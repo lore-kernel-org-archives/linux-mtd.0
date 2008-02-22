@@ -1,23 +1,18 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from miranda.se.axis.com ([193.13.178.8])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JSTxJ-0002KE-QP
-	for linux-mtd@lists.infradead.org; Fri, 22 Feb 2008 09:12:34 +0000
-Subject: Re: [PATCH] ubi-utils: Fixup pddcustomize
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: haver@vnet.ibm.com
-In-Reply-To: <1203670055.8489.4.camel@august>
-References: <1203670055.8489.4.camel@august>
-Content-Type: text/plain; charset=utf-8
-Date: Fri, 22 Feb 2008 10:51:17 +0200
-Message-Id: <1203670277.3758.51.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: Josh Boyer <jwboyer@linux.ibm.com>,
-	Alexander Schmidt <alexs@linux.vnet.ibm.com>,
-	"Monte K. Copeland" <catboat@texas.net>,
-	MTD Mailinglist <linux-mtd@lists.infradead.org>,
-	Andreas Arnez <arnez@de.ibm.com>, Thomas Gleixner <tglx@linutronix.de>
-Reply-To: dedekind@infradead.org
+	id 1JSWoq-000794-Tv
+	for linux-mtd@lists.infradead.org; Fri, 22 Feb 2008 12:16:01 +0000
+Date: Fri, 22 Feb 2008 13:15:26 +0100 (CET)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Mangesh Edake <m_edake@yahoo.com>
+Subject: Re: JFFS2 as rootfs on DataFlash
+In-Reply-To: <389154.92868.qm@web50802.mail.re2.yahoo.com>
+Message-ID: <Pine.LNX.4.64.0802221308540.6032@lnxricardw.se.axis.com>
+References: <389154.92868.qm@web50802.mail.re2.yahoo.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: linux-mtd@lists.infradead.org, michael <trimarchi@gandalf.sssup.it>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,36 +23,43 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-On Fri, 2008-02-22 at 09:47 +0100, Frank Haverkamp wrote:
-> Subject: ubi-utils: pddcustomize fixup update volume
-> From: Frank Haverkamp <haver@vnet.ibm.com>
->=20
-> Somehow calling ubi_update_start was forgotten and caused the
-> tool not to write but silently ignore the write.
->=20
-> Signed-off-by: Frank Haverkamp <haver@vnet.ibm.com>
+On Thu, 21 Feb 2008, Mangesh Edake wrote:
 
-[dedekind@golum mtd-utils.git]$ git-am haver.eml
-Applying ubi-utils: pddcustomize fixup update volume
-.dotest/patch:11: trailing whitespace.
- * Copyright (c) International Business Machines Corp., 2008
-.dotest/patch:20: trailing whitespace.
- * Copyright (c) International Business Machines Corp., 2008
-.dotest/patch:28: trailing whitespace.
- * 1.6 Fixed broken volume update
-.dotest/patch:37: trailing whitespace.
-#define PROGRAM_VERSION "1.6"
-.dotest/patch:46: trailing whitespace.
-        size_t nbytes;
-error: patch failed: ubi-utils/src/bootenv.c:1
-error: ubi-utils/src/bootenv.c: patch does not apply
-error: patch failed: ubi-utils/src/pddcustomize.c:1
-error: ubi-utils/src/pddcustomize.c: patch does not apply
-Patch failed at 0001.
-When you have resolved this problem run "git-am --resolved".
-If you would prefer to skip this patch, instead run "git-am --skip".
+> However I found that dataflash driver in u-boot
+> doesnot deal with extra 16-bytes (oob) and doesnot
+> write any JFFS2 specific magic bitmask, node crc,
+> cleanmarker etc. info to the oob. But the nand flash
+> (legacy) driver does the same in u-boot. Also
+> kernel-mtd driver for at45 dataflash is missing with
+> read_oob, write_oob functions whereas mtd-nand uses
+> those routines. So my concern is, while copying the
+> jffs2 image to dataflash is it necessory to write
+> jffs2 specific info in oob region..? My assumption is,
+> this info should be present in image itself and
+> mkfs.jffs2 must take care of this while creating an
+> image. (Please corret me if I'm wrong...)
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+The only JFFS2 data present in the OOB is the cleanmarker indicator for=20
+blocks that are unused, i.e. where the data is =3D0xFF. For blocks that are=
+=20
+used, all JFFS2 info is in the ordinary data area.
+
+Since the JFFS2 driver automagically writes cleanmarkers to unused blocks=
+=20
+when mounting (after erasing them first), it is not necessary to have=20
+(oob) cleanmarkers in the filesystem image produced by mkfs.jffs2, and=20
+indeed there is no option to do so IIRC.
+
+The said, we've seen that the erase/cleamarker write during initial mount=
+=20
+of a JFFS2 filesystem consumes a lot of cpu time, and this can be=20
+minimized by writing all the cleanmarkers before mounting. It is possible=
+=20
+that nandwrite -j would do this (we don't use nandwrite to write the=20
+initial image in our products so I don't have any experience with this).
+
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
