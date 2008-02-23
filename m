@@ -1,28 +1,16 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JSwO7-0001MD-QD
-	for linux-mtd@lists.infradead.org; Sat, 23 Feb 2008 15:34:08 +0000
-Date: Sat, 23 Feb 2008 16:33:21 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Stephane Chazelas <stephane.chazelas@emerson.com>
-Subject: Re: [PATCH 2.6.24] block2mtd: removing a device and typo fixes
-Message-ID: <20080223153321.GC29143@lazybastard.org>
-References: <chaz20080212134751.GI30304@artesyncp.com>
-	<chaz20080212161034.GJ30304@artesyncp.com>
-	<20080219150822.GA29587@lazybastard.org>
-	<200802192333.39707.arnd@arndb.de>
-	<chaz20080220144339.GK4539@artesyncp.com>
-	<20080220163042.GC5539@lazybastard.org>
-	<chaz20080220170231.GV4539@artesyncp.com>
-	<20080220172250.GA6873@lazybastard.org>
-	<chaz20080220173053.GX4539@artesyncp.com>
+Received: from gprs189-60.eurotel.cz ([160.218.189.60] helo=amd.ucw.cz)
+	by pentafluge.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JT4FX-0004CJ-CA
+	for linux-mtd@lists.infradead.org; Sat, 23 Feb 2008 23:57:48 +0000
+Date: Sun, 24 Feb 2008 00:57:42 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: kernel list <linux-kernel@vger.kernel.org>
+Subject: jffs2: -ENOSPC when truncating file?!
+Message-ID: <20080223235742.GE2202@elf.ucw.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <chaz20080220173053.GX4539@artesyncp.com>
-Cc: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,45 +20,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 20 February 2008 17:30:53 +0000, Stephane Chazelas wrote:
-> > 
-> > Actually, there is /dev/mtd<x>.  Enable CONFIG_MTD_CHAR.
-> 
-> Yes, my point ;). "block2mtd" creates a "mtd" out of a block
-> device and "mtdchar" and "mtdblock" create the "char" and
-> "block" devices out of the "mtd". This is a different concept
-> from "loop". With "loop", you make a block device out of a file,
-> but you do the ioctl on the target loop block device itself.
-> With block2mtd, you can't do that.
+Hi!
 
-The fact is that there is _no_ interface to manage mtd.  Part of the
-reason is this tradition to have seperate modules every couple of lines
-of code.  In other subsystems, CONFIG_MTD_CHAR would not exist and the
-code always be compiled in.  Simply to get _some_ interface to handle
-the device that is always there.
+I'm trying to free space by truncating big file, and I get:
 
-Without going much deeper into that discussion, I consider it acceptable
-to depend on CONFIG_MTD_CHAR for things like device removal.  If you
-want device removal and explicitly don't want the extra code from
-mtdchar.c, send a patch or go find 500 bytes to save elsewhere. ;)
+root@fic-gta01:~# ls -al gps.nmea 
+-rw-r--r--    1 root     root      2332070 Feb 19 22:13 gps.nmea
+root@fic-gta01:~# > gps.nmea 
+-sh: cannot create gps.nmea: No space left on device
+root@fic-gta01:~# rm gps.nmea
+root@fic-gta01:~# > gps.nmea
+root@fic-gta01:~# 
 
-With that out of the way, the question remains which interface we should
-have.  Independently of mimicking loop, I would like to have a generic
-interface for all mtd, not just block2mtd.  Whether it is "echo 1 >
-/sys/.../mtd/mtdN/remove" or an ioctl(), I don't care much about.
+:-(
 
-> Actually, that's what I use block2mtd for, in combination with
-> "loop" to mount jffs2 filesystem images (always wondered if
-> there wasn't a simpler way, BTW (other than mtdram))
+Kernel is not-so-ancient, on openmoko:
 
-Logfs can use a block device directly, which still leaves loop.
-Enhancing block2mtd to work with files shouldn't be too hard.  If anyone
-want a fun project to hack on...
+root@fic-gta01:~# uname -a
+Linux fic-gta01 2.6.24 #1 PREEMPT Mon Feb 18 21:30:53 GMT 2008 armv4tl
+unknown
+root@fic-gta01:~# 
 
-Jörn
 
+								Pavel
 -- 
-Data dominates. If you've chosen the right data structures and organized
-things well, the algorithms will almost always be self-evident. Data
-structures, not algorithms, are central to programming.
--- Rob Pike
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
