@@ -1,18 +1,28 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JSWoq-000794-Tv
-	for linux-mtd@lists.infradead.org; Fri, 22 Feb 2008 12:16:01 +0000
-Date: Fri, 22 Feb 2008 13:15:26 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Mangesh Edake <m_edake@yahoo.com>
-Subject: Re: JFFS2 as rootfs on DataFlash
-In-Reply-To: <389154.92868.qm@web50802.mail.re2.yahoo.com>
-Message-ID: <Pine.LNX.4.64.0802221308540.6032@lnxricardw.se.axis.com>
-References: <389154.92868.qm@web50802.mail.re2.yahoo.com>
+	id 1JSwO7-0001MD-QD
+	for linux-mtd@lists.infradead.org; Sat, 23 Feb 2008 15:34:08 +0000
+Date: Sat, 23 Feb 2008 16:33:21 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Stephane Chazelas <stephane.chazelas@emerson.com>
+Subject: Re: [PATCH 2.6.24] block2mtd: removing a device and typo fixes
+Message-ID: <20080223153321.GC29143@lazybastard.org>
+References: <chaz20080212134751.GI30304@artesyncp.com>
+	<chaz20080212161034.GJ30304@artesyncp.com>
+	<20080219150822.GA29587@lazybastard.org>
+	<200802192333.39707.arnd@arndb.de>
+	<chaz20080220144339.GK4539@artesyncp.com>
+	<20080220163042.GC5539@lazybastard.org>
+	<chaz20080220170231.GV4539@artesyncp.com>
+	<20080220172250.GA6873@lazybastard.org>
+	<chaz20080220173053.GX4539@artesyncp.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: linux-mtd@lists.infradead.org, michael <trimarchi@gandalf.sssup.it>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <chaz20080220173053.GX4539@artesyncp.com>
+Cc: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,44 +32,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, 20 February 2008 17:30:53 +0000, Stephane Chazelas wrote:
+> > 
+> > Actually, there is /dev/mtd<x>.  Enable CONFIG_MTD_CHAR.
+> 
+> Yes, my point ;). "block2mtd" creates a "mtd" out of a block
+> device and "mtdchar" and "mtdblock" create the "char" and
+> "block" devices out of the "mtd". This is a different concept
+> from "loop". With "loop", you make a block device out of a file,
+> but you do the ioctl on the target loop block device itself.
+> With block2mtd, you can't do that.
 
-On Thu, 21 Feb 2008, Mangesh Edake wrote:
+The fact is that there is _no_ interface to manage mtd.  Part of the
+reason is this tradition to have seperate modules every couple of lines
+of code.  In other subsystems, CONFIG_MTD_CHAR would not exist and the
+code always be compiled in.  Simply to get _some_ interface to handle
+the device that is always there.
 
-> However I found that dataflash driver in u-boot
-> doesnot deal with extra 16-bytes (oob) and doesnot
-> write any JFFS2 specific magic bitmask, node crc,
-> cleanmarker etc. info to the oob. But the nand flash
-> (legacy) driver does the same in u-boot. Also
-> kernel-mtd driver for at45 dataflash is missing with
-> read_oob, write_oob functions whereas mtd-nand uses
-> those routines. So my concern is, while copying the
-> jffs2 image to dataflash is it necessory to write
-> jffs2 specific info in oob region..? My assumption is,
-> this info should be present in image itself and
-> mkfs.jffs2 must take care of this while creating an
-> image. (Please corret me if I'm wrong...)
+Without going much deeper into that discussion, I consider it acceptable
+to depend on CONFIG_MTD_CHAR for things like device removal.  If you
+want device removal and explicitly don't want the extra code from
+mtdchar.c, send a patch or go find 500 bytes to save elsewhere. ;)
 
-The only JFFS2 data present in the OOB is the cleanmarker indicator for=20
-blocks that are unused, i.e. where the data is =3D0xFF. For blocks that are=
-=20
-used, all JFFS2 info is in the ordinary data area.
+With that out of the way, the question remains which interface we should
+have.  Independently of mimicking loop, I would like to have a generic
+interface for all mtd, not just block2mtd.  Whether it is "echo 1 >
+/sys/.../mtd/mtdN/remove" or an ioctl(), I don't care much about.
 
-Since the JFFS2 driver automagically writes cleanmarkers to unused blocks=
-=20
-when mounting (after erasing them first), it is not necessary to have=20
-(oob) cleanmarkers in the filesystem image produced by mkfs.jffs2, and=20
-indeed there is no option to do so IIRC.
+> Actually, that's what I use block2mtd for, in combination with
+> "loop" to mount jffs2 filesystem images (always wondered if
+> there wasn't a simpler way, BTW (other than mtdram))
 
-The said, we've seen that the erase/cleamarker write during initial mount=
-=20
-of a JFFS2 filesystem consumes a lot of cpu time, and this can be=20
-minimized by writing all the cleanmarkers before mounting. It is possible=
-=20
-that nandwrite -j would do this (we don't use nandwrite to write the=20
-initial image in our products so I don't have any experience with this).
+Logfs can use a block device directly, which still leaves loop.
+Enhancing block2mtd to work with files shouldn't be too hard.  If anyone
+want a fun project to hack on...
 
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Jörn
+
+-- 
+Data dominates. If you've chosen the right data structures and organized
+things well, the algorithms will almost always be self-evident. Data
+structures, not algorithms, are central to programming.
+-- Rob Pike
