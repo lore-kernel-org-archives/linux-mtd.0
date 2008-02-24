@@ -1,23 +1,21 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+Received: from mail2.shareable.org ([80.68.89.115])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JTEjg-0004Fr-D9
-	for linux-mtd@lists.infradead.org; Sun, 24 Feb 2008 11:09:36 +0000
-Date: Sun, 24 Feb 2008 12:08:58 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: David Woodhouse <dwmw2@infradead.org>
+	id 1JTLZ6-0002QB-Oi
+	for linux-mtd@lists.infradead.org; Sun, 24 Feb 2008 18:27:09 +0000
+Date: Sun, 24 Feb 2008 16:11:35 +0000
+From: Jamie Lokier <jamie@shareable.org>
+To: Pavel Machek <pavel@ucw.cz>
 Subject: Re: jffs2: -ENOSPC when truncating file?!
-Message-ID: <20080224110858.GC31293@lazybastard.org>
+Message-ID: <20080224161135.GA4918@shareable.org>
 References: <20080223235742.GE2202@elf.ucw.cz>
 	<1203813368.5771.174.camel@shinybook.infradead.org>
-	<20080224065751.GA31293@lazybastard.org>
-	<1203850653.13749.9.camel@shinybook.infradead.org>
+	<20080224072423.GF2202@elf.ucw.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1203850653.13749.9.camel@shinybook.infradead.org>
-Cc: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>, linux-mtd@lists.infradead.org,
-	kernel list <linux-kernel@vger.kernel.org>, Pavel Machek <pavel@ucw.cz>
+In-Reply-To: <20080224072423.GF2202@elf.ucw.cz>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	kernel list <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,32 +25,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 24 February 2008 18:57:32 +0800, David Woodhouse wrote:
-> On Sun, 2008-02-24 at 07:57 +0100, Jörn Engel wrote:
-> > Could a naïve implementation of this get exploited by doing a large
-> > number of truncates that just shave single bytes off various files?
+Pavel Machek wrote:
+> > You need to write a log entry indicating the new length of the file.
+> > There is no space for new log entries.
+> > 
+> > There is a special case for removal -- 'rm gps.nmea' would work. Perhaps
+> > we should add a special case for truncation too, so that it can also use
+> > the extra pool of free space.
 > 
-> Yeah, which is why _my_ naïve implementation would do it for
-> truncate-to-zero instead of just _any_ truncate (which could even be
-> truncate-to-larger).
+> Yes, that would be nice. I somehow assumed that truncate can't fail
+> for -ENOSPC ... I was trying to actually free some space on the
+> filesystem...
 
-Truncate-to-larger is trivial to check.  Almost every filesystem does it
-somewhere, including JFFS2. ;)
+Same here!  When I got ENOSPC from truncate, trying to free some
+space, I was so surprised (and a bit disappointed) that I assumed
+removal could fail too.  So now I'm pleasantly surprised to learn I
+can at least remove a file.
 
-But yeah, truncate-to-zero should catch the common case.
+It does seem odd that truncate to zero length can fail.  It is
+guaranteed to free up one or more data nodes, so there should be
+enough space for the size change node, provided GC is invoked when
+necessary and the node sizes are compatible for this in corner cases.
 
-> If allowing only truncate-to-zero isn't good enough, perhaps we could
-> allow truncation to use the ALLOC_DELETION pool when it's going to
-> obsolete at least one full data node. That's not so hard to check.
-
-I would simply always write out a "full" replacement node, i.e. the
-complete tail page for the file.  No need to check if an old node gets
-obsoleted, we just made sure it does.  Anyway, it is your baby, so you
-get to change the dirty diapers and pick your favorite pair of clean
-ones.
-
-Jörn
-
--- 
-Joern's library part 3:
-http://inst.eecs.berkeley.edu/~cs152/fa05/handouts/clark-test.pdf
+-- Jamie
