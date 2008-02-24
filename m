@@ -1,21 +1,23 @@
-Received: from mail2.shareable.org ([80.68.89.115])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JTLZ6-0002QB-Oi
-	for linux-mtd@lists.infradead.org; Sun, 24 Feb 2008 18:27:09 +0000
-Date: Sun, 24 Feb 2008 16:11:35 +0000
-From: Jamie Lokier <jamie@shareable.org>
-To: Pavel Machek <pavel@ucw.cz>
+Received: from gprs189-60.eurotel.cz ([160.218.189.60] helo=amd.ucw.cz)
+	by pentafluge.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JTM76-0005s6-Tn
+	for linux-mtd@lists.infradead.org; Sun, 24 Feb 2008 19:02:18 +0000
+Date: Sun, 24 Feb 2008 20:02:07 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: David Woodhouse <dwmw2@infradead.org>
 Subject: Re: jffs2: -ENOSPC when truncating file?!
-Message-ID: <20080224161135.GA4918@shareable.org>
+Message-ID: <20080224190207.GA18908@elf.ucw.cz>
 References: <20080223235742.GE2202@elf.ucw.cz>
 	<1203813368.5771.174.camel@shinybook.infradead.org>
-	<20080224072423.GF2202@elf.ucw.cz>
+	<20080224065751.GA31293@lazybastard.org>
+	<1203850653.13749.9.camel@shinybook.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20080224072423.GF2202@elf.ucw.cz>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	kernel list <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1203850653.13749.9.camel@shinybook.infradead.org>
+Cc: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
+	linux-mtd@lists.infradead.org, kernel list <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +27,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Pavel Machek wrote:
-> > You need to write a log entry indicating the new length of the file.
-> > There is no space for new log entries.
-> > 
-> > There is a special case for removal -- 'rm gps.nmea' would work. Perhaps
-> > we should add a special case for truncation too, so that it can also use
-> > the extra pool of free space.
+On Sun 2008-02-24 18:57:32, David Woodhouse wrote:
 > 
-> Yes, that would be nice. I somehow assumed that truncate can't fail
-> for -ENOSPC ... I was trying to actually free some space on the
-> filesystem...
+> On Sun, 2008-02-24 at 07:57 +0100, Jörn Engel wrote:
+> > Could a na??ve implementation of this get exploited by doing a large
+> > number of truncates that just shave single bytes off various files?
+> 
+> Yeah, which is why _my_ na??ve implementation would do it for
+> truncate-to-zero instead of just _any_ truncate (which could even be
+> truncate-to-larger).
+> 
+> A more complex version might allow _any_ transaction to eat into the
+> ALLOC_DELETION pool if it is ultimately going to reduce the amount of
+> space taken on the file system -- even overwriting 'real' data with
+> zeroes which compress better. That's going to be hard to calculate in
+> the general case though.
+> 
+> If allowing only truncate-to-zero isn't good enough, perhaps we could
+> allow truncation to use the ALLOC_DELETION pool when it's going to
+> obsolete at least one full data node. That's not so hard to check.
 
-Same here!  When I got ENOSPC from truncate, trying to free some
-space, I was so surprised (and a bit disappointed) that I assumed
-removal could fail too.  So now I'm pleasantly surprised to learn I
-can at least remove a file.
+I believe truncate-to-zero is good enough.
 
-It does seem odd that truncate to zero length can fail.  It is
-guaranteed to free up one or more data nodes, so there should be
-enough space for the size change node, provided GC is invoked when
-necessary and the node sizes are compatible for this in corner cases.
-
--- Jamie
+-- 
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
