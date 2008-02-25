@@ -1,22 +1,23 @@
-Received: from gprs189-60.eurotel.cz ([160.218.189.60] helo=amd.ucw.cz)
-	by pentafluge.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JTM76-0005s6-Tn
-	for linux-mtd@lists.infradead.org; Sun, 24 Feb 2008 19:02:18 +0000
-Date: Sun, 24 Feb 2008 20:02:07 +0100
-From: Pavel Machek <pavel@ucw.cz>
-To: David Woodhouse <dwmw2@infradead.org>
+Received: from fg-out-1718.google.com ([72.14.220.158])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JTYAw-0002rc-8U
+	for linux-mtd@lists.infradead.org; Mon, 25 Feb 2008 07:55:03 +0000
+Received: by fg-out-1718.google.com with SMTP id 22so1105263fge.26
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 24 Feb 2008 23:55:00 -0800 (PST)
+Message-ID: <fe810cf0802242348w625a7e7bj1a5476d6c79662@mail.gmail.com>
+Date: Mon, 25 Feb 2008 10:48:10 +0300
+From: "Alexander Belyakov" <abelyako@googlemail.com>
+To: "Pavel Machek" <pavel@ucw.cz>
 Subject: Re: jffs2: -ENOSPC when truncating file?!
-Message-ID: <20080224190207.GA18908@elf.ucw.cz>
-References: <20080223235742.GE2202@elf.ucw.cz>
-	<1203813368.5771.174.camel@shinybook.infradead.org>
-	<20080224065751.GA31293@lazybastard.org>
-	<1203850653.13749.9.camel@shinybook.infradead.org>
+In-Reply-To: <20080223235742.GE2202@elf.ucw.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1203850653.13749.9.camel@shinybook.infradead.org>
-Cc: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
+References: <20080223235742.GE2202@elf.ucw.cz>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	=?UTF-8?Q?J=C3=B6rn_Engel?= <joern@logfs.org>,
 	linux-mtd@lists.infradead.org, kernel list <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -27,28 +28,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun 2008-02-24 18:57:32, David Woodhouse wrote:
-> 
-> On Sun, 2008-02-24 at 07:57 +0100, Jörn Engel wrote:
-> > Could a na??ve implementation of this get exploited by doing a large
-> > number of truncates that just shave single bytes off various files?
-> 
-> Yeah, which is why _my_ na??ve implementation would do it for
-> truncate-to-zero instead of just _any_ truncate (which could even be
-> truncate-to-larger).
-> 
-> A more complex version might allow _any_ transaction to eat into the
-> ALLOC_DELETION pool if it is ultimately going to reduce the amount of
-> space taken on the file system -- even overwriting 'real' data with
-> zeroes which compress better. That's going to be hard to calculate in
-> the general case though.
-> 
-> If allowing only truncate-to-zero isn't good enough, perhaps we could
-> allow truncation to use the ALLOC_DELETION pool when it's going to
-> obsolete at least one full data node. That's not so hard to check.
+On Sun, Feb 24, 2008 at 2:57 AM, Pavel Machek <pavel@ucw.cz> wrote:
+> Hi!
+>
+>  I'm trying to free space by truncating big file, and I get:
+>
+>  root@fic-gta01:~# ls -al gps.nmea
+>  -rw-r--r--    1 root     root      2332070 Feb 19 22:13 gps.nmea
+>  root@fic-gta01:~# > gps.nmea
+>  -sh: cannot create gps.nmea: No space left on device
+>  root@fic-gta01:~# rm gps.nmea
+>  root@fic-gta01:~# > gps.nmea
+>  root@fic-gta01:~#
+>
+>  :-(
+>
+>  Kernel is not-so-ancient, on openmoko:
 
-I believe truncate-to-zero is good enough.
+Hi!
 
--- 
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+JFFS2 has known bug in GC leading to -ENOSPC upon file removal. Time
+ago I've sent a patch with detailed explanations of what is going on.
+Probably your case is the same.
+
+Here is the patch
+http://lists.infradead.org/pipermail/linux-mtd/2007-December/020091.html
+(though infradead mailing list archive is missing most of messages
+from this thread)
+
+And here are some details
+http://lists.infradead.org/pipermail/linux-mtd/2007-June/018756.html
+
+Alexander
