@@ -1,24 +1,15 @@
-Received: from fg-out-1718.google.com ([72.14.220.158])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JTYAw-0002rc-8U
-	for linux-mtd@lists.infradead.org; Mon, 25 Feb 2008 07:55:03 +0000
-Received: by fg-out-1718.google.com with SMTP id 22so1105263fge.26
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 24 Feb 2008 23:55:00 -0800 (PST)
-Message-ID: <fe810cf0802242348w625a7e7bj1a5476d6c79662@mail.gmail.com>
-Date: Mon, 25 Feb 2008 10:48:10 +0300
-From: "Alexander Belyakov" <abelyako@googlemail.com>
-To: "Pavel Machek" <pavel@ucw.cz>
-Subject: Re: jffs2: -ENOSPC when truncating file?!
-In-Reply-To: <20080223235742.GE2202@elf.ucw.cz>
+Received: from web36904.mail.mud.yahoo.com ([209.191.85.72])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JTa34-00014F-9d
+	for linux-mtd@lists.infradead.org; Mon, 25 Feb 2008 09:55:02 +0000
+Date: Mon, 25 Feb 2008 09:54:58 +0000 (GMT)
+From: Mark Underwood <basicmark@yahoo.com>
+Subject: NAND driver
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <20080223235742.GE2202@elf.ucw.cz>
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	=?UTF-8?Q?J=C3=B6rn_Engel?= <joern@logfs.org>,
-	linux-mtd@lists.infradead.org, kernel list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Message-ID: <751269.90312.qm@web36904.mail.mud.yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,35 +19,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Feb 24, 2008 at 2:57 AM, Pavel Machek <pavel@ucw.cz> wrote:
-> Hi!
->
->  I'm trying to free space by truncating big file, and I get:
->
->  root@fic-gta01:~# ls -al gps.nmea
->  -rw-r--r--    1 root     root      2332070 Feb 19 22:13 gps.nmea
->  root@fic-gta01:~# > gps.nmea
->  -sh: cannot create gps.nmea: No space left on device
->  root@fic-gta01:~# rm gps.nmea
->  root@fic-gta01:~# > gps.nmea
->  root@fic-gta01:~#
->
->  :-(
->
->  Kernel is not-so-ancient, on openmoko:
+I’m writing a NAND driver for an ASIC. The NAND controller has been designed to handle page read &
+writes with little SW intervention using interrupts or DMA, so I plan to implement the
+write_page_raw & read_page_raw functions.
+However, looking through nand_base.c it looks like not all NAND access go through these functions
+so to start with I have implemented the cmd_ctrl function & supplied the IO_ADDR_R & IO_ADDR_W
+address with the thinking that these would be a fall back when the access doesn't go through the
+raw functions.
+Unfortunately it seems the single write functionality of the controller is broken. The page  read
+& write functionality only allow me to work in 512byte blocks so I can't write OOB that way. Can
+you confirm that there are cases where OOB is written separately and if so do you have any
+suggestions for getting around this problem?
 
-Hi!
+Many thanks,
 
-JFFS2 has known bug in GC leading to -ENOSPC upon file removal. Time
-ago I've sent a patch with detailed explanations of what is going on.
-Probably your case is the same.
+Mark
 
-Here is the patch
-http://lists.infradead.org/pipermail/linux-mtd/2007-December/020091.html
-(though infradead mailing list archive is missing most of messages
-from this thread)
 
-And here are some details
-http://lists.infradead.org/pipermail/linux-mtd/2007-June/018756.html
 
-Alexander
+      ___________________________________________________________ 
+Rise to the challenge for Sport Relief with Yahoo! For Good  
+
+http://uk.promotions.yahoo.com/forgood/
