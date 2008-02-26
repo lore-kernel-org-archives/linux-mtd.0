@@ -1,16 +1,21 @@
-Received: from relay02.pair.com ([209.68.5.16])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JU4W3-0005hj-0K
-	for linux-mtd@lists.infradead.org; Tue, 26 Feb 2008 18:26:59 +0000
-Date: Tue, 26 Feb 2008 10:26:48 -0800
-Subject: [PATCH] [MTD-UTILS]: Add Optional ZLIB and LZO CFLAGS and LDFLAGS
-From: Grant Erickson <gerickson@nuovations.com>
-To: <linux-mtd@lists.infradead.org>
-Message-ID: <C3E999E8.D9D2%gerickson@nuovations.com>
-Mime-version: 1.0
-Content-type: text/plain;
-	charset="US-ASCII"
-Content-transfer-encoding: 7bit
+Received: from an-out-0708.google.com ([209.85.132.243])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JU7Wm-0001KE-Gd
+	for linux-mtd@lists.infradead.org; Tue, 26 Feb 2008 21:39:56 +0000
+Received: by an-out-0708.google.com with SMTP id c3so434374ana.99
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 26 Feb 2008 13:39:54 -0800 (PST)
+Message-ID: <97a0a9ac0802261339w6eb6143fx87ddca8bcb0add87@mail.gmail.com>
+Date: Tue, 26 Feb 2008 14:39:54 -0700
+From: "Gordon Farquharson" <gordonfarquharson@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] [MTD] [NOR] Add support for the ST M29W400DB flash chip
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Cc: Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,54 +25,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds support for allowing the specification of unique CFLAGS and
-LDFLAGS for both LZO and ZLIB. In addition, it allows for independently
-specifying both PREFIX and EXEC_PREFIX.
+Please could somebody acknowledge this patch. I have sent it to
+linux-mtd several times and received no response [1]. It was
+originally posted to linux-mtd on 2008-01-08 in the hope that it would
+be included in 2.6.25.
 
-The former is useful in some cross-compilation environments where the LZO
-and ZLIB versions being built against are not those installed in the
-standard locations.
+Thanks.
 
-The latter is useful when installing mtd-utils in a multi-architecture
-installation area.
-
-Compiled, linked and tested successfully in both a i686-unknown-linux to
-powerpc-unknown-linux cross-compilation environment as well as a native
-i686-unknown-linux environment
-
-Signed-off-by: Grant Erickson <gerickson@nuovations.com>
+[1] http://lists.infradead.org/pipermail/linux-mtd/2008-January/020291.html
 
 ---
-diff -aruN mtd-utils-1.1.0/Makefile mtd-utils-1.1.0.N/Makefile
---- mtd-utils-1.1.0/Makefile    2007-08-03 06:55:51.000000000 -0700
-+++ mtd-utils-1.1.0.N/Makefile    2008-02-26 09:51:46.000000000 -0800
-@@ -1,12 +1,14 @@
- 
- # -*- sh -*-
- 
--SBINDIR=/usr/sbin
--MANDIR=/usr/man
--INCLUDEDIR=/usr/include
-+PREFIX=/usr
-+EXEC_PREFIX=$(PREFIX)
-+SBINDIR=$(EXEC_PREFIX)/sbin
-+MANDIR=$(PREFIX)/man
-+INCLUDEDIR=$(PREFIX)/include
- #CROSS=arm-linux-
- CC := $(CROSS)gcc
--CFLAGS := -I./include -O2 -Wall
-+CFLAGS := -I./include $(ZLIBCFLAGS) $(LZOCFLAGS) -O2 -Wall
- 
- ifeq ($(origin CROSS),undefined)
-   BUILDDIR := .
-@@ -58,7 +60,7 @@
-             $(BUILDDIR)/compr_zlib.o \
-             $(BUILDDIR)/compr_lzo.o \
-             $(BUILDDIR)/compr.o
--    $(CC) $(LDFLAGS) -o $@ $^ -lz -llzo2
-+    $(CC) $(LDFLAGS) -o $@ $^ $(ZLIBLDFLAGS) -lz $(LZOLDFLAGS) -llzo2
- 
- $(BUILDDIR)/flash_eraseall: $(BUILDDIR)/crc32.o
-$(BUILDDIR)/flash_eraseall.o
-     $(CC) $(LDFLAGS) -o $@ $^
---
+
+Add support for the ST M29W400DB flash chip. which is used on the GLAN Tank NAS.
+
+Signed-off-by: Gordon Farquharson <gordonfarquharson@gmail.com>
+
+---
+
+diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
+index 4be51a8..51ec937 100644
+--- a/drivers/mtd/chips/jedec_probe.c
++++ b/drivers/mtd/chips/jedec_probe.c
+@@ -135,6 +135,7 @@
+ #define M29W160DT	0x22C4
+ #define M29W160DB	0x2249
+ #define M29W040B	0x00E3
++#define M29W400DB	0x00EF
+ #define M50FW040	0x002C
+ #define M50FW080	0x002D
+ #define M50FW016	0x002E
+@@ -1498,7 +1499,22 @@ static const struct amd_flash_info jedec_table[] = {
+ 		.regions	= {
+ 			ERASEINFO(0x10000,8),
+ 		}
+-        }, {
++	}, {
++		.mfr_id		= MANUFACTURER_ST,
++		.dev_id		= M29W400DB,
++		.name		= "ST M29W400DB",
++		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
++		.uaddr		= MTD_UADDR_0x0555_0x02AA,
++		.dev_size	= SIZE_512KiB,
++		.cmd_set	= P_ID_AMD_STD,
++		.nr_regions	= 4,
++		.regions	= {
++			ERASEINFO(0x04000,1),
++			ERASEINFO(0x02000,2),
++			ERASEINFO(0x08000,1),
++			ERASEINFO(0x10000,7)
++		}
++	}, {
+ 		.mfr_id		= MANUFACTURER_ST,
+ 		.dev_id		= M50FW040,
+ 		.name		= "ST M50FW040",
+
+-- 
+Gordon Farquharson
+GnuPG Key ID: 32D6D676
