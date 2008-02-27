@@ -1,22 +1,26 @@
-Received: from ug-out-1314.google.com ([66.249.92.171])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JUz6W-0006MD-9w
-	for linux-mtd@lists.infradead.org; Fri, 29 Feb 2008 06:52:24 +0000
-Received: by ug-out-1314.google.com with SMTP id 23so154658ugr.45
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 28 Feb 2008 22:52:23 -0800 (PST)
-Message-ID: <97a0a9ac0802282245h65967c30lf7cb6e9f87c021b3@mail.gmail.com>
-Date: Thu, 28 Feb 2008 23:45:29 -0700
-From: "Gordon Farquharson" <gordonfarquharson@gmail.com>
+Received: from zigzag.lvk.cs.msu.su ([158.250.17.23])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JUTCN-0003CT-7k
+	for linux-mtd@lists.infradead.org; Wed, 27 Feb 2008 20:48:20 +0000
+Received: from Debian-exim by zigzag.lvk.cs.msu.su with spam-scanned (Exim
+	4.50) id 1JUTCI-0006vA-KP
+	for linux-mtd@lists.infradead.org; Wed, 27 Feb 2008 23:48:17 +0300
+Received: from ppp85-140-99-217.pppoe.mtu-net.ru ([85.140.99.217] helo=blacky)
+	by zigzag.lvk.cs.msu.su with esmtpsa (TLS-1.0:RSA_AES_256_CBC_SHA:32)
+	(Exim 4.50) id 1JUTCI-0006v7-Fg
+	for linux-mtd@lists.infradead.org; Wed, 27 Feb 2008 23:48:14 +0300
+Received: from nikita by blacky with local (Exim 4.63)
+	(envelope-from <yoush@cs.msu.su>) id 1JUTCH-0001X8-6Q
+	for linux-mtd@lists.infradead.org; Wed, 27 Feb 2008 23:48:13 +0300
+From: "Nikita V. Youshchenko" <yoush@cs.msu.su>
 To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] [MTD] [NOR] Add support for the ST M29W400DT and
-	M29W400DB flash chips
+Subject: [PATCH] mtd: support for bit-reversed CFI cmd/query
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Date: Wed, 27 Feb 2008 23:48:07 +0300
+Content-Type: multipart/signed; boundary="nextPart5266589.hXS0jztc2a";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Cc: Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>
+Message-Id: <200802272348.13180@blacky.localdomain>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,137 +30,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Andrew
+--nextPart5266589.hXS0jztc2a
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-On Tue, Feb 26, 2008 at 2:39 PM, Gordon Farquharson
-<gordonfarquharson@gmail.com> wrote:
+commit 049aa6336a85de3143a3dc9cb3f4c87ecc8896b3
+Author: Nikita Youshchenko <yoush@cs.msu.su>
+Date:   Wed Feb 27 20:25:22 2008 +0000
 
->  Add support for the ST M29W400DB flash chip. which is used on the GLAN Tank NAS.
->
->  Signed-off-by: Gordon Farquharson <gordonfarquharson@gmail.com>
+    mtd: support for bit-reversed CFI cmd/query
+   =20
+    Some embedded boards have flash chips connected with reversed bit order.
+    Example for 16-bit width:
+     chip D0 is bus D15
+     chip D1 is bus D14
+     ...
+     chip D15 is bus D0
+    It works perfectly for data access, however probing and issuing CFI com=
+mands
+    for such chips require bit reversing. This patch adds support for this.
+   =20
+    Signed-off-by: Nikita Youshchenko <yoush@cs.msu.su>
 
-Thank you very much for including this patch in your -mm tree. During
-my testing, I found that the unlock address in this patch must be
-updated because jedec_table[] contains byte addresses [1]. My previous
-patch worked with 2.6.23, but doesn't with 2.6.24 and 2.6.25-rc3. In
-the updated patch (below), I have also added the top boot device
-(M29W400DT) to the table for completeness, and cleaned up a some of
-the formatting in the file.
+diff --git a/drivers/mtd/chips/Kconfig b/drivers/mtd/chips/Kconfig
+index 6d8f30d..0471cd0 100644
+=2D-- a/drivers/mtd/chips/Kconfig
++++ b/drivers/mtd/chips/Kconfig
+@@ -57,7 +57,8 @@ config MTD_CFI_NOSWAP
+ 	  enabled, means that the CPU will not do any swapping; the chips
+ 	  are expected to be wired to the CPU in 'host-endian' form.
+ 	  Specific arrangements are possible with the BIG_ENDIAN_BYTE and
+=2D	  LITTLE_ENDIAN_BYTE, if the bytes are reversed.
++	  LITTLE_ENDIAN_BYTE, if the bytes are reversed. Also it is possible
++	  to revert bit order in 'magic commands'.
+=20
+ 	  If you have a LART, on which the data (and address) lines were
+ 	  connected in a fashion which ensured that the nets were as short
+@@ -72,6 +73,10 @@ config MTD_CFI_BE_BYTE_SWAP
+ config MTD_CFI_LE_BYTE_SWAP
+ 	bool "LITTLE_ENDIAN_BYTE"
+=20
++config MTD_CFI_BIT_SWAP
++	bool "Reverse bit order"
++	select BITREVERSE
++
+ endchoice
+=20
+ config MTD_CFI_GEOMETRY
+diff --git a/include/linux/mtd/cfi_endian.h b/include/linux/mtd/cfi_endian.h
+index 25724f7..195edae 100644
+=2D-- a/include/linux/mtd/cfi_endian.h
++++ b/include/linux/mtd/cfi_endian.h
+@@ -52,6 +52,24 @@
+ #define cfi16_to_cpu(x) (x)
+ #define cfi32_to_cpu(x) (x)
+ #define cfi64_to_cpu(x) (x)
++#elif defined(CONFIG_MTD_CFI_BIT_SWAP)
++#include <linux/bitrev.h>
++#define cpu_to_cfi8(x) (x)
++#define cfi8_to_cpu(x) (x)
++#define cpu_to_cfi16(x) ({ u16 y =3D (x); \
++		           (bitrev8(y & 255) << 8) | bitrev8(y >> 8); \
++			})
++#define cfi16_to_cpu(x) ({ u16 y =3D (x); \
++		           (bitrev8(y & 255) << 8) | bitrev8(y >> 8); \
++			})
++#define cpu_to_cfi32(x) (x)
++#define cfi32_to_cpu(x) (x)
++#define cpu_to_cfi64(x) ({ u64 y =3D (x); \
++		           (bitrev32(y & 0xffffffff) << 32) | bitrev32(y >> 32); \
++			})
++#define cfi64_to_cpu(x) ({ u64 y =3D (x); \
++		           (bitrev32(y & 0xffffffff) << 32) | bitrev32(y >> 32); \
++			})
+ #else
+ #error No CFI endianness defined
+ #endif
 
-It would be great if you could update the patch in your tree with the
-patch below.
+--nextPart5266589.hXS0jztc2a
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-Thanks very much.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
 
-Gordon
+iD8DBQBHxcyNv3x5OskTLdsRAoPeAKDCfSLJ3lwloBsUp81CA11kGw4bIACeNKGo
+jQlUIVTiJ7OYcrpVTrOYPxU=
+=53QG
+-----END PGP SIGNATURE-----
 
-[1] http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=cec80bf2cc5283f2f00c34f474be857e5c9f6f65
-
----
-
-Add support for the ST M29W400DT and M29W400DB flash chips. The latter
-is used on the GLAN Tank NAS.
-
-Signed-off-by: Gordon Farquharson <gordonfarquharson@gmail.com>
-
----
-
-diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
-index 4be51a8..00159f5 100644
---- a/drivers/mtd/chips/jedec_probe.c
-+++ b/drivers/mtd/chips/jedec_probe.c
-@@ -132,6 +132,8 @@
- #define M29F800AB	0x0058
- #define M29W800DT	0x00D7
- #define M29W800DB	0x005B
-+#define M29W400DT	0x00EE
-+#define M29W400DB	0x00EF
- #define M29W160DT	0x22C4
- #define M29W160DB	0x2249
- #define M29W040B	0x00E3
-@@ -1426,7 +1428,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x08000,1),
- 			ERASEINFO(0x10000,15),
- 		}
--       }, {
-+	}, {
- 		.mfr_id		= MANUFACTURER_ST,	/* FIXME - CFI device? */
- 		.dev_id		= M29W800DT,
- 		.name		= "ST M29W800DT",
-@@ -1456,6 +1458,36 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x08000,1),
- 			ERASEINFO(0x10000,15)
- 		}
-+	},  {
-+		.mfr_id         = MANUFACTURER_ST,
-+		.dev_id         = M29W400DT,
-+		.name           = "ST M29W400DT",
-+		.devtypes       = CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-+		.uaddr          = MTD_UADDR_0x0AAA_0x0555,
-+		.dev_size       = SIZE_512KiB,
-+		.cmd_set        = P_ID_AMD_STD,
-+		.nr_regions     = 4,
-+		.regions        = {
-+			ERASEINFO(0x04000,7),
-+			ERASEINFO(0x02000,1),
-+			ERASEINFO(0x08000,2),
-+			ERASEINFO(0x10000,1)
-+		}
-+	}, {
-+		.mfr_id         = MANUFACTURER_ST,
-+		.dev_id         = M29W400DB,
-+		.name           = "ST M29W400DB",
-+		.devtypes       = CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-+		.uaddr          = MTD_UADDR_0x0AAA_0x0555,
-+		.dev_size       = SIZE_512KiB,
-+		.cmd_set        = P_ID_AMD_STD,
-+		.nr_regions     = 4,
-+		.regions        = {
-+			ERASEINFO(0x04000,1),
-+			ERASEINFO(0x02000,2),
-+			ERASEINFO(0x08000,1),
-+			ERASEINFO(0x10000,7)
-+		}
- 	}, {
- 		.mfr_id		= MANUFACTURER_ST,	/* FIXME - CFI device? */
- 		.dev_id		= M29W160DT,
-@@ -1486,7 +1518,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x08000,1),
- 			ERASEINFO(0x10000,31)
- 		}
--        }, {
-+	}, {
- 		.mfr_id		= MANUFACTURER_ST,
- 		.dev_id		= M29W040B,
- 		.name		= "ST M29W040B",
-@@ -1498,7 +1530,7 @@ static const struct amd_flash_info jedec_table[] = {
- 		.regions	= {
- 			ERASEINFO(0x10000,8),
- 		}
--        }, {
-+	}, {
- 		.mfr_id		= MANUFACTURER_ST,
- 		.dev_id		= M50FW040,
- 		.name		= "ST M50FW040",
-@@ -1510,7 +1542,7 @@ static const struct amd_flash_info jedec_table[] = {
- 		.regions	= {
- 			ERASEINFO(0x10000,8),
- 		}
--        }, {
-+	}, {
- 		.mfr_id		= MANUFACTURER_ST,
- 		.dev_id		= M50FW080,
- 		.name		= "ST M50FW080",
-@@ -1522,7 +1554,7 @@ static const struct amd_flash_info jedec_table[] = {
- 		.regions	= {
- 			ERASEINFO(0x10000,16),
- 		}
--        }, {
-+	}, {
- 		.mfr_id		= MANUFACTURER_ST,
- 		.dev_id		= M50FW016,
- 		.name		= "ST M50FW016",
-
--- 
-Gordon Farquharson
-GnuPG Key ID: 32D6D676
+--nextPart5266589.hXS0jztc2a--
