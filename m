@@ -1,24 +1,24 @@
-Received: from relais.videotron.ca ([24.201.245.36])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JUOUw-0005jV-KG
-	for linux-mtd@lists.infradead.org; Wed, 27 Feb 2008 15:47:11 +0000
-MIME-version: 1.0
-Content-transfer-encoding: 7BIT
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Received: from xanadu.home ([66.131.194.97]) by VL-MH-MR001.ip.videotron.ca
-	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
-	32bit))
-	with ESMTP id <0JWW00K3CMI5IZ10@VL-MH-MR001.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Wed, 27 Feb 2008 10:46:54 -0500 (EST)
-Date: Wed, 27 Feb 2008 10:46:53 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-To: Paulius Zaleckas <paulius.zaleckas@teltonika.lt>
-Subject: Re: [PATCH] MTD-XIP: Use generic xip_iprefetch() instead of asm
-	volatile (...)
-In-reply-to: <fq285f$isa$1@ger.gmane.org>
-Message-id: <alpine.LFD.1.00.0802271046180.3167@xanadu.home>
-References: <fq285f$isa$1@ger.gmane.org>
-Cc: linux-mtd@lists.infradead.org
+Received: from de01egw02.freescale.net ([192.88.165.103])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JUhtq-0003NE-7L
+	for linux-mtd@lists.infradead.org; Thu, 28 Feb 2008 12:30:11 +0000
+Received: from de01smr02.am.mot.com (de01smr02.freescale.net [10.208.0.151])
+	by de01egw02.freescale.net (8.12.11/de01egw02) with ESMTP id
+	m1SC7WSj011002 for <linux-mtd@lists.infradead.org>;
+	Thu, 28 Feb 2008 05:07:33 -0700 (MST)
+Received: from zch01exm26.fsl.freescale.net (zch01exm26.ap.freescale.net
+	[10.192.129.221])
+	by de01smr02.am.mot.com (8.13.1/8.13.0) with ESMTP id m1SC7UUL001686
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 28 Feb 2008 06:07:31 -0600 (CST)
+From: Li Yang <leoli@freescale.com>
+To: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Subject: [PATCH] MTD: fix partition scan control logic in physmap_of and
+	fsl_elbc_nand
+Date: Thu, 28 Feb 2008 20:17:31 +0800
+Message-Id: <1204201051-13107-1-git-send-email-leoli@freescale.com>
+Cc: Stefan Roese <sr@denx.de>, linuxppc-dev@ozlabs.org,
+	Li Yang <leoli@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,91 +28,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 27 Feb 2008, Paulius Zaleckas wrote:
+The generic rule for partition scan is to try all supported
+partition types before an usable partition table is found.
+However the original code returns unsuccessful when there is
+an error in any of the partition types.
 
-> Untested, but shouldn't break anything...
-> Makes MTD_XIP arch independent. I guess this is why xip_iprefetch() was made for.
-> 
-> Signed-off-by: Paulius Zaleckas <paulius.zaleckas@teltonika.lt>
+Signed-off-by: Li Yang <leoli@freescale.com>
+Cc: Stefan Roese <sr@denx.de>
+Cc: Peter Korsgaard <jacmet@sunsite.dk>
+---
+I later found that Stefan has proposed a similar patch for physmap_of
+and Peter proposed another patch to fix cmdlinepart instead.
+I'd say that even after cmdlinepart patch is applied the scan control
+logic still needs to be fixed.
 
-Acked-by: Nicolas Pitre <nico@cam.org>
+ drivers/mtd/maps/physmap_of.c    |   12 ++----------
+ drivers/mtd/nand/fsl_elbc_nand.c |    7 +------
+ 2 files changed, 3 insertions(+), 16 deletions(-)
 
-
-> 
-> ---
->   drivers/mtd/chips/cfi_cmdset_0001.c |    4 ++--
->   drivers/mtd/chips/cfi_cmdset_0002.c |    4 ++--
->   drivers/mtd/chips/cfi_probe.c       |    2 +-
->   drivers/mtd/chips/cfi_util.c        |    2 +-
->   4 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-> index 1707f98..c54d0b6 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-> @@ -1007,10 +1007,10 @@ static int __xipram xip_wait_for_operation(
->   			chip->state = newstate;
->   			map_write(map, CMD(0xff), adr);
->   			(void) map_read(map, adr);
-> -			asm volatile (".rep 8; nop; .endr");
-> +			xip_iprefetch();
->   			local_irq_enable();
->   			spin_unlock(chip->mutex);
-> -			asm volatile (".rep 8; nop; .endr");
-> +			xip_iprefetch();
->   			cond_resched();
-> 
->   			/*
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-> index 389acc6..f71cd70 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> @@ -717,10 +717,10 @@ static void __xipram xip_udelay(struct map_info *map, struct flchip *chip,
->   			chip->erase_suspended = 1;
->   			map_write(map, CMD(0xf0), adr);
->   			(void) map_read(map, adr);
-> -			asm volatile (".rep 8; nop; .endr");
-> +			xip_iprefetch();
->   			local_irq_enable();
->   			spin_unlock(chip->mutex);
-> -			asm volatile (".rep 8; nop; .endr");
-> +			xip_iprefetch();
->   			cond_resched();
-> 
->   			/*
-> diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
-> index 60e11a0..648a0a5 100644
-> --- a/drivers/mtd/chips/cfi_probe.c
-> +++ b/drivers/mtd/chips/cfi_probe.c
-> @@ -39,7 +39,7 @@ struct mtd_info *cfi_probe(struct map_info *map);
->   #define xip_allowed(base, map) \
->   do { \
->   	(void) map_read(map, base); \
-> -	asm volatile (".rep 8; nop; .endr"); \
-> +	xip_iprefetch(); \
->   	local_irq_enable(); \
->   } while (0)
-> 
-> diff --git a/drivers/mtd/chips/cfi_util.c b/drivers/mtd/chips/cfi_util.c
-> index 2e51496..72e0022 100644
-> --- a/drivers/mtd/chips/cfi_util.c
-> +++ b/drivers/mtd/chips/cfi_util.c
-> @@ -65,7 +65,7 @@ __xipram cfi_read_pri(struct map_info *map, __u16 adr, __u16 size, const char* n
-> 
->   #ifdef CONFIG_MTD_XIP
->   	(void) map_read(map, base);
-> -	asm volatile (".rep 8; nop; .endr");
-> +	xip_iprefetch();
->   	local_irq_enable();
->   #endif
-> 
-> -- 
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-
-
-Nicolas
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index 49acd41..5ebbbc4 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -225,23 +225,15 @@ static int __devinit of_flash_probe(struct of_device *dev,
+ 	 * line, these take precedence over device tree information */
+ 	err = parse_mtd_partitions(info->mtd, part_probe_types,
+ 	                           &info->parts, 0);
+-	if (err < 0)
+-		return err;
+ 
+ #ifdef CONFIG_MTD_OF_PARTS
+-	if (err == 0) {
++	if (err <= 0)
+ 		err = of_mtd_parse_partitions(&dev->dev, info->mtd,
+ 		                              dp, &info->parts);
+-		if (err < 0)
+-			return err;
+-	}
+ #endif
+ 
+-	if (err == 0) {
++	if (err <= 0)
+ 		err = parse_obsolete_partitions(dev, info, dp);
+-		if (err < 0)
+-			return err;
+-	}
+ 
+ 	if (err > 0)
+ 		add_mtd_partitions(info->mtd, info->parts, err);
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+index b025dfe..72e9bd9 100644
+--- a/drivers/mtd/nand/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -1054,16 +1054,11 @@ static int fsl_elbc_chip_probe(struct fsl_elbc_ctrl *ctrl,
+ 	/* First look for RedBoot table or partitions on the command
+ 	 * line, these take precedence over device tree information */
+ 	ret = parse_mtd_partitions(&priv->mtd, part_probe_types, &parts, 0);
+-	if (ret < 0)
+-		goto err;
+ 
+ #ifdef CONFIG_MTD_OF_PARTS
+-	if (ret == 0) {
++	if (ret <= 0)
+ 		ret = of_mtd_parse_partitions(priv->dev, &priv->mtd,
+ 		                              node, &parts);
+-		if (ret < 0)
+-			goto err;
+-	}
+ #endif
+ 
+ 	if (ret > 0)
+-- 
+1.5.4.rc4
