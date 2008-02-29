@@ -1,18 +1,19 @@
-Received: from mail.gmx.net ([213.165.64.20])
+Received: from relay02.pair.com ([209.68.5.16])
 	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JV9AL-0006HD-2w
-	for linux-mtd@lists.infradead.org; Fri, 29 Feb 2008 17:37:02 +0000
-Message-ID: <47C84111.6030103@gmx.net>
-Date: Fri, 29 Feb 2008 19:29:53 +0200
-From: Dimitrios Apostolou <jimis@gmx.net>
-MIME-Version: 1.0
-To: =?UTF-8?B?SsO2cm4gRW5nZWw=?= <joern@logfs.org>
-Subject: Re: swap file over jffs2 partition
-References: <47C772E9.2000000@gmx.net> <20080229084345.GA16507@lazybastard.org>
-In-Reply-To: <20080229084345.GA16507@lazybastard.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+	id 1JVAOU-0000Xy-Hq
+	for linux-mtd@lists.infradead.org; Fri, 29 Feb 2008 18:55:42 +0000
+Date: Fri, 29 Feb 2008 10:55:34 -0800
+Subject: Re: Writing JFFS2 to Samsung K9F1208U0B NAND on AMCC PPC405EX/r
+	Kilauea/Haleakala
+From: Grant Erickson <gerickson@nuovations.com>
+To: "Manfred jun. Schl=?ISO-8859-1?B?5A==?=gl" <manfred.schlaegl@gmx.at>
+Message-ID: <C3ED9526.DB2F%gerickson@nuovations.com>
+In-Reply-To: <1204275029.3408.31.camel@lisa.alm.archives.at>
+Mime-version: 1.0
+Content-type: text/plain;
+	charset="ISO-8859-1"
+Content-transfer-encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,66 +23,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jörn Engel wrote:
-> On Fri, 29 February 2008 04:50:17 +0200, Dimitrios Apostolou wrote:
->> I intend to build a diskless linux system (root over NFS). Because it
->> has 1GB of embedded flash storage, I'm thinking of using this as swap 
->> (I've been bitten many times by the problems linux has with *no* 
->> swap...). And to avoid wearing out the flash storage too fast, I 'm 
->> thinking to format the 1GB partition as JFFS2, and create the swapfile 
->> on top of it.
->>
->> I'm not so experienced with JFFS and I don't know if it's too heavy for
->> the CPU, for swapping. Or if there are other issues I 'll face. What do
->> you think about it? Any other ways you 'd propose?
->>
->> Sorry for sending this at LKML but jffs-dev mailing list seems to be 
->> off. And JFFS is the only in-kernel filesystem that does wear-leveling, 
->> right?
-> 
-> Replying in reverse order...
-> 
-> The relevant mailing list is linux-mtd, added to Cc:.  JFFS and JFFS2
-> are two different things, JFFS is older and was removed from the kernel
-> not too long ago.
+On 2/29/08 12:50 AM, Manfred jun. Schl=E4gl wrote:
+> Am Donnerstag, den 28.02.2008, 16:30 -0800 schrieb Grant Erickson:
+>> I am attempting to create and write a JFFS2 file system to the Samsung
+>> K9F1208U0B NAND part on an AMCC PPC405EXr "Haleakala" board and seem to =
+be
+>> running into a hurdle or two.
+>>=20
+>> Given the Samsung K9F1208U0B's 16 KiB erase block and 512 B page sizes, =
+I
+>> invoked mkfs.jffs2 with:
+>>=20
+>> % mkfs.jffs2 -n -b -s 512 -e 16 KiB -d /export/haleakala -o haleakala.im=
+g
+>=20
+>> I then erase the device with 'flash_eraseall' using the '-j' option:
+>>=20
+>> # flash_eraseall -j /dev/mtd9
+>> Erasing 16 Kibyte @ 3f94000 -- 99 % complete. Cleanmarker written at
+>> 3f94000.
+>>=20
+>> However, when I attempt to lay down the file system image with nandwrite
+>> (again, using the '-j' option), I get a driver error:
+>>=20
+>> # nandwrite -j /dev/mtd9 haleakala.img
+>> MEMSETOOBSEL: Inappropriate ioctl for device
+>>=20
+>> Eliding the '-j' option, I get errors about page alignment:
+>>=20
+>> # nandwrite /dev/mtd9 haleakala.img
+>> Input file is not page aligned
+>> Data was only partially written due to error: Success
 
-Thanks and sorry for intruding LKML. It seems that even wikipedia has 
-wrong address for the mailing list, see the last link of the article:
+> You have to pad(-p) your image, so that it's size is a multiple of page
+> size
+> % mkfs.jffs2 -n -b -s 512 -p 512 -e 16 KiB -d /export/haleakala -o
+> haleakala.img
+>=20
+> Then you should be able to write it with:
+> % nandwrite /dev/mtd9 haleakala.img
+>=20
+> greetings
+> manfred
 
-http://en.wikipedia.org/wiki/JFFS2
+Manfred:
 
-> 
-> The real fun comes not from CPU usage, but from interactions with the
-> memory management subsystem.  In a nutshell, JFFS2 may require memory in
-> order to write data.  When the system is under memory pressure, it needs
-> JFFS2 to write out pages, which will try to allocate memory.  It is
-> theoretically possible to deadlock the system in this way.
+Danke sch=F6n. Your suggestion of adding padding ('-p 512') along with
+Andrey's suggestion to remove the deprecated '-j' options to flash_eraseall
+and nandwrite did the trick:
 
-Interesting. I guess nobody has experimented with it yet so I'll try. 
-Unfortunately it seems I'll face another problem, that JFFS2 doesn't 
-support having a swap-file at all. Why would this happen? More info:
+# mount -t jffs2 /dev/mtdblock9 /import/
+# df -h
+Filesystem                Size      Used Available Use% Mounted on
+...
+/dev/mtdblock9           63.6M     14.4M     49.2M  23% /import
 
-http://dev.laptop.org/ticket/6469
+Regards,
 
-> 
-> On the plus side, the write path of JFFS2 is relatively simple and
-> extremely low-latency.  It shouldn't be too hard to review the code and
-> handle all problem cases wrt. memory allocations.
-> 
-> One issue that is hard to solve is space reservation.  JFFS2 compresses
-> data and allows users to write as long as there is space remaining.  It
-> is possible to swap out data that compresses well, have some other
-> process fill up the filesystem, then try to swap out data that
-> compresses badly and get -ENOSPC in return.  As a system administrator
-> you can prevent others from ever writing to JFFS2 - and you better do!
-
-Of course! I intend to use all the 1GB of flash only for swap, the 
-system will be practically diskless. And I don't think enabling 
-compression for such a task would be wise.
-
-> 
-> Jörn
-> 
-
-Thanks for the help,
-Dimitris
+Grant
