@@ -1,18 +1,20 @@
-Received: from mail.gmx.net ([213.165.64.20])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JV0x7-0007NL-Na
-	for linux-mtd@lists.infradead.org; Fri, 29 Feb 2008 08:50:50 +0000
-Subject: Re: Writing JFFS2 to Samsung K9F1208U0B NAND on AMCC PPC405EX/r
-	Kilauea/Haleakala
-From: =?ISO-8859-1?Q?Schl=E4gl?= "Manfred jun." <manfred.schlaegl@gmx.at>
-To: Grant Erickson <gerickson@nuovations.com>
-In-Reply-To: <C3EC922E.DAF1%gerickson@nuovations.com>
-References: <C3EC922E.DAF1%gerickson@nuovations.com>
-Content-Type: text/plain
-Date: Fri, 29 Feb 2008 09:50:29 +0100
-Message-Id: <1204275029.3408.31.camel@lisa.alm.archives.at>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JV14U-0007bR-Q2
+	for linux-mtd@lists.infradead.org; Fri, 29 Feb 2008 08:58:27 +0000
+Date: Fri, 29 Feb 2008 09:57:48 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: =?utf-8?Q?Schl=C3=A4gl_Manfred_jun=2E?= <manfred.schlaegl@gmx.at>
+Subject: Re: Global changelogs about
+Message-ID: <20080229085748.GB16507@lazybastard.org>
+References: <1204238252.3435.21.camel@lisa.alm.archives.at>
+	<20080228235048.GA24195@lazybastard.org>
+	<1204274577.3408.25.camel@lisa.alm.archives.at>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1204274577.3408.25.camel@lisa.alm.archives.at>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,78 +25,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Donnerstag, den 28.02.2008, 16:30 -0800 schrieb Grant Erickson:
-> I am attempting to create and write a JFFS2 file system to the Samsung
-> K9F1208U0B NAND part on an AMCC PPC405EXr "Haleakala" board and seem to be
-> running into a hurdle or two.
+On Fri, 29 February 2008 09:42:57 +0100, Schlägl Manfred jun. wrote:
+>
+> My request wasn't meant like that. I don't wanted to affront the people
+> here. I just wanted to know, if such a list of critical bugs or problems
+> exist for the last few years. Don't you think such a list would be
+> useful for people who want to get in mtd(+nand) using and development?
 > 
-> Given the Samsung K9F1208U0B's 16 KiB erase block and 512 B page sizes, I
-> invoked mkfs.jffs2 with:
-> 
-> % mkfs.jffs2 -n -b -s 512 -e 16 KiB -d /export/haleakala -o haleakala.img
+>  If such a list not exist i'll create it by my self and make it public
+> to you and the others. I know: It's MY work to do, I just not wanted to
+> do work twice. 
 
-> I then erase the device with 'flash_eraseall' using the '-j' option:
-> 
-> # flash_eraseall -j /dev/mtd9
-> Erasing 16 Kibyte @ 3f94000 -- 99 % complete. Cleanmarker written at
-> 3f94000.
-> 
-> However, when I attempt to lay down the file system image with nandwrite
-> (again, using the '-j' option), I get a driver error:
-> 
-> # nandwrite -j /dev/mtd9 haleakala.img
-> MEMSETOOBSEL: Inappropriate ioctl for device
-> 
-> Eliding the '-j' option, I get errors about page alignment:
-> 
-> # nandwrite /dev/mtd9 haleakala.img
-> Input file is not page aligned
-> Data was only partially written due to error: Success
-> 
-> The output from 'mtd_debug':
-> 
-> # mtd_debug info /dev/mtd9
-> mtd.type = MTD_NANDFLASH
-> mtd.flags = MTD_CAP_NANDFLASH
-> mtd.size = 66682880 (63M)
-> mtd.erasesize = 16384 (16K)
-> mtd.writesize = 512
-> mtd.oobsize = 16 
-> regions = 0
-> 
-> The version of mtd-utils is 1.1.0 from the MTD FTP site.
-> 
-> This occurs with either hand-built kernels using the GIT repo or
-> 'git://www.denx.de/git/linux-2.6-denx.git' the latest pre-built kernel
-> posted to the AMCC-partner (DENX) site:
-> 
->     ftp://ftp.denx.de/pub/linux/images/amcc/kilauea/uImage-g8adfc2c
-> 
-> # uname -a
-> Linux haleakala 2.6.25-rc2-00492-g8adfc2c #1 Sat Feb 23 23:10:15 CET 2008
-> ppc unknown
-> 
-> Anyone have success with writing a JFFS2 file system on these boards or have
-> any insight into the errors above?
-> 
-> Regards,
-> 
-> Grant Erickson
-> 
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+No such list exists, afaik.  Generally people tend to either use the
+latest kernels or backport drivers/mtd/ and fs/jffs2/ along with any
+dependencies to their respective kernels.
 
-You have to pad(-p) your image, so that it's size is a multiple of page
-size
-% mkfs.jffs2 -n -b -s 512 -p 512 -e 16 KiB -d /export/haleakala -o
-haleakala.img
+> Again, I'm sorry .. I hope, you understand the reason of my request.
 
-Then you should be able to write it with:
-% nandwrite /dev/mtd9 haleakala.img
+No worries.  This lists gets a fair share of both "my kernel is five
+years old, but I want all bugfixes and performance improvements from the
+newest code" and "can you provide free consulting".  Neither is greeted
+with much enthusiasm and your mail appeared to match both.
 
-greetings
-	manfred
+Jörn
+
+-- 
+They laughed at Galileo.  They laughed at Copernicus.  They laughed at
+Columbus. But remember, they also laughed at Bozo the Clown.
+-- unknown
