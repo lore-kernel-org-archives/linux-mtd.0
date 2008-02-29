@@ -1,18 +1,19 @@
-Received: from mail.gmx.net ([213.165.64.20])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JV0pr-0007DM-Bs
-	for linux-mtd@lists.infradead.org; Fri, 29 Feb 2008 08:43:19 +0000
-Subject: Re: Global changelogs about
-From: =?ISO-8859-1?Q?Schl=E4gl?= "Manfred jun." <manfred.schlaegl@gmx.at>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <20080228235048.GA24195@lazybastard.org>
-References: <1204238252.3435.21.camel@lisa.alm.archives.at>
-	<20080228235048.GA24195@lazybastard.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Date: Fri, 29 Feb 2008 09:42:57 +0100
-Message-Id: <1204274577.3408.25.camel@lisa.alm.archives.at>
-Mime-Version: 1.0
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JV0qw-0007E4-IU
+	for linux-mtd@lists.infradead.org; Fri, 29 Feb 2008 08:44:26 +0000
+Date: Fri, 29 Feb 2008 09:43:45 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Dimitrios Apostolou <jimis@gmx.net>
+Subject: Re: swap file over jffs2 partition
+Message-ID: <20080229084345.GA16507@lazybastard.org>
+References: <47C772E9.2000000@gmx.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <47C772E9.2000000@gmx.net>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,46 +23,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Freitag, den 29.02.2008, 00:50 +0100 schrieb Jörn Engel:
-> On Thu, 28 February 2008 23:37:32 +0100, Schlägl Manfred jun. wrote:
-> > 
-> > My name is Schlaegl Manfred and I'm new on the list. I spent the last
-> > two week on viewing and analyzing source codes of mtd+nand and jffs2.
-> > I like to proof the consitency(wear-leveling, bad-block handling, etc.)
-> > for our requirements so I need some information about
-> > critical-changes(bugfixes,etc) of mtd+nand in the last view years. For
-> > example a changelog of critical changes or something.
-> > 
-> > Second: We are currently using kernels 2.6.12 and 2.6.15. Are there any
-> > critical bugs or problems of mtd+nand known on this kernel-versions?
+On Fri, 29 February 2008 04:50:17 +0200, Dimitrios Apostolou wrote:
 > 
-> I hope you do realize the rudeness of your request.  I still have a lot
-> of dirty laundry to wash, would you be willing to take care of it?
-> Maybe water my plants?  Take out the trash?
-My request wasn't meant like that. I don't wanted to affront the people
-here. I just wanted to know, if such a list of critical bugs or problems
-exist for the last few years. Don't you think such a list would be
-useful for people who want to get in mtd(+nand) using and development?
-
- If such a list not exist i'll create it by my self and make it public
-to you and the others. I know: It's MY work to do, I just not wanted to
-do work twice. 
-
+> I intend to build a diskless linux system (root over NFS). Because it
+> has 1GB of embedded flash storage, I'm thinking of using this as swap 
+> (I've been bitten many times by the problems linux has with *no* 
+> swap...). And to avoid wearing out the flash storage too fast, I 'm 
+> thinking to format the 1GB partition as JFFS2, and create the swapfile 
+> on top of it.
 > 
-> If you want to participate, send patches, review code, report bugs or
-> provide documentation.  Otherwise leave and don't come back.
-Providing documentation, results of my testing, etc. .. just what i like
-to do currently... 
-
-Again, I'm sorry .. I hope, you understand the reason of my request.
-I've already found a starting-point for working on mtd. Source and
-documentation about mtd ist very well, but I thought, this further
-information would have been very useful for me, to do expedient work on
-mtd.
-
+> I'm not so experienced with JFFS and I don't know if it's too heavy for
+> the CPU, for swapping. Or if there are other issues I 'll face. What do
+> you think about it? Any other ways you 'd propose?
 > 
-> Jörn
-> 
+> Sorry for sending this at LKML but jffs-dev mailing list seems to be 
+> off. And JFFS is the only in-kernel filesystem that does wear-leveling, 
+> right?
 
-respects
-	Manfred
+Replying in reverse order...
+
+The relevant mailing list is linux-mtd, added to Cc:.  JFFS and JFFS2
+are two different things, JFFS is older and was removed from the kernel
+not too long ago.
+
+The real fun comes not from CPU usage, but from interactions with the
+memory management subsystem.  In a nutshell, JFFS2 may require memory in
+order to write data.  When the system is under memory pressure, it needs
+JFFS2 to write out pages, which will try to allocate memory.  It is
+theoretically possible to deadlock the system in this way.
+
+On the plus side, the write path of JFFS2 is relatively simple and
+extremely low-latency.  It shouldn't be too hard to review the code and
+handle all problem cases wrt. memory allocations.
+
+One issue that is hard to solve is space reservation.  JFFS2 compresses
+data and allows users to write as long as there is space remaining.  It
+is possible to swap out data that compresses well, have some other
+process fill up the filesystem, then try to swap out data that
+compresses badly and get -ENOSPC in return.  As a system administrator
+you can prevent others from ever writing to JFFS2 - and you better do!
+
+JÃ¶rn
+
+-- 
+Joern's library part 5:
+http://www.faqs.org/faqs/compression-faq/part2/section-9.html
