@@ -1,24 +1,22 @@
-Received: from mail2.shareable.org ([80.68.89.115])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JVq0T-0001Kt-54
-	for linux-mtd@lists.infradead.org; Sun, 02 Mar 2008 15:21:41 +0000
-Received: from jamie by mail2.shareable.org with local (Exim 4.63)
-	(envelope-from <jamie@shareable.org>) id 1JVq0O-0003Sy-NL
-	for linux-mtd@lists.infradead.org; Sun, 02 Mar 2008 15:21:36 +0000
-Date: Sun, 2 Mar 2008 15:21:36 +0000
-From: Jamie Lokier <jamie@shareable.org>
-To: linux-mtd@lists.infradead.org
+Received: from [2002:53a0:b870::1] (helo=xi.wantstofly.org)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JVsZv-00083a-F6
+	for linux-mtd@lists.infradead.org; Sun, 02 Mar 2008 18:06:28 +0000
+Date: Sun, 2 Mar 2008 19:06:01 +0100
+From: Lennert Buytenhek <buytenh@wantstofly.org>
+To: Jamie Lokier <jamie@shareable.org>
 Subject: Re: Global changelogs about
-Message-ID: <20080302152136.GA10194@shareable.org>
+Message-ID: <20080302180601.GA22003@xi.wantstofly.org>
 References: <1204238252.3435.21.camel@lisa.alm.archives.at>
 	<20080228235048.GA24195@lazybastard.org>
 	<1204274577.3408.25.camel@lisa.alm.archives.at>
 	<20080229085748.GB16507@lazybastard.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+	<20080302152136.GA10194@shareable.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20080229085748.GB16507@lazybastard.org>
+In-Reply-To: <20080302152136.GA10194@shareable.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,17 +26,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jörn Engel wrote:
-> This lists gets a fair share of both "my kernel is five years old,
-> but I want all bugfixes and performance improvements from the newest
-> code"
+On Sun, Mar 02, 2008 at 03:21:36PM +0000, Jamie Lokier wrote:
 
-Funny you should mention this.  My kernel is at least five years old,
-and if anyone happens to have backported the latest JFFS2/MTD bugfixes
-and improvements to 2.4.26 I would be most interested, thank you ;-) <-
+> (Alternatively, if anyone has forward-ported Sigma Designs ARM support
+> to 2.6 kernels, or would like to collaborate with me on that, I would
+> be _very_ interested...)
 
-(Alternatively, if anyone has forward-ported Sigma Designs ARM support
-to 2.6 kernels, or would like to collaborate with me on that, I would
-be _very_ interested...)
+I don't have the hardware, but I can help.
 
--- Jamie
+Are docs freely available?
