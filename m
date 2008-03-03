@@ -1,19 +1,16 @@
-Received: from smtp4.int-evry.fr ([157.159.10.71])
+Received: from smtp4.pp.htv.fi ([213.243.153.38])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JWEvg-0006pT-4A
-	for linux-mtd@lists.infradead.org; Mon, 03 Mar 2008 17:58:24 +0000
-From: Florian Fainelli <florian.fainelli@telecomint.eu>
-Date: Mon, 3 Mar 2008 18:30:24 +0100
-Subject: [PATCH] Extend plat-ram to support a supplied probe type
+	id 1JWF6Q-0002UI-A1
+	for linux-mtd@lists.infradead.org; Mon, 03 Mar 2008 18:09:31 +0000
+Date: Mon, 3 Mar 2008 20:07:52 +0200
+From: Adrian Bunk <bunk@kernel.org>
+To: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Subject: [2.6 patch] mtd/ubi/vtbl.c: fix memory leak
+Message-ID: <20080303180752.GK26072@cs181133002.pp.htv.fi>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Message-Id: <200803031830.25392.florian.fainelli@telecomint.eu>
-Cc: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,127 +20,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This enhances plat-ram to take a map_probes argument in
-the platform_data structure which allow plat-ram to support
-any direct-mapped device that MTD supports (jedec, cfi, amd ..)
+This patch fixes a memory leak introduced by commit 
+4ccf8cffa963c7b5bdc6d455ea9417084ee49aa8 and spotted by the Coverity 
+checker.
 
-A few items are also fixed:
-- Don't panic if probes is 0
-- Actually use the partition list that is passed in
+Signed-off-by: Adrian Bunk <bunk@kernel.org>
 
-Signed-off-by: Florian Fainelli <florian.fainelli@telecomint.eu>
-Signed-off-by: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
 ---
-diff --git a/drivers/mtd/maps/plat-ram.c b/drivers/mtd/maps/plat-ram.c
-index 894c0b2..c23057a 100644
---- a/drivers/mtd/maps/plat-ram.c
-+++ b/drivers/mtd/maps/plat-ram.c
-@@ -47,6 +47,7 @@ struct platram_info {
- 	struct mtd_info		*mtd;
- 	struct map_info		 map;
- 	struct mtd_partition	*partitions;
-+	bool			free_partitions;
- 	struct resource		*area;
- 	struct platdata_mtd_ram	*pdata;
- };
-@@ -98,7 +99,8 @@ static int platram_remove(struct platform_device *pdev)
- #ifdef CONFIG_MTD_PARTITIONS
- 		if (info->partitions) {
- 			del_mtd_partitions(info->mtd);
--			kfree(info->partitions);
-+			if (info->free_partitions)
-+				kfree(info->partitions);
+
+ drivers/mtd/ubi/vtbl.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- linux-2.6/drivers/mtd/ubi/vtbl.c.orig	2008-03-02 14:06:25.000000000 +0200
++++ linux-2.6/drivers/mtd/ubi/vtbl.c	2008-03-02 14:15:54.000000000 +0200
+@@ -502,40 +502,41 @@ static int init_volumes(struct ubi_devic
+ 		vol = kzalloc(sizeof(struct ubi_volume), GFP_KERNEL);
+ 		if (!vol)
+ 			return -ENOMEM;
+ 
+ 		vol->reserved_pebs = be32_to_cpu(vtbl[i].reserved_pebs);
+ 		vol->alignment = be32_to_cpu(vtbl[i].alignment);
+ 		vol->data_pad = be32_to_cpu(vtbl[i].data_pad);
+ 		vol->vol_type = vtbl[i].vol_type == UBI_VID_DYNAMIC ?
+ 					UBI_DYNAMIC_VOLUME : UBI_STATIC_VOLUME;
+ 		vol->name_len = be16_to_cpu(vtbl[i].name_len);
+ 		vol->usable_leb_size = ubi->leb_size - vol->data_pad;
+ 		memcpy(vol->name, vtbl[i].name, vol->name_len);
+ 		vol->name[vol->name_len] = '\0';
+ 		vol->vol_id = i;
+ 
+ 		if (vtbl[i].flags & UBI_VTBL_AUTORESIZE_FLG) {
+ 			/* Auto re-size flag may be set only for one volume */
+ 			if (ubi->autoresize_vol_id != -1) {
+ 				ubi_err("more then one auto-resize volume (%d "
+ 					"and %d)", ubi->autoresize_vol_id, i);
++				kfree(vol);
+ 				return -EINVAL;
+ 			}
+ 
+ 			ubi->autoresize_vol_id = i;
  		}
- #endif
- 		del_mtd_device(info->mtd);
-@@ -176,7 +178,8 @@ static int platram_probe(struct platform_device *pdev)
  
- 	info->map.phys = res->start;
- 	info->map.size = (res->end - res->start) + 1;
--	info->map.name = pdata->mapname != NULL ? pdata->mapname : (char *)pdev->name;
-+	info->map.name = pdata->mapname != NULL ?
-+			(char *)pdata->mapname : (char *)pdev->name;
- 	info->map.bankwidth = pdata->bankwidth;
+ 		ubi_assert(!ubi->volumes[i]);
+ 		ubi->volumes[i] = vol;
+ 		ubi->vol_count += 1;
+ 		vol->ubi = ubi;
+ 		reserved_pebs += vol->reserved_pebs;
  
- 	/* register our usage of the memory area */
-@@ -203,9 +206,19 @@ static int platram_probe(struct platform_device *pdev)
- 
- 	dev_dbg(&pdev->dev, "initialised map, probing for mtd\n");
- 
--	/* probe for the right mtd map driver */
-+	/* probe for the right mtd map driver
-+	 * supplied by the platform_data struct */
-+
-+	if (pdata->map_probes != 0) {
-+		const char **map_probes = pdata->map_probes;
-+
-+		for ( ; !info->mtd && *map_probes; map_probes++)
-+			info->mtd = do_map_probe(*map_probes , &info->map);
-+	}
-+	/* fallback to map_ram */
-+	else
-+		info->mtd = do_map_probe("map_ram", &info->map);
- 
--	info->mtd = do_map_probe("map_ram" , &info->map);
- 	if (info->mtd == NULL) {
- 		dev_err(&pdev->dev, "failed to probe for map_ram\n");
- 		err = -ENOMEM;
-@@ -220,19 +233,21 @@ static int platram_probe(struct platform_device *pdev)
- 	 * to add this device whole */
- 
- #ifdef CONFIG_MTD_PARTITIONS
--	if (pdata->nr_partitions > 0) {
--		const char **probes = { NULL };
--
--		if (pdata->probes)
--			probes = (const char **)pdata->probes;
--
--		err = parse_mtd_partitions(info->mtd, probes,
-+	if (!pdata->nr_partitions) {
-+		/* try to probe using the supplied probe type */
-+		if (pdata->probes) {
-+			err = parse_mtd_partitions(info->mtd, pdata->probes,
- 					   &info->partitions, 0);
--		if (err > 0) {
--			err = add_mtd_partitions(info->mtd, info->partitions,
--						 err);
-+			info->free_partitions = 1;
-+			if (err > 0)
-+				err = add_mtd_partitions(info->mtd,
-+					info->partitions, err);
- 		}
- 	}
-+	/* use the static mapping */
-+	else
-+		err = add_mtd_partitions(info->mtd, pdata->partitions,
-+				pdata->nr_partitions);
- #endif /* CONFIG_MTD_PARTITIONS */
- 
- 	if (add_mtd_device(info->mtd)) {
-@@ -240,7 +255,9 @@ static int platram_probe(struct platform_device *pdev)
- 		err = -ENOMEM;
- 	}
- 
--	dev_info(&pdev->dev, "registered mtd device\n");
-+	if (!err)
-+		dev_info(&pdev->dev, "registered mtd device\n");
-+
- 	return err;
- 
-  exit_free:
-diff --git a/include/linux/mtd/plat-ram.h b/include/linux/mtd/plat-ram.h
-index 9667863..0e37ad0 100644
---- a/include/linux/mtd/plat-ram.h
-+++ b/include/linux/mtd/plat-ram.h
-@@ -21,8 +21,9 @@
- #define PLATRAM_RW (1)
- 
- struct platdata_mtd_ram {
--	char			*mapname;
--	char		       **probes;
-+	const char		*mapname;
-+	const char		**map_probes;
-+	const char		**probes;
- 	struct mtd_partition	*partitions;
- 	int			 nr_partitions;
- 	int			 bankwidth;
+ 		/*
+ 		 * In case of dynamic volume UBI knows nothing about how many
+ 		 * data is stored there. So assume the whole volume is used.
+ 		 */
+ 		if (vol->vol_type == UBI_DYNAMIC_VOLUME) {
+ 			vol->used_ebs = vol->reserved_pebs;
+ 			vol->last_eb_bytes = vol->usable_leb_size;
+ 			vol->used_bytes =
