@@ -1,22 +1,20 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JWCJg-0007Kc-GV
-	for linux-mtd@lists.infradead.org; Mon, 03 Mar 2008 15:11:00 +0000
-Date: Mon, 3 Mar 2008 16:10:12 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Pavel Machek <pavel@ucw.cz>
+Received: from gprs189-60.eurotel.cz ([160.218.189.60])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JWCPH-0000zZ-UN
+	for linux-mtd@lists.infradead.org; Mon, 03 Mar 2008 15:16:49 +0000
+Date: Mon, 3 Mar 2008 13:15:11 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: Alexander Belyakov <abelyako@googlemail.com>
 Subject: Re: jffs2: -ENOSPC when truncating file?!
-Message-ID: <20080303151012.GB17732@lazybastard.org>
+Message-ID: <20080303121510.GD28369@elf.ucw.cz>
 References: <20080223235742.GE2202@elf.ucw.cz>
 	<fe810cf0802242348w625a7e7bj1a5476d6c79662@mail.gmail.com>
-	<20080303121510.GD28369@elf.ucw.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20080303121510.GD28369@elf.ucw.cz>
+In-Reply-To: <fe810cf0802242348w625a7e7bj1a5476d6c79662@mail.gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
-	=?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
+	=?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
 	linux-mtd@lists.infradead.org, kernel list <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -27,17 +25,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 3 March 2008 13:15:11 +0100, Pavel Machek wrote:
+Hi!
+
+> >  I'm trying to free space by truncating big file, and I get:
+> >
+> >  root@fic-gta01:~# ls -al gps.nmea
+> >  -rw-r--r--    1 root     root      2332070 Feb 19 22:13 gps.nmea
+> >  root@fic-gta01:~# > gps.nmea
+> >  -sh: cannot create gps.nmea: No space left on device
+> >  root@fic-gta01:~# rm gps.nmea
+> >  root@fic-gta01:~# > gps.nmea
+> >  root@fic-gta01:~#
+> >
+> >  :-(
+> >
+> >  Kernel is not-so-ancient, on openmoko:
 > 
-> Patch is here (I whitespace-damaged it, sorry], and I've seen no
-> discussion.. should it just be applied?
+> Hi!
+> 
+> JFFS2 has known bug in GC leading to -ENOSPC upon file removal. Time
+> ago I've sent a patch with detailed explanations of what is going on.
+> Probably your case is the same.
+> 
+> Here is the patch
+> http://lists.infradead.org/pipermail/linux-mtd/2007-December/020091.html
+> (though infradead mailing list archive is missing most of messages
+> from this thread)
+> 
+> And here are some details
+> http://lists.infradead.org/pipermail/linux-mtd/2007-June/018756.html
 
-There was discussion.  The patch is a pure band-aid.  It should not make
-a difference at all, so clearly something is very wrong and we should
-dig deeper to find the real problem.  So far noone has done it.
+Patch is here (I whitespace-damaged it, sorry], and I've seen no
+discussion.. should it just be applied?
+								Pavel
 
-Jörn
+diff -uNr a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
+--- a/fs/jffs2/wbuf.c	2007-05-25 01:22:47.000000000 +0400
++++ b/fs/jffs2/wbuf.c	2007-06-20 18:45:09.000000000 +0400
+@@ -117,7 +117,7 @@
+
+ 		D1(printk(KERN_DEBUG "Removing eraseblock at 0x%08x
+from erasable_pending_wbuf_list...\n", jeb->offset));
+ 		list_del(this);
+-		if ((jiffies + (n++)) & 127) {
++		if (((jiffies + (n++)) & 127) &&
+!list_empty(&c->erasable_list)) {
+ 			/* Most of the time, we just erase it immediately. Otherwise we
+ 			   spend ages scanning it on mount, etc. */
+ 			D1(printk(KERN_DEBUG "...and adding to
+erase_pending_list\n"));
+
+
 
 -- 
-All models are wrong. Some models are useful.
--- George Box
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
