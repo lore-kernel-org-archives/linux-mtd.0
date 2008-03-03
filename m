@@ -1,26 +1,16 @@
-Received: from fg-out-1718.google.com ([72.14.220.158])
+Received: from ipn36372-d52026.cidr.lightship.net ([216.204.15.186]
+	helo=zeus.bittware.com)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JWDK7-0008CQ-VB
-	for linux-mtd@lists.infradead.org; Mon, 03 Mar 2008 16:15:34 +0000
-Received: by fg-out-1718.google.com with SMTP id 22so114483fge.26
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 03 Mar 2008 08:15:29 -0800 (PST)
-Message-ID: <fe810cf0803030809n2117219ey9fcd8f57cdf68142@mail.gmail.com>
-Date: Mon, 3 Mar 2008 19:09:18 +0300
-From: "Alexander Belyakov" <abelyako@googlemail.com>
-To: "Pavel Machek" <pavel@ucw.cz>
-Subject: Re: jffs2: -ENOSPC when truncating file?!
-In-Reply-To: <20080303121510.GD28369@elf.ucw.cz>
+	id 1JWDUJ-0001hO-Ru
+	for linux-mtd@lists.infradead.org; Mon, 03 Mar 2008 16:26:04 +0000
+Message-ID: <47CC25BF.4030806@bittware.com>
+Date: Mon, 03 Mar 2008 11:22:23 -0500
+From: DMcLeod <dmcleod@bittware.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: querying status ?
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <20080223235742.GE2202@elf.ucw.cz>
-	<fe810cf0802242348w625a7e7bj1a5476d6c79662@mail.gmail.com>
-	<20080303121510.GD28369@elf.ucw.cz>
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	=?UTF-8?Q?J=C3=B6rn_Engel?= <joern@logfs.org>,
-	linux-mtd@lists.infradead.org, kernel list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,15 +20,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 3, 2008 at 3:15 PM, Pavel Machek <pavel@ucw.cz> wrote:
->
->  Patch is here (I whitespace-damaged it, sorry], and I've seen no
->  discussion.. should it just be applied?
->                                                                 Pavel
+Hi,
+    Is there a way to query  the status of MTD devices? We are using mtd 
+over a NOR flash device with jffs2 filesystem. At boot time, there are 
+occasionally more than one processes accessing the filesystem and one of 
+our utilities reads strange values (eg 0xff4fff4f) during bootup. It 
+reads this value by dereferencing a pointer to a memory mapped address.. 
+eg;
 
-Being very simple workaround, this patch helps to avoid -ENOSPC bug
-until better (proper) solution is found. IMO it is worth to try this
-patch (at least to make sure that you are indeed dealing with the same
-bug).
+        U32 base = 0x7fc0000;
+        memcpy(buff, (void *)base, sizeof(buff));
 
--a
+9 times out of 10, valid data is read using this method. But the other 
+time it seems there's some operation keeping us from accessing flash...  
+ideally, we'd like to be able to query (and maybe lock) flash during 
+this read. Our first thought was to try to fopen /dev/mtdblockX for 
+reading, but this does not work.
+
+Thanks in advance,
+
+-- 
+
+Thank you,
+Dennis McLeod
+Software Engineer
+BittWare, Inc
+9 Hills Ave
+Concord, NH 03301
+dmcleod@bittware.com
+603 226 0404 x514
