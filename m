@@ -1,19 +1,23 @@
 Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JWAdd-0007ES-UJ
-	for linux-mtd@lists.infradead.org; Mon, 03 Mar 2008 13:23:30 +0000
-Date: Mon, 3 Mar 2008 14:22:46 +0100
+	id 1JWCJg-0007Kc-GV
+	for linux-mtd@lists.infradead.org; Mon, 03 Mar 2008 15:11:00 +0000
+Date: Mon, 3 Mar 2008 16:10:12 +0100
 From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Darius <augulis.darius@gmail.com>
-Subject: Re: [PATCH] Boot XIP kernel for IMX
-Message-ID: <20080303132245.GA17061@lazybastard.org>
-References: <fq5nlh$h6g$2@ger.gmane.org>
+To: Pavel Machek <pavel@ucw.cz>
+Subject: Re: jffs2: -ENOSPC when truncating file?!
+Message-ID: <20080303151012.GB17732@lazybastard.org>
+References: <20080223235742.GE2202@elf.ucw.cz>
+	<fe810cf0802242348w625a7e7bj1a5476d6c79662@mail.gmail.com>
+	<20080303121510.GD28369@elf.ucw.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <fq5nlh$h6g$2@ger.gmane.org>
-Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <20080303121510.GD28369@elf.ucw.cz>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	=?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
+	linux-mtd@lists.infradead.org, kernel list <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,21 +27,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 28 February 2008 09:24:26 +0200, Darius wrote:
-> +
-> +/*
-> +#define xip_irqpending()        ( IMX_NIPNDH || IMX_NIPNDL )
-> +#define xip_currtime()          (IMX_TCN(IMX_TIM1_BASE))
-> +#define xip_elapsed_since(x)    (signed)((IMX_TCN(IMX_TIM1_BASE) -(x)) * 31)
-> +*/
-> +
-> +//#define xip_cpu_idle()  asm volatile ("mcr p14, 0, %0, c7, c0, 0" :: "r" (1))
+On Mon, 3 March 2008 13:15:11 +0100, Pavel Machek wrote:
+> 
+> Patch is here (I whitespace-damaged it, sorry], and I've seen no
+> discussion.. should it just be applied?
 
-Is there a reason to leave these bits in the patch?
+There was discussion.  The patch is a pure band-aid.  It should not make
+a difference at all, so clearly something is very wrong and we should
+dig deeper to find the real problem.  So far noone has done it.
 
 Jörn
 
 -- 
-When people work hard for you for a pat on the back, you've got
-to give them that pat.
--- Robert Heinlein
+All models are wrong. Some models are useful.
+-- George Box
