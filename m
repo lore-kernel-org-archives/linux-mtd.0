@@ -1,16 +1,16 @@
-Received: from smtp4.pp.htv.fi ([213.243.153.38])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JWF6Q-0002UI-A1
-	for linux-mtd@lists.infradead.org; Mon, 03 Mar 2008 18:09:31 +0000
-Date: Mon, 3 Mar 2008 20:07:52 +0200
-From: Adrian Bunk <bunk@kernel.org>
-To: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Subject: [2.6 patch] mtd/ubi/vtbl.c: fix memory leak
-Message-ID: <20080303180752.GK26072@cs181133002.pp.htv.fi>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Received: from [212.176.242.38] (helo=barber.spb.rtsoft.ru)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JWFSa-0000qn-T6
+	for linux-mtd@lists.infradead.org; Mon, 03 Mar 2008 18:32:26 +0000
+Date: Mon, 3 Mar 2008 21:01:21 +0300
+From: Andrei Dolnikov <adolnikov@ru.mvista.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH][MTD][NOR]Add support for the SST 36VF3203 flash chip
+Message-ID: <20080303180121.GA9206@ru.mvista.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: linuxppc-dev@ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,58 +20,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch fixes a memory leak introduced by commit 
-4ccf8cffa963c7b5bdc6d455ea9417084ee49aa8 and spotted by the Coverity 
-checker.
+Add support for the SST 36VF3203 flash chip. It is used on Emerson KSI8560 board.
 
-Signed-off-by: Adrian Bunk <bunk@kernel.org>
+Signed-off-by: Andrei Dolnikov <adolnikov@ru.mvista.com>
 
 ---
+ jedec_probe.c |   13 +++++++++++++
+ 1 files changed, 13 insertions(+)
 
- drivers/mtd/ubi/vtbl.c |    1 +
- 1 file changed, 1 insertion(+)
-
---- linux-2.6/drivers/mtd/ubi/vtbl.c.orig	2008-03-02 14:06:25.000000000 +0200
-+++ linux-2.6/drivers/mtd/ubi/vtbl.c	2008-03-02 14:15:54.000000000 +0200
-@@ -502,40 +502,41 @@ static int init_volumes(struct ubi_devic
- 		vol = kzalloc(sizeof(struct ubi_volume), GFP_KERNEL);
- 		if (!vol)
- 			return -ENOMEM;
+diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
+index 6405938..15e061b 100644
+--- a/drivers/mtd/chips/jedec_probe.c
++++ b/drivers/mtd/chips/jedec_probe.c
+@@ -160,6 +160,7 @@
+ #define SST49LF030A	0x001C
+ #define SST49LF040A	0x0051
+ #define SST49LF080A	0x005B
++#define SST36VF3203	0x7354
  
- 		vol->reserved_pebs = be32_to_cpu(vtbl[i].reserved_pebs);
- 		vol->alignment = be32_to_cpu(vtbl[i].alignment);
- 		vol->data_pad = be32_to_cpu(vtbl[i].data_pad);
- 		vol->vol_type = vtbl[i].vol_type == UBI_VID_DYNAMIC ?
- 					UBI_DYNAMIC_VOLUME : UBI_STATIC_VOLUME;
- 		vol->name_len = be16_to_cpu(vtbl[i].name_len);
- 		vol->usable_leb_size = ubi->leb_size - vol->data_pad;
- 		memcpy(vol->name, vtbl[i].name, vol->name_len);
- 		vol->name[vol->name_len] = '\0';
- 		vol->vol_id = i;
- 
- 		if (vtbl[i].flags & UBI_VTBL_AUTORESIZE_FLG) {
- 			/* Auto re-size flag may be set only for one volume */
- 			if (ubi->autoresize_vol_id != -1) {
- 				ubi_err("more then one auto-resize volume (%d "
- 					"and %d)", ubi->autoresize_vol_id, i);
-+				kfree(vol);
- 				return -EINVAL;
- 			}
- 
- 			ubi->autoresize_vol_id = i;
+ /* Toshiba */
+ #define TC58FVT160	0x00C2
+@@ -1412,6 +1413,18 @@ static const struct amd_flash_info jedec_table[] = {
+ 			ERASEINFO(0x1000,256)
  		}
- 
- 		ubi_assert(!ubi->volumes[i]);
- 		ubi->volumes[i] = vol;
- 		ubi->vol_count += 1;
- 		vol->ubi = ubi;
- 		reserved_pebs += vol->reserved_pebs;
- 
- 		/*
- 		 * In case of dynamic volume UBI knows nothing about how many
- 		 * data is stored there. So assume the whole volume is used.
- 		 */
- 		if (vol->vol_type == UBI_DYNAMIC_VOLUME) {
- 			vol->used_ebs = vol->reserved_pebs;
- 			vol->last_eb_bytes = vol->usable_leb_size;
- 			vol->used_bytes =
+ 	}, {
++		.mfr_id		= MANUFACTURER_SST,
++		.dev_id		= SST36VF3203,
++		.name		= "SST 36VF3203",
++		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
++		.uaddr		= MTD_UADDR_0x0AAA_0x0555,
++		.dev_size	= SIZE_4MiB,
++		.cmd_set	= P_ID_AMD_STD,
++		.nr_regions	= 1,
++		.regions	= {
++			ERASEINFO(0x10000,64),
++		}
++	}, {
+ 		.mfr_id		= MANUFACTURER_ST,
+ 		.dev_id		= M29F800AB,
+ 		.name		= "ST M29F800AB",
