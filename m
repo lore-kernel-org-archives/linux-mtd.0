@@ -1,23 +1,20 @@
-Received: from gv-out-0910.google.com ([216.239.58.190])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JWLj7-0004ZK-IE
-	for linux-mtd@lists.infradead.org; Tue, 04 Mar 2008 01:13:53 +0000
-Received: by gv-out-0910.google.com with SMTP id e6so213652gvc.5
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 03 Mar 2008 17:13:52 -0800 (PST)
-Message-ID: <bae050c10803031713s2e42db9cj8c62a08183364fa3@mail.gmail.com>
-Date: Tue, 4 Mar 2008 09:13:49 +0800
-From: Nancy <nancydreaming@gmail.com>
-To: dedekind@infradead.org
-Subject: Re: UBI: adds block device layer on top of UBI
-In-Reply-To: <1204546683.23706.11.camel@sauron>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <bae050c10803011927y67d5ddc3idab13c84cf5eaaea@mail.gmail.com>
-	<1204546683.23706.11.camel@sauron>
-Cc: linux-mtd@lists.infradead.org
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JWQhi-0002ku-AC
+	for linux-mtd@lists.infradead.org; Tue, 04 Mar 2008 06:32:46 +0000
+Subject: Re: [2.6 patch] mtd/ubi/vtbl.c: fix memory leak
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Adrian Bunk <bunk@kernel.org>
+In-Reply-To: <20080303180752.GK26072@cs181133002.pp.htv.fi>
+References: <20080303180752.GK26072@cs181133002.pp.htv.fi>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 04 Mar 2008 08:27:33 +0200
+Message-Id: <1204612053.23706.13.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,17 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Sorry, which task are you going to solve? And what do you do to solve
-> it?
-The mail titiled "UBI: adds block device layer on top of UBI" was
-delayed by the mail server 24 hours, I already solve the problem by
-myself.
+On Mon, 2008-03-03 at 20:07 +0200, Adrian Bunk wrote:
+> This patch fixes a memory leak introduced by commit=20
+> 4ccf8cffa963c7b5bdc6d455ea9417084ee49aa8 and spotted by the Coverity=20
+> checker.
+>=20
+> Signed-off-by: Adrian Bunk <bunk@kernel.org>
 
-The mail titled " [PATCH] [MTD] [UBI] add block device layer on top of
-UBI " is the task I'm goting to solve.   Please help!
+Good catch, thank you!
 
-Many thanks
-
---
-Best wishes,
-Nancy
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
