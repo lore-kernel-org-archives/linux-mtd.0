@@ -1,19 +1,19 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JWQhi-0002ku-AC
-	for linux-mtd@lists.infradead.org; Tue, 04 Mar 2008 06:32:46 +0000
-Subject: Re: [2.6 patch] mtd/ubi/vtbl.c: fix memory leak
+	id 1JWTiF-0000xL-CK
+	for linux-mtd@lists.infradead.org; Tue, 04 Mar 2008 09:45:31 +0000
+Subject: Re: [PATCH] [MTD] [UBI] add block device layer on top of UBI
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Adrian Bunk <bunk@kernel.org>
-In-Reply-To: <20080303180752.GK26072@cs181133002.pp.htv.fi>
-References: <20080303180752.GK26072@cs181133002.pp.htv.fi>
+To: Nancy <nancydreaming@gmail.com>
+In-Reply-To: <bae050c10803040140q2d4801d5m4271cadcaa55579@mail.gmail.com>
+References: <bae050c10803030317j49cfce3ds7a6af593d16d3736@mail.gmail.com>
+	<bae050c10803040140q2d4801d5m4271cadcaa55579@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Date: Tue, 04 Mar 2008 08:27:33 +0200
-Message-Id: <1204612053.23706.13.camel@sauron>
+Date: Tue, 04 Mar 2008 11:40:21 +0200
+Message-Id: <1204623622.23706.22.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,14 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2008-03-03 at 20:07 +0200, Adrian Bunk wrote:
-> This patch fixes a memory leak introduced by commit=20
-> 4ccf8cffa963c7b5bdc6d455ea9417084ee49aa8 and spotted by the Coverity=20
-> checker.
+On Tue, 2008-03-04 at 17:40 +0800, Nancy wrote:
+> Hi,
+>     UBI block device layer's basic function finally OK now.
 >=20
-> Signed-off-by: Adrian Bunk <bunk@kernel.org>
+>     Please, replace the "ubi_new.diff" with "ubi_blk_ok.diff"
+>=20
+>     Next to do:
+>           1,  fix ubi->ref_count
+>           2,  when write a LEB, do not read the old mapped LEB to
+> write_cache, only read needed pages  to hance speed.
 
-Good catch, thank you!
+Hi,
+
+could you please send patches inline? It is what people normally do
+and it is easier to reply and comment the patches this way.
+
+Also, I do not think we need this common "blktrans" module for UBI at
+all, it just does not seem to make much sense.
 
 --=20
 Best regards,
