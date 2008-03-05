@@ -1,25 +1,23 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JWu1e-0003Dt-M3
-	for linux-mtd@lists.infradead.org; Wed, 05 Mar 2008 13:51:19 +0000
-Date: Wed, 5 Mar 2008 14:50:25 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Dach Miroslaw <miroslaw.dach@psi.ch>
-Subject: Re: MTD and jffs2 mount problem on Linux-2.6.23 rc2
-Message-ID: <20080305135024.GA8301@lazybastard.org>
-References: <C3F2E592.DC63%gerickson@nuovations.com>
-	<1B4F8000449511488D1A640DD6DECA3501EC25E3@MAILBOX0A.psi.ch>
-	<1204710323.3599.12.camel@lisa.alm.archives.at>
-	<20080305120320.GH6616@lazybastard.org>
-	<1B4F8000449511488D1A640DD6DECA3501EC25EC@MAILBOX0A.psi.ch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1B4F8000449511488D1A640DD6DECA3501EC25EC@MAILBOX0A.psi.ch>
-Cc: =?utf-8?Q?Schl=C3=A4gl_Manfred_jun=2E?= <manfred.schlaegl@gmx.at>,
-	=?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
-	linux-mtd@lists.infradead.org, Grant Erickson <gerickson@nuovations.com>
+Received: from relais.videotron.ca ([24.201.245.36])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JWurv-000416-TM
+	for linux-mtd@lists.infradead.org; Wed, 05 Mar 2008 14:45:20 +0000
+MIME-version: 1.0
+Content-transfer-encoding: 7BIT
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Received: from xanadu.home ([66.131.194.97]) by VL-MO-MR002.ip.videotron.ca
+	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
+	32bit))
+	with ESMTP id <0JX900K22IB8TT40@VL-MO-MR002.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Wed, 05 Mar 2008 09:45:08 -0500 (EST)
+Date: Wed, 05 Mar 2008 09:45:08 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+To: Jared Hulbert <jaredeh@gmail.com>
+Subject: Re: [MTD][NOR] adding physical address to point()
+In-reply-to: <6934efce0803050213i6908afbbn5655f13d10309c38@mail.gmail.com>
+Message-id: <alpine.LFD.1.00.0803050943140.2947@xanadu.home>
+References: <6934efce0803050213i6908afbbn5655f13d10309c38@mail.gmail.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,24 +27,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 5 March 2008 14:44:45 +0100, Dach Miroslaw wrote:
+On Wed, 5 Mar 2008, Jared Hulbert wrote:
+
+> [MTD][NOR] adding physical address to point()
 > 
-> Thank you for the hint. I have recompiled the kernel with built-in block2mtd driver.
+> Adding the ability to get a physical address from point() in addition
+> to virtual address.  This physical address is required for XIP of
+> userspace code from flash.
 > 
-> Do you know where to find some examples how to use block2mtd with jffs2 image.
+> Signed-off-by: Jared Hulbert <jaredeh@gmail.com>
+> Reviewed-by: Joern Engel <joern@logfs.org>
 
-I don't.  If someone wants to write some documentation, I'd gladly add
-it.
+Acked-by: Nicolas Pitre <nico@cam.org>
 
-But I believe this should do the trick:
-echo block2mtd=/dev/loop0 > /sys/modules/block2mtd/parameters/block2mtd
-or to explicitly set the erase size:
-echo block2mtd=/dev/loop0,128KiB > /sys/modules/block2mtd/parameters/block2mtd
+> We've looked at this before.  Joern came up with the idea and I've
+> been doing the patch.  For a while I thought I could drop this patch.
+> Turns out I do need it after all.
 
-Jörn
+I think that's the only sensible thing to do anyway.
 
--- 
-The story so far:
-In the beginning the Universe was created.  This has made a lot
-of people very angry and been widely regarded as a bad move.
--- Douglas Adams
+
+Nicolas
