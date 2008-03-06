@@ -1,12 +1,12 @@
 Received: from www.tglx.de ([62.245.132.106])
 	by pentafluge.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JXByF-00024L-Kq
-	for linux-mtd@lists.infradead.org; Thu, 06 Mar 2008 09:01:00 +0000
-Date: Thu, 6 Mar 2008 10:00:50 +0100
+	id 1JXBzZ-000251-AC
+	for linux-mtd@lists.infradead.org; Thu, 06 Mar 2008 09:02:22 +0000
+Date: Thu, 6 Mar 2008 10:02:09 +0100
 From: Sebastian Siewior <bigeasy@tglx.de>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] [FS] jffs2: check if partition is marked RO on remount
-Message-ID: <20080306090050.GA894@www.tglx.de>
+Subject: [PATCH] [FS] jffs2: check if partition is marked RO on mount
+Message-ID: <20080306090209.GB894@www.tglx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
@@ -20,26 +20,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-and if it is, don't tell userspace that write is possible.
+and if it is, don't tell userspace that write is possible. Mount it RO
+instead.
 
 Signed-off-by: Sebastian Siewior <bigeasy@linutronix.de>
 ---
- fs/jffs2/fs.c |    3 +++
+ fs/jffs2/super.c |    3 +++
  1 files changed, 3 insertions(+), 0 deletions(-)
 
-diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
-index e26ea78..a9f474f 100644
---- a/fs/jffs2/fs.c
-+++ b/fs/jffs2/fs.c
-@@ -374,6 +374,9 @@ int jffs2_remount_fs (struct super_block *sb, int *flags, char *data)
- 	if (c->flags & JFFS2_SB_FLAG_RO && !(sb->s_flags & MS_RDONLY))
- 		return -EROFS;
- 
+diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+index 4677355..e4c9493 100644
+--- a/fs/jffs2/super.c
++++ b/fs/jffs2/super.c
+@@ -108,6 +108,9 @@ static int jffs2_fill_super(struct super_block *sb, void *data, int silent)
+ #ifdef CONFIG_JFFS2_FS_POSIX_ACL
+ 	sb->s_flags |= MS_POSIXACL;
+ #endif
 +	if (!(c->mtd->flags & MTD_WRITEABLE))
-+		return -EROFS;
++		sb->s_flags |= MS_RDONLY;
 +
- 	/* We stop if it was running, then restart if it needs to.
- 	   This also catches the case where it was stopped and this
- 	   is just a remount to restart it.
+ 	return jffs2_do_fill_super(sb, data, silent);
+ }
+ 
 -- 
 1.5.3.5
