@@ -1,27 +1,15 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JXHrp-0004pl-24
-	for linux-mtd@lists.infradead.org; Thu, 06 Mar 2008 15:18:45 +0000
-Date: Thu, 6 Mar 2008 15:19:48 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Dach Miroslaw <miroslaw.dach@psi.ch>
-Subject: Re: MTD and jffs2 mount problem on Linux-2.6.23 rc2
-Message-ID: <20080306141948.GC5280@lazybastard.org>
-References: <C3F2E592.DC63%gerickson@nuovations.com>
-	<1B4F8000449511488D1A640DD6DECA3501EC25E3@MAILBOX0A.psi.ch>
-	<1204710323.3599.12.camel@lisa.alm.archives.at>
-	<20080305120320.GH6616@lazybastard.org>
-	<1B4F8000449511488D1A640DD6DECA3501EC25EC@MAILBOX0A.psi.ch>
-	<20080305135024.GA8301@lazybastard.org>
-	<1B4F8000449511488D1A640DD6DECA3501EC25F0@MAILBOX0A.psi.ch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1B4F8000449511488D1A640DD6DECA3501EC25F0@MAILBOX0A.psi.ch>
-Cc: =?utf-8?Q?Schl=C3=A4gl_Manfred_jun=2E?= <manfred.schlaegl@gmx.at>,
-	=?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
-	linux-mtd@lists.infradead.org, Grant Erickson <gerickson@nuovations.com>
+Received: from mail.gmx.net ([213.165.64.20])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JXJAT-0004dF-6a
+	for linux-mtd@lists.infradead.org; Thu, 06 Mar 2008 16:42:06 +0000
+Subject: Powerfail-tests and jffs2-sync-mount
+From: =?ISO-8859-1?Q?Schl=E4gl?= "Manfred jun." <manfred.schlaegl@gmx.at>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Date: Thu, 06 Mar 2008 17:41:59 +0100
+Message-Id: <1204821719.3426.33.camel@lisa.alm.archives.at>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,18 +19,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 6 March 2008 08:48:46 +0100, Dach Miroslaw wrote:
->
-> # insmod block2mtd block2mtd=/dev/loop0,640ki
-                                          ^^^^^
-> [ 2715.317777] block2mtd: mtd4: [d: /dev/loop0] erase_size = 640KiB [655360]
-                                                               ^^^^^^
+Hi!
 
-That number is likely wrong.  Also you might have to pad your image with
-0xff a bit.
+I did some powerfail-testing of jffs2. 
 
-Jörn
+Short overview (Contact me for details):
+Arch: ARM926EJ-S with 40MB rw jffs2 part on Samsung NAND-Flash
+Kernel: linux-2.6.12 (a little bit out of date, i know ;-))
+Test: 
+ * Target-Loop
+   * filesystem-consistency:
+     * create dir
+     * copy data(> eraseblock-size) to new file
+     * delete a file
+   * file-consistency:
+     * logfile on jffs-part (simply appending text with echo)
+ * External random-time reset:
+   * external uC
+   * generates reset every 120+rand(0..30) seconds
+ * Run until no more space on filesystem
+Results:
+ * test with sync-mounted jffs2 (mount -o sync):
+   * duration 4:40 hours
+   * 131 generated resets
+   * consistent FS
+   * consistent logfile
+ * test with async mounted jffs2:
+   * duration 4:10 hours
+   * 118 generated resets
+   * consistent FS
+   * corrupted logfile (bad-chars, etc.)
 
--- 
-All art is but imitation of nature.
--- Lucius Annaeus Seneca
+Now my question: Are there any non-obvious disadvantages, mounting jffs2
+synchronal, except lower speed and a little(depends on usage) decreased
+flash-life-time (wear-out), or is this anyway the default approach?
+
+Best regards,
+	Manfred Schlaegl
