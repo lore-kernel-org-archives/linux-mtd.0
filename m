@@ -1,16 +1,25 @@
-Received: from www.tglx.de ([62.245.132.106])
-	by pentafluge.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JWzW0-00022f-Um
-	for linux-mtd@lists.infradead.org; Wed, 05 Mar 2008 19:43:01 +0000
-Date: Wed, 5 Mar 2008 20:42:45 +0100
-From: Sebastian Siewior <bigeasy@tglx.de>
-To: linux-mtd@lists.infradead.org
-Subject: Sleeping while atomic on a RO JFFS2 partition.
-Message-ID: <20080305194245.GA15584@www.tglx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Cc: David Woodhouse <dwmw2@infradead.org>
+Received: from mailsend02.psi.ch ([129.129.191.54])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JXAtx-0008Av-Aq
+	for linux-mtd@lists.infradead.org; Thu, 06 Mar 2008 07:52:29 +0000
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: MTD and jffs2 mount problem on Linux-2.6.23 rc2
+Date: Thu, 6 Mar 2008 08:48:46 +0100
+Message-ID: <1B4F8000449511488D1A640DD6DECA3501EC25F0@MAILBOX0A.psi.ch>
+References: <C3F2E592.DC63%gerickson@nuovations.com>
+	<1B4F8000449511488D1A640DD6DECA3501EC25E3@MAILBOX0A.psi.ch>
+	<1204710323.3599.12.camel@lisa.alm.archives.at>
+	<20080305120320.GH6616@lazybastard.org>
+	<1B4F8000449511488D1A640DD6DECA3501EC25EC@MAILBOX0A.psi.ch>
+	<20080305135024.GA8301@lazybastard.org>
+From: "Dach Miroslaw" <miroslaw.dach@psi.ch>
+To: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>
+Cc: =?iso-8859-1?Q?Schl=E4gl_Manfred_jun=2E?= <manfred.schlaegl@gmx.at>,
+	linux-mtd@lists.infradead.org, Grant Erickson <gerickson@nuovations.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,44 +29,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David, I'm sorry to CC you again.
+Hi Jorn,
 
-My flash partition was marked RO in the partition table and got probably
-RW mounted somehow. However I get
-|VFS: Mounted root (jffs2 filesystem) readonly.
-So I should not be able to write anyway. This is maybe another BUG I try
-to look after later. Anyway, the backtrace I got is:
+I have followed your idea with block2mtd.
 
-|jffs2_flush_wbuf(): Write failed with -30
-|BUG: sleeping function called from invalid context at /home/bigeasy/linux-2.6/include/linux/writeback.h:79
-|in_atomic():1, irqs_disabled():0
-|Call Trace:
-|[df8b3d80] [c0006c24] show_stack+0x48/0x184 (unreliable)
-|[df8b3da0] [c001d8b4] __might_sleep+0xc0/0xd4
-|[df8b3db0] [c008d650] ifind_fast+0x60/0xa8
-|[df8b3dd0] [c008da68] iget_locked+0x3c/0x140
-|[df8b3e00] [c011430c] jffs2_iget+0x14/0x39c
-|[df8b3e70] [c01151f0] jffs2_gc_fetch_inode+0xcc/0x124
-|[df8b3eb0] [c0116a90] __jffs2_flush_wbuf+0x744/0xc10
-|[df8b3f00] [c011778c] jffs2_flush_wbuf_gc+0x128/0x1bc
-|[df8b3f20] [c01142e4] jffs2_write_super+0x48/0x5c
-|[df8b3f30] [c007a14c] sync_supers+0x88/0x104
-|[df8b3f40] [c0058ef8] wb_kupdate+0x38/0x138
-|[df8b3f90] [c0059620] pdflush+0x108/0x1d0
-|[df8b3fd0] [c003b374] kthread+0x4c/0x88
-|[df8b3ff0] [c000daf8] kernel_thread+0x44/0x60
-|jffs2_flush_wbuf(): Write failed with -30
+The steps I have done are as following:
+# mkdir /mnt
+# ./mkfs.jffs2 -n --pad=3D0xA0000 --eraseblock=3D0x20000 =
+--root=3DMTEST-PC-M24 --output=3Dimage2.jffs2
+# losetup /dev/loop0 image2.jffs2
+# insmod block2mtd block2mtd=3D/dev/loop0,640ki
 
-jffs2_gc_fetch_inode() is called from two places. One of them is
-jffs2_wbuf_recover() and that functions grabs the spinlock
-c->erase_completion_lock before calling (under some condition) that
-function. IMHO there should be no spinlock around or that function
-should not be called at all.
+[ 2715.317777] block2mtd: mtd4: [d: /dev/loop0] erase_size =3D 640KiB =
+[655360]
 
-To reproduce:
-- mark nand JFFS2 partition RO
-- in my case it is my root partition which mounted RW during the boot
-  process
-- later some programs are going to store some data and voila.
+# mount -t jffs2 /dev/mtdblock4 /mnt
+                                                                         =
+      =20
+[ 2725.702309] jffs2: Too few erase blocks (1)
+mount: mounting mtd4 on /mnt failed
 
-Sebastian
+I have no idea what is the meaning of "Too few erase blocks".
+
+Best Regards
+
+M.
+
+
+
+
+
+
+-----Original Message-----
+From: J=F6rn Engel [mailto:joern@logfs.org]
+Sent: Wed 3/5/2008 2:50 PM
+To: Dach Miroslaw
+Cc: J=F6rn Engel; Schl=E4gl Manfred jun.; linux-mtd@lists.infradead.org; =
+Grant Erickson
+Subject: Re: MTD and jffs2 mount problem on Linux-2.6.23 rc2
+=20
+On Wed, 5 March 2008 14:44:45 +0100, Dach Miroslaw wrote:
+>=20
+> Thank you for the hint. I have recompiled the kernel with built-in =
+block2mtd driver.
+>=20
+> Do you know where to find some examples how to use block2mtd with =
+jffs2 image.
+
+I don't.  If someone wants to write some documentation, I'd gladly add
+it.
+
+But I believe this should do the trick:
+echo block2mtd=3D/dev/loop0 > =
+/sys/modules/block2mtd/parameters/block2mtd
+or to explicitly set the erase size:
+echo block2mtd=3D/dev/loop0,128KiB > =
+/sys/modules/block2mtd/parameters/block2mtd
+
+J=F6rn
+
+--=20
+The story so far:
+In the beginning the Universe was created.  This has made a lot
+of people very angry and been widely regarded as a bad move.
+-- Douglas Adams
