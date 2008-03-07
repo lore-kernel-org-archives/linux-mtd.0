@@ -1,19 +1,18 @@
-Received: from lana.hrz.tu-chemnitz.de ([134.109.132.3])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JXheh-00047i-Kv
-	for linux-mtd@lists.infradead.org; Fri, 07 Mar 2008 18:50:56 +0000
-Message-ID: <47D18E8C.5010307@informatik.tu-chemnitz.de>
-Date: Fri, 07 Mar 2008 19:50:52 +0100
-From: Markus Franke <Markus.Franke@informatik.tu-chemnitz.de>
-MIME-Version: 1.0
-To: Grant Erickson <gerickson@nuovations.com>
+Received: from relay01.pair.com ([209.68.5.15])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JXjME-0006CZ-37
+	for linux-mtd@lists.infradead.org; Fri, 07 Mar 2008 20:39:58 +0000
+Date: Fri, 07 Mar 2008 12:39:46 -0800
 Subject: Re: Creating an Empty JFFS2 File System
-References: <C3F6C181.DD74%gerickson@nuovations.com>
-In-Reply-To: <C3F6C181.DD74%gerickson@nuovations.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: Markus.Franke@informatik.tu-chemnitz.de
+From: Grant Erickson <gerickson@nuovations.com>
+To: Josh Boyer <jwboyer@gmail.com>
+Message-ID: <C3F6E812.DD80%gerickson@nuovations.com>
+In-Reply-To: <20080307123701.55c3ebf8@weaponx>
+Mime-version: 1.0
+Content-type: text/plain;
+	charset="US-ASCII"
+Content-transfer-encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,16 +22,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-Grant Erickson schrieb:
-> Is creating an empty JFFS2 file system supported or is this a deprecated
-> capability? The following steps seem to be incorrect or failing:
+On 3/7/08 10:37 AM, Josh Boyer wrote:
+> On Fri, 07 Mar 2008 09:55:13 -0800
+> Grant Erickson <gerickson@nuovations.com> wrote:
+>> Is creating an empty JFFS2 file system supported or is this a deprecated
+>> capability? The following steps seem to be incorrect or failing:
+>> 
+>>     # flash_eraseall -q -j /dev/mtd9
+>>     # mount -t jffs2 /dev/mtdblock9 /mnt
+>>     Cowardly refusing to erase blocks on filesystem with no valid JFFS2
+>>     nodes
+>>     empty_blocks 0, bad_blocks 0, c->nr_blocks 3840
+>> 
+>> Or, is the only way to accomplish this to create a NULL JFFS2 image with
+>> mkfs.jffs2 and then nandwrite it?
 > 
->     # flash_eraseall -q -j /dev/mtd9
->     # mount -t jffs2 /dev/mtdblock9 /mnt
+> Just erase it completely without the -j option and mount.  JFFS2 will go
+> through and erase them all again and add the cleanmarkers itself.
 
-Does this work with NOR Flash as well?
+Josh:
 
-Best regards,
-Markus
+That technique is a no-go as well:
+
+    # flash_eraseall -q /dev/mtd8
+    # mount -t jffs2 /dev/mtdblock8 /mnt
+    Cowardly refusing to erase blocks on filesystem with no valid JFFS2
+    nodes
+    empty_blocks 0, bad_blocks 0, c->nr_blocks 3840
+    mount: mounting /dev/mtdblock8 on /mnt failed: Input/output error
+
+Regards,
+
+Grant
