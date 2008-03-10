@@ -1,15 +1,20 @@
-Received: from mail.feig.de ([212.184.177.12])
+Received: from smtp.innovsys.com ([66.115.232.196] helo=mail.innovsys.com)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JYcPX-0003V4-OI
-	for linux-mtd@lists.infradead.org; Mon, 10 Mar 2008 07:27:04 +0000
-Message-ID: <47D4E2C4.10402@feig.de>
-Date: Mon, 10 Mar 2008 08:27:00 +0100
-From: Manuel Sahm <Manuel.Sahm@feig.de>
+	id 1JYlMW-000622-F2
+	for linux-mtd@lists.infradead.org; Mon, 10 Mar 2008 17:00:32 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: "root=/dev/mtblock3" or "root=dev/mtddblock/3"
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: OF compatible MTD platform RAM driver ?
+Date: Mon, 10 Mar 2008 12:00:22 -0500
+Message-ID: <DCEAAC0833DD314AB0B58112AD99B93B0418505E@ismail.innsys.innovsys.com>
+In-Reply-To: <200803101606.39184.laurentp@cse-semaphore.com>
+References: <200803101606.39184.laurentp@cse-semaphore.com>
+From: "Rune Torgersen" <runet@innovsys.com>
+To: "Laurent Pinchart" <laurentp@cse-semaphore.com>, <linuxppc-dev@ozlabs.org>
+Cc: ben@simtec.co.uk, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,25 +24,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+linuxppc-dev-bounces+runet=3Dinnovsys.com@ozlabs.org wrote:
+> Hi everybody,
+>=20
+> as part of a ARCH=3Dppc to ARCH=3Dpowerpc migration process, I'm
+> looking for an
+> OpenFirmware compatible way to handle a RAM-based MTD device.
+>=20
+> On the platform_device based ppc architecture, the
+> drivers/mtd/maps/plat-ram.c
+> driver handled "mtd-ram" platform devices. There is no such
+> driver for the
+> OF-based powerpc architecture.
+>=20
+> As a temporary workaround I hacked the physmap_of driver to
+> handle "direct-mapped" OF devices oh type "ram" by adding a
+> corresponding entry in the of_flash_match[] array. This seems to work
+> fine.=20
+>=20
+> What would be the preferred way to handle OF-compatible RAM-based MTD
+> devices ? The 3 ways I can think of are
+>=20
+> 1. porting the plat-ram driver to OF (the driver isn't used
+> in the kernel tree
+> but I suspect it is used by out-of-tree boards)
+>=20
+> 2. creating a new plat-ram-of driver, much like the
+> physmap_of driver comes
+> from the physmap driver
+>=20
+> 3. extending the physmap_of driver to handle RAM devices (in
+> which case
+> references to "flash" in the function names should probably
+> be replaced
+> by "mtd")
+>=20
+> I live option 3 better so far.
+>=20
+> Has anyone already worked on this ? Is there any defined
+> device tree mapping
+> for MTD RAM devices ?
+>=20
+> Best regards,
 
-could anybody explain me the difference between this two commands.
-I want to boot the RFS out of the NAND Flash Partition 3 and tell the 
-kernel this through the bootargs.
+We ran ito the same issue.=20
+We did option 3, as it was efinetly the easiest,
+here is the sram entry in our dts:
 
-This works:
+        sram@9,0 {
+            device_type =3D "rom";
+            compatible =3D "direct-mapped";
+            probe-type =3D "RAM";
+            reg =3D <9 0 20000>;
+            bank-width =3D <2>;
+            device-width =3D <2>;
+            #address-cells =3D <1>;
+            #size-cells =3D <1>;
+            partition@0 {
+                label =3D "SRAM";
+                reg =3D <0 20000>;
+            };
 
-"root=dev/mtddblock/3" works,
+here is the change to physmap_of.c:
 
-but in many examples is shown that this should be added to the bootargs...?
-
-"root=/dev/mtblock3"
-
-The scond one doen?t work at my system ??? Why?
-
-Thank you
-
--- 
-Best regards 
-
-Manuel Sahm
+diff --git a/drivers/mtd/maps/physmap_of.c
+b/drivers/mtd/maps/physmap_of.c
+old mode 100644
+new mode 100755
+index aeed9ea..687ef54
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -201,6 +201,8 @@ static struct mtd_info * __devinit
+obsolete_probe(struct of_device *dev,
+ 		return do_map_probe("cfi_probe", map);
+ 	} else if (strcmp(of_probe, "JEDEC") =3D=3D 0) {
+ 		return do_map_probe("jedec_probe", map);
++	} else if (strcmp(of_probe, "RAM") =3D=3D 0) {
++		return do_map_probe("map_ram", map);
+ 	} else {
+ 		if (strcmp(of_probe, "ROM") !=3D 0)
+ 			dev_warn(&dev->dev, "obsolete_probe: don't know
+probe "
