@@ -1,25 +1,18 @@
-Received: from rex.snapgear.com ([203.143.235.140] helo=cyberguard.com.au)
-	by pentafluge.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JZEKr-00013y-P5
-	for linux-mtd@lists.infradead.org; Tue, 11 Mar 2008 23:57:14 +0000
-Message-ID: <47D71C2F.4090102@snapgear.com>
-Date: Wed, 12 Mar 2008 09:56:31 +1000
-From: Greg Ungerer <gerg@snapgear.com>
-MIME-Version: 1.0
-To: jaredeh@gmail.com
-Subject: Re: [MTD][NOR] adding physical address to point()
-References: <6934efce0803050213i6908afbbn5655f13d10309c38@mail.gmail.com>
-	<alpine.LFD.1.00.0803050943140.2947@xanadu.home>
-	<47D6F132.2050002@gmail.com>
-In-Reply-To: <47D6F132.2050002@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from smtp1.linux-foundation.org ([140.211.169.13])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JZK0P-0006Ir-Ov
+	for linux-mtd@lists.infradead.org; Wed, 12 Mar 2008 06:00:02 +0000
+Date: Tue, 11 Mar 2008 22:59:26 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: "Gordon Farquharson" <gordonfarquharson@gmail.com>
+Subject: Re: physmap and "request_module: runaway loop modprobe net-pf-1"
+Message-Id: <20080311225926.6515e18c.akpm@linux-foundation.org>
+In-Reply-To: <97a0a9ac0803112235l157706adoa84b131549a46049@mail.gmail.com>
+References: <97a0a9ac0803112235l157706adoa84b131549a46049@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	=?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>,
-	Alexander Larsson <alex@cendio.se>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	Mark Ferrell <mferrell@mvista.com>, Nicolas Pitre <nico@cam.org>,
-	Jochen Schaeuble <psionic@psionic.de>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,493 +22,190 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jared,
+On Tue, 11 Mar 2008 23:35:28 -0600 "Gordon Farquharson" <gordonfarquharson@gmail.com> wrote:
 
-Jared Hulbert wrote:
-> [MTD][NOR] adding physical address to point()
-> 
-> Adding the ability to get a physical address from point() in addition
-> to virtual address.  This physical address is required for XIP of
-> userspace code from flash.
-> 
-> Signed-off-by: Jared Hulbert <jaredeh@gmail.com>
-> Reviewed-by: Joern Engel <joern@logfs.org>
-> Acked-by: Nicolas Pitre <nico@cam.org>
+> Hi All
 
-I have no problem with the change to uclinux.c.
-Heres an acked-by for that change if you want:
+Let's cc the MTD list.
 
-Acked-by: Greg Ungerer <gerg@uclinux.org>
+> On machines that register a physmap flash platform device (e.g. many
+> arm machines), parse_mtd_partitions() in drivers/mtd/mtdpart.c can
+> cause the following output in the boot log:
+> 
+> request_module: runaway loop modprobe net-pf-1
+> modprobe: FATAL: Could not load
+> /lib/modules/2.6.25-rc4-iop32x/modules.dep: No such file or directory
+> 
+> modprobe: FATAL: Could not load
+> /lib/modules/2.6.25-rc4-iop32x/modules.dep: No such file or directory
+> 
+> modprobe: FATAL: Could not load
+> /lib/modules/2.6.25-rc4-iop32x/modules.dep: No such file or directory
+> ...
+> 
+> To illustrate how this can occur, I'll use the example where
+> CONFIG_KMOD=y, CONFIG_MTD_PARTITIONS=y, CONFIG_MTD_REDBOOT_PARTS=y,
+> and CONFIG_CMDLINE_PARTS is not set. I'll also refer to the following
+> code segment which is in drivers/mtd/mtdpart.c:parse_mtd_partitions():
+> 
+> 	for ( ; ret <= 0 && *types; types++) {
+> 		parser = get_partition_parser(*types);
+> #ifdef CONFIG_KMOD
+> 		if (!parser && !request_module("%s", *types))
+> 				parser = get_partition_parser(*types);
+> #endif
+> 		if (!parser) {
+> 			printk(KERN_NOTICE "%s partition parsing not available\n",
+> 			       *types);
+> 			continue;
+> 		}
+> 		ret = (*parser->parse_fn)(master, pparts, origin);
+> 		if (ret > 0) {
+> 			printk(KERN_NOTICE "%d %s partitions found on MTD device %s\n",
+> 			       ret, parser->name, master->name);
+> 		}
+> 		put_partition_parser(parser);
+> 	}
+> 
+> I should note that I am assuming (because I don't understand how) that
+> request_module() requires net-pf-1 to succeed. This assumption is
+> based on my observation of the request_module message
+> ("request_module: runaway loop modprobe net-pf-1"), and that
+> af_unix_init() (net-pf-1 initialization) is called only after the call
+> to request_module() in this example.
+> 
+> Based on the configuration and assumptions described above, the
+> sequence of events that cause the boot log messages above are:
+> 
+> 1. the first call to get_partition_parser() in parse_mtd_partitions()
+> does not find the parser in the the list of registered parsers, i.e.
+> get_partition_parser() returns a NULL pointer. In this example, the
+> only registered parser in the list is called Redboot;
+> 
+> 2. parse_mtd_partitions() calls request_module() with (in this
+> example) the parameter "cmdlinepart";
+> 
+> 3. request_module() complains (request_module: runaway loop modprobe
+> net-pf-1, etc.) because af_unix_init() has not been called. The boot
+> log shows that af_unix_init() is called only after
+> parse_mtd_partitions() finishes.
+> 
+> register_mtd_parser: RedBoot
+> physmap platform flash device: 00080000 at f0000000
+> Found: ST M29W400DB
+> physmap-flash.0: Found 1 x16 devices at 0x0 in 16-bit bank
+> number of JEDEC chips: 1
+> cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
+> parse_mtd_partitions:
+> get_partition_parser: name=cmdlinepart
+> get_partition_parser: p->name=RedBoot
+> get_partition_parser: p->owner=00000000
+> get_partition_parser: ret=00000000
+> parse_mtd_partitions: cmdlinepart
+> request_module: runaway loop modprobe net-pf-1
+> modprobe: FATAL: Could not load
+> /lib/modules/2.6.25-rc4-iop32x/modules.dep: No such file or directory
+> 
+> modprobe: FATAL: Could not load
+> /lib/modules/2.6.25-rc4-iop32x/modules.dep: No such file or directory
+> 
+> modprobe: FATAL: Could not load
+> /lib/modules/2.6.25-rc4-iop32x/modules.dep: No such file or directory
+> 
+> <--- 47 repeated modprobe messages deleted --->
+> parse_mtd_partitions: request_module called
+> cmdlinepart partition parsing not available
+> get_partition_parser: name=RedBoot
+> get_partition_parser: p->name=RedBoot
+> get_partition_parser: p->owner=00000000
+> get_partition_parser: ret->name=RedBoot
+> get_partition_parser: ret=c02b0f8c
+> parse_mtd_partitions: RedBoot
+> parse_mtd_partitions: request_module called
+> Searching for RedBoot partition table in physmap-flash.0 at offset 0x70000
+> No RedBoot partition table detected in physmap-flash.0
+> parse_mtd_partitions: end of function
+> mice: PS/2 mouse device common for all mice
+> i2c /dev entries driver
+> rtc-rs5c372 0-0032: rs5c372a found, 24hr, driver version 0.5
+> rtc-rs5c372 0-0032: rtc core: registered rtc-rs5c372 as rtc0
+> iop-adma iop-adma.0: Intel(R) IOP: ( cpy intr )
+> iop-adma iop-adma.1: Intel(R) IOP: ( cpy intr )
+> NET: Registered protocol family 26
+> TCP bic registered
+> af_unix_init:
+> NET: Registered protocol family 1
+> NET: Registered protocol family 17
+> XScale DSP coprocessor detected.
+> registered taskstats version 1
+> rtc-rs5c372 0-0032: setting system clock to 2008-03-11 03:16:46 UTC (1205205406)
+> 
+> The reason parse_mtd_partitions() tries to use cmdlinepart, even
+> though it is not a registered parsing scheme when CONFIG_CMDLINE_PARTS
+> is not set, is because cmdlinepart is hard coded in
+> drivers/mtd/maps/physmap.c:
+> 
+> #ifdef CONFIG_MTD_PARTITIONS
+> static const char *part_probe_types[] = { "cmdlinepart", "RedBoot", NULL };
+> #endif
+> 
+> The simple solution to eliminating the messages in the boot log
+> appears to be to ensure that, for machines that use a physmap flash
+> device, CONFIG_MTD_REDBOOT_PARTS and CONFIG_CMDLINE_PARTS are set if
+> CONFIG_MTD_PARTITIONS is set. However, the problem also occurs if
+> CONFIG_MTD_REDBOOT_PARTS is configured to be built as a module,
+> because again, request_module() fails because af_unix_init() has not
+> been called.
+> 
+> It would be simpler if all parsing code could only be built into the
+> kernel. In this case, built in parsers would be registered by the time
+> parse_mtd_partitions() is called, so the call to request_module() in
+> parse_mtd_partitions() could be removed:
+> 
+> #ifdef CONFIG_KMOD
+> 		if (!parser && !request_module("%s", *types))
+> 				parser = get_partition_parser(*types);
+> #endif
+> 
+> This solution would require simply changing the parser configuration
+> options to bool in drivers/mtd/Kconfig. Is there a reason to allow the
+> parsing code to be built as a module?
 
-Regards
-Greg
+That sounds reasonable.
 
+> Alternatively, if selecting CONFIG_MTD_PARTITIONS and not selecting
+> both CONFIG_MTD_REDBOOT_PARTS and CONFIG_CMDLINE_PARTS, or selecting
+> CONFIG_MTD_PARTITIONS and not selecting CONFIG_CMDLINE_PARTS and
+> selecting CONFIG_MTD_REDBOOT_PARTS as a module, are valid
+> configurations, it seems that parse_mtd_partitions() must be called
+> only after af_unix_init() has been called. Is this possible?
 
-> CC'ing dwmw2 and owners of diff'ed files. Adding Nicolas as Acked-by.
-> 
-> I need this to do ANY legitimate XIP of
-> userspace code from Flash.  I've written AXFS to do XIP of userspace
-> code.  Working with the linux-mm guys we come up with a way to make
-> mm/filemap_xip.c to what we need it to. To XIP Flash pages we need to
-> do a vm_insert_pfn().  To get a pfn we need a physical address.
-> virt_to_page() doesn't work for ioremap'ed kaddr's (like mtd->virt
-> mtd->cached) and Linus told us "no sneaky page table walks and don't
-> screw with virt_to_page()."   So we're stuck needing to get this
-> physical address from the mtd driver.  This was the way we came up
-> with to do that a while back.
-> 
-> 
-> drivers/mtd/devices/mtdram.c      |   11 +++++++----
-> drivers/mtd/devices/phram.c       |   13 +++++++------
-> drivers/mtd/devices/pmc551.c      |   27 +++++++++++++++++----------
-> drivers/mtd/devices/slram.c       |   15 ++++++++++-----
-> drivers/mtd/maps/uclinux.c        |    6 ++++--
-> drivers/mtd/mtdpart.c             |    8 ++++----
-> fs/jffs2/erase.c                  |    7 ++++---
-> fs/jffs2/readinode.c              |    9 +++++----
-> fs/jffs2/scan.c                   |    7 ++++---
-> include/linux/mtd/mtd.h           |    6 ++++--
-> include/linux/mtd/pmc551.h        |    5 +++--
-> drivers/mtd/chips/cfi_cmdset_0001.c |   14 ++++++++------
-> 12 files changed, 77 insertions(+), 51 deletions(-)
-> 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-> index 47794d2..d2105aa 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-> @@ -82,9 +82,8 @@ static struct mtd_info *cfi_intelext_setup (struct mtd_info *);
->  static int cfi_intelext_partition_fixup(struct mtd_info *, struct cfi_private **);
->  
->  static int cfi_intelext_point (struct mtd_info *mtd, loff_t from, size_t len,
-> -		     size_t *retlen, u_char **mtdbuf);
-> -static void cfi_intelext_unpoint (struct mtd_info *mtd, u_char *addr, loff_t from,
-> -			size_t len);
-> +		     size_t *retlen, void **virt, resource_size_t *phys);
-> +static void cfi_intelext_unpoint(struct mtd_info *mtd, loff_t from, size_t len);
->  
->  static int chip_ready (struct map_info *map, struct flchip *chip, unsigned long adr, int mode);
->  static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr, int mode);
-> @@ -1237,7 +1236,8 @@ static int do_point_onechip (struct map_info *map, struct flchip *chip, loff_t a
->  	return ret;
->  }
->  
-> -static int cfi_intelext_point (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char **mtdbuf)
-> +static int cfi_intelext_point(struct mtd_info *mtd, loff_t from, size_t len,
-> +		size_t *retlen, void **virt, resource_size_t *phys)
->  {
->  	struct map_info *map = mtd->priv;
->  	struct cfi_private *cfi = map->fldrv_priv;
-> @@ -1254,8 +1254,10 @@ static int cfi_intelext_point (struct mtd_info *mtd, loff_t from, size_t len, si
->  	chipnum = (from >> cfi->chipshift);
->  	ofs = from - (chipnum << cfi->chipshift);
->  
-> -	*mtdbuf = (void *)map->virt + cfi->chips[chipnum].start + ofs;
-> +	*virt = map->virt + cfi->chips[chipnum].start + ofs;
->  	*retlen = 0;
-> +	if (phys)
-> +		*phys = map->phys + cfi->chips[chipnum].start + ofs;
->  
->  	while (len) {
->  		unsigned long thislen;
-> @@ -1288,7 +1290,7 @@ static int cfi_intelext_point (struct mtd_info *mtd, loff_t from, size_t len, si
->  	return 0;
->  }
->  
-> -static void cfi_intelext_unpoint (struct mtd_info *mtd, u_char *addr, loff_t from, size_t len)
-> +static void cfi_intelext_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
->  {
->  	struct map_info *map = mtd->priv;
->  	struct cfi_private *cfi = map->fldrv_priv;
-> diff --git a/drivers/mtd/devices/mtdram.c b/drivers/mtd/devices/mtdram.c
-> index e427c82..fe39a9d 100644
-> --- a/drivers/mtd/devices/mtdram.c
-> +++ b/drivers/mtd/devices/mtdram.c
-> @@ -47,18 +47,21 @@ static int ram_erase(struct mtd_info *mtd, struct erase_info *instr)
->  }
->  
->  static int ram_point(struct mtd_info *mtd, loff_t from, size_t len,
-> -		size_t *retlen, u_char **mtdbuf)
-> +		size_t *retlen, void **virt, resource_size_t *phys)
->  {
->  	if (from + len > mtd->size)
->  		return -EINVAL;
->  
-> -	*mtdbuf = mtd->priv + from;
-> +	/* can we return a physical address with this driver? */
-> +	if (phys)
-> +		return -EINVAL;
-> +
-> +	*virt = mtd->priv + from;
->  	*retlen = len;
->  	return 0;
->  }
->  
-> -static void ram_unpoint(struct mtd_info *mtd, u_char * addr, loff_t from,
-> -		size_t len)
-> +static void ram_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
->  {
->  }
->  
-> diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
-> index 180298b..2b4d739 100644
-> --- a/drivers/mtd/devices/phram.c
-> +++ b/drivers/mtd/devices/phram.c
-> @@ -57,20 +57,21 @@ static int phram_erase(struct mtd_info *mtd, struct erase_info *instr)
->  }
->  
->  static int phram_point(struct mtd_info *mtd, loff_t from, size_t len,
-> -		size_t *retlen, u_char **mtdbuf)
-> +		size_t *retlen, void **virt, resource_size_t *phys)
->  {
-> -	u_char *start = mtd->priv;
-> -
->  	if (from + len > mtd->size)
->  		return -EINVAL;
->  
-> -	*mtdbuf = start + from;
-> +	/* can we return a physical address with this driver? */
-> +	if (phys)
-> +		return -EINVAL;
-> +
-> +	*virt = mtd->priv + from;
->  	*retlen = len;
->  	return 0;
->  }
->  
-> -static void phram_unpoint(struct mtd_info *mtd, u_char *addr, loff_t from,
-> -		size_t len)
-> +static void phram_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
->  {
->  }
->  
-> diff --git a/drivers/mtd/devices/pmc551.c b/drivers/mtd/devices/pmc551.c
-> index 7060a08..bc99817 100644
-> --- a/drivers/mtd/devices/pmc551.c
-> +++ b/drivers/mtd/devices/pmc551.c
-> @@ -134,7 +134,8 @@ static int pmc551_erase(struct mtd_info *mtd, struct erase_info *instr)
->  	eoff_lo = end & (priv->asize - 1);
->  	soff_lo = instr->addr & (priv->asize - 1);
->  
-> -	pmc551_point(mtd, instr->addr, instr->len, &retlen, &ptr);
-> +	pmc551_point(mtd, instr->addr, instr->len, &retlen,
-> +		     (void **)&ptr, NULL);
->  
->  	if (soff_hi == eoff_hi || mtd->size == priv->asize) {
->  		/* The whole thing fits within one access, so just one shot
-> @@ -154,7 +155,8 @@ static int pmc551_erase(struct mtd_info *mtd, struct erase_info *instr)
->  			}
->  			soff_hi += priv->asize;
->  			pmc551_point(mtd, (priv->base_map0 | soff_hi),
-> -				     priv->asize, &retlen, &ptr);
-> +				     priv->asize, &retlen,
-> +				     (void **)&ptr, NULL);
->  		}
->  		memset(ptr, 0xff, eoff_lo);
->  	}
-> @@ -170,7 +172,7 @@ static int pmc551_erase(struct mtd_info *mtd, struct erase_info *instr)
->  }
->  
->  static int pmc551_point(struct mtd_info *mtd, loff_t from, size_t len,
-> -			size_t * retlen, u_char ** mtdbuf)
-> +			size_t *retlen, void **virt, resource_size_t *phys)
->  {
->  	struct mypriv *priv = mtd->priv;
->  	u32 soff_hi;
-> @@ -188,6 +190,10 @@ static int pmc551_point(struct mtd_info *mtd, loff_t from, size_t len,
->  		return -EINVAL;
->  	}
->  
-> +	/* can we return a physical address with this driver? */
-> +	if (phys)
-> +		return -EINVAL;
-> +
->  	soff_hi = from & ~(priv->asize - 1);
->  	soff_lo = from & (priv->asize - 1);
->  
-> @@ -198,13 +204,12 @@ static int pmc551_point(struct mtd_info *mtd, loff_t from, size_t len,
->  		priv->curr_map0 = soff_hi;
->  	}
->  
-> -	*mtdbuf = priv->start + soff_lo;
-> +	*virt = priv->start + soff_lo;
->  	*retlen = len;
->  	return 0;
->  }
->  
-> -static void pmc551_unpoint(struct mtd_info *mtd, u_char * addr, loff_t from,
-> -			   size_t len)
-> +static void pmc551_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
->  {
->  #ifdef CONFIG_MTD_PMC551_DEBUG
->  	printk(KERN_DEBUG "pmc551_unpoint()\n");
-> @@ -242,7 +247,7 @@ static int pmc551_read(struct mtd_info *mtd, loff_t from, size_t len,
->  	soff_lo = from & (priv->asize - 1);
->  	eoff_lo = end & (priv->asize - 1);
->  
-> -	pmc551_point(mtd, from, len, retlen, &ptr);
-> +	pmc551_point(mtd, from, len, retlen, (void **)&ptr, NULL);
->  
->  	if (soff_hi == eoff_hi) {
->  		/* The whole thing fits within one access, so just one shot
-> @@ -263,7 +268,8 @@ static int pmc551_read(struct mtd_info *mtd, loff_t from, size_t len,
->  				goto out;
->  			}
->  			soff_hi += priv->asize;
-> -			pmc551_point(mtd, soff_hi, priv->asize, retlen, &ptr);
-> +			pmc551_point(mtd, soff_hi, priv->asize, retlen,
-> +				     (void **)&ptr, NULL);
->  		}
->  		memcpy(copyto, ptr, eoff_lo);
->  		copyto += eoff_lo;
-> @@ -308,7 +314,7 @@ static int pmc551_write(struct mtd_info *mtd, loff_t to, size_t len,
->  	soff_lo = to & (priv->asize - 1);
->  	eoff_lo = end & (priv->asize - 1);
->  
-> -	pmc551_point(mtd, to, len, retlen, &ptr);
-> +	pmc551_point(mtd, to, len, retlen, (void **)&ptr, NULL);
->  
->  	if (soff_hi == eoff_hi) {
->  		/* The whole thing fits within one access, so just one shot
-> @@ -329,7 +335,8 @@ static int pmc551_write(struct mtd_info *mtd, loff_t to, size_t len,
->  				goto out;
->  			}
->  			soff_hi += priv->asize;
-> -			pmc551_point(mtd, soff_hi, priv->asize, retlen, &ptr);
-> +			pmc551_point(mtd, soff_hi, priv->asize, retlen,
-> +				     (void **)&ptr, NULL);
->  		}
->  		memcpy(ptr, copyfrom, eoff_lo);
->  		copyfrom += eoff_lo;
-> diff --git a/drivers/mtd/devices/slram.c b/drivers/mtd/devices/slram.c
-> index d293add..cb86db7 100644
-> --- a/drivers/mtd/devices/slram.c
-> +++ b/drivers/mtd/devices/slram.c
-> @@ -76,8 +76,9 @@ static char *map;
->  static slram_mtd_list_t *slram_mtdlist = NULL;
->  
->  static int slram_erase(struct mtd_info *, struct erase_info *);
-> -static int slram_point(struct mtd_info *, loff_t, size_t, size_t *, u_char **);
-> -static void slram_unpoint(struct mtd_info *, u_char *, loff_t,	size_t);
-> +static int slram_point(struct mtd_info *, loff_t, size_t, size_t *, void **,
-> +		resource_size_t *);
-> +static void slram_unpoint(struct mtd_info *, loff_t, size_t);
->  static int slram_read(struct mtd_info *, loff_t, size_t, size_t *, u_char *);
->  static int slram_write(struct mtd_info *, loff_t, size_t, size_t *, const u_char *);
->  
-> @@ -104,19 +105,23 @@ static int slram_erase(struct mtd_info *mtd, struct erase_info *instr)
->  }
->  
->  static int slram_point(struct mtd_info *mtd, loff_t from, size_t len,
-> -		size_t *retlen, u_char **mtdbuf)
-> +		size_t *retlen, void **virt, resource_size_t *phys)
->  {
->  	slram_priv_t *priv = mtd->priv;
->  
-> +	/* can we return a physical address with this driver? */
-> +	if (phys)
-> +		return -EINVAL;
-> +
->  	if (from + len > mtd->size)
->  		return -EINVAL;
->  
-> -	*mtdbuf = priv->start + from;
-> +	*virt = priv->start + from;
->  	*retlen = len;
->  	return(0);
->  }
->  
-> -static void slram_unpoint(struct mtd_info *mtd, u_char *addr, loff_t from, size_t len)
-> +static void slram_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
->  {
->  }
->  
-> diff --git a/drivers/mtd/maps/uclinux.c b/drivers/mtd/maps/uclinux.c
-> index 14ffb1a..c42f4b8 100644
-> --- a/drivers/mtd/maps/uclinux.c
-> +++ b/drivers/mtd/maps/uclinux.c
-> @@ -40,10 +40,12 @@ struct mtd_partition uclinux_romfs[] = {
->  /****************************************************************************/
->  
->  int uclinux_point(struct mtd_info *mtd, loff_t from, size_t len,
-> -	size_t *retlen, u_char **mtdbuf)
-> +	size_t *retlen, void **virt, resource_size_t *phys)
->  {
->  	struct map_info *map = mtd->priv;
-> -	*mtdbuf = (u_char *) (map->virt + ((int) from));
-> +	*virt = map->virt + from;
-> +	if (phys)
-> +		*phys = map->phys + from;
->  	*retlen = len;
->  	return(0);
->  }
-> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> index c66902d..07c7011 100644
-> --- a/drivers/mtd/mtdpart.c
-> +++ b/drivers/mtd/mtdpart.c
-> @@ -68,7 +68,7 @@ static int part_read (struct mtd_info *mtd, loff_t from, size_t len,
->  }
->  
->  static int part_point (struct mtd_info *mtd, loff_t from, size_t len,
-> -			size_t *retlen, u_char **buf)
-> +			size_t *retlen, void **virt, resource_size_t *phys)
->  {
->  	struct mtd_part *part = PART(mtd);
->  	if (from >= mtd->size)
-> @@ -76,14 +76,14 @@ static int part_point (struct mtd_info *mtd, loff_t from, size_t len,
->  	else if (from + len > mtd->size)
->  		len = mtd->size - from;
->  	return part->master->point (part->master, from + part->offset,
-> -				    len, retlen, buf);
-> +				    len, retlen, virt, phys);
->  }
->  
-> -static void part_unpoint (struct mtd_info *mtd, u_char *addr, loff_t from, size_t len)
-> +static void part_unpoint(struct mtd_info *mtd, loff_t from, size_t len)
->  {
->  	struct mtd_part *part = PART(mtd);
->  
-> -	part->master->unpoint (part->master, addr, from + part->offset, len);
-> +	part->master->unpoint(part->master, from + part->offset, len);
->  }
->  
->  static int part_read_oob(struct mtd_info *mtd, loff_t from,
-> diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
-> index a1db918..6c2a046 100644
-> --- a/fs/jffs2/erase.c
-> +++ b/fs/jffs2/erase.c
-> @@ -332,7 +332,8 @@ static int jffs2_block_check_erase(struct jffs2_sb_info *c, struct jffs2_erasebl
->  	if (c->mtd->point) {
->  		unsigned long *wordebuf;
->  
-> -		ret = c->mtd->point(c->mtd, jeb->offset, c->sector_size, &retlen, (unsigned char **)&ebuf);
-> +		ret = c->mtd->point(c->mtd, jeb->offset, c->sector_size,
-> +				    &retlen, &ebuf, NULL);
->  		if (ret) {
->  			D1(printk(KERN_DEBUG "MTD point failed %d\n", ret));
->  			goto do_flash_read;
-> @@ -340,7 +341,7 @@ static int jffs2_block_check_erase(struct jffs2_sb_info *c, struct jffs2_erasebl
->  		if (retlen < c->sector_size) {
->  			/* Don't muck about if it won't let us point to the whole erase sector */
->  			D1(printk(KERN_DEBUG "MTD point returned len too short: 0x%zx\n", retlen));
-> -			c->mtd->unpoint(c->mtd, ebuf, jeb->offset, retlen);
-> +			c->mtd->unpoint(c->mtd, jeb->offset, retlen);
->  			goto do_flash_read;
->  		}
->  		wordebuf = ebuf-sizeof(*wordebuf);
-> @@ -349,7 +350,7 @@ static int jffs2_block_check_erase(struct jffs2_sb_info *c, struct jffs2_erasebl
->  		   if (*++wordebuf != ~0)
->  			   break;
->  		} while(--retlen);
-> -		c->mtd->unpoint(c->mtd, ebuf, jeb->offset, c->sector_size);
-> +		c->mtd->unpoint(c->mtd, jeb->offset, c->sector_size);
->  		if (retlen)
->  			printk(KERN_WARNING "Newly-erased block contained word 0x%lx at offset 0x%08tx\n",
->  			       *wordebuf, jeb->offset + c->sector_size-retlen*sizeof(*wordebuf));
-> diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
-> index e512a93..22acc12 100644
-> --- a/fs/jffs2/readinode.c
-> +++ b/fs/jffs2/readinode.c
-> @@ -63,10 +63,11 @@ static int check_node_data(struct jffs2_sb_info *c, struct jffs2_tmp_dnode_info
->  	/* TODO: instead, incapsulate point() stuff to jffs2_flash_read(),
->  	 * adding and jffs2_flash_read_end() interface. */
->  	if (c->mtd->point) {
-> -		err = c->mtd->point(c->mtd, ofs, len, &retlen, &buffer);
-> +		err = c->mtd->point(c->mtd, ofs, len, &retlen,
-> +				    (void **)&buffer, NULL);
->  		if (!err && retlen < len) {
->  			JFFS2_WARNING("MTD point returned len too short: %zu instead of %u.\n", retlen, tn->csize);
-> -			c->mtd->unpoint(c->mtd, buffer, ofs, retlen);
-> +			c->mtd->unpoint(c->mtd, ofs, retlen);
->  		} else if (err)
->  			JFFS2_WARNING("MTD point failed: error code %d.\n", err);
->  		else
-> @@ -100,7 +101,7 @@ static int check_node_data(struct jffs2_sb_info *c, struct jffs2_tmp_dnode_info
->  		kfree(buffer);
->  #ifndef __ECOS
->  	else
-> -		c->mtd->unpoint(c->mtd, buffer, ofs, len);
-> +		c->mtd->unpoint(c->mtd, ofs, len);
->  #endif
->  
->  	if (crc != tn->data_crc) {
-> @@ -136,7 +137,7 @@ free_out:
->  		kfree(buffer);
->  #ifndef __ECOS
->  	else
-> -		c->mtd->unpoint(c->mtd, buffer, ofs, len);
-> +		c->mtd->unpoint(c->mtd, ofs, len);
->  #endif
->  	return err;
->  }
-> diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
-> index 272872d..b1b3884 100644
-> --- a/fs/jffs2/scan.c
-> +++ b/fs/jffs2/scan.c
-> @@ -97,11 +97,12 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
->  	size_t pointlen;
->  
->  	if (c->mtd->point) {
-> -		ret = c->mtd->point (c->mtd, 0, c->mtd->size, &pointlen, &flashbuf);
-> +		ret = c->mtd->point(c->mtd, 0, c->mtd->size, &pointlen,
-> +				    (void **)&flashbuf, NULL);
->  		if (!ret && pointlen < c->mtd->size) {
->  			/* Don't muck about if it won't let us point to the whole flash */
->  			D1(printk(KERN_DEBUG "MTD point returned len too short: 0x%zx\n", pointlen));
-> -			c->mtd->unpoint(c->mtd, flashbuf, 0, pointlen);
-> +			c->mtd->unpoint(c->mtd, 0, pointlen);
->  			flashbuf = NULL;
->  		}
->  		if (ret)
-> @@ -267,7 +268,7 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
->  		kfree(flashbuf);
->  #ifndef __ECOS
->  	else
-> -		c->mtd->unpoint(c->mtd, flashbuf, 0, c->mtd->size);
-> +		c->mtd->unpoint(c->mtd, 0, c->mtd->size);
->  #endif
->  	if (s)
->  		kfree(s);
-> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-> index 0a13bb3..245f909 100644
-> --- a/include/linux/mtd/mtd.h
-> +++ b/include/linux/mtd/mtd.h
-> @@ -143,10 +143,12 @@ struct mtd_info {
->  	int (*erase) (struct mtd_info *mtd, struct erase_info *instr);
->  
->  	/* This stuff for eXecute-In-Place */
-> -	int (*point) (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char **mtdbuf);
-> +	/* phys is optional and may be set to NULL */
-> +	int (*point) (struct mtd_info *mtd, loff_t from, size_t len,
-> +			size_t *retlen, void **virt, resource_size_t *phys);
->  
->  	/* We probably shouldn't allow XIP if the unpoint isn't a NULL */
-> -	void (*unpoint) (struct mtd_info *mtd, u_char * addr, loff_t from, size_t len);
-> +	void (*unpoint) (struct mtd_info *mtd, loff_t from, size_t len);
->  
->  
->  	int (*read) (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf);
-> diff --git a/include/linux/mtd/pmc551.h b/include/linux/mtd/pmc551.h
-> index a7f6d20..5cc070c 100644
-> --- a/include/linux/mtd/pmc551.h
-> +++ b/include/linux/mtd/pmc551.h
-> @@ -36,8 +36,9 @@ struct mypriv {
->   * Function Prototypes
->   */
->  static int pmc551_erase(struct mtd_info *, struct erase_info *);
-> -static void pmc551_unpoint(struct mtd_info *, u_char *, loff_t, size_t);
-> -static int pmc551_point (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char **mtdbuf);
-> +static void pmc551_unpoint(struct mtd_info *, loff_t, size_t);
-> +static int pmc551_point(struct mtd_info *mtd, loff_t from, size_t len,
-> +		size_t *retlen, void **virt, resource_size_t *phys);
->  static int pmc551_read(struct mtd_info *, loff_t, size_t, size_t *, u_char *);
->  static int pmc551_write(struct mtd_info *, loff_t, size_t, size_t *, const u_char *);
-> 
-> 
-> 
+Probably.
 
--- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Chief Software Dude       EMAIL:     gerg@snapgear.com
-Secure Computing Corporation                PHONE:       +61 7 3435 2888
-825 Stanley St,                             FAX:         +61 7 3891 3630
-Woolloongabba, QLD, 4102, Australia         WEB: http://www.SnapGear.com
+We can specify the order in which these things are called at compile-time. 
+See these, from include/linux/init.h:
+
+#define core_initcall(fn)		__define_initcall("1",fn,1)
+#define postcore_initcall(fn)		__define_initcall("2",fn,2)
+#define arch_initcall(fn)		__define_initcall("3",fn,3)
+#define subsys_initcall(fn)		__define_initcall("4",fn,4)
+#define fs_initcall(fn)			__define_initcall("5",fn,5)
+#define rootfs_initcall(fn)		__define_initcall("rootfs",fn,rootfs)
+#define device_initcall(fn)		__define_initcall("6",fn,6)
+#define late_initcall(fn)		__define_initcall("7",fn,7)
+
+Now, af_unix_init() uses module_init(), which is really __initcall(), which
+is really device_initcall() (ug, don't ask).
+
+So you can do what you're sugesting here by locating the caller/callers of
+parse_mtd_partitions() and marking them late_initcall().
+
+> Lastly, does anybody care because this problem does not cause the
+> kernel to crash? :-)
+
+We're very caring people.
+
+I'd suggest that you make your own decision as to what is the best fix, then
+send a patch.  Please cc me on it and I'll make sure that it gets
+appropriately handled.  This may take a bit of time, as the MTD patch
+backlog is rather large at present.
