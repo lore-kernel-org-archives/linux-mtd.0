@@ -1,22 +1,23 @@
-Received: from smtp-out25.alice.it ([85.33.2.25])
+Received: from an-out-0708.google.com ([209.85.132.242])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JZFvO-0003Uh-5c
-	for linux-mtd@lists.infradead.org; Wed, 12 Mar 2008 01:38:34 +0000
-From: Matteo Croce <technoboy85@gmail.com>
-To: linux-mips@linux-mips.org
-Subject: [PATCH][MIPS][2/6]: AR7 mtd partition map
-Date: Wed, 12 Mar 2008 02:25:06 +0100
-References: <200803120221.25044.technoboy85@gmail.com>
-In-Reply-To: <200803120221.25044.technoboy85@gmail.com>
+	id 1JZL38-0008B3-W2
+	for linux-mtd@lists.infradead.org; Wed, 12 Mar 2008 07:06:55 +0000
+Received: by an-out-0708.google.com with SMTP id c3so614330ana.99
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 12 Mar 2008 00:06:53 -0700 (PDT)
+Message-ID: <97a0a9ac0803120006k30a0ef7dq7b67518bca384b03@mail.gmail.com>
+Date: Wed, 12 Mar 2008 01:06:53 -0600
+From: "Gordon Farquharson" <gordonfarquharson@gmail.com>
+To: "Andrew Morton" <akpm@linux-foundation.org>
+Subject: Re: physmap and "request_module: runaway loop modprobe net-pf-1"
+In-Reply-To: <20080311225926.6515e18c.akpm@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200803120225.06990.technoboy85@gmail.com>
-Cc: Eugene Konev <ejka@imfi.kspu.ru>, Felix Fietkau <nbd@openwrt.org>,
-	linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
-	openwrt-devel@lists.openwrt.org, dwmw2@infradead.org
+References: <97a0a9ac0803112235l157706adoa84b131549a46049@mail.gmail.com>
+	<20080311225926.6515e18c.akpm@linux-foundation.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,188 +27,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Matteo Croce <technoboy85@gmail.com>
-Signed-off-by: Felix Fietkau <nbd@openwrt.org>
-Signed-off-by: Eugene Konev <ejka@imfi.kspu.ru>
+Hi Andrew
 
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index e850334..eed06d0 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -158,6 +158,12 @@ config MTD_OF_PARTS
- 	  the partition map from the children of the flash node,
- 	  as described in Documentation/powerpc/booting-without-of.txt.
- 
-+config MTD_AR7_PARTS
-+	tristate "TI AR7 partitioning support"
-+	depends on MTD_PARTITIONS
-+	---help---
-+	  TI AR7 partitioning support
-+
- comment "User Modules And Translation Layers"
- 
- config MTD_CHAR
-diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
-index 538e33d..4b77335 100644
---- a/drivers/mtd/Makefile
-+++ b/drivers/mtd/Makefile
-@@ -11,6 +11,7 @@ obj-$(CONFIG_MTD_CONCAT)	+= mtdconcat.o
- obj-$(CONFIG_MTD_REDBOOT_PARTS) += redboot.o
- obj-$(CONFIG_MTD_CMDLINE_PARTS) += cmdlinepart.o
- obj-$(CONFIG_MTD_AFS_PARTS)	+= afs.o
-+obj-$(CONFIG_MTD_AR7_PARTS)	+= ar7part.o
- obj-$(CONFIG_MTD_OF_PARTS)      += ofpart.o
- 
- # 'Users' - code which presents functionality to userspace.
-diff --git a/drivers/mtd/ar7part.c b/drivers/mtd/ar7part.c
-new file mode 100644
-index 0000000..3d160d4
---- /dev/null
-+++ b/drivers/mtd/ar7part.c
-@@ -0,0 +1,146 @@
-+/*
-+ * Copyright (C) 2007 Eugene Konev <ejka@openwrt.org>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ *
-+ * TI AR7 flash partition table.
-+ * Based on ar7 map by Felix Fietkau <nbd@openwrt.org>
-+ *
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/slab.h>
-+
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/partitions.h>
-+#include <linux/bootmem.h>
-+#include <linux/magic.h>
-+
-+#define AR7_PARTS	4
-+#define ROOT_OFFSET	0xe0000
-+
-+#define LOADER_MAGIC1	le32_to_cpu(0xfeedfa42)
-+#define LOADER_MAGIC2	le32_to_cpu(0xfeed1281)
-+
-+struct ar7_bin_rec {
-+	unsigned int checksum;
-+	unsigned int length;
-+	unsigned int address;
-+};
-+
-+static struct mtd_partition ar7_parts[AR7_PARTS];
-+
-+static int create_mtd_partitions(struct mtd_info *master,
-+				 struct mtd_partition **pparts,
-+				 unsigned long origin)
-+{
-+	struct ar7_bin_rec header;
-+	unsigned int offset, len;
-+	unsigned int pre_size = master->erasesize, post_size = 0;
-+	unsigned int root_offset = ROOT_OFFSET;
-+
-+	int retries = 10;
-+
-+	ar7_parts[0].name = "loader";
-+	ar7_parts[0].offset = 0;
-+	ar7_parts[0].size = master->erasesize;
-+	ar7_parts[0].mask_flags = MTD_WRITEABLE;
-+
-+	ar7_parts[1].name = "config";
-+	ar7_parts[1].offset = 0;
-+	ar7_parts[1].size = master->erasesize;
-+	ar7_parts[1].mask_flags = 0;
-+
-+	do { /* Try 10 blocks starting from master->erasesize */
-+		offset = pre_size;
-+		master->read(master, offset,
-+			sizeof(header), &len, (u8 *)&header);
-+		if (!strncmp((char *)&header, "TIENV0.8", 8))
-+			ar7_parts[1].offset = pre_size;
-+		if (header.checksum == LOADER_MAGIC1)
-+			break;
-+		if (header.checksum == LOADER_MAGIC2)
-+			break;
-+		pre_size += master->erasesize;
-+	} while (retries--);
-+
-+	pre_size = offset;
-+
-+	if (!ar7_parts[1].offset) {
-+		ar7_parts[1].offset = master->size - master->erasesize;
-+		post_size = master->erasesize;
-+	}
-+
-+	switch (header.checksum) {
-+	case LOADER_MAGIC1:
-+		while (header.length) {
-+			offset += sizeof(header) + header.length;
-+			master->read(master, offset, sizeof(header),
-+				     &len, (u8 *)&header);
-+		}
-+		root_offset = offset + sizeof(header) + 4;
-+		break;
-+	case LOADER_MAGIC2:
-+		while (header.length) {
-+			offset += sizeof(header) + header.length;
-+			master->read(master, offset, sizeof(header),
-+				     &len, (u8 *)&header);
-+		}
-+		root_offset = offset + sizeof(header) + 4 + 0xff;
-+		root_offset &= ~(u32)0xff;
-+		break;
-+	default:
-+		printk(KERN_WARNING "Unknown magic: %08x\n", header.checksum);
-+		break;
-+	}
-+
-+	master->read(master, root_offset,
-+		sizeof(header), &len, (u8 *)&header);
-+	if (header.checksum != SQUASHFS_MAGIC) {
-+		root_offset += master->erasesize - 1;
-+		root_offset &= ~(master->erasesize - 1);
-+	}
-+
-+	ar7_parts[2].name = "linux";
-+	ar7_parts[2].offset = pre_size;
-+	ar7_parts[2].size = master->size - pre_size - post_size;
-+	ar7_parts[2].mask_flags = 0;
-+
-+	ar7_parts[3].name = "rootfs";
-+	ar7_parts[3].offset = root_offset;
-+	ar7_parts[3].size = master->size - root_offset - post_size;
-+	ar7_parts[3].mask_flags = 0;
-+
-+	*pparts = ar7_parts;
-+	return AR7_PARTS;
-+}
-+
-+static struct mtd_part_parser ar7_parser = {
-+	.owner = THIS_MODULE,
-+	.parse_fn = create_mtd_partitions,
-+	.name = "ar7part",
-+};
-+
-+static int __init ar7_parser_init(void)
-+{
-+	return register_mtd_parser(&ar7_parser);
-+}
-+
-+module_init(ar7_parser_init);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR(	"Felix Fietkau <nbd@openwrt.org>, "
-+		"Eugene Konev <ejka@openwrt.org>");
-+MODULE_DESCRIPTION("MTD partitioning for TI AR7");
+On Tue, Mar 11, 2008 at 11:59 PM, Andrew Morton
+<akpm@linux-foundation.org> wrote:
+> On Tue, 11 Mar 2008 23:35:28 -0600 "Gordon Farquharson" <gordonfarquharson@gmail.com> wrote:
+
+>  > Alternatively, if selecting CONFIG_MTD_PARTITIONS and not selecting
+>  > both CONFIG_MTD_REDBOOT_PARTS and CONFIG_CMDLINE_PARTS, or selecting
+>  > CONFIG_MTD_PARTITIONS and not selecting CONFIG_CMDLINE_PARTS and
+>  > selecting CONFIG_MTD_REDBOOT_PARTS as a module, are valid
+>  > configurations, it seems that parse_mtd_partitions() must be called
+>  > only after af_unix_init() has been called. Is this possible?
+>
+>  Probably.
+>
+>  We can specify the order in which these things are called at compile-time.
+>  See these, from include/linux/init.h:
+>
+>  #define core_initcall(fn)               __define_initcall("1",fn,1)
+>  #define postcore_initcall(fn)           __define_initcall("2",fn,2)
+>  #define arch_initcall(fn)               __define_initcall("3",fn,3)
+>  #define subsys_initcall(fn)             __define_initcall("4",fn,4)
+>  #define fs_initcall(fn)                 __define_initcall("5",fn,5)
+>  #define rootfs_initcall(fn)             __define_initcall("rootfs",fn,rootfs)
+>  #define device_initcall(fn)             __define_initcall("6",fn,6)
+>  #define late_initcall(fn)               __define_initcall("7",fn,7)
+>
+>  Now, af_unix_init() uses module_init(), which is really __initcall(), which
+>  is really device_initcall() (ug, don't ask).
+>
+>  So you can do what you're sugesting here by locating the caller/callers of
+>  parse_mtd_partitions() and marking them late_initcall().
+
+Thanks very much for the explanation.
+
+It looks like there could be up to 38 distinct callers of
+parse_mtd_partitions(), and I expect that one would need to test all
+of the various platforms on which these calls occur to ensure that
+there were no regressions introduced by the change, so this option
+scares me a little.
+
+$ grep parse_mtd_partitions -r * | wc -l
+38
+
+>  I'd suggest that you make your own decision as to what is the best fix, then
+>  send a patch.  Please cc me on it and I'll make sure that it gets
+>  appropriately handled.  This may take a bit of time, as the MTD patch
+>  backlog is rather large at present.
+
+I'll see how the MTD guys respond today, and then submit a patch
+later. I like option 1, but they may have a good reason for needing to
+compile a parser as a module, or they may propose a completely
+different solution. Right now, there is only one defconfig that has
+CONFIG_REDBOOT_MTD_PARTS=m:
+
+arch/mips/configs/mtx1_defconfig:CONFIG_MTD_REDBOOT_PARTS=m
+
+Thanks very much for the input.
+
+Gordon
+
+-- 
+Gordon Farquharson
+GnuPG Key ID: 32D6D676
