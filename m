@@ -1,16 +1,17 @@
-Subject: Re: physmap and "request_module: runaway loop modprobe net-pf-1"
-From: David Woodhouse <dwmw2@infradead.org>
-To: Andrew Morton <akpm@linux-foundation.org>
-In-Reply-To: <20080311225926.6515e18c.akpm@linux-foundation.org>
-References: <97a0a9ac0803112235l157706adoa84b131549a46049@mail.gmail.com>
-	<20080311225926.6515e18c.akpm@linux-foundation.org>
-Content-Type: text/plain
-Date: Wed, 12 Mar 2008 08:36:51 +0100
-Message-Id: <1205307411.2592.120.camel@shinybook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Gordon Farquharson <gordonfarquharson@gmail.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from mailsend02.psi.ch ([129.129.191.54])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JZMEp-00016C-Rb
+	for linux-mtd@lists.infradead.org; Wed, 12 Mar 2008 08:23:04 +0000
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: jffs2 and 32 bit data access problem
+Date: Wed, 12 Mar 2008 09:23:00 +0100
+Message-ID: <1B4F8000449511488D1A640DD6DECA3501EC2614@MAILBOX0A.psi.ch>
+From: "Dach Miroslaw" <miroslaw.dach@psi.ch>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,25 +21,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2008-03-11 at 22:59 -0700, Andrew Morton wrote:
-> > This solution would require simply changing the parser configuration
-> > options to bool in drivers/mtd/Kconfig. Is there a reason to allow the
-> > parsing code to be built as a module?
-> 
-> That sounds reasonable.
+Hi All,
 
-I have no particular objection to that. But shouldn't we call
-af_unix_init() earlier if modprobe doesn't run without it? 
+I have had some problems mounting jffs2 file system on my NOR Flash =
+(Intel TE28F640) (it is part of Avnet evaluation board with Virtex-4 =
+Xilinx chip). NOR Flash is connected to the bus in a way that I can =
+access data in 1 or 2 bytes mode. When I try to get 4 bytes (ie. an =
+integer value) I get only first two bytes. I went through the jffs2 code =
+in the linux kernel 2.6.23 and it seems to be that some structures have =
+fields which refer to 'int' values:
 
-> I'd suggest that you make your own decision as to what is the best fix, then
-> send a patch.  Please cc me on it and I'll make sure that it gets
-> appropriately handled.  This may take a bit of time, as the MTD patch
-> backlog is rather large at present.
+include/linux/jffs2.h  :
 
-Yeah, things have been interesting. But I get to spend a whole three
-weeks at home, starting next week. So feel free to LART me if I don't
-catch up. Thanks, again, for your help in making sure things don't fall
-through the cracks.
+typedef struct {
+        uint32_t v32;
+} __attribute__((packed)) jint32_t;
 
--- 
-dwmw2
+struct jffs2_unknown_node
+{
+        /* All start like this */
+        jint16_t magic;
+        jint16_t nodetype;
+        jint32_t totlen; /* So we can skip over nodes we don't grok */
+        jint32_t hdr_crc;
+};
+
+Is there some work around (in software) to get 4 bytes (jint32_t type) - =
+one implicit readout of the Flash memory which refers to 2 explicit =
+readouts (of two bytes each) of Flash.
+
+Best Regards
+
+Miroslaw Dach
