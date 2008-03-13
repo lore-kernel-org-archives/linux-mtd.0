@@ -1,21 +1,15 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JZkCT-0005ux-RF
-	for linux-mtd@lists.infradead.org; Thu, 13 Mar 2008 09:58:14 +0000
-Date: Thu, 13 Mar 2008 09:59:12 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Arnaud Patard <arnaud.patard@rtp-net.org>
-Subject: Re: [PATCH] Fix oops on reboot in physmap
-Message-ID: <20080313085912.GB2187@logfs.org>
-References: <87fxuv816l.fsf@lechat.rtp-net.org>
-	<20080313082224.GA2187@logfs.org>
-	<87fxuv2aua.fsf@lechat.rtp-net.org>
+Received: from mail.feig.de ([212.184.177.12])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JZkr7-00053Z-Fs
+	for linux-mtd@lists.infradead.org; Thu, 13 Mar 2008 10:40:14 +0000
+Message-ID: <47D90489.5090909@feig.de>
+Date: Thu, 13 Mar 2008 11:40:09 +0100
+From: Manuel Sahm <Manuel.Sahm@feig.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87fxuv2aua.fsf@lechat.rtp-net.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+To: linux-mtd@lists.infradead.org
+Subject: mtd-utils 1.0.1 Cross Compile error
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,18 +19,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 13 March 2008 11:10:37 +0100, Arnaud Patard wrote:
-> >
-> > Added dwmw2 on Cc:.  This could be material for -stable.
-> 
-> -stable ? why ? iirc, the faulty commit has been merged for
-> 25-rc..something so 2.6.24 is not affected. Are you talking about 2.6.25?
+Hello,
 
-No, I simply didn't check when the commit happened.  But yes, this is
-.25 material.
+I want to CrossCompile mtd-utils 1.0.1 with an ARM Crossompiler but 
+through the process an error occurs:
 
-Jörn
+mkfs.jffs2.c68:21 sys/acl.h: No such file or directory
+mkfs.jffs2.c: In function 'formalize_posix_acl' :
+.
+.
+.
+.
 
--- 
-He that composes himself is wiser than he that composes a book.
--- B. Franklin
+with Version 1.0.0 all works ?
+
+What could be the problem ?
+
+Thank you
+
+Best regards 
+
+Manuel Sahm	
