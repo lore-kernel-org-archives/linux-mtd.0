@@ -1,22 +1,18 @@
-Received: from an-out-0708.google.com ([209.85.132.247])
+Received: from lechat.rtp-net.org ([88.191.19.38])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JZhdX-0007qK-78
-	for linux-mtd@lists.infradead.org; Thu, 13 Mar 2008 07:13:59 +0000
-Received: by an-out-0708.google.com with SMTP id c3so729845ana.99
+	id 1JZin6-0003NN-8F
+	for linux-mtd@lists.infradead.org; Thu, 13 Mar 2008 08:27:56 +0000
+Received: from lechat.rtp-net.org (localhost [127.0.0.1])
+	by lechat.rtp-net.org (Postfix) with ESMTP id CD7211006C
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 13 Mar 2008 00:13:56 -0700 (PDT)
-Message-ID: <97a0a9ac0803130013g1984a164y94e00c3c11cc8984@mail.gmail.com>
-Date: Thu, 13 Mar 2008 01:13:56 -0600
-From: "Gordon Farquharson" <gordonfarquharson@gmail.com>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: prevent physmap from causing "request_module: runaway
-	loop modprobe net-pf-1"
+	Thu, 13 Mar 2008 09:42:42 +0100 (CET)
+From: Arnaud Patard (Rtp) <arnaud.patard@rtp-net.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] Fix oops on reboot in physmap
+Date: Thu, 13 Mar 2008 09:42:42 +0100
+Message-ID: <87fxuv816l.fsf@lechat.rtp-net.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>, linux-mtd@lists.infradead.org
+Content-Type: multipart/mixed; boundary="=-=-="
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,210 +22,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 12, 2008 at 1:19 AM, Andrew Morton
-<akpm@linux-foundation.org> wrote:
+--=-=-=
 
->  Just send the patch, please.  Please retain you original analysis in its
->  covering description.
+Hi,
 
-On machines that register a physmap flash platform device (e.g. many
-arm machines), parse_mtd_partitions() in drivers/mtd/mtdpart.c can
-cause the following output in the boot log:
+I sent this patch to David Woodhouse, but I forgot to put the list in
+CC: (and I'm not even sure that I used the right email address :( ). So,
+I'm sending the patch here so everyone can have my fix.
 
-request_module: runaway loop modprobe net-pf-1
-modprobe: FATAL: Could not load
-/lib/modules/2.6.25-rc4-iop32x/modules.dep: No such file or directory
 
-modprobe: FATAL: Could not load
-/lib/modules/2.6.25-rc4-iop32x/modules.dep: No such file or directory
+Thanks,
+Arnaud
 
-modprobe: FATAL: Could not load
-/lib/modules/2.6.25-rc4-iop32x/modules.dep: No such file or directory
-...
 
-To illustrate how this can occur, I'll use the example where
-CONFIG_KMOD=y, CONFIG_MTD_PARTITIONS=y, CONFIG_MTD_REDBOOT_PARTS=y,
-and CONFIG_CMDLINE_PARTS is not set. I'll also refer to the following
-code segment which is in drivers/mtd/mtdpart.c:parse_mtd_partitions():
+--=-=-=
+Content-Type: text/x-diff
+Content-Disposition: inline; filename=physmap_change.patch
 
-	for ( ; ret <= 0 && *types; types++) {
-		parser = get_partition_parser(*types);
-#ifdef CONFIG_KMOD
-		if (!parser && !request_module("%s", *types))
-				parser = get_partition_parser(*types);
-#endif
-		if (!parser) {
-			printk(KERN_NOTICE "%s partition parsing not available\n",
-			       *types);
-			continue;
-		}
-		ret = (*parser->parse_fn)(master, pparts, origin);
-		if (ret > 0) {
-			printk(KERN_NOTICE "%d %s partitions found on MTD device %s\n",
-			       ret, parser->name, master->name);
-		}
-		put_partition_parser(parser);
+Commit df66e7167ac756baf14d2b8ea7a2cfa056600a93 is adding support for multiple 
+resources in physmap. On shutdown/supend/resume, it's suspending all resources
+by calling mtd[]->suspend() without checking the mtd[] is not null.
+This makes oopsing my kernel.
 
-I should note that I am assuming (because I don't understand how) that
-request_module() requires net-pf-1 to succeed. This assumption is
-based on my observation of the request_module message
-("request_module: runaway loop modprobe net-pf-1"), and that
-af_unix_init() (net-pf-1 initialization) is called only after the call
-to request_module() in this example.
 
-Based on the configuration and assumptions described above, the
-sequence of events that cause the boot log messages above are:
-
-1. the first call to get_partition_parser() in parse_mtd_partitions()
-does not find the parser in the the list of registered parsers, i.e.
-get_partition_parser() returns a NULL pointer. In this example, the
-only registered parser in the list is called Redboot;
-
-2. parse_mtd_partitions() calls request_module() with (in this
-example) the parameter "cmdlinepart";
-
-3. request_module() complains (request_module: runaway loop modprobe
-net-pf-1, etc.) because af_unix_init() has not been called. The boot
-log shows that af_unix_init() is called only after
-parse_mtd_partitions() finishes.
-
-register_mtd_parser: RedBoot
-physmap platform flash device: 00080000 at f0000000
-Found: ST M29W400DB
-physmap-flash.0: Found 1 x16 devices at 0x0 in 16-bit bank
-number of JEDEC chips: 1
-cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
-parse_mtd_partitions:
-get_partition_parser: name=cmdlinepart
-get_partition_parser: p->name=RedBoot
-get_partition_parser: p->owner=00000000
-get_partition_parser: ret=00000000
-parse_mtd_partitions: cmdlinepart
-request_module: runaway loop modprobe net-pf-1
-modprobe: FATAL: Could not load
-/lib/modules/2.6.25-rc4-iop32x/modules.dep: No such file or directory
-
-modprobe: FATAL: Could not load
-/lib/modules/2.6.25-rc4-iop32x/modules.dep: No such file or directory
-
-modprobe: FATAL: Could not load
-/lib/modules/2.6.25-rc4-iop32x/modules.dep: No such file or directory
-
-<--- 47 repeated modprobe messages deleted --->
-parse_mtd_partitions: request_module called
-cmdlinepart partition parsing not available
-get_partition_parser: name=RedBoot
-get_partition_parser: p->name=RedBoot
-get_partition_parser: p->owner=00000000
-get_partition_parser: ret->name=RedBoot
-get_partition_parser: ret=c02b0f8c
-parse_mtd_partitions: RedBoot
-parse_mtd_partitions: request_module called
-Searching for RedBoot partition table in physmap-flash.0 at offset 0x70000
-No RedBoot partition table detected in physmap-flash.0
-parse_mtd_partitions: end of function
-mice: PS/2 mouse device common for all mice
-i2c /dev entries driver
-rtc-rs5c372 0-0032: rs5c372a found, 24hr, driver version 0.5
-rtc-rs5c372 0-0032: rtc core: registered rtc-rs5c372 as rtc0
-iop-adma iop-adma.0: Intel(R) IOP: ( cpy intr )
-iop-adma iop-adma.1: Intel(R) IOP: ( cpy intr )
-NET: Registered protocol family 26
-TCP bic registered
-af_unix_init:
-NET: Registered protocol family 1
-NET: Registered protocol family 17
-XScale DSP coprocessor detected.
-registered taskstats version 1
-rtc-rs5c372 0-0032: setting system clock to 2008-03-11 03:16:46 UTC (1205205406)
-
-The reason parse_mtd_partitions() tries to use cmdlinepart, even
-though it is not a registered parsing scheme when CONFIG_CMDLINE_PARTS
-is not set, is because cmdlinepart is hard coded in
-drivers/mtd/maps/physmap.c:
-
-#ifdef CONFIG_MTD_PARTITIONS
-static const char *part_probe_types[] = { "cmdlinepart", "RedBoot", NULL };
-#endif
-
-The patch below changes CONFIG_MTD_REDBOOT_PARTS,
-CONFIG_MTD_AFS_PARTS, and CONFIG_MTD_OF_PARTS from tristate to bool,
-and removes the call to request_module() in
-drivers/mtd/mtdpart.c:parse_mtd_partitions(). The changes to the
-definitions of the configuration variables ensure that MTD parsers
-compiled into the kernel are registered before parse_mtd_partitions()
-is called, which negates the need to have parse_mtd_partitions() call
-request_module(), and thereby eliminating the call to request_module()
-before af_unix_init(). The patch also changes the setting of
-CONFIG_MTD_REDBOOT_PARTS in arch/mips/configs/mtx1_defconfig from 'm'
-to 'y'. This defconfig is the only one that set any of the
-partitioning schemes to be compiled as a module.
-
-Signed-off-by: Gordon Farquharson <gordonfarquharson@gmail.com>
-
+Signed-off-by: Arnaud Patard <arnaud.patard@rtp-net.org>
 ---
+ arch/arm/mach-iop32x/em7210.c |   10 	6 +	4 -	0 !
+ drivers/mtd/maps/physmap.c    |    8 	5 +	3 -	0 !
+ 2 files changed, 11 insertions(+), 7 deletions(-)
 
-diff --git a/arch/mips/configs/mtx1_defconfig b/arch/mips/configs/mtx1_defconfig
-index fa3aa39..ace51d3 100644
---- a/arch/mips/configs/mtx1_defconfig
-+++ b/arch/mips/configs/mtx1_defconfig
-@@ -743,7 +743,7 @@ CONFIG_MTD=m
- # CONFIG_MTD_DEBUG is not set
- CONFIG_MTD_CONCAT=m
- CONFIG_MTD_PARTITIONS=y
--CONFIG_MTD_REDBOOT_PARTS=m
-+CONFIG_MTD_REDBOOT_PARTS=y
- CONFIG_MTD_REDBOOT_DIRECTORY_BLOCK=-1
- # CONFIG_MTD_REDBOOT_PARTS_UNALLOCATED is not set
- # CONFIG_MTD_REDBOOT_PARTS_READONLY is not set
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index e850334..20b4574 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -48,7 +48,7 @@ config MTD_PARTITIONS
- 	  'normal' form of partitioning used on a block device.
+Index: linux-2.6/drivers/mtd/maps/physmap.c
+===================================================================
+--- linux-2.6.orig/drivers/mtd/maps/physmap.c	2008-03-02 15:37:20.000000000 +0100
++++ linux-2.6/drivers/mtd/maps/physmap.c	2008-03-02 15:43:18.000000000 +0100
+@@ -204,7 +204,8 @@ static int physmap_flash_suspend(struct 
+ 
+ 	if (info)
+ 		for (i = 0; i < MAX_RESOURCES; i++)
+-			ret |= info->mtd[i]->suspend(info->mtd[i]);
++			if (info && info->mtd[i])
++				ret |= info->mtd[i]->suspend(info->mtd[i]);
+ 
+ 	return ret;
+ }
+@@ -216,7 +217,8 @@ static int physmap_flash_resume(struct p
+ 
+ 	if (info)
+ 		for (i = 0; i < MAX_RESOURCES; i++)
+-			info->mtd[i]->resume(info->mtd[i]);
++			if (info && info->mtd[i])
++				info->mtd[i]->resume(info->mtd[i]);
+ 	return 0;
+ }
+ 
+@@ -226,7 +228,7 @@ static void physmap_flash_shutdown(struc
+ 	int i;
+ 
+ 	for (i = 0; i < MAX_RESOURCES; i++)
+-		if (info && info->mtd[i]->suspend(info->mtd[i]) == 0)
++		if (info && info->mtd[i] &&  info->mtd[i]->suspend(info->mtd[i]) == 0)
+ 			info->mtd[i]->resume(info->mtd[i]);
+ }
+ #else
 
- config MTD_REDBOOT_PARTS
--	tristate "RedBoot partition table parsing"
-+	bool "RedBoot partition table parsing"
- 	depends on MTD_PARTITIONS
- 	---help---
- 	  RedBoot is a ROM monitor and bootloader which deals with multiple
-@@ -135,7 +135,7 @@ config MTD_CMDLINE_PARTS
- 	  If unsure, say 'N'.
-
- config MTD_AFS_PARTS
--	tristate "ARM Firmware Suite partition parsing"
-+	bool "ARM Firmware Suite partition parsing"
- 	depends on ARM && MTD_PARTITIONS
- 	---help---
- 	  The ARM Firmware Suite allows the user to divide flash devices into
-@@ -151,7 +151,7 @@ config MTD_AFS_PARTS
- 	  'armflash' map driver (CONFIG_MTD_ARMFLASH) does this, for example.
-
- config MTD_OF_PARTS
--	tristate "Flash partition map based on OF description"
-+	bool "Flash partition map based on OF description"
- 	depends on PPC_OF && MTD_PARTITIONS
- 	help
- 	  This provides a partition parsing function which derives
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index c66902d..a3b3331 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -555,10 +555,6 @@ int parse_mtd_partitions(struct mtd_info *master,
-const char **types,
-
- 	for ( ; ret <= 0 && *types; types++) {
- 		parser = get_partition_parser(*types);
--#ifdef CONFIG_KMOD
--		if (!parser && !request_module("%s", *types))
--				parser = get_partition_parser(*types);
--#endif
- 		if (!parser) {
- 			printk(KERN_NOTICE "%s partition parsing not available\n",
- 			       *types);
-
--- 
-Gordon Farquharson
-GnuPG Key ID: 32D6D676
+--=-=-=--
