@@ -1,12 +1,16 @@
-Message-ID: <3967.81.199.84.143.1205674283.squirrel@webmail.4u.com.gh>
-Date: Sun, 16 Mar 2008 13:31:23 -0000 (GMT)
-Subject: CONGRATULATIONS
-From: "BMW  LOTTERY" <info@yahoo.co.uk>
+Received: from parabel.levigo.net ([62.206.214.16] helo=parabel.matrix.de)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JbBs7-0003HJ-92
+	for linux-mtd@lists.infradead.org; Mon, 17 Mar 2008 09:43:12 +0000
+Message-ID: <47DE3D1B.7050007@gdsys.de>
+Date: Mon, 17 Mar 2008 10:42:51 +0100
+From: Dirk Eibach <eibach@gdsys.de>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-To: undisclosed-recipients:;
-Reply-To: claimsagentjohns@yahoo.co.uk
+To: linux-mtd@lists.infradead.org
+Subject: jffs2: filesystem corruption caused by writing and powercycle
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,37 +20,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ticket Number: 5647600545188
-Serial number: BMWP/11654347845
+Hello,
 
-Attention: Lucky Winner,
+I have  a problem with jffs2 filesystem corruption.=20
+My environment is kernel 2.6.23.4, running on PPC.=20
+Flash is Spansion 29GL512 NOR-Flash.
 
-We are happy to announce that you are one of our Lucky Four(4)Star
-Prize Winner in this months edition of the BMW
-International Online Promotion held on 15th of March 2008 in
-England.
-This makes you a proud owner of a Brand New BMW 5 series Car and a
-cash amount of (Five Hundred Thousand Great British Pounds).
-To claim your prize Contact the claim office with the under listed
-information's as soon as possible:
-Name......................
-Address..................
-Country..................
-Age.........................
-Sex..........................
-Occupation.............
-Phone....................
-Fax.........................
-Ticket Number........
-Nationality.............
+The problem can be reproduced simply by turning off power while writing.
+After 3 or 4 powercycles I get errormessages when trying to copy the file=
+ I wrote before turning off power:
+
+/ # cp /data/tst /data/tst2
+Data CRC ee9173b1 !=3D calculated CRC 6af6806d for node at 0221f108
+cp: read error: Input/output error
+/ #=20
 
 
-You are hereby inform you contact the claims agents below  for we to be
-able to file in you document which you have send to us for we to be
-able to deliver your winning prize to you at your homes the selection
-is yearly and every winning of the Brand New BMW 5 series Car for the
-2007/2008
+This is my code to reproduce the problem:
 
-Contact For Your Claim
-Mr. Starinzo John Pilo
-Email:claimsagentjohns@yahoo.co.uk
+#include <cstdlib>
+#include <iostream>
+#include <fcntl.h>
+#include <errno.h>
+
+#define MAXDATASIZE 10000.0
+#define MINDATASIZE 10.0
+
+int doStressTest (std::string filename)
+{
+  std::string data;
+  int dataSize;
+
+  int fd;
+  fd =3D open(filename.c_str(), O_CREAT | O_RDWR);
+  if ( fd =3D=3D -1 ) {
+    std::cerr << "Open file failed." << std::endl;
+    return 1;
+  }
+ =20
+  data =3D std::string("");
+  // Create random data
+  for ( int i=3D0; i < MAXDATASIZE; i++ )
+    data.push_back(1+rand()%255);
+
+  for(;;) {
+    dataSize =3D (int)(MINDATASIZE+(MAXDATASIZE-MINDATASIZE+1)*rand()/RAN=
+D_MAX);
+
+    std::cout << "Write " << dataSize << " bytes..." << std::endl;
+    if ( write(fd, data.data(), dataSize) !=3D dataSize ) {
+      std::cerr << "Write data failed: " << strerror(errno) << std::endl;
+      return 1;
+    }
+
+  }
+
+  close(fd);
+  return 0;
+}
+
+
+int main (int argc, char **argv)
+{
+  if ( argc < 2 ) {
+    std::cerr << "usage: stresstest <FILENAME>" << std::endl;
+    exit(EXIT_FAILURE);
+  }
+
+  std::cout << "Stresstest running..." << std::endl;
+
+  return doStressTest (std::string(argv[1]));
+}
+
+
+Cheers
+--=20
+Dirk Eibach
+Entwicklung
+Guntermann & Drunck GmbH Systementwicklung
+
+Telefon: +49 2739 8901-100
+Fax:     +49 2739 8901-120
+EMail:   mailto:eibach@gdsys.de
+
+-------------------------------------------------------------------------=
+------
+Guntermann & Drunck GmbH Systementwicklung=20
+Dortmunder Str. 4a=20
+D-57234 Wilnsdorf - Germany=20
+Tel: +49 (0) 27 39 / 89 01 - 100  Fax: +49 (0) 27 39 / 89 01 - 120=20
+E-Mail: mailto:sales@gdsys.de Web: www.gdsys.de
+-------------------------------------------------------------------------=
+------
+Gesch=E4ftsf=FChrer: Udo Guntermann - Martin Drunck - Reiner Ruelmann - K=
+laus Tocke
+HRB 2884, Amtsgericht Siegen
+USt.-Id.-Nr. DE 126575222 - Steuer-Nr. 342 / 5835 / 1041
+-------------------------------------------------------------------------=
+------
