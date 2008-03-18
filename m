@@ -1,25 +1,16 @@
-Received: from wx-out-0506.google.com ([66.249.82.227])
+Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JbcTj-0005nO-8z
-	for linux-mtd@lists.infradead.org; Tue, 18 Mar 2008 14:07:47 +0000
-Received: by wx-out-0506.google.com with SMTP id s7so6076117wxc.24
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 18 Mar 2008 07:07:44 -0700 (PDT)
-Message-ID: <c384c5ea0803180707k4c9dd9e0m814e66ef6a309100@mail.gmail.com>
-Date: Tue, 18 Mar 2008 15:07:42 +0100
-From: "Leon Woestenberg" <leon.woestenberg@gmail.com>
-To: "=?ISO-8859-1?Q?J=F6rn_Engel?=" <joern@logfs.org>,
-	linux-mtd@lists.infradead.org
-Subject: Re: [RFC] root=/dev/mtdblock@name
-In-Reply-To: <c384c5ea0803180646w7334f15ch28d5e09cf0a33e15@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+	id 1Jbdyb-0005pl-ID
+	for linux-mtd@lists.infradead.org; Tue, 18 Mar 2008 15:43:46 +0000
+Date: Tue, 18 Mar 2008 18:43:44 +0300
+From: Anton Vorontsov <avorontsov@ru.mvista.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] fsl_elbc_nand: fix mtd name
+Message-ID: <20080318154344.GA31173@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf8
 Content-Disposition: inline
-References: <c384c5ea0710190455h195aa8eeub0bc775da3377183@mail.gmail.com>
-	<20071019143303.GD26913@lazybastard.org>
-	<c384c5ea0710191452x52ffdc74x2ce16d0faf62a11b@mail.gmail.com>
-	<c384c5ea0803180646w7334f15ch28d5e09cf0a33e15@mail.gmail.com>
+Cc: Scott Wood <scottwood@freescale.com>, linuxppc-dev@ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,15 +20,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello all,
+Currently fsl_elbc_nand doesn't initialize mtd->name, and this causes
+nand_get_flash_type() to assign name that is equal to chip type, like
+this:
 
-On Tue, Mar 18, 2008 at 2:46 PM, Leon Woestenberg
-<leon.woestenberg@gmail.com> wrote:
->  CONFIG_CMDLINE=" root=/dev/mtd:rootfs rootfstype=jffs2"
+   root@b1:~# cat /proc/mtd
+   dev:    size   erasesize  name
+   mtd0: 00800000 00010000 "fe000000.flash"
+   mtd1: 02000000 00004000 "NAND 32MiB 3,3V 8-bit"
 
-Ah, the trick is /dev/ is not supported in the new approach.
-root=mtd:name solves it.  Sorry for the noise.
+mtd0 is physmap_of flash (normal name), and mtd1 is fsl_elbc_nand.
 
-Regards,
+Despite inconsistency, with mtd name like this specifying paritions
+from the kernel command line becomes a torture (though, I didn't tried
+and not sure if mtdparts= can handle spaces at all). Plus, this causes
+real bugs when multiple fsl_elbc_nand chips registered.
+
+With this patch applied fsl_elbc_nand chip will have proper name:
+
+   root@b1:~# cat /proc/mtd
+   dev:    size   erasesize  name
+   mtd0: 00800000 00010000 "fe000000.flash"
+   mtd1: 02000000 00004000 "e0600000.flash"
+
+p.s. We can't use priv->dev->bus_id as in physmap_of, because
+fsl_elbc_nand pretends to be a localbus controller, so its bus_id is
+"address.localbus", which is incorrect and thus will also not work
+for multiple chips.
+
+Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
+---
+ drivers/mtd/nand/fsl_elbc_nand.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+index b025dfe..54a9d83 100644
+--- a/drivers/mtd/nand/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -974,6 +974,8 @@ static int fsl_elbc_chip_remove(struct fsl_elbc_mtd *priv)
+ 
+ 	nand_release(&priv->mtd);
+ 
++	kfree(priv->mtd.name);
++
+ 	if (priv->vbase)
+ 		iounmap(priv->vbase);
+ 
+@@ -1050,6 +1052,8 @@ static int fsl_elbc_chip_probe(struct fsl_elbc_ctrl *ctrl,
+ 	if (ret)
+ 		goto err;
+ 
++	priv->mtd.name = kasprintf(GFP_KERNEL, "%x.flash", res.start);
++
+ #ifdef CONFIG_MTD_PARTITIONS
+ 	/* First look for RedBoot table or partitions on the command
+ 	 * line, these take precedence over device tree information */
 -- 
-Leon
+1.5.2.2
