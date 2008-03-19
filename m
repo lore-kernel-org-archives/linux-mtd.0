@@ -1,21 +1,19 @@
-Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
+Received: from wx-out-0506.google.com ([66.249.82.234])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JbelI-0001rm-9h
-	for linux-mtd@lists.infradead.org; Tue, 18 Mar 2008 16:34:04 +0000
-Date: Tue, 18 Mar 2008 19:34:03 +0300
-From: Anton Vorontsov <avorontsov@ru.mvista.com>
-To: Scott Wood <scottwood@freescale.com>
-Subject: [PATCH v3] fsl_elbc_nand: fix mtd name
-Message-ID: <20080318163403.GA13244@localhost.localdomain>
-References: <20080318154344.GA31173@localhost.localdomain>
-	<20080318155814.GA5223@localhost.localdomain>
-	<20080318161139.GD17944@ld0162-tx32.am.freescale.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf8
+	id 1JbpFQ-0007ln-Vk
+	for linux-mtd@lists.infradead.org; Wed, 19 Mar 2008 03:45:53 +0000
+Received: by wx-out-0506.google.com with SMTP id s7so224193wxc.24
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 18 Mar 2008 20:45:51 -0700 (PDT)
+Message-ID: <79ac09b60803182045i376f78deh289c6ee5d49d06ec@mail.gmail.com>
+Date: Tue, 18 Mar 2008 21:45:51 -0600
+From: Duke <ezbonites@gmail.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: JFFS2 filesystem integrity issue
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <20080318161139.GD17944@ld0162-tx32.am.freescale.net>
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
-Reply-To: avorontsov@ru.mvista.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,79 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently fsl_elbc_nand doesn't initialize mtd->name, and this causes
-nand_get_flash_type() to assign name that is equal to chip type, like
-this:
+Hi All,
+I have a system that uses a touchscreen I use tslib to handle events.
+The tslib calibration sits on a mtd block that is a JFFS2 file system.
+For quite a while the systems would be operational and would be so for
+months. However, at times it would appear to lose the calibration and
+I was baffled by this since the file could not be changed. Rerunning
+the calibration solved the calibration issue but I struggled to
+determine what the problem is. After a while it seems not to do with
+anything file related but the filesystem it sits on. For some reason
+it either seem to read the file incorrectly or the file is corrupt
+some how. When this happens I don't loose the calibration altogether
+but it is intermittent and sporadic at times.
+Has anyone seen something similar? Does the cause seem realistic? Has
+anyone had a possible corruption like this?
+Any thoughts would be much appreciated.
 
-   root@b1:~# cat /proc/mtd
-   dev:    size   erasesize  name
-   mtd0: 00800000 00010000 "fe000000.flash"
-   mtd1: 02000000 00004000 "NAND 32MiB 3,3V 8-bit"
-
-mtd0 is physmap_of flash (normal name), and mtd1 is fsl_elbc_nand.
-
-Despite inconsistency, with mtd name like this specifying paritions
-from the kernel command line becomes a torture (though, I didn't tried
-and not sure if mtdparts= can handle spaces at all). Plus, this causes
-real bugs when multiple fsl_elbc_nand chips registered.
-
-With this patch applied fsl_elbc_nand chip will have proper name:
-
-   root@b1:~# cat /proc/mtd
-   dev:    size   erasesize  name
-   mtd0: 00800000 00010000 "fe000000.flash"
-   mtd1: 02000000 00004000 "e0600000.flash"
-
-p.s. We can't use priv->dev->bus_id as in physmap_of, because
-fsl_elbc_nand pretends to be a localbus controller, so its bus_id is
-"address.localbus", which is incorrect and thus will also not work
-for multiple chips.
-
-Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
----
-
-On Tue, Mar 18, 2008 at 11:11:39AM -0500, Scott Wood wrote:
-> On Tue, Mar 18, 2008 at 06:58:14PM +0300, Anton Vorontsov wrote:
-> > Oops, forgot the NULL checking.
-> [snip] 
-> > +	if (priv->mtd.name)
-> > +		kfree(priv->mtd.name);
-> > +
-> 
-> Not needed; kfree(NULL) is a no-op.
-
-D'oh, right. Also, we should fill the name prior to nand_scan_ident,
-otherwise if error happened between nand_scan_ident and kasprintf
-then we'll kfree chip's type name.
-
- drivers/mtd/nand/fsl_elbc_nand.c |    8 ++++++++
- 1 files changed, 8 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index b025dfe..9c86d9b 100644
---- a/drivers/mtd/nand/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -974,6 +974,8 @@ static int fsl_elbc_chip_remove(struct fsl_elbc_mtd *priv)
- 
- 	nand_release(&priv->mtd);
- 
-+	kfree(priv->mtd.name);
-+
- 	if (priv->vbase)
- 		iounmap(priv->vbase);
- 
-@@ -1034,6 +1036,12 @@ static int fsl_elbc_chip_probe(struct fsl_elbc_ctrl *ctrl,
- 		goto err;
- 	}
- 
-+	priv->mtd.name = kasprintf(GFP_KERNEL, "%x.flash", res.start);
-+	if (!priv->mtd.name) {
-+		ret = -ENOMEM;
-+		goto err;
-+	}
-+
- 	ret = fsl_elbc_chip_init(priv);
- 	if (ret)
- 		goto err;
--- 
-1.5.2.2
+Thank you.
+D.
