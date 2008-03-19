@@ -1,20 +1,18 @@
-Received: from mail2.shareable.org ([80.68.89.115])
+Received: from de01egw02.freescale.net ([192.88.165.103])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jc00o-00017m-Ci
-	for linux-mtd@lists.infradead.org; Wed, 19 Mar 2008 15:15:36 +0000
-Date: Wed, 19 Mar 2008 15:15:28 +0000
-From: Jamie Lokier <jamie@shareable.org>
-To: Duke <ezbonites@gmail.com>
-Subject: Re: JFFS2 filesystem integrity issue
-Message-ID: <20080319151528.GA22758@shareable.org>
-References: <79ac09b60803182045i376f78deh289c6ee5d49d06ec@mail.gmail.com>
-	<20080319040244.GA11832@shareable.org>
-	<79ac09b60803190635h6935e15aiebad0b2a45dc0ce4@mail.gmail.com>
-MIME-Version: 1.0
+	id 1Jc1gA-000095-Ox
+	for linux-mtd@lists.infradead.org; Wed, 19 Mar 2008 17:02:19 +0000
+Date: Wed, 19 Mar 2008 12:02:10 -0500
+From: Scott Wood <scottwood@freescale.com>
+To: Mike Hench <mhench@engagenet.com>
+Subject: Re: [PATCH] MPC8313 NAND fixes
+Message-ID: <20080319170210.GD7962@ld0162-tx32.am.freescale.net>
+References: <6629C06B144F5C4098DFF95C4FF9DAF702BA1D02@mailsrv.engagenet.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <79ac09b60803190635h6935e15aiebad0b2a45dc0ce4@mail.gmail.com>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+In-Reply-To: <6629C06B144F5C4098DFF95C4FF9DAF702BA1D02@mailsrv.engagenet.com>
+Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,50 +22,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Duke wrote:
-> >  > For some reason it either seem to read the file incorrectly or the
-> >  > file is corrupt some how. When this happens I don't loose the
-> >  > calibration altogether but it is intermittent and sporadic at times.
-> >  > Has anyone seen something similar? Does the cause seem realistic?
-> >  > Has anyone had a possible corruption like this?
-> >
-> >  I have seen similar, and it was due to borderline timing or signal
-> >  integrity issues, possibly affected by what else the CPU was doing at
-> >  the time.
+On Wed, Mar 19, 2008 at 10:28:19AM -0500, Mike Hench wrote:
 > 
-> Didn't adjusting the timing of the banks help you any?
+> From: Mike Hench 
+> Sent: Wednesday, March 19, 2008 10:22 AM
+> To: 'mhench@wi.rr.com'
+> Subject: [PATCH] MPC813 NAND fixes
 
-I'm not sure what you mean by this.  The only adjustment that can be
-made in software on our device, as far as I know, is to reduce the
-clock frequency.
+This patch is whitespace-mangled.  Also, please don't post HTML.
 
-> >  It was fixed in our case by improving the PCB design.
+> -           unsigned int irq_status; /* status read from LTESR by irq
+> handler */
 > 
-> I'm doing a rev of the board but as far as improving the design, I
-> have no reason to adjust my memory design.
-> Perhaps you have something I can look for?
+> +          volatile unsigned int irq_status; /* status read from LTESR
+> by irq handler */
 
-I don't know what fixed our design.  A new hardware rev arrived, and
-the problem no longer occurred.  But my instincts suggest two
-possibilities:
+This change is not needed; both out_be32() and wait_event() act as
+optimization barriers.
 
-    - Supply voltage too low, or insufficient stabilisation near the chips.
-    - Excessive propagation delay between the CPU and flash, failing
-      to meet timing specs.
+> @@ -379,13 +379,13 @@ static int fsl_elbc_run_command(struct m
+> 
+>                      in_be32(&lbc->fbar), in_be32(&lbc->fpar),
+> 
+>                      in_be32(&lbc->fbcr), priv->bank);
+> 
+>  
+> 
+> +          ctrl->irq_status = 0;
+> 
+>             /* execute special operation */
+> 
+>             out_be32(&lbc->lsor, priv->bank);
+> 
+>  
+> 
+>             /* wait for FCM complete flag or timeout */
+> 
+> -           ctrl->irq_status = 0;
 
-Both of these I've observed on our boards, and both of them cause
-spurious bit errors when reading flash (or RAM for that matter).  I
-noticed that these bit errors, in both cases, are dependent on what
-other activity the board is doing at a similar time - e.g. reading
-from disk, booting, CPU busy or idle, even specific code sequences, etc.
+ACK this change.
 
-Spurious bit errors results in JFFS2 temporary file corruption on
-reads, similar to what you have.  Unfortunately, JFFS2 doesn't report
-this as an error.  Because of the way it works, it can only silently
-change the file contents.
+>             wait_event_timeout(ctrl->irq_wait, ctrl->irq_status,
+> 
+> -                              FCM_TIMEOUT_MSECS * HZ/1000);
+> 
+> +                             (FCM_TIMEOUT_MSECS * HZ)/1000);
 
-If you can reproduce these occasional errors by soak testing, try
-lowering the clock frequency.  If the errors go away, you know it's
-probably a marginal hardware problem.
+This change is a no-op.  Multiplication and division are evaluated at the
+same precedence, left-to-right.
 
--- Jamie
+>             if (mtd->writesize == 512) {
+> 
+>                         priv->page_size = 0;
+> 
+> -                       clrbits32(&lbc->bank[priv->bank].or,
+> ~OR_FCM_PGS);
+> 
+> +                      clrbits32(&lbc->bank[priv->bank].or, OR_FCM_PGS);
+
+D'oh!  Thanks for finding this.
+ACK this change.
+
+> -           /* The default u-boot configuration on MPC8313ERDB causes
+> errors;
+> 
+> -           * more delay is needed.  This should be safe for other
+> boards
+> 
+> -           * as well.
+> 
+> -           */
+> 
+> -           setbits32(&lbc->bank[priv->bank].or, 0x70);
+
+And this one.
+
+-Scott
