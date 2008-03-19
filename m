@@ -1,18 +1,17 @@
-Received: from [66.195.150.24] (helo=owa.engagenet.com)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jc2rf-000864-9A
-	for linux-mtd@lists.infradead.org; Wed, 19 Mar 2008 18:18:15 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Subject: [[PATCH] corrected MPC8313 NAND fixes
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 19 Mar 2008 12:40:15 -0500
-Message-ID: <6629C06B144F5C4098DFF95C4FF9DAF702BA1D11@mailsrv.engagenet.com>
-From: "Mike Hench" <mhench@engagenet.com>
-To: "Scott Wood" <scottwood@freescale.com>
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Received: from www.tglx.de ([62.245.132.106])
+	by pentafluge.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jc4N2-0005ZI-Hs
+	for linux-mtd@lists.infradead.org; Wed, 19 Mar 2008 19:54:45 +0000
+Date: Wed, 19 Mar 2008 20:54:08 +0100
+From: Sebastian Siewior <bigeasy@tglx.de>
+To: Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH RESEND] [FS] jffs2: check if partition is marked RO on remount
+Message-ID: <20080319195408.GA16728@www.tglx.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+Cc: David Woodhouse <dwmw2@infradead.org>, tglx@linutronix.de,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,49 +21,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix a race condition in fsl_elbc_run_command
-Fix incorrect usage of clearbits32 that bashed option register
-Remove work around for bashed register
+and if it is, don't tell userspace that write is possible.
 
-Signed-off-by: Mike Hench <mhench@elutions.com>
-
+Signed-off-by: Sebastian Siewior <bigeasy@linutronix.de>
 ---
 
---- linux-2.6.25-rc5.orig/drivers/mtd/nand/fsl_elbc_nand.c
-2008-03-10 00:22:27.000000000 -0500
-+++ linux-2.6.25-rc5/drivers/mtd/nand/fsl_elbc_nand.c	2008-03-19
-12:34:36.000000000 -0500
-@@ -379,11 +379,11 @@ static int fsl_elbc_run_command(struct m
- 	         in_be32(&lbc->fbar), in_be32(&lbc->fpar),
- 	         in_be32(&lbc->fbcr), priv->bank);
-=20
-+	ctrl->irq_status =3D 0;
- 	/* execute special operation */
- 	out_be32(&lbc->lsor, priv->bank);
-=20
- 	/* wait for FCM complete flag or timeout */
--	ctrl->irq_status =3D 0;
- 	wait_event_timeout(ctrl->irq_wait, ctrl->irq_status,
- 	                   FCM_TIMEOUT_MSECS * HZ/1000);
- 	ctrl->status =3D ctrl->irq_status;
-@@ -861,7 +861,7 @@ static int fsl_elbc_chip_init_tail(struc
- 	/* adjust Option Register and ECC to match Flash page size */
- 	if (mtd->writesize =3D=3D 512) {
- 		priv->page_size =3D 0;
--		clrbits32(&lbc->bank[priv->bank].or, ~OR_FCM_PGS);
-+		clrbits32(&lbc->bank[priv->bank].or, OR_FCM_PGS);
- 	} else if (mtd->writesize =3D=3D 2048) {
- 		priv->page_size =3D 1;
- 		setbits32(&lbc->bank[priv->bank].or, OR_FCM_PGS);
-@@ -882,11 +882,6 @@ static int fsl_elbc_chip_init_tail(struc
- 		return -1;
- 	}
-=20
--	/* The default u-boot configuration on MPC8313ERDB causes
-errors;
--	 * more delay is needed.  This should be safe for other boards
--	 * as well.
--	 */
--	setbits32(&lbc->bank[priv->bank].or, 0x70);
- 	return 0;
- }
+ fs/jffs2/fs.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+index e26ea78..a9f474f 100644
+--- a/fs/jffs2/fs.c
++++ b/fs/jffs2/fs.c
+@@ -374,6 +374,9 @@ int jffs2_remount_fs (struct super_block *sb, int *flags, char *data)
+ 	if (c->flags & JFFS2_SB_FLAG_RO && !(sb->s_flags & MS_RDONLY))
+ 		return -EROFS;
+ 
++	if (!(c->mtd->flags & MTD_WRITEABLE))
++		return -EROFS;
++
+ 	/* We stop if it was running, then restart if it needs to.
+ 	   This also catches the case where it was stopped and this
+ 	   is just a remount to restart it.
+-- 
+1.5.3.5
