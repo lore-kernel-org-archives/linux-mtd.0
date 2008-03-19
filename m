@@ -1,19 +1,17 @@
-Received: from mk-filter-3-a-1.mail.uk.tiscali.com ([212.74.100.54]
-	helo=mk-filter-3-a-4.mail.uk.tiscali.com)
+Received: from mk-filter-4-a-1.mail.uk.tiscali.com ([212.74.100.55])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jc5ic-0003pI-C2
-	for linux-mtd@lists.infradead.org; Wed, 19 Mar 2008 21:21:07 +0000
+	id 1Jc5jA-0004RW-9l
+	for linux-mtd@lists.infradead.org; Wed, 19 Mar 2008 21:21:43 +0000
 Received: from [192.168.62.105] ([192.168.62.105])
 	by newgolddream.info (8.14.1/8.14.1/Debian-8ubuntu1) with ESMTP id
-	m2JLKUVl030397
-	for <linux-mtd@lists.infradead.org>; Wed, 19 Mar 2008 21:20:31 GMT
-Subject: [Fwd: [PATCH] 1/2 Maple: Update bus driver to allow support of VMU
-	device]
+	m2JLKmvT030404
+	for <linux-mtd@lists.infradead.org>; Wed, 19 Mar 2008 21:20:49 GMT
+Subject: [Fwd: Re: [PATCH] 2/2 mtd: Add support for the Dreamcast VMU flash]
 From: Adrian McMenamin <adrian@newgolddream.dyndns.info>
 To: MTD <linux-mtd@lists.infradead.org>
 Content-Type: text/plain
-Date: Wed, 19 Mar 2008 21:20:24 +0000
-Message-Id: <1205961624.6276.4.camel@localhost.localdomain>
+Date: Wed, 19 Mar 2008 21:20:41 +0000
+Message-Id: <1205961641.6276.6.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,367 +24,799 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
+---
 
-These patches update the maple bus driver with a semaphore to allow
-other maple drivers to inject arbitrary packets (eg block reads and
-writes) into the maple bus packet stream - so allowing support for the
-VMU (and, eventually, other maple devices).
+This builds on (though I essentially rewrote most of it) a driver Paul
+Mundt and I wrote way back when to support the memory component of the
+SEGA Dreamcast's Visual Memory Unit.
 
-The patches also ensure that the maple bus driver properly supports the
-device model through probing.
+The device is accessed via the Dreamcast's maple bus.
 
 Signed-off-by: Adrian McMenamin <adrian@mcmen.demon.co.uk>
 ---
-
-diff --git a/drivers/sh/maple/maple.c b/drivers/sh/maple/maple.c
-index 617efb1..57a118a 100644
---- a/drivers/sh/maple/maple.c
-+++ b/drivers/sh/maple/maple.c
-@@ -47,13 +47,14 @@ static LIST_HEAD(maple_waitq);
- static LIST_HEAD(maple_sentq);
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 12c2536..c89a610 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -590,5 +590,19 @@ config MTD_PLATRAM
  
- static DEFINE_MUTEX(maple_list_lock);
-+static DEFINE_MUTEX(maple_wlist_lock);
+ 	  This selection automatically selects the map_ram driver.
  
- static struct maple_driver maple_dummy_driver;
- static struct device maple_bus;
- static int subdevice_map[MAPLE_PORTS];
- static unsigned long *maple_sendbuf, *maple_sendptr, *maple_lastptr;
- static unsigned long maple_pnp_time;
--static int started, scanning, liststatus, fullscan;
-+static int started, scanning, fullscan;
- static struct kmem_cache *maple_queue_cache;
- 
- struct maple_device_specify {
-@@ -135,9 +136,9 @@ static void maple_release_device(struct device *dev)
-  */
- void maple_add_packet(struct mapleq *mq)
- {
--	mutex_lock(&maple_list_lock);
-+	mutex_lock(&maple_wlist_lock);
- 	list_add(&mq->list, &maple_waitq);
--	mutex_unlock(&maple_list_lock);
-+	mutex_unlock(&maple_wlist_lock);
- }
- EXPORT_SYMBOL_GPL(maple_add_packet);
- 
-@@ -147,17 +148,21 @@ static struct mapleq *maple_allocq(struct maple_device *mdev)
- 
- 	mq = kmalloc(sizeof(*mq), GFP_KERNEL);
- 	if (!mq)
--		return NULL;
-+		goto failed_nomem;
- 
- 	mq->dev = mdev;
- 	mq->recvbufdcsp = kmem_cache_zalloc(maple_queue_cache, GFP_KERNEL);
- 	mq->recvbuf = (void *) P2SEGADDR(mq->recvbufdcsp);
--	if (!mq->recvbuf) {
--		kfree(mq);
--		return NULL;
--	}
-+	if (!mq->recvbuf)
-+		goto failed_p2;
-+	init_MUTEX(&mq->sem);
- 
- 	return mq;
++config MTD_VMU_FLASH
++	tristate "Dreamcast Visual Memory devices and clones"
++	depends on SH_DREAMCAST
++	select MAPLE
++	help
++	  Flash map driver for the SEGA Dreamcast Visual Memory Unit
++	  and clones.
 +
-+failed_p2:
-+	kfree(mq);
-+failed_nomem:
++	  Most Dreamcast users will have one of these and so will want
++	  to say Y here.
++
++	  To compile this driver as a module choose M here: the module
++	  will be called vmu_flash.
++
+ endmenu
+ 
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index a9cbe80..d5802d2 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -68,3 +68,4 @@ obj-$(CONFIG_MTD_PLATRAM)	+= plat-ram.o
+ obj-$(CONFIG_MTD_OMAP_NOR)	+= omap_nor.o
+ obj-$(CONFIG_MTD_MTX1)		+= mtx-1_flash.o
+ obj-$(CONFIG_MTD_INTEL_VR_NOR)	+= intel_vr_nor.o
++obj-$(CONFIG_MTD_VMU_FLASH)	+= vmu_flash.o
+diff --git a/drivers/mtd/maps/vmu_flash.c b/drivers/mtd/maps/vmu_flash.c
+new file mode 100644
+index 0000000..ce31134
+--- /dev/null
++++ b/drivers/mtd/maps/vmu_flash.c
+@@ -0,0 +1,746 @@
++/* vmu-flash.c
++ * Driver for SEGA Dreamcast Visual Memory Unit
++ *
++ * Copyright Adrian McMenamin 2008
++ *
++ * Substantial parts based on code:
++ * Copyright Paul Mundt 2001
++ * Copyright Adrian McMenamin 2002
++ *
++ *
++ * Licensed under version 2 of the
++ * GNU General Public Licence
++ */
++#include <linux/init.h>
++#include <linux/maple.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/map.h>
++#include <asm/mach/maple.h>
++
++static DECLARE_WAIT_QUEUE_HEAD(vmu_read);
++static int block_read;
++
++struct vmu_cache {
++	char *buffer;			/* Cache */
++	unsigned int block;		/* Which block was cached */
++	unsigned long jiffies_atc;	/* Whn was it cached? */
++	int valid;
++};
++
++struct mdev_part {
++	struct maple_device *mdev;
++	int partition;
++};
++
++struct vmupart {
++	u16 user_blocks;
++	u16 root_block;
++	u16 numblocks;
++	char *name;
++	struct vmu_cache *pcache;
++};
++
++struct memcard {
++	u16 tempA;
++	u16 tempB;
++	u32 partitions;
++	u32 blocklen;
++	u32 writecnt;
++	u32 readcnt;
++	u32 removeable;
++	int partition;
++	void *sendbuf;
++	void *blockread;
++	struct vmupart *parts;
++	struct mtd_info *mtd;
++};
++
++struct vmu_block {
++	unsigned int num; /* block number */
++	unsigned int ofs; /* block offset */
++};
++
++static struct vmu_block *ofs_to_block(unsigned long src_ofs,
++	struct mtd_info *mtd, int partition)
++{
++	struct vmu_block *vblock;
++	struct maple_device *mdev;
++	struct memcard *card;
++	struct mdev_part *mpart;
++
++	mpart = mtd->priv;
++	mdev = mpart->mdev;
++	card = mdev->private_data;
++	vblock = kmalloc(sizeof(struct vmu_block), GFP_KERNEL);
++	if (!vblock)
++		goto simple_failed;
++
++	if (src_ofs >= ((card->parts)[partition]).numblocks * card->blocklen)
++		goto failed;
++
++	vblock->num = src_ofs / card->blocklen;
++
++	if (vblock->num > ((card->parts)[partition]).numblocks)
++		goto failed;
++
++	vblock->ofs = src_ofs % card->blocklen;
++	return vblock;
++
++failed:
++	kfree(vblock);
++simple_failed:
 +	return NULL;
- }
- 
- static struct maple_device *maple_alloc_dev(int port, int unit)
-@@ -178,7 +183,6 @@ static struct maple_device *maple_alloc_dev(int port, int unit)
- 	}
- 	mdev->dev.bus = &maple_bus_type;
- 	mdev->dev.parent = &maple_bus;
--	mdev->function = 0;
- 	return mdev;
- }
- 
-@@ -216,8 +220,7 @@ static void maple_build_block(struct mapleq *mq)
- 	*maple_sendptr++ = PHYSADDR(mq->recvbuf);
- 	*maple_sendptr++ =
- 	    mq->command | (to << 8) | (from << 16) | (len << 24);
--
--	while (len-- > 0)
-+	while (len-- > 0)
- 		*maple_sendptr++ = *lsendbuf++;
- }
- 
-@@ -230,16 +233,24 @@ static void maple_send(void)
- 
- 	if (!list_empty(&maple_sentq))
- 		return;
--	if (list_empty(&maple_waitq) || !maple_dma_done())
-+	mutex_lock(&maple_wlist_lock);
-+	if (list_empty(&maple_waitq) || !maple_dma_done()) {
-+		mutex_unlock(&maple_wlist_lock);
- 		return;
-+	}
-+	mutex_unlock(&maple_wlist_lock);
- 	maple_packets = 0;
- 	maple_sendptr = maple_lastptr = maple_sendbuf;
--	list_for_each_entry_safe(mq, nmq, &maple_waitq, list) {
-+	mutex_lock(&maple_list_lock);
-+	mutex_lock(&maple_wlist_lock);
-+ 	list_for_each_entry_safe(mq, nmq, &maple_waitq, list) {
- 		maple_build_block(mq);
- 		list_move(&mq->list, &maple_sentq);
--		if (maple_packets++ > MAPLE_MAXPACKETS)
-+		if (maple_packets++ > MAPLE_MAXPACKETS)
- 			break;
- 	}
-+	mutex_unlock(&maple_wlist_lock);
-+	mutex_unlock(&maple_list_lock);
- 	if (maple_packets > 0) {
- 		for (i = 0; i < (1 << MAPLE_DMA_PAGES); i++)
- 			dma_cache_sync(0, maple_sendbuf + i * PAGE_SIZE,
-@@ -247,7 +258,8 @@ static void maple_send(void)
- 	}
- }
- 
--static int attach_matching_maple_driver(struct device_driver *driver,
-+/* check if there is a driver registered likely to match this device */
-+static int check_matching_maple_driver(struct device_driver *driver,
- 					void *devptr)
- {
- 	struct maple_driver *maple_drv;
-@@ -255,12 +267,8 @@ static int attach_matching_maple_driver(struct device_driver *driver,
- 
- 	mdev = devptr;
- 	maple_drv = to_maple_driver(driver);
--	if (mdev->devinfo.function & be32_to_cpu(maple_drv->function)) {
--		if (maple_drv->connect(mdev) == 0) {
--			mdev->driver = maple_drv;
--			return 1;
--		}
--	}
-+	if (mdev->devinfo.function & cpu_to_be32(maple_drv->function))
-+		return 1;
- 	return 0;
- }
- 
-@@ -268,11 +276,6 @@ static void maple_detach_driver(struct maple_device *mdev)
- {
- 	if (!mdev)
- 		return;
--	if (mdev->driver) {
--		if (mdev->driver->disconnect)
--			mdev->driver->disconnect(mdev);
--	}
--	mdev->driver = NULL;
- 	device_unregister(&mdev->dev);
- 	mdev = NULL;
- }
-@@ -328,8 +331,8 @@ static void maple_attach_driver(struct maple_device *mdev)
- 			mdev->port, mdev->unit, function);
- 
- 		matched =
--		    bus_for_each_drv(&maple_bus_type, NULL, mdev,
--				     attach_matching_maple_driver);
-+			bus_for_each_drv(&maple_bus_type, NULL, mdev,
-+				check_matching_maple_driver);
- 
- 		if (matched == 0) {
- 			/* Driver does not exist yet */
-@@ -342,7 +345,7 @@ static void maple_attach_driver(struct maple_device *mdev)
- 	}
- 	mdev->function = function;
- 	mdev->dev.release = &maple_release_device;
--	retval = device_register(&mdev->dev);
-+	retval = device_register(&mdev->dev);
- 	if (retval) {
- 		printk(KERN_INFO
- 		"Maple bus: Attempt to register device"
-@@ -377,18 +380,20 @@ static int setup_maple_commands(struct device *device, void *ignored)
- 
- 	if ((maple_dev->interval > 0)
- 	    && time_after(jiffies, maple_dev->when)) {
-+		if (down_trylock(&maple_dev->mq->sem))
-+			return 0;
- 		maple_dev->when = jiffies + maple_dev->interval;
- 		maple_dev->mq->command = MAPLE_COMMAND_GETCOND;
- 		maple_dev->mq->sendbuf = &maple_dev->function;
- 		maple_dev->mq->length = 1;
- 		maple_add_packet(maple_dev->mq);
--		liststatus++;
- 	} else {
- 		if (time_after(jiffies, maple_pnp_time)) {
-+			if (down_trylock(&maple_dev->mq->sem))
-+				return -1;
- 			maple_dev->mq->command = MAPLE_COMMAND_DEVINFO;
- 			maple_dev->mq->length = 0;
- 			maple_add_packet(maple_dev->mq);
--			liststatus++;
- 		}
- 	}
- 
-@@ -398,32 +403,38 @@ static int setup_maple_commands(struct device *device, void *ignored)
- /* VBLANK bottom half - implemented via workqueue */
- static void maple_vblank_handler(struct work_struct *work)
- {
--	if (!maple_dma_done())
--		return;
- 	if (!list_empty(&maple_sentq))
- 		return;
-+	if (!maple_dma_done())
++}
++
++
++/* Maple bus callback function for reads */
++static void vmu_blockread(struct mapleq *mq)
++{
++	struct maple_device *mdev;
++	struct memcard *card;
++	struct mtd_info *mtd;
++	struct vmu_cache *pcache;
++	struct mdev_part *mpart;
++	int partition;
++
++	mdev = mq->dev;
++	card = mdev->private_data;
++	card->blockread = kmalloc(card->blocklen, GFP_KERNEL);
++	if (!card->blockread)
 +		return;
- 	ctrl_outl(0, MAPLE_ENABLE);
--	liststatus = 0;
- 	bus_for_each_dev(&maple_bus_type, NULL, NULL,
- 			 setup_maple_commands);
- 	if (time_after(jiffies, maple_pnp_time))
- 		maple_pnp_time = jiffies + MAPLE_PNP_INTERVAL;
--	if (liststatus && list_empty(&maple_sentq)) {
-+	mutex_lock(&maple_wlist_lock);
-+	if (!list_empty(&maple_waitq) && list_empty(&maple_sentq)) {
-+		mutex_unlock(&maple_wlist_lock);
-+		mutex_lock(&maple_list_lock);
- 		INIT_LIST_HEAD(&maple_sentq);
-+		mutex_unlock(&maple_list_lock);
- 		maple_send();
-+	} else {
-+		mutex_unlock(&maple_wlist_lock);
- 	}
++	memcpy(card->blockread, mq->recvbuf + 12, card->blocklen);
++	block_read = 1;
++	mtd = card->mtd;
++	mpart = mtd->priv;
++	partition = mpart->partition;
++	pcache = (card->parts[partition]).pcache;
++	if (!pcache->buffer)
++		pcache->buffer = kmalloc(card->blocklen, GFP_KERNEL);
++		if (!pcache->buffer)
++			return;
++	memcpy(pcache->buffer, card->blockread, card->blocklen);
++	pcache->block = ((unsigned char *)mq->recvbuf)[11] & 0xFF;
++	pcache->jiffies_atc = jiffies;
++	pcache->valid = 1;
++	wake_up_interruptible(&vmu_read);
++}
 +
- 	maplebus_dma_reset();
- }
- 
- /* handle devices added via hotplugs - placing them on queue for DEVINFO*/
- static void maple_map_subunits(struct maple_device *mdev, int submask)
- {
--	int retval, k, devcheck;
-+	int retval, k, devcheck, locking;
- 	struct maple_device *mdev_add;
- 	struct maple_device_specify ds;
- 
-+	ds.port = mdev->port;
- 	for (k = 0; k < 5; k++) {
--		ds.port = mdev->port;
- 		ds.unit = k + 1;
- 		retval =
- 		    bus_for_each_dev(&maple_bus_type, NULL, &ds,
-@@ -437,9 +448,15 @@ static void maple_map_subunits(struct maple_device *mdev, int submask)
- 			mdev_add = maple_alloc_dev(mdev->port, k + 1);
- 			if (!mdev_add)
- 				return;
-+			locking = down_trylock(&mdev_add->mq->sem);
-+			if (locking) {
-+				up(&mdev_add->mq->sem);
-+				down_interruptible(&mdev_add->mq->sem);
++/* Interface with maple bus to read bytes */
++static int maple_vmu_read_block(unsigned int num, unsigned char *buf,
++	struct mtd_info *mtd)
++{
++	struct memcard *card;
++	struct mdev_part *mpart;
++	struct maple_device *mdev;
++	int partition, error, locking;
++	void *sendbuf;
++
++	mpart = mtd->priv;
++	mdev = mpart->mdev;
++	partition = mpart->partition;
++	card = mdev->private_data;
++
++	/* wait for the mutex to be available */
++	locking = down_interruptible(&(mdev->mq->sem));
++	if (locking) {
++		printk(KERN_INFO "Maple: VMU at (%d, %d) is locked -"
++			" aborting read\n", mdev->unit, mdev->port);
++		goto fail_nosendbuf;
++	}
++	mdev->mq->command = MAPLE_COMMAND_BREAD;
++	mdev->mq->length = 2;
++
++	sendbuf = kzalloc(mdev->mq->length * 4, GFP_KERNEL);
++	if (!sendbuf) {
++		error = -ENOMEM;
++		goto fail_nosendbuf;
++	}
++
++	((unsigned long *)sendbuf)[0] = cpu_to_be32(MAPLE_FUNC_MEMCARD);
++	((unsigned long *)sendbuf)[1] = cpu_to_be32(partition << 24 | num);
++
++	mdev->mq->sendbuf = sendbuf;
++	block_read = 0;
++
++	maple_getcond_callback(mdev, vmu_blockread, 0, MAPLE_FUNC_MEMCARD);
++	maple_add_packet(mdev->mq);
++	wait_event_interruptible_timeout(vmu_read, block_read, HZ * 4);
++	if (block_read == 0) {
++		printk(KERN_INFO "Maple: VMU read failed on block 0x%X\n", num);
++		goto fail_blockread;
++	}
++
++	memcpy(buf, card->blockread, card->blocklen);
++	kfree(card->blockread);
++	kfree(sendbuf);
++
++	return 0;
++
++fail_blockread:
++	kfree(sendbuf);
++fail_nosendbuf:
++	return -1;
++}
++
++/* communicate with maple bus for phased writing */
++static int maple_vmu_write_block(unsigned int num, const unsigned char *buf,
++	struct mtd_info *mtd)
++{
++	struct memcard *card;
++	struct mdev_part *mpart;
++	struct maple_device *mdev;
++	int partition, error, locking, x, phaselen;
++	void *sendbuf;
++
++	mpart = mtd->priv;
++	mdev = mpart->mdev;
++	partition = mpart->partition;
++	card = mdev->private_data;
++
++	phaselen = card->blocklen/card->writecnt;
++	mdev->mq->command = MAPLE_COMMAND_BWRITE;
++	mdev->mq->length = phaselen / 4 + 2;
++
++	sendbuf = kmalloc(mdev->mq->length * 4, GFP_KERNEL);
++	if (!sendbuf) {
++		error = -ENOMEM;
++		goto fail_nosendbuf;
++	}
++
++	((unsigned long *)sendbuf)[0] = cpu_to_be32(MAPLE_FUNC_MEMCARD);
++
++	for (x = 0; x < card->writecnt; x++) {
++		/* take the lock to protect the contents of sendbuf */
++		locking = down_interruptible(&mdev->mq->sem);
++		if (locking) {
++			error = -EBUSY;
++			goto fail_nolock;
++		}
++		((unsigned long *)sendbuf)[1] =
++			cpu_to_be32(partition << 24 | x << 16 | num);
++		memcpy(sendbuf + 8, buf + phaselen * x, phaselen);
++		mdev->mq->sendbuf = sendbuf;
++		/* wait for the mutex to be available */
++		maple_add_packet(mdev->mq);
++	}
++	/* wait until command is processed */
++	locking = down_interruptible(&mdev->mq->sem);
++	if (locking) {
++		error = -EBUSY;
++		goto fail_nolock;
++	}
++	up(&mdev->mq->sem);
++
++	kfree(sendbuf);
++
++	return card->blocklen;
++
++fail_nolock:
++	printk(KERN_INFO "Maple: VMU at (%d, %d) is locked -"
++		" aborting write\n", mdev->unit, mdev->port);
++	kfree(sendbuf);
++fail_nosendbuf:
++	printk("Maple: VMU (%d, %d): write failed\n", mdev->port, mdev->unit);
++	return error;
++}
++
++/* mtd function to simulate reading byte by byte */
++static unsigned char vmu_flash_read_char(unsigned long ofs, int *retval,
++	struct mtd_info *mtd)
++{
++	struct vmu_block *vblock;
++	struct memcard *card;
++	struct mdev_part *mpart;
++	struct maple_device *mdev;
++	unsigned char *buf, ret;
++	int partition, error;
++
++	mpart = mtd->priv;
++	mdev = mpart->mdev;
++	partition = mpart->partition;
++	card = mdev->private_data;
++	*retval =  0;
++	buf = kmalloc(card->blocklen, GFP_KERNEL);
++	if (!buf) {
++		*retval = 1;
++		error = ENOMEM;
++		goto fail_buffer;
++	}
++
++	vblock = ofs_to_block(ofs, mtd, partition);
++	if (!vblock) {
++		*retval = 3;
++		error = ENOMEM;
++		goto invalid_block;
++	}
++
++	error = maple_vmu_read_block(vblock->num, buf, mtd);
++	if (error) {
++		*retval = 2;
++		goto failed_block;
++	}
++	ret = buf[vblock->ofs];
++	kfree(buf);
++	kfree(vblock);
++	return ret;
++
++failed_block:
++	kfree(vblock);
++invalid_block:
++	kfree(buf);
++fail_buffer:
++	return -error;
++}
++
++/* mtd higher order function to read flash */
++static int vmu_flash_read(struct mtd_info *mtd, loff_t from, size_t len,
++	size_t *retlen,  u_char *buf)
++{
++	struct maple_device *mdev;
++	struct memcard *card;
++	struct mdev_part *mpart;
++	struct vmu_cache *pcache;
++	struct vmu_block *vblock = NULL;
++	int index = 0, retval, partition, leftover, numblocks;
++	unsigned char cx;
++
++	mpart = mtd->priv;
++	mdev = mpart->mdev;
++	partition = mpart->partition;
++	card = mdev->private_data;
++
++	if (len < 1)
++		return -1;
++	numblocks = card->parts[partition].numblocks;
++	if (from + len > numblocks * card->blocklen)
++		len = numblocks * card->blocklen - from;
++	if (len == 0)
++		return -1;
++	/* Have we cached this bit already? */
++	pcache = (card->parts[partition]).pcache;
++	do {
++		if (pcache->valid &&
++		   time_before(jiffies, pcache->jiffies_atc + HZ)) {
++			vblock = ofs_to_block(from + index, mtd, partition);
++			if (!vblock)
++				return -ENOMEM;
++			if (pcache->block == vblock->num) {
++				/*we have cached it, so do necessary copying */
++				leftover = card->blocklen - vblock->ofs;
++				if (leftover > len - index) {
++					/* only a bit of this block to copy */
++					memcpy(buf + index,
++						pcache->buffer + vblock->ofs,
++						len - index);
++					index = len;
++					kfree(vblock);
++					break;
++				}
++				memcpy(buf + index, pcache->buffer +
++					vblock->ofs, leftover);
++				index += leftover;
++			} else {
++				kfree(vblock);
++				vblock = NULL;
 +			}
- 			mdev_add->mq->command = MAPLE_COMMAND_DEVINFO;
- 			mdev_add->mq->length = 0;
- 			maple_add_packet(mdev_add->mq);
-+			/* mark that we are checking sub devices */
- 			scanning = 1;
- 		}
- 		submask = submask >> 1;
-@@ -512,15 +529,17 @@ static void maple_dma_handler(struct work_struct *work)
- 	struct maple_device *dev;
- 	char *recvbuf;
- 	enum maple_code code;
--	int i;
-+	int i, locking;
- 
- 	if (!maple_dma_done())
- 		return;
- 	ctrl_outl(0, MAPLE_ENABLE);
-+	mutex_lock(&maple_list_lock);
- 	if (!list_empty(&maple_sentq)) {
- 		list_for_each_entry_safe(mq, nmq, &maple_sentq, list) {
- 			recvbuf = mq->recvbuf;
- 			code = recvbuf[0];
-+			up(&mq->sem);
- 			dev = mq->dev;
- 			switch (code) {
- 			case MAPLE_RESPONSE_NONE:
-@@ -559,18 +578,26 @@ static void maple_dma_handler(struct work_struct *work)
- 			}
- 		}
- 		INIT_LIST_HEAD(&maple_sentq);
-+		mutex_unlock(&maple_list_lock);
-+		/* if scanning is 1 then we have subdevices to check */
- 		if (scanning == 1) {
- 			maple_send();
- 			scanning = 2;
- 		} else
- 			scanning = 0;
--
-+		/*check if we have actually tested all ports yet */
- 		if (!fullscan) {
- 			fullscan = 1;
- 			for (i = 0; i < MAPLE_PORTS; i++) {
- 				if (checked[i] == false) {
- 					fullscan = 0;
- 					dev = baseunits[i];
-+					locking = down_trylock(&dev->mq->sem);
-+					if (locking) {
-+						up(&dev->mq->sem);
-+						down_interruptible
-+							(&dev->mq->sem);
-+					}
- 					dev->mq->command =
- 						MAPLE_COMMAND_DEVINFO;
- 					dev->mq->length = 0;
-@@ -578,8 +605,11 @@ static void maple_dma_handler(struct work_struct *work)
- 				}
- 			}
- 		}
-+		/* mark that we have been through the first scan */
- 		if (started == 0)
- 			started = 1;
-+	} else {
-+		mutex_unlock(&maple_list_lock);
- 	}
- 	maplebus_dma_reset();
- }
-@@ -631,7 +661,7 @@ static int match_maple_bus_driver(struct device *devptr,
- 	if (maple_dev->devinfo.function == 0xFFFFFFFF)
- 		return 0;
- 	else if (maple_dev->devinfo.function &
--		 be32_to_cpu(maple_drv->function))
-+		 cpu_to_be32(maple_drv->function))
- 		return 1;
- 	return 0;
- }
-@@ -713,6 +743,8 @@ static int __init maple_bus_init(void)
- 	if (!maple_queue_cache)
- 		goto cleanup_bothirqs;
- 
-+	INIT_LIST_HEAD(&maple_waitq);
++		}
++		if (!vblock) {
++			/* Not cached */
++			cx = vmu_flash_read_char(from + index, &retval, mtd);
++			if (retval) {
++				*retlen = index;
++				return -1;
++			}
++			memset(buf + index, cx, 1);
++			index++;
++		}
++		kfree(vblock);
++		vblock = NULL;
++	} while (len > index);
++	*retlen = index;
 +
- 	/* setup maple ports */
- 	for (i = 0; i < MAPLE_PORTS; i++) {
- 		checked[i] = false;
-@@ -723,6 +755,7 @@ static int __init maple_bus_init(void)
- 				maple_free_dev(mdev[i]);
- 			goto cleanup_cache;
- 		}
-+		down_interruptible(&mdev[i]->mq->sem);
- 		mdev[i]->mq->command = MAPLE_COMMAND_DEVINFO;
- 		mdev[i]->mq->length = 0;
- 		maple_add_packet(mdev[i]->mq);
-diff --git a/include/linux/maple.h b/include/linux/maple.h
-index d31e36e..e40142e 100644
---- a/include/linux/maple.h
-+++ b/include/linux/maple.h
-@@ -33,6 +33,7 @@ struct mapleq {
- 	void *sendbuf, *recvbuf, *recvbufdcsp;
- 	unsigned char length;
- 	enum maple_code command;
-+	struct semaphore sem;
- };
- 
- struct maple_devinfo {
-@@ -73,6 +74,7 @@ void maple_getcond_callback(struct maple_device *dev,
- int maple_driver_register(struct device_driver *drv);
- void maple_add_packet(struct mapleq *mq);
- 
++	return 0;
++}
 +
- #define to_maple_dev(n) container_of(n, struct maple_device, dev)
- #define to_maple_driver(n) container_of(n, struct maple_driver, drv)
- 
++static int vmu_flash_write(struct mtd_info *mtd, loff_t to, size_t len,
++	size_t *retlen, const u_char *buf)
++{
++	struct maple_device *mdev;
++	struct memcard *card;
++	struct mdev_part *mpart;
++	int index = 0, retval, partition, error = 0, numblocks;
++	struct vmu_cache *pcache;
++	struct vmu_block *vblock;
++	unsigned char *buffer;
++
++	mpart = mtd->priv;
++	mdev = mpart->mdev;
++	partition = mpart->partition;
++	card = mdev->private_data;
++
++	/* simple sanity checks */
++	if (len < 1) {
++		error = -1;
++		goto failed;
++	}
++	numblocks = card->parts[partition].numblocks;
++	if (to + len > numblocks * card->blocklen)
++		len = numblocks * card->blocklen - to;
++	if (len == 0) {
++		error = -1;
++		goto failed;
++	}
++
++	vblock = ofs_to_block(to, mtd, partition);
++	if (!vblock) {
++		error = -ENOMEM;
++		goto failed;
++	}
++
++	buffer = kmalloc(card->blocklen, GFP_KERNEL);
++	if (!buffer) {
++		error = -ENOMEM;
++		goto fail_buffer;
++	}
++
++	do {
++
++		/* Read in the block we are to write to */
++		if (maple_vmu_read_block(vblock->num, buffer, mtd)) {
++			error = -EIO;
++			goto fail_io;
++		}
++
++		do {
++			buffer[vblock->ofs] = buf[index];
++			vblock->ofs++;
++			index++;
++			if (index >= len)
++				break;
++		} while (vblock->ofs < card->blocklen);
++		/* write out new buffer */
++		retval = maple_vmu_write_block(vblock->num, buffer, mtd);
++		/* invalidare the cache */
++		pcache = (card->parts[partition]).pcache;
++		pcache->valid = 0;
++
++		if (retval != card->blocklen) {
++			error = -EIO;
++			goto fail_io;
++		}
++
++		vblock->num++;
++		vblock->ofs = 0;
++	} while (len > index);
++
++	kfree(buffer);
++	*retlen = index;
++	kfree(vblock);
++	return 0;
++
++fail_io:
++	kfree(buffer);
++fail_buffer:
++	kfree(vblock);
++failed:
++	printk(KERN_INFO "Maple: VMU write failing with error %d\n", error);
++	return error;
++}
++
++static int vmu_flash_erase(struct mtd_info *mtd, struct erase_info *erase)
++{
++	int z;
++	erase->state = MTD_ERASING;
++	vmu_flash_write(mtd, erase->addr, erase->len, &z, "\0");
++	erase->state = MTD_ERASE_DONE;
++	if (erase->callback)
++		(erase->callback) (erase);
++	return 0;
++}
++
++static void vmu_flash_sync(struct mtd_info *mtd)
++{
++	/* Do nothing */
++}
++
++/* Maple bus callback function to recursively query hardware details */
++static void vmu_queryblocks(struct mapleq *mq)
++{
++	struct maple_device *mdev;
++	unsigned short *res;
++	struct memcard *card;
++	void *sendbuf;
++	struct vmu_cache *pcache;
++	struct mdev_part *mpart;
++	struct mtd_info *mtd_cur;
++	struct vmupart *part_cur;
++	int error, locking;
++
++	mdev = mq->dev;
++	card = mdev->private_data;
++	res = mq->recvbuf;
++	card->tempA = res[12];
++	card->tempB = res[6];
++
++	printk(KERN_INFO "Maple: VMU device at partition %d has %d user "
++		"blocks with a root block at %d\n", card->partition,
++		card->tempA, card->tempB);
++
++	part_cur = &((card->parts)[card->partition]);
++	part_cur->user_blocks = card->tempA;
++	part_cur->root_block = card->tempB;
++	part_cur->numblocks = card->tempB + 1;
++	part_cur->name = kmalloc(12, GFP_KERNEL);
++	if (!part_cur->name)
++		goto fail_name;
++
++	sprintf(part_cur->name, "vmu%d.%d.%d",
++		mdev->port, mdev->unit, card->partition);
++	mtd_cur = &((card->mtd)[card->partition]);
++	mtd_cur->name = part_cur->name;
++	mtd_cur->type = MTD_NORFLASH;
++	mtd_cur->flags = MTD_CAP_NORFLASH;
++	mtd_cur->size = part_cur->numblocks * card->blocklen;
++	mtd_cur->erasesize = card->blocklen;
++	mtd_cur->write = vmu_flash_write;
++	mtd_cur->read = vmu_flash_read;
++	mtd_cur->erase = vmu_flash_erase;
++	mtd_cur->sync = vmu_flash_sync;
++	mtd_cur->writesize = card->blocklen;
++
++	mpart = kmalloc(sizeof(struct mdev_part), GFP_KERNEL);
++	if (!mpart)
++		goto fail_mpart;
++
++	mpart->mdev = mdev;
++	mpart->partition = card->partition;
++	mtd_cur->priv = mpart;
++	mtd_cur->owner = THIS_MODULE;
++
++	pcache = kmalloc(sizeof(struct vmu_cache), GFP_KERNEL);
++	if (!pcache)
++		goto fail_cache_create;
++	pcache->buffer = NULL;
++	pcache->valid = 0;
++	part_cur->pcache = pcache;
++
++	error = add_mtd_device(mtd_cur);
++	if (error)
++		goto fail_mtd_register;
++
++	kfree(card->sendbuf);
++	maple_getcond_callback(mdev, NULL, 0,
++		MAPLE_FUNC_MEMCARD);
++
++	if (++(card->partition) < card->partitions) {
++		mdev->mq->command = MAPLE_COMMAND_GETMINFO;
++		mdev->mq->length = 2;
++
++		sendbuf = kzalloc(mdev->mq->length * 4, GFP_KERNEL);
++		if (!sendbuf) {
++			error = -ENOMEM;
++			goto fail_nosendbuf;
++		}
++		card->sendbuf = sendbuf;
++		mdev->mq->sendbuf = sendbuf;
++		maple_getcond_callback(mdev, vmu_queryblocks, 0,
++			MAPLE_FUNC_MEMCARD);
++
++		locking = down_interruptible(&(mdev->mq->sem));
++		if (!locking)
++			maple_add_packet(mdev->mq);
++	}
++
++	return;
++
++fail_mtd_register:
++	printk("mtd: Could not register maple device at (%d, %d)\n",
++		mdev->port, mdev->unit);
++	for (error = 0; error <= card->partition; error++) {
++		kfree(((card->parts)[error]).pcache);
++		((card->parts)[error]).pcache = NULL;
++	}
++fail_cache_create:
++	kfree(card->sendbuf);
++fail_mpart:
++	for (error = 0; error <= card->partition; error++) {
++		kfree(((card->mtd)[error]).priv);
++		((card->mtd)[error]).priv = NULL;
++	}
++fail_nosendbuf:
++	maple_getcond_callback(mdev, NULL, 0,
++		MAPLE_FUNC_MEMCARD);
++	kfree(part_cur->name);
++fail_name:
++	return;
++}
++
++static int vmu_connect(struct maple_device *mdev)
++{
++	unsigned long test_flash_data, basic_flash_data;
++	int c, locking, error = 0;
++	struct memcard *card;
++	void *sendbuf;
++
++	test_flash_data = be32_to_cpu(mdev->devinfo.function);
++	/* Need to count how many bits are set - to find out which
++	* function_data element has details of the memory card:
++	* using Brian Kernighan's/Peter Wegner's method */
++	for (c = 0; test_flash_data; c++)
++		test_flash_data &= test_flash_data - 1;
++
++	basic_flash_data = be32_to_cpu(mdev->devinfo.function_data[c - 1]);
++
++	card = kmalloc(sizeof(struct memcard), GFP_KERNEL);
++	if (!card) {
++		error = ENOMEM;
++		goto fail_nomem;
++	}
++
++	card->partitions = ((basic_flash_data >> 24) & 0xFF) + 1;
++	card->blocklen = (((basic_flash_data >> 16) & 0xFF) + 1) << 5;
++	card->writecnt = (basic_flash_data >> 12) & 0xF;
++	card->readcnt = (basic_flash_data >> 8) & 0xF;
++	card->removeable = (basic_flash_data >> 7) & 1;
++
++	card->partition = 0;
++	/* Not sure there are actually any multi-partition devices in the
++	* real world, but the hardware supports them, so, so will we */
++	card->parts = kmalloc(sizeof(struct vmupart) * card->partitions,
++		GFP_KERNEL);
++	if (!card->parts) {
++		error = -ENOMEM;
++		goto fail_partitions;
++	}
++	/*kzalloc this to ensure safe kfree-ing of NULL mparts on error*/
++	card->mtd = kzalloc(sizeof(struct mtd_info) * card->partitions,
++		GFP_KERNEL);
++	if (!card->mtd) {
++		error = -ENOMEM;
++		goto fail_mtd_info;
++	}
++
++	mdev->private_data = card;
++
++	/* Now query the device to find out about blocks */
++	mdev->mq->command = MAPLE_COMMAND_GETMINFO;
++	mdev->mq->length = 2;
++
++	sendbuf = kzalloc(mdev->mq->length * 4, GFP_KERNEL);
++	if (!sendbuf) {
++		error = -ENOMEM;
++		goto fail_nosendbuf;
++	}
++	card->sendbuf = sendbuf;
++	mdev->mq->sendbuf = sendbuf;
++
++	((unsigned long *)(mdev->mq->sendbuf))[0] =
++		cpu_to_be32(MAPLE_FUNC_MEMCARD);
++
++	maple_getcond_callback(mdev, vmu_queryblocks, 0,
++		MAPLE_FUNC_MEMCARD);
++
++	locking = down_interruptible(&(mdev->mq->sem));
++	if (!locking)
++		maple_add_packet(mdev->mq);
++
++	return 0;
++
++fail_nosendbuf:
++	kfree(card->mtd);
++fail_mtd_info:
++	kfree(card->parts);
++fail_partitions:
++	kfree(card);
++fail_nomem:
++	return -error;
++}
++
++static void vmu_disconnect(struct maple_device *mdev)
++{
++	struct memcard *card;
++	int x, locking;
++
++	locking = down_interruptible(&mdev->mq->sem);
++	if (locking) {
++		printk(KERN_INFO "Maple: Could not disconnect VMU device at:"
++			"(%d, %d)\n", mdev->port, mdev->unit);
++		return;
++	}
++	mdev->callback = NULL;
++	card = mdev->private_data;
++	for (x = 0; x < card->partitions; x++) {
++		del_mtd_device(&((card->mtd)[x]));
++		kfree(((card->parts)[x]).name);
++	}
++	kfree(card->parts);
++	kfree(card->mtd);
++	kfree(card);
++	up(&mdev->mq->sem);
++
++}
++
++static int probe_maple_vmu(struct device *dev)
++{
++	int error;
++	struct maple_device *mdev = to_maple_dev(dev);
++	struct maple_driver *mdrv = to_maple_driver(dev->driver);
++
++	error = vmu_connect(mdev);
++	if (error)
++		return error;
++
++	mdev->driver = mdrv;
++
++	return 0;
++}
++
++static int remove_maple_vmu(struct device *dev)
++{
++	struct maple_device *mdev = to_maple_dev(dev);
++
++	vmu_disconnect(mdev);
++	return 0;
++}
++
++static struct maple_driver vmu_flash_driver = {
++	.function =	MAPLE_FUNC_MEMCARD,
++	.connect =	vmu_connect,
++	.disconnect =	vmu_disconnect,
++	.drv = {
++		.name = "Dreamcast_visual_memory",
++		.probe = probe_maple_vmu,
++		.remove = remove_maple_vmu,
++	},
++};
++
++static int unplug_vmu_flash(struct device *dev, void *ignored)
++{
++	struct maple_device *mdev;
++
++	mdev = to_maple_dev(dev);
++	if ((mdev->function & MAPLE_FUNC_MEMCARD)
++		&& (mdev->driver == &vmu_flash_driver))
++		remove_maple_vmu(dev);
++
++	return 0;
++}
++
++static int __init vmu_flash_map_init(void)
++{
++	maple_driver_register(&vmu_flash_driver.drv);
++	return 0;
++}
++
++static void __exit vmu_flash_map_exit(void)
++{
++	bus_for_each_dev(&maple_bus_type, NULL, NULL, unplug_vmu_flash);
++	driver_unregister(&vmu_flash_driver.drv);
++}
++
++module_init(vmu_flash_map_init);
++module_exit(vmu_flash_map_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Adrian McMenamin, Paul Mundt");
++MODULE_DESCRIPTION("Flash mapping for Sega Dreamcast visual memory");
 
