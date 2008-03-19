@@ -1,17 +1,20 @@
-Received: from www.tglx.de ([62.245.132.106])
-	by pentafluge.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jc4O6-0005aD-0p
-	for linux-mtd@lists.infradead.org; Wed, 19 Mar 2008 19:55:50 +0000
-Date: Wed, 19 Mar 2008 20:55:38 +0100
-From: Sebastian Siewior <bigeasy@tglx.de>
-To: Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH RESEND] [FS] jffs2: check if partition is marked RO on mount
-Message-ID: <20080319195538.GB16728@www.tglx.de>
+Received: from mk-filter-4-a-1.mail.uk.tiscali.com ([212.74.100.55])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jc5iA-0003Ex-3y
+	for linux-mtd@lists.infradead.org; Wed, 19 Mar 2008 21:20:38 +0000
+Received: from [192.168.62.105] ([192.168.62.105])
+	by newgolddream.info (8.14.1/8.14.1/Debian-8ubuntu1) with ESMTP id
+	m2JLKFpW030390
+	for <linux-mtd@lists.infradead.org>; Wed, 19 Mar 2008 21:20:16 GMT
+Subject: [Fwd: [PATCH] 0/2 Add support for maple "Visual Memory Unit" on
+	SEGA Dreamcast]
+From: Adrian McMenamin <adrian@newgolddream.dyndns.info>
+To: MTD <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Date: Wed, 19 Mar 2008 21:20:10 +0000
+Message-Id: <1205961610.6276.2.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Cc: David Woodhouse <dwmw2@infradead.org>, tglx@linutronix.de,
-	linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,26 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-and if it is, don't tell userspace that write is possible.
 
-Signed-off-by: Sebastian Siewior <bigeasy@linutronix.de>
----
- fs/jffs2/super.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+Apologies: sent it to the wrong address for this list before
 
-diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index 4677355..e4c9493 100644
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -108,6 +108,9 @@ static int jffs2_fill_super(struct super_block *sb, void *data, int silent)
- #ifdef CONFIG_JFFS2_FS_POSIX_ACL
- 	sb->s_flags |= MS_POSIXACL;
- #endif
-+	if (!(c->mtd->flags & MTD_WRITEABLE))
-+		sb->s_flags |= MS_RDONLY;
-+
- 	return jffs2_do_fill_super(sb, data, silent);
- }
- 
--- 
-1.5.3.5
+The VMU is a small (approx 128K) hotpluggable flash device on the SEGA Dreamcast.
+
+To get this to work I have had to rewrite parts of the maple bus driver - some of that
+is bug fixing (in the sense that the bus driver was not allowing proper probing, just
+forcing the load of the appropriate driver) - the main functional change is to add a
+semaphore to the maple device (to ensure that devices can properly inject maple packets
+into the queue of packets waiting to be dispatched via DMA to the devices themselves).
+
+Signed-off-by: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+
+
+ drivers/mtd/maps/Kconfig     |   14 +
+ drivers/mtd/maps/Makefile    |    1 +
+ drivers/mtd/maps/vmu_flash.c |  746 ++++++++++++++++++++++++++++++++++++++++++
+ drivers/sh/maple/maple.c     |  113 ++++---
+ include/linux/maple.h        |    2 +
+
+
