@@ -1,17 +1,17 @@
-Received: from de01egw01.freescale.net ([192.88.165.102])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jc2Ht-0004Lz-LY
-	for linux-mtd@lists.infradead.org; Wed, 19 Mar 2008 17:41:18 +0000
-Date: Wed, 19 Mar 2008 12:41:04 -0500
-From: Scott Wood <scottwood@freescale.com>
-To: Mike Hench <mhench@engagenet.com>
-Subject: Re: [PATCH] corrected MPC8313 NAND fixes
-Message-ID: <20080319174104.GG7962@ld0162-tx32.am.freescale.net>
-References: <6629C06B144F5C4098DFF95C4FF9DAF702BA1D11@mailsrv.engagenet.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6629C06B144F5C4098DFF95C4FF9DAF702BA1D11@mailsrv.engagenet.com>
+Received: from [66.195.150.24] (helo=owa.engagenet.com)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jc2rf-000864-9A
+	for linux-mtd@lists.infradead.org; Wed, 19 Mar 2008 18:18:15 +0000
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Subject: [[PATCH] corrected MPC8313 NAND fixes
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Date: Wed, 19 Mar 2008 12:40:15 -0500
+Message-ID: <6629C06B144F5C4098DFF95C4FF9DAF702BA1D11@mailsrv.engagenet.com>
+From: "Mike Hench" <mhench@engagenet.com>
+To: "Scott Wood" <scottwood@freescale.com>
 Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -22,13 +22,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 19, 2008 at 12:40:15PM -0500, Mike Hench wrote:
-> Fix a race condition in fsl_elbc_run_command
-> Fix incorrect usage of clearbits32 that bashed option register
-> Remove work around for bashed register
-> 
-> Signed-off-by: Mike Hench <mhench@elutions.com>
+Fix a race condition in fsl_elbc_run_command
+Fix incorrect usage of clearbits32 that bashed option register
+Remove work around for bashed register
 
-Acked-by: Scott Wood <scottwood@freescale.com>
+Signed-off-by: Mike Hench <mhench@elutions.com>
 
--Scott
+---
+
+--- linux-2.6.25-rc5.orig/drivers/mtd/nand/fsl_elbc_nand.c
+2008-03-10 00:22:27.000000000 -0500
++++ linux-2.6.25-rc5/drivers/mtd/nand/fsl_elbc_nand.c	2008-03-19
+12:34:36.000000000 -0500
+@@ -379,11 +379,11 @@ static int fsl_elbc_run_command(struct m
+ 	         in_be32(&lbc->fbar), in_be32(&lbc->fpar),
+ 	         in_be32(&lbc->fbcr), priv->bank);
+=20
++	ctrl->irq_status =3D 0;
+ 	/* execute special operation */
+ 	out_be32(&lbc->lsor, priv->bank);
+=20
+ 	/* wait for FCM complete flag or timeout */
+-	ctrl->irq_status =3D 0;
+ 	wait_event_timeout(ctrl->irq_wait, ctrl->irq_status,
+ 	                   FCM_TIMEOUT_MSECS * HZ/1000);
+ 	ctrl->status =3D ctrl->irq_status;
+@@ -861,7 +861,7 @@ static int fsl_elbc_chip_init_tail(struc
+ 	/* adjust Option Register and ECC to match Flash page size */
+ 	if (mtd->writesize =3D=3D 512) {
+ 		priv->page_size =3D 0;
+-		clrbits32(&lbc->bank[priv->bank].or, ~OR_FCM_PGS);
++		clrbits32(&lbc->bank[priv->bank].or, OR_FCM_PGS);
+ 	} else if (mtd->writesize =3D=3D 2048) {
+ 		priv->page_size =3D 1;
+ 		setbits32(&lbc->bank[priv->bank].or, OR_FCM_PGS);
+@@ -882,11 +882,6 @@ static int fsl_elbc_chip_init_tail(struc
+ 		return -1;
+ 	}
+=20
+-	/* The default u-boot configuration on MPC8313ERDB causes
+errors;
+-	 * more delay is needed.  This should be safe for other boards
+-	 * as well.
+-	 */
+-	setbits32(&lbc->bank[priv->bank].or, 0x70);
+ 	return 0;
+ }
