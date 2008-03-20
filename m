@@ -1,20 +1,24 @@
-Received: from asmtp.proserver1.at ([193.186.169.16])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JcMvm-0003uK-Qi
-	for linux-mtd@lists.infradead.org; Thu, 20 Mar 2008 15:43:51 +0000
-Received: from secure.proserver1.at (boogie-with-stu.proserver1.at
-	[193.186.169.6])
-	by asmtp.proserver1.at (Postfix) with ESMTP id F28A22C7C8
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 20 Mar 2008 16:51:51 +0100 (CET)
-Message-ID: <48926.80.120.2.52.1206028032.squirrel@secure.proserver1.at>
-Date: Thu, 20 Mar 2008 16:47:12 +0100 (CET)
-Subject: usage of mkfs.jffs2 --incremental=
-From: "Harald Krammer" <Harald.Krammer@hkr.at>
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
+Received: from mk-filter-4-a-1.mail.uk.tiscali.com ([212.74.100.55])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JcR6f-0006y3-1V
+	for linux-mtd@lists.infradead.org; Thu, 20 Mar 2008 20:11:21 +0000
+Subject: Re: [Fwd: Re: [PATCH] 2/2 mtd: Add support for the Dreamcast VMU
+	flash]
+From: Adrian McMenamin <adrian@newgolddream.dyndns.info>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
+In-Reply-To: <20080320123139.GE1355@logfs.org>
+References: <1205961641.6276.6.camel@localhost.localdomain>
+	<20080320100353.GA409@logfs.org>
+	<21996.85.118.17.158.1206014214.squirrel@newgolddream.dyndns.info>
+	<20080320112029.GB1355@logfs.org>
+	<47111.85.118.17.158.1206017802.squirrel@newgolddream.dyndns.info>
+	<20080320123139.GE1355@logfs.org>
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 20 Mar 2008 20:11:01 +0000
+Message-Id: <1206043861.6274.8.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Cc: MTD <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +28,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
 
-I have a question about the usage of "--incremental=<img> in mkfs.jffs2.
+On Thu, 2008-03-20 at 13:31 +0100, Jörn Engel wrote:
+> On Thu, 20 March 2008 12:56:42 -0000, Adrian McMenamin wrote:
+> > On Thu, March 20, 2008 11:20 am, JÃ¶rn Engel wrote:
+> > > On Thu, 20 March 2008 11:56:54 -0000, Adrian McMenamin wrote:
+> > >> >> +
+> > >> >> +	((unsigned long *)sendbuf)[0] = cpu_to_be32(MAPLE_FUNC_MEMCARD);
+> > >> >> +	((unsigned long *)sendbuf)[1] = cpu_to_be32(partition << 24 | num);
+> > > So why do you use void* for data you actually dereference?
+> > 
+> > Because for other devices data can be passed as 16 bit structures as well
+> > as 32 bit ones.
+> 
+> Hogwash!  If you ever deal with 16bit structures here you have a bug.
+> cpu_to_be32() only makes sense when actually dealing with __be32.
+> Either your variable is and should be called __be32, or it isn't and you
+> have a bug right in front of you.
 
-I made following test code (flash_img.jffs2 is already there):
+You don't seem to have grasped that this is one type of device on a
+proprietary bus which has other (types of) devices. I keep the code
+consistent so that the API runs the same across the different devices -
+makes the code easier to understand and maintain.
 
-mkfs.jffs2 --incremental=flash_img.jffs2  -o flash_backup.jffs2
---root=backup/
-cat flash_backup.jffs2 >>flash_img.jffs2
-rm flash_backup.jffs2
-fcp -v flash_img.jffs2 /dev/mtd3
-
-After mounting I get many error message...
-
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x002e0024:
-0x2e94 instead
-Further such events for this erase block will not be printed
-Empty flash at 0x002e2288 ends at 0x002e228c
-CLEANMARKER node found at 0x002e228c, not first node in block (0x002e0000)
-Node at 0x002ef82c with length 0x00000a06 would run over the end of the
-erase block
-Perhaps the file system was created with the wrong erase size?
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x002f0000:
-0x9a8f instead
-
-What is my mistake?
-
-Any help are welcome
-nice greetings,
-Harald
-
--- 
-Harald Krammer
-Brucknerstrasse 33
-A - 4020  Linz
-AUSTRIA
-
-Mobil +43.(0) 664. 130 59 58
-Mail: Harald.Krammer (at) hkr.at
+And given that this is also the variable that points to the memory block
+that also includes the 8 bit based date that gets read in for block
+writes I it makes perfect sense to have this as a void*.
