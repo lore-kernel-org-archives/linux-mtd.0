@@ -1,29 +1,24 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jdqdd-0007uU-VP
-	for linux-mtd@lists.infradead.org; Mon, 24 Mar 2008 17:39:14 +0000
-Date: Mon, 24 Mar 2008 18:38:56 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Adrian McMenamin <adrian@newgolddream.dyndns.info>
-Subject: Re: [PATCH] 3/3 maple: update bus driver to support Dreamcast VMU
-Message-ID: <20080324173856.GI2899@logfs.org>
-References: <1206207805.6324.13.camel@localhost.localdomain>
-	<1206209786.6324.41.camel@localhost.localdomain>
-	<20080324033344.GB15872@linux-sh.org>
-	<20080324144647.GC2899@logfs.org>
-	<1206371178.6283.37.camel@localhost.localdomain>
-	<20080324152952.GF2899@logfs.org>
-	<1206373900.6283.39.camel@localhost.localdomain>
-	<20080324160429.GG2899@logfs.org> <20080324170707.GH2899@logfs.org>
+Received: from fg-out-1718.google.com ([72.14.220.157])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JckBu-00067N-QH
+	for linux-mtd@lists.infradead.org; Fri, 21 Mar 2008 16:34:04 +0000
+Received: by fg-out-1718.google.com with SMTP id 22so1382065fge.26
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 21 Mar 2008 09:33:58 -0700 (PDT)
+Message-ID: <74d0deb30803210933u1d3ca18endcd942496409de28@mail.gmail.com>
+Date: Fri, 21 Mar 2008 17:33:57 +0100
+From: "pHilipp Zabel" <philipp.zabel@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Fwd: [PATCH 5/9] magician: enable flash VPP GPIO and build in MTD,
+	physmap-flash and JFFS2
+In-Reply-To: <74d0deb30803210448l49d2eea8ladd95766c47ba820@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="m51xatjYGsM+13rf"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20080324170707.GH2899@logfs.org>
-Cc: Andrew Morton <akpm@osdl.org>, linux-sh <linux-sh@vger.kernel.org>,
-	Greg KH <greg@kroah.com>, LKML <linux-kernel@vger.kernel.org>,
-	Paul Mundt <lethal@linux-sh.org>,
-	MTD <linux-mtd@lists.infradead.org>, dwmw2 <dwmw2@infradead.org>
+References: <1205785071.11350.39.camel@localhost.localdomain>
+	<20080320210120.GI16166@flint.arm.linux.org.uk>
+	<74d0deb30803210448l49d2eea8ladd95766c47ba820@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,270 +28,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi, I'd like to forward you a question about this patch that I'd like
+to get in via Russell King's queue.
 
---m51xatjYGsM+13rf
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+The way the MTD subsystem / physmap driver handle set_vpp, can the
+magician_set_vpp function below race with itself? Or would it be
+better to use a counting approach like omap_set_vpp in the omap-nor
+driver?
 
-On Mon, 24 March 2008 18:07:07 +0100, JÃ¶rn Engel wrote:
-> 
-> The second rearranges the list locking a bit.  Previously it was
-> possible to touch maple_waitq or maple_sentq without holding the lock.
-> With my limited understanding of the driver, the second patch may
-> already be enough to prevent the type of corruption you've been seeing.
+The full patch is here:
+http://lists.arm.linux.org.uk/lurker/message/20080317.201751.2fa54cff.en.html
 
-Limited understanding indeed.  The problem in the mtd driver is that it
-has no concept of ownership.  For example maple_vmu_read_block() does
-the following:
-	mdev->mq->sendbuf = sendbuf;
-	...
-	maple_add_packet(mdev->mq);
+thanks
+Philipp
 
-It accesses some field in mdev->mq, then sends the structure off to
-maple_add_packet().  From this point on, mdev->mq belongs to the bus
-driver - until it calls the callback, vmu_blockread() in this case.
+---------- Forwarded message ----------
+From: pHilipp Zabel <philipp.zabel@gmail.com>
+Date: Fri, Mar 21, 2008 at 12:48 PM
+Subject: Re: [PATCH 5/9] magician: enable flash VPP GPIO and build in
+MTD, physmap-flash and JFFS2
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>
 
-But a second thread can call into maple_vmu_read_block() again and
-access mdev->mq while it rightfully belongs to the bus driver.  Bad
-things will happen.
+On Thu, Mar 20, 2008 at 10:01 PM, Russell King - ARM Linux
+ <linux@arm.linux.org.uk> wrote:
+ > On Mon, Mar 17, 2008 at 09:17:51PM +0100, Philipp Zabel wrote:
+ >  > This enables rootfs on StrataFlash if the bootloader supplies the
+ >  > partition list.
+ >
+ > > diff --git a/arch/arm/mach-pxa/magician.c b/arch/arm/mach-pxa/magician.c
+ >  > index 3a3252e..531be3d 100644
+ >  > --- a/arch/arm/mach-pxa/magician.c
+ >  > +++ b/arch/arm/mach-pxa/magician.c
+ >  > @@ -223,6 +223,15 @@ static struct pxaohci_platform_data
+magician_ohci_info = {
+ >  >   * StrataFlash
+ >  >   */
+ >  >
+ >  > +static void magician_set_vpp(struct map_info *map, int vpp)
+ >  > +{
+ >  > +     static int old_vpp;
+ >  > +     if (vpp == old_vpp)
+ >  > +             return;
+ >  > +     gpio_set_value(EGPIO_MAGICIAN_FLASH_VPP, vpp);
+ >  > +     old_vpp = vpp;
+ >  > +}
+ >  > +
+ >
+ >  Have you checked that this can't race with itself?
 
-So these two patches try to close the race windows.  Please note the
-FIXME in the write patch - I didn't do all the work.  Real life calls
-for attention, so these will be the last patches for a while.
+ No, I have just seen that set_vpp is called very often in quick
+ succession with the same vpp value and wanted to avoid overhead,
+ assuming that the mtd subsystem cares about locking.
+ I have just seen that omap-nor does something similar but with a
+ counter. Maybe this would be better?
 
-JÃ¶rn
+ static void omap_set_vpp(struct map_info *map, int enable)
+ {
+        static int      count;
 
--- 
-The only good bug is a dead bug.
--- Starship Troopers
-
---m51xatjYGsM+13rf
-Content-Type: text/x-diff; charset=utf-8
-Content-Disposition: attachment; filename="cu8.patch"
-Content-Transfer-Encoding: 8bit
-
-
-Add a mutex to protect any accesses to maple queue.
-
-Signed-off-by: Jörn Engel <joern@logfs.org>
----
-
- drivers/mtd/maps/vmu_flash.c |   55 ++++++++++++++++++++-----------------------
- 1 file changed, 26 insertions(+), 29 deletions(-)
-
---- maple/drivers/mtd/maps/vmu_flash.c~cu8	2008-03-24 17:49:59.000000000 +0100
-+++ maple/drivers/mtd/maps/vmu_flash.c	2008-03-24 18:26:56.000000000 +0100
-@@ -22,6 +22,8 @@
- static DECLARE_WAIT_QUEUE_HEAD(vmu_read);
- static int block_read;
- 
-+static DEFINE_MUTEX(dev_mutex);
-+
- struct vmu_cache {
- 	char *buffer;			/* Cache */
- 	unsigned int block;		/* Which block was cached */
-@@ -133,26 +135,21 @@ static int maple_vmu_read_block(unsigned
- 	struct mdev_part *mpart;
- 	struct maple_device *mdev;
- 	int partition, error = 0;
--	__be32 *sendbuf;
-+	__be32 sendbuf[2];
- 
- 	mpart = mtd->priv;
- 	mdev = mpart->mdev;
- 	partition = mpart->partition;
- 	card = mdev->private_data;
- 
-+	mutex_lock(&dev_mutex);
- 	mdev->mq->command = MAPLE_COMMAND_BREAD;
- 	mdev->mq->length = 2;
- 
--	sendbuf = kzalloc(mdev->mq->length * 4, GFP_KERNEL);
--	if (!sendbuf) {
--		error = -ENOMEM;
--		goto fail_nosendbuf;
--	}
--
- 	sendbuf[0] = cpu_to_be32(MAPLE_FUNC_MEMCARD);
- 	sendbuf[1] = cpu_to_be32(partition << 24 | num);
- 
--	mdev->mq->sendbuf = sendbuf;
-+	mdev->mq->sendbuf = &sendbuf;
- 	block_read = 0;
- 
- 	card->blockread = kmalloc(card->blocklen, GFP_KERNEL);
-@@ -171,16 +168,12 @@ static int maple_vmu_read_block(unsigned
- 	}
- 
- 	memcpy(buf, card->blockread, card->blocklen);
--	kfree(card->blockread);
--	kfree(sendbuf);
--
--	return 0;
- 
-+	error = 0;
- fail_blockread:
- 	kfree(card->blockread);
- fail_bralloc:
--	kfree(sendbuf);
--fail_nosendbuf:
-+	mutex_unlock(&dev_mutex);
- 	return error;
+        if (enable) {
+                if (count++ == 0)
+                        OMAP_EMIFS_CONFIG_REG |= OMAP_EMIFS_CONFIG_WP;
+        } else {
+                if (count && (--count == 0))
+                        OMAP_EMIFS_CONFIG_REG &= ~OMAP_EMIFS_CONFIG_WP;
+        }
  }
- 
-@@ -191,7 +184,7 @@ static int maple_vmu_write_block(unsigne
- 	struct memcard *card;
- 	struct mdev_part *mpart;
- 	struct maple_device *mdev;
--	int partition, error, x, phaselen;
-+	int partition, x, phaselen;
- 	__be32 *sendbuf;
- 
- 	mpart = mtd->priv;
-@@ -199,16 +192,18 @@ static int maple_vmu_write_block(unsigne
- 	partition = mpart->partition;
- 	card = mdev->private_data;
- 
--	phaselen = card->blocklen/card->writecnt;
--	mdev->mq->command = MAPLE_COMMAND_BWRITE;
--	mdev->mq->length = phaselen / 4 + 2;
--
- 	sendbuf = kmalloc(mdev->mq->length * 4, GFP_KERNEL);
- 	if (!sendbuf) {
--		error = -ENOMEM;
--		goto fail_nosendbuf;
-+		printk("Maple: VMU (%d, %d): write failed\n", mdev->port,
-+				mdev->unit);
-+		return -ENOMEM;
- 	}
- 
-+	phaselen = card->blocklen/card->writecnt;
-+	mutex_lock(&dev_mutex);
-+	mdev->mq->command = MAPLE_COMMAND_BWRITE;
-+	mdev->mq->length = phaselen / 4 + 2;
-+
- 	sendbuf[0] = cpu_to_be32(MAPLE_FUNC_MEMCARD);
- 
- 	for (x = 0; x < card->writecnt; x++) {
-@@ -217,14 +212,14 @@ static int maple_vmu_write_block(unsigne
- 		mdev->mq->sendbuf = sendbuf;
- 		maple_add_packet(mdev->mq);
- 	}
-+	/* FIXME: we have to wait for the write to finish before releasing
-+	 * the mutex.  Requires another callback.
-+	 */
-+	mutex_unlock(&dev_mutex);
- 
- 	kfree(sendbuf);
- 
- 	return card->blocklen;
--
--fail_nosendbuf:
--	printk("Maple: VMU (%d, %d): write failed\n", mdev->port, mdev->unit);
--	return error;
- }
- 
- /* mtd function to simulate reading byte by byte */
-@@ -593,15 +588,16 @@ static int vmu_connect(struct maple_devi
- 
- 	mdev->private_data = card;
- 
--	/* Now query the device to find out about blocks */
--	mdev->mq->command = MAPLE_COMMAND_GETMINFO;
--	mdev->mq->length = 2;
--
- 	sendbuf = kzalloc(mdev->mq->length * 4, GFP_KERNEL);
- 	if (!sendbuf) {
- 		error = -ENOMEM;
- 		goto fail_nosendbuf;
- 	}
-+	/* Now query the device to find out about blocks */
-+	mutex_lock(&dev_mutex);
-+	mdev->mq->command = MAPLE_COMMAND_GETMINFO;
-+	mdev->mq->length = 2;
-+
- 	card->sendbuf = sendbuf;
- 	mdev->mq->sendbuf = sendbuf;
- 
-@@ -611,6 +607,7 @@ static int vmu_connect(struct maple_devi
- 	maple_getcond_callback(mdev, vmu_queryblocks, 0,
- 		MAPLE_FUNC_MEMCARD);
- 
-+	mutex_unlock(&dev_mutex);
- 	return 0;
- 
- fail_nosendbuf:
 
---m51xatjYGsM+13rf
-Content-Type: text/x-diff; charset=utf-8
-Content-Disposition: attachment; filename="cu9.patch"
-Content-Transfer-Encoding: 8bit
+ There's also a comment in chips/cfi_cmdset_0001.c:
+ /* We should really make set_vpp() count, rather than doing this */
 
-
-Replace the waitqueue with completion logic.
-
-Signed-off-by: Jörn Engel <joern@logfs.org>
----
-
- drivers/mtd/maps/vmu_flash.c |   15 +++------------
- 1 file changed, 3 insertions(+), 12 deletions(-)
-
---- maple/drivers/mtd/maps/vmu_flash.c~cu9	2008-03-24 18:26:56.000000000 +0100
-+++ maple/drivers/mtd/maps/vmu_flash.c	2008-03-24 18:36:12.000000000 +0100
-@@ -19,8 +19,7 @@
- #include <linux/mtd/map.h>
- #include <asm/mach/maple.h>
- 
--static DECLARE_WAIT_QUEUE_HEAD(vmu_read);
--static int block_read;
-+static DECLARE_COMPLETION(read_complete);
- 
- static DEFINE_MUTEX(dev_mutex);
- 
-@@ -108,7 +107,6 @@ static void vmu_blockread(struct mapleq 
- 	card = mdev->private_data;
- 	/* copy the read in data */
- 	memcpy(card->blockread, mq->recvbuf + 12, card->blocklen);
--	block_read = 1;
- 	/* fill the cache for this block */
- 	mtd = card->mtd;
- 	mpart = mtd->priv;
-@@ -124,7 +122,7 @@ static void vmu_blockread(struct mapleq 
- 	pcache->jiffies_atc = jiffies;
- 	pcache->valid = 1;
- wakeup:
--	wake_up_interruptible(&vmu_read);
-+	complete(&read_complete);
- }
- 
- /* Interface with maple bus to read bytes */
-@@ -150,7 +148,6 @@ static int maple_vmu_read_block(unsigned
- 	sendbuf[1] = cpu_to_be32(partition << 24 | num);
- 
- 	mdev->mq->sendbuf = &sendbuf;
--	block_read = 0;
- 
- 	card->blockread = kmalloc(card->blocklen, GFP_KERNEL);
- 	if (!card->blockread) {
-@@ -160,17 +157,11 @@ static int maple_vmu_read_block(unsigned
- 
- 	maple_getcond_callback(mdev, vmu_blockread, 0, MAPLE_FUNC_MEMCARD);
- 	maple_add_packet(mdev->mq);
--	wait_event_interruptible_timeout(vmu_read, block_read, HZ * 4);
--	if (block_read == 0) {
--		printk(KERN_INFO "Maple: VMU read failed on block 0x%X\n", num);
--		error = -EIO;
--		goto fail_blockread;
--	}
-+	wait_for_completion(&read_complete);
- 
- 	memcpy(buf, card->blockread, card->blocklen);
- 
- 	error = 0;
--fail_blockread:
- 	kfree(card->blockread);
- fail_bralloc:
- 	mutex_unlock(&dev_mutex);
-
---m51xatjYGsM+13rf--
+ regards
+ Philipp
