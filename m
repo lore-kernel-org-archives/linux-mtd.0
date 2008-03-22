@@ -1,20 +1,21 @@
-Received: from mk-filter-2-a-1.mail.uk.tiscali.com ([212.74.100.53]
-	helo=mk-filter-2-a-4.mail.uk.tiscali.com)
+Received: from mk-filter-4-a-1.mail.uk.tiscali.com ([212.74.100.55])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jd7lB-0005SY-Vl
-	for linux-mtd@lists.infradead.org; Sat, 22 Mar 2008 17:44:02 +0000
-Subject: [PATCH] 0/3 - Add support for VMU flash memory and update maple
-	bus driver on the SEGA Dreamcast
+	id 1Jd7xX-0006bm-6j
+	for linux-mtd@lists.infradead.org; Sat, 22 Mar 2008 17:56:47 +0000
+Subject: Re: [PATCH] 1/3 mtd: add Kbuild support and makefile support for
+	Dreamcast VMU
 From: Adrian McMenamin <adrian@newgolddream.dyndns.info>
-To: dwmw2 <dwmw2@infradead.org>, Greg KH <greg@kroah.com>
+To: dwmw2 <dwmw2@infradead.org>
+In-Reply-To: <1206207805.6324.13.camel@localhost.localdomain>
+References: <1206207805.6324.13.camel@localhost.localdomain>
 Content-Type: text/plain
-Date: Sat, 22 Mar 2008 17:43:25 +0000
-Message-Id: <1206207805.6324.13.camel@localhost.localdomain>
+Date: Sat, 22 Mar 2008 17:56:32 +0000
+Message-Id: <1206208592.6324.19.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Andrew Morton <akpm@osdl.org>, Paul Mundt <lethal@users.sourceforge.net>,
-	MTD <linux-mtd@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-sh <linux-sh@vger.kernel.org>
+Cc: Andrew Morton <akpm@osdl.org>, linux-sh <linux-sh@vger.kernel.org>,
+	Greg KH <greg@kroah.com>, Paul Mundt <lethal@users.sourceforge.net>,
+	LKML <linux-kernel@vger.kernel.org>, MTD <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +25,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-OK, second iteration of this - have added more comments and, I hope,
-addressed all or nearly all of people's comments.
-
-This adds support for the flash memory portion of the "visual memory
-unit" on the SEGA Dreamcast.
-
-Changelogs on the patches but, in summary:
-
-On the maple bus side: 
-
-- adds a mutex to ensure device is only addressed once per maple bus
-cycle (and so avoiding corruption of the linked list of packets waiting
-for transmission).
-
-- properly uses the existing lock on the waiting packet queue and cleans
-up the way the linked lists (of waiting and processed packets) are
-handled.
-
-For the device:
-
-- relies on the mutex to ensure block reads and writes are handled
-properly - normally the bus driver will unlock the mutex once a waiting
-packet has been processed
-
-- implements support for partitions. There are rumours such devices
-exist - they are supported in the specification. But I've never seen
-one!
-
-
-There is code to follow (eventually) to implement the FAT based
-filesystem used by the Dreamcast to save to these devices, but they
-should be usable as small flash devices with other filesystems too.
-
-(See http://mc.pp.se/dc/vms/flashmem.html for more details on the
-hardware etc)
-
 Signed-off-by: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+---
+diff -ruN a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+--- a/drivers/mtd/maps/Kconfig	2008-03-22 17:26:24.000000000 +0000
++++ b/drivers/mtd/maps/Kconfig	2008-03-22 17:20:45.000000000 +0000
+@@ -590,5 +590,19 @@
+ 
+ 	  This selection automatically selects the map_ram driver.
+ 
++config MTD_VMU_FLASH
++	tristate "Dreamcast Visual Memory devices and clones"
++	depends on SH_DREAMCAST
++	select MAPLE
++	help
++	  Flash map driver for the SEGA Dreamcast Visual Memory Unit
++	  and clones.
++
++	  Most Dreamcast users will have one of these and so will want
++	  to say Y here.
++
++	  To compile this driver as a module choose M here: the module
++	  will be called vmu-flash.
++
+ endmenu
+ 
+diff -ruN a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+--- a/drivers/mtd/maps/Makefile	2008-03-22 17:26:24.000000000 +0000
++++ b/drivers/mtd/maps/Makefile	2008-03-22 17:20:45.000000000 +0000
+@@ -68,3 +68,4 @@
+ obj-$(CONFIG_MTD_OMAP_NOR)	+= omap_nor.o
+ obj-$(CONFIG_MTD_MTX1)		+= mtx-1_flash.o
+ obj-$(CONFIG_MTD_INTEL_VR_NOR)	+= intel_vr_nor.o
++obj-$(CONFIG_MTD_VMU_FLASH)	+= vmu_flash.o
