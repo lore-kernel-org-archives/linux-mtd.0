@@ -1,28 +1,20 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jcdt2-0001jT-AY
-	for linux-mtd@lists.infradead.org; Fri, 21 Mar 2008 09:50:08 +0000
-Date: Fri, 21 Mar 2008 10:49:54 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Adrian McMenamin <adrian@newgolddream.dyndns.info>
-Subject: Re: [Fwd: Re: [PATCH] 2/2 mtd: Add support for the Dreamcast VMU
-	flash]
-Message-ID: <20080321094954.GA9550@logfs.org>
-References: <1205961641.6276.6.camel@localhost.localdomain>
-	<20080320100353.GA409@logfs.org>
-	<21996.85.118.17.158.1206014214.squirrel@newgolddream.dyndns.info>
-	<20080320112029.GB1355@logfs.org>
-	<47111.85.118.17.158.1206017802.squirrel@newgolddream.dyndns.info>
-	<20080320123139.GE1355@logfs.org>
-	<1206043861.6274.8.camel@localhost.localdomain>
-	<20080320215807.GC3977@logfs.org>
-	<1206052077.6274.21.camel@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1206052077.6274.21.camel@localhost.localdomain>
-Cc: MTD <linux-mtd@lists.infradead.org>
+Received: from mk-filter-2-a-1.mail.uk.tiscali.com ([212.74.100.53]
+	helo=mk-filter-2-a-4.mail.uk.tiscali.com)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jd7lB-0005SY-Vl
+	for linux-mtd@lists.infradead.org; Sat, 22 Mar 2008 17:44:02 +0000
+Subject: [PATCH] 0/3 - Add support for VMU flash memory and update maple
+	bus driver on the SEGA Dreamcast
+From: Adrian McMenamin <adrian@newgolddream.dyndns.info>
+To: dwmw2 <dwmw2@infradead.org>, Greg KH <greg@kroah.com>
+Content-Type: text/plain
+Date: Sat, 22 Mar 2008 17:43:25 +0000
+Message-Id: <1206207805.6324.13.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Andrew Morton <akpm@osdl.org>, Paul Mundt <lethal@users.sourceforge.net>,
+	MTD <linux-mtd@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-sh <linux-sh@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,19 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 20 March 2008 22:27:57 +0000, Adrian McMenamin wrote:
-> 
-> I'm sorry, but the comment above <snap> isn't good english. What do you
-> mean? 
+OK, second iteration of this - have added more comments and, I hope,
+addressed all or nearly all of people's comments.
 
-Ok, I give up.  There are far too many misunderstandings between us for
-any sort of useful discussion.  No matter who is to blame, it would be
-pointless to continue.
+This adds support for the flash memory portion of the "visual memory
+unit" on the SEGA Dreamcast.
 
-Maybe someone else has better luck than me.
+Changelogs on the patches but, in summary:
 
-Jörn
+On the maple bus side: 
 
--- 
-Eighty percent of success is showing up.
--- Woody Allen
+- adds a mutex to ensure device is only addressed once per maple bus
+cycle (and so avoiding corruption of the linked list of packets waiting
+for transmission).
+
+- properly uses the existing lock on the waiting packet queue and cleans
+up the way the linked lists (of waiting and processed packets) are
+handled.
+
+For the device:
+
+- relies on the mutex to ensure block reads and writes are handled
+properly - normally the bus driver will unlock the mutex once a waiting
+packet has been processed
+
+- implements support for partitions. There are rumours such devices
+exist - they are supported in the specification. But I've never seen
+one!
+
+
+There is code to follow (eventually) to implement the FAT based
+filesystem used by the Dreamcast to save to these devices, but they
+should be usable as small flash devices with other filesystems too.
+
+(See http://mc.pp.se/dc/vms/flashmem.html for more details on the
+hardware etc)
+
+Signed-off-by: Adrian McMenamin <adrian@mcmen.demon.co.uk>
