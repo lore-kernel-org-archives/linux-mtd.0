@@ -1,21 +1,22 @@
-Received: from mk-filter-2-a-1.mail.uk.tiscali.com ([212.74.100.53]
-	helo=mk-filter-2-a-4.mail.uk.tiscali.com)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jd8cl-00027Z-Lo
-	for linux-mtd@lists.infradead.org; Sat, 22 Mar 2008 18:39:24 +0000
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jd8tH-0005ei-Ko
+	for linux-mtd@lists.infradead.org; Sat, 22 Mar 2008 18:56:28 +0000
+Date: Sat, 22 Mar 2008 19:56:01 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Adrian McMenamin <adrian@newgolddream.dyndns.info>
 Subject: Re: [PATCH] 2/3 mtd: add support for flash on the SEGA Dreamcast
 	Visual Memory Unit
-From: Adrian McMenamin <adrian@newgolddream.dyndns.info>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
-In-Reply-To: <20080322183200.GD19347@logfs.org>
+Message-ID: <20080322185600.GE19347@logfs.org>
 References: <1206207805.6324.13.camel@localhost.localdomain>
 	<1206209035.6324.29.camel@localhost.localdomain>
 	<20080322183200.GD19347@logfs.org>
-Content-Type: text/plain; charset=UTF-8
-Date: Sat, 22 Mar 2008 18:39:07 +0000
-Message-Id: <1206211147.6324.48.camel@localhost.localdomain>
-Mime-Version: 1.0
+	<1206211147.6324.48.camel@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1206211147.6324.48.camel@localhost.localdomain>
 Cc: Andrew Morton <akpm@osdl.org>, linux-sh <linux-sh@vger.kernel.org>,
 	Greg KH <greg@kroah.com>, Paul Mundt <lethal@users.sourceforge.net>,
 	LKML <linux-kernel@vger.kernel.org>,
@@ -29,45 +30,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-On Sat, 2008-03-22 at 19:32 +0100, Jörn Engel wrote:
-> On Sat, 22 March 2008 18:03:55 +0000, Adrian McMenamin wrote:
-> > 
-
-> Without a doubt, buffering is useful.  However I question how useful it
-> is to implement this in individual device drivers instead of once in
-> mtd_core.c.
-
-
-Well, it's obviously useful to this device. Are you making best the
-enemy of better?
-
-
+On Sat, 22 March 2008 18:39:07 +0000, Adrian McMenamin wrote:
+> On Sat, 2008-03-22 at 19:32 +0100, Jörn Engel wrote:
 > 
-> Given that you have ignored most of my previous comments, NAK. 
-
-
-Not good enough, frankly. What comments have I ignored? I didn't
-implement your suggestion that a void* memory type become be32* because
-it was totally inappropriate for a type that is passed in both be32 and
-le32 and as u8.
-
-
->  I don't
-> mind merging code that isn't up to our standards yet.  But I have a bad
-> feeling about a maintainer that does not understand review comments.
-> Since you had similar problems understanding Andrew, part of the blame
-> may sit on your side.
+> > Given that you have ignored most of my previous comments, NAK. 
 > 
+> Not good enough, frankly. What comments have I ignored? I didn't
+> implement your suggestion that a void* memory type become be32* because
+> it was totally inappropriate for a type that is passed in both be32 and
+> le32 and as u8.
 
-I'm sorry that you feel that way, but as you took the hump when I said
-that this:
+Your argument would make sense if referring to a transport layer where
+some structure is just passed along as payload data.  But you are
+dereferencing a structure.  And instead of declaring a structure, you
+still do this:
+	((unsigned long *)sendbuf)[0] = cpu_to_be32(MAPLE_FUNC_MEMCARD);
+	((unsigned long *)sendbuf)[1] = cpu_to_be32(partition << 24 | num);
 
-"Possibly the big-endian annotations need to trickly though the layers
-here as well."
+If that is a valid description of "appropriate" in your dictionary then
+we clearly don't speak the same language.  Even your own suggestion to
+change the cast to (u32*) would have been an improvement.
 
-Isn't good english (and it's not) and asked you - twice - to explain
-what you meant. I cannot accept your summary.
+> I'm sorry that you feel that way, but as you took the hump when I said
+> that this:
+> 
+> "Possibly the big-endian annotations need to trickly though the layers
+> here as well."
+> 
+> Isn't good english (and it's not) and asked you - twice - to explain
+> what you meant. I cannot accept your summary.
 
+s/trickly/trickle/
 
-Adrian
+I tried to help you by a) reviewing the code and b) even converting the
+function myself after deciding that you don't understand what I meant.  
+Clearly this didn't work.  And maybe the problem is me, either because
+my English is insufficient or I am a d***head.  Quite possible.
+
+But even if I am the problem, you should be able to understand
+somebody's review comments and act accordingly.  If not, I have a really
+bad feeling about this.  And I hope someone else has more patience than
+me, because this code still needs work.
+
+Jörn
+
+-- 
+It is better to die of hunger having lived without grief and fear,
+than to live with a troubled spirit amid abundance.
+-- Epictetus
