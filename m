@@ -1,26 +1,14 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jd8tH-0005ei-Ko
-	for linux-mtd@lists.infradead.org; Sat, 22 Mar 2008 18:56:28 +0000
-Date: Sat, 22 Mar 2008 19:56:01 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Adrian McMenamin <adrian@newgolddream.dyndns.info>
-Subject: Re: [PATCH] 2/3 mtd: add support for flash on the SEGA Dreamcast
-	Visual Memory Unit
-Message-ID: <20080322185600.GE19347@logfs.org>
-References: <1206207805.6324.13.camel@localhost.localdomain>
-	<1206209035.6324.29.camel@localhost.localdomain>
-	<20080322183200.GD19347@logfs.org>
-	<1206211147.6324.48.camel@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1206211147.6324.48.camel@localhost.localdomain>
-Cc: Andrew Morton <akpm@osdl.org>, linux-sh <linux-sh@vger.kernel.org>,
-	Greg KH <greg@kroah.com>, Paul Mundt <lethal@users.sourceforge.net>,
-	LKML <linux-kernel@vger.kernel.org>,
-	MTD <linux-mtd@lists.infradead.org>, dwmw2 <dwmw2@infradead.org>
+Received: from mx06.syd.iprimus.net.au ([210.50.76.235])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JdT8D-0007OV-4O
+	for linux-mtd@lists.infradead.org; Sun, 23 Mar 2008 16:33:13 +0000
+Message-Id: <6hfmtm$320pdp@smtp06.syd.iprimus.net.au>
+From: "AdandSell.com" <hendriza@iprimus.com.au>
+Subject: Free!!! Selling Your Products with Video Advertising & Shopping
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain;iso-8859-1
+Date: Mon, 24 Mar 2008 03:22:09 +1100
+Reply-To: hendriza@iprimus.com.au
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,51 +18,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 22 March 2008 18:39:07 +0000, Adrian McMenamin wrote:
-> On Sat, 2008-03-22 at 19:32 +0100, Jörn Engel wrote:
-> 
-> > Given that you have ignored most of my previous comments, NAK. 
-> 
-> Not good enough, frankly. What comments have I ignored? I didn't
-> implement your suggestion that a void* memory type become be32* because
-> it was totally inappropriate for a type that is passed in both be32 and
-> le32 and as u8.
+FREE !! VIDEO ADVERTISING & SHOPPING
 
-Your argument would make sense if referring to a transport layer where
-some structure is just passed along as payload data.  But you are
-dereferencing a structure.  And instead of declaring a structure, you
-still do this:
-	((unsigned long *)sendbuf)[0] = cpu_to_be32(MAPLE_FUNC_MEMCARD);
-	((unsigned long *)sendbuf)[1] = cpu_to_be32(partition << 24 | num);
+AdandSell.com is first of its kind introducing Video shopping online and that is also for Free. We have moved forward from traditional Photo online shopping to the new video shopping to make it more interactive. 
 
-If that is a valid description of "appropriate" in your dictionary then
-we clearly don't speak the same language.  Even your own suggestion to
-change the cast to (u32*) would have been an improvement.
+Simply by uploading Videos (FLV) of products you want to sell can give a much better idea to Buyers of what they are actually buying. It helps Buyers in their decision making & improves Sales.
 
-> I'm sorry that you feel that way, but as you took the hump when I said
-> that this:
-> 
-> "Possibly the big-endian annotations need to trickly though the layers
-> here as well."
-> 
-> Isn't good english (and it's not) and asked you - twice - to explain
-> what you meant. I cannot accept your summary.
+100% Free of Charge !!!!
+Free Membership & No Fees or Commission.
+Buyer pays directly to Seller. No hidden charges.
 
-s/trickly/trickle/
+We have huge potential to grow into most popular Shopping website in the world, we encourage you to come and join us and enjoy all the benefits.
 
-I tried to help you by a) reviewing the code and b) even converting the
-function myself after deciding that you don't understand what I meant.  
-Clearly this didn't work.  And maybe the problem is me, either because
-my English is insufficient or I am a d***head.  Quite possible.
 
-But even if I am the problem, you should be able to understand
-somebody's review comments and act accordingly.  If not, I have a really
-bad feeling about this.  And I hope someone else has more patience than
-me, because this code still needs work.
+Best Regards 
 
-Jörn
-
--- 
-It is better to die of hunger having lived without grief and fear,
-than to live with a troubled spirit amid abundance.
--- Epictetus
+AdandSell Team
+AdandSell.com
