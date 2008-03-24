@@ -1,30 +1,29 @@
 Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JdnO3-0002di-Nb
-	for linux-mtd@lists.infradead.org; Mon, 24 Mar 2008 14:10:57 +0000
-Date: Mon, 24 Mar 2008 15:10:44 +0100
+	id 1Jdq8t-0005S2-EN
+	for linux-mtd@lists.infradead.org; Mon, 24 Mar 2008 17:07:28 +0000
+Date: Mon, 24 Mar 2008 18:07:07 +0100
 From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
 To: Adrian McMenamin <adrian@newgolddream.dyndns.info>
-Subject: Re: [PATCH] 2/3 mtd: add support for flash on the SEGA Dreamcast
-	Visual Memory Unit
-Message-ID: <20080324141043.GB2899@logfs.org>
-References: <1206211147.6324.48.camel@localhost.localdomain>
-	<20080322185600.GE19347@logfs.org>
-	<1206207805.6324.13.camel@localhost.localdomain>
-	<1206209035.6324.29.camel@localhost.localdomain>
-	<20080322183200.GD19347@logfs.org>
-	<1206211147.6324.48.camel@localhost.localdomain>
-	<20080324020832.GA13935@linux-sh.org>
-	<1206360384.6283.11.camel@localhost.localdomain>
-	<20080324132101.GA2899@logfs.org>
-	<1206367120.6283.15.camel@localhost.localdomain>
+Subject: Re: [PATCH] 3/3 maple: update bus driver to support Dreamcast VMU
+Message-ID: <20080324170707.GH2899@logfs.org>
+References: <1206207805.6324.13.camel@localhost.localdomain>
+	<1206209786.6324.41.camel@localhost.localdomain>
+	<20080324033344.GB15872@linux-sh.org>
+	<20080324144647.GC2899@logfs.org>
+	<1206371178.6283.37.camel@localhost.localdomain>
+	<20080324152952.GF2899@logfs.org>
+	<1206373900.6283.39.camel@localhost.localdomain>
+	<20080324160429.GG2899@logfs.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="YZ5djTAD1cGYuMQK"
+Content-Type: multipart/mixed; boundary="O5XBE6gyVG5Rl6Rj"
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1206367120.6283.15.camel@localhost.localdomain>
-Cc: Paul Mundt <lethal@linux-sh.org>, MTD <linux-mtd@lists.infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>, linux-sh <linux-sh@vger.kernel.org>
+In-Reply-To: <20080324160429.GG2899@logfs.org>
+Cc: Andrew Morton <akpm@osdl.org>, linux-sh <linux-sh@vger.kernel.org>,
+	Greg KH <greg@kroah.com>, LKML <linux-kernel@vger.kernel.org>,
+	Paul Mundt <lethal@linux-sh.org>,
+	MTD <linux-mtd@lists.infradead.org>, dwmw2 <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,389 +34,375 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---YZ5djTAD1cGYuMQK
+--O5XBE6gyVG5Rl6Rj
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 
-On Mon, 24 March 2008 13:58:40 +0000, Adrian McMenamin wrote:
+On Mon, 24 March 2008 17:04:29 +0100, JÃ¶rn Engel wrote:
 > 
-> Tempting as it is to continue the war, discretion will be the better
-> part of valour here and I will give you the last word.
-> 
-> Of course I don't mind you sending patches. Indeed it would be very
-> helpful and generous of you to do so.
+> Then we should be fine.  I'll try to beat the code into submission.
 
-Good.  The first four shouldn't change any behaviour.  Number five flips
-positive error returns into negative ones.  I believe the old behaviour
-is a bug.  Worth a second look to make sure.
+And here go two more interesting patches.  The first is removing all
+locking from the mtd driver.  Since the existing locking code is nearly
+impossibly to verify, I'd rather have something simple and wrong than
+something complicated and wrong.
 
-All five patches are attached.  Hope that doesn't cause any problems.
+The second rearranges the list locking a bit.  Previously it was
+possible to touch maple_waitq or maple_sentq without holding the lock.
+With my limited understanding of the driver, the second patch may
+already be enough to prevent the type of corruption you've been seeing.
 
 JÃ¶rn
 
 -- 
-There are two ways of constructing a software design: one way is to make
-it so simple that there are obviously no deficiencies, and the other is
-to make it so complicated that there are no obvious deficiencies.
--- C. A. R. Hoare
+If a problem has a hardware solution, and a software solution,
+do it in software.
+-- Arnd Bergmann
 
---YZ5djTAD1cGYuMQK
+--O5XBE6gyVG5Rl6Rj
 Content-Type: text/x-diff; charset=utf-8
-Content-Disposition: attachment; filename="cu1.patch"
+Content-Disposition: attachment; filename="cu6.patch"
 Content-Transfer-Encoding: 8bit
 
 
-Directly include two headers.  While unnecessary on sh, this allows the driver
-to be compiled on i386 for those lacking a cross-compiler setup.
+Remove all locking with mq->mutex.
 
 Signed-off-by: Jörn Engel <joern@logfs.org>
 ---
 
- drivers/mtd/maps/vmu_flash.c |    2 ++
- 1 file changed, 2 insertions(+)
-
---- maple/drivers/mtd/maps/vmu_flash.c~cu1	2008-03-24 14:36:51.000000000 +0100
-+++ maple/drivers/mtd/maps/vmu_flash.c	2008-03-24 14:39:05.000000000 +0100
-@@ -12,6 +12,8 @@
-  * GNU General Public Licence
-  */
- #include <linux/init.h>
-+#include <linux/sched.h>
-+#include <linux/jiffies.h>
- #include <linux/maple.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/map.h>
-
---YZ5djTAD1cGYuMQK
-Content-Type: text/x-diff; charset=utf-8
-Content-Disposition: attachment; filename="cu2.patch"
-Content-Transfer-Encoding: 8bit
+ drivers/mtd/maps/vmu_flash.c |   60 +++----------------------------------------
+ drivers/sh/maple/maple.c     |   33 +----------------------
+ 2 files changed, 7 insertions(+), 86 deletions(-)
 
 
-Minimal changes to make sparse happier.
-
-Signed-off-by: Jörn Engel <joern@logfs.org>
----
-
- drivers/mtd/maps/vmu_flash.c |   15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
-
---- maple/drivers/mtd/maps/vmu_flash.c~cu2	2008-03-24 14:39:05.000000000 +0100
-+++ maple/drivers/mtd/maps/vmu_flash.c	2008-03-24 14:44:24.000000000 +0100
-@@ -136,7 +136,7 @@ static int maple_vmu_read_block(unsigned
- 	struct mdev_part *mpart;
- 	struct maple_device *mdev;
- 	int partition, error = 0, locking;
--	void *sendbuf;
-+	__be32 *sendbuf;
- 
- 	mpart = mtd->priv;
- 	mdev = mpart->mdev;
-@@ -162,8 +162,8 @@ static int maple_vmu_read_block(unsigned
- 		goto fail_nosendbuf;
- 	}
- 
--	((unsigned long *)sendbuf)[0] = cpu_to_be32(MAPLE_FUNC_MEMCARD);
--	((unsigned long *)sendbuf)[1] = cpu_to_be32(partition << 24 | num);
-+	sendbuf[0] = cpu_to_be32(MAPLE_FUNC_MEMCARD);
-+	sendbuf[1] = cpu_to_be32(partition << 24 | num);
- 
- 	mdev->mq->sendbuf = sendbuf;
- 	block_read = 0;
-@@ -207,7 +207,7 @@ static int maple_vmu_write_block(unsigne
- 	struct mdev_part *mpart;
- 	struct maple_device *mdev;
- 	int partition, error, locking, x, phaselen;
--	void *sendbuf;
-+	__be32 *sendbuf;
- 
- 	mpart = mtd->priv;
- 	mdev = mpart->mdev;
-@@ -224,7 +224,7 @@ static int maple_vmu_write_block(unsigne
- 		goto fail_nosendbuf;
- 	}
- 
--	((unsigned long *)sendbuf)[0] = cpu_to_be32(MAPLE_FUNC_MEMCARD);
-+	sendbuf[0] = cpu_to_be32(MAPLE_FUNC_MEMCARD);
- 
- 	for (x = 0; x < card->writecnt; x++) {
- 		/* take the lock to protect the contents of sendbuf */
-@@ -233,8 +233,7 @@ static int maple_vmu_write_block(unsigne
- 			error = -EBUSY;
- 			goto fail_nolock;
- 		}
--		((unsigned long *)sendbuf)[1] =
--			cpu_to_be32(partition << 24 | x << 16 | num);
-+		sendbuf[1] = cpu_to_be32(partition << 24 | x << 16 | num);
- 		memcpy(sendbuf + 8, buf + phaselen * x, phaselen);
- 		mdev->mq->sendbuf = sendbuf;
- 		maple_add_packet(mdev->mq);
-@@ -467,7 +466,7 @@ failed:
- 
- static int vmu_flash_erase(struct mtd_info *mtd, struct erase_info *erase)
- {
--	int z;
-+	size_t z;
- 	erase->state = MTD_ERASING;
- 	vmu_flash_write(mtd, erase->addr, erase->len, &z, "\0");
- 	erase->state = MTD_ERASE_DONE;
-
---YZ5djTAD1cGYuMQK
-Content-Type: text/x-diff; charset=utf-8
-Content-Disposition: attachment; filename="cu3.patch"
-Content-Transfer-Encoding: 8bit
-
-
-Shrink the goto logic where easily possible.  Changing the return type to int
-allows vmu_flash_read_char() to follow normal Linux style.
-
-Signed-off-by: Jörn Engel <joern@logfs.org>
----
-
- drivers/mtd/maps/vmu_flash.c |   37 ++++++++++++++-----------------------
- 1 file changed, 14 insertions(+), 23 deletions(-)
-
---- maple/drivers/mtd/maps/vmu_flash.c~cu3	2008-03-24 14:44:50.000000000 +0100
-+++ maple/drivers/mtd/maps/vmu_flash.c	2008-03-24 14:55:22.000000000 +0100
-@@ -76,22 +76,19 @@ static struct vmu_block *ofs_to_block(un
- 	card = mdev->private_data;
- 
- 	if (src_ofs >= ((card->parts)[partition]).numblocks * card->blocklen)
--		goto failed;
-+		return NULL;
- 
- 	num = src_ofs / card->blocklen;
- 	if (num > ((card->parts)[partition]).numblocks)
--		goto failed;
-+		return NULL;
- 
- 	vblock = kmalloc(sizeof(struct vmu_block), GFP_KERNEL);
- 	if (!vblock)
--		goto failed;
-+		return NULL;
- 
- 	vblock->num = num;
- 	vblock->ofs = src_ofs % card->blocklen;
- 	return vblock;
--
--failed:
--	return NULL;
- }
- 
- 
-@@ -264,15 +261,15 @@ fail_nosendbuf:
- }
- 
- /* mtd function to simulate reading byte by byte */
--static unsigned char vmu_flash_read_char(unsigned long ofs, int *retval,
-+static int vmu_flash_read_char(unsigned long ofs, int *retval,
- 	struct mtd_info *mtd)
- {
- 	struct vmu_block *vblock;
+--- maple/drivers/mtd/maps/vmu_flash.c~cu6	2008-03-24 17:12:15.000000000 +0100
++++ maple/drivers/mtd/maps/vmu_flash.c	2008-03-24 17:37:22.000000000 +0100
+@@ -132,7 +132,7 @@ static int maple_vmu_read_block(unsigned
  	struct memcard *card;
  	struct mdev_part *mpart;
  	struct maple_device *mdev;
--	unsigned char *buf, ret;
--	int partition, error;
-+	unsigned char *buf;
-+	int partition, ret;
+-	int partition, error = 0, locking;
++	int partition, error = 0;
+ 	__be32 *sendbuf;
  
  	mpart = mtd->priv;
- 	mdev = mpart->mdev;
-@@ -282,33 +279,27 @@ static unsigned char vmu_flash_read_char
- 	buf = kmalloc(card->blocklen, GFP_KERNEL);
- 	if (!buf) {
- 		*retval = 1;
--		error = -ENOMEM;
--		goto fail_buffer;
-+		return -ENOMEM;
- 	}
- 
- 	vblock = ofs_to_block(ofs, mtd, partition);
- 	if (!vblock) {
- 		*retval = 3;
--		error = -ENOMEM;
-+		ret = -ENOMEM;
- 		goto invalid_block;
- 	}
- 
--	error = maple_vmu_read_block(vblock->num, buf, mtd);
--	if (error) {
-+	ret = maple_vmu_read_block(vblock->num, buf, mtd);
-+	if (ret) {
- 		*retval = 2;
- 		goto failed_block;
- 	}
- 	ret = buf[vblock->ofs];
--	kfree(buf);
--	kfree(vblock);
--	return ret;
--
- failed_block:
- 	kfree(vblock);
- invalid_block:
- 	kfree(buf);
--fail_buffer:
--	return error;
-+	return ret;
- }
- 
- /* mtd higher order function to read flash */
-@@ -321,7 +312,7 @@ static int vmu_flash_read(struct mtd_inf
- 	struct vmu_cache *pcache;
- 	struct vmu_block *vblock = NULL;
- 	int index = 0, retval, partition, leftover, numblocks;
--	unsigned char cx;
-+	int cx;
- 
- 	mpart = mtd->priv;
- 	mdev = mpart->mdev;
-@@ -364,9 +355,9 @@ static int vmu_flash_read(struct mtd_inf
- 		} else {
- 			/* Not cached so read from the device */
- 			cx = vmu_flash_read_char(from + index, &retval, mtd);
--			if (retval) {
-+			if (cx < 0) {
- 				*retlen = index;
--				return -EIO;
-+				return cx;
- 			}
- 			memset(buf + index, cx, 1);
- 			index++;
-
---YZ5djTAD1cGYuMQK
-Content-Type: text/x-diff; charset=utf-8
-Content-Disposition: attachment; filename="cu4.patch"
-Content-Transfer-Encoding: 8bit
-
-
-Trivial comment reformatting.  Old style was uncommon for Linux.
-
-Signed-off-by: Jörn Engel <joern@logfs.org>
----
-
- drivers/mtd/maps/vmu_flash.c |   22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
-
---- maple/drivers/mtd/maps/vmu_flash.c~cu4	2008-03-24 14:55:22.000000000 +0100
-+++ maple/drivers/mtd/maps/vmu_flash.c	2008-03-24 14:57:38.000000000 +0100
-@@ -140,10 +140,10 @@ static int maple_vmu_read_block(unsigned
+@@ -140,16 +140,6 @@ static int maple_vmu_read_block(unsigned
  	partition = mpart->partition;
  	card = mdev->private_data;
  
--	/***
--	* Maple devices include a mutex to ensure packets injected into
--	* the wait queue are not corrupted via scans for hotplug events etc
--	*/
-+	/*
-+	 * Maple devices include a mutex to ensure packets injected into
-+	 * the wait queue are not corrupted via scans for hotplug events etc
-+	 */
- 	locking = mutex_lock_interruptible(&mdev->mq->mutex);
- 	if (locking) {
- 		printk(KERN_INFO "Maple: VMU at (%d, %d) is locked -"
-@@ -235,9 +235,9 @@ static int maple_vmu_write_block(unsigne
+-	/*
+-	 * Maple devices include a mutex to ensure packets injected into
+-	 * the wait queue are not corrupted via scans for hotplug events etc
+-	 */
+-	locking = mutex_lock_interruptible(&mdev->mq->mutex);
+-	if (locking) {
+-		printk(KERN_INFO "Maple: VMU at (%d, %d) is locked -"
+-			" aborting read\n", mdev->unit, mdev->port);
+-		goto fail_nosendbuf;
+-	}
+ 	mdev->mq->command = MAPLE_COMMAND_BREAD;
+ 	mdev->mq->length = 2;
+ 
+@@ -191,8 +181,6 @@ fail_blockread:
+ fail_bralloc:
+ 	kfree(sendbuf);
+ fail_nosendbuf:
+-	if (mutex_is_locked(&mdev->mq->mutex))
+-		mutex_unlock(&mdev->mq->mutex);
+ 	return error;
+ }
+ 
+@@ -203,7 +191,7 @@ static int maple_vmu_write_block(unsigne
+ 	struct memcard *card;
+ 	struct mdev_part *mpart;
+ 	struct maple_device *mdev;
+-	int partition, error, locking, x, phaselen;
++	int partition, error, x, phaselen;
+ 	__be32 *sendbuf;
+ 
+ 	mpart = mtd->priv;
+@@ -224,39 +212,18 @@ static int maple_vmu_write_block(unsigne
+ 	sendbuf[0] = cpu_to_be32(MAPLE_FUNC_MEMCARD);
+ 
+ 	for (x = 0; x < card->writecnt; x++) {
+-		/* take the lock to protect the contents of sendbuf */
+-		locking = mutex_lock_interruptible(&mdev->mq->mutex);
+-		if (locking) {
+-			error = -EBUSY;
+-			goto fail_nolock;
+-		}
+ 		sendbuf[1] = cpu_to_be32(partition << 24 | x << 16 | num);
+ 		memcpy(sendbuf + 8, buf + phaselen * x, phaselen);
  		mdev->mq->sendbuf = sendbuf;
  		maple_add_packet(mdev->mq);
  	}
--	/***
--	* The Maple bus driver will unlock the mutex once the command
--	* has been processed, so we'll just sleep waiting for the unlock */
-+	/*
-+	 * The Maple bus driver will unlock the mutex once the command
-+	 * has been processed, so we'll just sleep waiting for the unlock */
- 	locking = mutex_lock_interruptible(&mdev->mq->mutex);
- 	if (locking) {
- 		error = -EBUSY;
-@@ -592,8 +592,8 @@ static int vmu_connect(struct maple_devi
+-	/*
+-	 * The Maple bus driver will unlock the mutex once the command
+-	 * has been processed, so we'll just sleep waiting for the unlock */
+-	locking = mutex_lock_interruptible(&mdev->mq->mutex);
+-	if (locking) {
+-		error = -EBUSY;
+-		goto fail_nolock;
+-	}
+-	mutex_unlock(&mdev->mq->mutex);
  
- 	test_flash_data = be32_to_cpu(mdev->devinfo.function);
- 	/* Need to count how many bits are set - to find out which
--	* function_data element has details of the memory card:
--	* using Brian Kernighan's/Peter Wegner's method */
-+	 * function_data element has details of the memory card:
-+	 * using Brian Kernighan's/Peter Wegner's method */
- 	for (c = 0; test_flash_data; c++)
- 		test_flash_data &= test_flash_data - 1;
+ 	kfree(sendbuf);
  
-@@ -613,14 +613,14 @@ static int vmu_connect(struct maple_devi
+ 	return card->blocklen;
  
- 	card->partition = 0;
- 	/* Not sure there are actually any multi-partition devices in the
--	* real world, but the hardware supports them, so, so will we */
-+	 * real world, but the hardware supports them, so, so will we */
- 	card->parts = kmalloc(sizeof(struct vmupart) * card->partitions,
- 		GFP_KERNEL);
- 	if (!card->parts) {
- 		error = -ENOMEM;
- 		goto fail_partitions;
+-fail_nolock:
+-	printk(KERN_INFO "Maple: VMU at (%d, %d) is locked -"
+-		" aborting write\n", mdev->unit, mdev->port);
+-	kfree(sendbuf);
+ fail_nosendbuf:
+ 	printk("Maple: VMU (%d, %d): write failed\n", mdev->port, mdev->unit);
+-	if (mutex_is_locked(&mdev->mq->mutex))
+-		mutex_unlock(&mdev->mq->mutex);
+ 	return error;
+ }
+ 
+@@ -482,7 +449,7 @@ static void vmu_queryblocks(struct maple
+ 	struct mdev_part *mpart;
+ 	struct mtd_info *mtd_cur;
+ 	struct vmupart *part_cur;
+-	int error, locking;
++	int error;
+ 
+ 	mdev = mq->dev;
+ 	card = mdev->private_data;
+@@ -553,10 +520,6 @@ static void vmu_queryblocks(struct maple
+ 		mdev->mq->sendbuf = sendbuf;
+ 		maple_getcond_callback(mdev, vmu_queryblocks, 0,
+ 			MAPLE_FUNC_MEMCARD);
+-
+-		locking = mutex_lock_interruptible(&(mdev->mq->mutex));
+-		if (!locking)
+-			maple_add_packet(mdev->mq);
  	}
--	/*kzalloc this to ensure safe kfree-ing of NULL mparts on error*/
-+	/* kzalloc this to ensure safe kfree-ing of NULL mparts on error */
- 	card->mtd = kzalloc(sizeof(struct mtd_info) * card->partitions,
- 		GFP_KERNEL);
- 	if (!card->mtd) {
+ 
+ 	return;
+@@ -586,7 +549,7 @@ fail_name:
+ static int vmu_connect(struct maple_device *mdev)
+ {
+ 	unsigned long test_flash_data, basic_flash_data;
+-	int c, locking, error = 0;
++	int c, error = 0;
+ 	struct memcard *card;
+ 	void *sendbuf;
+ 
+@@ -648,10 +611,6 @@ static int vmu_connect(struct maple_devi
+ 	maple_getcond_callback(mdev, vmu_queryblocks, 0,
+ 		MAPLE_FUNC_MEMCARD);
+ 
+-	locking = mutex_lock_interruptible(&(mdev->mq->mutex));
+-	if (!locking)
+-		maple_add_packet(mdev->mq);
+-
+ 	return 0;
+ 
+ fail_nosendbuf:
+@@ -667,15 +626,8 @@ fail_nomem:
+ static void vmu_disconnect(struct maple_device *mdev)
+ {
+ 	struct memcard *card;
+-	int x, locking;
++	int x;
+ 
+-	/* Seek lock to ensure smooth removal */
+-	locking = mutex_lock_interruptible(&mdev->mq->mutex);
+-	if (locking) {
+-		printk(KERN_INFO "Maple: Could not disconnect VMU device at:"
+-			"(%d, %d)\n", mdev->port, mdev->unit);
+-		return;
+-	}
+ 	mdev->callback = NULL;
+ 	card = mdev->private_data;
+ 	for (x = 0; x < card->partitions; x++) {
+@@ -685,8 +637,6 @@ static void vmu_disconnect(struct maple_
+ 	kfree(card->parts);
+ 	kfree(card->mtd);
+ 	kfree(card);
+-	mutex_unlock(&mdev->mq->mutex);
+-
+ }
+ 
+ static int probe_maple_vmu(struct device *dev)
+--- maple/drivers/sh/maple/maple.c~cu6	2008-03-24 14:40:26.000000000 +0100
++++ maple/drivers/sh/maple/maple.c	2008-03-24 17:49:51.000000000 +0100
+@@ -381,14 +381,7 @@ static int setup_maple_commands(struct d
+ {
+ 	struct maple_device *maple_dev = to_maple_dev(device);
+ 
+-	if ((maple_dev->interval > 0)
+-	    && time_after(jiffies, maple_dev->when)) {
+-		/***
+-		* Can only queue one command per device at a time
+-		* so if cannot aquire the mutex, just return
+-		*/
+-		if (!mutex_trylock(&maple_dev->mq->mutex))
+-			goto setup_finished;
++	if ((maple_dev->interval > 0) && time_after(jiffies, maple_dev->when)) {
+ 		maple_dev->when = jiffies + maple_dev->interval;
+ 		maple_dev->mq->command = MAPLE_COMMAND_GETCOND;
+ 		maple_dev->mq->sendbuf = &maple_dev->function;
+@@ -396,8 +389,6 @@ static int setup_maple_commands(struct d
+ 		maple_add_packet(maple_dev->mq);
+ 	} else {
+ 		if (time_after(jiffies, maple_pnp_time)) {
+-			if (!mutex_trylock(&maple_dev->mq->mutex))
+-				goto setup_finished;
+ 			maple_dev->mq->command = MAPLE_COMMAND_DEVINFO;
+ 			maple_dev->mq->length = 0;
+ 			maple_add_packet(maple_dev->mq);
+@@ -452,11 +443,6 @@ static void maple_map_subunits(struct ma
+ 			mdev_add = maple_alloc_dev(mdev->port, k + 1);
+ 			if (!mdev_add)
+ 				return;
+-			/* Use trylock again to avoid corrupting
+-			* any already queued commands */
+-			locking = mutex_trylock(&mdev_add->mq->mutex);
+-			if (locking == 0)
+-				return;
+ 			mdev_add->mq->command = MAPLE_COMMAND_DEVINFO;
+ 			mdev_add->mq->length = 0;
+ 			maple_add_packet(mdev_add->mq);
+@@ -536,18 +522,6 @@ static void maple_port_rescan(void)
+ 		if (checked[i] == false) {
+ 			fullscan = 0;
+ 			mdev = baseunits[i];
+-			/**
+-			*  Use trylock in case scan has failed
+-			*  but device is still locked
+-			*/
+-			locking = mutex_trylock(&mdev->mq->mutex);
+-			if (locking == 0) {
+-				mutex_unlock(&mdev->mq->mutex);
+-				locking = mutex_lock_interruptible
+-					(&mdev->mq->mutex);
+-				if (locking)
+-					continue;
+-			}
+ 			mdev->mq->command = MAPLE_COMMAND_DEVINFO;
+ 			mdev->mq->length = 0;
+ 			maple_add_packet(mdev->mq);
+@@ -570,8 +544,6 @@ static void maple_dma_handler(struct wor
+ 		list_for_each_entry_safe(mq, nmq, &maple_sentq, list) {
+ 			recvbuf = mq->recvbuf;
+ 			code = recvbuf[0];
+-			if (mutex_is_locked(&mq->mutex))
+-				mutex_unlock(&mq->mutex);
+ 			dev = mq->dev;
+ 			list_del_init(&mq->list);
+ 			switch (code) {
+@@ -763,9 +735,8 @@ static int __init maple_bus_init(void)
+ 		checked[i] = false;
+ 		mdev[i] = maple_alloc_dev(i, 0);
+ 		baseunits[i] = mdev[i];
+-		if (!mdev[i] || mutex_lock_interruptible(&mdev[i]->mq->mutex)) {
++		if (!mdev[i]) {
+ 			while (i-- > 0) {
+-				mutex_unlock(&mdev[i]->mq->mutex);
+ 				maple_free_dev(mdev[i]);
+ 			}
+ 			goto cleanup_cache;
 
---YZ5djTAD1cGYuMQK
+--O5XBE6gyVG5Rl6Rj
 Content-Type: text/x-diff; charset=utf-8
-Content-Disposition: attachment; filename="cu5.patch"
+Content-Disposition: attachment; filename="cu7.patch"
 Content-Transfer-Encoding: 8bit
 
 
-Change return values.
-- Turn -1 into -EIO.  Possibly not the best value, but better than -EPERM.
-- Change -error to error to return negative error values, as is standard.
+Properly protect all accesses to maple_waitq or maple_sentq with
+maple_wlist_lock.  
 
 Signed-off-by: Jörn Engel <joern@logfs.org>
 ---
 
- drivers/mtd/maps/vmu_flash.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/sh/maple/maple.c |   31 +++++++++++++++----------------
+ 1 file changed, 15 insertions(+), 16 deletions(-)
 
 
---- maple/drivers/mtd/maps/vmu_flash.c~cu5	2008-03-24 14:57:38.000000000 +0100
-+++ maple/drivers/mtd/maps/vmu_flash.c	2008-03-24 15:02:36.000000000 +0100
-@@ -320,12 +320,12 @@ static int vmu_flash_read(struct mtd_inf
- 	card = mdev->private_data;
+--- maple/drivers/sh/maple/maple.c~cu7	2008-03-24 17:49:59.000000000 +0100
++++ maple/drivers/sh/maple/maple.c	2008-03-24 18:02:03.000000000 +0100
+@@ -236,17 +236,13 @@ static void maple_send(void)
+ 	int maple_packets;
+ 	struct mapleq *mq, *nmq;
  
- 	if (len < 1)
--		return -1;
-+		return -EIO;
- 	numblocks = card->parts[partition].numblocks;
- 	if (from + len > numblocks * card->blocklen)
- 		len = numblocks * card->blocklen - from;
- 	if (len == 0)
--		return -1;
-+		return -EIO;
- 	/* Have we cached this bit already? */
- 	pcache = (card->parts[partition]).pcache;
- 	do {
-@@ -388,14 +388,14 @@ static int vmu_flash_write(struct mtd_in
- 
- 	/* simple sanity checks */
- 	if (len < 1) {
--		error = -1;
-+		error = -EIO;
- 		goto failed;
+-	if (!list_empty(&maple_sentq))
+-		return;
+ 	mutex_lock(&maple_wlist_lock);
+-	if (list_empty(&maple_waitq) || !maple_dma_done()) {
+-		mutex_unlock(&maple_wlist_lock);
+-		return;
+-	}
+-	mutex_unlock(&maple_wlist_lock);
++	if (!list_empty(&maple_sentq))
++		goto out;
++	if (list_empty(&maple_waitq) || !maple_dma_done())
++		goto out;
+ 	maple_packets = 0;
+ 	maple_sendptr = maple_lastptr = maple_sendbuf;
+-	mutex_lock(&maple_wlist_lock);
+ 	list_for_each_entry_safe(mq, nmq, &maple_waitq, list) {
+ 		maple_build_block(mq);
+ 		list_move(&mq->list, &maple_sentq);
+@@ -259,6 +255,9 @@ static void maple_send(void)
+ 			dma_cache_sync(0, maple_sendbuf + i * PAGE_SIZE,
+ 				       PAGE_SIZE, DMA_BIDIRECTIONAL);
  	}
- 	numblocks = card->parts[partition].numblocks;
- 	if (to + len > numblocks * card->blocklen)
- 		len = numblocks * card->blocklen - to;
- 	if (len == 0) {
--		error = -1;
-+		error = -EIO;
- 		goto failed;
- 	}
- 
-@@ -661,7 +661,7 @@ fail_mtd_info:
- fail_partitions:
- 	kfree(card);
- fail_nomem:
--	return -error;
-+	return error;
++	return;
++out:
++	mutex_unlock(&maple_wlist_lock);
  }
  
- static void vmu_disconnect(struct maple_device *mdev)
+ /* check if there is a driver registered likely to match this device */
+@@ -401,24 +400,22 @@ setup_finished:
+ /* VBLANK bottom half - implemented via workqueue */
+ static void maple_vblank_handler(struct work_struct *work)
+ {
++	mutex_lock(&maple_wlist_lock);
+ 	if (!list_empty(&maple_sentq))
+-		return;
++		goto out;
+ 	if (!maple_dma_done())
+-		return;
++		goto out;
+ 	ctrl_outl(0, MAPLE_ENABLE);
+ 	bus_for_each_dev(&maple_bus_type, NULL, NULL,
+ 			 setup_maple_commands);
+ 	if (time_after(jiffies, maple_pnp_time))
+ 		maple_pnp_time = jiffies + MAPLE_PNP_INTERVAL;
+-	mutex_lock(&maple_wlist_lock);
+-	if (!list_empty(&maple_waitq) && list_empty(&maple_sentq)) {
+-		mutex_unlock(&maple_wlist_lock);
++	if (!list_empty(&maple_waitq) && list_empty(&maple_sentq))
+ 		maple_send();
+-	} else {
+-		mutex_unlock(&maple_wlist_lock);
+-	}
+ 
+ 	maplebus_dma_reset();
++out:
++	mutex_unlock(&maple_wlist_lock);
+ }
+ 
+ /* handle devices added via hotplugs - placing them on queue for DEVINFO*/
+@@ -540,6 +537,7 @@ static void maple_dma_handler(struct wor
+ 	if (!maple_dma_done())
+ 		return;
+ 	ctrl_outl(0, MAPLE_ENABLE);
++	mutex_lock(&maple_wlist_lock);
+ 	if (!list_empty(&maple_sentq)) {
+ 		list_for_each_entry_safe(mq, nmq, &maple_sentq, list) {
+ 			recvbuf = mq->recvbuf;
+@@ -595,6 +593,7 @@ static void maple_dma_handler(struct wor
+ 		if (started == 0)
+ 			started = 1;
+ 	}
++	mutex_unlock(&maple_wlist_lock);
+ 	maplebus_dma_reset();
+ }
+ 
 
---YZ5djTAD1cGYuMQK--
+--O5XBE6gyVG5Rl6Rj--
