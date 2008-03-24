@@ -1,14 +1,14 @@
-Received: from mk-filter-4-a-1.mail.uk.tiscali.com ([212.74.100.55])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JdlS2-0004E8-9B
-	for linux-mtd@lists.infradead.org; Mon, 24 Mar 2008 12:06:54 +0000
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jdmc6-0005Hh-EI
+	for linux-mtd@lists.infradead.org; Mon, 24 Mar 2008 13:21:23 +0000
+Date: Mon, 24 Mar 2008 14:21:02 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Adrian McMenamin <adrian@newgolddream.dyndns.info>
 Subject: Re: [PATCH] 2/3 mtd: add support for flash on the SEGA Dreamcast
 	Visual Memory Unit
-From: Adrian McMenamin <adrian@newgolddream.dyndns.info>
-To: Paul Mundt <lethal@linux-sh.org>
-In-Reply-To: <20080324020832.GA13935@linux-sh.org>
-References: <1206207805.6324.13.camel@localhost.localdomain>
-	<1206209035.6324.29.camel@localhost.localdomain>
+Message-ID: <20080324132101.GA2899@logfs.org>
+References: <1206209035.6324.29.camel@localhost.localdomain>
 	<20080322183200.GD19347@logfs.org>
 	<1206211147.6324.48.camel@localhost.localdomain>
 	<20080322185600.GE19347@logfs.org>
@@ -17,12 +17,13 @@ References: <1206207805.6324.13.camel@localhost.localdomain>
 	<20080322183200.GD19347@logfs.org>
 	<1206211147.6324.48.camel@localhost.localdomain>
 	<20080324020832.GA13935@linux-sh.org>
-Content-Type: text/plain
-Date: Mon, 24 Mar 2008 12:06:24 +0000
-Message-Id: <1206360384.6283.11.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: J??rn Engel <joern@logfs.org>, MTD <linux-mtd@lists.infradead.org>,
+	<1206360384.6283.11.camel@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1206360384.6283.11.camel@localhost.localdomain>
+Cc: Paul Mundt <lethal@linux-sh.org>, MTD <linux-mtd@lists.infradead.org>,
 	LKML <linux-kernel@vger.kernel.org>, linux-sh <linux-sh@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -33,58 +34,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[Recipient list cut somewhat]
-
-
-On Mon, 2008-03-24 at 11:08 +0900, Paul Mundt wrote:
-> On Sat, Mar 22, 2008 at 06:39:07PM +0000, Adrian McMenamin wrote:
-> > On Sat, 2008-03-22 at 19:32 +0100, J??rn Engel wrote:
-
-> > >  I don't mind merging code that isn't up to our standards yet.  But I
-> > >  have a bad feeling about a maintainer that does not understand
-> > >  review comments.  Since you had similar problems understanding
-> > >  Andrew, part of the blame may sit on your side.
-> > 
-> > I'm sorry that you feel that way, but as you took the hump when I said
-> > that this:
-> > 
-> > "Possibly the big-endian annotations need to trickly though the layers
-> > here as well."
-> > 
-> > Isn't good english (and it's not) and asked you - twice - to explain
-> > what you meant. I cannot accept your summary.
-> > 
-> Just as there's no motivation for others to accept merging your code. You
-> really need to work on handling feedback in a less oppositional way if
-> you ever want to have your changes merged.
+On Mon, 24 March 2008 12:06:24 +0000, Adrian McMenamin wrote:
 > 
-> As far as "good" english goes, this is l-k, hang your degree at the
-> door and get off your high horse. Even the native speakers perform
-> horrendous atrocities against the english language, that's life, deal
-> with it. In technical discussions this doesn't tend to matter at all, as
-> long as the meaning is obvious -- which in this case it certainly seems
-> to be. If you're speaking a different language, perhaps it's a
-> miscommunication or misinterpretation of technical terms rather than
-> anything else. Do not automatically assume the blame lies with people who
-> are trying to help you.
+> I have no desire to have a flame war over this. But I didn't understand
+> the sentence, was told twice that I should act on it and asked twice
+> simply what it meant. Eg the second time...
+> 
+> "I'm sorry, but the comment above <snap> isn't good english. What do you
+> mean?"
 
+Just for reference, I had no bloody idea what the "<snap>" in your
+sentence meant.  Or what the comment as a whole was referring to.  In
+other words, we could't communicate.
 
-I have no desire to have a flame war over this. But I didn't understand
-the sentence, was told twice that I should act on it and asked twice
-simply what it meant. Eg the second time...
+Probably more important is the thing you didn't ask about.  The cast is
+- to use a techinical term - crap.  And when someone ignores such
+things, but instead makes a comment about my English language skills, my
+natural response is to suspect a troll.  Trolls tend to replace "I don't
+understand <foo>" with "you are an idiot" in some disguise like a
+comment about hairstyle or language skills.
 
+You ignored other things as well.  In general, the things you ignored
+are a lot more important than the things you didn't ignore.  Which again
+is a good recipe for fruitless discussions, if not flamewars.  As is a
+metadiscussion about previous discussions - like this one.
 
-"I'm sorry, but the comment above <snap> isn't good english. What do you
-mean?"
+> Not unreasonable I think. After the second time I was told  all
+> communication would cease. And, yes, that did annoy me, especially when
+> the next thing I get is someone telling me I didn't listen to them.
 
-Not unreasonable I think. After the second time I was told  all
-communication would cease. And, yes, that did annoy me, especially when
-the next thing I get is someone telling me I didn't listen to them.
+Then maybe we can end the digressions and get back to the code and
+improving it?  I would welcome that.  Would you mind if I sent you
+patches against your code?  Might be a way to avoid metadiscussions as
+much as possible.
 
-I certainly don't expect people to be flawless speakers or writers of
-English. But I don't think it is wrong to ask for clarity when something
-that doesn't make sense is written.
+Jörn
 
-Bluntly I almost always think the blame lies with me when people point
-out mistakes or imperfections in my code - because it usually is. But I
-don't think it is unreasonable to ask what people mean.
+-- 
+Doubt is not a pleasant condition, but certainty is an absurd one.
+-- Voltaire
