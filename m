@@ -1,29 +1,31 @@
-Received: from mk-filter-2-a-1.mail.uk.tiscali.com ([212.74.100.53]
-	helo=mk-filter-2-a-4.mail.uk.tiscali.com)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jdqu4-0000yP-4f
-	for linux-mtd@lists.infradead.org; Mon, 24 Mar 2008 17:56:12 +0000
-Subject: Re: [PATCH] 3/3 maple: update bus driver to support Dreamcast VMU
-From: Adrian McMenamin <adrian@newgolddream.dyndns.info>
+Received: from smtp1.linux-foundation.org ([140.211.169.13])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jdrfl-0005o9-SY
+	for linux-mtd@lists.infradead.org; Mon, 24 Mar 2008 18:45:30 +0000
+Date: Mon, 24 Mar 2008 11:45:18 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
 To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
-In-Reply-To: <20080324173856.GI2899@logfs.org>
+Subject: Re: [PATCH] 2/3 mtd: add support for flash on the SEGA Dreamcast
+	Visual Memory Unit
+Message-Id: <20080324114518.07533af9.akpm@linux-foundation.org>
+In-Reply-To: <20080324145433.GD2899@logfs.org>
 References: <1206207805.6324.13.camel@localhost.localdomain>
-	<1206209786.6324.41.camel@localhost.localdomain>
-	<20080324033344.GB15872@linux-sh.org> <20080324144647.GC2899@logfs.org>
-	<1206371178.6283.37.camel@localhost.localdomain>
-	<20080324152952.GF2899@logfs.org>
-	<1206373900.6283.39.camel@localhost.localdomain>
-	<20080324160429.GG2899@logfs.org> <20080324170707.GH2899@logfs.org>
-	<20080324173856.GI2899@logfs.org>
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 24 Mar 2008 17:55:51 +0000
-Message-Id: <1206381351.7543.15.camel@localhost.localdomain>
+	<1206209035.6324.29.camel@localhost.localdomain>
+	<20080322183200.GD19347@logfs.org>
+	<1206211147.6324.48.camel@localhost.localdomain>
+	<20080324020832.GA13935@linux-sh.org>
+	<1206360384.6283.11.camel@localhost.localdomain>
+	<20080324132101.GA2899@logfs.org>
+	<1206367120.6283.15.camel@localhost.localdomain>
+	<20080324141043.GB2899@logfs.org>
+	<1206369796.6283.19.camel@localhost.localdomain>
+	<20080324145433.GD2899@logfs.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Andrew Morton <akpm@osdl.org>, linux-sh <linux-sh@vger.kernel.org>,
-	Greg KH <greg@kroah.com>, LKML <linux-kernel@vger.kernel.org>,
-	Paul Mundt <lethal@linux-sh.org>,
-	MTD <linux-mtd@lists.infradead.org>, dwmw2 <dwmw2@infradead.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-sh@vger.kernel.org, lethal@linux-sh.org,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	adrian@newgolddream.dyndns.info
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,43 +35,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, 24 Mar 2008 15:54:33 +0100
+J__rn Engel <joern@logfs.org> wrote:
 
-On Mon, 2008-03-24 at 18:38 +0100, Jörn Engel wrote:
-> On Mon, 24 March 2008 18:07:07 +0100, Jörn Engel wrote:
+> On Mon, 24 March 2008 14:43:16 +0000, Adrian McMenamin wrote:
 > > 
-> > The second rearranges the list locking a bit.  Previously it was
-> > possible to touch maple_waitq or maple_sentq without holding the lock.
-> > With my limited understanding of the driver, the second patch may
-> > already be enough to prevent the type of corruption you've been seeing.
+> > Well, I haven't got round to applying them and testing them yet, though
+> > they look ok, obviously, except for one thing: I'm pretty much where you
+> > are on the goto versus return thing, but got pretty clear instructions
+> > on a previous patch from Andrew Morton that using gotos to ensure
+> > functions limit the number of return points is the way to go.
+> > 
+> > I've added him back in now we aren't exchanging flames, so maybe he can
+> > pronouce ex cathedra.
 > 
-> Limited understanding indeed.  The problem in the mtd driver is that it
-> has no concept of ownership.  For example maple_vmu_read_block() does
-> the following:
-> 	mdev->mq->sendbuf = sendbuf;
-> 	...
-> 	maple_add_packet(mdev->mq);
-> 
-> It accesses some field in mdev->mq, then sends the structure off to
-> maple_add_packet().  From this point on, mdev->mq belongs to the bus
-> driver - until it calls the callback, vmu_blockread() in this case.
-> 
-> But a second thread can call into maple_vmu_read_block() again and
-> access mdev->mq while it rightfully belongs to the bus driver.  Bad
-> things will happen.
-> 
-> So these two patches try to close the race windows.  Please note the
-> FIXME in the write patch - I didn't do all the work.  Real life calls
-> for attention, so these will be the last patches for a while.
-> 
-> Jörn
-> 
+> It is a matter of personal taste.  Having a single return statement is
+> nice when using a debugger.  One can set a single breakpoint instead of
+> ten.  I guess that is why Andrew prefers it.
 
-The problem is that the hardware does not support another callback. In
-any case while you are right that the function might be called as second
-time, in the original code it will sleep while waiting for the lock,
-which is allocated per device.
+Experience has shown that over time, the multiple-return-point approach
+leads to locking errors, resource leaks and to much duplicated
+unlocking/freeing code.
 
-On the second patch - aiui completions do an uninterruptible wait, that
-means they are surely not a good choice for this - especially as the
-device could be unplugged at any time. (Admittedly my documentation
-migght be of date here)
+Because when people add new locking and more dynamic allocations to the function
+they need to hunt down each `return' and add unlocking/freeing code to it (this
+is bad).   And sometimes they miss one (this is worse).
