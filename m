@@ -1,21 +1,22 @@
 Received: from mailrelay005.isp.belgacom.be ([195.238.6.171])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JeAGD-0007Te-Bk
-	for linux-mtd@lists.infradead.org; Tue, 25 Mar 2008 14:36:22 +0000
+	id 1JeBRC-00035Z-4r
+	for linux-mtd@lists.infradead.org; Tue, 25 Mar 2008 15:51:46 +0000
 From: Laurent Pinchart <laurentp@cse-semaphore.com>
-To: David Gibson <david@gibson.dropbear.id.au>
+To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
 Subject: Re: OF compatible MTD platform RAM driver ?
-Date: Tue, 25 Mar 2008 15:36:12 +0100
+Date: Tue, 25 Mar 2008 16:51:31 +0100
 References: <200803101606.39184.laurentp@cse-semaphore.com>
-	<200803111139.12667.laurentp@cse-semaphore.com>
-	<20080311224048.GA7642@localhost.localdomain>
-In-Reply-To: <20080311224048.GA7642@localhost.localdomain>
+	<200803251536.17795.laurentp@cse-semaphore.com>
+	<47E91A5B.1060406@ru.mvista.com>
+In-Reply-To: <47E91A5B.1060406@ru.mvista.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart3247855.gUWhUHSo2b";
+Content-Type: multipart/signed; boundary="nextPart1509009.ud9OxWemcf";
 	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
-Message-Id: <200803251536.17795.laurentp@cse-semaphore.com>
-Cc: ben@simtec.co.uk, linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
+Message-Id: <200803251651.42608.laurentp@cse-semaphore.com>
+Cc: ben@simtec.co.uk, linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	David Gibson <david@gibson.dropbear.id.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,69 +26,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---nextPart3247855.gUWhUHSo2b
+--nextPart1509009.ud9OxWemcf
 Content-Type: text/plain;
-  charset="utf-8"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
 
-On Tuesday 11 March 2008 23:40, David Gibson wrote:
-> On Tue, Mar 11, 2008 at 11:39:08AM +0100, Laurent Pinchart wrote:
-> > On Tuesday 11 March 2008 01:45, David Gibson wrote:
-> > > On Mon, Mar 10, 2008 at 12:00:22PM -0500, Rune Torgersen wrote:
-> > > > linuxppc-dev-bounces+runet=3Dinnovsys.com@ozlabs.org wrote:
-> [snip]
-> > > > We ran ito the same issue.
-> > > > We did option 3, as it was efinetly the easiest,
-> > >
-> > > I think this is the best option in principle.
-> >=20
-> > I'll implement that and post a patch after completing the ppc-to-powerp=
-c=20
-> > migration.
-> >=20
-> > > > here is the sram entry in our dts:
-> > >
-> > > Except that your implementation of it is not good.
-> > >
-> > > You're relying on the old obsolete flash binding with the "probe-type"
-> > > field.  The solution should be adapted to the new approach which uses
-> > > values in the "compatible" field to indicate various sorts of flash
-> > > device.
-> >=20
-> > What "compatible" values should I use for ROM and RAM mappings ?
+Hi Sergei,
+
+On Tuesday 25 March 2008 16:29, Sergei Shtylyov wrote:
+> Hello.
 >=20
-> That I'm not so sure of.  We'll need to find some consensus.
+> Laurent Pinchart wrote:
 >=20
-> There may be existing IEEE1275 bindings for roms, which we should
-> investigate.
+> >>>>>here is the sram entry in our dts:
+>=20
+> >>>>Except that your implementation of it is not good.
+>=20
+> >>>>You're relying on the old obsolete flash binding with the "probe-type"
+> >>>>field.  The solution should be adapted to the new approach which uses
+> >>>>values in the "compatible" field to indicate various sorts of flash
+> >>>>device.
+>=20
+> >>>What "compatible" values should I use for ROM and RAM mappings ?
+>=20
+> >>That I'm not so sure of.  We'll need to find some consensus.
+>=20
+> >>There may be existing IEEE1275 bindings for roms, which we should
+> >>investigate.
+>=20
+> > Do you (or someone else here) have access to the IEEE1275 specification=
+ ? Is=20
+>=20
+>     Yeah, and I can point you to it -- see the documantation section on=20
+> http://www.openbios.org/...
 
-Do you (or someone else here) have access to the IEEE1275 specification ? I=
-s=20
-there any ROM binding in there ?
+Thanks a lot for the pointer.
 
-> Arguably RAM should be represented by a memory node, but=20
-> that's going to get messy for this sort of application.
+> > there any ROM binding in there ?
+>=20
+>     No. We initially called the flash devices that physmap_of driver=20
+> controlled "rom" (I mean the "device_type" property) -- now this is obsol=
+eted.
+>=20
+> >>Arguably RAM should be represented by a memory node, but=20
+> >>that's going to get messy for this sort of application.
+>=20
+>     Note that the OF "memory" type nodes do *not* represent RAM devices.
+>=20
+> > We're talking about a very specific type of RAM, used for permanent sto=
+rage=20
+> > with a battery backup. The RAM is really meant to be used as an MTD dev=
+ice=20
+> > and as such I think it makes sense to describe it as an mtd-compatible =
+device=20
+> > on the local bus.
+>=20
+> > What about the following definition for the RAM node ?
+>=20
+> >         nvram@2,0000 {
+>=20
+>     Note that there's a OF "device_type" of "nvram", so your (generic) de=
+vice=20
+> name seems to add some mess. (IIRC, that OF device type didn't actually=20
+> represent a "real" device, and only served to provide access to NVRAM for=
+ OF).
 
-We're talking about a very specific type of RAM, used for permanent storage=
-=20
-with a battery backup. The RAM is really meant to be used as an MTD device=
-=20
-and as such I think it makes sense to describe it as an mtd-compatible devi=
-ce=20
-on the local bus.
+Ok.
 
-What about the following definition for the RAM node ?
+> >                 compatible =3D "mtd,ram";
+>=20
+>     The part before comma should be a company name or a stock ticker. Wha=
+t did=20
+> you mean here?
 
-        nvram@2,0000 {
-                compatible =3D "mtd,ram";
-                reg =3D <2 0x0000 0x00100000>;
-                bank-width =3D <2>;
-        };
+I didn't know that. Let's say I meant "mtd-ram" :-)
 
-Or should the node have a device-type property of either 'ram' or 'rom' wit=
-h=20
-the compatible property just referencing MTD ?
+> >                 reg =3D <2 0x0000 0x00100000>;
+> >                 bank-width =3D <2>;
+> >         };
+>=20
+> > Or should the node have a device-type property of either 'ram' or 'rom'=
+ with=20
+> > the compatible property just referencing MTD ?
+>=20
+>     The "device_type" properties are not required and their further creat=
+ion=20
+> has been discouraged on liunxppc-dev.
+
+What about
+
+	mtdram@2,0000 {
+		compatible =3D "mtd-ram";
+		reg =3D <2 0x0000 0x00100000>;
+		bank-width =3D <2>;
+	};
+
+ROMs could use "mtd-rom" for their compatible property.
 
 Best regards,
 
@@ -95,22 +130,22 @@ Best regards,
 Laurent Pinchart
 CSE Semaphore Belgium
 
-Chauss=C3=A9e de Bruxelles, 732A
+Chauss=E9e de Bruxelles, 732A
 B-1410 Waterloo
 Belgium
 
 T +32 (2) 387 42 59
 =46 +32 (2) 387 42 75
 
---nextPart3247855.gUWhUHSo2b
+--nextPart1509009.ud9OxWemcf
 Content-Type: application/pgp-signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.5 (GNU/Linux)
 
-iD8DBQBH6Q3h8y9gWxC9vpcRAndqAJ9tkmT0QYoubo1HsWSHHY2pq/whrwCdG2Tz
-lOMWmBQFI3g+XD/k7Uo0Ee4=
-=19Bl
+iD8DBQBH6R+O8y9gWxC9vpcRAjmRAJ9PZj/+KY8fFg6/bfI8me5ivje06QCguR7E
+1UoOb0cvvpX5p70BhGuAXaw=
+=iahI
 -----END PGP SIGNATURE-----
 
---nextPart3247855.gUWhUHSo2b--
+--nextPart1509009.ud9OxWemcf--
