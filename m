@@ -1,20 +1,21 @@
-Received: from fmmailgate09.web.de ([217.72.192.184])
+Received: from mailrelay005.isp.belgacom.be ([195.238.6.171])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jecaw-0002lU-1n
-	for linux-mtd@lists.infradead.org; Wed, 26 Mar 2008 20:51:38 +0000
-Date: Wed, 26 Mar 2008 21:51:34 +0100
-Message-Id: <213384793@web.de>
+	id 1JeAGD-0007Te-Bk
+	for linux-mtd@lists.infradead.org; Tue, 25 Mar 2008 14:36:22 +0000
+From: Laurent Pinchart <laurentp@cse-semaphore.com>
+To: David Gibson <david@gibson.dropbear.id.au>
+Subject: Re: OF compatible MTD platform RAM driver ?
+Date: Tue, 25 Mar 2008 15:36:12 +0100
+References: <200803101606.39184.laurentp@cse-semaphore.com>
+	<200803111139.12667.laurentp@cse-semaphore.com>
+	<20080311224048.GA7642@localhost.localdomain>
+In-Reply-To: <20080311224048.GA7642@localhost.localdomain>
 MIME-Version: 1.0
-From: devzero@web.de
-To: Randy Dunlap <randy.dunlap@oracle.com>
-Subject: Re: some minor issues with 2.6.25-rc6-git7-default
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: multipart/signed; boundary="nextPart3247855.gUWhUHSo2b";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
-Cc: "Rafael J. Wysocki" <rjw@sisk.pl>, linux-ide@vger.kernel.org,
-	greg@kroah.com, linux-kernel@vger.kernel.org,
-	david-b@pacbell.net, linux-acpi@vger.kernel.org,
-	linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
-	alan@lxorguk.ukuu.org.uk, lenb@kernel.org
+Message-Id: <200803251536.17795.laurentp@cse-semaphore.com>
+Cc: ben@simtec.co.uk, linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,56 +25,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Can you post the full kernel log up to this BUG?
-> It should show that causes the Taint.
+--nextPart3247855.gUWhUHSo2b
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-oh - yes:
+On Tuesday 11 March 2008 23:40, David Gibson wrote:
+> On Tue, Mar 11, 2008 at 11:39:08AM +0100, Laurent Pinchart wrote:
+> > On Tuesday 11 March 2008 01:45, David Gibson wrote:
+> > > On Mon, Mar 10, 2008 at 12:00:22PM -0500, Rune Torgersen wrote:
+> > > > linuxppc-dev-bounces+runet=3Dinnovsys.com@ozlabs.org wrote:
+> [snip]
+> > > > We ran ito the same issue.
+> > > > We did option 3, as it was efinetly the easiest,
+> > >
+> > > I think this is the best option in principle.
+> >=20
+> > I'll implement that and post a patch after completing the ppc-to-powerp=
+c=20
+> > migration.
+> >=20
+> > > > here is the sram entry in our dts:
+> > >
+> > > Except that your implementation of it is not good.
+> > >
+> > > You're relying on the old obsolete flash binding with the "probe-type"
+> > > field.  The solution should be adapted to the new approach which uses
+> > > values in the "compatible" field to indicate various sorts of flash
+> > > device.
+> >=20
+> > What "compatible" values should I use for ROM and RAM mappings ?
+>=20
+> That I'm not so sure of.  We'll need to find some consensus.
+>=20
+> There may be existing IEEE1275 bindings for roms, which we should
+> investigate.
 
-Mar 23 09:12:20 opensuse103 kernel: ac97_codec: module license 'unspecified' taints kernel.
+Do you (or someone else here) have access to the IEEE1275 specification ? I=
+s=20
+there any ROM binding in there ?
 
-modinfo ac97_codec
-filename:       /lib/modules/2.6.25-rc6-git7-default/kernel/sound/oss/ac97_codec.ko
-srcversion:     8665939D5E471F7E331BB3E
-depends:
-vermagic:       2.6.25-rc6-git7-default SMP mod_unload 586
+> Arguably RAM should be represented by a memory node, but=20
+> that's going to get messy for this sort of application.
 
+We're talking about a very specific type of RAM, used for permanent storage=
+=20
+with a battery backup. The RAM is really meant to be used as an MTD device=
+=20
+and as such I think it makes sense to describe it as an mtd-compatible devi=
+ce=20
+on the local bus.
 
-seems MODULE_LICENSE is missing in ./sound/oss/ac97_codec.c !?
+What about the following definition for the RAM node ?
 
+        nvram@2,0000 {
+                compatible =3D "mtd,ram";
+                reg =3D <2 0x0000 0x00100000>;
+                bank-width =3D <2>;
+        };
 
-> > > > CCing Dave Brownell.
-> > > > 
-> > > > > Mar 23 09:14:23 opensuse103 kernel: Generic RTC Driver v1.07
-> > > > > Mar 23 09:14:23 opensuse103 kernel: proc_dir_entry 'rtc' already registered
-> > > > > Mar 23 09:14:23 opensuse103 kernel: Pid: 3994, comm: modprobe Tainted: P         2.6.25-rc6-git7-default #1
-> > > > > Mar 23 09:14:23 opensuse103 kernel:  [<c019a602>] proc_register+0xf3/0x11f
-> > > > > Mar 23 09:14:23 opensuse103 kernel:  [<c019a719>] create_proc_entry+0x69/0x7b
-> > > > > Mar 23 09:14:23 opensuse103 kernel:  [<e0c5f02d>] rtc_generic_init+0x2d/0x54 [genrtc]
-> > > > > Mar 23 09:14:23 opensuse103 kernel:  [<c013c1de>] sys_init_module+0x16b6/0x17c9
-> > > > > Mar 23 09:14:23 opensuse103 kernel:  [<c0108a6a>] sys_mmap2+0x62/0x77
-> > > > > Mar 23 09:14:23 opensuse103 kernel:  [<c01059c4>] sysenter_past_esp+0x6d/0xa9
-> > > > > Mar 23 09:14:23 opensuse103 kernel:  =======================
-> > > 
-> > > uh, "known problem": multiple rtc drivers are being run.
-> > > 
-> > > I don't really understand why we haven't been able to fix this - there have
-> > > been numerous reports..
-> > 
-> > i will take a closer look to determine how/when this happens.
-> 
-> I thought that David B. sent a (Kconfig ?) patch for this...
-> 
-> ---
-> ~Randy
+Or should the node have a device-type property of either 'ram' or 'rom' wit=
+h=20
+the compatible property just referencing MTD ?
 
-do you mean this one ?
+Best regards,
 
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=55ff1aba940ff46d4f6d4fd790ea3e1a47aaa84f
+=2D-=20
+Laurent Pinchart
+CSE Semaphore Belgium
 
-ok, it may be sort of "dumb" to blindly load one module after the other but i would expect a more meaningful message.
+Chauss=C3=A9e de Bruxelles, 732A
+B-1410 Waterloo
+Belgium
 
-regards
-roland
-_________________________________________________________________________
-In 5 Schritten zur eigenen Homepage. Jetzt Domain sichern und gestalten! 
-Nur 3,99 EUR/Monat! http://www.maildomain.web.de/?mc=021114
+T +32 (2) 387 42 59
+=46 +32 (2) 387 42 75
+
+--nextPart3247855.gUWhUHSo2b
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+
+iD8DBQBH6Q3h8y9gWxC9vpcRAndqAJ9tkmT0QYoubo1HsWSHHY2pq/whrwCdG2Tz
+lOMWmBQFI3g+XD/k7Uo0Ee4=
+=19Bl
+-----END PGP SIGNATURE-----
+
+--nextPart3247855.gUWhUHSo2b--
