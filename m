@@ -1,20 +1,20 @@
 Received: from mailrelay005.isp.belgacom.be ([195.238.6.171])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JeBRC-00035Z-4r
-	for linux-mtd@lists.infradead.org; Tue, 25 Mar 2008 15:51:46 +0000
+	id 1JeCGW-00061C-4s
+	for linux-mtd@lists.infradead.org; Tue, 25 Mar 2008 16:44:48 +0000
 From: Laurent Pinchart <laurentp@cse-semaphore.com>
 To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
 Subject: Re: OF compatible MTD platform RAM driver ?
-Date: Tue, 25 Mar 2008 16:51:31 +0100
+Date: Tue, 25 Mar 2008 17:44:42 +0100
 References: <200803101606.39184.laurentp@cse-semaphore.com>
-	<200803251536.17795.laurentp@cse-semaphore.com>
-	<47E91A5B.1060406@ru.mvista.com>
-In-Reply-To: <47E91A5B.1060406@ru.mvista.com>
+	<200803251651.42608.laurentp@cse-semaphore.com>
+	<47E926FB.3030900@ru.mvista.com>
+In-Reply-To: <47E926FB.3030900@ru.mvista.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1509009.ud9OxWemcf";
+Content-Type: multipart/signed; boundary="nextPart6354502.gbtd3JDiyu";
 	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
-Message-Id: <200803251651.42608.laurentp@cse-semaphore.com>
+Message-Id: <200803251744.46001.laurentp@cse-semaphore.com>
 Cc: ben@simtec.co.uk, linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
 	David Gibson <david@gibson.dropbear.id.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,103 +26,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---nextPart1509009.ud9OxWemcf
+--nextPart6354502.gbtd3JDiyu
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
 
-Hi Sergei,
-
-On Tuesday 25 March 2008 16:29, Sergei Shtylyov wrote:
-> Hello.
->=20
+On Tuesday 25 March 2008 17:23, Sergei Shtylyov wrote:
 > Laurent Pinchart wrote:
 >=20
-> >>>>>here is the sram entry in our dts:
->=20
-> >>>>Except that your implementation of it is not good.
->=20
-> >>>>You're relying on the old obsolete flash binding with the "probe-type"
-> >>>>field.  The solution should be adapted to the new approach which uses
-> >>>>values in the "compatible" field to indicate various sorts of flash
-> >>>>device.
->=20
-> >>>What "compatible" values should I use for ROM and RAM mappings ?
->=20
-> >>That I'm not so sure of.  We'll need to find some consensus.
->=20
-> >>There may be existing IEEE1275 bindings for roms, which we should
-> >>investigate.
->=20
-> > Do you (or someone else here) have access to the IEEE1275 specification=
- ? Is=20
->=20
->     Yeah, and I can point you to it -- see the documantation section on=20
-> http://www.openbios.org/...
-
-Thanks a lot for the pointer.
-
-> > there any ROM binding in there ?
->=20
->     No. We initially called the flash devices that physmap_of driver=20
-> controlled "rom" (I mean the "device_type" property) -- now this is obsol=
-eted.
->=20
-> >>Arguably RAM should be represented by a memory node, but=20
-> >>that's going to get messy for this sort of application.
->=20
->     Note that the OF "memory" type nodes do *not* represent RAM devices.
->=20
-> > We're talking about a very specific type of RAM, used for permanent sto=
-rage=20
-> > with a battery backup. The RAM is really meant to be used as an MTD dev=
-ice=20
-> > and as such I think it makes sense to describe it as an mtd-compatible =
+> >>>We're talking about a very specific type of RAM, used for permanent=20
+storage=20
+> >>>with a battery backup. The RAM is really meant to be used as an MTD=20
 device=20
-> > on the local bus.
+> >>>and as such I think it makes sense to describe it as an mtd-compatible=
+=20
+device=20
+> >>>on the local bus.
 >=20
-> > What about the following definition for the RAM node ?
+> >>>What about the following definition for the RAM node ?
 >=20
-> >         nvram@2,0000 {
+> >>>        nvram@2,0000 {
 >=20
->     Note that there's a OF "device_type" of "nvram", so your (generic) de=
-vice=20
-> name seems to add some mess. (IIRC, that OF device type didn't actually=20
-> represent a "real" device, and only served to provide access to NVRAM for=
- OF).
-
-Ok.
-
-> >                 compatible =3D "mtd,ram";
+> >>    Note that there's a OF "device_type" of "nvram", so your (generic)=
+=20
+device=20
+> >>name seems to add some mess. (IIRC, that OF device type didn't actually=
+=20
+> >>represent a "real" device, and only served to provide access to NVRAM f=
+or=20
+OF).
 >=20
->     The part before comma should be a company name or a stock ticker. Wha=
-t did=20
-> you mean here?
-
-I didn't know that. Let's say I meant "mtd-ram" :-)
-
-> >                 reg =3D <2 0x0000 0x00100000>;
-> >                 bank-width =3D <2>;
-> >         };
+> > Ok.
 >=20
-> > Or should the node have a device-type property of either 'ram' or 'rom'=
- with=20
-> > the compatible property just referencing MTD ?
+>     Well, I might have gone too far here -- it should be a real device=20
+> (spec'ed in Device Support Extensions recommended practice). It's just th=
+at=20
+> the spec didn't mention "reg" property, only "#bytes" (the device capacit=
+y).=20
+> So, it may be worth considering...
+
+The nvram device descrived in the Device Support Extensions is probably mea=
+nt=20
+to describe the kind of nvram found in RTC chips. That memory isn't directl=
+y=20
+accessible. As the spec doesn't mention this explicitely we could still reu=
+se=20
+the nvram device type for direct-mapped battery-backed ram. I have no stron=
+g=20
+opinion for or against that.
+
+> >>>                compatible =3D "mtd,ram";
 >=20
->     The "device_type" properties are not required and their further creat=
-ion=20
-> has been discouraged on liunxppc-dev.
+> >>    The part before comma should be a company name or a stock ticker. W=
+hat=20
+did=20
+> >>you mean here?
+>=20
+> > I didn't know that. Let's say I meant "mtd-ram" :-)
+>=20
+> >>>                reg =3D <2 0x0000 0x00100000>;
+> >>>                bank-width =3D <2>;
+> >>>        };
+>=20
+> >>>Or should the node have a device-type property of either 'ram' or 'rom=
+'=20
+with=20
+> >>>the compatible property just referencing MTD ?
+>=20
+> >>    The "device_type" properties are not required and their further=20
+creation=20
+> >>has been discouraged on liunxppc-dev.
+>=20
+> > What about
+>=20
+> > 	mtdram@2,0000 {
+> > 		compatible =3D "mtd-ram";
+> > 		reg =3D <2 0x0000 0x00100000>;
+> > 		bank-width =3D <2>;
+> > 	};
+>=20
+> > ROMs could use "mtd-rom" for their compatible property.
+>=20
+>     Heh, there was a whole company against mentioning "mtd" when we start=
+ed=20
+> working on this (of course, the first idea was to call the flash device t=
+ype=20
+> "mtd"). I don't think "mtd" looks good here -- I'd suggest "flash-ram" (i=
+f=20
+> this is just a linearly mapped NVRAM).
 
-What about
-
-	mtdram@2,0000 {
-		compatible =3D "mtd-ram";
-		reg =3D <2 0x0000 0x00100000>;
-		bank-width =3D <2>;
-	};
-
-ROMs could use "mtd-rom" for their compatible property.
+I'm fine with "flash-ram" (even thought it looks a bit weird). I'll prepare=
+ a=20
+patch.
 
 Best regards,
 
@@ -137,15 +133,15 @@ Belgium
 T +32 (2) 387 42 59
 =46 +32 (2) 387 42 75
 
---nextPart1509009.ud9OxWemcf
+--nextPart6354502.gbtd3JDiyu
 Content-Type: application/pgp-signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.5 (GNU/Linux)
 
-iD8DBQBH6R+O8y9gWxC9vpcRAjmRAJ9PZj/+KY8fFg6/bfI8me5ivje06QCguR7E
-1UoOb0cvvpX5p70BhGuAXaw=
-=iahI
+iD8DBQBH6Sv98y9gWxC9vpcRAgtPAJ0aSONVtY/c6F6WnCCXr3Uqp9OwNwCg0Ewb
+xNaWaFOYIQ80bBYRfFL85Rs=
+=iULb
 -----END PGP SIGNATURE-----
 
---nextPart1509009.ud9OxWemcf--
+--nextPart6354502.gbtd3JDiyu--
