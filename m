@@ -1,22 +1,23 @@
-Received: from agminet01.oracle.com ([141.146.126.228])
+Received: from ozlabs.org ([203.10.76.45])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JecpV-0007HP-EX
-	for linux-mtd@lists.infradead.org; Wed, 26 Mar 2008 21:06:42 +0000
-Message-ID: <47EABA4A.6030705@oracle.com>
-Date: Wed, 26 Mar 2008 14:04:10 -0700
-From: Randy Dunlap <randy.dunlap@oracle.com>
+	id 1JefEj-0005vW-J1
+	for linux-mtd@lists.infradead.org; Wed, 26 Mar 2008 23:40:53 +0000
+Date: Thu, 27 Mar 2008 10:37:25 +1100
+From: David Gibson <david@gibson.dropbear.id.au>
+To: Segher Boessenkool <segher@kernel.crashing.org>
+Subject: Re: [PATCH 1/2] [MTD] Add support for RAM & ROM mappings in the
+	physmap_of MTD driver.
+Message-ID: <20080326233725.GB8005@localhost.localdomain>
+References: <200803261344.03438.laurentp@cse-semaphore.com>
+	<346860fa1e8a75a4a89e260011690659@kernel.crashing.org>
+	<47EA6B11.7050804@ru.mvista.com>
+	<777c028aa41fe870542afdb4fa7d2db6@kernel.crashing.org>
 MIME-Version: 1.0
-To: devzero@web.de
-Subject: Re: some minor issues with 2.6.25-rc6-git7-default
-References: <213384793@web.de>
-In-Reply-To: <213384793@web.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "Rafael J. Wysocki" <rjw@sisk.pl>, linux-ide@vger.kernel.org,
-	greg@kroah.com, linux-kernel@vger.kernel.org,
-	david-b@pacbell.net, linux-acpi@vger.kernel.org,
-	linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
-	alan@lxorguk.ukuu.org.uk, lenb@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <777c028aa41fe870542afdb4fa7d2db6@kernel.crashing.org>
+Cc: Sergei Shtylyov <sshtylyov@ru.mvista.com>, ben@simtec.co.uk,
+	linux-mtd@lists.infradead.org, linuxppc-dev@ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,58 +27,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-devzero@web.de wrote:
->> Can you post the full kernel log up to this BUG?
->> It should show that causes the Taint.
-> 
-> oh - yes:
-> 
-> Mar 23 09:12:20 opensuse103 kernel: ac97_codec: module license 'unspecified' taints kernel.
-> 
-> modinfo ac97_codec
-> filename:       /lib/modules/2.6.25-rc6-git7-default/kernel/sound/oss/ac97_codec.ko
-> srcversion:     8665939D5E471F7E331BB3E
-> depends:
-> vermagic:       2.6.25-rc6-git7-default SMP mod_unload 586
-> 
-> 
-> seems MODULE_LICENSE is missing in ./sound/oss/ac97_codec.c !?
-
-It was recently removed for some reason.
-
-I get the impression that you (we) should be using ALSA drivers/codecs
-instead of the OSS ones that in the process of being removed.
-
-
->>>>> CCing Dave Brownell.
->>>>>
->>>>>> Mar 23 09:14:23 opensuse103 kernel: Generic RTC Driver v1.07
->>>>>> Mar 23 09:14:23 opensuse103 kernel: proc_dir_entry 'rtc' already registered
->>>>>> Mar 23 09:14:23 opensuse103 kernel: Pid: 3994, comm: modprobe Tainted: P         2.6.25-rc6-git7-default #1
->>>>>> Mar 23 09:14:23 opensuse103 kernel:  [<c019a602>] proc_register+0xf3/0x11f
->>>>>> Mar 23 09:14:23 opensuse103 kernel:  [<c019a719>] create_proc_entry+0x69/0x7b
->>>>>> Mar 23 09:14:23 opensuse103 kernel:  [<e0c5f02d>] rtc_generic_init+0x2d/0x54 [genrtc]
->>>>>> Mar 23 09:14:23 opensuse103 kernel:  [<c013c1de>] sys_init_module+0x16b6/0x17c9
->>>>>> Mar 23 09:14:23 opensuse103 kernel:  [<c0108a6a>] sys_mmap2+0x62/0x77
->>>>>> Mar 23 09:14:23 opensuse103 kernel:  [<c01059c4>] sysenter_past_esp+0x6d/0xa9
->>>>>> Mar 23 09:14:23 opensuse103 kernel:  =======================
->>>> uh, "known problem": multiple rtc drivers are being run.
->>>>
->>>> I don't really understand why we haven't been able to fix this - there have
->>>> been numerous reports..
->>> i will take a closer look to determine how/when this happens.
->> I thought that David B. sent a (Kconfig ?) patch for this...
+On Wed, Mar 26, 2008 at 04:34:58PM +0100, Segher Boessenkool wrote:
+>>>>      {
+>>>> +        .compatible    = "physmap-ram",
+>>>> +        .data        = (void *)"map_ram",
+>>>> +    },
+>>>> +    {
+>>>> +        .compatible    = "physmap-rom",
+>>>> +        .data        = (void *)"map_rom",
+>>>> +    },
 >>
->> ---
->> ~Randy
-> 
-> do you mean this one ?
-> 
-> http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=55ff1aba940ff46d4f6d4fd790ea3e1a47aaa84f
-> 
-> ok, it may be sort of "dumb" to blindly load one module after the other but i would expect a more meaningful message.
+>>> Why the cast?  It's redundant afaics.
+>>
+>>   To be in line with the surrounding code...
+>
+> I see _that_, but it's not a great argument IMNSHO.  Could I trick
+> you into preceding this patch with a cleanup patch for the existing
+> casts?
 
-No, I meant something else, but I can't find it just now.
+Hrm.  Much as I generally dislike redundant casts, these ones do serve
+to inform the reader that the data field is not always a string, which
+they might otherwise assume.
 
 -- 
-~Randy
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
