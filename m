@@ -1,21 +1,26 @@
-Received: from wf-out-1314.google.com ([209.85.200.170])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JeMyk-0002D4-3G
-	for linux-mtd@lists.infradead.org; Wed, 26 Mar 2008 04:11:10 +0000
-Received: by wf-out-1314.google.com with SMTP id 29so3154504wff.24
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 25 Mar 2008 21:11:08 -0700 (PDT)
-Message-ID: <bae050c10803252111y4a79334l6e09567d54a0539e@mail.gmail.com>
-Date: Wed, 26 Mar 2008 12:11:08 +0800
-From: Nancy <nancydreaming@gmail.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: UBI: about ubinize tool
-In-Reply-To: <bae050c10803252102k373c5bddudda56bba12a0979f@mail.gmail.com>
+Received: from cnxtsmtp4.conexant.com ([198.62.9.251])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JeNhT-0002KF-KU
+	for linux-mtd@lists.infradead.org; Wed, 26 Mar 2008 04:57:24 +0000
+Received: from CPS (wsmx1.nb.conexant.com [157.152.185.16]) (using TLSv1 with
+	cipher RC4-MD5 ( 128/128 bits)) (No client certificate requested) by
+	cnxtsmtp4.conexant.com (Tumbleweed MailGate
+	3.5.1) with ESMTP id 2597319E0C86 for <linux-mtd@lists.infradead.org>;
+	Tue, 25 Mar 2008 21:57:27 -0700 (PDT)
+Content-Class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <bae050c10803252102k373c5bddudda56bba12a0979f@mail.gmail.com>
+Content-Type: text/plain;
+ charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: NAND driver
+Date: Wed, 26 Mar 2008 10:27:16 +0530
+Message-ID: <C80DC1B06774F9419F4E0920B46E54AE13F760@hyd-mail2.bbnet.ad>
+In-Reply-To: <631124.21101.qm@web36909.mail.mud.yahoo.com>
+References: <751269.90312.qm@web36904.mail.mud.yahoo.com>
+	<631124.21101.qm@web36909.mail.mud.yahoo.com>
+From: "RadhaKumar Pulyala" <radha.kumar@conexant.com>
+To: "Mark Underwood" <basicmark@yahoo.com>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +30,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sorry, wrong key make the unfinished mail sent.
+I have faced situation similar to yours.
 
-   If the input file which needed by ubinize can be the image file
-created by mkfs.ubifs(eg: ubifs.img), then how to use the output ubi
-image file (eg: ubi.img)?
-Use the same tool "ubiupdatevol "?  ubifs.img works fine with
-ubiupdatevol, but ubi.img can't. Sure it can't, how can one tool treat
-different format image file the same? Would you please tell me a way
-to use ubi.img?
+What I did was to start afresh instead of tweaking the generic nand
+interface driver. I would suggest you to look at the OneNAND interface
+driver. That will have a lot of similarities to an interface written for
+a controller.
+
+Hope that helps.
+
+Regards,
+RK
+
+-----Original Message-----
+=46rom: linux-mtd-bounces@lists.infradead.org
+[mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Mark
+Underwood
+Sent: Tuesday, February 26, 2008 2:34 PM
+To: linux-mtd@lists.infradead.org
+Subject: Re: NAND driver
 
 
---
-Best wishes,
-Nancy
+--- Mark Underwood <basicmark@yahoo.com> wrote:
+
+> I'm writing a NAND driver for an ASIC. The NAND controller has been
+designed to handle page read
+> &
+> writes with little SW intervention using interrupts or DMA, so I plan
+to implement the
+> write_page_raw & read_page_raw functions.
+> However, looking through nand_base.c it looks like not all NAND access
+go through these
+> functions
+> so to start with I have implemented the cmd_ctrl function & supplied
+the IO_ADDR_R & IO_ADDR_W
+> address with the thinking that these would be a fall back when the
+access doesn't go through the
+> raw functions.
+> Unfortunately it seems the single write functionality of the
+controller is broken. The page=20
+> read
+> & write functionality only allow me to work in 512byte blocks so I
+can't write OOB that way. Can
+> you confirm that there are cases where OOB is written separately and
+if so do you have any
+> suggestions for getting around this problem=3F
+>=20
+> Many thanks,
+>=20
+> Mark
+>=20
+
+I forgot to say that I'm working on a 2.6.21.1 kernel.
+
+After some pondering I managed to implement the single write
+=66unctionality by abusing the command
+=66ifo and playing with GPIO pins.
+
+Looking through nand_base.c I notice that although I can pass in
+*_page_raw operations in the
+nand_chip structure they are not used in the *_page_swecc functions but
+instead they call the
+internal *_page_raw functions directly. I propose just to replace the
+direct calls with indirect
+ones (via the function pointers in the nand_chip structure). Does this
+proposal sound OK=3F
+
+Mark
+
+>=20
+>=20
+>       ___________________________________________________________=20
+> Rise to the challenge for Sport Relief with Yahoo! For Good =20
+>=20
+> http://uk.promotions.yahoo.com/forgood/
+>=20
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>=20
+
+
+
+      ___________________________________________________________=20
+Rise to the challenge for Sport Relief with Yahoo! For Good =20
+
+http://uk.promotions.yahoo.com/forgood/
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+Conexant E-mail Firewall (Conexant.Com) made the following annotations
+---------------------------------------------------------------------
+********************** Legal Disclaimer ****************************=20
+
+"This email may contain confidential and privileged material for the sole =
+=
+use of the intended recipient. Any unauthorized review, use or distribution=
+ =
+by others is strictly prohibited. If you have received the message in error=
+,=
+ please advise the sender by reply email and delete the message. Thank you.=
+"=
+=20
+
+**********************************************************************=20
+
+---------------------------------------------------------------------
