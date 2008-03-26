@@ -1,22 +1,23 @@
-Received: from [63.81.120.155] (helo=imap.sh.mvista.com)
+Received: from smtp.innovsys.com ([66.115.232.196] helo=mail.innovsys.com)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JeV6k-0001Fc-Pr
-	for linux-mtd@lists.infradead.org; Wed, 26 Mar 2008 12:51:59 +0000
-Message-ID: <47EA4741.2050402@ru.mvista.com>
-Date: Wed, 26 Mar 2008 15:53:21 +0300
-From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+	id 1JeVIW-0002Ta-EE
+	for linux-mtd@lists.infradead.org; Wed, 26 Mar 2008 13:04:08 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-To: Laurent Pinchart <laurentp@cse-semaphore.com>
-Subject: Re: OF compatible MTD platform RAM driver ?
-References: <200803101606.39184.laurentp@cse-semaphore.com>
-	<200803251823.32039.laurentp@cse-semaphore.com>
-	<DCEAAC0833DD314AB0B58112AD99B93B0427706A@ismail.innsys.innovsys.com>
-	<200803251914.24021.laurentp@cse-semaphore.com>
-In-Reply-To: <200803251914.24021.laurentp@cse-semaphore.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: [PATCH 0/2] Add support for RAM & ROM mappings to the physmap_of
+	driver
+Date: Wed, 26 Mar 2008 08:04:04 -0500
+Message-ID: <DCEAAC0833DD314AB0B58112AD99B93B042C208D@ismail.innsys.innovsys.com>
+In-Reply-To: <200803261341.31238.laurentp@cse-semaphore.com>
+References: <200803261341.31238.laurentp@cse-semaphore.com>
+From: "Rune Torgersen" <runet@innovsys.com>
+To: "Laurent Pinchart" <laurentp@cse-semaphore.com>,
+	<linux-mtd@lists.infradead.org>
 Cc: ben@simtec.co.uk, linuxppc-dev@ozlabs.org,
-	Rune Torgersen <runet@innovsys.com>, linux-mtd@lists.infradead.org,
+	Sergei Shtylyov <sshtylyov@ru.mvista.com>,
 	David Gibson <david@gibson.dropbear.id.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -28,46 +29,10 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Laurent Pinchart wrote:
+> Hi everybody,
+>=20
+> these two patches add support for memory-mapped RAM & ROM chips to the
+> physmap_of MTD driver.
 
->>>Regarding non-volatility nothing prevents a user from using a 
->>>volatile RAM as an MTD device, but there's little point in doing so.
->>>Would it be acceptable for the "linear-nvram" specification
->>>not to include > volatile RAM ? ROM chips would be excluded too. Is
-
->>that an issue ?
-
->>We actually use a volatile ram (SRAM) as an MTD device. We use it to
->>store info from bootloader and system specific values between resets.
-
-> So we're left with two main options.
-
-> - Reusing the nvram device type from the Device Support Extensions. Volatile 
-> devices wouldn't be supported, and we'd need a separate device specification 
-> for linear-mapped volatile RAMs. I'm not very happy with that.
-
-> - Using another device node with a compatible value set to "linear-ram" (or 
-> something similar). This would support both volatile and non-volatile 
-> devices, and a property could be added to specify if the device is volatile 
-> or not.
-
-> I'd go for the second option, and I'd specify a "linear-rom" compatible value 
-> as well while we're at it.
-
-> Both volatile and non-volatile RAMs can be handled by the physmap_of MTD 
-> driver. They both use the same map probe type ("map_ram"). Volatility isn't 
-> handled there.
-
-> ROMs should be handled by the same driver and should use the "mtd_rom" map 
-> probe type.
-
-    OK, let's go with it.
-
-> As all those devices use the physmap_of MTD driver, what about 
-> using "physmap-ram" and "physmap-rom" as compatibility names ?
-
-    Heh, we've gone thru "physmap" before -- it was labelled Linux-specific 
-name (well, I'd agree with that).
-
-> Best regards,
-
-WBR, Sergei
+Whole series
+acked-by: Rune Torgersen <runet@innovsys.com>
