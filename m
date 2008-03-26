@@ -1,18 +1,21 @@
-Received: from [202.75.200.241] (helo=mailgw.cms.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JeMr1-0005eV-KO
-	for linux-mtd@lists.infradead.org; Wed, 26 Mar 2008 04:03:13 +0000
-Received: from [172.19.23.21] ([172.19.23.21])
-	by mailgw.cms.com (8.12.11/8.12.11) with ESMTP id m2Q42Kdn013576
-	for <linux-mtd@lists.infradead.org>; Wed, 26 Mar 2008 09:32:21 +0530
-Subject: MTD
-From: Aneesh <aneesh_g@cms.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Wed, 26 Mar 2008 09:28:29 +0530
-Message-Id: <1206503909.3091.2.camel@Aneesh>
-Mime-Version: 1.0
+Received: from wf-out-1314.google.com ([209.85.200.170])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JeMyk-0002D4-3G
+	for linux-mtd@lists.infradead.org; Wed, 26 Mar 2008 04:11:10 +0000
+Received: by wf-out-1314.google.com with SMTP id 29so3154504wff.24
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 25 Mar 2008 21:11:08 -0700 (PDT)
+Message-ID: <bae050c10803252111y4a79334l6e09567d54a0539e@mail.gmail.com>
+Date: Wed, 26 Mar 2008 12:11:08 +0800
+From: Nancy <nancydreaming@gmail.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Re: UBI: about ubinize tool
+In-Reply-To: <bae050c10803252102k373c5bddudda56bba12a0979f@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <bae050c10803252102k373c5bddudda56bba12a0979f@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,17 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Sorry, wrong key make the unfinished mail sent.
+
+   If the input file which needed by ubinize can be the image file
+created by mkfs.ubifs(eg: ubifs.img), then how to use the output ubi
+image file (eg: ubi.img)?
+Use the same tool "ubiupdatevol "?  ubifs.img works fine with
+ubiupdatevol, but ubi.img can't. Sure it can't, how can one tool treat
+different format image file the same? Would you please tell me a way
+to use ubi.img?
 
 
-Hello,
-        I am Using an arm9 processor(kernel 2.6.24) and tried to
-implement JFFS2 in parallel flash for data storage.but it failed .
-my parallel flash is AT49BV642DT .First i erased the flash and mounted
-to a drive .then i created a file there .After that i unmounted the
-drive .and
- when i am trying to mount the jffs2 again  ,It is showing an error like
-follows
-"Magic bitmask 0x1985 not found at 0x007e0078:  0x6d63 instead  "
-can you help me to solve this problem ?
-                                                    Regards
-                                                            Aneesh.
+--
+Best wishes,
+Nancy
