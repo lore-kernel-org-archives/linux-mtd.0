@@ -1,18 +1,18 @@
 Received: from mailrelay005.isp.belgacom.be ([195.238.6.171])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JeUwg-0007eX-HT
-	for linux-mtd@lists.infradead.org; Wed, 26 Mar 2008 12:41:34 +0000
+	id 1JeUz7-0004Yo-6d
+	for linux-mtd@lists.infradead.org; Wed, 26 Mar 2008 12:44:05 +0000
 From: Laurent Pinchart <laurentp@cse-semaphore.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 0/2] Add support for RAM & ROM mappings to the physmap_of
-	driver
-Date: Wed, 26 Mar 2008 13:41:30 +0100
+Subject: [PATCH 1/2] [MTD] Add support for RAM & ROM mappings in the
+	physmap_of MTD driver.
 MIME-Version: 1.0
+Content-Disposition: inline
+Date: Wed, 26 Mar 2008 13:44:03 +0100
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200803261341.31238.laurentp@cse-semaphore.com>
+Message-Id: <200803261344.03438.laurentp@cse-semaphore.com>
 Cc: ben@simtec.co.uk, linuxppc-dev@ozlabs.org,
 	Rune Torgersen <runet@innovsys.com>,
 	Sergei Shtylyov <sshtylyov@ru.mvista.com>,
@@ -26,12 +26,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi everybody,
 
-these two patches add support for memory-mapped RAM & ROM chips to the=20
-physmap_of MTD driver.
+Signed-off-by: Laurent Pinchart <laurentp@cse-semaphore.com>
+=2D--
+ drivers/mtd/maps/physmap_of.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
 
-Best regards,
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index 49acd41..65c30b5 100644
+=2D-- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -273,6 +273,14 @@ static struct of_device_id of_flash_match[] =3D {
+ 		.data		=3D (void *)"jedec_probe",
+ 	},
+ 	{
++		.compatible	=3D "physmap-ram",
++		.data		=3D (void *)"map_ram",
++	},
++	{
++		.compatible	=3D "physmap-rom",
++		.data		=3D (void *)"map_rom",
++	},
++	{
+ 		.type		=3D "rom",
+ 		.compatible	=3D "direct-mapped"
+ 	},
+=2D-=20
+1.5.0
+
 
 =2D-=20
 Laurent Pinchart
