@@ -1,23 +1,19 @@
-Received: from smtp.innovsys.com ([66.115.232.196] helo=mail.innovsys.com)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JeVIW-0002Ta-EE
-	for linux-mtd@lists.infradead.org; Wed, 26 Mar 2008 13:04:08 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: [PATCH 0/2] Add support for RAM & ROM mappings to the physmap_of
-	driver
-Date: Wed, 26 Mar 2008 08:04:04 -0500
-Message-ID: <DCEAAC0833DD314AB0B58112AD99B93B042C208D@ismail.innsys.innovsys.com>
-In-Reply-To: <200803261341.31238.laurentp@cse-semaphore.com>
-References: <200803261341.31238.laurentp@cse-semaphore.com>
-From: "Rune Torgersen" <runet@innovsys.com>
-To: "Laurent Pinchart" <laurentp@cse-semaphore.com>,
-	<linux-mtd@lists.infradead.org>
-Cc: ben@simtec.co.uk, linuxppc-dev@ozlabs.org,
-	Sergei Shtylyov <sshtylyov@ru.mvista.com>,
+Received: from [2001:470:1f01:ffff::eb] (helo=gate.crashing.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JeWuV-0004l2-I2
+	for linux-mtd@lists.infradead.org; Wed, 26 Mar 2008 14:47:28 +0000
+In-Reply-To: <200803261344.03438.laurentp@cse-semaphore.com>
+References: <200803261344.03438.laurentp@cse-semaphore.com>
+Mime-Version: 1.0 (Apple Message framework v623)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Message-Id: <346860fa1e8a75a4a89e260011690659@kernel.crashing.org>
+Content-Transfer-Encoding: 7bit
+From: Segher Boessenkool <segher@kernel.crashing.org>
+Subject: Re: [PATCH 1/2] [MTD] Add support for RAM & ROM mappings in the
+	physmap_of MTD driver.
+Date: Wed, 26 Mar 2008 15:45:07 +0100
+To: Laurent Pinchart <laurentp@cse-semaphore.com>
+Cc: ben@simtec.co.uk, linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
 	David Gibson <david@gibson.dropbear.id.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -28,11 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Laurent Pinchart wrote:
-> Hi everybody,
->=20
-> these two patches add support for memory-mapped RAM & ROM chips to the
-> physmap_of MTD driver.
+>  	{
+> +		.compatible	= "physmap-ram",
+> +		.data		= (void *)"map_ram",
+> +	},
+> +	{
+> +		.compatible	= "physmap-rom",
+> +		.data		= (void *)"map_rom",
+> +	},
 
-Whole series
-acked-by: Rune Torgersen <runet@innovsys.com>
+Why the cast?  It's redundant afaics.
+
+
+Segher
