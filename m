@@ -1,23 +1,24 @@
-Received: from mailrelay005.isp.belgacom.be ([195.238.6.171])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JeDfK-0004mY-FF
-	for linux-mtd@lists.infradead.org; Tue, 25 Mar 2008 18:14:30 +0000
-From: Laurent Pinchart <laurentp@cse-semaphore.com>
-To: "Rune Torgersen" <runet@innovsys.com>
-Subject: Re: OF compatible MTD platform RAM driver ?
-Date: Tue, 25 Mar 2008 19:14:20 +0100
-References: <200803101606.39184.laurentp@cse-semaphore.com>
-	<200803251823.32039.laurentp@cse-semaphore.com>
-	<DCEAAC0833DD314AB0B58112AD99B93B0427706A@ismail.innsys.innovsys.com>
-In-Reply-To: <DCEAAC0833DD314AB0B58112AD99B93B0427706A@ismail.innsys.innovsys.com>
+Received: from risingsoftware01.propagation.net ([66.221.33.65])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JemBK-0002j9-GO
+	for linux-mtd@lists.infradead.org; Thu, 27 Mar 2008 07:05:50 +0000
+Received: from c122-107-142-134.eburwd5.vic.optusnet.com.au ([122.107.142.134]
+	helo=noddy.cloud.net.au)
+	by risingsoftware01.propagation.net with esmtpsa
+	(TLS-1.0:RSA_AES_256_CBC_SHA1:32) (Exim 4.63)
+	(envelope-from <hamish@cloud.net.au>) id 1JemBG-0003n2-O6
+	for linux-mtd@lists.infradead.org; Thu, 27 Mar 2008 02:05:47 -0500
+Received: from hamish by noddy.cloud.net.au with local (Exim 4.69)
+	(envelope-from <hamish@cloud.net.au>) id 1JemBB-0002lJ-Ml
+	for linux-mtd@lists.infradead.org; Thu, 27 Mar 2008 18:05:41 +1100
+Date: Thu, 27 Mar 2008 18:05:41 +1100
+From: Hamish Moffatt <hamish@cloud.net.au>
+To: linux-mtd@lists.infradead.org
+Subject: corrupted ubi after reboot while busy
+Message-ID: <20080327070541.GA10446@cloud.net.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1972833.p6L5KqdjO2";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-Message-Id: <200803251914.24021.laurentp@cse-semaphore.com>
-Cc: Sergei Shtylyov <sshtylyov@ru.mvista.com>, ben@simtec.co.uk,
-	David Gibson <david@gibson.dropbear.id.au>,
-	linux-mtd@lists.infradead.org, linuxppc-dev@ozlabs.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,79 +28,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---nextPart1972833.p6L5KqdjO2
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+I'm trying UBI for the first time; I have the kernel 2.6.24 with UBI
+backported from 2.6.25-rc7.
 
-On Tuesday 25 March 2008 18:56, Rune Torgersen wrote:
-> Laurent Pinchart wrote:
-> > On Tuesday 25 March 2008 18:02, Sergei Shtylyov wrote:
-> >> Laurent Pinchart wrote:
-> >>=20
-> > Regarding non-volatility nothing prevents a user from using a=20
-> > volatile RAM as an MTD device, but there's little point in doing so.
-> > Would it be acceptable for the "linear-nvram" specification
-> > not to include > volatile RAM ? ROM chips would be excluded too. Is
-> that an issue ?
->=20
-> We actually use a volatile ram (SRAM) as an MTD device. We use it to
-> store info from bootloader and system specific values between resets.
+I created a static volume (on NAND) and wrote a JFFS2 image to it with 
+ubiupdatevol. mount succeeded, but the image was built wrongly so the
+jffs2 garbage collector thread to fix it. I then rebooted the system
+while this was running (using a proper reboot, which succeeded).
 
-So we're left with two main options.
+After rebooting, I can't attach the UBI volume at all:
 
-=2D Reusing the nvram device type from the Device Support Extensions. Volat=
-ile=20
-devices wouldn't be supported, and we'd need a separate device specificatio=
-n=20
-for linear-mapped volatile RAMs. I'm not very happy with that.
+Jan  1 00:16:34 elaraboot user.err kernel: [  994.310000] UBI error: validate_vid_hdr: inconsistent VID header at PEB 664                         
+Jan  1 00:16:34 elaraboot user.err kernel: [  994.320000] UBI error: cannot attach mtd7                                                           
+Jan  1 00:16:34 elaraboot user.err kernel: [  994.320000] UBI error: cannot initialize UBI, error -22 
 
-=2D Using another device node with a compatible value set to "linear-ram" (=
-or=20
-something similar). This would support both volatile and non-volatile=20
-devices, and a property could be added to specify if the device is volatile=
-=20
-or not.
+I don't understand how a corrupt volume can cause the whole UBI to be
+unusable?
 
-I'd go for the second option, and I'd specify a "linear-rom" compatible val=
-ue=20
-as well while we're at it.
+As an aside, is a static volume not read-only?
 
-Both volatile and non-volatile RAMs can be handled by the physmap_of MTD=20
-driver. They both use the same map probe type ("map_ram"). Volatility isn't=
-=20
-handled there.
-
-ROMs should be handled by the same driver and should use the "mtd_rom" map=
-=20
-probe type.
-
-As all those devices use the physmap_of MTD driver, what about=20
-using "physmap-ram" and "physmap-rom" as compatibility names ?
-
-Best regards,
-
-=2D-=20
-Laurent Pinchart
-CSE Semaphore Belgium
-
-Chauss=E9e de Bruxelles, 732A
-B-1410 Waterloo
-Belgium
-
-T +32 (2) 387 42 59
-=46 +32 (2) 387 42 75
-
---nextPart1972833.p6L5KqdjO2
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
-
-iD8DBQBH6UEA8y9gWxC9vpcRAnAdAKCl+R9yUIF3XoE+NEyaD1HywCpcBQCePN+j
-0QtPBwPn8tCK7C2F4CBt8Is=
-=aT37
------END PGP SIGNATURE-----
-
---nextPart1972833.p6L5KqdjO2--
+thanks
+Hamish
+-- 
+Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
