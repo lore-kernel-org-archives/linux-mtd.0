@@ -1,24 +1,23 @@
-Received: from mgw-fb01.nokia.com ([192.100.122.235])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JeqQO-0004PC-38
-	for linux-mtd@lists.infradead.org; Thu, 27 Mar 2008 11:37:42 +0000
-Received: from mgw-mx06.nokia.com (mgw-mx06.nokia.com [192.100.122.233])
-	by mgw-fb01.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
-	m2R78mRc010203
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <linux-mtd@lists.infradead.org>; Thu, 27 Mar 2008 09:08:49 +0200
-Subject: Re: UBI: about ubinize tool
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Nancy <nancydreaming@gmail.com>
-In-Reply-To: <bae050c10803252102k373c5bddudda56bba12a0979f@mail.gmail.com>
-References: <bae050c10803252102k373c5bddudda56bba12a0979f@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 27 Mar 2008 08:53:45 +0200
-Message-Id: <1206600825.3856.25.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+Received: from [63.81.120.155] (helo=imap.sh.mvista.com)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jer7g-0004dJ-Pd
+	for linux-mtd@lists.infradead.org; Thu, 27 Mar 2008 12:22:25 +0000
+Message-ID: <47EB91D2.60100@ru.mvista.com>
+Date: Thu, 27 Mar 2008 15:23:46 +0300
+From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+MIME-Version: 1.0
+To: David Gibson <david@gibson.dropbear.id.au>
+Subject: Re: OF compatible MTD platform RAM driver ?
+References: <200803101606.39184.laurentp@cse-semaphore.com>
+	<200803251914.24021.laurentp@cse-semaphore.com>
+	<47EA4741.2050402@ru.mvista.com>
+	<200803271013.32612.laurentp@cse-semaphore.com>
+	<20080327100304.GC10397@localhost.localdomain>
+In-Reply-To: <20080327100304.GC10397@localhost.localdomain>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Laurent Pinchart <laurentp@cse-semaphore.com>, ben@simtec.co.uk,
+	linux-mtd@lists.infradead.org, linuxppc-dev@ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,36 +27,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello.
 
-On Wed, 2008-03-26 at 12:02 +0800, Nancy wrote:
-> Hi,
->     As I know, ubinize can generate UBI images. I don't understand why
-> its .cfg file need parameter "image=3Dubifs.img", why can't it collect
-> the content
-> from the defined vol_id automatically and output to file "ubi.img"?
+David Gibson wrote:
 
-You may want to create an UBI image with 3 UBI volumes. In this case you
-may want to specify 3 different images as the contents of the UBI
-volumes.
+>>>Laurent Pinchart wrote:
 
-For example, you may want to have "/home" UBIFS volume, "/" UBIFS
-volume, and "/boot" JFFS2 volume. In this case you prepare
-"home.ubifs.img", "rootfs.ubifs.img" with mkfs.ubifs, and
-"boot.jffs2.img" with mkfs.jffs2. Then you create a config file where
-you ask ubinize to create an UBI image, add 3 volumes to it, the first
-volume should have ID 5 (you specify vol_id=3D5), the second volume should
-have ID 10, and the third volume ID 0, and so on.
+> [snip]
 
-This is the idea.
+>>>    Heh, we've gone thru "physmap" before -- it was labelled Linux-specific 
+>>>name (well, I'd agree with that).
 
->     How to make the input image file? mkfs.ubifs can only generate
-> ubifs image. If it was another filesystem eg. vfat, there's no tool.
+>>physmap stands for physically mapped. That doesn't sound
+>>Linux-specific to me, the fact that the MTD driver has the same name
+>>is a pure coincidence.  linmap-rom and linmap-rom sound even more
+>>Linux-specific :-)
 
-ubinize does not care about the contents of the image you ask it to put
-to the volume. It may be anything. I do not know how one can prepare
-vfat image, there should be a tool or a way to do this.
+> It may not be Linux specific per se, but it's a bad name, because the
+> fact that the device is physically direct mapped isn't a useful
+> distinguishing feature of the device.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+    Yeah, it's not a propery of a device itself (yet, the device would be 
+useless if this information is not supplied in the tree somehow). Yet remember 
+the now ungoing discussion about "reg-shift" property for UARTs -- some people 
+said that the fact that this property may not be a feature of device is 
+irrelevant WRT the binding. :-)
+
+> Main memory is also direct physically mapped, after all,  but that's not what you want to cover
+> with this description.
+
+   Haven't ever seen the description of memory as a device (unless you mean 
+the "memory" node which can hardly be considered proper device -- mainly 
+because of their usual placement at the top of the tree, and not where a RAM 
+device logically should be in the bus hierarchy).
+
+> In general how a device is wired is described by where it sits in the tree, not by its properties.
+
+    Oh, another argument against "reg-shift" in the Xilinx UART quarry... :-)
+
+> It only seems like a usefully distinguishing name because it's the
+> Linux "physmap_of" driver that uses it.  So in this sense it is a
+> Linux specific name after all.  In fact, physmap_of is itself very
+> badly named - right now it only handles direct mapped mtds, but that's
+
+    Yeah, because that's what is what it has been written for.
+
+> not inherent; it could be trivially extended to also instantiate a
+> non-direct-mapped device (as long as the underlying mtd layer
+> supported it, of course).   It bears no relation at all to the
+ > "physmap" driver, except historical accident.
+
+    This driver resides on the "top", device mapping layer of the MTD 
+hierarchy, and I don't see a point of cramming support for all the possible 
+mappings into one driver vs doing it as the *separate* specific drivers in 
+drivers/mtd/mapps/ -- as it has been done in the MTD tree before "the great OF 
+revolution". This is really strange idea...
+
+WBR, Sergei
