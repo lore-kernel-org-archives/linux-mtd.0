@@ -1,19 +1,23 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JesNA-0004NO-LE
-	for linux-mtd@lists.infradead.org; Thu, 27 Mar 2008 13:42:29 +0000
-Subject: Re: corrupted ubi after reboot while busy
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Hamish Moffatt <hamish@cloud.net.au>
-In-Reply-To: <20080327070541.GA10446@cloud.net.au>
-References: <20080327070541.GA10446@cloud.net.au>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 27 Mar 2008 15:39:38 +0200
-Message-Id: <1206625178.3856.38.camel@sauron>
-Mime-Version: 1.0
+Received: from mailrelay005.isp.belgacom.be ([195.238.6.171])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jet8k-0000UF-54
+	for linux-mtd@lists.infradead.org; Thu, 27 Mar 2008 14:31:38 +0000
+From: Laurent Pinchart <laurentp@cse-semaphore.com>
+To: David Gibson <david@gibson.dropbear.id.au>
+Subject: Re: OF compatible MTD platform RAM driver ?
+Date: Thu, 27 Mar 2008 15:31:34 +0100
+References: <200803101606.39184.laurentp@cse-semaphore.com>
+	<200803271013.32612.laurentp@cse-semaphore.com>
+	<20080327100304.GC10397@localhost.localdomain>
+In-Reply-To: <20080327100304.GC10397@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Content-Disposition: inline
+Message-Id: <200803271531.35401.laurentp@cse-semaphore.com>
+Cc: Sergei Shtylyov <sshtylyov@ru.mvista.com>, ben@simtec.co.uk,
+	linux-mtd@lists.infradead.org, linuxppc-dev@ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,46 +27,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Thu, 2008-03-27 at 18:05 +1100, Hamish Moffatt wrote:
-> I'm trying UBI for the first time; I have the kernel 2.6.24 with UBI
-> backported from 2.6.25-rc7.
+On Thursday 27 March 2008 11:03, David Gibson wrote:
+> On Thu, Mar 27, 2008 at 10:13:32AM +0100, Laurent Pinchart wrote:
+> > On Wednesday 26 March 2008 13:53, Sergei Shtylyov wrote:
+> > > Laurent Pinchart wrote:
+> [snip]
+> > >     Heh, we've gone thru "physmap" before -- it was labelled
+> > >     Linux-specific name (well, I'd agree with that).
+> >=20
+> > physmap stands for physically mapped. That doesn't sound
+> > Linux-specific to me, the fact that the MTD driver has the same name
+> > is a pure coincidence.  linmap-rom and linmap-rom sound even more
+> > Linux-specific :-)
 >=20
-> I created a static volume (on NAND) and wrote a JFFS2 image to it with=20
-> ubiupdatevol. mount succeeded, but the image was built wrongly so the
-> jffs2 garbage collector thread to fix it.
-Strange, the volume should be read-only, what could the GC thread do to
-it?
-
->  I then rebooted the system
-> while this was running (using a proper reboot, which succeeded).
+> It may not be Linux specific per se, but it's a bad name, because the
+> fact that the device is physically direct mapped isn't a useful
+> distinguishing feature of the device.  Main memory is also direct
+> physically mapped, after all, but that's not what you want to cover
+> with this description.  In general how a device is wired is described
+> by where it sits in the tree, not by its properties.
 >=20
-> After rebooting, I can't attach the UBI volume at all:
+> It only seems like a usefully distinguishing name because it's the
+> Linux "physmap_of" driver that uses it.  So in this sense it is a
+> Linux specific name after all.  In fact, physmap_of is itself very
+> badly named - right now it only handles direct mapped mtds, but that's
+> not inherent; it could be trivially extended to also instantiate a
+> non-direct-mapped device (as long as the underlying mtd layer
+> supported it, of course).  It bears no relation at all to the
+> "physmap" driver, except historical accident.
 >=20
-> Jan  1 00:16:34 elaraboot user.err kernel: [  994.310000] UBI error: vali=
-date_vid_hdr: inconsistent VID header at PEB 664                        =20
-> Jan  1 00:16:34 elaraboot user.err kernel: [  994.320000] UBI error: cann=
-ot attach mtd7                                                          =20
-> Jan  1 00:16:34 elaraboot user.err kernel: [  994.320000] UBI error: cann=
-ot initialize UBI, error -22=20
+> > Could we agree on a name ? I'd like to submit a new patch.
+>=20
+> For ROMs I think just plain "rom" should be sufficient.  For RAMs we
+> need something to indicate that it's memory but intended for secondary
+> storage, not as main memory.  Unfortunately, I'm finding myself unable
+> to think of something.
 
-Could you please enable UBI debugging (just UBI debugging, not any of
-debugging messages), and try to attach the MTD device again? Then send
-me the UBI output which you may take with dmesg?
+What about "storage-ram", "auxiliary-ram", "secondary-ram", "application-ra=
+m",
+"user-ram" or "ramdisk" ?
 
-> I don't understand how a corrupt volume can cause the whole UBI to be
-> unusable?
+=2D-=20
+Laurent Pinchart
+CSE Semaphore Belgium
 
-In this case UBI finds that the VID header contains some "insane" data,
-it's not just corruption which would be detected by CRC checking (which
-is OK in your case). This is why UBI refuses to keep going. This might
-me a bug though, the debugging should help.
+Chauss=E9e de Bruxelles, 732A
+B-1410 Waterloo
+Belgium
 
-> As an aside, is a static volume not read-only?
-It should be, but I never tried.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+T +32 (2) 387 42 59
+=46 +32 (2) 387 42 75
