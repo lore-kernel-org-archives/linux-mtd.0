@@ -1,24 +1,23 @@
 Received: from mgw-fb01.nokia.com ([192.100.122.235])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jeq8x-0002eV-Bw
-	for linux-mtd@lists.infradead.org; Thu, 27 Mar 2008 11:19:39 +0000
-Received: from mgw-mx09.nokia.com ([192.100.105.134])
+	id 1JeqM4-0003tq-97
+	for linux-mtd@lists.infradead.org; Thu, 27 Mar 2008 11:33:13 +0000
+Received: from mgw-mx06.nokia.com (mgw-mx06.nokia.com [192.100.122.233])
 	by mgw-fb01.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
-	m2R7DSvx013768
+	m2R70psa004021
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <linux-mtd@lists.infradead.org>; Thu, 27 Mar 2008 09:13:30 +0200
-Subject: Re: UBI: about ubinize tool
+	for <linux-mtd@lists.infradead.org>; Thu, 27 Mar 2008 09:00:54 +0200
+Subject: Re: [PATCH] mtd-utils: don't use argp.h
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Nancy <nancydreaming@gmail.com>
-In-Reply-To: <bae050c10803252111y4a79334l6e09567d54a0539e@mail.gmail.com>
-References: <bae050c10803252102k373c5bddudda56bba12a0979f@mail.gmail.com>
-	<bae050c10803252111y4a79334l6e09567d54a0539e@mail.gmail.com>
+To: Hamish Moffatt <hamish@cloud.net.au>
+In-Reply-To: <20080326051759.GA32079@cloud.net.au>
+References: <20080326051759.GA32079@cloud.net.au>
 Content-Type: text/plain; charset=utf-8
-Date: Thu, 27 Mar 2008 08:58:27 +0200
-Message-Id: <1206601107.3856.31.camel@sauron>
+Date: Thu, 27 Mar 2008 08:45:44 +0200
+Message-Id: <1206600344.3856.16.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -29,22 +28,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-03-26 at 12:11 +0800, Nancy wrote:
->    If the input file which needed by ubinize can be the image file
-> created by mkfs.ubifs(eg: ubifs.img), then how to use the output ubi
-> image file (eg: ubi.img)?
+On Wed, 2008-03-26 at 16:17 +1100, Hamish Moffatt wrote:
+> Don't include argp.h as it's glibc-specific, and not used anyway.
+>=20
+> Signed-Off-By: Hamish Moffatt <hamish@cloud.net.au>
 
-You have to put that image to the _raw_ flash. If you use nandsim,
-something like "dd if=3Dubi.img of=3D/dev/mtdX" is OK. If you use a real
-NAND flash, you have to use the nandwrite utility, becaus dd cannot skip
-bad blocks: nandwrite /dev/mtdX ubi.img
-
-For example, if you were a vendor of some devices and you had a factory,
-you would prepare you final ubi.img and you would flash it to the newly
-produced devices in the factory. Straight to the raw flash.
-
-> Use the same tool "ubiupdatevol "?
-You may put ubifs.img with ubiupdatevol.
+Applied, thank you.
 
 --=20
 Best regards,
