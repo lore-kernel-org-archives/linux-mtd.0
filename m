@@ -1,24 +1,24 @@
-Received: from risingsoftware01.propagation.net ([66.221.33.65])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JemBK-0002j9-GO
-	for linux-mtd@lists.infradead.org; Thu, 27 Mar 2008 07:05:50 +0000
-Received: from c122-107-142-134.eburwd5.vic.optusnet.com.au ([122.107.142.134]
-	helo=noddy.cloud.net.au)
-	by risingsoftware01.propagation.net with esmtpsa
-	(TLS-1.0:RSA_AES_256_CBC_SHA1:32) (Exim 4.63)
-	(envelope-from <hamish@cloud.net.au>) id 1JemBG-0003n2-O6
-	for linux-mtd@lists.infradead.org; Thu, 27 Mar 2008 02:05:47 -0500
-Received: from hamish by noddy.cloud.net.au with local (Exim 4.69)
-	(envelope-from <hamish@cloud.net.au>) id 1JemBB-0002lJ-Ml
-	for linux-mtd@lists.infradead.org; Thu, 27 Mar 2008 18:05:41 +1100
-Date: Thu, 27 Mar 2008 18:05:41 +1100
-From: Hamish Moffatt <hamish@cloud.net.au>
-To: linux-mtd@lists.infradead.org
-Subject: corrupted ubi after reboot while busy
-Message-ID: <20080327070541.GA10446@cloud.net.au>
+Received: from mailrelay005.isp.belgacom.be ([195.238.6.171])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JeoB4-0004de-BP
+	for linux-mtd@lists.infradead.org; Thu, 27 Mar 2008 09:13:43 +0000
+From: Laurent Pinchart <laurentp@cse-semaphore.com>
+To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+Subject: Re: OF compatible MTD platform RAM driver ?
+Date: Thu, 27 Mar 2008 10:13:32 +0100
+References: <200803101606.39184.laurentp@cse-semaphore.com>
+	<200803251914.24021.laurentp@cse-semaphore.com>
+	<47EA4741.2050402@ru.mvista.com>
+In-Reply-To: <47EA4741.2050402@ru.mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
+Message-Id: <200803271013.32612.laurentp@cse-semaphore.com>
+Cc: ben@simtec.co.uk, linuxppc-dev@ozlabs.org,
+	Rune Torgersen <runet@innovsys.com>, linux-mtd@lists.infradead.org,
+	David Gibson <david@gibson.dropbear.id.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,26 +28,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm trying UBI for the first time; I have the kernel 2.6.24 with UBI
-backported from 2.6.25-rc7.
+On Wednesday 26 March 2008 13:53, Sergei Shtylyov wrote:
+> Laurent Pinchart wrote:
+>=20
+> >>>Regarding non-volatility nothing prevents a user from using a=20
+> >>>volatile RAM as an MTD device, but there's little point in doing so.
+> >>>Would it be acceptable for the "linear-nvram" specification
+> >>>not to include > volatile RAM ? ROM chips would be excluded too. Is
+>=20
+> >>that an issue ?
+>=20
+> >>We actually use a volatile ram (SRAM) as an MTD device. We use it to
+> >>store info from bootloader and system specific values between resets.
+>=20
+> > So we're left with two main options.
+>=20
+> > - Reusing the nvram device type from the Device Support Extensions.=20
+Volatile=20
+> > devices wouldn't be supported, and we'd need a separate device=20
+specification=20
+> > for linear-mapped volatile RAMs. I'm not very happy with that.
+>=20
+> > - Using another device node with a compatible value set to "linear-ram"=
+=20
+(or=20
+> > something similar). This would support both volatile and non-volatile=20
+> > devices, and a property could be added to specify if the device is=20
+volatile=20
+> > or not.
+>=20
+> > I'd go for the second option, and I'd specify a "linear-rom" compatible=
+=20
+value=20
+> > as well while we're at it.
+>=20
+> > Both volatile and non-volatile RAMs can be handled by the physmap_of MT=
+D=20
+> > driver. They both use the same map probe type ("map_ram"). Volatility=20
+isn't=20
+> > handled there.
+>=20
+> > ROMs should be handled by the same driver and should use the "mtd_rom" =
+map=20
+> > probe type.
+>=20
+>     OK, let's go with it.
+>=20
+> > As all those devices use the physmap_of MTD driver, what about=20
+> > using "physmap-ram" and "physmap-rom" as compatibility names ?
+>=20
+>     Heh, we've gone thru "physmap" before -- it was labelled Linux-specif=
+ic=20
+> name (well, I'd agree with that).
 
-I created a static volume (on NAND) and wrote a JFFS2 image to it with 
-ubiupdatevol. mount succeeded, but the image was built wrongly so the
-jffs2 garbage collector thread to fix it. I then rebooted the system
-while this was running (using a proper reboot, which succeeded).
+physmap stands for physically mapped. That doesn't sound Linux-specific to =
+me,=20
+the fact that the MTD driver has the same name is a pure coincidence.=20
+linmap-rom and linmap-rom sound even more Linux-specific :-)
 
-After rebooting, I can't attach the UBI volume at all:
+Could we agree on a name ? I'd like to submit a new patch.
 
-Jan  1 00:16:34 elaraboot user.err kernel: [  994.310000] UBI error: validate_vid_hdr: inconsistent VID header at PEB 664                         
-Jan  1 00:16:34 elaraboot user.err kernel: [  994.320000] UBI error: cannot attach mtd7                                                           
-Jan  1 00:16:34 elaraboot user.err kernel: [  994.320000] UBI error: cannot initialize UBI, error -22 
+=2D-=20
+Laurent Pinchart
+CSE Semaphore Belgium
 
-I don't understand how a corrupt volume can cause the whole UBI to be
-unusable?
+Chauss=E9e de Bruxelles, 732A
+B-1410 Waterloo
+Belgium
 
-As an aside, is a static volume not read-only?
-
-thanks
-Hamish
--- 
-Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
+T +32 (2) 387 42 59
+=46 +32 (2) 387 42 75
