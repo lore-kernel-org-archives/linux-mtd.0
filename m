@@ -1,23 +1,19 @@
-Received: from mailrelay005.isp.belgacom.be ([195.238.6.171])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JeoLt-0003Ae-Ek
-	for linux-mtd@lists.infradead.org; Thu, 27 Mar 2008 09:24:53 +0000
-From: Laurent Pinchart <laurentp@cse-semaphore.com>
-To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-Subject: Re: OF compatible MTD platform RAM driver ?
-Date: Thu, 27 Mar 2008 10:24:45 +0100
-References: <200803101606.39184.laurentp@cse-semaphore.com>
-	<b06db7bb4932d14f8af9547abdfc9d0d@kernel.crashing.org>
-	<47EA6E88.5050109@ru.mvista.com>
-In-Reply-To: <47EA6E88.5050109@ru.mvista.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1916913.M1ef4UuZnQ";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-Message-Id: <200803271024.51591.laurentp@cse-semaphore.com>
-Cc: ben@simtec.co.uk, linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Segher Boessenkool <segher@kernel.crashing.org>,
-	David Gibson <david@gibson.dropbear.id.au>
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JesNA-0004NO-LE
+	for linux-mtd@lists.infradead.org; Thu, 27 Mar 2008 13:42:29 +0000
+Subject: Re: corrupted ubi after reboot while busy
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Hamish Moffatt <hamish@cloud.net.au>
+In-Reply-To: <20080327070541.GA10446@cloud.net.au>
+References: <20080327070541.GA10446@cloud.net.au>
+Content-Type: text/plain; charset=utf-8
+Date: Thu, 27 Mar 2008 15:39:38 +0200
+Message-Id: <1206625178.3856.38.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,67 +23,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---nextPart1916913.M1ef4UuZnQ
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Hi,
 
-On Wednesday 26 March 2008 16:40, Sergei Shtylyov wrote:
-> Segher Boessenkool wrote:
+On Thu, 2008-03-27 at 18:05 +1100, Hamish Moffatt wrote:
+> I'm trying UBI for the first time; I have the kernel 2.6.24 with UBI
+> backported from 2.6.25-rc7.
 >=20
-> >> - Using another device node with a compatible value set to=20
-> >> "linear-ram" (or
-> >> something similar). This would support both volatile and non-volatile
-> >> devices, and a property could be added to specify if the device is=20
-> >> volatile
-> >> or not.
+> I created a static volume (on NAND) and wrote a JFFS2 image to it with=20
+> ubiupdatevol. mount succeeded, but the image was built wrongly so the
+> jffs2 garbage collector thread to fix it.
+Strange, the volume should be read-only, what could the GC thread do to
+it?
+
+>  I then rebooted the system
+> while this was running (using a proper reboot, which succeeded).
 >=20
-> > "memory-mapped-memory" perhaps :-)
+> After rebooting, I can't attach the UBI volume at all:
 >=20
-> > Or, just "memory".  Although that one might play havoc with some
->=20
->     I'd suggest "ram" and "rom" then. Luckily the device trees don't cont=
-ain=20
-> binding for the real RAM chips yet. :-)
+> Jan  1 00:16:34 elaraboot user.err kernel: [  994.310000] UBI error: vali=
+date_vid_hdr: inconsistent VID header at PEB 664                        =20
+> Jan  1 00:16:34 elaraboot user.err kernel: [  994.320000] UBI error: cann=
+ot attach mtd7                                                          =20
+> Jan  1 00:16:34 elaraboot user.err kernel: [  994.320000] UBI error: cann=
+ot initialize UBI, error -22=20
 
-And when it will we'll be in trouble.
+Could you please enable UBI debugging (just UBI debugging, not any of
+debugging messages), and try to attach the MTD device again? Then send
+me the UBI output which you may take with dmesg?
 
-Here are a few names. I like physmap-r[ao]m better. Does anyone have anothe=
-r=20
-suggestion ? I'd like to send a revised patch.
+> I don't understand how a corrupt volume can cause the whole UBI to be
+> unusable?
 
-linear-r[ao]m
-linear-mapped-r[ao]m
-mapped-r[ao]m
-memory-mapped-r[ao]m
-physmap-r[ao]m
+In this case UBI finds that the VID header contains some "insane" data,
+it's not just corruption which would be detected by CRC checking (which
+is OK in your case). This is why UBI refuses to keep going. This might
+me a bug though, the debugging should help.
 
-> > not-quite-correct main memory probing code.
->=20
->     You mean the there's parsers that search the "compatible" prop for=20
-> "memory" as well as "device_type" prop?
+> As an aside, is a static volume not read-only?
+It should be, but I never tried.
 
-=2D-=20
-Laurent Pinchart
-CSE Semaphore Belgium
-
-Chauss=E9e de Bruxelles, 732A
-B-1410 Waterloo
-Belgium
-
-T +32 (2) 387 42 59
-=46 +32 (2) 387 42 75
-
---nextPart1916913.M1ef4UuZnQ
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
-
-iD8DBQBH62fj8y9gWxC9vpcRAkhHAJoD9TNb44LA0qQhb6GhAFFziLuD5ACfYcbs
-GQ3LMMw+KAbzUCZmxEdZgKw=
-=idjv
------END PGP SIGNATURE-----
-
---nextPart1916913.M1ef4UuZnQ--
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
