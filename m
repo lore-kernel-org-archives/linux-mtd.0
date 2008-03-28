@@ -1,24 +1,24 @@
-Received: from ozlabs.org ([203.10.76.45])
+Received: from risingsoftware01.propagation.net ([66.221.33.65])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jf29s-0008Ia-B0
-	for linux-mtd@lists.infradead.org; Fri, 28 Mar 2008 00:09:26 +0000
-Date: Fri, 28 Mar 2008 11:07:11 +1100
-From: David Gibson <david@gibson.dropbear.id.au>
-To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-Subject: Re: OF compatible MTD platform RAM driver ?
-Message-ID: <20080328000711.GC16141@localhost.localdomain>
-References: <200803101606.39184.laurentp@cse-semaphore.com>
-	<200803251914.24021.laurentp@cse-semaphore.com>
-	<47EA4741.2050402@ru.mvista.com>
-	<200803271013.32612.laurentp@cse-semaphore.com>
-	<20080327100304.GC10397@localhost.localdomain>
-	<47EB91D2.60100@ru.mvista.com>
+	id 1Jf30q-00019D-Sg
+	for linux-mtd@lists.infradead.org; Fri, 28 Mar 2008 01:04:09 +0000
+Received: from c122-107-142-134.eburwd5.vic.optusnet.com.au ([122.107.142.134]
+	helo=noddy.cloud.net.au)
+	by risingsoftware01.propagation.net with esmtpsa
+	(TLS-1.0:RSA_AES_256_CBC_SHA1:32) (Exim 4.63)
+	(envelope-from <hamish@cloud.net.au>) id 1Jf30p-0000eu-UO
+	for linux-mtd@lists.infradead.org; Thu, 27 Mar 2008 20:04:08 -0500
+Received: from hamish by noddy.cloud.net.au with local (Exim 4.69)
+	(envelope-from <hamish@cloud.net.au>) id 1Jf30l-0006S7-9d
+	for linux-mtd@lists.infradead.org; Fri, 28 Mar 2008 12:04:03 +1100
+Date: Fri, 28 Mar 2008 12:04:03 +1100
+From: Hamish Moffatt <hamish@cloud.net.au>
+To: linux-mtd@lists.infradead.org
+Subject: choosing a file system to use on NAND/UBI
+Message-ID: <20080328010403.GB23610@cloud.net.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <47EB91D2.60100@ru.mvista.com>
-Cc: Laurent Pinchart <laurentp@cse-semaphore.com>, ben@simtec.co.uk,
-	linux-mtd@lists.infradead.org, linuxppc-dev@ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,95 +28,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 27, 2008 at 03:23:46PM +0300, Sergei Shtylyov wrote:
-> Hello.
->
-> David Gibson wrote:
->
->>>> Laurent Pinchart wrote:
->
->> [snip]
->
->>>>    Heh, we've gone thru "physmap" before -- it was labelled 
->>>> Linux-specific name (well, I'd agree with that).
->
->>> physmap stands for physically mapped. That doesn't sound
->>> Linux-specific to me, the fact that the MTD driver has the same name
->>> is a pure coincidence.  linmap-rom and linmap-rom sound even more
->>> Linux-specific :-)
->
->> It may not be Linux specific per se, but it's a bad name, because the
->> fact that the device is physically direct mapped isn't a useful
->> distinguishing feature of the device.
->
->    Yeah, it's not a propery of a device itself (yet, the device would be 
-> useless if this information is not supplied in the tree somehow). Yet 
-> remember the now ungoing discussion about "reg-shift" property for UARTs -- 
-> some people said that the fact that this property may not be a feature of 
-> device is irrelevant WRT the binding. :-)
->
->> Main memory is also direct physically mapped, after all,  but that's not 
->> what you want to cover
->> with this description.
->
->   Haven't ever seen the description of memory as a device (unless you mean 
-> the "memory" node which can hardly be considered proper device -- mainly 
-> because of their usual placement at the top of the tree, and not where a 
-> RAM device logically should be in the bus hierarchy).
+I'm developing an embedded product which will have its root file system
+on NAND. The root will be pre-prepared and installed using
+flashcp/nandwrite/ubiupdatevol, and usually mounted read-only.
+Occasionally we might want to mount it read/write for debug purposes.
 
-Yes, I mean the memory node.  And although it's no very likely,
-there's no inherent reason a RAM device couldn't also be at the top of
-the tree, on a CPU with the right sort of localbus.
+I'm intending to use UBI for volume management and wear-levelling.
 
->> In general how a device is wired is described by where it sits in the 
->> tree, not by its properties.
->
->    Oh, another argument against "reg-shift" in the Xilinx UART quarry... 
-> :-)
+JFFS2 on UBI does not seem very fast, in particular mount time and
+initial access (until cache is populated). I tried disabling compression
+but that seemed to make it worse (mount time was doubled).
 
-Not really.  I was perhaps a bit strong, wiring information in the
-properties isn't necessarily wrong, but it does need a close look.
-"reg-shift" is a useful compromise.
+Will ubifs on UBI be better? Is it mature enough to use yet?
 
->> It only seems like a usefully distinguishing name because it's the
->> Linux "physmap_of" driver that uses it.  So in this sense it is a
->> Linux specific name after all.  In fact, physmap_of is itself very
->> badly named - right now it only handles direct mapped mtds, but that's
->
->    Yeah, because that's what is what it has been written for.
->
->> not inherent; it could be trivially extended to also instantiate a
->> non-direct-mapped device (as long as the underlying mtd layer
->> supported it, of course).   It bears no relation at all to the
-> > "physmap" driver, except historical accident.
->
->    This driver resides on the "top", device mapping layer of the MTD 
-> hierarchy, and I don't see a point of cramming support for all the possible 
-> mappings into one driver vs doing it as the *separate* specific drivers in 
-> drivers/mtd/mapps/
+For static volumes you have UBI protecting you, so you should not need
+file-system CRC checking as JFFS2 does, correct? Are there any file
+systems which take advantage of this property? 
 
-Because doing it as separate drivers would mean duplicating most of
-physmap_of for absolutely no reason.  I'll say it again there is
-*nothing* that actually relies on the direct mapping in physmap_of;
-the *only* thing it does is take the device tree information and
-marshal it into an initialization call for the appropriate mtd chip
-drivers.
+Would I be better choosing LogFS or YAFFS1/2, perhaps without UBI?
 
-I really should get around to sending a patch to rename physmap_of to
-"of_mtd.c".
-
-> -- as it has been done in the MTD tree before "the great 
-> OF revolution". This is really strange idea...
-
-The only reason mtd needs heaps of little "map drivers" (which barely
-deserve the title of "driver") is because there wasn't a single
-generally available source of information about where and how flash
-was mapped so a whole pile of platform or sitation specific ways of
-getting that information were needed.  With a device tree all that can
-be replaced with just getting the information from the device tree.
-
+thanks
+Hamish
 -- 
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
+Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
