@@ -1,21 +1,19 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jf91H-0002Dd-Ly
-	for linux-mtd@lists.infradead.org; Fri, 28 Mar 2008 07:29:00 +0000
-Received: from esebh107.NOE.Nokia.com (esebh107.ntc.nokia.com [172.21.143.143])
-	by mgw-mx06.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
-	m2S7SmBL015685
-	for <linux-mtd@lists.infradead.org>; Fri, 28 Mar 2008 09:28:55 +0200
-Message-ID: <47EC9CC4.3090902@nokia.com>
-Date: Fri, 28 Mar 2008 09:22:44 +0200
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Received: from nf-out-0910.google.com ([64.233.182.189])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JfAP2-0002Wv-Lv
+	for linux-mtd@lists.infradead.org; Fri, 28 Mar 2008 08:57:37 +0000
+Received: by nf-out-0910.google.com with SMTP id h3so311555nfh.22
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 28 Mar 2008 01:57:35 -0700 (PDT)
+Message-ID: <47ECB2F7.6010402@tiscali.it>
+Date: Fri, 28 Mar 2008 09:57:27 +0100
 MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: Re: choosing a file system to use on NAND/UBI
-References: <20080328010403.GB23610@cloud.net.au>
-In-Reply-To: <20080328010403.GB23610@cloud.net.au>
+Subject: NAND flash ST NAND16GW3C4A not properly supported
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
+From: Jaws <mlafauci@tiscali.it>
+Sender: Domenico La Fauci <mimjaws@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +23,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hamish Moffatt wrote:
-> I'm developing an embedded product which will have its root file system
-> on NAND. The root will be pre-prepared and installed using
-> flashcp/nandwrite/ubiupdatevol, and usually mounted read-only.
-> Occasionally we might want to mount it read/write for debug purposes.
-> 
-> I'm intending to use UBI for volume management and wear-levelling.
-> 
-> JFFS2 on UBI does not seem very fast, in particular mount time and
-> initial access (until cache is populated). I tried disabling compression
-> but that seemed to make it worse (mount time was doubled).
+In my custom board with AVR32 I'm using at the moment a NAND flash ST NAND16GW3C4A 
+(http://www.stmicroelectronics.com/stonline/products/literature/ds/13631/nand16gw3c4a.pdf)
+that is internally built as to 1G nand flash integrated, with 2 enable 
+pins and 2 ready/busy pins. The nand driver at moment present in avr32-linux branch does not forseen more nand devices in a single chip.
+How is it possible to manage it with the current driver? I have to use it as two 1G partitions?
+Any suggestions?
 
-Do you know that you need to have JFFS2 summary support enabled to have
-reasonable mount times?
+Thanks in advance Jaws
