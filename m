@@ -1,17 +1,20 @@
-Received: from www.tglx.de ([62.245.132.106])
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JfGNX-0004gv-Dr
-	for linux-mtd@lists.infradead.org; Fri, 28 Mar 2008 15:20:28 +0000
-Subject: [PATCH] ubi_create_gluebi: Initialize static volumes with
+	id 1JfGaA-0002aq-2U
+	for linux-mtd@lists.infradead.org; Fri, 28 Mar 2008 15:33:31 +0000
+Subject: Re: [PATCH] ubi_create_gluebi: Initialize static volumes with
 	vol->used_bytes
-From: Jan Altenberg <jan.altenberg@linutronix.de>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Fri, 28 Mar 2008 16:13:53 +0100
-Message-Id: <1206717233.5461.31.camel@jan-laptop>
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Jan Altenberg <jan.altenberg@linutronix.de>
+In-Reply-To: <1206717233.5461.31.camel@jan-laptop>
+References: <1206717233.5461.31.camel@jan-laptop>
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 28 Mar 2008 17:29:04 +0200
+Message-Id: <1206718144.3856.77.camel@sauron>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Artem.Bityutskiy@nokia.com, tglx@linutronix.de
+Content-Transfer-Encoding: quoted-printable
+Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,39 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
 
-I came across a problem which seems to be present since:
+On Fri, 2008-03-28 at 16:13 +0100, Jan Altenberg wrote:
+> Hi all,
+>=20
+> I came across a problem which seems to be present since:
+>=20
+> commit 941dfb07ed91451b1c58626a0d258dfdf468b593
+> UBI: set correct gluebi device size
+>=20
+> ubi_create_gluebi() leaves mtd->size =3D 0 for static volumes. So even
+> existing static volumes are initialized with a size of 0.
+> See attached patch (applies on top of latest git).
 
-commit 941dfb07ed91451b1c58626a0d258dfdf468b593
-UBI: set correct gluebi device size
+Fair enough, applied, thank you!
 
-ubi_create_gluebi() leaves mtd->size = 0 for static volumes. So even
-existing static volumes are initialized with a size of 0.
-See attached patch (applies on top of latest git).
-
-Signed-off-by: Jan Altenberg <jan.altenberg@linutronix.de>
-
----
- drivers/mtd/ubi/gluebi.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-Index: linux-2.6/drivers/mtd/ubi/gluebi.c
-===================================================================
---- linux-2.6.orig/drivers/mtd/ubi/gluebi.c
-+++ linux-2.6/drivers/mtd/ubi/gluebi.c
-@@ -291,11 +291,12 @@ int ubi_create_gluebi(struct ubi_device 
- 	/*
- 	 * In case of dynamic volume, MTD device size is just volume size. In
- 	 * case of a static volume the size is equivalent to the amount of data
--	 * bytes, which is zero at this moment and will be changed after volume
--	 * update.
-+	 * bytes.
- 	 */
- 	if (vol->vol_type == UBI_DYNAMIC_VOLUME)
- 		mtd->size = vol->usable_leb_size * vol->reserved_pebs;
-+	else
-+		mtd->size = vol->used_bytes;
- 
- 	if (add_mtd_device(mtd)) {
- 		ubi_err("cannot not add MTD device\n");
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
