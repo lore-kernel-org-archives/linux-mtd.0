@@ -1,19 +1,21 @@
-Received: from risingsoftware01.propagation.net ([66.221.33.65])
+Received: from ozlabs.org ([203.10.76.45])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jf26Y-0001qp-Mj
-	for linux-mtd@lists.infradead.org; Fri, 28 Mar 2008 00:05:58 +0000
-Date: Fri, 28 Mar 2008 11:05:51 +1100
-From: Hamish Moffatt <hamish@cloud.net.au>
-To: Artem Bityutskiy <dedekind@infradead.org>
-Subject: Re: corrupted ubi after reboot while busy
-Message-ID: <20080328000551.GA23610@cloud.net.au>
-References: <20080327070541.GA10446@cloud.net.au>
-	<1206625178.3856.38.camel@sauron>
+	id 1Jf29s-0008Ib-7a
+	for linux-mtd@lists.infradead.org; Fri, 28 Mar 2008 00:09:26 +0000
+Date: Fri, 28 Mar 2008 11:09:17 +1100
+From: David Gibson <david@gibson.dropbear.id.au>
+To: Laurent Pinchart <laurentp@cse-semaphore.com>
+Subject: Re: OF compatible MTD platform RAM driver ?
+Message-ID: <20080328000917.GD16141@localhost.localdomain>
+References: <200803101606.39184.laurentp@cse-semaphore.com>
+	<200803271013.32612.laurentp@cse-semaphore.com>
+	<20080327100304.GC10397@localhost.localdomain>
+	<200803271531.35401.laurentp@cse-semaphore.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1206625178.3856.38.camel@sauron>
-Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <200803271531.35401.laurentp@cse-semaphore.com>
+Cc: ben@simtec.co.uk, linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,37 +25,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 27, 2008 at 03:39:38PM +0200, Artem Bityutskiy wrote:
-> On Thu, 2008-03-27 at 18:05 +1100, Hamish Moffatt wrote:
-> > I'm trying UBI for the first time; I have the kernel 2.6.24 with UBI
-> > backported from 2.6.25-rc7.
+On Thu, Mar 27, 2008 at 03:31:34PM +0100, Laurent Pinchart wrote:
+> On Thursday 27 March 2008 11:03, David Gibson wrote:
+> > On Thu, Mar 27, 2008 at 10:13:32AM +0100, Laurent Pinchart wrote:
+> > > On Wednesday 26 March 2008 13:53, Sergei Shtylyov wrote:
+> > > > Laurent Pinchart wrote:
+> > [snip]
+> > > >     Heh, we've gone thru "physmap" before -- it was labelled
+> > > >     Linux-specific name (well, I'd agree with that).
+> > > 
+> > > physmap stands for physically mapped. That doesn't sound
+> > > Linux-specific to me, the fact that the MTD driver has the same name
+> > > is a pure coincidence.  linmap-rom and linmap-rom sound even more
+> > > Linux-specific :-)
 > > 
-> > I created a static volume (on NAND) and wrote a JFFS2 image to it with 
-> > ubiupdatevol. mount succeeded, but the image was built wrongly so the
-> > jffs2 garbage collector thread to fix it.
-> Strange, the volume should be read-only, what could the GC thread do to
-> it?
-
-That's what I thought.
-
-> >  I then rebooted the system
-> > while this was running (using a proper reboot, which succeeded).
+> > It may not be Linux specific per se, but it's a bad name, because the
+> > fact that the device is physically direct mapped isn't a useful
+> > distinguishing feature of the device.  Main memory is also direct
+> > physically mapped, after all, but that's not what you want to cover
+> > with this description.  In general how a device is wired is described
+> > by where it sits in the tree, not by its properties.
 > > 
-> > After rebooting, I can't attach the UBI volume at all:
+> > It only seems like a usefully distinguishing name because it's the
+> > Linux "physmap_of" driver that uses it.  So in this sense it is a
+> > Linux specific name after all.  In fact, physmap_of is itself very
+> > badly named - right now it only handles direct mapped mtds, but that's
+> > not inherent; it could be trivially extended to also instantiate a
+> > non-direct-mapped device (as long as the underlying mtd layer
+> > supported it, of course).  It bears no relation at all to the
+> > "physmap" driver, except historical accident.
 > > 
-> > Jan  1 00:16:34 elaraboot user.err kernel: [  994.310000] UBI error: validate_vid_hdr: inconsistent VID header at PEB 664                         
-> > Jan  1 00:16:34 elaraboot user.err kernel: [  994.320000] UBI error: cannot attach mtd7                                                           
-> > Jan  1 00:16:34 elaraboot user.err kernel: [  994.320000] UBI error: cannot initialize UBI, error -22 
+> > > Could we agree on a name ? I'd like to submit a new patch.
+> > 
+> > For ROMs I think just plain "rom" should be sufficient.  For RAMs we
+> > need something to indicate that it's memory but intended for secondary
+> > storage, not as main memory.  Unfortunately, I'm finding myself unable
+> > to think of something.
 > 
-> Could you please enable UBI debugging (just UBI debugging, not any of
-> debugging messages), and try to attach the MTD device again? Then send
-> me the UBI output which you may take with dmesg?
+> What about "storage-ram", "auxiliary-ram", "secondary-ram",
+> "application-ram", "user-ram" or "ramdisk" ?
 
-I will try. I already erased the device to try something else, but I
-will try to reproduce it.
+Well, I like all those better than anything previously suggested.
+"storage-ram" is probably my favourite.  It still doesn't seem great,
+but given I've been unable to thing of something better.
 
-
-thanks
-Hamish
 -- 
-Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
