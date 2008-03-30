@@ -1,22 +1,19 @@
-Received: from az33egw02.freescale.net ([192.88.158.103])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JfK36-0002ZT-Bi
-	for linux-mtd@lists.infradead.org; Fri, 28 Mar 2008 19:15:37 +0000
-Message-ID: <47ED43E1.3010104@freescale.com>
-Date: Fri, 28 Mar 2008 14:15:45 -0500
-From: Scott Wood <scottwood@freescale.com>
-MIME-Version: 1.0
-To: avorontsov@ru.mvista.com
-Subject: Re: [PATCH] mtd/nand/fsl_elbc_nand: workaround for hangs during nand
-	write [was: Re: [PATCH] mtd/nand/fsl_elbc_nand: workaround for hangs
-	on MPC837X]
-References: <20080328184303.GA25882@localhost.localdomain>
-	<47ED3EC5.8030508@freescale.com>
-	<20080328191054.GA30765@localhost.localdomain>
-In-Reply-To: <20080328191054.GA30765@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Received: from mba.ocn.ne.jp ([122.1.235.107] helo=smtp.mba.ocn.ne.jp)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jfx7j-0000QQ-Jd
+	for linux-mtd@lists.infradead.org; Sun, 30 Mar 2008 12:59:00 +0000
+Date: Sun, 30 Mar 2008 21:59:37 +0900 (JST)
+Message-Id: <20080330.215937.130241438.anemo@mba.ocn.ne.jp>
+To: Andrew Victor <andrew@sanpeople.com>
+Subject: [PATCH] at91_nand: Make part_probes[] static
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org,
+	=?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Frank Mandarino <fmandarino@endrelia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,15 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Anton Vorontsov wrote:
-> From: Anton Vorontsov <avorontsov@ru.mvista.com>
-> Subject: mtd/nand/fsl_elbc_nand: workaround for hangs during nand write
-> 
-> Using current driver elbc sometimes hangs during nand write. Reading back
-> last byte helps though (thanks to Scott Wood for the idea).
-> 
-> Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
+The part_probes[] should be static.
 
-Acked-by: Scott Wood <scottwood@freescale.com>
+Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Acked-by: Joern Engel <joern@logfs.org>
+---
+This is a resend of same patch, with (hopefully) better description.
 
--Scott
+diff --git a/drivers/mtd/nand/at91_nand.c b/drivers/mtd/nand/at91_nand.c
+index b2a5672..9adbf2a 100644
+--- a/drivers/mtd/nand/at91_nand.c
++++ b/drivers/mtd/nand/at91_nand.c
+@@ -83,7 +83,7 @@ static void at91_nand_disable(struct at91_nand_host *host)
+ }
+ 
+ #ifdef CONFIG_MTD_PARTITIONS
+-const char *part_probes[] = { "cmdlinepart", NULL };
++static const char *part_probes[] = { "cmdlinepart", NULL };
+ #endif
+ 
+ /*
