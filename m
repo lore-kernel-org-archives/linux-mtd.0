@@ -1,22 +1,23 @@
-Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
+Received: from smtp5.pp.htv.fi ([213.243.153.39])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JfJyZ-0002qz-GN
-	for linux-mtd@lists.infradead.org; Fri, 28 Mar 2008 19:10:55 +0000
-Date: Fri, 28 Mar 2008 22:10:54 +0300
-From: Anton Vorontsov <avorontsov@ru.mvista.com>
-To: Scott Wood <scottwood@freescale.com>
-Subject: [PATCH] mtd/nand/fsl_elbc_nand: workaround for hangs during nand
-	write [was: Re: [PATCH] mtd/nand/fsl_elbc_nand: workaround for
-	hangs on MPC837X]
-Message-ID: <20080328191054.GA30765@localhost.localdomain>
-References: <20080328184303.GA25882@localhost.localdomain>
-	<47ED3EC5.8030508@freescale.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf8
+	id 1Jg1Ae-00069r-69
+	for linux-mtd@lists.infradead.org; Sun, 30 Mar 2008 17:18:16 +0000
+Date: Sun, 30 Mar 2008 19:53:23 +0300
+From: Adrian Bunk <bunk@kernel.org>
+To: devzero@web.de, Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [2.6.25 patch] sound/oss/ac97_codec.c: restore MODULE_LICENSE
+Message-ID: <20080330165323.GA1575@cs181133002.pp.htv.fi>
+References: <213384793@web.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <47ED3EC5.8030508@freescale.com>
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
-Reply-To: avorontsov@ru.mvista.com
+In-Reply-To: <213384793@web.de>
+Cc: Randy Dunlap <randy.dunlap@oracle.com>, "Rafael J. Wysocki" <rjw@sisk.pl>,
+	linux-ide@vger.kernel.org, greg@kroah.com,
+	linux-kernel@vger.kernel.org, david-b@pacbell.net,
+	linux-acpi@vger.kernel.org, linux-mtd@lists.infradead.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	alan@lxorguk.ukuu.org.uk, lenb@kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,70 +27,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Mar 28, 2008 at 01:53:57PM -0500, Scott Wood wrote:
-> Anton Vorontsov wrote:
-> >@@ -495,6 +495,16 @@ static void fsl_elbc_write_buf(struct mtd_info *mtd, 
-> >const u8 *buf, int len)
-> > 	}
-> > 
-> > 	memcpy_toio(&ctrl->addr[ctrl->index], buf, len);
-> >+#ifdef CONFIG_PPC_MPC837x
-> >+	/*
-> >+	 * This is workaround for the weird elbc hangs on the MPC837X CPUs,
-> >+	 * Scott Wood says: "...perhaps difference in how long it takes a
-> >+	 * write to make it through the localbus compared to a write to IMMR
-> >+	 * is causing problems, and sync isn't helping for some reason."
-> >+	 * Reading back the last byte helps though.
-> >+	 */
-> >+	in_8(&ctrl->addr[ctrl->index] + len - 1);
-> >+#endif
+On Wed, Mar 26, 2008 at 09:51:34PM +0100, devzero@web.de wrote:
+> > Can you post the full kernel log up to this BUG?
+> > It should show that causes the Taint.
 > 
-> Let's do it regardless of chip -- odds are the issue exists on all 
-> implementations, and it's just a function of what frequencies things are 
-> running at.
+> oh - yes:
+> 
+> Mar 23 09:12:20 opensuse103 kernel: ac97_codec: module license 'unspecified' taints kernel.
+> 
+> modinfo ac97_codec
+> filename:       /lib/modules/2.6.25-rc6-git7-default/kernel/sound/oss/ac97_codec.ko
+> srcversion:     8665939D5E471F7E331BB3E
+> depends:
+> vermagic:       2.6.25-rc6-git7-default SMP mod_unload 586
+> 
+> 
+> seems MODULE_LICENSE is missing in ./sound/oss/ac97_codec.c !?
+>...
 
-Ok.
+My fault, fix below.
 
-- - - -
-From: Anton Vorontsov <avorontsov@ru.mvista.com>
-Subject: mtd/nand/fsl_elbc_nand: workaround for hangs during nand write
+> regards
+> roland
 
-Using current driver elbc sometimes hangs during nand write. Reading back
-last byte helps though (thanks to Scott Wood for the idea).
+cu
+Adrian
 
-Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
+
+<--  snip  -->
+
+
+I accidentally removed the MODULE_LICENSE("GPL") from sound/oss/ac97_codec.c
+
+Spotted by Roland <devzero@web.de>.
+
+Signed-off-by: Adrian Bunk <bunk@kernel.org>
+
 ---
- drivers/mtd/nand/fsl_elbc_nand.c |   11 ++++++++++-
- 1 files changed, 10 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index 378b7aa..2f4ce2a 100644
---- a/drivers/mtd/nand/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -480,7 +480,7 @@ static void fsl_elbc_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
- 	struct fsl_elbc_ctrl *ctrl = priv->ctrl;
- 	unsigned int bufsize = mtd->writesize + mtd->oobsize;
+c4f4fee537525836680163622dc15b045f551d40 diff --git a/sound/oss/ac97_codec.c b/sound/oss/ac97_codec.c
+index 87a6726..b63839e 100644
+--- a/sound/oss/ac97_codec.c
++++ b/sound/oss/ac97_codec.c
+@@ -1202,3 +1202,5 @@ static int pt101_init(struct ac97_codec * codec)
  
--	if (len < 0) {
-+	if (len <= 0) {
- 		dev_err(ctrl->dev, "write_buf of %d bytes", len);
- 		ctrl->status = 0;
- 		return;
-@@ -495,6 +495,15 @@ static void fsl_elbc_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
- 	}
+ EXPORT_SYMBOL(ac97_probe_codec);
  
- 	memcpy_toio(&ctrl->addr[ctrl->index], buf, len);
-+	/*
-+	 * This is workaround for the weird elbc hangs during nand write,
-+	 * Scott Wood says: "...perhaps difference in how long it takes a
-+	 * write to make it through the localbus compared to a write to IMMR
-+	 * is causing problems, and sync isn't helping for some reason."
-+	 * Reading back the last byte helps though.
-+	 */
-+	in_8(&ctrl->addr[ctrl->index] + len - 1);
++MODULE_LICENSE("GPL");
 +
- 	ctrl->index += len;
- }
- 
--- 
-1.5.2.2
