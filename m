@@ -1,23 +1,24 @@
-Received: from [2001:470:1f01:ffff::eb] (helo=gate.crashing.org)
+Received: from ozlabs.org ([203.10.76.45])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jg24R-0008Pr-HA
-	for linux-mtd@lists.infradead.org; Sun, 30 Mar 2008 18:15:56 +0000
-In-Reply-To: <20080327100304.GC10397@localhost.localdomain>
+	id 1Jg4tJ-0000B1-8O
+	for linux-mtd@lists.infradead.org; Sun, 30 Mar 2008 21:16:37 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <18416.813.635397.559197@cargo.ozlabs.ibm.com>
+Date: Mon, 31 Mar 2008 08:16:29 +1100
+From: Paul Mackerras <paulus@samba.org>
+To: Segher Boessenkool <segher@kernel.crashing.org>
+Subject: Re: OF compatible MTD platform RAM driver ?
+In-Reply-To: <7c44646510c3b98075de9aa57cad0bce@kernel.crashing.org>
 References: <200803101606.39184.laurentp@cse-semaphore.com>
 	<200803251914.24021.laurentp@cse-semaphore.com>
 	<47EA4741.2050402@ru.mvista.com>
 	<200803271013.32612.laurentp@cse-semaphore.com>
 	<20080327100304.GC10397@localhost.localdomain>
-Mime-Version: 1.0 (Apple Message framework v623)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Message-Id: <7c44646510c3b98075de9aa57cad0bce@kernel.crashing.org>
-Content-Transfer-Encoding: 7bit
-From: Segher Boessenkool <segher@kernel.crashing.org>
-Subject: Re: OF compatible MTD platform RAM driver ?
-Date: Sun, 30 Mar 2008 20:15:46 +0200
-To: David Gibson <david@gibson.dropbear.id.au>
+	<7c44646510c3b98075de9aa57cad0bce@kernel.crashing.org>
 Cc: ben@simtec.co.uk, linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Laurent Pinchart <laurentp@cse-semaphore.com>
+	David Gibson <david@gibson.dropbear.id.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,19 +28,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> Could we agree on a name ? I'd like to submit a new patch.
->
-> For ROMs I think just plain "rom" should be sufficient.
+Segher Boessenkool writes:
 
-Yes.
+> > For RAMs we
+> > need something to indicate that it's memory but intended for secondary
+> > storage, not as main memory.
+> 
+> How it is intended to be used is not a property of the hardware, so
+> that information doesn't belong in the device tree at all.  The Linux
+> platform code should handle this, I imagine.
 
-> For RAMs we
-> need something to indicate that it's memory but intended for secondary
-> storage, not as main memory.
+There must be some reason why it is not intended to be used as main
+memory.  Presumably it has something different about it compared to
+"normal" RAM, and that difference could perfectly well be expressed in
+the device tree.
 
-How it is intended to be used is not a property of the hardware, so
-that information doesn't belong in the device tree at all.  The Linux
-platform code should handle this, I imagine.
-
-
-Segher
+Paul.
