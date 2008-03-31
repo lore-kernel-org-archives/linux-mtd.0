@@ -1,27 +1,18 @@
-Received: from [2001:470:1f01:ffff::eb] (helo=gate.crashing.org)
+Received: from mail5.sea5.speakeasy.net ([69.17.117.7])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jg8Mo-0007xW-QD
-	for linux-mtd@lists.infradead.org; Mon, 31 Mar 2008 00:59:19 +0000
-In-Reply-To: <18416.13196.812280.794832@cargo.ozlabs.ibm.com>
-References: <200803101606.39184.laurentp@cse-semaphore.com>
-	<200803251914.24021.laurentp@cse-semaphore.com>
-	<47EA4741.2050402@ru.mvista.com>
-	<200803271013.32612.laurentp@cse-semaphore.com>
-	<20080327100304.GC10397@localhost.localdomain>
-	<7c44646510c3b98075de9aa57cad0bce@kernel.crashing.org>
-	<18416.813.635397.559197@cargo.ozlabs.ibm.com>
-	<56851566f85e117c42b078dd2d6a2028@kernel.crashing.org>
-	<18416.13196.812280.794832@cargo.ozlabs.ibm.com>
-Mime-Version: 1.0 (Apple Message framework v623)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Message-Id: <b393df3f814388b5cd5ae2f3b2b7fd66@kernel.crashing.org>
-Content-Transfer-Encoding: 7bit
-From: Segher Boessenkool <segher@kernel.crashing.org>
-Subject: Re: OF compatible MTD platform RAM driver ?
-Date: Mon, 31 Mar 2008 02:59:03 +0200
-To: Paul Mackerras <paulus@samba.org>
-Cc: ben@simtec.co.uk, linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	David Gibson <david@gibson.dropbear.id.au>
+	id 1JgBTZ-0000pp-Rl
+	for linux-mtd@lists.infradead.org; Mon, 31 Mar 2008 04:18:30 +0000
+Received: from 71-37-33-91.tukw.qwest.net (HELO t2.domain.actdsltmp)
+	(xyzzy@[71.37.33.91]) (envelope-sender <tpiepho@freescale.com>)
+	by mail5.sea5.speakeasy.net (qmail-ldap-1.03) with AES256-SHA encrypted
+	SMTP for <linux-mtd@lists.infradead.org>; 31 Mar 2008 04:18:25 -0000
+Date: Sun, 30 Mar 2008 21:14:57 -0700 (PDT)
+From: Trent Piepho <tpiepho@freescale.com>
+To: MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: [PATCH] 0/2 Fixups for quirks in a few Spansion NOR flash chips
+Message-ID: <Pine.LNX.4.64.0803302101060.16066@t2.domain.actdsltmp>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,25 +22,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> [*] It seems to me the longtrail workaround code in prom_init.c is
->> incorrect though: it will match any node with name "memory" that
->> doesn't have a device_type?
->
-> It only matches on children of the root node,
+The first patch extends the CFI probe code to get the extended ID from
+AMD/Spansion flash chips.  I checked with Spansion's support and for AMD or
+Spansion devices, a flash device id of 0x7e is always used to indicates an
+extended ID is present later on in the CFI query data.  There are no
+AMD/Spansion chips with a non-extended ID that is the same as another chip's
+extended ID.  So, once can just replace the normal device id (0x7e) with the
+extended one without losing any information.  There's nothing to gain by
+adding a new field to the flash info struct and then adding code to the fixup
+routines to also matches the new field, etc.
 
-Oh okay, I misread that then.
-
-> and it's that way
-> because the /memory node in the longtrail device tree doesn't have a
-> device_type.
-
-Yeah.
-
-> Actually we could probably remove the longtrail stuff
-> now; I think mine has stopped working, and I only know of 2 others in
-> existence. :)
-
-I'll prepare a patch.
-
-
-Segher
+The second patch is just a couple simple fixup entries that change the sector
+count for the affected flash chips.  It uses the extended ID to get the right
+chips.
