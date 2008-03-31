@@ -1,21 +1,24 @@
-Received: from [63.81.120.155] (helo=imap.sh.mvista.com)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JgNTa-0001TQ-5N
-	for linux-mtd@lists.infradead.org; Mon, 31 Mar 2008 17:07:19 +0000
-Message-ID: <47F11A19.4050305@ru.mvista.com>
-Date: Mon, 31 Mar 2008 21:06:33 +0400
-From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-MIME-Version: 1.0
-To: Laurent Pinchart <laurentp@cse-semaphore.com>
-Subject: Re: [PATCHv2] powerpc: Describe memory-mapped RAM&ROM chips OF
-	bindings
-References: <200803311839.10519.laurentp@cse-semaphore.com>
-In-Reply-To: <200803311839.10519.laurentp@cse-semaphore.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from mailgw3.cms.com ([202.75.200.223] helo=ms4l.cms.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JgNkj-0008DF-90
+	for linux-mtd@lists.infradead.org; Mon, 31 Mar 2008 17:25:02 +0000
+Received: from localhost (mailgw3.cms.com [127.0.0.1])
+	by ms4l.cms.com (Postfix) with ESMTP id EEFAD1481C4
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 31 Mar 2008 14:51:50 +0530 (IST)
+Received: from [172.19.23.13] (unknown [172.19.23.13])
+	by ms4l.cms.com (Postfix) with ESMTP id 7138714816C
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 31 Mar 2008 14:51:45 +0530 (IST)
+Subject: help MTD OVER AT45BV642DT
+From: vibi <vibi_sreenivasan@cms.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Date: Mon, 31 Mar 2008 09:06:11 +0000
+Message-Id: <1206954371.2787.23.camel@root>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: ben@simtec.co.uk, linuxppc-dev@ozlabs.org,
-	Rune Torgersen <runet@innovsys.com>, linux-mtd@lists.infradead.org,
-	David Gibson <david@gibson.dropbear.id.au>
+Reply-To: vibi_sreenivasan@cms.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +28,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello.
+hello,
+	has anyone tried using mtd over at45db642dt.
+	Is there anything we have to take into account 
+	when we are going to use mtd over bottom boot flash
+	like at45db642dt.
+	
+	thanks in advance
 
-Laurent Pinchart wrote:
-
-> Signed-off-by: Laurent Pinchart <laurentp@cse-semaphore.com>
-> ---
->  Documentation/powerpc/booting-without-of.txt |   13 ++++++++++++-
->  1 files changed, 12 insertions(+), 1 deletions(-)
-> 
-> diff --git a/Documentation/powerpc/booting-without-of.txt b/Documentation/powerpc/booting-without-of.txt
-> index 7b4e8a7..3e1963b 100644
-> --- a/Documentation/powerpc/booting-without-of.txt
-> +++ b/Documentation/powerpc/booting-without-of.txt
-> @@ -57,7 +57,8 @@ Table of Contents
->        n) 4xx/Axon EMAC ethernet nodes
->        o) Xilinx IP cores
->        p) Freescale Synchronous Serial Interface
-> -	  q) USB EHCI controllers
-> +      q) USB EHCI controllers
-> +      r) Memory-mapped RAM & ROM
-
-    Memory-mapped RA/RO Memory again? Should better drop this. :-)
-
-WBR, Sergei
+regards 
+vibi sreenivasn
+	
