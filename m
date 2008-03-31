@@ -1,21 +1,25 @@
-Received: from az33egw01.freescale.net ([192.88.158.102])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JgBXq-0000vo-9M
-	for linux-mtd@lists.infradead.org; Mon, 31 Mar 2008 04:22:54 +0000
-Received: from az33smr01.freescale.net (az33smr01.freescale.net [10.64.34.199])
-	by az33egw01.freescale.net (8.12.11/az33egw01) with ESMTP id
-	m2V4Mpur005872 for <linux-mtd@lists.infradead.org>;
-	Sun, 30 Mar 2008 21:22:51 -0700 (MST)
-From: Trent Piepho <tpiepho@freescale.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] MTD: Fixup for incorrect CFI data in Spansion
-	S29GL064/32N flash chips
-Date: Sun, 30 Mar 2008 21:19:30 -0700
-Message-Id: <1206937170-26930-2-git-send-email-tpiepho@freescale.com>
-In-Reply-To: <1206937170-26930-1-git-send-email-tpiepho@freescale.com>
-References: <Pine.LNX.4.64.0803302101060.16066@t2.domain.actdsltmp>
-	<1206937170-26930-1-git-send-email-tpiepho@freescale.com>
-Cc: Trent Piepho <tpiepho@freescale.com>
+Received: from mailrelay005.isp.belgacom.be ([195.238.6.171])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JgFGq-0008W4-Iv
+	for linux-mtd@lists.infradead.org; Mon, 31 Mar 2008 08:21:37 +0000
+From: Laurent Pinchart <laurentp@cse-semaphore.com>
+To: linuxppc-dev@ozlabs.org
+Subject: Re: OF compatible MTD platform RAM driver ?
+Date: Mon, 31 Mar 2008 10:21:28 +0200
+References: <200803101606.39184.laurentp@cse-semaphore.com>
+	<18416.813.635397.559197@cargo.ozlabs.ibm.com>
+	<56851566f85e117c42b078dd2d6a2028@kernel.crashing.org>
+In-Reply-To: <56851566f85e117c42b078dd2d6a2028@kernel.crashing.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Message-Id: <200803311021.28919.laurentp@cse-semaphore.com>
+Cc: ben@simtec.co.uk, linux-mtd@lists.infradead.org,
+	Paul Mackerras <paulus@samba.org>,
+	Segher Boessenkool <segher@kernel.crashing.org>,
+	David Gibson <david@gibson.dropbear.id.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,68 +29,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a known erratum confirmed by Spansion.  I have an errata document,
-but I can't find a link to it anywhere on their site to include here.
+On Monday 31 March 2008 00:39, Segher Boessenkool wrote:
+> >>> For RAMs we
+> >>> need something to indicate that it's memory but intended for=20
+> >>> secondary
+> >>> storage, not as main memory.
+> >>
+> >> How it is intended to be used is not a property of the hardware, so
+> >> that information doesn't belong in the device tree at all.  The Linux
+> >> platform code should handle this, I imagine.
+> >
+> > There must be some reason why it is not intended to be used as main
+> > memory.  Presumably it has something different about it compared to
+> > "normal" RAM, and that difference could perfectly well be expressed in
+> > the device tree.
+>=20
+> Sure, that's a different thing.  It might sit on a bus that doesn't
+> do cache coherency, or maybe it's just slow (or sits on a slow bus).
+> All these things can be usefully expressed in the device tree (but
+> typically are not, it is left to the client code to know this stuff
+> implicitly).
+>=20
+> It's still the (platform) probe code its responsibility to figure
+> out what (if anything) to do with any device.  And "main memory"
+> is probed differently (via /chosen/memory, for example) anyway.
+> Well, actually, Linux searches for all nodes with device_type "memory",
+> which should work fine as well [*].
+>=20
+> So, all in all, I think we should just give these "auxiliary memory"
+> devices a name of "ram" c.q. "rom", and some "reg", and that should
+> be all that is needed: the main memory probe stuff won't consider
+> these nodes, and the (platform) device probe code can do whatever it
+> wants (create mtd devices, I guess).
 
-Some of the S29GL064N chips report 64 sectors when they should report 128,
-and some of S29GL032N chips report 127 sectors when they should report 63.
+Ok, I get your point. I'll prepare a new documentation patch; changes to=20
+physmap_of.c will go away.
 
-Note that when the chip dies are fixed by Spansion, they will still have
-the same id.  The fix is done in such a way that it won't affect corrected
-chips.
+If I understand you correctly, there should be no "compatible" property on =
+the=20
+ram and rom devices. Should the "non-volatile", "slow" and "static ram"=20
+properties still be expressed in the device tree ?
 
-The fixups use the extended id made available by a previous patch.  Without
-that, virtually all newer AMD/Spansion chips will have the same ID (0x227e)
-and it's not possible to apply the fixup to the correct chips.
+=2D-=20
+Laurent Pinchart
+CSE Semaphore Belgium
 
-Signed-off-by: Trent Piepho <tpiepho@freescale.com>
----
- drivers/mtd/chips/cfi_cmdset_0002.c |   26 ++++++++++++++++++++++++++
- 1 files changed, 26 insertions(+), 0 deletions(-)
+Chauss=E9e de Bruxelles, 732A
+B-1410 Waterloo
+Belgium
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 1f64458..4412e5f 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -216,6 +216,28 @@ static void fixup_use_atmel_lock(struct mtd_info *mtd, void *param)
- 	mtd->flags |= MTD_STUPID_LOCK;
- }
- 
-+static void fixup_s29gl064n_sectors(struct mtd_info *mtd, void *param)
-+{
-+	struct map_info *map = mtd->priv;
-+	struct cfi_private *cfi = map->fldrv_priv;
-+
-+	if ((cfi->cfiq->EraseRegionInfo[0] & 0xffff) == 0x003f) {
-+		cfi->cfiq->EraseRegionInfo[0] |= 0x0040;
-+		pr_warning("%s: Bad S29GL064N CFI data, adjust from 64 to 128 sectors\n", mtd->name);
-+	}
-+}
-+
-+static void fixup_s29gl032n_sectors(struct mtd_info *mtd, void *param)
-+{
-+	struct map_info *map = mtd->priv;
-+	struct cfi_private *cfi = map->fldrv_priv;
-+
-+	if ((cfi->cfiq->EraseRegionInfo[1] & 0xffff) == 0x007e) {
-+		cfi->cfiq->EraseRegionInfo[1] &= ~0x0040;
-+		pr_warning("%s: Bad S29GL032N CFI data, adjust from 127 to 63 sectors\n", mtd->name);
-+	}
-+}
-+
- static struct cfi_fixup cfi_fixup_table[] = {
- #ifdef AMD_BOOTLOC_BUG
- 	{ CFI_MFR_AMD, CFI_ID_ANY, fixup_amd_bootblock, NULL },
-@@ -226,6 +248,10 @@ static struct cfi_fixup cfi_fixup_table[] = {
- 	{ CFI_MFR_AMD, 0x0056, fixup_use_secsi, NULL, },
- 	{ CFI_MFR_AMD, 0x005C, fixup_use_secsi, NULL, },
- 	{ CFI_MFR_AMD, 0x005F, fixup_use_secsi, NULL, },
-+	{ CFI_MFR_AMD, 0x0c01, fixup_s29gl064n_sectors, NULL, },
-+	{ CFI_MFR_AMD, 0x1301, fixup_s29gl064n_sectors, NULL, },
-+	{ CFI_MFR_AMD, 0x1a00, fixup_s29gl032n_sectors, NULL, },
-+	{ CFI_MFR_AMD, 0x1a01, fixup_s29gl032n_sectors, NULL, },
- #if !FORCE_WORD_WRITE
- 	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_use_write_buffers, NULL, },
- #endif
--- 
-1.5.4.1
+T +32 (2) 387 42 59
+=46 +32 (2) 387 42 75
