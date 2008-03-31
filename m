@@ -1,23 +1,20 @@
-Received: from smtp5.pp.htv.fi ([213.243.153.39])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jg1Ae-00069r-69
-	for linux-mtd@lists.infradead.org; Sun, 30 Mar 2008 17:18:16 +0000
-Date: Sun, 30 Mar 2008 19:53:23 +0300
-From: Adrian Bunk <bunk@kernel.org>
-To: devzero@web.de, Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [2.6.25 patch] sound/oss/ac97_codec.c: restore MODULE_LICENSE
-Message-ID: <20080330165323.GA1575@cs181133002.pp.htv.fi>
-References: <213384793@web.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <213384793@web.de>
-Cc: Randy Dunlap <randy.dunlap@oracle.com>, "Rafael J. Wysocki" <rjw@sisk.pl>,
-	linux-ide@vger.kernel.org, greg@kroah.com,
-	linux-kernel@vger.kernel.org, david-b@pacbell.net,
-	linux-acpi@vger.kernel.org, linux-mtd@lists.infradead.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	alan@lxorguk.ukuu.org.uk, lenb@kernel.org
+Received: from az33egw01.freescale.net ([192.88.158.102])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JgBXp-0000rQ-R4
+	for linux-mtd@lists.infradead.org; Mon, 31 Mar 2008 04:22:54 +0000
+Received: from az33smr01.freescale.net (az33smr01.freescale.net [10.64.34.199])
+	by az33egw01.freescale.net (8.12.11/az33egw01) with ESMTP id
+	m2V4MolX005867 for <linux-mtd@lists.infradead.org>;
+	Sun, 30 Mar 2008 21:22:51 -0700 (MST)
+From: Trent Piepho <tpiepho@freescale.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/2] MTD: Read extended device ID from AMD/Spansion CFI flash
+	chips
+Date: Sun, 30 Mar 2008 21:19:29 -0700
+Message-Id: <1206937170-26930-1-git-send-email-tpiepho@freescale.com>
+In-Reply-To: <Pine.LNX.4.64.0803302101060.16066@t2.domain.actdsltmp>
+References: <Pine.LNX.4.64.0803302101060.16066@t2.domain.actdsltmp>
+Cc: Trent Piepho <tpiepho@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,50 +24,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 26, 2008 at 09:51:34PM +0100, devzero@web.de wrote:
-> > Can you post the full kernel log up to this BUG?
-> > It should show that causes the Taint.
-> 
-> oh - yes:
-> 
-> Mar 23 09:12:20 opensuse103 kernel: ac97_codec: module license 'unspecified' taints kernel.
-> 
-> modinfo ac97_codec
-> filename:       /lib/modules/2.6.25-rc6-git7-default/kernel/sound/oss/ac97_codec.ko
-> srcversion:     8665939D5E471F7E331BB3E
-> depends:
-> vermagic:       2.6.25-rc6-git7-default SMP mod_unload 586
-> 
-> 
-> seems MODULE_LICENSE is missing in ./sound/oss/ac97_codec.c !?
->...
+AMD/Spansion use a device id of 0x7e to indicate an extended device is
+present at offset 0xe and 0xf in the query data.
 
-My fault, fix below.
+I've verified with Spansion that all their chips (mfr == 0x01) with an id
+of 0x7e use it to indicate an extended id is present.  What's more, there
+are no chips with a NON-extended id that is the same as a different chip's
+extended id.  In other words, when the extended ID is present, one can
+replace the normal id with the extended id without losing any information.
+Which is what I've done.
 
-> regards
-> roland
-
-cu
-Adrian
-
-
-<--  snip  -->
-
-
-I accidentally removed the MODULE_LICENSE("GPL") from sound/oss/ac97_codec.c
-
-Spotted by Roland <devzero@web.de>.
-
-Signed-off-by: Adrian Bunk <bunk@kernel.org>
-
+Signed-off-by: Trent Piepho <tpiepho@freescale.com>
 ---
-c4f4fee537525836680163622dc15b045f551d40 diff --git a/sound/oss/ac97_codec.c b/sound/oss/ac97_codec.c
-index 87a6726..b63839e 100644
---- a/sound/oss/ac97_codec.c
-+++ b/sound/oss/ac97_codec.c
-@@ -1202,3 +1202,5 @@ static int pt101_init(struct ac97_codec * codec)
+ drivers/mtd/chips/cfi_probe.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
+index 60e11a0..0b69034 100644
+--- a/drivers/mtd/chips/cfi_probe.c
++++ b/drivers/mtd/chips/cfi_probe.c
+@@ -231,6 +231,11 @@ static int __xipram cfi_chip_setup(struct map_info *map,
+ 	cfi_send_gen_cmd(0x90, 0x555, base, map, cfi, cfi->device_type, NULL);
+ 	cfi->mfr = cfi_read_query16(map, base);
+ 	cfi->id = cfi_read_query16(map, base + ofs_factor);
++	
++	/* Get AMD/Spansion extended JEDEC ID */
++	if (cfi->mfr == CFI_MFR_AMD && (cfi->id & 0xff) == 0x7e)
++		cfi->id = cfi_read_query(map, base + 0xe * ofs_factor) << 8 |
++			  cfi_read_query(map, base + 0xf * ofs_factor);
  
- EXPORT_SYMBOL(ac97_probe_codec);
- 
-+MODULE_LICENSE("GPL");
-+
+ 	/* Put it back into Read Mode */
+ 	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
+-- 
+1.5.4.1
