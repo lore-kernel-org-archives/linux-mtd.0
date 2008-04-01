@@ -1,13 +1,13 @@
 Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JhTFI-0004s6-KU
-	for linux-mtd@lists.infradead.org; Thu, 03 Apr 2008 17:29:05 +0000
-Message-Id: <20080401181332.853833008@logfs.org>
+	id 1JhTFN-0004s6-MP
+	for linux-mtd@lists.infradead.org; Thu, 03 Apr 2008 17:29:10 +0000
+Message-Id: <20080401181332.853833006@logfs.org>
 References: <20080401181308.512473173@logfs.org>
 Date: Tue, 01 Apr 2008 20:13:08 +0200
 To: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [patch 8/15] fs/logfs/inode.c
+Subject: [patch 6/15] fs/logfs/file.c
 From: joern@logfs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -19,580 +19,241 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 --- /dev/null	2008-03-30 12:15:48.586669308 +0200
-+++ linux-2.6.24logfs/fs/logfs/inode.c	2008-04-01 19:42:55.146055510 +0200
-@@ -0,0 +1,575 @@
++++ linux-2.6.24logfs/fs/logfs/file.c	2008-03-28 18:26:27.421722776 +0100
+@@ -0,0 +1,236 @@
 +/*
-+ * fs/logfs/inode.c	- inode handling code
++ * fs/logfs/file.c	- prepare_write, commit_write and friends
 + *
 + * As should be obvious for Linux kernel code, license is GPLv2
 + *
 + * Copyright (c) 2005-2007 Joern Engel <joern@logfs.org>
 + */
 +#include "logfs.h"
++#include <linux/sched.h>
 +#include <linux/writeback.h>
-+#include <linux/backing-dev.h>
 +
-+/*
-+ * We need to include <linux/writeback.h> - a header we normally shouldn't
-+ * be mucking with.  If life only were that easy!
-+ *
-+ * As it is, LogFS' requirement to read inodes for garbage collection keeps
-+ * breaking Linux assumptions.  In particular, an inode can get be in
-+ * I_DELETING state when being written out.  Logfs then notices that it
-+ * needs some space, does a little GC and tries to read just the inode in
-+ * I_DELETING state.  So the code is waiting for itself to finish, lovely.
-+ *
-+ * Our strategy to solve this problem is to overload the generic drop_inode()
-+ * and destroy_inode() methods.  Writeback happens between those two calls,
-+ * so add the inode to a list in drop_inode() and remove it again in
-+ * destroy_inode().  Any iget() in the GC path is replaced with logfs_iget(),
-+ * which will check the list and only call the blocking iget() if the inode
-+ * in question cannot deadlock.
-+ *
-+ * And of course this would be racy if we didn't take inode_lock in a few
-+ * key moments.
-+ */
-+static struct kmem_cache *logfs_inode_cache;
-+
-+static int __logfs_read_inode(struct inode *inode);
-+
-+static struct inode *__logfs_iget(struct super_block *sb, unsigned long ino)
++static int logfs_prepare_write(struct file *file, struct page *page,
++		unsigned start, unsigned end)
 +{
-+	struct inode *inode = iget_locked(sb, ino);
-+	int err;
-+
-+	if (inode && (inode->i_state & I_NEW)) {
-+		err = __logfs_read_inode(inode);
-+		unlock_new_inode(inode);
-+		if (err) {
-+			/* set i_nlink to 0 to prevent caching */
-+			inode->i_nlink = 0;
-+			logfs_inode(inode)->li_flags |= LOGFS_IF_ZOMBIE;
-+			iput(inode);
-+			return NULL;
-+		}
-+		BUG_ON(inode->i_nlink == 0);
-+	}
-+
-+	return inode;
-+}
-+
-+/*
-+ * is_cached is set to 1 if we hand out a cached inode, 0 otherwise.
-+ * this allows logfs_iput to do the right thing later
-+ */
-+struct inode *logfs_iget(struct super_block *sb, ino_t ino, int *is_cached)
-+{
-+	struct logfs_super *super = logfs_super(sb);
-+	struct logfs_inode *li;
-+
-+	if (ino == LOGFS_INO_MASTER)
-+		return super->s_master_inode;
-+
-+	spin_lock(&inode_lock);
-+	list_for_each_entry(li, &super->s_freeing_list, li_freeing_list)
-+		if (li->vfs_inode.i_ino == ino) {
-+			spin_unlock(&inode_lock);
-+			*is_cached = 1;
-+			return &li->vfs_inode;
-+		}
-+	spin_unlock(&inode_lock);
-+
-+	*is_cached = 0;
-+	return __logfs_iget(sb, ino);
-+}
-+
-+void logfs_iput(struct inode *inode, int is_cached)
-+{
-+	if (inode->i_ino == LOGFS_INO_MASTER)
-+		return;
-+
-+	if (is_cached)
-+		return;
-+
-+	iput(inode);
-+}
-+
-+static void logfs_init_inode(struct inode *inode)
-+{
-+	struct logfs_inode *li = logfs_inode(inode);
-+	int i;
-+
-+	li->li_flags	= LOGFS_IF_VALID;
-+	li->li_used_bytes = 0;
-+	li->li_transaction = NULL;
-+	inode->i_uid	= 0;
-+	inode->i_gid	= 0;
-+	inode->i_size	= 0;
-+	inode->i_blocks	= 0;
-+	inode->i_ctime	= CURRENT_TIME;
-+	inode->i_mtime	= CURRENT_TIME;
-+	inode->i_nlink	= 1;
-+	INIT_LIST_HEAD(&li->li_freeing_list);
-+	btree_init(&li->li_shadow_tree.new);
-+	btree_init(&li->li_shadow_tree.old);
-+
-+	for (i = 0; i < LOGFS_EMBEDDED_FIELDS; i++)
-+		li->li_data[i] = 0;
-+
-+	return;
-+}
-+
-+static struct inode *logfs_alloc_inode(struct super_block *sb)
-+{
-+	struct logfs_inode *li;
-+
-+	li = kmem_cache_alloc(logfs_inode_cache, GFP_KERNEL);
-+	if (!li)
-+		return NULL;
-+	logfs_init_inode(&li->vfs_inode);
-+	return &li->vfs_inode;
-+}
-+
-+/*
-+ * In logfs inodes are written to an inode file.  The inode file, like any
-+ * other file, is managed with a inode.  The inode file's inode, aka master
-+ * inode, requires special handling in several respects.  First, it cannot be
-+ * written to the inode file, so it is stored in the journal instead.
-+ *
-+ * Secondly, this inode cannot be written back and destroyed before all other
-+ * inodes have been written.  The ordering is important.  Linux' VFS is happily
-+ * unaware of the ordering constraint and would ordinarily destroy the master
-+ * inode at umount time while other inodes are still in use and dirty.  Not
-+ * good.
-+ *
-+ * So logfs makes sure the master inode is not written until all other inodes
-+ * have been destroyed.  Sadly, this method has another side-effect.  The VFS
-+ * will notice one remaining inode and print a frightening warning message.
-+ * Worse, it is impossible to judge whether such a warning was caused by the
-+ * master inode or any other inodes have leaked as well.
-+ *
-+ * Our attempt of solving this is with logfs_new_meta_inode() below.  Its
-+ * purpose is to create a new inode that will not trigger the warning if such
-+ * an inode is still in use.  An ugly hack, no doubt.  Suggections for
-+ * improvement are welcome.
-+ */
-+struct inode *logfs_new_meta_inode(struct super_block *sb, u64 ino)
-+{
-+	struct inode *inode;
-+
-+	inode = logfs_alloc_inode(sb);
-+	if (!inode)
-+		return ERR_PTR(-ENOMEM);
-+
-+	inode->i_mode = 0;
-+	inode->i_ino = ino;
-+	inode->i_sb = sb;
-+
-+	/* This is a blatant copy of alloc_inode code.  We'd need alloc_inode
-+	 * to be nonstatic, alas. */
-+	{
-+		struct address_space * const mapping = &inode->i_data;
-+
-+		mapping->a_ops = &logfs_reg_aops;
-+		mapping->host = inode;
-+		mapping->flags = 0;
-+		mapping_set_gfp_mask(mapping, GFP_HIGHUSER);
-+		mapping->assoc_mapping = NULL;
-+		mapping->backing_dev_info = &default_backing_dev_info;
-+		inode->i_mapping = mapping;
-+	}
-+
-+	return inode;
-+}
-+
-+/*
-+ * Time is stored as nanoseconds since the epoch.
-+ */
-+static struct timespec be64_to_timespec(__be64 betime)
-+{
-+	return ns_to_timespec(be64_to_cpu(betime));
-+}
-+
-+static __be64 timespec_to_be64(struct timespec tsp)
-+{
-+	return cpu_to_be64((u64)tsp.tv_sec * NSEC_PER_SEC + tsp.tv_nsec);
-+}
-+
-+static void logfs_disk_to_inode(struct logfs_disk_inode *di, struct inode*inode)
-+{
-+	struct logfs_inode *li = logfs_inode(inode);
-+	int i;
-+
-+	inode->i_mode	= be16_to_cpu(di->di_mode);
-+	li->li_height	= di->di_height;
-+	li->li_flags	= be32_to_cpu(di->di_flags);
-+	inode->i_uid	= be32_to_cpu(di->di_uid);
-+	inode->i_gid	= be32_to_cpu(di->di_gid);
-+	inode->i_size	= be64_to_cpu(di->di_size);
-+	logfs_set_blocks(inode, be64_to_cpu(di->di_used_bytes));
-+	inode->i_ctime	= be64_to_timespec(di->di_ctime);
-+	inode->i_mtime	= be64_to_timespec(di->di_mtime);
-+	inode->i_nlink	= be32_to_cpu(di->di_refcount);
-+	inode->i_generation = be32_to_cpu(di->di_generation);
-+
-+	switch (inode->i_mode & S_IFMT) {
-+	case S_IFCHR: /* fall through */
-+	case S_IFBLK: /* fall through */
-+	case S_IFIFO:
-+		inode->i_rdev = be64_to_cpu(di->di_data[0]);
-+		break;
-+	default:
-+		/* li_flags must be read before this */
-+		if (li->li_flags & LOGFS_IF_EMBEDDED)
-+			memcpy(li->li_data, di->di_data,
-+					LOGFS_EMBEDDED_FIELDS * sizeof(u64));
-+		else
-+			for (i = 0; i < LOGFS_EMBEDDED_FIELDS; i++)
-+				li->li_data[i] = be64_to_cpu(di->di_data[i]);
-+		break;
-+	}
-+}
-+
-+static void logfs_inode_to_disk(struct inode *inode, struct logfs_disk_inode*di)
-+{
-+	struct logfs_inode *li = logfs_inode(inode);
-+	int i;
-+
-+	di->di_mode	= cpu_to_be16(inode->i_mode);
-+	di->di_height	= li->li_height;
-+	di->di_pad	= 0;
-+	di->di_flags	= cpu_to_be32(li->li_flags);
-+	di->di_uid	= cpu_to_be32(inode->i_uid);
-+	di->di_gid	= cpu_to_be32(inode->i_gid);
-+	di->di_size	= cpu_to_be64(i_size_read(inode));
-+	di->di_used_bytes = cpu_to_be64(li->li_used_bytes);
-+	di->di_ctime	= timespec_to_be64(inode->i_ctime);
-+	di->di_mtime	= timespec_to_be64(inode->i_mtime);
-+	di->di_refcount	= cpu_to_be32(inode->i_nlink);
-+	di->di_generation = cpu_to_be32(inode->i_generation);
-+
-+	switch (inode->i_mode & S_IFMT) {
-+	case S_IFCHR: /* fall through */
-+	case S_IFBLK: /* fall through */
-+	case S_IFIFO:
-+		di->di_data[0] = cpu_to_be64(inode->i_rdev);
-+		break;
-+	default:
-+		if (li->li_flags & LOGFS_IF_EMBEDDED)
-+			memcpy(di->di_data, li->li_data,
-+					LOGFS_EMBEDDED_FIELDS * sizeof(u64));
-+		else
-+			for (i = 0; i < LOGFS_EMBEDDED_FIELDS; i++)
-+				di->di_data[i] = cpu_to_be64(li->li_data[i]);
-+		break;
-+	}
-+}
-+
-+#define VALID_MASK (LOGFS_IF_VALID | LOGFS_IF_INVALID)
-+static int logfs_read_disk_inode(struct logfs_disk_inode *di,
-+		struct inode *inode)
-+{
-+	struct logfs_super *super = logfs_super(inode->i_sb);
-+	ino_t ino = inode->i_ino;
-+	int ret;
-+
-+	BUG_ON(!super->s_master_inode);
-+	ret = logfs_inode_read(super->s_master_inode, di, sizeof(*di), ino);
-+	if (ret)
-+		return ret;
-+
-+	if ((be32_to_cpu(di->di_flags) & VALID_MASK) != LOGFS_IF_VALID) {
-+		/*
-+		 * We read wrong data, someone scribbled over it or we
-+		 * have a bug.  Worth mentioning in the logs.
-+		 */
-+		printk(KERN_WARNING"LOGFS: read corrupt inode #%lx\n", ino);
-+		WARN_ON(1);
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
-+static void logfs_inode_setops(struct inode *inode)
-+{
-+	switch (inode->i_mode & S_IFMT) {
-+	case S_IFDIR:
-+		inode->i_op = &logfs_dir_iops;
-+		inode->i_fop = &logfs_dir_fops;
-+		inode->i_mapping->a_ops = &logfs_reg_aops;
-+		break;
-+	case S_IFREG:
-+		inode->i_op = &logfs_reg_iops;
-+		inode->i_fop = &logfs_reg_fops;
-+		inode->i_mapping->a_ops = &logfs_reg_aops;
-+		break;
-+	case S_IFLNK:
-+		inode->i_op = &logfs_symlink_iops;
-+		inode->i_mapping->a_ops = &logfs_reg_aops;
-+		break;
-+	default:
-+		;
-+	}
-+}
-+
-+static int __logfs_read_inode(struct inode *inode)
-+{
-+	struct logfs_disk_inode di;
-+	int ret;
-+
-+	ret = logfs_read_disk_inode(&di, inode);
-+	if (ret)
-+		return ret;
-+	logfs_disk_to_inode(&di, inode);
-+
-+	logfs_inode_setops(inode);
-+	return 0;
-+}
-+
-+static void logfs_read_inode(struct inode *inode)
-+{
-+	int ret;
-+
-+	BUG_ON(inode->i_ino == LOGFS_INO_MASTER);
-+
-+	ret = __logfs_read_inode(inode);
-+
-+	if (ret)
-+		make_bad_inode(inode);
-+}
-+
-+/* This function should move to fs/fs-writeback.c or similar. */
-+static void clear_inode_dirty_sync(struct inode *inode)
-+{
-+	spin_lock(&inode_lock);
-+	inode->i_state &= ~I_DIRTY_SYNC;
-+	spin_unlock(&inode_lock);
-+}
-+
-+static void __logfs_set_blocks(struct inode *inode)
-+{
-+	struct super_block *sb = inode->i_sb;
-+	struct logfs_inode *li = logfs_inode(inode);
-+
-+	inode->i_blocks = ULONG_MAX;
-+	if (li->li_used_bytes >> sb->s_blocksize_bits < ULONG_MAX)
-+		inode->i_blocks = ALIGN(li->li_used_bytes, 512) >> 9;
-+}
-+
-+void logfs_set_blocks(struct inode *inode, u64 bytes)
-+{
-+	struct logfs_inode *li = logfs_inode(inode);
-+
-+	li->li_used_bytes = bytes;
-+	__logfs_set_blocks(inode);
-+}
-+
-+static void account_shadow(void *_shadow, long _inode, u64 ignore)
-+{
-+	struct logfs_shadow *shadow = _shadow;
-+	struct inode *inode = (void *)_inode;
-+	struct logfs_inode *li = logfs_inode(inode);
-+
-+	li->li_used_bytes += shadow->new_len - shadow->old_len;
-+}
-+
-+static int logfs_write_disk_inode(struct logfs_disk_inode *di,
-+		struct inode *inode, long flags)
-+{
-+	struct logfs_super *super = logfs_super(inode->i_sb);
-+	struct logfs_inode *li = logfs_inode(inode);
-+	struct logfs_transaction *ta;
-+	int ret;
-+
-+	/* FIXME: should we take inode->i_mutex? */
-+	ta = logfs_inode(inode)->li_transaction;
-+	logfs_inode(inode)->li_transaction = NULL;
-+
-+	btree_visitor(&li->li_shadow_tree.new, (long)inode, account_shadow);
-+	btree_visitor(&li->li_shadow_tree.old, (long)inode, account_shadow);
-+	__logfs_set_blocks(inode);
-+	BUG_ON((s64)li->li_used_bytes < 0);
-+
-+	logfs_inode_to_disk(inode, di);
-+	clear_inode_dirty_sync(inode);
-+	ret = logfs_inode_write(super->s_master_inode, di, sizeof(*di),
-+			inode->i_ino, flags, ta, &li->li_shadow_tree);
-+	return ret;
-+}
-+
-+int __logfs_write_inode(struct inode *inode, long flags)
-+{
-+	struct logfs_disk_inode di;
-+
-+	BUG_ON(inode->i_ino == LOGFS_INO_MASTER);
-+	return logfs_write_disk_inode(&di, inode, flags);
-+}
-+
-+static int logfs_write_inode(struct inode *inode, int do_sync)
-+{
-+	int ret;
-+	long flags = WF_LOCK;
-+
-+	if (do_sync)
-+		flags |= WF_SYNC;
-+
-+	/* Can only happen if creat() failed.  Safe to skip. */
-+	if (logfs_inode(inode)->li_flags & LOGFS_IF_STILLBORN)
++	if (PageUptodate(page))
 +		return 0;
 +
-+	ret = __logfs_write_inode(inode, flags);
-+	LOGFS_BUG_ON(ret, inode->i_sb);
++	if ((start == 0) && (end == PAGE_CACHE_SIZE))
++		return 0;
++
++	return logfs_readpage_nolock(page);
++}
++
++static int logfs_commit_write(struct file *file, struct page *page,
++		unsigned start, unsigned end)
++{
++	struct inode *inode = page->mapping->host;
++	pgoff_t index = page->index;
++	int ret;
++
++	BUG_ON(PAGE_CACHE_SIZE != inode->i_sb->s_blocksize);
++	BUG_ON(page->index > I3_BLOCKS);
++
++	if (start == end)
++		return 0; /* FIXME: do we need to update inode? */
++
++	if (i_size_read(inode) < (index << PAGE_CACHE_SHIFT) + end) {
++		i_size_write(inode, (index << PAGE_CACHE_SHIFT) + end);
++		mark_inode_dirty_sync(inode);
++	}
++
++	ClearPageZero(page);
++	ret = logfs_write_buf(inode, page, NULL, WF_LOCK);
 +	return ret;
 +}
 +
-+static void logfs_truncate_inode(struct inode *inode)
++int logfs_readpage(struct file *file, struct page *page)
 +{
-+	logfs_truncate(inode, 0);
-+	truncate_inode_pages(&inode->i_data, 0);
++	int ret;
++
++	ret = logfs_readpage_nolock(page);
++	unlock_page(page);
++	return ret;
 +}
 +
-+/*
-+ * ZOMBIE inodes have already been deleted before and should remain dead,
-+ * if it weren't for valid checking.  No need to kill them again here.
++/* Clear the page's dirty flag in the radix tree. */
++/* TODO: mucking with PageWriteback is silly.  Add a generic function to clear
++ * the dirty bit from the radix tree for filesystems that don't have to wait
++ * for page writeback to finish (i.e. any compressing filesystem).
 + */
-+static void logfs_delete_inode(struct inode *inode)
++static void clear_radix_tree_dirty(struct page *page)
 +{
-+	struct logfs_super *super = logfs_super(inode->i_sb);
-+	struct logfs_inode *li = logfs_inode(inode);
-+
-+	if (!(li->li_flags & LOGFS_IF_ZOMBIE)) {
-+		li->li_flags |= LOGFS_IF_ZOMBIE;
-+		if (i_size_read(inode) > 0)
-+			logfs_truncate_inode(inode);
-+		logfs_delete(super->s_master_inode, inode->i_ino,
-+				&li->li_shadow_tree, NULL);
-+	}
-+	clear_inode(inode);
++	BUG_ON(PagePrivate(page) || page->private);
++	set_page_writeback(page);
++	end_page_writeback(page);
 +}
 +
-+void __logfs_destroy_inode(struct inode *inode)
++static int __logfs_writepage(struct page *page, struct writeback_control *wbc)
 +{
-+	if (likely(inode))
-+		kmem_cache_free(logfs_inode_cache, logfs_inode(inode));
++	struct inode *inode = page->mapping->host;
++	int err;
++
++	ClearPageZero(page);
++	err = logfs_write_buf(inode, page, NULL, WF_LOCK);
++	if (err)
++		set_page_dirty(page);
++	else
++		clear_radix_tree_dirty(page);
++	unlock_page(page);
++	return err;
 +}
 +
-+/*
-+ * We need to remember which inodes are currently being dropped.  They
-+ * would deadlock the cleaner, if it were to iget() them.  So
-+ * logfs_drop_inode() adds them to super->s_freeing_list,
-+ * logfs_destroy_inode() removes them again and logfs_iget() checks the
-+ * list.
-+ */
-+static void logfs_destroy_inode(struct inode *inode)
++static int logfs_writepage(struct page *page, struct writeback_control *wbc)
 +{
-+	struct logfs_inode *li = logfs_inode(inode);
++	struct inode *inode = page->mapping->host;
++	loff_t i_size = i_size_read(inode);
++	pgoff_t end_index = i_size >> PAGE_CACHE_SHIFT;
++	unsigned offset;
++	u64 bix;
++	u8 level;
 +
-+	BUG_ON(list_empty(&li->li_freeing_list));
-+	spin_lock(&inode_lock);
-+	list_del(&li->li_freeing_list);
-+	spin_unlock(&inode_lock);
-+	kmem_cache_free(logfs_inode_cache, li);
-+}
++	pr_debug("logfs_writepage(%lx, %lx, %p)\n", inode->i_ino, page->index,
++			page);
 +
-+/* called with inode_lock held */
-+static void logfs_drop_inode(struct inode *inode)
-+{
-+	struct logfs_super *super = logfs_super(inode->i_sb);
-+	struct logfs_inode *li = logfs_inode(inode);
++	logfs_unpack_index(page->index, &bix, &level);
 +
-+	list_move(&li->li_freeing_list, &super->s_freeing_list);
-+	generic_drop_inode(inode);
-+}
-+
-+static u64 logfs_get_ino(struct super_block *sb)
-+{
-+	struct logfs_super *super = logfs_super(sb);
-+	u64 ino;
++	/* Indirect blocks are never truncated */
++	if (level > 0)
++		return __logfs_writepage(page, wbc);
 +
 +	/*
-+	 * FIXME: ino allocation should work in two modes:
-+	 * o nonsparse - ifile is mostly occupied, just append
-+	 * o sparse - ifile has lots of holes, fill them up
-+	 *
-+	 * SEEK_HOLE would obviously help a lot here.
++	 * TODO: everything below is a near-verbatim copy of nobh_writepage().
++	 * The relevant bits should be factored out after logfs is merged.
 +	 */
-+	spin_lock(&super->s_ino_lock);
-+	ino = super->s_last_ino;
-+	super->s_last_ino++;
-+	spin_unlock(&super->s_ino_lock);
-+	return ino;
-+}
 +
-+struct inode *logfs_new_inode(struct inode *dir, int mode)
-+{
-+	struct super_block *sb = dir->i_sb;
-+	struct inode *inode;
++	/* Is the page fully inside i_size? */
++	if (bix < end_index)
++		return __logfs_writepage(page, wbc);
 +
-+	inode = new_inode(sb);
-+	if (!inode)
-+		return ERR_PTR(-ENOMEM);
-+
-+	logfs_init_inode(inode);
-+
-+	/* inherit parent flags */
-+	logfs_inode(inode)->li_flags |=
-+		logfs_inode(dir)->li_flags & LOGFS_FL_INHERITED;
-+
-+	inode->i_mode = mode;
-+	inode->i_ino = logfs_get_ino(sb);
-+
-+	inode->i_uid = current->fsuid;
-+	inode->i_gid = current->fsgid;
-+	if (dir->i_mode & S_ISGID) {
-+		inode->i_gid = dir->i_gid;
-+		if (S_ISDIR(mode))
-+			inode->i_mode |= S_ISGID;
++	 /* Is the page fully outside i_size? (truncate in progress) */
++	offset = i_size & (PAGE_CACHE_SIZE-1);
++	if (bix > end_index || offset == 0) {
++		unlock_page(page);
++		return 0; /* don't care */
 +	}
 +
-+	logfs_inode_setops(inode);
-+	insert_inode_hash(inode);
-+
-+	return inode;
++	/*
++	 * The page straddles i_size.  It must be zeroed out on each and every
++	 * writepage invokation because it may be mmapped.  "A file is mapped
++	 * in multiples of the page size.  For a file that is not a multiple of
++	 * the  page size, the remaining memory is zeroed when mapped, and
++	 * writes to that region are not written out to the file."
++	 */
++	zero_user_page(page, offset, PAGE_CACHE_SIZE - offset, KM_USER0);
++	return __logfs_writepage(page, wbc);
 +}
 +
-+static void logfs_init_once(struct kmem_cache *cachep, void *_li)
++static void logfs_invalidatepage(struct page *page, unsigned long offset)
 +{
-+	struct logfs_inode *li = _li;
-+	int i;
++	u64 bix;
++	u8 level;
 +
-+	li->li_flags = 0;
-+	li->li_used_bytes = 0;
-+	for (i = 0; i < LOGFS_EMBEDDED_FIELDS; i++)
-+		li->li_data[i] = 0;
-+	inode_init_once(&li->vfs_inode);
++	/* Gets called for dirty indirect blocks at umount time */
++	logfs_unpack_index(page->index, &bix, &level);
++	BUG_ON(level == 0);
++	BUG_ON(PageZero(page));
++	logfs_write_buf(page->mapping->host, page, NULL, WF_LOCK);
 +}
 +
-+static int logfs_sync_fs(struct super_block *sb, int wait)
++static int logfs_releasepage(struct page *page, gfp_t only_xfs_uses_this)
 +{
++	return 0; /* None of these are easy to release */
++}
++
++
++int logfs_ioctl(struct inode *inode, struct file *file, unsigned int cmd,
++		unsigned long arg)
++{
++	struct logfs_inode *li = logfs_inode(inode);
++	unsigned int oldflags, flags;
++	int err;
++
++	switch (cmd) {
++	case FS_IOC_GETFLAGS:
++		flags = li->li_flags & LOGFS_FL_USER_VISIBLE;
++		return put_user(flags, (int __user *)arg);
++	case FS_IOC_SETFLAGS:
++		if (IS_RDONLY(inode))
++			return -EROFS;
++
++		if ((current->fsuid != inode->i_uid) && !capable(CAP_FOWNER))
++			return -EACCES;
++
++		err = get_user(flags, (int __user *)arg);
++		if (err)
++			return err;
++
++		mutex_lock(&inode->i_mutex);
++		oldflags = li->li_flags;
++		flags &= LOGFS_FL_USER_MODIFIABLE;
++		flags |= oldflags & ~LOGFS_FL_USER_MODIFIABLE;
++		li->li_flags = flags;
++		mutex_unlock(&inode->i_mutex);
++
++		inode->i_ctime = CURRENT_TIME;
++		mark_inode_dirty_sync(inode);
++		return 0;
++
++	default:
++		return -ENOTTY;
++	}
++}
++
++int logfs_fsync(struct file *file, struct dentry *dentry, int datasync)
++{
++	struct super_block *sb = dentry->d_inode->i_sb;
++	struct logfs_super *super = logfs_super(sb);
++
 +	logfs_flush_dirty(sb, 1);
-+	logfs_super(sb)->s_devops->sync(sb);
++
++	super->s_devops->sync(sb);
 +	return 0;
 +}
 +
-+const struct super_operations logfs_super_operations = {
-+	.alloc_inode	= logfs_alloc_inode,
-+	.delete_inode	= logfs_delete_inode,
-+	.destroy_inode	= logfs_destroy_inode,
-+	.drop_inode	= logfs_drop_inode,
-+	.read_inode	= logfs_read_inode,
-+	.write_inode	= logfs_write_inode,
-+	.statfs		= logfs_statfs,
-+	.sync_fs	= logfs_sync_fs,
++static int logfs_setattr(struct dentry *dentry, struct iattr *attr)
++{
++	struct inode *inode = dentry->d_inode;
++	int err = 0;
++
++	if (attr->ia_valid & ATTR_SIZE)
++		err = logfs_truncate(inode, attr->ia_size);
++	attr->ia_valid &= ~ATTR_SIZE;
++
++	if (!err)
++		err = inode_change_ok(inode, attr);
++	if (!err)
++		err = inode_setattr(inode, attr);
++	return err;
++}
++
++const struct inode_operations logfs_reg_iops = {
++	.setattr	= logfs_setattr,
 +};
 +
-+int logfs_init_inode_cache(void)
-+{
-+	logfs_inode_cache = kmem_cache_create("logfs_inode_cache",
-+			sizeof(struct logfs_inode), 0, SLAB_RECLAIM_ACCOUNT,
-+			logfs_init_once);
-+	if (!logfs_inode_cache)
-+		return -ENOMEM;
-+	return 0;
-+}
++const struct file_operations logfs_reg_fops = {
++	.aio_read	= generic_file_aio_read,
++	.aio_write	= generic_file_aio_write,
++	.fsync		= logfs_fsync,
++	.ioctl		= logfs_ioctl,
++	.llseek		= generic_file_llseek,
++	.mmap		= generic_file_readonly_mmap,
++	.open		= generic_file_open,
++	.read		= do_sync_read,
++	.write		= do_sync_write,
++};
 +
-+void logfs_destroy_inode_cache(void)
-+{
-+	kmem_cache_destroy(logfs_inode_cache);
-+}
++const struct address_space_operations logfs_reg_aops = {
++	.commit_write	= logfs_commit_write,
++	.invalidatepage	= logfs_invalidatepage,
++	.prepare_write	= logfs_prepare_write,
++	.readpage	= logfs_readpage,
++	.releasepage	= logfs_releasepage,
++	.set_page_dirty	= __set_page_dirty_nobuffers,
++	.writepage	= logfs_writepage,
++	.writepages	= generic_writepages,
++};
