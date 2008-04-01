@@ -1,13 +1,13 @@
 Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JhTEx-0004s6-AG
-	for linux-mtd@lists.infradead.org; Thu, 03 Apr 2008 17:28:44 +0000
-Message-Id: <20080401181332.853833012@logfs.org>
+	id 1JhTF2-0004s6-JC
+	for linux-mtd@lists.infradead.org; Thu, 03 Apr 2008 17:28:49 +0000
+Message-Id: <20080401181332.853833010@logfs.org>
 References: <20080401181308.512473173@logfs.org>
 Date: Tue, 01 Apr 2008 20:13:08 +0200
 To: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [patch 12/15] fs/logfs/segment.c
+Subject: [patch 10/15] fs/logfs/memtree.c
 From: joern@logfs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -18,601 +18,411 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---- /dev/null	2008-03-30 12:15:48.586669308 +0200
-+++ linux-2.6.24logfs/fs/logfs/segment.c	2008-03-28 18:40:52.161518316 +0100
-@@ -0,0 +1,595 @@
+--- /dev/null	2008-04-02 16:29:12.813336657 +0200
++++ linux-2.6.24logfs/fs/logfs/memtree.c	2008-04-01 21:43:14.593326689 +0200
+@@ -0,0 +1,405 @@
 +/*
-+ * fs/logfs/segment.c	- Handling the Object Store
++ * fs/logfs/memtree.c	- Simple In-memory B+Tree
 + *
 + * As should be obvious for Linux kernel code, license is GPLv2
 + *
-+ * Copyright (c) 2005-2007 Joern Engel <joern@logfs.org>
++ * Copyright (c) 2007 Joern Engel <joern@logfs.org>
 + *
-+ * Object store or ostore makes up the complete device with exception of
-+ * the superblock and journal areas.  Apart from its own metadata it stores
-+ * three kinds of objects: inodes, dentries and blocks, both data and indirect.
++ *
++ * This could possibly get moved to lib/.
++ *
++ * A relatively simple B+Tree implementation.  I have written it as a learning
++ * excercise to understand how B+Trees work.  Turned out to be useful as well.
++ *
++ * B+Trees can be used similar to Linux radix trees (which don't have anything
++ * in common with textbook radix trees, beware).  Prerequisite for them working
++ * well is that access to a random tree node is much faster than a large number
++ * of operations within each node.
++ *
++ * Disks have fulfilled the prerequite for a long time.  More recently DRAM
++ * has gained similar properties, as memory access times, when measured in cpu
++ * cycles, have increased.  Cacheline sizes have increased as well, which also
++ * helps B+Trees.
++ *
++ * Compared to radix trees, B+Trees are more efficient when dealing with a
++ * sparsely populated address space.  Between 25% and 50% of the memory is
++ * occupied with valid pointers.  When densely populated, radix trees contain
++ * ~98% pointers - hard to beat.  Very sparse radix trees contain only ~2%
++ * pointers.
++ *
++ * This particular implementation stores pointers identified by a long value.
++ * Storing NULL pointers is illegal, lookup will return NULL when no entry
++ * was found.
++ *
++ * Two tricks were used that are not commonly found in textbooks.  First, the
++ * lowest values are to the right, not to the left.  All used slots within a
++ * node are on the left, all unused slots contain NUL values.  Most operations
++ * simply loop once over all slots and terminate on the first NUL.
++ *
++ * Second trick is to special-case the key "0" or NUL.  As seen above, this
++ * value indicates an unused slot, so such a value should not be stored in the
++ * tree itself.  Instead it is stored in the null_ptr field in the btree_head.
 + */
++/* FIXME: use mempool for allocations */
 +#include "logfs.h"
 +
-+int logfs_erase_segment(struct super_block *sb, u32 index)
-+{
-+	struct logfs_super *super = logfs_super(sb);
-+
-+	super->s_gec++;
-+
-+	super->s_devops->sync(sb);
-+	return super->s_devops->erase(sb, (u64)index << super->s_segshift,
-+			super->s_segsize);
-+}
-+
-+static s64 logfs_get_free_bytes(struct logfs_area *area, size_t bytes)
-+{
-+	s32 ofs;
-+	int ret;
-+
-+	ret = logfs_open_area(area);
-+	BUG_ON(ret > 0);
-+	if (ret)
-+		return ret;
-+
-+	ofs = area->a_used_bytes;
-+	area->a_used_bytes += bytes;
-+	BUG_ON(area->a_used_bytes >= logfs_super(area->a_sb)->s_segsize);
-+
-+	return dev_ofs(area->a_sb, area->a_segno, ofs);
-+}
-+
-+void logfs_buf_write(struct logfs_area *area, u64 ofs, void *data, size_t len)
-+{
-+	struct super_block *sb = area->a_sb;
-+	struct logfs_super *super = logfs_super(sb);
-+	long write_mask = super->s_writesize - 1;
-+	u64 buf_start;
-+	size_t space, buf_ofs;
-+
-+	buf_ofs = (long)ofs & write_mask;
-+	if (buf_ofs) {
-+		/* buf already used - fill it */
-+		space = super->s_writesize - buf_ofs;
-+		if (len < space) {
-+			/* not enough to fill it - just copy */
-+			memcpy(area->a_wbuf + buf_ofs, data, len);
-+			return;
-+		}
-+		/* enough data to fill and flush the buffer */
-+		memcpy(area->a_wbuf + buf_ofs, data, space);
-+		buf_start = ofs & ~write_mask;
-+		super->s_devops->write(sb, buf_start, super->s_writesize, area->a_wbuf);
-+		ofs += space;
-+		data += space;
-+		len -= space;
-+	}
-+
-+	/* write complete hunks */
-+	space = len & ~write_mask;
-+	if (space) {
-+		super->s_devops->write(sb, ofs, space, data);
-+		ofs += space;
-+		data += space;
-+		len -= space;
-+	}
-+
-+	/* store anything remaining in wbuf */
-+	if (len)
-+		memcpy(area->a_wbuf, data, len);
-+}
-+
-+static struct logfs_area *get_area(struct super_block *sb, int level)
-+{
-+	return logfs_super(sb)->s_area[level];
-+}
-+
-+static int __logfs_segment_write(struct inode *inode, void *buf,
-+		struct logfs_shadow *shadow, int len, int compr)
-+{
-+	struct logfs_area *area;
-+	struct super_block *sb = inode->i_sb;
-+	s64 ofs;
-+	struct logfs_object_header h;
-+	int acc_len = (shadow->level == 0) ? len : sb->s_blocksize;
-+
-+	h.len	= cpu_to_be16(len);
-+	h.type	= OBJ_BLOCK;
-+	h.compr	= compr;
-+	h.ino	= cpu_to_be64(inode->i_ino);
-+	h.bix	= cpu_to_be64(shadow->bix);
-+	h.crc	= logfs_crc32(&h, sizeof(h) - 4, 4);
-+	h.data_crc = logfs_crc32(buf, len, 0);
-+
-+	area = get_area(sb, shadow->level);
-+	ofs = logfs_get_free_bytes(area, len + LOGFS_HEADERSIZE);
-+	LOGFS_BUG_ON(ofs <= 0, sb);
-+
-+	logfs_buf_write(area, ofs, &h, sizeof(h));
-+	logfs_buf_write(area, ofs + LOGFS_HEADERSIZE, buf, len);
-+
-+	shadow->new_ofs = ofs;
-+	shadow->new_len = acc_len + LOGFS_HEADERSIZE;
-+
-+	pr_debug("%2x %2x\n", area->a_level, area->a_segno);
-+	/* FIXME merge with open_area */
-+	logfs_close_area(area);
-+
-+	return 0;
-+}
-+
-+static s64 logfs_segment_write_compress(struct inode *inode, void *buf,
-+		struct logfs_shadow *shadow)
-+{
-+	struct super_block *sb = inode->i_sb;
-+	void *compressor_buf = logfs_super(sb)->s_compressed_je;
-+	int bs = sb->s_blocksize;
-+	ssize_t compr_len;
-+	int ret;
-+
-+	mutex_lock(&logfs_super(sb)->s_journal_mutex);
-+	compr_len = logfs_compress(buf, compressor_buf, bs, bs);
-+
-+	if (compr_len >= 0) {
-+		ret = __logfs_segment_write(inode, compressor_buf, shadow,
-+				compr_len, COMPR_ZLIB);
-+	} else {
-+		ret = __logfs_segment_write(inode, buf, shadow, bs, COMPR_NONE);
-+	}
-+	mutex_unlock(&logfs_super(sb)->s_journal_mutex);
-+	return ret;
-+}
-+
-+/**
-+ * logfs_segment_write - write data block to object store
-+ * @inode:		inode containing data
-+ * @buf:		data buffer
-+ * @bix:		block index
-+ * @level:		block level
-+ * @alloc:		1 if new allocation is needs, 0 otherwise
++/*
++ * Prerequisite of B+Trees performing well is that node lookup is much slower
++ * than a large number of operations within a node.  That can be true if the
++ * node size is identical to cacheline size.  All that is highly
++ * machine-dependent, just like the #define below is not.
 + *
-+ * Returns the physical offset of data written or a negative errno.
++ * Patches to do something smarter are welcome.  Just beware that too small
++ * node with less than 8 slots have a bad fan-out and won't perform well
++ * either.
 + */
-+int logfs_segment_write(struct inode *inode, struct page *page,
-+		struct logfs_shadow *shadow)
-+{
-+	struct super_block *sb = inode->i_sb;
-+	int bs = sb->s_blocksize;
-+	int do_compress;
-+	int ret;
-+	void *buf;
++#if BITS_PER_LONG == 32
++#define BTREE_NODES 20	/* 32bit, 240 byte nodes */
++#else
++#define BTREE_NODES 16	/* 64bit, 256 byte nodes */
++#endif
 +
-+	do_compress = logfs_inode(inode)->li_flags & LOGFS_IF_COMPRESSED;
-+	if (shadow->level != 0) {
-+		/* temporarily disable compression for indirect blocks */
-+		do_compress = 0;
-+	}
-+
-+	buf = kmap(page);
-+	if (do_compress)
-+		ret = logfs_segment_write_compress(inode, buf, shadow);
-+	else
-+		ret = __logfs_segment_write(inode, buf, shadow, bs, COMPR_NONE);
-+	kunmap(page);
-+
-+	/* this BUG_ON did catch a locking bug.  useful */
-+	BUG_ON(!(shadow->new_ofs & (logfs_super(sb)->s_segsize - 1)));
-+	return ret;
-+}
-+
-+/* FIXME: all this mess should get replaced by using the page cache */
-+static void fixup_from_wbuf(struct super_block *sb, struct logfs_area *area,
-+		void *read, u64 ofs, size_t readlen)
-+{
-+	struct logfs_super *super = logfs_super(sb);
-+	u32 read_start = ofs & (super->s_segsize - 1);
-+	u32 read_end = read_start + readlen;
-+	u32 writemask = super->s_writesize - 1;
-+	u32 buf_start = area->a_used_bytes & ~writemask;
-+	u32 buf_end = area->a_used_bytes;
-+	void *buf = area->a_wbuf;
-+	size_t buflen = buf_end - buf_start;
-+
-+	if (!buf || read_end < buf_start)
-+		return;
-+	if ((ofs & (super->s_segsize - 1)) >= area->a_used_bytes) {
-+		memset(read, 0xff, readlen);
-+		return;
-+	}
-+
-+	if (buf_start > read_start) {
-+		read += buf_start - read_start;
-+		readlen -= buf_start - read_start;
-+	} else {
-+		buf += read_start - buf_start;
-+		buflen -= read_start - buf_start;
-+	}
-+	memcpy(read, buf, min(readlen, buflen));
-+	if (buflen < readlen)
-+		memset(read + buflen, 0xff, readlen - buflen);
-+}
-+
-+int wbuf_read(struct super_block *sb, u64 ofs, size_t len, void *buf)
-+{
-+	struct logfs_super *super = logfs_super(sb);
-+	struct logfs_area *area;
-+	u32 segno = ofs >> super->s_segshift;
-+	int i, err;
-+
-+	err = super->s_devops->read(sb, ofs, len, buf);
-+	if (err)
-+		return err;
-+
-+	for_each_area(i) {
-+		area = super->s_area[i];
-+		if (area->a_segno == segno) {
-+			fixup_from_wbuf(sb, area, buf, ofs, len);
-+			break;
-+		}
-+	}
-+	return 0;
-+}
-+
-+static u64 logfs_block_mask[] = {
-+	~0,
-+	~(I1_BLOCKS-1),
-+	~(I2_BLOCKS-1),
-+	~(I3_BLOCKS-1)
++struct btree_node {
++	u64 key;
++	struct btree_node *node;
 +};
 +
-+/*
-+ * The "position" of indirect blocks is ambiguous.  It can be the position
-+ * of any data block somewhere behind this indirect block.  So we need to
-+ * normalize the positions through logfs_block_mask[level] before comparing.
-+ */
-+static int check_pos(struct super_block *sb, u64 pos1, u64 pos2, int level)
++void btree_init(struct btree_head *head)
 +{
-+	return	(pos1 & logfs_block_mask[level]) !=
-+		(pos2 & logfs_block_mask[level]);
++	head->node = NULL;
++	head->height = 0;
++	head->null_ptr = NULL;
 +}
 +
-+static int __logfs_segment_read(struct inode *inode, void *buf,
-+		u64 ofs, u64 bix, u8 level)
++#if 0
++static void __dump_tree(struct btree_node *node, int height)
 +{
-+	struct super_block *sb = inode->i_sb;
-+	void *compressor_buf = logfs_super(sb)->s_compressed_je;
-+	struct logfs_object_header h;
-+	__be32 crc;
-+	u16 len;
-+	int err, bs = sb->s_blocksize;
++	int i;
 +
-+	err = wbuf_read(sb, ofs, LOGFS_HEADERSIZE, &h);
-+	if (err)
-+		goto out_err;
-+	err = -EIO;
-+	crc = logfs_crc32(&h, sizeof(h) - 4, 4);
-+	if (crc != h.crc) {
-+		printk(KERN_ERR"LOGFS: header crc error at %llx: expected %x, "
-+				"got %x\n", ofs, be32_to_cpu(h.crc),
-+				be32_to_cpu(crc));
-+		goto out_err;
-+	}
-+
-+	if (be64_to_cpu(h.ino) != inode->i_ino
-+			|| check_pos(sb, be64_to_cpu(h.bix), bix, level)) {
-+		printk(KERN_ERR"LOGFS: (ino, bix) don't match at %llx: "
-+				"expected (%lx, %llx), got %llx, %llx)\n",
-+				ofs, inode->i_ino, bix,
-+				be64_to_cpu(h.ino), be64_to_cpu(h.bix));
-+		goto out_err;
-+	}
-+
-+	len = be16_to_cpu(h.len);
-+
-+	switch (h.compr) {
-+	case COMPR_NONE:
-+		err = wbuf_read(sb, ofs + LOGFS_HEADERSIZE, len, buf);
-+		if (err)
-+			goto out_err;
-+		crc = logfs_crc32(buf, len, 0);
-+		if (crc != h.data_crc) {
-+			printk(KERN_ERR"LOGFS: uncompressed data crc error at "
-+					"%llx: expected %x, got %x\n", ofs,
-+					be32_to_cpu(h.data_crc),
-+					be32_to_cpu(crc));
-+			goto out_err;
-+		}
-+		break;
-+	case COMPR_ZLIB:
-+		mutex_lock(&logfs_super(sb)->s_journal_mutex);
-+		err = wbuf_read(sb, ofs + LOGFS_HEADERSIZE, len, compressor_buf);
-+		if (err) {
-+			mutex_unlock(&logfs_super(sb)->s_journal_mutex);
-+			goto out_err;
-+		}
-+		crc = logfs_crc32(compressor_buf, len, 0);
-+		if (crc != h.data_crc) {
-+			printk(KERN_ERR"LOGFS: compressed data crc error at "
-+					"%llx: expected %x, got %x\n", ofs,
-+					be32_to_cpu(h.data_crc),
-+					be32_to_cpu(crc));
-+			mutex_unlock(&logfs_super(sb)->s_journal_mutex);
-+			goto out_err;
-+		}
-+		err = logfs_uncompress(compressor_buf, buf, len, bs);
-+		mutex_unlock(&logfs_super(sb)->s_journal_mutex);
-+		if (err) {
-+			printk(KERN_ERR"LOGFS: uncompress error at %llx\n", ofs);
-+			goto out_err;
-+		}
-+		break;
-+	default:
-+		LOGFS_BUG(sb);
-+		err = -EIO;
-+	}
-+	return 0;
-+
-+out_err:
-+	logfs_set_ro(sb);
-+	printk(KERN_ERR"LOGFS: device is read-only now\n");
-+	BUG();
-+	return err;
-+}
-+
-+/**
-+ * logfs_segment_read - read data block from object store
-+ * @inode:		inode containing data
-+ * @buf:		data buffer
-+ * @ofs:		physical data offset
-+ * @bix:		block index
-+ * @level:		block level
-+ *
-+ * Returns 0 on success or a negative errno.
-+ */
-+int logfs_segment_read(struct inode *inode, struct page *page,
-+		u64 ofs, u64 bix, u8 level)
-+{
-+	int err;
-+	void *buf;
-+
-+	if (PageUptodate(page))
-+		return 0;
-+
-+	ofs &= ~LOGFS_FULLY_POPULATED;
-+
-+	buf = kmap(page);
-+	err = __logfs_segment_read(inode, buf, ofs, bix, level);
-+	kunmap(page);
-+	if (!err)
-+		SetPageUptodate(page);
-+	return err;
-+}
-+
-+int logfs_segment_delete(struct inode *inode, struct logfs_shadow *shadow)
-+{
-+	struct super_block *sb = inode->i_sb;
-+	struct logfs_object_header h;
-+	u16 len;
-+	int err;
-+
-+	BUG_ON(shadow->old_ofs & LOGFS_FULLY_POPULATED);
-+	if (!shadow->old_ofs)
-+		return 0;
-+
-+	err = wbuf_read(sb, shadow->old_ofs, sizeof(h), &h);
-+	LOGFS_BUG_ON(err, sb);
-+	LOGFS_BUG_ON(h.crc != logfs_crc32(&h, sizeof(h)-4, 4), sb);
-+	LOGFS_BUG_ON(be64_to_cpu(h.ino) != inode->i_ino, sb);
-+	LOGFS_BUG_ON(check_pos(sb, shadow->bix, be64_to_cpu(h.bix),
-+				shadow->level), sb);
-+
-+	len = be16_to_cpu(h.len);
-+	len = (shadow->level == 0) ? len : sb->s_blocksize;
-+	shadow->old_len = len + sizeof(h);
-+	return 0;
-+}
-+
-+static int logfs_mark_segment_bad(struct super_block *sb, u32 segno)
-+{
-+	struct btree_head *head = &logfs_super(sb)->s_reserved_segments;
-+	int err;
-+
-+	err = btree_insert(head, segno, (void *)1);
-+	if (err)
-+		return err;
-+	logfs_super(sb)->s_bad_segments++;
-+	/* FIXME: write to journal */
-+	return 0;
-+}
-+
-+int logfs_open_area(struct logfs_area *area)
-+{
-+	size_t writesize = logfs_super(area->a_sb)->s_writesize;
-+	int err;
-+
-+	if (area->a_is_open)
-+		return 0;
-+
-+again:
-+	area->a_ops->get_free_segment(area);
-+	area->a_used_bytes = 0;
-+	area->a_ops->get_erase_count(area);
-+
-+	if (area->a_wbuf)
-+		memset(area->a_wbuf, 0, writesize);
-+	area->a_is_open = 1;
-+
-+	err = area->a_ops->erase_segment(area);
-+	if (unlikely(err)) {
-+		printk(KERN_WARNING "LogFS: Error erasing segment %x\n",
-+				area->a_segno);
-+		logfs_mark_segment_bad(area->a_sb, area->a_segno);
-+		goto again;
-+	}
-+	return 0;
-+}
-+
-+void logfs_close_area(struct logfs_area *area)
-+{
-+	if (!area->a_is_open)
++	if (!height)
 +		return;
 +
-+	area->a_ops->finish_area(area);
++	printk(KERN_DEBUG"%p ", node);
++	for (i = 0; i < BTREE_NODES; i++)
++		printk("(%llx,%p) ", node[i].key, node[i].node);
++	printk("\n");
++
++	for (i = 0; i < BTREE_NODES; i++)
++		if (node[i].key)
++			__dump_tree(node[i].node, height-1);
 +}
 +
-+/*
-+ * Pick a free segment to be used for this area.  Effectively takes a
-+ * candidate from the free list (not really a candidate anymore).
-+ */
-+static void ostore_get_free_segment(struct logfs_area *area)
++static void dump_tree(struct btree_head *head)
 +{
-+	struct logfs_super *super = logfs_super(area->a_sb);
-+	struct gc_candidate *cand;
++	printk(KERN_DEBUG"%p\n", head->null_ptr);
++	__dump_tree(head->node, head->height);
++}
++#endif
 +
-+	if (list_empty(&super->s_free_list.list)) {
-+		printk(KERN_ERR"LOGFS: ran out of free segments\n");
-+		BUG();
-+	}
++static u64 btree_last(struct btree_head *head)
++{
++	int height = head->height;
++	struct btree_node *node = head->node;
 +
-+	cand = get_best_cand(&super->s_free_list);
-+	area->a_segno = cand->segno;
-+	kfree(cand);
-+	if (super->s_free_list.count < 5)
-+		pr_debug("use segment #%02x, level %x, %2x remaining\n",
-+				area->a_segno, area->a_level,
-+				super->s_free_list.count);
++	if (height == 0)
++		return 0;
++
++	for ( ; height > 1; height--)
++		node = node[0].node;
++
++	return node[0].key;
 +}
 +
-+static void ostore_get_erase_count(struct logfs_area *area)
++void *btree_lookup(struct btree_head *head, u64 key)
 +{
-+	struct logfs_segment_header h;
-+	int err;
++	int i, height = head->height;
++	struct btree_node *node = head->node;
 +
-+	err = device_read(area->a_sb, area->a_segno, 0, sizeof(h), &h);
-+	BUG_ON(err);
-+	area->a_erase_count = be32_to_cpu(h.ec) + 1;
-+}
++	if (key == 0)
++		return head->null_ptr;
 +
-+static int ostore_erase_segment(struct logfs_area *area)
-+{
-+	struct logfs_segment_header h;
-+	u64 ofs;
-+	int err;
-+
-+	err = logfs_erase_segment(area->a_sb, area->a_segno);
-+	if (err)
-+		return err;
-+
-+	h.pad = 0;
-+	h.type = OBJ_OSTORE;
-+	h.level = area->a_level;
-+	h.segno = cpu_to_be32(area->a_segno);
-+	h.ec = cpu_to_be32(area->a_erase_count);
-+	h.gec = cpu_to_be64(logfs_super(area->a_sb)->s_gec);
-+	h.crc = logfs_crc32(&h, sizeof(h), 4);
-+
-+	ofs = dev_ofs(area->a_sb, area->a_segno, 0);
-+	area->a_used_bytes = sizeof(h);
-+	logfs_buf_write(area, ofs, &h, sizeof(h));
-+	return 0;
-+}
-+
-+static void flush_buf(struct logfs_area *area)
-+{
-+	struct super_block *sb = area->a_sb;
-+	struct logfs_super *super = logfs_super(sb);
-+	u32 used, free;
-+	u64 ofs;
-+	u32 writemask = super->s_writesize - 1;
-+	int err;
-+
-+	ofs = dev_ofs(sb, area->a_segno, area->a_used_bytes);
-+	ofs &= ~writemask;
-+	used = area->a_used_bytes & writemask;
-+	free = super->s_writesize - area->a_used_bytes;
-+	free &= writemask;
-+	if (used == 0)
-+		return;
-+
-+	memset(area->a_wbuf + used, 0xff, free);
-+	err = super->s_devops->write(sb, ofs, super->s_writesize, area->a_wbuf);
-+	LOGFS_BUG_ON(err, sb);
-+}
-+
-+static void ostore_finish_area(struct logfs_area *area)
-+{
-+	struct super_block *sb = area->a_sb;
-+	struct logfs_super *super = logfs_super(sb);
-+	u32 remaining = super->s_segsize - area->a_used_bytes;
-+
-+	if (remaining >= LOGFS_MAX_OBJECTSIZE)
-+		return;
-+
-+	flush_buf(area);
-+
-+	area->a_segno = 0;
-+	area->a_is_open = 0;
-+}
-+
-+static const struct logfs_area_ops ostore_area_ops = {
-+	.get_free_segment	= ostore_get_free_segment,
-+	.get_erase_count	= ostore_get_erase_count,
-+	.erase_segment		= ostore_erase_segment,
-+	.finish_area		= ostore_finish_area,
-+};
-+
-+static void free_area(struct logfs_area *area)
-+{
-+	if (area)
-+		kfree(area->a_wbuf);
-+	kfree(area);
-+}
-+
-+static struct logfs_area *alloc_area(struct super_block *sb)
-+{
-+	struct logfs_area *area;
-+	size_t writesize = logfs_super(sb)->s_writesize;
-+
-+	area = kzalloc(sizeof(*area), GFP_KERNEL);
-+	if (!area)
++	if (height == 0)
 +		return NULL;
 +
-+	area->a_sb = sb;
-+	if (writesize > 1) {
-+		area->a_wbuf = kmalloc(writesize, GFP_KERNEL);
-+		if (!area->a_wbuf) {
-+			kfree(area);
++	for ( ; height > 1; height--) {
++		for (i = 0; i < BTREE_NODES; i++)
++			if (node[i].key <= key)
++				break;
++		node = node[i].node;
++		if (!node)
 +			return NULL;
-+		}
 +	}
-+	return area;
++
++	if (!node)
++		return NULL;
++
++	for (i = 0; i < BTREE_NODES; i++)
++		if (node[i].key == key)
++			return node[i].node;
++
++	return NULL;
 +}
 +
-+int logfs_init_areas(struct super_block *sb)
++/*
++ * Returns two values:
++ * pos - the position of the first slot equal or less than key
++ * fill - the number of positions filled with any value
++ */
++static void find_pos(struct btree_node *node, u64 key, int *pos, int *fill)
 +{
-+	struct logfs_super *super = logfs_super(sb);
 +	int i;
 +
-+	super->s_journal_area = alloc_area(sb);
-+	if (!super->s_journal_area)
-+		return -ENOMEM;
++	for (i = 0; i < BTREE_NODES; i++)
++		if (node[i].key <= key)
++			break;
++	*pos = i;
++	for (i = *pos; i < BTREE_NODES; i++)
++		if (node[i].key == 0)
++			break;
++	*fill = i;
++}
 +
-+	for_each_area(i) {
-+		super->s_area[i] = alloc_area(sb);
-+		if (!super->s_area[i])
-+			goto err;
-+		super->s_area[i]->a_level = i;
-+		super->s_area[i]->a_ops = &ostore_area_ops;
++/*
++ * locate the correct leaf node in the btree
++ */
++static struct btree_node *find_level(struct btree_head *head, u64 key,
++		int level)
++{
++	struct btree_node *node = head->node;
++	int i, height;
++
++	for (height = head->height; height > level; height--) {
++		for (i = 0; i < BTREE_NODES; i++)
++			if (node[i].key <= key)
++				break;
++
++		if ((i == BTREE_NODES) || !node[i].key) {
++			/* right-most key is too large, update it */
++			i--;
++			node[i].key = key;
++		}
++		BUG_ON(i < 0);
++		node = node[i].node;
++	}
++	BUG_ON(!node);
++	return node;
++}
++
++static int btree_grow(struct btree_head *head)
++{
++	struct btree_node *node;
++
++	node = kcalloc(BTREE_NODES, sizeof(*node), GFP_KERNEL);
++	BUG_ON(!node);
++	if (!node)
++		return -ENOMEM;
++	if (head->node) {
++		node->key = head->node[BTREE_NODES-1].key;
++		node->node = head->node;
++	}
++	head->node = node;
++	head->height++;
++	return 0;
++}
++
++static int btree_insert_level(struct btree_head *head, u64 key, void *ptr,
++		int level)
++{
++	struct btree_node *node;
++	int i, pos, fill, err;
++
++	BUG_ON(!ptr);
++	if (key == 0) {
++		/* 0 identifies empty slots, so special-case this */
++		BUG_ON(level != 1);
++		head->null_ptr = ptr;
++		return 0;
++	}
++
++	if (head->height < level) {
++		err = btree_grow(head);
++		if (err)
++			return err;
++	}
++
++retry:
++	node = find_level(head, key, level);
++	find_pos(node, key, &pos, &fill);
++	BUG_ON(node[pos].key == key);
++
++	if (fill == BTREE_NODES) {
++		/* need to split node */
++		struct btree_node *new;
++
++		new = kcalloc(BTREE_NODES, sizeof(*node), GFP_KERNEL);
++		BUG_ON(!new);
++		if (!new)
++			return -ENOMEM;
++		err = btree_insert_level(head, node[BTREE_NODES/2 - 1].key, new,
++				level+1);
++		if (err) {
++			kfree(new);
++			return err;
++		}
++		for (i = 0; i < BTREE_NODES / 2; i++) {
++			new[i].key = node[i].key;
++			new[i].node = node[i].node;
++			node[i].key = node[i + BTREE_NODES/2].key;
++			node[i].node = node[i + BTREE_NODES/2].node;
++			node[i + BTREE_NODES/2].key = 0;
++			node[i + BTREE_NODES/2].node = NULL;
++		}
++		goto retry;
++	}
++	BUG_ON(fill >= BTREE_NODES);
++
++	/* shift and insert */
++	for (i = fill; i > pos; i--) {
++		node[i].key = node[i-1].key;
++		node[i].node = node[i-1].node;
++	}
++	node[pos].key = key;
++	node[pos].node = ptr;
++
++	return 0;
++}
++
++int btree_insert(struct btree_head *head, u64 key, void *ptr)
++{
++	BUG_ON(!ptr);
++	return btree_insert_level(head, key, ptr, 1);
++}
++
++static void *btree_remove_level(struct btree_head *head, u64 key, int level)
++{
++	struct btree_node *node;
++	int i, pos, fill;
++	void *ret;
++
++	if (level > head->height) {
++		/* we recursed all the way up */
++		head->height = 0;
++		head->node = NULL;
++		return NULL;
++	}
++
++	node = find_level(head, key, level);
++	find_pos(node, key, &pos, &fill);
++	if ((level == 1) && (node[pos].key != key))
++		return NULL;
++	ret = node[pos].node;
++
++	/* remove and shift */
++	for (i = pos; i < fill-1; i++) {
++		node[i].key = node[i+1].key;
++		node[i].node = node[i+1].node;
++	}
++	node[fill-1].key = 0;
++	node[fill-1].node = NULL;
++
++	if (fill-1 < BTREE_NODES/2) {
++		/*
++		 * At this point there *should* be code to either merge with
++		 * a neighboring node or steal some entries from it to preserve
++		 * the btree invariant of only having nodes with n/2..n
++		 * elements.
++		 *
++		 * As you can see, that code is left as an excercise to the
++		 * reader or anyone noticing severe performance problems in
++		 * very rare cases.
++		 *
++		 * As-is this code "implements" a method called lazy deletion,
++		 * which according to text books is relatively common in
++		 * databases and usually works quite well.
++		 * Not so usually, the btree can degrade into very long lists
++		 * of 1-element nodes and perform accordingly.
++		 */
++	}
++	if (fill-1 == 0) {
++		btree_remove_level(head, key, level+1);
++		kfree(node);
++	}
++
++	return ret;
++}
++
++void *btree_remove(struct btree_head *head, u64 key)
++{
++	void *ret;
++
++	if (key == 0) {
++		/* 0 identifies empty slots, so special-case this */
++		ret = head->null_ptr;
++		head->null_ptr = NULL;
++		return ret;
++	}
++	if (head->height == 0)
++		return NULL;
++
++	return btree_remove_level(head, key, 1);
++}
++
++int btree_merge(struct btree_head *target, struct btree_head *victim)
++{
++	struct btree_node *node;
++	u64 key;
++	int err;
++
++	BUG_ON(target == victim);
++
++	if (!(target->node || target->null_ptr)) {
++		/* target is empty, just copy fields over */
++		target->null_ptr = victim->null_ptr;
++		target->node = victim->node;
++		target->height = victim->height;
++		btree_init(victim);
++		return 0;
++	}
++
++	for (;;) {
++		key = btree_last(victim);
++		node = btree_remove(victim, key);
++		if (!node)
++			break;
++		err = btree_insert(target, key, node);
++		if (err)
++			return err;
 +	}
 +	return 0;
-+
-+err:
-+	for (i--; i >= 0; i--)
-+		free_area(super->s_area[i]);
-+	free_area(super->s_journal_area);
-+	return -ENOMEM;
 +}
 +
-+void logfs_cleanup_areas(struct logfs_super *super)
++static void __btree_for_each(struct btree_node *node, long opaque,
++		void (*func)(void *elem, long opaque, u64 key),  int reap,
++		int height)
 +{
 +	int i;
 +
-+	for_each_area(i)
-+		free_area(super->s_area[i]);
-+	kfree(super->s_journal_area);
++	for (i = 0; i < BTREE_NODES && node[i].key; i++) {
++		if (height > 1)
++			__btree_for_each(node[i].node, opaque, func, reap,
++					height-1);
++		else
++			func(node[i].node, opaque, node[i].key);
++	}
++	if (reap)
++		kfree(node);
++}
++
++void btree_visitor(struct btree_head *head, long opaque,
++		void (*func)(void *elem, long opaque, u64 key))
++{
++	if (head->node)
++		__btree_for_each(head->node, opaque, func, 0, head->height);
++	if (head->null_ptr)
++		func(head->null_ptr, opaque, 0);
++}
++
++void btree_grim_visitor(struct btree_head *head, long opaque,
++		void (*func)(void *elem, long opaque, u64 key))
++{
++	if (head->node)
++		__btree_for_each(head->node, opaque, func, 1, head->height);
++	if (head->null_ptr)
++		func(head->null_ptr, opaque, 0);
++	btree_init(head);
 +}
