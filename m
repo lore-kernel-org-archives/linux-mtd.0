@@ -1,13 +1,13 @@
 Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JhTF8-0004s6-4f
-	for linux-mtd@lists.infradead.org; Thu, 03 Apr 2008 17:28:55 +0000
-Message-Id: <20080401181332.853833007@logfs.org>
+	id 1JhTFD-0004s6-DP
+	for linux-mtd@lists.infradead.org; Thu, 03 Apr 2008 17:29:00 +0000
+Message-Id: <20080401181332.853833009@logfs.org>
 References: <20080401181308.512473173@logfs.org>
 Date: Tue, 01 Apr 2008 20:13:08 +0200
 To: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [patch 7/15] fs/logfs/gc.c
+Subject: [patch 9/15] fs/logfs/journal.c
 From: joern@logfs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -19,734 +19,810 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 --- /dev/null	2008-03-30 12:15:48.586669308 +0200
-+++ linux-2.6.24logfs/fs/logfs/gc.c	2008-04-01 19:48:36.066470483 +0200
-@@ -0,0 +1,729 @@
++++ linux-2.6.24logfs/fs/logfs/journal.c	2008-03-31 13:47:33.248155528 +0200
+@@ -0,0 +1,805 @@
 +/*
-+ * fs/logfs/gc.c	- garbage collection code
++ * fs/logfs/journal.c	- journal handling code
 + *
 + * As should be obvious for Linux kernel code, license is GPLv2
 + *
 + * Copyright (c) 2005-2007 Joern Engel <joern@logfs.org>
-+ *
-+ * GC design as it should be (and isn't, as of 15.3.07):
-+ * 1. Pick a good candidate for GC, constrained by the number of currently
-+ *    free segments.
-+ * 2. Move all valid blocks in this segment until
-+ *   a) they are all gone, or
-+ *   b) the number of currently free segments drops too low.
-+ * 3. Mark the segment as GC-pending or so, because not all indirect blocks
-+ *    have been written yet.
-+ * 4. Either
-+ *   a) goto 1. or
-+ *   b) write dirty indirect blocks directly
-+ *
-+ * Sooner or later 4b) should be taken, causing a number of segments to be
-+ * freed.  2b) will consume free segments until this point is reached.  Overall
-+ * progress will be made, even though less than a full segment may be gained.
-+ *
-+ * Crucial question is when to choose 4b) over 4a.
 + */
 +#include "logfs.h"
-+#include <linux/sched.h>
 +
-+#define SCAN_RATIO 16	/* number of scanned segments per gc'd segment */
-+#define LIST_SIZE 16	/* base size of candidate lists */
-+#define SCAN_ROUNDS 128	/* maximum number of complete medium scans */
-+#define SCAN_ROUNDS_HIGH 4 /* maximum number of higher-level scans */
-+
-+static void __logfs_gc_pass(struct super_block *sb, int target);
-+
-+/* journal has distance -1, top-most ifile layer distance 0 */
-+static u8 root_distance(struct super_block *sb, u8 level)
++static void clear_retired(struct super_block *sb)
 +{
 +	struct logfs_super *super = logfs_super(sb);
-+
-+	switch (level) {
-+	case 0: /* fall through */
-+	case 1: /* fall through */
-+	case 2: /* fall through */
-+	case 3:
-+		/* file data or indirect blocks */
-+		return super->s_ifile_levels + super->s_iblock_levels - level;
-+	case 6: /* fall through */
-+	case 7: /* fall through */
-+	case 8: /* fall through */
-+	case 9:
-+		/* inode file data or indirect blocks */
-+		return super->s_ifile_levels - (level-6);
-+	default:
-+		printk(KERN_ERR"LOGFS: segment of unknown level %x found\n",
-+				level);
-+		WARN_ON(1);
-+		return super->s_ifile_levels + super->s_iblock_levels;
-+	}
-+}
-+
-+int logfs_safe_to_write_block(struct super_block *sb, u8 level)
-+{
-+	struct logfs_super *super = logfs_super(sb);
-+
-+	return root_distance(sb, level) <= super->s_free_list.count;
-+}
-+
-+static int segment_is_reserved(struct super_block *sb, u32 segno)
-+{
-+	struct logfs_super *super = logfs_super(sb);
-+	struct logfs_area *area;
-+	struct gc_candidate *cand;
-+	void *reserved;
 +	int i;
 +
-+	/* Some segments are reserved.  Just pretend they were all valid */
-+	reserved = btree_lookup(&super->s_reserved_segments, segno);
-+	if (reserved)
-+		return 1;
-+
-+	/* Currently open segments */
-+	for_each_area(i) {
-+		area = super->s_area[i];
-+		if (area->a_is_open && area->a_segno == segno)
-+			return 1;
-+	}
-+
-+	/* On the free list */
-+	list_for_each_entry(cand, &super->s_free_list.list, list)
-+		if (cand->segno == segno)
-+			return 1;
-+
-+	return 0;
++	for (i = 0; i < JE_LAST; i++)
++		super->s_retired[i].used = 0;
++	super->s_first.used = 0;
 +}
 +
-+static void logfs_mark_segment_bad(struct super_block *sb, u32 segno)
-+{
-+	BUG();
-+}
-+
-+/*
-+ * Count the bytes consumed by valid objects in this segment.  Object headers
-+ * are counted, the segment header is not.
-+ */
-+static u32 logfs_valid_bytes(struct super_block *sb, u32 segno, u32 *ec,
-+		u8 *level, u64 *segment_gec)
++static void clear_speculatives(struct super_block *sb)
 +{
 +	struct logfs_super *super = logfs_super(sb);
-+	struct logfs_segment_header sh;
-+	struct logfs_object_header oh;
-+	u64 ofs, ino, bix;
-+	u32 seg_ofs, valid, size;
-+	int err;
++	int i;
 +
-+	err = device_read(sb, segno, 0, sizeof(sh), &sh);
-+	BUG_ON(err);
-+	if (!memchr_inv(&sh, 0xff, sizeof(sh)))
-+		return 0;
-+
-+	*level = sh.level;
-+	*ec = be32_to_cpu(sh.ec);
-+	*segment_gec = be64_to_cpu(sh.gec);
-+	if (sh.crc != logfs_crc32(&sh, sizeof(sh), 4)) {
-+		logfs_mark_segment_bad(sb, segno);
-+		return super->s_segsize - 1;
-+	}
-+
-+	valid = 0;
-+	for (seg_ofs = LOGFS_SEGMENT_HEADERSIZE;
-+			seg_ofs + sizeof(oh) < super->s_segsize;) {
-+		err = device_read(sb, segno, seg_ofs, sizeof(oh), &oh);
-+		BUG_ON(err);
-+		if (!memchr_inv(&oh, 0xff, sizeof(oh)))
-+			break;
-+
-+		if (oh.crc != logfs_crc32(&oh, sizeof(oh) - 4, 4)) {
-+			logfs_mark_segment_bad(sb, segno);
-+			return super->s_segsize - 1;
-+		}
-+
-+		ofs = dev_ofs(sb, segno, seg_ofs);
-+		ino = be64_to_cpu(oh.ino);
-+		bix = be64_to_cpu(oh.bix);
-+		size = (u32)be16_to_cpu(oh.len) + sizeof(oh);
-+
-+		if (logfs_is_valid_block(sb, ofs, ino, bix, *level))
-+			valid += size;
-+		seg_ofs += size;
-+	}
-+	pr_debug(KERN_INFO "LOGFS valid(%x) = %x\n", segno, valid);
-+	return valid;
++	for (i = 0; i < JE_LAST; i++)
++		super->s_speculative[i].used = 0;
 +}
 +
-+/* FIXME: check for off-by-one on max_dist */
++static void retire_speculatives(struct super_block *sb)
++{
++	struct logfs_super *super = logfs_super(sb);
++	struct logfs_journal_entry *spec, *retired;
++	int i;
++
++	for (i = 0; i < JE_LAST; i++) {
++		spec = super->s_speculative + i;
++		retired = super->s_retired + i;
++		if (!spec->used)
++			continue;
++		if (retired->used && (spec->version <= retired->version))
++			continue;
++		retired->used = 1;
++		retired->version = spec->version;
++		retired->offset = spec->offset;
++		retired->len = spec->len;
++		retired->datalen = spec->datalen;
++	}
++	clear_speculatives(sb);
++}
++
 +/*
-+ * GC distance N:
-+ * while (valid blocks in segment) {
-+ * 	rewrite one block
-+ * 	if (fewer than N free segments)
-+ * 		GC distance N-1
-+ * }
-+ * While (N > 1) {
-+ * 	N--;
-+ * 	flush dirty list N
-+ * }
-+ * Exit criterium: free segments >= N
++ * Journal entries are versioned and highest version always wins.  To save
++ * some bytes, the version is only be16 instead of be64.  This means versions
++ * can and regularly will wrap.  However, all versions should be in a strict
++ * sequence and the total number of entries significantly lower than 2^16.
 + *
-+ * flush dirty list N:
-+ * while (dirty blocks on level) {
-+ * 	write block
-+ * 	if (fewer then N free segments)
-+ * 		GC distance N-1
-+ * }
++ * So we read the first entry, store its version and substract that from
++ * any version read to normalize them.  Normalized versions should all be
++ * fairly close to zero and we can again easily judge which is the highest
++ * number.
 + */
-+
-+/*
-+ * Move all block from the gc_dirty lists to a private one, then recursively
-+ * call into GC again to free some segments on higher layers.
-+ */
-+static void recursive_backoff(struct super_block *sb, int max_dist)
++static int scan_segment(struct super_block *sb, u32 segno)
 +{
 +	struct logfs_super *super = logfs_super(sb);
-+	struct logfs_block *block, *tmp;
-+	int i;
-+	LIST_HEAD(backoff_list);
-+
-+	for_each_area(i) {
-+		if (i > max_dist)
-+			break;
-+		list_for_each_entry_safe(block, tmp, &super->s_gc_dirty_list[i], dirty_list) {
-+			list_move_tail(&block->dirty_list, &backoff_list);
-+		}
-+	}
-+	__logfs_gc_pass(sb, max_dist);
-+	list_for_each_entry_safe(block, tmp, &backoff_list, dirty_list)
-+		logfs_dirty_for_gc(sb, block);
-+}
-+
-+/* Write back any indirect/inode blocks dirtied during the GC run. */
-+static void flush_gc_dirty_list(struct super_block *sb, int dist)
-+{
-+	struct logfs_super *super = logfs_super(sb);
-+	struct logfs_block *block;
-+	struct page *page;
-+	struct inode *inode;
-+	long flags;
++	struct logfs_area *area = super->s_journal_area;
++	struct logfs_journal_header *h = super->s_compressed_je;
++	struct logfs_journal_entry *spec, *retired;
++	u64 ofs, seg_ofs = dev_ofs(sb, segno, 0);
++	u32 h_ofs;
++	s16 len, datalen, type, version;
 +	int err;
 +
-+	for (;;) {
-+		if (dist < 0)
-+			break;
-+		if (list_empty(&super->s_gc_dirty_list[dist])) {
-+			dist--;
-+			continue;
-+		}
-+
-+		block = list_entry(super->s_gc_dirty_list[dist].next,
-+				struct logfs_block, dirty_list);
-+		page = block->page;
-+		inode = page->mapping->host;
-+		if (super->s_free_list.count < dist) {
-+			/* We ran out of room on this level. */
-+			/* Interestingly enough, this case is possible in
-+			 * theory, but never triggered in practice.
-+			 */
-+			recursive_backoff(sb, dist);
-+			continue;
-+		}
-+
-+		flags = WF_GC;
-+		if (super->s_free_bytes < dist * LOGFS_MAX_OBJECTSIZE
-+				+ super->s_gc_reserve
-+				+ super->s_dirty_free_bytes)
-+			flags |= WF_SYNC;
-+		err = logfs_write_buf(inode, page, NULL, WF_GC);
-+		BUG_ON(err);
-+	}
-+}
-+
-+void logfs_dirty_for_gc(struct super_block *sb, struct logfs_block *block)
-+{
-+	struct page *page;
-+	struct inode *inode;
-+	u64 bix;
-+	u8 level, dist;
-+
-+	page = block->page;
-+	inode = page->mapping->host;
-+	logfs_unpack_index(block->page->index, &bix, &level);
-+	if (inode->i_ino == LOGFS_INO_MASTER)
-+		level += LOGFS_MAX_LEVELS;
-+
-+	dist = root_distance(sb, level);
-+	list_move_tail(&block->dirty_list, &logfs_super(sb)->s_gc_dirty_list[dist]);
-+}
-+
-+static void logfs_cleanse_block(struct super_block *sb, u64 ofs, u64 ino,
-+		u64 bix, int level, long flags)
-+{
-+	struct inode *inode;
-+	int err, cookie;
-+
-+	inode = logfs_iget(sb, ino, &cookie);
-+	BUG_ON(!inode);
-+	err = logfs_rewrite_block(inode, bix, ofs, level, flags);
-+	BUG_ON(err);
-+	logfs_iput(inode, cookie);
-+}
-+
-+static u32 logfs_gc_segment(struct super_block *sb, u32 segno, u8 dist)
-+{
-+	struct logfs_super *super = logfs_super(sb);
-+	struct logfs_segment_header sh;
-+	struct logfs_object_header oh;
-+	u64 ofs, ino, bix;
-+	u32 seg_ofs, cleaned = 0;
-+	int level, err, len, valid;
-+	long flags;
-+
-+	LOGFS_BUG_ON(segment_is_reserved(sb, segno), sb);
-+
-+	btree_insert(&super->s_reserved_segments, segno, (void *)1);
-+	err = device_read(sb, segno, 0, sizeof(sh), &sh);
-+	BUG_ON(err);
-+	level = sh.level;
-+	if (sh.crc != logfs_crc32(&sh, sizeof(sh), 4)) {
-+		logfs_mark_segment_bad(sb, segno);
-+		cleaned = -1;
-+		goto out;
-+	}
-+
-+	for (seg_ofs = LOGFS_SEGMENT_HEADERSIZE;
-+			seg_ofs + sizeof(oh) < super->s_segsize; ) {
-+		ofs = dev_ofs(sb, segno, seg_ofs);
-+		err = device_read(sb, segno, seg_ofs, sizeof(oh), &oh);
-+		BUG_ON(err);
-+
-+		if (!memchr_inv(&oh, 0xff, sizeof(oh)))
-+			break;
-+
-+		if (oh.crc != logfs_crc32(&oh, sizeof(oh) - 4, 4)) {
-+			logfs_mark_segment_bad(sb, segno);
-+			cleaned = super->s_segsize - 1;
-+			goto out;
-+		}
-+
-+		ino = be64_to_cpu(oh.ino);
-+		bix = be64_to_cpu(oh.bix);
-+		len = sizeof(oh) + be16_to_cpu(oh.len);
-+		valid = logfs_is_valid_block(sb, ofs, ino, bix, level);
-+		if (valid) {
-+			/* Garbage collection may consume further free segments.
-+			 * If space gets too tight, abort and continue with a
-+			 * higher level segment for the moment. */
-+			if (super->s_free_list.count < dist)
-+				recursive_backoff(sb, dist);
-+
-+			flags = WF_GC;
-+			if (super->s_free_bytes < dist * LOGFS_MAX_OBJECTSIZE
-+					+ super->s_gc_reserve
-+					+ super->s_dirty_free_bytes)
-+				flags |= WF_SYNC;
-+			logfs_cleanse_block(sb, ofs, ino, bix, level, flags);
-+			cleaned += len;
-+		}
-+		seg_ofs += len;
-+	}
-+
-+	flush_gc_dirty_list(sb, dist - 1);
-+out:
-+	btree_remove(&super->s_reserved_segments, segno);
-+	return cleaned;
-+}
-+
-+static struct gc_candidate *add_list(struct gc_candidate *cand,
-+		struct candidate_list *list)
-+{
-+	struct gc_candidate *cur, *removed = NULL;
-+	int cont;
-+
-+	/* insert sorted */
-+	list_for_each_entry(cur, &list->list, list) {
-+		if (list->sort_by_ec)
-+			cont = cur->erase_count < cand->erase_count;
-+		else
-+			cont = cur->valid < cand->valid;
-+		if (cont)
-+			continue;
-+		list_add(&cand->list, &cur->list);
-+		cand = NULL;
-+		break;
-+	}
-+	/* if list is empty or candidate is worse than entire list */
-+	if (cand)
-+		list_add_tail(&cand->list, &list->list);
-+
-+	/* remove worst entry if list is full */
-+	if (list->count >= list->maxcount) {
-+		removed = list_entry(list->list.prev,
-+				struct gc_candidate, list);
-+		list_del(&removed->list);
-+	} else
-+		list->count++;
-+
-+	return removed;
-+}
-+
-+struct gc_candidate *get_best_cand(struct candidate_list *list)
-+{
-+	struct gc_candidate *cand;
-+
-+	if (list->count == 0)
-+		return NULL;
-+
-+	cand = list_entry(list->list.next, struct gc_candidate, list);
-+	list_del(&cand->list);
-+	list->count--;
-+	return cand;
-+}
-+
-+/*
-+ * We try to stuff the candidate in several lists in order.  Any list may
-+ * either reject it or evict another candidate when full.  Anything left after
-+ * trying the last list gets freed.
-+ */
-+static void __add_candidate(struct super_block *sb, struct gc_candidate *cand)
-+{
-+	struct logfs_super *super = logfs_super(sb);
-+	u32 full = super->s_segsize - LOGFS_SEGMENT_RESERVE;
-+
-+	/* 100% free segments */
-+	if (cand->valid == 0)
-+		cand = add_list(cand, &super->s_free_list);
-+	/* good candidates for Garbage Collection */
-+	if (cand && cand->valid < full)
-+		cand = add_list(cand, &super->s_low_list[cand->dist]);
-+	/* good candidates for wear leveling,
-+	 * segments that were recently written get ignored */
-+	if (cand && cand->gec < super->s_gec + 2*super->s_no_segs)
-+		cand = add_list(cand, &super->s_ec_list);
-+
-+	kfree(cand);
-+}
-+
-+static int add_candidate(struct super_block *sb, u32 segno, u32 valid, u32 ec,
-+		u8 dist, u64 segment_gec)
-+{
-+	struct gc_candidate *cand;
-+
-+	cand = kmalloc(sizeof(*cand), GFP_KERNEL);
-+	if (!cand)
-+		return -ENOMEM;
-+
-+	cand->segno = segno;
-+	cand->valid = valid;
-+	cand->erase_count = ec;
-+	cand->dist = dist;
-+	cand->gec = segment_gec;
-+
-+	/* FIXME: add to btree */
-+	__add_candidate(sb, cand);
-+	return 0;
-+}
-+
-+int add_free_segments_from_journal(struct super_block *sb,
-+		struct logfs_je_free_segments *segs, int count)
-+{
-+	int i, err;
-+
-+	for (i = 0; i < count; i++) {
-+		u32 segno = be32_to_cpu(segs[i].segno);
-+		u32 ec = be32_to_cpu(segs[i].ec);
-+		err = add_candidate(sb, segno, 0, ec, 0, 0);
++	for (h_ofs = 0; h_ofs < super->s_segsize; h_ofs += sizeof(*h)) {
++		ofs = seg_ofs + h_ofs;
++		err = super->s_devops->read(sb, ofs, sizeof(*h), h);
 +		if (err)
 +			return err;
++		/* stop scanning if all 0xff */
++		if (0 && !memchr_inv(h, 0xff, sizeof(*h))) /* FIXME */
++			break;
++
++		len = be16_to_cpu(h->h_len);
++		datalen = be16_to_cpu(h->h_datalen);
++		type = be16_to_cpu(h->h_type);
++		version = be16_to_cpu(h->h_version);
++
++		if ((len < 16) || (len > sb->s_blocksize))
++			continue;
++		if ((type < JE_FIRST) || (type > JE_LAST))
++			continue;
++
++		err = super->s_devops->read(sb, ofs, len + sizeof(*h), h);
++		if (err)
++			return err;
++
++		if (h->h_crc != logfs_crc32(h, len, 4))
++			continue;
++
++		if (!super->s_first.used) {
++			super->s_first.used = 1;
++			super->s_first.version = version;
++		}
++		version -= super->s_first.version;
++
++		if (abs(version) > 1<<14)
++			return -EIO;
++
++		h_ofs += len - sizeof(*h);
++		spec = &super->s_speculative[type];
++		retired = &super->s_retired[type];
++		switch (type) {
++		default:
++			if (spec->used && (version <= spec->version))
++				break;
++			/* store speculative entry */
++			spec->used = 1;
++			spec->version = version;
++			spec->offset = ofs;
++			spec->len = len;
++			spec->datalen = datalen;
++			break;
++		case JE_COMMIT:
++			if (retired->used && (version <= retired->version))
++				break;
++			/* retire speculative entries */
++			retired->used = 1;
++			retired->version = version;
++			retired->offset = ofs;
++			retired->len = len;
++			retired->datalen = datalen;
++			retire_speculatives(sb);
++			/* and set up journal area */
++			area->a_segno = segno;
++			/*
++			 * On every mount we switch to a new segment instead
++			 * of writing further in the current one.  While safe
++			 * this method is quite wasteful and may get changed
++			 * sooner or later.
++			 */
++			area->a_is_open = 0;
++			break;
++		}
 +	}
 +	return 0;
 +}
 +
-+static void __del_segment(struct candidate_list *list, u32 segno)
-+{
-+	struct gc_candidate *cand;
-+
-+	list_for_each_entry(cand, &list->list, list)
-+		if (cand->segno == segno) {
-+			list_del(&cand->list);
-+			list->count -= 1;
-+			kfree(cand);
-+			return;
-+		}
-+}
-+
-+static void del_segment(struct super_block *sb, u32 segno)
-+{
-+	struct logfs_super *super = logfs_super(sb);
-+	int i;
-+
-+	__del_segment(&super->s_free_list, segno);
-+	for_each_area(i)
-+		__del_segment(&super->s_low_list[i], segno);
-+	__del_segment(&super->s_ec_list, segno);
-+}
-+
-+static void scan_segment(struct super_block *sb, u32 segno)
-+{
-+	u64 segment_gec = 0;
-+	u32 valid, ec = 0;
-+	u8 dist, level = 0;
-+
-+	if (segment_is_reserved(sb, segno))
-+		return;
-+
-+	del_segment(sb, segno);
-+	valid = logfs_valid_bytes(sb, segno, &ec, &level, &segment_gec);
-+	dist = root_distance(sb, level);
-+	add_candidate(sb, segno, valid, ec, dist, segment_gec);
-+}
-+
-+static struct gc_candidate *first_in_list(struct candidate_list *list)
-+{
-+	if (list->count == 0)
-+		return NULL;
-+	return list_entry(list->list.next, struct gc_candidate, list);
-+}
-+
-+static struct gc_candidate *get_wl_candidate(struct super_block *sb,
-+		int max_dist)
-+{
-+	struct logfs_super *super = logfs_super(sb);
-+	struct gc_candidate *cand;
-+	u64 cand_gec;
-+
-+	if (super->s_gec & 0xf)
-+		return NULL;
-+
-+	cand = first_in_list(&super->s_ec_list);
-+	if (!cand)
-+		return NULL;
-+	if (cand->dist > max_dist)
-+		return NULL;
-+
-+	/* instead of comparing candidate erasecount to average erasecount,
-+	 * which would involve a 64bit division we multiply candidate erasecount
-+	 * with the number of segment..  In effect, the comparison is:
-+	 * if (cand->erase_count + 20 > average_erasecount)
-+	 */
-+	cand_gec = cand->erase_count;
-+	cand_gec += 20; /* FIXME: should be a superblock variable */
-+	cand_gec *= super->s_no_segs;
-+	if (cand_gec > super->s_gec)
-+		return NULL;
-+
-+	list_del(&cand->list);
-+	super->s_ec_list.count--;
-+	return cand;
-+}
-+
-+static struct gc_candidate *get_candidate(struct super_block *sb)
-+{
-+	struct logfs_super *super = logfs_super(sb);
-+	int i, max_dist;
-+	struct gc_candidate *cand = NULL, *this;
-+
-+	max_dist = min(super->s_free_list.count, LOGFS_NO_AREAS);
-+
-+	cand = get_wl_candidate(sb, max_dist);
-+	if (cand)
-+		return cand;
-+
-+	for (i = 0; i <= max_dist; i++) {
-+		this = first_in_list(&super->s_low_list[i]);
-+		if (!this)
-+			continue;
-+		if (!cand)
-+			cand = this;
-+		if (this->valid < cand->valid)
-+			cand = this;
-+	}
-+	if (cand) {
-+		list_del(&cand->list);
-+		super->s_low_list[cand->dist].count--;
-+	}
-+	return cand;
-+}
-+
-+static int logfs_gc_once(struct super_block *sb)
-+{
-+	struct logfs_super *super = logfs_super(sb);
-+	struct gc_candidate *cand;
-+	u64 segment_gec;
-+	u32 cleaned, valid, segno, ec;
-+	u8 dist;
-+
-+	cand = get_candidate(sb);
-+	if (!cand)
-+		return 0;
-+
-+	valid = cand->valid;
-+	segno = cand->segno;
-+	dist = cand->dist;
-+	ec = cand->erase_count;
-+	segment_gec = cand->gec;
-+	kfree(cand);
-+	pr_debug("GC segment #%02x at %x, %x required, %x free, %x valid, %llx free, %llx reserve\n",
-+			segno, segno << super->s_segshift,
-+			dist, super->s_free_list.count, valid,
-+			super->s_free_bytes, super->s_gc_reserve);
-+	cleaned = logfs_gc_segment(sb, segno, dist);
-+	pr_debug("GC segment #%02x complete\n", segno);
-+	add_candidate(sb, segno, valid - cleaned, ec, dist, segment_gec);
-+	return 1;
-+}
-+
-+/* returns 1 if a wrap occurs, 0 otherwise */
-+static int logfs_scan_some(struct super_block *sb)
++static int logfs_scan_journal(struct super_block *sb)
 +{
 +	struct logfs_super *super = logfs_super(sb);
 +	u32 segno;
-+	int i, ret = 0;
++	int i, err;
 +
-+	segno = super->s_sweeper;
-+	for (i = SCAN_RATIO; i > 0; i--) {
-+		segno++;
-+		if (segno >= super->s_no_segs) {
-+			segno = 0;
-+			ret = 1;
-+		}
-+
-+		scan_segment(sb, segno);
++	clear_speculatives(sb);
++	clear_retired(sb);
++	journal_for_each(i) {
++		segno = super->s_journal_seg[i];
++		if (!segno)
++			continue;
++		err = scan_segment(sb, segno);
++		if (err)
++			return err;
 +	}
-+	super->s_sweeper = segno;
-+	return ret;
++	return 0;
++}
++
++static void read_commit(struct logfs_super *super,
++		struct logfs_journal_header *h)
++{
++	super->s_last_version = be16_to_cpu(h->h_version);
++}
++
++static void logfs_calc_free(struct super_block *sb)
++{
++	struct logfs_super *super = logfs_super(sb);
++	u64 no_segs = super->s_no_segs;
++	s64 free;
++	int i;
++
++	/* superblock segment */
++	no_segs -= 1;
++	/* bad blocks */
++	no_segs -= super->s_bad_segments;
++	/* journal */
++	journal_for_each(i)
++		if (super->s_journal_seg[i])
++			no_segs--;
++
++	free = no_segs * (super->s_segsize - LOGFS_SEGMENT_RESERVE);
++	free -= super->s_used_bytes;
++
++#if 0
++	/* reserve some extra to speed up GC for full filesystems */
++	free -= 10 * (super->s_size >> 10);
++	/* in case this reserve exceeds currently free space */
++	free = max(free, 0LL);
++#endif
++	super->s_free_bytes = free;
++}
++
++static void reserve_sb_and_journal(struct super_block *sb)
++{
++	struct logfs_super *super = logfs_super(sb);
++	struct btree_head *head = &super->s_reserved_segments;
++	int i, err;
++
++	err = btree_insert(head, 0, (void *)1);
++	BUG_ON(err);
++
++	journal_for_each(i) {
++		if (!super->s_journal_seg[i])
++			continue;
++		err = btree_insert(head, super->s_journal_seg[i], (void *)1);
++		BUG_ON(err);
++	}
++}
++
++static void read_dynsb(struct super_block *sb,
++		struct logfs_je_dynsb *dynsb)
++{
++	struct logfs_super *super = logfs_super(sb);
++
++	super->s_gec		= be64_to_cpu(dynsb->ds_gec);
++	super->s_sweeper	= be64_to_cpu(dynsb->ds_sweeper);
++	super->s_victim_ino	= be64_to_cpu(dynsb->ds_victim_ino);
++	super->s_rename_dir	= be64_to_cpu(dynsb->ds_rename_dir);
++	super->s_rename_pos	= be64_to_cpu(dynsb->ds_rename_pos);
++	super->s_used_bytes	= be64_to_cpu(dynsb->ds_used_bytes);
++}
++
++static void read_anchor(struct super_block *sb,
++		struct logfs_je_anchor *da)
++{
++	struct logfs_super *super = logfs_super(sb);
++	struct inode *inode = super->s_master_inode;
++	struct logfs_inode *li = logfs_inode(inode);
++	int i;
++
++	super->s_last_ino = be64_to_cpu(da->da_last_ino);
++	li->li_flags	= LOGFS_IF_VALID;
++	i_size_write(inode, be64_to_cpu(da->da_size));
++	li->li_used_bytes = be64_to_cpu(da->da_used_bytes);
++
++	for (i = 0; i < LOGFS_EMBEDDED_FIELDS; i++)
++		li->li_data[i] = be64_to_cpu(da->da_data[i]);
++}
++
++static void read_erasecount(struct super_block *sb,
++		struct logfs_je_journal_ec *ec)
++{
++	struct logfs_super *super = logfs_super(sb);
++	int i;
++
++	journal_for_each(i)
++		super->s_journal_ec[i] = be32_to_cpu(ec->ec[i]);
++}
++
++static void read_badsegments(struct super_block *sb)
++{
++	struct logfs_super *super = logfs_super(sb);
++	struct btree_head *head = &super->s_reserved_segments;
++	__be32 *seg, *bad = super->s_bb_array;
++	int err;
++
++	super->s_bad_segments = 0;
++	for (seg = bad; seg - bad < sb->s_blocksize >> 2; seg++) {
++		if (*seg == 0)
++			continue;
++		err = btree_insert(head, be32_to_cpu(*seg), (void *)1);
++		BUG_ON(err);
++		super->s_bad_segments++;
++	}
++}
++
++static void read_areas(struct super_block *sb, struct logfs_je_areas *a)
++{
++	struct logfs_area *area;
++	int i;
++
++	for_each_area(i) {
++		area = logfs_super(sb)->s_area[i];
++		area->a_used_bytes = be32_to_cpu(a->used_bytes[i]);
++		area->a_segno = be32_to_cpu(a->segno[i]);
++		if (area->a_segno)
++			area->a_is_open = 1;
++	}
++}
++
++static void read_free_segments(struct super_block *sb,
++		struct logfs_je_free_segments *f, u16 len)
++{
++	u32 count = len / sizeof(struct logfs_je_free_segments);
++
++	add_free_segments_from_journal(sb, f, count);
++}
++
++static void *unpack(void *from, void *to)
++{
++	struct logfs_journal_header *h = from;
++	void *data = from + sizeof(struct logfs_journal_header);
++	int err;
++	size_t inlen, outlen;
++
++	if (h->h_compr == COMPR_NONE)
++		return data;
++
++	inlen = be16_to_cpu(h->h_len) - sizeof(*h);
++	outlen = be16_to_cpu(h->h_datalen);
++	err = logfs_uncompress(data, to, inlen, outlen);
++	BUG_ON(err);
++	return to;
 +}
 +
 +/*
-+ * In principle, this function should loop forever, looking for GC candidates
-+ * and moving data.  LogFS is designed in such a way that this loop is
-+ * guaranteed to terminate.
-+ *
-+ * Limiting the loop to some iterations serves purely to catch cases when
-+ * these guarantees have failed.  An actual endless loop is an obvious bug
-+ * and should be reported as such.
++ * Journal entries come in groups of 16.  The first group contains unique
++ * entries, the second group contains the write buffers for all levels.
++ * As of now, there are only two groups.
++ * The outer switch statement deals with groups (high nibble), the inner
++ * one with unique entries
 + */
-+static void __logfs_gc_pass(struct super_block *sb, int target)
++/* FIXME: make sure there are enough per-area objects in journal */
++static int logfs_read_journal(struct super_block *sb)
 +{
 +	struct logfs_super *super = logfs_super(sb);
-+	int round, progress, last_progress = 0;
++	void *block = super->s_compressed_je;
++	void *scratch = super->s_je;
++	int i, err, level;
++	struct logfs_area *area;
 +
-+	pr_debug("__logfs_gc_pass(%x)\n", target);
-+	for (round = 0; round < SCAN_ROUNDS; ) {
-+		if (super->s_free_list.count >= target)
-+			return;
-+		round += logfs_scan_some(sb);
-+		if (super->s_free_list.count >= target)
-+			return;
-+		progress = logfs_gc_once(sb);
-+		if (progress)
-+			last_progress = round;
-+		else if (round - last_progress > 2)
-+			break;
-+	}
-+	LOGFS_BUG(sb);
-+}
-+
-+void logfs_gc_pass(struct super_block *sb)
-+{
-+	__logfs_gc_pass(sb, logfs_super(sb)->s_total_levels);
-+}
-+
-+static int check_area(struct super_block *sb, int i)
-+{
-+	struct logfs_super *super = logfs_super(sb);
-+	struct logfs_area *area = super->s_area[i];
-+	struct logfs_object_header h;
-+	u32 segno = area->a_segno;
-+	u32 ofs = area->a_used_bytes;
-+	__be32 crc;
-+	int err;
-+
-+	if (!area->a_is_open)
-+		return 0;
-+
-+	for (ofs = area->a_used_bytes;
-+	    ofs <= super->s_segsize - sizeof(h);
-+	    ofs += (u32)be16_to_cpu(h.len) + sizeof(h)) {
-+		err = device_read(sb, segno, ofs, sizeof(h), &h);
++	for (i = 0; i < JE_LAST; i++) {
++		struct logfs_journal_entry *je = super->s_retired + i;
++		if (!super->s_retired[i].used) {
++			switch (i) {
++			case JE_COMMIT:
++			case JE_DYNSB:
++			case JE_ANCHOR:
++				printk(KERN_WARNING "LogFS: Missing journal "
++						"entry %x?\n", i);
++				return -EIO;
++			default:
++				continue;
++			}
++		}
++		err = super->s_devops->read(sb, je->offset, sb->s_blocksize, block);
 +		if (err)
 +			return err;
 +
-+		if (!memchr_inv(&h, 0xff, sizeof(h)))
++		switch (i & ~0xf) {
++		case JEG_BASE:
++			switch (i) {
++			case JE_COMMIT:
++				/* just reads the latest version number */
++				read_commit(super, block);
++				break;
++			case JE_DYNSB:
++				read_dynsb(sb, unpack(block, scratch));
++				break;
++			case JE_ANCHOR:
++				read_anchor(sb, unpack(block, scratch));
++				break;
++			case JE_ERASECOUNT:
++				read_erasecount(sb, unpack(block, scratch));
++				break;
++			case JE_BADSEGMENTS:
++				unpack(block, super->s_bb_array);
++				read_badsegments(sb);
++				break;
++			case JE_AREAS:
++				read_areas(sb, unpack(block, scratch));
++				break;
++			case JE_FREESEGS:
++				read_free_segments(sb, unpack(block, scratch),
++						je->datalen);
++				break;
++			default:
++				/*
++				 * Any unknown entries in this group are
++				 * considered optional.
++				 */
++				break;
++			}
 +			break;
-+
-+		crc = logfs_crc32(&h, sizeof(h) - 4, 4);
-+		if (crc != h.crc) {
-+			printk(KERN_INFO "interrupted header at %llx\n",
-+					dev_ofs(sb, segno, ofs));
-+			return 0;
++		case JEG_WBUF:
++			if (super->s_writesize <= 1)
++				return -EIO;
++			level = i & 0xf;
++			area = super->s_area[level];
++			unpack(block, area->a_wbuf);
++			break;
++		default:
++			LOGFS_BUG(sb);
++			return -EIO;
 +		}
-+	}
-+	if (ofs > super->s_segsize - LOGFS_MAX_OBJECTSIZE) {
-+		printk(KERN_INFO "%x bytes unaccounted data found at %llx - closing it\n",
-+				ofs - area->a_used_bytes,
-+				dev_ofs(sb, segno, ofs));
-+		area->a_segno = 0;
-+		area->a_is_open = 0;
-+	} else if (ofs != area->a_used_bytes) {
-+		printk(KERN_INFO "%x bytes unaccounted data found at %llx\n",
-+				ofs - area->a_used_bytes,
-+				dev_ofs(sb, segno, ofs));
-+		area->a_used_bytes = ofs;
++
 +	}
 +	return 0;
 +}
 +
-+int logfs_check_areas(struct super_block *sb)
++/*
++ * First search the current segment (outer loop), then pick the next segment
++ * in the array, skipping any zero entries (inner loop).
++ */
++static void journal_get_free_segment(struct logfs_area *area)
 +{
++	struct logfs_super *super = logfs_super(area->a_sb);
++	int i;
++
++	journal_for_each(i) {
++		if (area->a_segno != super->s_journal_seg[i])
++			continue;
++
++		do {
++			i++;
++			if (i == LOGFS_JOURNAL_SEGS)
++				i = 0;
++		} while (!super->s_journal_seg[i]);
++
++		area->a_segno = super->s_journal_seg[i];
++		++(super->s_journal_ec[i]);
++		return;
++	}
++	BUG();
++}
++
++static void journal_get_erase_count(struct logfs_area *area)
++{
++	/* erase count is stored globally and incremented in
++	 * journal_get_free_segment() - nothing to do here */
++}
++
++static int journal_erase_segment(struct logfs_area *area)
++{
++	return logfs_erase_segment(area->a_sb, area->a_segno);
++}
++
++static void journal_finish_area(struct logfs_area *area)
++{
++	area->a_is_open = 0;
++	area->a_used_bytes = 0;
++}
++
++static size_t __logfs_write_header(struct logfs_super *super,
++		struct logfs_journal_header *h, size_t len, size_t datalen,
++		u16 type, u8 compr)
++{
++	h->h_len	= cpu_to_be16(len);
++	h->h_type	= cpu_to_be16(type);
++	h->h_version	= cpu_to_be16(++super->s_last_version);
++	h->h_datalen	= cpu_to_be16(datalen);
++	h->h_compr	= compr;
++	h->h_pad[0]	= 'H';
++	h->h_pad[1]	= 'A';
++	h->h_pad[2]	= 'T';
++	h->h_crc	= logfs_crc32(h, len, 4);
++	return len;
++}
++
++static size_t logfs_write_header(struct logfs_super *super,
++		struct logfs_journal_header *h, size_t datalen, u16 type)
++{
++	size_t len = datalen + sizeof(*h);
++
++	return __logfs_write_header(super, h, len, datalen, type, COMPR_NONE);
++}
++
++static void *logfs_write_bb(struct super_block *sb, void *h,
++		u16 *type, size_t *len)
++{
++	*type = JE_BADSEGMENTS;
++	*len = sb->s_blocksize;
++	return logfs_super(sb)->s_bb_array;
++}
++
++static inline size_t logfs_journal_erasecount_size(struct logfs_super *super)
++{
++	return LOGFS_JOURNAL_SEGS * sizeof(__be32);
++}
++
++static void *logfs_write_erasecount(struct super_block *sb, void *_ec,
++		u16 *type, size_t *len)
++{
++	struct logfs_super *super = logfs_super(sb);
++	struct logfs_je_journal_ec *ec = _ec;
++	int i;
++
++	journal_for_each(i)
++		ec->ec[i] = cpu_to_be32(super->s_journal_ec[i]);
++	*type = JE_ERASECOUNT;
++	*len = logfs_journal_erasecount_size(super);
++	return ec;
++}
++
++static void *logfs_write_wbuf(struct super_block *sb, void *h,
++		u16 *type, size_t *len)
++{
++	struct logfs_super *super = logfs_super(sb);
++	struct logfs_area *area = super->s_area[super->s_sum_index];
++
++	*type = JEG_WBUF + super->s_sum_index;
++	*len = super->s_writesize;
++	return area->a_wbuf;
++}
++
++static void account_shadow(void *_shadow, long _sb, u64 ignore)
++{
++	struct logfs_shadow *shadow = _shadow;
++	struct super_block *sb = (void *)_sb;
++	struct logfs_super *super = logfs_super(sb);
++	struct logfs_inode *li = logfs_inode(super->s_master_inode);
++
++	/* consume new space */
++	super->s_free_bytes	  -= shadow->new_len;
++	super->s_used_bytes	  += shadow->new_len;
++	super->s_dirty_used_bytes -= shadow->new_len;
++
++	/* free up old space */
++	super->s_free_bytes	  += shadow->old_len;
++	super->s_used_bytes	  -= shadow->old_len;
++	super->s_dirty_free_bytes -= shadow->old_len;
++
++	if (shadow->ino == LOGFS_INO_MASTER)
++		li->li_used_bytes += shadow->new_len - shadow->old_len;
++	mempool_free(shadow, super->s_block_pool);
++}
++
++static void *__logfs_write_anchor(struct super_block *sb, void *_da,
++		u16 *type, size_t *len)
++{
++	struct logfs_super *super = logfs_super(sb);
++	struct logfs_je_anchor *da = _da;
++	struct inode *inode = super->s_master_inode;
++	struct logfs_inode *li = logfs_inode(inode);
++	int i;
++
++	btree_grim_visitor(&li->li_shadow_tree.new, (long)sb, account_shadow);
++	btree_grim_visitor(&li->li_shadow_tree.old, (long)sb, account_shadow);
++	BUG_ON((s64)li->li_used_bytes < 0);
++
++	da->da_last_ino = cpu_to_be64(super->s_last_ino);
++	da->da_size	= cpu_to_be64(i_size_read(inode));
++	da->da_used_bytes = cpu_to_be64(li->li_used_bytes);
++	for (i = 0; i < LOGFS_EMBEDDED_FIELDS; i++)
++		da->da_data[i] = cpu_to_be64(li->li_data[i]);
++	*type = JE_ANCHOR;
++	*len = sizeof(*da);
++	return da;
++}
++
++static void *logfs_write_dynsb(struct super_block *sb, void *_dynsb,
++		u16 *type, size_t *len)
++{
++	struct logfs_super *super = logfs_super(sb);
++	struct logfs_je_dynsb *dynsb = _dynsb;
++
++	dynsb->ds_gec		= cpu_to_be64(super->s_gec);
++	dynsb->ds_sweeper	= cpu_to_be64(super->s_sweeper);
++	dynsb->ds_victim_ino	= cpu_to_be64(super->s_victim_ino);
++	dynsb->ds_rename_dir	= cpu_to_be64(super->s_rename_dir);
++	dynsb->ds_rename_pos	= cpu_to_be64(super->s_rename_pos);
++	dynsb->ds_used_bytes	= cpu_to_be64(super->s_used_bytes);
++	*type = JE_DYNSB;
++	*len = sizeof(*dynsb);
++	return dynsb;
++}
++
++static void *logfs_write_areas(struct super_block *sb, void *_a,
++		u16 *type, size_t *len)
++{
++	struct logfs_area *area;
++	struct logfs_je_areas *a = _a;
++	int i;
++
++	for (i = 0; i < 16; i++) {
++		/* FIXME: have all 16 areas */
++		a->used_bytes[i] = 0;
++		a->segno[i] = 0;
++	}
++	for_each_area(i) {
++		area = logfs_super(sb)->s_area[i];
++		a->used_bytes[i] = cpu_to_be32(area->a_used_bytes);
++		a->segno[i] = cpu_to_be32(area->a_segno);
++	}
++	*type = JE_AREAS;
++	*len = sizeof(*a);
++	return a;
++}
++
++static void *logfs_write_free_segments(struct super_block *sb, void *_f,
++		u16 *type, size_t *len)
++{
++	struct logfs_super *super = logfs_super(sb);
++	struct logfs_je_free_segments *f = _f;
++	struct gc_candidate *cand;
++	int i = 0;
++
++	list_for_each_entry(cand, &super->s_free_list.list, list) {
++		f[i].segno = cpu_to_be32(cand->segno);
++		f[i].ec = cpu_to_be32(cand->erase_count);
++		i++;
++		if (i > MAX_CACHED_SEGS)
++			break;
++	}
++
++	*type = JE_FREESEGS;
++	*len = i * sizeof(struct logfs_je_free_segments);
++	return f;
++}
++
++static void *logfs_write_commit(struct super_block *sb, void *h,
++		u16 *type, size_t *len)
++{
++	*type = JE_COMMIT;
++	*len = 0;
++	return NULL;
++}
++
++static size_t __logfs_write_je(struct super_block *sb, size_t jpos,
++		void* (*write)(struct super_block *sb, void *scratch,
++			u16 *type, size_t *len))
++{
++	struct logfs_super *super = logfs_super(sb);
++	void *scratch = super->s_je;
++	void *header = super->s_compressed_je + jpos;
++	void *data = header + sizeof(struct logfs_journal_header);
++	ssize_t max, compr_len, pad_len, full_len;
++	size_t len;
++	u16 type;
++	u8 compr = COMPR_ZLIB;
++
++	scratch = write(sb, scratch, &type, &len);
++	if (len == 0)
++		return logfs_write_header(super, header, 0, type);
++
++	max = sb->s_blocksize - jpos;
++	compr_len = logfs_compress(scratch, data, len, max);
++	if (compr_len < 0 || type == JE_ANCHOR) {
++		BUG_ON(len > max);
++		memcpy(data, scratch, len);
++		compr_len = len;
++		compr = COMPR_NONE;
++	}
++
++	pad_len = ALIGN(compr_len, 16);
++	memset(data + compr_len, 0, pad_len - compr_len);
++	full_len = pad_len + sizeof(struct logfs_journal_header);
++
++	return __logfs_write_header(super, header, full_len, len, type, compr);
++}
++
++static s64 logfs_get_free_bytes(struct logfs_area *area, size_t *bytes,
++		int must_pad)
++{
++	u32 writesize = logfs_super(area->a_sb)->s_writesize;
++	s32 ofs;
++	int ret;
++
++	ret = logfs_open_area(area);
++	BUG_ON(ret);
++
++	ofs = area->a_used_bytes;
++	area->a_used_bytes += *bytes;
++
++	if (area->a_used_bytes >= logfs_super(area->a_sb)->s_segsize) {
++		logfs_close_area(area);
++		return -EAGAIN;
++	}
++	if (must_pad) {
++		area->a_used_bytes = ALIGN(area->a_used_bytes, writesize);
++		*bytes = area->a_used_bytes - ofs;
++	}
++
++	return dev_ofs(area->a_sb, area->a_segno, ofs);
++}
++
++static int logfs_write_je(struct super_block *sb,
++		void* (*write)(struct super_block *sb, void *scratch,
++			u16 *type, size_t *len))
++{
++	struct logfs_super *super = logfs_super(sb);
++	struct logfs_area *area = super->s_journal_area;
++	struct logfs_journal_header *h = super->s_compressed_je;
++	size_t len;
++	int must_pad = 0;
++	s64 ofs;
++
++	len = __logfs_write_je(sb, 0, write);
++	if (h->h_type == cpu_to_be16(JE_COMMIT))
++		must_pad = 1;
++
++	ofs = logfs_get_free_bytes(area, &len, must_pad);
++	if (ofs < 0)
++		return ofs;
++	logfs_buf_write(area, ofs, super->s_compressed_je, len);
++	return 0;
++}
++
++/*
++ * Write all journal entries.  The goto logic ensures that all journal entries
++ * are written whenever a new segment is used.  It is ugly and potentially a
++ * bit wasteful, but robustness is more important.  With this we can *always*
++ * erase all journal segments except the one containing the most recent commit.
++ */
++int logfs_write_anchor(struct inode *inode)
++{
++	struct super_block *sb = inode->i_sb;
++	struct logfs_super *super = logfs_super(sb);
 +	int i, err;
 +
-+	for_each_area(i) {
-+		err = check_area(sb, i);
-+		if (err)
-+			return err;
-+	}
++	mutex_lock(&super->s_journal_mutex);
++
++again:
++	if (super->s_writesize > 1)
++		for_each_area(i) {
++			super->s_sum_index = i;
++			err = logfs_write_je(sb, logfs_write_wbuf);
++			if (err)
++				goto again;
++		}
++	err = logfs_write_je(sb, logfs_write_bb);
++	if (err)
++		goto again;
++	err = logfs_write_je(sb, logfs_write_erasecount);
++	if (err)
++		goto again;
++	err = logfs_write_je(sb, __logfs_write_anchor);
++	if (err)
++		goto again;
++	err = logfs_write_je(sb, logfs_write_dynsb);
++	if (err)
++		goto again;
++	err = logfs_write_je(sb, logfs_write_areas);
++	if (err)
++		goto again;
++	err = logfs_write_je(sb, logfs_write_free_segments);
++	if (err)
++		goto again;
++	super->s_devops->sync(sb);
++	err = logfs_write_je(sb, logfs_write_commit);
++	if (err)
++		goto again;
++
++	mutex_unlock(&super->s_journal_mutex);
 +	return 0;
 +}
 +
-+static void logfs_init_candlist(struct candidate_list *list, int maxcount,
-+		int sort_by_ec)
-+{
-+	list->count = 0;
-+	list->maxcount = maxcount;
-+	list->sort_by_ec = sort_by_ec;
-+	INIT_LIST_HEAD(&list->list);
-+}
++static const struct logfs_area_ops journal_area_ops = {
++	.get_free_segment	= journal_get_free_segment,
++	.get_erase_count	= journal_get_erase_count,
++	.erase_segment		= journal_erase_segment,
++	.finish_area		= journal_finish_area,
++};
 +
-+int logfs_init_gc(struct logfs_super *super)
++int logfs_init_journal(struct super_block *sb)
 +{
-+	int i;
++	struct logfs_super *super = logfs_super(sb);
++	int ret = -ENOMEM;
 +
-+	logfs_init_candlist(&super->s_free_list, 4*LIST_SIZE, 1);
-+	for_each_area(i)
-+		logfs_init_candlist(&super->s_low_list[i], LIST_SIZE, 0);
-+	logfs_init_candlist(&super->s_ec_list, LIST_SIZE, 1);
++	mutex_init(&super->s_journal_mutex);
++
++	super->s_je = kzalloc(sb->s_blocksize, GFP_KERNEL);
++	if (!super->s_je)
++		return ret;
++
++	super->s_compressed_je = kzalloc(sb->s_blocksize, GFP_KERNEL);
++	if (!super->s_compressed_je)
++		return ret;
++
++	super->s_bb_array = kzalloc(sb->s_blocksize, GFP_KERNEL);
++	if (!super->s_bb_array)
++		return ret;
++
++	super->s_master_inode = logfs_new_meta_inode(sb, LOGFS_INO_MASTER);
++	if (!super->s_master_inode)
++		return ret;
++
++	/* make sure noone tries to evict this inode */
++	super->s_master_inode->i_nlink = 1;
++
++	/* logfs_scan_journal() is looking for the latest journal entries, but
++	 * doesn't copy them into data structures yet.  logfs_read_journal()
++	 * then re-reads those entries and copies their contents over. */
++	ret = logfs_scan_journal(sb);
++	if (ret)
++		return ret;
++	ret = logfs_read_journal(sb);
++	if (ret)
++		return ret;
++
++	reserve_sb_and_journal(sb);
++	logfs_calc_free(sb);
++
++	super->s_journal_area->a_ops = &journal_area_ops;
 +	return 0;
 +}
 +
-+static void logfs_cleanup_list(struct candidate_list *list)
++void logfs_cleanup_journal(struct super_block *sb)
 +{
-+	struct gc_candidate *cand, *next;
++	struct logfs_super *super = logfs_super(sb);
 +
-+	list_for_each_entry_safe(cand, next, &list->list, list) {
-+		list_del(&cand->list);
-+		kfree(cand);
-+	}
-+}
++	__logfs_destroy_inode(super->s_master_inode);
++	super->s_master_inode = NULL;
 +
-+void logfs_cleanup_gc(struct logfs_super *super)
-+{
-+	int i;
-+
-+	if (!super->s_free_list.list.next)
-+		return;
-+
-+	logfs_cleanup_list(&super->s_free_list);
-+	for_each_area(i)
-+		logfs_cleanup_list(&super->s_low_list[i]);
-+	logfs_cleanup_list(&super->s_ec_list);
++	kfree(super->s_bb_array);
++	kfree(super->s_compressed_je);
++	kfree(super->s_je);
 +}
