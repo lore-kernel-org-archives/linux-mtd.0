@@ -1,25 +1,19 @@
-Received: from an-out-0708.google.com ([209.85.132.247])
+Received: from rn-out-0910.google.com ([64.233.170.190])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JggLN-0007Gy-Ad
-	for linux-mtd@lists.infradead.org; Tue, 01 Apr 2008 13:16:05 +0000
-Received: by an-out-0708.google.com with SMTP id c3so538275ana.99
+	id 1Jgj1X-0002MA-BV
+	for linux-mtd@lists.infradead.org; Tue, 01 Apr 2008 16:07:47 +0000
+Received: by rn-out-0910.google.com with SMTP id i6so1117779rng.2
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 01 Apr 2008 06:16:01 -0700 (PDT)
-Message-ID: <fa686aa40804010616v4d6a2c8at5d3be8c32f316494@mail.gmail.com>
-Date: Tue, 1 Apr 2008 07:16:01 -0600
-From: "Grant Likely" <grant.likely@secretlab.ca>
-Sender: glikely@secretlab.ca
-To: "Laurent Pinchart" <laurentp@cse-semaphore.com>
-Subject: Re: [PATCHv2] powerpc: Describe memory-mapped RAM&ROM chips OF
-	bindings
-In-Reply-To: <200803311839.10519.laurentp@cse-semaphore.com>
+	Tue, 01 Apr 2008 09:07:45 -0700 (PDT)
+Message-ID: <8bf247760804010907q7a04c212wf437acfd5e44e937@mail.gmail.com>
+Date: Tue, 1 Apr 2008 21:37:36 +0530
+From: Ram <vshrirama@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: nand tests causes "uninterruptible sleep"
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <200803311839.10519.laurentp@cse-semaphore.com>
-Cc: ben@simtec.co.uk, linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	David Gibson <david@gibson.dropbear.id.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,48 +23,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 31, 2008 at 10:39 AM, Laurent Pinchart
-<laurentp@cse-semaphore.com> wrote:
->
->  Signed-off-by: Laurent Pinchart <laurentp@cse-semaphore.com>
->  ---
->   Documentation/powerpc/booting-without-of.txt |   13 ++++++++++++-
->   1 files changed, 12 insertions(+), 1 deletions(-)
->
->  diff --git a/Documentation/powerpc/booting-without-of.txt b/Documentation/powerpc/booting-without-of.txt
->  index 7b4e8a7..3e1963b 100644
->  --- a/Documentation/powerpc/booting-without-of.txt
->  +++ b/Documentation/powerpc/booting-without-of.txt
->  @@ -57,7 +57,8 @@ Table of Contents
->        n) 4xx/Axon EMAC ethernet nodes
->        o) Xilinx IP cores
->        p) Freescale Synchronous Serial Interface
->  -         q) USB EHCI controllers
->  +      q) USB EHCI controllers
->  +      r) Memory-mapped RAM & ROM
->
->    VII - Specifying interrupt information for devices
->      1) interrupts property
->  @@ -2816,6 +2817,16 @@ platforms are moved over to use the flattened-device-tree model.
->                    big-endian;
->            };
->
->  +   r) Memory-mapped RAM & ROM
->  +
->  +    Dedicated RAM and ROM chips are often used as storage for temporary or
->  +    permanent data in embedded devices. Possible usage include non-volatile
->  +    storage in battery-backed SRAM, semi-permanent storage in dedicated SRAM
->  +    to preserve data accross reboots and firmware storage in dedicated ROM.
->  +
->  +     - name : should be either "ram" or "rom"
->  +     - reg : Address range of the RAM/ROM chip
->  +
+Hi,
+  I am using linux 2.6.22. I am testing my nand driver/nand device.
+  I am using a arm based processor.
 
-No compatible prop?  How does the OS know what the node is to be used for?
+  To test my nand device, i am using fs-tests package that comes
+  with mtd-utils git tree.
 
-Cheers,
-g.
+  These are standard filesystem regression tests.
 
--- 
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
+  I am running the test to test a particular partition.
+
+  During one of the tests: The test process hangs.
+  When i do a ps -eal i get a -D against that process.
+  That particular process remains in that state forever.
+
+  I have eliminated all the infinte loops (checks for busy/read pin/nand reset)
+  in my nand driver. I have tried to put debug prints to print
+failures in my nand
+  device. I dont see any failure prints when i run the tests.
+
+  I tried doing "echo t > /proc/sysrq-trigger" i am appending the results.
+
+  Basically, i am trying to isolate the code that is causing the process
+  to go into an uniterruptible sleep state.
+
+  It is to be noted that - When the fs-tests process has gone into
+"uninterruptible
+  sleep state" accessing the partion under test makes that process
+  also go into the uninterruptible sleep state"
+
+  What i am trying to say is - If i try to copy something to the
+"partition under test"
+  that process (cp) also goes into that state.
+
+  In other words,  Once the fs-test process goes into -D state
+("uninterruptible sleep state")
+  I cannot access the partition under test.
+
+  However, i can access other partitions in the nand device without
+any problem.
+
+   I need some suggestions/advices to debug the issue.
+   How does one debug such a issue.
+
+  please advice.
+
+Thanks and Regards,
+  sriram
+
+
+
+
+Output of echo t > /proc/sysrq-trigger
+-----------------------------------------------------
+
+
+
+test_2        D C022BB54     0   267    248 (NOTLB)
+[<c022b620>] (schedule+0x0/0x608) from [<c022c434>] (io_schedule+0x2c/0x48)
+[<c022c408>] (io_schedule+0x0/0x48) from [<c0077eb4>] (sync_page+0x50/0x5c)
+ r5:00000000 r4:c38a3a34
+[<c0077e64>] (sync_page+0x0/0x5c) from [<c022c62c>] (__wait_on_bit+0x64/0xa8)
+[<c022c5c8>] (__wait_on_bit+0x0/0xa8) from [<c0078258>]
+(wait_on_page_bit+0xa8/0xb8)
+[<c00781b0>] (wait_on_page_bit+0x0/0xb8) from [<c0079e60>]
+(read_cache_page+0x38/0x58)
+ r6:00007080 r5:c0340a80 r4:00000000
+[<c0079e28>] (read_cache_page+0x0/0x58) from [<c0113c50>]
+(jffs2_gc_fetch_page+0x28/0x60)
+ r5:00007000 r4:c38a3afc
+[<c0113c28>] (jffs2_gc_fetch_page+0x0/0x60) from [<c011128c>]
+(jffs2_garbage_collect_pass+0x1130/0x185c)
+ r4:00007850
+[<c011015c>] (jffs2_garbage_collect_pass+0x0/0x185c) from [<c010b358>]
+(jffs2_reserve_space+0x134/0x1d0)
+[<c010b224>] (jffs2_reserve_space+0x0/0x1d0) from [<c010dd18>]
+(jffs2_write_inode_range+0x60/0x37c)
+[<c010dcb8>] (jffs2_write_inode_range+0x0/0x37c) from [<c0108f08>]
+(jffs2_commit_write+0x130/0x264)
+[<c0108dd8>] (jffs2_commit_write+0x0/0x264) from [<c007a5c4>]
+(generic_file_buffered_write+0x41c/0x610)
+[<c007a1ac>] (generic_file_buffered_write+0x4/0x610) from [<c007af84>]
+(__generic_file_aio_write_nolock+0x51c/0x54c)
+[<c007aa68>] (__generic_file_aio_write_nolock+0x0/0x54c) from
+[<c007b034>] (generic_file_aio_write+0x80/0xf4)
+[<c007afb8>] (generic_file_aio_write+0x4/0xf4) from [<c0097d10>]
+(do_sync_write+0xc0/0x110)
+[<c0097c50>] (do_sync_write+0x0/0x110) from [<c0097e2c>] (vfs_write+0xcc/0x150)
+ r9:c38a2000 r8:00000000 r7:00000190 r6:c38a3f78 r5:bec68b1c
+r4:c3d313e0
+[<c0097d60>] (vfs_write+0x0/0x150) from [<c0097f70>] (sys_write+0x4c/0x74)
+ r7:00007850 r6:c38a3f78 r5:c3d313e0 r4:c3d31400
+[<c0097f24>] (sys_write+0x0/0x74) from [<c0038de0>] (ret_fast_syscall+0x0/0x2c)
+ r8:c0038f84 r7:00000004 r6:00800000 r5:bec68cac r4:00000000
