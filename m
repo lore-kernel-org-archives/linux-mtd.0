@@ -1,13 +1,13 @@
 Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JhTFf-0004s6-0b
-	for linux-mtd@lists.infradead.org; Thu, 03 Apr 2008 17:29:27 +0000
-Message-Id: <20080401181332.853833004@logfs.org>
+	id 1JhTFj-0004s6-Gv
+	for linux-mtd@lists.infradead.org; Thu, 03 Apr 2008 17:29:31 +0000
+Message-Id: <20080401181332.853833001@logfs.org>
 References: <20080401181308.512473173@logfs.org>
 Date: Tue, 01 Apr 2008 20:13:08 +0200
 To: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [patch 4/15] fs/logfs/compr.c
+Subject: [patch 1/15] Makefiles and Kconfig
 From: joern@logfs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -18,101 +18,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+--- linux-2.6.24logfs/fs/Kconfig~logfs	2008-03-24 12:39:10.190939342 +0100
++++ linux-2.6.24logfs/fs/Kconfig	2008-04-01 19:48:18.517351063 +0200
+@@ -1385,6 +1385,23 @@ config JFFS2_CMODE_FAVOURLZO
+ 
+ endchoice
+ 
++config LOGFS
++	bool "Log Filesystem (EXPERIMENTAL)"
++	depends on (MTD || BLOCK) && EXPERIMENTAL
++	select ZLIB_INFLATE
++	select ZLIB_DEFLATE
++	select CRC32
++	help
++	  Flash filesystem aimed to scale efficiently to large devices.
++	  In comparison to JFFS2 it offers significantly faster mount
++	  times and potentially less RAM usage, although the latter has
++	  not been measured yet.
++
++	  In its current state it is still very experimental and should
++	  not be used for other than testing purposes.
++
++	  If unsure, say N.
++
+ config CRAMFS
+ 	tristate "Compressed ROM file system support (cramfs)"
+ 	depends on BLOCK
+--- linux-2.6.24logfs/fs/Makefile~logfs	2008-03-24 12:39:10.190939342 +0100
++++ linux-2.6.24logfs/fs/Makefile	2008-03-24 12:40:08.127616634 +0100
+@@ -99,6 +99,7 @@ obj-$(CONFIG_NTFS_FS)		+= ntfs/
+ obj-$(CONFIG_UFS_FS)		+= ufs/
+ obj-$(CONFIG_EFS_FS)		+= efs/
+ obj-$(CONFIG_JFFS2_FS)		+= jffs2/
++obj-$(CONFIG_LOGFS)		+= logfs/
+ obj-$(CONFIG_AFFS_FS)		+= affs/
+ obj-$(CONFIG_ROMFS_FS)		+= romfs/
+ obj-$(CONFIG_QNX4FS_FS)		+= qnx4/
 --- /dev/null	2008-03-30 12:15:48.586669308 +0200
-+++ linux-2.6.24logfs/fs/logfs/compr.c	2008-03-25 16:56:40.399236016 +0100
-@@ -0,0 +1,95 @@
-+/*
-+ * fs/logfs/compr.c	- compression routines
-+ *
-+ * As should be obvious for Linux kernel code, license is GPLv2
-+ *
-+ * Copyright (c) 2005-2007 Joern Engel <joern@logfs.org>
-+ */
-+#include "logfs.h"
-+#include <linux/vmalloc.h>
-+#include <linux/zlib.h>
++++ linux-2.6.24logfs/fs/logfs/Makefile	2008-04-01 19:48:07.170961891 +0200
+@@ -0,0 +1,14 @@
++obj-$(CONFIG_LOGFS)	+= logfs.o
 +
-+#define COMPR_LEVEL 3
-+
-+static DEFINE_MUTEX(compr_mutex);
-+static struct z_stream_s stream;
-+
-+int logfs_compress(void *in, void *out, size_t inlen, size_t outlen)
-+{
-+	int err, ret;
-+
-+	ret = -EIO;
-+	mutex_lock(&compr_mutex);
-+	err = zlib_deflateInit(&stream, COMPR_LEVEL);
-+	if (err != Z_OK)
-+		goto error;
-+
-+	stream.next_in = in;
-+	stream.avail_in = inlen;
-+	stream.total_in = 0;
-+	stream.next_out = out;
-+	stream.avail_out = outlen;
-+	stream.total_out = 0;
-+
-+	err = zlib_deflate(&stream, Z_FINISH);
-+	if (err != Z_STREAM_END)
-+		goto error;
-+
-+	err = zlib_deflateEnd(&stream);
-+	if (err != Z_OK)
-+		goto error;
-+
-+	if (stream.total_out >= stream.total_in)
-+		goto error;
-+
-+	ret = stream.total_out;
-+error:
-+	mutex_unlock(&compr_mutex);
-+	return ret;
-+}
-+
-+int logfs_uncompress(void *in, void *out, size_t inlen, size_t outlen)
-+{
-+	int err, ret;
-+
-+	ret = -EIO;
-+	mutex_lock(&compr_mutex);
-+	err = zlib_inflateInit(&stream);
-+	if (err != Z_OK)
-+		goto error;
-+
-+	stream.next_in = in;
-+	stream.avail_in = inlen;
-+	stream.total_in = 0;
-+	stream.next_out = out;
-+	stream.avail_out = outlen;
-+	stream.total_out = 0;
-+
-+	err = zlib_inflate(&stream, Z_FINISH);
-+	if (err != Z_STREAM_END)
-+		goto error;
-+
-+	err = zlib_inflateEnd(&stream);
-+	if (err != Z_OK)
-+		goto error;
-+
-+	ret = 0;
-+error:
-+	mutex_unlock(&compr_mutex);
-+	return ret;
-+}
-+
-+int __init logfs_compr_init(void)
-+{
-+	size_t size = max(zlib_deflate_workspacesize(),
-+			zlib_inflate_workspacesize());
-+	stream.workspace = vmalloc(size);
-+	if (!stream.workspace)
-+		return -ENOMEM;
-+	return 0;
-+}
-+
-+void logfs_compr_exit(void)
-+{
-+	vfree(stream.workspace);
-+}
++logfs-y	+= compr.o
++logfs-y	+= dir.o
++logfs-y	+= file.o
++logfs-y	+= gc.o
++logfs-y	+= inode.o
++logfs-y	+= journal.o
++logfs-y	+= memtree.o
++logfs-y	+= readwrite.o
++logfs-y	+= segment.o
++logfs-y	+= super.o
++logfs-$(CONFIG_BLOCK)	+= dev_bdev.o
++logfs-$(CONFIG_MTD)	+= dev_mtd.o
