@@ -1,23 +1,20 @@
-Received: from mailrelay005.isp.belgacom.be ([195.238.6.171])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JhMTl-00067K-Cf
-	for linux-mtd@lists.infradead.org; Thu, 03 Apr 2008 10:15:33 +0000
-From: Laurent Pinchart <laurentp@cse-semaphore.com>
-To: "Grant Likely" <grant.likely@secretlab.ca>
-Subject: Re: [PATCHv2] powerpc: Describe memory-mapped RAM&ROM chips OF
-	bindings
-Date: Thu, 3 Apr 2008 12:15:29 +0200
-References: <200803311839.10519.laurentp@cse-semaphore.com>
-	<fa686aa40804010616v4d6a2c8at5d3be8c32f316494@mail.gmail.com>
-In-Reply-To: <fa686aa40804010616v4d6a2c8at5d3be8c32f316494@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JhNkE-0005Xg-Lc
+	for linux-mtd@lists.infradead.org; Thu, 03 Apr 2008 11:36:39 +0000
+Received: from esebh107.NOE.Nokia.com (esebh107.ntc.nokia.com [172.21.143.143])
+	by mgw-mx09.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
+	m33BcbSn028546
+	for <linux-mtd@lists.infradead.org>; Thu, 3 Apr 2008 06:38:47 -0500
+Subject: UBIFS: media format changes
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 03 Apr 2008 14:37:05 +0300
+Message-Id: <1207222625.8040.4.camel@sauron>
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200804031215.30314.laurentp@cse-semaphore.com>
-Cc: ben@simtec.co.uk, linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	David Gibson <david@gibson.dropbear.id.au>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,70 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 01 April 2008 15:16, Grant Likely wrote:
-> On Mon, Mar 31, 2008 at 10:39 AM, Laurent Pinchart
-> <laurentp@cse-semaphore.com> wrote:
-> >
-> >  Signed-off-by: Laurent Pinchart <laurentp@cse-semaphore.com>
-> >  ---
-> >   Documentation/powerpc/booting-without-of.txt |   13 ++++++++++++-
-> >   1 files changed, 12 insertions(+), 1 deletions(-)
-> >
-> >  diff --git a/Documentation/powerpc/booting-without-of.txt=20
-> >  b/Documentation/powerpc/booting-without-of.txt=20
-> >  index 7b4e8a7..3e1963b 100644
-> >  --- a/Documentation/powerpc/booting-without-of.txt
-> >  +++ b/Documentation/powerpc/booting-without-of.txt
-> >  @@ -57,7 +57,8 @@ Table of Contents
-> >        n) 4xx/Axon EMAC ethernet nodes
-> >        o) Xilinx IP cores
-> >        p) Freescale Synchronous Serial Interface
-> >  -         q) USB EHCI controllers
-> >  +      q) USB EHCI controllers
-> >  +      r) Memory-mapped RAM & ROM
-> >
-> >    VII - Specifying interrupt information for devices
-> >      1) interrupts property
-> >  @@ -2816,6 +2817,16 @@ platforms are moved over to use the
-> >  flattened-device-tree model.=20
-> >                    big-endian;
-> >            };
-> >
-> >  +   r) Memory-mapped RAM & ROM
-> >  +
-> >  +    Dedicated RAM and ROM chips are often used as storage for tempora=
-ry
-> >  or=20
-> >  +    permanent data in embedded devices. Possible usage include
-> >  non-volatile=20
-> >  +    storage in battery-backed SRAM, semi-permanent storage in dedicat=
-ed
-> >  SRAM=20
-> >  +    to preserve data accross reboots and firmware storage in dedicated
-> >  ROM.=20
-> >  +
-> >  +     - name : should be either "ram" or "rom"
-> >  +     - reg : Address range of the RAM/ROM chip
-> >  +
->=20
-> No compatible prop?  How does the OS know what the node is to be used for?
+Hi all,
 
-If I understood Sergei's arguments properly, the device tree should describ=
-e=20
-device properties and not their intended usage. With generic devices such a=
-s=20
-RAM chips, platform code is responsible for binding the device to the=20
-appropriate driver (mtd-ram for instance).
+as we have announced UBIFS, it is good idea to notify people
+who may try to use it about media format changes.
 
-Cheers,
+We now store nanoseconds in [amc]time in inodes, not just seconds,
+and the latest UBIFS is incompatible to the previous versions,
+which means it will refuse mounting older images.
 
-=2D-=20
-Laurent Pinchart
-CSE Semaphore Belgium
+You should also update mkfs.ubifs utility.
 
-Chauss=E9e de Bruxelles, 732A
-B-1410 Waterloo
-Belgium
-
-T +32 (2) 387 42 59
-=46 +32 (2) 387 42 75
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
