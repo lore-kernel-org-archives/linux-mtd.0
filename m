@@ -1,22 +1,23 @@
-Received: from kuumail.barco.com ([32.58.34.195])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JhLLl-00068n-K9
-	for linux-mtd@lists.infradead.org; Thu, 03 Apr 2008 09:03:14 +0000
-Content-Class: urn:content-classes:message
-Subject: Re: [PATCH] [JFFS2] Fix free space leaking
-From: "Martin Creutziger" <martin.creutziger@barco.com>
-To: "linux-mtd" <linux-mtd@lists.infradead.org>
-In-Reply-To: <1203593969.15409.45.camel@shinybook.infradead.org>
-References: <20071113102323.GA5933@damir.rnd.local>
-	<1202293219.25864.45.camel@gentoo-jocke.transmode.se>
-	<20080221111148.GA10791@lazybastard.org>
-	<1203593969.15409.45.camel@shinybook.infradead.org>
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 03 Apr 2008 11:03:04 +0200
-Message-ID: <1207213384.6161.4.camel@KARCLT0275>
+Received: from mailrelay005.isp.belgacom.be ([195.238.6.171])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JhMTl-00067K-Cf
+	for linux-mtd@lists.infradead.org; Thu, 03 Apr 2008 10:15:33 +0000
+From: Laurent Pinchart <laurentp@cse-semaphore.com>
+To: "Grant Likely" <grant.likely@secretlab.ca>
+Subject: Re: [PATCHv2] powerpc: Describe memory-mapped RAM&ROM chips OF
+	bindings
+Date: Thu, 3 Apr 2008 12:15:29 +0200
+References: <200803311839.10519.laurentp@cse-semaphore.com>
+	<fa686aa40804010616v4d6a2c8at5d3be8c32f316494@mail.gmail.com>
+In-Reply-To: <fa686aa40804010616v4d6a2c8at5d3be8c32f316494@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Message-Id: <200804031215.30314.laurentp@cse-semaphore.com>
+Cc: ben@simtec.co.uk, linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	David Gibson <david@gibson.dropbear.id.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +27,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-On Thu, 2008-02-21 at 20:39 +0900, an unknown sender wrote:
-> On Thu, 2008-02-21 at 12:11 +0100, J?rn Engel wrote:
-> > No idea, but it might help to add dwmw2 to Cc:.
+On Tuesday 01 April 2008 15:16, Grant Likely wrote:
+> On Mon, Mar 31, 2008 at 10:39 AM, Laurent Pinchart
+> <laurentp@cse-semaphore.com> wrote:
+> >
+> >  Signed-off-by: Laurent Pinchart <laurentp@cse-semaphore.com>
+> >  ---
+> >   Documentation/powerpc/booting-without-of.txt |   13 ++++++++++++-
+> >   1 files changed, 12 insertions(+), 1 deletions(-)
+> >
+> >  diff --git a/Documentation/powerpc/booting-without-of.txt=20
+> >  b/Documentation/powerpc/booting-without-of.txt=20
+> >  index 7b4e8a7..3e1963b 100644
+> >  --- a/Documentation/powerpc/booting-without-of.txt
+> >  +++ b/Documentation/powerpc/booting-without-of.txt
+> >  @@ -57,7 +57,8 @@ Table of Contents
+> >        n) 4xx/Axon EMAC ethernet nodes
+> >        o) Xilinx IP cores
+> >        p) Freescale Synchronous Serial Interface
+> >  -         q) USB EHCI controllers
+> >  +      q) USB EHCI controllers
+> >  +      r) Memory-mapped RAM & ROM
+> >
+> >    VII - Specifying interrupt information for devices
+> >      1) interrupts property
+> >  @@ -2816,6 +2817,16 @@ platforms are moved over to use the
+> >  flattened-device-tree model.=20
+> >                    big-endian;
+> >            };
+> >
+> >  +   r) Memory-mapped RAM & ROM
+> >  +
+> >  +    Dedicated RAM and ROM chips are often used as storage for tempora=
+ry
+> >  or=20
+> >  +    permanent data in embedded devices. Possible usage include
+> >  non-volatile=20
+> >  +    storage in battery-backed SRAM, semi-permanent storage in dedicat=
+ed
+> >  SRAM=20
+> >  +    to preserve data accross reboots and firmware storage in dedicated
+> >  ROM.=20
+> >  +
+> >  +     - name : should be either "ram" or "rom"
+> >  +     - reg : Address range of the RAM/ROM chip
+> >  +
 >=20
-> dwmw2 moderately confused by it. I don't see why it's correct to =
-account
-> for the space as 'free' when it isn't really. If it's causing a
-> persistent leak, shouldn't we deal with that when the block is erased
-> instead?
+> No compatible prop?  How does the OS know what the node is to be used for?
 
-Hi,=20
+If I understood Sergei's arguments properly, the device tree should describ=
+e=20
+device properties and not their intended usage. With generic devices such a=
+s=20
+RAM chips, platform code is responsible for binding the device to the=20
+appropriate driver (mtd-ram for instance).
 
-I am currently testing the patch on 2.6.24.2 (as a result of
-http://lists.infradead.org/pipermail/linux-mtd/2008-March/021024.html),
-and so far it seems to at least cure the symptoms, as in: The partition
-does not "fill up" any more so far.=20
-But: For later production use I would certainly prefer a patch that also
-dwmw2 agrees being a cure to the _cause_, not just the symptoms.
-Any suggestions?
+Cheers,
 
-Greetings . . . Martin
+=2D-=20
+Laurent Pinchart
+CSE Semaphore Belgium
 
+Chauss=E9e de Bruxelles, 732A
+B-1410 Waterloo
+Belgium
 
-
-DISCLAIMER:
-Unless indicated otherwise, the information contained in this message is =
-privileged and confidential, and is intended only for the use of the =
-addressee(s) named above and others who have been specifically =
-authorized to receive it. If you are not the intended recipient, you are =
-hereby notified that any dissemination, distribution or copying of this =
-message and/or attachments is strictly prohibited. The company accepts =
-no liability for any damage caused by any virus transmitted by this =
-email. Furthermore, the company does not warrant a proper and complete =
-transmission of this information, nor does it accept liability for any =
-delays. If you have received this message in error, please contact the =
-sender and delete the message. Thank you.
+T +32 (2) 387 42 59
+=46 +32 (2) 387 42 75
