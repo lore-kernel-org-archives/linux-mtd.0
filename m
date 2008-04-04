@@ -1,20 +1,16 @@
-Received: from brick.kernel.dk ([87.55.233.238] helo=kernel.dk)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JhkPd-0003dJ-Gn
-	for linux-mtd@lists.infradead.org; Fri, 04 Apr 2008 11:48:53 +0000
-Date: Fri, 4 Apr 2008 13:46:00 +0200
-From: Jens Axboe <jens.axboe@oracle.com>
-To: joern@logfs.org
-Subject: Re: [patch 0/15] LogFS take five
-Message-ID: <20080404114600.GD29686@kernel.dk>
-References: <20080401181308.512473173@logfs.org>
+Date: Fri, 4 Apr 2008 13:10:27 +0100 (BST)
+From: Alexey Korolev <akorolev@infradead.org>
+To: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+Subject: Re: [PATCH] Fix of broken state in CFI driver caused by FL_SHUTDOWN
+In-Reply-To: <20080404093359.GA4338@logfs.org>
+Message-ID: <Pine.LNX.4.64.0804041306470.10410@pentafluge.infradead.org>
+References: <Pine.LNX.4.64.0804040949090.2042@pentafluge.infradead.org>
+	<20080404093359.GA4338@logfs.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20080401181308.512473173@logfs.org>
-Cc: linux-fsdevel@vger.kernel.org, Nick Piggin <npiggin@suse.de>,
-	David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: MULTIPART/MIXED;
+	BOUNDARY="-1831524198-200585786-1207311027=:10410"
+Cc: nico@cam.org, haokexin@gmail.com, dwmw2@infradead.org,
+	akpm@linux-foundation.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,22 +20,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 01 2008, joern@logfs.org wrote:
-> And it is currently reasonably simple to run into a deadlock when
-> using logfs on a block device.  The problem appears to be the block
-> layer allocating memory for its cache without GFP_NOFS, so that under
-> memory pressure logfs writes through block layer may recurse back to
-> logfs writes.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-So you mean for writes through the page cache, you are seeing pages
-allocated with __GFP_FS set?
+---1831524198-200585786-1207311027=:10410
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: 8BIT
 
-> Not entirely sure who is to blame for this bug and how to
-> solve it.
+Hi Jörn
 
-A good starting point would be doing a stack trace dump in logfs if you
-see such back recursion into the fs. A quick guess would be a missing
-setting of mapping gfp mask?
-
--- 
-Jens Axboe
+> 
+> Ouch!  I've been bitten by these before.  After I've carefully written
+> code that takes advantage of missing break; statements, a colleague of
+> mine reordered the code and missed those subtleties.
+> 
+> Could you add a comment like this where appropriate:
+> 		/* fall through */
+No problem. See patch update in next message. 
+> 
+> It might even have prevented this bug if Kevin had seen such a comment
+> before writing his patch.
+> 
+> Reviewed-By: Joern Engel <joern@logfs.org>
+> 
+> >  
+> > -	case FL_SHUTDOWN:
+> > -		/* The machine is rebooting now,so no one can get chip anymore */
+> > -		return -EIO;
+> >  	default:
+> >  	sleep:
+> >  		set_current_state(TASK_UNINTERRUPTIBLE);
+> 
+> 
+---1831524198-200585786-1207311027=:10410--
