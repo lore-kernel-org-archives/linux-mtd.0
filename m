@@ -1,22 +1,21 @@
-Received: from py-out-1112.google.com ([64.233.166.182])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JhvDw-0001hb-Tt
-	for linux-mtd@lists.infradead.org; Fri, 04 Apr 2008 23:21:33 +0000
-Received: by py-out-1112.google.com with SMTP id p76so371688pyb.2
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 04 Apr 2008 16:21:31 -0700 (PDT)
+Received: from smtp121.sbc.mail.sp1.yahoo.com ([69.147.64.94])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jhvnv-0004HP-90
+	for linux-mtd@lists.infradead.org; Fri, 04 Apr 2008 23:58:43 +0000
+From: David Brownell <david-b@pacbell.net>
+To: Josh Boyer <jwboyer@gmail.com>
 Subject: Re: [PATCH]  jffs2 summary allocation
-From: Josh Boyer <jwboyer@gmail.com>
-To: David Brownell <david-b@pacbell.net>
-In-Reply-To: <200804041609.41092.david-b@pacbell.net>
+Date: Fri, 4 Apr 2008 16:58:38 -0700
 References: <713171.37644.qm@web26213.mail.ukl.yahoo.com>
-	<20080404124812.d39fa640.akpm@linux-foundation.org>
 	<200804041609.41092.david-b@pacbell.net>
-Content-Type: text/plain
-Date: Fri, 04 Apr 2008 18:21:22 -0500
-Message-Id: <1207351282.3224.79.camel@vader.jdub.homelinux.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+	<1207351282.3224.79.camel@vader.jdub.homelinux.org>
+In-Reply-To: <1207351282.3224.79.camel@vader.jdub.homelinux.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+Message-Id: <200804041658.38499.david-b@pacbell.net>
 Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
 	Michael Trimarchi <trimarchimichael@yahoo.it>,
 	spi-devel-general@lists.sourceforge.net,
@@ -31,31 +30,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2008-04-04 at 16:09 -0700, David Brownell wrote:
-> On Friday 04 April 2008, Andrew Morton wrote:
+On Friday 04 April 2008, Josh Boyer wrote:
 > 
-> > I'm assuming from the trace that the arm code tried to put that memory
-> > under DMA (or at least, passed it into part of the DMA management code to
-> > get the various caches sorted out) and that the arm DMA support code
-> > doesn't like being given vmalloced memory.
+> >   ... This means specifically that you may _not_ use the
+> >   memory/addresses returned from vmalloc() for DMA.  ...
+> > 
+> > So I'm rather surprised to see *ANY* kernel code trying to do
+> > that.  That rule has been in effect for many, many years now.
 > 
-> Actually, Documentation/DMA-Mapping.txt has a section right up
-> front called "What memory is DMA'able?" ... which despite its
-> ungrammatical title, says clearly:
+> I don't think it was intentional.  You're going through several layers
+> here:
 > 
->   ... This means specifically that you may _not_ use the
->   memory/addresses returned from vmalloc() for DMA.  ...
+> JFFS2 -> mtd parts -> mtd dataflash -> atmel_spi.
 > 
-> So I'm rather surprised to see *ANY* kernel code trying to do
-> that.  That rule has been in effect for many, many years now.
+> Typically MTD drivers aren't doing DMAs to flash and JFFS2 has no idea
+> which particular chip driver is being used because it's abstracted by
+> MTD.
 
-I don't think it was intentional.  You're going through several layers
-here:
+That's true ... although I can imagine using DMA to
+avoid dcache trashing if its setup cost is low enough,
+with either NAND or NOR chips.
 
-JFFS2 -> mtd parts -> mtd dataflash -> atmel_spi.
+Still:  in this context vmalloc() is wrong.
 
-Typically MTD drivers aren't doing DMAs to flash and JFFS2 has no idea
-which particular chip driver is being used because it's abstracted by
-MTD.
-
-josh
+- Dave
