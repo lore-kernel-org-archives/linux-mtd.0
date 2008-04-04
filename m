@@ -1,20 +1,24 @@
-Received: from fg-out-1718.google.com ([72.14.220.159])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JhVGW-0002pH-7N
-	for linux-mtd@lists.infradead.org; Thu, 03 Apr 2008 19:38:28 +0000
-Received: by fg-out-1718.google.com with SMTP id 22so3352223fge.26
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 03 Apr 2008 12:38:26 -0700 (PDT)
-Subject: [PATCH] mtd/chips: add missing set_current_state() to
-	cfi_{amdstd,staa}_sync()
-From: Dmitry Adamushko <dmitry.adamushko@gmail.com>
+Received: from risingsoftware01.propagation.net ([66.221.33.65])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JhdIU-0001ny-Mm
+	for linux-mtd@lists.infradead.org; Fri, 04 Apr 2008 04:13:02 +0000
+Received: from c122-107-142-134.eburwd5.vic.optusnet.com.au ([122.107.142.134]
+	helo=noddy.cloud.net.au)
+	by risingsoftware01.propagation.net with esmtpsa
+	(TLS-1.0:RSA_AES_256_CBC_SHA1:32) (Exim 4.63)
+	(envelope-from <hamish@cloud.net.au>) id 1JhdIP-0004rN-EK
+	for linux-mtd@lists.infradead.org; Thu, 03 Apr 2008 23:12:57 -0500
+Received: from hamish by noddy.cloud.net.au with local (Exim 4.69)
+	(envelope-from <hamish@cloud.net.au>) id 1JhdIK-0000vW-67
+	for linux-mtd@lists.infradead.org; Fri, 04 Apr 2008 15:12:52 +1100
+Date: Fri, 4 Apr 2008 15:12:52 +1100
+From: Hamish Moffatt <hamish@cloud.net.au>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Thu, 03 Apr 2008 21:38:23 +0200
-Message-Id: <1207251503.6300.9.camel@earth>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: dwmw2@infradead.org, linux-kernel@vger.kernel.org
+Subject: can't mount ubifs on volume smaller than 265 LEBs/32MiB
+Message-ID: <20080404041251.GA2752@cloud.net.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,41 +28,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Dmitry Adamushko <dmitry.adamushko@gmail.com>
-Subject: [mtd/chips] add missing set_current_state() to cfi_{amdstd,staa}_sync()
+I need a ubifs on a small volume (around 16MiB or less) but I've found
+that I can't get the volume to mount if it's that small.
 
-cfi_amdstd_sync() and cfi_staa_sync() call schedule() without changing
-task's state appropriately.
+With a LEB size of 126kb, any file system < 265 LEBs won't mount,
+failing in validate_sb.
 
-In case of e.g. chip->state == FL_ERASING, cfi_*_sync() will be busy-looping
-either redundantly for a fixed interval of time (for SCHED_NORMAL tasks) or
-possibly endlessly (for RT tasks and UP).
+# ubimkvol /dev/ubi0 -N config -S 264
+Volume ID 2, size 264 LEBs (34062336 bytes, 32.5 MiB), LEB size 129024 bytes (126.0 KiB), dynamic, name "config", alignment 1
+# mount /rw
+mount: mounting ubi0:config on /rw failed: Invalid argument
 
-Signed-off-by: Dmitry Adamushko <dmitry.adamushko@gmail.com>
+# dmesg
+[...]
+[ 1191.360000] UBIFS error (pid 2804): validate_sb: bad superblock
 
----
+# ubirmvol /dev/ubi0 -n 2
+# ubimkvol /dev/ubi0 -N config -S 265
+Volume ID 2, size 265 LEBs (34191360 bytes, 32.6 MiB), LEB size 129024 bytes (126.0 KiB), dynamic, name "config", alignment 1
+# mount /rw
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index d072e87..458d477 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1763,6 +1763,7 @@ static void cfi_amdstd_sync (struct mtd_info *mtd)
- 
- 		default:
- 			/* Not an idle state */
-+			set_current_state(TASK_UNINTERRUPTIBLE);
- 			add_wait_queue(&chip->wq, &wait);
- 
- 			spin_unlock(chip->mutex);
-diff --git a/drivers/mtd/chips/cfi_cmdset_0020.c b/drivers/mtd/chips/cfi_cmdset_0020.c
-index b344ff8..492e2ab 100644
---- a/drivers/mtd/chips/cfi_cmdset_0020.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0020.c
-@@ -1015,6 +1015,7 @@ static void cfi_staa_sync (struct mtd_info *mtd)
- 
- 		default:
- 			/* Not an idle state */
-+			set_current_state(TASK_UNINTERRUPTIBLE);
- 			add_wait_queue(&chip->wq, &wait);
- 
- 			spin_unlock_bh(chip->mutex);
+My ubifs is about 1 week old from git.
+
+Thanks,
+Hamish
+-- 
+Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
