@@ -1,26 +1,19 @@
-Received: from ti-out-0910.google.com ([209.85.142.191])
+Received: from wa-out-1112.google.com ([209.85.146.182])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JhzMe-0000uy-Fj
-	for linux-mtd@lists.infradead.org; Sat, 05 Apr 2008 03:46:48 +0000
-Received: by ti-out-0910.google.com with SMTP id a20so226298tia.2
+	id 1JiAXB-0006Yc-Mw
+	for linux-mtd@lists.infradead.org; Sat, 05 Apr 2008 15:42:26 +0000
+Received: by wa-out-1112.google.com with SMTP id v33so447443wah.2
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 04 Apr 2008 20:46:45 -0700 (PDT)
-Message-ID: <8dd980de0804042046n361671e5x7a6966a70b467db5@mail.gmail.com>
-Date: Sat, 5 Apr 2008 11:46:30 +0800
-From: "Kevin Hao" <haokexin@gmail.com>
-To: "Alexey Korolev" <akorolev@infradead.org>
-Subject: Re: [PATCH] Fix of broken state in CFI driver caused by FL_SHUTDOWN
-In-Reply-To: <Pine.LNX.4.64.0804041310550.10410@pentafluge.infradead.org>
+	Sat, 05 Apr 2008 08:42:19 -0700 (PDT)
+Message-ID: <8bf247760804050842q5407de1bq8400fcea75d1e875@mail.gmail.com>
+Date: Sat, 5 Apr 2008 21:12:19 +0530
+From: Ram <vshrirama@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: issues with Nand tests
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <Pine.LNX.4.64.0804040949090.2042@pentafluge.infradead.org>
-	<20080404093359.GA4338@logfs.org>
-	<Pine.LNX.4.64.0804041310550.10410@pentafluge.infradead.org>
-Cc: nico@cam.org, =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>,
-	dwmw2@infradead.org, akpm@linux-foundation.org,
-	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,58 +23,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Oh, my fault. Thanks for correction.
+Hi,
+Im testing nand device using fs-tests package that comes with mtd-git.
+I am using linux 2.6.23.
 
-Thanks,
-Kevin
+Right now, i am facing a few issues, i would appreciate your advice in
+this regard.
 
-On 4/4/08, Alexey Korolev <akorolev@infradead.org> wrote:
-> Hi
->
->
->  CFI driver in 2.6.24 kernel is broken. Not so intensive read/write operations cause incomplete writes which lead to kernel panics in JFFS2.
->  We investigated the issue - it is caused by bug in FL_SHUTDOWN parsing code. Sometimes chip returns -EIO as if it is in FL_SHUTDOWN state when it should wait in FL_PONT (error in order of conditions).
->
-> The following patch fixes the bug in state parsing code of CFI.
-> Also I've added comments to notify developers if they want to add new case in future.
-> Please include it.
->
-> Signed-off-by: Alexey Korolev <akorolev@infradead.org>
-> Reviewed-By: Joern Engel <joern@logfs.org>
->
-> diff -aurpp a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-> --- a/drivers/mtd/chips/cfi_cmdset_0001.c       2008-02-11 08:51:11.000000000 +0300
-> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c       2008-04-04 15:50:47.000000000 +0400
-> @@ -669,7 +669,7 @@ static int chip_ready (struct map_info *
->                        /* Someone else might have been playing with it. */
->                        return -EAGAIN;
->                }
-> -
-> +               /* Fall through */
->        case FL_READY:
->        case FL_CFI_QUERY:
->        case FL_JEDEC_QUERY:
-> @@ -729,14 +729,14 @@ static int chip_ready (struct map_info *
->                chip->state = FL_READY;
->                return 0;
->
-> +       case FL_SHUTDOWN:
-> +               /* The machine is rebooting now,so no one can get chip anymore */
-> +               return -EIO;
->        case FL_POINT:
->                /* Only if there's no operation suspended... */
->                if (mode == FL_READY && chip->oldstate == FL_READY)
->                        return 0;
-> -
-> -       case FL_SHUTDOWN:
-> -               /* The machine is rebooting now,so no one can get chip anymore */
-> -               return -EIO;
-> +               /* Fall through */
->        default:
->        sleep:
->                set_current_state(TASK_UNINTERRUPTIBLE);
-> -------------
-> Thanks,
-> Alexey
->
->
+!) All the the tests passes except that the stress test ./stress00.sh
+throws up the message as shown below.
+during the test, However the test passes successfully.
+
+mtd->read(0x3c8 bytes from 0x59725c) returned ECC error
+Data CRC failed on REF_PRISTINE data node at 0x0059725c: Read
+0x32e9ab7f, calculated 0xb1b6afa0
+mtd->read(0x3dc bytes from 0x597764) returned ECC error
+Data CRC failed on REF_PRISTINE data node at 0x00597764: Read
+0x70c076f0, calculated 0x2d5d9d38
+mtd->read(0x99c bytes from 0x59849c) returned ECC error
+Data CRC failed on REF_PRISTINE data node at 0x0059849c: Read
+0xa2908a1a, calculated 0x364b837f
+mtd->read(0x1044 bytes from 0x598eb4) returned ECC error
+Data CRC failed on REF_PRISTINE data node at 0x00598eb4: Read
+0xb882b629, calculated 0x5e66e5b0
+mtd->read(0x1044 bytes from 0x599ef8) returned ECC error
+Data CRC failed on REF_PRISTINE data node at 0x00599ef8: Read
+0x8819eb58, calculated 0x83e2d097
+mtd->read(0x1044 bytes from 0x59af3c) returned ECC error
+Data CRC failed on REF_PRISTINE data node at 0x0059af3c: Read
+0xe9c03ff1, calculated 0xd85bc634
+mtd->read(0x1044 bytes from 0x59bf80) returned ECC error
+Data CRC failed on REF_PRISTINE data node at 0x0059bf80: Read
+0xebcbe14f, calculated 0xa3f6ce10
+mtd->read(0x1044 bytes from 0x59cfc4) returned ECC error
+Data CRC failed on REF_PRISTINE data node at 0x0059cfc4: Read
+0xd8533cde, calculated 0x5130dbf6
+mtd->read(0x1044 bytes from 0x59e008) returned ECC error
+Data CRC failed on REF_PRISTINE data node at 0x0059e008: Read
+0xe6f84772, calculated 0x30f06f3d
+
+
+My question is what can one conclude on the above - can i say the nand
+drivers/linux mtd are working
+perfectly!. -;)
+
+How does one isolate the problem of this nature since all the tests
+are passing except for the
+occasional ECC error.
+
+2) My 2nd question is regarding the time taken for running
+
+ Each run of all the tests take more than 6 hours to complete to test
+a partition of 16MB.
+ All the tests run only once, (repeat count is 0) and -z (size
+parameter is 0 that is
+ all the test fills the file system until there is no space left.)
+
+The clock to the nand device is around 125MHZ.
+
+ I observe that the "test processes" keep oscillating between "-D"
+(uninterruptible sleep) and -R (Running)
+ during the course of the test.
+
+ When i do a ls -Rl on the test partition, i observe that the output
+is not continuous, It stops intermittently
+  and then continous.
+
+ Is this normal behaviour.
+
+Thanks and Regards,
+  Sriram
