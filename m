@@ -1,16 +1,16 @@
-Received: from duster.selinc.com ([12.156.93.38])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jixcw-0007QN-Ef
-	for linux-mtd@lists.infradead.org; Mon, 07 Apr 2008 20:07:49 +0000
-In-Reply-To: <1207553242.8040.48.camel@sauron>
-To: dedekind@infradead.org
-Subject: Re: Question about ubimkvol vs. mkfs.ubifs
+Received: from harold.telenet-ops.be ([195.130.133.65])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jj0Xi-0000AX-FD
+	for linux-mtd@lists.infradead.org; Mon, 07 Apr 2008 23:14:26 +0000
+Message-ID: <47FAAACB.2060800@telenet.be>
+Date: Tue, 08 Apr 2008 01:14:19 +0200
+From: =?ISO-8859-1?Q?J=FCrgen_Lambrecht?= <jurgen.lambrecht2@telenet.be>
 MIME-Version: 1.0
-Message-ID: <OFC5391750.C1B34EBF-ON88257424.006DD52A-88257424.006E8EFD@selinc.com>
-From: Bruce_Leonard@selinc.com
-Date: Mon, 7 Apr 2008 13:07:35 -0700
-Content-Type: text/plain; charset="US-ASCII"
-Cc: linux-mtd@lists.infradead.org
+To: ecos-discuss@ecos.sourceware.org,  linux-mtd@lists.infradead.org
+Subject: JFFS2 needs approx 72B of RAM per file
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Reply-To: j.lambrecht@televic.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,20 +20,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> 
-> Is it a secret what is your flash and what is its size? If it is NAND
-> I'd recommend you to test it with Adrian's NAND tests:
-> git://infradead.org/~ahunter/nand-tests.git
-> 
-Nope, no secret.  We're using Samsung K9WAG08U1A NAND parts in 2GiB, 4GiB, 
-and 8GiB configurations.  At least we're hoping to get the 4 and 8GiB 
-configurations working.  I've run into a problem in the MTD layer with the 
-size field.  It's a 32-bit field which isn't big enough to store 
-0x100000000 or 0x200000000 which we need for the two larger 
-configurations.  Just changing it to a 64-bit field introduces problems 
-with other code, so we're looking at using more than one NAND controller 
-in our FPGA and concatenating the NAND chips at the MTD level.
+Hello to ecos-discuss and especially linux-mtd,
 
-Anyway, thanks for the tip on the NAND tests.
+Tests have revealed to me that jffs2 does not only need raw nodes in RAM 
+(I use CYGNUM_FS_JFFS2_RAW_NODE_REF_CACHE_POOL_SIZE to have this 
+statically), but also "eats RAM" per file in flash.
+I want to remove this allocation, but I don't know if this is possible, 
+what are the disadvantages....?
+(my basic problem is that I have not enough RAM on my board, but it is 
+too late to change HW for the running projects)
 
-Bruce
+After reading some jffs2 documentation, I think that my problem is the 
+inode cache?
+
+
+Kind regards,
+Juergen Lambrecht
