@@ -1,23 +1,22 @@
-Received: from risingsoftware01.propagation.net ([66.221.33.65])
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JipOc-00027F-V1
-	for linux-mtd@lists.infradead.org; Mon, 07 Apr 2008 11:20:19 +0000
-Date: Mon, 7 Apr 2008 21:20:10 +1000
-From: Hamish Moffatt <hamish@cloud.net.au>
-To: Artem Bityutskiy <dedekind@infradead.org>
+	id 1JiqGv-0000Y5-4s
+	for linux-mtd@lists.infradead.org; Mon, 07 Apr 2008 12:16:26 +0000
 Subject: Re: choosing a file system to use on NAND/UBI
-Message-ID: <20080407112010.GA8942@cloud.net.au>
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Hamish Moffatt <hamish@cloud.net.au>
+In-Reply-To: <20080407112010.GA8942@cloud.net.au>
 References: <20080328010403.GB23610@cloud.net.au>
-	<1206686024.3856.57.camel@sauron>
-	<20080407051259.GA3584@cloud.net.au>
-	<1207552429.8040.33.camel@sauron>
-	<20080407073227.GA6317@cloud.net.au>
-	<1207555006.8040.76.camel@sauron>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1207555006.8040.76.camel@sauron>
+	<1206686024.3856.57.camel@sauron> <20080407051259.GA3584@cloud.net.au>
+	<1207552429.8040.33.camel@sauron> <20080407073227.GA6317@cloud.net.au>
+	<1207555006.8040.76.camel@sauron> <20080407112010.GA8942@cloud.net.au>
+Content-Type: text/plain; charset=utf-8
+Date: Mon, 07 Apr 2008 15:15:34 +0300
+Message-Id: <1207570534.8040.94.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,64 +26,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 07, 2008 at 10:56:46AM +0300, Artem Bityutskiy wrote:
-> On Mon, 2008-04-07 at 17:32 +1000, Hamish Moffatt wrote:
-> > UBI attach time appears to be about 6 seconds.
-> 
-> Looks really a lot. We had 2 seconds for 1GiB flash on OLPC, but OLPC
-> has fast flash and fast CPU. I guess you have slow flash.
+On Mon, 2008-04-07 at 21:20 +1000, Hamish Moffatt wrote:
+> Is that the CRC of one whole page of each block?
 
-I'm not sure about the flash (I will have to check tomorrow) but we
-don't have a hardware NAND flash controller. The NAND is connected to
-the expansion bus of our IXP4XX processor (ARM) and CE is controlled by
-a GPIO.. so it's not the fastest. We use the plat_nand driver.
+Only of the headers, which are 64 bytes.
 
-I reduced the time a little by connecting up the NAND ready function in
-the driver and reducing the delays. It doesn't look like there is much
-else to tweak in the code. The CPU is a 533MHz ARM.
+> > I have 2 quick ideas about how to improve scan speed, but I am not sure
+> > if they will help.
+> >=20
+> > 1. Currently what UBI is doing is: read EC header, check it, read VID
+> > header, check it. So we run mtd->read() 2 times (it might help to run i=
+t
+> > 1 time because EC and VID headers go one after the other): read EC and
+> > VID headers in one go, check them. We might do this soon.
+>=20
+> How much is read each time - just a few bytes? Are those reads
+> duplicated by the CRC check?
 
-> Yeah. Is there any way to increase read speed on driver level? UBI reads
-> 1 NAND page of each eraseblock during scanning and this is the
-> bottleneck. It also checks CRC, so if the CPU is very slow, this may be
-> the bottleneck as well.
+Well, NAND allows reading it PAGE_SIZE units. So it reads whole page.
+Your flash allows sub-page write, so UBI reads 2KiB for per each
+eraseblock. Then The your CPU is doing ECC check.
 
-Is that the CRC of one whole page of each block?
+> > Well, the only way is to use mkfs.ubifs for this. You may create an
+> > empty image, put it to the media and that's it. Would you conceive
+> > something else?
+>=20
+> I mean, I am preparing my root file system on my host and using
+> mkfs.ubifs to generate an image which I write with ubiupdatevol. I found
+> that zlib produced a smaller image.
 
-> I have 2 quick ideas about how to improve scan speed, but I am not sure
-> if they will help.
-> 
-> 1. Currently what UBI is doing is: read EC header, check it, read VID
-> header, check it. So we run mtd->read() 2 times (it might help to run it
-> 1 time because EC and VID headers go one after the other): read EC and
-> VID headers in one go, check them. We might do this soon.
+That's right, zlib compresses better then lzo. But as I said, it is
+slower, and reading files are slower, because de-compression is slower
+in case of zlib.
 
-How much is read each time - just a few bytes? Are those reads
-duplicated by the CRC check?
+> Also I found that the image can be compressed further with gzip or lzma.
 
-> 4. Finally, one  could invest money and develop UBI2. I would be
-> interested to participate. We have some ideas.
+Yes, because of several factors:
+1. UBIFS (and JFFS2) does not compress meta-data.
+2. UBIFS (and JFFS2) compresses 4KiB chunks of data independently.
+Compression is better when you compress large chunks (which happens when
+you use gzip or lzma), rather then small chunks.
+3. The image has paddings, like paddings to the end of NAND page or to
+the end of eraseblock. They also introduce more compressible data for
+gzip.
 
-I wish we could help but we are a very small company :-) I appreciate
-your assistance with ubi and ubifs very much though.
+> Could ubiupdatevol support on-the-fly decompression?
+Err, why?
 
-> > I switched my UBIFS from the default lzo to zlib compression, as the
-> > resulting images (from mkfs.ubifs) were smaller. Is there any reason to
-> > prefer the default lzo?
-> 
-> Well, the only way is to use mkfs.ubifs for this. You may create an
-> empty image, put it to the media and that's it. Would you conceive
-> something else?
+>  I will develop a
+> patch if I have time.. I already patched flashcp to do this once.
 
-I mean, I am preparing my root file system on my host and using
-mkfs.ubifs to generate an image which I write with ubiupdatevol. I found
-that zlib produced a smaller image.
+Sorry, I am not sure what you mean here as well. What did your patch do?
 
-Also I found that the image can be compressed further with gzip or lzma.
-Could ubiupdatevol support on-the-fly decompression? I will develop a
-patch if I have time.. I already patched flashcp to do this once.
-
-
-Thanks
-Hamish
--- 
-Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
