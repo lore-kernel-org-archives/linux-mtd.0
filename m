@@ -1,20 +1,30 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from risingsoftware01.propagation.net ([66.221.33.65])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jilva-0005rK-S4
-	for linux-mtd@lists.infradead.org; Mon, 07 Apr 2008 07:38:07 +0000
-Subject: Re: Question about ubimkvol vs. mkfs.ubifs
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Bruce_Leonard@selinc.com
-In-Reply-To: <1207553242.8040.48.camel@sauron>
-References: <OF56D7FBB0.A3722ECD-ON88257423.008249AB-88257423.00833E0B@selinc.com>
-	<1207553242.8040.48.camel@sauron>
-Content-Type: text/plain; charset=utf-8
-Date: Mon, 07 Apr 2008 10:37:06 +0300
-Message-Id: <1207553826.8040.58.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+	id 1Jim5r-00074b-F8
+	for linux-mtd@lists.infradead.org; Mon, 07 Apr 2008 07:48:43 +0000
+Received: from c122-107-142-134.eburwd5.vic.optusnet.com.au ([122.107.142.134]
+	helo=noddy.cloud.net.au)
+	by risingsoftware01.propagation.net with esmtpsa
+	(TLS-1.0:RSA_AES_256_CBC_SHA1:32) (Exim 4.63)
+	(envelope-from <hamish@cloud.net.au>) id 1Jim5q-0000SE-4u
+	for linux-mtd@lists.infradead.org; Mon, 07 Apr 2008 02:48:42 -0500
+Received: from hamish by noddy.cloud.net.au with local (Exim 4.69)
+	(envelope-from <hamish@cloud.net.au>) id 1Jim5k-0001lz-Sv
+	for linux-mtd@lists.infradead.org; Mon, 07 Apr 2008 17:48:36 +1000
+Date: Mon, 7 Apr 2008 17:48:36 +1000
+From: Hamish Moffatt <hamish@cloud.net.au>
+To: linux-mtd@lists.infradead.org
+Subject: Re: choosing a file system to use on NAND/UBI
+Message-ID: <20080407074836.GB6317@cloud.net.au>
+References: <20080328010403.GB23610@cloud.net.au>
+	<1206686024.3856.57.camel@sauron>
+	<20080407051259.GA3584@cloud.net.au>
+	<1207552429.8040.33.camel@sauron>
+	<20080407073227.GA6317@cloud.net.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20080407073227.GA6317@cloud.net.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +34,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2008-04-07 at 10:27 +0300, Artem Bityutskiy wrote:
-> Hi,
->=20
-> On Sun, 2008-04-06 at 16:53 -0700, Bruce_Leonard@selinc.com wrote:
-> > This is probably a basic question but I'll admit to being lost.  I'm=20
-> > relatively new to kernel coding and up till now I've been focused on th=
-e=20
-> > very low level stuff, i.e., making hardware work and LEDs go=20
-> > blinkey-blinkey.  Currently I'm working on a NAND flash driver that I n=
-eed=20
-> > to tie into UBI/UBIFS.  I've got the driver working, I can=20
-> > read/write/erase my flash parts, so the low level stuff that I understa=
-nd=20
-> > is good.=20
->=20
-> Is it a secret what is your flash and what is its size? If it is NAND
-> I'd recommend you to test it with Adrian's NAND tests:
-> git://infradead.org/~ahunter/nand-tests.git
+On Mon, Apr 07, 2008 at 05:32:27PM +1000, Hamish Moffatt wrote:
+> UBI attach time appears to be about 6 seconds.
+> 
+> [    0.960000] NAND device: Manufacturer ID: 0xec, Chip ID: 0xdc (Samsung NAND 512MiB 3,3V 8-bit)
+> [    0.970000] Scanning device for bad blocks
+> [    1.020000] Bad eraseblock 494 at 0x03dc0000
+> [    1.110000] Bad eraseblock 1300 at 0x0a280000
+> [    1.240000] Bad eraseblock 2554 at 0x13f40000
+> [    1.280000] Bad eraseblock 2923 at 0x16d60000
+> [    1.330000] Bad eraseblock 3349 at 0x1a2a0000
+> [    1.370000] Bad eraseblock 3790 at 0x1d9c0000
+> [    1.410000] cmdlinepart partition parsing not available
+> [    7.210000] UBI: attached mtd9 to ubi0
 
-Just a note - be careful with torture test - it may harm. Although we
-were unable to wear-out SLC OneNAND after even > 2 000 000 erases.
+Less with some NAND glue improvements.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+[    0.960000] NAND device: Manufacturer ID: 0xec, Chip ID: 0xdc (Samsung NAND 512MiB 3,3V 8-bit)
+[    0.970000] Scanning device for bad blocks
+[    1.010000] Bad eraseblock 494 at 0x03dc0000
+[    1.060000] Bad eraseblock 1300 at 0x0a280000
+[    1.140000] Bad eraseblock 2554 at 0x13f40000
+[    1.170000] Bad eraseblock 2923 at 0x16d60000
+[    1.200000] Bad eraseblock 3349 at 0x1a2a0000
+[    1.230000] Bad eraseblock 3790 at 0x1d9c0000
+[    1.260000] cmdlinepart partition parsing not available
+[    6.910000] UBI: attached mtd9 to ubi0
+
+
+
+Hamish
+-- 
+Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
