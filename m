@@ -1,21 +1,18 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JimEp-0008JP-PS
-	for linux-mtd@lists.infradead.org; Mon, 07 Apr 2008 07:58:00 +0000
-Subject: Re: choosing a file system to use on NAND/UBI
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Hamish Moffatt <hamish@cloud.net.au>
-In-Reply-To: <20080407073227.GA6317@cloud.net.au>
-References: <20080328010403.GB23610@cloud.net.au>
-	<1206686024.3856.57.camel@sauron> <20080407051259.GA3584@cloud.net.au>
-	<1207552429.8040.33.camel@sauron> <20080407073227.GA6317@cloud.net.au>
-Content-Type: text/plain; charset=utf-8
-Date: Mon, 07 Apr 2008 10:56:46 +0300
-Message-Id: <1207555006.8040.76.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+	id 1JimS8-0003h3-77
+	for linux-mtd@lists.infradead.org; Mon, 07 Apr 2008 08:11:44 +0000
+Message-ID: <47F9D5FF.1070308@nokia.com>
+Date: Mon, 07 Apr 2008 11:06:23 +0300
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: ext Ram <vshrirama@gmail.com>
+Subject: Re: issues with Nand tests
+References: <8bf247760804050842q5407de1bq8400fcea75d1e875@mail.gmail.com>
+In-Reply-To: <8bf247760804050842q5407de1bq8400fcea75d1e875@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,103 +22,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
+ext Ram wrote:
+> Hi,
+> Im testing nand device using fs-tests package that comes with mtd-git.
+> I am using linux 2.6.23.
+> 
+> Right now, i am facing a few issues, i would appreciate your advice in
+> this regard.
+> 
+> !) All the the tests passes except that the stress test ./stress00.sh
+> throws up the message as shown below.
+> during the test, However the test passes successfully.
 
-On Mon, 2008-04-07 at 17:32 +1000, Hamish Moffatt wrote:
-> UBI attach time appears to be about 6 seconds.
+Not exactly.  The different tests test different things.  The stress
+tests are trying to break the file system / mtd / driver.  They check
+return codes from system calls, but they do not check that the data in
+files is correct.  Forcing errors from the file system / mtd / driver
+are what the tests do, so in this case the test effectively failed.
 
-Looks really a lot. We had 2 seconds for 1GiB flash on OLPC, but OLPC
-has fast flash and fast CPU. I guess you have slow flash.
+> 
+> mtd->read(0x3c8 bytes from 0x59725c) returned ECC error
+> Data CRC failed on REF_PRISTINE data node at 0x0059725c: Read
+> 0x32e9ab7f, calculated 0xb1b6afa0
+> mtd->read(0x3dc bytes from 0x597764) returned ECC error
+> Data CRC failed on REF_PRISTINE data node at 0x00597764: Read
+> 0x70c076f0, calculated 0x2d5d9d38
+> mtd->read(0x99c bytes from 0x59849c) returned ECC error
+> Data CRC failed on REF_PRISTINE data node at 0x0059849c: Read
+> 0xa2908a1a, calculated 0x364b837f
+> mtd->read(0x1044 bytes from 0x598eb4) returned ECC error
+> Data CRC failed on REF_PRISTINE data node at 0x00598eb4: Read
+> 0xb882b629, calculated 0x5e66e5b0
+> mtd->read(0x1044 bytes from 0x599ef8) returned ECC error
+> Data CRC failed on REF_PRISTINE data node at 0x00599ef8: Read
+> 0x8819eb58, calculated 0x83e2d097
+> mtd->read(0x1044 bytes from 0x59af3c) returned ECC error
+> Data CRC failed on REF_PRISTINE data node at 0x0059af3c: Read
+> 0xe9c03ff1, calculated 0xd85bc634
+> mtd->read(0x1044 bytes from 0x59bf80) returned ECC error
+> Data CRC failed on REF_PRISTINE data node at 0x0059bf80: Read
+> 0xebcbe14f, calculated 0xa3f6ce10
+> mtd->read(0x1044 bytes from 0x59cfc4) returned ECC error
+> Data CRC failed on REF_PRISTINE data node at 0x0059cfc4: Read
+> 0xd8533cde, calculated 0x5130dbf6
+> mtd->read(0x1044 bytes from 0x59e008) returned ECC error
+> Data CRC failed on REF_PRISTINE data node at 0x0059e008: Read
+> 0xe6f84772, calculated 0x30f06f3d
+> 
+> 
+> My question is what can one conclude on the above - can i say the nand
+> drivers/linux mtd are working
+> perfectly!. -;)
 
-> [    0.960000] NAND device: Manufacturer ID: 0xec, Chip ID: 0xdc (Samsung=
- NAND 512MiB 3,3V 8-bit)
-> [    0.970000] Scanning device for bad blocks
-> [    1.020000] Bad eraseblock 494 at 0x03dc0000
-> [    1.110000] Bad eraseblock 1300 at 0x0a280000
-> [    1.240000] Bad eraseblock 2554 at 0x13f40000
-> [    1.280000] Bad eraseblock 2923 at 0x16d60000
-> [    1.330000] Bad eraseblock 3349 at 0x1a2a0000
-> [    1.370000] Bad eraseblock 3790 at 0x1d9c0000
-> [    1.410000] cmdlinepart partition parsing not available
-> [    7.210000] UBI: attached mtd9 to ubi0
-> [    7.210000] UBI: MTD device name:            "gen_nand.0"
-> [    7.220000] UBI: MTD device size:            512 MiB
-> [    7.220000] UBI: physical eraseblock size:   131072 bytes (128 KiB)
-> [    7.230000] UBI: logical eraseblock size:    129024 bytes
-> [    7.240000] UBI: number of good PEBs:        4090
-> [    7.240000] UBI: number of bad PEBs:         6
-> [    7.250000] UBI: smallest flash I/O unit:    2048
-> [    7.250000] UBI: VID header offset:          512 (aligned 512)
-> [    7.260000] UBI: data offset:                2048
-> [    7.260000] UBI: max. allowed volumes:       128
-> [    7.270000] UBI: wear-leveling threshold:    4096
-> [    7.270000] UBI: number of internal volumes: 1
-> [    7.270000] UBI: number of user volumes:     4
-> [    7.280000] UBI: available PEBs:             0
-> [    7.280000] UBI: total number of reserved PEBs: 4090
-> [    7.290000] UBI: number of PEBs reserved for bad PEB handling: 40
-> [    7.290000] UBI: max/mean erase counter: 41/1
-> [    7.300000] UBI: background thread "ubi_bgt0d" started, PID 619
->=20
-> Mounting the 128MiB root volume (ubifs) is taking 0.35 seconds:
->=20
-> # time mount -o ro -t ubifs ubi0:rootA /mnt
-> [  404.390000] UBIFS: mounted UBI device 0, volume 0
-> [  404.400000] UBIFS: mounted read-only
-> [  404.400000] UBIFS: minimal I/O unit size:   2048 bytes
-> [  404.400000] UBIFS: logical eraseblock size: 129024 bytes (126 KiB)
-> [  404.410000] UBIFS: file system size:        132894720 bytes (129780 Ki=
-B, 126 MiB, 1030 LEBs)
-> [  404.420000] UBIFS: journal size:            9033728 bytes (8822 KiB, 8=
- MiB, 71 LEBs)
-> [  404.430000] UBIFS: data journal heads:      1
-> [  404.430000] UBIFS: default compressor:      zlib
-> real    0m 0.34s
-> user    0m 0.00s
-> sys     0m 0.35s
->=20
-> which is fine. Although if there was any way to speed it up I would be
-> interested, particularly the UBI attach time.
+Nope.
 
-Yeah. Is there any way to increase read speed on driver level? UBI reads
-1 NAND page of each eraseblock during scanning and this is the
-bottleneck. It also checks CRC, so if the CPU is very slow, this may be
-the bottleneck as well.
+> How does one isolate the problem of this nature since all the tests
+> are passing except for the
+> occasional ECC error.
 
-I have 2 quick ideas about how to improve scan speed, but I am not sure
-if they will help.
+The ECC errors mean that what was written to the flash was different
+from what was read back.  It could be the driver is imperfect.  Check
+the latest MTD tree for patches that might relate.
 
-1. Currently what UBI is doing is: read EC header, check it, read VID
-header, check it. So we run mtd->read() 2 times (it might help to run it
-1 time because EC and VID headers go one after the other): read EC and
-VID headers in one go, check them. We might do this soon.
+Also the errors look like they could come from a single eraseblock,
+so maybe it is just a bad block.
 
-2. More complex optimization would be to split scanning on 2 processes -
-one just reads VID/EC headers and puts them to a list, the other takes
-them from the list and checks. So that we would split the scanning on
-I/O and CPU bound processes. This should help, especially if the CPU is
-not very fast and checking time is comparable to I/O speed. We will do
-this when we have time.
+> 2) My 2nd question is regarding the time taken for running
+> 
+>  Each run of all the tests take more than 6 hours to complete to test
+> a partition of 16MB.
+>  All the tests run only once, (repeat count is 0) and -z (size
+> parameter is 0 that is
+>  all the test fills the file system until there is no space left.)
+> 
+> The clock to the nand device is around 125MHZ.
+> 
+>  I observe that the "test processes" keep oscillating between "-D"
+> (uninterruptible sleep) and -R (Running)
+>  during the course of the test.
+> 
+>  When i do a ls -Rl on the test partition, i observe that the output
+> is not continuous, It stops intermittently
+>   and then continous.
+> 
+>  Is this normal behaviour.
 
-Other ideas are:
+Not sure what you mean.  If you mean the output from the ls pauses,
+then that is normal - it is competing with the tests for resources,
+and some of the tests really stress JFFS2.
 
-3. Even more complex change. Teach UBI to dump all the mapping
-information on the media before de-attaching. Then the scanning process
-would have to find this data and that's it. Although this would not help
-in case if there was an unclean reboot.
-
-4. Finally, one  could invest money and develop UBI2. I would be
-interested to participate. We have some ideas.
-
-> I switched my UBIFS from the default lzo to zlib compression, as the
-> resulting images (from mkfs.ubifs) were smaller. Is there any reason to
-> prefer the default lzo?
-
-Well, the only way is to use mkfs.ubifs for this. You may create an
-empty image, put it to the media and that's it. Would you conceive
-something else?
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+> 
+> Thanks and Regards,
+>   Sriram
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
