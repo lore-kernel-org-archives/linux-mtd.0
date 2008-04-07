@@ -1,13 +1,15 @@
-Message-ID: <4699.81.199.197.131.1207586546.squirrel@mail.klasifikasiindonesia.com>
-Date: Mon, 7 Apr 2008 17:42:26 +0100 (BST)
-Subject: 
-From: "microsoft/aol promo award team Anthony Anderson"
-	<msftclaimsagent@yahoo.co.uk>
+Received: from smtp119.sbc.mail.sp1.yahoo.com ([69.147.64.92])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jix1q-0007B2-7g
+	for linux-mtd@lists.infradead.org; Mon, 07 Apr 2008 19:29:18 +0000
+Date: Mon, 07 Apr 2008 12:29:23 -0700
+From: David Brownell <david-b@pacbell.net>
+To: linux-mtd@lists.infradead.org
+Subject: [patch 2.6.25-rc8] omap_nor section fixes
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-To: undisclosed-recipients:;
-Reply-To: msftclaimsagent@yahoo.co.uk
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-Id: <20080407192923.807E7235001@adsl-69-226-248-13.dsl.pltn13.pacbell.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,59 +19,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Minor tweaks to omap_nor ... as with most platform drivers, its probe
+and remove logic can (and should!) safely vanish in most configs.
 
+Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
 
-
-STAR MEGA BUCKS AWARD DEPARTMENT
-151 Canada Square, Canary Wharf,
-London E14 5DY, United Kingdom
-
-Batch No: SMBA/2907/444/908/07
-Ticket No: 45407
-Lucky No: 3-18-40-40-76
-Serial No: 51622
-Ref No: SMB/WIN/008/07/03/LUK
-
-WINNING NOTIFICATION LETTER.
-
-We wish to congratulate you over your email  success in our computer 
-balloting sweepstake held on th of 06/04/2008. This is a millennium
-scientific computer game in which email addresses were used.It is a
-promotional program aimed at encouraging internet users; therefore you  do
-not need to buy ticket to enter for it. You have been approved for  one of
-the prizes along side four other lucky winners.Your prize is worth
-500,000GBP (Five hundred thousand Pounds Sterling Only), as you won in
- the forth Category of the programme.
-
-To file for your claim, please contact our  verification department:
-Mr. Greg Walter
-INTERNATIONAL REMITTANCE DIRECTOR
-1 Canada Square, Canary Wharf,
-London E14 5DY, United Kingdom
-Email: claimsagentwalter_01@starmegabucks.co.cc
-Telephone: +44-70-31842364
-
-          VERIFICATION FORM
-1. FULL NAME:..........................
-2. PRESENT ADDRESS:....................
-3. SEX:................................
-4. AGE:................................
-5. MARITAL STATUS:.....................
-6. OCCUPATION:.........................
-7. TELEPHONE NUMBER:...................
-8. COUNTRY OF CITIZEN:.................
-9. COMPANY OWNER/INDIVIDUAL:...........
-9.Batch No:............................
-10.Ref No:.............................
-11.HOW DO YOU FEEL AS WINNER:..........
-
-INDICATE YOUR MODE OF PAYMENT:
-**VIA COURIER DELIVERY____________________
-**VIA BANK WIRE TRANSFER________________
-
-Good luck from me and members of Star Mega Bucks Award Department.
-
-Best Regards,
-Mr. William Ford.
-(Management).
-London, United Kingdom
+--- a/drivers/mtd/maps/omap_nor.c
++++ b/drivers/mtd/maps/omap_nor.c
+@@ -70,7 +70,7 @@ static void omap_set_vpp(struct map_info *map, int enable)
+ 	}
+ }
+ 
+-static int __devinit omapflash_probe(struct platform_device *pdev)
++static int __init omapflash_probe(struct platform_device *pdev)
+ {
+ 	int err;
+ 	struct omapflash_info *info;
+@@ -130,7 +130,7 @@ out_free_info:
+ 	return err;
+ }
+ 
+-static int __devexit omapflash_remove(struct platform_device *pdev)
++static int __exit omapflash_remove(struct platform_device *pdev)
+ {
+ 	struct omapflash_info *info = platform_get_drvdata(pdev);
+ 
+@@ -152,8 +152,7 @@ static int __devexit omapflash_remove(struct platform_device *pdev)
+ }
+ 
+ static struct platform_driver omapflash_driver = {
+-	.probe	= omapflash_probe,
+-	.remove	= __devexit_p(omapflash_remove),
++	.remove	= __exit_p(omapflash_remove),
+ 	.driver = {
+ 		.name	= "omapflash",
+ 	},
+@@ -161,7 +160,7 @@ static struct platform_driver omapflash_driver = {
+ 
+ static int __init omapflash_init(void)
+ {
+-	return platform_driver_register(&omapflash_driver);
++	return platform_driver_probe(&omapflash_driver, omapflash_probe);
+ }
+ 
+ static void __exit omapflash_exit(void)
