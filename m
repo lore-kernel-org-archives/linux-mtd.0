@@ -1,18 +1,22 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JimS8-0003h3-77
-	for linux-mtd@lists.infradead.org; Mon, 07 Apr 2008 08:11:44 +0000
-Message-ID: <47F9D5FF.1070308@nokia.com>
-Date: Mon, 07 Apr 2008 11:06:23 +0300
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+	id 1Jimcr-0007PI-EZ
+	for linux-mtd@lists.infradead.org; Mon, 07 Apr 2008 08:22:50 +0000
+Date: Mon, 7 Apr 2008 10:22:36 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Jens Axboe <jens.axboe@oracle.com>
+Subject: Re: [patch 0/15] LogFS take five
+Message-ID: <20080407082235.GB22431@logfs.org>
+References: <20080401181308.512473173@logfs.org>
+	<20080404114600.GD29686@kernel.dk>
 MIME-Version: 1.0
-To: ext Ram <vshrirama@gmail.com>
-Subject: Re: issues with Nand tests
-References: <8bf247760804050842q5407de1bq8400fcea75d1e875@mail.gmail.com>
-In-Reply-To: <8bf247760804050842q5407de1bq8400fcea75d1e875@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20080404114600.GD29686@kernel.dk>
+Cc: linux-fsdevel@vger.kernel.org, Nick Piggin <npiggin@suse.de>,
+	David Woodhouse <dwmw2@infradead.org>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,99 +26,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ext Ram wrote:
-> Hi,
-> Im testing nand device using fs-tests package that comes with mtd-git.
-> I am using linux 2.6.23.
+On Fri, 4 April 2008 13:46:00 +0200, Jens Axboe wrote:
+> On Tue, Apr 01 2008, joern@logfs.org wrote:
+> > And it is currently reasonably simple to run into a deadlock when
+> > using logfs on a block device.  The problem appears to be the block
+> > layer allocating memory for its cache without GFP_NOFS, so that under
+> > memory pressure logfs writes through block layer may recurse back to
+> > logfs writes.
 > 
-> Right now, i am facing a few issues, i would appreciate your advice in
-> this regard.
-> 
-> !) All the the tests passes except that the stress test ./stress00.sh
-> throws up the message as shown below.
-> during the test, However the test passes successfully.
+> So you mean for writes through the page cache, you are seeing pages
+> allocated with __GFP_FS set?
 
-Not exactly.  The different tests test different things.  The stress
-tests are trying to break the file system / mtd / driver.  They check
-return codes from system calls, but they do not check that the data in
-files is correct.  Forcing errors from the file system / mtd / driver
-are what the tests do, so in this case the test effectively failed.
+It sure looks like it.  On top, the patch at the bottom seems to solve
+the deadlock.  I'm just not certain it is the right fix for the problem.
 
+> > Not entirely sure who is to blame for this bug and how to
+> > solve it.
 > 
-> mtd->read(0x3c8 bytes from 0x59725c) returned ECC error
-> Data CRC failed on REF_PRISTINE data node at 0x0059725c: Read
-> 0x32e9ab7f, calculated 0xb1b6afa0
-> mtd->read(0x3dc bytes from 0x597764) returned ECC error
-> Data CRC failed on REF_PRISTINE data node at 0x00597764: Read
-> 0x70c076f0, calculated 0x2d5d9d38
-> mtd->read(0x99c bytes from 0x59849c) returned ECC error
-> Data CRC failed on REF_PRISTINE data node at 0x0059849c: Read
-> 0xa2908a1a, calculated 0x364b837f
-> mtd->read(0x1044 bytes from 0x598eb4) returned ECC error
-> Data CRC failed on REF_PRISTINE data node at 0x00598eb4: Read
-> 0xb882b629, calculated 0x5e66e5b0
-> mtd->read(0x1044 bytes from 0x599ef8) returned ECC error
-> Data CRC failed on REF_PRISTINE data node at 0x00599ef8: Read
-> 0x8819eb58, calculated 0x83e2d097
-> mtd->read(0x1044 bytes from 0x59af3c) returned ECC error
-> Data CRC failed on REF_PRISTINE data node at 0x0059af3c: Read
-> 0xe9c03ff1, calculated 0xd85bc634
-> mtd->read(0x1044 bytes from 0x59bf80) returned ECC error
-> Data CRC failed on REF_PRISTINE data node at 0x0059bf80: Read
-> 0xebcbe14f, calculated 0xa3f6ce10
-> mtd->read(0x1044 bytes from 0x59cfc4) returned ECC error
-> Data CRC failed on REF_PRISTINE data node at 0x0059cfc4: Read
-> 0xd8533cde, calculated 0x5130dbf6
-> mtd->read(0x1044 bytes from 0x59e008) returned ECC error
-> Data CRC failed on REF_PRISTINE data node at 0x0059e008: Read
-> 0xe6f84772, calculated 0x30f06f3d
-> 
-> 
-> My question is what can one conclude on the above - can i say the nand
-> drivers/linux mtd are working
-> perfectly!. -;)
+> A good starting point would be doing a stack trace dump in logfs if you
+> see such back recursion into the fs. A quick guess would be a missing
+> setting of mapping gfp mask?
 
-Nope.
+Sorry, should have sent that right along.
 
-> How does one isolate the problem of this nature since all the tests
-> are passing except for the
-> occasional ECC error.
+ [<ffffffff802ca83f>] elv_insert+0x156/0x219
+ [<ffffffff8037d96d>] __mutex_lock_slowpath+0x57/0x81
+ [<ffffffff8037d804>] mutex_lock+0xd/0xf
+ [<ffffffff802c07e7>] logfs_get_wblocks+0x33/0x54
+ [<ffffffff802c025c>] logfs_write_buf+0x3d/0x322
+ [<ffffffff802bbae0>] __logfs_writepage+0x24/0x67
+ [<ffffffff802bbbfb>] logfs_writepage+0xd8/0xe3
+ [<ffffffff8024ba78>] shrink_page_list+0x2ee/0x514
+ [<ffffffff8024b466>] isolate_lru_pages+0x6c/0x1ff
+ [<ffffffff8024c2a9>] shrink_zone+0x60b/0x85b
+ [<ffffffff802cc0e5>] generic_make_request+0x329/0x364
+ [<ffffffff80245ea1>] mempool_alloc_slab+0x11/0x13
+ [<ffffffff802367b3>] up_read+0x9/0xb
+ [<ffffffff8024c638>] shrink_slab+0x13f/0x151
+ [<ffffffff8024cc1c>] try_to_free_pages+0x111/0x209
+ [<ffffffff8024859a>] __alloc_pages+0x1b1/0x2f5
+ [<ffffffff80243f6b>] read_cache_page_async+0x7e/0x15c
+ [<ffffffff8027fba9>] blkdev_readpage+0x0/0x15
+ [<ffffffff80245612>] read_cache_page+0xe/0x46
+ [<ffffffff802c2842>] bdev_read+0x61/0xee
+ [<ffffffff802bc741>] __logfs_gc_pass+0x219/0x7dc
+ [<ffffffff802bcd1b>] logfs_gc_pass+0x17/0x19
+ [<ffffffff802c0798>] logfs_flush_dirty+0x7d/0x99
+ [<ffffffff802c0800>] logfs_get_wblocks+0x4c/0x54
+ [<ffffffff802c025c>] logfs_write_buf+0x3d/0x322
+ [<ffffffff802bbe1e>] logfs_commit_write+0x77/0x7d
+ [<ffffffff80244ec2>] generic_file_buffered_write+0x49d/0x62c
+ [<ffffffff802704da>] file_update_time+0x7f/0xad
+ [<ffffffff802453a5>] __generic_file_aio_write_nolock+0x354/0x3be
+ [<ffffffff80237077>] atomic_notifier_call_chain+0xf/0x11
+ [<ffffffff80245abb>] filemap_fault+0x1b4/0x320
+ [<ffffffff80245473>] generic_file_aio_write+0x64/0xc0
+ [<ffffffff8025ebc8>] do_sync_write+0xe2/0x126
+ [<ffffffff80224b4f>] release_console_sem+0x1a0/0x1a9
+ [<ffffffff802344f4>] autoremove_wake_function+0x0/0x38
+ [<ffffffff802ef6f3>] tty_write+0x1f2/0x20d
+ [<ffffffff802f1914>] write_chan+0x0/0x334
+ [<ffffffff8025f351>] vfs_write+0xae/0x137
+ [<ffffffff8025f824>] sys_write+0x47/0x6f
+ [<ffffffff802191c2>] ia32_sysret+0x0/0xa
 
-The ECC errors mean that what was written to the flash was different
-from what was read back.  It could be the driver is imperfect.  Check
-the latest MTD tree for patches that might relate.
+Jörn
 
-Also the errors look like they could come from a single eraseblock,
-so maybe it is just a bad block.
+-- 
+Joern's library part 10:
+http://blogs.msdn.com/David_Gristwood/archive/2004/06/24/164849.aspx
 
-> 2) My 2nd question is regarding the time taken for running
-> 
->  Each run of all the tests take more than 6 hours to complete to test
-> a partition of 16MB.
->  All the tests run only once, (repeat count is 0) and -z (size
-> parameter is 0 that is
->  all the test fills the file system until there is no space left.)
-> 
-> The clock to the nand device is around 125MHZ.
-> 
->  I observe that the "test processes" keep oscillating between "-D"
-> (uninterruptible sleep) and -R (Running)
->  during the course of the test.
-> 
->  When i do a ls -Rl on the test partition, i observe that the output
-> is not continuous, It stops intermittently
->   and then continous.
-> 
->  Is this normal behaviour.
+Signed-off-by: Joern Engel <joern@logfs.org>
 
-Not sure what you mean.  If you mean the output from the ls pauses,
-then that is normal - it is competing with the tests for resources,
-and some of the tests really stress JFFS2.
+ fs/block_dev.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> Thanks and Regards,
->   Sriram
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+--- linux-2.6.24logfs/fs/block_dev.c~blockdev_nofs	2008-04-07 10:19:08.627413077 +0200
++++ linux-2.6.24logfs/fs/block_dev.c	2008-04-07 10:20:56.927117162 +0200
+@@ -586,7 +586,7 @@ struct block_device *bdget(dev_t dev)
+ 		inode->i_rdev = dev;
+ 		inode->i_bdev = bdev;
+ 		inode->i_data.a_ops = &def_blk_aops;
+-		mapping_set_gfp_mask(&inode->i_data, GFP_USER);
++		mapping_set_gfp_mask(&inode->i_data, GFP_USER & ~__GFP_FS);
+ 		inode->i_data.backing_dev_info = &default_backing_dev_info;
+ 		spin_lock(&bdev_lock);
+ 		list_add(&bdev->bd_list, &all_bdevs);
