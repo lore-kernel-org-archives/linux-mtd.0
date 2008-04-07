@@ -1,15 +1,22 @@
-Received: from rekin18.go2.pl ([193.17.41.40])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JioEw-0005AP-Vs
-	for linux-mtd@lists.infradead.org; Mon, 07 Apr 2008 10:06:15 +0000
-Subject: =?UTF-8?Q?Now_Contact_my_secretary?=
-From: =?UTF-8?Q?mike=5Fjohn2?= <mike_john2@o2.pl>
-Mime-Version: 1.0
-Message-ID: <760a9057.c30e873.47f9f216.247e5@o2.pl>
-Date: Mon, 07 Apr 2008 12:06:14 +0200
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-To: undisclosed-recipients:;
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JipHl-0004hM-Ul
+	for linux-mtd@lists.infradead.org; Mon, 07 Apr 2008 11:13:14 +0000
+Date: Mon, 7 Apr 2008 13:12:50 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Kyungmin Park <kmpark@infradead.org>
+Subject: Re: [patch 8/15] fs/logfs/inode.c
+Message-ID: <20080407111249.GF22431@logfs.org>
+References: <20080401181308.512473173@logfs.org>
+	<20080401181332.853833008@logfs.org>
+	<9c9fda240804032357i36e7eac0q1c639a017b27af42@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9c9fda240804032357i36e7eac0q1c639a017b27af42@mail.gmail.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,15 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=20Dear=20Friend,
-=20
-Contact=20Mr=20Anthony=20Joe=20and=20ask=20him=20for=20a=20cheque=20worth=
-=20of=20$1.2million=20which=20I=20kept=20for=20your=20compensation.=20His=
-=20contact=20information=20is=20below:=20
+On Fri, 4 April 2008 15:57:08 +0900, Kyungmin Park wrote:
+> 
+> Same reason, 'read_inode' is removed.
+> 
+> After some works, it can compile but there's undefined symbols.
+> WARNING: "swapper_space" [fs/logfs/logfs.ko] undefined!
+> WARNING: "add_to_page_cache_lru" [fs/logfs/logfs.ko] undefined!
+> WARNING: "inode_lock" [fs/logfs/logfs.ko] undefined!
+> 
+> Which kernel version do you use?
 
-Name:=20Mr=20Anthony=20Joe=20=20Email:=20anthonyjoe31@yahoo.it=20=20phone=
-no+229-93=20893-201=20Contact=20him=20right=20away=20and=20ask=20him=20to=
-=20send=20the=20cheque=20to=20you.
+2.6.24, until today.  I've updated my compat patch here:
+http://lazybastard.org/~joern/patches/logfs.patch.769
 
-REGARDS
-MIKE=20JOHN
+It should work on all kernel from 2.6.21 to current git.
+
+Thanks for pointing it out.
+
+Jörn
+
+-- 
+They laughed at Galileo.  They laughed at Copernicus.  They laughed at
+Columbus. But remember, they also laughed at Bozo the Clown.
+-- unknown
