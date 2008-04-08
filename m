@@ -1,15 +1,15 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JjH3p-0004gQ-BQ
-	for linux-mtd@lists.infradead.org; Tue, 08 Apr 2008 16:52:41 +0000
+	id 1JjH6t-000521-Ub
+	for linux-mtd@lists.infradead.org; Tue, 08 Apr 2008 16:55:52 +0000
 Subject: Re: Question about ubimkvol vs. mkfs.ubifs
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: Bruce_Leonard@selinc.com
 In-Reply-To: <OF360E3C04.51837E02-ON88257425.005B6EBB-88257425.005C150F@selinc.com>
 References: <OF360E3C04.51837E02-ON88257425.005B6EBB-88257425.005C150F@selinc.com>
 Content-Type: text/plain; charset=utf-8
-Date: Tue, 08 Apr 2008 19:51:39 +0300
-Message-Id: <1207673499.8040.118.camel@sauron>
+Date: Tue, 08 Apr 2008 19:54:56 +0300
+Message-Id: <1207673696.8040.122.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -31,12 +31,9 @@ r=20
 =20
 > etc, etc, etc.  You know...the usual development things ;).
 
-Yeah. It will take time. It's shame MTD still has this limitation.
-
-> I'll try and remember to get some exact mount times for you when we get=20
-> things a bit more stable.
-
-I'd appreciate, thanks.
+Hmm. Do you divide 64-bit offset on eraseblock size? Could generally
+make sense to change MTD interfaces to accept eraseblock:offset pair
+instead?
 
 --=20
 Best regards,
