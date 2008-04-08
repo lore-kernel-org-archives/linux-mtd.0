@@ -1,15 +1,17 @@
 Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jj6cT-0005mh-7E
-	for linux-mtd@lists.infradead.org; Tue, 08 Apr 2008 05:43:45 +0000
-Subject: Re: Question about ubimkvol vs. mkfs.ubifs
+	id 1Jj7xJ-0007bj-Go
+	for linux-mtd@lists.infradead.org; Tue, 08 Apr 2008 07:09:21 +0000
+Subject: Re: choosing a file system to use on NAND/UBI
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Bruce_Leonard@selinc.com
-In-Reply-To: <OFC5391750.C1B34EBF-ON88257424.006DD52A-88257424.006E8EFD@selinc.com>
-References: <OFC5391750.C1B34EBF-ON88257424.006DD52A-88257424.006E8EFD@selinc.com>
+To: Hamish Moffatt <hamish@cloud.net.au>
+In-Reply-To: <20080407073227.GA6317@cloud.net.au>
+References: <20080328010403.GB23610@cloud.net.au>
+	<1206686024.3856.57.camel@sauron> <20080407051259.GA3584@cloud.net.au>
+	<1207552429.8040.33.camel@sauron> <20080407073227.GA6317@cloud.net.au>
 Content-Type: text/plain; charset=utf-8
-Date: Tue, 08 Apr 2008 08:43:06 +0300
-Message-Id: <1207633386.8040.112.camel@sauron>
+Date: Tue, 08 Apr 2008 10:07:57 +0300
+Message-Id: <1207638477.8040.114.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -23,30 +25,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, 2008-04-07 at 17:32 +1000, Hamish Moffatt wrote:
+> which is fine. Although if there was any way to speed it up I would be
+> interested, particularly the UBI attach time.
 
-On Mon, 2008-04-07 at 13:07 -0700, Bruce_Leonard@selinc.com wrote:
-> >=20
-> > Is it a secret what is your flash and what is its size? If it is NAND
-> > I'd recommend you to test it with Adrian's NAND tests:
-> > git://infradead.org/~ahunter/nand-tests.git
-> >=20
-> Nope, no secret.  We're using Samsung K9WAG08U1A NAND parts in 2GiB, 4GiB=
-,=20
-> and 8GiB configurations.  At least we're hoping to get the 4 and 8GiB=20
-> configurations working.
-If you are thinking about using UBI, it might be not fast enough if you
-have slow I/O which is usually the case if there is not NAND controller.
-But anyway, I would be very interested to know UBI attach time for your
-flash.
-
->   I've run into a problem in the MTD layer with the=20
-> size field.  It's a 32-bit field which isn't big enough to store=20
-> 0x100000000 or 0x200000000 which we need for the two larger=20
-> configurations.  Just changing it to a 64-bit field introduces problems=20
-> with other code, so we're looking at using more than one NAND controller=20
-> in our FPGA and concatenating the NAND chips at the MTD level.
-
-Well, I guess it should not be too difficult to fix these 64 bit issues.
+One more thing I could suggest is profiling UBI - this may help
+improving it.
 
 --=20
 Best regards,
