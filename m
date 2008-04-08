@@ -1,16 +1,19 @@
-Received: from duster.selinc.com ([12.156.93.38])
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JjGxJ-0006nZ-SI
-	for linux-mtd@lists.infradead.org; Tue, 08 Apr 2008 16:45:59 +0000
-In-Reply-To: <1207633386.8040.112.camel@sauron>
-To: dedekind@infradead.org
+	id 1JjH3p-0004gQ-BQ
+	for linux-mtd@lists.infradead.org; Tue, 08 Apr 2008 16:52:41 +0000
 Subject: Re: Question about ubimkvol vs. mkfs.ubifs
-MIME-Version: 1.0
-Message-ID: <OF360E3C04.51837E02-ON88257425.005B6EBB-88257425.005C150F@selinc.com>
-From: Bruce_Leonard@selinc.com
-Date: Tue, 8 Apr 2008 09:45:47 -0700
-Content-Type: text/plain; charset="US-ASCII"
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Bruce_Leonard@selinc.com
+In-Reply-To: <OF360E3C04.51837E02-ON88257425.005B6EBB-88257425.005C150F@selinc.com>
+References: <OF360E3C04.51837E02-ON88257425.005B6EBB-88257425.005C150F@selinc.com>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 08 Apr 2008 19:51:39 +0300
+Message-Id: <1207673499.8040.118.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,45 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > > 
-> > Nope, no secret.  We're using Samsung K9WAG08U1A NAND parts in 2GiB, 
-4GiB, 
-> > and 8GiB configurations.  At least we're hoping to get the 4 and 8GiB 
-> > configurations working.
-> If you are thinking about using UBI, it might be not fast enough if you
-> have slow I/O which is usually the case if there is not NAND controller.
-> But anyway, I would be very interested to know UBI attach time for your
-> flash.
+On Tue, 2008-04-08 at 09:45 -0700, Bruce_Leonard@selinc.com wrote:
+> One would think so, but I keep running into division and modulo problems=20
+> (because doing 64-bit division in the kernel is strongly frowned upon, fo=
+r=20
+> good reasons), and once I work through all those issues I get seg faults,=
+=20
+> etc, etc, etc.  You know...the usual development things ;).
 
-We're using a custom built PCI NAND controller.  Currently for the 2GiB 
-case the mount time is about (I haven't timed it exactly) 3 seconds so it 
-should be on the order of 12 seconds for the 8G case.  Which is acceptable 
-for us because in the application we're putting this in boots will be rare 
-(i.e., years between boots).
+Yeah. It will take time. It's shame MTD still has this limitation.
 
-> 
-> >   I've run into a problem in the MTD layer with the 
-> > size field.  It's a 32-bit field which isn't big enough to store 
-> > 0x100000000 or 0x200000000 which we need for the two larger 
-> > configurations.  Just changing it to a 64-bit field introduces 
-problems 
-> > with other code, so we're looking at using more than one NAND 
-controller 
-> > in our FPGA and concatenating the NAND chips at the MTD level.
-> 
-> Well, I guess it should not be too difficult to fix these 64 bit issues.
-> 
+> I'll try and remember to get some exact mount times for you when we get=20
+> things a bit more stable.
 
-One would think so, but I keep running into division and modulo problems 
-(because doing 64-bit division in the kernel is strongly frowned upon, for 
-good reasons), and once I work through all those issues I get seg faults, 
-etc, etc, etc.  You know...the usual development things ;).
+I'd appreciate, thanks.
 
-I'll try and remember to get some exact mount times for you when we get 
-things a bit more stable.
-
-Thanks for the info.
-
-See 'ya!
-
-Bruce
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
