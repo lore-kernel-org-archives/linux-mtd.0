@@ -1,24 +1,21 @@
-Received: from wa-out-1112.google.com ([209.85.146.178])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jj95E-0001ME-J2
-	for linux-mtd@lists.infradead.org; Tue, 08 Apr 2008 08:21:41 +0000
-Received: by wa-out-1112.google.com with SMTP id v33so1461901wah.2
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 08 Apr 2008 01:21:34 -0700 (PDT)
-Message-ID: <b647ffbd0804080121l2bb1863fmb8ef85ec7d42b118@mail.gmail.com>
-Date: Tue, 8 Apr 2008 10:21:34 +0200
-From: "Dmitry Adamushko" <dmitry.adamushko@gmail.com>
-To: "Andrew Morton" <akpm@linux-foundation.org>
-Subject: Re: [PATCH] mtd/chips: add missing set_current_state() to cfi_{amdstd,
-	staa}_sync()
-In-Reply-To: <20080407161555.3dd540f9.akpm@linux-foundation.org>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jj9Gm-0008Fg-RU
+	for linux-mtd@lists.infradead.org; Tue, 08 Apr 2008 08:33:33 +0000
+Date: Tue, 8 Apr 2008 10:33:17 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [patch 1/15] Makefiles and Kconfig
+Message-ID: <20080408083316.GA31262@logfs.org>
+References: <20080401181308.512473173@logfs.org>
+	<20080401181332.853833001@logfs.org>
+	<200804080230.17426.arnd@arndb.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-References: <1207251503.6300.9.camel@earth>
-	<20080407161555.3dd540f9.akpm@linux-foundation.org>
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <200804080230.17426.arnd@arndb.de>
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -29,72 +26,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/04/2008, Andrew Morton <akpm@linux-foundation.org> wrote:
-> On Thu, 03 Apr 2008 21:38:23 +0200
->  Dmitry Adamushko <dmitry.adamushko@gmail.com> wrote:
->
->  > From: Dmitry Adamushko <dmitry.adamushko@gmail.com>
->  > Subject: [mtd/chips] add missing set_current_state() to cfi_{amdstd,staa}_sync()
->  >
->  > cfi_amdstd_sync() and cfi_staa_sync() call schedule() without changing
->  > task's state appropriately.
->  >
->  > In case of e.g. chip->state == FL_ERASING, cfi_*_sync() will be busy-looping
->  > either redundantly for a fixed interval of time (for SCHED_NORMAL tasks) or
->  > possibly endlessly (for RT tasks and UP).
->  >
->  > Signed-off-by: Dmitry Adamushko <dmitry.adamushko@gmail.com>
->  >
->  > ---
->  >
->  > diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
->  > index d072e87..458d477 100644
->  > --- a/drivers/mtd/chips/cfi_cmdset_0002.c
->  > +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
->  > @@ -1763,6 +1763,7 @@ static void cfi_amdstd_sync (struct mtd_info *mtd)
->  >
->  >               default:
->  >                       /* Not an idle state */
->  > +                     set_current_state(TASK_UNINTERRUPTIBLE);
->  >                       add_wait_queue(&chip->wq, &wait);
->  >
->  >                       spin_unlock(chip->mutex);
->  > diff --git a/drivers/mtd/chips/cfi_cmdset_0020.c b/drivers/mtd/chips/cfi_cmdset_0020.c
->  > index b344ff8..492e2ab 100644
->  > --- a/drivers/mtd/chips/cfi_cmdset_0020.c
->  > +++ b/drivers/mtd/chips/cfi_cmdset_0020.c
->  > @@ -1015,6 +1015,7 @@ static void cfi_staa_sync (struct mtd_info *mtd)
->  >
->  >               default:
->  >                       /* Not an idle state */
->  > +                     set_current_state(TASK_UNINTERRUPTIBLE);
->  >                       add_wait_queue(&chip->wq, &wait);
->  >
->  >                       spin_unlock_bh(chip->mutex);
->
->
-> The change certainly looks correct.  Has it been runtime tested?
+On Tue, 8 April 2008 02:30:16 +0200, Arnd Bergmann wrote:
+> On Tuesday 01 April 2008, joern@logfs.org wrote:
+> > --- linux-2.6.24logfs/fs/Kconfig~logfs	2008-03-24 12:39:10.190939342 +0100
+> > +++ linux-2.6.24logfs/fs/Kconfig	2008-04-01 19:48:18.517351063 +0200
+> > @@ -1385,6 +1385,23 @@ config JFFS2_CMODE_FAVOURLZO
+> >  
+> >  endchoice
+> >  
+> > +config LOGFS
+> > +	bool "Log Filesystem (EXPERIMENTAL)"
+> 
+> Is it really still the "Log Filesystem"? By now, I had the impression
+> that "logfs" is a name by itself, so it should be called the
+> "Logfs file system", and "config LOGFS_FS" respectively, like
+> JFFS2_FS, REISERFS_FS, AUTOFS_FS, UDF_FS etc.
 
-It has been tested with an oldish 2.6.8.1 where the problem initially
-occured. It was a RT task that happened to close an mtd fd (and
-resulting in ->sync() being called) and ran in the middle of the
-->erase op... resulting in a "nice" endless loop.
+"Logfs file system" might make sense.  LOGFS_FS is something I would
+rather avoid.  For some reason my brain reacts strongly to repetition,
+redundancy and superfluous information.
 
-The versions of cfi_{amdstd,staa}_sync() in the mainline look not that
-much different from the respective versions in 2.6.8.1.
+> You shouldn't add the Makefile and Kconfig before adding the actual
+> files, or you could cause git-bisect problems.
 
-I guess, it went unnoticed for so long time due to :
+:)
 
-(1) apps. don't often directly open/close() fd for mtd partitions;
-(2) a race against ->erase() (or smth else) is rare;
-(3) if (1) is not true, then an app. is still unlikely to be RT (in
-which case, a task just loops until its timeslice is gone).
+I keep hearing that and I also continue to forget it.  It shouldn't
+matter either way, because it simply makes no sense to merge 15 seperate
+patches file-by-file for something that is functionally one change.  The
+split is all about review and has nothing to do with merging.
 
+But if I finally remembered it, at least these comments would cease.
+I'll try.
 
->
->  Thanks.
->
+Jörn
 
 -- 
-Best regards,
-Dmitry Adamushko
+Beware of bugs in the above code; I have only proved it correct, but
+not tried it.
+-- Donald Knuth
