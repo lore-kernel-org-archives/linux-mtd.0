@@ -1,21 +1,16 @@
-Received: from noticiesderuenes.com ([207.210.64.215]
-	helo=l6.tresuvesdobles.com)
+Received: from duster.selinc.com ([12.156.93.38])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JjFcw-0003p3-5a
-	for linux-mtd@lists.infradead.org; Tue, 08 Apr 2008 15:20:50 +0000
-Received: from nobody by l6.tresuvesdobles.com with local (Exim 4.68)
-	(envelope-from <nobody@l6.tresuvesdobles.com>) id 1JjFcq-0005lM-Pi
-	for linux-mtd@lists.infradead.org; Tue, 08 Apr 2008 10:20:44 -0500
-To: linux-mtd@lists.infradead.org
-Subject: HONDA SPLASH PROMO (((Congratulations!!!))) You Have won the sum of
-	&#65533; 400,000.00 pounds
-From: HONDA SPLASH PROMO <contact@hondapromo.com>
+	id 1JjGxJ-0006nZ-SI
+	for linux-mtd@lists.infradead.org; Tue, 08 Apr 2008 16:45:59 +0000
+In-Reply-To: <1207633386.8040.112.camel@sauron>
+To: dedekind@infradead.org
+Subject: Re: Question about ubimkvol vs. mkfs.ubifs
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-Message-Id: <E1JjFcq-0005lM-Pi@l6.tresuvesdobles.com>
-Date: Tue, 08 Apr 2008 10:20:44 -0500
-Reply-To: h_pro_splash@hotmail.com
+Message-ID: <OF360E3C04.51837E02-ON88257425.005B6EBB-88257425.005C150F@selinc.com>
+From: Bruce_Leonard@selinc.com
+Date: Tue, 8 Apr 2008 09:45:47 -0700
+Content-Type: text/plain; charset="US-ASCII"
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,70 +20,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-European Region Office: 
-10B Canada Square, 
-London HP1 8HFD, 
-England. 
+> > > 
+> > Nope, no secret.  We're using Samsung K9WAG08U1A NAND parts in 2GiB, 
+4GiB, 
+> > and 8GiB configurations.  At least we're hoping to get the 4 and 8GiB 
+> > configurations working.
+> If you are thinking about using UBI, it might be not fast enough if you
+> have slow I/O which is usually the case if there is not NAND controller.
+> But anyway, I would be very interested to know UBI attach time for your
+> flash.
 
-Ref: 475061725 
-Batch: 7056490902/188 
-CONGRATULATIONS! 
+We're using a custom built PCI NAND controller.  Currently for the 2GiB 
+case the mount time is about (I haven't timed it exactly) 3 seconds so it 
+should be on the order of 12 seconds for the 8G case.  Which is acceptable 
+for us because in the application we're putting this in boots will be rare 
+(i.e., years between boots).
 
+> 
+> >   I've run into a problem in the MTD layer with the 
+> > size field.  It's a 32-bit field which isn't big enough to store 
+> > 0x100000000 or 0x200000000 which we need for the two larger 
+> > configurations.  Just changing it to a 64-bit field introduces 
+problems 
+> > with other code, so we're looking at using more than one NAND 
+controller 
+> > in our FPGA and concatenating the NAND chips at the MTD level.
+> 
+> Well, I guess it should not be too difficult to fix these 64 bit issues.
+> 
 
-AWARD NOTIFICATION 
-We happily announce to you the draw of the Honda Lottery Promotions for the year 2007 at our Lotto Draw Headquarters London, United Kingdom organized by Honda. This is to inform you that you have won a prize money of GBP ‚£400,000.00 (Four hundred  thousand British Pounds Sterling). 
+One would think so, but I keep running into division and modulo problems 
+(because doing 64-bit division in the kernel is strongly frowned upon, for 
+good reasons), and once I work through all those issues I get seg faults, 
+etc, etc, etc.  You know...the usual development things ;).
 
-Honda Promo Inc. arranged and gathered some of all the e-mail addresses of the people that are active online, among the millions that subscribed to all Email Providers most especially Yahoo and Hotmail, we only selected Twenty (20) candidates per annually as our winners through Electronic Balloting System (EBS) without the candidate applying, we congratulate you for being one of our lucky winners. 
+I'll try and remember to get some exact mount times for you when we get 
+things a bit more stable.
 
-PAYMENT OF PRIZE AND CLAIM 
-We are sorry that your Payment Approval File was sent to London due to we have 3 lucky winners in United Kingdom so that you can be cleared and paid simultaneously there. You are to contact our UK Location Claim Office on or before your date of Claim. 
+Thanks for the info.
 
-Honda Lottery Prize must be claimed not later than  14 days from date of Draw Notification after the Draw date in which Prize has won. 
+See 'ya!
 
-Note: Any prize not claimed within this period (14 days) will be forfeited. 
-
-These are your identification numbers: 
-Ticket number: 00545 188 564756, 
-Prize # 77801209/UK, 
-Winning Number:4634553/N, 
-Serial number 5368/02 
-Lucky numbers: 17 98 09 67 46 
- 
-HOW TO CLAIM YOUR PRIZE: 
-Simply contact our Customer Service Information Headquarters (CSIH Department), 
-Mr Mark Johnson
-E-mail: h_pro_splash@hotmail.com
-
-
-IMPORTANT NOTICE 
-Send these following informations to the CSIH Department immediately for further procession. 
-
-1 Full Name: ......................
-
-2 Cell phone:......................
-
-or Telephone:.................
-
-3 Contact Address ....................
-
-4 Date of birth ...........................
-
-5 Age .................................
-
-6 Occupation.............................
-
-7 Sex.................................
-
-8 Marital Status..............
-
-9 Country of Origin.......................... 
-
-KEEP THIS PRIVATE AND CONFIDENTIAL UNTIL YOU RECEIVE YOUR PRIZE MONEY. 
-
-NOTE THAT NOBODY OR EVEN THE APPOINTED BANK HAS THE RIGHT TO TOUCH, DEDUCT OR GET ACCESS TO YOUR 
-PRIZE MONEY FOR ANY REASON THEY HAVE BEEN WARNED STRICTLY! 
-
-For security reasons, we advice all winners to keep this information confidential from the public until your claim is processed and your prize released to you. This is part of our security protocol to avoid double claiming and unwarranted taking advantage of this program by 
-non-participant or unofficial personnel. 
-
-Congratulations once again on your winnings!!! 
+Bruce
