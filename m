@@ -1,22 +1,20 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+Received: from az33egw02.freescale.net ([192.88.158.103])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jj9Gm-0008Fg-RU
-	for linux-mtd@lists.infradead.org; Tue, 08 Apr 2008 08:33:33 +0000
-Date: Tue, 8 Apr 2008 10:33:17 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [patch 1/15] Makefiles and Kconfig
-Message-ID: <20080408083316.GA31262@logfs.org>
-References: <20080401181308.512473173@logfs.org>
-	<20080401181332.853833001@logfs.org>
-	<200804080230.17426.arnd@arndb.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <200804080230.17426.arnd@arndb.de>
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+	id 1Jj2Qd-0001Qs-92
+	for linux-mtd@lists.infradead.org; Tue, 08 Apr 2008 01:15:15 +0000
+Received: from az33smr01.freescale.net (az33smr01.freescale.net [10.64.34.199])
+	by az33egw02.freescale.net (8.12.11/az33egw02) with ESMTP id
+	m381FB06006930 for <linux-mtd@lists.infradead.org>;
+	Mon, 7 Apr 2008 18:15:11 -0700 (MST)
+From: Trent Piepho <tpiepho@freescale.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/2] MTD: Read extended device ID from AMD/Spansion CFI flash
+	chips
+Date: Mon,  7 Apr 2008 18:12:28 -0700
+Message-Id: <1207617149-1582-1-git-send-email-tpiepho@freescale.com>
+In-Reply-To: <Pine.LNX.4.64.0804071759410.15143@t2.domain.actdsltmp>
+References: <Pine.LNX.4.64.0804071759410.15143@t2.domain.actdsltmp>
+Cc: Trent Piepho <tpiepho@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,42 +24,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 8 April 2008 02:30:16 +0200, Arnd Bergmann wrote:
-> On Tuesday 01 April 2008, joern@logfs.org wrote:
-> > --- linux-2.6.24logfs/fs/Kconfig~logfs	2008-03-24 12:39:10.190939342 +0100
-> > +++ linux-2.6.24logfs/fs/Kconfig	2008-04-01 19:48:18.517351063 +0200
-> > @@ -1385,6 +1385,23 @@ config JFFS2_CMODE_FAVOURLZO
-> >  
-> >  endchoice
-> >  
-> > +config LOGFS
-> > +	bool "Log Filesystem (EXPERIMENTAL)"
-> 
-> Is it really still the "Log Filesystem"? By now, I had the impression
-> that "logfs" is a name by itself, so it should be called the
-> "Logfs file system", and "config LOGFS_FS" respectively, like
-> JFFS2_FS, REISERFS_FS, AUTOFS_FS, UDF_FS etc.
+AMD/Spansion use a device id of 0x7e to indicate an extended device is
+present at offset 0xe and 0xf in the query data.
 
-"Logfs file system" might make sense.  LOGFS_FS is something I would
-rather avoid.  For some reason my brain reacts strongly to repetition,
-redundancy and superfluous information.
+I've verified with Spansion that all their chips (mfr == 0x01) with an id
+of 0x7e use it to indicate an extended id is present.  What's more, there
+are no chips with a NON-extended id that is the same as a different chip's
+extended id.  In other words, when the extended ID is present, one can
+replace the normal id with the extended id without losing any information.
+Which is what I've done.
 
-> You shouldn't add the Makefile and Kconfig before adding the actual
-> files, or you could cause git-bisect problems.
+Signed-off-by: Trent Piepho <tpiepho@freescale.com>
+---
+ drivers/mtd/chips/cfi_probe.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
-:)
-
-I keep hearing that and I also continue to forget it.  It shouldn't
-matter either way, because it simply makes no sense to merge 15 seperate
-patches file-by-file for something that is functionally one change.  The
-split is all about review and has nothing to do with merging.
-
-But if I finally remembered it, at least these comments would cease.
-I'll try.
-
-Jörn
-
+diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
+index f651b6e..d9112dd 100644
+--- a/drivers/mtd/chips/cfi_probe.c
++++ b/drivers/mtd/chips/cfi_probe.c
+@@ -232,6 +232,11 @@ static int __xipram cfi_chip_setup(struct map_info *map,
+ 	cfi->mfr = cfi_read_query16(map, base);
+ 	cfi->id = cfi_read_query16(map, base + ofs_factor);
+ 
++	/* Get AMD/Spansion extended JEDEC ID */
++	if (cfi->mfr == CFI_MFR_AMD && (cfi->id & 0xff) == 0x7e)
++		cfi->id = cfi_read_query(map, base + 0xe * ofs_factor) << 8 |
++			  cfi_read_query(map, base + 0xf * ofs_factor);
++
+ 	/* Put it back into Read Mode */
+ 	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
+ 	/* ... even if it's an Intel chip */
 -- 
-Beware of bugs in the above code; I have only proved it correct, but
-not tried it.
--- Donald Knuth
+1.5.4.1
