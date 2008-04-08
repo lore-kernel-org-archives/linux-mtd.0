@@ -1,22 +1,23 @@
-Received: from moutng.kundenserver.de ([212.227.126.187])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jj1oE-0004DS-Q6
-	for linux-mtd@lists.infradead.org; Tue, 08 Apr 2008 00:35:35 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: joern@logfs.org
-Subject: Re: [patch 3/15] fs/logfs/logfs.h
-Date: Tue, 8 Apr 2008 02:35:28 +0200
-References: <20080401181308.512473173@logfs.org>
-	<20080401181332.853833003@logfs.org>
-In-Reply-To: <20080401181332.853833003@logfs.org>
+Received: from az33egw02.freescale.net ([192.88.158.103])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jj2KG-0004xO-GA
+	for linux-mtd@lists.infradead.org; Tue, 08 Apr 2008 01:08:40 +0000
+Received: from az33smr01.freescale.net (az33smr01.freescale.net [10.64.34.199])
+	by az33egw02.freescale.net (8.12.11/az33egw02) with ESMTP id
+	m3818bs1000919 for <linux-mtd@lists.infradead.org>;
+	Mon, 7 Apr 2008 18:08:38 -0700 (MST)
+Received: from [10.213.160.139] (vpn-10-213-160-139.am.freescale.net
+	[10.213.160.139])
+	by az33smr01.freescale.net (8.13.1/8.13.0) with ESMTP id m3818aQr017464
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 7 Apr 2008 20:08:37 -0500 (CDT)
+Date: Mon, 7 Apr 2008 18:05:54 -0700 (PDT)
+From: Trent Piepho <tpiepho@freescale.com>
+To: MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: [PATCH 0/2] CFI fixups for quirks in some new NOR flash chips (try 2)
+Message-ID: <Pine.LNX.4.64.0804071759410.15143@t2.domain.actdsltmp>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200804080235.28946.arnd@arndb.de>
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 01 April 2008, joern@logfs.org wrote:
-> +/*
-> + * Private errno for accessed beyond end-of-file. =A0Only used internall=
-y to
-> + * logfs. =A0If this ever gets exposed to userspace or even other parts =
-of the
-> + * kernel, it is a bug. =A0256 was chosen as a number sufficiently above=
- all
-> + * used errno #defines.
-> + *
-> + * It can be argued that this is a hack and should be replaced with some=
-thing
-> + * else. =A0My last attempt to do this failed spectacularly and there ar=
-e more
-> + * urgent problems that users actually care about. =A0This will remain f=
-or the
-> + * moment. =A0Patches are welcome, of course.
-> + */
-> +#define EOF=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0(=
-512)
-> +
+I posted this last week, trying again.
 
-Try to make the comment match the definition, it still says the value is 25=
-6.
+The first patch extends the CFI probe code to get the extended ID from
+AMD/Spansion flash chips.  I checked with Spansion's support and for AMD or
+Spansion devices, a flash device id of 0x7e is always used to indicates an
+extended ID is present later on in the CFI query data.  There are no
+AMD/Spansion chips with a non-extended ID that is the same as another chip's
+extended ID.  So, once can just replace the normal device id (0x7e) with the
+extended one without losing any information.  There's nothing to gain by
+adding a new field to the flash info struct and then adding code to the fixup
+routines to also matches the new field, etc.
 
-	Arnd <><
+The second patch is just a couple simple fixup entries that change the sector
+count for the affected flash chips.  It uses the extended ID to get the right
+chips.
