@@ -1,18 +1,28 @@
-Received: from mail3.sea5.speakeasy.net ([69.17.117.5])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jjji7-0007Bc-L1
-	for linux-mtd@lists.infradead.org; Wed, 09 Apr 2008 23:28:12 +0000
-Date: Wed, 9 Apr 2008 16:27:02 -0700 (PDT)
-From: Trent Piepho <tpiepho@freescale.com>
-To: Vernon Sauder <vernoninhand@gmail.com>
-Subject: Re: mtd->size revisited
-In-Reply-To: <47FD4C1F.6010001@gmail.com>
-Message-ID: <Pine.LNX.4.64.0804091626190.17847@t2.domain.actdsltmp>
-References: <OF1E779C97.22C47CCA-ON88257426.007A4C73-88257426.007C6F5B@selinc.com>
-	<47FD4C1F.6010001@gmail.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>, Bruce_Leonard@selinc.com
+Received: from relais.videotron.ca ([24.201.245.36])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JjjJD-0003kk-Pu
+	for linux-mtd@lists.infradead.org; Wed, 09 Apr 2008 23:02:28 +0000
+MIME-version: 1.0
+Content-type: multipart/mixed; boundary="Boundary_(ID_nHtVGNq0gZ1eV3YBHKdxwg)"
+Received: from xanadu.home ([66.131.194.97]) by VL-MH-MR002.ip.videotron.ca
+	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
+	32bit))
+	with ESMTP id <0JZ2007L7YO2MW30@VL-MH-MR002.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Wed, 09 Apr 2008 19:02:26 -0400 (EDT)
+Date: Wed, 09 Apr 2008 19:02:26 -0400 (EDT)
+From: Nicolas Pitre <nico@cam.org>
+To: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+Subject: RE: [PATCH] Fix of broken state in CFI driver caused by FL_SHUTDOWN
+In-reply-to: <009801c89a95$09ae4680$1d0ad380$%Tjernlund@transmode.se>
+Message-id: <alpine.LFD.1.00.0804091901270.2947@xanadu.home>
+References: <Pine.LNX.4.64.0804040949090.2042@pentafluge.infradead.org>
+	<20080404093359.GA4338@logfs.org>
+	<Pine.LNX.4.64.0804041310550.10410@pentafluge.infradead.org>
+	<009801c89a95$09ae4680$1d0ad380$%Tjernlund@transmode.se>
+Cc: haokexin@gmail.com, 'Alexey Korolev' <akorolev@infradead.org>,
+	=?ISO-8859-15?Q?'J=F6rn_Engel'?= <joern@logfs.org>,
+	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
+	dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,24 +32,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 9 Apr 2008, Vernon Sauder wrote:
-> Bruce_Leonard@selinc.com wrote:
->
-> While I agree that it would be great to support larger devices, I'm
-> going to ask a dumb question: does this have to grow to a 64-bit number?
-> Can it be in KB or something? If device sizes are always divisible by
-> 1KB, we don't need the bottom 10 bits anyway. That would seem an easier
-> change in some ways.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-It's more efficient that way too.
+--Boundary_(ID_nHtVGNq0gZ1eV3YBHKdxwg)
+Content-type: TEXT/PLAIN; charset=iso-8859-1
+Content-transfer-encoding: 8BIT
 
-Instead of just changing the size to uint64_t, it might be better to create a
-new type which can be 32 or 64.  Once you start using the right type
-everywhere you usually don't have to change much code.  The only exception is
-printf format strings, which can be a pain.
+On Thu, 10 Apr 2008, Joakim Tjernlund wrote:
 
-Or like Vern said, just shift off the bottom bits.  define MTD_SIZE_SHIFT to
-the number of bits to shift off.  One can then make trivial macros/inline
-functions mtd_size_to_kb(), mtd_size_to_bytes(), mtd_size_to_pages(), etc. 
-when code actually cares about the units.  I imagine a lot of code doesn't
-care if it's bytes or kilobytes, as long as everything uses the same units.
+> > -----Original Message-----
+> > From: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf
+> > Of Alexey Korolev
+> > Sent: den 4 april 2008 14:22
+> > To: Jörn Engel
+> > Cc: nico@cam.org; haokexin@gmail.com; dwmw2@infradead.org; akpm@linux-foundation.org; linux-
+> > mtd@lists.infradead.org
+> > Subject: Re: [PATCH] Fix of broken state in CFI driver caused by FL_SHUTDOWN
+> > 
+> > Hi
+> > 
+> > 
+> >  CFI driver in 2.6.24 kernel is broken. Not so intensive read/write operations cause incomplete writes
+> > which lead to kernel panics in JFFS2.
+> >  We investigated the issue - it is caused by bug in FL_SHUTDOWN parsing code. Sometimes chip returns -
+> > EIO as if it is in FL_SHUTDOWN state when it should wait in FL_PONT (error in order of conditions).
+> > 
+> > The following patch fixes the bug in state parsing code of CFI.
+> > Also I've added comments to notify developers if they want to add new case in future.
+> > Please include it.
+> > 
+> > Signed-off-by: Alexey Korolev <akorolev@infradead.org>
+> > Reviewed-By: Joern Engel <joern@logfs.org>
+> 
+> Acked-By: Joakim Tjernlund <Joakim.Tjenrlund@transmode.se>
+> 
+> Guys, I think you should sent this directly to Linus as David seems
+> unavailable ATM. It should really go into 2.6.25
+
+It is already in mainline.  See commit fb6d080c.
+
+
+Nicolas
+
+--Boundary_(ID_nHtVGNq0gZ1eV3YBHKdxwg)--
