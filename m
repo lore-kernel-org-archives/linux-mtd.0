@@ -1,21 +1,27 @@
-Received: from hs-out-0708.google.com ([64.233.178.246])
+Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JjjNS-0004K7-Dw
-	for linux-mtd@lists.infradead.org; Wed, 09 Apr 2008 23:06:50 +0000
-Received: by hs-out-0708.google.com with SMTP id k27so2018774hsc.2
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 09 Apr 2008 16:06:49 -0700 (PDT)
-Message-ID: <47FD4C1F.6010001@gmail.com>
-Date: Wed, 09 Apr 2008 19:07:11 -0400
+	id 1JjjOv-00071i-2l
+	for linux-mtd@lists.infradead.org; Wed, 09 Apr 2008 23:08:21 +0000
+From: "Joakim Tjernlund" <Joakim.Tjernlund@transmode.se>
+To: "'Nicolas Pitre'" <nico@cam.org>
+References: <Pine.LNX.4.64.0804040949090.2042@pentafluge.infradead.org>
+	<20080404093359.GA4338@logfs.org>
+	<Pine.LNX.4.64.0804041310550.10410@pentafluge.infradead.org>
+	<009801c89a95$09ae4680$1d0ad380$%Tjernlund@transmode.se>
+	<alpine.LFD.1.00.0804091901270.2947@xanadu.home>
+In-Reply-To: <alpine.LFD.1.00.0804091901270.2947@xanadu.home>
+Subject: RE: [PATCH] Fix of broken state in CFI driver caused by FL_SHUTDOWN
+Date: Thu, 10 Apr 2008 01:08:18 +0200
+Message-ID: <00a101c89a96$9969d180$cc3d7480$@Tjernlund@transmode.se>
 MIME-Version: 1.0
-To: Bruce_Leonard@selinc.com
-Subject: Re: mtd->size revisited
-References: <OF1E779C97.22C47CCA-ON88257426.007A4C73-88257426.007C6F5B@selinc.com>
-In-Reply-To: <OF1E779C97.22C47CCA-ON88257426.007A4C73-88257426.007C6F5B@selinc.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-From: Vernon Sauder <vernoninhand@gmail.com>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Language: sv
+Cc: haokexin@gmail.com, 'Alexey Korolev' <akorolev@infradead.org>,
+	=?iso-8859-1?Q?'J=F6rn_Engel'?= <joern@logfs.org>,
+	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
+	dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +31,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Bruce_Leonard@selinc.com wrote:
-> I know that just changing it isn't all that's involved.  I've alredy gone 
-> through some of the pain of changing 32-bit division to 64-bit shifts and 
-> masks.  A larger concern of mine is ripple effects.  I know that this 
-> field is referenced in a lot of places, most of which are pretty benign, 
-> and others that are less so.  A good example is in .../mtd/mtdblock.c 
-> where this happens: dev->size = mtd->size >> 9.  I don't know right off 
-> the top of my head what struct mtd_blktrans_dev->size is used for, but I 
-> can pretty well bet that a 64-bit value shifted right by nine ain't gonna 
-> fit.  So then this ripples into making changes to mtd_blktrans_dev.  Wow. 
-> This could end up going a long way.  Plus, I know there are a couple of 
-> drivers that make use of this field and I expect that if I make this 
-> change, I'll be responsible for makeing the changes to the drivers. 
-> However, I can't test those changes since I don't have the HW.  How is 
-> that going to be received by the community and the maintainers of those 
-> drivers?
->
-> So, as I said, I'm willing to tackle this, but I need to get a sense of 
-> how long it's going to take me.  I need an idea of how long it would take 
-> someone with experiance with MTD and I can then translate that (roughly :) 
->  ) into how long it should take me.  I also need guidence on how to deal 
-> with things that I can't test.
->
-> Thanks for any help and direction.
->
-> Bruce
->   
+> -----Original Message-----
+> From: Nicolas Pitre [mailto:nico@cam.org]
+> Sent: den 10 april 2008 01:02
+> To: Joakim Tjernlund
+> Cc: 'Alexey Korolev'; 'J=F6rn Engel'; haokexin@gmail.com; =
+dwmw2@infradead.org; akpm@linux-
+> foundation.org; linux-mtd@lists.infradead.org
+> Subject: RE: [PATCH] Fix of broken state in CFI driver caused by =
+FL_SHUTDOWN
+>=20
+> On Thu, 10 Apr 2008, Joakim Tjernlund wrote:
+>=20
+> > > -----Original Message-----
+> > > From: linux-mtd-bounces@lists.infradead.org =
+[mailto:linux-mtd-bounces@lists.infradead.org] On
+> Behalf
+> > > Of Alexey Korolev
+> > > Sent: den 4 april 2008 14:22
+> > > To: J=F6rn Engel
+> > > Cc: nico@cam.org; haokexin@gmail.com; dwmw2@infradead.org; =
+akpm@linux-foundation.org; linux-
+> > > mtd@lists.infradead.org
+> > > Subject: Re: [PATCH] Fix of broken state in CFI driver caused by =
+FL_SHUTDOWN
+> > >
+> > > Hi
+> > >
+> > >
+> > >  CFI driver in 2.6.24 kernel is broken. Not so intensive =
+read/write operations cause incomplete
+> writes
+> > > which lead to kernel panics in JFFS2.
+> > >  We investigated the issue - it is caused by bug in FL_SHUTDOWN =
+parsing code. Sometimes chip
+> returns -
+> > > EIO as if it is in FL_SHUTDOWN state when it should wait in =
+FL_PONT (error in order of
+> conditions).
+> > >
+> > > The following patch fixes the bug in state parsing code of CFI.
+> > > Also I've added comments to notify developers if they want to add =
+new case in future.
+> > > Please include it.
+> > >
+> > > Signed-off-by: Alexey Korolev <akorolev@infradead.org>
+> > > Reviewed-By: Joern Engel <joern@logfs.org>
+> >
+> > Acked-By: Joakim Tjernlund <Joakim.Tjenrlund@transmode.se>
+> >
+> > Guys, I think you should sent this directly to Linus as David seems
+> > unavailable ATM. It should really go into 2.6.25
+>=20
+> It is already in mainline.  See commit fb6d080c.
 
-While I agree that it would be great to support larger devices, I'm 
-going to ask a dumb question: does this have to grow to a 64-bit number? 
-Can it be in KB or something? If device sizes are always divisible by 
-1KB, we don't need the bottom 10 bits anyway. That would seem an easier 
-change in some ways.
+Oh, good. Never saw any mail about it on the list, sorry for the noise.
 
-Vern
+     Jocke
