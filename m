@@ -1,19 +1,24 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JjTNP-0001nJ-Hm
-	for linux-mtd@lists.infradead.org; Wed, 09 Apr 2008 06:01:44 +0000
-Message-ID: <47FC4A91.8010104@denx.de>
-Date: Wed, 09 Apr 2008 06:48:17 +0200
-From: Heiko Schocher <hs@denx.de>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JjZ68-0006z5-Pi
+	for linux-mtd@lists.infradead.org; Wed, 09 Apr 2008 12:08:17 +0000
+Date: Wed, 9 Apr 2008 14:08:06 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Andres Salomon <dilinger@queued.net>
+Subject: Re: [patch 2/15] fs/logfs/logfs_abi.h
+Message-ID: <20080409120805.GC7979@logfs.org>
+References: <20080401181308.512473173@logfs.org>
+	<20080401181332.853833002@logfs.org>
+	<200804080224.18014.arnd@arndb.de>
+	<20080408093946.GA31266@logfs.org>
+	<20080408175259.6f5d3d2c@ephemeral>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: [JFFS2] Garbage collector says "Checked all inodes but still
-	0x5e3d0	bytes of unchecked space?"
-References: <47FB884B.9050301@besancon.parkeon.com>
-In-Reply-To: <47FB884B.9050301@besancon.parkeon.com>
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 7bit
-Reply-To: hs@denx.de
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20080408175259.6f5d3d2c@ephemeral>
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +28,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Fabrice,
+On Tue, 8 April 2008 17:52:59 -0400, Andres Salomon wrote:
+> 
+> Hm, logfs.patch.771 contains lowercase.  Do you have your latest
+> patch set somewhere online?  Alternatively, would you mind pushing
+> your git tree somewhere public?
 
-Fabrice GIRARDOT fgirardot at besancon.parkeon.com Tue Apr 8 10:59:23 EDT 2008 wrote:
-> Sometimes, after several unclean system resets, JFFS2's garbage
-> collector outputs this message :
-> "Checked all inodes but still 0x5e3d0 bytes of unchecked space?
->  kernel BUG at fs/jffs2/gc.c:139!"
-[...]
-> I don't know which exact version of jffs2 I'm using ; my gc.c
-> file is version 1.144 on 21-dec-2004, which may look a bit old.
-> Unfortunately, I can not switch to a newer kernel version.
+Try logfs.patch.772.
 
-Thats bad ...
+Jörn
 
-> Does somebody has more information on this problem ?
-> Is it a bug in jffs2 and/or its GC ? Is it fixed ?
-
-try the following Patch:
-
-http://lists.infradead.org/pipermail/linux-mtd-cvs/2006-May/005354.html
-
-I had the same Problem, and the above Patch fixed it.
-But the "prefered" way should be, to update your kernel.
-
-bye,
-Heiko
 -- 
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Everything should be made as simple as possible, but not simpler.
+-- Albert Einstein
