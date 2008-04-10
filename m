@@ -1,28 +1,19 @@
-Received: from relais.videotron.ca ([24.201.245.36])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JjjJD-0003kk-Pu
-	for linux-mtd@lists.infradead.org; Wed, 09 Apr 2008 23:02:28 +0000
-MIME-version: 1.0
-Content-type: multipart/mixed; boundary="Boundary_(ID_nHtVGNq0gZ1eV3YBHKdxwg)"
-Received: from xanadu.home ([66.131.194.97]) by VL-MH-MR002.ip.videotron.ca
-	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
-	32bit))
-	with ESMTP id <0JZ2007L7YO2MW30@VL-MH-MR002.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Wed, 09 Apr 2008 19:02:26 -0400 (EDT)
-Date: Wed, 09 Apr 2008 19:02:26 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-To: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-Subject: RE: [PATCH] Fix of broken state in CFI driver caused by FL_SHUTDOWN
-In-reply-to: <009801c89a95$09ae4680$1d0ad380$%Tjernlund@transmode.se>
-Message-id: <alpine.LFD.1.00.0804091901270.2947@xanadu.home>
-References: <Pine.LNX.4.64.0804040949090.2042@pentafluge.infradead.org>
-	<20080404093359.GA4338@logfs.org>
-	<Pine.LNX.4.64.0804041310550.10410@pentafluge.infradead.org>
-	<009801c89a95$09ae4680$1d0ad380$%Tjernlund@transmode.se>
-Cc: haokexin@gmail.com, 'Alexey Korolev' <akorolev@infradead.org>,
-	=?ISO-8859-15?Q?'J=F6rn_Engel'?= <joern@logfs.org>,
-	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
-	dwmw2@infradead.org
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JjopL-0005qk-8o
+	for linux-mtd@lists.infradead.org; Thu, 10 Apr 2008 04:56:00 +0000
+Subject: Re: mtd->size revisited
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Bruce_Leonard@selinc.com
+In-Reply-To: <OF1E779C97.22C47CCA-ON88257426.007A4C73-88257426.007C6F5B@selinc.com>
+References: <OF1E779C97.22C47CCA-ON88257426.007A4C73-88257426.007C6F5B@selinc.com>
+Content-Type: text/plain; charset=utf-8
+Date: Thu, 10 Apr 2008 07:53:57 +0300
+Message-Id: <1207803237.5965.13.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,47 +23,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hi,
 
---Boundary_(ID_nHtVGNq0gZ1eV3YBHKdxwg)
-Content-type: TEXT/PLAIN; charset=iso-8859-1
-Content-transfer-encoding: 8BIT
+On Wed, 2008-04-09 at 15:39 -0700, Bruce_Leonard@selinc.com wrote:
+> I asked about this a few weeks ago, came up with an alternative solution,=
+=20
+> but that solution came up against a 30% performance hit on accessing my=20
+> flash, so we're back to a kernel change.  Let me recap a bit.  The issue =
+I=20
+> have is that I'm trying to put together a NAND flash driver for an 8GiB=20
+> part.  The struct mtd_info->size field is a u_int32_t, which is not big=20
+> enough to hold 0x200000000 (i.e., 8GiB).  The question I originally asked=
+=20
+> was "am I understanding this correctly and is it an issue for anyone else=
+"=20
+> and got the answer "it's either a bug or an enhancement depending on your=
+=20
+> viewpoint, patches welcome".
 
-On Thu, 10 Apr 2008, Joakim Tjernlund wrote:
+It is actually issue, just nobody was really eager to solve this.
 
-> > -----Original Message-----
-> > From: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf
-> > Of Alexey Korolev
-> > Sent: den 4 april 2008 14:22
-> > To: Jörn Engel
-> > Cc: nico@cam.org; haokexin@gmail.com; dwmw2@infradead.org; akpm@linux-foundation.org; linux-
-> > mtd@lists.infradead.org
-> > Subject: Re: [PATCH] Fix of broken state in CFI driver caused by FL_SHUTDOWN
-> > 
-> > Hi
-> > 
-> > 
-> >  CFI driver in 2.6.24 kernel is broken. Not so intensive read/write operations cause incomplete writes
-> > which lead to kernel panics in JFFS2.
-> >  We investigated the issue - it is caused by bug in FL_SHUTDOWN parsing code. Sometimes chip returns -
-> > EIO as if it is in FL_SHUTDOWN state when it should wait in FL_PONT (error in order of conditions).
-> > 
-> > The following patch fixes the bug in state parsing code of CFI.
-> > Also I've added comments to notify developers if they want to add new case in future.
-> > Please include it.
-> > 
-> > Signed-off-by: Alexey Korolev <akorolev@infradead.org>
-> > Reviewed-By: Joern Engel <joern@logfs.org>
-> 
-> Acked-By: Joakim Tjernlund <Joakim.Tjenrlund@transmode.se>
-> 
-> Guys, I think you should sent this directly to Linus as David seems
-> unavailable ATM. It should really go into 2.6.25
+> I know that just changing it isn't all that's involved.  I've alredy gone=
+=20
+> through some of the pain of changing 32-bit division to 64-bit shifts and=
+=20
+> masks.  A larger concern of mine is ripple effects.  I know that this=20
+> field is referenced in a lot of places, most of which are pretty benign,=20
+> and others that are less so.  A good example is in .../mtd/mtdblock.c=20
+> where this happens: dev->size =3D mtd->size >> 9.  I don't know right off=
+=20
+> the top of my head what struct mtd_blktrans_dev->size is used for, but I=20
+> can pretty well bet that a 64-bit value shifted right by nine ain't gonna=
+=20
+> fit.  So then this ripples into making changes to mtd_blktrans_dev.  Wow.=
+=20
+> This could end up going a long way.  Plus, I know there are a couple of=20
+> drivers that make use of this field and I expect that if I make this=20
+> change, I'll be responsible for makeing the changes to the drivers.=20
+> However, I can't test those changes since I don't have the HW.  How is=20
+> that going to be received by the community and the maintainers of those=20
+> drivers?
 
-It is already in mainline.  See commit fb6d080c.
+What you should do is to talk to dwmw2, who is the original author of
+this. I have not seen him in the mailing list for long time, but you
+might talk to him at #mtd IRC channel at OFTC.
 
+Vs.struct mtd_blktrans_dev->size, I am sure this is just size of block
+device in 512-byte sectors. You may quite safely assume it should fit
+32-bits I think. You may add a check even.
 
-Nicolas
+> So, as I said, I'm willing to tackle this, but I need to get a sense of=20
+> how long it's going to take me.  I need an idea of how long it would take=
+=20
+> someone with experiance with MTD and I can then translate that (roughly :=
+)=20
+>  ) into how long it should take me.  I also need guidence on how to deal=20
+> with things that I can't test.
 
---Boundary_(ID_nHtVGNq0gZ1eV3YBHKdxwg)--
+My opinion on this is that the best way to address flash is
+eraseblock:offset pair, not a 64-bit offset. Indeed, it is natural for
+flash to consist of eraseblocks. And in opposite, it is not natural to
+address as a 64-bit address. I mead, flash _does_ consist of
+eraseblocks, why not to reflect this in the MTD interface?
+
+What I would do is I'd invent a new interface with EB:offset addressing.
+I'd preserve the old interface for the older stuff and wouldn't even try
+to change them. I'd just turn the stuff I need to use the new interface.
+
+Something like:
+
+ret =3D mtd->read64(mtd, eraseblock, offset, buf, len).
+
+But anyway, better talk to dwmw2, because he will accept/reject your
+work :-)
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
