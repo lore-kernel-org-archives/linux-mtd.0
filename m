@@ -1,20 +1,22 @@
-Received: from www.tglx.de ([62.245.132.106])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JjpeR-0000aW-Ve
-	for linux-mtd@lists.infradead.org; Thu, 10 Apr 2008 05:48:48 +0000
-Date: Thu, 10 Apr 2008 07:48:29 +0200 (CEST)
-From: Thomas Gleixner <tglx@linutronix.de>
-To: bhsong@augustatek.com
-Subject: Re: bug report about nand flash id table and the way to identify chips
-In-Reply-To: <42335.10.1.16.2.1207804422.squirrel@mailbj.augustatek.com>
-Message-ID: <alpine.LFD.1.10.0804100741460.3225@apollo.tec.linutronix.de>
-References: <20080409194417.1EA9872AED@usa.augustatek.com>
-	<001501c89ac6$019bd0d0$7d10010a@desktopsz32>
-	<42335.10.1.16.2.1207804422.squirrel@mailbj.augustatek.com>
+Received: from moutng.kundenserver.de ([212.227.126.183])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JjxRj-0007JS-FM
+	for linux-mtd@lists.infradead.org; Thu, 10 Apr 2008 14:08:12 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: joern@logfs.org
+Subject: Re: [patch 10/15] fs/logfs/memtree.c
+Date: Thu, 10 Apr 2008 16:07:44 +0200
+References: <20080401181308.512473173@logfs.org>
+	<20080401181332.853833010@logfs.org>
+In-Reply-To: <20080401181332.853833010@logfs.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: cfan@augustatek.com, linux-mtd@lists.infradead.org,
-	chenjiang@augustatek.com, pfeng@augustatek.com
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Message-Id: <200804101607.45409.arnd@arndb.de>
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 10 Apr 2008, bhsong@augustatek.com wrote:
-> Dear all&Thomas,
-> There is a bug in the way to identify nand chips.
-> At the array nand_flash_ids[]  of nand_ids.c, there is a line like that:
->  {"NAND 4MiB 3,3V 8-bit",        0xd5, 512, 4, 0x2000, 0},
+On Tuesday 01 April 2008, joern@logfs.org wrote:
+> +#if BITS_PER_LONG =3D=3D 32
+> +#define BTREE_NODES 20=A0/* 32bit, 240 byte nodes */
+> +#else
+> +#define BTREE_NODES 16=A0/* 64bit, 256 byte nodes */
+> +#endif
+> +
+> +struct btree_node {
+> +=A0=A0=A0=A0=A0=A0=A0u64 key;
+> +=A0=A0=A0=A0=A0=A0=A0struct btree_node *node;
+> +};
 
-and the line above is guarded by:
+On 32 bit platforms other than x86, your struct btree_node
+is 16 bytes long because of alignment requirements, rather
+than the 12 bytes you are assuming.
 
-#ifdef CONFIG_MTD_NAND_MUSEUM_IDS
-
-which is default off.
-
->From Kconfig:
-
-config MTD_NAND_MUSEUM_IDS
-        bool "Enable chip ids for obsolete ancient NAND devices"
-        depends on MTD_NAND
-        default n
-        help
-          Enable this option only when your board has first generation
-          NAND chips (page size 256 byte, erase size 4-8KiB). The IDs
-          of these chips were reused by later, larger chips.            
-
-So there is no bug at all.
-
-Thanks,
-	tglx
+	Arnd <><
