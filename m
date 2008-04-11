@@ -1,18 +1,21 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from naru.obs2.net ([84.20.150.76] helo=narury.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JkDDP-0001CH-8p
-	for linux-mtd@lists.infradead.org; Fri, 11 Apr 2008 06:58:27 +0000
-Message-ID: <47FF0ADA.7010101@nokia.com>
-Date: Fri, 11 Apr 2008 09:53:14 +0300
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+	id 1JkFXq-0004QN-5W
+	for linux-mtd@lists.infradead.org; Fri, 11 Apr 2008 09:27:42 +0000
+Received: from kos.to (localhost.localdomain [127.0.0.1])
+	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by narury.org (Postfix) with ESMTP id E2B933274008
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 11 Apr 2008 12:27:38 +0300 (EEST)
+Date: Fri, 11 Apr 2008 12:27:38 +0300
+From: Riku Voipio <riku.voipio@iki.fi>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] Use LSB locations for manpages
+Message-ID: <20080411092738.GA21208@kos.to>
 MIME-Version: 1.0
-To: "ext Bruce_Leonard@selinc.com" <Bruce_Leonard@selinc.com>
-Subject: Re: mtd->size revisited
-References: <OF1E779C97.22C47CCA-ON88257426.007A4C73-88257426.007C6F5B@selinc.com>
-In-Reply-To: <OF1E779C97.22C47CCA-ON88257426.007A4C73-88257426.007C6F5B@selinc.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,16 +25,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Bruce_Leonard@selinc.com wrote:
-> This could end up going a long way.  Plus, I know there are a couple of 
-> drivers that make use of this field and I expect that if I make this 
-> change, I'll be responsible for makeing the changes to the drivers. 
-> However, I can't test those changes since I don't have the HW.  How is 
-> that going to be received by the community and the maintainers of those 
-> drivers?
+LSB says manpages belong to /usr/share/man, adjust makefile
+defaults accordingly.
 
-I would suggest making 64-bit size support a config option and not touching
-any code you don't have to for your device.
+Signed-off-by: Riku Voipio <riku.voipio@iki.fi>
+---
+ Makefile           |    4 ++--
+ ubi-utils/Makefile |    2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-This reduces the amount of work you have to do and leaves 32-bit people
-unaffected.
+diff --git a/Makefile b/Makefile
+index 5f0cef6..9f5ef6c 100644
+--- a/Makefile
++++ b/Makefile
+@@ -3,7 +3,7 @@
+ 
+ OPTFLAGS := -O2 -Wall
+ SBINDIR=/usr/sbin
+-MANDIR=/usr/man
++MANDIR=/usr/share/man
+ INCLUDEDIR=/usr/include
+ #CROSS=arm-linux-
+ CC := $(CROSS)gcc
+@@ -92,5 +92,5 @@ install: ${TARGETS}
+ 	mkdir -p ${DESTDIR}/${SBINDIR}
+ 	install -m0755 ${TARGETS} ${DESTDIR}/${SBINDIR}/
+ 	mkdir -p ${DESTDIR}/${MANDIR}/man1
+-	gzip -c mkfs.jffs2.1 > ${DESTDIR}/${MANDIR}/man1/mkfs.jffs2.1.gz
++	gzip -9c mkfs.jffs2.1 > ${DESTDIR}/${MANDIR}/man1/mkfs.jffs2.1.gz
+ 	make -C $(BUILDDIR)/ubi-utils install
+diff --git a/ubi-utils/Makefile b/ubi-utils/Makefile
+index 8c1994c..e86738b 100644
+--- a/ubi-utils/Makefile
++++ b/ubi-utils/Makefile
+@@ -6,7 +6,7 @@ OPTFLAGS := -O2 -g -Wall
+ KERNELHDR := ../include
+ DESTDIR := /usr/local
+ SBINDIR=/usr/sbin
+-MANDIR=/usr/man
++MANDIR=/usr/share/man
+ INCLUDEDIR=/usr/include
+ 
+ CC := $(CROSS)gcc
+-- 
+1.5.4.5
+
+
+-- 
+"rm -rf" only sounds scary if you don't have backups
