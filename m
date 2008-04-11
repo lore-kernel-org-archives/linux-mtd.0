@@ -1,20 +1,18 @@
-Received: from wx-out-0506.google.com ([66.249.82.236])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JkD3s-0001bn-F9
-	for linux-mtd@lists.infradead.org; Fri, 11 Apr 2008 06:48:36 +0000
-Received: by wx-out-0506.google.com with SMTP id s7so378378wxc.24
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 10 Apr 2008 23:48:33 -0700 (PDT)
-Message-ID: <bae050c10804102348sceaef1bh557ecce22a96b03f@mail.gmail.com>
-Date: Fri, 11 Apr 2008 14:48:33 +0800
-From: Nancy <nancydreaming@gmail.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Is there possible to integrate mtd ubi ubifs latest version in one
-	git tree?
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JkDDP-0001CH-8p
+	for linux-mtd@lists.infradead.org; Fri, 11 Apr 2008 06:58:27 +0000
+Message-ID: <47FF0ADA.7010101@nokia.com>
+Date: Fri, 11 Apr 2008 09:53:14 +0300
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+To: "ext Bruce_Leonard@selinc.com" <Bruce_Leonard@selinc.com>
+Subject: Re: mtd->size revisited
+References: <OF1E779C97.22C47CCA-ON88257426.007A4C73-88257426.007C6F5B@selinc.com>
+In-Reply-To: <OF1E779C97.22C47CCA-ON88257426.007A4C73-88257426.007C6F5B@selinc.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,18 +22,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-    Is there possible to integrate mtd ubi ubifs latest version in one git tree?
-    If the answer is no, will ubifs give patches for porting it to old
-linux kernel? The patches only contain the ubifs needed file.
-    I know little about kernel, just git clone the whole
-ubifs-v2.6.24, I found there is a lot of differences between the
-original linux-2.6.24.3 and ubifs-v2.6.24. I doulbt all the
-linux/kernel ....or linux/mm files' change are all necessary for UBIFS
-to run correctly, or just some of them.
-     Will you give me some suggestion?
+Bruce_Leonard@selinc.com wrote:
+> This could end up going a long way.  Plus, I know there are a couple of 
+> drivers that make use of this field and I expect that if I make this 
+> change, I'll be responsible for makeing the changes to the drivers. 
+> However, I can't test those changes since I don't have the HW.  How is 
+> that going to be received by the community and the maintainers of those 
+> drivers?
 
+I would suggest making 64-bit size support a config option and not touching
+any code you don't have to for your device.
 
---
-Best wishes,
-Nancy
+This reduces the amount of work you have to do and leaves 32-bit people
+unaffected.
