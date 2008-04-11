@@ -1,22 +1,19 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JkGhN-0006ek-Vp
-	for linux-mtd@lists.infradead.org; Fri, 11 Apr 2008 10:41:38 +0000
-Date: Fri, 11 Apr 2008 12:41:28 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [patch 4/15] fs/logfs/compr.c
-Message-ID: <20080411104128.GG25462@logfs.org>
-References: <20080401181308.512473173@logfs.org>
-	<20080401181332.853833004@logfs.org>
-	<200804101613.48465.arnd@arndb.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <200804101613.48465.arnd@arndb.de>
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JkGrU-00088i-53
+	for linux-mtd@lists.infradead.org; Fri, 11 Apr 2008 10:52:04 +0000
+Subject: Re: [PATCH] compr_lzo.c: allocate enough memory for lzo compressor.
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: Riku Voipio <riku.voipio@iki.fi>
+In-Reply-To: <20080411093337.GA22045@kos.to>
+References: <20080411093337.GA22045@kos.to>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: Fri, 11 Apr 2008 12:52:02 +0200
+Message-Id: <1207911122.9544.29.camel@gentoo-jocke.transmode.se>
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,27 +23,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 10 April 2008 16:13:47 +0200, Arnd Bergmann wrote:
+
+On Fri, 2008-04-11 at 12:33 +0300, Riku Voipio wrote:
+> This is the same bug as in kernel, pointed out the LZO author
+> (Markus Oberhumer):
 > 
-> How much time is spent in the compression code? Would it be helpful
-> to have a percpu stream and do preempt_disable around it instead
-> of the mutex?
+> http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=f2a11b158a24301e9158e9c873fa88e5eb775486
+> ---
+>  compr_lzo.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
 > 
-> That would improve parallelism and cache-locality of the compression,
-> at the cost of adding a source of latency to preemptible kernels.
+> diff --git a/compr_lzo.c b/compr_lzo.c
+> index fb54600..a0bb362 100644
+> --- a/compr_lzo.c
+> +++ b/compr_lzo.c
+> @@ -97,7 +97,7 @@ int jffs2_lzo_init(void)
+>  		return -1;
+>  
+>  	/* Worse case LZO compression size from their FAQ */
+> -	lzo_compress_buf = malloc(page_size + (page_size / 64) + 16 + 3);
+> +	lzo_compress_buf = malloc(page_size + (page_size / 16) + 64 + 3);
+>  	if (!lzo_compress_buf) {
+>  		free(lzo_mem);
+>  		return -1;
 
-Several years back (before logfs) I was planning to do just that.  It
-turned out that ipsec doesn't work in such a fashion, because each
-connection is a stream.  And the two block-oriented users, jffs2 and
-cramfs just weren't worth it.
+I think you should use lzo1x_worst_compress() from the link you posted
+above.
 
-Might be a good idea by now.  I guess it should become self-contained
-code, so that jffs2, cramfs and ubifs can use it as well.
-
-Jörn
-
--- 
-Write programs that do one thing and do it well. Write programs to work
-together. Write programs to handle text streams, because that is a
-universal interface.
--- Doug MacIlroy
+  Jocke
