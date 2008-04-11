@@ -1,21 +1,20 @@
-Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
+Received: from wx-out-0506.google.com ([66.249.82.236])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jk3vR-0001tk-Md
-	for linux-mtd@lists.infradead.org; Thu, 10 Apr 2008 21:03:17 +0000
-From: "Joakim Tjernlund" <Joakim.Tjernlund@transmode.se>
-To: =?iso-8859-1?Q?'Anders_Grafstr=F6m'?= <grfstrm@users.sourceforge.net>,
-	<linux-mtd@lists.infradead.org>
-References: <42739.212.247.11.1.1205350163.squirrel@webmail.sys.kth.se>
-	<47FE7392.2060900@users.sourceforge.net>
-In-Reply-To: <47FE7392.2060900@users.sourceforge.net>
-Subject: RE: JFFS2: Return values of jffs2_block_check_erase error paths
-Date: Thu, 10 Apr 2008 23:03:12 +0200
-Message-ID: <019d01c89b4e$4a24f6f0$de6ee4d0$@Tjernlund@transmode.se>
+	id 1JkD3s-0001bn-F9
+	for linux-mtd@lists.infradead.org; Fri, 11 Apr 2008 06:48:36 +0000
+Received: by wx-out-0506.google.com with SMTP id s7so378378wxc.24
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 10 Apr 2008 23:48:33 -0700 (PDT)
+Message-ID: <bae050c10804102348sceaef1bh557ecce22a96b03f@mail.gmail.com>
+Date: Fri, 11 Apr 2008 14:48:33 +0800
+From: Nancy <nancydreaming@gmail.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Is there possible to integrate mtd ubi ubifs latest version in one
+	git tree?
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Language: sv
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,40 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> -----Original Message-----
-> From: linux-mtd-bounces@lists.infradead.org =
-[mailto:linux-mtd-bounces@lists.infradead.org] On Behalf
-> Of Anders Grafstr=F6m
-> Sent: den 10 april 2008 22:08
-> To: linux-mtd@lists.infradead.org
-> Subject: Re: JFFS2: Return values of jffs2_block_check_erase error =
-paths
->=20
-> Anders Grafstr=F6m wrote:
-> > It looks like the error paths in jffs2_block_check_erase() have =
-wrong return values.
-> > A block that failed to be erased never gets marked as bad.
-> >
-> > Any comments on this patch?
-> >
-> > Anders
-> >
-> >
-> > diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
-> > index a1db918..23e9dd6 100644
-> > --- a/fs/jffs2/erase.c
+Hi,
+    Is there possible to integrate mtd ubi ubifs latest version in one git tree?
+    If the answer is no, will ubifs give patches for porting it to old
+linux kernel? The patches only contain the ubifs needed file.
+    I know little about kernel, just git clone the whole
+ubifs-v2.6.24, I found there is a lot of differences between the
+original linux-2.6.24.3 and ubifs-v2.6.24. I doulbt all the
+linux/kernel ....or linux/mm files' change are all necessary for UBIFS
+to run correctly, or just some of them.
+     Will you give me some suggestion?
 
 
-[SNIP]
-
->=20
->=20
-> Nobody looked at this?
-> This issue caused a corrupt file system.
->=20
-> /Anders
-
-Looks good to me, but I think you should add your own signoff, write a
-proper commit message and send it to Linus/Andrew as David appears busy.
-
-Signed-off-by: Joakim Tjernlund <Joakim.Tjenrlund@transmode.se>
+--
+Best wishes,
+Nancy
