@@ -1,16 +1,25 @@
-Subject: Re: [BUG] JFFS2 usage of write_begin and write_end functions
-	causes kernel panic
-From: David Woodhouse <dwmw2@infradead.org>
-To: Alexey Korolev <akorolev@infradead.org>
-In-Reply-To: <Pine.LNX.4.64.0804101152270.13226@pentafluge.infradead.org>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jkzne-0007w1-5N
+	for linux-mtd@lists.infradead.org; Sun, 13 Apr 2008 10:51:06 +0000
+Date: Sun, 13 Apr 2008 12:50:46 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Artem Bityutskiy <dedekind@infradead.org>
+Subject: Re: [BUG] JFFS2 usage of write_begin and write_end functions causes
+	kernel panic
+Message-ID: <20080413105046.GB6022@logfs.org>
 References: <Pine.LNX.4.64.0804101152270.13226@pentafluge.infradead.org>
-Content-Type: text/plain
-Date: Sat, 12 Apr 2008 15:48:39 +0100
-Message-Id: <1208011719.2698.19.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: nickpiggin@yahoo.com.au, joern@logfs.org, linux-mtd@lists.infradead.org,
-	akpm@linux-foundation.org
+	<200804101918.21362.jpihet@mvista.com>
+	<Pine.LNX.4.64.0804111824450.12186@pentafluge.infradead.org>
+	<1207937133.5965.17.camel@sauron>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1207937133.5965.17.camel@sauron>
+Cc: nickpiggin@yahoo.com.au, Alexey Korolev <akorolev@infradead.org>,
+	Jean Pihet <jpihet@mvista.com>, linux-mtd@lists.infradead.org,
+	akpm@linux-foundation.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,24 +29,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2008-04-10 at 17:53 +0100, Alexey Korolev wrote:
-> The problem is related to introduction  of write_begin and write_end
-> functions instead of original prepare_write & commit_write. The kernel
-> panic has disappeared when we rolled back write_begin and write_end
-> changes in JFFS2. We tried to fix it - but it seems problem is bit
-> tough for us.
+On Fri, 11 April 2008 21:05:33 +0300, Artem Bityutskiy wrote:
+> 
+> So why did you start this project? How about just making all your work
+> to go into mainline instead?
 
-Hm, that's very strange. Are you 100% sure it's related to the
-write_begin/write_end changes? How long did you run the test for without
-a failure, after reverting those changes? And what was the maximum
-length of time you could run it without failure beforehand?
+At least one of the patches should not go to mainline.  It is one of
+those strange "If I change the code here, all symptoms disappear"
+patches that doesn't cure the cause.  Someone should spend some time to
+find the root couse, but noone has.
 
-Can you show some of the different panic messages you saw? Was there any
-kind of pattern to them at all? I suspect memory corruption of some kind
--- can you enable slab debugging?
+Keeping such patches somewhere easily accessable - but not in mainline -
+might be a good idea.  Would be even better if the root cause was found
+and fixed, of course.
 
-The output you show includes strings such as 'readlink - no filename'.
-Can you explain those? They don't seem to come from your test program.
+Jörn
 
 -- 
-dwmw2
+Fantasy is more important than knowledge. Knowledge is limited,
+while fantasy embraces the whole world.
+-- Albert Einstein
