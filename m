@@ -1,12 +1,12 @@
-Received: from smtp5.pp.htv.fi ([213.243.153.39])
+Received: from smtp6.pp.htv.fi ([213.243.153.40])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JlPYB-0002KA-BK
-	for linux-mtd@lists.infradead.org; Mon, 14 Apr 2008 14:20:51 +0000
-Date: Mon, 14 Apr 2008 17:19:46 +0300
+	id 1JlPYN-0002Wk-BH
+	for linux-mtd@lists.infradead.org; Mon, 14 Apr 2008 14:21:03 +0000
+Date: Mon, 14 Apr 2008 17:19:58 +0300
 From: Adrian Bunk <bunk@kernel.org>
 To: dwmw2@infradead.org
-Subject: [2.6 patch] mtd/ofpart.c: add MODULE_LICENSE
-Message-ID: <20080414141946.GM6695@cs181133002.pp.htv.fi>
+Subject: [2.6 patch] mtd: proper prototypes for inftl_{read,write}_oob()
+Message-ID: <20080414141958.GO6695@cs181133002.pp.htv.fi>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
@@ -20,18 +20,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds the missing MODULE_LICENSE("GPL").
+This patch adds proper prototypes for inftl_{read,write}_oob() in 
+include/linux/mtd/inftl.h
 
 Signed-off-by: Adrian Bunk <bunk@kernel.org>
 
 ---
-b530cd2188d467f2b157e77349baa8e854b61a17 diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-index f86e069..4f80c2f 100644
---- a/drivers/mtd/ofpart.c
-+++ b/drivers/mtd/ofpart.c
-@@ -72,3 +72,5 @@ int __devinit of_mtd_parse_partitions(struct device *dev,
- 	return nr_parts;
- }
- EXPORT_SYMBOL(of_mtd_parse_partitions);
+
+ drivers/mtd/inftlmount.c  |    5 -----
+ include/linux/mtd/inftl.h |    5 +++++
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+12972b4c2d014aa68e0293aef11b1c97e42a821d diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
+index b8917be..c551d2f 100644
+--- a/drivers/mtd/inftlmount.c
++++ b/drivers/mtd/inftlmount.c
+@@ -41,11 +41,6 @@
+ 
+ char inftlmountrev[]="$Revision: 1.18 $";
+ 
+-extern int inftl_read_oob(struct mtd_info *mtd, loff_t offs, size_t len,
+-			  size_t *retlen, uint8_t *buf);
+-extern int inftl_write_oob(struct mtd_info *mtd, loff_t offs, size_t len,
+-			   size_t *retlen, uint8_t *buf);
+-
+ /*
+  * find_boot_record: Find the INFTL Media Header and its Spare copy which
+  *	contains the various device information of the INFTL partition and
+diff --git a/include/linux/mtd/inftl.h b/include/linux/mtd/inftl.h
+index 6977780..85fd041 100644
+--- a/include/linux/mtd/inftl.h
++++ b/include/linux/mtd/inftl.h
+@@ -57,6 +57,11 @@ extern char inftlmountrev[];
+ void INFTL_dumptables(struct INFTLrecord *s);
+ void INFTL_dumpVUchains(struct INFTLrecord *s);
+ 
++int inftl_read_oob(struct mtd_info *mtd, loff_t offs, size_t len,
++		   size_t *retlen, uint8_t *buf);
++int inftl_write_oob(struct mtd_info *mtd, loff_t offs, size_t len,
++		    size_t *retlen, uint8_t *buf);
 +
-+MODULE_LICENSE("GPL");
+ #endif /* __KERNEL__ */
+ 
+ #endif /* __MTD_INFTL_H__ */
