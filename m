@@ -1,9 +1,9 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JlIo1-0001GN-DK
-	for linux-mtd@lists.infradead.org; Mon, 14 Apr 2008 07:08:45 +0000
-Message-ID: <480301E5.1040607@nokia.com>
-Date: Mon, 14 Apr 2008 10:04:05 +0300
+	id 1JlJOk-0002Y3-TO
+	for linux-mtd@lists.infradead.org; Mon, 14 Apr 2008 07:46:43 +0000
+Message-ID: <48030ACC.2090302@nokia.com>
+Date: Mon, 14 Apr 2008 10:42:04 +0300
 From: Adrian Hunter <ext-adrian.hunter@nokia.com>
 MIME-Version: 1.0
 To: ext Kyungmin Park <kmpark@infradead.org>
@@ -24,6 +24,8 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Kyungmin Park wrote:
+> Hi,
+> 
 > On Fri, Apr 11, 2008 at 8:05 PM, Adrian Hunter
 > <ext-adrian.hunter@nokia.com> wrote:
 >> Controller errors while reading can be caused by
@@ -37,19 +39,13 @@ Kyungmin Park wrote:
 > And it needs to define the terminology the Sudden Power Off Recovery
 > or POR shortly.
 > I'm not sure a previous powerloss means POR.
+> 
+> Anyway could you show the controller error value? 
 
-No it is not what I meant.  I have sent another patch which I hope is
-clearer.
+0x2440
 
-> Anyway could you show the controller error value?
-
-The controller error value is still printed.
-
-> Since it needs to
+Since it needs to
 > distinguish others e.g., initial bad blocks condition.
-
-The bbt scan has its own wait function - I guess it is
-possible to get a controller error while reading oob
-from an eraseblock that is not actually a bad block.
-I am not sure how it would be possible to tell the
-difference.
+> 
+> Thank you,
+> Kyungmin Park
