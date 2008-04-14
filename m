@@ -1,13 +1,16 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JlIQa-0004Iz-CT
-	for linux-mtd@lists.infradead.org; Mon, 14 Apr 2008 06:44:32 +0000
-Message-ID: <4802FC2B.4090501@nokia.com>
-Date: Mon, 14 Apr 2008 09:39:39 +0300
+	id 1JlIo1-0001GN-DK
+	for linux-mtd@lists.infradead.org; Mon, 14 Apr 2008 07:08:45 +0000
+Message-ID: <480301E5.1040607@nokia.com>
+Date: Mon, 14 Apr 2008 10:04:05 +0300
 From: Adrian Hunter <ext-adrian.hunter@nokia.com>
 MIME-Version: 1.0
 To: ext Kyungmin Park <kmpark@infradead.org>
-Subject: [PATCH] [MTD] [OneNAND] Allow for controller errors when reading
+Subject: Re: [PATCHJ] [MTD] [OneNAND] Allow for controller errors when reading
+References: <47FF45EB.5070806@nokia.com>
+	<9c9fda240804111933w2963db9bx3d78bdca46b1f1fc@mail.gmail.com>
+In-Reply-To: <9c9fda240804111933w2963db9bx3d78bdca46b1f1fc@mail.gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
@@ -20,46 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-A power loss while writing can result in a page
-becoming unreadable.  When the device is mounted
-again, reading that page gives controller errors.
-Upper level software like JFFS2 treat -EIO as fatal,
-refusing to mount at all.  That means it is necessary
-to treat the error as an ECC error to allow recovery.
-Note that typically in this case, the eraseblock can
-still be erased and rewritten i.e. it has not become
-a bad block.
+Kyungmin Park wrote:
+> On Fri, Apr 11, 2008 at 8:05 PM, Adrian Hunter
+> <ext-adrian.hunter@nokia.com> wrote:
+>> Controller errors while reading can be caused by
+>>  corruption caused by a previous powerloss. Because
+>>  upper level software like JFFS2 treat -EIO as fatal,
+>>  it is necessary to treat the error as an ECC error.
+>>
+> 
+> Umm interesting. You mean it occurs controller error before ecc error
+> at power loss case.
+> And it needs to define the terminology the Sudden Power Off Recovery
+> or POR shortly.
+> I'm not sure a previous powerloss means POR.
 
-Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
----
- drivers/mtd/onenand/onenand_base.c |   15 +++++++++++++++
- 1 files changed, 15 insertions(+), 0 deletions(-)
+No it is not what I meant.  I have sent another patch which I hope is
+clearer.
 
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index 15a62db..4171635 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -329,6 +329,21 @@ static int onenand_wait(struct mtd_info *mtd, int state)
- 		printk(KERN_ERR "onenand_wait: controller error = 0x%04x\n", ctrl);
- 		if (ctrl & ONENAND_CTRL_LOCK)
- 			printk(KERN_ERR "onenand_wait: it's locked error.\n");
-+		if (state == FL_READING) {
-+			/*
-+			 * A power loss while writing can result in a page
-+			 * becoming unreadable.  When the device is mounted
-+			 * again, reading that page gives controller errors.
-+			 * Upper level software like JFFS2 treat -EIO as fatal,
-+			 * refusing to mount at all.  That means it is necessary
-+			 * to treat the error as an ECC error to allow recovery.
-+			 * Note that typically in this case, the eraseblock can
-+			 * still be erased and rewritten i.e. it has not become
-+			 * a bad block.
-+			 */
-+			mtd->ecc_stats.failed++;
-+			return -EBADMSG;
-+		}
- 		return -EIO;
- 	}
- 
--- 
-1.5.2.5
+> Anyway could you show the controller error value?
+
+The controller error value is still printed.
+
+> Since it needs to
+> distinguish others e.g., initial bad blocks condition.
+
+The bbt scan has its own wait function - I guess it is
+possible to get a controller error while reading oob
+from an eraseblock that is not actually a bad block.
+I am not sure how it would be possible to tell the
+difference.
