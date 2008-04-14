@@ -1,12 +1,12 @@
 Received: from smtp5.pp.htv.fi ([213.243.153.39])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JlPYS-0002wJ-Jq
-	for linux-mtd@lists.infradead.org; Mon, 14 Apr 2008 14:21:08 +0000
-Date: Mon, 14 Apr 2008 17:20:04 +0300
+	id 1JlPYn-0003QA-8f
+	for linux-mtd@lists.infradead.org; Mon, 14 Apr 2008 14:21:29 +0000
+Date: Mon, 14 Apr 2008 17:20:24 +0300
 From: Adrian Bunk <bunk@kernel.org>
 To: dwmw2@infradead.org
-Subject: [2.6 patch] mtd/cmdlinepart.c: don't compare pointers with 0
-Message-ID: <20080414142004.GR6695@cs181133002.pp.htv.fi>
+Subject: [2.6 patch] mtd/ftl.c: make code static
+Message-ID: <20080414142024.GS6695@cs181133002.pp.htv.fi>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
@@ -20,42 +20,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sparse spotted that 0 was compared to pointers.
-
-While I was at it, I also moved the assignments out of the if's.
+This patch makes the following needlessly global code static:
+- ftl_freepart()
+- struct ftl_tr
 
 Signed-off-by: Adrian Bunk <bunk@kernel.org>
 
 ---
 
- drivers/mtd/cmdlinepart.c |   10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/mtd/ftl.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-32de76e83f37322dd85eaecf126e7b17327f606f diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
-index b44292a..3e09043 100644
---- a/drivers/mtd/cmdlinepart.c
-+++ b/drivers/mtd/cmdlinepart.c
-@@ -119,7 +119,8 @@ static struct mtd_partition * newpart(char *s,
- 		char *p;
+febd03449dbd4d03eb0e9a73b47815c9a63255b9 diff --git a/drivers/mtd/ftl.c b/drivers/mtd/ftl.c
+index c815d0f..4a79b18 100644
+--- a/drivers/mtd/ftl.c
++++ b/drivers/mtd/ftl.c
+@@ -136,8 +136,6 @@ typedef struct partition_t {
+ #endif
+ } partition_t;
  
- 	    	name = ++s;
--		if ((p = strchr(name, delim)) == 0)
-+		p = strchr(name, delim);
-+		if (!p)
- 		{
- 			printk(KERN_ERR ERRP "no closing %c found in partition name\n", delim);
- 			return NULL;
-@@ -159,9 +160,10 @@ static struct mtd_partition * newpart(char *s,
- 			return NULL;
- 		}
- 		/* more partitions follow, parse them */
--		if ((parts = newpart(s + 1, &s, num_parts,
--		                     this_part + 1, &extra_mem, extra_mem_size)) == 0)
--		  return NULL;
-+		parts = newpart(s + 1, &s, num_parts, this_part + 1,
-+				&extra_mem, extra_mem_size);
-+		if (!parts)
-+			return NULL;
- 	}
- 	else
- 	{	/* this is the last partition: allocate space for all */
+-void ftl_freepart(partition_t *part);
+-
+ /* Partition state flags */
+ #define FTL_FORMATTED	0x01
+ 
+@@ -1014,7 +1012,7 @@ static int ftl_writesect(struct mtd_blktrans_dev *dev,
+ 
+ /*====================================================================*/
+ 
+-void ftl_freepart(partition_t *part)
++static void ftl_freepart(partition_t *part)
+ {
+ 	vfree(part->VirtualBlockMap);
+ 	part->VirtualBlockMap = NULL;
+@@ -1069,7 +1067,7 @@ static void ftl_remove_dev(struct mtd_blktrans_dev *dev)
+ 	kfree(dev);
+ }
+ 
+-struct mtd_blktrans_ops ftl_tr = {
++static struct mtd_blktrans_ops ftl_tr = {
+ 	.name		= "ftl",
+ 	.major		= FTL_MAJOR,
+ 	.part_bits	= PART_BITS,
