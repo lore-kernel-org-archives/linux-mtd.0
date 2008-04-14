@@ -1,20 +1,13 @@
-Received: from smtp5.pp.htv.fi ([213.243.153.39])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JlRHT-0003G1-9f
-	for linux-mtd@lists.infradead.org; Mon, 14 Apr 2008 16:11:44 +0000
-Date: Mon, 14 Apr 2008 19:10:38 +0300
-From: Adrian Bunk <bunk@kernel.org>
-To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-Subject: Re: [2.6 patch] mtd/cmdlinepart.c: don't compare pointers with 0
-Message-ID: <20080414161037.GZ6695@cs181133002.pp.htv.fi>
-References: <20080414142004.GR6695@cs181133002.pp.htv.fi>
-	<48036D43.6070307@ru.mvista.com>
+Date: Mon, 14 Apr 2008 17:55:22 +0100 (BST)
+From: Alexey Korolev <akorolev@infradead.org>
+To: dwmw2@infradead.org, nickpiggin@yahoo.com.au
+Subject: [PATCH] JFFS2 Fix of panics caused by wrong condition for hole frag
+	creation in write_begin
+Message-ID: <Pine.LNX.4.64.0804141747020.15842@pentafluge.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <48036D43.6070307@ru.mvista.com>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-kernel@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: joern@logfs.org, linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
+	vailiy.leonenko@intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,45 +17,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 14, 2008 at 06:42:11PM +0400, Sergei Shtylyov wrote:
-> Hello.
->
-> Adrian Bunk wrote:
->
->> Sparse spotted that 0 was compared to pointers.
->
->> While I was at it, I also moved the assignments out of the if's.
->
->> Signed-off-by: Adrian Bunk <bunk@kernel.org>
->
->> 32de76e83f37322dd85eaecf126e7b17327f606f diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
->> index b44292a..3e09043 100644
->> --- a/drivers/mtd/cmdlinepart.c
->> +++ b/drivers/mtd/cmdlinepart.c
->> @@ -119,7 +119,8 @@ static struct mtd_partition * newpart(char *s,
->>  		char *p;
->>   	    	name = ++s;
->> -		if ((p = strchr(name, delim)) == 0)
->> +		p = strchr(name, delim);
->> +		if (!p)
->>  		{
->
->    Wouldn't it be nice to join the standalone brace to if () while it?
+Hi,
 
-Most of the file is written like this, so there's no point in changing 
-it only here...
 
->>  			printk(KERN_ERR ERRP "no closing %c found in partition name\n", delim);
->>  			return NULL;
->
-> WBR, Sergei
+JFFS2 in Linux 2.6.24 fails to kernel panic on random read/write/truncate operatons. We investigated the issue it is caused by
+bug in conditions for hole fragment creation in write_begin function. Offset of starting offset which is used to identify should we create hole frag or not is calculated improperly.
+As result hole frags are not created when they must be - it leads to internal memory corruptions and kernel panic. 
 
-cu
-Adrian
+The following patch fixes the bug in JFFS2 write_begin hole frag conditions. 
+Please include the patch. 
 
--- 
+Signed-off-by: Alexey Korolev <akorolev@infradead.org>
+Signed-off-by: Vasiliy Leonenko <vasiliy.leonenko@mail.ru>
+=========================================
+diff -aupNr a/fs/jffs2/file.c b/fs/jffs2/file.c
+--- a/fs/jffs2/file.c	2008-02-11 08:51:11.000000000 +0300
++++ b/fs/jffs2/file.c	2008-04-11 13:54:08.000000000 +0400
+@@ -129,13 +129,14 @@ static int jffs2_write_begin(struct file
+ 	struct inode *inode = mapping->host;
+ 	struct jffs2_inode_info *f = JFFS2_INODE_INFO(inode);
+ 	pgoff_t index = pos >> PAGE_CACHE_SHIFT;
+-	uint32_t pageofs = pos & (PAGE_CACHE_SIZE - 1);
++	uint32_t pageofs;
+ 	int ret = 0;
+ 
+ 	pg = __grab_cache_page(mapping, index);
+ 	if (!pg)
+ 		return -ENOMEM;
+ 	*pagep = pg;
++	pageofs = pg->index << PAGE_CACHE_SHIFT;
+ 
+ 	D1(printk(KERN_DEBUG "jffs2_write_begin()\n"));
+=========================================
 
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+Thanks,
+Alexey
