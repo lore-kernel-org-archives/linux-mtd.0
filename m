@@ -1,16 +1,15 @@
-Received: from ernst.netinsight.se ([212.247.11.2])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JlN4h-0006Ms-9g
-	for linux-mtd@lists.infradead.org; Mon, 14 Apr 2008 11:42:16 +0000
-Message-ID: <4803430D.2050201@users.sourceforge.net>
-Date: Mon, 14 Apr 2008 13:42:05 +0200
-From: =?ISO-8859-1?Q?Anders_Grafstr=F6m?= <grfstrm@users.sourceforge.net>
-MIME-Version: 1.0
-To: dwmw2@infradead.org
-Subject: [PATCH] Fix return values of jffs2_block_check_erase
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: Linux-MTD Mailing List <linux-mtd@lists.infradead.org>
+Received: from 87-194-8-8.bethere.co.uk ([87.194.8.8] helo=kira.home.fluff.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JlOmV-0007al-Ph
+	for linux-mtd@lists.infradead.org; Mon, 14 Apr 2008 13:31:39 +0000
+Subject: NAND: Verify probe by retrying to checking the results match
+Message-Id: <20080414131603.950238663@fluff.org.uk>
+From: Ben Dooks <ben-linux@fluff.org>
+To: linux-mtd@lists.infradead.org
+Content-Disposition: inline;
+	filename=simtec/simtec-drivers-mtd-nand-doubleprobe.patch
+Date: Mon, 14 Apr 2008 14:16:04 +0100
+Cc: Ben Dooks <ben-linux@fluff.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,51 +19,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Corrects the return values of the error paths so that a block
-that failed to be erased is marked as bad instead of being reused.
+With modern systems using bus-hold instead of bus pull-up, it can
+often lead to erroneous reporting of NAND devices where there are
+none. Do a double probe to ensure that the result we got the first
+time is repeatable, and if it is not then return that there is no
+chip there.
 
-Signed-off-by: Anders Grafström <grfstrm@users.sourceforge.net>
----
-  fs/jffs2/erase.c |    7 ++++++-
-  1 files changed, 6 insertions(+), 1 deletions(-)
+Signed-off-by: Ben Dooks <ben-linux@fluff.org>
 
-diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
-index a1db918..23e9dd6 100644
---- a/fs/jffs2/erase.c
-+++ b/fs/jffs2/erase.c
-@@ -350,9 +350,11 @@ static int jffs2_block_check_erase(struct jffs2_sb_info *c, struct jffs2_erasebl
-  			   break;
-  		} while(--retlen);
-  		c->mtd->unpoint(c->mtd, ebuf, jeb->offset, c->sector_size);
--		if (retlen)
-+		if (retlen) {
-  			printk(KERN_WARNING "Newly-erased block contained word 0x%lx at offset 0x%08tx\n",
-  			       *wordebuf, jeb->offset + c->sector_size-retlen*sizeof(*wordebuf));
-+			return -EIO;
-+		}
-  		return 0;
-  	}
-   do_flash_read:
-@@ -373,10 +375,12 @@ static int jffs2_block_check_erase(struct jffs2_sb_info *c, struct jffs2_erasebl
-  		ret = c->mtd->read(c->mtd, ofs, readlen, &retlen, ebuf);
-  		if (ret) {
-  			printk(KERN_WARNING "Read of newly-erased block at 0x%08x failed: %d. Putting on bad_list\n", ofs, ret);
-+			ret = -EIO;
-  			goto fail;
-  		}
-  		if (retlen != readlen) {
-  			printk(KERN_WARNING "Short read from newly-erased block at 0x%08x. Wanted %d, got %zd\n", ofs, readlen, retlen);
-+			ret = -EIO;
-  			goto fail;
-  		}
-  		for (i=0; i<readlen; i += sizeof(unsigned long)) {
-@@ -385,6 +389,7 @@ static int jffs2_block_check_erase(struct jffs2_sb_info *c, struct jffs2_erasebl
-  			if (*datum + 1) {
-  				*bad_offset += i;
-  				printk(KERN_WARNING "Newly-erased block contained word 0x%lx at offset 0x%08x\n", *datum, *bad_offset);
-+				ret = -EIO;
-  				goto fail;
-  			}
-  		}
+--- linux-2.6.24-quilt16.orig/drivers/mtd/nand/nand_base.c
++++ linux-2.6.24-quilt16/drivers/mtd/nand/nand_base.c
+@@ -2229,6 +2229,7 @@ static struct nand_flash_dev *nand_get_f
+ {
+ 	struct nand_flash_dev *type = NULL;
+ 	int i, dev_id, maf_idx;
++	int tmp_id, tmp_manf;
+ 
+ 	/* Select the device */
+ 	chip->select_chip(mtd, 0);
+@@ -2239,6 +2240,22 @@ static struct nand_flash_dev *nand_get_f
+ 	/* Read manufacturer and device IDs */
+ 	*maf_id = chip->read_byte(mtd);
+ 	dev_id = chip->read_byte(mtd);
++	
++	/* Try again to make sure. */
++
++	chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
++
++	/* Read manufacturer and device IDs */
++
++	tmp_manf = chip->read_byte(mtd);
++	tmp_id = chip->read_byte(mtd);
++
++	if (tmp_manf != *maf_id || tmp_id != dev_id) {
++		printk(KERN_INFO "%s: second ID read did not match "
++		       "%02x,%02x against %02x,%02x\n", __func__,
++		       *maf_id, dev_id, tmp_manf, tmp_id);
++		return ERR_PTR(-ENODEV);
++	}
+ 
+ 	/* Lookup the flash id */
+ 	for (i = 0; nand_flash_ids[i].name != NULL; i++) {
+
 -- 
-1.5.4.4
+Ben (ben@fluff.org, http://www.fluff.org/)
+
+  'a smiley only costs 4 bytes'
