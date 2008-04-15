@@ -1,12 +1,16 @@
 Received: from 87-194-8-8.bethere.co.uk ([87.194.8.8] helo=kira.home.fluff.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JliXF-0006Tn-Ot
+	id 1JliXF-0006Uk-Or
 	for linux-mtd@lists.infradead.org; Tue, 15 Apr 2008 10:37:10 +0000
-Message-Id: <20080415103617.924928338@fluff.org.uk>
-Date: Tue, 15 Apr 2008 11:36:17 +0100
+Message-Id: <20080415103708.226160643@fluff.org.uk>
+References: <20080415103617.924928338@fluff.org.uk>
+Date: Tue, 15 Apr 2008 11:36:21 +0100
 From: Ben Dooks <ben-mtd@fluff.org>
 To: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: S3C2410 NAND updates
+Subject: S3C2410 Allow ECC layout to be passed through platform data
+Content-Disposition: inline;
+	filename=simtec/simtec-drivers-mtd-nand-s3c2410-specify-oob.patch
+Cc: Ben Dooks <ben-linux@fluff.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,5 +20,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-These are some updates (and a fix) for the S3C2410
-NAND controller, for merge after 2.6.25.
+Add support for the ECC layout to be passed via the
+platform data specified by the board.
+
+Signed-off-by: Ben Dooks <ben-linux@fluff.org>
+
+Index: linux-2.6.25-rc9-quilt2/drivers/mtd/nand/s3c2410.c
+===================================================================
+--- linux-2.6.25-rc9-quilt2.orig/drivers/mtd/nand/s3c2410.c	2008-04-15 11:07:20.000000000 +0100
++++ linux-2.6.25-rc9-quilt2/drivers/mtd/nand/s3c2410.c	2008-04-15 11:07:26.000000000 +0100
+@@ -672,6 +672,9 @@ static void s3c2410_nand_init_chip(struc
+ 	} else {
+ 		chip->ecc.mode	    = NAND_ECC_SOFT;
+ 	}
++
++	if (set->ecc_layout != NULL)
++		chip->ecc.layout = set->ecc_layout;
+ }
+ 
+ /* s3c2410_nand_update_chip
+Index: linux-2.6.25-rc9-quilt2/include/asm-arm/plat-s3c/nand.h
+===================================================================
+--- linux-2.6.25-rc9-quilt2.orig/include/asm-arm/plat-s3c/nand.h	2008-04-15 11:07:20.000000000 +0100
++++ linux-2.6.25-rc9-quilt2/include/asm-arm/plat-s3c/nand.h	2008-04-15 11:07:26.000000000 +0100
+@@ -27,6 +27,7 @@ struct s3c2410_nand_set {
+ 	char			*name;
+ 	int			*nr_map;
+ 	struct mtd_partition	*partitions;
++	struct nand_ecclayout	*ecc_layout;
+ };
+ 
+ struct s3c2410_platform_nand {
+
+-- 
+Ben (ben@fluff.org, http://www.fluff.org/)
+
+  'a smiley only costs 4 bytes'
