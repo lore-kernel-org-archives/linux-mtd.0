@@ -1,16 +1,17 @@
-Received: from le-cheque-dejeuner.ba.gtsi.sk ([85.248.2.170]
-	helo=ip-mx.chequedejeuner.sk)
+Received: from breadfish.de ([85.114.135.162]
+	helo=m162.magenta.fastwebserver.de)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JlcoI-0003D6-T2
-	for linux-mtd@lists.infradead.org; Tue, 15 Apr 2008 04:30:23 +0000
-Date: Wed, 16 Apr 2008 12:59:02 +0500
-From: "Kilgore X Shannon" <PetersonSummer@yahoo.com>
-To: morgan.keller@starleasing.com, hbengts@siue.edu,
-	linux-mtd@lists.infradead.org, aeder@marchofdimes.com, re28@freemail.hu
-Subject: Dentists List in the US
-Message-ID: <136130d1dgx0$c2116vi0$2557y7a0@Delldim5150
+	id 1Jld3t-00013u-LC
+	for linux-mtd@lists.infradead.org; Tue, 15 Apr 2008 04:46:29 +0000
+To: linux-mtd@lists.infradead.org
+Subject: From Mr. Barry Leonard.
+From: MR. BARRY LEONARD <mr.barryleonard@natwest.co.uk>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Message-Id: <20080415041542.BCA98FC7FF0@m162.magenta.fastwebserver.de>
+Date: Tue, 15 Apr 2008 03:58:00 +0200 (CEST)
+Reply-To: barryleonard20014@yahoo.co.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +23,42 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 
 
+>From Mr. Barry Leonard.
+
+PO Box 10720
+
+217 Strand 
+
+London WC2R 1AP 
+
+ 
+
+My Request.
+
+ 
+
+I Have a very important request that make me to contact you; I am  Mr. Barry Leonard, I found Your profile very interesting and decided to reach you directly to solicit your assistance and Guidelines in making a business investment and transfer of £12.500000,000 (Twelve Million Five Hundred thousand pounds Sterling) to your country  within the Next few days.
+
+ 
+
+I presently work as a senior Accounts Director, Offshore Mortgage &  Services with Natwest Bank Plc, London. But at this moment, I am  constrained to issue more details about this profitable Business investment  until I get your response by mail.
+
+ 
+
+This transaction is totally free of risk and troubles as the fund is  legitimate and does not originate from drug, money laundry, terrorism or  any other illegal act, funds will be released to you after necessary  processes have been followed.
+
+ 
+
+Please take out a moment of your very busy Schedule today to respond  back if you are interested; please send your direct telephone numbers  through  email  for an initial confidential  communication. I wish for utmost confidentiality in handling this  transaction.
+
+ 
+
+Awaiting your reply,
+
+Mr. Barry Leonard
+
+Snr.Accounts Director
 
 
 
-New for 2008 Dentis.try List in the United States
-
-==> 164,858 Dentist.s with City, State, Zip
-==> 158,115 Postal Addresses
-==> 163,361 Phone Numbers
-==> 77,047 Faxes
-==> 45,016 Emails
-
-Up to April 18 cost is $291 (regular price $392)
-
-Write an email to katiefarkharson@hotmail.com for additional info 
-
-
-
-
-
-
-
-
-Please put 857 in the subject for deletion
+ 
