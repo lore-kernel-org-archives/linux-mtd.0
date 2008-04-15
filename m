@@ -1,23 +1,15 @@
-Received: from py-out-1112.google.com ([64.233.166.177])
+Received: from ns4.paknet.com.pk ([203.135.0.70] helo=webmail.paknet.com.pk)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JlqRN-0005zO-NY
-	for linux-mtd@lists.infradead.org; Tue, 15 Apr 2008 19:03:38 +0000
-Received: by py-out-1112.google.com with SMTP id a73so3240264pye.2
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 15 Apr 2008 12:03:37 -0700 (PDT)
-Message-ID: <f383264b0804151203x11b8fd2bmdb2949de36156b69@mail.gmail.com>
-Date: Tue, 15 Apr 2008 12:03:36 -0700
-From: "Matt Reimer" <mattjreimer@gmail.com>
-To: "Ben Dooks" <ben-mtd@fluff.org>
-Subject: Re: S3C2410 NAND updates
-In-Reply-To: <f383264b0804151130h6dbc6a54wce4ec309f42ed114@mail.gmail.com>
+	id 1Jlszy-0005qt-64
+	for linux-mtd@lists.infradead.org; Tue, 15 Apr 2008 21:47:30 +0000
+Message-ID: <3292.81.199.182.38.1208274443.squirrel@webmail.paknet.com.pk>
+Date: Tue, 15 Apr 2008 15:47:23 -0000 (GMT)
+Subject: Deposit
+From: "EMMA THOMPSON" <EMMAT173@COMCAST.NET>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <20080415103617.924928338@fluff.org.uk>
-	<f383264b0804151130h6dbc6a54wce4ec309f42ed114@mail.gmail.com>
-Cc: Linux MTD <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Reply-To: EMMAT173@COMCAST.NET
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,19 +19,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 15, 2008 at 11:30 AM, Matt Reimer <mattjreimer@gmail.com> wrote=
-:
-> On Tue, Apr 15, 2008 at 3:36 AM, Ben Dooks <ben-mtd@fluff.org> wrote:
->  > These are some updates (and a fix) for the S3C2410
->  >  NAND controller, for merge after 2.6.25.
->
->  Ben,
->
->  If you have time, can you review the following patch? It has been
->  reported to work on s3c2410, s3c2412, and s3c2440, and has been acked
->  by J=F6rn Engel.
+Our REF:  70417356TZ
+Date:  15th Apr. 2008
 
-Double oops; it's already in. I was looking at an old tree. Sorry for the n=
-oise.
+Dear participant.
 
-Matt
+We write today with reference to a deposited fund totalling six million
+pounds currently held here in our office in your favour. According to our
+records, you are the sole beneficiary of the deposited fund and you are
+required to contact this office immediately to verify your eligibility to
+the deposited fund with a view to claiming the said fund.
+As soon as you make contact with this office, you will be requested to
+either come to collect the fund personally or provide a bank account
+details for direct transfer of the fund to you. For security, please quote
+reference number: 70417356tz when you contact us.   In order to avoid
+confusion in the collection process, you are advised to keep this
+transaction confidential until the fund has been credited to you. Please
+contact Mr Adrian Peters at the collections department on:
+coordinateuk406@breakthru.com  immediately to claim your deposited fund.
+Your fund w ill be kept in this office for seven working days and if we do
+not hear from you within the specified time, your fund will be declared as
+unclaimed and returned back to the original source. Your prompt response
+will be highly appreciated.
+Please call your claims officer  directly if you need further clarification.
+Regards
+Emma Thompson
+Claims  Department
+Tel: +44 7011146407
+Fax: +44 7077089596
