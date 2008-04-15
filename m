@@ -1,17 +1,20 @@
-Received: from breadfish.de ([85.114.135.162]
-	helo=m162.magenta.fastwebserver.de)
+Received: from slave.mail113.cn4e.com ([211.152.33.79])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jld3t-00013u-LC
-	for linux-mtd@lists.infradead.org; Tue, 15 Apr 2008 04:46:29 +0000
-To: linux-mtd@lists.infradead.org
-Subject: From Mr. Barry Leonard.
-From: MR. BARRY LEONARD <mr.barryleonard@natwest.co.uk>
-MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-Message-Id: <20080415041542.BCA98FC7FF0@m162.magenta.fastwebserver.de>
-Date: Tue, 15 Apr 2008 03:58:00 +0200 (CEST)
-Reply-To: barryleonard20014@yahoo.co.uk
+	id 1JlfP5-0005Xv-0N
+	for linux-mtd@lists.infradead.org; Tue, 15 Apr 2008 07:16:32 +0000
+Received: from bruce (unknown [220.189.223.56])
+	by slave.mail113.cn4e.com (Postfix) with ESMTP id 0152424B140
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 15 Apr 2008 14:28:09 +0800 (CST)
+Date: Tue, 15 Apr 2008 14:25:32 +0800
+From: "=?gb2312?B?wO66o7rs?=" <lhh@nbicc.com>
+To: "linux-mtd" <linux-mtd@lists.infradead.org>
+Subject: compile error with 2.4.26 kernel
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
+Message-Id: <20080415062809.0152424B140@slave.mail113.cn4e.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,44 +24,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
->From Mr. Barry Leonard.
-
-PO Box 10720
-
-217 Strand 
-
-London WC2R 1AP 
-
- 
-
-My Request.
-
- 
-
-I Have a very important request that make me to contact you; I am  Mr. Barry Leonard, I found Your profile very interesting and decided to reach you directly to solicit your assistance and Guidelines in making a business investment and transfer of £12.500000,000 (Twelve Million Five Hundred thousand pounds Sterling) to your country  within the Next few days.
-
- 
-
-I presently work as a senior Accounts Director, Offshore Mortgage &  Services with Natwest Bank Plc, London. But at this moment, I am  constrained to issue more details about this profitable Business investment  until I get your response by mail.
-
- 
-
-This transaction is totally free of risk and troubles as the fund is  legitimate and does not originate from drug, money laundry, terrorism or  any other illegal act, funds will be released to you after necessary  processes have been followed.
-
- 
-
-Please take out a moment of your very busy Schedule today to respond  back if you are interested; please send your direct telephone numbers  through  email  for an initial confidential  communication. I wish for utmost confidentiality in handling this  transaction.
-
- 
-
-Awaiting your reply,
-
-Mr. Barry Leonard
-
-Snr.Accounts Director
-
-
-
- 
+RGVhciBsaW51eC1tdGQNCiAgICANCiANCkkgZGlkbid0IGtub3cgd2hpY2ggdmVyc2lvbiBvZiBt
+dGQtc25hcHNob3QteHh4eCwgc3VpdCBmb3IgMi40LjI2IGtlcm5lbC4NCm5vdyB1c2UgdGhlIDIw
+MDUwNTE5IGFuZCAyMDA1MDgwMSxib3RoIHByaW50IHRoZSBzYW1lIGluZm9ybWFpb24NCmFuZCBJ
+IHNhdyBtYW55IHBlb3BsZSBoYWQgbWV0IHRoZSBzYW1lIHByb2JsZW0sIGRvZXMgYW55IGJvZHkg
+a25vdyBob3cgdG8gZml4IGl0IHVwPw0KYW5kIEkgaGF2ZSBkb25lIHNvbWUgY2hhbmdlcyBmb2xs
+b3dpbmcgdGhlIHdlYiA6aHR0cDovL2xpbnV4LmRlcmtlaWxlci5jb20vTWFpbGluZy1MaXN0cy9L
+ZXJuZWwvMjAwNy0wOC9tc2cwNDI0NS5odG1sDQpidXQgaXQgYWxzbyBoYXZlIHRoZSBzaW1pbGFy
+IGVycm9yDQpmb2xsb3dpbmcgaXMgdGhlIGVycm9yIG1lc3NhZ2UgcHJpbnRlZDoNCg0KbWFrZVs1
+XTogRW50ZXJpbmcgZGlyZWN0b3J5IGAvbW50L2xpbnV4L2xoaC1zaWdtYS9hcm11dGlsc18yLjUu
+MTM4LjAvYnVpbGRfYXJtL2xpbnV4LTIuNC4yNi1lbTg2eHgvZHJpdmVycy9tdGQvY2hpcHMnDQph
+cm0tZWxmLWdjYyAtRF9fS0VSTkVMX18gLUkvbW50L2xpbnV4L2xoaC1zaWdtYS9hcm11dGlsc18y
+LjUuMTM4LjAvYnVpbGRfYXJtL2xpbnV4LTIuNC4yNi1lbTg2eHgvaW5jbHVkZSAgLVdhbGwgLVdz
+dHJpY3QtcHJvdG90eXBlcyAtV25vLXRyaWdyYXBocyAtTzIgLWZuby1zdHJpY3QtYWxpYXNpbmcg
+LWZuby1jb21tb24gLWZuby1jb21tb24gLXBpcGUgLWZuby1idWlsdGluIC1EX19saW51eF9fIC1E
+Tk9fTU0gLW1hcGNzLTMyIC1tYXJjaD1hcm12NCAtbXR1bmU9YXJtN3RkbWkgLW1zaG9ydC1sb2Fk
+LWJ5dGVzIC1tc29mdC1mbG9hdCAgIC1ub3N0ZGluYyAtaXdpdGhwcmVmaXggaW5jbHVkZSAtREtC
+VUlMRF9CQVNFTkFNRT1jaGlwcmVnICAtREVYUE9SVF9TWU1UQUIgLWMgY2hpcHJlZy5jDQoJSW4g
+ZmlsZSBpbmNsdWRlZCBmcm9tIC9tbnQvbGludXgvbGhoLXNpZ21hL2FybXV0aWxzXzIuNS4xMzgu
+MC9idWlsZF9hcm0vbGludXgtMi40LjI2LWVtODZ4eC9pbmNsdWRlL2xpbnV4L210ZC9tYXAuaDox
+MSwNCiAgICAgICAgICAgICAgICAgZnJvbSBjaGlwcmVnLmM6MTQ6DQovbW50L2xpbnV4L2xoaC1z
+aWdtYS9hcm11dGlsc18yLjUuMTM4LjAvYnVpbGRfYXJtL2xpbnV4LTIuNC4yNi1lbTg2eHgvaW5j
+bHVkZS9saW51eC9tdGQvY29tcGF0bWFjLmg6MjAzOiBsaW51eC9zdXNwZW5kLmg6IE5vIHN1Y2gg
+ZmlsZSBvciBkaXJlY3RvcnkNCkluIGZpbGUgaW5jbHVkZWQgZnJvbSBjaGlwcmVnLmM6MTQ6DQov
+bW50L2xpbnV4L2xoaC1zaWdtYS9hcm11dGlsc18yLjUuMTM4LjAvYnVpbGRfYXJtL2xpbnV4LTIu
+NC4yNi1lbTg2eHgvaW5jbHVkZS9saW51eC9tdGQvbWFwLmg6MTI4OiB3YXJuaW5nOiAjd2Fybmlu
+ZyAiTm8gQ09ORklHX01URF9NQVBfQkFOS19XSURUSF94eCBzZWxlY3RlZC4gTm8gTk9SIGNoaXAg
+c3VwcG9ydCBjYW4gd29yayINCkluIGZpbGUgaW5jbHVkZWQgZnJvbSBjaGlwcmVnLmM6MTQ6DQov
+bW50L2xpbnV4L2xoaC1zaWdtYS9hcm11dGlsc18yLjUuMTM4LjAvYnVpbGRfYXJtL2xpbnV4LTIu
+NC4yNi1lbTg2eHgvaW5jbHVkZS9saW51eC9tdGQvbWFwLmg6IEluIGZ1bmN0aW9uIGBtYXBfYmFu
+a3dpZHRoX3N1cHBvcnRlZCc6DQovbW50L2xpbnV4L2xoaC1zaWdtYS9hcm11dGlsc18yLjUuMTM4
+LjAvYnVpbGRfYXJtL2xpbnV4LTIuNC4yNi1lbTg2eHgvaW5jbHVkZS9saW51eC9tdGQvbWFwLmg6
+MTYxOiB3YXJuaW5nOiB1bnJlYWNoYWJsZSBjb2RlIGF0IGJlZ2lubmluZyBvZiBzd2l0Y2ggc3Rh
+dGVtZW50DQptYWtlWzVdOiAqKiogW2NoaXByZWcub10gRXJyb3IgMQ0KbWFrZVs1XTogTGVhdmlu
+ZyBkaXJlY3RvcnkgYC9tbnQvbGludXgvbGhoLXNpZ21hL2FybXV0aWxzXzIuNS4xMzguMC9idWls
+ZF9hcm0vbGludXgtMi40LjI2LWVtODZ4eC9kcml2ZXJzL210ZC9jaGlwcycNCm1ha2VbNF06ICoq
+KiBbZmlyc3RfcnVsZV0gRXJyb3IgMg0KbWFrZVs0XTogTGVhdmluZyBkaXJlY3RvcnkgYC9tbnQv
+bGludXgvbGhoLXNpZ21hL2FybXV0aWxzXzIuNS4xMzguMC9idWlsZF9hcm0vbGludXgtMi40LjI2
+LWVtODZ4eC9kcml2ZXJzL210ZC9jaGlwcycNCm1ha2VbM106ICoqKiBbX3N1YmRpcl9jaGlwc10g
+RXJyb3IgMg0KbWFrZVszXTogTGVhdmluZyBkaXJlY3RvcnkgYC9tbnQvbGludXgvbGhoLXNpZ21h
+L2FybXV0aWxzXzIuNS4xMzguMC9idWlsZF9hcm0vbGludXgtMi40LjI2LWVtODZ4eC9kcml2ZXJz
+L210ZCcNCm1ha2VbMl06ICoqKiBbX3N1YmRpcl9tdGRdIEVycm9yIDINCm1ha2VbMl06IExlYXZp
+bmcgZGlyZWN0b3J5IGAvbW50L2xpbnV4L2xoaC1zaWdtYS9hcm11dGlsc18yLjUuMTM4LjAvYnVp
+bGRfYXJtL2xpbnV4LTIuNC4yNi1lbTg2eHgvZHJpdmVycycNCm1ha2VbMV06ICoqKiBbX2Rpcl9k
+cml2ZXJzXSBFcnJvciAyDQptYWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL21udC9saW51eC9s
+aGgtc2lnbWEvYXJtdXRpbHNfMi41LjEzOC4wL2J1aWxkX2FybS9saW51eC0yLjQuMjYtZW04Nnh4
+Jw0KbWFrZTogKioqIFsvbW50L2xpbnV4L2xoaC1zaWdtYS9hcm11dGlsc18yLjUuMTM4LjAvYnVp
+bGRfYXJtL2xpbnV4LTIuNC4yNi1lbTg2eHgvbGludXguYmluXSBFcnJvciAyDQoNCg0KDQpCZXN0
+IFJlZ2FyZHMhDQqhoaGhoaGhoaGhoaENCkxpIEhhaWhvbmcNCkhhcmR3YXJlIEVuZ2luZWVyDQpO
+aW5nYm8gQ0FTIElDIERlc2lnbiBDZW50ZXIgICAgIA0KRmF4o7ogODYtNTc0LTg3OTA4NDg0DQpU
+ZWyjuiA4Ni01NzQtODc5MTAxMDQNCldlYjogd3d3Lm5iaWNjLmNvbQ0KRS1NYWlso7psaGhAbmJp
+Y2MuY29tDQo=
