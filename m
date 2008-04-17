@@ -1,20 +1,23 @@
-Received: from smtp.nblnetworks.fi ([2001:1bc8:100c:f220::66]
-	helo=smtp-69.nebula.fi)
+Received: from ug-out-1314.google.com ([66.249.92.172])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jlm6f-0003ZB-Fa
-	for linux-mtd@lists.infradead.org; Tue, 15 Apr 2008 14:25:57 +0000
-Received: from [127.0.0.1] (nblzone-209-18.nblnetworks.fi [83.145.209.18])
-	by smtp-69.nebula.fi (Postfix) with ESMTP id ED90265E93A
+	id 1JmPwl-0002Cj-UO
+	for linux-mtd@lists.infradead.org; Thu, 17 Apr 2008 08:58:24 +0000
+Received: by ug-out-1314.google.com with SMTP id 23so1024477ugr.45
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 15 Apr 2008 17:25:54 +0300 (EEST)
-Message-ID: <4804BB40.9080403@hut.fi>
-Date: Tue, 15 Apr 2008 17:27:12 +0300
-From: Jussi Hakala <jussi.hakala@hut.fi>
+	Thu, 17 Apr 2008 01:58:19 -0700 (PDT)
+Message-ID: <90d987c0804170158x73f3ad16o1b0cefe6adddb9b9@mail.gmail.com>
+Date: Thu, 17 Apr 2008 14:28:19 +0530
+From: "rohit h" <hrohit85@gmail.com>
+To: "Adrian Hunter" <ext-adrian.hunter@nokia.com>
+Subject: Re: [JFFS2] Running fsstress on JFFS2 causing freeze
+In-Reply-To: <4804AAE5.9060609@nokia.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mkfs.jffs2.c: Fix issue with crashing when using lzo
-	compression
-Content-Type: multipart/mixed; boundary="------------070306090600030404040703"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <90d987c0804150511v7063ebcdx8e769c6c20161899@mail.gmail.com>
+	<4804AAE5.9060609@nokia.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,49 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------070306090600030404040703
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Calling jffs2_compressors_init() before page_size results in invalid 
-compression buffer, which in turn leads to segmentation fault when lzo 
-compression is used, for example:
-
-mkfs.jffs2 -r /path-to/mtd-test -o /tmp/mtd-test.jffs2 -e 128KiB -l -n 
--X lzo -x zlib
-
-Thanks to Siarhei Siamashka <siarhei dot siamashka at nokia dot com> for 
-the patch.
-
-
-
---------------070306090600030404040703
-Content-Type: text/x-diff;
- name="lzo-fix.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="lzo-fix.patch"
-
-diff -Naur main.d/mtd-utils-0.0~200802271600.orig/mkfs.jffs2.c main.d/mtd-utils-0.0~200802271600/mkfs.jffs2.c
---- main.d/mtd-utils-0.0~200802271600.orig/mkfs.jffs2.c	2008-04-15 14:37:04.000000000 +0300
-+++ main.d/mtd-utils-0.0~200802271600/mkfs.jffs2.c	2008-04-15 14:38:51.000000000 +0300
-@@ -1662,14 +1662,14 @@
- 	int compr_prior  = -1;
- 	int warn_page_size = 0;
- 
--	jffs2_compressors_init();
--
- 	page_size = sysconf(_SC_PAGESIZE);
- 	if (page_size < 0) /* System doesn't know so ... */
- 		page_size = 4096; /* ... we make an educated guess */
- 	if (page_size != 4096)
- 		warn_page_size = 1; /* warn user if page size not 4096 */
- 
-+	jffs2_compressors_init();
-+
- 	while ((opt = getopt_long(argc, argv,
- 					"D:d:r:s:o:qUPfh?vVe:lbp::nc:m:x:X:Lty:i:", long_options, &c)) >= 0)
- 	{
-
---------------070306090600030404040703--
+On Tue, Apr 15, 2008 at 6:47 PM, Adrian Hunter
+<ext-adrian.hunter@nokia.com> wrote:
+> rohit h wrote:
+>
+> > Hello everyone.
+> > I am running a filesystem testing application "fsstress" on JFFS2.
+> > The JFFS2 code is from linux-2.6.22 kernel.All the processes spawned
+> > by fsstress do filesystem operations on the JFFS2 partition.After some
+> > time all the processes go into "UNINTERRUPTIBLE SLEEP" state as shown.
+> >
+>
+>  It is probably the same issue described here:
+>
+>  http://lists.infradead.org/pipermail/linux-mtd/2008-April/021039.html
+>
+>
+Thanks a lot.
+I'll  test the patch and post the the results.
+Rohit
