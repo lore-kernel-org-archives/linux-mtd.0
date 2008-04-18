@@ -1,15 +1,18 @@
-Received: from ernst.netinsight.se ([212.247.11.2])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jmasb-0003q1-Sl
-	for linux-mtd@lists.infradead.org; Thu, 17 Apr 2008 20:38:50 +0000
-Message-ID: <4807B552.7090501@users.sourceforge.net>
-Date: Thu, 17 Apr 2008 22:38:42 +0200
-From: =?ISO-8859-1?Q?Anders_Grafstr=F6m?= <grfstrm@users.sourceforge.net>
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jmkwf-0004qF-0k
+	for linux-mtd@lists.infradead.org; Fri, 18 Apr 2008 07:23:41 +0000
+Message-ID: <48084B80.2050601@nokia.com>
+Date: Fri, 18 Apr 2008 10:19:28 +0300
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
 MIME-Version: 1.0
-To: Linux-MTD Mailing List <linux-mtd@lists.infradead.org>
-Subject: cfi_cmdset_0001.c: Excessive erase suspends
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: Abhijit Singh <mail2abhijit@gmail.com>
+Subject: Re: inconsistent behaviour with onenand with 2.6.24 kernel
+References: <60e9ed290804170851y17cd9ea8nbb2531275eb899fb@mail.gmail.com>
+In-Reply-To: <60e9ed290804170851y17cd9ea8nbb2531275eb899fb@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,20 +22,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With recent kernels I've been seeing a lot of these
-"Newly-erased block contained word 0xffff0000 at offset 0x00180000"
-on a board using Intel 28F640J5 flash chips.
+Abhijit Singh wrote:
+> I am facing some problem with onenand with the kernel 2.6.24.
 
-It looks like the errors are caused by large amounts of erase suspends.
-Each erase gets suspended around 8500 times and in some extreme cases
-a lot more. The erase ends without any error bits set but it turns out
-that it has failed.
+Yes it is broken.
 
-It seems like some flash chips have a limit on the number of times that
-the erase can be suspended. I have not seen any information on the Intel
-chips but a Spansion AppNote says 5,980 times for some of their devices
-before running the risk of an erase fail.
+Here is a list on OneNAND patches in 2.6.25
 
-So I'm guessing that erase suspends need to be paced somehow?
+69d79186dc48ca22a0ce69511bef8ef6c2465ada [MTD] [OneNAND] Use pre-alloced oob buffer instead of local buffer
+978cb38a296fceac82a8a757f6387d7ef2a21ac6 [MTD] [OneNAND] Use the u_char instead of char in oobbuf
+b2581be291aa8595eadf3d6933d04d0f1d01b46d [MTD] [OneNAND] Check the initial bad block using ONENAND_CTRL_ERROR
+e71f04fc9234b14636887ceb5862755f1690642c [MTD] [OneNAND] Get correct density from device ID
+b21b72cf33bb212414c1d967850e261b795befa4 [MTD] [OneNAND] Consolidate OneNAND operation order
+9d2f0b7a3de28d06ba4011b835b9a7e772553f0d [MTD] [OneNAND] fix call to onenand_verify when writing subpages
+d0b36d8cc8f345ec5faadd15daaecfb409b94523 [MTD] [OneNAND] Do not release chip twice
 
-/Anders
+The last one "[MTD] [OneNAND] Do not release chip twice" is absolutely essential, so here it is:
+
+
+commit d0b36d8cc8f345ec5faadd15daaecfb409b94523
+Author: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Date:   Thu Jan 24 12:48:37 2008 +0200
+
+    [MTD] [OneNAND] Do not release chip twice
+    
+    Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+    Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index ed9f9c0..e5882b6 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -1447,9 +1447,6 @@ static int onenand_write_ops_nolock(struct mtd_info *mtd, loff_t to,
+                buf += thislen;
+        }
+ 
+-       /* Deselect and wake up anyone waiting on the device */
+-       onenand_release_device(mtd);
+-
+        ops->retlen = written;
+ 
+        return ret;
