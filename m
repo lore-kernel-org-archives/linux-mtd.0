@@ -1,19 +1,24 @@
-Received: from caramon.arm.linux.org.uk ([78.32.30.218])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JnFW3-0000eL-3P
-	for linux-mtd@lists.infradead.org; Sat, 19 Apr 2008 16:02:16 +0000
-Date: Sat, 19 Apr 2008 16:56:58 +0100
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-To: linux-mtd@lists.infradead.org
-Subject: Fwd: Re: [PATCH 5/9] magician: enable flash VPP GPIO and build in MTD,
-	physmap-flash and JFFS2
-Message-ID: <20080419155658.GD19303@flint.arm.linux.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: LAK <linux-arm-kernel@lists.arm.linux.org.uk>,
-	Philipp Zabel <philipp.zabel@gmail.com>
+Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JnGRX-0004EG-0e
+	for linux-mtd@lists.infradead.org; Sat, 19 Apr 2008 17:01:39 +0000
+From: "Joakim Tjernlund" <Joakim.Tjernlund@transmode.se>
+To: =?iso-8859-1?Q?'Anders_Grafstr=F6m'?= <grfstrm@users.sourceforge.net>,
+	"'Jared Hulbert'" <jaredeh@gmail.com>,
+	"'Alexey Korolev'" <akorolev@infradead.org>,
+	"'Linux-MTD Mailing List'" <linux-mtd@lists.infradead.org>
+References: <4807B552.7090501@users.sourceforge.net>	<Pine.LNX.4.64.0804181554230.27235@pentafluge.infradead.org>	<20080418163536.GD31520@shareable.org>	<6934efce0804181054y5887c6b4kc1129deec2d3a2eb@mail.gmail.com>	<48091C7A.1070709@users.sourceforge.net>
+	<012501c8a1fe$4a5308e0$def91aa0$@Tjernlund@transmode.se>
+	<4809F7EC.9010808@users.sourceforge.net>
+In-Reply-To: <4809F7EC.9010808@users.sourceforge.net>
+Subject: RE: cfi_cmdset_0001.c: Excessive erase suspends
+Date: Sat, 19 Apr 2008 19:01:20 +0200
+Message-ID: <017701c8a23e$fdd70b60$f9852220$@Tjernlund@transmode.se>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Language: sv
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,171 +28,164 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It would be nice if someone in MTD land could take a look at this.  It's
-been hanging for about a month wanting an answer to the question.  Thanks.
-
------ Forwarded message from Philipp Zabel <philipp.zabel@gmail.com> -----
-Subject: Re: [PATCH 5/9] magician: enable flash VPP GPIO and build in MTD,
-	physmap-flash and JFFS2
-From: Philipp Zabel <philipp.zabel@gmail.com>
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>
-Date: Tue, 08 Apr 2008 20:52:53 +0200
-
-Am Freitag, den 21.03.2008, 12:07 +0000 schrieb Russell King - ARM
-Linux:
-> On Fri, Mar 21, 2008 at 12:48:42PM +0100, pHilipp Zabel wrote:
-> > On Thu, Mar 20, 2008 at 10:01 PM, Russell King - ARM Linux
-> > <linux@arm.linux.org.uk> wrote:
-> > > On Mon, Mar 17, 2008 at 09:17:51PM +0100, Philipp Zabel wrote:
-> > >  > This enables rootfs on StrataFlash if the bootloader supplies the
-> > >  > partition list.
-> > >
-> > > > diff --git a/arch/arm/mach-pxa/magician.c b/arch/arm/mach-pxa/magician.c
-> > >  > index 3a3252e..531be3d 100644
-> > >  > --- a/arch/arm/mach-pxa/magician.c
-> > >  > +++ b/arch/arm/mach-pxa/magician.c
-> > >  > @@ -223,6 +223,15 @@ static struct pxaohci_platform_data magician_ohci_info = {
-> > >  >   * StrataFlash
-> > >  >   */
-> > >  >
-> > >  > +static void magician_set_vpp(struct map_info *map, int vpp)
-> > >  > +{
-> > >  > +     static int old_vpp;
-> > >  > +     if (vpp == old_vpp)
-> > >  > +             return;
-> > >  > +     gpio_set_value(EGPIO_MAGICIAN_FLASH_VPP, vpp);
-> > >  > +     old_vpp = vpp;
-> > >  > +}
-> > >  > +
-> > >
-> > >  Have you checked that this can't race with itself?
-> > 
-> > No, I have just seen that set_vpp is called very often in quick
-> > succession with the same vpp value and wanted to avoid overhead,
-> > assuming that the mtd subsystem cares about locking.
-> > I have just seen that omap-nor does something similar but with a
-> > counter. Maybe this would be better?
-> 
-> No idea.  These are questions that only the MTD folk can answer.
-
-I got no answer yet, probably because I'm not subscribed my mail got lost in moderation.
-For now is it ok if I just drop that 'optimization'?
-
-regards
-Philipp
-
-diff --git a/arch/arm/configs/magician_defconfig b/arch/arm/configs/magician_defconfig
-index 76960c7..b9b234b 100644
---- a/arch/arm/configs/magician_defconfig
-+++ b/arch/arm/configs/magician_defconfig
-@@ -1,7 +1,7 @@
- #
- # Automatically generated make config: don't edit
--# Linux kernel version: 2.6.24-rc3
--# Tue Nov 20 12:05:40 2007
-+# Linux kernel version: 2.6.24-rc6
-+# Sat Dec 22 10:38:43 2007
- #
- CONFIG_ARM=y
- CONFIG_SYS_SUPPORTS_APM_EMULATION=y
-@@ -461,7 +461,6 @@ CONFIG_MTD_CMDLINE_PARTS=y
- CONFIG_MTD_CHAR=m
- CONFIG_MTD_BLKDEVS=m
- CONFIG_MTD_BLOCK=m
--# CONFIG_MTD_BLOCK_RO is not set
- # CONFIG_FTL is not set
- # CONFIG_NFTL is not set
- # CONFIG_INFTL is not set
-@@ -472,9 +471,8 @@ CONFIG_MTD_BLOCK=m
- #
- # RAM/ROM/Flash chip drivers
- #
--CONFIG_MTD_CFI=m
-+CONFIG_MTD_CFI=y
- # CONFIG_MTD_JEDECPROBE is not set
--CONFIG_MTD_GEN_PROBE=m
- # CONFIG_MTD_CFI_ADV_OPTIONS is not set
- CONFIG_MTD_MAP_BANK_WIDTH_1=y
- CONFIG_MTD_MAP_BANK_WIDTH_2=y
-@@ -486,10 +484,9 @@ CONFIG_MTD_CFI_I1=y
- CONFIG_MTD_CFI_I2=y
- # CONFIG_MTD_CFI_I4 is not set
- # CONFIG_MTD_CFI_I8 is not set
--CONFIG_MTD_CFI_INTELEXT=m
-+CONFIG_MTD_CFI_INTELEXT=y
- # CONFIG_MTD_CFI_AMDSTD is not set
- # CONFIG_MTD_CFI_STAA is not set
--CONFIG_MTD_CFI_UTIL=m
- # CONFIG_MTD_RAM is not set
- # CONFIG_MTD_ROM is not set
- # CONFIG_MTD_ABSENT is not set
-@@ -499,10 +496,10 @@ CONFIG_MTD_CFI_UTIL=m
- # Mapping drivers for chip access
- #
- # CONFIG_MTD_COMPLEX_MAPPINGS is not set
--CONFIG_MTD_PHYSMAP=m
--CONFIG_MTD_PHYSMAP_START=0x8000000
--CONFIG_MTD_PHYSMAP_LEN=0x0
--CONFIG_MTD_PHYSMAP_BANKWIDTH=2
-+CONFIG_MTD_PHYSMAP=y
-+CONFIG_MTD_PHYSMAP_START=0x00000000
-+CONFIG_MTD_PHYSMAP_LEN=0x04000000
-+CONFIG_MTD_PHYSMAP_BANKWIDTH=4
- # CONFIG_MTD_PXA2XX is not set
- # CONFIG_MTD_ARM_INTEGRATOR is not set
- # CONFIG_MTD_SHARP_SL is not set
-@@ -951,7 +948,7 @@ CONFIG_TMPFS=y
- # CONFIG_BEFS_FS is not set
- # CONFIG_BFS_FS is not set
- # CONFIG_EFS_FS is not set
--CONFIG_JFFS2_FS=m
-+CONFIG_JFFS2_FS=y
- CONFIG_JFFS2_FS_DEBUG=0
- CONFIG_JFFS2_FS_WRITEBUFFER=y
- # CONFIG_JFFS2_FS_WBUF_VERIFY is not set
-@@ -1142,10 +1139,10 @@ CONFIG_CRC_CCITT=y
- CONFIG_CRC32=y
- # CONFIG_CRC7 is not set
- # CONFIG_LIBCRC32C is not set
--CONFIG_ZLIB_INFLATE=m
--CONFIG_ZLIB_DEFLATE=m
--CONFIG_LZO_COMPRESS=m
--CONFIG_LZO_DECOMPRESS=m
-+CONFIG_ZLIB_INFLATE=y
-+CONFIG_ZLIB_DEFLATE=y
-+CONFIG_LZO_COMPRESS=y
-+CONFIG_LZO_DECOMPRESS=y
- CONFIG_PLIST=y
- CONFIG_HAS_IOMEM=y
- CONFIG_HAS_IOPORT=y
-diff --git a/arch/arm/mach-pxa/magician.c b/arch/arm/mach-pxa/magician.c
-index dadd1a1..10376a1 100644
---- a/arch/arm/mach-pxa/magician.c
-+++ b/arch/arm/mach-pxa/magician.c
-@@ -223,6 +223,11 @@ static struct pxaohci_platform_data magician_ohci_info = {
-  * StrataFlash
-  */
- 
-+static void magician_set_vpp(struct map_info *map, int vpp)
-+{
-+	gpio_set_value(EGPIO_MAGICIAN_FLASH_VPP, vpp);
-+}
-+
- #define PXA_CS_SIZE		0x04000000
- 
- static struct resource strataflash_resource = {
-@@ -233,6 +238,7 @@ static struct resource strataflash_resource = {
- 
- static struct physmap_flash_data strataflash_data = {
- 	.width = 4,
-+	.set_vpp = magician_set_vpp,
- };
- 
- static struct platform_device strataflash = {
--- 
-1.5.4.5
 
 
+> -----Original Message-----
+> From: Anders Grafstr=F6m [mailto:grfstrm@users.sourceforge.net]
+> Sent: den 19 april 2008 15:47
+> To: Joakim Tjernlund; 'Jared Hulbert'; 'Alexey Korolev'; 'Linux-MTD =
+Mailing List'
+> Subject: Re: cfi_cmdset_0001.c: Excessive erase suspends
+>=20
+> Joakim Tjernlund wrote:
+> > Don't you need to check that the chip is suspended before you do any
+> > new operation?
+>=20
+> You're right.
+>=20
+> Here's the improved version;
+>=20
+> static void erase_suspend(unsigned int loops)
+> {
+> 	volatile unsigned int *flash =3D (unsigned int *)0x41040000;
+> 	unsigned int i;
+> 	unsigned int suspends =3D 0;
+> 	unsigned int words =3D 2;
+> 	unsigned int timeout;
+>=20
+> 	/* Make sure there's something to erase */
+> 	for (i =3D 0; i < 0x10000; i++) {
+> 		if (flash[i] =3D=3D 0xffffffff) {
+> 			flash[i] =3D 0x00400040;
+> 			flash[i] =3D 0;
+> 			while ((flash[i] & 0x00800080) !=3D 0x00800080);
+> 		}
+> 	}
+>=20
+> 	/* Clear status */
+> 	flash[0] =3D 0x00500050;
+>=20
+> 	/* Erase */
+> 	flash[0] =3D 0x00200020;
+> 	flash[0] =3D 0x00d000d0;
+>=20
+> 	while (1) {
+> 		/* Suspend */
+> 		flash[0] =3D 0x00b000b0;
+> 		flash[0] =3D 0x00700070;
+> 		timeout =3D 100000;
+> 		while ((flash[0] & 0x00800080) !=3D 0x00800080 && --timeout);
+> 		if (!timeout)
+> 			printf("suspend timeout\n");
+> 		suspends++;
+>=20
+> 		/* Short delay */
+> 		for (i =3D 0; i < 1000; i++);
+>=20
+> 		/* Resume */
+> 		flash[0] =3D 0x00d000d0;
+> 		flash[0] =3D 0x00700070;
+>=20
+> 		/* Erase done ? */
+> 		if ((flash[0] & 0x00800080) =3D=3D 0x00800080) {
+> 			printf("\nstatus %08x\n", flash[0]);
+> 			break;
+> 		}
+>=20
+> 		/* Short delay */
+> 		for (i =3D 0; i < loops; i++);
+> 	}
+>=20
+> 	/* Read array */
+> 	flash[0] =3D 0x00ff00ff;
+>=20
+> 	/* Show the first 2 failed words */
+> 	for (i =3D 0; i < 0x10000; i++) {
+> 		if (flash[i] !=3D 0xffffffff) {
+> 			printf("%08x\n", flash[i]);
+> 			if (--words =3D=3D 0)
+> 				break;
+> 		}
+> 	}
+>=20
+> 	printf("%d suspends\n", suspends);
+> }
+>=20
+> void test_flash_erase_suspend(void)
+> {
+> 	unsigned int loops;
+>=20
+> 	for (loops =3D 6000; loops > 2000; loops -=3D 500) {
+> 		printf("\n%d loops", loops);
+> 		erase_suspend(loops);
+> 	}
+> }
+>=20
+>=20
+> It produced this output at one occasion:
+>=20
+> 6000 loops
+> status 00800080
+> ffff0000
+> ffff0000
+> 4783 suspends
+>=20
+> 5500 loops
+> status 00800080
+> 5508 suspends
+>=20
+> 5000 loops
+> status 008000a0
+> 6394 suspends
+>=20
+> 4500 loops
+> status 00a000a0
+> fffffeff
+> fffffffe
+> 5169 suspends
+>=20
+> 4000 loops
+> status 00a000a0
+> fffffeff
+> fffffeff
+> 5378 suspends
+>=20
+> 3500 loops
+> status 00a000a0
+> aaaaaaaa
+> aaaaaaaa
+> 5715 suspends
+>=20
+> 3000 loops
+> status 00a000a0
+> 55555555
+> 55555555
+> 6142 suspends
+>=20
+> 2500 loops
+> status 00a000a0
+> 00000000
+> 00000000
+> 6929 suspends
+>=20
+> It locks up when I drop it down to 2000 or less iterations in the loop =
+between resume and suspend.
+> I think I need to do more testing with properly timed delays.
+>=20
+> Is there anything else that I have missed?
 
------ End forwarded message -----
+Perhaps, you should make "i" a volatile. That said I know that Intel
+had erase suspend bugs in their early strata flash, that=92s why there =
+is
+a define in cmdset_0001 that disables them.
+
+Maybe you got buggy chips?
+oh, just remembered, strata chips needs to have a stable address bus =
+before
+CS is pulled. We had add a small delay on CS in the memory controller, =
+otherwise
+they would fail, especially when cold.=20
+
+>=20
+> /Anders
+>=20
