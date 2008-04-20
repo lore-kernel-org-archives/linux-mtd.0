@@ -1,24 +1,19 @@
-Received: from mail2.shareable.org ([80.68.89.115])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JndMH-0003oq-4y
-	for linux-mtd@lists.infradead.org; Sun, 20 Apr 2008 17:29:45 +0000
-Date: Sun, 20 Apr 2008 18:29:37 +0100
-From: Jamie Lokier <jamie@shareable.org>
-To: Josh Boyer <jwboyer@gmail.com>
+Received: from mail-out.m-online.net ([212.18.0.9])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jnhvl-0003lI-5Z
+	for linux-mtd@lists.infradead.org; Sun, 20 Apr 2008 22:22:41 +0000
+To: Bernard Blackham <bernard@largestprime.net>
+From: Wolfgang Denk <wd@denx.de>
 Subject: Re: [U-Boot-Users] ubi and u-boot
-Message-ID: <20080420172937.GA16184@shareable.org>
-References: <4808AE6F.4030505@largestprime.net>
-	<1208536808.6654.6.camel@vader.jdub.homelinux.org>
-	<20080418165957.GG31520@shareable.org>
-	<1208546341.6654.8.camel@vader.jdub.homelinux.org>
-	<20080420160413.GC14268@shareable.org>
-	<1208709853.6654.23.camel@vader.jdub.homelinux.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1208709853.6654.23.camel@vader.jdub.homelinux.org>
-Cc: u-boot-users@lists.sourceforge.net,
-	Bernard Blackham <bernard@largestprime.net>, linux-mtd@lists.infradead.org
+Mime-version: 1.0
+Content-type: text/plain; charset=ISO-8859-1
+Content-transfer-encoding: 8bit
+In-reply-to: Your message of "Sat, 19 Apr 2008 01:49:47 +0800."
+	<4808DF3B.2080702@largestprime.net>
+Date: Mon, 21 Apr 2008 00:22:37 +0200
+Sender: wd@denx.de
+Message-Id: <20080420222237.4AE5324657@gemini.denx.de>
+Cc: u-boot-users@lists.sourceforge.net, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,43 +23,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Josh Boyer wrote:
-> > Hamish Moffatt wrote (Message-ID: <20080407073227.GA6317@cloud.net.au>):
-> > > Sorry I should've said 512MiB perhaps: 512 megabytes.
-> > > UBI attach time appears to be about 6 seconds.
-> > 
-> > If 6 seconds is as fast as it can be done, annoying but fair enough.
+In message <4808DF3B.2080702@largestprime.net> you wrote:
 > 
-> You should read that thread a bit more carefully.  The scan time is
-> highly dependent upon the NAND driver beneath UBI.  For example, a UBI
-> scan/attach on a 1GiB device on OLPC was 2 seconds.
+> Wolfgang showed some interest briefly too.[1]
 
-Ah, I intended to quote the 2 seconds too but forgot, sorry.  I think
-2 seconds per gigabyte is a significant time, too, but not so much.
+I am definitely interested.
 
-The followup suggested it was due to the speed of the chip, not so
-much the driver.
+>  > The UBI (version 1 :-) initial scan is not
+> > fast for large flash, and if the bootloader does it too, that's twice
+> > as much time to boot.
 
-> > Adding _another_ 6 seconds to the boot time seems a lot to me.
-> 
-> You mean adding another "X amount of time depending on factors outside
-> of UBI's control."
+We have the same (at at least similar) problems when using JFFS2 file
+systems in U-Boot. Yet, being able to do this is quite useful in many
+situations.
 
-Well, yes, that would be a reason to consider whether doing it is a
-good idea :-)
+> > However, if there was a protocol for bootloader to pass the scan
+> > results to the booted kernel, that would be very nice.
 
-> > I can understand the hesitation, but I think 6 seconds just to find
-> > the kernel - especially when doing a 'disk resume' - is quite a lot.
-> 
-> You should really stop quoting this 6 second number.
+That would be of course a good thing to have :-)
 
-Let's call it 2 seconds per gigabyte, then.
+> If there's no compelling reasons not to, I'll try and find some time to 
+> work on ubi in uboot. I'm not expecting it to be easy though :)
 
-> > Note that I haven't tried UBI myself yet.  I'm going on what has been
-> > written to the list so far, as quoted above.
-> 
-> Maybe you should try it :).
+Thanks in advance, and good luck!
 
-I will when good looking figures are being quoted on the list ;-)
+Best regards,
 
--- Jamie
+Wolfgang Denk
+
+-- 
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+All these theories, diverse as they are, have two things  in  common:
+they explain the observed facts, and they are completeley and utterly
+wrong.                       - Terry Pratchett, _The Light Fantastic_
