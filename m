@@ -1,23 +1,23 @@
-Received: from risingsoftware01.propagation.net ([66.221.33.65])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JnkTT-0000OT-7B
-	for linux-mtd@lists.infradead.org; Mon, 21 Apr 2008 01:05:39 +0000
-Date: Mon, 21 Apr 2008 11:05:21 +1000
-From: Hamish Moffatt <hamish@cloud.net.au>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [U-Boot-Users] ubi and u-boot
-Message-ID: <20080421010521.GA6317@cloud.net.au>
-References: <4808AE6F.4030505@largestprime.net>
-	<1208536808.6654.6.camel@vader.jdub.homelinux.org>
-	<20080418165957.GG31520@shareable.org>
-	<1208546341.6654.8.camel@vader.jdub.homelinux.org>
-	<20080420160413.GC14268@shareable.org>
+Received: from wf-out-1314.google.com ([209.85.200.169])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JnpgM-0002Vf-8f
+	for linux-mtd@lists.infradead.org; Mon, 21 Apr 2008 06:39:18 +0000
+Received: by wf-out-1314.google.com with SMTP id 29so1295927wff.24
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 20 Apr 2008 23:39:15 -0700 (PDT)
+Message-ID: <60e9ed290804202339v14b04468hafdbc9e088bee4fe@mail.gmail.com>
+Date: Mon, 21 Apr 2008 12:09:15 +0530
+From: "Abhijit Singh" <mail2abhijit@gmail.com>
+To: "Adrian Hunter" <ext-adrian.hunter@nokia.com>
+Subject: Re: inconsistent behaviour with onenand with 2.6.24 kernel
+In-Reply-To: <48084B80.2050601@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <20080420160413.GC14268@shareable.org>
-Cc: u-boot-users@lists.sourceforge.net, Josh Boyer <jwboyer@gmail.com>,
-	Bernard Blackham <bernard@largestprime.net>
+References: <60e9ed290804170851y17cd9ea8nbb2531275eb899fb@mail.gmail.com>
+	<48084B80.2050601@nokia.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,35 +27,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Apr 20, 2008 at 05:04:14PM +0100, Jamie Lokier wrote:
-> I was thinking this:
-> 
-> Hamish Moffatt wrote (Message-ID: <20080407073227.GA6317@cloud.net.au>):
-> > Sorry I should've said 512MiB perhaps: 512 megabytes.
-> > UBI attach time appears to be about 6 seconds.
-> 
-> If 6 seconds is as fast as it can be done, annoying but fair enough.
-> 
-> Adding _another_ 6 seconds to the boot time seems a lot to me.
+Hi Adrian,
 
-Yes. I have a prototype system here booting a minimal system from NOR
-flash then booting the full system from NAND via kexec. I'm suffering
-my 6 seconds of UBI attach time twice each boot.
+On Fri, Apr 18, 2008 at 12:49 PM, Adrian Hunter
+<ext-adrian.hunter@nokia.com> wrote:
+> Abhijit Singh wrote:
+> > I am facing some problem with onenand with the kernel 2.6.24.
+> >
+>
+> Yes it is broken.
+>
+> Here is a list on OneNAND patches in 2.6.25
+>
+> 69d79186dc48ca22a0ce69511bef8ef6c2465ada [MTD] [OneNAND] Use pre-alloced oob
+> buffer instead of local buffer
+> 978cb38a296fceac82a8a757f6387d7ef2a21ac6 [MTD] [OneNAND] Use the u_char
+> instead of char in oobbuf
+> b2581be291aa8595eadf3d6933d04d0f1d01b46d [MTD] [OneNAND] Check the initial
+> bad block using ONENAND_CTRL_ERROR
+> e71f04fc9234b14636887ceb5862755f1690642c [MTD] [OneNAND] Get correct density
+> from device ID
+> b21b72cf33bb212414c1d967850e261b795befa4 [MTD] [OneNAND] Consolidate OneNAND
+> operation order
+> 9d2f0b7a3de28d06ba4011b835b9a7e772553f0d [MTD] [OneNAND] fix call to
+> onenand_verify when writing subpages
+> d0b36d8cc8f345ec5faadd15daaecfb409b94523 [MTD] [OneNAND] Do not release chip
+> twice
+>
+> The last one "[MTD] [OneNAND] Do not release chip twice" is absolutely
+> essential, so here it is:
 
-Six seconds does seem to be abnormal though - I don't have a hardware
-NAND controller so it's all software ECC, GPIO for chip selects etc. The
-performance is said to be much better with a hardware controller.
-
-> To remove the double scan:
-> 
-> > > However, if there was a protocol for bootloader to pass the scan
-> > > results to the booted kernel, that would be very nice.
-
-That would certainly help my case. Fortunately my device is usually
-always-on and therefore boot time is not critical, and we don't
-suspend/resume.
+I have tried all the above mentioned patches. But the status is same.
+behaviour is inconsistent.
+It still leads to system hangs while writing big files. Any other pointers ?
+But it is working fine on 2.6.20 kernel.
 
 
-Hamish
--- 
-Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
+Abhijit
