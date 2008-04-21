@@ -1,25 +1,20 @@
-Received: from wa-out-1112.google.com ([209.85.146.181])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JnuWY-0002YB-3M
-	for linux-mtd@lists.infradead.org; Mon, 21 Apr 2008 11:49:31 +0000
-Received: by wa-out-1112.google.com with SMTP id v33so2651914wah.2
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 21 Apr 2008 04:49:28 -0700 (PDT)
-Message-ID: <bae050c10804210449w14e75e0wf977815c22423358@mail.gmail.com>
-Date: Mon, 21 Apr 2008 19:49:23 +0800
-From: Nancy <nancydreaming@gmail.com>
-To: dedekind@infradead.org
-Subject: Re: ubi-utils
-In-Reply-To: <1208776123.5965.367.camel@sauron>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <bae050c10804210148g7e36db07vd7df62e286da6490@mail.gmail.com>
-	<1208769345.5965.363.camel@sauron>
-	<bae050c10804210243l848eeb6m97a33c5a65d5dfc6@mail.gmail.com>
-	<1208776123.5965.367.camel@sauron>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JnunD-0000rQ-Sb
+	for linux-mtd@lists.infradead.org; Mon, 21 Apr 2008 12:06:44 +0000
+Subject: Re: [U-Boot-Users] ubi and u-boot
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Wolfgang Denk <wd@denx.de>
+In-Reply-To: <20080420222237.4AE5324657@gemini.denx.de>
+References: <20080420222237.4AE5324657@gemini.denx.de>
+Content-Type: text/plain; charset=utf-8
+Date: Mon, 21 Apr 2008 15:05:08 +0300
+Message-Id: <1208779508.5965.371.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: u-boot-users@lists.sourceforge.net,
+	Bernard Blackham <bernard@largestprime.net>, linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,33 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > unubi need a image file as one of its parameter, its job seems like
-> > ubiupdatevol do, but I need an opposite function. I need a tool to
-> > generate a volume image
->
-> I do not think you got it right because its input file it flash dump,
-> but we do not have anything else at the moment.
+On Mon, 2008-04-21 at 00:22 +0200, Wolfgang Denk wrote:
+> In message <4808DF3B.2080702@largestprime.net> you wrote:
+> >=20
+> > Wolfgang showed some interest briefly too.[1]
+>=20
+> I am definitely interested.
 
-Yes, its input file is ubi image.
-Where is the old ubi-utils' user manual? At least, hope the code
-producer give those tools' usage examples and briefly tell those
-tools' function. Thanks in advance!
+What I would suggest to start with is to teach U-boot to erase flash and
+preserve erase counters, because now it just wipes the erase counters
+out. Also, it would be nice to teach it to flash images properly in case
+of NAND flash.
 
-Ok, so I have to build this tool by myself. Cause there's no tools
-like mkfs.ubifs for vfat filesystem. That's the only way to generate a
-image file the same format like the ubifs.img and all those images can
-be integrated by ubinize to generate a final ubi image file, then
-nandwrite to complete the Nand flash burn job.
+I've just written a documentation section which I hope would help to do
+this. Please, see
+http://www.linux-mtd.infradead.org/doc/ubi.html#L_format
 
-Or, I make all UBIFS volumes in one MTD partition, VFAT as the only
-volume in another MTD partition, attache two MTD partition to UBI.
-Then I do not need to write any tools, but use traditional nandread,
-nandwrite(fixed FF) for VFAT. How about this? Does attach 2 MTD
-partition as 2 UBI devices eat system resources a lot? slow down the
-Nand read or write speed?
-
-Any suggestion?   Thanks!
-
--- 
-Best wishes,
-Nancy
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
