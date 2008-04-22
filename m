@@ -1,17 +1,20 @@
-Received: from tesla.selinc.com ([12.110.71.2])
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JoMIE-0001W9-5Y
-	for linux-mtd@lists.infradead.org; Tue, 22 Apr 2008 17:28:34 +0000
-In-Reply-To: <1208882552.11721.13.camel@sauron>
-To: dedekind@infradead.org
+	id 1JoMtN-0004LB-6b
+	for linux-mtd@lists.infradead.org; Tue, 22 Apr 2008 18:07:00 +0000
 Subject: Re: [RFC] slight UBI scan time improvement
-MIME-Version: 1.0
-Message-ID: <OF2C5F9D9C.5885C22C-ON88257433.005FAD98-88257433.005FF7CC@selinc.com>
-From: Bruce_Leonard@selinc.com
-Date: Tue, 22 Apr 2008 10:28:15 -0700
-Content-Type: text/plain; charset="US-ASCII"
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Bruce_Leonard@selinc.com
+In-Reply-To: <OF2C5F9D9C.5885C22C-ON88257433.005FAD98-88257433.005FF7CC@selinc.com>
+References: <OF2C5F9D9C.5885C22C-ON88257433.005FAD98-88257433.005FF7CC@selinc.com>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 22 Apr 2008 21:07:33 +0300
+Message-Id: <1208887653.11721.14.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Cc: Nancy <nancydreaming@gmail.com>, Hamish Moffatt <hamish@cloud.net.au>,
 	linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,19 +24,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> 
-> I've prepared 2 UBI patches which may slightly improve the scan time. I
-> am not sure though. Would you guys please try them and tell if UBI scan
-> time changed? Thanks in advance.
-> 
+On Tue, 2008-04-22 at 10:28 -0700, Bruce_Leonard@selinc.com wrote:
+> I'll be happy to do so, but it may be a couple of days before I can get=20
+> results to you.  I'm on the road for my company for a few days.  If I can=
+,=20
+> I'll try it out before I leave tonight, but if I can't get to it, it'll b=
+e=20
+> tommorrow night before I can get my equipment set up and running again.
 
-Hi Artem,
+Thanks Bruce,
 
-I'll be happy to do so, but it may be a couple of days before I can get 
-results to you.  I'm on the road for my company for a few days.  If I can, 
-I'll try it out before I leave tonight, but if I can't get to it, it'll be 
-tommorrow night before I can get my equipment set up and running again.
+no problem, this is not urgent and not that important.
 
-See 'ya!
-
-Bruce
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
