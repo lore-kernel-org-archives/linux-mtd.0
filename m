@@ -1,17 +1,15 @@
-Subject: Re: [PATCH][MTD][NAND] PXA300 Zylonite controller support
+Subject: Re: [PATCH] NAND hardware ECC controller on at91sam9263 / at91sam9260
 From: David Woodhouse <dwmw2@infradead.org>
-To: Dmitry Krivoschekov <dmitry.krivoschekov@gmail.com>
-In-Reply-To: <480E164F.4000700@gmail.com>
-References: <1200289475.1727.106.camel@localhost.localdomain>
-	<1208878908.9212.623.camel@pmac.infradead.org>
-	<480E164F.4000700@gmail.com>
+To: Richard Genoud <richard.genoud@gmail.com>
+In-Reply-To: <47BABA0C.8070500@gmail.com>
+References: <47BABA0C.8070500@gmail.com>
 Content-Type: text/plain
-Date: Tue, 22 Apr 2008 19:21:20 +0100
-Message-Id: <1208888480.9212.639.camel@pmac.infradead.org>
+Date: Tue, 22 Apr 2008 19:40:53 +0100
+Message-Id: <1208889653.9212.641.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: eric.y.miao@gmail.com, podstavin@dev.rtsoft.ru,
-	linux-mtd@lists.infradead.org
+Cc: David Brownell <david-b@pacbell.net>, linux-mtd@lists.infradead.org,
+	Haavard Skinnemoen <hskinnemoen@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,31 +19,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2008-04-22 at 20:46 +0400, Dmitry Krivoschekov wrote:
-> Hi David,
+On Tue, 2008-02-19 at 12:14 +0100, Richard Genoud wrote:
+> This is a patch to use the hardware ECC controller of
+> the AT91SAM9260 and AT91SAM9263 for the AT91 nand.
+> On AT91 NAND, there's now a choice between ECC soft,
+> ECC hard or no ECC (for debug).
 > 
-> David Woodhouse wrote:
-> > On Mon, 2008-01-14 at 08:44 +0300, Sergey Podstavin wrote:
-> >> This is a fixed version for pxa3 nand controller from eric miao, 
-> >> working on pxa300 Zylonite
-> >
-> > It doesn't apply, and it contains some very dodgy changes in
-> > arch/arm/kernel/head.S.
-> >
-> > Please can I have a current, working version?
-> >
+> It has been tested on AT91SAM9263 with 8 bits large
+> and small page NAND.
 > 
-> can you instead of this consider a more recent (more clean?) version of
-> that driver submitted by Eric Miao:
 > 
-> http://lists.infradead.org/pipermail/linux-mtd/2008-February/020653.html
+> kernel version : 2.6.25-rc2
+> 
+> Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
 
-Looks like someone didn't try applying their own patch when they
-received it back from the mailing list...
 
-Applying [MTD] [NAND] support for pxa3xx
-fatal: corrupt patch at line 1245
-Patch failed at 0001.
+patching file arch/arm/mach-at91/at91sam9260_devices.c
+Hunk #1 FAILED at 288.
+1 out of 1 hunk FAILED -- saving rejects to file arch/arm/mach-at91/at91sam9260_devices.c.rej
+patching file arch/arm/mach-at91/at91sam9263_devices.c
+Hunk #1 FAILED at 358.
+1 out of 1 hunk FAILED -- saving rejects to file arch/arm/mach-at91/at91sam9263_devices.c.rej
+patching file drivers/mtd/nand/Kconfig
+Hunk #1 succeeded at 278 with fuzz 2.
+patching file drivers/mtd/nand/at91_nand.c
+Hunk #3 succeeded at 139 with fuzz 2.
+Hunk #11 FAILED at 584.
+1 out of 11 hunks FAILED -- saving rejects to file drivers/mtd/nand/at91_nand.c.rej
+patching file include/asm-arm/arch-at91/at91_ecc.h
+Hunk #1 FAILED at 13.
+1 out of 1 hunk FAILED -- saving rejects to file include/asm-arm/arch-at91/at91_ecc.h.rej
+patching file include/asm-arm/arch-at91/at91sam9260.h
+patching file include/asm-arm/arch-at91/at91sam9263.h
 
 -- 
 dwmw2
