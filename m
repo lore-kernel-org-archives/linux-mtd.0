@@ -1,23 +1,14 @@
-Subject: Re: [PATCH 1/2] [MTD] Add support for RAM & ROM mappings
-	in	the	physmap_of MTD driver.
+Subject: Re: [PATCH] mtd_dataflash use command allocated on stack
 From: David Woodhouse <dwmw2@infradead.org>
-To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-In-Reply-To: <480E479C.7040408@ru.mvista.com>
-References: <200803261344.03438.laurentp@cse-semaphore.com>
-	<47EA6B11.7050804@ru.mvista.com>
-	<777c028aa41fe870542afdb4fa7d2db6@kernel.crashing.org>
-	<200803271026.51555.laurentp@cse-semaphore.com>
-	<1208894995.9212.669.camel@pmac.infradead.org>
-	<480E479C.7040408@ru.mvista.com>
+To: Vitja Makarov <vitja.makarov@gmail.com>
+In-Reply-To: <1207285360.10621.8.camel@vitja-laptop>
+References: <1207285360.10621.8.camel@vitja-laptop>
 Content-Type: text/plain
-Date: Tue, 22 Apr 2008 21:18:16 +0100
-Message-Id: <1208895496.9212.671.camel@pmac.infradead.org>
+Date: Tue, 22 Apr 2008 21:20:38 +0100
+Message-Id: <1208895638.9212.673.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: ben@simtec.co.uk, Segher Boessenkool <segher@kernel.crashing.org>,
-	Laurent Pinchart <laurentp@cse-semaphore.com>,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	David Gibson <david@gibson.dropbear.id.au>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,17 +18,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-04-23 at 00:16 +0400, Sergei Shtylyov wrote:
-> David Woodhouse wrote:
+On Fri, 2008-04-04 at 09:02 +0400, Vitja Makarov wrote:
+> Hi!
 > 
-> >>Ok. I'll submit a new patch as soon as we agree on a compatible name.
 > 
-> > Did we?
+> Currently mtd_dataflash driver has command in their private structure.
+> That is only 4 bytes, sometimes actually 8 is needed.
+> Also it could be accessed twice before lock is taken.
 > 
->     IIRC, The latest agreement was that we don't need the "compatible" and 
-> will match on node name.
+> This patch moves command to stack.
 
-Ok. Is there a current patch I should be merging?
+Is that allowed? The SPI code might DMA from it, surely?
 
 -- 
 dwmw2
