@@ -1,16 +1,14 @@
-Subject: Re: [PATCH] MTD: fix partition scan control logic in physmap_of
-	and fsl_elbc_nand
+Subject: Re: [PATCH] Boot XIP kernel for IMX
 From: David Woodhouse <dwmw2@infradead.org>
-To: Li Yang <leoli@freescale.com>
-In-Reply-To: <1204201051-13107-1-git-send-email-leoli@freescale.com>
-References: <1204201051-13107-1-git-send-email-leoli@freescale.com>
+To: Darius <augulis.darius@gmail.com>
+In-Reply-To: <fq5nlh$h6g$2@ger.gmane.org>
+References: <fq5nlh$h6g$2@ger.gmane.org>
 Content-Type: text/plain
-Date: Tue, 22 Apr 2008 19:49:22 +0100
-Message-Id: <1208890162.9212.646.camel@pmac.infradead.org>
+Date: Tue, 22 Apr 2008 19:51:09 +0100
+Message-Id: <1208890269.9212.649.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linuxppc-dev@ozlabs.org, Stefan Roese <sr@denx.de>,
-	linux-mtd@lists.infradead.org
+Cc: rmk+linux@arm.linux.org.uk, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,24 +18,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2008-02-28 at 20:17 +0800, Li Yang wrote:
-> The generic rule for partition scan is to try all supported
-> partition types before an usable partition table is found.
-> However the original code returns unsuccessful when there is
-> an error in any of the partition types.
-> 
-> Signed-off-by: Li Yang <leoli@freescale.com>
-> Cc: Stefan Roese <sr@denx.de>
-> Cc: Peter Korsgaard <jacmet@sunsite.dk>
-> ---
-> I later found that Stefan has proposed a similar patch for physmap_of
-> and Peter proposed another patch to fix cmdlinepart instead.
-> I'd say that even after cmdlinepart patch is applied the scan control
-> logic still needs to be fixed.
+On Thu, 2008-02-28 at 09:24 +0200, Darius wrote:
+> Adds possibility to boot XIP kernel from flash for IMX.
+> I have tested it with M9328MXLADS V2.0 board.
+> It does NOT support write to flash, it only does support booting xip 
+> kernel. Somebody can continue and make feature to have rw rootfs in
+> the 
+> flash with XIP kernel together:)
 
-I'm not convinced. I think the partition code should return an error if
-it hits a hard error, like a failure to read from the device. And return
-zero when it doesn't find anything.
+Why doesn't write support work? If probes work, shouldn't writes?
 
+This is an ARM architecture change and should probably go via rmk.
+
+> diff -uprN -X linux-2.6.24.3-vanilla//Documentation/dontdiff linux-2.6.24.3-vanilla/arch/arm/Kconfig linux-2.6.24.3/arch/arm/Kconfig
+> --- linux-2.6.24.3-vanilla/arch/arm/Kconfig	2008-01-25 00:58:37.000000000 +0200
+> +++ linux-2.6.24.3/arch/arm/Kconfig	2008-02-27 14:51:50.000000000 +0200
+> @@ -244,6 +244,7 @@ config ARCH_IMX
+>  	select GENERIC_GPIO
+>  	select GENERIC_TIME
+>  	select GENERIC_CLOCKEVENTS
+> +	select ARCH_MTD_XIP
+>  	help
+>  	  Support for Motorola's i.MX family of processors (MX1, MXL).
+> diff -uprN -X linux-2.6.24.3-vanilla//Documentation/dontdiff linux-2.6.24.3-vanilla/include/asm-arm/arch-imx/imx-regs.h linux-2.6.24.3/include/asm-arm/arch-imx/imx-regs.h
+> --- linux-2.6.24.3-vanilla/include/asm-arm/arch-imx/imx-regs.h	2008-01-25 00:58:37.000000000 +0200
+> +++ linux-2.6.24.3/include/asm-arm/arch-imx/imx-regs.h	2008-02-13 17:58:42.000000000 +0200
+> @@ -348,6 +348,10 @@
+>  #define IMX_INTENABLEH     __REG(IMX_AITC_BASE+0x10)
+>  #define IMX_INTENABLEL     __REG(IMX_AITC_BASE+0x14)
+>  
+> +#define IMX_NIPNDH	__REG(IMX_AITC_BASE+0x58) 		/* Normal Interrupt Pending Register High */
+> +#define IMX_NIPNDL 	__REG(IMX_AITC_BASE+0x5C)		/* Normal Interrupt Pending Register Low  */
+> +
+> +
+>  /*
+>   *  General purpose timers
+>   */
+> diff -uprN -X linux-2.6.24.3-vanilla//Documentation/dontdiff linux-2.6.24.3-vanilla/include/asm-arm/arch-imx/mtd-xip.h linux-2.6.24.3/include/asm-arm/arch-imx/mtd-xip.h
+> --- linux-2.6.24.3-vanilla/include/asm-arm/arch-imx/mtd-xip.h	1970-01-01 03:00:00.000000000 +0300
+> +++ linux-2.6.24.3/include/asm-arm/arch-imx/mtd-xip.h	2008-02-27 15:00:22.000000000 +0200
+> @@ -0,0 +1,37 @@
+> +/*
+> + * MTD primitives for XIP support. Architecture specific functions
+> + *
+> + * Do not include this file directly. It's included from linux/mtd/xip.h
+> + * 
+> + * Author:	
+> + * Created:	Nov 2, 2004
+> + * Copyright:	(C) 2004 MontaVista Software, Inc.
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + *
+> + * $Id: xip.h,v 1.2 2004/12/01 15:49:10 nico Exp $
+> + */
+> +
+> +#ifndef __ARCH_IMX_MTD_XIP_H__
+> +#define __ARCH_IMX_MTD_XIP_H__
+> +
+> +#include <asm/arch/imx-regs.h>
+> +
+> +#define xip_irqpending()        (( IMX_INTENABLEH  & IMX_NIPNDH ) || ( IMX_INTENABLEL & IMX_NIPNDL ))
+> +#define xip_currtime()          (IMX_TCN(1))
+> +#define xip_elapsed_since(x)    (signed)((IMX_TCN(1) - (x)) / 4)
+> +
+> +/*
+> +#define xip_irqpending()        ( IMX_NIPNDH || IMX_NIPNDL )
+> +#define xip_currtime()          (IMX_TCN(IMX_TIM1_BASE))
+> +#define xip_elapsed_since(x)    (signed)((IMX_TCN(IMX_TIM1_BASE) -(x)) * 31)
+> +*/
+> +
+> +//#define xip_cpu_idle()  asm volatile ("mcr p14, 0, %0, c7, c0, 0" :: "r" (1))
+> +
+> +#warning IMX_MTD_XIP enabled!
+> +
+> +#endif /* __ARCH_IMX_MTD_XIP_H__ */
+> +
 -- 
 dwmw2
