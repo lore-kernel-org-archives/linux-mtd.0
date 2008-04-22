@@ -1,14 +1,16 @@
-Subject: Re: [PATCH 0/4] pxa: cleaned up patch set for pxa3xx NAND controller
+Subject: Re: [PATCH] MTD: fix partition scan control logic in physmap_of
+	and fsl_elbc_nand
 From: David Woodhouse <dwmw2@infradead.org>
-To: eric miao <eric.y.miao@gmail.com>
-In-Reply-To: <f17812d70802182235l56914c2ai4f87d8c41f1aa4d7@mail.gmail.com>
-References: <f17812d70802182235l56914c2ai4f87d8c41f1aa4d7@mail.gmail.com>
+To: Li Yang <leoli@freescale.com>
+In-Reply-To: <1204201051-13107-1-git-send-email-leoli@freescale.com>
+References: <1204201051-13107-1-git-send-email-leoli@freescale.com>
 Content-Type: text/plain
-Date: Tue, 22 Apr 2008 19:42:18 +0100
-Message-Id: <1208889738.9212.644.camel@pmac.infradead.org>
+Date: Tue, 22 Apr 2008 19:49:22 +0100
+Message-Id: <1208890162.9212.646.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, spodstavin@ru.mvista.com
+Cc: linuxppc-dev@ozlabs.org, Stefan Roese <sr@denx.de>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,13 +20,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2008-02-19 at 14:35 +0800, eric miao wrote:
-> I cleaned up the previous patch a bit, and added support for zylonite
-> and littleton. And this version is intended for merging upstream.
+On Thu, 2008-02-28 at 20:17 +0800, Li Yang wrote:
+> The generic rule for partition scan is to try all supported
+> partition types before an usable partition table is found.
+> However the original code returns unsuccessful when there is
+> an error in any of the partition types.
+> 
+> Signed-off-by: Li Yang <leoli@freescale.com>
+> Cc: Stefan Roese <sr@denx.de>
+> Cc: Peter Korsgaard <jacmet@sunsite.dk>
+> ---
+> I later found that Stefan has proposed a similar patch for physmap_of
+> and Peter proposed another patch to fix cmdlinepart instead.
+> I'd say that even after cmdlinepart patch is applied the scan control
+> logic still needs to be fixed.
 
-I fixed the first patch in the sequence so it would actually apply.
-When it got to the second one, and that didn't apply either, I gave up. 
-It's probably best to send those via rmk anyway.
+I'm not convinced. I think the partition code should return an error if
+it hits a hard error, like a failure to read from the device. And return
+zero when it doesn't find anything.
 
 -- 
 dwmw2
