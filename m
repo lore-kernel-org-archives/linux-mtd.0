@@ -1,20 +1,17 @@
-Received: from mail.gmx.net ([213.165.64.20])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JoMBg-00010Z-Cx
-	for linux-mtd@lists.infradead.org; Tue, 22 Apr 2008 17:21:48 +0000
-Message-ID: <480E1EA8.9040101@gmx.net>
-Date: Tue, 22 Apr 2008 19:21:44 +0200
-From: Carl-Daniel Hailfinger <c-d.hailfinger.devel.2006@gmx.net>
+Received: from tesla.selinc.com ([12.110.71.2])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JoMIE-0001W9-5Y
+	for linux-mtd@lists.infradead.org; Tue, 22 Apr 2008 17:28:34 +0000
+In-Reply-To: <1208882552.11721.13.camel@sauron>
+To: dedekind@infradead.org
+Subject: Re: [RFC] slight UBI scan time improvement
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] [MTD] [RESEND] MAPS: add support for Nvidia MCP55 to
-	ck804xrom
-References: <478E1880.2040609@gmx.net>
-	<1208884343.9212.633.camel@pmac.infradead.org>
-In-Reply-To: <1208884343.9212.633.camel@pmac.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: Linux mtd <linux-mtd@lists.infradead.org>
+Message-ID: <OF2C5F9D9C.5885C22C-ON88257433.005FAD98-88257433.005FF7CC@selinc.com>
+From: Bruce_Leonard@selinc.com
+Date: Tue, 22 Apr 2008 10:28:15 -0700
+Content-Type: text/plain; charset="US-ASCII"
+Cc: Nancy <nancydreaming@gmail.com>, Hamish Moffatt <hamish@cloud.net.au>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +21,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 22.04.2008 19:12, David Woodhouse wrote:
-> On Wed, 2008-01-16 at 15:45 +0100, Carl-Daniel Hailfinger wrote:
->   
->> [PATCH] [MTD] MAPS: add support for Nvidia MCP55 to ck804xrom
->>
->> This patch extends the existing MAPS driver for the Nvidia CK804 chipset
->> (ck804xrom.c) to also work on the Nvidia MCP55 chipset. As both chipsets
->> are rather similar, suporting them both with the same driver is easy.
->>
->> The patch is not ready for inclusion yet, it needs some codingstyle care
->> and probably better comments. The indenting is wrong at some points to
->> keep the diff minimal for a first review. I will post a better version
->> once I get some comments.
->>     
->
-> I fixed that and applied it anyway.
->   
+> 
+> I've prepared 2 UBI patches which may slightly improve the scan time. I
+> am not sure though. Would you guys please try them and tell if UBI scan
+> time changed? Thanks in advance.
+> 
 
-Thank you!
+Hi Artem,
 
->> +	{ PCI_VENDOR_ID_NVIDIA, 0x0363,
->> +        PCI_ANY_ID, PCI_ANY_ID, 2 }, /* nvidia mcp55 */
->> +	{ PCI_VENDOR_ID_NVIDIA, 0x0364,
->> +        PCI_ANY_ID, PCI_ANY_ID, 2 }, /* nvidia mcp55 */
->> +	{ PCI_VENDOR_ID_NVIDIA, 0x0365,
->> +        PCI_ANY_ID, PCI_ANY_ID, 2 }, /* nvidia mcp55 */
->> +	{ PCI_VENDOR_ID_NVIDIA, 0x0366,
->> +        PCI_ANY_ID, PCI_ANY_ID, 2 }, /* nvidia mcp55 */
->> +	{ PCI_VENDOR_ID_NVIDIA, 0x03607,
->> +        PCI_ANY_ID, PCI_ANY_ID, 2 }, /* nvidia mcp55 */
->>     
->
-> I fixed that too; I assume the last ID should have been 0x367?
->   
+I'll be happy to do so, but it may be a couple of days before I can get 
+results to you.  I'm on the road for my company for a few days.  If I can, 
+I'll try it out before I leave tonight, but if I can't get to it, it'll be 
+tommorrow night before I can get my equipment set up and running again.
 
-Indeed, my bad.
+See 'ya!
 
-Regards,
-Carl-Daniel
+Bruce
