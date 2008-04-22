@@ -1,18 +1,23 @@
-Received: from mail3.sea5.speakeasy.net ([69.17.117.5])
+Received: from zigzag.lvk.cs.msu.su ([158.250.17.23])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JoX8b-0007Tm-R7
-	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 05:03:22 +0000
-Received: from 63-231-27-195.tukw.qwest.net (HELO t2.domain.actdsltmp)
-	(xyzzy@[63.231.27.195]) (envelope-sender <tpiepho@freescale.com>)
-	by mail3.sea5.speakeasy.net (qmail-ldap-1.03) with AES256-SHA encrypted
-	SMTP for <linux-mtd@lists.infradead.org>; 23 Apr 2008 05:03:18 -0000
-Date: Tue, 22 Apr 2008 22:02:06 -0700 (PDT)
-From: Trent Piepho <tpiepho@freescale.com>
-To: MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 0/2] CFI fixups for quirks in some new NOR flash chips (try 3)
-Message-ID: <Pine.LNX.4.64.0804222159450.12267@t2.domain.actdsltmp>
+	id 1JoNrO-0006TY-4T
+	for linux-mtd@lists.infradead.org; Tue, 22 Apr 2008 19:08:58 +0000
+Received: from Debian-exim by zigzag.lvk.cs.msu.su with spam-scanned (Exim
+	4.63) (envelope-from <yoush@cs.msu.su>) id 1JoNrE-0000Q5-U2
+	for linux-mtd@lists.infradead.org; Tue, 22 Apr 2008 23:08:52 +0400
+From: "Nikita V. Youshchenko" <yoush@cs.msu.su>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] mtd: support for bit-reversed CFI cmd/query
+Date: Tue, 22 Apr 2008 23:08:32 +0400
+References: <200802272348.13180@blacky.localdomain>
+	<1208890591.9212.654.camel@pmac.infradead.org>
+In-Reply-To: <1208890591.9212.654.camel@pmac.infradead.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Content-Type: multipart/signed; boundary="nextPart1644156.FvyZUbpBte";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+Message-Id: <200804222308.39071@blacky.localdomain>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,20 +27,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Maybe the third time's the charm.  I'd like to get this in 2.6.26.  I
-first posted these patchs last month.
+--nextPart1644156.FvyZUbpBte
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-The first patch extends the CFI probe code to get the extended ID from
-AMD/Spansion flash chips.  I checked with Spansion's support and for AMD
-or Spansion devices, a flash device id of 0x7e is always used to
-indicates an extended ID is present later on in the CFI query data. 
-There are no AMD/Spansion chips with a non-extended ID that is the same
-as another chip's extended ID.  So, once can just replace the normal
-device id (0x7e) with the extended one without losing any information. 
-There's nothing to gain by adding a new field to the flash info struct
-and then adding code to the fixup routines to also matches the new field,
-etc.
+> On Wed, 2008-02-27 at 23:48 +0300, Nikita V. Youshchenko wrote:
+> >     mtd: support for bit-reversed CFI cmd/query
+> >
+> >     Some embedded boards have flash chips connected with reversed bit
+> > order. Example for 16-bit width:
+> >      chip D0 is bus D15
+> >      chip D1 is bus D14
+> >      ...
+> >      chip D15 is bus D0
+> >     It works perfectly for data access, however probing and issuing
+> > CFI commands for such chips require bit reversing. This patch adds
+> > support for this.
+> >
+> >     Signed-off-by: Nikita Youshchenko <yoush@cs.msu.su>
+>
+> Am I missing something, or did you only reverse the bits on 16-bit and
+> 64-bit access, and not 8-bit or 32-bit?
 
-The second patch is just a couple simple fixup entries that change the
-sector count for the affected flash chips.  It uses the extended ID to
-get the right chips.
+Hmm... Looks so :(.
+The board I work with has 16-bit flash, so I could not test others.
+
+Btw, the vendor of the board confirmed that such a strange flash chip=20
+connection is 'an old hardware bug', however they decided to keep it in=20
+current and future revisions of the board 'for backward compatibility'.
+
+Is it a good idea to support such strange cases in the official kernel?
+If yes, I may send an updated patch.
+
+Nikita
+
+--nextPart1644156.FvyZUbpBte
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQBIDje3v3x5OskTLdsRApKRAJ44RmkL9Ge43tr2q3PJmckhAID7WACgzWBU
+upOAcGywtaiECmuH7EIbymo=
+=TW0/
+-----END PGP SIGNATURE-----
+
+--nextPart1644156.FvyZUbpBte--
