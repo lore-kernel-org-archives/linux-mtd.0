@@ -1,23 +1,17 @@
-Received: from mail2.shareable.org ([80.68.89.115])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JoHeJ-0000Zj-GP
-	for linux-mtd@lists.infradead.org; Tue, 22 Apr 2008 12:31:03 +0000
-Date: Tue, 22 Apr 2008 13:30:56 +0100
-From: Jamie Lokier <jamie@shareable.org>
-To: Josh Boyer <jwboyer@gmail.com>
-Subject: Re: [U-Boot-Users] ubi and u-boot
-Message-ID: <20080422123054.GA4849@shareable.org>
-References: <20080420222237.4AE5324657@gemini.denx.de>
-	<1208779508.5965.371.camel@sauron>
-	<Pine.LNX.4.64.0804211533140.27984@lnxricardw.se.axis.com>
-	<1208785463.6654.34.camel@vader.jdub.homelinux.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1208785463.6654.34.camel@vader.jdub.homelinux.org>
-Cc: "u-boot-users@lists.sourceforge.net" <u-boot-users@lists.sourceforge.net>,
-	Ricard Wanderlof <ricard.wanderlof@axis.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: physmap and "request_module: runaway loop modprobe net-pf-1"
+From: David Woodhouse <dwmw2@infradead.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+In-Reply-To: <20080311225926.6515e18c.akpm@linux-foundation.org>
+References: <97a0a9ac0803112235l157706adoa84b131549a46049@mail.gmail.com>
+	<20080311225926.6515e18c.akpm@linux-foundation.org>
+Content-Type: text/plain
+Date: Tue, 22 Apr 2008 13:37:11 +0100
+Message-Id: <1208867831.9212.582.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: netdev@vger.kernel.org, Gordon Farquharson <gordonfarquharson@gmail.com>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	davem@davemloft.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,23 +21,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Josh Boyer wrote:
-> > I was under the impression from past emails on the MTD list that the 
-> > internal meta format for UBI has changed a few times over its lifetime.
-> > 
-> > Assuming this continues, I would think this would cause problems for 
-> > bootloaders such as U-Boot whose flash partitions are not necessarily 
-> > rewritten in the case of a product upgrade - i.e. a firmware upgrade with 
-> > a new kernel would have a new UBI implementation and spec causing an
-> > older bootloader to fail to operate properly with the newer image.
-> 
-> I think there was only 1 time the on-flash format changed, and that was
-> before UBI was merged upstream.  New features can be introduced with
-> additional flags, however older versions should be able to ignore those.
+On Tue, 2008-03-11 at 22:59 -0700, Andrew Morton wrote:
+> Now, af_unix_init() uses module_init(), which is really __initcall(), which
+> is really device_initcall() (ug, don't ask).
 
-Quite.  As long as the format is changed in an upward compatible way,
-it should be fine.  Hopefully the existing format is designed to
-ensure that's always possible - at least for everything called 'UBI 1'
-since the upstream merge.
+... which is really __define_initcall("6", ...);.
 
--- Jamie
+> So you can do what you're sugesting here by locating the caller/callers of
+> parse_mtd_partitions() and marking them late_initcall().
+
+Better still, just initialise af_unix earlier so that it's there before
+any normal drivers which happen to call request_module(). Since core
+network stuff is initialised with subsys_initcall() which is really
+__define_initcall("4", ...), we can initialise af_unix with
+fs_initcall() which is really __define_initcall("5", ...).
+
+
+---
+[AF_UNIX] Initialise UNIX sockets before general device initcalls
+
+When drivers call request_module(), it tries to do something with UNIX
+sockets and triggers a 'runaway loop modprobe net-pf-1' warning. Avoid
+this by initialising AF_UNIX support earlier.
+
+Signed-off-by: David Woodhouse <dwmw2@infradead.org>
+
+--- linux-2.6.24.ppc/net/unix/af_unix.c~	2008-04-13 13:38:25.000000000 +0100
++++ linux-2.6.24.ppc/net/unix/af_unix.c	2008-04-22 13:01:45.000000000 +0100
+@@ -2193,7 +2193,11 @@ static void __exit af_unix_exit(void)
+ 	unregister_pernet_subsys(&unix_net_ops);
+ }
+ 
+-module_init(af_unix_init);
++/* Earlier than device_initcall() so that other drivers invoking
++   request_module() don't end up in a loop when modprobe tries
++   to use a UNIX socket. But later than subsys_initcall() because
++   we depend on stuff initialised there */
++fs_initcall(af_unix_init);
+ module_exit(af_unix_exit);
+ 
+ MODULE_LICENSE("GPL");
+
+
+-- 
+dwmw2
