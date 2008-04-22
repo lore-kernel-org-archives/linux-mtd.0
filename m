@@ -1,18 +1,21 @@
-Subject: Re: Fwd: [PATCH 5/9] magician: enable flash VPP GPIO and build in
-	MTD, physmap-flash and JFFS2
+Subject: Re: [PATCH 1/2] [MTD] Add support for RAM & ROM mappings in
+	the	physmap_of MTD driver.
 From: David Woodhouse <dwmw2@infradead.org>
-To: pHilipp Zabel <philipp.zabel@gmail.com>
-In-Reply-To: <74d0deb30803210933u1d3ca18endcd942496409de28@mail.gmail.com>
-References: <1205785071.11350.39.camel@localhost.localdomain>
-	<20080320210120.GI16166@flint.arm.linux.org.uk>
-	<74d0deb30803210448l49d2eea8ladd95766c47ba820@mail.gmail.com>
-	<74d0deb30803210933u1d3ca18endcd942496409de28@mail.gmail.com>
+To: Laurent Pinchart <laurentp@cse-semaphore.com>
+In-Reply-To: <200803271026.51555.laurentp@cse-semaphore.com>
+References: <200803261344.03438.laurentp@cse-semaphore.com>
+	<47EA6B11.7050804@ru.mvista.com>
+	<777c028aa41fe870542afdb4fa7d2db6@kernel.crashing.org>
+	<200803271026.51555.laurentp@cse-semaphore.com>
 Content-Type: text/plain
-Date: Tue, 22 Apr 2008 20:59:45 +0100
-Message-Id: <1208894385.9212.666.camel@pmac.infradead.org>
+Date: Tue, 22 Apr 2008 21:09:55 +0100
+Message-Id: <1208894995.9212.669.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: Segher Boessenkool <segher@kernel.crashing.org>,
+	Sergei Shtylyov <sshtylyov@ru.mvista.com>, ben@simtec.co.uk,
+	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	David Gibson <david@gibson.dropbear.id.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,19 +25,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2008-03-21 at 17:33 +0100, pHilipp Zabel wrote:
-> Hi, I'd like to forward you a question about this patch that I'd like
-> to get in via Russell King's queue.
-> 
-> The way the MTD subsystem / physmap driver handle set_vpp, can the
-> magician_set_vpp function below race with itself? Or would it be
-> better to use a counting approach like omap_set_vpp in the omap-nor
-> driver?
+On Thu, 2008-03-27 at 10:26 +0100, Laurent Pinchart wrote:
+> Ok. I'll submit a new patch as soon as we agree on a compatible name.
 
-I believe that when used for a single chip (or set of chips with a
-single map driver), all access is serialised. It's only if you use the
-same set_vpp() function for multiple different maps that you need to
-play counting tricks.
+Did we?
 
 -- 
 dwmw2
