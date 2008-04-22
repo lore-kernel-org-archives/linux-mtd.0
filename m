@@ -1,19 +1,24 @@
-Subject: Re: [PATCH 1/2] [MTD] Add support for RAM & ROM mappings in
-	the	physmap_of MTD driver.
-From: David Woodhouse <dwmw2@infradead.org>
-To: Laurent Pinchart <laurentp@cse-semaphore.com>
-In-Reply-To: <200803271026.51555.laurentp@cse-semaphore.com>
-References: <200803261344.03438.laurentp@cse-semaphore.com>
-	<47EA6B11.7050804@ru.mvista.com>
-	<777c028aa41fe870542afdb4fa7d2db6@kernel.crashing.org>
+Received: from [63.81.120.155] (helo=imap.sh.mvista.com)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JoOvL-0003ke-Mf
+	for linux-mtd@lists.infradead.org; Tue, 22 Apr 2008 20:17:08 +0000
+Message-ID: <480E479C.7040408@ru.mvista.com>
+Date: Wed, 23 Apr 2008 00:16:28 +0400
+From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 1/2] [MTD] Add support for RAM & ROM mappings
+	in	the	physmap_of MTD driver.
+References: <200803261344.03438.laurentp@cse-semaphore.com>	
+	<47EA6B11.7050804@ru.mvista.com>	
+	<777c028aa41fe870542afdb4fa7d2db6@kernel.crashing.org>	
 	<200803271026.51555.laurentp@cse-semaphore.com>
-Content-Type: text/plain
-Date: Tue, 22 Apr 2008 21:09:55 +0100
-Message-Id: <1208894995.9212.669.camel@pmac.infradead.org>
-Mime-Version: 1.0
+	<1208894995.9212.669.camel@pmac.infradead.org>
+In-Reply-To: <1208894995.9212.669.camel@pmac.infradead.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Segher Boessenkool <segher@kernel.crashing.org>,
-	Sergei Shtylyov <sshtylyov@ru.mvista.com>, ben@simtec.co.uk,
+Cc: ben@simtec.co.uk, Segher Boessenkool <segher@kernel.crashing.org>,
+	Laurent Pinchart <laurentp@cse-semaphore.com>,
 	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
 	David Gibson <david@gibson.dropbear.id.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,10 +30,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2008-03-27 at 10:26 +0100, Laurent Pinchart wrote:
-> Ok. I'll submit a new patch as soon as we agree on a compatible name.
+David Woodhouse wrote:
 
-Did we?
+>>Ok. I'll submit a new patch as soon as we agree on a compatible name.
 
--- 
-dwmw2
+> Did we?
+
+    IIRC, The latest agreement was that we don't need the "compatible" and 
+will match on node name.
+
+WBR, Sergei
