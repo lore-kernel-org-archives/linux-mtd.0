@@ -1,21 +1,18 @@
-Received: from [63.81.120.155] (helo=imap.sh.mvista.com)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JoOvL-0003ke-Mf
-	for linux-mtd@lists.infradead.org; Tue, 22 Apr 2008 20:17:08 +0000
-Message-ID: <480E479C.7040408@ru.mvista.com>
-Date: Wed, 23 Apr 2008 00:16:28 +0400
-From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
 Subject: Re: [PATCH 1/2] [MTD] Add support for RAM & ROM mappings
 	in	the	physmap_of MTD driver.
-References: <200803261344.03438.laurentp@cse-semaphore.com>	
-	<47EA6B11.7050804@ru.mvista.com>	
-	<777c028aa41fe870542afdb4fa7d2db6@kernel.crashing.org>	
+From: David Woodhouse <dwmw2@infradead.org>
+To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+In-Reply-To: <480E479C.7040408@ru.mvista.com>
+References: <200803261344.03438.laurentp@cse-semaphore.com>
+	<47EA6B11.7050804@ru.mvista.com>
+	<777c028aa41fe870542afdb4fa7d2db6@kernel.crashing.org>
 	<200803271026.51555.laurentp@cse-semaphore.com>
 	<1208894995.9212.669.camel@pmac.infradead.org>
-In-Reply-To: <1208894995.9212.669.camel@pmac.infradead.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+	<480E479C.7040408@ru.mvista.com>
+Content-Type: text/plain
+Date: Tue, 22 Apr 2008 21:18:16 +0100
+Message-Id: <1208895496.9212.671.camel@pmac.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: ben@simtec.co.uk, Segher Boessenkool <segher@kernel.crashing.org>,
 	Laurent Pinchart <laurentp@cse-semaphore.com>,
@@ -30,13 +27,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse wrote:
+On Wed, 2008-04-23 at 00:16 +0400, Sergei Shtylyov wrote:
+> David Woodhouse wrote:
+> 
+> >>Ok. I'll submit a new patch as soon as we agree on a compatible name.
+> 
+> > Did we?
+> 
+>     IIRC, The latest agreement was that we don't need the "compatible" and 
+> will match on node name.
 
->>Ok. I'll submit a new patch as soon as we agree on a compatible name.
+Ok. Is there a current patch I should be merging?
 
-> Did we?
-
-    IIRC, The latest agreement was that we don't need the "compatible" and 
-will match on node name.
-
-WBR, Sergei
+-- 
+dwmw2
