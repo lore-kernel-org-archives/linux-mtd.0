@@ -1,14 +1,14 @@
-Subject: Re: [PATCH] Boot XIP kernel for IMX
+Subject: Re: [PATCH] mtd: support for bit-reversed CFI cmd/query
 From: David Woodhouse <dwmw2@infradead.org>
-To: Darius <augulis.darius@gmail.com>
-In-Reply-To: <fq5nlh$h6g$2@ger.gmane.org>
-References: <fq5nlh$h6g$2@ger.gmane.org>
+To: "Nikita V. Youshchenko" <yoush@cs.msu.su>
+In-Reply-To: <200802272348.13180@blacky.localdomain>
+References: <200802272348.13180@blacky.localdomain>
 Content-Type: text/plain
-Date: Tue, 22 Apr 2008 19:51:09 +0100
-Message-Id: <1208890269.9212.649.camel@pmac.infradead.org>
+Date: Tue, 22 Apr 2008 19:56:31 +0100
+Message-Id: <1208890591.9212.654.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: rmk+linux@arm.linux.org.uk, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,82 +18,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2008-02-28 at 09:24 +0200, Darius wrote:
-> Adds possibility to boot XIP kernel from flash for IMX.
-> I have tested it with M9328MXLADS V2.0 board.
-> It does NOT support write to flash, it only does support booting xip 
-> kernel. Somebody can continue and make feature to have rw rootfs in
-> the 
-> flash with XIP kernel together:)
+On Wed, 2008-02-27 at 23:48 +0300, Nikita V. Youshchenko wrote:
+>     mtd: support for bit-reversed CFI cmd/query
+>     
+>     Some embedded boards have flash chips connected with reversed bit order.
+>     Example for 16-bit width:
+>      chip D0 is bus D15
+>      chip D1 is bus D14
+>      ...
+>      chip D15 is bus D0
+>     It works perfectly for data access, however probing and issuing CFI commands
+>     for such chips require bit reversing. This patch adds support for this.
+>     
+>     Signed-off-by: Nikita Youshchenko <yoush@cs.msu.su>
 
-Why doesn't write support work? If probes work, shouldn't writes?
+Am I missing something, or did you only reverse the bits on 16-bit and
+64-bit access, and not 8-bit or 32-bit?
 
-This is an ARM architecture change and should probably go via rmk.
-
-> diff -uprN -X linux-2.6.24.3-vanilla//Documentation/dontdiff linux-2.6.24.3-vanilla/arch/arm/Kconfig linux-2.6.24.3/arch/arm/Kconfig
-> --- linux-2.6.24.3-vanilla/arch/arm/Kconfig	2008-01-25 00:58:37.000000000 +0200
-> +++ linux-2.6.24.3/arch/arm/Kconfig	2008-02-27 14:51:50.000000000 +0200
-> @@ -244,6 +244,7 @@ config ARCH_IMX
->  	select GENERIC_GPIO
->  	select GENERIC_TIME
->  	select GENERIC_CLOCKEVENTS
-> +	select ARCH_MTD_XIP
->  	help
->  	  Support for Motorola's i.MX family of processors (MX1, MXL).
-> diff -uprN -X linux-2.6.24.3-vanilla//Documentation/dontdiff linux-2.6.24.3-vanilla/include/asm-arm/arch-imx/imx-regs.h linux-2.6.24.3/include/asm-arm/arch-imx/imx-regs.h
-> --- linux-2.6.24.3-vanilla/include/asm-arm/arch-imx/imx-regs.h	2008-01-25 00:58:37.000000000 +0200
-> +++ linux-2.6.24.3/include/asm-arm/arch-imx/imx-regs.h	2008-02-13 17:58:42.000000000 +0200
-> @@ -348,6 +348,10 @@
->  #define IMX_INTENABLEH     __REG(IMX_AITC_BASE+0x10)
->  #define IMX_INTENABLEL     __REG(IMX_AITC_BASE+0x14)
->  
-> +#define IMX_NIPNDH	__REG(IMX_AITC_BASE+0x58) 		/* Normal Interrupt Pending Register High */
-> +#define IMX_NIPNDL 	__REG(IMX_AITC_BASE+0x5C)		/* Normal Interrupt Pending Register Low  */
-> +
-> +
->  /*
->   *  General purpose timers
->   */
-> diff -uprN -X linux-2.6.24.3-vanilla//Documentation/dontdiff linux-2.6.24.3-vanilla/include/asm-arm/arch-imx/mtd-xip.h linux-2.6.24.3/include/asm-arm/arch-imx/mtd-xip.h
-> --- linux-2.6.24.3-vanilla/include/asm-arm/arch-imx/mtd-xip.h	1970-01-01 03:00:00.000000000 +0300
-> +++ linux-2.6.24.3/include/asm-arm/arch-imx/mtd-xip.h	2008-02-27 15:00:22.000000000 +0200
-> @@ -0,0 +1,37 @@
-> +/*
-> + * MTD primitives for XIP support. Architecture specific functions
-> + *
-> + * Do not include this file directly. It's included from linux/mtd/xip.h
-> + * 
-> + * Author:	
-> + * Created:	Nov 2, 2004
-> + * Copyright:	(C) 2004 MontaVista Software, Inc.
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + *
-> + * $Id: xip.h,v 1.2 2004/12/01 15:49:10 nico Exp $
-> + */
-> +
-> +#ifndef __ARCH_IMX_MTD_XIP_H__
-> +#define __ARCH_IMX_MTD_XIP_H__
-> +
-> +#include <asm/arch/imx-regs.h>
-> +
-> +#define xip_irqpending()        (( IMX_INTENABLEH  & IMX_NIPNDH ) || ( IMX_INTENABLEL & IMX_NIPNDL ))
-> +#define xip_currtime()          (IMX_TCN(1))
-> +#define xip_elapsed_since(x)    (signed)((IMX_TCN(1) - (x)) / 4)
-> +
-> +/*
-> +#define xip_irqpending()        ( IMX_NIPNDH || IMX_NIPNDL )
-> +#define xip_currtime()          (IMX_TCN(IMX_TIM1_BASE))
-> +#define xip_elapsed_since(x)    (signed)((IMX_TCN(IMX_TIM1_BASE) -(x)) * 31)
-> +*/
-> +
-> +//#define xip_cpu_idle()  asm volatile ("mcr p14, 0, %0, c7, c0, 0" :: "r" (1))
-> +
-> +#warning IMX_MTD_XIP enabled!
-> +
-> +#endif /* __ARCH_IMX_MTD_XIP_H__ */
-> +
 -- 
 dwmw2
