@@ -1,16 +1,15 @@
-Subject: Re: [PATCH][MTD][NAND] PXA300 Zylonite controller support
+Subject: Re: [PATCH] [MTD] [RESEND] MAPS: add support for Nvidia MCP55 to
+	ck804xrom
 From: David Woodhouse <dwmw2@infradead.org>
-To: Dmitry Krivoschekov <dmitry.krivoschekov@gmail.com>
-In-Reply-To: <480E164F.4000700@gmail.com>
-References: <1200289475.1727.106.camel@localhost.localdomain>
-	<1208878908.9212.623.camel@pmac.infradead.org>
-	<480E164F.4000700@gmail.com>
+To: Carl-Daniel Hailfinger <c-d.hailfinger.devel.2006@gmx.net>
+In-Reply-To: <478E1880.2040609@gmx.net>
+References: <478E1880.2040609@gmx.net>
 Content-Type: text/plain
-Date: Tue, 22 Apr 2008 17:48:37 +0100
-Message-Id: <1208882917.9212.630.camel@pmac.infradead.org>
+Date: Tue, 22 Apr 2008 18:12:23 +0100
+Message-Id: <1208884343.9212.633.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: podstavin@dev.rtsoft.ru, linux-mtd@lists.infradead.org
+Cc: Linux mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,16 +19,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2008-04-22 at 20:46 +0400, Dmitry Krivoschekov wrote:
+On Wed, 2008-01-16 at 15:45 +0100, Carl-Daniel Hailfinger wrote:
+> [PATCH] [MTD] MAPS: add support for Nvidia MCP55 to ck804xrom
 > 
-> can you instead of this consider a more recent (more clean?) version
-> of
-> that driver submitted by Eric Miao:
+> This patch extends the existing MAPS driver for the Nvidia CK804 chipset
+> (ck804xrom.c) to also work on the Nvidia MCP55 chipset. As both chipsets
+> are rather similar, suporting them both with the same driver is easy.
 > 
-> http://lists.infradead.org/pipermail/linux-mtd/2008-February/020653.html
+> The patch is not ready for inclusion yet, it needs some codingstyle care
+> and probably better comments. The indenting is wrong at some points to
+> keep the diff minimal for a first review. I will post a better version
+> once I get some comments.
 
-Working through my mailbox, catching up on the backlog. I'll look at
-that later; thanks for the response.
+I fixed that and applied it anyway.
+
+> +	{ PCI_VENDOR_ID_NVIDIA, 0x0363,
+> +        PCI_ANY_ID, PCI_ANY_ID, 2 }, /* nvidia mcp55 */
+> +	{ PCI_VENDOR_ID_NVIDIA, 0x0364,
+> +        PCI_ANY_ID, PCI_ANY_ID, 2 }, /* nvidia mcp55 */
+> +	{ PCI_VENDOR_ID_NVIDIA, 0x0365,
+> +        PCI_ANY_ID, PCI_ANY_ID, 2 }, /* nvidia mcp55 */
+> +	{ PCI_VENDOR_ID_NVIDIA, 0x0366,
+> +        PCI_ANY_ID, PCI_ANY_ID, 2 }, /* nvidia mcp55 */
+> +	{ PCI_VENDOR_ID_NVIDIA, 0x03607,
+> +        PCI_ANY_ID, PCI_ANY_ID, 2 }, /* nvidia mcp55 */
+
+
+I fixed that too; I assume the last ID should have been 0x367?
 
 -- 
 dwmw2
