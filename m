@@ -1,24 +1,24 @@
-Subject: Re: [PATCH][JFFS2] Fix garbage collector block search
-From: David Woodhouse <dwmw2@infradead.org>
-To: Alexander Belyakov <abelyako@googlemail.com>
-In-Reply-To: <fe810cf0804230608t1183dbf4l99b168476875bfc0@mail.gmail.com>
-References: <E1J2Trs-000IFE-00.abelyako-mail-ru@f65.mail.ru>
-	<20080114132843.GA15710@lazybastard.org>
-	<fe810cf0801150424j25f35131v83692a3193a45a3b@mail.gmail.com>
-	<20080115133350.GA22338@lazybastard.org>
-	<fe810cf0801180828g7a48b6a1u69e35f832185b5eb@mail.gmail.com>
-	<1208882833.9212.629.camel@pmac.infradead.org>
-	<fe810cf0804230431m2bf80e83h4fa71bd5887b7587@mail.gmail.com>
-	<1208950350.9212.791.camel@pmac.infradead.org>
-	<fe810cf0804230608t1183dbf4l99b168476875bfc0@mail.gmail.com>
-Content-Type: text/plain
-Date: Wed, 23 Apr 2008 15:01:26 +0100
-Message-Id: <1208959286.9212.799.camel@pmac.infradead.org>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jofeo-0005Ep-V7
+	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 14:09:11 +0000
+Subject: Re: [RFC] slight UBI scan time improvement
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Hamish Moffatt <hamish@cloud.net.au>
+In-Reply-To: <20080423134254.GA17867@cloud.net.au>
+References: <1208882552.11721.13.camel@sauron>
+	<20080423073840.GA9472@cloud.net.au> <480EEFAB.7010304@parrot.com>
+	<1208938864.11721.44.camel@sauron>
+	<20080423124046.GA16201@cloud.net.au>
+	<1208955467.11721.69.camel@sauron>
+	<20080423134254.GA17867@cloud.net.au>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 23 Apr 2008 17:09:19 +0300
+Message-Id: <1208959759.11721.76.camel@sauron>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Alexander Belyakov <abelyako@mail.ru>,
-	=?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,39 +28,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-04-23 at 17:08 +0400, Alexander Belyakov wrote:
-> On Wed, Apr 23, 2008 at 3:32 PM, David Woodhouse <dwmw2@infradead.org> wrote:
-> >
-> >  I'm playing with it now, with the intent of committing it. Can you show
-> >  me how to reproduce the problem?
-> >
-> 
-> The most easy way to reproduce it is to fill jffs2 volume with single
-> large file until there is no empty space, then remove this file and
-> immediately try to write another file.
-> 
-> Something like:
-> ---
-> #!/bin/sh
-> rm -rf /mnt/vol1/*
-> dd if=/dev/urandom of=/mnt/vol1/test.file bs=4096 count=32768
-> rm /mnt/vol1/test.file
-> dd if=/dev/urandom of=/mnt/vol1/test_new.file bs=2048 count=1024
-> -------
-> 
-> The bug is better reproduced on small volumes (for me it is just
-> 4Mbytes). The first dd should exit with "No space left on device"
-> error to be sure no free space left. The last dd should always
-> succeed. If it fails - you catch the bug. Sometimes it is necessary to
-> run this script in several time in a row before last dd exits with an
-> error.
+On Wed, 2008-04-23 at 23:42 +1000, Hamish Moffatt wrote:
+> On Wed, Apr 23, 2008 at 03:57:47PM +0300, Artem Bityutskiy wrote:
+> > On Wed, 2008-04-23 at 22:40 +1000, Hamish Moffatt wrote:
+> > > Well I think from past use of "time ubiattach ..." that most of
+> > > the missing time is in the attach.=20
+> > Sure, UBI takes most of the time. Its just if you want to save 1.2+ sec=
+,
+> > you may try to play with on-flash BBT.
+>=20
+> I'm not sure what this means.. ? Instead of having to scan each block
+> to check the marker, it has a central table? And that table is created
+> once by an initial scan and then added to when UBI declares a block bad?
+> How do I access this feature?
+Yes.
 
-Hm, I can't make it fail. I'm using nandsim, and have enabled the
-'Museum IDs' so that I can have a 4MiB device (I've also tried 2MiB).
+When your NAND driver is initialized, it scans whole flash and builds
+the BBT. Basically, it reads OOB area of each first (and may be second)
+page of each eraseblock. The BBT is simply an array with 1 bit per
+eraseblock.
 
-I never even see the 'Synching wbuf in order to reuse
-erasable_pending_wbuf_list blocks' message, whether I have debugging
-enabled or whether I just unable that one message.
+You may make it save the BBT on the flash media. So next time you boot,
+it reads the BBT from a pre-defined place (e.g., the last eraseblock)
+and that's it. It does not scan and does not waste time.
 
--- 
-dwmw2
+This all is happening in the driver, before UBI starts.
+
+Yes, if UBI marks a block bad, which basically means it calls an MTD
+function, the NAND infrastructure changes the on-flash BBT.
+
+But I never used this myself, so my knowledge is theoretical. I just
+know others use this and I saw the code in nand_base.c.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
