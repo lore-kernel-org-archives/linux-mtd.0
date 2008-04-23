@@ -1,22 +1,24 @@
-Received: from risingsoftware01.propagation.net ([66.221.33.65])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JofFU-00008H-H6
-	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 13:43:00 +0000
-Date: Wed, 23 Apr 2008 23:42:54 +1000
-From: Hamish Moffatt <hamish@cloud.net.au>
-To: Artem Bityutskiy <dedekind@infradead.org>
-Subject: Re: [RFC] slight UBI scan time improvement
-Message-ID: <20080423134254.GA17867@cloud.net.au>
-References: <1208882552.11721.13.camel@sauron>
-	<20080423073840.GA9472@cloud.net.au> <480EEFAB.7010304@parrot.com>
-	<1208938864.11721.44.camel@sauron>
-	<20080423124046.GA16201@cloud.net.au>
-	<1208955467.11721.69.camel@sauron>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1208955467.11721.69.camel@sauron>
-Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH][JFFS2] Fix garbage collector block search
+From: David Woodhouse <dwmw2@infradead.org>
+To: Alexander Belyakov <abelyako@googlemail.com>
+In-Reply-To: <fe810cf0804230608t1183dbf4l99b168476875bfc0@mail.gmail.com>
+References: <E1J2Trs-000IFE-00.abelyako-mail-ru@f65.mail.ru>
+	<20080114132843.GA15710@lazybastard.org>
+	<fe810cf0801150424j25f35131v83692a3193a45a3b@mail.gmail.com>
+	<20080115133350.GA22338@lazybastard.org>
+	<fe810cf0801180828g7a48b6a1u69e35f832185b5eb@mail.gmail.com>
+	<1208882833.9212.629.camel@pmac.infradead.org>
+	<fe810cf0804230431m2bf80e83h4fa71bd5887b7587@mail.gmail.com>
+	<1208950350.9212.791.camel@pmac.infradead.org>
+	<fe810cf0804230608t1183dbf4l99b168476875bfc0@mail.gmail.com>
+Content-Type: text/plain
+Date: Wed, 23 Apr 2008 15:01:26 +0100
+Message-Id: <1208959286.9212.799.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Alexander Belyakov <abelyako@mail.ru>,
+	=?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,39 +28,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Apr 23, 2008 at 03:57:47PM +0300, Artem Bityutskiy wrote:
-> On Wed, 2008-04-23 at 22:40 +1000, Hamish Moffatt wrote:
-> > Well I think from past use of "time ubiattach ..." that most of
-> > the missing time is in the attach. 
-> Sure, UBI takes most of the time. Its just if you want to save 1.2+ sec,
-> you may try to play with on-flash BBT.
+On Wed, 2008-04-23 at 17:08 +0400, Alexander Belyakov wrote:
+> On Wed, Apr 23, 2008 at 3:32 PM, David Woodhouse <dwmw2@infradead.org> wrote:
+> >
+> >  I'm playing with it now, with the intent of committing it. Can you show
+> >  me how to reproduce the problem?
+> >
+> 
+> The most easy way to reproduce it is to fill jffs2 volume with single
+> large file until there is no empty space, then remove this file and
+> immediately try to write another file.
+> 
+> Something like:
+> ---
+> #!/bin/sh
+> rm -rf /mnt/vol1/*
+> dd if=/dev/urandom of=/mnt/vol1/test.file bs=4096 count=32768
+> rm /mnt/vol1/test.file
+> dd if=/dev/urandom of=/mnt/vol1/test_new.file bs=2048 count=1024
+> -------
+> 
+> The bug is better reproduced on small volumes (for me it is just
+> 4Mbytes). The first dd should exit with "No space left on device"
+> error to be sure no free space left. The last dd should always
+> succeed. If it fails - you catch the bug. Sometimes it is necessary to
+> run this script in several time in a row before last dd exits with an
+> error.
 
-I'm not sure what this means.. ? Instead of having to scan each block
-to check the marker, it has a central table? And that table is created
-once by an initial scan and then added to when UBI declares a block bad?
-How do I access this feature?
+Hm, I can't make it fail. I'm using nandsim, and have enabled the
+'Museum IDs' so that I can have a 4MiB device (I've also tried 2MiB).
 
-> > What sort of speed do you get using
-> > dd if=/dev/mtdblock9 of=/tmp/foo bs=128K count=64
-> > (where mtdblock9 is your raw mtd NAND device). I'm seeing about 6
-> > seconds to read that 8Mb, which is quite long I guess.
-> I have busybox so stuff like 128K does not work. Here are my results:
+I never even see the 'Synching wbuf in order to reuse
+erasable_pending_wbuf_list blocks' message, whether I have debugging
+enabled or whether I just unable that one message.
 
-Hmm I have busybox (1.9.x) also, 128K works ok for me.
-
-> # time dd if=/dev/mtd4 of=/dev/null bs=131072 count=64
-> 64+0 records in
-> 64+0 records out
-> real    0m 0.28s
-> user    0m 0.00s
-> sys     0m 0.28s
-
-Very good. It's about 6.1 seconds for me :-(
-
-(Worse on my previous hardware which had compact flash on IDE without a
-hardware IDE controller: over 11 seconds.)
-
-
-Hamish
 -- 
-Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
+dwmw2
