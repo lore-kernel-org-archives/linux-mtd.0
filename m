@@ -1,25 +1,22 @@
-Received: from wf-out-1314.google.com ([209.85.200.169])
+Received: from yw-out-1718.google.com ([74.125.46.157])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JoUXb-0007xm-DF
-	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 02:16:59 +0000
-Received: by wf-out-1314.google.com with SMTP id 29so1860383wff.24
+	id 1JoW9w-0008OM-Vv
+	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 04:00:41 +0000
+Received: by yw-out-1718.google.com with SMTP id 5so48498ywr.56
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 22 Apr 2008 19:16:58 -0700 (PDT)
-Message-ID: <9c9fda240804221916s6b14416fnc0396484a8101ea1@mail.gmail.com>
-Date: Wed, 23 Apr 2008 11:16:58 +0900
-From: "Kyungmin Park" <kmpark@infradead.org>
-Sender: kyungmin78@gmail.com
+	Tue, 22 Apr 2008 21:00:34 -0700 (PDT)
+Message-ID: <1925ef8a0804222100y2b0ff8d6rd640ad723d0517bc@mail.gmail.com>
+Date: Wed, 23 Apr 2008 08:00:34 +0400
+From: "Vitja Makarov" <vitja.makarov@gmail.com>
 To: "David Woodhouse" <dwmw2@infradead.org>
-Subject: Re: [PATCH] [MTD][OneNAND] Multi Level Chip (MLC) OneNAND support
-In-Reply-To: <1208914410.9212.714.camel@pmac.infradead.org>
+Subject: Re: [PATCH] mtd_dataflash use command allocated on stack
+In-Reply-To: <1208895638.9212.673.camel@pmac.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <20080103000350.GA12237@party>
-	<1208876816.9212.609.camel@pmac.infradead.org>
-	<9c9fda240804221749u4c235a3fv54926f8acfd2e605@mail.gmail.com>
-	<1208914410.9212.714.camel@pmac.infradead.org>
+References: <1207285360.10621.8.camel@vitja-laptop>
+	<1208895638.9212.673.camel@pmac.infradead.org>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -30,48 +27,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Apr 23, 2008 at 10:33 AM, David Woodhouse <dwmw2@infradead.org> wrote:
-> On Wed, 2008-04-23 at 09:49 +0900, Kyungmin Park wrote:
->  > On Wed, Apr 23, 2008 at 12:06 AM, David Woodhouse <dwmw2@infradead.org> wrote:
->  > > On Thu, 2008-01-03 at 09:03 +0900, Kyungmin Park wrote:
->  > >  > This patch enables the MLC OneNAND support
->  > >  > Now it's basic support. We need to work more.
->  > >  >
->  > >  > In MLC, we use the 4KiB BufferRam instead of 2KiB.
->  > >  > With this reason it is changed to read/write data from/to BufferRAM 0 and
->  > >  > we can't use read-while-load.
->  > >  >
->  > >  > It passed the nand-tests module and it diffed against the OneNAND MTD tree instead of MTD one.
->  > >
->  > >  Did you intend this to be merged?
->  > >
+2008/4/23 David Woodhouse <dwmw2@infradead.org>:
+> On Fri, 2008-04-04 at 09:02 +0400, Vitja Makarov wrote:
+>  > Hi!
 >  >
->  > Yes, Before merge this one
->  > Another patch should be merged first.
 >  >
->  > "[JFFS2] JFFS2 doesn't use OOB at MLC NAND/OneNAND"
->  > http://patchwork.ozlabs.org/linux-mtd/patch?id=16536
+>  > Currently mtd_dataflash driver has command in their private structure.
+>  > That is only 4 bytes, sometimes actually 8 is needed.
+>  > Also it could be accessed twice before lock is taken.
+>  >
+>  > This patch moves command to stack.
 >
->  Hm, yeah... that was the other thing I wanted to ask you about.
+>  Is that allowed? The SPI code might DMA from it, surely?
 >
->  I'm really not wonderfully happy with it. Have we done any powerfail
->  testing with MLC chips?
-
-Now OneNAND try to solve the MLC Power Off Recovery (POR) handling at
-hardware level exactly chip level.
-I'm sorry since the Spec. is not open, I can't tell you more detailed
-information. However, the Spec. is open, you can find it. When? I'm
-not sure...
-
+>  --
+>  dwmw2
 >
->  Maybe it would be better to just refuse to mount, until/unless we have a
->  proper solution?
 >
-Reasonable. how about to change into read-only mode? powerfail is only
-occurs at write operation so read-only mode doesn't affect this
-problem.
 
-Okay, wait until we have a proper solution.
 
-Thank you,
-Kyungmin Park
+I'm using this driver with dma enabled on blackfin arch and that seems to work.
+Btw mutex is taken before priv->command is accessed so no race could be here.
+But I still think that having command 4 bytes when it's actually 8 (4
++ 4 don't cares) isn't a good idea.
+If you are asking about could spi DMA from stack, I think so, as
+spi_sync() is called before ret, but there still are cache issues,
+dataflash or better spi driver should call invalidate/flush for the
+given address if needed, I moved it to spi_bfin code, and that seems
+to work for me wo modifyng original dataflash driver.
