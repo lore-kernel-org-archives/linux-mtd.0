@@ -1,14 +1,24 @@
-Subject: Re: [PATCH] fix cfi for collie flash
-From: David Woodhouse <dwmw2@infradead.org>
-To: Thomas Kunze <thommycheck@gmx.de>
-In-Reply-To: <480E7784.6030902@gmx.de>
-References: <480E7784.6030902@gmx.de>
-Content-Type: text/plain
-Date: Wed, 23 Apr 2008 01:30:18 +0100
-Message-Id: <1208910618.9212.701.camel@pmac.infradead.org>
-Mime-Version: 1.0
+Received: from wf-out-1314.google.com ([209.85.200.173])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JoTAt-00071H-1z
+	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 00:49:27 +0000
+Received: by wf-out-1314.google.com with SMTP id 29so1832326wff.24
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 22 Apr 2008 17:49:25 -0700 (PDT)
+Message-ID: <9c9fda240804221749u4c235a3fv54926f8acfd2e605@mail.gmail.com>
+Date: Wed, 23 Apr 2008 09:49:25 +0900
+From: "Kyungmin Park" <kmpark@infradead.org>
+Sender: kyungmin78@gmail.com
+To: "David Woodhouse" <dwmw2@infradead.org>
+Subject: Re: [PATCH] [MTD][OneNAND] Multi Level Chip (MLC) OneNAND support
+In-Reply-To: <1208876816.9212.609.camel@pmac.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Disposition: inline
+References: <20080103000350.GA12237@party>
+	<1208876816.9212.609.camel@pmac.infradead.org>
+Cc: Kyungmin Park <kyungmin.park@samsung.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,17 +28,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-04-23 at 01:40 +0200, Thomas Kunze wrote:
-> Hi,
-> 
-> collie seems to contain LH28F640BF flash chips. According to 
-> http://sharp-world.com/products/device/flash/pdf/*FUM00701*@E.pdf
-> (page 83) if they have 0x51 of Extended Query Table (number of hardware 
-> partitions) set to zero, they have a single fixed partition.
-> This patch makes those chips work.
+On Wed, Apr 23, 2008 at 12:06 AM, David Woodhouse <dwmw2@infradead.org> wrote:
+> On Thu, 2008-01-03 at 09:03 +0900, Kyungmin Park wrote:
+>  > This patch enables the MLC OneNAND support
+>  > Now it's basic support. We need to work more.
+>  >
+>  > In MLC, we use the 4KiB BufferRam instead of 2KiB.
+>  > With this reason it is changed to read/write data from/to BufferRAM 0 and
+>  > we can't use read-while-load.
+>  >
+>  > It passed the nand-tests module and it diffed against the OneNAND MTD tree instead of MTD one.
+>
+>  Did you intend this to be merged?
+>
 
-fatal: corrupt patch at line 8
-Patch failed at 0001.
+Yes, Before merge this one
+Another patch should be merged first.
 
--- 
-dwmw2
+"[JFFS2] JFFS2 doesn't use OOB at MLC NAND/OneNAND"
+http://patchwork.ozlabs.org/linux-mtd/patch?id=16536
+
+Could you first merge it first? then I will resend the patch against
+the latest tree.
+
+Thank you,
+Kyungmin Park
