@@ -1,28 +1,29 @@
-Received: from [63.81.120.155] (helo=imap.sh.mvista.com)
+Received: from fg-out-1718.google.com ([72.14.220.153])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jocut-0004sh-KG
-	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 11:13:36 +0000
-Message-ID: <480F19B9.1070403@ru.mvista.com>
-Date: Wed, 23 Apr 2008 15:12:57 +0400
-From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+	id 1JodCN-0007SV-Uj
+	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 11:31:40 +0000
+Received: by fg-out-1718.google.com with SMTP id 22so2505986fge.26
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 23 Apr 2008 04:31:37 -0700 (PDT)
+Message-ID: <fe810cf0804230431m2bf80e83h4fa71bd5887b7587@mail.gmail.com>
+Date: Wed, 23 Apr 2008 15:31:37 +0400
+From: "Alexander Belyakov" <abelyako@googlemail.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Subject: Re: [PATCH][JFFS2] Fix garbage collector block search
+In-Reply-To: <1208882833.9212.629.camel@pmac.infradead.org>
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 1/2] [MTD] Add support for RAM & ROM
-	mappings	in	the	physmap_of MTD driver.
-References: <200803261344.03438.laurentp@cse-semaphore.com>	
-	<47EA6B11.7050804@ru.mvista.com>	
-	<777c028aa41fe870542afdb4fa7d2db6@kernel.crashing.org>	
-	<200803271026.51555.laurentp@cse-semaphore.com>	
-	<1208894995.9212.669.camel@pmac.infradead.org>	
-	<480E479C.7040408@ru.mvista.com>
-	<1208895496.9212.671.camel@pmac.infradead.org>
-In-Reply-To: <1208895496.9212.671.camel@pmac.infradead.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: ben@simtec.co.uk, Segher Boessenkool <segher@kernel.crashing.org>,
-	Laurent Pinchart <laurentp@cse-semaphore.com>,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	David Gibson <david@gibson.dropbear.id.au>
+Content-Disposition: inline
+References: <E1J2Trs-000IFE-00.abelyako-mail-ru@f65.mail.ru>
+	<20080114132843.GA15710@lazybastard.org>
+	<fe810cf0801150424j25f35131v83692a3193a45a3b@mail.gmail.com>
+	<20080115133350.GA22338@lazybastard.org>
+	<fe810cf0801180828g7a48b6a1u69e35f832185b5eb@mail.gmail.com>
+	<1208882833.9212.629.camel@pmac.infradead.org>
+Cc: Alexander Belyakov <abelyako@mail.ru>,
+	=?UTF-8?Q?J=C3=B6rn_Engel?= <joern@logfs.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,18 +33,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse wrote:
+On Tue, Apr 22, 2008 at 8:47 PM, David Woodhouse <dwmw2@infradead.org> wrote:
+>
+> On Fri, 2008-01-18 at 19:28 +0300, Alexander Belyakov wrote:
+>  >
+>  > Question. What is success criteria for jffs2_garbage_collect_pass() execution?
+>  >
+>
+>  It depends. There are two callers of jffs2_garbage_collect_pass().
+>
+>  For jffs2_flush_wbuf_gc() it's not progress, so it should be handled
+>  like failure.
+>
+>  For jffs2_reserve_space(), we can treat it as success... or we can have
+>  a special case which calls jffs2_erase_pending_blocks() right away to
+>  wait for the block to erase.
+>
+>  How about this... does it solve the problem for you?
+>
 
->>>>Ok. I'll submit a new patch as soon as we agree on a compatible name.
+I like this special case for jffs2_reserve_space(). It solves the problem.
 
->>>Did we?
-
->>    IIRC, The latest agreement was that we don't need the "compatible" and 
->>will match on node name.
-
-> Ok. Is there a current patch I should be merging?
-
-    Looks like it was decided to revert to the platform device method, not 
-sure why -- so, no changes. Laurent?
-
-WBR, Sergei
+Thank you,
+Alexander
