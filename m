@@ -1,26 +1,15 @@
-Received: from el-out-1112.google.com ([209.85.162.178])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Josdx-0008EP-7I
-	for linux-mtd@lists.infradead.org; Thu, 24 Apr 2008 04:01:09 +0000
-Received: by el-out-1112.google.com with SMTP id j27so1102053elf.22
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 23 Apr 2008 21:01:07 -0700 (PDT)
-Message-ID: <97a0a9ac0804232101i71bfff22o723e2aaa80b09c2f@mail.gmail.com>
-Date: Wed, 23 Apr 2008 22:01:07 -0600
-From: "Gordon Farquharson" <gordonfarquharson@gmail.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Subject: Re: physmap and "request_module: runaway loop modprobe net-pf-1"
-In-Reply-To: <1208867831.9212.582.camel@pmac.infradead.org>
+Received: from static.88-198-239-122.clients.your-server.de ([88.198.239.122]
+	helo=german-host.net)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JoswN-0000Q3-Tx
+	for linux-mtd@lists.infradead.org; Thu, 24 Apr 2008 04:20:13 +0000
+Date: Wed, 23 Apr 2008 23:44:21 +0300
+From: "Thomas ballast" <Bradyxcqbep@yahoo.com>
+To: linux-mips@ferretporn.se
+Subject: De'ntists Listing in America
+Message-ID: <752372n1fqc0$k5755ik0$6066h5a0@Delldim5150
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <97a0a9ac0803112235l157706adoa84b131549a46049@mail.gmail.com>
-	<20080311225926.6515e18c.akpm@linux-foundation.org>
-	<1208867831.9212.582.camel@pmac.infradead.org>
-Cc: netdev@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	davem@davemloft.net
+Content-type: text/plain; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,56 +19,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David
 
-On Tue, Apr 22, 2008 at 6:37 AM, David Woodhouse <dwmw2@infradead.org> wrote:
-> On Tue, 2008-03-11 at 22:59 -0700, Andrew Morton wrote:
->
-> > Now, af_unix_init() uses module_init(), which is really __initcall(), which
->  > is really device_initcall() (ug, don't ask).
->
->  ... which is really __define_initcall("6", ...);.
->
->
->  > So you can do what you're sugesting here by locating the caller/callers of
->  > parse_mtd_partitions() and marking them late_initcall().
->
->  Better still, just initialise af_unix earlier so that it's there before
->  any normal drivers which happen to call request_module(). Since core
->  network stuff is initialised with subsys_initcall() which is really
->  __define_initcall("4", ...), we can initialise af_unix with
->  fs_initcall() which is really __define_initcall("5", ...).
 
-I tested the patch you sent. It fixes the runaway modprobe messages,
-but I get a modprobe error (see below) with the Debian kernel I used
-to test the patch because modules.dep does not exist in the initramfs
-(should it?). In my kernel config, I did not enable
-CONFIG_MTD_CMDLINE_PARTS and I set CONFIG_MTD_REDBOOT_PARTS=m but the
-redboot module was not included in the initramfs so it could not be
-loaded, hence the messages saying that the parsing schemes are not
-available.
 
-[    4.790000] physmap platform flash device: 00080000 at f0000000
-[    4.800000] Found: ST M29W400DB
-[    4.800000] physmap-flash.0: Found 1 x16 devices at 0x0 in 16-bit bank
-[    4.810000] number of JEDEC chips: 1
-[    4.810000] cfi_cmdset_0002: Disabling erase-suspend-program due to
-code brokenness.
-modprobe: FATAL: Could not load
-/lib/modules/2.6.25-trunk-iop32x/modules.dep: No such file or
-directory
 
-[    4.900000] cmdlinepart partition parsing not available
-modprobe: FATAL: Could not load
-/lib/modules/2.6.25-trunk-iop32x/modules.dep: No such file or
-directory
 
-[    4.970000] RedBoot partition parsing not available
+New for this Year: Listing of Dentists  in the United States
 
-I guess the question is which patch (if either) is more appealing.
+--> 164,739 Dentists with City, State, Zip
+--> 158,934 Mailing Addresses
+--> 163,633 Tel #'s
+--> 77,238 Fax Nos.
+--> 45,687 Email Addys
 
-Gordon
+Only until April 25th the special introductory price is $292 (reduced from $396)
 
--- 
-Gordon Farquharson
-GnuPG Key ID: 32D6D676
+Please reply by email to henryfrankenson@hotmail.com  for more details
+
+
+
+
+
+
+
+
+for termination of this mail send a blank message with 0747 in the subject
