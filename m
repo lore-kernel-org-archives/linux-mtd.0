@@ -1,21 +1,18 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JoaDN-0000MH-G3
-	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 08:20:30 +0000
-Subject: Re: [RFC] slight UBI scan time improvement
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-In-Reply-To: <480EEFAB.7010304@parrot.com>
-References: <1208882552.11721.13.camel@sauron>
-	<20080423073840.GA9472@cloud.net.au>  <480EEFAB.7010304@parrot.com>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 23 Apr 2008 11:21:04 +0300
-Message-Id: <1208938864.11721.44.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: Nancy <nancydreaming@gmail.com>, linux-mtd@lists.infradead.org,
-	Bruce_Leonard@selinc.com
-Reply-To: dedekind@infradead.org
+Received: from wf-out-1314.google.com ([209.85.200.175])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JoanH-0002PI-Rn
+	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 08:57:36 +0000
+Received: by wf-out-1314.google.com with SMTP id 29so1974598wff.24
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 23 Apr 2008 01:57:34 -0700 (PDT)
+Message-ID: <15577be70804230157g35941393m599fd5fc2ad895c3@mail.gmail.com>
+Date: Wed, 23 Apr 2008 10:57:34 +0200
+From: "Abel Bernabeu" <abel.bernabeu@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: PATCH: solving a hang while waiting in FL_STATUS
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_Part_9501_14189474.1208941054867"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +22,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+------=_Part_9501_14189474.1208941054867
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-On Wed, 2008-04-23 at 10:13 +0200, Matthieu CASTET wrote:
-> > [    0.950000] NAND device: Manufacturer ID: 0xec, Chip ID: 0xdc (Samsu=
-ng NAND 512MiB 3,3V 8-bit)
-> > [    0.960000] Scanning device for bad blocks
-> > [    1.000000] Bad eraseblock 494 at 0x03dc0000
-> > [    1.050000] Bad eraseblock 1300 at 0x0a280000
-> > [    1.140000] Bad eraseblock 2554 at 0x13f40000
-> > [    1.160000] Bad eraseblock 2923 at 0x16d60000
-> > [    1.200000] Bad eraseblock 3349 at 0x1a2a0000
-> > [    1.230000] Bad eraseblock 3790 at 0x1d9c0000
-> > [    6.890000] UBI: attached mtd9 to ubi0
-> >=20
-> >=20
-> >=20
-> > Hamish
->=20
-> Do you know when the bad block scanning finish and the ubi scan start ?
+I am experimenting an infinite loop problem happening at
+cfi_cmdset_0001.c:chip_ready.
 
-Good point Matthieu. Indeed, _at least_ 1.23 sec is spend in the driver
-for scanning against bad eraseblocks to build in-memory bad block table
-(BBT). And it is probably more than 1.23 sec. If you start using
-on-flash bad block table, this should go away. I never used on-flash
-BBT, but I know MTD supports this and for example OLPC has on-flash BBT.
+Some kind of timeout while waiting  in FL_STATUS should be included.
+Indeed, this timeout feature is not new at all.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+The feature was present in 2.6.23.17 but disappeared in 2.6.24 (after
+some refactoring work easily perceptible).
+
+The present patch restores the "lost functionality" and solves my
+problem. Please consider the patch to be included in the mtd code.
+
+Yours, Abel.
+
+------=_Part_9501_14189474.1208941054867
+Content-Type: text/x-patch; name=chip_ready.patch
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_ffdoa849
+Content-Disposition: attachment; filename=chip_ready.patch
+
+LS0tIGxpbnV4LTIuNi4yNS9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDEuYwkyMDA4
+LTA0LTE3IDA0OjQ5OjQ0LjAwMDAwMDAwMCArMDIwMAorKysgbGludXgtMi42LjI1LmhhY2tlZC9k
+cml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDEuYwkyMDA4LTA0LTIzIDEwOjI3OjEyLjAw
+MDAwMDAwMCArMDIwMApAQCAtNzEyLDYgKzcxMiwxMiBAQAogCQkJaWYgKGNoaXAtPnByaXYgJiYg
+bWFwX3dvcmRfYW5kZXF1YWwobWFwLCBzdGF0dXMsIHN0YXR1c19QV1MsIHN0YXR1c19QV1MpKQog
+CQkJCWJyZWFrOwogCisJCQlpZiAodGltZV9hZnRlcihqaWZmaWVzLCB0aW1lbykpIHsKKwkJCQlw
+cmludGsoS0VSTl9FUlIgIiVzOiBXYWl0aW5nIGZvciBjaGlwIHRvIGJlIHJlYWR5IHRpbWVkIG91
+dC4gU3RhdHVzICVseFxuIiwKKwkJCQkJbWFwLT5uYW1lLCBzdGF0dXMueFswXSk7CisJCQkJcmV0
+dXJuIC1FSU87CisJCQl9CisKIAkJCXNwaW5fdW5sb2NrKGNoaXAtPm11dGV4KTsKIAkJCWNmaV91
+ZGVsYXkoMSk7CiAJCQlzcGluX2xvY2soY2hpcC0+bXV0ZXgpOwo=
+------=_Part_9501_14189474.1208941054867--
