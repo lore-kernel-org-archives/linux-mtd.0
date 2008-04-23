@@ -1,22 +1,30 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JoeXw-0003Kd-Nb
-	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 12:58:01 +0000
-Subject: Re: [RFC] slight UBI scan time improvement
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Hamish Moffatt <hamish@cloud.net.au>
-In-Reply-To: <20080423124046.GA16201@cloud.net.au>
-References: <1208882552.11721.13.camel@sauron>
-	<20080423073840.GA9472@cloud.net.au> <480EEFAB.7010304@parrot.com>
-	<1208938864.11721.44.camel@sauron>
-	<20080423124046.GA16201@cloud.net.au>
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 23 Apr 2008 15:57:47 +0300
-Message-Id: <1208955467.11721.69.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from n1.cetrtapot.si ([89.212.80.162])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JoeZk-0007YZ-50
+	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 12:59:52 +0000
+Received: from localhost (localhost.dmz.cetrtapot.si [127.0.0.1])
+	by n1.cetrtapot.si (Postfix) with ESMTP id 8A3A5BE2C
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 23 Apr 2008 14:59:49 +0200 (CEST)
+Received: from n1.cetrtapot.si ([127.0.0.1])
+	by localhost (n1.dmz.cetrtapot.si [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id ydQf+e-TUHbf for <linux-mtd@lists.infradead.org>;
+	Wed, 23 Apr 2008 14:59:46 +0200 (CEST)
+Received: from fubar.kranj.cetrtapot.si (inside.kranj.cetrtapot.si
+	[192.168.66.2])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by n1.cetrtapot.si (Postfix) with ESMTP id 8CDF1BE27
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 23 Apr 2008 14:59:46 +0200 (CEST)
+Message-ID: <480F32C1.6050003@cetrtapot.si>
+Date: Wed, 23 Apr 2008 14:59:45 +0200
+From: Hinko Kocevar <hinko.kocevar@cetrtapot.si>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: hang on jffs2 mount
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +34,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-04-23 at 22:40 +1000, Hamish Moffatt wrote:
-> Well I think from past use of "time ubiattach ..." that most of
-> the missing time is in the attach.=20
-Sure, UBI takes most of the time. Its just if you want to save 1.2+ sec,
-you may try to play with on-flash BBT.
+Hi all,
 
-> Would combining the bad block scan with the UBI scan save time? I guess
-> it would be a bad layering violation however :-)
-Yeah, it could be done as custom hack but not for mainstream.
+We are using ancient kernel 2.6.12 on our embedded devices.
+After being in the wild about two/three years the devices
+started having issues with mounting jffs2 rootfs that is
+located on NOR flash. The devices are turned off on daily
+basis without any power management - power is just cut
+off from the board while jffs2 filesystems are still
+mounted!!! I think this might be the main reason for
+the hangs we are experiencing.
 
-> What sort of speed do you get using
-> dd if=3D/dev/mtdblock9 of=3D/tmp/foo bs=3D128K count=3D64
-> (where mtdblock9 is your raw mtd NAND device). I'm seeing about 6
-> seconds to read that 8Mb, which is quite long I guess.
+I've managed to start the device with NFS mounted rootfs
+and then manually mounted the flash rootfs.
+If using 2.6.12 kernel for this 'rescue' procedure it hangs
+the device - not responding anymore.
+More success was achieved using 2.6.25 kernel - it actually
+managed to mount the offending flash rootfs with following
+dmesg messages:
 
-I have busybox so stuff like 128K does not work. Here are my results:
 
-# time dd if=3D/dev/mtd4 of=3D/dev/null bs=3D131072 count=3D64
-64+0 records in
-64+0 records out
-real    0m 0.28s
-user    0m 0.00s
-sys     0m 0.28s
+# mount -t jffs2 /dev/mtdblk2 /mnt
 
-# time dd if=3D/dev/mtd4 of=3D/dev/null bs=3D131072 count=3D256
-256+0 records in
-256+0 records out
-real    0m 1.12s
-user    0m 0.00s
-sys     0m 1.11s
+jffs2_scan_eraseblock(): Node at 0x00213f54 {0x1985, 0xffff, 0xffffffff) has invalid CRC 0xffffffff (calculated 0x19861e00)
+JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x260320. {ffff,ffff,ffffffff,ffffffff}
+JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x260364. {ffff,ffff,ffffffff,ffffffff}
+JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x2602ac. {ffff,ffff,ffffffff,ffffffff}
+JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x2603a8. {ffff,ffff,ffffffff,ffffffff}
+JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x2603ec. {ffff,ffff,ffffffff,ffffffff}
+JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x260268. {ffff,ffff,ffffffff,ffffffff}
+JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x260430. {ffff,ffff,ffffffff,ffffffff}
+JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x260474. {ffff,ffff,ffffffff,ffffffff}
+JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x260224. {ffff,ffff,ffffffff,ffffffff}
+JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x2604b8. {ffff,ffff,ffffffff,ffffffff}
+JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x2604fc. {ffff,ffff,ffffffff,ffffffff}
+JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x260540. {ffff,ffff,ffffffff,ffffffff}
+JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x2601e0. {ffff,ffff,ffffffff,ffffffff}
+JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x260584. {ffff,ffff,ffffffff,ffffffff}
+JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x2605c8. {ffff,ffff,ffffffff,ffffffff}
+JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x26060c. {ffff,ffff,ffffffff,ffffffff}
 
-Its OneNAND which has a controller and it is quite quick.
+Seeing those ffff, ffffffff values makes me thinking that
+info was read from erased flash sector or similar!?
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Would upgrade to more recent kernel fix the hangs during
+bootup or can this be solved only with clean umount before
+poweroff?
+
+Regards,
+Hinko
+
+-- 
+ČETRTA POT, d.o.o., Kranj
+Planina 3
+4000 Kranj
+Slovenia, Europe
+Tel. +386 (0) 4 280 66 03
+E-mail: hinko.kocevar@cetrtapot.si
+Http: www.cetrtapot.si
