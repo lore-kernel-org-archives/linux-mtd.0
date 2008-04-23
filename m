@@ -1,14 +1,22 @@
-Date: Wed, 23 Apr 2008 14:27:09 +0100 (BST)
-From: Alexey Korolev <akorolev@infradead.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: PATCH: solving a hang while waiting in FL_STATUS
-In-Reply-To: <1208946790.9212.782.camel@pmac.infradead.org>
-Message-ID: <Pine.LNX.4.64.0804231408140.28908@pentafluge.infradead.org>
-References: <15577be70804230157g35941393m599fd5fc2ad895c3@mail.gmail.com>
-	<1208946790.9212.782.camel@pmac.infradead.org>
+Received: from risingsoftware01.propagation.net ([66.221.33.65])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JofFU-00008H-H6
+	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 13:43:00 +0000
+Date: Wed, 23 Apr 2008 23:42:54 +1000
+From: Hamish Moffatt <hamish@cloud.net.au>
+To: Artem Bityutskiy <dedekind@infradead.org>
+Subject: Re: [RFC] slight UBI scan time improvement
+Message-ID: <20080423134254.GA17867@cloud.net.au>
+References: <1208882552.11721.13.camel@sauron>
+	<20080423073840.GA9472@cloud.net.au> <480EEFAB.7010304@parrot.com>
+	<1208938864.11721.44.camel@sauron>
+	<20080423124046.GA16201@cloud.net.au>
+	<1208955467.11721.69.camel@sauron>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org, Abel Bernabeu <abel.bernabeu@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1208955467.11721.69.camel@sauron>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,55 +26,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David,  
+On Wed, Apr 23, 2008 at 03:57:47PM +0300, Artem Bityutskiy wrote:
+> On Wed, 2008-04-23 at 22:40 +1000, Hamish Moffatt wrote:
+> > Well I think from past use of "time ubiattach ..." that most of
+> > the missing time is in the attach. 
+> Sure, UBI takes most of the time. Its just if you want to save 1.2+ sec,
+> you may try to play with on-flash BBT.
 
-> > I am experimenting an infinite loop problem happening at
-> > cfi_cmdset_0001.c:chip_ready.
-> > 
-> > Some kind of timeout while waiting  in FL_STATUS should be included.
-> > Indeed, this timeout feature is not new at all.
-> > 
-> > The feature was present in 2.6.23.17 but disappeared in 2.6.24 (after
-> > some refactoring work easily perceptible).
-> 
-> Hm. This was removed in commit 5a37cf19:
-> 	Fix deadlock in Intel chip driver caused by get_chip recursion
-> 
-> Alexey, can you explain why you removed it? Abel's patch simply adds
-> this back where it was. That looks reasonable to me, so I'd like to know
-> if I've missed some reason why it shouldn't be there...
-> 
->
-Yes. I can explain. I removed it because just simple adding timeout
-won't work. Please look at the code after patch applying (solving a hang while waiting in FL_STATUS). Time_after will never occur:
---------------
-	case FL_STATUS:
-		for (;;) {
-			status = map_read(map, adr);
-			if (map_word_andequal(map, status, status_OK, status_OK))
-				break;
+I'm not sure what this means.. ? Instead of having to scan each block
+to check the marker, it has a central table? And that table is created
+once by an initial scan and then added to when UBI declares a block bad?
+How do I access this feature?
 
-			/* At this point we're fine with write operations
-			   in other partitions as they don't conflict. */
-			if (chip->priv && map_word_andequal(map, status, status_PWS, status_PWS))
-				break;
+> > What sort of speed do you get using
+> > dd if=/dev/mtdblock9 of=/tmp/foo bs=128K count=64
+> > (where mtdblock9 is your raw mtd NAND device). I'm seeing about 6
+> > seconds to read that 8Mb, which is quite long I guess.
+> I have busybox so stuff like 128K does not work. Here are my results:
 
-			if (time_after(jiffies, timeo)) {
-				printk(KERN_ERR "%s: Waiting for chip to be ready timed out. Status %lx\n",
-				       map->name, status.x[0]);
-				return -EIO;
-			}
-			spin_unlock(chip->mutex);
-			cfi_udelay(1);
-			spin_lock(chip->mutex);
-			/* Someone else might have been playing with it. */
-			return -EAGAIN;
-		}
---------------
+Hmm I have busybox (1.9.x) also, 128K works ok for me.
 
-I agree that watchdog could be quite useful here, but adding
-it properly will lead to rather big changes. That is why Nicolas and me
-agreed to kick it off. 
+> # time dd if=/dev/mtd4 of=/dev/null bs=131072 count=64
+> 64+0 records in
+> 64+0 records out
+> real    0m 0.28s
+> user    0m 0.00s
+> sys     0m 0.28s
 
-Thanks,
-Alexey
+Very good. It's about 6.1 seconds for me :-(
+
+(Worse on my previous hardware which had compact flash on IDE without a
+hardware IDE controller: over 11 seconds.)
+
+
+Hamish
+-- 
+Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
