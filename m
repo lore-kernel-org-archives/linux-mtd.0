@@ -1,21 +1,20 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Joa8s-0003Nd-NN
-	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 08:15:50 +0000
+	id 1JoaDN-0000MH-G3
+	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 08:20:30 +0000
 Subject: Re: [RFC] slight UBI scan time improvement
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Nancy <nancydreaming@gmail.com>
-In-Reply-To: <bae050c10804230101m64bc2558icf9a5ad7efb8c824@mail.gmail.com>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+In-Reply-To: <480EEFAB.7010304@parrot.com>
 References: <1208882552.11721.13.camel@sauron>
-	<bae050c10804230015r50b7747apef8b1d8cab302c9a@mail.gmail.com>
-	<1208935971.11721.20.camel@sauron>
-	<bae050c10804230101m64bc2558icf9a5ad7efb8c824@mail.gmail.com>
+	<20080423073840.GA9472@cloud.net.au>  <480EEFAB.7010304@parrot.com>
 Content-Type: text/plain; charset=utf-8
-Date: Wed, 23 Apr 2008 11:16:11 +0300
-Message-Id: <1208938571.11721.38.camel@sauron>
+Date: Wed, 23 Apr 2008 11:21:04 +0300
+Message-Id: <1208938864.11721.44.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Cc: Nancy <nancydreaming@gmail.com>, linux-mtd@lists.infradead.org,
+	Bruce_Leonard@selinc.com
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -26,33 +25,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-04-23 at 16:01 +0800, Nancy wrote:
->     Yes, the issue is go away by properly use MLC nand.
->     But the write fail issue in UBI still exist! Suppose you are
-> properly used your Nand, when it return write fail, but can erase
-> successfully, UBI still group this block in good block heap. That is
-> wrong and dangerous.
+Hi,
 
-The driver may return I/O errors for many reasons, including bugs in the
-driver. Or this may be an dumb user who screwed up his flash. It might
-be something else. We do not wand to mark the eraseblock bad when it is
-_not_ bad.
+On Wed, 2008-04-23 at 10:13 +0200, Matthieu CASTET wrote:
+> > [    0.950000] NAND device: Manufacturer ID: 0xec, Chip ID: 0xdc (Samsu=
+ng NAND 512MiB 3,3V 8-bit)
+> > [    0.960000] Scanning device for bad blocks
+> > [    1.000000] Bad eraseblock 494 at 0x03dc0000
+> > [    1.050000] Bad eraseblock 1300 at 0x0a280000
+> > [    1.140000] Bad eraseblock 2554 at 0x13f40000
+> > [    1.160000] Bad eraseblock 2923 at 0x16d60000
+> > [    1.200000] Bad eraseblock 3349 at 0x1a2a0000
+> > [    1.230000] Bad eraseblock 3790 at 0x1d9c0000
+> > [    6.890000] UBI: attached mtd9 to ubi0
+> >=20
+> >=20
+> >=20
+> > Hamish
+>=20
+> Do you know when the bad block scanning finish and the ubi scan start ?
 
-And it's not just erase successfully. We torture the eraseblock. We
-erase it, read it back, check it has all 0xFFs, then write 0xA5 pattern,
-read it back, check, erase again, read back, check, write 0x5A pattern,
-read back, check, erase, read back, check, write 0x00 pattern, read
-back, check, erase, read back check. Enough? If it is not enough, feel
-free to send a patch for better torturing.
-
-Please, refer the torture_peb() function for more details.
-
-So, we do not mark eraseblock as bad if it passed the torture test.
-Note, a bit-flip during torture test is enough to mark the eraseblock
-bad as well.
-
-In your particular case, you would have _all_ eraseblocks marked as bad
-if UBI did what you want.
+Good point Matthieu. Indeed, _at least_ 1.23 sec is spend in the driver
+for scanning against bad eraseblocks to build in-memory bad block table
+(BBT). And it is probably more than 1.23 sec. If you start using
+on-flash bad block table, this should go away. I never used on-flash
+BBT, but I know MTD supports this and for example OLPC has on-flash BBT.
 
 --=20
 Best regards,
