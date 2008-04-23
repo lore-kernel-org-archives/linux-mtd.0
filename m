@@ -1,25 +1,19 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from risingsoftware01.propagation.net ([66.221.33.65])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JoZXa-0005V4-1D
-	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 07:37:18 +0000
-Subject: Re: ubi-utils
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Nancy <nancydreaming@gmail.com>
-In-Reply-To: <bae050c10804230027h6121713fw2f594d49d89e5137@mail.gmail.com>
-References: <bae050c10804210148g7e36db07vd7df62e286da6490@mail.gmail.com>
-	<1208769345.5965.363.camel@sauron>
-	<bae050c10804210243l848eeb6m97a33c5a65d5dfc6@mail.gmail.com>
-	<1208776123.5965.367.camel@sauron>
-	<bae050c10804210449w14e75e0wf977815c22423358@mail.gmail.com>
-	<1208881852.11721.6.camel@sauron>
-	<bae050c10804230027h6121713fw2f594d49d89e5137@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 23 Apr 2008 10:37:46 +0300
-Message-Id: <1208936266.11721.25.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+	id 1JoZZ8-0005a0-7G
+	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 07:38:54 +0000
+Date: Wed, 23 Apr 2008 17:38:41 +1000
+From: Hamish Moffatt <hamish@cloud.net.au>
+To: Artem Bityutskiy <dedekind@infradead.org>
+Subject: Re: [RFC] slight UBI scan time improvement
+Message-ID: <20080423073840.GA9472@cloud.net.au>
+References: <1208882552.11721.13.camel@sauron>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1208882552.11721.13.camel@sauron>
+Cc: Nancy <nancydreaming@gmail.com>, linux-mtd@lists.infradead.org,
+	Bruce_Leonard@selinc.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,22 +23,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-04-23 at 15:27 +0800, Nancy wrote:
-> OK, pass, will you please answer me one question:
-> Compare with attaching only 1 MTD device, attaching 2 MTD devices will
-> eat system resources a lot? will slow down the Nand write or read
-> speed?
-> All I need to know is the performances differences. Thanks a lot !
+On Tue, Apr 22, 2008 at 07:42:32PM +0300, Artem Bityutskiy wrote:
+> Hi,
+> 
+> I've prepared 2 UBI patches which may slightly improve the scan time. I
+> am not sure though. Would you guys please try them and tell if UBI scan
+> time changed? Thanks in advance.
 
-As I understand you are talking about splitting your single chip on 2
-partitions and you are questioning about the difference between 1 big
-partition and 2 smaller.
+Hi Artem,
 
-Well, I never tried this with real flash. But theoretically there should
-be no difference. But I do not recommend you doing this with your MLC
-NAND where an eraseblock survives just 10000 erase-cycles.
+Thanks for your patch.. unfortunately I don't see a significant
+difference, although it is slightly faster.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Before:
+
+[    0.950000] NAND device: Manufacturer ID: 0xec, Chip ID: 0xdc (Samsung NAND 512MiB 3,3V 8-bit)
+[    0.960000] Scanning device for bad blocks
+[    1.000000] Bad eraseblock 494 at 0x03dc0000
+[    1.050000] Bad eraseblock 1300 at 0x0a280000
+[    1.140000] Bad eraseblock 2554 at 0x13f40000
+[    1.160000] Bad eraseblock 2923 at 0x16d60000
+[    1.200000] Bad eraseblock 3349 at 0x1a2a0000
+[    1.230000] Bad eraseblock 3790 at 0x1d9c0000
+[    6.900000] UBI: attached mtd9 to ubi0
+
+After:
+
+[    0.950000] NAND device: Manufacturer ID: 0xec, Chip ID: 0xdc (Samsung NAND 512MiB 3,3V 8-bit)
+[    0.960000] Scanning device for bad blocks
+[    1.000000] Bad eraseblock 494 at 0x03dc0000
+[    1.050000] Bad eraseblock 1300 at 0x0a280000
+[    1.140000] Bad eraseblock 2554 at 0x13f40000
+[    1.160000] Bad eraseblock 2923 at 0x16d60000
+[    1.200000] Bad eraseblock 3349 at 0x1a2a0000
+[    1.230000] Bad eraseblock 3790 at 0x1d9c0000
+[    6.890000] UBI: attached mtd9 to ubi0
+
+
+
+Hamish
+-- 
+Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
