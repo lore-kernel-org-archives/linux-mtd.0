@@ -1,17 +1,14 @@
-Subject: Re: [PATCH] NAND hardware ECC controller on at91sam9263 / at91sam9260
+Subject: Re: PATCH: solving a hang while waiting in FL_STATUS
 From: David Woodhouse <dwmw2@infradead.org>
-To: Richard Genoud <richard.genoud@gmail.com>
-In-Reply-To: <80b317760804230237n188bd989oc28a5ed60e615d88@mail.gmail.com>
-References: <47BABA0C.8070500@gmail.com>
-	<1208889653.9212.641.camel@pmac.infradead.org>
-	<80b317760804230237n188bd989oc28a5ed60e615d88@mail.gmail.com>
+To: Abel Bernabeu <abel.bernabeu@gmail.com>
+In-Reply-To: <15577be70804230157g35941393m599fd5fc2ad895c3@mail.gmail.com>
+References: <15577be70804230157g35941393m599fd5fc2ad895c3@mail.gmail.com>
 Content-Type: text/plain
-Date: Wed, 23 Apr 2008 11:22:17 +0100
-Message-Id: <1208946137.9212.778.camel@pmac.infradead.org>
+Date: Wed, 23 Apr 2008 11:33:10 +0100
+Message-Id: <1208946790.9212.782.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: David Brownell <david-b@pacbell.net>, linux-mtd@lists.infradead.org,
-	Haavard Skinnemoen <hskinnemoen@atmel.com>
+Cc: linux-mtd@lists.infradead.org, Alexey Korolev <akorolev@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,16 +18,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-04-23 at 11:37 +0200, Richard Genoud wrote:
-> I don't know what kernel you use, but I'm getting no error with this
-> patch on kernel 2.6.25-rc2 (and on 2.6.25 it's also ok) that I've
-> downloaded from kernel.org:
+On Wed, 2008-04-23 at 10:57 +0200, Abel Bernabeu wrote:
+> I am experimenting an infinite loop problem happening at
+> cfi_cmdset_0001.c:chip_ready.
+> 
+> Some kind of timeout while waiting  in FL_STATUS should be included.
+> Indeed, this timeout feature is not new at all.
+> 
+> The feature was present in 2.6.23.17 but disappeared in 2.6.24 (after
+> some refactoring work easily perceptible).
 
-Hm, that's true. There seem to have been changes since 2.6.25 which
-cause the conflicts. Please could you make it apply to the current git
-tree?
+Hm. This was removed in commit 5a37cf19:
+	Fix deadlock in Intel chip driver caused by get_chip recursion
 
-Thanks.
+Alexey, can you explain why you removed it? Abel's patch simply adds
+this back where it was. That looks reasonable to me, so I'd like to know
+if I've missed some reason why it shouldn't be there...
 
 -- 
 dwmw2
