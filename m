@@ -1,23 +1,18 @@
-Received: from yw-out-1718.google.com ([74.125.46.157])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JoW9w-0008OM-Vv
-	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 04:00:41 +0000
-Received: by yw-out-1718.google.com with SMTP id 5so48498ywr.56
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 22 Apr 2008 21:00:34 -0700 (PDT)
-Message-ID: <1925ef8a0804222100y2b0ff8d6rd640ad723d0517bc@mail.gmail.com>
-Date: Wed, 23 Apr 2008 08:00:34 +0400
-From: "Vitja Makarov" <vitja.makarov@gmail.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd_dataflash use command allocated on stack
-In-Reply-To: <1208895638.9212.673.camel@pmac.infradead.org>
+Received: from mail3.sea5.speakeasy.net ([69.17.117.5])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JoX8b-0007Tm-R7
+	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 05:03:22 +0000
+Received: from 63-231-27-195.tukw.qwest.net (HELO t2.domain.actdsltmp)
+	(xyzzy@[63.231.27.195]) (envelope-sender <tpiepho@freescale.com>)
+	by mail3.sea5.speakeasy.net (qmail-ldap-1.03) with AES256-SHA encrypted
+	SMTP for <linux-mtd@lists.infradead.org>; 23 Apr 2008 05:03:18 -0000
+Date: Tue, 22 Apr 2008 22:02:06 -0700 (PDT)
+From: Trent Piepho <tpiepho@freescale.com>
+To: MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: [PATCH 0/2] CFI fixups for quirks in some new NOR flash chips (try 3)
+Message-ID: <Pine.LNX.4.64.0804222159450.12267@t2.domain.actdsltmp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <1207285360.10621.8.camel@vitja-laptop>
-	<1208895638.9212.673.camel@pmac.infradead.org>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,31 +22,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2008/4/23 David Woodhouse <dwmw2@infradead.org>:
-> On Fri, 2008-04-04 at 09:02 +0400, Vitja Makarov wrote:
->  > Hi!
->  >
->  >
->  > Currently mtd_dataflash driver has command in their private structure.
->  > That is only 4 bytes, sometimes actually 8 is needed.
->  > Also it could be accessed twice before lock is taken.
->  >
->  > This patch moves command to stack.
->
->  Is that allowed? The SPI code might DMA from it, surely?
->
->  --
->  dwmw2
->
->
+Maybe the third time's the charm.  I'd like to get this in 2.6.26.  I
+first posted these patchs last month.
 
+The first patch extends the CFI probe code to get the extended ID from
+AMD/Spansion flash chips.  I checked with Spansion's support and for AMD
+or Spansion devices, a flash device id of 0x7e is always used to
+indicates an extended ID is present later on in the CFI query data. 
+There are no AMD/Spansion chips with a non-extended ID that is the same
+as another chip's extended ID.  So, once can just replace the normal
+device id (0x7e) with the extended one without losing any information. 
+There's nothing to gain by adding a new field to the flash info struct
+and then adding code to the fixup routines to also matches the new field,
+etc.
 
-I'm using this driver with dma enabled on blackfin arch and that seems to work.
-Btw mutex is taken before priv->command is accessed so no race could be here.
-But I still think that having command 4 bytes when it's actually 8 (4
-+ 4 don't cares) isn't a good idea.
-If you are asking about could spi DMA from stack, I think so, as
-spi_sync() is called before ret, but there still are cache issues,
-dataflash or better spi driver should call invalidate/flush for the
-given address if needed, I moved it to spi_bfin code, and that seems
-to work for me wo modifyng original dataflash driver.
+The second patch is just a couple simple fixup entries that change the
+sector count for the affected flash chips.  It uses the extended ID to
+get the right chips.
