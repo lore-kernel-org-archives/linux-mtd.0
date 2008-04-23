@@ -1,31 +1,14 @@
-Received: from hu-out-0506.google.com ([72.14.214.237])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JoeiB-0008SW-AC
-	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 13:08:36 +0000
-Received: by hu-out-0506.google.com with SMTP id 34so1575018hui.22
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 23 Apr 2008 06:08:33 -0700 (PDT)
-Message-ID: <fe810cf0804230608t1183dbf4l99b168476875bfc0@mail.gmail.com>
-Date: Wed, 23 Apr 2008 17:08:33 +0400
-From: "Alexander Belyakov" <abelyako@googlemail.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Subject: Re: [PATCH][JFFS2] Fix garbage collector block search
-In-Reply-To: <1208950350.9212.791.camel@pmac.infradead.org>
+Date: Wed, 23 Apr 2008 14:27:09 +0100 (BST)
+From: Alexey Korolev <akorolev@infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: PATCH: solving a hang while waiting in FL_STATUS
+In-Reply-To: <1208946790.9212.782.camel@pmac.infradead.org>
+Message-ID: <Pine.LNX.4.64.0804231408140.28908@pentafluge.infradead.org>
+References: <15577be70804230157g35941393m599fd5fc2ad895c3@mail.gmail.com>
+	<1208946790.9212.782.camel@pmac.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <E1J2Trs-000IFE-00.abelyako-mail-ru@f65.mail.ru>
-	<20080114132843.GA15710@lazybastard.org>
-	<fe810cf0801150424j25f35131v83692a3193a45a3b@mail.gmail.com>
-	<20080115133350.GA22338@lazybastard.org>
-	<fe810cf0801180828g7a48b6a1u69e35f832185b5eb@mail.gmail.com>
-	<1208882833.9212.629.camel@pmac.infradead.org>
-	<fe810cf0804230431m2bf80e83h4fa71bd5887b7587@mail.gmail.com>
-	<1208950350.9212.791.camel@pmac.infradead.org>
-Cc: Alexander Belyakov <abelyako@mail.ru>,
-	=?UTF-8?Q?J=C3=B6rn_Engel?= <joern@logfs.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, Abel Bernabeu <abel.bernabeu@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,31 +18,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Apr 23, 2008 at 3:32 PM, David Woodhouse <dwmw2@infradead.org> wrote:
+Hi David,  
+
+> > I am experimenting an infinite loop problem happening at
+> > cfi_cmdset_0001.c:chip_ready.
+> > 
+> > Some kind of timeout while waiting  in FL_STATUS should be included.
+> > Indeed, this timeout feature is not new at all.
+> > 
+> > The feature was present in 2.6.23.17 but disappeared in 2.6.24 (after
+> > some refactoring work easily perceptible).
+> 
+> Hm. This was removed in commit 5a37cf19:
+> 	Fix deadlock in Intel chip driver caused by get_chip recursion
+> 
+> Alexey, can you explain why you removed it? Abel's patch simply adds
+> this back where it was. That looks reasonable to me, so I'd like to know
+> if I've missed some reason why it shouldn't be there...
+> 
 >
->  I'm playing with it now, with the intent of committing it. Can you show
->  me how to reproduce the problem?
->
+Yes. I can explain. I removed it because just simple adding timeout
+won't work. Please look at the code after patch applying (solving a hang while waiting in FL_STATUS). Time_after will never occur:
+--------------
+	case FL_STATUS:
+		for (;;) {
+			status = map_read(map, adr);
+			if (map_word_andequal(map, status, status_OK, status_OK))
+				break;
 
-The most easy way to reproduce it is to fill jffs2 volume with single
-large file until there is no empty space, then remove this file and
-immediately try to write another file.
+			/* At this point we're fine with write operations
+			   in other partitions as they don't conflict. */
+			if (chip->priv && map_word_andequal(map, status, status_PWS, status_PWS))
+				break;
 
-Something like:
----
-#!/bin/sh
-rm -rf /mnt/vol1/*
-dd if=/dev/urandom of=/mnt/vol1/test.file bs=4096 count=32768
-rm /mnt/vol1/test.file
-dd if=/dev/urandom of=/mnt/vol1/test_new.file bs=2048 count=1024
--------
+			if (time_after(jiffies, timeo)) {
+				printk(KERN_ERR "%s: Waiting for chip to be ready timed out. Status %lx\n",
+				       map->name, status.x[0]);
+				return -EIO;
+			}
+			spin_unlock(chip->mutex);
+			cfi_udelay(1);
+			spin_lock(chip->mutex);
+			/* Someone else might have been playing with it. */
+			return -EAGAIN;
+		}
+--------------
 
-The bug is better reproduced on small volumes (for me it is just
-4Mbytes). The first dd should exit with "No space left on device"
-error to be sure no free space left. The last dd should always
-succeed. If it fails - you catch the bug. Sometimes it is necessary to
-run this script in several time in a row before last dd exits with an
-error.
+I agree that watchdog could be quite useful here, but adding
+it properly will lead to rather big changes. That is why Nicolas and me
+agreed to kick it off. 
 
 Thanks,
-Alexander
+Alexey
