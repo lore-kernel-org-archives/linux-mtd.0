@@ -1,18 +1,20 @@
-Subject: Re: JFFS2: Kernel 2.6.24.2 Ooops during excessive write test
+Subject: [JFFS2] Fix free space leak with in-band cleanmarkers
 From: David Woodhouse <dwmw2@infradead.org>
-To: Martin Creutziger <martin.creutziger@barco.com>
-In-Reply-To: <1207549813.6505.8.camel@KARCLT0275>
+To: stable@kernel.org
+In-Reply-To: <1208945526.9212.770.camel@pmac.infradead.org>
 References: <1206973072.6190.16.camel@KARCLT0275>
 	<679044850803310823x10ac1f9dg7de6ed531c7d01b6@mail.gmail.com>
 	<1207035371.6252.7.camel@KARCLT0275>
 	<1207549813.6505.8.camel@KARCLT0275>
+	<1208945526.9212.770.camel@pmac.infradead.org>
 Content-Type: text/plain
-Date: Wed, 23 Apr 2008 11:12:06 +0100
-Message-Id: <1208945526.9212.770.camel@pmac.infradead.org>
+Date: Wed, 23 Apr 2008 11:15:35 +0100
+Message-Id: <1208945735.9212.775.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Damir Shayhutdinov <lost404@gmail.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>, stable@kernel.org
+Cc: Martin Creutziger <martin.creutziger@barco.com>,
+	Damir Shayhutdinov <lost404@gmail.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,53 +24,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2008-04-07 at 08:30 +0200, Martin Creutziger wrote:
-> > On Mon, 2008-03-31 at 19:23 +0400, Damir Shayhutdinov wrote:
-> > > Hi!
-> > > 
-> > > 2008/3/31, Martin Creutziger wrote:
-> > > >
-> > > >  I am doing some excessive write tests on a PPC405EP running kernel
-> > > >  2.6.24.2 at the moment. At irregular intervals, the "space accounting
-> > > >  superblock info" gets "screwed" and I'd like to know why this happens
-> > > >  and if it is fixable. 
-> > > 
-> > > Can you test this patch with your system?
-> > > http://lists.infradead.org/pipermail/linux-mtd/2007-November/019866.html
-> 
-> Hi again,
-> 
-> that did not work out well. Although the volume did not fill up any
-> more now (df -k shows 556k used, which is ok), the oops still occured.
+We were accounting for the cleanmarker by calling jffs2_link_node_ref()
+(without locking!), which adjusted both superblock and per-eraseblock
+accounting, subtracting the size of the cleanmarker from {jeb,c}->free_size
+and adding it to {jeb,c}->used_size.
 
-I believe this should be fixed now. The above patch was _almost_
-correct, but not quite.
+But only _then_ were we adding the size of the newly-erased block back
+to the superblock counts, and we were adding each of jeb->{free,used}_size
+to the corresponding superblock counts. Thus, the size of the cleanmarker
+was effectively subtracted from the superblock's free_size _twice_.
 
-The original problem was that we were misaccounting the size of the
-clean marker when we marked a newly-erased block.
+Fix this, by always adding a full eraseblock size to c->free_size when
+we've erased a block. And call jffs2_link_node_ref() under the proper
+lock, while we're at it.
 
-The above-referenced patch simply adjusted for that error, rather than
-fixing it at source -- but it left a small period of time where the
-superblock counts weren't correct and the appropriate locks weren't
-held.
+Thanks to Alexander Yurchenko and/or Damir Shayhutdinov for (almost)
+pinpointing the problem.
 
-Our paranoid debug code didn't actually detect the incorrect counts
-(I've since made it do so, by adding up the counts for each eraseblock
-and comparing them with the totals in the superblock). But because of
-the lack of locking, there was an even smaller period of time where the
-superblock counts weren't even _consistent_, which we _did_ check for.
+[Backport of commit 014b164e1392a166fe96e003d2f0e7ad2e2a0bb7]
 
-Looking at your log, I'm fairly sure that you're seeing another thread
-go through that check during that time when the counts were
-inconsistent. I see output from the thread in
-jffs2_erase_pending_blocks(), interleaved with another thread hitting
-the BUG(), with a discrepancy of precisely 12 bytes (the size of a
-cleanmarker).
+Signed-off-by: David Woodhouse <dwmw2@infradead.org>
 
-Thus, I believe it should be fixed by commit 014b164e, which I'll be
-adjusting for the semaphore->mutex conversion and submitting to stable@
-for inclusion in 2.6.24.x and 2.6.25.1 shortly:
-http://git.infradead.org/mtd-2.6.git?a=commitdiff;h=014b164e
+diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
+index 96d9ad5..bdc6a7b 100644
+--- a/fs/jffs2/erase.c
++++ b/fs/jffs2/erase.c
+@@ -419,9 +419,6 @@ static void jffs2_mark_erased_block(struct jffs2_sb_info *c, struct jffs2_eraseb
+ 			if (jffs2_write_nand_cleanmarker(c, jeb))
+ 				goto filebad;
+ 		}
+-
+-		/* Everything else got zeroed before the erase */
+-		jeb->free_size = c->sector_size;
+ 	} else {
+ 
+ 		struct kvec vecs[1];
+@@ -449,18 +446,19 @@ static void jffs2_mark_erased_block(struct jffs2_sb_info *c, struct jffs2_eraseb
+ 
+ 			goto filebad;
+ 		}
+-
+-		/* Everything else got zeroed before the erase */
+-		jeb->free_size = c->sector_size;
+-		/* FIXME Special case for cleanmarker in empty block */
+-		jffs2_link_node_ref(c, jeb, jeb->offset | REF_NORMAL, c->cleanmarker_size, NULL);
+ 	}
++	/* Everything else got zeroed before the erase */
++	jeb->free_size = c->sector_size;
+ 
+ 	down(&c->erase_free_sem);
+ 	spin_lock(&c->erase_completion_lock);
++
+ 	c->erasing_size -= c->sector_size;
+-	c->free_size += jeb->free_size;
+-	c->used_size += jeb->used_size;
++	c->free_size += c->sector_size;
++
++	/* Account for cleanmarker now, if it's in-band */
++	if (c->cleanmarker_size && !jffs2_cleanmarker_oob(c))
++		jffs2_link_node_ref(c, jeb, jeb->offset | REF_NORMAL, c->cleanmarker_size, NULL);
+ 
+ 	jffs2_dbg_acct_sanity_check_nolock(c,jeb);
+ 	jffs2_dbg_acct_paranoia_check_nolock(c, jeb);
 
 -- 
 dwmw2
