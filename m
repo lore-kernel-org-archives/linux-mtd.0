@@ -1,19 +1,22 @@
-Received: from co203.xi-lite.net ([149.6.83.203] helo=toronto.xi-lite.net)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Joa6h-0001CL-G7
-	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 08:13:35 +0000
-Message-ID: <480EEFAB.7010304@parrot.com>
-Date: Wed, 23 Apr 2008 10:13:31 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind@infradead.org>, Bruce_Leonard@selinc.com,
-	Nancy <nancydreaming@gmail.com>, linux-mtd@lists.infradead.org
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Joa8s-0003Nd-NN
+	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 08:15:50 +0000
 Subject: Re: [RFC] slight UBI scan time improvement
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Nancy <nancydreaming@gmail.com>
+In-Reply-To: <bae050c10804230101m64bc2558icf9a5ad7efb8c824@mail.gmail.com>
 References: <1208882552.11721.13.camel@sauron>
-	<20080423073840.GA9472@cloud.net.au>
-In-Reply-To: <20080423073840.GA9472@cloud.net.au>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+	<bae050c10804230015r50b7747apef8b1d8cab302c9a@mail.gmail.com>
+	<1208935971.11721.20.camel@sauron>
+	<bae050c10804230101m64bc2558icf9a5ad7efb8c824@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 23 Apr 2008 11:16:11 +0300
+Message-Id: <1208938571.11721.38.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,48 +26,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hamish Moffatt wrote:
-> On Tue, Apr 22, 2008 at 07:42:32PM +0300, Artem Bityutskiy wrote:
->> Hi,
->>
->> I've prepared 2 UBI patches which may slightly improve the scan time. I
->> am not sure though. Would you guys please try them and tell if UBI scan
->> time changed? Thanks in advance.
-> 
-> Hi Artem,
-> 
-> Thanks for your patch.. unfortunately I don't see a significant
-> difference, although it is slightly faster.
-> 
-> Before:
-> 
-> [    0.950000] NAND device: Manufacturer ID: 0xec, Chip ID: 0xdc (Samsung NAND 512MiB 3,3V 8-bit)
-> [    0.960000] Scanning device for bad blocks
-> [    1.000000] Bad eraseblock 494 at 0x03dc0000
-> [    1.050000] Bad eraseblock 1300 at 0x0a280000
-> [    1.140000] Bad eraseblock 2554 at 0x13f40000
-> [    1.160000] Bad eraseblock 2923 at 0x16d60000
-> [    1.200000] Bad eraseblock 3349 at 0x1a2a0000
-> [    1.230000] Bad eraseblock 3790 at 0x1d9c0000
-> [    6.900000] UBI: attached mtd9 to ubi0
-> 
-> After:
-> 
-> [    0.950000] NAND device: Manufacturer ID: 0xec, Chip ID: 0xdc (Samsung NAND 512MiB 3,3V 8-bit)
-> [    0.960000] Scanning device for bad blocks
-> [    1.000000] Bad eraseblock 494 at 0x03dc0000
-> [    1.050000] Bad eraseblock 1300 at 0x0a280000
-> [    1.140000] Bad eraseblock 2554 at 0x13f40000
-> [    1.160000] Bad eraseblock 2923 at 0x16d60000
-> [    1.200000] Bad eraseblock 3349 at 0x1a2a0000
-> [    1.230000] Bad eraseblock 3790 at 0x1d9c0000
-> [    6.890000] UBI: attached mtd9 to ubi0
-> 
-> 
-> 
-> Hamish
+On Wed, 2008-04-23 at 16:01 +0800, Nancy wrote:
+>     Yes, the issue is go away by properly use MLC nand.
+>     But the write fail issue in UBI still exist! Suppose you are
+> properly used your Nand, when it return write fail, but can erase
+> successfully, UBI still group this block in good block heap. That is
+> wrong and dangerous.
 
-Do you know when the bad block scanning finish and the ubi scan start ?
+The driver may return I/O errors for many reasons, including bugs in the
+driver. Or this may be an dumb user who screwed up his flash. It might
+be something else. We do not wand to mark the eraseblock bad when it is
+_not_ bad.
 
+And it's not just erase successfully. We torture the eraseblock. We
+erase it, read it back, check it has all 0xFFs, then write 0xA5 pattern,
+read it back, check, erase again, read back, check, write 0x5A pattern,
+read back, check, erase, read back, check, write 0x00 pattern, read
+back, check, erase, read back check. Enough? If it is not enough, feel
+free to send a patch for better torturing.
 
-Matthieu
+Please, refer the torture_peb() function for more details.
+
+So, we do not mark eraseblock as bad if it passed the torture test.
+Note, a bit-flip during torture test is enough to mark the eraseblock
+bad as well.
+
+In your particular case, you would have _all_ eraseblocks marked as bad
+if UBI did what you want.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
