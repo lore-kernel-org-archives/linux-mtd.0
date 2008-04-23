@@ -1,29 +1,24 @@
-Received: from wf-out-1314.google.com ([209.85.200.170])
+Received: from wf-out-1314.google.com ([209.85.200.173])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JoZn0-00073z-Cp
-	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 07:53:15 +0000
-Received: by wf-out-1314.google.com with SMTP id 29so1955837wff.24
+	id 1JoZvH-0003ho-Rx
+	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 08:01:48 +0000
+Received: by wf-out-1314.google.com with SMTP id 29so1958237wff.24
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 23 Apr 2008 00:53:13 -0700 (PDT)
-Message-ID: <bae050c10804230053y67b7a429yeda4e122fcb2e459@mail.gmail.com>
-Date: Wed, 23 Apr 2008 15:53:13 +0800
+	Wed, 23 Apr 2008 01:01:47 -0700 (PDT)
+Message-ID: <bae050c10804230101m64bc2558icf9a5ad7efb8c824@mail.gmail.com>
+Date: Wed, 23 Apr 2008 16:01:46 +0800
 From: Nancy <nancydreaming@gmail.com>
 To: dedekind@infradead.org
-Subject: Re: ubi-utils
-In-Reply-To: <1208936266.11721.25.camel@sauron>
+Subject: Re: [RFC] slight UBI scan time improvement
+In-Reply-To: <1208935971.11721.20.camel@sauron>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <bae050c10804210148g7e36db07vd7df62e286da6490@mail.gmail.com>
-	<1208769345.5965.363.camel@sauron>
-	<bae050c10804210243l848eeb6m97a33c5a65d5dfc6@mail.gmail.com>
-	<1208776123.5965.367.camel@sauron>
-	<bae050c10804210449w14e75e0wf977815c22423358@mail.gmail.com>
-	<1208881852.11721.6.camel@sauron>
-	<bae050c10804230027h6121713fw2f594d49d89e5137@mail.gmail.com>
-	<1208936266.11721.25.camel@sauron>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+References: <1208882552.11721.13.camel@sauron>
+	<bae050c10804230015r50b7747apef8b1d8cab302c9a@mail.gmail.com>
+	<1208935971.11721.20.camel@sauron>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,22 +29,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On 4/23/08, Artem Bityutskiy <dedekind@infradead.org> wrote:
-> On Wed, 2008-04-23 at 15:27 +0800, Nancy wrote:
-> > OK, pass, will you please answer me one question:
-> > Compare with attaching only 1 MTD device, attaching 2 MTD devices will
-> > eat system resources a lot? will slow down the Nand write or read
-> > speed?
-> > All I need to know is the performances differences. Thanks a lot !
+> On Wed, 2008-04-23 at 15:15 +0800, Nancy wrote:
+> > I have tried, as you said slightly improve the scan time, slightly,
+> > even don't feel it exist. en....I don't like the two stages displaying
+> > when ubi attach to mtd. First time I see it, I doubt the NFS server is
+> > too busy. It is just like a kid playing sliding board who do not like
+> > being block in the middle, or a group of men "cheers!", then drink off
+> > the beer. Oh, don't make it stop in the half way.
 >
-> As I understand you are talking about splitting your single chip on 2
-> partitions and you are questioning about the difference between 1 big
-> partition and 2 smaller.
->
-> Well, I never tried this with real flash. But theoretically there should
-> be no difference. But I do not recommend you doing this with your MLC
-> NAND where an eraseblock survives just 10000 erase-cycles.
+> Hmm, may be. But the reason for this is that we want to see this
+> information even if UBI refuses your MTD device later.
+   Thank you for your explaination.
 
-Ok, I got what you mean, the only difference is Nand lifetime. Thank you : )
+> > You still do not add patch to handle write fail issue, a little disappointment.
+>
+> I do not see any UBI/UBIFS issue in your case. The issue was that you
+> abused your flash using wrong tools, I think. Use the "ubiformat"
+> utility which we have recently implemented - the issue should go.
+    Thanks for the "ubiformat " tool.
+    Yes, the issue is go away by properly use MLC nand.
+    But the write fail issue in UBI still exist! Suppose you are
+properly used your Nand, when it return write fail, but can erase
+successfully, UBI still group this block in good block heap. That is
+wrong and dangerous.
+
 
 -- 
 Best wishes,
