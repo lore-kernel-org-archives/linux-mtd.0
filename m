@@ -1,30 +1,31 @@
-Received: from n1.cetrtapot.si ([89.212.80.162])
+Received: from hu-out-0506.google.com ([72.14.214.237])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JoeZk-0007YZ-50
-	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 12:59:52 +0000
-Received: from localhost (localhost.dmz.cetrtapot.si [127.0.0.1])
-	by n1.cetrtapot.si (Postfix) with ESMTP id 8A3A5BE2C
+	id 1JoeiB-0008SW-AC
+	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 13:08:36 +0000
+Received: by hu-out-0506.google.com with SMTP id 34so1575018hui.22
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 23 Apr 2008 14:59:49 +0200 (CEST)
-Received: from n1.cetrtapot.si ([127.0.0.1])
-	by localhost (n1.dmz.cetrtapot.si [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id ydQf+e-TUHbf for <linux-mtd@lists.infradead.org>;
-	Wed, 23 Apr 2008 14:59:46 +0200 (CEST)
-Received: from fubar.kranj.cetrtapot.si (inside.kranj.cetrtapot.si
-	[192.168.66.2])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by n1.cetrtapot.si (Postfix) with ESMTP id 8CDF1BE27
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 23 Apr 2008 14:59:46 +0200 (CEST)
-Message-ID: <480F32C1.6050003@cetrtapot.si>
-Date: Wed, 23 Apr 2008 14:59:45 +0200
-From: Hinko Kocevar <hinko.kocevar@cetrtapot.si>
+	Wed, 23 Apr 2008 06:08:33 -0700 (PDT)
+Message-ID: <fe810cf0804230608t1183dbf4l99b168476875bfc0@mail.gmail.com>
+Date: Wed, 23 Apr 2008 17:08:33 +0400
+From: "Alexander Belyakov" <abelyako@googlemail.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Subject: Re: [PATCH][JFFS2] Fix garbage collector block search
+In-Reply-To: <1208950350.9212.791.camel@pmac.infradead.org>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: hang on jffs2 mount
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <E1J2Trs-000IFE-00.abelyako-mail-ru@f65.mail.ru>
+	<20080114132843.GA15710@lazybastard.org>
+	<fe810cf0801150424j25f35131v83692a3193a45a3b@mail.gmail.com>
+	<20080115133350.GA22338@lazybastard.org>
+	<fe810cf0801180828g7a48b6a1u69e35f832185b5eb@mail.gmail.com>
+	<1208882833.9212.629.camel@pmac.infradead.org>
+	<fe810cf0804230431m2bf80e83h4fa71bd5887b7587@mail.gmail.com>
+	<1208950350.9212.791.camel@pmac.infradead.org>
+Cc: Alexander Belyakov <abelyako@mail.ru>,
+	=?UTF-8?Q?J=C3=B6rn_Engel?= <joern@logfs.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,61 +35,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+On Wed, Apr 23, 2008 at 3:32 PM, David Woodhouse <dwmw2@infradead.org> wrote:
+>
+>  I'm playing with it now, with the intent of committing it. Can you show
+>  me how to reproduce the problem?
+>
 
-We are using ancient kernel 2.6.12 on our embedded devices.
-After being in the wild about two/three years the devices
-started having issues with mounting jffs2 rootfs that is
-located on NOR flash. The devices are turned off on daily
-basis without any power management - power is just cut
-off from the board while jffs2 filesystems are still
-mounted!!! I think this might be the main reason for
-the hangs we are experiencing.
+The most easy way to reproduce it is to fill jffs2 volume with single
+large file until there is no empty space, then remove this file and
+immediately try to write another file.
 
-I've managed to start the device with NFS mounted rootfs
-and then manually mounted the flash rootfs.
-If using 2.6.12 kernel for this 'rescue' procedure it hangs
-the device - not responding anymore.
-More success was achieved using 2.6.25 kernel - it actually
-managed to mount the offending flash rootfs with following
-dmesg messages:
+Something like:
+---
+#!/bin/sh
+rm -rf /mnt/vol1/*
+dd if=/dev/urandom of=/mnt/vol1/test.file bs=4096 count=32768
+rm /mnt/vol1/test.file
+dd if=/dev/urandom of=/mnt/vol1/test_new.file bs=2048 count=1024
+-------
 
+The bug is better reproduced on small volumes (for me it is just
+4Mbytes). The first dd should exit with "No space left on device"
+error to be sure no free space left. The last dd should always
+succeed. If it fails - you catch the bug. Sometimes it is necessary to
+run this script in several time in a row before last dd exits with an
+error.
 
-# mount -t jffs2 /dev/mtdblk2 /mnt
-
-jffs2_scan_eraseblock(): Node at 0x00213f54 {0x1985, 0xffff, 0xffffffff) has invalid CRC 0xffffffff (calculated 0x19861e00)
-JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x260320. {ffff,ffff,ffffffff,ffffffff}
-JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x260364. {ffff,ffff,ffffffff,ffffffff}
-JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x2602ac. {ffff,ffff,ffffffff,ffffffff}
-JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x2603a8. {ffff,ffff,ffffffff,ffffffff}
-JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x2603ec. {ffff,ffff,ffffffff,ffffffff}
-JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x260268. {ffff,ffff,ffffffff,ffffffff}
-JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x260430. {ffff,ffff,ffffffff,ffffffff}
-JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x260474. {ffff,ffff,ffffffff,ffffffff}
-JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x260224. {ffff,ffff,ffffffff,ffffffff}
-JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x2604b8. {ffff,ffff,ffffffff,ffffffff}
-JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x2604fc. {ffff,ffff,ffffffff,ffffffff}
-JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x260540. {ffff,ffff,ffffffff,ffffffff}
-JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x2601e0. {ffff,ffff,ffffffff,ffffffff}
-JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x260584. {ffff,ffff,ffffffff,ffffffff}
-JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x2605c8. {ffff,ffff,ffffffff,ffffffff}
-JFFS2 notice: (656) jffs2_get_inode_nodes: Node header CRC failed at 0x26060c. {ffff,ffff,ffffffff,ffffffff}
-
-Seeing those ffff, ffffffff values makes me thinking that
-info was read from erased flash sector or similar!?
-
-Would upgrade to more recent kernel fix the hangs during
-bootup or can this be solved only with clean umount before
-poweroff?
-
-Regards,
-Hinko
-
--- 
-ČETRTA POT, d.o.o., Kranj
-Planina 3
-4000 Kranj
-Slovenia, Europe
-Tel. +386 (0) 4 280 66 03
-E-mail: hinko.kocevar@cetrtapot.si
-Http: www.cetrtapot.si
+Thanks,
+Alexander
