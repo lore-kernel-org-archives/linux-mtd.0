@@ -1,18 +1,27 @@
-Date: Thu, 24 Apr 2008 11:57:11 +0100 (BST)
-From: Alexey Korolev <akorolev@infradead.org>
-To: Artem Bityutskiy <dedekind@infradead.org>
-Subject: Re: [RFC][patch] NAND partial page read functionality
-In-Reply-To: <1209033953.11721.131.camel@sauron>
-Message-ID: <Pine.LNX.4.64.0804241149420.6029@pentafluge.infradead.org>
-References: <Pine.LNX.4.64.0712131747490.16624@pentafluge.infradead.org>
-	<1209018876.11721.100.camel@sauron>
-	<20080424074526.GA21709@cloud.net.au>
-	<Pine.LNX.4.64.0804241057520.6029@pentafluge.infradead.org>
-	<1209033953.11721.131.camel@sauron>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Hamish Moffatt <hamish@cloud.net.au>, Thomas Gleixner <tglx@linutronix.de>,
-	linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Subject: Re: [PATCH][JFFS2] Fix garbage collector block search
+From: David Woodhouse <dwmw2@infradead.org>
+To: Alexander Belyakov <abelyako@googlemail.com>
+In-Reply-To: <fe810cf0804240342r35d0ecf8s9ee159a2980a83c3@mail.gmail.com>
+References: <E1J2Trs-000IFE-00.abelyako-mail-ru@f65.mail.ru>
+	<1208961030.9212.806.camel@pmac.infradead.org>
+	<fe810cf0804230825n21944ae3p4174512c2c0f9589@mail.gmail.com>
+	<1208964656.9212.811.camel@pmac.infradead.org>
+	<fe810cf0804240017v7069d6fdx6e7d03459d7d5503@mail.gmail.com>
+	<1209022137.9212.942.camel@pmac.infradead.org>
+	<fe810cf0804240048w783fbdc0sa701fc7c59b3d06f@mail.gmail.com>
+	<1209023484.9212.960.camel@pmac.infradead.org>
+	<fe810cf0804240314w70364639nb2ba38cd10cd7b46@mail.gmail.com>
+	<1209033162.9212.1031.camel@pmac.infradead.org>
+	<fe810cf0804240342r35d0ecf8s9ee159a2980a83c3@mail.gmail.com>
+Content-Type: text/plain
+Date: Thu, 24 Apr 2008 12:05:03 +0100
+Message-Id: <1209035103.9212.1051.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Alexander Belyakov <abelyako@mail.ru>,
+	=?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	KaiGai Kohei <kaigai@ak.jp.nec.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,32 +31,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Thu, 2008-04-24 at 14:42 +0400, Alexander Belyakov wrote:
+> I was checking this on Sibley-like parts, not NAND. Sorry for
+> confusion.
 
-> > Oh I'm glad to hear that this patch is needful. In fact I did
-> > not drop it. We did some more investigations about integration subpage
-> >  read in background. We tried to remove some drawback caused by
-> > invalidation of prestored page in do_read_ops function. (We have found
-> > that on large read requests nand subpage read causes ~10% of read performance degradation. I
-> > wanted to remove but changes made code ugly and saved only 5%)
-> 
-> Err, are you referring this chip->pagebuf cache? Have you considered
-> making it more complex and keep track of individual sub-pages within the
-> pagebuf? You say it introduces a lot of ugliness? May be you could
-> somehow separate this ugliness out nicely somehow?
-Yes. I mean chip->pagebuf cache. From point of performacne the best
-would be traking sub_pages within the pagebuf. But it is too complex and
-brings ugliness. Sure I will definetely separate it.
+Oh, so you have an inline cleanmarker? That makes sense. You'll lose
+c->cleanmarker_size from c->free_size for every block you erase.
 
-> 
-> > Also we investigated possibility to make more universal solution which includes both sub-page 
-> > read and partial page write. As it was discussed in December. In fact the partial page write did not
-> > give any benefits at all as file system operates write_size. If we reduce writesize JFFS2 will write data by 
-> > small chunks only and it will cause strong performance degradation. (it
-> > brings more cons than pros until serious hacks in JFFS2 will be
-> > implemented)
-> 
-> Well, in any case, if you have something for writes, this should be a
-> separate story.
-> 
-> 
+-- 
+dwmw2
