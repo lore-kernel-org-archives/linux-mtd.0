@@ -1,32 +1,26 @@
-Received: from risingsoftware01.propagation.net ([66.221.33.65])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Joqe5-0002fI-Fw
-	for linux-mtd@lists.infradead.org; Thu, 24 Apr 2008 01:53:10 +0000
-Received: from c122-107-142-134.eburwd5.vic.optusnet.com.au ([122.107.142.134]
-	helo=noddy.cloud.net.au)
-	by risingsoftware01.propagation.net with esmtpsa
-	(TLS-1.0:RSA_AES_256_CBC_SHA1:32) (Exim 4.63)
-	(envelope-from <hamish@cloud.net.au>) id 1Joqe4-0001Tv-AK
-	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 20:53:08 -0500
-Received: from hamish by noddy.cloud.net.au with local (Exim 4.69)
-	(envelope-from <hamish@cloud.net.au>) id 1Joqdz-00043v-NO
-	for linux-mtd@lists.infradead.org; Thu, 24 Apr 2008 11:53:03 +1000
-Date: Thu, 24 Apr 2008 11:53:03 +1000
-From: Hamish Moffatt <hamish@cloud.net.au>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [RFC] slight UBI scan time improvement
-Message-ID: <20080424015303.GB13358@cloud.net.au>
-References: <1208882552.11721.13.camel@sauron>
-	<20080423073840.GA9472@cloud.net.au> <480EEFAB.7010304@parrot.com>
-	<1208938864.11721.44.camel@sauron>
-	<20080423124046.GA16201@cloud.net.au>
-	<1208955467.11721.69.camel@sauron>
-	<20080423134254.GA17867@cloud.net.au>
-	<1208959759.11721.76.camel@sauron>
+Received: from el-out-1112.google.com ([209.85.162.178])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Josdx-0008EP-7I
+	for linux-mtd@lists.infradead.org; Thu, 24 Apr 2008 04:01:09 +0000
+Received: by el-out-1112.google.com with SMTP id j27so1102053elf.22
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 23 Apr 2008 21:01:07 -0700 (PDT)
+Message-ID: <97a0a9ac0804232101i71bfff22o723e2aaa80b09c2f@mail.gmail.com>
+Date: Wed, 23 Apr 2008 22:01:07 -0600
+From: "Gordon Farquharson" <gordonfarquharson@gmail.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Subject: Re: physmap and "request_module: runaway loop modprobe net-pf-1"
+In-Reply-To: <1208867831.9212.582.camel@pmac.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <1208959759.11721.76.camel@sauron>
+References: <97a0a9ac0803112235l157706adoa84b131549a46049@mail.gmail.com>
+	<20080311225926.6515e18c.akpm@linux-foundation.org>
+	<1208867831.9212.582.camel@pmac.infradead.org>
+Cc: netdev@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	davem@davemloft.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,52 +30,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Apr 23, 2008 at 05:09:19PM +0300, Artem Bityutskiy wrote:
-> You may make it save the BBT on the flash media. So next time you boot,
-> it reads the BBT from a pre-defined place (e.g., the last eraseblock)
-> and that's it. It does not scan and does not waste time.
+Hi David
 
-Thanks for the info. It looks like this would not save me very much
-time so I don't think I will bother.
+On Tue, Apr 22, 2008 at 6:37 AM, David Woodhouse <dwmw2@infradead.org> wrote:
+> On Tue, 2008-03-11 at 22:59 -0700, Andrew Morton wrote:
+>
+> > Now, af_unix_init() uses module_init(), which is really __initcall(), which
+>  > is really device_initcall() (ug, don't ask).
+>
+>  ... which is really __define_initcall("6", ...);.
+>
+>
+>  > So you can do what you're sugesting here by locating the caller/callers of
+>  > parse_mtd_partitions() and marking them late_initcall().
+>
+>  Better still, just initialise af_unix earlier so that it's there before
+>  any normal drivers which happen to call request_module(). Since core
+>  network stuff is initialised with subsys_initcall() which is really
+>  __define_initcall("4", ...), we can initialise af_unix with
+>  fs_initcall() which is really __define_initcall("5", ...).
 
-[    0.960000] Scanning device for bad blocks
-[    1.000000] Bad eraseblock 494 at 0x03dc0000
-[    1.050000] Bad eraseblock 1300 at 0x0a280000
-[    1.140000] Bad eraseblock 2554 at 0x13f40000
-[    1.160000] Bad eraseblock 2923 at 0x16d60000
-[    1.200000] Bad eraseblock 3349 at 0x1a2a0000
-[    1.230000] Bad eraseblock 3790 at 0x1d9c0000
-[    1.250000] UBI: attaching mtd9 to ubi-1
-[    6.890000] UBI: attached mtd9 to ubi0
+I tested the patch you sent. It fixes the runaway modprobe messages,
+but I get a modprobe error (see below) with the Debian kernel I used
+to test the patch because modules.dep does not exist in the initramfs
+(should it?). In my kernel config, I did not enable
+CONFIG_MTD_CMDLINE_PARTS and I set CONFIG_MTD_REDBOOT_PARTS=m but the
+redboot module was not included in the initramfs so it could not be
+loaded, hence the messages saying that the parsing schemes are not
+available.
 
-I notice in your patch that you read a whole min_io_size block, even
-though you only need the EC and VID headers (total of 128 bytes each, or
-576 bytes as a single read according to my calculation):
+[    4.790000] physmap platform flash device: 00080000 at f0000000
+[    4.800000] Found: ST M29W400DB
+[    4.800000] physmap-flash.0: Found 1 x16 devices at 0x0 in 16-bit bank
+[    4.810000] number of JEDEC chips: 1
+[    4.810000] cfi_cmdset_0002: Disabling erase-suspend-program due to
+code brokenness.
+modprobe: FATAL: Could not load
+/lib/modules/2.6.25-trunk-iop32x/modules.dep: No such file or
+directory
 
-+	/*
-+	 * During scanning we read EC and VID headers at one go in to the
-+	 * @si->read_buf, and then check EC and VID header. This must be faster
-+	 * than doing 2 small read operations.
-+	 */
-+	si->read_len = ubi->vid_hdr_offset + UBI_VID_HDR_SIZE;
-+	si->read_len = ALIGN(si->read_len, ubi->min_io_size);
-+	si->read_buf = kmalloc(si->read_len, GFP_KERNEL);
-+	if (!si->read_buf) {
-+		err = -ENOMEM;
- 		goto out_si;
-+	}
- 
-Won't reading 2K bytes be slower than 576 in some cases? If you have
-soft ECC then you have to read the whole page anyway, but if you have
-hardware ECC then you have no need to read the whole page into RAM.
+[    4.900000] cmdlinepart partition parsing not available
+modprobe: FATAL: Could not load
+/lib/modules/2.6.25-trunk-iop32x/modules.dep: No such file or
+directory
 
-Hmm. The software ECC seems to work internally on 256 byte blocks.
-However it appears that nand_base will always read in a whole page (2K
-on my flash). It should be ok to read only a 256-byte block as that's
-all you need for ECC calculation? Not a whole 2K which requires 8 ECC
-calculations.
+[    4.970000] RedBoot partition parsing not available
 
+I guess the question is which patch (if either) is more appealing.
 
-Hamish
+Gordon
+
 -- 
-Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
+Gordon Farquharson
+GnuPG Key ID: 32D6D676
