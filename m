@@ -1,20 +1,23 @@
-Received: from ernst.netinsight.se ([212.247.11.2])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jok9u-0002g2-5p
-	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 18:57:34 +0000
-Message-ID: <480F8695.2050804@users.sourceforge.net>
-Date: Wed, 23 Apr 2008 20:57:25 +0200
-From: =?ISO-8859-1?Q?Anders_Grafstr=F6m?= <grfstrm@users.sourceforge.net>
+Received: from risingsoftware01.propagation.net ([66.221.33.65])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jop2t-00021T-Tq
+	for linux-mtd@lists.infradead.org; Thu, 24 Apr 2008 00:10:40 +0000
+Date: Thu, 24 Apr 2008 10:10:26 +1000
+From: Hamish Moffatt <hamish@cloud.net.au>
+To: Artem Bityutskiy <dedekind@infradead.org>,
+	Matthieu CASTET <matthieu.castet@parrot.com>,
+	Nancy <nancydreaming@gmail.com>, linux-mtd@lists.infradead.org,
+	Bruce_Leonard@selinc.com
+Subject: Re: [RFC] slight UBI scan time improvement
+Message-ID: <20080424001026.GA13358@cloud.net.au>
+References: <1208882552.11721.13.camel@sauron>
+	<20080423073840.GA9472@cloud.net.au> <480EEFAB.7010304@parrot.com>
+	<1208938864.11721.44.camel@sauron>
+	<20080423124046.GA16201@cloud.net.au>
 MIME-Version: 1.0
-To: abelbg@m2grp.com, linux-mtd@lists.infradead.org
-Subject: Re: PATCH: solving a hang while waiting in FL_STATUS
-References: <15577be70804230157g35941393m599fd5fc2ad895c3@mail.gmail.com>	<1208946790.9212.782.camel@pmac.infradead.org>	<Pine.LNX.4.64.0804231408140.28908@pentafluge.infradead.org>
-	<15577be70804230935q252b90a5td60b9a7de1d2da46@mail.gmail.com>
-In-Reply-To: <15577be70804230935q252b90a5td60b9a7de1d2da46@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, abel.bernabeu@gmail.com,
-	Alexey Korolev <akorolev@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20080423124046.GA16201@cloud.net.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +27,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Abel Bernabeu wrote:
-> Image you have a broken sector which will never respond... that could
-> hang the process while unlocking the sectors of a partition. In my
-> case the problem prevents our board to complete the kernel start-up.
+On Wed, Apr 23, 2008 at 10:40:46PM +1000, Hamish Moffatt wrote:
+> On Wed, Apr 23, 2008 at 11:21:04AM +0300, Artem Bityutskiy wrote:
+> > Hi,
+> > 
+> > On Wed, 2008-04-23 at 10:13 +0200, Matthieu CASTET wrote:
+> > > > [    0.950000] NAND device: Manufacturer ID: 0xec, Chip ID: 0xdc (Samsung NAND 512MiB 3,3V 8-bit)
+> > > > [    0.960000] Scanning device for bad blocks
+> > > > [    1.000000] Bad eraseblock 494 at 0x03dc0000
+> > > > [    1.050000] Bad eraseblock 1300 at 0x0a280000
+> > > > [    1.140000] Bad eraseblock 2554 at 0x13f40000
+> > > > [    1.160000] Bad eraseblock 2923 at 0x16d60000
+> > > > [    1.200000] Bad eraseblock 3349 at 0x1a2a0000
+> > > > [    1.230000] Bad eraseblock 3790 at 0x1d9c0000
+> > > > [    6.890000] UBI: attached mtd9 to ubi0
+> > > > 
+> > > > 
+> > > > 
+> > > > Hamish
+> > > 
+> > > Do you know when the bad block scanning finish and the ubi scan start ?
+> > 
+> > Good point Matthieu. Indeed, _at least_ 1.23 sec is spend in the driver
+> > for scanning against bad eraseblocks to build in-memory bad block table
+> > (BBT). And it is probably more than 1.23 sec. If you start using
+> > on-flash bad block table, this should go away. I never used on-flash
+> > BBT, but I know MTD supports this and for example OLPC has on-flash BBT.
+> 
+> Well I think from past use of "time ubiattach ..." that most of
+> the missing time is in the attach. 
 
-I have seen a case with a faulty Intel 28F128J3 that had a sector that
-wouldn't erase. What happened was that the device kept trying to erase
-the sector until the max specified erase time had passed then it set
-the ready and error bits. The max erase time in this case was 25 seconds.
-(early chip revision suffering from errata #2, I believe)
-inval_cache_and_wait_for_operation() timed out already after 8 seconds
-and set chip->state to FL_STATUS. It thus lost the actual state of the chip.
-All operations within the next 17 seconds failed. The unit was impossble
-to boot since it just kept panicing.
+Here's the evidence:
 
-The error message I saw at that time (2.6.18) was
-"Waiting for chip to be ready timed out. Status xxxx"
-then JFFS2 got very unhappy.
+[    0.950000] NAND device: Manufacturer ID: 0xec, Chip ID: 0xdc (Samsung NAND 512MiB 3,3V 8-bit)
+[    0.960000] Scanning device for bad blocks
+[    1.000000] Bad eraseblock 494 at 0x03dc0000
+[    1.050000] Bad eraseblock 1300 at 0x0a280000
+[    1.140000] Bad eraseblock 2554 at 0x13f40000
+[    1.160000] Bad eraseblock 2923 at 0x16d60000
+[    1.200000] Bad eraseblock 3349 at 0x1a2a0000
+[    1.230000] Bad eraseblock 3790 at 0x1d9c0000
+[    1.250000] UBI: attaching mtd9 to ubi-1
+[    6.890000] UBI: attached mtd9 to ubi0
+[    6.900000] UBI: MTD device name:            "gen_nand.0"
+[    6.900000] UBI: MTD device size:            512 MiB
+[    6.910000] UBI: physical eraseblock size:   131072 bytes (128 KiB)
+[    6.910000] UBI: logical eraseblock size:    129024 bytes
+[    6.920000] UBI: number of good PEBs:        4090
+[    6.920000] UBI: number of bad PEBs:         6
+[    6.930000] UBI: smallest flash I/O unit:    2048
+[    6.930000] UBI: VID header offset:          512 (aligned 512)
+[    6.940000] UBI: data offset:                2048
+[    6.940000] UBI: max. allowed volumes:       128
+[    6.950000] UBI: wear-leveling threshold:    4096
+[    6.950000] UBI: number of internal volumes: 1
+[    6.960000] UBI: number of user volumes:     4
+[    6.960000] UBI: available PEBs:             0
+[    6.970000] UBI: total number of reserved PEBs: 4090
+[    6.970000] UBI: number of PEBs reserved for bad PEB handling: 40
+[    6.980000] UBI: max/mean erase counter: 29/1
+[    6.980000] UBI: background thread "ubi_bgt0d" started, PID 641
 
-A patched kernel with proper timeouts later booted this unit with just a
-warning message about the bad sector. I'll post the patch shortly.
 
-I've added this patch below as a safeguard. (Any thoughts on it?)
-You could try it and see if it gets you out of the loop.
-
-Anders
-
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index e812df6..e8a880c 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -706,6 +706,7 @@ static int chip_ready (struct map_info *map, struct flchip *chip, unsigned long
-
-  	case FL_STATUS:
-  		for (;;) {
-+			map_write(map, CMD(0x70), adr);
-  			status = map_read(map, adr);
-  			if (map_word_andequal(map, status, status_OK, status_OK))
-  				break;
+Hamish
+-- 
+Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
