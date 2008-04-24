@@ -1,25 +1,22 @@
-Received: from wa-out-1112.google.com ([209.85.146.177])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JouY4-00058T-1C
-	for linux-mtd@lists.infradead.org; Thu, 24 Apr 2008 06:03:12 +0000
-Received: by wa-out-1112.google.com with SMTP id v33so4533390wah.2
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 23 Apr 2008 23:03:10 -0700 (PDT)
-Message-ID: <8bf247760804232303t12f4b903l17f7aa59cbd38bf8@mail.gmail.com>
-Date: Thu, 24 Apr 2008 11:33:09 +0530
-From: Ram <vshrirama@gmail.com>
-To: dedekind@infradead.org
-Subject: Re: JFFS2 powerfail ?
-In-Reply-To: <1208973178.11721.84.camel@sauron>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=KOI8-R
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-References: <1531E53627F1F749B4FE809BF2A4EB674AF845@WETMEX10.loepfe.com>
-	<1208964812.11721.81.camel@sauron>
-	<20080423174858.GA12903@shareable.org>
-	<1208973178.11721.84.camel@sauron>
-Cc: linux-mtd@lists.infradead.org
+Received: from [74.93.104.97] (helo=sunset.davemloft.net)
+	by pentafluge.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Joufc-00085W-P3
+	for linux-mtd@lists.infradead.org; Thu, 24 Apr 2008 06:11:01 +0000
+Date: Wed, 23 Apr 2008 23:10:55 -0700 (PDT)
+Message-Id: <20080423.231055.193687131.davem@davemloft.net>
+To: dwmw2@infradead.org
+Subject: Re: physmap and "request_module: runaway loop modprobe net-pf-1"
+From: David Miller <davem@davemloft.net>
+In-Reply-To: <1209016143.9212.910.camel@pmac.infradead.org>
+References: <1208867831.9212.582.camel@pmac.infradead.org>
+	<97a0a9ac0804232101i71bfff22o723e2aaa80b09c2f@mail.gmail.com>
+	<1209016143.9212.910.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Cc: netdev@vger.kernel.org, akpm@linux-foundation.org,
+	gordonfarquharson@gmail.com, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,36 +26,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-V2hhdCBhYm91dCB0aGUgRW1wdHkgRmxhc2ggTWVzc2FnZXM/LgoKSSBnZXQgcGxlbnR5IG9mIHRo
-ZW0uCgppIHRob3VnaHQgSkZGUzIgd2FzIGhhdmluZyBhIHByb2JsZW0gd2l0aCAweEZGIGRhdGEg
-YmxvY2tzLgp3aGV0aGVyIHBhZGRpbmcgdGhlIGZpbGVzeXN0ZW0gd2l0aCAweGZmIHVzaW5nICdu
-YW5kIHdyaXRlJyAobXRkIHV0aWxzKQpjYXVzZXMgaXQ/CgoKUmVnYXJkcywKc3JpcmFtCgpPbiA0
-LzIzLzA4LCBBcnRlbSBCaXR5dXRza2l5IDxkZWRla2luZEBpbmZyYWRlYWQub3JnPiB3cm90ZToK
-PiBPbiBXZWQsIDIwMDgtMDQtMjMgYXQgMTg6NDggKzAxMDAsIEphbWllIExva2llciB3cm90ZToK
-PiAgPiBBcnRlbSBCaXR5dXRza2l5IHdyb3RlOgo+ICA+ID4gPiBKRkZTMiBub3RpY2U6ICg3OTEp
-IGNoZWNrX25vZGVfZGF0YTogd3JvbmcgZGF0YSBDUkMgaW4gZGF0YSBub2RlIGF0IDB4MDEwNjIx
-MjA6IHJlYWQgMHhmYWMyZjg1YSwgY2FsY3VsYXRlZCAweDlhYzBjNmQxLgo+ICA+ID4gPiBKRkZT
-MiBub3RpY2U6ICg3OTEpIGNoZWNrX25vZGVfZGF0YTogd3JvbmcgZGF0YSBDUkMgaW4gZGF0YSBu
-b2RlIGF0IDB4MDAyYjliZjA6IHJlYWQgMHg5ZjE4MmZhYiwgY2FsY3VsYXRlZCAweDRhZDIwZTVm
-Lgo+ICA+ID4gPiBKRkZTMiBub3RpY2U6ICg3OTEpIGNoZWNrX25vZGVfZGF0YTogd3JvbmcgZGF0
-YSBDUkMgaW4gZGF0YSBub2RlIGF0IDB4MDAyYjVkNjA6IHJlYWQgMHg3OWEyYTlkOCwgY2FsY3Vs
-YXRlZCAweDM1MjM0YzlhLgo+ICA+ID4KPiAgPiA+IFRoaXMgaXMgbm9ybWFsLiBJdCdzIGp1c3Qg
-aGFsZi13cml0dGVuIG5vZGVzIHdoaWNoIGNvcnJlc3BvbmQgdG8gdGhlCj4gID4gPiBsYXN0IHdy
-aXRlcyB5b3UgbWFkZSBiZWZvcmUgdGhlIHBvd2VyIGN1dC4gVGhleSBhcmUgaGFybWxlc3MsIGFs
-dGhvdWdoCj4gID4gPiBzcGFtIHRoZSBzeXNsb2cuIEpGRlMyIGNhbm5vdCByZW1vdmUgdGhlbSBz
-dHJhaWdodCBhZnRlciBtb3VudCwgc28gdGhleQo+ICA+ID4gbWF5IGFjY3VtdWxhdGUuIFdoaWNo
-IG1lYW5zIGVhY2ggdGltZSB5b3Ugc2VlIGNvcnJ1cHRpb24gbWVzc2FnZXMgZm9yCj4gID4gPiB0
-aGUgcHJldmlvdXMgdW5jbGVhbiByZWJvb3RzLiBIb3dldmVyLCB0aGUgY29ycnVwdGVkIG5vZGVz
-IHdpbGwgZ28gYXdheQo+ICA+ID4gc29tZSB0aW1lLCB3aGVuIEpGRlMyIGRlY2lkZXMgdG8gZ2Fy
-YmFnZS1jb2xsZWN0IGNvcnJlc3BvbmRpbmcKPiAgPiA+IGVyYXNlYmxvY2tzLiBJT1csIGRvbid0
-IHdvcnJ5LCB0aGlzIGlzIGEgZmVhdHVyZS4KPiAgPgo+ICA+IElmIHRoZXkgYXJlIGdvaW5nIHRv
-IGJlIHJlbW92ZWQgYXQgdGhlIG5leHQgR0MsIGl0IHdvdWxkIGJlIG5pY2UgdG8KPiAgPiByZW1v
-dmUgdGhlbSBlYXJsaWVyIGJ5IG92ZXJ3cml0aW5nIHRoZW0gd2l0aCBhbGwtMXMgLSB3b3VsZCB0
-aGF0IHdvcms/Cj4gID4KPgo+Cj4gWWVzLCBpdCBpcyBub3QgYSBiaWcgcHJvYmxlbSB0byByZW1l
-bWJlciBzdWNoIGJsb2NrcyBvbiBzY2FuIGFuZCB0aGVuCj4gIGdhcmJhZ2UgY29sbGVjdCB0aGVt
-LiBJdHMganVzdCBub2JvZHkgY2FyZWQgZW5vdWdoIHRvIGltcGxlbWVudCB0aGlzLgo+ICBZb3Ug
-Y291bGQgdHJ5IDotKQo+Cj4KPiAgLS0KPiAgQmVzdCByZWdhcmRzLAo+ICBBcnRlbSBCaXR5dXRz
-a2l5ICjiydTAw8vJyiDh0tSjzSkKPgo+Cj4gIF9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwo+Cj4gTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
-ZyBsaXN0Cj4gIGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
-dXgtbXRkLwo+Cg==
+From: David Woodhouse <dwmw2@infradead.org>
+Date: Thu, 24 Apr 2008 06:49:03 +0100
+
+> On Wed, 2008-04-23 at 22:01 -0600, Gordon Farquharson wrote:
+> > I guess the question is which patch (if either) is more appealing.
+> 
+> I definitely think we should initialise AF_UNIX sockets earlier. At
+> least request_module() _can_ work then, if you want it to and you set up
+> userspace accordingly.
+
+I'm not so sure, for example, what if AF_UNIX is built modular?
