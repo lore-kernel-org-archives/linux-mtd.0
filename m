@@ -1,22 +1,20 @@
-Received: from risingsoftware01.propagation.net ([66.221.33.65])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jp24E-0002PY-Kv
-	for linux-mtd@lists.infradead.org; Thu, 24 Apr 2008 14:04:55 +0000
-Date: Fri, 25 Apr 2008 00:04:47 +1000
-From: Hamish Moffatt <hamish@cloud.net.au>
-To: Alexey Korolev <akorolev@infradead.org>
-Subject: Re: [RFC][patch] NAND partial page read functionality
-Message-ID: <20080424140447.GA30558@cloud.net.au>
-References: <Pine.LNX.4.64.0712131747490.16624@pentafluge.infradead.org>
-	<1209018876.11721.100.camel@sauron>
-	<20080424074526.GA21709@cloud.net.au>
-	<Pine.LNX.4.64.0804241057520.6029@pentafluge.infradead.org>
+Date: Thu, 24 Apr 2008 15:34:24 +0100 (BST)
+From: Alexey Korolev <akorolev@infradead.org>
+To: =?ISO-8859-1?Q?Anders_Grafstr=F6m?= <grfstrm@users.sourceforge.net>
+Subject: Re: cfi_cmdset_0001.c: Excessive erase suspends
+In-Reply-To: <4809F7EC.9010808@users.sourceforge.net>
+Message-ID: <Pine.LNX.4.64.0804241524310.16953@pentafluge.infradead.org>
+References: <4807B552.7090501@users.sourceforge.net>
+	<Pine.LNX.4.64.0804181554230.27235@pentafluge.infradead.org>
+	<20080418163536.GD31520@shareable.org>
+	<6934efce0804181054y5887c6b4kc1129deec2d3a2eb@mail.gmail.com>
+	<48091C7A.1070709@users.sourceforge.net>
+	<012501c8a1fe$4a5308e0$def91aa0$@Tjernlund@transmode.se>
+	<4809F7EC.9010808@users.sourceforge.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.0804241057520.6029@pentafluge.infradead.org>
-Cc: dwmw2@infradead.org, Thomas Gleixner <tglx@linutronix.de>,
-	linux-mtd@lists.infradead.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: 'Linux-MTD Mailing List' <linux-mtd@lists.infradead.org>,
+	Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,51 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Anders,
 
-Thanks for your patch Alexey.
+Could you please try this patch on your platform. 
+It should solve the issue. 
+As I said before we also have a case which reproduces the issue.
+After applying it the issue is not seen on test items which usually
+fails. (However to prove that it is Ok
+we need to execute whole bunch. It will be completed on next day)
 
-On Thu, Apr 24, 2008 at 11:25:01AM +0100, Alexey Korolev wrote:
-> Oh I'm glad to hear that this patch is needful. In fact I did
-> not drop it. We did some more investigations about integration subpage
->  read in background. We tried to remove some drawback caused by
-> invalidation of prestored page in do_read_ops function. (We have found
-> that on large read requests nand subpage read causes ~10% of read performance degradation. I
-> wanted to remove but changes made code ugly and saved only 5%)
+diff -aurp linux-2.6.24-a/drivers/mtd/chips/cfi_cmdset_0001.c linux-2.6.24-b/drivers/mtd/chips/cfi_cmdset_0001.c
+--- linux-2.6.24-a/drivers/mtd/chips/cfi_cmdset_0001.c	2008-02-11 08:51:11.000000000 +0300
++++ linux-2.6.24-b/drivers/mtd/chips/cfi_cmdset_0001.c	2008-04-24 18:13:00.000000000 +0400
+@@ -874,6 +874,10 @@ static void put_chip(struct map_info *ma
+ 		   do. */
+ 		map_write(map, CMD(0xd0), adr);
+ 		map_write(map, CMD(0x70), adr);
++		/* According to recomendations from h/w experts adding wait  
++		   of 100us just after resume solves the erase suspend issues   
++		   seen on some NOR parts. */
++		udelay(100);
+ 		chip->oldstate = FL_READY;
+ 		chip->state = FL_ERASING;
+ 		break;
 
-Do you know why this is? If you are reading a whole page then the
-partial read code is equivalent to the read full page code as far as I
-can tell.
 
-> > Also Alexey said:
-> > > Setting NAND_PART_READ option in board driver will enable this
-> > > feature.
-> > 
-> > which is not true, as nand_base.c masks out chip-options (like this)
-> > inherited from the board driver. It must be set for the chip in
-> > nand_ids.c instead.
-> It works fine,  you need to setup this option after nand_scan. 
-> Using it in NAND_IDS is bad idea because some people may want disable it you can indirectly identify if chip
-> supports subpage read from NAND capabilities records.y 
-
-Oh, I see. I think it is unusual to modify the chip->options after
-calling nand_scan? I am using plat_nand.c and it doesn't have any way to
-do this.
-
-Maybe NAND_PART_READ should be excluded from NAND_CHIPOPTIONS_MSK. But
-you still have the case where the chip can't do it even if the board
-wants to. Maybe the chip should declare it's capable and the board
-should be able to turn it off if required.
-
-Mind you, other parts of nand_base use the RNDOUT function already so I
-don't think there is any case where you *wouldn't* enable partial reads.
-
-> So if there is an interest in subpage read let resume the topic. In next couple days I
-> will send updated patch with subpage read functionality. 
-
-Thanks. Did you find any actual bugs with the previous patch, or is it
-safe for me to use it?
-
-Hamish
--- 
-Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
+Thanks,
+Alexey
