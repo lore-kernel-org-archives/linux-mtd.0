@@ -1,24 +1,17 @@
-Received: from wf-out-1314.google.com ([209.85.200.173])
+Received: from news.amuz.bydgoszcz.pl ([212.122.200.132]
+	helo=cello.amuz.bydgoszcz.pl)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JoZvH-0003ho-Rx
-	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 08:01:48 +0000
-Received: by wf-out-1314.google.com with SMTP id 29so1958237wff.24
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 23 Apr 2008 01:01:47 -0700 (PDT)
-Message-ID: <bae050c10804230101m64bc2558icf9a5ad7efb8c824@mail.gmail.com>
-Date: Wed, 23 Apr 2008 16:01:46 +0800
-From: Nancy <nancydreaming@gmail.com>
-To: dedekind@infradead.org
-Subject: Re: [RFC] slight UBI scan time improvement
-In-Reply-To: <1208935971.11721.20.camel@sauron>
+	id 1Joa5x-0001AW-TY
+	for linux-mtd@lists.infradead.org; Wed, 23 Apr 2008 08:12:50 +0000
+Date: Thu, 24 Apr 2008 14:36:03 +0400
+From: "cotillion" <doric@arpaco.com>
+To: linux-mtd@lists.infradead.org
+Subject: Doctor Listing in the United States
+Message-ID: <138722o5wgc0$o9069sf0$4887y4u0@Delldim5150
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <1208882552.11721.13.camel@sauron>
-	<bae050c10804230015r50b7747apef8b1d8cab302c9a@mail.gmail.com>
-	<1208935971.11721.20.camel@sauron>
-Cc: linux-mtd@lists.infradead.org
+Content-type: text/plain; charset=US-ASCII
+Cc: linux-net@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+	linux-questions-only@ssc.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,32 +21,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 4/23/08, Artem Bityutskiy <dedekind@infradead.org> wrote:
-> On Wed, 2008-04-23 at 15:15 +0800, Nancy wrote:
-> > I have tried, as you said slightly improve the scan time, slightly,
-> > even don't feel it exist. en....I don't like the two stages displaying
-> > when ubi attach to mtd. First time I see it, I doubt the NFS server is
-> > too busy. It is just like a kid playing sliding board who do not like
-> > being block in the middle, or a group of men "cheers!", then drink off
-> > the beer. Oh, don't make it stop in the half way.
->
-> Hmm, may be. But the reason for this is that we want to see this
-> information even if UBI refuses your MTD device later.
-   Thank you for your explaination.
-
-> > You still do not add patch to handle write fail issue, a little disappointment.
->
-> I do not see any UBI/UBIFS issue in your case. The issue was that you
-> abused your flash using wrong tools, I think. Use the "ubiformat"
-> utility which we have recently implemented - the issue should go.
-    Thanks for the "ubiformat " tool.
-    Yes, the issue is go away by properly use MLC nand.
-    But the write fail issue in UBI still exist! Suppose you are
-properly used your Nand, when it return write fail, but can erase
-successfully, UBI still group this block in good block heap. That is
-wrong and dangerous.
 
 
--- 
-Best wishes,
-Nancy
+
+
+
+Board Certified Doctors in the US 
+
+788,972 in total <> 17,460 emails
+
+Lots of Doctors in specialties like Orthopedics, Surgery, Radiology, Dermatology, Neurology, General Practice etc..
+
+Can easily be sorted by 16 different fields
+
+Price for new customers -  $394
+
+
+()()() GET THESE FR EE WITH EVERY ORDER THIS WEEK ()()()
+
+American Pharmaceutical Company Contact List
+Names and email addresses of 47,000 employees in high-ranking positions
+
+American Hospital List
+complete contact information for CEO's, CFO's, Directors and more - over 23,000 listings in total for more than 7,000 hospitals in the USA
+
+Extensive Directory of Dentists in the US
+A complete Directory or dentists and related services (valued at $399)
+
+Chiropractors in the USA
+100,000 Chiropractors in the USA (worth $250 alone)
+
+reply by email:      tylerkimbalson@hotmail.com
+
+  
+
+this offer is only valid until April 25, 2008
+
+
+to get off our list please send an email with 11554  in the subject
