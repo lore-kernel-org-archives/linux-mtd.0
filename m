@@ -1,22 +1,34 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Joy9W-0007kU-Te
-	for linux-mtd@lists.infradead.org; Thu, 24 Apr 2008 09:54:07 +0000
-Subject: Re: [RFC][patch] NAND partial page read functionality
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Hamish Moffatt <hamish@cloud.net.au>
-In-Reply-To: <20080424074526.GA21709@cloud.net.au>
-References: <Pine.LNX.4.64.0712131747490.16624@pentafluge.infradead.org>
-	<1209018876.11721.100.camel@sauron>
-	<20080424074526.GA21709@cloud.net.au>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 24 Apr 2008 12:53:59 +0300
-Message-Id: <1209030839.11721.115.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: dwmw2@infradead.org, Thomas Gleixner <tglx@linutronix.de>,
-	linux-mtd@lists.infradead.org, Alexey Korolev <akorolev@infradead.org>
-Reply-To: dedekind@infradead.org
+Received: from fg-out-1718.google.com ([72.14.220.158])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JoySq-0008Gh-Kv
+	for linux-mtd@lists.infradead.org; Thu, 24 Apr 2008 10:14:05 +0000
+Received: by fg-out-1718.google.com with SMTP id 22so2905772fge.26
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 24 Apr 2008 03:14:03 -0700 (PDT)
+Message-ID: <fe810cf0804240314w70364639nb2ba38cd10cd7b46@mail.gmail.com>
+Date: Thu, 24 Apr 2008 14:14:03 +0400
+From: "Alexander Belyakov" <abelyako@googlemail.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Subject: Re: [PATCH][JFFS2] Fix garbage collector block search
+In-Reply-To: <1209023484.9212.960.camel@pmac.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <E1J2Trs-000IFE-00.abelyako-mail-ru@f65.mail.ru>
+	<fe810cf0804230608t1183dbf4l99b168476875bfc0@mail.gmail.com>
+	<1208959286.9212.799.camel@pmac.infradead.org>
+	<1208961030.9212.806.camel@pmac.infradead.org>
+	<fe810cf0804230825n21944ae3p4174512c2c0f9589@mail.gmail.com>
+	<1208964656.9212.811.camel@pmac.infradead.org>
+	<fe810cf0804240017v7069d6fdx6e7d03459d7d5503@mail.gmail.com>
+	<1209022137.9212.942.camel@pmac.infradead.org>
+	<fe810cf0804240048w783fbdc0sa701fc7c59b3d06f@mail.gmail.com>
+	<1209023484.9212.960.camel@pmac.infradead.org>
+Cc: Alexander Belyakov <abelyako@mail.ru>,
+	=?UTF-8?Q?J=C3=B6rn_Engel?= <joern@logfs.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	KaiGai Kohei <kaigai@ak.jp.nec.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +38,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2008-04-24 at 17:45 +1000, Hamish Moffatt wrote:
-> The rest of the discussion was about improved use of sub-page writes.
-> I'm sure that would be useful but it's not strictly relevant to the
-> partial read patch.
-Yup.
+On Thu, Apr 24, 2008 at 11:51 AM, David Woodhouse <dwmw2@infradead.org> wrote:
+> On Thu, 2008-04-24 at 11:48 +0400, Alexander Belyakov wrote:
+>  > Values are not fluctuating. After about 40 iterations I have no space
+>  > to write 2Mbytes file on 4MiB volume constantly getting "No space left
+>  > on device" until remount.
+>
+>  With no existing files?
 
-> Artem, were you able to try the patch on the OLPC with hardware ECC, as
-> you hinted in the original discussion?
+No files.
 
-Right, I completely forgot to do this. I've just verified - OLPC works
-just fine with this patch. It also does not affect our OneNAND setup.
+>
+>
+>  > It might be not a real leak, but anyway pixie doesn't feel this is a
+>  > correct behavior. :)
+>
+>  Ah, OK -- that's definitely not what I was seeing here. I'll try harder
+>  to reproduce.
+>
+>  Does the space come back when you remount? And are you running with the
+>  new paranoia check I added in commit 85a62db6?
+>
 
-> Also I reverted your recent patch to combine the EC + VID header reads
-> in the UBI scan for this test. I think with partial reads it may make=20
-> things slower, because it will force 2K to be read (or 576 bytes if the=20
-> ALIGN() is removed, still more than 64 + 64). Because min_io_size =3D 2K
-> is not really accurate I guess.
+Space comes back after remount.
 
-I deliberately did that. I though making one call instead of 2 is
-better, because MTD anyway reads whole page. And my other motivation was
-that flashes like OneNAND which may read 2 consecutive pages faster
-(kind of "burst" read). Although for OneNAND this trick does not really
-work. Anyway, lets forget about that patch.
+I'm able to reproduce problem with stable 2.6.25 kernel, but I see no
+such fails with the latest mtd-2.6.git snapshot. It seems changes in
+jffs2 since 2.6.25 merge address this issue somehow.
 
-I think if Alexey is not any more interested in working on his patch,
-you could do this, if you are interested. I am going to be away till the
-5 of May, so I won't be able to help.
+If I hit something similar once again I would let you know.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+-a
