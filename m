@@ -1,16 +1,23 @@
-Received: from mba.ocn.ne.jp ([122.1.235.107] helo=smtp.mba.ocn.ne.jp)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jp2mM-0004xr-2x
-	for linux-mtd@lists.infradead.org; Thu, 24 Apr 2008 14:50:30 +0000
-Date: Thu, 24 Apr 2008 23:51:29 +0900 (JST)
-Message-Id: <20080424.235129.82088339.anemo@mba.ocn.ne.jp>
-To: Andrew Victor <andrew@sanpeople.com>
-Subject: [PATCH] at91_nand: control NCE signal
-From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Received: from smtp115.sbc.mail.sp1.yahoo.com ([69.147.64.88])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jp6hs-0005nJ-7Z
+	for linux-mtd@lists.infradead.org; Thu, 24 Apr 2008 19:02:08 +0000
+From: David Brownell <david-b@pacbell.net>
+To: Richard Genoud <richard.genoud@gmail.com>
+Subject: Re: [PATCH] NAND hardware ECC controller on at91sam9263 / at91sam9260
+Date: Thu, 24 Apr 2008 12:02:04 -0700
+References: <47BABA0C.8070500@gmail.com>
+	<1208964556.9212.809.camel@pmac.infradead.org>
+	<1208973075.7471.6.camel@ubuntu>
+In-Reply-To: <1208973075.7471.6.camel@ubuntu>
+MIME-Version: 1.0
+Content-Disposition: inline
+Message-Id: <200804241202.04290.david-b@pacbell.net>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	Haavard Skinnemoen <hskinnemoen@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,29 +27,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This driver did not control NCE signal during normal operations (only
-enable NCE on probing and disable NCE on removing).  This patch make
-NCE signal inactive on idle state.
+On Wednesday 23 April 2008, Richard Genoud wrote:
+> +static int at91_nand_calculate(struct mtd_info *mtd,
+> +               const u_char *dat, unsigned char *ecc_code)
+> +{
+> +       struct nand_chip *nand_chip = mtd->priv;
+> +       struct at91_nand_host *host = nand_chip->priv;
+> +       uint32_t *eccpos = nand_chip->ecc.layout->eccpos;
+> +       unsigned int ecc_value;
+> +
+> +       /* get the first 2 ECC bytes */
+> +       ecc_value = ecc_readl(host->ecc, PR) & AT91_ECC_PARITY;
+> +
+> +       ecc_code[eccpos[0]] = ecc_value & 0xFF;
+> +       ecc_code[eccpos[1]] = (ecc_value >> 8) & 0xFF;
 
-Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
----
- drivers/mtd/nand/at91_nand.c |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
+My copy of the sam9263 docs doesn't list an "ECC_PARITY" field
+in the PR register ... just two masked fields, 0xfff0 and 0x000f
+labeled WORDADDR and BITADDR respectively.  (Which evidently are
+combined into a single opague 0xffff mask on block writes, and
+are interpretable only on block reads.)
 
-diff --git a/drivers/mtd/nand/at91_nand.c b/drivers/mtd/nand/at91_nand.c
-index c9fb2ac..c96812f 100644
---- a/drivers/mtd/nand/at91_nand.c
-+++ b/drivers/mtd/nand/at91_nand.c
-@@ -44,6 +44,12 @@ static void at91_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
- 	struct nand_chip *nand_chip = mtd->priv;
- 	struct at91_nand_host *host = nand_chip->priv;
- 
-+	if (host->board->enable_pin && (ctrl & NAND_CTRL_CHANGE)) {
-+		if (ctrl & NAND_NCE)
-+			at91_set_gpio_value(host->board->enable_pin, 0);
-+		else
-+			at91_set_gpio_value(host->board->enable_pin, 1);
-+	}
- 	if (cmd == NAND_CMD_NONE)
- 		return;
- 
+And the system header doesn't have an ECC_PARITY mask ... so I
+get build errors with current GIT.
+
+
+> +
+> +       /* get the last 2 ECC bytes */
+> +       ecc_value = ecc_readl(host->ecc, NPR) & AT91_ECC_NPARITY;
+> +
+> +       ecc_code[eccpos[2]] = ecc_value & 0xFF;
+> +       ecc_code[eccpos[3]] = (ecc_value >> 8) & 0xFF;
+
+That one builds OK.
+
+I suggest you just remove the masks from the readl() lines.
+They're not necessary.
+
+- Dave
+
+
+> +
+> +       return 0;
+> +}
