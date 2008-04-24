@@ -1,34 +1,16 @@
-Received: from fg-out-1718.google.com ([72.14.220.156])
+Received: from mba.ocn.ne.jp ([122.1.235.107] helo=smtp.mba.ocn.ne.jp)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JozVe-00060t-Ee
-	for linux-mtd@lists.infradead.org; Thu, 24 Apr 2008 11:21:02 +0000
-Received: by fg-out-1718.google.com with SMTP id 22so2926844fge.26
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 24 Apr 2008 04:21:01 -0700 (PDT)
-Message-ID: <fe810cf0804240421m5ca024f6xa0e03c1bd4f796f7@mail.gmail.com>
-Date: Thu, 24 Apr 2008 15:21:01 +0400
-From: "Alexander Belyakov" <abelyako@googlemail.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Subject: Re: [PATCH][JFFS2] Fix garbage collector block search
-In-Reply-To: <1209035103.9212.1051.camel@pmac.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+	id 1Jp1dl-00020Y-4K
+	for linux-mtd@lists.infradead.org; Thu, 24 Apr 2008 13:37:34 +0000
+Date: Thu, 24 Apr 2008 22:38:30 +0900 (JST)
+Message-Id: <20080424.223830.27953792.anemo@mba.ocn.ne.jp>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] physmap: do not probe absent modules
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <E1J2Trs-000IFE-00.abelyako-mail-ru@f65.mail.ru>
-	<1208964656.9212.811.camel@pmac.infradead.org>
-	<fe810cf0804240017v7069d6fdx6e7d03459d7d5503@mail.gmail.com>
-	<1209022137.9212.942.camel@pmac.infradead.org>
-	<fe810cf0804240048w783fbdc0sa701fc7c59b3d06f@mail.gmail.com>
-	<1209023484.9212.960.camel@pmac.infradead.org>
-	<fe810cf0804240314w70364639nb2ba38cd10cd7b46@mail.gmail.com>
-	<1209033162.9212.1031.camel@pmac.infradead.org>
-	<fe810cf0804240342r35d0ecf8s9ee159a2980a83c3@mail.gmail.com>
-	<1209035103.9212.1051.camel@pmac.infradead.org>
-Cc: Alexander Belyakov <abelyako@mail.ru>,
-	=?UTF-8?Q?J=C3=B6rn_Engel?= <joern@logfs.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	KaiGai Kohei <kaigai@ak.jp.nec.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,17 +20,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 24, 2008 at 3:05 PM, David Woodhouse <dwmw2@infradead.org> wrote:
-> On Thu, 2008-04-24 at 14:42 +0400, Alexander Belyakov wrote:
->  > I was checking this on Sibley-like parts, not NAND. Sorry for
->  > confusion.
->
->  Oh, so you have an inline cleanmarker? That makes sense. You'll lose
->  c->cleanmarker_size from c->free_size for every block you erase.
->
+For example, if MTD_CFI was not enabled, probing it does nothing other
+than just produces an error message.
 
-So you are speaking about "Fix free space leak with in-band
-cleanmarkers" patch. Right? It seems I've overlooked it. Now I see
-what was happening there - thank you.
+Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+---
+ drivers/mtd/maps/physmap.c |   24 ++++++++++++++++++++++--
+ 1 files changed, 22 insertions(+), 2 deletions(-)
 
-Alexander
+diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
+index bc4649a..7f8f3bd 100644
+--- a/drivers/mtd/maps/physmap.c
++++ b/drivers/mtd/maps/physmap.c
+@@ -85,9 +85,29 @@ static int physmap_flash_remove(struct platform_device *dev)
+ 	return 0;
+ }
+ 
+-static const char *rom_probe_types[] = { "cfi_probe", "jedec_probe", "map_rom", NULL };
++static const char *rom_probe_types[] = {
++#if defined(CONFIG_MTD_CFI) || defined(CONFIG_MTD_CFI_MODULE)
++	"cfi_probe",
++#endif
++#if defined(CONFIG_MTD_JEDECPROBE) || defined(CONFIG_MTD_JEDECPROBE_MODULE)
++	"jedec_probe",
++#endif
++#if defined(CONFIG_MTD_ROM) || defined(CONFIG_MTD_ROM_MODULE)
++	"map_rom",
++#endif
++	NULL
++};
+ #ifdef CONFIG_MTD_PARTITIONS
+-static const char *part_probe_types[] = { "cmdlinepart", "RedBoot", NULL };
++static const char *part_probe_types[] = {
++#if defined(CONFIG_MTD_CMDLINE_PARTS)
++	"cmdlinepart",
++#endif
++#if defined(CONFIG_MTD_REDBOOT_PARTS) || \
++	defined(CONFIG_MTD_REDBOOT_PARTS_MODULE)
++	"RedBoot",
++#endif
++	NULL
++};
+ #endif
+ 
+ static int physmap_flash_probe(struct platform_device *dev)
