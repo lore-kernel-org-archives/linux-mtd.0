@@ -1,27 +1,22 @@
-Subject: Re: [PATCH][JFFS2] Fix garbage collector block search
-From: David Woodhouse <dwmw2@infradead.org>
-To: Alexander Belyakov <abelyako@googlemail.com>
-In-Reply-To: <fe810cf0804240048w783fbdc0sa701fc7c59b3d06f@mail.gmail.com>
-References: <E1J2Trs-000IFE-00.abelyako-mail-ru@f65.mail.ru>
-	<fe810cf0804230431m2bf80e83h4fa71bd5887b7587@mail.gmail.com>
-	<1208950350.9212.791.camel@pmac.infradead.org>
-	<fe810cf0804230608t1183dbf4l99b168476875bfc0@mail.gmail.com>
-	<1208959286.9212.799.camel@pmac.infradead.org>
-	<1208961030.9212.806.camel@pmac.infradead.org>
-	<fe810cf0804230825n21944ae3p4174512c2c0f9589@mail.gmail.com>
-	<1208964656.9212.811.camel@pmac.infradead.org>
-	<fe810cf0804240017v7069d6fdx6e7d03459d7d5503@mail.gmail.com>
-	<1209022137.9212.942.camel@pmac.infradead.org>
-	<fe810cf0804240048w783fbdc0sa701fc7c59b3d06f@mail.gmail.com>
-Content-Type: text/plain
-Date: Thu, 24 Apr 2008 08:51:24 +0100
-Message-Id: <1209023484.9212.960.camel@pmac.infradead.org>
+Received: from [74.93.104.97] (helo=sunset.davemloft.net)
+	by pentafluge.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JowM6-0000dO-Ta
+	for linux-mtd@lists.infradead.org; Thu, 24 Apr 2008 07:58:59 +0000
+Date: Thu, 24 Apr 2008 00:58:23 -0700 (PDT)
+Message-Id: <20080424.005823.19184500.davem@davemloft.net>
+To: dwmw2@infradead.org
+Subject: Re: physmap and "request_module: runaway loop modprobe net-pf-1"
+From: David Miller <davem@davemloft.net>
+In-Reply-To: <1209021852.9212.936.camel@pmac.infradead.org>
+References: <1209021399.9212.927.camel@pmac.infradead.org>
+	<20080424.002038.201593352.davem@davemloft.net>
+	<1209021852.9212.936.camel@pmac.infradead.org>
 Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: Alexander Belyakov <abelyako@mail.ru>,
-	=?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	KaiGai Kohei <kaigai@ak.jp.nec.com>
+Cc: netdev@vger.kernel.org, akpm@linux-foundation.org,
+	gordonfarquharson@gmail.com, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,21 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2008-04-24 at 11:48 +0400, Alexander Belyakov wrote:
-> Values are not fluctuating. After about 40 iterations I have no space
-> to write 2Mbytes file on 4MiB volume constantly getting "No space left
-> on device" until remount.
+From: David Woodhouse <dwmw2@infradead.org>
+Date: Thu, 24 Apr 2008 08:24:12 +0100
 
-With no existing files?
+> On Thu, 2008-04-24 at 00:20 -0700, David Miller wrote:
+> > But won't the request_module() for AF_UNIX spit out that warning too?
+> 
+> Yes. If you build AF_UNIX as a module, it will. Just once though, before
+> loading it (assuming it's available).
+> 
+> > Actually, I think I need a clarification.  It is the modular loader
+> > utility in userspace which is trying to open up AF_UNIX sockets,
+> > right?
+> 
+> Yes. Or probably libc.
 
-> It might be not a real leak, but anyway pixie doesn't feel this is a
-> correct behavior. :)
-
-Ah, OK -- that's definitely not what I was seeing here. I'll try harder
-to reproduce.
-
-Does the space come back when you remount? And are you running with the
-new paranoia check I added in commit 85a62db6?
-
--- 
-dwmw2
+Ok, I'll apply your patch, but really this all feels like a jumble
+of hacks to me :-)
