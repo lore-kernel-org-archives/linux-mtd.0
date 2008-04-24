@@ -1,26 +1,21 @@
-Received: from risingsoftware01.propagation.net ([66.221.33.65])
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JovTB-0006sh-Pc
-	for linux-mtd@lists.infradead.org; Thu, 24 Apr 2008 07:02:14 +0000
-Date: Thu, 24 Apr 2008 17:02:06 +1000
-From: Hamish Moffatt <hamish@cloud.net.au>
-To: Artem Bityutskiy <dedekind@infradead.org>
-Subject: Re: [RFC] slight UBI scan time improvement
-Message-ID: <20080424070206.GA20799@cloud.net.au>
-References: <1208882552.11721.13.camel@sauron>
-	<20080423073840.GA9472@cloud.net.au> <480EEFAB.7010304@parrot.com>
-	<1208938864.11721.44.camel@sauron>
-	<20080423124046.GA16201@cloud.net.au>
-	<1208955467.11721.69.camel@sauron>
-	<20080423134254.GA17867@cloud.net.au>
-	<1208959759.11721.76.camel@sauron>
-	<20080424015303.GB13358@cloud.net.au>
-	<1209018080.11721.88.camel@sauron>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1209018080.11721.88.camel@sauron>
-Cc: linux-mtd@lists.infradead.org
+	id 1JovdD-0002d6-7m
+	for linux-mtd@lists.infradead.org; Thu, 24 Apr 2008 07:12:35 +0000
+Subject: Re: [RFC][patch] NAND partial page read functionality
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1209018876.11721.100.camel@sauron>
+References: <Pine.LNX.4.64.0712131747490.16624@pentafluge.infradead.org>
+	<1209018876.11721.100.camel@sauron>
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 24 Apr 2008 10:11:55 +0300
+Message-Id: <1209021115.11721.107.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: Hamish Moffatt <hamish@cloud.net.au>, linux-mtd@lists.infradead.org,
+	Alexey Korolev <akorolev@infradead.org>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,46 +25,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 24, 2008 at 09:21:20AM +0300, Artem Bityutskiy wrote:
-> On Thu, 2008-04-24 at 11:53 +1000, Hamish Moffatt wrote:
-> > Hmm. The software ECC seems to work internally on 256 byte blocks.
-> > However it appears that nand_base will always read in a whole page (2K
-> > on my flash). It should be ok to read only a 256-byte block as that's
-> > all you need for ECC calculation? Not a whole 2K which requires 8 ECC
-> > calculations.
-> 
-> However, there was a patch from Alexey which may certainly help you. It
-> was not looked at properly, unfortunately. I'll try to find it in my
-> mailbox and will send to you.
+Hi David, Thomas,
 
-Thanks. Yes I found the patch in my linux-mtd folder too. It's very
-nice!
+On Thu, 2008-04-24 at 09:34 +0300, Artem Bityutskiy wrote:
+> On Thu, 2007-12-13 at 18:15 +0000, Alexey Korolev wrote:
+> > Hi=20
+> >=20
+> > Here is a patch providing partial page read functionality for NAND
+> > devices.=20
+> >=20
+> > In many cases it gives performacne boost. I've added this feature
+> > enabling under chip->options flag.=20
+> > Setting NAND_PART_READ option in board driver will enable this feature.
+>=20
+> Hamish, this stuff should certainly help you. You could give it a try.
+> Unfortunately Alexey gave up almost straight away and did not try to
+> push his work harder.The arguments against the patch were weak, and
+> addressable. This work needs some more efforts and it may get merged.
+> Moreover, Alexey came with impressive numbers, and it is difficult to
+> argue against. Would you give it a try? If it gives performance benefits
+> for you, I think we could raise this again.
+>=20
+> Look here for the full story:=20
+> http://lists.infradead.org/pipermail/linux-mtd/2007-December/020105.html
 
-Here's my attach time before:
+Could we please take a look at this work:
+http://lists.infradead.org/pipermail/linux-mtd/2007-December/020105.html
 
-[    0.950000] NAND device: Manufacturer ID: 0xec, Chip ID: 0xdc (Samsung NAND 512MiB 3,3V 8-bit)
-[    0.960000] Scanning device for bad blocks
-[    1.000000] Bad eraseblock 494 at 0x03dc0000
-[    1.050000] Bad eraseblock 1300 at 0x0a280000
-[    1.140000] Bad eraseblock 2554 at 0x13f40000
-[    1.160000] Bad eraseblock 2923 at 0x16d60000
-[    1.200000] Bad eraseblock 3349 at 0x1a2a0000
-[    1.230000] Bad eraseblock 3790 at 0x1d9c0000
-[    6.900000] UBI: attached mtd9 to ubi0
+and identify what should be changed/done to have it merged. Alexey shows
+impressive numbers there. Also, Hamish(*) shows that UBI attach time drops
+from about 5.6 seconds to about 2.5 seconds which is a very substantial
+growth.
 
-... and now:
+Thanks!
 
-[    0.950000] NAND device: Manufacturer ID: 0xec, Chip ID: 0xdc (Samsung NAND 512MiB 3,3V 8-bit)
-[    0.970000] Scanning device for bad blocks
-[    1.000000] Bad eraseblock 494 at 0x03dc0000
-[    1.060000] Bad eraseblock 1300 at 0x0a280000
-[    1.140000] Bad eraseblock 2554 at 0x13f40000
-[    1.170000] Bad eraseblock 2923 at 0x16d60000
-[    1.200000] Bad eraseblock 3349 at 0x1a2a0000
-[    1.230000] Bad eraseblock 3790 at 0x1d9c0000
-[    3.880000] UBI: attached mtd9 to ubi0
+*) http://lists.infradead.org/pipermail/linux-mtd/2008-April/021413.html
 
-
-Hamish
--- 
-Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
