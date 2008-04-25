@@ -1,32 +1,24 @@
-Received: from az33egw02.freescale.net ([192.88.158.103])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JpLod-0004Ph-7V
-	for linux-mtd@lists.infradead.org; Fri, 25 Apr 2008 11:10:09 +0000
-Received: from az33smr01.freescale.net (az33smr01.freescale.net [10.64.34.199])
-	by az33egw02.freescale.net (8.12.11/az33egw02) with ESMTP id
-	m3PBA2i1019584 for <linux-mtd@lists.infradead.org>;
-	Fri, 25 Apr 2008 04:10:03 -0700 (MST)
-Received: from zch01exm26.fsl.freescale.net (zch01exm26.ap.freescale.net
-	[10.192.129.221])
-	by az33smr01.freescale.net (8.13.1/8.13.0) with ESMTP id m3PBA0kB011693
+Received: from el-out-1112.google.com ([209.85.162.183])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JpMnE-0001DR-3c
+	for linux-mtd@lists.infradead.org; Fri, 25 Apr 2008 12:12:44 +0000
+Received: by el-out-1112.google.com with SMTP id j27so1332368elf.22
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 25 Apr 2008 06:10:01 -0500 (CDT)
-Content-class: urn:content-classes:message
+	Fri, 25 Apr 2008 05:12:43 -0700 (PDT)
+Message-ID: <bae050c10804250512g1393b6afu54809e90db2807a6@mail.gmail.com>
+Date: Fri, 25 Apr 2008 20:12:42 +0800
+From: Nancy <nancydreaming@gmail.com>
+To: "Adrian Hunter" <ext-adrian.hunter@nokia.com>
+Subject: Re: UBI: badblock management confusion!
+In-Reply-To: <bae050c10804250508g68df553qcce03bb6551aa5c5@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: [PATCH] MTD: fix partition scan control logic in physmap_ofand
-	fsl_elbc_nand
-Date: Fri, 25 Apr 2008 19:09:59 +0800
-Message-ID: <989B956029373F45A0B8AF029708189002007C8F@zch01exm26.fsl.freescale.net>
-In-Reply-To: <1208890162.9212.646.camel@pmac.infradead.org>
-References: <1204201051-13107-1-git-send-email-leoli@freescale.com>
-	<1208890162.9212.646.camel@pmac.infradead.org>
-From: "Li Yang" <LeoLi@freescale.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Cc: linuxppc-dev@ozlabs.org, Stefan Roese <sr@denx.de>,
-	linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <bae050c10804242354s722c9a58r1ed4e1ad1afaff90@mail.gmail.com>
+	<4811B6BF.9020200@nokia.com>
+	<bae050c10804250508g68df553qcce03bb6551aa5c5@mail.gmail.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,40 +28,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> -----Original Message-----
-> From: David Woodhouse [mailto:dwmw2@infradead.org]=20
-> Sent: Wednesday, April 23, 2008 2:49 AM
-> To: Li Yang
-> Cc: linux-mtd@lists.infradead.org; Stefan Roese;=20
-> linuxppc-dev@ozlabs.org
-> Subject: Re: [PATCH] MTD: fix partition scan control logic in=20
-> physmap_ofand fsl_elbc_nand
->=20
-> On Thu, 2008-02-28 at 20:17 +0800, Li Yang wrote:
-> > The generic rule for partition scan is to try all supported=20
-> partition=20
-> > types before an usable partition table is found.
-> > However the original code returns unsuccessful when there=20
-> is an error=20
-> > in any of the partition types.
-> >=20
-> > Signed-off-by: Li Yang <leoli@freescale.com>
-> > Cc: Stefan Roese <sr@denx.de>
-> > Cc: Peter Korsgaard <jacmet@sunsite.dk>
-> > ---
-> > I later found that Stefan has proposed a similar patch for=20
-> physmap_of=20
-> > and Peter proposed another patch to fix cmdlinepart instead.
-> > I'd say that even after cmdlinepart patch is applied the=20
-> scan control=20
-> > logic still needs to be fixed.
->=20
-> I'm not convinced. I think the partition code should return=20
-> an error if it hits a hard error, like a failure to read from=20
-> the device. And return zero when it doesn't find anything.
+ > > # modprobe ubi mtd=5
+ > > UBI: physical eraseblock size:   262144 bytes (256 KiB)
+ > > UBI: logical eraseblock size:    258048 bytes
+ > > UBI: smallest flash I/O unit:    2048
+ > > UBI: VID header offset:          2048 (aligned 2048)
+ > > UBI: data offset:                4096
+ > > UBI warning: ubi_eba_init_scan: cannot reserve enough PEBs for bad PEB
+ > > handling, reserved 19, need 20
+ > > UBI: attached mtd5 to ubi0
+ > > UBI: MTD device name:            "NAND VFAT partition"
+ > > UBI: MTD device size:            512 MiB
+ > > UBI: number of good PEBs:        2044
+ > > UBI: number of bad PEBs:         4
+ > > UBI: max. allowed volumes:       128
+ > > UBI: wear-leveling threshold:    256
+ > > UBI: number of internal volumes: 1
+ > > UBI: number of user volumes:     1
+ > > UBI: available PEBs:             0
+ > > UBI: total number of reserved PEBs: 2044
+ > > UBI: number of PEBs reserved for bad PEB handling: 19
+ > > UBI: max/mean erase counter: 39/24
+ > > UBI: background thread "ubi_bgt0d" started, PID 263
 
-The error can also be soft error like a typo in the cmdline or device
-tree.  I could be better to try other ways to see if we can find a sane
-partition table than just to fail.
+pls:
+ > > UBI: available PEBs:             0
+ > > UBI: total number of reserved PEBs: 2044
+Quite wrong displaying messages.
 
-- Leo
+
+-- 
+Best wishes,
+Nancy
