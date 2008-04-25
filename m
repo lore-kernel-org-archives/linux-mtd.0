@@ -1,26 +1,22 @@
-Received: from yw-out-1718.google.com ([74.125.46.152])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JpIQ3-0007f0-N5
-	for linux-mtd@lists.infradead.org; Fri, 25 Apr 2008 07:32:32 +0000
-Received: by yw-out-1718.google.com with SMTP id 9so2314483ywk.72
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 25 Apr 2008 00:32:26 -0700 (PDT)
-Message-ID: <80b317760804250032r117fa1f8ge72b9fc0792dc355@mail.gmail.com>
-Date: Fri, 25 Apr 2008 09:32:26 +0200
-From: "Richard Genoud" <richard.genoud@gmail.com>
-To: "David Brownell" <david-b@pacbell.net>
-Subject: Re: [PATCH] NAND hardware ECC controller on at91sam9263 / at91sam9260
-In-Reply-To: <200804241202.04290.david-b@pacbell.net>
+Date: Fri, 25 Apr 2008 10:59:31 +0100 (BST)
+From: Alexey Korolev <akorolev@infradead.org>
+To: =?ISO-8859-1?Q?Anders_Grafstr=F6m?= <grfstrm@users.sourceforge.net>
+Subject: Re: cfi_cmdset_0001.c: Excessive erase suspends
+In-Reply-To: <4810F549.6030107@users.sourceforge.net>
+Message-ID: <Pine.LNX.4.64.0804251052290.30914@pentafluge.infradead.org>
+References: <4807B552.7090501@users.sourceforge.net>
+	<Pine.LNX.4.64.0804181554230.27235@pentafluge.infradead.org>
+	<20080418163536.GD31520@shareable.org>
+	<6934efce0804181054y5887c6b4kc1129deec2d3a2eb@mail.gmail.com>
+	<48091C7A.1070709@users.sourceforge.net>
+	<012501c8a1fe$4a5308e0$def91aa0$@Tjernlund@transmode.se>
+	<4809F7EC.9010808@users.sourceforge.net>
+	<Pine.LNX.4.64.0804241524310.16953@pentafluge.infradead.org>
+	<4810F549.6030107@users.sourceforge.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <47BABA0C.8070500@gmail.com>
-	<1208964556.9212.809.camel@pmac.infradead.org>
-	<1208973075.7471.6.camel@ubuntu>
-	<200804241202.04290.david-b@pacbell.net>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	Haavard Skinnemoen <hskinnemoen@atmel.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: 'Linux-MTD Mailing List' <linux-mtd@lists.infradead.org>,
+	Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,35 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2008/4/24, David Brownell <david-b@pacbell.net>:
-> My copy of the sam9263 docs doesn't list an "ECC_PARITY" field
->  in the PR register ... just two masked fields, 0xfff0 and 0x000f
->  labeled WORDADDR and BITADDR respectively.  (Which evidently are
->  combined into a single opague 0xffff mask on block writes, and
->  are interpretable only on block reads.)
+Hi
+
+> > After applying it the issue is not seen on test items which usually
+> > fails. (However to prove that it is Ok
+> > we need to execute whole bunch. It will be completed on next day)
+> 
+> Works a lot better but it has failed one time so far with the patch applied.
 >
->  And the system header doesn't have an ECC_PARITY mask ... so I
->  get build errors with current GIT.
->
->  - Dave
->
+Could you please specify how it fails. I'm not sure that we are talking
+about the same issue. Also I need to see the data read just after broken
+erase. Could you please read the same data several times just after
+broken erase and compare it? Will data in erase block be the same? Is 
+you flash configuration interleaved? 
 
-you're right, this is my bad. Thanks for pointing this out.
-
-David W., could you apply the patch bellow to make things right again ?
-
-The AT91_ECC_PARITY mask does not exist (and masking with it was useless).
-kernel version : mtd-2.6 current git
-Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
----
---- drivers/mtd/nand/at91_nand.c.orig
-+++ drivers/mtd/nand/at91_nand.c
-@@ -199,7 +199,7 @@ static int at91_nand_calculate(struct mt
- 	unsigned int ecc_value;
-
- 	/* get the first 2 ECC bytes */
--	ecc_value = ecc_readl(host->ecc, PR) & AT91_ECC_PARITY;
-+	ecc_value = ecc_readl(host->ecc, PR);
-
- 	ecc_code[eccpos[0]] = ecc_value & 0xFF;
- 	ecc_code[eccpos[1]] = (ecc_value >> 8) & 0xFF;
+Thanks,
+Alexey
