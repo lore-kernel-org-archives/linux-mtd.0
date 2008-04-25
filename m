@@ -1,22 +1,21 @@
-Date: Fri, 25 Apr 2008 10:59:31 +0100 (BST)
+Date: Fri, 25 Apr 2008 11:04:44 +0100 (BST)
 From: Alexey Korolev <akorolev@infradead.org>
-To: =?ISO-8859-1?Q?Anders_Grafstr=F6m?= <grfstrm@users.sourceforge.net>
-Subject: Re: cfi_cmdset_0001.c: Excessive erase suspends
-In-Reply-To: <4810F549.6030107@users.sourceforge.net>
-Message-ID: <Pine.LNX.4.64.0804251052290.30914@pentafluge.infradead.org>
-References: <4807B552.7090501@users.sourceforge.net>
-	<Pine.LNX.4.64.0804181554230.27235@pentafluge.infradead.org>
-	<20080418163536.GD31520@shareable.org>
-	<6934efce0804181054y5887c6b4kc1129deec2d3a2eb@mail.gmail.com>
-	<48091C7A.1070709@users.sourceforge.net>
-	<012501c8a1fe$4a5308e0$def91aa0$@Tjernlund@transmode.se>
-	<4809F7EC.9010808@users.sourceforge.net>
-	<Pine.LNX.4.64.0804241524310.16953@pentafluge.infradead.org>
-	<4810F549.6030107@users.sourceforge.net>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [BUG] JFFS2 usage of write_begin and write_end functions causes
+	kernel panic
+In-Reply-To: <1209075315.11578.9.camel@shinybook.infradead.org>
+Message-ID: <Pine.LNX.4.64.0804251100430.30914@pentafluge.infradead.org>
+References: <Pine.LNX.4.64.0804101152270.13226@pentafluge.infradead.org>
+	<1208011719.2698.19.camel@pmac.infradead.org>
+	<Pine.LNX.4.64.0804141650100.15842@pentafluge.infradead.org>
+	<Pine.LNX.4.64.0804141800170.15842@pentafluge.infradead.org>
+	<4810F73A.5000305@users.sourceforge.net>
+	<1209075315.11578.9.camel@shinybook.infradead.org>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: 'Linux-MTD Mailing List' <linux-mtd@lists.infradead.org>,
-	Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+Cc: nickpiggin@yahoo.com.au, joern@logfs.org, linux-mtd@lists.infradead.org,
+	Anders =?ISO-8859-1?Q?Grafstr=F6m?= <grfstrm@users.sourceforge.net>,
+	akpm@linux-foundation.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,19 +25,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
+Anders,
 
-> > After applying it the issue is not seen on test items which usually
-> > fails. (However to prove that it is Ok
-> > we need to execute whole bunch. It will be completed on next day)
-> 
-> Works a lot better but it has failed one time so far with the patch applied.
->
-Could you please specify how it fails. I'm not sure that we are talking
-about the same issue. Also I need to see the data read just after broken
-erase. Could you please read the same data several times just after
-broken erase and compare it? Will data in erase block be the same? Is 
-you flash configuration interleaved? 
+Are you reproducing it after failed erase? 
+What tool do you use? The last one in excessive erase thread?
+If so we could try to reproduce it as well.
 
 Thanks,
 Alexey
