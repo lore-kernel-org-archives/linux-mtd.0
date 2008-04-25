@@ -1,19 +1,26 @@
-Received: from wf-out-1314.google.com ([209.85.200.172])
+Received: from yw-out-1718.google.com ([74.125.46.152])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JpHpE-00037K-GD
-	for linux-mtd@lists.infradead.org; Fri, 25 Apr 2008 06:54:29 +0000
-Received: by wf-out-1314.google.com with SMTP id 29so2888994wff.24
+	id 1JpIQ3-0007f0-N5
+	for linux-mtd@lists.infradead.org; Fri, 25 Apr 2008 07:32:32 +0000
+Received: by yw-out-1718.google.com with SMTP id 9so2314483ywk.72
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 24 Apr 2008 23:54:26 -0700 (PDT)
-Message-ID: <bae050c10804242354s722c9a58r1ed4e1ad1afaff90@mail.gmail.com>
-Date: Fri, 25 Apr 2008 14:54:26 +0800
-From: Nancy <nancydreaming@gmail.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: UBI: badblock management confusion!
+	Fri, 25 Apr 2008 00:32:26 -0700 (PDT)
+Message-ID: <80b317760804250032r117fa1f8ge72b9fc0792dc355@mail.gmail.com>
+Date: Fri, 25 Apr 2008 09:32:26 +0200
+From: "Richard Genoud" <richard.genoud@gmail.com>
+To: "David Brownell" <david-b@pacbell.net>
+Subject: Re: [PATCH] NAND hardware ECC controller on at91sam9263 / at91sam9260
+In-Reply-To: <200804241202.04290.david-b@pacbell.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
+References: <47BABA0C.8070500@gmail.com>
+	<1208964556.9212.809.camel@pmac.infradead.org>
+	<1208973075.7471.6.camel@ubuntu>
+	<200804241202.04290.david-b@pacbell.net>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	Haavard Skinnemoen <hskinnemoen@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,121 +30,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
-        I don't quite understand the UBI badblock management unit.
-But I think there must be something wrong, or I take a wrong operation.
-        Please follow my test below:
+2008/4/24, David Brownell <david-b@pacbell.net>:
+> My copy of the sam9263 docs doesn't list an "ECC_PARITY" field
+>  in the PR register ... just two masked fields, 0xfff0 and 0x000f
+>  labeled WORDADDR and BITADDR respectively.  (Which evidently are
+>  combined into a single opague 0xffff mask on block writes, and
+>  are interpretable only on block reads.)
+>
+>  And the system header doesn't have an ECC_PARITY mask ... so I
+>  get build errors with current GIT.
+>
+>  - Dave
+>
 
-# ubiformat /dev/mtd5
-ubiformat: mtd5 (NAND), size 536870912 bytes (512.0 MiB), 262144 eraseblocks of
-262144 bytes (256.0 KiB), min. I/O size 2048 bytes
-libscan: scanning eraseblock 2047 -- 100 % complete
-ubiformat: 2045 eraseblocks have valid erase counter, mean value is 23
-ubiformat: bad eraseblocks: 10, 40, 84
-ubiformat: formatting eraseblock 2047 -- 100 % complete
+you're right, this is my bad. Thanks for pointing this out.
 
-# modprobe ubi mtd=5
-UBI: physical eraseblock size:   262144 bytes (256 KiB)
-UBI: logical eraseblock size:    258048 bytes
-UBI: smallest flash I/O unit:    2048
-UBI: VID header offset:          2048 (aligned 2048)
-UBI: data offset:                4096
-UBI: attached mtd5 to ubi0
-UBI: MTD device name:            "NAND VFAT partition"
-UBI: MTD device size:            512 MiB
-UBI: number of good PEBs:        2045
-UBI: number of bad PEBs:         3
-UBI: max. allowed volumes:       128
-UBI: wear-leveling threshold:    256
-UBI: number of internal volumes: 1
-UBI: number of user volumes:     0
-UBI: available PEBs:             2021
-UBI: total number of reserved PEBs: 24
-UBI: number of PEBs reserved for bad PEB handling: 20
-UBI: max/mean erase counter: 38/24
-UBI: background thread "ubi_bgt0d" started, PID 233
+David W., could you apply the patch bellow to make things right again ?
 
-***************************************************************************
-I'm going to make one big volume which take all available space this ubi
-device has.
+The AT91_ECC_PARITY mask does not exist (and masking with it was useless).
+kernel version : mtd-2.6 current git
+Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
+---
+--- drivers/mtd/nand/at91_nand.c.orig
++++ drivers/mtd/nand/at91_nand.c
+@@ -199,7 +199,7 @@ static int at91_nand_calculate(struct mt
+ 	unsigned int ecc_value;
 
-I think the volume size should be equal to
-(total number of PEB this ubi device has - total number of reserved PEBs) \
-* LEB size
-In this case, it should be : (2048-24) * 258048 bytes
+ 	/* get the first 2 ECC bytes */
+-	ecc_value = ecc_readl(host->ecc, PR) & AT91_ECC_PARITY;
++	ecc_value = ecc_readl(host->ecc, PR);
 
-But that is not what UBI count.
-UBI think the volume size
-= (number of good PEBs - total number of reserved PEBs) * LEB size
-
-Q: Number of bad PEBs at initialization are not included in resered for bad
-PEBs handling. That mean there should never has badblocks overflow issue
-happen. What a good idea! But is there really a possible way to implement this
-idea?
-   Suppose there's only one volume take all the ubi device space, there's no
-badblocks at the very beginning. The user does never shut down the device but
-hibernate for a long time. Then, suppose there is 3 badblocks and the volume
-just full of data. No space left. Then reboot the device, beside the 3 badblocks
-which used to be count in reserved PEBs, now be seperate from the reserved PEBs,
-But there's no space, reserved PEB will fail.
-
-   The following test showes even the volume data is blank, there still comes
-problem.
-   Is it an UBI bug or my wrong operation?
-   Thanks for your notice about it!
-****************************************************************************
-
-# ubimkvol /dev/ubi0 -n 0 -N vfat -s 509292KiB
-Volume ID 0, size 2021 LEBs (521515008 bytes, 497.4 MiB), LEB size
-258048 bytes (252.0 KiB), dynamic, name "vfat", alignment 1
-# rmmod ubi
-UBI: mtd5 is detached from ubi0
-
-*****************************************************************************
-"markbadblock" is a tool I force to mark a block bad manually, just for test
-*****************************************************************************
-# markbadblock -l 17 /dev/mtd5
-Block size 262144, page size 2048, OOB size 64
-mark block 17 to be badblock done
-
-# modprobe ubi mtd=5
-UBI: physical eraseblock size:   262144 bytes (256 KiB)
-UBI: logical eraseblock size:    258048 bytes
-UBI: smallest flash I/O unit:    2048
-UBI: VID header offset:          2048 (aligned 2048)
-UBI: data offset:                4096
-UBI warning: ubi_eba_init_scan: cannot reserve enough PEBs for bad PEB
-handling, reserved 19, need 20
-UBI: attached mtd5 to ubi0
-UBI: MTD device name:            "NAND VFAT partition"
-UBI: MTD device size:            512 MiB
-UBI: number of good PEBs:        2044
-UBI: number of bad PEBs:         4
-UBI: max. allowed volumes:       128
-UBI: wear-leveling threshold:    256
-UBI: number of internal volumes: 1
-UBI: number of user volumes:     1
-UBI: available PEBs:             0
-UBI: total number of reserved PEBs: 2044
-UBI: number of PEBs reserved for bad PEB handling: 19
-UBI: max/mean erase counter: 39/24
-UBI: background thread "ubi_bgt0d" started, PID 263
-# modprobe ubifs
-
-# mount -t ubifs ubi0:ubifs /mnt/1
-UBIFS error (pid 293): ubifs_get_sb: cannot open "ubi0:ubifs", error -19
-mount: mounting ubi0:ubifs on /mnt/1 failed: No such device
-# rmmod ubifs
-# rmmod ubi
-
-# ubiformat /dev/mtd5
-ubiformat: mtd5 (NAND), size 536870912 bytes (512.0 MiB), 262144 eraseblocks of
-262144 bytes (256.0 KiB), min. I/O size 2048 bytes
-libscan: scanning eraseblock 2047 -- 100 % complete
-ubiformat: 2044 eraseblocks have valid erase counter, mean value is 24
-ubiformat: bad eraseblocks: 10, 17, 40, 84
-ubiformat: formatting eraseblock 2047 -- 100 % complete
-
--- 
-Best wishes,
-Nancy
+ 	ecc_code[eccpos[0]] = ecc_value & 0xFF;
+ 	ecc_code[eccpos[1]] = (ecc_value >> 8) & 0xFF;
