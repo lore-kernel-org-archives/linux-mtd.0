@@ -1,16 +1,16 @@
-Received: from mx2.suse.de ([195.135.220.15])
+Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JpYcV-0006AS-L3
-	for linux-mtd@lists.infradead.org; Sat, 26 Apr 2008 00:50:29 +0000
+	id 1JpYnC-0000mE-06
+	for linux-mtd@lists.infradead.org; Sat, 26 Apr 2008 01:01:30 +0000
 Subject: patch jffs2-fix-free-space-leak-with-in-band-cleanmarkers.patch added
-	to 2.6.24-stable tree
+	to 2.6.25-stable tree
 To: dwmw2@infradead.org, gregkh@suse.de,
 	linux-mtd@lists.infradead.org, lost404@gmail.com,
 	martin.creutziger@barco.com
 From: <gregkh@suse.de>
-Date: Fri, 25 Apr 2008 17:50:16 -0700
+Date: Fri, 25 Apr 2008 18:01:20 -0700
 In-Reply-To: <1208945735.9212.775.camel@pmac.infradead.org>
-Message-Id: <20080426005023.833C514540CB@imap.suse.de>
+Message-Id: <20080426010127.28A4014540D0@imap.suse.de>
 Cc: stable@kernel.org, stable-commits@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -26,7 +26,7 @@ This is a note to let you know that we have just queued up the patch titled
 
      Subject: JFFS2: Fix free space leak with in-band cleanmarkers
 
-to the 2.6.24-stable tree.  Its filename is
+to the 2.6.25-stable tree.  Its filename is
 
      jffs2-fix-free-space-leak-with-in-band-cleanmarkers.patch
 
@@ -113,4 +113,4 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
 
 Patches currently in stable-queue which might be from dwmw2@infradead.org are
 
-queue-2.6.24/jffs2-fix-free-space-leak-with-in-band-cleanmarkers.patch
+queue-2.6.25/jffs2-fix-free-space-leak-with-in-band-cleanmarkers.patch
