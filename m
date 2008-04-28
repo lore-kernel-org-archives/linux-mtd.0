@@ -1,16 +1,16 @@
-Received: from wf-out-1314.google.com ([209.85.200.168])
+Received: from wr-out-0506.google.com ([64.233.184.231])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JqRne-0001uQ-Oc
-	for linux-mtd@lists.infradead.org; Mon, 28 Apr 2008 11:45:39 +0000
-Received: by wf-out-1314.google.com with SMTP id 29so4245579wff.24
+	id 1JqRs1-0002MF-Mb
+	for linux-mtd@lists.infradead.org; Mon, 28 Apr 2008 11:50:10 +0000
+Received: by wr-out-0506.google.com with SMTP id c46so4243436wra.18
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 28 Apr 2008 04:45:37 -0700 (PDT)
-Message-ID: <bae050c10804280445h3026ccefk53bc7506cc5b3e9e@mail.gmail.com>
-Date: Mon, 28 Apr 2008 19:45:37 +0800
+	Mon, 28 Apr 2008 04:50:08 -0700 (PDT)
+Message-ID: <bae050c10804280450g591c74bfn711f668863b693f1@mail.gmail.com>
+Date: Mon, 28 Apr 2008 19:50:08 +0800
 From: Nancy <nancydreaming@gmail.com>
 To: "Adrian Hunter" <ext-adrian.hunter@nokia.com>
 Subject: Re: UBI: badblock management confusion!
-In-Reply-To: <481583CD.1060804@nokia.com>
+In-Reply-To: <48158370.9090001@nokia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
@@ -18,8 +18,7 @@ Content-Disposition: inline
 References: <bae050c10804242354s722c9a58r1ed4e1ad1afaff90@mail.gmail.com>
 	<4811B6BF.9020200@nokia.com>
 	<bae050c10804250508g68df553qcce03bb6551aa5c5@mail.gmail.com>
-	<bae050c10804250512g1393b6afu54809e90db2807a6@mail.gmail.com>
-	<481583CD.1060804@nokia.com>
+	<48158370.9090001@nokia.com>
 Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -30,48 +29,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 4/28/08, Adrian Hunter <ext-adrian.hunter@nokia.com> wrote:
-> ext Nancy wrote:
-> >  > > # modprobe ubi mtd=5
-> >  > > UBI: physical eraseblock size:   262144 bytes (256 KiB)
-> >  > > UBI: logical eraseblock size:    258048 bytes
-> >  > > UBI: smallest flash I/O unit:    2048
-> >  > > UBI: VID header offset:          2048 (aligned 2048)
-> >  > > UBI: data offset:                4096
-> >  > > UBI warning: ubi_eba_init_scan: cannot reserve enough PEBs for bad
-> PEB
-> >  > > handling, reserved 19, need 20
-> >  > > UBI: attached mtd5 to ubi0
-> >  > > UBI: MTD device name:            "NAND VFAT partition"
-> >  > > UBI: MTD device size:            512 MiB
-> >  > > UBI: number of good PEBs:        2044
-> >  > > UBI: number of bad PEBs:         4
-> >  > > UBI: max. allowed volumes:       128
-> >  > > UBI: wear-leveling threshold:    256
-> >  > > UBI: number of internal volumes: 1
-> >  > > UBI: number of user volumes:     1
-> >  > > UBI: available PEBs:             0
-> >  > > UBI: total number of reserved PEBs: 2044
-> >  > > UBI: number of PEBs reserved for bad PEB handling: 19
-> >  > > UBI: max/mean erase counter: 39/24
-> >  > > UBI: background thread "ubi_bgt0d" started, PID 263
-> >
-> > pls:
-> >  > > UBI: available PEBs:             0
-> >  > > UBI: total number of reserved PEBs: 2044
-> > Quite wrong displaying messages.
-> >
-> >
+> > Oh, thank you for ponting out my mistake!
+> > You mean UBI admit the amount of current badblocks are part of
+> > reserved PEBs, right?
 > >
 >
-> There are no available PEBs so no more volumes can be created.
+> Not exactly.  It is just that UBI does not mind if there are not enough
+> PEBs to meet the number desired for bad-block handling.
 >
-> The number of reserved PEBs includes all existing volumes.
-
-I thought available PEBs is the PEBs which only contain erase counter.
-total number of reserved PEBs contains only the ones upper layter can't see.
-
-Thank you for your explaination!
+> > If the answer is yes, then the volume size I'm goting to create should
+> > be equal to
+> >
+> > (total number of PEB this ubi device has - total number of reserved
+> > PEBs) * LEB size
+> >
+> > not what UBI think:
+> > (number of good PEBs - total number of reserved PEBs) * LEB size
+> >
+> > Am I right?
+> >
+>
+> I am not sure what you are trying to achieve.  You can always use
+> the -m option of ubimkvol to set volume size to maximum available size.
+>
+Let me clarify the problem I met:
+	there are so many Nand flash for burning. Each one of them may have
+different numbers of badblocks, but that number do not exceed the reserved
+badblock number. Each one of them should have the same maximum avaliable
+volume size. But the practice tell no, the maximum avaliable volume size
+effect by number of badblocks the current MTD partition has. That's wrong.
+You can try by yourself.
 
 -- 
 Best wishes,
