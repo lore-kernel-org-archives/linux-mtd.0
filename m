@@ -1,19 +1,25 @@
-Received: from mba.ocn.ne.jp ([122.1.235.107] helo=smtp.mba.ocn.ne.jp)
+Received: from smtp.innovsys.com ([66.115.232.196] helo=mail.innovsys.com)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JqUpn-0001Od-63
-	for linux-mtd@lists.infradead.org; Mon, 28 Apr 2008 15:00:04 +0000
-Date: Tue, 29 Apr 2008 00:01:00 +0900 (JST)
-Message-Id: <20080429.000100.02304871.anemo@mba.ocn.ne.jp>
-To: dwmw2@infradead.org
-Subject: Re: [PATCH] physmap: do not probe absent modules
-From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-In-Reply-To: <1209371162.25560.109.camel@pmac.infradead.org>
-References: <20080424.223830.27953792.anemo@mba.ocn.ne.jp>
-	<1209371162.25560.109.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+	id 1JqWBG-00020D-11
+	for linux-mtd@lists.infradead.org; Mon, 28 Apr 2008 16:26:18 +0000
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: [PATCH 1/2] [MTD] Add support for RAM & ROMmappings in the
+	physmap_of MTD driver.
+Date: Mon, 28 Apr 2008 11:26:15 -0500
+Message-ID: <DCEAAC0833DD314AB0B58112AD99B93B04512785@ismail.innsys.innovsys.com>
+In-Reply-To: <200804251353.13698.laurentp@cse-semaphore.com>
+References: <200803261344.03438.laurentp@cse-semaphore.com><1208895496.9212.671.camel@pmac.infradead.org><480F19B9.1070403@ru.mvista.com>
+	<200804251353.13698.laurentp@cse-semaphore.com>
+From: "Rune Torgersen" <runet@innovsys.com>
+To: "Laurent Pinchart" <laurentp@cse-semaphore.com>,
+	"Sergei Shtylyov" <sshtylyov@ru.mvista.com>
+Cc: ben@simtec.co.uk, linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>,
+	David Gibson <david@gibson.dropbear.id.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,39 +29,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 28 Apr 2008 09:26:02 +0100, David Woodhouse <dwmw2@infradead.org> wrote:
-> > For example, if MTD_CFI was not enabled, probing it does nothing other
-> > than just produces an error message.
-> 
-> Eww. We should _never_ have stuff in the static kernel depending on
-> CONFIG_xxx_MODULE. What if you build the module later?
+Laurent Pinchart wrote:
+> Last thing I heard was that the device tree should not encode
+> a device's
+> expected usage, so memory nodes should not have any
+> compatible property that
+> would automatically associated them to an MTD driver. I've
+> been adviced to
+> add platform-specific code to instantiate a platform device manually
+> (possibly checking if the required memory node is present in
+> the device
+> tree). This arguably makes sense, but adds more
+> platform-specific code.
 
-OK, I see.
+So... What good it the device tree at all then, if intended usage should
+not be encoded in there.
+Most other devices has an intended usage encoded.
 
-> I wouldn't be entirely averse to making some of these config options
-> boolean, though.
+Examples would be the FCC's on a Freescale PQ2 chip, where they are
+encoded as ethernet controllers. (Thsy could be used as high-speed HDLC
+controllers, ATM controllers and other usages), the SCC ports (as
+serial, they can be used for syncronous serial and HDLC)
 
-Well, maybe, but I'm not sure nobody want to make the redboot parser
-loadable.
-
-My intention was just removing a garbage in boot message.  How about
-this alternative?  Is this acceptable?
-
------------------------------------------------------------------
-Subject: mtdpart: Do not report loud about absent parser module
-
-Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
----
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index c66902d..f199ffc 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -560,7 +560,7 @@ int parse_mtd_partitions(struct mtd_info *master, const char **types,
- 				parser = get_partition_parser(*types);
- #endif
- 		if (!parser) {
--			printk(KERN_NOTICE "%s partition parsing not available\n",
-+			printk(KERN_DEBUG "%s partition parsing not available\n",
- 			       *types);
- 			continue;
- 		}
+That would also mean if usage would change, the kernel image (and
+possiby u-boot) whould have to change, instead of just fixing the device
+tree. Argh....
