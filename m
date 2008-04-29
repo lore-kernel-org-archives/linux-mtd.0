@@ -1,18 +1,18 @@
 Received: from mail.suse.de ([195.135.220.2] helo=mx1.suse.de)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JqtUt-0002l5-VU
-	for linux-mtd@lists.infradead.org; Tue, 29 Apr 2008 17:20:08 +0000
-Date: Tue, 29 Apr 2008 10:17:57 -0700
+	id 1Jquur-0003E1-9m
+	for linux-mtd@lists.infradead.org; Tue, 29 Apr 2008 18:51:02 +0000
+Date: Tue, 29 Apr 2008 11:49:39 -0700
 From: Greg KH <gregkh@suse.de>
 To: linux-kernel@vger.kernel.org, stable@kernel.org
-Subject: [03/37] JFFS2: Fix free space leak with in-band cleanmarkers
-Message-ID: <20080429171757.GD14724@suse.de>
-References: <20080429171222.073929148@mini.kroah.org>
+Subject: [07/12] JFFS2: Fix free space leak with in-band cleanmarkers
+Message-ID: <20080429184939.GH24199@suse.de>
+References: <20080429184543.308594866@mini.kroah.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline;
 	filename="jffs2-fix-free-space-leak-with-in-band-cleanmarkers.patch"
-In-Reply-To: <20080429171730.GA14724@suse.de>
+In-Reply-To: <20080429184911.GA24199@suse.de>
 Cc: Martin Creutziger <martin.creutziger@barco.com>,
 	Theodore Ts'o <tytso@mit.edu>, Zwane Mwaikambo <zwane@arm.linux.org.uk>,
 	Damir Shayhutdinov <lost404@gmail.com>,
@@ -33,10 +33,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2.6.25-stable review patch.  If anyone has any objections, please let us
+2.6.24-stable review patch.  If anyone has any objections, please let us
 know.
 
 ------------------
+
 From: David Woodhouse <dwmw2@infradead.org>
 
 We were accounting for the cleanmarker by calling jffs2_link_node_ref()
