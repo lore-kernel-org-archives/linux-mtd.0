@@ -1,18 +1,29 @@
-Received: from nwd2mail10.analog.com ([137.71.25.55])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JpFE5-0005QH-Kn
-	for linux-mtd@lists.infradead.org; Fri, 25 Apr 2008 04:07:57 +0000
-From: Bryan Wu <cooloney@kernel.org>
-To: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] [mtd] bf5xx_nand driver: Fix BUG - nand driver on bf527
-	ezkit board crashes if bfin_mac installed
-Date: Fri, 25 Apr 2008 12:07:31 +0800
-Message-Id: <1209096453-21610-2-git-send-email-cooloney@kernel.org>
-In-Reply-To: <1209096453-21610-1-git-send-email-cooloney@kernel.org>
-References: <1209096453-21610-1-git-send-email-cooloney@kernel.org>
-Cc: Bryan Wu <cooloney@kernel.org>,
-	Michael Hennerich <michael.hennerich@analog.com>
+Received: from mail.suse.de ([195.135.220.2] helo=mx1.suse.de)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JqtUt-0002l5-VU
+	for linux-mtd@lists.infradead.org; Tue, 29 Apr 2008 17:20:08 +0000
+Date: Tue, 29 Apr 2008 10:17:57 -0700
+From: Greg KH <gregkh@suse.de>
+To: linux-kernel@vger.kernel.org, stable@kernel.org
+Subject: [03/37] JFFS2: Fix free space leak with in-band cleanmarkers
+Message-ID: <20080429171757.GD14724@suse.de>
+References: <20080429171222.073929148@mini.kroah.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline;
+	filename="jffs2-fix-free-space-leak-with-in-band-cleanmarkers.patch"
+In-Reply-To: <20080429171730.GA14724@suse.de>
+Cc: Martin Creutziger <martin.creutziger@barco.com>,
+	Theodore Ts'o <tytso@mit.edu>, Zwane Mwaikambo <zwane@arm.linux.org.uk>,
+	Damir Shayhutdinov <lost404@gmail.com>,
+	Justin Forbes <jmforbes@linuxtx.org>, Domenico Andreoli <cavokz@gmail.com>,
+	Chris Wedgwood <reviews@ml.cw.f00f.org>,
+	Randy Dunlap <rdunlap@xenotime.net>, Michael Krufky <mkrufky@linuxtv.org>,
+	Chuck Ebbert <cebbert@redhat.com>, Dave Jones <davej@redhat.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	Chuck Wolber <chuckw@quantumlinux.com>,
+	akpm@linux-foundation.org, torvalds@linux-foundation.org,
+	David Woodhouse <dwmw2@infradead.org>, alan@lxorguk.ukuu.org.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,62 +33,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Michael Hennerich <michael.hennerich@analog.com>
+2.6.25-stable review patch.  If anyone has any objections, please let us
+know.
 
-http://blackfin.uclinux.org/gf/project/uclinux-dist/tracker/?action=TrackerItemEdit&tracker_item_id=4053
+------------------
+From: David Woodhouse <dwmw2@infradead.org>
 
-Singed-off-by: Michael Hennerich <michael.hennerich@analog.com>
-Signed-off-by: Bryan Wu <cooloney@kernel.org>
+We were accounting for the cleanmarker by calling jffs2_link_node_ref()
+(without locking!), which adjusted both superblock and per-eraseblock
+accounting, subtracting the size of the cleanmarker from {jeb,c}->free_size
+and adding it to {jeb,c}->used_size.
+
+But only _then_ were we adding the size of the newly-erased block back
+to the superblock counts, and we were adding each of jeb->{free,used}_size
+to the corresponding superblock counts. Thus, the size of the cleanmarker
+was effectively subtracted from the superblock's free_size _twice_.
+
+Fix this, by always adding a full eraseblock size to c->free_size when
+we've erased a block. And call jffs2_link_node_ref() under the proper
+lock, while we're at it.
+
+Thanks to Alexander Yurchenko and/or Damir Shayhutdinov for (almost)
+pinpointing the problem.
+
+[Backport of commit 014b164e1392a166fe96e003d2f0e7ad2e2a0bb7]
+
+Signed-off-by: David Woodhouse <dwmw2@infradead.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
+
 ---
- drivers/mtd/nand/bf5xx_nand.c |   16 ++++++++--------
- 1 files changed, 8 insertions(+), 8 deletions(-)
+ fs/jffs2/erase.c |   18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
-index 747042a..a7afe35 100644
---- a/drivers/mtd/nand/bf5xx_nand.c
-+++ b/drivers/mtd/nand/bf5xx_nand.c
-@@ -1,6 +1,6 @@
- /* linux/drivers/mtd/nand/bf5xx_nand.c
-  *
-- * Copyright 2006-2007 Analog Devices Inc.
-+ * Copyright 2006-2008 Analog Devices Inc.
-  *	http://blackfin.uclinux.org/
-  *	Bryan Wu <bryan.wu@analog.com>
-  *
-@@ -74,7 +74,7 @@ static int hardware_ecc = 1;
- static int hardware_ecc;
- #endif
- 
--static unsigned short bfin_nfc_pin_req[] =
-+static const unsigned short bfin_nfc_pin_req[] =
- 	{P_NAND_CE,
- 	 P_NAND_RB,
- 	 P_NAND_D0,
-@@ -581,12 +581,6 @@ static int bf5xx_nand_hw_init(struct bf5xx_nand_info *info)
- 	bfin_write_NFC_IRQSTAT(val);
- 	SSYNC();
- 
--	if (peripheral_request_list(bfin_nfc_pin_req, DRV_NAME)) {
--		printk(KERN_ERR DRV_NAME
--		": Requesting Peripherals failed\n");
--		return -EFAULT;
--	}
+--- a/fs/jffs2/erase.c
++++ b/fs/jffs2/erase.c
+@@ -419,9 +419,6 @@ static void jffs2_mark_erased_block(stru
+ 			if (jffs2_write_nand_cleanmarker(c, jeb))
+ 				goto filebad;
+ 		}
 -
- 	/* DMA initialization  */
- 	if (bf5xx_nand_dma_init(info))
- 		err = -ENXIO;
-@@ -654,6 +648,12 @@ static int bf5xx_nand_probe(struct platform_device *pdev)
+-		/* Everything else got zeroed before the erase */
+-		jeb->free_size = c->sector_size;
+ 	} else {
  
- 	dev_dbg(&pdev->dev, "(%p)\n", pdev);
+ 		struct kvec vecs[1];
+@@ -449,18 +446,19 @@ static void jffs2_mark_erased_block(stru
  
-+	if (peripheral_request_list(bfin_nfc_pin_req, DRV_NAME)) {
-+		printk(KERN_ERR DRV_NAME
-+		": Requesting Peripherals failed\n");
-+		return -EFAULT;
-+	}
+ 			goto filebad;
+ 		}
+-
+-		/* Everything else got zeroed before the erase */
+-		jeb->free_size = c->sector_size;
+-		/* FIXME Special case for cleanmarker in empty block */
+-		jffs2_link_node_ref(c, jeb, jeb->offset | REF_NORMAL, c->cleanmarker_size, NULL);
+ 	}
++	/* Everything else got zeroed before the erase */
++	jeb->free_size = c->sector_size;
+ 
+ 	down(&c->erase_free_sem);
+ 	spin_lock(&c->erase_completion_lock);
 +
- 	if (!plat) {
- 		dev_err(&pdev->dev, "no platform specific information\n");
- 		goto exit_error;
+ 	c->erasing_size -= c->sector_size;
+-	c->free_size += jeb->free_size;
+-	c->used_size += jeb->used_size;
++	c->free_size += c->sector_size;
++
++	/* Account for cleanmarker now, if it's in-band */
++	if (c->cleanmarker_size && !jffs2_cleanmarker_oob(c))
++		jffs2_link_node_ref(c, jeb, jeb->offset | REF_NORMAL, c->cleanmarker_size, NULL);
+ 
+ 	jffs2_dbg_acct_sanity_check_nolock(c,jeb);
+ 	jffs2_dbg_acct_paranoia_check_nolock(c, jeb);
+
 -- 
-1.5.5
