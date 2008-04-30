@@ -1,19 +1,12 @@
-Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
+Received: from mail3.rossvideo.com ([209.5.118.99])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JrDh6-0004GG-PC
-	for linux-mtd@lists.infradead.org; Wed, 30 Apr 2008 14:54:05 +0000
-Subject: Re: jffs2 lockdep warning
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-To: David Brownell <david-b@pacbell.net>
-In-Reply-To: <200804292139.35426.david-b@pacbell.net>
-References: <200804292139.35426.david-b@pacbell.net>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: Wed, 30 Apr 2008 16:53:49 +0200
-Message-Id: <1209567229.16926.16.camel@gentoo-jocke.transmode.se>
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: joakim.tjernlund@transmode.se
+	id 1JrHtK-0004AD-C4
+	for linux-mtd@lists.infradead.org; Wed, 30 Apr 2008 19:22:58 +0000
+From: "Andrew E. Mileski" <andrewm@isoar.ca>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] nand_wait_ready() timeout scaling
+Date: Wed, 30 Apr 2008 15:22:55 -0400
+Message-Id: <1209583375-11136-1-git-send-email-andrewm@isoar.ca>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +16,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The nand_wait_ready() timeout was hardcoded to 2 jiffies, which does not
+scale with the system timer frequency.  Using a guess of a 250 Hz system
+timer frequency, I believe the timeout was meant to be 8 ms.  This patch
+sets an 8 ms timeout that scales with the system timer frequency.
 
-On Tue, 2008-04-29 at 21:39 -0700, David Brownell wrote:
-> This little surprise happened from busybox 1.7.2 "ash" when I typed:
-> 
-> 	$ echo $(( 2 + 2 ))
-> 
-> I didn't try to reproduce it.  The kernel used GIT that was current
-> as of sometime this afternoon.
+Tested with a 1000 Hz system timer frequency and with a device requiring
+at least a 3 ms timeout.
 
-[Offtopic]
+Signed-off-by: Andrew E. Mileski <andrewm@isoar.ca>
+--
 
-David, I have been trying to reach you a few times but there was
-no reply. I know our mail server got on your black list for a while,
-maybe it still is? Hopefully you will get this via the MTD list in
-that case.
-
- Jocke
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index ba1bdf7..ef7e1c1 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -415,13 +415,13 @@ static int nand_block_checkbad(struct mtd_info *mtd, loff_t ofs, int getchip,
+ }
+ 
+ /*
+- * Wait for the ready pin, after a command
+- * The timeout is catched later.
++ * Wait 8 ms for the ready pin, after a command
++ * The timeout is caught later.
+  */
+ void nand_wait_ready(struct mtd_info *mtd)
+ {
+ 	struct nand_chip *chip = mtd->priv;
+-	unsigned long timeo = jiffies + 2;
++	unsigned long timeo = jiffies + (HZ * 8) / 1000;
+ 
+ 	led_trigger_event(nand_led_trigger, LED_FULL);
+ 	/* wait until command is processed or timeout occures */
