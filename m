@@ -1,19 +1,17 @@
-Received: from f60.mail.ru ([194.67.57.94])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JqmHS-0003Yv-4l
-	for linux-mtd@lists.infradead.org; Tue, 29 Apr 2008 09:37:47 +0000
-From: Alexander Belyakov <abelyako@mail.ru>
-To: Alexander Belyakov <abelyako@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>,
-	=?windows-1251?Q?linux-mtd=40lists.infradead.org?=
-	<linux-mtd@lists.infradead.org>, Nicolas Pitre <nico@cam.org>
-Subject: =?windows-1251?Q?[RFC/PATCH][NOR]_Fix_cfi=5Fcmdset=5F0001.c_FL=5FSYNCING_race?=
-Mime-Version: 1.0
-Date: Tue, 29 Apr 2008 13:37:42 +0400
-Content-Type: text/plain; charset=windows-1251
-Content-Transfer-Encoding: 8bit
-Message-Id: <E1JqmHO-000AQf-00.abelyako-mail-ru@f60.mail.ru>
-Reply-To: Alexander Belyakov <abelyako@mail.ru>
+Received: from smtp124.sbc.mail.sp1.yahoo.com ([69.147.64.97])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jr46U-0002Ev-Rz
+	for linux-mtd@lists.infradead.org; Wed, 30 Apr 2008 04:39:39 +0000
+From: David Brownell <david-b@pacbell.net>
+To: linux-mtd@lists.infradead.org
+Subject: jffs2 lockdep warning
+Date: Tue, 29 Apr 2008 21:39:35 -0700
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200804292139.35426.david-b@pacbell.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,74 +21,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+This little surprise happened from busybox 1.7.2 "ash" when I typed:
 
-we've met another CFI driver issue with multipartitional devices.
+	$ echo $(( 2 + 2 ))
 
-One can easily reproduce the bug by
-1. Running intensive writes on one jffs2 volume and
-2. Simultaneously performing mount/unmount cycle with another jffs2 volume at the same chip.
+I didn't try to reproduce it.  The kernel used GIT that was current
+as of sometime this afternoon.
 
-With almost 100% probability we hit the deadlock or/and the following errors:
+- Dave
 
----
-Newly-erased block contained word 0x20031985 at offset 0x006c0000
-flash1: buffer write error (status 0x1d0)
-jffs2_flush_wbuf(): Write failed with -22
-Write of 3681 bytes at 0x006c0400 failed. returned -22, retlen 0
-Not marking the space at 0x006c0400 as dirty because the flash driver returned retlen zero
-Error writing new dnode: -22
-Error garbage collecting node at 00254700!
-No space for garbage collection. Aborting GC thread
----
+=======================================================
+[ INFO: possible circular locking dependency detected ]
+2.6.25 #316
+-------------------------------------------------------
+ash/378 is trying to acquire lock:
+ (&c->alloc_sem){--..}, at: [<900b9ea4>] jffs2_reserve_space+0x28/0x120
 
-We found this issue was related to FL_SYNCING state race with other operations.
-The patch below tries to remove these races.
+but task is already holding lock:
+ (&ei->sem){--..}, at: [<900c0584>] jffs2_new_inode+0x4c/0x180
 
-Any comments on this patch are welcome.
-
----
-Signed-off-by: Alexander Belyakov <abelyako@googlemail.com>
+which lock already depends on the new lock.
 
 
-diff -uNrp a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
---- a/drivers/mtd/chips/cfi_cmdset_0001.c	2008-04-24 02:34:28.000000000 +0400
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c	2008-04-28 16:41:03.000000000 +0400
-@@ -702,6 +702,10 @@ static int chip_ready (struct map_info *
- 	struct cfi_pri_intelext *cfip = cfi->cmdset_priv;
- 	unsigned long timeo = jiffies + HZ;
- 
-+	/* Prevent setting state FL_SYNCING for chip in suspended state. */
-+	if (FL_SYNCING == mode && FL_READY != chip->oldstate)
-+		goto sleep;
-+
- 	switch (chip->state) {
- 
- 	case FL_STATUS:
-@@ -807,8 +811,9 @@ static int get_chip(struct map_info *map
- 	DECLARE_WAITQUEUE(wait, current);
- 
-  retry:
--	if (chip->priv && (mode == FL_WRITING || mode == FL_ERASING
--			   || mode == FL_OTP_WRITE || mode == FL_SHUTDOWN)) {
-+	if (chip->priv &&
-+	    (mode == FL_WRITING || mode == FL_ERASING || mode == FL_OTP_WRITE 
-+	    || mode == FL_SHUTDOWN ) && chip->state != FL_SYNCING) {
- 		/*
- 		 * OK. We have possibility for contention on the write/erase
- 		 * operations which are global to the real chip and not per
-@@ -858,6 +863,14 @@ static int get_chip(struct map_info *map
- 				return ret;
- 			}
- 			spin_lock(&shared->lock);
-+			
-+			/* We should not own chip if it is already in FL_SYNCING state.
-+			 * Put contender and retry. */
-+			if (chip->state == FL_SYNCING) {
-+				put_chip(map, contender, contender->start);
-+				spin_unlock(contender->mutex);
-+				goto retry;
-+			}
- 			spin_unlock(contender->mutex);
- 		}
- 
+the existing dependency chain (in reverse order) is:
+
+-> #1 (&ei->sem){--..}:
+       [<90034b48>] lock_acquire+0x40/0x58
+       [<90159b2a>] mutex_lock_nested+0x82/0x1bc
+       [<900c0a4a>] jffs2_do_setattr+0x13a/0x618
+       [<900c0f9c>] jffs2_setattr+0x18/0x1c
+       [<900615d0>] notify_change+0xd8/0x100
+       [<90069d30>] do_utimes+0x168/0x198
+       [<90069ed2>] sys_utime+0x6a/0x8c
+       [<90010136>] syscall_return+0x0/0x12
+
+-> #0 (&c->alloc_sem){--..}:
+       [<90034b48>] lock_acquire+0x40/0x58
+       [<90159b2a>] mutex_lock_nested+0x82/0x1bc
+       [<900b9ea4>] jffs2_reserve_space+0x28/0x120
+       [<900bc90a>] jffs2_do_create+0x26/0x220
+       [<900b75ba>] jffs2_create+0x6e/0xc8
+       [<90058cc8>] vfs_create+0x48/0x54
+       [<9005a830>] do_filp_open+0x174/0x614
+       [<90052914>] do_sys_open+0x30/0x5c
+       [<90052956>] sys_open+0xe/0x10
+       [<90010136>] syscall_return+0x0/0x12
+
+other info that might help us debug this:
+
+2 locks held by ash/378:
+ #0:  (&type->i_mutex_dir_key#2){--..}, at: [<9005a7a0>] do_filp_open+0xe4/0x614
+ #1:  (&ei->sem){--..}, at: [<900c0584>] jffs2_new_inode+0x4c/0x180
+
+stack backtrace:
+Call trace:
+ [<90013320>] dump_stack+0x18/0x20
+ [<90032f36>] print_circular_bug_tail+0x4a/0x60
+ [<90034308>] __lock_acquire+0x7a8/0x9b0
+ [<90034b48>] lock_acquire+0x40/0x58
+ [<90159b2a>] mutex_lock_nested+0x82/0x1bc
+ [<900b9ea4>] jffs2_reserve_space+0x28/0x120
+ [<900bc90a>] jffs2_do_create+0x26/0x220
+ [<900b75ba>] jffs2_create+0x6e/0xc8
+ [<90058cc8>] vfs_create+0x48/0x54
+ [<9005a830>] do_filp_open+0x174/0x614
+ [<90052914>] do_sys_open+0x30/0x5c
+ [<90052956>] sys_open+0xe/0x10
+ [<90010136>] syscall_return+0x0/0x12
