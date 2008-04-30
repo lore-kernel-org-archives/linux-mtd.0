@@ -1,26 +1,11 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jr8T9-0005iD-Fc
-	for linux-mtd@lists.infradead.org; Wed, 30 Apr 2008 09:19:20 +0000
-Message-ID: <4818385E.5080207@nokia.com>
-Date: Wed, 30 Apr 2008 12:14:06 +0300
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Date: Wed, 30 Apr 2008 13:13:24 +0100 (BST)
+From: Alexey Korolev <akorolev@infradead.org>
+To: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Subject: [PATCH][RFC] NAND subpage read feature. Take 2. 
+Message-ID: <Pine.LNX.4.64.0804301301360.6788@pentafluge.infradead.org>
 MIME-Version: 1.0
-To: Nancy <nancydreaming@gmail.com>
-Subject: Re: UBI: badblock management confusion!
-References: <bae050c10804242354s722c9a58r1ed4e1ad1afaff90@mail.gmail.com>	
-	<4811B6BF.9020200@nokia.com>	
-	<bae050c10804250508g68df553qcce03bb6551aa5c5@mail.gmail.com>	
-	<48158370.9090001@nokia.com>	
-	<bae050c10804280450g591c74bfn711f668863b693f1@mail.gmail.com>	
-	<4815BBDD.4090004@nokia.com>	
-	<bae050c10804280524o6555551cm90088d816674965b@mail.gmail.com>	
-	<4815DA46.60403@nokia.com>
-	<bae050c10804281906h7174a282n91e3c50e2b1e7220@mail.gmail.com>
-In-Reply-To: <bae050c10804281906h7174a282n91e3c50e2b1e7220@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: joern@logfs.org, tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,137 +15,179 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Nancy wrote:
->> Well, the number of initial bad blocks does not affect how many will become
->> bad over time.  So it is not part of the calculation.  For example, if you
->> have 2048 PEBs and 17 are bad initially and you want to reserve 1% for
->> (more)
->> bad blocks then the number reserved is (2048 - 17) / 100 = 20.  That makes
->> the
->> default maximum volume size 2048 - 17 - 20 = 2011.  Whereas, if you are
->> lucky
->> and there are no initial bad blocks, then the number reserved for bad block
->> handling is 2048 / 100 = 20, and the default maximum volume size is
->> 2048 - 20 = 2028.
->>
->> Just because 17 are initially bad in the first case does not mean only 3
->> more
->> will become bad in the time it takes for 20 to become bad in the second
->> case.
->>
->> So 20 are reserved for bad block handling in both cases.
-> No, your implement says the initial bad blocks are part of the
-> reserved badblocks. As you figure out
->      UBI warning: ubi_eba_init_scan: cannot reserve enough PEBs for
-> bad PEB handling, reserved 19, need 20
-> just Warning, it need reserved 20, but found there's one more badblock
-> comes out during the long using time, so reserved only 19.
-> Same code, same operation. Can you tell me how UBI figure out when is
-> the real initial time?
+Hi,
 
-Initial bad blocks is the number of bad blocks when the flash comes from
-the factory.
+This patch enables NAND subpage read functionality. 
+This functionality works in case of SW ECC algorithms only. In this case
+every page is split into independent ECC regions covered by own ECC code. 
+Usually ECC region's size is 256 bytes and ECC code's size is 3 bytes.
+If upper layer drivers are requesting to read non page aligned data NAND
+subpage-read functionality reads the ECC regions which includes
+requested data when original code reads whole page.
 
-> I think it has no way to know, it have to admit
-> each attache MTD partition time is initial time. You said initial
-> time's badblocks Nand has are not part of reserved badblocks, but the
-> practice tell it is part of reserved badblock PEBs( the warning is a
-> prof). If it is part of reserved badblocks, then why the max volume
-> size have to - current badblocks (it is already in reserved
-> badblocks). That is a waist. That is what I confused about!
+This significantly improves performance in many cases.
+It doubles JFFS2 file stat performance. It increases random read
+performance and sequential performance for small data shunks. 
 
-There are two numbers and they both depend on the number of bad blocks.
+It is a second attempt to include this feature.
+What has been changed? 
+1. Fixed naming. Fixed coding style. 
+2. Modified registration. Now it is no need to use magic to switch on
+this feature. It is enabled by default. 
+3. Improved performance. The previous code read whole oob region per
+every subpage read request. Now it reads only necessary ecc codes.  
 
-The two numbers are:
+As I know some of you already use this feature. I would be much
+appreciate if you give me some performance numbers. It may assist to get this
+feature included. 
 
-	beb_rsvd_pebs
-	beb_rsvd_level
+Thanks,
+Alexey
 
-These numbers are not written to the flash, they are calculated as follows:
 
-beb_rsvd_level is the number of good PEBs multiplied by the bad block
-handling percentage.
-
-beb_rsvd_pebs is the same as beb_rsvd_level unless there are not enough
-PEBs.  That is, if the sum of the volume sizes plus beb_rsvd_pebs is
-greater than the number of good PEBs, then beb_rsvd_pebs is reduced.
-
-So the number of PEBs reserved for bad block handling depends on the
-volume size(s) and the number of bad blocks.
-
-When a new volume is created there must be enough PEBs for it plus the
-minimum bad block handling reserve (which is 2 PEBs minimum).
-
-When a new volume is created with ubimkvol, you can use the -m option and
-the size is calculated automatically to give the biggest volume size where
-beb_rsvd_pebs = beb_rsvd_level.
-
-When the volume size is specified with ubinize you can flag it as "autoresize"
-and it will be increased if possible.
-
->> And that means that the maximum volume size varies.
->>
->> What we do here is we don't have the same partition table.  We fix the size
->> of
->> every partition except the last and let the start of each partition be
->> adjusted
->> if there are bad blocks.  For the last partition, it ends up being smaller
->> by the
->> total number of bad blocks.  We then use the "autoresize" of UBI to
->> automatically
->> fit the volume size of the last volume to the partition size.  Since our
->> last
->> volume is UBIFS, there is no problem because UBIFS also automatically
->> adjusts
->> (so long as the volume size is larger that the flashed image created by
->> mkfs.ubifs).
-> Oh, too complicated! I don't quite understand.
-
-Sorry that wasn't very clear.  Please just ignore it.
-
-> en...
-> fix size of every partition except the last!  if last partitions is
-> full of data, then it can't give any free PEBs to other volumes right?
-> or you just keep last volume blank, do not use it, like a space
-> storehouse for other volume's need, if like that, why not simply
-> reserved the last volume size.
-
-The image for the last partition or volume must always be small enough to fit.
-
->> If you want to have the same volume size, then you can but you must make the
->> size smaller than the maximum.  You will need to consult your documentation
->> about what the maximum number of initial bad blocks is.  For example, for
->> OneNAND with 2048 PEBs, when a OneNAND comes from the factory it may have
->> as many as 40 PEBs that are bad.  So 2048 - 40 = 2008 good PEBs minimum.
->> 2008 / 100 = 20 PEBs reserved for (more) bad blocks (assuming you use the 1%
->> setting).  2008 - 20 = 1988 PEBs for the volume size.  The exact volume size
->> is
->> then 1988 * LEB size = 1988 * 258048 (in your case) = 512999424.
-> 
-> Compare with reserved badblocks(including the init and future go bad)
-> by a percentage UBI user can configure by wish. What good autoresize
-> has?
-
-autoresize is for when you are creating images with ubinize and you want to
-use the maximum volume size.  Because the maximum volume size depends on
-the number of bad blocks, it changes from device to device.
-
-autoresize means you can specify the worst-case volume size and tell UBI to
-make the volume bigger if there are fewer bad blocks than the worst case.
-
-If you are using ubimkvol, you can just use the -m option to get the
-maximum size.
-
-If you are using ubimkvol, you can find UBI values in /sys/class/ubi/ubix
-where x is the UBI device number (0 if you only have 1 UBI device).
-
-For example, the following is the same as using the -m option:
-
-	modprobe ubi mtd=5
-
-	ebcnt=`cat /sys/class/ubi/ubi0/avail_eraseblocks`
-	ebsize=`cat /sys/class/ubi/ubi0/eraseblock_size`
-
-	volsize=`expr $ebcnt \* $ebsize`
-
-	ubimkvol /dev/ubi0 -Nvol -s$volsize
+Signed-off-by Alexey Korolev <akorolev@infradead.org>
+-----
+diff -Naurp 1/drivers/mtd/nand/nand_base.c 2/drivers/mtd/nand/nand_base.c
+--- 1/drivers/mtd/nand/nand_base.c	2008-02-11 08:51:11.000000000 +0300
++++ 2/drivers/mtd/nand/nand_base.c	2008-04-30 14:58:52.000000000 +0400
+@@ -798,6 +798,89 @@ static int nand_read_page_swecc(struct m
+ }
+ 
+ /**
++ * nand_read_subpage - [REPLACABLE] software ecc based sub-page read function
++ * @mtd:	mtd info structure
++ * @chip:	nand chip info structure
++ * @dataofs	offset of requested data within the page 
++ * @readlen	data length 
++ * @buf:	buffer to store read data
++ */
++static int nand_read_subpage(struct mtd_info * mtd,struct nand_chip *chip, uint32_t data_offs, uint32_t readlen, uint8_t *bufpoi)
++{
++	int start_step, end_step, num_steps;
++	uint32_t *eccpos = chip->ecc.layout->eccpos;
++	uint8_t *p;
++	int data_col_addr, i, gaps = 0;
++	int datafrag_len, eccfrag_len, aligned_len, aligned_pos;
++	int busw = (chip->options & NAND_BUSWIDTH_16) ? 2 : 1;
++	
++	/* Column address wihin the page aligned to ECC size (256bytes). */
++	start_step = data_offs / chip->ecc.size;
++	end_step = (data_offs + readlen - 1) / chip->ecc.size;
++	num_steps = end_step - start_step + 1;
++
++	/* Data size aligned to ECC ecc.size*/
++	datafrag_len = num_steps * chip->ecc.size;
++	eccfrag_len = num_steps * chip->ecc.bytes;
++
++	data_col_addr = start_step * chip->ecc.size;
++	/* If we read not a page aligned data */
++	if (data_col_addr != 0) {
++		chip->cmdfunc(mtd, NAND_CMD_RNDOUT, data_col_addr, -1);
++	}
++
++	p = bufpoi + data_col_addr;
++	chip->read_buf(mtd, p, datafrag_len);
++
++	/* Calculate  ECC */
++	for (i = 0; i<eccfrag_len ; i += chip->ecc.bytes, p += chip->ecc.size)
++		chip->ecc.calculate(mtd, p, &chip->buffers->ecccalc[i]);
++
++	/* The performance is faster if to position offsets 
++	   according to ecc.pos. Let make sure here that 
++	   there are no gaps in ecc positions */
++	for (i = 0; i < eccfrag_len - 1; i++) {
++		if (eccpos[i + start_step * chip->ecc.bytes] + 1 != 
++			eccpos[i + start_step * chip->ecc.bytes + 1]) {
++			gaps = 1;
++			break;
++		}
++	}
++	if (gaps) {
++		chip->cmdfunc(mtd, NAND_CMD_RNDOUT, mtd->writesize, -1);
++		chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
++	}
++	else {
++		/* send the command to read the particular ecc bytes */
++		/* take care about buswidth alignment in read_buf */
++		aligned_pos = eccpos[start_step * chip->ecc.bytes] & ~(busw - 1);
++		aligned_len = eccfrag_len;
++		if (eccpos[start_step * chip->ecc.bytes] & (busw - 1))
++			aligned_len++;
++		if (eccpos[(start_step + num_steps) * chip->ecc.bytes] & (busw - 1))
++			aligned_len++;
++
++		chip->cmdfunc(mtd, NAND_CMD_RNDOUT, mtd->writesize + aligned_pos, -1);
++		chip->read_buf(mtd, &chip->oob_poi[aligned_pos], aligned_len);
++	}
++	
++	for (i = 0; i < eccfrag_len; i++)
++		chip->buffers->ecccode[i] = chip->oob_poi[eccpos[i + start_step * chip->ecc.bytes]];
++
++	p = bufpoi + data_col_addr;
++	for (i = 0; i<eccfrag_len ; i += chip->ecc.bytes, p += chip->ecc.size) {
++		int stat;
++
++		stat = chip->ecc.correct(mtd, p, &chip->buffers->ecccode[i], &chip->buffers->ecccalc[i]);
++		if (stat == -1)
++			mtd->ecc_stats.failed++;
++		else
++			mtd->ecc_stats.corrected += stat;
++	}
++	return 0;	
++}
++
++/**
+  * nand_read_page_hwecc - [REPLACABLE] hardware ecc based page read function
+  * @mtd:	mtd info structure
+  * @chip:	nand chip info structure
+@@ -994,14 +1077,17 @@ static int nand_do_read_ops(struct mtd_i
+ 			/* Now read the page into the buffer */
+ 			if (unlikely(ops->mode == MTD_OOB_RAW))
+ 				ret = chip->ecc.read_page_raw(mtd, chip, bufpoi);
+-			else
++			else if ( !aligned && NAND_SUBPAGE_READ(chip) && !oob )
++				ret = chip->ecc.read_subpage(mtd, chip, col, bytes, bufpoi);
++			else 
+ 				ret = chip->ecc.read_page(mtd, chip, bufpoi);
+ 			if (ret < 0)
+ 				break;
+ 
+ 			/* Transfer not aligned data */
+ 			if (!aligned) {
+-				chip->pagebuf = realpage;
++				if (!NAND_SUBPAGE_READ(chip) && !oob)
++					chip->pagebuf = realpage;
+ 				memcpy(buf, chip->buffers->databuf + col, bytes);
+ 			}
+ 
+@@ -2496,6 +2582,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		chip->ecc.calculate = nand_calculate_ecc;
+ 		chip->ecc.correct = nand_correct_data;
+ 		chip->ecc.read_page = nand_read_page_swecc;
++		chip->ecc.read_subpage = nand_read_subpage;
+ 		chip->ecc.write_page = nand_write_page_swecc;
+ 		chip->ecc.read_oob = nand_read_oob_std;
+ 		chip->ecc.write_oob = nand_write_oob_std;
+diff -Naurp 1/include/linux/mtd/nand.h 2/include/linux/mtd/nand.h
+--- 1/include/linux/mtd/nand.h	2008-02-11 08:51:11.000000000 +0300
++++ 2/include/linux/mtd/nand.h	2008-04-30 14:56:54.000000000 +0400
+@@ -179,6 +179,7 @@ typedef enum {
+ #define NAND_MUST_PAD(chip) (!(chip->options & NAND_NO_PADDING))
+ #define NAND_HAS_CACHEPROG(chip) ((chip->options & NAND_CACHEPRG))
+ #define NAND_HAS_COPYBACK(chip) ((chip->options & NAND_COPYBACK))
++#define NAND_SUBPAGE_READ(chip) ((chip->ecc.mode == NAND_ECC_SOFT))
+ 
+ /* Mask to zero out the chip options, which come from the id table */
+ #define NAND_CHIPOPTIONS_MSK	(0x0000ffff & ~NAND_NO_AUTOINCR)
+@@ -276,6 +277,10 @@ struct nand_ecc_ctrl {
+ 	int			(*read_page)(struct mtd_info *mtd,
+ 					     struct nand_chip *chip,
+ 					     uint8_t *buf);
++	int			(*read_subpage)(struct mtd_info *mtd,
++					     struct nand_chip *chip, 
++					     uint32_t offs, uint32_t len,
++					     uint8_t *buf);
+ 	void			(*write_page)(struct mtd_info *mtd,
+ 					      struct nand_chip *chip,
+ 					      const uint8_t *buf);
+-----
