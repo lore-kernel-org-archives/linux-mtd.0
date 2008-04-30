@@ -1,14 +1,24 @@
-Received: from blaze.eclipse-net.hu ([81.2.252.11] helo=eclipse-net.hu)
+Received: from 206-248-137-77.dsl.teksavvy.com ([206.248.137.77]
+	helo=mail.isoar.ca)
 	by pentafluge.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JrJ9G-0007rJ-O5
-	for linux-mtd@lists.infradead.org; Wed, 30 Apr 2008 20:43:31 +0000
-Date: Thu, 01 May 2008 11:14:29 +0200
-From: "Dennis A Charmaine" <rutheniumbbcalvfubh@perry60.freeserve.co.uk>
-To: linux-mm-www-request@nl.linux.org
-Subject: Medical Doctor Contact List
-Message-ID: <254021r4ien0$r2553mc0$8229w3v0@Delldim5150
+	id 1JrJLn-00080v-CZ
+	for linux-mtd@lists.infradead.org; Wed, 30 Apr 2008 20:56:28 +0000
+Received: from [10.0.200.99] (vpn02.rossvideo.com [209.5.118.98])
+	by mail.isoar.ca (8.14.1/8.13.8) with ESMTP id m3UKtJwL004152
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <linux-mtd@lists.infradead.org>; Wed, 30 Apr 2008 16:55:21 -0400
+Message-ID: <4818DCB6.3020004@isoar.ca>
+Date: Wed, 30 Apr 2008 16:55:18 -0400
+From: "Andrew E. Mileski" <andrewm@isoar.ca>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] nand_wait_ready() timeout scaling
+References: <1209583375-11136-1-git-send-email-andrewm@isoar.ca>
+	<4818CC89.2010106@isoar.ca>
+	<Pine.LNX.4.64.0804301318110.32329@t2.domain.actdsltmp>
+In-Reply-To: <Pine.LNX.4.64.0804301318110.32329@t2.domain.actdsltmp>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,38 +28,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Trent Piepho wrote:
+> Andrew E. Mileski wrote:
+>> Just realized that 100 Hz systems would have a problem with this patch
+>> since (100 * 8) / 1000 = 0.  Guess the simple solution is to make the
+>> timeout 10 ms.
+> 
+> msecs_to_jiffies() is what you want to use.
 
+Thanks.  Guess all similar calculations in nand_base.c file should be 
+changed to that too.
 
-
-The package below is valued at over $2000 when purchased individually
-
-Practicing Medical Doctors in the United States 
-
-788,512 in total * 17,875 emails
-
-Medical Doctor in over 34 specialties
-
-16 different sortable fields
-
-
-Pharmaceutical Companies in the USA
-47,000 personal emails and names of decision makers
-
-Hospital Facilities in the USA
-Complete contact information for the important jobs held at the hospitals
-
-Complete and Accurate List for Dental Service Providers
-More than half a million listings [worth $499 alone!]
-
-American Chiropractors Contact List
-100,000 Chiropractors in the USA (worth $250 alone)
-
-
-Dramatic cost reduction: 
-$399 for all 5 datasets
-
-send us an email:      cynthialittman@hotmail.com
-
-  
-
-valid thru May 2
+-- 
+Andrew E. Mileski
