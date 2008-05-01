@@ -1,9 +1,9 @@
 Received: from [220.247.214.25] (helo=viduliya.pucsl.gov.lk)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JrU5k-0003DV-LR
-	for linux-mtd@lists.infradead.org; Thu, 01 May 2008 08:24:37 +0000
-Message-ID: <49411.80.255.59.243.1209615921.squirrel@viduliya>
-Date: Thu, 1 May 2008 06:25:21 +0200 (CEST)
+	id 1JrU7K-0006rQ-FC
+	for linux-mtd@lists.infradead.org; Thu, 01 May 2008 08:26:15 +0000
+Message-ID: <48456.80.255.59.243.1209615725.squirrel@viduliya>
+Date: Thu, 1 May 2008 06:22:05 +0200 (CEST)
 Subject: HERE IS YOUR WINNING PIN NUMBER
 From: "WESTERNUNION CUSTOMER CARE CENTER" <wu@westernunion.com>
 To: 
