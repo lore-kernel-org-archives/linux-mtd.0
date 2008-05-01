@@ -1,19 +1,15 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JrfLX-0001Sw-KO
-	for linux-mtd@lists.infradead.org; Thu, 01 May 2008 20:25:40 +0000
-Date: Thu, 1 May 2008 22:25:28 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Alexey Korolev <akorolev@infradead.org>
-Subject: Re: [PATCH][RFC] NAND subpage read feature. Take 2.
-Message-ID: <20080501202523.GA17828@logfs.org>
-References: <Pine.LNX.4.64.0804301301360.6788@pentafluge.infradead.org>
+Date: Thu, 1 May 2008 16:48:20 -0400
+From: Christoph Hellwig <hch@infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [RFC] Reinstate NFS exportability for JFFS2.
+Message-ID: <20080501204820.GA5951@infradead.org>
+References: <1209670979.25560.587.camel@pmac.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Pine.LNX.4.64.0804301301360.6788@pentafluge.infradead.org>
-Cc: dwmw2@infradead.org, tglx@linutronix.de, linux-mtd@lists.infradead.org
+In-Reply-To: <1209670979.25560.587.camel@pmac.infradead.org>
+Cc: linux-fsdevel@vger.kernel.org, hch@infradead.org,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,60 +19,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 30 April 2008 13:13:24 +0100, Alexey Korolev wrote:
+On Thu, May 01, 2008 at 08:42:59PM +0100, David Woodhouse wrote:
+> On top of commit 27c72b040c0be8f3704ed0b6b84c12cbba24a7e8 (in the
+> mtd-2.6 tree if Linus hasn't pulled it yet), this provides
+> export_operations for JFFS2. 
 > 
-> This patch enables NAND subpage read functionality. 
+> It doesn't yet solve the readdirplus deadlock described in
+> http://lists.infradead.org/pipermail/linux-mtd/2007-March/017663.html 
+> 
+> You also still need to set fsid manually when exporting it -- I'm
+> thinking of adding a 'get_fsid' to the export_operations to allow the
+> filesystem to provide its own...
 
-...and creates a peculiar conflict of interests in me.  I've added full
-caching of the complete mtd in logfs, which gave a huge speedup to some
-of my testcases.  However caching is done in page granularity, therefore
-it would completely defeat this patch, which also gives a speedup.
+Yes, and get_fsid would be extremly useful, especially for those
+filesystems that already have an uuid in the superblock
+(*cough*, XFS, *cough*), but it'll need some co-operations with
+nfs-utils on when to use it.
 
-But until I can figure out how to combine both benefits, this looks
-rather promising and should clearly get in.
-
->  /**
-> + * nand_read_subpage - [REPLACABLE] software ecc based sub-page read function
-> + * @mtd:	mtd info structure
-> + * @chip:	nand chip info structure
-> + * @dataofs	offset of requested data within the page 
-> + * @readlen	data length 
-> + * @buf:	buffer to store read data
-> + */
-> +static int nand_read_subpage(struct mtd_info * mtd,struct nand_chip *chip, uint32_t data_offs, uint32_t readlen, uint8_t *bufpoi)
-                                                 ^   ^^
-A linebreak would help.  The indicated space should move five bytes to
-the right.  And there are a few similar stylistic things below.  If you
-feed this through checkpatch.pl, you should find them all.
-
-buf and bufpoi should be the same name (I personally would prefer buf).
-And you should document that the buffer has to be bigger than readlen.
-There is just a single caller, but such a counter-intuitive detail can
-easily cause bugs some years from now.
-
-> +{
-> +	int start_step, end_step, num_steps;
-> +	uint32_t *eccpos = chip->ecc.layout->eccpos;
-> +	uint8_t *p;
-> +	int data_col_addr, i, gaps = 0;
-> +	int datafrag_len, eccfrag_len, aligned_len, aligned_pos;
-> +	int busw = (chip->options & NAND_BUSWIDTH_16) ? 2 : 1;
-> +	
-> +	/* Column address wihin the page aligned to ECC size (256bytes). */
-
-within
-
-> +	start_step = data_offs / chip->ecc.size;
-> +	end_step = (data_offs + readlen - 1) / chip->ecc.size;
-
-Divisions are fairly expensive computations.  Can they be replaced by
-shifts?
-
-Rest looks good to me, apart from some checkpatch-type details.
-Although I am tired and could have missed something.
-
-Jörn
-
--- 
-Joern's library part 9:
-http://www.scl.ameslab.gov/Publications/Gus/TwelveWays.html
+Patch looks good for me except for the few introduced overlong lines.
