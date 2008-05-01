@@ -1,29 +1,19 @@
-Received: from mail.suse.de ([195.135.220.2] helo=mx1.suse.de)
+Received: from risingsoftware01.propagation.net ([66.221.33.65])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jquur-0003E1-9m
-	for linux-mtd@lists.infradead.org; Tue, 29 Apr 2008 18:51:02 +0000
-Date: Tue, 29 Apr 2008 11:49:39 -0700
-From: Greg KH <gregkh@suse.de>
-To: linux-kernel@vger.kernel.org, stable@kernel.org
-Subject: [07/12] JFFS2: Fix free space leak with in-band cleanmarkers
-Message-ID: <20080429184939.GH24199@suse.de>
-References: <20080429184543.308594866@mini.kroah.org>
+	id 1JrQb1-0005oU-3S
+	for linux-mtd@lists.infradead.org; Thu, 01 May 2008 04:40:39 +0000
+Date: Thu, 1 May 2008 14:40:27 +1000
+From: Hamish Moffatt <hamish@cloud.net.au>
+To: Alexey Korolev <akorolev@infradead.org>
+Subject: Re: [PATCH][RFC] NAND subpage read feature. Take 2.
+Message-ID: <20080501044027.GA26541@cloud.net.au>
+References: <Pine.LNX.4.64.0804301301360.6788@pentafluge.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline;
-	filename="jffs2-fix-free-space-leak-with-in-band-cleanmarkers.patch"
-In-Reply-To: <20080429184911.GA24199@suse.de>
-Cc: Martin Creutziger <martin.creutziger@barco.com>,
-	Theodore Ts'o <tytso@mit.edu>, Zwane Mwaikambo <zwane@arm.linux.org.uk>,
-	Damir Shayhutdinov <lost404@gmail.com>,
-	Justin Forbes <jmforbes@linuxtx.org>, Domenico Andreoli <cavokz@gmail.com>,
-	Chris Wedgwood <reviews@ml.cw.f00f.org>,
-	Randy Dunlap <rdunlap@xenotime.net>, Michael Krufky <mkrufky@linuxtv.org>,
-	Chuck Ebbert <cebbert@redhat.com>, Dave Jones <davej@redhat.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	Chuck Wolber <chuckw@quantumlinux.com>,
-	akpm@linux-foundation.org, torvalds@linux-foundation.org,
-	David Woodhouse <dwmw2@infradead.org>, alan@lxorguk.ukuu.org.uk
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.0804301301360.6788@pentafluge.infradead.org>
+Cc: dwmw2@infradead.org, joern@logfs.org, linux-mtd@lists.infradead.org,
+	tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,77 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2.6.24-stable review patch.  If anyone has any objections, please let us
-know.
+On Wed, Apr 30, 2008 at 01:13:24PM +0100, Alexey Korolev wrote:
+> This patch enables NAND subpage read functionality. 
+[..]
+> As I know some of you already use this feature. I would be much
+> appreciate if you give me some performance numbers. It may assist to get this
+> feature included. 
 
-------------------
+To attach my 512Mb NAND with UBI, with software NAND controller
+(plat_nand), on a 533MHz IXP4xx, I measure:
 
-From: David Woodhouse <dwmw2@infradead.org>
+No partial reads: 5.75 seconds
+Previous partial read patch: 2.72 seconds
+New subpage read patch: 2.42 seconds
 
-We were accounting for the cleanmarker by calling jffs2_link_node_ref()
-(without locking!), which adjusted both superblock and per-eraseblock
-accounting, subtracting the size of the cleanmarker from {jeb,c}->free_size
-and adding it to {jeb,c}->used_size.
+Very fine. Thanks.
 
-But only _then_ were we adding the size of the newly-erased block back
-to the superblock counts, and we were adding each of jeb->{free,used}_size
-to the corresponding superblock counts. Thus, the size of the cleanmarker
-was effectively subtracted from the superblock's free_size _twice_.
 
-Fix this, by always adding a full eraseblock size to c->free_size when
-we've erased a block. And call jffs2_link_node_ref() under the proper
-lock, while we're at it.
-
-Thanks to Alexander Yurchenko and/or Damir Shayhutdinov for (almost)
-pinpointing the problem.
-
-[Backport of commit 014b164e1392a166fe96e003d2f0e7ad2e2a0bb7]
-
-Signed-off-by: David Woodhouse <dwmw2@infradead.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
-
----
- fs/jffs2/erase.c |   18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
-
---- a/fs/jffs2/erase.c
-+++ b/fs/jffs2/erase.c
-@@ -419,9 +419,6 @@ static void jffs2_mark_erased_block(stru
- 			if (jffs2_write_nand_cleanmarker(c, jeb))
- 				goto filebad;
- 		}
--
--		/* Everything else got zeroed before the erase */
--		jeb->free_size = c->sector_size;
- 	} else {
- 
- 		struct kvec vecs[1];
-@@ -449,18 +446,19 @@ static void jffs2_mark_erased_block(stru
- 
- 			goto filebad;
- 		}
--
--		/* Everything else got zeroed before the erase */
--		jeb->free_size = c->sector_size;
--		/* FIXME Special case for cleanmarker in empty block */
--		jffs2_link_node_ref(c, jeb, jeb->offset | REF_NORMAL, c->cleanmarker_size, NULL);
- 	}
-+	/* Everything else got zeroed before the erase */
-+	jeb->free_size = c->sector_size;
- 
- 	down(&c->erase_free_sem);
- 	spin_lock(&c->erase_completion_lock);
-+
- 	c->erasing_size -= c->sector_size;
--	c->free_size += jeb->free_size;
--	c->used_size += jeb->used_size;
-+	c->free_size += c->sector_size;
-+
-+	/* Account for cleanmarker now, if it's in-band */
-+	if (c->cleanmarker_size && !jffs2_cleanmarker_oob(c))
-+		jffs2_link_node_ref(c, jeb, jeb->offset | REF_NORMAL, c->cleanmarker_size, NULL);
- 
- 	jffs2_dbg_acct_sanity_check_nolock(c,jeb);
- 	jffs2_dbg_acct_paranoia_check_nolock(c, jeb);
-
+Hamish
 -- 
+Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
