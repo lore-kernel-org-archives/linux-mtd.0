@@ -1,15 +1,24 @@
-Received: from [81.2.110.250] (helo=lxorguk.ukuu.org.uk)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JrvVN-0008UF-RR
-	for linux-mtd@lists.infradead.org; Fri, 02 May 2008 13:40:55 +0000
-Date: Fri, 2 May 2008 14:32:40 +0100
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-To: dwmw2@infradead.org, linux-mtd@lists.infradead.org
-Subject: [PATCH] jffs2: Correct language use
-Message-ID: <20080502143240.163e0819@core>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from mail.fieldses.org ([66.93.2.214] helo=fieldses.org)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jrvvs-00010X-BU
+	for linux-mtd@lists.infradead.org; Fri, 02 May 2008 14:08:16 +0000
+Date: Fri, 2 May 2008 10:08:04 -0400
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [RFC] Reinstate NFS exportability for JFFS2.
+Message-ID: <20080502140804.GA16959@fieldses.org>
+References: <1209670979.25560.587.camel@pmac.infradead.org>
+	<20080501204820.GA5951@infradead.org>
+	<1209681898.25560.613.camel@pmac.infradead.org>
+	<18458.28833.539314.455215@notabene.brown>
+	<1209728238.25560.686.camel@pmac.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1209728238.25560.686.camel@pmac.infradead.org>
+From: "J. Bruce Fields" <bfields@fieldses.org>
+Cc: Neil Brown <neilb@suse.de>, Christoph Hellwig <hch@infradead.org>,
+	linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,515 +28,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dwmw2 will appreciate this I am sure
+On Fri, May 02, 2008 at 12:37:18PM +0100, David Woodhouse wrote:
+> On Fri, 2008-05-02 at 11:38 +1000, Neil Brown wrote:
+> > Why is there a deadlock here?
+> 
+> Many file systems have their own locking, and lookup() can end up trying
+> to re-take a lock which readdir() is already holding. In the JFFS2 case,
+> it's the fs-internal inode mutex, which is required because the garbage
+> collector can't use i_mutex for lock ordering reasons.
+> 
+> See also the readdir implementation and surrounding comments in
+> fs/xfs/linux-2.6/xfs_file.c -- and the way GFS2 uses
+> gfs2_glock_is_locked_by_me() to avoid the deadlock.
+> 
+> The annoying thing is that JFFS2 doesn't even _implement_ i_generation,
+> so you get no more useful information out of the lookup() call anyway :)
+> 
+> > Both readdir and lookup are called with i_mutex held on the directory
+> > so there should need to do any extra locking (he said, naively).  In
+> > the readdirplus cases, i_mutex is held across both the readdir and the
+> > lookup....
+> > 
+> > One problem with your proposed solution is that filehandles aren't all
+> > the same length, so you cannot reliably leave space for them.
+> 
+> Not without moving stuff around during the postprocessing, I suppose.
+> Which isn't very pretty -- but it's prettier than some of the hacks we
+> have at the moment to avoid the deadlock.
 
-The verb form of journal is "to journalise" not "to journal". Verified
-with the OED and querying the British Computer Society. The s/z is
-debatable but as the US prefers the s and the BCS prefers the s (and
-Dwmw2 is in Cambridge which favours 's' over the Oxford 'z' ;)) we'll use
-the s form.
+This comes up periodically.  It would be great to finally get it fixed.
+The last conversation I remember started at about:
 
-No code changes included
+	http://marc.info/?l=linux-kernel&m=119506226209056&w=2
 
-Signed-off-by: Alan Cox <alan@redhat.com>
+Summary: one approach would be to define a ->readdirplus() that passes a
+dentry to its equivalent of the ->filldir callback.  (Christoph points
+out that returning a stat struct would be simpler.  But unfortunately we
+need to check for mountpoints here, so that's not sufficient.)
 
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/acl.c linux-2.6.25-mm1/fs/jffs2/acl.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/acl.c	2008-04-28 11:36:44.000000000 +=
-0100
-+++ linux-2.6.25-mm1/fs/jffs2/acl.c	2008-05-02 13:40:27.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2006  NEC Corporation
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/acl.h linux-2.6.25-mm1/fs/jffs2/acl.h
---- linux.vanilla-2.6.25-mm1/fs/jffs2/acl.h	2008-04-28 11:36:44.000000000 +=
-0100
-+++ linux-2.6.25-mm1/fs/jffs2/acl.h	2008-05-02 13:51:21.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2006  NEC Corporation
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/background.c linux-2.6.25-mm1/fs/jffs2/background.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/background.c	2008-04-28 11:35:17.0000=
-00000 +0100
-+++ linux-2.6.25-mm1/fs/jffs2/background.c	2008-05-02 13:40:48.000000000 +0=
-100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/build.c linux-2.6.25-mm1/fs/jffs2/build.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/build.c	2008-04-28 11:35:17.000000000=
- +0100
-+++ linux-2.6.25-mm1/fs/jffs2/build.c	2008-05-02 13:40:53.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/compr.c linux-2.6.25-mm1/fs/jffs2/compr.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/compr.c	2008-04-28 11:35:17.000000000=
- +0100
-+++ linux-2.6.25-mm1/fs/jffs2/compr.c	2008-05-02 13:40:55.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  * Created by Arjan van de Ven <arjanv@redhat.com>
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/compr.h linux-2.6.25-mm1/fs/jffs2/compr.h
---- linux.vanilla-2.6.25-mm1/fs/jffs2/compr.h	2008-04-28 11:35:17.000000000=
- +0100
-+++ linux-2.6.25-mm1/fs/jffs2/compr.h	2008-05-02 13:51:24.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2004   Ferenc Havasi <havasi@inf.u-szeged.hu>,
-  *		      University of Szeged, Hungary
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/compr_lzo.c linux-2.6.25-mm1/fs/jffs2/compr_lzo.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/compr_lzo.c	2008-04-28 11:35:17.00000=
-0000 +0100
-+++ linux-2.6.25-mm1/fs/jffs2/compr_lzo.c	2008-05-02 13:40:59.000000000 +01=
-00
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2007 Nokia Corporation. All rights reserved.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/compr_rtime.c linux-2.6.25-mm1/fs/jffs2/compr_rtime.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/compr_rtime.c	2008-04-28 11:35:17.000=
-000000 +0100
-+++ linux-2.6.25-mm1/fs/jffs2/compr_rtime.c	2008-05-02 13:41:01.000000000 +=
-0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/compr_rubin.c linux-2.6.25-mm1/fs/jffs2/compr_rubin.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/compr_rubin.c	2008-04-28 11:35:17.000=
-000000 +0100
-+++ linux-2.6.25-mm1/fs/jffs2/compr_rubin.c	2008-05-02 13:41:04.000000000 +=
-0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/compr_zlib.c linux-2.6.25-mm1/fs/jffs2/compr_zlib.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/compr_zlib.c	2008-04-28 11:35:17.0000=
-00000 +0100
-+++ linux-2.6.25-mm1/fs/jffs2/compr_zlib.c	2008-05-02 13:41:07.000000000 +0=
-100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/debug.c linux-2.6.25-mm1/fs/jffs2/debug.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/debug.c	2008-04-28 11:35:17.000000000=
- +0100
-+++ linux-2.6.25-mm1/fs/jffs2/debug.c	2008-05-02 13:41:10.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/debug.h linux-2.6.25-mm1/fs/jffs2/debug.h
---- linux.vanilla-2.6.25-mm1/fs/jffs2/debug.h	2008-04-28 11:36:50.000000000=
- +0100
-+++ linux-2.6.25-mm1/fs/jffs2/debug.h	2008-05-02 13:51:28.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/dir.c linux-2.6.25-mm1/fs/jffs2/dir.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/dir.c	2008-04-28 11:36:44.000000000 +=
-0100
-+++ linux-2.6.25-mm1/fs/jffs2/dir.c	2008-05-02 13:41:13.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/erase.c linux-2.6.25-mm1/fs/jffs2/erase.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/erase.c	2008-04-28 11:35:17.000000000=
- +0100
-+++ linux-2.6.25-mm1/fs/jffs2/erase.c	2008-05-02 13:41:15.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/file.c linux-2.6.25-mm1/fs/jffs2/file.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/file.c	2008-04-28 11:36:44.000000000 =
-+0100
-+++ linux-2.6.25-mm1/fs/jffs2/file.c	2008-05-02 13:41:19.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/fs.c linux-2.6.25-mm1/fs/jffs2/fs.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/fs.c	2008-04-28 11:36:50.000000000 +0=
-100
-+++ linux-2.6.25-mm1/fs/jffs2/fs.c	2008-05-02 13:41:22.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/gc.c linux-2.6.25-mm1/fs/jffs2/gc.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/gc.c	2008-04-28 11:36:50.000000000 +0=
-100
-+++ linux-2.6.25-mm1/fs/jffs2/gc.c	2008-05-02 13:41:24.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/ioctl.c linux-2.6.25-mm1/fs/jffs2/ioctl.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/ioctl.c	2008-04-28 11:36:50.000000000=
- +0100
-+++ linux-2.6.25-mm1/fs/jffs2/ioctl.c	2008-05-02 13:41:27.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/jffs2_fs_i.h linux-2.6.25-mm1/fs/jffs2/jffs2_fs_i.h
---- linux.vanilla-2.6.25-mm1/fs/jffs2/jffs2_fs_i.h	2008-04-28 11:35:17.0000=
-00000 +0100
-+++ linux-2.6.25-mm1/fs/jffs2/jffs2_fs_i.h	2008-05-02 13:51:31.000000000 +0=
-100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/jffs2_fs_sb.h linux-2.6.25-mm1/fs/jffs2/jffs2_fs_sb.h
---- linux.vanilla-2.6.25-mm1/fs/jffs2/jffs2_fs_sb.h	2008-04-28 11:35:17.000=
-000000 +0100
-+++ linux-2.6.25-mm1/fs/jffs2/jffs2_fs_sb.h	2008-05-02 13:51:34.000000000 +=
-0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/malloc.c linux-2.6.25-mm1/fs/jffs2/malloc.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/malloc.c	2008-04-28 11:35:17.00000000=
-0 +0100
-+++ linux-2.6.25-mm1/fs/jffs2/malloc.c	2008-05-02 13:41:34.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/nodelist.c linux-2.6.25-mm1/fs/jffs2/nodelist.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/nodelist.c	2008-04-28 11:36:44.000000=
-000 +0100
-+++ linux-2.6.25-mm1/fs/jffs2/nodelist.c	2008-05-02 13:41:37.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/nodelist.h linux-2.6.25-mm1/fs/jffs2/nodelist.h
---- linux.vanilla-2.6.25-mm1/fs/jffs2/nodelist.h	2008-04-28 11:35:17.000000=
-000 +0100
-+++ linux-2.6.25-mm1/fs/jffs2/nodelist.h	2008-05-02 13:51:36.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/nodemgmt.c linux-2.6.25-mm1/fs/jffs2/nodemgmt.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/nodemgmt.c	2008-04-28 11:36:50.000000=
-000 +0100
-+++ linux-2.6.25-mm1/fs/jffs2/nodemgmt.c	2008-05-02 13:41:40.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/os-linux.h linux-2.6.25-mm1/fs/jffs2/os-linux.h
---- linux.vanilla-2.6.25-mm1/fs/jffs2/os-linux.h	2008-04-28 11:36:44.000000=
-000 +0100
-+++ linux-2.6.25-mm1/fs/jffs2/os-linux.h	2008-05-02 13:51:39.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/read.c linux-2.6.25-mm1/fs/jffs2/read.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/read.c	2008-04-28 11:35:17.000000000 =
-+0100
-+++ linux-2.6.25-mm1/fs/jffs2/read.c	2008-05-02 13:41:42.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/readinode.c linux-2.6.25-mm1/fs/jffs2/readinode.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/readinode.c	2008-04-28 11:36:44.00000=
-0000 +0100
-+++ linux-2.6.25-mm1/fs/jffs2/readinode.c	2008-05-02 13:41:45.000000000 +01=
-00
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/scan.c linux-2.6.25-mm1/fs/jffs2/scan.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/scan.c	2008-04-28 11:35:17.000000000 =
-+0100
-+++ linux-2.6.25-mm1/fs/jffs2/scan.c	2008-05-02 13:41:47.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/security.c linux-2.6.25-mm1/fs/jffs2/security.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/security.c	2008-04-28 11:35:17.000000=
-000 +0100
-+++ linux-2.6.25-mm1/fs/jffs2/security.c	2008-05-02 13:41:51.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2006  NEC Corporation
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/summary.c linux-2.6.25-mm1/fs/jffs2/summary.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/summary.c	2008-04-28 11:36:50.0000000=
-00 +0100
-+++ linux-2.6.25-mm1/fs/jffs2/summary.c	2008-05-02 13:41:54.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2004  Ferenc Havasi <havasi@inf.u-szeged.hu>,
-  *		     Zoltan Sogor <weth@inf.u-szeged.hu>,
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/summary.h linux-2.6.25-mm1/fs/jffs2/summary.h
---- linux.vanilla-2.6.25-mm1/fs/jffs2/summary.h	2008-04-28 11:35:17.0000000=
-00 +0100
-+++ linux-2.6.25-mm1/fs/jffs2/summary.h	2008-05-02 13:51:42.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2004  Ferenc Havasi <havasi@inf.u-szeged.hu>,
-  *		     Zoltan Sogor <weth@inf.u-szeged.hu>,
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/super.c linux-2.6.25-mm1/fs/jffs2/super.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/super.c	2008-04-28 11:36:50.000000000=
- +0100
-+++ linux-2.6.25-mm1/fs/jffs2/super.c	2008-05-02 13:43:35.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-@@ -236,7 +236,7 @@
- module_init(init_jffs2_fs);
- module_exit(exit_jffs2_fs);
-=20
--MODULE_DESCRIPTION("The Journalling Flash File System, v2");
-+MODULE_DESCRIPTION("The Journalising Flash File System, v2");
- MODULE_AUTHOR("Red Hat, Inc.");
- MODULE_LICENSE("GPL"); // Actually dual-licensed, but it doesn't matter for
- 		       // the sake of this tag. It's Free Software.
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/symlink.c linux-2.6.25-mm1/fs/jffs2/symlink.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/symlink.c	2008-04-28 11:35:17.0000000=
-00 +0100
-+++ linux-2.6.25-mm1/fs/jffs2/symlink.c	2008-05-02 13:42:00.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/wbuf.c linux-2.6.25-mm1/fs/jffs2/wbuf.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/wbuf.c	2008-04-28 11:36:50.000000000 =
-+0100
-+++ linux-2.6.25-mm1/fs/jffs2/wbuf.c	2008-05-02 13:42:02.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  * Copyright =C2=A9 2004 Thomas Gleixner <tglx@linutronix.de>
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/write.c linux-2.6.25-mm1/fs/jffs2/write.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/write.c	2008-04-28 11:36:50.000000000=
- +0100
-+++ linux-2.6.25-mm1/fs/jffs2/write.c	2008-05-02 13:42:05.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/writev.c linux-2.6.25-mm1/fs/jffs2/writev.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/writev.c	2008-04-28 11:35:17.00000000=
-0 +0100
-+++ linux-2.6.25-mm1/fs/jffs2/writev.c	2008-05-02 13:42:09.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2001-2007 Red Hat, Inc.
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/xattr.c linux-2.6.25-mm1/fs/jffs2/xattr.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/xattr.c	2008-04-28 11:36:50.000000000=
- +0100
-+++ linux-2.6.25-mm1/fs/jffs2/xattr.c	2008-05-02 13:42:11.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2006  NEC Corporation
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/xattr.h linux-2.6.25-mm1/fs/jffs2/xattr.h
---- linux.vanilla-2.6.25-mm1/fs/jffs2/xattr.h	2008-04-28 11:35:17.000000000=
- +0100
-+++ linux-2.6.25-mm1/fs/jffs2/xattr.h	2008-05-02 13:51:45.000000000 +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2006  NEC Corporation
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/xattr_trusted.c linux-2.6.25-mm1/fs/jffs2/xattr_trust=
-ed.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/xattr_trusted.c	2008-04-28 11:35:17.0=
-00000000 +0100
-+++ linux-2.6.25-mm1/fs/jffs2/xattr_trusted.c	2008-05-02 13:40:40.000000000=
- +0100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2006  NEC Corporation
-  *
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanill=
-a-2.6.25-mm1/fs/jffs2/xattr_user.c linux-2.6.25-mm1/fs/jffs2/xattr_user.c
---- linux.vanilla-2.6.25-mm1/fs/jffs2/xattr_user.c	2008-04-28 11:35:17.0000=
-00000 +0100
-+++ linux-2.6.25-mm1/fs/jffs2/xattr_user.c	2008-05-02 13:40:43.000000000 +0=
-100
-@@ -1,5 +1,5 @@
- /*
-- * JFFS2 -- Journalling Flash File System, Version 2.
-+ * JFFS2 -- Journalising Flash File System, Version 2.
-  *
-  * Copyright =C2=A9 2006  NEC Corporation
-  *
+--b.
