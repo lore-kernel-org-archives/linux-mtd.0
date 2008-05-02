@@ -1,21 +1,21 @@
 Received: from risingsoftware01.propagation.net ([66.221.33.65])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jrndn-00039u-25
-	for linux-mtd@lists.infradead.org; Fri, 02 May 2008 05:17:03 +0000
+	id 1Jrniq-0003IQ-MH
+	for linux-mtd@lists.infradead.org; Fri, 02 May 2008 05:22:16 +0000
 Received: from c122-107-142-134.eburwd5.vic.optusnet.com.au ([122.107.142.134]
 	helo=noddy.cloud.net.au)
 	by risingsoftware01.propagation.net with esmtpsa
 	(TLS-1.0:RSA_AES_256_CBC_SHA1:32) (Exim 4.63)
-	(envelope-from <hamish@cloud.net.au>) id 1Jrndk-0003Vo-5o
-	for linux-mtd@lists.infradead.org; Fri, 02 May 2008 00:17:00 -0500
+	(envelope-from <hamish@cloud.net.au>) id 1Jrnip-0003Wt-Q7
+	for linux-mtd@lists.infradead.org; Fri, 02 May 2008 00:22:16 -0500
 Received: from hamish by noddy.cloud.net.au with local (Exim 4.69)
-	(envelope-from <hamish@cloud.net.au>) id 1Jrndf-0001k5-GB
-	for linux-mtd@lists.infradead.org; Fri, 02 May 2008 15:16:55 +1000
-Date: Fri, 2 May 2008 15:16:55 +1000
+	(envelope-from <hamish@cloud.net.au>) id 1Jrnil-0001mC-Si
+	for linux-mtd@lists.infradead.org; Fri, 02 May 2008 15:22:11 +1000
+Date: Fri, 2 May 2008 15:22:11 +1000
 From: Hamish Moffatt <hamish@cloud.net.au>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mkfs.ubifs: support --squash-uids
-Message-ID: <20080502051655.GA6654@cloud.net.au>
+Subject: [RFC][PATCH] making ubifs compile with gcc-3.4
+Message-ID: <20080502052211.GB6654@cloud.net.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -28,74 +28,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mkfs.jffs2 and genext2fs both have a -U/--squash-uids switch which make
-them ignore the uid/gids in the directory and set them to 0:0 instead.
+ubifs fails to compile with my gcc 3.4.4 (for arm), bombing with:
 
-Here's my implementation for mkfs.ubifs.
+fs/built-in.o: In function `ubifs_create_dflt_lpt':
+lpt_commit.c:(.text+0x88690): undefined reference to `__you_cannot_kmalloc_that_much'
+make[1]: *** [.tmp_vmlinux1] Error 1
+
+It compiles with 4.1.2 ok though. Some web searches suggest that this is
+due to a compiler bug. Patches have been applied in other parts of the 
+tree to work around this so perhaps you'll consider this patch for ubifs 
+also.
+
+I found that rearranging the kmalloc order makes it compile. I don't
+believe there is any effect on the behaviour.
 
 Signed-off-by: Hamish Moffatt <hamish@cloud.net.au>
 
 --
-Those tools also have a -P/--squash-perms switch which I haven't
-implemented due to lack of need.
 
-Index: mkfs.ubifs/mkfs.ubifs.c
-===================================================================
---- mkfs.ubifs/mkfs.ubifs.c	(revision 4400)
-+++ mkfs.ubifs/mkfs.ubifs.c	(working copy)
-@@ -98,6 +98,7 @@
- static struct stat root_st;
- static char *output;
- static int out_fd;
-+static int squash_owner;
+--- a/fs/ubifs/lpt.c	(revision 4400)
++++ b/fs/ubifs/lpt.c	(working copy)
+@@ -597,11 +597,11 @@
+ 	/* Needed by 'ubifs_pack_lsave()' */
+ 	c->main_first = c->leb_cnt - *main_lebs;
  
- /* The 'head' (position) which nodes are written */
- static int head_lnum;
-@@ -120,7 +121,7 @@
- /* Inode creation sequence number */
- static unsigned long long creat_sqnum;
- 
--static const char *optstring = "d:r:m:o:D:h?vVe:c:g:f:p:k:x:j:l:j:";
-+static const char *optstring = "d:r:m:o:D:h?vVe:c:g:f:p:k:x:j:l:j:U";
- 
- static const struct option longopts[] = {
- 	{"root"        , 1, NULL, 'r'},
-@@ -139,6 +140,7 @@
- 	{"keyhash"     , 1, NULL, 'k'},
- 	{"log-lebs"    , 1, NULL, 'l'},
- 	{"orph-lebs"   , 1, NULL, 'p'},
-+	{"squash-uids" , 0, NULL, 'U'},
- 	{NULL, 0, NULL, 0}
- };
- 
-@@ -159,6 +161,7 @@
- "  -l, --log-lebs=COUNT    Use COUNT erase blocks for the log\n"
- "  -p, --orph-lebs=COUNT   Use COUNT erase blocks for orphans (default: 1)\n"
- "  -D, --devtable=FILE     Use device table FILE\n"
-+"  -U, --squash-uids       Squash owners making all files owned by root\n"
- "  -v, --verbose           Verbose operation\n"
- "  -V, --version           Display version information\n"
- "  -g, --debug=LEVEL       Display debug information (0 - none, 1 - statistics,\n"
-@@ -509,6 +512,9 @@
- 			if (c->max_bud_bytes < 0)
- 				return -1;
- 			break;
-+		case 'U':
-+			squash_owner = 1;
-+			break;
- 		}
- 	}
- 
-@@ -885,8 +891,8 @@
- 	ino->atime.sec  = cpu_to_le32(st->st_atime);
- 	ino->ctime.sec  = cpu_to_le32(st->st_ctime);
- 	ino->mtime.sec  = cpu_to_le32(st->st_mtime);
--	ino->uid        = cpu_to_le32(st->st_uid);
--	ino->gid        = cpu_to_le32(st->st_gid);
-+	ino->uid        = cpu_to_le32((squash_owner) ? 0 : st->st_uid);
-+	ino->gid        = cpu_to_le32((squash_owner) ? 0 : st->st_gid);
- 	ino->mode       = cpu_to_le32(st->st_mode);
- 	ino->flags      = cpu_to_le32(use_flags);
- 	ino->data_len   = cpu_to_le32(data_len);
++	lsave = kmalloc(sizeof(int) * c->lsave_cnt, GFP_KERNEL);
+ 	pnode = kzalloc(sizeof(struct ubifs_pnode), GFP_KERNEL);
+ 	nnode = kzalloc(sizeof(struct ubifs_nnode), GFP_KERNEL);
+ 	buf = vmalloc(c->leb_size);
+ 	ltab = vmalloc(sizeof(struct ubifs_lpt_lprops) * c->lpt_lebs);
+-	lsave = kmalloc(sizeof(int) * c->lsave_cnt, GFP_KERNEL);
+ 	if (!pnode || !nnode || !buf || !ltab || !lsave) {
+ 		err = -ENOMEM;
+ 		goto out;
+
 -- 
 Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
