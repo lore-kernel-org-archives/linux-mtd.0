@@ -1,24 +1,18 @@
-Received: from risingsoftware01.propagation.net ([66.221.33.65])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jrniq-0003IQ-MH
-	for linux-mtd@lists.infradead.org; Fri, 02 May 2008 05:22:16 +0000
-Received: from c122-107-142-134.eburwd5.vic.optusnet.com.au ([122.107.142.134]
-	helo=noddy.cloud.net.au)
-	by risingsoftware01.propagation.net with esmtpsa
-	(TLS-1.0:RSA_AES_256_CBC_SHA1:32) (Exim 4.63)
-	(envelope-from <hamish@cloud.net.au>) id 1Jrnip-0003Wt-Q7
-	for linux-mtd@lists.infradead.org; Fri, 02 May 2008 00:22:16 -0500
-Received: from hamish by noddy.cloud.net.au with local (Exim 4.69)
-	(envelope-from <hamish@cloud.net.au>) id 1Jrnil-0001mC-Si
-	for linux-mtd@lists.infradead.org; Fri, 02 May 2008 15:22:11 +1000
-Date: Fri, 2 May 2008 15:22:11 +1000
-From: Hamish Moffatt <hamish@cloud.net.au>
-To: linux-mtd@lists.infradead.org
-Subject: [RFC][PATCH] making ubifs compile with gcc-3.4
-Message-ID: <20080502052211.GB6654@cloud.net.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Subject: Re: [RFC] Reinstate NFS exportability for JFFS2.
+From: David Woodhouse <dwmw2@infradead.org>
+To: Neil Brown <neilb@suse.de>
+In-Reply-To: <18458.28833.539314.455215@notabene.brown>
+References: <1209670979.25560.587.camel@pmac.infradead.org>
+	<20080501204820.GA5951@infradead.org>
+	<1209681898.25560.613.camel@pmac.infradead.org>
+	<18458.28833.539314.455215@notabene.brown>
+Content-Type: text/plain
+Date: Fri, 02 May 2008 12:37:18 +0100
+Message-Id: <1209728238.25560.686.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Christoph Hellwig <hch@infradead.org>, linux-fsdevel@vger.kernel.org,
+	linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,39 +22,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ubifs fails to compile with my gcc 3.4.4 (for arm), bombing with:
+On Fri, 2008-05-02 at 11:38 +1000, Neil Brown wrote:
+> On Thursday May 1, dwmw2@infradead.org wrote:
+> > On Thu, 2008-05-01 at 16:48 -0400, Christoph Hellwig wrote:
+> > > Yes, and get_fsid would be extremly useful, especially for those
+> > > filesystems that already have an uuid in the superblock
+> > > (*cough*, XFS, *cough*), but it'll need some co-operations with
+> > > nfs-utils on when to use it.
+> > 
+> > Why do you need to co-operate with userspace? Userspace shouldn't need
+> > to do anything -- we'll just generate a suitable fsid/uuid for
+> > ourselves, unless userspace deliberately overrides it for the export in
+> > question.
+> 
+> Actually it is the kernel that doesn't need to do anything....
+> Mapping between the filesystem and the filesystem part of the
+> filehandle is done entirely in user space.
+> The kernel says "Here is a filehandle fragement, what filesystem
+> should I be accessing".
+> 
+> So what you really want is to teach nfs-utils to recognise JFFS2 and
+> extract an appropriate uuid.
+> It already uses libblkid to get uuids for ext3 and XFS and others.
+> Extending that to handle JFFS2 should be much of a drama.
 
-fs/built-in.o: In function `ubifs_create_dflt_lpt':
-lpt_commit.c:(.text+0x88690): undefined reference to `__you_cannot_kmalloc_that_much'
-make[1]: *** [.tmp_vmlinux1] Error 1
+For JFFS2, there is no UUID; only i_sb->s_dev. Actually. if we just set
+FS_REQUIRES_DEV then it would work out OK -- at least for the NFS
+export. We don't do that though, because it gives behaviour we don't
+want in other situations,
 
-It compiles with 4.1.2 ok though. Some web searches suggest that this is
-due to a compiler bug. Patches have been applied in other parts of the 
-tree to work around this so perhaps you'll consider this patch for ubifs 
-also.
+> Why is there a deadlock here?
 
-I found that rearranging the kmalloc order makes it compile. I don't
-believe there is any effect on the behaviour.
+Many file systems have their own locking, and lookup() can end up trying
+to re-take a lock which readdir() is already holding. In the JFFS2 case,
+it's the fs-internal inode mutex, which is required because the garbage
+collector can't use i_mutex for lock ordering reasons.
 
-Signed-off-by: Hamish Moffatt <hamish@cloud.net.au>
+See also the readdir implementation and surrounding comments in
+fs/xfs/linux-2.6/xfs_file.c -- and the way GFS2 uses
+gfs2_glock_is_locked_by_me() to avoid the deadlock.
 
---
+The annoying thing is that JFFS2 doesn't even _implement_ i_generation,
+so you get no more useful information out of the lookup() call anyway :)
 
---- a/fs/ubifs/lpt.c	(revision 4400)
-+++ b/fs/ubifs/lpt.c	(working copy)
-@@ -597,11 +597,11 @@
- 	/* Needed by 'ubifs_pack_lsave()' */
- 	c->main_first = c->leb_cnt - *main_lebs;
- 
-+	lsave = kmalloc(sizeof(int) * c->lsave_cnt, GFP_KERNEL);
- 	pnode = kzalloc(sizeof(struct ubifs_pnode), GFP_KERNEL);
- 	nnode = kzalloc(sizeof(struct ubifs_nnode), GFP_KERNEL);
- 	buf = vmalloc(c->leb_size);
- 	ltab = vmalloc(sizeof(struct ubifs_lpt_lprops) * c->lpt_lebs);
--	lsave = kmalloc(sizeof(int) * c->lsave_cnt, GFP_KERNEL);
- 	if (!pnode || !nnode || !buf || !ltab || !lsave) {
- 		err = -ENOMEM;
- 		goto out;
+> Both readdir and lookup are called with i_mutex held on the directory
+> so there should need to do any extra locking (he said, naively).  In
+> the readdirplus cases, i_mutex is held across both the readdir and the
+> lookup....
+> 
+> One problem with your proposed solution is that filehandles aren't all
+> the same length, so you cannot reliably leave space for them.
+
+Not without moving stuff around during the postprocessing, I suppose.
+Which isn't very pretty -- but it's prettier than some of the hacks we
+have at the moment to avoid the deadlock.
 
 -- 
-Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
+dwmw2
