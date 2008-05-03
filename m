@@ -1,21 +1,21 @@
-Received: from [202.75.200.241] (helo=mailgw.cms.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JrRcU-0003PD-9a
-	for linux-mtd@lists.infradead.org; Thu, 01 May 2008 05:46:15 +0000
-Received: from [172.19.23.21] ([172.19.23.21])
-	by mailgw.cms.com (8.12.11/8.12.11) with ESMTP id m415j4A4024130
-	for <linux-mtd@lists.infradead.org>; Thu, 1 May 2008 11:15:04 +0530
-Subject: MTD PARTITION
-From: Aneesh <aneesh_g@cms.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-In-Reply-To: <20080501044027.GA26541@cloud.net.au>
-References: <Pine.LNX.4.64.0804301301360.6788@pentafluge.infradead.org>
-	<20080501044027.GA26541@cloud.net.au>
-Content-Type: text/plain
-Date: Thu, 01 May 2008 11:04:30 +0530
-Message-Id: <1209620070.3559.5.camel@Aneesh>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: from postfix1-g20.free.fr ([212.27.60.42])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JsESV-0000Nb-JT
+	for linux-mtd@lists.infradead.org; Sat, 03 May 2008 09:55:11 +0000
+Received: from smtp2-g19.free.fr (smtp2-g19.free.fr [212.27.42.28])
+	by postfix1-g20.free.fr (Postfix) with ESMTP id 7BEFA25AD8E6
+	for <linux-mtd@lists.infradead.org>;
+	Sat,  3 May 2008 11:30:00 +0200 (CEST)
+Message-ID: <481C3087.8020501@free.fr>
+Date: Sat, 03 May 2008 11:29:43 +0200
+From: matthieu castet <castet.matthieu@free.fr>
+MIME-Version: 1.0
+To: Linux Kernel list <linux-kernel@vger.kernel.org>,
+	Linus Torvalds <torvalds@osdl.org>,
+	joern@logfs.org, linux-mtd@lists.infradead.org
+Subject: Re: LogFS merge
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,11 +25,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hello,
-	Any body can tell me how to partition a parallel flash ?
-	means how to create mtdblock1 ,mtdblock2 etc?
-	i am using at91rm9200dk custom board and i am using a parallel flash
-AT49BV642D
+Hi,
 
-regards 
-Aneesh
+On Fri, May 2, 2008 at 4:32 PM, Jörn Engel <joern@logfs.org> wrote:
+ >  not being familiar with either maintaining my own git tree or the -next
+ >  process, I'd still like to get logfs into mainline.  It has gone through
+ >  six rounds of reviews and the last has been mostly about crossing some
+ >  i's here and dotting some t's there.
+ >
+ >  So should it simmer in -next and -mm for another month?  Should it go
+ >  straight into -linus?
+Shouldn't this get review by mtd guys first ?
+
+Also for info, there have been some issue raised by the ubifs developer [1].
+
+Matthieu
+
+[1] http://thread.gmane.org/gmane.linux.kernel/658740/focus=660392
