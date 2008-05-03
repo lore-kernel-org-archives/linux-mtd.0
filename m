@@ -1,11 +1,20 @@
-Date: Fri, 02 May 2008 20:35:38 -0600
-From: info@microsoftwindows.com
-Subject: Yahoo&Msn/Windows Live/ Congratulate You For Been Choosen.
-Message-ID: <78d4f1df239ec3c3223d039f02b69b27@plmw.com>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JsGPl-000319-Rk
+	for linux-mtd@lists.infradead.org; Sat, 03 May 2008 12:00:30 +0000
+Date: Sat, 3 May 2008 14:00:05 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: matthieu castet <castet.matthieu@free.fr>
+Subject: Re: LogFS merge
+Message-ID: <20080503120005.GA32608@logfs.org>
+References: <481C3087.8020501@free.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Reply-To: info@microsoftwindows.com
+In-Reply-To: <481C3087.8020501@free.fr>
+Cc: Linus Torvalds <torvalds@osdl.org>, linux-mtd@lists.infradead.org,
+	Linux Kernel list <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,81 +24,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Sat, 3 May 2008 11:29:43 +0200, matthieu castet wrote:
+>
+> Shouldn't this get review by mtd guys first ?
 
-Yahoo&Msn/Windows Live
-Promotion Incoperation
-Baley House, Har Road
-Sutton, Greater London
-SM1 4te
-United Kingdom.
+They were on Cc: on most of the review rounds.
 
-This is to inform you that you have won a Bonaza prize of money
- (£250,000GBP )Two Hundred And Fifty Thousand Great Britain Pounds Sterling, For
-the month of 03/05/2008 Yahoo&Msn Microsoft Windows Live Web Domains
-Promotion In Co-Operated.
+> Also for info, there have been some issue raised by the ubifs developer [1].
 
-Yahoo&Msn Microsoft Windows Live In-Coporation: Collects all the email
-addresses of the people that are active online,Among the Millions that
-subscribed to Yahoo&Hotmails Web Domains ,We only select Three people
-every Month of (03/05/2008 ) as our winners through electronic
- balloting System without the winner applying,we congratulate you for being one of the Winner selected.Below are Details of your agent for you to contact
- him Immediately.
+I am aware of them.  When ignoring FUD and personal things (Artem and I
+have a history), it should come down to roughly this:
 
-:PAYMENT OF PRIZE AND CLAIMS!!!
+1.
+Ubifs takes the easy approach and uses ubi for wear leveling, bad block
+handling, ets.  Saves a ton of work, gives quick results and is limited
+by ubi scan time, which is O(n).
 
-You are to contact your Claims Agent on or before your date of
-Claim, Winners Shall be paid in accordance with his/her Settlement
-Centre.Yahoo&Msn/Windows Live Promotion Prize must be claimed no later
-than 10 days from date of Draw Notification after the Draw date in
- which Prize has won.Any prize not claimed within this period will be
- forfeitedand return back to the Yahoo&Msn Promotion Board.
-These are your identification numbers:
+Logfs ignores ubi and does wear leveling, bad block handling, etc.
+itself.  Bad block handling in particular is not too robust yet.  If you
+expect blocks to rot away after mkfs time, logfs is a bad choice.
 
-Batch number......YM09102XN
-Reff number.......YM35447XN
-Winning number....YM09788
+2.
+Logfs still scans the medium.  It currently does not store free space
+maps and has to search for free space the hard way.  I still have a
+patch to keep the map in-memory, which will avoid any rescans.  But the
+real deal is to store it in a file with some additional tricks to make
+things work in a log-structured fashion.  Not done yet.
 
-These numbers fall within your Location file,you are requested to
-contact EVENTS AGENT MANAGER,send your winning identification numbers
-to them at this contact address below.
+Ubifs has a seperate region to store its free space map, which has its
+own GC.  Wear leveling is dealt with through ubi.  Again, ubi makes life
+easier.
 
-(CONTACT EVENTS MANAGER)
-Name: Mr.Scotty Moore
-E-mail: Mr.Scotty_moore@live.com
-Phone:+44 70319 14809
-+44 70319 29578 :+44 70457 47959
-Fax: +44-70750-09942
----------------------------------------------------------------------------------------
-Choose your mode of Transfer (Bank Transfer or Courier Delivery)
-1. Bank Transfer
-2. Courier Delivery.
----------------------------------------------------------------------------------------
-Congratulations once again and wish to here from you through Event
-Manager for your claims procedures.
+3. Code size.
 
-You are therefore advised to send the following information to the
-EVENTS AGENT to facilitate them and process the Courier of your money.
+4. Mount time.  I don't see any numbers I could quote, but I believe
+ubifs is somewhere close to a second.  Does anyone know?  Logfs is in
+the 10-60ms range.
 
-NAME:---------------
-AGE: ---------------
-SEX: ---------------
-ADDRESS: -----------
-EMAIL: -------------
-PHONE: -------------
-OCCUPATION: --------
-COMPANY: -----------
-NEXT OF KIN: -------
-STATE: -------------
-COUNTRY: -----------
-NATIONALITY: -------
+5.
+Ubifs has write-back caching for file data.  Their benchmarks blow jffs2
+or logfs out of the water, which isn't surprising when comparing DRAM to
+flash.
 
-Mrs.Mariam Adams
-Dr. Sa mual Bent
-(Public Relations Officer.BRITISH EMBASSY)
-(Promotion Co-ordinator)
-Yahoo/Msn/Windows Live Promotion Results
+Logfs has write-back caching for metadata (indirect blocks, etc.) but
+immediatly writes normal data.  Some embedded folks actually prefer this
+approach, as it is more deterministic.  For most uses it simply throws
+away some performance.  Extending caching to normal data isn't too hard
+and fairly high on my list.
 
-Yahoo&Msn/Windows Live Promotion is a free service that does not
-require you to register or be a Yahoo registered user,before
- winning.NOTE
-You do not have to buy a ticket to qualify you for this promotion.
+6.
+"Logfs isn't finished yet."
+My usual answer to that is that Linux isn't finished yet either.  We're
+still improving performance, adding hardware support and fixing bugs
+some 15 years after people started using it.  The question is not
+whether there are improvements left, but whether it is good enough
+already.
+
+Jörn
+
+-- 
+I've never met a human being who would want to read 17,000 pages of
+documentation, and if there was, I'd kill him to get him out of the
+gene pool.
+-- Joseph Costello
