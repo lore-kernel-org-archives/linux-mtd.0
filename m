@@ -1,21 +1,19 @@
-Received: from postfix1-g20.free.fr ([212.27.60.42])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JsESV-0000Nb-JT
-	for linux-mtd@lists.infradead.org; Sat, 03 May 2008 09:55:11 +0000
-Received: from smtp2-g19.free.fr (smtp2-g19.free.fr [212.27.42.28])
-	by postfix1-g20.free.fr (Postfix) with ESMTP id 7BEFA25AD8E6
-	for <linux-mtd@lists.infradead.org>;
-	Sat,  3 May 2008 11:30:00 +0200 (CEST)
-Message-ID: <481C3087.8020501@free.fr>
-Date: Sat, 03 May 2008 11:29:43 +0200
-From: matthieu castet <castet.matthieu@free.fr>
-MIME-Version: 1.0
-To: Linux Kernel list <linux-kernel@vger.kernel.org>,
-	Linus Torvalds <torvalds@osdl.org>,
-	joern@logfs.org, linux-mtd@lists.infradead.org
+Received: from www.tglx.de ([62.245.132.106])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jsgww-0007cj-3y
+	for linux-mtd@lists.infradead.org; Sun, 04 May 2008 16:20:30 +0000
+Date: Sun, 4 May 2008 18:20:23 +0200 (CEST)
+From: Thomas Gleixner <tglx@linutronix.de>
+To: =?ISO-8859-15?Q?J=F6rn_Engel?= <joern@logfs.org>
 Subject: Re: LogFS merge
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20080503120005.GA32608@logfs.org>
+Message-ID: <alpine.LFD.1.10.0805041809370.3318@apollo.tec.linutronix.de>
+References: <481C3087.8020501@free.fr> <20080503120005.GA32608@logfs.org>
+MIME-Version: 1.0
+Content-Type: MULTIPART/MIXED; BOUNDARY="8323328-276966678-1209918024=:3318"
+Cc: Linus Torvalds <torvalds@osdl.org>, linux-mtd@lists.infradead.org,
+	Linux Kernel list <linux-kernel@vger.kernel.org>,
+	matthieu castet <castet.matthieu@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,20 +23,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-On Fri, May 2, 2008 at 4:32 PM, Jörn Engel <joern@logfs.org> wrote:
- >  not being familiar with either maintaining my own git tree or the -next
- >  process, I'd still like to get logfs into mainline.  It has gone through
- >  six rounds of reviews and the last has been mostly about crossing some
- >  i's here and dotting some t's there.
- >
- >  So should it simmer in -next and -mm for another month?  Should it go
- >  straight into -linus?
-Shouldn't this get review by mtd guys first ?
+--8323328-276966678-1209918024=:3318
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 
-Also for info, there have been some issue raised by the ubifs developer [1].
+On Sat, 3 May 2008, Jörn Engel wrote:
+> 1.
+> Ubifs takes the easy approach and uses ubi for wear leveling, bad block
+> handling, ets.  Saves a ton of work, gives quick results and is limited
+> by ubi scan time, which is O(n).
 
-Matthieu
+Which is easy enough to fix.
 
-[1] http://thread.gmane.org/gmane.linux.kernel/658740/focus=660392
+> Logfs ignores ubi and does wear leveling, bad block handling, etc.
+> itself.  Bad block handling in particular is not too robust yet.  If you
+> expect blocks to rot away after mkfs time, logfs is a bad choice.
+
+It's a matter of fact that especially on NAND flash blocks become bad
+over time, i.e. after mkfs. So that's a pretty crucial feature which
+needs to be complete and robust before it's declared to be usable on
+such devices.
+
+Thanks,
+	tglx
+
+--8323328-276966678-1209918024=:3318--
