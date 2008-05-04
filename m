@@ -1,24 +1,19 @@
-Received: from fg-out-1718.google.com ([72.14.220.157])
+Received: from f188.mail.ru ([194.67.57.254])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JsZrc-0004tW-QQ
-	for linux-mtd@lists.infradead.org; Sun, 04 May 2008 08:46:33 +0000
-Received: by fg-out-1718.google.com with SMTP id l26so385262fgb.26
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 04 May 2008 01:46:31 -0700 (PDT)
-Message-ID: <fe810cf0805040146y64ffcb66vfbf2c4aa82eabfd4@mail.gmail.com>
-Date: Sun, 4 May 2008 12:46:31 +0400
-From: "Alexander Belyakov" <abelyako@googlemail.com>
-To: "=?UTF-8?Q?J=C3=B6rn_Engel?=" <joern@logfs.org>
-Subject: Re: [PATCH][RFC] NAND subpage read feature. Take 2.
-In-Reply-To: <20080501202523.GA17828@logfs.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-References: <Pine.LNX.4.64.0804301301360.6788@pentafluge.infradead.org>
-	<20080501202523.GA17828@logfs.org>
-Cc: linux-mtd@lists.infradead.org, tglx@linutronix.de, dwmw2@infradead.org,
-	Alexey Korolev <akorolev@infradead.org>
+	id 1Jsaon-00076u-Tg
+	for linux-mtd@lists.infradead.org; Sun, 04 May 2008 09:47:42 +0000
+From: Alexander Belyakov <abelyako@mail.ru>
+To: David Woodhouse <dwmw2@infradead.org>,
+	=?windows-1251?Q?linux-mtd=40lists.infradead.org?=
+	<linux-mtd@lists.infradead.org>, Nicolas Pitre <nico@cam.org>
+Subject: =?windows-1251?Q?Re=3A_[RFC/PATCH][NOR]_Fix_cfi=5Fcmdset=5F0001.c_FL=5FSYNCING_race?=
+Mime-Version: 1.0
+Date: Sun, 04 May 2008 13:47:39 +0400
+Content-Type: text/plain; charset=windows-1251
+Content-Transfer-Encoding: 8bit
+Message-Id: <E1Jsaol-0007Gx-00.abelyako-mail-ru@f188.mail.ru>
+Cc: Alexander Belyakov <abelyako@gmail.com>
+Reply-To: Alexander Belyakov <abelyako@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,15 +23,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gRnJpLCBNYXkgMiwgMjAwOCBhdCAxMjoyNSBBTSwgSsO2cm4gRW5nZWwgPGpvZXJuQGxvZ2Zz
-Lm9yZz4gd3JvdGU6Cj4gT24gV2VkLCAzMCBBcHJpbCAyMDA4IDEzOjEzOjI0ICswMTAwLCBBbGV4
-ZXkgS29yb2xldiB3cm90ZToKPj4KPj4gVGhpcyBwYXRjaCBlbmFibGVzIE5BTkQgc3VicGFnZSBy
-ZWFkIGZ1bmN0aW9uYWxpdHkuCj4KPiAuLi5hbmQgY3JlYXRlcyBhIHBlY3VsaWFyIGNvbmZsaWN0
-IG9mIGludGVyZXN0cyBpbiBtZS4gIEkndmUgYWRkZWQgZnVsbAo+IGNhY2hpbmcgb2YgdGhlIGNv
-bXBsZXRlIG10ZCBpbiBsb2dmcywgd2hpY2ggZ2F2ZSBhIGh1Z2Ugc3BlZWR1cCB0byBzb21lCj4g
-b2YgbXkgdGVzdGNhc2VzLiAgSG93ZXZlciBjYWNoaW5nIGlzIGRvbmUgaW4gcGFnZSBncmFudWxh
-cml0eSwgdGhlcmVmb3JlCj4gaXQgd291bGQgY29tcGxldGVseSBkZWZlYXQgdGhpcyBwYXRjaCwg
-d2hpY2ggYWxzbyBnaXZlcyBhIHNwZWVkdXAuCj4KClRoZXJlIGlzIGEgc3BlY2lhbCBjYXNlIGZv
-ciBwYWdlIGFsaWduZWQgZGF0YSB3aGVyZSBnZW5lcmljCnJlYWRfcGFnZSgpIGlzIGJlaW5nIHVz
-ZWQgaW5zdGVhZCBvZiByZWFkX3N1YnBhZ2UoKS4gSSBiZWxpZXZlIGxvZ2ZzCmNhY2hpbmcgd29u
-J3Qgc3VmZmVyIGZyb20gdGhpcyBwYXRjaC4KCi1hCg==
+> 
+> We found this issue was related to FL_SYNCING state race with other operations.
+> The patch below tries to remove these races.
+> 
+> Any comments on this patch are welcome.
+> 
+
+No one is interested in fixing these issues?
+I hope it is not because of some trailing whitespaces :)
+I've fixed them and checkpatch.pl has passed.
+
+---
+Signed-off-by: Alexander Belyakov <abelyako@googlemail.com>
+
+diff -uNrp a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c	2008-05-01 22:15:28.000000000 +0400
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c	2008-05-04 13:51:20.000000000 +0400
+@@ -701,6 +701,10 @@ static int chip_ready (struct map_info *
+ 	struct cfi_pri_intelext *cfip = cfi->cmdset_priv;
+ 	unsigned long timeo = jiffies + HZ;
+ 
++	/* Prevent setting state FL_SYNCING for chip in suspended state. */
++	if (FL_SYNCING == mode && FL_READY != chip->oldstate)
++		goto sleep;
++
+ 	switch (chip->state) {
+ 
+ 	case FL_STATUS:
+@@ -806,8 +810,9 @@ static int get_chip(struct map_info *map
+ 	DECLARE_WAITQUEUE(wait, current);
+ 
+  retry:
+-	if (chip->priv && (mode == FL_WRITING || mode == FL_ERASING
+-			   || mode == FL_OTP_WRITE || mode == FL_SHUTDOWN)) {
++	if (chip->priv &&
++	    (mode == FL_WRITING || mode == FL_ERASING || mode == FL_OTP_WRITE
++	    || mode == FL_SHUTDOWN) && chip->state != FL_SYNCING) {
+ 		/*
+ 		 * OK. We have possibility for contention on the write/erase
+ 		 * operations which are global to the real chip and not per
+@@ -857,6 +862,14 @@ static int get_chip(struct map_info *map
+ 				return ret;
+ 			}
+ 			spin_lock(&shared->lock);
++
++			/* We should not own chip if it is already
++			 * in FL_SYNCING state. Put contender and retry. */
++			if (chip->state == FL_SYNCING) {
++				put_chip(map, contender, contender->start);
++				spin_unlock(contender->mutex);
++				goto retry;
++			}
+ 			spin_unlock(contender->mutex);
+ 		}
+ 
