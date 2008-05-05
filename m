@@ -1,29 +1,18 @@
-Received: from e36.co.us.ibm.com ([32.97.110.154])
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jt40E-0008La-Mi
-	for linux-mtd@lists.infradead.org; Mon, 05 May 2008 16:57:29 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e36.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id m45GvM4C002301
-	for <linux-mtd@lists.infradead.org>; Mon, 5 May 2008 12:57:22 -0400
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v8.7) with ESMTP id
-	m45GvMuC211934
-	for <linux-mtd@lists.infradead.org>; Mon, 5 May 2008 10:57:22 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	m45GvLmp004548
-	for <linux-mtd@lists.infradead.org>; Mon, 5 May 2008 10:57:22 -0600
-Date: Mon, 5 May 2008 11:56:22 -0500
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: "Yigal Sadgat" <YSadgat1@gcte.com>
-Subject: Re: Compact Flash Questions
-Message-ID: <20080505115622.37dd45d4@zod.rchland.ibm.com>
-In-Reply-To: <004701c8aec5$c1aed530$6401a8c0@techwriter>
-References: <004701c8aec5$c1aed530$6401a8c0@techwriter>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+	id 1Jt5LB-0007B3-Iu
+	for linux-mtd@lists.infradead.org; Mon, 05 May 2008 18:23:09 +0000
+Date: Mon, 5 May 2008 20:23:00 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Justin Treon <justin_treon@yahoo.com>
+Subject: Re: [Patch][MTD][NAND] Rodan NAND controller
+Message-ID: <20080505182300.GA18494@logfs.org>
+References: <567477.3675.qm@web43132.mail.sp1.yahoo.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <567477.3675.qm@web43132.mail.sp1.yahoo.com>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -34,16 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 5 May 2008 08:36:15 -0700
-"Yigal Sadgat" <YSadgat1@gcte.com> wrote:
+On Fri, 2 May 2008 15:04:39 -0700, Justin Treon wrote:
+>
+> +const static struct mtd_partition partition_info[] = {
+> +	{
+> +	 .name = "IMFT NAND",
+> +	 .offset = 0,
+> +	 .size = 256 * 1024 * 1024}
+> +};
 
-> Is this the right place to discuss CF low-level questions like Kernel 
-> drivers?
+It took me a third look to find the closing brace.
 
-Sorry, no.  Compact Flash presents itself as an IDE device, and does
-not allow access to the raw flash contained within.  MTD is used for
-accessing raw flash.
+> +	/* Initialize structures */
+> +	memset((char *)rodan_mtd, 0, sizeof(struct mtd_info));
+> +	memset((char *)this, 0, sizeof(struct nand_chip));
 
-You might try posting your questions on the linux kernel mailing list.
+The casts don't seem necessary.
 
-josh
+Otherwise looks fine to me.  So module the cosmetics, it is
+Acked-By: Joern Engel <joern@logfs.org>
+
+Jörn
+
+-- 
+Do not stop an army on its way home.
+-- Sun Tzu
