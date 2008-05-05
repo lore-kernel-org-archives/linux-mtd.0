@@ -1,20 +1,14 @@
-Received: from ernst.netinsight.se ([212.247.11.2])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jt06K-0000YN-Jg
-	for linux-mtd@lists.infradead.org; Mon, 05 May 2008 12:47:29 +0000
-Message-ID: <481F01DB.60603@users.sourceforge.net>
-Date: Mon, 05 May 2008 14:47:23 +0200
-From: =?ISO-8859-1?Q?Anders_Grafstr=F6m?= <grfstrm@users.sourceforge.net>
+Received: from mtai02.charter.net ([209.225.8.182])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jt1uW-0007sl-UQ
+	for linux-mtd@lists.infradead.org; Mon, 05 May 2008 14:43:25 +0000
+Message-ID: <20080505104317.IQU42.524540.root@fepweb13>
+Date: Mon, 5 May 2008 10:43:16 -0400
+From: Buckingham Palace <awlancaster@charter.net>
+Subject: Contact your claims agent.//
 MIME-Version: 1.0
-To: Alexander Belyakov <abelyako@mail.ru>
-Subject: Re: [RFC/PATCH][NOR] Fix cfi_cmdset_0001.c FL_SYNCING race
-References: <E1Jsaol-0007Gx-00.abelyako-mail-ru@f188.mail.ru>
-In-Reply-To: <E1Jsaol-0007Gx-00.abelyako-mail-ru@f188.mail.ru>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Nicolas Pitre <nico@cam.org>, David Woodhouse <dwmw2@infradead.org>,
-	Alexander Belyakov <abelyako@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,11 +18,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Alexander Belyakov wrote:
-> +	/* Prevent setting state FL_SYNCING for chip in suspended state. */
-> +	if (FL_SYNCING == mode && FL_READY != chip->oldstate)
+Attn:
+ 
+We are pleased to notify you of the Last Sweepstakes result.  
+You are advised to expeditiously contact our agent: Contact Person:
+ Robert Kings Email: r_kings_1152@live.com In line with the governing rules of claim, you are requested to furnish Your Agent with the following information: 
+1. Full name. 2. Address.  3. Occupation. 4. Tel/Fax. 
+Do understand that, this is done to ensure that, we are dealing with
+the rightful Winner in this 2nd category to avoid double claiming by
+non . 
+winners
+Thanks.
+Mrs Mary
+ 
 
-The operand order differs from the rest of the code.
-Apart from that I think it looks ok.
-
-Anders
+ 
