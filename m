@@ -1,25 +1,25 @@
-Received: from py-out-1112.google.com ([64.233.166.179])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JsiZh-0005zv-67
-	for linux-mtd@lists.infradead.org; Sun, 04 May 2008 18:04:37 +0000
-Received: by py-out-1112.google.com with SMTP id a73so556084pye.2
+Received: from [59.36.102.60] (helo=21cn.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JsozX-0002US-2N
+	for linux-mtd@lists.infradead.org; Mon, 05 May 2008 00:55:44 +0000
+Received: from aisp5-smtp?dg (dgproxy5.inner-hermes.com [10.27.2.5])
+	by 21cn.com (HERMES) with ESMTP id 7D77038005
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 04 May 2008 11:04:35 -0700 (PDT)
-Date: Sun, 4 May 2008 13:04:27 -0500
-From: Josh Boyer <jwboyer@gmail.com>
-To: =?ISO-8859-1?B?SvZybg==?= Engel <joern@logfs.org>
-Subject: Re: LogFS merge
-Message-ID: <20080504130427.583d563c@vader.jdub.homelinux.org>
-In-Reply-To: <alpine.LFD.1.10.0805041809370.3318@apollo.tec.linutronix.de>
-References: <481C3087.8020501@free.fr> <20080503120005.GA32608@logfs.org>
-	<alpine.LFD.1.10.0805041809370.3318@apollo.tec.linutronix.de>
+	Mon,  5 May 2008 08:55:05 +0800 (CST)
+Received: from gzb4103([218.17.227.162])
+	by aisp5-smtp@dg(Knowledge-based Antispam Gateway
+	2.126n(2008-04-29),59.36.102.14) with ESMTP id
+	local1002.1209948905 for <linux-mtd@lists.infradead.org>;
+	Mon, 05 May 2008 08:55:05 +0800
+Date: Mon, 5 May 2008 08:55:06 +0800
+From: "marco.qu" <szlinux@21cn.com>
+To: "linux-mtd" <linux-mtd@lists.infradead.org>
+Subject: nand flash's size overflow
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+	charset="gb2312"
 Content-Transfer-Encoding: 7bit
-Cc: Linus Torvalds <torvalds@osdl.org>, Thomas Gleixner <tglx@linutronix.de>,
-	linux-mtd@lists.infradead.org,
-	Linux Kernel list <linux-kernel@vger.kernel.org>,
-	matthieu castet <castet.matthieu@free.fr>
+Message-Id: <20080505005505.7D77038005@21cn.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,23 +29,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 4 May 2008 18:20:23 +0200 (CEST)
-Thomas Gleixner <tglx@linutronix.de> wrote:
+Hi,all
+  I'm using two 4G Bbyte nand flash chip (totally 8GB) under kernel 2.6.24.3, but the size and offset int the mtd and chip structures are int type(32 bit), so my flash's size if overflow. is there an official way to solve this problem?
 
-> > Logfs ignores ubi and does wear leveling, bad block handling, etc.
-> > itself.  Bad block handling in particular is not too robust yet.  If you
-> > expect blocks to rot away after mkfs time, logfs is a bad choice.
-> 
-> It's a matter of fact that especially on NAND flash blocks become bad
-> over time, i.e. after mkfs. So that's a pretty crucial feature which
-> needs to be complete and robust before it's declared to be usable on
-> such devices.
+Thanks!!
 
-I agree.  LogFS seems quite impressive in its performance, however I'm
-wondering how much redesign and rewrite would be needed in the code to
-fix the bad block handling.  Maybe it's not so much and I'm overly
-paranoid, but having at least some idea of what it would take might
-help.  You could add it to Documentation/filesystems/LogFS.txt as a
-TODO.
-
-josh
+                                                                                                       marco
+                                                                                                            2007-5-5
