@@ -1,24 +1,30 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+Received: from e36.co.us.ibm.com ([32.97.110.154])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jt2nk-0004mn-78
-	for linux-mtd@lists.infradead.org; Mon, 05 May 2008 15:40:29 +0000
-Date: Mon, 5 May 2008 17:39:59 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Alexander Belyakov <abelyako@googlemail.com>
-Subject: Re: [PATCH][RFC] NAND subpage read feature. Take 2.
-Message-ID: <20080505153959.GA17330@logfs.org>
-References: <Pine.LNX.4.64.0804301301360.6788@pentafluge.infradead.org>
-	<20080501202523.GA17828@logfs.org>
-	<fe810cf0805040146y64ffcb66vfbf2c4aa82eabfd4@mail.gmail.com>
-	<20080505073745.GA13916@logfs.org>
-	<fe810cf0805050510g2bf7ef4brfaf4352454dd204b@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fe810cf0805050510g2bf7ef4brfaf4352454dd204b@mail.gmail.com>
-Cc: dwmw2@infradead.org, tglx@linutronix.de, linux-mtd@lists.infradead.org,
-	Alexey Korolev <akorolev@infradead.org>
+	id 1Jt40E-0008La-Mi
+	for linux-mtd@lists.infradead.org; Mon, 05 May 2008 16:57:29 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e36.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id m45GvM4C002301
+	for <linux-mtd@lists.infradead.org>; Mon, 5 May 2008 12:57:22 -0400
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v8.7) with ESMTP id
+	m45GvMuC211934
+	for <linux-mtd@lists.infradead.org>; Mon, 5 May 2008 10:57:22 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	m45GvLmp004548
+	for <linux-mtd@lists.infradead.org>; Mon, 5 May 2008 10:57:22 -0600
+Date: Mon, 5 May 2008 11:56:22 -0500
+From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+To: "Yigal Sadgat" <YSadgat1@gcte.com>
+Subject: Re: Compact Flash Questions
+Message-ID: <20080505115622.37dd45d4@zod.rchland.ibm.com>
+In-Reply-To: <004701c8aec5$c1aed530$6401a8c0@techwriter>
+References: <004701c8aec5$c1aed530$6401a8c0@techwriter>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,30 +34,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 5 May 2008 16:10:46 +0400, Alexander Belyakov wrote:
-> On Mon, May 5, 2008 at 11:37 AM, Jörn Engel <joern@logfs.org> wrote:
-> >
-> > Actually, logfs caching would help jffs2 as well, as soon as you have
-> > several parallel readers.  It should be made generic mtd caching.  And
-> > when made generic, it would effectively defeat this patch, as all reads
-> > would be (DRAM-) pagesized.
-> >
-> > We could theoretically use buggerheads and do the caching in smaller
-> > granularities.
-> 
-> We'd like to look at this new mtd caching layer. Have you working
-> prototype to play with?
+On Mon, 5 May 2008 08:36:15 -0700
+"Yigal Sadgat" <YSadgat1@gcte.com> wrote:
 
-Take a look into fs/logfs/dev_mtd.c in the logfs patch or git tree:
-http://lazybastard.org/~joern/patches/logfs.patch.773
-http://git.kernel.org/?p=linux/kernel/git/joern/logfs.git;a=summary
+> Is this the right place to discuss CF low-level questions like Kernel 
+> drivers?
 
-It is currently part of logfs, but moving it over to
-drivers/mtd/mtdcore.c shouldn't be too hard.
+Sorry, no.  Compact Flash presents itself as an IDE device, and does
+not allow access to the raw flash contained within.  MTD is used for
+accessing raw flash.
 
-Jörn
+You might try posting your questions on the linux kernel mailing list.
 
--- 
-Optimizations always bust things, because all optimizations are, in
-the long haul, a form of cheating, and cheaters eventually get caught.
--- Larry Wall
+josh
