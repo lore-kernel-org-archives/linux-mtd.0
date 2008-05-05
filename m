@@ -1,26 +1,20 @@
-Received: from fg-out-1718.google.com ([72.14.220.158])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JszWr-0003ZH-7B
-	for linux-mtd@lists.infradead.org; Mon, 05 May 2008 12:10:49 +0000
-Received: by fg-out-1718.google.com with SMTP id l26so772778fgb.26
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 05 May 2008 05:10:46 -0700 (PDT)
-Message-ID: <fe810cf0805050510g2bf7ef4brfaf4352454dd204b@mail.gmail.com>
-Date: Mon, 5 May 2008 16:10:46 +0400
-From: "Alexander Belyakov" <abelyako@googlemail.com>
-To: "=?UTF-8?Q?J=C3=B6rn_Engel?=" <joern@logfs.org>
-Subject: Re: [PATCH][RFC] NAND subpage read feature. Take 2.
-In-Reply-To: <20080505073745.GA13916@logfs.org>
+Received: from ernst.netinsight.se ([212.247.11.2])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jt06K-0000YN-Jg
+	for linux-mtd@lists.infradead.org; Mon, 05 May 2008 12:47:29 +0000
+Message-ID: <481F01DB.60603@users.sourceforge.net>
+Date: Mon, 05 May 2008 14:47:23 +0200
+From: =?ISO-8859-1?Q?Anders_Grafstr=F6m?= <grfstrm@users.sourceforge.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-References: <Pine.LNX.4.64.0804301301360.6788@pentafluge.infradead.org>
-	<20080501202523.GA17828@logfs.org>
-	<fe810cf0805040146y64ffcb66vfbf2c4aa82eabfd4@mail.gmail.com>
-	<20080505073745.GA13916@logfs.org>
-Cc: dwmw2@infradead.org, tglx@linutronix.de, linux-mtd@lists.infradead.org,
-	Alexey Korolev <akorolev@infradead.org>
+To: Alexander Belyakov <abelyako@mail.ru>
+Subject: Re: [RFC/PATCH][NOR] Fix cfi_cmdset_0001.c FL_SYNCING race
+References: <E1Jsaol-0007Gx-00.abelyako-mail-ru@f188.mail.ru>
+In-Reply-To: <E1Jsaol-0007Gx-00.abelyako-mail-ru@f188.mail.ru>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Nicolas Pitre <nico@cam.org>, David Woodhouse <dwmw2@infradead.org>,
+	Alexander Belyakov <abelyako@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,12 +24,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gTW9uLCBNYXkgNSwgMjAwOCBhdCAxMTozNyBBTSwgSsO2cm4gRW5nZWwgPGpvZXJuQGxvZ2Zz
-Lm9yZz4gd3JvdGU6Cj4KPiBBY3R1YWxseSwgbG9nZnMgY2FjaGluZyB3b3VsZCBoZWxwIGpmZnMy
-IGFzIHdlbGwsIGFzIHNvb24gYXMgeW91IGhhdmUKPiBzZXZlcmFsIHBhcmFsbGVsIHJlYWRlcnMu
-ICBJdCBzaG91bGQgYmUgbWFkZSBnZW5lcmljIG10ZCBjYWNoaW5nLiAgQW5kCj4gd2hlbiBtYWRl
-IGdlbmVyaWMsIGl0IHdvdWxkIGVmZmVjdGl2ZWx5IGRlZmVhdCB0aGlzIHBhdGNoLCBhcyBhbGwg
-cmVhZHMKPiB3b3VsZCBiZSAoRFJBTS0pIHBhZ2VzaXplZC4KPgo+IFdlIGNvdWxkIHRoZW9yZXRp
-Y2FsbHkgdXNlIGJ1Z2dlcmhlYWRzIGFuZCBkbyB0aGUgY2FjaGluZyBpbiBzbWFsbGVyCj4gZ3Jh
-bnVsYXJpdGllcy4KPgoKV2UnZCBsaWtlIHRvIGxvb2sgYXQgdGhpcyBuZXcgbXRkIGNhY2hpbmcg
-bGF5ZXIuIEhhdmUgeW91IHdvcmtpbmcKcHJvdG90eXBlIHRvIHBsYXkgd2l0aD8KCi1hCg==
+Alexander Belyakov wrote:
+> +	/* Prevent setting state FL_SYNCING for chip in suspended state. */
+> +	if (FL_SYNCING == mode && FL_READY != chip->oldstate)
+
+The operand order differs from the rest of the code.
+Apart from that I think it looks ok.
+
+Anders
