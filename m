@@ -1,19 +1,22 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JsvAD-00075s-1l
-	for linux-mtd@lists.infradead.org; Mon, 05 May 2008 07:31:09 +0000
-Subject: Re: [PATCH] mkfs.ubifs: support --squash-uids
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Hamish Moffatt <hamish@cloud.net.au>
-In-Reply-To: <20080502051655.GA6654@cloud.net.au>
-References: <20080502051655.GA6654@cloud.net.au>
+	id 1JsvGl-00019r-MW
+	for linux-mtd@lists.infradead.org; Mon, 05 May 2008 07:37:55 +0000
+Date: Mon, 5 May 2008 09:37:45 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Alexander Belyakov <abelyako@googlemail.com>
+Subject: Re: [PATCH][RFC] NAND subpage read feature. Take 2.
+Message-ID: <20080505073745.GA13916@logfs.org>
+References: <Pine.LNX.4.64.0804301301360.6788@pentafluge.infradead.org>
+	<20080501202523.GA17828@logfs.org>
+	<fe810cf0805040146y64ffcb66vfbf2c4aa82eabfd4@mail.gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Date: Mon, 05 May 2008 10:31:12 +0300
-Message-Id: <1209972672.3645.8.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fe810cf0805040146y64ffcb66vfbf2c4aa82eabfd4@mail.gmail.com>
+Cc: dwmw2@infradead.org, tglx@linutronix.de, linux-mtd@lists.infradead.org,
+	Alexey Korolev <akorolev@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,23 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Sun, 4 May 2008 12:46:31 +0400, Alexander Belyakov wrote:
+> On Fri, May 2, 2008 at 12:25 AM, Jörn Engel <joern@logfs.org> wrote:
+> >
+> > ...and creates a peculiar conflict of interests in me.  I've added full
+> > caching of the complete mtd in logfs, which gave a huge speedup to some
+> > of my testcases.  However caching is done in page granularity, therefore
+> > it would completely defeat this patch, which also gives a speedup.
+> 
+> There is a special case for page aligned data where generic
+> read_page() is being used instead of read_subpage(). I believe logfs
+> caching won't suffer from this patch.
 
-On Fri, 2008-05-02 at 15:16 +1000, Hamish Moffatt wrote:
-> mkfs.jffs2 and genext2fs both have a -U/--squash-uids switch which make
-> them ignore the uid/gids in the directory and set them to 0:0 instead.
->=20
-> Here's my implementation for mkfs.ubifs.
->=20
-> Signed-off-by: Hamish Moffatt <hamish@cloud.net.au>
->=20
+Actually, logfs caching would help jffs2 as well, as soon as you have
+several parallel readers.  It should be made generic mtd caching.  And
+when made generic, it would effectively defeat this patch, as all reads
+would be (DRAM-) pagesized.
 
-Thanks for the patch. Before applying it, we'd like to know what do you
-expect to happen if -U is used simultaneously with the device table
-(-D). Should we use what device table says for directories which are
-created because they are specified in the device table, or we should use
-0 anyway? Or we should just prohibit simultaneous usage of -U and -D ?
+We could theoretically use buggerheads and do the caching in smaller
+granularities.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Jörn
+
+-- 
+All models are wrong. Some models are useful.
+-- George Box
