@@ -1,25 +1,29 @@
-Received: from [59.36.102.60] (helo=21cn.com)
-	by pentafluge.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JsozX-0002US-2N
-	for linux-mtd@lists.infradead.org; Mon, 05 May 2008 00:55:44 +0000
-Received: from aisp5-smtp?dg (dgproxy5.inner-hermes.com [10.27.2.5])
-	by 21cn.com (HERMES) with ESMTP id 7D77038005
-	for <linux-mtd@lists.infradead.org>;
-	Mon,  5 May 2008 08:55:05 +0800 (CST)
-Received: from gzb4103([218.17.227.162])
-	by aisp5-smtp@dg(Knowledge-based Antispam Gateway
-	2.126n(2008-04-29),59.36.102.14) with ESMTP id
-	local1002.1209948905 for <linux-mtd@lists.infradead.org>;
-	Mon, 05 May 2008 08:55:05 +0800
-Date: Mon, 5 May 2008 08:55:06 +0800
-From: "marco.qu" <szlinux@21cn.com>
-To: "linux-mtd" <linux-mtd@lists.infradead.org>
-Subject: nand flash's size overflow
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JsrHv-00036h-36
+	for linux-mtd@lists.infradead.org; Mon, 05 May 2008 03:22:51 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e3.ny.us.ibm.com (8.13.8/8.13.8) with ESMTP id m453Kgmd031014
+	for <linux-mtd@lists.infradead.org>; Sun, 4 May 2008 23:20:42 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v8.7) with ESMTP id
+	m453Kgg4263082
+	for <linux-mtd@lists.infradead.org>; Sun, 4 May 2008 23:20:42 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	m453KgqS018386
+	for <linux-mtd@lists.infradead.org>; Sun, 4 May 2008 23:20:42 -0400
+Date: Sun, 4 May 2008 22:19:51 -0500
+From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+To: "marco.qu" <szlinux@21cn.com>
+Subject: Re: nand flash's size overflow
+Message-ID: <20080504221951.163ba145@zod.rchland.ibm.com>
+In-Reply-To: <20080505005505.7D77038005@21cn.com>
+References: <20080505005505.7D77038005@21cn.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="gb2312"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <20080505005505.7D77038005@21cn.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,10 +33,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,all
-  I'm using two 4G Bbyte nand flash chip (totally 8GB) under kernel 2.6.24.3, but the size and offset int the mtd and chip structures are int type(32 bit), so my flash's size if overflow. is there an official way to solve this problem?
+On Mon, 5 May 2008 08:55:06 +0800
+"marco.qu" <szlinux@21cn.com> wrote:
 
-Thanks!!
+> Hi,all
+>    is there an official way to solve this problem?
 
-                                                                                                       marco
-                                                                                                            2007-5-5
+Provide patches to convert the MTD subsystem to overcome the limit of
+using a 32bit variable to store size/offset in a sane manner.
+
+This is getting asked often enough that it should be an FAQ.
+
+josh
