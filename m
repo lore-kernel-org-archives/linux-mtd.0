@@ -1,19 +1,19 @@
-Received: from www.tglx.de ([62.245.132.106])
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jsgww-0007cj-3y
-	for linux-mtd@lists.infradead.org; Sun, 04 May 2008 16:20:30 +0000
-Date: Sun, 4 May 2008 18:20:23 +0200 (CEST)
-From: Thomas Gleixner <tglx@linutronix.de>
-To: =?ISO-8859-15?Q?J=F6rn_Engel?= <joern@logfs.org>
-Subject: Re: LogFS merge
-In-Reply-To: <20080503120005.GA32608@logfs.org>
-Message-ID: <alpine.LFD.1.10.0805041809370.3318@apollo.tec.linutronix.de>
-References: <481C3087.8020501@free.fr> <20080503120005.GA32608@logfs.org>
-MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="8323328-276966678-1209918024=:3318"
-Cc: Linus Torvalds <torvalds@osdl.org>, linux-mtd@lists.infradead.org,
-	Linux Kernel list <linux-kernel@vger.kernel.org>,
-	matthieu castet <castet.matthieu@free.fr>
+	id 1Jsv7a-0000vK-Ap
+	for linux-mtd@lists.infradead.org; Mon, 05 May 2008 07:28:26 +0000
+Subject: Re: [RFC][PATCH] making ubifs compile with gcc-3.4
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Hamish Moffatt <hamish@cloud.net.au>
+In-Reply-To: <20080502052211.GB6654@cloud.net.au>
+References: <20080502052211.GB6654@cloud.net.au>
+Content-Type: text/plain; charset=utf-8
+Date: Mon, 05 May 2008 10:28:14 +0300
+Message-Id: <1209972494.3645.4.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323328-276966678-1209918024=:3318
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+On Fri, 2008-05-02 at 15:22 +1000, Hamish Moffatt wrote:
+> ubifs fails to compile with my gcc 3.4.4 (for arm), bombing with:
+>=20
+> fs/built-in.o: In function `ubifs_create_dflt_lpt':
+> lpt_commit.c:(.text+0x88690): undefined reference to `__you_cannot_kmallo=
+c_that_much'
+> make[1]: *** [.tmp_vmlinux1] Error 1
+>=20
+> It compiles with 4.1.2 ok though. Some web searches suggest that this is
+> due to a compiler bug. Patches have been applied in other parts of the=20
+> tree to work around this so perhaps you'll consider this patch for ubifs=20
+> also.
+>=20
+> I found that rearranging the kmalloc order makes it compile. I don't
+> believe there is any effect on the behaviour.
+>=20
+> Signed-off-by: Hamish Moffatt <hamish@cloud.net.au>
 
-On Sat, 3 May 2008, Jörn Engel wrote:
-> 1.
-> Ubifs takes the easy approach and uses ubi for wear leveling, bad block
-> handling, ets.  Saves a ton of work, gives quick results and is limited
-> by ubi scan time, which is O(n).
+Applied, thank you.
 
-Which is easy enough to fix.
-
-> Logfs ignores ubi and does wear leveling, bad block handling, etc.
-> itself.  Bad block handling in particular is not too robust yet.  If you
-> expect blocks to rot away after mkfs time, logfs is a bad choice.
-
-It's a matter of fact that especially on NAND flash blocks become bad
-over time, i.e. after mkfs. So that's a pretty crucial feature which
-needs to be complete and robust before it's declared to be usable on
-such devices.
-
-Thanks,
-	tglx
-
---8323328-276966678-1209918024=:3318--
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
