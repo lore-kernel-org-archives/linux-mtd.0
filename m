@@ -1,19 +1,20 @@
-Received: from risingsoftware01.propagation.net ([66.221.33.65])
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JswL2-0008G6-Rw
-	for linux-mtd@lists.infradead.org; Mon, 05 May 2008 08:46:25 +0000
-Date: Mon, 5 May 2008 18:46:17 +1000
-From: Hamish Moffatt <hamish@cloud.net.au>
-To: Artem Bityutskiy <dedekind@infradead.org>
+	id 1JswQg-00024E-0N
+	for linux-mtd@lists.infradead.org; Mon, 05 May 2008 08:52:14 +0000
 Subject: Re: [PATCH] mkfs.ubifs: support --squash-uids
-Message-ID: <20080505084617.GA11042@cloud.net.au>
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Hamish Moffatt <hamish@cloud.net.au>
+In-Reply-To: <20080505084617.GA11042@cloud.net.au>
 References: <20080502051655.GA6654@cloud.net.au>
-	<1209972672.3645.8.camel@sauron>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1209972672.3645.8.camel@sauron>
+	<1209972672.3645.8.camel@sauron> <20080505084617.GA11042@cloud.net.au>
+Content-Type: text/plain; charset=utf-8
+Date: Mon, 05 May 2008 11:52:00 +0300
+Message-Id: <1209977520.3645.15.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,34 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, May 05, 2008 at 10:31:12AM +0300, Artem Bityutskiy wrote:
-> 
-> On Fri, 2008-05-02 at 15:16 +1000, Hamish Moffatt wrote:
-> > mkfs.jffs2 and genext2fs both have a -U/--squash-uids switch which make
-> > them ignore the uid/gids in the directory and set them to 0:0 instead.
-> > 
-> > Here's my implementation for mkfs.ubifs.
-> > 
-> > Signed-off-by: Hamish Moffatt <hamish@cloud.net.au>
-> > 
-> 
-> Thanks for the patch. Before applying it, we'd like to know what do you
-> expect to happen if -U is used simultaneously with the device table
-> (-D). Should we use what device table says for directories which are
-> created because they are specified in the device table, or we should use
-> 0 anyway? Or we should just prohibit simultaneous usage of -U and -D ?
+On Mon, 2008-05-05 at 18:46 +1000, Hamish Moffatt wrote:
+> Good point. mkfs.jffs2 (from my reading of the source code) squashes=20
+> ownership of files read from the specified root directory, but the
+> ownerships specified in the device table are still used. I think that
+> makes sense, because you can always specify 0:0 in the device table if
+> that's what you need.
+>=20
+> However it's not what is implemented by my patch :-) Would you like me
+> to fix it up and resubmit, or will you? I applied the squashing at the
+> lowest level without realizing the effect on the device table.
 
-Good point. mkfs.jffs2 (from my reading of the source code) squashes 
-ownership of files read from the specified root directory, but the
-ownerships specified in the device table are still used. I think that
-makes sense, because you can always specify 0:0 in the device table if
-that's what you need.
+I think I can do this, but a bit later. So if it is not urgent for you,
+you may want to just wait.
 
-However it's not what is implemented by my patch :-) Would you like me
-to fix it up and resubmit, or will you? I applied the squashing at the
-lowest level without realizing the effect on the device table.
+Thanks.
 
-thanks,
-Hamish
--- 
-Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
