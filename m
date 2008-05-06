@@ -1,21 +1,22 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JtKuf-0007hl-TV
-	for linux-mtd@lists.infradead.org; Tue, 06 May 2008 11:00:50 +0000
-Subject: Re: [PATCH] mkfs.ubifs: support --squash-uids
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Hamish Moffatt <hamish@cloud.net.au>
-In-Reply-To: <1209977520.3645.15.camel@sauron>
-References: <20080502051655.GA6654@cloud.net.au>
-	<1209972672.3645.8.camel@sauron> <20080505084617.GA11042@cloud.net.au>
-	<1209977520.3645.15.camel@sauron>
-Content-Type: text/plain; charset=utf-8
-Date: Tue, 06 May 2008 14:00:17 +0300
-Message-Id: <1210071617.3645.35.camel@sauron>
+Received: from mx45.mail.ru ([194.67.23.236])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JtN1D-00028m-5Q
+	for linux-mtd@lists.infradead.org; Tue, 06 May 2008 13:15:44 +0000
+From: Alexander Belyakov <abelyako@mail.ru>
+To: grfstrm@users.sourceforge.net
+Subject: =?windows-1251?Q?Re=3A_[RFC/PATCH][NOR]_Fix_cfi=5Fcmdset=5F0001.c_FL=5FSYNCING_race?=
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Date: Tue, 06 May 2008 13:41:48 +0400
+References: <481F01DB.60603@users.sourceforge.net>
+In-Reply-To: <481F01DB.60603@users.sourceforge.net>
+Content-Type: text/plain; charset=windows-1251
+Content-Transfer-Encoding: 8bit
+Message-Id: <E1JtJgC-000Jm2-00.abelyako-mail-ru@f189.mail.ru>
+Cc: "=?windows-1251?Q?linux-mtd=40lists.infradead.org?="
+	<linux-mtd@lists.infradead.org>, Nicolas Pitre <nico@cam.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Alexander Belyakov <abelyako@gmail.com>
+Reply-To: Alexander Belyakov <abelyako@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,16 +26,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2008-05-05 at 11:52 +0300, Artem Bityutskiy wrote:
-> > However it's not what is implemented by my patch :-) Would you like me
-> > to fix it up and resubmit, or will you? I applied the squashing at the
-> > lowest level without realizing the effect on the device table.
->=20
-> I think I can do this, but a bit later. So if it is not urgent for you,
-> you may want to just wait.
+> 
+> Alexander Belyakov wrote:
+> > +	/* Prevent setting state FL_SYNCING for chip in suspended state. */
+> > +	if (FL_SYNCING == mode && FL_READY != chip->oldstate)
+> 
+> The operand order differs from the rest of the code.
+> Apart from that I think it looks ok.
+> 
 
-Done.
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Thanks. fixed.
+
+---
+Signed-off-by: Alexander Belyakov <abelyako@googlemail.com>
+
+diff -uNrp a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c	2008-05-01 22:15:28.000000000 +0400
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c	2008-05-05 18:16:07.000000000 +0400
+@@ -701,6 +701,10 @@ static int chip_ready (struct map_info *
+ 	struct cfi_pri_intelext *cfip = cfi->cmdset_priv;
+ 	unsigned long timeo = jiffies + HZ;
+ 
++	/* Prevent setting state FL_SYNCING for chip in suspended state. */
++	if (mode == FL_SYNCING && chip->oldstate != FL_READY)
++		goto sleep;
++
+ 	switch (chip->state) {
+ 
+ 	case FL_STATUS:
+@@ -806,8 +810,9 @@ static int get_chip(struct map_info *map
+ 	DECLARE_WAITQUEUE(wait, current);
+ 
+  retry:
+-	if (chip->priv && (mode == FL_WRITING || mode == FL_ERASING
+-			   || mode == FL_OTP_WRITE || mode == FL_SHUTDOWN)) {
++	if (chip->priv &&
++	    (mode == FL_WRITING || mode == FL_ERASING || mode == FL_OTP_WRITE
++	    || mode == FL_SHUTDOWN) && chip->state != FL_SYNCING) {
+ 		/*
+ 		 * OK. We have possibility for contention on the write/erase
+ 		 * operations which are global to the real chip and not per
+@@ -857,6 +862,14 @@ static int get_chip(struct map_info *map
+ 				return ret;
+ 			}
+ 			spin_lock(&shared->lock);
++
++			/* We should not own chip if it is already
++			 * in FL_SYNCING state. Put contender and retry. */
++			if (chip->state == FL_SYNCING) {
++				put_chip(map, contender, contender->start);
++				spin_unlock(contender->mutex);
++				goto retry;
++			}
+ 			spin_unlock(contender->mutex);
+ 		}
+ 
