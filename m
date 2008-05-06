@@ -1,21 +1,22 @@
-Received: from risingsoftware01.propagation.net ([66.221.33.65])
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JtAqG-0005sa-1L
-	for linux-mtd@lists.infradead.org; Tue, 06 May 2008 00:15:36 +0000
-Date: Tue, 6 May 2008 10:15:15 +1000
-From: Hamish Moffatt <hamish@cloud.net.au>
-To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
+	id 1JtGSp-0001Mz-Pf
+	for linux-mtd@lists.infradead.org; Tue, 06 May 2008 06:15:48 +0000
+Date: Tue, 6 May 2008 08:15:31 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Hamish Moffatt <hamish@cloud.net.au>
 Subject: Re: [PATCH][RFC] NAND subpage read feature. Take 2.
-Message-ID: <20080506001514.GA12796@cloud.net.au>
+Message-ID: <20080506061530.GA23412@logfs.org>
 References: <Pine.LNX.4.64.0804301301360.6788@pentafluge.infradead.org>
 	<20080501202523.GA17828@logfs.org>
 	<fe810cf0805040146y64ffcb66vfbf2c4aa82eabfd4@mail.gmail.com>
 	<20080505073745.GA13916@logfs.org>
+	<20080506001514.GA12796@cloud.net.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20080505073745.GA13916@logfs.org>
+In-Reply-To: <20080506001514.GA12796@cloud.net.au>
 Cc: linux-mtd@lists.infradead.org, tglx@linutronix.de, dwmw2@infradead.org,
 	Alexey Korolev <akorolev@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,30 +28,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, May 05, 2008 at 09:37:45AM +0200, Jörn Engel wrote:
-> On Sun, 4 May 2008 12:46:31 +0400, Alexander Belyakov wrote:
-> > On Fri, May 2, 2008 at 12:25 AM, Jörn Engel <joern@logfs.org> wrote:
-> > >
-> > > ...and creates a peculiar conflict of interests in me.  I've added full
-> > > caching of the complete mtd in logfs, which gave a huge speedup to some
-> > > of my testcases.  However caching is done in page granularity, therefore
-> > > it would completely defeat this patch, which also gives a speedup.
-> > 
-> > There is a special case for page aligned data where generic
-> > read_page() is being used instead of read_subpage(). I believe logfs
-> > caching won't suffer from this patch.
+On Tue, 6 May 2008 10:15:15 +1000, Hamish Moffatt wrote:
 > 
-> Actually, logfs caching would help jffs2 as well, as soon as you have
-> several parallel readers.  It should be made generic mtd caching.  And
-> when made generic, it would effectively defeat this patch, as all reads
-> would be (DRAM-) pagesized.
+> Caching only makes sense when you can read extra data at no cost.
 
-.. and therefore performance would be worse for UBI attach, for example.
-Caching only makes sense when you can read extra data at no cost. Unless
-you can find some way to cache while idle but abort if it is delaying
-another read?
+Not true.  Caching makes sense when the benefits outweigh the costs,
+just like everything else.  "No cost" is just a special case where even
+minimal benefits suffice.
 
+Nand already does caching, it just limits itself to a single page.  If
+two consecutive reads hit the single page, it is only read once.  Which
+easily fits your definition and just as easily helps single-threaded
+users.  But two threads bouncing back and forth can already nullify the
+gains.  It would be useful to keep as much old data around as there is
+DRAM for.
 
-Hamish
+However DRAM page granularity is bigger, therefore some data will be
+read and not used.  In the case of ubi attach that is a lot of data.
+And there are no benefits in caching the ubi headers, as they are read
+only once.  So the solution is to have NAND page granularity or so for
+the cache, which means buggerheads.
+
+[ Also, even ubi attach may benefit from caching under special
+circumstances.  If you have just written an image and have enough ram,
+there is no reason to go back to flash.  But that hardly matters in real
+life. ]
+
+JÃ¶rn
+
 -- 
-Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
+tglx1 thinks that joern should get a (TM) for "Thinking Is Hard"
+-- Thomas Gleixner
