@@ -1,20 +1,28 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JtGpU-0000o2-KJ
-	for linux-mtd@lists.infradead.org; Tue, 06 May 2008 06:39:13 +0000
-Subject: Re: [PATCH] mkfs.ubifs: support --squash-uids
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Hamish Moffatt <hamish@cloud.net.au>
-In-Reply-To: <20080505084617.GA11042@cloud.net.au>
-References: <20080502051655.GA6654@cloud.net.au>
-	<1209972672.3645.8.camel@sauron> <20080505084617.GA11042@cloud.net.au>
-Content-Type: text/plain; charset=utf-8
-Date: Tue, 06 May 2008 09:38:36 +0300
-Message-Id: <1210055916.3645.21.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from fg-out-1718.google.com ([72.14.220.156])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JtJTz-0004MW-1R
+	for linux-mtd@lists.infradead.org; Tue, 06 May 2008 09:29:11 +0000
+Received: by fg-out-1718.google.com with SMTP id l26so1087626fgb.26
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 06 May 2008 02:29:10 -0700 (PDT)
+Message-ID: <fe810cf0805060229j3c20ab77g96c5ade0f111d278@mail.gmail.com>
+Date: Tue, 6 May 2008 13:29:09 +0400
+From: "Alexander Belyakov" <abelyako@googlemail.com>
+To: "=?UTF-8?Q?J=C3=B6rn_Engel?=" <joern@logfs.org>
+Subject: Re: [PATCH][RFC] NAND subpage read feature. Take 2.
+In-Reply-To: <20080505153959.GA17330@logfs.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+References: <Pine.LNX.4.64.0804301301360.6788@pentafluge.infradead.org>
+	<20080501202523.GA17828@logfs.org>
+	<fe810cf0805040146y64ffcb66vfbf2c4aa82eabfd4@mail.gmail.com>
+	<20080505073745.GA13916@logfs.org>
+	<fe810cf0805050510g2bf7ef4brfaf4352454dd204b@mail.gmail.com>
+	<20080505153959.GA17330@logfs.org>
+Cc: dwmw2@infradead.org, tglx@linutronix.de, linux-mtd@lists.infradead.org,
+	Alexey Korolev <akorolev@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +32,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2008-05-05 at 18:46 +1000, Hamish Moffatt wrote:
-> > Thanks for the patch. Before applying it, we'd like to know what do you
-> > expect to happen if -U is used simultaneously with the device table
-> > (-D). Should we use what device table says for directories which are
-> > created because they are specified in the device table, or we should us=
-e
-> > 0 anyway? Or we should just prohibit simultaneous usage of -U and -D ?
->=20
-> Good point. mkfs.jffs2 (from my reading of the source code) squashes=20
-> ownership of files read from the specified root directory, but the
-> ownerships specified in the device table are still used. I think that
-> makes sense, because you can always specify 0:0 in the device table if
-> that's what you need.
->=20
-> However it's not what is implemented by my patch :-) Would you like me
-> to fix it up and resubmit, or will you? I applied the squashing at the
-> lowest level without realizing the effect on the device table.
-
-I've committed your patch and will do the "prefer dev. table" change
-later. Just a note - the patch was against some old mkfs.ubifs, so I had
-to do conflict resolution. Also note, we changed -p (--orph-lebs) option
-to -P at some point. You are unlikely using it - this is just for
-information.
-
-Thank you!
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+T24gTW9uLCBNYXkgNSwgMjAwOCBhdCA3OjM5IFBNLCBKw7ZybiBFbmdlbCA8am9lcm5AbG9nZnMu
+b3JnPiB3cm90ZToKPiBPbiBNb24sIDUgTWF5IDIwMDggMTY6MTA6NDYgKzA0MDAsIEFsZXhhbmRl
+ciBCZWx5YWtvdiB3cm90ZToKPj4KPj4gV2UnZCBsaWtlIHRvIGxvb2sgYXQgdGhpcyBuZXcgbXRk
+IGNhY2hpbmcgbGF5ZXIuIEhhdmUgeW91IHdvcmtpbmcKPj4gcHJvdG90eXBlIHRvIHBsYXkgd2l0
+aD8KPgo+IFRha2UgYSBsb29rIGludG8gZnMvbG9nZnMvZGV2X210ZC5jIGluIHRoZSBsb2dmcyBw
+YXRjaCBvciBnaXQgdHJlZToKClRoYW5rcy4gSSBiZWxpZXZlIG10ZCBjYWNoaW5nIGRlc2VydmVz
+IHNlcGFyYXRlIGRpc2N1c3Npb24sIGJlY2F1c2UKdG9vIG1hbnkgbXRkIHRoaW5ncyBhcmUgZ29p
+bmcgdG8gYmUgYWZmZWN0ZWQuCgpBcyBmb3Igc3VicGFnZSByZWFkLCBBbGV4ZXkgd2lsbCBwcm9j
+ZWVkIHdpdGggcGF0Y2ggc3VibWlzc2lvbiBuZXh0IHdlZWsuCgotYQo=
