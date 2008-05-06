@@ -1,14 +1,21 @@
-Subject: Re: cfi_{build,send_gen}_cmd bloats, how to uninline?
-From: David Woodhouse <dwmw2@infradead.org>
-To: Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@helsinki.fi>
-In-Reply-To: <Pine.LNX.4.64.0805030002240.3985@wrl-59.cs.helsinki.fi>
-References: <Pine.LNX.4.64.0805030002240.3985@wrl-59.cs.helsinki.fi>
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 06 May 2008 11:03:09 +0100
-Message-Id: <1210068189.25560.759.camel@pmac.infradead.org>
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JtKL2-0003pn-IA
+	for linux-mtd@lists.infradead.org; Tue, 06 May 2008 10:24:00 +0000
+Subject: Re: [PATCH] mkfs.ubifs: support --squash-uids
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Hamish Moffatt <hamish@cloud.net.au>
+In-Reply-To: <20080506094642.GB23685@cloud.net.au>
+References: <20080502051655.GA6654@cloud.net.au>
+	<1209972672.3645.8.camel@sauron> <20080505084617.GA11042@cloud.net.au>
+	<1210055916.3645.21.camel@sauron> <20080506094642.GB23685@cloud.net.au>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 06 May 2008 13:23:12 +0300
+Message-Id: <1210069392.3645.34.camel@sauron>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,43 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2008-05-06 at 12:53 +0300, Ilpo Järvinen wrote:
-> Hi,
-> 
-> When doing some time ago measurements on how static inlines affect the 
-> size of the kernel, I found out that uninlining cfi_{build,send_gen}_cmd 
-> yield to considerable size reduction (measured with 32-bit x86, gcc 
-> version 4.1.2 20070626 (Red Hat 4.1.2-13), on v2.6.25-rc2-mm1 IIRC, 
-> allyesconfig minus number of manually selected DEBUG related CONFIGs):
-> 
-> 42 funcs, 199 +, 33328 -, diff: -33129 --- cfi_build_cmd
-> 14 funcs, 365 +, 14648 -, diff: -14283 --- cfi_send_gen_cmd
-> 
-> ...(Because there's depency between them as cfi_send_gen_cmd includes a 
-> call to cfi_build_cmd, total for both to is likely going to less than what 
-> those two summed together are, uninlining cfi_send_gen_cmd might even not 
-> pay off much).
-> 
-> I'm unsure how should the uninlining be performed in this case, 
-> especially since there's some alerting comment like this:
-> 
-> "/* We do it this way to give the compiler a fighting chance
->     of optimising away all ..."
-> 
-> "* It looks too long to be inline, but in the common case it should almost all
->  * get optimised away."
-> 
-> ...Perhaps somebody has just assumed gcc to be more clever than it 
-> actually is, I wonder if the claimed optimization was ever happening
-> in practice... :-/
+On Tue, 2008-05-06 at 19:46 +1000, Hamish Moffatt wrote:
+> Yes it was against the v0.4 tag.=20
+>=20
+> mkfs.jffs2 and genext2fs both use -P as the short version of
+> --squash-perms, so mkfs.ubifs will have to use something different. No
+> big deal however (although they are pretty similar otherwise).
 
-Were you testing with only a single interleave/bankwidth enabled, or did
-you have them all supported? It's the single-geometry case where we
-expect it to all fall out and the inlines to be really trivial.
+Hmm, ok, then I will make it -p back. I just wanted to reserve -p for
+other purposes, but this is not important anymore. I'v pushed
+corresponding patch.
 
-I suspect that we should make the inlining optional though -- a lot of
-people are building generic kernels with CFI support these days, or just
-not bothering to optimise their config.
+> Also, what is the purpose of --max-leb-cnt? It seems to be just a safety
+> check that the volume will fit? It's a bit unusual.
 
--- 
-dwmw2
+It is a form of specifying FS size. But instead of specifying exact FS
+size, you specify maximum FS size. This means that it will be possible
+to put the image on smaller volumes as well, which is quite handy
+because due to random amount of initial NAND bad blocks different
+instances of the same device may have a bit different volume sizes.
+E.g., rootfs partition may be 500MiB or 501MiB on a 512MiB NAND,
+depending on how many initial bad block NAND contains.
+
+Fundamentally, mkfs.ubifs has to know FS size because UBIFS maintains
+and stores per-LEB information (like amount of dirty and free space in
+each LEB) in so-called LPT area on the media. So obviously, the size of
+this area depends on the total amount of LEBs, i.e. on the volume size.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
