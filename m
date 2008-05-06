@@ -1,26 +1,23 @@
-Received: from fg-out-1718.google.com ([72.14.220.156])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JtJTz-0004MW-1R
-	for linux-mtd@lists.infradead.org; Tue, 06 May 2008 09:29:11 +0000
-Received: by fg-out-1718.google.com with SMTP id l26so1087626fgb.26
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 06 May 2008 02:29:10 -0700 (PDT)
-Message-ID: <fe810cf0805060229j3c20ab77g96c5ade0f111d278@mail.gmail.com>
-Date: Tue, 6 May 2008 13:29:09 +0400
-From: "Alexander Belyakov" <abelyako@googlemail.com>
-To: "=?UTF-8?Q?J=C3=B6rn_Engel?=" <joern@logfs.org>
+Received: from risingsoftware01.propagation.net ([66.221.33.65])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JtJhS-0007wG-NB
+	for linux-mtd@lists.infradead.org; Tue, 06 May 2008 09:43:06 +0000
+Date: Tue, 6 May 2008 19:42:49 +1000
+From: Hamish Moffatt <hamish@cloud.net.au>
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
 Subject: Re: [PATCH][RFC] NAND subpage read feature. Take 2.
-In-Reply-To: <20080505153959.GA17330@logfs.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
+Message-ID: <20080506094249.GA23685@cloud.net.au>
 References: <Pine.LNX.4.64.0804301301360.6788@pentafluge.infradead.org>
 	<20080501202523.GA17828@logfs.org>
 	<fe810cf0805040146y64ffcb66vfbf2c4aa82eabfd4@mail.gmail.com>
 	<20080505073745.GA13916@logfs.org>
-	<fe810cf0805050510g2bf7ef4brfaf4352454dd204b@mail.gmail.com>
-	<20080505153959.GA17330@logfs.org>
+	<20080506001514.GA12796@cloud.net.au>
+	<20080506061530.GA23412@logfs.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20080506061530.GA23412@logfs.org>
 Cc: dwmw2@infradead.org, tglx@linutronix.de, linux-mtd@lists.infradead.org,
 	Alexey Korolev <akorolev@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,12 +29,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gTW9uLCBNYXkgNSwgMjAwOCBhdCA3OjM5IFBNLCBKw7ZybiBFbmdlbCA8am9lcm5AbG9nZnMu
-b3JnPiB3cm90ZToKPiBPbiBNb24sIDUgTWF5IDIwMDggMTY6MTA6NDYgKzA0MDAsIEFsZXhhbmRl
-ciBCZWx5YWtvdiB3cm90ZToKPj4KPj4gV2UnZCBsaWtlIHRvIGxvb2sgYXQgdGhpcyBuZXcgbXRk
-IGNhY2hpbmcgbGF5ZXIuIEhhdmUgeW91IHdvcmtpbmcKPj4gcHJvdG90eXBlIHRvIHBsYXkgd2l0
-aD8KPgo+IFRha2UgYSBsb29rIGludG8gZnMvbG9nZnMvZGV2X210ZC5jIGluIHRoZSBsb2dmcyBw
-YXRjaCBvciBnaXQgdHJlZToKClRoYW5rcy4gSSBiZWxpZXZlIG10ZCBjYWNoaW5nIGRlc2VydmVz
-IHNlcGFyYXRlIGRpc2N1c3Npb24sIGJlY2F1c2UKdG9vIG1hbnkgbXRkIHRoaW5ncyBhcmUgZ29p
-bmcgdG8gYmUgYWZmZWN0ZWQuCgpBcyBmb3Igc3VicGFnZSByZWFkLCBBbGV4ZXkgd2lsbCBwcm9j
-ZWVkIHdpdGggcGF0Y2ggc3VibWlzc2lvbiBuZXh0IHdlZWsuCgotYQo=
+On Tue, May 06, 2008 at 08:15:31AM +0200, Jörn Engel wrote:
+> On Tue, 6 May 2008 10:15:15 +1000, Hamish Moffatt wrote:
+> > 
+> > Caching only makes sense when you can read extra data at no cost.
+> 
+> Not true.  Caching makes sense when the benefits outweigh the costs,
+> just like everything else.  "No cost" is just a special case where even
+> minimal benefits suffice.
+> 
+> Nand already does caching, it just limits itself to a single page.  If
+> two consecutive reads hit the single page, it is only read once.  Which
+> easily fits your definition and just as easily helps single-threaded
+> users.  But two threads bouncing back and forth can already nullify the
+> gains.  It would be useful to keep as much old data around as there is
+> DRAM for.
+
+It makes sense to keep data that you had to read anyway, but with the
+subpage read patch that's less than a whole page.
+
+> [ Also, even ubi attach may benefit from caching under special
+> circumstances.  If you have just written an image and have enough ram,
+> there is no reason to go back to flash.  But that hardly matters in real
+> life. ]
+
+I agree. So are we talking about caching of data which we've read
+anyway, or speculative reads? Because reading more than the user
+requested is speculation afaict. If LogFS (for example) reads a whole 
+page even when it doesn't need it, that will degrade performance in some
+cases.
+
+Hamish
+-- 
+Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
