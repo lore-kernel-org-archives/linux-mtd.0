@@ -1,15 +1,21 @@
-Subject: Re: jffs2 and unaligned access
-From: David Woodhouse <dwmw2@infradead.org>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-In-Reply-To: <20080507102724.GE4326@pengutronix.de>
-References: <20080507102724.GE4326@pengutronix.de>
-Content-Type: text/plain
-Date: Wed, 07 May 2008 11:53:49 +0100
-Message-Id: <1210157630.25560.884.camel@pmac.infradead.org>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JtjCK-0005td-9e
+	for linux-mtd@lists.infradead.org; Wed, 07 May 2008 12:56:40 +0000
+Subject: Re: [PATCH] mkfs.ubifs: support --squash-uids
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Hamish Moffatt <hamish@cloud.net.au>
+In-Reply-To: <20080506094642.GB23685@cloud.net.au>
+References: <20080502051655.GA6654@cloud.net.au>
+	<1209972672.3645.8.camel@sauron> <20080505084617.GA11042@cloud.net.au>
+	<1210055916.3645.21.camel@sauron> <20080506094642.GB23685@cloud.net.au>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 07 May 2008 15:55:34 +0300
+Message-Id: <1210164935.3645.39.camel@sauron>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Jon Smirl <jonsmirl@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,18 +25,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-05-07 at 12:27 +0200, Sascha Hauer wrote:
-> memcpy_from/to_io() use word aligned accesses on the io side of memory.
-> The MPC5200 local plus bus where our flashes are connected does not
-> allow unaligned accesses, so we have to use the io versions of memcpy.
+On Tue, 2008-05-06 at 19:46 +1000, Hamish Moffatt wrote:
+> Also, what is the purpose of --max-leb-cnt? It seems to be just a safety
+> check that the volume will fit? It's a bit unusual.
 
-But this region of flash is marked as suitable for execute-in-place,
-otherwise the point() function wouldn't be working to give a direct
-pointer to it. It sounds like we shouldn't be allowing that.
+Just added this FAQ entry:
+http://www.linux-mtd.infradead.org/faq/ubifs.html#L_max_leb_cnt
 
-Which in turn means that perhaps we should have a property in the
-corresponding node in the device-tree which indicates that it's not
-suitable for direct access?
+Let me know if I did not put it clear enough there.
 
--- 
-dwmw2
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
