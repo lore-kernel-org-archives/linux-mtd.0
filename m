@@ -1,16 +1,23 @@
-Received: from metis.extern.pengutronix.de ([83.236.181.26])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JtgpJ-0001Se-1p
-	for linux-mtd@lists.infradead.org; Wed, 07 May 2008 10:24:45 +0000
-Date: Wed, 7 May 2008 12:27:24 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: jffs2 and unaligned access
-Message-ID: <20080507102724.GE4326@pengutronix.de>
+Received: from wa-out-1112.google.com ([209.85.146.178])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jtgqh-00057L-U2
+	for linux-mtd@lists.infradead.org; Wed, 07 May 2008 10:26:12 +0000
+Received: by wa-out-1112.google.com with SMTP id v33so303595wah.2
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 07 May 2008 03:26:10 -0700 (PDT)
+Message-ID: <8bf247760805070326h2512080bi5dcb61456920f6fb@mail.gmail.com>
+Date: Wed, 7 May 2008 15:56:08 +0530
+From: Ram <vshrirama@gmail.com>
+To: Sameer <x0081444@ti.com>
+Subject: Re: JFFS2 mount problem on NAND flash
+In-Reply-To: <00dc01c84e0b$b10fab20$ec8818ac@ent.ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Cc: David Woodhouse <dwmw2@infradead.org>, Jon Smirl <jonsmirl@gmail.com>
+References: <AchOC7Aeq8/iWL2SSKmE/WuZCJ0fIw==>
+	<00dc01c84e0b$b10fab20$ec8818ac@ent.ti.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,57 +27,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Sameer,
 
-memcpy_from/to_io() use word aligned accesses on the io side of memory.
-The MPC5200 local plus bus where our flashes are connected does not
-allow unaligned accesses, so we have to use the io versions of memcpy.
+I am facing a similar problem.
 
-I have the suspicion that this is not the correct fix to our problem,
-but maybe someone can have a look at it and point me in the right
-direction.
+With Software ECC, i am able to mount without any issues.
+With hardware ECC, i get "Cowardly refusing to erase blocks on
+filesystem with no valid JFFS2 nodes" messages.
 
-Thanks,
-  Sascha
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+Were you able to fix this issue?
 
----
- fs/jffs2/scan.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Index: linux-2.6/fs/jffs2/scan.c
-===================================================================
---- linux-2.6.orig/fs/jffs2/scan.c
-+++ linux-2.6/fs/jffs2/scan.c
-@@ -16,6 +16,7 @@
- #include <linux/pagemap.h>
- #include <linux/crc32.h>
- #include <linux/compiler.h>
-+#include <linux/io.h>
- #include "nodelist.h"
- #include "summary.h"
- #include "debug.h"
-@@ -506,7 +507,7 @@ static int jffs2_scan_eraseblock (struct
- 					sumptr = kmalloc(sumlen, GFP_KERNEL);
- 					if (!sumptr)
- 						return -ENOMEM;
--					memcpy(sumptr + sumlen - buf_len, buf + buf_size - buf_len, buf_len);
-+					memcpy_fromio(sumptr + sumlen - buf_len, buf + buf_size - buf_len, buf_len);
- 				}
- 				if (buf_len < sumlen) {
- 					/* Need to read more so that the entire summary node is present */
-@@ -1036,7 +1037,7 @@ static int jffs2_scan_dirent_node(struct
- 	if (!fd) {
- 		return -ENOMEM;
- 	}
--	memcpy(&fd->name, rd->name, checkedlen);
-+	memcpy_fromio(&fd->name, rd->name, checkedlen);
- 	fd->name[checkedlen] = 0;
- 
- 	crc = crc32(0, fd->name, rd->nsize);
--- 
-Pengutronix e.K. - Linux Solutions for Science and Industry
------------------------------------------------------------
-Kontakt-Informationen finden Sie im Header dieser Mail oder
-auf der Webseite -> http://www.pengutronix.de/impressum/ <-
+Regards,
+sriram
+
+On 1/3/08, Sameer <x0081444@ti.com> wrote:
+> Hi,
+> I am working on omap based board with 16bit, small page Samsung NAND of size 64MB.
+> I have enabled hardware ecc functionality in the driver code. To test the functionality I run the
+> Following tests.
+> 1. When the kernel comes up, >>cat /proc/mtd
+>        mtd0: 00040000 00020000 "bootloader"
+>        mtd1: 00020000 00020000 "params"
+>        mtd2: 00200000 00020000 "kernel"
+>        mtd3: 03da0000 00020000 "filesystem"
+>        mtd4: 00080000 00004000 "NAND-X-Loader"
+>        mtd5: 00080000 00004000 "NAND-U-Boot"
+>        mtd6: 00040000 00004000 "NAND-U-Boot Environment"
+>        mtd7: 00400000 00004000 "NAND-Kernel"
+>        mtd8: 03ac0000 00004000 "NAND-File System"
+> 2. I erase the NAND flash filesystem partition
+>        ./flash_eraseall /dev/mtd8
+>        This function passes. I have verified the erase functionality using the debugger.
+> 3  mount -t jffs2 /dev/mtdblock8 /mnt/nand. I have enabled the low level jffs2 fs debugging
+>        Following is the error message
+>
+>        JFFS2: Erase block at 0x00000000 is not formatted. It will be erased
+>        JFFS2: Erase block at 0x00004000 is not formatted. It will be erased
+>        JFFS2: Erase block at 0x00008000 is not formatted. It will be erased
+>        JFFS2: Erase block at 0x0000c000 is not formatted. It will be erased
+>        JFFS2: Erase block at 0x00010000 is not formatted. It will be erased
+>        JFFS2: Erase block at 0x00014000 is not formatted. It will be erased
+>        JFFS2: Erase block at 0x00018000 is not formatted. It will be erased
+>        JFFS2: Erase block at 0x0001c000 is not formatted. It will be erased
+>                                             -----
+>                                                =----
+>                                        upto--
+>
+>        JFFS2: Erase block at 0x03a9c000 is not formatted. It will be erased
+>        JFFS2: Erase block at 0x03aa0000 is not formatted. It will be erased
+>        JFFS2: Erase block at 0x03aa4000 is not formatted. It will be erased
+>        JFFS2: Erase block at 0x03aa8000 is not formatted. It will be erased
+>        FFS2: Erase block at 0x03aac000 is not formatted. It will be erased
+>        JFFS2: Erase block at 0x03ab0000 is not formatted. It will be erased
+>        JFFS2: Erase block at 0x03ab4000 is not formatted. It will be erased
+>        JFFS2: Erase block at 0x03ab8000 is not formatted. It will be erased
+>        JFFS2: Erase block at 0x03abc000 is not formatted. It will be erased
+>        Cowardly refusing to erase blocks on filesystem with no valid JFFS2 nodes
+>        mpty_blocks 0, bad_blocks 0, c->nr_blocks 3760
+>        mount: Mounting /dev/mtdblock8 on /mnt/nand failed: Input/output error
+>
+> But when I enable the SW_ECC functionalilty I am able to mount the jffs2 fs and perform the fs operations
+>
+> I am beginner for JFFS2 fs.Could you please let me know what causes this error.
+>
+>
+> Regards,
+> -Sameer
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
