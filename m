@@ -1,16 +1,16 @@
-Received: from webmail.frequentis.com ([213.47.210.151])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JtPxI-0006kW-Ox
-	for linux-mtd@lists.infradead.org; Tue, 06 May 2008 16:23:53 +0000
-Content-class: urn:content-classes:message
+Received: from metis.extern.pengutronix.de ([83.236.181.26])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JtgpJ-0001Se-1p
+	for linux-mtd@lists.infradead.org; Wed, 07 May 2008 10:24:45 +0000
+Date: Wed, 7 May 2008 12:27:24 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: jffs2 and unaligned access
+Message-ID: <20080507102724.GE4326@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C8AF95.8FF9F4CC"
-Subject: [RFC][PATCH] making jffs2 more realtime friendly when scanning a
-	partly empty eraseblock
-Date: Tue, 6 May 2008 18:23:41 +0200
-Message-ID: <B80D0E83691CB840ACE9714151F86385014862F9@VIECLEX01.frequentis.frq>
-From: "Nielsen David Marqvar" <David.Nielsen@frequentis.com>
-To: <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: David Woodhouse <dwmw2@infradead.org>, Jon Smirl <jonsmirl@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,89 +20,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
+Hi,
 
-------_=_NextPart_001_01C8AF95.8FF9F4CC
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+memcpy_from/to_io() use word aligned accesses on the io side of memory.
+The MPC5200 local plus bus where our flashes are connected does not
+allow unaligned accesses, so we have to use the io versions of memcpy.
 
-Hello,
+I have the suspicion that this is not the correct fix to our problem,
+but maybe someone can have a look at it and point me in the right
+direction.
 
-I've had problems with jitter in a RTP stream occurring during mount of =
-a
-jffs2 fs.
-With the code below, the jitter are significantly decreased.
+Thanks,
+  Sascha
 
-The problem occurs when scanning an erase block with empty space in it. =
-This
-scan may take long depending on the size of the empty space within the =
-erase
-block and the speed of the flash. On my system scanning an almost empty =
-(but
-NOT completely empty!) erase block can take 80-100 ms (worst case).
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 
-I have added the code below to call cond_resched() for each 2 KiB =
-scanned
-(while the first check will be done before 2 KiB the code is simple and
-fast).
+---
+ fs/jffs2/scan.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Please take a look at the code below - comments are much appreciated.
-
-
-Patch attached.
-(How do I proceed to suggest this committed to the jffs2 source?)
-
-Best regards,
-David Marqvar Nielsen
-
------
-jffs2_scan_eraseblock(), line 653 in scan.c:
-
-			D1(printk(KERN_DEBUG "Found empty flash at 0x%08x\n",
-ofs));
-		more_empty:
-			inbuf_ofs =3D ofs - buf_ofs;
-			while (inbuf_ofs < buf_len) {
-				if (*(uint32_t *)(&buf[inbuf_ofs]) !=3D
-0xffffffff) {
-					printk(KERN_WARNING "Empty flash at
-0x%08x ends at 0x%08x\n",
-					       empty_start, ofs);
-					if ((err =3D jffs2_scan_dirty_space(c,
-jeb, ofs-empty_start)))
-						return err;
-					goto scan_more;
-				}
-
-+                       /* check for resched - searching an eraseblock =
-may
-take several ms */
-+                       if ( (ofs & 0x7ff /* for each 2KiB */) =3D=3D 0)
-+                               cond_resched();
-+
-				inbuf_ofs+=3D4;
-				ofs +=3D 4;
-			}
-			/* Ran off end. */
-			D1(printk(KERN_DEBUG "Empty flash to end of buffer at
-0x%08x\n", ofs));
-
-
-
-------_=_NextPart_001_01C8AF95.8FF9F4CC
-Content-Type: application/octet-stream; name="scan_eraseblock_empty_rt.patch"
-Content-Transfer-Encoding: base64
-Content-Description: scan_eraseblock_empty_rt.patch
-Content-Disposition: attachment;
-	filename="scan_eraseblock_empty_rt.patch"
-
-LS0tIC9ob21lX3ZpZS9kbmllbHNlbi9saW51eC0yLjYuMjUuMS9mcy9qZmZzMi9zY2FuLmMJMjAw
-OC0wNS0wMSAyMzo0NToyNS4wMDAwMDAwMDAgKzAyMDAKKysrIGZzL2pmZnMyL3NjYW4uYwkyMDA4
-LTA1LTA2IDE3OjI1OjU3LjAwMDAwMDAwMCArMDIwMApAQCAtNjUzLDYgKzY1MywxMCBAQAogCQkJ
-CQlnb3RvIHNjYW5fbW9yZTsKIAkJCQl9CiAKKwkJCQkvKiBjaGVjayBmb3IgcmVzY2hlZCAtIHNl
-YXJjaGluZyBhbiBlcmFzZWJsb2NrIG1heSB0YWtlIHNldmVyYWwgbXMgKi8KKwkJCQlpZiAoIChv
-ZnMgJiAweDdmZiAvKiBmb3IgZWFjaCAyS2lCICovKSA9PSAwKQorCQkJCQljb25kX3Jlc2NoZWQo
-KTsKKwogCQkJCWluYnVmX29mcys9NDsKIAkJCQlvZnMgKz0gNDsKIAkJCX0K
-
-------_=_NextPart_001_01C8AF95.8FF9F4CC--
+Index: linux-2.6/fs/jffs2/scan.c
+===================================================================
+--- linux-2.6.orig/fs/jffs2/scan.c
++++ linux-2.6/fs/jffs2/scan.c
+@@ -16,6 +16,7 @@
+ #include <linux/pagemap.h>
+ #include <linux/crc32.h>
+ #include <linux/compiler.h>
++#include <linux/io.h>
+ #include "nodelist.h"
+ #include "summary.h"
+ #include "debug.h"
+@@ -506,7 +507,7 @@ static int jffs2_scan_eraseblock (struct
+ 					sumptr = kmalloc(sumlen, GFP_KERNEL);
+ 					if (!sumptr)
+ 						return -ENOMEM;
+-					memcpy(sumptr + sumlen - buf_len, buf + buf_size - buf_len, buf_len);
++					memcpy_fromio(sumptr + sumlen - buf_len, buf + buf_size - buf_len, buf_len);
+ 				}
+ 				if (buf_len < sumlen) {
+ 					/* Need to read more so that the entire summary node is present */
+@@ -1036,7 +1037,7 @@ static int jffs2_scan_dirent_node(struct
+ 	if (!fd) {
+ 		return -ENOMEM;
+ 	}
+-	memcpy(&fd->name, rd->name, checkedlen);
++	memcpy_fromio(&fd->name, rd->name, checkedlen);
+ 	fd->name[checkedlen] = 0;
+ 
+ 	crc = crc32(0, fd->name, rd->nsize);
+-- 
+Pengutronix e.K. - Linux Solutions for Science and Industry
+-----------------------------------------------------------
+Kontakt-Informationen finden Sie im Header dieser Mail oder
+auf der Webseite -> http://www.pengutronix.de/impressum/ <-
