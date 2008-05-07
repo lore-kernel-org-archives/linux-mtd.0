@@ -1,17 +1,23 @@
-Received: from smtp5.centerbeam.com ([63.120.115.249])
+Received: from wf-out-1314.google.com ([209.85.200.174])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JtVLu-0001JH-9r
-	for linux-mtd@lists.infradead.org; Tue, 06 May 2008 22:09:38 +0000
-Content-class: urn:content-classes:message
+	id 1JtZlM-0000M6-9R
+	for linux-mtd@lists.infradead.org; Wed, 07 May 2008 02:52:12 +0000
+Received: by wf-out-1314.google.com with SMTP id 28so86798wfc.24
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 06 May 2008 19:52:10 -0700 (PDT)
+Message-ID: <9c9fda240805061952s1da089b5x1be364588146994e@mail.gmail.com>
+Date: Wed, 7 May 2008 11:52:10 +0900
+From: "Kyungmin Park" <kmpark@infradead.org>
+Sender: kyungmin78@gmail.com
+To: "David Woodhouse" <dwmw2@infradead.org>
+Subject: Re: [PATCH] cmdlinepart: Missing partition info is not an error
+In-Reply-To: <87lk5nr0j9.fsf@macbook.be.48ers.dk>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Subject: MTD/JFFS2 causes libc.so to break(?)
-Date: Tue, 6 May 2008 15:09:31 -0700
-Message-ID: <32C4C619DF66B945B608E59A6791C8C302626746@CBA0E2K11.CBA0.centerbeam.com>
-From: "Manu Rao" <MRao@AlienTechnology.com>
-To: <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <87lk5nr0j9.fsf@macbook.be.48ers.dk>
+Cc: sr@denx.de, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,44 +27,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
-I have a linux 2.6.22.2 kernel running on an AT91SAM9260 processor =
-board, with debian filesytem stored on a Samsung NAND flash.
+Hi David,
 
-When I setup the filesystem by untarring a tarball into /dev/mtblock0, =
-everything is fine.
-When I setup the filesystem by using a jffs2 image (with either uboot, =
-nandwrite(in linux) or preprogrammed ) , it boots fine once( or a couple =
-of times) and then gives the following error:
+After commit this patch, we can't register the mtd partitions in case
+of OneNAND.
+In previous time it expects the negative value (-EINVAL) if not found.
+Now it returns 0 if not found.
 
-/bin/sh: error while loading shared libraries: /lib/libc.so.6: undefined =
-symbol: __`=C0, version GLIBC_2.0
+#ifdef CONFIG_MTD_PARTITIONS
+        err = parse_mtd_partitions(&info->mtd, part_probes, &info->parts, 0);
+        if (err > 0)
+                /* If cmdline found */
+                add_mtd_partitions(&info->mtd, info->parts, err);
+        else if (err < 0 && pdata->parts)
+                /* not found but we have parts info */
+                add_mtd_partitions(&info->mtd, pdata->parts, pdata->nr_parts);
+        else
+#endif
+                err = add_mtd_device(&info->mtd);
 
-I have verified (using md5-sum) that the library remains the same. I =
-have a soft link to the library like so:
+Well I will send the related patches.
 
-ls -la libc.so.6
-lrwxrwxrwx=A0 1 root root 13 May=A0 5=A0 2008 libc.so.6 -> libc-2.3.2.so
-ls -la libc-2.3.2.so
--rwxr-xr-x=A0 1 root root 1159708 Mar=A0 5=A0 2007 libc-2.3.2.so
+Thank you,
+Kyungmin Park
 
 
-1) Could it be that my mkfs.jffs2 is the wrong version (mkfs.jffs2: =
-revision 1.50 ) ?? What version would I need to compile a FS for a =
-2.6.22 kernel ?
-2) Am I passing the wrong params to mkfs.jffs2? I invoke it like so:
-       mkfs.jffs2 -n -l -s 512 -p 16KiB -e 16 KiB -o jffs2.img -d =
-deb_root
-Does the page size need to include the oob area???
-
-My Flash is K9F1208U0B, which has 512 byte pages, and 16 KiB erase =
-blocks.
-
-Any and all help greatly appreciated
-
-Manu Rao
-
-Misc info:
-
-uname -a=A0 =3D=3D Linux version 2.6.22.2.alien.x650 (mrao@mhlxrh4rfe) =
-(gcc version 4.0.1) #2 Fri May 2 17:32:13 PDT 2008
+On Fri, Feb 15, 2008 at 1:00 AM, Peter Korsgaard <jacmet@sunsite.dk> wrote:
+> Return 0 partitions instead of -EINVAL on no mtdpart= argument in kernel
+>  cmdline or missing partition info for device.
+>
+>  Signed-off-by: Peter Korsgaard <jacmet@sunsite.dk>
+>  Acked-by: Stefan Roese <sr@denx.de>
+>  ---
+>   drivers/mtd/cmdlinepart.c |    5 +----
+>   1 files changed, 1 insertions(+), 4 deletions(-)
+>
+>  diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
+>  index b44292a..08b82c9 100644
+>  --- a/drivers/mtd/cmdlinepart.c
+>  +++ b/drivers/mtd/cmdlinepart.c
+>  @@ -308,9 +308,6 @@ static int parse_cmdline_partitions(struct mtd_info *master,
+>         struct cmdline_mtd_partition *part;
+>         char *mtd_id = master->name;
+>
+>  -       if(!cmdline)
+>  -               return -EINVAL;
+>  -
+>         /* parse command line */
+>         if (!cmdline_parsed)
+>                 mtdpart_setup_real(cmdline);
+>  @@ -341,7 +338,7 @@ static int parse_cmdline_partitions(struct mtd_info *master,
+>                         return part->num_parts;
+>                 }
+>         }
+>  -       return -EINVAL;
+>  +       return 0;
+>   }
+>
+>
+>  --
