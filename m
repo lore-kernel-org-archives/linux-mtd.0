@@ -1,19 +1,22 @@
-Received: from ip66-104-21-76.z21-104-66.customer.algx.net ([66.104.21.76]
-	helo=beretta.inhandelectronics.com)
+Received: from yw-out-1718.google.com ([74.125.46.156])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JtwGW-0007lr-V9
-	for linux-mtd@lists.infradead.org; Thu, 08 May 2008 02:53:53 +0000
-From: Vernon Sauder <VernonInHand@gmail.com>
+	id 1JtwPc-00047Q-EW
+	for linux-mtd@lists.infradead.org; Thu, 08 May 2008 03:03:16 +0000
+Received: by yw-out-1718.google.com with SMTP id 5so598331ywm.72
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 07 May 2008 20:03:05 -0700 (PDT)
+Message-ID: <48226D8F.3030603@gmail.com>
+Date: Wed, 07 May 2008 23:03:43 -0400
 MIME-Version: 1.0
-Content-Disposition: inline
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: add more StrataFlash chip ids that need powerup fixup
-Date: Wed, 7 May 2008 22:35:56 -0400
-Content-Type: text/plain;
-  charset="iso-8859-1"
+To: Markus Wagner <Markus.Wagner@delec.de>
+Subject: Re: Problems mounting jffs2 image on nor flash > Erase at 0x....
+	failed	immediately: -EROFS. Is the sector locked?
+References: <1423A303F72A2F4FB7801E51406342EA10ECCD@delec-server-01.DELEC.local>
+In-Reply-To: <1423A303F72A2F4FB7801E51406342EA10ECCD@delec-server-01.DELEC.local>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <200805072235.56227.VernonInHand@gmail.com>
-Reply-To: Vernon Sauder <VernonInHand@gmail.com>
+From: Vernon Sauder <vernoninhand@gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +26,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Vernon Sauder <VernonInHand@gmail.com>
+Markus Wagner wrote:
+> Hello,
+>
+> i have some problems to mount my jffs2 image on my NOR-Flash.
+> I ported UBoot and Linux to my new board.
+> So far UBoot works well but Linux has some problems to mount the flash.
+>
+> I can read from my flash with the dd command.
+> But when I mount the flash with 'mount -t jffs2 /dev/mtdblock4 /mnt/' I get the error: 'Erase at 0x...... failed immediately: -EROFS. Is the sector locked?'
+>
+> Some Infos:
+> Its an Intel P33 Strataflash.
+>
+> <SNIP>
+>
+> It seems to me that the kernel doesn't know that the flash is protected after power up.
+>
+> How can I get it to work?
+> Where should I look at?
+>
+> Thanks for your help.
+> Markus
+>
+>   
+You did not mention exactly which device you are using. I just posted a 
+patch to the list that added more StrataFlash devices to the fixup table 
+so they are unlocked at power up.
 
-Signed-off-by: Vernon Sauder <VernonInHand@gmail.com>
----
+See [PATCH] mtd: add more StrataFlash chip ids that need powerup fixup
 
---- a/drivers/mtd/chips/cfi_cmdset_0001.c	2008-05-07 18:35:36.000000000 -0400
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c	2008-05-07 18:19:40.000000000 -0400
-@@ -245,6 +245,11 @@ static struct cfi_fixup cfi_fixup_table[
- #endif
- 	{ CFI_MFR_ST, 0x00ba, /* M28W320CT */ fixup_st_m28w320ct, NULL },
- 	{ CFI_MFR_ST, 0x00bb, /* M28W320CB */ fixup_st_m28w320cb, NULL },
-+	{ MANUFACTURER_INTEL, 0x8917,	      fixup_use_powerup_lock, NULL, },
-+	{ MANUFACTURER_INTEL, 0x8918,	      fixup_use_powerup_lock, NULL, },
-+	{ MANUFACTURER_INTEL, 0x8919,	      fixup_use_powerup_lock, NULL, },
-+	{ MANUFACTURER_INTEL, 0x891a,	      fixup_use_powerup_lock, NULL, },
-+	{ MANUFACTURER_INTEL, 0x891b,	      fixup_use_powerup_lock, NULL, },
- 	{ MANUFACTURER_INTEL, 0x891c,	      fixup_use_powerup_lock, NULL, },
- 	{ 0, 0, NULL, NULL }
- };
+Vern
