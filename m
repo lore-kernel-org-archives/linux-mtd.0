@@ -1,29 +1,26 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Ju6fG-0003XC-1K
-	for linux-mtd@lists.infradead.org; Thu, 08 May 2008 14:00:06 +0000
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1Ju6fC-0004lh-9t
-	for linux-mtd@lists.infradead.org; Thu, 08 May 2008 14:00:02 +0000
-Received: from p5497da3c.dip.t-dialin.net ([84.151.218.60])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 08 May 2008 14:00:02 +0000
-Received: from dzu by p5497da3c.dip.t-dialin.net with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 08 May 2008 14:00:02 +0000
-To: linux-mtd@lists.infradead.org
-From: Detlev Zundel <dzu@denx.de>
-Subject: Re: jffs2 and unaligned access
-Date: Thu, 08 May 2008 15:19:50 +0200
-Message-ID: <m2tzh9rkzt.fsf@ohwell.denx.de>
-References: <20080507102724.GE4326@pengutronix.de>
-	<1210157630.25560.884.camel@pmac.infradead.org>
-	<9146b2e7fde34e912d20e6ea954bb067@kernel.crashing.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: news <news@ger.gmane.org>
-Cc: linuxppc-dev@ozlabs.org
+	id 1Ju84z-0004ru-FV
+	for linux-mtd@lists.infradead.org; Thu, 08 May 2008 15:30:46 +0000
+Date: Thu, 8 May 2008 17:30:38 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Alexander Belyakov <abelyako@googlemail.com>
+Subject: Re: [PATCH][RFC] NAND subpage read feature. Take 2.
+Message-ID: <20080508153038.GC14141@logfs.org>
+References: <Pine.LNX.4.64.0804301301360.6788@pentafluge.infradead.org>
+	<20080501202523.GA17828@logfs.org>
+	<fe810cf0805040146y64ffcb66vfbf2c4aa82eabfd4@mail.gmail.com>
+	<20080505073745.GA13916@logfs.org>
+	<fe810cf0805050510g2bf7ef4brfaf4352454dd204b@mail.gmail.com>
+	<20080505153959.GA17330@logfs.org>
+	<fe810cf0805060229j3c20ab77g96c5ade0f111d278@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fe810cf0805060229j3c20ab77g96c5ade0f111d278@mail.gmail.com>
+Cc: dwmw2@infradead.org, tglx@linutronix.de, linux-mtd@lists.infradead.org,
+	Alexey Korolev <akorolev@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,41 +30,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Tue, 6 May 2008 13:29:09 +0400, Alexander Belyakov wrote:
+> 
+> Thanks. I believe mtd caching deserves separate discussion, because
+> too many mtd things are going to be affected.
 
->>> memcpy_from/to_io() use word aligned accesses on the io side of
->>> memory.
->>> The MPC5200 local plus bus where our flashes are connected does not
->>> allow unaligned accesses, so we have to use the io versions of memcpy.
->>
->> But this region of flash is marked as suitable for execute-in-place,
->> otherwise the point() function wouldn't be working to give a direct
->> pointer to it. It sounds like we shouldn't be allowing that.
->>
->> Which in turn means that perhaps we should have a property in the
->> corresponding node in the device-tree which indicates that it's not
->> suitable for direct access?
->
-> This isn't usually a property of the flash device, but of the various
-> buses/controllers above the flash device.  
+Indeed.  For that very reason I've kept the caching part of logfs for
+now.  It is not a trivial decision to make and regressions can show up
+in surprising places.
 
-I wholeheartedly agree.  After all, its the Local+ bus playing games
-here.  And fixing that for JFFS2 only ignores that other devices can
-*and will* be connected on this bus.  Unaligned accesses to such devices
-will also fail (likely from mtd unrelated code) - and fail silently,
-taking quite a while to figure out what is going wrong where.
-
-> The device tree should mimic reality (and it does, it just seems the
-> kernel doesn't use this information yet?)
-
-How is this exactly supposed to work?
-
-Cheers
-  Detlev
+Jörn
 
 -- 
-In the topologic hell the beer is packed in Klein's bottles.
---
-DENX Software Engineering GmbH,      MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich,  Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-40 Fax: (+49)-8142-66989-80 Email: dzu@denx.de
+Joern's library part 10:
+http://blogs.msdn.com/David_Gristwood/archive/2004/06/24/164849.aspx
