@@ -1,19 +1,29 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Ju3ge-00019t-HJ
-	for linux-mtd@lists.infradead.org; Thu, 08 May 2008 10:49:20 +0000
-Subject: Re: ubifs image file confusion!
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Nancy <nancydreaming@gmail.com>
-In-Reply-To: <bae050c10805080217r77c9724aya0777ccf5f59a293@mail.gmail.com>
-References: <bae050c10805080217r77c9724aya0777ccf5f59a293@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 08 May 2008 13:48:50 +0300
-Message-Id: <1210243730.3645.66.camel@sauron>
+	id 1Ju6fG-0003XC-1K
+	for linux-mtd@lists.infradead.org; Thu, 08 May 2008 14:00:06 +0000
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1Ju6fC-0004lh-9t
+	for linux-mtd@lists.infradead.org; Thu, 08 May 2008 14:00:02 +0000
+Received: from p5497da3c.dip.t-dialin.net ([84.151.218.60])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 08 May 2008 14:00:02 +0000
+Received: from dzu by p5497da3c.dip.t-dialin.net with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 08 May 2008 14:00:02 +0000
+To: linux-mtd@lists.infradead.org
+From: Detlev Zundel <dzu@denx.de>
+Subject: Re: jffs2 and unaligned access
+Date: Thu, 08 May 2008 15:19:50 +0200
+Message-ID: <m2tzh9rkzt.fsf@ohwell.denx.de>
+References: <20080507102724.GE4326@pengutronix.de>
+	<1210157630.25560.884.camel@pmac.infradead.org>
+	<9146b2e7fde34e912d20e6ea954bb067@kernel.crashing.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+Content-Type: text/plain; charset=us-ascii
+Sender: news <news@ger.gmane.org>
+Cc: linuxppc-dev@ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +33,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2008-05-08 at 17:17 +0800, Nancy wrote:
->    ubifs image size aligned to LEB size.
-Right.
+Hi,
 
->  so it contains LEBs from 0 to
-> ?(no matter what the number is).
-OK.
+>>> memcpy_from/to_io() use word aligned accesses on the io side of
+>>> memory.
+>>> The MPC5200 local plus bus where our flashes are connected does not
+>>> allow unaligned accesses, so we have to use the io versions of memcpy.
+>>
+>> But this region of flash is marked as suitable for execute-in-place,
+>> otherwise the point() function wouldn't be working to give a direct
+>> pointer to it. It sounds like we shouldn't be allowing that.
+>>
+>> Which in turn means that perhaps we should have a property in the
+>> corresponding node in the device-tree which indicates that it's not
+>> suitable for direct access?
+>
+> This isn't usually a property of the flash device, but of the various
+> buses/controllers above the flash device.  
 
->  Do all those LEBs mapped in EBA
-> table?
-When you flash the image, yes, the will be.
+I wholeheartedly agree.  After all, its the Local+ bus playing games
+here.  And fixing that for JFFS2 only ignores that other devices can
+*and will* be connected on this bus.  Unaligned accesses to such devices
+will also fail (likely from mtd unrelated code) - and fail silently,
+taking quite a while to figure out what is going wrong where.
 
->    My current tool ubidumpvol works fine with VFAT volume
-I have no idea what VFAT volume mean. I have not idea what your "current
-tool" is. And the rest of your mail is unclear and cryptic for me.
+> The device tree should mimic reality (and it does, it just seems the
+> kernel doesn't use this information yet?)
 
-It is very difficult to realize what is the question an the problem from
-this mail. Could you please think more on your questions and how you
-formulate them? It will help us answering them. Moreover, a well
-formulated question already has half an answer.
+How is this exactly supposed to work?
 
-Thanks.
+Cheers
+  Detlev
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+-- 
+In the topologic hell the beer is packed in Klein's bottles.
+--
+DENX Software Engineering GmbH,      MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich,  Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-40 Fax: (+49)-8142-66989-80 Email: dzu@denx.de
