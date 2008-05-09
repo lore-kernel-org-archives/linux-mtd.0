@@ -1,19 +1,21 @@
-Received: from ernst.netinsight.se ([212.247.11.2])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JuS8F-0005hO-AP
-	for linux-mtd@lists.infradead.org; Fri, 09 May 2008 12:55:27 +0000
-Message-ID: <482449AD.405@users.sourceforge.net>
-Date: Fri, 09 May 2008 14:55:09 +0200
-From: =?ISO-8859-1?Q?Anders_Grafstr=F6m?= <grfstrm@users.sourceforge.net>
-MIME-Version: 1.0
-To: James <jamessteward@optusnet.com.au>
-Subject: Re: New thread [BUG] JFFS2 usage of write_begin and
-	write_end	functions causes kernel panic
-References: <1210312276.28139.19.camel@Ubuntu-Desktop>
-In-Reply-To: <1210312276.28139.19.camel@Ubuntu-Desktop>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from mba.ocn.ne.jp ([122.1.235.107] helo=smtp.mba.ocn.ne.jp)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JuUDF-0002r9-7Z
+	for linux-mtd@lists.infradead.org; Fri, 09 May 2008 15:08:45 +0000
+Date: Sat, 10 May 2008 00:09:50 +0900 (JST)
+Message-Id: <20080510.000950.25478534.anemo@mba.ocn.ne.jp>
+To: dwmw2@infradead.org
+Subject: Re: [2.6.25 PATCH] JFFS2 Fix of panics caused by wrong condition
+	for hole frag creation in write_begin
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+In-Reply-To: <1208202002.3005.35.camel@pmac.infradead.org>
+References: <1208202002.3005.35.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: nickpiggin@yahoo.com.au, joern@logfs.org, linux-mtd@lists.infradead.org,
+	torvalds@infradead.org, akpm@linux-foundation.org,
+	vailiy.leonenko@intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,12 +25,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-James wrote:
-> Did the change suggested here
-> http://lists.infradead.org/pipermail/linux-mtd/2008-April/021473.html
-> help?
+On Mon, 14 Apr 2008 20:40:02 +0100, David Woodhouse <dwmw2@infradead.org> wrote:
+> From: Alexey Korolev <akorolev@infradead.org>
+> 
+> This fixes a regression introduced in commit
+> 205c109a7a96d9a3d8ffe64c4068b70811fef5e8 when switching to
+> write_begin/write_end operations in JFFS2. The page offset is
+> miscalculated, leading to corruption of the fragment lists and
+> subsequently to memory corruption and panics.
+> 
+> Signed-off-by: Alexey Korolev <akorolev@infradead.org>
+> Signed-off-by: Vasiliy Leonenko <vasiliy.leonenko@mail.ru>
+> Signed-off-by: David Woodhouse <dwmw2@infradead.org>
 
-It avoids a panic if you have set panic-on-oops but the write operation fails
-for the application. write(2) returning a short write count is what I saw.
+I see this in final 2.6.25 kernel.
+Is this worth to go to 2.6.24.y stable too?
 
-Anders
+---
+Atsushi Nemoto
