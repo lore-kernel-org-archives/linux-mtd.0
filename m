@@ -1,17 +1,14 @@
-Received: from mail04.syd.optusnet.com.au ([211.29.132.185])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JvK5u-0006am-4Q
-	for linux-mtd@lists.infradead.org; Sun, 11 May 2008 22:32:38 +0000
 Subject: Re: New thread [BUG] JFFS2 usage of write_begin and write_end
 	functions causes kernel panic
-From: James <jamessteward@optusnet.com.au>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1210320731.25560.1193.camel@pmac.infradead.org>
+From: David Woodhouse <dwmw2@infradead.org>
+To: James <jamessteward@optusnet.com.au>
+In-Reply-To: <1210545077.6235.10.camel@Ubuntu-Desktop>
 References: <1210312276.28139.19.camel@Ubuntu-Desktop>
 	<1210320731.25560.1193.camel@pmac.infradead.org>
+	<1210545077.6235.10.camel@Ubuntu-Desktop>
 Content-Type: text/plain
-Date: Mon, 12 May 2008 08:31:17 +1000
-Message-Id: <1210545077.6235.10.camel@Ubuntu-Desktop>
+Date: Sun, 11 May 2008 23:41:02 +0100
+Message-Id: <1210545663.2861.1.camel@shinybook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -24,20 +21,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2008-05-09 at 09:12 +0100, David Woodhouse wrote:
-> You possibly need the patch in commit abe2f4143?
+On Mon, 2008-05-12 at 08:31 +1000, James wrote:
+> I'd love to, but (embarrassed) how do I find it?  I was searching in
+> http://git.infradead.org/mtd-2.6.git , but didn't see how to search
+> for a commit number.
 
-I'd love to, but (embarrassed) how do I find it?  I was searching in
-http://git.infradead.org/mtd-2.6.git , but didn't see how to search for
-a commit number.  Also the link the the GIT HOWTO timed out on several
-attempts to view it.
+Just type it.
+http://git.infradead.org/mtd-2.6.git?a=commitdiff;h=abe2f4143
 
-> The first link on the archived mail, despite appearing to be the address
-> of the person who sent the mail, actually has a mailto: link which will
-> send mail to the list -- and will get the threading right, if your MUA
-> is behaving itself properly.
+>  Also the link the the GIT HOWTO timed out on several
+> attempts to view it.
 
-I see, thanks.
+Yeah, due to a generator failure that machine is down until Monday
+morning (UK time).
 
-Regards,
-James.
+-- 
+dwmw2
