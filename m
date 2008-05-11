@@ -1,19 +1,19 @@
-Received: from rv-out-0708.google.com ([209.85.198.243])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JvITN-00035L-Sl
-	for linux-mtd@lists.infradead.org; Sun, 11 May 2008 20:48:46 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so2333139rvf.42
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 11 May 2008 13:48:44 -0700 (PDT)
-Message-ID: <cd73a99e0805111348g667d1e63j38379d66f55c062c@mail.gmail.com>
-Date: Sun, 11 May 2008 22:48:44 +0200
-From: "Andrew Victor" <avictor.za@gmail.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Subject: AT91 NAND ECC default
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from mail04.syd.optusnet.com.au ([211.29.132.185])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JvK5u-0006am-4Q
+	for linux-mtd@lists.infradead.org; Sun, 11 May 2008 22:32:38 +0000
+Subject: Re: New thread [BUG] JFFS2 usage of write_begin and write_end
+	functions causes kernel panic
+From: James <jamessteward@optusnet.com.au>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1210320731.25560.1193.camel@pmac.infradead.org>
+References: <1210312276.28139.19.camel@Ubuntu-Desktop>
+	<1210320731.25560.1193.camel@pmac.infradead.org>
+Content-Type: text/plain
+Date: Mon, 12 May 2008 08:31:17 +1000
+Message-Id: <1210545077.6235.10.camel@Ubuntu-Desktop>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,91 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi,
+On Fri, 2008-05-09 at 09:12 +0100, David Woodhouse wrote:
+> You possibly need the patch in commit abe2f4143?
 
-Can this be merged upstream ASAP.
-There will most likely be data-corruption without it.
+I'd love to, but (embarrassed) how do I find it?  I was searching in
+http://git.infradead.org/mtd-2.6.git , but didn't see how to search for
+a commit number.  Also the link the the GIT HOWTO timed out on several
+attempts to view it.
 
----
+> The first link on the archived mail, despite appearing to be the address
+> of the person who sent the mail, actually has a mailto: link which will
+> send mail to the list -- and will get the threading right, if your MUA
+> is behaving itself properly.
 
-All existing systems where the AT91 NAND driver is used operate with
-Software ECC.
-With the recently merged (2.6.26-rc1) Hardware ECC support for this
-driver, the default is now set to Hardware ECC which causes existing
-filesystems to be incompatible.
+I see, thanks.
 
-This patch swaps the KConfig option so Software ECC is once again the default.
-
-Also indicates that Hardware ECC is available on the AT91SAM9RL and
-AT91CAP9 processors.
-(And there also seems to be a duplicate 'endchoice')
-
-
-Signed-off-by: Andrew Victor <linux@maxim.org.za>
-
-
-
-
-diff -urN -x CVS linux-2.6.26-rc1/drivers/mtd/nand/Kconfig
-linux-2.6/drivers/mtd/nand/Kconfig
---- linux-2.6.26-rc1/drivers/mtd/nand/Kconfig	2008-05-10
-16:26:49.000000000 +0200
-+++ linux-2.6/drivers/mtd/nand/Kconfig	2008-05-11 22:24:19.000000000 +0200
-@@ -273,7 +273,7 @@
- 	  If you say "m", the module will be called "cs553x_nand.ko".
-
- config MTD_NAND_AT91
--	bool "Support for NAND Flash / SmartMedia on AT91"
-+	tristate "Support for NAND Flash / SmartMedia on AT91"
- 	depends on ARCH_AT91
- 	help
- 	  Enables support for NAND Flash / Smart Media Card interface
-@@ -282,11 +282,20 @@
- 	prompt "ECC management for NAND Flash / SmartMedia on AT91"
- 	depends on MTD_NAND_AT91
-
-+config MTD_NAND_AT91_ECC_SOFT
-+	bool "Software ECC"
-+	help
-+	  Uses software ECC.
-+
-+	  NB : hardware and software ECC schemes are incompatible.
-+	  If you switch from one to another, you'll have to erase your
-+	  mtd partition.
-+
- config MTD_NAND_AT91_ECC_HW
- 	bool "Hardware ECC"
--	depends on ARCH_AT91SAM9263 || ARCH_AT91SAM9260
-+	depends on ARCH_AT91SAM9263 || ARCH_AT91SAM9260 || ARCH_AT91SAM9RL
-|| ARCH_AT91CAP9
- 	help
--	  Uses hardware ECC provided by the at91sam9260/at91sam9263 chip
-+	  Uses hardware ECC provided by some AT91 processors
- 	  instead of software ECC.
- 	  The hardware ECC controller is capable of single bit error
- 	  correction and 2-bit random detection per page.
-@@ -297,15 +306,6 @@
-
- 	  If unsure, say Y
-
--config MTD_NAND_AT91_ECC_SOFT
--	bool "Software ECC"
--	help
--	  Uses software ECC.
--
--	  NB : hardware and software ECC schemes are incompatible.
--	  If you switch from one to another, you'll have to erase your
--	  mtd partition.
--
- config MTD_NAND_AT91_ECC_NONE
- 	bool "No ECC (testing only, DANGEROUS)"
- 	depends on DEBUG_KERNEL
-@@ -316,8 +316,6 @@
-
- 	  If unsure, say N
-
--	  endchoice
--
- endchoice
-
- config MTD_NAND_PXA3xx
+Regards,
+James.
