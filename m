@@ -1,29 +1,22 @@
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JvVlu-0004Or-9d
-	for linux-mtd@lists.infradead.org; Mon, 12 May 2008 11:00:47 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e2.ny.us.ibm.com (8.13.8/8.13.8) with ESMTP id m4CB0jnO011045
-	for <linux-mtd@lists.infradead.org>; Mon, 12 May 2008 07:00:45 -0400
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v8.7) with ESMTP id
-	m4CB0j55080660
-	for <linux-mtd@lists.infradead.org>; Mon, 12 May 2008 07:00:45 -0400
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	m4CB0jT4024734
-	for <linux-mtd@lists.infradead.org>; Mon, 12 May 2008 07:00:45 -0400
-Date: Mon, 12 May 2008 05:58:17 -0500
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: "marco.qu" <szarm@21cn.com>
-Subject: Re: 64bit mtd subsystem and 4K page nand flash
-Message-ID: <20080512055817.4e9af240@zod.rchland.ibm.com>
-In-Reply-To: <20080512064314.398093807C@21cn.com>
-References: <20080512064314.398093807C@21cn.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+	id 1JvX7Q-0007Wb-KC
+	for linux-mtd@lists.infradead.org; Mon, 12 May 2008 12:27:05 +0000
+Date: Mon, 12 May 2008 14:26:51 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Bryan Wu <bryan.wu@analog.com>
+Subject: Re: [PATCH try#2] [MTD/MAPS] Blackfin BF5xx Maps: Handle the case
+	where flash memory and ethernet mac/phy are mapped onto the
+	same async bank
+Message-ID: <20080512122650.GA10014@logfs.org>
+References: <1202020355.6671.23.camel@roc-laptop>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1202020355.6671.23.camel@roc-laptop>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, will.newton@gmail.com,
+	Mike Frysinger <vapier.adi@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,17 +26,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 12 May 2008 14:11:27 +0800
-"marco.qu" <szarm@21cn.com> wrote:
+On Sun, 3 February 2008 14:32:35 +0800, Bryan Wu wrote:
+> +
+> +static void bf5xx_copy_from(struct map_info *map, void *to, unsigned long from, ssize_t len)
+> +{
+> +	unsigned long i;
+> +	map_word test;
+> +
+> +	if ((unsigned long)to & 0x1) {
+> +		for (i = 0; i < len / 2 * 2; i += 2) {
+> +			test = bf5xx_read(map, from + i);
+> +			put_unaligned(test.x[0], (__le16 *)(to + i));
+> +		}
+> +	} else {
+> +		for (i = 0; i < len / 2 * 2; i += 2) {
+> +			test = bf5xx_read(map, from + i);
+> +			*((u16*)(to + i)) = test.x[0];
+                        ^^^^^^^^^^^^^^^^^
 
-> 
-> Is anybody can provide patches to convert the MTD subsystem to overcome the limit of
-> using a 32bit variable to store size/offset?
+I'm not particularly fond of such constructs, maybe because I have such
+a hard time understanding what the code actually does.
 
-You can if you work on it.  Some others are looking at it as well.
+How about:
+	u16 *foo = to;
 
-> Is anybody can provide patches for 4k+128 byte per page nand flash ? 
+	for (i = 0; i < (len & ~1); i++) {
+		test = bf5xx_read(map, from + 2 * i);
+		foo[i] = test.x[0];
+	}
 
-Patches for it are welcome.
+With perhaps a better name than "foo" and the same conversion in the
+rest of the function as well?
 
-josh
+> +		}
+> +	}
+> +
+> +	if (len & 0x1) {
+> +		test = bf5xx_read(map, from + i);
+> +		*((u8*)(to + i)) = (u8)test.x[0];
+> +	}
+> +}
+
+Jörn
+
+-- 
+There's nothing better for promoting creativity in a medium than
+making an audience feel "Hmm ­ I could do better than that!"
+-- Douglas Adams in a slashdot interview
