@@ -1,23 +1,25 @@
-Received: from mail18.syd.optusnet.com.au ([211.29.132.199])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JvOff-0001UC-Jt
-	for linux-mtd@lists.infradead.org; Mon, 12 May 2008 03:25:52 +0000
-Subject: Re: New thread [BUG] JFFS2 usage of write_begin and write_end
-	functions causes kernel panic
-From: James <jamessteward@optusnet.com.au>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1210550476.6235.30.camel@Ubuntu-Desktop>
-References: <1210312276.28139.19.camel@Ubuntu-Desktop>
-	<1210320731.25560.1193.camel@pmac.infradead.org>
-	<1210545077.6235.10.camel@Ubuntu-Desktop>
-	<1210545663.2861.1.camel@shinybook.infradead.org>
-	<1210550476.6235.30.camel@Ubuntu-Desktop>
-Content-Type: text/plain
-Date: Mon, 12 May 2008 13:24:40 +1000
-Message-Id: <1210562680.6235.55.camel@Ubuntu-Desktop>
+Received: from [59.36.102.42] (helo=21cn.com)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JvRSU-0005x6-Qx
+	for linux-mtd@lists.infradead.org; Mon, 12 May 2008 06:24:27 +0000
+Received: from aisp5-smtp?dg (dgproxy5.inner-hermes.com [10.27.2.5])
+	by 21cn.com (HERMES) with ESMTP id 398093807C
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 12 May 2008 14:43:14 +0800 (CST)
+Received: from gzb4103([218.17.227.162])
+	by aisp5-smtp@dg(Knowledge-based Antispam Gateway
+	2.126n(2008-04-29),59.36.102.14) with ESMTP id
+	local14894.1210572687 for <linux-mtd@lists.infradead.org>;
+	Mon, 12 May 2008 14:11:27 +0800
+Date: Mon, 12 May 2008 14:11:27 +0800
+From: "marco.qu" <szarm@21cn.com>
+To: "linux-mtd" <linux-mtd@lists.infradead.org>
+Subject: 64bit mtd subsystem and 4K page nand flash
 Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="gb2312"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Message-Id: <20080512064314.398093807C@21cn.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,29 +29,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2008-05-12 at 10:01 +1000, James wrote:
-> On Sun, 2008-05-11 at 23:41 +0100, David Woodhouse wrote:
-> > Just type it.
-> > http://git.infradead.org/mtd-2.6.git?a=commitdiff;h=abe2f4143
-> 
-> It seems better.  I still get bucket loads of;
-> 
-> mtd->read(0x62c bytes from 0x3204608) returned ECC error
-> 
-> and the occasional;
-> 
-> Data CRC failed on REF_PRISTINE data node at 0x0331540c: Read
-> 0x503a4071, calculated 0x52c053a8
-> 
-> but no more kernel oops, which makes me much happier.
-      ^^^^^^^
-Scrub that.  I just got an oops.  Same place as before
-(fs/jffs2/file.c:251), but far less frequent than before.
 
-> Any ideas on the above two mentioned warnings?  Are they the result of
-> unclean NAND oob data, or kernel bugs, or something else?
+Is anybody can provide patches to convert the MTD subsystem to overcome the limit of
+using a 32bit variable to store size/offset?
 
-I guess there are still some bugs to squash.
+Is anybody can provide patches for 4k+128 byte per page nand flash ? 
 
-Regards,
-James.
+	
+
+2008-05-12
+
+
+Best Regards,
+ 				
+marco
