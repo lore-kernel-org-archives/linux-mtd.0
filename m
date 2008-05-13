@@ -1,29 +1,16 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+Received: from xes-mad.com ([216.165.139.214])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JvzzB-0000j7-3p
-	for linux-mtd@lists.infradead.org; Tue, 13 May 2008 19:16:30 +0000
-Date: Tue, 13 May 2008 21:16:16 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: [PATCH 1/1] [MTD/MAPS] Blackfin Async Flash Maps: Handle the case
-	where flash memory and ethernet mac/phy are mapped onto the
-	same async bank
-Message-ID: <20080513191616.GC18026@logfs.org>
-References: <1210653525-19437-1-git-send-email-cooloney@kernel.org>
-	<20080513080727.GA15795@logfs.org>
-	<8bd0f97a0805130542x46f5e7fejf1347f1c71f567fb@mail.gmail.com>
-	<20080513150143.GA18026@logfs.org>
-	<8bd0f97a0805130815q2ffa1d34ue87f5eb1422b6f42@mail.gmail.com>
-	<20080513153441.GB18026@logfs.org>
-	<8bd0f97a0805131042x2a74115dqc3831a604583bbd5@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8bd0f97a0805131042x2a74115dqc3831a604583bbd5@mail.gmail.com>
-Cc: dwmw2@infradead.org, Bryan Wu <cooloney@kernel.org>,
-	linux-mtd@lists.infradead.org, will.newton@gmail.com,
-	linux-kernel@vger.kernel.org
+	id 1Jw0RO-0001ol-RZ
+	for linux-mtd@lists.infradead.org; Tue, 13 May 2008 19:45:39 +0000
+Subject: [PATCH] [MTD] CHIPS: Support for M50FLW080A and M50FLW080B
+From: Nate Case <ncase@xes-inc.com>
+To: dwmw2@infradead.org
+Content-Type: text/plain
+Date: Tue, 13 May 2008 14:45:29 -0500
+Message-Id: <1210707929.13845.378.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,24 +20,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 13 May 2008 13:42:04 -0400, Mike Frysinger wrote:
-> On Tue, May 13, 2008 at 11:34 AM, Jörn Engel <joern@logfs.org> wrote:
-> > On Tue, 13 May 2008 12:38:45 +0800, Bryan Wu wrote:
-> > > +#define pr_devinit(fmt, args...) ({ static const __devinitdata char __fmt[] = fmt; printk(__fmt, ## args); })
-> >
-> >  That bit is obvious.  But why do you use pr_devinit() instead of
-> >  printk()?  What does it gain you?
-> 
-> why do we have __init and __devinit in the first place ?
+Add support for M50FLW080A and M50FLW080B revisions of LPC flash
+devices.
 
-Ah.  Now I finally understand what this code does.
+Signed-off-by: Aaron Lindner <alindner@xes-inc.com>
+Signed-off-by: Nate Case <ncase@xes-inc.com>
+---
+ drivers/mtd/chips/cfi_cmdset_0001.c |    4 ++++
+ drivers/mtd/chips/jedec_probe.c     |   32 ++++++++++++++++++++++++++++++++
+ 2 files changed, 36 insertions(+), 0 deletions(-)
 
-Might be worth moving it to include/linux/kernel.h, along with
-pr_init().  And watch an avalanche of janitor patches use these new
-toys. :)
-
-Jörn
-
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index fcd1aec..8305ef5 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -50,6 +50,8 @@
+ #define I82802AC	0x00ac
+ #define MANUFACTURER_ST         0x0020
+ #define M50LPW080       0x002F
++#define M50FLW080A	0x0080
++#define M50FLW080B	0x0081
+ #define AT49BV640D	0x02de
+ 
+ static int cfi_intelext_read (struct mtd_info *, loff_t, size_t, size_t *, u_char *);
+@@ -301,6 +303,8 @@ static struct cfi_fixup jedec_fixup_table[] = {
+ 	{ MANUFACTURER_INTEL, I82802AB,   fixup_use_fwh_lock, NULL, },
+ 	{ MANUFACTURER_INTEL, I82802AC,   fixup_use_fwh_lock, NULL, },
+ 	{ MANUFACTURER_ST,    M50LPW080,  fixup_use_fwh_lock, NULL, },
++	{ MANUFACTURER_ST,    M50FLW080A, fixup_use_fwh_lock, NULL, },
++	{ MANUFACTURER_ST,    M50FLW080B, fixup_use_fwh_lock, NULL, },
+ 	{ 0, 0, NULL, NULL }
+ };
+ static struct cfi_fixup fixup_table[] = {
+diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
+index aa07575..99f9ed2 100644
+--- a/drivers/mtd/chips/jedec_probe.c
++++ b/drivers/mtd/chips/jedec_probe.c
+@@ -141,6 +141,8 @@
+ #define M50FW080	0x002D
+ #define M50FW016	0x002E
+ #define M50LPW080       0x002F
++#define M50FLW080A	0x0080
++#define M50FLW080B	0x0081
+ 
+ /* SST */
+ #define SST29EE020	0x0010
+@@ -1590,6 +1592,36 @@ static const struct amd_flash_info jedec_table[] = {
+ 		.nr_regions	= 1,
+ 		.regions	= {
+ 			ERASEINFO(0x10000,16),
++		},
++	}, {
++		.mfr_id		= MANUFACTURER_ST,
++		.dev_id		= M50FLW080A,
++		.name		= "ST M50FLW080A",
++		.devtypes	= CFI_DEVICETYPE_X8,
++		.uaddr		= MTD_UADDR_UNNECESSARY,
++		.dev_size	= SIZE_1MiB,
++		.cmd_set	= P_ID_INTEL_EXT,
++		.nr_regions	= 4,
++		.regions	= {
++			ERASEINFO(0x1000,16),
++			ERASEINFO(0x10000,13),
++			ERASEINFO(0x1000,16),
++			ERASEINFO(0x1000,16),
++		}
++	}, {
++		.mfr_id		= MANUFACTURER_ST,
++		.dev_id		= M50FLW080B,
++		.name		= "ST M50FLW080B",
++		.devtypes	= CFI_DEVICETYPE_X8,
++		.uaddr		= MTD_UADDR_UNNECESSARY,
++		.dev_size	= SIZE_1MiB,
++		.cmd_set	= P_ID_INTEL_EXT,
++		.nr_regions	= 4,
++		.regions	= {
++			ERASEINFO(0x1000,16),
++			ERASEINFO(0x1000,16),
++			ERASEINFO(0x10000,13),
++			ERASEINFO(0x1000,16),
+ 		}
+ 	}, {
+ 		.mfr_id		= MANUFACTURER_TOSHIBA,
 -- 
-Joern's library part 3:
-http://inst.eecs.berkeley.edu/~cs152/fa05/handouts/clark-test.pdf
+1.5.4.4
