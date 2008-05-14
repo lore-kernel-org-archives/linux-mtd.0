@@ -1,31 +1,20 @@
-Received: from wx-out-0506.google.com ([66.249.82.228])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JwLVU-0008JB-6u
-	for linux-mtd@lists.infradead.org; Wed, 14 May 2008 18:15:16 +0000
-Received: by wx-out-0506.google.com with SMTP id h28so6928wxd.24
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 14 May 2008 11:15:15 -0700 (PDT)
-Message-ID: <c260b4940805141115i3d634049u27749042f61c99f9@mail.gmail.com>
-Date: Wed, 14 May 2008 11:15:14 -0700
-From: "N Cheung" <brjerome.1@gmail.com>
-To: Nancy <nancydreaming@gmail.com>
-Subject: Re: [PATCH] [MTD] [UBI] add block device layer on top of UBI
-In-Reply-To: <bae050c10805130631g7de2a4b0x1d67ddd3b84511bc@mail.gmail.com>
+Received: from smtp-out3.atlngahp.sys.nuvox.net ([70.43.63.20]
+	helo=smtp03.atlngahp.sys.nuvox.net)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JwM5Y-0007oA-IR
+	for linux-mtd@lists.infradead.org; Wed, 14 May 2008 18:52:32 +0000
+Message-ID: <38698.137.237.242.42.1210791136.squirrel@webmail.nuvox.net>
+In-Reply-To: <Pine.LNX.4.64.0805141752210.5183@pentafluge.infradead.org>
+References: <57616.137.237.242.138.1210774371.squirrel@webmail.nuvox.net>
+	<Pine.LNX.4.64.0805141752210.5183@pentafluge.infradead.org>
+Date: Wed, 14 May 2008 14:52:16 -0400 (EDT)
+Subject: Re: Porting to Intel P33 flash
+From: jkimble@one.net
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <bae050c10803030317j49cfce3ds7a6af593d16d3736@mail.gmail.com>
-	<bae050c10803040140q2d4801d5m4271cadcaa55579@mail.gmail.com>
-	<1204623622.23706.22.camel@sauron>
-	<bae050c10803040154t2f635dfewe1221c18255f7bda@mail.gmail.com>
-	<1204624414.23706.26.camel@sauron>
-	<bae050c10803040207odbaebe5vd85b619b370a16cd@mail.gmail.com>
-	<bae050c10803040555y3a398fla89fe54c01908838@mail.gmail.com>
-	<bae050c10805122116g4295f202j40e1a8528be5220@mail.gmail.com>
-	<1210672391.5708.15.camel@sauron>
-	<bae050c10805130631g7de2a4b0x1d67ddd3b84511bc@mail.gmail.com>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Cc: akorolev@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,23 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, May 13, 2008 at 6:31 AM, Nancy <nancydreaming@gmail.com> wrote:
 
-> .. But none! UBI complete
-> the main part of the NFTL job and done well. In fact I want to ask you
-> why do not go further to make it a good NFTL, not just for UBIFS use,
-> but other filesystem based on block device layer.
-..
->   Also, some customer like to use Reiserfs. As a BSP Nand flash
-> driver supporter, I have to meet there need. That's why I add this
-> "generic" ubi block layer.
+Thank you very, very much! At least that gives me a place to start from
+with my 2.6.10 kernel.
+
+James
+
 >
-
-Nancy and Artem,
-
-I want to run cramfs or squashfs on NAND. It looks like this ubiblock
-may be the solution to my search.  Or perhaps there is a NFTL layer
-that manages bad blocks.  Any suggestions?
-
-Thanks,
-Norman
+>
+> There are two versions of P33 one has version of CFI 1.4 another version
+> 1.5
+>
+> P33 with CFI 1.4 works Ok starting 2.6.17
+> P33 with CFI 1.5 works Ok starting 2.6.24
+>
+> Since the difference between P33 with CFI 1.4 and P33 with CFI 1.5 are
+> minor applying the following very simple patch:
+> http://git.infradead.org/mtd-2.6.git?a=commitdiff;h=b1c9c9be6da010510459aca93f5754efb19695ff
+> should solve the problem for linux >= 2.6.17.
+>
+> Thanks,
+> Alexey
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
+>
