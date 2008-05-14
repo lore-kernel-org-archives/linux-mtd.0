@@ -1,14 +1,31 @@
-Date: Wed, 14 May 2008 18:34:21 +0100 (BST)
-From: Alexey Korolev <akorolev@infradead.org>
-To: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-Subject: Re: [PATCH][RFC] NAND subpage read feature. Take 2.
-In-Reply-To: <20080501202523.GA17828@logfs.org>
-Message-ID: <Pine.LNX.4.64.0805141814300.5183@pentafluge.infradead.org>
-References: <Pine.LNX.4.64.0804301301360.6788@pentafluge.infradead.org>
-	<20080501202523.GA17828@logfs.org>
+Received: from wx-out-0506.google.com ([66.249.82.228])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JwLVU-0008JB-6u
+	for linux-mtd@lists.infradead.org; Wed, 14 May 2008 18:15:16 +0000
+Received: by wx-out-0506.google.com with SMTP id h28so6928wxd.24
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 14 May 2008 11:15:15 -0700 (PDT)
+Message-ID: <c260b4940805141115i3d634049u27749042f61c99f9@mail.gmail.com>
+Date: Wed, 14 May 2008 11:15:14 -0700
+From: "N Cheung" <brjerome.1@gmail.com>
+To: Nancy <nancydreaming@gmail.com>
+Subject: Re: [PATCH] [MTD] [UBI] add block device layer on top of UBI
+In-Reply-To: <bae050c10805130631g7de2a4b0x1d67ddd3b84511bc@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: dwmw2@infradead.org, tglx@linutronix.de, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <bae050c10803030317j49cfce3ds7a6af593d16d3736@mail.gmail.com>
+	<bae050c10803040140q2d4801d5m4271cadcaa55579@mail.gmail.com>
+	<1204623622.23706.22.camel@sauron>
+	<bae050c10803040154t2f635dfewe1221c18255f7bda@mail.gmail.com>
+	<1204624414.23706.26.camel@sauron>
+	<bae050c10803040207odbaebe5vd85b619b370a16cd@mail.gmail.com>
+	<bae050c10803040555y3a398fla89fe54c01908838@mail.gmail.com>
+	<bae050c10805122116g4295f202j40e1a8528be5220@mail.gmail.com>
+	<1210672391.5708.15.camel@sauron>
+	<bae050c10805130631g7de2a4b0x1d67ddd3b84511bc@mail.gmail.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,51 +35,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Tue, May 13, 2008 at 6:31 AM, Nancy <nancydreaming@gmail.com> wrote:
 
-> >  /**
-> > + * nand_read_subpage - [REPLACABLE] software ecc based sub-page read function
-> > + * @mtd:	mtd info structure
-> > + * @chip:	nand chip info structure
-> > + * @dataofs	offset of requested data within the page 
-> > + * @readlen	data length 
-> > + * @buf:	buffer to store read data
-> > + */
-> > +static int nand_read_subpage(struct mtd_info * mtd,struct nand_chip *chip, uint32_t data_offs, uint32_t readlen, uint8_t *bufpoi)
->                                                  ^   ^^
-> A linebreak would help.  The indicated space should move five bytes to
-> the right.  And there are a few similar stylistic things below.  If you
-> feed this through checkpatch.pl, you should find them all.
-> 
-> buf and bufpoi should be the same name (I personally would prefer buf).
-> And you should document that the buffer has to be bigger than readlen.
-> There is just a single caller, but such a counter-intuitive detail can
-> easily cause bugs some years from now.
+> .. But none! UBI complete
+> the main part of the NFTL job and done well. In fact I want to ask you
+> why do not go further to make it a good NFTL, not just for UBIFS use,
+> but other filesystem based on block device layer.
+..
+>   Also, some customer like to use Reiserfs. As a BSP Nand flash
+> driver supporter, I have to meet there need. That's why I add this
+> "generic" ubi block layer.
 >
-Oops. You are right. Wrong styling will be fixed. Thanks.
-> > +{
-> > +	int start_step, end_step, num_steps;
-> > +	uint32_t *eccpos = chip->ecc.layout->eccpos;
-> > +	uint8_t *p;
-> > +	int data_col_addr, i, gaps = 0;
-> > +	int datafrag_len, eccfrag_len, aligned_len, aligned_pos;
-> > +	int busw = (chip->options & NAND_BUSWIDTH_16) ? 2 : 1;
-> > +	
-> > +	/* Column address wihin the page aligned to ECC size (256bytes). */
-> 
-> within
-> 
-> > +	start_step = data_offs / chip->ecc.size;
-> > +	end_step = (data_offs + readlen - 1) / chip->ecc.size;
-> 
-> Divisions are fairly expensive computations.  Can they be replaced by
-> shifts?
-> 
-I've thought about it. In current desing we assume that ecc.size may
-vary. So substitution division  with shift will be related to extension
-of the structures. 
-If it make sence to do it, it should be done in separate patch. As it is
-another thing. 
 
+Nancy and Artem,
 
-Alexey
+I want to run cramfs or squashfs on NAND. It looks like this ubiblock
+may be the solution to my search.  Or perhaps there is a NFTL layer
+that manages bad blocks.  Any suggestions?
+
+Thanks,
+Norman
