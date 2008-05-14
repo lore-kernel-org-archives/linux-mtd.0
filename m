@@ -1,15 +1,14 @@
-Date: Wed, 14 May 2008 18:13:50 +0100 (BST)
+Date: Wed, 14 May 2008 18:34:21 +0100 (BST)
 From: Alexey Korolev <akorolev@infradead.org>
-To: Hamish Moffatt <hamish@cloud.net.au>
+To: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
 Subject: Re: [PATCH][RFC] NAND subpage read feature. Take 2.
-In-Reply-To: <20080501044027.GA26541@cloud.net.au>
-Message-ID: <Pine.LNX.4.64.0805141808140.5183@pentafluge.infradead.org>
+In-Reply-To: <20080501202523.GA17828@logfs.org>
+Message-ID: <Pine.LNX.4.64.0805141814300.5183@pentafluge.infradead.org>
 References: <Pine.LNX.4.64.0804301301360.6788@pentafluge.infradead.org>
-	<20080501044027.GA26541@cloud.net.au>
+	<20080501202523.GA17828@logfs.org>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org, joern@logfs.org, dwmw2@infradead.org,
-	tglx@linutronix.de
+Cc: dwmw2@infradead.org, tglx@linutronix.de, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,24 +18,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Hamish,
+Hi,
 
-> On Wed, Apr 30, 2008 at 01:13:24PM +0100, Alexey Korolev wrote:
-> > This patch enables NAND subpage read functionality. 
-> [..]
-> > As I know some of you already use this feature. I would be much
-> > appreciate if you give me some performance numbers. It may assist to get this
-> > feature included. 
+> >  /**
+> > + * nand_read_subpage - [REPLACABLE] software ecc based sub-page read function
+> > + * @mtd:	mtd info structure
+> > + * @chip:	nand chip info structure
+> > + * @dataofs	offset of requested data within the page 
+> > + * @readlen	data length 
+> > + * @buf:	buffer to store read data
+> > + */
+> > +static int nand_read_subpage(struct mtd_info * mtd,struct nand_chip *chip, uint32_t data_offs, uint32_t readlen, uint8_t *bufpoi)
+>                                                  ^   ^^
+> A linebreak would help.  The indicated space should move five bytes to
+> the right.  And there are a few similar stylistic things below.  If you
+> feed this through checkpatch.pl, you should find them all.
 > 
-> To attach my 512Mb NAND with UBI, with software NAND controller
-> (plat_nand), on a 533MHz IXP4xx, I measure:
-> 
-> No partial reads: 5.75 seconds
-> Previous partial read patch: 2.72 seconds
-> New subpage read patch: 2.42 seconds
+> buf and bufpoi should be the same name (I personally would prefer buf).
+> And you should document that the buffer has to be bigger than readlen.
+> There is just a single caller, but such a counter-intuitive detail can
+> easily cause bugs some years from now.
 >
-Oh nice digits. Thank you very much for you asistance and for the data. 
-I will add it to patch description. 
+Oops. You are right. Wrong styling will be fixed. Thanks.
+> > +{
+> > +	int start_step, end_step, num_steps;
+> > +	uint32_t *eccpos = chip->ecc.layout->eccpos;
+> > +	uint8_t *p;
+> > +	int data_col_addr, i, gaps = 0;
+> > +	int datafrag_len, eccfrag_len, aligned_len, aligned_pos;
+> > +	int busw = (chip->options & NAND_BUSWIDTH_16) ? 2 : 1;
+> > +	
+> > +	/* Column address wihin the page aligned to ECC size (256bytes). */
+> 
+> within
+> 
+> > +	start_step = data_offs / chip->ecc.size;
+> > +	end_step = (data_offs + readlen - 1) / chip->ecc.size;
+> 
+> Divisions are fairly expensive computations.  Can they be replaced by
+> shifts?
+> 
+I've thought about it. In current desing we assume that ecc.size may
+vary. So substitution division  with shift will be related to extension
+of the structures. 
+If it make sence to do it, it should be done in separate patch. As it is
+another thing. 
+
 
 Alexey
- 
