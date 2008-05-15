@@ -1,20 +1,28 @@
-Received: from smtp-out3.atlngahp.sys.nuvox.net ([70.43.63.20]
-	helo=smtp03.atlngahp.sys.nuvox.net)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JwM5Y-0007oA-IR
-	for linux-mtd@lists.infradead.org; Wed, 14 May 2008 18:52:32 +0000
-Message-ID: <38698.137.237.242.42.1210791136.squirrel@webmail.nuvox.net>
-In-Reply-To: <Pine.LNX.4.64.0805141752210.5183@pentafluge.infradead.org>
-References: <57616.137.237.242.138.1210774371.squirrel@webmail.nuvox.net>
-	<Pine.LNX.4.64.0805141752210.5183@pentafluge.infradead.org>
-Date: Wed, 14 May 2008 14:52:16 -0400 (EDT)
-Subject: Re: Porting to Intel P33 flash
-From: jkimble@one.net
-To: linux-mtd@lists.infradead.org
+Received: from wf-out-1314.google.com ([209.85.200.169])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JwTzO-0001Bp-Sr
+	for linux-mtd@lists.infradead.org; Thu, 15 May 2008 03:18:43 +0000
+Received: by wf-out-1314.google.com with SMTP id 28so192956wfc.24
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 14 May 2008 20:18:40 -0700 (PDT)
+Message-ID: <bae050c10805142018mb356fcegaafbc0c943c73cac@mail.gmail.com>
+Date: Thu, 15 May 2008 11:18:40 +0800
+From: Nancy <nancydreaming@gmail.com>
+To: dedekind@infradead.org
+Subject: Re: ubifs image file confusion!
+In-Reply-To: <1210771200.5708.50.camel@sauron>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Cc: akorolev@infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <bae050c10805080217r77c9724aya0777ccf5f59a293@mail.gmail.com>
+	<1210243730.3645.66.camel@sauron>
+	<bae050c10805090005g50b657c2jf8d471cd51244da7@mail.gmail.com>
+	<bae050c10805092120u14177a03td46fa8175f89aa66@mail.gmail.com>
+	<1210671861.5708.5.camel@sauron>
+	<bae050c10805130541w132a1757paea415f5564b23ec@mail.gmail.com>
+	<1210771200.5708.50.camel@sauron>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +32,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 5/14/08, Artem Bityutskiy <dedekind@infradead.org> wrote:
+> If you want me to understand you and properly answer, you should try to
+> formulate things better. I understand language difficulties and this is
+> all right. I just ask you to try better, may be re-reading what you have
+> composed and trying imagine me reading your mail and imagine which part
+> could be not very clear for me.
+     OK, I admit I was in a hurry and have tried to use my bad English
+to explain the issue, but failed. Then I think about to plase the
+"ubidumpvol"  source code and tell you a way to reproduce the problem
+I met. Thank God we still have a common language C. 90% of
+"ubidumpvol" code are direct copy-plase from your tool "ubiupdatevol".
+It should be no problem for you to quickly grasp its idea. But you
+still push me hard to explain everything in English which makes me
+disappointed and a little angry.
 
-Thank you very, very much! At least that gives me a place to start from
-with my 2.6.10 kernel.
+> >    As I fool understand which I have plase after that mail:
+> Cannot parse this sentence, sorry.
+        I mean I do not know the UBIFS implent detail. I just guess,
+maybe it designed that way.  If you still can't parse, or still have
+questions about that, please just ignore the whole. I already run out
+of my brain to think about a suitable way to express.
 
-James
+> > pls:
+> >       1. ubinize tool do not check whether vol_id or vol_name's
+> > uniqueness which may cause unexpected error.
+>
+> OK, will be fixed but a bit later.
+   Thanks!
 
+> >       2. ubinize tool's volume size check do not aligned to LEB size.
+> Cannot parse this.
 >
->
-> There are two versions of P33 one has version of CFI 1.4 another version
-> 1.5
->
-> P33 with CFI 1.4 works Ok starting 2.6.17
-> P33 with CFI 1.5 works Ok starting 2.6.24
->
-> Since the difference between P33 with CFI 1.4 and P33 with CFI 1.5 are
-> minor applying the following very simple patch:
-> http://git.infradead.org/mtd-2.6.git?a=commitdiff;h=b1c9c9be6da010510459aca93f5754efb19695ff
-> should solve the problem for linux >= 2.6.17.
->
-> Thanks,
-> Alexey
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
->
+> > I can't use an image file which taken up of its all volume space.
+> > eg. LEB size =258048  , .cfg defined vol size = 100MiB ,
+> > vfat.img(407LEBs)     fail
+> > it say something like the image file size exceed the volume size. I'm
+> > home now, can't plase the original error message here. sorry.
+> Sorry, do not understand this.
+
+$ cat ubinize.cfg
+[ubifs]
+mode=ubi
+image=vfat.dump
+vol_id=0
+vol_size=100MiB
+vol_type=dynamic
+vol_name=vfat
+vol_alignment=1
+
+$ ./ubinize -o ubi.img ubinize.cfg -p 262144 -m 2048
+ubinize: error!: error in section "vfat": size of the image file
+"vfat.dump" is 105025536, which is larger then the volume size
+104857600
+
+LEB size = 258048,  volume 0 should contains 407 available lebs.
+The volume size should be 407*258048 = 105025535  not 104857600.
+The error message should not be triggered.
+
+pls:
+    You seems miss one issue
+    # ubiupdatevol /dev/ubi0_0 rootfs.img (generated by mkfs.ubifs)
+    # mount -t ubifs ubi0:rootfs /mnt/1
+    # rm /mnt/1/* -rf
+    # df
+    The Use% of ubi0:rootfs is not 0%, but 2% which is unusual!
+
+
+-- 
+Best wishes,
+Nancy
