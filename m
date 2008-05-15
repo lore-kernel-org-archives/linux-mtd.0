@@ -1,16 +1,16 @@
-Received: from wf-out-1314.google.com ([209.85.200.169])
+Received: from wf-out-1314.google.com ([209.85.200.171])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JwTzO-0001Bp-Sr
-	for linux-mtd@lists.infradead.org; Thu, 15 May 2008 03:18:43 +0000
-Received: by wf-out-1314.google.com with SMTP id 28so192956wfc.24
+	id 1JwUjW-0001t4-9H
+	for linux-mtd@lists.infradead.org; Thu, 15 May 2008 04:06:22 +0000
+Received: by wf-out-1314.google.com with SMTP id 28so211666wfc.24
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 14 May 2008 20:18:40 -0700 (PDT)
-Message-ID: <bae050c10805142018mb356fcegaafbc0c943c73cac@mail.gmail.com>
-Date: Thu, 15 May 2008 11:18:40 +0800
+	Wed, 14 May 2008 21:06:21 -0700 (PDT)
+Message-ID: <bae050c10805142106x124e01fatc02f81631988396d@mail.gmail.com>
+Date: Thu, 15 May 2008 12:06:20 +0800
 From: Nancy <nancydreaming@gmail.com>
 To: dedekind@infradead.org
 Subject: Re: ubifs image file confusion!
-In-Reply-To: <1210771200.5708.50.camel@sauron>
+In-Reply-To: <1210772744.5708.77.camel@sauron>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
@@ -19,9 +19,10 @@ References: <bae050c10805080217r77c9724aya0777ccf5f59a293@mail.gmail.com>
 	<1210243730.3645.66.camel@sauron>
 	<bae050c10805090005g50b657c2jf8d471cd51244da7@mail.gmail.com>
 	<bae050c10805092120u14177a03td46fa8175f89aa66@mail.gmail.com>
-	<1210671861.5708.5.camel@sauron>
-	<bae050c10805130541w132a1757paea415f5564b23ec@mail.gmail.com>
-	<1210771200.5708.50.camel@sauron>
+	<bae050c10805100031u25a233ffi65e39705ea778fcc@mail.gmail.com>
+	<1210672125.5708.9.camel@sauron>
+	<bae050c10805130552o351fbcb6ifc83815895fcce22@mail.gmail.com>
+	<1210772744.5708.77.camel@sauron>
 Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -33,71 +34,43 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On 5/14/08, Artem Bityutskiy <dedekind@infradead.org> wrote:
-> If you want me to understand you and properly answer, you should try to
-> formulate things better. I understand language difficulties and this is
-> all right. I just ask you to try better, may be re-reading what you have
-> composed and trying imagine me reading your mail and imagine which part
-> could be not very clear for me.
-     OK, I admit I was in a hurry and have tried to use my bad English
-to explain the issue, but failed. Then I think about to plase the
-"ubidumpvol"  source code and tell you a way to reproduce the problem
-I met. Thank God we still have a common language C. 90% of
-"ubidumpvol" code are direct copy-plase from your tool "ubiupdatevol".
-It should be no problem for you to quickly grasp its idea. But you
-still push me hard to explain everything in English which makes me
-disappointed and a little angry.
+> I see. But it is not a good reason for an additional ioctl anyway. In
+> Linux we try to keep the amount of ioctl's as low as possible.
+   As low as possible, why? As I know Ioctl is a way to make function
+spread of device driver. I thought the more Ioctls imply more
+functional this device driver has.
 
-> >    As I fool understand which I have plase after that mail:
-> Cannot parse this sentence, sorry.
-        I mean I do not know the UBIFS implent detail. I just guess,
-maybe it designed that way.  If you still can't parse, or still have
-questions about that, please just ignore the whole. I already run out
-of my brain to think about a suitable way to express.
+> What you can do instead, is to read the volume LEB by LEB, then check
+> the data against 0xFFs, and if it contains all 0xFFs - drop this data.
+   Is there any choise for me if I do not add this read LEB ioctl to
+finish this task?
 
-> > pls:
-> >       1. ubinize tool do not check whether vol_id or vol_name's
-> > uniqueness which may cause unexpected error.
+> What you can do is to save the numbers of dropped LEBs in a file. And
+> when you write the dumped image, you feed 0xFFs instead of the LEB which
+> were dropped.
 >
-> OK, will be fixed but a bit later.
-   Thanks!
+> For example, you may improve ubiupdatevol and teach it to accept a
+> --unmapped=file option which would contain a list of unmapped LEB
+> numbers.
+How about give each Mapped LEB an header( long long lnum )? So the
+image file content structure looks like:
+-------------------------------------------------------------------
+long long lnum |  LEB |  long long lnum | LEB | ...........................
+-------------------------------------------------------------------
 
-> >       2. ubinize tool's volume size check do not aligned to LEB size.
-> Cannot parse this.
->
-> > I can't use an image file which taken up of its all volume space.
-> > eg. LEB size =258048  , .cfg defined vol size = 100MiB ,
-> > vfat.img(407LEBs)     fail
-> > it say something like the image file size exceed the volume size. I'm
-> > home now, can't plase the original error message here. sorry.
-> Sorry, do not understand this.
+And "ubiupdatevol" can do:
+1.  erase the volume
+2.  write image file to volume, no need to skip the 0xFF
 
-$ cat ubinize.cfg
-[ubifs]
-mode=ubi
-image=vfat.dump
-vol_id=0
-vol_size=100MiB
-vol_type=dynamic
-vol_name=vfat
-vol_alignment=1
+If you agree with this idea, tool mkfs.ubifs, ubinize, ubiupdatevol
+should be changed.
 
-$ ./ubinize -o ubi.img ubinize.cfg -p 262144 -m 2048
-ubinize: error!: error in section "vfat": size of the image file
-"vfat.dump" is 105025536, which is larger then the volume size
-104857600
-
-LEB size = 258048,  volume 0 should contains 407 available lebs.
-The volume size should be 407*258048 = 105025535  not 104857600.
-The error message should not be triggered.
-
-pls:
-    You seems miss one issue
-    # ubiupdatevol /dev/ubi0_0 rootfs.img (generated by mkfs.ubifs)
-    # mount -t ubifs ubi0:rootfs /mnt/1
-    # rm /mnt/1/* -rf
-    # df
-    The Use% of ubi0:rootfs is not 0%, but 2% which is unusual!
-
+For meeting current urgent need ,  ubidumpvol is just for dump FAT
+image, cause there's no tools like mkfs.ubifs to generate a FAT image.
+I have not enought knowlege to build tool like that. There are many
+other filesystem may run on top of this ubiblk device layer.  It's
+better to build a general tool like ubidumpvol to do this job to avoid
+various differences of filesystem.
 
 -- 
 Best wishes,
