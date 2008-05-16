@@ -1,13 +1,26 @@
-Date: Thu, 15 May 2008 17:23:18 +0100 (BST)
-From: Alexey Korolev <akorolev@infradead.org>
-To: linux-mtd@lists.infradead.org, dwmw2@infradead.org, joern@logfs.org,
-	dedekind@infradead.org, hamish@cloud.net.au
-Subject: [PATCH] NAND subpage read feature as a way to increase performance.
-	Take 2.
-Message-ID: <Pine.LNX.4.64.0805151643360.32186@pentafluge.infradead.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: tglx@linutronix.de
+Received: from mail06.syd.optusnet.com.au ([211.29.132.187])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JwpnQ-00082J-1w
+	for linux-mtd@lists.infradead.org; Fri, 16 May 2008 02:35:48 +0000
+Subject: Re: New thread [BUG] JFFS2 usage of write_begin and write_end
+	functions causes kernel panic
+From: James <jamessteward@optusnet.com.au>
+To: Jason Liu <liu.h.jason@gmail.com>
+In-Reply-To: <e8775dd00805150201t12448ec5x452425039abc18de@mail.gmail.com>
+References: <1210312276.28139.19.camel@Ubuntu-Desktop>
+	<1210320731.25560.1193.camel@pmac.infradead.org>
+	<1210545077.6235.10.camel@Ubuntu-Desktop>
+	<1210545663.2861.1.camel@shinybook.infradead.org>
+	<1210550476.6235.30.camel@Ubuntu-Desktop>
+	<1210562680.6235.55.camel@Ubuntu-Desktop>
+	<1210747104.6158.41.camel@Ubuntu-Desktop>
+	<e8775dd00805150201t12448ec5x452425039abc18de@mail.gmail.com>
+Content-Type: text/plain
+Date: Fri, 16 May 2008 12:35:33 +1000
+Message-Id: <1210905333.6100.72.camel@Ubuntu-Desktop>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,169 +30,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, 
+On Thu, 2008-05-15 at 17:01 +0800, Jason Liu wrote:
+> Maybe, you need pay attention to the BBM
 
-This patch enables NAND subpage read functionality. 
-If upper layer drivers are requesting to read non page aligned data NAND
-subpage-read functionality reads the only whose ECC regions which include
-requested data when original code reads whole page.
-This significantly improves performance in many cases. 
+Not knowing offhand what "BBM" is, I'm guess it is bad block management?
+I only see reference to this in the onenand driver.
 
-Here are some digits :
+I've now cross compiled the mtd-utils, as I couldn't get the Debian ARM
+package for the same to run on my AT91SAM9263-EK board.  I have 2
+partitions, the first starting at 0x100000 and finishing 504 blocks
+later, i.e. 128kB * 504 = 63MB, 1MB is reserved at the beginning for
+U-boot and it's env.  There were no bad blocks detected on the device as
+it was shipped from the factory.
 
-UBI volume mount time
-No subpage reads: 5.75 seconds
-Subpage read patch: 2.42 seconds
+Running an ext3 fs on a USB stick as the RFS with noatime and nodiratime
+options, I can test the NAND interface.
 
-Open/stat time for files on JFFS2 volume:
-No subpage read  0m 5.36s
-Subpage read     0m 2.88s
+So I tried this...
 
-Signed-off-by Alexey Korolev <akorolev@infradead.org>
--------------------------
-diff -Naurp 1/drivers/mtd/nand/nand_base.c 2/drivers/mtd/nand/nand_base.c
---- 1/drivers/mtd/nand/nand_base.c	2008-02-11 08:51:11.000000000 +0300
-+++ 2/drivers/mtd/nand/nand_base.c	2008-04-30 14:58:52.000000000 +0400
-@@ -798,6 +798,87 @@ static int nand_read_page_swecc(struct m
- }
- 
- /**
-+ * nand_read_subpage - [REPLACABLE] software ecc based sub-page read function
-+ * @mtd:	mtd info structure
-+ * @chip:	nand chip info structure
-+ * @dataofs	offset of requested data within the page
-+ * @readlen	data length
-+ * @buf:	buffer to store read data
-+ */
-+static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip, uint32_t data_offs, uint32_t readlen, uint8_t *bufpoi)
-+{
-+	int start_step, end_step, num_steps;
-+	uint32_t *eccpos = chip->ecc.layout->eccpos;
-+	uint8_t *p;
-+	int data_col_addr, i, gaps = 0;
-+	int datafrag_len, eccfrag_len, aligned_len, aligned_pos;
-+	int busw = (chip->options & NAND_BUSWIDTH_16) ? 2 : 1;
-+
-+	/* Column address wihin the page aligned to ECC size (256bytes). */
-+	start_step = data_offs / chip->ecc.size;
-+	end_step = (data_offs + readlen - 1) / chip->ecc.size;
-+	num_steps = end_step - start_step + 1;
-+
-+	/* Data size aligned to ECC ecc.size*/
-+	datafrag_len = num_steps * chip->ecc.size;
-+	eccfrag_len = num_steps * chip->ecc.bytes;
-+
-+	data_col_addr = start_step * chip->ecc.size;
-+	/* If we read not a page aligned data */
-+	if (data_col_addr != 0)
-+		chip->cmdfunc(mtd, NAND_CMD_RNDOUT, data_col_addr, -1);
-+
-+	p = bufpoi + data_col_addr;
-+	chip->read_buf(mtd, p, datafrag_len);
-+
-+	/* Calculate  ECC */
-+	for (i = 0; i < eccfrag_len ; i += chip->ecc.bytes, p += chip->ecc.size)
-+		chip->ecc.calculate(mtd, p, &chip->buffers->ecccalc[i]);
-+
-+	/* The performance is faster if to position offsets
-+	   according to ecc.pos. Let make sure here that
-+	   there are no gaps in ecc positions */
-+	for (i = 0; i < eccfrag_len - 1; i++) {
-+		if (eccpos[i + start_step * chip->ecc.bytes] + 1 !=
-+			eccpos[i + start_step * chip->ecc.bytes + 1]) {
-+			gaps = 1;
-+			break;
-+		}
-+	}
-+	if (gaps) {
-+		chip->cmdfunc(mtd, NAND_CMD_RNDOUT, mtd->writesize, -1);
-+		chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
-+	} else {
-+		/* send the command to read the particular ecc bytes */
-+		/* take care about buswidth alignment in read_buf */
-+		aligned_pos = eccpos[start_step * chip->ecc.bytes] & ~(busw - 1);
-+		aligned_len = eccfrag_len;
-+		if (eccpos[start_step * chip->ecc.bytes] & (busw - 1))
-+			aligned_len++;
-+		if (eccpos[(start_step + num_steps) * chip->ecc.bytes] & (busw - 1))
-+			aligned_len++;
-+
-+		chip->cmdfunc(mtd, NAND_CMD_RNDOUT, mtd->writesize + aligned_pos, -1);
-+		chip->read_buf(mtd, &chip->oob_poi[aligned_pos], aligned_len);
-+	}
-+
-+	for (i = 0; i < eccfrag_len; i++)
-+		chip->buffers->ecccode[i] = chip->oob_poi[eccpos[i + start_step * chip->ecc.bytes]];
-+
-+	p = bufpoi + data_col_addr;
-+	for (i = 0; i < eccfrag_len ; i += chip->ecc.bytes, p += chip->ecc.size) {
-+		int stat;
-+
-+		stat = chip->ecc.correct(mtd, p, &chip->buffers->ecccode[i], &chip->buffers->ecccalc[i]);
-+		if (stat == -1)
-+			mtd->ecc_stats.failed++;
-+		else
-+			mtd->ecc_stats.corrected += stat;
-+	}
-+	return 0;
-+}
-+
-+/**
-  * nand_read_page_hwecc - [REPLACABLE] hardware ecc based page read function
-  * @mtd:	mtd info structure
-  * @chip:	nand chip info structure
-@@ -994,14 +1077,17 @@ static int nand_do_read_ops(struct mtd_i
- 			/* Now read the page into the buffer */
- 			if (unlikely(ops->mode == MTD_OOB_RAW))
- 				ret = chip->ecc.read_page_raw(mtd, chip, bufpoi);
--			else
-+			else if (!aligned && NAND_SUBPAGE_READ(chip) && !oob)
-+				ret = chip->ecc.read_subpage(mtd, chip, col, bytes, bufpoi);
-+			else
- 				ret = chip->ecc.read_page(mtd, chip, bufpoi);
- 			if (ret < 0)
- 				break;
- 
- 			/* Transfer not aligned data */
- 			if (!aligned) {
--				chip->pagebuf = realpage;
-+				if (!NAND_SUBPAGE_READ(chip) && !oob)
-+					chip->pagebuf = realpage;
- 				memcpy(buf, chip->buffers->databuf + col, bytes);
- 			}
- 
-@@ -2496,6 +2582,7 @@ int nand_scan_tail(struct mtd_info *mtd)
- 		chip->ecc.calculate = nand_calculate_ecc;
- 		chip->ecc.correct = nand_correct_data;
- 		chip->ecc.read_page = nand_read_page_swecc;
-+		chip->ecc.read_subpage = nand_read_subpage;
- 		chip->ecc.write_page = nand_write_page_swecc;
- 		chip->ecc.read_oob = nand_read_oob_std;
- 		chip->ecc.write_oob = nand_write_oob_std;
-diff -Naurp 1/include/linux/mtd/nand.h 2/include/linux/mtd/nand.h
---- 1/include/linux/mtd/nand.h	2008-02-11 08:51:11.000000000 +0300
-+++ 2/include/linux/mtd/nand.h	2008-04-30 14:56:54.000000000 +0400
-@@ -179,6 +179,7 @@ typedef enum {
- #define NAND_MUST_PAD(chip) (!(chip->options & NAND_NO_PADDING))
- #define NAND_HAS_CACHEPROG(chip) ((chip->options & NAND_CACHEPRG))
- #define NAND_HAS_COPYBACK(chip) ((chip->options & NAND_COPYBACK))
-+#define NAND_SUBPAGE_READ(chip) ((chip->ecc.mode == NAND_ECC_SOFT))
- 
- /* Mask to zero out the chip options, which come from the id table */
- #define NAND_CHIPOPTIONS_MSK	(0x0000ffff & ~NAND_NO_AUTOINCR)
-@@ -276,6 +277,10 @@ struct nand_ecc_ctrl {
- 	int			(*read_page)(struct mtd_info *mtd,
- 					     struct nand_chip *chip,
- 					     uint8_t *buf);
-+	int			(*read_subpage)(struct mtd_info *mtd,
-+					     struct nand_chip *chip,
-+					     uint32_t offs, uint32_t len,
-+					     uint8_t *buf);
- 	void			(*write_page)(struct mtd_info *mtd,
- 					      struct nand_chip *chip,
- 					      const uint8_t *buf);
+root@at91sam9263ek:~/mtd-tools$ ./flash_eraseall  /dev/mtd0 0 504
+Erasing 128 Kibyte @ 3ee0000 -- 99 % complete.
+root@at91sam9263ek:~/mtd-tools$ ./nandtest -p 5 -o 0 /dev/mtd0
+ECC corrections: 0
+ECC failures   : 3
+Bad blocks     : 0
+BBT blocks     : 0
+00000000: reading... 
+ECC failed at 00000000
+00000000: checking...
+compare failed. seed 1804289383
+Byte 0x7c40 is 0c should be ff
+Byte 0xa58f is 0c should be ff
+Byte 0xd010 is 55 should be 83
+Byte 0xd011 is 38 should be fb
+Byte 0xd050 is 12 should be a8
+Byte 0xd051 is 74 should be 90
+Byte 0xd090 is c8 should be 89
+Byte 0xd091 is 86 should be c9
+Byte 0xd0d0 is 41 should be 48
+Byte 0xd0d1 is b3 should be c3
+Byte 0xd110 is c3 should be 09
+Byte 0xd111 is d1 should be 73
 
-Thanks,
-Alexey
+Hmm.  This does not look good to me.  Does this indicate a hardware or
+software problem?  Or did I misuse the tools?  What tests should/could I
+perform?
 
-P/S special thanks to Vasiliy and Hamish for performance mesurements/invesrtigations
+Regards,
+James.
