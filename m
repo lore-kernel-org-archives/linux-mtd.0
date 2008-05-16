@@ -1,13 +1,11 @@
-Message-ID: <62526.83.229.90.16.1210406959.overlook@mail.pop.co.th>
-Date: Sat, 10 May 2008 20:09:19 +1200 (NZST)
-Subject: Re;YOUR HONESTY PAYMENT IS READY!!!
-From: "THE CREDITS AND BILLS LIQUIDATION OF C.B.N AND BCEAO."
-	<trinarongs@pop.co.th>
-MIME-Version: 1.0
-Content-Type: text/plain;charset=windows-874
+Message-ID: <20080517070222.23028.482DF21E35D8E-482D@webmail.dodo.com.au>
+Date: Sat, 17 May 2008 7:02:22 +1000
+From: "UK National Lottery" <kkk4@dodo.com.au>
+Subject: You Just Won!! Contact (Mr Paul David) For Claims
 Content-Transfer-Encoding: 8bit
-To: undisclosed-recipients:;
-Reply-To: royaldeliveryservice@gmail.com
+Content-Type: text/plain; charset="iso-8859-1";
+MIME-Version: 1.0
+Reply-To: UK National Lottery <officedpt08@Grad.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,52 +15,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-FROM;THE CREDITS AND BILLS LIQUIDATION OF C.B.N AND BCEAO.
-message codes;;00/cbn/bceao/002219/10/4/2008
+--
+The National Lottery
+PO Box 1010
+Liverpool L70 1NL United Kingdom
+Ref: UK/6648D/09
+Batch: 080/07/MK881
 
-May i use this juncture to notify you that new Government have  Paid the
-bills which was the cause of the delay of your Payments, and the
-Managements of CBN and BCEAO has put your funds into a foreign draft,and
-find out that before the Draft will reach you it may get expired due to
-the unreliability of the corrupted postal service here , and we decided to
-convert the Draft into Cash, (box money) the sum of $9.500,000.00 so to
-deliver it to you in Cash on your Personal receipt at your DESTINATION in
-your country. We which to deliver your Payment through this system to
-avoid another stress of K.T.T and so on all the necessary arrangements of
-delivering the $9.500,000.00 in cash to you has been made with ROYAL
-ERRAND DELIVERY LIMITED YOU have to get in touch with  ROYAL ERRAND
-DELIVERY LIMITED via email or telephone  immediately.Below are their
-contacts
+Dear Lucky Winner,
 
-Contact Person In-charge : MR LYD BROWN
-Tel: + 234-806 0411 820
-EMAIL:( royaldeliveryservice@gmail.com)
+We are pleased to announce your email address as one of the 200 lucky
+winners in the UK Lotto draw held on the 15th of May 2008. All 200
+winning addresses were randomly selected from a batch of £1,500,000.00
+(one million five hundred thousand pound sterling) international emails
+addresses.Consequently, you have therefore been approved for a total
+payout of GBP £1,500,000.00 (one million five hundred thousand pound
+sterling) only.
 
-Please Send them your contacts information to enable them locate you
-immediately they arrive in your country with your CONSIGNMENT .
-* Full Names.................
-* Address. (not P.O.Box)..............
-* City..................
-* State.................
-* Postal Code...........
-* Phone.................
-* Email................
-* Age...................
-* Occupation...........
-* Marital Status...............
-* Sex...............
-* Home equity yes or No ............
-* Nearest Airport.....................
+Your email address emerged along side with 199 others as a category of
+winner in this year's Annual Draw.The UK lottery draw is held once in
+every four years interval.And is also organized to encourage the use of
+internet and computers.We are proud to say that over GBP £25 Million
+Pounds are won annually in more than 150 countries world-wide.
 
-Note... The ROYAL ERRAND DELIVERY LIMITED will contents of your
-delivery,it was a special registered -as a Box of FAMILY
-TREASURES.Once-more ? You will pay the R.E.D.L fee of FORCE OF NATURE
-which is just $260.00 so that the  detective agents will not open the BOX
-for search while on transit, as the content was  not disclosed; please
-request for the tag of the said FORCE OF NATURE from the R.E.D.L, this is
-to avoid repeating delaying or mischeifing  with your payments by any
-Governments agent while on transit.  So be very confidential, and so let
-it be.CHEERS ,
+Fill the form below to enable us process you winning prize.
 
-Dr. Samuel Sodeh.
-PAYMASTER C.B.N & BCEAO CREDITS AND BILLS.
+1. Full Name: ..........
+2. Address: ............
+3. Nationality: ........
+4. Date of Birth:.. ....
+5. Occupation: .........
+6. Phone: ..............
+7. Mobile: .............
+8. Fax: ................
+9. Sex:.................
+
+Name: Mr.Paul David
+Tel: +44-704-5737128
+Email: officedpt08@Grad.com
+
+Cordially,
+Sarah May.
+Promotions Manager.
+
+________________________________________________
+
+This message was sent
+using Dodo Webmail - www.dodo.com.au
