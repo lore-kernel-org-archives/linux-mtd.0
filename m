@@ -1,23 +1,19 @@
-Received: from wf-out-1314.google.com ([209.85.200.174])
+Received: from ug-out-1314.google.com ([66.249.92.174])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jwujk-00076g-Hf
-	for linux-mtd@lists.infradead.org; Fri, 16 May 2008 07:52:20 +0000
-Received: by wf-out-1314.google.com with SMTP id 28so39490wfc.24
+	id 1Jwxqz-0005EV-H7
+	for linux-mtd@lists.infradead.org; Fri, 16 May 2008 11:12:01 +0000
+Received: by ug-out-1314.google.com with SMTP id m2so1497133ugc.45
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 16 May 2008 00:52:18 -0700 (PDT)
-Message-ID: <9c9fda240805160052o1754f1beke7053ffdfbd1c8af@mail.gmail.com>
-Date: Fri, 16 May 2008 16:52:18 +0900
-From: "Kyungmin Park" <kmpark@infradead.org>
-Sender: kyungmin78@gmail.com
-To: "Adrian Hunter" <ext-adrian.hunter@nokia.com>
-Subject: Re: [RFC][PATCH][MTD][OneNAND] Fix OneNAND byte access
-In-Reply-To: <482D36FD.6050506@nokia.com>
+	Fri, 16 May 2008 04:11:59 -0700 (PDT)
+Message-ID: <90d987c0805160411r436dec1es61fb820e8238be4@mail.gmail.com>
+Date: Fri, 16 May 2008 16:41:59 +0530
+From: "rohit h" <hrohit85@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [JFFS2] Running fsstress causes panic
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <20080516044508.GA28048@party> <482D36FD.6050506@nokia.com>
-Cc: Kyungmin Park <kyungmin.park@samsung.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,59 +23,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> It's only optimization at driver level
->>
->> I think it's the best that it handles at UBIFS itself
->> e.g., Now it passed down from name handling
->> If the size of name is odd how about pad it even?
->
-> It would be a lot of work to change UBIFS.
->
-> It is really a driver problem.  For example OMAP2
-> does not have the problem, so it should be fixed at
-> the driver level.
->
+Hello all,
+ I am running a filesystem testing utility 'fsstress' on JFFS2 running
+over a 80MB OneNAND partition.
+ The fsstress command line used is 'fsstress -p 3 -n 1000000 -d /tmp -l 0 &'
+ This creates 3 processes with each process executing 1000000 operations.
+ The testing board has 64MB of RAM.
+ After around 5 hours, I get panic message pasted below.
+ I have done the same test with the command line 'fsstress -p3 -n
+10000 -d /tmp -l 0 &'
+ This test goes through for 5 days without failing, after which I
+ended the test.
+ Can somebody throw some light as to why this is happening.
+Thanks a lot
+ Rohit
 
-I'm not sure it makes a problem but potentially it access wrongly.
-Well I will check it at omap2 driver
 
->>
->> Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
->> ---
->> diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
->> index 5d7965f..49194b6 100644
->> --- a/drivers/mtd/onenand/onenand_base.c
->> +++ b/drivers/mtd/onenand/onenand_base.c
->> @@ -509,9 +509,23 @@ static int onenand_read_bufferram(struct mtd_info *mtd, int area,
->>
->>       bufferram += onenand_bufferram_offset(mtd, area);
->>
->> +     if (ONENAND_CHECK_BYTE_ACCESS(offset)) {
->> +             unsigned short word;
->> +             printk("%s[%d] %d %zd\n", __func__, __LINE__, offset, count);
->> +
->> +             /* Align with word(16-bit) size */
->> +             /* Read word and save byte */
->> +             word = this->read_word(bufferram + offset - 1);
->> +             buffer[0] = (word & 0xff00) >> 8;
->> +             buffer++;
->> +             offset++;
->> +             count--;
->> +     }
->> +
->>       if (ONENAND_CHECK_BYTE_ACCESS(count)) {
->>               unsigned short word;
->>
->> +             printk("%s[%d] %d %zd\n", __func__, __LINE__, offset, count);
->>               /* Align with word(16-bit) size */
->>               count--;
->>
->>
->
-> I presume you will remove the printks.
->
-
-Sure, it remains only for checking for you. Must be removed at patch.
-
-Thank you,
-Kyungmin Park
+fsstress invoked oom-killer: gfp_mask=0x201d2, order=0, oomkilladj=0
+[<c0026b98>] <4>init invoked oom-killer: gfp_mask=0x201d2, order=0, oomkilladj=0
+[<c0026b98>] (dump_stack+0x0/0x14) from [<c006b31c>] (out_of_memory+0x7c/0x224)
+[<c006b2a0>] (out_of_memory+0x0/0x224) from [<c006c944>]
+(__alloc_pages+0x24c/0x2d8)
+r8:c0566820 r7:c0285f80 r6:000201d2 r5:00000000 r4:00000000
+[<c006c6f8>] (__alloc_pages+0x0/0x2d8) from [<c00687a0>]
+(page_cache_read+0x44/0xb4)
+[<c006875c>] (page_cache_read+0x0/0xb4) from [<c0068a48>]
+(filemap_nopage+0x238/0x3bc)
+r8:000000cc r7:00000000 r6:00127edc r5:c056a000 r4:00000000
+[<c0068810>] (filemap_nopage+0x0/0x3bc) from [<c00765cc>]
+(__handle_mm_fault+0x17c/0xb24)
+[<c0076450>] (__handle_mm_fault+0x0/0xb24) from [<c002836c>]
+(do_page_fault+0xe8/0x218)
+[<c0028284>] (do_page_fault+0x0/0x218) from [<c00284bc>]
+(do_translation_fault+0x20/0x7c)
+[<c002849c>] (do_translation_fault+0x0/0x7c) from [<c002227c>]
+(do_PrefetchAbort+0x18/0x1c)
+r5:000169c0 r4:ffffffff
+[<c0022264>] (do_PrefetchAbort+0x0/0x1c) from [<c0022e40>]
+(ret_from_exception+0x0/0x10)
+Exception stack(0xc056bfb0 to 0xc056bff8)
+bfa0:                                     00000003 0000e118 beafa8c8 00000000
+bfc0: beafa8c8 000169c0 10000000 beafaba8 beafabac 0000a1a0 000167ec 000167d8
+bfe0: 000166e0 beafa8bc 0000c440 400ec344 60000010 ffffffff
