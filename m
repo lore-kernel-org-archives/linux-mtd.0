@@ -1,22 +1,19 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+Received: from risingsoftware01.propagation.net ([66.221.33.65])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JwsCy-0004BW-RJ
-	for linux-mtd@lists.infradead.org; Fri, 16 May 2008 05:10:21 +0000
-Date: Fri, 16 May 2008 07:10:01 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Artem Bityutskiy <dedekind@infradead.org>
-Subject: Re: [PATCH] NAND subpage read feature as a way to increase
-	performance. Take 2.
-Message-ID: <20080516051001.GA11460@logfs.org>
-References: <Pine.LNX.4.64.0805151643360.32186@pentafluge.infradead.org>
-	<1210914078.27243.13.camel@sauron>
+	id 1Jwstq-0003PG-K7
+	for linux-mtd@lists.infradead.org; Fri, 16 May 2008 05:54:39 +0000
+Date: Fri, 16 May 2008 15:54:24 +1000
+From: Hamish Moffatt <hamish@cloud.net.au>
+To: Alexey Korolev <akorolev@infradead.org>
+Subject: Re: Porting to Intel P33 flash
+Message-ID: <20080516055424.GA10763@cloud.net.au>
+References: <57616.137.237.242.138.1210774371.squirrel@webmail.nuvox.net>
+	<Pine.LNX.4.64.0805141752210.5183@pentafluge.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1210914078.27243.13.camel@sauron>
-Cc: linux-mtd@lists.infradead.org, tglx@linutronix.de, dwmw2@infradead.org,
-	Alexey Korolev <akorolev@infradead.org>, hamish@cloud.net.au
+In-Reply-To: <Pine.LNX.4.64.0805141752210.5183@pentafluge.infradead.org>
+Cc: linux-mtd@lists.infradead.org, jkimble@one.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,37 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 16 May 2008 08:01:18 +0300, Artem Bityutskiy wrote:
-> On Thu, 2008-05-15 at 17:23 +0100, Alexey Korolev wrote:
-> > Hi, 
-> > 
-> > This patch enables NAND subpage read functionality. 
-> > If upper layer drivers are requesting to read non page aligned data NAND
-> > subpage-read functionality reads the only whose ECC regions which include
-> > requested data when original code reads whole page.
-> > This significantly improves performance in many cases. 
-> > 
-> > Here are some digits :
-> > 
-> > UBI volume mount time
-> > No subpage reads: 5.75 seconds
-> > Subpage read patch: 2.42 seconds
-> > 
-> > Open/stat time for files on JFFS2 volume:
-> > No subpage read  0m 5.36s
-> > Subpage read     0m 2.88s
-> > 
-> > Signed-off-by Alexey Korolev <akorolev@infradead.org>
-> > -------------------------
+On Wed, May 14, 2008 at 06:06:35PM +0100, Alexey Korolev wrote:
+> There are two versions of P33 one has version of CFI 1.4 another version
+> 1.5 
 > 
-> Looks good to me,
-> Acked-by Artem Bityutskiy <dedekind@infradead.org>
+> P33 with CFI 1.4 works Ok starting 2.6.17 
+> P33 with CFI 1.5 works Ok starting 2.6.24 
+> 
+> Since the difference between P33 with CFI 1.4 and P33 with CFI 1.5 are
+> minor applying the following very simple patch:
+> http://git.infradead.org/mtd-2.6.git?a=commitdiff;h=b1c9c9be6da010510459aca93f5754efb19695ff 
+> should solve the problem for linux >= 2.6.17.
 
-Same here
-Acked-by: Joern Engel <joern@logfs.org>
+I've been running 2.6.15 with P33 CFI 1.5 without issue. Almost
+completely read-only operation though in my application.
 
-Jörn
-
+Hamish
 -- 
-Joern's library part 6:
-http://www.gzip.org/zlib/feldspar.html
+Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
