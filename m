@@ -1,26 +1,12 @@
-Received: from mail06.syd.optusnet.com.au ([211.29.132.187])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JwpnQ-00082J-1w
-	for linux-mtd@lists.infradead.org; Fri, 16 May 2008 02:35:48 +0000
-Subject: Re: New thread [BUG] JFFS2 usage of write_begin and write_end
-	functions causes kernel panic
-From: James <jamessteward@optusnet.com.au>
-To: Jason Liu <liu.h.jason@gmail.com>
-In-Reply-To: <e8775dd00805150201t12448ec5x452425039abc18de@mail.gmail.com>
-References: <1210312276.28139.19.camel@Ubuntu-Desktop>
-	<1210320731.25560.1193.camel@pmac.infradead.org>
-	<1210545077.6235.10.camel@Ubuntu-Desktop>
-	<1210545663.2861.1.camel@shinybook.infradead.org>
-	<1210550476.6235.30.camel@Ubuntu-Desktop>
-	<1210562680.6235.55.camel@Ubuntu-Desktop>
-	<1210747104.6158.41.camel@Ubuntu-Desktop>
-	<e8775dd00805150201t12448ec5x452425039abc18de@mail.gmail.com>
-Content-Type: text/plain
-Date: Fri, 16 May 2008 12:35:33 +1000
-Message-Id: <1210905333.6100.72.camel@Ubuntu-Desktop>
+Date: Fri, 16 May 2008 13:45:08 +0900
+From: Kyungmin Park <kyungmin.park@samsung.com>
+To: dedekind@infradead.org, ext-adrian.hunter@nokia.com
+Subject: [RFC][PATCH][MTD][OneNAND] Fix OneNAND byte access
+Message-ID: <20080516044508.GA28048@party>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,51 +16,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2008-05-15 at 17:01 +0800, Jason Liu wrote:
-> Maybe, you need pay attention to the BBM
+Some upper layer try to read unaligned offset access
+So it adjusts the buffer, offset, and count variables
 
-Not knowing offhand what "BBM" is, I'm guess it is bad block management?
-I only see reference to this in the onenand driver.
+/ # mount -t ubifs ubi0 /mnt
+UBIFS: recovery needed
+onenand_read_bufferram[528] 0 11	<- Unaligned count
+onenand_read_bufferram[514] 91 12	<- Unaligned offset
+onenand_read_bufferram[528] 92 11
+onenand_read_bufferram[528] 74 17
+onenand_read_bufferram[514] 103 17	<- Unaligned offset
+onenand_read_bufferram[514] 11 17
+onenand_read_bufferram[514] 137 17
+onenand_read_bufferram[528] 120 17
+onenand_read_bufferram[528] 40 17
+onenand_read_bufferram[514] 57 17
+onenand_read_bufferram[528] 632 61
+onenand_read_bufferram[528] 360 61
+onenand_read_bufferram[528] 80 61
 
-I've now cross compiled the mtd-utils, as I couldn't get the Debian ARM
-package for the same to run on my AT91SAM9263-EK board.  I have 2
-partitions, the first starting at 0x100000 and finishing 504 blocks
-later, i.e. 128kB * 504 = 63MB, 1MB is reserved at the beginning for
-U-boot and it's env.  There were no bad blocks detected on the device as
-it was shipped from the factory.
+It's only optimization at driver level
 
-Running an ext3 fs on a USB stick as the RFS with noatime and nodiratime
-options, I can test the NAND interface.
+I think it's the best that it handles at UBIFS itself
+e.g., Now it passed down from name handling
+If the size of name is odd how about pad it even?
 
-So I tried this...
-
-root@at91sam9263ek:~/mtd-tools$ ./flash_eraseall  /dev/mtd0 0 504
-Erasing 128 Kibyte @ 3ee0000 -- 99 % complete.
-root@at91sam9263ek:~/mtd-tools$ ./nandtest -p 5 -o 0 /dev/mtd0
-ECC corrections: 0
-ECC failures   : 3
-Bad blocks     : 0
-BBT blocks     : 0
-00000000: reading... 
-ECC failed at 00000000
-00000000: checking...
-compare failed. seed 1804289383
-Byte 0x7c40 is 0c should be ff
-Byte 0xa58f is 0c should be ff
-Byte 0xd010 is 55 should be 83
-Byte 0xd011 is 38 should be fb
-Byte 0xd050 is 12 should be a8
-Byte 0xd051 is 74 should be 90
-Byte 0xd090 is c8 should be 89
-Byte 0xd091 is 86 should be c9
-Byte 0xd0d0 is 41 should be 48
-Byte 0xd0d1 is b3 should be c3
-Byte 0xd110 is c3 should be 09
-Byte 0xd111 is d1 should be 73
-
-Hmm.  This does not look good to me.  Does this indicate a hardware or
-software problem?  Or did I misuse the tools?  What tests should/could I
-perform?
-
-Regards,
-James.
+Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+---
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index 5d7965f..49194b6 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -509,9 +509,23 @@ static int onenand_read_bufferram(struct mtd_info *mtd, int area,
+ 
+ 	bufferram += onenand_bufferram_offset(mtd, area);
+ 
++	if (ONENAND_CHECK_BYTE_ACCESS(offset)) {
++		unsigned short word;
++		printk("%s[%d] %d %zd\n", __func__, __LINE__, offset, count);
++
++		/* Align with word(16-bit) size */
++		/* Read word and save byte */
++		word = this->read_word(bufferram + offset - 1);
++		buffer[0] = (word & 0xff00) >> 8;
++		buffer++;
++		offset++;
++		count--;
++	}
++
+ 	if (ONENAND_CHECK_BYTE_ACCESS(count)) {
+ 		unsigned short word;
+ 
++		printk("%s[%d] %d %zd\n", __func__, __LINE__, offset, count);
+ 		/* Align with word(16-bit) size */
+ 		count--;
+ 
