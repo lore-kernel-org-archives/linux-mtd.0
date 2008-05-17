@@ -1,11 +1,20 @@
-Message-ID: <20080517070222.23028.482DF21E35D8E-482D@webmail.dodo.com.au>
-Date: Sat, 17 May 2008 7:02:22 +1000
-From: "UK National Lottery" <kkk4@dodo.com.au>
-Subject: You Just Won!! Contact (Mr Paul David) For Claims
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="iso-8859-1";
-MIME-Version: 1.0
-Reply-To: UK National Lottery <officedpt08@Grad.com>
+Received: from wf-out-1314.google.com ([209.85.200.172])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JxK1P-0001iv-OY
+	for linux-mtd@lists.infradead.org; Sat, 17 May 2008 10:52:16 +0000
+Received: by wf-out-1314.google.com with SMTP id 28so560989wfc.24
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 17 May 2008 03:52:13 -0700 (PDT)
+From: Bryan Wu <cooloney@kernel.org>
+To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	mike@steroidmicros.com
+Subject: [PATCH 1/1] mtd m25p80: fix bug - ATmel spi flash fails to be copied
+	to
+Date: Sat, 17 May 2008 18:52:06 +0800
+Message-Id: <1211021526-24076-1-git-send-email-cooloney@kernel.org>
+Sender: Bryan Wu <cooloney.lkml@gmail.com>
+Cc: Bryan Wu <cooloney@kernel.org>,
+	Michael Hennerich <michael.hennerich@analog.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,50 +24,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---
-The National Lottery
-PO Box 1010
-Liverpool L70 1NL United Kingdom
-Ref: UK/6648D/09
-Batch: 080/07/MK881
+From: Michael Hennerich <michael.hennerich@analog.com>
 
-Dear Lucky Winner,
+Atmel serial flash tends to power up with the protection status bits set.
+http://blackfin.uclinux.org/gf/project/uclinux-dist/tracker/?action=TrackerItemEdit&tracker_item_id=4089
 
-We are pleased to announce your email address as one of the 200 lucky
-winners in the UK Lotto draw held on the 15th of May 2008. All 200
-winning addresses were randomly selected from a batch of £1,500,000.00
-(one million five hundred thousand pound sterling) international emails
-addresses.Consequently, you have therefore been approved for a total
-payout of GBP £1,500,000.00 (one million five hundred thousand pound
-sterling) only.
+Signed-off-by: Michael Hennerich <michael.hennerich@analog.com>
+Signed-off-by: Bryan Wu <cooloney@kernel.org>
+---
+ drivers/mtd/devices/m25p80.c |   24 ++++++++++++++++++++++++
+ 1 files changed, 24 insertions(+), 0 deletions(-)
 
-Your email address emerged along side with 199 others as a category of
-winner in this year's Annual Draw.The UK lottery draw is held once in
-every four years interval.And is also organized to encourage the use of
-internet and computers.We are proud to say that over GBP £25 Million
-Pounds are won annually in more than 150 countries world-wide.
-
-Fill the form below to enable us process you winning prize.
-
-1. Full Name: ..........
-2. Address: ............
-3. Nationality: ........
-4. Date of Birth:.. ....
-5. Occupation: .........
-6. Phone: ..............
-7. Mobile: .............
-8. Fax: ................
-9. Sex:.................
-
-Name: Mr.Paul David
-Tel: +44-704-5737128
-Email: officedpt08@Grad.com
-
-Cordially,
-Sarah May.
-Promotions Manager.
-
-________________________________________________
-
-This message was sent
-using Dodo Webmail - www.dodo.com.au
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 25efd33..b10649b 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -33,6 +33,7 @@
+ /* Flash opcodes. */
+ #define	OPCODE_WREN		0x06	/* Write enable */
+ #define	OPCODE_RDSR		0x05	/* Read status register */
++#define	OPCODE_WRSR		0x01	/* Write status register 1 byte */
+ #define	OPCODE_NORM_READ	0x03	/* Read data bytes (low frequency) */
+ #define	OPCODE_FAST_READ	0x0b	/* Read data bytes (high frequency) */
+ #define	OPCODE_PP		0x02	/* Page program (up to 256 bytes) */
+@@ -112,6 +113,19 @@ static int read_sr(struct m25p *flash)
+ 	return val;
+ }
+ 
++/*
++ * Write status register 1 byte
++ * Returns negative if error occurred.
++ */
++static int write_sr(struct m25p *flash, u8 val)
++{
++	flash->command[0] = OPCODE_WRSR;
++	flash->command[1] = val;
++
++	spi_write(flash->spi, flash->command, 2);
++
++	return spi_write(flash->spi, flash->command, 2);
++}
+ 
+ /*
+  * Set write enable latch with Write Enable command.
+@@ -587,6 +601,16 @@ static int __devinit m25p_probe(struct spi_device *spi)
+ 	mutex_init(&flash->lock);
+ 	dev_set_drvdata(&spi->dev, flash);
+ 
++	/*
++	 * Atmel serial flash tend to power up
++	 * with the software protection bits set
++	 */
++
++	if (info->jedec_id >> 16 == 0x1f) {
++		write_enable(flash);
++		write_sr(flash, 0);
++	}
++
+ 	if (data && data->name)
+ 		flash->mtd.name = data->name;
+ 	else
+-- 
+1.5.5
