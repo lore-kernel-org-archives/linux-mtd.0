@@ -1,15 +1,19 @@
-Received: from risingsoftware01.propagation.net ([66.221.33.65])
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jy128-0005Hx-NI
-	for linux-mtd@lists.infradead.org; Mon, 19 May 2008 08:47:53 +0000
-Date: Mon, 19 May 2008 18:47:46 +1000
-From: Hamish Moffatt <hamish@cloud.net.au>
-To: dedekind@infradead.org, linux-mtd@lists.infradead.org
-Subject: ubiupdatevol from pipe/compressed file
-Message-ID: <20080519084746.GA19325@cloud.net.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+	id 1Jy1A2-0003WR-0T
+	for linux-mtd@lists.infradead.org; Mon, 19 May 2008 08:56:06 +0000
+Subject: Re: ubiupdatevol from pipe/compressed file
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Hamish Moffatt <hamish@cloud.net.au>
+In-Reply-To: <20080519084746.GA19325@cloud.net.au>
+References: <20080519084746.GA19325@cloud.net.au>
+Content-Type: text/plain; charset=utf-8
+Date: Mon, 19 May 2008 11:54:01 +0300
+Message-Id: <1211187241.27243.40.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,36 +23,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Mon, 2008-05-19 at 18:47 +1000, Hamish Moffatt wrote:
+> Alternatively allow the uncompressed file size to be specified as a
+> ubiupdatevol parameter. In my application I can store the uncompressed
+> file size and provide it to ubiupdatevol ok.
 
-We discussed this briefly a few months back but I want to investigate a
-bit further.
+Yeah, I think it is reasonable to add one more option and pass the size
+there. Then it could be easy to teach ubiupdatevol to read the specified
+amount of bytes from stdin.
 
-I would like to be able to update a ubi volume from a compressed file.
-My system has limited RAM so I can't always keep the whole file
-uncompressed in RAM, and I'd prefer not to uncompress it to temporary
-space on flash, just to copy it somewhere else.
-
-I'm doing this on a block device with "zcat img.gz | dd of=..." but
-ubiupdatevol doesn't accept a pipe.
-
-Reading the source this looks quite difficult to fix - it really must
-know how many bytes are to be programmed in advance because it
-communicates that to the kernel.
-
-One solution I see is to add decompression support directly into
-ubiupdatevol. eg with zlib it can gzseek() to the end of the file to get
-the length, then rewind. I modified flashcp once to do this. However I
-prefer to use better compression (lzma or bzip2) and we don't want to
-add all of these to mtd-utils I think.
-
-Alternatively allow the uncompressed file size to be specified as a
-ubiupdatevol parameter. In my application I can store the uncompressed
-file size and provide it to ubiupdatevol ok.
-
-Artem, do you have any other ideas?
-
-Thanks
-Hamish
--- 
-Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
