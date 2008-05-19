@@ -1,24 +1,19 @@
-Received: from risingsoftware01.propagation.net ([66.221.33.65])
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jxykt-0004Ym-VK
-	for linux-mtd@lists.infradead.org; Mon, 19 May 2008 06:21:56 +0000
-Received: from c122-107-142-134.eburwd5.vic.optusnet.com.au ([122.107.142.134]
-	helo=noddy.cloud.net.au)
-	by risingsoftware01.propagation.net with esmtpsa
-	(TLS-1.0:RSA_AES_256_CBC_SHA1:32) (Exim 4.63)
-	(envelope-from <hamish@cloud.net.au>) id 1Jxykr-0005zH-Jl
-	for linux-mtd@lists.infradead.org; Mon, 19 May 2008 01:21:53 -0500
-Received: from hamish by noddy.cloud.net.au with local (Exim 4.69)
-	(envelope-from <hamish@cloud.net.au>) id 1Jxykn-0004Kf-4Q
-	for linux-mtd@lists.infradead.org; Mon, 19 May 2008 16:21:49 +1000
-Date: Mon, 19 May 2008 16:21:49 +1000
-From: Hamish Moffatt <hamish@cloud.net.au>
-To: linux-mtd@lists.infradead.org
-Subject: ext2 for read-only file system on UBI
-Message-ID: <20080519062149.GA16462@cloud.net.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+	id 1Jxz1p-0003Dc-9j
+	for linux-mtd@lists.infradead.org; Mon, 19 May 2008 06:39:25 +0000
+Subject: Re: ext2 for read-only file system on UBI
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Hamish Moffatt <hamish@cloud.net.au>
+In-Reply-To: <20080519062149.GA16462@cloud.net.au>
+References: <20080519062149.GA16462@cloud.net.au>
+Content-Type: text/plain; charset=utf-8
+Date: Mon, 19 May 2008 09:37:53 +0300
+Message-Id: <1211179073.27243.22.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,24 +23,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-My embedded device has a read-only root file system which is only
-replaced by writing a whole image (dd, flashcp, ubiupdatevol etc).
+Hello Hamish,
 
-Using gluebi and mtdblock, I think I can put a traditional block file
-system (eg ext2) on top of NAND flash. What are the disadvantages of
-this? (For the read-only application only.)
+On Mon, 2008-05-19 at 16:21 +1000, Hamish Moffatt wrote:
+> My embedded device has a read-only root file system which is only
+> replaced by writing a whole image (dd, flashcp, ubiupdatevol etc).
+>=20
+> Using gluebi and mtdblock, I think I can put a traditional block file
+> system (eg ext2) on top of NAND flash. What are the disadvantages of
+> this? (For the read-only application only.)
 
-Background: I've got older hardware which uses ext2 on top of compact
-flash in IDE mode, and new hardware which has replaced the compact flash
-with NAND. I'd like to share an ext2 image between the two if possible.
+For read-only it should be ok, although I am not sure mtdblock will like
+non power of 2 eraseblock sizes. But this should be trivial to fix.
 
-The read-write file systems use ubifs. I'm only considering this for the
-read-only volumes. One obvious disadvantage is lack of compression. Are
-there others? Do I still get the reliability of ubi? 
+> Background: I've got older hardware which uses ext2 on top of compact
+> flash in IDE mode, and new hardware which has replaced the compact flash
+> with NAND. I'd like to share an ext2 image between the two if possible.
 
-ie what does "UBI is not an FTL" mean in practice?
+Should be possible for R/O. Different sizes of eraseblocks may add extra
+work though.
 
-thanks,
-Hamish
--- 
-Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
+> The read-write file systems use ubifs. I'm only considering this for the
+> read-only volumes. One obvious disadvantage is lack of compression. Are
+> there others? Do I still get the reliability of ubi?=20
+
+No, should be fine. Well, you'll still have WL across whole NAND chip,
+yes. You'll still have bit-flip handling.
+
+> ie what does "UBI is not an FTL" mean in practice?
+
+In practice it means that /dev/ubiX_Y are not block devices, where you
+may directly put ext2 and the like.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
