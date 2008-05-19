@@ -1,22 +1,26 @@
-Received: from nwd2mail11.analog.com ([137.71.25.57])
+Received: from yw-out-1718.google.com ([74.125.46.158])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jy1Ra-00086F-Hy
-	for linux-mtd@lists.infradead.org; Mon, 19 May 2008 09:14:10 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: [PATCH 1/1] mtd m25p80: fix bug - ATmel spi flash fails to be
+	id 1Jy23N-0006x3-4I
+	for linux-mtd@lists.infradead.org; Mon, 19 May 2008 09:53:13 +0000
+Received: by yw-out-1718.google.com with SMTP id 5so1775935ywm.72
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 19 May 2008 02:53:11 -0700 (PDT)
+Message-ID: <386072610805190253g42d47d81w794b3c14c15aa890@mail.gmail.com>
+Date: Mon, 19 May 2008 17:53:11 +0800
+From: "Bryan Wu" <cooloney@kernel.org>
+Sender: cooloney.lkml@gmail.com
+To: "Hennerich, Michael" <Michael.Hennerich@analog.com>
+Subject: Re: [PATCH 1/1] mtd m25p80: fix bug - ATmel spi flash fails to be
 	copied to
-Date: Mon, 19 May 2008 10:12:46 +0100
-Message-ID: <8A42379416420646B9BFAC9682273B6D0183AE38@limkexm3.ad.analog.com>
-In-Reply-To: <1211021526-24076-1-git-send-email-cooloney@kernel.org>
+In-Reply-To: <8A42379416420646B9BFAC9682273B6D0183AE38@limkexm3.ad.analog.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 References: <1211021526-24076-1-git-send-email-cooloney@kernel.org>
-From: "Hennerich, Michael" <Michael.Hennerich@analog.com>
-To: "Bryan Wu" <cooloney@kernel.org>, <linux-mtd@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <mike@steroidmicros.com>
-Cc: Michael Hennerich <michael.hennerich@analog.com>
+	<8A42379416420646B9BFAC9682273B6D0183AE38@limkexm3.ad.analog.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	mike@steroidmicros.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,93 +30,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->+	spi_write(flash->spi, flash->command, 2);
->+
->+	return spi_write(flash->spi, flash->command, 2);
+On Mon, May 19, 2008 at 5:12 PM, Hennerich, Michael
+<Michael.Hennerich@analog.com> wrote:
+>>+      spi_write(flash->spi, flash->command, 2);
+>>+
+>>+      return spi_write(flash->spi, flash->command, 2);
+>
+>
+> I just noticed that write_sr contains a duplicated spi_write.
+> Bryan sends out a new patch.
+>
 
 
-I just noticed that write_sr contains a duplicated spi_write.
-Bryan sends out a new patch.
+No problem, it is my fault. I should review the patch carefully.
 
--Michael
-
->-----Original Message-----
->From: Bryan Wu [mailto:cooloney.lkml@gmail.com] On Behalf Of Bryan Wu
->Sent: Samstag, 17. Mai 2008 12:52
->To: linux-mtd@lists.infradead.org; linux-kernel@vger.kernel.org;
->mike@steroidmicros.com
->Cc: Michael Hennerich; Bryan Wu
->Subject: [PATCH 1/1] mtd m25p80: fix bug - ATmel spi flash fails to be
->copied to
->
->From: Michael Hennerich <michael.hennerich@analog.com>
->
->Atmel serial flash tends to power up with the protection status bits
-set.
->http://blackfin.uclinux.org/gf/project/uclinux-
->dist/tracker/?action=3DTrackerItemEdit&tracker_item_id=3D4089
->
->Signed-off-by: Michael Hennerich <michael.hennerich@analog.com>
->Signed-off-by: Bryan Wu <cooloney@kernel.org>
->---
-> drivers/mtd/devices/m25p80.c |   24 ++++++++++++++++++++++++
-> 1 files changed, 24 insertions(+), 0 deletions(-)
->
->diff --git a/drivers/mtd/devices/m25p80.c
-b/drivers/mtd/devices/m25p80.c
->index 25efd33..b10649b 100644
->--- a/drivers/mtd/devices/m25p80.c
->+++ b/drivers/mtd/devices/m25p80.c
->@@ -33,6 +33,7 @@
-> /* Flash opcodes. */
-> #define	OPCODE_WREN		0x06	/* Write enable */
-> #define	OPCODE_RDSR		0x05	/* Read status register
-*/
->+#define	OPCODE_WRSR		0x01	/* Write status register
-1 byte */
-> #define	OPCODE_NORM_READ	0x03	/* Read data bytes (low
-frequency) */
-> #define	OPCODE_FAST_READ	0x0b	/* Read data bytes (high
-frequency) */
-> #define	OPCODE_PP		0x02	/* Page program (up to
-256 bytes) */
->@@ -112,6 +113,19 @@ static int read_sr(struct m25p *flash)
-> 	return val;
-> }
->
->+/*
->+ * Write status register 1 byte
->+ * Returns negative if error occurred.
->+ */
->+static int write_sr(struct m25p *flash, u8 val)
->+{
->+	flash->command[0] =3D OPCODE_WRSR;
->+	flash->command[1] =3D val;
->+
->+	spi_write(flash->spi, flash->command, 2);
->+
->+	return spi_write(flash->spi, flash->command, 2);
->+}
->
-> /*
->  * Set write enable latch with Write Enable command.
->@@ -587,6 +601,16 @@ static int __devinit m25p_probe(struct spi_device
->*spi)
-> 	mutex_init(&flash->lock);
-> 	dev_set_drvdata(&spi->dev, flash);
->
->+	/*
->+	 * Atmel serial flash tend to power up
->+	 * with the software protection bits set
->+	 */
->+
->+	if (info->jedec_id >> 16 =3D=3D 0x1f) {
->+		write_enable(flash);
->+		write_sr(flash, 0);
->+	}
->+
-> 	if (data && data->name)
-> 		flash->mtd.name =3D data->name;
-> 	else
->--
->1.5.5
+Thanks
+-Bryan
