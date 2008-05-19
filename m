@@ -1,19 +1,22 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jy1A2-0003WR-0T
-	for linux-mtd@lists.infradead.org; Mon, 19 May 2008 08:56:06 +0000
-Subject: Re: ubiupdatevol from pipe/compressed file
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Hamish Moffatt <hamish@cloud.net.au>
-In-Reply-To: <20080519084746.GA19325@cloud.net.au>
-References: <20080519084746.GA19325@cloud.net.au>
-Content-Type: text/plain; charset=utf-8
-Date: Mon, 19 May 2008 11:54:01 +0300
-Message-Id: <1211187241.27243.40.camel@sauron>
-Mime-Version: 1.0
+Received: from nwd2mail11.analog.com ([137.71.25.57])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jy1Ra-00086F-Hy
+	for linux-mtd@lists.infradead.org; Mon, 19 May 2008 09:14:10 +0000
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Subject: RE: [PATCH 1/1] mtd m25p80: fix bug - ATmel spi flash fails to be
+	copied to
+Date: Mon, 19 May 2008 10:12:46 +0100
+Message-ID: <8A42379416420646B9BFAC9682273B6D0183AE38@limkexm3.ad.analog.com>
+In-Reply-To: <1211021526-24076-1-git-send-email-cooloney@kernel.org>
+References: <1211021526-24076-1-git-send-email-cooloney@kernel.org>
+From: "Hennerich, Michael" <Michael.Hennerich@analog.com>
+To: "Bryan Wu" <cooloney@kernel.org>, <linux-mtd@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <mike@steroidmicros.com>
+Cc: Michael Hennerich <michael.hennerich@analog.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,16 +26,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2008-05-19 at 18:47 +1000, Hamish Moffatt wrote:
-> Alternatively allow the uncompressed file size to be specified as a
-> ubiupdatevol parameter. In my application I can store the uncompressed
-> file size and provide it to ubiupdatevol ok.
+>+	spi_write(flash->spi, flash->command, 2);
+>+
+>+	return spi_write(flash->spi, flash->command, 2);
 
-Yeah, I think it is reasonable to add one more option and pass the size
-there. Then it could be easy to teach ubiupdatevol to read the specified
-amount of bytes from stdin.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+I just noticed that write_sr contains a duplicated spi_write.
+Bryan sends out a new patch.
+
+-Michael
+
+>-----Original Message-----
+>From: Bryan Wu [mailto:cooloney.lkml@gmail.com] On Behalf Of Bryan Wu
+>Sent: Samstag, 17. Mai 2008 12:52
+>To: linux-mtd@lists.infradead.org; linux-kernel@vger.kernel.org;
+>mike@steroidmicros.com
+>Cc: Michael Hennerich; Bryan Wu
+>Subject: [PATCH 1/1] mtd m25p80: fix bug - ATmel spi flash fails to be
+>copied to
+>
+>From: Michael Hennerich <michael.hennerich@analog.com>
+>
+>Atmel serial flash tends to power up with the protection status bits
+set.
+>http://blackfin.uclinux.org/gf/project/uclinux-
+>dist/tracker/?action=3DTrackerItemEdit&tracker_item_id=3D4089
+>
+>Signed-off-by: Michael Hennerich <michael.hennerich@analog.com>
+>Signed-off-by: Bryan Wu <cooloney@kernel.org>
+>---
+> drivers/mtd/devices/m25p80.c |   24 ++++++++++++++++++++++++
+> 1 files changed, 24 insertions(+), 0 deletions(-)
+>
+>diff --git a/drivers/mtd/devices/m25p80.c
+b/drivers/mtd/devices/m25p80.c
+>index 25efd33..b10649b 100644
+>--- a/drivers/mtd/devices/m25p80.c
+>+++ b/drivers/mtd/devices/m25p80.c
+>@@ -33,6 +33,7 @@
+> /* Flash opcodes. */
+> #define	OPCODE_WREN		0x06	/* Write enable */
+> #define	OPCODE_RDSR		0x05	/* Read status register
+*/
+>+#define	OPCODE_WRSR		0x01	/* Write status register
+1 byte */
+> #define	OPCODE_NORM_READ	0x03	/* Read data bytes (low
+frequency) */
+> #define	OPCODE_FAST_READ	0x0b	/* Read data bytes (high
+frequency) */
+> #define	OPCODE_PP		0x02	/* Page program (up to
+256 bytes) */
+>@@ -112,6 +113,19 @@ static int read_sr(struct m25p *flash)
+> 	return val;
+> }
+>
+>+/*
+>+ * Write status register 1 byte
+>+ * Returns negative if error occurred.
+>+ */
+>+static int write_sr(struct m25p *flash, u8 val)
+>+{
+>+	flash->command[0] =3D OPCODE_WRSR;
+>+	flash->command[1] =3D val;
+>+
+>+	spi_write(flash->spi, flash->command, 2);
+>+
+>+	return spi_write(flash->spi, flash->command, 2);
+>+}
+>
+> /*
+>  * Set write enable latch with Write Enable command.
+>@@ -587,6 +601,16 @@ static int __devinit m25p_probe(struct spi_device
+>*spi)
+> 	mutex_init(&flash->lock);
+> 	dev_set_drvdata(&spi->dev, flash);
+>
+>+	/*
+>+	 * Atmel serial flash tend to power up
+>+	 * with the software protection bits set
+>+	 */
+>+
+>+	if (info->jedec_id >> 16 =3D=3D 0x1f) {
+>+		write_enable(flash);
+>+		write_sr(flash, 0);
+>+	}
+>+
+> 	if (data && data->name)
+> 		flash->mtd.name =3D data->name;
+> 	else
+>--
+>1.5.5
