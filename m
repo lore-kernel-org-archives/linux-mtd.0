@@ -1,22 +1,22 @@
 Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jy3OS-0003hf-VH
-	for linux-mtd@lists.infradead.org; Mon, 19 May 2008 11:19:05 +0000
-Date: Mon, 19 May 2008 13:18:51 +0200
+	id 1Jy3hy-0008SJ-Oe
+	for linux-mtd@lists.infradead.org; Mon, 19 May 2008 11:39:15 +0000
+Date: Mon, 19 May 2008 13:38:58 +0200
 From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Bryan Wu <cooloney@kernel.org>
-Subject: Re: [PATCH 1/1] mtd maps - Blackfin Async Flash Maps (try #4): Handle
-	the case where flash memory and ethernet mac/phy are mapped
-	onto the same async bank
-Message-ID: <20080519111851.GA32679@logfs.org>
-References: <1211193144-7731-1-git-send-email-cooloney@kernel.org>
+To: Chris Malley <mail@chrismalley.co.uk>
+Subject: Re: [PATCH] [MTD] CORE: Use list_for_each_entry[_safe] where
+	appropriate (2nd attempt)
+Message-ID: <20080519113858.GB32679@logfs.org>
+References: <1211046845.17244.19.camel@localhost>
+	<20080517194914.GA21674@logfs.org>
+	<1211139433.19435.19.camel@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1211193144-7731-1-git-send-email-cooloney@kernel.org>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-kernel@vger.kernel.org, Mike Frysinger <vapier.adi@gmail.com>
+In-Reply-To: <1211139433.19435.19.camel@localhost>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,39 +26,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 19 May 2008 18:32:24 +0800, Bryan Wu wrote:
-> 
-> [try #4]
->  - drop superfluous casts
->  - drop SSYNC() when reading from the flash and rewrite
->    bfin_copy_from() to be like bfin_copy_to() so that
->    we dont have to handle all the aligned/unaligned cases
-> 
-> [try #3] rename bf5xx-flash to bfin-async-flash
->  - move all kconfig board settings into board resources
->  - fixup casting style according to lkml feedback
->  - rewrite driver so that it can handle arbitrary of
->    instances according to the declared platform resources
-> 
-> [try #2]
-> Remove useless SSYNC() as Will said
-> 
-> [try #1]
-> The BF533-STAMP does this for example.
-> All board-specific configuration goes in your board resources file.
-> 
-> Signed-off-by: Mike Frysinger <vapier.adi@gmail.com>
-> Cc: Joern Engel <joern@logfs.org>
-> Signed-off-by: Bryan Wu <cooloney@kernel.org>
+On Sun, 18 May 2008 20:37:13 +0100, Chris Malley wrote:
+>
+> +	list_for_each_entry(tr, &blktrans_majors, list) {
+>  		tr->add_mtd(tr, mtd);
+>  	}
 
-Looks good to me.  If dwmw2 doesn't mind adding another mapping driver,
-this can go in.  Not that I had any idea how physmap could sanely cover
-this driver too.
+In a couple of places like this the loop body became a single line.  So
+you could remove the braces as well, while at it.
 
-Acked-By: Joern Engel <joern@logfs.org>
+> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+> index 07c7011..b7847f2 100644
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -302,20 +302,14 @@ static int part_block_markbad (struct mtd_info *mtd, loff_t ofs)
+>  
+>  int del_mtd_partitions(struct mtd_info *master)
+>  {
+> -	struct list_head *node;
+> -	struct mtd_part *slave;
+> +	struct mtd_part *slave, *safe;
+
+"next" seems a bit better than "safe".
+
+Rest looks fine to me.  So I leave it up to you whether to add those
+trivial cosmetics or just leave the patch as-is.  Either way, it is an
+improvement.  Also, having dwmw2 on Cc: improves the chances of this
+patch not being ignored. ;)
+
+Reviewed-By: Joern Engel <joern@logfs.org>
 
 Jörn
 
 -- 
-Ninety percent of everything is crap.
--- Sturgeon's Law
+Victory in war is not repetitious.
+-- Sun Tzu
