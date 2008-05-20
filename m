@@ -1,22 +1,20 @@
-Received: from rn-out-0910.google.com ([64.233.170.190])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JyGyk-00011R-9U
-	for linux-mtd@lists.infradead.org; Tue, 20 May 2008 01:49:26 +0000
-Received: by rn-out-0910.google.com with SMTP id s46so627001rnb.3
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 19 May 2008 18:49:24 -0700 (PDT)
-Message-ID: <9c9fda240805191849m6bdfd99fi7509c37128f5d989@mail.gmail.com>
-Date: Tue, 20 May 2008 10:49:24 +0900
-From: "Kyungmin Park" <kmpark@infradead.org>
-Sender: kyungmin78@gmail.com
-To: "Artem Bityutskiy" <Artem.Bityutskiy@nokia.com>,
-	"Adrian Hunter" <ext-adrian.hunter@nokia.com>
-Subject: Question about the 2-bit EDC scrubbing at UBI
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JyKGg-0002bp-KA
+	for linux-mtd@lists.infradead.org; Tue, 20 May 2008 05:20:10 +0000
+Message-ID: <48325E70.4070201@nokia.com>
+Date: Tue, 20 May 2008 08:15:28 +0300
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: Kyungmin Park <kmpark@infradead.org>
+Subject: Re: Question about the 2-bit EDC scrubbing at UBI
+References: <9c9fda240805191849m6bdfd99fi7509c37128f5d989@mail.gmail.com>
+In-Reply-To: <9c9fda240805191849m6bdfd99fi7509c37128f5d989@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Adrian Hunter <ext-adrian.hunter@nokia.com>
+Reply-To: Artem.Bityutskiy@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +24,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Kyungmin,
 
-In internal layout handling in UBI, it plans to scrub the LEB if the
-2-bit EDC is found.
-As you know, if the EDC is detected it can't trust which bit is wrong.
-So it needs another handling.
-But the code does as 1-bit ECC.
+Kyungmin Park wrote:
+> In internal layout handling in UBI, it plans to scrub the LEB if the
+> 2-bit EDC is found.
+> As you know, if the EDC is detected it can't trust which bit is wrong.
+> So it needs another handling.
+> But the code does as 1-bit ECC.
+> 
+> How do you think? Is that make a problem in use?
 
-How do you think? Is that make a problem in use?
+Hi, I think the code is OK. I've added an explanatory comment
+below.
 
-static struct ubi_vtbl_record *process_lvol(struct ubi_device *ubi,
-                                            struct ubi_scan_info *si,
-                                            struct ubi_scan_volume *sv)
-{
-        ...snip...
-        dbg_msg("check layout volume");
+BTW, have you received a lengthy description about our OneNAND
+read error occasion from Adrian which he sent probably about 3
+weeks ago?
 
-        /* Read both LEB 0 and LEB 1 into memory */
-        ubi_rb_for_each_entry(rb, seb, &sv->root, u.rb) {
-                leb[seb->lnum] = vmalloc(ubi->vtbl_size);
-                if (!leb[seb->lnum]) {
-                        err = -ENOMEM;
-                        goto out_free;
-                }
-                memset(leb[seb->lnum], 0, ubi->vtbl_size);
+>From 6a1384fa8e384110cfb761aa5c25511fc8ae812e Mon Sep 17 00:00:00 2001
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Date: Tue, 20 May 2008 09:54:02 +0300
+Subject: [PATCH] UBI: add a comment
 
-                err = ubi_io_read_data(ubi, leb[seb->lnum], seb->pnum, 0,
-                                       ubi->vtbl_size);
-                /* It has to check only 1-bit ECC not 2-bit EDC */
-                if (err == UBI_IO_BITFLIPS || err == -EBADMSG) =>
-should be 'if (err == UBI_IO_BITFLIPS)'
-                        /* Scrub the PEB later */
-                        seb->scrub = 1;
-                else if (err)
-                        goto out_free;
-        }
-        ...snip...
-}
+It is not clear why we schedule PEB for scrubbing in case of
+-EBADMSG. Elaborate.
 
-Thank you,
-Kyungmin Park
+Requested-by: Kyungmin Park <kmpark@infradead.org>
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ drivers/mtd/ubi/vtbl.c |   11 ++++++++++-
+ 1 files changed, 10 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
+index 3c4d68f..42a7815 100644
+--- a/drivers/mtd/ubi/vtbl.c
++++ b/drivers/mtd/ubi/vtbl.c
+@@ -385,7 +385,16 @@ static struct ubi_vtbl_record *process_lvol(struct ubi_device *ubi,
+ 		err = ubi_io_read_data(ubi, leb[seb->lnum], seb->pnum, 0,
+ 				       ubi->vtbl_size);
+ 		if (err == UBI_IO_BITFLIPS || err == -EBADMSG)
+-			/* Scrub the PEB later */
++			/*
++			 * Scrub the PEB later. Note, -EBADMSG indicates an
++			 * uncorrectable ECC error, but we have our own CRC and
++			 * the data will be checked later. If the data is OK,
++			 * the PEB will be scrubbed (because we set
++			 * seb->scrub). If the data is not OK, the contents of
++			 * the PEB will be recovered from the second copy, and
++			 * seb->scrub will be cleared in
++			 * 'ubi_scan_add_used()'.
++			 */
+ 			seb->scrub = 1;
+ 		else if (err)
+ 			goto out_free;
+-- 
+1.5.4.1
+
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
