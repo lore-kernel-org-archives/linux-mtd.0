@@ -1,19 +1,20 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jz85Z-0007V0-1E
-	for linux-mtd@lists.infradead.org; Thu, 22 May 2008 10:32:01 +0000
-Subject: Re: [PATCH] UBI: Use the bit operation with min_io_size
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Kyungmin Park <kyungmin.park@samsung.com>
-In-Reply-To: <20080522013218.GA26360@party>
-References: <20080522013218.GA26360@party>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 22 May 2008 13:31:10 +0300
-Message-Id: <1211452270.31023.31.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, ext-adrian.hunter@nokia.com
-Reply-To: dedekind@infradead.org
+Received: from yw-out-1718.google.com ([74.125.46.152])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jyke4-0001nU-O9
+	for linux-mtd@lists.infradead.org; Wed, 21 May 2008 09:30:04 +0000
+Received: by yw-out-1718.google.com with SMTP id 5so2574977ywm.72
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 21 May 2008 02:30:03 -0700 (PDT)
+Message-ID: <f17812d70805210230u62b25c1drc3d9120fae7de6a2@mail.gmail.com>
+Date: Wed, 21 May 2008 17:30:03 +0800
+From: "eric miao" <eric.y.miao@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] pxa: fix the incorrect calling of pxa3xx_nand_config() on
+	resume path
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_Part_5158_6207219.1211362203794"
+Cc: David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,39 +24,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Kyungmin,
+------=_Part_5158_6207219.1211362203794
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-you patch looks OK to me and I'll apply it, but with few changes
-(see below).
+>From b23139b5e9d39b5fea306f4429bcaa6d075d284b Mon Sep 17 00:00:00 2001
+From: Eric Miao <eric.miao@marvell.com>
+Date: Wed, 21 May 2008 17:26:15 +0800
+Subject: [PATCH] pxa: fix the incorrect calling of
+pxa3xx_nand_config() on resume path
 
-On Thu, 2008-05-22 at 10:32 +0900, Kyungmin Park wrote:
-> It already checks the min io size is the power of 2 at io_init.
->=20
->         /* Make sure minimal I/O unit is power of 2 */
-I will add a comment here that we do not have any fundamental reason
-to require this. It is just an optimization which makes it possible
-to avoid costly division operations.
+Signed-off-by: Eric Miao <eric.miao@marvell.com>
+---
 
-> +	n =3D req->alignment & (ubi->min_io_size - 1);
-Probably we could introduce an ubi->min_io_mask variable even. But
-this is anyway a subject of a separate change.
+David, this is a fix and I hope this can be merged soon during this
+-rc period, thanks.
 
-> -		ubi_assert(len % ubi->min_io_size =3D=3D 0);
-> +		ubi_assert(len & (ubi->min_io_size - 1) =3D=3D 0);
+ drivers/mtd/nand/pxa3xx_nand.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Bitwise & has smaller priority than =3D=3D, so I think this should be
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index fceb468..fe2bc7e 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -1216,7 +1216,7 @@ static int pxa3xx_nand_resume(struct
+platform_device *pdev)
 
-ubi_assert((len & (ubi->min_io_size - 1)) =3D=3D 0); or better
-ubi_assert(!(len & (ubi->min_io_size - 1)));
+ 	clk_enable(info->clk);
 
-> -	ubi_assert(length % ubi->min_io_size =3D=3D 0);
-> +	ubi_assert(length & (ubi->min_io_size - 1) =3D=3D 0);
-Similar.
+-	return pxa3xx_nand_config_flash(info);
++	return pxa3xx_nand_config_flash(info, info->flash_info);
+ }
+ #else
+ #define pxa3xx_nand_suspend	NULL
+-- 
+1.5.4.3
 
 
-Thank you!
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+-- 
+Cheers
+- eric
+
+------=_Part_5158_6207219.1211362203794
+Content-Type: text/x-diff;
+	name=0001-pxa-fix-the-incorrect-calling-of-pxa3xx_nand_config.patch
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fghpqh7x0
+Content-Disposition: attachment;
+	filename=0001-pxa-fix-the-incorrect-calling-of-pxa3xx_nand_config.patch
+
+RnJvbSBiMjMxMzliNWU5ZDM5YjVmZWEzMDZmNDQyOWJjYWE2ZDA3NWQyODRiIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBFcmljIE1pYW8gPGVyaWMubWlhb0BtYXJ2ZWxsLmNvbT4KRGF0
+ZTogV2VkLCAyMSBNYXkgMjAwOCAxNzoyNjoxNSArMDgwMApTdWJqZWN0OiBbUEFUQ0hdIHB4YTog
+Zml4IHRoZSBpbmNvcnJlY3QgY2FsbGluZyBvZiBweGEzeHhfbmFuZF9jb25maWcoKSBvbiByZXN1
+bWUgcGF0aAoKU2lnbmVkLW9mZi1ieTogRXJpYyBNaWFvIDxlcmljLm1pYW9AbWFydmVsbC5jb20+
+Ci0tLQogZHJpdmVycy9tdGQvbmFuZC9weGEzeHhfbmFuZC5jIHwgICAgMiArLQogMSBmaWxlcyBj
+aGFuZ2VkLCAxIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJp
+dmVycy9tdGQvbmFuZC9weGEzeHhfbmFuZC5jIGIvZHJpdmVycy9tdGQvbmFuZC9weGEzeHhfbmFu
+ZC5jCmluZGV4IGZjZWI0NjguLmZlMmJjN2UgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL25hbmQv
+cHhhM3h4X25hbmQuYworKysgYi9kcml2ZXJzL210ZC9uYW5kL3B4YTN4eF9uYW5kLmMKQEAgLTEy
+MTYsNyArMTIxNiw3IEBAIHN0YXRpYyBpbnQgcHhhM3h4X25hbmRfcmVzdW1lKHN0cnVjdCBwbGF0
+Zm9ybV9kZXZpY2UgKnBkZXYpCiAKIAljbGtfZW5hYmxlKGluZm8tPmNsayk7CiAKLQlyZXR1cm4g
+cHhhM3h4X25hbmRfY29uZmlnX2ZsYXNoKGluZm8pOworCXJldHVybiBweGEzeHhfbmFuZF9jb25m
+aWdfZmxhc2goaW5mbywgaW5mby0+Zmxhc2hfaW5mbyk7CiB9CiAjZWxzZQogI2RlZmluZSBweGEz
+eHhfbmFuZF9zdXNwZW5kCU5VTEwKLS0gCjEuNS40LjMKCg==
+------=_Part_5158_6207219.1211362203794--
