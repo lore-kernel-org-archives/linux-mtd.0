@@ -1,15 +1,15 @@
-Subject: Re: Support of removable MTD devices and other advanced features
-	(follow-up from lkml)
-From: David Woodhouse <dwmw2@infradead.org>
-To: Alex Dubov <oakad@yahoo.com>
-In-Reply-To: <411628.55054.qm@web36703.mail.mud.yahoo.com>
-References: <411628.55054.qm@web36703.mail.mud.yahoo.com>
-Content-Type: text/plain
-Date: Wed, 21 May 2008 10:06:07 +0100
-Message-Id: <1211360767.21380.325.camel@pmac.infradead.org>
-Mime-Version: 1.0
+Received: from nabagan.bluegap.ch ([88.198.58.248])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JykRE-00008m-CL
+	for linux-mtd@lists.infradead.org; Wed, 21 May 2008 09:16:48 +0000
+Message-ID: <4833E87D.10209@bluegap.ch>
+Date: Wed, 21 May 2008 11:16:45 +0200
+From: Markus Schiltknecht <markus@bluegap.ch>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: curious questions
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,34 +19,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2008-05-20 at 06:59 -0700, Alex Dubov wrote:
-> Therefore, I propose (and intend to implement) a new architecture for MTD core,
-> modeled after the block device API. The "alpha" version of it is here:
-> 
-> http://gentoo-wiki.com/User:Oakad/mtd_proposal
+Hi,
 
-That looks very interesting, and is fairly similar to what we were
-thinking. Some of the outstanding problems we need to solve when we
-change are:
+I'm new to the list - and having lots of questions. Feel free to simply 
+point me to earlier discussions or other resources. Even simple Yes or 
+No answers might also do it ;-)
 
- - Support for devices larger than 4GiB.
- - Clarifying whether buffers can be used for DMA
- - Partitioning (which is a bit of a hack right now) & concatenation.
- - Removable devices
- - Sysfs presence
+Having read through most of the infradead.org website (and others), I 
+today realized, that erase blocks span *multiple* pages, which explains 
+the huge difference in 'block size' sometimes cited (around 2K vs around 
+128K).
 
-Here's one way I think we can get started on this...
+Now, if I understand correctly, a flash chip supports reading and 
+(limited) writing to pages, and erasing erase-blocks. But the MTD FAQ 
+states:
 
- 1. Turn all calls to functions like mtd->read(mtd...) into calls to 
-    core functions 'mtd_read()' which we can later play with.
- 2. Introduce a wrapper which acts on mtd_requests by making calls to
-    the existing direct driver functions (much like mtd_blkdevs.c does
-    for block requests).
- 3. Make our code 'mtd_read()' et al functions use the mtd_request API.
- 4. Shift partitioning into the new layer.
- 5. Make it possible for devices to provide the new API directly instead
-    of the old one being invoked through the wrappers -- and for user
-    modules to use it directly. This is the point at which we fix sysfs.
+ > (The mtd device) maintains 3 main operations: read from eraseblock,
+ > write to eraseblock, and erase eraseblock
 
--- 
-dwmw2
+Am I understanding correctly, that I can't write to the a single page 
+with MTD (after having erased the according erase-block)? Even if I'm 
+writing the single pages in the block sequentially?
+
+
+Can I repeatedly write to a NAND flash page, to set its bits to 1 
+(without resetting any bit to 0) (or vice-versa for XOR)?
+
+
+I've followed the 'hardware devices' cited on the website, but it seems 
+a little out-dated. What's an inexpensive way to get a device with 
+accessible NAND chips on it to play with? It looks to me like you only 
+get to purchase stuff with embedded FTL, which isn't suitable as an mtd.
+
+
+Looking forward to your answers, hints and pointers.
+
+Markus
