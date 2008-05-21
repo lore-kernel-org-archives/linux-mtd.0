@@ -1,20 +1,20 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jyi6P-0001N3-Vp
-	for linux-mtd@lists.infradead.org; Wed, 21 May 2008 06:47:10 +0000
+	id 1JyjtV-0002ys-WA
+	for linux-mtd@lists.infradead.org; Wed, 21 May 2008 08:41:58 +0000
+Date: Wed, 21 May 2008 10:41:45 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Alex Dubov <oakad@yahoo.com>
 Subject: Re: Support of removable MTD devices and other advanced features
 	(follow-up from lkml)
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Alex Dubov <oakad@yahoo.com>
-In-Reply-To: <411628.55054.qm@web36703.mail.mud.yahoo.com>
+Message-ID: <20080521084144.GA20195@logfs.org>
 References: <411628.55054.qm@web36703.mail.mud.yahoo.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Date: Wed, 21 May 2008 09:47:12 +0300
-Message-Id: <1211352433.31023.19.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <411628.55054.qm@web36703.mail.mud.yahoo.com>
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,46 +24,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-I do not know much about SmartMedia and so on, so I cannot really
-comment. I mail more because I am afraid your mail will not be answered.
-Probably you should keep CCing LKML, not sure.
-
-On Tue, 2008-05-20 at 06:59 -0700, Alex Dubov wrote:
-> And third, architectural switch I'm proposing should not require modifica=
-tion
-> to low level chip drivers or higher level functionality of UBI kind. They=
- can
-> be glued together with relative ease (callback architecture is quite flex=
-ible).
-> My target is device management and FTL drivers.
->=20
-> Therefore, I propose (and intend to implement) a new architecture for MTD=
- core,
+On Tue, 20 May 2008 06:59:18 -0700, Alex Dubov wrote:
+> 
+> Therefore, I propose (and intend to implement) a new architecture for MTD core,
 > modeled after the block device API. The "alpha" version of it is here:
->=20
+> 
 > http://gentoo-wiki.com/User:Oakad/mtd_proposal
 
-I've briefly read through this. I think it is nice having an
-asynchronous interface based on requests. Probably UBI/UBIFS would
-benefit from it as well. Just few thoughts:
+Excellent!  I was just about to write my own proposal for some of this
+today.  In particular I need asynchronous read, writes and erases.
 
-1. You will probably need to solve the horrible MTD problem - it does
-not support devices larger than 4GiB because it uses absolute 32-bit
-offsets.
-2. You will need to make MTD sysfs-aware.
-3. Removable devices support is a separate task as well.
-4. IMO you should preserve the low-level flash access interface and the
-request-based infrastructure should yous it as the back-end. Is this
-possible? Or my understanding of smartmedia is incorrect? I thought it
-is accessible as bare NAND and you have to support its FTL in software.=20
+So here is a lightly modified version of your mtd_request bits.  Apart
+from reformatting and adding some documentation, the changes are:
 
-Probably there are other tasks. I think you should work on these smaller
-tasks separately and make them go in one by one, instead of trying to
-put all together.
+- No flag for MTD_DATA, as this should be the default
+- flags argument becomes int for natural alignment
+- struct mtd_address introduced
+- added length fields and data pointer
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+enum mtd_command {
+	MTD_READ,
+	MTD_WRITE,
+	MTD_ERASE,
+	MTD_COPY,
+	MTD_INVALIDATE
+};
+
+/**
+ * @block_no:	physical eraseblock number
+ * @block_ofs:	offset within physical eraseblock
+ */
+struct mtd_address {
+	u32	block_no;
+	u32	block_ofs;
+};
+
+#define MTD_FLAG_OOB	0x01
+/**
+ * @mtd:	underlying memory technology device
+ * @command:	read, write, erase, etc.
+ * @flags:	additional flags to modify commands
+ * @dst:	destination address
+ * @len:	length for read/write
+ * @src:	source address - only used for MTD_COPY
+ */
+struct mtd_request {
+	struct mtd_device *mtd;
+	enum mtd_command command;
+	int		flags;
+
+	u32		dst;
+	void		*buf;
+	u32		len;
+	u32		src;
+};
+
+
+Jörn
+
+-- 
+My second remark is that our intellectual powers are rather geared to
+master static relations and that our powers to visualize processes
+evolving in time are relatively poorly developed.
+-- Edsger W. Dijkstra
