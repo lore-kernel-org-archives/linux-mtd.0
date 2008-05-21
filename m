@@ -1,18 +1,21 @@
-Received: from web36703.mail.mud.yahoo.com ([209.191.85.37])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JyqRg-0003q1-Bw
-	for linux-mtd@lists.infradead.org; Wed, 21 May 2008 15:41:41 +0000
-Date: Wed, 21 May 2008 08:41:38 -0700 (PDT)
-From: Alex Dubov <oakad@yahoo.com>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JyvBa-0005PP-0g
+	for linux-mtd@lists.infradead.org; Wed, 21 May 2008 20:45:22 +0000
+Date: Wed, 21 May 2008 22:45:06 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Alex Dubov <oakad@yahoo.com>
 Subject: Re: Support of removable MTD devices and other advanced features
 	(follow-up from lkml)
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1211383329.21380.358.camel@pmac.infradead.org>
+Message-ID: <20080521204505.GA1268@logfs.org>
+References: <1211383329.21380.358.camel@pmac.infradead.org>
+	<546240.79105.qm@web36703.mail.mud.yahoo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Message-ID: <546240.79105.qm@web36703.mail.mud.yahoo.com>
-Cc: J?rn Engel <joern@logfs.org>, linux-mtd@lists.infradead.org
+In-Reply-To: <546240.79105.qm@web36703.mail.mud.yahoo.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,37 +25,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---- David Woodhouse <dwmw2@infradead.org> wrote:
-
-> On Wed, 2008-05-21 at 08:20 -0700, Alex Dubov wrote:
-> > Thanks for the comments. At this point it's enough for me to see that
-> you're ok
-> > with the idea.
-> > 
-> > I'll try to implement a working prototype of the proposal, supporting block
-> > device emulation over smartmedia and memorystick (these are the only mtd
-> > devices I have). Hopefully, it should take no more than couple of weeks.
-> Then
-> > we will be able to play with the working prototype to see what features it
-> must
-> > actually have.
+On Wed, 21 May 2008 08:41:38 -0700, Alex Dubov wrote:
 > 
-> Block device emulation is a separate thing to the core MTD device API.
-> We already have an implementation of SSFDC, don't we?
->       
+> (Current ssfdc.ko implementation is junk, sorry. Joern's driver has its own
+> implementation built-in).
 
-What I meant is: my prototype will include mtd_block, ftl for ssfdc, ftl for
-memorystick, and backends for both adapted to work with fully callback driven
-architecture. This is my current priority.
+Mine doesn't, I ripped it all out.  But the original driver from Daniel
+Drake does, along with several others in drivers/usb/storage/.  And
+those are almost as bad as vendor code - from which they likely evolved.
 
-Everything else can be bolted on later.
+Jörn
 
-(Current ssfdc.ko implementation is junk, sorry. Joern's driver has its own
-implementation built-in).
-
-
-
-
-
-      
+-- 
+Fools ignore complexity.  Pragmatists suffer it.
+Some can avoid it.  Geniuses remove it.
+-- Perlis's Programming Proverb #58, SIGPLAN Notices, Sept.  1982
