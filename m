@@ -1,20 +1,15 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jyl8g-0002Vz-Oe
-	for linux-mtd@lists.infradead.org; Wed, 21 May 2008 10:01:43 +0000
-Date: Wed, 21 May 2008 12:01:33 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Markus Schiltknecht <markus@bluegap.ch>
-Subject: Re: curious questions
-Message-ID: <20080521100132.GA20943@logfs.org>
-References: <4833E87D.10209@bluegap.ch> <20080521093827.GB20358@logfs.org>
-	<4833F0CE.5010506@bluegap.ch>
+Received: from mail.feig.de ([212.184.177.12])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JylLd-0005F9-NV
+	for linux-mtd@lists.infradead.org; Wed, 21 May 2008 10:15:06 +0000
+Message-ID: <4833F626.1060600@feig.de>
+Date: Wed, 21 May 2008 12:15:02 +0200
+From: Manuel Sahm <Manuel.Sahm@feig.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4833F0CE.5010506@bluegap.ch>
-Cc: linux-mtd@lists.infradead.org
+To: linux-mtd@lists.infradead.org
+Subject: mkfs.jffs2 ?!
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,15 +19,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 21 May 2008 11:52:14 +0200, Markus Schiltknecht wrote:
-> 
-> So, with mtd, I can erase the erase-block spanning pages 0 to 63, and
-> then, write to page 0, wait for more data and only then write page 1, right?
+Hello,
 
-You can also erase/write other blocks in the meantime.
+I have lot of problems concerning my NANDflash:
 
-Jörn
+I?ve downloaded mtd-utils 1.1.0 and compiled it on my host pc [Suse 
+Linux 10.2 - Kernel 2.6.18]
 
--- 
-Time? What's that? Time is only worth what you do with it.
--- Theo de Raadt
+I enter:
+mkfs.jffs2 -d /exports/ -p -s 0x800 -e 0x20000 -n -l -o /RFS.jffs2
+
+NAND Flash has Pagesize = 2048 Byte = 2kByte
+EraseBlockSize= 128 kByte
+oob = 64
+
+I could mount the Image on my target [linux 2.6.25.3]through:
+
+mount -rw -t jffs2 /dev/mtdblock5 /media/DATAfs
+
+BUT:
+If I want to write to the device like: touch /media/DATAfs/test.txt
+and then unmount /media/DATAfs/test.txt
+and mount -rw -t jffs2 /dev/mtdblock5 /media/DATAfs
+
+
+There?s an message:
+
+empty flash at [address] end at [address] !!!!!!!!!!!!!!!!!!!!!!!
+
+
+Please help me........
