@@ -1,20 +1,21 @@
-Received: from yw-out-1718.google.com ([74.125.46.152])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jyke4-0001nU-O9
-	for linux-mtd@lists.infradead.org; Wed, 21 May 2008 09:30:04 +0000
-Received: by yw-out-1718.google.com with SMTP id 5so2574977ywm.72
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 21 May 2008 02:30:03 -0700 (PDT)
-Message-ID: <f17812d70805210230u62b25c1drc3d9120fae7de6a2@mail.gmail.com>
-Date: Wed, 21 May 2008 17:30:03 +0800
-From: "eric miao" <eric.y.miao@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] pxa: fix the incorrect calling of pxa3xx_nand_config() on
-	resume path
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JzCRc-0000nH-SZ
+	for linux-mtd@lists.infradead.org; Thu, 22 May 2008 15:11:05 +0000
+Date: Thu, 22 May 2008 17:10:51 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Alex Dubov <oakad@yahoo.com>
+Subject: Re: Support of removable MTD devices and other advanced features
+	(follow-up from lkml)
+Message-ID: <20080522151051.GA15015@logfs.org>
+References: <20080521084144.GA20195@logfs.org>
+	<612512.56176.qm@web36708.mail.mud.yahoo.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_5158_6207219.1211362203794"
-Cc: David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <612512.56176.qm@web36708.mail.mud.yahoo.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,70 +25,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-------=_Part_5158_6207219.1211362203794
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On Wed, 21 May 2008 18:30:44 -0700, Alex Dubov wrote:
+> 
+> > So here is a lightly modified version of your mtd_request bits.  Apart
+> > from reformatting and adding some documentation, the changes are:
+> > 
+> > - No flag for MTD_DATA, as this should be the default
+> 
+> # Nope. What about the case where you only want to read the oob (block scan) or
+> have no data to transfer (block invalidate)? Of course, this "flags" field may
+> be omitted outright, and the drivers could rely on error returned from
+> mtd_get_buf/mtd_get_oob, but this may turn out awkward.
 
->From b23139b5e9d39b5fea306f4429bcaa6d075d284b Mon Sep 17 00:00:00 2001
-From: Eric Miao <eric.miao@marvell.com>
-Date: Wed, 21 May 2008 17:26:15 +0800
-Subject: [PATCH] pxa: fix the incorrect calling of
-pxa3xx_nand_config() on resume path
+Fair enough.
 
-Signed-off-by: Eric Miao <eric.miao@marvell.com>
----
+> # You have to retain logical block address when using FTLs. This also makes
+> "struct mtd_address" confusing - the offset applies the same both to physical
+> and logical block. User level driver may want to fill in only logical block
+> address + offset, FTL will put in the actual physical block.
 
-David, this is a fix and I hope this can be merged soon during this
--rc period, thanks.
+But nothing below the FTL should ever know about a logical block at all.
+Why pass it on?
 
- drivers/mtd/nand/pxa3xx_nand.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+> # And it's not clear to me why would you need pointer to data in the request
+> struct. Data is delivered through the additional (quite often more than one)
+> call to mtd_get_buf. I think, it's imperative to support fragmented buffers -
+> block device often submits requests that are larger than eraseblock (can be
+> read/written in one go) but fragmented across several memory buffers.
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index fceb468..fe2bc7e 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1216,7 +1216,7 @@ static int pxa3xx_nand_resume(struct
-platform_device *pdev)
+We can replace the data pointer with a struct bio_vec.  In fact, I am
+wondering whether we could just use a struct bio instead of struct
+mtd_request.
 
- 	clk_enable(info->clk);
-
--	return pxa3xx_nand_config_flash(info);
-+	return pxa3xx_nand_config_flash(info, info->flash_info);
- }
- #else
- #define pxa3xx_nand_suspend	NULL
--- 
-1.5.4.3
-
-
+Jörn
 
 -- 
-Cheers
-- eric
-
-------=_Part_5158_6207219.1211362203794
-Content-Type: text/x-diff;
-	name=0001-pxa-fix-the-incorrect-calling-of-pxa3xx_nand_config.patch
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fghpqh7x0
-Content-Disposition: attachment;
-	filename=0001-pxa-fix-the-incorrect-calling-of-pxa3xx_nand_config.patch
-
-RnJvbSBiMjMxMzliNWU5ZDM5YjVmZWEzMDZmNDQyOWJjYWE2ZDA3NWQyODRiIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBFcmljIE1pYW8gPGVyaWMubWlhb0BtYXJ2ZWxsLmNvbT4KRGF0
-ZTogV2VkLCAyMSBNYXkgMjAwOCAxNzoyNjoxNSArMDgwMApTdWJqZWN0OiBbUEFUQ0hdIHB4YTog
-Zml4IHRoZSBpbmNvcnJlY3QgY2FsbGluZyBvZiBweGEzeHhfbmFuZF9jb25maWcoKSBvbiByZXN1
-bWUgcGF0aAoKU2lnbmVkLW9mZi1ieTogRXJpYyBNaWFvIDxlcmljLm1pYW9AbWFydmVsbC5jb20+
-Ci0tLQogZHJpdmVycy9tdGQvbmFuZC9weGEzeHhfbmFuZC5jIHwgICAgMiArLQogMSBmaWxlcyBj
-aGFuZ2VkLCAxIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJp
-dmVycy9tdGQvbmFuZC9weGEzeHhfbmFuZC5jIGIvZHJpdmVycy9tdGQvbmFuZC9weGEzeHhfbmFu
-ZC5jCmluZGV4IGZjZWI0NjguLmZlMmJjN2UgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL25hbmQv
-cHhhM3h4X25hbmQuYworKysgYi9kcml2ZXJzL210ZC9uYW5kL3B4YTN4eF9uYW5kLmMKQEAgLTEy
-MTYsNyArMTIxNiw3IEBAIHN0YXRpYyBpbnQgcHhhM3h4X25hbmRfcmVzdW1lKHN0cnVjdCBwbGF0
-Zm9ybV9kZXZpY2UgKnBkZXYpCiAKIAljbGtfZW5hYmxlKGluZm8tPmNsayk7CiAKLQlyZXR1cm4g
-cHhhM3h4X25hbmRfY29uZmlnX2ZsYXNoKGluZm8pOworCXJldHVybiBweGEzeHhfbmFuZF9jb25m
-aWdfZmxhc2goaW5mbywgaW5mby0+Zmxhc2hfaW5mbyk7CiB9CiAjZWxzZQogI2RlZmluZSBweGEz
-eHhfbmFuZF9zdXNwZW5kCU5VTEwKLS0gCjEuNS40LjMKCg==
-------=_Part_5158_6207219.1211362203794--
+Mundie uses a textbook tactic of manipulation: start with some
+reasonable talk, and lead the audience to an unreasonable conclusion.
+-- Bruce Perens
