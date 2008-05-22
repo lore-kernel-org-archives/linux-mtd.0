@@ -1,21 +1,17 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JzCRc-0000nH-SZ
-	for linux-mtd@lists.infradead.org; Thu, 22 May 2008 15:11:05 +0000
-Date: Thu, 22 May 2008 17:10:51 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Alex Dubov <oakad@yahoo.com>
-Subject: Re: Support of removable MTD devices and other advanced features
-	(follow-up from lkml)
-Message-ID: <20080522151051.GA15015@logfs.org>
-References: <20080521084144.GA20195@logfs.org>
-	<612512.56176.qm@web36708.mail.mud.yahoo.com>
+Received: from smtp5.centerbeam.com ([63.120.115.249])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JzHRD-0001YJ-2T
+	for linux-mtd@lists.infradead.org; Thu, 22 May 2008 20:31:01 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <612512.56176.qm@web36708.mail.mud.yahoo.com>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: Bug in nand_base.c , in handling of K9F1208U0B ?
+Date: Thu, 22 May 2008 13:30:52 -0700
+Message-ID: <32C4C619DF66B945B608E59A6791C8C30276C31A@CBA0E2K11.CBA0.centerbeam.com>
+From: "Manu Rao" <MRao@AlienTechnology.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,41 +21,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 21 May 2008 18:30:44 -0700, Alex Dubov wrote:
-> 
-> > So here is a lightly modified version of your mtd_request bits.  Apart
-> > from reformatting and adding some documentation, the changes are:
-> > 
-> > - No flag for MTD_DATA, as this should be the default
-> 
-> # Nope. What about the case where you only want to read the oob (block scan) or
-> have no data to transfer (block invalidate)? Of course, this "flags" field may
-> be omitted outright, and the drivers could rely on error returned from
-> mtd_get_buf/mtd_get_oob, but this may turn out awkward.
+Hi All,=20
+I have an Atmel AT91SAM9260 processor interfaced to a K9F1208U0B (
+Samsung 64Mbytes Small Block flash device).
 
-Fair enough.
+The code in nand_base.c and at91_nand.c leads me to believe that the
+flash is getting enabled once and then does not get disabled at all( My
+scope traces confirm that the CE never goes high) . This seems like it
+would work with a CE don't care flash.
 
-> # You have to retain logical block address when using FTLs. This also makes
-> "struct mtd_address" confusing - the offset applies the same both to physical
-> and logical block. User level driver may want to fill in only logical block
-> address + offset, FTL will put in the actual physical block.
+However, in the datasheet of the K9F1208U0B( page 31) , it is explicitly
+mentioned that the CE has to be driven HIGH at the end of a block read
+for greater than 100ns.
 
-But nothing below the FTL should ever know about a logical block at all.
-Why pass it on?
+Do all flashes that support sequential row read have a requirement that
+the CE line should be taken high and then brought low? If yes, then the
+current implementation in kernel 2.6.22.2 would violate the requirement.
 
-> # And it's not clear to me why would you need pointer to data in the request
-> struct. Data is delivered through the additional (quite often more than one)
-> call to mtd_get_buf. I think, it's imperative to support fragmented buffers -
-> block device often submits requests that are larger than eraseblock (can be
-> read/written in one go) but fragmented across several memory buffers.
-
-We can replace the data pointer with a struct bio_vec.  In fact, I am
-wondering whether we could just use a struct bio instead of struct
-mtd_request.
-
-Jörn
-
--- 
-Mundie uses a textbook tactic of manipulation: start with some
-reasonable talk, and lead the audience to an unreasonable conclusion.
--- Bruce Perens
+What implications would this have, if any? I have a situation where I
+occasionally get corrupt data from the flash - can this be the cause?
+Thanks
+Manu Rao
