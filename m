@@ -1,12 +1,20 @@
-Date: Thu, 22 May 2008 10:32:18 +0900
-From: Kyungmin Park <kyungmin.park@samsung.com>
-To: dedekind@infradead.org, ext-adrian.hunter@nokia.com
-Subject: [PATCH] UBI: Use the bit operation with min_io_size
-Message-ID: <20080522013218.GA26360@party>
+Received: from mail09.syd.optusnet.com.au ([211.29.132.190])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Jz4AM-0005ZQ-U1
+	for linux-mtd@lists.infradead.org; Thu, 22 May 2008 06:20:43 +0000
+Received: from [192.168.70.104] (218-214-145-58.people.net.au [218.214.145.58])
+	(authenticated sender jamessteward)
+	by mail09.syd.optusnet.com.au (8.13.1/8.13.1) with ESMTP id
+	m4M6KORx024621
+	for <linux-mtd@lists.infradead.org>; Thu, 22 May 2008 16:20:26 +1000
+Subject: Help needed with MTD on AT91SAM9263-EK please.
+From: James <jamessteward@optusnet.com.au>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Date: Thu, 22 May 2008 16:20:23 +1000
+Message-Id: <1211437223.6129.82.camel@Ubuntu-Desktop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,171 +24,134 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It already checks the min io size is the power of 2 at io_init.
+Hi All,
 
-        /* Make sure minimal I/O unit is power of 2 */
-        if (!is_power_of_2(ubi->min_io_size)) {
-                ubi_err("min. I/O unit (%d) is not power of 2",
-                        ubi->min_io_size);
-                return -EINVAL;
-        }
+I get very little joy from the NAND flash on my AT91SAM9263-EK board.  I
+have 2 partitions, one starts at 0x100000 and finishes at 0x04000000,
+then other starts from there and finishes at the end of the device at
+256MB.  E.g.
 
-Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
----
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 961416a..1f95f54 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -581,7 +581,7 @@ static int io_init(struct ubi_device *ubi)
- 	if (ubi->vid_hdr_offset < UBI_EC_HDR_SIZE ||
- 	    ubi->leb_start < ubi->vid_hdr_offset + UBI_VID_HDR_SIZE ||
- 	    ubi->leb_start > ubi->peb_size - UBI_VID_HDR_SIZE ||
--	    ubi->leb_start % ubi->min_io_size) {
-+	    ubi->leb_start & (ubi->min_io_size - 1)) {
- 		ubi_err("bad VID header (%d) or data offsets (%d)",
- 			ubi->vid_hdr_offset, ubi->leb_start);
- 		return -EINVAL;
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index 9d6aae5..34175ec 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -290,7 +290,7 @@ static ssize_t vol_cdev_direct_write(struct file *file, const char __user *buf,
- 	off = do_div(tmp, vol->usable_leb_size);
- 	lnum = tmp;
- 
--	if (off % ubi->min_io_size) {
-+	if (off & (ubi->min_io_size - 1)) {
- 		dbg_err("unaligned position");
- 		return -EINVAL;
- 	}
-@@ -299,7 +299,7 @@ static ssize_t vol_cdev_direct_write(struct file *file, const char __user *buf,
- 		count_save = count = vol->used_bytes - *offp;
- 
- 	/* We can write only in fractions of the minimum I/O unit */
--	if (count % ubi->min_io_size) {
-+	if (count & (ubi->min_io_size - 1)) {
- 		dbg_err("unaligned write length");
- 		return -EINVAL;
- 	}
-@@ -559,7 +559,7 @@ static int verify_mkvol_req(const struct ubi_device *ubi,
- 	if (req->alignment > ubi->leb_size)
- 		goto bad;
- 
--	n = req->alignment % ubi->min_io_size;
-+	n = req->alignment & (ubi->min_io_size - 1);
- 	if (req->alignment != 1 && n)
- 		goto bad;
- 
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index 7ce91ca..75f886c 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -752,7 +752,7 @@ int ubi_eba_write_leb_st(struct ubi_device *ubi, struct ubi_volume *vol,
- 		/* If this is the last LEB @len may be unaligned */
- 		len = ALIGN(data_size, ubi->min_io_size);
- 	else
--		ubi_assert(len % ubi->min_io_size == 0);
-+		ubi_assert(len & (ubi->min_io_size - 1) == 0);
- 
- 	vid_hdr = ubi_zalloc_vid_hdr(ubi, GFP_NOFS);
- 	if (!vid_hdr)
-diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
-index a70d588..5150883 100644
---- a/drivers/mtd/ubi/kapi.c
-+++ b/drivers/mtd/ubi/kapi.c
-@@ -397,8 +397,8 @@ int ubi_leb_write(struct ubi_volume_desc *desc, int lnum, const void *buf,
- 		return -EROFS;
- 
- 	if (lnum < 0 || lnum >= vol->reserved_pebs || offset < 0 || len < 0 ||
--	    offset + len > vol->usable_leb_size || offset % ubi->min_io_size ||
--	    len % ubi->min_io_size)
-+	    offset + len > vol->usable_leb_size ||
-+	    offset & (ubi->min_io_size - 1) || len & (ubi->min_io_size - 1))
- 		return -EINVAL;
- 
- 	if (dtype != UBI_LONGTERM && dtype != UBI_SHORTTERM &&
-@@ -447,7 +447,7 @@ int ubi_leb_change(struct ubi_volume_desc *desc, int lnum, const void *buf,
- 		return -EROFS;
- 
- 	if (lnum < 0 || lnum >= vol->reserved_pebs || len < 0 ||
--	    len > vol->usable_leb_size || len % ubi->min_io_size)
-+	    len > vol->usable_leb_size || len & (ubi->min_io_size - 1))
- 		return -EINVAL;
- 
- 	if (dtype != UBI_LONGTERM && dtype != UBI_SHORTTERM &&
-diff --git a/drivers/mtd/ubi/misc.c b/drivers/mtd/ubi/misc.c
-index 93e0528..2e2d1d3 100644
---- a/drivers/mtd/ubi/misc.c
-+++ b/drivers/mtd/ubi/misc.c
-@@ -37,7 +37,7 @@ int ubi_calc_data_len(const struct ubi_device *ubi, const void *buf,
- {
- 	int i;
- 
--	ubi_assert(length % ubi->min_io_size == 0);
-+	ubi_assert(length & (ubi->min_io_size - 1) == 0);
- 
- 	for (i = length - 1; i >= 0; i--)
- 		if (((const uint8_t *)buf)[i] != 0xFF)
-diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index 5be58d8..7402025 100644
---- a/drivers/mtd/ubi/vmt.c
-+++ b/drivers/mtd/ubi/vmt.c
-@@ -727,7 +727,7 @@ static void paranoid_check_volume(struct ubi_device *ubi, int vol_id)
- 		goto fail;
- 	}
- 
--	n = vol->alignment % ubi->min_io_size;
-+	n = vol->alignment & (ubi->min_io_size - 1);
- 	if (vol->alignment != 1 && n) {
- 		ubi_err("alignment is not multiple of min I/O unit");
- 		goto fail;
-diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
-index af36b12..751a0f3 100644
---- a/drivers/mtd/ubi/vtbl.c
-+++ b/drivers/mtd/ubi/vtbl.c
-@@ -170,7 +170,7 @@ static int vtbl_check(const struct ubi_device *ubi,
- 			goto bad;
- 		}
- 
--		n = alignment % ubi->min_io_size;
-+		n = alignment & (ubi->min_io_size - 1);
- 		if (alignment != 1 && n) {
- 			dbg_err("alignment is not multiple of min I/O unit");
- 			goto bad;
-@@ -672,14 +672,13 @@ static int check_scanning_info(const struct ubi_device *ubi,
- 		return -EINVAL;
- 	}
- 
--	if (si->highest_vol_id >= ubi->vtbl_slots + UBI_INT_VOL_COUNT&&
-+	if (si->highest_vol_id >= ubi->vtbl_slots + UBI_INT_VOL_COUNT &&
- 	    si->highest_vol_id < UBI_INTERNAL_VOL_START) {
- 		ubi_err("too large volume ID %d found by scanning",
- 			si->highest_vol_id);
- 		return -EINVAL;
- 	}
- 
--
- 	for (i = 0; i < ubi->vtbl_slots + UBI_INT_VOL_COUNT; i++) {
- 		cond_resched();
- 
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index a471a49..cc8fe29 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -1368,7 +1368,7 @@ int ubi_thread(void *u)
- 		int err;
- 
- 		if (kthread_should_stop())
--			goto out;
-+			break;
- 
- 		if (try_to_freeze())
- 			continue;
-@@ -1403,7 +1403,6 @@ int ubi_thread(void *u)
- 		cond_resched();
- 	}
- 
--out:
- 	dbg_wl("background thread \"%s\" is killed", ubi->bgt_name);
- 	return 0;
- }
+/*
+ * NAND flash
+ */
+static struct mtd_partition __initdata ek_nand_partition[] = {
+        {
+                .name   = "Partition 1",
+                .offset = 0x100000,
+                .size   = (64 * 1024 * 1024) - 0x100000,
+        },
+        {
+                .name   = "Partition 2",
+                .offset = 64 * 1024 * 1024,
+                .size   = MTDPART_SIZ_FULL,
+        },
+};
+
+The kernel seems happy with this:
+NAND device: Manufacturer ID: 0x2c, Chip ID: 0xda (Micron NAND 256MiB
+3,3V 8-bit)
+AT91 NAND: 8-bit, Software ECC
+Scanning device for bad blocks
+Creating 2 MTD partitions on "at91_nand":
+0x00100000-0x04000000 : "Partition 1"
+0x04000000-0x10000000 : "Partition 2"
+
+So I try running some diagnostics, such as;
+root@at91sam9263ek:~/mtd-tools$ nandtest -p1 -o0 -l0x100000 /dev/mtd0
+ECC corrections: 0
+ECC failures   : 0
+Bad blocks     : 0
+BBT blocks     : 0
+00000000: reading... 
+ECC failed at 00000000
+00000000: checking...
+compare failed. seed 1804289383
+Byte 0x7c40 is 0c should be ff
+Byte 0xa58f is 0c should be ff
+Byte 0xd354 is 0c should be 5c
+Byte 0xd355 is 0c should be ff
+Byte 0x108b4 is 0c should be a0
+Byte 0x108b5 is 0c should be ff
+Byte 0x108b8 is ff should be b6
+Byte 0x108b9 is ff should be 2e
+Byte 0x108bc is ff should be 4a
+
+Always the same, and the same if I chose /dev/mtd1.
+
+Also, this;
+
+root@at91sam9263ek:~/mtd-tools$ ./flash_eraseall -j /dev/mtd0
+Erasing 128 Kibyte @ 3ee0000 -- 99 % complete. Cleanmarker written at
+3ee0000.
+root@at91sam9263ek:~/mtd-tools$ ls /dev/mtd*
+/dev/mtd0       /dev/mtd1       /dev/mtdblock0
+/dev/mtd0ro     /dev/mtd1ro     /dev/mtdblock1
+root@at91sam9263ek:~/mtd-tools$ nandwrite -a -p /dev/mtd0 /boot/uImage
+Writing data to block 0
+Writing data to block 20000
+Writing data to block 40000
+Writing data to block 60000
+Writing data to block 80000
+Writing data to block a0000
+Writing data to block c0000
+Writing data to block e0000
+Writing data to block 100000
+Writing data to block 120000
+Writing data to block 140000
+Writing data to block 160000
+Writing data to block 180000
+Writing data to block 1a0000
+Writing data to block 1c0000
+Writing data to block 1e0000
+Writing data to block 200000
+Writing data to block 220000
+Writing data to block 240000
+root@at91sam9263ek:~/mtd-tools$ nanddump -f text.out -l 0x260000 -s
+0 /dev/mtd0
+ECC failed: 3
+ECC corrected: 0
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x00000000 and ending at 0x00260000...
+ECC: 1 uncorrectable bitflip(s) at offset 0x00001000
+ECC: 1 uncorrectable bitflip(s) at offset 0x00001800
+ECC: 1 uncorrectable bitflip(s) at offset 0x00002000
+ECC: 1 uncorrectable bitflip(s) at offset 0x00002800
+ECC: 1 uncorrectable bitflip(s) at offset 0x00003000
+ECC: 1 uncorrectable bitflip(s) at offset 0x00004800
+ECC: 1 uncorrectable bitflip(s) at offset 0x00007000
+ECC: 1 uncorrectable bitflip(s) at offset 0x0000c800
+ECC: 1 uncorrectable bitflip(s) at offset 0x0000f000
+ECC: 1 uncorrectable bitflip(s) at offset 0x00011000
+ECC: 1 uncorrectable bitflip(s) at offset 0x00011800
+ECC: 1 uncorrectable bitflip(s) at offset 0x00014000
+ECC: 1 uncorrectable bitflip(s) at offset 0x00014800
+ECC: 1 uncorrectable bitflip(s) at offset 0x00015000
+ECC: 1 uncorrectable bitflip(s) at offset 0x00015800
+ECC: 1 corrected bitflip(s) at offset 0x00016000
+ECC: 1 uncorrectable bitflip(s) at offset 0x00017000
+ECC: 1 uncorrectable bitflip(s) at offset 0x00019800
+ECC: 1 uncorrectable bitflip(s) at offset 0x0001c000
+ECC: 1 uncorrectable bitflip(s) at offset 0x0001f000
+ECC: 1 uncorrectable bitflip(s) at offset 0x00024800
+ECC: 1 uncorrectable bitflip(s) at offset 0x00025000
+ECC: 1 uncorrectable bitflip(s) at offset 0x00025800
+ECC: 1 uncorrectable bitflip(s) at offset 0x00026000
+ECC: 1 uncorrectable bitflip(s) at offset 0x00027000
+ECC: 1 uncorrectable bitflip(s) at offset 0x00027800
+ECC: 1 uncorrectable bitflip(s) at offset 0x00028800
+ECC: 1 uncorrectable bitflip(s) at offset 0x00029000
+<snip>
+
+There were no bad blocks reported on the device as new.
+
+Is anyone able to use the NAND flash on one of these boards?  If so,
+with what kernel version, and in what manner (r/w JFFS2, ro CRAMFS,
+etc).
+
+Any other details of what/how I might get this to work, or where the
+trouble is likely to be, would be much appreciated.
+
+Sincerely,
+James.
