@@ -1,17 +1,11 @@
-Received: from web36708.mail.mud.yahoo.com ([209.191.85.42])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Jyzdm-00036k-ED
-	for linux-mtd@lists.infradead.org; Thu, 22 May 2008 01:30:46 +0000
-Date: Wed, 21 May 2008 18:30:44 -0700 (PDT)
-From: Alex Dubov <oakad@yahoo.com>
-Subject: Re: Support of removable MTD devices and other advanced features
-	(follow-up from lkml)
-To: "Jörn" Engel <joern@logfs.org>
-In-Reply-To: <20080521084144.GA20195@logfs.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Message-ID: <612512.56176.qm@web36708.mail.mud.yahoo.com>
+Date: Thu, 22 May 2008 10:32:18 +0900
+From: Kyungmin Park <kyungmin.park@samsung.com>
+To: dedekind@infradead.org, ext-adrian.hunter@nokia.com
+Subject: [PATCH] UBI: Use the bit operation with min_io_size
+Message-ID: <20080522013218.GA26360@party>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -22,76 +16,171 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> So here is a lightly modified version of your mtd_request bits.  Apart
-> from reformatting and adding some documentation, the changes are:
-> 
-> - No flag for MTD_DATA, as this should be the default
+It already checks the min io size is the power of 2 at io_init.
 
-# Nope. What about the case where you only want to read the oob (block scan) or
-have no data to transfer (block invalidate)? Of course, this "flags" field may
-be omitted outright, and the drivers could rely on error returned from
-mtd_get_buf/mtd_get_oob, but this may turn out awkward.
+        /* Make sure minimal I/O unit is power of 2 */
+        if (!is_power_of_2(ubi->min_io_size)) {
+                ubi_err("min. I/O unit (%d) is not power of 2",
+                        ubi->min_io_size);
+                return -EINVAL;
+        }
 
-> 
-> enum mtd_command {
-> 	MTD_READ,
-> 	MTD_WRITE,
-> 	MTD_ERASE,
-> 	MTD_COPY,
-> 	MTD_INVALIDATE
-> };
-> 
-> /**
->  * @block_no:	physical eraseblock number
->  * @block_ofs:	offset within physical eraseblock
->  */
-> struct mtd_address {
-> 	u32	block_no;
-> 	u32	block_ofs;
-> };
-> 
-> #define MTD_FLAG_OOB	0x01
-> /**
->  * @mtd:	underlying memory technology device
->  * @command:	read, write, erase, etc.
->  * @flags:	additional flags to modify commands
->  * @dst:	destination address
->  * @len:	length for read/write
->  * @src:	source address - only used for MTD_COPY
->  */
-> struct mtd_request {
-> 	struct mtd_device  *mtd;
-> 	enum mtd_command   command;
-> 	int		   flags;
->
-
-        u32                log_block;
-
-	struct mtd_address dst;
-
-> 	u32		   len;
-
- 	struct mtd_address src;
-> };
-> 
-
-# You have to retain logical block address when using FTLs. This also makes
-"struct mtd_address" confusing - the offset applies the same both to physical
-and logical block. User level driver may want to fill in only logical block
-address + offset, FTL will put in the actual physical block.
-
-# And it's not clear to me why would you need pointer to data in the request
-struct. Data is delivered through the additional (quite often more than one)
-call to mtd_get_buf. I think, it's imperative to support fragmented buffers -
-block device often submits requests that are larger than eraseblock (can be
-read/written in one go) but fragmented across several memory buffers.
-
-
-By the way, my bias toward block device emulation is caused by the obvious fact
-that overwhelming majority of flash devices in existence are used as such, and
-not without much success (I don't see many people complaining about their usb
-sticks and mmc cards, and those may run linux inside one day).
-
-
-
-      
+Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+---
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 961416a..1f95f54 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -581,7 +581,7 @@ static int io_init(struct ubi_device *ubi)
+ 	if (ubi->vid_hdr_offset < UBI_EC_HDR_SIZE ||
+ 	    ubi->leb_start < ubi->vid_hdr_offset + UBI_VID_HDR_SIZE ||
+ 	    ubi->leb_start > ubi->peb_size - UBI_VID_HDR_SIZE ||
+-	    ubi->leb_start % ubi->min_io_size) {
++	    ubi->leb_start & (ubi->min_io_size - 1)) {
+ 		ubi_err("bad VID header (%d) or data offsets (%d)",
+ 			ubi->vid_hdr_offset, ubi->leb_start);
+ 		return -EINVAL;
+diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+index 9d6aae5..34175ec 100644
+--- a/drivers/mtd/ubi/cdev.c
++++ b/drivers/mtd/ubi/cdev.c
+@@ -290,7 +290,7 @@ static ssize_t vol_cdev_direct_write(struct file *file, const char __user *buf,
+ 	off = do_div(tmp, vol->usable_leb_size);
+ 	lnum = tmp;
+ 
+-	if (off % ubi->min_io_size) {
++	if (off & (ubi->min_io_size - 1)) {
+ 		dbg_err("unaligned position");
+ 		return -EINVAL;
+ 	}
+@@ -299,7 +299,7 @@ static ssize_t vol_cdev_direct_write(struct file *file, const char __user *buf,
+ 		count_save = count = vol->used_bytes - *offp;
+ 
+ 	/* We can write only in fractions of the minimum I/O unit */
+-	if (count % ubi->min_io_size) {
++	if (count & (ubi->min_io_size - 1)) {
+ 		dbg_err("unaligned write length");
+ 		return -EINVAL;
+ 	}
+@@ -559,7 +559,7 @@ static int verify_mkvol_req(const struct ubi_device *ubi,
+ 	if (req->alignment > ubi->leb_size)
+ 		goto bad;
+ 
+-	n = req->alignment % ubi->min_io_size;
++	n = req->alignment & (ubi->min_io_size - 1);
+ 	if (req->alignment != 1 && n)
+ 		goto bad;
+ 
+diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+index 7ce91ca..75f886c 100644
+--- a/drivers/mtd/ubi/eba.c
++++ b/drivers/mtd/ubi/eba.c
+@@ -752,7 +752,7 @@ int ubi_eba_write_leb_st(struct ubi_device *ubi, struct ubi_volume *vol,
+ 		/* If this is the last LEB @len may be unaligned */
+ 		len = ALIGN(data_size, ubi->min_io_size);
+ 	else
+-		ubi_assert(len % ubi->min_io_size == 0);
++		ubi_assert(len & (ubi->min_io_size - 1) == 0);
+ 
+ 	vid_hdr = ubi_zalloc_vid_hdr(ubi, GFP_NOFS);
+ 	if (!vid_hdr)
+diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
+index a70d588..5150883 100644
+--- a/drivers/mtd/ubi/kapi.c
++++ b/drivers/mtd/ubi/kapi.c
+@@ -397,8 +397,8 @@ int ubi_leb_write(struct ubi_volume_desc *desc, int lnum, const void *buf,
+ 		return -EROFS;
+ 
+ 	if (lnum < 0 || lnum >= vol->reserved_pebs || offset < 0 || len < 0 ||
+-	    offset + len > vol->usable_leb_size || offset % ubi->min_io_size ||
+-	    len % ubi->min_io_size)
++	    offset + len > vol->usable_leb_size ||
++	    offset & (ubi->min_io_size - 1) || len & (ubi->min_io_size - 1))
+ 		return -EINVAL;
+ 
+ 	if (dtype != UBI_LONGTERM && dtype != UBI_SHORTTERM &&
+@@ -447,7 +447,7 @@ int ubi_leb_change(struct ubi_volume_desc *desc, int lnum, const void *buf,
+ 		return -EROFS;
+ 
+ 	if (lnum < 0 || lnum >= vol->reserved_pebs || len < 0 ||
+-	    len > vol->usable_leb_size || len % ubi->min_io_size)
++	    len > vol->usable_leb_size || len & (ubi->min_io_size - 1))
+ 		return -EINVAL;
+ 
+ 	if (dtype != UBI_LONGTERM && dtype != UBI_SHORTTERM &&
+diff --git a/drivers/mtd/ubi/misc.c b/drivers/mtd/ubi/misc.c
+index 93e0528..2e2d1d3 100644
+--- a/drivers/mtd/ubi/misc.c
++++ b/drivers/mtd/ubi/misc.c
+@@ -37,7 +37,7 @@ int ubi_calc_data_len(const struct ubi_device *ubi, const void *buf,
+ {
+ 	int i;
+ 
+-	ubi_assert(length % ubi->min_io_size == 0);
++	ubi_assert(length & (ubi->min_io_size - 1) == 0);
+ 
+ 	for (i = length - 1; i >= 0; i--)
+ 		if (((const uint8_t *)buf)[i] != 0xFF)
+diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
+index 5be58d8..7402025 100644
+--- a/drivers/mtd/ubi/vmt.c
++++ b/drivers/mtd/ubi/vmt.c
+@@ -727,7 +727,7 @@ static void paranoid_check_volume(struct ubi_device *ubi, int vol_id)
+ 		goto fail;
+ 	}
+ 
+-	n = vol->alignment % ubi->min_io_size;
++	n = vol->alignment & (ubi->min_io_size - 1);
+ 	if (vol->alignment != 1 && n) {
+ 		ubi_err("alignment is not multiple of min I/O unit");
+ 		goto fail;
+diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
+index af36b12..751a0f3 100644
+--- a/drivers/mtd/ubi/vtbl.c
++++ b/drivers/mtd/ubi/vtbl.c
+@@ -170,7 +170,7 @@ static int vtbl_check(const struct ubi_device *ubi,
+ 			goto bad;
+ 		}
+ 
+-		n = alignment % ubi->min_io_size;
++		n = alignment & (ubi->min_io_size - 1);
+ 		if (alignment != 1 && n) {
+ 			dbg_err("alignment is not multiple of min I/O unit");
+ 			goto bad;
+@@ -672,14 +672,13 @@ static int check_scanning_info(const struct ubi_device *ubi,
+ 		return -EINVAL;
+ 	}
+ 
+-	if (si->highest_vol_id >= ubi->vtbl_slots + UBI_INT_VOL_COUNT&&
++	if (si->highest_vol_id >= ubi->vtbl_slots + UBI_INT_VOL_COUNT &&
+ 	    si->highest_vol_id < UBI_INTERNAL_VOL_START) {
+ 		ubi_err("too large volume ID %d found by scanning",
+ 			si->highest_vol_id);
+ 		return -EINVAL;
+ 	}
+ 
+-
+ 	for (i = 0; i < ubi->vtbl_slots + UBI_INT_VOL_COUNT; i++) {
+ 		cond_resched();
+ 
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index a471a49..cc8fe29 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -1368,7 +1368,7 @@ int ubi_thread(void *u)
+ 		int err;
+ 
+ 		if (kthread_should_stop())
+-			goto out;
++			break;
+ 
+ 		if (try_to_freeze())
+ 			continue;
+@@ -1403,7 +1403,6 @@ int ubi_thread(void *u)
+ 		cond_resched();
+ 	}
+ 
+-out:
+ 	dbg_wl("background thread \"%s\" is killed", ubi->bgt_name);
+ 	return 0;
+ }
