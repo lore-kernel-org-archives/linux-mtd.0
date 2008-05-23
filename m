@@ -1,21 +1,18 @@
-Received: from py-out-1112.google.com ([64.233.166.176])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JzQj7-000198-Sl
-	for linux-mtd@lists.infradead.org; Fri, 23 May 2008 06:26:06 +0000
-Received: by py-out-1112.google.com with SMTP id a73so403398pye.2
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 22 May 2008 23:26:04 -0700 (PDT)
-Message-ID: <80b317760805222326j57e6bc11sfe0beef9ab68267b@mail.gmail.com>
-Date: Fri, 23 May 2008 08:26:04 +0200
-From: "Richard Genoud" <richard.genoud@gmail.com>
-To: James <jamessteward@optusnet.com.au>
+Received: from mail07.syd.optusnet.com.au ([211.29.132.188])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JzQuu-0007wO-6t
+	for linux-mtd@lists.infradead.org; Fri, 23 May 2008 06:38:16 +0000
 Subject: Re: Help needed with MTD on AT91SAM9263-EK please.
-In-Reply-To: <1211437223.6129.82.camel@Ubuntu-Desktop>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+From: James <jamessteward@optusnet.com.au>
+To: Richard Genoud <richard.genoud@gmail.com>
+In-Reply-To: <80b317760805222326j57e6bc11sfe0beef9ab68267b@mail.gmail.com>
 References: <1211437223.6129.82.camel@Ubuntu-Desktop>
+	<80b317760805222326j57e6bc11sfe0beef9ab68267b@mail.gmail.com>
+Content-Type: text/plain
+Date: Fri, 23 May 2008 16:38:04 +1000
+Message-Id: <1211524684.6203.13.camel@torchwood>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -26,14 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2008/5/22 James <jamessteward@optusnet.com.au>:
-> Hi All,
->
-> I get very little joy from the NAND flash on my AT91SAM9263-EK board.
+Hi Richard,
 
-Hi !
-I didn't have those kind of problems with the sam9263-ek
-have you tried to erase the device, mount it with jffs2 or yaffs2,
-write a file, unmount, mount and read back the file ?
+On Fri, 2008-05-23 at 08:26 +0200, Richard Genoud wrote:
+> I didn't have those kind of problems with the sam9263-ek
+> have you tried to erase the device, mount it with jffs2 or yaffs2,
+> write a file, unmount, mount and read back the file ?
 
-richard.
+Yup.  I have used the examples from linux4sam.org, which use a jffs2
+file system.
+
+The NAND flash was erased and root jffs2 image written using the SAM-BA
+utility, then boot the kernel to use this as its rootfs.  It mounts ok
+to begin with, then I get heaps of jffs2 warnings and finally a kernel
+bug, I think at fs/jffs2/file.c:251 (I don't have the system here at
+home.)
+
+What version of kernel, patches and compiler are you using?
+
+I did try briefly with yaffs2, but I don't think the problem is in the
+file system, more the underlying access to the NAND flash.  Maybe in the
+chip timing, or something.  I haven't yet investigated that properly.
+
+Regards,
+James.
