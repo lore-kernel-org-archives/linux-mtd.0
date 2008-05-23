@@ -1,21 +1,22 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JzQAS-0006df-TS
-	for linux-mtd@lists.infradead.org; Fri, 23 May 2008 05:50:17 +0000
-Date: Fri, 23 May 2008 07:50:06 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Alex Dubov <oakad@yahoo.com>
-Subject: Re: Support of removable MTD devices and other advanced features
-	(follow-up from lkml)
-Message-ID: <20080523055005.GA20264@logfs.org>
-References: <20080522151051.GA15015@logfs.org>
-	<323976.43299.qm@web36707.mail.mud.yahoo.com>
+Received: from py-out-1112.google.com ([64.233.166.176])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JzQj7-000198-Sl
+	for linux-mtd@lists.infradead.org; Fri, 23 May 2008 06:26:06 +0000
+Received: by py-out-1112.google.com with SMTP id a73so403398pye.2
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 22 May 2008 23:26:04 -0700 (PDT)
+Message-ID: <80b317760805222326j57e6bc11sfe0beef9ab68267b@mail.gmail.com>
+Date: Fri, 23 May 2008 08:26:04 +0200
+From: "Richard Genoud" <richard.genoud@gmail.com>
+To: James <jamessteward@optusnet.com.au>
+Subject: Re: Help needed with MTD on AT91SAM9263-EK please.
+In-Reply-To: <1211437223.6129.82.camel@Ubuntu-Desktop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <323976.43299.qm@web36707.mail.mud.yahoo.com>
-Cc: linux-mtd@lists.infradead.org
+References: <1211437223.6129.82.camel@Ubuntu-Desktop>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,58 +26,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 22 May 2008 19:47:02 -0700, Alex Dubov wrote:
-> 
-> > 
-> > But nothing below the FTL should ever know about a logical block at all.
-> > Why pass it on?
-> 
-> Media class specific backend must know it, to populate media's oob structure.
-> TI's smartmedia adapter, for example, wants to know it itself (it has a
-> hardware register for it).
+2008/5/22 James <jamessteward@optusnet.com.au>:
+> Hi All,
+>
+> I get very little joy from the NAND flash on my AT91SAM9263-EK board.
 
-Interesting.  Do you have a spec for that?
+Hi !
+I didn't have those kind of problems with the sam9263-ek
+have you tried to erase the device, mount it with jffs2 or yaffs2,
+write a file, unmount, mount and read back the file ?
 
-I would have expected two kinds of controllers.  "Smart" ones that
-essentially export a block device interface and do all FTL work
-themselves and dumb ones that allow raw flash access and require and FTL
-in software.  Didn't know there were mixtures of the two.
-
-> > We can replace the data pointer with a struct bio_vec.  In fact, I am
-> > wondering whether we could just use a struct bio instead of struct
-> > mtd_request.
-> > 
-> 
-> Passing the whole struct bio is an overshoot for what we want to support. It
-> has plenty of functionality that to my opinion would never be supported by dumb
-> flash controllers.
-
-After having a closer look at it I tend to agree.  Nevertheless there
-are tons of similarities between block devices and mtd and I would like
-them to become as similar as reasonably possible.  So right now I'd
-create a struct fio (flash io) and copy any fields that make sense for
-both from struct bio. 
-
-> I thought, something simple would be enough, as long as it can handle buffer
-> fragmentation and give the backend access to the actual struct page for mapping
-> operation. It doesn't matter if this is a scatterlist or bio_vec (they are
-> mostly the same). What's matter is an ability to obtain several chunks of the
-> buffer in some not too obtrusive way.
-> 
-> Host controller will get a buffer chunk, and set up a dma into it. When it
-> catches dma boundary event, it'll get another chunk, while still in the
-> interrupt handler (as much as needed). If controller happens to have a real sg
-> dma, it can call mtd_get_buf_sg several times in advance to populate the sg
-> table.
-> 
-> Controllers lacking dma capability can do exactly the same using mtd_get_buf.
-
-Makes sense.  And one hopes that most controllers don't require busy
-waits and either send an interrupt or allow setting a timer as a poor
-man's interrupt.
-
-Jörn
-
--- 
-Homo Sapiens is a goal, not a description.
--- unknown
+richard.
