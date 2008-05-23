@@ -1,21 +1,21 @@
-Received: from [213.203.150.91] (helo=mail.gnudd.com)
+Received: from mail16.syd.optusnet.com.au ([211.29.132.197])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JzRJf-0004OL-Bn
-	for linux-mtd@lists.infradead.org; Fri, 23 May 2008 07:03:51 +0000
-Date: Fri, 23 May 2008 09:03:42 +0200
-From: Alessandro Rubini <rubini-list@gnudd.com>
-To: jamessteward@optusnet.com.au
+	id 1JzRL3-0007wZ-Me
+	for linux-mtd@lists.infradead.org; Fri, 23 May 2008 07:05:18 +0000
 Subject: Re: Help needed with MTD on AT91SAM9263-EK please.
-Message-ID: <20080523070342.GA25241@mail.gnudd.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Sender: rubini-list@gnudd.com
-In-Reply-To: <1211524684.6203.13.camel@torchwood>
-References: <1211524684.6203.13.camel@torchwood>
-	<1211437223.6129.82.camel@Ubuntu-Desktop>
+From: James <jamessteward@optusnet.com.au>
+To: Richard Genoud <richard.genoud@gmail.com>
+In-Reply-To: <80b317760805222352v3701dcc5p7aa0108fb72b2192@mail.gmail.com>
+References: <1211437223.6129.82.camel@Ubuntu-Desktop>
 	<80b317760805222326j57e6bc11sfe0beef9ab68267b@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
+	<1211524684.6203.13.camel@torchwood>
+	<80b317760805222352v3701dcc5p7aa0108fb72b2192@mail.gmail.com>
+Content-Type: text/plain
+Date: Fri, 23 May 2008 17:05:11 +1000
+Message-Id: <1211526311.6203.27.camel@torchwood>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,21 +26,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-> The NAND flash was erased and root jffs2 image written using the SAM-BA
-> utility
+On Fri, 2008-05-23 at 08:52 +0200, Richard Genoud wrote:
+> ok, so, that's weird...
 
-This is likely the source of problems. The crc layout used by sam-ba
-may well be different from what mtd uses.
+Tell me about it.  It's driving me nuts.
 
-I had tons of problems with the 9260 when programming the nand flash
-from sam-ba, and I only programmed u-boot (writing all the rest from
-u-boot or linux). I never had problem with 9263-ek, as long as I
-didn't write linux stuff from sam-ba.
+> it was 2.6.24 with at91 patchset (
+> http://maxim.org.za/AT91RM9200/2.6/2.6.24-at91.patch.gz )
 
-So you should only write the boot code with sam-ba, and write your
-kernel and filesystem from either u-boot or linux. You'll probably
-want to erase and re-program the boot loader from itself, to get rid
-of remaining wrong sam-ba bits.
+Ok.  I'm on 2.6.24 + patches from linux4sam.org.
 
-hope this helps
-/alessandro
+> (beware to choose software ECC in at91 nand ecc kernel option if you
+> want to be sam-ba compatible)
+
+Yep, and U-boot is soft ECC too.
+
+What tool chain are you using?
+
+Regards,
+James.
