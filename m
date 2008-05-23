@@ -1,10 +1,10 @@
 Received: from rt-pi1-ru-sssup.pi1.garr.net ([193.206.136.46]
 	helo=smtp2.sssup.it)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JzRTI-0001TB-VE
-	for linux-mtd@lists.infradead.org; Fri, 23 May 2008 07:13:49 +0000
-Message-ID: <48366E79.1010709@gandalf.sssup.it>
-Date: Fri, 23 May 2008 09:12:57 +0200
+	id 1JzRUh-0004SX-Js
+	for linux-mtd@lists.infradead.org; Fri, 23 May 2008 07:15:16 +0000
+Message-ID: <48366EAF.4010908@gandalf.sssup.it>
+Date: Fri, 23 May 2008 09:13:51 +0200
 From: michael <trimarchi@gandalf.sssup.it>
 MIME-Version: 1.0
 To: James <jamessteward@optusnet.com.au>
