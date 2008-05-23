@@ -1,24 +1,22 @@
-Received: from yw-out-1718.google.com ([74.125.46.158])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JzR8g-0002zi-QA
-	for linux-mtd@lists.infradead.org; Fri, 23 May 2008 06:52:31 +0000
-Received: by yw-out-1718.google.com with SMTP id 5so334211ywm.72
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 22 May 2008 23:52:15 -0700 (PDT)
-Message-ID: <80b317760805222352v3701dcc5p7aa0108fb72b2192@mail.gmail.com>
-Date: Fri, 23 May 2008 08:52:15 +0200
-From: "Richard Genoud" <richard.genoud@gmail.com>
-To: James <jamessteward@optusnet.com.au>
+Received: from mail02.syd.optusnet.com.au ([211.29.132.183])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JzRIR-0001bR-8v
+	for linux-mtd@lists.infradead.org; Fri, 23 May 2008 07:02:35 +0000
 Subject: Re: Help needed with MTD on AT91SAM9263-EK please.
-In-Reply-To: <1211524684.6203.13.camel@torchwood>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+From: James <jamessteward@optusnet.com.au>
+To: michael <trimarchi@gandalf.sssup.it>
+In-Reply-To: <483668B6.3080507@gandalf.sssup.it>
 References: <1211437223.6129.82.camel@Ubuntu-Desktop>
 	<80b317760805222326j57e6bc11sfe0beef9ab68267b@mail.gmail.com>
 	<1211524684.6203.13.camel@torchwood>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+	<483668B6.3080507@gandalf.sssup.it>
+Content-Type: text/plain
+Date: Fri, 23 May 2008 17:02:22 +1000
+Message-Id: <1211526142.6203.24.camel@torchwood>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Richard Genoud <richard.genoud@gmail.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,17 +26,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2008/5/23 James <jamessteward@optusnet.com.au>:
-> Hi Richard,
-> The NAND flash was erased and root jffs2 image written using the SAM-BA
-> utility, then boot the kernel to use this as its rootfs.  It mounts ok
-> to begin with, then I get heaps of jffs2 warnings and finally a kernel
-> bug, I think at fs/jffs2/file.c:251 (I don't have the system here at
-> home.)
-ok, so, that's weird...
+Hi Michael,
 
-> What version of kernel, patches and compiler are you using?
-it was 2.6.24 with at91 patchset (
-http://maxim.org.za/AT91RM9200/2.6/2.6.24-at91.patch.gz )
-(beware to choose software ECC in at91 nand ecc kernel option if you
-want to be sam-ba compatible)
+On Fri, 2008-05-23 at 08:48 +0200, michael wrote:
+> How do you create the jffs2 image. Which parameters use with the
+> mtd-utils?
+
+I was using the one supplied from
+ftp://www.linux4sam.org/pub/oe/deploy/glibc/images/at91sam9263ek/Angstrom-x11-image-demo-glibc.rootfs.jffs2
+
+I built the Angstrom minimal system and tried the resulting jffs2 file
+system from that too.  Same problem.
+
+I did try mkfs.jffs2 on the root file system produced in the Angstrom
+minimal system build, but the result was the same.  I don't recall the
+precise command line args I used now.
+
+> Did you try to start from a ramdisk, erase all, and mount it?
+
+At the moment I've got a USB stick as root, with an ext3 fs on it, and
+noatime/nodiratime options.  At one stage I did erase the whole thing
+and mount -tjffs2 /dev/mtdblock0 /mnt, writing and reading files died
+there soon too.
+
+> I'm using an at91san9260 board without any problems.
+
+What kernel, patches and tool chain are you using?
+
+Regards,
+James.
