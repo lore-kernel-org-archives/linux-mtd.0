@@ -1,25 +1,25 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+Received: from mail02.syd.optusnet.com.au ([211.29.132.183])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K0JVG-00070J-4e
-	for linux-mtd@lists.infradead.org; Sun, 25 May 2008 16:55:26 +0000
-Date: Sun, 25 May 2008 18:55:16 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Jamie Lokier <jamie@shareable.org>
-Subject: Re: Support of removable MTD devices and other advanced features
-	(follow-up from lkml)
-Message-ID: <20080525165515.GC14741@logfs.org>
-References: <20080524175647.GA7366@logfs.org>
-	<346401.5675.qm@web36705.mail.mud.yahoo.com>
-	<20080525072501.GA13140@logfs.org>
-	<20080525133029.GA3599@shareable.org>
-	<20080525162426.GA14741@logfs.org>
-	<20080525163555.GA7112@shareable.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20080525163555.GA7112@shareable.org>
-Cc: linux-mtd@lists.infradead.org, Alex Dubov <oakad@yahoo.com>
+	id 1K0P3k-0004M8-Ct
+	for linux-mtd@lists.infradead.org; Sun, 25 May 2008 22:51:25 +0000
+Subject: Re: Help needed with MTD on AT91SAM9263-EK please.
+From: James <jamessteward@optusnet.com.au>
+To: Richard Genoud <richard.genoud@gmail.com>
+In-Reply-To: <80b317760805230027n7cbf6ccbpc8289b4b3ad80714@mail.gmail.com>
+References: <1211437223.6129.82.camel@Ubuntu-Desktop>
+	<80b317760805222326j57e6bc11sfe0beef9ab68267b@mail.gmail.com>
+	<1211524684.6203.13.camel@torchwood>
+	<80b317760805222352v3701dcc5p7aa0108fb72b2192@mail.gmail.com>
+	<1211526311.6203.27.camel@torchwood>
+	<80b317760805230027n7cbf6ccbpc8289b4b3ad80714@mail.gmail.com>
+Content-Type: text/plain
+Date: Mon, 26 May 2008 08:50:45 +1000
+Message-Id: <1211755845.6724.29.camel@Ubuntu-Desktop>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	Alessandro Rubini <rubini-list@gnudd.com>,
+	michael <trimarchi@gandalf.sssup.it>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,26 +29,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 25 May 2008 17:35:56 +0100, Jamie Lokier wrote:
+
+On Fri, 2008-05-23 at 09:27 +0200, Richard Genoud wrote:
+> 2008/5/23 James <jamessteward@optusnet.com.au>:
+> > What tool chain are you using?
+> i think it was buildroot + gcc3.4.6 and glib2.3.2, but i'm not sure.
 > 
-> I mean that progressive writing may cause more wear towards the
-> beginning of _each_ eraseblock, because you'll write more often at the
-> start of each eraseblock than the end.  That's if wear is at all a
-> function of writes, and not solely erase operations.
+> On Fri, 2008-05-23 at 09:03 +0200, Alessandro Rubini wrote:
+> > So you should only write the boot code with sam-ba, and write your
+> > kernel and filesystem from either u-boot or linux. You'll probably
+> > want to erase and re-program the boot loader from itself, to get rid
+> > of remaining wrong sam-ba bits.
+> I agree with Alessandro, don't rely to much on sam-ba for nand writing.
+> That's why I asked you to do the test from linux (erase/mount/write/read)
 
-I don't have any numbers on that.  Iirc on NOR flash, erase voltage is
-significantly higher than write voltage, so erase likely dominate the
-wear.  NAND flash may behave differently.
+root@at91sam9263ek:~/mtd-tools$ ./flash_eraseall -j /dev/mtd0
+Erasing 128 Kibyte @ 3ee0000 -- 99 % complete. Cleanmarker written at
+3ee0000.
+root@at91sam9263ek:~/mtd-tools$ mount -t
+jffs2 /dev/mtdblock0  /mnt/nand/
+mtd->read(0x400 bytes from 0xa00000) returned ECC error
+mtd->read(0x400 bytes from 0xdc0000) returned ECC error
+mtd->read(0x400 bytes from 0xfa0000) returned ECC error
+mtd->read(0x400 bytes from 0x13e0000) returned ECC error
+mtd->read(0x400 bytes from 0x2000000) returned ECC error
+mtd->read(0x400 bytes from 0x20e0000) returned ECC error
+mtd->read(0x400 bytes from 0x2680000) returned ECC error
+mtd->read(0x400 bytes from 0x2fc0000) returned ECC error
+mtd->read(0x400 bytes from 0x3540000) returned ECC error
+mtd->read(0x400 bytes from 0x3820000) returned ECC error
+root@at91sam9263ek:~/mtd-tools$ umount /mnt/nand/
 
-> There's another curious thought: do individual flash bit cells wear
-> out more quickly when written to "0" or left at "1"?  I doubt it, but
-> if it did make a difference, it would make a case for xoring data with
-> predictable pseudo-random bits.
+Then I tried this;
+root@at91sam9263ek:~/mtd-tools$ ./nandwrite -a /dev/mtd0 ./fs.jffs2 
+Writing data to block 0
+Writing data to block 20000
+Writing data to block 40000
+<snip>
+root@at91sam9263ek:~/mtd-tools$ mount -t
+jffs2 /dev/mtdblock0  /mnt/nand/
+mtd->read(0x1fc0c bytes from 0x3f4) returned ECC error
+mtd->read(0x800 bytes from 0x3f800) returned ECC error
+mtd->read(0x1f6d4 bytes from 0x2092c) returned ECC error
+mtd->read(0x1f7dc bytes from 0x40824) returned ECC error
+jffs2_scan_inode_node(): CRC failed on node at 0x0005b020: Read
+0x31199cbf, calculated 0x81b0002e
+mtd->read(0x1fbf0 bytes from 0x60410) returned ECC error
+jffs2_scan_inode_node(): CRC failed on node at 0x00060a4c: Read
+0x2072000c, calculated 0x207200ff
+mtd->read(0x1f6d8 bytes from 0x80928) returned ECC error
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00094c88:
+0x578a instead
 
-Might make a nice article for the April edition of some magazine. ;)
+<big snip - lots more>
 
-Jörn
+Hardware failures?  Or have I not used the tools correctly?
 
--- 
-Anything that can go wrong, will.
--- Finagle's Law
+Regards,
+James.
