@@ -1,20 +1,17 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JzxzM-0000s9-62
-	for linux-mtd@lists.infradead.org; Sat, 24 May 2008 17:57:05 +0000
-Date: Sat, 24 May 2008 19:56:48 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Alex Dubov <oakad@yahoo.com>
+Received: from web36705.mail.mud.yahoo.com ([209.191.85.39])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K076l-0004KB-4M
+	for linux-mtd@lists.infradead.org; Sun, 25 May 2008 03:41:19 +0000
+Date: Sat, 24 May 2008 20:41:17 -0700 (PDT)
+From: Alex Dubov <oakad@yahoo.com>
 Subject: Re: Support of removable MTD devices and other advanced features
 	(follow-up from lkml)
-Message-ID: <20080524175647.GA7366@logfs.org>
-References: <20080523132853.GC22384@logfs.org>
-	<380082.38285.qm@web36708.mail.mud.yahoo.com>
+To: "Jörn" Engel <joern@logfs.org>
+In-Reply-To: <20080524175647.GA7366@logfs.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <380082.38285.qm@web36708.mail.mud.yahoo.com>
+Message-ID: <346401.5675.qm@web36705.mail.mud.yahoo.com>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -25,18 +22,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 24 May 2008 06:12:23 -0700, Alex Dubov wrote:
+
+--- Jörn Engel <joern@logfs.org> wrote:
+
+> On Sat, 24 May 2008 06:12:23 -0700, Alex Dubov wrote:
+> > 
+> > Do UBI and JFFS always operate in terms of whole eraseblocks or they may
+> > attempt  partial block writes? Different flash chips have different
+> > capabilities in regard to writing and this can be used to some advantage.
 > 
-> Do UBI and JFFS always operate in terms of whole eraseblocks or they may
-> attempt  partial block writes? Different flash chips have different
-> capabilities in regard to writing and this can be used to some advantage.
+> Writes happen in multiples of mtd->writesize.  Which for NAND is
+> pagesize.  There are also special cases with subpage writes.  AFAIK only
+> UBI exploits that feature.
+> 
 
-Writes happen in multiples of mtd->writesize.  Which for NAND is
-pagesize.  There are also special cases with subpage writes.  AFAIK only
-UBI exploits that feature.
+Most xd cards can only be written a whole PEB in a time (can be handled with
+appropriate writesize, I suppose).
 
-JÃ¶rn
+Memorystick cards can be written page at a time, but only in progressive
+fashion - only if all pages at lower offsets to the current page were written
+before. This can be made to work as a useful optimization.
 
--- 
-Joern's library part 15:
-http://www.knosof.co.uk/cbook/accu06a.pdf
+Are there any special tricks with subpage writes or it all amounts to "read
+block" -> "merge changes" -> "write block"?
+
+
+
+
+
+      
