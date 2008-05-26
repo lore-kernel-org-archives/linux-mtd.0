@@ -1,14 +1,21 @@
-Received: from mail.feig.de ([212.184.177.12])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K0XnQ-0004UQ-Ir
-	for linux-mtd@lists.infradead.org; Mon, 26 May 2008 08:11:09 +0000
-Message-ID: <483A709A.9070901@feig.de>
-Date: Mon, 26 May 2008 10:11:06 +0200
-From: Manuel Sahm <Manuel.Sahm@feig.de>
+Received: from 206-248-137-77.dsl.teksavvy.com ([206.248.137.77]
+	helo=mail.isoar.ca)
+	by pentafluge.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1K0ieG-0003Rk-5k
+	for linux-mtd@lists.infradead.org; Mon, 26 May 2008 19:46:41 +0000
+Received: from [10.0.200.99] (vpn02.rossvideo.com [209.5.118.98])
+	by mail.isoar.ca (8.14.1/8.13.8) with ESMTP id m4QJikK8001684
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <linux-mtd@lists.infradead.org>; Mon, 26 May 2008 15:44:50 -0400
+Message-ID: <483B132D.80103@isoar.ca>
+Date: Mon, 26 May 2008 15:44:45 -0400
+From: "Andrew E. Mileski" <andrewm@isoar.ca>
 MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: --pad option [NAND Flash: Pagesize 0x800; eraseblocksize=0x20000]
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Subject: Re: Problem with Micron 256 MB NAND on 440EPx
+References: <48079979.3030201@isoar.ca>
+In-Reply-To: <48079979.3030201@isoar.ca>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -19,21 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello
-I have a huge problem concerning the mtd-tools:
+Andrew E. Mileski wrote:
+> I'm looking for some pointers in the right direction with this problem
+> I'm having with Micron 256 MB NAND part MT29F2G08AACWP:C with a JFFS2
+> filesystem on a AMCC PowerPC 440EPx board using the NDFC driver.
+> 
+snip
+> 
+> Write verify error (ECC correction failed) at 0e480000. Wrote:
+> 00000000: 19 85 e0 02 00 00 04 44 c0 83 e7 3a 00 00 00 03
+> ...
+> Read back:
+> 00000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+> 00000010: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+> 00000020: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+> 00000030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+> 00000040: 19 85 e0 02 00 00 04 44 c0 83 e7 3a 00 00 00 03
+> 
+> Notice that the data appears to be "offset" by 64 bytes, which just
+> happens to be the size of the OOB, but that could be a coincidence.
 
-I use makefs.jffs2 to create an image. I mount the Image and write to 
-it, add files. Then I umount it and mount it again:
-"empty flash at [address] ends at [address]"
+I've now verified with a logic analyzer that the NFREN strobe is active 
+during when NFRDYBSY is low (NAND chip is busy), and latching bogus data 
+as a result (the bus has pull-ups so 0xff).
 
-This is because:
-mkfs.jffs2 or nandwrite uses a --pad option wich fills the image with 0xFF.
+I've verified the pin is connected, and I have seen transitions on it 
+through the PPC register.
 
-If I write to the image via Linux, a page is written completly with 
-appended 0x00 !!!!!
+Any suggestions on what I might be missing still?
 
-So what could I do - I must append 0x00 with the --pad option not 0xFF
+Thanks.
 
-Linux isn?t comkptable eith the mtd-utils at the moment....
-
-Thank you for your help
+-- 
+Andrew E. Mileski
