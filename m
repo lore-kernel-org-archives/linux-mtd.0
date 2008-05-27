@@ -1,17 +1,27 @@
-Received: from smtp5.centerbeam.com ([63.120.115.250])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K137F-00006g-55
-	for linux-mtd@lists.infradead.org; Tue, 27 May 2008 17:37:41 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: Need help understanding jffs2 behaviour
-Date: Tue, 27 May 2008 10:37:28 -0700
-Message-ID: <32C4C619DF66B945B608E59A6791C8C3027BAED1@CBA0E2K11.CBA0.centerbeam.com>
-From: "Manu Rao" <MRao@AlienTechnology.com>
-To: <linux-mtd@lists.infradead.org>
+Received: from mail14.syd.optusnet.com.au ([211.29.132.195])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1K170K-0004yl-ND
+	for linux-mtd@lists.infradead.org; Tue, 27 May 2008 21:46:49 +0000
+Subject: Re: Help needed with MTD on AT91SAM9263-EK please.
+From: James <jamessteward@optusnet.com.au>
+To: Richard Genoud <richard.genoud@gmail.com>
+In-Reply-To: <80b317760805270042w39c409d4j230c1a2967bf0242@mail.gmail.com>
+References: <1211437223.6129.82.camel@Ubuntu-Desktop>
+	<80b317760805222326j57e6bc11sfe0beef9ab68267b@mail.gmail.com>
+	<1211524684.6203.13.camel@torchwood>
+	<80b317760805222352v3701dcc5p7aa0108fb72b2192@mail.gmail.com>
+	<1211526311.6203.27.camel@torchwood>
+	<80b317760805230027n7cbf6ccbpc8289b4b3ad80714@mail.gmail.com>
+	<1211755845.6724.29.camel@Ubuntu-Desktop>
+	<80b317760805270042w39c409d4j230c1a2967bf0242@mail.gmail.com>
+Content-Type: text/plain
+Date: Wed, 28 May 2008 07:46:19 +1000
+Message-Id: <1211924779.6140.9.camel@Ubuntu-Desktop>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	Alessandro Rubini <rubini-list@gnudd.com>,
+	michael <trimarchi@gandalf.sssup.it>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,30 +31,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,=20
-I have a linux 2.6.22.2 kernel running on an AT91SAM9260, using a
-K9F1208U0b(64byte NAND) for storing the filesystem.
+Hi Richard,
 
-When I setup the nand by NFS booting, mounting /dev/mtdblock0 and then
-untarring the filesystem into it, the filesystem ends up midway in the
-flash, like so
+On Tue, 2008-05-27 at 09:42 +0200, Richard Genoud wrote:
+> well, I would say hardware failure, as far as we all used this board
+> without any problem.
 
-<EMPTY>      <- Location 0
-<EMPTY>
-<EMPTY>
-<START_DATA> <- Location 0x2978000
-...
+It's good to know the problem is (hopefully) isolated.  After the test
+below, I feel it might be more than just a hardware failure though.
 
-However, when I use u-boot to write the flash image, using=20
-Nand write.jffs 22000000 0 $(filesize), the filesystem starts from block
-0.
+> Maybe a last test to be sure :
+> flash_eraseall /dev/mtd0
+> dd if=/dev/zero bs=2K count=1 of=/dev/mtd0
+> nanddump -p -l2048 /dev/mtd0
+> 
+> (try to write a page and read it back).
+> 
+> if you can post this dump, I'm curious...
 
-Why does this occur? The starting location and size of my fs indicate
-that the filesys seems to be untarred from the bottom of the flash up -
-is that default behaviour for mounted flash? I have issues with my
-filesys (Segfaults, kernel reports unable to read /proc, etc) in the
-first case (when I start at block 0 ), but not when I program the flash
-from half way. I don't have nand partitions enabled.
+root@at91sam9263ek:~/mtd-tools$ ./flash_eraseall /dev/mtd0
+Erasing 128 Kibyte @ 3ee0000 -- 99 % complete.
+root@at91sam9263ek:~/mtd-tools$ dd if=/dev/zero bs=2k count=1
+of=/dev/mtd0
+1+0 records in
+1+0 records out
+root@at91sam9263ek:~/mtd-tools$ ./nanddump -p -l2048 /dev/mtd0
+ECC failed: 0
+ECC corrected: 0
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x00000000 and ending at 0x00000800...
+0x00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+<skip all zeros>
+0x000007e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000007f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
 
-Thanks
-Manu
+Hmm.  So I tried a block that previously had problems with mount.
+
+root@at91sam9263ek:~/mtd-tools$ dd if=/dev/zero bs=2k count=1 seek=5120
+of=/dev/mtd0    
+1+0 records in
+1+0 records out
+root@at91sam9263ek:~/mtd-tools$ ./nanddump -p -l2048
+-s0xa00000 /dev/mtd0
+ECC failed: 0
+ECC corrected: 0
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x00a00000 and ending at 0x00a00800...
+0x00a00000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00a00010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00a00020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+<snip all zeros>
+0x00a007e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00a007f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+
+And an unwritten to page...
+
+root@at91sam9263ek:~/mtd-tools$ ./nanddump -p -l2048
+-s0xdc0000 /dev/mtd0
+ECC failed: 0
+ECC corrected: 0
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x00dc0000 and ending at 0x00dc0800...
+0x00dc0000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+0x00dc0010: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+0x00dc0020: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+<snip all 0xff>
+
+So, a page at a time seems ok?
+
+I wonder, what markings are on your CPU and NAND flash?  I have;
+AT91SAM9263 CU-ES 0747 8 QH59R.07
+0742 29F2G08AAC WP C LJK6
+
+I assume some of this will be a batch code, but I wonder if there's been
+a die shrink that's caused some marginal timing issue?
+
+Regards,
+James.
