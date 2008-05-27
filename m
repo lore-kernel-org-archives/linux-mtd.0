@@ -1,17 +1,17 @@
 Received: from mxout10.netvision.net.il ([194.90.6.38])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K0uPZ-0000vd-FF
-	for linux-mtd@lists.infradead.org; Tue, 27 May 2008 08:20:02 +0000
+	id 1K0uPd-0001NM-Dl
+	for linux-mtd@lists.infradead.org; Tue, 27 May 2008 08:20:05 +0000
 Received: from mail.linux-boards.com ([62.90.235.247])
 	by mxout10.netvision.net.il
 	(Sun Java System Messaging Server 6.2-8.04 (built Feb 28 2007))
-	with ESMTP id <0K1I0044BPYJKUB0@mxout10.netvision.net.il> for
-	linux-mtd@lists.infradead.org; Tue, 27 May 2008 11:23:07 +0300 (IDT)
-Date: Tue, 27 May 2008 11:20:03 +0300
+	with ESMTP id <0K1I004ROPYNL9B0@mxout10.netvision.net.il> for
+	linux-mtd@lists.infradead.org; Tue, 27 May 2008 11:23:11 +0300 (IDT)
+Date: Tue, 27 May 2008 11:20:07 +0300
 From: Mike Rapoport <mike@compulab.co.il>
-Subject: [PATCH 1/2] Add support for flash chips with ID in bank other than 0
+Subject: [PATCH 2/2] Add support for Eon  EN29SL800B[BT] NOR flash chips
 To: David Woodhouse <dwmw2@infradead.org>
-Message-id: <483BC433.8020607@compulab.co.il>
+Message-id: <483BC437.7000402@compulab.co.il>
 MIME-version: 1.0
 Content-type: text/plain; charset=ISO-8859-1
 Content-transfer-encoding: 7BIT
@@ -25,53 +25,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-According to JEDEC "Standard Manufacturer's Identification Code"
-(http://www.jedec.org/download/search/jep106W.pdf)
-several first banks of NOR flash can contain 0x7f instead of actual ID.
-This patch adds support for reading manufacturer ID from banks other than 0.
+This patch add support for non-CFI Eon EN29SL800B[BT] NOR flash chips.
+The Eon chips have manufacturer ID in the first bank, therefore this patch
+depends on support for flash chips with ID in bank other than 0.
 
 Signed-off-by: Mike Rapoport <mike@compulab.co.il>
 ---
- drivers/mtd/chips/jedec_probe.c |   19 ++++++++++++++++---
- 1 files changed, 16 insertions(+), 3 deletions(-)
+ drivers/mtd/chips/jedec_probe.c |   35 +++++++++++++++++++++++++++++++++++
+ 1 files changed, 35 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
-index 02e375b..9e57aec 100644
+index 9e57aec..623b2e0 100644
 --- a/drivers/mtd/chips/jedec_probe.c
 +++ b/drivers/mtd/chips/jedec_probe.c
-@@ -37,6 +37,7 @@
- #define MANUFACTURER_ST		0x0020
- #define MANUFACTURER_TOSHIBA	0x0098
- #define MANUFACTURER_WINBOND	0x00da
-+#define CONTINUATION_CODE	0x007f
+@@ -26,6 +26,7 @@
+ /* Manufacturers */
+ #define MANUFACTURER_AMD	0x0001
+ #define MANUFACTURER_ATMEL	0x001f
++#define MANUFACTURER_EON	0x001c
+ #define MANUFACTURER_FUJITSU	0x0004
+ #define MANUFACTURER_HYUNDAI	0x00AD
+ #define MANUFACTURER_INTEL	0x0089
+@@ -70,6 +71,10 @@
+ #define AT49BV32X	0x00C8
+ #define AT49BV32XT	0x00C9
 
-
- /* AMD */
-@@ -1728,9 +1729,21 @@ static inline u32 jedec_read_mfr(struct map_info *map, uint32_t base,
- {
- 	map_word result;
- 	unsigned long mask;
--	u32 ofs = cfi_build_cmd_addr(0, cfi_interleave(cfi), cfi->device_type);
--	mask = (1 << (cfi->device_type * 8)) -1;
--	result = map_read(map, base + ofs);
-+	int bank = 0;
++/* Eon */
++#define EN29SL800BB	0x226B
++#define EN29SL800BT	0x22EA
 +
-+	/* According to JEDEC "Standard Manufacturer's Identification Code"
-+	 * (http://www.jedec.org/download/search/jep106W.pdf)
-+	 * several first banks can contain 0x7f instead of actual ID
-+	 */
-+	do {
-+		u32 ofs = cfi_build_cmd_addr(0 + (bank << 8),
-+					     cfi_interleave(cfi),
-+					     cfi->device_type);
-+		mask = (1 << (cfi->device_type * 8)) - 1;
-+		result = map_read(map, base + ofs);
-+		bank++;
-+	} while ((result.x[0] & mask) == CONTINUATION_CODE);
-+
- 	return result.x[0] & mask;
- }
-
+ /* Fujitsu */
+ #define MBM29F040C	0x00A4
+ #define MBM29F800BA	0x2258
+@@ -632,6 +637,36 @@ static const struct amd_flash_info jedec_table[] = {
+ 			ERASEINFO(0x02000,8)
+ 		}
+ 	}, {
++		.mfr_id		= MANUFACTURER_EON,
++		.dev_id		= EN29SL800BT,
++		.name		= "Eon EN29SL800BT",
++		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
++		.uaddr		= MTD_UADDR_0x0AAA_0x0555,
++		.dev_size	= SIZE_1MiB,
++		.cmd_set	= P_ID_AMD_STD,
++		.nr_regions	= 4,
++		.regions	= {
++			ERASEINFO(0x10000,15),
++			ERASEINFO(0x08000,1),
++			ERASEINFO(0x02000,2),
++			ERASEINFO(0x04000,1),
++		}
++	}, {
++		.mfr_id		= MANUFACTURER_EON,
++		.dev_id		= EN29SL800BB,
++		.name		= "Eon EN29SL800BB",
++		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
++		.uaddr		= MTD_UADDR_0x0AAA_0x0555,
++		.dev_size	= SIZE_1MiB,
++		.cmd_set	= P_ID_AMD_STD,
++		.nr_regions	= 4,
++		.regions	= {
++			ERASEINFO(0x04000,1),
++			ERASEINFO(0x02000,2),
++			ERASEINFO(0x08000,1),
++			ERASEINFO(0x10000,15),
++		}
++	}, {
+ 		.mfr_id		= MANUFACTURER_FUJITSU,
+ 		.dev_id		= MBM29F040C,
+ 		.name		= "Fujitsu MBM29F040C",
 -- 
 1.5.3.7
 
