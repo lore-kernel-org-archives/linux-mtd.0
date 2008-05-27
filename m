@@ -1,30 +1,21 @@
-Received: from ti-out-0910.google.com ([209.85.142.185])
+Received: from mxout10.netvision.net.il ([194.90.6.38])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K0tp8-0004eJ-9f
-	for linux-mtd@lists.infradead.org; Tue, 27 May 2008 07:42:22 +0000
-Received: by ti-out-0910.google.com with SMTP id a21so1675193tia.2
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 27 May 2008 00:42:20 -0700 (PDT)
-Message-ID: <80b317760805270042w39c409d4j230c1a2967bf0242@mail.gmail.com>
-Date: Tue, 27 May 2008 09:42:18 +0200
-From: "Richard Genoud" <richard.genoud@gmail.com>
-To: James <jamessteward@optusnet.com.au>
-Subject: Re: Help needed with MTD on AT91SAM9263-EK please.
-In-Reply-To: <1211755845.6724.29.camel@Ubuntu-Desktop>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <1211437223.6129.82.camel@Ubuntu-Desktop>
-	<80b317760805222326j57e6bc11sfe0beef9ab68267b@mail.gmail.com>
-	<1211524684.6203.13.camel@torchwood>
-	<80b317760805222352v3701dcc5p7aa0108fb72b2192@mail.gmail.com>
-	<1211526311.6203.27.camel@torchwood>
-	<80b317760805230027n7cbf6ccbpc8289b4b3ad80714@mail.gmail.com>
-	<1211755845.6724.29.camel@Ubuntu-Desktop>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	Alessandro Rubini <rubini-list@gnudd.com>,
-	michael <trimarchi@gandalf.sssup.it>
+	id 1K0uPV-0000sE-IK
+	for linux-mtd@lists.infradead.org; Tue, 27 May 2008 08:19:58 +0000
+Received: from mail.linux-boards.com ([62.90.235.247])
+	by mxout10.netvision.net.il
+	(Sun Java System Messaging Server 6.2-8.04 (built Feb 28 2007))
+	with ESMTP id <0K1I004Q8PYDKFB0@mxout10.netvision.net.il> for
+	linux-mtd@lists.infradead.org; Tue, 27 May 2008 11:23:02 +0300 (IDT)
+Date: Tue, 27 May 2008 11:19:57 +0300
+From: Mike Rapoport <mike@compulab.co.il>
+Subject: [PATCH] Add support to AMD AM29SL800D[BT] NOR flash chips
+To: David Woodhouse <dwmw2@infradead.org>
+Message-id: <483BC42D.6050507@compulab.co.il>
+MIME-version: 1.0
+Content-type: text/plain; charset=ISO-8859-1
+Content-transfer-encoding: 7BIT
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,15 +25,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-well, I would say hardware failure, as far as we all used this board
-without any problem.
-Maybe a last test to be sure :
-flash_eraseall /dev/mtd0
-dd if=/dev/zero bs=2K count=1 of=/dev/mtd0
-nanddump -p -l2048 /dev/mtd0
+This patch add support for non-CFI AMD AM29SL800D[BT] NOR flash chips
 
-(try to write a page and read it back).
+Signed-off-by: Mike Rapoport <mike@compulab.co.il>
+---
+ drivers/mtd/chips/jedec_probe.c |   32 ++++++++++++++++++++++++++++++++
+ 1 files changed, 32 insertions(+), 0 deletions(-)
 
-if you can post this dump, I'm curious...
+diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
+index aa07575..02e375b 100644
+--- a/drivers/mtd/chips/jedec_probe.c
++++ b/drivers/mtd/chips/jedec_probe.c
+@@ -58,6 +58,8 @@
+ #define AM29LV040B	0x004F
+ #define AM29F032B	0x0041
+ #define AM29F002T	0x00B0
++#define AM29SL800DB	0x226B
++#define AM29SL800DT	0x22EA
 
-richard.
+ /* Atmel */
+ #define AT49BV512	0x0003
+@@ -522,6 +524,36 @@ static const struct amd_flash_info jedec_table[] = {
+ 			ERASEINFO(0x04000,1),
+ 		}
+ 	}, {
++		.mfr_id		= MANUFACTURER_AMD,
++		.dev_id		= AM29SL800DT,
++		.name		= "AMD AM29SL800DT",
++		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
++		.uaddr		= MTD_UADDR_0x0AAA_0x0555,
++		.dev_size	= SIZE_1MiB,
++		.cmd_set	= P_ID_AMD_STD,
++		.nr_regions	= 4,
++		.regions	= {
++			ERASEINFO(0x10000,15),
++			ERASEINFO(0x08000,1),
++			ERASEINFO(0x02000,2),
++			ERASEINFO(0x04000,1),
++		}
++	}, {
++		.mfr_id		= MANUFACTURER_AMD,
++		.dev_id		= AM29SL800DB,
++		.name		= "AMD AM29SL800DB",
++		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
++		.uaddr		= MTD_UADDR_0x0AAA_0x0555,
++		.dev_size	= SIZE_1MiB,
++		.cmd_set	= P_ID_AMD_STD,
++		.nr_regions	= 4,
++		.regions	= {
++			ERASEINFO(0x04000,1),
++			ERASEINFO(0x02000,2),
++			ERASEINFO(0x08000,1),
++			ERASEINFO(0x10000,15),
++		}
++	}, {
+ 		.mfr_id		= MANUFACTURER_ATMEL,
+ 		.dev_id		= AT49BV512,
+ 		.name		= "Atmel AT49BV512",
+-- 
+1.5.3.7
+
+
+-- 
+Sincerely yours,
+Mike.
