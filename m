@@ -1,14 +1,19 @@
-Received: from [211.231.165.3] (helo=etsvr01.einstrend.co.kr)
+Received: from wa-out-1112.google.com ([209.85.146.179])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K1NF4-0001GV-HC
-	for linux-mtd@lists.infradead.org; Wed, 28 May 2008 15:07:06 +0000
-Date: Fri, 30 May 2008 01:05:03 +0600
-From: "peritectic Bailey" <Jensen_Eve@yahoo.com>
-To: graham@kinetictheatre.co.uk
-Subject: Dent ists Directory for the United States
-Message-ID: <368425e2cbz0$q6008vz0$8770h1l0@Delldim5150
+	id 1K1PEl-00044w-H5
+	for linux-mtd@lists.infradead.org; Wed, 28 May 2008 17:14:55 +0000
+Received: by wa-out-1112.google.com with SMTP id v33so2951381wah.2
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 28 May 2008 10:14:53 -0700 (PDT)
+Message-ID: <f96d234e0805281014o64ac1968y1910861486292065@mail.gmail.com>
+Date: Wed, 28 May 2008 13:14:53 -0400
+From: "Cliff Brake" <cliff.brake@gmail.com>
+To: "MTD mailing list" <linux-mtd@lists.infradead.org>
+Subject: ubifs status?
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,24 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello.
 
+I'm wondering if anyone has implemented ubifs on 1-8GB NAND parts in a
+production device?  How is it working, and is it considered stable
+enough for production use?  In my experience, production devices
+always bring out the corner cases that are not seen during
+development.
 
+Thanks,
+Cliff
 
-
-
-Just Released: Listing
-
-==> 164,960 D entists 
-==> 158,654 Physical Addresses
-==> 163,709 Phone Nos
-==> 77,092 Fax Numbers
-==> 45,923 office emails
-
-This week only instead of paying $597 you only pay $297
-
-Respond to marieovermyer@hotmail.com 
-
-
-
-
-to terminate please send a blank message with 2577 in the subject
+-- 
+=======================
+Cliff Brake
+http://bec-systems.com
