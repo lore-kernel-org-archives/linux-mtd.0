@@ -1,19 +1,11 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K1egd-0001uZ-El
-	for linux-mtd@lists.infradead.org; Thu, 29 May 2008 09:44:43 +0000
-Subject: Re: [PATCH][JFFS2] Reschedule during scan of partly empty eraseblock
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Nielsen David Marqvar <David.Nielsen@frequentis.com>
-In-Reply-To: <B80D0E83691CB840ACE9714151F863850157100C@VIECLEX01.frequentis.frq>
-References: <B80D0E83691CB840ACE9714151F863850157100C@VIECLEX01.frequentis.frq>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 29 May 2008 12:46:32 +0300
-Message-Id: <1212054392.31023.66.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Date: Thu, 29 May 2008 12:38:57 +0100 (BST)
+From: Alexey Korolev <akorolev@infradead.org>
+To: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Subject: [BUG] JFFS2 power loss recovery issues in 2.6.25, 2.6.26-rc
+Message-ID: <alpine.LFD.1.10.0805291205480.22130@pentafluge.infradead.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,40 +15,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2008-05-29 at 11:29 +0200, Nielsen David Marqvar wrote:
-> This patch adds rescheduling to the loop that scans an empty area of an
-> eraseblock.
->=20
-> Rationale:
-> When scanning the an empty area of an eraseblock no scheduling occurs. Bu=
-t
-> this scan may take significantly long to complete depending on the size o=
-f=20
-> the empty space within the eraseblock and the speed of the flash (on my
-> system
-> it could theoretically be up to 100 ms).
-> The patch will add a call to cond_resched() for each 2 KiB scanned (while=
- the
-> first check may be done before 2 KiB the code is simple and fast).
->=20
-> The patch has been tested and running on our systems for a month now.
-...
->                                 }
->=20
-> +                               /* check for resched - searching an
-> eraseblock may take several ms */
-> +                               if ( (ofs & 0x7ff /* for each 2KiB */) =
-=3D=3D 0)
-> +                                       cond_resched();
-> +
->                                 inbuf_ofs+=3D4;
->                                 ofs +=3D 4;
->                         }
+Hi, 
 
-I would rather add cond_resched() to jffs2_fill_scan_buf()
-unconditionally. Conditional cond_resched() really looks bad.
+One of recent patches broke JFFS2 power loss recoverability.
+We faced the issue in Linux 2.6.25 and 2.6.26-rc but not in 2.6.24,
+2.6.23.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+If to reboot platform during file write. And try to read it again rest
+of file will contain trash. 
+Issue is well reproducible on NAND, especially if to delete large file
+before write and reboot.
+
+We made some investigations for this issue and found commit number which
+breaks JFFS2 power loss recoverability.
+It is:  [JFFS2] Improve getdents vs. f_pos handling on NOR flash.
+        http://git.infradead.org/mtd-2.6.git?a=commitdiff;h=15953580e79b58caefb107e77f218e009b9992e6
+
+Currently we don't know why it breaks JFFS2 and how it could be fixed
+except roll back. 
+So I would much appreciate any ideas on how it could be fixed. 
+
+
+Thanks
