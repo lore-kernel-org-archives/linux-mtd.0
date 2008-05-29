@@ -1,11 +1,21 @@
-Date: Thu, 29 May 2008 12:38:57 +0100 (BST)
-From: Alexey Korolev <akorolev@infradead.org>
-To: dwmw2@infradead.org, linux-mtd@lists.infradead.org
-Subject: [BUG] JFFS2 power loss recovery issues in 2.6.25, 2.6.26-rc
-Message-ID: <alpine.LFD.1.10.0805291205480.22130@pentafluge.infradead.org>
+Received: from webmail.frequentis.com ([213.47.210.151])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K1gUI-0002t0-7i
+	for linux-mtd@lists.infradead.org; Thu, 29 May 2008 11:40:06 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org
+Content-Type: text/plain;
+	charset="UTF-8"
+Content-Transfer-Encoding: base64
+Subject: RE: [PATCH][JFFS2] Reschedule during scan of partly emptyeraseblock
+Date: Thu, 29 May 2008 13:40:04 +0200
+Message-ID: <B80D0E83691CB840ACE9714151F8638501571080@VIECLEX01.frequentis.frq>
+In-Reply-To: <1212054392.31023.66.camel@sauron>
+References: <B80D0E83691CB840ACE9714151F863850157100C@VIECLEX01.frequentis.frq>
+	<1212054392.31023.66.camel@sauron>
+From: "Nielsen David Marqvar" <David.Nielsen@frequentis.com>
+To: <dedekind@infradead.org>
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,25 +25,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, 
-
-One of recent patches broke JFFS2 power loss recoverability.
-We faced the issue in Linux 2.6.25 and 2.6.26-rc but not in 2.6.24,
-2.6.23.
-
-If to reboot platform during file write. And try to read it again rest
-of file will contain trash. 
-Issue is well reproducible on NAND, especially if to delete large file
-before write and reboot.
-
-We made some investigations for this issue and found commit number which
-breaks JFFS2 power loss recoverability.
-It is:  [JFFS2] Improve getdents vs. f_pos handling on NOR flash.
-        http://git.infradead.org/mtd-2.6.git?a=commitdiff;h=15953580e79b58caefb107e77f218e009b9992e6
-
-Currently we don't know why it breaks JFFS2 and how it could be fixed
-except roll back. 
-So I would much appreciate any ideas on how it could be fixed. 
-
-
-Thanks
+DQpPbiBUaHUsIDIwMDgtMDUtMjkgYXQgMTE6NDcgKzAyMDAsIEFydGVtIEJpdHl1dHNraXkgd3Jv
+dGU6DQo+ID4gVGhpcyBwYXRjaCBhZGRzIHJlc2NoZWR1bGluZyB0byB0aGUgbG9vcCB0aGF0IHNj
+YW5zIGFuIGVtcHR5IGFyZWEgb2YNCj4gPiBhbiBlcmFzZWJsb2NrLg0KPiA+ICsgLyogY2hlY2sg
+Zm9yIHJlc2NoZWQgLSBzZWFyY2hpbmcgYW4gZXJhc2VibG9jayBtYXkgdGFrZSBzZXZlcmFsIG1z
+ICovDQo+ID4gKyBpZiAoIChvZnMgJiAweDdmZiAvKiBmb3IgZWFjaCAyS2lCICovKSA9PSAwKQ0K
+PiA+ICsgCWNvbmRfcmVzY2hlZCgpOw0KPiA+ICsNCj4gDQo+IEkgd291bGQgcmF0aGVyIGFkZCBj
+b25kX3Jlc2NoZWQoKSB0byBqZmZzMl9maWxsX3NjYW5fYnVmKCkNCj4gdW5jb25kaXRpb25hbGx5
+LiBDb25kaXRpb25hbCBjb25kX3Jlc2NoZWQoKSByZWFsbHkgbG9va3MgYmFkLg0KDQpJIGRvbid0
+IHNlZSBob3cgYWRkaW5nIGNvbmRfcmVzY2hlZCgpIHRvIGpmZnMyX2ZpbGxfc2Nhbl9idWYoKSB3
+aWxsDQpyZW1vdmUgdGhlIGxvbmcgZGVsYXkgaW1wb3NlZCBieSB0aGUgd2hpbGUoKSBsb29wIHRo
+YXQgc2NhbnMgYW4gZW1wdHkNCmFyZWEgb2YgYW4gZXJhc2VibG9jayAtIHRoZSBsb29wIChwbGFj
+ZWQganVzdCBhZnRlciB0aGUgbGFiZWwNCiJtb3JlX2VtcHR5OiIpIHdpbGwgc2NhbiBmcm9tIG9m
+cyB1bnRpbCBzY2FuX2VuZCB1bmxlc3MgaXQgZmluZHMgYQ0Kbm9uLWVyYXNlZCBhcmVhLg0KVGhl
+cmUncyBhbiBvdXRlciB3aGlsZSBsb29wIGFyb3VuZCB0aGlzIG9uZSBhbmQgdGhlIG91dGVyIGxv
+b3AgDQphbHJlYWR5IGNvbnRhaW5zIGEgY29uZF9yZXNjaGVkKCksIHNvIGl0J3Mgbm90IGEgbmV3
+IHRoaW5nIHRoYXQNCmNvbmRfcmVzY2hlZCgpIG1heSBiZSBuZWVkZWQgZHVyaW5nIHRoZSBzY2Fu
+Lg0KDQpJZiBJIG1pc3VuZGVyc3Rvb2Qgd2hhdCB5b3Ugd3JvdGUsIHBsZWFzZSB0cnkgYWdhaW4g
+OikNCg0KDQotLQ0KQnIsDQpEYXZpZCBNYXJxdmFyIE5pZWxzZW4NCg0K
