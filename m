@@ -1,25 +1,18 @@
-Received: from wf-out-1314.google.com ([209.85.200.168])
+Received: from webmail.frequentis.com ([213.47.210.151])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K1dhU-0004XY-FN
-	for linux-mtd@lists.infradead.org; Thu, 29 May 2008 08:41:33 +0000
-Received: by wf-out-1314.google.com with SMTP id 28so3110101wfc.24
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 29 May 2008 01:41:31 -0700 (PDT)
-Message-ID: <bae050c10805290141g66dba350s5ab1dc3611498938@mail.gmail.com>
-Date: Thu, 29 May 2008 16:41:31 +0800
-From: Nancy <nancydreaming@gmail.com>
-To: mhfan@hhcn.com
-Subject: Re: mkfs.ubifs, ubinize, ubiupdatevol request!
-In-Reply-To: <483E68E3.30609@hhcn.com>
+	id 1K1eSE-0000Lv-9D
+	for linux-mtd@lists.infradead.org; Thu, 29 May 2008 09:29:50 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <bae050c10805290002gb294d4yf5a62a4331225dbc@mail.gmail.com>
-	<483E5C97.2000100@hhcn.com>
-	<bae050c10805290101s4467bb39u95cd9fe0a55f883@mail.gmail.com>
-	<483E68E3.30609@hhcn.com>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: [PATCH][JFFS2] Reschedule during scan of partly empty eraseblock
+Date: Thu, 29 May 2008 11:29:43 +0200
+Message-ID: <B80D0E83691CB840ACE9714151F863850157100C@VIECLEX01.frequentis.frq>
+From: "Nielsen David Marqvar" <David.Nielsen@frequentis.com>
+To: <linux-mtd@lists.infradead.org>,
+	<dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,32 +22,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 5/29/08, Meihui Fan <mhfan@hhcn.com> wrote:
->
->Nancy wrote:
-> > I have tried several pair, but none was same as winodws fast fat32
-> > format program.
-> > Would you please give me an example?
-> >
-> > By the way, are you using my ubiblk patch now? Have you meet the same
->
-> No. I didn't have a chance to using your ubiblk patch. But I think it is
-> useful, and it would very nice if your patch (if you do some further work as
-> the UBI guys pointed out) or a similar one to be merged into UBI and
-> mainline kernel. Then I and many other people would benefit from this in the
-> future.
-   Yes, you are quite right! But I guess most MTD developers have more
-interesting in Alex Dubov future FAL patch.
+This patch adds rescheduling to the loop that scans an empty area of an
+eraseblock.
 
-> > speed problem? How do you solve it?
->
-> I met a similar block access performance issue for the SD/MMC card in my
-> target. I solved it by merge several continues single small block access
-> into a bigger batch one.
+Rationale:
+When scanning the an empty area of an eraseblock no scheduling occurs. =
+But
+this scan may take significantly long to complete depending on the size =
+of=20
+the empty space within the eraseblock and the speed of the flash (on my
+system
+it could theoretically be up to 100 ms).
+The patch will add a call to cond_resched() for each 2 KiB scanned =
+(while the
+first check may be done before 2 KiB the code is simple and fast).
 
-I see, thanks!
+The patch has been tested and running on our systems for a month now.
 
 
--- 
-Best wishes,
-Nancy
+Signed-off-by: David Marqvar Nielsen <david.nielsen@frequentis.com>
+---
+diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
+index 1d437de..044a4a1 100644
+--- a/fs/jffs2/scan.c
++++ b/fs/jffs2/scan.c
+@@ -654,6 +654,10 @@ scan_more:
+                                        goto scan_more;
+                                }
+
++                               /* check for resched - searching an
+eraseblock may take several ms */
++                               if ( (ofs & 0x7ff /* for each 2KiB */) =
+=3D=3D 0)
++                                       cond_resched();
++
+                                inbuf_ofs+=3D4;
+                                ofs +=3D 4;
+                        }
