@@ -1,23 +1,19 @@
-Received: from wf-out-1314.google.com ([209.85.200.169])
+Received: from fg-out-1718.google.com ([72.14.220.159])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K1d5F-0007wU-N0
-	for linux-mtd@lists.infradead.org; Thu, 29 May 2008 08:02:01 +0000
-Received: by wf-out-1314.google.com with SMTP id 28so3098860wfc.24
+	id 1K1dEo-0007lf-Rb
+	for linux-mtd@lists.infradead.org; Thu, 29 May 2008 08:11:55 +0000
+Received: by fg-out-1718.google.com with SMTP id l26so1936266fgb.26
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 29 May 2008 01:02:00 -0700 (PDT)
-Message-ID: <bae050c10805290101s4467bb39u95cd9fe0a55f883@mail.gmail.com>
-Date: Thu, 29 May 2008 16:01:58 +0800
-From: Nancy <nancydreaming@gmail.com>
-To: mhfan@hhcn.com
-Subject: Re: mkfs.ubifs, ubinize, ubiupdatevol request!
-In-Reply-To: <483E5C97.2000100@hhcn.com>
+	Thu, 29 May 2008 01:11:53 -0700 (PDT)
+Message-ID: <e8775dd00805290111l40cdf6f9p5efee4005037557c@mail.gmail.com>
+Date: Thu, 29 May 2008 16:11:53 +0800
+From: "Jason Liu" <liu.h.jason@gmail.com>
+To: linux-mtd@lists.infradead.org, "Jason Liu" <liu.h.jason@gmail.com>
+Subject: JFFS2 warnning message and notice
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <bae050c10805290002gb294d4yf5a62a4331225dbc@mail.gmail.com>
-	<483E5C97.2000100@hhcn.com>
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 5/29/08, Meihui Fan <mhfan@hhcn.com> wrote:
->
-> Hi Nancy,
->
-> I don't know the difference between mkfs.vfat and windows fast fat32 format
-> program, but  in my experience, I think there are two arguments for
-> mkfs.vfat which would impact the block access performance: -s and/or -S,
-> please try to specify a big value for these two arguments.
->
-> Hopeful this would help.
-
-I have tried several pair, but none was same as winodws fast fat32
-format program.
-Would you please give me an example?
-
-By the way, are you using my ubiblk patch now? Have you meet the same
-speed problem? How do you solve it?
-
-Thank you for your reply :-)
-
--- 
-Best wishes,
-Nancy
+Hi,All
+      These days, I enconter a lot of jffs2 warning or notices when
+using jffs2 file system on MLC nand flash
+      with Kyungmin Park 's not use oob patches. the messages as followings,
+      JFFS2 warning: (1688) jffs2_do_read_inode_internal: Truncating
+ino #7568 to 20168 bytes failed because
+      it only had 4096 bytes to start with!
+      JFFS2 warning: (1688) jffs2_do_read_inode_internal: Truncating
+ino #7573 to 883418 bytes failed because it only had 5734
+      4 bytes to start with!
+      JFFS2 notice: (873) check_node_data: wrong data CRC in data node
+at 0x02e6c270: read 0xe6d40036, calculated 0x176f5ac1.
+      JFFS2 notice: (873) check_node_data: wrong data CRC in data node
+at 0x0528e7b0: read 0x8abffc49, calculated 0x6e7e8788.
+      JFFS2 notice: (873) check_node_data: wrong data CRC in data node
+at 0x0529f638: read 0x66e426b7, calculated 0x5eedc576.
+      ....
+      I don't know what cause such happen?  Is this the common case of
+jffs2 file system?
