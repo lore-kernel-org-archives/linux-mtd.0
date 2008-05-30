@@ -1,19 +1,23 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K1y9m-0003f1-Ef
-	for linux-mtd@lists.infradead.org; Fri, 30 May 2008 06:32:07 +0000
-Subject: Re: ubifs, ubiblk(formatted with vfat) and yaffs2 test.
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: KeunO Park <lastnite@gmail.com>
-In-Reply-To: <5ed5c4730805292301m558dee30o66f5dd034d594390@mail.gmail.com>
-References: <5ed5c4730805292301m558dee30o66f5dd034d594390@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Date: Fri, 30 May 2008 09:33:43 +0300
-Message-Id: <1212129223.31023.106.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Received: from wf-out-1314.google.com ([209.85.200.172])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K1yIb-0004Gc-1Z
+	for linux-mtd@lists.infradead.org; Fri, 30 May 2008 06:41:13 +0000
+Received: by wf-out-1314.google.com with SMTP id 28so3456898wfc.24
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 29 May 2008 23:41:12 -0700 (PDT)
+Message-ID: <bae050c10805292341o663991bew78c0a4cb8541d5e0@mail.gmail.com>
+Date: Fri, 30 May 2008 14:41:11 +0800
+From: Nancy <nancydreaming@gmail.com>
+To: dedekind@infradead.org
+Subject: Re: mkfs.ubifs, ubinize, ubiupdatevol request!
+In-Reply-To: <1212128506.31023.95.camel@sauron>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <bae050c10805290002gb294d4yf5a62a4331225dbc@mail.gmail.com>
+	<1212128506.31023.95.camel@sauron>
 Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,43 +27,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2008-05-30 at 15:01 +0900, KeunO Park wrote:
-> I am working in embedded device. and I handled some kind of flash
-> filesystem like yaffs2, jffs2, rfs on ONENAND/NAND and tffs on MDOC.
-> you know, in territory of mobile phone, mass storage class func
-> becomes basic function.
+On 5/30/08, Artem Bityutskiy <dedekind@infradead.org> wrote:
+> Actually what we could do is to create a simple program which would dump
+> whole _MTD_ device, and basically drop unmapped physical eraseblocks.
+> This is just easier to do. Something like this:
+>
+> fd = open(/dev/mtdX);
+> for (each physical eraseblock) {
+>        read(fd, buf, peb_size);
+>        /* Check if PEB is not mapped by checking that there is not VID
+>           header */
+>        if (vid_header_is_not_present())
+>                /* This PEB is unmapped, it is safe to drop it and
+>                   switch to the next PEB */
+>                continue;
+>        /* Write data to the output file */
+>        write(output_file_descriptor, buf, peb_size);
+>
+> }
+>
+> Afterward, you will be able to just flash the resulting dump with
+> "ubiformat".
+>
+> But of course, you will dump all volumes this way, not just one. Does
+> this work for you?
+That's a greate idea to create UBI image for Nand burning, but I also
+have to support the volume update functions. Cause products update is
+used more ofen than Nand burning.
 
-Yes, yaffs, jffs2 are "special" class of file-systems and they were not
-designed to be what you call "mass storage class func". They should
-rather be used as root file system on "internal" flash, which is smaller
-than "mass memory", where you store your core libraries, etc.=20
+So I have no choices but write a tool to reformate ubifs.img(generated
+by mkfs.ubifs), fix ubinize, ubiupdatevol.
 
-> yaffs2
-> write: 10.20s, 12.09s, 12.24s avg:11.51s (868KB/s)
-> load avg right after copy&sync: 0.03 -> 0.11
->=20
-> ubifs (LZO)
-> write: 14.45s, 14.40s, 14.45s avg:14.43s (693KB/s)
-> load avg right after copy&sync: 0.03 -> 0.53
->=20
-> ubifs (ZLIB)
-> write : 27.17s, 27.18s, 27.21s avg:27.18 (367KB/s)
-> load avg right after copy&sync: 0.03 -> 0.80
->=20
-> ubifs (No Compression)
-> write: 6.69s, 10.90s, 10.98s avg:9.52s (1050KB/s)
-> load avg right after copy&sync: 0.03 -> 0.43
-We beat yaffs2? Sounds nice :-)
+> This should be easy to write this tool. I could do this but I am very
+> busy at the moment and basically have not time, may be later.
+It's OK. I'm so happy to get your reply. That mean you have already
+forgive me.  Thank you!  * ^_^ *
 
-> ubiblk(vfat mount)
-> read: 0.46s, 0.47s, 0.46s avg: 0.463s (21.5MB/s)
-> write: 12.13s, 14.95s, 12.61s avg:13.23s (755KB/s)
-> load avg right after copy&sync: 0.02 -> 0.31
->=20
-> With above result, it seems that there is some overload in ubi.
-I do not really see what is the question you want to ask.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+-- 
+Best wishes,
+Nancy
