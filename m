@@ -1,23 +1,18 @@
-Received: from rv-out-0708.google.com ([209.85.198.240])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K1ypn-0002nQ-Nd
-	for linux-mtd@lists.infradead.org; Fri, 30 May 2008 07:15:32 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so4508220rvf.42
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 30 May 2008 00:15:30 -0700 (PDT)
-Message-ID: <5ed5c4730805300015o4f757dcbn394c770c2f92566a@mail.gmail.com>
-Date: Fri, 30 May 2008 16:15:30 +0900
-From: "KeunO Park" <lastnite@gmail.com>
-To: dedekind@infradead.org
-Subject: Re: ubifs, ubiblk(formatted with vfat) and yaffs2 test.
-In-Reply-To: <1212129223.31023.106.camel@sauron>
+Received: from risingsoftware01.propagation.net ([66.221.33.65])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1K1z4J-0002UG-SO
+	for linux-mtd@lists.infradead.org; Fri, 30 May 2008 07:30:32 +0000
+Date: Fri, 30 May 2008 17:30:25 +1000
+From: Hamish Moffatt <hamish@cloud.net.au>
+To: Artem Bityutskiy <dedekind@infradead.org>
+Subject: Re: UBIFS on-media format changed to version 3
+Message-ID: <20080530073025.GB20369@cloud.net.au>
+References: <1212047442.31023.64.camel@sauron>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-References: <5ed5c4730805292301m558dee30o66f5dd034d594390@mail.gmail.com>
-	<1212129223.31023.106.camel@sauron>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+In-Reply-To: <1212047442.31023.64.camel@sauron>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,37 +22,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Yes, yaffs, jffs2 are "special" class of file-systems and they were not
-> designed to be what you call "mass storage class func". They should
-> rather be used as root file system on "internal" flash, which is smaller
-> than "mass memory", where you store your core libraries, etc.
->
->> yaffs2
->> write: 10.20s, 12.09s, 12.24s avg:11.51s (868KB/s)
->> load avg right after copy&sync: 0.03 -> 0.11
->>
->> ubifs (LZO)
->> write: 14.45s, 14.40s, 14.45s avg:14.43s (693KB/s)
->> load avg right after copy&sync: 0.03 -> 0.53
->>
->> ubifs (ZLIB)
->> write : 27.17s, 27.18s, 27.21s avg:27.18 (367KB/s)
->> load avg right after copy&sync: 0.03 -> 0.80
->>
->> ubifs (No Compression)
->> write: 6.69s, 10.90s, 10.98s avg:9.52s (1050KB/s)
->> load avg right after copy&sync: 0.03 -> 0.43
-> We beat yaffs2? Sounds nice :-)
+On Thu, May 29, 2008 at 10:50:42AM +0300, Artem Bityutskiy wrote:
+> we have found a bug in UBIFS and the fix changes the on-media format.
+> Namely, the direntry hash function changed. We've always assumed it to
+> be 29 bits wide, but because of incorrect bitmask it has been only 25
+> bits wide.
+> 
+> Please, update UBIFS and mkfs.ubifs to version 0.7. We have changed
+> media format version from 2 to 3 as well. We support compatibility with
+> older JFFS2 format (version 2) for now, but we would like to drop the
+> support, unless someone really needs this and asks us not to do this. We
+> are not in mainline so far, so we probably have luxury of changing
+> on-flash format so far.
+> 
+> I've CCed people who may be using UBIFS and should be aware of the
+> change.
 
-according to the above result(and only with no compressor option :-), yes.
-but, I think that load avg result is too much higher than yaffs2's.
-this may result in some critical situation especially on the mobile phone.
-For example, camera or camcorder application in mobile devices need to write
-the encoded display data steadily to NAND. so because of the high load avg,
-we may get stuttered display result.
-(I had experienced this before with the combination of 416Mhz pxa27x &
-mdoc tffs)
-so I wanna more light ubi.
+Hi Artem,
 
-regards,
-KeunO Park
+Thanks for the notification.
+
+What's the impact of the bug? Does it only affect particularly large
+volumes or directories with a particularly large number of files or
+something else?
+
+As I understand your comments, the new source will currently work with 
+existing file systems but you want to drop that ability?
+
+We're just about to deploy devices with 2.6.24 + ubifs from GIT a month
+or two back, though we're probably not going to upgrade the kernel on
+existing devices in the future anyway.
+
+Hamish
+-- 
+Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
