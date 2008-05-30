@@ -1,22 +1,25 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K23K9-0002kX-0N
-	for linux-mtd@lists.infradead.org; Fri, 30 May 2008 12:03:09 +0000
+Received: from rn-out-0910.google.com ([64.233.170.191])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K244l-0005jc-3d
+	for linux-mtd@lists.infradead.org; Fri, 30 May 2008 12:51:19 +0000
+Received: by rn-out-0910.google.com with SMTP id m7so2148669rnd.3
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 30 May 2008 05:51:17 -0700 (PDT)
+Message-ID: <5ed5c4730805300551k240bfb1dq35d8b18efc28b618@mail.gmail.com>
+Date: Fri, 30 May 2008 21:51:15 +0900
+From: "KeunO Park" <lastnite@gmail.com>
+To: "Josh Boyer" <jwboyer@linux.vnet.ibm.com>
 Subject: Re: ubifs, ubiblk(formatted with vfat) and yaffs2 test.
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: KeunO Park <lastnite@gmail.com>
-In-Reply-To: <1212148942.31023.135.camel@sauron>
+In-Reply-To: <20080530063412.0f64df1f@zod.rchland.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 References: <5ed5c4730805292301m558dee30o66f5dd034d594390@mail.gmail.com>
 	<1212129223.31023.106.camel@sauron>
 	<5ed5c4730805300015o4f757dcbn394c770c2f92566a@mail.gmail.com>
-	<1212148942.31023.135.camel@sauron>
-Content-Type: text/plain; charset=utf-8
-Date: Fri, 30 May 2008 15:05:02 +0300
-Message-Id: <1212149102.31023.138.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+	<20080530063412.0f64df1f@zod.rchland.ibm.com>
 Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,46 +29,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2008-05-30 at 15:02 +0300, Artem Bityutskiy wrote:
-> On Fri, 2008-05-30 at 16:15 +0900, KeunO Park wrote:
-> > > Yes, yaffs, jffs2 are "special" class of file-systems and they were n=
-ot
-> > > designed to be what you call "mass storage class func". They should
-> > > rather be used as root file system on "internal" flash, which is smal=
-ler
-> > > than "mass memory", where you store your core libraries, etc.
-> > >
-> > >> yaffs2
-> > >> write: 10.20s, 12.09s, 12.24s avg:11.51s (868KB/s)
-> > >> load avg right after copy&sync: 0.03 -> 0.11
-> > >>
-> > >> ubifs (LZO)
-> > >> write: 14.45s, 14.40s, 14.45s avg:14.43s (693KB/s)
-> > >> load avg right after copy&sync: 0.03 -> 0.53
-> > >>
-> > >> ubifs (ZLIB)
-> > >> write : 27.17s, 27.18s, 27.21s avg:27.18 (367KB/s)
-> > >> load avg right after copy&sync: 0.03 -> 0.80
-> > >>
-> > >> ubifs (No Compression)
-> > >> write: 6.69s, 10.90s, 10.98s avg:9.52s (1050KB/s)
-> > >> load avg right after copy&sync: 0.03 -> 0.43
-> > > We beat yaffs2? Sounds nice :-)
-> >=20
-> > according to the above result(and only with no compressor option :-), y=
-es.
-> > but, I think that load avg result is too much higher than yaffs2's.
->=20
-> So what you do is you write a large file, this does not go to the flash
-> but instead sits in the kernel buffers, in the page cache, then you call
-> fsync() which causes _massive_ page-cache write-back (flushing) and
-> consume a lot of CPU.
+2008/5/30, Josh Boyer <jwboyer@linux.vnet.ibm.com>:
+> On Fri, 30 May 2008 16:15:30 +0900
+> "KeunO Park" <lastnite@gmail.com> wrote:
+>
+> > so I wanna more light ubi.
+>
+> Send patches?
+>
 
-But I have to add that of course, YAFFS/JFFS2 are more light-weight
-file-system, because they do not maintain the FS index on the flash
-media. UBIFS does and this costs extra CPU cycles and extra I/O.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+oh. I'm sorry. I mean I'll wait for next release in mainline.
+that's why I'm newbie here. :-)
