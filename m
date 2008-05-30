@@ -1,18 +1,20 @@
-Received: from risingsoftware01.propagation.net ([66.221.33.65])
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K1z4J-0002UG-SO
-	for linux-mtd@lists.infradead.org; Fri, 30 May 2008 07:30:32 +0000
-Date: Fri, 30 May 2008 17:30:25 +1000
-From: Hamish Moffatt <hamish@cloud.net.au>
-To: Artem Bityutskiy <dedekind@infradead.org>
+	id 1K20lx-0000Xo-U1
+	for linux-mtd@lists.infradead.org; Fri, 30 May 2008 09:19:42 +0000
 Subject: Re: UBIFS on-media format changed to version 3
-Message-ID: <20080530073025.GB20369@cloud.net.au>
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Hamish Moffatt <hamish@cloud.net.au>
+In-Reply-To: <20080530073025.GB20369@cloud.net.au>
 References: <1212047442.31023.64.camel@sauron>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1212047442.31023.64.camel@sauron>
+	<20080530073025.GB20369@cloud.net.au>
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 30 May 2008 12:20:50 +0300
+Message-Id: <1212139250.31023.114.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,37 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 29, 2008 at 10:50:42AM +0300, Artem Bityutskiy wrote:
-> we have found a bug in UBIFS and the fix changes the on-media format.
-> Namely, the direntry hash function changed. We've always assumed it to
-> be 29 bits wide, but because of incorrect bitmask it has been only 25
-> bits wide.
-> 
-> Please, update UBIFS and mkfs.ubifs to version 0.7. We have changed
-> media format version from 2 to 3 as well. We support compatibility with
-> older JFFS2 format (version 2) for now, but we would like to drop the
-> support, unless someone really needs this and asks us not to do this. We
-> are not in mainline so far, so we probably have luxury of changing
-> on-flash format so far.
-> 
-> I've CCed people who may be using UBIFS and should be aware of the
-> change.
+Hi,
 
-Hi Artem,
+On Fri, 2008-05-30 at 17:30 +1000, Hamish Moffatt wrote:
+> What's the impact of the bug? Does it only affect particularly large
+> volumes or directories with a particularly large number of files or
+> something else?
 
-Thanks for the notification.
+Right. It is basically harmless, it's just that the hash function will
+collide more often which may result in poorer performance in case of
+large directories.
 
-What's the impact of the bug? Does it only affect particularly large
-volumes or directories with a particularly large number of files or
-something else?
+> As I understand your comments, the new source will currently work with=20
+> existing file systems but you want to drop that ability?
 
-As I understand your comments, the new source will currently work with 
-existing file systems but you want to drop that ability?
+Right. But we may keep the support if you need this of course.
 
-We're just about to deploy devices with 2.6.24 + ubifs from GIT a month
-or two back, though we're probably not going to upgrade the kernel on
-existing devices in the future anyway.
+> We're just about to deploy devices with 2.6.24 + ubifs from GIT a month
+> or two back, though we're probably not going to upgrade the kernel on
+> existing devices in the future anyway.
 
-Hamish
--- 
-Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
+Oh. We fixed many bugs since that time :-) Of course you may never hit
+them, everything depends on the use-case. But I would update the kernel.
+
+Anyway, if you want, we may keep backward compatibility so that new
+kernel will work fine with older (version 2) images.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
