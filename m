@@ -1,17 +1,17 @@
 Received: from mx1.riseup.net ([204.13.164.18])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K2RTK-0000sL-2s
+	id 1K2RTL-0000sN-5J
 	for linux-mtd@lists.infradead.org; Sat, 31 May 2008 13:50:15 +0000
-Resent-Message-ID: <20080531133004.GG3075@traven>
-Message-Id: <20080531132809.319282660@kaehlcke.net>
+Resent-Message-ID: <20080531132959.GF3075@traven>
+Message-Id: <20080531132808.984625508@kaehlcke.net>
 References: <20080531132808.644758754@kaehlcke.net>
-Date: Sat, 31 May 2008 15:28:10 +0200
+Date: Sat, 31 May 2008 15:28:09 +0200
 From: matthias@kaehlcke.net
 To: dwmw2@infradead.org,
  linux-mtd@lists.infradead.org
-Subject: [patch 2/2] MTD: use list_for_each_entry() in del_mtd_device()
+Subject: [patch 1/2] MTD: use list_for_each_entry() in add_mtd_device()
 Content-Disposition: inline;
-	filename=mtd-del_mtd_device-use-list_for_each_entry.patch
+	filename=mtd-add_mtd_device-use-list_for_each_entry.patch
 Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
 	Matthias Kaehlcke <matthias@kaehlcke.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,28 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-MTD: use list_for_each_entry() instead of list_for_each() in del_mtd_device()
+MTD: use list_for_each_entry() instead of list_for_each() in add_mtd_device()
 
 Signed-off-by: Matthias Kaehlcke <matthias@kaehlcke.net>
 
 Index: linux-2.6/drivers/mtd/mtdcore.c
 ===================================================================
---- linux-2.6.orig/drivers/mtd/mtdcore.c	2008-05-31 15:18:13.000000000 +0200
-+++ linux-2.6/drivers/mtd/mtdcore.c	2008-05-31 15:21:04.000000000 +0200
-@@ -112,12 +112,11 @@
- 		       mtd->index, mtd->name, mtd->usecount);
- 		ret = -EBUSY;
- 	} else {
--		struct list_head *this;
-+		struct mtd_notifier *not;
+--- linux-2.6.orig/drivers/mtd/mtdcore.c	2008-05-31 14:46:00.000000000 +0200
++++ linux-2.6/drivers/mtd/mtdcore.c	2008-05-31 14:46:20.000000000 +0200
+@@ -53,7 +53,7 @@
  
- 		/* No need to get a refcount on the module containing
- 		   the notifier, since we hold the mtd_table_mutex */
--		list_for_each(this, &mtd_notifiers) {
--			struct mtd_notifier *not = list_entry(this, struct mtd_notifier, list);
-+		list_for_each_entry(not, &mtd_notifiers, list) {
- 			not->remove(mtd);
- 		}
+ 	for (i=0; i < MAX_MTD_DEVICES; i++)
+ 		if (!mtd_table[i]) {
+-			struct list_head *this;
++			struct mtd_notifier *not
+ 
+ 			mtd_table[i] = mtd;
+ 			mtd->index = i;
+@@ -72,8 +72,7 @@
+ 			DEBUG(0, "mtd: Giving out device %d to %s\n",i, mtd->name);
+ 			/* No need to get a refcount on the module containing
+ 			   the notifier, since we hold the mtd_table_mutex */
+-			list_for_each(this, &mtd_notifiers) {
+-				struct mtd_notifier *not = list_entry(this, struct mtd_notifier, list);
++			list_for_each_entry(not, &mtd_notifiers, list) {
+ 				not->add(mtd);
+ 			}
  
 
 -- 
