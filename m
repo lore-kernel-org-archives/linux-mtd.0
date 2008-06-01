@@ -1,19 +1,23 @@
 Received: from mx1.riseup.net ([204.13.164.18])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K2RTL-0000sN-5J
-	for linux-mtd@lists.infradead.org; Sat, 31 May 2008 13:50:15 +0000
-Resent-Message-ID: <20080531132959.GF3075@traven>
-Message-Id: <20080531132808.984625508@kaehlcke.net>
+	id 1K2fop-0006KJ-In
+	for linux-mtd@lists.infradead.org; Sun, 01 Jun 2008 05:09:24 +0000
+Date: Sun, 1 Jun 2008 07:09:12 +0200
+From: Matthias Kaehlcke <matthias@kaehlcke.net>
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
+Subject: Re: [patch 1/2] MTD: use list_for_each_entry() in add_mtd_device()
+Message-ID: <20080601050912.GC8734@traven>
 References: <20080531132808.644758754@kaehlcke.net>
-Date: Sat, 31 May 2008 15:28:09 +0200
-From: matthias@kaehlcke.net
-To: dwmw2@infradead.org,
- linux-mtd@lists.infradead.org
-Subject: [patch 1/2] MTD: use list_for_each_entry() in add_mtd_device()
-Content-Disposition: inline;
-	filename=mtd-add_mtd_device-use-list_for_each_entry.patch
-Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-	Matthias Kaehlcke <matthias@kaehlcke.net>
+	<20080531132808.984625508@kaehlcke.net>
+	<20080531133511.GA8734@traven> <20080531194154.GA7055@logfs.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20080531194154.GA7055@logfs.org>
+Cc: linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
+	dwmw2@infradead.org, linux-kernel@vger.kernel.org,
+	Chris Malley <mail@chrismalley.co.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +27,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-MTD: use list_for_each_entry() instead of list_for_each() in add_mtd_device()
+El Sat, May 31, 2008 at 09:41:55PM +0200 Jörn Engel ha dit:
 
-Signed-off-by: Matthias Kaehlcke <matthias@kaehlcke.net>
+> On Sat, 31 May 2008 15:35:11 +0200, Matthias Kaehlcke wrote:
+> > 
+> > MTD: use list_for_each_entry() instead of list_for_each() in add_mtd_device()
+> > 
+> > Signed-off-by: Matthias Kaehlcke <matthias@kaehlcke.net>
+> 
+> Chris Malley (added to Cc:) sent a patch converting all of drivers/mtd/
+> in a similar fashion.  It should be on its way in, if dwmw2 hasn't
+> missed it.
 
-Index: linux-2.6/drivers/mtd/mtdcore.c
-===================================================================
---- linux-2.6.orig/drivers/mtd/mtdcore.c	2008-05-31 14:46:00.000000000 +0200
-+++ linux-2.6/drivers/mtd/mtdcore.c	2008-05-31 14:46:20.000000000 +0200
-@@ -53,7 +53,7 @@
+fine :)
  
- 	for (i=0; i < MAX_MTD_DEVICES; i++)
- 		if (!mtd_table[i]) {
--			struct list_head *this;
-+			struct mtd_notifier *not
- 
- 			mtd_table[i] = mtd;
- 			mtd->index = i;
-@@ -72,8 +72,7 @@
- 			DEBUG(0, "mtd: Giving out device %d to %s\n",i, mtd->name);
- 			/* No need to get a refcount on the module containing
- 			   the notifier, since we hold the mtd_table_mutex */
--			list_for_each(this, &mtd_notifiers) {
--				struct mtd_notifier *not = list_entry(this, struct mtd_notifier, list);
-+			list_for_each_entry(not, &mtd_notifiers, list) {
- 				not->add(mtd);
- 			}
- 
+> You might also want to check your mailer.  This patch looks like bouquet
+> of flowers that got stuck in an elevator door. ;)
+
+thanks for the pointer. normally my mutt/emacs config doesn't cause
+this type of problems, i suppose i screwed it up myself somehow ...
 
 -- 
 Matthias Kaehlcke
 Embedded Linux Engineer
 Barcelona
 
-              We build too many walls and not enough bridges
-                             (Isaac Newton)
+    The book of nature is written in the language of mathematics
+                         (Galileo Galilei)
                                                                  .''`.
     using free software / Debian GNU/Linux | http://debian.org  : :'  :
                                                                 `. `'`
