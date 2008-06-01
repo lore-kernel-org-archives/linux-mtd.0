@@ -1,23 +1,16 @@
-Received: from mx1.riseup.net ([204.13.164.18])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K2fop-0006KJ-In
-	for linux-mtd@lists.infradead.org; Sun, 01 Jun 2008 05:09:24 +0000
-Date: Sun, 1 Jun 2008 07:09:12 +0200
-From: Matthias Kaehlcke <matthias@kaehlcke.net>
-To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
-Subject: Re: [patch 1/2] MTD: use list_for_each_entry() in add_mtd_device()
-Message-ID: <20080601050912.GC8734@traven>
-References: <20080531132808.644758754@kaehlcke.net>
-	<20080531132808.984625508@kaehlcke.net>
-	<20080531133511.GA8734@traven> <20080531194154.GA7055@logfs.org>
+Received: from utservm.ut.ac.ir ([80.66.177.10])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K2ml0-0000NL-Lv
+	for linux-mtd@lists.infradead.org; Sun, 01 Jun 2008 12:33:56 +0000
+Message-ID: <11160.41.204.224.16.1212321769.squirrel@utservm.ut.ac.ir>
+Date: Sun, 1 Jun 2008 15:32:49 +0330 (IRST)
+Subject: Indicate Interest
+From: "Amanda Williams" <adarvish@ut.ac.ir>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain;charset=utf-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20080531194154.GA7055@logfs.org>
-Cc: linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
-	dwmw2@infradead.org, linux-kernel@vger.kernel.org,
-	Chris Malley <mail@chrismalley.co.uk>
+To: undisclosed-recipients:;
+Reply-To: am.williams05@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,34 +20,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-El Sat, May 31, 2008 at 09:41:55PM +0200 Jörn Engel ha dit:
+Lady Amanda Williams.
+52 Oxford Street,
+England.
+E-mail:am.williams05@gmail.com
 
-> On Sat, 31 May 2008 15:35:11 +0200, Matthias Kaehlcke wrote:
-> > 
-> > MTD: use list_for_each_entry() instead of list_for_each() in add_mtd_device()
-> > 
-> > Signed-off-by: Matthias Kaehlcke <matthias@kaehlcke.net>
-> 
-> Chris Malley (added to Cc:) sent a patch converting all of drivers/mtd/
-> in a similar fashion.  It should be on its way in, if dwmw2 hasn't
-> missed it.
+Here writes Lady Amanda Williams, suffering from cancerous ailment. I was
+married to Sir Richard Williams an Englishman who is dead. My husband was
+into private practice all his life before his death. Our life together as
+man and wife lasted for three decades without child, My husband and I made
+a vow touplift the down-trodden and the less-privileged individuals as he
+had passion for persons who can not help themselves due to physical
+disability or financial predicament.When my late husband was alive he
+deposited the sum of Â£20 Million which were derived from his vast estates
+and investment in capital market with his bank here in UK. Presently, this
+money is still with the bank. Recently, my doctor told me that I have
+limited days to live due to the cancerous problems I am suffering from.
 
-fine :)
- 
-> You might also want to check your mailer.  This patch looks like bouquet
-> of flowers that got stuck in an elevator door. ;)
+Though what bothers me most is the stroke that I have in addition to the
+cancer. With this hard reality that has befallen my family and me I have
+decided to donate this fund to you and want you to use this gift to fund
+the upkeep of widowers, orphans, the down-trodden, and persons who prove
+to be genuinely handicapped financially. I took this decision because I do
+not have any child that will inherit this money and my husband relatives
+are bourgeois and very wealthy persons and I do not want my husband's hard
+earned money to be misused or invested into ill perceived ventures. I do
+not need any telephone communication in this regard due to my
+deteriorating health. As soon as I receive your reply I shall give you the
+contact of the bank in UK. I will also issue you a Letter of Authority
+that will empower you as the original beneficiary of this money.Please
+assure me that you will act just as I have stated herein, You can contact
+me through my personal email address: am.williams05@gmail.com
 
-thanks for the pointer. normally my mutt/emacs config doesn't cause
-this type of problems, i suppose i screwed it up myself somehow ...
-
--- 
-Matthias Kaehlcke
-Embedded Linux Engineer
-Barcelona
-
-    The book of nature is written in the language of mathematics
-                         (Galileo Galilei)
-                                                                 .''`.
-    using free software / Debian GNU/Linux | http://debian.org  : :'  :
-                                                                `. `'`
-gpg --keyserver pgp.mit.edu --recv-keys 47D8E5D4                  `-
+Best Regards,
+Lady Amanda Williams.
