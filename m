@@ -1,16 +1,20 @@
-Received: from utservm.ut.ac.ir ([80.66.177.10])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K2ml0-0000NL-Lv
-	for linux-mtd@lists.infradead.org; Sun, 01 Jun 2008 12:33:56 +0000
-Message-ID: <11160.41.204.224.16.1212321769.squirrel@utservm.ut.ac.ir>
-Date: Sun, 1 Jun 2008 15:32:49 +0330 (IRST)
-Subject: Indicate Interest
-From: "Amanda Williams" <adarvish@ut.ac.ir>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1K2rfp-0006bl-Bd
+	for linux-mtd@lists.infradead.org; Sun, 01 Jun 2008 17:48:53 +0000
+Date: Sun, 1 Jun 2008 19:48:42 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Alexey Korolev <akorolev@infradead.org>
+Subject: Re: [RFC/PATCH 2/3] NAND multiple plane feature
+Message-ID: <20080601174841.GH13094@logfs.org>
+References: <alpine.LFD.1.10.0805281342150.23606@pentafluge.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=utf-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-To: undisclosed-recipients:;
-Reply-To: am.williams05@gmail.com
+In-Reply-To: <alpine.LFD.1.10.0805281342150.23606@pentafluge.infradead.org>
+Cc: linux-mtd@lists.infradead.org, tglx@linutronix.de, dwmw2@infradead.org,
+	vasiliy.leonenko@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,37 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Lady Amanda Williams.
-52 Oxford Street,
-England.
-E-mail:am.williams05@gmail.com
+On Wed, 28 May 2008 14:08:01 +0100, Alexey Korolev wrote:
+> 
+> As NAND multiple plane architecture assumes simultaneous write/erase of
+> several pages/blocks at the same time, we have to modify page/eraseblock
+> sizes and report modified size to upper layers. In other words physical
+> erase block size/ page size != reported erase block size/ page size.
+> For example if we have dual plane device we have to extend erase block
+> size and page size in 2 times. 
 
-Here writes Lady Amanda Williams, suffering from cancerous ailment. I was
-married to Sir Richard Williams an Englishman who is dead. My husband was
-into private practice all his life before his death. Our life together as
-man and wife lasted for three decades without child, My husband and I made
-a vow touplift the down-trodden and the less-privileged individuals as he
-had passion for persons who can not help themselves due to physical
-disability or financial predicament.When my late husband was alive he
-deposited the sum of £20 Million which were derived from his vast estates
-and investment in capital market with his bank here in UK. Presently, this
-money is still with the bank. Recently, my doctor told me that I have
-limited days to live due to the cancerous problems I am suffering from.
+Before actually reading the datasheets (just now) I had hoped that
+manufacturers would provide us several independent read/write/erase
+units per chip and allow software to deal with each plane as if it was a
+seperate chip.  _That_ would have been really useful.  And for NOR
+flashes, Intel has already shown how to do it.
 
-Though what bothers me most is the stroke that I have in addition to the
-cancer. With this hard reality that has befallen my family and me I have
-decided to donate this fund to you and want you to use this gift to fund
-the upkeep of widowers, orphans, the down-trodden, and persons who prove
-to be genuinely handicapped financially. I took this decision because I do
-not have any child that will inherit this money and my husband relatives
-are bourgeois and very wealthy persons and I do not want my husband's hard
-earned money to be misused or invested into ill perceived ventures. I do
-not need any telephone communication in this regard due to my
-deteriorating health. As soon as I receive your reply I shall give you the
-contact of the bank in UK. I will also issue you a Letter of Authority
-that will empower you as the original beneficiary of this money.Please
-assure me that you will act just as I have stated herein, You can contact
-me through my personal email address: am.williams05@gmail.com
+But hoping for manufacturers to get it right rarely works - it certainly
+didn't work in this case.  As it seems, we can either program two planes
+in a weird lock-step process or ignore the feature.  And the lock-step
+variant isn't useful for much more than doubling/quadrupling the
+erasesize and writesize.  With all the disadvantages that brings. :(
 
-Best Regards,
-Lady Amanda Williams.
+Speaking about the disadvantages, if the dual plane feature is
+enabled/disabled across reboots and erase size or write size changes,
+we're in for a lot of fun from the filesystem size.  F.e. JFFS2 will
+experience data loss when erase size isn't stable.
+
+Jörn
+
+-- 
+All models are wrong. Some models are useful.
+-- George Box
