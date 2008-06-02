@@ -1,22 +1,21 @@
 Received: from mail2.shareable.org ([80.68.89.115])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K39D7-0001I1-8B
-	for linux-mtd@lists.infradead.org; Mon, 02 Jun 2008 12:32:25 +0000
-Date: Mon, 2 Jun 2008 13:32:18 +0100
+	id 1K39SZ-0000lo-MA
+	for linux-mtd@lists.infradead.org; Mon, 02 Jun 2008 12:48:24 +0000
+Date: Mon, 2 Jun 2008 13:48:22 +0100
 From: Jamie Lokier <jamie@shareable.org>
 To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
 Subject: Re: big flash disks?
-Message-ID: <20080602123217.GA2679@shareable.org>
+Message-ID: <20080602124822.GB2679@shareable.org>
 References: <20080601184239.GA11135@shareable.org>
-	<1212386359.31023.154.camel@sauron>
-	<20080602082346.GB20259@logfs.org>
-	<20080602104330.GD31032@shareable.org>
-	<20080602115538.GC21359@logfs.org>
+	<20080602072842.GB19219@logfs.org>
+	<20080602104106.GC31032@shareable.org>
+	<20080602114339.GB21359@logfs.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20080602115538.GC21359@logfs.org>
+In-Reply-To: <20080602114339.GB21359@logfs.org>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -28,25 +27,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Jörn Engel wrote:
-> Flash allows one to do partial writes to blocks.  SSDs generally don't.
-> Logfs currently does partial writes for atomic transactions, to make
-> creat(), unlink(), rename() and friends behave well.  Depending on your
-> SSD a simple creat() can blow up to writing several megabytes on the
-> actual medium.
+> On Mon, 2 June 2008 11:41:06 +0100, Jamie Lokier wrote:
+> > 
+> > Won't you get essentially the same by creating a single file on LogFS,
+> > and using it for a loopback mount?
+> 
+> In a broad sense, yes.  Drawbacks of this setup are the usual ones of
+> loop plus a deeper tree for logfs.  Instead of having a single 'file'
+> with indirect blocks, you also have the inode file with indirect blocks.
+> So for every sync, another couple of writes are necessary that don't
+> give you any gains in such a setup.
 
-It's a good argument for delaying writes, and committing only the
-minimum necessary on fsync/fdatasync/sync_file_range.
+Oh.  I've been thinking a lot about log-structured trees (or
+tree-structured logs :-) lately, so I tend to assume the tree depth
+isn't important, when nodes close to the root are static.
 
-According to the slashdot comment which started this thread :-) they
-do 4k log writes to large SSDs - and then report a very high write IOP
-rate for database applications.  It's the high write rate which is
-their selling point: price per GB is ridiculous.  So I'm inclined to
-believe they do actually get the claimed write rate under some
-circumstances.
+Did you know you can structure the tree such that additional depth
+doesn't add many/any additional writes on sync?
 
-If they can do 4k writes, and you cannot, it sounds like the SSDs you
-have used are very different to the SSDs they have used.  Is that
-right?  If so, we need to keep an open mind about the different kinds
-of SSD that are becoming available under that name.
+The basic idea is for a pointer in a tree node to point not to one
+child, but to a small set of potential children.  The child-set are a
+journal in the jffs2 sense.  When reading, you read each block of the
+child-set, and pick the most recent.  This slows down reading, but
+reduces the amount of writing.  You still read in O(log tree_size)
+blocks, and since most of the extra reads are hot-cache internal tree
+blocks, the amount of extra reading is quite small.  Child-sets can
+overlap to reduce storage duplication, at cost of more operations -
+it's a heuristic balancing act.  Child-sets are not used for all tree
+nodes, especially data.  They can be invoked and destroyed dynamically
+using heuristics to detect some parts of the tree undergoing lots of
+write+sync sequences and others being coalescable writes or not
+written.
+
+Put simply: combine logging with phase trees, and you won't have to
+replace the whole leaf-to-root path on every sync.  Then extra static
+depth at the root is free.
 
 -- Jamie
