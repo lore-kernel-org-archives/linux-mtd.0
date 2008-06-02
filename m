@@ -1,22 +1,21 @@
 Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K38LI-0005Wd-MF
-	for linux-mtd@lists.infradead.org; Mon, 02 Jun 2008 11:36:49 +0000
-Date: Mon, 2 Jun 2008 13:36:39 +0200
+	id 1K38S3-0006CF-Qp
+	for linux-mtd@lists.infradead.org; Mon, 02 Jun 2008 11:43:48 +0000
+Date: Mon, 2 Jun 2008 13:43:40 +0200
 From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
 To: Jamie Lokier <jamie@shareable.org>
-Subject: Re: [RFC/PATCH 2/3] NAND multiple plane feature
-Message-ID: <20080602113639.GA21359@logfs.org>
-References: <alpine.LFD.1.10.0805281342150.23606@pentafluge.infradead.org>
-	<20080601174841.GH13094@logfs.org>
-	<20080602112807.GA728@shareable.org>
+Subject: Re: big flash disks?
+Message-ID: <20080602114339.GB21359@logfs.org>
+References: <20080601184239.GA11135@shareable.org>
+	<20080602072842.GB19219@logfs.org>
+	<20080602104106.GC31032@shareable.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20080602112807.GA728@shareable.org>
-Cc: dwmw2@infradead.org, tglx@linutronix.de, linux-mtd@lists.infradead.org,
-	Alexey Korolev <akorolev@infradead.org>, vasiliy.leonenko@gmail.com
+In-Reply-To: <20080602104106.GC31032@shareable.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +25,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2 June 2008 12:28:07 +0100, Jamie Lokier wrote:
+On Mon, 2 June 2008 11:41:06 +0100, Jamie Lokier wrote:
 > 
-> Did you see if the dual plane feature at least allows erasing the next
-> block while writing the current one, so you can do continuous
-> streaming log writes without big pauses?
+> Won't you get essentially the same by creating a single file on LogFS,
+> and using it for a loopback mount?
 
-No, it simply allows the same operation to be done for two seperate
-blocks.
+In a broad sense, yes.  Drawbacks of this setup are the usual ones of
+loop plus a deeper tree for logfs.  Instead of having a single 'file'
+with indirect blocks, you also have the inode file with indirect blocks.
+So for every sync, another couple of writes are necessary that don't
+give you any gains in such a setup.
+
+> Sure, it's more complicated under the hood than a stripped-down LogFS,
+> but will it behave and perform similarly?
+
+With plenty of memory and sync being a sufficiently rare event, it
+might.
 
 Jörn
 
 -- 
-If you're willing to restrict the flexibility of your approach,
-you can almost always do something better.
--- John Carmack
+Invincibility is in oneself, vulnerability is in the opponent.
+-- Sun Tzu
