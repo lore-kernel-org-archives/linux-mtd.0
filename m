@@ -1,21 +1,15 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K38S3-0006CF-Qp
-	for linux-mtd@lists.infradead.org; Mon, 02 Jun 2008 11:43:48 +0000
-Date: Mon, 2 Jun 2008 13:43:40 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Jamie Lokier <jamie@shareable.org>
-Subject: Re: big flash disks?
-Message-ID: <20080602114339.GB21359@logfs.org>
-References: <20080601184239.GA11135@shareable.org>
-	<20080602072842.GB19219@logfs.org>
-	<20080602104106.GC31032@shareable.org>
+Date: Mon, 2 Jun 2008 12:41:53 +0100 (BST)
+From: Alexey Korolev <akorolev@infradead.org>
+To: Jared Hulbert <jaredeh@gmail.com>
+Subject: Re: [BUG] JFFS2 power loss recovery issues in 2.6.25, 2.6.26-rc
+In-Reply-To: <6934efce0805301224t5e5d7a01n3b652c4df5324d58@mail.gmail.com>
+Message-ID: <alpine.LFD.1.10.0806021239440.5100@pentafluge.infradead.org>
+References: <alpine.LFD.1.10.0805291205480.22130@pentafluge.infradead.org>
+	<6934efce0805301224t5e5d7a01n3b652c4df5324d58@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20080602104106.GC31032@shareable.org>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,25 +19,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2 June 2008 11:41:06 +0100, Jamie Lokier wrote:
+Hi,
+> > We made some investigations for this issue and found commit number which
+> > breaks JFFS2 power loss recoverability.
+> > It is:  [JFFS2] Improve getdents vs. f_pos handling on NOR flash.
+> >        http://git.infradead.org/mtd-2.6.git?a=commitdiff;h=15953580e79b58caefb107e77f218e009b9992e6
+> >
+> > Currently we don't know why it breaks JFFS2 and how it could be fixed
+> > except roll back.
 > 
-> Won't you get essentially the same by creating a single file on LogFS,
-> and using it for a loopback mount?
+> Does everything work when you unmerge this one commit?
+> 
+Correct, commit roll back fixes the problem. 
 
-In a broad sense, yes.  Drawbacks of this setup are the usual ones of
-loop plus a deeper tree for logfs.  Instead of having a single 'file'
-with indirect blocks, you also have the inode file with indirect blocks.
-So for every sync, another couple of writes are necessary that don't
-give you any gains in such a setup.
-
-> Sure, it's more complicated under the hood than a stripped-down LogFS,
-> but will it behave and perform similarly?
-
-With plenty of memory and sync being a sufficiently rare event, it
-might.
-
-Jörn
-
--- 
-Invincibility is in oneself, vulnerability is in the opponent.
--- Sun Tzu
+Thanks
+Alexey
