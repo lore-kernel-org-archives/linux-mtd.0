@@ -1,21 +1,15 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K33EV-0002Hm-GW
-	for linux-mtd@lists.infradead.org; Mon, 02 Jun 2008 06:09:28 +0000
-Subject: Re: ubifs, ubiblk(formatted with vfat) and yaffs2 test.
+	id 1K33Lu-0007xm-HX
+	for linux-mtd@lists.infradead.org; Mon, 02 Jun 2008 06:17:06 +0000
+Subject: Re: ubifs, ubiblk(formatted with vfat) and yaffs2 test
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: KeunO Park <lastnite@gmail.com>
-In-Reply-To: <5ed5c4730805300808v79f7fd7dpe3550cd8fc1b0db5@mail.gmail.com>
-References: <5ed5c4730805292301m558dee30o66f5dd034d594390@mail.gmail.com>
-	<1212129223.31023.106.camel@sauron>
-	<5ed5c4730805300015o4f757dcbn394c770c2f92566a@mail.gmail.com>
-	<1212148942.31023.135.camel@sauron> <1212149102.31023.138.camel@sauron>
-	<5ed5c4730805300600v33e9c2d1hada32b24953cfaf7@mail.gmail.com>
-	<1212155390.31023.140.camel@sauron>
-	<5ed5c4730805300808v79f7fd7dpe3550cd8fc1b0db5@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Date: Mon, 02 Jun 2008 09:10:34 +0300
-Message-Id: <1212387034.31023.166.camel@sauron>
+To: Nancy <nancydreaming@gmail.com>
+In-Reply-To: <bae050c10806012229n78668cf3rf71c44bd396a7fba@mail.gmail.com>
+References: <bae050c10806012229n78668cf3rf71c44bd396a7fba@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 02 Jun 2008 09:18:17 +0300
+Message-Id: <1212387497.31023.172.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd <linux-mtd@lists.infradead.org>
@@ -29,71 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+[Fixed abused mail subject]
 
-On Sat, 2008-05-31 at 00:08 +0900, KeunO Park wrote:
-> 2008/5/30, Artem Bityutskiy <dedekind@infradead.org>:
-> > On Fri, 2008-05-30 at 22:00 +0900, KeunO Park wrote:
-> > > > But I have to add that of course, YAFFS/JFFS2 are more light-weight
-> > > > file-system, because they do not maintain the FS index on the flash
-> > > > media. UBIFS does and this costs extra CPU cycles and extra I/O.
-> > > >
-> > >
-> > > actually I did write & fsync the file during test. :-)
-> > > anyway thank you for your comment.
-> >
-> > Could you please send your test? And how you measure the load average?
-> >
->=20
-> ok. here is my simple test.
->=20
-> 1. make a random dumped file in sdram area.
-> # cd /dev/shm/tmp
-> # dd if=3D/dev/urandom of=3Dtest.out bs=3D1M count=3D10
-> because ubifs uses compressor, I made a random data file for test.
->=20
-> 2. make another shell script.
-> # cat test_write.sh
-> #!/bin/sh
-> /bin/cp /dev/shm/tmp/test.out /nand_partition
-> /bin/sync
+On Mon, 2008-06-02 at 13:29 +0800, Nancy wrote:
+>     Thank you for sharing your test report!
+>     For ubiblk,  cp; sync;  is not enough, cause ubiblk hold back a LEB
+> in ram until another logical block number LEB wants to use the
+> writecache(in ubiblk) or an block device layer "release" call will
+> drive the LEB in writecache to be written on Nand Flash.
+>     For FAT, when it write some files, usually, it modify FAT table
+> first, then goes the file contends, finally still need to change
+> something in FAT table or whatever it is which belongs to the
+> Filesystem meta data. That means, the last LEB hold back in ram
+> contains the most important data (filesystem meta data). If there
+> comes unclean reboot. That may lost lots of data. Though UBI tolerant
+> unclean reboot. In this case, you should use tool "dosfsck
+> /dev/ubiblockN -a" before you mount ubiblock again. And see what you
+> have lost!
+>     To be safe, you should do : cp...; sync; flushcache /dev/ubiblockN
+>     I'm not sure block device layer's Ioctl "BLKFLSBUF" use in this
+> way. Is there any command like sync, not just sync the buffer cache,
+> but also the buffer in dirver layer( call that ioctl :-)
 
-In my previous mail, I described why the load will jump up when you do
-like this, please refer to that mail again.
-
-I suggest you to mount the file-system with '-o sync' option and measure
-load average.
-
-> 3. check that there is no other application running.
-> write down the load avg using 'top'
->=20
-> 4. just use 'time' utility to know how long it takes.
-> # time ./test_write.sh
->=20
-> 5. write down the load avg again using 'top'.
->=20
-> using 'top' may be inadaquate choice. but, I think that
-> this would be helpful more or less.
-
-Yes, using top is not nice. But if the file is large enough, and you
-watch 'top' for, say, several minutes, and then calculate the average
-accurately, this should be good enough.=20
-
-> 3.1 while I run 'cp test.out /nand_partition;sync' in ubifs partition
-> with 6800 files, suddenly I cut off the power. then check the speed in
-> next mount time.
-> real 0m 3.64s
-> user 0m 0.00s
-> sys 0m 1.32s
-> 3.2 while I run 'cp test.out /nand_partition;sync' in clean ubifs
-> partition with a few files, suddenly I cut off the power. then check
-> the speed in next mount time.
-> real 0m 1.62s
-> user 0m 0.00s
-> sys 0m 0.45s
-
-Mount time depends on how full is your journal, so it will be slightly
-different each time you reboot uncleanly.
+Sorry, but these things are absolutely unacceptable and mean your
+implementation is broken.
 
 --=20
 Best regards,
