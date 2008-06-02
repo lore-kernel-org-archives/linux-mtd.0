@@ -1,23 +1,19 @@
-Received: from rv-out-0708.google.com ([209.85.198.248])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K33pU-0006YI-6m
-	for linux-mtd@lists.infradead.org; Mon, 02 Jun 2008 06:47:40 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so1113096rvf.42
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 01 Jun 2008 23:47:39 -0700 (PDT)
-Message-ID: <bae050c10806012347p3f7e3bf0v3642383edaffd92b@mail.gmail.com>
-Date: Mon, 2 Jun 2008 14:47:38 +0800
-From: Nancy <nancydreaming@gmail.com>
-To: dedekind@infradead.org
-Subject: Re: ubifs, ubiblk(formatted with vfat) and yaffs2 test
-In-Reply-To: <1212387497.31023.172.camel@sauron>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1K34TM-0003RT-NH
+	for linux-mtd@lists.infradead.org; Mon, 02 Jun 2008 07:28:53 +0000
+Date: Mon, 2 Jun 2008 09:28:42 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Jamie Lokier <jamie@shareable.org>
+Subject: Re: big flash disks?
+Message-ID: <20080602072842.GB19219@logfs.org>
+References: <20080601184239.GA11135@shareable.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-References: <bae050c10806012229n78668cf3rf71c44bd396a7fba@mail.gmail.com>
-	<1212387497.31023.172.camel@sauron>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20080601184239.GA11135@shareable.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,47 +23,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 6/2/08, Artem Bityutskiy <dedekind@infradead.org> wrote:
-> [Fixed abused mail subject]
-I wished I know how to fix it. Is there any mailbox supply References:
-or In-Reply-To: headers when you write a new Email? Or is there some
-special operation to do this?
+On Sun, 1 June 2008 19:42:39 +0100, Jamie Lokier wrote:
+> 
+> Some people developing newer flash filesystems (UBIFS, Logfs,
+> FAT-over-UBI :-) and interested in flash filesystem performance might
+> be interested in this slashdot comment:
+> 
+>     http://slashdot.org/comments.pl?sid=569439&cid=23618215
+> 
+> They're implying that UBIFS and Logfs aren't suitable for high
+> performance writes and/or large flash, and don't work well with up and
+> coming flash disks either.
+> 
+> Also that patents may get in the way.
 
-> On Mon, 2008-06-02 at 13:29 +0800, Nancy wrote:
-> >     Thank you for sharing your test report!
-> >     For ubiblk,  cp; sync;  is not enough, cause ubiblk hold back a LEB
-> > in ram until another logical block number LEB wants to use the
-> > writecache(in ubiblk) or an block device layer "release" call will
-> > drive the LEB in writecache to be written on Nand Flash.
-> >     For FAT, when it write some files, usually, it modify FAT table
-> > first, then goes the file contends, finally still need to change
-> > something in FAT table or whatever it is which belongs to the
-> > Filesystem meta data. That means, the last LEB hold back in ram
-> > contains the most important data (filesystem meta data). If there
-> > comes unclean reboot. That may lost lots of data. Though UBI tolerant
-> > unclean reboot. In this case, you should use tool "dosfsck
-> > /dev/ubiblockN -a" before you mount ubiblock again. And see what you
-> > have lost!
-> >     To be safe, you should do : cp...; sync; flushcache /dev/ubiblockN
-> >     I'm not sure block device layer's Ioctl "BLKFLSBUF" use in this
-> > way. Is there any command like sync, not just sync the buffer cache,
-> > but also the buffer in dirver layer( call that ioctl :-)
->
-> Sorry, but these things are absolutely unacceptable and mean your
-> implementation is broken.
+He has some good points, but also happens to argue in favor of his
+company and against their competition.  To be served with a grain of
+salt.
 
-     That's OK. For me, better have a faulty one than have nothing at
-all. Hope someone will fix it or create a new one instead!
-     Because that's mainly for FAT, lost some user data is not that
-unaccepable. Cause most of the user data have bak in PC. Just make
-sure when you download somefiles from PC through USB, unload USB
-properly, the script will close the ubiblock device. That's safe.
-     When you want to write something in ubiblock device in target
-board, you should be aware of flushcache things.  Unclean reboot
-happened rarely.
-     At least this faulty accepted by my customers :-)
+> I've never heard of MFT before.
 
+Basically they create a log-structured block device.  For a while I've
+been thinking of doing the same, essentially strip logfs down to a
+single file, which gets a block device interface.  Removing all the
+filesystem complexities (atomic create/unlink/rename, interactions with
+vfs and mm, etc.) makes the project a _lot_ simpler.  I'm nor surprised
+they have a usable product already.
+
+I decided against it, because I don't believe it to be the best approach
+long-term.  One of the disadvantages is that block devices have
+relatively little knowledge about caching constraints.  A filesystem can
+easily have gigabytes of dirty data around, where a block device is
+expected to return success for every single write in a reasonable
+timeframe, usually measures in milliseconds.
+
+Jörn
 
 -- 
-Best wishes,
-Nancy
+Rules of Optimization:
+Rule 1: Don't do it.
+Rule 2 (for experts only): Don't do it yet.
+-- M.A. Jackson
