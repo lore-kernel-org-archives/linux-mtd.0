@@ -1,20 +1,21 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K32ng-0008KZ-PY
-	for linux-mtd@lists.infradead.org; Mon, 02 Jun 2008 05:41:45 +0000
+Received: from chilli.pcug.org.au ([203.10.76.44] helo=smtps.tip.net.au)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K32sV-0000UI-SF
+	for linux-mtd@lists.infradead.org; Mon, 02 Jun 2008 05:46:44 +0000
+Date: Mon, 2 Jun 2008 15:46:27 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: dedekind@infradead.org
 Subject: Re: next 20080530: ubifs build errors
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Randy Dunlap <randy.dunlap@oracle.com>
-In-Reply-To: <20080530093147.cc1d389f.randy.dunlap@oracle.com>
+Message-Id: <20080602154627.18af863b.sfr@canb.auug.org.au>
+In-Reply-To: <1212385369.31023.147.camel@sauron>
 References: <20080530093147.cc1d389f.randy.dunlap@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Date: Mon, 02 Jun 2008 08:42:49 +0300
-Message-Id: <1212385369.31023.147.camel@sauron>
+	<1212385369.31023.147.camel@sauron>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: akpm <akpm@linux-foundation.org>, linux-next@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+	micalg="PGP-SHA1";
+	boundary="Signature=_Mon__2_Jun_2008_15_46_27_+1000_nJyKHgEZUA+8VSWc"
+Cc: Randy Dunlap <randy.dunlap@oracle.com>, akpm <akpm@linux-foundation.org>,
+	linux-next@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2008-05-30 at 09:31 -0700, Randy Dunlap wrote:
-> with:
-> CONFIG_UBIFS_FS=3Dy
-> # CONFIG_UBIFS_FS_XATTR is not set
-> CONFIG_UBIFS_FS_ADVANCED_COMPR=3Dy
-> # CONFIG_UBIFS_FS_LZO is not set
-> # CONFIG_UBIFS_FS_ZLIB is not set
-> # CONFIG_UBIFS_FS_DEBUG is not set
->=20
-> build gets:
-> fs/built-in.o: In function `compr_exit':
-> compress.c:(.text+0x4a3fc): undefined reference to `crypto_free_tfm'
-> fs/built-in.o: In function `compr_init':
-> compress.c:(.init.text+0x11d4): undefined reference to `crypto_alloc_base=
-'
-> make[1]: *** [.tmp_vmlinux1] Error 1
->=20
->=20
-> because CRYPTO is not enabled.
+--Signature=_Mon__2_Jun_2008_15_46_27_+1000_nJyKHgEZUA+8VSWc
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixed, pushed to the git tree, thank you!
+On Mon, 02 Jun 2008 08:42:49 +0300 Artem Bityutskiy <dedekind@infradead.org=
+> wrote:
+>
+> Fixed, pushed to the git tree, thank you!
+
+And that will be in today's linux-next build.
+
+Thanks.
 
 --=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Cheers,
+Stephen Rothwell                    sfr@canb.auug.org.au
+http://www.canb.auug.org.au/~sfr/
+
+--Signature=_Mon__2_Jun_2008_15_46_27_+1000_nJyKHgEZUA+8VSWc
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQFIQ4k4TgG2atn1QN8RAjAJAJ9+sDUESM/YlzFJi04dQshiWv/+OwCgmyL9
+ywL3Kj2TYuxI/Txscw25Oac=
+=uAzW
+-----END PGP SIGNATURE-----
+
+--Signature=_Mon__2_Jun_2008_15_46_27_+1000_nJyKHgEZUA+8VSWc--
