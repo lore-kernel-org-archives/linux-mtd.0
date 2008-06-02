@@ -1,15 +1,15 @@
-Received: from mail17.syd.optusnet.com.au ([211.29.132.198])
+Received: from mail16.syd.optusnet.com.au ([211.29.132.197])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K3HhG-0005BK-NL
-	for linux-mtd@lists.infradead.org; Mon, 02 Jun 2008 21:36:07 +0000
-Subject: Re: u-boot reports ecc error on blocks written by nandwrite
+	id 1K3IMs-0002xB-QF
+	for linux-mtd@lists.infradead.org; Mon, 02 Jun 2008 22:19:12 +0000
+Subject: RE: u-boot reports ecc error on blocks written by nandwrite
 From: James <jamessteward@optusnet.com.au>
 To: Mark Roths <mroths@softairmicro.com>
-In-Reply-To: <01b301c8c4db$c5ebb560$6601a8c0@mrothsduo>
-References: <01b301c8c4db$c5ebb560$6601a8c0@mrothsduo>
+In-Reply-To: <01c001c8c4fb$8ac04170$6601a8c0@mrothsduo>
+References: <01c001c8c4fb$8ac04170$6601a8c0@mrothsduo>
 Content-Type: text/plain
-Date: Tue, 03 Jun 2008 07:35:52 +1000
-Message-Id: <1212442552.6121.8.camel@Ubuntu-Desktop>
+Date: Tue, 03 Jun 2008 08:18:59 +1000
+Message-Id: <1212445139.6121.19.camel@Ubuntu-Desktop>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -22,20 +22,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mark,
 
-On Mon, 2008-06-02 at 11:09 -0700, Mark Roths wrote:
-> There appears to be a discrepancy between how the linux mtd driver and
-> u-boot handle the ecc.  Or I am doing something
-> boneheadded.
+On Mon, 2008-06-02 at 14:56 -0700, Mark Roths wrote:
+> Yes, u-boot can erase, write, and read with no problems on its own.  
+> I use the u-boot nand utilities to build my flash with bootloader, u-boot,
+> linux and initrd.  All that works fantastically.
+> 
+> The only time I have problems is when I write a block in my boot partition
+> using nandwrite, and then subsequently read it with u-boot on the next boot.
+> And the completely strange behavior is that if I request 1 byte using 'nand
+> read', it fails the 1st time and then succeeds - all reads succeed after
+> that with no ecc errors.
 
-It is unlikely but possible that you have one configured for hardware
-ECC, and the other software ECC.
+Sounds almost like a cache problem.
 
-Can U-boot erase, write and read back some data properly?
-(see u-boot-1.1.5/doc/README.nand for commands)
+> Both the mtdchar driver and u-boot are configured for soft ecc, or so I
+> believe from my reading of the code.
 
-You are erasing before writing?
+Likely.
+
+I've had a plethora of problems using the NAND MT29F2G08AACWP on some
+AT91SAM9263-EK boards.  I now feel it might be a timing issue.  Maybe
+yours is too!
 
 Regards,
 James.
