@@ -1,19 +1,23 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K333W-0001c2-C6
-	for linux-mtd@lists.infradead.org; Mon, 02 Jun 2008 05:58:07 +0000
-Subject: Re: big flash disks?
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Jamie Lokier <jamie@shareable.org>
-In-Reply-To: <20080601184239.GA11135@shareable.org>
-References: <20080601184239.GA11135@shareable.org>
-Content-Type: text/plain; charset=utf-8
-Date: Mon, 02 Jun 2008 08:59:19 +0300
-Message-Id: <1212386359.31023.154.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from wf-out-1314.google.com ([209.85.200.172])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K33Bj-0007bX-4F
+	for linux-mtd@lists.infradead.org; Mon, 02 Jun 2008 06:06:35 +0000
+Received: by wf-out-1314.google.com with SMTP id 28so786801wfc.24
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 01 Jun 2008 23:06:34 -0700 (PDT)
+Message-ID: <bae050c10806012306p3c28330ap4ce9fac5032fdc14@mail.gmail.com>
+Date: Mon, 2 Jun 2008 14:06:34 +0800
+From: Nancy <nancydreaming@gmail.com>
+To: "KeunO Park" <lastnite@gmail.com>
+Subject: Re: ubifs, ubiblk(formatted with vfat) and yaffs2 test
+In-Reply-To: <5ed5c4730806012255t368976ebk46d1e102e8b042d0@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <bae050c10806012138p6167f30eu9450563efa5429ab@mail.gmail.com>
+	<5ed5c4730806012255t368976ebk46d1e102e8b042d0@mail.gmail.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +27,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+> ubiblk(vfat mount)
+> write: 15.39s, 15.82s, 16.03s avg:15.74s (635KB/s)
+> load avg right after copy&sync: 0.03 -> 0.85
 
-On Sun, 2008-06-01 at 19:42 +0100, Jamie Lokier wrote:
-> Some people developing newer flash filesystems (UBIFS, Logfs,
-> FAT-over-UBI :-) and interested in flash filesystem performance might
-> be interested in this slashdot comment:
->=20
->     http://slashdot.org/comments.pl?sid=3D569439&cid=3D23618215
->=20
-> They're implying that UBIFS and Logfs aren't suitable for high
-> performance writes and/or large flash, and don't work well with up and
-> coming flash disks either.
->=20
-> Also that patents may get in the way.
->=20
-> I've never heard of MFT before.
+Big difference!  Hope someone make it or the new FAL quickly!
 
-People should understand that UBIFS is designed for embedded systems. It
-is good for low-price devices where you have just bare flash which is
-cheap. SSD is a completely different area and irrelevant to UBIFS. The
-same applies for LogFS and YAFFS IMO. Talking about using these FS-es on
-SSD is just silly (again IMHO).
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+-- 
+Best wishes,
+Nancy
