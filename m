@@ -1,15 +1,15 @@
-Received: from wf-out-1314.google.com ([209.85.200.171])
+Received: from wf-out-1314.google.com ([209.85.200.173])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K32bU-0006wM-1x
-	for linux-mtd@lists.infradead.org; Mon, 02 Jun 2008 05:29:08 +0000
-Received: by wf-out-1314.google.com with SMTP id 28so772842wfc.24
+	id 1K32fC-0007MG-Lp
+	for linux-mtd@lists.infradead.org; Mon, 02 Jun 2008 05:32:58 +0000
+Received: by wf-out-1314.google.com with SMTP id 28so774023wfc.24
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 01 Jun 2008 22:29:07 -0700 (PDT)
-Message-ID: <bae050c10806012229n78668cf3rf71c44bd396a7fba@mail.gmail.com>
-Date: Mon, 2 Jun 2008 13:29:07 +0800
+	Sun, 01 Jun 2008 22:32:58 -0700 (PDT)
+Message-ID: <bae050c10806012232x3df849a3r843459e55bd19aae@mail.gmail.com>
+Date: Mon, 2 Jun 2008 13:32:57 +0800
 From: Nancy <nancydreaming@gmail.com>
 To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: References:ubifs, ubiblk(formatted with vfat) and yaffs2 test
+Subject: In-Reply-To:ubifs, ubiblk(formatted with vfat) and yaffs2 test
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
@@ -69,7 +69,6 @@ int main(int argc,char **argv)
        close(fd);
        return 0;
 }
-
 
 -- 
 Best wishes,
