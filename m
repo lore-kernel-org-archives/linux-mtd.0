@@ -1,18 +1,18 @@
 Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K3aX8-0003sS-Qj
-	for linux-mtd@lists.infradead.org; Tue, 03 Jun 2008 17:42:55 +0000
-Date: Tue, 3 Jun 2008 19:42:45 +0200
+	id 1K3aqw-0003jO-7y
+	for linux-mtd@lists.infradead.org; Tue, 03 Jun 2008 18:03:22 +0000
+Date: Tue, 3 Jun 2008 20:03:12 +0200
 From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
 To: Alexey Korolev <akorolev@infradead.org>
-Subject: Re: [RFC/PATCH 2/3] NAND multiple plane feature
-Message-ID: <20080603174244.GC1224@logfs.org>
-References: <alpine.LFD.1.10.0805281342150.23606@pentafluge.infradead.org>
+Subject: Re: [RFC/PATCH 3/3] NAND multiple plane feature
+Message-ID: <20080603180312.GD1224@logfs.org>
+References: <alpine.LFD.1.10.0805281410030.23606@pentafluge.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <alpine.LFD.1.10.0805281342150.23606@pentafluge.infradead.org>
+In-Reply-To: <alpine.LFD.1.10.0805281410030.23606@pentafluge.infradead.org>
 Cc: linux-mtd@lists.infradead.org, tglx@linutronix.de, dwmw2@infradead.org,
 	vasiliy.leonenko@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,115 +24,143 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 28 May 2008 14:08:01 +0100, Alexey Korolev wrote:
+On Wed, 28 May 2008 14:42:48 +0100, Alexey Korolev wrote:
 >
-> @@ -2449,9 +2453,6 @@ int nand_scan_tail(struct mtd_info *mtd)
->  		}
->  	}
->  
-> -	if (!chip->write_page)
-> -		chip->write_page = nand_write_page;
-> -
+> +static int nand_read_operations(struct mtd_info *mtd, struct nand_chip *chip,
+> +				      const uint8_t *buf, loff_t offt, int len, int sndcmd, int raw)
+> +{
+> +	int i = 0;
+> +	int ret, phys_page;
+> +	int page = (int)(offt >> chip->page_shift) & chip->pagemask;
+> +	int block_mask = (1 << (chip->erase_shift - chip->page_shift)) - 1;
+> +	int col, bytes, start_block, page_num;
+> +	uint8_t *datbuf, *oobbuf;
+> +
+> +	/* starting erase block at first plane */
+> +	start_block = (page & ~block_mask) * chip->numplanes;
+> +	page_num = page & block_mask;
+> +	while (i < chip->numplanes) {
+> +		datbuf = (uint8_t *)(buf + chip->page_phys_size * i);
+> +		oobbuf = chip->oob_poi + chip->oob_phys_size * i;
+> +		col = (int)(offt & (mtd->writesize - 1));
 
-Why is this removed?
+Does the explicit cast make any difference?
 
-> @@ -2593,6 +2594,21 @@ int nand_scan_tail(struct mtd_info *mtd)
->  
->  	/* propagate ecc.layout to mtd_info */
->  	mtd->ecclayout = chip->ecc.layout;
-> +	if (chip->numplanes > 1) {
-> +		for (oobfree_len = 0; chip->ecc.layout->oobfree[oobfree_len].length; oobfree_len++)
-> +			;
-
-Empty loop body.  And the header doesn't seem to have a side-effect
-either.  If it does, it can sure use a comment.
-
-> +		i = 0;
-> +		while (i < chip->numplanes) {
-
-		for (i = 0; i < chip->numplanes; i++) ?
-
-> +			for (j = 0; j < oobfree_len ; j++) {
-> +				chip->ecc.layout->oobfree[j + i * oobfree_len].length = chip->ecc.layout->oobfree[j].length;
-> +				chip->ecc.layout->oobfree[j + i * oobfree_len].offset = chip->ecc.layout->oobfree[j].offset + chip->oob_phys_size * i;
-
-Even if I sound like Andrew Morton, what is the meaning of i and j?
-Maybe rename the variable so future readers don't ask that question?
-Add a helper variable for chip->ecc.layout->oobfree and I might even be
-able to understand what this code does. ;)
-
-> +			}
-> +			for (j = 0; j < chip->ecc.layout->eccbytes; j++)
-> +				chip->ecc.layout->eccpos[j + i * chip->ecc.layout->eccbytes] = chip->ecc.layout->eccpos[j] + chip->oob_phys_size * i;
-> +			i++;
+> +		/* calculate column for current plane */
+> +		col = (int)(col & (chip->page_phys_size - 1));
+> +		bytes = min(chip->page_phys_size - col, len);
+> +
+> +		phys_page = start_block + page_num + (block_mask + 1) * i;
+> +		if (likely(sndcmd)) {
+> +			chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, phys_page);
+> +			if (chip->numplanes == 1)
+> +				sndcmd = 0;
 > +		}
-> +		chip->ecc.layout->eccbytes *= chip->numplanes;
-> +	}
->  
->  	/* Check, if we should skip the bad block table scan */
->  	if (chip->options & NAND_SKIP_BBTSCAN)
-> diff -Nurp linux-2.6.24.3/drivers/mtd/nand/nand_bbt.c linux-2.6.24.3-dp/drivers/mtd/nand/nand_bbt.c
-> --- linux-2.6.24.3/drivers/mtd/nand/nand_bbt.c	2008-02-26 03:20:20.000000000 +0300
-> +++ linux-2.6.24.3-dp/drivers/mtd/nand/nand_bbt.c	2008-05-28 14:57:56.000000000 +0400
-> @@ -75,12 +75,15 @@
->   * pattern area contain 0xff
->   *
->  */
-> -static int check_pattern(uint8_t *buf, int len, int paglen, struct nand_bbt_descr *td)
-> +static int check_pattern(struct mtd_info *mtd, uint8_t *buf, int len, int paglen, struct nand_bbt_descr *td)
+> +		/* Now read the page into the buffer */
+> +		if (unlikely(raw))
+> +			ret = chip->ecc.read_page_raw(mtd, chip, datbuf, oobbuf);
+> +		else
+> +			ret = chip->ecc.read_page(mtd, chip, datbuf, oobbuf);
+> +
+> +		offt += bytes;
+> +		len -= bytes;
+> +		i++;
+
+Looks like this could be a standard for loop as well.
+
+And I am a bit surprised that you don't break out of the loop if bytes
+ever becomes zero.  Is there a reason or did you just forget?
+
+> +
+> +		if (ret)
+> +			break;
+> +
+> +		if (!(chip->options & NAND_NO_READRDY)) {
+> +			if (!chip->dev_ready)
+> +				udelay(chip->chip_delay);
+> +			else
+> +				nand_wait_ready(mtd);
+> +			}
+
+Wrong indentation.
+
+> -			if (likely(sndcmd)) {
+> -				chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
+> -				sndcmd = 0;
+> -			}
+> -
+> -			/* Now read the page into the buffer */
+> -			if (unlikely(ops->mode == MTD_OOB_RAW))
+> -				ret = chip->ecc.read_page_raw(mtd, chip, bufpoi);
+> -			else
+> -				ret = chip->ecc.read_page(mtd, chip, bufpoi);
+> -			if (ret < 0)
+> -				break;
+> +			nand_read_operations(mtd, chip, bufpoi, from, bytes, sndcmd, (ops->mode == MTD_OOB_RAW));
+
+I like this part.  Actually making our monster-functions shorter is
+always a good thing.
+
+> -					int toread = min(oobreadlen,
+> -						chip->ecc.layout->oobavail);
+> +					int toread = min(oobreadlen, chip->ecc.layout->oobavail);
+
+Please don't reformat the code.  Or if you do, send that as a seperate
+patch, either the first or the last in the series.  Makes the review a
+lot easier if I don't have to double-check every time. :)
+
+>  					if (toread) {
+> -						oob = nand_transfer_oob(chip,
+> -							oob, ops, toread);
+> +						oob = nand_transfer_oob(chip, oob, ops, toread);
+>  						oobreadlen -= toread;
+>  					}
+>  				} else
+> -					buf = nand_transfer_oob(chip,
+> -						buf, ops, mtd->oobsize);
+> +					buf = nand_transfer_oob(chip, buf, ops, mtd->oobsize);
+
+Same here.  And dito for the newline-removals somewhere above.
+
+> -static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+> +static int nand_write_operations(struct mtd_info *mtd, struct nand_chip *chip,
+>  			   const uint8_t *buf, int page, int cached, int raw)
 >  {
->  	int i, end = 0;
-> +	struct nand_chip *this = mtd->priv;
-> +	int plane_num = 0;
->  	uint8_t *p = buf;
->  
-> -	end = paglen + td->offs;
-> +	do {
-> +	end = this->page_phys_size + td->offs;
+> +	int i = 0;
+>  	int status;
+> +	int block_mask = (1 << (chip->erase_shift - chip->page_shift)) - 1;
+> +	int start_block = (page & ~block_mask) * chip->numplanes;
+> +	int page_num = page & block_mask;
+> +
+> +	/* calculate physycal page at first plane */
+> +	while (i < chip->numplanes) {
+> +		page = start_block + page_num + (block_mask + 1) * i;
+> +		chip->cmdfunc(mtd, NAND_CMD_SEQIN, 0x00, page);
+> +
+> +		if (unlikely(raw))
+> +			chip->ecc.write_page_raw(mtd, chip, buf + chip->page_phys_size * i,
+> +									chip->oob_poi + chip->oob_phys_size * i);
+> +		else
+> +			chip->ecc.write_page(mtd, chip, buf + chip->page_phys_size * i,
+> +									chip->oob_poi + chip->oob_phys_size * i);
+> +		i++;
 
-The loop wants indentation.
+Even here I'd prefer a for loop and use "i - 1" in the condition below.
 
->  	if (td->options & NAND_BBT_SCANEMPTY) {
->  		for (i = 0; i < end; i++) {
->  			if (p[i] != 0xff)
-> @@ -103,6 +106,10 @@ static int check_pattern(uint8_t *buf, i
->  				return -1;
->  		}
->  	}
-> +	p += len - end;
-> +	plane_num++;
-> +	}
-> +	while (plane_num < this->numplanes);
+> +		if (i < chip->numplanes) {
+> +			chip->cmdfunc(mtd, NAND_CMD_PAGEPROG_MP, -1, -1);
+> +			if (!chip->dev_ready)
+> +				udelay(chip->chip_delay);
+> +			else
+> +				nand_wait_ready(mtd);
 
-	} while (plane_num < this->numplanes);
-
-> -		if (p[td->offs + i] != td->pattern[i])
-> +		if (p[this->oob_phys_size * plane_num + td->offs + i] != td->pattern[i])
-
-This is beyond me.  Without context I have no clue what it does.  And
-even with context it is hard work to figure it out.  Not good.
-
-My first thought was to move the calculation of
-"p[this->oob_phys_size * plane_num + td->offs + i]" to an inline
-function.  But I doubt whether that is much better.  Ideas?
-
->  			return -1;
->  	}
-> +	plane_num++;
-> +	}
-> +	while (plane_num < this->numplanes);
-
-Add indentation, remove newline.
-
-> -#define NAND_MAX_OOBSIZE	64
-> -#define NAND_MAX_PAGESIZE	2048
-> +#define NAND_MAX_OOBSIZE	128
-> +#define NAND_MAX_PAGESIZE	4096
-
-Are there chips with four planes around already?
+This occurs for the second time.  And each time it was new code added by
+you.  Looks like you should move it into some helper function, along
+with a few lines of explanations why it is needed.
 
 Jörn
 
 -- 
-He who knows that enough is enough will always have enough.
--- Lao Tsu
+There are three principal ways to lose money: wine, women, and engineers.
+While the first two are more pleasant, the third is by far the more certain.
+-- Baron Rothschild
