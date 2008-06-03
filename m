@@ -1,18 +1,16 @@
-Received: from smtpauth04.prod.mesa1.secureserver.net ([64.202.165.95])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K3O8X-00064Q-JB
-	for linux-mtd@lists.infradead.org; Tue, 03 Jun 2008 04:28:42 +0000
-From: "Mark Roths" <mroths@softairmicro.com>
-To: "'James'" <jamessteward@optusnet.com.au>
-Subject: RE: u-boot reports ecc error on blocks written by nandwrite
-Date: Mon, 2 Jun 2008 21:28:39 -0700
-Message-ID: <01ca01c8c532$4ccdc6d0$6601a8c0@mrothsduo>
+Date: Tue, 3 Jun 2008 10:05:26 +0100 (BST)
+From: Alexey Korolev <akorolev@infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [BUG] JFFS2 power loss recovery issues in 2.6.25, 2.6.26-rc
+In-Reply-To: <1212407774.16924.120.camel@pmac.infradead.org>
+Message-ID: <alpine.LFD.1.10.0806030951001.15548@pentafluge.infradead.org>
+References: <alpine.LFD.1.10.0805291205480.22130@pentafluge.infradead.org>
+	<6934efce0805301224t5e5d7a01n3b652c4df5324d58@mail.gmail.com>
+	<alpine.LFD.1.10.0806021239440.5100@pentafluge.infradead.org>
+	<1212407774.16924.120.camel@pmac.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <1212445139.6121.19.camel@Ubuntu-Desktop>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,48 +20,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I haven't had a plethora of problems, just this one.  It is also extremely
-reproducible leading me to not suspect any kind of timing problem. 
+Hi David,
+> On Mon, 2008-06-02 at 12:41 +0100, Alexey Korolev wrote:
+> > Hi,
+> > > > We made some investigations for this issue and found commit number which
+> > > > breaks JFFS2 power loss recoverability.
+> > > > It is:  [JFFS2] Improve getdents vs. f_pos handling on NOR flash.
+> > > >        http://git.infradead.org/mtd-2.6.git?a=commitdiff;h=15953580e79b58caefb107e77f218e009b9992e6
+> > > >
+> > > > Currently we don't know why it breaks JFFS2 and how it could be fixed
+> > > > except roll back.
+> > > 
+> > > Does everything work when you unmerge this one commit?
+> > > 
+> > Correct, commit roll back fixes the problem. 
+> 
+> But leaves another one. I was away last week, and I'm home now -- I'll
+> try to reproduce and understand what's going on.
+> 
+> 
+We made more investigations of this problem. Joakim has assisted us to understan the patch. This patch can't break PLR feature on NAND. The only way it affects on tests is timing. So commit roll back will not fix the problem, but hides. 
 
-Everything else works find, JFFS2, boot partition etc.
+Now we are collecting more information about the problem. We will let you know as
+soon as we find something interesting about it. 
 
-But when I write a block with nandwrite, u-boot chokes on it.
-
-	-Mark
-
-> -----Original Message-----
-> From: James [mailto:jamessteward@optusnet.com.au]
-> Sent: Monday, June 02, 2008 3:19 PM
-> To: Mark Roths
-> Cc: linux-mtd@lists.infradead.org
-> Subject: RE: u-boot reports ecc error on blocks written by nandwrite
-> 
-> 
-> On Mon, 2008-06-02 at 14:56 -0700, Mark Roths wrote:
-> > Yes, u-boot can erase, write, and read with no problems on its own.
-> > I use the u-boot nand utilities to build my flash with bootloader, u-
-> boot,
-> > linux and initrd.  All that works fantastically.
-> >
-> > The only time I have problems is when I write a block in my boot
-> partition
-> > using nandwrite, and then subsequently read it with u-boot on the next
-> boot.
-> > And the completely strange behavior is that if I request 1 byte using
-> 'nand
-> > read', it fails the 1st time and then succeeds - all reads succeed after
-> > that with no ecc errors.
-> 
-> Sounds almost like a cache problem.
-> 
-> > Both the mtdchar driver and u-boot are configured for soft ecc, or so I
-> > believe from my reading of the code.
-> 
-> Likely.
-> 
-> I've had a plethora of problems using the NAND MT29F2G08AACWP on some
-> AT91SAM9263-EK boards.  I now feel it might be a timing issue.  Maybe
-> yours is too!
-> 
-> Regards,
-> James.
+Thanks,
+Alexey
