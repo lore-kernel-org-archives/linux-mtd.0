@@ -1,22 +1,24 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+Received: from mail2.shareable.org ([80.68.89.115])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K3azq-00040J-C4
-	for linux-mtd@lists.infradead.org; Tue, 03 Jun 2008 18:12:34 +0000
-Date: Tue, 3 Jun 2008 20:12:26 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Jamie Lokier <jamie@shareable.org>
+	id 1K3bUk-0004YZ-Pk
+	for linux-mtd@lists.infradead.org; Tue, 03 Jun 2008 18:44:31 +0000
+Date: Tue, 3 Jun 2008 19:44:29 +0100
+From: Jamie Lokier <jamie@shareable.org>
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
 Subject: Re: big flash disks?
-Message-ID: <20080603181226.GF1224@logfs.org>
+Message-ID: <20080603184428.GA6899@shareable.org>
 References: <20080601184239.GA11135@shareable.org>
-	<20080602072842.GB19219@logfs.org>
-	<20080602104106.GC31032@shareable.org>
-	<20080602114339.GB21359@logfs.org>
-	<20080602124822.GB2679@shareable.org>
+	<1212386359.31023.154.camel@sauron>
+	<20080602082346.GB20259@logfs.org>
+	<20080602104330.GD31032@shareable.org>
+	<20080602115538.GC21359@logfs.org>
+	<20080602123217.GA2679@shareable.org>
+	<20080603180944.GE1224@logfs.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20080602124822.GB2679@shareable.org>
+In-Reply-To: <20080603180944.GE1224@logfs.org>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -27,26 +29,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2 June 2008 13:48:22 +0100, Jamie Lokier wrote:
+Jörn Engel wrote:
+> On Mon, 2 June 2008 13:32:18 +0100, Jamie Lokier wrote:
+> > 
+> > If they can do 4k writes, and you cannot, it sounds like the SSDs you
+> > have used are very different to the SSDs they have used.  Is that
+> > right?
 > 
-> The basic idea is for a pointer in a tree node to point not to one
-> child, but to a small set of potential children.  The child-set are a
-> journal in the jffs2 sense.  When reading, you read each block of the
-> child-set, and pick the most recent.  This slows down reading, but
-> reduces the amount of writing.  You still read in O(log tree_size)
-> blocks, and since most of the extra reads are hot-cache internal tree
-> blocks, the amount of extra reading is quite small.  Child-sets can
-> overlap to reduce storage duplication, at cost of more operations -
-> it's a heuristic balancing act.  Child-sets are not used for all tree
-> nodes, especially data.  They can be invoked and destroyed dynamically
-> using heuristics to detect some parts of the tree undergoing lots of
-> write+sync sequences and others being coalescable writes or not
-> written.
+> It isn't.  Their SSDs have shitty performance for 4k random writes.
+> That's the entire point of their product.  They reorder the data,
+> turning random 4k writes into aligned eraseblock-sized writes.  After
+> that reordering the performance goes way up.  Iirc at least one SSD they
+> used must have 1MB erasesize to explain the performance boost.
 
-This is actually a good explanation of the logfs journal. :)
+Yes, they reorder - he says as much, that traditional filesystems
+perform very poorly.
 
-JÃ¶rn
+But he quites a high write IOP rate, which is sometimes taken to mean
+a high rate of database commits (e.g. fsync).  That can't be done with
+eraseblock-sized writes.
 
--- 
-All art is but imitation of nature.
--- Lucius Annaeus Seneca
+If it's not high commit rate, then the quoted IOP rate is misleading
+because you can do the same reordering thing with hard disks to get a
+high write rate.  (Albeit hard disks suffer from random reads more if
+ordering writes disorders reads).
+
+If you think it's just reordering, not committing each 4k write one
+after the other quickly, I'll ask him about it.
+
+-- Jamie
