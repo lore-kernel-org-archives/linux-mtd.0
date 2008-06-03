@@ -1,16 +1,18 @@
-Received: from nwd2mail10.analog.com ([137.71.25.55])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K3O63-0002ec-Ca
-	for linux-mtd@lists.infradead.org; Tue, 03 Jun 2008 04:26:07 +0000
-From: Bryan Wu <cooloney@kernel.org>
-To: dbrownell@users.sourceforge.net
-Subject: [PATCH 1/1] MTD DataFlash: fix bug - ATMEL AT45DF321D spi flash card
-	fails to be copied to (v2)
-Date: Tue,  3 Jun 2008 12:26:05 +0800
-Message-Id: <1212467165-26379-1-git-send-email-cooloney@kernel.org>
-Cc: David Brownell <david-b@pacbell.net>, Bryan Wu <cooloney@kernel.org>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Michael Hennerich <michael.hennerich@analog.com>
+Received: from smtpauth04.prod.mesa1.secureserver.net ([64.202.165.95])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K3O8X-00064Q-JB
+	for linux-mtd@lists.infradead.org; Tue, 03 Jun 2008 04:28:42 +0000
+From: "Mark Roths" <mroths@softairmicro.com>
+To: "'James'" <jamessteward@optusnet.com.au>
+Subject: RE: u-boot reports ecc error on blocks written by nandwrite
+Date: Mon, 2 Jun 2008 21:28:39 -0700
+Message-ID: <01ca01c8c532$4ccdc6d0$6601a8c0@mrothsduo>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <1212445139.6121.19.camel@Ubuntu-Desktop>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,177 +22,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Michael Hennerich <michael.hennerich@analog.com>
+I haven't had a plethora of problems, just this one.  It is also extremely
+reproducible leading me to not suspect any kind of timing problem. 
 
- - Add support for binary page size DataFlashes.
- - The driver now prints out pagesize and erasesize.
-   Printout valuable information for creating flash filesystems.
+Everything else works find, JFFS2, boot partition etc.
 
-Signed-off-by: Michael Hennerich <michael.hennerich@analog.com>
-Cc: David Brownell <david-b@pacbell.net>
-Signed-off-by: Bryan Wu <cooloney@kernel.org>
----
- drivers/mtd/devices/mtd_dataflash.c |  117 +++++++++++++++++++++++++++++++++--
- 1 files changed, 112 insertions(+), 5 deletions(-)
+But when I write a block with nandwrite, u-boot chokes on it.
 
-diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-index b35e481..acc3728 100644
---- a/drivers/mtd/devices/mtd_dataflash.c
-+++ b/drivers/mtd/devices/mtd_dataflash.c
-@@ -487,7 +487,9 @@ add_dataflash(struct spi_device *spi, char *name,
- 	device->write = dataflash_write;
- 	device->priv = priv;
- 
--	dev_info(&spi->dev, "%s (%d KBytes)\n", name, device->size/1024);
-+	dev_info(&spi->dev, "%s (%d KBytes) pagesize %d bytes, "
-+		"erasesize %d bytes\n", name, device->size/1024,
-+		 pagesize, pagesize * 8);	/* 8 pages = 1 block */
- 	dev_set_drvdata(&spi->dev, priv);
- 
- 	if (mtd_has_partitions()) {
-@@ -521,7 +523,7 @@ add_dataflash(struct spi_device *spi, char *name,
-  *
-  *   Device      Density         ID code          #Pages PageSize  Offset
-  *   AT45DB011B  1Mbit   (128K)  xx0011xx (0x0c)    512    264      9
-- *   AT45DB021B  2Mbit   (256K)  xx0101xx (0x14)   1025    264      9
-+ *   AT45DB021B  2Mbit   (256K)  xx0101xx (0x14)   1024    264      9
-  *   AT45DB041B  4Mbit   (512K)  xx0111xx (0x1c)   2048    264      9
-  *   AT45DB081B  8Mbit   (1M)    xx1001xx (0x24)   4096    264      9
-  *   AT45DB0161B 16Mbit  (2M)    xx1011xx (0x2c)   4096    528     10
-@@ -529,9 +531,114 @@ add_dataflash(struct spi_device *spi, char *name,
-  *   AT45DB0642  64Mbit  (8M)    xx111xxx (0x3c)   8192   1056     11
-  *   AT45DB1282  128Mbit (16M)   xx0100xx (0x10)  16384   1056     11
-  */
-+
-+struct flash_info {
-+	char		*name;
-+
-+	/* JEDEC id zero means "no ID" (most older chips); otherwise it has
-+	 * a high byte of zero plus three data bytes: the manufacturer id,
-+	 * then a two byte device id.
-+	 */
-+	u32		jedec_id;
-+
-+	/* The size listed here is what works with OPCODE_SE, which isn't
-+	 * necessarily called a "sector" by the vendor.
-+	 */
-+	unsigned	nr_pages;
-+	u16		pagesize;
-+	u16		pageoffset;
-+
-+	u16		flags;
-+#define	SUP_POW2PS	0x02
-+#define	IS_POW2PS	0x01
-+};
-+
-+static struct flash_info __devinitdata dataflash_data [] = {
-+
-+	{ "at45db011d",  0x1f2200, 512, 264, 9, SUP_POW2PS},
-+	{ "at45db011d",  0x1f2200, 512, 256, 8, SUP_POW2PS | IS_POW2PS},
-+
-+	{ "at45db021d",  0x1f2300, 1024, 264, 9, SUP_POW2PS},
-+	{ "at45db021d",  0x1f2300, 1024, 256, 8, SUP_POW2PS | IS_POW2PS},
-+
-+	{ "at45db041d",  0x1f2400, 2048, 264, 9, SUP_POW2PS},
-+	{ "at45db041d",  0x1f2400, 2048, 256, 8, SUP_POW2PS | IS_POW2PS},
-+
-+	{ "at45db081d",  0x1f2500, 4096, 264, 9, SUP_POW2PS},
-+	{ "at45db081d",  0x1f2500, 4096, 256, 8, SUP_POW2PS | IS_POW2PS},
-+
-+	{ "at45db161d",  0x1f2600, 4096, 528, 10, SUP_POW2PS},
-+	{ "at45db161d",  0x1f2600, 4096, 512, 9, SUP_POW2PS | IS_POW2PS},
-+
-+	{ "at45db321c",  0x1f2700, 8192, 528, 10, },
-+
-+	{ "at45db321d",  0x1f2701, 8192, 528, 10, SUP_POW2PS},
-+	{ "at45db321d",  0x1f2701, 8192, 512, 9, SUP_POW2PS | IS_POW2PS},
-+
-+	{ "at45db641d",  0x1f2800, 8192, 1056, 11, SUP_POW2PS},
-+	{ "at45db641d",  0x1f2800, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS},
-+};
-+
-+static struct flash_info *__devinit jedec_probe(struct spi_device *spi)
-+{
-+	int			tmp;
-+	u8			code = OP_READ_ID;
-+	u8			id[3];
-+	u32			jedec;
-+	struct flash_info	*info;
-+	int status;
-+
-+
-+	/* JEDEC also defines an optional "extended device information"
-+	 * string for after vendor-specific data, after the three bytes
-+	 * we use here.  Supporting some chips might require using it.
-+	 */
-+	tmp = spi_write_then_read(spi, &code, 1, id, 3);
-+	if (tmp < 0) {
-+		DEBUG(MTD_DEBUG_LEVEL0, "%s: error %d reading JEDEC ID\n",
-+			spi->dev.bus_id, tmp);
-+		return NULL;
-+	}
-+	jedec = id[0];
-+	jedec = jedec << 8;
-+	jedec |= id[1];
-+	jedec = jedec << 8;
-+	jedec |= id[2];
-+
-+	for (tmp = 0, info = dataflash_data;
-+			tmp < ARRAY_SIZE(dataflash_data);
-+			tmp++, info++) {
-+		if (info->jedec_id == jedec) {
-+			if (info->flags & SUP_POW2PS) {
-+				status = dataflash_status(spi);
-+				if (status & 0x1)
-+					/* return power of 2 pagesize */
-+					return ++info;
-+				else
-+					return info;
-+			}
-+		}
-+	}
-+	return NULL;
-+}
-+
- static int __devinit dataflash_probe(struct spi_device *spi)
- {
- 	int status;
-+	struct flash_info	*info;
-+
-+	/*
-+	 * Try to detect dataflash by JEDEC ID.
-+	 * If it succeeds we know we have either a C or D part.
-+	 * D will support power of 2 pagesize option.
-+	 */
-+
-+	info = jedec_probe(spi);
-+
-+	if (info != NULL)
-+		return add_dataflash(spi, info->name, info->nr_pages,
-+				 info->pagesize, info->pageoffset);
-+
- 
- 	status = dataflash_status(spi);
- 	if (status <= 0 || status == 0xff) {
-@@ -551,16 +658,16 @@ static int __devinit dataflash_probe(struct spi_device *spi)
- 		status = add_dataflash(spi, "AT45DB011B", 512, 264, 9);
- 		break;
- 	case 0x14:	/* 0 1 0 1 x x */
--		status = add_dataflash(spi, "AT45DB021B", 1025, 264, 9);
-+		status = add_dataflash(spi, "AT45DB021B", 1024, 264, 9);
- 		break;
- 	case 0x1c:	/* 0 1 1 1 x x */
--		status = add_dataflash(spi, "AT45DB041x", 2048, 264, 9);
-+		status = add_dataflash(spi, "AT45DB041B", 2048, 264, 9);
- 		break;
- 	case 0x24:	/* 1 0 0 1 x x */
- 		status = add_dataflash(spi, "AT45DB081B", 4096, 264, 9);
- 		break;
- 	case 0x2c:	/* 1 0 1 1 x x */
--		status = add_dataflash(spi, "AT45DB161x", 4096, 528, 10);
-+		status = add_dataflash(spi, "AT45DB161B", 4096, 528, 10);
- 		break;
- 	case 0x34:	/* 1 1 0 1 x x */
- 		status = add_dataflash(spi, "AT45DB321x", 8192, 528, 10);
--- 
-1.5.5
+	-Mark
+
+> -----Original Message-----
+> From: James [mailto:jamessteward@optusnet.com.au]
+> Sent: Monday, June 02, 2008 3:19 PM
+> To: Mark Roths
+> Cc: linux-mtd@lists.infradead.org
+> Subject: RE: u-boot reports ecc error on blocks written by nandwrite
+> 
+> 
+> On Mon, 2008-06-02 at 14:56 -0700, Mark Roths wrote:
+> > Yes, u-boot can erase, write, and read with no problems on its own.
+> > I use the u-boot nand utilities to build my flash with bootloader, u-
+> boot,
+> > linux and initrd.  All that works fantastically.
+> >
+> > The only time I have problems is when I write a block in my boot
+> partition
+> > using nandwrite, and then subsequently read it with u-boot on the next
+> boot.
+> > And the completely strange behavior is that if I request 1 byte using
+> 'nand
+> > read', it fails the 1st time and then succeeds - all reads succeed after
+> > that with no ecc errors.
+> 
+> Sounds almost like a cache problem.
+> 
+> > Both the mtdchar driver and u-boot are configured for soft ecc, or so I
+> > believe from my reading of the code.
+> 
+> Likely.
+> 
+> I've had a plethora of problems using the NAND MT29F2G08AACWP on some
+> AT91SAM9263-EK boards.  I now feel it might be a timing issue.  Maybe
+> yours is too!
+> 
+> Regards,
+> James.
