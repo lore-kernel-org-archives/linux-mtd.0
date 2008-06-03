@@ -1,19 +1,29 @@
-Received: from wf-out-1314.google.com ([209.85.200.171])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K3Keb-0004aw-Q8
-	for linux-mtd@lists.infradead.org; Tue, 03 Jun 2008 00:45:34 +0000
-Received: by wf-out-1314.google.com with SMTP id 28so1125006wfc.24
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 02 Jun 2008 17:45:31 -0700 (PDT)
-Message-ID: <a791a2dc0806021745o629da671ib011567cb2aa519a@mail.gmail.com>
-Date: Mon, 2 Jun 2008 21:45:31 -0300
-From: "Alaor Koppe" <alakoppe@gmail.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: vfat loopback mount problem
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1K3LDB-0006Y3-Ey
+	for linux-mtd@lists.infradead.org; Tue, 03 Jun 2008 01:21:18 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e1.ny.us.ibm.com (8.13.8/8.13.8) with ESMTP id m531L5Ec013942
+	for <linux-mtd@lists.infradead.org>; Mon, 2 Jun 2008 21:21:05 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v8.7) with ESMTP id
+	m531L562187710
+	for <linux-mtd@lists.infradead.org>; Mon, 2 Jun 2008 21:21:05 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	m531L4u0020777
+	for <linux-mtd@lists.infradead.org>; Mon, 2 Jun 2008 21:21:05 -0400
+Date: Mon, 2 Jun 2008 20:14:16 -0500
+From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+To: Mandeep Ahuja <ahuja@aksysnetworks.com>
+Subject: Re: Cannot compile latest mtd with 2.6.10
+Message-ID: <20080602201416.7d76c2e4@zod.rchland.ibm.com>
+In-Reply-To: <484486B4.3070605@aksysnetworks.com>
+References: <484486B4.3070605@aksysnetworks.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,19 +33,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have mounted my jfss2 on NAND Flash and created my file.img (with
-fat12 filesystem) and when I try to mount I get:
+On Mon, 02 Jun 2008 17:48:04 -0600
+Mandeep Ahuja <ahuja@aksysnetworks.com> wrote:
 
-# mount -t msdos file.img fat -o loop,ro
-FAT: bogus number of reserved sectors
-VFS: Can't find a valid FAT filesystem on dev loop0.
-mount: Mounting /mnt/file.img on /mnt/fat failed: Invalid argument
+> Hi,
+> I recently check out the 'mtd' module from CVS. I have kernel 2.6.10 for 
+> mips malta board. I ran the patchkernel.sh script and then tried to 
+> compile my kernel.
 
-I don't know what is happening, anybody can help me?
-(I am using a kit from Embedded Artists with LPC2468 and
-uClinux-dist-20051014 with kernel 2.6.11)
+Which CVS?  The MTD CVS tree has been deprecated for a number of years
+now.
 
-Best Regards
-
--- 
-Alaor Abel Koppe
+josh
