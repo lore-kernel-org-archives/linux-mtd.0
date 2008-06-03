@@ -1,35 +1,20 @@
-Received: from idcmail-mo1so.shaw.ca ([24.71.223.10]
-	helo=pd2mo2so.prod.shaw.ca)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K3aGY-0004Pd-SJ
-	for linux-mtd@lists.infradead.org; Tue, 03 Jun 2008 17:25:47 +0000
-Received: from pd3mr3so.prod.shaw.ca
-	(pd3mr3so-qfe3.prod.shaw.ca [10.0.141.179]) by l-daemon
-	(Sun ONE Messaging Server 6.0 HotFix 1.01 (built Mar 15 2004))
-	with ESMTP id <0K1W0012XDPQWN20@l-daemon> for
-	linux-mtd@lists.infradead.org; Tue, 03 Jun 2008 11:25:02 -0600 (MDT)
-Received: from pn2ml2so.prod.shaw.ca ([10.0.121.146])
-	by pd3mr3so.prod.shaw.ca (Sun Java System Messaging Server 6.2-7.05
-	(built Sep
-	5 2006)) with ESMTP id <0K1W00LXBDPQ88C0@pd3mr3so.prod.shaw.ca> for
-	linux-mtd@lists.infradead.org; Tue, 03 Jun 2008 11:25:02 -0600 (MDT)
-Received: from [192.168.0.107] ([70.73.70.241])
-	by l-daemon (Sun Java System Messaging Server 6.2-7.05 (built Sep 5
-	2006)) with ESMTP id <0K1W004T3DPO8F20@l-daemon> for
-	linux-mtd@lists.infradead.org; Tue, 03 Jun 2008 11:25:01 -0600 (MDT)
-Date: Tue, 03 Jun 2008 11:24:56 -0600
-From: Mandeep Ahuja <ahuja@aksysnetworks.com>
-Subject: Re: SPAM-LOW: Re: Cannot compile latest mtd with 2.6.10
-In-reply-to: <1212512194.16924.399.camel@pmac.infradead.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Message-id: <48457E68.2020503@aksysnetworks.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=ISO-8859-1; format=flowed
-Content-transfer-encoding: 7bit
-References: <484486B4.3070605@aksysnetworks.com>
-	<20080602201416.7d76c2e4@zod.rchland.ibm.com>
-	<1212512194.16924.399.camel@pmac.infradead.org>
-Cc: linux-mtd@lists.infradead.org
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1K3aGt-0004R2-9A
+	for linux-mtd@lists.infradead.org; Tue, 03 Jun 2008 17:26:07 +0000
+Date: Tue, 3 Jun 2008 19:25:56 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Alexey Korolev <akorolev@infradead.org>
+Subject: Re: [RFC/PATCH 1/3] NAND multiple plane feature
+Message-ID: <20080603172556.GB1224@logfs.org>
+References: <alpine.LFD.1.10.0805281332280.23606@pentafluge.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <alpine.LFD.1.10.0805281332280.23606@pentafluge.infradead.org>
+Cc: linux-mtd@lists.infradead.org, tglx@linutronix.de, dwmw2@infradead.org,
+	vasiliy.leonenko@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,26 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-But interestingly the 2.4.17 kernel still able to mount jffs2 without 
-any issues
-so why cant 2.6.11 do it?
+On Wed, 28 May 2008 13:41:46 +0100, Alexey Korolev wrote:
+> diff -Nurp linux-2.6.24.3/drivers/mtd/nand/nand_base.c linux-2.6.24.3-dp/drivers/mtd/nand/nand_base.c
+> --- linux-2.6.24.3/drivers/mtd/nand/nand_base.c	2008-02-26 03:20:20.000000000 +0300
+> +++ linux-2.6.24.3-dp/drivers/mtd/nand/nand_base.c	2008-05-28 02:06:01.000000000 +0400
+> @@ -2259,10 +2367,15 @@ static struct nand_flash_dev *nand_get_f
+>  	/* Newer devices have all the information in additional id bytes */
+>  	if (!type->pagesize) {
+>  		int extid;
+> +		int planeid;
+>  		/* The 3rd id byte holds MLC / multichip data */
+>  		chip->cellinfo = chip->read_byte(mtd);
+>  		/* The 4th id byte is the important one */
+>  		extid = chip->read_byte(mtd);
+> +		/* The 5th id byte contains number of planes */
+> +		planeid = chip->read_byte(mtd);
+> +		/* Number of planes*/
 
-David Woodhouse wrote:
+This comment seems redundant.  And it fooled me for a few seconds.
+Remove it?
 
->On Mon, 2008-06-02 at 20:14 -0500, Josh Boyer wrote:
->  
->
->>>I recently check out the 'mtd' module from CVS. I have kernel 2.6.10 for 
->>>mips malta board. I ran the patchkernel.sh script and then tried to 
->>>compile my kernel.
->>>      
->>>
->>Which CVS?  The MTD CVS tree has been deprecated for a number of years
->>now.
->>    
->>
->
->So has 2.6.10 :)
->
->  
->
+> +		chip->numplanes = 1 << ((planeid >> 2) & 0x03);
+>  		/* Calc pagesize */
+>  		mtd->writesize = 1024 << (extid & 0x3);
+>  		extid >>= 2;
+
+Jörn
+
+-- 
+Fools ignore complexity.  Pragmatists suffer it.
+Some can avoid it.  Geniuses remove it.
+-- Perlis's Programming Proverb #58, SIGPLAN Notices, Sept.  1982
