@@ -1,27 +1,19 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K3nzV-00007P-0g
-	for linux-mtd@lists.infradead.org; Wed, 04 Jun 2008 08:05:05 +0000
-Subject: Re: ubifs, ubiblk(formatted with vfat) and yaffs2 test.
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: KeunO Park <lastnite@gmail.com>
-In-Reply-To: <5ed5c4730806032106r77a912f4jbf72f06c59e3f72f@mail.gmail.com>
-References: <5ed5c4730805292301m558dee30o66f5dd034d594390@mail.gmail.com>
-	<1212129223.31023.106.camel@sauron>
-	<5ed5c4730805300015o4f757dcbn394c770c2f92566a@mail.gmail.com>
-	<1212148942.31023.135.camel@sauron> <1212149102.31023.138.camel@sauron>
-	<5ed5c4730805300600v33e9c2d1hada32b24953cfaf7@mail.gmail.com>
-	<1212155390.31023.140.camel@sauron>
-	<5ed5c4730805300808v79f7fd7dpe3550cd8fc1b0db5@mail.gmail.com>
-	<1212387034.31023.166.camel@sauron>
-	<5ed5c4730806032106r77a912f4jbf72f06c59e3f72f@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 04 Jun 2008 11:05:46 +0300
-Message-Id: <1212566746.14566.20.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+Received: from mrqout3.tiscali.it ([195.130.225.13])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K3vFG-0002GF-AC
+	for linux-mtd@lists.infradead.org; Wed, 04 Jun 2008 15:49:51 +0000
+Received: from ps23 (10.39.75.93) by mail-5-it.mail.tiscali.sys (8.0.016)
+	id 4816F17C000B7BFA for linux-mtd@lists.infradead.org;
+	Wed, 4 Jun 2008 17:49:42 +0200
+Message-ID: <25645542.1212594582569.JavaMail.root@ps23>
+Date: Wed, 4 Jun 2008 17:49:42 +0200 (CEST)
+From: "iw3gtf@tiscali.it" <iw3gtf@tiscali.it>
+To: linux-mtd@lists.infradead.org
+Subject: Cannot write to ubi volume
+MIME-Version: 1.0
+Content-Type: text/plain;charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Reply-To: "iw3gtf@tiscali.it" <iw3gtf@tiscali.it>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,27 +23,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-06-04 at 13:06 +0900, KeunO Park wrote:
-> Hi, I tested again with '-o sync'. :-)
+Hallo,
 
-Note, these load average numbers do not mean much, and you cannot do
-conclusions whether the FS will prevent your camera application from
-being executed.
+according to the ubi documentation it should be possible to 'write' in 
+a, say, /dev/ubi1_0 (dynamic) volume device.
+I tried the following without success:
 
->=20
-> UBIFS LZO (mounted with '-o sync,noatime' option)
-> 16.93sec 590KB/s
-> load avg : 0.00 -> 0.36
->=20
-> UBIFS No Compressor (mounted with '-o sync,noatime' option)
-> 13.38sec 747KB/s
-> load avg : 0.00 -> 0.29
->=20
-> YAFFS2 (mounted with '-o sync,noatime' option)
-> 12.25sec 816KB/s
-> load avg : 0.00 -> 0.15
+root@giorgio [ ~ ]# ubimkvol /dev/ubi1 -N "rootfs" -s 32MiB 
+Volume ID 0, size 265 LEBs (33648640 bytes, 32.1 MiB), LEB size 126976 
+bytes (124.0 KiB), dynamic, name "rootfs", alignment 1
+root@giorgio [ ~ ]# ls -al /dev/ubi*
+crw-rw---- 1 root root 254,  0 1970-01-01 01:00 /dev/ubi0
+crw-rw---- 1 root root 254,  2 1970-01-01 01:00 /dev/ubi0_1
+crw-rw---- 1 root root 253,  0 1970-01-01 01:00 /dev/ubi1
+crw-rw---- 1 root root 253,  1 2008-06-04 17:03 /dev/ubi1_0
+crw-rw---- 1 root root  10, 63 1970-01-01 01:00 /dev/ubi_ctrl
+root@giorgio [ ~ ]# dd if=/usr/local/tftp_root/k of=/dev/ubi1_0 
+count=1960020 bs=1
+dd: writing `/dev/ubi1_0': Operation not permitted
+1+0 records in
+0+0 records out
+0 bytes (0 B) copied, 0.00690123 s, 0.0 kB/s
+root@giorgio [ ~ ]# ubinfo /dev/ubi1_0
+Volume ID:   0 (on ubi1)
+Type:        dynamic
+Alignment:   1
+Size:        265 LEBs (33648640 bytes, 32.1 MiB)
+State:       OK
+Name:        rootfs
+Character device major/minor: 253:1
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Am I completely wrong trying to write with a 'dd' ?
+How should I proceed to write something into the volume ?
+Is it possible to write something 'directly' in an ubi volume without 
+explicitly formatting an image file (with 'ubinize' for example) ?
+
+Excuse me if my questions are a bit silly or naive and thank you for 
+your explanations.
+
+giorgio
+
+
+
+_________________________________________________________________
+
+Non perdere altro tempo...corri incontro all'amore!  http://incontri.tiscali.it/
