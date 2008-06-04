@@ -1,26 +1,23 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K3mRj-0006TO-2v
-	for linux-mtd@lists.infradead.org; Wed, 04 Jun 2008 06:26:07 +0000
-Date: Wed, 4 Jun 2008 08:25:57 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Jamie Lokier <jamie@shareable.org>
-Subject: Re: big flash disks?
-Message-ID: <20080604062557.GB6492@logfs.org>
-References: <20080601184239.GA11135@shareable.org>
-	<1212386359.31023.154.camel@sauron>
-	<20080602082346.GB20259@logfs.org>
-	<20080602104330.GD31032@shareable.org>
-	<20080602115538.GC21359@logfs.org>
-	<20080602123217.GA2679@shareable.org>
-	<20080603180944.GE1224@logfs.org>
-	<20080603184428.GA6899@shareable.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20080603184428.GA6899@shareable.org>
-Cc: linux-mtd@lists.infradead.org
+Received: from mxout10.netvision.net.il ([194.90.6.38])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K3mc6-0008Lc-TS
+	for linux-mtd@lists.infradead.org; Wed, 04 Jun 2008 06:36:51 +0000
+Received: from mail.linux-boards.com ([62.90.235.247])
+	by mxout10.netvision.net.il
+	(Sun Java System Messaging Server 6.2-8.04 (built Feb 28 2007))
+	with ESMTP id <0K1X001BZEIRIT80@mxout10.netvision.net.il> for
+	linux-mtd@lists.infradead.org; Wed, 04 Jun 2008 09:40:03 +0300 (IDT)
+Date: Wed, 04 Jun 2008 09:36:51 +0300
+From: Mike Rapoport <mike@compulab.co.il>
+Subject: Re: [PATCH] Add support to AMD AM29SL800D[BT] NOR flash chips
+In-reply-to: <483BC42D.6050507@compulab.co.il>
+To: David Woodhouse <dwmw2@infradead.org>
+Message-id: <48463803.7090403@compulab.co.il>
+MIME-version: 1.0
+Content-type: text/plain; charset=ISO-8859-1
+Content-transfer-encoding: 7BIT
+References: <483BC42D.6050507@compulab.co.il>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,37 +27,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 3 June 2008 19:44:29 +0100, Jamie Lokier wrote:
+David,
+Any chance you can look at it please?
+
+Mike Rapoport wrote:
+> This patch add support for non-CFI AMD AM29SL800D[BT] NOR flash chips
 > 
-> But he quites a high write IOP rate, which is sometimes taken to mean
-> a high rate of database commits (e.g. fsync).  That can't be done with
-> eraseblock-sized writes.
-
-I don't remember reading the words 'commit' or 'sync' in any of his
-posts. ;)
-
-> If it's not high commit rate, then the quoted IOP rate is misleading
-> because you can do the same reordering thing with hard disks to get a
-> high write rate.  (Albeit hard disks suffer from random reads more if
-> ordering writes disorders reads).
+> Signed-off-by: Mike Rapoport <mike@compulab.co.il>
+> ---
+>  drivers/mtd/chips/jedec_probe.c |   32 ++++++++++++++++++++++++++++++++
+>  1 files changed, 32 insertions(+), 0 deletions(-)
 > 
-> If you think it's just reordering, not committing each 4k write one
-> after the other quickly, I'll ask him about it.
-
-At least on some of the cheaper SSDs I believe the only way to commit a
-write is by writing the whole eraseblock.  And if you don't explicitly
-request that, the SSD will do it for you.  Either way you take the
-performance hit.
-
-Alternatively he could walk up the tree for commits and store all higher
-layers in the same eraseblock.  16k would be enough for a commit on
-disks up to 512G in size, 20k up to 256T.  On real flash that simply
-won't fly, as GC will cause a deadlock sooner or later.  With an SSD you
-can still get away with it, as 4k writes without erases are slow, but at
-least possible.
-
-Jörn
+> diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
+> index aa07575..02e375b 100644
+> --- a/drivers/mtd/chips/jedec_probe.c
+> +++ b/drivers/mtd/chips/jedec_probe.c
+> @@ -58,6 +58,8 @@
+>  #define AM29LV040B	0x004F
+>  #define AM29F032B	0x0041
+>  #define AM29F002T	0x00B0
+> +#define AM29SL800DB	0x226B
+> +#define AM29SL800DT	0x22EA
+> 
+>  /* Atmel */
+>  #define AT49BV512	0x0003
+> @@ -522,6 +524,36 @@ static const struct amd_flash_info jedec_table[] = {
+>  			ERASEINFO(0x04000,1),
+>  		}
+>  	}, {
+> +		.mfr_id		= MANUFACTURER_AMD,
+> +		.dev_id		= AM29SL800DT,
+> +		.name		= "AMD AM29SL800DT",
+> +		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
+> +		.uaddr		= MTD_UADDR_0x0AAA_0x0555,
+> +		.dev_size	= SIZE_1MiB,
+> +		.cmd_set	= P_ID_AMD_STD,
+> +		.nr_regions	= 4,
+> +		.regions	= {
+> +			ERASEINFO(0x10000,15),
+> +			ERASEINFO(0x08000,1),
+> +			ERASEINFO(0x02000,2),
+> +			ERASEINFO(0x04000,1),
+> +		}
+> +	}, {
+> +		.mfr_id		= MANUFACTURER_AMD,
+> +		.dev_id		= AM29SL800DB,
+> +		.name		= "AMD AM29SL800DB",
+> +		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
+> +		.uaddr		= MTD_UADDR_0x0AAA_0x0555,
+> +		.dev_size	= SIZE_1MiB,
+> +		.cmd_set	= P_ID_AMD_STD,
+> +		.nr_regions	= 4,
+> +		.regions	= {
+> +			ERASEINFO(0x04000,1),
+> +			ERASEINFO(0x02000,2),
+> +			ERASEINFO(0x08000,1),
+> +			ERASEINFO(0x10000,15),
+> +		}
+> +	}, {
+>  		.mfr_id		= MANUFACTURER_ATMEL,
+>  		.dev_id		= AT49BV512,
+>  		.name		= "Atmel AT49BV512",
 
 -- 
-Sometimes, asking the right question is already the answer.
--- Unknown
+Sincerely yours,
+Mike.
