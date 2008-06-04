@@ -1,16 +1,26 @@
-Received: from relay00.pair.com ([209.68.5.9])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K3wWa-0006pq-7L
-	for linux-mtd@lists.infradead.org; Wed, 04 Jun 2008 17:11:48 +0000
-Date: Wed, 04 Jun 2008 10:11:39 -0700
-Subject: Odd Results Using -d and -D Together with mkfs.jffs2
-From: Grant Erickson <gerickson@nuovations.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Message-ID: <C46C1ADB.F95E%gerickson@nuovations.com>
-Mime-version: 1.0
-Content-type: text/plain;
-	charset="US-ASCII"
-Content-transfer-encoding: 7bit
+Received: from nwd2mail11.analog.com ([137.71.25.57])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K3weY-0005HY-Uq
+	for linux-mtd@lists.infradead.org; Wed, 04 Jun 2008 17:20:03 +0000
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: [PATCH 1/1] mtd m25p80: fix bug - ATmel spi flash fails to
+	becopied to
+Date: Wed, 4 Jun 2008 18:20:52 +0100
+Message-ID: <8A42379416420646B9BFAC9682273B6D01FB8036@limkexm3.ad.analog.com>
+In-Reply-To: <1212598723.32207.130.camel@pmac.infradead.org>
+References: <1211021526-24076-1-git-send-email-cooloney@kernel.org>
+	<8A42379416420646B9BFAC9682273B6D0183AE38@limkexm3.ad.analog.com>
+	<386072610805190253g42d47d81w794b3c14c15aa890@mail.gmail.com>
+	<1212598723.32207.130.camel@pmac.infradead.org>
+From: "Hennerich, Michael" <Michael.Hennerich@analog.com>
+To: "David Woodhouse" <dwmw2@infradead.org>, "Bryan Wu" <cooloney@kernel.org>
+Cc: mike@steroidmicros.com, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, "Hennerich,
+	Michael" <Michael.Hennerich@analog.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,85 +30,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I've run into what I can only imagine is user error regarding mkfs.jffs2
-when creating a root file system image for a target system.
+David,
 
-At present, I run mkfs.jffs2 with super-user credentials and point it at a
-temporary root file system tree (created with a tool that does
-gather/scatter of build tree results) and end up with the precisely desired
-image with all the right permissions, files, etc.:
-
-    % sudo mkfs.jffs2 -v --big-endian --no-cleanmarkers --pad 512 \
-    --pagesize 512 --eraseblock 16384 -d /tmp/tmp.gtKxQ31829 -o root.img
-
-at about 11 MiB in size.
-
-However, clearly, I'd like to be able to run a build without requiring
-super-user credentials. So, I added an option to my gather/scatter tool to
-generate a device table so that it can skip setting permissions and creating
-device nodes and let mkfs.jffs2 do that:
-
-    % mkfs.jffs2 -v --big-endian --no-cleanmarkers --pad 512 \
-    --pagesize 512 --eraseblock 16384 -d /tmp/tmp.EdxjV32751 \
-    -D devices.txt -o root.img
-
-However, I end up with two problems, the first of which seems counter to
-what I had expected based on my interpretation of the manual reference page:
-
-    1) I end up with an image that is 2x larger (22 MiB) than was
-       created in the super-user credentialed case without the device table.
-
-       Based on the output with '-v' enabled, mkfs.jffs2 seems to create
-       every regular file and directory twice, once with the permissions
-       (the current build user) from the source file from '-d' and again
-       with the permissions specified (privileged users) in '-D'. For
-       example:
-
-        ...
-        /usr
-            d 0775         0              1000:1000 bin
-            d 0775         0              1000:1000 lib
-            d 0775         0              1000:1000 libexec
-            d 0775         0              1000:1000 sbin
-            d 0775         0              1000:1000 share
-            d 0775         0                 0:4   bin
-            d 0775         0                 0:4   lib
-            d 0775         0                 0:4   libexec
-            d 0775         0                 0:4   sbin
-            d 0775         0                 0:4   share
-        ...
-
-    2) It does not seem to be able to set the permissions of any directories
-       at the top of the file tree:
-
-        mkfs.jffs2: skipping device_table entry '/bin': no parent directory!
-        mkfs.jffs2: skipping device_table entry '/dev': no parent directory!
-        mkfs.jffs2: skipping device_table entry '/etc': no parent directory!
-        mkfs.jffs2: skipping device_table entry '/lib': no parent directory!
-        mkfs.jffs2: skipping device_table entry '/sys': no parent directory!
-        mkfs.jffs2: skipping device_table entry '/tmp': no parent directory!
-        mkfs.jffs2: skipping device_table entry '/usr': no parent directory!
-        mkfs.jffs2: skipping device_table entry '/var': no parent directory!
-        ...
-
-Given the two example bits of output above, my device table looks like:
-
-/bin    d   0775    0   4   0   0   -   -   -
-/dev    d   0775    0   4   0   0   -   -   -
-/etc    d   0775    0   4   0   0   -   -   -
-/lib    d   0775    0   4   0   0   -   -   -
-/sys    d   0775    0   4   0   0   -   -   -
-/tmp    d   0775    0   4   0   0   -   -   -
-/usr    d   0775    0   4   0   0   -   -   -
-/usr/bin    d   0775    0   4   0   0   -   -   -
-/usr/lib    d   0775    0   4   0   0   -   -   -
-/usr/libexec    d   0775    0   4   0   0   -   -   -
-/usr/sbin   d   0775    0   4   0   0   -   -   -
-/usr/share  d   0775    0   4   0   0   -   -   -
-/var    d   0775    0   4   0   0   -   -   -
-
-Any insight on what user error I am tripping over here?
+Bryan sent an incremental update patch, some time ago.
+See below ...
 
 Regards,
+Michael
 
-Grant Erickson
+From: Michael Hennerich <michael.hennerich@analog.com>
+
+remove duplicate code.
+
+Signed-off-by: Michael Hennerich <michael.hennerich@analog.com>
+Signed-off-by: Bryan Wu <cooloney@kernel.org>
+---
+ drivers/mtd/devices/m25p80.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index b10649b..7f89b54 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -122,8 +122,6 @@ static int write_sr(struct m25p *flash, u8 val)
+ 	flash->command[0] =3D OPCODE_WRSR;
+ 	flash->command[1] =3D val;
+=20
+-	spi_write(flash->spi, flash->command, 2);
+-
+ 	return spi_write(flash->spi, flash->command, 2);  }
+=20
+--
+1.5.5
+
+>-----Original Message-----
+>From: David Woodhouse [mailto:dwmw2@infradead.org]
+>Sent: Mittwoch, 4. Juni 2008 18:59
+>To: Bryan Wu
+>Cc: Hennerich, Michael; linux-mtd@lists.infradead.org; linux-
+>kernel@vger.kernel.org; mike@steroidmicros.com
+>Subject: Re: [PATCH 1/1] mtd m25p80: fix bug - ATmel spi flash fails to
+>becopied to
+>
+>On Mon, 2008-05-19 at 17:53 +0800, Bryan Wu wrote:
+>>
+>> >
+>> > I just noticed that write_sr contains a duplicated spi_write.
+>> > Bryan sends out a new patch.
+>> >
+>>
+>>
+>> No problem, it is my fault. I should review the patch carefully.
+>
+>Was there a new patch coming?
+>
+>--
+>dwmw2
