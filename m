@@ -1,20 +1,16 @@
-Received: from slave.mail113.cn4e.com ([211.152.33.79])
+Received: from mail-out.m-online.net ([212.18.0.9])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K4Alo-0007di-HL
-	for linux-mtd@lists.infradead.org; Thu, 05 Jun 2008 08:24:29 +0000
-Received: from bruce (unknown [220.189.223.56])
-	by slave.mail113.cn4e.com (Postfix) with ESMTP id DABE824B22B
-	for <linux-mtd@lists.infradead.org>;
-	Thu,  5 Jun 2008 16:27:51 +0800 (CST)
-Date: Thu, 5 Jun 2008 16:24:14 +0800
-From: "=?gb2312?B?wO66o7rs?=" <lhh@nbicc.com>
-To: "linux-mtd" <linux-mtd@lists.infradead.org>
-Subject: insmod modules problems when start-up with jffs2 romfs images
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
-Message-Id: <20080605082751.DABE824B22B@slave.mail113.cn4e.com>
+	id 1K4BBI-00048Q-AK
+	for linux-mtd@lists.infradead.org; Thu, 05 Jun 2008 08:50:48 +0000
+Message-ID: <4847A8DA.6010406@grandegger.com>
+Date: Thu, 05 Jun 2008 10:50:34 +0200
+From: Wolfgang Grandegger <wg@grandegger.com>
+MIME-Version: 1.0
+To: linuxppc-dev@ozlabs.org
+Subject: [PATCH v2] [NAND] driver extension to support NAND on TQM85xx modules
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Anton Vorontsov <avorontsov@ru.mvista.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,36 +20,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-RGVhciBsaW51eC1tdGQNCiAgICAgICAgICAgIEkgYW0gbm90IHN1cmUgZG8gaXQgaGF2ZSBzb21l
-dGhpbmcgdG8gZG8gd2l0aCBqZmZzMiBwcm9ibGVtLGJ1dCBubyBvdGhlcnMgdG8gZG91bHQuDQog
-ICAgICAgIGhlcmUgaXMgbXkgcHJvYmxlbXM6DQogICAgICAgIGtlcm5lbCB2ZXJzaW9uIDIuNC4y
-NiwgIG5vciBmbGFzaCB0eXBlOlMyOUdMMTI4TjEwVEYxMDENCiAgICAgICAgd2hlbiBpIGVyYXNl
-IHRoZSBtdGQgcGFydGl0aW9uLHRoZW4gaSB3cml0ZSB0aGUgcm9tZnMgYmluIGZpbGUgbWFkZSB3
-aXRoIGpmZnMyIGZvcm1hdCB0aGVyZS5maW5pc2ggd3JpdGUsd2UgcmVib290IHRoZSBib2FyZCwg
-d2hlbiBpbnNtb2Qgb25lIG1vZHVsZSwgaXQgY2FuJ3QgaW5zbW9kIGNvcnJlY3RseSwgYW5kIGFm
-dGVyIHNldmVyYWwgdGltZXMobW9zdGx5IDIgb3IgMyB0aW1lcykgcmVib290LCBpdCBjYW4gaW5z
-bW9kIGNvcnJlY3RseSxhbmQgYWZ0ZXIgdGhhdCwgaXQgd2lsbCBuZXZlciBzaG93IHRoaXMgaW5z
-bW9kIHByb2JsZW0ubXkgcm9tZnMgaXMgYWJvdXQgMTBNQixhbmQgdGhlIHByb2JsZW0gbW9kdWxl
-IGlzIGFsc28gYmlnICxuZWFybHkgMk1CLmFuZCB0aGlzIG1vZHVsZXMgaXMgbm90IGJ1aWx0IGlu
-IGtlcm5lbC4NCiAgICAgICBzbyBpIGFtIGRvdWx0IGlmIHRoZXJlIGlzIHNvbWUgcHJvYmxlbXMg
-d2l0aCByZWFkaW5nIGJpZyBmaWxlPyANCiAgICAgICBkb2VzIGFueWJvZHkgZWxzZSBlbmNvdW50
-ZXIgc2ltaWxhciBwcm9ibGVtcz8NCiAgICAgIA0KIGFuZCBhbHNvIHRoZXJlIHdpbGwgc2hvdyBt
-ZSBpbmZvcm1hdGlvbiBsaWtlOg0KQ0xFQU5NQVJLRVIgbm9kZSBmb3VuZCBhdCAweDAwNTMwMDAw
-LCBub3QgZmlyc3Qgbm9kZSBpbiBibG9jayAoMHgwMDUyMDAwMCkNCkNMRUFOTUFSS0VSIG5vZGUg
-Zm91bmQgYXQgMHgwMDU1MDAwMCwgbm90IGZpcnN0IG5vZGUgaW4gYmxvY2sgKDB4MDA1NDAwMDAp
-DQpDTEVBTk1BUktFUiBub2RlIGZvdW5kIGF0IDB4MDA1NzAwMDAsIG5vdCBmaXJzdCBub2RlIGlu
-IGJsb2NrICgweDAwNTYwMDAwKQ0KQ0xFQU5NQVJLRVIgbm9kZSBmb3VuZCBhdCAweDAwNTkwMDAw
-LCBub3QgZmlyc3Qgbm9kZSBpbiBibG9jayAoMHgwMDU4MDAwMCkNCkNMRUFOTUFSS0VSIG5vZGUg
-Zm91bmQgYXQgMHgwMDViMDAwMCwgbm90IGZpcnN0IG5vZGUgaW4gYmxvY2sgKDB4MDA1YTAwMDAp
-DQpDTEVBTk1BUktFUiBub2RlIGZvdW5kIGF0IDB4MDA1ZDAwMDAsIG5vdCBmaXJzdCBub2RlIGlu
-IGJsb2NrICgweDAwNWMwMDAwKQ0KQ0xFQU5NQVJLRVIgbm9kZSBmb3VuZCBhdCAweDAwNWYwMDAw
-LCBub3QgZmlyc3Qgbm9kZSBpbiBibG9jayAoMHgwMDVlMDAwMCkNCkNMRUFOTUFSS0VSIG5vZGUg
-Zm91bmQgYXQgMHgwMDYxMDAwMCwgbm90IGZpcnN0IG5vZGUgaW4gYmxvY2sgKDB4MDA2MDAwMDAp
-DQpDTEVBTk1BUktFUiBub2RlIGZvdW5kIGF0IDB4MDA2MzAwMDAsIG5vdCBmaXJzdCBub2RlIGlu
-IGJsb2NrICgweDAwNjIwMDAwKQ0KQ0xFQU5NQVJLRVIgbm9kZSBmb3VuZCBhdCAweDAwNjUwMDAw
-LCBub3QgZmlyc3Qgbm9kZSBpbiBibG9jayAoMHgwMDY0MDAwMCkNClZGUzogTW91bnRlZCByb290
-IChqZmZzMiBmaWxlc3lzdGVtKS4NCk1vdW50ZWQgZGV2ZnMgb24gL2Rldg0KDQphbmQgdGhpcyB3
-aWxsIGNvc3QgbWFueSB0aW1lIHdoZW4gYm9vdC4NCgkNCg0KQmVzdCBSZWdhcmRzIQ0KoaGhoaGh
-oaGhoaGhDQpMaSBIYWlob25nDQpIYXJkd2FyZSBFbmdpbmVlcg0KTmluZ2JvIENBUyBJQyBEZXNp
-Z24gQ2VudGVyICAgICANCkZheKO6IDg2LTU3NC04NzkwODQ4NA0KVGVso7ogODYtNTc0LTg3OTEw
-MTMyDQpXZWI6IHd3dy5uYmljYy5jb20NCkUtTWFpbKO6bGhoQG5iaWNjLmNvbQ0K
+[NAND] driver extension to support NAND on TQM85xx modules
+
+This patch extends the FSL UPM NAND driver from Anton Vorontsov to
+support NAND on the TQM85xx modules. Unfortunately, the hardware does
+not support the R/B pins of the NAND chip and therefore the specified
+maximum delay time must used. It therefore re-introduces the chip-delay
+property.
+
+Note: this patch is based on various patches from  Anton Vorontsov posted
+      to this list:
+
+      http://ozlabs.org/pipermail/linuxppc-dev/2008-April/055587.html.
+      http://ozlabs.org/pipermail/linuxppc-dev/2008-May/057158.html
+      http://ozlabs.org/pipermail/linuxppc-dev/2008-May/056531.html
+      http://ozlabs.org/pipermail/linuxppc-dev/2008-June/057244.html
+
+      They should show up mainstream soon.
+
+Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
+---
+ Documentation/powerpc/booting-without-of.txt |    1 +
+ drivers/mtd/nand/Kconfig                     |    2 +-
+ drivers/mtd/nand/fsl_upm.c                   |   17 +++++++++++++----
+ 3 files changed, 15 insertions(+), 5 deletions(-)
+
+Index: linux-2.6-galak/drivers/mtd/nand/Kconfig
+===================================================================
+--- linux-2.6-galak.orig/drivers/mtd/nand/Kconfig
++++ linux-2.6-galak/drivers/mtd/nand/Kconfig
+@@ -380,7 +380,7 @@ config MTD_NAND_FSL_ELBC
+ 
+ config MTD_NAND_FSL_UPM
+ 	tristate "Support for NAND on Freescale UPM"
+-	depends on MTD_NAND && OF_GPIO && (PPC_83xx || PPC_85xx)
++	depends on MTD_NAND && (PPC_83xx || PPC_85xx)
+ 	select FSL_LBC
+ 	help
+ 	  Enables support for NAND Flash chips wired onto Freescale PowerPC
+Index: linux-2.6-galak/drivers/mtd/nand/fsl_upm.c
+===================================================================
+--- linux-2.6-galak.orig/drivers/mtd/nand/fsl_upm.c
++++ linux-2.6-galak/drivers/mtd/nand/fsl_upm.c
+@@ -13,6 +13,7 @@
+ 
+ #include <linux/kernel.h>
+ #include <linux/module.h>
++#include <linux/delay.h>
+ #include <linux/mtd/nand.h>
+ #include <linux/mtd/nand_ecc.h>
+ #include <linux/mtd/partitions.h>
+@@ -36,6 +37,7 @@ struct fsl_upm_nand {
+ 	uint8_t upm_cmd_offset;
+ 	void __iomem *io_base;
+ 	int rnb_gpio;
++	int chip_delay;
+ };
+ 
+ #define to_fsl_upm_nand(mtd) container_of(mtd, struct fsl_upm_nand, mtd)
+@@ -58,10 +60,11 @@ static void fun_wait_rnb(struct fsl_upm_
+ 	if (fun->rnb_gpio >= 0) {
+ 		while (--cnt && !fun_chip_ready(&fun->mtd))
+ 			cpu_relax();
++		if (!cnt)
++			dev_err(fun->dev, "tired waiting for RNB\n");
++	} else {
++		ndelay(100);
+ 	}
+-
+-	if (!cnt)
+-		dev_err(fun->dev, "tired waiting for RNB\n");
+ }
+ 
+ static void fun_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+@@ -129,7 +132,7 @@ static int __devinit fun_chip_init(struc
+ 	fun->chip.IO_ADDR_R = fun->io_base;
+ 	fun->chip.IO_ADDR_W = fun->io_base;
+ 	fun->chip.cmd_ctrl = fun_cmd_ctrl;
+-	fun->chip.chip_delay = 50;
++	fun->chip.chip_delay = fun->chip_delay;
+ 	fun->chip.read_byte = fun_read_byte;
+ 	fun->chip.read_buf = fun_read_buf;
+ 	fun->chip.write_buf = fun_write_buf;
+@@ -233,6 +236,12 @@ static int __devinit fun_probe(struct of
+ 		goto err2;
+ 	}
+ 
++	prop = of_get_property(ofdev->node, "chip-delay", NULL);
++	if (prop)
++		fun->chip_delay = *prop;
++	else
++		fun->chip_delay = 50;
++
+ 	fun->io_base = devm_ioremap_nocache(&ofdev->dev, io_res.start,
+ 					  io_res.end - io_res.start + 1);
+ 	if (!fun->io_base) {
+Index: linux-2.6-galak/Documentation/powerpc/booting-without-of.txt
+===================================================================
+--- linux-2.6-galak.orig/Documentation/powerpc/booting-without-of.txt
++++ linux-2.6-galak/Documentation/powerpc/booting-without-of.txt
+@@ -3007,6 +3007,7 @@ platforms are moved over to use the flat
+       - reg : should specify localbus chip select and size used for the chip.
+       - fsl,upm-addr-offset : UPM pattern offset for the address latch.
+       - fsl,upm-cmd-offset : UPM pattern offset for the command latch.
++      - chip-delay : may specify a delay value in milliseconds.
+       - gpios : may specify optional GPIO connected to the Ready-Not-Busy pin.
+ 
+       Example:
