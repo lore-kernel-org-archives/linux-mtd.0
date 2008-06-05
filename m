@@ -1,10 +1,10 @@
-Date: Thu, 5 Jun 2008 22:03:25 +0200 (CEST)
+Date: Thu, 5 Jun 2008 22:28:58 +0200 (CEST)
 From: Thomas Gleixner <tglx@linutronix.de>
 To: Alexey Korolev <akorolev@infradead.org>
-Subject: Re: [RFC/PATCH 2/3] NAND multiple plane feature 
-In-Reply-To: <alpine.LFD.1.10.0805281342150.23606@pentafluge.infradead.org>
-Message-ID: <alpine.LFD.1.10.0806052116000.3235@apollo.tec.linutronix.de>
-References: <alpine.LFD.1.10.0805281342150.23606@pentafluge.infradead.org>
+Subject: Re: [RFC/PATCH 3/3] NAND multiple plane feature 
+In-Reply-To: <alpine.LFD.1.10.0805281410030.23606@pentafluge.infradead.org>
+Message-ID: <alpine.LFD.1.10.0806052203520.3235@apollo.tec.linutronix.de>
+References: <alpine.LFD.1.10.0805281410030.23606@pentafluge.infradead.org>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: linux-mtd@lists.infradead.org, joern@logfs.org, dwmw2@infradead.org,
@@ -19,182 +19,163 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Wed, 28 May 2008, Alexey Korolev wrote:
+> @@ -748,12 +750,13 @@ static int nand_wait(struct mtd_info *mt
+>   * @mtd:	mtd info structure
+>   * @chip:	nand chip info structure
+>   * @buf:	buffer to store read data
+> + * @oobbuf:	buffer to store read oob
+>   */
+>  static int nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+> -			      uint8_t *buf)
+> +			      uint8_t *buf, uint8_t *oobbuf)
 
-> As NAND multiple plane architecture assumes simultaneous write/erase of
-> several pages/blocks at the same time, we have to modify page/eraseblock
-> sizes and report modified size to upper layers. In other words physical
-> erase block size/ page size != reported erase block size/ page size.
->
-> For example if we have dual plane device we have to extend erase block
-> size and page size in 2 times. 
+Why is this change necessary ?
 
-And why the heck do you have to do all those phys_erase_shift changes ?
+> -			if (ret < 0)
+> -				break;
+> +			nand_read_operations(mtd, chip, bufpoi, from, bytes, sndcmd, (ops->mode == MTD_OOB_RAW));
 
-mtd->erase_size is completely independent of the nand internal
-information already. All it needs is to adjust the erase_size which is
-reported to the mtd layer.
-
-> Also this patch keep track on bad block management. NAND datasheets
-> alows us combine only pair of neibour blocks into dual/multiple plane
-> operations. So if we have multiple plane device and one block is bad,
-> reported extended block should be considered as bad. 
-
-Please do this in a separate patch if it's even necessary at all.
-
-> @@ -2269,13 +2269,13 @@ static struct nand_flash_dev *nand_get_f
->  		/* Number of planes*/
->  		chip->numplanes = 1 << ((planeid >> 2) & 0x03);
-
-		planeid is magically declared and initialized, right ?
-
->  		/* Calc pagesize */
-> -		mtd->writesize = 1024 << (extid & 0x3);
-> +		mtd->writesize = (1024 << (extid & 0x3)) * chip->numplanes;
->  		extid >>= 2;
->  		/* Calc oobsize */
->  		mtd->oobsize = (8 << (extid & 0x01)) * (mtd->writesize >> 9);
->  		extid >>= 2;
->  		/* Calc blocksize. Blocksize is multiples of 64KiB */
-> -		mtd->erasesize = (64 * 1024) << (extid & 0x03);
-> +		mtd->erasesize = ((64 * 1024) << (extid & 0x03)) * chip->numplanes;
->  		extid >>= 2;
->  		/* Get buswidth information */
->  		busw = (extid & 0x01) ? NAND_BUSWIDTH_16 : 0;
-> @@ -2290,6 +2290,8 @@ static struct nand_flash_dev *nand_get_f
->  		busw = type->options & NAND_BUSWIDTH_16;
->  	}
->  
-> +	chip->oob_phys_size = mtd->oobsize / chip->numplanes;
-
-What the heck initializes chip->numplanes in the else path of 
-
-        if (!type->pagesize) {
-
-
->  int nand_scan_tail(struct mtd_info *mtd)
->  {
-> -	int i;
-> +	int i, j;
-> +	int oobfree_len;
-
-One line
+sigh
 
 >  
-> -	if (!chip->write_page)
-> -		chip->write_page = nand_write_page;
+>  			/* Transfer not aligned data */
+>  			if (!aligned) {
+>  				chip->pagebuf = realpage;
+>  				memcpy(buf, chip->buffers->databuf + col, bytes);
+>  			}
 > -
-
-1) Change has nothing to do with the patch description
-
-2) removing this will break existing code
-
-> +	if (chip->numplanes > 1) {
-
-
-Introduce new feature in a separate patch
-
-> +		for (oobfree_len = 0; chip->ecc.layout->oobfree[oobfree_len].length; oobfree_len++)
-> +			;
-> +		i = 0;
-> +		while (i < chip->numplanes) {
-> +			for (j = 0; j < oobfree_len ; j++) {
-> +				chip->ecc.layout->oobfree[j + i * oobfree_len].length = chip->ecc.layout->oobfree[j].length;
-> +				chip->ecc.layout->oobfree[j + i * oobfree_len].offset = chip->ecc.layout->oobfree[j].offset + chip->oob_phys_size * i;
-> +			}
-> +			for (j = 0; j < chip->ecc.layout->eccbytes; j++)
-> +				chip->ecc.layout->eccpos[j + i * chip->ecc.layout->eccbytes] = chip->ecc.layout->eccpos[j] + chip->oob_phys_size * i;
-
-Screenwidth 280 characters ?
-
-> +			i++;
-> +		}
-> +		chip->ecc.layout->eccbytes *= chip->numplanes;
-> +	}
+>  			buf += bytes;
+> +			from += bytes;
 >  
->  */
-> -static int check_pattern(uint8_t *buf, int len, int paglen, struct nand_bbt_descr *td)
-> +static int check_pattern(struct mtd_info *mtd, uint8_t *buf, int len, int paglen, struct nand_bbt_descr *td)
+>  			if (unlikely(oob)) {
+>  				/* Raw mode does data:oob:data:oob */
+>  				if (ops->mode != MTD_OOB_RAW) {
+> -					int toread = min(oobreadlen,
+> -						chip->ecc.layout->oobavail);
+> +					int toread = min(oobreadlen, chip->ecc.layout->oobavail);
+
+  what's the effective change ?
+
+>  					if (toread) {
+> -						oob = nand_transfer_oob(chip,
+> -							oob, ops, toread);
+> +						oob = nand_transfer_oob(chip, oob, ops, toread);
+
+  ditto
+
+
+>  						oobreadlen -= toread;
+>  					}
+>  				} else
+> -					buf = nand_transfer_oob(chip,
+> -						buf, ops, mtd->oobsize);
+> +					buf = nand_transfer_oob(chip, buf, ops, mtd->oobsize);
+
+  ditto
+
+>  		readlen -= bytes;
+> @@ -1125,11 +1181,21 @@ static int nand_read(struct mtd_info *mt
+>  static int nand_read_oob_std(struct mtd_info *mtd, struct nand_chip *chip,
+>  			     int page, int sndcmd)
 >  {
->  	int i, end = 0;
-> +	struct nand_chip *this = mtd->priv;
-> +	int plane_num = 0;
->
->  	uint8_t *p = buf;
->  
-> -	end = paglen + td->offs;
-> +	do {
-> +	end = this->page_phys_size + td->offs;
->  	if (td->options & NAND_BBT_SCANEMPTY) {
->  		for (i = 0; i < end; i++) {
->  			if (p[i] != 0xff)
-> @@ -103,6 +106,10 @@ static int check_pattern(uint8_t *buf, i
->  				return -1;
->  		}
->  	}
-> +	p += len - end;
-> +	plane_num++;
-> +	}
-> +	while (plane_num < this->numplanes);
->  	return 0;
->  }
+> -	if (sndcmd) {
+> -		chip->cmdfunc(mtd, NAND_CMD_READOOB, 0, page);
+> -		sndcmd = 0;
+> +	int i = 0;
+> +	int block_mask = (1 << (chip->erase_shift - chip->page_shift)) - 1;
+> +	int start_block = (page & ~block_mask) * chip->numplanes;
+> +	int page_num = page & block_mask;
+> +
+> +	while (i < chip->numplanes) {
 
-This change is completely useless. If you have to scan a buffer double
-the size, then the code can be called twice. Create an inline function
-which does the numplanes magic and call that.
-  
-> @@ -116,16 +123,22 @@ static int check_pattern(uint8_t *buf, i
->   * no optional empty check
->   *
->  */
-> -static int check_short_pattern(uint8_t *buf, struct nand_bbt_descr *td)
-> +static int check_short_pattern(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_descr *td)
+  for (i = 0; .....
+
+> @@ -1181,15 +1247,30 @@ static int nand_read_oob_syndrome(struct
+>  static int nand_write_oob_std(struct mtd_info *mtd, struct nand_chip *chip,
+>  			      int page)
 >  {
->  	int i;
->  	uint8_t *p = buf;
->  
-> +	struct nand_chip *this = mtd->priv;
-> +	int plane_num = 0;
->  	/* Compare the pattern */
-> +	do {
->  	for (i = 0; i < td->len; i++) {
-> -		if (p[td->offs + i] != td->pattern[i])
-> +		if (p[this->oob_phys_size * plane_num + td->offs + i] != td->pattern[i])
->  			return -1;
->  	}
-> +	plane_num++;
+> +	int i = 0;
+>  	int status = 0;
+>  	const uint8_t *buf = chip->oob_poi;
+> -	int length = mtd->oobsize;
+> -
+> -	chip->cmdfunc(mtd, NAND_CMD_SEQIN, mtd->writesize, page);
+> -	chip->write_buf(mtd, buf, length);
+> -	/* Send command to program the OOB data */
+> -	chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
+> -
+> +	int length = chip->oob_phys_size;
+> +	int block_mask = (1 << (chip->erase_shift - chip->page_shift)) - 1;
+> +	int start_block = (page & ~block_mask) * chip->numplanes;
+> +	int page_num = page & block_mask;
+> +
+> +	/* calculate physycal page at first plane */
+> +	while (i < chip->numplanes) {
+> +		page = start_block + page_num + (block_mask + 1) * i;
+> +		chip->cmdfunc(mtd, NAND_CMD_SEQIN, chip->page_phys_size, page);
+> +		chip->write_buf(mtd, buf + length * i, length);
+> +		/* Send command to program the OOB data */
+> +		i++;
+> +		if (i < chip->numplanes) {
+> +			chip->cmdfunc(mtd, NAND_CMD_PAGEPROG_MP, -1, -1);
+> +			if (!chip->dev_ready)
+> +				udelay(chip->chip_delay);
+> +			else
+> +				nand_wait_ready(mtd);
+> +		} else
+> +			chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
 > +	}
-> +	while (plane_num < this->numplanes);
->  	return 0;
->  }
+>  	status = chip->waitfunc(mtd, chip);
 
-Same here
- 
-> @@ -318,7 +331,7 @@ static int scan_block_full(struct mtd_in
->  		return ret;
->  
->  	for (j = 0; j < len; j++, buf += scanlen) {
-> -		if (check_pattern(buf, scanlen, mtd->writesize, bd))
-> +		if (check_pattern(mtd, buf, scanlen, mtd->writesize, bd))
->  			return 1;
->  	}
->  	return 0;
-> @@ -349,7 +362,7 @@ static int scan_block_fast(struct mtd_in
->  		if (ret)
->  			return ret;
->  
-> -		if (check_short_pattern(buf, bd))
-> +		if (check_short_pattern(mtd, buf, bd))
->  			return 1;
->  
->  		offs += mtd->writesize;
-> @@ -501,7 +514,7 @@ static int search_bbt(struct mtd_info *m
->  
->  			/* Read first page */
->  			scan_read_raw(mtd, buf, offs, mtd->writesize);
-> -			if (!check_pattern(buf, scanlen, mtd->writesize, td)) {
-> +			if (!check_pattern(mtd, buf, scanlen, mtd->writesize, td)) {
+Sigh. There is one call site for this and there we can do the whole
+numplanes hackery in 5 lines of code and extend the function with a
+parameter which command to use. Which also allows those driver which
+have their own function to utilize the multiplane features.
 
-And what puts the BBT magic pattern into both erase blocks ?
+> @@ -269,16 +270,16 @@ struct nand_ecc_ctrl {
+>  					   uint8_t *calc_ecc);
+>  	int			(*read_page_raw)(struct mtd_info *mtd,
+>  						 struct nand_chip *chip,
+> -						 uint8_t *buf);
+> +						 uint8_t *buf, uint8_t *oobbuf);
+>  	void			(*write_page_raw)(struct mtd_info *mtd,
+>  						  struct nand_chip *chip,
+> -						  const uint8_t *buf);
+> +						  const uint8_t *buf, uint8_t *oobbuf);
+>  	int			(*read_page)(struct mtd_info *mtd,
+>  					     struct nand_chip *chip,
+> -					     uint8_t *buf);
+> +					     uint8_t *buf, uint8_t *oobbuf);
+>  	void			(*write_page)(struct mtd_info *mtd,
+>  					      struct nand_chip *chip,
+> -					      const uint8_t *buf);
+> +					      const uint8_t *buf, uint8_t *oobbuf);
+>  	int			(*read_oob)(struct mtd_info *mtd,
+>  					    struct nand_chip *chip,
+>  					    int page,
+> @@ -362,7 +363,6 @@ struct nand_buffers {
+>   * @priv:		[OPTIONAL] pointer to private chip date
+>   * @errstat:		[OPTIONAL] hardware specific function to perform additional error status checks
+>   *			(determine if errors are correctable)
+> - * @write_page:		[REPLACEABLE] High-level page write function
+>   */
+>  
+>  struct nand_chip {
+> @@ -385,8 +385,6 @@ struct nand_chip {
+>  	void		(*erase_cmd)(struct mtd_info *mtd, int page);
+>  	int		(*scan_bbt)(struct mtd_info *mtd);
+>  	int		(*errstat)(struct mtd_info *mtd, struct nand_chip *this, int state, int status, int page);
+> -	int		(*write_page)(struct mtd_info *mtd, struct nand_chip *chip,
+> -				      const uint8_t *buf, int page, int cached, int raw);
+>  
+>  	int		chip_delay;
+>  	unsigned int	options;> 
+
+All the above changes break existing drivers.
+
+The whole multiplane stuff needs to be done at the highest possible
+level of the nand driver and not pushed down into the low level
+functions, which access the hardware.
 
 Thanks,
 	tglx
