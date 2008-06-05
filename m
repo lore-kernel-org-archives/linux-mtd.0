@@ -1,19 +1,11 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K49Gr-0002RS-Vf
-	for linux-mtd@lists.infradead.org; Thu, 05 Jun 2008 06:48:26 +0000
-Date: Thu, 5 Jun 2008 08:48:14 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Russell Fleitman <fleitman68@yahoo.com>
-Subject: Re: Intel Turbo Memory
-Message-ID: <20080605064814.GB17037@logfs.org>
-References: <261293.50747.qm@web31815.mail.mud.yahoo.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <261293.50747.qm@web31815.mail.mud.yahoo.com>
-Cc: linux-mtd@lists.infradead.org
+Message-ID: <11a57a15e41.visavis@tin.it>
+Date: Thu, 5 Jun 2008 08:29:30 +0100 (GMT+01:00)
+From: "support@fondazionedivittorio.it" <visavis@tin.it>
+Subject: Attn:Recipient,
+Mime-Version: 1.0
+Content-Type: text/plain;charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Reply-To: fvittorio.es@terra.es
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +15,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 4 June 2008 15:58:34 -0700, Russell Fleitman wrote:
-> 
-> Hello, I have searched the archives of this list and have found no references to Intel Turbo Memory or Robson.
-> 
-> Has anyone heard of these chips working?
-> 
-> I have the output from dmesg and lspci ready to post but thought I would ask if I am barking up the wrong tree first.
+Attn:Recipient,
 
-It appears as if those devices are raw flash and could be accessed
-through mtd - provided someone either has documentation or creates some
-by reverse engineering.
+Fondazione Di Vittorio, hereby notify you for a 
+Grant/Donation cash aid of 1,500,000.00 Euro for your own personal 
+education, and business development.
 
-I have tried to obtain documentation and failed.  My best guess is that
-it is as dead as hybrid disks - those simply don't perform.  It would be
-neat to use for different purposes, but Intel doesn't seem to see a
-business case anymore and won't ship either a Linux driver or
-documentation.
+Qualification numbers (S-222-
+6747, C-900-56).
 
-In short: forget about it. :)
+CONTACT DETIALS BELOW: 
 
-Jörn
+===========================================
+Fondazione Di Vittorio 
+Espanola
 
--- 
-When in doubt, punt.  When somebody actually complains, go back and fix it...
-The 90% solution is a good thing.
--- Rob Landley
+CONTACT NAME: DR. JEAN PEZZI 
+===========================================  
+
+
+Regards.
+Mr. Andrea 
+Gianfagna
+
+http://www.fondazionedivittorio.it
