@@ -1,11 +1,20 @@
-Message-ID: <11a57a15e41.visavis@tin.it>
-Date: Thu, 5 Jun 2008 08:29:30 +0100 (GMT+01:00)
-From: "support@fondazionedivittorio.it" <visavis@tin.it>
-Subject: Attn:Recipient,
+Received: from slave.mail113.cn4e.com ([211.152.33.79])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K4Alo-0007di-HL
+	for linux-mtd@lists.infradead.org; Thu, 05 Jun 2008 08:24:29 +0000
+Received: from bruce (unknown [220.189.223.56])
+	by slave.mail113.cn4e.com (Postfix) with ESMTP id DABE824B22B
+	for <linux-mtd@lists.infradead.org>;
+	Thu,  5 Jun 2008 16:27:51 +0800 (CST)
+Date: Thu, 5 Jun 2008 16:24:14 +0800
+From: "=?gb2312?B?wO66o7rs?=" <lhh@nbicc.com>
+To: "linux-mtd" <linux-mtd@lists.infradead.org>
+Subject: insmod modules problems when start-up with jffs2 romfs images
 Mime-Version: 1.0
-Content-Type: text/plain;charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Reply-To: fvittorio.es@terra.es
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
+Message-Id: <20080605082751.DABE824B22B@slave.mail113.cn4e.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,27 +24,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Attn:Recipient,
-
-Fondazione Di Vittorio, hereby notify you for a 
-Grant/Donation cash aid of 1,500,000.00 Euro for your own personal 
-education, and business development.
-
-Qualification numbers (S-222-
-6747, C-900-56).
-
-CONTACT DETIALS BELOW: 
-
-===========================================
-Fondazione Di Vittorio 
-Espanola
-
-CONTACT NAME: DR. JEAN PEZZI 
-===========================================  
-
-
-Regards.
-Mr. Andrea 
-Gianfagna
-
-http://www.fondazionedivittorio.it
+RGVhciBsaW51eC1tdGQNCiAgICAgICAgICAgIEkgYW0gbm90IHN1cmUgZG8gaXQgaGF2ZSBzb21l
+dGhpbmcgdG8gZG8gd2l0aCBqZmZzMiBwcm9ibGVtLGJ1dCBubyBvdGhlcnMgdG8gZG91bHQuDQog
+ICAgICAgIGhlcmUgaXMgbXkgcHJvYmxlbXM6DQogICAgICAgIGtlcm5lbCB2ZXJzaW9uIDIuNC4y
+NiwgIG5vciBmbGFzaCB0eXBlOlMyOUdMMTI4TjEwVEYxMDENCiAgICAgICAgd2hlbiBpIGVyYXNl
+IHRoZSBtdGQgcGFydGl0aW9uLHRoZW4gaSB3cml0ZSB0aGUgcm9tZnMgYmluIGZpbGUgbWFkZSB3
+aXRoIGpmZnMyIGZvcm1hdCB0aGVyZS5maW5pc2ggd3JpdGUsd2UgcmVib290IHRoZSBib2FyZCwg
+d2hlbiBpbnNtb2Qgb25lIG1vZHVsZSwgaXQgY2FuJ3QgaW5zbW9kIGNvcnJlY3RseSwgYW5kIGFm
+dGVyIHNldmVyYWwgdGltZXMobW9zdGx5IDIgb3IgMyB0aW1lcykgcmVib290LCBpdCBjYW4gaW5z
+bW9kIGNvcnJlY3RseSxhbmQgYWZ0ZXIgdGhhdCwgaXQgd2lsbCBuZXZlciBzaG93IHRoaXMgaW5z
+bW9kIHByb2JsZW0ubXkgcm9tZnMgaXMgYWJvdXQgMTBNQixhbmQgdGhlIHByb2JsZW0gbW9kdWxl
+IGlzIGFsc28gYmlnICxuZWFybHkgMk1CLmFuZCB0aGlzIG1vZHVsZXMgaXMgbm90IGJ1aWx0IGlu
+IGtlcm5lbC4NCiAgICAgICBzbyBpIGFtIGRvdWx0IGlmIHRoZXJlIGlzIHNvbWUgcHJvYmxlbXMg
+d2l0aCByZWFkaW5nIGJpZyBmaWxlPyANCiAgICAgICBkb2VzIGFueWJvZHkgZWxzZSBlbmNvdW50
+ZXIgc2ltaWxhciBwcm9ibGVtcz8NCiAgICAgIA0KIGFuZCBhbHNvIHRoZXJlIHdpbGwgc2hvdyBt
+ZSBpbmZvcm1hdGlvbiBsaWtlOg0KQ0xFQU5NQVJLRVIgbm9kZSBmb3VuZCBhdCAweDAwNTMwMDAw
+LCBub3QgZmlyc3Qgbm9kZSBpbiBibG9jayAoMHgwMDUyMDAwMCkNCkNMRUFOTUFSS0VSIG5vZGUg
+Zm91bmQgYXQgMHgwMDU1MDAwMCwgbm90IGZpcnN0IG5vZGUgaW4gYmxvY2sgKDB4MDA1NDAwMDAp
+DQpDTEVBTk1BUktFUiBub2RlIGZvdW5kIGF0IDB4MDA1NzAwMDAsIG5vdCBmaXJzdCBub2RlIGlu
+IGJsb2NrICgweDAwNTYwMDAwKQ0KQ0xFQU5NQVJLRVIgbm9kZSBmb3VuZCBhdCAweDAwNTkwMDAw
+LCBub3QgZmlyc3Qgbm9kZSBpbiBibG9jayAoMHgwMDU4MDAwMCkNCkNMRUFOTUFSS0VSIG5vZGUg
+Zm91bmQgYXQgMHgwMDViMDAwMCwgbm90IGZpcnN0IG5vZGUgaW4gYmxvY2sgKDB4MDA1YTAwMDAp
+DQpDTEVBTk1BUktFUiBub2RlIGZvdW5kIGF0IDB4MDA1ZDAwMDAsIG5vdCBmaXJzdCBub2RlIGlu
+IGJsb2NrICgweDAwNWMwMDAwKQ0KQ0xFQU5NQVJLRVIgbm9kZSBmb3VuZCBhdCAweDAwNWYwMDAw
+LCBub3QgZmlyc3Qgbm9kZSBpbiBibG9jayAoMHgwMDVlMDAwMCkNCkNMRUFOTUFSS0VSIG5vZGUg
+Zm91bmQgYXQgMHgwMDYxMDAwMCwgbm90IGZpcnN0IG5vZGUgaW4gYmxvY2sgKDB4MDA2MDAwMDAp
+DQpDTEVBTk1BUktFUiBub2RlIGZvdW5kIGF0IDB4MDA2MzAwMDAsIG5vdCBmaXJzdCBub2RlIGlu
+IGJsb2NrICgweDAwNjIwMDAwKQ0KQ0xFQU5NQVJLRVIgbm9kZSBmb3VuZCBhdCAweDAwNjUwMDAw
+LCBub3QgZmlyc3Qgbm9kZSBpbiBibG9jayAoMHgwMDY0MDAwMCkNClZGUzogTW91bnRlZCByb290
+IChqZmZzMiBmaWxlc3lzdGVtKS4NCk1vdW50ZWQgZGV2ZnMgb24gL2Rldg0KDQphbmQgdGhpcyB3
+aWxsIGNvc3QgbWFueSB0aW1lIHdoZW4gYm9vdC4NCgkNCg0KQmVzdCBSZWdhcmRzIQ0KoaGhoaGh
+oaGhoaGhDQpMaSBIYWlob25nDQpIYXJkd2FyZSBFbmdpbmVlcg0KTmluZ2JvIENBUyBJQyBEZXNp
+Z24gQ2VudGVyICAgICANCkZheKO6IDg2LTU3NC04NzkwODQ4NA0KVGVso7ogODYtNTc0LTg3OTEw
+MTMyDQpXZWI6IHd3dy5uYmljYy5jb20NCkUtTWFpbKO6bGhoQG5iaWNjLmNvbQ0K
