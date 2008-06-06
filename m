@@ -1,25 +1,18 @@
-Received: from py-out-1112.google.com ([64.233.166.177])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K4NAZ-0002xo-2s
-	for linux-mtd@lists.infradead.org; Thu, 05 Jun 2008 21:38:51 +0000
-Received: by py-out-1112.google.com with SMTP id a73so925490pye.2
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 05 Jun 2008 14:38:49 -0700 (PDT)
-Message-ID: <9e4733910806051438g2b0bdd8tc4fbfceecd8dc1ea@mail.gmail.com>
-Date: Thu, 5 Jun 2008 17:38:48 -0400
-From: "Jon Smirl" <jonsmirl@gmail.com>
-To: "Sascha Hauer" <s.hauer@pengutronix.de>
-Subject: Re: jffs2 and unaligned access
-In-Reply-To: <20080507132514.GF4326@pengutronix.de>
+Date: Fri, 6 Jun 2008 11:08:02 +0100 (BST)
+From: Alexey Korolev <akorolev@infradead.org>
+To: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [RFC/PATCH 2/3] NAND multiple plane feature
+In-Reply-To: <alpine.LFD.1.10.0806052110560.3235@apollo.tec.linutronix.de>
+Message-ID: <alpine.LFD.1.10.0806061043300.18675@pentafluge.infradead.org>
+References: <alpine.LFD.1.10.0805281342150.23606@pentafluge.infradead.org>
+	<20080603174244.GC1224@logfs.org>
+	<alpine.LFD.1.10.0806051724560.16300@pentafluge.infradead.org>
+	<alpine.LFD.1.10.0806052110560.3235@apollo.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <20080507102724.GE4326@pengutronix.de>
-	<1210157630.25560.884.camel@pmac.infradead.org>
-	<20080507132514.GF4326@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	linuxppc-dev@ozlabs.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org,
+	=?ISO-8859-15?Q?J=F6rn_Engel?= <joern@logfs.org>,
+	dwmw2@infradead.org, vasiliy.leonenko@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,53 +22,129 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 5/7/08, Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> On Wed, May 07, 2008 at 11:53:49AM +0100, David Woodhouse wrote:
->  > On Wed, 2008-05-07 at 12:27 +0200, Sascha Hauer wrote:
->  > > memcpy_from/to_io() use word aligned accesses on the io side of memory.
->  > > The MPC5200 local plus bus where our flashes are connected does not
->  > > allow unaligned accesses, so we have to use the io versions of memcpy.
->  >
->  > But this region of flash is marked as suitable for execute-in-place,
->  > otherwise the point() function wouldn't be working to give a direct
->  > pointer to it. It sounds like we shouldn't be allowing that.
+Hi,
+> On Thu, 5 Jun 2008, Alexey Korolev wrote:
+> > > > -	if (!chip->write_page)
+> > > > -		chip->write_page = nand_write_page;
+> > > > -
+> > > 
+> > > Why is this removed?
+> > >
+> > Oh. May be it would be better to make stand alone patch in order to
+> > clean up NAND subsystem. Using chip->write_page is redundend here. It
+> > is set once it is set for write procedure only. There is no chip read
+> > page call like that. IMHO it is better to use static call here. Please
+> > let me know if you are agree with this. 
+> 
+> No, it's definitely not better to use a static call here. Cared to look
+> at the existing drivers, whether one provides it's own function ?
+> 
+> drivers/mtd/nand/cafe_nand.c:	cafe->nand.write_page = cafe_nand_write_page;
 >
->
-> It actually is suitable for execute-in-place. It's the flash U-Boot
->  starts from. The compiler will generate a proper alignment for you.
->
->
->  >
->  > Which in turn means that perhaps we should have a property in the
->  > corresponding node in the device-tree which indicates that it's not
->  > suitable for direct access?
->
->
-> So far we did not work with the device-tree flash binding but with the
->  physmap-flash driver, but ok, this is subject to change anyway.
->
->  I gave it a quick try to disable direct accesses. It works, but has a
->  1:10 performance impact on mounting a jffs2. At least it's a clean
->  solution.
+It make sence to remove because of:
+1. nand_chip structure looks ugly with that function. It contains write_page but it does not contain read_page.
+2. existence of such redefinition is redundend. There is definetely no need to redefine it. 
 
-How did this get resolved? The thread died without any final solution
-being proposed.
+The only reasignment of write_page call in whole nand subsystem exists in cafe driver. 
+But the purpose of this reasigment looks rather unclear.
+Try to find at least one line difference between cafe_nand_write_page and nand_write_page. I wonder how this code get included ?
+
+Thanks,
+Alexey
 
 
->
->
->  Sascha
->
->
->
->  --
->  Pengutronix e.K. - Linux Solutions for Science and Industry
->  -----------------------------------------------------------
->  Kontakt-Informationen finden Sie im Header dieser Mail oder
->  auf der Webseite -> http://www.pengutronix.de/impressum/ <-
->
+-------
+static int cafe_nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+				const uint8_t *buf, int page, int cached, int raw)
+{
+	int status;
 
+	chip->cmdfunc(mtd, NAND_CMD_SEQIN, 0x00, page);
 
--- 
-Jon Smirl
-jonsmirl@gmail.com
+	if (unlikely(raw))
+		chip->ecc.write_page_raw(mtd, chip, buf);
+	else
+		chip->ecc.write_page(mtd, chip, buf);
+
+	/*
+	 * Cached progamming disabled for now, Not sure if its worth the
+	 * trouble. The speed gain is not very impressive. (2.3->2.6Mib/s)
+	 */
+	cached = 0;
+
+	if (!cached || !(chip->options & NAND_CACHEPRG)) {
+
+		chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
+		status = chip->waitfunc(mtd, chip);
+		/*
+		 * See if operation failed and additional status checks are
+		 * available
+		 */
+		if ((status & NAND_STATUS_FAIL) && (chip->errstat))
+			status = chip->errstat(mtd, chip, FL_WRITING, status,
+					       page);
+
+		if (status & NAND_STATUS_FAIL)
+			return -EIO;
+	} else {
+		chip->cmdfunc(mtd, NAND_CMD_CACHEDPROG, -1, -1);
+		status = chip->waitfunc(mtd, chip);
+	}
+
+#ifdef CONFIG_MTD_NAND_VERIFY_WRITE
+	/* Send command to read back the data */
+	chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
+
+	if (chip->verify_buf(mtd, buf, mtd->writesize))
+		return -EIO;
+#endif
+	return 0;
+}
+------
+
+static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+			   const uint8_t *buf, int page, int cached, int raw)
+{
+	int status;
+
+	chip->cmdfunc(mtd, NAND_CMD_SEQIN, 0x00, page);
+
+	if (unlikely(raw))
+		chip->ecc.write_page_raw(mtd, chip, buf);
+	else
+		chip->ecc.write_page(mtd, chip, buf);
+
+	/*
+	 * Cached progamming disabled for now, Not sure if its worth the
+	 * trouble. The speed gain is not very impressive. (2.3->2.6Mib/s)
+	 */
+	cached = 0;
+
+	if (!cached || !(chip->options & NAND_CACHEPRG)) {
+
+		chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
+		status = chip->waitfunc(mtd, chip);
+		/*
+		 * See if operation failed and additional status checks are
+		 * available
+		 */
+		if ((status & NAND_STATUS_FAIL) && (chip->errstat))
+			status = chip->errstat(mtd, chip, FL_WRITING, status,
+					       page);
+
+		if (status & NAND_STATUS_FAIL)
+			return -EIO;
+	} else {
+		chip->cmdfunc(mtd, NAND_CMD_CACHEDPROG, -1, -1);
+		status = chip->waitfunc(mtd, chip);
+	}
+
+#ifdef CONFIG_MTD_NAND_VERIFY_WRITE
+	/* Send command to read back the data */
+	chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
+
+	if (chip->verify_buf(mtd, buf, mtd->writesize))
+		return -EIO;
+#endif
+	return 0;
+}
