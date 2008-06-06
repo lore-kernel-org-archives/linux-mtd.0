@@ -1,16 +1,24 @@
-Received: from smtpeu1.atmel.com ([195.65.72.27] helo=bagnes.atmel.com)
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K4eR7-0001kB-GC
-	for linux-mtd@lists.infradead.org; Fri, 06 Jun 2008 16:05:05 +0000
-From: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
-To: linux-mtd@lists.infradead.org, kernel@avr32linux.org
-Subject: [PATCH 0/8] Make at91_nand usable on AVR32
-Date: Fri,  6 Jun 2008 18:04:50 +0200
-Message-Id: <1212768298-13614-1-git-send-email-haavard.skinnemoen@atmel.com>
-Cc: Patrice VILCHEZ <patrice.vilchez@atmel.com>,
-	Andrew Victor <avictor.za@gmail.com>,
-	Haavard Skinnemoen <haavard.skinnemoen@atmel.com>,
-	Nicolas Ferre <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org
+	id 1K4eiI-0001ug-9J
+	for linux-mtd@lists.infradead.org; Fri, 06 Jun 2008 16:22:51 +0000
+Date: Fri, 6 Jun 2008 18:22:39 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Alexey Korolev <akorolev@infradead.org>
+Subject: Re: [RFC/PATCH 2/3] NAND multiple plane feature
+Message-ID: <20080606162238.GA30407@logfs.org>
+References: <alpine.LFD.1.10.0805281342150.23606@pentafluge.infradead.org>
+	<20080601174841.GH13094@logfs.org>
+	<alpine.LFD.1.10.0806031754030.32134@pentafluge.infradead.org>
+	<20080605210929.GB19234@logfs.org>
+	<alpine.LFD.1.10.0806061448270.26291@pentafluge.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <alpine.LFD.1.10.0806061448270.26291@pentafluge.infradead.org>
+Cc: linux-mtd@lists.infradead.org, tglx@linutronix.de, dwmw2@infradead.org,
+	vasiliy.leonenko@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,65 +28,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patchset renames at91_nand to atmel_nand and makes it usable on
-AVR32. It also fixes a couple of bugs in the process.
+On Fri, 6 June 2008 15:01:05 +0100, Alexey Korolev wrote:
+>
+> We just tried to check your scenario. It is not
+> possible to overwrite something if JFFS2 returned -ENOSPC until
+> something got deleted. 
+> 
+> In fact our test suite do not include this test case. We have another.
+> Write file1 at about 5% of whole space, write file2 for rest of space.
+> Delete file1. Do step 2. 
+> In this not so good case we got the following numbers:
+> 
+> single-plane:
+> 73 sec 424541 usec
+> 
+> dual-plane:
+> 69 sec 428637 usec
 
-The patchset also adds support for the ATSTK1006 daughterboard which
-is currently in production, and is what I used for testing. It's
-basically the same as ATSTK1002 except that it has more RAM (handled
-by u-boot) and NAND flash (handled by patch #8) on board.
+An improvement instead of the expected regression.  Impressive.
 
-This patchset hopefully makes the at32_nand driver (which doesn't
-support hardware ECC) obsolete. It has never been submitted for
-inclusion in mainline, and I don't intend to do so. Please use this
-driver instead.
+Jörn
 
-I saw a lot of ECC errors when trying to use hardware ECC, but I
-suspect that might be because I tested software ECC first, which uses
-an incompatible oob layout.
-
-Haavard
-
-
-Haavard Skinnemoen (8):
-      at91_nand: Convert to generic GPIO API
-      rename at91_nand -> atmel_nand: file names and Kconfig
-      rename at91_nand -> atmel_nand: internal symbols
-      atmel_nand: Clean up and fix probe() error path
-      avr32: move hsmc_init() to core_initcall
-      avr32: atmel_nand platform code for AT32AP700x
-      atmel_nand: make available on AVR32
-      avr32: Add support for ATSTK1006
-
- arch/arm/mach-at91/at91cap9_devices.c          |    8 +-
- arch/arm/mach-at91/at91rm9200_devices.c        |    8 +-
- arch/arm/mach-at91/at91sam9260_devices.c       |    8 +-
- arch/arm/mach-at91/at91sam9261_devices.c       |   12 +-
- arch/arm/mach-at91/at91sam9263_devices.c       |    8 +-
- arch/arm/mach-at91/at91sam9rl_devices.c        |   12 +-
- arch/arm/mach-at91/board-cam60.c               |    2 +-
- arch/arm/mach-at91/board-cap9adk.c             |    2 +-
- arch/arm/mach-at91/board-dk.c                  |    2 +-
- arch/arm/mach-at91/board-kb9202.c              |    2 +-
- arch/arm/mach-at91/board-sam9-l9260.c          |    2 +-
- arch/arm/mach-at91/board-sam9260ek.c           |    2 +-
- arch/arm/mach-at91/board-sam9261ek.c           |    2 +-
- arch/arm/mach-at91/board-sam9263ek.c           |    2 +-
- arch/arm/mach-at91/board-sam9rlek.c            |    2 +-
- arch/arm/mach-at91/board-yl-9200.c             |    2 +-
- arch/avr32/boards/atstk1000/Kconfig            |    4 +
- arch/avr32/boards/atstk1000/Makefile           |    1 +
- arch/avr32/boards/atstk1000/atstk1002.c        |   78 +++++++++-
- arch/avr32/mach-at32ap/at32ap700x.c            |   52 ++++++
- arch/avr32/mach-at32ap/hsmc.c                  |    2 +-
- drivers/mtd/nand/Kconfig                       |   27 ++--
- drivers/mtd/nand/Makefile                      |    2 +-
- drivers/mtd/nand/{at91_nand.c => atmel_nand.c} |  213 ++++++++++++------------
- drivers/mtd/nand/atmel_nand_ecc.h              |   36 ++++
- include/asm-arm/arch-at91/at91_ecc.h           |   38 -----
- include/asm-arm/arch-at91/board.h              |    4 +-
- include/asm-avr32/arch-at32ap/board.h          |   13 ++
- 28 files changed, 344 insertions(+), 202 deletions(-)
- rename drivers/mtd/nand/{at91_nand.c => atmel_nand.c} (69%)
- create mode 100644 drivers/mtd/nand/atmel_nand_ecc.h
- delete mode 100644 include/asm-arm/arch-at91/at91_ecc.h
+-- 
+tglx1 thinks that joern should get a (TM) for "Thinking Is Hard"
+-- Thomas Gleixner
