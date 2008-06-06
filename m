@@ -1,28 +1,16 @@
-Received: from az33egw01.freescale.net ([192.88.158.102])
+Received: from smtpeu1.atmel.com ([195.65.72.27] helo=bagnes.atmel.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K4daQ-0000yE-SA
-	for linux-mtd@lists.infradead.org; Fri, 06 Jun 2008 15:10:39 +0000
-Received: from az33smr02.freescale.net (az33smr02.freescale.net [10.64.34.200])
-	by az33egw01.freescale.net (8.12.11/az33egw01) with ESMTP id
-	m56FAZ7r009255 for <linux-mtd@lists.infradead.org>;
-	Fri, 6 Jun 2008 08:10:36 -0700 (MST)
-Received: from ld0162-tx32.am.freescale.net (ld0162-tx32.am.freescale.net
-	[10.82.19.112])
-	by az33smr02.freescale.net (8.13.1/8.13.0) with ESMTP id m56FAY1D028116
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 6 Jun 2008 10:10:35 -0500 (CDT)
-Date: Fri, 6 Jun 2008 10:10:34 -0500
-From: Scott Wood <scottwood@freescale.com>
-To: Anton Vorontsov <avorontsov@ru.mvista.com>
-Subject: Re: [PATCH] MTD: NAND: fsl_elbc_nand: fix section mismatch between
-	probe and remove
-Message-ID: <20080606151034.GA21080@ld0162-tx32.am.freescale.net>
-References: <20080606145940.GA25327@polina.dev.rtsoft.ru>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20080606145940.GA25327@polina.dev.rtsoft.ru>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+	id 1K4eR7-0001kB-GC
+	for linux-mtd@lists.infradead.org; Fri, 06 Jun 2008 16:05:05 +0000
+From: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
+To: linux-mtd@lists.infradead.org, kernel@avr32linux.org
+Subject: [PATCH 0/8] Make at91_nand usable on AVR32
+Date: Fri,  6 Jun 2008 18:04:50 +0200
+Message-Id: <1212768298-13614-1-git-send-email-haavard.skinnemoen@atmel.com>
+Cc: Patrice VILCHEZ <patrice.vilchez@atmel.com>,
+	Andrew Victor <avictor.za@gmail.com>,
+	Haavard Skinnemoen <haavard.skinnemoen@atmel.com>,
+	Nicolas Ferre <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,17 +20,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 06, 2008 at 06:59:40PM +0400, Anton Vorontsov wrote:
-> WARNING: drivers/mtd/nand/built-in.o(.devinit.text+0x114): Section mismatch
-> in reference from the function fsl_elbc_ctrl_probe() to the function
-> .devexit.text:fsl_elbc_ctrl_remove()
-> 
-> __devinit functions should not call functions with __devexit. Since probe
-> function calls remove in case of errors, we want to remove __devexit
-> attribute from it.
-> 
-> Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
+This patchset renames at91_nand to atmel_nand and makes it usable on
+AVR32. It also fixes a couple of bugs in the process.
 
-Acked-by: Scott Wood <scottwood@freescale.com>
+The patchset also adds support for the ATSTK1006 daughterboard which
+is currently in production, and is what I used for testing. It's
+basically the same as ATSTK1002 except that it has more RAM (handled
+by u-boot) and NAND flash (handled by patch #8) on board.
 
--Scott
+This patchset hopefully makes the at32_nand driver (which doesn't
+support hardware ECC) obsolete. It has never been submitted for
+inclusion in mainline, and I don't intend to do so. Please use this
+driver instead.
+
+I saw a lot of ECC errors when trying to use hardware ECC, but I
+suspect that might be because I tested software ECC first, which uses
+an incompatible oob layout.
+
+Haavard
+
+
+Haavard Skinnemoen (8):
+      at91_nand: Convert to generic GPIO API
+      rename at91_nand -> atmel_nand: file names and Kconfig
+      rename at91_nand -> atmel_nand: internal symbols
+      atmel_nand: Clean up and fix probe() error path
+      avr32: move hsmc_init() to core_initcall
+      avr32: atmel_nand platform code for AT32AP700x
+      atmel_nand: make available on AVR32
+      avr32: Add support for ATSTK1006
+
+ arch/arm/mach-at91/at91cap9_devices.c          |    8 +-
+ arch/arm/mach-at91/at91rm9200_devices.c        |    8 +-
+ arch/arm/mach-at91/at91sam9260_devices.c       |    8 +-
+ arch/arm/mach-at91/at91sam9261_devices.c       |   12 +-
+ arch/arm/mach-at91/at91sam9263_devices.c       |    8 +-
+ arch/arm/mach-at91/at91sam9rl_devices.c        |   12 +-
+ arch/arm/mach-at91/board-cam60.c               |    2 +-
+ arch/arm/mach-at91/board-cap9adk.c             |    2 +-
+ arch/arm/mach-at91/board-dk.c                  |    2 +-
+ arch/arm/mach-at91/board-kb9202.c              |    2 +-
+ arch/arm/mach-at91/board-sam9-l9260.c          |    2 +-
+ arch/arm/mach-at91/board-sam9260ek.c           |    2 +-
+ arch/arm/mach-at91/board-sam9261ek.c           |    2 +-
+ arch/arm/mach-at91/board-sam9263ek.c           |    2 +-
+ arch/arm/mach-at91/board-sam9rlek.c            |    2 +-
+ arch/arm/mach-at91/board-yl-9200.c             |    2 +-
+ arch/avr32/boards/atstk1000/Kconfig            |    4 +
+ arch/avr32/boards/atstk1000/Makefile           |    1 +
+ arch/avr32/boards/atstk1000/atstk1002.c        |   78 +++++++++-
+ arch/avr32/mach-at32ap/at32ap700x.c            |   52 ++++++
+ arch/avr32/mach-at32ap/hsmc.c                  |    2 +-
+ drivers/mtd/nand/Kconfig                       |   27 ++--
+ drivers/mtd/nand/Makefile                      |    2 +-
+ drivers/mtd/nand/{at91_nand.c => atmel_nand.c} |  213 ++++++++++++------------
+ drivers/mtd/nand/atmel_nand_ecc.h              |   36 ++++
+ include/asm-arm/arch-at91/at91_ecc.h           |   38 -----
+ include/asm-arm/arch-at91/board.h              |    4 +-
+ include/asm-avr32/arch-at32ap/board.h          |   13 ++
+ 28 files changed, 344 insertions(+), 202 deletions(-)
+ rename drivers/mtd/nand/{at91_nand.c => atmel_nand.c} (69%)
+ create mode 100644 drivers/mtd/nand/atmel_nand_ecc.h
+ delete mode 100644 include/asm-arm/arch-at91/at91_ecc.h
