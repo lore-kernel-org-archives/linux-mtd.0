@@ -1,21 +1,25 @@
 Received: from newsmtp5.atmel.com ([204.2.163.5] helo=sjogate2.atmel.com)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K4eYO-0006zf-UI
-	for linux-mtd@lists.infradead.org; Fri, 06 Jun 2008 16:12:37 +0000
+	id 1K4eYR-00072B-D0
+	for linux-mtd@lists.infradead.org; Fri, 06 Jun 2008 16:12:39 +0000
 Received: from bagnes.atmel.com ([10.175.100.4])
-	by sjogate2.atmel.com (8.13.6/8.13.6) with ESMTP id m56GBsGi003371
+	by sjogate2.atmel.com (8.13.6/8.13.6) with ESMTP id m56GBvIT003381
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 6 Jun 2008 09:11:55 -0700 (PDT)
+	Fri, 6 Jun 2008 09:11:57 -0700 (PDT)
 From: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
 To: linux-mtd@lists.infradead.org, kernel@avr32linux.org
-Subject: [PATCH 4/8] atmel_nand: Clean up and fix probe() error path
-Date: Fri,  6 Jun 2008 18:04:54 +0200
-Message-Id: <1212768298-13614-5-git-send-email-haavard.skinnemoen@atmel.com>
-In-Reply-To: <1212768298-13614-4-git-send-email-haavard.skinnemoen@atmel.com>
+Subject: [PATCH 8/8] avr32: Add support for ATSTK1006
+Date: Fri,  6 Jun 2008 18:04:58 +0200
+Message-Id: <1212768298-13614-9-git-send-email-haavard.skinnemoen@atmel.com>
+In-Reply-To: <1212768298-13614-8-git-send-email-haavard.skinnemoen@atmel.com>
 References: <1212768298-13614-1-git-send-email-haavard.skinnemoen@atmel.com>
 	<1212768298-13614-2-git-send-email-haavard.skinnemoen@atmel.com>
 	<1212768298-13614-3-git-send-email-haavard.skinnemoen@atmel.com>
 	<1212768298-13614-4-git-send-email-haavard.skinnemoen@atmel.com>
+	<1212768298-13614-5-git-send-email-haavard.skinnemoen@atmel.com>
+	<1212768298-13614-6-git-send-email-haavard.skinnemoen@atmel.com>
+	<1212768298-13614-7-git-send-email-haavard.skinnemoen@atmel.com>
+	<1212768298-13614-8-git-send-email-haavard.skinnemoen@atmel.com>
 Cc: Patrice VILCHEZ <patrice.vilchez@atmel.com>,
 	Andrew Victor <avictor.za@gmail.com>,
 	Haavard Skinnemoen <haavard.skinnemoen@atmel.com>,
@@ -29,122 +33,144 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This fixes several bugs in the atmel_nand_probe() error path, including
-at least one memory leak.
+The ATSTK1006 is basically an upgraded version of ATSTK1002 with 128
+MB SDRAM and 256 MB NAND flash on board.
+
+Otherwise, the board is very similar to the ATSTK1002, so it uses the
+same board support file.
 
 Signed-off-by: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
 ---
- drivers/mtd/nand/atmel_nand.c |   41 ++++++++++++++++++++++-------------------
- 1 files changed, 22 insertions(+), 19 deletions(-)
+ arch/avr32/boards/atstk1000/Kconfig     |    4 ++
+ arch/avr32/boards/atstk1000/Makefile    |    1 +
+ arch/avr32/boards/atstk1000/atstk1002.c |   78 ++++++++++++++++++++++++++++++-
+ 3 files changed, 81 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 675a82c..325ce29 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -371,6 +371,12 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
- 	int num_partitions = 0;
- #endif
+diff --git a/arch/avr32/boards/atstk1000/Kconfig b/arch/avr32/boards/atstk1000/Kconfig
+index af90b00..8dc4821 100644
+--- a/arch/avr32/boards/atstk1000/Kconfig
++++ b/arch/avr32/boards/atstk1000/Kconfig
+@@ -18,6 +18,10 @@ config BOARD_ATSTK1004
+ 	bool "ATSTK1004"
+ 	select CPU_AT32AP7002
  
-+	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!mem) {
-+		printk(KERN_ERR "atmel_nand: can't get I/O resource mem\n");
-+		return -ENXIO;
-+	}
++config BOARD_ATSTK1006
++	bool "ATSTK1006"
++	select CPU_AT32AP7000
 +
- 	/* Allocate memory for the device structure (and zero it) */
- 	host = kzalloc(sizeof(struct atmel_nand_host), GFP_KERNEL);
- 	if (!host) {
-@@ -378,17 +384,11 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 	}
+ endchoice
  
--	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!mem) {
--		printk(KERN_ERR "atmel_nand: can't get I/O resource mem\n");
--		return -ENXIO;
--	}
--
- 	host->io_base = ioremap(mem->start, mem->end - mem->start + 1);
- 	if (host->io_base == NULL) {
- 		printk(KERN_ERR "atmel_nand: ioremap failed\n");
--		kfree(host);
--		return -EIO;
-+		res = -EIO;
-+		goto err_nand_ioremap;
- 	}
  
- 	mtd = &host->mtd;
-@@ -446,14 +446,14 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
- 		if (gpio_get_value(host->board->det_pin)) {
- 			printk ("No SmartMedia card inserted.\n");
- 			res = ENXIO;
--			goto out;
-+			goto err_no_card;
- 		}
- 	}
+diff --git a/arch/avr32/boards/atstk1000/Makefile b/arch/avr32/boards/atstk1000/Makefile
+index beead86..edecee0 100644
+--- a/arch/avr32/boards/atstk1000/Makefile
++++ b/arch/avr32/boards/atstk1000/Makefile
+@@ -2,3 +2,4 @@ obj-y				+= setup.o flash.o
+ obj-$(CONFIG_BOARD_ATSTK1002)	+= atstk1002.o
+ obj-$(CONFIG_BOARD_ATSTK1003)	+= atstk1003.o
+ obj-$(CONFIG_BOARD_ATSTK1004)	+= atstk1004.o
++obj-$(CONFIG_BOARD_ATSTK1006)	+= atstk1002.o
+diff --git a/arch/avr32/boards/atstk1000/atstk1002.c b/arch/avr32/boards/atstk1000/atstk1002.c
+index 000eb42..5bfaf4d 100644
+--- a/arch/avr32/boards/atstk1000/atstk1002.c
++++ b/arch/avr32/boards/atstk1000/atstk1002.c
+@@ -1,7 +1,7 @@
+ /*
+- * ATSTK1002 daughterboard-specific init code
++ * ATSTK1002/ATSTK1006 daughterboard-specific init code
+  *
+- * Copyright (C) 2005-2006 Atmel Corporation
++ * Copyright (C) 2005-2007 Atmel Corporation
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2 as
+@@ -29,6 +29,74 @@
+ #include "atstk1000.h"
  
- 	/* first scan to find the device and get the page size */
- 	if (nand_scan_ident(mtd, 1)) {
- 		res = -ENXIO;
--		goto out;
-+		goto err_scan_ident;
- 	}
  
- 	if (nand_chip->ecc.mode == NAND_ECC_HW_SYNDROME) {
-@@ -498,7 +498,7 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
- 	/* second phase scan */
- 	if (nand_scan_tail(mtd)) {
- 		res = -ENXIO;
--		goto out;
-+		goto err_scan_tail;
- 	}
++/*
++ * The ATSTK1006 daughterboard is very similar to the ATSTK1002. Both
++ * have the AT32AP7000 chip on board; the difference is that the
++ * STK1006 has 128 MB SDRAM (the STK1002 uses the 8 MB SDRAM chip on
++ * the STK1000 motherboard) and 256 MB NAND flash (the STK1002 has
++ * none.)
++ *
++ * The RAM difference is handled by the boot loader, so the only
++ * difference we end up handling here is the NAND flash.
++ */
++#ifdef CONFIG_BOARD_ATSTK1006
++#include <linux/mtd/partitions.h>
++#include <asm/arch/smc.h>
++
++static struct smc_timing nand_timing __initdata = {
++	.ncs_read_setup		= 0,
++	.nrd_setup		= 10,
++	.ncs_write_setup	= 0,
++	.nwe_setup		= 10,
++
++	.ncs_read_pulse		= 30,
++	.nrd_pulse		= 15,
++	.ncs_write_pulse	= 30,
++	.nwe_pulse		= 15,
++
++	.read_cycle		= 30,
++	.write_cycle		= 30,
++
++	.ncs_read_recover	= 0,
++	.nrd_recover		= 15,
++	.ncs_write_recover	= 0,
++	/* WE# high -> RE# low min 60 ns */
++	.nwe_recover		= 50,
++};
++
++static struct smc_config nand_config __initdata = {
++	.bus_width		= 1,
++	.nrd_controlled		= 1,
++	.nwe_controlled		= 1,
++	.nwait_mode		= 0,
++	.byte_write		= 0,
++	.tdf_cycles		= 2,
++	.tdf_mode		= 0,
++};
++
++static struct mtd_partition nand_partitions[] = {
++	{
++		.name		= "main",
++		.offset		= 0x00000000,
++		.size		= MTDPART_SIZ_FULL,
++	},
++};
++
++static struct mtd_partition *nand_part_info(int size, int *num_partitions)
++{
++	*num_partitions = ARRAY_SIZE(nand_partitions);
++	return nand_partitions;
++}
++
++struct atmel_nand_data atstk1006_nand_data __initdata = {
++	.cle		= 21,
++	.ale		= 22,
++	.rdy_pin	= GPIO_PIN_PB(30),
++	.enable_pin	= GPIO_PIN_PB(29),
++	.partition_info	= nand_part_info,
++};
++#endif
++
+ struct eth_addr {
+ 	u8 addr[6];
+ };
+@@ -212,6 +280,12 @@ static int __init atstk1002_init(void)
  
- #ifdef CONFIG_MTD_PARTITIONS
-@@ -514,7 +514,7 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
- 	if ((!partitions) || (num_partitions == 0)) {
- 		printk(KERN_ERR "atmel_nand: No parititions defined, or unsupported device.\n");
- 		res = ENXIO;
--		goto release;
-+		goto err_no_partitions;
- 	}
+ 	at32_add_system_devices();
  
- 	res = add_mtd_partitions(mtd, partitions, num_partitions);
-@@ -526,17 +526,19 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
- 		return res;
- 
- #ifdef CONFIG_MTD_PARTITIONS
--release:
-+err_no_partitions:
- #endif
- 	nand_release(mtd);
--
--out:
--	iounmap(host->ecc);
--
--err_ecc_ioremap:
-+err_scan_tail:
-+err_scan_ident:
-+err_no_card:
- 	atmel_nand_disable(host);
- 	platform_set_drvdata(pdev, NULL);
-+	if (host->ecc)
-+		iounmap(host->ecc);
-+err_ecc_ioremap:
- 	iounmap(host->io_base);
-+err_nand_ioremap:
- 	kfree(host);
- 	return res;
- }
-@@ -553,8 +555,9 @@ static int __devexit atmel_nand_remove(struct platform_device *pdev)
- 
- 	atmel_nand_disable(host);
- 
-+	if (host->ecc)
-+		iounmap(host->ecc);
- 	iounmap(host->io_base);
--	iounmap(host->ecc);
- 	kfree(host);
- 
- 	return 0;
++#ifdef CONFIG_BOARD_ATSTK1006
++	smc_set_timing(&nand_config, &nand_timing);
++	smc_set_configuration(3, &nand_config);
++	at32_add_device_nand(0, &atstk1006_nand_data);
++#endif
++
+ #ifdef	CONFIG_BOARD_ATSTK100X_SW2_CUSTOM
+ 	at32_add_device_usart(1);
+ #else
 -- 
 1.5.5.1
