@@ -1,19 +1,23 @@
 Received: from newsmtp5.atmel.com ([204.2.163.5] helo=sjogate2.atmel.com)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K4eY6-0006TY-Hd
+	id 1K4eY6-0006Tb-Td
 	for linux-mtd@lists.infradead.org; Fri, 06 Jun 2008 16:12:19 +0000
 Received: from bagnes.atmel.com ([10.175.100.4])
-	by sjogate2.atmel.com (8.13.6/8.13.6) with ESMTP id m56GBaXL003319
+	by sjogate2.atmel.com (8.13.6/8.13.6) with ESMTP id m56GBaLh003320
 	for <linux-mtd@lists.infradead.org>;
 	Fri, 6 Jun 2008 09:11:37 -0700 (PDT)
 From: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
 To: linux-mtd@lists.infradead.org, kernel@avr32linux.org
-Subject: [PATCH 2/8] rename at91_nand -> atmel_nand: file names and Kconfig
-Date: Fri,  6 Jun 2008 18:04:52 +0200
-Message-Id: <1212768298-13614-3-git-send-email-haavard.skinnemoen@atmel.com>
-In-Reply-To: <1212768298-13614-2-git-send-email-haavard.skinnemoen@atmel.com>
+Subject: [PATCH 6/8] avr32: atmel_nand platform code for AT32AP700x
+Date: Fri,  6 Jun 2008 18:04:56 +0200
+Message-Id: <1212768298-13614-7-git-send-email-haavard.skinnemoen@atmel.com>
+In-Reply-To: <1212768298-13614-6-git-send-email-haavard.skinnemoen@atmel.com>
 References: <1212768298-13614-1-git-send-email-haavard.skinnemoen@atmel.com>
 	<1212768298-13614-2-git-send-email-haavard.skinnemoen@atmel.com>
+	<1212768298-13614-3-git-send-email-haavard.skinnemoen@atmel.com>
+	<1212768298-13614-4-git-send-email-haavard.skinnemoen@atmel.com>
+	<1212768298-13614-5-git-send-email-haavard.skinnemoen@atmel.com>
+	<1212768298-13614-6-git-send-email-haavard.skinnemoen@atmel.com>
 Cc: Patrice VILCHEZ <patrice.vilchez@atmel.com>,
 	Andrew Victor <avictor.za@gmail.com>,
 	Haavard Skinnemoen <haavard.skinnemoen@atmel.com>,
@@ -27,159 +31,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The AT91 NAND driver needs just a few tiny modifications to work on
-AVR32 as well. Rename it atmel_nand to reflect this.
-
-Also move the ECC register definitions into drivers/mtd/nand since they
-are only useful to the atmel_nand driver, and get rid of the useless
-filename at the top of each file.
+This function initializes and adds a platform_device for a NAND flash
+interface on SMC chip select 3.
 
 Signed-off-by: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
 ---
- drivers/mtd/nand/Kconfig                           |   17 +++++++++--------
- drivers/mtd/nand/Makefile                          |    2 +-
- drivers/mtd/nand/{at91_nand.c => atmel_nand.c}     |   10 ++++------
- .../mtd/nand/atmel_nand_ecc.h                      |    6 ++----
- 4 files changed, 16 insertions(+), 19 deletions(-)
- rename drivers/mtd/nand/{at91_nand.c => atmel_nand.c} (98%)
- rename include/asm-arm/arch-at91/at91_ecc.h => drivers/mtd/nand/atmel_nand_ecc.h (93%)
+ arch/avr32/mach-at32ap/at32ap700x.c   |   52 +++++++++++++++++++++++++++++++++
+ include/asm-avr32/arch-at32ap/board.h |   13 ++++++++
+ 2 files changed, 65 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 5076faf..7bbf386 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -272,7 +272,7 @@ config MTD_NAND_CS553X
- 
- 	  If you say "m", the module will be called "cs553x_nand.ko".
- 
--config MTD_NAND_AT91
-+config MTD_NAND_ATMEL
- 	bool "Support for NAND Flash / SmartMedia on AT91"
- 	depends on ARCH_AT91
- 	help
-@@ -280,14 +280,15 @@ config MTD_NAND_AT91
- 	  on Atmel AT91 processors.
- choice
- 	prompt "ECC management for NAND Flash / SmartMedia on AT91"
--	depends on MTD_NAND_AT91
-+	depends on MTD_NAND_ATMEL
- 
--config MTD_NAND_AT91_ECC_HW
-+config MTD_NAND_ATMEL_ECC_HW
- 	bool "Hardware ECC"
- 	depends on ARCH_AT91SAM9263 || ARCH_AT91SAM9260
- 	help
--	  Uses hardware ECC provided by the at91sam9260/at91sam9263 chip
--	  instead of software ECC.
-+	  Use hardware ECC instead of software ECC when the chip
-+	  supports it.
-+
- 	  The hardware ECC controller is capable of single bit error
- 	  correction and 2-bit random detection per page.
- 
-@@ -297,16 +298,16 @@ config MTD_NAND_AT91_ECC_HW
- 
- 	  If unsure, say Y
- 
--config MTD_NAND_AT91_ECC_SOFT
-+config MTD_NAND_ATMEL_ECC_SOFT
- 	bool "Software ECC"
- 	help
--	  Uses software ECC.
-+	  Use software ECC.
- 
- 	  NB : hardware and software ECC schemes are incompatible.
- 	  If you switch from one to another, you'll have to erase your
- 	  mtd partition.
- 
--config MTD_NAND_AT91_ECC_NONE
-+config MTD_NAND_ATMEL_ECC_NONE
- 	bool "No ECC (testing only, DANGEROUS)"
- 	depends on DEBUG_KERNEL
- 	help
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index a6e74a4..e3d738a 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -24,7 +24,7 @@ obj-$(CONFIG_MTD_NAND_TS7250)		+= ts7250.o
- obj-$(CONFIG_MTD_NAND_NANDSIM)		+= nandsim.o
- obj-$(CONFIG_MTD_NAND_CS553X)		+= cs553x_nand.o
- obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
--obj-$(CONFIG_MTD_NAND_AT91)		+= at91_nand.o
-+obj-$(CONFIG_MTD_NAND_ATMEL)		+= atmel_nand.o
- obj-$(CONFIG_MTD_NAND_CM_X270)		+= cmx270_nand.o
- obj-$(CONFIG_MTD_NAND_BASLER_EXCITE)	+= excite_nandflash.o
- obj-$(CONFIG_MTD_NAND_PXA3xx)		+= pxa3xx_nand.o
-diff --git a/drivers/mtd/nand/at91_nand.c b/drivers/mtd/nand/atmel_nand.c
-similarity index 98%
-rename from drivers/mtd/nand/at91_nand.c
-rename to drivers/mtd/nand/atmel_nand.c
-index 2dcaeea..51b7031 100644
---- a/drivers/mtd/nand/at91_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -1,6 +1,4 @@
- /*
-- * drivers/mtd/nand/at91_nand.c
-- *
-  *  Copyright (C) 2003 Rick Bronson
-  *
-  *  Derived from drivers/mtd/nand/autcpu12.c
-@@ -36,13 +34,13 @@
- 
- #include <asm/arch/board.h>
- 
--#ifdef CONFIG_MTD_NAND_AT91_ECC_HW
-+#ifdef CONFIG_MTD_NAND_ATMEL_ECC_HW
- #define hard_ecc	1
- #else
- #define hard_ecc	0
+diff --git a/arch/avr32/mach-at32ap/at32ap700x.c b/arch/avr32/mach-at32ap/at32ap700x.c
+index 0f24b4f..b65d3e0 100644
+--- a/arch/avr32/mach-at32ap/at32ap700x.c
++++ b/arch/avr32/mach-at32ap/at32ap700x.c
+@@ -1730,6 +1730,58 @@ fail:
  #endif
  
--#ifdef CONFIG_MTD_NAND_AT91_ECC_NONE
-+#ifdef CONFIG_MTD_NAND_ATMEL_ECC_NONE
- #define no_ecc		1
- #else
- #define no_ecc		0
-@@ -54,7 +52,7 @@
- #define ecc_writel(add, reg, value)			\
- 	__raw_writel((value), add + AT91_ECC_##reg)
+ /* --------------------------------------------------------------------
++ * NAND Flash / SmartMedia
++ * -------------------------------------------------------------------- */
++static struct resource smc_cs3_resource[] __initdata = {
++	{
++		.start	= 0x0c000000,
++		.end	= 0x0fffffff,
++		.flags	= IORESOURCE_MEM,
++	}, {
++		.start	= 0xfff03c00,
++		.end	= 0xfff03fff,
++		.flags	= IORESOURCE_MEM,
++	},
++};
++
++struct platform_device *__init
++at32_add_device_nand(unsigned int id, struct atmel_nand_data *data)
++{
++	struct platform_device *pdev;
++
++	if (id != 0 || !data)
++		return NULL;
++
++	pdev = platform_device_alloc("atmel_nand", id);
++	if (!pdev)
++		goto fail;
++
++	if (platform_device_add_resources(pdev, smc_cs3_resource,
++				ARRAY_SIZE(smc_cs3_resource)))
++		goto fail;
++
++	if (platform_device_add_data(pdev, data,
++				sizeof(struct atmel_nand_data)))
++		goto fail;
++
++	set_ebi_sfr_bits(HMATRIX_BIT(CS3A));
++	if (data->enable_pin)
++		at32_select_gpio(data->enable_pin,
++				AT32_GPIOF_OUTPUT | AT32_GPIOF_HIGH);
++	if (data->rdy_pin)
++		at32_select_gpio(data->rdy_pin, 0);
++	if (data->det_pin)
++		at32_select_gpio(data->det_pin, 0);
++
++	platform_device_add(pdev);
++	return pdev;
++
++fail:
++	platform_device_put(pdev);
++	return NULL;
++}
++
++/* --------------------------------------------------------------------
+  * AC97C
+  * -------------------------------------------------------------------- */
+ static struct resource atmel_ac97c0_resource[] __initdata = {
+diff --git a/include/asm-avr32/arch-at32ap/board.h b/include/asm-avr32/arch-at32ap/board.h
+index a4e2d28..cc5906c 100644
+--- a/include/asm-avr32/arch-at32ap/board.h
++++ b/include/asm-avr32/arch-at32ap/board.h
+@@ -85,4 +85,17 @@ struct platform_device *
+ at32_add_device_cf(unsigned int id, unsigned int extint,
+ 		struct cf_platform_data *data);
  
--#include <asm/arch/at91_ecc.h> /* AT91SAM9260/3 ECC registers */
-+#include "atmel_nand_ecc.h"	/* Hardware ECC registers */
- 
- /* oob layout for large page size
-  * bad block info is on bytes 0 and 1
-@@ -588,5 +586,5 @@ module_exit(at91_nand_exit);
- 
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Rick Bronson");
--MODULE_DESCRIPTION("NAND/SmartMedia driver for AT91RM9200 / AT91SAM9");
-+MODULE_DESCRIPTION("NAND/SmartMedia driver for AT91 / AVR32");
- MODULE_ALIAS("platform:at91_nand");
-diff --git a/include/asm-arm/arch-at91/at91_ecc.h b/drivers/mtd/nand/atmel_nand_ecc.h
-similarity index 93%
-rename from include/asm-arm/arch-at91/at91_ecc.h
-rename to drivers/mtd/nand/atmel_nand_ecc.h
-index 1e5a8ca..170db86 100644
---- a/include/asm-arm/arch-at91/at91_ecc.h
-+++ b/drivers/mtd/nand/atmel_nand_ecc.h
-@@ -1,6 +1,4 @@
- /*
-- * include/asm-arm/arch-at91/at91_ecc.h
-- *
-  * Error Corrected Code Controller (ECC) - System peripherals regsters.
-  * Based on AT91SAM9260 datasheet revision B.
-  *
-@@ -10,8 +8,8 @@
-  * option) any later version.
-  */
- 
--#ifndef AT91_ECC_H
--#define AT91_ECC_H
-+#ifndef ATMEL_NAND_ECC_H
-+#define ATMEL_NAND_ECC_H
- 
- #define AT91_ECC_CR		0x00			/* Control register */
- #define		AT91_ECC_RST		(1 << 0)		/* Reset parity */
++/* NAND / SmartMedia */
++struct atmel_nand_data {
++	int	enable_pin;	/* chip enable */
++	int	det_pin;	/* card detect */
++	int	rdy_pin;	/* ready/busy */
++	u8	ale;		/* address line number connected to ALE */
++	u8	cle;		/* address line number connected to CLE */
++	u8	bus_width_16;	/* buswidth is 16 bit */
++	struct mtd_partition *(*partition_info)(int size, int *num_partitions);
++};
++struct platform_device *
++at32_add_device_nand(unsigned int id, struct atmel_nand_data *data);
++
+ #endif /* __ASM_ARCH_BOARD_H */
 -- 
 1.5.5.1
