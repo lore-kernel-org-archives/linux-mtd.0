@@ -1,24 +1,19 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K4eiI-0001ug-9J
-	for linux-mtd@lists.infradead.org; Fri, 06 Jun 2008 16:22:51 +0000
-Date: Fri, 6 Jun 2008 18:22:39 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Alexey Korolev <akorolev@infradead.org>
-Subject: Re: [RFC/PATCH 2/3] NAND multiple plane feature
-Message-ID: <20080606162238.GA30407@logfs.org>
-References: <alpine.LFD.1.10.0805281342150.23606@pentafluge.infradead.org>
-	<20080601174841.GH13094@logfs.org>
-	<alpine.LFD.1.10.0806031754030.32134@pentafluge.infradead.org>
-	<20080605210929.GB19234@logfs.org>
-	<alpine.LFD.1.10.0806061448270.26291@pentafluge.infradead.org>
+Received: from el-out-1112.google.com ([209.85.162.176])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K4fTl-0006TM-Qq
+	for linux-mtd@lists.infradead.org; Fri, 06 Jun 2008 17:11:54 +0000
+Received: by el-out-1112.google.com with SMTP id o28so309318ele.2
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 06 Jun 2008 10:11:52 -0700 (PDT)
+Message-ID: <a791a2dc0806061011yc1d0021m96c0a64260f03a83@mail.gmail.com>
+Date: Fri, 6 Jun 2008 14:11:51 -0300
+From: "Alaor Koppe" <alakoppe@gmail.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: NAND and vfat
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <alpine.LFD.1.10.0806061448270.26291@pentafluge.infradead.org>
-Cc: linux-mtd@lists.infradead.org, tglx@linutronix.de, dwmw2@infradead.org,
-	vasiliy.leonenko@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,27 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 6 June 2008 15:01:05 +0100, Alexey Korolev wrote:
->
-> We just tried to check your scenario. It is not
-> possible to overwrite something if JFFS2 returned -ENOSPC until
-> something got deleted. 
-> 
-> In fact our test suite do not include this test case. We have another.
-> Write file1 at about 5% of whole space, write file2 for rest of space.
-> Delete file1. Do step 2. 
-> In this not so good case we got the following numbers:
-> 
-> single-plane:
-> 73 sec 424541 usec
-> 
-> dual-plane:
-> 69 sec 428637 usec
+I have mounted my jfss2 on NAND Flash and created my file.img (with
+fat12 filesystem) and when I try to mount I get:
 
-An improvement instead of the expected regression.  Impressive.
+# mount -t msdos file.img fat -o loop,ro
+FAT: bogus number of reserved sectors
+VFS: Can't find a valid FAT filesystem on dev loop0.
+mount: Mounting /mnt/file.img on /mnt/fat failed: Invalid argument
 
-Jörn
+I don't know what is happening, anybody can help me?
+(I am using a kit from Embedded Artists with LPC2468 and
+uClinux-dist-20051014 with kernel 2.6.11)
+
+Best Regards
 
 -- 
-tglx1 thinks that joern should get a (TM) for "Thinking Is Hard"
--- Thomas Gleixner
+Alaor Abel Koppe
