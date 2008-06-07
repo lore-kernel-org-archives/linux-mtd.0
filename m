@@ -1,22 +1,25 @@
-Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
+Received: from rv-out-0708.google.com ([209.85.198.242])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K4wqd-0001e5-LP
-	for linux-mtd@lists.infradead.org; Sat, 07 Jun 2008 11:44:40 +0000
-Date: Sat, 7 Jun 2008 15:44:38 +0400
-From: Anton Vorontsov <avorontsov@ru.mvista.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v2] [NAND] driver extension to support NAND on TQM85xx
-	modules
-Message-ID: <20080607114438.GA23329@polina.dev.rtsoft.ru>
-References: <4847A8DA.6010406@grandegger.com>
-	<1212825701.32207.403.camel@pmac.infradead.org>
+	id 1K50Xj-0004rB-OF
+	for linux-mtd@lists.infradead.org; Sat, 07 Jun 2008 15:41:24 +0000
+Received: by rv-out-0708.google.com with SMTP id b17so2067487rvf.42
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 07 Jun 2008 08:41:21 -0700 (PDT)
+Message-ID: <cd73a99e0806070841m22f2364dy916e7b1c6f2cdeda@mail.gmail.com>
+Date: Sat, 7 Jun 2008 17:41:21 +0200
+From: "Andrew Victor" <avictor.za@gmail.com>
+To: "Haavard Skinnemoen" <haavard.skinnemoen@atmel.com>
+Subject: Re: [PATCH 1/8] at91_nand: Convert to generic GPIO API
+In-Reply-To: <1212768298-13614-2-git-send-email-haavard.skinnemoen@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf8
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <1212825701.32207.403.camel@pmac.infradead.org>
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Wolfgang Grandegger <wg@grandegger.com>
-Reply-To: avorontsov@ru.mvista.com
+References: <1212768298-13614-1-git-send-email-haavard.skinnemoen@atmel.com>
+	<1212768298-13614-2-git-send-email-haavard.skinnemoen@atmel.com>
+Cc: Patrice VILCHEZ <patrice.vilchez@atmel.com>, kernel@avr32linux.org,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Nicolas Ferre <nicolas.ferre@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,37 +29,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Jun 07, 2008 at 09:01:41AM +0100, David Woodhouse wrote:
-> On Thu, 2008-06-05 at 10:50 +0200, Wolfgang Grandegger wrote:
-> > [NAND] driver extension to support NAND on TQM85xx modules
-> > 
-> > This patch extends the FSL UPM NAND driver from Anton Vorontsov to
-> > support NAND on the TQM85xx modules. Unfortunately, the hardware does
-> > not support the R/B pins of the NAND chip and therefore the specified
-> > maximum delay time must used. It therefore re-introduces the chip-delay
-> > property.
-> > 
-> > Note: this patch is based on various patches from  Anton Vorontsov posted
-> >       to this list:
-> > 
-> >       http://ozlabs.org/pipermail/linuxppc-dev/2008-April/055587.html.
-> 
-> Do you also want me to apply that patch (on which this one depends)?
-> It says 'Signed-off-by: not yet' ...
+hi,
 
-Well, I have no objections to applying that patch, feel free to add my
-sign off. But if OF people will NAK the bindings, I'll have to bother you
-once again with the update to that driver. :-/
+> No point in using an AT91-specific GPIO API when the generic API works
+> just as well.
 
-I've tried to push the bindings several times already, and always there
-were [absolutely legitimate] issues. The last RFC is here (along with
-other new bindings):
+Driver existed before there was a generic GPIO API.  :)
 
-http://ozlabs.org/pipermail/linuxppc-dev/2008-June/057244.html
 
-so far no comments.. Probably a good sign. :-)
+> Signed-off-by: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
 
--- 
-Anton Vorontsov
-email: cbouatmailru@gmail.com
-irc://irc.freenode.net/bd2
+Acked-by: Andrew Victor <linux@maxim.org.za>
