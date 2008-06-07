@@ -1,29 +1,30 @@
-Received: from newsmtp5.atmel.com ([204.2.163.5] helo=sjogate2.atmel.com)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K4eYR-00072B-D0
-	for linux-mtd@lists.infradead.org; Fri, 06 Jun 2008 16:12:39 +0000
-Received: from bagnes.atmel.com ([10.175.100.4])
-	by sjogate2.atmel.com (8.13.6/8.13.6) with ESMTP id m56GBvIT003381
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 6 Jun 2008 09:11:57 -0700 (PDT)
-From: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
-To: linux-mtd@lists.infradead.org, kernel@avr32linux.org
-Subject: [PATCH 8/8] avr32: Add support for ATSTK1006
-Date: Fri,  6 Jun 2008 18:04:58 +0200
-Message-Id: <1212768298-13614-9-git-send-email-haavard.skinnemoen@atmel.com>
-In-Reply-To: <1212768298-13614-8-git-send-email-haavard.skinnemoen@atmel.com>
-References: <1212768298-13614-1-git-send-email-haavard.skinnemoen@atmel.com>
-	<1212768298-13614-2-git-send-email-haavard.skinnemoen@atmel.com>
-	<1212768298-13614-3-git-send-email-haavard.skinnemoen@atmel.com>
-	<1212768298-13614-4-git-send-email-haavard.skinnemoen@atmel.com>
-	<1212768298-13614-5-git-send-email-haavard.skinnemoen@atmel.com>
-	<1212768298-13614-6-git-send-email-haavard.skinnemoen@atmel.com>
-	<1212768298-13614-7-git-send-email-haavard.skinnemoen@atmel.com>
-	<1212768298-13614-8-git-send-email-haavard.skinnemoen@atmel.com>
-Cc: Patrice VILCHEZ <patrice.vilchez@atmel.com>,
-	Andrew Victor <avictor.za@gmail.com>,
-	Haavard Skinnemoen <haavard.skinnemoen@atmel.com>,
-	Nicolas Ferre <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org
+From: Tony Lindgren <tony@atomide.com>
+To: linux-arm-kernel@lists.arm.linux.org.uk
+Subject: [PATCH 16/21] ARM: OMAP: Change omap_cf.c and omap_nor.c to use
+	omap_readw/writew instead of __REG
+Date: Fri,  6 Jun 2008 18:30:48 -0700
+Message-Id: <1212802253-17797-17-git-send-email-tony@atomide.com>
+In-Reply-To: <1212802253-17797-16-git-send-email-tony@atomide.com>
+References: omap-upstream-2008-06-06-183049
+	<1212802253-17797-1-git-send-email-tony@atomide.com>
+	<1212802253-17797-2-git-send-email-tony@atomide.com>
+	<1212802253-17797-3-git-send-email-tony@atomide.com>
+	<1212802253-17797-4-git-send-email-tony@atomide.com>
+	<1212802253-17797-5-git-send-email-tony@atomide.com>
+	<1212802253-17797-6-git-send-email-tony@atomide.com>
+	<1212802253-17797-7-git-send-email-tony@atomide.com>
+	<1212802253-17797-8-git-send-email-tony@atomide.com>
+	<1212802253-17797-9-git-send-email-tony@atomide.com>
+	<1212802253-17797-10-git-send-email-tony@atomide.com>
+	<1212802253-17797-11-git-send-email-tony@atomide.com>
+	<1212802253-17797-12-git-send-email-tony@atomide.com>
+	<1212802253-17797-13-git-send-email-tony@atomide.com>
+	<1212802253-17797-14-git-send-email-tony@atomide.com>
+	<1212802253-17797-15-git-send-email-tony@atomide.com>
+	<1212802253-17797-16-git-send-email-tony@atomide.com>
+Cc: Tony Lindgren <tony@atomide.com>, David Brownell <david-b@pacbell.net>,
+	linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-pcmcia@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,144 +34,198 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The ATSTK1006 is basically an upgraded version of ATSTK1002 with 128
-MB SDRAM and 256 MB NAND flash on board.
+Change omap_cf.c and omap_nor.c to use omap_readw/writew instead of __REG.
+This is needed for multi-omap in the future.
 
-Otherwise, the board is very similar to the ATSTK1002, so it uses the
-same board support file.
+Cc: David Brownell <david-b@pacbell.net>
+Cc: linux-pcmcia@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
+Signed-off-by: Tony Lindren <tony@atomide.com>
 
-Signed-off-by: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
----
- arch/avr32/boards/atstk1000/Kconfig     |    4 ++
- arch/avr32/boards/atstk1000/Makefile    |    1 +
- arch/avr32/boards/atstk1000/atstk1002.c |   78 ++++++++++++++++++++++++++++++-
- 3 files changed, 81 insertions(+), 2 deletions(-)
-
-diff --git a/arch/avr32/boards/atstk1000/Kconfig b/arch/avr32/boards/atstk1000/Kconfig
-index af90b00..8dc4821 100644
---- a/arch/avr32/boards/atstk1000/Kconfig
-+++ b/arch/avr32/boards/atstk1000/Kconfig
-@@ -18,6 +18,10 @@ config BOARD_ATSTK1004
- 	bool "ATSTK1004"
- 	select CPU_AT32AP7002
+diff --git a/arch/arm/mach-omap1/board-osk.c b/arch/arm/mach-omap1/board-osk.c
+index a66505f..82ec34c 100644
+--- a/arch/arm/mach-omap1/board-osk.c
++++ b/arch/arm/mach-omap1/board-osk.c
+@@ -267,13 +267,17 @@ static struct i2c_board_info __initdata osk_i2c_board_info[] = {
  
-+config BOARD_ATSTK1006
-+	bool "ATSTK1006"
-+	select CPU_AT32AP7000
+ static void __init osk_init_smc91x(void)
+ {
++	u32 l;
 +
- endchoice
+ 	if ((gpio_request(0, "smc_irq")) < 0) {
+ 		printk("Error requesting gpio 0 for smc91x irq\n");
+ 		return;
+ 	}
  
+ 	/* Check EMIFS wait states to fix errors with SMC_GET_PKT_HDR */
+-	EMIFS_CCS(1) |= 0x3;
++	l = omap_readl(EMIFS_CCS(1));
++	l |= 0x3;
++	omap_writel(l, EMIFS_CCS(1));
+ }
  
-diff --git a/arch/avr32/boards/atstk1000/Makefile b/arch/avr32/boards/atstk1000/Makefile
-index beead86..edecee0 100644
---- a/arch/avr32/boards/atstk1000/Makefile
-+++ b/arch/avr32/boards/atstk1000/Makefile
-@@ -2,3 +2,4 @@ obj-y				+= setup.o flash.o
- obj-$(CONFIG_BOARD_ATSTK1002)	+= atstk1002.o
- obj-$(CONFIG_BOARD_ATSTK1003)	+= atstk1003.o
- obj-$(CONFIG_BOARD_ATSTK1004)	+= atstk1004.o
-+obj-$(CONFIG_BOARD_ATSTK1006)	+= atstk1002.o
-diff --git a/arch/avr32/boards/atstk1000/atstk1002.c b/arch/avr32/boards/atstk1000/atstk1002.c
-index 000eb42..5bfaf4d 100644
---- a/arch/avr32/boards/atstk1000/atstk1002.c
-+++ b/arch/avr32/boards/atstk1000/atstk1002.c
-@@ -1,7 +1,7 @@
- /*
-- * ATSTK1002 daughterboard-specific init code
-+ * ATSTK1002/ATSTK1006 daughterboard-specific init code
-  *
-- * Copyright (C) 2005-2006 Atmel Corporation
-+ * Copyright (C) 2005-2007 Atmel Corporation
-  *
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License version 2 as
-@@ -29,6 +29,74 @@
- #include "atstk1000.h"
+ static void __init osk_init_cf(void)
+@@ -526,13 +530,16 @@ static void __init osk_mistral_init(void) { }
  
+ static void __init osk_init(void)
+ {
++	u32 l;
++
+ 	/* Workaround for wrong CS3 (NOR flash) timing
+ 	 * There are some U-Boot versions out there which configure
+ 	 * wrong CS3 memory timings. This mainly leads to CRC
+ 	 * or similar errors if you use NOR flash (e.g. with JFFS2)
+ 	 */
+-	if (EMIFS_CCS(3) != EMIFS_CS3_VAL)
+-		EMIFS_CCS(3) = EMIFS_CS3_VAL;
++	l = omap_readl(EMIFS_CCS(3));
++	if (l != EMIFS_CS3_VAL)
++		omap_writel(EMIFS_CS3_VAL, EMIFS_CCS(3));
  
-+/*
-+ * The ATSTK1006 daughterboard is very similar to the ATSTK1002. Both
-+ * have the AT32AP7000 chip on board; the difference is that the
-+ * STK1006 has 128 MB SDRAM (the STK1002 uses the 8 MB SDRAM chip on
-+ * the STK1000 motherboard) and 256 MB NAND flash (the STK1002 has
-+ * none.)
-+ *
-+ * The RAM difference is handled by the boot loader, so the only
-+ * difference we end up handling here is the NAND flash.
-+ */
-+#ifdef CONFIG_BOARD_ATSTK1006
-+#include <linux/mtd/partitions.h>
-+#include <asm/arch/smc.h>
+ 	osk_flash_resource.end = osk_flash_resource.start = omap_cs3_phys();
+ 	osk_flash_resource.end += SZ_32M - 1;
+diff --git a/drivers/mtd/maps/omap_nor.c b/drivers/mtd/maps/omap_nor.c
+index 240b0e2..fb7ba78 100644
+--- a/drivers/mtd/maps/omap_nor.c
++++ b/drivers/mtd/maps/omap_nor.c
+@@ -60,13 +60,22 @@ struct omapflash_info {
+ static void omap_set_vpp(struct map_info *map, int enable)
+ {
+ 	static int	count;
+-
+-	if (enable) {
+-		if (count++ == 0)
+-			OMAP_EMIFS_CONFIG_REG |= OMAP_EMIFS_CONFIG_WP;
+-	} else {
+-		if (count && (--count == 0))
+-			OMAP_EMIFS_CONFIG_REG &= ~OMAP_EMIFS_CONFIG_WP;
++	u32 l;
 +
-+static struct smc_timing nand_timing __initdata = {
-+	.ncs_read_setup		= 0,
-+	.nrd_setup		= 10,
-+	.ncs_write_setup	= 0,
-+	.nwe_setup		= 10,
-+
-+	.ncs_read_pulse		= 30,
-+	.nrd_pulse		= 15,
-+	.ncs_write_pulse	= 30,
-+	.nwe_pulse		= 15,
-+
-+	.read_cycle		= 30,
-+	.write_cycle		= 30,
-+
-+	.ncs_read_recover	= 0,
-+	.nrd_recover		= 15,
-+	.ncs_write_recover	= 0,
-+	/* WE# high -> RE# low min 60 ns */
-+	.nwe_recover		= 50,
-+};
-+
-+static struct smc_config nand_config __initdata = {
-+	.bus_width		= 1,
-+	.nrd_controlled		= 1,
-+	.nwe_controlled		= 1,
-+	.nwait_mode		= 0,
-+	.byte_write		= 0,
-+	.tdf_cycles		= 2,
-+	.tdf_mode		= 0,
-+};
-+
-+static struct mtd_partition nand_partitions[] = {
-+	{
-+		.name		= "main",
-+		.offset		= 0x00000000,
-+		.size		= MTDPART_SIZ_FULL,
-+	},
-+};
-+
-+static struct mtd_partition *nand_part_info(int size, int *num_partitions)
-+{
-+	*num_partitions = ARRAY_SIZE(nand_partitions);
-+	return nand_partitions;
-+}
-+
-+struct atmel_nand_data atstk1006_nand_data __initdata = {
-+	.cle		= 21,
-+	.ale		= 22,
-+	.rdy_pin	= GPIO_PIN_PB(30),
-+	.enable_pin	= GPIO_PIN_PB(29),
-+	.partition_info	= nand_part_info,
-+};
-+#endif
-+
- struct eth_addr {
- 	u8 addr[6];
- };
-@@ -212,6 +280,12 @@ static int __init atstk1002_init(void)
++	if (cpu_class_is_omap1()) {
++		if (enable) {
++			if (count++ == 0) {
++				l = omap_readl(EMIFS_CONFIG);
++				l |= OMAP_EMIFS_CONFIG_WP;
++				omap_writel(l, EMIFS_CONFIG);
++			}
++		} else {
++			if (count && (--count == 0)) {
++				l = omap_readl(EMIFS_CONFIG);
++				l &= ~OMAP_EMIFS_CONFIG_WP;
++				omap_writel(l, EMIFS_CONFIG);
++			}
++		}
+ 	}
+ }
  
- 	at32_add_system_devices();
+diff --git a/drivers/pcmcia/omap_cf.c b/drivers/pcmcia/omap_cf.c
+index 46314b4..569b746 100644
+--- a/drivers/pcmcia/omap_cf.c
++++ b/drivers/pcmcia/omap_cf.c
+@@ -38,19 +38,19 @@
+ #define	CF_BASE	0xfffe2800
  
-+#ifdef CONFIG_BOARD_ATSTK1006
-+	smc_set_timing(&nand_config, &nand_timing);
-+	smc_set_configuration(3, &nand_config);
-+	at32_add_device_nand(0, &atstk1006_nand_data);
-+#endif
-+
- #ifdef	CONFIG_BOARD_ATSTK100X_SW2_CUSTOM
- 	at32_add_device_usart(1);
- #else
--- 
-1.5.5.1
+ /* status; read after IRQ */
+-#define CF_STATUS_REG		__REG16(CF_BASE + 0x00)
++#define CF_STATUS			(CF_BASE + 0x00)
+ #	define	CF_STATUS_BAD_READ	(1 << 2)
+ #	define	CF_STATUS_BAD_WRITE	(1 << 1)
+ #	define	CF_STATUS_CARD_DETECT	(1 << 0)
+ 
+ /* which chipselect (CS0..CS3) is used for CF (active low) */
+-#define CF_CFG_REG		__REG16(CF_BASE + 0x02)
++#define CF_CFG				(CF_BASE + 0x02)
+ 
+ /* card reset */
+-#define CF_CONTROL_REG		__REG16(CF_BASE + 0x04)
++#define CF_CONTROL			(CF_BASE + 0x04)
+ #	define	CF_CONTROL_RESET	(1 << 0)
+ 
+-#define omap_cf_present() (!(CF_STATUS_REG & CF_STATUS_CARD_DETECT))
++#define omap_cf_present() (!(omap_readw(CF_STATUS) & CF_STATUS_CARD_DETECT))
+ 
+ /*--------------------------------------------------------------------------*/
+ 
+@@ -139,11 +139,11 @@ omap_cf_set_socket(struct pcmcia_socket *sock, struct socket_state_t *s)
+ 		return -EINVAL;
+ 	}
+ 
+-	control = CF_CONTROL_REG;
++	control = omap_readw(CF_CONTROL);
+ 	if (s->flags & SS_RESET)
+-		CF_CONTROL_REG = CF_CONTROL_RESET;
++		omap_writew(CF_CONTROL_RESET, CF_CONTROL);
+ 	else
+-		CF_CONTROL_REG = 0;
++		omap_writew(0, CF_CONTROL);
+ 
+ 	pr_debug("%s: Vcc %d, io_irq %d, flags %04x csc %04x\n",
+ 		driver_name, s->Vcc, s->io_irq, s->flags, s->csc_mask);
+@@ -270,7 +270,7 @@ static int __init omap_cf_probe(struct platform_device *pdev)
+ 	omap_cfg_reg(V10_1610_CF_IREQ);
+ 	omap_cfg_reg(W10_1610_CF_RESET);
+ 
+-	CF_CFG_REG = ~(1 << seg);
++	omap_writew(~(1 << seg), CF_CFG);
+ 
+ 	pr_info("%s: cs%d on irq %d\n", driver_name, seg, irq);
+ 
+@@ -279,14 +279,15 @@ static int __init omap_cf_probe(struct platform_device *pdev)
+ 	 * CF/PCMCIA variants...
+ 	 */
+ 	pr_debug("%s: cs%d, previous ccs %08x acs %08x\n", driver_name,
+-			seg, EMIFS_CCS(seg), EMIFS_ACS(seg));
+-	EMIFS_CCS(seg) = 0x0004a1b3;	/* synch mode 4 etc */
+-	EMIFS_ACS(seg) = 0x00000000;	/* OE hold/setup */
++		seg, omap_readl(EMIFS_CCS(seg)), omap_readl(EMIFS_ACS(seg)));
++	omap_writel(0x0004a1b3, EMIFS_CCS(seg));	/* synch mode 4 etc */
++	omap_writel(0x00000000, EMIFS_ACS(seg));	/* OE hold/setup */
+ 
+ 	/* CF uses armxor_ck, which is "always" available */
+ 
+ 	pr_debug("%s: sts %04x cfg %04x control %04x %s\n", driver_name,
+-		CF_STATUS_REG, CF_CFG_REG, CF_CONTROL_REG,
++		omap_readw(CF_STATUS), omap_readw(CF_CFG),
++		omap_readw(CF_CONTROL),
+ 		omap_cf_present() ? "present" : "(not present)");
+ 
+ 	cf->socket.owner = THIS_MODULE;
+diff --git a/include/asm-arm/arch-omap/tc.h b/include/asm-arm/arch-omap/tc.h
+index 8ded218..65a9c82 100644
+--- a/include/asm-arm/arch-omap/tc.h
++++ b/include/asm-arm/arch-omap/tc.h
+@@ -75,16 +75,14 @@
+ #ifndef	__ASSEMBLER__
+ 
+ /* EMIF Slow Interface Configuration Register */
+-#define	OMAP_EMIFS_CONFIG_REG	__REG32(EMIFS_CONFIG)
+-
+ #define OMAP_EMIFS_CONFIG_FR		(1 << 4)
+ #define OMAP_EMIFS_CONFIG_PDE		(1 << 3)
+ #define OMAP_EMIFS_CONFIG_PWD_EN	(1 << 2)
+ #define OMAP_EMIFS_CONFIG_BM		(1 << 1)
+ #define OMAP_EMIFS_CONFIG_WP		(1 << 0)
+ 
+-#define EMIFS_CCS(n)		__REG32(EMIFS_CS0_CONFIG + (4 * (n)))
+-#define EMIFS_ACS(n)		__REG32(EMIFS_ACS0 + (4 * (n)))
++#define EMIFS_CCS(n)		(EMIFS_CS0_CONFIG + (4 * (n)))
++#define EMIFS_ACS(n)		(EMIFS_ACS0 + (4 * (n)))
+ 
+ /* Almost all documentation for chip and board memory maps assumes
+  * BM is clear.  Most devel boards have a switch to control booting
+@@ -93,13 +91,13 @@
+  */
+ static inline u32 omap_cs0_phys(void)
+ {
+-	return (OMAP_EMIFS_CONFIG_REG & OMAP_EMIFS_CONFIG_BM)
++	return (omap_readl(EMIFS_CONFIG) & OMAP_EMIFS_CONFIG_BM)
+ 			?  OMAP_CS3_PHYS : 0;
+ }
+ 
+ static inline u32 omap_cs3_phys(void)
+ {
+-	return (OMAP_EMIFS_CONFIG_REG & OMAP_EMIFS_CONFIG_BM)
++	return (omap_readl(EMIFS_CONFIG) & OMAP_EMIFS_CONFIG_BM)
+ 			? 0 : OMAP_CS3_PHYS;
+ }
+ 
