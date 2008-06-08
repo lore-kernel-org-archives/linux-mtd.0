@@ -1,20 +1,21 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K5JmE-0006Il-Tl
-	for linux-mtd@lists.infradead.org; Sun, 08 Jun 2008 12:13:39 +0000
-Date: Sun, 8 Jun 2008 14:13:30 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Bruce_Leonard@selinc.com
-Subject: Re: mtd_info->size again (lengthy)
-Message-ID: <20080608121330.GB13200@logfs.org>
-References: <OFD87C95E7.367C9580-ON88257462.00177BAD-88257462.001EF9FC@selinc.com>
-	<20080608121020.GA13200@logfs.org>
+Received: from mail-out.m-online.net ([212.18.0.9])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K5PDK-0006C9-J8
+	for linux-mtd@lists.infradead.org; Sun, 08 Jun 2008 18:02:10 +0000
+Message-ID: <484C1E8F.4010900@grandegger.com>
+Date: Sun, 08 Jun 2008 20:01:51 +0200
+From: Wolfgang Grandegger <wg@grandegger.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20080608121020.GA13200@logfs.org>
-Cc: linux-mtd@lists.infradead.org
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v2] [NAND] driver extension to support NAND on TQM85xx
+	modules
+References: <4847A8DA.6010406@grandegger.com>
+	<1212825701.32207.403.camel@pmac.infradead.org>
+In-Reply-To: <1212825701.32207.403.camel@pmac.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linuxppc-dev@ozlabs.org, Anton Vorontsov <avorontsov@ru.mvista.com>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,15 +25,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 8 June 2008 14:10:20 +0200, Jörn Engel wrote:
+David Woodhouse wrote:
+> On Thu, 2008-06-05 at 10:50 +0200, Wolfgang Grandegger wrote:
+>> [NAND] driver extension to support NAND on TQM85xx modules
+>>
+>> This patch extends the FSL UPM NAND driver from Anton Vorontsov to
+>> support NAND on the TQM85xx modules. Unfortunately, the hardware does
+>> not support the R/B pins of the NAND chip and therefore the specified
+>> maximum delay time must used. It therefore re-introduces the chip-delay
+>> property.
+>>
+>> Note: this patch is based on various patches from  Anton Vorontsov posted
+>>       to this list:
+>>
+>>       http://ozlabs.org/pipermail/linuxppc-dev/2008-April/055587.html.
 > 
-> Comments?
+> Do you also want me to apply that patch (on which this one depends)?
+> It says 'Signed-off-by: not yet' ...
 
-And before anyone bothers complaining, the patch is completely untested,
-I haven't even compiled it.
+Anton has already answer that question.
 
-Jörn
+> You should probably comment on the removal of the OF_GPIO dependency. It
+> looks fine, since the relevant functions all get stubbed out and will do
+> the right thing, but it's worth a comment in the commit text.
 
--- 
-One of my most productive days was throwing away 1000 lines of code.
--- Ken Thompson.
+OK, will do so.
+
+Wolfgang.
