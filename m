@@ -1,26 +1,17 @@
-Received: from wf-out-1314.google.com ([209.85.200.174])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K5Xat-0002z4-GO
-	for linux-mtd@lists.infradead.org; Mon, 09 Jun 2008 02:58:51 +0000
-Received: by wf-out-1314.google.com with SMTP id 28so1940866wfc.24
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 08 Jun 2008 19:58:47 -0700 (PDT)
-Message-ID: <bae050c10806081958v5575545ay977877f3aaca7e1@mail.gmail.com>
-Date: Mon, 9 Jun 2008 10:58:47 +0800
-From: Nancy <nancydreaming@gmail.com>
-To: "Alaor Koppe" <alakoppe@gmail.com>
-Subject: Re: NAND and vfat
-In-Reply-To: <a791a2dc0806081549g74f6af40yb91d3a5e1a6c31d@mail.gmail.com>
+Received: from tesla.selinc.com ([12.110.71.2])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1K5ZEY-0006Y1-9V
+	for linux-mtd@lists.infradead.org; Mon, 09 Jun 2008 04:43:55 +0000
+In-Reply-To: <20080608121020.GA13200@logfs.org>
+To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>
+Subject: Re: mtd_info->size again (lengthy)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <a791a2dc0806061011yc1d0021m96c0a64260f03a83@mail.gmail.com>
-	<bae050c10806061841j27dab8cp48ac7b75dadf7cd1@mail.gmail.com>
-	<a791a2dc0806071251v23b74c67ne160bebc5774374b@mail.gmail.com>
-	<bae050c10806071804k7bddc290s8538ce55989118e0@mail.gmail.com>
-	<a791a2dc0806081549g74f6af40yb91d3a5e1a6c31d@mail.gmail.com>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Message-ID: <OF900336E0.BD21AFA6-ON88257463.0019C3EA-88257463.0019F5E4@selinc.com>
+From: Bruce_Leonard@selinc.com
+Date: Sun, 8 Jun 2008 21:43:33 -0700
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,39 +21,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Alaor,
-On Mon, Jun 9, 2008 at 6:49 AM, Alaor Koppe <alakoppe@gmail.com> wrote:
-> Hi Nancy
->
-> I followed what you said but something is wrong. I'm trying to mount
-> my board as a device to windows, using the vfat.img as a Backing
-> Storage File (with gadget driver).
-> Well, I created the file with 50 Mb, indicated the file to driver and
-> formated the file as vfat at Windows. I put files in this volume at
-> Windows and all works fine, but when I mount the vfat.img at board
-> with mount command (-t vfat -o loop vfat.img /mnt/fat), I can't see
-> the files that I put with Windows.
-> The gadget driver is working fine, and the mount command doesn't
-> return error when I mount the loopback file.
-> Can be an error on Vfat fs in uclinux? (I'm using 2.6.11.8-hsc0)?
-   I think you miss some important VFAT meta data which should be
-written on Nand, but due to your wrong operations, they do not.
-   Try this:
- # dd bs=1M count=10 if=/dev/zero of=vfat.img
- # loseup /dev/loop0 vfat.img
- # modprobe g_file_storage file=/dev/loop0
+J=F6rn Engel <joern@logfs.org> wrote on 06/08/2008 05:10:20 AM:
 
- On windows side:
- fast FAT or FAT32 format
- cp files ...
- unload USB device
+>=20
+> And while at it, replace the 32bit size with a 64bit blockno and 32bit
+> offset.  Unless someone is stupid enough to create devices with 4G
+> erasesize, that should last for a human lifetime or something close.
+>=20
 
- On Board:
-# rmmod g_file_storage
-# mount -t vfat -o loop vfat.img /mnt/fat
-# ls /mnt/fat
-See it ?
-
--- 
-Best wishes,
-Nancy
+What kind of block is blockno?  An erase block (which is 128K in my case)=20
+or a write block (2K)?
