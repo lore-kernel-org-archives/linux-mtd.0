@@ -1,23 +1,23 @@
-Received: from smtp120.sbc.mail.sp1.yahoo.com ([69.147.64.93])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K5kqK-0006yy-Gs
-	for linux-mtd@lists.infradead.org; Mon, 09 Jun 2008 17:07:41 +0000
-From: David Brownell <david-b@pacbell.net>
-To: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
-Subject: Re: [patch 2.6.26-rc5-git] at91_nand speedup via {read, write}s{b,
-	w}()
-Date: Mon, 9 Jun 2008 10:07:37 -0700
-References: <200806090313.28515.david-b@pacbell.net>
-	<20080609133124.0eb97e25@hskinnemo-gx745.norway.atmel.com>
-In-Reply-To: <20080609133124.0eb97e25@hskinnemo-gx745.norway.atmel.com>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1K5l4p-0000s1-9U
+	for linux-mtd@lists.infradead.org; Mon, 09 Jun 2008 17:22:39 +0000
+Date: Mon, 9 Jun 2008 19:22:17 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Jamie Lokier <jamie@shareable.org>
+Subject: Re: mtd_info->size again (lengthy)
+Message-ID: <20080609172202.GB22447@logfs.org>
+References: <OFD87C95E7.367C9580-ON88257462.00177BAD-88257462.001EF9FC@selinc.com>
+	<20080608121020.GA13200@logfs.org>
+	<20080609132117.GC29526@shareable.org>
+	<20080609143633.GA22447@logfs.org>
+	<20080609163149.GB2596@shareable.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Message-Id: <200806091007.37494.david-b@pacbell.net>
-Cc: Nicolas Ferre <nicolas.ferre@rfo.atmel.com>, linux-mtd@lists.infradead.org,
-	lkml <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20080609163149.GB2596@shareable.org>
+Cc: linux-mtd@lists.infradead.org, Bruce_Leonard@selinc.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,96 +27,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 09 June 2008, Haavard Skinnemoen wrote:
-> David Brownell <david-b@pacbell.net> wrote:
-> > This uses __raw_{read,write}s{b,w}() primitives to access data on NAND
-> > chips for more efficient I/O.
-> > 
-> > On an arm926 with memory clocked at 100 MHz, this reduced the elapsed
-> > time for a 64 MByte read by 16%.  ("dd" /dev/mtd0 to /dev/null, with
-> > an 8-bit NAND using hardware ECC and 128KB blocksize.)
+On Mon, 9 June 2008 17:31:49 +0100, Jamie Lokier wrote:
 > 
-> Nice. Here are some numbers from my setup (256 MB, 8-bit, software ECC).
+> > But mtdio is even worse.  Dude, what are you smoking? ;)
 > 
-> Before:
-> real	2m38.131s
-> user	0m0.228s
-> sys	2m37.740s
+> submit_fio suggests "file I/O" to me....  Even if I knew better, it
+> looks just that bit too much like submit_bio for something file-ish.
 > 
-> After:
-> real	2m27.404s
-> user	0m0.180s
-> sys	2m27.068s
+> submit_mtd_request or async_mtd, then! :-)
+
+No, the similarities to submit_bio are _not_ accidental.  In a perfect
+world, I would have used submit_bio.  In our less than perfect world, I
+want to retain as many similarities as possible.  We have two storage
+subsystems in the kernel that have lived their own seperate lives for
+all too long.  They should get combined by some brave soul.  And while I
+am not that brave soul, at least I can make his/her work a little
+easier.
+
+> I didn't say it's a _good_ idea!  Just that I won't be surprised when
+> someone produces hardware like that.  And, there will probably be a
+> reason you haven't thought of why they did it that way.
+
+If someone is stupid enough to create such hardware, I don't mind if
+they suffer.  Quite the contrary.  Send them the darwin award of
+hardware engineering!
+
+> > Part of the reason for asynchronous interfaces is to make parallel chips
+> > work fast without striping them.  Or rather, make them work even faster
+> > than stripes.
 > 
-> which is a 6.8% speedup. I guess hardware ECC helps...
+> And erasing simultaneous with streaming writes, let the CPU get on
+> with something else, etc.
 
-The AVR32 versions of readsb/writesb didn't look to me as if they'd
-be quite as fast as the ARM ones either.  If AVR32 has some analogue
-of "stmia r1!, {r3 - r6}" for burst 16 byte stores, it's not using
-it right now.  (What was the bug you found in its readsb?)
+Same with asynchronous erases on all chips - except that the blocks
+being erased don't need any special relationship.
 
-Yes, I'd think the win would be most visible with hardware ECC, since
-without it you've still got a second manual scan of each block.  (And
-I see you observed this too, after applying a workaround for an ECC
-erratum you just learned about...)  My numbers for one pair of trials
-(the "16%" was an average of 6 runs) had a *lot* less system time.
-Which oddly enough went *up* after the switch to readsb/writesb:
+> What should the behaviour be with devices which block the CPU during
+> synchronous writes and erases?  Right now, you can be sure the
+> temporary CPU blockage (if there is one) happens when you request the
+> I/O.  If it's asynchronous, depending on how it's implemented, the CPU
+> could block at an unexpected time later.
 
-Before:
-real    0m24.199s
-user    0m0.000s
-sys     0m5.630s
+Good devices should have a dma engine and an interrupt line.  Lesser
+devices can set a timer in the driver.  If the cpu has to actively do
+some work during erase, you won't win any benchmark crowns with it
+anyway and I care fairly little.
 
-After:
-real    0m20.226s
-user    0m0.010s
-sys     0m6.000s
+If you are designing hardware and want it to be fast, make sure it can
+handle at least one request autonomously.  Better yet add a small queue
+with - say - 16 entries and simply handle them in order.  Reads/writes
+should dma the data to/from main memory.  Each completed request yields
+an interrupt.
 
-However, the fact that you got a win even with soft ECC (and, I'm
-guessing, slower RAM and slower readsb) suggests that this speedup
-should be pretty generally applicable!
+This is not rocket science.  If you have any trouble implementing
+something like this, just talk to some network/ide/scsi person.  Crap
+design like dual plane chips will disappear over time.  Once you get to
+64 parallel planes, it is obvious that the same approach no longer
+works.
 
+Jörn
 
-> though I can't 
-> seem to get it to work properly. Is there anything I need to do besides
-> flash_eraseall when changing the ECC layout?
-
-I wouldn't know.  Just be sure not to lose all your badblocks data
-when you convert ...
-
-
-> Also, I wonder if we can use the DMA engine framework to get rid of all
-> that "sys" time...?
-
-It's another one of those cases where the framework overhead has to be
-low enough to make that practical.  Last time I looked, the overhead to
-set up and wait for a DMA of a couple KBytes was a significant chunk of
-the cost to readsb()/writesb() the same data ... and that's even before
-the data starts transferring.
-
-Plus, the MTD layer currently assumes DMA is never used.  Some of the
-buffers it passes are not suitable for dma_map_single() since they
-come from vmalloc.
-
- 
-> > 	...
-> > 	
-> > Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
-> > ---
-> > Yeah, this does may you wonder why the *default* nand r/w code isn't
-> > using these primitives; this speedup shouldn't be platform-specific.
-> > 
-> > Posting this now since I think this should either be incorporated into
-> > the new atmel_nand.c code or into drivers/mtd/nand/nand_base.c ...
-> > both arm and avr32 support these calls, I'm not sure whether or not
-> > some platforms don't support them.
-> 
-> I'll leave it up to the MTD people to decide whether or not to update
-> nand_base.c. Below is your patch rebased onto my patchset. I'll include
-> it in my next series after I figure out where to send it.
-
-Sounds fair to me.  Thanks; this has been sitting in my tree for many
-months now, I finally made time to measure it and was pleasantly
-surprised by the size of the win!
-
-- Dave
+-- 
+Doubt is not a pleasant condition, but certainty is an absurd one.
+-- Voltaire
