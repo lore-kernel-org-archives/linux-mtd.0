@@ -1,21 +1,24 @@
 Received: from mail-out.m-online.net ([212.18.0.9])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K5cno-0006NI-F4
-	for linux-mtd@lists.infradead.org; Mon, 09 Jun 2008 08:32:32 +0000
-Message-ID: <484CEA9C.7010505@grandegger.com>
-Date: Mon, 09 Jun 2008 10:32:28 +0200
+	id 1K5cze-0002uG-2b
+	for linux-mtd@lists.infradead.org; Mon, 09 Jun 2008 08:44:46 +0000
+Message-ID: <484CED7C.9050700@grandegger.com>
+Date: Mon, 09 Jun 2008 10:44:44 +0200
 From: Wolfgang Grandegger <wg@grandegger.com>
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
+To: Segher Boessenkool <segher@kernel.crashing.org>
 Subject: Re: [PATCH v2] [NAND] driver extension to support NAND on TQM85xx
 	modules
 References: <4847A8DA.6010406@grandegger.com>
 	<1212825701.32207.403.camel@pmac.infradead.org>
-In-Reply-To: <1212825701.32207.403.camel@pmac.infradead.org>
+	<20080607114438.GA23329@polina.dev.rtsoft.ru>
+	<484C1F6C.9000108@grandegger.com>
+	<0909149cc236822d193338c5eeb4e4b4@kernel.crashing.org>
+In-Reply-To: <0909149cc236822d193338c5eeb4e4b4@kernel.crashing.org>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: linuxppc-dev@ozlabs.org, Anton Vorontsov <avorontsov@ru.mvista.com>,
-	linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, avorontsov@ru.mvista.com,
+	David Woodhouse <dwmw2@infradead.org>, linuxppc-dev@ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +28,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse wrote:
-> On Thu, 2008-06-05 at 10:50 +0200, Wolfgang Grandegger wrote:
->> [NAND] driver extension to support NAND on TQM85xx modules
->>
->> This patch extends the FSL UPM NAND driver from Anton Vorontsov to
->> support NAND on the TQM85xx modules. Unfortunately, the hardware does
->> not support the R/B pins of the NAND chip and therefore the specified
->> maximum delay time must used. It therefore re-introduces the chip-delay
->> property.
->>
->> Note: this patch is based on various patches from  Anton Vorontsov posted
->>       to this list:
->>
->>       http://ozlabs.org/pipermail/linuxppc-dev/2008-April/055587.html.
+Segher Boessenkool wrote:
+>> I see. I think I should then also post the bindings (update of
+>> booting-without-of.txt) separately.
 > 
-> Do you also want me to apply that patch (on which this one depends)?
-> It says 'Signed-off-by: not yet' ...
-> 
-> You should probably comment on the removal of the OF_GPIO dependency. It
-> looks fine, since the relevant functions all get stubbed out and will do
-> the right thing, but it's worth a comment in the commit text.
+> Yes please.  They are much easier to review that way (and they
+> should be reviewed as a separate entity anyway).
 
-I just sent v3 of this patch with some better description.
-
-Thanks,
+I just sent the patch "[PATCH] booting-without-of: add more bindings for
+FSL UPM driver" describing the binding separately.
 
 Wolfgang.
