@@ -1,20 +1,30 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K5Zw5-0005Ad-W7
-	for linux-mtd@lists.infradead.org; Mon, 09 Jun 2008 05:28:54 +0000
-Date: Mon, 9 Jun 2008 07:28:42 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Bruce_Leonard@selinc.com
-Subject: Re: mtd_info->size again (lengthy)
-Message-ID: <20080609052841.GE13200@logfs.org>
-References: <20080608121020.GA13200@logfs.org>
-	<OF900336E0.BD21AFA6-ON88257463.0019C3EA-88257463.0019F5E4@selinc.com>
+Received: from yw-out-1718.google.com ([74.125.46.154])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K5bR7-0001My-Dq
+	for linux-mtd@lists.infradead.org; Mon, 09 Jun 2008 07:05:01 +0000
+Received: by yw-out-1718.google.com with SMTP id 5so1477184ywm.72
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 09 Jun 2008 00:04:54 -0700 (PDT)
+Message-ID: <80b317760806090004v56436872oac76944e39f57860@mail.gmail.com>
+Date: Mon, 9 Jun 2008 09:04:54 +0200
+From: "Richard Genoud" <richard.genoud@gmail.com>
+To: "Haavard Skinnemoen" <haavard.skinnemoen@atmel.com>
+Subject: Re: [PATCH 4/8] atmel_nand: Clean up and fix probe() error path
+In-Reply-To: <20080607191815.3dc24360@siona.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <OF900336E0.BD21AFA6-ON88257463.0019C3EA-88257463.0019F5E4@selinc.com>
-Cc: linux-mtd@lists.infradead.org
+References: <1212768298-13614-1-git-send-email-haavard.skinnemoen@atmel.com>
+	<1212768298-13614-2-git-send-email-haavard.skinnemoen@atmel.com>
+	<1212768298-13614-3-git-send-email-haavard.skinnemoen@atmel.com>
+	<1212768298-13614-4-git-send-email-haavard.skinnemoen@atmel.com>
+	<1212768298-13614-5-git-send-email-haavard.skinnemoen@atmel.com>
+	<cd73a99e0806070908n5c9b6be4ned0386905555a1b7@mail.gmail.com>
+	<20080607191815.3dc24360@siona.local>
+Cc: kernel@avr32linux.org, Patrice VILCHEZ <patrice.vilchez@atmel.com>,
+	linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@atmel.com>,
+	Andrew Victor <avictor.za@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,20 +34,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 8 June 2008 21:43:33 -0700, Bruce_Leonard@selinc.com wrote:
-> Jörn Engel <joern@logfs.org> wrote on 06/08/2008 05:10:20 AM:
-> 
-> > And while at it, replace the 32bit size with a 64bit blockno and 32bit
-> > offset.  Unless someone is stupid enough to create devices with 4G
-> > erasesize, that should last for a human lifetime or something close.
-> 
-> What kind of block is blockno?  An erase block (which is 128K in my case) 
-> or a write block (2K)?
+hi !
 
-eraseblock
+>> The driver currently ioremap()'s the ECC controller's registers, but
+>> on the AT91 the ECC controller is part of the System Peripherals and
+>> so it is already mapped at startup.
+>> I don't think it can/should be remapped twice.
+>
+> I don't see why that's really a problem -- it may get a different
+> virtual address and possibly waste a TLB entry, but it should work.
 
-Jörn
+Hmm, it reminds me something :
+http://article.gmane.org/gmane.linux.ports.arm.kernel/38834
 
--- 
-Those who come seeking peace without a treaty are plotting.
--- Sun Tzu
+>> The AT91 patch (on maxim.org.za) current does:
+>>     regs = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+>>          ....
+>>     host->ecc = (void __force __iomem *) (AT91_VA_BASE_SYS - AT91_BASE_SYS);
+>>     host->ecc += regs->start;
+>> instead of the ioremap().  But this is not portable to the AVR32.
+>
+> How about sticking a "void __iomem *ecc_regs" field in struct
+> atmel_nand_data and allow platforms to specify a pre-mapped pointer?
+> Then the driver can do
+>
+>        if (host->board->ecc_regs)
+>                host->ecc = host->board->ecc_regs;
+>        else if (regs)
+>                host->ecc = ioremap(regs->start, regs->end - regs->start + 1);
+>
+>        if (hard_ecc && !host->ecc)
+>                printk("Hardware ECC not available\n");
+>
+> Right? I think we use a similar trick in the atmel_serial driver too.
+
+It may be the best solution indeed.
+
+richard.
