@@ -1,17 +1,18 @@
-Received: from moutng.kundenserver.de ([212.227.126.174])
+Received: from gv-out-0910.google.com ([216.239.58.189])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K650o-0000Tt-HE
-	for linux-mtd@lists.infradead.org; Tue, 10 Jun 2008 14:39:52 +0000
-Message-Id: <20080610142948.237270763@arndb.de>
-References: <20080610142702.354823071@arndb.de>
-Date: Tue, 10 Jun 2008 16:27:07 +0200
-From: arnd@arndb.de
-To: paulus@samba.org
-Subject: [PATCH 5/5] powerpc/mtd: remove dead platform specific maps
-Content-Disposition: inline;
-	filename=0005-powerpc-mtd-remove-dead-platform-specific-maps.patch
-Cc: linuxppc-dev@ozlabs.org, David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd@lists.infradead.org, Kumar Gala <galak@kernel.crashing.org>
+	id 1K5kVH-0007YH-NX
+	for linux-mtd@lists.infradead.org; Mon, 09 Jun 2008 16:45:57 +0000
+Received: by gv-out-0910.google.com with SMTP id n40so557277gve.5
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 09 Jun 2008 09:45:54 -0700 (PDT)
+Message-ID: <484D5E3B.3010705@gnutls.org>
+Date: Mon, 09 Jun 2008 19:45:47 +0300
+From: Nikos Mavrogiannopoulos <nmav@gnutls.org>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] jffs2: Add lzma compression
+Content-Type: multipart/mixed; boundary="------------010109040009060609030803"
+Sender: Nikos Mavrogiannopoulos <n.mavrogiannopoulos@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,1128 +22,619 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It is no longer possible to select compilation of these
-drivers with arch/powerpc, so the code should be removed.
+This is a multi-part message in MIME format.
+--------------010109040009060609030803
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-New platforms should use physmap_of.
+Hello,
+ This patch adds Lzma support to mkfs.jffs2 using the 7z 4.58 ansi C
+encoder/decoder. The compression optimization in a typical system was
+about 10% less than zlib. I've kept the original Lzma code intact so
+that it can be easily updated to latest versions of the lzma sdk. The
+lzma code worked perfectly well both in kernel and user space.
 
-Cc: linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/mtd/maps/Kconfig            |   57 --------
- drivers/mtd/maps/Makefile           |    6 -
- drivers/mtd/maps/mbx860.c           |  100 -------------
- drivers/mtd/maps/ocotea.c           |  154 ---------------------
- drivers/mtd/maps/redwood.c          |  176 -----------------------
- drivers/mtd/maps/rpxlite.c          |   66 ---------
- drivers/mtd/maps/tqm8xxl.c          |  261 -----------------------------------
- drivers/mtd/maps/wr_sbc82xx_flash.c |  180 ------------------------
- 8 files changed, 0 insertions(+), 1000 deletions(-)
- delete mode 100644 drivers/mtd/maps/mbx860.c
- delete mode 100644 drivers/mtd/maps/ocotea.c
- delete mode 100644 drivers/mtd/maps/redwood.c
- delete mode 100644 drivers/mtd/maps/rpxlite.c
- delete mode 100644 drivers/mtd/maps/tqm8xxl.c
- delete mode 100644 drivers/mtd/maps/wr_sbc82xx_flash.c
+The compr_lzma.c attached is the file used by linux kernel to read data
+(only changes includes).
 
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index 17bc87a..c334e66 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -297,34 +297,6 @@ config MTD_SBC8240
-           Flash access on the SBC8240 board from Wind River.  See
-           <http://www.windriver.com/products/sbc8240/>
- 
--config MTD_TQM8XXL
--	tristate "CFI Flash device mapped on TQM8XXL"
--	depends on MTD_CFI && TQM8xxL
--	help
--	  The TQM8xxL PowerPC board has up to two banks of CFI-compliant
--	  chips, currently uses AMD one. This 'mapping' driver supports
--	  that arrangement, allowing the CFI probe and command set driver
--	  code to communicate with the chips on the TQM8xxL board. More at
--	  <http://www.denx.de/embedded-ppc-en.html>.
--
--config MTD_RPXLITE
--	tristate "CFI Flash device mapped on RPX Lite or CLLF"
--	depends on MTD_CFI && (RPXCLASSIC || RPXLITE)
--	help
--	  The RPXLite PowerPC board has CFI-compliant chips mapped in
--	  a strange sparse mapping. This 'mapping' driver supports that
--	  arrangement, allowing the CFI probe and command set driver code
--	  to communicate with the chips on the RPXLite board. More at
--	  <http://www.embeddedplanet.com/>.
--
--config MTD_MBX860
--	tristate "System flash on MBX860 board"
--	depends on MTD_CFI && MBX
--	help
--	  This enables access routines for the flash chips on the Motorola
--	  MBX860 board. If you have one of these boards and would like
--	  to use the flash chips on it, say 'Y'.
--
- config MTD_DBOX2
- 	tristate "CFI Flash device mapped on D-Box2"
- 	depends on DBOX2 && MTD_CFI_INTELSTD && MTD_CFI_INTELEXT && MTD_CFI_AMDSTD
-@@ -356,22 +328,6 @@ config MTD_EBONY
- 	  Ebony board. If you have one of these boards and would like to
- 	  use the flash chips on it, say 'Y'.
- 
--config MTD_OCOTEA
--	tristate "Flash devices mapped on IBM 440GX Ocotea"
--	depends on MTD_CFI && OCOTEA && !PPC_MERGE
--	help
--	  This enables access routines for the flash chips on the IBM 440GX
--	  Ocotea board. If you have one of these boards and would like to
--	  use the flash chips on it, say 'Y'.
--
--config MTD_REDWOOD
--	tristate "CFI Flash devices mapped on IBM Redwood"
--	depends on MTD_CFI && ( REDWOOD_4 || REDWOOD_5 || REDWOOD_6 )
--	help
--	  This enables access routines for the flash chips on the IBM
--	  Redwood board. If you have one of these boards and would like to
--	  use the flash chips on it, say 'Y'.
--
- config MTD_SOLUTIONENGINE
- 	tristate "CFI Flash device mapped on Hitachi SolutionEngine"
- 	depends on SUPERH && SOLUTION_ENGINE && MTD_CFI && MTD_REDBOOT_PARTS
-@@ -523,19 +479,6 @@ config MTD_UCLINUX
- 	help
- 	  Map driver to support image based filesystems for uClinux.
- 
--config MTD_WRSBC8260
--	tristate "Map driver for WindRiver PowerQUICC II MPC82xx board"
--	depends on (SBC82xx || SBC8560)
--	select MTD_PARTITIONS
--	select MTD_MAP_BANK_WIDTH_4
--	select MTD_MAP_BANK_WIDTH_1
--	select MTD_CFI_I1
--	select MTD_CFI_I4
--	help
--	  Map driver for WindRiver PowerQUICC II MPC82xx board. Drives
--	  all three flash regions on CS0, CS1 and CS6 if they are configured
--	  correctly by the boot loader.
--
- config MTD_DMV182
-         tristate "Map driver for Dy-4 SVME/DMV-182 board."
-         depends on DMV182
-diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index 957fb5f..7855ecb 100644
---- a/drivers/mtd/maps/Makefile
-+++ b/drivers/mtd/maps/Makefile
-@@ -21,7 +21,6 @@ obj-$(CONFIG_MTD_ICHXROM)	+= ichxrom.o
- obj-$(CONFIG_MTD_CK804XROM)	+= ck804xrom.o
- obj-$(CONFIG_MTD_TSUNAMI)	+= tsunami_flash.o
- obj-$(CONFIG_MTD_PXA2XX)	+= pxa2xx-flash.o
--obj-$(CONFIG_MTD_MBX860)	+= mbx860.o
- obj-$(CONFIG_MTD_CEIVA)		+= ceiva.o
- obj-$(CONFIG_MTD_OCTAGON)	+= octagon-5066.o
- obj-$(CONFIG_MTD_PHYSMAP)	+= physmap.o
-@@ -29,8 +28,6 @@ obj-$(CONFIG_MTD_PHYSMAP_OF)	+= physmap_of.o
- obj-$(CONFIG_MTD_PMC_MSP_EVM)   += pmcmsp-flash.o
- obj-$(CONFIG_MTD_PMC_MSP_RAMROOT)+= pmcmsp-ramroot.o
- obj-$(CONFIG_MTD_PCMCIA)	+= pcmciamtd.o
--obj-$(CONFIG_MTD_RPXLITE)	+= rpxlite.o
--obj-$(CONFIG_MTD_TQM8XXL)	+= tqm8xxl.o
- obj-$(CONFIG_MTD_SA1100)	+= sa1100-flash.o
- obj-$(CONFIG_MTD_IPAQ)		+= ipaq-flash.o
- obj-$(CONFIG_MTD_SBC_GXX)	+= sbc_gxx.o
-@@ -48,19 +45,16 @@ obj-$(CONFIG_MTD_AUTCPU12)	+= autcpu12-nvram.o
- obj-$(CONFIG_MTD_EDB7312)	+= edb7312.o
- obj-$(CONFIG_MTD_IMPA7)		+= impa7.o
- obj-$(CONFIG_MTD_FORTUNET)	+= fortunet.o
--obj-$(CONFIG_MTD_REDWOOD)	+= redwood.o
- obj-$(CONFIG_MTD_UCLINUX)	+= uclinux.o
- obj-$(CONFIG_MTD_NETtel)	+= nettel.o
- obj-$(CONFIG_MTD_SCB2_FLASH)	+= scb2_flash.o
- obj-$(CONFIG_MTD_EBONY)		+= ebony.o
--obj-$(CONFIG_MTD_OCOTEA)	+= ocotea.o
- obj-$(CONFIG_MTD_WALNUT)        += walnut.o
- obj-$(CONFIG_MTD_H720X)		+= h720x-flash.o
- obj-$(CONFIG_MTD_SBC8240)	+= sbc8240.o
- obj-$(CONFIG_MTD_NOR_TOTO)	+= omap-toto-flash.o
- obj-$(CONFIG_MTD_IXP4XX)	+= ixp4xx.o
- obj-$(CONFIG_MTD_IXP2000)	+= ixp2000.o
--obj-$(CONFIG_MTD_WRSBC8260)	+= wr_sbc82xx_flash.o
- obj-$(CONFIG_MTD_DMV182)	+= dmv182.o
- obj-$(CONFIG_MTD_SHARP_SL)	+= sharpsl-flash.o
- obj-$(CONFIG_MTD_PLATRAM)	+= plat-ram.o
-diff --git a/drivers/mtd/maps/mbx860.c b/drivers/mtd/maps/mbx860.c
-deleted file mode 100644
-index 06b1187..0000000
---- a/drivers/mtd/maps/mbx860.c
-+++ /dev/null
-@@ -1,100 +0,0 @@
--/*
-- * $Id: mbx860.c,v 1.9 2005/11/07 11:14:27 gleixner Exp $
-- *
-- * Handle mapping of the flash on MBX860 boards
-- *
-- * Author:	Anton Todorov
-- * Copyright:	(C) 2001 Emness Technology
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- *
-- */
--
--#include <linux/module.h>
--#include <linux/types.h>
--#include <linux/kernel.h>
--#include <linux/init.h>
--#include <asm/io.h>
--#include <linux/mtd/mtd.h>
--#include <linux/mtd/map.h>
--#include <linux/mtd/partitions.h>
--
--
--#define WINDOW_ADDR 0xfe000000
--#define WINDOW_SIZE 0x00200000
--
--/* Flash / Partition sizing */
--#define MAX_SIZE_KiB              8192
--#define BOOT_PARTITION_SIZE_KiB    512
--#define KERNEL_PARTITION_SIZE_KiB 5632
--#define APP_PARTITION_SIZE_KiB    2048
--
--#define NUM_PARTITIONS 3
--
--/* partition_info gives details on the logical partitions that the split the
-- * single flash device into. If the size if zero we use up to the end of the
-- * device. */
--static struct mtd_partition partition_info[]={
--	{ .name = "MBX flash BOOT partition",
--	.offset = 0,
--	.size =   BOOT_PARTITION_SIZE_KiB*1024 },
--	{ .name = "MBX flash DATA partition",
--	.offset = BOOT_PARTITION_SIZE_KiB*1024,
--	.size = (KERNEL_PARTITION_SIZE_KiB)*1024 },
--	{ .name = "MBX flash APPLICATION partition",
--	.offset = (BOOT_PARTITION_SIZE_KiB+KERNEL_PARTITION_SIZE_KiB)*1024 }
--};
--
--
--static struct mtd_info *mymtd;
--
--struct map_info mbx_map = {
--	.name = "MBX flash",
--	.size = WINDOW_SIZE,
--	.phys = WINDOW_ADDR,
--	.bankwidth = 4,
--};
--
--int __init init_mbx(void)
--{
--	printk(KERN_NOTICE "Motorola MBX flash device: 0x%x at 0x%x\n", WINDOW_SIZE*4, WINDOW_ADDR);
--	mbx_map.virt = ioremap(WINDOW_ADDR, WINDOW_SIZE * 4);
--
--	if (!mbx_map.virt) {
--		printk("Failed to ioremap\n");
--		return -EIO;
--	}
--	simple_map_init(&mbx_map);
--
--	mymtd = do_map_probe("jedec_probe", &mbx_map);
--	if (mymtd) {
--		mymtd->owner = THIS_MODULE;
--		add_mtd_device(mymtd);
--                add_mtd_partitions(mymtd, partition_info, NUM_PARTITIONS);
--		return 0;
--	}
--
--	iounmap((void *)mbx_map.virt);
--	return -ENXIO;
--}
--
--static void __exit cleanup_mbx(void)
--{
--	if (mymtd) {
--		del_mtd_device(mymtd);
--		map_destroy(mymtd);
--	}
--	if (mbx_map.virt) {
--		iounmap((void *)mbx_map.virt);
--		mbx_map.virt = 0;
--	}
--}
--
--module_init(init_mbx);
--module_exit(cleanup_mbx);
--
--MODULE_AUTHOR("Anton Todorov <a.todorov@emness.com>");
--MODULE_DESCRIPTION("MTD map driver for Motorola MBX860 board");
--MODULE_LICENSE("GPL");
-diff --git a/drivers/mtd/maps/ocotea.c b/drivers/mtd/maps/ocotea.c
-deleted file mode 100644
-index 5522eac..0000000
---- a/drivers/mtd/maps/ocotea.c
-+++ /dev/null
-@@ -1,154 +0,0 @@
--/*
-- * Mapping for Ocotea user flash
-- *
-- * Matt Porter <mporter@kernel.crashing.org>
-- *
-- * Copyright 2002-2004 MontaVista Software Inc.
-- *
-- * This program is free software; you can redistribute  it and/or modify it
-- * under  the terms of  the GNU General  Public License as published by the
-- * Free Software Foundation;  either version 2 of the  License, or (at your
-- * option) any later version.
-- */
--
--#include <linux/module.h>
--#include <linux/types.h>
--#include <linux/kernel.h>
--#include <linux/init.h>
--#include <linux/mtd/mtd.h>
--#include <linux/mtd/map.h>
--#include <linux/mtd/partitions.h>
--#include <asm/io.h>
--#include <asm/ibm44x.h>
--#include <platforms/4xx/ocotea.h>
--
--static struct mtd_info *flash;
--
--static struct map_info ocotea_small_map = {
--	.name =		"Ocotea small flash",
--	.size =		OCOTEA_SMALL_FLASH_SIZE,
--	.buswidth =	1,
--};
--
--static struct map_info ocotea_large_map = {
--	.name =		"Ocotea large flash",
--	.size =		OCOTEA_LARGE_FLASH_SIZE,
--	.buswidth =	1,
--};
--
--static struct mtd_partition ocotea_small_partitions[] = {
--	{
--		.name =   "pibs",
--		.offset = 0x0,
--		.size =   0x100000,
--	}
--};
--
--static struct mtd_partition ocotea_large_partitions[] = {
--	{
--		.name =   "fs",
--		.offset = 0,
--		.size =   0x300000,
--	},
--	{
--		.name =   "firmware",
--		.offset = 0x300000,
--		.size =   0x100000,
--	}
--};
--
--int __init init_ocotea(void)
--{
--	u8 fpga0_reg;
--	u8 *fpga0_adr;
--	unsigned long long small_flash_base, large_flash_base;
--
--	fpga0_adr = ioremap64(OCOTEA_FPGA_ADDR, 16);
--	if (!fpga0_adr)
--		return -ENOMEM;
--
--	fpga0_reg = readb((unsigned long)fpga0_adr);
--	iounmap(fpga0_adr);
--
--	if (OCOTEA_BOOT_LARGE_FLASH(fpga0_reg)) {
--		small_flash_base = OCOTEA_SMALL_FLASH_HIGH;
--		large_flash_base = OCOTEA_LARGE_FLASH_LOW;
--	}
--	else {
--		small_flash_base = OCOTEA_SMALL_FLASH_LOW;
--		large_flash_base = OCOTEA_LARGE_FLASH_HIGH;
--	}
--
--	ocotea_small_map.phys = small_flash_base;
--	ocotea_small_map.virt = ioremap64(small_flash_base,
--					 ocotea_small_map.size);
--
--	if (!ocotea_small_map.virt) {
--		printk("Failed to ioremap flash\n");
--		return -EIO;
--	}
--
--	simple_map_init(&ocotea_small_map);
--
--	flash = do_map_probe("map_rom", &ocotea_small_map);
--	if (flash) {
--		flash->owner = THIS_MODULE;
--		add_mtd_partitions(flash, ocotea_small_partitions,
--					ARRAY_SIZE(ocotea_small_partitions));
--	} else {
--		printk("map probe failed for flash\n");
--		iounmap(ocotea_small_map.virt);
--		return -ENXIO;
--	}
--
--	ocotea_large_map.phys = large_flash_base;
--	ocotea_large_map.virt = ioremap64(large_flash_base,
--					 ocotea_large_map.size);
--
--	if (!ocotea_large_map.virt) {
--		printk("Failed to ioremap flash\n");
--		iounmap(ocotea_small_map.virt);
--		return -EIO;
--	}
--
--	simple_map_init(&ocotea_large_map);
--
--	flash = do_map_probe("cfi_probe", &ocotea_large_map);
--	if (flash) {
--		flash->owner = THIS_MODULE;
--		add_mtd_partitions(flash, ocotea_large_partitions,
--					ARRAY_SIZE(ocotea_large_partitions));
--	} else {
--		printk("map probe failed for flash\n");
--		iounmap(ocotea_small_map.virt);
--		iounmap(ocotea_large_map.virt);
--		return -ENXIO;
--	}
--
--	return 0;
--}
--
--static void __exit cleanup_ocotea(void)
--{
--	if (flash) {
--		del_mtd_partitions(flash);
--		map_destroy(flash);
--	}
--
--	if (ocotea_small_map.virt) {
--		iounmap((void *)ocotea_small_map.virt);
--		ocotea_small_map.virt = 0;
--	}
--
--	if (ocotea_large_map.virt) {
--		iounmap((void *)ocotea_large_map.virt);
--		ocotea_large_map.virt = 0;
--	}
--}
--
--module_init(init_ocotea);
--module_exit(cleanup_ocotea);
--
--MODULE_LICENSE("GPL");
--MODULE_AUTHOR("Matt Porter <mporter@kernel.crashing.org>");
--MODULE_DESCRIPTION("MTD map and partitions for IBM 440GX Ocotea boards");
-diff --git a/drivers/mtd/maps/redwood.c b/drivers/mtd/maps/redwood.c
-deleted file mode 100644
-index 4d858b3..0000000
---- a/drivers/mtd/maps/redwood.c
-+++ /dev/null
-@@ -1,176 +0,0 @@
--/*
-- * $Id: redwood.c,v 1.11 2005/11/07 11:14:28 gleixner Exp $
-- *
-- * drivers/mtd/maps/redwood.c
-- *
-- * FLASH map for the IBM Redwood 4/5/6 boards.
-- *
-- * Author: MontaVista Software, Inc. <source@mvista.com>
-- *
-- * 2001-2003 (c) MontaVista, Software, Inc. This file is licensed under
-- * the terms of the GNU General Public License version 2. This program
-- * is licensed "as is" without any warranty of any kind, whether express
-- * or implied.
-- */
--
--#include <linux/module.h>
--#include <linux/types.h>
--#include <linux/kernel.h>
--#include <linux/init.h>
--
--#include <linux/mtd/mtd.h>
--#include <linux/mtd/map.h>
--#include <linux/mtd/partitions.h>
--
--#include <asm/io.h>
--
--#if !defined (CONFIG_REDWOOD_6)
--
--#define WINDOW_ADDR 0xffc00000
--#define WINDOW_SIZE 0x00400000
--
--#define RW_PART0_OF	0
--#define RW_PART0_SZ	0x10000
--#define RW_PART1_OF	RW_PART0_SZ
--#define RW_PART1_SZ	0x200000 - 0x10000
--#define RW_PART2_OF	0x200000
--#define RW_PART2_SZ	0x10000
--#define RW_PART3_OF	0x210000
--#define RW_PART3_SZ	0x200000 - (0x10000 + 0x20000)
--#define RW_PART4_OF	0x3e0000
--#define RW_PART4_SZ	0x20000
--
--static struct mtd_partition redwood_flash_partitions[] = {
--	{
--		.name = "Redwood OpenBIOS Vital Product Data",
--		.offset = RW_PART0_OF,
--		.size = RW_PART0_SZ,
--		.mask_flags = MTD_WRITEABLE	/* force read-only */
--	},
--	{
--		.name = "Redwood kernel",
--		.offset = RW_PART1_OF,
--		.size = RW_PART1_SZ
--	},
--	{
--		.name = "Redwood OpenBIOS non-volatile storage",
--		.offset = RW_PART2_OF,
--		.size = RW_PART2_SZ,
--		.mask_flags = MTD_WRITEABLE	/* force read-only */
--	},
--	{
--		.name = "Redwood filesystem",
--		.offset = RW_PART3_OF,
--		.size = RW_PART3_SZ
--	},
--	{
--		.name = "Redwood OpenBIOS",
--		.offset = RW_PART4_OF,
--		.size = RW_PART4_SZ,
--		.mask_flags = MTD_WRITEABLE	/* force read-only */
--	}
--};
--
--#else /* CONFIG_REDWOOD_6 */
--/* FIXME: the window is bigger - armin */
--#define WINDOW_ADDR 0xff800000
--#define WINDOW_SIZE 0x00800000
--
--#define RW_PART0_OF	0
--#define RW_PART0_SZ	0x400000	/* 4 MiB data */
--#define RW_PART1_OF	RW_PART0_OF + RW_PART0_SZ
--#define RW_PART1_SZ	0x10000		/* 64K VPD */
--#define RW_PART2_OF	RW_PART1_OF + RW_PART1_SZ
--#define RW_PART2_SZ	0x400000 - (0x10000 + 0x20000)
--#define RW_PART3_OF	RW_PART2_OF + RW_PART2_SZ
--#define RW_PART3_SZ	0x20000
--
--static struct mtd_partition redwood_flash_partitions[] = {
--	{
--		.name = "Redwood filesystem",
--		.offset = RW_PART0_OF,
--		.size = RW_PART0_SZ
--	},
--	{
--		.name = "Redwood OpenBIOS Vital Product Data",
--		.offset = RW_PART1_OF,
--		.size = RW_PART1_SZ,
--		.mask_flags = MTD_WRITEABLE	/* force read-only */
--	},
--	{
--		.name = "Redwood kernel",
--		.offset = RW_PART2_OF,
--		.size = RW_PART2_SZ
--	},
--	{
--		.name = "Redwood OpenBIOS",
--		.offset = RW_PART3_OF,
--		.size = RW_PART3_SZ,
--		.mask_flags = MTD_WRITEABLE	/* force read-only */
--	}
--};
--
--#endif /* CONFIG_REDWOOD_6 */
--
--struct map_info redwood_flash_map = {
--	.name = "IBM Redwood",
--	.size = WINDOW_SIZE,
--	.bankwidth = 2,
--	.phys = WINDOW_ADDR,
--};
--
--
--#define NUM_REDWOOD_FLASH_PARTITIONS ARRAY_SIZE(redwood_flash_partitions)
--
--static struct mtd_info *redwood_mtd;
--
--int __init init_redwood_flash(void)
--{
--	int err;
--
--	printk(KERN_NOTICE "redwood: flash mapping: %x at %x\n",
--			WINDOW_SIZE, WINDOW_ADDR);
--
--	redwood_flash_map.virt = ioremap(WINDOW_ADDR, WINDOW_SIZE);
--
--	if (!redwood_flash_map.virt) {
--		printk("init_redwood_flash: failed to ioremap\n");
--		return -EIO;
--	}
--	simple_map_init(&redwood_flash_map);
--
--	redwood_mtd = do_map_probe("cfi_probe",&redwood_flash_map);
--
--	if (redwood_mtd) {
--		redwood_mtd->owner = THIS_MODULE;
--		err = add_mtd_partitions(redwood_mtd,
--				redwood_flash_partitions,
--				NUM_REDWOOD_FLASH_PARTITIONS);
--		if (err) {
--			printk("init_redwood_flash: add_mtd_partitions failed\n");
--			iounmap(redwood_flash_map.virt);
--		}
--		return err;
--
--	}
--
--	iounmap(redwood_flash_map.virt);
--	return -ENXIO;
--}
--
--static void __exit cleanup_redwood_flash(void)
--{
--	if (redwood_mtd) {
--		del_mtd_partitions(redwood_mtd);
--		/* moved iounmap after map_destroy - armin */
--		map_destroy(redwood_mtd);
--		iounmap((void *)redwood_flash_map.virt);
--	}
--}
--
--module_init(init_redwood_flash);
--module_exit(cleanup_redwood_flash);
--
--MODULE_LICENSE("GPL");
--MODULE_AUTHOR("MontaVista Software <source@mvista.com>");
--MODULE_DESCRIPTION("MTD map driver for the IBM Redwood reference boards");
-diff --git a/drivers/mtd/maps/rpxlite.c b/drivers/mtd/maps/rpxlite.c
-deleted file mode 100644
-index 809a0c8..0000000
---- a/drivers/mtd/maps/rpxlite.c
-+++ /dev/null
-@@ -1,66 +0,0 @@
--/*
-- * $Id: rpxlite.c,v 1.22 2004/11/04 13:24:15 gleixner Exp $
-- *
-- * Handle mapping of the flash on the RPX Lite and CLLF boards
-- */
--
--#include <linux/module.h>
--#include <linux/types.h>
--#include <linux/kernel.h>
--#include <linux/init.h>
--#include <asm/io.h>
--#include <linux/mtd/mtd.h>
--#include <linux/mtd/map.h>
--
--
--#define WINDOW_ADDR 0xfe000000
--#define WINDOW_SIZE 0x800000
--
--static struct mtd_info *mymtd;
--
--static struct map_info rpxlite_map = {
--	.name = "RPX",
--	.size = WINDOW_SIZE,
--	.bankwidth = 4,
--	.phys = WINDOW_ADDR,
--};
--
--int __init init_rpxlite(void)
--{
--	printk(KERN_NOTICE "RPX Lite or CLLF flash device: %x at %x\n", WINDOW_SIZE*4, WINDOW_ADDR);
--	rpxlite_map.virt = ioremap(WINDOW_ADDR, WINDOW_SIZE * 4);
--
--	if (!rpxlite_map.virt) {
--		printk("Failed to ioremap\n");
--		return -EIO;
--	}
--	simple_map_init(&rpxlite_map);
--	mymtd = do_map_probe("cfi_probe", &rpxlite_map);
--	if (mymtd) {
--		mymtd->owner = THIS_MODULE;
--		add_mtd_device(mymtd);
--		return 0;
--	}
--
--	iounmap((void *)rpxlite_map.virt);
--	return -ENXIO;
--}
--
--static void __exit cleanup_rpxlite(void)
--{
--	if (mymtd) {
--		del_mtd_device(mymtd);
--		map_destroy(mymtd);
--	}
--	if (rpxlite_map.virt) {
--		iounmap((void *)rpxlite_map.virt);
--		rpxlite_map.virt = 0;
--	}
--}
--
--module_init(init_rpxlite);
--module_exit(cleanup_rpxlite);
--
--MODULE_LICENSE("GPL");
--MODULE_AUTHOR("Arnold Christensen <AKC@pel.dk>");
--MODULE_DESCRIPTION("MTD map driver for RPX Lite and CLLF boards");
-diff --git a/drivers/mtd/maps/tqm8xxl.c b/drivers/mtd/maps/tqm8xxl.c
-deleted file mode 100644
-index 5217340..0000000
---- a/drivers/mtd/maps/tqm8xxl.c
-+++ /dev/null
-@@ -1,261 +0,0 @@
--/*
-- * Handle mapping of the flash memory access routines
-- * on TQM8xxL based devices.
-- *
-- * $Id: tqm8xxl.c,v 1.15 2005/11/07 11:14:28 gleixner Exp $
-- *
-- * based on rpxlite.c
-- *
-- * Copyright(C) 2001 Kirk Lee <kirk@hpc.ee.ntu.edu.tw>
-- *
-- * This code is GPLed
-- *
-- */
--
--/*
-- * According to TQM8xxL hardware manual, TQM8xxL series have
-- * following flash memory organisations:
-- *	| capacity |	| chip type |	| bank0 |	| bank1 |
-- *	    2MiB	   512Kx16	  2MiB		   0
-- *	    4MiB	   1Mx16	  4MiB		   0
-- *	    8MiB	   1Mx16	  4MiB		   4MiB
-- * Thus, we choose CONFIG_MTD_CFI_I2 & CONFIG_MTD_CFI_B4 at
-- * kernel configuration.
-- */
--#include <linux/module.h>
--#include <linux/types.h>
--#include <linux/kernel.h>
--#include <linux/init.h>
--#include <linux/slab.h>
--
--#include <linux/mtd/mtd.h>
--#include <linux/mtd/map.h>
--#include <linux/mtd/partitions.h>
--
--#include <asm/io.h>
--
--#define FLASH_ADDR 0x40000000
--#define FLASH_SIZE 0x00800000
--#define FLASH_BANK_MAX 4
--
--// trivial struct to describe partition information
--struct mtd_part_def
--{
--	int nums;
--	unsigned char *type;
--	struct mtd_partition* mtd_part;
--};
--
--//static struct mtd_info *mymtd;
--static struct mtd_info* mtd_banks[FLASH_BANK_MAX];
--static struct map_info* map_banks[FLASH_BANK_MAX];
--static struct mtd_part_def part_banks[FLASH_BANK_MAX];
--static unsigned long num_banks;
--static void __iomem *start_scan_addr;
--
--/*
-- * Here are partition information for all known TQM8xxL series devices.
-- * See include/linux/mtd/partitions.h for definition of the mtd_partition
-- * structure.
-- *
-- * The *_max_flash_size is the maximum possible mapped flash size which
-- * is not necessarily the actual flash size.  It must correspond to the
-- * value specified in the mapping definition defined by the
-- * "struct map_desc *_io_desc" for the corresponding machine.
-- */
--
--#ifdef CONFIG_MTD_PARTITIONS
--/* Currently, TQM8xxL has upto 8MiB flash */
--static unsigned long tqm8xxl_max_flash_size = 0x00800000;
--
--/* partition definition for first flash bank
-- * (cf. "drivers/char/flash_config.c")
-- */
--static struct mtd_partition tqm8xxl_partitions[] = {
--	{
--	  .name = "ppcboot",
--	  .offset = 0x00000000,
--	  .size = 0x00020000,           /* 128KB           */
--	  .mask_flags = MTD_WRITEABLE,  /* force read-only */
--	},
--	{
--	  .name = "kernel",             /* default kernel image */
--	  .offset = 0x00020000,
--	  .size = 0x000e0000,
--	  .mask_flags = MTD_WRITEABLE,  /* force read-only */
--	},
--	{
--	  .name = "user",
--	  .offset = 0x00100000,
--	  .size = 0x00100000,
--	},
--	{
--	  .name = "initrd",
--	  .offset = 0x00200000,
--	  .size = 0x00200000,
--	}
--};
--/* partition definition for second flash bank */
--static struct mtd_partition tqm8xxl_fs_partitions[] = {
--	{
--	  .name = "cramfs",
--	  .offset = 0x00000000,
--	  .size = 0x00200000,
--	},
--	{
--	  .name = "jffs",
--	  .offset = 0x00200000,
--	  .size = 0x00200000,
--	  //.size = MTDPART_SIZ_FULL,
--	}
--};
--#endif
--
--int __init init_tqm_mtd(void)
--{
--	int idx = 0, ret = 0;
--	unsigned long flash_addr, flash_size, mtd_size = 0;
--	/* pointer to TQM8xxL board info data */
--	bd_t *bd = (bd_t *)__res;
--
--	flash_addr = bd->bi_flashstart;
--	flash_size = bd->bi_flashsize;
--
--	//request maximum flash size address space
--	start_scan_addr = ioremap(flash_addr, flash_size);
--	if (!start_scan_addr) {
--		printk(KERN_WARNING "%s:Failed to ioremap address:0x%x\n", __func__, flash_addr);
--		return -EIO;
--	}
--
--	for (idx = 0 ; idx < FLASH_BANK_MAX ; idx++) {
--		if(mtd_size >= flash_size)
--			break;
--
--		printk(KERN_INFO "%s: chip probing count %d\n", __func__, idx);
--
--		map_banks[idx] = kzalloc(sizeof(struct map_info), GFP_KERNEL);
--		if(map_banks[idx] == NULL) {
--			ret = -ENOMEM;
--			/* FIXME: What if some MTD devices were probed already? */
--			goto error_mem;
--		}
--
--		map_banks[idx]->name = (char *)kmalloc(16, GFP_KERNEL);
--
--		if (!map_banks[idx]->name) {
--			ret = -ENOMEM;
--			/* FIXME: What if some MTD devices were probed already? */
--			goto error_mem;
--		}
--		sprintf(map_banks[idx]->name, "TQM8xxL%d", idx);
--
--		map_banks[idx]->size = flash_size;
--		map_banks[idx]->bankwidth = 4;
--
--		simple_map_init(map_banks[idx]);
--
--		map_banks[idx]->virt = start_scan_addr;
--		map_banks[idx]->phys = flash_addr;
--		/* FIXME: This looks utterly bogus, but I'm trying to
--		   preserve the behaviour of the original (shown here)...
--
--		map_banks[idx]->map_priv_1 =
--		start_scan_addr + ((idx > 0) ?
--		(mtd_banks[idx-1] ? mtd_banks[idx-1]->size : 0) : 0);
--		*/
--
--		if (idx && mtd_banks[idx-1]) {
--			map_banks[idx]->virt += mtd_banks[idx-1]->size;
--			map_banks[idx]->phys += mtd_banks[idx-1]->size;
--		}
--
--		//start to probe flash chips
--		mtd_banks[idx] = do_map_probe("cfi_probe", map_banks[idx]);
--
--		if (mtd_banks[idx]) {
--			mtd_banks[idx]->owner = THIS_MODULE;
--			mtd_size += mtd_banks[idx]->size;
--			num_banks++;
--
--			printk(KERN_INFO "%s: bank%d, name:%s, size:%dbytes \n", __func__, num_banks,
--			mtd_banks[idx]->name, mtd_banks[idx]->size);
--		}
--	}
--
--	/* no supported flash chips found */
--	if (!num_banks) {
--		printk(KERN_NOTICE "TQM8xxL: No support flash chips found!\n");
--		ret = -ENXIO;
--		goto error_mem;
--	}
--
--#ifdef CONFIG_MTD_PARTITIONS
--	/*
--	 * Select Static partition definitions
--	 */
--	part_banks[0].mtd_part = tqm8xxl_partitions;
--	part_banks[0].type = "Static image";
--	part_banks[0].nums = ARRAY_SIZE(tqm8xxl_partitions);
--
--	part_banks[1].mtd_part = tqm8xxl_fs_partitions;
--	part_banks[1].type = "Static file system";
--	part_banks[1].nums = ARRAY_SIZE(tqm8xxl_fs_partitions);
--
--	for(idx = 0; idx < num_banks ; idx++) {
--		if (part_banks[idx].nums == 0) {
--			printk(KERN_NOTICE "TQM flash%d: no partition info available, registering whole flash at once\n", idx);
--			add_mtd_device(mtd_banks[idx]);
--		} else {
--			printk(KERN_NOTICE "TQM flash%d: Using %s partition definition\n",
--					idx, part_banks[idx].type);
--			add_mtd_partitions(mtd_banks[idx], part_banks[idx].mtd_part,
--								part_banks[idx].nums);
--		}
--	}
--#else
--	printk(KERN_NOTICE "TQM flash: registering %d whole flash banks at once\n", num_banks);
--	for(idx = 0 ; idx < num_banks ; idx++)
--		add_mtd_device(mtd_banks[idx]);
--#endif
--	return 0;
--error_mem:
--	for(idx = 0 ; idx < FLASH_BANK_MAX ; idx++) {
--		if(map_banks[idx] != NULL) {
--			kfree(map_banks[idx]->name);
--			map_banks[idx]->name = NULL;
--			kfree(map_banks[idx]);
--			map_banks[idx] = NULL;
--		}
--	}
--error:
--	iounmap(start_scan_addr);
--	return ret;
--}
--
--static void __exit cleanup_tqm_mtd(void)
--{
--	unsigned int idx = 0;
--	for(idx = 0 ; idx < num_banks ; idx++) {
--		/* destroy mtd_info previously allocated */
--		if (mtd_banks[idx]) {
--			del_mtd_partitions(mtd_banks[idx]);
--			map_destroy(mtd_banks[idx]);
--		}
--		/* release map_info not used anymore */
--		kfree(map_banks[idx]->name);
--		kfree(map_banks[idx]);
--	}
--
--	if (start_scan_addr) {
--		iounmap(start_scan_addr);
--		start_scan_addr = 0;
--	}
--}
--
--module_init(init_tqm_mtd);
--module_exit(cleanup_tqm_mtd);
--
--MODULE_LICENSE("GPL");
--MODULE_AUTHOR("Kirk Lee <kirk@hpc.ee.ntu.edu.tw>");
--MODULE_DESCRIPTION("MTD map driver for TQM8xxL boards");
-diff --git a/drivers/mtd/maps/wr_sbc82xx_flash.c b/drivers/mtd/maps/wr_sbc82xx_flash.c
-deleted file mode 100644
-index ac5b810..0000000
---- a/drivers/mtd/maps/wr_sbc82xx_flash.c
-+++ /dev/null
-@@ -1,180 +0,0 @@
--/*
-- * $Id: wr_sbc82xx_flash.c,v 1.8 2005/11/07 11:14:29 gleixner Exp $
-- *
-- * Map for flash chips on Wind River PowerQUICC II SBC82xx board.
-- *
-- * Copyright (C) 2004 Red Hat, Inc.
-- *
-- * Author: David Woodhouse <dwmw2@infradead.org>
-- *
-- */
--
--#include <linux/module.h>
--#include <linux/types.h>
--#include <linux/kernel.h>
--#include <linux/init.h>
--#include <linux/slab.h>
--#include <asm/io.h>
--#include <linux/mtd/mtd.h>
--#include <linux/mtd/map.h>
--#include <linux/mtd/partitions.h>
--
--#include <asm/immap_cpm2.h>
--
--static struct mtd_info *sbcmtd[3];
--static struct mtd_partition *sbcmtd_parts[3];
--
--struct map_info sbc82xx_flash_map[3] = {
--	{.name = "Boot flash"},
--	{.name = "Alternate boot flash"},
--	{.name = "User flash"}
--};
--
--static struct mtd_partition smallflash_parts[] = {
--	{
--		.name =		"space",
--		.size =		0x100000,
--		.offset =	0,
--	}, {
--		.name =		"bootloader",
--		.size =		MTDPART_SIZ_FULL,
--		.offset =	MTDPART_OFS_APPEND,
--	}
--};
--
--static struct mtd_partition bigflash_parts[] = {
--	{
--		.name =		"bootloader",
--		.size =		0x00100000,
--		.offset =	0,
--	}, {
--		.name =		"file system",
--		.size =		0x01f00000,
--		.offset =	MTDPART_OFS_APPEND,
--	}, {
--		.name =		"boot config",
--		.size =		0x00100000,
--		.offset =	MTDPART_OFS_APPEND,
--	}, {
--		.name =		"space",
--		.size =		0x01f00000,
--		.offset =	MTDPART_OFS_APPEND,
--	}
--};
--
--static const char *part_probes[] __initdata = {"cmdlinepart", "RedBoot", NULL};
--
--#define init_sbc82xx_one_flash(map, br, or)			\
--do {								\
--	(map).phys = (br & 1) ? (br & 0xffff8000) : 0;		\
--	(map).size = (br & 1) ? (~(or & 0xffff8000) + 1) : 0;	\
--	switch (br & 0x00001800) {				\
--	case 0x00000000:					\
--	case 0x00000800:	(map).bankwidth = 1;	break;	\
--	case 0x00001000:	(map).bankwidth = 2;	break;	\
--	case 0x00001800:	(map).bankwidth = 4;	break;	\
--	}							\
--} while (0);
--
--int __init init_sbc82xx_flash(void)
--{
--	volatile memctl_cpm2_t *mc = &cpm2_immr->im_memctl;
--	int bigflash;
--	int i;
--
--#ifdef CONFIG_SBC8560
--	mc = ioremap(0xff700000 + 0x5000, sizeof(memctl_cpm2_t));
--#else
--	mc = &cpm2_immr->im_memctl;
--#endif
--
--	bigflash = 1;
--	if ((mc->memc_br0 & 0x00001800) == 0x00001800)
--		bigflash = 0;
--
--	init_sbc82xx_one_flash(sbc82xx_flash_map[0], mc->memc_br0, mc->memc_or0);
--	init_sbc82xx_one_flash(sbc82xx_flash_map[1], mc->memc_br6, mc->memc_or6);
--	init_sbc82xx_one_flash(sbc82xx_flash_map[2], mc->memc_br1, mc->memc_or1);
--
--#ifdef CONFIG_SBC8560
--	iounmap((void *) mc);
--#endif
--
--	for (i=0; i<3; i++) {
--		int8_t flashcs[3] = { 0, 6, 1 };
--		int nr_parts;
--
--		printk(KERN_NOTICE "PowerQUICC II %s (%ld MiB on CS%d",
--		       sbc82xx_flash_map[i].name,
--		       (sbc82xx_flash_map[i].size >> 20),
--		       flashcs[i]);
--		if (!sbc82xx_flash_map[i].phys) {
--			/* We know it can't be at zero. */
--			printk("): disabled by bootloader.\n");
--			continue;
--		}
--		printk(" at %08lx)\n",  sbc82xx_flash_map[i].phys);
--
--		sbc82xx_flash_map[i].virt = ioremap(sbc82xx_flash_map[i].phys, sbc82xx_flash_map[i].size);
--
--		if (!sbc82xx_flash_map[i].virt) {
--			printk("Failed to ioremap\n");
--			continue;
--		}
--
--		simple_map_init(&sbc82xx_flash_map[i]);
--
--		sbcmtd[i] = do_map_probe("cfi_probe", &sbc82xx_flash_map[i]);
--
--		if (!sbcmtd[i])
--			continue;
--
--		sbcmtd[i]->owner = THIS_MODULE;
--
--		nr_parts = parse_mtd_partitions(sbcmtd[i], part_probes,
--						&sbcmtd_parts[i], 0);
--		if (nr_parts > 0) {
--			add_mtd_partitions (sbcmtd[i], sbcmtd_parts[i], nr_parts);
--			continue;
--		}
--
--		/* No partitioning detected. Use default */
--		if (i == 2) {
--			add_mtd_device(sbcmtd[i]);
--		} else if (i == bigflash) {
--			add_mtd_partitions (sbcmtd[i], bigflash_parts, ARRAY_SIZE(bigflash_parts));
--		} else {
--			add_mtd_partitions (sbcmtd[i], smallflash_parts, ARRAY_SIZE(smallflash_parts));
--		}
--	}
--	return 0;
--}
--
--static void __exit cleanup_sbc82xx_flash(void)
--{
--	int i;
--
--	for (i=0; i<3; i++) {
--		if (!sbcmtd[i])
--			continue;
--
--		if (i<2 || sbcmtd_parts[i])
--			del_mtd_partitions(sbcmtd[i]);
--		else
--			del_mtd_device(sbcmtd[i]);
--
--		kfree(sbcmtd_parts[i]);
--		map_destroy(sbcmtd[i]);
--
--		iounmap((void *)sbc82xx_flash_map[i].virt);
--		sbc82xx_flash_map[i].virt = 0;
--	}
--}
--
--module_init(init_sbc82xx_flash);
--module_exit(cleanup_sbc82xx_flash);
--
--
--MODULE_LICENSE("GPL");
--MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org>");
--MODULE_DESCRIPTION("Flash map driver for WindRiver PowerQUICC II");
--- 
-1.5.4.3
+regards,
+Nikos
 
--- 
+
+
+--------------010109040009060609030803
+Content-Type: application/x-gzip;
+ name="lzma.patch.gz"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename="lzma.patch.gz"
+
+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
+--------------010109040009060609030803
+Content-Type: application/x-gzip;
+ name="compr_lzma-kernel.c.gz"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename="compr_lzma-kernel.c.gz"
+
+H4sICDSwS0gAA2NvbXByX2x6bWEuYwCtVtty2kgQfUZf0etUeYHI4Mtu1VbspIo4YJNgoBDe
+lPOiGqQRzFqaUc2MsMlW/n17RhdAJpeH5QVN3+Z09+mWum0H2vBxMPDO4eQEPopMchLHjC9h
+EBO1ggGLKXgbpWniwt9UKiY4nHfQyzhei3Qj2XKloXndgvPT079gzB6FgjuylmLJCOciFVks
+VOkRiCSVfvw1IcAURJJSUCLST0TSN7ARGQSEg6QhU1qyRaYpMA2Eh10hIREhizYmCsoyHlIJ
+ekVBU5koEJE93Izv4YZyKkkM02wRswBGLKBcUSAKUiNRKxrCwsYxHgODwSswwEBgYKIxSxco
+Q72EdZH1RXlHEdAFIU2QJtEGuQSRGr8Wwt1ATPTW1SQP+7+XtdimHALj9qKVSDG9FcbHhJ9Y
+HMOCQqZolMWuCYDG8Hk4v53cz6E3foDPvdmsN54/XKKxXgnU0jXNQ7EkjRlGxiQl4XqDuZgI
+d/3Z9S269N4PR8P5A2YEg+F83Pc8GExm0INpbzYfXt+PejOY3s+mE6/fAfCogUVNgB/UO7It
+w5qGVBMWqwNVqP+MxQOSQCH4OIQVWVMkQ0DZGqETLFi6+XmjTRASC6SwqQIaY3FTZKMkCWIf
+RsCFdkFhDlcrrdM33e7T01NnybOOkMtunAdR3XcGb9dxXjEexFmI1jgW2XM3EDxiy87q3QvN
+I5Wcxoc0KkDOHVL8E0XqfE9xNEI+fKBBZ3VUE/Z5TWj5Y0Qoi3AconyQ/evJ3XTmj77c9ZxX
+WPyIcfpCA6fPZ386ryjHkXIcpZHyAawFC9uQbHxcASJoFucUi8W+Ul/bv5bzrwPYFI2bAh6T
+3NIoXLgZTP1P/dm4P2pdOt/2opqgZth3YuYPJAxlHvLR6u257m0xLdjyV2Gtd2AdhIKxfoJm
+XUODXVcaros+TKVIFZjJ9VP7+BaMUyfGeYvxcOZCt40rCmc1NCQyqgDlF659TPHx1D6mC3w8
+t48kXgrrag6RkV/kioW+E9juUpUEW9WTZJr2eXhH5GMVk2fJfCUpCVXlg6Jb3ObvN5oa4R9G
+iACVSCiOB06KnVPcNDwfl1BQxX/XZkgS0AJnLsJthnvNWqMzjlgqSYA1xfHD9YwbK8ArcW4g
+oRhsY5vSsZY2/ZAF2kORgQRXV3CGpfh26ThD72vP9AqebctMISsCuiVrAC23hiURStvy7O50
+1ng4jGuwA2Z3rG/HhSrVzLhiS46dCVZEQhvXPfEZ7vuaPEjJkvq4RV2n0cgw2MU5kq2tcNUH
+NKbGoRKGSluJJVgbX1Q0NjxqGAhIykunUXDV0sVXeSXMIPrT2WTq+d7wS39rZSHhzaVhs7ig
+dfLCBe+IKj1c1WO2EHsxFSdnaF1uWpQZADmdEW4TqnRf10K4cLyHx4UqSqOq3W5ZjreDsWu7
+rSccb8vgImthfD8aofS56ONx1WMcvso/z9QA/+0teF/8yad6co2yDG9rFXx9oNRO6XpqB7xG
+lpD+P3RRMtinSkh/lSp1EhSeNQPGS31+FZwcyLVvGu3hDswUKPtnC2DqWXj9jDh5uQrK4Otp
+nzIvKVJg+x6XCtRIj8aWQy9srWAwHA+9Wx+/b9A5B19RpVWl8UNa7DW6eBXgx1YWlC0ve41f
+LLWFYTd7o5NKJnDXbvCYv0kLrMPJDD+bsOMdThLThCPjeWQE+D1HFjHSw+7lRsfeUflv38SV
+Du9H9fGBjWXD0e8YbRX5Rq0RmXGmm4ZrlmRFJXK9pEv85qRyJ/1m/fr87We5uqOhz7tBc0XG
+fznef/Cux612DAAA
+--------------010109040009060609030803--
