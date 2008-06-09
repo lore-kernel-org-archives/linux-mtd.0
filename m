@@ -1,22 +1,20 @@
-Received: from mail2.shareable.org ([80.68.89.115])
+Received: from smtpeu1.atmel.com ([195.65.72.27] helo=bagnes.atmel.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K5kHl-00037W-No
-	for linux-mtd@lists.infradead.org; Mon, 09 Jun 2008 16:31:58 +0000
-Date: Mon, 9 Jun 2008 17:31:49 +0100
-From: Jamie Lokier <jamie@shareable.org>
-To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
-Subject: Re: mtd_info->size again (lengthy)
-Message-ID: <20080609163149.GB2596@shareable.org>
-References: <OFD87C95E7.367C9580-ON88257462.00177BAD-88257462.001EF9FC@selinc.com>
-	<20080608121020.GA13200@logfs.org>
-	<20080609132117.GC29526@shareable.org>
-	<20080609143633.GA22447@logfs.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20080609143633.GA22447@logfs.org>
-Cc: linux-mtd@lists.infradead.org, Bruce_Leonard@selinc.com
+	id 1K5kXq-0003ZP-Om
+	for linux-mtd@lists.infradead.org; Mon, 09 Jun 2008 16:48:35 +0000
+Date: Mon, 9 Jun 2008 18:49:05 +0200
+From: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
+To: David Brownell <david-b@pacbell.net>
+Subject: Re: [patch 2.6.26-rc5-git] at91_nand speedup via {read,write}s{b,w}()
+Message-ID: <20080609184905.3457c528@hskinnemo-gx745.norway.atmel.com>
+In-Reply-To: <20080609133124.0eb97e25@hskinnemo-gx745.norway.atmel.com>
+References: <200806090313.28515.david-b@pacbell.net>
+	<20080609133124.0eb97e25@hskinnemo-gx745.norway.atmel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+Cc: Nicolas Ferre <nicolas.ferre@rfo.atmel.com>, linux-mtd@lists.infradead.org,
+	lkml <linux-kernel@vger.kernel.org>, kernel@avr32linux.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,51 +24,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jörn Engel wrote:
-> > May I suggest submit_mtdio?  One concept to one name, you know.
-> > 
-> > F means flash, sure.  But we don't call the devices /dev/flash0, /dev/flash1.
-> > Nor do we call it the Flash subsystem.
-> 
-> I never liked the name "mtd".
+Haavard Skinnemoen <haavard.skinnemoen@atmel.com> wrote:
+> which is a 6.8% speedup. I guess hardware ECC helps...though I can't
+> seem to get it to work properly. Is there anything I need to do besides
+> flash_eraseall when changing the ECC layout?
 
-Me neither.
+Turns out there's an AP7000 errata that hasn't made it to the data
+sheet yet. The IC designers have already come up with a workaround,
+which I've implemented below. This brings the time down to
 
-> But mtdio is even worse.  Dude, what are you smoking? ;)
+real	2m0.934s
+user	0m0.140s
+sys	2m0.700s
 
-submit_fio suggests "file I/O" to me....  Even if I knew better, it
-looks just that bit too much like submit_bio for something file-ish.
+which is a nice improvement.
 
-submit_mtd_request or async_mtd, then! :-)
+Haavard
 
-> > > And while at it, replace the 32bit size with a 64bit blockno and 32bit
-> > > offset.  Unless someone is stupid enough to create devices with 4G
-> > > erasesize, that should last for a human lifetime or something close.
-> > 
-> > Although a single chip is unlikely to have 4GiB erasesize for a while,
-> > a cluster of chips might, and it should be possible to represent them
-> > as a single device.
-> 
-> When you have a cluster of chips, striping them and increasing writesize
-> and erasesize (and having each bad block kill perfectly good blocks in
-> the other stripes) may be the first idea you have.  But I hope it won't
-> be the last.
+=46rom 57d4f806c28a068baae12558794733e838016a71 Mon Sep 17 00:00:00 2001
+From: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
+Date: Mon, 9 Jun 2008 18:31:25 +0200
+Subject: [PATCH] atmel_nand: Work around AT32AP7000 errata
 
-I didn't say it's a _good_ idea!  Just that I won't be surprised when
-someone produces hardware like that.  And, there will probably be a
-reason you haven't thought of why they did it that way.
+The ALE signal isn't correctly wired up to the ECC controller on the
+AP7000, so it starts calculating ECC during the address cycles.
 
-> Part of the reason for asynchronous interfaces is to make parallel chips
-> work fast without striping them.  Or rather, make them work even faster
-> than stripes.
+Work around this by resetting the ECC controller between the address and
+data cycles.
 
-And erasing simultaneous with streaming writes, let the CPU get on
-with something else, etc.
+Signed-off-by: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
+---
+ drivers/mtd/nand/atmel_nand.c |   25 +++++++++++++++++++++++--
+ 1 files changed, 23 insertions(+), 2 deletions(-)
 
-What should the behaviour be with devices which block the CPU during
-synchronous writes and erases?  Right now, you can be sure the
-temporary CPU blockage (if there is one) happens when you request the
-I/O.  If it's asynchronous, depending on how it's implemented, the CPU
-could block at an unexpected time later.
-
--- Jamie
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index d9f7a5d..b769ef3 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -33,6 +33,7 @@
+ #include <asm/io.h>
+=20
+ #include <asm/arch/board.h>
++#include <asm/arch/cpu.h>
+=20
+ #ifdef CONFIG_MTD_NAND_ATMEL_ECC_HW
+ #define hard_ecc	1
+@@ -264,6 +265,19 @@ static int atmel_nand_read_page(struct mtd_info *mtd,
+ 	uint8_t *ecc_pos;
+ 	int stat;
+=20
++	/*
++	 * Errata: ALE is incorrectly wired up to the ECC controller
++	 * on the AP7000, so it will include the address cycles in the
++	 * ECC calculation.
++	 *
++	 * Workaround: Reset the parity registers before reading the
++	 * actual data.
++	 */
++	if (cpu_is_at32ap7000()) {
++		struct atmel_nand_host *host =3D chip->priv;
++		ecc_writel(host->ecc, CR, ATMEL_ECC_RST);
++	}
++
+ 	/* read the page */
+ 	chip->read_buf(mtd, p, eccsize);
+=20
+@@ -377,9 +391,16 @@ static int atmel_nand_correct(struct mtd_info *mtd, u_=
+char *dat,
+ }
+=20
+ /*
+- * Enable HW ECC : unsused
++ * Enable HW ECC : unused on most chips
+  */
+-static void atmel_nand_hwctl(struct mtd_info *mtd, int mode) { ; }
++static void atmel_nand_hwctl(struct mtd_info *mtd, int mode)
++{
++	if (cpu_is_at32ap7000()) {
++		struct nand_chip *nand_chip =3D mtd->priv;
++		struct atmel_nand_host *host =3D nand_chip->priv;
++		ecc_writel(host->ecc, CR, ATMEL_ECC_RST);
++	}
++}
+=20
+ #ifdef CONFIG_MTD_PARTITIONS
+ static const char *part_probes[] =3D { "cmdlinepart", NULL };
+--=20
+1.5.5.3
