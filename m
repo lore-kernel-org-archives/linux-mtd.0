@@ -1,20 +1,28 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K6MP7-0000mK-UG
-	for linux-mtd@lists.infradead.org; Wed, 11 Jun 2008 09:14:06 +0000
-Date: Wed, 11 Jun 2008 11:13:58 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Bruce_Leonard@selinc.com
-Subject: Re: mtd_info->size again (lengthy)
-Message-ID: <20080611091357.GB9045@logfs.org>
-References: <20080611071814.GC2432@logfs.org>
-	<OFEC9EF05D.17E9BC87-ON88257465.0029A487-88257465.002AB5C8@selinc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <OFEC9EF05D.17E9BC87-ON88257465.0029A487-88257465.002AB5C8@selinc.com>
-Cc: linux-mtd@lists.infradead.org
+	id 1K6Mbi-0002Pc-Qh
+	for linux-mtd@lists.infradead.org; Wed, 11 Jun 2008 09:27:07 +0000
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1K6Mbd-0002Vo-Bk
+	for linux-mtd@lists.infradead.org; Wed, 11 Jun 2008 09:27:01 +0000
+Received: from vpn28.rz.tu-ilmenau.de ([141.24.172.28])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2008 09:27:01 +0000
+Received: from andre.puschmann by vpn28.rz.tu-ilmenau.de with local (Gmexim
+	0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2008 09:27:01 +0000
+To: linux-mtd@lists.infradead.org
+From: Andre Puschmann <andre.puschmann@stud.tu-ilmenau.de>
+Subject: Re: Mounting mtd block device raises "Block device required"
+Date: Wed, 11 Jun 2008 11:26:46 +0200
+Message-ID: <g2o5oo$fqe$1@ger.gmane.org>
+References: <g2o39t$703$1@ger.gmane.org> <484F92E5.2080207@cetrtapot.si>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <484F92E5.2080207@cetrtapot.si>
+Sender: news <news@ger.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,39 +32,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 11 June 2008 00:46:30 -0700, Bruce_Leonard@selinc.com wrote:
-> 
-> Okay, that makes sense.  I think I'm actually starting to understand some 
-> of this :\.  How tied up in the block layer is the I/O scheduler?  With my 
-> limited understanding, it seems that is going to be the real sticking 
-> point in moving block and mtd io towards each other.  If the I/O scheduler 
-> is largely decoupled from bio it may make this easier than I think.
+Hi,
 
-The block io schedulers do two things.  First they implement some kind
-of elevator, combining operations and reordering them for better disk
-head utilization.  That is fairly useless in flash context.  Some
-schedulers also add policy, like giving all process a fair share of io.
-That might become useful for flash as well.
+Hinko Kocevar wrote:
+> Char device seems to work..
 
-> Fortunately, I think I'm well on my way to doing that.  I've taken your 
-> code snippets (okay pretty much stolen them wholesale, I hope that's okay) 
-> and started makeing changes based on them.  The changes aren't really 
-> radical, I don't make use of the struct fio_vec and I'm just making 
-> submit_fio() a wrapper around existing NAND functions, simple stuff like 
-> that for now.  That will at least get me working and maybe some proof of 
-> concept.  I hope to have a patch set in the next day or two for the list 
-> to look over.
+Yes, sorry for being not precise.
+Coping a jffs2 image (in 2.6.25) at /dev/mtd5 and mouting the same one
+in 2.6.21 (/dev/mtdblock5) works. So accessing the flash as a character
+device works.
 
-Cool.  If you solve your problem, don't break anything existing and the
-infrastructure allows to handle existing drivers one by one, I am happy.
-Bonus points for changing existing drivers, of course.  But I think a
-one-by-one migration is better than a flag-day.  If the conversion
-introduces bugs to individual drivers, we can simply revert those bits
-and redo them at our leasure, instead of dealing with everything at
-once.
+> What is the ls -l /dev/mtdblock5 output?
 
-Jörn
+As expected:
+$ ls -l /dev/mtdblock5
+brw-rw----    1 root     root      31,   5 Jan  1  1970 /dev/mtdblock5
 
--- 
-I don't understand it. Nobody does.
--- Richard P. Feynman
+
+> Also could you try:
+> mount -t jffs2 /dev/mtdblock5 /mnt/flash
+
+I also tried that:
+
+# mount -t jffs2 /dev/mtdblock5 /mnt/flash
+mount: mounting /dev/mtdblock5 on /mnt/flash failed: Invalid argument
+
+
+But it seems like it has to do something with the block device driver
+mapping:
+
+$ head -n 2 /dev/mtdblock5 | hexdump -C
+head: /dev/mtdblock5: No such device or address
+
+
+Thanks,
+Andre
