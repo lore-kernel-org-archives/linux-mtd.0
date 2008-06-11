@@ -1,18 +1,20 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K6JxJ-0003XM-ET
-	for linux-mtd@lists.infradead.org; Wed, 11 Jun 2008 06:37:14 +0000
-Message-ID: <484F7202.1010701@nokia.com>
-Date: Wed, 11 Jun 2008 09:34:42 +0300
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+	id 1K6KbA-00051Q-U7
+	for linux-mtd@lists.infradead.org; Wed, 11 Jun 2008 07:18:25 +0000
+Date: Wed, 11 Jun 2008 09:18:14 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Bruce_Leonard@selinc.com
+Subject: Re: mtd_info->size again (lengthy)
+Message-ID: <20080611071814.GC2432@logfs.org>
+References: <20080608121020.GA13200@logfs.org>
+	<OF397179E3.A6764D8A-ON88257464.007D81C8-88257465.0000E0CF@selinc.com>
 MIME-Version: 1.0
-To: Zhao Forrest <forrest.zhao@gmail.com>
-Subject: Re: A question about UBIFS
-References: <ac8af0be0806102116l5918c48ax279d456b4de1d061@mail.gmail.com>
-In-Reply-To: <ac8af0be0806102116l5918c48ax279d456b4de1d061@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Artem.Bityutskiy@nokia.com, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <OF397179E3.A6764D8A-ON88257464.007D81C8-88257465.0000E0CF@selinc.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,43 +24,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Zhao Forrest wrote:
-> Hi Artem,
+On Tue, 10 June 2008 17:09:35 -0700, Bruce_Leonard@selinc.com wrote:
+> 
+> I think I'm starting to glean some things and one of those things is that 
+> I think I'm in over my head :(.  Are you suggesting that the direction we 
+> want to move is to change the MTD layer over to function the same way as 
+> the Block I/O layer?
 
-Artem is on holiday til next week.
+Either that or move the block io layer to function the same way as mtd.
+Effectively the two should meet somewhere in between, but it's going to
+be a lot closer to current block io than current mtd.  We want all the
+goodies of both worlds, and block io simply has more.
 
-> I have a basic question about NAND flash page update in UBIFS/UBI,
-> take the following as an example:
-> 1 a NAND flash with page size of 4KB, erase block size of 256KB, so
-> there're 64 pages within an erase block
-> 2 page 0 - page 10 has invalid data content, page 11 - page 63 has
-> valid data content from FS's point of view
-> 3 UBIFS attempts to update(or rewrite) page 11
+> With all of it's attendant infrastructure?  I've 
+> read through the 'Block Device Drivers' chapter of 'Understanding the 
+> Linux Kernal'.  It talks about the I/O scheduler and queues of requests 
+> consisting of multiple bios which can consist of multiple segments 
+> (bio_vec?), and a WHOLE lot of 'stuff'.  If that's what we're talking 
+> about then it's WAY beyond my scope or my abilities.
 
-UBIFS does out-of-place updates. It never tries to update or rewrite
-page 11. (Well, except in very rare circumstances that are not worth
-going into)
+That's ok.  I don't expect you to do it all.  What I would like is to
+solve your problem in a way that brings us closer to block io instead of
+farther away.
 
-> My question is how page 11 is updated by UBIFS/UBI?
+> > +static int ram_submit_fio(struct mtd_info *mtd, struct fio *fio)
+> > +{
+> > +   int i, err = 0;
+> > +   u32 ofs;
+> > +   size_t *retlen;
+> > +   const u_char *buf;
+> > +   struct fio_vec *vec;
+> > +
+> > +   /* This driver cannot deal with device >32bit yet */
+> > +   if (fio->fi_blockno * mtd->erasesize + fio->block_ofs + fio->fi_len
+> > +         > 0xffffffff)
+> > +      return -EIO;
+> > +
+> > +   ofs = fio->fi_blockno * mtd->erasesize + fio->block_ofs;
+> > +
+> > +   if (fio->fi_command == FI_ERASE) {
+> > +      memset(mtd->priv + ofs, 0xff, fio->fi_len);
+> > +      goto out;
+> > +   }
+> > +
+> > +   for (i = 0; i < fio->fi_vcnt; i++) {
+> > +      vec = fio->fi_io_vec + i;
+> > +      buf = kmap_atomic(vec->fv_page, KM_USER0);
+> > +      switch (fio->fi_command) {
+> > +      case FI_READ:
+> > +         err = ram_read(mtd, ofs, vec->fv_len, &retlen,
+> > +               buf + vec->fv_offset);
+> 
+> 'len' confuses me a bit as it comes from vec->fv_len rather than fi_len. 
+> Why use the length from the vector rather than the struct fio?  Should 
+> they be initialized to the same thing?  I would think to use fi_len as the 
+> calling function should have loaded that at the same time it figured out 
+> where to start from (i.e., when it loaded fi_blockno and fi_blockofs). I'm 
+> sure I'm missing something because I've never used struct page before and 
+> it's probably obvious to someone with more kernel experiance.
 
-As far as UBIFS goes, you need to learn about wandering trees and
-garbage collection.
+An io-vector is used to scatter-gather io.  Basically you tell a driver
+to write those 4 meg of data in one huge chunk to the device.  And, by
+the way, the data is currently scattered all over memory and the
+individual bits are here, here, here, here, here,...
 
-> I only read the design docs of UBI and guess that for this particular
-> case a new physical eraseblock is got by UBI, then new content of page
-> 11 is written to page 11 of new physical eraseblock, page 12 - page 63
-> in original physical eraseblock are copied to new physical eraseblock,
-> lastly the mapping between logical eraseblock and physical eraseblock
-> is updated. Am I right?
+That's why we have a loop and within each iteration of the loop only one
+fragment is processed.  Each fragment consists of the page, starting
+offset within the page and length.  The sum of all fragments length
+fields should equal fio->fi_len.  (And it might be a good idea to check
+that to catch bugs.)
 
-Not for UBIFS.
+> Does vec->fv_len represent the remaining length of vec->fv_page?  And 
+> vec->fv_offset the offset to start accessing vec->fv_page from?  Sorry to 
+> be asking dumb questions.
 
-> I know I omit many details in UBIFS/UBI for this updating operation.
-> I'd like to know the cost of rewrite in UBIFS/UBI.
+Just keep asking.  Your questions are far from dumb.  And lack of
+experience is often a good thing.  Sometimes all the adults strongly
+believe the emperor is wearing clothes and it takes a child to point out
+the obvious facts. :)
 
-UBIFS rewrite is typically better than even JFFS2 - see
-http://osl.sed.hu/wiki/ubifs/index.php/IOzone
+Jörn
 
-Of course that assumes you are sync.ing the data.  UBIFS has writeback
-which means rewrites will be much faster if you do not need to have
-the data sync'ed.
+-- 
+Homo Sapiens is a goal, not a description.
+-- unknown
