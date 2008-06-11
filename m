@@ -1,28 +1,14 @@
-Received: from wf-out-1314.google.com ([209.85.200.170])
+Received: from [218.247.179.29] (helo=Mail.htcc.com.cn)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K5vQe-0006wh-Eu
-	for linux-mtd@lists.infradead.org; Tue, 10 Jun 2008 04:25:53 +0000
-Received: by wf-out-1314.google.com with SMTP id 28so2470133wfc.24
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 09 Jun 2008 21:25:50 -0700 (PDT)
-Message-ID: <bae050c10806092125l2d758980j29ba9153f165be56@mail.gmail.com>
-Date: Tue, 10 Jun 2008 12:25:49 +0800
-From: Nancy <nancydreaming@gmail.com>
-To: "Alaor Koppe" <alakoppe@gmail.com>
-Subject: Re: NAND and vfat
-In-Reply-To: <a791a2dc0806091855p5e35ae1biebdce6009795399e@mail.gmail.com>
+	id 1K5zum-000513-HT
+	for linux-mtd@lists.infradead.org; Tue, 10 Jun 2008 09:13:18 +0000
+Date: Wed, 11 Jun 2008 08:58:38 -0400
+From: "Tomlinson Q Stanley" <theologygirbg@asemesa.es>
+To: linux-mtd@lists.infradead.org
+Subject: Directory of otolaryngologists etc..
+Message-ID: <613024k3quu0$s9262xp0$3609c1y0@Delldim5150
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <a791a2dc0806061011yc1d0021m96c0a64260f03a83@mail.gmail.com>
-	<bae050c10806061841j27dab8cp48ac7b75dadf7cd1@mail.gmail.com>
-	<a791a2dc0806071251v23b74c67ne160bebc5774374b@mail.gmail.com>
-	<bae050c10806071804k7bddc290s8538ce55989118e0@mail.gmail.com>
-	<a791a2dc0806081549g74f6af40yb91d3a5e1a6c31d@mail.gmail.com>
-	<bae050c10806081958v5575545ay977877f3aaca7e1@mail.gmail.com>
-	<a791a2dc0806091855p5e35ae1biebdce6009795399e@mail.gmail.com>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Content-type: text/plain; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,31 +18,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Alaor,
-On 6/10/08, Alaor Koppe <alakoppe@gmail.com> wrote:
-> Hi Nancy,
->
-> What board are you using? What uclinux version?
-   I use our own board Pavo (www.ingenic.cn). We use Linux-2.6.24.3.
-The patches on website are not up to date. But that's fine with Jffs2.
 
-> I tried a little bit with your tips, but I can't write correct and
-> jffs2 returned these errors:
-> Buffer I/O error on device loop0, logical block 19
-> lost page write due to I/O error on loop0
-   That seems driver problem.
 
-> At windows we can format with FAT or FAT32, but whe we use the volume,
-> all that we write generate an error at board and also we receive a
-> message that is not possible to read. After that we umount and mount
-> again at windows side and we can see the files that we tried to create
-> with correct name but empty.
-     Be sure /dev/loop0 device only mount once at one time. That mean
-you can't mount /dev/loop0 on your board then modprobe g_file_storage
-file=/dev/loop0. After that remember first remmod g_file_storage then
-mount /dev/loop0 on board again.
-     If still the same result, I don't know why : (
 
--- 
-Best wishes,
-Nancy
+
+
+Board Certified Doctors in the United States 
+
+788,451 in total <> 17,952 emails
+
+Featuring coverage for more than 30 specialties like Internal Medicine, Family Practice, Opthalmology, Anesthesiologists, Cardiologists and more
+
+you can sort by many different fields 
+
+reduced price is now: $398
+
+
+======= Buy this week and get these bonus information directories: =======
+
+++ American Pharmaceutical Company Database
+  Names and email addresses of 47,000 employees in high-ranking positions
+
+++ American Hospital Directory
+  more than 23k hospital administrators in over 7k hospitals [worth over $300 alone)
+
+++ List of US Dentists
+  A complete Directory or dentists and related services (valued at $399)
+
+++ American Chiropractors Marketing List
+  Over than 100k chiropractors practicing in the US
+
+send email to -       janeritake@hotmail.com
+
+  
+
+If you order by this Friday
+
+
+Put this number in the heading: 231 and send this email back to be delisted
