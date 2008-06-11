@@ -1,18 +1,18 @@
-Received: from moutng.kundenserver.de ([212.227.126.174])
+Received: from n1.cetrtapot.si ([89.212.80.162])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K6LxH-0005yB-KY
-	for linux-mtd@lists.infradead.org; Wed, 11 Jun 2008 08:45:19 +0000
-Received: from [192.168.7.2] ([192.168.7.2])
-	by WebServer.mynet (8.13.6/8.13.1) with ESMTP id m5B8jFQH015750
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2008 10:45:16 +0200
-Message-ID: <484F909D.6080709@web.de>
-Date: Wed, 11 Jun 2008 10:45:17 +0200
-From: Hyphen79 <hyphen79@web.de>
+	id 1K6M7p-0007QX-Nn
+	for linux-mtd@lists.infradead.org; Wed, 11 Jun 2008 08:56:14 +0000
+Message-ID: <484F92E5.2080207@cetrtapot.si>
+Date: Wed, 11 Jun 2008 10:55:01 +0200
+From: Hinko Kocevar <hinko.kocevar@cetrtapot.si>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: mtd caching in kernel 2.6
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+To: Andre Puschmann <andre.puschmann@stud.tu-ilmenau.de>
+Subject: Re: Mounting mtd block device raises "Block device required"
+References: <g2o39t$703$1@ger.gmane.org>
+In-Reply-To: <g2o39t$703$1@ger.gmane.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,15 +22,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Andre Puschmann wrote:
+> Hi list,
+> 
+> I am successfully running kernel 2.6.21 on a custom AT91RM9200-based
+> board. I now updated to kernel 2.6.25 for various reasons.
+> 
+> Now, we use the _new_ atmel_spi driver and mtd_dataflash driver (but the
+> problem also exist if I use the legacy one). If I try to mount a
+> jffs2 or cramfs image on dataflash I get the following error:
+> # mount /dev/mtdblock5 /mnt/flash
+> mount: mounting /dev/mtdblock5 on /mnt/flash failed: Block device required
+> 
+> Exactly the same line works with the 2.6.21 kernel. Also doing a cat
+> on the normal /dev/mtd* nodes also works.
 
-I have a problem with my mtdblock root device with the 2.6 kernel. When 
-I write data to a mtd partition,
-which is not the root, the data will be written immediately. But when I 
-write something to the root partition,
-it will be cached and written to it after a while (~30sec). What could 
-this be and how could I deactivate
-the caching? - the root is a cramdisk, not JFFS2 - and I have no 
-problems with the 2.4 kernel.
+Char device seems to work..
 
-Many thanks ahead!
+> 
+> "cat /proc/devices" shows:
+> 
+> Block devices:
+>   7 loop
+>  31 mtdblock
+> 
+> So I have no idea here. Any hints?
+
+What is the ls -l /dev/mtdblock5 output?
+Also could you try:
+mount -t jffs2 /dev/mtdblock5 /mnt/flash
+
+HTH,
+Hinko
+
+-- 
+ČETRTA POT, d.o.o., Kranj
+Planina 3
+4000 Kranj
+Slovenia, Europe
+Tel. +386 (0) 4 280 66 03
+E-mail: hinko.kocevar@cetrtapot.si
+Http: www.cetrtapot.si
