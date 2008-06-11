@@ -1,17 +1,19 @@
-Received: from n1.cetrtapot.si ([89.212.80.162])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K6M7p-0007QX-Nn
-	for linux-mtd@lists.infradead.org; Wed, 11 Jun 2008 08:56:14 +0000
-Message-ID: <484F92E5.2080207@cetrtapot.si>
-Date: Wed, 11 Jun 2008 10:55:01 +0200
-From: Hinko Kocevar <hinko.kocevar@cetrtapot.si>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1K6MP7-0000mK-UG
+	for linux-mtd@lists.infradead.org; Wed, 11 Jun 2008 09:14:06 +0000
+Date: Wed, 11 Jun 2008 11:13:58 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Bruce_Leonard@selinc.com
+Subject: Re: mtd_info->size again (lengthy)
+Message-ID: <20080611091357.GB9045@logfs.org>
+References: <20080611071814.GC2432@logfs.org>
+	<OFEC9EF05D.17E9BC87-ON88257465.0029A487-88257465.002AB5C8@selinc.com>
 MIME-Version: 1.0
-To: Andre Puschmann <andre.puschmann@stud.tu-ilmenau.de>
-Subject: Re: Mounting mtd block device raises "Block device required"
-References: <g2o39t$703$1@ger.gmane.org>
-In-Reply-To: <g2o39t$703$1@ger.gmane.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <OFEC9EF05D.17E9BC87-ON88257465.0029A487-88257465.002AB5C8@selinc.com>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -22,44 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Andre Puschmann wrote:
-> Hi list,
+On Wed, 11 June 2008 00:46:30 -0700, Bruce_Leonard@selinc.com wrote:
 > 
-> I am successfully running kernel 2.6.21 on a custom AT91RM9200-based
-> board. I now updated to kernel 2.6.25 for various reasons.
-> 
-> Now, we use the _new_ atmel_spi driver and mtd_dataflash driver (but the
-> problem also exist if I use the legacy one). If I try to mount a
-> jffs2 or cramfs image on dataflash I get the following error:
-> # mount /dev/mtdblock5 /mnt/flash
-> mount: mounting /dev/mtdblock5 on /mnt/flash failed: Block device required
-> 
-> Exactly the same line works with the 2.6.21 kernel. Also doing a cat
-> on the normal /dev/mtd* nodes also works.
+> Okay, that makes sense.  I think I'm actually starting to understand some 
+> of this :\.  How tied up in the block layer is the I/O scheduler?  With my 
+> limited understanding, it seems that is going to be the real sticking 
+> point in moving block and mtd io towards each other.  If the I/O scheduler 
+> is largely decoupled from bio it may make this easier than I think.
 
-Char device seems to work..
+The block io schedulers do two things.  First they implement some kind
+of elevator, combining operations and reordering them for better disk
+head utilization.  That is fairly useless in flash context.  Some
+schedulers also add policy, like giving all process a fair share of io.
+That might become useful for flash as well.
 
-> 
-> "cat /proc/devices" shows:
-> 
-> Block devices:
->   7 loop
->  31 mtdblock
-> 
-> So I have no idea here. Any hints?
+> Fortunately, I think I'm well on my way to doing that.  I've taken your 
+> code snippets (okay pretty much stolen them wholesale, I hope that's okay) 
+> and started makeing changes based on them.  The changes aren't really 
+> radical, I don't make use of the struct fio_vec and I'm just making 
+> submit_fio() a wrapper around existing NAND functions, simple stuff like 
+> that for now.  That will at least get me working and maybe some proof of 
+> concept.  I hope to have a patch set in the next day or two for the list 
+> to look over.
 
-What is the ls -l /dev/mtdblock5 output?
-Also could you try:
-mount -t jffs2 /dev/mtdblock5 /mnt/flash
+Cool.  If you solve your problem, don't break anything existing and the
+infrastructure allows to handle existing drivers one by one, I am happy.
+Bonus points for changing existing drivers, of course.  But I think a
+one-by-one migration is better than a flag-day.  If the conversion
+introduces bugs to individual drivers, we can simply revert those bits
+and redo them at our leasure, instead of dealing with everything at
+once.
 
-HTH,
-Hinko
+Jörn
 
 -- 
-ČETRTA POT, d.o.o., Kranj
-Planina 3
-4000 Kranj
-Slovenia, Europe
-Tel. +386 (0) 4 280 66 03
-E-mail: hinko.kocevar@cetrtapot.si
-Http: www.cetrtapot.si
+I don't understand it. Nobody does.
+-- Richard P. Feynman
