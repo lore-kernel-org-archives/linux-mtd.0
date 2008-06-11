@@ -1,23 +1,30 @@
-Received: from rv-out-0708.google.com ([209.85.198.245])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K6NES-00017e-Ju
-	for linux-mtd@lists.infradead.org; Wed, 11 Jun 2008 10:07:09 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so4080076rvf.42
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 11 Jun 2008 03:07:07 -0700 (PDT)
-Message-ID: <bae050c10806110238g515e426am83149b436cc81af0@mail.gmail.com>
-Date: Wed, 11 Jun 2008 17:38:38 +0800
-From: Nancy <nancydreaming@gmail.com>
-To: "Andre Puschmann" <andre.puschmann@stud.tu-ilmenau.de>
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1K6Ndi-0005ZP-4x
+	for linux-mtd@lists.infradead.org; Wed, 11 Jun 2008 10:33:14 +0000
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1K6Ndg-0005Iz-05
+	for linux-mtd@lists.infradead.org; Wed, 11 Jun 2008 10:33:12 +0000
+Received: from vpn128.rz.tu-ilmenau.de ([141.24.172.128])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2008 10:33:11 +0000
+Received: from andre.puschmann by vpn128.rz.tu-ilmenau.de with local (Gmexim
+	0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2008 10:33:11 +0000
+To: linux-mtd@lists.infradead.org
+From: Andre Puschmann <andre.puschmann@stud.tu-ilmenau.de>
 Subject: Re: Mounting mtd block device raises "Block device required"
-In-Reply-To: <g2o5oo$fqe$1@ger.gmane.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Date: Wed, 11 Jun 2008 12:33:02 +0200
+Message-ID: <g2o9kv$sbs$1@ger.gmane.org>
+References: <g2o39t$703$1@ger.gmane.org>
+	<484F92E5.2080207@cetrtapot.si>	<g2o5oo$fqe$1@ger.gmane.org>
+	<484FA122.1030208@cetrtapot.si>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <g2o39t$703$1@ger.gmane.org> <484F92E5.2080207@cetrtapot.si>
-	<g2o5oo$fqe$1@ger.gmane.org>
-Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <484FA122.1030208@cetrtapot.si>
+Sender: news <news@ger.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +34,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 6/11/08, Andre Puschmann <andre.puschmann@stud.tu-ilmenau.de> wrote:
-> # mount -t jffs2 /dev/mtdblock5 /mnt/flash
-> mount: mounting /dev/mtdblock5 on /mnt/flash failed: Invalid argument
->
->
-> But it seems like it has to do something with the block device driver
-> mapping:
->
-> $ head -n 2 /dev/mtdblock5 | hexdump -C
-> head: /dev/mtdblock5: No such device or address
+Hi,
 
-$ls linux-2.6.21/drivers/mtd/*.o
-is there displaying  mtd_blkdev.o and mtdblock.o? if no, you must add
-it in your .config file.
+Hinko Kocevar wrote:
+> Is this true (kernel config)?:
+> CONFIG_JFFS2_FS=y
+> CONFIG_MTD_BLKDEVS=y
+> CONFIG_MTD_BLOCK=y
+
+Sure, all these parameters are defined. Also, mdev dynamically creates
+the device nodes.
 
 
--- 
-Best wishes,
-Nancy
+Regards,
+	Andre
