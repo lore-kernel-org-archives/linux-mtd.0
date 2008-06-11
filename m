@@ -1,16 +1,23 @@
-Received: from tesla.selinc.com ([12.110.71.2])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K6L2p-00029g-GD
-	for linux-mtd@lists.infradead.org; Wed, 11 Jun 2008 07:46:59 +0000
-In-Reply-To: <20080611071814.GC2432@logfs.org>
-To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>
-Subject: Re: mtd_info->size again (lengthy)
+Received: from wa-out-1112.google.com ([209.85.146.180])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K6LC0-0003Ja-87
+	for linux-mtd@lists.infradead.org; Wed, 11 Jun 2008 07:56:28 +0000
+Received: by wa-out-1112.google.com with SMTP id v33so2068401wah.2
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 11 Jun 2008 00:56:27 -0700 (PDT)
+Message-ID: <ac8af0be0806110056q427ff589h1269d4d8633d0170@mail.gmail.com>
+Date: Wed, 11 Jun 2008 15:56:26 +0800
+From: "Zhao Forrest" <forrest.zhao@gmail.com>
+To: "Adrian Hunter" <ext-adrian.hunter@nokia.com>
+Subject: Re: A question about UBIFS
+In-Reply-To: <484F7202.1010701@nokia.com>
 MIME-Version: 1.0
-Message-ID: <OFEC9EF05D.17E9BC87-ON88257465.0029A487-88257465.002AB5C8@selinc.com>
-From: Bruce_Leonard@selinc.com
-Date: Wed, 11 Jun 2008 00:46:30 -0700
-Content-Type: text/plain; charset="US-ASCII"
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <ac8af0be0806102116l5918c48ax279d456b4de1d061@mail.gmail.com>
+	<484F7202.1010701@nokia.com>
+Cc: Artem.Bityutskiy@nokia.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,39 +28,15 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 >
-> > I think I'm in over my head :(.  Are you suggesting that the direction 
-we 
-> > want to move is to change the MTD layer over to function the same way 
-as 
-> > the Block I/O layer?
-> 
-> Either that or move the block io layer to function the same way as mtd.
-> Effectively the two should meet somewhere in between, but it's going to
-> be a lot closer to current block io than current mtd.  We want all the
-> goodies of both worlds, and block io simply has more.
+>> My question is how page 11 is updated by UBIFS/UBI?
 >
+> As far as UBIFS goes, you need to learn about wandering trees and
+> garbage collection.
 
-Okay, that makes sense.  I think I'm actually starting to understand some 
-of this :\.  How tied up in the block layer is the I/O scheduler?  With my 
-limited understanding, it seems that is going to be the real sticking 
-point in moving block and mtd io towards each other.  If the I/O scheduler 
-is largely decoupled from bio it may make this easier than I think.
- 
-> 
-> That's ok.  I don't expect you to do it all.  What I would like is to
-> solve your problem in a way that brings us closer to block io instead of
-> farther away.
-> 
+This question is just out of my curiosity and not related to this topic.
+Do you know if there is any FTL implemented by firmware doing the
+out-of-place updating? Maybe this is too complexed to be implemented
+by firmware?
 
-Fortunately, I think I'm well on my way to doing that.  I've taken your 
-code snippets (okay pretty much stolen them wholesale, I hope that's okay) 
-and started makeing changes based on them.  The changes aren't really 
-radical, I don't make use of the struct fio_vec and I'm just making 
-submit_fio() a wrapper around existing NAND functions, simple stuff like 
-that for now.  That will at least get me working and maybe some proof of 
-concept.  I hope to have a patch set in the next day or two for the list 
-to look over.
-
-Thanks again for all the help.
-
-Bruce
+Thanks,
+Forrest
