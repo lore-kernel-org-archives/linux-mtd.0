@@ -1,28 +1,22 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K6Mbi-0002Pc-Qh
-	for linux-mtd@lists.infradead.org; Wed, 11 Jun 2008 09:27:07 +0000
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1K6Mbd-0002Vo-Bk
-	for linux-mtd@lists.infradead.org; Wed, 11 Jun 2008 09:27:01 +0000
-Received: from vpn28.rz.tu-ilmenau.de ([141.24.172.28])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2008 09:27:01 +0000
-Received: from andre.puschmann by vpn28.rz.tu-ilmenau.de with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2008 09:27:01 +0000
-To: linux-mtd@lists.infradead.org
-From: Andre Puschmann <andre.puschmann@stud.tu-ilmenau.de>
-Subject: Re: Mounting mtd block device raises "Block device required"
-Date: Wed, 11 Jun 2008 11:26:46 +0200
-Message-ID: <g2o5oo$fqe$1@ger.gmane.org>
-References: <g2o39t$703$1@ger.gmane.org> <484F92E5.2080207@cetrtapot.si>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Received: from rv-out-0708.google.com ([209.85.198.242])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K6Mc9-0002QM-Cf
+	for linux-mtd@lists.infradead.org; Wed, 11 Jun 2008 09:27:33 +0000
+Received: by rv-out-0708.google.com with SMTP id b17so4059599rvf.42
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 11 Jun 2008 02:27:32 -0700 (PDT)
+Message-ID: <bae050c10806110227x364e631ev9ae3deb41114a1dd@mail.gmail.com>
+Date: Wed, 11 Jun 2008 17:27:32 +0800
+From: Nancy <nancydreaming@gmail.com>
+To: Hyphen79 <hyphen79@web.de>
+Subject: Re: mtd caching in kernel 2.6
+In-Reply-To: <484F909D.6080709@web.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <484F92E5.2080207@cetrtapot.si>
-Sender: news <news@ger.gmane.org>
+Content-Disposition: inline
+References: <484F909D.6080709@web.de>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,38 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On 6/11/08, Hyphen79 <hyphen79@web.de> wrote:
+> Hello,
+>
+> I have a problem with my mtdblock root device with the 2.6 kernel. When
+> I write data to a mtd partition,
+> which is not the root, the data will be written immediately. But when I
+> write something to the root partition,
+> it will be cached and written to it after a while (~30sec).
+Yes, cause your root is cramdisk, goes to block device layer
+mtdblock.c Which is cache designed. Your other partitions works with
+JFFS2 or Yaffs2 which goes directly on MTD nand_base.c or similar
+file.
 
-Hinko Kocevar wrote:
-> Char device seems to work..
+What could
+> this be and how could I deactivate
+> the caching? - the root is a cramdisk, not JFFS2 - and I have no
+> problems with the 2.4 kernel.
+No, you can't deactiveate the caching. But you can avoid it by using
+JFFS2 or YAFFS2 as your rootfs. I think your case have nothing to do
+with the kernel version. It should be the same with 2.4 kernel.
 
-Yes, sorry for being not precise.
-Coping a jffs2 image (in 2.6.25) at /dev/mtd5 and mouting the same one
-in 2.6.21 (/dev/mtdblock5) works. So accessing the flash as a character
-device works.
-
-> What is the ls -l /dev/mtdblock5 output?
-
-As expected:
-$ ls -l /dev/mtdblock5
-brw-rw----    1 root     root      31,   5 Jan  1  1970 /dev/mtdblock5
-
-
-> Also could you try:
-> mount -t jffs2 /dev/mtdblock5 /mnt/flash
-
-I also tried that:
-
-# mount -t jffs2 /dev/mtdblock5 /mnt/flash
-mount: mounting /dev/mtdblock5 on /mnt/flash failed: Invalid argument
-
-
-But it seems like it has to do something with the block device driver
-mapping:
-
-$ head -n 2 /dev/mtdblock5 | hexdump -C
-head: /dev/mtdblock5: No such device or address
-
-
-Thanks,
-Andre
+-- 
+Best wishes,
+Nancy
