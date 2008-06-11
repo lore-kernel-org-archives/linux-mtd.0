@@ -1,30 +1,16 @@
-Received: from mail119.messagelabs.com ([216.82.245.51])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K6L2B-000285-UC
-	for linux-mtd@lists.infradead.org; Wed, 11 Jun 2008 07:46:20 +0000
-Received: from az33exr03.mot.com (az33exr03.mot.com [10.64.251.233])
-	by motgate4.mot.com (8.12.11/Motorola) with ESMTP id m5B7kIef011245
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 11 Jun 2008 00:46:18 -0700 (MST)
-Received: from az10vts02.mot.com (az10vts02.mot.com [10.64.251.243])
-	by az33exr03.mot.com (8.13.1/Vontu) with SMTP id m5B7kHNu003194
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 11 Jun 2008 02:46:17 -0500 (CDT)
-Received: from ZMY16EXM67.ds.mot.com (zmy16exm67.ap.mot.com [10.179.4.27])
-	by az33exr03.mot.com (8.13.1/8.13.0) with ESMTP id m5B7kFqZ003185
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 11 Jun 2008 02:46:16 -0500 (CDT)
-Content-class: urn:content-classes:message
+Received: from tesla.selinc.com ([12.110.71.2])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1K6L2p-00029g-GD
+	for linux-mtd@lists.infradead.org; Wed, 11 Jun 2008 07:46:59 +0000
+In-Reply-To: <20080611071814.GC2432@logfs.org>
+To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>
+Subject: Re: mtd_info->size again (lengthy)
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-Subject: Question on linux hibernate functionality
-Date: Wed, 11 Jun 2008 15:46:14 +0800
-Message-ID: <B7803DC652E2F9458758AEBB6A5FD60F02ED222E@ZMY16EXM67.ds.mot.com>
-From: "KRISHNAN SUDHAKAR-NRD743" <sudhakark@motorola.com>
-To: "KRISHNAN SUDHAKAR-NRD743" <sudhakark@motorola.com>,
-	<linux-mtd@lists.infradead.org>
+Message-ID: <OFEC9EF05D.17E9BC87-ON88257465.0029A487-88257465.002AB5C8@selinc.com>
+From: Bruce_Leonard@selinc.com
+Date: Wed, 11 Jun 2008 00:46:30 -0700
+Content-Type: text/plain; charset="US-ASCII"
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,14 +20,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=20
-Hi all,
+>
+> > I think I'm in over my head :(.  Are you suggesting that the direction 
+we 
+> > want to move is to change the MTD layer over to function the same way 
+as 
+> > the Block I/O layer?
+> 
+> Either that or move the block io layer to function the same way as mtd.
+> Effectively the two should meet somewhere in between, but it's going to
+> be a lot closer to current block io than current mtd.  We want all the
+> goodies of both worlds, and block io simply has more.
+>
 
-I like to enable the hibernate feature for my board. I like to know how
-to do hibernate in Linux ramdisk image itself. So that every time if our
-board boots up it will come immediately.
+Okay, that makes sense.  I think I'm actually starting to understand some 
+of this :\.  How tied up in the block layer is the I/O scheduler?  With my 
+limited understanding, it seems that is going to be the real sticking 
+point in moving block and mtd io towards each other.  If the I/O scheduler 
+is largely decoupled from bio it may make this easier than I think.
+ 
+> 
+> That's ok.  I don't expect you to do it all.  What I would like is to
+> solve your problem in a way that brings us closer to block io instead of
+> farther away.
+> 
 
-It will be very helpful if anyone provides me link or method to follow.
+Fortunately, I think I'm well on my way to doing that.  I've taken your 
+code snippets (okay pretty much stolen them wholesale, I hope that's okay) 
+and started makeing changes based on them.  The changes aren't really 
+radical, I don't make use of the struct fio_vec and I'm just making 
+submit_fio() a wrapper around existing NAND functions, simple stuff like 
+that for now.  That will at least get me working and maybe some proof of 
+concept.  I hope to have a patch set in the next day or two for the list 
+to look over.
 
-Thanks
-Sudhakar
+Thanks again for all the help.
+
+Bruce
