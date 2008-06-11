@@ -1,26 +1,18 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K6Lwu-00055z-Ke
-	for linux-mtd@lists.infradead.org; Wed, 11 Jun 2008 08:44:57 +0000
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1K6Lwq-0000Zv-VN
-	for linux-mtd@lists.infradead.org; Wed, 11 Jun 2008 08:44:53 +0000
-Received: from vpn28.rz.tu-ilmenau.de ([141.24.172.28])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2008 08:44:52 +0000
-Received: from andre.puschmann by vpn28.rz.tu-ilmenau.de with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2008 08:44:52 +0000
+Received: from moutng.kundenserver.de ([212.227.126.174])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K6LxH-0005yB-KY
+	for linux-mtd@lists.infradead.org; Wed, 11 Jun 2008 08:45:19 +0000
+Received: from [192.168.7.2] ([192.168.7.2])
+	by WebServer.mynet (8.13.6/8.13.1) with ESMTP id m5B8jFQH015750
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Jun 2008 10:45:16 +0200
+Message-ID: <484F909D.6080709@web.de>
+Date: Wed, 11 Jun 2008 10:45:17 +0200
+From: Hyphen79 <hyphen79@web.de>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-From: Andre Puschmann <andre.puschmann@stud.tu-ilmenau.de>
-Subject: Mounting mtd block device raises "Block device required"
-Date: Wed, 11 Jun 2008 10:44:44 +0200
-Message-ID: <g2o39t$703$1@ger.gmane.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Subject: mtd caching in kernel 2.6
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
-Sender: news <news@ger.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,30 +22,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi list,
+Hello,
 
-I am successfully running kernel 2.6.21 on a custom AT91RM9200-based
-board. I now updated to kernel 2.6.25 for various reasons.
+I have a problem with my mtdblock root device with the 2.6 kernel. When 
+I write data to a mtd partition,
+which is not the root, the data will be written immediately. But when I 
+write something to the root partition,
+it will be cached and written to it after a while (~30sec). What could 
+this be and how could I deactivate
+the caching? - the root is a cramdisk, not JFFS2 - and I have no 
+problems with the 2.4 kernel.
 
-Now, we use the _new_ atmel_spi driver and mtd_dataflash driver (but the
-problem also exist if I use the legacy one). If I try to mount a
-jffs2 or cramfs image on dataflash I get the following error:
-# mount /dev/mtdblock5 /mnt/flash
-mount: mounting /dev/mtdblock5 on /mnt/flash failed: Block device required
-
-Exactly the same line works with the 2.6.21 kernel. Also doing a cat
-on the normal /dev/mtd* nodes also works.
-
-"cat /proc/devices" shows:
-
-Block devices:
-  7 loop
- 31 mtdblock
-
-So I have no idea here. Any hints?
-
-
-Thanks in advance.
-
-Best regards,
-	Andre
+Many thanks ahead!
