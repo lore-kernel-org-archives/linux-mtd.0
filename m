@@ -1,21 +1,18 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from moutng.kundenserver.de ([212.227.126.179])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K6hsl-00082j-Er
-	for linux-mtd@lists.infradead.org; Thu, 12 Jun 2008 08:10:07 +0000
-Message-ID: <4850D9DA.7000207@grandegger.com>
-Date: Thu, 12 Jun 2008 10:10:02 +0200
-From: Wolfgang Grandegger <wg@grandegger.com>
+	id 1K6juy-0008Dc-Rd
+	for linux-mtd@lists.infradead.org; Thu, 12 Jun 2008 10:20:33 +0000
+Received: from [192.168.7.2] ([192.168.7.2])
+	by WebServer.mynet (8.13.6/8.13.1) with ESMTP id m5CAKUa3029760
+	for <linux-mtd@lists.infradead.org>; Thu, 12 Jun 2008 12:20:30 +0200
+Message-ID: <4850F86D.90505@web.de>
+Date: Thu, 12 Jun 2008 12:20:29 +0200
+From: Hyphen79 <hyphen79@web.de>
 MIME-Version: 1.0
-To: Segher Boessenkool <segher@kernel.crashing.org>
-Subject: Re: [PATCH] booting-without-of: add more bindings for FSL UPM driver
-References: <484CECE2.9050605@grandegger.com>
-	<519f1a6d9baeca8cfea9e8ad7a92c4d4@kernel.crashing.org>
-	<484D49FF.4090604@grandegger.com>
-	<a9f4227722f169bc9c2e712df774b748@kernel.crashing.org>
-In-Reply-To: <a9f4227722f169bc9c2e712df774b748@kernel.crashing.org>
-Content-Type: text/plain; charset=ISO-8859-1
+To: linux-mtd@lists.infradead.org
+Subject: Last sector of flash root partition will not be flashed
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,118 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Segher Boessenkool wrote:
->>>> +      - chip-delay : may specify a delay value in milliseconds.
->>>
->>> Delay for what?  The binding should say.  "chip-delay" is a bit
->>> too generic name as well, it could be more descriptive perhaps.
->>
->> The chip-delay property defines an appropriate maximum delay
->> time (tR) required for read operations if the R/B pin is not
->> connected.
-> 
-> Yeah.  So please put that in the binding.
-> 
->>> Shouldn't this be a property of the NAND device anyway, not the
->>> NAND controller?
->>
->> Strictly speaking, it's a property of the NAND device. Therefore it
->> should be inside the node nand@0, I thhink:
->>
->> +            nand@0 {
->> +                #address-cells = <1>;
->> +                #size-cells = <1>;
->> +                    chip-delay = <25>; // in micro-seconds
-> 
-> Something like that, yes.  You wrote milliseconds before; which is it?
+Hello,
 
-Oops, it's in micro-seconds.
+the problem is, that the last sector of the mtd root partition 
+(cramdisk) will not be flashed:
 
-> And, a better property name, please.
+mtdblock: write on "File System" at 0x1f5e00, size 0x200
+mtdblock: write on "File System" at 0x1f6000, size 0x200
+mtdblock: writing cached data for "File System" at 0x1f5000, size 0x1000
+mtdblock: write on "File System" at 0x1f6200, size 0x200
+mtdblock: write on "File System" at 0x1f6400, size 0x200
+mtdblock: write on "File System" at 0x1f6600, size 0x200
+mtdblock: write on "File System" at 0x1f6800, size 0x200
+mtdblock: write on "File System" at 0x1f6a00, size 0x200
+mtdblock: write on "File System" at 0x1f6c00, size 0x200
+mtdblock: write on "File System" at 0x1f6e00, size 0x200
 
-Here is what we speak about (from the NAND chip manual):
-
-  "After a READ command is sent to the memory device, data is
-   transferred from the memory array to the data register in tR.
-   Typically tR is 25us. The READ STATUS (70h) command or the R/B#
-   signal can be used to determine when the device is ready."
-
-And in the NAND header file "chip-delay" is documented as shown below:
-
-  "chip_delay: [BOARDSPECIFIC] chip dependent delay for transfering data 
-               from array to read regs (tR)"
-
-The name "read-fetch-time" sounds more reasonable too me, but English
-is not my native language.
-
->> Where should that be documented?
-> 
-> In the binding for nand devices.  If there isn't any yet, it might be
-> best to include that with the binding for your nand controller (i.e.,
-> describe the whole sub node there).
-
-OK, here is a my proposal:
-
-    x) Freescale Localbus UPM programmed to work with NAND flash
-
-      Required properties:
-      - compatible : "fsl,upm-nand".
-      - reg : should specify localbus chip select and size used for the chip.
-      - fsl,upm-addr-offset : UPM pattern offset for the address latch.
-      - fsl,upm-cmd-offset : UPM pattern offset for the command latch.
-      - gpios : may specify optional GPIO connected to the Ready-Not-Busy pin.
-
-      Each NAND flash device is represented as a sub-node of the UPM node.
-      The nodes's name represents the name of the corresponding device.
-
-      NAND flash properties:
-      - compatible: not yet used.
-      - read-fetch-delay: chip dependent delay for transfering data 
-        from array to read regs (tR) im micro-seconds.
- 
-      Each partition is represented as a sub-node of the NAND flash device.
-      Each node's name represents the name of the corresponding partition
-      of the NAND flash device.
-
-      NAND flash partitions:
-      - reg : The partition's offset and size within the flash bank.
-      - label : (optional) The label / name for this flash partition.
-        If omitted, the label is taken from the node name (excluding
-        the unit address).
-      - read-only : (optional) This parameter, if present, is a hint to
-        Linux that this flash partition should only be mounted
-        read-only.  This is usually used for flash partitions
-        containing early-boot firmware images or data which should not
-        be clobbered.
- 
-      Example:
-
-	upm@1,0 {
-		compatible = "fsl,upm-nand";
-		reg = <1 0 1>;
-		fsl,upm-addr-offset = <16>;
-		fsl,upm-cmd-offset = <8>;
-		gpios = <&qe_pio_e 18 0>;
-
-		flash {
-			#address-cells = <1>;
-			#size-cells = <1>;
-			compatible = "stmicro,NAND512W3A2BN6E";
-			read-fetch-delay = 25
-
-			fs@0 {
-				label = "fs";
-				reg = <0 f80000>;
-			};
-
-			firmware@f80000 {
-				label ="firmware";
-				reg = <f80000 80000>;
-				read-only;
-			};
-		};
-	};
-
-What do you think?
-
-Wolfgang.
+But the last call to "write_cached_data" will not be done - even not 
+after an explicit  "sync".
+For example: "mtdblock: writing cached data for "File System" at 
+0x1f6000, size 0x1000"
+Has anyone an idea?
