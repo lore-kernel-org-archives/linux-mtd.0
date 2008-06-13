@@ -1,25 +1,21 @@
-Received: from mx1.redhat.com ([66.187.233.31])
+Received: from rv-out-0708.google.com ([209.85.198.240])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K7ARr-0002Rt-Hf
-	for linux-mtd@lists.infradead.org; Fri, 13 Jun 2008 14:40:15 +0000
-Received: from int-mx1.corp.redhat.com (int-mx1.corp.redhat.com
-	[172.16.52.254])
-	by mx1.redhat.com (8.13.8/8.13.8) with ESMTP id m5DEdtuB026030
-	for <linux-mtd@lists.infradead.org>; Fri, 13 Jun 2008 10:39:55 -0400
-Received: from pobox.corp.redhat.com (pobox.corp.redhat.com [10.11.255.20])
-	by int-mx1.corp.redhat.com (8.13.1/8.13.1) with ESMTP id m5DEdtdS026104
-	for <linux-mtd@lists.infradead.org>; Fri, 13 Jun 2008 10:39:55 -0400
-Received: from [10.11.15.61] (vpn-15-61.rdu.redhat.com [10.11.15.61])
-	by pobox.corp.redhat.com (8.13.1/8.13.1) with ESMTP id m5DEdsIO018490
-	for <linux-mtd@lists.infradead.org>; Fri, 13 Jun 2008 10:39:54 -0400
-Subject: DiskOnChip Millennium Plus 32MB
-From: Mark Salter <msalter@redhat.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Fri, 13 Jun 2008 10:39:54 -0400
-Message-Id: <1213367994.3057.24.camel@deneb.localdomain>
+	id 1K7AdM-0006WE-Gh
+	for linux-mtd@lists.infradead.org; Fri, 13 Jun 2008 14:52:08 +0000
+Received: by rv-out-0708.google.com with SMTP id b17so5481750rvf.42
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 13 Jun 2008 07:52:07 -0700 (PDT)
+Date: Fri, 13 Jun 2008 10:51:53 -0400
+From: Josh Boyer <jwboyer@gmail.com>
+To: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [PATCH] respect CFLAGS/CPPFLAGS from build environment
+Message-ID: <20080613105153.31449aa5@vader.jdub.homelinux.org>
+In-Reply-To: <1213220948-30156-1-git-send-email-vapier@gentoo.org>
+References: <1213220948-30156-1-git-send-email-vapier@gentoo.org>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,25 +25,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have a box with a Millennium Plus 64MB part (MD3331-D64-V3) which is
-really just two 32MB parts on the same die. I'm not having much luck
-with mtd, though. If I use docprobe/doc2000plus/inftl, I get a message
-from inftl saying that the old (doc2000plus) driver is not supported and
-I should use the diskonchip driver under the nand directory. This was
-discussed a couple of years ago and a patch was claimed to be nearly
-ready:
+On Wed, 11 Jun 2008 17:49:08 -0400
+Mike Frysinger <vapier@gentoo.org> wrote:
+ 
+> diff --git a/ubi-utils/Makefile b/ubi-utils/Makefile
+> index 0394eee..062cc32 100644
+> --- a/ubi-utils/Makefile
+> +++ b/ubi-utils/Makefile
+> @@ -2,7 +2,6 @@
+>  # Makefile for ubi-utils
+>  #
+>  
+> -OPTFLAGS := -O2 -g -Wall
+>  KERNELHDR := ../include
+>  DESTDIR := /usr/local
+>  SBINDIR=/usr/sbin
+> @@ -10,8 +9,10 @@ MANDIR=/usr/share/man
+>  INCLUDEDIR=/usr/include
+>  
+>  CC := $(CROSS)gcc
+> -CFLAGS := -I./inc -I./src -I$(KERNELHDR) $(OPTFLAGS) -Werror \
+> -	-Wwrite-strings -W -std=gnu99 -DPACKAGE_VERSION=\"1.0\"
+> +CFLAGS ?= -O2 -g -Werror
+> +CFLAGS += -Wall -Wwrite-strings -W
+> +CPPFLAGS += -I./inc -I./src -I$(KERNELHDR) \
+> +	-std=gnu99 -DPACKAGE_VERSION=\"1.0\"
+>  
+>  PERLPROGS = mkpfi ubicrc32.pl
+>  
+> @@ -26,7 +27,7 @@ vpath   %.c ./src
+>  	$(CC) $(LDFLAGS) -g -o $@ $^
+>  
+>  %.o: %.c
+> -	$(CC) $(CFLAGS) -g -c -o $@ $< -g -Wp,-MD,.$(shell basename $<).dep
+> +	$(CC) $(CPPFLAGS) $(CFLAGS) -g -c -o $@ $< -g -Wp,-MD,.$(shell basename $<).dep
 
-  http://lists.infradead.org/pipermail/linux-mtd/2005-May/012592.html
+Should either remove the unconditional -g here, or not specify it in
+the default CFLAGS above, correct?
 
-The current nand/diskonchip.c has this:
-
-  case DOC_ChipID_DocMilPlus32:
-    printk(KERN_ERR "DiskOnChip Millennium Plus 32MB is not supported, ignoring.\n");
-  default:
-   ret = -ENODEV;
-   goto notfound;
-
-So it seems the 32MB support never showed up. Am I missing anything? Was
-the patch ever submitted?
-
---Mark
+josh
