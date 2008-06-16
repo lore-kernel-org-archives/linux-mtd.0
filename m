@@ -1,20 +1,23 @@
-Received: from mba.ocn.ne.jp ([122.1.235.107] helo=smtp.mba.ocn.ne.jp)
+Received: from yw-out-1718.google.com ([74.125.46.154])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K8GN8-0006Ds-Jj
-	for linux-mtd@lists.infradead.org; Mon, 16 Jun 2008 15:11:55 +0000
-Date: Mon, 16 Jun 2008 23:30:39 +0900 (JST)
-Message-Id: <20080616.233039.01916379.anemo@mba.ocn.ne.jp>
-To: joern@logfs.org
-Subject: Re: [PATCH RESEND] mtdpart: Avoid divide-by-zero on out-of-reach path
-From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-In-Reply-To: <20080616083356.GA15504@logfs.org>
-References: <20080614.234540.102579992.anemo@mba.ocn.ne.jp>
-	<20080616083356.GA15504@logfs.org>
+	id 1K8HPM-0005HS-CK
+	for linux-mtd@lists.infradead.org; Mon, 16 Jun 2008 16:18:18 +0000
+Received: by yw-out-1718.google.com with SMTP id 5so3797636ywm.72
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 16 Jun 2008 09:18:06 -0700 (PDT)
+Date: Mon, 16 Jun 2008 12:12:42 -0400
+From: Josh Boyer <jwboyer@gmail.com>
+To: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [PATCH] respect CFLAGS/CPPFLAGS from build environment
+Message-ID: <20080616121242.6e4bf43a@vader.jdub.homelinux.org>
+In-Reply-To: <200806131711.21891.vapier@gentoo.org>
+References: <1213220948-30156-1-git-send-email-vapier@gentoo.org>
+	<20080613105153.31449aa5@vader.jdub.homelinux.org>
+	<200806131711.21891.vapier@gentoo.org>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: dwmw2@infradead.org, akpm@linux-foundation.org,
-	linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +27,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 16 Jun 2008 10:33:56 +0200, J=F6rn Engel <joern@logfs.org> wrot=
-e:
-> > On "partition is out of reach" path, i.e. slave's offset was bigger=
+On Fri, 13 Jun 2008 17:11:21 -0400
+Mike Frysinger <vapier@gentoo.org> wrote:
 
-> > than the master's size, slave's erasesize will not be calculated an=
-d
-> > it leads division by zero on following boundary checking.  This pat=
-ch
-> > makes calculation of the slave's erasesize more robust.
-> > =
+> On Friday 13 June 2008, Josh Boyer wrote:
+> > On Wed, 11 Jun 2008 17:49:08 -0400
+> >
+> > Mike Frysinger <vapier@gentoo.org> wrote:
+> > > diff --git a/ubi-utils/Makefile b/ubi-utils/Makefile
+> > > index 0394eee..062cc32 100644
+> > > --- a/ubi-utils/Makefile
+> > > +++ b/ubi-utils/Makefile
+> > > @@ -2,7 +2,6 @@
+> > >  # Makefile for ubi-utils
+> > >  #
+> > >
+> > > -OPTFLAGS := -O2 -g -Wall
+> > >  KERNELHDR := ../include
+> > >  DESTDIR := /usr/local
+> > >  SBINDIR=/usr/sbin
+> > > @@ -10,8 +9,10 @@ MANDIR=/usr/share/man
+> > >  INCLUDEDIR=/usr/include
+> > >
+> > >  CC := $(CROSS)gcc
+> > > -CFLAGS := -I./inc -I./src -I$(KERNELHDR) $(OPTFLAGS) -Werror \
+> > > -	-Wwrite-strings -W -std=gnu99 -DPACKAGE_VERSION=\"1.0\"
+> > > +CFLAGS ?= -O2 -g -Werror
+> > > +CFLAGS += -Wall -Wwrite-strings -W
+> > > +CPPFLAGS += -I./inc -I./src -I$(KERNELHDR) \
+> > > +	-std=gnu99 -DPACKAGE_VERSION=\"1.0\"
+> > >
+> > >  PERLPROGS = mkpfi ubicrc32.pl
+> > >
+> > > @@ -26,7 +27,7 @@ vpath   %.c ./src
+> > >  	$(CC) $(LDFLAGS) -g -o $@ $^
+> > >
+> > >  %.o: %.c
+> > > -	$(CC) $(CFLAGS) -g -c -o $@ $< -g -Wp,-MD,.$(shell basename $<).dep
+> > > +	$(CC) $(CPPFLAGS) $(CFLAGS) -g -c -o $@ $< -g -Wp,-MD,.$(shell basename
+> > > $<).dep
+> >
+> > Should either remove the unconditional -g here, or not specify it in
+> > the default CFLAGS above, correct?
+> 
+> moving -g in both Makefiles to the default CFLAGS makes the most sense to 
+> me ... i just figured someone liked it the way it was and i didnt really care 
+> to fight em for it.
 
-> > This patch also contains some cleanups.  Do not shadow symbol 'i',
-> > fold long lines, etc.
-> =
+Yeah, default CFLAGS makes sense.  I'll fix that up and get this
+committed shortly.  Thanks.
 
-> I personally consider the original long "for (...)" lines slightly
-> better (or rather less bad) than your replacement.  Mixing cleanups
-> with bugfixes is often a bad idea.
-> =
-
-> Another reason is that I still cannot see the bugfix among all the
-> changes. *scratches head*  Ah, here it is.  *scratches some more*  An=
-d
-> it even appears to be correct.
-> =
-
-> Can you resend as two patches?
-
-OK, I will send two patches --- one for the bugfix and one for sparse
-warning.  Remaining cleanup ("Folding long lines, etc.") was just for
-checkpatch.pl and if these new patches can be accepted, I gladly keep
-code as is.  The mtdpart.c has many long lines anyway. :-)
-
-Thank you for review.
-
----
-Atsushi Nemoto
+josh
