@@ -1,16 +1,19 @@
-Received: from mba.ocn.ne.jp ([122.1.235.107] helo=smtp.mba.ocn.ne.jp)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K7WzI-0005Vu-EQ
-	for linux-mtd@lists.infradead.org; Sat, 14 Jun 2008 14:44:18 +0000
-Date: Sat, 14 Jun 2008 23:45:40 +0900 (JST)
-Message-Id: <20080614.234540.102579992.anemo@mba.ocn.ne.jp>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH RESEND] mtdpart: Avoid divide-by-zero on out-of-reach path
-From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Cc: akpm@linux-foundation.org, David Woodhouse <dwmw2@infradead.org>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1K88QR-0007qH-MS
+	for linux-mtd@lists.infradead.org; Mon, 16 Jun 2008 06:42:48 +0000
+Message-ID: <48560B69.4080704@nokia.com>
+Date: Mon, 16 Jun 2008 09:42:49 +0300
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+MIME-Version: 1.0
+To: Zhao Forrest <forrest.zhao@gmail.com>
+Subject: Re: A question about UBIFS
+References: <ac8af0be0806102116l5918c48ax279d456b4de1d061@mail.gmail.com>
+In-Reply-To: <ac8af0be0806102116l5918c48ax279d456b4de1d061@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: Artem.Bityutskiy@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,53 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On "partition is out of reach" path, i.e. slave's offset was bigger
-than the master's size, slave's erasesize will not be calculated and
-it leads division by zero on following boundary checking.  This patch
-makes calculation of the slave's erasesize more robust.
+Hi,
 
-This patch also contains some cleanups.  Do not shadow symbol 'i',
-fold long lines, etc.
+Zhao Forrest wrote:
+> Hi Artem,
+> I have a basic question about NAND flash page update in UBIFS/UBI,
+> take the following as an example:
+> 1 a NAND flash with page size of 4KB, erase block size of 256KB, so
+> there're 64 pages within an erase block
+> 2 page 0 - page 10 has invalid data content, page 11 - page 63 has
+> valid data content from FS's point of view
+> 3 UBIFS attempts to update(or rewrite) page 11
+> My question is how page 11 is updated by UBIFS/UBI?
+> I only read the design docs of UBI and guess that for this particular
+> case a new physical eraseblock is got by UBI, then new content of page
+> 11 is written to page 11 of new physical eraseblock, page 12 - page 63
+> in original physical eraseblock are copied to new physical eraseblock,
+> lastly the mapping between logical eraseblock and physical eraseblock
+> is updated. Am I right?
 
-Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
----
- drivers/mtd/mtdpart.c |   25 +++++++++++++++----------
- 1 files changed, 15 insertions(+), 10 deletions(-)
+Right. All updates are out-of-place.
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 07c7011..ff9ea3a 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -445,17 +445,22 @@ int add_mtd_partitions(struct mtd_info *master,
- 		}
- 		if (master->numeraseregions>1) {
- 			/* Deal with variable erase size stuff */
--			int i;
--			struct mtd_erase_region_info *regions = master->eraseregions;
--
--			/* Find the first erase regions which is part of this partition. */
--			for (i=0; i < master->numeraseregions && slave->offset >= regions[i].offset; i++)
-+			int j, num = master->numeraseregions;
-+			struct mtd_erase_region_info *r = master->eraseregions;
-+			/*
-+			 * Find the first erase region which is part
-+			 * of this partition.
-+			 */
-+			for (j = 0; j < num && slave->offset >= r[j].offset;
-+				j++)
- 				;
--
--			for (i--; i < master->numeraseregions && slave->offset + slave->mtd.size > regions[i].offset; i++) {
--				if (slave->mtd.erasesize < regions[i].erasesize) {
--					slave->mtd.erasesize = regions[i].erasesize;
--				}
-+			j--;
-+			slave->mtd.erasesize = r[j].erasesize;
-+			for (; j < num &&
-+				slave->offset + slave->mtd.size > r[j].offset;
-+				j++) {
-+				if (slave->mtd.erasesize < r[j].erasesize)
-+					slave->mtd.erasesize = r[j].erasesize;
- 			}
- 		} else {
- 			/* Single erase size */
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
