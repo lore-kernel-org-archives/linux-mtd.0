@@ -1,23 +1,20 @@
-Received: from wa-out-1112.google.com ([209.85.146.180])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K88xd-0000jj-HP
-	for linux-mtd@lists.infradead.org; Mon, 16 Jun 2008 07:17:06 +0000
-Received: by wa-out-1112.google.com with SMTP id v33so3593115wah.2
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 16 Jun 2008 00:16:58 -0700 (PDT)
-Message-ID: <ac8af0be0806160016p85be687n50110e2b9ce637df@mail.gmail.com>
-Date: Mon, 16 Jun 2008 15:16:58 +0800
-From: "Zhao Forrest" <forrest.zhao@gmail.com>
-To: Artem.Bityutskiy@nokia.com
-Subject: Re: A question about UBIFS
-In-Reply-To: <48560B69.4080704@nokia.com>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1K8AAC-0001wS-Bv
+	for linux-mtd@lists.infradead.org; Mon, 16 Jun 2008 08:34:08 +0000
+Date: Mon, 16 Jun 2008 10:33:56 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Subject: Re: [PATCH RESEND] mtdpart: Avoid divide-by-zero on out-of-reach path
+Message-ID: <20080616083356.GA15504@logfs.org>
+References: <20080614.234540.102579992.anemo@mba.ocn.ne.jp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-References: <ac8af0be0806102116l5918c48ax279d456b4de1d061@mail.gmail.com>
-	<48560B69.4080704@nokia.com>
-Cc: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20080614.234540.102579992.anemo@mba.ocn.ne.jp>
+Cc: David Woodhouse <dwmw2@infradead.org>, akpm@linux-foundation.org,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,33 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jun 16, 2008 at 2:42 PM, Artem Bityutskiy
-<Artem.Bityutskiy@nokia.com> wrote:
-> Hi,
->
-> Zhao Forrest wrote:
->>
->> Hi Artem,
->> I have a basic question about NAND flash page update in UBIFS/UBI,
->> take the following as an example:
->> 1 a NAND flash with page size of 4KB, erase block size of 256KB, so
->> there're 64 pages within an erase block
->> 2 page 0 - page 10 has invalid data content, page 11 - page 63 has
->> valid data content from FS's point of view
->> 3 UBIFS attempts to update(or rewrite) page 11
->> My question is how page 11 is updated by UBIFS/UBI?
->> I only read the design docs of UBI and guess that for this particular
->> case a new physical eraseblock is got by UBI, then new content of page
->> 11 is written to page 11 of new physical eraseblock, page 12 - page 63
->> in original physical eraseblock are copied to new physical eraseblock,
->> lastly the mapping between logical eraseblock and physical eraseblock
->> is updated. Am I right?
->
-> Right. All updates are out-of-place.
->
-So when only page 11 is rewritten, are pages 12-63 rewritten at the same time?
-Or page 11 is updated by wandering tree mechanism, and pages 12-63 are
-untouched?
+On Sat, 14 June 2008 23:45:40 +0900, Atsushi Nemoto wrote:
+> 
+> On "partition is out of reach" path, i.e. slave's offset was bigger
+> than the master's size, slave's erasesize will not be calculated and
+> it leads division by zero on following boundary checking.  This patch
+> makes calculation of the slave's erasesize more robust.
+> 
+> This patch also contains some cleanups.  Do not shadow symbol 'i',
+> fold long lines, etc.
 
-Thanks,
-Forrest
+I personally consider the original long "for (...)" lines slightly
+better (or rather less bad) than your replacement.  Mixing cleanups
+with bugfixes is often a bad idea.
+
+Another reason is that I still cannot see the bugfix among all the
+changes. *scratches head*  Ah, here it is.  *scratches some more*  And
+it even appears to be correct.
+
+Can you resend as two patches?
+
+Jörn
+
+-- 
+A victorious army first wins and then seeks battle.
+-- Sun Tzu
