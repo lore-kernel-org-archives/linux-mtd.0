@@ -1,18 +1,20 @@
+Received: from mba.ocn.ne.jp ([122.1.235.107] helo=smtp.mba.ocn.ne.jp)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K8GN8-0006Ds-Jj
+	for linux-mtd@lists.infradead.org; Mon, 16 Jun 2008 15:11:55 +0000
+Date: Mon, 16 Jun 2008 23:30:39 +0900 (JST)
+Message-Id: <20080616.233039.01916379.anemo@mba.ocn.ne.jp>
+To: joern@logfs.org
 Subject: Re: [PATCH RESEND] mtdpart: Avoid divide-by-zero on out-of-reach path
-From: David Woodhouse <dwmw2@infradead.org>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
-In-Reply-To: <20080616145704.GB20814@logfs.org>
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+In-Reply-To: <20080616083356.GA15504@logfs.org>
 References: <20080614.234540.102579992.anemo@mba.ocn.ne.jp>
 	<20080616083356.GA15504@logfs.org>
-	<20080616.233039.01916379.anemo@mba.ocn.ne.jp>
-	<20080616145704.GB20814@logfs.org>
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 16 Jun 2008 16:03:54 +0100
-Message-Id: <1213628634.26255.781.camel@pmac.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Atsushi Nemoto <anemo@mba.ocn.ne.jp>, linux-mtd@lists.infradead.org,
-	akpm@linux-foundation.org
+Content-Type: Text/Plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: dwmw2@infradead.org, akpm@linux-foundation.org,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,12 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2008-06-16 at 16:57 +0200, Jörn Engel wrote:
-> David seems to like long lines.  Sometimes even for good reasons.
+On Mon, 16 Jun 2008 10:33:56 +0200, J=F6rn Engel <joern@logfs.org> wrot=
+e:
+> > On "partition is out of reach" path, i.e. slave's offset was bigger=
 
-Sometimes I do, yes. But at a quick glance I don't think I would argue
-that we should keep _those_ ones. They could be wrapped without
-detriment.
+> > than the master's size, slave's erasesize will not be calculated an=
+d
+> > it leads division by zero on following boundary checking.  This pat=
+ch
+> > makes calculation of the slave's erasesize more robust.
+> > =
 
--- 
-dwmw2
+> > This patch also contains some cleanups.  Do not shadow symbol 'i',
+> > fold long lines, etc.
+> =
+
+> I personally consider the original long "for (...)" lines slightly
+> better (or rather less bad) than your replacement.  Mixing cleanups
+> with bugfixes is often a bad idea.
+> =
+
+> Another reason is that I still cannot see the bugfix among all the
+> changes. *scratches head*  Ah, here it is.  *scratches some more*  An=
+d
+> it even appears to be correct.
+> =
+
+> Can you resend as two patches?
+
+OK, I will send two patches --- one for the bugfix and one for sparse
+warning.  Remaining cleanup ("Folding long lines, etc.") was just for
+checkpatch.pl and if these new patches can be accepted, I gladly keep
+code as is.  The mtdpart.c has many long lines anyway. :-)
+
+Thank you for review.
+
+---
+Atsushi Nemoto
