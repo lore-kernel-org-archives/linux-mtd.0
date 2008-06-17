@@ -1,24 +1,20 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K8eUo-0002Ej-GQ
-	for linux-mtd@lists.infradead.org; Tue, 17 Jun 2008 16:57:27 +0000
-Date: Tue, 17 Jun 2008 18:57:18 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Alexey Korolev <akorolev@infradead.org>
+Received: from ipmail04.adl2.internode.on.net ([203.16.214.57])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K8kyK-0007rV-UY
+	for linux-mtd@lists.infradead.org; Tue, 17 Jun 2008 23:52:22 +0000
+Message-ID: <48584DE9.3000709@call-direct.com.au>
+Date: Wed, 18 Jun 2008 09:51:05 +1000
+From: Iwo Mergler <iwo@call-direct.com.au>
+MIME-Version: 1.0
+To: Matthieu CASTET <matthieu.castet@parrot.com>
 Subject: Re: [BUG] JFFS2 power loss recovery issues on NAND
-Message-ID: <20080617165717.GH28448@logfs.org>
 References: <alpine.LFD.1.10.0806101438520.27550@casper.infradead.org>
 	<48570D5A.1050906@call-direct.com.au> <48577212.9070004@parrot.com>
-	<20080617092434.GA27539@logfs.org>
-	<alpine.LFD.1.10.0806171642280.31079@casper.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <alpine.LFD.1.10.0806171642280.31079@casper.infradead.org>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	Matthieu CASTET <matthieu.castet@parrot.com>,
-	Iwo Mergler <iwo@call-direct.com.au>
+In-Reply-To: <48577212.9070004@parrot.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: dwmw2@infradead.org, joern@logfs.org, linux-mtd@lists.infradead.org,
+	Alexey Korolev <akorolev@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,21 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 17 June 2008 17:00:42 +0100, Alexey Korolev wrote:
-> 
-> Declare bug as a feature could be not so good. But the issue is rare. I think if we got some time we will fix it in the described way.
+Matthieu CASTET wrote:
+> Iwo Mergler wrote:
+>> Alexey Korolev wrote:
+>>>   
+>> Alexey,
+>>
+>> I know of at least one hardware ECC implementation which can flag
+>> errors within the ECC bytes separately. In other words, not all 
+>> implementations
+>> will detect/correct bit errors in the case of a ECC write error.
+>>
+>> About how to fix it - what about making the reading without ECC the 
+>> default
+>> and only re-reading with ECC if JFFS2 finds an invalid checksum?
+>>
+> But what happen if a but flip happen ?
+> If we do this, ecc won't correct it, the error can happen everywhere 
+> not only in checksum, for example wrong nodetype.
+Forgive my ignorance - does that mean that not everything in JFFS2 is 
+CRC protected?
 
-[ You really should switch to a decent mailer that e.g. breaks lines
-  before column 136. ;) ]
+If that is the case, forget my suggestion. I don't know JFFS2 that 
+intimately. :-)
 
-For 'normal' filesystems, this bug is solved in __sync_single_inode by
-writing out pages first and the inode later.  Works well enough for
-ext[23] at least.
+Kind regards,
 
-So I agree, JffS2 should behave at least as well.
-
-Jörn
-
--- 
-Simplicity is prerequisite for reliability.
--- Edsger W. Dijkstra
+Iwo
