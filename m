@@ -1,15 +1,22 @@
-Subject: Re: [PATCH][MTD][OneNAND]Update oobretlen in onenand_write_ops_nolock
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: rohit h <hrohit85@gmail.com>
-In-Reply-To: <90d987c0806161044g4b52faa5qb62be9a7b5882d90@mail.gmail.com>
-References: <90d987c0806161044g4b52faa5qb62be9a7b5882d90@mail.gmail.com>
+Received: from rv-out-0708.google.com ([209.85.198.247])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K8VNX-00044Q-63
+	for linux-mtd@lists.infradead.org; Tue, 17 Jun 2008 07:13:19 +0000
+Received: by rv-out-0708.google.com with SMTP id b17so7025546rvf.42
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 17 Jun 2008 00:13:16 -0700 (PDT)
+Message-ID: <48576402.3040503@gmail.com>
+Date: Tue, 17 Jun 2008 15:13:06 +0800
+From: Eric Miao <eric.y.miao@gmail.com>
+MIME-Version: 1.0
+To: Mike Rapoport <mike@compulab.co.il>
+Subject: Re: [PATCH 3/5] CM-X270: update NAND flash driver to use gpio_lib
+References: <48566FEF.5070206@compulab.co.il>
+In-Reply-To: <48566FEF.5070206@compulab.co.il>
 Content-Type: text/plain; charset=UTF-8
-Date: Tue, 17 Jun 2008 08:41:32 +0300
-Message-Id: <1213681292.6573.13.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: Kyungmin Park <kmpark@infradead.org>, linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	ARM Linux <linux-arm-kernel@lists.arm.linux.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,32 +26,201 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-On Mon, 2008-06-16 at 23:14 +0530, rohit h wrote:
-> We are missing updating the oobretlen return parameter
-> in onenand_write_ops_nolock. This patch fixes it.
-> Regards,
-> Rohit H
-> Signed-off-by: Rohit H <hrohit85@gmail.com>
-> ---
-> --- a/drivers/mtd/onenand/onenand_base.c	2008-05-30 13:04:59.000000000 +0=
-530
-> +++ b/drivers/mtd/onenand/onenand_base.c	2008-06-16 22:27:02.000000000 +0=
-530
-> @@ -1554,6 +1554,7 @@ static int onenand_write_ops_nolock(stru
->  	}
->=20
->  	ops->retlen =3D written;
-> +	ops->oobretlen =3D oobwritten;
->=20
->  	return ret;
->  }
+Mike Rapoport wrote:
+> Update CM-X270 NAND flash driver to use gpio_lib.
+> 
+> Signed-off-by: Mike Rapoport <mike@compulab.co.il>
+> 
 
 Looks OK.
-Acked-by: Artem Bityutskiy <dedekind@infradead.org>
-CC: Kyungmin Park <kmpark@infradead.org>
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+>  drivers/mtd/nand/cmx270_nand.c |   79 ++++++++++++++++++++++++----------------
+>  1 files changed, 47 insertions(+), 32 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/cmx270_nand.c b/drivers/mtd/nand/cmx270_nand.c
+> index cb663ef..fc8529b 100644
+> --- a/drivers/mtd/nand/cmx270_nand.c
+> +++ b/drivers/mtd/nand/cmx270_nand.c
+> @@ -20,9 +20,11 @@
+> 
+>  #include <linux/mtd/nand.h>
+>  #include <linux/mtd/partitions.h>
+> +#include <linux/gpio.h>
+> 
+>  #include <asm/io.h>
+>  #include <asm/irq.h>
+> +#include <asm/mach-types.h>
+> 
+>  #include <asm/arch/hardware.h>
+>  #include <asm/arch/pxa-regs.h>
+> @@ -30,20 +32,6 @@
+>  #define GPIO_NAND_CS	(11)
+>  #define GPIO_NAND_RB	(89)
+> 
+> -/* This macro needed to ensure in-order operation of GPIO and local
+> - * bus. Without both asm command and dummy uncached read there're
+> - * states when NAND access is broken. I've looked for such macro(s) in
+> - * include/asm-arm but found nothing approptiate.
+> - * dmac_clean_range is close, but is makes cache invalidation
+> - * unnecessary here and it cannot be used in module
+> - */
+> -#define DRAIN_WB() \
+> -	do { \
+> -		unsigned char dummy; \
+> -		asm volatile ("mcr p15, 0, r0, c7, c10, 4":::"r0"); \
+> -		dummy=*((unsigned char*)UNCACHED_ADDR); \
+> -	} while(0)
+> -
+>  /* MTD structure for CM-X270 board */
+>  static struct mtd_info *cmx270_nand_mtd;
+> 
+> @@ -103,14 +91,14 @@ static int cmx270_verify_buf(struct mtd_info *mtd, const u_char *buf, int len)
+> 
+>  static inline void nand_cs_on(void)
+>  {
+> -	GPCR(GPIO_NAND_CS) = GPIO_bit(GPIO_NAND_CS);
+> +	gpio_set_value(GPIO_NAND_CS, 0);
+>  }
+> 
+>  static void nand_cs_off(void)
+>  {
+> -	DRAIN_WB();
+> +	dsb();
+> 
+> -	GPSR(GPIO_NAND_CS) = GPIO_bit(GPIO_NAND_CS);
+> +	gpio_set_value(GPIO_NAND_CS, 1);
+>  }
+> 
+>  /*
+> @@ -122,7 +110,7 @@ static void cmx270_hwcontrol(struct mtd_info *mtd, int dat,
+>  	struct nand_chip* this = mtd->priv;
+>  	unsigned int nandaddr = (unsigned int)this->IO_ADDR_W;
+> 
+> -	DRAIN_WB();
+> +	dsb();
+> 
+>  	if (ctrl & NAND_CTRL_CHANGE) {
+>  		if ( ctrl & NAND_ALE )
+> @@ -139,12 +127,12 @@ static void cmx270_hwcontrol(struct mtd_info *mtd, int dat,
+>  			nand_cs_off();
+>  	}
+> 
+> -	DRAIN_WB();
+> +	dsb();
+>  	this->IO_ADDR_W = (void __iomem*)nandaddr;
+>  	if (dat != NAND_CMD_NONE)
+>  		writel((dat << 16), this->IO_ADDR_W);
+> 
+> -	DRAIN_WB();
+> +	dsb();
+>  }
+> 
+>  /*
+> @@ -152,9 +140,9 @@ static void cmx270_hwcontrol(struct mtd_info *mtd, int dat,
+>   */
+>  static int cmx270_device_ready(struct mtd_info *mtd)
+>  {
+> -	DRAIN_WB();
+> +	dsb();
+> 
+> -	return (GPLR(GPIO_NAND_RB) & GPIO_bit(GPIO_NAND_RB));
+> +	return (gpio_get_value(GPIO_NAND_RB));
+>  }
+> 
+>  /*
+> @@ -168,20 +156,40 @@ static int cmx270_init(void)
+>  	int mtd_parts_nb = 0;
+>  	int ret;
+> 
+> +	if (!machine_is_armcore())
+> +		return -ENODEV;
+> +
+> +	ret = gpio_request(GPIO_NAND_CS, "NAND CS");
+> +	if (ret) {
+> +		pr_warning("CM-X270: failed to request NAND CS gpio\n");
+> +		return ret;
+> +	}
+> +
+> +	gpio_direction_output(GPIO_NAND_CS, 1);
+> +
+> +	ret = gpio_request(GPIO_NAND_RB, "NAND R/B");
+> +	if (ret) {
+> +		pr_warning("CM-X270: failed to request NAND R/B gpio\n");
+> +		goto err_gpio_request;
+> +	}
+> +
+> +	gpio_direction_input(GPIO_NAND_RB);
+> +
+>  	/* Allocate memory for MTD device structure and private data */
+>  	cmx270_nand_mtd = kzalloc(sizeof(struct mtd_info) +
+>  				  sizeof(struct nand_chip),
+>  				  GFP_KERNEL);
+>  	if (!cmx270_nand_mtd) {
+> -		printk("Unable to allocate CM-X270 NAND MTD device structure.\n");
+> -		return -ENOMEM;
+> +		pr_debug("Unable to allocate CM-X270 NAND MTD device structure.\n");
+> +		ret = -ENOMEM;
+> +		goto err_kzalloc;
+>  	}
+> 
+>  	cmx270_nand_io = ioremap(PXA_CS1_PHYS, 12);
+>  	if (!cmx270_nand_io) {
+> -		printk("Unable to ioremap NAND device\n");
+> +		pr_debug("Unable to ioremap NAND device\n");
+>  		ret = -EINVAL;
+> -		goto err1;
+> +		goto err_ioremap;
+>  	}
+> 
+>  	/* Get pointer to private data */
+> @@ -209,9 +217,9 @@ static int cmx270_init(void)
+> 
+>  	/* Scan to find existence of the device */
+>  	if (nand_scan (cmx270_nand_mtd, 1)) {
+> -		printk(KERN_NOTICE "No NAND device\n");
+> +		pr_notice("No NAND device\n");
+>  		ret = -ENXIO;
+> -		goto err2;
+> +		goto err_scan;
+>  	}
+> 
+>  #ifdef CONFIG_MTD_CMDLINE_PARTS
+> @@ -229,18 +237,22 @@ static int cmx270_init(void)
+>  	}
+> 
+>  	/* Register the partitions */
+> -	printk(KERN_NOTICE "Using %s partition definition\n", part_type);
+> +	pr_notice("Using %s partition definition\n", part_type);
+>  	ret = add_mtd_partitions(cmx270_nand_mtd, mtd_parts, mtd_parts_nb);
+>  	if (ret)
+> -		goto err2;
+> +		goto err_scan;
+> 
+>  	/* Return happy */
+>  	return 0;
+> 
+> -err2:
+> +err_scan:
+>  	iounmap(cmx270_nand_io);
+> -err1:
+> +err_ioremap:
+>  	kfree(cmx270_nand_mtd);
+> +err_kzalloc:
+> +	gpio_free(GPIO_NAND_RB);
+> +err_gpio_request:
+> +	gpio_free(GPIO_NAND_CS);
+> 
+>  	return ret;
+> 
+> @@ -255,6 +267,9 @@ static void cmx270_cleanup(void)
+>  	/* Release resources, unregister device */
+>  	nand_release(cmx270_nand_mtd);
+> 
+> +	gpio_free(GPIO_NAND_RB);
+> +	gpio_free(GPIO_NAND_CS);
+> +
+>  	iounmap(cmx270_nand_io);
+> 
+>  	/* Free the MTD device structure */
+> 
+> 
