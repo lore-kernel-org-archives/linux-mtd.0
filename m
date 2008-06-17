@@ -1,18 +1,19 @@
 Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K8d7w-0003GP-P4
-	for linux-mtd@lists.infradead.org; Tue, 17 Jun 2008 15:29:45 +0000
-Date: Tue, 17 Jun 2008 17:29:32 +0200
+	id 1K8dHj-0004Dh-2V
+	for linux-mtd@lists.infradead.org; Tue, 17 Jun 2008 15:39:51 +0000
+Date: Tue, 17 Jun 2008 17:39:43 +0200
 From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
 To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
 Subject: Re: [PATCH 1/2] mtdpart: Avoid divide-by-zero on out-of-reach path
-Message-ID: <20080617152932.GD28448@logfs.org>
+Message-ID: <20080617153942.GE28448@logfs.org>
 References: <20080616.233222.112854616.anemo@mba.ocn.ne.jp>
+	<20080617152932.GD28448@logfs.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20080616.233222.112854616.anemo@mba.ocn.ne.jp>
+In-Reply-To: <20080617152932.GD28448@logfs.org>
 Cc: David Woodhouse <dwmw2@infradead.org>, akpm@linux-foundation.org,
 	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,46 +25,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 16 June 2008 23:32:22 +0900, Atsushi Nemoto wrote:
+On Tue, 17 June 2008 17:29:32 +0200, Jörn Engel wrote:
 > 
->  
-> -			for (i--; i < master->numeraseregions && slave->offset + slave->mtd.size > regions[i].offset; i++) {
-> +			i--;
-> +			slave->mtd.erasesize = regions[i].erasesize;
-> +			for (; i < master->numeraseregions && slave->offset + slave->mtd.size > regions[i].offset; i++) {
->  				if (slave->mtd.erasesize < regions[i].erasesize) {
->  					slave->mtd.erasesize = regions[i].erasesize;
->  				}
+> In other words, I am tempted to replace all that with a single line:
+> 	BUG();
 
-While this patch appears to work, I still don't like it.  Before the
-patch, the whole function is simply a mess.  After your patch, it looks
-even worse and becomes almost impossible to understand.  So while you
-are fixing a bug today, the very next change may introduce a new bug
-simply because whoever makes the change doesn't understand the code.
+Or maybe combine it with the else path:
+	slave->mtd.erasesize = master->erasesize;
+	if (master->numeraseregions > 1)
+		printk(KERN_ERR"mtdpart can not handle multiple eraseregions correctly.\n");
 
-At least I have a hard enough time understanding it today.  The first
-loop seems to look for the last eraseregion that is part of the current
-partition.  Why then it should check for
-	slave->offset + slave->mtd.size > regions[i].offset
-instead of 
-	slave->offset >= regions[i].offset
-
-Odd.  And the second loop should go backwards as long as the
-eraseregions are part of the current partition.  Which means that
-	i < master->numeraseregions
-doesn't make sense at all and
-	slave->offset + slave->mtd.size > regions[i].offset
-would imply that eraseregions go backwards.
-
-In other words, I am tempted to replace all that with a single line:
-	BUG();
-
-At least that line is short and descriptive.  Otherwise it seems to be
-roughly equivalent of what we had before.
+Nemoto-san, would this be good enough for you?  It fixes the bug you
+noticed, it removes most long lines and it removes the sparse warning.
+It also removes functionality that may have been useful to some person -
+detecting a smaller erasesize.  And with some luck and a warm easterly
+wind, that functionality may even have worked.
 
 Jörn
 
 -- 
-Mundie uses a textbook tactic of manipulation: start with some
-reasonable talk, and lead the audience to an unreasonable conclusion.
--- Bruce Perens
+Maintenance in other professions and of other articles is concerned with
+the return of the item to its original state; in Software, maintenance
+is concerned with moving an item away from its original state.
+-- Les Belady
