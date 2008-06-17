@@ -1,20 +1,19 @@
-Received: from smtp.scorch.co.nz ([203.167.210.162] helo=firstline.co.nz)
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K8PMW-0005wi-9z
-	for linux-mtd@lists.infradead.org; Tue, 17 Jun 2008 00:47:53 +0000
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: linux-mtd@lists.infradead.org
-Subject: Re: mtd partitions limited to 4 GB?
-Date: Tue, 17 Jun 2008 12:41:08 +1200
-References: <4856FF76.9000302@firmworks.com>
-In-Reply-To: <4856FF76.9000302@firmworks.com>
+Received: from ipmail01.adl6.internode.on.net ([203.16.214.146])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K8Pbi-0002aW-U5
+	for linux-mtd@lists.infradead.org; Tue, 17 Jun 2008 01:03:35 +0000
+Message-ID: <48570D5A.1050906@call-direct.com.au>
+Date: Tue, 17 Jun 2008 11:03:22 +1000
+From: Iwo Mergler <iwo@call-direct.com.au>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+To: linux-mtd@lists.infradead.org
+Subject: Re: [BUG] JFFS2 power loss recovery issues on NAND
+References: <alpine.LFD.1.10.0806101438520.27550@casper.infradead.org>
+In-Reply-To: <alpine.LFD.1.10.0806101438520.27550@casper.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200806171241.08371.manningc2@actrix.gen.nz>
-Cc: Mitch Bradley <wmb@firmworks.com>
+Cc: joern@logfs.org, dwmw2@infradead.org,
+	Alexey Korolev <akorolev@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +23,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 17 June 2008 12:04:06 Mitch Bradley wrote:
-> In drivers/mtd/mtdpart.c, struct mtd_part has  "u_int32_t offset", thus
-> (apparently) limiting the partition start offset to 4 GiB.  Similarly,
-> struct mtd_partition in include/linux/mtd/partititions.h has "u_int32_t
-> size" and "u_int32_offset".
-
-As Josh says it is not just an mtd_part issue, but the whole guts of mtd 
-suffer from this. The actual mtd_xxx interface to the kernel is close enough 
-for most purposes.
-
-I am aware of people using Linux with >4GB of NAND for a long time now (well 
-over a year). They did this by writing their own mtd drivers that just fit 
-onto the existing interface.  Many people do that anyway because the nand 
-core stuff is slow relative to a tailor made driver.
-
+Alexey Korolev wrote:
+> JFFS2 ignores read errors from NAND since it has own CRC. On attempt to
+> read fragment from first 256 bytes JFFS2 detects CRC error as this
+> region has been improperly corrected and considers
+> node as invalid. Rest data on page is considered as good. 
 >
-> Now that NAND FLASH device sizes have exceeded that, this appears to be
-> a significant limitation.
+> So if we write new file during power loss and we have several nodes in
+> page, we may face bad case with hole in the middle of the file after
+> power loss. It is a bug. 
 >
-> Is anyone in the mtd community already addressing this?
+> The attached picture may explain the issue better. 
 >
-> Fixing the core infrastructure might be as simple as using "loff_t"
-> instead of "u_int32_t" for those fields.  However, all of the existing
-> partition map parsers appear to have the same 32-bit limitation, so
-> partitioning a >4GiB device will require a new or modified partition map
-> format.
+>
+> So for now it is clear how JFFS2 fails. It is not obvious how to fix it. 
+> Do you have any suggestions or ideas how it could be fixed?
+> Would it be a good idea do hack JFFS2 in order to read data one more
+> time but without ECC correction in case of failed read?
+>   
+Alexey,
 
-It is more than just changing the 32 to 64 bit types.
+I know of at least one hardware ECC implementation which can flag
+errors within the ECC bytes separately. In other words, not all 
+implementations
+will detect/correct bit errors in the case of a ECC write error.
+
+About how to fix it - what about making the reading without ECC the default
+and only re-reading with ECC if JFFS2 finds an invalid checksum?
+
+Kind regards,
+
+Iwo
