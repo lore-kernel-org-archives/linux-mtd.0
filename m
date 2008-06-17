@@ -1,19 +1,20 @@
-Received: from rv-out-0708.google.com ([209.85.198.251])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K8NmT-0002Xw-T1
-	for linux-mtd@lists.infradead.org; Mon, 16 Jun 2008 23:06:34 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so6859769rvf.42
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 16 Jun 2008 16:06:33 -0700 (PDT)
-Message-ID: <4856F1F7.4040003@mistralsolutions.com>
-Date: Mon, 16 Jun 2008 16:06:31 -0700
-From: Suresh Rajashekara <suresh@mistralsolutions.com>
+Received: from rs35.luxsci.com ([66.216.127.90])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1K8OgS-000132-9d
+	for linux-mtd@lists.infradead.org; Tue, 17 Jun 2008 00:04:24 +0000
+Received: from [10.20.0.14] (user-10cm74m.cable.mindspring.com [64.203.28.150])
+	(authenticated bits=0)
+	by rs35.luxsci.com (8.13.1/8.13.7) with ESMTP id m5H04KXQ007038
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NOT)
+	for <linux-mtd@lists.infradead.org>; Mon, 16 Jun 2008 19:04:22 -0500
+Message-ID: <4856FF76.9000302@firmworks.com>
+Date: Mon, 16 Jun 2008 14:04:06 -1000
+From: Mitch Bradley <wmb@firmworks.com>
 MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: JFFS2 Cleanmarker Issue
+Subject: mtd partitions limited to 4 GB?
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Sender: Suresh Rajashekara <rajashekara.suresh@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,61 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Everyone,
+In drivers/mtd/mtdpart.c, struct mtd_part has  "u_int32_t offset", thus 
+(apparently) limiting the partition start offset to 4 GiB.  Similarly, 
+struct mtd_partition in include/linux/mtd/partititions.h has "u_int32_t 
+size" and "u_int32_offset".
 
-Few necessary details before I explain my issue.
+Now that NAND FLASH device sizes have exceeded that, this appears to be 
+a significant limitation.
 
-Hardware I use: OMAP5912 based board
-Linux: 2.6.16-rc3
+Is anyone in the mtd community already addressing this?
 
-Let me know if you guys need more details.
-
-The issue:
-I use the JFFS2 file system on the oneNAND flash. Every time I boot the 
-board I see the following on the serial console (I have
-CONFIG_JFFS2_FS_DEBUG=2)
-
-<SNIP>
-jffs2_check_nand_cleanmarker(): Cleanmarker node not detected in block 
-at 00000000 OOB at 00000000 was ff ff 00 19 03 03 ff ff ff ff ff 56 fe 
-ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 
-ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 
-ff ff ff jffs_check_nand_cleanmarker returned 1 jffs2_check_oob_empty 
-returned 1
-JFFS2: Erase block at 0x00000000 is not formatted. It will be erased
-jffs2_check_nand_cleanmarker(): Cleanmarker node not detected in block 
-at 00020000 OOB at 00020000 was ff ff 00 19 03 03 ff ff ff ff ff 56 fe 
-ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 
-ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 
-ff ff ff jffs_check_nand_cleanmarker returned 1 jffs2_check_oob_empty 
-returned 1 blah..
-.
-blah...
-.
-.
-</SNIP>
-
-Getting this on the first boot, is I guess expected. But this messages 
-repeats every time we reboot the board. I did some debugging and found 
-that the JFFS2 driver is marking these blocks and writes the clean markers.
-
-Since these prints were appearing on every boot, I read the oob area 
-which the jffs2 driver wrote to mark the cleanmarkers. I found the data 
-to be shifted. I tried Googling and also went through the GIT log 
-messages to find if this was a known issue, but could not find any. Is 
-this a known issue in 2.6.16-rc3.
-
-The developers who did the initial design have chosen to format the 
-partition using the nftl_format command. I read on the MTD howto that it 
-should not be used. I tried replacing that with "flash_eraseall -j" and 
-created the jffs2 file system using the command mkfs.jffs2 (I tried with 
-the correct page size and other stuff by looking in to the datasheet) 
-and wrote the jffs2 file system using the nand_write command, but none 
-helped.
-
-Could someone please point me in the right direction?
-
-Thanks in advance,
-
-Best Regards,
-Suresh
+Fixing the core infrastructure might be as simple as using "loff_t" 
+instead of "u_int32_t" for those fields.  However, all of the existing 
+partition map parsers appear to have the same 32-bit limitation, so 
+partitioning a >4GiB device will require a new or modified partition map 
+format.
