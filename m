@@ -1,23 +1,18 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+Received: from tesla.selinc.com ([12.110.71.2])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K91eK-0000ar-UA
-	for linux-mtd@lists.infradead.org; Wed, 18 Jun 2008 17:40:49 +0000
-Date: Wed, 18 Jun 2008 19:40:34 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-Subject: Re: [PATCH 1/2] mtdpart: Avoid divide-by-zero on out-of-reach path
-Message-ID: <20080618174034.GA10271@logfs.org>
-References: <20080617152932.GD28448@logfs.org>
-	<20080618.005735.51867626.anemo@mba.ocn.ne.jp>
-	<20080617164629.GG28448@logfs.org>
-	<20080618.111907.60384971.nemoto@toshiba-tops.co.jp>
+	id 1K91pe-0001XE-9u
+	for linux-mtd@lists.infradead.org; Wed, 18 Jun 2008 17:52:30 +0000
+Received: from edison2.selinc.com (edison2.selinc.com [12.110.71.8])
+	by tesla.selinc.com (8.12.11.20060308/8.12.11) with ESMTP id
+	m5IHqTWs019502
+	for <linux-mtd@lists.infradead.org>; Wed, 18 Jun 2008 10:52:29 -0700
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH][MTD]Remove dead code
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20080618.111907.60384971.nemoto@toshiba-tops.co.jp>
-Cc: dwmw2@infradead.org, akpm@linux-foundation.org,
-	linux-mtd@lists.infradead.org
+Message-ID: <OF46A22CC0.E795A9BE-ON8825746C.006121A0-8825746C.00622E1D@selinc.com>
+From: Bruce_Leonard@selinc.com
+Date: Wed, 18 Jun 2008 10:52:26 -0700
+Content-Type: text/plain; charset="US-ASCII"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +22,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 18 June 2008 11:19:07 +0900, Atsushi Nemoto wrote:
-> 
-> The decrement is there because when the first loop stoped 'i' points
-> the second region in the partition.
+As near as I can tell this line of code serves no usefull purpose, so I 
+removed it.
 
-Finally even I understand that code.  Thank you for your patience.
+Signed-off-by: Bruce Leonard <brucle@selinc.com>
 
-> Putting 'goto somewhere' or 'slave->mtd.erasesize = master->erasesize'
-> in the above 'if' block can be an alternative fix.
+---
 
-That seems a better idea.
-
-Jörn
-
--- 
-A defeated army first battles and then seeks victory.
--- Sun Tzu
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index 5e121ce..2733e04 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -1029,7 +1029,6 @@ int nand_update_bbt(struct mtd_info *mtd, loff_t 
+offs)
+        if (!this->bbt || !td)
+                return -EINVAL;
+ 
+-       len = mtd->size >> (this->bbt_erase_shift + 2);
+        /* Allocate a temporary buffer for one eraseblock incl. oob */
+        len = (1 << this->bbt_erase_shift);
+        len += (len >> this->page_shift) * mtd->oobsize;
