@@ -1,20 +1,17 @@
-Subject: Re: [BUG] JFFS2 power loss recovery issues on NAND
-From: David Woodhouse <dwmw2@infradead.org>
-To: Jamie Lokier <jamie@shareable.org>
-In-Reply-To: <20080618121936.GD305@shareable.org>
-References: <alpine.LFD.1.10.0806101438520.27550@casper.infradead.org>
-	<48570D5A.1050906@call-direct.com.au> <48577212.9070004@parrot.com>
-	<48584DE9.3000709@call-direct.com.au>
-	<20080618121936.GD305@shareable.org>
-Content-Type: text/plain
-Date: Wed, 18 Jun 2008 13:33:28 +0100
-Message-Id: <1213792408.26255.1215.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: joern@logfs.org, linux-mtd@lists.infradead.org,
-	Matthieu CASTET <matthieu.castet@parrot.com>,
-	Iwo Mergler <iwo@call-direct.com.au>,
-	Alexey Korolev <akorolev@infradead.org>
+Received: from web8606.mail.in.yahoo.com ([202.43.219.81])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K8x2T-0000l8-OX
+	for linux-mtd@lists.infradead.org; Wed, 18 Jun 2008 12:45:26 +0000
+Date: Wed, 18 Jun 2008 18:15:16 +0530 (IST)
+From: veena s <veena_3_2003@yahoo.co.in>
+Subject: Reg:LTP Test fail on nand 
+To: linux-mtd@lists.infradead.org
+In-Reply-To: <mailman.1514.1213626659.2802.linux-mtd@lists.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Message-ID: <772763.66951.qm@web8606.mail.in.yahoo.com>
+Reply-To: veena_3_2003@yahoo.co.in
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +21,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-06-18 at 13:19 +0100, Jamie Lokier wrote:
-> Iwo Mergler wrote:
-> > Forgive my ignorance - does that mean that not everything in JFFS2 is 
-> > CRC protected?
-> 
-> I think every _individual_ record is CRC protected in JFFS2
-> 
-> _But_ that doesn't always detect file corruption.  If JFFS2 records
-> don't match their CRC, they are treated as if not there.
-> 
-> If there's corrupt data records, that causes holes in files.  There's
-> no I/O error reported to the application, just blocks of zero bytes.
-> 
-> There's no mechanism in JFFS2 to detect that.  It requires checksums
-> at a higher level
+Hi ,
+I am checking my nand filesystem(jffs2) test by running LTP test ..
+My testcases are failing for following .
+ rwtest01                       FAIL      =20
+ rwtest02                       FAIL      =20
+ rwtest03                       FAIL      =20
+ rwtest04                       FAIL      =20
+ rwtest05                       FAIL     =20
+and the error message is mmap-write() request failed:  No such file or dire=
+ctory (2)
 
-Well, in the case where a given region of the file is actually _absent_,
-rather than the 'hole' being filled by an earlier version of the data
-for that range of the file, we _could_ at least bitch about it, or maybe
-even return -EIO. It should never happen, because of the way we 'fill'
-holes in files.
+All other testcases are PASS.
+Can anyone please suggest me what is the cause & how to debug it.
 
-It doesn't solve the real issue at hand though.
-
--- 
-dwmw2
+Thanks=20
+Veena=20
+=0A=0A=0A      Best Jokes, Best Friends, Best Food and more. Go to http://i=
+n.promos.yahoo.com/groups/bestofyahoo/
