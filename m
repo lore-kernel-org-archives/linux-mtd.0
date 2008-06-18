@@ -1,17 +1,30 @@
-Received: from web8606.mail.in.yahoo.com ([202.43.219.81])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K8x2T-0000l8-OX
-	for linux-mtd@lists.infradead.org; Wed, 18 Jun 2008 12:45:26 +0000
-Date: Wed, 18 Jun 2008 18:15:16 +0530 (IST)
-From: veena s <veena_3_2003@yahoo.co.in>
-Subject: Reg:LTP Test fail on nand 
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <mailman.1514.1213626659.2802.linux-mtd@lists.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Message-ID: <772763.66951.qm@web8606.mail.in.yahoo.com>
-Reply-To: veena_3_2003@yahoo.co.in
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1K8xKD-00041t-R7
+	for linux-mtd@lists.infradead.org; Wed, 18 Jun 2008 13:03:46 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e3.ny.us.ibm.com (8.13.8/8.13.8) with ESMTP id m5ID3bQd029413
+	for <linux-mtd@lists.infradead.org>; Wed, 18 Jun 2008 09:03:37 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.0) with ESMTP id
+	m5ID3ViG205740
+	for <linux-mtd@lists.infradead.org>; Wed, 18 Jun 2008 09:03:31 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	m5ID3VVe008658
+	for <linux-mtd@lists.infradead.org>; Wed, 18 Jun 2008 09:03:31 -0400
+Date: Wed, 18 Jun 2008 09:01:24 -0400
+From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+To: Grant Erickson <gerickson@nuovations.com>
+Subject: Re: [PATCH] [MTD-UTILS] Makefile: Add Optional ZLIB and LZO CFLAGS
+	and LDFLAGS
+Message-ID: <20080618090124.327efe45@zod.rchland.ibm.com>
+In-Reply-To: <1213371980-23414-1-git-send-email-gerickson@nuovations.com>
+References: <1213371980-23414-1-git-send-email-gerickson@nuovations.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,21 +34,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi ,
-I am checking my nand filesystem(jffs2) test by running LTP test ..
-My testcases are failing for following .
- rwtest01                       FAIL      =20
- rwtest02                       FAIL      =20
- rwtest03                       FAIL      =20
- rwtest04                       FAIL      =20
- rwtest05                       FAIL     =20
-and the error message is mmap-write() request failed:  No such file or dire=
-ctory (2)
+On Fri, 13 Jun 2008 08:46:20 -0700
+Grant Erickson <gerickson@nuovations.com> wrote:
 
-All other testcases are PASS.
-Can anyone please suggest me what is the cause & how to debug it.
+> This adds support for allowing the specification of unique CFLAGS and 
+> LDFLAGS for both LZO and ZLIB. In addition, it allows for independently 
+> specifying both PREFIX and EXEC_PREFIX.
+> 
+> The former is useful in some cross-compilation environments where the 
+> LZO and ZLIB versions being built against are not those installed in the 
+> standard locations.
+> 
+> The latter is useful when installing mtd-utils in a multi-architecture 
+> installation area.
 
-Thanks=20
-Veena=20
-=0A=0A=0A      Best Jokes, Best Friends, Best Food and more. Go to http://i=
-n.promos.yahoo.com/groups/bestofyahoo/
+I like this, but due to my ineptitude I committed Mike's CFLAGS rework
+patch first so this no longer applies.  Could you rework this based on
+today's latest Makefile?
+
+josh
