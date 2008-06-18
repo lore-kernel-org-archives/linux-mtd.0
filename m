@@ -1,12 +1,22 @@
-In-Reply-To: <200806171241.08371.manningc2@actrix.gen.nz>
-To: Charles Manning <manningc2@actrix.gen.nz>
-Subject: Re: mtd partitions limited to 4 GB?
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1K91eK-0000ar-UA
+	for linux-mtd@lists.infradead.org; Wed, 18 Jun 2008 17:40:49 +0000
+Date: Wed, 18 Jun 2008 19:40:34 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Subject: Re: [PATCH 1/2] mtdpart: Avoid divide-by-zero on out-of-reach path
+Message-ID: <20080618174034.GA10271@logfs.org>
+References: <20080617152932.GD28448@logfs.org>
+	<20080618.005735.51867626.anemo@mba.ocn.ne.jp>
+	<20080617164629.GG28448@logfs.org>
+	<20080618.111907.60384971.nemoto@toshiba-tops.co.jp>
 MIME-Version: 1.0
-Message-ID: <OF8B8E1CD6.3EC346B9-ON8825746C.005D5388-8825746C.005DC6FF@selinc.com>
-From: Bruce_Leonard@selinc.com
-Date: Wed, 18 Jun 2008 10:04:20 -0700
-Content-Type: text/plain; charset="US-ASCII"
-Cc: linux-mtd-bounces@lists.infradead.org, Mitch Bradley <wmb@firmworks.com>,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20080618.111907.60384971.nemoto@toshiba-tops.co.jp>
+Cc: dwmw2@infradead.org, akpm@linux-foundation.org,
 	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -17,31 +27,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > In drivers/mtd/mtdpart.c, struct mtd_part has  "u_int32_t offset", 
-thus
-> > (apparently) limiting the partition start offset to 4 GiB.  Similarly,
-> > struct mtd_partition in include/linux/mtd/partititions.h has 
-"u_int32_t
-> > size" and "u_int32_offset".
+On Wed, 18 June 2008 11:19:07 +0900, Atsushi Nemoto wrote:
 > 
-> As Josh says it is not just an mtd_part issue, but the whole guts of mtd 
+> The decrement is there because when the first loop stoped 'i' points
+> the second region in the partition.
 
-> suffer from this. The actual mtd_xxx interface to the kernel is close 
-enough 
-> for most purposes.
-> 
+Finally even I understand that code.  Thank you for your patience.
 
-<snip>
+> Putting 'goto somewhere' or 'slave->mtd.erasesize = master->erasesize'
+> in the above 'if' block can be an alternative fix.
 
-> It is more than just changing the 32 to 64 bit types.
-> 
+That seems a better idea.
 
-It is indeed more than just a type change, as I'm discovering :\.  I'm 
-currently working on a change that will allow greater than 2GiB size, but 
-since my project isn't going to have any partitions in it, I wasn't aware 
-of any limitations there.  As I go through my work I'll try and keep it in 
-mind, but I'm mired in the NAND layer and make no promises.  I'm trying to 
-do this in small increments rather than a wholesale change that introduces 
-numerous bugs :).
+Jörn
 
-Bruce
+-- 
+A defeated army first battles and then seeks victory.
+-- Sun Tzu
