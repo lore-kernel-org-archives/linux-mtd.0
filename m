@@ -1,23 +1,20 @@
-Received: from outbound-wa4.frontbridge.com ([216.32.181.16]
-	helo=WA4EHSOBE003.bigfish.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K9Jrf-0004Mk-SZ
-	for linux-mtd@lists.infradead.org; Thu, 19 Jun 2008 13:07:48 +0000
-Received: from mail151-wa4 (localhost.localdomain [127.0.0.1])	by
-	mail151-wa4-R.bigfish.com (Postfix) with ESMTP id D6A888B80DC	for
-	<linux-mtd@lists.infradead.org>; Thu, 19 Jun 2008 13:07:46 +0000 (UTC)
-Received: from echo.xsnet.com (mail.xsnet.com [208.36.194.4])	by
-	mail151-wa4.bigfish.com (Postfix) with ESMTP id 429561A30062	for
-	<linux-mtd@lists.infradead.org>; Thu, 19 Jun 2008 13:07:46 +0000 (UTC)
-Content-Class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Subject: Contract work
-Date: Thu, 19 Jun 2008 09:11:32 -0400
-Message-ID: <EB43F0CEE95632498A28090612981AF1026F10C1@echo.xsnet.com>
-From: "Nate Fuhriman (Avarsys)" <nfuhriman@avarsys.com>
-To: <linux-mtd@lists.infradead.org>
+Received: from mba.ocn.ne.jp ([122.1.235.107] helo=smtp.mba.ocn.ne.jp)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1K9LfU-0002YT-By
+	for linux-mtd@lists.infradead.org; Thu, 19 Jun 2008 15:03:21 +0000
+Date: Fri, 20 Jun 2008 00:04:47 +0900 (JST)
+Message-Id: <20080620.000447.05598315.anemo@mba.ocn.ne.jp>
+To: greg@kroah.com
+Subject: Re: [stable] [PATCH] jedec_probe: Fix SST 16-bit chip detection
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+In-Reply-To: <20080619110418.GB27196@kroah.com>
+References: <20080619.163648.262833678.nemoto@toshiba-tops.co.jp>
+	<20080619110418.GB27196@kroah.com>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, stable@kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,13 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SSBoYXZlIHNvbWUgc3VwZXJtaWNybyB4NWRwciBtb3RoZXJib2FyZHMgdGhhdCBJIG5lZWQgdG8g
-Zmxhc2ggdGhlIGJpb3Mgb24uIEkgdXNlZCB0byBiZSBhYmxlIHRvIGZsYXNoIHVzaW5nIHRoZSBp
-Y2h4cm9tLiBIb3dldmVyIHRoYXQgZHJpdmVyIGRvZXNuJ3QgYXBwZWFyIHRvIHN1cHBvcnQgdGhl
-IGJpb3MgY2hpcCBhbnltb3JlLg0KDQpUbyBhbnN3ZXIgYWxsIHRoZSBxdWVzdGlvbnMgY29taW5n
-Og0KVGhpcyB3b3JrIHdpbGwgYmUgcGFpZCBieSBteSBjb21wYW55IGF0IGEgbmVnb3RpYXRlZCBy
-YXRlLg0KV2UgbmVlZCB0aGUgd29yayBjb21wbGV0ZWQgQVNBUCBhcyB3ZSBoYXZlIGEgY3VzdG9t
-ZXIgd2FpdGluZyBvbiB0aGlzLg0KV2UgaGF2ZSBib2FyZChzKSB0aGF0IHdlIGNhbiBsZW5kIHlv
-dS4NClVuZm9ydHVuYXRlbHkgdGhlIGJpb3MgY2hpcCBpcyBzb2xkZXJlZCBvbiBzbyB0aGVyZSBp
-cyBubyB3YXkgdG8gdXNlIGEgUk9NLWJ1cm5lci4NCg0KSWYgeW91IGFyZSBpbnRlcmVzdGVkIGlu
-IHRoaXMgd29yayBwbGVhc2UgY29udGFjdCBtZSBhdDoNCm5mdWhyaW1hbkBhdmFyc3lzLmNvbQ0K
+On Thu, 19 Jun 2008 04:04:18 -0700, Greg KH <greg@kroah.com> wrote:
+> In the future, if you want something to go into the stable tree, just
+> add:
+> 	cc: stable <stable@kernel.org>
+> to the signed-off-by area of the patch and we will be automatically
+> notifed when it goes into Linus's tree and will then add it to the
+> -stable tree.
+> 
+> Otherwise it's a pain to try to track when a patch goes into mainline.
+
+Sure.  Will do next time.  I had misunderstand the statement in
+stable_kernel_rules.txt, as CC: in mail header (not S-O-B area) is
+enough.  Thank you.
+
+> Can you notify us when this patch is accepted?
+
+Sure too.
+---
+Atsushi Nemoto
