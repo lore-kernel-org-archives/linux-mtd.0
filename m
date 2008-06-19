@@ -1,17 +1,15 @@
-Received: from [208.98.1.60] (helo=darghos.com)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K9NY2-0003ZR-Lz
-	for linux-mtd@lists.infradead.org; Thu, 19 Jun 2008 17:03:47 +0000
-Date: Fri, 20 Jun 2008 17:30:04 -0300
-From: "Kristy starfish" <bhebwbjxegKatie@yahoo.com>
-To: sales@slsonline.co.uk
-Subject: Dentist.s List in America
-Message-ID: <493786w3mmz0$o8860uc0$0631a7e0@Delldim5150
-MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: goossen@dns.nhl.nl, a.e.m.jonker@archiefschool.nl,
-	linux-mtd@lists.infradead.org, pogiboooy@yahoo.com,
-	click12wealth@getresponse.com, meg.atwood@sunyorange.edu
+Subject: Re: [PATCH] jedec_probe: Fix SST 16-bit chip detection
+From: David Woodhouse <dwmw2@infradead.org>
+To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+In-Reply-To: <20080619.163648.262833678.nemoto@toshiba-tops.co.jp>
+References: <20080619.163648.262833678.nemoto@toshiba-tops.co.jp>
+Content-Type: text/plain
+Date: Thu, 19 Jun 2008 18:21:53 +0100
+Message-Id: <1213896113.26255.1434.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	stable@kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,24 +19,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, 2008-06-19 at 16:36 +0900, Atsushi Nemoto wrote:
+> -               .devtypes       = CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
+> +               .devtypes       = CFI_DEVICETYPE_X16,
 
+I believe you about the uaddr -- but can these devices really not be
+used in 8-bit mode?
 
-
-
-
-Fully exportable and can be used for any purpose:
-
-==> 164,622 D e ntists 
-==> 158,892 Postal Addresses
-==> 163,749 Phone Nos
-==> 77,154 Office Fax Numbers 
-==> 45,651 Contact emails
-
-from now until Friday you can take the above with unlimited use rights for $296 - a $596 value
-
-Please repond to sueramelson@hotmail.com 
-
-
-
-
-by following this link you will never get more of these messages please send an email with 820 for subject
+-- 
+dwmw2
