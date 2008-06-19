@@ -1,16 +1,15 @@
-Received: from nwd2mail11.analog.com ([137.71.25.57])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1K9HDp-0001fa-8c
-	for linux-mtd@lists.infradead.org; Thu, 19 Jun 2008 10:18:29 +0000
-From: Bryan Wu <cooloney@kernel.org>
-To: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: [PATCH 1/2] [MTD] Blackfin NFC Driver: fix bug - do not clobber the
-	status from the first 256 bytes if operating on 512 pages
-Date: Thu, 19 Jun 2008 18:18:28 +0800
-Message-Id: <1213870709-17356-2-git-send-email-cooloney@kernel.org>
-In-Reply-To: <1213870709-17356-1-git-send-email-cooloney@kernel.org>
-References: <1213870709-17356-1-git-send-email-cooloney@kernel.org>
-Cc: Bryan Wu <cooloney@kernel.org>, Mike Frysinger <vapier.adi@gmail.com>
+Date: Thu, 19 Jun 2008 04:04:18 -0700
+From: Greg KH <greg@kroah.com>
+To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Subject: Re: [stable] [PATCH] jedec_probe: Fix SST 16-bit chip detection
+Message-ID: <20080619110418.GB27196@kroah.com>
+References: <20080619.163648.262833678.nemoto@toshiba-tops.co.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20080619.163648.262833678.nemoto@toshiba-tops.co.jp>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, stable@kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,26 +19,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Mike Frysinger <vapier.adi@gmail.com>
+On Thu, Jun 19, 2008 at 04:36:48PM +0900, Atsushi Nemoto wrote:
+> The unlock_addr rework in kernel 2.6.25 breaks 16-bit SST chips.  SST
+> 39LF160 and SST 39VF1601 are both 16-bit only chip and new uaddr value
+> is not correct for them.  Add MTD_UADDR_0xAAAA_0x5555 for those chips.
+> Tested with SST 39VF1601 chip.
+> 
+> Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
 
-Singed-off-by: Mike Frysinger <vapier.adi@gmail.com>
-Signed-off-by: Bryan Wu <cooloney@kernel.org>
----
- drivers/mtd/nand/bf5xx_nand.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+In the future, if you want something to go into the stable tree, just
+add:
+	cc: stable <stable@kernel.org>
+to the signed-off-by area of the patch and we will be automatically
+notifed when it goes into Linus's tree and will then add it to the
+-stable tree.
 
-diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
-index e87a572..3254348 100644
---- a/drivers/mtd/nand/bf5xx_nand.c
-+++ b/drivers/mtd/nand/bf5xx_nand.c
-@@ -273,7 +273,7 @@ static int bf5xx_nand_correct_data(struct mtd_info *mtd, u_char *dat,
- 		dat += 256;
- 		read_ecc += 8;
- 		calc_ecc += 8;
--		ret = bf5xx_nand_correct_data_256(mtd, dat, read_ecc, calc_ecc);
-+		ret |= bf5xx_nand_correct_data_256(mtd, dat, read_ecc, calc_ecc);
- 	}
- 
- 	return ret;
--- 
-1.5.6
+Otherwise it's a pain to try to track when a patch goes into mainline.
+
+Can you notify us when this patch is accepted?
+
+thanks,
+
+greg k-h
