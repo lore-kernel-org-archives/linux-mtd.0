@@ -1,14 +1,23 @@
-Date: Fri, 20 Jun 2008 10:07:15 +0200
-From: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
-To: "Eirik Aanonsen" <eaa@wprmedical.com>
-Subject: Re: ubifs and losetup
-Message-ID: <20080620100715.3950ad73@hskinnemo-gx745.norway.atmel.com>
-In-Reply-To: <6B5648EA2E2C2D42AF2FF7691522AD92417B68@wpr01.wprmedical.local>
-References: <6B5648EA2E2C2D42AF2FF7691522AD92417B68@wpr01.wprmedical.local>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, kernel@avr32linux.org
+Received: from de01egw01.freescale.net ([192.88.165.102])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1K9eUz-0007fl-Ix
+	for linux-mtd@lists.infradead.org; Fri, 20 Jun 2008 11:09:45 +0000
+Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
+	by de01egw01.freescale.net (8.12.11/az33egw01) with ESMTP id
+	m5KB9gug012368 for <linux-mtd@lists.infradead.org>;
+	Fri, 20 Jun 2008 04:09:42 -0700 (MST)
+Received: from zch01exm21.fsl.freescale.net (zch01exm21.ap.freescale.net
+	[10.192.129.205])
+	by de01smr01.freescale.net (8.13.1/8.13.0) with ESMTP id m5KB9eeK002104
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 20 Jun 2008 06:09:41 -0500 (CDT)
+From: Chen Gong <g.chen@freescale.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/3] [MTD] m25p80.c add a erase_block command to enhance erase
+	operation
+Date: Fri, 20 Jun 2008 19:04:40 +0800
+Message-Id: <1213959882-12828-1-git-send-email-g.chen@freescale.com>
+Cc: Chen Gong <g.chen@freescale.com>, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,125 +27,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[Cc'ing linux-mtd and Artem]
+Signed-Off-by: Chen Gong <g.chen@freescale.com>
+---
+ drivers/mtd/devices/m25p80.c |   48 +++++++++++++++++++++++++++++++++++-------
+ 1 files changed, 40 insertions(+), 8 deletions(-)
 
-"Eirik Aanonsen" <eaa@wprmedical.com> wrote:
-> 
-> Hi.
-> 
-> I an trying to make a file backed image that reside on a NAND flash
-> running 2.6.25.6.atmel.1 and BusyBox v1.10.1
-
-The 2.6.25.6.atmel.1 kernel is based on v2.6.25.6 and includes the
-ubifs-v2.6.25 tree:
-
-    Merge branch 'master' of git://git.infradead.org/users/dedekind/ubifs-v2.6.25
-
-> I intend to use a image residing on the flash for swapping access
-> between the Linux and the usb. Thus using vfat and loop device.
-> 
-> For mounting and setup in linux I have used losetup up until now.
-> 
-> 
-> This works with no problem:
-> 
-> dd bs=1M count=5 if=/dev/zero of=/tmp/usb
-> fdisk -S 8 -H 16 -C 80 /tmp/usb < fd.in
-> ( fd in contains the settings for creating the setup see below signature
-> )
-> losetup -o 4096 /dev/loop0 /tmp/usb 
-> 
-> 
-> This does not work (/media/ is ubifs):
-> 
-> dd bs=1M count=5 if=/dev/zero of=/media/usb
-> fdisk -S 8 -H 16 -C 80 /media/usb < fd.in
-> ( fd in contains the settings for creating the setup see below signature
-> )
-> losetup -o 4096 /dev/loop0 /media/usb
-> 
-> ~ # losetup -o 4096 /dev/loop0 /media/usb
-> losetup: /dev/loop0: Invalid argument
-
-Looks like UBIFS doesn't support loopback devices. Is that right?
-
-> More procedure info below.
-
-(keeping it for the MTD people)
-
-Haavard
-
-> ____________________________________________________
->  
-> Eirik Aanonsen
-> SW Developer
-> E-mail: eaa@wprmedical.com 
-> Phone: +47 90 68 11 92
-> Fax: +47 37 03 56 77
-> ____________________________________________________
-> 
-> Content of fd.in
-> n
-> p
-> 1
-> 1
-> 80
-> t
-> b
-> w
-> 
-> 
-> Commands used for setting up ubifs and mounting the new filesystem:
-> ~ # ubiformat /dev/mtd5
-> ubiformat: error!: please, first detach mtd5 (/dev/mtd5) from ubi0
-> ~ # rmmod ubi
-> ~ # ubiformat /dev/mtd5
-> ubiformat: mtd5 (NAND), size 2147483648 bytes (2.0 GiB), 524288
-> eraseblocks of 524288 bytes (512.0 KiB), min. I/O size 4096 bytes
-> libscan: scanning eraseblock 4095 -- 100 % complete
-> ubiformat: 4092 eraseblocks have valid erase counter, mean value is 2
-> ubiformat: bad eraseblocks: 802, 2340, 2360, 2364
-> ubiformat: formatting eraseblock 4095 -- 100 % complete
-> ~ # modprobe ubi mtd=5
-> ~ # ubimkvol /dev/ubi0 -N wpr_data -s 10MiB
-> Volume ID 0, size 21 LEBs (10838016 bytes, 10.3 MiB), LEB size 516096
-> bytes (504.0 KiB), dynamic, name "wpr_data", alignment 1 
-> ~ # modprobe ubifs
-> ~ # mount -t ubifs ubi0:wpr_data /media
-> 
-> 
-> Dmesg:
-> UBI: attaching mtd5 to ubi0
-> UBI: physical eraseblock size:   524288 bytes (512 KiB)
-> UBI: logical eraseblock size:    516096 bytes
-> UBI: smallest flash I/O unit:    4096
-> UBI: VID header offset:          4096 (aligned 4096)
-> UBI: data offset:                8192
-> UBI: attached mtd5 to ubi0
-> UBI: MTD device name:            "main"
-> UBI: MTD device size:            2048 MiB
-> UBI: number of good PEBs:        4092
-> UBI: number of bad PEBs:         4
-> UBI: max. allowed volumes:       128
-> UBI: wear-leveling threshold:    4096
-> UBI: number of internal volumes: 1
-> UBI: number of user volumes:     0
-> UBI: available PEBs:             4048
-> UBI: total number of reserved PEBs: 44
-> UBI: number of PEBs reserved for bad PEB handling: 40
-> UBI: max/mean erase counter: 9/3
-> UBI: background thread "ubi_bgt0d" started, PID 379
-> UBIFS: default file-system created
-> UBIFS: background thread "ubifs_bgt0_0" started, PID 392
-> UBIFS: mounted UBI device 0, volume 0
-> UBIFS: minimal I/O unit size:   4096 bytes
-> UBIFS: logical eraseblock size: 516096 bytes (504 KiB)
-> UBIFS: file system size:        6193152 bytes (6048 KiB, 5 MiB, 12 LEBs)
-> UBIFS: journal size:            4128769 bytes (4032 KiB, 3 MiB, 5 LEBs)
-> UBIFS: data journal heads:      1
-> UBIFS: default compressor:      LZO
-> UBIFS: media format 4, latest format 4
-> _______________________________________________
-> Kernel mailing list
-> Kernel@avr32linux.org
-> http://duppen.flaskehals.net/cgi-bin/mailman/listinfo/kernel
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index b402269..9632247 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -38,6 +38,7 @@
+ #define	OPCODE_PP		0x02	/* Page program (up to 256 bytes) */
+ #define	OPCODE_BE_4K 		0x20	/* Erase 4KiB block */
+ #define	OPCODE_BE_32K		0x52	/* Erase 32KiB block */
++#define OPCODE_BE               0xc7    /* Erase whole flash block */
+ #define	OPCODE_SE		0xd8	/* Sector erase (usually 64KiB) */
+ #define	OPCODE_RDID		0x9f	/* Read JEDEC ID */
+ 
+@@ -149,6 +150,31 @@ static int wait_till_ready(struct m25p *flash)
+ 	return 1;
+ }
+ 
++/*
++ * Erase the whole flash memory
++ *
++ * Returns 0 if successful, non-zero otherwise.
++ */
++static int erase_block(struct m25p *flash)
++{
++	DEBUG(MTD_DEBUG_LEVEL3, "%s: %s %dKiB\n",
++			flash->spi->dev.bus_id, __func__,
++			flash->mtd.size / 1024);
++
++	/* Wait until finished previous write command. */
++	if (wait_till_ready(flash))
++		return 1;
++
++	/* Send write enable, then erase commands. */
++	write_enable(flash);
++
++	/* Set up command buffer. */
++	flash->command[0] = OPCODE_BE;
++
++	spi_write(flash->spi, flash->command, 1);
++
++	return 0;
++}
+ 
+ /*
+  * Erase one sector of flash memory at offset ``offset'' which is any
+@@ -217,15 +243,21 @@ static int m25p80_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	 */
+ 
+ 	/* now erase those sectors */
+-	while (len) {
+-		if (erase_sector(flash, addr)) {
+-			instr->state = MTD_ERASE_FAILED;
+-			mutex_unlock(&flash->lock);
+-			return -EIO;
+-		}
++	if (len == flash->mtd.size && erase_block(flash)) {
++		instr->state = MTD_ERASE_FAILED;
++		mutex_unlock(&flash->lock);
++		return -EIO;
++	} else {
++		while (len) {
++			if (erase_sector(flash, addr)) {
++				instr->state = MTD_ERASE_FAILED;
++				mutex_unlock(&flash->lock);
++				return -EIO;
++			}
+ 
+-		addr += mtd->erasesize;
+-		len -= mtd->erasesize;
++			addr += mtd->erasesize;
++			len -= mtd->erasesize;
++		}
+ 	}
+ 
+ 	mutex_unlock(&flash->lock);
+-- 
+1.5.4
