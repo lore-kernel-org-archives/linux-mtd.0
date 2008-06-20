@@ -1,25 +1,13 @@
-Received: from de01egw01.freescale.net ([192.88.165.102])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1K9ejy-0001eq-4c
-	for linux-mtd@lists.infradead.org; Fri, 20 Jun 2008 11:25:14 +0000
-Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
-	by de01egw01.freescale.net (8.12.11/az33egw01) with ESMTP id
-	m5KB9jTU012427 for <linux-mtd@lists.infradead.org>;
-	Fri, 20 Jun 2008 04:09:45 -0700 (MST)
-Received: from zch01exm21.fsl.freescale.net (zch01exm21.ap.freescale.net
-	[10.192.129.205])
-	by de01smr01.freescale.net (8.13.1/8.13.0) with ESMTP id m5KB9eeO002104
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 20 Jun 2008 06:09:44 -0500 (CDT)
-From: Chen Gong <g.chen@freescale.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 3/3] [MTD] m25p80.c
-Date: Fri, 20 Jun 2008 19:04:42 +0800
-Message-Id: <1213959882-12828-3-git-send-email-g.chen@freescale.com>
-In-Reply-To: <1213959882-12828-2-git-send-email-g.chen@freescale.com>
-References: <1213959882-12828-1-git-send-email-g.chen@freescale.com>
-	<1213959882-12828-2-git-send-email-g.chen@freescale.com>
-Cc: Chen Gong <g.chen@freescale.com>, dwmw2@infradead.org
+From: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH 2/3] atmel_nand: Work around AT32AP7000 ECC errata
+Date: Fri, 20 Jun 2008 09:48:31 +0200
+Message-Id: <1213948112-22348-2-git-send-email-haavard.skinnemoen@atmel.com>
+In-Reply-To: <1213948112-22348-1-git-send-email-haavard.skinnemoen@atmel.com>
+References: <1213948112-22348-1-git-send-email-haavard.skinnemoen@atmel.com>
+Cc: Andrew Victor <andrew@sanpeople.com>,
+	Haavard Skinnemoen <haavard.skinnemoen@atmel.com>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,144 +17,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Chen Gong <g.chen@freescale.com>
----
- drivers/mtd/devices/m25p80.c |   86 +++++++++++++++++++++++-------------------
- 1 files changed, 47 insertions(+), 39 deletions(-)
+The ALE signal isn't correctly wired up to the ECC controller on the
+AP7000, so it starts calculating ECC during the address cycles.
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index aae0d80..3855076 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -457,6 +457,7 @@ struct flash_info {
- 	 * then a two byte device id.
- 	 */
- 	u32		jedec_id;
-+	u16             ext_id;
+Work around this by resetting the ECC controller between the address and
+data cycles.
+
+Signed-off-by: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
+---
+ drivers/mtd/nand/atmel_nand.c |   25 +++++++++++++++++++++++--
+ 1 files changed, 23 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 4814fc9..99aec46 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -33,6 +33,7 @@
+ #include <linux/io.h>
  
- 	/* The size listed here is what works with OPCODE_SE, which isn't
- 	 * necessarily called a "sector" by the vendor.
-@@ -476,57 +477,59 @@ struct flash_info {
- static struct flash_info __devinitdata m25p_data [] = {
+ #include <asm/arch/board.h>
++#include <asm/arch/cpu.h>
  
- 	/* Atmel -- some are (confusingly) marketed as "DataFlash" */
--	{ "at25fs010",  0x1f6601, 32 * 1024, 4, SECT_4K, },
--	{ "at25fs040",  0x1f6604, 64 * 1024, 8, SECT_4K, },
-+	{ "at25fs010",  0x1f6601, 0, 32 * 1024, 4, SECT_4K, },
-+	{ "at25fs040",  0x1f6604, 0, 64 * 1024, 8, SECT_4K, },
+ #ifdef CONFIG_MTD_NAND_ATMEL_ECC_HW
+ #define hard_ecc	1
+@@ -264,6 +265,19 @@ static int atmel_nand_read_page(struct mtd_info *mtd,
+ 	uint8_t *ecc_pos;
+ 	int stat;
  
--	{ "at25df041a", 0x1f4401, 64 * 1024, 8, SECT_4K, },
--	{ "at25df641",  0x1f4800, 64 * 1024, 128, SECT_4K, },
-+	{ "at25df041a", 0x1f4401, 0, 64 * 1024, 8, SECT_4K, },
-+	{ "at25df641",  0x1f4800, 0, 64 * 1024, 128, SECT_4K, },
- 
--	{ "at26f004",   0x1f0400, 64 * 1024, 8, SECT_4K, },
--	{ "at26df081a", 0x1f4501, 64 * 1024, 16, SECT_4K, },
--	{ "at26df161a", 0x1f4601, 64 * 1024, 32, SECT_4K, },
--	{ "at26df321",  0x1f4701, 64 * 1024, 64, SECT_4K, },
-+	{ "at26f004",   0x1f0400, 0, 64 * 1024, 8, SECT_4K, },
-+	{ "at26df081a", 0x1f4501, 0, 64 * 1024, 16, SECT_4K, },
-+	{ "at26df161a", 0x1f4601, 0, 64 * 1024, 32, SECT_4K, },
-+	{ "at26df321",  0x1f4701, 0, 64 * 1024, 64, SECT_4K, },
- 
- 	/* Spansion -- single (large) sector size only, at least
- 	 * for the chips listed here (without boot sectors).
- 	 */
--	{ "s25sl004a", 0x010212, 64 * 1024, 8, },
--	{ "s25sl008a", 0x010213, 64 * 1024, 16, },
--	{ "s25sl016a", 0x010214, 64 * 1024, 32, },
--	{ "s25sl032a", 0x010215, 64 * 1024, 64, },
--	{ "s25sl064a", 0x010216, 64 * 1024, 128, },
-+	{ "s25sl004a", 0x010212, 0, 64 * 1024, 8, },
-+	{ "s25sl008a", 0x010213, 0, 64 * 1024, 16, },
-+	{ "s25sl016a", 0x010214, 0, 64 * 1024, 32, },
-+	{ "s25sl032a", 0x010215, 0, 64 * 1024, 64, },
-+	{ "s25sl064a", 0x010216, 0, 64 * 1024, 128, },
-+        { "s25sl12800", 0x012018, 0x0300, 256 * 1024, 64, },
-+	{ "s25sl12801", 0x012018, 0x0301, 64 * 1024, 256, },
- 
- 	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
--	{ "sst25vf040b", 0xbf258d, 64 * 1024, 8, SECT_4K, },
--	{ "sst25vf080b", 0xbf258e, 64 * 1024, 16, SECT_4K, },
--	{ "sst25vf016b", 0xbf2541, 64 * 1024, 32, SECT_4K, },
--	{ "sst25vf032b", 0xbf254a, 64 * 1024, 64, SECT_4K, },
-+	{ "sst25vf040b", 0xbf258d, 0, 64 * 1024, 8, SECT_4K, },
-+	{ "sst25vf080b", 0xbf258e, 0, 64 * 1024, 16, SECT_4K, },
-+	{ "sst25vf016b", 0xbf2541, 0, 64 * 1024, 32, SECT_4K, },
-+	{ "sst25vf032b", 0xbf254a, 0, 64 * 1024, 64, SECT_4K, },
- 
- 	/* ST Microelectronics -- newer production may have feature updates */
--	{ "m25p05",  0x202010,  32 * 1024, 2, },
--	{ "m25p10",  0x202011,  32 * 1024, 4, },
--	{ "m25p20",  0x202012,  64 * 1024, 4, },
--	{ "m25p40",  0x202013,  64 * 1024, 8, },
--	{ "m25p80",         0,  64 * 1024, 16, },
--	{ "m25p16",  0x202015,  64 * 1024, 32, },
--	{ "m25p32",  0x202016,  64 * 1024, 64, },
--	{ "m25p64",  0x202017,  64 * 1024, 128, },
--	{ "m25p128", 0x202018, 256 * 1024, 64, },
--
--	{ "m45pe80", 0x204014,  64 * 1024, 16, },
--	{ "m45pe16", 0x204015,  64 * 1024, 32, },
--
--	{ "m25pe80", 0x208014,  64 * 1024, 16, },
--	{ "m25pe16", 0x208015,  64 * 1024, 32, SECT_4K, },
-+	{ "m25p05",  0x202010,  0, 32 * 1024, 2, },
-+	{ "m25p10",  0x202011,  0, 32 * 1024, 4, },
-+	{ "m25p20",  0x202012,  0, 64 * 1024, 4, },
-+	{ "m25p40",  0x202013,  0, 64 * 1024, 8, },
-+	{ "m25p80",         0,  0, 64 * 1024, 16, },
-+	{ "m25p16",  0x202015,  0, 64 * 1024, 32, },
-+	{ "m25p32",  0x202016,  0, 64 * 1024, 64, },
-+	{ "m25p64",  0x202017,  0, 64 * 1024, 128, },
-+	{ "m25p128", 0x202018, 0, 256 * 1024, 64, },
++	/*
++	 * Errata: ALE is incorrectly wired up to the ECC controller
++	 * on the AP7000, so it will include the address cycles in the
++	 * ECC calculation.
++	 *
++	 * Workaround: Reset the parity registers before reading the
++	 * actual data.
++	 */
++	if (cpu_is_at32ap7000()) {
++		struct atmel_nand_host *host = chip->priv;
++		ecc_writel(host->ecc, CR, ATMEL_ECC_RST);
++	}
 +
-+	{ "m45pe80", 0x204014,  0, 64 * 1024, 16, },
-+	{ "m45pe16", 0x204015,  0, 64 * 1024, 32, },
-+
-+	{ "m25pe80", 0x208014,  0, 64 * 1024, 16, },
-+	{ "m25pe16", 0x208015,  0, 64 * 1024, 32, SECT_4K, },
+ 	/* read the page */
+ 	chip->read_buf(mtd, p, eccsize);
  
- 	/* Winbond -- w25x "blocks" are 64K, "sectors" are 4KiB */
--	{ "w25x10", 0xef3011, 64 * 1024, 2, SECT_4K, },
--	{ "w25x20", 0xef3012, 64 * 1024, 4, SECT_4K, },
--	{ "w25x40", 0xef3013, 64 * 1024, 8, SECT_4K, },
--	{ "w25x80", 0xef3014, 64 * 1024, 16, SECT_4K, },
--	{ "w25x16", 0xef3015, 64 * 1024, 32, SECT_4K, },
--	{ "w25x32", 0xef3016, 64 * 1024, 64, SECT_4K, },
--	{ "w25x64", 0xef3017, 64 * 1024, 128, SECT_4K, },
-+	{ "w25x10", 0xef3011, 0, 64 * 1024, 2, SECT_4K, },
-+	{ "w25x20", 0xef3012, 0, 64 * 1024, 4, SECT_4K, },
-+	{ "w25x40", 0xef3013, 0, 64 * 1024, 8, SECT_4K, },
-+	{ "w25x80", 0xef3014, 0, 64 * 1024, 16, SECT_4K, },
-+	{ "w25x16", 0xef3015, 0, 64 * 1024, 32, SECT_4K, },
-+	{ "w25x32", 0xef3016, 0, 64 * 1024, 64, SECT_4K, },
-+	{ "w25x64", 0xef3017, 0, 64 * 1024, 128, SECT_4K, },
- };
+@@ -377,9 +391,16 @@ static int atmel_nand_correct(struct mtd_info *mtd, u_char *dat,
+ }
  
- static struct flash_info *__devinit jedec_probe(struct spi_device *spi)
-@@ -535,6 +538,7 @@ static struct flash_info *__devinit jedec_probe(struct spi_device *spi)
- 	u8			code = OPCODE_RDID;
- 	u8			id[3];
- 	u32			jedec;
-+	u16                     ext_jedec;
- 	struct flash_info	*info;
+ /*
+- * Enable HW ECC : unsused
++ * Enable HW ECC : unused on most chips
+  */
+-static void atmel_nand_hwctl(struct mtd_info *mtd, int mode) { ; }
++static void atmel_nand_hwctl(struct mtd_info *mtd, int mode)
++{
++	if (cpu_is_at32ap7000()) {
++		struct nand_chip *nand_chip = mtd->priv;
++		struct atmel_nand_host *host = nand_chip->priv;
++		ecc_writel(host->ecc, CR, ATMEL_ECC_RST);
++	}
++}
  
- 	/* JEDEC also defines an optional "extended device information"
-@@ -553,10 +557,14 @@ static struct flash_info *__devinit jedec_probe(struct spi_device *spi)
- 	jedec = jedec << 8;
- 	jedec |= id[2];
- 
-+	ext_jedec = id[3] << 8 | id[4];
-+
- 	for (tmp = 0, info = m25p_data;
- 			tmp < ARRAY_SIZE(m25p_data);
- 			tmp++, info++) {
- 		if (info->jedec_id == jedec)
-+			if (ext_jedec != 0 && info->ext_id != ext_jedec)
-+				continue;
- 			return info;
- 	}
- 	dev_err(&spi->dev, "unrecognized JEDEC id %06x\n", jedec);
+ #ifdef CONFIG_MTD_PARTITIONS
+ static const char *part_probes[] = { "cmdlinepart", NULL };
 -- 
-1.5.4
+1.5.5.3
