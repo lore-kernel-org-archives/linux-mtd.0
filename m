@@ -1,15 +1,24 @@
-Date: Sat, 21 Jun 2008 13:46:55 +0100 (BST)
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
-Subject: Re: ubifs and losetup
-In-Reply-To: <20080620100715.3950ad73@hskinnemo-gx745.norway.atmel.com>
-Message-ID: <alpine.LFD.1.10.0806211343050.2833@casper.infradead.org>
-References: <6B5648EA2E2C2D42AF2FF7691522AD92417B68@wpr01.wprmedical.local>
-	<20080620100715.3950ad73@hskinnemo-gx745.norway.atmel.com>
+Received: from mms2.broadcom.com ([216.31.210.18])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KA3cn-0002e1-TO
+	for linux-mtd@lists.infradead.org; Sat, 21 Jun 2008 13:59:30 +0000
+Received: from mail-irva-8.broadcom.com (mail-irva-8 [10.11.18.52]) by
+	mail-irva-10.broadcom.com (Postfix) with ESMTP id 7CBDE2B0 for
+	<linux-mtd@lists.infradead.org>; Sat, 21 Jun 2008 06:59:17 -0700 (PDT)
+Received: from NT-SJCA-0752.brcm.ad.broadcom.com (nt-sjca-0752
+	[10.16.192.222]) by mail-sj1-12.sj.broadcom.com (Postfix) with ESMTP id
+	097D220501 for <linux-mtd@lists.infradead.org>; Sat, 21 Jun 2008
+	06:59:16 -0700 (PDT)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Cc: Eirik Aanonsen <eaa@wprmedical.com>, linux-mtd@lists.infradead.org,
-	kernel@avr32linux.org
+Subject: Problem on recognise the CFI flash chip
+Date: Sat, 21 Jun 2008 06:59:14 -0700
+Message-ID: <E06E3B7BBC07864CADE892DAF1EB0FBD08D9A134@NT-SJCA-0752.brcm.ad.broadcom.com>
+From: "Divyanshu Verma" <dverma@broadcom.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+ charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,14 +28,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 20 Jun 2008, Haavard Skinnemoen wrote:
->> ~ # losetup -o 4096 /dev/loop0 /media/usb
->> losetup: /dev/loop0: Invalid argument
->
-> Looks like UBIFS doesn't support loopback devices. Is that right?
-
-Right. Just added this FAQ entry:
-http://www.linux-mtd.infradead.org/faq/ubifs.html#L_loop_mount
-
---
-Artem
+Hi,
+I am trying to detect NOR Flash (MTS29WS512 by Micron) on our SOC.  It
+supports CFI and hence I am trying to use  "do_map_probe()", to detect
+it. But it is returning NULL  and then comes out without detecting it.
+ My NOR location starts at 0x30000000 and not at 0x0000000, so I get the
+message "CFI: Found no BCM5892_CS1_NAND device at location zero", during
+following code execution.
+=20
+ if (!genprobe_new_chip(map, cp, &cfi)) {
+  /* The probe didn't like it */
+  printk(KERN_DEBUG "%s: Found no %s device at location zero\n",
+cp->name, map->name);
+return NULL;
+=20
+=20
+I kindly request someone to answer this and provide right pointer so
+that  I can proceed further. Kind of stuck from past three days:-(.
+=20
+=20
+thanks and regards,
+Divyanshu
