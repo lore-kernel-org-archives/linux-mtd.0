@@ -1,15 +1,15 @@
-From: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 3/3] MTD: atmel_nand can be modular
-Date: Fri, 20 Jun 2008 09:48:32 +0200
-Message-Id: <1213948112-22348-3-git-send-email-haavard.skinnemoen@atmel.com>
-In-Reply-To: <1213948112-22348-2-git-send-email-haavard.skinnemoen@atmel.com>
-References: <1213948112-22348-1-git-send-email-haavard.skinnemoen@atmel.com>
-	<1213948112-22348-2-git-send-email-haavard.skinnemoen@atmel.com>
-Cc: Andrew Victor <andrew@sanpeople.com>,
-	David Brownell <dbrownell@users.sourceforge.net>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
+Received: from web57604.mail.re1.yahoo.com ([66.196.100.86])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KAibK-0006PG-V3
+	for linux-mtd@lists.infradead.org; Mon, 23 Jun 2008 09:44:43 +0000
+Date: Mon, 23 Jun 2008 02:37:59 -0700 (PDT)
+From: sanni sannusi <barrsannisannusi8@yahoo.com>
+Subject: URGENT ATTENTION !!!!
+To: undisclosed recipients: ;
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Message-ID: <75721.40211.qm@web57604.mail.re1.yahoo.com>
+Reply-To: barrsannisannusi8@yahoo.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,29 +19,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: David Brownell <dbrownell@users.sourceforge.net>
-
-There's no reason to prevent the Atmel NAND driver from
-building as a module.
-
-Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
-Signed-off-by: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
----
- drivers/mtd/nand/Kconfig |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index d8c0d86..71406e5 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -272,7 +272,7 @@ config MTD_NAND_CS553X
- 	  If you say "m", the module will be called "cs553x_nand.ko".
+Dear: Friend,
  
- config MTD_NAND_ATMEL
--	bool "Support for NAND Flash / SmartMedia on AT91 and AVR32"
-+	tristate "Support for NAND Flash / SmartMedia on AT91 and AVR32"
- 	depends on ARCH_AT91 || AVR32
- 	help
- 	  Enables support for NAND Flash / Smart Media Card interface
--- 
-1.5.5.3
+   This message might meet you in utmost surprise, First of all I want you to Know that this is not a scam mail because based on what is going on all over the internet world, people find it very difficult to believe things like this any more.
+
+   If you can guarantee me from your own side, your trust,honestly I will be able to work with you.I will appreciate if you can come down your self and see things for your self before we proceed and this will make things clearer for you.But Why I am sending you this letter, I think if that situation has a place in  internet,may be one out of 1000 has a real fund for transaction.
+ 
+   I am a banker by profession from Nigeria in West Africa and currently holding the post of operation manager in our bank. I have the opportunity of transferring the leftover funds($7.5 million dollars) of one of my bank clients who died along with his entire family on 31 July 2000 in a plane crash.
+ 
+  In accordance with the West African Trust and Federal Laws, at the expiration of 8 (eight) years, his investments with our Financial Trust Shall revert to ownership of the government of the country of the said Investments if nobody apply as the next of kin to claim the investments.
+ 
+  If this proposal is acceptable to you, kindly indicate your full Interest by sending to me as below to my confidential email address:  j_william505@yahoo.com
+ 
+  Hence, I am inviting you for a business deal where this money can be shared between us in the ratio of 70/30 if you agree to my business proposal.Further details of the transfer will be forwarded to you as soon as I receive your return mail immediately.
+ 
+With friendly greetings,
+Mr.Sanni Sannusi.
+ 
+ Nb: The information contained in this e-mail may be confidential and is intended solely for the use of the named addressee Access, copying,use of the e-mail or any information contained therein by any other person is not authorized.If you are not the intended recipient please notify us immediately by returning the e-mail to the originator.
+
+
+      
