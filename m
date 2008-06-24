@@ -1,14 +1,15 @@
-Received: from mail.gmx.net ([213.165.64.20])
+Received: from [202.202.0.36] (helo=cqu.edu.cn)
 	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KB6XQ-0004Y0-6l
-	for linux-mtd@lists.infradead.org; Tue, 24 Jun 2008 11:18:16 +0000
-Content-Type: text/plain; charset="us-ascii"
-Date: Tue, 24 Jun 2008 13:18:12 +0200
-From: "Rossen Georgiev" <rz70@gmx.at>
-Message-ID: <20080624111812.189860@gmx.net>
-MIME-Version: 1.0
-Subject: How to use REAL "Anonymous Memory"? 
+	id 1KB89Z-0006su-HS
+	for linux-mtd@lists.infradead.org; Tue, 24 Jun 2008 13:01:46 +0000
+Message-ID: <414312276.02836@cqu.edu.cn>
+Subject: [MTD][NAND] nandsim: modify report wear information function
+From: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
 To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Date: Tue, 24 Jun 2008 21:01:06 +0800
+Message-Id: <1214312466.3201.6.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -19,117 +20,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello!
+a smart wear information report function, which can print wear leveling
+information more obviously and vividly.
 
-I am trying to use an "Anonymous Memory" with PCMCIA - kernel
-version 2.6.23.16 and pcmciautils-014.
-
-The HW configuration is as follow:
-
-Yenta: CardBus bridge found at 0000:00:0a.0 [3412:7856]
-Yenta: ISA IRQ mask 0x02a0, PCI irq 12
-Socket status: 30000059
-Yenta: CardBus bridge found at 0000:00:0a.1 [3412:7856]
-Yenta: ISA IRQ mask 0x02a0, PCI irq 15
-Socket status: 30000059
-
-
-On Socket 0 a CF is pluged in.
-On Socket 1 a "REAL" "Anonymous Memory is pluged in.
-There is NO CIS for the anonymous memory.
-
-When the pcmcia-socket-startup is done for Socket 0,
-the CF is properly found and mapped to ide-cs driver.
-
-The kernel is started with following parameters:
-
- pcmcia_core.pc_debug=5 pcmcia.pc_debug=5 yenta_socket.pc_debug=5
-
-
-When the pcmcia-socket-startup is done for Socket 1,
-the kernel report following problem:
-
-
-Mar 10 12:24:37 platf106 kernel: cs: IO port probe 0xa00-0xaff: clean.
-Mar 10 12:24:39 platf106 kernel: cs: IO port probe 0x1000-0x17ff: clean.
-Mar 10 12:24:46 platf106 kernel: ds: re-scanning socket 1
-Mar 10 12:24:46 platf106 kernel: cs: memory probe 0xa0000000-0xa0ffffff:<7>cs: pcmcia_socket1: pcmcia_read_cis_mem(1, 0x0, 2)
-Mar 10 12:24:46 platf106 kernel: cs: pcmcia_socket1:   0xff 0xff 0x00 0xe0 ...
-Mar 10 12:24:46 platf106 kernel: cs: pcmcia_socket1: pcmcia_read_cis_mem(0, 0x0, 5)
-Mar 10 12:24:46 platf106 kernel: cs: pcmcia_socket1:   0xff 0xff 0x33 0x33 ...
-Mar 10 12:24:46 platf106 kernel: cs: pcmcia_socket1: pcmcia_read_cis_mem(1, 0x0, 2)
-Mar 10 12:24:46 platf106 kernel: cs: pcmcia_socket1:   0xff 0xff 0x00 0xc0 ...
-Mar 10 12:24:46 platf106 kernel: cs: pcmcia_socket1: pcmcia_read_cis_mem(0, 0x0, 5)
-Mar 10 12:24:46 platf106 kernel: cs: pcmcia_socket1:   0xff 0xff 0x33 0x33 ...
-Mar 10 12:24:46 platf106 kernel: cs: pcmcia_socket1: pcmcia_read_cis_mem(1, 0x0, 2)
-Mar 10 12:24:46 platf106 kernel: cs: pcmcia_socket1:   0xff 0xff 0x00 0x00 ...
-Mar 10 12:24:46 platf106 kernel: cs: pcmcia_socket1: pcmcia_read_cis_mem(0, 0x0, 5)
-Mar 10 12:24:46 platf106 kernel: cs: pcmcia_socket1:   0xff 0xff 0x33 0x33 ...
-Mar 10 12:24:46 platf106 kernel: cs: pcmcia_socket1: pcmcia_read_cis_mem(1, 0x0, 2)
-Mar 10 12:24:46 platf106 kernel: cs: pcmcia_socket1:   0xff 0xff 0x00 0xe0 ...
-Mar 10 12:24:46 platf106 kernel: cs: pcmcia_socket1: pcmcia_read_cis_mem(0, 0x0, 5)
-....
-....
-Mar 10 12:24:46 platf106 kernel: cs: pcmcia_socket1:   0xff 0xff 0x33 0x33 ...
-Mar 10 12:24:46 platf106 kernel: cs: pcmcia_socket1: pcmcia_read_cis_mem(1, 0x0, 2)
-Mar 10 12:24:46 platf106 kernel: cs: pcmcia_socket1:   0xff 0xff 0x00 0x00 ...
-Mar 10 12:24:46 platf106 kernel: cs: pcmcia_socket1: pcmcia_read_cis_mem(0, 0x0, 5)
-Mar 10 12:24:46 platf106 kernel: cs: pcmcia_socket1:   0xff 0xff 0x33 0x33 ...
-Mar 10 12:24:46 platf106 kernel:  excluding 0xa0000000-0xa01fffff
-Mar 10 12:24:46 platf106 kernel: cs: pcmcia_socket1: pcmcia_read_cis_mem(1, 0x0, 2)
-Mar 10 12:24:46 platf106 kernel: cs: pcmcia_socket1:   0xff 0xff 0xc5 0x80 ...
-Mar 10 12:24:46 platf106 kernel: cs: pcmcia_socket1: pcmcia_read_cis_mem(0, 0x0, 5)
-Mar 10 12:24:46 platf106 kernel: cs: pcmcia_socket1:   0xff 0xff 0x33 0x33 ...
-Mar 10 12:24:46 platf106 kernel: ds: invalid CIS or invalid resources
-                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   
-
-Having a look into drivers/pcmcia/
-
-static int pcmcia_card_add(struct pcmcia_socket *s)
-{
-	......
-
-	ret = pccard_validate_cis(s, BIND_FN_ALL, &cisinfo);
-	if (ret || !cisinfo.Chains) {
-		ds_dbg(0, "invalid CIS or invalid resources\n");
-		return -ENODEV;
-	}
-        .......
-}
-
-and from drivers/pcmcia/cistpl.c
-
-/*======================================================================
-
-    This tries to determine if a card has a sensible CIS.  It returns
-    the number of tuples in the CIS, or 0 if the CIS looks bad.  The
-    checks include making sure several critical tuples are present and
-    valid; seeing if the total number of tuples is reasonable; and
-    looking for tuples that use reserved codes.
-    
-======================================================================*/
-
-int pccard_validate_cis(struct pcmcia_socket *s, unsigned int function, cisinfo_t *info)
-
-
-
-So, acordind to the code when a PCMCIA card does have bad CIS or NO CIS at all,
-it will be not added and mapped to corresponding driver.
-
-So my question is if there is a way to handle an Anonymous Memory 
-with the the 2.6.x kernels and pcmciautils? I did search in pcmcia mailing list, but did not find anything about. Does somebody use such "Anonymous Memory"?
-
-As experiment I did comment out the "return -ENODEV" in ds.c.
-( which is not very correct from programming style ) and
-the nulled cisinfo_t cisinfo reports "Anonymous memory" CIS.
-Then the "Anonymous memory" was mapped successfully to pcmciamtd and map_mem
-drivers. But this is not a solution coming from main stream kernel.
-
-
-Thank you for your time!
-Rossen
-
-
--- 
-GMX startet ShortView.de. Hier findest Du Leute mit Deinen Interessen!
-Jetzt dabei sein: http://www.shortview.de/?mc=sv_ext_mf@gmx
+--- a/nandsim.c	2008-06-14 08:47:29.000000000 +0800
++++ b/nandsim.c	2008-06-14 08:47:29.000000000 +0800
+@@ -101,6 +101,7 @@
+ static char *gravepages = NULL;
+ static unsigned int rptwear = 0;
+ static unsigned int overridesize = 0;
++static unsigned int pile_num = 10;
+ 
+ module_param(first_id_byte,  uint, 0400);
+ module_param(second_id_byte, uint, 0400);
+@@ -123,6 +124,7 @@
+ module_param(gravepages,     charp, 0400);
+ module_param(rptwear,        uint, 0400);
+ module_param(overridesize,   uint, 0400);
++module_param(pile_num,		uint,0400);
+ 
+ MODULE_PARM_DESC(first_id_byte,  "The first byte returned by NAND Flash
+'read ID' command (manufacturer ID)");
+ MODULE_PARM_DESC(second_id_byte, "The second byte returned by NAND
+Flash 'read ID' command (chip ID)");
+@@ -154,6 +156,7 @@
+ MODULE_PARM_DESC(overridesize,   "Specifies the NAND Flash size
+overriding the ID bytes. "
+ 				 "The size is specified in erase blocks and as the exponent of a
+power of two"
+ 				 " e.g. 5 means a size of 32 erase blocks");
++MODULE_PARM_DESC(pile_num,	"Length of the array deciles[] and
+decile_max[], 10 is default");
+ 
+ /* The largest possible page size */
+ #define NS_LARGEST_PAGE_SIZE	2048
+@@ -842,7 +845,9 @@
+ static void update_wear(unsigned int erase_block_no)
+ {
+ 	unsigned long wmin = -1, wmax = 0, avg;
+-	unsigned long deciles[10], decile_max[10], tot = 0;
++	unsigned long *deciles = NULL, *decile_max = NULL;
++	unsigned long tot = 0, wear = 0;
++	unsigned long span;
+ 	unsigned int i;
+ 
+ 	if (!erase_block_wear)
+@@ -857,25 +862,41 @@
+ 	if (rptwear_cnt < rptwear)
+ 		return;
+ 	rptwear_cnt = 0;
++	
++	deciles = (unsigned long *)kzalloc(sizeof(unsigned long)*pile_num,
+GFP_KERNEL);
++	if (!deciles) {
++		NS_ERR("Too many items for deciles\n");
++		return ;
++	}	
++	decile_max = (unsigned long *)kmalloc(sizeof(unsigned long)*pile_num,
+GFP_KERNEL);
++	if (!decile_max) {
++		NS_ERR("Too many items for decile_max\n");
++		kfree(deciles);
++		return;
++	}		
++	
+ 	/* Calc wear stats */
+ 	for (i = 0; i < wear_eb_count; ++i) {
+-		unsigned long wear = erase_block_wear[i];
++		wear = erase_block_wear[i];
+ 		if (wear < wmin)
+ 			wmin = wear;
+ 		if (wear > wmax)
+ 			wmax = wear;
+ 		tot += wear;
+ 	}
+-	for (i = 0; i < 9; ++i) {
+-		deciles[i] = 0;
+-		decile_max[i] = (wmax * (i + 1) + 5) / 10;
+-	}
+-	deciles[9] = 0;
+-	decile_max[9] = wmax;
++	
++	span = wmax - wmin;
++	
++	for (i = 0; i < pile_num - 1; ++i) {
++		decile_max[i] = (span * (i + 1) + (pile_num >> 1)) / pile_num + wmin;
++	}
++	
++	decile_max[pile_num - 1] = wmax;
++	
+ 	for (i = 0; i < wear_eb_count; ++i) {
+ 		int d;
+ 		unsigned long wear = erase_block_wear[i];
+-		for (d = 0; d < 10; ++d)
++		for (d = 0; d < pile_num; ++d)
+ 			if (wear <= decile_max[d]) {
+ 				deciles[d] += 1;
+ 				break;
+@@ -883,22 +904,23 @@
+ 	}
+ 	avg = tot / wear_eb_count;
+ 	/* Output wear report */
+-	NS_INFO("*** Wear Report ***\n");
++	NS_INFO("****** Wear Report ******\n");
+ 	NS_INFO("Total numbers of erases:  %lu\n", tot);
+ 	NS_INFO("Number of erase blocks:   %u\n", wear_eb_count);
+ 	NS_INFO("Average number of erases: %lu\n", avg);
+ 	NS_INFO("Maximum number of erases: %lu\n", wmax);
+ 	NS_INFO("Minimum number of erases: %lu\n", wmin);
+-	for (i = 0; i < 10; ++i) {
+-		unsigned long from = (i ? decile_max[i - 1] + 1 : 0);
++	NS_INFO("Number of ebs with erase counts:\n");
++	for (i = 0; i < pile_num; ++i) {
++		unsigned long from = (i ? decile_max[i - 1] + 1 : wmin);
+ 		if (from > decile_max[i])
+ 			continue;
+-		NS_INFO("Number of ebs with erase counts from %lu to %lu : %lu\n",
+-			from,
+-			decile_max[i],
+-			deciles[i]);
++		NS_INFO("from %lu to %lu : %lu\n",from,decile_max[i],deciles[i]);
+ 	}
+ 	NS_INFO("*** End of Wear Report ***\n");
++	
++	kfree(decile_max);
++	kfree(deciles);
+ }
+ 
+ /*
