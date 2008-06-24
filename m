@@ -1,8 +1,8 @@
-Received: from bay0-omc3-s40.bay0.hotmail.com ([65.54.246.240])
+Received: from bay0-omc3-s3.bay0.hotmail.com ([65.54.246.203])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KAwHx-0005pz-E1
-	for linux-mtd@lists.infradead.org; Tue, 24 Jun 2008 00:21:37 +0000
-Message-ID: <BAY111-DS45E28300966699E920AB691A10@phx.gbl>
+	id 1KAwLS-0006KP-Gr
+	for linux-mtd@lists.infradead.org; Tue, 24 Jun 2008 00:25:15 +0000
+Message-ID: <BAY111-DS71863DAAE2925A1321FC891A10@phx.gbl>
 From: <xiangguo_li@hotmail.com>
 To: <linux-mtd@lists.infradead.org>
 Subject: problem in probing flash for MTD
