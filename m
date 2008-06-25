@@ -1,20 +1,12 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KBVHP-0006Ti-Ld
-	for linux-mtd@lists.infradead.org; Wed, 25 Jun 2008 13:43:24 +0000
-Subject: Re: [PATCH] [MTD-UTILS] ubiformat: reverse question about vid
-	offset change
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Bernard Blackham <bernard@largestprime.net>
-In-Reply-To: <20080625131723.GA24006@mersenne.largestprime.net>
-References: <20080625131723.GA24006@mersenne.largestprime.net>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 25 Jun 2008 16:42:32 +0300
-Message-Id: <1214401352.6573.24.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Message-ID: <39776.83.229.48.220.1214388344.squirrel@intnet.bj>
+Date: Wed, 25 Jun 2008 11:05:44 +0100 (WAT)
+Subject: I Need Your Urgent Response
+From: "Mr. Peter Sands" <info@intnet.bj>
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+To: undisclosed-recipients: ;
+Reply-To: personalpetersands@yahoo.com.vn
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,20 +16,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-06-25 at 21:17 +0800, Bernard Blackham wrote:
-> Users can pass the -O option to ubiformat to override the VID header
-> offset on the command-line. If for some reason, the new offset does
-> not match what is on flash, ubiformat currently prompts the user if
-> they'd rather use the *old* offsets.  This means that calling
-> ubiformat with --yes will not do what was requested on the
-> command-line.
->=20
-> This patch reverses the question so --yes is actually useful for
-> running in batch-mode.
 
-Pushed, thank you!
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+
+Standard Chartered Bank PLC,
+1 Aldermanbury Square
+London EC2V 7SB
+private Line:+447024045595
+Private Email: personalpetersands@yahoo.com.vn
+Greetings...
+
+I got your contact email address through a personal search and decided  to
+let you know about this packaged financial transaction that will benefit
+us. I am Mr Peter Sands, the Group Executive Director of the Standard
+Chartered Bank PLC Central London Branch
+On the course of the 2007 end of the year's report, I discovered that my
+branch in which I am the Chief Auditor had Thirty five Million Five
+Hundred Thousand G B  Pounds (35,500.000.00 GBP) of which my head Office
+is not aware of and will  never be aware of, I have also PLACED this fund
+on ESCROW CALL ACCOUNT without a beneficiary.
+
+As the As the Chief Auditor in the bank, I cannot be directly connected to
+this  money thus I am compelled to request for your assistance to receive
+this money into  your bank account. I will compensate you with 40% as
+gratification while 60%  will be for me.  Please If you accept my offer,
+kindly contact me on my private  cell phone number:+447024045595 or my
+private email contact personalpetersands@yahoo.com.vn  for more details.
+In course of this transaction, there are practically no risk involve
+because It will be a bank-to-bank transfer. please this  is very
+confidential transaction please.
+
+I will appreciate your timely response.
+With Regards,
+Mr.Peter Sands.
+
+NOTE: Please if however, you are not disposed to assist, kindly delete
+this email in view of the confidentiality and let me know as soon as
+possible to enable me look for Capable one.
