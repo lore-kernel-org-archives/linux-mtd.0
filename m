@@ -1,5 +1,5 @@
-Message-ID: <39776.83.229.48.220.1214388344.squirrel@intnet.bj>
-Date: Wed, 25 Jun 2008 11:05:44 +0100 (WAT)
+Message-ID: <39750.83.229.48.220.1214388342.squirrel@intnet.bj>
+Date: Wed, 25 Jun 2008 11:05:42 +0100 (WAT)
 Subject: I Need Your Urgent Response
 From: "Mr. Peter Sands" <info@intnet.bj>
 MIME-Version: 1.0
