@@ -1,12 +1,19 @@
-Date: Tue, 24 Jun 2008 22:20:53 +0900
-From: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
-To: dwmw2@infradead.org
-Subject: [PATCH] au1550nd: remove unused variable
-Message-Id: <20080624222053.105a7b56.yoichi_yuasa@tripeaks.co.jp>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KBTE6-00055V-G9
+	for linux-mtd@lists.infradead.org; Wed, 25 Jun 2008 11:31:50 +0000
+Subject: Re: [MTD][NAND] nandsim: modify report wear information function
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
+In-Reply-To: <1214312466.3201.6.camel@localhost.localdomain>
+References: <1214312466.3201.6.camel@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 25 Jun 2008 14:30:52 +0300
+Message-Id: <1214393452.6573.22.camel@sauron>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, yoichi_yuasa@tripeaks.co.jp
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,19 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Remove unused variable from au1550 NAND driver.
+Hi,
 
-Signed-off-by: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
+On Tue, 2008-06-24 at 21:01 +0800, xiaochuan-xu wrote:
+> a smart wear information report function, which can print wear leveling
+> information more obviously and vividly.
 
-diff -pruN -X mips/Documentation/dontdiff mips-orig/drivers/mtd/nand/au1550nd.c mips/drivers/mtd/nand/au1550nd.c
---- mips-orig/drivers/mtd/nand/au1550nd.c	2007-09-05 11:22:36.347628750 +0900
-+++ mips/drivers/mtd/nand/au1550nd.c	2007-09-05 15:18:46.419306500 +0900
-@@ -604,8 +604,6 @@ module_init(au1xxx_nand_init);
-  */
- static void __exit au1550_cleanup(void)
- {
--	struct nand_chip *this = (struct nand_chip *)&au1550_mtd[1];
--
- 	/* Release resources, unregister device */
- 	nand_release(au1550_mtd);
- 
+Can you just change constant 9 to something larger? What is the more
+appropriate value for you?
+
+Or if you really really want it to be configurable, I think you may
+re-use rptwear argument instead. It is integer, so you may assign the
+desirable number to it, instead of introducing one more argument.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
