@@ -1,12 +1,18 @@
-Message-ID: <39750.83.229.48.220.1214388342.squirrel@intnet.bj>
-Date: Wed, 25 Jun 2008 11:05:42 +0100 (WAT)
-Subject: I Need Your Urgent Response
-From: "Mr. Peter Sands" <info@intnet.bj>
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-To: undisclosed-recipients: ;
-Reply-To: personalpetersands@yahoo.com.vn
+Received: from [202.75.200.241] (helo=mailgw.cms.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KBpq1-0001zh-Dc
+	for linux-mtd@lists.infradead.org; Thu, 26 Jun 2008 11:40:30 +0000
+Received: from [172.19.23.21] ([172.19.23.21])
+	by mailgw.cms.com (8.12.11/8.12.11) with ESMTP id m5QBbgTt004756
+	for <linux-mtd@lists.infradead.org>; Thu, 26 Jun 2008 17:07:42 +0530
+Subject: CRC failed error,when mounting JFFS2
+From: Aneesh <aneesh_g@cms.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Date: Thu, 26 Jun 2008 17:01:12 +0530
+Message-Id: <1214479872.8603.14.camel@Ani>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,40 +22,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi all,
+        When i am trying to mount jffs2  i am getting an error like
+follows
+
+
+ JFFS2 error: (268) jffs2_do_read_inode_internal: CRC failed for
+read_inode of inode 2 at physical location 0x0
+Returned error for crccheck of ino #2. Expect badness...
+JFFS2 error: (268) jffs2_do_read_inode_internal: CRC failed for
+read_inode of inode 3 at physical location 0x790104
+Returned error for crccheck of ino #3. Expect badness...
 
 
 
-Standard Chartered Bank PLC,
-1 Aldermanbury Square
-London EC2V 7SB
-private Line:+447024045595
-Private Email: personalpetersands@yahoo.com.vn
-Greetings...
+ i have two partitions .I am using mtd1 partition  for data storage
+(mtd0 is not using)
+steps i did
+1) erased the flash  
+    ##### ./flash_eraseall -j /dev/mtd1
+2) mounted jffs2 
+   ##### mount -t jffs2 /dev/mtdblock1 /database/
+then i written to  this parallel flash. i created a text file and a
+folder
+3)unmounted 
+    umount /database
+4)again i tried to mount then  above error is coming
 
-I got your contact email address through a personal search and decided  to
-let you know about this packaged financial transaction that will benefit
-us. I am Mr Peter Sands, the Group Executive Director of the Standard
-Chartered Bank PLC Central London Branch
-On the course of the 2007 end of the year's report, I discovered that my
-branch in which I am the Chief Auditor had Thirty five Million Five
-Hundred Thousand G B  Pounds (35,500.000.00 GBP) of which my head Office
-is not aware of and will  never be aware of, I have also PLACED this fund
-on ESCROW CALL ACCOUNT without a beneficiary.
+My parallel flash is  AT49BV642D. I am using 2.6.21 kernel.
 
-As the As the Chief Auditor in the bank, I cannot be directly connected to
-this  money thus I am compelled to request for your assistance to receive
-this money into  your bank account. I will compensate you with 40% as
-gratification while 60%  will be for me.  Please If you accept my offer,
-kindly contact me on my private  cell phone number:+447024045595 or my
-private email contact personalpetersands@yahoo.com.vn  for more details.
-In course of this transaction, there are practically no risk involve
-because It will be a bank-to-bank transfer. please this  is very
-confidential transaction please.
+can anybody give a suggestion?
 
-I will appreciate your timely response.
-With Regards,
-Mr.Peter Sands.
-
-NOTE: Please if however, you are not disposed to assist, kindly delete
-this email in view of the confidentiality and let me know as soon as
-possible to enable me look for Capable one.
+Regards 
+Aneesh
