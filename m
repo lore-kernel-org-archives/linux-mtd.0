@@ -1,16 +1,21 @@
-Date: Thu, 26 Jun 2008 21:55:25 +0200
-From: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
-To: "Vitja Makarov" <vitja.makarov@gmail.com>
-Subject: Re: [PATCH] mtd_dataflash use command allocated on stack
-Message-ID: <20080626215525.177e1694@siona.local>
-In-Reply-To: <1925ef8a0804222100y2b0ff8d6rd640ad723d0517bc@mail.gmail.com>
-References: <1207285360.10621.8.camel@vitja-laptop>
-	<1208895638.9212.673.camel@pmac.infradead.org>
-	<1925ef8a0804222100y2b0ff8d6rd640ad723d0517bc@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KC0Xo-0006Op-GJ
+	for linux-mtd@lists.infradead.org; Thu, 26 Jun 2008 23:06:25 +0000
+Date: Fri, 27 Jun 2008 03:06:21 +0400
+From: Anton Vorontsov <avorontsov@ru.mvista.com>
+To: Scott Wood <scottwood@freescale.com>
+Subject: Re: [PATCH] MTD: NAND: fsl_elbc_nand: fix OOB workability for
+	large page NAND chips
+Message-ID: <20080626230621.GA22450@polina.dev.rtsoft.ru>
+References: <20080626184156.GA2356@polina.dev.rtsoft.ru>
+	<4863E721.60906@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf8
+Content-Disposition: inline
+In-Reply-To: <4863E721.60906@freescale.com>
 Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Reply-To: avorontsov@ru.mvista.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,26 +25,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sorry about the late response...I'm currently getting up to speed with
-various mailing lists.
+On Thu, Jun 26, 2008 at 01:59:45PM -0500, Scott Wood wrote:
+> Anton Vorontsov wrote:
+>> For large page chips, nand_bbt is looking into OOB area, and checking
+>> for "0xff 0xff" pattern at OOB offset 0. That is, two bytes should be
+>> reserved for bbt means.
+>
+> Interesting... both the 8313 manual and the manual for a random large  
+> page NAND chip say that the bad block indicator is one byte.
 
-On Wed, 23 Apr 2008 08:00:34 +0400
-"Vitja Makarov" <vitja.makarov@gmail.com> wrote:
+Ok, great. If I understood David correctly, second byte is used (by some
+chips?) for redundancy, thus should not be a big problem if we'll ignore
+it. So, would you ack this part? Then I'll resend it with some typos
+fixed. ;-)
 
-> If you are asking about could spi DMA from stack, I think so, as
-> spi_sync() is called before ret, but there still are cache issues,
-> dataflash or better spi driver should call invalidate/flush for the
-> given address if needed, I moved it to spi_bfin code, and that seems
-> to work for me wo modifyng original dataflash driver.
+> BTW, I was just looking at NAND boot on this chip, and it seems that it  
+> expects ECCM=1 for large page devices, so we should make that the  
+> default (preferably at the same time as we fix this problem, so that we  
+> don't break compatibility with a working version).
 
-NO! DMA from stack is NOT safe!
+Ugh. I think driver should support both. If we'll change (force) this in
+Linux, we'll break older u-boots (especially FSL U-Boots with NAND
+support enabled). I believe that simply changing ECCM to 1 in the newer
+community u-boots would be less pain for everybody, no?
 
-The problem isn't missing cache flushing -- any driver that uses DMA
-must do that anyway -- but that the flushed lines get sucked right back
-in when the function returns.
-
-Also note that DMA from stack may work _sometimes_, but you never know
-when the buffer happens to share a cache line with some return
-address...
-
-Haavard
+-- 
+Anton Vorontsov
+email: cbouatmailru@gmail.com
+irc://irc.freenode.net/bd2
