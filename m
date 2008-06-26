@@ -1,23 +1,17 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KBvCi-0004ka-6X
-	for linux-mtd@lists.infradead.org; Thu, 26 Jun 2008 17:24:16 +0000
-MIME-version: 1.0
-Content-transfer-encoding: 7BIT
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Received: from xanadu.home ([66.131.194.97]) by VL-MO-MR005.ip.videotron.ca
-	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
-	32bit))
-	with ESMTP id <0K32004PTYZSKQ80@VL-MO-MR005.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Thu, 26 Jun 2008 13:23:53 -0400 (EDT)
-Date: Thu, 26 Jun 2008 13:24:14 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] [MTD] orion_nand: add chip_delay parameter
-In-reply-to: <alpine.LFD.1.10.0806230952530.2979@xanadu.home>
-Message-id: <alpine.LFD.1.10.0806261319340.2979@xanadu.home>
-References: <alpine.LFD.1.10.0806230952530.2979@xanadu.home>
-Cc: David Woodhouse <dwmw2@infradead.org>
+	id 1KBwPu-0002G3-2F
+	for linux-mtd@lists.infradead.org; Thu, 26 Jun 2008 18:41:58 +0000
+Date: Thu, 26 Jun 2008 22:41:56 +0400
+From: Anton Vorontsov <avorontsov@ru.mvista.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] MTD: NAND: fsl_elbc_nand: fix OOB workability for large
+	page NAND chips
+Message-ID: <20080626184156.GA2356@polina.dev.rtsoft.ru>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf8
+Content-Disposition: inline
+Cc: Scott Wood <scottwood@freescale.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,51 +21,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 23 Jun 2008, Nicolas Pitre wrote:
+For large page chips, nand_bbt is looking into OOB area, and checking
+for "0xff 0xff" pattern at OOB offset 0. That is, two bytes should be
+reserved for bbt means.
 
-> From: Saeed Bishara <saeed@marvell.com>
-> 
-> Some SoC's need a different chip_delay value.
-> 
-> Signed-off-by: Saeed Bishara <saeed@marvell.com>
-> Signed-off-by: Lennert Buytenhek <buytenh@marvell.com>
-> Signed-off-by: Nicolas Pitre <nico@marvell.com>
+But ELBC driver is specifying ecclayout so that oobfree area starts at
+offset 1, so only one byte left for the bbt purposes.
 
-I posted this patch on Monday for inclusion in 2.6.27.  However we have 
-additional patches meant to be pushed through the ARM tree that depend 
-on this one.  So to simplify dependency issues, I would like for this 
-patch to be acked and then we'll simply push it along with the others 
-through the ARM path.
+This causes problems with any OOB users, namely JFFS2: after first mount
+JFFS2 will fill all OOBs with "erased marker", so OOBs will contain:
 
-Any objections??
+  OOB Data: ff 19 85 20 03 00 ff ff ff 00 00 08 ff ff ff ff
+  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
 
-> diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
-> index 59e05a1..ee2ac39 100644
-> --- a/drivers/mtd/nand/orion_nand.c
-> +++ b/drivers/mtd/nand/orion_nand.c
-> @@ -85,6 +85,9 @@ static int __init orion_nand_probe(struct platform_device *pdev)
->  	nc->cmd_ctrl = orion_nand_cmd_ctrl;
->  	nc->ecc.mode = NAND_ECC_SOFT;
->  
-> +	if (board->chip_delay)
-> +		nc->chip_delay = board->chip_delay;
-> +
->  	if (board->width == 16)
->  		nc->options |= NAND_BUSWIDTH_16;
->  
-> diff --git a/include/asm-arm/plat-orion/orion_nand.h b/include/asm-arm/plat-orion/orion_nand.h
-> index ffd3852..ad4ce94 100644
-> --- a/include/asm-arm/plat-orion/orion_nand.h
-> +++ b/include/asm-arm/plat-orion/orion_nand.h
-> @@ -18,6 +18,7 @@ struct orion_nand_data {
->  	u8 ale;		/* address line number connected to ALE */
->  	u8 cle;		/* address line number connected to CLE */
->  	u8 width;	/* buswidth */
-> +	u8 chip_delay;
->  };
->  
->  
-> 
+And on the next boot, NAND core will rescan for bad blocks, then will
+see "0xff 0x19" pattern, and will mark all blocks as bad ones.
 
+To fix the issue we should implement our own bad block pattern: just one
+byte at OOB start.
 
-Nicolas
+Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
+---
+
+The patch that fixes oobfree will follow, but you have to choice which
+you'll want to apply (if any), not both.
+
+ drivers/mtd/nand/fsl_elbc_nand.c |   15 +++++++++++++++
+ 1 files changed, 15 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+index 1b06d29..69609cc 100644
+--- a/drivers/mtd/nand/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -116,6 +116,20 @@ static struct nand_ecclayout fsl_elbc_oob_lp_eccm1 = {
+ 	.oobavail = 48,
+ };
+ 
++/*
++ * fsl_elbc_oob_lp_eccm* specify for LP NANDs that OOB starts at offset 1, so
++ * we have to adjust bad block pattern (this is for compatiblitywith already
++ * reflashed devices, otherwise we could fix ecclayout.oobfree instead).
++ */
++static u8 scan_ff_pattern[] = { 0xff, };
++
++static struct nand_bbt_descr largepage_memorybased = {
++	.options = 0,
++	.offs = 0,
++	.len = 1,
++	.pattern = scan_ff_pattern,
++};
++
+ /*=================================*/
+ 
+ /*
+@@ -687,6 +701,7 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
+ 			chip->ecc.layout = (priv->fmr & FMR_ECCM) ?
+ 			                   &fsl_elbc_oob_lp_eccm1 :
+ 			                   &fsl_elbc_oob_lp_eccm0;
++			chip->badblock_pattern = &largepage_memorybased;
+ 			mtd->ecclayout = chip->ecc.layout;
+ 			mtd->oobavail = chip->ecc.layout->oobavail;
+ 		}
+-- 
+1.5.5.4
