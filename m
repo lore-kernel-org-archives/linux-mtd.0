@@ -1,13 +1,13 @@
 Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KBwPu-0002G3-2F
-	for linux-mtd@lists.infradead.org; Thu, 26 Jun 2008 18:41:58 +0000
-Date: Thu, 26 Jun 2008 22:41:56 +0400
+	id 1KBwXr-0004GQ-N6
+	for linux-mtd@lists.infradead.org; Thu, 26 Jun 2008 18:50:12 +0000
+Date: Thu, 26 Jun 2008 22:50:11 +0400
 From: Anton Vorontsov <avorontsov@ru.mvista.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] MTD: NAND: fsl_elbc_nand: fix OOB workability for large
-	page NAND chips
-Message-ID: <20080626184156.GA2356@polina.dev.rtsoft.ru>
+Subject: [PATCH] MTD: NAND: fsl_elbc_nand: fix oobfree location for large
+	page nands
+Message-ID: <20080626185011.GA4447@polina.dev.rtsoft.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf8
 Content-Disposition: inline
@@ -39,50 +39,79 @@ JFFS2 will fill all OOBs with "erased marker", so OOBs will contain:
 And on the next boot, NAND core will rescan for bad blocks, then will
 see "0xff 0x19" pattern, and will mark all blocks as bad ones.
 
-To fix the issue we should implement our own bad block pattern: just one
-byte at OOB start.
+This patch fixes the issue by shrinking the first OOB free area by one
+byte.
+
+Without this patch, LP NANDs working through ELBC driver are nearly
+unusable, thus we don't bother with implementing Kconfig option for the
+compatibility with previous OOB layout (though, firmwares should be
+fixed too!).
+
+This patch also deletes oobavail assignments, they're calculated by the
+nand core code in nand_scan_tail, plus current oobavail values are wrong
+for the LP NANDs.
+
+Also remove mtd->ecclayout and mtd->oobavail assignments, mtd core
+handles this all by itself.
 
 Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
 ---
 
-The patch that fixes oobfree will follow, but you have to choice which
-you'll want to apply (if any), not both.
+This and
+MTD: NAND: fsl_elbc_nand: fix OOB workability for large page NAND chips
 
- drivers/mtd/nand/fsl_elbc_nand.c |   15 +++++++++++++++
- 1 files changed, 15 insertions(+), 0 deletions(-)
+patches are mutually exclusive, they're fixing the same problem but
+differently.
+
+ drivers/mtd/nand/fsl_elbc_nand.c |   10 ++--------
+ 1 files changed, 2 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index 1b06d29..69609cc 100644
+index 1b06d29..416a3eb 100644
 --- a/drivers/mtd/nand/fsl_elbc_nand.c
 +++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -116,6 +116,20 @@ static struct nand_ecclayout fsl_elbc_oob_lp_eccm1 = {
- 	.oobavail = 48,
+@@ -89,7 +89,6 @@ static struct nand_ecclayout fsl_elbc_oob_sp_eccm0 = {
+ 	.eccbytes = 3,
+ 	.eccpos = {6, 7, 8},
+ 	.oobfree = { {0, 5}, {9, 7} },
+-	.oobavail = 12,
  };
  
-+/*
-+ * fsl_elbc_oob_lp_eccm* specify for LP NANDs that OOB starts at offset 1, so
-+ * we have to adjust bad block pattern (this is for compatiblitywith already
-+ * reflashed devices, otherwise we could fix ecclayout.oobfree instead).
-+ */
-+static u8 scan_ff_pattern[] = { 0xff, };
-+
-+static struct nand_bbt_descr largepage_memorybased = {
-+	.options = 0,
-+	.offs = 0,
-+	.len = 1,
-+	.pattern = scan_ff_pattern,
-+};
-+
- /*=================================*/
+ /* Small Page FLASH with FMR[ECCM] = 1 */
+@@ -97,23 +96,20 @@ static struct nand_ecclayout fsl_elbc_oob_sp_eccm1 = {
+ 	.eccbytes = 3,
+ 	.eccpos = {8, 9, 10},
+ 	.oobfree = { {0, 5}, {6, 2}, {11, 5} },
+-	.oobavail = 12,
+ };
  
- /*
-@@ -687,6 +701,7 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
+ /* Large Page FLASH with FMR[ECCM] = 0 */
+ static struct nand_ecclayout fsl_elbc_oob_lp_eccm0 = {
+ 	.eccbytes = 12,
+ 	.eccpos = {6, 7, 8, 22, 23, 24, 38, 39, 40, 54, 55, 56},
+-	.oobfree = { {1, 5}, {9, 13}, {25, 13}, {41, 13}, {57, 7} },
+-	.oobavail = 48,
++	.oobfree = { {2, 4}, {9, 13}, {25, 13}, {41, 13}, {57, 7} },
+ };
+ 
+ /* Large Page FLASH with FMR[ECCM] = 1 */
+ static struct nand_ecclayout fsl_elbc_oob_lp_eccm1 = {
+ 	.eccbytes = 12,
+ 	.eccpos = {8, 9, 10, 24, 25, 26, 40, 41, 42, 56, 57, 58},
+-	.oobfree = { {1, 7}, {11, 13}, {27, 13}, {43, 13}, {59, 5} },
+-	.oobavail = 48,
++	.oobfree = { {2, 6}, {11, 13}, {27, 13}, {43, 13}, {59, 5} },
+ };
+ 
+ /*=================================*/
+@@ -687,8 +683,6 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
  			chip->ecc.layout = (priv->fmr & FMR_ECCM) ?
  			                   &fsl_elbc_oob_lp_eccm1 :
  			                   &fsl_elbc_oob_lp_eccm0;
-+			chip->badblock_pattern = &largepage_memorybased;
- 			mtd->ecclayout = chip->ecc.layout;
- 			mtd->oobavail = chip->ecc.layout->oobavail;
+-			mtd->ecclayout = chip->ecc.layout;
+-			mtd->oobavail = chip->ecc.layout->oobavail;
  		}
+ 	} else {
+ 		dev_err(ctrl->dev,
 -- 
 1.5.5.4
