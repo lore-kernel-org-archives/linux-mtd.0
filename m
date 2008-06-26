@@ -1,13 +1,14 @@
-Message-ID: <4863E721.60906@freescale.com>
-Date: Thu, 26 Jun 2008 13:59:45 -0500
-From: Scott Wood <scottwood@freescale.com>
-MIME-Version: 1.0
-To: Anton Vorontsov <avorontsov@ru.mvista.com>
-Subject: Re: [PATCH] MTD: NAND: fsl_elbc_nand: fix OOB workability for large
-	page NAND chips
-References: <20080626184156.GA2356@polina.dev.rtsoft.ru>
-In-Reply-To: <20080626184156.GA2356@polina.dev.rtsoft.ru>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Date: Thu, 26 Jun 2008 21:55:25 +0200
+From: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
+To: "Vitja Makarov" <vitja.makarov@gmail.com>
+Subject: Re: [PATCH] mtd_dataflash use command allocated on stack
+Message-ID: <20080626215525.177e1694@siona.local>
+In-Reply-To: <1925ef8a0804222100y2b0ff8d6rd640ad723d0517bc@mail.gmail.com>
+References: <1207285360.10621.8.camel@vitja-laptop>
+	<1208895638.9212.673.camel@pmac.infradead.org>
+	<1925ef8a0804222100y2b0ff8d6rd640ad723d0517bc@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -19,17 +20,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Anton Vorontsov wrote:
-> For large page chips, nand_bbt is looking into OOB area, and checking
-> for "0xff 0xff" pattern at OOB offset 0. That is, two bytes should be
-> reserved for bbt means.
+Sorry about the late response...I'm currently getting up to speed with
+various mailing lists.
 
-Interesting... both the 8313 manual and the manual for a random large 
-page NAND chip say that the bad block indicator is one byte.
+On Wed, 23 Apr 2008 08:00:34 +0400
+"Vitja Makarov" <vitja.makarov@gmail.com> wrote:
 
-BTW, I was just looking at NAND boot on this chip, and it seems that it 
-expects ECCM=1 for large page devices, so we should make that the 
-default (preferably at the same time as we fix this problem, so that we 
-don't break compatibility with a working version).
+> If you are asking about could spi DMA from stack, I think so, as
+> spi_sync() is called before ret, but there still are cache issues,
+> dataflash or better spi driver should call invalidate/flush for the
+> given address if needed, I moved it to spi_bfin code, and that seems
+> to work for me wo modifyng original dataflash driver.
 
--Scott
+NO! DMA from stack is NOT safe!
+
+The problem isn't missing cache flushing -- any driver that uses DMA
+must do that anyway -- but that the flushed lines get sucked right back
+in when the function returns.
+
+Also note that DMA from stack may work _sometimes_, but you never know
+when the buffer happens to share a cache line with some return
+address...
+
+Haavard
