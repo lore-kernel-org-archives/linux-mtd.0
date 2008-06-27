@@ -1,13 +1,12 @@
 Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KCJEz-0001Bv-T4
-	for linux-mtd@lists.infradead.org; Fri, 27 Jun 2008 19:04:14 +0000
-Date: Fri, 27 Jun 2008 23:04:13 +0400
+	id 1KCJF6-0001CO-Ge
+	for linux-mtd@lists.infradead.org; Fri, 27 Jun 2008 19:04:20 +0000
+Date: Fri, 27 Jun 2008 23:04:20 +0400
 From: Anton Vorontsov <avorontsov@ru.mvista.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 2/3] MTD: NAND: fsl_elbc_nand: implement support for
-	flash-based BBT
-Message-ID: <20080627190413.GB16901@polina.dev.rtsoft.ru>
+Subject: [PATCH 3/3] MTD: NAND: fsl_elbc_nand: ecclayout cleanups
+Message-ID: <20080627190420.GC16901@polina.dev.rtsoft.ru>
 References: <20080627190243.GA4713@polina.dev.rtsoft.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf8
@@ -24,71 +23,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch implements support for flash-based BBT for chips working
-through ELBC NAND controller, so that NAND core will not have to re-scan
-for bad blocks on every boot.
+This patch deletes oobavail assignments, they're calculated by the nand
+core code in nand_scan_tail, plus current oobavail values are wrong for
+the LP NANDs.
 
-Because ELBC controller may provide HW-generated ECCs we should adjust
-bbt pattern and bbt version positions in the OOB free area.
+Also remove mtd->ecclayout and mtd->oobavail assignments, mtd core
+handles this all by itself.
 
 Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
-Acked-by: Scott Wood <scottwood@freescale.com>
 ---
- drivers/mtd/nand/fsl_elbc_nand.c |   34 +++++++++++++++++++++++++++++++++-
- 1 files changed, 33 insertions(+), 1 deletions(-)
+ drivers/mtd/nand/fsl_elbc_nand.c |    6 ------
+ 1 files changed, 0 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index 99dc2be..5f1bc5e 100644
+index 5f1bc5e..d6d1ff5 100644
 --- a/drivers/mtd/nand/fsl_elbc_nand.c
 +++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -130,6 +130,34 @@ static struct nand_bbt_descr largepage_memorybased = {
- 	.pattern = scan_ff_pattern,
+@@ -89,7 +89,6 @@ static struct nand_ecclayout fsl_elbc_oob_sp_eccm0 = {
+ 	.eccbytes = 3,
+ 	.eccpos = {6, 7, 8},
+ 	.oobfree = { {0, 5}, {9, 7} },
+-	.oobavail = 12,
  };
  
-+/*
-+ * ELBC may use HW ECC, so that OOB offsets, that NAND core uses for bbt,
-+ * interfere with ECC positions, that's why we implement our own descriptors.
-+ * OOB {11, 5}, works for both SP and LP chips, with ECCM = 1 and ECCM = 0.
-+ */
-+static u8 bbt_pattern[] = {'B', 'b', 't', '0' };
-+static u8 mirror_pattern[] = {'1', 't', 'b', 'B' };
-+
-+static struct nand_bbt_descr bbt_main_descr = {
-+	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE |
-+		   NAND_BBT_2BIT | NAND_BBT_VERSION,
-+	.offs =	11,
-+	.len = 4,
-+	.veroffs = 15,
-+	.maxblocks = 4,
-+	.pattern = bbt_pattern,
-+};
-+
-+static struct nand_bbt_descr bbt_mirror_descr = {
-+	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE |
-+		   NAND_BBT_2BIT | NAND_BBT_VERSION,
-+	.offs =	11,
-+	.len = 4,
-+	.veroffs = 15,
-+	.maxblocks = 4,
-+	.pattern = mirror_pattern,
-+};
-+
- /*=================================*/
+ /* Small Page FLASH with FMR[ECCM] = 1 */
+@@ -97,7 +96,6 @@ static struct nand_ecclayout fsl_elbc_oob_sp_eccm1 = {
+ 	.eccbytes = 3,
+ 	.eccpos = {8, 9, 10},
+ 	.oobfree = { {0, 5}, {6, 2}, {11, 5} },
+-	.oobavail = 12,
+ };
+ 
+ /* Large Page FLASH with FMR[ECCM] = 0 */
+@@ -105,7 +103,6 @@ static struct nand_ecclayout fsl_elbc_oob_lp_eccm0 = {
+ 	.eccbytes = 12,
+ 	.eccpos = {6, 7, 8, 22, 23, 24, 38, 39, 40, 54, 55, 56},
+ 	.oobfree = { {1, 5}, {9, 13}, {25, 13}, {41, 13}, {57, 7} },
+-	.oobavail = 48,
+ };
+ 
+ /* Large Page FLASH with FMR[ECCM] = 1 */
+@@ -113,7 +110,6 @@ static struct nand_ecclayout fsl_elbc_oob_lp_eccm1 = {
+ 	.eccbytes = 12,
+ 	.eccpos = {8, 9, 10, 24, 25, 26, 40, 41, 42, 56, 57, 58},
+ 	.oobfree = { {1, 7}, {11, 13}, {27, 13}, {43, 13}, {59, 5} },
+-	.oobavail = 48,
+ };
  
  /*
-@@ -767,8 +795,12 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
- 	chip->cmdfunc = fsl_elbc_cmdfunc;
- 	chip->waitfunc = fsl_elbc_wait;
- 
-+	chip->bbt_td = &bbt_main_descr;
-+	chip->bbt_md = &bbt_mirror_descr;
-+
- 	/* set up nand options */
--	chip->options = NAND_NO_READRDY | NAND_NO_AUTOINCR;
-+	chip->options = NAND_NO_READRDY | NAND_NO_AUTOINCR |
-+			NAND_USE_FLASH_BBT;
- 
- 	chip->controller = &ctrl->controller;
- 	chip->priv = priv;
+@@ -730,8 +726,6 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
+ 			                   &fsl_elbc_oob_lp_eccm1 :
+ 			                   &fsl_elbc_oob_lp_eccm0;
+ 			chip->badblock_pattern = &largepage_memorybased;
+-			mtd->ecclayout = chip->ecc.layout;
+-			mtd->oobavail = chip->ecc.layout->oobavail;
+ 		}
+ 	} else {
+ 		dev_err(ctrl->dev,
 -- 
 1.5.5.4
