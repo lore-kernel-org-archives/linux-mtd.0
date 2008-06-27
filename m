@@ -1,22 +1,20 @@
-Received: from ozlabs.org ([203.10.76.45])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KC5Cg-0005wI-CK
-	for linux-mtd@lists.infradead.org; Fri, 27 Jun 2008 04:04:55 +0000
-Date: Fri, 27 Jun 2008 14:04:49 +1000
-From: David Gibson <david@gibson.dropbear.id.au>
-To: Mitch Bradley <wmb@firmworks.com>
-Subject: Re: [PATCH] Support NAND partitions >4GiB with Open Firmware
-Message-ID: <20080627040449.GA24381@yookeroo.seuss>
-References: <48642B50.9060607@firmworks.com>
-	<20080627032046.GH17621@yookeroo.seuss>
-	<48645E6A.6020202@firmworks.com>
-	<20080627033817.GJ17621@yookeroo.seuss>
-	<486462F1.9080602@firmworks.com>
+Received: from ipmail01.adl6.internode.on.net ([203.16.214.146])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KC7Ir-00040c-7c
+	for linux-mtd@lists.infradead.org; Fri, 27 Jun 2008 06:19:25 +0000
+Message-ID: <48648662.1050107@call-direct.com.au>
+Date: Fri, 27 Jun 2008 16:19:14 +1000
+From: Iwo Mergler <iwo@call-direct.com.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <486462F1.9080602@firmworks.com>
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
+To: Anton Vorontsov <avorontsov@ru.mvista.com>
+Subject: Re: [PATCH] MTD: NAND: fsl_elbc_nand: fix OOB workability for large
+	page NAND chips
+References: <20080626184156.GA2356@polina.dev.rtsoft.ru>
+In-Reply-To: <20080626184156.GA2356@polina.dev.rtsoft.ru>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Scott Wood <scottwood@freescale.com>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,61 +24,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 26, 2008 at 05:48:01PM -1000, Mitch Bradley wrote:
+Anton Vorontsov wrote:
+> For large page chips, nand_bbt is looking into OOB area, and checking
+> for "0xff 0xff" pattern at OOB offset 0. That is, two bytes should be
+> reserved for bbt means.
 >
+> But ELBC driver is specifying ecclayout so that oobfree area starts at
+> offset 1, so only one byte left for the bbt purposes.
 >
-> David Gibson wrote:
->> On Thu, Jun 26, 2008 at 05:28:42PM -1000, Mitch Bradley wrote:
->>   
->>> David Gibson wrote:
->>>     
->>>> On Thu, Jun 26, 2008 at 01:50:40PM -1000, Mitch Bradley wrote:
->>>>       
->> [snip]
->>   
->>>>> +               const u_int32_t *propval;
->>>>> +               u_int32_t addrcells = 0, sizecells = 0;
->>>>>                int len;
->>>>>
->>>>> -               reg = of_get_property(pp, "reg", &len);
->>>>> -               if (!reg || (len != 2 * sizeof(u32))) {
->>>>> +               /*
->>>>> +                * Determine the layout of a "reg" entry based on the parent
->>>>> +                * node's properties, if it hasn't been done already.
->>>>> +                */
->>>>> +
->>>>> +               if (addrcells == 0)
->>>>>             
->>>> Redundant 'if'; you've just initialized this variable to zero.
->>>>       
->>> The intention is that the body of the "if" should only be executed
->>> once during the loop, since the parent node is the same for all
->>> children.
->>>     
->>
->> But the initialization is within the loop body as well, so this won't
->> do it.  Just factor the code getting addr and size cells right out of
->> the loop, instead.
->>
->>   
+> This causes problems with any OOB users, namely JFFS2: after first mount
+> JFFS2 will fill all OOBs with "erased marker", so OOBs will contain:
 >
-> Hmmm.  Perhaps it's better to move the declaration of the variables out of
-> the loop instead.
+>   OOB Data: ff 19 85 20 03 00 ff ff ff 00 00 08 ff ff ff ff
+>   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
 >
-> Moving the of_n_*_cells() calls outside the loop requires redundant calls
-> to of_get_child() and of_node_put(), because of_n_*_cells() implicitly
-> reach up to the parent node.  That is almost certainly more expensive  
-> than the "if".
+> And on the next boot, NAND core will rescan for bad blocks, then will
+> see "0xff 0x19" pattern, and will mark all blocks as bad ones.
+>
+> To fix the issue we should implement our own bad block pattern: just one
+> byte at OOB start.
+>
+>   
+Anton,
 
-This is not exactly a hot path; clarity and (source) code size are
-more important than expense.  But going down to the child then back up
-is ugly too.  Maybe you should just directly pull #address-cells and
-#size-cells from the parent node.  In fact, of_n_*_cells() are wrong
-by the OF spec, since they assume the values are inherited, which is
-not how it's supposed to work.
+the problem with bad block markers is that if they are set, _nothing_ is 
+guaranteed
+to work with that block. You cannot assume that it is possible to 
+relocate the BB
+marker into the first byte, if the second one is set. If you don't 
+relocate it, your
+new pattern will fail to find the bad block.
 
--- 
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
+Most manufacturers use the first OOB byte in one of the first two pages 
+in a block
+as the BB marker. Others use, as you noticed, the first two OOB bytes of 
+the first and
+possibly second page of a block.
+
+The point is that if  the marker is set, nothing can be done with that 
+block. You must
+not touch it.
+
+To make things worse, some hardware NAND controllers *require* you to place
+the ECC immediately after the data area. That's right, straight over the 
+BB marker
+locations.
+
+The solution to your and other similar problems is to use a Bad Block 
+Table (BBT)
+at the end of the NAND. When your device comes up for the first time, it 
+must
+scan the NAND for bad blocks, and then write this information into the BBT.
+
+In all consecutive boots, the device must always use the BBT and not 
+scan again.
+
+The algorithm, as implemented e.g. in U-Boot and the Linux kernel is to look
+for a valid BBT first and only go scanning if it doesn't exist. After 
+the scan,
+the BBT is written and available next time.
+
+You just need to set the correct flags in your low-level NAND driver.
+
+Kind regards,
+
+Iwo
