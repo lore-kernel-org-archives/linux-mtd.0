@@ -1,10 +1,20 @@
-Date: Mon, 30 Jun 2008 07:52:13 +0200
-Message-Id: <K39HN1$56D90D53F4451B8B788B7C4987787C4F@libero.it>
-Subject: YOU HAVE WON
+Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KCJEq-0001BN-QE
+	for linux-mtd@lists.infradead.org; Fri, 27 Jun 2008 19:04:05 +0000
+Date: Fri, 27 Jun 2008 23:04:04 +0400
+From: Anton Vorontsov <avorontsov@ru.mvista.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH 1/3] MTD: NAND: fsl_elbc_nand: fix OOB workability for
+	large page NAND chips
+Message-ID: <20080627190404.GA16901@polina.dev.rtsoft.ru>
+References: <20080627190243.GA4713@polina.dev.rtsoft.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-From: "klasselotteriet9\@libero\.it" <klasselotteriet9@libero.it>
+Content-Type: text/plain; charset=utf8
+Content-Disposition: inline
+In-Reply-To: <20080627190243.GA4713@polina.dev.rtsoft.ru>
+Cc: Scott Wood <scottwood@freescale.com>, linux-mtd@lists.infradead.org,
+	Iwo Mergler <iwo@call-direct.com.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -14,44 +24,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Det Danske Klasselotteriet
-R=E5dhuspladsen 2
-1550 K=F8benhavn
-Denmark.
- 
-Dear Beneficiary,
- 
-We are pleased to announce you as one of the 10 lucky winners in the Dans=
-ke Klasselotteriet Promotions Address draw of June 2008, due to the mixtu=
-re of names and addresses the result was released on the 27th of June 200=
-8. All 10 winning Email addresses were randomly selected from a batch of =
-50,000,000 international email addresses.Your email address drew the luck=
-y numbers 8-4-1-9-0-0-5-12 alongside 9 others as a category 2 winner in t=
-he Danske Klasselotteriet Promotions Address draw. Consequently, you have=
- therefore been approved for a total pay out of =801,000,000 (One million=
- Euro).
- 
- 
-To claim your winning prize you are to contact the appointed agent as soo=
-n as possible for them to send your application form which will be filled=
- to the lottery board for immediate process and release of your winnings.=
+For large page chips, nand_bbt is looking into OOB area, and checking
+for "0xff 0xff" pattern at OOB offset 0. That is, two bytes should be
+reserved for bbt means.
 
+But ELBC driver is specifying ecclayout so that oobfree area starts at
+offset 1, so only one byte left for the bbt purposes.
+
+This causes problems with any OOB users, namely JFFS2: after first mount
+JFFS2 will fill all OOBs with "erased marker", so OOBs will contain:
+
+  OOB Data: ff 19 85 20 03 00 ff ff ff 00 00 08 ff ff ff ff
+  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+
+And on the next boot, NAND core will rescan for bad blocks, then will
+see "0xff 0x19" pattern, and will mark all blocks as bad ones.
+
+To fix the issue we should implement our own bad block pattern: just one
+byte at OOB start. Though, this will work only for x8 chips. For x16
+chips two bytes must be checked. Since ELBC driver does not support x16
+NANDs (yet), we're safe for now.
+
+Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
+Acked-by: Scott Wood <scottwood@freescale.com>
+---
+ drivers/mtd/nand/fsl_elbc_nand.c |   15 +++++++++++++++
+ 1 files changed, 15 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+index 1b06d29..99dc2be 100644
+--- a/drivers/mtd/nand/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -116,6 +116,20 @@ static struct nand_ecclayout fsl_elbc_oob_lp_eccm1 = {
+ 	.oobavail = 48,
+ };
  
-Contact Person:
-
-Mr.Ashley Thompson
-Foreign Services Manager,
-Information and Payment Bureau.
-Claims Procession Department.
-Det Danske Klasselotteri.
-E-post: ashleythompson@telkom.net 
-
-
-Note that all prize funds must be claimed not later than One month.
++/*
++ * fsl_elbc_oob_lp_eccm* specify that LP NAND's OOB free area starts at offset
++ * 1, so we have to adjust bad block pattern. This pattern should be used for
++ * x8 chips only. So far hardware does not support x16 chips anyway.
++ */
++static u8 scan_ff_pattern[] = { 0xff, };
++
++static struct nand_bbt_descr largepage_memorybased = {
++	.options = 0,
++	.offs = 0,
++	.len = 1,
++	.pattern = scan_ff_pattern,
++};
++
+ /*=================================*/
  
-Congratulation once again.
-
-Yours Earnestly,
-Mrs. Elisabeth Rask J=F8rgensen,
-Promotions Manager(Online Promo Programme)
-Det Danske Klasselotteriet A/S
+ /*
+@@ -687,6 +701,7 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
+ 			chip->ecc.layout = (priv->fmr & FMR_ECCM) ?
+ 			                   &fsl_elbc_oob_lp_eccm1 :
+ 			                   &fsl_elbc_oob_lp_eccm0;
++			chip->badblock_pattern = &largepage_memorybased;
+ 			mtd->ecclayout = chip->ecc.layout;
+ 			mtd->oobavail = chip->ecc.layout->oobavail;
+ 		}
+-- 
+1.5.5.4
