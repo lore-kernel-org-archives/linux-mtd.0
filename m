@@ -1,27 +1,18 @@
-Received: from mms3.broadcom.com ([216.31.210.19])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KBnik-0007qH-8T
-	for linux-mtd@lists.infradead.org; Thu, 26 Jun 2008 09:24:51 +0000
-Received: from mail-irva-8.broadcom.com (mail-irva-8 [10.11.18.52]) by
-	mail-irva-10.broadcom.com (Postfix) with ESMTP id 302982B0 for
-	<linux-mtd@lists.infradead.org>; Thu, 26 Jun 2008 02:24:39 -0700 (PDT)
-Received: from NT-SJCA-0752.brcm.ad.broadcom.com (nt-sjca-0752
-	[10.16.192.222]) by mail-sj1-12.sj.broadcom.com (Postfix) with ESMTP id
-	ABEFA20501 for <linux-mtd@lists.infradead.org>; Thu, 26 Jun 2008
-	02:24:38 -0700 (PDT)
-Content-class: urn:content-classes:message
+Message-ID: <4865079A.2020300@freescale.com>
+Date: Fri, 27 Jun 2008 10:30:34 -0500
+From: Scott Wood <scottwood@freescale.com>
 MIME-Version: 1.0
-Subject: Getting Error in NOR MTD map driver
-Date: Thu, 26 Jun 2008 02:24:36 -0700
-Message-ID: <E06E3B7BBC07864CADE892DAF1EB0FBD08FC36D5@NT-SJCA-0752.brcm.ad.broadcom.com>
-In-Reply-To: <1214401352.6573.24.camel@sauron>
-References: <20080625131723.GA24006@mersenne.largestprime.net>
-	<1214401352.6573.24.camel@sauron>
-From: "Divyanshu Verma" <dverma@broadcom.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain;
- charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
+To: avorontsov@ru.mvista.com
+Subject: Re: [PATCH] MTD: NAND: fsl_elbc_nand: implement support
+	for	flash-based BBT
+References: <20080626184156.GA2356@polina.dev.rtsoft.ru>
+	<48648662.1050107@call-direct.com.au>
+	<20080627145512.GA11372@polina.dev.rtsoft.ru>
+In-Reply-To: <20080627145512.GA11372@polina.dev.rtsoft.ru>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	Iwo Mergler <iwo@call-direct.com.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,14 +22,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
- I am developing NOR MTD map driver for  SPANSION NOR. I am getting the
-following error and hence not able to  detect the device.
-Kindly help  me out.
+Anton Vorontsov wrote:
+> Just looked into x16 LP NAND spec, and it says that block should be
+> considered as bad when the first _Word_ isn't 0xff. So we indeed should
+> not ignore the second byte. Ouch.
 
- Unknown Amd/Fujitsu Extended Query version 1.4.
-gen_probe: No supported Vendor Command Set found=20
+The FCM doesn't support 16-bit devices.
 
+> How about this patch?
 
-Regards,
-Divyanshu
+ACK
+
+-Scott
