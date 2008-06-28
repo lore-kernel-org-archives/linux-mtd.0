@@ -1,26 +1,12 @@
-Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KCJDZ-00018F-Fa
-	for linux-mtd@lists.infradead.org; Fri, 27 Jun 2008 19:02:45 +0000
-Date: Fri, 27 Jun 2008 23:02:43 +0400
-From: Anton Vorontsov <avorontsov@ru.mvista.com>
-To: Scott Wood <scottwood@freescale.com>
-Subject: Re: [PATCH] MTD: NAND: fsl_elbc_nand: implement support for
-	flash-based BBT
-Message-ID: <20080627190243.GA4713@polina.dev.rtsoft.ru>
-References: <20080626184156.GA2356@polina.dev.rtsoft.ru>
-	<48648662.1050107@call-direct.com.au>
-	<20080627145512.GA11372@polina.dev.rtsoft.ru>
-	<4865079A.2020300@freescale.com>
-	<20080627160019.GA32374@polina.dev.rtsoft.ru>
-	<48651570.5020409@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf8
-Content-Disposition: inline
-In-Reply-To: <48651570.5020409@freescale.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	Iwo Mergler <iwo@call-direct.com.au>
-Reply-To: avorontsov@ru.mvista.com
+From: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH RESEND 1/3] atmel_nand speedup via {read,write}s{b,w}()
+Date: Sat, 28 Jun 2008 14:14:06 +0200
+Message-Id: <1214655248-15707-1-git-send-email-haavard.skinnemoen@atmel.com>
+Cc: David Brownell <david-b@pacbell.net>,
+	Haavard Skinnemoen <haavard.skinnemoen@atmel.com>,
+	David Brownell <dbrownell@users.sourceforge.net>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,32 +16,121 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 27, 2008 at 11:29:36AM -0500, Scott Wood wrote:
-> Anton Vorontsov wrote:
->> On Fri, Jun 27, 2008 at 10:30:34AM -0500, Scott Wood wrote:
->>> Anton Vorontsov wrote:
->>>> Just looked into x16 LP NAND spec, and it says that block should be
->>>> considered as bad when the first _Word_ isn't 0xff. So we indeed should
->>>> not ignore the second byte. Ouch.
->>> The FCM doesn't support 16-bit devices.
->>
->> And will never support? 
->
-> It's a hardware limitation in current chips (see the manual description  
-> of BRn[PS]), though upon further looking it seems that it may be  
-> supported in the future.
->
->> Then maybe, in addition, we could apply the first
->> patch that you've acked so we'll unbreak NANDs for pour souls that tried
->> to reflash the JFFS2 into NAND, so that they'll will not have to
->> "nand scrub" their NANDs?
->
-> OK -- we can limit it to 8-bit chips once 16-bit support is added to the  
-> driver.
+From: David Brownell <david-b@pacbell.net>
 
-Great. So.. the final patchset.
+This uses __raw_{read,write}s{b,w}() primitives to access data on NAND
+chips for more efficient I/O.
 
+On an arm926 with memory clocked at 100 MHz, this reduced the elapsed
+time for a 64 MByte read by 16%.  ("dd" /dev/mtd0 to /dev/null, with
+an 8-bit NAND using hardware ECC and 128KB blocksize.)
+
+Also some minor section tweaks:
+
+  - Use platform_driver_probe() so no pointer to probe() lingers
+    after that code has been removed at run-time.
+
+  - Use __exit and __exit_p so the remove() code will normally be
+    removed by the linker.
+
+Since these buffer read/write calls are new, this increases the runtime
+code footprint (by 88 bytes on my build, after the section tweaks).
+
+Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
+[haavard.skinnemoen@atmel.com: rebase onto atmel_nand rename]
+Signed-off-by: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
+Acked-by: Andrew Victor <linux@maxim.org.za>
+---
+Resending the series with Andrew's ACKs added, no other changes.
+
+ drivers/mtd/nand/atmel_nand.c |   46 ++++++++++++++++++++++++++++++++++++----
+ 1 files changed, 41 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 50700ab..4814fc9 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -142,6 +142,37 @@ static int atmel_nand_device_ready(struct mtd_info *mtd)
+ }
+ 
+ /*
++ * Minimal-overhead PIO for data access.
++ */
++static void atmel_read_buf(struct mtd_info *mtd, u8 *buf, int len)
++{
++	struct nand_chip	*nand_chip = mtd->priv;
++
++	__raw_readsb(nand_chip->IO_ADDR_R, buf, len);
++}
++
++static void atmel_read_buf16(struct mtd_info *mtd, u8 *buf, int len)
++{
++	struct nand_chip	*nand_chip = mtd->priv;
++
++	__raw_readsw(nand_chip->IO_ADDR_R, buf, len / 2);
++}
++
++static void atmel_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
++{
++	struct nand_chip	*nand_chip = mtd->priv;
++
++	__raw_writesb(nand_chip->IO_ADDR_W, buf, len);
++}
++
++static void atmel_write_buf16(struct mtd_info *mtd, const u8 *buf, int len)
++{
++	struct nand_chip	*nand_chip = mtd->priv;
++
++	__raw_writesw(nand_chip->IO_ADDR_W, buf, len / 2);
++}
++
++/*
+  * write oob for small pages
+  */
+ static int atmel_nand_write_oob_512(struct mtd_info *mtd,
+@@ -436,8 +467,14 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+ 
+ 	nand_chip->chip_delay = 20;		/* 20us command delay time */
+ 
+-	if (host->board->bus_width_16)		/* 16-bit bus width */
++	if (host->board->bus_width_16) {	/* 16-bit bus width */
+ 		nand_chip->options |= NAND_BUSWIDTH_16;
++		nand_chip->read_buf = atmel_read_buf16;
++		nand_chip->write_buf = atmel_write_buf16;
++	} else {
++		nand_chip->read_buf = atmel_read_buf;
++		nand_chip->write_buf = atmel_write_buf;
++	}
+ 
+ 	platform_set_drvdata(pdev, host);
+ 	atmel_nand_enable(host);
+@@ -546,7 +583,7 @@ err_nand_ioremap:
+ /*
+  * Remove a NAND device.
+  */
+-static int __devexit atmel_nand_remove(struct platform_device *pdev)
++static int __exit atmel_nand_remove(struct platform_device *pdev)
+ {
+ 	struct atmel_nand_host *host = platform_get_drvdata(pdev);
+ 	struct mtd_info *mtd = &host->mtd;
+@@ -564,8 +601,7 @@ static int __devexit atmel_nand_remove(struct platform_device *pdev)
+ }
+ 
+ static struct platform_driver atmel_nand_driver = {
+-	.probe		= atmel_nand_probe,
+-	.remove		= atmel_nand_remove,
++	.remove		= __exit_p(atmel_nand_remove),
+ 	.driver		= {
+ 		.name	= "atmel_nand",
+ 		.owner	= THIS_MODULE,
+@@ -574,7 +610,7 @@ static struct platform_driver atmel_nand_driver = {
+ 
+ static int __init atmel_nand_init(void)
+ {
+-	return platform_driver_register(&atmel_nand_driver);
++	return platform_driver_probe(&atmel_nand_driver, atmel_nand_probe);
+ }
+ 
+ 
 -- 
-Anton Vorontsov
-email: cbouatmailru@gmail.com
-irc://irc.freenode.net/bd2
+1.5.5.4
