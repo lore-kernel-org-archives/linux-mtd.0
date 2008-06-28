@@ -1,12 +1,15 @@
-From: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH RESEND 1/3] atmel_nand speedup via {read,write}s{b,w}()
-Date: Sat, 28 Jun 2008 14:14:06 +0200
-Message-Id: <1214655248-15707-1-git-send-email-haavard.skinnemoen@atmel.com>
-Cc: David Brownell <david-b@pacbell.net>,
-	Haavard Skinnemoen <haavard.skinnemoen@atmel.com>,
-	David Brownell <dbrownell@users.sourceforge.net>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from [88.198.44.79] (helo=mail.thyro-media.de)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KCdHc-0008Ny-8b
+	for linux-mtd@lists.infradead.org; Sat, 28 Jun 2008 16:28:17 +0000
+Message-ID: <8333abfd4124c51a395fbdfce9550a274872486661166770a@localhost>
+From: "Anna kimberley" <annak@kostnixmail.de>
+To: 
+Subject: Please get back to me urgent
+MIME-Version: 1.0
+Date: Sat, 28 Jun 2008 18:04:38 +0200
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,121 +19,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: David Brownell <david-b@pacbell.net>
+I am Ms Anna kimberley and I represent Mr. Mikhail Khordokovskythe former C.E.O of Yukos Oil Company in Russia.I have a very sensitive and confidential brief from himto ask for your partnership in re-profiling funds in aprivate bank investment portfolio in Western Europe.I will give the details, but in summary, the funds arecoming via Bank Menatep in Russia. This is alegitimate transaction. You will be paid 20% of theportfolio investment value as your "management fees"If you are interested, please write back to me via myprivate E-mail: anna.kimberley@hotmail.com and provide me with yourconfidential telephone number, fax number and emailaddress and I will provide further details and if youare satisfied I can proceed with the instructions.Please we can not afford any political problemsbecause of recent events in Russia. So I will adviceyou keep this to your self.Finally, please note thatthis must be concluded within reasonable time frametherefore your prompt reply is essential.Write me back.
+ I look forward to it.
+Ms Anna kimberley
 
-This uses __raw_{read,write}s{b,w}() primitives to access data on NAND
-chips for more efficient I/O.
-
-On an arm926 with memory clocked at 100 MHz, this reduced the elapsed
-time for a 64 MByte read by 16%.  ("dd" /dev/mtd0 to /dev/null, with
-an 8-bit NAND using hardware ECC and 128KB blocksize.)
-
-Also some minor section tweaks:
-
-  - Use platform_driver_probe() so no pointer to probe() lingers
-    after that code has been removed at run-time.
-
-  - Use __exit and __exit_p so the remove() code will normally be
-    removed by the linker.
-
-Since these buffer read/write calls are new, this increases the runtime
-code footprint (by 88 bytes on my build, after the section tweaks).
-
-Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
-[haavard.skinnemoen@atmel.com: rebase onto atmel_nand rename]
-Signed-off-by: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
-Acked-by: Andrew Victor <linux@maxim.org.za>
----
-Resending the series with Andrew's ACKs added, no other changes.
-
- drivers/mtd/nand/atmel_nand.c |   46 ++++++++++++++++++++++++++++++++++++----
- 1 files changed, 41 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 50700ab..4814fc9 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -142,6 +142,37 @@ static int atmel_nand_device_ready(struct mtd_info *mtd)
- }
- 
- /*
-+ * Minimal-overhead PIO for data access.
-+ */
-+static void atmel_read_buf(struct mtd_info *mtd, u8 *buf, int len)
-+{
-+	struct nand_chip	*nand_chip = mtd->priv;
-+
-+	__raw_readsb(nand_chip->IO_ADDR_R, buf, len);
-+}
-+
-+static void atmel_read_buf16(struct mtd_info *mtd, u8 *buf, int len)
-+{
-+	struct nand_chip	*nand_chip = mtd->priv;
-+
-+	__raw_readsw(nand_chip->IO_ADDR_R, buf, len / 2);
-+}
-+
-+static void atmel_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
-+{
-+	struct nand_chip	*nand_chip = mtd->priv;
-+
-+	__raw_writesb(nand_chip->IO_ADDR_W, buf, len);
-+}
-+
-+static void atmel_write_buf16(struct mtd_info *mtd, const u8 *buf, int len)
-+{
-+	struct nand_chip	*nand_chip = mtd->priv;
-+
-+	__raw_writesw(nand_chip->IO_ADDR_W, buf, len / 2);
-+}
-+
-+/*
-  * write oob for small pages
-  */
- static int atmel_nand_write_oob_512(struct mtd_info *mtd,
-@@ -436,8 +467,14 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
- 
- 	nand_chip->chip_delay = 20;		/* 20us command delay time */
- 
--	if (host->board->bus_width_16)		/* 16-bit bus width */
-+	if (host->board->bus_width_16) {	/* 16-bit bus width */
- 		nand_chip->options |= NAND_BUSWIDTH_16;
-+		nand_chip->read_buf = atmel_read_buf16;
-+		nand_chip->write_buf = atmel_write_buf16;
-+	} else {
-+		nand_chip->read_buf = atmel_read_buf;
-+		nand_chip->write_buf = atmel_write_buf;
-+	}
- 
- 	platform_set_drvdata(pdev, host);
- 	atmel_nand_enable(host);
-@@ -546,7 +583,7 @@ err_nand_ioremap:
- /*
-  * Remove a NAND device.
-  */
--static int __devexit atmel_nand_remove(struct platform_device *pdev)
-+static int __exit atmel_nand_remove(struct platform_device *pdev)
- {
- 	struct atmel_nand_host *host = platform_get_drvdata(pdev);
- 	struct mtd_info *mtd = &host->mtd;
-@@ -564,8 +601,7 @@ static int __devexit atmel_nand_remove(struct platform_device *pdev)
- }
- 
- static struct platform_driver atmel_nand_driver = {
--	.probe		= atmel_nand_probe,
--	.remove		= atmel_nand_remove,
-+	.remove		= __exit_p(atmel_nand_remove),
- 	.driver		= {
- 		.name	= "atmel_nand",
- 		.owner	= THIS_MODULE,
-@@ -574,7 +610,7 @@ static struct platform_driver atmel_nand_driver = {
- 
- static int __init atmel_nand_init(void)
- {
--	return platform_driver_register(&atmel_nand_driver);
-+	return platform_driver_probe(&atmel_nand_driver, atmel_nand_probe);
- }
- 
- 
--- 
-1.5.5.4
+_____________________________________________________
+powered by kostnixmail 6 - http://www.kostnixmail.de/
