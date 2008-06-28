@@ -1,13 +1,11 @@
 From: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH RESEND 3/3] MTD: atmel_nand can be modular
-Date: Sat, 28 Jun 2008 14:14:08 +0200
-Message-Id: <1214655248-15707-3-git-send-email-haavard.skinnemoen@atmel.com>
-In-Reply-To: <1214655248-15707-2-git-send-email-haavard.skinnemoen@atmel.com>
+Subject: [PATCH RESEND 2/3] atmel_nand: Work around AT32AP7000 ECC errata
+Date: Sat, 28 Jun 2008 14:14:07 +0200
+Message-Id: <1214655248-15707-2-git-send-email-haavard.skinnemoen@atmel.com>
+In-Reply-To: <1214655248-15707-1-git-send-email-haavard.skinnemoen@atmel.com>
 References: <1214655248-15707-1-git-send-email-haavard.skinnemoen@atmel.com>
-	<1214655248-15707-2-git-send-email-haavard.skinnemoen@atmel.com>
 Cc: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>,
-	David Brownell <dbrownell@users.sourceforge.net>,
 	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -18,30 +16,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: David Brownell <dbrownell@users.sourceforge.net>
+The ALE signal isn't correctly wired up to the ECC controller on the
+AP7000, so it starts calculating ECC during the address cycles.
 
-There's no reason to prevent the Atmel NAND driver from
-building as a module.
+Work around this by resetting the ECC controller between the address and
+data cycles.
 
-Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
 Signed-off-by: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
 Acked-by: Andrew Victor <linux@maxim.org.za>
 ---
- drivers/mtd/nand/Kconfig |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Andrew, the comment you mentioned
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index d8c0d86..71406e5 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -272,7 +272,7 @@ config MTD_NAND_CS553X
- 	  If you say "m", the module will be called "cs553x_nand.ko".
+   nand_chip->ecc.hwctl = at91_nand_hwctl;     /* unused */
+
+doesn't seem to have made it into the MTD tree. So there was nothing
+to remove.
+
+ drivers/mtd/nand/atmel_nand.c |   25 +++++++++++++++++++++++--
+ 1 files changed, 23 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 4814fc9..99aec46 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -33,6 +33,7 @@
+ #include <linux/io.h>
  
- config MTD_NAND_ATMEL
--	bool "Support for NAND Flash / SmartMedia on AT91 and AVR32"
-+	tristate "Support for NAND Flash / SmartMedia on AT91 and AVR32"
- 	depends on ARCH_AT91 || AVR32
- 	help
- 	  Enables support for NAND Flash / Smart Media Card interface
+ #include <asm/arch/board.h>
++#include <asm/arch/cpu.h>
+ 
+ #ifdef CONFIG_MTD_NAND_ATMEL_ECC_HW
+ #define hard_ecc	1
+@@ -264,6 +265,19 @@ static int atmel_nand_read_page(struct mtd_info *mtd,
+ 	uint8_t *ecc_pos;
+ 	int stat;
+ 
++	/*
++	 * Errata: ALE is incorrectly wired up to the ECC controller
++	 * on the AP7000, so it will include the address cycles in the
++	 * ECC calculation.
++	 *
++	 * Workaround: Reset the parity registers before reading the
++	 * actual data.
++	 */
++	if (cpu_is_at32ap7000()) {
++		struct atmel_nand_host *host = chip->priv;
++		ecc_writel(host->ecc, CR, ATMEL_ECC_RST);
++	}
++
+ 	/* read the page */
+ 	chip->read_buf(mtd, p, eccsize);
+ 
+@@ -377,9 +391,16 @@ static int atmel_nand_correct(struct mtd_info *mtd, u_char *dat,
+ }
+ 
+ /*
+- * Enable HW ECC : unsused
++ * Enable HW ECC : unused on most chips
+  */
+-static void atmel_nand_hwctl(struct mtd_info *mtd, int mode) { ; }
++static void atmel_nand_hwctl(struct mtd_info *mtd, int mode)
++{
++	if (cpu_is_at32ap7000()) {
++		struct nand_chip *nand_chip = mtd->priv;
++		struct atmel_nand_host *host = nand_chip->priv;
++		ecc_writel(host->ecc, CR, ATMEL_ECC_RST);
++	}
++}
+ 
+ #ifdef CONFIG_MTD_PARTITIONS
+ static const char *part_probes[] = { "cmdlinepart", NULL };
 -- 
 1.5.5.4
