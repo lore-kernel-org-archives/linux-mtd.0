@@ -1,12 +1,24 @@
-From: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH RESEND 2/3] atmel_nand: Work around AT32AP7000 ECC errata
-Date: Sat, 28 Jun 2008 14:14:07 +0200
-Message-Id: <1214655248-15707-2-git-send-email-haavard.skinnemoen@atmel.com>
-In-Reply-To: <1214655248-15707-1-git-send-email-haavard.skinnemoen@atmel.com>
-References: <1214655248-15707-1-git-send-email-haavard.skinnemoen@atmel.com>
-Cc: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from relais.videotron.ca ([24.201.245.36])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KCP5E-0005qK-SB
+	for linux-mtd@lists.infradead.org; Sat, 28 Jun 2008 01:18:33 +0000
+MIME-version: 1.0
+Content-type: multipart/mixed; boundary="Boundary_(ID_f4tA//VPE0/Lw42GZpyK9A)"
+Received: from xanadu.home ([66.131.194.97]) by VL-MO-MR004.ip.videotron.ca
+	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
+	32bit))
+	with ESMTP id <0K3500JDQFMV1860@VL-MO-MR004.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Fri, 27 Jun 2008 21:18:31 -0400 (EDT)
+Date: Fri, 27 Jun 2008 21:18:31 -0400 (EDT)
+From: Nicolas Pitre <nico@cam.org>
+To: =?ISO-8859-15?Q?J=F6rn_Engel?= <joern@logfs.org>
+Subject: Re: [PATCH] [MTD] orion_nand: add chip_delay parameter
+In-reply-to: <20080627072354.GA30174@logfs.org>
+Message-id: <alpine.LFD.1.10.0806272113270.19095@xanadu.home>
+References: <alpine.LFD.1.10.0806230952530.2979@xanadu.home>
+	<alpine.LFD.1.10.0806261319340.2979@xanadu.home>
+	<20080627072354.GA30174@logfs.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,75 +28,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The ALE signal isn't correctly wired up to the ECC controller on the
-AP7000, so it starts calculating ECC during the address cycles.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Work around this by resetting the ECC controller between the address and
-data cycles.
+--Boundary_(ID_f4tA//VPE0/Lw42GZpyK9A)
+Content-type: TEXT/PLAIN; charset=utf-8
+Content-transfer-encoding: 8BIT
 
-Signed-off-by: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
-Acked-by: Andrew Victor <linux@maxim.org.za>
----
-Andrew, the comment you mentioned
+On Fri, 27 Jun 2008, Jörn Engel wrote:
 
-   nand_chip->ecc.hwctl = at91_nand_hwctl;     /* unused */
+> On Thu, 26 June 2008 13:24:14 -0400, Nicolas Pitre wrote:
+> > 
+> > I posted this patch on Monday for inclusion in 2.6.27.  However we have 
+> > additional patches meant to be pushed through the ARM tree that depend 
+> > on this one.  So to simplify dependency issues, I would like for this 
+> > patch to be acked and then we'll simply push it along with the others 
+> > through the ARM path.
+> > 
+> > Any objections??
+> 
+> While I don't really understand what this patch does, it seems harmless
+> enough and I generally trust your judgement.  Good enough for me.
 
-doesn't seem to have made it into the MTD tree. So there was nothing
-to remove.
+OK thanks.
 
- drivers/mtd/nand/atmel_nand.c |   25 +++++++++++++++++++++++--
- 1 files changed, 23 insertions(+), 2 deletions(-)
+> > > diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
+> > > index 59e05a1..ee2ac39 100644
+> > > --- a/drivers/mtd/nand/orion_nand.c
+> > > +++ b/drivers/mtd/nand/orion_nand.c
+> > > @@ -85,6 +85,9 @@ static int __init orion_nand_probe(struct platform_device *pdev)
+> > >  	nc->cmd_ctrl = orion_nand_cmd_ctrl;
+> > >  	nc->ecc.mode = NAND_ECC_SOFT;
+> > >  
+> > > +	if (board->chip_delay)
+> > > +		nc->chip_delay = board->chip_delay;
+> > > +
+> 
+> What I'm wondering about is whether the assignment should be made
+> unconditional.  After all, if board->chip_delay is zero, the assignment
+> should simply write zero to a variable that already is zero.  Or if it
+> isn't, the driver is missing a memset() somewhere.
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 4814fc9..99aec46 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -33,6 +33,7 @@
- #include <linux/io.h>
- 
- #include <asm/arch/board.h>
-+#include <asm/arch/cpu.h>
- 
- #ifdef CONFIG_MTD_NAND_ATMEL_ECC_HW
- #define hard_ecc	1
-@@ -264,6 +265,19 @@ static int atmel_nand_read_page(struct mtd_info *mtd,
- 	uint8_t *ecc_pos;
- 	int stat;
- 
-+	/*
-+	 * Errata: ALE is incorrectly wired up to the ECC controller
-+	 * on the AP7000, so it will include the address cycles in the
-+	 * ECC calculation.
-+	 *
-+	 * Workaround: Reset the parity registers before reading the
-+	 * actual data.
-+	 */
-+	if (cpu_is_at32ap7000()) {
-+		struct atmel_nand_host *host = chip->priv;
-+		ecc_writel(host->ecc, CR, ATMEL_ECC_RST);
-+	}
-+
- 	/* read the page */
- 	chip->read_buf(mtd, p, eccsize);
- 
-@@ -377,9 +391,16 @@ static int atmel_nand_correct(struct mtd_info *mtd, u_char *dat,
- }
- 
- /*
-- * Enable HW ECC : unsused
-+ * Enable HW ECC : unused on most chips
-  */
--static void atmel_nand_hwctl(struct mtd_info *mtd, int mode) { ; }
-+static void atmel_nand_hwctl(struct mtd_info *mtd, int mode)
-+{
-+	if (cpu_is_at32ap7000()) {
-+		struct nand_chip *nand_chip = mtd->priv;
-+		struct atmel_nand_host *host = nand_chip->priv;
-+		ecc_writel(host->ecc, CR, ATMEL_ECC_RST);
-+	}
-+}
- 
- #ifdef CONFIG_MTD_PARTITIONS
- static const char *part_probes[] = { "cmdlinepart", NULL };
--- 
-1.5.5.4
+There is the case that a default could be set by the driver and having 
+board->chip_delay == 0 should mean the driver default is fine.
+
+
+Nicolas
+
+--Boundary_(ID_f4tA//VPE0/Lw42GZpyK9A)--
