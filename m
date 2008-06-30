@@ -1,21 +1,20 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KDJ67-0006EY-VN
-	for linux-mtd@lists.infradead.org; Mon, 30 Jun 2008 13:07:12 +0000
-Date: Mon, 30 Jun 2008 15:06:52 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
-Subject: Re: [PATCH RESEND 1/3] atmel_nand speedup via {read,write}s{b,w}()
-Message-ID: <20080630130652.GA28159@logfs.org>
-References: <1214655248-15707-1-git-send-email-haavard.skinnemoen@atmel.com>
-MIME-Version: 1.0
+	id 1KDKsr-0003Py-Lk
+	for linux-mtd@lists.infradead.org; Mon, 30 Jun 2008 15:01:38 +0000
+Subject: Re: UBIFS error (pid 4687): compr_init: cannot inittialize
+	compressor zlib, error -2
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
+In-Reply-To: <1214829850.2771.2.camel@localhost.localdomain>
+References: <1214829850.2771.2.camel@localhost.localdomain>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1214655248-15707-1-git-send-email-haavard.skinnemoen@atmel.com>
-Cc: David Brownell <david-b@pacbell.net>, linux-mtd@lists.infradead.org,
-	David Brownell <dbrownell@users.sourceforge.net>,
-	David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+Date: Mon, 30 Jun 2008 17:59:29 +0300
+Message-Id: <1214837969.6573.53.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,19 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 28 June 2008 14:14:06 +0200, Haavard Skinnemoen wrote:
-> 
-> Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
-> [haavard.skinnemoen@atmel.com: rebase onto atmel_nand rename]
-> Signed-off-by: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
-> Acked-by: Andrew Victor <linux@maxim.org.za>
+Hi,
 
-Acked-by: Joern Engel <joern@logfs.org>
+On Mon, 2008-06-30 at 20:44 +0800, xiaochuan-xu wrote:
+> I have created a UBI layer on top of mtd and create a volumes in
+> 2.6.26-rc5-01191-g23baa5b-dirty.
+> and when i met such error when i modprobe ubifs:
+> =20
+> FATAL: Error inserting ubifs
+> (/lib/mdules/2.6.26-rc5-01191-g23baa5b-dirty/kernel/fs/ubifs/ubifs.ko):
+> Unknown symbol in module, or unknown parameter (see dmesg)
 
-Same goes for the other two patches in the series.
+Did you run depmod -a
+=20
+> I've try to install zlib module,but I only found a similar module named
+> zlib_deflate=20
+> which is useless for the problem. Maybe seting CONFIG_UBIFS_FS_ZLIB =3D n
+> can solve this problem.
 
-Jörn
+You need "deflate" and "zlib_deflate" modules.
 
--- 
-Joern's library part 9:
-http://www.scl.ameslab.gov/Publications/Gus/TwelveWays.html
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
