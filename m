@@ -1,24 +1,17 @@
-Received: from relais.videotron.ca ([24.201.245.36])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KCP5E-0005qK-SB
-	for linux-mtd@lists.infradead.org; Sat, 28 Jun 2008 01:18:33 +0000
-MIME-version: 1.0
-Content-type: multipart/mixed; boundary="Boundary_(ID_f4tA//VPE0/Lw42GZpyK9A)"
-Received: from xanadu.home ([66.131.194.97]) by VL-MO-MR004.ip.videotron.ca
-	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
-	32bit))
-	with ESMTP id <0K3500JDQFMV1860@VL-MO-MR004.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Fri, 27 Jun 2008 21:18:31 -0400 (EDT)
-Date: Fri, 27 Jun 2008 21:18:31 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-To: =?ISO-8859-15?Q?J=F6rn_Engel?= <joern@logfs.org>
-Subject: Re: [PATCH] [MTD] orion_nand: add chip_delay parameter
-In-reply-to: <20080627072354.GA30174@logfs.org>
-Message-id: <alpine.LFD.1.10.0806272113270.19095@xanadu.home>
-References: <alpine.LFD.1.10.0806230952530.2979@xanadu.home>
-	<alpine.LFD.1.10.0806261319340.2979@xanadu.home>
-	<20080627072354.GA30174@logfs.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Received: from [202.202.0.36] (helo=cqu.edu.cn)
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KDIl6-0004QZ-0e
+	for linux-mtd@lists.infradead.org; Mon, 30 Jun 2008 12:45:29 +0000
+Message-ID: <414829586.31683@cqu.edu.cn>
+Subject: UBIFS error (pid 4687): compr_init: cannot inittialize compressor
+	zlib, error -2
+From: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Date: Mon, 30 Jun 2008 20:44:10 +0800
+Message-Id: <1214829850.2771.2.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,51 +21,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---Boundary_(ID_f4tA//VPE0/Lw42GZpyK9A)
-Content-type: TEXT/PLAIN; charset=utf-8
-Content-transfer-encoding: 8BIT
-
-On Fri, 27 Jun 2008, Jörn Engel wrote:
-
-> On Thu, 26 June 2008 13:24:14 -0400, Nicolas Pitre wrote:
-> > 
-> > I posted this patch on Monday for inclusion in 2.6.27.  However we have 
-> > additional patches meant to be pushed through the ARM tree that depend 
-> > on this one.  So to simplify dependency issues, I would like for this 
-> > patch to be acked and then we'll simply push it along with the others 
-> > through the ARM path.
-> > 
-> > Any objections??
-> 
-> While I don't really understand what this patch does, it seems harmless
-> enough and I generally trust your judgement.  Good enough for me.
-
-OK thanks.
-
-> > > diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
-> > > index 59e05a1..ee2ac39 100644
-> > > --- a/drivers/mtd/nand/orion_nand.c
-> > > +++ b/drivers/mtd/nand/orion_nand.c
-> > > @@ -85,6 +85,9 @@ static int __init orion_nand_probe(struct platform_device *pdev)
-> > >  	nc->cmd_ctrl = orion_nand_cmd_ctrl;
-> > >  	nc->ecc.mode = NAND_ECC_SOFT;
-> > >  
-> > > +	if (board->chip_delay)
-> > > +		nc->chip_delay = board->chip_delay;
-> > > +
-> 
-> What I'm wondering about is whether the assignment should be made
-> unconditional.  After all, if board->chip_delay is zero, the assignment
-> should simply write zero to a variable that already is zero.  Or if it
-> isn't, the driver is missing a memset() somewhere.
-
-There is the case that a default could be set by the driver and having 
-board->chip_delay == 0 should mean the driver default is fine.
-
-
-Nicolas
-
---Boundary_(ID_f4tA//VPE0/Lw42GZpyK9A)--
+hello everyone
+ 
+I have created a UBI layer on top of mtd and create a volumes in
+2.6.26-rc5-01191-g23baa5b-dirty.
+and when i met such error when i modprobe ubifs:
+ 
+FATAL: Error inserting ubifs
+(/lib/mdules/2.6.26-rc5-01191-g23baa5b-dirty/kernel/fs/ubifs/ubifs.ko):
+Unknown symbol in module, or unknown parameter (see dmesg)
+ 
+and in the /var/log/message: 
+kernel: UBIFS error (pid 4687): compr_init: cannot inittialize
+compressor zlib, error -2
+ 
+I've try to install zlib module,but I only found a similar module named
+zlib_deflate 
+which is useless for the problem. Maybe seting CONFIG_UBIFS_FS_ZLIB = n
+can solve this problem.
+But are there some ways else and more advisable?
+I need you help, thands in advance.
+ 
+xxc. 
