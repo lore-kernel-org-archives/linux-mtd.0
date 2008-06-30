@@ -1,17 +1,21 @@
-Received: from [202.202.0.36] (helo=cqu.edu.cn)
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KDIl6-0004QZ-0e
-	for linux-mtd@lists.infradead.org; Mon, 30 Jun 2008 12:45:29 +0000
-Message-ID: <414829586.31683@cqu.edu.cn>
-Subject: UBIFS error (pid 4687): compr_init: cannot inittialize compressor
-	zlib, error -2
-From: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Mon, 30 Jun 2008 20:44:10 +0800
-Message-Id: <1214829850.2771.2.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KDJ67-0006EY-VN
+	for linux-mtd@lists.infradead.org; Mon, 30 Jun 2008 13:07:12 +0000
+Date: Mon, 30 Jun 2008 15:06:52 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
+Subject: Re: [PATCH RESEND 1/3] atmel_nand speedup via {read,write}s{b,w}()
+Message-ID: <20080630130652.GA28159@logfs.org>
+References: <1214655248-15707-1-git-send-email-haavard.skinnemoen@atmel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1214655248-15707-1-git-send-email-haavard.skinnemoen@atmel.com>
+Cc: David Brownell <david-b@pacbell.net>, linux-mtd@lists.infradead.org,
+	David Brownell <dbrownell@users.sourceforge.net>,
+	David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,25 +25,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hello everyone
- 
-I have created a UBI layer on top of mtd and create a volumes in
-2.6.26-rc5-01191-g23baa5b-dirty.
-and when i met such error when i modprobe ubifs:
- 
-FATAL: Error inserting ubifs
-(/lib/mdules/2.6.26-rc5-01191-g23baa5b-dirty/kernel/fs/ubifs/ubifs.ko):
-Unknown symbol in module, or unknown parameter (see dmesg)
- 
-and in the /var/log/message: 
-kernel: UBIFS error (pid 4687): compr_init: cannot inittialize
-compressor zlib, error -2
- 
-I've try to install zlib module,but I only found a similar module named
-zlib_deflate 
-which is useless for the problem. Maybe seting CONFIG_UBIFS_FS_ZLIB = n
-can solve this problem.
-But are there some ways else and more advisable?
-I need you help, thands in advance.
- 
-xxc. 
+On Sat, 28 June 2008 14:14:06 +0200, Haavard Skinnemoen wrote:
+> 
+> Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
+> [haavard.skinnemoen@atmel.com: rebase onto atmel_nand rename]
+> Signed-off-by: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
+> Acked-by: Andrew Victor <linux@maxim.org.za>
+
+Acked-by: Joern Engel <joern@logfs.org>
+
+Same goes for the other two patches in the series.
+
+Jörn
+
+-- 
+Joern's library part 9:
+http://www.scl.ameslab.gov/Publications/Gus/TwelveWays.html
