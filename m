@@ -1,16 +1,18 @@
-Message-ID: <48694BA3.7010805@freescale.com>
-Date: Mon, 30 Jun 2008 16:09:55 -0500
-From: Scott Wood <scottwood@freescale.com>
+Received: from tesla.selinc.com ([12.110.71.2])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KDT9H-0006wg-0z
+	for linux-mtd@lists.infradead.org; Mon, 30 Jun 2008 23:51:07 +0000
+Received: from edison2.selinc.com (edison2.selinc.com [12.110.71.8])
+	by tesla.selinc.com (8.12.11.20060308/8.12.11) with ESMTP id
+	m5UNp5ul007544
+	for <linux-mtd@lists.infradead.org>; Mon, 30 Jun 2008 16:51:05 -0700
+To: linux-mtd@lists.infradead.org
+Subject: GIT troubles at infradead?
 MIME-Version: 1.0
-To: Anton Vorontsov <avorontsov@ru.mvista.com>
-Subject: Re: [PATCH 3/3] MTD: NAND: fsl_elbc_nand: ecclayout cleanups
-References: <20080627190243.GA4713@polina.dev.rtsoft.ru>
-	<20080627190420.GC16901@polina.dev.rtsoft.ru>
-In-Reply-To: <20080627190420.GC16901@polina.dev.rtsoft.ru>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	Iwo Mergler <iwo@call-direct.com.au>
+Message-ID: <OF02AB95B1.1E50A1B0-ON88257478.0082C6C1-88257478.0082FA41@selinc.com>
+From: Bruce_Leonard@selinc.com
+Date: Mon, 30 Jun 2008 16:50:45 -0700
+Content-Type: text/plain; charset="US-ASCII"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,16 +22,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Anton Vorontsov wrote:
-> This patch deletes oobavail assignments, they're calculated by the nand
-> core code in nand_scan_tail, plus current oobavail values are wrong for
-> the LP NANDs.
-> 
-> Also remove mtd->ecclayout and mtd->oobavail assignments, mtd core
-> handles this all by itself.
-> 
-> Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
-
-ACK
-
--Scott
+Is anyone else having trouble pulling trees via git from infradead.org? 
+I've been trying to clone the ubifs-2.6 tree for most of the day and all 
+it does is hang right after initializing the empyt repository on my 
+machine.  git seems to be working from my end as I can pull down the 
+latest vanilla kernel from kernel.org.
