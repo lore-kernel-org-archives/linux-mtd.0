@@ -1,28 +1,19 @@
-Received: from mms1.broadcom.com ([216.31.210.17])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KDEzB-0001EL-64
-	for linux-mtd@lists.infradead.org; Mon, 30 Jun 2008 08:43:45 +0000
-Received: from mail-irva-8.broadcom.com (mail-irva-8 [10.11.18.52]) by
-	mail-irva-10.broadcom.com (Postfix) with ESMTP id 476FE2B0 for
-	<linux-mtd@lists.infradead.org>; Mon, 30 Jun 2008 01:37:22 -0700 (PDT)
-Received: from NT-SJCA-0752.brcm.ad.broadcom.com (nt-sjca-0752
-	[10.16.192.222]) by mail-sj1-12.sj.broadcom.com (Postfix) with ESMTP id
-	CC85D20501 for <linux-mtd@lists.infradead.org>; Mon, 30 Jun 2008
-	01:37:16 -0700 (PDT)
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Subject: NOR MTD map driver up and running  but name coming as NULL
-Date: Mon, 30 Jun 2008 01:37:15 -0700
-Message-ID: <E06E3B7BBC07864CADE892DAF1EB0FBD090EA663@NT-SJCA-0752.brcm.ad.broadcom.com>
-In-Reply-To: <E06E3B7BBC07864CADE892DAF1EB0FBD08FC36D5@NT-SJCA-0752.brcm.ad.broadcom.com>
-References: <20080625131723.GA24006@mersenne.largestprime.net>
-	<1214401352.6573.24.camel@sauron>
-	<E06E3B7BBC07864CADE892DAF1EB0FBD08FC36D5@NT-SJCA-0752.brcm.ad.broadcom.com>
-From: "Divyanshu Verma" <dverma@broadcom.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain;
- charset=us-ascii
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KDZJp-0006FT-9v
+	for linux-mtd@lists.infradead.org; Tue, 01 Jul 2008 06:26:26 +0000
+Subject: Re: GIT troubles at infradead?
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Bruce_Leonard@selinc.com
+In-Reply-To: <OF02AB95B1.1E50A1B0-ON88257478.0082C6C1-88257478.0082FA41@selinc.com>
+References: <OF02AB95B1.1E50A1B0-ON88257478.0082C6C1-88257478.0082FA41@selinc.com>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 01 Jul 2008 09:23:55 +0300
+Message-Id: <1214893435.6573.56.camel@sauron>
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,64 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-I am able to bring up NOR flash succsfully. The reason for the error was
-2.6.14.2 not supporting  query version 1.4.
-Anyway it is working fine and I can see the partitions on # cat
-/proc/mtd.
 
-Now for testing that device is it required that I need to put some fime
-system on it, say jffs?
-Also  on  doing cat /proc/mtd, I can see the partition names appearing
-as "<NULL>" and not the ones that I declared in my map driver inside
-instance of struct mtd_partitions
+On Mon, 2008-06-30 at 16:50 -0700, Bruce_Leonard@selinc.com wrote:
+> Is anyone else having trouble pulling trees via git from infradead.org?=20
+> I've been trying to clone the ubifs-2.6 tree for most of the day and all=20
+> it does is hang right after initializing the empyt repository on my=20
+> machine.  git seems to be working from my end as I can pull down the=20
+> latest vanilla kernel from kernel.org.
 
-Following are my declarations and I aspire to see names as "BOOT" and
-"Linux-Image".
+Does it happen when you pull mtd-2.6.git as well (may be I screwed up
+ubifs-2.6.git)? Do you use --reference linux-2.g.git as it is said
+here: http://www.linux-mtd.infradead.org/source.html ?
 
-Any help will be highly appreciated.
-
-static struct mtd_partition BCM5892_nand_partition [] =3D {
-{
-        .name           =3D "BOOT",
-        .offset         =3D 0,
-        .size           =3D 0x0001000,
-        .mask_flags     =3DMTD_WRITEABLE,
-},
-
-{
-        .name           =3D "Linux-Image",
-        .size           =3D MTDPART_SIZ_FULL,
-        .offset         =3D MTDPART_OFS_NXTBLK,
-},
-};
-
-Thanks and regards,
-Divyanshu
-
-
------Original Message-----
-From: linux-mtd-bounces@lists.infradead.org
-[mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Divyanshu
-Verma
-Sent: Thursday, June 26, 2008 2:55 PM
-To: linux-mtd@lists.infradead.org
-Subject: Getting Error in NOR MTD map driver
-
-Hi,
- I am developing NOR MTD map driver for  SPANSION NOR. I am getting the
-following error and hence not able to  detect the device.
-Kindly help  me out.
-
- Unknown Amd/Fujitsu Extended Query version 1.4.
-gen_probe: No supported Vendor Command Set found=20
-
-
-Regards,
-Divyanshu
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
