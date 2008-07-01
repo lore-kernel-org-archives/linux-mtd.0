@@ -1,19 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KDf64-000356-Ac
-	for linux-mtd@lists.infradead.org; Tue, 01 Jul 2008 12:36:36 +0000
-Subject: Re: Bootloader support for UBI images
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Richard Titmuss <richard_titmuss@logitech.com>
-In-Reply-To: <1214915164.6573.75.camel@sauron>
-References: <486A184B.3080708@logitech.com> <1214915164.6573.75.camel@sauron>
+	id 1KDglc-0004mh-Dc
+	for linux-mtd@lists.infradead.org; Tue, 01 Jul 2008 14:23:36 +0000
+Date: Tue, 1 Jul 2008 16:23:24 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Subject: Re: [PATCH] Nand driver for TMIO devices
+Message-ID: <20080701142323.GA3114@logfs.org>
+References: <20080627094340.GA2748@doriath.ww600.siemens.net>
+	<20080701115309.GB7238@doriath.ww600.siemens.net>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Date: Tue, 01 Jul 2008 15:34:11 +0300
-Message-Id: <1214915651.6573.78.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20080701115309.GB7238@doriath.ww600.siemens.net>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,23 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2008-07-01 at 15:26 +0300, Artem Bityutskiy wrote:
-> >  Also I need support for=20
-> > renaming multiple volumes atomically when switching images after the=20
-> > upgrade. If these sound sensible and useful changes I can look at=20
-> > creating patches to add these features.
-> Also sounds as a good and useful idea. And implementation should not
-> difficult - it is just about changing the volume table. You may count on
-> my assistance.
->=20
-> I'm just not sure about the interface. Renaming one volume is fine. But
-> you need to rename 2, so the interface should be more complex. And if 2,
-> why not 3, or 5? Or 16? Or any amount from 1 to UBI_MAX_VOLUMES?
+On Tue, 1 July 2008 15:53:09 +0400, Dmitry Baryshkov wrote:
+> On Fri, Jun 27, 2008 at 01:43:40PM +0400, Dmitry Baryshkov wrote:
+> > Add support nand controller part of toshiba mobile i/o controllers
+> > and some custom ASIC found in some PDAs.
+> > 
+> > Respective parts which handle platform device registration are merged
+> > via Russell's arm:devel tree.
+> > 
+> > Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+> > ---
+> >  drivers/mtd/nand/Kconfig     |    7 +
+> >  drivers/mtd/nand/Makefile    |    1 +
+> >  drivers/mtd/nand/tmio_nand.c |  534 ++++++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 542 insertions(+), 0 deletions(-)
+> >  create mode 100644 drivers/mtd/nand/tmio_nand.c
+> 
+> Any comments regarding this patch?
 
-Just a note: I was talking about how would the corresponding UBI
-ioctl(s) interface(s) look like. Kernel people are very picky at this.
+I don't see any obvious problems with it.  I guess David will take a
+closer look in the next merge window.  He tends to ignore the list for
+some month, then merge dozens of patches in one hour.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Jörn
+
+-- 
+All models are wrong. Some models are useful.
+-- George Box
