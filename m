@@ -1,24 +1,18 @@
-Received: from wf-out-1314.google.com ([209.85.200.172])
+Received: from mail.slimdevices.com ([67.155.107.5])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KDpFY-0001zW-Tw
-	for linux-mtd@lists.infradead.org; Tue, 01 Jul 2008 23:27:05 +0000
-Received: by wf-out-1314.google.com with SMTP id 28so100875wfc.24
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 01 Jul 2008 16:27:02 -0700 (PDT)
-Message-ID: <9c9fda240807011627v60428f9eh3c2bb17cdc8ce6ea@mail.gmail.com>
-Date: Wed, 2 Jul 2008 08:27:02 +0900
-From: "Kyungmin Park" <kmpark@infradead.org>
-Sender: kyungmin78@gmail.com
-To: "Kamat, Nishant" <nskamat@ti.com>
-Subject: Re: [PATCH] MTD: OMAP2-NAND: Fix partition reading from board info
-In-Reply-To: <DFEF307E035C8647B119E6A60DB62D4AE47475F8@dlee02.ent.ti.com>
+	id 1KDxDN-0006al-D6
+	for linux-mtd@lists.infradead.org; Wed, 02 Jul 2008 07:57:21 +0000
+Message-ID: <486B34D9.2070009@logitech.com>
+Date: Wed, 02 Jul 2008 08:57:13 +0100
+From: Richard Titmuss <richard_titmuss@logitech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+To: dedekind@infradead.org
+Subject: Re: Bootloader support for UBI images
+References: <486A184B.3080708@logitech.com> <1214915164.6573.75.camel@sauron>
+In-Reply-To: <1214915164.6573.75.camel@sauron>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <DFEF307E035C8647B119E6A60DB62D4AE47475F8@dlee02.ent.ti.com>
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,44 +22,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Artem Bityutskiy wrote:
 
-It's should be sent to MTD list. and we also fix the NOR similar ways.
-It's already posted but not committed.
+>>  Also I need support for 
+>> renaming multiple volumes atomically when switching images after the 
+>> upgrade. If these sound sensible and useful changes I can look at 
+>> creating patches to add these features.
+>>     
+> Also sounds as a good and useful idea. And implementation should not
+> difficult - it is just about changing the volume table. You may count on
+> my assistance.
+>
+> I'm just not sure about the interface. Renaming one volume is fine. But
+> you need to rename 2, so the interface should be more complex. And if 2,
+> why not 3, or 5? Or 16? Or any amount from 1 to UBI_MAX_VOLUMES?
+>   
+Right, I was thinking that it would allow any number of volumes for 
+renaming. I am also not sure about the interface, and was hoping to get 
+some suggestions here. I will think about it and propose something in a 
+few days.
 
-Thank you,
-Kyungmin Park
+> So you use the sub-page read patch BTW?
+No, I'd missed that. Where is it?
 
-On Tue, Jul 1, 2008 at 11:32 PM, Kamat, Nishant <nskamat@ti.com> wrote:
->
-> From: Nishant Kamat <nskamat@ti.com>
->
-> MTD: OMAP2-NAND: Fix partition reading from board info
->
-> The parse_mtd_partitions() function no longer returns
-> a negative error in case cmdline is not passed.
-> See commit: b0d06afb607
->
-> Signed-off-by: Nishant Kamat <nskamat@ti.com>
-> ---
->  drivers/mtd/nand/omap2.c |    2 +-
->  1 files changed, 1 insertion(+), 1 deletion(-)
->
-> Index: linux-omap-ti.ldp/drivers/mtd/nand/omap2.c
-> ===================================================================
-> --- linux-omap-ti.ldp.orig/drivers/mtd/nand/omap2.c     2008-06-30 22:01:50.000000000 +0530
-> +++ linux-omap-ti.ldp/drivers/mtd/nand/omap2.c  2008-06-30 22:03:34.446471469 +0530
-> @@ -699,7 +699,7 @@
->        err = parse_mtd_partitions(&info->mtd, part_probes, &info->parts, 0);
->        if (err > 0)
->                add_mtd_partitions(&info->mtd, info->parts, err);
-> -       else if (err < 0 && pdata->parts)
-> +       else if (pdata->parts)
->                add_mtd_partitions(&info->mtd, pdata->parts, pdata->nr_parts);
->        else
->  #endif
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
+> Well, surely the boot-loader may create a per-PEB (physical eraseblock)
+> array and put all information about each PEB there (mapped/unmapped, LEB
+> number, erase-counter, etc)? Then in UBI it will be easy to scan this
+> array instead of the flash media. I am just not aware how such kind of
+> bootloader->kernel data passing is done in Linux. Can you come up with a
+> nice and mainline-acceptible way?
+>   
+Ok, that is possible. This would also have to include the bad block and 
+bit flip status for each PEB. At the moment the Redboot flash api does 
+not make this available, so it would mean extending Redboot or writing 
+custom flash drivers to access this information.
+
+> I did not actually catch the second part (LER and PER) tables - this is
+> something I am not aware of. UBI has only volume table on flash, the
+> other things are in-memory and build by scanning.
+>   
+It was a proposal to _add_ an addition table, that provided a LER to PER 
+mapping for static volumes. If this table was stored near the beginning 
+of the flash, then it could be accessed without a full scan. This could 
+only be used if the UBI volume was mounted read-only, any write 
+operations would require scanning all the flash blocks. This is an 
+alternative approach to passing data from the bootloader to the kernel.
+
+Richard
