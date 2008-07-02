@@ -1,20 +1,20 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KDxX9-0000y9-GU
-	for linux-mtd@lists.infradead.org; Wed, 02 Jul 2008 08:17:48 +0000
-Message-ID: <486B39C8.10502@grandegger.com>
-Date: Wed, 02 Jul 2008 10:18:16 +0200
-From: Wolfgang Grandegger <wg@grandegger.com>
-MIME-Version: 1.0
-To: Linuxppc-dev@ozlabs.org
-Subject: Re: [PATCH v3] [NAND] driver extension to support NAND on TQM85xx
-	modules
-References: <484CE77C.70506@grandegger.com>
-In-Reply-To: <484CE77C.70506@grandegger.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	Anton Vorontsov <avorontsov@ru.mvista.com>, linux-mtd@lists.infradead.org
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KDyH5-0003rq-MW
+	for linux-mtd@lists.infradead.org; Wed, 02 Jul 2008 09:05:16 +0000
+Subject: Re: Bootloader support for UBI images
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Richard Titmuss <richard_titmuss@logitech.com>
+In-Reply-To: <486B34D9.2070009@logitech.com>
+References: <486A184B.3080708@logitech.com>
+	<1214915164.6573.75.camel@sauron>  <486B34D9.2070009@logitech.com>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 02 Jul 2008 12:02:58 +0300
+Message-Id: <1214989379.6573.85.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,113 +24,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Wed, 2008-07-02 at 08:57 +0100, Richard Titmuss wrote:
+> Right, I was thinking that it would allow any number of volumes for=20
+> renaming. I am also not sure about the interface, and was hoping to get=20
+> some suggestions here. I will think about it and propose something in a=20
+> few days.
 
-I would like to ask for the status of the patch below and the related 
-ones. Any chance to get them in for 2.6.27.
+Do you absolutely need multiple renames? Could you live with one at
+a time?
 
-TIA,
+> > So you use the sub-page read patch BTW?
+> No, I'd missed that. Where is it?
 
-Wolfgang.
+Here is the relevant thread. Some people already use that patch. dwmw2
+was positive about it and told he would accept it.
 
-Wolfgang Grandegger wrote:
-> This patch extends the FSL UPM NAND driver from Anton Vorontsov to
-> support hardware which does not have the R/B pin of the NAND chip
-> connected, like the TQM8548 module:
-> 
-> - The OF_GPIO dependency has been removed from the Kconfig option
->   because GPIO is not needed. The relevant gpio_* function are then
->   stubbed out in <linux/gpio.h>.
->  
-> - It re-introduces the chip-delay property to define an appropriate
->   maximum delay time (tR) required for read operations. The binding
->   will be documented in a separate patch.
-> 
-> Note: this patch is based on a patch from Anton Vorontsov aöready
->       posted to this list:
-> 
->       http://ozlabs.org/pipermail/linuxppc-dev/2008-April/055587.html.
->       http://ozlabs.org/pipermail/linuxppc-dev/2008-May/057158.html
-> 
-> Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
-> ---
->  drivers/mtd/nand/Kconfig   |    2 +-
->  drivers/mtd/nand/fsl_upm.c |   17 +++++++++++++----
->  2 files changed, 14 insertions(+), 5 deletions(-)
-> 
-> Index: linux-2.6-galak/drivers/mtd/nand/Kconfig
-> ===================================================================
-> --- linux-2.6-galak.orig/drivers/mtd/nand/Kconfig
-> +++ linux-2.6-galak/drivers/mtd/nand/Kconfig
-> @@ -380,7 +380,7 @@ config MTD_NAND_FSL_ELBC
->  
->  config MTD_NAND_FSL_UPM
->  	tristate "Support for NAND on Freescale UPM"
-> -	depends on MTD_NAND && OF_GPIO && (PPC_83xx || PPC_85xx)
-> +	depends on MTD_NAND && (PPC_83xx || PPC_85xx)
->  	select FSL_LBC
->  	help
->  	  Enables support for NAND Flash chips wired onto Freescale PowerPC
-> Index: linux-2.6-galak/drivers/mtd/nand/fsl_upm.c
-> ===================================================================
-> --- linux-2.6-galak.orig/drivers/mtd/nand/fsl_upm.c
-> +++ linux-2.6-galak/drivers/mtd/nand/fsl_upm.c
-> @@ -13,6 +13,7 @@
->  
->  #include <linux/kernel.h>
->  #include <linux/module.h>
-> +#include <linux/delay.h>
->  #include <linux/mtd/nand.h>
->  #include <linux/mtd/nand_ecc.h>
->  #include <linux/mtd/partitions.h>
-> @@ -36,6 +37,7 @@ struct fsl_upm_nand {
->  	uint8_t upm_cmd_offset;
->  	void __iomem *io_base;
->  	int rnb_gpio;
-> +	int chip_delay;
->  };
->  
->  #define to_fsl_upm_nand(mtd) container_of(mtd, struct fsl_upm_nand, mtd)
-> @@ -58,10 +60,11 @@ static void fun_wait_rnb(struct fsl_upm_
->  	if (fun->rnb_gpio >= 0) {
->  		while (--cnt && !fun_chip_ready(&fun->mtd))
->  			cpu_relax();
-> +		if (!cnt)
-> +			dev_err(fun->dev, "tired waiting for RNB\n");
-> +	} else {
-> +		ndelay(100);
->  	}
-> -
-> -	if (!cnt)
-> -		dev_err(fun->dev, "tired waiting for RNB\n");
->  }
->  
->  static void fun_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
-> @@ -129,7 +132,7 @@ static int __devinit fun_chip_init(struc
->  	fun->chip.IO_ADDR_R = fun->io_base;
->  	fun->chip.IO_ADDR_W = fun->io_base;
->  	fun->chip.cmd_ctrl = fun_cmd_ctrl;
-> -	fun->chip.chip_delay = 50;
-> +	fun->chip.chip_delay = fun->chip_delay;
->  	fun->chip.read_byte = fun_read_byte;
->  	fun->chip.read_buf = fun_read_buf;
->  	fun->chip.write_buf = fun_write_buf;
-> @@ -233,6 +236,12 @@ static int __devinit fun_probe(struct of
->  		goto err2;
->  	}
->  
-> +	prop = of_get_property(ofdev->node, "chip-delay", NULL);
-> +	if (prop)
-> +		fun->chip_delay = *prop;
-> +	else
-> +		fun->chip_delay = 50;
-> +
->  	fun->io_base = devm_ioremap_nocache(&ofdev->dev, io_res.start,
->  					  io_res.end - io_res.start + 1);
->  	if (!fun->io_base) {
-> _______________________________________________
-> Linuxppc-dev mailing list
-> Linuxppc-dev@ozlabs.org
-> https://ozlabs.org/mailman/listinfo/linuxppc-dev
-> 
-> 
+http://lists.infradead.org/pipermail/linux-mtd/2008-April/021412.html
+
+> Ok, that is possible. This would also have to include the bad block and=20
+> bit flip status for each PEB. At the moment the Redboot flash api does=20
+> not make this available, so it would mean extending Redboot or writing=20
+> custom flash drivers to access this information.
+
+Well, bit-flip information is not mandatory and may be done later as
+an improvement. Bad-block information have to be available.
+
+> > I did not actually catch the second part (LER and PER) tables - this is
+> > something I am not aware of. UBI has only volume table on flash, the
+> > other things are in-memory and build by scanning.
+> >  =20
+> It was a proposal to _add_ an addition table, that provided a LER to PER=20
+> mapping for static volumes.
+
+Ah, this is s/LER/LEB/, s/PER/PEB/.
+
+>  If this table was stored near the beginning=20
+> of the flash, then it could be accessed without a full scan. This could=20
+> only be used if the UBI volume was mounted read-only, any write=20
+> operations would require scanning all the flash blocks. This is an=20
+> alternative approach to passing data from the bootloader to the kernel.
+
+Well, may be done, but the R/O limitation seems to be too hard.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
