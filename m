@@ -1,15 +1,15 @@
-From: "Kamat, Nishant" <nskamat@ti.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Thu, 3 Jul 2008 04:18:39 -0500
-Subject: RE: [PATCH] MTD: OMAP2-NAND: Fix partition reading from board info
-Message-ID: <DFEF307E035C8647B119E6A60DB62D4AE47C155A@dlee02.ent.ti.com>
-In-Reply-To: <9c9fda240807011627v60428f9eh3c2bb17cdc8ce6ea@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Received: from ocean.emcraft.com ([213.221.7.182])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KESXZ-00044x-3V
+	for linux-mtd@lists.infradead.org; Thu, 03 Jul 2008 17:24:18 +0000
+Message-ID: <486CFB83.3010301@emcraft.com>
+Date: Thu, 03 Jul 2008 20:17:07 +0400
+From: Sergei Poselenov <sposelenov@emcraft.com>
 MIME-Version: 1.0
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	Kyungmin Park <kmpark@infradead.org>
+To: linux-mtd@lists.infradead.org
+Subject: JFFS2: real free capacity of the partition
+Content-Type: text/plain; charset=KOI8-R; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,51 +19,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hello,
+
+Probably this is a trivial question and won't take much of your time.
+
+A simple test on a JFFS2 partition:
+
+# df
+Filesystem           1k-blocks      Used Available Use% Mounted on
+/dev/mtdblock1            1024       376       648  37% /etc
+# dd if=/dev/urandom of=tmp bs=1024 count=2900
+dd: tmp: No space left on device
+# rm tmp
+# df
+Filesystem           1k-blocks      Used Available Use% Mounted on
+/dev/mtdblock1            1024       372       652  36% /etc
+
+Why additional space appeared?
+
+I've noted, that this effect:
+- appeared only on the well-used partition, not on the
+   fresh-created one.
+- appeared only after filling up the device
+- appeared only once. On subsequent tests, the free space was
+reported without magic increases.
 
 
-> Kyungmin Park on July 02, 2008 4:57 AM, wrote:
->
-> Hi,
->
-> It's should be sent to MTD list. and we also fix the NOR similar ways.
-> It's already posted but not committed.
+Is this is an effect of the JFFS2 garbage collector?
+Is there any method to learn the real available capacity of the
+mounted partition?
 
-
-Posting the patch on MTD list. Please merge.
-
----< Cut here >---
-
-From: Nishant Kamat <nskamat@ti.com>
-
-This patch fixes the omap2 nand driver code that allows
-reading of partition data from board info.
-
-The parse_mtd_partitions() function no longer returns a
-negative error in case cmdline is not passed.
-See commit: b0d06afb607
-
-Signed-off-by: Nishant Kamat <nskamat@ti.com>
----
- drivers/mtd/nand/omap2.c |    2 +-
- 1 files changed, 1 insertion(+), 1 deletion(-)
-
-Index: linux-omap-ti.ldp/drivers/mtd/nand/omap2.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- linux-omap-ti.ldp.orig/drivers/mtd/nand/omap2.c     2008-06-30 22:01:50=
-.000000000 +0530
-+++ linux-omap-ti.ldp/drivers/mtd/nand/omap2.c  2008-06-30 22:03:34.4464714=
-69 +0530
-@@ -699,7 +699,7 @@
-        err =3D parse_mtd_partitions(&info->mtd, part_probes, &info->parts,=
- 0);
-        if (err > 0)
-                add_mtd_partitions(&info->mtd, info->parts, err);
--       else if (err < 0 && pdata->parts)
-+       else if (pdata->parts)
-                add_mtd_partitions(&info->mtd, pdata->parts, pdata->nr_part=
-s);
-        else
- #endif
+Thanks in advance,
+Sergei
