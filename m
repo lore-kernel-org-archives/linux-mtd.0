@@ -1,19 +1,15 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KEkyR-0001vE-0q
-	for linux-mtd@lists.infradead.org; Fri, 04 Jul 2008 13:05:15 +0000
-Subject: Re: Problem mounting a UBIFS volume
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Bruce_Leonard@selinc.com
-In-Reply-To: <OF565C42CF.2A35DC45-ON8825747B.001B2100-8825747B.001D1F69@selinc.com>
-References: <OF565C42CF.2A35DC45-ON8825747B.001B2100-8825747B.001D1F69@selinc.com>
-Content-Type: text/plain; charset=utf-8
-Date: Fri, 04 Jul 2008 16:02:29 +0300
-Message-Id: <1215176549.6573.110.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from n75.bullet.mail.sp1.yahoo.com ([98.136.44.51])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KEzN4-0003lV-QU
+	for linux-mtd@lists.infradead.org; Sat, 05 Jul 2008 04:27:39 +0000
+Date: Fri, 4 Jul 2008 21:27:36 -0700 (PDT)
+From: Josef Tran <josefctran@yahoo.com>
+Subject: problem with jffs
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Message-ID: <960230.9247.qm@web45110.mail.sp1.yahoo.com>
+Reply-To: josefctran@yahoo.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +19,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On startup by GESBC-2440 board has problems with the JFFS2 on the flash memory.  Here is what it says.  Can anyone tell me why i am getting this error?  Thank in advance.
 
-On Wed, 2008-07-02 at 22:18 -0700, Bruce_Leonard@selinc.com wrote:
-> UBIFS error (pid 842): check_lpt_crc:invalid crc in LPT node: crc 2bbb=20
-> calc a5a5
-> UBIFS error (pid 842): ubifs_read_nnode: error -22 reading nnode at 8:615=
-0
-> mount: wrong fs type, bad option, bad superblock on ubi0:bob,
->        missing codepage or other error
->        In some cases useful info is found in syslog - try
->        dmesg | tail  or so
-
-AFAIU, you still use a small flash and small image. So the only change
-was your MTD change. Are you sure it is not the MTD change which is to
-blame? Can you reproduce this error without your MTD change?
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+s3c2410-rtc s3c2410-rtc: setting the system clock to 2008-04-03
+ 20:38:50
+(1207255130)
+Empty flash at 0x01f40580 ends at 0x01f40600
+Empty flash at 0x01f40a18 ends at 0x01f40c00
+Empty flash at 0x01f41930 ends at 0x01f41a00
+JFFS2 notice: (243) read_dnode: node CRC failed on dnode at 0x1f409d4:
+ read
+0xffffffff, calculated 0x95b410e6
+JFFS2 notice: (243) check_node_data: wrong data CRC in data node at
+0x01f42200: read 0xab6032e, calculated 0xd95d2064.
+VFS: Mounted root (jffs2 filesystem).
+Freeing init memory: 112K
+s3c2410-sdi s3c2410-sdi: powered down.
+mount /etc as ramfs
+mount /var/nfs as nfs
+mount /dev as tmpfs
+mounting all 
