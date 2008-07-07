@@ -1,12 +1,17 @@
-Message-ID: <18370.83.229.48.220.1215438305.squirrel@intnet.bj>
-Date: Mon, 7 Jul 2008 14:45:05 +0100 (WAT)
-Subject: Reminder: I Need Your Urgent Response
-From: "Mr. Peter Sands" <info@intnet.bj>
+Received: from ocean.emcraft.com ([213.221.7.182])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KFtNW-0005uB-B6
+	for linux-mtd@lists.infradead.org; Mon, 07 Jul 2008 16:15:50 +0000
+Message-ID: <48724132.3050004@emcraft.com>
+Date: Mon, 07 Jul 2008 20:15:46 +0400
+From: Sergei Poselenov <sposelenov@emcraft.com>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-To: undisclosed-recipients: ;
-Reply-To: petersandspersonal@yahoo.co.uk
+To: linux-mtd@lists.infradead.org
+Subject: Re: JFFS2: real free capacity of the partition
+References: <486CFB83.3010301@emcraft.com>
+In-Reply-To: <486CFB83.3010301@emcraft.com>
+Content-Type: text/plain; charset=KOI8-R; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,40 +21,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello all,
 
+Seems I found why is that happens.
+In jffs2_statfs() the wasted_size is excluded
+from calculation:
+...
+    avail = c->dirty_size + c->free_size;
+...
 
+Could someone explain for what reason?
+Have I understand it right - on the certain conditions, the
+wasted space can be converted to dirty space?
 
-Standard Chartered Bank PLC,
-1 Aldermanbury Square
-London EC2V 7SB
-private Line:+447024045595
-Private Email: petersandspersonal@yahoo.co.uk
-Greetings...
+Regards,
+Sergei
 
-I got your contact email address through a personal search and decided  to
-let you know about this packaged financial transaction that will benefit
-us. I am Mr Peter Sands, the Group Executive Director of the Standard
-Chartered Bank PLC Central London Branch
-On the course of the 2007 end of the year's report, I discovered that my
-branch in which I am the Chief Auditor had Thirty five Million Five
-Hundred Thousand G B  Pounds (35,500.000.00 GBP) of which my head Office
-is not aware of and will  never be aware of, I have also PLACED this fund
-on ESCROW CALL ACCOUNT without a beneficiary.
-
-As the As the Chief Auditor in the bank, I cannot be directly connected to
-this  money thus I am compelled to request for your assistance to receive
-this money into  your bank account. I will compensate you with 40% as
-gratification while 60%  will be for me.  Please If you accept my offer,
-kindly contact me on my private  cell phone number:+447024045595 or my
-private email contact petersandspersonal@yahoo.co.uk  for more details.
-In course of this transaction, there are practically no risk involve
-because It will be a bank-to-bank transfer. please this  is very
-confidential transaction please.
-
-I will appreciate your timely response.
-With Regards,
-Mr.Peter Sands.
-
-NOTE: Please if however, you are not disposed to assist, kindly delete
-this email in view of the confidentiality and let me know as soon as
-possible to enable me look for Capable one.
+Sergei Poselenov wrote:
+> Hello,
+> 
+> Probably this is a trivial question and won't take much of your time.
+> 
+> A simple test on a JFFS2 partition:
+> 
+> # df
+> Filesystem           1k-blocks      Used Available Use% Mounted on
+> /dev/mtdblock1            1024       376       648  37% /etc
+> # dd if=/dev/urandom of=tmp bs=1024 count=2900
+> dd: tmp: No space left on device
+> # rm tmp
+> # df
+> Filesystem           1k-blocks      Used Available Use% Mounted on
+> /dev/mtdblock1            1024       372       652  36% /etc
+> 
+> Why additional space appeared?
+> 
+> I've noted, that this effect:
+> - appeared only on the well-used partition, not on the
+>   fresh-created one.
+> - appeared only after filling up the device
+> - appeared only once. On subsequent tests, the free space was
+> reported without magic increases.
+> 
+> 
+> Is this is an effect of the JFFS2 garbage collector?
+> Is there any method to learn the real available capacity of the
+> mounted partition?
+> 
+> Thanks in advance,
+> Sergei
+> 
