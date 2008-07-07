@@ -1,16 +1,14 @@
-Received: from ocean.emcraft.com ([213.221.7.182])
+Received: from nabagan.bluegap.ch ([88.198.58.248])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KFtNW-0005uB-B6
-	for linux-mtd@lists.infradead.org; Mon, 07 Jul 2008 16:15:50 +0000
-Message-ID: <48724132.3050004@emcraft.com>
-Date: Mon, 07 Jul 2008 20:15:46 +0400
-From: Sergei Poselenov <sposelenov@emcraft.com>
+	id 1KFtVD-0003Bk-RF
+	for linux-mtd@lists.infradead.org; Mon, 07 Jul 2008 16:23:48 +0000
+Message-ID: <48724306.4040908@bluegap.ch>
+Date: Mon, 07 Jul 2008 18:23:34 +0200
+From: Markus Wanner <markus@bluegap.ch>
 MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2: real free capacity of the partition
-References: <486CFB83.3010301@emcraft.com>
-In-Reply-To: <486CFB83.3010301@emcraft.com>
-Content-Type: text/plain; charset=KOI8-R; format=flowed
+Subject: ioDrive by FusionIO
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -21,53 +19,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello all,
+Hi,
 
-Seems I found why is that happens.
-In jffs2_statfs() the wasted_size is excluded
-from calculation:
-...
-    avail = c->dirty_size + c->free_size;
-...
+I've recently read about FusionIO [1], a startup promoting a product 
+called ioDrive. It attaches a couple of NAND chips to commodity servers 
+via PCI Express (x4). They claim reaching much higher throughput and 
+lower latency with their device, compared to normal SSDs, which pipe 
+their data through SAS or (S)ATA.
 
-Could someone explain for what reason?
-Have I understand it right - on the certain conditions, the
-wasted space can be converted to dirty space?
+The general idea makes lots of sense to me, except that I wish they 
+would not only emulate a block device, but also provide an MTD 
+interface. (Even if the currently available file systems probably don't 
+cope well with the sizes they offer (claiming up to 320 GiB), yet.) (And 
+who knows, maybe the hardware would allow it, and one just needs to 
+write the drivers?)
 
-Regards,
-Sergei
+The company looks pretty "professional", also in the rather negative 
+sense that they don't disclose much information about their product's 
+internals. Or does anybody on this list have more information about 
+their products? More thoughts or comments?
 
-Sergei Poselenov wrote:
-> Hello,
-> 
-> Probably this is a trivial question and won't take much of your time.
-> 
-> A simple test on a JFFS2 partition:
-> 
-> # df
-> Filesystem           1k-blocks      Used Available Use% Mounted on
-> /dev/mtdblock1            1024       376       648  37% /etc
-> # dd if=/dev/urandom of=tmp bs=1024 count=2900
-> dd: tmp: No space left on device
-> # rm tmp
-> # df
-> Filesystem           1k-blocks      Used Available Use% Mounted on
-> /dev/mtdblock1            1024       372       652  36% /etc
-> 
-> Why additional space appeared?
-> 
-> I've noted, that this effect:
-> - appeared only on the well-used partition, not on the
->   fresh-created one.
-> - appeared only after filling up the device
-> - appeared only once. On subsequent tests, the free space was
-> reported without magic increases.
-> 
-> 
-> Is this is an effect of the JFFS2 garbage collector?
-> Is there any method to learn the real available capacity of the
-> mounted partition?
-> 
-> Thanks in advance,
-> Sergei
-> 
+Regards
+
+Markus
+
+[1]: http://www.fusionio.com/
