@@ -1,16 +1,11 @@
-Received: from [202.202.0.36] (helo=cqu.edu.cn)
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KFhNi-0008R9-B3
-	for linux-mtd@lists.infradead.org; Mon, 07 Jul 2008 03:27:15 +0000
-Message-ID: <415400846.17365@cqu.edu.cn>
-Subject: problem of UBI debug info printing
-From: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 07 Jul 2008 11:25:58 +0800
-Message-Id: <1215401158.3218.2.camel@localhost.localdomain>
+Message-ID: <11afbc578cd.cartei.mauro@virgilio.it>
+Date: Mon, 7 Jul 2008 05:26:40 +0100 (GMT+01:00)
+From: FDV <cartei.mauro@virgilio.it>
+Subject: Attn:Recipient,
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Reply-To: fvittorio.es@terra.es
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,48 +15,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Attn:Recipient,
 
-No debug message about UBI's WL unit can be found in
-/var/log/dmesg file in my 2.6.26-rc5-01191-g23baa5b-dirty kernel. 
-I don't why? I need you help. thanks in advance. 
+Fondazione Di Vittorio, hereby notify you for a=20
+Grant/Donation cash aid of =E2=82=AC1,500,000.00 Euro for your own personal=
+=20
+education, and business development.
 
-My CONFIG_* is as following:
+Qualification numbers (S-222-
+6747, C-900-56).
 
-......
+CONTACT DETIALS BELOW:=20
 
-#
-# UBI - Unsorted block images
-#
-CONFIG_MTD_UBI=m
-CONFIG_MTD_UBI_WL_THRESHOLD=4096
-CONFIG_MTD_UBI_BEB_RESERVE=1
-CONFIG_MTD_UBI_GLUEBI=y
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Fondazione Di Vittorio=20
+Espanola
 
-#
-# UBI debugging options
-#
-CONFIG_MTD_UBI_DEBUG=y
-CONFIG_MTD_UBI_DEBUG_MSG=y
-CONFIG_MTD_UBI_DEBUG_PARANOID=y
-# CONFIG_MTD_UBI_DEBUG_DISABLE_BGT is not set
-# CONFIG_MTD_UBI_DEBUG_USERSPACE_IO is not set
-# CONFIG_MTD_UBI_DEBUG_EMULATE_BITFLIPS is not set
-# CONFIG_MTD_UBI_DEBUG_EMULATE_WRITE_FAILURES is not set
-# CONFIG_MTD_UBI_DEBUG_EMULATE_ERASE_FAILURES is not set
+CONTACT NAME: Dr Jean Pezzi
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =20
 
-#
-# Additional UBI debugging messages
-#
-CONFIG_MTD_UBI_DEBUG_MSG_BLD=y
-CONFIG_MTD_UBI_DEBUG_MSG_EBA=y
-CONFIG_MTD_UBI_DEBUG_MSG_WL=y
-CONFIG_MTD_UBI_DEBUG_MSG_IO=y
-# CONFIG_PARPORT is not set
-CONFIG_PNP=y
-# CONFIG_PNP_DEBUG is not set
 
--- 
-yours Sincerely,
+Regards.
+Mr. Andrea=20
+Gianfagna
 
-xiaochuan-xu (许小川)
+http://www.fondazionedivittorio.it
