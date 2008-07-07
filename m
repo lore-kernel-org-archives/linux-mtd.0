@@ -1,12 +1,16 @@
-Message-ID: <13811.83.229.48.219.1215261266.squirrel@intnet.bj>
-Date: Sat, 5 Jul 2008 13:34:26 +0100 (WAT)
-Subject: I Need Your Urgent Response
-From: "Mr. Peter Sands" <info@intnet.bj>
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
+Received: from [202.202.0.36] (helo=cqu.edu.cn)
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KFhNi-0008R9-B3
+	for linux-mtd@lists.infradead.org; Mon, 07 Jul 2008 03:27:15 +0000
+Message-ID: <415400846.17365@cqu.edu.cn>
+Subject: problem of UBI debug info printing
+From: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 07 Jul 2008 11:25:58 +0800
+Message-Id: <1215401158.3218.2.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To: undisclosed-recipients: ;
-Reply-To: personalpetersands@yahoo.com.vn
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,40 +20,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello,
 
+No debug message about UBI's WL unit can be found in
+/var/log/dmesg file in my 2.6.26-rc5-01191-g23baa5b-dirty kernel. 
+I don't why? I need you help. thanks in advance. 
 
+My CONFIG_* is as following:
 
-Standard Chartered Bank PLC,
-1 Aldermanbury Square
-London EC2V 7SB
-private Line:+447024045595
-Private Email: personalpetersands@yahoo.com.vn
-Greetings...
+......
 
-I got your contact email address through a personal search and decided  to
-let you know about this packaged financial transaction that will benefit
-us. I am Mr Peter Sands, the Group Executive Director of the Standard
-Chartered Bank PLC Central London Branch
-On the course of the 2007 end of the year's report, I discovered that my
-branch in which I am the Chief Auditor had Thirty five Million Five
-Hundred Thousand G B  Pounds (35,500.000.00 GBP) of which my head Office
-is not aware of and will  never be aware of, I have also PLACED this fund
-on ESCROW CALL ACCOUNT without a beneficiary.
+#
+# UBI - Unsorted block images
+#
+CONFIG_MTD_UBI=m
+CONFIG_MTD_UBI_WL_THRESHOLD=4096
+CONFIG_MTD_UBI_BEB_RESERVE=1
+CONFIG_MTD_UBI_GLUEBI=y
 
-As the As the Chief Auditor in the bank, I cannot be directly connected to
-this  money thus I am compelled to request for your assistance to receive
-this money into  your bank account. I will compensate you with 40% as
-gratification while 60%  will be for me.  Please If you accept my offer,
-kindly contact me on my private  cell phone number:+447024045595 or my
-private email contact personalpetersands@yahoo.com.vn  for more details.
-In course of this transaction, there are practically no risk involve
-because It will be a bank-to-bank transfer. please this  is very
-confidential transaction please.
+#
+# UBI debugging options
+#
+CONFIG_MTD_UBI_DEBUG=y
+CONFIG_MTD_UBI_DEBUG_MSG=y
+CONFIG_MTD_UBI_DEBUG_PARANOID=y
+# CONFIG_MTD_UBI_DEBUG_DISABLE_BGT is not set
+# CONFIG_MTD_UBI_DEBUG_USERSPACE_IO is not set
+# CONFIG_MTD_UBI_DEBUG_EMULATE_BITFLIPS is not set
+# CONFIG_MTD_UBI_DEBUG_EMULATE_WRITE_FAILURES is not set
+# CONFIG_MTD_UBI_DEBUG_EMULATE_ERASE_FAILURES is not set
 
-I will appreciate your timely response.
-With Regards,
-Mr.Peter Sands.
+#
+# Additional UBI debugging messages
+#
+CONFIG_MTD_UBI_DEBUG_MSG_BLD=y
+CONFIG_MTD_UBI_DEBUG_MSG_EBA=y
+CONFIG_MTD_UBI_DEBUG_MSG_WL=y
+CONFIG_MTD_UBI_DEBUG_MSG_IO=y
+# CONFIG_PARPORT is not set
+CONFIG_PNP=y
+# CONFIG_PNP_DEBUG is not set
 
-NOTE: Please if however, you are not disposed to assist, kindly delete
-this email in view of the confidentiality and let me know as soon as
-possible to enable me look for Capable one.
+-- 
+yours Sincerely,
+
+xiaochuan-xu (许小川)
