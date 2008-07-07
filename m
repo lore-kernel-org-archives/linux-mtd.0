@@ -1,13 +1,22 @@
-Received: from nabagan.bluegap.ch ([88.198.58.248])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KFtVD-0003Bk-RF
-	for linux-mtd@lists.infradead.org; Mon, 07 Jul 2008 16:23:48 +0000
-Message-ID: <48724306.4040908@bluegap.ch>
-Date: Mon, 07 Jul 2008 18:23:34 +0200
-From: Markus Wanner <markus@bluegap.ch>
+Received: from hosted06.westnet.com.au ([203.10.1.221])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KFuSQ-0001e0-AB
+	for linux-mtd@lists.infradead.org; Mon, 07 Jul 2008 17:24:59 +0000
+Received: from hosted06.westnet.com.au (hosted06.westnet.com.au [127.0.0.1])
+	by hosted06.westnet.com.au (Postfix) with SMTP id 59C2A2234AB
+	for <linux-mtd@lists.infradead.org>;
+	Tue,  8 Jul 2008 01:24:55 +0800 (WST)
+Received: from [192.168.1.104] (dsl-220-235-139-223.wa.westnet.com.au
+	[220.235.139.223])
+	by hosted06.westnet.com.au (Postfix) with ESMTP id 460C5223612
+	for <linux-mtd@lists.infradead.org>;
+	Tue,  8 Jul 2008 01:24:55 +0800 (WST)
+Message-ID: <4872514A.20906@westnet.com.au>
+Date: Tue, 08 Jul 2008 01:24:26 +0800
+From: SR <malternate@westnet.com.au>
 MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: ioDrive by FusionIO
+Subject: pcimciamtd usage
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -19,28 +28,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hello
+I have a  16 bit 4MByte PCMCIA linear flash (type 2) card I want to use 
+with a 2.6.25.7 vanilla kernel. I understand that the pcmciamtd driver 
+is what I need to get raw mode access to it. However, I cannot find any 
+option in menuconfig to enable  compilation of the pcmciamtd module. The 
+pcmciamtd.c is there in the source but the pcmciamtd module is not 
+produced. I thought the relevant sections in menuconfig to enable this 
+would be found in
 
-I've recently read about FusionIO [1], a startup promoting a product 
-called ioDrive. It attaches a couple of NAND chips to commodity servers 
-via PCI Express (x4). They claim reaching much higher throughput and 
-lower latency with their device, compared to normal SSDs, which pipe 
-their data through SAS or (S)ATA.
+User Modules And Translation Layers
+RAM/ROM/Flash chip drivers
+ Mapping drivers for chip access
+Self-contained MTD device drivers
 
-The general idea makes lots of sense to me, except that I wish they 
-would not only emulate a block device, but also provide an MTD 
-interface. (Even if the currently available file systems probably don't 
-cope well with the sizes they offer (claiming up to 320 GiB), yet.) (And 
-who knows, maybe the hardware would allow it, and one just needs to 
-write the drivers?)
 
-The company looks pretty "professional", also in the rather negative 
-sense that they don't disclose much information about their product's 
-internals. Or does anybody on this list have more information about 
-their products? More thoughts or comments?
+My questions are
 
-Regards
+Is the PCMCIAMTD module what I need for this?
+How do I enable production of this module?
 
-Markus
+regards
 
-[1]: http://www.fusionio.com/
+M Merewether
