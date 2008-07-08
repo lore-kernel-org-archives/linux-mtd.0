@@ -1,24 +1,29 @@
-Received: from hosted06.westnet.com.au ([203.10.1.221])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KFuSQ-0001e0-AB
-	for linux-mtd@lists.infradead.org; Mon, 07 Jul 2008 17:24:59 +0000
-Received: from hosted06.westnet.com.au (hosted06.westnet.com.au [127.0.0.1])
-	by hosted06.westnet.com.au (Postfix) with SMTP id 59C2A2234AB
+Received: from gateout01.mbox.net ([165.212.64.21])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KG1qL-0000MW-FJ
+	for linux-mtd@lists.infradead.org; Tue, 08 Jul 2008 01:18:10 +0000
+Received: from gwsin01.mbox.net (gwsin01.mbox.net [165.212.64.13])
+	by gateout01.mbox.net (Postfix) with ESMTP id 3FF2CCD385
 	for <linux-mtd@lists.infradead.org>;
-	Tue,  8 Jul 2008 01:24:55 +0800 (WST)
-Received: from [192.168.1.104] (dsl-220-235-139-223.wa.westnet.com.au
-	[220.235.139.223])
-	by hosted06.westnet.com.au (Postfix) with ESMTP id 460C5223612
+	Tue,  8 Jul 2008 01:13:01 +0000 (GMT)
+Received: from gwsfilter01.mbox.net (cf01-lo [127.0.0.1])
+	by localhost (Postfix) with SMTP id BCDBCD798E
 	for <linux-mtd@lists.infradead.org>;
-	Tue,  8 Jul 2008 01:24:55 +0800 (WST)
-Message-ID: <4872514A.20906@westnet.com.au>
-Date: Tue, 08 Jul 2008 01:24:26 +0800
-From: SR <malternate@westnet.com.au>
+	Tue,  8 Jul 2008 01:12:59 +0000 (GMT)
+Received: from gateout01 (gateout01.mbox.net [165.212.64.21])
+	by gwsfilter01.mbox.net (Postfix) with ESMTP id 99DDCD798D
+	for <linux-mtd@lists.infradead.org>;
+	Tue,  8 Jul 2008 01:12:59 +0000 (GMT)
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: pcimciamtd usage
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-class: urn:content-classes:message
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: bad block in jffs2 partition
+Date: Mon, 7 Jul 2008 19:12:37 -0600
+Message-ID: <F23ABFFDB8261D40A6F6D30EA014882511CEEC97@VS6.EXCHPROD.USA.NET>
+From: "Jeffrey Hall" <jhall@healthhero.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,26 +33,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello
-I have a  16 bit 4MByte PCMCIA linear flash (type 2) card I want to use 
-with a 2.6.25.7 vanilla kernel. I understand that the pcmciamtd driver 
-is what I need to get raw mode access to it. However, I cannot find any 
-option in menuconfig to enable  compilation of the pcmciamtd module. The 
-pcmciamtd.c is there in the source but the pcmciamtd module is not 
-produced. I thought the relevant sections in menuconfig to enable this 
-would be found in
+Hello folks,
 
-User Modules And Translation Layers
-RAM/ROM/Flash chip drivers
- Mapping drivers for chip access
-Self-contained MTD device drivers
+I have an embedded device with a NAND flash partition that contains a
+single bad block that was marked bad by the NAND flash manufacturer
+(Samsung) during their QA process. As long as the number of bad blocks
+doesn't exceed some threshold, the part is still good.=20
 
 
-My questions are
+So, if I use:
+# flash_eraseall -j /dev/mtd4
+Erasing 16 Kibyte @ d3c000 -- 88 % complete. Cleanmarker written at
+d3c000.
+Skipping bad block at 0x00d40000
+Erasing 16 Kibyte @ efc000 -- 99 % complete. Cleanmarker written at
+efc000.
 
-Is the PCMCIAMTD module what I need for this?
-How do I enable production of this module?
+You can see the bad block at offset 0x00d40000.
 
-regards
+Ok, so far so good. If I understand jffs2, it's able to handle bad
+blocks, so this shouldn't be a problem.=20
 
-M Merewether
+But, when I mount the partition, I get:
+
+# mount /dev/mtdblock4
+mount: Mounting /dev/mtdblock4 on /usr/local failed: Input/output error
+
+Examining the kernel log I see:
+
+Cowardly refusing to erase blocks on filesystem with no valid JFFS2
+nodes
+empty_blocks 0, bad_blocks 0, c->nr_blocks 960
+
+This looks fishy to me. So the question is: Shouldn't flash_eraseall
+leave the partition in a blank, but ready to go state for the mount
+command, even if the partition has a bad block in it? Any hints on what
+might be happening here would be very much appreciated.
+
+Trying this same thing on a flash part with no bad blocks in the
+partition yields the correct result - the partition is mounted and
+working.
+
+Here's something else you might want to see=20
+# cat /etc/fstab:
+
+# /etc/fstab: static file system information.
+#
+# <file system> <mount pt>     <type>   <options>         <dump> <pass>
+/dev/root       /              ext2     rw,noauto         0      1
+proc            /proc          proc     defaults          0      0
+devpts          /dev/pts       devpts   defaults,gid=3D5,mode=3D620   0
+0
+tmpfs           /tmp           tmpfs    defaults          0      0
+usbfs           /proc/bus/usb  usbfs    defaults          0      0
+sysfs           /sys           sysfs    defaults          0      0
+
+/dev/sda1       /mnt/usbstick vfat
+codepage=3D437,iocharset=3Diso8859-1,noauto,umask=3D0 0 0
+
+/dev/mtdblock4  /usr/local      jffs2   rw                0       0
+/dev/mtdblock5  /usr/hb         jffs2   rw                0       0
+/dev/mtdblock6  /var/hbdata     jffs2   rw,noauto         0       0
+/dev/mtdblock7  /var/hbdata/box jffs2   rw,noauto         0       0
+
+Thanks,
+-Jeff-
