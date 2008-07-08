@@ -1,12 +1,25 @@
-Message-ID: <33689.83.229.48.219.1215509610.squirrel@intnet.bj>
-Date: Tue, 8 Jul 2008 10:33:30 +0100 (WAT)
-Subject: I Need Your Urgent Response
-From: "Mr. Peter Sands" <info@intnet.bj>
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-To: undisclosed-recipients: ;
-Reply-To: petersandspersonal@yahoo.co.uk
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KGAlI-0007i7-VG
+	for linux-mtd@lists.infradead.org; Tue, 08 Jul 2008 10:49:33 +0000
+Subject: Re: ubifs image file confusion!
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Nancy <nancydreaming@gmail.com>
+In-Reply-To: <1210771200.5708.50.camel@sauron>
+References: <bae050c10805080217r77c9724aya0777ccf5f59a293@mail.gmail.com>
+	<1210243730.3645.66.camel@sauron>
+	<bae050c10805090005g50b657c2jf8d471cd51244da7@mail.gmail.com>
+	<bae050c10805092120u14177a03td46fa8175f89aa66@mail.gmail.com>
+	<1210671861.5708.5.camel@sauron>
+	<bae050c10805130541w132a1757paea415f5564b23ec@mail.gmail.com>
+	<1210771200.5708.50.camel@sauron>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 08 Jul 2008 13:45:50 +0300
+Message-Id: <1215513950.14618.11.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,40 +29,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
+On Wed, 2008-05-14 at 16:20 +0300, Artem Bityutskiy wrote:
+> > pls:
+> >       1. ubinize tool do not check whether vol_id or vol_name's
+> > uniqueness which may cause unexpected error.
+>=20
+> OK, will be fixed but a bit later.
 
+Done.
 
-Standard Chartered Bank PLC,
-1 Aldermanbury Square
-London EC2V 7SB
-private Line:+447024045595
-Private Email: petersandspersonal@yahoo.co.uk
-Greetings...
-
-I got your contact email address through a personal search and decided  to
-let you know about this packaged financial transaction that will benefit
-us. I am Mr Peter Sands, the Group Executive Director of the Standard
-Chartered Bank PLC Central London Branch
-On the course of the 2007 end of the year's report, I discovered that my
-branch in which I am the Chief Auditor had Thirty five Million Five
-Hundred Thousand G B  Pounds (35,500.000.00 GBP) of which my head Office
-is not aware of and will  never be aware of, I have also PLACED this fund
-on ESCROW CALL ACCOUNT without a beneficiary.
-
-As the As the Chief Auditor in the bank, I cannot be directly connected to
-this  money thus I am compelled to request for your assistance to receive
-this money into  your bank account. I will compensate you with 40% as
-gratification while 60%  will be for me.  Please If you accept my offer,
-kindly contact me on my private  cell phone number:+447024045595 or my
-private email contact petersandspersonal@yahoo.co.uk  for more details.
-In course of this transaction, there are practically no risk involve
-because It will be a bank-to-bank transfer. please this  is very
-confidential transaction please.
-
-I will appreciate your timely response.
-With Regards,
-Mr.Peter Sands.
-
-NOTE: Please if however, you are not disposed to assist, kindly delete
-this email in view of the confidentiality and let me know as soon as
-possible to enable me look for Capable one.
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
