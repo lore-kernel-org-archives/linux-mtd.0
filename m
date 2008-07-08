@@ -1,25 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KGAlI-0007i7-VG
-	for linux-mtd@lists.infradead.org; Tue, 08 Jul 2008 10:49:33 +0000
-Subject: Re: ubifs image file confusion!
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Nancy <nancydreaming@gmail.com>
-In-Reply-To: <1210771200.5708.50.camel@sauron>
-References: <bae050c10805080217r77c9724aya0777ccf5f59a293@mail.gmail.com>
-	<1210243730.3645.66.camel@sauron>
-	<bae050c10805090005g50b657c2jf8d471cd51244da7@mail.gmail.com>
-	<bae050c10805092120u14177a03td46fa8175f89aa66@mail.gmail.com>
-	<1210671861.5708.5.camel@sauron>
-	<bae050c10805130541w132a1757paea415f5564b23ec@mail.gmail.com>
-	<1210771200.5708.50.camel@sauron>
-Content-Type: text/plain; charset=utf-8
-Date: Tue, 08 Jul 2008 13:45:50 +0300
-Message-Id: <1215513950.14618.11.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+Received: from ag-out-0708.google.com ([72.14.246.245])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KGBSs-0006eT-9n
+	for linux-mtd@lists.infradead.org; Tue, 08 Jul 2008 11:34:34 +0000
+Received: by ag-out-0708.google.com with SMTP id 9so15839895agd.2
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 08 Jul 2008 04:34:33 -0700 (PDT)
+Message-ID: <7f0bd2d90807080434h13007cj68e242a8fc6fb48a@mail.gmail.com>
+Date: Tue, 8 Jul 2008 08:34:33 -0300
+From: "rtkk 2008" <rtkk2008@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Partition Creation Doubt when upgrading from 16M bytes to 32 M bytes
+	flash memory
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,18 +24,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi all,
 
-On Wed, 2008-05-14 at 16:20 +0300, Artem Bityutskiy wrote:
-> > pls:
-> >       1. ubinize tool do not check whether vol_id or vol_name's
-> > uniqueness which may cause unexpected error.
->=20
-> OK, will be fixed but a bit later.
+I am upgrading my platform from a flash of 16 M bytes to another one
+with 32 Mbytes. Before the upgrading, I had four partitions that took
+all the size of the flash, so I created another partition including
+the new 16 Mbytes of the new flash. When I started the platform, this
+new partition was not been mounted, even though the boot was telling
+that the partition was created.
+Bellow there is my source which is responsable to create the partitions.
+Note that the new partition, created after de upgrading is the TEST one.
+Does anyone know if this file is correct?
+Does anyone know how to adapt this file to use all of the new flash?
 
-Done.
+Thanks and best regards
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+
+=========== flash.c partition source code ==============================
+
+#ifdef CONFIG_MPC832x_RDB
+#define WINDOW_ADDR 0xFE000000
+/*#define WINDOW_SIZE 0x01000000*/
+              <------- 16M flash window size
+#define WINDOW_SIZE 0x2000000
+                 <------- 32M flash window size  (Is that correct?)
+#define PARTITION_0 0x0080000 /* 0xFE0size of U-boot partition */
+#define PARTITION_1 0x0080000 /* size of device tree partition */
+#define PARTITION_2 0x0200000 /* size of kernel partition */
+#define PARTITION_3 0x0100000 /* size of JFFS2 HOME partition */
+#define PARTITION_4 0x0100000 /* size of JFFS2 ETC partition */
+#define PARTITION_5 0x0B00000 /* size of JFFS2 TEST partition */  <--
+New partition created after the flash upgrading
+#define PARTITION_6 0X1000000 /* size of EXT2 partition */
+
+#endif
+
+/* partition_info gives details on the logical partitions that the split the
+ * single flash device into. If the size if zero we use up to the end of the
+ * device. */
+static struct mtd_partition partition_info[]={
+ {
+ .name = "U-Boot",
+ .offset = 0,
+ .size = PARTITION_0,
+ .mask_flags = MTD_WRITEABLE
+ },
+ {
+ .name = "Device tree (dtb)",
+ .offset = MTDPART_OFS_APPEND,
+ .size = PARTITION_1
+ },
+ {
+ .name = "Kernel",
+ .offset = MTDPART_OFS_APPEND,
+ .size = PARTITION_2
+ },
+ {
+ .name = "JFFS2_HOME",
+ .offset = MTDPART_OFS_APPEND,
+ .size = PARTITION_3
+ },
+ {
+ .name = "JFFS2_ETC",
+ .offset = MTDPART_OFS_APPEND,
+ .size = PARTITION_4
+ },
+ {
+ .name = "TEST",                                       <--- TEST parameters
+ .offset = MTDPART_OFS_APPEND,
+ .size = PARTITION_5
+ },
+ {
