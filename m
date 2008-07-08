@@ -1,19 +1,15 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KGCTx-00088Q-1r
-	for linux-mtd@lists.infradead.org; Tue, 08 Jul 2008 12:39:45 +0000
-Subject: Re: [UBI][WL][PATCH] Rewrite the UBI wear-leveling unit
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
-In-Reply-To: <1215519259.2706.19.camel@localhost.localdomain>
-References: <1215519259.2706.19.camel@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 08 Jul 2008 15:35:33 +0300
-Message-Id: <1215520533.14618.24.camel@sauron>
+Received: from sm4.cyberspaceindia.com ([64.34.180.158])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KGCm4-0003gi-F4
+	for linux-mtd@lists.infradead.org; Tue, 08 Jul 2008 12:58:29 +0000
+Subject: NAND Flash bad blocks
+From: Prakash N <prakash@celestialsys.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Date: Tue, 08 Jul 2008 18:27:52 +0530
+Message-Id: <1215521872.3127.87.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,40 +19,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Xiaochuan-xu,
+Hi All
 
-in general, I am interested in your work. However, I have
-difficulties understanding your mails.
+I am using 256MB NAND Flash. I have created 4 partitions of 64 MB each.
+I have a program to mark a particular block as a bad block. 
 
-On Tue, 2008-07-08 at 20:14 +0800, xiaochuan-xu wrote:
-> I've commit my patch to the 'ubi-2.6.git'.
+I notice when I create a bad block within 22 blocks from the start of a
+partition, though I am able to erase all the blocks properly skipping
+all the bad blocks created, it is unable to copy the file system to the
+partition, it gives I/O error as below. For example my partitions starts
+from 0x0, 0x4000000,0x8000000 and 0xc000000 with block numbers at
+0,512,1024 & 1536. The block size is 128 KB (0x20000). I get this error
+if I create bad blocks any where from 2 to 22, 512 to 533, 1024 to 1045
+& 1536 to 1557.
 
-You cannot commit anything to my repository because you have no
-permission for this. And git does not work this way. What you should
-rather do is to create your own clone of ubi-2.6.git repository, and
-then I could pull from it. You should read more about git and kernel
-development/submission.
+======
+flash_eraseall /dev/mtd1
+Erasing 128 Kibyte @ 0 --  0 % complete.
+Skipping bad block at 0x00020000
+Erasing 128 Kibyte @ 3a00000 -- 90 % complete.
+Skipping bad block at 0x03a20000
+Erasing 128 Kibyte @ 3fe0000 -- 99 % complete.
+sh-3.00# flashcp /home/jffs2.img /dev/mtd1
+nand_erase: attempt to erase a bad block at page 0x00008040
+While erasing blocks from 0x00000000-0x002c0000 on /dev/mtd1:
+Input/output error
+======
 
-Or just send patches.=20
+If I create bad blocks in the range of 22 to 511, 534 to 1023, 1046 to
+1535 and 1558 to 2047 I do not face any issue. It skips the bad blocks
+properly and it can copy the file system to the partition.
 
-The patch you have sent is very strange. Did you look at your own mail?
-Did you see that you repeat the same stuff many times? Did you try to
-take your own mail and apply your own patch? Try this. We use git-am
-command for this. It won't apply because it is line-wrapped. Could you
-please be more careful with these things?
+I appreciate if any one give an explanation for the same. Is it not
+possible to have bad blocks in the start of a partition? How the magic
+number 22 blocks can be explained in this situation. I really appreciate
+your help. 
 
-Anyway, can we start from the following things:
-
-1. Describe the problems of current algorithm.
-2. Describe your new algorithm and how it solve the problems of the
-current one.
-
-After we (I and other people on the list) understand what you have done,
-we can try to adopt your code.
-
-Thanks.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Prakash
