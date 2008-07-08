@@ -1,20 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KG8V3-0008AH-7L
-	for linux-mtd@lists.infradead.org; Tue, 08 Jul 2008 08:24:37 +0000
-Subject: Re: [UBI][WL][PATCH] Rewrite the UBI wear-leveling unit and
-	Implemented two-dimension(PEB ec, LEB temp) wear leveling algorithm.
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
-In-Reply-To: <1215504853.2801.5.camel@localhost.localdomain>
-References: <1215504853.2801.5.camel@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8
-Date: Tue, 08 Jul 2008 11:20:58 +0300
-Message-Id: <1215505258.14618.4.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from rv-out-0708.google.com ([209.85.198.241])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KG9Bk-0002Ql-Dn
+	for linux-mtd@lists.infradead.org; Tue, 08 Jul 2008 09:08:44 +0000
+Received: by rv-out-0708.google.com with SMTP id b17so4197848rvf.42
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 08 Jul 2008 02:08:43 -0700 (PDT)
+Message-ID: <71413c850807080208h26a5d452x4eb705a5133838c4@mail.gmail.com>
+Date: Tue, 8 Jul 2008 18:08:43 +0900
+From: "Qiang Wang" <rurality.linux@gmail.com>
+Sender: rurality.wq@gmail.com
+To: linux-mtd@lists.infradead.org
+Subject: About UBIFS
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,23 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+hello, every body
+I am a newbie here.
+I want to try UBIFS , and want to study it.
 
-On Tue, 2008-07-08 at 16:14 +0800, xiaochuan-xu wrote:
-> I've finished the two-dimension wear-leveling algorithm.
+So , here is my first question.
+how to download the
+git://git.infradead.org/~dedekind/ubi-2.6.git
+I try the
+git fetch git://git.infradead.org/~dedekind/ubi-2.6.git
+but got the error message as below
+fatal: Not a git repository
+Failed to find a valid git directory.
 
-How about more details?
+thank you very much.
 
-> which is good enough for not only wear-leveling but also=20
-> reduce unnecessary erasure among the wear-leveling process=20
-> as soon as possible,due to the two-dimension(PEB erase counter,=20
-> LEB temperature) wear leveling algorithm.=20
->=20
-> It's too long to send the diff in the mail-list.
-
-How long?
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+best regards
+wagnqiang
