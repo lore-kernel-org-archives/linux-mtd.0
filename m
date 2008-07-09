@@ -1,16 +1,17 @@
-Message-ID: <20080709110949.hdxs66seg4ws4occ@www.webmail.ufba.br>
-Date: Wed, 09 Jul 2008 11:09:49 -0300
-From: MRS JULIET MARROW <maxraph14@yahoo.com>
-To: undisclosed-recipients:;
-Subject: DRAW UPDATE
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset=ISO-8859-1;
-	DelSp="Yes";
-	format="flowed"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Reply-To: yahmsn14@hotmail.com
+Received: from hull.simtec.co.uk ([78.105.113.97]
+	helo=ivanova.local.simtec.co.uk)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KGZrZ-0001ps-Rd
+	for linux-mtd@lists.infradead.org; Wed, 09 Jul 2008 13:37:44 +0000
+Message-Id: <20080709131037.826688594@fluff.org>
+References: <20080709130919.508608130@fluff.org>
+Date: Wed, 09 Jul 2008 14:09:20 +0100
+From: Ben Dooks <ben-linux@fluff.org>
+To: linux-mtd@lists.infradead.org
+Subject: [patch 1/2] MTD: Remove the bast-flash driver.
+Content-Disposition: inline;
+	filename=simtec/simtec-drivers-mtd-remove-bastflash.patch
+Cc: linux-arm-kernel@lists.arm.linux.org.uk, Ben Dooks <ben-linux@fluff.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,61 +21,280 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Remove the Simtec BAST flash driver as this has been replaced by using
+the platform flash driver.
 
+Signed-off-by: Ben Dooks <ben-linux@fluff.org>
 
-YAHOO&MSN LOTTERY
-Incoperation,
-Baley House, Har Road,
-Sutton, Greater London,
-SM1 4te,United Kingdom.
+Index: linux-2.6.26-rc9-next20080709/drivers/mtd/maps/Kconfig
+===================================================================
+--- linux-2.6.26-rc9-next20080709.orig/drivers/mtd/maps/Kconfig	2008-07-09 10:10:44.000000000 +0100
++++ linux-2.6.26-rc9-next20080709/drivers/mtd/maps/Kconfig	2008-07-09 14:06:45.000000000 +0100
+@@ -556,24 +556,6 @@ config MTD_DMV182
+         help
+           Map driver for Dy-4 SVME/DMV-182 board.
+ 
+-config MTD_BAST
+-	tristate "Map driver for Simtec BAST (EB2410ITX) or Thorcom VR1000"
+-	depends on ARCH_BAST || MACH_VR1000
+-	select MTD_PARTITIONS
+-	select MTD_MAP_BANK_WIDTH_16
+-	select MTD_JEDECPROBE
+-	help
+-	  Map driver for NOR flash on the Simtec BAST (EB2410ITX), or the
+-	  Thorcom VR1000
+-
+-	  Note, this driver *cannot* over-ride the WP link on the
+-	  board, or currently detect the state of the link.
+-
+-config MTD_BAST_MAXSIZE
+-	int "Maximum size for BAST flash area (MiB)"
+-	depends on MTD_BAST
+-	default "4"
+-
+ config MTD_SHARP_SL
+ 	tristate "ROM mapped on Sharp SL Series"
+ 	depends on ARCH_PXA
+Index: linux-2.6.26-rc9-next20080709/drivers/mtd/maps/Makefile
+===================================================================
+--- linux-2.6.26-rc9-next20080709.orig/drivers/mtd/maps/Makefile	2008-07-09 10:10:44.000000000 +0100
++++ linux-2.6.26-rc9-next20080709/drivers/mtd/maps/Makefile	2008-07-09 14:06:45.000000000 +0100
+@@ -9,7 +9,6 @@ endif
+ # Chip mappings
+ obj-$(CONFIG_MTD_CDB89712)	+= cdb89712.o
+ obj-$(CONFIG_MTD_ARM_INTEGRATOR)+= integrator-flash.o
+-obj-$(CONFIG_MTD_BAST)		+= bast-flash.o
+ obj-$(CONFIG_MTD_CFI_FLAGADM)	+= cfi_flagadm.o
+ obj-$(CONFIG_MTD_DC21285)	+= dc21285.o
+ obj-$(CONFIG_MTD_DILNETPC)	+= dilnetpc.o
+Index: linux-2.6.26-rc9-next20080709/drivers/mtd/maps/bast-flash.c
+===================================================================
+--- linux-2.6.26-rc9-next20080709.orig/drivers/mtd/maps/bast-flash.c	2008-07-09 10:10:44.000000000 +0100
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,224 +0,0 @@
+-/* linux/drivers/mtd/maps/bast-flash.c
+- *
+- * Copyright (c) 2004-2005 Simtec Electronics
+- *	Ben Dooks <ben@simtec.co.uk>
+- *
+- * Simtec Bast (EB2410ITX) NOR MTD Mapping driver
+- *
+- * Changelog:
+- *	20-Sep-2004  BJD  Initial version
+- *	17-Jan-2005  BJD  Add whole device if no partitions found
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+-*/
+-
+-#include <linux/module.h>
+-#include <linux/types.h>
+-#include <linux/init.h>
+-#include <linux/kernel.h>
+-#include <linux/string.h>
+-#include <linux/ioport.h>
+-#include <linux/device.h>
+-#include <linux/slab.h>
+-#include <linux/platform_device.h>
+-#include <linux/mtd/mtd.h>
+-#include <linux/mtd/map.h>
+-#include <linux/mtd/partitions.h>
+-
+-#include <asm/io.h>
+-#include <asm/mach/flash.h>
+-
+-#include <asm/arch/map.h>
+-#include <asm/arch/bast-map.h>
+-#include <asm/arch/bast-cpld.h>
+-
+-#ifdef CONFIG_MTD_BAST_MAXSIZE
+-#define AREA_MAXSIZE (CONFIG_MTD_BAST_MAXSIZE * SZ_1M)
+-#else
+-#define AREA_MAXSIZE (32 * SZ_1M)
+-#endif
+-
+-#define PFX "bast-flash: "
+-
+-struct bast_flash_info {
+-	struct mtd_info		*mtd;
+-	struct map_info		 map;
+-	struct mtd_partition	*partitions;
+-	struct resource		*area;
+-};
+-
+-static const char *probes[] = { "RedBoot", "cmdlinepart", NULL };
+-
+-static void bast_flash_setrw(int to)
+-{
+-	unsigned int val;
+-	unsigned long flags;
+-
+-	local_irq_save(flags);
+-	val = __raw_readb(BAST_VA_CTRL3);
+-
+-	if (to)
+-		val |= BAST_CPLD_CTRL3_ROMWEN;
+-	else
+-		val &= ~BAST_CPLD_CTRL3_ROMWEN;
+-
+-	pr_debug("new cpld ctrl3=%02x\n", val);
+-
+-	__raw_writeb(val, BAST_VA_CTRL3);
+-	local_irq_restore(flags);
+-}
+-
+-static int bast_flash_remove(struct platform_device *pdev)
+-{
+-	struct bast_flash_info *info = platform_get_drvdata(pdev);
+-
+-	platform_set_drvdata(pdev, NULL);
+-
+-	if (info == NULL)
+-		return 0;
+-
+-	if (info->map.virt != NULL)
+-		iounmap(info->map.virt);
+-
+-	if (info->mtd) {
+-		del_mtd_partitions(info->mtd);
+-		map_destroy(info->mtd);
+-	}
+-
+-	kfree(info->partitions);
+-
+-	if (info->area) {
+-		release_resource(info->area);
+-		kfree(info->area);
+-	}
+-
+-	kfree(info);
+-
+-	return 0;
+-}
+-
+-static int bast_flash_probe(struct platform_device *pdev)
+-{
+-	struct bast_flash_info *info;
+-	struct resource *res;
+-	int err = 0;
+-
+-	info = kmalloc(sizeof(*info), GFP_KERNEL);
+-	if (info == NULL) {
+-		printk(KERN_ERR PFX "no memory for flash info\n");
+-		err = -ENOMEM;
+-		goto exit_error;
+-	}
+-
+-	memzero(info, sizeof(*info));
+-	platform_set_drvdata(pdev, info);
+-
+-	res = pdev->resource;  /* assume that the flash has one resource */
+-
+-	info->map.phys = res->start;
+-	info->map.size = res->end - res->start + 1;
+-	info->map.name = pdev->dev.bus_id;
+-	info->map.bankwidth = 2;
+-
+-	if (info->map.size > AREA_MAXSIZE)
+-		info->map.size = AREA_MAXSIZE;
+-
+-	pr_debug("%s: area %08lx, size %ld\n", __func__,
+-		 info->map.phys, info->map.size);
+-
+-	info->area = request_mem_region(res->start, info->map.size,
+-					pdev->name);
+-	if (info->area == NULL) {
+-		printk(KERN_ERR PFX "cannot reserve flash memory region\n");
+-		err = -ENOENT;
+-		goto exit_error;
+-	}
+-
+-	info->map.virt = ioremap(res->start, info->map.size);
+-	pr_debug("%s: virt at %08x\n", __func__, (int)info->map.virt);
+-
+-	if (info->map.virt == 0) {
+-		printk(KERN_ERR PFX "failed to ioremap() region\n");
+-		err = -EIO;
+-		goto exit_error;
+-	}
+-
+-	simple_map_init(&info->map);
+-
+-	/* enable the write to the flash area */
+-
+-	bast_flash_setrw(1);
+-
+-	/* probe for the device(s) */
+-
+-	info->mtd = do_map_probe("jedec_probe", &info->map);
+-	if (info->mtd == NULL)
+-		info->mtd = do_map_probe("cfi_probe", &info->map);
+-
+-	if (info->mtd == NULL) {
+-		printk(KERN_ERR PFX "map_probe() failed\n");
+-		err = -ENXIO;
+-		goto exit_error;
+-	}
+-
+-	/* mark ourselves as the owner */
+-	info->mtd->owner = THIS_MODULE;
+-
+-	err = parse_mtd_partitions(info->mtd, probes, &info->partitions, 0);
+-	if (err > 0) {
+-		err = add_mtd_partitions(info->mtd, info->partitions, err);
+-		if (err)
+-			printk(KERN_ERR PFX "cannot add/parse partitions\n");
+-	} else {
+-		err = add_mtd_device(info->mtd);
+-	}
+-
+-	if (err == 0)
+-		return 0;
+-
+-	/* fall through to exit error */
+-
+- exit_error:
+-	bast_flash_remove(pdev);
+-	return err;
+-}
+-
+-static struct platform_driver bast_flash_driver = {
+-	.probe		= bast_flash_probe,
+-	.remove		= bast_flash_remove,
+-	.driver		= {
+-		.name	= "bast-nor",
+-		.owner	= THIS_MODULE,
+-	},
+-};
+-
+-static int __init bast_flash_init(void)
+-{
+-	printk("BAST NOR-Flash Driver, (c) 2004 Simtec Electronics\n");
+-	return platform_driver_register(&bast_flash_driver);
+-}
+-
+-static void __exit bast_flash_exit(void)
+-{
+-	platform_driver_unregister(&bast_flash_driver);
+-}
+-
+-module_init(bast_flash_init);
+-module_exit(bast_flash_exit);
+-
+-MODULE_LICENSE("GPL");
+-MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");
+-MODULE_DESCRIPTION("BAST MTD Map driver");
+-MODULE_ALIAS("platform:bast-nor");
 
-This is to inform you that you have won a prize money
-of (=A3850,000.00) EIGHT HUNDRED AND FIFTY THOUSAND
-Great Britain Pounds Sterlings for the YEAR, 2008.
-Lottery Promotion Which Is Organized By YAHOO/MSN LOTTERY
-INC & WINDOWS LIVE.YAHOO&MSN MICROSOFT WINDOWS, Collects all the E-mail
-addresses of the people that are active online, among the millions that
-subscribed
-to Yahoo and Hotmail we only select five people every Month as our
-winners through electronic balloting System without the winner
-applying,we congratulate you for being one of the people selected.
-PAYMENT OF PRIZE AND CLAIM
-You are to contact your Claims Agent on or before your date of
-Claim, Winners Shall be paid in accordance with his/her Settlement
-Centre.YAHOO/MSN LOTTERY Prize must be claimed no later than 15
-days from date of Draw Notification after the Draw date in which Prize
-has won.Any prize not claimed within this period will be forfeited.You
-are to keep your Claims Confidential to yourself alone.
-These are your identification numbers:
-Batch number----------YM 09102XN
-Reff number------------YM35447XN
-Winning number-------YM09788
-These numbers fall within your Location file,you are requested to
-contact EVENTS AGENT MANAGER,send your winning identification numbers
-to them at this contact address below.
-(CONTACT EVENTS AGENT MANAGER)
-*******************************************************
-NAME:.....................................
-AGE:........................................
-SEX:........................................
-ADDRESS:...............................
-EMAIL:....................................
-PHONE:...................................
-OCCUPATION:.........................
-COMPANY:..............................
-NEXT OF KIN...........................
-STATE......................................
-COUNTRY:................................
-NATIONALITY............................
-OPTIONS OF DELIVERY..(BANK TO BANK TRANSFER)
-(Fiduciary Agent:MAX RAPH.
-E-Mail;maxraph20@live.com
-Tel: +44-7031949372 or +44-7045732204
-
-*******************************************************
-CONGRATULATION ONCE AGAIN FROM UNITED KINGDOM YAHOO&MSN PROMO BOARD
-FROM : MRS JULIET MARROW.
-(ONLINE COORDINATOR)
-
-----------------------------------------------------------------
-Universidade Federal da Bahia - http://www.portal.ufba.br
+-- 
