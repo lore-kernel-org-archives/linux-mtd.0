@@ -1,34 +1,14 @@
-Received: from mx51.mymxserver.com ([85.199.173.110])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KGwOE-0002Dx-A2
-	for linux-mtd@lists.infradead.org; Thu, 10 Jul 2008 13:40:54 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by localhost.mx51.mymxserver.com (Postfix) with ESMTP id 6AD564B01A
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 10 Jul 2008 15:40:49 +0200 (CEST)
-Received: from mx51.mymxserver.com ([127.0.0.1])
-	by localhost (mx51.mymxserver.com [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id AwFgZfIWNPFS for <linux-mtd@lists.infradead.org>;
-	Thu, 10 Jul 2008 15:40:49 +0200 (CEST)
-Received: from lin01.mn-solutions.de (pD95F961B.dip0.t-ipconnect.de
-	[217.95.150.27])
-	by mx51.mymxserver.com (Postfix) with ESMTP id 19E524B014
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 10 Jul 2008 15:40:49 +0200 (CEST)
-Received: from mnz66.mn-solutions.de (mnz66.mn-solutions.de [192.168.233.66])
-	by lin01.mn-solutions.de (Postfix) with ESMTP id 9E0E81E000E
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 10 Jul 2008 15:40:44 +0200 (CEST)
-From: Holger Schurig <hs4233@mail.mn-solutions.de>
+Received: from web33611.mail.mud.yahoo.com ([68.142.198.157])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KH3lj-0003Dx-AR
+	for linux-mtd@lists.infradead.org; Thu, 10 Jul 2008 21:33:39 +0000
+Date: Thu, 10 Jul 2008 14:26:59 -0700 (PDT)
+From: Frans Meulenbroeks <fransmeulenbroeks@yahoo.com>
+Subject: Fw: [PATCH] [MTD] NAND nand_ecc.c: rewrite for improved performance
 To: linux-mtd@lists.infradead.org
-Subject: Flash device refused suspend due to active operation (state 0)
-Date: Thu, 10 Jul 2008 15:39:46 +0200
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200807101539.46202.hs4233@mail.mn-solutions.de>
+Content-Type: text/plain; charset=us-ascii
+Message-ID: <618660.91327.qm@web33611.mail.mud.yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,58 +18,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have, from time to time, the following strange thing on my 
-device:
+Missed that the reply of Thomas was to the list.
+Here is my reply.
+Don't think I'm going to make it to come with a new version next 2 weeks.
 
-# sync
-# shutdown -r 0
-
-Broadcast message from root (tts/2) (Thu Jan  1 00:01:24 1970):
-
-The system is going down for reboot NOW!
-INIT: Switching to runlevel: 6
-INIT: Sending processes the TERM signal
-INIT: Sending pStopping Dropbear SSH server: 
-stopped /usr/sbin/dropbear (pid 211)
-dropbear.
-Stopping syslogd/klogd: stopped syslogd (pid 218)
-stopped klogd (pid 220)
-done
-Deconfiguring network interfaces... done.
-Stopping vncserver: done
-Sending TERM signal...
-Sending KILL signal...
-Flash device refused suspend due to active operation (state 0)
-Restarting system.
+Frans.
 
 
+----- Forwarded Message ----
 
-This is on 2.6.25.7, PXA255, with:
+> 
+> Hi Thomas,
+> 
+> Thanks for your reply.
+> Some response  below.
+> 
+> 
+> 
+> 
+> > First off, please use a mail client which does line breaks around 78
+> > characters.
+> 
+> Ah ok. Actually I do only use webmail clients nowadays, and the yahoo one indeed 
+> truncates quite early.
+> Guess this is better (finally got a reason to switch to the new yahoo email 
+> format).
+> If not, let me know.
+> > 
+> > Secondly, we only bash advisory resistant repeat offenders :)
+> 
+> NP. I'll try to do my best to learn.
+> 
+> > It should go into Documentation/mtd. I read trough it and I want to
+> > answer a question you asked there:
+> 
+> I'll put it there.
+> > 
+> > > Not too sure why the last invert is
+> > > needed, but it happened also in the original code.
+> > 
+> > We want to have 0xff 0xff 0xff ECC code for a page full of 0xff's
+> > (empty flash).
+> 
+> Ok. Will add that.
+> > 
+> > > I have included the complete nand_ecc.c file. It was derived from
+> > > scratch so a patch would have been much bigger.
+> > 
+> > At the end, we need a patch anyway.
+> 
+> Aargh. I feared someone would say so. Reason for distributing the full file was:
+> 1. it is smaller
+> 2. it is less dependent on the original code (as a patch does require that the 
+> original code is exactly the same
+> and actually for this it does not matter as long as the API does not change.
+> 
+> Any suggestion how to best make such a patch?
+> (I'm an oldtimer so unless advised otherwise, I'll just use diff -c :-) )
+> > 
+> > I'm not surprised about the effect of unrolling the loop, but it the
+> > benefit depends on the CPU architecture as you have noticed
+> > already. I'm curious what the speedup on ARM will be.
+> 
+> I have an unused NSLU2 which has an ARM on board (ARM5 if I am not mistaken).
+> I can see if I can get that one up and running again and test on it as well
+> 
+> BTW: I also do have an improved version of the current driver, but that one did 
+> give much less gain. 
+> If you are interested I can sent you that one.
+> 
+> A lot of the gain also comes from going to one byte at a time, to one longword 
+> at a time.
+> longword instructions take the same time as byte instructions so this gives 4 
+> times the gain.
+> Didn't know how to do that in the original code anyway (actually I did not fully 
+> understand the original code, but
+> maybe I did not try hard enough :-)
+> > 
+> > I have no real objections to merge that code aside of formal aspects:
+> > 
+> > 1) Please keep at least a reference to the original authors of the ecc
+> > code.
+> 
+> No problems with that. How do you propose to do that/what is the common 
+> convention there.
+> Note that I did not reuse any of the original code except the api and part of 
+> the copyright message.
+> I'm glad to give credit where credit is due. Then again I hate it if people get 
+> blamed or so for whatever mistake I made :)
+> > 
+> > 2) Try to follow Documentation/Codingstyle
+> 
+> Will have a look at it. Guess one of the issues is that I always use {} whereas 
+> the kernel code does not in case
+> of an if statement with only one statement. Also I might have done the layout 
+> differently.
+> > 
+> > 3) Create a patch and use scripts/checkpatch.pl on it. The current
+> > output is: 
+> > 
+> > total: 160 errors, 17 warnings, 482 lines checked
+> 
+> Ouch. Will look at it. I was unaware of this script.
+> > 
+> > 4) Send it as a patch preferrably inline in the mail.
+> 
+> Will do. It will probably take a few weeks to do this (I'm leaving for a 2 week 
+> vacation saturday early morning :)
+> > 
+> > Thanks,
+> > 
+> >     tglx
+> 
+> My pleasure.
+> 
+> One other question. 
+> As you probably saw from my message or the copyright message I work for Philips.
+> As such, the other day I bumped upon a snippet of code for bad block handling 
+> for squashfs (or cramfs).
+> This code seemed to come from linutronix (so probably even from you), but is not 
+> in the official kernel.
+> Guess it came to us through NXP (former Philips Semiconductors).
+> Is this something to be added?
+> (btw: I am not an expert in this area, but when reading the patch it seemed to 
+> me that it would be more efficient to either record the bad blocks somewhere or, 
+> even better, use the bad block list of the device, instead of testing each block 
+> sequentially for being bad).
+> 
+> Best regards, Frans.
 
-flash: Found 2 x16 devices at 0x0 in 32-bit bank
-flash: Found an alias at 0x2000000 for the chip at 0x0
-erase region 0: offset=0x0,size=0x40000,blocks=128
-0x00000000-0x00040000: "Boot"
-0x00040000-0x00140000: "Linux"
-0x00140000-0x02000000: "Files"
-VFS: Mounted root (jffs2 filesystem).
 
-CONFIG_MTD=y
-CONFIG_MTD_PARTITIONS=y
-CONFIG_MTD_BLKDEVS=y
-CONFIG_MTD_BLOCK=y
-CONFIG_MTD_CFI=y
-CONFIG_MTD_GEN_PROBE=y
-CONFIG_MTD_CFI_ADV_OPTIONS=y
-CONFIG_MTD_CFI_NOSWAP=y
-CONFIG_MTD_CFI_GEOMETRY=y
-CONFIG_MTD_MAP_BANK_WIDTH_4=y
-CONFIG_MTD_CFI_I2=y
-CONFIG_MTD_CFI_INTELEXT=y
-CONFIG_MTD_CFI_UTIL=y
-CONFIG_MTD_PXA2XX=y
 
-Any hint on how I could debug this?
-
-I'm not sure if this is related to a problem that I have from 
-time to
+      
