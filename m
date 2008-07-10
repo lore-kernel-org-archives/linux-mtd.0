@@ -1,17 +1,20 @@
-Received: from zone0.gcu-squad.org ([212.85.147.21]
-	helo=services.gcu-squad.org)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KGuSZ-0004no-DJ
-	for linux-mtd@lists.infradead.org; Thu, 10 Jul 2008 11:37:15 +0000
-Date: Thu, 10 Jul 2008 13:37:08 +0200
-From: Jean Delvare <khali@linux-fr.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] [MTD] No debug message when debugging is disabled
-Message-ID: <20080710133708.32e53b71@hyperion.delvare>
+	id 1KGv7i-0002Sl-Mv
+	for linux-mtd@lists.infradead.org; Thu, 10 Jul 2008 12:19:47 +0000
+Received: from esebh107.NOE.Nokia.com (esebh107.ntc.nokia.com [172.21.143.143])
+	by mgw-mx06.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
+	m6ACJQ1w021736
+	for <linux-mtd@lists.infradead.org>; Thu, 10 Jul 2008 15:19:43 +0300
+Subject: UBIFS write-back: what application developers should know
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 10 Jul 2008 15:19:27 +0300
+Message-Id: <1215692367.14618.114.camel@sauron>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: John Stoffel <john@stoffel.org>, linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: quoted-printable
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,34 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use pr_debug(...) instead of printk(KERN_DEBUG ...) so that the message
-is only printed when debugging is enabled.
+Hi,
 
-Signed-off-by: Jean Delvare <khali@linux-fr.org>
-Tested-by: John stoffel <john@stoffel.org>
----
-This patch was already sent on:
- * 2008-06-12
+I just wrote a small UBIFS documentation chapter and described an
+important aspect of UBIFS application programmers should be aware of:
 
-David, can you please add this patch to your tree? Thanks.
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_writeback
 
- drivers/mtd/chips/gen_probe.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
---- linux-2.6.26-rc5.orig/drivers/mtd/chips/gen_probe.c	2008-04-17 04:49:44.000000000 +0200
-+++ linux-2.6.26-rc5/drivers/mtd/chips/gen_probe.c	2008-06-12 22:20:12.000000000 +0200
-@@ -71,8 +71,8 @@ static struct cfi_private *genprobe_iden
- 	   interleave and device type, etc. */
- 	if (!genprobe_new_chip(map, cp, &cfi)) {
- 		/* The probe didn't like it */
--		printk(KERN_DEBUG "%s: Found no %s device at location zero\n",
--		       cp->name, map->name);
-+		pr_debug("%s: Found no %s device at location zero\n",
-+			 cp->name, map->name);
- 		return NULL;
- 	}
- 
-
-
--- 
-Jean Delvare
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
