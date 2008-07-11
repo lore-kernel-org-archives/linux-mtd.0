@@ -1,12 +1,23 @@
-Message-ID: <41415.62.56.141.34.1215774745.squirrel@www.idl.org.pe>
-Date: Fri, 11 Jul 2008 06:12:25 -0500 (PET)
-Subject: Congratulations!! *You Have Won 500,000.00 GBP*
-From: "Online Promo Programme 2008" <msword@yahoo.co.uk>
+Received: from smtp4.int-evry.fr ([157.159.10.71])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KHJ28-0007mV-Og
+	for linux-mtd@lists.infradead.org; Fri, 11 Jul 2008 13:51:37 +0000
+From: Florian Fainelli <florian.fainelli@telecomint.eu>
+To: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
+Subject: Re: [PATCH][MIPS] MTX-1 flash partition setup move to platform
+	devices registration
+Date: Fri, 11 Jul 2008 15:50:56 +0200
+References: <20080711223448.f5826678.yoichi_yuasa@tripeaks.co.jp>
+In-Reply-To: <20080711223448.f5826678.yoichi_yuasa@tripeaks.co.jp>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-To: undisclosed-recipients:;
-Reply-To: mrs_vanessawhitescott147@yahoo.com.hk
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Message-Id: <200807111550.57481.florian.fainelli@telecomint.eu>
+Cc: linux-mips <linux-mips@linux-mips.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	Ralf Baechle <ralf@linux-mips.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,37 +27,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello Yoichi,
 
+Le Friday 11 July 2008 15:34:48 Yoichi Yuasa, vous avez =E9crit=A0:
+> MTX-1 flash partition setup move to platform devices registration.
 
+Thanks for doing this.
 
-Dear Esteemed Winner,
+>
+> Signed-off-by: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
 
-We are pleased to inform you of the result of the Microsoft
-Word International Promotions Program .Your e-mail address
-attached to Winning number 20-12JAN-2008-02MSW,
-serial S/N-00168, drew the lucky numbers 887-13-865-37-10-83
-which consequently won in the 1st category, you have therefore
-been approved for a lump sum pay out of 500,000.00 GBP This is
-from total prize money of GBP2,500,000.00 POUNDS shared among
-the five international winners in this category. To claim your prize
-kindly submit the completed form to your verification unit
-by email: VERIFICATION FORM BELOW:
-
-*Name of Winner:
-*Address:
-*City/State:
-*Nationality:
-*Sex:
-*Email Address:
-*Phone no:
-*Occupation:
-*Age:
-*Amount won:.
-
-The claims officer contact email is:
-Name: Mrs Vanessa White Scott
-E-mail:mrs_vanessawhitescott147@yahoo.com.hk
-
-Yours Truly,
-Mrs. Dolly Michaels
-Co-ordinator(Online Promo Programme)
+Acked-by: Florian Fainelli <florian.fainelli@telecomint.eu>
+=2D-=20
+Cordialement, Florian Fainelli
+=2D-----------------------------
