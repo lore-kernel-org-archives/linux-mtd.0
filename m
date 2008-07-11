@@ -1,18 +1,17 @@
-Received: from mfo32.po.2iij.net ([210.128.50.15])
+Received: from ironport2-out.teksavvy.com ([206.248.154.182])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KHJKJ-0007Ic-LZ
-	for linux-mtd@lists.infradead.org; Fri, 11 Jul 2008 14:10:24 +0000
-Date: Fri, 11 Jul 2008 22:34:48 +0900
-From: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
-To: Ralf Baechle <ralf@linux-mips.org>
-Subject: [PATCH][MIPS] MTX-1 flash partition setup move to platform devices
-	registration
-Message-Id: <20080711223448.f5826678.yoichi_yuasa@tripeaks.co.jp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mips <linux-mips@linux-mips.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>, yoichi_yuasa@tripeaks.co.jp
+	id 1KHKho-0003oK-TZ
+	for linux-mtd@lists.infradead.org; Fri, 11 Jul 2008 15:38:45 +0000
+Message-ID: <2542.128.100.203.197.1215792479.squirrel@128.100.203.197>
+Date: Fri, 11 Jul 2008 12:07:59 -0400 (EDT)
+Subject: DiskOnChip 2000
+From: "Jesse Malone" <jmalone@jsoft.ca>
+To: anbadeol@gmail.com
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: jmalone@jsoft.ca
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,203 +21,148 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-MTX-1 flash partition setup move to platform devices registration.
+I'm trying your driver on a diskonchip 2000 D2202-D16 and seem to be
+running into problems writing to the DOC. Have you had success writing to
+the DOC? I'm using a 2.6.22 kernel with your patch. I fairly conistently
+get a bunch of kernel Oops's after writing a significant amount of data (a
+few megabytes). I'll post the Ooops's for you, hopefully they might
+provide a clue. Any thoughts?
 
-Signed-off-by: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
 
-diff -pruN -X /home/yuasa/Memo/dontdiff linux-orig/arch/mips/au1000/mtx-1/platform.c linux/arch/mips/au1000/mtx-1/platform.c
---- linux-orig/arch/mips/au1000/mtx-1/platform.c	2008-05-12 08:28:21.391041296 +0900
-+++ linux/arch/mips/au1000/mtx-1/platform.c	2008-05-12 08:28:36.375895238 +0900
-@@ -24,6 +24,9 @@
- #include <linux/gpio.h>
- #include <linux/gpio_keys.h>
- #include <linux/input.h>
-+#include <linux/mtd/partitions.h>
-+#include <linux/mtd/physmap.h>
-+#include <mtd/mtd-abi.h>
- 
- static struct gpio_keys_button mtx1_gpio_button[] = {
- 	{
-@@ -85,10 +88,56 @@ static struct platform_device mtx1_gpio_
- 	}
- };
- 
-+static struct mtd_partition mtx1_mtd_partitions[] = {
-+	{
-+		.name	= "filesystem",
-+		.size	= 0x01C00000,
-+		.offset	= 0,
-+	},
-+	{
-+		.name	= "yamon",
-+		.size	= 0x00100000,
-+		.offset	= MTDPART_OFS_APPEND,
-+		.mask_flags = MTD_WRITEABLE,
-+	},
-+	{
-+		.name	= "kernel",
-+		.size	= 0x002c0000,
-+		.offset	= MTDPART_OFS_APPEND,
-+	},
-+	{
-+		.name	= "yamon env",
-+		.size	= 0x00040000,
-+		.offset	= MTDPART_OFS_APPEND,
-+	},
-+};
-+
-+static struct physmap_flash_data mtx1_flash_data = {
-+	.width		= 4,
-+	.nr_parts	= 4,
-+	.parts		= mtx1_mtd_partitions,
-+};
-+
-+static struct resource mtx1_mtd_resource = {
-+	.start	= 0x1e000000,
-+	.end	= 0x1fffffff,
-+	.flags	= IORESOURCE_MEM,
-+};
-+
-+static struct platform_device mtx1_mtd = {
-+	.name		= "physmap-flash",
-+	.dev		= {
-+		.platform_data	= &mtx1_flash_data,
-+	},
-+	.num_resources	= 1,
-+	.resource	= &mtx1_mtd_resource,
-+};
-+
- static struct __initdata platform_device * mtx1_devs[] = {
- 	&mtx1_gpio_leds,
- 	&mtx1_wdt,
--	&mtx1_button
-+	&mtx1_button,
-+	&mtx1_mtd,
- };
- 
- static int __init mtx1_register_devices(void)
-diff -pruN -X /home/yuasa/Memo/dontdiff linux-orig/drivers/mtd/maps/Kconfig linux/drivers/mtd/maps/Kconfig
---- linux-orig/drivers/mtd/maps/Kconfig	2008-05-12 08:28:24.811236201 +0900
-+++ linux/drivers/mtd/maps/Kconfig	2008-05-12 08:28:36.375895238 +0900
-@@ -258,13 +258,6 @@ config MTD_ALCHEMY
- 	help
- 	  Flash memory access on AMD Alchemy Pb/Db/RDK Reference Boards
- 
--config MTD_MTX1
--	tristate "4G Systems MTX-1 Flash device"
--	depends on MIPS_MTX1 && MTD_CFI
--	help
--	  Flash memory access on 4G Systems MTX-1 Board. If you have one of
--	  these boards and would like to use the flash chips on it, say 'Y'.
--
- config MTD_DILNETPC
- 	tristate "CFI Flash device mapped on DIL/Net PC"
- 	depends on X86 && MTD_CONCAT && MTD_PARTITIONS && MTD_CFI_INTELEXT
-diff -pruN -X /home/yuasa/Memo/dontdiff linux-orig/drivers/mtd/maps/Makefile linux/drivers/mtd/maps/Makefile
---- linux-orig/drivers/mtd/maps/Makefile	2008-05-12 08:28:24.811236201 +0900
-+++ linux/drivers/mtd/maps/Makefile	2008-05-12 08:28:36.375895238 +0900
-@@ -65,5 +65,4 @@ obj-$(CONFIG_MTD_DMV182)	+= dmv182.o
- obj-$(CONFIG_MTD_SHARP_SL)	+= sharpsl-flash.o
- obj-$(CONFIG_MTD_PLATRAM)	+= plat-ram.o
- obj-$(CONFIG_MTD_OMAP_NOR)	+= omap_nor.o
--obj-$(CONFIG_MTD_MTX1)		+= mtx-1_flash.o
- obj-$(CONFIG_MTD_INTEL_VR_NOR)	+= intel_vr_nor.o
-diff -pruN -X /home/yuasa/Memo/dontdiff linux-orig/drivers/mtd/maps/mtx-1_flash.c linux/drivers/mtd/maps/mtx-1_flash.c
---- linux-orig/drivers/mtd/maps/mtx-1_flash.c	2008-05-12 08:28:24.839237803 +0900
-+++ linux/drivers/mtd/maps/mtx-1_flash.c	1970-01-01 09:00:00.000000000 +0900
-@@ -1,95 +0,0 @@
--/*
-- * Flash memory access on 4G Systems MTX-1 boards
-- *
-- * $Id: mtx-1_flash.c,v 1.2 2005/11/07 11:14:27 gleixner Exp $
-- *
-- * (C) 2005 Bruno Randolf <bruno.randolf@4g-systems.biz>
-- * (C) 2005 Joern Engel <joern@wohnheim.fh-wedel.de>
-- *
-- */
--
--#include <linux/module.h>
--#include <linux/types.h>
--#include <linux/init.h>
--#include <linux/kernel.h>
--
--#include <linux/mtd/mtd.h>
--#include <linux/mtd/map.h>
--#include <linux/mtd/partitions.h>
--
--#include <asm/io.h>
--
--static struct map_info mtx1_map = {
--	.name = "MTX-1 flash",
--	.bankwidth = 4,
--	.size = 0x2000000,
--	.phys = 0x1E000000,
--};
--
--static struct mtd_partition mtx1_partitions[] = {
--        {
--                .name = "filesystem",
--                .size = 0x01C00000,
--                .offset = 0,
--        },{
--                .name = "yamon",
--                .size = 0x00100000,
--                .offset = MTDPART_OFS_APPEND,
--                .mask_flags = MTD_WRITEABLE,
--        },{
--                .name = "kernel",
--                .size = 0x002c0000,
--                .offset = MTDPART_OFS_APPEND,
--        },{
--                .name = "yamon env",
--                .size = 0x00040000,
--                .offset = MTDPART_OFS_APPEND,
--        }
--};
--
--static struct mtd_info *mtx1_mtd;
--
--int __init mtx1_mtd_init(void)
--{
--	int ret = -ENXIO;
--
--	simple_map_init(&mtx1_map);
--
--	mtx1_map.virt = ioremap(mtx1_map.phys, mtx1_map.size);
--	if (!mtx1_map.virt)
--		return -EIO;
--
--	mtx1_mtd = do_map_probe("cfi_probe", &mtx1_map);
--	if (!mtx1_mtd)
--		goto err;
--
--	mtx1_mtd->owner = THIS_MODULE;
--
--	ret = add_mtd_partitions(mtx1_mtd, mtx1_partitions,
--			ARRAY_SIZE(mtx1_partitions));
--	if (ret)
--		goto err;
--
--	return 0;
--
--err:
--       iounmap(mtx1_map.virt);
--       return ret;
--}
--
--static void __exit mtx1_mtd_cleanup(void)
--{
--	if (mtx1_mtd) {
--		del_mtd_partitions(mtx1_mtd);
--		map_destroy(mtx1_mtd);
--	}
--	if (mtx1_map.virt)
--		iounmap(mtx1_map.virt);
--}
--
--module_init(mtx1_mtd_init);
--module_exit(mtx1_mtd_cleanup);
--
--MODULE_AUTHOR("Bruno Randolf <bruno.randolf@4g-systems.biz>");
--MODULE_DESCRIPTION("MTX-1 flash map");
--MODULE_LICENSE("GPL");
+printing eip:
+c0188dc5
+*pde = 00000000
+Oops: 0000 [#1]
+Modules linked in:
+CPU:    0
+EIP:    0060:[<c0188dc5>]    Not tainted VLI
+EFLAGS: 00010046   (2.6.22 #1)
+EIP is at rb_insert_color+0x1d/0xc4
+eax: 00000000   ebx: c1155498   ecx: 00000000   edx: c1155438
+esi: 00000000   edi: c1e3ae04   ebp: c1155438   esp: c10b3c5c
+ds: 007b   es: 007b   fs: 0000  gs: 0000  ss: 0068
+Process pdflush (pid: 41, ti=c10b2000 task=c1094a00 task.ti=c10b2000)
+Stack: 00005a84 c1e3adc0 c1155438 c10bc900 c017afa0 c1155438 c1e3adc0
+c1155420
+       c01839a3 c1e3adc0 c1155420 c10bc900 00000000 c0184b90 c1e3adc0
+c10cade0
+       00000000 c017b41d 00000000 00000000 c015f710 c1e3adc0 c10cade0
+00000000
+Call Trace:
+ [<c017afa0>] elv_rb_add+0x44/0x54
+ [<c01839a3>] cfq_add_rq_rb+0x2b/0x74
+ [<c0184b90>] cfq_insert_request+0x1c/0x3c
+ [<c017b41d>] elv_insert+0x105/0x148
+ [<c015f710>] bio_phys_segments+0x14/0x18
+ [<c017e783>] __make_request+0xb3/0x2e0
+ [<c017eb6e>] generic_make_request+0x142/0x1c0
+ [<c017dabd>] blk_alloc_request+0x41/0x5c
+ [<c017ec31>] submit_bio+0x45/0xb8
+ [<c015e72f>] bio_alloc_bioset+0x7b/0x150
+ [<c015e1b7>] submit_bh+0xbf/0xfc
+ [<c015ca75>] __block_write_full_page+0x101/0x2cc
+ [<c0188abd>] radix_tree_gang_lookup_tag+0x99/0xb0
+ [<c015f89c>] blkdev_get_block+0x0/0x38
+ [<c015e070>] block_write_full_page+0xb4/0xb8
+ [<c015f89c>] blkdev_get_block+0x0/0x38
+ [<c01300bc>] __writepage+0x8/0x20
+ [<c012ffb6>] write_cache_pages+0x1c6/0x2c4
+ [<c01300b4>] __writepage+0x0/0x20
+ [<c022dc08>] __sched_text_start+0x2e8/0x5a4
+ [<c01300d4>] generic_writepages+0x0/0x28
+ [<c01300f7>] generic_writepages+0x23/0x28
+ [<c013011b>] do_writepages+0x1f/0x38
+ [<c0158ac6>] __sync_single_inode+0x4e/0x1b4
+ [<c0158c73>] __writeback_single_inode+0x47/0x16c
+ [<c022e494>] schedule_timeout+0x4c/0x8c
+ [<c0115588>] process_timeout+0x0/0x8
+ [<c0133930>] congestion_wait+0x6c/0x78
+ [<c011d6b8>] autoremove_wake_function+0x0/0x34
+ [<c0158f0b>] sync_sb_inodes+0x173/0x240
+ [<c0159047>] writeback_inodes+0x6f/0x74
+ [<c012fc8c>] wb_kupdate+0x74/0xe0
+ [<c01305be>] __pdflush+0x8e/0x12c
+ [<c013065c>] pdflush+0x0/0x28
+ [<c013067f>] pdflush+0x23/0x28
+ [<c012fc18>] wb_kupdate+0x0/0xe0
+ [<c011d394>] kthread+0x58/0x5c
+ [<c011d33c>] kthread+0x0/0x5c
+ [<c0102df3>] kernel_thread_helper+0x7/0x10
+ =======================
+Code: c3 90 89 56 04 eb ed 8d 76 00 89 17 eb e6 55 57 56 53 8b 18 83 e3 fc
+89 c
+EIP: [<c0188dc5>] rb_insert_color+0x1d/0xc4 SS:ESP 0068:c10b3c5c
+estart.
+process '/usr/bin/tail------------[ cut here ]------------
+kernel BUG at block/elevator.c:780!
+invalid opcode: 0000 [#2]
+Modules linked in:
+CPU:    0
+EIP:    0060:[<c017b65e>]    Not tainted VLI
+EFLAGS: 00010246   (2.6.22 #1)
+EIP is at elv_dequeue_request+0x3a/0x40
+eax: c10cade0   ebx: c10cade0   ecx: c1e3adc0   edx: c1e3adc0
+esi: 00000001   edi: c017d6b8   ebp: c1081fa4   esp: c1081f34
+ds: 007b   es: 007b   fs: 0000  gs: 0000  ss: 0068
+Process kblockd/0 (pid: 23, ti=c1080000 task=c1078a00 task.ti=c1080000)
+Stack: c1e3adc0 c017f286 c1e3adc0 c10cade0 c01bc684 c10cade0 c104c340
+c017d69d
+       c10cae60 c017d6a6 c017d6c0 c011a902 00000000 df960f00 0000007f
+c104c340
+       c104c340 c104c348 c1081fb8 c011aa3c 00000000 c1078a00 c011d6b8
+c1081fb0
+Call Trace:
+ [<c017f286>] end_request+0x2a/0x38
+ [<c01bc684>] doc2000_request+0x20/0x38
+ [<c017d69d>] __generic_unplug_device+0x21/0x24
+ [<c017d6a6>] generic_unplug_device+0x6/0x8
+ [<c017d6c0>] blk_unplug_work+0x8/0xc
+ [<c011a902>] run_workqueue+0x4a/0xe8
+ [<c011aa3c>] worker_thread+0x9c/0xb0
+ [<c011d6b8>] autoremove_wake_function+0x0/0x34
+ [<c010b857>] __wake_up_common+0x33/0x58
+ [<c011d6b8>] autoremove_wake_function+0x0/0x34
+ [<c011a9a0>] worker_thread+0x0/0xb0
+ [<c011d394>] kthread+0x58/0x5c
+ [<c011d33c>] kthread+0x0/0x5c
+ [<c0102df3>] kernel_thread_helper+0x7/0x10
+ =======================
+Code: 23 8b 42 04 89 41 04 89 08 80 7a 14 00 89 12 89 52 04 79 06 83 7a 18
+01 7
+EIP: [<c017b65e>] elv_dequeue_request+0x3a/0x40 SS:ESP 0068:c1081f34
+ -f /var/log/messages' (pid 3490) exited. Scheduling it for restart.
+process '/sbin/BUG: unable to handle kernel NULL pointer dereference at
+virtual2
+ printing eip:
+c013e58c
+*pde = 00000000
+Oops: 0000 [#3]
+Modules linked in:
+CPU:    0
+EIP:    0060:[<c013e58c>]    Not tainted VLI
+EFLAGS: 00010002   (2.6.22 #1)
+EIP is at kmem_cache_alloc+0x28/0x58
+eax: 00000000   ebx: 00000286   ecx: c1022aa0   edx: 00000002
+esi: c10493c0   edi: 000000d0   ebp: c10fb630   esp: c105fed4
+ds: 007b   es: 007b   fs: 0000  gs: 0000  ss: 0068
+Process init (pid: 1, ti=c105e000 task=c105c000 task.ti=c105e000)
+Stack: c1168340 c1155478 00000001 00000000 00000001 c010c8c8 c1155ee0
+c1168374
+       c1168034 c1155490 c1155494 c1155484 c1168000 c1168340 c1078a00
+00000000
+       c10a7ed0 c10a7d80 c010cacb c1078a00 c010d1d4 c01534a7 00000000
+c105ff44
+Call Trace:
+ [<c010c8c8>] dup_mm+0x158/0x2d4
+ [<c010cacb>] copy_mm+0x87/0x94
+ [<c010d1d4>] copy_process+0x340/0xac8
+ [<c01534a7>] mntput_no_expire+0x13/0x4c
+ [<c010d9c0>] do_fork+0x64/0x198
+ [<c018af8b>] copy_to_user+0x27/0x30
+ [<c01013b8>] sys_fork+0x2c/0x30
+ [<c0102b6a>] syscall_call+0x7/0xb
+ [<c0220000>] devinet_ioctl+0x1f8/0x554
+ =======================
+Code: 8d 76 00 57 56 53 83 ec 08 89 d7 89 c6 8b 54 24 14 9c 5b fa 8b 88 88
+00 0
+EIP: [<c013e58c>] kmem_cache_alloc+0x28/0x58 SS:ESP 0068:c105fed4
