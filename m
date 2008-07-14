@@ -1,22 +1,27 @@
-Received: from 206-248-137-77.dsl.teksavvy.com ([206.248.137.77]
-	helo=mail.isoar.ca)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KIUiu-0001PV-M3
-	for linux-mtd@lists.infradead.org; Mon, 14 Jul 2008 20:32:41 +0000
-Received: from [10.0.200.176] (vpn02.rossvideo.com [209.5.118.98])
-	by mail.isoar.ca (8.14.1/8.13.8) with ESMTP id m6EKWRQq001141
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <linux-mtd@lists.infradead.org>; Mon, 14 Jul 2008 16:32:33 -0400
-Message-ID: <487BB7D9.4070505@isoar.ca>
-Date: Mon, 14 Jul 2008 16:32:25 -0400
-From: "Andrew E. Mileski" <andrewm@isoar.ca>
+Received: from an-out-0708.google.com ([209.85.132.247])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KIUk2-0002Jl-9w
+	for linux-mtd@lists.infradead.org; Mon, 14 Jul 2008 20:33:50 +0000
+Received: by an-out-0708.google.com with SMTP id c24so880149ana.99
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 14 Jul 2008 13:33:48 -0700 (PDT)
+Message-ID: <acd2a5930807141333u1266830dvd2ca57a9d2729d04@mail.gmail.com>
+Date: Tue, 15 Jul 2008 00:33:48 +0400
+From: "Vitaly Wool" <vitalywool@gmail.com>
+To: "Divyanshu Verma" <dverma@broadcom.com>
+Subject: Re: Regarding NAND driver based on PrimeCell Static Memory Controller
+	(PL350 series)
+In-Reply-To: <E06E3B7BBC07864CADE892DAF1EB0FBD095146C0@NT-SJCA-0752.brcm.ad.broadcom.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] nand_wait_ready() timeout scaling
-References: <1209583375-11136-1-git-send-email-andrewm@isoar.ca>
-In-Reply-To: <1209583375-11136-1-git-send-email-andrewm@isoar.ca>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <20080711223448.f5826678.yoichi_yuasa@tripeaks.co.jp>
+	<20080711141053.GD13593@linux-mips.org>
+	<1215797959.11567.448.camel@pmac.infradead.org>
+	<E06E3B7BBC07864CADE892DAF1EB0FBD095146C0@NT-SJCA-0752.brcm.ad.broadcom.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,20 +31,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Andrew E. Mileski wrote:
-> The nand_wait_ready() timeout was hardcoded to 2 jiffies, which does not
-> scale with the system timer frequency.  Using a guess of a 250 Hz system
-> timer frequency, I believe the timeout was meant to be 8 ms.
+On 7/14/08, Divyanshu Verma <dverma@broadcom.com> wrote:
+>
+>  Hi,
+>  I am trying to implement a NAND driver for our SOC. The problem I am
+>  facing is that, our NAND controller does not allow me to have access to
+>  hardware specific control line. In other words, I cannot follow the
+>  mechanism given on http://www.linux-mtd.infradead.org/ for NAND driver
+>  as I cannot write  "my_nand_hwcontrol"  function. The H/w guys say that
+>  all this is taken care in the controller itself.
 
-Just a heads-up for those similarly banging their heads trying to get
-NAND to work for them, that I think I've also found 2 instances of a
-bug:  not waiting tWB before calling nand_wait_ready() in nand_base.c
+As far as I recall, PrimeCell thingies fit well into the _new_
+MTD/NAND subsystem.
+Please provide more detail on your one and I hope I'll be able to give
+you some guidance.
 
-   nand_do_read_ops()
-   nand_do_read_oob()
-
-I almost think the ndelay(tWB) should be in nand_wait_ready(), but I'm
-still playing with it.
-
--- 
-Andrew E. Mileski
+Vitaly
