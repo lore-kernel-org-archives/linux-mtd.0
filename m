@@ -1,17 +1,22 @@
-Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
+Received: from rn-out-0910.google.com ([64.233.170.191])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KIPsw-0002mJ-1J
-	for linux-mtd@lists.infradead.org; Mon, 14 Jul 2008 15:22:42 +0000
-Date: Mon, 14 Jul 2008 19:20:37 +0400
-From: Anton Vorontsov <avorontsov@ru.mvista.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] [MTD] [NAND] fsl_elbc_nand: fix section mismatch with
-	CONFIG_MTD_OF_PARTS=y
-Message-ID: <20080714152037.GA21062@polina.dev.rtsoft.ru>
+	id 1KIROG-0008Be-TX
+	for linux-mtd@lists.infradead.org; Mon, 14 Jul 2008 16:59:09 +0000
+Received: by rn-out-0910.google.com with SMTP id m7so1477232rnd.3
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 14 Jul 2008 09:59:07 -0700 (PDT)
+Message-ID: <be4b62bb0807140959l24f0f551w1629d6c722d19079@mail.gmail.com>
+Date: Mon, 14 Jul 2008 17:59:07 +0100
+From: "Andre Oliveira" <anbadeol@gmail.com>
+To: jmalone@jsoft.ca
+Subject: Re: DiskOnChip 2000
+In-Reply-To: <2542.128.100.203.197.1215792479.squirrel@128.100.203.197>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf8
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Cc: Scott Wood <scottwood@freescale.com>, linux-mtd@lists.infradead.org
+References: <2542.128.100.203.197.1215792479.squirrel@128.100.203.197>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,32 +26,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With CONFIG_MTD_OF_PARTS=y I'm getting this new section mismatch in reference
-from the function fsl_elbc_chip_probe() to the function
-.devinit.text:of_mtd_parse_partitions()
+On Fri, Jul 11, 2008 at 5:07 PM, Jesse Malone <jmalone@jsoft.ca> wrote:
+> I'm trying your driver on a diskonchip 2000 D2202-D16 and seem to be
+> running into problems writing to the DOC. Have you had success writing to
+> the DOC?
 
-This patch fixes the mismatch by providing __devinit annotation to the
-fsl_elbc_chip_probe() function.
+Hi!
+Yes, I have been using this patch without problems since kernel
+2.6.22, through 2.6.25 (which I'm currently using). I have a
+DiskOnChip 2000 MD2202-D32-X.
 
-Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
----
- drivers/mtd/nand/fsl_elbc_nand.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+> I'm using a 2.6.22 kernel with your patch. I fairly conistently
+> get a bunch of kernel Oops's after writing a significant amount of data (a
+> few megabytes). I'll post the Ooops's for you, hopefully they might
+> provide a clue. Any thoughts?
 
-diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index d6d1ff5..9dff513 100644
---- a/drivers/mtd/nand/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -836,8 +836,8 @@ static int fsl_elbc_chip_remove(struct fsl_elbc_mtd *priv)
- 	return 0;
- }
- 
--static int fsl_elbc_chip_probe(struct fsl_elbc_ctrl *ctrl,
--                               struct device_node *node)
-+static int __devinit fsl_elbc_chip_probe(struct fsl_elbc_ctrl *ctrl,
-+					 struct device_node *node)
- {
- 	struct fsl_lbc_regs __iomem *lbc = ctrl->regs;
- 	struct fsl_elbc_mtd *priv;
+Sorry, no clue. :-(
+I think the only part that seems related to the doc2000 is this:
+
+> kernel BUG at block/elevator.c:780!
+> ...
+> Call Trace:
+>  [<c017f286>] end_request+0x2a/0x38
+>  [<c01bc684>] doc2000_request+0x20/0x38
+
+The BUG trap in block/elevator.c is BUG_ON(list_empty(&rq->queuelist));
+But I don't know what this means. :-(
+I'm sorry I can't be more helpful...
 -- 
-1.5.5.4
+Andre Oliveira
+http://anbadeol.googlepages.com/
