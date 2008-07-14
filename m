@@ -1,17 +1,17 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from mail161.messagelabs.com ([216.82.253.115])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KIKxL-00020S-Qv
-	for linux-mtd@lists.infradead.org; Mon, 14 Jul 2008 10:06:56 +0000
-Subject: [RFC] UBI volume re-name
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 14 Jul 2008 13:05:51 +0300
-Message-Id: <1216029951.29469.7.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: Richard Titmuss <richard_titmuss@logitech.com>
-Reply-To: dedekind@infradead.org
+	id 1KIL8e-0002sG-Im
+	for linux-mtd@lists.infradead.org; Mon, 14 Jul 2008 10:18:37 +0000
+Date: Mon, 14 Jul 2008 12:18:29 +0200
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <Uwe.Kleine-Koenig@digi.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: M29W128GL doesn't like cfi_send_gen_cmd(0xFF, 0, ...)
+Message-ID: <20080714101829.GA27534@digi.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,382 +21,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hello,
 
-here is implementation of the volume re-name ioctl suggested
-by Richard Titmuss. I think it was quite nice idea which allows
-users to upgrade UBI volumes atomically:
+I have a machine here with a M29W128GL (8 Mbit x16[1]) assembled.  In
+U-Boot this part is autodetected correctly using CFI, but Linux fails.
+The reason is that the flash doesn't like having a 0xff written to it
+before going into CFI mode:
 
-1. Suppose we want to update volumes A and B atomically.
-2. Create temporary volumes A1 and B1
-3. Put new contents to volumes A1 and B1
-4. Atomically rename A1->A and A->A1, B1->B and B->B1.
-5. Now A and B have new contents
-6. Remove A1 and B1.
+	CC9P9215 # mw.w 0x50000000 0xf0
+	CC9P9215 # mw.w 0x500000aa 0x98
+	CC9P9215 # md.w 0x50000000
+	50000000: 0020 227e ffff ffff ffff ffff ffff ffff     .~"............
+	50000010: ffff ffff ffff ffff ffff ffff 2221 2200    ............!"."
+	50000020: 0051 0052 0059 0002 0000 0040 0000 0000    Q.R.Y.....@.....
+	50000030: 0000 0000 0000 0027 0036 00b5 00c5 0004    ......'.6.......
+	50000040: 0004 0009 0010 0004 0002 0003 0004 0018    ................
+	50000050: 0002 0000 0006 0000 0001 007f 0000 0000    ................
+	50000060: 0002 0000 0000 0000 0000 0000 0000 0000    ................
+	50000070: 0000 0000 0000 0000 0000 ffff ffff ffff    ................
 
-Of course volume id of A1 and B1 would change, but if the
-volumes are only referred by name, then it'll be fine.
+(i.e. this works, 0051 0052 0059 at (word-)offset 0x10.)
 
->From b285d9230c753890e9f57c43174559e4d1122c11 Mon Sep 17 00:00:00 2001
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Date: Sun, 13 Jul 2008 21:47:47 +0300
-Subject: [PATCH] UBI: implement multiple volumes rename
+	CC9P9215 # mw.w 0x50000000 0xf0
+	CC9P9215 # mw.w 0x50000000 0xff
+	CC9P9215 # mw.w 0x500000aa 0x98
+	CC9P9215 # md.w 0x50000000
+	50000000: 0015 ea00 f014 e59f f014 e59f f014 e59f    ................
+	50000010: f014 e59f f014 e59f f014 e59f f014 e59f    ................
+	50000020: 0180 0074 01e0 0074 0240 0074 02a0 0074    ..t...t.@.t...t.
+	50000030: 0300 0074 0360 0074 03a0 0074 beef dead    ..t.`.t...t.....
+	50000040: 0000 0074 0000 0074 cd18 0076 f438 0077    ..t...t...v.8.w.
+	50000050: c0de 0bad c0de 0bad 003c 0074 0000 e10f    ........<.t.....
+	50000060: 001f e3c0 00d3 e380 f000 e129 002f eb00    ..........)./...
+	50000070: 0078 e24f 103c e51f 0001 e150 0011 0a00    x.O.<.....P.....
 
-Quite useful ioctl which allows to make atomic system upgrades.
-The idea belongs to Richard Titmuss <richard_titmuss@logitech.com>
+(i.e. doesn't work, this is the data contained in the flash.)
 
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- drivers/mtd/ubi/cdev.c |   95 ++++++++++++++++++++++++++++++++++++++++++++=
-++++
- drivers/mtd/ubi/ubi.h  |    5 ++-
- drivers/mtd/ubi/vmt.c  |   30 +++++++++++++++
- drivers/mtd/ubi/vtbl.c |   46 +++++++++++++++++++++++
- include/mtd/ubi-user.h |   42 +++++++++++++++++++++
- 5 files changed, 217 insertions(+), 1 deletions(-)
+If I comment out all
 
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index 333c98e..b29c362 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -599,6 +599,75 @@ static int verify_rsvol_req(const struct ubi_device *u=
-bi,
- 	return 0;
- }
-=20
-+/**
-+ * rename_volumes - rename UBI volumes.
-+ * @ubi: UBI device description object
-+ * @req: volumes re-name request
-+ *
-+ * This is a helper function for the volume re-name IOCTL which validates =
-the
-+ * the request, opens the volume and calls corresponding volumes managemen=
-t
-+ * function. Returns zero in case of success and a negative error code in =
-case
-+ * of failure.
-+ */
-+static int rename_volumes(struct ubi_device *ubi,
-+			  struct ubi_rnvol_req *req)
-+{
-+	int i, n, err;
-+	struct ubi_volume_desc *desc[UBI_MAX_RNVOL];
-+
-+	if (req->count < 0 || req->count > UBI_MAX_RNVOL)
-+		return -EINVAL;
-+
-+	/* Validate volume IDs and names in the request */
-+	for (i =3D 0; i < req->count; i++) {
-+		if (req->vols[i].vol_id < 0 ||
-+		    req->vols[i].vol_id >=3D ubi->vtbl_slots)
-+			return -EINVAL;
-+		if (req->vols[i].name_len < 0)
-+			return -EINVAL;
-+		if (req->vols[i].name_len > UBI_VOL_NAME_MAX)
-+			return -ENAMETOOLONG;
-+		req->vols[i].name[req->vols[i].name_len] =3D '\0';
-+		n =3D strlen(req->vols[i].name);
-+		if (n !=3D req->vols[i].name_len)
-+			err =3D -EINVAL;
-+	}
-+
-+	/* Make sure volume IDs and names are unique */
-+	for (i =3D 0; i < req->count - 1; i++) {
-+		for (n =3D i + 1; n < req->count; n++) {
-+			if (req->vols[i].vol_id =3D=3D req->vols[n].vol_id) {
-+				dbg_err("duplicated volume id %d",
-+					req->vols[i].vol_id);
-+				return -EINVAL;
-+			}
-+			if (!strcmp(req->vols[i].name, req->vols[n].name)) {
-+				dbg_err("duplicated volume name %s",
-+					req->vols[i].name);
-+				return -EINVAL;
-+			}
-+		}
-+	}
-+
-+	/* Open all involeved volumes in exclusive mode */
-+	for (i =3D 0; i < req->count; i++) {
-+		desc[i] =3D ubi_open_volume(ubi->ubi_num, req->vols[i].vol_id,
-+					  UBI_EXCLUSIVE);
-+		if (IS_ERR(desc[i])) {
-+			err =3D PTR_ERR(desc[i]);
-+			goto out;
-+		}
-+	}
-+
-+	i =3D req->count;
-+	err =3D ubi_rename_volumes(ubi, req);
-+
-+out:
-+	for (n =3D 0; n < i; n++)
-+		ubi_close_volume(desc[n]);
-+	return err;
-+}
-+
- static int ubi_cdev_ioctl(struct inode *inode, struct file *file,
- 			  unsigned int cmd, unsigned long arg)
- {
-@@ -711,6 +780,32 @@ static int ubi_cdev_ioctl(struct inode *inode, struct =
-file *file,
- 		break;
- 	}
-=20
-+	/* Re-name volumes command */
-+	case UBI_IOCRNVOL:
-+	{
-+		struct ubi_rnvol_req *req;
-+
-+		dbg_msg("re-name volumes");
-+		req =3D kmalloc(sizeof(struct ubi_rnvol_req), GFP_KERNEL);
-+		if (!req) {
-+			err =3D -ENOMEM;
-+			break;
-+		};
-+
-+		err =3D copy_from_user(req, argp, sizeof(struct ubi_rnvol_req));
-+		if (err) {
-+			err =3D -EFAULT;
-+			kfree(req);
-+			break;
-+		}
-+
-+		mutex_lock(&ubi->volumes_mutex);
-+		err =3D rename_volumes(ubi, req);
-+		mutex_unlock(&ubi->volumes_mutex);
-+		kfree(req);
-+		break;
-+	}
-+
- 	default:
- 		err =3D -ENOTTY;
- 		break;
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 940f6b7..e41f508 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -273,7 +273,7 @@ struct ubi_wl_entry;
-  * @vtbl_size: size of the volume table in bytes
-  * @vtbl: in-RAM volume table copy
-  * @volumes_mutex: protects on-flash volume table and serializes volume
-- *                 changes, like creation, deletion, update, resize
-+ *                 changes, like creation, deletion, update, re-size and r=
-e-name
-  *
-  * @max_ec: current highest erase counter value
-  * @mean_ec: current mean erase counter value
-@@ -427,12 +427,15 @@ extern struct mutex ubi_devices_mutex;
- /* vtbl.c */
- int ubi_change_vtbl_record(struct ubi_device *ubi, int idx,
- 			   struct ubi_vtbl_record *vtbl_rec);
-+int ubi_vtbl_rename_volumes(struct ubi_device *ubi,
-+			    const struct ubi_rnvol_req *req);
- int ubi_read_volume_table(struct ubi_device *ubi, struct ubi_scan_info *si=
-);
-=20
- /* vmt.c */
- int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req);
- int ubi_remove_volume(struct ubi_volume_desc *desc);
- int ubi_resize_volume(struct ubi_volume_desc *desc, int reserved_pebs);
-+int ubi_rename_volumes(struct ubi_device *ubi, const struct ubi_rnvol_req =
-*req);
- int ubi_add_volume(struct ubi_device *ubi, struct ubi_volume *vol);
- void ubi_free_volume(struct ubi_device *ubi, struct ubi_volume *vol);
-=20
-diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index bfa7c5d..03a6042 100644
---- a/drivers/mtd/ubi/vmt.c
-+++ b/drivers/mtd/ubi/vmt.c
-@@ -602,6 +602,36 @@ out_free:
- }
-=20
- /**
-+ * ubi_vtbl_rename_volumes - re-name UBI volumes.
-+ * @req: volumes re-name request
-+ *
-+ * This function re-names multiple volumes specified in @req. Returns zero=
- in
-+ * case of success and a negative error code in case of failure.
-+ */
-+int ubi_rename_volumes(struct ubi_device *ubi, const struct ubi_rnvol_req =
-*req)
-+{
-+	int i, err;
-+
-+	err =3D ubi_vtbl_rename_volumes(ubi, req);
-+	if (err)
-+		return err;
-+
-+	spin_lock(&ubi->volumes_lock);
-+	for (i =3D 0; i < req->count; i++) {
-+		int vol_id =3D req->vols[i].vol_id;
-+		int name_len =3D req->vols[i].name_len;
-+		const char *name =3D req->vols[i].name;
-+		struct ubi_volume *vol =3D ubi->volumes[vol_id];
-+
-+		vol->name_len =3D name_len;
-+		memcpy(vol->name, name, name_len + 1);
-+	}
-+	spin_unlock(&ubi->volumes_lock);
-+
-+	return 0;
-+}
-+
-+/**
-  * ubi_add_volume - add volume.
-  * @ubi: UBI device description object
-  * @vol: volume description object
-diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
-index d9af11a..8629574 100644
---- a/drivers/mtd/ubi/vtbl.c
-+++ b/drivers/mtd/ubi/vtbl.c
-@@ -115,6 +115,52 @@ int ubi_change_vtbl_record(struct ubi_device *ubi, int=
- idx,
- }
-=20
- /**
-+ * ubi_vtbl_rename_volumes - rename UBI volumes in the volume table.
-+ * @ubi: UBI device description object
-+ * @req: volumes re-name request
-+ *
-+ * This function re-names multiple volumes specified in @req in the volume
-+ * table. Returns zero in case of success and a negative error code in cas=
-e of
-+ * failure.
-+ */
-+int ubi_vtbl_rename_volumes(struct ubi_device *ubi,
-+			    const struct ubi_rnvol_req *req)
-+{
-+	int i, err;
-+	struct ubi_volume *layout_vol;
-+
-+	for (i =3D 0; i < req->count; i++) {
-+		uint32_t crc;
-+		int vol_id =3D req->vols[i].vol_id;
-+		int name_len =3D req->vols[i].name_len;
-+		const char *name =3D req->vols[i].name;
-+		struct ubi_vtbl_record *vtbl_rec =3D &ubi->vtbl[vol_id];
-+
-+		vtbl_rec->name_len =3D cpu_to_be16(name_len);
-+		memset(vtbl_rec->name, 0, UBI_VOL_NAME_MAX + 1);
-+		memcpy(vtbl_rec->name, name, name_len);
-+		crc =3D crc32(UBI_CRC32_INIT, vtbl_rec,
-+			    UBI_VTBL_RECORD_SIZE_CRC);
-+		vtbl_rec->crc =3D cpu_to_be32(crc);
-+	}
-+
-+	layout_vol =3D ubi->volumes[vol_id2idx(ubi, UBI_LAYOUT_VOLUME_ID)];
-+	for (i =3D 0; i < UBI_LAYOUT_VOLUME_EBS; i++) {
-+		err =3D ubi_eba_unmap_leb(ubi, layout_vol, i);
-+		if (err)
-+			return err;
-+
-+		err =3D ubi_eba_write_leb(ubi, layout_vol, i, ubi->vtbl, 0,
-+					ubi->vtbl_size, UBI_LONGTERM);
-+		if (err)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
-+
-+/**
-  * vtbl_check - check if volume table is not corrupted and contains sensib=
-le
-  *              data.
-  * @ubi: UBI device description object
-diff --git a/include/mtd/ubi-user.h b/include/mtd/ubi-user.h
-index a7421f1..bd93b57 100644
---- a/include/mtd/ubi-user.h
-+++ b/include/mtd/ubi-user.h
-@@ -58,6 +58,13 @@
-  * device should be used. A &struct ubi_rsvol_req object has to be properl=
-y
-  * filled and a pointer to it has to be passed to the IOCTL.
-  *
-+ * UBI volumes re-name
-+ * ~~~~~~~~~~~~~~~~~~~
-+ *
-+ * To rename several volumes atomically at one go, the %UBI_IOCRNVOL comma=
-nd
-+ * of the UBI character device should be used. A &struct ubi_rnvol_req obj=
-ect
-+ * has to be properly filled and a pointer to it has to be passed to the I=
-OCTL.
-+ *
-  * UBI volume update
-  * ~~~~~~~~~~~~~~~~~
-  *
-@@ -104,6 +111,8 @@
- #define UBI_IOCRMVOL _IOW(UBI_IOC_MAGIC, 1, int32_t)
- /* Re-size an UBI volume */
- #define UBI_IOCRSVOL _IOW(UBI_IOC_MAGIC, 2, struct ubi_rsvol_req)
-+/* Re-name volumes */
-+#define UBI_IOCRNVOL _IOW(UBI_IOC_MAGIC, 3, struct ubi_rnvol_req)
-=20
- /* IOCTL commands of the UBI control character device */
-=20
-@@ -128,6 +137,9 @@
- /* Maximum MTD device name length supported by UBI */
- #define MAX_UBI_MTD_NAME_LEN 127
-=20
-+/* Maximum amount of UBI volumes that can be renamed at one go */
-+#define UBI_MAX_RNVOL 32
-+
- /*
-  * UBI data type hint constants.
-  *
-@@ -251,6 +263,36 @@ struct ubi_rsvol_req {
- } __attribute__ ((packed));
-=20
- /**
-+ * struct ubi_rnvol_req - volumes rename request.
-+ * @count: count of volumes to rename
-+ * @padding1:  reserved for future, not used, has to be zeroed
-+ * @vol_id: ID of the volume to rename
-+ * @name_len: name length
-+ * @padding2:  reserved for future, not used, has to be zeroed
-+ * @name: new volume name
-+ *
-+ * UBI allows to rename up to %32 volumes at one go. The count of volumes =
-to
-+ * rename is specified in the @count field. The ID of the volumes to renam=
-e
-+ * and the new names are specified in the @vol_id and @name fields.
-+ *
-+ * The UBI volume rename operation is atomic, which means that should powe=
-r cut
-+ * happen, the volumes will have either old name or new name. So the possi=
-ble
-+ * use-cases of this command is atomic upgrade. Indeed, to upgrade, say, v=
-olumes
-+ * A and B one may create temporary volumes A1 and B1 with the new content=
-s,
-+ * then atomically rename A1->A and A->A1, B1->B and B->B1.
-+ */
-+struct ubi_rnvol_req {
-+	int32_t count;
-+	uint8_t padding1[12];
-+	struct {
-+		int32_t vol_id;
-+		int16_t name_len;
-+		uint8_t padding2[2];
-+		char name[UBI_MAX_VOLUME_NAME + 1];
-+	} vols[UBI_MAX_RNVOL];
-+} __attribute__ ((packed));
-+
-+/**
-  * struct ubi_leb_change_req - a data structure used in atomic logical
-  *                             eraseblock change requests.
-  * @lnum: logical eraseblock number to change
---=20
-1.5.4.1
+	cfi_send_gen_cmd(0xFF, 0, ...)
 
+in drivers/mtd/chips/cfi_probe.c, the flash is detected correctly by
+Linux, too.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+These calls were introduced in 67d4878e4e61ae4f73855ecc73e9e4d4fc18f2fb
+(i.e. between v2.6.8-rc1 and v2.6.8-rc2).  That commit changed the CVS
+$Id from $Id: cfi_probe.c,v 1.71 ...$ to $Id: cfi_probe.c,v 1.77 ...$.
+So looking into CVS I think the "guilty" commit was 
+
+	revision 1.77
+	date: 2004/07/14 08:38:44;  author: dwmw2;  state: Exp;  lines: +8 -2
+	Send 0xFF to switch Intel chips back to read mode too. Some of
+	them ignore 0xF0
+
+A quick fix that would work with my flash part and that might work with
+these Intel chips, too, is to write 0xff before writing 0xf0.
+Are these chips still available to test if it works for them?
+
+Best regards
+Uwe
+
+[1] datasheet currently available at
+http://www.numonyx.com/Documents/Datasheets/M29W128G.pdf
+-- 
+Uwe Kleine-König, Software Engineer
+Digi International GmbH Branch Breisach, Küferstrasse 8, 79206 Breisach, Germany
+Tax: 315/5781/0242 / VAT: DE153662976 / Reg. Amtsgericht Dortmund HRB 13962
