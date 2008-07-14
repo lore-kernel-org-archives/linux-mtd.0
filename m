@@ -1,21 +1,23 @@
-Received: from qw-out-1920.google.com ([74.125.92.147])
+Received: from mms1.broadcom.com ([216.31.210.17])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KIMaW-0002vv-JE
-	for linux-mtd@lists.infradead.org; Mon, 14 Jul 2008 11:51:28 +0000
-Received: by qw-out-1920.google.com with SMTP id 5so105288qwf.24
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 14 Jul 2008 04:51:27 -0700 (PDT)
-Subject: Re: About mkfs.jffs2
-From: Josh Boyer <jwboyer@gmail.com>
-To: Qiang Wang <rurality.linux@gmail.com>
-In-Reply-To: <71413c850807132338q38849e5egd49631295f3105f3@mail.gmail.com>
-References: <71413c850807132338q38849e5egd49631295f3105f3@mail.gmail.com>
-Content-Type: text/plain
-Date: Mon, 14 Jul 2008 07:51:20 -0400
-Message-Id: <1216036280.14579.39.camel@weaponx>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+	id 1KILNb-0002JO-44
+	for linux-mtd@lists.infradead.org; Mon, 14 Jul 2008 10:34:03 +0000
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Subject: Regarding NAND driver based on PrimeCell Static Memory
+	Controller (PL350 series)
+Date: Mon, 14 Jul 2008 03:33:57 -0700
+Message-ID: <E06E3B7BBC07864CADE892DAF1EB0FBD095146C0@NT-SJCA-0752.brcm.ad.broadcom.com>
+In-Reply-To: <1215797959.11567.448.camel@pmac.infradead.org>
+References: <20080711223448.f5826678.yoichi_yuasa@tripeaks.co.jp>
+	<20080711141053.GD13593@linux-mips.org>
+	<1215797959.11567.448.camel@pmac.infradead.org>
+From: "Divyanshu Verma" <dverma@broadcom.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Content-Type: text/plain;
+ charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +27,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2008-07-14 at 15:38 +0900, Qiang Wang wrote:
-> hello, everyone
-> 
-> I use mkfs,jffs2 tools to make my jffs2 filesystem.
-> I found that it apply some compress logic, result the data is compressed.
-> How can I remove the compressing function from the tools?
-> 
-> my command is as below:
-> ./mkfs.jffs2 -r fs -o root.jffs2 -e 0x20000 -s 0x20000 -l -p
+=20
+Hi,
+I am trying to implement a NAND driver for our SOC. The problem I am
+facing is that, our NAND controller does not allow me to have access to
+hardware specific control line. In other words, I cannot follow the
+mechanism given on http://www.linux-mtd.infradead.org/ for NAND driver
+as I cannot write  "my_nand_hwcontrol"  function. The H/w guys say that
+all this is taken care in the controller itself.
 
-Add '-m none'.  And you could have figured that out pretty easily by
-doing --help or reading the code.
+I then decided to identify the NAND Chip as a MTD_BLOCK device, so that
+I  will not require any Hwcontrol function. Now for doing so, is it
+possible to write a kernel module for NAND which can use functions
+exported by mtd/mtd_blkdevs.c ?
 
-josh
+ =20
+My very  cordial thanks for any heads up on this as I am struggling for
+a long time.
+
+Just for info I am using ARM PrimeCell Static Memory Controller (PL350
+series) as NAND controller.They way h/w guys have designed it is that it
+doesn't provide me access to HWCONTROL functions.
+
+
+Thanks and regards,
+Divyanshu=20
