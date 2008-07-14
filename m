@@ -1,22 +1,22 @@
-Received: from rn-out-0910.google.com ([64.233.170.191])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KIROG-0008Be-TX
-	for linux-mtd@lists.infradead.org; Mon, 14 Jul 2008 16:59:09 +0000
-Received: by rn-out-0910.google.com with SMTP id m7so1477232rnd.3
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 14 Jul 2008 09:59:07 -0700 (PDT)
-Message-ID: <be4b62bb0807140959l24f0f551w1629d6c722d19079@mail.gmail.com>
-Date: Mon, 14 Jul 2008 17:59:07 +0100
-From: "Andre Oliveira" <anbadeol@gmail.com>
-To: jmalone@jsoft.ca
-Subject: Re: DiskOnChip 2000
-In-Reply-To: <2542.128.100.203.197.1215792479.squirrel@128.100.203.197>
+Received: from 206-248-137-77.dsl.teksavvy.com ([206.248.137.77]
+	helo=mail.isoar.ca)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KIUiu-0001PV-M3
+	for linux-mtd@lists.infradead.org; Mon, 14 Jul 2008 20:32:41 +0000
+Received: from [10.0.200.176] (vpn02.rossvideo.com [209.5.118.98])
+	by mail.isoar.ca (8.14.1/8.13.8) with ESMTP id m6EKWRQq001141
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <linux-mtd@lists.infradead.org>; Mon, 14 Jul 2008 16:32:33 -0400
+Message-ID: <487BB7D9.4070505@isoar.ca>
+Date: Mon, 14 Jul 2008 16:32:25 -0400
+From: "Andrew E. Mileski" <andrewm@isoar.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] nand_wait_ready() timeout scaling
+References: <1209583375-11136-1-git-send-email-andrewm@isoar.ca>
+In-Reply-To: <1209583375-11136-1-git-send-email-andrewm@isoar.ca>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <2542.128.100.203.197.1215792479.squirrel@128.100.203.197>
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jul 11, 2008 at 5:07 PM, Jesse Malone <jmalone@jsoft.ca> wrote:
-> I'm trying your driver on a diskonchip 2000 D2202-D16 and seem to be
-> running into problems writing to the DOC. Have you had success writing to
-> the DOC?
+Andrew E. Mileski wrote:
+> The nand_wait_ready() timeout was hardcoded to 2 jiffies, which does not
+> scale with the system timer frequency.  Using a guess of a 250 Hz system
+> timer frequency, I believe the timeout was meant to be 8 ms.
 
-Hi!
-Yes, I have been using this patch without problems since kernel
-2.6.22, through 2.6.25 (which I'm currently using). I have a
-DiskOnChip 2000 MD2202-D32-X.
+Just a heads-up for those similarly banging their heads trying to get
+NAND to work for them, that I think I've also found 2 instances of a
+bug:  not waiting tWB before calling nand_wait_ready() in nand_base.c
 
-> I'm using a 2.6.22 kernel with your patch. I fairly conistently
-> get a bunch of kernel Oops's after writing a significant amount of data (a
-> few megabytes). I'll post the Ooops's for you, hopefully they might
-> provide a clue. Any thoughts?
+   nand_do_read_ops()
+   nand_do_read_oob()
 
-Sorry, no clue. :-(
-I think the only part that seems related to the doc2000 is this:
+I almost think the ndelay(tWB) should be in nand_wait_ready(), but I'm
+still playing with it.
 
-> kernel BUG at block/elevator.c:780!
-> ...
-> Call Trace:
->  [<c017f286>] end_request+0x2a/0x38
->  [<c01bc684>] doc2000_request+0x20/0x38
-
-The BUG trap in block/elevator.c is BUG_ON(list_empty(&rq->queuelist));
-But I don't know what this means. :-(
-I'm sorry I can't be more helpful...
 -- 
-Andre Oliveira
-http://anbadeol.googlepages.com/
+Andrew E. Mileski
