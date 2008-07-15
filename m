@@ -1,19 +1,17 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from mail164.messagelabs.com ([216.82.253.131])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KIzFE-0000qa-HO
-	for linux-mtd@lists.infradead.org; Wed, 16 Jul 2008 05:08:04 +0000
-Subject: Re: [ubi][wl] the W/R performance of my wear-leveling unit 2
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
-In-Reply-To: <1215763483.2784.85.camel@localhost.localdomain>
-References: <1215763483.2784.85.camel@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 16 Jul 2008 08:06:10 +0300
-Message-Id: <1216184770.29469.44.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+	id 1KJ1Ph-00036D-R8
+	for linux-mtd@lists.infradead.org; Wed, 16 Jul 2008 07:27:02 +0000
+Resent-Message-ID: <20080716072656.GA16043@digi.com>
+From: "Kleine-Koenig, Uwe" <Uwe.Kleine-Koenig@digi.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Tue, 15 Jul 2008 15:14:12 +0200
+Subject: [PATCH] [MTD] physmap: resume already suspended chips on failure to
+	suspend
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Message-ID: <DOR-SMS-MAIL1reBBsQ00000021@dor-sms-mail1.digi.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +21,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2008-07-11 at 16:04 +0800, xiaochuan-xu wrote:
-> one other thing forgeted,
-> the threshold value is 4096 for current UBI, and 100 for mine
+A nice side effect of this patch is that the return value of
+physmap_flash_suspend in the error path is the value of the first failing
+suspend callback and not the bitwise OR of all of them.
 
-Could you please first send a patch which only removes the protection
-trees. It should not contain any other unnecessary change, just
-protection tree removal.
+Signed-off-by: Uwe Kleine-König <Uwe.Kleine-Koenig@digi.com>
+---
+ drivers/mtd/maps/physmap.c |   18 ++++++++++++++++--
+ 1 files changed, 16 insertions(+), 2 deletions(-)
 
-Everything should work fine without the protection tree, because it is
-just an optimization. The performance should drop I guess.
+diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
+index f04061f..814b617 100644
+--- a/drivers/mtd/maps/physmap.c
++++ b/drivers/mtd/maps/physmap.c
+@@ -203,8 +203,22 @@ static int physmap_flash_suspend(struct platform_device *dev, pm_message_t state
+        int i;
 
-After you have succeeded providing a small and clean prot. tree removal
-patch, we may continue with further WL re-working.
+        for (i = 0; i < MAX_RESOURCES && info->mtd[i]; i++) {
+-               if (info->mtd[i]->suspend)
+-                       ret |= info->mtd[i]->suspend(info->mtd[i]);
++               if (info->mtd[i]->suspend) {
++                       ret = info->mtd[i]->suspend(info->mtd[i]);
++                       if (ret)
++                               goto fail;
++
++               }
++       }
++
++       return 0;
++
++fail:
++       for (i; i >= 0; --i) {
++               if (info->mtd[i]->suspend) {
++                       BUG_ON(!info->mtd[i]->resume);
++                       info->mtd[i]->resume(info->mtd[i]);
++               }
+        }
 
-Please, test your patch as well. Run the UBI tests which you may find
-in mtd-utils.git/tests/ubi-tests/.
-
-Thanks.=20
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+        return ret;
+--
+1.5.6.2
