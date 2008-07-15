@@ -1,24 +1,18 @@
-Received: from [202.202.0.36] (helo=cqu.edu.cn)
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KJK0S-0004hG-RQ
-	for linux-mtd@lists.infradead.org; Thu, 17 Jul 2008 03:18:13 +0000
-Message-ID: <416264428.20337@cqu.edu.cn>
-Subject: Re: [PATCH][UBI]:Remove the prot tree from the WL unit
-From: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
-To: dedekind@infradead.org
-In-Reply-To: <1216219840.29469.81.camel@sauron>
-References: <1216214483.2782.91.camel@localhost.localdomain>
-	<1216217566.29469.62.camel@sauron>
-	<1216218027.2782.97.camel@localhost.localdomain>
-	<1216218036.29469.64.camel@sauron>
-	<1216218971.2782.112.camel@localhost.localdomain>
-	<1216219840.29469.81.camel@sauron>
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 17 Jul 2008 11:17:42 +0800
-Message-Id: <1216264662.2781.15.camel@localhost.localdomain>
-Mime-Version: 1.0
+Received: from mail29.messagelabs.com ([216.82.249.147])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KIkSe-0003it-NN
+	for linux-mtd@lists.infradead.org; Tue, 15 Jul 2008 13:20:57 +0000
+From: =?utf-8?q?Uwe=20Kleine-K=C3=B6nig?= <Uwe.Kleine-Koenig@digi.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] [MTD] physmap: only call suspend and resume callbacks if
+	non-NULL
+Date: Tue, 15 Jul 2008 15:14:11 +0200
+Message-ID: <1216127652-2318-1-git-send-email-Uwe.Kleine-Koenig@digi.com>
+In-Reply-To: <20080715130316.GA1617@digi.com>
+References: <20080715130316.GA1617@digi.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,25 +22,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+Signed-off-by: Uwe Kleine-König <Uwe.Kleine-Koenig@digi.com>
+---
+ drivers/mtd/maps/physmap.c |   12 ++++++++----
+ 1 files changed, 8 insertions(+), 4 deletions(-)
 
-On Wed, 2008-07-16 at 17:50 +0300, Artem Bityutskiy wrote:
-> 
-> Sure, this is an intermediate state. Your next patches should fix
-> this. We just removed the protection tree separately because it
-> is an independed step and it will make further patches simpler
-> to review and understand. 
-
-I believe the next patch should modify the used tree, i.e., adding the
-@tempr element to @struct ubi_wl_entry and some relative sentences.
-Of course, a used tree special function refer to as @wl_used_tree_add()
-is in need.  
-
-What do you think?
-
-
-
+diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
+index 183255f..f04061f 100644
+--- a/drivers/mtd/maps/physmap.c
++++ b/drivers/mtd/maps/physmap.c
+@@ -202,8 +202,10 @@ static int physmap_flash_suspend(struct platform_device *dev, pm_message_t state
+ 	int ret = 0;
+ 	int i;
+ 
+-	for (i = 0; i < MAX_RESOURCES && info->mtd[i]; i++)
+-		ret |= info->mtd[i]->suspend(info->mtd[i]);
++	for (i = 0; i < MAX_RESOURCES && info->mtd[i]; i++) {
++		if (info->mtd[i]->suspend)
++			ret |= info->mtd[i]->suspend(info->mtd[i]);
++	}
+ 
+ 	return ret;
+ }
+@@ -213,8 +215,10 @@ static int physmap_flash_resume(struct platform_device *dev)
+ 	struct physmap_flash_info *info = platform_get_drvdata(dev);
+ 	int i;
+ 
+-	for (i = 0; i < MAX_RESOURCES && info->mtd[i]; i++)
+-		info->mtd[i]->resume(info->mtd[i]);
++	for (i = 0; i < MAX_RESOURCES && info->mtd[i]; i++) {
++		if (info->mtd[i]->resume)
++			info->mtd[i]->resume(info->mtd[i]);
++	}
+ 
+ 	return 0;
+ }
 -- 
-yours Sincerely,
-
-xiaochuan-xu (许小川)
+1.5.6.2
