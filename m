@@ -1,15 +1,15 @@
 Received: from aeryn.fluff.org.uk ([87.194.8.8] helo=kira.home.fluff.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KIiFA-0000za-GV
+	id 1KIiFA-00010n-Ge
 	for linux-mtd@lists.infradead.org; Tue, 15 Jul 2008 10:58:53 +0000
-Message-Id: <20080715105843.760364066@fluff.org.uk>
+Message-Id: <20080715105843.982717996@fluff.org.uk>
 References: <20080715105829.105768029@fluff.org.uk>
-Date: Tue, 15 Jul 2008 11:58:30 +0100
+Date: Tue, 15 Jul 2008 11:58:31 +0100
 From: Ben Dooks <ben-mtd@fluff.org>
 To: linux-mtd@lists.infradead.org
-Subject: [patch 1/2] MTD: Remove the bast-flash driver.
+Subject: [patch 2/2] CPUFREQ: S3C24XX NAND driver frequency scaling support.
 Content-Disposition: inline;
-	filename=simtec/simtec-drivers-mtd-remove-bastflash.patch
+	filename=simtec/cpufreq/s3c24xx-cpufreq-drivers-nand.patch
 Cc: Ben Dooks <ben-linux@fluff.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -20,283 +20,236 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Remove the Simtec BAST flash driver as this has been replaced by using
-the platform flash driver.
+Add support for CPU frequency scalling to the S3C24XX NAND driver.
 
 Signed-off-by: Ben Dooks <ben-linux@fluff.org>
 
-Index: linux-2.6.26-rc3-quilt2/drivers/mtd/maps/Kconfig
+Index: linux-2.6.26/drivers/mtd/nand/s3c2410.c
 ===================================================================
---- linux-2.6.26-rc3-quilt2.orig/drivers/mtd/maps/Kconfig	2008-05-19 23:04:02.000000000 +0100
-+++ linux-2.6.26-rc3-quilt2/drivers/mtd/maps/Kconfig	2008-05-19 23:45:18.000000000 +0100
-@@ -546,24 +546,6 @@ config MTD_DMV182
-         help
-           Map driver for Dy-4 SVME/DMV-182 board.
+--- linux-2.6.26.orig/drivers/mtd/nand/s3c2410.c	2008-07-15 10:57:41.000000000 +0100
++++ linux-2.6.26/drivers/mtd/nand/s3c2410.c	2008-07-15 11:49:06.000000000 +0100
+@@ -52,6 +52,7 @@
+ #include <linux/err.h>
+ #include <linux/slab.h>
+ #include <linux/clk.h>
++#include <linux/cpufreq.h>
  
--config MTD_BAST
--	tristate "Map driver for Simtec BAST (EB2410ITX) or Thorcom VR1000"
--	depends on ARCH_BAST || MACH_VR1000
--	select MTD_PARTITIONS
--	select MTD_MAP_BANK_WIDTH_16
--	select MTD_JEDECPROBE
--	help
--	  Map driver for NOR flash on the Simtec BAST (EB2410ITX), or the
--	  Thorcom VR1000
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/nand.h>
+@@ -120,8 +121,13 @@ struct s3c2410_nand_info {
+ 	int				sel_bit;
+ 	int				mtd_count;
+ 	unsigned long			save_sel;
++	unsigned long			clk_rate;
+ 
+ 	enum s3c_cpu_type		cpu_type;
++
++#ifdef CONFIG_CPU_FREQ
++	struct notifier_block	freq_transition;
++#endif
+ };
+ 
+ /* conversion functions */
+@@ -179,17 +185,18 @@ static int s3c_nand_calc_rate(int wanted
+ 
+ /* controller setup */
+ 
+-static int s3c2410_nand_inithw(struct s3c2410_nand_info *info,
+-			       struct platform_device *pdev)
++static int s3c2410_nand_setrate(struct s3c2410_nand_info *info)
+ {
+-	struct s3c2410_platform_nand *plat = to_nand_plat(pdev);
+-	unsigned long clkrate = clk_get_rate(info->clk);
++	struct s3c2410_platform_nand *plat = info->platform;
+ 	int tacls_max = (info->cpu_type == TYPE_S3C2412) ? 8 : 4;
+ 	int tacls, twrph0, twrph1;
+-	unsigned long cfg = 0;
++	unsigned long clkrate = clk_get_rate(info->clk);
++	unsigned long set, cfg, mask;
++	unsigned long flags;
+ 
+ 	/* calculate the timing information for the controller */
+ 
++	info->clk_rate = clkrate;
+ 	clkrate /= 1000;	/* turn clock into kHz for ease of use */
+ 
+ 	if (plat != NULL) {
+@@ -213,26 +220,67 @@ static int s3c2410_nand_inithw(struct s3
+ 
+  	switch (info->cpu_type) {
+  	case TYPE_S3C2410:
+-		cfg = S3C2410_NFCONF_EN;
+-		cfg |= S3C2410_NFCONF_TACLS(tacls - 1);
+-		cfg |= S3C2410_NFCONF_TWRPH0(twrph0 - 1);
+-		cfg |= S3C2410_NFCONF_TWRPH1(twrph1 - 1);
++		mask = (S3C2410_NFCONF_TACLS(3) |
++			S3C2410_NFCONF_TWRPH0(7) |
++			S3C2410_NFCONF_TWRPH1(7));
++		set = S3C2410_NFCONF_EN;
++		set |= S3C2410_NFCONF_TACLS(tacls - 1);
++		set |= S3C2410_NFCONF_TWRPH0(twrph0 - 1);
++		set |= S3C2410_NFCONF_TWRPH1(twrph1 - 1);
+ 		break;
+ 
+  	case TYPE_S3C2440:
+  	case TYPE_S3C2412:
+-		cfg = S3C2440_NFCONF_TACLS(tacls - 1);
+-		cfg |= S3C2440_NFCONF_TWRPH0(twrph0 - 1);
+-		cfg |= S3C2440_NFCONF_TWRPH1(twrph1 - 1);
 -
--	  Note, this driver *cannot* over-ride the WP link on the
--	  board, or currently detect the state of the link.
--
--config MTD_BAST_MAXSIZE
--	int "Maximum size for BAST flash area (MiB)"
--	depends on MTD_BAST
--	default "4"
--
- config MTD_SHARP_SL
- 	tristate "ROM mapped on Sharp SL Series"
- 	depends on ARCH_PXA
-Index: linux-2.6.26-rc3-quilt2/drivers/mtd/maps/Makefile
-===================================================================
---- linux-2.6.26-rc3-quilt2.orig/drivers/mtd/maps/Makefile	2008-05-19 23:04:02.000000000 +0100
-+++ linux-2.6.26-rc3-quilt2/drivers/mtd/maps/Makefile	2008-05-19 23:45:18.000000000 +0100
-@@ -10,7 +10,6 @@ endif
- # Chip mappings
- obj-$(CONFIG_MTD_CDB89712)	+= cdb89712.o
- obj-$(CONFIG_MTD_ARM_INTEGRATOR)+= integrator-flash.o
--obj-$(CONFIG_MTD_BAST)		+= bast-flash.o
- obj-$(CONFIG_MTD_CFI_FLAGADM)	+= cfi_flagadm.o
- obj-$(CONFIG_MTD_DC21285)	+= dc21285.o
- obj-$(CONFIG_MTD_DILNETPC)	+= dilnetpc.o
-Index: linux-2.6.26-rc3-quilt2/drivers/mtd/maps/bast-flash.c
-===================================================================
---- linux-2.6.26-rc3-quilt2.orig/drivers/mtd/maps/bast-flash.c	2008-05-19 23:04:02.000000000 +0100
-+++ /dev/null	1970-01-01 00:00:00.000000000 +0000
-@@ -1,226 +0,0 @@
--/* linux/drivers/mtd/maps/bast-flash.c
-- *
-- * Copyright (c) 2004-2005 Simtec Electronics
-- *	Ben Dooks <ben@simtec.co.uk>
-- *
-- * Simtec Bast (EB2410ITX) NOR MTD Mapping driver
-- *
-- * Changelog:
-- *	20-Sep-2004  BJD  Initial version
-- *	17-Jan-2005  BJD  Add whole device if no partitions found
-- *
-- * $Id: bast-flash.c,v 1.5 2005/11/07 11:14:26 gleixner Exp $
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write to the Free Software
-- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
--*/
--
--#include <linux/module.h>
--#include <linux/types.h>
--#include <linux/init.h>
--#include <linux/kernel.h>
--#include <linux/string.h>
--#include <linux/ioport.h>
--#include <linux/device.h>
--#include <linux/slab.h>
--#include <linux/platform_device.h>
--#include <linux/mtd/mtd.h>
--#include <linux/mtd/map.h>
--#include <linux/mtd/partitions.h>
--
--#include <asm/io.h>
--#include <asm/mach/flash.h>
--
--#include <asm/arch/map.h>
--#include <asm/arch/bast-map.h>
--#include <asm/arch/bast-cpld.h>
--
--#ifdef CONFIG_MTD_BAST_MAXSIZE
--#define AREA_MAXSIZE (CONFIG_MTD_BAST_MAXSIZE * SZ_1M)
--#else
--#define AREA_MAXSIZE (32 * SZ_1M)
--#endif
--
--#define PFX "bast-flash: "
--
--struct bast_flash_info {
--	struct mtd_info		*mtd;
--	struct map_info		 map;
--	struct mtd_partition	*partitions;
--	struct resource		*area;
--};
--
--static const char *probes[] = { "RedBoot", "cmdlinepart", NULL };
--
--static void bast_flash_setrw(int to)
--{
--	unsigned int val;
--	unsigned long flags;
--
--	local_irq_save(flags);
--	val = __raw_readb(BAST_VA_CTRL3);
--
--	if (to)
--		val |= BAST_CPLD_CTRL3_ROMWEN;
--	else
--		val &= ~BAST_CPLD_CTRL3_ROMWEN;
--
--	pr_debug("new cpld ctrl3=%02x\n", val);
--
--	__raw_writeb(val, BAST_VA_CTRL3);
--	local_irq_restore(flags);
--}
--
--static int bast_flash_remove(struct platform_device *pdev)
--{
--	struct bast_flash_info *info = platform_get_drvdata(pdev);
--
--	platform_set_drvdata(pdev, NULL);
--
--	if (info == NULL)
--		return 0;
--
--	if (info->map.virt != NULL)
--		iounmap(info->map.virt);
--
--	if (info->mtd) {
--		del_mtd_partitions(info->mtd);
--		map_destroy(info->mtd);
--	}
--
--	kfree(info->partitions);
--
--	if (info->area) {
--		release_resource(info->area);
--		kfree(info->area);
--	}
--
--	kfree(info);
--
--	return 0;
--}
--
--static int bast_flash_probe(struct platform_device *pdev)
--{
--	struct bast_flash_info *info;
--	struct resource *res;
--	int err = 0;
--
--	info = kmalloc(sizeof(*info), GFP_KERNEL);
--	if (info == NULL) {
--		printk(KERN_ERR PFX "no memory for flash info\n");
--		err = -ENOMEM;
--		goto exit_error;
--	}
--
--	memzero(info, sizeof(*info));
--	platform_set_drvdata(pdev, info);
--
--	res = pdev->resource;  /* assume that the flash has one resource */
--
--	info->map.phys = res->start;
--	info->map.size = res->end - res->start + 1;
--	info->map.name = pdev->dev.bus_id;
--	info->map.bankwidth = 2;
--
--	if (info->map.size > AREA_MAXSIZE)
--		info->map.size = AREA_MAXSIZE;
--
--	pr_debug("%s: area %08lx, size %ld\n", __func__,
--		 info->map.phys, info->map.size);
--
--	info->area = request_mem_region(res->start, info->map.size,
--					pdev->name);
--	if (info->area == NULL) {
--		printk(KERN_ERR PFX "cannot reserve flash memory region\n");
--		err = -ENOENT;
--		goto exit_error;
--	}
--
--	info->map.virt = ioremap(res->start, info->map.size);
--	pr_debug("%s: virt at %08x\n", __func__, (int)info->map.virt);
--
--	if (info->map.virt == 0) {
--		printk(KERN_ERR PFX "failed to ioremap() region\n");
--		err = -EIO;
--		goto exit_error;
--	}
--
--	simple_map_init(&info->map);
--
--	/* enable the write to the flash area */
--
--	bast_flash_setrw(1);
--
--	/* probe for the device(s) */
--
--	info->mtd = do_map_probe("jedec_probe", &info->map);
--	if (info->mtd == NULL)
--		info->mtd = do_map_probe("cfi_probe", &info->map);
--
--	if (info->mtd == NULL) {
--		printk(KERN_ERR PFX "map_probe() failed\n");
--		err = -ENXIO;
--		goto exit_error;
--	}
--
--	/* mark ourselves as the owner */
--	info->mtd->owner = THIS_MODULE;
--
--	err = parse_mtd_partitions(info->mtd, probes, &info->partitions, 0);
--	if (err > 0) {
--		err = add_mtd_partitions(info->mtd, info->partitions, err);
--		if (err)
--			printk(KERN_ERR PFX "cannot add/parse partitions\n");
--	} else {
--		err = add_mtd_device(info->mtd);
--	}
--
--	if (err == 0)
--		return 0;
--
--	/* fall through to exit error */
--
-- exit_error:
--	bast_flash_remove(pdev);
--	return err;
--}
--
--static struct platform_driver bast_flash_driver = {
--	.probe		= bast_flash_probe,
--	.remove		= bast_flash_remove,
--	.driver		= {
--		.name	= "bast-nor",
--		.owner	= THIS_MODULE,
--	},
--};
--
--static int __init bast_flash_init(void)
--{
--	printk("BAST NOR-Flash Driver, (c) 2004 Simtec Electronics\n");
--	return platform_driver_register(&bast_flash_driver);
--}
--
--static void __exit bast_flash_exit(void)
--{
--	platform_driver_unregister(&bast_flash_driver);
--}
--
--module_init(bast_flash_init);
--module_exit(bast_flash_exit);
--
--MODULE_LICENSE("GPL");
--MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");
--MODULE_DESCRIPTION("BAST MTD Map driver");
--MODULE_ALIAS("platform:bast-nor");
+-		/* enable the controller and de-assert nFCE */
++		mask = (S3C2410_NFCONF_TACLS(tacls_max - 1) |
++			S3C2410_NFCONF_TWRPH0(7) |
++			S3C2410_NFCONF_TWRPH1(7));
++
++		set = S3C2440_NFCONF_TACLS(tacls - 1);
++		set |= S3C2440_NFCONF_TWRPH0(twrph0 - 1);
++		set |= S3C2440_NFCONF_TWRPH1(twrph1 - 1);
++		break;
+ 
+-		writel(S3C2440_NFCONT_ENABLE, info->regs + S3C2440_NFCONT);
++	default:
++		/* keep compiler happy */
++		mask = 0;
++		set = 0;
++		BUG();
+ 	}
+ 
+ 	dev_dbg(info->device, "NF_CONF is 0x%lx\n", cfg);
+ 
++	local_irq_save(flags);
++
++	cfg = readl(info->regs + S3C2410_NFCONF);
++	cfg &= ~mask;
++	cfg |= set;
+ 	writel(cfg, info->regs + S3C2410_NFCONF);
++
++	local_irq_restore(flags);
++
++	return 0;
++}
++
++static int s3c2410_nand_inithw(struct s3c2410_nand_info *info)
++{
++	int ret;
++
++	ret = s3c2410_nand_setrate(info);
++	if (ret < 0)
++		return ret;
++
++ 	switch (info->cpu_type) {
++ 	case TYPE_S3C2410:
++	default:
++		break;
++
++ 	case TYPE_S3C2440:
++ 	case TYPE_S3C2412:
++		/* enable the controller and de-assert nFCE */
++
++		writel(S3C2440_NFCONT_ENABLE, info->regs + S3C2440_NFCONT);
++	}
++
+ 	return 0;
+ }
+ 
+@@ -513,6 +561,52 @@ static void s3c2440_nand_write_buf(struc
+ 	writesl(info->regs + S3C2440_NFDATA, buf, len / 4);
+ }
+ 
++/* cpufreq driver support */
++
++#ifdef CONFIG_CPU_FREQ
++
++static int s3c2410_nand_cpufreq_transition(struct notifier_block *nb,
++					  unsigned long val, void *data)
++{
++	struct s3c2410_nand_info *info;
++	unsigned long newclk;
++
++	info = container_of(nb, struct s3c2410_nand_info, freq_transition);
++	newclk = clk_get_rate(info->clk);
++
++	if ((val == CPUFREQ_POSTCHANGE && newclk < info->clk_rate) ||
++	    (val == CPUFREQ_PRECHANGE && newclk > info->clk_rate)) {
++		s3c2410_nand_setrate(info);
++	}
++
++	return 0;
++}
++
++static inline int s3c2410_nand_cpufreq_register(struct s3c2410_nand_info *info)
++{
++	info->freq_transition.notifier_call = s3c2410_nand_cpufreq_transition;
++
++	return cpufreq_register_notifier(&info->freq_transition,
++					 CPUFREQ_TRANSITION_NOTIFIER);
++}
++
++static inline void s3c2410_nand_cpufreq_deregister(struct s3c2410_nand_info *info)
++{
++	cpufreq_unregister_notifier(&info->freq_transition,
++				    CPUFREQ_TRANSITION_NOTIFIER);
++}
++
++#else
++static inline int s3c2410_nand_cpufreq_register(struct s3c2410_nand_info *info)
++{
++	return 0;
++}
++
++static inline void s3c2410_nand_cpufreq_deregister(struct s3c2410_nand_info *info)
++{
++}
++#endif
++
+ /* device management functions */
+ 
+ static int s3c2410_nand_remove(struct platform_device *pdev)
+@@ -524,9 +618,10 @@ static int s3c2410_nand_remove(struct pl
+ 	if (info == NULL)
+ 		return 0;
+ 
+-	/* first thing we need to do is release all our mtds
+-	 * and their partitions, then go through freeing the
+-	 * resources used
++	s3c2410_nand_cpufreq_deregister(info);
++
++	/* Release all our mtds  and their partitions, then go through
++	 * freeing the resources used
+ 	 */
+ 
+ 	if (info->mtds != NULL) {
+@@ -784,7 +879,7 @@ static int s3c24xx_nand_probe(struct pla
+ 
+ 	/* initialise the hardware */
+ 
+-	err = s3c2410_nand_inithw(info, pdev);
++	err = s3c2410_nand_inithw(info);
+ 	if (err != 0)
+ 		goto exit_error;
+ 
+@@ -827,6 +922,12 @@ static int s3c24xx_nand_probe(struct pla
+ 			sets++;
+ 	}
+ 
++	err = s3c2410_nand_cpufreq_register(info);
++	if (err < 0) {
++		dev_err(&pdev->dev, "failed to init cpufreq support\n");
++		goto exit_error;
++	}
++
+ 	if (allow_clk_stop(info)) {
+ 		dev_info(&pdev->dev, "clock idle support enabled\n");
+ 		clk_disable(info->clk);
+@@ -874,7 +975,7 @@ static int s3c24xx_nand_resume(struct pl
+ 
+ 	if (info) {
+ 		clk_enable(info->clk);
+-		s3c2410_nand_inithw(info, dev);
++		s3c2410_nand_inithw(info);
+ 
+ 		/* Restore the state of the nFCE line. */
+ 
 
 -- 
 Ben (ben@fluff.org, http://www.fluff.org/)
