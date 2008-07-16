@@ -1,15 +1,16 @@
-Received: from mk-outboundfilter-5.mail.uk.tiscali.com ([212.74.114.1])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KJ4Qx-0005M5-Rh
-	for linux-mtd@lists.infradead.org; Wed, 16 Jul 2008 10:40:32 +0000
-Subject: [MFD] TMIO NAND driver
-From: ian <spyro@f2s.com>
+Received: from [202.202.0.36] (helo=cqu.edu.cn)
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KJ4Zi-0000B1-Dx
+	for linux-mtd@lists.infradead.org; Wed, 16 Jul 2008 10:49:36 +0000
+Message-ID: <416205113.03852@cqu.edu.cn>
+Subject: [PATCH][UBI]:Remove the prot tree from the WL unit
+From: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Wed, 16 Jul 2008 11:40:24 +0100
-Message-Id: <1216204824.11481.156.camel@wirenth>
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 16 Jul 2008 18:49:07 +0800
+Message-Id: <1216205347.2782.63.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,633 +20,519 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi folks,
+Hi Artem,
 
-Here is an updated version of the TMIO nand driver.
+This is the patch you asked for.
+Only the prot tree and a few comments were modified.
+Please check it. and I'll test it a bit later.
 
-It has __correct__ copyright unlike previous versions, and has a
-writeb() replaced with iowrite8() that seems to have escaped earlier
-reviews.
+>From 3df5422ade6d77cfa763ca0e1e8374b984982fee Mon Sep 17 00:00:00 2001
+From: XiaoChuan-Xu <xiaochuan-xu@cqu.edu.cn>
+Date: Wed, 16 Jul 2008 18:12:13 +0800
+Subject: [PATCH] Remove the prot tree from the WL unit
 
-Also available from my git tree in the MFD branch:
-
-git://git.mnementh.co.uk/linux-2.6-im.git mfd_push_try_1
-
-Please apply.
-
-Please CC me on replies.
-
-
->From 256a4b3b641a2bd636f695771cef1a32b5a4c8a9 Mon Sep 17 00:00:00 2001
-From: Ian Molton <spyro@f2s.com>
-Date: Tue, 15 Jul 2008 16:04:22 +0100
-Subject: [PATCH] [MFD] Driver for TMIO NAND controller
-
-This patch adds support for the NAND controller commonly found in
-TMIO based SoCs.
-
-Signed-off-by: Ian Molton <spyro@f2s.com>
+Signed-off-by: XiaoChuan-Xu <xiaochuan-xu@cqu.edu.cn>
 ---
- drivers/mtd/nand/Kconfig     |    7 +
- drivers/mtd/nand/Makefile    |    1 +
- drivers/mtd/nand/tmio_nand.c |  559 ++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 567 insertions(+), 0 deletions(-)
- create mode 100644 drivers/mtd/nand/tmio_nand.c
+ drivers/mtd/ubi/ubi.h |    9 +--
+ drivers/mtd/ubi/wl.c  |  295 ++-----------------------------------------------
+ 2 files changed, 13 insertions(+), 291 deletions(-)
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 5076faf..6291748 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -338,6 +338,13 @@ config MTD_NAND_PASEMI
- 	  Enables support for NAND Flash interface on PA Semi PWRficient
- 	  based boards
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index 940f6b7..8d61247 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -286,10 +286,7 @@ struct ubi_wl_entry;
+  * @used: RB-tree of used physical eraseblocks
+  * @free: RB-tree of free physical eraseblocks
+  * @scrub: RB-tree of physical eraseblocks which need scrubbing
+- * @prot: protection trees
+- * @prot.pnum: protection tree indexed by physical eraseblock numbers
+- * @prot.aec: protection tree indexed by absolute erase counter value
+- * @wl_lock: protects the @used, @free, @prot, @lookuptbl, @abs_ec, @move_from,
++ * @wl_lock: protects the @used, @free, @lookuptbl, @abs_ec, @move_from,
+  *           @move_to, @move_to_put @erase_pending, @wl_scheduled, and @works
+  *           fields
+  * @move_mutex: serializes eraseblock moves
+@@ -369,10 +366,6 @@ struct ubi_device {
+ 	struct rb_root used;
+ 	struct rb_root free;
+ 	struct rb_root scrub;
+-	struct {
+-		struct rb_root pnum;
+-		struct rb_root aec;
+-	} prot;
+ 	spinlock_t wl_lock;
+ 	struct mutex move_mutex;
+ 	struct rw_semaphore work_sem;
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index cc8fe29..bdac635 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -54,8 +54,7 @@
+  *
+  * As it was said, for the UBI unit all physical eraseblocks are either "free"
+  * or "used". Free eraseblock are kept in the @wl->free RB-tree, while used
+- * eraseblocks are kept in a set of different RB-trees: @wl->used,
+- * @wl->prot.pnum, @wl->prot.aec, and @wl->scrub.
++ * eraseblocks are kept in the @wl->used.
+  *
+  * Note, in this implementation, we keep a small in-RAM object for each physical
+  * eraseblock. This is surely not a scalable solution. But it appears to be good
+@@ -83,14 +82,6 @@
+ #define WL_RESERVED_PEBS 1
  
-+config MTD_NAND_TMIO
-+	tristate "NAND Flash device on Toshiba Mobile IO Controller"
-+	depends on MTD_NAND && MFD_CORE
-+	help
-+	  Support for NAND flash connected to a Toshiba Mobile IO
-+	  Controller in some PDAs, including the Sharp SL6000x.
-+
- config MTD_NAND_NANDSIM
- 	tristate "Support for NAND Flash Simulator"
- 	depends on MTD_PARTITIONS
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index a6e74a4..c16453f 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -28,6 +28,7 @@ obj-$(CONFIG_MTD_NAND_AT91)		+= at91_nand.o
- obj-$(CONFIG_MTD_NAND_CM_X270)		+= cmx270_nand.o
- obj-$(CONFIG_MTD_NAND_BASLER_EXCITE)	+= excite_nandflash.o
- obj-$(CONFIG_MTD_NAND_PXA3xx)		+= pxa3xx_nand.o
-+obj-$(CONFIG_MTD_NAND_TMIO)		+= tmio_nand.o
- obj-$(CONFIG_MTD_NAND_PLATFORM)		+= plat_nand.o
- obj-$(CONFIG_MTD_ALAUDA)		+= alauda.o
- obj-$(CONFIG_MTD_NAND_PASEMI)		+= pasemi_nand.o
-diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
-new file mode 100644
-index 0000000..1cbcade
---- /dev/null
-+++ b/drivers/mtd/nand/tmio_nand.c
-@@ -0,0 +1,559 @@
-+/*
-+ * Toshiba TMIO NAND flash controller driver
-+ *
-+ * Slightly murky pre-git history of the driver:
-+ *
-+ * Copyright (c) Ian Molton 2004, 2005, 2008
-+ *    Original work, independant of sharps code. Included hardware ECC support.
-+ *    Hard ECC did not work for writes in the early revisions.
-+ * Copyright (c) Dirk Opfer 2005.
-+ *    Modifications developed from sharps code but
-+ *    NOT containing any, ported onto Ians base.
-+ * Copyright (c) Chris Humbert 2005
-+ * Copyright (c) Dmitry Baryshkov 2008
-+ *    Minor fixes
-+ *
-+ * Parts copyright Sebastian Carlier
-+ *
-+ * This file is licensed under
-+ * the terms of the GNU General Public License version 2. This program
-+ * is licensed "as is" without any warranty of any kind, whether express
-+ * or implied.
-+ *
-+ */
-+
-+
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/mfd/core.h>
-+#include <linux/mfd/tmio.h>
-+#include <linux/delay.h>
-+#include <linux/io.h>
-+#include <linux/irq.h>
-+#include <linux/interrupt.h>
-+#include <linux/ioport.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/nand.h>
-+#include <linux/mtd/nand_ecc.h>
-+#include <linux/mtd/partitions.h>
-+
-+/*--------------------------------------------------------------------------*/
-+
-+/*
-+ * NAND Flash Host Controller Configuration Register
-+ */
-+#define CCR_COMMAND	0x04	/* w Command				*/
-+#define CCR_BASE	0x10	/* l NAND Flash Control Reg Base Addr	*/
-+#define CCR_INTP	0x3d	/* b Interrupt Pin			*/
-+#define CCR_INTE	0x48	/* b Interrupt Enable			*/
-+#define CCR_EC		0x4a	/* b Event Control			*/
-+#define CCR_ICC		0x4c	/* b Internal Clock Control		*/
-+#define CCR_ECCC	0x5b	/* b ECC Control			*/
-+#define CCR_NFTC	0x60	/* b NAND Flash Transaction Control	*/
-+#define CCR_NFM		0x61	/* b NAND Flash Monitor			*/
-+#define CCR_NFPSC	0x62	/* b NAND Flash Power Supply Control	*/
-+#define CCR_NFDC	0x63	/* b NAND Flash Detect Control		*/
-+
-+/*
-+ * NAND Flash Control Register
-+ */
-+#define FCR_DATA	0x00	/* bwl Data Register			*/
-+#define FCR_MODE	0x04	/* b Mode Register			*/
-+#define FCR_STATUS	0x05	/* b Status Register			*/
-+#define FCR_ISR		0x06	/* b Interrupt Status Register		*/
-+#define FCR_IMR		0x07	/* b Interrupt Mask Register		*/
-+
-+/* FCR_MODE Register Command List */
-+#define FCR_MODE_DATA	0x94	/* Data Data_Mode */
-+#define FCR_MODE_COMMAND 0x95	/* Data Command_Mode */
-+#define FCR_MODE_ADDRESS 0x96	/* Data Address_Mode */
-+
-+#define FCR_MODE_HWECC_CALC	0xB4	/* HW-ECC Data */
-+#define FCR_MODE_HWECC_RESULT	0xD4	/* HW-ECC Calc result Read_Mode */
-+#define FCR_MODE_HWECC_RESET	0xF4	/* HW-ECC Reset */
-+
-+#define FCR_MODE_POWER_ON	0x0C	/* Power Supply ON  to SSFDC card */
-+#define FCR_MODE_POWER_OFF	0x08	/* Power Supply OFF to SSFDC card */
-+
-+#define FCR_MODE_LED_OFF	0x00	/* LED OFF */
-+#define FCR_MODE_LED_ON		0x04	/* LED ON */
-+
-+#define FCR_MODE_EJECT_ON	0x68	/* Ejection events active  */
-+#define FCR_MODE_EJECT_OFF	0x08	/* Ejection events ignored */
-+
-+#define FCR_MODE_LOCK		0x6C	/* Lock_Mode. Eject Switch Invalid */
-+#define FCR_MODE_UNLOCK		0x0C	/* UnLock_Mode. Eject Switch is valid */
-+
-+#define FCR_MODE_CONTROLLER_ID	0x40	/* Controller ID Read */
-+#define FCR_MODE_STANDBY	0x00	/* SSFDC card Changes Standby State */
-+
-+#define FCR_MODE_WE		0x80
-+#define FCR_MODE_ECC1		0x40
-+#define FCR_MODE_ECC0		0x20
-+#define FCR_MODE_CE		0x10
-+#define FCR_MODE_PCNT1		0x08
-+#define FCR_MODE_PCNT0		0x04
-+#define FCR_MODE_ALE		0x02
-+#define FCR_MODE_CLE		0x01
-+
-+#define FCR_STATUS_BUSY		0x80
-+
-+/*--------------------------------------------------------------------------*/
-+
-+struct tmio_nand {
-+	struct mtd_info mtd;
-+	struct nand_chip chip;
-+
-+	struct platform_device *dev;
-+
-+	void __iomem *ccr;
-+	void __iomem *fcr;
-+
-+	unsigned int irq;
-+
-+	/* for tmio_nand_read_byte */
-+	u8			read;
-+	unsigned read_good:1;
-+};
-+
-+#define mtd_to_tmio(m)			container_of(m, struct tmio_nand, mtd)
-+
-+#ifdef CONFIG_MTD_CMDLINE_PARTS
-+static const char *part_probes[] = { "cmdlinepart", NULL };
-+#endif
-+
-+/*--------------------------------------------------------------------------*/
-+
-+static void tmio_nand_hwcontrol(struct mtd_info *mtd, int cmd,
-+				   unsigned int ctrl)
-+{
-+	struct tmio_nand *tmio = mtd_to_tmio(mtd);
-+	struct nand_chip *chip = mtd->priv;
-+
-+	if (ctrl & NAND_CTRL_CHANGE) {
-+		u8 mode;
-+
-+		if (ctrl & NAND_NCE) {
-+			mode = FCR_MODE_DATA;
-+
-+			if (ctrl & NAND_CLE)
-+				mode |=  FCR_MODE_CLE;
-+			else
-+				mode &= ~FCR_MODE_CLE;
-+
-+			if (ctrl & NAND_ALE)
-+				mode |=  FCR_MODE_ALE;
-+			else
-+				mode &= ~FCR_MODE_ALE;
-+		} else {
-+			mode = FCR_MODE_STANDBY;
-+		}
-+
-+		iowrite8(mode, tmio->fcr + FCR_MODE);
-+		tmio->read_good = 0;
-+	}
-+
-+	if (cmd != NAND_CMD_NONE)
-+		iowrite8(cmd, chip->IO_ADDR_W);
-+}
-+
-+static int tmio_nand_dev_ready(struct mtd_info *mtd)
-+{
-+	struct tmio_nand *tmio = mtd_to_tmio(mtd);
-+
-+	return !(ioread8(tmio->fcr + FCR_STATUS) & FCR_STATUS_BUSY);
-+}
-+
-+static irqreturn_t tmio_irq(int irq, void *__tmio)
-+{
-+	struct tmio_nand *tmio = __tmio;
-+	struct nand_chip *nand_chip = &tmio->chip;
-+
-+	/* disable RDYREQ interrupt */
-+	iowrite8(0x00, tmio->fcr + FCR_IMR);
-+
-+	if (unlikely(!waitqueue_active(&nand_chip->controller->wq)))
-+		dev_warn(&tmio->dev->dev, "spurious interrupt\n");
-+
-+	wake_up(&nand_chip->controller->wq);
-+	return IRQ_HANDLED;
-+}
-+
-+/*
-+  *The TMIO core has a RDYREQ interrupt on the posedge of #SMRB.
-+  *This interrupt is normally disabled, but for long operations like
-+  *erase and write, we enable it to wake us up.  The irq handler
-+  *disables the interrupt.
-+ */
-+static int
-+tmio_nand_wait(struct mtd_info *mtd, struct nand_chip *nand_chip)
-+{
-+	struct tmio_nand *tmio = mtd_to_tmio(mtd);
-+	long timeout;
-+
-+	/* enable RDYREQ interrupt */
-+	iowrite8(0x0f, tmio->fcr + FCR_ISR);
-+	iowrite8(0x81, tmio->fcr + FCR_IMR);
-+
-+	timeout = wait_event_timeout(nand_chip->controller->wq,
-+		tmio_nand_dev_ready(mtd),
-+		msecs_to_jiffies(nand_chip->state == FL_ERASING ? 400 : 20));
-+
-+	if (unlikely(!tmio_nand_dev_ready(mtd))) {
-+		iowrite8(0x00, tmio->fcr + FCR_IMR);
-+		dev_warn(&tmio->dev->dev, "still busy with %s after %d ms\n",
-+			nand_chip->state == FL_ERASING ? "erase" : "program",
-+			nand_chip->state == FL_ERASING ? 400 : 20);
-+
-+	} else if (unlikely(!timeout)) {
-+		iowrite8(0x00, tmio->fcr + FCR_IMR);
-+		dev_warn(&tmio->dev->dev, "timeout waiting for interrupt\n");
-+	}
-+
-+	nand_chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
-+	return nand_chip->read_byte(mtd);
-+}
-+
-+/*
-+  *The TMIO controller combines two 8-bit data bytes into one 16-bit
-+  *word. This function separates them so nand_base.c works as expected,
-+  *especially its NAND_CMD_READID routines.
-+ *
-+  *To prevent stale data from being read, tmio_nand_hwcontrol() clears
-+  *tmio->read_good.
-+ */
-+static u_char tmio_nand_read_byte(struct mtd_info *mtd)
-+{
-+	struct tmio_nand *tmio = mtd_to_tmio(mtd);
-+	unsigned int data;
-+
-+	if (tmio->read_good--)
-+		return tmio->read;
-+
-+	data = ioread16(tmio->fcr + FCR_DATA);
-+	tmio->read = data >> 8;
-+	return data;
-+}
-+
-+/*
-+  *The TMIO controller converts an 8-bit NAND interface to a 16-bit
-+  *bus interface, so all data reads and writes must be 16-bit wide.
-+  *Thus, we implement 16-bit versions of the read, write, and verify
-+  *buffer functions.
-+ */
-+static void
-+tmio_nand_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
-+{
-+	struct tmio_nand *tmio = mtd_to_tmio(mtd);
-+
-+	iowrite16_rep(tmio->fcr + FCR_DATA, buf, len >> 1);
-+}
-+
-+static void tmio_nand_read_buf(struct mtd_info *mtd, u_char *buf, int len)
-+{
-+	struct tmio_nand *tmio = mtd_to_tmio(mtd);
-+
-+	ioread16_rep(tmio->fcr + FCR_DATA, buf, len >> 1);
-+}
-+
-+static int
-+tmio_nand_verify_buf(struct mtd_info *mtd, const u_char *buf, int len)
-+{
-+	struct tmio_nand *tmio = mtd_to_tmio(mtd);
-+	u16				*p = (u16 *) buf;
-+
-+	for (len >>= 1; len; len--)
-+		if (*(p++) != ioread16(tmio->fcr + FCR_DATA))
-+			return -EFAULT;
-+	return 0;
-+}
-+
-+static void tmio_nand_enable_hwecc(struct mtd_info *mtd, int mode)
-+{
-+	struct tmio_nand *tmio = mtd_to_tmio(mtd);
-+
-+	iowrite8(FCR_MODE_HWECC_RESET, tmio->fcr + FCR_MODE);
-+	ioread8(tmio->fcr + FCR_DATA);	/* dummy read */
-+	iowrite8(FCR_MODE_HWECC_CALC, tmio->fcr + FCR_MODE);
-+}
-+
-+static int tmio_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
-+							u_char *ecc_code)
-+{
-+	struct tmio_nand *tmio = mtd_to_tmio(mtd);
-+	unsigned int ecc;
-+
-+	iowrite8(FCR_MODE_HWECC_RESULT, tmio->fcr + FCR_MODE);
-+
-+	ecc = ioread16(tmio->fcr + FCR_DATA);
-+	ecc_code[1] = ecc;	/* 000-255 LP7-0 */
-+	ecc_code[0] = ecc >> 8;	/* 000-255 LP15-8 */
-+	ecc = ioread16(tmio->fcr + FCR_DATA);
-+	ecc_code[2] = ecc;	/* 000-255 CP5-0,11b */
-+	ecc_code[4] = ecc >> 8;	/* 256-511 LP7-0 */
-+	ecc = ioread16(tmio->fcr + FCR_DATA);
-+	ecc_code[3] = ecc;	/* 256-511 LP15-8 */
-+	ecc_code[5] = ecc >> 8;	/* 256-511 CP5-0,11b */
-+
-+	iowrite8(FCR_MODE_DATA, tmio->fcr + FCR_MODE);
-+	return 0;
-+}
-+
-+static int tmio_hw_init(struct platform_device *dev, struct tmio_nand *tmio)
-+{
-+	struct mfd_cell *cell = mfd_get_cell(dev);
-+	const struct resource *nfcr = NULL;
-+	unsigned long base;
-+	int i;
-+
-+	for (i = 0; i < cell->num_resources; i++)
-+		if (!strcmp((cell->resources+i)->name, TMIO_NAND_CONTROL))
-+			nfcr = &cell->resources[i];
-+
-+	if (nfcr == NULL)
-+		return -ENOMEM;
-+
-+	if (cell->enable) {
-+		int rc = cell->enable(dev);
-+		if (rc)
-+			return rc;
-+	}
-+
-+	/* (4Ch) CLKRUN Enable    1st spcrunc */
-+	iowrite8(0x81, tmio->ccr + CCR_ICC);
-+
-+	/* (10h)BaseAddress    0x1000 spba.spba2 */
-+	base = nfcr->start;
-+	iowrite16(base, tmio->ccr + CCR_BASE);
-+	iowrite16(base >> 16, tmio->ccr + CCR_BASE + 16);
-+
-+	/* (04h)Command Register I/O spcmd */
-+	iowrite8(0x02, tmio->ccr + CCR_COMMAND);
-+
-+	/* (62h) Power Supply Control ssmpwc */
-+	/* HardPowerOFF - SuspendOFF - PowerSupplyWait_4MS */
-+	iowrite8(0x02, tmio->ccr + CCR_NFPSC);
-+
-+	/* (63h) Detect Control ssmdtc */
-+	iowrite8(0x02, tmio->ccr + CCR_NFDC);
-+
-+	/* Interrupt status register clear sintst */
-+	iowrite8(0x0f, tmio->fcr + FCR_ISR);
-+
-+	/* After power supply, Media are reset smode */
-+	iowrite8(FCR_MODE_POWER_ON, tmio->fcr + FCR_MODE);
-+	iowrite8(FCR_MODE_COMMAND, tmio->fcr + FCR_MODE);
-+	iowrite8(NAND_CMD_RESET, tmio->fcr + FCR_DATA);
-+
-+	/* Standby Mode smode */
-+	iowrite8(FCR_MODE_STANDBY, tmio->fcr + FCR_MODE);
-+
-+	mdelay(5);
-+
-+	return 0;
-+}
-+
-+static void tmio_hw_stop(struct platform_device *dev, struct tmio_nand *tmio)
-+{
-+	struct mfd_cell *cell = mfd_get_cell(dev);
-+
-+	iowrite8(FCR_MODE_POWER_OFF, tmio->fcr + FCR_MODE);
-+	if (cell->disable)
-+		cell->disable(dev);
-+}
-+
-+static int tmio_probe(struct platform_device *dev)
-+{
-+	struct mfd_cell *cell = mfd_get_cell(dev);
-+	struct tmio_nand_data *data = cell->driver_data;
-+	struct resource *ccr = platform_get_resource_byname(dev,
-+			IORESOURCE_MEM, TMIO_NAND_CONFIG);
-+	struct resource *fcr = platform_get_resource_byname(dev,
-+			IORESOURCE_MEM, TMIO_NAND_CONTROL);
-+	int irq = platform_get_irq(dev, 0);
-+	struct tmio_nand *tmio;
-+	struct mtd_info *mtd;
-+	struct nand_chip *nand_chip;
-+	struct mtd_partition *parts;
-+	int nbparts = 0;
-+	int retval;
-+
-+	if (data == NULL)
-+		dev_warn(&dev->dev, "NULL platform data!\n");
-+
-+	tmio = kzalloc(sizeof *tmio, GFP_KERNEL);
-+	if (!tmio) {
-+		retval = -ENOMEM;
-+		goto err_kzalloc;
-+	}
-+
-+	tmio->dev = dev;
-+
-+	platform_set_drvdata(dev, tmio);
-+	mtd = &tmio->mtd;
-+	nand_chip = &tmio->chip;
-+	mtd->priv = nand_chip;
-+	mtd->name = "tmio-nand";
-+
-+	tmio->ccr = ioremap(ccr->start, ccr->end - ccr->start + 1);
-+	if (!tmio->ccr) {
-+		retval = -EIO;
-+		goto err_iomap_ccr;
-+	}
-+
-+	tmio->fcr = ioremap(fcr->start, fcr->end - fcr->start + 1);
-+	if (!tmio->fcr) {
-+		retval = -EIO;
-+		goto err_iomap_fcr;
-+	}
-+
-+	retval = tmio_hw_init(dev, tmio);
-+	if (retval)
-+		goto err_hwinit;
-+
-+	/* Set address of NAND IO lines */
-+	nand_chip->IO_ADDR_R = tmio->fcr;
-+	nand_chip->IO_ADDR_W = tmio->fcr;
-+
-+	/* Set address of hardware control function */
-+	nand_chip->cmd_ctrl = tmio_nand_hwcontrol;
-+	nand_chip->dev_ready = tmio_nand_dev_ready;
-+	nand_chip->read_byte = tmio_nand_read_byte;
-+	nand_chip->write_buf = tmio_nand_write_buf;
-+	nand_chip->read_buf = tmio_nand_read_buf;
-+	nand_chip->verify_buf = tmio_nand_verify_buf;
-+
-+	/* set eccmode using hardware ECC */
-+	nand_chip->ecc.mode = NAND_ECC_HW;
-+	nand_chip->ecc.size = 512;
-+	nand_chip->ecc.bytes = 6;
-+	nand_chip->ecc.hwctl = tmio_nand_enable_hwecc;
-+	nand_chip->ecc.calculate = tmio_nand_calculate_ecc;
-+	nand_chip->ecc.correct = nand_correct_data;
-+
-+	if (data)
-+		nand_chip->badblock_pattern = data->badblock_pattern;
-+
-+	/* 15 us command delay time */
-+	nand_chip->chip_delay = 15;
-+
-+	retval = request_irq(irq, &tmio_irq,
-+				IRQF_DISABLED, dev->dev.bus_id, tmio);
-+	if (retval) {
-+		dev_err(&dev->dev, "request_irq error %d\n", retval);
-+		goto err_irq;
-+	}
-+
-+	tmio->irq = irq;
-+	nand_chip->waitfunc = tmio_nand_wait;
-+
-+	/* Scan to find existence of the device */
-+	if (nand_scan(mtd, 1)) {
-+		retval = -ENODEV;
-+		goto err_scan;
-+	}
-+	/* Register the partitions */
-+#ifdef CONFIG_MTD_PARTITIONS
-+#ifdef CONFIG_MTD_CMDLINE_PARTS
-+	nbparts = parse_mtd_partitions(mtd, part_probes, &parts, 0);
-+#endif
-+	if (nbparts <= 0 && data) {
-+		parts = data->partition;
-+		nbparts = data->num_partitions;
-+	}
-+
-+	if (nbparts)
-+		retval = add_mtd_partitions(mtd, parts, nbparts);
-+	else
-+#endif
-+	retval = add_mtd_device(mtd);
-+
-+	if (!retval)
-+		return retval;
-+
-+	nand_release(mtd);
-+
-+err_scan:
-+	if (tmio->irq)
-+		free_irq(tmio->irq, tmio);
-+err_irq:
-+	tmio_hw_stop(dev, tmio);
-+err_hwinit:
-+	iounmap(tmio->fcr);
-+err_iomap_fcr:
-+	iounmap(tmio->ccr);
-+err_iomap_ccr:
-+	kfree(tmio);
-+err_kzalloc:
-+	return retval;
-+}
-+
-+static int tmio_remove(struct platform_device *dev)
-+{
-+	struct tmio_nand *tmio = platform_get_drvdata(dev);
-+
-+	nand_release(&tmio->mtd);
-+	if (tmio->irq)
-+		free_irq(tmio->irq, tmio);
-+	tmio_hw_stop(dev, tmio);
-+	iounmap(tmio->fcr);
-+	iounmap(tmio->ccr);
-+	kfree(tmio);
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM
-+static int tmio_suspend(struct platform_device *dev, pm_message_t state)
-+{
-+	struct mfd_cell *cell = mfd_get_cell(dev);
-+
-+	if (cell->suspend)
-+		cell->suspend(dev);
-+
-+	tmio_hw_stop(dev, platform_get_drvdata(dev));
-+	return 0;
-+}
-+
-+static int tmio_resume(struct platform_device *dev)
-+{
-+	struct mfd_cell *cell = mfd_get_cell(dev);
-+
-+	tmio_hw_init(dev, platform_get_drvdata(dev));
-+
-+	if (cell->resume)
-+		cell->resume(dev);
-+
-+	return 0;
-+}
-+#else
-+#define tmio_suspend NULL
-+#define tmio_resume NULL
-+#endif
-+
-+static struct platform_driver tmio_driver = {
-+	.driver.name	= "tmio-nand",
-+	.driver.owner	= THIS_MODULE,
-+	.probe		= tmio_probe,
-+	.remove		= tmio_remove,
-+	.suspend	= tmio_suspend,
-+	.resume		= tmio_resume,
-+};
-+
-+static int __init tmio_init(void)
-+{
-+	return platform_driver_register(&tmio_driver);
-+}
-+
-+static void __exit tmio_exit(void)
-+{
-+	platform_driver_unregister(&tmio_driver);
-+}
-+
-+module_init(tmio_init);
-+module_exit(tmio_exit);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR("Ian Molton, Dirk Opfer, Chris Humbert, Dmitry Baryshkov");
-+MODULE_DESCRIPTION("NAND flash driver on Toshiba Mobile IO controller");
-+MODULE_ALIAS("platform:tmio-nand");
+ /*
+- * How many erase cycles are short term, unknown, and long term physical
+- * eraseblocks protected.
+- */
+-#define ST_PROTECTION 16
+-#define U_PROTECTION  10
+-#define LT_PROTECTION 4
+-
+-/*
+  * Maximum difference between two erase counters. If this threshold is
+  * exceeded, the WL unit starts moving data from used physical eraseblocks with
+  * low erase counter to free physical eraseblocks with high erase counter.
+@@ -117,60 +108,6 @@
+ #define WL_MAX_FAILURES 32
+ 
+ /**
+- * struct ubi_wl_prot_entry - PEB protection entry.
+- * @rb_pnum: link in the @wl->prot.pnum RB-tree
+- * @rb_aec: link in the @wl->prot.aec RB-tree
+- * @abs_ec: the absolute erase counter value when the protection ends
+- * @e: the wear-leveling entry of the physical eraseblock under protection
+- *
+- * When the WL unit returns a physical eraseblock, the physical eraseblock is
+- * protected from being moved for some "time". For this reason, the physical
+- * eraseblock is not directly moved from the @wl->free tree to the @wl->used
+- * tree. There is one more tree in between where this physical eraseblock is
+- * temporarily stored (@wl->prot).
+- *
+- * All this protection stuff is needed because:
+- *  o we don't want to move physical eraseblocks just after we have given them
+- *    to the user; instead, we first want to let users fill them up with data;
+- *
+- *  o there is a chance that the user will put the physical eraseblock very
+- *    soon, so it makes sense not to move it for some time, but wait; this is
+- *    especially important in case of "short term" physical eraseblocks.
+- *
+- * Physical eraseblocks stay protected only for limited time. But the "time" is
+- * measured in erase cycles in this case. This is implemented with help of the
+- * absolute erase counter (@wl->abs_ec). When it reaches certain value, the
+- * physical eraseblocks are moved from the protection trees (@wl->prot.*) to
+- * the @wl->used tree.
+- *
+- * Protected physical eraseblocks are searched by physical eraseblock number
+- * (when they are put) and by the absolute erase counter (to check if it is
+- * time to move them to the @wl->used tree). So there are actually 2 RB-trees
+- * storing the protected physical eraseblocks: @wl->prot.pnum and
+- * @wl->prot.aec. They are referred to as the "protection" trees. The
+- * first one is indexed by the physical eraseblock number. The second one is
+- * indexed by the absolute erase counter. Both trees store
+- * &struct ubi_wl_prot_entry objects.
+- *
+- * Each physical eraseblock has 2 main states: free and used. The former state
+- * corresponds to the @wl->free tree. The latter state is split up on several
+- * sub-states:
+- * o the WL movement is allowed (@wl->used tree);
+- * o the WL movement is temporarily prohibited (@wl->prot.pnum and
+- * @wl->prot.aec trees);
+- * o scrubbing is needed (@wl->scrub tree).
+- *
+- * Depending on the sub-state, wear-leveling entries of the used physical
+- * eraseblocks may be kept in one of those trees.
+- */
+-struct ubi_wl_prot_entry {
+-	struct rb_node rb_pnum;
+-	struct rb_node rb_aec;
+-	unsigned long long abs_ec;
+-	struct ubi_wl_entry *e;
+-};
+-
+-/**
+  * struct ubi_work - UBI work description data structure.
+  * @list: a link in the list of pending works
+  * @func: worker function
+@@ -353,53 +290,6 @@ static int in_wl_tree(struct ubi_wl_entry *e, struct rb_root *root)
+ }
+ 
+ /**
+- * prot_tree_add - add physical eraseblock to protection trees.
+- * @ubi: UBI device description object
+- * @e: the physical eraseblock to add
+- * @pe: protection entry object to use
+- * @abs_ec: absolute erase counter value when this physical eraseblock has
+- * to be removed from the protection trees.
+- *
+- * @wl->lock has to be locked.
+- */
+-static void prot_tree_add(struct ubi_device *ubi, struct ubi_wl_entry *e,
+-			  struct ubi_wl_prot_entry *pe, int abs_ec)
+-{
+-	struct rb_node **p, *parent = NULL;
+-	struct ubi_wl_prot_entry *pe1;
+-
+-	pe->e = e;
+-	pe->abs_ec = ubi->abs_ec + abs_ec;
+-
+-	p = &ubi->prot.pnum.rb_node;
+-	while (*p) {
+-		parent = *p;
+-		pe1 = rb_entry(parent, struct ubi_wl_prot_entry, rb_pnum);
+-
+-		if (e->pnum < pe1->e->pnum)
+-			p = &(*p)->rb_left;
+-		else
+-			p = &(*p)->rb_right;
+-	}
+-	rb_link_node(&pe->rb_pnum, parent, p);
+-	rb_insert_color(&pe->rb_pnum, &ubi->prot.pnum);
+-
+-	p = &ubi->prot.aec.rb_node;
+-	parent = NULL;
+-	while (*p) {
+-		parent = *p;
+-		pe1 = rb_entry(parent, struct ubi_wl_prot_entry, rb_aec);
+-
+-		if (pe->abs_ec < pe1->abs_ec)
+-			p = &(*p)->rb_left;
+-		else
+-			p = &(*p)->rb_right;
+-	}
+-	rb_link_node(&pe->rb_aec, parent, p);
+-	rb_insert_color(&pe->rb_aec, &ubi->prot.aec);
+-}
+-
+-/**
+  * find_wl_entry - find wear-leveling entry closest to certain erase counter.
+  * @root: the RB-tree where to look for
+  * @max: highest possible erase counter
+@@ -441,17 +331,12 @@ static struct ubi_wl_entry *find_wl_entry(struct rb_root *root, int max)
+  */
+ int ubi_wl_get_peb(struct ubi_device *ubi, int dtype)
+ {
+-	int err, protect, medium_ec;
++	int err, medium_ec;
+ 	struct ubi_wl_entry *e, *first, *last;
+-	struct ubi_wl_prot_entry *pe;
+ 
+ 	ubi_assert(dtype == UBI_LONGTERM || dtype == UBI_SHORTTERM ||
+ 		   dtype == UBI_UNKNOWN);
+ 
+-	pe = kmalloc(sizeof(struct ubi_wl_prot_entry), GFP_NOFS);
+-	if (!pe)
+-		return -ENOMEM;
+-
+ retry:
+ 	spin_lock(&ubi->wl_lock);
+ 	if (!ubi->free.rb_node) {
+@@ -481,7 +366,6 @@ retry:
+ 			 * erase counter plus %WL_FREE_MAX_DIFF.
+ 			 */
+ 			e = find_wl_entry(&ubi->free, WL_FREE_MAX_DIFF);
+-			protect = LT_PROTECTION;
+ 			break;
+ 		case UBI_UNKNOWN:
+ 			/*
+@@ -503,7 +387,6 @@ retry:
+ 				medium_ec = (first->ec + WL_FREE_MAX_DIFF)/2;
+ 				e = find_wl_entry(&ubi->free, medium_ec);
+ 			}
+-			protect = U_PROTECTION;
+ 			break;
+ 		case UBI_SHORTTERM:
+ 			/*
+@@ -513,67 +396,26 @@ retry:
+ 			 */
+ 			e = rb_entry(rb_first(&ubi->free),
+ 				     struct ubi_wl_entry, rb);
+-			protect = ST_PROTECTION;
+ 			break;
+ 		default:
+-			protect = 0;
+ 			e = NULL;
+ 			BUG();
+ 	}
+ 
+ 	/*
+-	 * Move the physical eraseblock to the protection trees where it will
+-	 * be protected from being moved for some time.
++	 * Move the physical eraseblock to the used tree.
+ 	 */
+ 	paranoid_check_in_wl_tree(e, &ubi->free);
+ 	rb_erase(&e->rb, &ubi->free);
+-	prot_tree_add(ubi, e, pe, protect);
++	wl_tree_add(e, &ubi->used);
+ 
+-	dbg_wl("PEB %d EC %d, protection %d", e->pnum, e->ec, protect);
++	dbg_wl("get PEB %d EC %d", e->pnum, e->ec);
+ 	spin_unlock(&ubi->wl_lock);
+ 
+ 	return e->pnum;
+ }
+ 
+ /**
+- * prot_tree_del - remove a physical eraseblock from the protection trees
+- * @ubi: UBI device description object
+- * @pnum: the physical eraseblock to remove
+- *
+- * This function returns PEB @pnum from the protection trees and returns zero
+- * in case of success and %-ENODEV if the PEB was not found in the protection
+- * trees.
+- */
+-static int prot_tree_del(struct ubi_device *ubi, int pnum)
+-{
+-	struct rb_node *p;
+-	struct ubi_wl_prot_entry *pe = NULL;
+-
+-	p = ubi->prot.pnum.rb_node;
+-	while (p) {
+-
+-		pe = rb_entry(p, struct ubi_wl_prot_entry, rb_pnum);
+-
+-		if (pnum == pe->e->pnum)
+-			goto found;
+-
+-		if (pnum < pe->e->pnum)
+-			p = p->rb_left;
+-		else
+-			p = p->rb_right;
+-	}
+-
+-	return -ENODEV;
+-
+-found:
+-	ubi_assert(pe->e->pnum == pnum);
+-	rb_erase(&pe->rb_aec, &ubi->prot.aec);
+-	rb_erase(&pe->rb_pnum, &ubi->prot.pnum);
+-	kfree(pe);
+-	return 0;
+-}
+-
+-/**
+  * sync_erase - synchronously erase a physical eraseblock.
+  * @ubi: UBI device description object
+  * @e: the the physical eraseblock to erase
+@@ -634,51 +476,6 @@ out_free:
+ }
+ 
+ /**
+- * check_protection_over - check if it is time to stop protecting some
+- * physical eraseblocks.
+- * @ubi: UBI device description object
+- *
+- * This function is called after each erase operation, when the absolute erase
+- * counter is incremented, to check if some physical eraseblock  have not to be
+- * protected any longer. These physical eraseblocks are moved from the
+- * protection trees to the used tree.
+- */
+-static void check_protection_over(struct ubi_device *ubi)
+-{
+-	struct ubi_wl_prot_entry *pe;
+-
+-	/*
+-	 * There may be several protected physical eraseblock to remove,
+-	 * process them all.
+-	 */
+-	while (1) {
+-		spin_lock(&ubi->wl_lock);
+-		if (!ubi->prot.aec.rb_node) {
+-			spin_unlock(&ubi->wl_lock);
+-			break;
+-		}
+-
+-		pe = rb_entry(rb_first(&ubi->prot.aec),
+-			      struct ubi_wl_prot_entry, rb_aec);
+-
+-		if (pe->abs_ec > ubi->abs_ec) {
+-			spin_unlock(&ubi->wl_lock);
+-			break;
+-		}
+-
+-		dbg_wl("PEB %d protection over, abs_ec %llu, PEB abs_ec %llu",
+-		       pe->e->pnum, ubi->abs_ec, pe->abs_ec);
+-		rb_erase(&pe->rb_aec, &ubi->prot.aec);
+-		rb_erase(&pe->rb_pnum, &ubi->prot.pnum);
+-		wl_tree_add(pe->e, &ubi->used);
+-		spin_unlock(&ubi->wl_lock);
+-
+-		kfree(pe);
+-		cond_resched();
+-	}
+-}
+-
+-/**
+  * schedule_ubi_work - schedule a work.
+  * @ubi: UBI device description object
+  * @wrk: the work to schedule
+@@ -743,7 +540,6 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
+ 				int cancel)
+ {
+ 	int err, put = 0, scrubbing = 0, protect = 0;
+-	struct ubi_wl_prot_entry *uninitialized_var(pe);
+ 	struct ubi_wl_entry *e1, *e2;
+ 	struct ubi_vid_hdr *vid_hdr;
+ 
+@@ -768,10 +564,7 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
+ 		 * the queue to be erased. Cancel movement - it will be
+ 		 * triggered again when a free physical eraseblock appears.
+ 		 *
+-		 * No used physical eraseblocks? They must be temporarily
+-		 * protected from being moved. They will be moved to the
+-		 * @ubi->used tree later and the wear-leveling will be
+-		 * triggered again.
++		 * No used physical eraseblocks?. cancel this wl worker.
+ 		 */
+ 		dbg_wl("cancel WL, a list is empty: free %d, used %d",
+ 		       !ubi->free.rb_node, !ubi->used.rb_node);
+@@ -855,25 +648,17 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
+ 
+ 		/*
+ 		 * For some reason the LEB was not moved - it might be because
+-		 * the volume is being deleted. We should prevent this PEB from
+-		 * being selected for wear-levelling movement for some "time",
+-		 * so put it to the protection tree.
++		 * the volume is being deleted. Nothing we can do but insert
++		 * this PEB back to used tree.
+ 		 */
+ 
+ 		dbg_wl("cancelled moving PEB %d", e1->pnum);
+-		pe = kmalloc(sizeof(struct ubi_wl_prot_entry), GFP_NOFS);
+-		if (!pe) {
+-			err = -ENOMEM;
+-			goto out_error;
+-		}
+ 
+ 		protect = 1;
+ 	}
+ 
+ 	ubi_free_vid_hdr(ubi, vid_hdr);
+ 	spin_lock(&ubi->wl_lock);
+-	if (protect)
+-		prot_tree_add(ubi, e1, pe, protect);
+ 	if (!ubi->move_to_put)
+ 		wl_tree_add(e2, &ubi->used);
+ 	else
+@@ -897,8 +682,8 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
+ 		err = schedule_erase(ubi, e1, 0);
+ 		if (err)
+ 			goto out_error;
+-	}
+-
++	} else
++		wl_tree_add(e1, &ubi->used);
+ 
+ 	dbg_wl("done");
+ 	mutex_unlock(&ubi->move_mutex);
+@@ -1053,13 +838,9 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
+ 		wl_tree_add(e, &ubi->free);
+ 		spin_unlock(&ubi->wl_lock);
+ 
+-		/*
+-		 * One more erase operation has happened, take care about protected
+-		 * physical eraseblocks.
++		/* One more erase operation has happened,
++		 * take care about wear-leveling
+ 		 */
+-		check_protection_over(ubi);
+-
+-		/* And take care about wear-leveling */
+ 		err = ensure_wear_leveling(ubi);
+ 		return err;
+ 	}
+@@ -1193,14 +974,6 @@ retry:
+ 		} else if (in_wl_tree(e, &ubi->scrub)) {
+ 			paranoid_check_in_wl_tree(e, &ubi->scrub);
+ 			rb_erase(&e->rb, &ubi->scrub);
+-		} else {
+-			err = prot_tree_del(ubi, e->pnum);
+-			if (err) {
+-				ubi_err("PEB %d not found", pnum);
+-				ubi_ro_mode(ubi);
+-				spin_unlock(&ubi->wl_lock);
+-				return err;
+-			}
+ 		}
+ 	}
+ 	spin_unlock(&ubi->wl_lock);
+@@ -1255,16 +1028,6 @@ retry:
+ 	if (in_wl_tree(e, &ubi->used)) {
+ 		paranoid_check_in_wl_tree(e, &ubi->used);
+ 		rb_erase(&e->rb, &ubi->used);
+-	} else {
+-		int err;
+-
+-		err = prot_tree_del(ubi, e->pnum);
+-		if (err) {
+-			ubi_err("PEB %d not found", pnum);
+-			ubi_ro_mode(ubi);
+-			spin_unlock(&ubi->wl_lock);
+-			return err;
+-		}
+ 	}
+ 
+ 	wl_tree_add(e, &ubi->scrub);
+@@ -1443,7 +1206,6 @@ int ubi_wl_init_scan(struct ubi_device *ubi, struct ubi_scan_info *si)
+ 
+ 
+ 	ubi->used = ubi->free = ubi->scrub = RB_ROOT;
+-	ubi->prot.pnum = ubi->prot.aec = RB_ROOT;
+ 	spin_lock_init(&ubi->wl_lock);
+ 	mutex_init(&ubi->move_mutex);
+ 	init_rwsem(&ubi->work_sem);
+@@ -1551,38 +1313,6 @@ out_free:
+ }
+ 
+ /**
+- * protection_trees_destroy - destroy the protection RB-trees.
+- * @ubi: UBI device description object
+- */
+-static void protection_trees_destroy(struct ubi_device *ubi)
+-{
+-	struct rb_node *rb;
+-	struct ubi_wl_prot_entry *pe;
+-
+-	rb = ubi->prot.aec.rb_node;
+-	while (rb) {
+-		if (rb->rb_left)
+-			rb = rb->rb_left;
+-		else if (rb->rb_right)
+-			rb = rb->rb_right;
+-		else {
+-			pe = rb_entry(rb, struct ubi_wl_prot_entry, rb_aec);
+-
+-			rb = rb_parent(rb);
+-			if (rb) {
+-				if (rb->rb_left == &pe->rb_aec)
+-					rb->rb_left = NULL;
+-				else
+-					rb->rb_right = NULL;
+-			}
+-
+-			kmem_cache_free(ubi_wl_entry_slab, pe->e);
+-			kfree(pe);
+-		}
+-	}
+-}
+-
+-/**
+  * ubi_wl_close - close the wear-leveling unit.
+  * @ubi: UBI device description object
+  */
+@@ -1591,7 +1321,6 @@ void ubi_wl_close(struct ubi_device *ubi)
+ 	dbg_wl("close the UBI wear-leveling unit");
+ 
+ 	cancel_pending(ubi);
+-	protection_trees_destroy(ubi);
+ 	tree_destroy(&ubi->used);
+ 	tree_destroy(&ubi->free);
+ 	tree_destroy(&ubi->scrub);
 -- 
-1.5.3.5.737.gdee1b
+1.5.3.2
+
+
+-- 
+yours Sincerely,
+
+xiaochuan-xu (许小川)
