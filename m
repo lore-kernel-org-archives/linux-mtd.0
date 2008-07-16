@@ -1,11 +1,22 @@
-Date: Wed, 16 Jul 2008 15:28:56 +0100 (BST)
-From: Alexey Korolev <akorolev@infradead.org>
-To: dwmw2@infradead.org, linux-mtd@lists.infradead.org
-Subject: [PATCH] Bugfix: -ETIMEO errors in CFI driver
-Message-ID: <alpine.LFD.1.10.0807161442500.5059@casper.infradead.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: joern@logfs.org, nico@cam.org
+Received: from [202.202.0.36] (helo=cqu.edu.cn)
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KJ87T-0007XJ-7a
+	for linux-mtd@lists.infradead.org; Wed, 16 Jul 2008 14:36:40 +0000
+Message-ID: <416218737.17674@cqu.edu.cn>
+Subject: Re: [PATCH][UBI]:Remove the prot tree from the WL unit
+From: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
+To: dedekind@infradead.org
+In-Reply-To: <1216218036.29469.64.camel@sauron>
+References: <1216214483.2782.91.camel@localhost.localdomain>
+	<1216217566.29469.62.camel@sauron>
+	<1216218027.2782.97.camel@localhost.localdomain>
+	<1216218036.29469.64.camel@sauron>
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 16 Jul 2008 22:36:11 +0800
+Message-Id: <1216218971.2782.112.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,60 +26,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-Existing CFI driver has problems with excessive writes during erase. 
-If CFI driver does many writes during one erase cycle we may face the 
-messages with -ETIMEO error on erase operation.  It may cause the
-following data corruption and kernel panics.
+On Wed, 2008-07-16 at 17:20 +0300, Artem Bityutskiy wrote:
+> On Wed, 2008-07-16 at 22:20 +0800, xiaochuan-xu wrote:
+> > Hi,
+> > 
+> > > Cool, thanks. However, if I grep for "prot", I still find
+> > > some traces of protection trees. Try this. They should be
+> > > removed as well.
+> > > 
+> > 
+> > Yes, a few "protect" words are still in the wl.c file.
+> > but I the are not relative to the PROT tree. 
+> 
+> Ok, sorry, I'll look closer again.
+> 
 
-The reason of the issue is related to specifics of suspend operation: 
-if we write to flash during erase, suspend operation will cost some time 
-to erase procedure (for P30 it could be significant). In current version of 
-cfi driver the problem of many suspends is partially workarounded by adding 
-some time reserv to any operation (8xerase_time) but if we have many writes 
-during one erase the problem appears. 
- 
-This patch detects the suspend and resets timer if suspend occured. It
-has been well verified on different chips. No problems were found.
-Could you please include the patch as it is simple and fixes bad issue.
+one problem,without the prot tree, is that when 
+ubi_io_read_vid_hdr(ubi, e1->pnum, vid_hdr, 0) (in the
+wear_leveling_worker function())return errorcode equals to
+UBI_IO_PEB_FREE, such PEB @e1 has to insert back to @used/scrub tree.
 
-Signed-off-by: Alexey Korolev <akorolev@infradead.org> 
-------------------
-diff -aurp linux-2.6.25.4/drivers/mtd/chips/cfi_cmdset_0001.c linux-2.6.25.4/drivers/mtd/chips/cfi_cmdset_0001.c
---- linux-2.6.25.4/drivers/mtd/chips/cfi_cmdset_0001.c	2008-05-15 19:00:12.000000000 +0400
-+++ linux-2.6.25.4/drivers/mtd/chips/cfi_cmdset_0001.c	2008-07-16 18:06:27.000000000 +0400
-@@ -1145,7 +1145,7 @@ static int inval_cache_and_wait_for_oper
- 	struct cfi_private *cfi = map->fldrv_priv;
- 	map_word status, status_OK = CMD(0x80);
- 	int chip_state = chip->state;
--	unsigned int timeo, sleep_time;
-+	unsigned int timeo, sleep_time, reset_timeo;
- 
- 	spin_unlock(chip->mutex);
- 	if (inval_len)
-@@ -1156,6 +1156,7 @@ static int inval_cache_and_wait_for_oper
- 	timeo = chip_op_time * 8;
- 	if (!timeo)
- 		timeo = 500000;
-+	reset_timeo = timeo;
- 	sleep_time = chip_op_time / 2;
- 
- 	for (;;) {
-@@ -1197,6 +1198,12 @@ static int inval_cache_and_wait_for_oper
- 			remove_wait_queue(&chip->wq, &wait);
- 			spin_lock(chip->mutex);
- 		}
-+		if (chip->erase_suspended || chip->write_suspended)  {
-+			/* Suspend has occured while sleep: reset timeout */
-+			timeo = reset_timeo;
-+			chip->erase_suspended = 0;
-+			chip->write_suspended = 0;
-+		}
- 	}
- 
- 	/* Done and happy. */
+a bit later, one other wear-leveling worker will select the some PEB
+(@e1 above), UBI_IO_PEB_FREE returns again.
 
-------------------
-Thanks,
-Alexey
+over and over agin.
+
+
+-- 
+yours Sincerely,
+
+xiaochuan-xu (许小川)
