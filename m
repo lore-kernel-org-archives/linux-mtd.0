@@ -1,21 +1,21 @@
-Received: from smtp6-g19.free.fr ([212.27.42.36])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KJQfF-0005R6-Ko
-	for linux-mtd@lists.infradead.org; Thu, 17 Jul 2008 10:24:45 +0000
-To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <Uwe.Kleine-Koenig@digi.com>
+Received: from mail37.messagelabs.com ([216.82.244.163])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KJRfc-0003Sk-Ge
+	for linux-mtd@lists.infradead.org; Thu, 17 Jul 2008 11:29:12 +0000
+Date: Thu, 17 Jul 2008 13:29:04 +0200
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <Uwe.Kleine-Koenig@digi.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
 Subject: Re: [PATCH] [MTD] physmap: only call suspend and resume callbacks if
 	non-NULL
+Message-ID: <20080717112904.GA28751@digi.com>
 References: <20080715130316.GA1617@digi.com>
 	<1216127652-2318-1-git-send-email-Uwe.Kleine-Koenig@digi.com>
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Date: Thu, 17 Jul 2008 12:24:42 +0200
-In-Reply-To: <1216127652-2318-1-git-send-email-Uwe.Kleine-Koenig@digi.com>
-	("Uwe =?utf-8?Q?Kleine-K=C3=B6nig=22's?= message of "Tue\, 15 Jul 2008
-	15\:14\:11 +0200")
-Message-ID: <877ibkbyfp.fsf@free.fr>
+	<877ibkbyfp.fsf@free.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <877ibkbyfp.fsf@free.fr>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -26,23 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Uwe Kleine-K=C3=B6nig <Uwe.Kleine-Koenig@digi.com> writes:
+Hello Robert,
 
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <Uwe.Kleine-Koenig@digi.com>
-> ---
->  drivers/mtd/maps/physmap.c |   12 ++++++++----
->  1 files changed, 8 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
-> index 183255f..f04061f 100644
-> --- a/drivers/mtd/maps/physmap.c
-> +++ b/drivers/mtd/maps/physmap.c
-> @@ -202,8 +202,10 @@ static int physmap_flash_suspend(struct platform_dev=
-ice *dev, pm_message_t state
-The same patch was submitted to this ML a while ago,
-http://lists.infradead.org/pipermail/linux-mtd/2008-June/022023.html
+Robert Jarzmik wrote:
+> The same patch was submitted to this ML a while ago,
+> http://lists.infradead.org/pipermail/linux-mtd/2008-June/022023.html
+> 
+> It has not made it's way upstream, though ...
+Ah, OK.  So please consider my mail as an additional Acked-by:
 
-It has not made it's way upstream, though ...
+Thanks,
+Uwe
 
---
-Robert
+-- 
+Uwe Kleine-König, Software Engineer
+Digi International GmbH Branch Breisach, Küferstrasse 8, 79206 Breisach, Germany
+Tax: 315/5781/0242 / VAT: DE153662976 / Reg. Amtsgericht Dortmund HRB 13962
