@@ -1,22 +1,11 @@
-Received: from mail37.messagelabs.com ([216.82.244.163])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KJRfc-0003Sk-Ge
-	for linux-mtd@lists.infradead.org; Thu, 17 Jul 2008 11:29:12 +0000
-Date: Thu, 17 Jul 2008 13:29:04 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <Uwe.Kleine-Koenig@digi.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH] [MTD] physmap: only call suspend and resume callbacks if
-	non-NULL
-Message-ID: <20080717112904.GA28751@digi.com>
-References: <20080715130316.GA1617@digi.com>
-	<1216127652-2318-1-git-send-email-Uwe.Kleine-Koenig@digi.com>
-	<877ibkbyfp.fsf@free.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <877ibkbyfp.fsf@free.fr>
-Cc: linux-mtd@lists.infradead.org
+Date: Fri, 18 Jul 2008 00:13:31 +1200 (NZST)
+From: melroy@paradise.net.nz
+Subject: Good Day
+To: melroy@paradise.net.nz
+Message-id: <1216296811.487f376b2cf3b@www.paradise.net.nz>
+MIME-version: 1.0
+Content-type: text/plain; charset=ISO-8859-1
+Content-transfer-encoding: 8BIT
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,19 +15,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Robert,
+Attn: Friend,
 
-Robert Jarzmik wrote:
-> The same patch was submitted to this ML a while ago,
-> http://lists.infradead.org/pipermail/linux-mtd/2008-June/022023.html
-> 
-> It has not made it's way upstream, though ...
-Ah, OK.  So please consider my mail as an additional Acked-by:
+I am  Peter A. Sands the Group Chief Executive (Standard Chartered Bank) herein
+UK, I will need you to execute a project from my bank to your Country which
+amount to GBP£30 million (Thirty Million Pounds Sterling only) for a partnership
+investment. Please, indicate your interest to enable me Furnish you with full
+detail of this Transaction. Please contact me on my private e-mail address:
+peter.asands@gmail.com
 
-Thanks,
-Uwe
-
--- 
-Uwe Kleine-König, Software Engineer
-Digi International GmbH Branch Breisach, Küferstrasse 8, 79206 Breisach, Germany
-Tax: 315/5781/0242 / VAT: DE153662976 / Reg. Amtsgericht Dortmund HRB 13962
+Best Regards
+Peter A. Sands
+E-Mail: peter.asands@gmail.com
