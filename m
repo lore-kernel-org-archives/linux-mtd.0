@@ -1,17 +1,24 @@
-Received: from mk-outboundfilter-3.mail.uk.tiscali.com ([212.74.114.23])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KJIYu-0008EN-HB
-	for linux-mtd@lists.infradead.org; Thu, 17 Jul 2008 01:45:40 +0000
-Subject: Re: [MFD] TMIO NAND driver
-From: ian <spyro@f2s.com>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <1216204824.11481.156.camel@wirenth>
-References: <1216204824.11481.156.camel@wirenth>
-Content-Type: text/plain
-Date: Thu, 17 Jul 2008 02:45:36 +0100
-Message-Id: <1216259137.11481.225.camel@wirenth>
+Received: from [202.202.0.36] (helo=cqu.edu.cn)
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KJK0S-0004hG-RQ
+	for linux-mtd@lists.infradead.org; Thu, 17 Jul 2008 03:18:13 +0000
+Message-ID: <416264428.20337@cqu.edu.cn>
+Subject: Re: [PATCH][UBI]:Remove the prot tree from the WL unit
+From: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
+To: dedekind@infradead.org
+In-Reply-To: <1216219840.29469.81.camel@sauron>
+References: <1216214483.2782.91.camel@localhost.localdomain>
+	<1216217566.29469.62.camel@sauron>
+	<1216218027.2782.97.camel@localhost.localdomain>
+	<1216218036.29469.64.camel@sauron>
+	<1216218971.2782.112.camel@localhost.localdomain>
+	<1216219840.29469.81.camel@sauron>
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 17 Jul 2008 11:17:42 +0800
+Message-Id: <1216264662.2781.15.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,22 +28,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-07-16 at 22:16 +0100, ian wrote:
+Hi Artem,
 
-> Here is an updated version of the TMIO nand driver.
+On Wed, 2008-07-16 at 17:50 +0300, Artem Bityutskiy wrote:
+> 
+> Sure, this is an intermediate state. Your next patches should fix
+> this. We just removed the protection tree separately because it
+> is an independed step and it will make further patches simpler
+> to review and understand. 
 
-And replying to myself... I've squashed two compile warnings.
+I believe the next patch should modify the used tree, i.e., adding the
+@tempr element to @struct ubi_wl_entry and some relative sentences.
+Of course, a used tree special function refer to as @wl_used_tree_add()
+is in need.  
 
-New version is available in this branch:
+What do you think?
 
-git://git.mnementh.co.uk/linux-2.6-im.git mfd_push_try_4
 
-Browse the code here:
 
-http://git.mnementh.co.uk/cgi-bin/gitweb.cgi?p=linux-2.6-im.git;a=commit;h=ffcd1b19e9348e923736c161f1159088656521bc
+-- 
+yours Sincerely,
 
-This completely superceeds the version in my previous post.
-
-Please apply! :-)
-
--Ian
+xiaochuan-xu (许小川)
