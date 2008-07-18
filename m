@@ -1,18 +1,20 @@
-Received: from mk-outboundfilter-5.mail.uk.tiscali.com ([212.74.114.1])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KJsWq-0007AA-44
-	for linux-mtd@lists.infradead.org; Fri, 18 Jul 2008 16:09:56 +0000
-Subject: Re: [MFD] TMIO NAND driver
-From: ian <spyro@f2s.com>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <1216259137.11481.225.camel@wirenth>
-References: <1216204824.11481.156.camel@wirenth>
-	<1216259137.11481.225.camel@wirenth>
-Content-Type: text/plain
-Date: Fri, 18 Jul 2008 17:09:45 +0100
-Message-Id: <1216397385.3644.17.camel@wirenth>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KJsk3-0000NY-Cn
+	for linux-mtd@lists.infradead.org; Fri, 18 Jul 2008 16:23:35 +0000
+Date: Fri, 18 Jul 2008 18:23:19 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Subject: Re: [PATCH 5/5] [MTD][MTDPART] Handle remaining checkpatch findings
+Message-ID: <20080718162319.GA12823@logfs.org>
+References: <20080719.010145.85416123.anemo@mba.ocn.ne.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20080719.010145.85416123.anemo@mba.ocn.ne.jp>
+Cc: linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
+	dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,12 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2008-07-17 at 02:45 +0100, ian wrote:
-> On Wed, 2008-07-16 at 22:16 +0100, ian wrote:
+On Sat, 19 July 2008 01:01:45 +0900, Atsushi Nemoto wrote:
 > 
-> > Here is an updated version of the TMIO nand driver.
+> Handle wargnings about long lines and braces.  Now mtdpart.c is
+> checkpatch-clean.
 
-I found problems with this version. Proposed (but untested) fix in the
-same place but in branch mfd_push_try_5.
+These bits I left out because I wasn't sure whether they are actually
+improvements.
 
-Comments welcome.
+Jörn
+
+-- 
+Admonish your friends privately, but praise them openly.
+-- Publilius Syrus
