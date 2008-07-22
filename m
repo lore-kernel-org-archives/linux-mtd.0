@@ -1,20 +1,18 @@
-Received: from mail51.messagelabs.com ([216.82.244.179])
+Received: from mail28.messagelabs.com ([216.82.249.131])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KLCSi-0006Wu-0C
-	for linux-mtd@lists.infradead.org; Tue, 22 Jul 2008 07:39:08 +0000
+	id 1KLCZB-0007Pi-UL
+	for linux-mtd@lists.infradead.org; Tue, 22 Jul 2008 07:45:50 +0000
 From: =?utf-8?q?Uwe=20Kleine-K=C3=B6nig?= <Uwe.Kleine-Koenig@digi.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 3/4] [MTD] physmap: Fix suspend/resume/shutdown bugs.
-Date: Tue, 22 Jul 2008 09:39:00 +0200
-Message-ID: <1216712341-25869-4-git-send-email-Uwe.Kleine-Koenig@digi.com>
-In-Reply-To: <1216712341-25869-3-git-send-email-Uwe.Kleine-Koenig@digi.com>
+Subject: [PATCH 2/4] [RFC] [MTD] cfi_probe: remove Intel chip workaround
+Date: Tue, 22 Jul 2008 09:38:59 +0200
+Message-ID: <1216712341-25869-3-git-send-email-Uwe.Kleine-Koenig@digi.com>
+In-Reply-To: <1216712341-25869-2-git-send-email-Uwe.Kleine-Koenig@digi.com>
 References: <1216712341-25869-1-git-send-email-Uwe.Kleine-Koenig@digi.com>
 	<1216712341-25869-2-git-send-email-Uwe.Kleine-Koenig@digi.com>
-	<1216712341-25869-3-git-send-email-Uwe.Kleine-Koenig@digi.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Robert Jarzmik <rjarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,53 +22,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Robert Jarzmik <rjarzmik@free.fr>
+For me this workaround breaks detection of a M29W128GL flash because it
+doesn't switch to CFI Query mode after writing 0xff.
 
-Don't call suspend/resume functions if they have not been
-defined.
+This workaround was introduced in 2004 between v2.6.8-rc1 and
+v2.6.8-rc2 in CVS revision 1.77 of cfi_probe.c.  ("Send 0xFF to switch Intel
+chips back to read mode too. Some of them ignore 0xF0")
 
-Signed-off-by: Robert Jarzmik <rjarzmik@free.fr>
-Acked-By: Joern Engel <joern@logfs.org>
+Alternatively writing 0xff *before* 0xf0 works with the M29W128GL.
+
 Signed-off-by: Uwe Kleine-König <Uwe.Kleine-Koenig@digi.com>
 ---
- drivers/mtd/maps/physmap.c |   11 +++++++----
- 1 files changed, 7 insertions(+), 4 deletions(-)
+ drivers/mtd/chips/cfi_probe.c |    8 --------
+ 1 files changed, 0 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
-index 183255f..73c770b 100644
---- a/drivers/mtd/maps/physmap.c
-+++ b/drivers/mtd/maps/physmap.c
-@@ -203,7 +203,8 @@ static int physmap_flash_suspend(struct platform_device *dev, pm_message_t state
- 	int i;
+diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
+index a4463a9..6b7ee5a 100644
+--- a/drivers/mtd/chips/cfi_probe.c
++++ b/drivers/mtd/chips/cfi_probe.c
+@@ -46,7 +46,6 @@ do { \
+ #define xip_enable(base, map, cfi) \
+ do { \
+ 	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL); \
+-	cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL); \
+ 	xip_allowed(base, map); \
+ } while (0)
  
- 	for (i = 0; i < MAX_RESOURCES && info->mtd[i]; i++)
--		ret |= info->mtd[i]->suspend(info->mtd[i]);
-+		if (info->mtd[i]->suspend)
-+			ret |= info->mtd[i]->suspend(info->mtd[i]);
+@@ -54,7 +53,6 @@ do { \
+ do { \
+ 	xip_disable(); \
+ 	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL); \
+-	cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL); \
+ 	cfi_send_gen_cmd(0x98, 0x55, base, map, cfi, cfi->device_type, NULL); \
+ } while (0)
  
- 	return ret;
- }
-@@ -214,7 +215,8 @@ static int physmap_flash_resume(struct platform_device *dev)
- 	int i;
+@@ -118,7 +116,6 @@ static int __xipram cfi_probe_chip(struct map_info *map, __u32 base,
  
- 	for (i = 0; i < MAX_RESOURCES && info->mtd[i]; i++)
--		info->mtd[i]->resume(info->mtd[i]);
-+		if (info->mtd[i]->resume)
-+			info->mtd[i]->resume(info->mtd[i]);
+ 	xip_disable();
+ 	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL);
+ 	cfi_send_gen_cmd(0x98, 0x55, base, map, cfi, cfi->device_type, NULL);
  
- 	return 0;
- }
-@@ -225,8 +227,9 @@ static void physmap_flash_shutdown(struct platform_device *dev)
- 	int i;
+ 	if (!qry_present(map,base,cfi)) {
+@@ -146,7 +143,6 @@ static int __xipram cfi_probe_chip(struct map_info *map, __u32 base,
+ 			/* Eep. This chip also had the QRY marker.
+ 			 * Is it an alias for the new one? */
+ 			cfi_send_gen_cmd(0xF0, 0, start, map, cfi, cfi->device_type, NULL);
+-			cfi_send_gen_cmd(0xFF, 0, start, map, cfi, cfi->device_type, NULL);
  
- 	for (i = 0; i < MAX_RESOURCES && info->mtd[i]; i++)
--		if (info->mtd[i]->suspend(info->mtd[i]) == 0)
--			info->mtd[i]->resume(info->mtd[i]);
-+		if (info->mtd[i]->suspend && info->mtd[i]->resume)
-+			if (info->mtd[i]->suspend(info->mtd[i]) == 0)
-+				info->mtd[i]->resume(info->mtd[i]);
- }
- #else
- #define physmap_flash_suspend NULL
+ 			/* If the QRY marker goes away, it's an alias */
+ 			if (!qry_present(map, start, cfi)) {
+@@ -160,7 +156,6 @@ static int __xipram cfi_probe_chip(struct map_info *map, __u32 base,
+ 			 * too and if it's the same, assume it's an alias. */
+ 			/* FIXME: Use other modes to do a proper check */
+ 			cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
+-			cfi_send_gen_cmd(0xFF, 0, start, map, cfi, cfi->device_type, NULL);
+ 
+ 			if (qry_present(map, base, cfi)) {
+ 				xip_allowed(base, map);
+@@ -178,7 +173,6 @@ static int __xipram cfi_probe_chip(struct map_info *map, __u32 base,
+ 
+ 	/* Put it back into Read Mode */
+ 	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL);
+ 	xip_allowed(base, map);
+ 
+ 	printk(KERN_INFO "%s: Found %d x%d devices at 0x%x in %d-bit bank\n",
+@@ -239,8 +233,6 @@ static int __xipram cfi_chip_setup(struct map_info *map,
+ 
+ 	/* Put it back into Read Mode */
+ 	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
+-	/* ... even if it's an Intel chip */
+-	cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL);
+ 	xip_allowed(base, map);
+ 
+ 	/* Do any necessary byteswapping */
 -- 
 1.5.6.3
