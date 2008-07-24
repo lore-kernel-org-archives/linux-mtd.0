@@ -1,12 +1,23 @@
-In-Reply-To: <1215176549.6573.110.camel@sauron>
-To: dedekind@infradead.org
-Subject: Re: Problem mounting a UBIFS volume
+Received: from mx04.mailboxcop.com ([206.125.223.74])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KLpQX-0007Ut-01
+	for linux-mtd@lists.infradead.org; Thu, 24 Jul 2008 01:15:29 +0000
+Received: from secure3.apollohosting.com (secure3.apollohosting.com
+	[206.125.215.253])
+	by mx04.mailboxcop.com (8.13.8/8.13.8) with ESMTP id m6O1FRre021786
+	for <linux-mtd@lists.infradead.org>; Wed, 23 Jul 2008 20:15:27 -0500
+Message-ID: <20080723201527.c93gjrlujjjswwc0@webmail.mistralsolutions.com>
+Date: Wed, 23 Jul 2008 20:15:27 -0500
+From: suresh@mistralsolutions.com
+To: linux-mtd@lists.infradead.org
+Subject: JFFS2 GC Bug?
 MIME-Version: 1.0
-Message-ID: <OF4576C3B0.EF1C94B9-ON8825748F.00764CD3-8825748F.007B449B@selinc.com>
-From: Bruce_Leonard@selinc.com
-Date: Wed, 23 Jul 2008 15:26:26 -0700
-Content-Type: text/plain; charset="US-ASCII"
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+	charset=ISO-8859-1;
+	DelSp="Yes";
+	format="flowed"
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,81 +27,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem,
+Hi,
 
-Sorry for the delay in replying, I was on holiday for a couple of weeks 
-and it's taken me a while to get my brain wrapped back around what I was 
-working on when I left :).
+Can files go missing if there is a powerfail when the garbage  
+collection is running (and doing updation to the file system) on a  
+JFFS2 filesystem.
 
-Artem Bityutskiy <dedekind@infradead.org> wrote on 07/04/2008 06:02:29 AM:
+Was this a bug in older kernels?
 
-> 
-> On Wed, 2008-07-02 at 22:18 -0700, Bruce_Leonard@selinc.com wrote:
-> > UBIFS error (pid 842): check_lpt_crc:invalid crc in LPT node: crc 2bbb 
-
-> > calc a5a5
-> > UBIFS error (pid 842): ubifs_read_nnode: error -22 reading nnode at 
-8:6150
-> > mount: wrong fs type, bad option, bad superblock on ubi0:bob,
-> >        missing codepage or other error
-> >        In some cases useful info is found in syslog - try
-> >        dmesg | tail  or so
-> 
-> AFAIU, you still use a small flash and small image. So the only change
-> was your MTD change. Are you sure it is not the MTD change which is to
-> blame? Can you reproduce this error without your MTD change?
-> 
-
-Yes I can and here's what I've found.  I pulled the latest vanilla kernel 
-from Linus' tree (congratulations on getting UBIFS in BTW, very cool), 
-pulled the latest mkfs.ubifs, and did an entirely new clone of mtd-utils 
-(I wanted to get rid of my modifications).  So there are NONE of my MTD 
-changes in any of the code I'm currently using.  I also reset my driver to 
-only recognize 2GiB of NAND.  Before I left I was starting to get 
-suspicious of mkfs.ubifs, so I ran the following experiment this morning. 
-I used mkfs.ubifs to create two different images of the same filesystem 
-(one for up to 2GiB devices and one for up to 8GiB devices) as follows:
-
-$ mkfs.ubifs -r x103/ -m 2048 -e 129024 -c 16384 -o x103.img
-$ mkfs.ubifs -r x103/ -m 2048 -e 129024 -c 65536 -o x103_large.img
-
-If I understand things right (which usually isn't the case :-\), these 
-should be more or less the same, because the -c option is just specifying 
-a MAXIMUM volume size the image can be put onto.  An ls -l command gives 
-the following:
-
--rw-r--r--  1 root root  29159424 Jul 23 13:31 x103.img
--rw-r--r--  1 root root  30449664 Jul 23 14:08 x103_large.img
-
-So they match pretty close in size.  I can burn both images to my NAND 
-without errors by:
-
-$ ubiupdatevol /dev/ubi0_0 x103*.img
-
-When I try to mount the filesystem that comes from x103.img (the one for 
-the 'smaller' NAND flash) it mounts just fine, I can cd to it, create 
-directories/files, etc.  However, when I try to mount the filesystem from 
-x103_large.img, it fails with the following errors:
-
-UBIFS error (pid 863): check_lpt_crc: invalid crc in LPT node: crc f486 
-calc e0b
-UBIFS error (pid 863): ubifs_read_nnode: error -22 reading nnode at 8:1356
-
-mount: wrong fs type, bad option, bad superblock on ubi0:bob,
-       missing codepage or other error
-       In some cases useful info is found in syslog - try
-       dmesg | tail  or so
-
-So, here's a couple of questions?  Does mkfs.ubifs and UBIFS calculate the 
-CRC identically or could there be a difference that's causing the problem? 
- Does ubiupdatevol touch the CRC and that's what's causing the problem?  A 
-complicating factor, I'm running on an MPC8349E, which is big endian and I 
-know we've tripped across an endian issue in the past.  I've tried 
-eliminating endian issues by compiling and running all tools native on the 
-8347, but could that be a factor?
-
-I'm going to start by digging into mkfs.ubifs on the assumption that the 
-large -c parameter is causing it to some how miscalculate the CRC, but any 
-pointers of where else the problem could be are greatly appreciated.
-
-Bruce
+Thanks in advance,
+Suresh
