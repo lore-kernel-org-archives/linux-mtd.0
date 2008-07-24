@@ -1,13 +1,17 @@
-Message-ID: <48881E98.5000703@nokia.com>
-Date: Thu, 24 Jul 2008 09:18:00 +0300
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Received: from n1.cetrtapot.si ([89.212.80.162])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KLvZh-0001Sd-7f
+	for linux-mtd@lists.infradead.org; Thu, 24 Jul 2008 07:49:21 +0000
+Message-ID: <488833E9.1020207@cetrtapot.si>
+Date: Thu, 24 Jul 2008 09:48:57 +0200
+From: Hinko Kocevar <hinko.kocevar@cetrtapot.si>
 MIME-Version: 1.0
-To: "Bruce_Leonard@selinc.com" <Bruce_Leonard@selinc.com>
-Subject: Re: Problem mounting a UBIFS volume
-References: <OF4576C3B0.EF1C94B9-ON8825748F.00764CD3-8825748F.007B449B@selinc.com>
-In-Reply-To: <OF4576C3B0.EF1C94B9-ON8825748F.00764CD3-8825748F.007B449B@selinc.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+To: suresh@mistralsolutions.com
+Subject: Re: JFFS2 GC Bug?
+References: <20080723201527.c93gjrlujjjswwc0@webmail.mistralsolutions.com>
+In-Reply-To: <20080723201527.c93gjrlujjjswwc0@webmail.mistralsolutions.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -18,87 +22,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Bruce_Leonard@selinc.com wrote:
-> Artem,
+suresh@mistralsolutions.com wrote:
+> Hi,
 > 
-> Sorry for the delay in replying, I was on holiday for a couple of weeks 
-> and it's taken me a while to get my brain wrapped back around what I was 
-> working on when I left :).
+> Can files go missing if there is a powerfail when the garbage  
+> collection is running (and doing updation to the file system) on a  
+> JFFS2 filesystem.
 > 
-> Artem Bityutskiy <dedekind@infradead.org> wrote on 07/04/2008 06:02:29 AM:
-> 
->> On Wed, 2008-07-02 at 22:18 -0700, Bruce_Leonard@selinc.com wrote:
->>> UBIFS error (pid 842): check_lpt_crc:invalid crc in LPT node: crc 2bbb 
-> 
->>> calc a5a5
->>> UBIFS error (pid 842): ubifs_read_nnode: error -22 reading nnode at 
-> 8:6150
->>> mount: wrong fs type, bad option, bad superblock on ubi0:bob,
->>>        missing codepage or other error
->>>        In some cases useful info is found in syslog - try
->>>        dmesg | tail  or so
->> AFAIU, you still use a small flash and small image. So the only change
->> was your MTD change. Are you sure it is not the MTD change which is to
->> blame? Can you reproduce this error without your MTD change?
->>
-> 
-> Yes I can and here's what I've found.  I pulled the latest vanilla kernel 
-> from Linus' tree (congratulations on getting UBIFS in BTW, very cool), 
-> pulled the latest mkfs.ubifs, and did an entirely new clone of mtd-utils 
-> (I wanted to get rid of my modifications).  So there are NONE of my MTD 
-> changes in any of the code I'm currently using.  I also reset my driver to 
-> only recognize 2GiB of NAND.  Before I left I was starting to get 
-> suspicious of mkfs.ubifs, so I ran the following experiment this morning. 
-> I used mkfs.ubifs to create two different images of the same filesystem 
-> (one for up to 2GiB devices and one for up to 8GiB devices) as follows:
-> 
-> $ mkfs.ubifs -r x103/ -m 2048 -e 129024 -c 16384 -o x103.img
-> $ mkfs.ubifs -r x103/ -m 2048 -e 129024 -c 65536 -o x103_large.img
-> 
-> If I understand things right (which usually isn't the case :-\), these 
-> should be more or less the same, because the -c option is just specifying 
-> a MAXIMUM volume size the image can be put onto.  An ls -l command gives 
-> the following:
-> 
-> -rw-r--r--  1 root root  29159424 Jul 23 13:31 x103.img
-> -rw-r--r--  1 root root  30449664 Jul 23 14:08 x103_large.img
-> 
-> So they match pretty close in size.  I can burn both images to my NAND 
-> without errors by:
-> 
-> $ ubiupdatevol /dev/ubi0_0 x103*.img
-> 
-> When I try to mount the filesystem that comes from x103.img (the one for 
-> the 'smaller' NAND flash) it mounts just fine, I can cd to it, create 
-> directories/files, etc.  However, when I try to mount the filesystem from 
-> x103_large.img, it fails with the following errors:
-> 
-> UBIFS error (pid 863): check_lpt_crc: invalid crc in LPT node: crc f486 
-> calc e0b
-> UBIFS error (pid 863): ubifs_read_nnode: error -22 reading nnode at 8:1356
-> 
-> mount: wrong fs type, bad option, bad superblock on ubi0:bob,
->        missing codepage or other error
->        In some cases useful info is found in syslog - try
->        dmesg | tail  or so
-> 
-> So, here's a couple of questions?  Does mkfs.ubifs and UBIFS calculate the 
-> CRC identically or could there be a difference that's causing the problem? 
->  Does ubiupdatevol touch the CRC and that's what's causing the problem?  A 
-> complicating factor, I'm running on an MPC8349E, which is big endian and I 
-> know we've tripped across an endian issue in the past.  I've tried 
-> eliminating endian issues by compiling and running all tools native on the 
-> 8347, but could that be a factor?
-> 
-> I'm going to start by digging into mkfs.ubifs on the assumption that the 
-> large -c parameter is causing it to some how miscalculate the CRC, but any 
-> pointers of where else the problem could be are greatly appreciated.
 
-Almost certainly mkfs.ubifs has screwed up the LPT.  That is because the
-LPT is a tree that is sized according to the maximum size that the file system
-can grow to i.e. the size given by the -c option
+According to this doc not: http://www.linux-mtd.infradead.org/faq/jffs2.html
 
-I will look at this.
+> Was this a bug in older kernels?
 
-Regards
-Adrian
+We are using 2.6.12 and 2.6.15 kernel on our embedded devices that use JFFS2 on NOR flash for rootfs. Devices are uncleanly shutdown every time, at least 3 times a day. Some devices are about 2.5 years in the wild and work as expected, while some fail to mount/use(!?) the rootfs right after the kernel has finished booting.
+Right now we are testing 2.6.26 that does not fail to mount rootfs even under bigger stress tests than 2.6.12/2.6.15 kernels ever faced. Also a 'corrupt' flash that won't boot with 2.6.12/2.6.15 boots FINE with 2.6.26.
+
+So my recommendation would be to use latest kernel sources.
+ 
+my 2c,
+Hinko
+
+-- 
+ČETRTA POT, d.o.o., Kranj
+Planina 3
+4000 Kranj
+Slovenia, Europe
+Tel. +386 (0) 4 280 66 03
+E-mail: hinko.kocevar@cetrtapot.si
+Http: www.cetrtapot.si
