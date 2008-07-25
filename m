@@ -1,22 +1,24 @@
-Received: from po-out-1718.google.com ([72.14.252.159])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KMzli-00070r-2L
-	for linux-mtd@lists.infradead.org; Sun, 27 Jul 2008 06:30:10 +0000
-Received: by po-out-1718.google.com with SMTP id b23so7863501poe.2
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 26 Jul 2008 23:30:09 -0700 (PDT)
-From: Bryan Wu <cooloney@kernel.org>
-To: dwmw2@infradead.org,
-	akpm@linux-foundation.org
-Subject: [PATCH 7/7] [MTD] Blackfin NFC Driver: Cleanup the error exit path of
-	bf5xx_nand_probe function
-Date: Sun, 27 Jul 2008 14:27:59 +0800
-Message-Id: <1217140079-20014-8-git-send-email-cooloney@kernel.org>
-In-Reply-To: <1217140079-20014-1-git-send-email-cooloney@kernel.org>
-References: <1217140079-20014-1-git-send-email-cooloney@kernel.org>
-Sender: Bryan Wu <cooloney.lkml@gmail.com>
+Received: from smtp118.sbc.mail.sp1.yahoo.com ([69.147.64.91])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KMWGU-0005Dp-Oc
+	for linux-mtd@lists.infradead.org; Fri, 25 Jul 2008 22:59:59 +0000
+From: David Brownell <david-b@pacbell.net>
+To: Andrew Morton <akpm@linux-foundation.org>
+Subject: [RESEND PATCH 2.6.26-git 1/2] MTD DataFlash: bugfix,
+	binary page sizes now handled (v3)
+Date: Fri, 25 Jul 2008 15:49:12 -0700
+References: <1212467165-26379-1-git-send-email-cooloney@kernel.org>
+	<200806282321.34275.david-b@pacbell.net>
+In-Reply-To: <200806282321.34275.david-b@pacbell.net>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200807251549.12565.david-b@pacbell.net>
 Cc: Bryan Wu <cooloney@kernel.org>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+	linux-kernel@vger.kernel.org,
+	Michael Hennerich <michael.hennerich@analog.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,111 +28,228 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Bryan Wu <cooloney@kernel.org>
----
- drivers/mtd/nand/bf5xx_nand.c |   38 ++++++++++++++++++++++++--------------
- 1 files changed, 24 insertions(+), 14 deletions(-)
+From: Michael Hennerich <michael.hennerich@analog.com>
 
-diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
-index 6cf7fb8..9af2a2c 100644
---- a/drivers/mtd/nand/bf5xx_nand.c
-+++ b/drivers/mtd/nand/bf5xx_nand.c
-@@ -549,7 +549,6 @@ static void bf5xx_nand_dma_write_buf(struct mtd_info *mtd,
- /*
-  * System initialization functions
-  */
--
- static int bf5xx_nand_dma_init(struct bf5xx_nand_info *info)
- {
- 	int ret;
-@@ -582,6 +581,13 @@ static int bf5xx_nand_dma_init(struct bf5xx_nand_info *info)
- 	return 0;
+This fixes a bug in handling certain newer DataFlash chips (at45db321d
+and at45db642d have current Linux users) when they were configured to
+use binary page sizes (possibly at the factory).
+
+ - Use JEDEC probing (borrowed from m25p80 driver) to tell if the chip
+   supports binary page sizes ... if so, then query the chip to tell
+   whether it's currently using them.
+
+ - Print that pagesize during probe; erasesize is still listed in 
+   the /proc/mtd file, useful for making filesystems.
+
+Also fix a pre-existing bug with 2 MBit parts using the wrong pagesize;
+these are a bit smaller than Linux would normally use (even shared with
+a small FPGA's configuration bitstream).
+
+Signed-off-by: Michael Hennerich <michael.hennerich@analog.com>
+Signed-off-by: Bryan Wu <cooloney@kernel.org>
+
+Fix regression (so cmdlinepart works again), update error handling
+and comments.
+# updated to use dev_name(dev) not dev->bus_id
+
+Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
+---
+ drivers/mtd/devices/mtd_dataflash.c |  154 ++++++++++++++++++++++++++++++++++--
+ 1 file changed, 149 insertions(+), 5 deletions(-)
+
+--- a/drivers/mtd/devices/mtd_dataflash.c	2008-06-30 16:44:26.000000000 -0700
++++ b/drivers/mtd/devices/mtd_dataflash.c	2008-06-30 21:38:22.000000000 -0700
+@@ -15,6 +15,8 @@
+ #include <linux/delay.h>
+ #include <linux/device.h>
+ #include <linux/mutex.h>
++#include <linux/err.h>
++
+ #include <linux/spi/spi.h>
+ #include <linux/spi/flash.h>
+ 
+@@ -487,7 +489,8 @@ add_dataflash(struct spi_device *spi, ch
+ 	device->write = dataflash_write;
+ 	device->priv = priv;
+ 
+-	dev_info(&spi->dev, "%s (%d KBytes)\n", name, device->size/1024);
++	dev_info(&spi->dev, "%s (%d KBytes) pagesize %d bytes\n",
++			name, DIV_ROUND_UP(device->size, 1024), pagesize);
+ 	dev_set_drvdata(&spi->dev, priv);
+ 
+ 	if (mtd_has_partitions()) {
+@@ -516,12 +519,137 @@ add_dataflash(struct spi_device *spi, ch
+ 	return add_mtd_device(device) == 1 ? -ENODEV : 0;
  }
  
-+static void bf5xx_nand_dma_remove(struct bf5xx_nand_info *info)
++struct flash_info {
++	char		*name;
++
++	/* JEDEC id zero means "no ID" (most older chips); otherwise it has
++	 * a high byte of zero plus three data bytes: the manufacturer id,
++	 * then a two byte device id.
++	 */
++	u32		jedec_id;
++
++	/* The size listed here is what works with OP_ERASE_PAGE. */
++	unsigned	nr_pages;
++	u16		pagesize;
++	u16		pageoffset;
++
++	u16		flags;
++#define SUP_POW2PS	0x0001		/* supports 2^N byte pages */
++#define IS_POW2PS	0x0002		/* uses 2^N byte pages */
++};
++
++static struct flash_info __devinitdata dataflash_data [] = {
++
++	/*
++	 * NOTE:  chips with SUP_POW2PS (rev D and up) need two entries,
++	 * one with IS_POW2PS and the other without.  The entry with the
++	 * non-2^N byte page size can't name exact chip revisions without
++	 * losing backwards compatibility for cmdlinepart.
++	 *
++	 * These newer chips also support 128-byte security registers (with
++	 * 64 bytes one-time-programmable) and software write-protection.
++	 */
++	{ "AT45DB011B",  0x1f2200, 512, 264, 9, SUP_POW2PS, },
++	{ "at45db011d",  0x1f2200, 512, 256, 8, SUP_POW2PS | IS_POW2PS, },
++
++	{ "AT45DB021B",  0x1f2300, 1024, 264, 9, SUP_POW2PS, },
++	{ "at45db021d",  0x1f2300, 1024, 256, 8, SUP_POW2PS | IS_POW2PS, },
++
++	{ "AT45DB041x",  0x1f2400, 2048, 264, 9, SUP_POW2PS, },
++	{ "at45db041d",  0x1f2400, 2048, 256, 8, SUP_POW2PS | IS_POW2PS, },
++
++	{ "AT45DB081B",  0x1f2500, 4096, 264, 9, SUP_POW2PS, },
++	{ "at45db081d",  0x1f2500, 4096, 256, 8, SUP_POW2PS | IS_POW2PS, },
++
++	{ "AT45DB161x",  0x1f2600, 4096, 528, 10, SUP_POW2PS, },
++	{ "at45db161d",  0x1f2600, 4096, 512, 9, SUP_POW2PS | IS_POW2PS, },
++
++	{ "AT45DB321x",  0x1f2700, 8192, 528, 10, 0, },		/* rev C */
++	{ "AT45DB321x",  0x1f2701, 8192, 528, 10, SUP_POW2PS, },
++	{ "at45db321d",  0x1f2701, 8192, 512, 9, SUP_POW2PS | IS_POW2PS, },
++
++	{ "AT45DB642x",  0x1f2800, 8192, 1056, 11, SUP_POW2PS, },
++	{ "at45db642d",  0x1f2800, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS, },
++};
++
++static struct flash_info *__devinit jedec_probe(struct spi_device *spi)
 +{
-+	/* Free NFC DMA channel */
-+	if (hardware_ecc)
-+		free_dma(CH_NFC);
++	int			tmp;
++	u8			code = OP_READ_ID;
++	u8			id[3];
++	u32			jedec;
++	struct flash_info	*info;
++	int			status;
++
++	/*
++	 * JEDEC also defines an optional "extended device information"
++	 * string for after vendor-specific data, after the three bytes
++	 * we use here.  Supporting some chips might require using it.
++	 *
++	 * If the vendor ID isn't Atmel's (0x1f), assume this call failed.
++	 * That's not an error; only rev C and newer chips handle it, and
++	 * only Atmel sells these chips.
++	 */
++	tmp = spi_write_then_read(spi, &code, 1, id, 3);
++	if (tmp < 0) {
++		DEBUG(MTD_DEBUG_LEVEL1, "%s: read ID error %d\n",
++			dev_name(spi->dev), status);
++		return ERR_PTR(tmp);
++	}
++	if (id[0] != 0x1f)
++		return NULL;
++
++	jedec = id[0];
++	jedec = jedec << 8;
++	jedec |= id[1];
++	jedec = jedec << 8;
++	jedec |= id[2];
++
++	for (tmp = 0, info = dataflash_data;
++			tmp < ARRAY_SIZE(dataflash_data);
++			tmp++, info++) {
++		if (info->jedec_id == jedec) {
++			DEBUG(MTD_DEBUG_LEVEL1, "%s: security register"
++					", sector protect%s\n",
++				dev_name(spi->dev),
++				(info->flags & SUP_POW2PS)
++					? ", binary pagesize" : ""
++				);
++			if (info->flags & SUP_POW2PS) {
++				status = dataflash_status(spi);
++				if (status < 0) {
++					DEBUG(MTD_DEBUG_LEVEL1,
++						"%s: status error %d\n",
++						dev_name(spi->dev), status);
++					return ERR_PTR(status);
++				}
++				if (status & 0x1) {
++					if (info->flags & IS_POW2PS)
++						return info;
++				} else {
++					if (!(info->flags & IS_POW2PS))
++						return info;
++				}
++			}
++		}
++	}
++
++	/*
++	 * Treat unrecognized chips as errors ... we won't know the
++	 * right page size (it might be binary) even when we can tell
++	 * which density class is involved
++	 */
++	dev_warn(&spi->dev, "unrecognized JEDEC id %06x\n", jedec);
++	return ERR_PTR(-ENODEV);
 +}
 +
  /*
-  * BF5XX NFC hardware initialization
-  *  - pin mux setup
-@@ -658,6 +664,7 @@ static int __devexit bf5xx_nand_remove(struct platform_device *pdev)
- 	}
+- * Detect and initialize DataFlash device:
++ * Detect and initialize DataFlash device, using JEDEC IDs on newer chips
++ * or else the ID code embedded in the status bits:
+  *
+  *   Device      Density         ID code          #Pages PageSize  Offset
+  *   AT45DB011B  1Mbit   (128K)  xx0011xx (0x0c)    512    264      9
+- *   AT45DB021B  2Mbit   (256K)  xx0101xx (0x14)   1025    264      9
++ *   AT45DB021B  2Mbit   (256K)  xx0101xx (0x14)   1024    264      9
+  *   AT45DB041B  4Mbit   (512K)  xx0111xx (0x1c)   2048    264      9
+  *   AT45DB081B  8Mbit   (1M)    xx1001xx (0x24)   4096    264      9
+  *   AT45DB0161B 16Mbit  (2M)    xx1011xx (0x2c)   4096    528     10
+@@ -531,8 +659,24 @@ add_dataflash(struct spi_device *spi, ch
+  */
+ static int __devinit dataflash_probe(struct spi_device *spi)
+ {
+-	int status;
++	int			status;
++	struct flash_info	*info;
  
- 	peripheral_free_list(bfin_nfc_pin_req);
-+	bf5xx_nand_dma_remove(info);
- 
- 	/* free the common resources */
- 	kfree(info);
-@@ -683,21 +690,21 @@ static int __devinit bf5xx_nand_probe(struct platform_device *pdev)
- 
- 	dev_dbg(&pdev->dev, "(%p)\n", pdev);
- 
-+	if (!plat) {
-+		dev_err(&pdev->dev, "no platform specific information\n");
-+		return -EINVAL;
-+	}
++	/*
++	 * Try to detect dataflash by JEDEC ID.  If it succeeds, we
++	 * have either a C or D part.  D supports pagesize options.
++	 */
++	info = jedec_probe(spi);
++	if (IS_ERR(info))
++		return PTR_ERR(info);
++	if (info != NULL)
++		return add_dataflash(spi, info->name, info->nr_pages,
++				 info->pagesize, info->pageoffset);
 +
- 	if (peripheral_request_list(bfin_nfc_pin_req, DRV_NAME)) {
- 		dev_err(&pdev->dev, "requesting Peripherals failed\n");
- 		return -EFAULT;
- 	}
- 
--	if (!plat) {
--		dev_err(&pdev->dev, "no platform specific information\n");
--		goto exit_error;
--	}
--
- 	info = kzalloc(sizeof(*info), GFP_KERNEL);
- 	if (info == NULL) {
- 		dev_err(&pdev->dev, "no memory for flash info\n");
- 		err = -ENOMEM;
--		goto exit_error;
-+		goto out_err_kzalloc;
- 	}
- 
- 	platform_set_drvdata(pdev, info);
-@@ -741,8 +748,8 @@ static int __devinit bf5xx_nand_probe(struct platform_device *pdev)
- 
- 	/* initialise the hardware */
- 	err = bf5xx_nand_hw_init(info);
--	if (err != 0)
--		goto exit_error;
-+	if (err)
-+		goto out_err_hw_init;
- 
- 	/* setup hardware ECC data struct */
- 	if (hardware_ecc) {
-@@ -772,7 +779,7 @@ static int __devinit bf5xx_nand_probe(struct platform_device *pdev)
- 	/* scan hardware nand chip and setup mtd info data struct */
- 	if (nand_scan(mtd, 1)) {
- 		err = -ENXIO;
--		goto exit_error;
-+		goto out_err_nand_scan;
- 	}
- 
- 	/* add NAND partition */
-@@ -781,11 +788,14 @@ static int __devinit bf5xx_nand_probe(struct platform_device *pdev)
- 	dev_dbg(&pdev->dev, "initialised ok\n");
- 	return 0;
- 
--exit_error:
--	bf5xx_nand_remove(pdev);
-+out_err_nand_scan:
-+	bf5xx_nand_dma_remove(info);
-+out_err_hw_init:
-+	platform_set_drvdata(pdev, NULL);
-+	kfree(info);
-+out_err_kzalloc:
-+	peripheral_free_list(bfin_nfc_pin_req);
- 
--	if (err == 0)
--		err = -EINVAL;
- 	return err;
- }
- 
--- 
-1.5.6
++	/*
++	 * Older chips support only legacy commands, identifing
++	 * capacity using bits in the status byte.
++	 */
+ 	status = dataflash_status(spi);
+ 	if (status <= 0 || status == 0xff) {
+ 		DEBUG(MTD_DEBUG_LEVEL1, "%s: status error %d\n",
+@@ -551,7 +695,7 @@ static int __devinit dataflash_probe(str
+ 		status = add_dataflash(spi, "AT45DB011B", 512, 264, 9);
+ 		break;
+ 	case 0x14:	/* 0 1 0 1 x x */
+-		status = add_dataflash(spi, "AT45DB021B", 1025, 264, 9);
++		status = add_dataflash(spi, "AT45DB021B", 1024, 264, 9);
+ 		break;
+ 	case 0x1c:	/* 0 1 1 1 x x */
+ 		status = add_dataflash(spi, "AT45DB041x", 2048, 264, 9);
