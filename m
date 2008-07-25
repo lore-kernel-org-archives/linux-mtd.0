@@ -1,15 +1,16 @@
-Received: from rekin23.go2.pl ([193.17.41.16])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KLwfQ-0003Np-Jy
-	for linux-mtd@lists.infradead.org; Thu, 24 Jul 2008 08:59:20 +0000
-Subject: =?UTF-8?Q?COMPENSATION?=
-From: =?UTF-8?Q?ibrahimkomo018?= <ibrahimkomo018@o2.pl>
+Subject: Re: [PATCH 2/4] [RFC] [MTD] cfi_probe: remove Intel chip workaround
+From: David Woodhouse <dwmw2@infradead.org>
+To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <Uwe.Kleine-Koenig@digi.com>
+In-Reply-To: <1216712341-25869-3-git-send-email-Uwe.Kleine-Koenig@digi.com>
+References: <1216712341-25869-1-git-send-email-Uwe.Kleine-Koenig@digi.com>
+	<1216712341-25869-2-git-send-email-Uwe.Kleine-Koenig@digi.com>
+	<1216712341-25869-3-git-send-email-Uwe.Kleine-Koenig@digi.com>
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 25 Jul 2008 09:52:19 -0400
+Message-Id: <1216993939.28941.139.camel@shinybook.infradead.org>
 Mime-Version: 1.0
-Message-ID: <2a3d9f3c.fecc2f4.48884466.b5f7d@o2.pl>
-Date: Thu, 24 Jul 2008 10:59:18 +0200
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-To: undisclosed-recipients:;
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,33 +20,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-My=20Dear=20,
+On Tue, 2008-07-22 at 09:38 +0200, Uwe Kleine-König wrote:
+> For me this workaround breaks detection of a M29W128GL flash because it
+> doesn't switch to CFI Query mode after writing 0xff.
+> 
+> This workaround was introduced in 2004 between v2.6.8-rc1 and
+> v2.6.8-rc2 in CVS revision 1.77 of cfi_probe.c.  ("Send 0xFF to switch Intel
+> chips back to read mode too. Some of them ignore 0xF0")
+> 
+> Alternatively writing 0xff *before* 0xf0 works with the M29W128GL.
 
-Sorry=20to=20hear=20this=20news=20and=20understand=20that=20the=20fault=20=
-is=20not=20from=20me.
+That's probably what you should do then; your patch as it stands would
+break Intel chips, wouldn't it?
 
-I'm=20to=20inform=20you=20about=20my=20success=20in=20getting=20those=20f=
-unds
-transferred=20under=20the=20co-operation=20of=20a=20new=20partner=20from=20=
-South=20Korea.
-
-Presently=20,I'm=20in=20South=20Korea.=20Meanwhile,i=20didn't=20forget=20=
-your=20past=20
-
-efforts=20and=20attempts=20to=20assist,=20despite=20it=20failed=20us=20so=
-me=20how.
-
-
-Now=20contact=20my=20secretary=20in=20Benin,=20her=20name=20is=20Mrs=20Cy=
-nthia=20Innocent.=20
-
-Email,cyn=5Finnocent2010@hotmail.com=20
-
-
-Ask=20her=20to=20send=20you=20the=20sum=20of=20$700.000.00=20which=20i=20=
-kept=20for=20you=20in=20a=20
-
-cashier=20check.let=20me=20know=20one=20you=20receieve=20it.
-
-Reagrds.
-Ibrahim=20Komo.
+-- 
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
