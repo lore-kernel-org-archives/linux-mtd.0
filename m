@@ -1,20 +1,25 @@
-Received: from smtp118.sbc.mail.sp1.yahoo.com ([69.147.64.91])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KMWA4-00010N-42
-	for linux-mtd@lists.infradead.org; Fri, 25 Jul 2008 22:53:21 +0000
-To: Andrew Morton <akpm@linux-foundation.org>
-Subject: [RESEND PATCH 2.6.26-git 2/2] mtd:  dataflash OTP support
-Content-Disposition: inline
-From: David Brownell <david-b@pacbell.net>
-Date: Fri, 25 Jul 2008 15:53:15 -0700
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Received: from mk-outboundfilter-3.mail.uk.tiscali.com ([212.74.114.23])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KMXTp-0003cI-1t
+	for linux-mtd@lists.infradead.org; Sat, 26 Jul 2008 00:17:50 +0000
+Subject: Re: [MFD] TMIO NAND driver
+From: ian <spyro@f2s.com>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1217018004.17427.9.camel@wirenth>
+References: <1216204824.11481.156.camel@wirenth>
+	<1216259137.11481.225.camel@wirenth> <1216397385.3644.17.camel@wirenth>
+	<1216994487.28941.141.camel@shinybook.infradead.org>
+	<1216995092.11324.165.camel@wirenth>
+	<1216995404.28941.143.camel@shinybook.infradead.org>
+	<1216999137.11324.174.camel@wirenth>
+	<1217010815.28941.162.camel@shinybook.infradead.org>
+	<1217018004.17427.9.camel@wirenth>
+Content-Type: text/plain
+Date: Sat, 26 Jul 2008 01:17:37 +0100
+Message-Id: <1217031457.17427.40.camel@wirenth>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Message-Id: <200807251553.16235.david-b@pacbell.net>
-Cc: Bryan Wu <cooloney@kernel.org>, linux-mtd@lists.infradead.org,
-	lkml <linux-kernel@vger.kernel.org>,
-	Michael Hennerich <michael.hennerich@analog.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,351 +29,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: David Brownell <dbrownell@users.sourceforge.net>
+On Fri, 2008-07-25 at 21:33 +0100, ian wrote:
+> On Fri, 2008-07-25 at 14:33 -0400, David Woodhouse wrote:
+> > > git://git.mnementh.co.uk/linux-2.6-im.git mfd_push_try_10
+> > 
+> > There stuff in there which wants to go separately. Do you want me to
+> > cherry-pick just the NAND driver and push it through my tree?
+> 
+> Yes please.
 
-Now that we can tell when we have one of the newer DataFlash chips,
-optionally expose the 128 bytes of OTP memory they provide.  Tested
-on at45db642 revision B and D chips.
+Ok, theres been discussion about accessors on LAKML with regards to the
+TMIO devices.
 
-Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
----
-Change from previous version:  create and use HAVE_MTD_OTP Kconfig symbol.
+I've made an updated version of this driver using tmio specific
+accessors that should allow the driver to be used more easily on other
+MFDs.
 
- drivers/mtd/Kconfig                 |    5 
- drivers/mtd/chips/Kconfig           |    1 
- drivers/mtd/devices/Kconfig         |   11 +
- drivers/mtd/devices/mtd_dataflash.c |  206 ++++++++++++++++++++++++++++++++--
- drivers/mtd/mtdchar.c               |    4 
- drivers/mtd/onenand/Kconfig         |    1 
- 6 files changed, 219 insertions(+), 9 deletions(-)
+Trouble is this causes a dependancy on a patch that needs to go via RMKs
+tree.
 
---- a/drivers/mtd/Kconfig	2008-05-28 23:07:45.000000000 -0700
-+++ b/drivers/mtd/Kconfig	2008-07-22 18:21:25.000000000 -0700
-@@ -174,6 +174,11 @@ config MTD_CHAR
- 	  memory chips, and also use ioctl() to obtain information about
- 	  the device, or to erase parts of it.
- 
-+config HAVE_MTD_OTP
-+	bool
-+	help
-+	  Enable access to OTP regions using MTD_CHAR.
-+
- config MTD_BLKDEVS
- 	tristate "Common interface to block layer for MTD 'translation layers'"
- 	depends on BLOCK
---- a/drivers/mtd/chips/Kconfig	2007-05-27 18:38:36.000000000 -0700
-+++ b/drivers/mtd/chips/Kconfig	2008-07-22 18:23:39.000000000 -0700
-@@ -154,6 +154,7 @@ config MTD_CFI_I8
- config MTD_OTP
- 	bool "Protection Registers aka one-time programmable (OTP) bits"
- 	depends on MTD_CFI_ADV_OPTIONS
-+	select HAVE_MTD_OTP
- 	default n
- 	help
- 	  This enables support for reading, writing and locking so called
---- a/drivers/mtd/devices/Kconfig	2008-07-22 13:13:21.000000000 -0700
-+++ b/drivers/mtd/devices/Kconfig	2008-07-22 18:22:55.000000000 -0700
-@@ -60,6 +60,17 @@ config MTD_DATAFLASH
- 	  Sometimes DataFlash chips are packaged inside MMC-format
- 	  cards; at this writing, the MMC stack won't handle those.
- 
-+config MTD_DATAFLASH_OTP
-+	bool "DataFlash OTP support (Security Register)"
-+	depends on MTD_DATAFLASH
-+	select HAVE_MTD_OTP
-+	help
-+	  Newer DataFlash chips (revisions C and D) support 128 bytes of
-+	  one-time-programmable (OTP) data.  The first half may be written
-+	  (once) with up to 64 bytes of data, such as a serial number or
-+	  other key product data.  The second half is programmed with a
-+	  unique-to-each-chip bit pattern at the factory.
-+
- config MTD_M25P80
- 	tristate "Support most SPI Flash chips (AT26DF, M25P, W25X, ...)"
- 	depends on SPI_MASTER && EXPERIMENTAL
---- a/drivers/mtd/devices/mtd_dataflash.c	2008-07-22 18:12:33.000000000 -0700
-+++ b/drivers/mtd/devices/mtd_dataflash.c	2008-07-22 18:12:33.000000000 -0700
-@@ -80,7 +80,8 @@
-  */
- #define OP_READ_ID		0x9F
- #define OP_READ_SECURITY	0x77
--#define OP_WRITE_SECURITY	0x9A	/* OTP bits */
-+#define OP_WRITE_SECURITY_REVC	0x9A
-+#define OP_WRITE_SECURITY	0x9B	/* revision D */
- 
- 
- struct dataflash {
-@@ -451,16 +452,192 @@ static int dataflash_write(struct mtd_in
- 
- /* ......................................................................... */
- 
-+#ifdef CONFIG_MTD_DATAFLASH_OTP
-+
-+static int dataflash_get_otp_info(struct mtd_info *mtd,
-+		struct otp_info *info, size_t len)
-+{
-+	/* Report both blocks as identical:  bytes 0..64, locked.
-+	 * Unless the user block changed from all-ones, we can't
-+	 * tell whether it's still writable; so we assume it isn't.
-+	 */
-+	info->start = 0;
-+	info->length = 64;
-+	info->locked = 1;
-+	return sizeof(*info);
-+}
-+
-+static ssize_t otp_read(struct spi_device *spi, unsigned base,
-+		u8 *buf, loff_t off, size_t len)
-+{
-+	struct spi_message	m;
-+	size_t			l;
-+	u8			*scratch;
-+	struct spi_transfer	t;
-+	int			status;
-+
-+	if (off > 64)
-+		return -EINVAL;
-+
-+	if ((off + len) > 64)
-+		len = 64 - off;
-+	if (len == 0)
-+		return len;
-+
-+	spi_message_init(&m);
-+
-+	l = 4 + base + off + len;
-+	scratch = kzalloc(l, GFP_KERNEL);
-+	if (!scratch)
-+		return -ENOMEM;
-+
-+	/* OUT: OP_READ_SECURITY, 3 don't-care bytes, zeroes
-+	 * IN:  ignore 4 bytes, data bytes 0..N (max 127)
-+	 */
-+	scratch[0] = OP_READ_SECURITY;
-+
-+	memset(&t, 0, sizeof t);
-+	t.tx_buf = scratch;
-+	t.rx_buf = scratch;
-+	t.len = l;
-+	spi_message_add_tail(&t, &m);
-+
-+	dataflash_waitready(spi);
-+
-+	status = spi_sync(spi, &m);
-+	if (status >= 0) {
-+		memcpy(buf, scratch + 4 + base + off, len);
-+		status = len;
-+	}
-+
-+	kfree(scratch);
-+	return status;
-+}
-+
-+static int dataflash_read_fact_otp(struct mtd_info *mtd,
-+		loff_t from, size_t len, size_t *retlen, u_char *buf)
-+{
-+	struct dataflash	*priv = (struct dataflash *)mtd->priv;
-+	int			status;
-+
-+	/* 64 bytes, from 0..63 ... start at 64 on-chip */
-+	mutex_lock(&priv->lock);
-+	status = otp_read(priv->spi, 64, buf, from, len);
-+	mutex_unlock(&priv->lock);
-+
-+	if (status < 0)
-+		return status;
-+	*retlen = status;
-+	return 0;
-+}
-+
-+static int dataflash_read_user_otp(struct mtd_info *mtd,
-+		loff_t from, size_t len, size_t *retlen, u_char *buf)
-+{
-+	struct dataflash	*priv = (struct dataflash *)mtd->priv;
-+	int			status;
-+
-+	/* 64 bytes, from 0..63 ... start at 0 on-chip */
-+	mutex_lock(&priv->lock);
-+	status = otp_read(priv->spi, 0, buf, from, len);
-+	mutex_unlock(&priv->lock);
-+
-+	if (status < 0)
-+		return status;
-+	*retlen = status;
-+	return 0;
-+}
-+
-+static int dataflash_write_user_otp(struct mtd_info *mtd,
-+		loff_t from, size_t len, size_t *retlen, u_char *buf)
-+{
-+	struct spi_message	m;
-+	const size_t		l = 4 + 64;
-+	u8			*scratch;
-+	struct spi_transfer	t;
-+	struct dataflash	*priv = (struct dataflash *)mtd->priv;
-+	int			status;
-+
-+	if (len > 64)
-+		return -EINVAL;
-+
-+	/* Strictly speaking, we *could* truncate the write ... but
-+	 * let's not do that for the only write that's ever possible.
-+	 */
-+	if ((from + len) > 64)
-+		return -EINVAL;
-+
-+	/* OUT: OP_WRITE_SECURITY, 3 zeroes, 64 data-or-zero bytes
-+	 * IN:  ignore all
-+	 */
-+	scratch = kzalloc(l, GFP_KERNEL);
-+	if (!scratch)
-+		return -ENOMEM;
-+	scratch[0] = OP_WRITE_SECURITY;
-+	memcpy(scratch + 4 + from, buf, len);
-+
-+	spi_message_init(&m);
-+
-+	memset(&t, 0, sizeof t);
-+	t.tx_buf = scratch;
-+	t.len = l;
-+	spi_message_add_tail(&t, &m);
-+
-+	/* Write the OTP bits, if they've not yet been written.
-+	 * This modifies SRAM buffer1.
-+	 */
-+	mutex_lock(&priv->lock);
-+	dataflash_waitready(priv->spi);
-+	status = spi_sync(priv->spi, &m);
-+	mutex_unlock(&priv->lock);
-+
-+	kfree(scratch);
-+
-+	if (status >= 0) {
-+		status = 0;
-+		*retlen = len;
-+	}
-+	return status;
-+}
-+
-+static char *otp_setup(struct mtd_info *device, char revision)
-+{
-+	device->get_fact_prot_info = dataflash_get_otp_info;
-+	device->read_fact_prot_reg = dataflash_read_fact_otp;
-+	device->get_user_prot_info = dataflash_get_otp_info;
-+	device->read_user_prot_reg = dataflash_read_user_otp;
-+
-+	/* rev c parts (at45db321c and at45db1281 only!) use a
-+	 * different write procedure; not (yet?) implemented.
-+	 */
-+	if (revision > 'c')
-+		device->write_user_prot_reg = dataflash_write_user_otp;
-+
-+	return ", OTP";
-+}
-+
-+#else
-+
-+static char *otp_setup(struct mtd_info *device)
-+{
-+	return " (OTP)";
-+}
-+
-+#endif
-+
-+/* ......................................................................... */
-+
- /*
-  * Register DataFlash device with MTD subsystem.
-  */
- static int __devinit
--add_dataflash(struct spi_device *spi, char *name,
--		int nr_pages, int pagesize, int pageoffset)
-+add_dataflash_otp(struct spi_device *spi, char *name,
-+		int nr_pages, int pagesize, int pageoffset, char revision)
- {
- 	struct dataflash		*priv;
- 	struct mtd_info			*device;
- 	struct flash_platform_data	*pdata = spi->dev.platform_data;
-+	char				*otp_tag = "";
- 
- 	priv = kzalloc(sizeof *priv, GFP_KERNEL);
- 	if (!priv)
-@@ -489,8 +666,12 @@ add_dataflash(struct spi_device *spi, ch
- 	device->write = dataflash_write;
- 	device->priv = priv;
- 
--	dev_info(&spi->dev, "%s (%d KBytes) pagesize %d bytes\n",
--			name, DIV_ROUND_UP(device->size, 1024), pagesize);
-+	if (revision >= 'c')
-+		otp_tag = otp_setup(device, revision);
-+
-+	dev_info(&spi->dev, "%s (%d KBytes) pagesize %d bytes%s\n",
-+			name, DIV_ROUND_UP(device->size, 1024),
-+			pagesize, otp_tag);
- 	dev_set_drvdata(&spi->dev, priv);
- 
- 	if (mtd_has_partitions()) {
-@@ -519,6 +700,14 @@ add_dataflash(struct spi_device *spi, ch
- 	return add_mtd_device(device) == 1 ? -ENODEV : 0;
- }
- 
-+static inline int __devinit
-+add_dataflash(struct spi_device *spi, char *name,
-+		int nr_pages, int pagesize, int pageoffset)
-+{
-+	return add_dataflash_otp(spi, name, nr_pages, pagesize,
-+			pageoffset, 0);
-+}
-+
- struct flash_info {
- 	char		*name;
- 
-@@ -665,13 +854,16 @@ static int __devinit dataflash_probe(str
- 	/*
- 	 * Try to detect dataflash by JEDEC ID.  If it succeeds, we
- 	 * have either a C or D part.  D supports pagesize options.
-+	 * Both support the security register, though with different
-+	 * write procedures.
- 	 */
- 	info = jedec_probe(spi);
- 	if (IS_ERR(info))
- 		return PTR_ERR(info);
- 	if (info != NULL)
--		return add_dataflash(spi, info->name, info->nr_pages,
--				 info->pagesize, info->pageoffset);
-+		return add_dataflash_otp(spi, info->name, info->nr_pages,
-+				info->pagesize, info->pageoffset,
-+				(info->flags & SUP_POW2PS) ? 'd' : 'c');
- 
- 	/*
- 	 * Older chips support only legacy commands, identifing
---- a/drivers/mtd/mtdchar.c	2008-07-22 15:27:52.000000000 -0700
-+++ b/drivers/mtd/mtdchar.c	2008-07-22 18:24:04.000000000 -0700
-@@ -352,7 +352,7 @@ static void mtdchar_erase_callback (stru
- 	wake_up((wait_queue_head_t *)instr->priv);
- }
- 
--#if defined(CONFIG_MTD_OTP) || defined(CONFIG_MTD_ONENAND_OTP)
-+#ifdef CONFIG_HAVE_MTD_OTP
- static int otp_select_filemode(struct mtd_file_info *mfi, int mode)
- {
- 	struct mtd_info *mtd = mfi->mtd;
-@@ -665,7 +665,7 @@ static int mtd_ioctl(struct inode *inode
- 		break;
- 	}
- 
--#if defined(CONFIG_MTD_OTP) || defined(CONFIG_MTD_ONENAND_OTP)
-+#ifdef CONFIG_HAVE_MTD_OTP
- 	case OTPSELECT:
- 	{
- 		int mode;
---- a/drivers/mtd/onenand/Kconfig	2007-10-21 16:25:18.000000000 -0700
-+++ b/drivers/mtd/onenand/Kconfig	2008-07-22 18:23:49.000000000 -0700
-@@ -29,6 +29,7 @@ config MTD_ONENAND_GENERIC
- 
- config MTD_ONENAND_OTP
- 	bool "OneNAND OTP Support"
-+	select HAVE_MTD_OTP
- 	help
- 	  One Block of the NAND Flash Array memory is reserved as
- 	  a One-Time Programmable Block memory area.
+Theres two ways to handle this
+
+1) You merge the version I already gave you and I send a later patch to
+convert it to the new accessors
+
+2) We push everything via RMKs tree, all in one go.
+
+I'd prefer 2) if theres still time and its not too much trouble. It
+causes less breakage.
+
+All it'd need is your acked-by:
+
+Let me know what you'd prefer to do.
