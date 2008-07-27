@@ -1,12 +1,19 @@
-Subject: [PATCH 3/3] [MTD] mtdoops: Fix a bug where block may not be erased
-From: Richard Purdie <rpurdie@rpsys.net>
-To: linux-mtd <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain
-Date: Sat, 26 Jul 2008 10:08:41 +0100
-Message-Id: <1217063321.5463.18.camel@dax.rpnet.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: from ti-out-0910.google.com ([209.85.142.190])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KMzjr-0006ea-3V
+	for linux-mtd@lists.infradead.org; Sun, 27 Jul 2008 06:28:15 +0000
+Received: by ti-out-0910.google.com with SMTP id a21so2000666tia.2
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 26 Jul 2008 23:28:12 -0700 (PDT)
+From: Bryan Wu <cooloney@kernel.org>
+To: dwmw2@infradead.org,
+	akpm@linux-foundation.org
+Subject: [PATCH 0/7] Blackfin on-chip NAND Flash Controller driver updates for
+	2.6.27
+Date: Sun, 27 Jul 2008 14:27:52 +0800
+Message-Id: <1217140079-20014-1-git-send-email-cooloney@kernel.org>
+Sender: Bryan Wu <cooloney.lkml@gmail.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,29 +23,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This makes the driver erase a block when it doesn't find any
-existing saved log messages which is safer than assuming the
-flash was already erased.
 
-Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
----
- drivers/mtd/mtdoops.c |    4 +---
- 1 files changed, 1 insertions(+), 3 deletions(-)
+Hi David,
 
-diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-index 6f6b2f3..aebb3b2 100644
---- a/drivers/mtd/mtdoops.c
-+++ b/drivers/mtd/mtdoops.c
-@@ -258,9 +258,7 @@ static void find_next_position(struct mtdoops_context *cxt)
- 	if (maxcount == 0xffffffff) {
- 		cxt->nextpage = 0;
- 		cxt->nextcount = 1;
--		cxt->ready = 1;
--		printk(KERN_DEBUG "mtdoops: Ready %d, %d (first init)\n",
--				cxt->nextpage, cxt->nextcount);
-+		schedule_work(&cxt->work_erase);
- 		return;
- 	}
- 
--- 
-1.5.4.4
+I sent some patches of this series before. Please take a look at this whole
+patch set for 2.6.27
+
+Thanks
+-Bryan
