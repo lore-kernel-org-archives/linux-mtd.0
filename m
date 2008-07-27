@@ -1,17 +1,17 @@
-Received: from ti-out-0910.google.com ([209.85.142.191])
+Received: from po-out-1718.google.com ([72.14.252.159])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KMzl9-0006zj-JW
-	for linux-mtd@lists.infradead.org; Sun, 27 Jul 2008 06:29:36 +0000
-Received: by ti-out-0910.google.com with SMTP id a21so2000841tia.2
+	id 1KMzlO-00070r-VE
+	for linux-mtd@lists.infradead.org; Sun, 27 Jul 2008 06:29:51 +0000
+Received: by po-out-1718.google.com with SMTP id b23so7863501poe.2
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 26 Jul 2008 23:29:33 -0700 (PDT)
+	Sat, 26 Jul 2008 23:29:50 -0700 (PDT)
 From: Bryan Wu <cooloney@kernel.org>
 To: dwmw2@infradead.org,
 	akpm@linux-foundation.org
-Subject: [PATCH 5/7] [MTD] Blackfin NFC Driver: enable Blackfin nand HWECC
-	support by default
-Date: Sun, 27 Jul 2008 14:27:57 +0800
-Message-Id: <1217140079-20014-6-git-send-email-cooloney@kernel.org>
+Subject: [PATCH 6/7] [MTD] Blackfin NFC Driver: use standard dev_err() rather
+	than printk()
+Date: Sun, 27 Jul 2008 14:27:58 +0800
+Message-Id: <1217140079-20014-7-git-send-email-cooloney@kernel.org>
 In-Reply-To: <1217140079-20014-1-git-send-email-cooloney@kernel.org>
 References: <1217140079-20014-1-git-send-email-cooloney@kernel.org>
 Sender: Bryan Wu <cooloney.lkml@gmail.com>
@@ -31,20 +31,22 @@ From: Mike Frysinger <vapier.adi@gmail.com>
 Signed-off-by: Mike Frysinger <vapier.adi@gmail.com>
 Signed-off-by: Bryan Wu <cooloney@kernel.org>
 ---
- drivers/mtd/nand/Kconfig |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/bf5xx_nand.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 6ca1ec0..582942d 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -105,6 +105,7 @@ config MTD_NAND_BF5XX
+diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
+index e259a7b..6cf7fb8 100644
+--- a/drivers/mtd/nand/bf5xx_nand.c
++++ b/drivers/mtd/nand/bf5xx_nand.c
+@@ -684,8 +684,7 @@ static int __devinit bf5xx_nand_probe(struct platform_device *pdev)
+ 	dev_dbg(&pdev->dev, "(%p)\n", pdev);
  
- config MTD_NAND_BF5XX_HWECC
- 	bool "BF5XX NAND Hardware ECC"
-+	default y
- 	depends on MTD_NAND_BF5XX
- 	help
- 	  Enable the use of the BF5XX's internal ECC generator when
+ 	if (peripheral_request_list(bfin_nfc_pin_req, DRV_NAME)) {
+-		printk(KERN_ERR DRV_NAME
+-		": Requesting Peripherals failed\n");
++		dev_err(&pdev->dev, "requesting Peripherals failed\n");
+ 		return -EFAULT;
+ 	}
+ 
 -- 
 1.5.6
