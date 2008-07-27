@@ -1,23 +1,22 @@
-Received: from mx03.mailboxcop.com ([206.125.223.73])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KNBEZ-0001vr-Dt
-	for linux-mtd@lists.infradead.org; Sun, 27 Jul 2008 18:44:43 +0000
-Received: from secure3.apollohosting.com (secure3.apollohosting.com
-	[206.125.215.253])
-	by mx03.mailboxcop.com (8.13.8/8.13.8) with ESMTP id m6RIifHb020000
-	for <linux-mtd@lists.infradead.org>; Sun, 27 Jul 2008 13:44:41 -0500
-Message-ID: <20080727134441.fv7uxpkeq28s8cc0@webmail.mistralsolutions.com>
-Date: Sun, 27 Jul 2008 13:44:41 -0500
-From: suresh@mistralsolutions.com
-To: linux-mtd@lists.infradead.org
-Subject: JFFS2 Garbage Collection Issue
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset=ISO-8859-1;
-	DelSp="Yes";
-	format="flowed"
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
+Received: from ti-out-0910.google.com ([209.85.142.190])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KMzk2-0006ea-MH
+	for linux-mtd@lists.infradead.org; Sun, 27 Jul 2008 06:28:27 +0000
+Received: by ti-out-0910.google.com with SMTP id a21so2000666tia.2
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 26 Jul 2008 23:28:26 -0700 (PDT)
+From: Bryan Wu <cooloney@kernel.org>
+To: dwmw2@infradead.org,
+	akpm@linux-foundation.org
+Subject: [PATCH 1/7] [MTD] Blackfin NFC Driver: fix bug - do not clobber the
+	status from the first 256 bytes if operating on 512 pages
+Date: Sun, 27 Jul 2008 14:27:53 +0800
+Message-Id: <1217140079-20014-2-git-send-email-cooloney@kernel.org>
+In-Reply-To: <1217140079-20014-1-git-send-email-cooloney@kernel.org>
+References: <1217140079-20014-1-git-send-email-cooloney@kernel.org>
+Sender: Bryan Wu <cooloney.lkml@gmail.com>
+Cc: Bryan Wu <cooloney@kernel.org>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, Mike Frysinger <vapier.adi@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,28 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+From: Mike Frysinger <vapier.adi@gmail.com>
 
-I am running a stress test which keeps writing to the flash on every  
-reboot (around 15 MB each time). After running the test for 2 days, I  
-see that the garbage collection takes a long time to complete (almost  
-65 seconds).
+Singed-off-by: Mike Frysinger <vapier.adi@gmail.com>
+Signed-off-by: Bryan Wu <cooloney@kernel.org>
+---
+ drivers/mtd/nand/bf5xx_nand.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-I disabled the garbage collection from running during bootup (and the  
-stress test is stopped). When I see the free space on the JFFS2  
-partition its much more than what it should be (we expect it to be  
-around 17 MB, but its 35 MB). When the JFFS2 garbage collection is  
-started again it comes down to 17MB. Again after a reboot its back at  
-35 MB (garbage collection is stopped at reboot and stress test is now  
-not running).
-
-Why does the JFFS2 NOT remember the garbage collection it did the  
-previous time? This is affecting the application start up time in out  
-case.
-
-I am using JFFS2 in 2.6.16-rc3 on OMAP5912
-
-Thanks in advance,
-
-Best Regards,
-Suresh
+diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
+index e87a572..3254348 100644
+--- a/drivers/mtd/nand/bf5xx_nand.c
++++ b/drivers/mtd/nand/bf5xx_nand.c
+@@ -273,7 +273,7 @@ static int bf5xx_nand_correct_data(struct mtd_info *mtd, u_char *dat,
+ 		dat += 256;
+ 		read_ecc += 8;
+ 		calc_ecc += 8;
+-		ret = bf5xx_nand_correct_data_256(mtd, dat, read_ecc, calc_ecc);
++		ret |= bf5xx_nand_correct_data_256(mtd, dat, read_ecc, calc_ecc);
+ 	}
+ 
+ 	return ret;
+-- 
+1.5.6
