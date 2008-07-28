@@ -1,24 +1,10 @@
-Received: from smtp118.sbc.mail.sp1.yahoo.com ([69.147.64.91])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KMWGU-0005Dp-Oc
-	for linux-mtd@lists.infradead.org; Fri, 25 Jul 2008 22:59:59 +0000
-From: David Brownell <david-b@pacbell.net>
-To: Andrew Morton <akpm@linux-foundation.org>
-Subject: [RESEND PATCH 2.6.26-git 1/2] MTD DataFlash: bugfix,
-	binary page sizes now handled (v3)
-Date: Fri, 25 Jul 2008 15:49:12 -0700
-References: <1212467165-26379-1-git-send-email-cooloney@kernel.org>
-	<200806282321.34275.david-b@pacbell.net>
-In-Reply-To: <200806282321.34275.david-b@pacbell.net>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200807251549.12565.david-b@pacbell.net>
-Cc: Bryan Wu <cooloney@kernel.org>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Michael Hennerich <michael.hennerich@analog.com>
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Date: Mon, 28 Jul 2008 10:06:26 +0300
+Message-Id: <20080728070626.4707.99096.sendpatchset@localhost.localdomain>
+Subject: [PATCH resend] MTD: nandsim: remove useless module parameters
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,228 +14,146 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Michael Hennerich <michael.hennerich@analog.com>
+nandsim pretends it may emulate real flash delays and has
+corresponding module parameters. But the emulation is anyway
+broken and useless, so remove it.
 
-This fixes a bug in handling certain newer DataFlash chips (at45db321d
-and at45db642d have current Linux users) when they were configured to
-use binary page sizes (possibly at the factory).
-
- - Use JEDEC probing (borrowed from m25p80 driver) to tell if the chip
-   supports binary page sizes ... if so, then query the chip to tell
-   whether it's currently using them.
-
- - Print that pagesize during probe; erasesize is still listed in 
-   the /proc/mtd file, useful for making filesystems.
-
-Also fix a pre-existing bug with 2 MBit parts using the wrong pagesize;
-these are a bit smaller than Linux would normally use (even shared with
-a small FPGA's configuration bitstream).
-
-Signed-off-by: Michael Hennerich <michael.hennerich@analog.com>
-Signed-off-by: Bryan Wu <cooloney@kernel.org>
-
-Fix regression (so cmdlinepart works again), update error handling
-and comments.
-# updated to use dev_name(dev) not dev->bus_id
-
-Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- drivers/mtd/devices/mtd_dataflash.c |  154 ++++++++++++++++++++++++++++++++++--
- 1 file changed, 149 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/nandsim.c |   52 --------------------------------------------
+ 1 files changed, 0 insertions(+), 52 deletions(-)
 
---- a/drivers/mtd/devices/mtd_dataflash.c	2008-06-30 16:44:26.000000000 -0700
-+++ b/drivers/mtd/devices/mtd_dataflash.c	2008-06-30 21:38:22.000000000 -0700
-@@ -15,6 +15,8 @@
- #include <linux/delay.h>
- #include <linux/device.h>
- #include <linux/mutex.h>
-+#include <linux/err.h>
-+
- #include <linux/spi/spi.h>
- #include <linux/spi/flash.h>
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index bb885d1..8e73a66 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -36,7 +36,6 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/nand.h>
+ #include <linux/mtd/partitions.h>
+-#include <linux/delay.h>
+ #include <linux/list.h>
+ #include <linux/random.h>
  
-@@ -487,7 +489,8 @@ add_dataflash(struct spi_device *spi, ch
- 	device->write = dataflash_write;
- 	device->priv = priv;
+@@ -51,27 +50,9 @@
+ #define CONFIG_NANDSIM_FOURTH_ID_BYTE 0xFF /* No byte */
+ #endif
  
--	dev_info(&spi->dev, "%s (%d KBytes)\n", name, device->size/1024);
-+	dev_info(&spi->dev, "%s (%d KBytes) pagesize %d bytes\n",
-+			name, DIV_ROUND_UP(device->size, 1024), pagesize);
- 	dev_set_drvdata(&spi->dev, priv);
+-#ifndef CONFIG_NANDSIM_ACCESS_DELAY
+-#define CONFIG_NANDSIM_ACCESS_DELAY 25
+-#endif
+-#ifndef CONFIG_NANDSIM_PROGRAMM_DELAY
+-#define CONFIG_NANDSIM_PROGRAMM_DELAY 200
+-#endif
+-#ifndef CONFIG_NANDSIM_ERASE_DELAY
+-#define CONFIG_NANDSIM_ERASE_DELAY 2
+-#endif
+-#ifndef CONFIG_NANDSIM_OUTPUT_CYCLE
+-#define CONFIG_NANDSIM_OUTPUT_CYCLE 40
+-#endif
+-#ifndef CONFIG_NANDSIM_INPUT_CYCLE
+-#define CONFIG_NANDSIM_INPUT_CYCLE  50
+-#endif
+ #ifndef CONFIG_NANDSIM_BUS_WIDTH
+ #define CONFIG_NANDSIM_BUS_WIDTH  8
+ #endif
+-#ifndef CONFIG_NANDSIM_DO_DELAYS
+-#define CONFIG_NANDSIM_DO_DELAYS  0
+-#endif
+ #ifndef CONFIG_NANDSIM_LOG
+ #define CONFIG_NANDSIM_LOG        0
+ #endif
+@@ -83,13 +64,7 @@ static uint first_id_byte  = CONFIG_NANDSIM_FIRST_ID_BYTE;
+ static uint second_id_byte = CONFIG_NANDSIM_SECOND_ID_BYTE;
+ static uint third_id_byte  = CONFIG_NANDSIM_THIRD_ID_BYTE;
+ static uint fourth_id_byte = CONFIG_NANDSIM_FOURTH_ID_BYTE;
+-static uint access_delay   = CONFIG_NANDSIM_ACCESS_DELAY;
+-static uint programm_delay = CONFIG_NANDSIM_PROGRAMM_DELAY;
+-static uint erase_delay    = CONFIG_NANDSIM_ERASE_DELAY;
+-static uint output_cycle   = CONFIG_NANDSIM_OUTPUT_CYCLE;
+-static uint input_cycle    = CONFIG_NANDSIM_INPUT_CYCLE;
+ static uint bus_width      = CONFIG_NANDSIM_BUS_WIDTH;
+-static uint do_delays      = CONFIG_NANDSIM_DO_DELAYS;
+ static uint log            = CONFIG_NANDSIM_LOG;
+ static uint dbg            = CONFIG_NANDSIM_DBG;
+ static unsigned long parts[MAX_MTD_DEVICES];
+@@ -106,13 +81,7 @@ module_param(first_id_byte,  uint, 0400);
+ module_param(second_id_byte, uint, 0400);
+ module_param(third_id_byte,  uint, 0400);
+ module_param(fourth_id_byte, uint, 0400);
+-module_param(access_delay,   uint, 0400);
+-module_param(programm_delay, uint, 0400);
+-module_param(erase_delay,    uint, 0400);
+-module_param(output_cycle,   uint, 0400);
+-module_param(input_cycle,    uint, 0400);
+ module_param(bus_width,      uint, 0400);
+-module_param(do_delays,      uint, 0400);
+ module_param(log,            uint, 0400);
+ module_param(dbg,            uint, 0400);
+ module_param_array(parts, ulong, &parts_num, 0400);
+@@ -128,13 +97,7 @@ MODULE_PARM_DESC(first_id_byte,  "The first byte returned by NAND Flash 'read ID
+ MODULE_PARM_DESC(second_id_byte, "The second byte returned by NAND Flash 'read ID' command (chip ID)");
+ MODULE_PARM_DESC(third_id_byte,  "The third byte returned by NAND Flash 'read ID' command");
+ MODULE_PARM_DESC(fourth_id_byte, "The fourth byte returned by NAND Flash 'read ID' command");
+-MODULE_PARM_DESC(access_delay,   "Initial page access delay (microiseconds)");
+-MODULE_PARM_DESC(programm_delay, "Page programm delay (microseconds");
+-MODULE_PARM_DESC(erase_delay,    "Sector erase delay (milliseconds)");
+-MODULE_PARM_DESC(output_cycle,   "Word output (from flash) time (nanodeconds)");
+-MODULE_PARM_DESC(input_cycle,    "Word input (to flash) time (nanodeconds)");
+ MODULE_PARM_DESC(bus_width,      "Chip's bus width (8- or 16-bit)");
+-MODULE_PARM_DESC(do_delays,      "Simulate NAND delays using busy-waits if not zero");
+ MODULE_PARM_DESC(log,            "Perform logging if not zero");
+ MODULE_PARM_DESC(dbg,            "Output debug information if not zero");
+ MODULE_PARM_DESC(parts,          "Partition sizes (in erase blocks) separated by commas");
+@@ -173,12 +136,6 @@ MODULE_PARM_DESC(overridesize,   "Specifies the NAND Flash size overriding the I
+ #define NS_INFO(args...) \
+ 	do { printk(KERN_INFO NS_OUTPUT_PREFIX " " args); } while(0)
  
- 	if (mtd_has_partitions()) {
-@@ -516,12 +519,137 @@ add_dataflash(struct spi_device *spi, ch
- 	return add_mtd_device(device) == 1 ? -ENODEV : 0;
- }
+-/* Busy-wait delay macros (microseconds, milliseconds) */
+-#define NS_UDELAY(us) \
+-        do { if (do_delays) udelay(us); } while(0)
+-#define NS_MDELAY(us) \
+-        do { if (do_delays) mdelay(us); } while(0)
+-
+ /* Is the nandsim structure initialized ? */
+ #define NS_IS_INITIALIZED(ns) ((ns)->geom.totsz != 0)
  
-+struct flash_info {
-+	char		*name;
-+
-+	/* JEDEC id zero means "no ID" (most older chips); otherwise it has
-+	 * a high byte of zero plus three data bytes: the manufacturer id,
-+	 * then a two byte device id.
-+	 */
-+	u32		jedec_id;
-+
-+	/* The size listed here is what works with OP_ERASE_PAGE. */
-+	unsigned	nr_pages;
-+	u16		pagesize;
-+	u16		pageoffset;
-+
-+	u16		flags;
-+#define SUP_POW2PS	0x0001		/* supports 2^N byte pages */
-+#define IS_POW2PS	0x0002		/* uses 2^N byte pages */
-+};
-+
-+static struct flash_info __devinitdata dataflash_data [] = {
-+
-+	/*
-+	 * NOTE:  chips with SUP_POW2PS (rev D and up) need two entries,
-+	 * one with IS_POW2PS and the other without.  The entry with the
-+	 * non-2^N byte page size can't name exact chip revisions without
-+	 * losing backwards compatibility for cmdlinepart.
-+	 *
-+	 * These newer chips also support 128-byte security registers (with
-+	 * 64 bytes one-time-programmable) and software write-protection.
-+	 */
-+	{ "AT45DB011B",  0x1f2200, 512, 264, 9, SUP_POW2PS, },
-+	{ "at45db011d",  0x1f2200, 512, 256, 8, SUP_POW2PS | IS_POW2PS, },
-+
-+	{ "AT45DB021B",  0x1f2300, 1024, 264, 9, SUP_POW2PS, },
-+	{ "at45db021d",  0x1f2300, 1024, 256, 8, SUP_POW2PS | IS_POW2PS, },
-+
-+	{ "AT45DB041x",  0x1f2400, 2048, 264, 9, SUP_POW2PS, },
-+	{ "at45db041d",  0x1f2400, 2048, 256, 8, SUP_POW2PS | IS_POW2PS, },
-+
-+	{ "AT45DB081B",  0x1f2500, 4096, 264, 9, SUP_POW2PS, },
-+	{ "at45db081d",  0x1f2500, 4096, 256, 8, SUP_POW2PS | IS_POW2PS, },
-+
-+	{ "AT45DB161x",  0x1f2600, 4096, 528, 10, SUP_POW2PS, },
-+	{ "at45db161d",  0x1f2600, 4096, 512, 9, SUP_POW2PS | IS_POW2PS, },
-+
-+	{ "AT45DB321x",  0x1f2700, 8192, 528, 10, 0, },		/* rev C */
-+	{ "AT45DB321x",  0x1f2701, 8192, 528, 10, SUP_POW2PS, },
-+	{ "at45db321d",  0x1f2701, 8192, 512, 9, SUP_POW2PS | IS_POW2PS, },
-+
-+	{ "AT45DB642x",  0x1f2800, 8192, 1056, 11, SUP_POW2PS, },
-+	{ "at45db642d",  0x1f2800, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS, },
-+};
-+
-+static struct flash_info *__devinit jedec_probe(struct spi_device *spi)
-+{
-+	int			tmp;
-+	u8			code = OP_READ_ID;
-+	u8			id[3];
-+	u32			jedec;
-+	struct flash_info	*info;
-+	int			status;
-+
-+	/*
-+	 * JEDEC also defines an optional "extended device information"
-+	 * string for after vendor-specific data, after the three bytes
-+	 * we use here.  Supporting some chips might require using it.
-+	 *
-+	 * If the vendor ID isn't Atmel's (0x1f), assume this call failed.
-+	 * That's not an error; only rev C and newer chips handle it, and
-+	 * only Atmel sells these chips.
-+	 */
-+	tmp = spi_write_then_read(spi, &code, 1, id, 3);
-+	if (tmp < 0) {
-+		DEBUG(MTD_DEBUG_LEVEL1, "%s: read ID error %d\n",
-+			dev_name(spi->dev), status);
-+		return ERR_PTR(tmp);
-+	}
-+	if (id[0] != 0x1f)
-+		return NULL;
-+
-+	jedec = id[0];
-+	jedec = jedec << 8;
-+	jedec |= id[1];
-+	jedec = jedec << 8;
-+	jedec |= id[2];
-+
-+	for (tmp = 0, info = dataflash_data;
-+			tmp < ARRAY_SIZE(dataflash_data);
-+			tmp++, info++) {
-+		if (info->jedec_id == jedec) {
-+			DEBUG(MTD_DEBUG_LEVEL1, "%s: security register"
-+					", sector protect%s\n",
-+				dev_name(spi->dev),
-+				(info->flags & SUP_POW2PS)
-+					? ", binary pagesize" : ""
-+				);
-+			if (info->flags & SUP_POW2PS) {
-+				status = dataflash_status(spi);
-+				if (status < 0) {
-+					DEBUG(MTD_DEBUG_LEVEL1,
-+						"%s: status error %d\n",
-+						dev_name(spi->dev), status);
-+					return ERR_PTR(status);
-+				}
-+				if (status & 0x1) {
-+					if (info->flags & IS_POW2PS)
-+						return info;
-+				} else {
-+					if (!(info->flags & IS_POW2PS))
-+						return info;
-+				}
-+			}
-+		}
-+	}
-+
-+	/*
-+	 * Treat unrecognized chips as errors ... we won't know the
-+	 * right page size (it might be binary) even when we can tell
-+	 * which density class is involved
-+	 */
-+	dev_warn(&spi->dev, "unrecognized JEDEC id %06x\n", jedec);
-+	return ERR_PTR(-ENODEV);
-+}
-+
- /*
-- * Detect and initialize DataFlash device:
-+ * Detect and initialize DataFlash device, using JEDEC IDs on newer chips
-+ * or else the ID code embedded in the status bits:
-  *
-  *   Device      Density         ID code          #Pages PageSize  Offset
-  *   AT45DB011B  1Mbit   (128K)  xx0011xx (0x0c)    512    264      9
-- *   AT45DB021B  2Mbit   (256K)  xx0101xx (0x14)   1025    264      9
-+ *   AT45DB021B  2Mbit   (256K)  xx0101xx (0x14)   1024    264      9
-  *   AT45DB041B  4Mbit   (512K)  xx0111xx (0x1c)   2048    264      9
-  *   AT45DB081B  8Mbit   (1M)    xx1001xx (0x24)   4096    264      9
-  *   AT45DB0161B 16Mbit  (2M)    xx1011xx (0x2c)   4096    528     10
-@@ -531,8 +659,24 @@ add_dataflash(struct spi_device *spi, ch
-  */
- static int __devinit dataflash_probe(struct spi_device *spi)
+@@ -1301,7 +1258,6 @@ static int prog_page(struct nandsim *ns, int num)
+ static int do_state_action(struct nandsim *ns, uint32_t action)
  {
--	int status;
-+	int			status;
-+	struct flash_info	*info;
+ 	int num;
+-	int busdiv = ns->busw == 8 ? 1 : 2;
+ 	unsigned int erase_block_no, page_no;
  
-+	/*
-+	 * Try to detect dataflash by JEDEC ID.  If it succeeds, we
-+	 * have either a C or D part.  D supports pagesize options.
-+	 */
-+	info = jedec_probe(spi);
-+	if (IS_ERR(info))
-+		return PTR_ERR(info);
-+	if (info != NULL)
-+		return add_dataflash(spi, info->name, info->nr_pages,
-+				 info->pagesize, info->pageoffset);
-+
-+	/*
-+	 * Older chips support only legacy commands, identifing
-+	 * capacity using bits in the status byte.
-+	 */
- 	status = dataflash_status(spi);
- 	if (status <= 0 || status == 0xff) {
- 		DEBUG(MTD_DEBUG_LEVEL1, "%s: status error %d\n",
-@@ -551,7 +695,7 @@ static int __devinit dataflash_probe(str
- 		status = add_dataflash(spi, "AT45DB011B", 512, 264, 9);
+ 	action &= ACTION_MASK;
+@@ -1337,9 +1293,6 @@ static int do_state_action(struct nandsim *ns, uint32_t action)
+ 		else
+ 			NS_LOG("read OOB of page %d\n", ns->regs.row);
+ 
+-		NS_UDELAY(access_delay);
+-		NS_UDELAY(input_cycle * ns->geom.pgsz / 1000 / busdiv);
+-
  		break;
- 	case 0x14:	/* 0 1 0 1 x x */
--		status = add_dataflash(spi, "AT45DB021B", 1025, 264, 9);
-+		status = add_dataflash(spi, "AT45DB021B", 1024, 264, 9);
- 		break;
- 	case 0x1c:	/* 0 1 1 1 x x */
- 		status = add_dataflash(spi, "AT45DB041x", 2048, 264, 9);
+ 
+ 	case ACTION_SECERASE:
+@@ -1370,8 +1323,6 @@ static int do_state_action(struct nandsim *ns, uint32_t action)
+ 
+ 		erase_sector(ns);
+ 
+-		NS_MDELAY(erase_delay);
+-
+ 		if (erase_block_wear)
+ 			update_wear(erase_block_no);
+ 
+@@ -1408,9 +1359,6 @@ static int do_state_action(struct nandsim *ns, uint32_t action)
+ 			num, ns->regs.row, ns->regs.column, NS_RAW_OFFSET(ns) + ns->regs.off);
+ 		NS_LOG("programm page %d\n", ns->regs.row);
+ 
+-		NS_UDELAY(programm_delay);
+-		NS_UDELAY(output_cycle * ns->geom.pgsz / 1000 / busdiv);
+-
+ 		if (write_error(page_no)) {
+ 			NS_WARN("simulating write failure in page %u\n", page_no);
+ 			return -1;
+-- 
+1.5.4.1
