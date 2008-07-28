@@ -1,12 +1,19 @@
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Date: Mon, 28 Jul 2008 10:06:31 +0300
-Message-Id: <20080728070631.4707.68077.sendpatchset@localhost.localdomain>
-In-Reply-To: <20080728070626.4707.99096.sendpatchset@localhost.localdomain>
-References: <20080728070626.4707.99096.sendpatchset@localhost.localdomain>
-Subject: [PATCH resend] MTD: nandsim: allow changing some module parameters
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	linux-mtd@lists.infradead.org
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KNOq2-0004vZ-Q9
+	for linux-mtd@lists.infradead.org; Mon, 28 Jul 2008 09:16:19 +0000
+Message-ID: <488D8E81.5020808@nokia.com>
+Date: Mon, 28 Jul 2008 12:16:49 +0300
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+MIME-Version: 1.0
+Subject: Re: Problem mounting a UBIFS volume
+References: <OF4576C3B0.EF1C94B9-ON8825748F.00764CD3-8825748F.007B449B@selinc.com>
+	<48881E98.5000703@nokia.com>
+In-Reply-To: <48881E98.5000703@nokia.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org,
+	"Bruce_Leonard@selinc.com" <Bruce_Leonard@selinc.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,59 +23,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Grant write permissions to some nandsim module parameters
-to make it possible to change them runtime e.g., via sysfs:
+Adrian Hunter wrote:
+> Bruce_Leonard@selinc.com wrote:
+>> Artem,
+>>
+>> Sorry for the delay in replying, I was on holiday for a couple of weeks 
+>> and it's taken me a while to get my brain wrapped back around what I was 
+>> working on when I left :).
+>>
+>> Artem Bityutskiy <dedekind@infradead.org> wrote on 07/04/2008 06:02:29 AM:
+>>
+>>> On Wed, 2008-07-02 at 22:18 -0700, Bruce_Leonard@selinc.com wrote:
+>>>> UBIFS error (pid 842): check_lpt_crc:invalid crc in LPT node: crc 2bbb 
+>>>> calc a5a5
+>>>> UBIFS error (pid 842): ubifs_read_nnode: error -22 reading nnode at 
+>> 8:6150
+>>>> mount: wrong fs type, bad option, bad superblock on ubi0:bob,
+>>>>        missing codepage or other error
+>>>>        In some cases useful info is found in syslog - try
+>>>>        dmesg | tail  or so
+>>> AFAIU, you still use a small flash and small image. So the only change
+>>> was your MTD change. Are you sure it is not the MTD change which is to
+>>> blame? Can you reproduce this error without your MTD change?
+>>>
+>> Yes I can and here's what I've found.  I pulled the latest vanilla kernel 
+>> from Linus' tree (congratulations on getting UBIFS in BTW, very cool), 
+>> pulled the latest mkfs.ubifs, and did an entirely new clone of mtd-utils 
+>> (I wanted to get rid of my modifications).  So there are NONE of my MTD 
+>> changes in any of the code I'm currently using.  I also reset my driver to 
+>> only recognize 2GiB of NAND.  Before I left I was starting to get 
+>> suspicious of mkfs.ubifs, so I ran the following experiment this morning. 
+>> I used mkfs.ubifs to create two different images of the same filesystem 
+>> (one for up to 2GiB devices and one for up to 8GiB devices) as follows:
+>>
+>> $ mkfs.ubifs -r x103/ -m 2048 -e 129024 -c 16384 -o x103.img
+>> $ mkfs.ubifs -r x103/ -m 2048 -e 129024 -c 65536 -o x103_large.img
+>>
+>> If I understand things right (which usually isn't the case :-\), these 
+>> should be more or less the same, because the -c option is just specifying 
+>> a MAXIMUM volume size the image can be put onto.  An ls -l command gives 
+>> the following:
+>>
+>> -rw-r--r--  1 root root  29159424 Jul 23 13:31 x103.img
+>> -rw-r--r--  1 root root  30449664 Jul 23 14:08 x103_large.img
+>>
+>> So they match pretty close in size.  I can burn both images to my NAND 
+>> without errors by:
+>>
+>> $ ubiupdatevol /dev/ubi0_0 x103*.img
+>>
+>> When I try to mount the filesystem that comes from x103.img (the one for 
+>> the 'smaller' NAND flash) it mounts just fine, I can cd to it, create 
+>> directories/files, etc.  However, when I try to mount the filesystem from 
+>> x103_large.img, it fails with the following errors:
+>>
+>> UBIFS error (pid 863): check_lpt_crc: invalid crc in LPT node: crc f486 
+>> calc e0b
+>> UBIFS error (pid 863): ubifs_read_nnode: error -22 reading nnode at 8:1356
+>>
+>> mount: wrong fs type, bad option, bad superblock on ubi0:bob,
+>>        missing codepage or other error
+>>        In some cases useful info is found in syslog - try
+>>        dmesg | tail  or so
+>>
+>> So, here's a couple of questions?  Does mkfs.ubifs and UBIFS calculate the 
+>> CRC identically or could there be a difference that's causing the problem? 
+>>  Does ubiupdatevol touch the CRC and that's what's causing the problem?  A 
+>> complicating factor, I'm running on an MPC8349E, which is big endian and I 
+>> know we've tripped across an endian issue in the past.  I've tried 
+>> eliminating endian issues by compiling and running all tools native on the 
+>> 8347, but could that be a factor?
+>>
+>> I'm going to start by digging into mkfs.ubifs on the assumption that the 
+>> large -c parameter is causing it to some how miscalculate the CRC, but any 
+>> pointers of where else the problem could be are greatly appreciated.
+> 
+> Almost certainly mkfs.ubifs has screwed up the LPT.  That is because the
+> LPT is a tree that is sized according to the maximum size that the file system
+> can grow to i.e. the size given by the -c option
+> 
+> I will look at this.
 
-echo 1 > /sys/module/nandsim/parameters/rptwear
+I tried this with a 2GiB nandsim and did not get any problems.
 
-There is no reason to have that file read-only. This patches
-also changes the permissions from octal to S_* format.
-
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- drivers/mtd/nand/nandsim.c |   30 +++++++++++++++---------------
- 1 files changed, 15 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 8e73a66..6e4703e 100644
---- a/drivers/mtd/nand/nandsim.c
-+++ b/drivers/mtd/nand/nandsim.c
-@@ -77,21 +77,21 @@ static char *gravepages = NULL;
- static unsigned int rptwear = 0;
- static unsigned int overridesize = 0;
- 
--module_param(first_id_byte,  uint, 0400);
--module_param(second_id_byte, uint, 0400);
--module_param(third_id_byte,  uint, 0400);
--module_param(fourth_id_byte, uint, 0400);
--module_param(bus_width,      uint, 0400);
--module_param(log,            uint, 0400);
--module_param(dbg,            uint, 0400);
--module_param_array(parts, ulong, &parts_num, 0400);
--module_param(badblocks,      charp, 0400);
--module_param(weakblocks,     charp, 0400);
--module_param(weakpages,      charp, 0400);
--module_param(bitflips,       uint, 0400);
--module_param(gravepages,     charp, 0400);
--module_param(rptwear,        uint, 0400);
--module_param(overridesize,   uint, 0400);
-+module_param(first_id_byte,  uint, S_IRUGO);
-+module_param(second_id_byte, uint, S_IRUGO);
-+module_param(third_id_byte,  uint, S_IRUGO);
-+module_param(fourth_id_byte, uint, S_IRUGO);
-+module_param(bus_width,      uint, S_IRUGO);
-+module_param(log,            uint, S_IRUGO | S_IWUSR);
-+module_param(dbg,            uint, S_IRUGO | S_IWUSR);
-+module_param(badblocks,      charp, S_IRUGO);
-+module_param(weakblocks,     charp, S_IRUGO);
-+module_param(weakpages,      charp, S_IRUGO);
-+module_param(bitflips,       uint,  S_IRUGO | S_IWUSR);
-+module_param(gravepages,     charp, S_IRUGO);
-+module_param(rptwear,        uint,  S_IRUGO | S_IWUSR);
-+module_param(overridesize,   uint,  S_IRUGO);
-+module_param_array(parts, ulong, &parts_num, S_IRUGO);
- 
- MODULE_PARM_DESC(first_id_byte,  "The first byte returned by NAND Flash 'read ID' command (manufacturer ID)");
- MODULE_PARM_DESC(second_id_byte, "The second byte returned by NAND Flash 'read ID' command (chip ID)");
--- 
-1.5.4.1
+Are you able to make available an image that I can test?  Obviously if you are
+able to make a small image that has the problem it would be easier to handle.
