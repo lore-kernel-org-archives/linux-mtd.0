@@ -1,19 +1,22 @@
-Received: from krynn.se.axis.com ([193.13.178.10])
+Received: from smtp1.linux-foundation.org ([140.211.169.13])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KNvRG-0002TU-G5
-	for linux-mtd@lists.infradead.org; Tue, 29 Jul 2008 20:04:55 +0000
-Date: Tue, 29 Jul 2008 22:04:46 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Frans Meulenbroeks <fransmeulenbroeks@yahoo.com>
-Subject: Re: [RESUBMIT] [PATCH] [MTD] NAND nand_ecc.c: rewrite for improved
-	performance
-In-Reply-To: <445284.23881.qm@web33612.mail.mud.yahoo.com>
-Message-ID: <Pine.LNX.4.64.0807292203190.4144@lnxricardw.se.axis.com>
-References: <445284.23881.qm@web33612.mail.mud.yahoo.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+	id 1KNxGA-0006dI-Sh
+	for linux-mtd@lists.infradead.org; Tue, 29 Jul 2008 22:01:35 +0000
+Date: Tue, 29 Jul 2008 15:00:52 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: David Brownell <david-b@pacbell.net>
+Subject: Re: [RESEND PATCH 2.6.26-git 1/2] MTD DataFlash: bugfix, binary
+	page sizes now handled (v3)
+Message-Id: <20080729150052.80e558db.akpm@linux-foundation.org>
+In-Reply-To: <200807251549.12565.david-b@pacbell.net>
+References: <1212467165-26379-1-git-send-email-cooloney@kernel.org>
+	<200806282321.34275.david-b@pacbell.net>
+	<200807251549.12565.david-b@pacbell.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: cooloney@kernel.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, michael.hennerich@analog.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +26,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, 25 Jul 2008 15:49:12 -0700
+David Brownell <david-b@pacbell.net> wrote:
 
-On Tue, 29 Jul 2008, Frans Meulenbroeks wrote:
+> This fixes a bug in handling certain newer DataFlash chips (at45db321d
+> and at45db642d have current Linux users) when they were configured to
+> use binary page sizes (possibly at the factory).
+> 
+>  - Use JEDEC probing (borrowed from m25p80 driver) to tell if the chip
+>    supports binary page sizes ... if so, then query the chip to tell
+>    whether it's currently using them.
+> 
+>  - Print that pagesize during probe; erasesize is still listed in 
+>    the /proc/mtd file, useful for making filesystems.
+> 
+> Also fix a pre-existing bug with 2 MBit parts using the wrong pagesize;
+> these are a bit smaller than Linux would normally use (even shared with
+> a small FPGA's configuration bitstream).
 
-> As my email client wraps lines at 79 chars I've added the patch as an=20
-> attachement instead of inlining it (the line with the filenames created=
-=20
-> by diff exceeds 79 chars).
-
-At least my email client (pine) doesn't seem to recognize it as an=20
-attachment but shows it inline. Don't know if anyone else had this=20
-problem.
-
-/Ricard
-
->
->
-> --0-415199513-1217354338=3D:23881
-> Content-Type: text/x-patch; name=3D"ecc.patch"
-> Content-Transfer-Encoding: base64
-> Content-Disposition: attachment; filename=3D"ecc.patch"
->
-> ZGlmZiAtdXJOIGxpbnV4LTIuNi4yNS4xMC9Eb2N1bWVudGF0aW9uL25hbmQv
-> ZWNjLnR4dCBsaW51eC0yLjYuMjUuMTAud29yay9Eb2N1bWVudGF0aW9uL25h
-> ....
-
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+I'm not sure what kernel this is against, but it gets a reject storm
+against 2.6.27-rc1.  As does [2/2].
