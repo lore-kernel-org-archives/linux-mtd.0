@@ -1,12 +1,11 @@
-Subject: Re: Problems in nand_read_subpage()
+Subject: Re: 2nd problem with read_subpage() ?
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: Alexey Korolev <akorolev@infradead.org>
-In-Reply-To: <alpine.LFD.1.10.0807290851200.12605@casper.infradead.org>
-References: <1217313233.3124.4.camel@sauron>
-	<alpine.LFD.1.10.0807290851200.12605@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 29 Jul 2008 10:59:30 +0300
-Message-Id: <1217318370.3124.13.camel@sauron>
+In-Reply-To: <1217314432.3124.9.camel@sauron>
+References: <1217314432.3124.9.camel@sauron>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 29 Jul 2008 12:30:10 +0300
+Message-Id: <1217323810.3124.19.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -20,18 +19,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-On Tue, 2008-07-29 at 08:52 +0100, Alexey Korolev wrote:
-> Hi Artem,
+On Tue, 2008-07-29 at 09:53 +0300, Artem Bityutskiy wrote:
+> Glance at nand_do_read_ops():
 >=20
-> Thank you very much for pointing to the issue. Sure. I'll fix it today.=20
+>=20
+> if (likely(sndcmd)) {
+>         chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
+>         sndcmd =3D 0;
+> }
 
-BTW, if you do not have small page hardware, you may test it on nandsim.
+Alexey,
 
-http://www.linux-mtd.infradead.org/faq/nand.html#L_nand_nandsim
-
-I also found out that nandsim does not support this RNDOUT stuff. I am
-trying to figure out what exactly it is and will try to implement it.
+my investigation showed that this "random output" command is not
+supported by all flashes. ST-micro NANDs seems to support it
+(I checked 2 manuals), while Sumsung NANDs do not (checked manual
+for K9XXG08UXA). This means your implementation will break many
+systems and should be either fixed or reverted.
 
 --=20
 Best regards,
