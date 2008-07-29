@@ -1,20 +1,21 @@
-Received: from smtp1.linux-foundation.org ([140.211.169.13])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KNxGA-0006dI-Sh
-	for linux-mtd@lists.infradead.org; Tue, 29 Jul 2008 22:01:35 +0000
-Date: Tue, 29 Jul 2008 15:00:52 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: David Brownell <david-b@pacbell.net>
-Subject: Re: [RESEND PATCH 2.6.26-git 1/2] MTD DataFlash: bugfix, binary
-	page sizes now handled (v3)
-Message-Id: <20080729150052.80e558db.akpm@linux-foundation.org>
-In-Reply-To: <200807251549.12565.david-b@pacbell.net>
+Received: from smtp115.sbc.mail.sp1.yahoo.com ([69.147.64.88])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KNxrd-0003rn-7s
+	for linux-mtd@lists.infradead.org; Tue, 29 Jul 2008 22:40:17 +0000
+Date: Tue, 29 Jul 2008 15:43:01 -0700
+From: David Brownell <david-b@pacbell.net>
+To: akpm@linux-foundation.org
+Subject: Re: [RESEND PATCH 2.6.26-git 1/2] MTD DataFlash: bugfix, binary page
+	sizes now handled (v3)
 References: <1212467165-26379-1-git-send-email-cooloney@kernel.org>
 	<200806282321.34275.david-b@pacbell.net>
 	<200807251549.12565.david-b@pacbell.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	<20080729150052.80e558db.akpm@linux-foundation.org>
+In-Reply-To: <20080729150052.80e558db.akpm@linux-foundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+Message-Id: <20080729224301.AD7A3361127@adsl-69-226-248-13.dsl.pltn13.pacbell.net>
 Cc: cooloney@kernel.org, linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org, michael.hennerich@analog.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,23 +27,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 25 Jul 2008 15:49:12 -0700
-David Brownell <david-b@pacbell.net> wrote:
+> > This fixes a bug in handling certain newer DataFlash chips (at45db321d
+> > and at45db642d have current Linux users) when they were configured to
+> > use binary page sizes (possibly at the factory).
+> > 
+> > ...
+>
+> I'm not sure what kernel this is against, but it gets a reject storm
+> against 2.6.27-rc1.  As does [2/2].
 
-> This fixes a bug in handling certain newer DataFlash chips (at45db321d
-> and at45db642d have current Linux users) when they were configured to
-> use binary page sizes (possibly at the factory).
-> 
->  - Use JEDEC probing (borrowed from m25p80 driver) to tell if the chip
->    supports binary page sizes ... if so, then query the chip to tell
->    whether it's currently using them.
-> 
->  - Print that pagesize during probe; erasesize is still listed in 
->    the /proc/mtd file, useful for making filesystems.
-> 
-> Also fix a pre-existing bug with 2 MBit parts using the wrong pagesize;
-> these are a bit smaller than Linux would normally use (even shared with
-> a small FPGA's configuration bitstream).
+You seem to have picked up the right version ... the problem
+was that V2 got merged into RC1, not V3.  So the updated patch
+corrected that problem.   The update of the second patch was
+unchanged other than the Kconfig tweak (HAVE_MTD_OTP flag)
+someone requested.
 
-I'm not sure what kernel this is against, but it gets a reject storm
-against 2.6.27-rc1.  As does [2/2].
+- Dave
