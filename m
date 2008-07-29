@@ -1,10 +1,21 @@
-Date: Tue, 29 Jul 2008 13:54:11 +0100 (BST)
-From: Alexey Korolev <akorolev@infradead.org>
-To: dwmw2@infradead.org, dedekind@infradead.org
-Subject: [PATCH] Bugfix subpage read for small page NAND.
-Message-ID: <alpine.LFD.1.10.0807291325580.23930@casper.infradead.org>
+Received: from yw-out-1718.google.com ([74.125.46.154])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KNsAf-0000b2-Rm
+	for linux-mtd@lists.infradead.org; Tue, 29 Jul 2008 16:35:34 +0000
+Received: by yw-out-1718.google.com with SMTP id 5so2186877ywm.72
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 29 Jul 2008 09:35:32 -0700 (PDT)
+Message-ID: <6934efce0807290935m1a89629es12da643914b4f1d7@mail.gmail.com>
+Date: Tue, 29 Jul 2008 09:35:31 -0700
+From: "Jared Hulbert" <jaredeh@gmail.com>
+To: Darius <augulis.darius@gmail.com>
+Subject: Re: XIP Kernel freeze
+In-Reply-To: <g6776j$n5p$1@ger.gmane.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <g6776j$n5p$1@ger.gmane.org>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -15,35 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+You can turn on MTD_XIP "XIP aware MTD support"
 
-Current implementation of subpage read feature for NAND has issues with
-small page devices. Small page NAND do not support RNDOUT command.
-So subpage feature is not applicable for them. 
+> kernel freezes when booting on this line from cfi_probe.c:
+>
+> cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
+> cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL);
+> --->>> cfi_send_gen_cmd(0x98, 0x55, base, map, cfi, cfi->device_type, NULL);
+>
+When you issue that last command it will trigger the Flash to output
+status instead of data.
 
-This patch disables support of subpage for small page NAND. 
-The code is verified on nandsim(SP NAND simulation) and on LP NAND
-devices. 
 
-Thanks a lot to Artem for finding this issue.  
+> This board has two 16bit NOR Flahs devices configured as one 32bit memory.
+> Overall 32Mbytes Flash. Memory chips are Spansion S29PL127.
 
-Signed-off-by: Alexey Korolev <akorolev@infradead.org>
------------
-diff -Naurp 1/include/linux/mtd/nand.h 2/include/linux/mtd/nand.h
---- 1/include/linux/mtd/nand.h	2008-07-29 16:05:17.000000000 +0400
-+++ 2/include/linux/mtd/nand.h	2008-07-29 15:38:34.000000000 +0400
-@@ -177,7 +177,9 @@ typedef enum {
- #define NAND_MUST_PAD(chip) (!(chip->options & NAND_NO_PADDING))
- #define NAND_HAS_CACHEPROG(chip) ((chip->options & NAND_CACHEPRG))
- #define NAND_HAS_COPYBACK(chip) ((chip->options & NAND_COPYBACK))
--#define NAND_SUBPAGE_READ(chip) ((chip->ecc.mode == NAND_ECC_SOFT))
-+/* Large page NAND with SOFT_ECC should support subpage reads */
-+#define NAND_SUBPAGE_READ(chip) ((chip->ecc.mode == NAND_ECC_SOFT) \
-+					&& (chip->page_shift > 9))
- 
- /* Mask to zero out the chip options, which come from the id table */
- #define NAND_CHIPOPTIONS_MSK	(0x0000ffff & ~NAND_NO_AUTOINCR)
------------
-
-Thanks,
-Alexey
+If the flash has multiple hardware partitions you might be able to
+simply move the kernel to the end of the chip instead of the
+beginning.
