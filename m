@@ -1,17 +1,15 @@
-Received: from [202.202.0.36] (helo=cqu.edu.cn)
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KNmUL-0007I0-0d
-	for linux-mtd@lists.infradead.org; Tue, 29 Jul 2008 10:31:29 +0000
-Message-ID: <417327189.03021@cqu.edu.cn>
-Subject: Deep thinking about the Wear-leveling mothed
-From: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
+Date: Tue, 29 Jul 2008 10:54:51 +0100 (BST)
+From: Alexey Korolev <akorolev@infradead.org>
 To: Artem Bityutskiy <dedekind@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 29 Jul 2008 18:31:19 +0800
-Message-Id: <1217327479.2812.24.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Re: 2nd problem with read_subpage() ?
+In-Reply-To: <1217324707.3124.29.camel@sauron>
+Message-ID: <alpine.LFD.1.10.0807291052280.17391@casper.infradead.org>
+References: <1217314432.3124.9.camel@sauron> <1217323810.3124.19.camel@sauron>
+	<1217324707.3124.29.camel@sauron>
+MIME-Version: 1.0
+Content-Type: MULTIPART/MIXED;
+	BOUNDARY="1985284609-456692116-1217325292=:17391"
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,53 +19,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-most of current wear-leveling motheds are based on three ideas:
-1. old-young eraseblocks swapping: If the difference between the erasure
-cycles of a old block and a young block is larger then the STATIC
-threshold, data stored in the old block and in the young block are
-swqpped. this is the KEY idea.
-2. young eraseblock priority selection and oldest eraseblock protection.
-3. Hot-cold date separation.
+--1985284609-456692116-1217325292=:17391
+Content-Type: TEXT/PLAIN; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 
-I'd tried to improve the wear-leveling performanct by means of the
-second and the third ideas improvment.
-But unfortunately, the experimental resultes is not every exciting.
-Why???? Maybe the current implementation is good enough or the last two
-ideas are not the KEY.
+Hi,
 
-Is it impossible to improve the current wear-leveling policy? NO!!!
+Oh thanks for explanation. 
+Now I understand what has puzzled you. 
 
-Some important things, I think, should be clarify:
-1. How to evaluate a wear-leveling method? there are, I consider, two
-performance index:
-   @ the percentage of erasure counter triggered by wear-leveling in the
-total erasure counter, refer to as wl_ec/total_ec here. 
-   @ the difference between the oldest PEB and the youngest PEB (ECmax -
-ECmin)
-we can say that a wear-leveling algorithm is good if wl_ec/total_ec and
-(ECmax - ECmin) are both small.
-But unfortunately, it's defficult to minimize both wl_ec/total_ec and
-(ECmax - ECmin) AT THE SAME TIME, because the wl_ec/total_ec is in
-inverse proportion to the THRESHOLD, whereas the later is in direct
-proportion to the THRESHOLD. 
-
-2. Do we really need wear-leveling when the oldest PEB is far from the
-upper limit of reliable erasure? 
-   the answer is NO! 
-   we just need to ensure that no one ersaeblock reaches the limit long
-before the rest of the chip. IOW, there is nearly no need to ensure the
-(ECmax - ECmin) small enough when the ECmax is far from the limit. 
-   So, we should pay more attention to reduce the wl_ec/total_ec before
-the oldest PEB closes to the limit. It follows that the THRESHOLD should
-be set large enough in the beginning. And then, when some PEB is close
-to the limit, the THRESHOLD should small enough in order to evenly worn.
-
-   sum up, a DYNAMIC threshold is need.
-
-
--- 
-yours Sincerely,
-
-xiaochuan-xu (许小川)
+Nothing wrong is here. 
+Driver reads one subpage - then it needs to check ECC for the subpage -
+it jumps to position of ECC for that region and reads it. 
+Then it checks if it is correct. 
+> 
+> On Tue, 2008-07-29 at 12:30 +0300, Artem Bityutskiy wrote:
+> > On Tue, 2008-07-29 at 09:53 +0300, Artem Bityutskiy wrote:
+> > > Glance at nand_do_read_ops():
+> > > 
+> > > 
+> > > if (likely(sndcmd)) {
+> > >         chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
+> > >         sndcmd = 0;
+> > > }
+> > 
+> > Alexey,
+> > 
+> > my investigation showed that this "random output" command is not
+> > supported by all flashes. ST-micro NANDs seems to support it
+> > (I checked 2 manuals), while Sumsung NANDs do not (checked manual
+> > for K9XXG08UXA). This means your implementation will break many
+> > systems and should be either fixed or reverted.
+> 
+> I tried to implement this command in nandsim and test it with your
+> patch and found that there is something wring with how you use it.
+> 
+> What I do is dd if=/dev/mtd0 of=file bs=512 count=1 - just read one
+> sub-page. And in nandsim I see the following:
+> 
+> 1. NAND_CMD_READ0 command, - read from eraseblock 0, column 0. This is
+> fine and seems to be called from nand_do_read_ops():
+> 
+> if (likely(sndcmd)) {
+> 	chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
+>         sndcmd = 0;
+> }
+> 
+> 2. Then NAND_CMD_RNDREAD command is issued with column address
+> 0x828, which is completely weird. It is called from nand_read_subpage():
+> 
+> ...
+> if (eccpos[(start_step + num_steps) * chip->ecc.bytes] & (busw - 1))
+> 	aligned_len++;
+> 
+> chip->cmdfunc(mtd, NAND_CMD_RNDOUT, mtd->writesize + aligned_pos, -1);
+> chip->read_buf(mtd, &chip->oob_poi[aligned_pos], aligned_len);
+> ....
+> 
+> I do not understand what is going on.
+> 
+> -- 
+> Best regards,
+> Artem Bityutskiy (Битюцкий Артём)
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
+--1985284609-456692116-1217325292=:17391--
