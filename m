@@ -1,13 +1,13 @@
 Received: from smtp1.linux-foundation.org ([140.211.169.13])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KOHS5-0000pz-3A
-	for linux-mtd@lists.infradead.org; Wed, 30 Jul 2008 19:35:13 +0000
-Message-Id: <200807301935.m6UJZ2nk012300@imap1.linux-foundation.org>
-Subject: [patch 08/13] Blackfin NFC Driver: add proper devinit/devexit
-	markings to probe/remove functions
+	id 1KOHS5-0000sr-S9
+	for linux-mtd@lists.infradead.org; Wed, 30 Jul 2008 19:35:15 +0000
+Message-Id: <200807301935.m6UJZ3Xs012306@imap1.linux-foundation.org>
+Subject: [patch 10/13] Blackfin NFC Driver: use standard dev_err() rather than
+	printk()
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Wed, 30 Jul 2008 12:35:02 -0700
+Date: Wed, 30 Jul 2008 12:35:03 -0700
 Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org,
 	cooloney@kernel.org, vapier.adi@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,37 +26,20 @@ Signed-off-by: Bryan Wu <cooloney@kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- drivers/mtd/nand/bf5xx_nand.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/bf5xx_nand.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff -puN drivers/mtd/nand/bf5xx_nand.c~blackfin-nfc-driver-add-proper-devinit-devexit-markings-to-probe-remove-functions drivers/mtd/nand/bf5xx_nand.c
---- a/drivers/mtd/nand/bf5xx_nand.c~blackfin-nfc-driver-add-proper-devinit-devexit-markings-to-probe-remove-functions
+diff -puN drivers/mtd/nand/bf5xx_nand.c~blackfin-nfc-driver-use-standard-dev_err-rather-than-printk drivers/mtd/nand/bf5xx_nand.c
+--- a/drivers/mtd/nand/bf5xx_nand.c~blackfin-nfc-driver-use-standard-dev_err-rather-than-printk
 +++ a/drivers/mtd/nand/bf5xx_nand.c
-@@ -640,7 +640,7 @@ static int bf5xx_nand_add_partition(stru
- #endif
- }
+@@ -684,8 +684,7 @@ static int __devinit bf5xx_nand_probe(st
+ 	dev_dbg(&pdev->dev, "(%p)\n", pdev);
  
--static int bf5xx_nand_remove(struct platform_device *pdev)
-+static int __devexit bf5xx_nand_remove(struct platform_device *pdev)
- {
- 	struct bf5xx_nand_info *info = to_nand_info(pdev);
- 	struct mtd_info *mtd = NULL;
-@@ -673,7 +673,7 @@ static int bf5xx_nand_remove(struct plat
-  * it can allocate all necessary resources then calls the
-  * nand layer to look for devices
-  */
--static int bf5xx_nand_probe(struct platform_device *pdev)
-+static int __devinit bf5xx_nand_probe(struct platform_device *pdev)
- {
- 	struct bf5xx_nand_platform *plat = to_nand_plat(pdev);
- 	struct bf5xx_nand_info *info = NULL;
-@@ -815,7 +815,7 @@ static int bf5xx_nand_resume(struct plat
- /* driver device registration */
- static struct platform_driver bf5xx_nand_driver = {
- 	.probe		= bf5xx_nand_probe,
--	.remove		= bf5xx_nand_remove,
-+	.remove		= __devexit_p(bf5xx_nand_remove),
- 	.suspend	= bf5xx_nand_suspend,
- 	.resume		= bf5xx_nand_resume,
- 	.driver		= {
+ 	if (peripheral_request_list(bfin_nfc_pin_req, DRV_NAME)) {
+-		printk(KERN_ERR DRV_NAME
+-		": Requesting Peripherals failed\n");
++		dev_err(&pdev->dev, "requesting Peripherals failed\n");
+ 		return -EFAULT;
+ 	}
+ 
 _
