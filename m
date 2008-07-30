@@ -1,21 +1,21 @@
-Received: from smtp1.linux-foundation.org ([140.211.169.13])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KO3RZ-0005gn-Ia
-	for linux-mtd@lists.infradead.org; Wed, 30 Jul 2008 04:37:45 +0000
-Date: Tue, 29 Jul 2008 21:37:33 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: David Brownell <david-b@pacbell.net>
+Received: from smtp123.sbc.mail.sp1.yahoo.com ([69.147.64.96])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KO3ry-0001hW-NQ
+	for linux-mtd@lists.infradead.org; Wed, 30 Jul 2008 05:05:03 +0000
+Date: Tue, 29 Jul 2008 22:07:50 -0700
+From: David Brownell <david-b@pacbell.net>
+To: akpm@linux-foundation.org
 Subject: Re: [RESEND x2 PATCH 2.6.26-git 1/2] MTD DataFlash: bugfix, binary
 	page sizes now handled (v3)
-Message-Id: <20080729213733.3345546a.akpm@linux-foundation.org>
-In-Reply-To: <200807270325.13790.david-b@pacbell.net>
 References: <200807270325.13790.david-b@pacbell.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	<20080729213733.3345546a.akpm@linux-foundation.org>
+In-Reply-To: <20080729213733.3345546a.akpm@linux-foundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: dwmw2@infradead.org, Bryan Wu <cooloney@kernel.org>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Michael Hennerich <michael.hennerich@analog.com>
+Message-Id: <20080730050750.A4C013608ED@adsl-69-226-248-13.dsl.pltn13.pacbell.net>
+Cc: dwmw2@infradead.org, cooloney@kernel.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, michael.hennerich@analog.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,37 +25,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 27 Jul 2008 03:25:13 -0700 David Brownell <david-b@pacbell.net> wrote:
+> drivers/mtd/devices/mtd_dataflash.c: In function 'jedec_probe':
+> drivers/mtd/devices/mtd_dataflash.c:611: error: incompatible type for argument 1 of 'dev_name'
+> drivers/mtd/devices/mtd_dataflash.c:619: error: incompatible type for argument 1 of 'dev_name'
+>
 
-> From: David Brownell <dbrownell@users.sourceforge.net>
-> 
-> The wrong version of the "teach dataflash about binary density" patch
-> just got merged (v2 not v3) ... this restores the missing updates:
-> 
->   * Fix the cmdlinepart *regression* that caused testing failures (!!)
->     by restoring the original part labels in relevant cases.
-> 
->   * Don't reference things that don't exist (!)
-> 	- An opcode that doesn't even exist for DataFlash
-> 	- The part is "at45db642" not "at45db641"
-> 	- ID zero in this JEDEC table
-> 
->   * Make the JEDEC probe routine report and handle errors better:
-> 	- If the SPI calls fail, return the error codes.
-> 	- Don't depend on ordering of table entries.
-> 	- Unrecognized ids are different from parts that have no ID.
->           We won't actually know how to handle them correctly; display
-> 	  the ID and ignore the chip.
-> 
->   * Move the original block comment about the "legacy" chip ID scheme
->     back next to the code to which it applies ... not next to the new
->     JEDEC query code, which uses an entirely different strategy.
-> 
->   * Don't print a guessed erasesize; /proc/mtd has the real value.
-> 
-> And add a few more comments.
-> 
+It seems the MTD debug facility doesn't follow the (recent)
+rule of making debug code subject to dead code elimination
+rather than the more error-prone CPP level elimination.
+I sense a patch coming ...
 
-drivers/mtd/devices/mtd_dataflash.c: In function 'jedec_probe':
-drivers/mtd/devices/mtd_dataflash.c:611: error: incompatible type for argument 1 of 'dev_name'
-drivers/mtd/devices/mtd_dataflash.c:619: error: incompatible type for argument 1 of 'dev_name'
+The following tweak resolves the stuff above ... do you want
+a new patch?
+
+- Dave
+
+
+--- g26.orig/drivers/mtd/devices/mtd_dataflash.c	2008-07-29 22:00:32.000000000 -0700
++++ g26/drivers/mtd/devices/mtd_dataflash.c	2008-07-29 22:00:17.000000000 -0700
+@@ -609,7 +609,7 @@ static struct flash_info *__devinit jede
+ 			tmp++, info++) {
+ 		if (info->jedec_id == jedec) {
+ 			DEBUG(MTD_DEBUG_LEVEL1, "%s: OTP, sector protect%s\n",
+-				dev_name(spi->dev),
++				dev_name(&spi->dev),
+ 				(info->flags & SUP_POW2PS)
+ 					? ", binary pagesize" : ""
+ 				);
+@@ -618,7 +618,7 @@ static struct flash_info *__devinit jede
+ 				if (status < 0) {
+ 					DEBUG(MTD_DEBUG_LEVEL1,
+ 						"%s: status error %d\n",
+-						dev_name(spi->dev), status);
++						dev_name(&spi->dev), status);
+ 					return ERR_PTR(status);
+ 				}
+ 				if (status & 0x1) {
