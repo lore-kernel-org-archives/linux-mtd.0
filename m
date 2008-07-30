@@ -1,13 +1,13 @@
 Received: from smtp1.linux-foundation.org ([140.211.169.13])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KOHS2-0000kg-Et
+	id 1KOHS3-0000mI-BN
 	for linux-mtd@lists.infradead.org; Wed, 30 Jul 2008 19:35:11 +0000
-Message-Id: <200807301935.m6UJZ0bK012285@imap1.linux-foundation.org>
-Subject: [patch 05/13] Blackfin NFC Driver: fix bug - do not clobber the
-	status from the first 256 bytes if operating on 512 pages
+Message-Id: <200807301935.m6UJZ0l4012288@imap1.linux-foundation.org>
+Subject: [patch 06/13] Blackfin NFC Driver: fix bug - hw ecc calc by making
+	sure we extract 11 bits from each register instead of 10
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Wed, 30 Jul 2008 12:34:59 -0700
+Date: Wed, 30 Jul 2008 12:35:00 -0700
 Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org,
 	cooloney@kernel.org, vapier.adi@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,24 +21,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Mike Frysinger <vapier.adi@gmail.com>
 
-Singed-off-by: Mike Frysinger <vapier.adi@gmail.com>
+Signed-off-by: Mike Frysinger <vapier.adi@gmail.com>
 Signed-off-by: Bryan Wu <cooloney@kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- drivers/mtd/nand/bf5xx_nand.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/bf5xx_nand.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff -puN drivers/mtd/nand/bf5xx_nand.c~blackfin-nfc-driver-fix-bug-do-not-clobber-the-status-from-the-first-256-bytes-if-operating-on-512-pages drivers/mtd/nand/bf5xx_nand.c
---- a/drivers/mtd/nand/bf5xx_nand.c~blackfin-nfc-driver-fix-bug-do-not-clobber-the-status-from-the-first-256-bytes-if-operating-on-512-pages
+diff -puN drivers/mtd/nand/bf5xx_nand.c~blackfin-nfc-driver-fix-bug-hw-ecc-calc-by-making-sure-we-extract-11-bits-from-each-register-instead-of-10 drivers/mtd/nand/bf5xx_nand.c
+--- a/drivers/mtd/nand/bf5xx_nand.c~blackfin-nfc-driver-fix-bug-hw-ecc-calc-by-making-sure-we-extract-11-bits-from-each-register-instead-of-10
 +++ a/drivers/mtd/nand/bf5xx_nand.c
-@@ -273,7 +273,7 @@ static int bf5xx_nand_correct_data(struc
- 		dat += 256;
- 		read_ecc += 8;
- 		calc_ecc += 8;
--		ret = bf5xx_nand_correct_data_256(mtd, dat, read_ecc, calc_ecc);
-+		ret |= bf5xx_nand_correct_data_256(mtd, dat, read_ecc, calc_ecc);
- 	}
+@@ -298,7 +298,7 @@ static int bf5xx_nand_calculate_ecc(stru
+ 	ecc0 = bfin_read_NFC_ECC0();
+ 	ecc1 = bfin_read_NFC_ECC1();
  
- 	return ret;
+-	code[0] = (ecc0 & 0x3FF) | ((ecc1 & 0x3FF) << 11);
++	code[0] = (ecc0 & 0x7ff) | ((ecc1 & 0x7ff) << 11);
+ 
+ 	dev_dbg(info->device, "returning ecc 0x%08x\n", code[0]);
+ 
+@@ -310,7 +310,7 @@ static int bf5xx_nand_calculate_ecc(stru
+ 	if (page_size == 512) {
+ 		ecc0 = bfin_read_NFC_ECC2();
+ 		ecc1 = bfin_read_NFC_ECC3();
+-		code[1] = (ecc0 & 0x3FF) | ((ecc1 & 0x3FF) << 11);
++		code[1] = (ecc0 & 0x7ff) | ((ecc1 & 0x7ff) << 11);
+ 
+ 		/* second 3 bytes in ecc_code for second 256
+ 		 * bytes of 512 page size
 _
