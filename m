@@ -1,18 +1,20 @@
-Received: from smtp122.sbc.mail.sp1.yahoo.com ([69.147.64.95])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KO4Be-0006RS-QU
-	for linux-mtd@lists.infradead.org; Wed, 30 Jul 2008 05:25:28 +0000
-Date: Tue, 29 Jul 2008 22:28:12 -0700
-From: David Brownell <david-b@pacbell.net>
-To: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	akpm@linux-foundation.org
-Subject: [PATCH 2.6.26-git] MTD_DEBUG always does compile-time typechecks
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-Id: <20080730052812.0D64C360E2D@adsl-69-226-248-13.dsl.pltn13.pacbell.net>
-Cc: cooloney@kernel.org, linux-kernel@vger.kernel.org,
-	michael.hennerich@analog.com
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KO54B-0000wQ-MB
+	for linux-mtd@lists.infradead.org; Wed, 30 Jul 2008 06:21:53 +0000
+Subject: Re: [RESUBMIT] [PATCH] [MTD] NAND nand_ecc.c: rewrite for improved
+	performance
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Frans Meulenbroeks <fransmeulenbroeks@yahoo.com>
+In-Reply-To: <445284.23881.qm@web33612.mail.mud.yahoo.com>
+References: <445284.23881.qm@web33612.mail.mud.yahoo.com>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 30 Jul 2008 09:17:01 +0300
+Message-Id: <1217398621.9048.0.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,32 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: David Brownell <dbrownell@users.sourceforge.net>
+On Tue, 2008-07-29 at 10:58 -0700, Frans Meulenbroeks wrote:
+> Dear all,
+>=20
+> A resubmit of my patch, with all comments from Thomas addressed.
 
-The current style for debug messages is to ensure they're always
-parsed by the compiler and then subjected to dead code removal.
-That way builds won't break only when debug options get enabled,
-which is common when they are stripped out early by CPP.
+I'd suggest you to glance at Documentation/email-clients.txt
 
-This patch makes CONFIG_MTD_DEBUG adopt that convention.
-
-Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
----
- include/linux/mtd/mtd.h |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
---- a/include/linux/mtd/mtd.h	2008-07-29 22:06:43.000000000 -0700
-+++ b/include/linux/mtd/mtd.h	2008-07-29 22:19:21.000000000 -0700
-@@ -272,7 +272,11 @@ static inline void mtd_erase_callback(st
- 			printk(KERN_INFO args);		\
- 	} while(0)
- #else /* CONFIG_MTD_DEBUG */
--#define DEBUG(n, args...) do { } while(0)
-+#define DEBUG(n, args...)				\
-+	do {						\
-+		if (0)					\
-+			printk(KERN_INFO args);		\
-+	} while(0)
- 
- #endif /* CONFIG_MTD_DEBUG */
- 
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
