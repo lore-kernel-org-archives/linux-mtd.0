@@ -1,18 +1,14 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KO59r-0007Kf-2J
-	for linux-mtd@lists.infradead.org; Wed, 30 Jul 2008 06:27:35 +0000
-Subject: Re: Deep thinking about the Wear-leveling mothed
+Subject: Re: [PATCH] Bugfix subpage read for small page NAND.
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
-In-Reply-To: <1217327479.2812.24.camel@localhost.localdomain>
-References: <1217327479.2812.24.camel@localhost.localdomain>
+To: Alexey Korolev <akorolev@infradead.org>
+In-Reply-To: <alpine.LFD.1.10.0807291325580.23930@casper.infradead.org>
+References: <alpine.LFD.1.10.0807291325580.23930@casper.infradead.org>
 Content-Type: text/plain; charset=utf-8
-Date: Wed, 30 Jul 2008 09:22:53 +0300
-Message-Id: <1217398973.9048.7.camel@sauron>
+Date: Wed, 30 Jul 2008 12:00:06 +0300
+Message-Id: <1217408406.9048.14.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,22 +19,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Tue, 2008-07-29 at 13:54 +0100, Alexey Korolev wrote:
+> Current implementation of subpage read feature for NAND has issues with
+> small page devices. Small page NAND do not support RNDOUT command.
+> So subpage feature is not applicable for them.=20
+>=20
+> This patch disables support of subpage for small page NAND.=20
+> The code is verified on nandsim(SP NAND simulation) and on LP NAND
+> devices.=20
 
-On Tue, 2008-07-29 at 18:31 +0800, xiaochuan-xu wrote:
-> 2. Do we really need wear-leveling when the oldest PEB is far from the
-> upper limit of reliable erasure?=20
->    the answer is NO!=20
+I've put this and my nandsim fix to
 
-I would not be so sure. When UBI looses an erase counter because of an
-unclean reboot, it assigns average erase counter to that eraseblock.
-This works fine because UBI maintains a reasonably small Max-Min
-difference.
+git://git.infradead.org/~dedekind/mtd-fixes.git master
 
-Also, I am not sure it is save to erase one eraseblock several million
-times and do not erase neighbor eraseblocks. There are "radiation"
-effects in some flashes, when unused eraseblocks slowly "rot" when their
-neighbor eraseblocks are used a lot.
+With those 2 patches nandsim is happy for both LP and SP NANDs.
 
 --=20
 Best regards,
