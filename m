@@ -1,23 +1,21 @@
-Received: from smtp116.sbc.mail.sp1.yahoo.com ([69.147.64.89])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KOQQT-0006aU-0D
-	for linux-mtd@lists.infradead.org; Thu, 31 Jul 2008 05:10:09 +0000
-From: David Brownell <david-b@pacbell.net>
-To: Andrew Morton <akpm@linux-foundation.org>
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KOQap-0006LQ-03
+	for linux-mtd@lists.infradead.org; Thu, 31 Jul 2008 05:20:51 +0000
 Subject: Re: [patch 02/13] jffs2 summary allocation: don't use vmalloc()
-Date: Wed, 30 Jul 2008 22:10:00 -0700
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: David Brownell <david-b@pacbell.net>
+In-Reply-To: <20080730223924.3C51136129C@adsl-69-226-248-13.dsl.pltn13.pacbell.net>
 References: <200807301934.m6UJYvtA012276@imap1.linux-foundation.org>
 	<20080730223924.3C51136129C@adsl-69-226-248-13.dsl.pltn13.pacbell.net>
-	<20080730154618.65a25c67.akpm@linux-foundation.org>
-In-Reply-To: <20080730154618.65a25c67.akpm@linux-foundation.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200807302210.00307.david-b@pacbell.net>
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Cc: trimarchimichael@yahoo.it, dwmw2@infradead.org, jwboyer@gmail.com,
-	linux-mtd@lists.infradead.org, rmk@arm.linux.org.uk
+Content-Type: text/plain; charset=utf-8
+Date: Thu, 31 Jul 2008 08:15:15 +0300
+Message-Id: <1217481315.9048.64.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, trimarchimichael@yahoo.it, jwboyer@gmail.com,
+	dwmw2@infradead.org, akpm@linux-foundation.org, rmk@arm.linux.org.uk
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,71 +25,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 30 July 2008, Andrew Morton wrote:
-> On Wed, 30 Jul 2008 15:39:24 -0700
-> David Brownell <david-b@pacbell.net> wrote:
-> 
-> > I'm still asking whether MTD folk have any plans to make that stack DMA-safe...
-> > more than just the SPI flash drivers (mtd_dataflash, m25p80) could benefit
-> > from DMA support, so I'd hope it's at least being considered.
-> > 
-> > If the answer is "no" then (a) the MTD interface specs need to finally say
-> > they pass DMA-unsafe addresses, and (b) those SPI flash drivers are going
-> > to need updates.
-> 
-> Well yes.  It's been four months since this bug (it goes oops!) was
-> reported and afaik there's been no discussion or consideration or
-> anything else.
+Hi,
 
-Well, the appended is at least starting to address (a) ... under the
-assumption the MTD folk aren't making the stack more DMA-friendly.
-Presumably the same thing should be true of panic_write(), the OOB
-operations (for NAND), and the OTP operations.
+On Wed, 2008-07-30 at 15:39 -0700, David Brownell wrote:
+> > This patch will probably break all sorts of things because that buffer =
+is
+> > &*large*: up to half a meg.
+> >
+> > So this patch isn't mergeable.  I'll hang onto it to bug dmwm2 with whe=
+n he
+> > reincarnates.
+>=20
+> I'm still asking whether MTD folk have any plans to make that stack DMA-s=
+afe...
+> more than just the SPI flash drivers (mtd_dataflash, m25p80) could benefi=
+t
+> from DMA support, so I'd hope it's at least being considered.
+>=20
+> If the answer is "no" then (a) the MTD interface specs need to finally sa=
+y
+> they pass DMA-unsafe addresses, and (b) those SPI flash drivers are going
+> to need updates.
 
-I actually think it makes the most technical sense to make the MTD
-stack talk to its low level drivers the way most code seems to:
-only pass DMA-safe buffers.
+We use vmalloc() in both UBI and UBIFS because we need to allocate a
+large (of eraseblock size) buffer. So this is not just JFFS2. Using
+kmalloc() for this does not seem to be a good idea for me, because
+indeed the buffer size may be up to 512KiB, and may even grow at some
+point to 1MiB.
 
+Using kmalloc() would mean that at some point we would be unable to
+allocate these buffers at one go and would have to do things is
+fractions smaller than eraseblock size, which is not always easy. So I
+am not really sure what is better - to add complexity to JFFS2/UBI/UBIFS
+or to teach low levels (which do DMA) to deal with physically
+noncontinuous buffers (e.g., DMA only one RAM page at a time).
 
-> I don't know how much of a problem this bug is in the real world, but
-> it's taking an awful long time to get fixed?
-
-I'm not keen on spending time on a "fix" that both worsens performance
-and is also wrong ... which is why I've asked the broader question about
-the MTD stack and DMA.  It's taking a long time to get an answer to what
-should be a simple question...
-
-That, and the fact that the board I have two types of SPI flash hooked up
-to currently has a misbehaving SPI driver, which I think someone (else)
-is going to be fixing soon.  So testing such changes is impractical, even
-if I assume the MTD stack is unlkely to change...
-
-Not all the SPI controllers use DMA, so only some boards suffer from
-this problem in any case.
-
-- Dave
-
-
----
- include/linux/mtd/mtd.h |   10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
---- a/include/linux/mtd/mtd.h	2008-07-30 20:46:02.000000000 -0700
-+++ b/include/linux/mtd/mtd.h	2008-07-30 21:20:37.000000000 -0700
-@@ -149,8 +149,14 @@ struct mtd_info {
- 	void (*unpoint) (struct mtd_info *mtd, loff_t from, size_t len);
- 
- 
--	int (*read) (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf);
--	int (*write) (struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen, const u_char *buf);
-+	/*
-+	 * Read/write operations are given *VIRTUAL* addresses, which
-+	 * must not be passed as-is to dma mapping operations.
-+	 */
-+	int (*read) (struct mtd_info *mtd, loff_t from,
-+			size_t len, size_t *retlen, u_char *virt);
-+	int (*write) (struct mtd_info *mtd, loff_t to,
-+			size_t len, size_t *retlen, const u_char *virt);
- 
- 	/* In blackbox flight recorder like scenarios we want to make successful
- 	   writes in interrupt context. panic_write() is only intended to be
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
