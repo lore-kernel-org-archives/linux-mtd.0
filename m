@@ -1,22 +1,19 @@
-Received: from venus.billgatliff.com ([209.251.101.201])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KOPiu-0005pU-0g
-	for linux-mtd@lists.infradead.org; Thu, 31 Jul 2008 04:25:08 +0000
-Received: from [192.168.2.10] (adsl-75-23-81-96.dsl.peoril.sbcglobal.net
-	[75.23.81.96])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by venus.billgatliff.com (Postfix) with ESMTP id 76D71A40B2
+Received: from wf-out-1314.google.com ([209.85.200.172])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KOPvJ-0001zX-AM
+	for linux-mtd@lists.infradead.org; Thu, 31 Jul 2008 04:37:57 +0000
+Received: by wf-out-1314.google.com with SMTP id 28so315614wfc.24
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 30 Jul 2008 23:25:07 -0500 (CDT)
-Message-ID: <48913EA3.9080603@billgatliff.com>
-Date: Wed, 30 Jul 2008 23:25:07 -0500
-From: Bill Gatliff <bgat@billgatliff.com>
-MIME-Version: 1.0
+	Wed, 30 Jul 2008 21:37:56 -0700 (PDT)
+Message-ID: <8bd0f97a0807302137h5960d8a0ue0ce5ff745f3a579@mail.gmail.com>
+Date: Thu, 31 Jul 2008 00:37:56 -0400
+From: "Mike Frysinger" <vapier.adi@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: Node CRC failures in latest mainline git?
+Subject: mtd maps and read lengths / boundaries
+MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,66 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Guys:
+i'm writing a mapping driver at the moment and i'm wondering if i can
+make assumptions on the read length and address boundaries.  but
+first, a little background:
 
+i have a CFI-compliant flash that needs some GPIO wiggling before it
+can be accessed physically.  so my mapping driver is simply: wiggle
+the GPIOs before passing things off to physmap/cfi to handle all the
+ugly flash details.  the output from probing:
+gpio-addr-flash: probing 16-bit flash bus
+gpio-addr-flash: Found 1 x16 devices at 0x0 in 16-bit bank
+ Intel/Sharp Extended Query Table at 0x0031
+Using buffer write method
+cfi_cmdset_0001: Erase suspend on write enabled
+erase region 0: offset=0x0,size=0x20000,blocks=32
+cmdlinepart partition parsing not available
+RedBoot partition parsing not available
+gpio-addr-flash: Using board partition definition
+Creating 3 MTD partitions on "gpio-addr-flash":
+0x00000000-0x00040000 : "bootloader(nor)"
+0x00040000-0x00120000 : "linux kernel(nor)"
+0x00120000-0x00400000 : "file system(nor)"
 
-I pulled from Linus' tree yesterday, and all of a sudden I'm seeing a _ton_ of
-these:
+in my tests, the higher mtd levels (cfi_cmdset_0001.c) break things up
+into chunks such that the start address is aligned according to the
+length.  for example, if just using `cat` to read a device, the
+mapping driver sees:
+offset: 0x201e00 len: 0x200
+offset: 0x202000 len: 0x200
+offset: 0x202200 len: 0x200
+and it does this even if i use `dd` and give it weird offsets/lengths/etc...
 
-JFFS2 notice: (224) jffs2_get_inode_nodes: Node header CRC failed at 0x263a0fc.
-{1985,c002,00000046,32fe3396}
-
-An older kernel (three or four weeks ago) continues to work fine on the same board.
-
-The target is a PXA270 with a Spansion 29GL512N.  The kernel was built with
-arm-linux-gnueabi-gcc (GCC) 4.2.4 (Debian 4.2.4-3).  There haven't been any
-changes in the mtd-related parts of the kernel, other than what's come in from
-Linus.
-
-It looks like the most recent mtd-related commit is this:
-
-$ git-log drivers/mtd
-commit 9ee08c2df47c10ba624ff05a6c0f2500748bcb69
-Merge: eaf0ba5... 3d45955...
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat Jul 26 20:30:56 2008 -0700
-
-    Merge git://git.infradead.org/mtd-2.6
-
-    * git://git.infradead.org/mtd-2.6: (57 commits)
-      [MTD] [NAND] subpage read feature as a way to increase performance.
-      CPUFREQ: S3C24XX NAND driver frequency scaling support.
-      [MTD][NAND] au1550nd: remove unused variable
-      [MTD] jedec_probe: Fix SST 16-bit chip detection
-      [MTD][MTDPART] Fix a division by zero bug
-      [MTD][MTDPART] Cleanup and document the erase region handling
-      [MTD][MTDPART] Handle most checkpatch findings
-      [MTD][MTDPART] Seperate main loop from per-partition code in add_mtd_partiti
-      [MTD] physmap: resume already suspended chips on failure to suspend
-      [MTD] physmap: Fix suspend/resume/shutdown bugs.
-      [MTD] [NOR] Fix -ETIMEO errors in CFI driver
-      [MTD] [NAND] fsl_elbc_nand: fix section mismatch with CONFIG_MTD_OF_PARTS=y
-      [JFFS2] Use .unlocked_ioctl
-      [MTD] Fix const assignment in the MTD command line partitioning driver
-      [MTD] [NOR] gen_probe: No debug message when debugging is disabled
-      [MTD] [NAND] remove __PPC__ hardcoded address from DiskOnChip drivers
-      [MTD] [MAPS] Remove the bast-flash driver.
-      [MTD] [NAND] fsl_elbc_nand: ecclayout cleanups
-      [MTD] [NAND] fsl_elbc_nand: implement support for flash-based BBT
-      [MTD] [NAND] fsl_elbc_nand: fix OOB workability for large page NAND chips
-      ...
-
-
-Were I more competent with git, I would figure out how to bisect down to the
-patch that caused the problem.  That's still a bit out of my skillset at the
-moment, unfortunately--- I've done bisects successfully in the past, but for
-some reason I just can't get git to play along this time...
-
-
-Thanks!
-
-
-b.g.
--- 
-Bill Gatliff
-bgat@billgatliff.com
+so if i can make this assumption that the read length given to the mtd
+mapping driver will not be large (over 1 megabyte), or cross said
+boundary (the offset and length will not cross the 1 megabyte
+boundary), it will simplify my driver considerably.  otherwise my
+mapping driver will need to further break up the incoming request and
+process it a piece at a time ...
+-mike
