@@ -1,30 +1,19 @@
-Received: from az33egw02.freescale.net ([192.88.158.103])
+Received: from venus.billgatliff.com ([209.251.101.201])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KOdEe-0000dj-2q
-	for linux-mtd@lists.infradead.org; Thu, 31 Jul 2008 18:50:48 +0000
-Received: from az33smr01.freescale.net (az33smr01.freescale.net [10.64.34.199])
-	by az33egw02.freescale.net (8.12.11/az33egw02) with ESMTP id
-	m6VIohvM012323 for <linux-mtd@lists.infradead.org>;
-	Thu, 31 Jul 2008 11:50:44 -0700 (MST)
-Received: from ld0162-tx32.am.freescale.net (ld0162-tx32.am.freescale.net
-	[10.82.19.112])
-	by az33smr01.freescale.net (8.13.1/8.13.0) with ESMTP id m6VIohnS001434
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 31 Jul 2008 13:50:43 -0500 (CDT)
-Date: Thu, 31 Jul 2008 13:50:43 -0500
-From: Scott Wood <scottwood@freescale.com>
-To: Nigel Hathaway <Nigel.Hathaway@ubiquisys.com>
-Subject: Re: [U-Boot-Users] U-boot and UBI
-Message-ID: <20080731185042.GB6876@ld0162-tx32.am.freescale.net>
-References: <094A73044298734FB7D58CAAA319E1D6FA5EEE@UBIQ-SERV1.ubiquisys.local>
-	<4890AC5A.5010803@largestprime.net>
-	<094A73044298734FB7D58CAAA319E1D6FEFC5F@UBIQ-SERV1.ubiquisys.local>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <094A73044298734FB7D58CAAA319E1D6FEFC5F@UBIQ-SERV1.ubiquisys.local>
-Cc: pgssgp <pradep@gmail.com>, Bernard Blackham <bernard@largestprime.net>,
-	linux-mtd@lists.infradead.org, u-boot-users@lists.sourceforge.net
+	id 1KOel0-0008Cd-EV
+	for linux-mtd@lists.infradead.org; Thu, 31 Jul 2008 20:28:18 +0000
+Message-ID: <4892205F.2080005@billgatliff.com>
+Date: Thu, 31 Jul 2008 15:28:15 -0500
+From: Bill Gatliff <bgat@billgatliff.com>
+MIME-Version: 1.0
+To: David Brown <mtd@davidb.org>
+Subject: Re: Node CRC failures in latest mainline git?
+References: <48913EA3.9080603@billgatliff.com>
+	<20080731045624.GA24431@old.davidb.org>
+In-Reply-To: <20080731045624.GA24431@old.davidb.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,18 +23,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 31, 2008 at 12:01:18PM +0100, Nigel Hathaway wrote:
-> I have been playing around with a board from Olimex: the SAM9-L9260 (it
-> has an Atmel AT91SAM9260 on it). This has a ROMboot with U-Boot in NAND
-> flash. The board I am using has an interesting feature: the block which
-> U-Boot is configured to use for storing its environment just happens to
-> be a bad block, so I can't change and store the U-Boot environment
-> parameters on it.
+David Brown wrote:
+> On Wed, Jul 30, 2008 at 11:25:07PM -0500, Bill Gatliff wrote:
+> 
+>> Were I more competent with git, I would figure out how to bisect down to the
+>> patch that caused the problem.  That's still a bit out of my skillset at the
+>> moment, unfortunately--- I've done bisects successfully in the past, but for
+>> some reason I just can't get git to play along this time...
+> 
+> I just recently asked a question on the git mailing list, and Linus replied
+> with these instructions for bisecting through a merge.  Basically, you
+> create a temporary branch where you flatten the merge, using rebase, and
+> then bisect that.
+> 
+>    # create a test-branch with the 'remote' side of the merge
+>    git checkout -b test-branch merge^2
+> 
+>    # rebase that remote side on top of the local side
+>    git rebase merge^
 
-There's a patch in the testing branch of u-boot-nand-flash to allow a
-range of blocks to be specified for the environment, with bad blocks
-being skipped.  Another patch has been posted to allow the location of
-the environment to be specified in the OOB area of the boot block (which
-is guaranteed to be good).
 
--Scott
+I have no idea what all that would be doing, I still don't grok the syntax for
+commits and deltas, and "rebase" in particular always scares me.  :)
+
+Here's what I'm trying:
+
+$ git-checkout -b test-branch 9ee08c2df47c10ba624ff05a6c0f2500748bcb69^2
+$ git rebase 9ee08c2df47c10ba624ff05a6c0f2500748bcb69^
+
+It leaves me here:
+
+First, rewinding head to replay your work on top of it...
+Applying [MTD] [NOR] Remove cfi_cmdset_0001.c erase suspend fixup typo
+Applying [MTD] [NOR] Support for M50FLW080A and M50FLW080B
+Applying [MTD] [NOR] Add support for AMD AM29SL800D[BT] NOR flash chips
+Applying [MTD] [NOR] Add support for flash chips with ID in bank other than 0
+Applying [MTD] [NOR] Add support for Eon EN29SL800B[BT] NOR flash chips
+Applying [MTD] [NAND] fix 2 "unused variable" warnings in cafe_nand.c
+Applying [MTD] [NAND] excite_nandflash: simplify code using ARRAY_SIZE() macro.
+Applying [MTD] use list_for_each_entry() in add_mtd_device()
+Applying [MTD] use list_for_each_entry() in del_mtd_device()
+Applying [MTD] DataFlash: fix bug - ATMEL AT45DF321D spi flash card fails to be
+copied to (v2)
+Applying [MTD] DataFlash: use proper types
+Applying [MTD] [OneNAND] Check the ECC status first instead of controller
+Applying [MTD] [NAND] nandsim: fix size bug
+Applying [MTD] [NAND] nandsim: fix overridesize
+Applying [MTD] [NAND] nandsim: allow for 64-bit size
+Applying MTD/JFFS2: remove CVS keywords
+error: drivers/mtd/maps/mtx-1_flash.c: does not exist in index
+Using index info to reconstruct a base tree...
+Falling back to patching base and 3-way merge...
+Auto-merged drivers/mtd/devices/block2mtd.c
+Auto-merged drivers/mtd/ftl.c
+Auto-merged drivers/mtd/maps/Kconfig
+Auto-merged drivers/mtd/maps/Makefile
+CONFLICT (delete/modify): drivers/mtd/maps/mtx-1_flash.c deleted in HEAD and
+modified in MTD/JFFS2: remove CVS keywords. Version MTD/JFFS2: remove CVS
+keywords of drivers/mtd/maps/mtx-1_flash.c left in tree.
+Auto-merged drivers/mtd/maps/pcmciamtd.c
+Auto-merged drivers/mtd/maps/uclinux.c
+Auto-merged drivers/mtd/mtdchar.c
+Auto-merged drivers/mtd/redboot.c
+Auto-merged include/linux/mtd/map.h
+Auto-merged include/linux/mtd/mtd.h
+Auto-merged include/linux/mtd/nand.h
+Failed to merge in the changes.
+Patch failed at 0016.
+
+When you have resolved this problem run "git rebase --continue".
+If you would prefer to skip this patch, instead run "git rebase --skip".
+To restore the original branch and stop rebasing run "git rebase --abort".
+
+
+
+Poking at it more now.  Does it look like I'm on the right track, at least?
+
+
+b.g.
+-- 
+Bill Gatliff
+bgat@billgatliff.com
