@@ -1,34 +1,26 @@
-Received: from an-out-0708.google.com ([209.85.132.247])
+Received: from mk-outboundfilter-4.mail.uk.tiscali.com ([212.74.114.32])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KOykx-0000EV-Cn
-	for linux-mtd@lists.infradead.org; Fri, 01 Aug 2008 17:49:35 +0000
-Received: by an-out-0708.google.com with SMTP id c24so187229ana.99
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 01 Aug 2008 10:49:34 -0700 (PDT)
-Subject: Re: [PATCH 10/10] mtd: remove code associated with !CONFIG_PPC_MERGE
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: Kumar Gala <galak@kernel.crashing.org>
-In-Reply-To: <1217609060-6381-11-git-send-email-galak@kernel.crashing.org>
-References: <1217609060-6381-1-git-send-email-galak@kernel.crashing.org>
-	<1217609060-6381-2-git-send-email-galak@kernel.crashing.org>
-	<1217609060-6381-3-git-send-email-galak@kernel.crashing.org>
-	<1217609060-6381-4-git-send-email-galak@kernel.crashing.org>
-	<1217609060-6381-5-git-send-email-galak@kernel.crashing.org>
-	<1217609060-6381-6-git-send-email-galak@kernel.crashing.org>
-	<1217609060-6381-7-git-send-email-galak@kernel.crashing.org>
-	<1217609060-6381-8-git-send-email-galak@kernel.crashing.org>
-	<1217609060-6381-9-git-send-email-galak@kernel.crashing.org>
-	<1217609060-6381-10-git-send-email-galak@kernel.crashing.org>
-	<1217609060-6381-11-git-send-email-galak@kernel.crashing.org>
+	id 1KOzHv-0008RK-DE
+	for linux-mtd@lists.infradead.org; Fri, 01 Aug 2008 18:23:39 +0000
+Subject: Re: [MFD] TMIO NAND driver
+From: ian <spyro@f2s.com>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1217425070.27925.235.camel@pmac.infradead.org>
+References: <1216204824.11481.156.camel@wirenth>
+	<1216259137.11481.225.camel@wirenth> <1216397385.3644.17.camel@wirenth>
+	<1216994487.28941.141.camel@shinybook.infradead.org>
+	<1216995092.11324.165.camel@wirenth>
+	<1216995404.28941.143.camel@shinybook.infradead.org>
+	<1216999137.11324.174.camel@wirenth>
+	<1217010815.28941.162.camel@shinybook.infradead.org>
+	<1217018004.17427.9.camel@wirenth> <1217031457.17427.40.camel@wirenth>
+	<1217425070.27925.235.camel@pmac.infradead.org>
 Content-Type: text/plain
-Date: Fri, 01 Aug 2008 13:49:30 -0400
-Message-Id: <1217612970.2328.8.camel@localhost.localdomain>
+Date: Fri, 01 Aug 2008 19:23:34 +0100
+Message-Id: <1217615014.17427.131.camel@wirenth>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Sender: Josh Boyer <jwboyer@gmail.com>
-Cc: linuxppc-dev@ozlabs.org, dwmw2@infradead.org, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Reply-To: jwboyer@linux.vnet.ibm.com
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,12 +30,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2008-08-01 at 11:44 -0500, Kumar Gala wrote:
-> Now that arch/ppc is gone we don't need CONFIG_PPC_MERGE anymore
-> remove the dead code associated with !CONFIG_PPC_MERGE.
+On Wed, 2008-07-30 at 14:37 +0100, David Woodhouse wrote:
+> > 2) We push everything via RMKs tree, all in one go.
+> > 
+> > I'd prefer 2) if theres still time and its not too much trouble. It
+> > causes less breakage.
+> > 
+> > All it'd need is your acked-by:
 > 
-> The mtd maps should be using the OF based mechanism.
-> 
-> Signed-off-by: Kumar Gala <galak@kernel.crashing.org>
+> Acked-By: David Woodhouse <David.Woodhouse@intel.com>
 
-Acked-by: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+Thanks for that (although now it may go via the MFD tree as samuel seems
+active again.)
+
+(I just got back from holiday)
