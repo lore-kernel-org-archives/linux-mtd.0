@@ -1,12 +1,7 @@
-Received: from [2002:c35c:fd02::1] (helo=ZenIV.linux.org.uk)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KOrUT-0007mm-3S
-	for linux-mtd@lists.infradead.org; Fri, 01 Aug 2008 10:04:05 +0000
-Date: Fri, 1 Aug 2008 11:03:59 +0100
-From: Al Viro <viro@ZenIV.linux.org.uk>
-To: Neil Brown <neilb@suse.de>
 Subject: Re: [RFC] Reinstate NFS exportability for JFFS2.
-Message-ID: <20080801100359.GM28946@ZenIV.linux.org.uk>
+From: David Woodhouse <dwmw2@infradead.org>
+To: chucklever@gmail.com, viro@zeniv.linux.org.uk
+In-Reply-To: <76bd70e30807311831p771d0f1eia3e303bd84919422@mail.gmail.com>
 References: <1209670979.25560.587.camel@pmac.infradead.org>
 	<20080501204820.GA5951@infradead.org>
 	<1209681898.25560.613.camel@pmac.infradead.org>
@@ -14,14 +9,16 @@ References: <1209670979.25560.587.camel@pmac.infradead.org>
 	<1217541264.1126.15.camel@shinybook.infradead.org>
 	<18578.21997.529551.676627@notabene.brown>
 	<1217551230.3719.15.camel@shinybook.infradead.org>
-	<18578.29049.38904.746701@notabene.brown>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <18578.29049.38904.746701@notabene.brown>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-Cc: Christoph Hellwig <hch@infradead.org>, linux-fsdevel@vger.kernel.org,
-	linux-nfs@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+	<76bd70e30807311753m2785c6d3kd82edd1fe8b5f8b7@mail.gmail.com>
+	<1217552437.3719.30.camel@shinybook.infradead.org>
+	<76bd70e30807311831p771d0f1eia3e303bd84919422@mail.gmail.com>
+Content-Type: text/plain
+Date: Fri, 01 Aug 2008 14:35:59 +0100
+Message-Id: <1217597759.3454.356.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Neil Brown <neilb@suse.de>, Christoph Hellwig <hch@infradead.org>,
+	linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -32,19 +29,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 01, 2008 at 12:14:17PM +1000, Neil Brown wrote:
-
-> It sounds to me like the core problem here is that the locking regime
-> imposed by the VFS simply isn't suitable for JFFS2 .. and a bunch of
-> other filesystems.
+On Thu, 2008-07-31 at 21:31 -0400, Chuck Lever wrote:
+> On Thu, Jul 31, 2008 at 9:00 PM, David Woodhouse <dwmw2@infradead.org> wrote:
+> > On Thu, 2008-07-31 at 20:53 -0400, Chuck Lever wrote:
+> >> For now it is sufficient, IMO.  NFSv4 doesn't implement a readdirplus
+> >> operation, and the performance benefits of NFSv3 readdirplus are
+> >> equivocal -- there isn't a strong desire to replicate the complexity
+> >> of NFSv3 readdirplus in NFSv4.  I'm not even sure you can do it even
+> >> with a single compound RPC, so even in the long run NFSv4 may not ever
+> >> have the locking issues that NFSv3 does here.
+> >
+> > AFAICT NFSv4 does have the same recursion issues already. The call trace
+> > goes fs->readdir() ... nfsd4_encode_dirent() ...
+> > nfsd4_encode_dirent_fattr() ... lookup_one_len() ... fs->lookup().
+> >
+> > Or am I mistaken?
 > 
-> This seems to suggest that the VFS should be changed.
-> Superficially, it seems that changing the locking rules so that the
-> callee takes i_mutex rather than the caller taking it would help and,
-> in the case of JFFS2, make f->sem redundant.  Does that match your
-> understanding?
+> It looks like it needs a directory entry's dentry for a couple of reasons:
+> 
+> 1.  To determine whether a directory entry is a mount point
+> 
+> 2.  If the client has asked for file handles (via a bitmask) for the
+> directory entries
 
-Huh?  How could that possibly help?  You are not changing the sequence
-of operations on locks, you only slightly modify the timing; how could
-that possibly eliminate a deadlock?  Moreover, how the _hell_ could
-making exclusion area smaller make f->sem redundant?
+Those are needed by NFSv3 too -- and can be handled with a lookup_fh()
+method in the file system which is guaranteed to be called from within
+the filldir callback, and some support in the VFS for checking if it's a
+mountpoint.
+
+NFSv4 introduces another problem though, which is that it seems to be
+able to return the _full_ getattr() results for each object, and there's
+no real way round the fact that we need to do the ->lookup() for that.
+
+If sane clients aren't expected to _ask_ for that, though, then perhaps
+it would be OK to fall back to something like the existing
+readdir-to-buffer hack for that case, while most normal clients won't
+trigger it.
+
+-- 
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
