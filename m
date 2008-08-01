@@ -1,25 +1,20 @@
-Received: from ns.suse.de ([195.135.220.2] helo=mx1.suse.de)
+Received: from mail.davidb.org ([66.93.32.219])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KOk9y-0003oS-IA
-	for linux-mtd@lists.infradead.org; Fri, 01 Aug 2008 02:14:27 +0000
-From: Neil Brown <neilb@suse.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Date: Fri, 1 Aug 2008 12:14:17 +1000
+	id 1KOkfc-0008B6-OI
+	for linux-mtd@lists.infradead.org; Fri, 01 Aug 2008 02:47:09 +0000
+Date: Thu, 31 Jul 2008 19:47:07 -0700
+From: David Brown <davidb@davidb.org>
+To: Bill Gatliff <bgat@billgatliff.com>
+Subject: Re: Node CRC failures in latest mainline git?
+Message-ID: <20080801024706.GB2296@old.davidb.org>
+References: <48913EA3.9080603@billgatliff.com>
+	<20080731045624.GA24431@old.davidb.org>
+	<4892205F.2080005@billgatliff.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-ID: <18578.29049.38904.746701@notabene.brown>
-Subject: Re: [RFC] Reinstate NFS exportability for JFFS2.
-In-Reply-To: message from David Woodhouse on Friday August 1
-References: <1209670979.25560.587.camel@pmac.infradead.org>
-	<20080501204820.GA5951@infradead.org>
-	<1209681898.25560.613.camel@pmac.infradead.org>
-	<18458.28833.539314.455215@notabene.brown>
-	<1217541264.1126.15.camel@shinybook.infradead.org>
-	<18578.21997.529551.676627@notabene.brown>
-	<1217551230.3719.15.camel@shinybook.infradead.org>
-Cc: Christoph Hellwig <hch@infradead.org>, linux-fsdevel@vger.kernel.org,
-	linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <4892205F.2080005@billgatliff.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,62 +24,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday August 1, dwmw2@infradead.org wrote:
-> On Fri, 2008-08-01 at 10:16 +1000, Neil Brown wrote:
-> > On Thursday July 31, dwmw2@infradead.org wrote:
-> > > On Fri, 2008-05-02 at 11:38 +1000, Neil Brown wrote:
-> > > > Why is there a deadlock here?
-> > 
-> > I was really hoping you would answer this question.
-> 
-> It's because the nfsd readdirplus code recurses into the file system.
-> >From the file system's ->readdir() function we call back into nfsd's
-> encode_entry(), which then calls back into the file system's ->lookup()
-> function so that it can generate a filehandle.
-> 
-> For any file system which has its own internal locking -- which includes
-> jffs2, btrfs, xfs, jfs, gfs*, ocfs* and probably others -- that
-> recursive call back into the file system will deadlock.
-> 
-> In the specific case of JFFS2, we need that internal locking because of
-> lock ordering constraints with the garbage collection -- we need to take
-> the allocator lock _before_ the per-inode lock, which means we can't use
-> the generic inode->i_mutex for that purpose. That's documented in
-> fs/jffs2/README.Locking. I know fewer details about the other affected
-> file systems.
+On Thu, Jul 31, 2008 at 03:28:15PM -0500, Bill Gatliff wrote:
 
-It sounds to me like the core problem here is that the locking regime
-imposed by the VFS simply isn't suitable for JFFS2 .. and a bunch of
-other filesystems.
+>I have no idea what all that would be doing, I still don't grok the syntax for
+>commits and deltas, and "rebase" in particular always scares me.  :)
 
-This seems to suggest that the VFS should be changed.
-Superficially, it seems that changing the locking rules so that the
-callee takes i_mutex rather than the caller taking it would help and,
-in the case of JFFS2, make f->sem redundant.  Does that match your
-understanding?
+>Here's what I'm trying:
+>
+>$ git-checkout -b test-branch 9ee08c2df47c10ba624ff05a6c0f2500748bcb69^2
+>$ git rebase 9ee08c2df47c10ba624ff05a6c0f2500748bcb69^
+>
+>CONFLICT (delete/modify): drivers/mtd/maps/mtx-1_flash.c deleted in HEAD and
+>modified in MTD/JFFS2: remove CVS keywords. Version MTD/JFFS2: remove CVS
+>When you have resolved this problem run "git rebase --continue".
+>If you would prefer to skip this patch, instead run "git rebase --skip".
+>To restore the original branch and stop rebasing run "git rebase --abort".
+>
+>Poking at it more now.  Does it look like I'm on the right track, at least?
 
-That is obviously a big change and one that should not be made
-lightly, but if it was to benefit a number of the newer filesystems, then
-it would seem like the appropriate way to go.
+Yes.  Basically, there are merge conflicts that got resolved at the end.
+You're trying to linearize that which means you have to figure them out for
+the pieces.  It's kind of a pain, but this particular one isn't all that
+hard.
 
-Clearly we need a short term solution too as we don't want to wait for
-VFS locking rules to be renegotiated.  The idea of a "lock is owned by
-me" check is appealing to me as it is a small, localised change that
-would easily be removed if/when the locking we "fixed" properly.
+So, I was able to do this rebase as follows:
 
-In the JFFS2 case I imagine this taking the following form:
+   $ git rebase 9ee08c2df47^
+   ...
+   $ git rm drivers/mtd/maps/mtx-1_flash.c
+   $ git rebase --continue
+   ...
 
- - new field in jffs2_inode_info "struct task_struct *sem_owner",
-   initialised to NULL
- - in jffs2_readdir after locking ->sem, set ->sem_owner to current.
- - before unlocking ->sem, set ->sem_owner to NULL
- - in jffs2_lookup, check if "dir_f->sem_owner == current"
-   If it does, set a flag reminding us not to drop the lock,
-   else mutex_lock(&dir_f->sem);
+Now we have a real conflict in arch/arm/mach-at91/board-yl-9200.c.
 
-This should fix the problem with very little cost either in
-performance or elegance.  And if/when the locking rules were changed,
-the accompanying code review would immediately notice this and remove
-it.
+   $ vi arch/arm/mach-at91/board-yl-9200.c
 
-NeilBrown
+What you want is actually the first one, but with the first line changed
+to:
+
+      static struct atmel_nand_data __initdata yl9200_nand_data = {
+
+(with atmel_nand_data, instead of at91_nand_data).
+
+   $ git add arch/arm/mach-at91/board-yl-9200.c
+   $ git rebase --continue
+
+As a sanity check, I can compare the end result:
+
+   $ git diff HEAD..9ee08c2df47c10ba624ff05a6c0f2500748bcb69
+
+and see that at least the end result is the same.
+
+Now
+    $ git bisect start
+    $ git bisect bad
+    $ git bisect good 9ee08c2df47c10ba624ff05a6c0f2500748bcb69^
+    Bisecting: 28 revisions left to test after this
+
+and that should help you find the problem.  No guarantee that each
+intermediate commit is quite right.  You can either fix them, and then
+continue, or 'git bisect skip' ones that don't work, but you might miss the
+bad one if it just happened to not compile.
+
+David
