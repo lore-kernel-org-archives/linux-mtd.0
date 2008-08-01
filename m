@@ -1,17 +1,16 @@
-Subject: Re: Node CRC failures in latest mainline git?
-From: David Woodhouse <dwmw2@infradead.org>
-To: Bill Gatliff <bgat@billgatliff.com>
-In-Reply-To: <489379A2.3060205@billgatliff.com>
-References: <48913EA3.9080603@billgatliff.com>
-	<4891431D.7030009@billgatliff.com>
-	<1217624390.3719.32.camel@shinybook.infradead.org>
-	<489379A2.3060205@billgatliff.com>
-Content-Type: text/plain
-Date: Fri, 01 Aug 2008 22:14:22 +0100
-Message-Id: <1217625262.3719.34.camel@shinybook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Received: from smtp4.pp.htv.fi ([213.243.153.38])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KP3AH-0003lO-H4
+	for linux-mtd@lists.infradead.org; Fri, 01 Aug 2008 22:32:02 +0000
+Date: Sat, 2 Aug 2008 01:30:56 +0300
+From: Adrian Bunk <bunk@kernel.org>
+To: nAl Viro <viro@zeniv.linux.org.uk>, dwmw2@infradead.org
+Subject: mtdsuper.c BLOCK=n compile error
+Message-ID: <20080801223056.GK19682@cs181140183.pp.htv.fi>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,14 +20,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2008-08-01 at 16:01 -0500, Bill Gatliff wrote:
-> Well, it's a bazillion bad node CRCs, approximately.  But I don't know if that's
-> why it doesn't mount, or not.  I haven't managed to catch the message--- if
-> there is one.
+Commit d5686b444ff3f72808d2b3fbd58672a86cdf38e7
+(switch mtd and dm-table to lookup_bdev()) causes
+the following compile error with CONFIG_BLOCK=n:
 
-More than the older kernels? If so, I suspect something broke in your
-flash bus setup. Can you make it dump the first node it fails the CRC
-on, and compare with what you read under a good kernel?
+<--  snip  -->
+
+...
+  CC      drivers/mtd/mtdsuper.o
+/home/bunk/linux/kernel-2.6/git/linux-2.6/drivers/mtd/mtdsuper.c: In function `get_sb_mtd':
+/home/bunk/linux/kernel-2.6/git/linux-2.6/drivers/mtd/mtdsuper.c:184: error: implicit declaration of function 'lookup_bdev'
+/home/bunk/linux/kernel-2.6/git/linux-2.6/drivers/mtd/mtdsuper.c:184: warning: assignment makes pointer from integer without a cast
+/home/bunk/linux/kernel-2.6/git/linux-2.6/drivers/mtd/mtdsuper.c:197: error: implicit declaration of function 'bdput'
+make[3]: *** [drivers/mtd/mtdsuper.o] Error 1
+
+<--  snip  -->
+
+cu
+Adrian
 
 -- 
-dwmw2
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
