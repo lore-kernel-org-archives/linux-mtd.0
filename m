@@ -1,21 +1,16 @@
-Received: from fg-out-1718.google.com ([72.14.220.154])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KOjUP-0004Qu-RI
-	for linux-mtd@lists.infradead.org; Fri, 01 Aug 2008 01:31:30 +0000
-Received: by fg-out-1718.google.com with SMTP id l26so413424fgb.26
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 31 Jul 2008 18:31:29 -0700 (PDT)
-Message-ID: <76bd70e30807311831p771d0f1eia3e303bd84919422@mail.gmail.com>
-Date: Thu, 31 Jul 2008 21:31:29 -0400
-From: "Chuck Lever" <chuck.lever@oracle.com>
-Sender: chucklever@gmail.com
-To: "David Woodhouse" <dwmw2@infradead.org>
-Subject: Re: [RFC] Reinstate NFS exportability for JFFS2.
-In-Reply-To: <1217552437.3719.30.camel@shinybook.infradead.org>
+Received: from ns.suse.de ([195.135.220.2] helo=mx1.suse.de)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KOk9y-0003oS-IA
+	for linux-mtd@lists.infradead.org; Fri, 01 Aug 2008 02:14:27 +0000
+From: Neil Brown <neilb@suse.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Date: Fri, 1 Aug 2008 12:14:17 +1000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Message-ID: <18578.29049.38904.746701@notabene.brown>
+Subject: Re: [RFC] Reinstate NFS exportability for JFFS2.
+In-Reply-To: message from David Woodhouse on Friday August 1
 References: <1209670979.25560.587.camel@pmac.infradead.org>
 	<20080501204820.GA5951@infradead.org>
 	<1209681898.25560.613.camel@pmac.infradead.org>
@@ -23,12 +18,8 @@ References: <1209670979.25560.587.camel@pmac.infradead.org>
 	<1217541264.1126.15.camel@shinybook.infradead.org>
 	<18578.21997.529551.676627@notabene.brown>
 	<1217551230.3719.15.camel@shinybook.infradead.org>
-	<76bd70e30807311753m2785c6d3kd82edd1fe8b5f8b7@mail.gmail.com>
-	<1217552437.3719.30.camel@shinybook.infradead.org>
-Cc: Neil Brown <neilb@suse.de>, Christoph Hellwig <hch@infradead.org>,
-	linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Reply-To: chucklever@gmail.com
+Cc: Christoph Hellwig <hch@infradead.org>, linux-fsdevel@vger.kernel.org,
+	linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,35 +29,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 31, 2008 at 9:00 PM, David Woodhouse <dwmw2@infradead.org> wrote:
-> On Thu, 2008-07-31 at 20:53 -0400, Chuck Lever wrote:
->> For now it is sufficient, IMO.  NFSv4 doesn't implement a readdirplus
->> operation, and the performance benefits of NFSv3 readdirplus are
->> equivocal -- there isn't a strong desire to replicate the complexity
->> of NFSv3 readdirplus in NFSv4.  I'm not even sure you can do it even
->> with a single compound RPC, so even in the long run NFSv4 may not ever
->> have the locking issues that NFSv3 does here.
->
-> AFAICT NFSv4 does have the same recursion issues already. The call trace
-> goes fs->readdir() ... nfsd4_encode_dirent() ...
-> nfsd4_encode_dirent_fattr() ... lookup_one_len() ... fs->lookup().
->
-> Or am I mistaken?
+On Friday August 1, dwmw2@infradead.org wrote:
+> On Fri, 2008-08-01 at 10:16 +1000, Neil Brown wrote:
+> > On Thursday July 31, dwmw2@infradead.org wrote:
+> > > On Fri, 2008-05-02 at 11:38 +1000, Neil Brown wrote:
+> > > > Why is there a deadlock here?
+> > 
+> > I was really hoping you would answer this question.
+> 
+> It's because the nfsd readdirplus code recurses into the file system.
+> >From the file system's ->readdir() function we call back into nfsd's
+> encode_entry(), which then calls back into the file system's ->lookup()
+> function so that it can generate a filehandle.
+> 
+> For any file system which has its own internal locking -- which includes
+> jffs2, btrfs, xfs, jfs, gfs*, ocfs* and probably others -- that
+> recursive call back into the file system will deadlock.
+> 
+> In the specific case of JFFS2, we need that internal locking because of
+> lock ordering constraints with the garbage collection -- we need to take
+> the allocator lock _before_ the per-inode lock, which means we can't use
+> the generic inode->i_mutex for that purpose. That's documented in
+> fs/jffs2/README.Locking. I know fewer details about the other affected
+> file systems.
 
-It looks like it needs a directory entry's dentry for a couple of reasons:
+It sounds to me like the core problem here is that the locking regime
+imposed by the VFS simply isn't suitable for JFFS2 .. and a bunch of
+other filesystems.
 
-1.  To determine whether a directory entry is a mount point
+This seems to suggest that the VFS should be changed.
+Superficially, it seems that changing the locking rules so that the
+callee takes i_mutex rather than the caller taking it would help and,
+in the case of JFFS2, make f->sem redundant.  Does that match your
+understanding?
 
-2.  If the client has asked for file handles (via a bitmask) for the
-directory entries
+That is obviously a big change and one that should not be made
+lightly, but if it was to benefit a number of the newer filesystems, then
+it would seem like the appropriate way to go.
 
-So, yep, you're right.  NFSv4 will hit this too.
+Clearly we need a short term solution too as we don't want to wait for
+VFS locking rules to be renegotiated.  The idea of a "lock is owned by
+me" check is appealing to me as it is a small, localised change that
+would easily be removed if/when the locking we "fixed" properly.
 
-As I recall, the Linux NFSv4 client doesn't use
-FATTR4_WORD0_FILEHANDLE during NFSv4 READDIR for the reasons I stated
-earlier; and it only uses FATTR4_WORD0_FSID during GETATTR.  Other
-clients might use these during a READDIR however.
+In the JFFS2 case I imagine this taking the following form:
 
--- 
- "Alright guard, begin the unnecessarily slow-moving dipping mechanism."
---Dr. Evil
+ - new field in jffs2_inode_info "struct task_struct *sem_owner",
+   initialised to NULL
+ - in jffs2_readdir after locking ->sem, set ->sem_owner to current.
+ - before unlocking ->sem, set ->sem_owner to NULL
+ - in jffs2_lookup, check if "dir_f->sem_owner == current"
+   If it does, set a flag reminding us not to drop the lock,
+   else mutex_lock(&dir_f->sem);
+
+This should fix the problem with very little cost either in
+performance or elegance.  And if/when the locking rules were changed,
+the accompanying code review would immediately notice this and remove
+it.
+
+NeilBrown
