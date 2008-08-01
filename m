@@ -1,20 +1,28 @@
-Received: from smtp4.pp.htv.fi ([213.243.153.38])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KP3bN-0002mm-GW
-	for linux-mtd@lists.infradead.org; Fri, 01 Aug 2008 23:00:01 +0000
-Date: Sat, 2 Aug 2008 01:58:58 +0300
-From: Adrian Bunk <bunk@kernel.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: mtdsuper.c BLOCK=n compile error
-Message-ID: <20080801225858.GM19682@cs181140183.pp.htv.fi>
-References: <20080801223056.GK19682@cs181140183.pp.htv.fi>
-	<1217630912.3719.41.camel@shinybook.infradead.org>
+Received: from cantor.suse.de ([195.135.220.2] helo=mx1.suse.de)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KP3mx-0000M3-MI
+	for linux-mtd@lists.infradead.org; Fri, 01 Aug 2008 23:12:00 +0000
+From: Neil Brown <neilb@suse.de>
+To: Al Viro <viro@ZenIV.linux.org.uk>
+Date: Sat, 2 Aug 2008 09:11:49 +1000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1217630912.3719.41.camel@shinybook.infradead.org>
-Cc: linux-mtd@lists.infradead.org, Al Viro <viro@zeniv.linux.org.uk>,
-	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <18579.38965.178789.21355@notabene.brown>
+Subject: Re: [RFC] Reinstate NFS exportability for JFFS2.
+In-Reply-To: message from Al Viro on Friday August 1
+References: <1209670979.25560.587.camel@pmac.infradead.org>
+	<20080501204820.GA5951@infradead.org>
+	<1209681898.25560.613.camel@pmac.infradead.org>
+	<18458.28833.539314.455215@notabene.brown>
+	<1217541264.1126.15.camel@shinybook.infradead.org>
+	<18578.21997.529551.676627@notabene.brown>
+	<1217551230.3719.15.camel@shinybook.infradead.org>
+	<18578.29049.38904.746701@notabene.brown>
+	<20080801100359.GM28946@ZenIV.linux.org.uk>
+Cc: Christoph Hellwig <hch@infradead.org>, linux-fsdevel@vger.kernel.org,
+	linux-nfs@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,59 +32,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 01, 2008 at 11:48:31PM +0100, David Woodhouse wrote:
-> On Sat, 2008-08-02 at 01:30 +0300, Adrian Bunk wrote:
-> > Commit d5686b444ff3f72808d2b3fbd58672a86cdf38e7
-> > (switch mtd and dm-table to lookup_bdev()) causes
-> > the following compile error with CONFIG_BLOCK=n:
-> > 
-> > <--  snip  -->
-> > 
-> > ...
-> >   CC      drivers/mtd/mtdsuper.o
-> > /home/bunk/linux/kernel-2.6/git/linux-2.6/drivers/mtd/mtdsuper.c: In function `get_sb_mtd':
-> > /home/bunk/linux/kernel-2.6/git/linux-2.6/drivers/mtd/mtdsuper.c:184: error: implicit declaration of function 'lookup_bdev'
-> > /home/bunk/linux/kernel-2.6/git/linux-2.6/drivers/mtd/mtdsuper.c:184: warning: assignment makes pointer from integer without a cast
-> > /home/bunk/linux/kernel-2.6/git/linux-2.6/drivers/mtd/mtdsuper.c:197: error: implicit declaration of function 'bdput'
-> > make[3]: *** [drivers/mtd/mtdsuper.o] Error 1
-> > 
-> > <--  snip  -->
+On Friday August 1, viro@ZenIV.linux.org.uk wrote:
+> On Fri, Aug 01, 2008 at 12:14:17PM +1000, Neil Brown wrote:
 > 
-> Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
+> > It sounds to me like the core problem here is that the locking regime
+> > imposed by the VFS simply isn't suitable for JFFS2 .. and a bunch of
+> > other filesystems.
+> > 
+> > This seems to suggest that the VFS should be changed.
+> > Superficially, it seems that changing the locking rules so that the
+> > callee takes i_mutex rather than the caller taking it would help and,
+> > in the case of JFFS2, make f->sem redundant.  Does that match your
+> > understanding?
 > 
-> diff --git a/drivers/mtd/mtdsuper.c b/drivers/mtd/mtdsuper.c
-> index 9b6af7e..e03250b 100644
-> --- a/drivers/mtd/mtdsuper.c
-> +++ b/drivers/mtd/mtdsuper.c
-> @@ -178,6 +178,7 @@ int get_sb_mtd(struct file_system_type *fs_type, int
-> flags,
->  		}
->  	}
->  
-> +#ifdef CONFIG_BLOCK
->  	/* try the old way - the hack where we allowed users to mount
->  	 * /dev/mtdblock$(n) but didn't actually _use_ the blockdev
->  	 */
-> @@ -200,6 +201,7 @@ int get_sb_mtd(struct file_system_type *fs_type, int
-> flags,
->  			     mnt);
->  
->  not_an_MTD_device:
-> +#endif /* CONFIG_BLOCK */
->  	if (!(flags & MS_SILENT))
->  		printk(KERN_NOTICE
->  		       "MTD: Attempt to mount non-MTD device \"%s\"\n",
+> Huh?  How could that possibly help?  You are not changing the sequence
+> of operations on locks, you only slightly modify the timing; how could
+> that possibly eliminate a deadlock?  Moreover, how the _hell_ could
+> making exclusion area smaller make f->sem redundant?
+
+By moving the locking of i_mutex inside the filesystem methods, I
+reasoned that the filesystem would have more control and be able to do
+things in the order that it wanted.
+
+I gathered from the JFFS locking document - admitted a very brief
+reading - that it the VFS took i_mutex at awkward times for JFFS2,
+and the for this reason, JFFS2 introduced f->sem, described as:
+
+  "This is the JFFS2-internal equivalent of the inode mutex i->i_sem."
+
+If i_mutex became internal, maybe JFFS2 wouldn't need an internal
+equivalent.
+
+But I did miss an important point.
+The reason that the current code works with many filesystems is that 
+lookup_one_len *doesn't* take i_mutex before calling ->lookup.  It 
+assumes that it is already held.  So pushing the locking down into
+->lookup would actually break other filesystems without fixing this
+one.  My Bad.
 
 
-Still gives a compile error for the second bdput().
+So it seems like recursion into the filesystem is a Bad Thing and we
+need a different approach.
+I really don't like NFSD having to cache all the names that it gets
+from readdir and then hand them back to lookup one at a time, though
+it might end up being the answer..
+
+What about this (I know you're going to hate it)??
+
+A new open flags: O_READDIRPLUS.
+If ->readdir finds that it is set on filp->f_flags, then it does a
+lookup on each name it finds and makes sure they are all in the
+dcache.
+Then when NFSD calls lookup_one_len inside the filldir callback, it
+will find the answer in the cache and not need to recurse into the
+filesystem.
+
+We would need some way to be sure that the new dentry didn't get
+flushed from the dcache before NFSD called lookup_one_len.  I guess
+if ->readdir held a reference on it while filldir was called that
+would be an adequate guarantee.
+
+This would then make O_READDIRPLUS available to userspace too. 
+"ls -l" could use it and thus give the filesystem an opportunity to
+optimise things.
+->readdir could:
+    load a block of the directory
+    schedule reads for all the inodes in parallel
+    attach them to the dcache in series, using whatever locking
+        was needed and no more.
 
 
-cu
-Adrian
+I'm actually starting to like the idea.  Which means it is probably
+doomed.
 
--- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+NeilBrown
