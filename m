@@ -1,23 +1,12 @@
-Received: from mk-outboundfilter-4.mail.uk.tiscali.com ([212.74.114.32])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KOzHv-0008RK-DE
-	for linux-mtd@lists.infradead.org; Fri, 01 Aug 2008 18:23:39 +0000
-Subject: Re: [MFD] TMIO NAND driver
-From: ian <spyro@f2s.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1217425070.27925.235.camel@pmac.infradead.org>
-References: <1216204824.11481.156.camel@wirenth>
-	<1216259137.11481.225.camel@wirenth> <1216397385.3644.17.camel@wirenth>
-	<1216994487.28941.141.camel@shinybook.infradead.org>
-	<1216995092.11324.165.camel@wirenth>
-	<1216995404.28941.143.camel@shinybook.infradead.org>
-	<1216999137.11324.174.camel@wirenth>
-	<1217010815.28941.162.camel@shinybook.infradead.org>
-	<1217018004.17427.9.camel@wirenth> <1217031457.17427.40.camel@wirenth>
-	<1217425070.27925.235.camel@pmac.infradead.org>
+Subject: Re: Node CRC failures in latest mainline git?
+From: David Woodhouse <dwmw2@infradead.org>
+To: Bill Gatliff <bgat@billgatliff.com>
+In-Reply-To: <4891431D.7030009@billgatliff.com>
+References: <48913EA3.9080603@billgatliff.com>
+	<4891431D.7030009@billgatliff.com>
 Content-Type: text/plain
-Date: Fri, 01 Aug 2008 19:23:34 +0100
-Message-Id: <1217615014.17427.131.camel@wirenth>
+Date: Fri, 01 Aug 2008 21:59:50 +0100
+Message-Id: <1217624390.3719.32.camel@shinybook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -30,17 +19,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-07-30 at 14:37 +0100, David Woodhouse wrote:
-> > 2) We push everything via RMKs tree, all in one go.
-> > 
-> > I'd prefer 2) if theres still time and its not too much trouble. It
-> > causes less breakage.
-> > 
-> > All it'd need is your acked-by:
+On Wed, 2008-07-30 at 23:44 -0500, Bill Gatliff wrote:
 > 
-> Acked-By: David Woodhouse <David.Woodhouse@intel.com>
+> Bill Gatliff wrote:
+> > 
+> > An older kernel (three or four weeks ago) continues to work fine on the same board.
+> 
+> I take that back--- a 2.6.24 kernel is issuing the same message, but it still
+> mounts the filesystem.  The latest git stuff won't.
 
-Thanks for that (although now it may go via the MFD tree as samuel seems
-active again.)
-
-(I just got back from holiday)
+Why doesn't it mount? It shouldn't be because of a single bad node
+CRC...
+ 
+-- 
+dwmw2
