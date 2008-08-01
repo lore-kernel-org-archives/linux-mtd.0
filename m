@@ -1,21 +1,25 @@
-Received: from venus.billgatliff.com ([209.251.101.201])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KOlcs-0008Rp-DT
-	for linux-mtd@lists.infradead.org; Fri, 01 Aug 2008 03:48:22 +0000
-Message-ID: <48928786.4000104@billgatliff.com>
-Date: Thu, 31 Jul 2008 22:48:22 -0500
-From: Bill Gatliff <bgat@billgatliff.com>
-MIME-Version: 1.0
-To: David Brown <davidb@davidb.org>
-Subject: Re: Node CRC failures in latest mainline git?
-References: <48913EA3.9080603@billgatliff.com>
-	<20080731045624.GA24431@old.davidb.org>
-	<4892205F.2080005@billgatliff.com>
-	<20080801024706.GB2296@old.davidb.org>
-In-Reply-To: <20080801024706.GB2296@old.davidb.org>
-Content-Type: text/plain; charset=ISO-8859-1
+Subject: Re: [RFC] Reinstate NFS exportability for JFFS2.
+From: David Woodhouse <dwmw2@infradead.org>
+To: chucklever@gmail.com
+In-Reply-To: <76bd70e30807311831p771d0f1eia3e303bd84919422@mail.gmail.com>
+References: <1209670979.25560.587.camel@pmac.infradead.org>
+	<20080501204820.GA5951@infradead.org>
+	<1209681898.25560.613.camel@pmac.infradead.org>
+	<18458.28833.539314.455215@notabene.brown>
+	<1217541264.1126.15.camel@shinybook.infradead.org>
+	<18578.21997.529551.676627@notabene.brown>
+	<1217551230.3719.15.camel@shinybook.infradead.org>
+	<76bd70e30807311753m2785c6d3kd82edd1fe8b5f8b7@mail.gmail.com>
+	<1217552437.3719.30.camel@shinybook.infradead.org>
+	<76bd70e30807311831p771d0f1eia3e303bd84919422@mail.gmail.com>
+Content-Type: text/plain
+Date: Fri, 01 Aug 2008 09:13:38 +0100
+Message-Id: <1217578418.3454.316.camel@pmac.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: Neil Brown <neilb@suse.de>, Christoph Hellwig <hch@infradead.org>,
+	linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +29,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Brown wrote:
-> Yes.  Basically, there are merge conflicts that got resolved at the end.
-> You're trying to linearize that which means you have to figure them out for
-> the pieces.  It's kind of a pain, but this particular one isn't all that
-> hard.
+On Thu, 2008-07-31 at 21:31 -0400, Chuck Lever wrote:
+> It looks like it needs a directory entry's dentry for a couple of
+> reasons:
+> 
+> 1.  To determine whether a directory entry is a mount point
+> 
+> 2.  If the client has asked for file handles (via a bitmask) for the
+> directory entries
 
-Yea, I got through that pretty easily once I figured out what it was telling me.
- Git is so smart, it's scary.  :)
+Theoretically, neither of those actually need the _inode_. If it's a
+mountpoint, won't it be in the dcache already? So a purely dcache-based
+lookup would find it, without having to call through to the file
+system's ->lookup() method on a dcache miss?
 
-BUT, I'm not confident now that the problem isn't that I simply corrupted my
-filesystem: I'm getting error messages (but it still mounts) on .24 and .23.  So
-now I've got to find the time to generate a new one, and then test that.
+And to generate the file handle, all you need in the common case is
+i_generation? You don't need to pull every inode into core.
 
-Don't hold your breath, I have a business trip to a destination 12 timezones
-away coming up.  I'll try to work it in...
-
-I do appreciate the help, though.  I'll let you know as soon as I have something
-credible to report.
-
-
-b.g.
 -- 
-Bill Gatliff
-bgat@billgatliff.com
+dwmw2
