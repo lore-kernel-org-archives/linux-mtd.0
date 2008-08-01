@@ -1,20 +1,28 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from [2002:c35c:fd02::1] (helo=ZenIV.linux.org.uk)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KOqNI-00083w-O5
-	for linux-mtd@lists.infradead.org; Fri, 01 Aug 2008 08:52:37 +0000
-Received: from vaebh105.NOE.Nokia.com (vaebh105.europe.nokia.com
-	[10.160.244.31])
-	by mgw-mx03.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
-	m718qIUd020544
-	for <linux-mtd@lists.infradead.org>; Fri, 1 Aug 2008 11:52:33 +0300
-Message-ID: <4892CF09.2020807@nokia.com>
-Date: Fri, 01 Aug 2008 11:53:29 +0300
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+	id 1KOrUT-0007mm-3S
+	for linux-mtd@lists.infradead.org; Fri, 01 Aug 2008 10:04:05 +0000
+Date: Fri, 1 Aug 2008 11:03:59 +0100
+From: Al Viro <viro@ZenIV.linux.org.uk>
+To: Neil Brown <neilb@suse.de>
+Subject: Re: [RFC] Reinstate NFS exportability for JFFS2.
+Message-ID: <20080801100359.GM28946@ZenIV.linux.org.uk>
+References: <1209670979.25560.587.camel@pmac.infradead.org>
+	<20080501204820.GA5951@infradead.org>
+	<1209681898.25560.613.camel@pmac.infradead.org>
+	<18458.28833.539314.455215@notabene.brown>
+	<1217541264.1126.15.camel@shinybook.infradead.org>
+	<18578.21997.529551.676627@notabene.brown>
+	<1217551230.3719.15.camel@shinybook.infradead.org>
+	<18578.29049.38904.746701@notabene.brown>
 MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [PATCH] [MTD] [OneNAND] Add defines for HF and sync write
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <18578.29049.38904.746701@notabene.brown>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+Cc: Christoph Hellwig <hch@infradead.org>, linux-fsdevel@vger.kernel.org,
+	linux-nfs@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +32,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, Aug 01, 2008 at 12:14:17PM +1000, Neil Brown wrote:
 
-Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
----
- include/linux/mtd/onenand_regs.h |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+> It sounds to me like the core problem here is that the locking regime
+> imposed by the VFS simply isn't suitable for JFFS2 .. and a bunch of
+> other filesystems.
+> 
+> This seems to suggest that the VFS should be changed.
+> Superficially, it seems that changing the locking rules so that the
+> callee takes i_mutex rather than the caller taking it would help and,
+> in the case of JFFS2, make f->sem redundant.  Does that match your
+> understanding?
 
-diff --git a/include/linux/mtd/onenand_regs.h b/include/linux/mtd/onenand_regs.h
-index d1b310c..0c6bbe2 100644
---- a/include/linux/mtd/onenand_regs.h
-+++ b/include/linux/mtd/onenand_regs.h
-@@ -152,6 +152,8 @@
- #define ONENAND_SYS_CFG1_INT		(1 << 6)
- #define ONENAND_SYS_CFG1_IOBE		(1 << 5)
- #define ONENAND_SYS_CFG1_RDY_CONF	(1 << 4)
-+#define ONENAND_SYS_CFG1_HF		(1 << 2)
-+#define ONENAND_SYS_CFG1_SYNC_WRITE	(1 << 1)
- 
- /*
-  * Controller Status Register F240h (R)
--- 
-1.5.4.3
+Huh?  How could that possibly help?  You are not changing the sequence
+of operations on locks, you only slightly modify the timing; how could
+that possibly eliminate a deadlock?  Moreover, how the _hell_ could
+making exclusion area smaller make f->sem redundant?
