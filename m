@@ -1,15 +1,30 @@
-Subject: Re: [PATCH 6/10] drivers/mtd: Use DIV_ROUND_UP
-From: David Woodhouse <dwmw2@infradead.org>
-To: Julia Lawall <julia@diku.dk>
-In-Reply-To: <Pine.LNX.4.64.0808021713580.20095@ask.diku.dk>
-References: <Pine.LNX.4.64.0808021713580.20095@ask.diku.dk>
-Content-Type: text/plain
-Date: Sat, 02 Aug 2008 18:45:43 +0100
-Message-Id: <1217699143.3719.58.camel@shinybook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+Received: from mail.fieldses.org ([66.93.2.214] helo=fieldses.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KPLoi-00068I-E0
+	for linux-mtd@lists.infradead.org; Sat, 02 Aug 2008 18:27:01 +0000
+Date: Sat, 2 Aug 2008 14:26:44 -0400
+To: chucklever@gmail.com
+Subject: Re: [RFC] Reinstate NFS exportability for JFFS2.
+Message-ID: <20080802182644.GE30454@fieldses.org>
+References: <18578.21997.529551.676627@notabene.brown>
+	<1217551230.3719.15.camel@shinybook.infradead.org>
+	<76bd70e30807311753m2785c6d3kd82edd1fe8b5f8b7@mail.gmail.com>
+	<1217552437.3719.30.camel@shinybook.infradead.org>
+	<76bd70e30807311831p771d0f1eia3e303bd84919422@mail.gmail.com>
+	<1217597759.3454.356.camel@pmac.infradead.org>
+	<1217598976.3454.359.camel@pmac.infradead.org>
+	<76bd70e30808010905j3010a6bfy534c068a662d348d@mail.gmail.com>
+	<1217607571.3454.417.camel@pmac.infradead.org>
+	<76bd70e30808011047u3cd0a56cg3b2d62e01afed014@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <76bd70e30808011047u3cd0a56cg3b2d62e01afed014@mail.gmail.com>
+From: "J. Bruce Fields" <bfields@fieldses.org>
+Cc: linux-nfs@vger.kernel.org, Neil Brown <neilb@suse.de>,
+	Christoph Hellwig <hch@infradead.org>,
+	linux-mtd@lists.infradead.org, viro@zeniv.linux.org.uk,
+	linux-fsdevel@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,14 +34,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2008-08-02 at 17:14 +0200, Julia Lawall wrote:
-> From: Julia Lawall <julia@diku.dk>
+On Fri, Aug 01, 2008 at 01:47:58PM -0400, Chuck Lever wrote:
+> AFAIK WORD0_CHANGE is a required value for NFSv4 clients to detect
+> data changes on the server.  That's one I think needs to remain
+> enabled in the server capabilities bitmask.  In fact most local file
+> systems on Linux don't handle that one correctly yet anyway, but
+> "saner" clients do depend on that one to manage their page caches.
 > 
-> The kernel.h macro DIV_ROUND_UP performs the computation (((n) + (d) -
-> 1) / (d)) but is perhaps more readable.
+> I don't think there's a way to indicate to a client that a server
+> supports WORD0_CHANGE for a normal NFSv4 GETATTR, but not during a
+> NFSv4 READDIR.
+> 
+> > But still, if masking them out would be a problem, we could use the
+> > existing trick of doing readdir into a buffer and then going back and
+> > doing the actual lookup later. But _only_ for that relatively rare case,
+> > rather than for _all_ users of readdirplus, as we do at the moment.
+> 
+> Personally I don't have an immediate problem with the double-buffering
+> here.  The extra data copy wouldn't add significant overhead to an
+> already expensive and not terribly frequent operation.  There may be a
+> caching opportunity to saving the buffered result, but I would bet
+> either the contents of a directory or the attributes of objects
+> residing in it would change too often for there to be much benefit.
+> 
+> I think we have an opportunity for a little better concurrency here,
+> though.  Doing all the lookups and the directory read asynchronously
+> and concurrently, if that's possible, might be a performance
+> enhancement in most normal cases.  This would allow the requests to be
+> passed all at once to the local file system, which could then organize
+> any necessary disk accesses in a more optimal way.
+> 
+> That would be a reason to continue to do a double-buffered readdir in
+> every case.
 
-Applied; thanks.
+I don't see how xfs's double-buffered readdir allows you to do the
+"lookups and directory reads asynchronously and concurrently"?  The
+filesystem doesn't know the lookups are going to be coming at the time
+that it gets the readdir, so it doesn't know to start them yet.
 
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+Could you add a readdirplus vfs operation which took a flag indicating
+how much extra information you're going to need?
+
+The three cases where readdir can be called are:
+
+	- ordinary readdir, for which the existing filldir_t provides
+	  all the information needed.
+	- nfsv3 readdirplus, where the only additional information
+	  needed is whether there's a mountpoint.
+	- nfsv4 readdir, where we may need all the stat info, acls,
+	  etc., etc.
+
+So you could define a readdirplus file operation like
+
+	readdirplus(file, void, plusfiller, flag)
+
+with plusfiller defined just as filldir_t but with an extra struct
+dentry * argument.  The only nonzero flag value would be DENTRY_NEEDED,
+and without DENTRY_NEEDED set, the filesystem would have the option of
+passing NULL in the plusfiller callback's dentry argument.  So nfsv3
+would use flag == 0, and get a dentry passed back to it only when it was
+already cached (all it needs to detect mountpoints).  But nfsv4 would
+pass in DENTRY_NEEDED, and get a dentry on every callback.
+
+Um.  That assumes it's only the lookup that has the locking problems,
+and that the calls back into the filesystem for acls and so on will be
+safe.  Etc.
+
+Or you could define a more complicated set of flags indicating exactly
+what would be needed, and have the callback pass back a big structure,
+most of whose fields could be left unset depending on what was
+requested.
+
+Though really I can't see any great objection to just moving xfs's hack
+up into nfsd.  It may not do everything, but it seems like an
+incremental improvement.
+
+--b.
