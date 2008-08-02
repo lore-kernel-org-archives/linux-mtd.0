@@ -1,18 +1,15 @@
-Subject: Re: mtdsuper.c BLOCK=n compile error
-From: David Woodhouse <dwmw2@infradead.org>
-To: Adrian Bunk <bunk@kernel.org>
-In-Reply-To: <1217632851.3719.47.camel@shinybook.infradead.org>
-References: <20080801223056.GK19682@cs181140183.pp.htv.fi>
-	<1217630912.3719.41.camel@shinybook.infradead.org>
-	<20080801225858.GM19682@cs181140183.pp.htv.fi>
-	<1217632851.3719.47.camel@shinybook.infradead.org>
-Content-Type: text/plain
-Date: Sat, 02 Aug 2008 00:26:11 +0100
-Message-Id: <1217633171.3719.50.camel@shinybook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Al Viro <viro@zeniv.linux.org.uk>,
-	linux-kernel@vger.kernel.org
+Received: from mgw2.diku.dk ([130.225.96.92])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KPJK4-000646-1v
+	for linux-mtd@lists.infradead.org; Sat, 02 Aug 2008 15:47:12 +0000
+Date: Sat, 2 Aug 2008 17:14:21 +0200 (CEST)
+From: Julia Lawall <julia@diku.dk>
+To: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH 6/10] drivers/mtd: Use DIV_ROUND_UP
+Message-ID: <Pine.LNX.4.64.0808021713580.20095@ask.diku.dk>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,14 +19,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2008-08-02 at 00:20 +0100, David Woodhouse wrote:
-> Er, why is the second bdput() there _anyway_?
+From: Julia Lawall <julia@diku.dk>
 
-Oh, I see. I have to stop posting patches -- I think it's past my
-bedtime.
+The kernel.h macro DIV_ROUND_UP performs the computation (((n) + (d) - 1) /
+(d)) but is perhaps more readable.
 
-http://git.infradead.org/users/dwmw2/random-2.6.git?a=commitdiff;h=10f8e16418a5a69eda36cdbfc4ad17531c52fe92
+An extract of the semantic patch that makes this change is as follows:
+(http://www.emn.fr/x-info/coccinelle/)
 
+// <smpl>
+@haskernel@
+@@
 
--- 
-dwmw2
+#include <linux/kernel.h>
+
+@depends on haskernel@
+expression n,d;
+@@
+
+(
+- (n + d - 1) / d
++ DIV_ROUND_UP(n,d)
+|
+- (n + (d - 1)) / d
++ DIV_ROUND_UP(n,d)
+)
+
+@depends on haskernel@
+expression n,d;
+@@
+
+- DIV_ROUND_UP((n),d)
++ DIV_ROUND_UP(n,d)
+
+@depends on haskernel@
+expression n,d;
+@@
+
+- DIV_ROUND_UP(n,(d))
++ DIV_ROUND_UP(n,d)
+// </smpl>
+
+Signed-off-by: Julia Lawall <julia@diku.dk>
+
+---
+ drivers/mtd/chips/cfi_cmdset_0001.c |    2 +-
+ drivers/mtd/chips/gen_probe.c       |    2 +-
+ drivers/mtd/ssfdc.c                 |    3 +--
+ 3 files changed, 3 insertions(+), 4 deletions(-)
+
+diff -u -p a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -1640,7 +1640,7 @@ static int __xipram do_write_buffer(stru
+ 
+ 	/* Figure out the number of words to write */
+ 	word_gap = (-adr & (map_bankwidth(map)-1));
+-	words = (len - word_gap + map_bankwidth(map) - 1) / map_bankwidth(map);
++	words = DIV_ROUND_UP(len - word_gap, map_bankwidth(map));
+ 	if (!word_gap) {
+ 		words--;
+ 	} else {
+diff -u -p a/drivers/mtd/chips/gen_probe.c b/drivers/mtd/chips/gen_probe.c
+--- a/drivers/mtd/chips/gen_probe.c
++++ b/drivers/mtd/chips/gen_probe.c
+@@ -111,7 +111,7 @@ static struct cfi_private *genprobe_iden
+ 		max_chips = 1;
+ 	}
+ 
+-	mapsize = sizeof(long) * ( (max_chips + BITS_PER_LONG-1) / BITS_PER_LONG );
++	mapsize = sizeof(long) * DIV_ROUND_UP(max_chips, BITS_PER_LONG);
+ 	chip_map = kzalloc(mapsize, GFP_KERNEL);
+ 	if (!chip_map) {
+ 		printk(KERN_WARNING "%s: kmalloc failed for CFI chip map\n", map->name);
+diff -u -p a/drivers/mtd/ssfdc.c b/drivers/mtd/ssfdc.c
+--- a/drivers/mtd/ssfdc.c
++++ b/drivers/mtd/ssfdc.c
+@@ -321,8 +321,7 @@ static void ssfdcr_add_mtd(struct mtd_bl
+ 	DEBUG(MTD_DEBUG_LEVEL1,
+ 		"SSFDC_RO: cis_block=%d,erase_size=%d,map_len=%d,n_zones=%d\n",
+ 		ssfdc->cis_block, ssfdc->erase_size, ssfdc->map_len,
+-		(ssfdc->map_len + MAX_PHYS_BLK_PER_ZONE - 1) /
+-		MAX_PHYS_BLK_PER_ZONE);
++		DIV_ROUND_UP(ssfdc->map_len, MAX_PHYS_BLK_PER_ZONE));
+ 
+ 	/* Set geometry */
+ 	ssfdc->heads = 16;
