@@ -1,19 +1,30 @@
-Received: from exprod6og109.obsmtp.com ([64.18.1.23])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KQ4U0-0008QI-4m
-	for linux-mtd@lists.infradead.org; Mon, 04 Aug 2008 18:08:36 +0000
-Content-class: urn:content-classes:message
+Received: from mail.fieldses.org ([66.93.2.214] helo=fieldses.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KQ4zm-00014I-3w
+	for linux-mtd@lists.infradead.org; Mon, 04 Aug 2008 18:41:26 +0000
+Date: Mon, 4 Aug 2008 14:41:15 -0400
+To: Neil Brown <neilb@suse.de>
+Subject: Re: [RFC] Reinstate NFS exportability for JFFS2.
+Message-ID: <20080804184115.GG25940@fieldses.org>
+References: <76bd70e30807311831p771d0f1eia3e303bd84919422@mail.gmail.com>
+	<1217597759.3454.356.camel@pmac.infradead.org>
+	<1217598976.3454.359.camel@pmac.infradead.org>
+	<76bd70e30808010905j3010a6bfy534c068a662d348d@mail.gmail.com>
+	<1217607571.3454.417.camel@pmac.infradead.org>
+	<76bd70e30808011047u3cd0a56cg3b2d62e01afed014@mail.gmail.com>
+	<20080802182644.GE30454@fieldses.org>
+	<18581.40178.976747.769343@notabene.brown>
+	<76bd70e30808031015l36db41bexf319e85ba7acc4e9@mail.gmail.com>
+	<18582.21855.2092.903688@notabene.brown>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: [PATCH] mtd: m25p80.c add support for non-JEDEC ID devices
-Date: Mon, 4 Aug 2008 14:08:23 -0400
-Message-ID: <BD79186B4FD85F4B8E60E381CAEE190958F55C@mi8nycmail19.Mi8.com>
-In-Reply-To: <BD79186B4FD85F4B8E60E381CAEE19094F63C3@mi8nycmail19.Mi8.com>
-References: <BD79186B4FD85F4B8E60E381CAEE19094F63C3@mi8nycmail19.Mi8.com>
-From: "hartleys" <hartleys@visionengravers.com>
-To: <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <18582.21855.2092.903688@notabene.brown>
+From: "J. Bruce Fields" <bfields@fieldses.org>
+Cc: linux-nfs@vger.kernel.org, chucklever@gmail.com,
+	Christoph Hellwig <hch@infradead.org>,
+	linux-mtd@lists.infradead.org, viro@zeniv.linux.org.uk,
+	linux-fsdevel@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,92 +34,150 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The following patch adds support for the SST 2 Mbit / 4 Mbit SPI Serial
-Flash devices (SST25LF020A/SST25LF040A).
+On Mon, Aug 04, 2008 at 11:03:27AM +1000, Neil Brown wrote:
+> The locking bothers me.
+> The VFS seems to have a general policy of doing the locking itself to
+> make life easier for filesystem implementors (or to make it harder for
+> them to mess up, depending on your perspective).
+> 
+> The current issue seems to suggest that the locking provided by the
+> VFS is no longer adequate, so each filesystem is needing to create
+> something itself.  That suggests to me a weakness in the model.
+> Possibly the VFS should give up trying to be in control and let
+> filesystems do their own locking.  Possibly there are still things
+> that the VFS can do which are universally good.  I think these are
+> questions that should be addressed.  
+> Maybe they have already been addressed and I missed the conversation
+> (that wouldn't surprise me much).  But seeing words like "hack"
+> suggests to me that it hasn't.  So I want to make sure I understand
+> the problem properly and deeply before giving my blessing to a hack.
+> 
+> So: what are the issues?
+> 
+>  Obviously readdir can race with create and you don't want them
+>  tripping each other up.  The current VFS approach to this is i_mutex.
+>  Any place which modifies a directory or does a lookup in a directory
+>  takes i_mutex to ensure that the directory doesn't change.
+> 
+>  This is probably fairly limiting.  With a tree-structured directory
+>  you only really need to lock the 'current node' of the tree.
+>  So any access would lock the top node, find which child to follow,
+>  then lock the child and unlock the parent.  Rebalancing might need to
+>  be creative as you cannot lock a parent while holding a lock on the
+>  child, but that isn't insurmountable.
+>  So I could argue that holding i_mutex across a lookup or create or
+>  readdir maybe isn't ideal.  It would be interesting to explore the
+>  possibility of dropping i_mutex across calls into the filesystem.
+>  By the time the filesystem is called, we really only need to be
+>  locking the names (dentries) rather than the whole directory.
+>  More on this later...
+> 
+>  Some filesystems want to restructure directories and times that are
+>  independent of any particular access.  This might be defragmentation
+>  or rebalancing or whatever.  Clearly there needs to be mutual
+>  exclusion between this and other accesses such as readdir and lookup.
+>  The VFS clearly cannot help with this.  It doesn't know when
+>  rebalancing might happen or are what sort of granularity.  So the
+>  filesystem must do it's own locking.
+>  It strikes me that this sort of locking would best be done by
+>  spinlocks at the block level rather than a per-inode mutex.  However
+>  I haven't actually implemented this (yet) so I cannot be certain.
+> 
+>  This is what is causing the current problem (for JFFS2 at least).
+>  JFF2 has a per-inode lock which protects against internally visible
+>  changes to the inode.  Further (and this is key) this lock is held
+>  across the filldir callback.
+>  i_mutex is also held across the filldir callback, but there is an
+>  important difference.  It is taken by the VFS, not the filesystem,
+>  and it is guaranteed always to be held across the filldir callback.
+>  So the filldir callback can call e.g. lookup without further locking.
+> 
+>  Backing up a little:  given that the filesystem implementor chose to
+>  use per-inode locking to protect internal restructuring (which is
+>  certainly an easier option), why not just use i_mutex?  The reason
+>  is that a create operation might trigger system-wide garbage
+>  collection which could trigger restructuring of the current inode,
+>  which would lead to an A-A deadlock (as the create is waiting for the
+>  garbage collection, and so still holding i_mutex).
+> 
+> So, given that background, it is possible to see some more possible
+> solutions (other than the ones already mentioned).
+> 
+>  - drop the internal lock across filldir.
+>    It could be seen a impolite to hold any locks across a callback
+>    that are not documented as being held.
+>    This would put an extra burden on the filesystem, but it shouldn't
+>    be a particularly big burden.
+>    A filesystem needs to be able to find the 'next' entry from a
+>    sequential 'seek' pointer so that is the most state that needs to
+>    be preserved.  It might be convenient to be able to keep more state
+>    (pointers into data structures etc).  All this can be achieved with
+>    fairly standard practice:
+>      a/ have a 'version' number per inode which is updated when any
+>         internal restructure happens.
+>      b/ when calling filldir, record the version number, drop the lock
+>         call filldir, reclaim the lock, check the version number
+>      c/ if the version number matches (as it mostly will) just keep
+>         going.  If it doesn't jump back to the top of readdir where
+>         we decode the current seek address.
+> 
+>    Some filesystems have problems implementing seekdir/telldir so they
+>    might not be totally happy here.  I have little sympathy for such
+>    filesystems and feel the burden should be on them to make it work.
+> 
+>  - use i_mutex to protect internal changes too, and drop i_mutex while
+>    doing internal restructuring.   This would need some VFS changes so
+>    that dropping i_mutex would be safe.  It would require some way to
+>    lock an individual dentry.  Probably you would lock it under
+>    i_mutex by setting a flag bit, wait for the flag on some inode-wide
+>    waitqueue, and drop the lock by clearing the flag and waking the
+>    waitqueue. And you are never allowed to look at ->d_inode if the
+>    lock flag is set.
 
-These devices do not support the JEDEC-Read-ID command but they do have
-a Read-ID command. There are probably other SPI serial flash devices
-there that could be used with the same patch.
+Isn't there a lot of kernel code that assumes that following ->d_inode
+is safe?  Or are you only worried about looking at certain
+filesystem-internal fields of d_inode?
 
-This patch was submitted previously for the 2.6.25.10 kernel. This is a
-resubmit based on 2.6.26.
+The locking required to keep the filesystem namespace consistent is
+difficult and important, so I think changing it would require an
+extremely careful description of the new design and a commitment from
+some filesystem developers to actually take advantage of it....
 
-Please let me know if there are any issues with this patch.
+--b.
 
-Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
-
-
---- m25p80.c.orig	2008-07-13 14:51:29.000000000 -0700
-+++ m25p80.c	2008-08-04 10:51:23.000000000 -0700
-@@ -40,6 +40,7 @@
- #define	OPCODE_BE_32K		0x52	/* Erase 32KiB block */
- #define	OPCODE_SE		0xd8	/* Sector erase (usually
-64KiB) */
- #define	OPCODE_RDID		0x9f	/* Read JEDEC ID */
-+#define OPCODE_RDID_NON_JEDEC	0x90	/* Read ID */
-=20
- /* Status Register bits. */
- #define	SR_WIP			1	/* Write in progress */
-@@ -495,13 +496,17 @@ static struct flash_info __devinitdata m
- 	{ "w25x16", 0xef3015, 64 * 1024, 32, SECT_4K, },
- 	{ "w25x32", 0xef3016, 64 * 1024, 64, SECT_4K, },
- 	{ "w25x64", 0xef3017, 64 * 1024, 128, SECT_4K, },
-+
-+	/* Non JEDEC ID SST -- large erase sizes are "overlays",
-"sectors" are 4K */
-+	{ "sst25lf020a", 0xbf43, 32 * 1024, 8, SECT_4K, },
-+	{ "sst25lf040a", 0xbf44, 32 * 1024, 16, SECT_4K, },
- };
-=20
- static struct flash_info *__devinit jedec_probe(struct spi_device *spi)
- {
- 	int			tmp;
--	u8			code =3D OPCODE_RDID;
--	u8			id[3];
-+	u8			code[4];
-+	u8			id[4];
- 	u32			jedec;
- 	struct flash_info	*info;
-=20
-@@ -509,7 +514,8 @@ static struct flash_info *__devinit jede
- 	 * string for after vendor-specific data, after the three bytes
- 	 * we use here.  Supporting some chips might require using it.
- 	 */
--	tmp =3D spi_write_then_read(spi, &code, 1, id, 3);
-+	code[0] =3D OPCODE_RDID;
-+	tmp =3D spi_write_then_read(spi, code, 1, id, 3);
- 	if (tmp < 0) {
- 		DEBUG(MTD_DEBUG_LEVEL0, "%s: error %d reading JEDEC
-ID\n",
- 			spi->dev.bus_id, tmp);
-@@ -528,6 +534,30 @@ static struct flash_info *__devinit jede
- 			return info;
- 	}
- 	dev_err(&spi->dev, "unrecognized JEDEC id %06x\n", jedec);
-+
-+	/* Try reading the Non-JEDEC Manufacture/Device ID */
-+	code[0] =3D OPCODE_RDID_NON_JEDEC;
-+	code[1] =3D 0x00;
-+	code[2] =3D 0x00;
-+	code[3] =3D 0x00;
-+	tmp =3D spi_write_then_read(spi, code, 4, id, 2);
-+	if (tmp < 0) {
-+		DEBUG(MTD_DEBUG_LEVEL0, "%s: error %d reading ID\n",
-+			spi->dev.bus_id, tmp);
-+		return NULL;
-+	}
-+
-+	jedec =3D id[0];
-+	jedec =3D jedec << 8;
-+	jedec |=3D id[1];
-+
-+	for (tmp =3D 0, info =3D m25p_data;
-+			tmp < ARRAY_SIZE(m25p_data);
-+			tmp++, info++) {
-+		if (info->jedec_id =3D=3D jedec)
-+			return info;
-+	}
-+	dev_err(&spi->dev, "unrecognized id %04x\n", jedec);
- 	return NULL;
- }
- =20
+> Of these I really like the second.  Refining the i_mutex down to a
+> per-name lock before calling in to the filesystem seems like a really
+> good idea and should be good for scalability and large directories.
+> It isn't something to be done lightly though.  The filesystem would
+> still be given i_mutex held, but would be allowed to drop it if it
+> wanted to.  We could have an FS_DROPS_I_MUTEX similar to the current
+> FS_RENAME_DOES_D_MOVE.
+> 
+> For the first, I really like the idea that a lock should not be held
+> across calls the filldir.  I feel that a filesystem doing that is
+> "wrong" in much the same way that some think that recursing into the
+> filesystem as nfsd does is "wrong".  In reality neither is "wrong", we
+> just need to work together and negotiate and work out the best way to
+> meet all of our needs.
+> 
+> So what should we do now?  I think that for JFFS2 to drop and reclaim
+> f->sem in readdir would be all of 20 lines of code, including updating
+> a ->version counter elsewhere in the code.  Replicating that in all
+> the filesystems that need it would probably be more code than the nfsd
+> change though.
+> 
+> On the other hand, if we implement the nfsd change, it will almost
+> certainly never go away, even if all filesystems eventually find that
+> they don't need it any more because someone improves the locking
+> rules in the VFS.  Where as the code in the filesystems could quite
+> possibly go away when they are revised to make better use of the
+> locking regime.  So I don't think that is an ideal situation either.
+> 
+> If I had time, I would work on modifying the VFS to allow filesystems
+> to drop i_mutex.  However I don't have time at the moment, so I'll
+> leave the decision to be made by someone else  (Hi Bruce!  I'll
+> support whatever you decide).
+> 
+> But I think it is important to understand what is really going on and
+> not just implement a hack that works around the problem.  I think I do
+> understand now, so I am a lot happier.  Hopefully you do too.
