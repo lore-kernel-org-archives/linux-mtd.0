@@ -1,25 +1,31 @@
-From: "Woodruff, Richard" <r-woodruff2@ti.com>
-To: Lennert Buytenhek <buytenh@wantstofly.org>
-Date: Mon, 4 Aug 2008 17:10:21 -0500
-Subject: RE: [PATCH] MTD: OMAP2-NAND: Fix partition reading from board info
-Message-ID: <13B9B4C6EF24D648824FF11BE89671620361EE18FF@dlee02.ent.ti.com>
-References: <9c9fda240807011627v60428f9eh3c2bb17cdc8ce6ea@mail.gmail.com>
-	<200808041302.46323.david-b@pacbell.net>
-	<20080804201715.GD31974@xi.wantstofly.org>
-	<200808041326.38840.david-b@pacbell.net>
-	<13B9B4C6EF24D648824FF11BE89671620361EE1833@dlee02.ent.ti.com>
-	<20080804213200.GH31974@xi.wantstofly.org>
-	<13B9B4C6EF24D648824FF11BE89671620361EE18A2@dlee02.ent.ti.com>
-	<20080804214910.GJ31974@xi.wantstofly.org>
-In-Reply-To: <20080804214910.GJ31974@xi.wantstofly.org>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mx1.suse.de ([195.135.220.2])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KQ8g1-00020K-EN
+	for linux-mtd@lists.infradead.org; Mon, 04 Aug 2008 22:37:17 +0000
+From: Neil Brown <neilb@suse.de>
+To: "J. Bruce Fields" <bfields@fieldses.org>
+Date: Tue, 5 Aug 2008 08:37:01 +1000
 MIME-Version: 1.0
-Cc: Kyungmin Park <kmpark@infradead.org>, Tony Lindgren <tony@atomide.com>,
-	"Kamat, Nishant" <nskamat@ti.com>, David Brownell <david-b@pacbell.net>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <18583.33933.818892.71415@notabene.brown>
+Subject: Re: [RFC] Reinstate NFS exportability for JFFS2.
+In-Reply-To: message from J. Bruce Fields on Monday August 4
+References: <76bd70e30807311831p771d0f1eia3e303bd84919422@mail.gmail.com>
+	<1217597759.3454.356.camel@pmac.infradead.org>
+	<1217598976.3454.359.camel@pmac.infradead.org>
+	<76bd70e30808010905j3010a6bfy534c068a662d348d@mail.gmail.com>
+	<1217607571.3454.417.camel@pmac.infradead.org>
+	<76bd70e30808011047u3cd0a56cg3b2d62e01afed014@mail.gmail.com>
+	<20080802182644.GE30454@fieldses.org>
+	<18581.40178.976747.769343@notabene.brown>
+	<76bd70e30808031015l36db41bexf319e85ba7acc4e9@mail.gmail.com>
+	<18582.21855.2092.903688@notabene.brown>
+	<20080804184115.GG25940@fieldses.org>
+Cc: linux-nfs@vger.kernel.org, chucklever@gmail.com,
+	Christoph Hellwig <hch@infradead.org>,
+	linux-mtd@lists.infradead.org, viro@zeniv.linux.org.uk,
+	linux-fsdevel@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,25 +35,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Hmmm.  So bit [7] of the system control register is ignored entirely,
-> and if you write a 1 to it, nothing at all happens and the system
-> boots as usual?  (To test, add a line "OBJS +=3D big-endian.o" to the
-> top of arch/arm/boot/compressed/Makefile.)
->
-> Does it also mean that the ARMv6 based OMAPs have the SETEND
-> instruction behave as NOPs?
+On Monday August 4, bfields@fieldses.org wrote:
+> On Mon, Aug 04, 2008 at 11:03:27AM +1000, Neil Brown wrote:
+> >  - use i_mutex to protect internal changes too, and drop i_mutex while
+> >    doing internal restructuring.   This would need some VFS changes so
+> >    that dropping i_mutex would be safe.  It would require some way to
+> >    lock an individual dentry.  Probably you would lock it under
+> >    i_mutex by setting a flag bit, wait for the flag on some inode-wide
+> >    waitqueue, and drop the lock by clearing the flag and waking the
+> >    waitqueue. And you are never allowed to look at ->d_inode if the
+> >    lock flag is set.
+> 
+> Isn't there a lot of kernel code that assumes that following ->d_inode
+> is safe?  Or are you only worried about looking at certain
+> filesystem-internal fields of d_inode?
 
-Last time I explicitly tried was back on OMAP1.  I then dug into doc's it w=
-as said that the bit was hardwired at the integration point.  I don't recal=
-l signal name.
+I overstated that restriction a bit.
+The way ->d_inode works is that it is set once and then never changed.
+A rename doesn't change ->d_inode, it changes the name in the dentry,
+and possibly the ->d_parent pointer.  An unlink also leaves ->d_inode
+alone and just unhashes the dentry.  ->d_inode is never cleared until
+the dentry is freed.
+So ->d_inode starts as NULL, is (possibly) set to a value, and stays
+that way.
+Currently if the name exists, then ->d_inode will be set non-NULL
+under i_mutex and so a NULL value will never be visible outside of
+i_mutex.  If the name doesn't exist, a NULL value *will* be visible
+outside of i_mutex and it could subsequently get (under i_mutex) set
+when name is created.
 
-Now, Peeking into OMAP2 (armv6) MPU integration docs I see that BIGENDINIT =
-is pulled low.  This forces the behavior as I indicated.  OMAP3 (armv7) doe=
-s something similar at cpu-to-bus bridge.
+If i_mutex is allowed to be dropped early, then a premature NULL could
+be visible in ->d_inode for a name that does exist.  This is the case
+the needs to be guarded against.
+So when I said "you are never allowed to look at ->d_inode ...." I 
+could have said "you are never allowed to see a NULL in ->d_inode ..."
+While lots of places dereference ->d_inode, relative few do it in a
+context where ->d_inode could be NULL, and these are probably all in
+fs/namei.c or related code.  Most of them would be fairly easy to get
+to work with dentry locking.
 
-Doing a quick desktop search in documents I see the armv6 behavior is defin=
-ed as part of BIGENDINIT in ARM TRMs.  I'll guess SETEND instruction follow=
-s what ever that dictates.  I don't know as I've never tried.
+The problem case is rename (as it always is).  With rename, d_move
+needs to be called after the filesystem has committed to the rename,
+but before i_mutex is dropped.  That would be awkward for filesystems
+that needed to collect garbage or whatever before completing the
+rename.
+I would probably address this by allowing ->rename to return -EAGAIN
+with the meaning that i_mutex was dropped but nothing was committed
+to, and that vfs_rename_* should try again from the top.  Presumably
+->rename will have done some garbage collection or whatever is needed
+and the next call to ->rename has a much better chance of going
+through without needing to drop the lock.  I don't know if livelocks
+could be a problem with this approach.
 
-Regards,
-Richard W.
+
+> 
+> The locking required to keep the filesystem namespace consistent is
+> difficult and important, so I think changing it would require an
+> extremely careful description of the new design and a commitment from
+> some filesystem developers to actually take advantage of it....
+
+An "extremely careful description of the new design" is something we
+could happily see more of in the kernel world, isn't it :-)
+Agreed.
+
+
+NeilBrown
