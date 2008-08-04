@@ -1,24 +1,23 @@
-Received: from [2002:53a0:b870::1] (helo=xi.wantstofly.org)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KQ7pL-0003xb-3h
-	for linux-mtd@lists.infradead.org; Mon, 04 Aug 2008 21:42:53 +0000
-Date: Mon, 4 Aug 2008 23:42:49 +0200
-From: Lennert Buytenhek <buytenh@wantstofly.org>
-To: David Brownell <david-b@pacbell.net>
-Subject: Re: [PATCH] MTD: OMAP2-NAND: Fix partition reading from board info
-Message-ID: <20080804214249.GI31974@xi.wantstofly.org>
+From: "Woodruff, Richard" <r-woodruff2@ti.com>
+To: Lennert Buytenhek <buytenh@wantstofly.org>
+Date: Mon, 4 Aug 2008 16:45:19 -0500
+Subject: RE: [PATCH] MTD: OMAP2-NAND: Fix partition reading from board info
+Message-ID: <13B9B4C6EF24D648824FF11BE89671620361EE18A2@dlee02.ent.ti.com>
 References: <9c9fda240807011627v60428f9eh3c2bb17cdc8ce6ea@mail.gmail.com>
+	<200808041302.46323.david-b@pacbell.net>
+	<20080804201715.GD31974@xi.wantstofly.org>
 	<200808041326.38840.david-b@pacbell.net>
-	<20080804205617.GF31974@xi.wantstofly.org>
-	<200808041437.34822.david-b@pacbell.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200808041437.34822.david-b@pacbell.net>
-Cc: Tony Lindgren <tony@atomide.com>, "Kamat, Nishant" <nskamat@ti.com>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	Kyungmin Park <kmpark@infradead.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+	<13B9B4C6EF24D648824FF11BE89671620361EE1833@dlee02.ent.ti.com>
+	<20080804213200.GH31974@xi.wantstofly.org>
+In-Reply-To: <20080804213200.GH31974@xi.wantstofly.org>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: Kyungmin Park <kmpark@infradead.org>, Tony Lindgren <tony@atomide.com>,
+	"Kamat, Nishant" <nskamat@ti.com>, David Brownell <david-b@pacbell.net>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,39 +27,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 04, 2008 at 02:37:34PM -0700, David Brownell wrote:
+> > The most visible BE-ARM seems to be Intel's IXP network processors.
+>
+> The IXPs are one of the few cases where the vendors _ships an all-BE
+> software development environment by default_ -- but that doesn't mean
+> that BE doesn't work on ARM CPUs where the vendor ships a LE software
+> development environment by default (BE has certainly worked on all
+> ARM CPUs I've ever tried it on).
 
-> > I've never seen CPU endianity being hardwired in any ARM system ever
-> > -- but maybe OMAP is different.
-> 
-> I'll let TI answer that one, since I'm not going to look at docs for
-> all the ARM's I've ever used.
-> 
-> My observation stands *REGARDLESS* of whether endianness was fixed in
-> hardware, bootloader, or kernel ... and in any case, with very few
-> exceptions (not including OMAP), Linux uses ARMs in LE mode:
-> 
->   ~/kernel/linux-2.6/arch/arm/configs$ grep ENDIAN * | egrep -v '#' |egrep -v OHCI
->   ixp2000_defconfig:CONFIG_ARCH_SUPPORTS_BIG_ENDIAN=y
->   ixp2000_defconfig:CONFIG_CPU_BIG_ENDIAN=y
->   ixp23xx_defconfig:CONFIG_ARCH_SUPPORTS_BIG_ENDIAN=y
->   ixp23xx_defconfig:CONFIG_CPU_BIG_ENDIAN=y
->   ixp4xx_defconfig:CONFIG_ARCH_SUPPORTS_BIG_ENDIAN=y
->   ixp4xx_defconfig:CONFIG_CPU_BIG_ENDIAN=y
->   ~/kernel/linux-2.6/arch/arm/configs$  ls | wc -l
->   105
->   ~/kernel/linux-2.6/arch/arm/configs$ 
+I wonder how many shipping systems use LE.  A grep of current ARM Linux Kco=
+nfig's only shows 3 IXP systems setting CONFIG_CPU_BIG_ENDIAN. Perhaps you =
+are correct about ability but few seem to use it. Seems like a trivia quest=
+ion for ARM Ltd.
 
-That's just because not many people ask for BE or use BE -- not
-because the LE'ness would be hardwired in hardware as you asserted
-earlier.
+At any rate all OMAPs have been hardwired.
 
-
-> To repeat:  there's no point in having the words byteswapped when
-> writing, then again when reading, like this driver does.  All that
-> does is ensure slow I/O paths.  Were you disagreeing with that main
-> point?  Or just quibbling about where any unusual big-endianness
-> might come from?
-
-I was responding to your statement that ARM CPU endianity is
-hardwired when ARM cores are turned into silicon.
+Regards,
+Richard W.
