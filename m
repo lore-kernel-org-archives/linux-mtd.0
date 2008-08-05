@@ -1,29 +1,12 @@
-Received: from n1.cetrtapot.si ([89.212.80.162])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KQO85-0002D5-UC
-	for linux-mtd@lists.infradead.org; Tue, 05 Aug 2008 15:07:18 +0000
-Received: from localhost (localhost.dmz.cetrtapot.si [127.0.0.1])
-	by n1.cetrtapot.si (Postfix) with ESMTP id 2F2BABECB
-	for <linux-mtd@lists.infradead.org>;
-	Tue,  5 Aug 2008 17:07:03 +0200 (CEST)
-Received: from n1.cetrtapot.si ([127.0.0.1])
-	by localhost (n1.dmz.cetrtapot.si [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id b8EMPV7YFKJ4 for <linux-mtd@lists.infradead.org>;
-	Tue,  5 Aug 2008 17:06:46 +0200 (CEST)
-Received: from [172.31.65.135] (inside.kranj.cetrtapot.si [192.168.66.2])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by n1.cetrtapot.si (Postfix) with ESMTP id 3C718BEC5
-	for <linux-mtd@lists.infradead.org>;
-	Tue,  5 Aug 2008 17:06:46 +0200 (CEST)
-Message-ID: <48986C4E.4060901@cetrtapot.si>
-Date: Tue, 05 Aug 2008 17:05:50 +0200
-From: Hinko Kocevar <hinko.kocevar@cetrtapot.si>
+Date: Tue, 5 Aug 2008 16:39:42 +0100 (BST)
+From: Alexey Korolev <akorolev@infradead.org>
+To: dwmw2@infradead.org, Uwe.Kleine-Koenig@digi.com
+Subject: [PATCH][CFI] qry_mode_on qry_omde_off in order to deal with odd
+	chips at the moment of chip probing
+Message-ID: <alpine.LFD.1.10.0808051553130.24454@casper.infradead.org>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: flash_info and MEMGETREGIONCOUNT
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,66 +18,262 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-I would like to know some info about the flash chip present on the board. I found flash_info utility and can't seem to get information about the region count with MEMGETREGIONCOUNT.
-# /flash_info /dev/mtd0 
-Device /dev/mtd0 has 0 erase regions
-# /flash_info /dev/mtd1 
-Device /dev/mtd1 has 0 erase regions
-# /flash_info /dev/mtd2
-Device /dev/mtd2 has 0 erase regions
+There are some CFI chips which require non standard procedures to get
+into QRY mode. The possible way to support them would be trying different modes
+till QRY will be read. 
+This patch introduce two new functions qry_mode_on qry_mode_off.
+qry_mode_on tries different commands in order switch chip into QRY mode.
 
-Although during boot these messages are shown (with CFI debug on):
-...
-[42949374.037212] Probing cse0 at physical address 0x00000000 (16-bit bankwidth)
-[42949374.044444] Number of erase regions: 4
-[42949374.054706] Primary Vendor Command Set: 0002 (AMD/Fujitsu Standard)
-[42949374.064951] Primary Algorithm Table at 0040
-[42949374.069392] Alternative Vendor Command Set: 0000 (None)
-[42949374.079548] No Alternate Algorithm Table
-[42949374.083729] Vcc Minimum:  2.7 V
-[42949374.087113] Vcc Maximum:  3.6 V
-[42949374.097284] Vpp Minimum: 11.5 V
-[42949374.100662] Vpp Maximum: 12.5 V
-[42949374.104043] Typical byte/word write timeout: 16 Âµs
-[42949374.114211] Maximum byte/word write timeout: 512 Âµs
-[42949374.119413] Full buffer write not supported
-[42949374.129580] Typical block erase timeout: 1024 ms
-[42949374.134452] Maximum block erase timeout: 16384 ms
-[42949374.144596] Chip erase not supported
-[42949374.148426] Device size: 0x400000 bytes (4 MiB)
-[42949374.158590] Flash Device Interface description: 0x0002
-[42949374.163975]   - supports x8 and x16 via BYTE# with asynchronous interface
-[42949374.174140] Max. bytes in buffer write: 0x1
-[42949374.178570] Number of Erase Block Regions: 4
-[42949374.188759]   Erase Region #0: BlockSize 0x4000 bytes, 1 blocks
-[42949374.198948]   Erase Region #1: BlockSize 0x2000 bytes, 2 blocks
-[42949374.205157]   Erase Region #2: BlockSize 0x8000 bytes, 1 blocks
-[42949374.215347]   Erase Region #3: BlockSize 0x10000 bytes, 63 blocks
-[42949374.221744] cse0: Found 1 x16 devices at 0x0 in 16-bit bank
-[42949374.235520]  Amd/Fujitsu Extended Query Table at 0x0040
-[42949374.245764] number of CFI chips: 1
-[42949374.249441] cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
-[42949374.259647] Probing cse1 at physical address 0x04000000 (16-bit bankwidth)
-[42949374.270098] Using static partitions on cse0
-[42949374.274538] NOR flash size: 4194304 b (4 Mb)
-[42949374.284722] Creating 3 MTD partitions on "cse0":
-[42949374.289640] 0x00000000-0x00010000 : "Rescue"
-[42949374.310538] 0x00010000-0x00130000 : "Kernel"
-[42949374.329690] 0x00130000-0x00400000 : "Filesystem"
-[42949374.350519] cse1 is absent. Skipping
-...
+So if we have one more "odd" chip - we just could add several lines to
+qry_mode_on. Also using these functions remove unnecessary code duplicaton in porbe
+procedure. 
 
-It is clearly seen that there are four regions reported by the kernel, but the 
-userspace does not agree with the kernel !?
+Currently there are two "odd" cases 
+1. Some old intel chips which require 0xFF before 0x98
+2. ST M29DW chip which requires 0x98 to be sent at 0x555 (according to
+CFI should be 0x55)
 
-Thank you,
-Hinko
+This patch is partialy based on the patch from Uwe 
+(see "[PATCH 2/4] [RFC][MTD] cfi_probe: remove Intel chip workaround"
+thread )
 
--- 
-ČETRTA POT, d.o.o., Kranj
-Planina 3
-4000 Kranj
-Slovenia, Europe
-Tel. +386 (0) 4 280 66 03
-E-mail: hinko.kocevar@cetrtapot.si
-Http: www.cetrtapot.si
+Signed-off-by: Alexey Korolev <akorolev@infradead.org>
+Signed-off-by: Alexander Belyakov <abelyako@gmail.com>
+
+ drivers/mtd/chips/cfi_probe.c |   52 ++++-----------------------------
+ drivers/mtd/chips/cfi_util.c  |   62 ++++++++++++++++++++++++++++++++++++++--
+ include/linux/mtd/cfi.h       |    9 +++++-
+ 3 files changed, 73 insertions(+), 50 deletions(-)
+
+diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
+index c418e92..e706be2
+--- a/drivers/mtd/chips/cfi_probe.c
++++ b/drivers/mtd/chips/cfi_probe.c
+@@ -44,17 +44,14 @@ do { \
+ 
+ #define xip_enable(base, map, cfi) \
+ do { \
+-	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL); \
+-	cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL); \
++	qry_mode_off(base, map, cfi); \
+ 	xip_allowed(base, map); \
+ } while (0)
+ 
+ #define xip_disable_qry(base, map, cfi) \
+ do { \
+ 	xip_disable(); \
+-	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL); \
+-	cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL); \
+-	cfi_send_gen_cmd(0x98, 0x55, base, map, cfi, cfi->device_type, NULL); \
++	qry_mode_on(base, map, cfi); \
+ } while (0)
+ 
+ #else
+@@ -70,32 +67,6 @@ do { \
+    in: interleave,type,mode
+    ret: table index, <0 for error
+  */
+-static int __xipram qry_present(struct map_info *map, __u32 base,
+-				struct cfi_private *cfi)
+-{
+-	int osf = cfi->interleave * cfi->device_type;	// scale factor
+-	map_word val[3];
+-	map_word qry[3];
+-
+-	qry[0] = cfi_build_cmd('Q', map, cfi);
+-	qry[1] = cfi_build_cmd('R', map, cfi);
+-	qry[2] = cfi_build_cmd('Y', map, cfi);
+-
+-	val[0] = map_read(map, base + osf*0x10);
+-	val[1] = map_read(map, base + osf*0x11);
+-	val[2] = map_read(map, base + osf*0x12);
+-
+-	if (!map_word_equal(map, qry[0], val[0]))
+-		return 0;
+-
+-	if (!map_word_equal(map, qry[1], val[1]))
+-		return 0;
+-
+-	if (!map_word_equal(map, qry[2], val[2]))
+-		return 0;
+-
+-	return 1; 	// "QRY" found
+-}
+ 
+ static int __xipram cfi_probe_chip(struct map_info *map, __u32 base,
+ 				   unsigned long *chip_map, struct cfi_private *cfi)
+@@ -116,11 +87,7 @@ static int __xipram cfi_probe_chip(struct map_info *map, __u32 base,
+ 	}
+ 
+ 	xip_disable();
+-	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0x98, 0x55, base, map, cfi, cfi->device_type, NULL);
+-
+-	if (!qry_present(map,base,cfi)) {
++	if (!qry_mode_on(base, map, cfi)) {
+ 		xip_enable(base, map, cfi);
+ 		return 0;
+ 	}
+@@ -144,8 +111,7 @@ static int __xipram cfi_probe_chip(struct map_info *map, __u32 base,
+ 		if (qry_present(map, start, cfi)) {
+ 			/* Eep. This chip also had the QRY marker.
+ 			 * Is it an alias for the new one? */
+-			cfi_send_gen_cmd(0xF0, 0, start, map, cfi, cfi->device_type, NULL);
+-			cfi_send_gen_cmd(0xFF, 0, start, map, cfi, cfi->device_type, NULL);
++			qry_mode_off(start, map, cfi);
+ 
+ 			/* If the QRY marker goes away, it's an alias */
+ 			if (!qry_present(map, start, cfi)) {
+@@ -158,8 +124,7 @@ static int __xipram cfi_probe_chip(struct map_info *map, __u32 base,
+ 			 * unfortunate. Stick the new chip in read mode
+ 			 * too and if it's the same, assume it's an alias. */
+ 			/* FIXME: Use other modes to do a proper check */
+-			cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
+-			cfi_send_gen_cmd(0xFF, 0, start, map, cfi, cfi->device_type, NULL);
++			qry_mode_off(base, map, cfi);
+ 
+ 			if (qry_present(map, base, cfi)) {
+ 				xip_allowed(base, map);
+@@ -176,8 +141,7 @@ static int __xipram cfi_probe_chip(struct map_info *map, __u32 base,
+ 	cfi->numchips++;
+ 
+ 	/* Put it back into Read Mode */
+-	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL);
++	qry_mode_off(base, map, cfi);
+ 	xip_allowed(base, map);
+ 
+ 	printk(KERN_INFO "%s: Found %d x%d devices at 0x%x in %d-bit bank\n",
+@@ -237,9 +201,7 @@ static int __xipram cfi_chip_setup(struct map_info *map,
+ 			  cfi_read_query(map, base + 0xf * ofs_factor);
+ 
+ 	/* Put it back into Read Mode */
+-	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
+-	/* ... even if it's an Intel chip */
+-	cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL);
++	qry_mode_off(base, map, cfi);
+ 	xip_allowed(base, map);
+ 
+ 	/* Do any necessary byteswapping */
+diff --git a/drivers/mtd/chips/cfi_util.c b/drivers/mtd/chips/cfi_util.c
+index 0ee4570..cf7ddb0 100644
+--- a/drivers/mtd/chips/cfi_util.c
++++ b/drivers/mtd/chips/cfi_util.c
+@@ -24,6 +24,62 @@
+ #include <linux/mtd/cfi.h>
+ #include <linux/mtd/compatmac.h>
+ 
++int __xipram qry_present(struct map_info *map, __u32 base,
++				struct cfi_private *cfi)
++{
++	int osf = cfi->interleave * cfi->device_type;	/* scale factor */
++	map_word val[3];
++	map_word qry[3];
++
++	qry[0] = cfi_build_cmd('Q', map, cfi);
++	qry[1] = cfi_build_cmd('R', map, cfi);
++	qry[2] = cfi_build_cmd('Y', map, cfi);
++
++	val[0] = map_read(map, base + osf*0x10);
++	val[1] = map_read(map, base + osf*0x11);
++	val[2] = map_read(map, base + osf*0x12);
++
++	if (!map_word_equal(map, qry[0], val[0]))
++		return 0;
++
++	if (!map_word_equal(map, qry[1], val[1]))
++		return 0;
++
++	if (!map_word_equal(map, qry[2], val[2]))
++		return 0;
++
++	return 1; 	/* "QRY" found */
++}
++
++int __xipram qry_mode_on(uint32_t base, struct map_info *map,
++				struct cfi_private *cfi)
++{
++	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
++	cfi_send_gen_cmd(0x98, 0x55, base, map, cfi, cfi->device_type, NULL);
++	if (qry_present(map, base, cfi))
++		return 1;
++	/* QRY not found probably we deal with some odd CFI chips */
++	/* Some revisions of some old Intel chips? */
++	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
++	cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL);
++	cfi_send_gen_cmd(0x98, 0x55, base, map, cfi, cfi->device_type, NULL);
++	if (qry_present(map, base, cfi))
++		return 1;
++	/* ST M29DW chips */
++	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
++	cfi_send_gen_cmd(0x98, 0x555, base, map, cfi, cfi->device_type, NULL);
++	if (qry_present(map, base, cfi))
++		return 1;
++	/* QRY not found */
++	return 0;
++}
++void __xipram qry_mode_off(uint32_t base, struct map_info *map,
++				struct cfi_private *cfi)
++{
++	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
++	cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL);
++}
++
+ struct cfi_extquery *
+ __xipram cfi_read_pri(struct map_info *map, __u16 adr, __u16 size, const char* name)
+ {
+@@ -48,8 +104,7 @@ __xipram cfi_read_pri(struct map_info *map, __u16 adr, __u16 size, const char* n
+ #endif
+ 
+ 	/* Switch it into Query Mode */
+-	cfi_send_gen_cmd(0x98, 0x55, base, map, cfi, cfi->device_type, NULL);
+-
++	qry_mode_on(base, map, cfi);
+ 	/* Read in the Extended Query Table */
+ 	for (i=0; i<size; i++) {
+ 		((unsigned char *)extp)[i] =
+@@ -57,8 +112,7 @@ __xipram cfi_read_pri(struct map_info *map, __u16 adr, __u16 size, const char* n
+ 	}
+ 
+ 	/* Make sure it returns to read mode */
+-	cfi_send_gen_cmd(0xf0, 0, base, map, cfi, cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0xff, 0, base, map, cfi, cfi->device_type, NULL);
++	qry_mode_off(base, map, cfi);
+ 
+ #ifdef CONFIG_MTD_XIP
+ 	(void) map_read(map, base);
+diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
+index d6fb115..c8b9d95 100644
+--- a/include/linux/mtd/cfi.h
++++ b/include/linux/mtd/cfi.h
+@@ -12,6 +12,7 @@
+ #include <linux/mtd/flashchip.h>
+ #include <linux/mtd/map.h>
+ #include <linux/mtd/cfi_endian.h>
++#include <linux/mtd/xip.h>
+ 
+ #ifdef CONFIG_MTD_CFI_I1
+ #define cfi_interleave(cfi) 1
+@@ -430,7 +431,6 @@ static inline uint32_t cfi_send_gen_cmd(u_char cmd, uint32_t cmd_addr, uint32_t
+ {
+ 	map_word val;
+ 	uint32_t addr = base + cfi_build_cmd_addr(cmd_addr, cfi_interleave(cfi), type);
+-
+ 	val = cfi_build_cmd(cmd, map, cfi);
+ 
+ 	if (prev_val)
+@@ -483,6 +483,13 @@ static inline void cfi_udelay(int us)
+ 	}
+ }
+ 
++int __xipram qry_present(struct map_info *map, __u32 base,
++				struct cfi_private *cfi);
++int __xipram qry_mode_on(uint32_t base, struct map_info *map,
++				struct cfi_private *cfi);
++void __xipram qry_mode_off(uint32_t base, struct map_info *map,
++				struct cfi_private *cfi);
++
+ struct cfi_extquery *cfi_read_pri(struct map_info *map, uint16_t adr, uint16_t size,
+ 			     const char* name);
+ struct cfi_fixup {
