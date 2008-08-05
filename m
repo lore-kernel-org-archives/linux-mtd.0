@@ -1,20 +1,31 @@
-Received: from exprod6og112.obsmtp.com ([64.18.1.29])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KQRCH-0004Wo-UZ
-	for linux-mtd@lists.infradead.org; Tue, 05 Aug 2008 18:23:51 +0000
-Content-class: urn:content-classes:message
+Received: from ns1.suse.de ([195.135.220.2] helo=mx1.suse.de)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KQVcL-0006xN-L0
+	for linux-mtd@lists.infradead.org; Tue, 05 Aug 2008 23:07:02 +0000
+From: Neil Brown <neilb@suse.de>
+To: Dave Chinner <david@fromorbit.com>
+Date: Wed, 6 Aug 2008 09:06:48 +1000
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: flash_info and MEMGETREGIONCOUNT
-Date: Tue, 5 Aug 2008 14:22:38 -0400
-Message-ID: <BD79186B4FD85F4B8E60E381CAEE190960DD5A@mi8nycmail19.Mi8.com>
-In-Reply-To: <48986C4E.4060901@cetrtapot.si>
-References: <48986C4E.4060901@cetrtapot.si>
-From: "hartleys" <hartleys@visionengravers.com>
-To: "Hinko Kocevar" <hinko.kocevar@cetrtapot.si>,
-	<linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <18584.56584.98868.881298@notabene.brown>
+Subject: Re: [RFC] Reinstate NFS exportability for JFFS2.
+In-Reply-To: message from Dave Chinner on Tuesday August 5
+References: <1217597759.3454.356.camel@pmac.infradead.org>
+	<1217598976.3454.359.camel@pmac.infradead.org>
+	<76bd70e30808010905j3010a6bfy534c068a662d348d@mail.gmail.com>
+	<1217607571.3454.417.camel@pmac.infradead.org>
+	<76bd70e30808011047u3cd0a56cg3b2d62e01afed014@mail.gmail.com>
+	<20080802182644.GE30454@fieldses.org>
+	<18581.40178.976747.769343@notabene.brown>
+	<76bd70e30808031015l36db41bexf319e85ba7acc4e9@mail.gmail.com>
+	<18582.21855.2092.903688@notabene.brown>
+	<76bd70e30808032319u65e35dbdj9cc5be07e1aef829@mail.gmail.com>
+	<20080805085157.GG21635@disturbed>
+Cc: Christoph Hellwig <hch@infradead.org>, linux-nfs@vger.kernel.org,
+	chucklever@gmail.com, "J. Bruce Fields" <bfields@fieldses.org>,
+	linux-mtd@lists.infradead.org, viro@zeniv.linux.org.uk,
+	linux-fsdevel@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +35,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday, August 05, 2008 8:06 AM, Hinko Kocevar wrote:
-> Hi,
->=20
-> I would like to know some info about the flash chip present
-> on the board. I found flash_info utility and can't seem to
-> get information about the region count with MEMGETREGIONCOUNT.
-> # /flash_info /dev/mtd0
-> Device /dev/mtd0 has 0 erase regions
-> # /flash_info /dev/mtd1
-> Device /dev/mtd1 has 0 erase regions
-> # /flash_info /dev/mtd2
-> Device /dev/mtd2 has 0 erase regions
+On Tuesday August 5, david@fromorbit.com wrote:
+> On Mon, Aug 04, 2008 at 02:19:12AM -0400, Chuck Lever wrote:
+> > So, the JFFS2 locking problem is a garbage-collection issue.  I'm not
+> > sure this is the case with other file systems like XFS and OCFS2.  My
+> > impression was that XFS had a transaction logging deadlock,
+> 
+> Just to clarify - XFS has a directory buffer lock deadlock. That is,
+> while reading the contents of the directory buffer it is locked to
+> prevent modifications from occurring while extracting the contents.
+> Looking up an entry in the directory also requires the directory
+> buffer lock (for the same reason), so calling the lookup while
+> already holding the directory buffer lock (i.e from the filldir
+> callback) will deadlock.
 
-I get the same results on my system. I'm not sure what "flash_info" is
-actually meant for.
+How much cost would it be, do you think, to drop the lock across the
+call to filldir?  Then reclaim the lock, validate pointers etc against
+a 'version' counter, and restart based on the current telldir cookie
+if needed?
 
-Try the mtd_debug utility instead and see if that information is more
-helpful. Here's a sample output from one of my mtd partitions:
+To me, that is the generic solution to allowing filldir to call
+->lookup.  I'm just not sure what it costs to be constantly dropping
+and reclaiming the lock in the normal case where ->lookup isn't being
+called.
 
-/ # mtd_debug info /dev/mtd0
-mtd.type =3D MTD_NORFLASH
-mtd.flags =3D MTD_WRITEABLE | MTD_BIT_WRITEABLE
-mtd.size =3D 262144 (256K)
-mtd.erasesize =3D 131072 (128K)
-mtd.writesize =3D 1
-mtd.oobsize =3D 0
-regions =3D 0
 
-BTW, the regions =3D 0 is why the flash_info utility reports 0 erase
-regions.
-
-Hartley
+NeilBrown
