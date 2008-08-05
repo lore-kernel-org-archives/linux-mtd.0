@@ -1,19 +1,31 @@
-Received: from smtp20.orange.fr ([193.252.22.31])
+Received: from ipmail04.adl2.internode.on.net ([203.16.214.57])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KQItu-0002Gj-P6
-	for linux-mtd@lists.infradead.org; Tue, 05 Aug 2008 09:32:19 +0000
-From: =?windows-1251?B?yu7s7OXw9+Xx6u7s8yDE6PDl6vLu8PM=?=
-	<Or.Cedarkey@yahoo.fr>
-To: <debian-68k-request@lists.debian.org>
-Subject: =?windows-1251?B?yvPw8SDk6/8gyu7s7OXw9+Xx6u7j7iDE6PDl6vLu8OAu?=
+	id 1KQJ8N-0003sS-4p
+	for linux-mtd@lists.infradead.org; Tue, 05 Aug 2008 09:47:15 +0000
+Date: Tue, 5 Aug 2008 19:47:05 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [RFC] Reinstate NFS exportability for JFFS2.
+Message-ID: <20080805094705.GH21635@disturbed>
+References: <76bd70e30808010905j3010a6bfy534c068a662d348d@mail.gmail.com>
+	<1217607571.3454.417.camel@pmac.infradead.org>
+	<76bd70e30808011047u3cd0a56cg3b2d62e01afed014@mail.gmail.com>
+	<20080802182644.GE30454@fieldses.org>
+	<18581.40178.976747.769343@notabene.brown>
+	<76bd70e30808031015l36db41bexf319e85ba7acc4e9@mail.gmail.com>
+	<18582.21855.2092.903688@notabene.brown>
+	<76bd70e30808032319u65e35dbdj9cc5be07e1aef829@mail.gmail.com>
+	<20080805085157.GG21635@disturbed>
+	<1217926788.3454.685.camel@pmac.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="windows-1251"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20080805093208.398E21C000A3@mwinf2023.orange.fr>
-Date: Tue,  5 Aug 2008 11:32:08 +0200 (CEST)
-Reply-To: =?windows-1251?B?yu7s7OXw9+Xx6u7s8yDE6PDl6vLu8PM=?=
-	<Or.Cedarkey@yahoo.fr>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1217926788.3454.685.camel@pmac.infradead.org>
+Cc: Christoph Hellwig <hch@infradead.org>, linux-nfs@vger.kernel.org,
+	chucklever@gmail.com, Neil Brown <neilb@suse.de>,
+	"J. Bruce Fields" <bfields@fieldses.org>,
+	linux-mtd@lists.infradead.org, viro@zeniv.linux.org.uk,
+	linux-fsdevel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,81 +35,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Курсы для  коммерческих директоров, директоров и руководителей отделов маркетинга и сбыта.
-********************************************************************************
-КОМЕРЧЕСКАЯ СЛУЖБА ПРЕДПРИЯТИЯ.
-ОРГАНИЗАЦИЯ ЭФФЕКТИВНОЙ РАБОТЫ, РАЗРАБОТКА И ВНЕДРЕНИЕ КОРПОРАТИВНЫХ СТАНДАРТОВ.
-МАКСИМИЗАЦИЯ ВКЛАДА В КОНЕЧНЫЙ РЕЗУЛЬТАТ РАБОТЫ ПРЕДПРИЯТИЯ
-********************************************************************************
-В программе:
-Коммерческая служба предприятия:
-·        в чём заключается главный результат работы коммерческой службы
-·        миссия, главная цель
-·        дерево целей службы
-·        финансово-экономические задачи службы
-·        маркетинговые задачи службы
-·        вклад службы в конечный результат работы предприятия
- 
-Особенности коммерческих служб в отраслях бизнеса:
-·        промышленных предприятий
-·        оптовых предприятий
-·        розничных предприятий
-·        предприятий сферы услуг
- 
-Системы показателей коммерческой службы:
-·        ключевые показатели эффективности
-·        оперативные показатели эффективности
-·        система сбалансированных показателей
- 
-Структура и направления развития коммерческой службы предприятия:
-·        состав
-·        структура
-·        штат
-·        требования к сотрудникам
-·        направления развития
- 
-Цели, задачи структурных подразделений коммерческой службы:
-·        отдел закупок
-·        служба логистики
-·        отдел маркетинга
-·        отдел продаж
- 
-Взаимодействие службы и отделов коммерческой службы между собой с другими подразделениями компании:
-·        взаимодействие между собой
-·        конфликтные зоны при взаимодействии, их ликвидация
-·        взаимодействие с другими структурными подразделениями
-·        оценка качества взаимодействия
-·        ликвидация сбоев, срывов, нестыковок в работе службы
- 
-Бизнес-процессы служб, отделов коммерческой службы предприятия:
-·        отдел закупок – главный бизнес-процесс, обеспечивающие бизнес-процессы, процессы управления
-·        служба логистики – главный бизнес-процесс, обеспечивающие бизнес-процессы, процессы управления
-·        отдел маркетинга - главный бизнес-процесс, обеспечивающие бизнес-процессы, процессы управления
-·        отдел продаж - главный бизнес-процесс, обеспечивающие бизнес-процессы, процессы управления
- 
-Корпоративные стандарты коммерческой службы:
-·        определение потребности в корпоративных стандартах
-·        требования к корпоративным стандартам
-·        разработка корпоративных стандартов
-·        изучение корпоративных стандартов
-·        внедрение корпоративных стандартов
- 
-Эффективная работа коммерческой службы:
-·        составляющие эффективности работы коммерческой службы
-·        эффект от работы коммерческой службы
-·        затраты коммерческой службы
-·        эффективность работы коммерческой службы
- 
-Максимизация вклада коммерческой службы в конечный результат работы предприятия:
-·        типичные ошибки
-·        подводные камни
-·        красные кнопки
-·        ключевые факторы успеха 
-*****************************************************************************
-15-16  августа | Москва 
-Стоимость участия: 17500 рублей.
-*****************************************************************************
-Получите подробную программу и информацию по этому мероприятию
-по тел.: +7 (495) 229-04-33
-*****************************************************************************
-Предварительная регистрация обязательна!
+On Tue, Aug 05, 2008 at 09:59:48AM +0100, David Woodhouse wrote:
+> On Tue, 2008-08-05 at 18:51 +1000, Dave Chinner wrote:
+> > On Mon, Aug 04, 2008 at 02:19:12AM -0400, Chuck Lever wrote:
+> > > So, the JFFS2 locking problem is a garbage-collection issue.  I'm not
+> > > sure this is the case with other file systems like XFS and OCFS2.  My
+> > > impression was that XFS had a transaction logging deadlock,
+> > 
+> > Just to clarify - XFS has a directory buffer lock deadlock. That is,
+> > while reading the contents of the directory buffer it is locked to
+> > prevent modifications from occurring while extracting the contents.
+> > Looking up an entry in the directory also requires the directory
+> > buffer lock (for the same reason), so calling the lookup while
+> > already holding the directory buffer lock (i.e from the filldir
+> > callback) will deadlock.
+> 
+> But if we had a ->lookup_locked() or ->lookup_fh() method which is
+> _guaranteed_ to be called from within your ->readdir(), you could manage
+> to bypass that locking and avoid the deadlock?
+
+I *think* it's possible. It's definitely in the realm of difficult
+because the buffer locks are a couple of layers removed from the
+directory code and both readdir and lookup assume exclusive access to
+the directory block.
+
+We'd probably have to introduce a directory buffer (dabuf) cache
+layer with it's own locking to allow multiple accessors to the
+buffer at the same time. Christoph might have some other ideas for
+this, but I think it's going to take significant surgery
+to implement a 'recursive lockless lookup' like this.
+
+The main problem you are going to have is finding someone who has
+the time to do the XFS work. If you only implement this lookup
+interface, then I'd say it's going to be some time before XFS would
+actually use it....
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
