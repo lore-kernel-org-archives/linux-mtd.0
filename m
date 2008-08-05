@@ -1,12 +1,21 @@
-Date: Tue, 5 Aug 2008 16:39:42 +0100 (BST)
-From: Alexey Korolev <akorolev@infradead.org>
-To: dwmw2@infradead.org, Uwe.Kleine-Koenig@digi.com
-Subject: [PATCH][CFI] qry_mode_on qry_omde_off in order to deal with odd
-	chips at the moment of chip probing
-Message-ID: <alpine.LFD.1.10.0808051553130.24454@casper.infradead.org>
+Received: from ernst.netinsight.se ([194.16.221.21])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KQPXn-0002DT-QX
+	for linux-mtd@lists.infradead.org; Tue, 05 Aug 2008 16:37:56 +0000
+Message-ID: <489881D5.7010708@users.sourceforge.net>
+Date: Tue, 05 Aug 2008 18:37:41 +0200
+From: =?UTF-8?B?QW5kZXJzIEdyYWZzdHLDtm0=?=
+ <grfstrm@users.sourceforge.net>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] cfi_cmdset_0001: Timeouts for erase, write and unlock
+	operations
+References: <48977822.4040401@users.sourceforge.net>
+	<1217943637.3454.733.camel@pmac.infradead.org>
+In-Reply-To: <1217943637.3454.733.camel@pmac.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Linux-MTD Mailing List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,264 +25,184 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+cfi_cmdset_0001: Timeouts for erase, write and unlock operations
 
-There are some CFI chips which require non standard procedures to get
-into QRY mode. The possible way to support them would be trying different modes
-till QRY will be read. 
-This patch introduce two new functions qry_mode_on qry_mode_off.
-qry_mode_on tries different commands in order switch chip into QRY mode.
+Timeouts are currently given by the typical operation time times 8.
+It works in the general well-behaved case but not when an erase block is
+failing. For erase operations, it seems that a failing erase block will
+keep the device state machine in erasing state until the vendor
+specified maximum timeout period has passed. By this time the driver
+would have long since timed out, left erasing state and attempted
+further operations which all fail. This patch implements timeouts using
+values from the CFI Query structure when available.
+The patch also sets a longer timeout for locking operations. The current
+value used for locking/unlocking given by 1000000/HZ microseconds is too
+short for devices like J3 and J5 Strataflash which have a typical clear
+lock-bits time of 0.5 seconds.
 
-So if we have one more "odd" chip - we just could add several lines to
-qry_mode_on. Also using these functions remove unnecessary code duplicaton in porbe
-procedure. 
+Signed-off-by: Anders Grafström <grfstrm@users.sourceforge.net>
+---
+Sorry about that. Hopefully I got the mailer settings right now so
+this won't be wrapped.
 
-Currently there are two "odd" cases 
-1. Some old intel chips which require 0xFF before 0x98
-2. ST M29DW chip which requires 0x98 to be sent at 0x555 (according to
-CFI should be 0x55)
+ drivers/mtd/chips/cfi_cmdset_0001.c |   52 +++++++++++++++++++++++++---------
+ include/linux/mtd/flashchip.h       |    4 +++
+ 2 files changed, 42 insertions(+), 14 deletions(-)
 
-This patch is partialy based on the patch from Uwe 
-(see "[PATCH 2/4] [RFC][MTD] cfi_probe: remove Intel chip workaround"
-thread )
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index d49cbe2..5157e3c 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -478,6 +478,28 @@ struct mtd_info *cfi_cmdset_0001(struct map_info *map, int primary)
+ 		else
+ 			cfi->chips[i].erase_time = 2000000;
 
-Signed-off-by: Alexey Korolev <akorolev@infradead.org>
-Signed-off-by: Alexander Belyakov <abelyako@gmail.com>
++		if (cfi->cfiq->WordWriteTimeoutTyp &&
++		    cfi->cfiq->WordWriteTimeoutMax)
++			cfi->chips[i].word_write_time_max =
++				1<<(cfi->cfiq->WordWriteTimeoutTyp +
++				    cfi->cfiq->WordWriteTimeoutMax);
++		else
++			cfi->chips[i].word_write_time_max = 50000 * 8;
++
++		if (cfi->cfiq->BufWriteTimeoutTyp &&
++		    cfi->cfiq->BufWriteTimeoutMax)
++			cfi->chips[i].buffer_write_time_max =
++				1<<(cfi->cfiq->BufWriteTimeoutTyp +
++				    cfi->cfiq->BufWriteTimeoutMax);
++
++		if (cfi->cfiq->BlockEraseTimeoutTyp &&
++		    cfi->cfiq->BlockEraseTimeoutMax)
++			cfi->chips[i].erase_time_max =
++				1000<<(cfi->cfiq->BlockEraseTimeoutTyp +
++				       cfi->cfiq->BlockEraseTimeoutMax);
++		else
++			cfi->chips[i].erase_time_max = 2000000 * 8;
++
+ 		cfi->chips[i].ref_point_counter = 0;
+ 		init_waitqueue_head(&(cfi->chips[i].wq));
+ 	}
+@@ -1012,7 +1034,7 @@ static void __xipram xip_enable(struct map_info *map, struct flchip *chip,
 
- drivers/mtd/chips/cfi_probe.c |   52 ++++-----------------------------
- drivers/mtd/chips/cfi_util.c  |   62 ++++++++++++++++++++++++++++++++++++++--
- include/linux/mtd/cfi.h       |    9 +++++-
- 3 files changed, 73 insertions(+), 50 deletions(-)
+ static int __xipram xip_wait_for_operation(
+ 		struct map_info *map, struct flchip *chip,
+-		unsigned long adr, unsigned int chip_op_time )
++		unsigned long adr, unsigned int chip_op_time_max)
+ {
+ 	struct cfi_private *cfi = map->fldrv_priv;
+ 	struct cfi_pri_intelext *cfip = cfi->cmdset_priv;
+@@ -1021,7 +1043,7 @@ static int __xipram xip_wait_for_operation(
+ 	flstate_t oldstate, newstate;
 
-diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
-index c418e92..e706be2
---- a/drivers/mtd/chips/cfi_probe.c
-+++ b/drivers/mtd/chips/cfi_probe.c
-@@ -44,17 +44,14 @@ do { \
- 
- #define xip_enable(base, map, cfi) \
- do { \
--	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL); \
--	cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL); \
-+	qry_mode_off(base, map, cfi); \
- 	xip_allowed(base, map); \
- } while (0)
- 
- #define xip_disable_qry(base, map, cfi) \
- do { \
- 	xip_disable(); \
--	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL); \
--	cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL); \
--	cfi_send_gen_cmd(0x98, 0x55, base, map, cfi, cfi->device_type, NULL); \
-+	qry_mode_on(base, map, cfi); \
- } while (0)
- 
+        	start = xip_currtime();
+-	usec = chip_op_time * 8;
++	usec = chip_op_time_max;
+ 	if (usec == 0)
+ 		usec = 500000;
+ 	done = 0;
+@@ -1131,8 +1153,8 @@ static int __xipram xip_wait_for_operation(
+ #define XIP_INVAL_CACHED_RANGE(map, from, size)  \
+ 	INVALIDATE_CACHED_RANGE(map, from, size)
+
+-#define INVAL_CACHE_AND_WAIT(map, chip, cmd_adr, inval_adr, inval_len, usec) \
+-	xip_wait_for_operation(map, chip, cmd_adr, usec)
++#define INVAL_CACHE_AND_WAIT(map, chip, cmd_adr, inval_adr, inval_len, usec, usec_max) \
++	xip_wait_for_operation(map, chip, cmd_adr, usec_max)
+
  #else
-@@ -70,32 +67,6 @@ do { \
-    in: interleave,type,mode
-    ret: table index, <0 for error
-  */
--static int __xipram qry_present(struct map_info *map, __u32 base,
--				struct cfi_private *cfi)
--{
--	int osf = cfi->interleave * cfi->device_type;	// scale factor
--	map_word val[3];
--	map_word qry[3];
--
--	qry[0] = cfi_build_cmd('Q', map, cfi);
--	qry[1] = cfi_build_cmd('R', map, cfi);
--	qry[2] = cfi_build_cmd('Y', map, cfi);
--
--	val[0] = map_read(map, base + osf*0x10);
--	val[1] = map_read(map, base + osf*0x11);
--	val[2] = map_read(map, base + osf*0x12);
--
--	if (!map_word_equal(map, qry[0], val[0]))
--		return 0;
--
--	if (!map_word_equal(map, qry[1], val[1]))
--		return 0;
--
--	if (!map_word_equal(map, qry[2], val[2]))
--		return 0;
--
--	return 1; 	// "QRY" found
--}
- 
- static int __xipram cfi_probe_chip(struct map_info *map, __u32 base,
- 				   unsigned long *chip_map, struct cfi_private *cfi)
-@@ -116,11 +87,7 @@ static int __xipram cfi_probe_chip(struct map_info *map, __u32 base,
- 	}
- 
- 	xip_disable();
--	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
--	cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL);
--	cfi_send_gen_cmd(0x98, 0x55, base, map, cfi, cfi->device_type, NULL);
--
--	if (!qry_present(map,base,cfi)) {
-+	if (!qry_mode_on(base, map, cfi)) {
- 		xip_enable(base, map, cfi);
- 		return 0;
- 	}
-@@ -144,8 +111,7 @@ static int __xipram cfi_probe_chip(struct map_info *map, __u32 base,
- 		if (qry_present(map, start, cfi)) {
- 			/* Eep. This chip also had the QRY marker.
- 			 * Is it an alias for the new one? */
--			cfi_send_gen_cmd(0xF0, 0, start, map, cfi, cfi->device_type, NULL);
--			cfi_send_gen_cmd(0xFF, 0, start, map, cfi, cfi->device_type, NULL);
-+			qry_mode_off(start, map, cfi);
- 
- 			/* If the QRY marker goes away, it's an alias */
- 			if (!qry_present(map, start, cfi)) {
-@@ -158,8 +124,7 @@ static int __xipram cfi_probe_chip(struct map_info *map, __u32 base,
- 			 * unfortunate. Stick the new chip in read mode
- 			 * too and if it's the same, assume it's an alias. */
- 			/* FIXME: Use other modes to do a proper check */
--			cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
--			cfi_send_gen_cmd(0xFF, 0, start, map, cfi, cfi->device_type, NULL);
-+			qry_mode_off(base, map, cfi);
- 
- 			if (qry_present(map, base, cfi)) {
- 				xip_allowed(base, map);
-@@ -176,8 +141,7 @@ static int __xipram cfi_probe_chip(struct map_info *map, __u32 base,
- 	cfi->numchips++;
- 
- 	/* Put it back into Read Mode */
--	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
--	cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL);
-+	qry_mode_off(base, map, cfi);
- 	xip_allowed(base, map);
- 
- 	printk(KERN_INFO "%s: Found %d x%d devices at 0x%x in %d-bit bank\n",
-@@ -237,9 +201,7 @@ static int __xipram cfi_chip_setup(struct map_info *map,
- 			  cfi_read_query(map, base + 0xf * ofs_factor);
- 
- 	/* Put it back into Read Mode */
--	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
--	/* ... even if it's an Intel chip */
--	cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL);
-+	qry_mode_off(base, map, cfi);
- 	xip_allowed(base, map);
- 
- 	/* Do any necessary byteswapping */
-diff --git a/drivers/mtd/chips/cfi_util.c b/drivers/mtd/chips/cfi_util.c
-index 0ee4570..cf7ddb0 100644
---- a/drivers/mtd/chips/cfi_util.c
-+++ b/drivers/mtd/chips/cfi_util.c
-@@ -24,6 +24,62 @@
- #include <linux/mtd/cfi.h>
- #include <linux/mtd/compatmac.h>
- 
-+int __xipram qry_present(struct map_info *map, __u32 base,
-+				struct cfi_private *cfi)
-+{
-+	int osf = cfi->interleave * cfi->device_type;	/* scale factor */
-+	map_word val[3];
-+	map_word qry[3];
-+
-+	qry[0] = cfi_build_cmd('Q', map, cfi);
-+	qry[1] = cfi_build_cmd('R', map, cfi);
-+	qry[2] = cfi_build_cmd('Y', map, cfi);
-+
-+	val[0] = map_read(map, base + osf*0x10);
-+	val[1] = map_read(map, base + osf*0x11);
-+	val[2] = map_read(map, base + osf*0x12);
-+
-+	if (!map_word_equal(map, qry[0], val[0]))
-+		return 0;
-+
-+	if (!map_word_equal(map, qry[1], val[1]))
-+		return 0;
-+
-+	if (!map_word_equal(map, qry[2], val[2]))
-+		return 0;
-+
-+	return 1; 	/* "QRY" found */
-+}
-+
-+int __xipram qry_mode_on(uint32_t base, struct map_info *map,
-+				struct cfi_private *cfi)
-+{
-+	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0x98, 0x55, base, map, cfi, cfi->device_type, NULL);
-+	if (qry_present(map, base, cfi))
-+		return 1;
-+	/* QRY not found probably we deal with some odd CFI chips */
-+	/* Some revisions of some old Intel chips? */
-+	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0x98, 0x55, base, map, cfi, cfi->device_type, NULL);
-+	if (qry_present(map, base, cfi))
-+		return 1;
-+	/* ST M29DW chips */
-+	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0x98, 0x555, base, map, cfi, cfi->device_type, NULL);
-+	if (qry_present(map, base, cfi))
-+		return 1;
-+	/* QRY not found */
-+	return 0;
-+}
-+void __xipram qry_mode_off(uint32_t base, struct map_info *map,
-+				struct cfi_private *cfi)
-+{
-+	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL);
-+}
-+
- struct cfi_extquery *
- __xipram cfi_read_pri(struct map_info *map, __u16 adr, __u16 size, const char* name)
+
+@@ -1144,7 +1166,7 @@ static int __xipram xip_wait_for_operation(
+ static int inval_cache_and_wait_for_operation(
+ 		struct map_info *map, struct flchip *chip,
+ 		unsigned long cmd_adr, unsigned long inval_adr, int inval_len,
+-		unsigned int chip_op_time)
++		unsigned int chip_op_time, unsigned int chip_op_time_max)
  {
-@@ -48,8 +104,7 @@ __xipram cfi_read_pri(struct map_info *map, __u16 adr, __u16 size, const char* n
+ 	struct cfi_private *cfi = map->fldrv_priv;
+ 	map_word status, status_OK = CMD(0x80);
+@@ -1156,8 +1178,7 @@ static int inval_cache_and_wait_for_operation(
+ 		INVALIDATE_CACHED_RANGE(map, inval_adr, inval_len);
+ 	spin_lock(chip->mutex);
+
+-	/* set our timeout to 8 times the expected delay */
+-	timeo = chip_op_time * 8;
++	timeo = chip_op_time_max;
+ 	if (!timeo)
+ 		timeo = 500000;
+ 	reset_timeo = timeo;
+@@ -1217,8 +1238,8 @@ static int inval_cache_and_wait_for_operation(
+
  #endif
- 
- 	/* Switch it into Query Mode */
--	cfi_send_gen_cmd(0x98, 0x55, base, map, cfi, cfi->device_type, NULL);
--
-+	qry_mode_on(base, map, cfi);
- 	/* Read in the Extended Query Table */
- 	for (i=0; i<size; i++) {
- 		((unsigned char *)extp)[i] =
-@@ -57,8 +112,7 @@ __xipram cfi_read_pri(struct map_info *map, __u16 adr, __u16 size, const char* n
- 	}
- 
- 	/* Make sure it returns to read mode */
--	cfi_send_gen_cmd(0xf0, 0, base, map, cfi, cfi->device_type, NULL);
--	cfi_send_gen_cmd(0xff, 0, base, map, cfi, cfi->device_type, NULL);
-+	qry_mode_off(base, map, cfi);
- 
- #ifdef CONFIG_MTD_XIP
- 	(void) map_read(map, base);
-diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
-index d6fb115..c8b9d95 100644
---- a/include/linux/mtd/cfi.h
-+++ b/include/linux/mtd/cfi.h
-@@ -12,6 +12,7 @@
- #include <linux/mtd/flashchip.h>
- #include <linux/mtd/map.h>
- #include <linux/mtd/cfi_endian.h>
-+#include <linux/mtd/xip.h>
- 
- #ifdef CONFIG_MTD_CFI_I1
- #define cfi_interleave(cfi) 1
-@@ -430,7 +431,6 @@ static inline uint32_t cfi_send_gen_cmd(u_char cmd, uint32_t cmd_addr, uint32_t
- {
- 	map_word val;
- 	uint32_t addr = base + cfi_build_cmd_addr(cmd_addr, cfi_interleave(cfi), type);
--
- 	val = cfi_build_cmd(cmd, map, cfi);
- 
- 	if (prev_val)
-@@ -483,6 +483,13 @@ static inline void cfi_udelay(int us)
- 	}
- }
- 
-+int __xipram qry_present(struct map_info *map, __u32 base,
-+				struct cfi_private *cfi);
-+int __xipram qry_mode_on(uint32_t base, struct map_info *map,
-+				struct cfi_private *cfi);
-+void __xipram qry_mode_off(uint32_t base, struct map_info *map,
-+				struct cfi_private *cfi);
+
+-#define WAIT_TIMEOUT(map, chip, adr, udelay) \
+-	INVAL_CACHE_AND_WAIT(map, chip, adr, 0, 0, udelay);
++#define WAIT_TIMEOUT(map, chip, adr, udelay, udelay_max) \
++	INVAL_CACHE_AND_WAIT(map, chip, adr, 0, 0, udelay, udelay_max);
+
+
+ static int do_point_onechip (struct map_info *map, struct flchip *chip, loff_t adr, size_t len)
+@@ -1452,7 +1473,8 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
+
+ 	ret = INVAL_CACHE_AND_WAIT(map, chip, adr,
+ 				   adr, map_bankwidth(map),
+-				   chip->word_write_time);
++				   chip->word_write_time,
++				   chip->word_write_time_max);
+ 	if (ret) {
+ 		xip_enable(map, chip, adr);
+ 		printk(KERN_ERR "%s: word write error (status timeout)\n", map->name);
+@@ -1623,7 +1645,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
+
+ 	chip->state = FL_WRITING_TO_BUFFER;
+ 	map_write(map, write_cmd, cmd_adr);
+-	ret = WAIT_TIMEOUT(map, chip, cmd_adr, 0);
++	ret = WAIT_TIMEOUT(map, chip, cmd_adr, 0, 0);
+ 	if (ret) {
+ 		/* Argh. Not ready for write to buffer */
+ 		map_word Xstatus = map_read(map, cmd_adr);
+@@ -1692,7 +1714,8 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
+
+ 	ret = INVAL_CACHE_AND_WAIT(map, chip, cmd_adr,
+ 				   initial_adr, initial_len,
+-				   chip->buffer_write_time);
++				   chip->buffer_write_time,
++				   chip->buffer_write_time_max);
+ 	if (ret) {
+ 		map_write(map, CMD(0x70), cmd_adr);
+ 		chip->state = FL_STATUS;
+@@ -1827,7 +1850,8 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
+
+ 	ret = INVAL_CACHE_AND_WAIT(map, chip, adr,
+ 				   adr, len,
+-				   chip->erase_time);
++				   chip->erase_time,
++				   chip->erase_time_max);
+ 	if (ret) {
+ 		map_write(map, CMD(0x70), adr);
+ 		chip->state = FL_STATUS;
+@@ -2006,7 +2030,7 @@ static int __xipram do_xxlock_oneblock(struct map_info *map, struct flchip *chip
+ 	 */
+ 	udelay = (!extp || !(extp->FeatureSupport & (1 << 5))) ? 1000000/HZ : 0;
+
+-	ret = WAIT_TIMEOUT(map, chip, adr, udelay);
++	ret = WAIT_TIMEOUT(map, chip, adr, udelay, udelay * 100);
+ 	if (ret) {
+ 		map_write(map, CMD(0x70), adr);
+ 		chip->state = FL_STATUS;
+diff --git a/include/linux/mtd/flashchip.h b/include/linux/mtd/flashchip.h
+index 08dd131..d4f38c5 100644
+--- a/include/linux/mtd/flashchip.h
++++ b/include/linux/mtd/flashchip.h
+@@ -73,6 +73,10 @@ struct flchip {
+ 	int buffer_write_time;
+ 	int erase_time;
+
++	int word_write_time_max;
++	int buffer_write_time_max;
++	int erase_time_max;
 +
- struct cfi_extquery *cfi_read_pri(struct map_info *map, uint16_t adr, uint16_t size,
- 			     const char* name);
- struct cfi_fixup {
+ 	void *priv;
+ };
+
+-- 
+1.5.6.3
