@@ -1,31 +1,17 @@
-Received: from ipmail04.adl2.internode.on.net ([203.16.214.57])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KQJ8N-0003sS-4p
-	for linux-mtd@lists.infradead.org; Tue, 05 Aug 2008 09:47:15 +0000
-Date: Tue, 5 Aug 2008 19:47:05 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [RFC] Reinstate NFS exportability for JFFS2.
-Message-ID: <20080805094705.GH21635@disturbed>
-References: <76bd70e30808010905j3010a6bfy534c068a662d348d@mail.gmail.com>
-	<1217607571.3454.417.camel@pmac.infradead.org>
-	<76bd70e30808011047u3cd0a56cg3b2d62e01afed014@mail.gmail.com>
-	<20080802182644.GE30454@fieldses.org>
-	<18581.40178.976747.769343@notabene.brown>
-	<76bd70e30808031015l36db41bexf319e85ba7acc4e9@mail.gmail.com>
-	<18582.21855.2092.903688@notabene.brown>
-	<76bd70e30808032319u65e35dbdj9cc5be07e1aef829@mail.gmail.com>
-	<20080805085157.GG21635@disturbed>
-	<1217926788.3454.685.camel@pmac.infradead.org>
+Received: from smtp20.orange.fr ([193.252.22.31])
+	by casper.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1KQLjx-0004sk-7e
+	for linux-mtd@lists.infradead.org; Tue, 05 Aug 2008 12:34:16 +0000
+From: =?koi8-r?B?5MnSxcvUz9LVIOvB3sXT1NfB?= <Mars.Gainestown@yahoo.fr>
+To: <debian-security-announce@lists.debian.org>
+Subject: =?koi8-r?B?/MbGxcvUydfOwdEg0sHCz9TBINPM1dbC2SDrwd7F09TXwS4=?=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1217926788.3454.685.camel@pmac.infradead.org>
-Cc: Christoph Hellwig <hch@infradead.org>, linux-nfs@vger.kernel.org,
-	chucklever@gmail.com, Neil Brown <neilb@suse.de>,
-	"J. Bruce Fields" <bfields@fieldses.org>,
-	linux-mtd@lists.infradead.org, viro@zeniv.linux.org.uk,
-	linux-fsdevel@vger.kernel.org
+Content-Type: text/plain;
+	charset="windows-1251"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20080805123143.E732D1C000D3@mwinf2024.orange.fr>
+Date: Tue,  5 Aug 2008 14:31:43 +0200 (CEST)
+Reply-To: =?koi8-r?B?5MnSxcvUz9LVIOvB3sXT1NfB?= <Mars.Gainestown@yahoo.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,44 +21,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 05, 2008 at 09:59:48AM +0100, David Woodhouse wrote:
-> On Tue, 2008-08-05 at 18:51 +1000, Dave Chinner wrote:
-> > On Mon, Aug 04, 2008 at 02:19:12AM -0400, Chuck Lever wrote:
-> > > So, the JFFS2 locking problem is a garbage-collection issue.  I'm not
-> > > sure this is the case with other file systems like XFS and OCFS2.  My
-> > > impression was that XFS had a transaction logging deadlock,
-> > 
-> > Just to clarify - XFS has a directory buffer lock deadlock. That is,
-> > while reading the contents of the directory buffer it is locked to
-> > prevent modifications from occurring while extracting the contents.
-> > Looking up an entry in the directory also requires the directory
-> > buffer lock (for the same reason), so calling the lookup while
-> > already holding the directory buffer lock (i.e from the filldir
-> > callback) will deadlock.
-> 
-> But if we had a ->lookup_locked() or ->lookup_fh() method which is
-> _guaranteed_ to be called from within your ->readdir(), you could manage
-> to bypass that locking and avoid the deadlock?
-
-I *think* it's possible. It's definitely in the realm of difficult
-because the buffer locks are a couple of layers removed from the
-directory code and both readdir and lookup assume exclusive access to
-the directory block.
-
-We'd probably have to introduce a directory buffer (dabuf) cache
-layer with it's own locking to allow multiple accessors to the
-buffer at the same time. Christoph might have some other ideas for
-this, but I think it's going to take significant surgery
-to implement a 'recursive lockless lookup' like this.
-
-The main problem you are going to have is finding someone who has
-the time to do the XFS work. If you only implement this lookup
-interface, then I'd say it's going to be some time before XFS would
-actually use it....
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Курсы для  директоров по качеству, ключевых специалистов службы качества.
+********************************************************************************
+СЛУЖБА КАЧЕСТВА ПРОИЗВОДСТВЕННОГО ПРЕДПРИЯТИЯ.
+ОРГАНИЗАЦИЯ ЭФФЕКИВНОЙ РАБОТЫ И МАКСИМИЗАЦИЯ ВКЛАДА В КОНЕЧНЫЙ РЕЗУЛЬТАТ РАБОТЫ ЗАВОДА
+********************************************************************************
+Постановка проблемы: изучение и выработка новых управленческих умений и навыков организации и эффективного руководства работой службы качества предприятия, повышения ценности СК для вашего предприятия, наращивания вклада службы в конечный результат работы предприятия.
+******************************************************************************** 
+Цели и задачи семинара:
+·        Сформировать у участников чёткое понимание современного набора существующих управленческих проблем, способов их решений;
+·        Изучить с участниками лучшие и наиболее результативные способы повышения эффективности работы службы и наращивания вклада службы в конечный результат работы предприятия;
+·        Разобраться, зачем именно генеральный директор создаёт службу качества на предприятии и затрачивает значительный бюджет на её содержание;
+·        Изучить мировой и лучший российский опыт работы служб качества;
+·        Рассмотреть в деталях, обменяться мнениями, опытом по вопросам организации эффективной работы службы качества, резервов повышения её эффективности;
+·        Изложить точку зрения генерального директора на личность руководителя службы качества, как человека, менеджера и профессионала, дать инструменты личного и профессионального развития;
+·        Рассмотреть вопросы управления персоналом применительно к службе качества;
+·        Обсудить пути дальнейшего развития службы качества;
+·        Конкретизировать понятие конечного результата работы завода и максимизации вклада службы качества в этот результат.
+******************************************************************************** 
+Ценность семинара: руководители и ключевые специалисты служб качества получат знания и навыки менеджера современного завода применительно к их службе.
+******************************************************************************** 
+Результаты семинара: повысить управленческую квалификацию руководителей служб качества по вопросам эффективной организации бизнес-процессов службы, управления персоналом службы, повышению вклада службы в экономику предприятия.
+********************************************************************************      
+Методы проведения семинара: теоретический материал с презентацией по всем ключевым вопросам рассматриваемой темы, индивидуальные и групповые задания, мозговые штурмы, презентации результатов и обсуждение, обмен мнениями и опытом.
+******************************************************************************** 
+Программа:
+ 
+Для чего предприятию нужна служба качества
+·        Взгляд генерального директора на службу качества
+·        С какими целями предприятие создаёт службу качества
+·        Какие услуги производит служба качества для предприятия
+·        Какие услуги производит служба качества для подразделений
+·        Каких результатов должна достигать служба качества
+·        Как предприятие оценивает работу службы качества
+·        Какой вклад вносит руководитель службы качества и его служба в конечный результат работы предприятия
+ 
+Организация эффективной работы службы качества: функционал и бизнес-процессы службы
+·        Функционал службы качества
+·        Взаимодействие с первыми лицами предприятия
+·        Взаимодействие с цехами, участками, службами, отделами, филиалами предприятия
+·        Взаимодействие с заказчиками, поставщиками, госконтролирующими органами, и органами по сертификации
+·        Бизнес-процессы предприятия: главные, обеспечивающие, вспомогательные, процессы управления
+·        Бизнес-процессы службы качества
+·        Этапы бизнес-процессов службы качества
+ 
+Служба качества в компаниях – мировых лидерах
+·        Стратегии, цели
+·        Функционал
+·        Бизнес-процессы
+ 
+Руководитель Службы качества – личность, менеджер, профессионал
+·        Профессиональные компетенции руководителя службы качества предприятия
+·        Личное и профессиональное развитие руководителя службы качества
+·        Система оценочных показателей работы руководителя службы качества
+·        Повышение роли, авторитета  руководителя службы качества перед руководством предприятия
+·        Усиление власти и влияния руководителя службы качества на подчинённый персонал и персонал предприятия
+ 
+Управление персоналом службы качества
+·        Требования к персоналу СК
+·        Компетенции персонала СК
+·        Оценка и аттестация персонала
+·        Активизация трудового поведения персонала
+·        Воспроизводство персонала
+·        Развитие персонала
+ 
+Развитие службы качества
+·        Цели и задачи развития службы
+·        Стратегии и процессы развития
+·        Внедрение изменений в службе
+·        Результаты развития
+·        Оценка результатов развития
+ 
+Максимизация вклада службы качества в конечный результат работы предприятия
+·        Определение понятия «конечного результата завода»
+·        Содержание вклада службы качества в конечный результат работы завода
+·        Типичные ошибки в работе руководителя службы качества, его службы и их профилактика
+·        Подводные камни в работе службы качества и их устранение
+·        Красные кнопки в работе службы качества и их исключение
+·        Ключевые факторы успеха в работе руководителя службы качества предприятия и его службы
+·        Выводы и заключения по максимизации вклада службы качества в конечный результат работы предприятия
+*****************************************************************************
+15-16  августа | Москва 
+Стоимость участия: 17500 рублей.
+*****************************************************************************
+Получите подробную программу и информацию по этому мероприятию
+по тел.: +7 (495) 229-04-33
+*****************************************************************************
+Предварительная регистрация обязательна!
