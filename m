@@ -1,19 +1,17 @@
-Received: from mx1.myoutlookonline.com ([69.25.74.47])
+Received: from smtp20.orange.fr ([193.252.22.31])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KQgPL-0001ag-0a
-	for linux-mtd@lists.infradead.org; Wed, 06 Aug 2008 10:38:19 +0000
-Content-class: urn:content-classes:message
+	id 1KQhdn-0002fX-LO
+	for linux-mtd@lists.infradead.org; Wed, 06 Aug 2008 11:57:20 +0000
+From: =?koi8-r?B?78fSz83O2cUg8NLPxMHWyQ==?= <Anisij.Kaneville@yahoo.fr>
+To: <debian-x@lists.debian.org>
+Subject: =?koi8-r?B?79LHwc7J2sHDydEg3MvT0MXS1M7ZyCDQ0s/EwdYu?=
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: usage of the reseverd byte in oob area
-Date: Wed, 6 Aug 2008 06:31:00 -0400
-Message-ID: <F933E170AF6D2641AC49FAE0F33296A9698A91@BE042.mail.lan>
-In-Reply-To: <F933E170AF6D2641AC49FAE0F33296A9698A32@BE042.mail.lan>
-From: "Raj Kumar Yadav" <ryadav@NeoMagic.com>
-To: <linux-mtd@lists.infradead.org>
-Cc: rajkumaryadav@gmail.com
+	charset="windows-1251"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20080806115715.C2F5A1C0019F@mwinf2019.orange.fr>
+Date: Wed,  6 Aug 2008 13:57:15 +0200 (CEST)
+Reply-To: =?koi8-r?B?78fSz83O2cUg8NLPxMHWyQ==?= <Anisij.Kaneville@yahoo.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,54 +21,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=20
+c 16 по 17 aвгустa | Moсквa
+********************************************************************************
+ТЕХНОЛОГИЯ ЭКСПЕРТНЫХ ПРОДАЖ С ДЛИТЕЛЬНЫМ ЦИКЛОМ.
+********************************************************************************
+Предназначен для: руководителей и специалистов отделов продаж и сбыта предприятий.
+Постановка проблемы: изучение и выработка новых управленческих умений и навыков организации и эффективного руководства экспертными продажами, наращивания вклада отдела продаж в конечный результат работы предприятия.
+Цели и задачи:
+"	Сформировать у участников чёткое понимание роли и места больших экспертных продаж, набора существующих управленческих проблем, способов их решений; 
+"	Изучить с участниками лучшие и наиболее результативные способы повышения эффективности работы с ключевыми клиентами и их развития; 
+"	Разобраться с признаками больших продаж и целью выделения ключевых клиентов из общей клиентской базы, почему работа с ними требует специального внимания и выделения специальных ресурсов; 
+"	Изучить мировой и лучший российский опыт организации больших продаж и работы с ключевыми клиентами; 
+"	Рассмотреть в деталях, обменяться мнениями, опытом по вопросам организации эффективной работы с ключевыми клиентами, резервов повышения её эффективности; 
+"	Дать участникам практические навыки формирования современных стандартов работы; 
+"	Изложить точку зрения на работу с клиентами при больших продажах и стадии одобрения сделки, дать инструменты личного и профессионального развития; 
+"	Обсудить пути дальнейшего стратегического развития ключевых клиентов, составить план работы с ними.
+Ценность семинара: руководители и ключевые специалисты служб маркетинга, продаж и сбыта получат знания и навыки по организации больших продаж и работе с ключевыми клиентами предприятия 
+Результаты семинара: повысить управленческую квалификацию руководителей и специалистов служб маркетинга, продаж и сбыта по вопросам эффективной организации больших продаж и работы с ключевыми клиентами, повышению вклада от больших продаж и работы с ключевыми клиентами в экономику предприятия. 
+Методы проведения семинара: теоретический материал с презентацией по всем ключевым вопросам рассматриваемой темы, индивидуальные и групповые задания, мозговые штурмы, презентации результатов и обсуждение, обмен мнениями и опытом. 
+********************************************************************************
 
------Original Message-----
+ПРОГРАММА: 
 
-The oob offset 0x4 in small page (512 byte pagesize) flash is marked as
-reserved.
-Is this byte reserved for any specifc present or defined future h/w or
-s/w use?=20
-Or left for the software to interpret and use it suitabily?=20
-=20
-I have a requirement of 7 bytes for the ECC code (currently it is 6
-bytes).
-Can I use the reserved byte as extra bytes for the ECC code of 7 bytes?
-=20
-As the remaining 8 bytes of OOB area are used by the JFFS2 and YAFFS1.=20
-=20
---------------------------------------------------------
+Что такое большие (экспертные) продажи
+· 10 признаков большой продажи
+· Ответственность и «лестница восприятия» продавца
+· Критерии выделения ключевых клиентов
+· Какой вклад вносят ключевые клиенты в конечный результат работы предприятия
+· Особенности взаимодействия с ключевыми клиентами
+Опыт компаний – мировых лидеров в области больших продаж
+· Стратегии, цели
+· Функционал
+· Бизнес-процессы
+Стратегическое планирование работы с ключевыми клиентами
+· Определение ключевых клиентов и их поиск
+· Оценка взаимоотношений с ключевыми клиентами
+· Приоритетные направления развития ключевых клиентов
+· Тактика взаимодействия с ключевыми клиентами
+· Определение SMART целей и задач, составление плана работы по развитию ключевых клиентов
+Понимание клиента
+· Уровни осознания решения
+· Скрытая Проблема или Возможность
+· Соотношения между стадиями одобрения сделки и уровнями осознания регения
+· Симптом проблемы и знак возможности
+· Предотвращение отложенного решения
+· Отложенное решение
+· Управление ценностью
+· Поиск решения
+· Управление ценностью
+· Реформация и продолжение поиска решения клиентом
+· Искусство задавать вопросы клиенту
+Стадии одобрения сделки (Пять «П»)
+· Поиск
+· Понимание
+· Построение
+· Подписание
+· Передача
+Планирование и контроль работы с ключевыми клиентами
+· Составление Плана работы
+· Характеристика эффективного плана работы
+· Планирование взаимодействия с ключевыми клиентами
+· Оценка эффективности составленного плана
+Задачи менеджера при организации больших продаж и работе с ключевыми клиентами
+· Структура взаимодействия с ключевыми клиентами
+· Что менеджер по работе с ключевыми клиентами должен держать под контролем
+· Содержание вклада ключевых клиентов в конечный результат работы фирмы
+· Типичные ошибки в работе менеджера по работе с ключевыми клиентами и их профилактика
+· Подводные камни в работе менеджера по работе с ключевыми клиентами и их устранение
+· Красные кнопки в работе менеджера по работе с ключевыми клиентами и их исключение
+· Ключевые факторы успеха в работе менеджера по работе с ключевыми клиентами
+· Выводы и заключения по максимизации вклада менеджера по работе с ключевыми клиентами в конечный результат работы предприятия
+Инструменты эффективных продаж
 
-Hi All,
-
-OK, my question (seems too silly and totally out of context)=20
-could not find merit for a reply. the additional data on this:
-
-As per the document "mtdnand.ps", for small page flash=20
-(with 512 byte pagesize and 16 byte oob), the oob area is=20
-used for=20
- 1) ECC bytes=20
- 2) two reserved bytes (one byte for badblock, other byte ???)
- 3) filesystem specific info (JFFS2/YAFFS1).
-
-The document "mtdnand.ps" also says, if anyone want to use=20
-the Hardware ECC, he have to store the badblock information
-into some known area of flash (NAND_BBT_*).
-
-After this the badblock byte and other reserved byte in the=20
-oob area is available for Hardware ECC.=20
-
-Now, I would like to know, can one use the other reserved=20
-byte for hardware ECC, while still using the badblock marker=20
-byte for its intended role. With additional reserved bytes,=20
-Total 7 bytes are available for hardware ECC (BCH). The=20
-hardware can take scattered positions for ECC bytes.
-
-The question is more about 'should' than 'can'.
-
-Please point me, if this is not the right mailing list for=20
-this query.
-
-
-Thanks,
-Raj Kumar Yadav
+*****************************************************************************
+16-17  августа | Москва 
+Стоимость участия: 17500 рублей.
+*****************************************************************************
+Получите подробную программу и информацию по этому мероприятию
+по тел.: +7(495)229~04~33
+*****************************************************************************
+Предварительная регистрация обязательна!
