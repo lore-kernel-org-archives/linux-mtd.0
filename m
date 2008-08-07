@@ -1,24 +1,17 @@
-Received: from fg-out-1718.google.com ([72.14.220.153])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KR2vI-0001Az-QH
-	for linux-mtd@lists.infradead.org; Thu, 07 Aug 2008 10:40:49 +0000
-Received: by fg-out-1718.google.com with SMTP id l26so188289fgb.26
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 07 Aug 2008 03:40:47 -0700 (PDT)
-Message-ID: <cd73a99e0808070340s29932337o74293afc91d128f4@mail.gmail.com>
-Date: Thu, 7 Aug 2008 12:40:47 +0200
-From: "Andrew Victor" <avictor.za@gmail.com>
-To: "David Brownell" <david-b@pacbell.net>
-Subject: Re: [patch 2.6.27-rc2] MTD: make dataflash write-verify be optional
-In-Reply-To: <200808062155.14366.david-b@pacbell.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Subject: Re: [PATCH 3/3] [MTD] m25p80.c
+From: David Woodhouse <dwmw2@infradead.org>
+To: Chen Gong <g.chen@freescale.com>
+In-Reply-To: <1218080495-2653-4-git-send-email-g.chen@freescale.com>
+References: <1218080495-2653-1-git-send-email-g.chen@freescale.com>
+	<1218080495-2653-2-git-send-email-g.chen@freescale.com>
+	<1218080495-2653-3-git-send-email-g.chen@freescale.com>
+	<1218080495-2653-4-git-send-email-g.chen@freescale.com>
+Content-Type: text/plain
+Date: Thu, 07 Aug 2008 14:31:57 +0100
+Message-Id: <1218115917.12232.56.camel@pmac.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <200808062155.14366.david-b@pacbell.net>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	Andrew Victor <linux@maxim.org.za>,
-	Haavard Skinnemoen <hskinnemoen@atmel.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,18 +21,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi,
+On Thu, 2008-08-07 at 11:41 +0800, Chen Gong wrote:
+> Signed-off-by: Chen Gong <g.chen@freescale.com>
 
-> It doesn't seem to add a
-> lot in terms of reliability, and wouldn't detect errors which
-> crop up when transferring data to the on-chip SRAM buffer.
+Changelog entry for this one?
 
-Yes, it was originally added for detecting bad/dead bits on the flash.
-
-[I think some (obsolete) DataFlash revisions (C?) didn't have the
-compare functionality, though revision B did.  Or atleast it wasn't
-defined in the rev C datasheets.  It did return "success" on those
-chips though].
-
-
-Acked-by: Andrew Victor <linux@maxim.org.za>
+-- 
+dwmw2
