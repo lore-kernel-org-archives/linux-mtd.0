@@ -1,8 +1,8 @@
-Date: Sat, 9 Aug 2008 16:07:35 -0400
+Date: Sat, 9 Aug 2008 16:08:09 -0400
 From: Christoph Hellwig <hch@infradead.org>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 1/4] Factor out nfsd_do_readdir() into its own function
-Message-ID: <20080809200735.GA8181@infradead.org>
+Subject: Re: [PATCH 2/4] Copy XFS readdir hack into nfsd code.
+Message-ID: <20080809200807.GB8181@infradead.org>
 References: <18582.21855.2092.903688@notabene.brown>
 	<76bd70e30808032319u65e35dbdj9cc5be07e1aef829@mail.gmail.com>
 	<20080805085157.GG21635@disturbed>
@@ -12,11 +12,11 @@ References: <18582.21855.2092.903688@notabene.brown>
 	<1218053443.5111.148.camel@pmac.infradead.org>
 	<1218300478.26926.114.camel@pmac.infradead.org>
 	<1218311710.26926.125.camel@pmac.infradead.org>
-	<1218312114.5063.5.camel@pmac.infradead.org>
+	<1218312158.5063.7.camel@pmac.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1218312114.5063.5.camel@pmac.infradead.org>
+In-Reply-To: <1218312158.5063.7.camel@pmac.infradead.org>
 Cc: Christoph Hellwig <hch@infradead.org>, linux-nfs@vger.kernel.org,
 	chucklever@gmail.com, Neil Brown <neilb@suse.de>,
 	"J. Bruce Fields" <bfields@fieldses.org>,
