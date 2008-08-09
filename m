@@ -1,13 +1,9 @@
-Subject: Re: [RFC] Reinstate NFS exportability for JFFS2.
-From: David Woodhouse <dwmw2@infradead.org>
-To: "J. Bruce Fields" <bfields@fieldses.org>
-In-Reply-To: <1218300478.26926.114.camel@pmac.infradead.org>
-References: <1217607571.3454.417.camel@pmac.infradead.org>
-	<76bd70e30808011047u3cd0a56cg3b2d62e01afed014@mail.gmail.com>
-	<20080802182644.GE30454@fieldses.org>
-	<18581.40178.976747.769343@notabene.brown>
-	<76bd70e30808031015l36db41bexf319e85ba7acc4e9@mail.gmail.com>
-	<18582.21855.2092.903688@notabene.brown>
+Date: Sat, 9 Aug 2008 16:07:35 -0400
+From: Christoph Hellwig <hch@infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 1/4] Factor out nfsd_do_readdir() into its own function
+Message-ID: <20080809200735.GA8181@infradead.org>
+References: <18582.21855.2092.903688@notabene.brown>
 	<76bd70e30808032319u65e35dbdj9cc5be07e1aef829@mail.gmail.com>
 	<20080805085157.GG21635@disturbed>
 	<18584.56584.98868.881298@notabene.brown>
@@ -15,13 +11,15 @@ References: <1217607571.3454.417.camel@pmac.infradead.org>
 	<20080806195635.GA31126@fieldses.org>
 	<1218053443.5111.148.camel@pmac.infradead.org>
 	<1218300478.26926.114.camel@pmac.infradead.org>
-Content-Type: text/plain
-Date: Sat, 09 Aug 2008 20:55:10 +0100
-Message-Id: <1218311710.26926.125.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-nfs@vger.kernel.org, chucklever@gmail.com, Neil Brown <neilb@suse.de>,
-	Christoph Hellwig <hch@infradead.org>,
+	<1218311710.26926.125.camel@pmac.infradead.org>
+	<1218312114.5063.5.camel@pmac.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1218312114.5063.5.camel@pmac.infradead.org>
+Cc: Christoph Hellwig <hch@infradead.org>, linux-nfs@vger.kernel.org,
+	chucklever@gmail.com, Neil Brown <neilb@suse.de>,
+	"J. Bruce Fields" <bfields@fieldses.org>,
 	linux-mtd@lists.infradead.org, viro@zeniv.linux.org.uk,
 	linux-fsdevel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,18 +31,4 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2008-08-09 at 17:47 +0100, David Woodhouse wrote:
-> Here it is in a single patch...
-
-Updated again after more feedback from hch, to really make it
-unconditional instead of just inverting the logic, turn a check for
-S_ISDIR() in JFFS2 into a BUG_ON() because it should _really_ never
-happen, and fix up some comments (remove the one about why we do the
-buffering in xfs, and add something similar back in nfsd).
-
-{http://,git://} git.infradead.org/users/dwmw2/nfsexport-2.6.git
-
-Patch sequence follows...
-
--- 
-dwmw2
+Looks good.
