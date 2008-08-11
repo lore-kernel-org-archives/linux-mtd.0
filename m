@@ -1,30 +1,24 @@
-Subject: [PATCH 4/4] Reinstate NFS exportability
-From: David Woodhouse <dwmw2@infradead.org>
-To: "J. Bruce Fields" <bfields@fieldses.org>
-In-Reply-To: <1218311710.26926.125.camel@pmac.infradead.org>
-References: <1217607571.3454.417.camel@pmac.infradead.org>
-	<76bd70e30808011047u3cd0a56cg3b2d62e01afed014@mail.gmail.com>
-	<20080802182644.GE30454@fieldses.org>
-	<18581.40178.976747.769343@notabene.brown>
-	<76bd70e30808031015l36db41bexf319e85ba7acc4e9@mail.gmail.com>
-	<18582.21855.2092.903688@notabene.brown>
-	<76bd70e30808032319u65e35dbdj9cc5be07e1aef829@mail.gmail.com>
-	<20080805085157.GG21635@disturbed>
-	<18584.56584.98868.881298@notabene.brown>
-	<20080806000805.GJ21635@disturbed>
-	<20080806195635.GA31126@fieldses.org>
-	<1218053443.5111.148.camel@pmac.infradead.org>
-	<1218300478.26926.114.camel@pmac.infradead.org>
-	<1218311710.26926.125.camel@pmac.infradead.org>
-Content-Type: text/plain
-Date: Sat, 09 Aug 2008 21:03:33 +0100
-Message-Id: <1218312213.5063.9.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-nfs@vger.kernel.org, chucklever@gmail.com, Neil Brown <neilb@suse.de>,
-	Christoph Hellwig <hch@infradead.org>,
-	linux-mtd@lists.infradead.org, viro@zeniv.linux.org.uk,
-	linux-fsdevel@vger.kernel.org
+Received: from az33egw02.freescale.net ([192.88.158.103])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KSTNr-00020T-Av
+	for linux-mtd@lists.infradead.org; Mon, 11 Aug 2008 09:08:11 +0000
+Received: from az33smr01.freescale.net (az33smr01.freescale.net [10.64.34.199])
+	by az33egw02.freescale.net (8.12.11/az33egw02) with ESMTP id
+	m7B9889O010985 for <linux-mtd@lists.infradead.org>;
+	Mon, 11 Aug 2008 02:08:08 -0700 (MST)
+Received: from zch01exm21.fsl.freescale.net (zch01exm21.ap.freescale.net
+	[10.192.129.205])
+	by az33smr01.freescale.net (8.13.1/8.13.0) with ESMTP id m7B985a9007178
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 11 Aug 2008 04:08:07 -0500 (CDT)
+From: Chen Gong <g.chen@freescale.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/3] [MTD] m25p80.c erase enhance
+Date: Mon, 11 Aug 2008 16:59:13 +0800
+Message-Id: <1218445155-6238-2-git-send-email-g.chen@freescale.com>
+In-Reply-To: <1218445155-6238-1-git-send-email-g.chen@freescale.com>
+References: <1218445155-6238-1-git-send-email-g.chen@freescale.com>
+Cc: Chen Gong <g.chen@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,106 +28,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that the readdir/lookup deadlock issues have been dealt with, we can
-export JFFS2 file systems again.
+This patch adds an erase_block command to enhance erase operation
 
-(For now, you have to specify fsid manually; we should add a method to
-the export_ops to handle that too.)
-
-Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
+Signed-Off-by: Chen Gong <g.chen@freescale.com>
 ---
- fs/jffs2/super.c |   59 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 59 insertions(+), 0 deletions(-)
+ drivers/mtd/devices/m25p80.c |   48 +++++++++++++++++++++++++++++++++++-------
+ 1 files changed, 40 insertions(+), 8 deletions(-)
 
-diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index efd4012..7f03a28 100644
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -22,6 +22,7 @@
- #include <linux/mtd/super.h>
- #include <linux/ctype.h>
- #include <linux/namei.h>
-+#include <linux/exportfs.h>
- #include "compr.h"
- #include "nodelist.h"
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index b35c333..8fbd1b5 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -39,6 +39,7 @@
+ #define	OPCODE_PP		0x02	/* Page program (up to 256 bytes) */
+ #define	OPCODE_BE_4K 		0x20	/* Erase 4KiB block */
+ #define	OPCODE_BE_32K		0x52	/* Erase 32KiB block */
++#define	OPCODE_BE		0xc7	/* Erase whole flash block */
+ #define	OPCODE_SE		0xd8	/* Sector erase (usually 64KiB) */
+ #define	OPCODE_RDID		0x9f	/* Read JEDEC ID */
  
-@@ -62,6 +63,63 @@ static int jffs2_sync_fs(struct super_block *sb, int wait)
- 	return 0;
+@@ -161,6 +162,31 @@ static int wait_till_ready(struct m25p *flash)
+ 	return 1;
  }
  
-+static struct inode *jffs2_nfs_get_inode(struct super_block *sb, uint64_t ino,
-+					 uint32_t generation)
++/*
++ * Erase the whole flash memory
++ *
++ * Returns 0 if successful, non-zero otherwise.
++ */
++static int erase_block(struct m25p *flash)
 +{
-+	return jffs2_iget(sb, ino);
++	DEBUG(MTD_DEBUG_LEVEL3, "%s: %s %dKiB\n",
++			flash->spi->dev.bus_id, __func__,
++			flash->mtd.size / 1024);
++
++	/* Wait until finished previous write command. */
++	if (wait_till_ready(flash))
++		return 1;
++
++	/* Send write enable, then erase commands. */
++	write_enable(flash);
++
++	/* Set up command buffer. */
++	flash->command[0] = OPCODE_BE;
++
++	spi_write(flash->spi, flash->command, 1);
++
++	return 0;
 +}
-+
-+static struct dentry *jffs2_fh_to_dentry(struct super_block *sb, struct fid *fid,
-+					 int fh_len, int fh_type)
-+{
-+        return generic_fh_to_dentry(sb, fid, fh_len, fh_type,
-+                                    jffs2_nfs_get_inode);
-+}
-+
-+static struct dentry *jffs2_fh_to_parent(struct super_block *sb, struct fid *fid,
-+					 int fh_len, int fh_type)
-+{
-+        return generic_fh_to_parent(sb, fid, fh_len, fh_type,
-+                                    jffs2_nfs_get_inode);
-+}
-+
-+static struct dentry *jffs2_get_parent(struct dentry *child)
-+{
-+	struct jffs2_inode_info *f;
-+	struct dentry *parent;
-+	struct inode *inode;
-+	uint32_t pino;
-+
-+	BUG_ON(!S_ISDIR(child->d_inode->i_mode));
-+
-+	f = JFFS2_INODE_INFO(child->d_inode);
-+
-+	pino = f->inocache->pino_nlink;
-+
-+	JFFS2_DEBUG("Parent of directory ino #%u is #%u\n",
-+		    f->inocache->ino, pino);
-+
-+	inode = jffs2_iget(child->d_inode->i_sb, pino);
-+	if (IS_ERR(inode)) {
-+		JFFS2_ERROR("Failed to get inode #%u: %ld\n", pino,
-+			    PTR_ERR(inode));
-+		return ERR_CAST(inode);
-+	}
-+
-+	parent = d_alloc_anon(inode);
-+	if (!parent) {
-+		iput(inode);
-+		parent = ERR_PTR(-ENOMEM);
-+	}
-+	return parent;
-+}
-+
-+static struct export_operations jffs2_export_ops = {
-+	.get_parent = jffs2_get_parent,
-+	.fh_to_dentry = jffs2_fh_to_dentry,
-+	.fh_to_parent = jffs2_fh_to_parent,
-+};
-+
- static const struct super_operations jffs2_super_operations =
- {
- 	.alloc_inode =	jffs2_alloc_inode,
-@@ -104,6 +162,7 @@ static int jffs2_fill_super(struct super_block *sb, void *data, int silent)
- 	spin_lock_init(&c->inocache_lock);
  
- 	sb->s_op = &jffs2_super_operations;
-+ 	sb->s_export_op = &jffs2_export_ops;
- 	sb->s_flags = sb->s_flags | MS_NOATIME;
- 	sb->s_xattr = jffs2_xattr_handlers;
- #ifdef CONFIG_JFFS2_FS_POSIX_ACL
+ /*
+  * Erase one sector of flash memory at offset ``offset'' which is any
+@@ -229,15 +255,21 @@ static int m25p80_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	 */
+ 
+ 	/* now erase those sectors */
+-	while (len) {
+-		if (erase_sector(flash, addr)) {
+-			instr->state = MTD_ERASE_FAILED;
+-			mutex_unlock(&flash->lock);
+-			return -EIO;
+-		}
++	if (len == flash->mtd.size && erase_block(flash)) {
++		instr->state = MTD_ERASE_FAILED;
++		mutex_unlock(&flash->lock);
++		return -EIO;
++	} else {
++		while (len) {
++			if (erase_sector(flash, addr)) {
++				instr->state = MTD_ERASE_FAILED;
++				mutex_unlock(&flash->lock);
++				return -EIO;
++			}
+ 
+-		addr += mtd->erasesize;
+-		len -= mtd->erasesize;
++			addr += mtd->erasesize;
++			len -= mtd->erasesize;
++		}
+ 	}
+ 
+ 	mutex_unlock(&flash->lock);
 -- 
-1.5.5.1
-
-
-
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+1.5.4
