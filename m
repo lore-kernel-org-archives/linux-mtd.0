@@ -1,21 +1,16 @@
-Received: from aero.aeryon.com ([76.10.149.188] helo=pokey.aeryon.com)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KTJQT-000673-CZ
-	for linux-mtd@lists.infradead.org; Wed, 13 Aug 2008 16:42:21 +0000
-Received: from [192.168.1.86] (foxy.aeryon.com [192.168.1.1])
-	by pokey.aeryon.com (Postfix) with ESMTP id 8B6596C871
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 13 Aug 2008 12:42:18 -0400 (EDT)
-Message-ID: <48A30EE9.4040304@aeryon.com>
-Date: Wed, 13 Aug 2008 12:42:17 -0400
-From: Dave Kroetsch <dave@aeryon.com>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KTaWn-0005xo-DN
+	for linux-mtd@lists.infradead.org; Thu, 14 Aug 2008 10:58:02 +0000
+Message-ID: <48A4103C.9090603@nokia.com>
+Date: Thu, 14 Aug 2008 14:00:12 +0300
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: NAND  JFFS2 mount umount problems
-References: <zT949098826967.01695@send5.inner-21cn.com>
-In-Reply-To: <zT949098826967.01695@send5.inner-21cn.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: [PATCH] [MTD] OneNAND OMAP3: add delay for GPIO
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
+Cc: linux-omap@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,13 +20,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Liao...
+On OMAP3, the driver was occasionally not seeing the GPIO
+interrupt.  Adding a small delay of one register read
+eliminates the problem.
 
-I saw your post on NAND JFFS2 mount/umount problems.  I know the post is 
-old, but I have the same problem and don't have a solution.  Did you 
-ever find a solution?
+Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+---
+ drivers/mtd/onenand/omap2.c |    9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
 
-http://lists.infradead.org/pipermail/linux-mtd/2005-September/013486.html
-
-Thanks,
-	Dave
+diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+index 2bd8746..bf6bba5 100644
+--- a/drivers/mtd/onenand/omap2.c
++++ b/drivers/mtd/onenand/omap2.c
+@@ -141,8 +141,13 @@ static int omap2_onenand_wait(struct mtd_info *mtd, int state)
+ 
+ 		/* Turn interrupts on */
+ 		syscfg = read_reg(c, ONENAND_REG_SYS_CFG1);
+-		syscfg |= ONENAND_SYS_CFG1_IOBE;
+-		write_reg(c, syscfg, ONENAND_REG_SYS_CFG1);
++		if (!(syscfg & ONENAND_SYS_CFG1_IOBE)) {
++			syscfg |= ONENAND_SYS_CFG1_IOBE;
++			write_reg(c, syscfg, ONENAND_REG_SYS_CFG1);
++			if (cpu_is_omap34xx())
++				/* Add a delay to let GPIO settle */
++				syscfg = read_reg(c, ONENAND_REG_SYS_CFG1);
++		}
+ 
+ 		INIT_COMPLETION(c->irq_done);
+ 		if (c->gpio_irq) {
+-- 
+1.5.4.3
