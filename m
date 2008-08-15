@@ -1,30 +1,15 @@
-Received: from nf-out-0910.google.com ([64.233.182.190])
+Received: from nwd2mail11.analog.com ([137.71.25.57])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KTvWx-00005z-92
-	for linux-mtd@lists.infradead.org; Fri, 15 Aug 2008 09:23:35 +0000
-Received: by nf-out-0910.google.com with SMTP id d21so840723nfb.22
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 15 Aug 2008 02:23:34 -0700 (PDT)
-Message-ID: <ac9c93b10808150223h6fb6032co61ffa7babba57884@mail.gmail.com>
-Date: Fri, 15 Aug 2008 11:23:34 +0200
-From: "Frans Meulenbroeks" <fransmeulenbroeks@gmail.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Subject: Re: [RESUBMIT] [PATCH] [MTD] NAND nand_ecc.c: rewrite for improved
-	performance
-In-Reply-To: <1218789997.3184.64.camel@pmac.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <alpine.DEB.0.99.0807311031390.6774@frans-desktop>
-	<1218472202.2977.12.camel@pmac.infradead.org>
-	<ac9c93b10808120153m7435424ci3e49a70d3599cc06@mail.gmail.com>
-	<1218535872.2977.133.camel@pmac.infradead.org>
-	<alpine.DEB.0.99.0808142007340.6572@frans-desktop>
-	<48A48330.70105@boundarydevices.com>
-	<ac9c93b10808150141o6627e350pd23895d56426d59c@mail.gmail.com>
-	<1218789997.3184.64.camel@pmac.infradead.org>
-Cc: linux-mtd@lists.infradead.org, Troy Kisky <troy.kisky@boundarydevices.com>
+	id 1KTva4-0000es-VT
+	for linux-mtd@lists.infradead.org; Fri, 15 Aug 2008 09:26:49 +0000
+From: Bryan Wu <cooloney@kernel.org>
+To: dwmw2@infradead.org
+Subject: [PATCH 1/1] mtd/maps: blackfin async flash maps - fix bug: dont leak
+	resources when initializing in case of errors
+Date: Fri, 15 Aug 2008 16:34:57 +0800
+Message-Id: <1218789297-9756-1-git-send-email-cooloney@kernel.org>
+Cc: Bryan Wu <cooloney@kernel.org>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, Mike Frysinger <vapier.adi@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,50 +19,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2008/8/15, David Woodhouse <dwmw2@infradead.org>:
-> Frans, thank you very much for your work. One question -- has this been
->  tested on 64-bit machines?
+From: Mike Frysinger <vapier.adi@gmail.com>
 
-Good question, and more difficult than I thought.
-Yes, It has been tested on 64 bit hardware. More specific a DELL 9150
-with a D920 (presler) dual core processor.
-However, not too sure if this system runs 64bit linux. Basically it
-runs an out-of-the-box install of Ubuntu 7.10.
+Signed-off-by: Mike Frysinger <vapier.adi@gmail.com>
+Signed-off-by: Bryan Wu <cooloney@kernel.org>
+---
+ drivers/mtd/maps/bfin-async-flash.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
 
-Note also that I tested this on this PC by running a test application
-and comparing the results with the original code as my PC does not
-have (user accessible) NAND flash.
-
-If desired I can install and test on a 64 bit kernel.
-Then again, I do not really expect issues (it is only an algorithm
-with simple operations).
-Also 64 bit is not that interesting. I doubt if we will ever see
-systems 64 bit processors that use NAND flash without hardware ECC
-calculations...
-
->
->  The patch still doesn't apply, unfortunately -- something seems to be
->  mangling it. In general, it's a good idea to send patches to yourself in
->  email first, then save them off from your own INBOX and try to apply
->  them to a clean kernel tree.
-
-Yikes. Can you email me the error log?
-I know about sending patches to myself and testing them, but again
-things are more complicated here.
-I've developed this on a fresh kernel from kernel.org. The previous
-version failed because the mtd git has a change from beginning of june
-where all cvs comments have been removed. This change has not
-propagated to mainline yet (2.6.26.2 still contains the cvs comment).
-As I have no git experience, what I did was pull a copy of nand_ecc.c
-(the only file I change) from the mtd git using my browser
-(http://git.infradead.org/mtd-2.6.git?a=blob_plain;f=drivers/mtd/nand/nand_ecc.c;hb=HEAD)
-and overwrite the one in 2.6.26.2. The only thing I can imagine is
-that something went wrong with that. (e.g. tabs and spaces).
-
->
->  Please could you let me have a copy as an attachment, or just a straight
->  copy of both files?
-
-I'll send you both files later today (they are on a different system).
-
-Best regards, Frans. (and apologies for the trouble I caused with this).
+diff --git a/drivers/mtd/maps/bfin-async-flash.c b/drivers/mtd/maps/bfin-async-flash.c
+index 6fec86a..576611f 100644
+--- a/drivers/mtd/maps/bfin-async-flash.c
++++ b/drivers/mtd/maps/bfin-async-flash.c
+@@ -152,14 +152,18 @@ static int __devinit bfin_flash_probe(struct platform_device *pdev)
+ 
+ 	if (gpio_request(state->enet_flash_pin, DRIVER_NAME)) {
+ 		pr_devinit(KERN_ERR DRIVER_NAME ": Failed to request gpio %d\n", state->enet_flash_pin);
++		kfree(state);
+ 		return -EBUSY;
+ 	}
+ 	gpio_direction_output(state->enet_flash_pin, 1);
+ 
+ 	pr_devinit(KERN_NOTICE DRIVER_NAME ": probing %d-bit flash bus\n", state->map.bankwidth * 8);
+ 	state->mtd = do_map_probe(memory->name, &state->map);
+-	if (!state->mtd)
++	if (!state->mtd) {
++		gpio_free(state->enet_flash_pin);
++		kfree(state);
+ 		return -ENXIO;
++	}
+ 
+ #ifdef CONFIG_MTD_PARTITIONS
+ 	ret = parse_mtd_partitions(state->mtd, part_probe_types, &pdata->parts, 0);
+-- 
+1.5.6
