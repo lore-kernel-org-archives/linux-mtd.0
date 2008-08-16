@@ -1,28 +1,19 @@
-Subject: Re: [RESUBMIT] [PATCH] [MTD] NAND nand_ecc.c: rewrite for improved
-	performance
-From: David Woodhouse <dwmw2@infradead.org>
-To: frans <fransmeulenbroeks@gmail.com>
-In-Reply-To: <alpine.DEB.0.99.0808152300300.9220@frans-desktop>
-References: <alpine.DEB.0.99.0807311031390.6774@frans-desktop>
-	<1218472202.2977.12.camel@pmac.infradead.org>
-	<ac9c93b10808120153m7435424ci3e49a70d3599cc06@mail.gmail.com>
-	<1218535872.2977.133.camel@pmac.infradead.org>
-	<alpine.DEB.0.99.0808142007340.6572@frans-desktop>
-	<48A48330.70105@boundarydevices.com>
-	<ac9c93b10808150141o6627e350pd23895d56426d59c@mail.gmail.com>
-	<1218789997.3184.64.camel@pmac.infradead.org>
-	<ac9c93b10808150223h6fb6032co61ffa7babba57884@mail.gmail.com>
-	<1218793271.3184.77.camel@pmac.infradead.org>
-	<ac9c93b10808150304k14f054faw402a7f67e868d2a@mail.gmail.com>
-	<1218795140.3184.84.camel@pmac.infradead.org>
-	<48A5D154.2000409@boundarydevices.com>
-	<alpine.DEB.0.99.0808152300300.9220@frans-desktop>
-Content-Type: text/plain
-Date: Sat, 16 Aug 2008 11:04:55 +0100
-Message-Id: <1218881095.3184.195.camel@pmac.infradead.org>
-Mime-Version: 1.0
+Received: from ti-out-0910.google.com ([209.85.142.191])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KUVXu-0003i0-BX
+	for linux-mtd@lists.infradead.org; Sat, 16 Aug 2008 23:50:58 +0000
+Received: by ti-out-0910.google.com with SMTP id a21so658281tia.2
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 16 Aug 2008 16:50:55 -0700 (PDT)
+Date: Sun, 17 Aug 2008 07:50:44 +0800
+From: Huang Weiyi <weiyi.huang@gmail.com>
+To: dwmw2@infradead.org
+Subject: [MTD] removed unused #include <version.h>
+Message-Id: <20080817063325.15F9.WEIYI.HUANG@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Troy Kisky <troy.kisky@boundarydevices.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,12 +23,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2008-08-15 at 23:14 +0200, frans wrote:
-> Anyway, here is the patch again.
-> I hope it is ok this time,
+The drivers below do not use LINUX_VERSION_CODE nor KERNEL_VERSION.
+  drivers/mtd/maps/amd76xrom.c
+  drivers/mtd/maps/ck804xrom.c
+  drivers/mtd/maps/esb2rom.c
 
-Applied; thanks.
+This patch removes the said #include <version.h>.
 
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+Signed-off-by: Huang Weiyi <weiyi.huang@gmail.com>
+
+diff --git a/drivers/mtd/maps/amd76xrom.c b/drivers/mtd/maps/amd76xrom.c
+index 948b86f..d1eec7d 100644
+--- a/drivers/mtd/maps/amd76xrom.c
++++ b/drivers/mtd/maps/amd76xrom.c
+@@ -6,7 +6,6 @@
+ 
+ #include <linux/module.h>
+ #include <linux/types.h>
+-#include <linux/version.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <asm/io.h>
+diff --git a/drivers/mtd/maps/ck804xrom.c b/drivers/mtd/maps/ck804xrom.c
+index effaf7c..1a6feb4 100644
+--- a/drivers/mtd/maps/ck804xrom.c
++++ b/drivers/mtd/maps/ck804xrom.c
+@@ -9,7 +9,6 @@
+ 
+ #include <linux/module.h>
+ #include <linux/types.h>
+-#include <linux/version.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <asm/io.h>
+diff --git a/drivers/mtd/maps/esb2rom.c b/drivers/mtd/maps/esb2rom.c
+index aa64a47..bbbcdd4 100644
+--- a/drivers/mtd/maps/esb2rom.c
++++ b/drivers/mtd/maps/esb2rom.c
+@@ -12,7 +12,6 @@
+ 
+ #include <linux/module.h>
+ #include <linux/types.h>
+-#include <linux/version.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <asm/io.h>
