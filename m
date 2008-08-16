@@ -1,26 +1,18 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KUDGq-00026e-2B
-	for linux-mtd@lists.infradead.org; Sat, 16 Aug 2008 04:20:08 +0000
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1KUDGl-0007LD-0T
-	for linux-mtd@lists.infradead.org; Sat, 16 Aug 2008 04:20:03 +0000
-Received: from d75-157-41-137.bchsia.telus.net ([75.157.41.137])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Sat, 16 Aug 2008 04:20:03 +0000
-Received: from dfoley by d75-157-41-137.bchsia.telus.net with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Sat, 16 Aug 2008 04:20:03 +0000
-To: linux-mtd@lists.infradead.org
-From: dfoley <dfoley@telus.net>
-Subject: ubifs mount size
-Date: Fri, 15 Aug 2008 21:16:07 -0700
-Message-ID: <g85ka8$cpi$1@ger.gmane.org>
+Subject: Re: SV: Jffs2 crach in 2.6.25.6.atmel.1
+From: David Woodhouse <dwmw2@infradead.org>
+To: Eirik Aanonsen <eaa@wprmedical.com>
+In-Reply-To: <6B5648EA2E2C2D42AF2FF7691522AD92417C8C@wpr01.wprmedical.local>
+References: <6B5648EA2E2C2D42AF2FF7691522AD92417C1C@wpr01.wprmedical.local>
+	<20080808150524.5263de89@hskinnemo-gx745.norway.atmel.com>
+	<1218203287.12232.165.camel@pmac.infradead.org>
+	<6B5648EA2E2C2D42AF2FF7691522AD92417C8C@wpr01.wprmedical.local>
+Content-Type: text/plain
+Date: Sat, 16 Aug 2008 10:11:16 +0100
+Message-Id: <1218877876.3184.185.camel@pmac.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Sender: news <news@ger.gmane.org>
+Cc: linux-mtd@lists.infradead.org,
+	Haavard Skinnemoen <haavard.skinnemoen@atmel.com>, kernel@avr32linux.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,25 +22,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Does this look right (info below) ?
-I create a 55MiB volume, but df only shows 33968KiB
-This is linux-2.6.24.4. I've also used linux-2.6.27-rc3.
+On Fri, 2008-08-15 at 18:10 +0200, Eirik Aanonsen wrote:
+> 
+> JFFS2 error: (348) __jffs2_dbg_acct_sanity_check_nolock: c->nr_blocks =
+> 0x0x000031
+> JFFS2 error: (348) __jffs2_dbg_acct_sanity_check_nolock: c->blocks[0] =
+> 0x0xffffffff
+> JFFS2 error: (348) __jffs2_dbg_acct_sanity_check_nolock: c->blocks[1] =
+> 0x0xffffffff
+> JFFS2 error: (348) __jffs2_dbg_acct_sanity_check_nolock: c->blocks[2] =
+> 0x0xffffffff
+> JFFS2 error: (348) __jffs2_dbg_acct_sanity_check_nolock: c->blocks[3] =
+> 0x0xffffffff
+> JFFS2 error: (348) __jffs2_dbg_acct_sanity_check_nolock: c->blocks[4] =
+> 0x0xffffffff
 
+That just shouldn't happen. It doesn't matter that u-boot has the first
+blocks reserved -- those aren't counted in this, which is about the
+_logical_ partition. JFFS2 doesn't know that they exist at all.
 
-root@tsi-sa2410:~# ubimkvol /dev/ubi1 -N root -s 55MiB
-Volume ID 0, size 3755 LEBs (57676800 bytes, 55.0 MiB), LEB size 15360 
-bytes (15.0 KiB), dynamic, name "root", alignment 1
-root@tsi-sa2410:~# mount -t ubifs ubi1:root /mnt/linux2-root/
-UBIFS: default file-system created
-UBIFS: background thread "ubifs_bgt1_0" started, PID 930
-UBIFS: mounted UBI device 1, volume 0, name "root"
-UBIFS: file system size: 57292800 bytes (55950 KiB, 54 MiB, 3730 LEBs)
-UBIFS: journal size: 2872320 bytes (2805 KiB, 2 MiB, 187 LEBs)
-UBIFS: default compressor: LZO
-UBIFS: media format 4, latest format 4
-root@tsi-sa2410:~# df
-Filesystem           1k-blocks      Used Available Use% Mounted on
-rootfs                    8059      5284      2366  69% /
-/dev/root                 8059      5284      2366  69% /
-/dev/root                 8059      5284      2366  69% /dev/.static/dev
-ubi1:root                33968         0     31204   0% /mnt/linux2-root
+Can you put a hardware watchpoint on c->blocks[0] and see when it's
+getting scribbled on? Or failing that, set up a software check on every
+interrupt, to BUG() if it's set to 0xffffffff.
+
+(Assuming you only have one JFFS2 fs, you can hack jffs2 to store 'c' in
+a global variable, then put a hack into the core interrupt handler code
+to do something like:
+	if (jffs2_c && jffs2_c->blocks &&
+	    jffs2_c->blocks[0] == 0xffffffff)
+		breakpoint();  // or BUG();
+
+-- 
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
