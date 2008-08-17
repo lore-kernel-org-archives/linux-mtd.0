@@ -1,9 +1,9 @@
-Received: from smtpauth02.csee.onr.siteprotect.com ([64.26.60.136])
+Received: from smtpauth01.csee.onr.siteprotect.com ([64.26.60.145])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KUpVK-0000UY-An
-	for linux-mtd@lists.infradead.org; Sun, 17 Aug 2008 21:09:38 +0000
-Message-ID: <48A8937D.1010007@boundarydevices.com>
-Date: Sun, 17 Aug 2008 14:09:17 -0700
+	id 1KUrhW-00015P-RA
+	for linux-mtd@lists.infradead.org; Sun, 17 Aug 2008 23:30:23 +0000
+Message-ID: <48A8B486.5070900@boundarydevices.com>
+Date: Sun, 17 Aug 2008 16:30:14 -0700
 From: Troy Kisky <troy.kisky@boundarydevices.com>
 MIME-Version: 1.0
 To: frans <fransmeulenbroeks@gmail.com>
@@ -36,23 +36,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-frans wrote:
-> 
-> On Fri, 15 Aug 2008, Troy Kisky wrote:
->> You might also test it on a big endian system to be safe.
->>
->> Troy
->>
-> Good remark!
-> I should have mentioned this more explicitly. As mentioned before I did test
-> on Linksys NSLU2. This is an ARM and standard Linksys software (as well as
-> the std unslung one from nslu2-linux.org) is big endian (and yes, that
-> is the part I did not mention).
-> 
+> +	if (nr_bits == 11) {	/* correctable error */
 
-So, you have tried reading a file system that was created before your patch
-was applied on a big endian system? Sorry to be a pest, but I didn't see any
-endian-ness test in your patch. But I will admit that my eyes aren't very good.
-I'm especially bad at spotting the jelly in the fridge. :^)
+This is a necessary, but NOT sufficient condition to
+determine that it is a 1 bit error.
+
+
+Big MAYBE below
+
+This is probably why you passed the big endian test.
+It was seeing every read as a single bit error
+and silently correcting. Adding a debug print
+when correcting or failing to correct would be
+useful.
 
 Troy
