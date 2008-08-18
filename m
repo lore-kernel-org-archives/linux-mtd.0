@@ -1,15 +1,24 @@
-Message-ID: <48A91AEB.2060503@nokia.com>
-Date: Mon, 18 Aug 2008 09:47:07 +0300
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
-MIME-Version: 1.0
-To: Kyungmin Park <kmpark@infradead.org>
-Subject: Re: [RFC] [PATCH] [MTD] [OneNAND] Add write-while-program operation
-References: <48A43E19.7090706@nokia.com>
-	<9c9fda240808151825u2693ab3h3d7524e90a6d24af@mail.gmail.com>
-In-Reply-To: <9c9fda240808151825u2693ab3h3d7524e90a6d24af@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Mon, 18 Aug 2008 09:11:22 +0200
+From: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
+To: "Eirik Aanonsen" <eaa@wprmedical.com>
+Subject: Re: Jffs2 crach in 2.6.25.6.atmel.1
+Message-ID: <20080818091122.56b94796@hskinnemo-gx745.norway.atmel.com>
+In-Reply-To: <6B5648EA2E2C2D42AF2FF7691522AD92417C8F@wpr01.wprmedical.local>
+References: <6B5648EA2E2C2D42AF2FF7691522AD92417C1C@wpr01.wprmedical.local>
+	<20080808150524.5263de89@hskinnemo-gx745.norway.atmel.com>
+	<1218203287.12232.165.camel@pmac.infradead.org>
+	<6B5648EA2E2C2D42AF2FF7691522AD92417C8C@wpr01.wprmedical.local>
+	<1218877876.3184.185.camel@pmac.infradead.org>
+	<6B5648EA2E2C2D42AF2FF7691522AD92417C8D@wpr01.wprmedical.local>
+	<1218979060.3184.291.camel@pmac.infradead.org>
+	<6B5648EA2E2C2D42AF2FF7691522AD92417C8E@wpr01.wprmedical.local>
+	<1218992056.3184.321.camel@pmac.infradead.org>
+	<6B5648EA2E2C2D42AF2FF7691522AD92417C8F@wpr01.wprmedical.local>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	kernel@avr32linux.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,13 +28,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Kyungmin Park wrote:
-> Before comment the patch, I first wonder which mtd user can use this feature?
+"Eirik Aanonsen" <eaa@wprmedical.com> wrote:
+> I have :
+> CONFIG_SLUB_DEBUG=y
+> # CONFIG_SLAB is not set
+> CONFIG_SLUB=y
+> # CONFIG_SLOB is not set
 
-Well, UBI does large writes when it moves PEBs (for wear leveling or in response
-to bit-flips), or for atomic LEB change, or when it updates volumes.
+You need to add "slub_debug" to the command line in order to actually
+turn it on. Alternatively, set CONFIG_SLUB_DEBUG_ON=y.
 
-> To work correctly, the upper layer sends more than 2 pages write size.
-> umm just override the write buffer in omap2. maybe assume mtdblock?
-
-I am not sure what you mean here.
+Haavard
