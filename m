@@ -1,19 +1,19 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KV2Fv-00007e-Pj
-	for linux-mtd@lists.infradead.org; Mon, 18 Aug 2008 10:46:36 +0000
-Subject: Re: ubifs mount size
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: dfoley <dfoley@telus.net>
-In-Reply-To: <48A9186D.3050902@nokia.com>
-References: <g85ka8$cpi$1@ger.gmane.org>  <48A9186D.3050902@nokia.com>
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 18 Aug 2008 13:45:17 +0300
-Message-Id: <1219056317.18027.2.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, Adrian Hunter <ext-adrian.hunter@nokia.com>
-Reply-To: dedekind@infradead.org
+Received: from rv-out-0708.google.com ([209.85.198.241])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KV3HQ-00025r-Dv
+	for linux-mtd@lists.infradead.org; Mon, 18 Aug 2008 11:52:13 +0000
+Received: by rv-out-0708.google.com with SMTP id b17so1818909rvf.42
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 18 Aug 2008 04:52:11 -0700 (PDT)
+Message-ID: <627b7eea0808180452i35bc99ecyc99fca8b997cd346@mail.gmail.com>
+Date: Mon, 18 Aug 2008 17:22:11 +0530
+From: "Hemagiri C" <hemagiric@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: jffs2 on MTD-Onenand driver - LTP test fails for ftest
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,41 +25,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-On Mon, 2008-08-18 at 09:36 +0300, Adrian Hunter wrote:
-> dfoley wrote:
-> > Does this look right (info below) ?
-> > I create a 55MiB volume, but df only shows 33968KiB
-> > This is linux-2.6.24.4. I've also used linux-2.6.27-rc3.
-> >=20
-> >=20
-> > root@tsi-sa2410:~# ubimkvol /dev/ubi1 -N root -s 55MiB
-> > Volume ID 0, size 3755 LEBs (57676800 bytes, 55.0 MiB), LEB size 15360=20
-> > bytes (15.0 KiB), dynamic, name "root", alignment 1
-> > root@tsi-sa2410:~# mount -t ubifs ubi1:root /mnt/linux2-root/
-> > UBIFS: default file-system created
-> > UBIFS: background thread "ubifs_bgt1_0" started, PID 930
-> > UBIFS: mounted UBI device 1, volume 0, name "root"
-> > UBIFS: file system size: 57292800 bytes (55950 KiB, 54 MiB, 3730 LEBs)
-> > UBIFS: journal size: 2872320 bytes (2805 KiB, 2 MiB, 187 LEBs)
-> > UBIFS: default compressor: LZO
-> > UBIFS: media format 4, latest format 4
-> > root@tsi-sa2410:~# df
-> > Filesystem           1k-blocks      Used Available Use% Mounted on
-> > rootfs                    8059      5284      2366  69% /
-> > /dev/root                 8059      5284      2366  69% /
-> > /dev/root                 8059      5284      2366  69% /dev/.static/de=
-v
-> > ubi1:root                33968         0     31204   0% /mnt/linux2-roo=
-t
->=20
-> Yes this looks right.  UBIFS doesn't really know how much data can be fit=
-ted
-> in the file system, so it makes a worst case estimate.
+I am new to JFFS2 and now I am running the LTP FS Tests for
+MTD-Onenand driver on JFFS2.
 
-In practice you will be able to fit more than what df shows. I will
-write a corresponding FAQ entry which will explain the issue later.
+Kernel version is linux-2.6.25.
+The following tests are failing while running the  LTP FS test for
+MTD-Onenand driver on JFFS2.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+ftest01                        FAIL       1
+ftest02                        PASS       0
+ftest03                        FAIL       1
+ftest04                        FAIL       1
+ftest05                        FAIL       1
+ftest06                        PASS       0
+ftest07                        FAIL       1
+ftest08                        FAIL       1
+
+But with linux-2.6.22 version, except ftest03 all other test cases are passing.
+
+Does any one know the reason for failure/possible cause.
+
+Please help me out......
+
+
+--
+Thanks and Regards
+Hemagiri C
