@@ -1,18 +1,15 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KUyTv-0001Bc-7I
-	for linux-mtd@lists.infradead.org; Mon, 18 Aug 2008 06:44:47 +0000
-Date: Mon, 18 Aug 2008 08:44:36 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Bily <hsssss1111@163.com>
-Subject: Re: how could block device read OOB?
-In-Reply-To: <200808180917288590868@163.com>
-Message-ID: <Pine.LNX.4.64.0808180844230.24218@lnxricardw.se.axis.com>
-References: <200808180917288590868@163.com>
+Message-ID: <48A91AEB.2060503@nokia.com>
+Date: Mon, 18 Aug 2008 09:47:07 +0300
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+To: Kyungmin Park <kmpark@infradead.org>
+Subject: Re: [RFC] [PATCH] [MTD] [OneNAND] Add write-while-program operation
+References: <48A43E19.7090706@nokia.com>
+	<9c9fda240808151825u2693ab3h3d7524e90a6d24af@mail.gmail.com>
+In-Reply-To: <9c9fda240808151825u2693ab3h3d7524e90a6d24af@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,21 +19,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Kyungmin Park wrote:
+> Before comment the patch, I first wonder which mtd user can use this feature?
 
-On Mon, 18 Aug 2008, Bily wrote:
+Well, UBI does large writes when it moves PEBs (for wear leveling or in response
+to bit-flips), or for atomic LEB change, or when it updates volumes.
 
->    Maybe this question is easy,but I just confused. I use my nand chip=20
-> as a mtd block device.now I open mtdblock by using the "open()"=20
-> function. and I want to read the OOB part by use the mtdblock device.now=
-=20
-> I want to know if I could read the OOB by operating an mtd block device=
-=20
-> or only I use the mtd char device could I solve this problem .Thanks!~
+> To work correctly, the upper layer sends more than 2 pages write size.
+> umm just override the write buffer in omap2. maybe assume mtdblock?
 
-Use the char device to read and write the OOB.
-
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+I am not sure what you mean here.
