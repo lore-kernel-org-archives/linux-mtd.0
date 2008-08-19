@@ -1,25 +1,12 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KVXU3-0004Dt-8V
-	for linux-mtd@lists.infradead.org; Tue, 19 Aug 2008 20:07:15 +0000
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1KVXTz-00047Y-U3
-	for linux-mtd@lists.infradead.org; Tue, 19 Aug 2008 20:07:12 +0000
-Received: from gw-c.sigma-chemnitz.de ([62.153.82.26])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2008 20:07:11 +0000
-Received: from enrico.scholz by gw-c.sigma-chemnitz.de with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2008 20:07:11 +0000
-To: linux-mtd@lists.infradead.org
-From: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
-Subject: Reading unique flash ID from Samsung NAND
-Date: Tue, 19 Aug 2008 21:47:20 +0200
-Message-ID: <ly63pwhjnb.fsf@ensc-virt.intern.sigma-chemnitz.de>
+Date: Tue, 19 Aug 2008 22:56:14 +0200
+From: Sebastian Siewior <bigeasy@linutronix.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: remove unused mtd parameter in of_mtd_parse_partitions()
+Message-ID: <20080819205614.GA1235@www.tglx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: news <news@ger.gmane.org>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,19 +16,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Signed-off-by: Sebastian Siewior <bigeasy@linutronix.de>
+---
+ drivers/mtd/maps/physmap_of.c    |    3 +--
+ drivers/mtd/nand/fsl_elbc_nand.c |    3 +--
+ drivers/mtd/ofpart.c             |    1 -
+ include/linux/mtd/partitions.h   |    1 -
+ 4 files changed, 2 insertions(+), 6 deletions(-)
 
-Samsung NAND flash have a feature described as
-
-| Unique ID for Copyright
-
-in the datasheets[1].  Does somebody know how to read this ID?
-Having such an unique id would allow e.g. things like setting
-machine serial number (and ethernet mac in turn).
-
-
-
-Enrico
-
-Footnotes: 
-[1]  e.g. http://www.samsung.com/global/system/business/semiconductor/product/2007/6/11/NANDFlash/SLC_LargeBlock/16Gbit/K9WAG08U1A/ds_k9xxg08uxa_rev11.pdf
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index 49acd41..5fcfec0 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -230,8 +230,7 @@ static int __devinit of_flash_probe(struct of_device *dev,
+ 
+ #ifdef CONFIG_MTD_OF_PARTS
+ 	if (err == 0) {
+-		err = of_mtd_parse_partitions(&dev->dev, info->mtd,
+-		                              dp, &info->parts);
++		err = of_mtd_parse_partitions(&dev->dev, dp, &info->parts);
+ 		if (err < 0)
+ 			return err;
+ 	}
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+index 4b69aac..25a4bd1 100644
+--- a/drivers/mtd/nand/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -877,8 +877,7 @@ static int fsl_elbc_chip_probe(struct fsl_elbc_ctrl *ctrl,
+ 
+ #ifdef CONFIG_MTD_OF_PARTS
+ 	if (ret == 0) {
+-		ret = of_mtd_parse_partitions(priv->dev, &priv->mtd,
+-		                              node, &parts);
++		ret = of_mtd_parse_partitions(priv->dev, node, &parts);
+ 		if (ret < 0)
+ 			goto err;
+ 	}
+diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+index 4f80c2f..9e45b3f 100644
+--- a/drivers/mtd/ofpart.c
++++ b/drivers/mtd/ofpart.c
+@@ -20,7 +20,6 @@
+ #include <linux/mtd/partitions.h>
+ 
+ int __devinit of_mtd_parse_partitions(struct device *dev,
+-                                      struct mtd_info *mtd,
+                                       struct device_node *node,
+                                       struct mtd_partition **pparts)
+ {
+diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
+index 7c37d7e..54713b5 100644
+--- a/include/linux/mtd/partitions.h
++++ b/include/linux/mtd/partitions.h
+@@ -75,7 +75,6 @@ struct device;
+ struct device_node;
+ 
+ int __devinit of_mtd_parse_partitions(struct device *dev,
+-                                      struct mtd_info *mtd,
+                                       struct device_node *node,
+                                       struct mtd_partition **pparts);
+ 
+-- 
+1.5.5.2
