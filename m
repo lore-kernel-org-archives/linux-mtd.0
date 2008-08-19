@@ -1,13 +1,21 @@
-In-Reply-To: <1219056317.18027.2.camel@sauron>
-To: dedekind@infradead.org
-Subject: Re: ubifs mount size
-MIME-Version: 1.0
-Message-ID: <OFDF416755.461F244B-ON882574A9.0080A363-882574A9.008152A0@selinc.com>
-From: Bruce_Leonard@selinc.com
-Date: Mon, 18 Aug 2008 16:32:56 -0700
-Content-Type: text/plain; charset="US-ASCII"
-Cc: linux-mtd-bounces@lists.infradead.org, dfoley <dfoley@telus.net>,
-	linux-mtd@lists.infradead.org, Adrian Hunter <ext-adrian.hunter@nokia.com>
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KVKDg-0005pz-Uj
+	for linux-mtd@lists.infradead.org; Tue, 19 Aug 2008 05:57:29 +0000
+Subject: Re: [PATCH] Remove duplicated unlikely() in IS_ERR()
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Hirofumi Nakagawa <hnakagawa@miraclelinux.com>
+In-Reply-To: <48A52D69.1040501@miraclelinux.com>
+References: <48A52D69.1040501@miraclelinux.com>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 19 Aug 2008 08:55:20 +0300
+Message-Id: <1219125321.18027.9.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: yoshfuji@linux-ipv6.org, christof.schmitt@de.ibm.com,
+	netdev@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-s390@vger.kernel.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,25 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > 
-> > Yes this looks right.  UBIFS doesn't really know how much data canbe 
-fitted
-> > in the file system, so it makes a worst case estimate.
-> 
-> In practice you will be able to fit more than what df shows. I will
-> write a corresponding FAQ entry which will explain the issue later.
-> 
 
-Oh good.  I finally have my 8GiB problem solved (patch forthcoming in the 
-next 24 hours probably), but df -h was only showing 6.8GiB and I couldn't 
-account for the descrpancy.  I'm looking forward to being able to do that.
+On Fri, 2008-08-15 at 16:16 +0900, Hirofumi Nakagawa wrote:
+> Hi
+> Some drivers have duplicated unlikely() macros.
+> IS_ERR() already has unlikely() in itself.
+> This patch cleans up such pointless codes although there is no real
+> effect on the kernel's behaviour.
+>=20
+> Thanks,
+> Hirofumi Nakagawa
+>=20
+> Signed-off-by: Hirofumi Nakagawa <hnakagawa@miraclelinux.com>
+> ---
 
-Thanks for all the hard work on UBI/UBIFS Artem.  It's working like a 
-champ so far.  I'm planning on setting LTP up to run for a couple of weeks 
-to really stress it out and I'll let you know how that goes.
+Hmm, after thinking a bit I am not sure this is the right way to go.
+Indeed, we try to avoid likly()/unlikely(), unless this is really
+hot-path. Some kernel developers even think these hints should never
+be used. So I'd say, the right thing would bo to remove unlikely()
+from IS_ERR() macro instead.
 
-FYI, it takes about 45 seconds for the UBI module to load for an 8GiB 
-device when I do it by hand.  I think things were a bit faster when UBI is 
-built into the kernel.  Once I get that working again I'll update you.
-
-Bruce
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
