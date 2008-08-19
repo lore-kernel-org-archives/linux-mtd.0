@@ -1,31 +1,22 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KVUCq-0007kk-Sk
-	for linux-mtd@lists.infradead.org; Tue, 19 Aug 2008 16:37:17 +0000
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1KVUCm-00021t-VG
-	for linux-mtd@lists.infradead.org; Tue, 19 Aug 2008 16:37:13 +0000
-Received: from gw-c.sigma-chemnitz.de ([62.153.82.26])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2008 16:37:12 +0000
-Received: from enrico.scholz by gw-c.sigma-chemnitz.de with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2008 16:37:12 +0000
-To: linux-mtd@lists.infradead.org
-From: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
-Subject: Re: [U-Boot] U-Boot and UBI
-Date: Tue, 19 Aug 2008 18:35:23 +0200
-Message-ID: <ly8wut9d4k.fsf@ensc-virt.intern.sigma-chemnitz.de>
-References: <1218220016.2328.109.camel@localhost.localdomain>
-	<200808112202.24363.sr@denx.de>
-	<9c9fda240808120325va530f61q13b4836f9b8202b5@mail.gmail.com>
-	<200808121311.27026.sr@denx.de>
-	<9c9fda240808121634q7128ed30w40635e34d4a7fcf9@mail.gmail.com>
-	<1218633636.10489.43.camel@localhost.localdomain>
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by casper.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1KVSfu-0000qj-Ut
+	for linux-mtd@lists.infradead.org; Tue, 19 Aug 2008 14:59:14 +0000
+Subject: Re: [PATCH] Remove duplicated unlikely() in IS_ERR()
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Hirofumi Nakagawa <hnakagawa@miraclelinux.com>
+In-Reply-To: <1219125321.18027.9.camel@sauron>
+References: <48A52D69.1040501@miraclelinux.com>
+	<1219125321.18027.9.camel@sauron>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 19 Aug 2008 17:57:38 +0300
+Message-Id: <1219157858.18027.44.camel@sauron>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: news <news@ger.gmane.org>
+Content-Transfer-Encoding: quoted-printable
+Cc: yoshfuji@linux-ipv6.org, christof.schmitt@de.ibm.com,
+	linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
+	netdev@vger.kernel.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,34 +26,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Josh Boyer <jwboyer@linux.vnet.ibm.com> writes:
+On Tue, 2008-08-19 at 08:55 +0300, Artem Bityutskiy wrote:
+> On Fri, 2008-08-15 at 16:16 +0900, Hirofumi Nakagawa wrote:
+> > Hi
+> > Some drivers have duplicated unlikely() macros.
+> > IS_ERR() already has unlikely() in itself.
+> > This patch cleans up such pointless codes although there is no real
+> > effect on the kernel's behaviour.
+> >=20
+> > Thanks,
+> > Hirofumi Nakagawa
+> >=20
+> > Signed-off-by: Hirofumi Nakagawa <hnakagawa@miraclelinux.com>
+> > ---
+>=20
+> Hmm, after thinking a bit I am not sure this is the right way to go.
+> Indeed, we try to avoid likly()/unlikely(), unless this is really
+> hot-path. Some kernel developers even think these hints should never
+> be used. So I'd say, the right thing would bo to remove unlikely()
+> from IS_ERR() macro instead.
 
->> Yes, we should make a u-boot within one block size since flash
->> only guarantees the first one block as bad block free. e.g.,
->> exactly (128KiB - 2KiB) size if OneNAND case.
->> For this, we need to code or size optimization.  If this is
->> solved, we can use flash as bad block free device with UBI.
->
-> An alternative to that is to have a very small IPL that loads
-> U-Boot to DRAM as the SPL.
+OK, after some googling I tend to thing having unlikely() in IS_ERR() is
+OK, so I take your patch. Thanks.=20
 
-Yes; our implementation of such an IPL (for PXA320) can be found
-at
-
-   https://www.cvg.de/people/ensc/elito-mobm320-0.0.4.tar.bz2
-
-This allows to jump into an image either located in a 'bootloader'
-volume (which contains U-Boot) or in a 'kernel' image.
-
-Latter is faster (by about 3-5 seconds plus the duplicate UBI
-scan within U-Boot) which can make a difference as the IPL itself
-needs 3.5 seconds to scan a 1GiB NAND :(
-
-
-> That would require some relocatable support in U-Boot.
-
-Depends on the system resp. how U-Boot was built (e.g. set its
-TEXTADDR so that it does not conflict with the IPL).
-
-
-Enrico
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
