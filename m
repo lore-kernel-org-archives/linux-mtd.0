@@ -1,17 +1,29 @@
-Received: from oceanus.site5.com ([67.43.13.2])
+Received: from e5.ny.us.ibm.com ([32.97.182.145])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KVONl-0006Fd-Dw
-	for linux-mtd@lists.infradead.org; Tue, 19 Aug 2008 10:24:10 +0000
-Message-ID: <48AA9F44.6000905@compulab.co.il>
-Date: Tue, 19 Aug 2008 13:24:04 +0300
-From: Mike Rapoport <mike@compulab.co.il>
-MIME-Version: 1.0
-To: eric miao <eric.y.miao@gmail.com>
-Subject: [PATCH] pxa3xx_nand: Add Samsung512MbX8
-Content-Type: text/plain; charset=ISO-8859-1
+	id 1KVPvD-0004Ai-N5
+	for linux-mtd@lists.infradead.org; Tue, 19 Aug 2008 12:02:47 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e5.ny.us.ibm.com (8.13.8/8.13.8) with ESMTP id m7JBxsYt009951
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2008 07:59:54 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.0) with ESMTP id
+	m7JBxnHA241584
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2008 07:59:49 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	m7JBxmWt030292
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2008 07:59:49 -0400
+Date: Tue, 19 Aug 2008 07:59:48 -0400
+From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+To: dedekind@infradead.org
+Subject: Re: mkfs.ubifs was moved to mtd-utils
+Message-ID: <20080819075948.7411a7f4@zod.rchland.ibm.com>
+In-Reply-To: <1219135603.18027.15.camel@sauron>
+References: <1219135603.18027.15.camel@sauron>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	ARM Linux <linux-arm-kernel@lists.arm.linux.org.uk>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,54 +33,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add definitions of Samsung512MbX8 flashes
+On Tue, 19 Aug 2008 11:46:43 +0300
+Artem Bityutskiy <dedekind@infradead.org> wrote:
 
-Signed-off-by: Mike Rapoport <mike@compulab.co.il>
+> Hi,
+> 
+> since UBIFS is in mainline now, the mkfs.ubifs utility has been
+> moved to mtd-utils.git repository.
+> 
+> Josh, I am not sure how you do this, but could you please tag
+> a new release of mtd-utils and may be make Fedora/Debian update
+> their corresponding rpm/deb? Thanks.
 
- drivers/mtd/nand/pxa3xx_nand.c |   24 ++++++++++++++++++++++++
- 1 files changed, 24 insertions(+), 0 deletions(-)
+David has done the tagging in the past, as he also uploads a tarball at
+the same time.
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index a64ad15..06e03bf 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -291,10 +291,34 @@ static struct pxa3xx_nand_flash micron1GbX16 = {
- 	.chip_id	= 0xb12c,
- };
+I can handle updating Fedora (once Fedora is back).  I have no ties to
+Debian though.
 
-+static struct pxa3xx_nand_timing samsung512MbX8_timing = {
-+	.tCH	= 25,
-+	.tCS	= 44,
-+	.tWH	= 32,
-+	.tWP	= 44,
-+	.tRH	= 32,
-+	.tRP	= 44,
-+	.tR	= 25000,
-+	.tWHR	= 96,
-+	.tAR	= 25,
-+};
-+
-+static struct pxa3xx_nand_flash samsung512MbX8 = {
-+	.timing		= &samsung512MbX8_timing,
-+	.cmdset		= &largepage_cmdset,
-+	.page_per_block	= 64,
-+	.page_size	= 2048,
-+	.flash_width	= 8,
-+	.dfc_width	= 8,
-+	.num_blocks	= 4096,
-+	.chip_id	= 0xdcec,
-+};
-+
- static struct pxa3xx_nand_flash *builtin_flash_types[] = {
- 	&samsung512MbX16,
- 	&micron1GbX8,
- 	&micron1GbX16,
-+	&samsung512MbX8,
- };
-
- #define NDTR0_tCH(c)	(min((c), 7) << 19)
-
-
--- 
-Sincerely yours,
-Mike.
+josh
