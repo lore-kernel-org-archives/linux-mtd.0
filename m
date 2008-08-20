@@ -1,12 +1,16 @@
-Date: Wed, 20 Aug 2008 12:32:14 +0200
-From: Sebastian Siewior <bigeasy@linutronix.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] mtd-utils: add support for 4k pages.
-Message-ID: <20080820103214.GA21091@www.tglx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Cc: Thomas Gleixner <tglx@linutronix.de>, linux-mtd@lists.infradead.org
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KVrqz-00030V-9h
+	for linux-mtd@lists.infradead.org; Wed, 20 Aug 2008 17:52:17 +0000
+Received: from localhost.localdomain (localhost [127.0.0.1])
+	by smtp.gentoo.org (Postfix) with ESMTP id CA85B67830
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 20 Aug 2008 17:52:06 +0000 (UTC)
+From: Mike Frysinger <vapier@gentoo.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] use $(MAKE) rather than make
+Date: Wed, 20 Aug 2008 13:52:05 -0400
+Message-Id: <1219254725-21918-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,69 +20,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Thomas Gleixner <tglx@linutronix.de>
+If you execute straight `make`, this prevents the active make env from
+being passed on to sub children.  This prevents parallel building as well
+as build flag passing.
 
-Add support for 4K pages in nanddump & nandwrite.
+I also dropped the recursive make in ubi-utils/Makefile for the all target
+as this causes problems when building in parallel.  All of the targets
+that we actually care about are handled by the $(NTARGETS) target anyways.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Sebastian Siewior <bigeasy@linutronix.de>
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
-Original patch was done by tglx, I just made sure it still applies and
-works on latest git.
+ Makefile           |   12 ++++++------
+ ubi-utils/Makefile |    5 ++---
+ 2 files changed, 8 insertions(+), 9 deletions(-)
 
- nanddump.c  |    7 ++++---
- nandwrite.c |    7 ++++---
- 2 files changed, 8 insertions(+), 6 deletions(-)
-
-diff --git a/nanddump.c b/nanddump.c
-index 9e10de4..be40287 100644
---- a/nanddump.c
-+++ b/nanddump.c
-@@ -159,8 +159,8 @@ void process_options (int argc, char *argv[])
- /*
-  * Buffers for reading data from flash
-  */
--unsigned char readbuf[2048];
--unsigned char oobbuf[64];
-+unsigned char readbuf[4096];
-+unsigned char oobbuf[128];
+diff --git a/Makefile b/Makefile
+index 2000b17..796c31b 100644
+--- a/Makefile
++++ b/Makefile
+@@ -47,8 +47,8 @@ $(BUILDDIR)/%.o: %.c
+ .SUFFIXES:
  
- /*
-  * Main program
-@@ -194,7 +194,8 @@ int main(int argc, char **argv)
- 	}
+ all: $(TARGETS)
+-	make -C $(BUILDDIR)/ubi-utils
+-	make -C $(BUILDDIR)/mkfs.ubifs
++	$(MAKE) -C $(BUILDDIR)/ubi-utils
++	$(MAKE) -C $(BUILDDIR)/mkfs.ubifs
  
- 	/* Make sure device page sizes are valid */
--	if (!(meminfo.oobsize == 64 && meminfo.writesize == 2048) &&
-+	if (!(meminfo.oobsize == 128 && meminfo.writesize == 4096) &&
-+			!(meminfo.oobsize == 64 && meminfo.writesize == 2048) &&
- 			!(meminfo.oobsize == 32 && meminfo.writesize == 1024) &&
- 			!(meminfo.oobsize == 16 && meminfo.writesize == 512) &&
- 			!(meminfo.oobsize == 8 && meminfo.writesize == 256)) {
-diff --git a/nandwrite.c b/nandwrite.c
-index a5462ae..e745fba 100644
---- a/nandwrite.c
-+++ b/nandwrite.c
-@@ -39,8 +39,8 @@
- #define PROGRAM "nandwrite"
- #define VERSION "$Revision: 1.32 $"
+ IGNORE=${wildcard $(BUILDDIR)/.*.c.dep}
+ -include ${IGNORE}
+@@ -56,8 +56,8 @@ IGNORE=${wildcard $(BUILDDIR)/.*.c.dep}
+ clean:
+ 	rm -f $(BUILDDIR)/*.o $(TARGETS) $(BUILDDIR)/.*.c.dep $(SYMLINKS)
+ 	if [ "$(BUILDDIR)x" != ".x" ]; then rm -rf $(BUILDDIR); fi
+-	make -C $(BUILDDIR)/ubi-utils clean
+-	make -C $(BUILDDIR)/mkfs.ubifs clean
++	$(MAKE) -C $(BUILDDIR)/ubi-utils clean
++	$(MAKE) -C $(BUILDDIR)/mkfs.ubifs clean
  
--#define MAX_PAGE_SIZE	2048
--#define MAX_OOB_SIZE	64
-+#define MAX_PAGE_SIZE	4096
-+#define MAX_OOB_SIZE	128
+ $(SYMLINKS):
+ 	ln -sf ../fs/jffs2/$@ $@
+@@ -99,5 +99,5 @@ install: ${TARGETS}
+ 	install -m0755 ${TARGETS} ${DESTDIR}/${SBINDIR}/
+ 	mkdir -p ${DESTDIR}/${MANDIR}/man1
+ 	gzip -9c mkfs.jffs2.1 > ${DESTDIR}/${MANDIR}/man1/mkfs.jffs2.1.gz
+-	make -C $(BUILDDIR)/ubi-utils install
+-	make -C $(BUILDDIR)/mkfs.ubifs install
++	$(MAKE) -C $(BUILDDIR)/ubi-utils install
++	$(MAKE) -C $(BUILDDIR)/mkfs.ubifs install
+diff --git a/ubi-utils/Makefile b/ubi-utils/Makefile
+index 3e6203f..4cca316 100644
+--- a/ubi-utils/Makefile
++++ b/ubi-utils/Makefile
+@@ -30,18 +30,17 @@ vpath   %.c ./src
+ 	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $< -g -Wp,-MD,.$(shell basename $<).dep
  
- /*
-  * Buffer array used for writing data
-@@ -248,7 +248,8 @@ int main(int argc, char **argv)
- 	/* Make sure device page sizes are valid */
- 	if (!(meminfo.oobsize == 16 && meminfo.writesize == 512) &&
- 			!(meminfo.oobsize == 8 && meminfo.writesize == 256) &&
--			!(meminfo.oobsize == 64 && meminfo.writesize == 2048)) {
-+			!(meminfo.oobsize == 64 && meminfo.writesize == 2048) &&
-+			!(meminfo.oobsize == 128 && meminfo.writesize == 4096)) {
- 		fprintf(stderr, "Unknown flash (not normal NAND)\n");
- 		close(fd);
- 		exit(1);
+ all: $(TARGETS)
+-	make -C new-utils
+ 
+ IGNORE=${wildcard .*.c.dep}
+ -include ${IGNORE}
+ 
+ $(NTARGETS):
+-	make -C new-utils $@
++	$(MAKE) -C new-utils $@
+ 	mv new-utils/$@ $@
+ 
+ clean:
+ 	rm -rf *.o $(TARGETS) .*.c.dep
+-	make -C new-utils clean
++	$(MAKE) -C new-utils clean
+ 
+ pddcustomize: pddcustomize.o error.o libubimirror.o bootenv.o hashmap.o \
+ 		libubi.o crc32.o
 -- 
-1.5.5.2
+1.5.6.5
