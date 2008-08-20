@@ -1,18 +1,12 @@
-Received: from wf-out-1314.google.com ([209.85.200.172])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KViPg-00052B-4q
-	for linux-mtd@lists.infradead.org; Wed, 20 Aug 2008 07:47:28 +0000
-Received: by wf-out-1314.google.com with SMTP id 28so321146wfc.24
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 20 Aug 2008 00:47:26 -0700 (PDT)
-Message-ID: <48ABCC0B.40607@gmail.com>
-Date: Wed, 20 Aug 2008 00:47:23 -0700
-From: Zev Weiss <zevweiss@gmail.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [MTD] mtdchar.c: Fix regression in MEMGETREGIONINFO ioctl()
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Date: Wed, 20 Aug 2008 12:32:14 +0200
+From: Sebastian Siewior <bigeasy@linutronix.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd-utils: add support for 4k pages.
+Message-ID: <20080820103214.GA21091@www.tglx.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+Cc: Thomas Gleixner <tglx@linutronix.de>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,55 +16,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Zev Weiss <zevweiss@gmail.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-The MEMGETREGIONINFO ioctl() in mtdchar.c was clobbering user memory by
-overwriting more than intended, due to the size of struct
-mtd_erase_region_info changing in commit
-0ecbc81adfcb9f15f86b05ff576b342ce81bbef8.
+Add support for 4K pages in nanddump & nandwrite.
 
-Fix uses a member-by-member copy into a local struct region_info_user,
-which is then copy_to_user()'d (and matches the size correctly by being
-of the same type as the pointer passed in the ioctl() call).
-
-Signed-off-by: Zev Weiss <zevweiss@gmail.com>
-Tested-by: Zev Weiss <zevweiss@gmail.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Sebastian Siewior <bigeasy@linutronix.de>
 ---
-I had been having some problems with userspace memory corruption, and traced
-them to a MEMGETREGIONINFO ioctl() on an MTD device.  I applied this patch and
-it seems to fix the problem, though I am not an expert and there may be a more
-correct way to go about doing this.  I'm also new at submitting patches, so
-hopefully I haven't screwed up the patch-submission etiquette too
-horrifically.
+Original patch was done by tglx, I just made sure it still applies and
+works on latest git.
 
-  drivers/mtd/mtdchar.c |   11 +++++++++--
-  1 files changed, 9 insertions(+), 2 deletions(-)
+ nanddump.c  |    7 ++++---
+ nandwrite.c |    7 ++++---
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 13cc67a..0acb135 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -411,14 +411,21 @@ static int mtd_ioctl(struct inode *inode, struct file *file,
-  	case MEMGETREGIONINFO:
-  	{
-  		struct region_info_user ur;
-+		struct mtd_erase_region_info *kr;
-
-  		if (copy_from_user(&ur, argp, sizeof(struct region_info_user)))
-  			return -EFAULT;
-
-  		if (ur.regionindex >= mtd->numeraseregions)
-  			return -EINVAL;
--		if (copy_to_user(argp, &(mtd->eraseregions[ur.regionindex]),
--				sizeof(struct mtd_erase_region_info)))
-+
-+		kr = &(mtd->eraseregions[ur.regionindex]);
-+
-+		ur.offset = kr->offset;
-+		ur.erasesize = kr->erasesize;
-+		ur.numblocks = kr->numblocks;
-+
-+		if (copy_to_user(argp, &ur, sizeof(struct region_info_user)))
-  			return -EFAULT;
-  		break;
-  	}
+diff --git a/nanddump.c b/nanddump.c
+index 9e10de4..be40287 100644
+--- a/nanddump.c
++++ b/nanddump.c
+@@ -159,8 +159,8 @@ void process_options (int argc, char *argv[])
+ /*
+  * Buffers for reading data from flash
+  */
+-unsigned char readbuf[2048];
+-unsigned char oobbuf[64];
++unsigned char readbuf[4096];
++unsigned char oobbuf[128];
+ 
+ /*
+  * Main program
+@@ -194,7 +194,8 @@ int main(int argc, char **argv)
+ 	}
+ 
+ 	/* Make sure device page sizes are valid */
+-	if (!(meminfo.oobsize == 64 && meminfo.writesize == 2048) &&
++	if (!(meminfo.oobsize == 128 && meminfo.writesize == 4096) &&
++			!(meminfo.oobsize == 64 && meminfo.writesize == 2048) &&
+ 			!(meminfo.oobsize == 32 && meminfo.writesize == 1024) &&
+ 			!(meminfo.oobsize == 16 && meminfo.writesize == 512) &&
+ 			!(meminfo.oobsize == 8 && meminfo.writesize == 256)) {
+diff --git a/nandwrite.c b/nandwrite.c
+index a5462ae..e745fba 100644
+--- a/nandwrite.c
++++ b/nandwrite.c
+@@ -39,8 +39,8 @@
+ #define PROGRAM "nandwrite"
+ #define VERSION "$Revision: 1.32 $"
+ 
+-#define MAX_PAGE_SIZE	2048
+-#define MAX_OOB_SIZE	64
++#define MAX_PAGE_SIZE	4096
++#define MAX_OOB_SIZE	128
+ 
+ /*
+  * Buffer array used for writing data
+@@ -248,7 +248,8 @@ int main(int argc, char **argv)
+ 	/* Make sure device page sizes are valid */
+ 	if (!(meminfo.oobsize == 16 && meminfo.writesize == 512) &&
+ 			!(meminfo.oobsize == 8 && meminfo.writesize == 256) &&
+-			!(meminfo.oobsize == 64 && meminfo.writesize == 2048)) {
++			!(meminfo.oobsize == 64 && meminfo.writesize == 2048) &&
++			!(meminfo.oobsize == 128 && meminfo.writesize == 4096)) {
+ 		fprintf(stderr, "Unknown flash (not normal NAND)\n");
+ 		close(fd);
+ 		exit(1);
+-- 
+1.5.5.2
