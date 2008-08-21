@@ -1,21 +1,24 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KW9VN-00051z-Uj
-	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 12:43:10 +0000
-Subject: Re: [PATCH] Remove duplicated unlikely() in IS_ERR()
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Hirofumi Nakagawa <hnakagawa@miraclelinux.com>
-In-Reply-To: <48A52D69.1040501@miraclelinux.com>
-References: <48A52D69.1040501@miraclelinux.com>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 21 Aug 2008 15:39:30 +0300
-Message-Id: <1219322370.18027.71.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: yoshfuji@linux-ipv6.org, christof.schmitt@de.ibm.com,
-	netdev@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-s390@vger.kernel.org
-Reply-To: dedekind@infradead.org
+Received: from moutng.kundenserver.de ([212.227.126.171])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KW9hH-0003Ak-DP
+	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 12:55:28 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: Nick Piggin <nickpiggin@yahoo.com.au>
+Subject: Re: [PATCH 00/10] AXFS: Advanced XIP filesystem
+Date: Thu, 21 Aug 2008 14:53:25 +0200
+References: <48AD00C4.6060302@gmail.com> <48AD42AE.4030107@de.ibm.com>
+	<200808212043.51209.nickpiggin@yahoo.com.au>
+In-Reply-To: <200808212043.51209.nickpiggin@yahoo.com.au>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200808211453.26233.arnd@arndb.de>
+Cc: linux-embedded@vger.kernel.org, carsteno@de.ibm.com,
+	=?iso-8859-1?q?J=F6rn_Engel?= <joern@logfs.org>,
+	Linux-kernel@vger.kernel.org,
+	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,19 +28,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Thursday 21 August 2008, Nick Piggin wrote:
+> On Thursday 21 August 2008 20:25, Carsten Otte wrote:
+> > Jared Hulbert wrote:
+> > > I'd like to get a first round of review on my AXFS filesystem.
+> >
+> > I like the general approach of it. It's much more flexible than the
+> > ext2 extension I've done, and the possibility to select XIP vs.
+> > compression per page is really really neat. I can imagine that people
+> > will prefer this over the ext2 implementation on s390. It is unclear
+> > to me how the "secondary block device" thing is supposed to work.
+> > Could you elaborate a bit on that?
+> 
+> Agreed. I haven't had a good look through it yet, but at a glance it
+> looks pretty neat. The VM side of things looks pretty reasonable
+> (I fear XIP faulting might have another race or two, but that's a
+> core mm issue rather than filesystem specific).
 
-On Fri, 2008-08-15 at 16:16 +0900, Hirofumi Nakagawa wrote:
-> Hi
-> Some drivers have duplicated unlikely() macros.
-> IS_ERR() already has unlikely() in itself.
-> This patch cleans up such pointless codes although there is no real
-> effect on the kernel's behaviour.
+Yes, I also like the file system, I guess this is 2.6.28 material and
+you should have it added to linux-next when you have addressed the
+comments so far.
 
-Your patch did not apply cleanly, but I've done all the manual work
-and pushed UBIFS-related part of it to ubifs-2.6.git. Thanks.
+One thing that would be really nice is if you could add fake-write
+support in the way that I proposed for cramfs a few months ago.
+This would make axfs much more interesting for another set of
+users, and keep cramfs a really simple example file system.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+	Arnd <><
