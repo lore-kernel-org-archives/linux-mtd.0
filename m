@@ -1,23 +1,20 @@
-Received: from moutng.kundenserver.de ([212.227.126.188])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KW8Iv-0008UW-GC
-	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 11:26:14 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: jaredeh@gmail.com
-Subject: Re: [PATCH 02/10] AXFS: Kconfig and Makefiles
-Date: Thu, 21 Aug 2008 13:24:22 +0200
-References: <48AD00DF.9080207@gmail.com>
-In-Reply-To: <48AD00DF.9080207@gmail.com>
+Received: from smtp1.stealer.net ([88.198.224.204])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KW8L1-00008k-6H
+	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 11:28:23 +0000
+Date: Thu, 21 Aug 2008 13:27:57 +0200 (CEST)
+From: Sven Wegener <sven.wegener@stealer.net>
+To: Jared Hulbert <jaredeh@gmail.com>
+Subject: Re: [PATCH 06/10] AXFS: axfs_super.c
+In-Reply-To: <48AD0101.4020505@gmail.com>
+Message-ID: <alpine.LNX.1.10.0808211325530.12259@titan.stealer.net>
+References: <48AD0101.4020505@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200808211324.22989.arnd@arndb.de>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
-	=?iso-8859-1?q?J=F6rn_Engel?= <joern@logfs.org>,
+	=?ISO-8859-15?Q?J=F6rn_Engel?= <joern@logfs.org>,
 	Linux-kernel@vger.kernel.org,
-	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
+	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@AM.SONY.COM
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,13 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 21 August 2008, Jared Hulbert wrote:
-> The Kconfig edits and Makefiles required for AXFS.
+On Wed, 20 Aug 2008, Jared Hulbert wrote:
+
+> The many different devices AXFS can mount to and the various
+> dual device mounting schemes are supported here.
 > 
 > Signed-off-by: Jared Hulbert <jaredeh@gmail.com>
+> ---
+> +static int __init init_axfs_fs(void)
+> +{
+> +	axfs_uncompress_init();
 
-If you split out this patch separate from the files, please make it the
-*last* patch so that you cannot get build errors during a later git-bisect
-through the middle of your series.
+one more thing, axfs_uncompress_init() can fail
 
-	Arnd <><
+> +	return register_filesystem(&axfs_fs_type);
+> +}
+> +
+> +static void __exit exit_axfs_fs(void)
+> +{
+> +	axfs_uncompress_exit();
+> +	unregister_filesystem(&axfs_fs_type);
+> +}
+> +
+> +module_init(init_axfs_fs);
+> +module_exit(exit_axfs_fs);
+> +MODULE_LICENSE("GPL");
