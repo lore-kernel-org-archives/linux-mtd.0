@@ -1,20 +1,21 @@
-Received: from www.tglx.de ([62.245.132.106])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KW5fs-0005O0-9j
-	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 08:37:44 +0000
-Date: Thu, 21 Aug 2008 10:28:05 +0200
-From: Sebastian Siewior <sebastian@breakpoint.cc>
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [RFC] mtd: add OF2PDEV convertor for the NDFC driver
-Message-ID: <20080821082805.GA8013@www.tglx.de>
-References: <20080820205958.GA13371@www.tglx.de>
-	<200808210040.58809.arnd@arndb.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Received: from ipmail01.adl6.internode.on.net ([203.16.214.146])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KW5i0-0000uv-8t
+	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 08:39:56 +0000
+Date: Thu, 21 Aug 2008 18:39:16 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: Jared Hulbert <jaredeh@gmail.com>
+Subject: Re: [PATCH 00/10] AXFS: Advanced XIP filesystem
+Message-ID: <20080821083916.GF5706@disturbed>
+References: <48AD00C4.6060302@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <200808210040.58809.arnd@arndb.de>
-Cc: linuxppc-dev@ozlabs.org, tglx@linutronix.de, linux-mtd@lists.infradead.org,
-	Sean MacLennan <smaclennan@pikatech.com>
+In-Reply-To: <48AD00C4.6060302@gmail.com>
+Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
+	=?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
+	Linux-kernel@vger.kernel.org,
+	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@AM.SONY.COM
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,18 +25,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Arnd Bergmann | 2008-08-21 00:40:58 [+0200]:
+On Wed, Aug 20, 2008 at 10:44:36PM -0700, Jared Hulbert wrote:
+> I'd like to get a first round of review on my AXFS filesystem.  This is a simple
+> read only compressed filesystem like Squashfs and cramfs.  AXFS is special
+> because it also allows for execute-in-place of your applications.  It is a major
+> improvement over the cramfs XIP patches that have been floating around for ages.
+> The biggest improvement is in the way AXFS allows for each page to be XIP or
+> not.  First, a user collects information about which pages are accessed on a
+> compressed image for each mmap()ed region from /proc/axfs/volume0.  That
+> 'profile' is used as an input to the image builder.  The resulting image has
+> only the relevant pages uncompressed and XIP.  The result is smaller memory
+> sizes and faster launches.
 
->On Wednesday 20 August 2008, Sebastian Siewior wrote:
->> I didn't convert the NDFC driver to support OF because there are
->> non-OF-aware platforms with the ndfc chip.
->> All settings are mandatory except the oob layout.
->
->Are you aware of Sean's patch from
->http://patchwork.ozlabs.org/linuxppc/patch?id=20183 ?
+FWIW, I'm not sure it's a good idea to name this new filesystem AXFS.
+People are almost certainly going to confuse it with XFS despite
+the filesystems being aimed at diammetrically opposed ends of the
+storage spectrum. ;)
 
-Yes, I heard of it. tglx told me that the IP-Core might show up in
-non-IBM HW and it would be better not to drop the platform support.
+Cheers,
 
->	Arnd <><
-Sebastian
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
