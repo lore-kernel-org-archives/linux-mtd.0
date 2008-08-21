@@ -1,35 +1,20 @@
-Received: from mtagate4.uk.ibm.com ([195.212.29.137])
+Received: from smtp1.stealer.net ([88.198.224.204])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KW5xG-0004F4-95
-	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 08:55:42 +0000
-Received: from d06nrmr1407.portsmouth.uk.ibm.com
-	(d06nrmr1407.portsmouth.uk.ibm.com [9.149.38.185])
-	by mtagate4.uk.ibm.com (8.13.8/8.13.8) with ESMTP id m7L8tTGP072896
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2008 08:55:29 GMT
-Received: from d06av04.portsmouth.uk.ibm.com (d06av04.portsmouth.uk.ibm.com
-	[9.149.37.216])
-	by d06nrmr1407.portsmouth.uk.ibm.com (8.13.8/8.13.8/NCO v9.0) with
-	ESMTP id m7L8tTxp4169856
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2008 09:55:29 +0100
-Received: from d06av04.portsmouth.uk.ibm.com (loopback [127.0.0.1])
-	by d06av04.portsmouth.uk.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
-	id m7L8tTwE012737
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2008 09:55:29 +0100
-Message-ID: <48AD2D7F.9070109@de.ibm.com>
-Date: Thu, 21 Aug 2008 10:55:27 +0200
-From: Carsten Otte <cotte@de.ibm.com>
+	id 1KW64N-00011E-Dt
+	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 09:03:04 +0000
+Date: Thu, 21 Aug 2008 11:01:53 +0200 (CEST)
+From: Sven Wegener <sven.wegener@stealer.net>
+To: Jared Hulbert <jaredeh@gmail.com>
+Subject: Re: [PATCH 10/10] AXFS: axfs_uncompress.c
+In-Reply-To: <48AD0126.1050609@gmail.com>
+Message-ID: <alpine.LNX.1.10.0808211028150.12259@titan.stealer.net>
+References: <48AD0126.1050609@gmail.com>
 MIME-Version: 1.0
-To: jaredeh@gmail.com
-Subject: Re: [PATCH 06/10] AXFS: axfs_super.c
-References: <48AD0101.4020505@gmail.com>
-In-Reply-To: <48AD0101.4020505@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: nickpiggin@yahoo.com.au, linux-embedded@vger.kernel.org,
-	=?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>,
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
+	=?ISO-8859-15?Q?J=F6rn_Engel?= <joern@logfs.org>,
 	Linux-kernel@vger.kernel.org,
 	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@AM.SONY.COM
-Reply-To: carsteno@de.ibm.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,29 +24,119 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jared Hulbert wrote:
-> diff --git a/fs/axfs/axfs_super.c b/fs/axfs/axfs_super.c
+On Wed, 20 Aug 2008, Jared Hulbert wrote:
+
+> Handles the decompression for axfs, modeled after fs/cramfs/uncompress.c.
+> 
+> Signed-off-by: Jared Hulbert <jaredeh@gmail.com>
+> ---
+> diff --git a/fs/axfs/axfs_uncompress.c b/fs/axfs/axfs_uncompress.c
 > new file mode 100644
-> index 0000000..5efab38
+> index 0000000..b7a2060
 > --- /dev/null
-> +++ b/fs/axfs/axfs_super.c
-> +/***************** functions in other axfs files ***************************/
-> +int axfs_get_sb_bdev(struct file_system_type *, int, const char *,
-> +		     struct axfs_super *, struct vfsmount *, int *);
-> +void axfs_kill_block_super(struct super_block *);
-> +int axfs_copy_block(struct super_block *, void *, u64, u64);
-> +int axfs_is_dev_bdev(char *);
-> +int axfs_map_mtd(struct super_block *);
-> +void axfs_unmap_mtd(struct super_block *);
-> +int axfs_copy_mtd(struct super_block *, void *, u64, u64);
-> +int axfs_get_sb_mtd(struct file_system_type *, int, const char *,
-> +		    struct axfs_super *, struct vfsmount *, int *);
-> +int axfs_is_dev_mtd(char *, int *);
-> +void axfs_kill_mtd_super(struct super_block *);
-> +struct inode *axfs_create_vfs_inode(struct super_block *, int);
-> +int axfs_get_uml_address(char *, unsigned long *, unsigned long *);
-> +int axfs_init_profiling(struct axfs_super *);
-> +int axfs_shutdown_profiling(struct axfs_super *);
-> +void axfs_profiling_add(struct axfs_super *, unsigned long, unsigned int);
-> +struct inode *axfs_create_vfs_inode(struct super_block *, int);
-Please put these definitions into a header file.
+> +++ b/fs/axfs/axfs_uncompress.c
+> @@ -0,0 +1,97 @@
+> +/*
+> + * Advanced XIP File System for Linux - AXFS
+> + *   Readonly, compressed, and XIP filesystem for Linux systems big and small
+> + *
+> + *   Modified in 2006 by Eric Anderson
+> + *     from the cramfs sources fs/cramfs/uncompress.c
+> + *
+> + * (C) Copyright 1999 Linus Torvalds
+> + *
+> + * axfs_uncompress.c -
+> + *  axfs interfaces to the uncompression library. There's really just
+> + * three entrypoints:
+> + *
+> + *  - axfs_uncompress_init() - called to initialize the thing.
+> + *  - axfs_uncompress_exit() - tell me when you're done
+> + *  - axfs_uncompress_block() - uncompress a block.
+> + *
+> + * NOTE NOTE NOTE! The uncompression is entirely single-threaded. We
+> + * only have one stream, and we'll initialize it only once even if it
+> + * then is used by multiple filesystems.
+> + *
+> + */
+> +
+> +#include <linux/errno.h>
+> +#include <linux/vmalloc.h>
+> +#include <linux/zlib.h>
+> +#include <linux/mutex.h>
+> +
+> +static z_stream stream;
+> +static int initialized;
+> +static struct mutex axfs_uncmp_mutex;
+
+Use DEFINE_MUTEX and drop the mutex_init() down in the init function.
+
+> +
+> +int axfs_uncompress_block(void *dst, int dstlen, void *src, int srclen)
+> +{
+> +	int err;
+> +	int out;
+> +
+> +	mutex_lock(&axfs_uncmp_mutex);
+> +
+> +	stream.next_in = src;
+> +	stream.avail_in = srclen;
+> +
+> +	stream.next_out = dst;
+> +	stream.avail_out = dstlen;
+> +
+> +	err = zlib_inflateReset(&stream);
+> +	if (err != Z_OK) {
+> +		printk(KERN_ERR "zlib_inflateReset error %d\n", err);
+> +		zlib_inflateEnd(&stream);
+> +		zlib_inflateInit(&stream);
+> +	}
+> +
+> +	err = zlib_inflate(&stream, Z_FINISH);
+> +	if (err != Z_STREAM_END)
+> +		goto err;
+> +
+> +	out = stream.total_out;
+> +
+> +	mutex_unlock(&axfs_uncmp_mutex);
+> +
+> +	return out;
+> +
+> +err:
+> +
+> +	mutex_unlock(&axfs_uncmp_mutex);
+> +
+> +	printk(KERN_ERR "Error %d while decompressing!\n", err);
+> +	printk(KERN_ERR "%p(%d)->%p(%d)\n", src, srclen, dst, dstlen);
+> +	return 0;
+> +}
+> +
+> +int axfs_uncompress_init(void)
+> +{
+> +	if (!initialized++) {
+> +
+> +		mutex_init(&axfs_uncmp_mutex);
+> +
+> +		stream.workspace = vmalloc(zlib_inflate_workspacesize());
+> +		if (!stream.workspace) {
+> +			initialized = 0;
+> +			return -ENOMEM;
+> +		}
+> +		stream.next_in = NULL;
+> +		stream.avail_in = 0;
+> +		zlib_inflateInit(&stream);
+> +	}
+> +	return 0;
+> +}
+> +
+> +int axfs_uncompress_exit(void)
+> +{
+> +	if (!--initialized) {
+> +		zlib_inflateEnd(&stream);
+> +		vfree(stream.workspace);
+> +	}
+> +	return 0;
+> +}
+
+axfs_uncompress_init() and axfs_uncompress_exit() are only called during 
+init and exit of the module, no need for the initialized variable and the 
+functions can be annotated with __init and __exit.
