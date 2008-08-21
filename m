@@ -1,24 +1,24 @@
-Received: from hs-out-0708.google.com ([64.233.178.241])
+Received: from rn-out-0910.google.com ([64.233.170.188])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KWBCU-0003gI-Dc
-	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 14:31:46 +0000
-Received: by hs-out-0708.google.com with SMTP id k27so9120hsc.2
+	id 1KWBFy-0003vC-O4
+	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 14:35:22 +0000
+Received: by rn-out-0910.google.com with SMTP id m7so18213rnd.3
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Aug 2008 07:31:44 -0700 (PDT)
-Message-ID: <c384c5ea0808210731k17ccc836u60c4803c3abfea31@mail.gmail.com>
-Date: Thu, 21 Aug 2008 16:31:44 +0200
-From: "Leon Woestenberg" <leon.woestenberg@gmail.com>
-To: "Jared Hulbert" <jaredeh@gmail.com>
-Subject: Re: [PATCH 00/10] AXFS: Advanced XIP filesystem
-In-Reply-To: <6934efce0808210719s6458dc77w2c0755a4bf90bf8a@mail.gmail.com>
+	Thu, 21 Aug 2008 07:35:22 -0700 (PDT)
+Message-ID: <6934efce0808210735w479075abga9f660e42ab8935d@mail.gmail.com>
+Date: Thu, 21 Aug 2008 07:35:21 -0700
+From: "Jared Hulbert" <jaredeh@gmail.com>
+To: "Geert Uytterhoeven" <Geert.Uytterhoeven@sonycom.com>
+Subject: Re: [PATCH 10/10] AXFS: axfs_uncompress.c
+In-Reply-To: <Pine.LNX.4.64.0808211423360.20704@vixen.sonytel.be>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <48AD00C4.6060302@gmail.com> <20080821083916.GF5706@disturbed>
-	<6934efce0808210719s6458dc77w2c0755a4bf90bf8a@mail.gmail.com>
+References: <48AD0126.1050609@gmail.com> <1219318838.18027.68.camel@sauron>
+	<Pine.LNX.4.64.0808211423360.20704@vixen.sonytel.be>
 Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
-	=?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>,
+	=?UTF-8?Q?J=C3=B6rn_Engel?= <joern@logfs.org>,
 	Linux-kernel@vger.kernel.org,
 	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,28 +30,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Jared,
-
-On Thu, Aug 21, 2008 at 4:19 PM, Jared Hulbert <jaredeh@gmail.com> wrote:
->> FWIW, I'm not sure it's a good idea to name this new filesystem AXFS.
->> People are almost certainly going to confuse it with XFS despite
+> If you want support for multiple decompression algorithms, you can switch
+> from using zlib_inflate*() directly to calling zlib through the crypto API.
+> Then you can call crypto_alloc_comp() with the correct decompression algorithm
+> name.
 >
-People that care about their filesystem choice know their choices.
-People that don't
-care, well they don't care.
+> For squashfs, I had to modify only ca. 40 lines of code.
 
-Maybe AXIPFS would be the close alternative.
-
-One question on the use-case profiling and subsequent image rebuild:
-
-What if the use-case did not cover all cases of XIP use?
-
-If a compressed page is attempted to be executed, will the filesystem
-fall back to decompression to RAM and execution from RAM, or will this
-result in a faulty system?
-
-The design choices look real good. Congrats on the achievement.
-
-Regards,
--- 
-Leon
+I definately want to support multiple formats.  I have a flag in the
+superblock all ready to go for that.  One problem.  I'm not sure how
+to do it.  Can you point us to some reference code?
