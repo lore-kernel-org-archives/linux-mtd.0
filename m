@@ -1,19 +1,24 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KWDxW-0000or-9W
-	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 17:28:30 +0000
-Subject: Re: ubifs mount size
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: dfoley <dfoley@telus.net>
-In-Reply-To: <1219339475.18027.87.camel@sauron>
-References: <g85ka8$cpi$1@ger.gmane.org>  <1219339475.18027.87.camel@sauron>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 21 Aug 2008 20:26:33 +0300
-Message-Id: <1219339593.18027.90.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, Bruce_Leonard@selinc.com
-Reply-To: dedekind@infradead.org
+Received: from gv-out-0910.google.com ([216.239.58.185])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KWF4A-0004TL-3G
+	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 18:39:26 +0000
+Received: by gv-out-0910.google.com with SMTP id n40so55051gve.5
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 21 Aug 2008 11:39:25 -0700 (PDT)
+Message-ID: <ac9c93b10808211139t69d3ce6euaac35368f1514931@mail.gmail.com>
+Date: Thu, 21 Aug 2008 20:39:25 +0200
+From: "Frans Meulenbroeks" <fransmeulenbroeks@gmail.com>
+To: "Singh, Vimal" <vimalsingh@ti.com>
+Subject: Re: [PATCH] [MTD] [NAND] nand_ecc.c: adding support for 512 byte ecc
+In-Reply-To: <19F8576C6E063C45BE387C64729E739403CD517C1A@dbde02.ent.ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <19F8576C6E063C45BE387C64729E739403CD517C16@dbde02.ent.ti.com>
+	<19F8576C6E063C45BE387C64729E739403CD517C1A@dbde02.ent.ti.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,15 +28,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2008-08-21 at 20:24 +0300, Artem Bityutskiy wrote:
-> However, even if we fix this, it'll still report less free space than it
-> has. I have started writing about this here:
-> http://www.linux-mtd.infradead.org/doc/ubifs.html
+Hi Vimal,
 
-As usually, I apologize for my English and appreciate any spelling/bad
-phrasing fixes.
+Thanks for your patch.
+I tried to apply your patch, but only hunk 1 succeeded with fuzz 2.
+Guess this is because shortly after submitting my patch another patch
+has been applied to it.
+Could you verify against the latest version in git and resubmit the patch.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Also there are a few small optimisation possibilities.
+E.g. the code:
++       if (j == 2)
++               rp16 = 0;
+Here the if statement does not really add. for 256 byte ecc
+initialising rp16 does not harm so the if statement creates additional
+overhead.
+
+There are a fw more of these (like the /256 reported by Artem.
+I'll happily fix these once I have a patch that I can apply.
+
+Best regards, Frans
