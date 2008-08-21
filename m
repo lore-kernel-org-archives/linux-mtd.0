@@ -1,24 +1,22 @@
-Received: from moutng.kundenserver.de ([212.227.126.186])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KW8Vz-0003Lq-So
-	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 11:39:44 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 05/10] AXFS: axfs_profiling.c
-Date: Thu, 21 Aug 2008 13:39:36 +0200
-References: <48AD00F8.1030004@gmail.com> <48AD2AFF.5060609@de.ibm.com>
-	<1219308560.2988.247.camel@pmac.infradead.org>
-In-Reply-To: <1219308560.2988.247.camel@pmac.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200808211339.37187.arnd@arndb.de>
-Cc: nickpiggin@yahoo.com.au, linux-embedded@vger.kernel.org,
-	carsteno@de.ibm.com, =?iso-8859-15?q?J=F6rn_Engel?= <joern@logfs.org>,
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KW8av-00044F-80
+	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 11:44:50 +0000
+Subject: Re: [PATCH 10/10] AXFS: axfs_uncompress.c
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: jaredeh@gmail.com
+In-Reply-To: <48AD0126.1050609@gmail.com>
+References: <48AD0126.1050609@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Date: Thu, 21 Aug 2008 14:40:38 +0300
+Message-Id: <1219318838.18027.68.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
+	=?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
 	Linux-kernel@vger.kernel.org,
-	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
+	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@AM.SONY.COM
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,17 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 21 August 2008, David Woodhouse wrote:
-> On Thu, 2008-08-21 at 10:44 +0200, Carsten Otte wrote:
-> >
-> > Exporting profiling data for a file system in another file system 
-> > (/proc) seems not very straigtforward to me. I think it is worth 
-> > considering to export this information via the same mount point.
-> 
-> I would have said sysfs, rather than 'the same mount point'.
-> 
+On Wed, 2008-08-20 at 22:46 -0700, Jared Hulbert wrote:
+> +	err =3D zlib_inflateReset(&stream);
+> +	if (err !=3D Z_OK) {
+> +		printk(KERN_ERR "zlib_inflateReset error %d\n", err);
+> +		zlib_inflateEnd(&stream);
+> +		zlib_inflateInit(&stream);
+> +	}
 
-Let me throw in debugfs as my preferred option. sysfs is for stable
-interfaces, while profiling generally fits into the debugging category.
+Jared,
 
-	Arnd <><
+just FYI, are you aware that LZO which is also present in the kernel is
+much faster on decompress than zlib, while its compression is only
+slightly worse?
+
+I do not remember the digits, but last time I tested UBIFS, LZO
+decompression was about 3 times faster than zlib on OMAP3. This depends
+on architecture, etc of course. This may matter a lot if one is fighting
+for faster system boot-up. So you might consider supporting LZO as well.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
