@@ -1,28 +1,21 @@
-Received: from yx-out-1718.google.com ([74.125.44.155])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KWBZY-0000iq-O0
-	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 14:55:37 +0000
-Received: by yx-out-1718.google.com with SMTP id 3so11357yxi.72
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Aug 2008 07:55:35 -0700 (PDT)
-Message-ID: <6934efce0808210755n1977e085o63b8b91e84575dc9@mail.gmail.com>
-Date: Thu, 21 Aug 2008 07:55:34 -0700
-From: "Jared Hulbert" <jaredeh@gmail.com>
-To: "Arnd Bergmann" <arnd@arndb.de>
-Subject: Re: [PATCH 05/10] AXFS: axfs_profiling.c
-In-Reply-To: <200808211339.37187.arnd@arndb.de>
+Received: from smtp1.stealer.net ([88.198.224.204])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KWBa1-0001VB-Ac
+	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 14:56:06 +0000
+Date: Thu, 21 Aug 2008 16:54:44 +0200 (CEST)
+From: Sven Wegener <sven.wegener@stealer.net>
+To: Jared Hulbert <jaredeh@gmail.com>
+Subject: Re: [PATCH 06/10] AXFS: axfs_super.c
+In-Reply-To: <alpine.LNX.1.10.0808211325530.12259@titan.stealer.net>
+Message-ID: <alpine.LNX.1.10.0808211653501.12259@titan.stealer.net>
+References: <48AD0101.4020505@gmail.com>
+	<alpine.LNX.1.10.0808211325530.12259@titan.stealer.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <48AD00F8.1030004@gmail.com> <48AD2AFF.5060609@de.ibm.com>
-	<1219308560.2988.247.camel@pmac.infradead.org>
-	<200808211339.37187.arnd@arndb.de>
-Cc: nickpiggin@yahoo.com.au, linux-embedded@vger.kernel.org,
-	carsteno@de.ibm.com, =?UTF-8?Q?J=C3=B6rn_Engel?= <joern@logfs.org>,
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
+	=?ISO-8859-15?Q?J=F6rn_Engel?= <joern@logfs.org>,
 	Linux-kernel@vger.kernel.org,
-	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com,
-	David Woodhouse <dwmw2@infradead.org>
+	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@AM.SONY.COM
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,32 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 21, 2008 at 4:39 AM, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Thursday 21 August 2008, David Woodhouse wrote:
->> On Thu, 2008-08-21 at 10:44 +0200, Carsten Otte wrote:
->> >
->> > Exporting profiling data for a file system in another file system
->> > (/proc) seems not very straigtforward to me. I think it is worth
->> > considering to export this information via the same mount point.
->>
->> I would have said sysfs, rather than 'the same mount point'.
->>
->
-> Let me throw in debugfs as my preferred option. sysfs is for stable
-> interfaces, while profiling generally fits into the debugging category.
+On Thu, 21 Aug 2008, Sven Wegener wrote:
 
-Three responses, three suggestions....
+> On Wed, 20 Aug 2008, Jared Hulbert wrote:
+> 
+> > The many different devices AXFS can mount to and the various
+> > dual device mounting schemes are supported here.
+> > 
+> > Signed-off-by: Jared Hulbert <jaredeh@gmail.com>
+> > ---
+> > +static int __init init_axfs_fs(void)
+> > +{
+> > +	axfs_uncompress_init();
+> 
+> one more thing, axfs_uncompress_init() can fail
+> 
+> > +	return register_filesystem(&axfs_fs_type);
 
-1) same mount point -
-I don't see how this works without an ioctl.  I can't just make up
-files in my mounted filesystem.   You expect the mounted version to
-match input to the mkfs.  I'd not be happy with an ioctl.  You can
-just read it.
+And if this fails you leak the memory allocated in axfs_uncompress_init()
 
-2) sysfs -
-I agree with Carsten, I don't see how this fits in the sysfs hierarchy.
-
-3) debugfs -
-I don't know diddly about this.
-
-So why not /proc?
+> > +}
+> > +
+> > +static void __exit exit_axfs_fs(void)
+> > +{
+> > +	axfs_uncompress_exit();
+> > +	unregister_filesystem(&axfs_fs_type);
+> > +}
+> > +
+> > +module_init(init_axfs_fs);
+> > +module_exit(exit_axfs_fs);
+> > +MODULE_LICENSE("GPL");
