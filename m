@@ -1,17 +1,25 @@
-Received: from baltazar.kontrollpanelen.se ([193.17.218.15])
-	by casper.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1KWG0Y-0007Pu-H1
-	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 19:39:49 +0000
-Date: Sat, 23 Aug 2008 05:40:02 +0600
-From: "Bryon B Harrell" <LunaLeo@gmail.com>
-To: linux-mtd@lists.infradead.org, xxxbbsitexxx@frsayyz.com,
-	colson@cadentlabs.com, archives@ama-assn.org,
-	julie.mcclure@llcc.edu, shana@lifelongaes.com, nsiegel@acus.org,
-	acrocker@odu.edu, carl.gray@algonquincollege.com
-Subject: D.entists Listing for the United States
-Message-ID: <400448t2atz0$l0529ap0$5645l7a0@Delldim5150
+Received: from rn-out-0910.google.com ([64.233.170.189])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KWGPw-0003sf-Vt
+	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 20:06:01 +0000
+Received: by rn-out-0910.google.com with SMTP id m7so114688rnd.3
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 21 Aug 2008 13:06:00 -0700 (PDT)
+Message-ID: <6934efce0808211305j349dc0fbo1cb122c0c5159ac0@mail.gmail.com>
+Date: Thu, 21 Aug 2008 13:05:59 -0700
+From: "Jared Hulbert" <jaredeh@gmail.com>
+To: "Arnd Bergmann" <arnd@arndb.de>
+Subject: Re: [PATCH 03/10] AXFS: axfs.h
+In-Reply-To: <200808211331.36346.arnd@arndb.de>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <48AD00E6.2070505@gmail.com> <200808211331.36346.arnd@arndb.de>
+Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
+	=?UTF-8?Q?J=C3=B6rn_Engel?= <joern@logfs.org>,
+	Linux-kernel@vger.kernel.org,
+	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,24 +29,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+>> +#define AXFS_PAGE_SIZE 4096
+>
+> What happens on systems where AXFS_PAGE_SIZE != PAGE_SIZE?
 
-
-
-
-
-Essential for any marketer:
-
-<> 164,260 D entists 
-<> 158,783 Physical Addresses
-<> 163,879 Contact Phone #
-<> 77,194 Office Fax #
-<> 45,517 Emails
-
-only until this Friday this can be yours for just $294 (usually $597)
-
-To inquire please write to robertvernone@hotmail.com 
-
-
-
-
-to adjust your subscription status email to the address above with 868 in the heading
+Right now, bad things I imagine.  I meant to revisit this, there was
+some reason during development for this, I don't remember.  No reason
+for AXFS_PAGE_SIZE I think.
