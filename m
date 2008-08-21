@@ -1,23 +1,23 @@
-Received: from moutng.kundenserver.de ([212.227.126.177])
+Received: from vervifontaine.sonytel.be ([80.88.33.193]
+	helo=vervifontaine.sonycom.com)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KW9DN-0004OD-K0
-	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 12:24:33 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: jaredeh@gmail.com
-Subject: Re: [PATCH 03/10] AXFS: axfs.h
-Date: Thu, 21 Aug 2008 14:24:31 +0200
-References: <48AD00E6.2070505@gmail.com>
-In-Reply-To: <48AD00E6.2070505@gmail.com>
+	id 1KW9Hh-0003W1-HK
+	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 12:29:02 +0000
+Date: Thu, 21 Aug 2008 14:28:52 +0200 (CEST)
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Sender: geert@sonytel.be
+To: Artem Bityutskiy <dedekind@infradead.org>
+Subject: Re: [PATCH 10/10] AXFS: axfs_uncompress.c
+In-Reply-To: <1219318838.18027.68.camel@sauron>
+Message-ID: <Pine.LNX.4.64.0808211423360.20704@vixen.sonytel.be>
+References: <48AD0126.1050609@gmail.com> <1219318838.18027.68.camel@sauron>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200808211424.31966.arnd@arndb.de>
+Content-Type: MULTIPART/MIXED;
+	BOUNDARY="-584349381-461250853-1219321732=:20704"
 Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
-	=?iso-8859-1?q?J=F6rn_Engel?= <joern@logfs.org>,
+	=?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
 	Linux-kernel@vger.kernel.org,
-	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
+	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@AM.SONY.COM
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,44 +27,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 21 August 2008, Jared Hulbert wrote:
-> +static inline u64 axfs_bytetable_stitch(u8 depth, u8 *table, u64 index)
-> +{
-> +=A0=A0=A0=A0=A0=A0=A0u64 i;
-> +=A0=A0=A0=A0=A0=A0=A0u64 output =3D 0;
-> +=A0=A0=A0=A0=A0=A0=A0u64 byte =3D 0;
-> +=A0=A0=A0=A0=A0=A0=A0u64 j;
-> +=A0=A0=A0=A0=A0=A0=A0u64 bits;
-> +
-> +=A0=A0=A0=A0=A0=A0=A0for (i =3D 0; i < depth; i++) {
-> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0j =3D index * depth + i;
-> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0bits =3D 8 * (depth - i - 1=
-);
-> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0byte =3D table[j];
-> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0output +=3D byte << bits;
-> +=A0=A0=A0=A0=A0=A0=A0}
-> +=A0=A0=A0=A0=A0=A0=A0return output;
-> +}
-> +
-> +#define AXFS_GET_BYTETABLE_VAL(desc,index) \
-> + =A0axfs_bytetable_stitch(((struct axfs_region_desc)(desc)).table_byte_d=
-epth,\
-> + =A0(u8 *)((struct axfs_region_desc)(desc)).virt_addr, index)
-> +
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-This bytetable stuff looks overly complicated, both the data structure and
-the access method. It seems like you are implementing your own custom Huffm=
-an
-compression with this.
+---584349381-461250853-1219321732=:20704
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-Is the reasonn for the bytetable just to pack numbers efficiently, or do you
-have a different intention?
+On Thu, 21 Aug 2008, Artem Bityutskiy wrote:
+> On Wed, 2008-08-20 at 22:46 -0700, Jared Hulbert wrote:
+> > +	err = zlib_inflateReset(&stream);
+> > +	if (err != Z_OK) {
+> > +		printk(KERN_ERR "zlib_inflateReset error %d\n", err);
+> > +		zlib_inflateEnd(&stream);
+> > +		zlib_inflateInit(&stream);
+> > +	}
+> 
+> just FYI, are you aware that LZO which is also present in the kernel is
+> much faster on decompress than zlib, while its compression is only
+> slightly worse?
 
-Did you see a significant size benefit over simply storing all metadata as
-uncompressed data structures like in cramfs?
+If you want support for multiple decompression algorithms, you can switch
+from using zlib_inflate*() directly to calling zlib through the crypto API.
+Then you can call crypto_alloc_comp() with the correct decompression algorithm
+name.
 
-Have you considered storing simple dentry/inode data in node_type=3D=3DComp=
-ressed
-nodes?
+For squashfs, I had to modify only ca. 40 lines of code.
 
-	Arnd <><
+You do need a new zlib crypto module, as the existing deflate crypto module
+uses the raw deflate format instead of the zlib format, and has some parameters
+tuned for its use in IPSec.
+
+I hope to have some patches ready next week...
+
+With kind regards,
+
+Geert Uytterhoeven
+Software Architect
+
+Sony Techsoft Centre Europe
+The Corporate Village · Da Vincilaan 7-D1 · B-1935 Zaventem · Belgium
+
+Phone:    +32 (0)2 700 8453
+Fax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 · RPR Brussels
+Fortis · BIC GEBABEBB · IBAN BE41293037680010
+---584349381-461250853-1219321732=:20704--
