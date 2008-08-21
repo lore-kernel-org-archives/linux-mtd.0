@@ -1,21 +1,35 @@
-Received: from ipmail01.adl6.internode.on.net ([203.16.214.146])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KW5i0-0000uv-8t
-	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 08:39:56 +0000
-Date: Thu, 21 Aug 2008 18:39:16 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Jared Hulbert <jaredeh@gmail.com>
-Subject: Re: [PATCH 00/10] AXFS: Advanced XIP filesystem
-Message-ID: <20080821083916.GF5706@disturbed>
-References: <48AD00C4.6060302@gmail.com>
+Received: from mtagate7.de.ibm.com ([195.212.29.156])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KW5o0-0004pG-Mi
+	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 08:46:09 +0000
+Received: from d12nrmr1607.megacenter.de.ibm.com
+	(d12nrmr1607.megacenter.de.ibm.com [9.149.167.49])
+	by mtagate7.de.ibm.com (8.13.8/8.13.8) with ESMTP id m7L8ipbj626530
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2008 08:44:51 GMT
+Received: from d12av01.megacenter.de.ibm.com (d12av01.megacenter.de.ibm.com
+	[9.149.165.212])
+	by d12nrmr1607.megacenter.de.ibm.com (8.13.8/8.13.8/NCO v9.0) with
+	ESMTP id m7L8ipne2756632
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2008 10:44:51 +0200
+Received: from d12av01.megacenter.de.ibm.com (loopback [127.0.0.1])
+	by d12av01.megacenter.de.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
+	id m7L8io45010283
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2008 10:44:51 +0200
+Message-ID: <48AD2AFF.5060609@de.ibm.com>
+Date: Thu, 21 Aug 2008 10:44:47 +0200
+From: Carsten Otte <cotte@de.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <48AD00C4.6060302@gmail.com>
-Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
-	=?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
+To: jaredeh@gmail.com
+Subject: Re: [PATCH 05/10] AXFS: axfs_profiling.c
+References: <48AD00F8.1030004@gmail.com>
+In-Reply-To: <48AD00F8.1030004@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: nickpiggin@yahoo.com.au, linux-embedded@vger.kernel.org,
+	=?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>,
 	Linux-kernel@vger.kernel.org,
 	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@AM.SONY.COM
+Reply-To: carsteno@de.ibm.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +39,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 20, 2008 at 10:44:36PM -0700, Jared Hulbert wrote:
-> I'd like to get a first round of review on my AXFS filesystem.  This is a simple
-> read only compressed filesystem like Squashfs and cramfs.  AXFS is special
-> because it also allows for execute-in-place of your applications.  It is a major
-> improvement over the cramfs XIP patches that have been floating around for ages.
-> The biggest improvement is in the way AXFS allows for each page to be XIP or
-> not.  First, a user collects information about which pages are accessed on a
-> compressed image for each mmap()ed region from /proc/axfs/volume0.  That
-> 'profile' is used as an input to the image builder.  The resulting image has
-> only the relevant pages uncompressed and XIP.  The result is smaller memory
-> sizes and faster launches.
-
-FWIW, I'm not sure it's a good idea to name this new filesystem AXFS.
-People are almost certainly going to confuse it with XFS despite
-the filesystems being aimed at diammetrically opposed ends of the
-storage spectrum. ;)
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Jared Hulbert wrote:
+> Profiling is a fault instrumentation and /proc formating system.
+> This is used to get an accurate picture of what the pages are actually used.
+> Using this info the image can be optimized for XIP
+Exporting profiling data for a file system in another file system 
+(/proc) seems not very straigtforward to me. I think it is worth 
+considering to export this information via the same mount point.
