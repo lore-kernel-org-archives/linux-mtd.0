@@ -1,20 +1,35 @@
-Received: from 81-7-68-229.static.zebra.lt ([81.7.68.229] helo=teltonika.lt)
+Received: from mtagate7.uk.ibm.com ([195.212.29.140])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KW4fK-0006Ja-Nx
-	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 07:33:07 +0000
-Message-ID: <48AD1A27.2090400@teltonika.lt>
-Date: Thu, 21 Aug 2008 10:32:55 +0300
-From: Paulius Zaleckas <paulius.zaleckas@teltonika.lt>
+	id 1KW4rs-0007do-9l
+	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 07:46:04 +0000
+Received: from d06nrmr1407.portsmouth.uk.ibm.com
+	(d06nrmr1407.portsmouth.uk.ibm.com [9.149.38.185])
+	by mtagate7.uk.ibm.com (8.13.8/8.13.8) with ESMTP id m7L7gr1F608964
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2008 07:42:54 GMT
+Received: from d06av04.portsmouth.uk.ibm.com (d06av04.portsmouth.uk.ibm.com
+	[9.149.37.216])
+	by d06nrmr1407.portsmouth.uk.ibm.com (8.13.8/8.13.8/NCO v9.0) with
+	ESMTP id m7L7grJE3514384
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2008 08:42:53 +0100
+Received: from d06av04.portsmouth.uk.ibm.com (loopback [127.0.0.1])
+	by d06av04.portsmouth.uk.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
+	id m7L7gqvq003439
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2008 08:42:53 +0100
+Message-ID: <48AD1C7A.6020705@de.ibm.com>
+Date: Thu, 21 Aug 2008 09:42:50 +0200
+From: Carsten Otte <cotte@de.ibm.com>
 MIME-Version: 1.0
+To: jaredeh@gmail.com
 Subject: Re: [PATCH 01/10] AXFS: exporting xip_file_fault() for use with AXFS
-References: <48AD00D5.5010904@gmail.com> <48AD1860.4040001@teltonika.lt>
-In-Reply-To: <48AD1860.4040001@teltonika.lt>
+References: <48AD00D5.5010904@gmail.com>
+In-Reply-To: <48AD00D5.5010904@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-embedded@vger.kernel.org,
+Cc: nickpiggin@yahoo.com.au, linux-embedded@vger.kernel.org,
 	=?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>,
 	Linux-kernel@vger.kernel.org,
 	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@AM.SONY.COM
+Reply-To: carsteno@de.ibm.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,61 +39,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Paulius Zaleckas wrote:
-> Jared Hulbert wrote:
->> We'll need this for AXFS.  The equivalent function in filemap.c is exported.
->>
->> Signed-off-by: Jared Hulbert <jaredeh@gmail.com>
->> ---
->>  include/linux/mm.h |    4 ++++
->>  mm/filemap_xip.c   |    3 ++-
->>  2 files changed, 6 insertions(+), 1 deletion(-)
->>
->> diff --git a/include/linux/mm.h b/include/linux/mm.h
->> index 72a15dc..2be5c22 100644
->> --- a/include/linux/mm.h
->> +++ b/include/linux/mm.h
->> @@ -161,6 +161,10 @@ struct vm_fault {
->>  					 */
->>  };
->>  
->> +#ifdef CONFIG_FS_XIP
->> +extern int xip_file_fault(struct vm_area_struct *vma, struct vm_fault *vmf);
->> +#endif
->> +
+Jared Hulbert wrote:
+> We'll need this for AXFS.  The equivalent function in filemap.c is exported.
 > 
-> No need for #ifdef here as this function is compiled and exported in .c
-> regardless of CONFIG_FS_XIP
-
-Sorry I am wrong... Have to get more sleep :)
-
->>  /*
->>   * These are the virtual MM functions - opening of an area, closing and
->>   * unmapping it (needed to keep files on disk up-to-date etc), pointer
->> diff --git a/mm/filemap_xip.c b/mm/filemap_xip.c
->> index 380ab40..ab2f174 100644
->> --- a/mm/filemap_xip.c
->> +++ b/mm/filemap_xip.c
->> @@ -206,7 +206,7 @@ __xip_unmap (struct address_space * mapping,
->>   *
->>   * This function is derived from filemap_fault, but used for execute in place
->>   */
->> -static int xip_file_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
->> +int xip_file_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
->>  {
->>  	struct file *file = vma->vm_file;
->>  	struct address_space *mapping = file->f_mapping;
->> @@ -262,6 +262,7 @@ found:
->>  		return 0;
->>  	}
->>  }
->> +EXPORT_SYMBOL_GPL(xip_file_fault);
->>  
->>  static struct vm_operations_struct xip_file_vm_ops = {
->>  	.fault	= xip_file_fault,
->>
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+> Signed-off-by: Jared Hulbert <jaredeh@gmail.com>
+> ---
+>  include/linux/mm.h |    4 ++++
+>  mm/filemap_xip.c   |    3 ++-
+>  2 files changed, 6 insertions(+), 1 deletion(-)
+Acked-by: Carsten Otte <cotte@de.ibm.com>
