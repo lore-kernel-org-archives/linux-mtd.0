@@ -1,21 +1,22 @@
-Received: from rn-out-0910.google.com ([64.233.170.189])
+Received: from py-out-1112.google.com ([64.233.166.183])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KWGPw-0003sf-Vt
-	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 20:06:01 +0000
-Received: by rn-out-0910.google.com with SMTP id m7so114688rnd.3
+	id 1KWGRn-0004T9-9M
+	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 20:07:55 +0000
+Received: by py-out-1112.google.com with SMTP id a73so187576pye.2
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Aug 2008 13:06:00 -0700 (PDT)
-Message-ID: <6934efce0808211305j349dc0fbo1cb122c0c5159ac0@mail.gmail.com>
-Date: Thu, 21 Aug 2008 13:05:59 -0700
+	Thu, 21 Aug 2008 13:07:54 -0700 (PDT)
+Message-ID: <6934efce0808211307g4eabe29fvac24d82252bf913c@mail.gmail.com>
+Date: Thu, 21 Aug 2008 13:07:54 -0700
 From: "Jared Hulbert" <jaredeh@gmail.com>
-To: "Arnd Bergmann" <arnd@arndb.de>
+To: "Daniel Walker" <dwalker@mvista.com>
 Subject: Re: [PATCH 03/10] AXFS: axfs.h
-In-Reply-To: <200808211331.36346.arnd@arndb.de>
+In-Reply-To: <1219324258.23311.14.camel@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <48AD00E6.2070505@gmail.com> <200808211331.36346.arnd@arndb.de>
+References: <48AD00E6.2070505@gmail.com>
+	<1219324258.23311.14.camel@localhost.localdomain>
 Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
 	=?UTF-8?Q?J=C3=B6rn_Engel?= <joern@logfs.org>,
 	Linux-kernel@vger.kernel.org,
@@ -29,10 +30,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> +#define AXFS_PAGE_SIZE 4096
->
-> What happens on systems where AXFS_PAGE_SIZE != PAGE_SIZE?
+> I think it would be much cleaner to do all these similar macro's as
+> static inline functions.
 
-Right now, bad things I imagine.  I meant to revisit this, there was
-some reason during development for this, I don't remember.  No reason
-for AXFS_PAGE_SIZE I think.
+Yeah.  Been thinking about that.
