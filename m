@@ -1,28 +1,28 @@
-Received: from mtagate7.de.ibm.com ([195.212.29.156])
+Received: from mtagate8.de.ibm.com ([195.212.29.157])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KW4xs-0000QW-Je
-	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 07:52:17 +0000
+	id 1KW5eq-0003BE-U6
+	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 08:36:41 +0000
 Received: from d12nrmr1607.megacenter.de.ibm.com
 	(d12nrmr1607.megacenter.de.ibm.com [9.149.167.49])
-	by mtagate7.de.ibm.com (8.13.8/8.13.8) with ESMTP id m7L7p5A1341960
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2008 07:51:05 GMT
-Received: from d12av02.megacenter.de.ibm.com (d12av02.megacenter.de.ibm.com
-	[9.149.165.228])
+	by mtagate8.de.ibm.com (8.13.8/8.13.8) with ESMTP id m7L8ZjHs294054
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2008 08:35:45 GMT
+Received: from d12av03.megacenter.de.ibm.com (d12av03.megacenter.de.ibm.com
+	[9.149.165.213])
 	by d12nrmr1607.megacenter.de.ibm.com (8.13.8/8.13.8/NCO v9.0) with
-	ESMTP id m7L7p55o3481666
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2008 09:51:05 +0200
-Received: from d12av02.megacenter.de.ibm.com (loopback [127.0.0.1])
-	by d12av02.megacenter.de.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
-	id m7L7p5Ua020165
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2008 09:51:05 +0200
-Message-ID: <48AD1E66.40307@de.ibm.com>
-Date: Thu, 21 Aug 2008 09:51:02 +0200
+	ESMTP id m7L8Ziqf3149872
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2008 10:35:44 +0200
+Received: from d12av03.megacenter.de.ibm.com (loopback [127.0.0.1])
+	by d12av03.megacenter.de.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
+	id m7L8Zi5p023697
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2008 10:35:44 +0200
+Message-ID: <48AD28DD.6090109@de.ibm.com>
+Date: Thu, 21 Aug 2008 10:35:41 +0200
 From: Carsten Otte <cotte@de.ibm.com>
 MIME-Version: 1.0
 To: jaredeh@gmail.com
-Subject: Re: [PATCH 03/10] AXFS: axfs.h
-References: <48AD00E6.2070505@gmail.com>
-In-Reply-To: <48AD00E6.2070505@gmail.com>
+Subject: Re: [PATCH 04/10] AXFS: axfs_inode.c
+References: <48AD00F0.5030403@gmail.com>
+In-Reply-To: <48AD00F0.5030403@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: nickpiggin@yahoo.com.au, linux-embedded@vger.kernel.org,
@@ -40,166 +40,154 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Jared Hulbert wrote:
-> +#define AXFS_GET_BYTETABLE_VAL(desc,index) \
-> +  axfs_bytetable_stitch(((struct axfs_region_desc)(desc)).table_byte_depth,\
-> +  (u8 *)((struct axfs_region_desc)(desc)).virt_addr, index)
+> +/***************** functions in other axfs files ******************************/
+> +int axfs_get_sb(struct file_system_type *, int, const char *, void *,
+> +		struct vfsmount *);
+This is neither implemented nor used in axfs_inode.c - why define it here?
+
+> +void axfs_kill_super(struct super_block *);
+Same for this one.
+
+
+> +void axfs_profiling_add(struct axfs_super *, unsigned long, unsigned int);
+> +int axfs_copy_mtd(struct super_block *, void *, u64, u64);
+> +int axfs_copy_block(struct super_block *, void *, u64, u64);
+These are used, but not implemented here. Please consider putting them 
+in a header file
+
+
+> +static int axfs_copy_data(struct super_block *sb, void *dst,
+> +			  struct axfs_region_desc *region, u64 offset, u64 len)
+> +{
+> +	u64 mmapped = 0;
+> +	u64 end = region->fsoffset + offset + len;
+> +	u64 begin = region->fsoffset + offset;
+> +	u64 left;
+> +	void *addr;
+> +	void *newdst;
+> +	struct axfs_super *sbi = AXFS_SB(sb);
 > +
-> +#define AXFS_GET_NODE_TYPE(sbi,node_index) \
-> +  AXFS_GET_BYTETABLE_VAL(((struct axfs_super *)(sbi))->node_type,\
-> +   (node_index))
+> +	if (len == 0)
+> +		return 0;
 > +
-> +#define AXFS_GET_NODE_INDEX(sbi,node__index) \
-> +  AXFS_GET_BYTETABLE_VAL(((struct axfs_super *)(sbi))->node_index,\
-> +   (node__index))
+> +	if (region->virt_addr) {
+> +		if (sbi->mmap_size >= end) {
+> +			mmapped = len;
+> +		} else if (sbi->mmap_size > begin) {
+> +			mmapped = sbi->mmap_size - begin;
+> +		}
+> +	}
+You can save braces and make the code more readable here:
+=> if (sbi->mmap_size >= end)
+	mmapped = len;
+    else if (sbi->mmap_size > begin)
+	mmapped = si->mmap_size - begin;
+
+
+> +struct inode *axfs_create_vfs_inode(struct super_block *sb, int ino)
+> +{
+> +	struct axfs_super *sbi = AXFS_SB(sb);
+> +	struct inode *inode;
+> +	u64 size;
+[SNIP]
+> +	size = AXFS_GET_INODE_FILE_SIZE(sbi, ino);
+> +	inode->i_size = size;
+The variable size is not needed. Do
+	inode->i_size = AXFS_GET_INODE_FILE_SIZE(sbi, ino);
+
+
+> +static struct dentry *axfs_lookup(struct inode *dir, struct dentry *dentry,
+> +				  struct nameidata *nd)
+> +{
+> +	struct super_block *sb = dir->i_sb;
+> +	struct axfs_super *sbi = AXFS_SB(sb);
+> +	u64 ino_number = dir->i_ino;
+> +	u64 dir_index = 0;
+> +	u64 entry;
+> +	char *name;
+> +	int namelen, err;
 > +
-> +#define AXFS_IS_NODE_XIP(sbi,node_index) \
-> +  (AXFS_GET_NODE_TYPE(sbi, (node_index)) == XIP)
+> +	while (dir_index < AXFS_GET_INODE_NUM_ENTRIES(sbi, ino_number)) {
+> +		entry = AXFS_GET_INODE_ARRAY_INDEX(sbi, ino_number);
+> +		entry += dir_index;
 > +
-> +#define AXFS_GET_CNODE_INDEX(sbi,node_index) \
-> +  AXFS_GET_BYTETABLE_VAL(((struct axfs_super *)(sbi))->cnode_index,\
-> +   (node_index))
+> +		name = AXFS_GET_INODE_NAME(sbi, entry);
+> +		namelen = strlen(name);
 > +
-> +#define AXFS_GET_CNODE_OFFSET(desc,node_index) \
-> +  AXFS_GET_BYTETABLE_VAL(((struct axfs_super *)(sbi))->cnode_offset,\
-> +   (node_index))
+> +		/* fast test, the entries are sorted alphabetically and the
+> +		 * first letter is smaller than the first letter in the search
+> +		 * name then it isn't in this directory.  Keeps this loop from
+> +		 * needing to scan through always.
+> +		 */
+> +		if (dentry->d_name.name[0] < name[0])
+> +			break;
 > +
-> +#define AXFS_GET_BANODE_OFFSET(desc,node_index) \
-> +  AXFS_GET_BYTETABLE_VAL(((struct axfs_super *)(sbi))->banode_offset,\
-> +   (node_index))
+> +		dir_index++;
 > +
-> +#define AXFS_GET_CBLOCK_OFFSET(desc,node_index) \
-> +  AXFS_GET_BYTETABLE_VAL(((struct axfs_super *)(sbi))->cblock_offset,\
-> +   (node_index))
+> +		/* Quick check that the name is roughly the right length */
+> +		if (dentry->d_name.len != namelen)
+> +			continue;
 > +
-> +#define AXFS_GET_INODE_FILE_SIZE(sbi,inode_index) \
-> +  AXFS_GET_BYTETABLE_VAL(((struct axfs_super *)(sbi))->inode_file_size,\
-> +   (inode_index))
+> +		err = memcmp(dentry->d_name.name, name, namelen);
+> +		if (err > 0)
+> +			continue;
 > +
-> +#define AXFS_GET_INODE_NAME_OFFSET(sbi,inode_index) \
-> +  AXFS_GET_BYTETABLE_VAL(((struct axfs_super *)(sbi))->inode_name_offset,\
-> +	(inode_index))
+> +		/* The file name isn't present in the directory. */
+> +		if (err < 0)
+> +			break;
+Very ingenious way to compare strings. strncmp also stops after the 
+first character if it does'nt fit. I doubt this has a measurable 
+performance advantage over using strncmp, please consider to replace 
+this logic to make the code smaller and more readable. See lib/string.c.
+
+> +static int axfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
+> +{
+> +	struct inode *inode = filp->f_dentry->d_inode;
+> +	struct super_block *sb = inode->i_sb;
+> +	struct axfs_super *sbi = AXFS_SB(sb);
+> +	u64 ino_number = inode->i_ino;
+> +	u64 entry;
+> +	loff_t dir_index;
+> +	char *name;
+> +	int namelen, mode;
+> +	int err = 0;
 > +
-> +#define AXFS_GET_INODE_NUM_ENTRIES(sbi,inode_index) \
-> +  AXFS_GET_BYTETABLE_VAL(((struct axfs_super *)(sbi))->inode_num_entries,\
-> +	(inode_index))
+> +	/* Get the current index into the directory and verify it is not beyond
+> +	   the end of the list */
+> +	dir_index = filp->f_pos;
+> +	if (dir_index >= AXFS_GET_INODE_NUM_ENTRIES(sbi, ino_number))
+> +		goto out;
 > +
-> +#define AXFS_GET_INODE_MODE_INDEX(sbi,inode_index) \
-> +  AXFS_GET_BYTETABLE_VAL(((struct axfs_super *)(sbi))->inode_mode_index,\
-> +   (inode_index))
+> +	/* Verify the inode is for a directory */
+> +	if (!(S_ISDIR(inode->i_mode))) {
+> +		err = -EINVAL;
+> +		goto out;
+> +	}
+Well, -ENOTDIR would be the correct return code. You can remove that 
+sanity check alltogether, vfs_readdir makes sure this is the right 
+file type. If you really want to check, make it 
+BUG_ON(!S_ISDIR(inode->i_mode));
+
+> +static int axfs_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
+> +{
+> +	struct file *file = vma->vm_file;
+> +	struct inode *inode = file->f_dentry->d_inode;
+> +	struct super_block *sb = inode->i_sb;
+> +	struct axfs_super *sbi = AXFS_SB(sb);
+> +	u64 ino_number = inode->i_ino;
+> +	u64 array_index;
 > +
-> +#define AXFS_GET_INODE_ARRAY_INDEX(sbi,inode_index) \
-> +  AXFS_GET_BYTETABLE_VAL(((struct axfs_super *)(sbi))->inode_array_index,\
-> +   (inode_index))
+> +	array_index = AXFS_GET_INODE_ARRAY_INDEX(sbi, ino_number) + vmf->pgoff;
 > +
-> +#define AXFS_GET_MODE(sbi,mode_index) \
-> +  AXFS_GET_BYTETABLE_VAL(((struct axfs_super *)(sbi))->modes,\
-> +  (AXFS_GET_INODE_MODE_INDEX(sbi, (mode_index))))
-> +
-> +#define AXFS_GET_UID(sbi,mode_index) \
-> +  AXFS_GET_BYTETABLE_VAL(((struct axfs_super *)(sbi))->uids,\
-> +  (AXFS_GET_INODE_MODE_INDEX(sbi, (mode_index))))
-> +
-> +#define AXFS_GET_GID(sbi,mode_index) \
-> +  AXFS_GET_BYTETABLE_VAL(((struct axfs_super *)(sbi))->gids,\
-> +  (AXFS_GET_INODE_MODE_INDEX(sbi, (mode_index))))
-> +
-> +#define AXFS_IS_REGION_COMPRESSED(_region) \
-> +    (( \
-> +     ((struct axfs_region_desc *)(_region))->compressed_size > \
-> +     0 \
-> +    ) ? TRUE : FALSE)
-> +
-> +#define AXFS_PHYSADDR_IS_VALID(sbi) \
-> +    (((((struct axfs_super *)(sbi))->phys_start_addr) > 0 \
-> +	) ? TRUE : FALSE)
-> +
-> +#define AXFS_VIRTADDR_IS_VALID(sbi) \
-> +    (((((struct axfs_super *)(sbi))->virt_start_addr) > 0 \
-> +	) ? TRUE : FALSE)
-> +
-> +#define AXFS_IS_IOMEM(sbi) \
-> +    (((((struct axfs_super *)(sbi))->iomem_size) > 0) ? TRUE : FALSE)
-> +
-> +#define AXFS_IS_POINTED(sbi) \
-> +    (((((struct axfs_super *)(sbi))->mtd_pointed) > 0) ? TRUE : FALSE)
-> +
-> +#define AXFS_IS_PHYSMEM(sbi) \
-> +    (( \
-> +      AXFS_PHYSADDR_IS_VALID(sbi) \
-> +      && !AXFS_IS_IOMEM(sbi) \
-> +      && !AXFS_IS_POINTED(sbi) \
-> +    ) ? TRUE : FALSE)
-> +
-> +#define AXFS_IS_MMAPABLE(sbi,offset) \
-> +    ((\
-> +       (((struct axfs_super *)(sbi))->mmap_size) > (offset) \
-> +    ) ? TRUE : FALSE)
-> +
-> +#define AXFS_IS_OFFSET_MMAPABLE(sbi,offset) \
-> +    (( \
-> +       AXFS_IS_MMAPABLE(sbi, offset) && AXFS_VIRTADDR_IS_VALID(sbi) \
-> +     ) ? TRUE : FALSE)
-> +
-> +#define AXFS_IS_REGION_MMAPABLE(sbi,_region) \
-> +    (( \
-> +      AXFS_IS_MMAPABLE(sbi, ((struct axfs_region_desc *)(_region))->fsoffset) \
-> +      && AXFS_VIRTADDR_IS_VALID(sbi) \
-> +     ) ? TRUE : FALSE)
-> +
-> +#define AXFS_IS_REGION_INCORE(_region) \
-> +    (((_region)->incore > 0) ? TRUE : FALSE)
-> +
-> +#define AXFS_IS_REGION_XIP(sbi,_region) \
-> +    (( \
-> +     !AXFS_IS_REGION_COMPRESSED(_region) && \
-> +     !AXFS_IS_REGION_INCORE(_region) && \
-> +     AXFS_IS_REGION_MMAPABLE(sbi,_region) \
-> +    ) ? TRUE : FALSE)
-> +
-> +#define AXFS_GET_XIP_REGION_PHYSADDR(sbi) \
-> +    (unsigned long)((sbi)->phys_start_addr + (sbi)->xip.fsoffset)
-> +
-> +#define AXFS_GET_INODE_NAME(sbi,inode_index) \
-> +     (char *)( \
-> +	(sbi)->strings.virt_addr \
-> +	+ AXFS_GET_INODE_NAME_OFFSET(sbi,inode_index) \
-> +     )
-> +
-> +#define AXFS_GET_CBLOCK_ADDRESS(sbi, cnode_index)\
-> +    (unsigned long)( \
-> +       (sbi)->compressed.virt_addr \
-> +       + AXFS_GET_CBLOCK_OFFSET(sbi, cnode_index) \
-> +    )
-> +
-> +#define AXFS_GET_NODE_ADDRESS(sbi,node__index) \
-> +    (unsigned long)( \
-> +       (sbi)->node_index.virt_addr \
-> +       + AXFS_GET_NODE_INDEX(sbi, node__index) \
-> +    )
-> +
-> +#define AXFS_GET_BANODE_ADDRESS(sbi,banode_index) \
-> +    (unsigned long)( \
-> +       (sbi)->byte_aligned.virt_addr \
-> +       + AXFS_GET_BANODE_OFFSET(sbi, banode_index) \
-> +    )
-> +
-> +#define AXFS_FSOFFSET_2_DEVOFFSET(sbi,fsoffset) \
-> +    (( \
-> +      ((sbi)->phys_start_addr == 0) && ((sbi)->virt_start_addr == 0) \
-> +      ) ? (fsoffset) : (fsoffset - (sbi)->mmap_size) \
-> +    )
-> +
-> +#define AXFS_GET_CBLOCK_LENGTH(sbi,cblock_index) \
-> +    (u64)( \
-> +      (u64)AXFS_GET_CBLOCK_OFFSET(sbi, ((u64)(cblock_index)+(u64)1)) \
-> +      - (u64)AXFS_GET_CBLOCK_OFFSET(sbi, (cblock_index)) \
-> +    )
-> +
-> +#ifndef TRUE
-> +#define TRUE 1
-> +#endif
-> +#ifndef FALSE
-> +#define FALSE 0
-> +#endif
-*Shrug*. That part reads scary. Are all those casts and macros really 
-needed? Maybe it is worth considering to clean this up a little.
+> +	/* if that pages are marked for write they will probably end up in RAM
+> +	   therefore we don't want their counts for being XIP'd */
+> +	if (!(vma->vm_flags & VM_WRITE))
+> +		axfs_profiling_add(sbi, array_index, ino_number);
+Thats very inacurate profiling, it does never count MAP_PRIVATE 
+mappings which is the regular case for executables and libraries. When 
+booting an enterprise distro, my sniff test shows that only about 5% 
+of the MAP_PRIVATE mappings get COW'ed. To get correct statistics, it 
+might be a good idea to find a way to add here and substract during 
+cow. Or to scan these mappings when the profiling information is being 
+retrieved - the readonly bit in the pte gives the right indication for 
+MIXEDMAP mappings.
