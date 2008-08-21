@@ -1,22 +1,25 @@
-Received: from wa-out-1112.google.com ([209.85.146.181])
+Received: from nf-out-0910.google.com ([64.233.182.186])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KW2zg-0006dB-Un
-	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 05:46:01 +0000
-Received: by wa-out-1112.google.com with SMTP id v33so192313wah.2
+	id 1KW3iL-0004yH-Da
+	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 06:32:10 +0000
+Received: by nf-out-0910.google.com with SMTP id d21so652349nfb.22
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 20 Aug 2008 22:46:00 -0700 (PDT)
-Message-ID: <48AD0126.1050609@gmail.com>
-Date: Wed, 20 Aug 2008 22:46:14 -0700
-From: Jared Hulbert <jaredeh@gmail.com>
+	Wed, 20 Aug 2008 23:32:08 -0700 (PDT)
+Message-ID: <ac9c93b10808202332n2654884eh877848df2da59f20@mail.gmail.com>
+Date: Thu, 21 Aug 2008 08:32:08 +0200
+From: "Frans Meulenbroeks" <fransmeulenbroeks@gmail.com>
+To: jaredeh@gmail.com
+Subject: Re: [PATCH 00/10] AXFS: Advanced XIP filesystem
+In-Reply-To: <48AD00C4.6060302@gmail.com>
 MIME-Version: 1.0
-To: Linux-kernel@vger.kernel.org, linux-embedded@vger.kernel.org,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	=?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>, tim.bird@AM.SONY.COM,
-	cotte@de.ibm.com, nickpiggin@yahoo.com.au
-Subject: [PATCH 10/10] AXFS: axfs_uncompress.c
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Reply-To: jaredeh@gmail.com
+Content-Disposition: inline
+References: <48AD00C4.6060302@gmail.com>
+Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
+	=?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>,
+	Linux-kernel@vger.kernel.org,
+	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,110 +29,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Handles the decompression for axfs, modeled after fs/cramfs/uncompress.c.
+Jared, nice work!
 
-Signed-off-by: Jared Hulbert <jaredeh@gmail.com>
----
-diff --git a/fs/axfs/axfs_uncompress.c b/fs/axfs/axfs_uncompress.c
-new file mode 100644
-index 0000000..b7a2060
---- /dev/null
-+++ b/fs/axfs/axfs_uncompress.c
-@@ -0,0 +1,97 @@
-+/*
-+ * Advanced XIP File System for Linux - AXFS
-+ *   Readonly, compressed, and XIP filesystem for Linux systems big and small
-+ *
-+ *   Modified in 2006 by Eric Anderson
-+ *     from the cramfs sources fs/cramfs/uncompress.c
-+ *
-+ * (C) Copyright 1999 Linus Torvalds
-+ *
-+ * axfs_uncompress.c -
-+ *  axfs interfaces to the uncompression library. There's really just
-+ * three entrypoints:
-+ *
-+ *  - axfs_uncompress_init() - called to initialize the thing.
-+ *  - axfs_uncompress_exit() - tell me when you're done
-+ *  - axfs_uncompress_block() - uncompress a block.
-+ *
-+ * NOTE NOTE NOTE! The uncompression is entirely single-threaded. We
-+ * only have one stream, and we'll initialize it only once even if it
-+ * then is used by multiple filesystems.
-+ *
-+ */
-+
-+#include <linux/errno.h>
-+#include <linux/vmalloc.h>
-+#include <linux/zlib.h>
-+#include <linux/mutex.h>
-+
-+static z_stream stream;
-+static int initialized;
-+static struct mutex axfs_uncmp_mutex;
-+
-+int axfs_uncompress_block(void *dst, int dstlen, void *src, int srclen)
-+{
-+	int err;
-+	int out;
-+
-+	mutex_lock(&axfs_uncmp_mutex);
-+
-+	stream.next_in = src;
-+	stream.avail_in = srclen;
-+
-+	stream.next_out = dst;
-+	stream.avail_out = dstlen;
-+
-+	err = zlib_inflateReset(&stream);
-+	if (err != Z_OK) {
-+		printk(KERN_ERR "zlib_inflateReset error %d\n", err);
-+		zlib_inflateEnd(&stream);
-+		zlib_inflateInit(&stream);
-+	}
-+
-+	err = zlib_inflate(&stream, Z_FINISH);
-+	if (err != Z_STREAM_END)
-+		goto err;
-+
-+	out = stream.total_out;
-+
-+	mutex_unlock(&axfs_uncmp_mutex);
-+
-+	return out;
-+
-+err:
-+
-+	mutex_unlock(&axfs_uncmp_mutex);
-+
-+	printk(KERN_ERR "Error %d while decompressing!\n", err);
-+	printk(KERN_ERR "%p(%d)->%p(%d)\n", src, srclen, dst, dstlen);
-+	return 0;
-+}
-+
-+int axfs_uncompress_init(void)
-+{
-+	if (!initialized++) {
-+
-+		mutex_init(&axfs_uncmp_mutex);
-+
-+		stream.workspace = vmalloc(zlib_inflate_workspacesize());
-+		if (!stream.workspace) {
-+			initialized = 0;
-+			return -ENOMEM;
-+		}
-+		stream.next_in = NULL;
-+		stream.avail_in = 0;
-+		zlib_inflateInit(&stream);
-+	}
-+	return 0;
-+}
-+
-+int axfs_uncompress_exit(void)
-+{
-+	if (!--initialized) {
-+		zlib_inflateEnd(&stream);
-+		vfree(stream.workspace);
-+	}
-+	return 0;
-+}
+I've also read your paper from the linux symposium
+(http://ols.fedoraproject.org/OLS/Reprints-2008/hulbert-reprint.pdf)
+
+A few questions:
+- how does this benchmark compared to cramfs and squashfs in a NAND-only system
+  (or is it just not a good plan to use this with NAND-only (of course
+I won't get XIP with NAND, I understand that)
+- would axfs be suitable as a filesystem on a ram disk?
+
+Background for the last question is that if you do not have the memory
+to retain all pages uncompressed (as you would with ramfs), this could
+be a nice intermediate format.
+Furthermore compared to ramfs, a filesystem on a ramdisk does not need
+the initialisation during startup (decompressing the cpio file,
+creating the files, copying the data), so when it comes to boot times
+a filesystem on a ramdisk (e.g. axfs) could be a better choice.
+
+Appreciate your feedback.
+
+Frans.
