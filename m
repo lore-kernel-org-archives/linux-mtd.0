@@ -1,22 +1,23 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KW8av-00044F-80
-	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 11:44:50 +0000
-Subject: Re: [PATCH 10/10] AXFS: axfs_uncompress.c
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: jaredeh@gmail.com
-In-Reply-To: <48AD0126.1050609@gmail.com>
-References: <48AD0126.1050609@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 21 Aug 2008 14:40:38 +0300
-Message-Id: <1219318838.18027.68.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
-	=?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
-	Linux-kernel@vger.kernel.org,
-	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@AM.SONY.COM
-Reply-To: dedekind@infradead.org
+Received: from moutng.kundenserver.de ([212.227.126.186])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KW8dT-0004fU-R2
+	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 11:47:28 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: Sebastian Siewior <sebastian@breakpoint.cc>
+Subject: Re: [RFC] mtd: add OF2PDEV convertor for the NDFC driver
+Date: Thu, 21 Aug 2008 13:46:14 +0200
+References: <20080820205958.GA13371@www.tglx.de>
+	<200808210040.58809.arnd@arndb.de>
+	<20080821082805.GA8013@www.tglx.de>
+In-Reply-To: <20080821082805.GA8013@www.tglx.de>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200808211346.15450.arnd@arndb.de>
+Cc: linuxppc-dev@ozlabs.org, tglx@linutronix.de, linux-mtd@lists.infradead.org,
+	Sean MacLennan <smaclennan@pikatech.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +27,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-08-20 at 22:46 -0700, Jared Hulbert wrote:
-> +	err =3D zlib_inflateReset(&stream);
-> +	if (err !=3D Z_OK) {
-> +		printk(KERN_ERR "zlib_inflateReset error %d\n", err);
-> +		zlib_inflateEnd(&stream);
-> +		zlib_inflateInit(&stream);
-> +	}
+On Thursday 21 August 2008, Sebastian Siewior wrote:
+> Yes, I heard of it. tglx told me that the IP-Core might show up in
+> non-IBM HW and it would be better not to drop the platform support.
 
-Jared,
+Thomas, any example of that? I would guess that all powerpc and microblaze
+systems would use the of_platform drivers now, so is there any other
+architecture that might get an ndfc?
 
-just FYI, are you aware that LZO which is also present in the kernel is
-much faster on decompress than zlib, while its compression is only
-slightly worse?
-
-I do not remember the digits, but last time I tested UBIFS, LZO
-decompression was about 3 times faster than zlib on OMAP3. This depends
-on architecture, etc of course. This may matter a lot if one is fighting
-for faster system boot-up. So you might consider supporting LZO as well.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+	Arnd <><
