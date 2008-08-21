@@ -1,20 +1,23 @@
-Received: from smtp1.stealer.net ([88.198.224.204])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KWBaQ-0002I6-7Q
-	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 14:56:30 +0000
-Date: Thu, 21 Aug 2008 16:53:04 +0200 (CEST)
-From: Sven Wegener <sven.wegener@stealer.net>
-To: Jared Hulbert <jaredeh@gmail.com>
-Subject: Re: [PATCH 10/10] AXFS: axfs_uncompress.c
-In-Reply-To: <6934efce0808210737w16b5f8dcr1657ea46099e4901@mail.gmail.com>
-Message-ID: <alpine.LNX.1.10.0808211647500.12259@titan.stealer.net>
-References: <48AD0126.1050609@gmail.com>
-	<alpine.LNX.1.10.0808211028150.12259@titan.stealer.net>
-	<6934efce0808210737w16b5f8dcr1657ea46099e4901@mail.gmail.com>
+Received: from wx-out-0506.google.com ([66.249.82.226])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KWBkR-0001N3-6k
+	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 15:06:51 +0000
+Received: by wx-out-0506.google.com with SMTP id h28so17583wxd.24
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 21 Aug 2008 08:06:50 -0700 (PDT)
+Message-ID: <6934efce0808210806r701f2e3bo677d2bd2da78faec@mail.gmail.com>
+Date: Thu, 21 Aug 2008 08:06:50 -0700
+From: "Jared Hulbert" <jaredeh@gmail.com>
+To: "Arnd Bergmann" <arnd@arndb.de>
+Subject: Re: [PATCH 04/10] AXFS: axfs_inode.c
+In-Reply-To: <200808211417.14425.arnd@arndb.de>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <48AD00F0.5030403@gmail.com> <200808211417.14425.arnd@arndb.de>
 Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
-	=?ISO-8859-15?Q?J=F6rn_Engel?= <joern@logfs.org>,
+	=?UTF-8?Q?J=C3=B6rn_Engel?= <joern@logfs.org>,
 	Linux-kernel@vger.kernel.org,
 	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,23 +29,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 21 Aug 2008, Jared Hulbert wrote:
+> Have you seen any benefit of the rwsem over a simple mutex? I would guess
+> that you can never even get into the situation where you get concurrent
+> readers since I haven't found a single down_read() in your code, only
+> downgrade_write()
 
-> > Use DEFINE_MUTEX and drop the mutex_init() down in the init function.
-> 
-> okay.  by drop you mean delete?
-
-Yes.
-
-> > axfs_uncompress_init() and axfs_uncompress_exit() are only called during
-> > init and exit of the module, no need for the initialized variable and the
-> > functions can be annotated with __init and __exit.
-> 
-> can be annotated or should be?
-
-Should be. We only need them once during init and cleanup. If you want to 
-call axfs_uncompress_exit() from init_axfs_fs() to clean up in case of 
-register_filesystem failing, you can't annotate axfs_uncompress_exit() 
-with __exit.
-
-Sven
+We implemented a rwsem here because you can get concurrent readers.
+My understanding is that downgrade_write() puts the rewem into the
+same state as down_read().  Am I mistaken?
