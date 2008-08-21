@@ -1,35 +1,20 @@
-Received: from mtagate8.de.ibm.com ([195.212.29.157])
+Received: from www.tglx.de ([62.245.132.106])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KW5eq-0003BE-U6
-	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 08:36:41 +0000
-Received: from d12nrmr1607.megacenter.de.ibm.com
-	(d12nrmr1607.megacenter.de.ibm.com [9.149.167.49])
-	by mtagate8.de.ibm.com (8.13.8/8.13.8) with ESMTP id m7L8ZjHs294054
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2008 08:35:45 GMT
-Received: from d12av03.megacenter.de.ibm.com (d12av03.megacenter.de.ibm.com
-	[9.149.165.213])
-	by d12nrmr1607.megacenter.de.ibm.com (8.13.8/8.13.8/NCO v9.0) with
-	ESMTP id m7L8Ziqf3149872
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2008 10:35:44 +0200
-Received: from d12av03.megacenter.de.ibm.com (loopback [127.0.0.1])
-	by d12av03.megacenter.de.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
-	id m7L8Zi5p023697
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2008 10:35:44 +0200
-Message-ID: <48AD28DD.6090109@de.ibm.com>
-Date: Thu, 21 Aug 2008 10:35:41 +0200
-From: Carsten Otte <cotte@de.ibm.com>
-MIME-Version: 1.0
-To: jaredeh@gmail.com
-Subject: Re: [PATCH 04/10] AXFS: axfs_inode.c
-References: <48AD00F0.5030403@gmail.com>
-In-Reply-To: <48AD00F0.5030403@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: nickpiggin@yahoo.com.au, linux-embedded@vger.kernel.org,
-	=?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>,
-	Linux-kernel@vger.kernel.org,
-	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@AM.SONY.COM
-Reply-To: carsteno@de.ibm.com
+	id 1KW5fs-0005O0-9j
+	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 08:37:44 +0000
+Date: Thu, 21 Aug 2008 10:28:05 +0200
+From: Sebastian Siewior <sebastian@breakpoint.cc>
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [RFC] mtd: add OF2PDEV convertor for the NDFC driver
+Message-ID: <20080821082805.GA8013@www.tglx.de>
+References: <20080820205958.GA13371@www.tglx.de>
+	<200808210040.58809.arnd@arndb.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <200808210040.58809.arnd@arndb.de>
+Cc: linuxppc-dev@ozlabs.org, tglx@linutronix.de, linux-mtd@lists.infradead.org,
+	Sean MacLennan <smaclennan@pikatech.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,155 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jared Hulbert wrote:
-> +/***************** functions in other axfs files ******************************/
-> +int axfs_get_sb(struct file_system_type *, int, const char *, void *,
-> +		struct vfsmount *);
-This is neither implemented nor used in axfs_inode.c - why define it here?
+* Arnd Bergmann | 2008-08-21 00:40:58 [+0200]:
 
-> +void axfs_kill_super(struct super_block *);
-Same for this one.
+>On Wednesday 20 August 2008, Sebastian Siewior wrote:
+>> I didn't convert the NDFC driver to support OF because there are
+>> non-OF-aware platforms with the ndfc chip.
+>> All settings are mandatory except the oob layout.
+>
+>Are you aware of Sean's patch from
+>http://patchwork.ozlabs.org/linuxppc/patch?id=20183 ?
 
+Yes, I heard of it. tglx told me that the IP-Core might show up in
+non-IBM HW and it would be better not to drop the platform support.
 
-> +void axfs_profiling_add(struct axfs_super *, unsigned long, unsigned int);
-> +int axfs_copy_mtd(struct super_block *, void *, u64, u64);
-> +int axfs_copy_block(struct super_block *, void *, u64, u64);
-These are used, but not implemented here. Please consider putting them 
-in a header file
-
-
-> +static int axfs_copy_data(struct super_block *sb, void *dst,
-> +			  struct axfs_region_desc *region, u64 offset, u64 len)
-> +{
-> +	u64 mmapped = 0;
-> +	u64 end = region->fsoffset + offset + len;
-> +	u64 begin = region->fsoffset + offset;
-> +	u64 left;
-> +	void *addr;
-> +	void *newdst;
-> +	struct axfs_super *sbi = AXFS_SB(sb);
-> +
-> +	if (len == 0)
-> +		return 0;
-> +
-> +	if (region->virt_addr) {
-> +		if (sbi->mmap_size >= end) {
-> +			mmapped = len;
-> +		} else if (sbi->mmap_size > begin) {
-> +			mmapped = sbi->mmap_size - begin;
-> +		}
-> +	}
-You can save braces and make the code more readable here:
-=> if (sbi->mmap_size >= end)
-	mmapped = len;
-    else if (sbi->mmap_size > begin)
-	mmapped = si->mmap_size - begin;
-
-
-> +struct inode *axfs_create_vfs_inode(struct super_block *sb, int ino)
-> +{
-> +	struct axfs_super *sbi = AXFS_SB(sb);
-> +	struct inode *inode;
-> +	u64 size;
-[SNIP]
-> +	size = AXFS_GET_INODE_FILE_SIZE(sbi, ino);
-> +	inode->i_size = size;
-The variable size is not needed. Do
-	inode->i_size = AXFS_GET_INODE_FILE_SIZE(sbi, ino);
-
-
-> +static struct dentry *axfs_lookup(struct inode *dir, struct dentry *dentry,
-> +				  struct nameidata *nd)
-> +{
-> +	struct super_block *sb = dir->i_sb;
-> +	struct axfs_super *sbi = AXFS_SB(sb);
-> +	u64 ino_number = dir->i_ino;
-> +	u64 dir_index = 0;
-> +	u64 entry;
-> +	char *name;
-> +	int namelen, err;
-> +
-> +	while (dir_index < AXFS_GET_INODE_NUM_ENTRIES(sbi, ino_number)) {
-> +		entry = AXFS_GET_INODE_ARRAY_INDEX(sbi, ino_number);
-> +		entry += dir_index;
-> +
-> +		name = AXFS_GET_INODE_NAME(sbi, entry);
-> +		namelen = strlen(name);
-> +
-> +		/* fast test, the entries are sorted alphabetically and the
-> +		 * first letter is smaller than the first letter in the search
-> +		 * name then it isn't in this directory.  Keeps this loop from
-> +		 * needing to scan through always.
-> +		 */
-> +		if (dentry->d_name.name[0] < name[0])
-> +			break;
-> +
-> +		dir_index++;
-> +
-> +		/* Quick check that the name is roughly the right length */
-> +		if (dentry->d_name.len != namelen)
-> +			continue;
-> +
-> +		err = memcmp(dentry->d_name.name, name, namelen);
-> +		if (err > 0)
-> +			continue;
-> +
-> +		/* The file name isn't present in the directory. */
-> +		if (err < 0)
-> +			break;
-Very ingenious way to compare strings. strncmp also stops after the 
-first character if it does'nt fit. I doubt this has a measurable 
-performance advantage over using strncmp, please consider to replace 
-this logic to make the code smaller and more readable. See lib/string.c.
-
-> +static int axfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
-> +{
-> +	struct inode *inode = filp->f_dentry->d_inode;
-> +	struct super_block *sb = inode->i_sb;
-> +	struct axfs_super *sbi = AXFS_SB(sb);
-> +	u64 ino_number = inode->i_ino;
-> +	u64 entry;
-> +	loff_t dir_index;
-> +	char *name;
-> +	int namelen, mode;
-> +	int err = 0;
-> +
-> +	/* Get the current index into the directory and verify it is not beyond
-> +	   the end of the list */
-> +	dir_index = filp->f_pos;
-> +	if (dir_index >= AXFS_GET_INODE_NUM_ENTRIES(sbi, ino_number))
-> +		goto out;
-> +
-> +	/* Verify the inode is for a directory */
-> +	if (!(S_ISDIR(inode->i_mode))) {
-> +		err = -EINVAL;
-> +		goto out;
-> +	}
-Well, -ENOTDIR would be the correct return code. You can remove that 
-sanity check alltogether, vfs_readdir makes sure this is the right 
-file type. If you really want to check, make it 
-BUG_ON(!S_ISDIR(inode->i_mode));
-
-> +static int axfs_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
-> +{
-> +	struct file *file = vma->vm_file;
-> +	struct inode *inode = file->f_dentry->d_inode;
-> +	struct super_block *sb = inode->i_sb;
-> +	struct axfs_super *sbi = AXFS_SB(sb);
-> +	u64 ino_number = inode->i_ino;
-> +	u64 array_index;
-> +
-> +	array_index = AXFS_GET_INODE_ARRAY_INDEX(sbi, ino_number) + vmf->pgoff;
-> +
-> +	/* if that pages are marked for write they will probably end up in RAM
-> +	   therefore we don't want their counts for being XIP'd */
-> +	if (!(vma->vm_flags & VM_WRITE))
-> +		axfs_profiling_add(sbi, array_index, ino_number);
-Thats very inacurate profiling, it does never count MAP_PRIVATE 
-mappings which is the regular case for executables and libraries. When 
-booting an enterprise distro, my sniff test shows that only about 5% 
-of the MAP_PRIVATE mappings get COW'ed. To get correct statistics, it 
-might be a good idea to find a way to add here and substract during 
-cow. Or to scan these mappings when the profiling information is being 
-retrieved - the readonly bit in the pte gives the right indication for 
-MIXEDMAP mappings.
+>	Arnd <><
+Sebastian
