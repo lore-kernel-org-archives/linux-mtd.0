@@ -1,21 +1,22 @@
 Received: from smtp1.stealer.net ([88.198.224.204])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KWBa1-0001VB-Ac
-	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 14:56:06 +0000
-Date: Thu, 21 Aug 2008 16:54:44 +0200 (CEST)
+	id 1KWBaQ-0002I6-7Q
+	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 14:56:30 +0000
+Date: Thu, 21 Aug 2008 16:53:04 +0200 (CEST)
 From: Sven Wegener <sven.wegener@stealer.net>
 To: Jared Hulbert <jaredeh@gmail.com>
-Subject: Re: [PATCH 06/10] AXFS: axfs_super.c
-In-Reply-To: <alpine.LNX.1.10.0808211325530.12259@titan.stealer.net>
-Message-ID: <alpine.LNX.1.10.0808211653501.12259@titan.stealer.net>
-References: <48AD0101.4020505@gmail.com>
-	<alpine.LNX.1.10.0808211325530.12259@titan.stealer.net>
+Subject: Re: [PATCH 10/10] AXFS: axfs_uncompress.c
+In-Reply-To: <6934efce0808210737w16b5f8dcr1657ea46099e4901@mail.gmail.com>
+Message-ID: <alpine.LNX.1.10.0808211647500.12259@titan.stealer.net>
+References: <48AD0126.1050609@gmail.com>
+	<alpine.LNX.1.10.0808211028150.12259@titan.stealer.net>
+	<6934efce0808210737w16b5f8dcr1657ea46099e4901@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
 	=?ISO-8859-15?Q?J=F6rn_Engel?= <joern@logfs.org>,
 	Linux-kernel@vger.kernel.org,
-	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@AM.SONY.COM
+	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +26,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 21 Aug 2008, Sven Wegener wrote:
+On Thu, 21 Aug 2008, Jared Hulbert wrote:
 
-> On Wed, 20 Aug 2008, Jared Hulbert wrote:
+> > Use DEFINE_MUTEX and drop the mutex_init() down in the init function.
 > 
-> > The many different devices AXFS can mount to and the various
-> > dual device mounting schemes are supported here.
-> > 
-> > Signed-off-by: Jared Hulbert <jaredeh@gmail.com>
-> > ---
-> > +static int __init init_axfs_fs(void)
-> > +{
-> > +	axfs_uncompress_init();
-> 
-> one more thing, axfs_uncompress_init() can fail
-> 
-> > +	return register_filesystem(&axfs_fs_type);
+> okay.  by drop you mean delete?
 
-And if this fails you leak the memory allocated in axfs_uncompress_init()
+Yes.
 
-> > +}
-> > +
-> > +static void __exit exit_axfs_fs(void)
-> > +{
-> > +	axfs_uncompress_exit();
-> > +	unregister_filesystem(&axfs_fs_type);
-> > +}
-> > +
-> > +module_init(init_axfs_fs);
-> > +module_exit(exit_axfs_fs);
-> > +MODULE_LICENSE("GPL");
+> > axfs_uncompress_init() and axfs_uncompress_exit() are only called during
+> > init and exit of the module, no need for the initialized variable and the
+> > functions can be annotated with __init and __exit.
+> 
+> can be annotated or should be?
+
+Should be. We only need them once during init and cleanup. If you want to 
+call axfs_uncompress_exit() from init_axfs_fs() to clean up in case of 
+register_filesystem failing, you can't annotate axfs_uncompress_exit() 
+with __exit.
+
+Sven
