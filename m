@@ -1,21 +1,19 @@
-Received: from djurbala-pt.tunnel.tserv2.fmt.ipv6.he.net
-	([2001:470:1f01:ffff::eb] helo=gate.crashing.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KWGpN-0006TP-IV
-	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 20:32:18 +0000
-Message-Id: <985DF0C9-8615-439A-8DBB-06FAB53CE68F@kernel.crashing.org>
-From: Kumar Gala <galak@kernel.crashing.org>
-To: Jeremy Kerr <jk@ozlabs.org>
-In-Reply-To: <200808211822.27786.jk@ozlabs.org>
-Content-Type: text/plain; charset=US-ASCII; format=flowed; delsp=yes
+Received: from yx-out-1718.google.com ([74.125.44.158])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KWIK0-00042d-EJ
+	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 22:08:00 +0000
+Received: by yx-out-1718.google.com with SMTP id 3so114471yxi.72
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 21 Aug 2008 15:07:59 -0700 (PDT)
+Message-ID: <3d9141e80808211507r3079199cx93f8115664f02f49@mail.gmail.com>
+Date: Fri, 22 Aug 2008 00:07:58 +0200
+From: "Per Andersson" <avtobiff@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [RFC] Add support for MTD in parted/partman
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0 (Apple Message framework v926)
-Subject: Re: New Patchwork beta
-Date: Thu, 21 Aug 2008 15:32:09 -0500
-References: <200808211822.27786.jk@ozlabs.org>
-Cc: linuxppc-dev@ozlabs.org, bazaar-ng@lists.canonical.com,
-	linux-mtd@lists.infradead.org, cbe-oss-dev@ozlabs.org,
-	linuxppc-embedded@ozlabs.org
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,15 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some feedback:
+Dear linux-mtd,
 
-* Can we increase the font size a bit?
-* For the list of patches can we change the background of every other  
-line (light gray)
-* Parsing subject header for determining state -- "[RFC]"
+I have just finished my Google Summer of Code project
+called Debian NAS. Read more about the project in
+[0] and [1].
 
-w/o being able to log in that's my initial two cents.
+Currently parted, and partman, cannot partition MTD flash.
+I would like to introduce this functionality.
 
-Both otherwise it looks good and seem much faster than the old version.
+I got confused by code found in the setup of the Kurobox
+Pro in the kernel, the "partitions" on flash were hard coded
+into the source.
 
-- k
+So, I wonder, what is the way to go with adding support for
+partitioning MTD flash? (I have read the JFFS2 article and
+skimmed the UBI and UBIFS articles.)
+
+
+Best regards,
+Per
+
+[0] http://oshw.org/usr/avtobiff/gsoc/08/debiannas
+[1] http://oshw.org/avtoblag/
