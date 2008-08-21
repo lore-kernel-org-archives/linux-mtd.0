@@ -1,26 +1,21 @@
-Received: from mail-gx0-f12.google.com ([209.85.217.12])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KWJ1h-0000vq-JK
-	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 22:53:10 +0000
-Received: by gxk5 with SMTP id 5so750026gxk.18
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Aug 2008 15:53:08 -0700 (PDT)
-Subject: Re: New Patchwork beta
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: Kumar Gala <galak@kernel.crashing.org>
-In-Reply-To: <985DF0C9-8615-439A-8DBB-06FAB53CE68F@kernel.crashing.org>
-References: <200808211822.27786.jk@ozlabs.org>
-	<985DF0C9-8615-439A-8DBB-06FAB53CE68F@kernel.crashing.org>
-Content-Type: text/plain
-Date: Thu, 21 Aug 2008 18:52:42 -0400
-Message-Id: <1219359163.26429.62.camel@jdub.homelinux.org>
-Mime-Version: 1.0
+Received: from rex.securecomputing.com ([203.24.151.4] helo=cyberguard.com.au)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KWJuA-0007gn-3w
+	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 23:49:26 +0000
+Message-ID: <48ADFE65.1050007@snapgear.com>
+Date: Fri, 22 Aug 2008 09:46:45 +1000
+From: Greg Ungerer <gerg@snapgear.com>
+MIME-Version: 1.0
+To: Jamie Lokier <jamie@shareable.org>
+Subject: Re: [PATCH 00/10] AXFS: Advanced XIP filesystem
+References: <48AD00C4.6060302@gmail.com> <20080821110749.GA1926@shareable.org>
+In-Reply-To: <20080821110749.GA1926@shareable.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Sender: Josh Boyer <jwboyer@gmail.com>
-Cc: bazaar-ng@lists.canonical.com, linuxppc-dev@ozlabs.org,
-	linux-mtd@lists.infradead.org, Jeremy Kerr <jk@ozlabs.org>,
-	linuxppc-embedded@ozlabs.org, cbe-oss-dev@ozlabs.org
-Reply-To: jwboyer@linux.vnet.ibm.com
+Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
+	=?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>,
+	Linux-kernel@vger.kernel.org,
+	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@AM.SONY.COM
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,21 +25,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2008-08-21 at 15:32 -0500, Kumar Gala wrote:
-> Some feedback:
+
+Jamie Lokier wrote:
+> Jared Hulbert wrote:
+>> The biggest improvement is in the way AXFS allows for each page to be XIP or
+>> not.  First, a user collects information about which pages are accessed on a
+>> compressed image for each mmap()ed region from /proc/axfs/volume0.  That
+>> 'profile' is used as an input to the image builder.  The resulting image has
+>> only the relevant pages uncompressed and XIP.  The result is smaller memory
+>> sizes and faster launches.
 > 
-> * Can we increase the font size a bit?
+> Sounds great, really nice idea.
+> 
+> How does it fare with no MMU?  Can the profiler and image builder lay
+> out the XIP pages in such a way that no-MMU mmaps can map those regions?
 
-NOO.  Just use CTRL-SHIFT-+.
+The key for XIP on noMMU would be the ability to store a
+file as one complete contiguous chunk. Can AXFS do this?
 
-> * For the list of patches can we change the background of every other  
-> line (light gray)
+Regards
+Greg
 
-That would work well.
 
-> * Parsing subject header for determining state -- "[RFC]"
 
-That is going to fail miserably because people tend to do silly things
-like post final patches in the middle of an [RFC] thread.
-
-josh
+------------------------------------------------------------------------
+Greg Ungerer  --  Chief Software Dude       EMAIL:     gerg@snapgear.com
+Secure Computing Corporation                PHONE:       +61 7 3435 2888
+825 Stanley St,                             FAX:         +61 7 3891 3630
+Woolloongabba, QLD, 4102, Australia         WEB: http://www.SnapGear.com
