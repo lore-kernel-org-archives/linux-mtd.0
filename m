@@ -1,21 +1,23 @@
-Received: from mail2.shareable.org ([80.68.89.115])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KW81E-0004wH-SN
-	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 11:07:57 +0000
-Date: Thu, 21 Aug 2008 12:07:50 +0100
-From: Jamie Lokier <jamie@shareable.org>
-To: Jared Hulbert <jaredeh@gmail.com>
-Subject: Re: [PATCH 00/10] AXFS: Advanced XIP filesystem
-Message-ID: <20080821110749.GA1926@shareable.org>
-References: <48AD00C4.6060302@gmail.com>
+Received: from moutng.kundenserver.de ([212.227.126.188])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KW8Iv-0008UW-GC
+	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 11:26:14 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: jaredeh@gmail.com
+Subject: Re: [PATCH 02/10] AXFS: Kconfig and Makefiles
+Date: Thu, 21 Aug 2008 13:24:22 +0200
+References: <48AD00DF.9080207@gmail.com>
+In-Reply-To: <48AD00DF.9080207@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <48AD00C4.6060302@gmail.com>
+Message-Id: <200808211324.22989.arnd@arndb.de>
 Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
-	=?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
+	=?iso-8859-1?q?J=F6rn_Engel?= <joern@logfs.org>,
 	Linux-kernel@vger.kernel.org,
-	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@AM.SONY.COM
+	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,19 +27,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jared Hulbert wrote:
-> The biggest improvement is in the way AXFS allows for each page to be XIP or
-> not.  First, a user collects information about which pages are accessed on a
-> compressed image for each mmap()ed region from /proc/axfs/volume0.  That
-> 'profile' is used as an input to the image builder.  The resulting image has
-> only the relevant pages uncompressed and XIP.  The result is smaller memory
-> sizes and faster launches.
+On Thursday 21 August 2008, Jared Hulbert wrote:
+> The Kconfig edits and Makefiles required for AXFS.
+> 
+> Signed-off-by: Jared Hulbert <jaredeh@gmail.com>
 
-Sounds great, really nice idea.
+If you split out this patch separate from the files, please make it the
+*last* patch so that you cannot get build errors during a later git-bisect
+through the middle of your series.
 
-How does it fare with no MMU?  Can the profiler and image builder lay
-out the XIP pages in such a way that no-MMU mmaps can map those regions?
-
-No complaint if not, it would be a nice bonus though.
-
--- Jamie
+	Arnd <><
