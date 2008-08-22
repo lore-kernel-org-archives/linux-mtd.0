@@ -1,26 +1,25 @@
-Received: from rv-out-0708.google.com ([209.85.198.240])
+Received: from vervifontaine.sonytel.be ([80.88.33.193]
+	helo=vervifontaine.sonycom.com)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KXV16-0001Hr-EQ
-	for linux-mtd@lists.infradead.org; Mon, 25 Aug 2008 05:53:29 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so1349866rvf.42
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 24 Aug 2008 22:53:27 -0700 (PDT)
-Message-ID: <1516faed0808242253v653c83bdpaf68c92205651cae@mail.gmail.com>
-Date: Mon, 25 Aug 2008 13:53:26 +0800
-From: "Hong Xu" <hongxu.cn@gmail.com>
-To: "Marc Pignat" <marc.pignat@hevs.ch>
-Subject: Re: [PATCH] [NAND] This patch add support for HW ECC (HSIAO code) on
-	AT91SAM9G20.
-In-Reply-To: <200808221147.03690.marc.pignat@hevs.ch>
+	id 1KWVNF-0007Yp-OB
+	for linux-mtd@lists.infradead.org; Fri, 22 Aug 2008 12:04:14 +0000
+Date: Fri, 22 Aug 2008 14:04:12 +0200 (CEST)
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Sender: geert@sonytel.be
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 03/10] AXFS: axfs.h
+In-Reply-To: <200808221327.37371.arnd@arndb.de>
+Message-ID: <Pine.LNX.4.64.0808221402170.17105@vixen.sonytel.be>
+References: <48AD00E6.2070505@gmail.com> <200808211424.31966.arnd@arndb.de>
+	<6934efce0808211540p237f2c52pd71c2b955b3f54a8@mail.gmail.com>
+	<200808221327.37371.arnd@arndb.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <1516faed0808211959w793d22a0xeea14cf1096012be@mail.gmail.com>
-	<200808221147.03690.marc.pignat@hevs.ch>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-arm-kernel@lists.arm.linux.org.uk, linux@maxim.org.za,
-	linux@arm.linux.org.uk
+Content-Type: MULTIPART/MIXED;
+	BOUNDARY="-584349381-947473005-1219406652=:17105"
+Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
+	=?utf-8?q?J=C3=B6rn?= Engel <joern@logfs.org>,
+	Linux-kernel@vger.kernel.org,
+	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,88 +29,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marc,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-On Fri, Aug 22, 2008 at 17:47, Marc Pignat <marc.pignat@hevs.ch> wrote:
-> Hi all!
->
-> On Friday 22 August 2008, Hong Xu wrote:
->> >From ce6b68cf009a94ab12a31d7f007003173b6cad2c Mon Sep 17 00:00:00 2001
->> From: Hong Xu <hong.xu@atmel.com>
->> Date: Fri, 22 Aug 2008 10:29:10 +0800
->> Subject: [PATCH] This patch add support for HW ECC on AT91SAM9G20.
->>
->> AT91SAM9G20 ECC controller is capable of 1-bits error correction
->> and 2-bit random detection for every 256 bytes of data. And this
->> patch chooses a working mode which can be compatible with software
->> ECC.
->
-> ...
->
->>
->> +#ifdef CONFIG_MTD_NAND_ATMEL_ECC_HW_HSIAO
->> +static struct nand_ecclayout nand_oob_16 = {
->> +     .eccbytes = 6,
->> +     .eccpos = {0, 1, 2, 3, 6, 7},
->> +     .oobfree = {
->> +             {.offset = 8,
->> +              . length = 8} }
->> +};
->
-> static const?
+---584349381-947473005-1219406652=:17105
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-To be strictly speaking, it's a static const. :-)
+On Fri, 22 Aug 2008, Arnd Bergmann wrote:
+> On Friday 22 August 2008, Jared Hulbert wrote:
+> > If I have an array of u64 numbers tracking small numbers (a[0] = 1;
+> > a[1] = 2;) just throwing that onmedia is a big waste.
+> > (0x0000000000000001; 0x0000000000000002)  Having different array types
+> > for different images such as arrays of u8,u16,u32,u64 becomes less
+> > efficient for 3,5,6 and 7 byte numbers, 3 bytes was a particularly
+> > interesting size for me.
+> > 
+> > All I'm doing is removing the totally unnecessary zeros and aligning by bytes.
+> > Take an array of u64 like this :
+> > 0x0000000000000005
+> > 0x0000000000001001
+> > 0x00000000000a0000
+> > 
+> > I strip off the unneeded leading zeros:
+> > 0x000005
+> > 0x001001
+> > 0x0a0000
+> > 
+> > Then pack them to byte alignment:
+> > 0x0000050010010a0000
+> > 
+> > Sure it could be encoded more but that would make it harder to extract
+> > the data.  This way I can read the data in one, maybe two, cache
+> > misses.  A couple of shifts to deal with the alignment and endianness
+> > and we are done.
+> 
+> So do I understand right that 3 bytes is your minimum size, and going
+> smaller than that would not be helpful? Otherwise I would assume that
+> storing a '5' should only take one byte instead of three.
 
->
->> +
->> +static struct nand_ecclayout nand_oob_64 = {
->> +     .eccbytes = 24,
->> +     .eccpos = {
->> +                40, 41, 42, 43, 44, 45, 46, 47,
->> +                48, 49, 50, 51, 52, 53, 54, 55,
->> +                56, 57, 58, 59, 60, 61, 62, 63 },
->> +     .oobfree = {
->> +             {.offset = 2,
->> +              .length = 38} }
->> +};
->> +> ...
->
->> diff --git a/drivers/mtd/nand/atmel_nand_ecc.h
->> b/drivers/mtd/nand/atmel_nand_ecc.h
->> index 1ee7f99..41e072e 100644
->> --- a/drivers/mtd/nand/atmel_nand_ecc.h
->> +++ b/drivers/mtd/nand/atmel_nand_ecc.h
->> @@ -26,6 +26,30 @@
->>  #define              ATMEL_ECC_ECCERR                (1 << 1)                /* ECC Single Bit Error */
->>  #define              ATMEL_ECC_MULERR                (1 << 2)                /* Multiple Errors */
->>
->> +#ifdef CONFIG_MTD_NAND_ATMEL_ECC_HW_HSIAO
->> +
->> +#define ATMEL_ECC_PER_256    (1 << 4)
->> +
->> +#define ATMEL_ECC_PR10               0x38
->> +#define ATMEL_ECC_PR11               0x3c
->> +#define ATMEL_ECC_PR12               0x40
->> +#define ATMEL_ECC_PR13               0x44
->> +#define ATMEL_ECC_PR14               0x48
->> +#define ATMEL_ECC_PR15               0x4c
->> +
->> +#else
->> +
->>  #define ATMEL_ECC_PR         0x0c                    /* Parity register */
->
-> Never used, perhaps a future use?
+>From the paper, the minimum size (called `depth') is 1.
 
-No, it's used. For some AVR chips and At91SAM926x chips, 2 bytes of 4
-ECC parity data are read from it.
+> I don't unsterstand yet why you store the length of each word separate
+> from the word. Most variable-length codes store that implicitly in
+> the data itself, e.g. in the upper three bits, so that for storing
+> 0x5, 0x1001, 0xa0000, this could e.g. end up as 0x054010014a0000,
+> which is shorter than what you have, but not harder to decode.
 
->
-> ...
->>  #endif
->
-> Best regards
->
-> Marc
->
->
->
+AFAIU, the length (`depth') of each word is not stored separate, as the
+depth is the same for all values in the same table.
+
+With kind regards,
+
+Geert Uytterhoeven
+Software Architect
+
+Sony Techsoft Centre Europe
+The Corporate Village · Da Vincilaan 7-D1 · B-1935 Zaventem · Belgium
+
+Phone:    +32 (0)2 700 8453
+Fax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 · RPR Brussels
+Fortis · BIC GEBABEBB · IBAN BE41293037680010
+---584349381-947473005-1219406652=:17105--
