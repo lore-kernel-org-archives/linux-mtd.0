@@ -1,22 +1,18 @@
-Received: from anchor-post-37.mail.demon.net ([194.217.242.87])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KWNbk-0005ZM-Dy
-	for linux-mtd@lists.infradead.org; Fri, 22 Aug 2008 03:46:40 +0000
-Message-ID: <48AE36A7.4060000@lougher.demon.co.uk>
-Date: Fri, 22 Aug 2008 04:46:47 +0100
-From: Phillip Lougher <phillip@lougher.demon.co.uk>
+From: "Singh, Vimal" <vimalsingh@ti.com>
+To: Frans Meulenbroeks <fransmeulenbroeks@gmail.com>
+Date: Fri, 22 Aug 2008 11:09:13 +0530
+Subject: RE: [PATCH] [MTD] [NAND] nand_ecc.c: adding support for 512 byte ecc
+Message-ID: <19F8576C6E063C45BE387C64729E739403CD517C1B@dbde02.ent.ti.com>
+References: <19F8576C6E063C45BE387C64729E739403CD517C16@dbde02.ent.ti.com>
+	<19F8576C6E063C45BE387C64729E739403CD517C1A@dbde02.ent.ti.com>,
+	<ac9c93b10808211139t69d3ce6euaac35368f1514931@mail.gmail.com>
+In-Reply-To: <ac9c93b10808211139t69d3ce6euaac35368f1514931@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: Jared Hulbert <jaredeh@gmail.com>
-Subject: Re: [PATCH 04/10] AXFS: axfs_inode.c
-References: <48AD00F0.5030403@gmail.com> <48AE0697.5040706@lougher.demon.co.uk>
-	<6934efce0808212027q412c4cbbp6ea8673a7d3bc1b9@mail.gmail.com>
-In-Reply-To: <6934efce0808212027q412c4cbbp6ea8673a7d3bc1b9@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
-	=?UTF-8?B?SsO2cm4gRW5nZWw=?= <joern@logfs.org>,
-	Linux-kernel@vger.kernel.org,
-	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
+Cc: Woodhouse <dwmw2@infradead.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, David
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +22,171 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jared Hulbert wrote:
->> I assume compressed blocks can be larger than PAGE_CACHE_SIZE?  This suffers
->> from the rather obvious inefficiency that you decompress a big block >
->> PAGE_CACHE_SIZE, but only copy one PAGE_CACHE_SIZE page out of it.  If
->> multiple files are being read simultaneously (a common occurrence), then
->> each is going to replace your one cached uncompressed block
->> (sbi->current_cnode_index), leading to decompressing the same blocks over
->> and over again on sequential file access.
->>
->> readpage file A, index 1 -> decompress block X
->> readpage file B, index 1 -> decompress block Y (replaces X)
->> readpage file A, index 2 -> repeated decompress of block X (replaces Y)
->> readpage file B, index 2 -> repeated decompress of block Y (replaces X)
->>
->> and so on.
-> 
-> Yep.  Been thinking about optimizing it.  So far it hasn't been an
-> issue for my customers.  Most fs traffic being on the XIP pages.  Once
-> I get a good automated performance test up we'll probably look into
-> something to improve this.
+Hi Frans,
 
-It's relatively easy to solve.  Squashfs explicitly pushes the extra 
-pages into the pagecache (so subsequent readpages find them there and 
-don't call readpage on squashfs again).
+>I tried to apply your patch, but only hunk 1 succeeded with fuzz 2.
+>Guess this is because shortly after submitting my patch another patch
+>has been applied to it.
+>Could you verify against the latest version in git and resubmit the patch.
 
-Phillip
+I have prepared the patch once again on top of latest version in git.
+Hopefully it should apply properly.
+
+Regards,
+vimal
+
+Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+
+-----
+ nand_ecc.c |   62 ++++++++++++++++++++++++++++++++++++++++++++++++--------=
+-----
+ 1 files changed, 49 insertions(+), 13 deletions(-)
+--- a/drivers/mtd/nand/nand_ecc.c       2008-08-22 10:41:53.000000000 +0530
++++ b/drivers/mtd/nand/nand_ecc.c       2008-08-22 10:47:40.000000000 +0530
+@@ -42,6 +42,8 @@
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/nand.h>
+ #include <linux/mtd/nand_ecc.h>
+ #else
+ #include <stdint.h>
+@@ -154,10 +156,12 @@ int nand_calculate_ecc(struct mtd_info *
+ {
+        int i;
+        const uint32_t *bp =3D (uint32_t *)buf;
++       /* 256 or 512 bytes/ecc  */
++       uint32_t j =3D(((struct nand_chip *)mtd->priv)->ecc.size) >> 8;
+        uint32_t cur;           /* current value in buffer */
+-       /* rp0..rp15 are the various accumulated parities (per byte) */
++       /* rp0..rp15..rp17 are the various accumulated parities (per byte) =
+*/
+        uint32_t rp0, rp1, rp2, rp3, rp4, rp5, rp6, rp7;
+-       uint32_t rp8, rp9, rp10, rp11, rp12, rp13, rp14, rp15;
++       uint32_t rp8, rp9, rp10, rp11, rp12, rp13, rp14, rp15, rp16, rp17;
+        uint32_t par;           /* the cumulative parity for all data */
+        uint32_t tmppar;        /* the cumulative parity for this iteration=
+;
+                                   for rp12 and rp14 at the end of the loop=
+ */
+@@ -169,6 +173,8 @@ int nand_calculate_ecc(struct mtd_info *
+        rp10 =3D 0;
+        rp12 =3D 0;
+        rp14 =3D 0;
++       rp16 =3D 0;
++       rp17 =3D 0; /* to make cmpiler happy */
+
+        /*
+         * The loop is unrolled a number of times;
+@@ -180,7 +186,7 @@ int nand_calculate_ecc(struct mtd_info *
+         * needed for calculating rp12, rp14 and par
+         * also used as a performance improvement for rp6, rp8 and rp10
+         */
+-       for (i =3D 0; i < 4; i++) {
++       for (i =3D 0; i < 4*j; i++) {
+                cur =3D *bp++;
+                tmppar =3D cur;
+                rp4 ^=3D cur;
+@@ -243,6 +249,8 @@ int nand_calculate_ecc(struct mtd_info *
+                        rp12 ^=3D tmppar;
+                if ((i & 0x2) =3D=3D 0)
+                        rp14 ^=3D tmppar;
++               if (j =3D=3D 2 && (i & 0x4) =3D=3D 0)
++                       rp16 ^=3D tmppar;
+        }
+
+        /*
+@@ -269,6 +277,11 @@ int nand_calculate_ecc(struct mtd_info *
+        rp14 ^=3D (rp14 >> 16);
+        rp14 ^=3D (rp14 >> 8);
+        rp14 &=3D 0xff;
++       if (j =3D=3D 2) {
++               rp16 ^=3D (rp16 >> 16);
++               rp16 ^=3D (rp16 >> 8);
++               rp16 &=3D 0xff;
++       }
+
+        /*
+         * we also need to calculate the row parity for rp0..rp3
+@@ -311,6 +324,8 @@ int nand_calculate_ecc(struct mtd_info *
+        rp11 =3D (par ^ rp10) & 0xff;
+        rp13 =3D (par ^ rp12) & 0xff;
+        rp15 =3D (par ^ rp14) & 0xff;
++       if (j =3D=3D 2)
++               rp17 =3D (par ^ rp16) & 0xff;
+
+        /*
+         * Finally calculate the ecc bits.
+@@ -357,14 +372,25 @@ int nand_calculate_ecc(struct mtd_info *
+            (invparity[rp9] << 1)  |
+            (invparity[rp8]);
+ #endif
+-       code[2] =3D
+-           (invparity[par & 0xf0] << 7) |
+-           (invparity[par & 0x0f] << 6) |
+-           (invparity[par & 0xcc] << 5) |
+-           (invparity[par & 0x33] << 4) |
+-           (invparity[par & 0xaa] << 3) |
+-           (invparity[par & 0x55] << 2) |
+-           3;
++       if (j =3D=3D 1)
++               code[2] =3D
++                   (invparity[par & 0xf0] << 7) |
++                   (invparity[par & 0x0f] << 6) |
++                   (invparity[par & 0xcc] << 5) |
++                   (invparity[par & 0x33] << 4) |
++                   (invparity[par & 0xaa] << 3) |
++                   (invparity[par & 0x55] << 2) |
++                   3;
++       else if (j =3D=3D 2)
++               code[2] =3D
++                   (invparity[par & 0xf0] << 7) |
++                   (invparity[par & 0x0f] << 6) |
++                   (invparity[par & 0xcc] << 5) |
++                   (invparity[par & 0x33] << 4) |
++                   (invparity[par & 0xaa] << 3) |
++                   (invparity[par & 0x55] << 2) |
++                   (invparity[rp17] << 1) |
++                   (invparity[rp16] << 0);
+        return 0;
+ }
+ EXPORT_SYMBOL(nand_calculate_ecc);
+@@ -384,6 +410,8 @@ int nand_correct_data(struct mtd_info *m
+        int nr_bits;
+        unsigned char b0, b1, b2;
+        unsigned char byte_addr, bit_addr;
++       /* 256 or 512 bytes/ecc  */
++       uint32_t j =3D (((struct nand_chip *)mtd->priv)->ecc.size) >> 8;
+
+        /*
+         * b0 to b2 indicate which bit is faulty (if any)
+@@ -408,7 +436,11 @@ int nand_correct_data(struct mtd_info *m
+        /* ordered in order of likelihood */
+        if (nr_bits =3D=3D 0)
+                return 0;       /* no error */
+-       if (nr_bits =3D=3D 11) {    /* correctable error */
++       if ((((b0 ^ (b0 >> 1)) & 0x55) =3D=3D 0x55) &&
++           (((b1 ^ (b1 >> 1)) & 0x55) =3D=3D 0x55) &&
++           ((j =3D=3D 1 && ((b2 ^ (b2 >> 1)) & 0x54) =3D=3D 0x54) ||
++            (j =3D=3D 2 && ((b2 ^ (b2 >> 1)) & 0x55) =3D=3D 0x55))) {
++       /* single bit error */
+                /*
+                 * rp15/13/11/9/7/5/3/1 indicate which byte is the faulty b=
+yte
+                 * cp 5/3/1 indicate the faulty bit.
+@@ -425,7 +457,11 @@ int nand_correct_data(struct mtd_info *m
+                 * We could also do addressbits[b2] >> 1 but for the
+                 * performace it does not make any difference
+                 */
+-               byte_addr =3D (addressbits[b1] << 4) + addressbits[b0];
++               if (j =3D=3D 1)
++                       byte_addr =3D (addressbits[b1] << 4) + addressbits[=
+b0];
++               else if (j =3D=3D 2)
++                       byte_addr =3D (addressbits[b2 & 0x3] << 8) +
++                                   (addressbits[b1] << 4) + addressbits[b0=
+];
+                bit_addr =3D addressbits[b2 >> 2];
+                /* flip the bit */
+                buf[byte_addr] ^=3D (1 << bit_addr);
