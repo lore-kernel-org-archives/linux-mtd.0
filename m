@@ -1,25 +1,17 @@
-Received: from rv-out-0708.google.com ([209.85.198.243])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KWeqf-0003vl-Kw
-	for linux-mtd@lists.infradead.org; Fri, 22 Aug 2008 22:11:14 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so579002rvf.42
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 22 Aug 2008 15:11:11 -0700 (PDT)
-Message-ID: <48AF3905.70304@gmail.com>
-Date: Fri, 22 Aug 2008 15:09:09 -0700
-From: Will Marone <wjmarone@gmail.com>
-MIME-Version: 1.0
-To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Subject: Re: [PATCH 00/10] AXFS: Advanced XIP filesystem
-References: <48AD00C4.6060302@gmail.com>
-	<Pine.LNX.4.64.0808221650500.17105@vixen.sonytel.be>
-In-Reply-To: <Pine.LNX.4.64.0808221650500.17105@vixen.sonytel.be>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Date: Fri, 22 Aug 2008 15:34:51 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Zev Weiss <zevweiss@gmail.com>
+Subject: Re: [PATCH] [MTD] mtdchar.c: Fix regression in MEMGETREGIONINFO
+	ioctl()
+Message-Id: <20080822153451.bb79bd1f.akpm@linux-foundation.org>
+In-Reply-To: <48ABCC0B.40607@gmail.com>
+References: <48ABCC0B.40607@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-embedded@vger.kernel.org,
-	=?UTF-8?B?SsO2cm4gRW5nZWw=?= <joern@logfs.org>,
-	Linux-kernel@vger.kernel.org,
-	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@AM.SONY.COM
+Cc: Rodolfo, David Woodhouse <dwmw2@infradead.org>,
+	Giometti <giometti@enneenne.com>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,39 +21,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Geert Uytterhoeven wrote:
-> I gave AxFS a try on PS3 (ppc64, always use big-endian 64-bit for testing new
-> code ;-).
-> When mounting the image, I got the crash below:
->
-> | attempt to access beyond end of device
-> | loop0: rw=0, want=4920, limit=4912
-> | Unable to handle kernel paging request for data at address 0x00000028
-> | Faulting instruction address: 0xd000000000037988
-> | Oops: Kernel access of bad area, sig: 11 [#1]
-> | SMP NR_CPUS=2 PS3
->
-> When mounting (also on PS3) an image created on ia32, I get a different crash:
->
-> | axfs: wrong magic
->   ^^^^^^^^^^^^^^^^^
-> | Unable to handle kernel paging request for data at address 0x000003a8
-> | Faulting instruction address: 0xd0000000000355f0
-> | Oops: Kernel access of bad area, sig: 11 [#1]
-> | SMP NR_CPUS=2 PS
-Geert,
+On Wed, 20 Aug 2008 00:47:23 -0700
+Zev Weiss <zevweiss@gmail.com> wrote:
 
-Thanks for giving it a spin, especially on a platform as different from 
-ours as the PS3.
+> From: Zev Weiss <zevweiss@gmail.com>
+> 
+> The MEMGETREGIONINFO ioctl() in mtdchar.c was clobbering user memory by
+> overwriting more than intended, due to the size of struct
+> mtd_erase_region_info changing in commit
+> 0ecbc81adfcb9f15f86b05ff576b342ce81bbef8.
+> 
+> Fix uses a member-by-member copy into a local struct region_info_user,
+> which is then copy_to_user()'d (and matches the size correctly by being
+> of the same type as the pointer passed in the ioctl() call).
+> 
+> Signed-off-by: Zev Weiss <zevweiss@gmail.com>
+> Tested-by: Zev Weiss <zevweiss@gmail.com>
+> ---
+> I had been having some problems with userspace memory corruption, and traced
+> them to a MEMGETREGIONINFO ioctl() on an MTD device.  I applied this patch and
+> it seems to fix the problem, though I am not an expert and there may be a more
+> correct way to go about doing this.  I'm also new at submitting patches, so
+> hopefully I haven't screwed up the patch-submission etiquette too
+> horrifically.
+> 
+>   drivers/mtd/mtdchar.c |   11 +++++++++--
+>   1 files changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+> index 13cc67a..0acb135 100644
+> --- a/drivers/mtd/mtdchar.c
+> +++ b/drivers/mtd/mtdchar.c
+> @@ -411,14 +411,21 @@ static int mtd_ioctl(struct inode *inode, struct file *file,
+>   	case MEMGETREGIONINFO:
+>   	{
+>   		struct region_info_user ur;
+> +		struct mtd_erase_region_info *kr;
+> 
+>   		if (copy_from_user(&ur, argp, sizeof(struct region_info_user)))
+>   			return -EFAULT;
+> 
+>   		if (ur.regionindex >= mtd->numeraseregions)
+>   			return -EINVAL;
+> -		if (copy_to_user(argp, &(mtd->eraseregions[ur.regionindex]),
+> -				sizeof(struct mtd_erase_region_info)))
+> +
+> +		kr = &(mtd->eraseregions[ur.regionindex]);
+> +
+> +		ur.offset = kr->offset;
+> +		ur.erasesize = kr->erasesize;
+> +		ur.numblocks = kr->numblocks;
+> +
+> +		if (copy_to_user(argp, &ur, sizeof(struct region_info_user)))
+>   			return -EFAULT;
+>   		break;
+>   	}
 
-Before I dig more into what happened, I was wondering if you could tell 
-me a bit more
-about your environment, particularly how you supplied the filesystem to 
-the kernel and
-your mount commandline (also, if you used a boot commandline, what it was.)
+ug.
 
-My first guess would be a ppc64 compiled UML session, but I'd like to be 
-a bit more sure.
+Putting a kernel pointer into a shared-with-userspace data structure
+(struct mtd_erase_region_info) was a big mistake.
 
+Copying a `struct region_info_user' back to userspace seems better than
+copying a `struct mtd_erase_region_info', but what do I know?
 
-Will Marone
+Actually...
+
+Before 0ecbc81adfcb9f15f86b05ff576b342ce81bbef8, `struct
+mtd_erase_region_info' had three members, all u32.  We were copying
+three u32's out to userspace.
+
+After 0ecbc81adfcb9f15f86b05ff576b342ce81bbef8, `struct
+mtd_erase_region_info' has four members: three u32's and one ulong*. 
+We're copying three u32's and one ulong* out to userspace.
+
+After your change, we're copying _four_ u32's out to userspace, so
+there still is potential for scribbling on unsuspecting userspace?
+
+If that reading is right, we need to go back to copying just the three
+u32's.  Perhaps via
+
+struct mtd_erase_region_info {
+	struct {
+		u_int32_t offset;
+		u_int32_t erasesize;
+		u_int32_t numblocks;
+	} user_part;
+	unsigned long *lockmap;
+};
+
+or similar.
+
+David?  Help?  2.6.25.x anmd 2.6.26.x need fixing as well.
