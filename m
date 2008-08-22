@@ -1,23 +1,22 @@
-Received: from djurbala-pt.tunnel.tserv2.fmt.ipv6.he.net
-	([2001:470:1f01:ffff::eb] helo=gate.crashing.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KWRlM-0004Wk-UI
-	for linux-mtd@lists.infradead.org; Fri, 22 Aug 2008 08:12:53 +0000
-Message-Id: <255B3FE9-1938-4CC0-ACA6-E8B4302531AC@kernel.crashing.org>
-From: Kumar Gala <galak@kernel.crashing.org>
-To: jwboyer@linux.vnet.ibm.com
-In-Reply-To: <1219359163.26429.62.camel@jdub.homelinux.org>
-Content-Type: text/plain; charset=US-ASCII; format=flowed; delsp=yes
+Received: from nf-out-0910.google.com ([64.233.182.188])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KWS76-0004GN-Td
+	for linux-mtd@lists.infradead.org; Fri, 22 Aug 2008 08:35:21 +0000
+Received: by nf-out-0910.google.com with SMTP id d21so264561nfb.22
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 22 Aug 2008 01:35:19 -0700 (PDT)
+Message-ID: <ac9c93b10808220135v26141113ud799bc56a744c64e@mail.gmail.com>
+Date: Fri, 22 Aug 2008 10:35:19 +0200
+From: "Frans Meulenbroeks" <fransmeulenbroeks@gmail.com>
+To: "Bruce Leonard" <brucle@earthlink.net>
+Subject: Re: [PATCH 0/2][MTD] Support for > 2GiB MTD devices
+In-Reply-To: <10836950.1219370444356.JavaMail.root@elwamui-cypress.atl.sa.earthlink.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0 (Apple Message framework v926)
-Subject: Re: New Patchwork beta
-Date: Fri, 22 Aug 2008 03:12:41 -0500
-References: <200808211822.27786.jk@ozlabs.org>
-	<985DF0C9-8615-439A-8DBB-06FAB53CE68F@kernel.crashing.org>
-	<1219359163.26429.62.camel@jdub.homelinux.org>
-Cc: bazaar-ng@lists.canonical.com, linuxppc-dev@ozlabs.org,
-	linux-mtd@lists.infradead.org, Jeremy Kerr <jk@ozlabs.org>,
-	linuxppc-embedded@ozlabs.org, cbe-oss-dev@ozlabs.org
+Content-Disposition: inline
+References: <10836950.1219370444356.JavaMail.root@elwamui-cypress.atl.sa.earthlink.net>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,35 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Suggest you also post this to linux-mtd@lists.infradead.org
 
-On Aug 21, 2008, at 5:52 PM, Josh Boyer wrote:
-
-> On Thu, 2008-08-21 at 15:32 -0500, Kumar Gala wrote:
->> Some feedback:
->>
->> * Can we increase the font size a bit?
+2008/8/22 Bruce Leonard <brucle@earthlink.net>:
+> All,
 >
-> NOO.  Just use CTRL-SHIFT-+.
-
-ok
-
->> * For the list of patches can we change the background of every other
->> line (light gray)
+> Over the course of the last several months, I've been working on adding support to
+> the kernel for MTD devices that exceed 2GiB in size.  In my particular case I
+> have a need for 8GiB of NAND flash that appears as a single device.  I'm now
+> ready to submit my (first ever!) patch (please be kind :)  ).
 >
-> That would work well.
-
-thanks this looks better, easier to read.
-
->> * Parsing subject header for determining state -- "[RFC]"
+> Design Details:
+> The problem - The size field of struct mtd_info is only 32-bits, which limits
+>        the size of mtd devices to 2GiB (0x80000000).
+> The solution - The size of a device can be calculated buy multiplying the number
+>        of erase blocks by the erase block size.  I added a new field to struct
+>        mtd_info to hold the number of erase blocks and an inline function to
+>        determine the device size by returning mtd_info->size if it's non-zero
+>        or returning (mtd_info->num_eraseblocks * mtd_info->erasesize).
 >
-> That is going to fail miserably because people tend to do silly things
-> like post final patches in the middle of an [RFC] thread.
-
-gotcha.
-
-Now that I can log in, can I get "maintainer" privileges (user: galak)
-
-also is it possible to put the patch controls in a separate frame so  
-they are always visible (dont have to scoll to the bottom to find them).
-
-- k
+> A couple of comments.  First and foremost, these patches don't completely change
+> the MTD layer.  Due to my in-experience outside of what I was focused on
+> (NAND/UBI/UBIFS/MTDCHAR) I felt it was best if I restricted my changes to what I
+> knew.  If the community feels I need to take these changes into the rest of the
+> MTD layer please advise.  Secondly, there were changes that I needed to make in
+> mtd-utils, but I again only focused on the UBI sub-set.  mtd-utils no longer builds
+> because of the changes (though the UBI tools still build).  But I really do NOT
+> feel qualified to make changes to the rest of mtd-utils as they're tools I don't
+> use and don't understand and I don't want to accidentaly break something I don't
+> understand.  The changes in mtd-utils are the same changes as in
+> .../include/linux/mtd/mtd.h and .../include/mtd/mtd-abi.h.  If anyone has a
+> suggestion as to how I should handle mtd-utils I would appreciate it.
+>
+> Thanks again to everyone who's answered my endless stupid questions.
+>
+> Bruce
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
+>
