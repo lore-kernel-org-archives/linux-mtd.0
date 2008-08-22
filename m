@@ -1,23 +1,22 @@
-Received: from yw-out-1718.google.com ([74.125.46.157])
+Received: from anchor-post-37.mail.demon.net ([194.217.242.87])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KWNJX-00038j-O1
-	for linux-mtd@lists.infradead.org; Fri, 22 Aug 2008 03:27:52 +0000
-Received: by yw-out-1718.google.com with SMTP id 5so25286ywm.72
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Aug 2008 20:27:51 -0700 (PDT)
-Message-ID: <6934efce0808212027q412c4cbbp6ea8673a7d3bc1b9@mail.gmail.com>
-Date: Thu, 21 Aug 2008 20:27:50 -0700
-From: "Jared Hulbert" <jaredeh@gmail.com>
-To: "Phillip Lougher" <phillip@lougher.demon.co.uk>
-Subject: Re: [PATCH 04/10] AXFS: axfs_inode.c
-In-Reply-To: <48AE0697.5040706@lougher.demon.co.uk>
+	id 1KWNLL-0003FU-VR
+	for linux-mtd@lists.infradead.org; Fri, 22 Aug 2008 03:29:44 +0000
+Message-ID: <48AE32AE.9010901@lougher.demon.co.uk>
+Date: Fri, 22 Aug 2008 04:29:50 +0100
+From: Phillip Lougher <phillip@lougher.demon.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+To: Jared Hulbert <jaredeh@gmail.com>
+Subject: Re: [PATCH 04/10] AXFS: axfs_inode.c
+References: <48AD00F0.5030403@gmail.com> <200808211417.14425.arnd@arndb.de>	
+	<48AE22F5.3000309@lougher.demon.co.uk>
+	<6934efce0808212023x758babf0w500da6801bd66f45@mail.gmail.com>
+In-Reply-To: <6934efce0808212023x758babf0w500da6801bd66f45@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <48AD00F0.5030403@gmail.com> <48AE0697.5040706@lougher.demon.co.uk>
-Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
-	=?UTF-8?Q?J=C3=B6rn_Engel?= <joern@logfs.org>,
+Cc: cotte@de.ibm.com, Arnd Bergmann <arnd@arndb.de>,
+	linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
+	=?UTF-8?B?SsO2cm4gRW5nZWw=?= <joern@logfs.org>,
 	Linux-kernel@vger.kernel.org,
 	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,22 +28,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> I assume compressed blocks can be larger than PAGE_CACHE_SIZE?  This suffers
-> from the rather obvious inefficiency that you decompress a big block >
-> PAGE_CACHE_SIZE, but only copy one PAGE_CACHE_SIZE page out of it.  If
-> multiple files are being read simultaneously (a common occurrence), then
-> each is going to replace your one cached uncompressed block
-> (sbi->current_cnode_index), leading to decompressing the same blocks over
-> and over again on sequential file access.
->
-> readpage file A, index 1 -> decompress block X
-> readpage file B, index 1 -> decompress block Y (replaces X)
-> readpage file A, index 2 -> repeated decompress of block X (replaces Y)
-> readpage file B, index 2 -> repeated decompress of block Y (replaces X)
->
-> and so on.
+Jared Hulbert wrote:
 
-Yep.  Been thinking about optimizing it.  So far it hasn't been an
-issue for my customers.  Most fs traffic being on the XIP pages.  Once
-I get a good automated performance test up we'll probably look into
-something to improve this.
+> 
+> The memcpy in question copies a c_node to the page.  The len is either
+> the max length of a c_node and size of the buffer I'm copying to
+> (PAGE_CACHE_SIZE) or it is the difference between the beginning of the
+> c_node in the c_block and the end of the c_block, whichever is
+> smaller.  The confusion is probably because of the fact that this
+> copies extra crap to the page for tails.
+
+
+Ah yes, that's where I got confused :)  Glad to see AXFS uses tail packing.
+
+
+Phillip
