@@ -1,24 +1,24 @@
-Received: from moutng.kundenserver.de ([212.227.126.183])
+Received: from fk-out-0910.google.com ([209.85.128.186])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KWUoA-00041A-GF
-	for linux-mtd@lists.infradead.org; Fri, 22 Aug 2008 11:27:58 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: "Jared Hulbert" <jaredeh@gmail.com>
-Subject: Re: [PATCH 03/10] AXFS: axfs.h
-Date: Fri, 22 Aug 2008 13:27:36 +0200
-References: <48AD00E6.2070505@gmail.com> <200808211424.31966.arnd@arndb.de>
-	<6934efce0808211540p237f2c52pd71c2b955b3f54a8@mail.gmail.com>
-In-Reply-To: <6934efce0808211540p237f2c52pd71c2b955b3f54a8@mail.gmail.com>
+	id 1KWVR5-0007Ot-Pz
+	for linux-mtd@lists.infradead.org; Fri, 22 Aug 2008 12:08:12 +0000
+Received: by fk-out-0910.google.com with SMTP id 18so281571fks.2
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 22 Aug 2008 05:08:10 -0700 (PDT)
+Date: Fri, 22 Aug 2008 14:07:29 +0200
+From: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+To: Jared Hulbert <jaredeh@gmail.com>
+Subject: Re: [PATCH 06/10] AXFS: axfs_super.c
+Message-ID: <20080822120729.GA319@mx.loc>
+References: <48AD0101.4020505@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200808221327.37371.arnd@arndb.de>
+In-Reply-To: <48AD0101.4020505@gmail.com>
 Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
-	=?utf-8?q?J=C3=B6rn?= Engel <joern@logfs.org>,
+	=?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
 	Linux-kernel@vger.kernel.org,
-	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
+	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@AM.SONY.COM
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,80 +28,197 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 22 August 2008, Jared Hulbert wrote:
-> > This bytetable stuff looks overly complicated, both the data structure and
-> > the access method. It seems like you are implementing your own custom Huffman
-> > compression with this.
-> >
-> > Is the reasonn for the bytetable just to pack numbers efficiently, or do you
-> > have a different intention?
-> 
-> It looks more complicated than it is.  I need a data structure that is
-> 64bit capable, easily read-in-place (remember this is designed to be
-> an XIP fs), and highly space efficient.  Because it's XIP I didn't
-> want something that required a lot of calculation nor something that
-> made you incur a lot of cache misses.  So yes I just want to pack
-> numbers in an easily read-in-place fashion.
+On Wed, Aug 20, 2008 at 10:45:37PM -0700, Jared Hulbert wrote:
+>+static int axfs_get_onmedia_super(struct super_block *sb)
+>+{
+>+	int err;
+>+	struct axfs_super *sbi = AXFS_SB(sb);
+>+	struct axfs_super_onmedia *sbo;
+>+
+>+	sbo = kmalloc(sizeof(*sbo), GFP_KERNEL);
+>+	if (!sbo)
+>+		return -ENOMEM;
+>+
+>+	axfs_copy_metadata(sb, (void *)sbo, 0, sizeof(*sbo));
+>+
+>+	/* Do sanity checks on the superblock */
+>+	if (be32_to_cpu(sbo->magic) != AXFS_MAGIC) {
+>+		printk(KERN_ERR "axfs: wrong magic\n");
+>+		err = -EINVAL;
+>+		goto out;
+>+	}
+>+
+>+	/* verify the signiture is correct */
+>+	if (strncmp(sbo->signature, AXFS_SIGNATURE, sizeof(AXFS_SIGNATURE))) {
+>+		printk(KERN_ERR "axfs: wrong axfs signature,"
+>+		       " read %s, expected %s\n",
+>+		       sbo->signature, AXFS_SIGNATURE);
+>+		err = -EINVAL;
+>+		goto out;
+>+	}
 
-ok, that makes sense.
- 
-> If I have an array of u64 numbers tracking small numbers (a[0] = 1;
-> a[1] = 2;) just throwing that onmedia is a big waste.
-> (0x0000000000000001; 0x0000000000000002)  Having different array types
-> for different images such as arrays of u8,u16,u32,u64 becomes less
-> efficient for 3,5,6 and 7 byte numbers, 3 bytes was a particularly
-> interesting size for me.
-> 
-> All I'm doing is removing the totally unnecessary zeros and aligning by bytes.
-> Take an array of u64 like this :
-> 0x0000000000000005
-> 0x0000000000001001
-> 0x00000000000a0000
-> 
-> I strip off the unneeded leading zeros:
-> 0x000005
-> 0x001001
-> 0x0a0000
-> 
-> Then pack them to byte alignment:
-> 0x0000050010010a0000
-> 
-> Sure it could be encoded more but that would make it harder to extract
-> the data.  This way I can read the data in one, maybe two, cache
-> misses.  A couple of shifts to deal with the alignment and endianness
-> and we are done.
+As Phillip mentioned for some other cases, just initialize err to
+EINVAL.
+>+
+>+	sbi->magic = be32_to_cpu(sbo->magic);
+>+	sbi->version_major = sbo->version_major;
+>+	sbi->version_minor = sbo->version_minor;
+>+	sbi->version_sub = sbo->version_sub;
+>+	sbi->files = be64_to_cpu(sbo->files);
+>+	sbi->size = be64_to_cpu(sbo->size);
+>+	sbi->blocks = be64_to_cpu(sbo->blocks);
+>+	sbi->mmap_size = be64_to_cpu(sbo->mmap_size);
+>+	sbi->cblock_size = be32_to_cpu(sbo->cblock_size);
+>+	sbi->timestamp.tv_sec = be64_to_cpu(sbo->timestamp);
+>+	sbi->timestamp.tv_nsec = 0;
+>+	sbi->compression_type = sbo->compression_type;
+>+
+>+	err = axfs_set_compression_type(sbi);
+>+	if (err)
+>+		goto out;
+>+
+>+	/* If no block or MTD device, adjust mmapable to cover all image */
+>+	if (AXFS_NODEV(sb))
+>+		sbi->mmap_size = sbi->size;
+>+
+>+	err = axfs_fill_region_descriptors(sb, sbo);
+[as already mentioned the clipped snippet here is unneeded]
+>+out:
+>+	kfree(sbo);
+>+	return err;
+>+}
 
-So do I understand right that 3 bytes is your minimum size, and going
-smaller than that would not be helpful? Otherwise I would assume that
-storing a '5' should only take one byte instead of three.
+>+int axfs_verify_device_sizes(struct super_block *sb)
+>+{
+>+	struct axfs_super *sbi = AXFS_SB(sb);
+>+	struct mtd_info *mtd0 = AXFS_MTD(sb);
+>+	struct mtd_info *mtd1 = AXFS_MTD1(sb);
+>+	int sndsize = sbi->size - sbi->mmap_size;
+>+
+>+	/* Whole FS on one device */
+>+	if (mtd0 && !mtd1 && (mtd0->size < sbi->size)) {
+>+		printk(KERN_ERR "axfs: ERROR: Filesystem extends beyond end of"
+>+		       "MTD! Filesystem cannot be safely mounted!\n");
 
-I don't unsterstand yet why you store the length of each word separate
-from the word. Most variable-length codes store that implicitly in
-the data itself, e.g. in the upper three bits, so that for storing
-0x5, 0x1001, 0xa0000, this could e.g. end up as 0x054010014a0000,
-which is shorter than what you have, but not harder to decode.
+missing space in "end ofMTD"
+You're mixing the style of where you put such a space, so potential
+errors are not easy to spot (manually).
+e.g.:
 
-> > Did you see a significant size benefit over simply storing all metadata as
-> > uncompressed data structures like in cramfs?
-> 
-> Yes. For some modest values of significant.  In terms of the amount of
-> space required to track the metadata it is more dramatic.  For a small
-> rootfs I can fit many of the data structures in an u8 array, while
-> maintaining u64 compatibility.  Compared to dumping u64 arrays onmedia
-> that's an 8X savings.  But it's an 8X savings of a smallish percentage
-> of the image size.  The difference is more pronounced on a smaller
-> (2MB) filesystem I tested but it was only ~5% if memory serves me
-> correct.
+>+			printk(KERN_ERR "axfs: ERROR: Mmap segment extends"
+>+			       " beyond end of MTD!");
+>+			printk(KERN_ERR "mtd name: %s, mtd size: 0x%x, mmap "
+>+			       "size: 0x%llx",
+>+			       mtd0->name, mtd0->size, sbi->mmap_size);
 
-If you can save 5% on a real-world file system, you have convinced me.
+>+static int axfs_check_options(char *options, struct axfs_super *sbi)
+>+{
+>+	unsigned long address = 0;
+>+	char *iomem = NULL;
+>+	unsigned long length = 0;
+>+	char *p;
+>+	int err = -EINVAL;
+>+	substring_t args[MAX_OPT_ARGS];
+>+
+>+	if (!options)
+>+		return 0;
+>+
+>+	if (!*options)
+>+		return 0;
+>+
+>+	while ((p = strsep(&options, ",")) != NULL) {
+>+		int token;
+>+		if (!*p)
+>+			continue;
+>+
+>+		token = match_token(p, tokens, args);
+>+		switch (token) {
+>+		case OPTION_SECOND_DEV:
+>+			sbi->second_dev = match_strdup(&args[0]);
+>+			if (!(sbi->second_dev)) {
+>+				err = -ENOMEM;
+>+				goto out;
+>+			}
+>+			if (!*(sbi->second_dev))
+>+				goto bad_value;
+>+			break;
+>+		case OPTION_IOMEM:
+>+			iomem = match_strdup(&args[0]);
+>+			if (!(iomem)) {
+>+				err = -ENOMEM;
+>+				goto out;
+>+			}
+>+			if (!*iomem)
+>+				goto bad_value;
+>+			break;
+>+		case OPTION_PHYSICAL_ADDRESS_LOWER_X:
+>+		case OPTION_PHYSICAL_ADDRESS_UPPER_X:
+>+			if (match_hex(&args[0], (int *)&address))
+>+				goto out;
+>+			if (!address)
+>+				goto bad_value;
+>+			break;
+>+		default:
 
-> > Have you considered storing simple dentry/inode data in node_type==Compressed
-> > nodes?
-> 
-> Yes, I thought a lot about that.  But I choose against it because I
-> wanted read-in-place data structures for minimum RAM usage in the XIP
-> case and I figure the way I do it would stat() faster.
+just:
+			goto bad_value;
 
-ok.
+>+			printk(KERN_ERR
+>+			       "axfs: unrecognized mount option \"%s\" "
+>+			       "or missing value\n", p);
+>+			goto out;
+>+		}
+>+	}
+>+
+>+	if (iomem) {
+>+		if (address)
+>+			goto out;
+>+		err = axfs_get_uml_address(iomem, &address, &length);
 
-	Arnd <><
+missing:
+		if (err)
+			goto out;
+
+>+		kfree(iomem);
+>+		sbi->iomem_size = length;
+>+		sbi->virt_start_addr = address;
+>+	}
+>+
+>+	sbi->phys_start_addr = address;
+>+	return 0;
+>+
+>+bad_value:
+>+	printk(KERN_ERR
+>+	       "axfs: unrecognized mount option \"%s\" "
+>+	       "or missing value\n", p);
+>+out:
+>+	if (iomem)
+>+		kfree(iomem);
+
+just kfree(iomem);
+
+>+	return err;
+>+}
+>+
+
+>+static int axfs_statfs(struct dentry *dentry, struct kstatfs *buf)
+>+{
+>+	struct axfs_super *sbi = AXFS_SB(dentry->d_sb);
+>+
+>+	buf->f_type = AXFS_MAGIC;
+>+	buf->f_bsize = AXFS_PAGE_SIZE;
+
+What will happen if i transfer the filesystem to a box with a different
+pagesize?
+
+>+	buf->f_blocks = sbi->blocks;
+>+	buf->f_bfree = 0;
+>+	buf->f_bavail = 0;
+>+	buf->f_files = sbi->files;
+>+	buf->f_ffree = 0;
+>+	buf->f_namelen = AXFS_MAXPATHLEN;
+>+	return 0;
+>+}
+
+I think i have seen the string "compessed" in one of your patches,
+should be "compressed".
