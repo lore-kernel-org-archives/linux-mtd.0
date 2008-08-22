@@ -1,22 +1,26 @@
-Received: from yx-out-1718.google.com ([74.125.44.152])
+Received: from yx-out-1718.google.com ([74.125.44.153])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KWabX-0004jR-DN
-	for linux-mtd@lists.infradead.org; Fri, 22 Aug 2008 17:39:19 +0000
-Received: by yx-out-1718.google.com with SMTP id 3so396916yxi.72
+	id 1KWaeu-0005G4-PQ
+	for linux-mtd@lists.infradead.org; Fri, 22 Aug 2008 17:42:49 +0000
+Received: by yx-out-1718.google.com with SMTP id 3so397776yxi.72
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 22 Aug 2008 10:39:19 -0700 (PDT)
-Message-ID: <6934efce0808221039o3ea57e35ka24a617621e2646e@mail.gmail.com>
-Date: Fri, 22 Aug 2008 10:39:18 -0700
+	Fri, 22 Aug 2008 10:42:48 -0700 (PDT)
+Message-ID: <6934efce0808221042u6d0c21eft6f8cdf67f0217a85@mail.gmail.com>
+Date: Fri, 22 Aug 2008 10:42:47 -0700
 From: "Jared Hulbert" <jaredeh@gmail.com>
-To: "Bernhard Reutner-Fischer" <rep.dot.nop@gmail.com>
-Subject: Re: [PATCH 07/10] AXFS: axfs_bdev.c
-In-Reply-To: <20080822125440.GA1396@mx.loc>
+To: "Phillip Lougher" <phillip@lougher.demon.co.uk>
+Subject: Re: [PATCH 06/10] AXFS: axfs_super.c
+In-Reply-To: <48AEF976.1010705@lougher.demon.co.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <48AD010B.6030209@gmail.com> <20080822125440.GA1396@mx.loc>
-Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
+References: <48AD0101.4020505@gmail.com> <48AE19AD.1020209@lougher.demon.co.uk>
+	<6934efce0808212005h30fa16d8w48833e8a0becfd8c@mail.gmail.com>
+	<200808221852.38950.arnd@arndb.de>
+	<48AEF976.1010705@lougher.demon.co.uk>
+Cc: cotte@de.ibm.com, Arnd Bergmann <arnd@arndb.de>,
+	linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
 	=?UTF-8?Q?J=C3=B6rn_Engel?= <joern@logfs.org>,
 	Linux-kernel@vger.kernel.org,
 	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
@@ -29,32 +33,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> mismatch between documentation and implementation WRT the function name ;)
-oops.
+> Squashfs and AXFS should be seen as complementary filesystems, and there
+> should be room in the Linux kernel for both.
 
->>+{
->>+      struct axfs_super *sbi = AXFS_SB(sb);
->>+      u64 boffset = AXFS_FSOFFSET_2_DEVOFFSET(sbi, fsoffset);
->>+      u64 blocks;
->>+      u64 blksize = sb->s_blocksize;
->>+      unsigned long dst;
->>+      unsigned long src;
->>+      sector_t block;
->>+      size_t bytes;
->>+      struct buffer_head *bh;
->>+      u64 copied = 0;
->>+
->>+      if (len == 0)
->>+              return 0;
->>+
->>+      blocks = len / blksize;
->>+      if ((len % blksize) > 0)
->>+              blocks += 1;
->>+
->>+      while (copied < len) {
->>+              /* Explicit casting for ARM linker errors. */
->
-> did it try to emit some external div()? Is this still needed?
-
-exactly.  I haven't heard otherwise, it was a Freescale ARM11 build
-that had the issue... I don't have the set up.
+Exactly.  We had different design assumptions.  One is not _better_
+than the other, they are just different.
