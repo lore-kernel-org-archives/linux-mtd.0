@@ -1,25 +1,23 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KWaJJ-0000Kz-BS
-	for linux-mtd@lists.infradead.org; Fri, 22 Aug 2008 17:20:30 +0000
-Date: Fri, 22 Aug 2008 19:19:59 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Phillip Lougher <phillip@lougher.demon.co.uk>
-Subject: Re: [PATCH 04/10] AXFS: axfs_inode.c
-Message-ID: <20080822171959.GA30977@logfs.org>
-References: <48AD00F0.5030403@gmail.com> <200808211417.14425.arnd@arndb.de>
-	<48AE22F5.3000309@lougher.demon.co.uk>
-	<200808221200.26052.arnd@arndb.de>
-	<48AEF2A3.7020905@lougher.demon.co.uk>
+Received: from anchor-post-34.mail.demon.net ([194.217.242.92])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KWaa9-0004f5-Tu
+	for linux-mtd@lists.infradead.org; Fri, 22 Aug 2008 17:37:54 +0000
+Message-ID: <48AEF976.1010705@lougher.demon.co.uk>
+Date: Fri, 22 Aug 2008 18:37:58 +0100
+From: Phillip Lougher <phillip@lougher.demon.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <48AEF2A3.7020905@lougher.demon.co.uk>
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 06/10] AXFS: axfs_super.c
+References: <48AD0101.4020505@gmail.com> <48AE19AD.1020209@lougher.demon.co.uk>
+	<6934efce0808212005h30fa16d8w48833e8a0becfd8c@mail.gmail.com>
+	<200808221852.38950.arnd@arndb.de>
+In-Reply-To: <200808221852.38950.arnd@arndb.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
+	=?UTF-8?B?SsO2cm4gRW5nZWw=?= <joern@logfs.org>,
 	Linux-kernel@vger.kernel.org,
-	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com,
-	Arnd Bergmann <arnd@arndb.de>
+	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,24 +27,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 22 August 2008 18:08:51 +0100, Phillip Lougher wrote:
+Arnd Bergmann wrote:
+> On Friday 22 August 2008, Jared Hulbert wrote:
+>>> This implies for block devices that the entire filesystem metadata has to be
+>>> cached in RAM.  This severely limits the size of AXFS filesystems when using
+>>> block devices, or the else memory usage will be excessive.
+>> This is where 64bit squashfs could be a better fit.
 > 
-> Squashfs stores significantly more metadata than cramfs.  Remember 
-> cramfs has no support for filesystems > ~ 16Mbytes, no inode timestamps, 
-> truncates uid/gids, no hard-links, no nlink counts, no hashed 
-> directories,  no unique inode numbers.  If Squashfs didn't compress the 
-> metadata it would be significantly larger than cramfs.
+> Is this the only place where squashfs has a significant advantage? 
+> If so, you might want to change it in axfs eventually to make the
+> decision easier for users ;-)
 
-Elsewhere in this maze of threads Arnd claimed to have tested the
-benefits of metadata compression - and it making little impact.
+As you asked here's the list.
 
-My guess is that it would make a large impact if metadata would be a
-significant part of the filesystem image.  Usually metadata is close
-enough to 0% to be mistaken for statistical noise.  So compressing it
-makes a significant impact on an insignificant amount of data.
+1. Support for > 4GB filesystems.  In theory 2^64 bytes.
+2. Compressed metadata
+3. Inode timestamps
+4. Hard-link support, and correct nlink counts
+5. Sparse file support
+6. Support for ". & ".." in readdir
+7. Indexed directories for fast lookup
+8. NFS exporting
+9. No need to cache entire metadata in memory
 
-Jörn
+Squashfs has been optimised for block-based rotating media like hard 
+disks, CDROMS.  AXFS has been optimised for flash based media.  Squashfs 
+will outperform AXFS on rotating media, AXFS will outperform Squashfs on 
+flash based media.
 
--- 
-One of my most productive days was throwing away 1000 lines of code.
--- Ken Thompson.
+Squashfs and AXFS should be seen as complementary filesystems, and there 
+should be room in the Linux kernel for both.
+
+I don't see what your problem is here.  I think AXFS is an extremely 
+good filesystem and should be merged.  But I don't see why this should 
+lead to more Squashfs bashing.
+
+Phillip
