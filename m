@@ -1,21 +1,22 @@
 Received: from rex.securecomputing.com ([203.24.151.4] helo=cyberguard.com.au)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KWJuA-0007gn-3w
-	for linux-mtd@lists.infradead.org; Thu, 21 Aug 2008 23:49:26 +0000
-Message-ID: <48ADFE65.1050007@snapgear.com>
-Date: Fri, 22 Aug 2008 09:46:45 +1000
+	id 1KWKJE-0001xr-52
+	for linux-mtd@lists.infradead.org; Fri, 22 Aug 2008 00:15:20 +0000
+Message-ID: <48AE0476.80109@snapgear.com>
+Date: Fri, 22 Aug 2008 10:12:38 +1000
 From: Greg Ungerer <gerg@snapgear.com>
 MIME-Version: 1.0
-To: Jamie Lokier <jamie@shareable.org>
+To: Jared Hulbert <jaredeh@gmail.com>
 Subject: Re: [PATCH 00/10] AXFS: Advanced XIP filesystem
 References: <48AD00C4.6060302@gmail.com> <20080821110749.GA1926@shareable.org>
-In-Reply-To: <20080821110749.GA1926@shareable.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+	<6934efce0808210711t686a88eci6eb294dbb54d68fe@mail.gmail.com>
+In-Reply-To: <6934efce0808210711t686a88eci6eb294dbb54d68fe@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
-	=?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>,
-	Linux-kernel@vger.kernel.org,
-	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@AM.SONY.COM
+	=?UTF-8?B?SsO2cm4gRW5nZWw=?= <joern@logfs.org>,
+	Jamie Lokier <jamie@shareable.org>, Linux-kernel@vger.kernel.org,
+	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +26,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Jared,
 
-Jamie Lokier wrote:
-> Jared Hulbert wrote:
->> The biggest improvement is in the way AXFS allows for each page to be XIP or
->> not.  First, a user collects information about which pages are accessed on a
->> compressed image for each mmap()ed region from /proc/axfs/volume0.  That
->> 'profile' is used as an input to the image builder.  The resulting image has
->> only the relevant pages uncompressed and XIP.  The result is smaller memory
->> sizes and faster launches.
+Jared Hulbert wrote:
+>> How does it fare with no MMU?  Can the profiler and image builder lay
+>> out the XIP pages in such a way that no-MMU mmaps can map those regions?
+>>
+>> No complaint if not, it would be a nice bonus though.
 > 
-> Sounds great, really nice idea.
-> 
-> How does it fare with no MMU?  Can the profiler and image builder lay
-> out the XIP pages in such a way that no-MMU mmaps can map those regions?
+> Sorry.  I don't believe it will work on no-MMU as is.  That said you
+> _could_ tweak the mkfs tool to lay mmap()'ed regions down contiguously
+> but then if you mmap() an unprofiled region, well that would be bad.
+> I suppose you could make axfs_mmap smart enough to handle that.  I
+> guess the cleanest way would be to just make files lay down
+> contiguously, you lose some of the space saving but it would work.
 
-The key for XIP on noMMU would be the ability to store a
-file as one complete contiguous chunk. Can AXFS do this?
+That would be enough I think. If you could manually select
+which files are contiguous-and-uncompressed that would be
+useful for some too here.
+
+
+> I'm not plannin to get to this anytime soon.  But I'd be willing merge
+> patches.  Can anybody convince me offline that working on no-MMU this
+> makes financial sense for my employer?  This is getting to be a common
+> question.  How many noMMU users are out there and why are you so
+> interested?
+
+One of those unknown factors, how many are there?
+Who knows, pretty much impossible to tell.
+
+One thing for sure is that many people who do non-MMU setups
+are interested in XIP to get the space savings. These are very
+often small devices with very constrained RAM and flash. (For
+whatever it is worth single NOR flash only boards are common in
+these smaller form factors :-)
 
 Regards
 Greg
-
 
 
 ------------------------------------------------------------------------
