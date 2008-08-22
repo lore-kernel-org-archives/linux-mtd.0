@@ -1,23 +1,21 @@
-Received: from moutng.kundenserver.de ([212.227.126.187])
+Received: from anchor-post-31.mail.demon.net ([194.217.242.89])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KWZt3-0003mR-Pd
-	for linux-mtd@lists.infradead.org; Fri, 22 Aug 2008 16:53:22 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: "Jared Hulbert" <jaredeh@gmail.com>
-Subject: Re: [PATCH 06/10] AXFS: axfs_super.c
-Date: Fri, 22 Aug 2008 18:52:37 +0200
-References: <48AD0101.4020505@gmail.com> <48AE19AD.1020209@lougher.demon.co.uk>
-	<6934efce0808212005h30fa16d8w48833e8a0becfd8c@mail.gmail.com>
-In-Reply-To: <6934efce0808212005h30fa16d8w48833e8a0becfd8c@mail.gmail.com>
+	id 1KWa7w-0003Q6-0O
+	for linux-mtd@lists.infradead.org; Fri, 22 Aug 2008 17:08:44 +0000
+Message-ID: <48AEF2A3.7020905@lougher.demon.co.uk>
+Date: Fri, 22 Aug 2008 18:08:51 +0100
+From: Phillip Lougher <phillip@lougher.demon.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200808221852.38950.arnd@arndb.de>
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 04/10] AXFS: axfs_inode.c
+References: <48AD00F0.5030403@gmail.com> <200808211417.14425.arnd@arndb.de>
+	<48AE22F5.3000309@lougher.demon.co.uk>
+	<200808221200.26052.arnd@arndb.de>
+In-Reply-To: <200808221200.26052.arnd@arndb.de>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
-	Phillip Lougher <phillip@lougher.demon.co.uk>,
-	=?utf-8?q?J=C3=B6rn?= Engel <joern@logfs.org>,
+	=?windows-1252?Q?J=F6rn_Engel?= <joern@logfs.org>,
 	Linux-kernel@vger.kernel.org,
 	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,20 +27,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 22 August 2008, Jared Hulbert wrote:
-> > This implies for block devices that the entire filesystem metadata has =
-to be
-> > cached in RAM. =C2=A0This severely limits the size of AXFS filesystems =
-when using
-> > block devices, or the else memory usage will be excessive.
->=20
-> This is where 64bit squashfs could be a better fit.
+Arnd Bergmann wrote:
+> On Friday 22 August 2008, Phillip Lougher wrote:
+>>> This looks very nice, but could use some comments about how the data is
+>>> actually stored on disk. It took me some time to figure out that it actually
+>>> allows to do tail merging into compressed blocks, which I was about to suggest
+>>> you implement ;-). Cramfs doesn't have them, and I found that they are the
+>>> main reason why squashfs compresses better than cramfs, besides the default
+>>> block size, which you can change on either one.
+>> Squashfs has much larger block sizes than cramfs (last time I looked it 
+>> was limited to 4K blocks), and it compresses the metadata which helps to 
+>> get better compression.  But tail merging (fragments in Squashfs 
+>> terminology) is obviously a major reason why Squashfs gets good compression.
+> 
+> The *default* block size in cramfs is smaller than in squashfs, but they both
+> have user selectable block sizes. I found the impact of compressed metadata
+> to be almost zero. 
 
-Is this the only place where squashfs has a significant advantage?=20
-If so, you might want to change it in axfs eventually to make the
-decision easier for users ;-)
+Squashfs stores significantly more metadata than cramfs.  Remember 
+cramfs has no support for filesystems > ~ 16Mbytes, no inode timestamps, 
+truncates uid/gids, no hard-links, no nlink counts, no hashed 
+directories,  no unique inode numbers.  If Squashfs didn't compress the 
+metadata it would be significantly larger than cramfs.
 
-It certainly sounds like something for your medium-term TODO list,
-although I wouldn't think of it as a show-stopper.
+Cheers
 
-	Arnd <><
+Phillip
