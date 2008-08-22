@@ -1,29 +1,21 @@
-Received: from nf-out-0910.google.com ([64.233.182.189])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KWSTE-0005iW-UX
-	for linux-mtd@lists.infradead.org; Fri, 22 Aug 2008 08:58:13 +0000
-Received: by nf-out-0910.google.com with SMTP id d21so269689nfb.22
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 22 Aug 2008 01:58:12 -0700 (PDT)
-Message-ID: <ac9c93b10808220158p13528b81t7dbb0eb6a6d8a5a8@mail.gmail.com>
-Date: Fri, 22 Aug 2008 10:58:12 +0200
-From: "Frans Meulenbroeks" <fransmeulenbroeks@gmail.com>
-To: "Singh, Vimal" <vimalsingh@ti.com>
 Subject: Re: [PATCH] [MTD] [NAND] nand_ecc.c: adding support for 512 byte ecc
-In-Reply-To: <19F8576C6E063C45BE387C64729E739403CD517C1C@dbde02.ent.ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+From: David Woodhouse <dwmw2@infradead.org>
+To: Frans Meulenbroeks <fransmeulenbroeks@gmail.com>
+In-Reply-To: <ac9c93b10808220143o27a769c6lbb37faaa68f6318d@mail.gmail.com>
 References: <19F8576C6E063C45BE387C64729E739403CD517C16@dbde02.ent.ti.com>
 	<19F8576C6E063C45BE387C64729E739403CD517C1A@dbde02.ent.ti.com>
 	<ac9c93b10808211139t69d3ce6euaac35368f1514931@mail.gmail.com>
 	<19F8576C6E063C45BE387C64729E739403CD517C1B@dbde02.ent.ti.com>
 	<1219385223.18027.105.camel@sauron>
-	<19F8576C6E063C45BE387C64729E739403CD517C1C@dbde02.ent.ti.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Woodhouse <dwmw2@infradead.org>,
-	"David@mgw-mx06.nokia.com" <David@mgw-mx06.nokia.com>
+	<ac9c93b10808220143o27a769c6lbb37faaa68f6318d@mail.gmail.com>
+Content-Type: text/plain
+Date: Fri, 22 Aug 2008 10:06:19 +0100
+Message-Id: <1219395979.9583.18.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: "Singh, Vimal" <vimalsingh@ti.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	David@mgw-mx06.nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,24 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Vimal,
+On Fri, 2008-08-22 at 10:43 +0200, Frans Meulenbroeks wrote:
+> @David (dwmw2)
+> Please let me know what the preferred way to integrate this. I can
+> either provide a patch on top of Vimal' patch if needed, or I can add
+> my changes to it and submit a patch containing the work of both of us,
+> or I can send my changes as review comment to Vimal and let him make
+> the patch. What is the preferred way? (and I highly prefer a solution
+> where Vimal gets credit for his changes)
 
-This is not a diff against the latest git version.
+When you forward the patch on to me, put 'From: Vimal Singh <...>'  as
+the first line of the _body_ of the email so that it is still attributed
+to him. It's reasonable to preserve his signed-off-by, if you're only
+making relatively minor changes, and document what _you_ changed in
+square brackets. For an example, see
+http://www.mail-archive.com/linux-btrfs@vger.kernel.org/msg00461.html
 
-E.g. this line
+Alternatively, if his patch isn't actually introducing a regression, it
+doesn't hurt to do it as two separate patches -- whichever you prefer.
 
-> -       if (nr_bits == 11) {    /* correctable error */
+When resending an updated patch, make sure the proper commit comment
+remains intact -- if you want to add some commentary like 'fixed up
+according to review and made some other fixes', which doesn't live in
+the commit comment but follows on from the email thread, then add it
+after a line with three dashes -- again, you can see that in the example
+above.
 
-was already replaced by the 0x55 tests in this commit:
-http://git.infradead.org/mtd-2.6.git?a=commitdiff;h=1077be58ad7baadd86e47e8b4f6209fa5b6364a5
-
-
-Also in your diff I see that this patch:
-http://git.infradead.org/mtd-2.6.git?a=commitdiff;h=17c1d2be28e485c0c8b09661db39d5bf2605069d
-is not in the version you compare against.
-
-I suggest to merge your changes with the mtd git version of nand_ecc.c
-The current HEAD for this file can be found here:
-http://git.infradead.org/mtd-2.6.git?a=blob_plain;f=drivers/mtd/nand/nand_ecc.c;hb=17c1d2be28e485c0c8b09661db39d5bf2605069d
-
-Best regards, Frans.
+-- 
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
