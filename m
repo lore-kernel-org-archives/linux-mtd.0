@@ -1,19 +1,23 @@
-Received: from anchor-post-30.mail.demon.net ([194.217.242.88])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KWMIR-00025o-DY
-	for linux-mtd@lists.infradead.org; Fri, 22 Aug 2008 02:22:39 +0000
-Message-ID: <48AE22F5.3000309@lougher.demon.co.uk>
-Date: Fri, 22 Aug 2008 03:22:45 +0100
-From: Phillip Lougher <phillip@lougher.demon.co.uk>
+Received: from smtp104.mail.mud.yahoo.com ([209.191.85.214])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KWMSH-0002wv-3E
+	for linux-mtd@lists.infradead.org; Fri, 22 Aug 2008 02:32:49 +0000
+From: Nick Piggin <nickpiggin@yahoo.com.au>
+To: "Jared Hulbert" <jaredeh@gmail.com>
+Subject: Re: [PATCH 00/10] AXFS: Advanced XIP filesystem
+Date: Fri, 22 Aug 2008 12:32:41 +1000
+References: <48AD00C4.6060302@gmail.com>
+	<200808212043.51209.nickpiggin@yahoo.com.au>
+	<6934efce0808210713m220d2a6cje06a2dc51c4a857a@mail.gmail.com>
+In-Reply-To: <6934efce0808210713m220d2a6cje06a2dc51c4a857a@mail.gmail.com>
 MIME-Version: 1.0
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 04/10] AXFS: axfs_inode.c
-References: <48AD00F0.5030403@gmail.com> <200808211417.14425.arnd@arndb.de>
-In-Reply-To: <200808211417.14425.arnd@arndb.de>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain;
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
-	=?windows-1252?Q?J=F6rn_Engel?= <joern@logfs.org>,
+Content-Disposition: inline
+Message-Id: <200808221232.42115.nickpiggin@yahoo.com.au>
+Cc: linux-embedded@vger.kernel.org, carsteno@de.ibm.com,
+	=?utf-8?q?J=C3=B6rn?= Engel <joern@logfs.org>,
 	Linux-kernel@vger.kernel.org,
 	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,58 +29,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Arnd Bergmann wrote:
-> On Thursday 21 August 2008, Jared Hulbert wrote:
->> +       array_index = AXFS_GET_INODE_ARRAY_INDEX(sbi, ino_number);
->> +       array_index += page->index;
->> +
->> +       node_index = AXFS_GET_NODE_INDEX(sbi, array_index);
->> +       node_type = AXFS_GET_NODE_TYPE(sbi, array_index);
->> +
->> +       if (node_type == Compressed) {
->> +               /* node is in compessed region */
->> +               cnode_offset = AXFS_GET_CNODE_OFFSET(sbi, node_index);
->> +               cnode_index = AXFS_GET_CNODE_INDEX(sbi, node_index);
->> +               down_write(&sbi->lock);
->> +               if (cnode_index != sbi->current_cnode_index) {
->> +                       /* uncompress only necessary if different cblock */
->> +                       ofs = AXFS_GET_CBLOCK_OFFSET(sbi, cnode_index);
->> +                       len = AXFS_GET_CBLOCK_OFFSET(sbi, cnode_index + 1);
->> +                       len -= ofs;
->> +                       axfs_copy_data(sb, cblk1, &(sbi->compressed), ofs, len);
->> +                       axfs_uncompress_block(cblk0, cblk_size, cblk1, len);
->> +                       sbi->current_cnode_index = cnode_index;
->> +               }
->> +               downgrade_write(&sbi->lock);
->> +               max_len = cblk_size - cnode_offset;
->> +               len = max_len > PAGE_CACHE_SIZE ? PAGE_CACHE_SIZE : max_len;
->> +               src = (void *)((unsigned long)cblk0 + cnode_offset);
->> +               memcpy(pgdata, src, len);
->> +               up_read(&sbi->lock);
-> 
-> This looks very nice, but could use some comments about how the data is
-> actually stored on disk. It took me some time to figure out that it actually
-> allows to do tail merging into compressed blocks, which I was about to suggest
-> you implement ;-). Cramfs doesn't have them, and I found that they are the
-> main reason why squashfs compresses better than cramfs, besides the default
-> block size, which you can change on either one.
+On Friday 22 August 2008 00:13, Jared Hulbert wrote:
+> > Agreed. I haven't had a good look through it yet, but at a glance it
+> > looks pretty neat. The VM side of things looks pretty reasonable
+> > (I fear XIP faulting might have another race or two, but that's a
+> > core mm issue rather than filesystem specific).
+>
+> How might I design a test to flush those bugs out?  We haven't seen any.
 
-Squashfs has much larger block sizes than cramfs (last time I looked it 
-was limited to 4K blocks), and it compresses the metadata which helps to 
-get better compression.  But tail merging (fragments in Squashfs 
-terminology) is obviously a major reason why Squashfs gets good compression.
-
-The AXFS code is rather obscure but it doesn't look to me that it does 
-tail merging.  The following code wouldn't work if the block in question 
-was a tail contained in a larger block.  It assumes the block extends to 
-the end of the compressed block (cblk_size - cnode_offset).
-
- >> +               max_len = cblk_size - cnode_offset;
- >> +               len = max_len > PAGE_CACHE_SIZE ? PAGE_CACHE_SIZE : 
-max_len;
- >> +               src = (void *)((unsigned long)cblk0 + cnode_offset);
- >> +               memcpy(pgdata, src, len);
-
-Perhaps the AXFS authors could clarify this?
-
-Phillip
+Not quite sure yet. I just fixed a couple of easy ones, but there
+could be some more lurking. Don't be too worried about it yet, I
+was just musing to myself there really :)
