@@ -1,17 +1,19 @@
-Date: Fri, 22 Aug 2008 15:34:51 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Zev Weiss <zevweiss@gmail.com>
-Subject: Re: [PATCH] [MTD] mtdchar.c: Fix regression in MEMGETREGIONINFO
-	ioctl()
-Message-Id: <20080822153451.bb79bd1f.akpm@linux-foundation.org>
-In-Reply-To: <48ABCC0B.40607@gmail.com>
-References: <48ABCC0B.40607@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from ti-out-0910.google.com ([209.85.142.189])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KWm6q-0003OZ-Bb
+	for linux-mtd@lists.infradead.org; Sat, 23 Aug 2008 05:56:24 +0000
+Received: by ti-out-0910.google.com with SMTP id a21so453687tia.2
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 22 Aug 2008 22:56:22 -0700 (PDT)
+Date: Sat, 23 Aug 2008 13:56:21 +0800
+From: Huang Weiyi <weiyi.huang@gmail.com>
+To: dwmw2@infradead.org
+Subject: [MTD] remove unused #include <version.h>
+Message-Id: <20080823132247.1280.WEIYI.HUANG@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-Cc: Rodolfo, David Woodhouse <dwmw2@infradead.org>,
-	Giometti <giometti@enneenne.com>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,95 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 20 Aug 2008 00:47:23 -0700
-Zev Weiss <zevweiss@gmail.com> wrote:
+The driver(s) below do not use LINUX_VERSION_CODE nor KERNEL_VERSION.
+  drivers/mtd/nand/au1550nd.c
 
-> From: Zev Weiss <zevweiss@gmail.com>
-> 
-> The MEMGETREGIONINFO ioctl() in mtdchar.c was clobbering user memory by
-> overwriting more than intended, due to the size of struct
-> mtd_erase_region_info changing in commit
-> 0ecbc81adfcb9f15f86b05ff576b342ce81bbef8.
-> 
-> Fix uses a member-by-member copy into a local struct region_info_user,
-> which is then copy_to_user()'d (and matches the size correctly by being
-> of the same type as the pointer passed in the ioctl() call).
-> 
-> Signed-off-by: Zev Weiss <zevweiss@gmail.com>
-> Tested-by: Zev Weiss <zevweiss@gmail.com>
-> ---
-> I had been having some problems with userspace memory corruption, and traced
-> them to a MEMGETREGIONINFO ioctl() on an MTD device.  I applied this patch and
-> it seems to fix the problem, though I am not an expert and there may be a more
-> correct way to go about doing this.  I'm also new at submitting patches, so
-> hopefully I haven't screwed up the patch-submission etiquette too
-> horrifically.
-> 
->   drivers/mtd/mtdchar.c |   11 +++++++++--
->   1 files changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-> index 13cc67a..0acb135 100644
-> --- a/drivers/mtd/mtdchar.c
-> +++ b/drivers/mtd/mtdchar.c
-> @@ -411,14 +411,21 @@ static int mtd_ioctl(struct inode *inode, struct file *file,
->   	case MEMGETREGIONINFO:
->   	{
->   		struct region_info_user ur;
-> +		struct mtd_erase_region_info *kr;
-> 
->   		if (copy_from_user(&ur, argp, sizeof(struct region_info_user)))
->   			return -EFAULT;
-> 
->   		if (ur.regionindex >= mtd->numeraseregions)
->   			return -EINVAL;
-> -		if (copy_to_user(argp, &(mtd->eraseregions[ur.regionindex]),
-> -				sizeof(struct mtd_erase_region_info)))
-> +
-> +		kr = &(mtd->eraseregions[ur.regionindex]);
-> +
-> +		ur.offset = kr->offset;
-> +		ur.erasesize = kr->erasesize;
-> +		ur.numblocks = kr->numblocks;
-> +
-> +		if (copy_to_user(argp, &ur, sizeof(struct region_info_user)))
->   			return -EFAULT;
->   		break;
->   	}
+This patch removes the said #include <version.h>.
 
-ug.
+Signed-off-by: Huang Weiyi <weiyi.huang@gmail.com>
 
-Putting a kernel pointer into a shared-with-userspace data structure
-(struct mtd_erase_region_info) was a big mistake.
+diff --git a/drivers/mtd/nand/au1550nd.c b/drivers/mtd/nand/au1550nd.c
+index 761946e..92c334f 100644
+--- a/drivers/mtd/nand/au1550nd.c
++++ b/drivers/mtd/nand/au1550nd.c
+@@ -16,7 +16,6 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/nand.h>
+ #include <linux/mtd/partitions.h>
+-#include <linux/version.h>
+ #include <asm/io.h>
 
-Copying a `struct region_info_user' back to userspace seems better than
-copying a `struct mtd_erase_region_info', but what do I know?
-
-Actually...
-
-Before 0ecbc81adfcb9f15f86b05ff576b342ce81bbef8, `struct
-mtd_erase_region_info' had three members, all u32.  We were copying
-three u32's out to userspace.
-
-After 0ecbc81adfcb9f15f86b05ff576b342ce81bbef8, `struct
-mtd_erase_region_info' has four members: three u32's and one ulong*. 
-We're copying three u32's and one ulong* out to userspace.
-
-After your change, we're copying _four_ u32's out to userspace, so
-there still is potential for scribbling on unsuspecting userspace?
-
-If that reading is right, we need to go back to copying just the three
-u32's.  Perhaps via
-
-struct mtd_erase_region_info {
-	struct {
-		u_int32_t offset;
-		u_int32_t erasesize;
-		u_int32_t numblocks;
-	} user_part;
-	unsigned long *lockmap;
-};
-
-or similar.
-
-David?  Help?  2.6.25.x anmd 2.6.26.x need fixing as well.
+ #include <asm/mach-au1x00/au1xxx.h>
