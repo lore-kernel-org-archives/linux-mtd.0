@@ -1,25 +1,18 @@
-Received: from wf-out-1314.google.com ([209.85.200.175])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KWoCZ-0001Bp-Co
-	for linux-mtd@lists.infradead.org; Sat, 23 Aug 2008 08:10:27 +0000
-Received: by wf-out-1314.google.com with SMTP id 28so743419wfc.24
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 23 Aug 2008 01:10:25 -0700 (PDT)
-Message-ID: <48AFC5ED.50005@gmail.com>
-Date: Sat, 23 Aug 2008 01:10:21 -0700
-From: Zev Weiss <zevweiss@gmail.com>
-MIME-Version: 1.0
-To: Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] [MTD] mtdchar.c: Fix regression in MEMGETREGIONINFO
-	ioctl()
-References: <48ABCC0B.40607@gmail.com>
-	<20080822153451.bb79bd1f.akpm@linux-foundation.org>
-In-Reply-To: <20080822153451.bb79bd1f.akpm@linux-foundation.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	Rodolfo Giometti <giometti@enneenne.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from relay02.pair.com ([209.68.5.16])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KWv8j-0005X7-PV
+	for linux-mtd@lists.infradead.org; Sat, 23 Aug 2008 15:34:58 +0000
+Date: Sat, 23 Aug 2008 08:34:38 -0700
+Subject: Re: Creating an Empty JFFS2 File System
+From: Grant Erickson <gerickson@nuovations.com>
+To: "\"linux-mtd@lists.infradead.org\"" <linux-mtd@lists.infradead.org>
+Message-ID: <C4D57C1E.113B6%gerickson@nuovations.com>
+In-Reply-To: <C3F6E812.DD80%gerickson@nuovations.com>
+Mime-version: 1.0
+Content-type: text/plain;
+	charset="US-ASCII"
+Content-transfer-encoding: 7bit
+Cc: Josh Boyer <jwboyer@gmail.com>, Stefan Roese <sr@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,117 +22,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Andrew Morton wrote:
-> On Wed, 20 Aug 2008 00:47:23 -0700
-> Zev Weiss <zevweiss@gmail.com> wrote:
+On 3/7/08 12:39 PM, Grant Erickson wrote:
+> On 3/7/08 10:37 AM, Josh Boyer wrote:
+>> On Fri, 07 Mar 2008 09:55:13 -0800
+>> Grant Erickson <gerickson@nuovations.com> wrote:
+>>> Is creating an empty JFFS2 file system supported or is this a deprecated
+>>> capability? The following steps seem to be incorrect or failing:
+>>> 
+>>>     # flash_eraseall -q -j /dev/mtd9
+>>>     # mount -t jffs2 /dev/mtdblock9 /mnt
+>>>     Cowardly refusing to erase blocks on filesystem with no valid JFFS2
+>>>     nodes
+>>>     empty_blocks 0, bad_blocks 0, c->nr_blocks 3840
+>>> 
+>>> Or, is the only way to accomplish this to create a NULL JFFS2 image with
+>>> mkfs.jffs2 and then nandwrite it?
+>> 
+>> Just erase it completely without the -j option and mount.  JFFS2 will go
+>> through and erase them all again and add the cleanmarkers itself.
 > 
->> From: Zev Weiss <zevweiss@gmail.com>
->>
->> The MEMGETREGIONINFO ioctl() in mtdchar.c was clobbering user memory by
->> overwriting more than intended, due to the size of struct
->> mtd_erase_region_info changing in commit
->> 0ecbc81adfcb9f15f86b05ff576b342ce81bbef8.
->>
->> Fix uses a member-by-member copy into a local struct region_info_user,
->> which is then copy_to_user()'d (and matches the size correctly by being
->> of the same type as the pointer passed in the ioctl() call).
->>
->> Signed-off-by: Zev Weiss <zevweiss@gmail.com>
->> Tested-by: Zev Weiss <zevweiss@gmail.com>
->> ---
->> I had been having some problems with userspace memory corruption, and traced
->> them to a MEMGETREGIONINFO ioctl() on an MTD device.  I applied this patch and
->> it seems to fix the problem, though I am not an expert and there may be a more
->> correct way to go about doing this.  I'm also new at submitting patches, so
->> hopefully I haven't screwed up the patch-submission etiquette too
->> horrifically.
->>
->>   drivers/mtd/mtdchar.c |   11 +++++++++--
->>   1 files changed, 9 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
->> index 13cc67a..0acb135 100644
->> --- a/drivers/mtd/mtdchar.c
->> +++ b/drivers/mtd/mtdchar.c
->> @@ -411,14 +411,21 @@ static int mtd_ioctl(struct inode *inode, struct file *file,
->>   	case MEMGETREGIONINFO:
->>   	{
->>   		struct region_info_user ur;
->> +		struct mtd_erase_region_info *kr;
->>
->>   		if (copy_from_user(&ur, argp, sizeof(struct region_info_user)))
->>   			return -EFAULT;
->>
->>   		if (ur.regionindex >= mtd->numeraseregions)
->>   			return -EINVAL;
->> -		if (copy_to_user(argp, &(mtd->eraseregions[ur.regionindex]),
->> -				sizeof(struct mtd_erase_region_info)))
->> +
->> +		kr = &(mtd->eraseregions[ur.regionindex]);
->> +
->> +		ur.offset = kr->offset;
->> +		ur.erasesize = kr->erasesize;
->> +		ur.numblocks = kr->numblocks;
->> +
->> +		if (copy_to_user(argp, &ur, sizeof(struct region_info_user)))
->>   			return -EFAULT;
->>   		break;
->>   	}
+> Josh:
 > 
-> ug.
+> That technique is a no-go as well:
 > 
-> Putting a kernel pointer into a shared-with-userspace data structure
-> (struct mtd_erase_region_info) was a big mistake.
-> 
-> Copying a `struct region_info_user' back to userspace seems better than
-> copying a `struct mtd_erase_region_info', but what do I know?
-> 
-> Actually...
-> 
-> Before 0ecbc81adfcb9f15f86b05ff576b342ce81bbef8, `struct
-> mtd_erase_region_info' had three members, all u32.  We were copying
-> three u32's out to userspace.
-> 
-> After 0ecbc81adfcb9f15f86b05ff576b342ce81bbef8, `struct
-> mtd_erase_region_info' has four members: three u32's and one ulong*. 
-> We're copying three u32's and one ulong* out to userspace.
-> 
-> After your change, we're copying _four_ u32's out to userspace, so
-> there still is potential for scribbling on unsuspecting userspace?
-> 
-> If that reading is right, we need to go back to copying just the three
-> u32's.  Perhaps via
-> 
-> struct mtd_erase_region_info {
-> 	struct {
-> 		u_int32_t offset;
-> 		u_int32_t erasesize;
-> 		u_int32_t numblocks;
-> 	} user_part;
-> 	unsigned long *lockmap;
-> };
-> 
-> or similar.
-> 
-> David?  Help?  2.6.25.x anmd 2.6.26.x need fixing as well.
-> 
-> 
+>     # flash_eraseall -q /dev/mtd8
+>     # mount -t jffs2 /dev/mtdblock8 /mnt
+>     Cowardly refusing to erase blocks on filesystem with no valid JFFS2
+>     nodes
+>     empty_blocks 0, bad_blocks 0, c->nr_blocks 3840
+>     mount: mounting /dev/mtdblock8 on /mnt failed: Input/output error
 
-Hmm.  Well, I may be misunderstanding what you're saying (again, I'm very much
-a newbie to kernelspace), but I *think* the "copying four u32's out to
-userspace" thing isn't really a problem with my patch.  It does certainly copy
-those four u32's, but given that `ur' (struct mtd_region_info_user) is
-initialized by copying from userspace, its fourth u32 (the `regionindex'
-member) should be identical when copied back out to userspace, given that it's
-not touched in the memberwise modification of the struct.  So yes, it is
-copying 4 bytes more than is strictly necessary, but it seemed like a
-reasonably clean way of going about it (to me, for what that's worth).
+For those following this thread via Google, I finally had time to debug this
+upon arrival of our prototype boards and thought I would close the thread
+out with the root cause.
 
-In my particular situation it didn't do anything unexpected in my testing (and
-restored the normal behavior I had when previously running 2.6.17.7).
+On the prototype board, which uses a Numonyx NAND01GW3B2B (128 KiB block / 2
+KiB page), I found that I COULD successfully erase a NAND partition with
+'nand erase' in u-boot or 'flash_eraseall' in Linux and then mount it:
 
-On the other hand, if I'm missing something completely, please let me know,
-and perhaps I can prepare a more suitable fix.
+    # flash_eraseall -q /dev/mtd9
+    # mount -t jffs2 /dev/mtdblock9 /mnt/root0
+    # df
+    Filesystem           1k-blocks      Used Available Use% Mounted on
+    ...
+    /dev/mtdblock9            8192       512      7680   6% /mnt/root0
 
-Thanks,
-Zev
+However, as before, I tried this on Haleakala/Kilauea with its Samsung
+K9F1208U0B (16 KiB block / 512 B page) part using the same 2.6.25-rc3 DENX
+kernel, I saw the following:
+
+    # flash_eraseall -q /dev/mtd9
+    # mount -t jffs2 /dev/mtdblock9 /mnt/root0
+    Cowardly refusing to erase blocks on filesystem with no valid JFFS2
+nodes
+    empty_blocks 0, bad_blocks 0, c->nr_blocks 512
+    mount: mounting /dev/mtdblock9 on /mnt/root0 failed: Input/output error
+
+My suspicion was that this was somehow related to the custom OOB/ECC layout
+specified in arch/powerpc/platforms/40x/kilauea-nand.c because an erase from
+either u-boot with 'nand erase' or Linux with 'flash_eraseall' produced
+identical results.
+
+The larger page part on the prototype board uses a default OOB/ECC layout
+(similar to Canyonlands, et al) and worked correctly in either case.
+
+So, I made the following change in arch/powerpc/platforms/40x/kilauea-nand.c
+in the DENX-2.6.26.2 kernel:
+
+    -    .ecclayout = &nand_oob_16,
+    +    .ecclayout = NULL,
+
+and an empty/erased partition mount worked, both with an erase from u-boot
+using 'nand erase' and from Linux using 'flash erase_all'.
+
+Stefan Roese at DENX confirmed this was likely an arch/ppc to arch/powerpc
+porting error/typo.
+
+Regards,
+
+Grant Erickson
