@@ -1,18 +1,14 @@
-Received: from py-out-1112.google.com ([64.233.166.180])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KXgId-000741-L7
-	for linux-mtd@lists.infradead.org; Mon, 25 Aug 2008 17:56:20 +0000
-Received: by py-out-1112.google.com with SMTP id a73so1625073pye.2
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 25 Aug 2008 10:56:18 -0700 (PDT)
-Subject: Having trouble with MTD partition on NOR flash
-From: "C.K. Lim" <lim.chongkean@gmail.com>
+Received: from mail.cvg.de ([62.153.82.30])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KXhRv-0002fQ-4n
+	for linux-mtd@lists.infradead.org; Mon, 25 Aug 2008 19:09:59 +0000
+From: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 25 Aug 2008 10:56:13 -0700
-Message-Id: <1219686973.2964.11.camel@testpc.toroki.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH] mtd-utils: fixed and enhanced '--flash-image' option
+Date: Mon, 25 Aug 2008 21:09:50 +0200
+Message-Id: <1219691391-15149-1-git-send-email-enrico.scholz@sigma-chemnitz.de>
+Sender: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
+Cc: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,15 +18,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All, 
+The '--flash-image' option of 'ubiformat' requires an argument and
+'.has_arg' must not be 0 hence.  The patch adds this option to the
+commandline synopsis too.
 
-﻿i compile .dts thru make that create uImage, .dtb (blob) file the
-problem that bothers me is when i   
-#cat /proc/mtd
-no mtd partition shows in the NOR flash, instead it has only mtd0 (one
-whole piece of flash) in physmap0.map. i've tried commandline
-parser, .config with MTD partition support
-any idea?
+Signed-off-by: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
+---
+ ubi-utils/new-utils/src/ubiformat.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
-thanks,
-ck
+diff --git a/ubi-utils/new-utils/src/ubiformat.c b/ubi-utils/new-utils/src/ubiformat.c
+index 1fa14b3..c2888e0 100644
+--- a/ubi-utils/new-utils/src/ubiformat.c
++++ b/ubi-utils/new-utils/src/ubiformat.c
+@@ -92,7 +92,8 @@ static const char *usage =
+ "\t\t\t[-x <num>] [-E <value>] [-s <bytes>] [-O <offs>] [-n]\n"
+ "\t\t\t[--help] [--version] [--yes] [--verbose] [--quiet]\n"
+ "\t\t\t[--ec=<value>] [--vid-hdr-offset=<offs>]\n"
+-"\t\t\t[--ubi-ver=<num>] [--no-volume-table]\n\n"
++"\t\t\t[--ubi-ver=<num>] [--no-volume-table]\n"
++"\t\t\t[--flash-image=<file>]\n\n"
+ 
+ "Example 1: " PROGRAM_NAME " /dev/mtd0 -y - format MTD device number 0 and do\n"
+ "           not ask questions.\n"
+@@ -103,7 +104,7 @@ static const struct option long_options[] = {
+ 	{ .name = "sub-page-size",   .has_arg = 1, .flag = NULL, .val = 's' },
+ 	{ .name = "vid-hdr-offset",  .has_arg = 1, .flag = NULL, .val = 'O' },
+ 	{ .name = "no-volume-table", .has_arg = 0, .flag = NULL, .val = 'n' },
+-	{ .name = "flash-image",     .has_arg = 0, .flag = NULL, .val = 'f' },
++	{ .name = "flash-image",     .has_arg = 1, .flag = NULL, .val = 'f' },
+ 	{ .name = "yes",             .has_arg = 0, .flag = NULL, .val = 'y' },
+ 	{ .name = "erase-counter",   .has_arg = 1, .flag = NULL, .val = 'e' },
+ 	{ .name = "quiet",           .has_arg = 0, .flag = NULL, .val = 'q' },
+-- 
+1.5.5.1
