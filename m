@@ -1,19 +1,38 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from mtagate6.uk.ibm.com ([195.212.29.139])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KXYsp-0003Zm-Ed
-	for linux-mtd@lists.infradead.org; Mon, 25 Aug 2008 10:01:11 +0000
-Subject: Re: [PATCH] mtd-utils: use 'stat(2)' instead of 'lstat(2)'
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
-In-Reply-To: <1219656108-1365-1-git-send-email-enrico.scholz@sigma-chemnitz.de>
-References: <1219656108-1365-1-git-send-email-enrico.scholz@sigma-chemnitz.de>
-Content-Type: text/plain; charset=utf-8
-Date: Mon, 25 Aug 2008 12:57:32 +0300
-Message-Id: <1219658252.18027.106.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+	id 1KXZhw-0004KJ-LM
+	for linux-mtd@lists.infradead.org; Mon, 25 Aug 2008 10:54:01 +0000
+Received: from d06nrmr1407.portsmouth.uk.ibm.com
+	(d06nrmr1407.portsmouth.uk.ibm.com [9.149.38.185])
+	by mtagate6.uk.ibm.com (8.13.8/8.13.8) with ESMTP id m7PAqqZj198384
+	for <linux-mtd@lists.infradead.org>; Mon, 25 Aug 2008 10:52:52 GMT
+Received: from d06av04.portsmouth.uk.ibm.com (d06av04.portsmouth.uk.ibm.com
+	[9.149.37.216])
+	by d06nrmr1407.portsmouth.uk.ibm.com (8.13.8/8.13.8/NCO v9.0) with
+	ESMTP id m7PAqqfP3047562
+	for <linux-mtd@lists.infradead.org>; Mon, 25 Aug 2008 11:52:52 +0100
+Received: from d06av04.portsmouth.uk.ibm.com (loopback [127.0.0.1])
+	by d06av04.portsmouth.uk.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
+	id m7PAqpQS006397
+	for <linux-mtd@lists.infradead.org>; Mon, 25 Aug 2008 11:52:51 +0100
+Message-ID: <48B28F00.10202@de.ibm.com>
+Date: Mon, 25 Aug 2008 12:52:48 +0200
+From: Carsten Otte <cotte@de.ibm.com>
+MIME-Version: 1.0
+To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Subject: Re: [PATCH 00/10] AXFS: Advanced XIP filesystem
+References: <48AD00C4.6060302@gmail.com>
+	<Pine.LNX.4.64.0808221650500.17105@vixen.sonytel.be>
+	<6934efce0808220951i5a2cd6f9t70f9c522eae6f1d6@mail.gmail.com>
+	<Pine.LNX.4.64.0808251136140.3893@vixen.sonytel.be>
+In-Reply-To: <Pine.LNX.4.64.0808251136140.3893@vixen.sonytel.be>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: nickpiggin@yahoo.com.au, linux-embedded@vger.kernel.org,
+	=?UTF-8?B?SsO2cm4gRW5nZWw=?= <joern@logfs.org>,
+	Linux-kernel@vger.kernel.org,
+	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
+Reply-To: carsteno@de.ibm.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +42,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Mon, 2008-08-25 at 11:21 +0200, Enrico Scholz wrote:
-> The UBI tools refuse to work with symlinks like
-> '/dev/ubi/bootloader -> ../ubi0_2' because they use 'lstat(2)' and get
-> information about the symlink but not about the device.  This is
-> unwanted and fixed by this patch.
->=20
-> This patch renames 'struct stat stat' variables to 'st' to avoid
-> compilation errors.
-
-Applied and pushed, thank you!
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Geert Uytterhoeven wrote:
+> From your good relationship with the s390 developers, I had hoped you would
+> have done some tests on s390 ;-)
+Haha, we let you sort out the endianess issues first and then take the 
+easy path :-). We have'nt tried it yet so far.
