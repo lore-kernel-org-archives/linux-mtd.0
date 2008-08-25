@@ -1,24 +1,19 @@
-Received: from vervifontaine.sonytel.be ([80.88.33.193]
-	helo=vervifontaine.sonycom.com)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KXYVy-0006eK-Po
-	for linux-mtd@lists.infradead.org; Mon, 25 Aug 2008 09:37:35 +0000
-Date: Mon, 25 Aug 2008 11:37:34 +0200 (CEST)
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Sender: geert@sonytel.be
-To: Jared Hulbert <jaredeh@gmail.com>
-Subject: Re: [PATCH 00/10] AXFS: Advanced XIP filesystem
-In-Reply-To: <6934efce0808220951i5a2cd6f9t70f9c522eae6f1d6@mail.gmail.com>
-Message-ID: <Pine.LNX.4.64.0808251136140.3893@vixen.sonytel.be>
-References: <48AD00C4.6060302@gmail.com>
-	<Pine.LNX.4.64.0808221650500.17105@vixen.sonytel.be>
-	<6934efce0808220951i5a2cd6f9t70f9c522eae6f1d6@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="-584349381-351044936-1219657054=:3893"
-Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
-	=?UTF-8?Q?J=C3=B6rn_Engel?= <joern@logfs.org>,
-	Linux-kernel@vger.kernel.org,
-	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KXYsp-0003Zm-Ed
+	for linux-mtd@lists.infradead.org; Mon, 25 Aug 2008 10:01:11 +0000
+Subject: Re: [PATCH] mtd-utils: use 'stat(2)' instead of 'lstat(2)'
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
+In-Reply-To: <1219656108-1365-1-git-send-email-enrico.scholz@sigma-chemnitz.de>
+References: <1219656108-1365-1-git-send-email-enrico.scholz@sigma-chemnitz.de>
+Content-Type: text/plain; charset=utf-8
+Date: Mon, 25 Aug 2008 12:57:32 +0300
+Message-Id: <1219658252.18027.106.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,63 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hi,
 
----584349381-351044936-1219657054=:3893
-Content-Type: TEXT/PLAIN; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+On Mon, 2008-08-25 at 11:21 +0200, Enrico Scholz wrote:
+> The UBI tools refuse to work with symlinks like
+> '/dev/ubi/bootloader -> ../ubi0_2' because they use 'lstat(2)' and get
+> information about the symlink but not about the device.  This is
+> unwanted and fixed by this patch.
+>=20
+> This patch renames 'struct stat stat' variables to 'st' to avoid
+> compilation errors.
 
-On Fri, 22 Aug 2008, Jared Hulbert wrote:
-> > The version in SVN seems to be slightly older than the one you submitted?
-> 
-> Oops.  Okay I must have neglected to sync at the very end.  Thanks.
-> 
-> I forgot, there is also a git repo at
-> 
-> git://git.infradead.org/users/jehulber/axfs.git
-> 
-> > Which platform(s) do you use for testing?
-> 
-> ARM, x86
+Applied and pushed, thank you!
 
-Ah, little endian.
-
->From your good relationship with the s390 developers, I had hoped you would
-have done some tests on s390 ;-)
-
-> > I gave AxFS a try on PS3 (ppc64, always use big-endian 64-bit for testing new
-> > code ;-).
-> 
-> Smart.  Hmmm, If only I had a PS3....
-> 
-> > When mounting the image, I got the crash below:
-> 
-> > When mounting (also on PS3) an image created on ia32, I get a different crash:
-> >
-> > | axfs: wrong magic
-> >
-> > So I guess some parts are not yet 64-bit or endian clean.
-> 
-> Can you run mkfs.axfs on the same trivial directory on both ia32 and
-> PPC64 and then get me the resulting images?
-
-I'll send them by private email.
-
-With kind regards,
-
-Geert Uytterhoeven
-Software Architect
-
-Sony Techsoft Centre Europe
-The Corporate Village · Da Vincilaan 7-D1 · B-1935 Zaventem · Belgium
-
-Phone:    +32 (0)2 700 8453
-Fax:      +32 (0)2 700 8622
-E-mail:   Geert.Uytterhoeven@sonycom.com
-Internet: http://www.sony-europe.com/
-
-A division of Sony Europe (Belgium) N.V.
-VAT BE 0413.825.160 · RPR Brussels
-Fortis · BIC GEBABEBB · IBAN BE41293037680010
----584349381-351044936-1219657054=:3893--
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
