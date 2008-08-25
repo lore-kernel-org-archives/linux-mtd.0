@@ -1,26 +1,19 @@
-Received: from hosted05.westnet.com.au ([203.10.1.219])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KXcfJ-0005RS-CP
-	for linux-mtd@lists.infradead.org; Mon, 25 Aug 2008 14:03:30 +0000
-Message-ID: <48B2BB71.3090803@snapgear.com>
-Date: Tue, 26 Aug 2008 00:02:25 +1000
-From: Greg Ungerer <gerg@snapgear.com>
-MIME-Version: 1.0
-To: Jamie Lokier <jamie@shareable.org>
-Subject: Re: [PATCH 00/10] AXFS: Advanced XIP filesystem
-References: <48AD00C4.6060302@gmail.com> <20080821110749.GA1926@shareable.org>
-	<6934efce0808210711t686a88eci6eb294dbb54d68fe@mail.gmail.com>
-	<48AE0476.80109@snapgear.com>
-	<6934efce0808211948kd12ba76k1ee847a0e08010e0@mail.gmail.com>
-	<48B2529B.8030906@snapgear.com>
-	<20080825114346.GB20960@shareable.org>
-In-Reply-To: <20080825114346.GB20960@shareable.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
-	=?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>,
-	Linux-kernel@vger.kernel.org,
-	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KXeOz-0006ag-PP
+	for linux-mtd@lists.infradead.org; Mon, 25 Aug 2008 15:54:46 +0000
+Subject: Re: ubifs mount size
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: dfoley <dfoley@telus.net>
+In-Reply-To: <1219339475.18027.87.camel@sauron>
+References: <g85ka8$cpi$1@ger.gmane.org>  <1219339475.18027.87.camel@sauron>
+Content-Type: text/plain; charset=utf-8
+Date: Mon, 25 Aug 2008 18:51:37 +0300
+Message-Id: <1219679497.18027.110.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, Bruce_Leonard@selinc.com
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,52 +23,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
-Hi Jamie,
+On Thu, 2008-08-21 at 20:24 +0300, Artem Bityutskiy wrote:
+> > root@tsi-sa2410:~# ubimkvol /dev/ubi1 -N root -s 55MiB
+> > Volume ID 0, size 3755 LEBs (57676800 bytes, 55.0 MiB), LEB size 15360=20
+> > bytes (15.0 KiB), dynamic, name "root", alignment 1
+> > root@tsi-sa2410:~# mount -t ubifs ubi1:root /mnt/linux2-root/
+> > UBIFS: default file-system created
+> > UBIFS: background thread "ubifs_bgt1_0" started, PID 930
+> > UBIFS: mounted UBI device 1, volume 0, name "root"
+> > UBIFS: file system size: 57292800 bytes (55950 KiB, 54 MiB, 3730 LEBs)
+> > UBIFS: journal size: 2872320 bytes (2805 KiB, 2 MiB, 187 LEBs)
+> > UBIFS: default compressor: LZO
+> > UBIFS: media format 4, latest format 4
+> > root@tsi-sa2410:~# df
+> > Filesystem           1k-blocks      Used Available Use% Mounted on
+> > rootfs                    8059      5284      2366  69% /
+> > /dev/root                 8059      5284      2366  69% /
+> > /dev/root                 8059      5284      2366  69% /dev/.static/de=
+v
+> > ubi1:root                33968         0     31204   0% /mnt/linux2-roo=
+t
+>=20
+> I've explored this a little. Currently UBIFS indeed reports 15%-20% less
+> free space than it actually has, and we'll try to fix this.
 
-Jamie Lokier wrote:
-> Greg Ungerer wrote:
->> Sort of. It actually just uses a single ->read to bring in
->> the entire file contents. There is a few limitations on the use
->> of mmap() for non-mmu. Documentation/nommu-mmap.txt gives
->> more details. With no MMU it does rely on being able to kmalloc()
->> a single RAM region big enough to hold the entire file.
-> 
-> That's unfortunate, if you're using FDPIC-ELF or BFLT-XIP, you really want
-> to kmalloc() one region for code (i.e. mmap not the whole file), and
-> one separate for data.
+We have improved UBIFS free space reporting and it should be much better
+now. Please, pull master branch of the ubifs-2.6.git tree to find the
+fixes.
 
-That is what the BFLT loader does. For the XIP case it mmap()s
-the text directly from the file, and then mmap()s a second region
-for the data/bss (reading the data into that region).
-
-I was referring to general mmap() of a file case above, not
-the exec path.
-
-
->  Asking for a single larger region sometimes
-> creates much higher memory pressure while kmalloc() attempts to
-> defragment by evicting everything.
-
-Sure.
-
-
-> But that's fiddly to do right in general.
-> 
-> The natural thing for AXFS to do to support no-MMU FDPIC-ELF or
-> BFLT-XIP is store the code segment uncompressed and contiguous, and
-> the data segment however the filesystem prefers, and the profiling
-> information to work out where these are is readily available from the
-> mmap() calls, which are always the same when an executable is run.
-
-Yep.
-
-Regards
-Greg
-
-
-------------------------------------------------------------------------
-Greg Ungerer  --  Chief Software Dude       EMAIL:     gerg@snapgear.com
-SnapGear -- a Secure Computing Company      PHONE:       +61 7 3435 2888
-825 Stanley St,                             FAX:         +61 7 3891 3630
-Woolloongabba, QLD, 4102, Australia         WEB: http://www.SnapGear.com
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
