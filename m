@@ -1,14 +1,25 @@
-Received: from mail.cvg.de ([62.153.82.30])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KXYHD-0004y8-7o
-	for linux-mtd@lists.infradead.org; Mon, 25 Aug 2008 09:22:19 +0000
-From: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd-utils: use 'stat(2)' instead of 'lstat(2)'
-Date: Mon, 25 Aug 2008 11:21:48 +0200
-Message-Id: <1219656108-1365-1-git-send-email-enrico.scholz@sigma-chemnitz.de>
-Sender: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
-Cc: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
+Received: from vervifontaine.sonytel.be ([80.88.33.193]
+	helo=vervifontaine.sonycom.com)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KXWQg-0005on-5n
+	for linux-mtd@lists.infradead.org; Mon, 25 Aug 2008 07:23:59 +0000
+Date: Mon, 25 Aug 2008 09:23:46 +0200 (CEST)
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Sender: geert@sonytel.be
+To: Will Marone <wjmarone@gmail.com>
+Subject: Re: [PATCH 00/10] AXFS: Advanced XIP filesystem
+In-Reply-To: <48AF3905.70304@gmail.com>
+Message-ID: <Pine.LNX.4.64.0808250922500.3893@vixen.sonytel.be>
+References: <48AD00C4.6060302@gmail.com>
+	<Pine.LNX.4.64.0808221650500.17105@vixen.sonytel.be>
+	<48AF3905.70304@gmail.com>
+MIME-Version: 1.0
+Content-Type: MULTIPART/MIXED;
+	BOUNDARY="-584349381-1942548691-1219649026=:3893"
+Cc: linux-embedded@vger.kernel.org,
+	=?UTF-8?B?SsO2cm4gRW5nZWw=?= <joern@logfs.org>,
+	Linux-kernel@vger.kernel.org,
+	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@AM.SONY.COM
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,164 +29,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The UBI tools refuse to work with symlinks like
-'/dev/ubi/bootloader -> ../ubi0_2' because they use 'lstat(2)' and get
-information about the symlink but not about the device.  This is
-unwanted and fixed by this patch.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-This patch renames 'struct stat stat' variables to 'st' to avoid
-compilation errors.
+---584349381-1942548691-1219649026=:3893
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-Signed-off-by: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
----
- ubi-utils/new-utils/src/libubi.c |   14 +++++++-------
- ubi-utils/src/libubi.c           |   30 +++++++++++++++---------------
- ubi-utils/src/nand2bin.c         |    2 +-
- 3 files changed, 23 insertions(+), 23 deletions(-)
+On Fri, 22 Aug 2008, Will Marone wrote:
+> Geert Uytterhoeven wrote:
+> > I gave AxFS a try on PS3 (ppc64, always use big-endian 64-bit for testing
+> > new
+> > code ;-).
+> > When mounting the image, I got the crash below:
+> >
+> > | attempt to access beyond end of device
+> > | loop0: rw=0, want=4920, limit=4912
+> > | Unable to handle kernel paging request for data at address 0x00000028
+> > | Faulting instruction address: 0xd000000000037988
+> > | Oops: Kernel access of bad area, sig: 11 [#1]
+> > | SMP NR_CPUS=2 PS3
+> >
+> > When mounting (also on PS3) an image created on ia32, I get a different
+> > crash:
+> >
+> > | axfs: wrong magic
+> >   ^^^^^^^^^^^^^^^^^
+> > | Unable to handle kernel paging request for data at address 0x000003a8
+> > | Faulting instruction address: 0xd0000000000355f0
+> > | Oops: Kernel access of bad area, sig: 11 [#1]
+> > | SMP NR_CPUS=2 PS
+> Geert,
+> 
+> Thanks for giving it a spin, especially on a platform as different from ours
+> as the PS3.
+> 
+> Before I dig more into what happened, I was wondering if you could tell me a
+> bit more
+> about your environment, particularly how you supplied the filesystem to the
+> kernel and
+> your mount commandline (also, if you used a boot commandline, what it was.)
+> 
+> My first guess would be a ppc64 compiled UML session, but I'd like to be a bit
+> more sure.
 
-diff --git a/ubi-utils/new-utils/src/libubi.c b/ubi-utils/new-utils/src/libubi.c
-index 8f95108..10e3f2a 100644
---- a/ubi-utils/new-utils/src/libubi.c
-+++ b/ubi-utils/new-utils/src/libubi.c
-@@ -365,7 +365,7 @@ static int vol_node2nums(struct libubi *lib, const char *node, int *dev_num,
- 	int i, fd, major, minor;
- 	char file[strlen(lib->ubi_vol) + 100];
- 
--	if (lstat(node, &st))
-+	if (stat(node, &st))
- 		return -1;
- 
- 	if (!S_ISCHR(st.st_mode)) {
-@@ -427,20 +427,20 @@ static int vol_node2nums(struct libubi *lib, const char *node, int *dev_num,
-  */
- static int dev_node2num(struct libubi *lib, const char *node, int *dev_num)
- {
--	struct stat stat;
-+	struct stat st;
- 	struct ubi_info info;
- 	int i, major, minor;
- 
--	if (lstat(node, &stat))
-+	if (stat(node, &st))
- 		return -1;
- 
--	if (!S_ISCHR(stat.st_mode)) {
-+	if (!S_ISCHR(st.st_mode)) {
- 		errno = EINVAL;
- 		return errmsg("\"%s\" is not a character device", node);
- 	}
- 
--	major = major(stat.st_rdev);
--	minor = minor(stat.st_rdev);
-+	major = major(st.st_rdev);
-+	minor = minor(st.st_rdev);
- 
- 	if (minor != 0) {
- 		errno = EINVAL;
-@@ -754,7 +754,7 @@ int ubi_node_type(libubi_t desc, const char *node)
- 	struct libubi *lib = (struct libubi *)desc;
- 	char file[strlen(lib->ubi_vol) + 100];
- 
--	if (lstat(node, &st))
-+	if (stat(node, &st))
- 		return -1;
- 
- 	if (!S_ISCHR(st.st_mode)) {
-diff --git a/ubi-utils/src/libubi.c b/ubi-utils/src/libubi.c
-index a028fc6..a536b47 100644
---- a/ubi-utils/src/libubi.c
-+++ b/ubi-utils/src/libubi.c
-@@ -754,20 +754,20 @@ static char *mkpath(const char *path, const char *name)
-  */
- static int find_dev_num(struct libubi *lib, const char *node)
- {
--	struct stat stat;
-+	struct stat st;
- 	struct ubi_info info;
- 	int i, major, minor;
- 
--	if (lstat(node, &stat))
-+	if (stat(node, &st))
- 		return -1;
- 
--	if (!S_ISCHR(stat.st_mode)) {
-+	if (!S_ISCHR(st.st_mode)) {
- 		errno = EINVAL;
- 		return -1;
- 	}
- 
--	major = major(stat.st_rdev);
--	minor = minor(stat.st_rdev);
-+	major = major(st.st_rdev);
-+	minor = minor(st.st_rdev);
- 
- 	if (minor != 0) {
- 		errno = -EINVAL;
-@@ -811,21 +811,21 @@ static int find_dev_num(struct libubi *lib, const char *node)
-  */
- static int find_dev_num_vol(struct libubi *lib, const char *node)
- {
--	struct stat stat;
-+	struct stat st;
- 	struct ubi_info info;
- 	int i, major;
- 
--	if (lstat(node, &stat))
-+	if (stat(node, &st))
- 		return -1;
- 
--	if (!S_ISCHR(stat.st_mode)) {
-+	if (!S_ISCHR(st.st_mode)) {
- 		errno = EINVAL;
- 		return -1;
- 	}
- 
--	major = major(stat.st_rdev);
-+	major = major(st.st_rdev);
- 
--	if (minor(stat.st_rdev) == 0) {
-+	if (minor(st.st_rdev) == 0) {
- 		errno = -EINVAL;
- 		return -1;
- 	}
-@@ -868,20 +868,20 @@ static int find_dev_num_vol(struct libubi *lib, const char *node)
-  */
- static int find_vol_num(struct libubi *lib, int dev_num, const char *node)
- {
--	struct stat stat;
-+	struct stat st;
- 	struct ubi_dev_info info;
- 	int i, major, minor;
- 
--	if (lstat(node, &stat))
-+	if (stat(node, &st))
- 		return -1;
- 
--	if (!S_ISCHR(stat.st_mode)) {
-+	if (!S_ISCHR(st.st_mode)) {
- 		errno = EINVAL;
- 		return -1;
- 	}
- 
--	major = major(stat.st_rdev);
--	minor = minor(stat.st_rdev);
-+	major = major(st.st_rdev);
-+	minor = minor(st.st_rdev);
- 
- 	if (minor == 0) {
- 		errno = -EINVAL;
-diff --git a/ubi-utils/src/nand2bin.c b/ubi-utils/src/nand2bin.c
-index be62e30..93ba29f 100644
---- a/ubi-utils/src/nand2bin.c
-+++ b/ubi-utils/src/nand2bin.c
-@@ -456,7 +456,7 @@ main(int argc, char *argv[])
- 		exit(EXIT_FAILURE);
- 	}
- 
--	if (lstat(myargs.arg1, &file_info) != 0) {
-+	if (stat(myargs.arg1, &file_info) != 0) {
- 		perror("Cannot fetch file size from input file.\n");
- 		exit(EXIT_FAILURE);
- 	}
--- 
-1.5.5.1
+Nope, I just built axfs as a module and insmoded it. After that
+
+    mount image.axfs /mnt -o loop -t axfs
+
+So nothing fancy.
+
+With kind regards,
+
+Geert Uytterhoeven
+Software Architect
+
+Sony Techsoft Centre Europe
+The Corporate Village · Da Vincilaan 7-D1 · B-1935 Zaventem · Belgium
+
+Phone:    +32 (0)2 700 8453
+Fax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 · RPR Brussels
+Fortis · BIC GEBABEBB · IBAN BE41293037680010
+---584349381-1942548691-1219649026=:3893--
