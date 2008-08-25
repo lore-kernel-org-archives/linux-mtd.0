@@ -1,24 +1,16 @@
-Received: from hosted05.westnet.com.au ([203.10.1.219])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KXVfd-0003HX-7w
-	for linux-mtd@lists.infradead.org; Mon, 25 Aug 2008 06:35:21 +0000
-Message-ID: <48B2529B.8030906@snapgear.com>
-Date: Mon, 25 Aug 2008 16:35:07 +1000
-From: Greg Ungerer <gerg@snapgear.com>
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KXXua-00046f-98
+	for linux-mtd@lists.infradead.org; Mon, 25 Aug 2008 08:58:56 +0000
+Message-ID: <48B274EB.4080004@nokia.com>
+Date: Mon, 25 Aug 2008 12:01:31 +0300
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
 MIME-Version: 1.0
-To: Jared Hulbert <jaredeh@gmail.com>
-Subject: Re: [PATCH 00/10] AXFS: Advanced XIP filesystem
-References: <48AD00C4.6060302@gmail.com> <20080821110749.GA1926@shareable.org>	
-	<6934efce0808210711t686a88eci6eb294dbb54d68fe@mail.gmail.com>	
-	<48AE0476.80109@snapgear.com>
-	<6934efce0808211948kd12ba76k1ee847a0e08010e0@mail.gmail.com>
-In-Reply-To: <6934efce0808211948kd12ba76k1ee847a0e08010e0@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: [PATCH] [MTD] [OneNAND] OMAP2: add retry after read timeout
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
-	=?UTF-8?B?SsO2cm4gRW5nZWw=?= <joern@logfs.org>,
-	Jamie Lokier <jamie@shareable.org>, Linux-kernel@vger.kernel.org,
-	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
+Cc: linux-omap@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,38 +20,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Very occasionally, (about one in a million) read operations are
+ongoing after the timeout has expired.  So, retry three times
+while the ongoing bit remains set.
 
-Hi Jared,
+Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+---
+ drivers/mtd/onenand/omap2.c |   26 +++++++++++++++++++++++---
+ 1 files changed, 23 insertions(+), 3 deletions(-)
 
-Jared Hulbert wrote:
->> That would be enough I think. If you could manually select
->> which files are contiguous-and-uncompressed that would be
->> useful for some too here.
-> 
-> So.... If you don't have an MMU when do you call ->fault?  Does the
-> noMMU code just loop through ->fault()ing all the pages in an mmap()?
-
-Sort of. It actually just uses a single ->read to bring in
-the entire file contents. There is a few limitations on the use
-of mmap() for non-mmu. Documentation/nommu-mmap.txt gives
-more details. With no MMU it does rely on being able to kmalloc()
-a single RAM region big enough to hold the entire file.
-
-
->> One thing for sure is that many people who do non-MMU setups
->> are interested in XIP to get the space savings. These are very
->> often small devices with very constrained RAM and flash. (For
->> whatever it is worth single NOR flash only boards are common in
->> these smaller form factors :-)
-> 
-> True.
-
-Regards
-Greg
-
-
-------------------------------------------------------------------------
-Greg Ungerer  --  Chief Software Dude       EMAIL:     gerg@snapgear.com
-SnapGear -- a Secure Computing Company      PHONE:       +61 7 3435 2888
-825 Stanley St,                             FAX:         +61 7 3891 3630
-Woolloongabba, QLD, 4102, Australia         WEB: http://www.SnapGear.com
+diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+index 34b4253..8387e05 100644
+--- a/drivers/mtd/onenand/omap2.c
++++ b/drivers/mtd/onenand/omap2.c
+@@ -187,16 +187,36 @@ retry:
+ 			}
+ 		}
+ 	} else {
++		int retry_cnt = 0;
++
+ 		/* Turn interrupts off */
+ 		syscfg = read_reg(c, ONENAND_REG_SYS_CFG1);
+ 		syscfg &= ~ONENAND_SYS_CFG1_IOBE;
+ 		write_reg(c, syscfg, ONENAND_REG_SYS_CFG1);
+ 
+ 		timeout = jiffies + msecs_to_jiffies(20);
+-		while (time_before(jiffies, timeout)) {
+-			intr = read_reg(c, ONENAND_REG_INTERRUPT);
+-			if (intr & ONENAND_INT_MASTER)
++		while (1) {
++			if (time_before(jiffies, timeout)) {
++				intr = read_reg(c, ONENAND_REG_INTERRUPT);
++				if (intr & ONENAND_INT_MASTER)
++					break;
++			} else {
++				/* Timeout after 20ms */
++				ctrl = read_reg(c, ONENAND_REG_CTRL_STATUS);
++				if (ctrl & ONENAND_CTRL_ONGO) {
++					/*
++					 * The operation seems to be still going
++					 * so give it some more time.
++					 */
++					retry_cnt += 1;
++					if (retry_cnt < 3) {
++						timeout = jiffies +
++							  msecs_to_jiffies(20);
++						continue;
++					}
++				}
+ 				break;
++			}
+ 		}
+ 	}
+ 
+-- 
+1.5.4.3
