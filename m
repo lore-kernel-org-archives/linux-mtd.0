@@ -1,20 +1,25 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KXrrM-0001vb-2m
-	for linux-mtd@lists.infradead.org; Tue, 26 Aug 2008 06:16:56 +0000
-Subject: Re: [PATCH] mtd-utils: allow 'ubiformat' to read from stdin
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
-In-Reply-To: <1219691391-15149-2-git-send-email-enrico.scholz@sigma-chemnitz.de>
-References: <1219691391-15149-1-git-send-email-enrico.scholz@sigma-chemnitz.de>
-	<1219691391-15149-2-git-send-email-enrico.scholz@sigma-chemnitz.de>
-Content-Type: text/plain; charset=utf-8
-Date: Tue, 26 Aug 2008 09:13:43 +0300
-Message-Id: <1219731223.18027.116.camel@sauron>
-Mime-Version: 1.0
+Received: from mms1.broadcom.com ([216.31.210.17])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KXtwD-0000i3-2K
+	for linux-mtd@lists.infradead.org; Tue, 26 Aug 2008 08:30:05 +0000
+From: "Divyanshu Verma" <dverma@broadcom.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Date: Tue, 26 Aug 2008 01:29:15 -0700
+Subject: RE: Regarding NAND driver based on PrimeCell Static Memory
+	Controller (PL350 series)
+Message-ID: <61AF4E60604DB348A69864027DF811501005778A29@SJEXCHCCR01.corp.ad.broadcom.com>
+References: <20080711223448.f5826678.yoichi_yuasa@tripeaks.co.jp>
+	<20080711141053.GD13593@linux-mips.org>
+	<1215797959.11567.448.camel@pmac.infradead.org>
+	<E06E3B7BBC07864CADE892DAF1EB0FBD095146C0@NT-SJCA-0752.brcm.ad.broadcom.com>
+	<1216045603.27455.25.camel@shinybook.infradead.org>
+In-Reply-To: <1216045603.27455.25.camel@shinybook.infradead.org>
+Content-Language: en-US
+MIME-Version: 1.0
+Content-Type: text/plain;
+ charset=us-ascii
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +29,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2008-08-25 at 21:09 +0200, Enrico Scholz wrote:
-> This patch allows to read the image from stdin and adds an
-> '--image-size' option to specify its size.  'upiupdatevol' has this
-> feature already and it is useful for 'ubiformat' too.
->=20
-> It adds a read_all() function which reads a block of data. Plain
-> 'read(2)' can fail on
->=20
->   nc -l -p 1234 | ubiformat -f - -S 25427968
->=20
-> else.
+Hi,
+I finally got the NAND as MTD device, by providing blank hw_control functio=
+n and providing my SOC specific read/write functions.
+It passes nand_scan successfully and shows up  as an mtd device under /proc=
+/mtd.
 
-Applied, pushed, but with few minor tweaks to make the utilities be
-uni-styled. Thanks.
+But when I try to cat NAND device, ( without any filesystem mounte)d  it cr=
+ashes.
 
-> +	int		fd;
-Here I've removed TABs between "int" and "fd", and put a space.
+I traced down the sequence and found that, on doing "cat" it issues a read =
+512 bytes ( for 8 consecutive sectors not sure why??).
+The low level read command then gets 2048 bytes from the NAND chip and puts=
+ it in NAND controller memory( page size of NAND is 2K).After that it tries=
+ to read 512 bytes into mtd buffer ( sent from mtdblock.c) but falls in bet=
+ween giving following oops message.
 
-> +		ssize_t		l =3D read(fd, buf, len);
-And here.
+Unable to handle kernel NULL pointer dereference at virtual address 0000007=
+8
+pgd =3D 0000d67c
+Unable to handle kernel paging request at virtual address 0000d67c
+pgd =3D 0000d67c
+Unable to handle kernel paging request at virtual address 0000d67c
+pgd =3D 0000d67c
+Unable to handle kernel paging request at virtual address 0000d67c
+pgd =3D 0000d67c
+Unable to handle kernel paging request at virtual address 0000d67c
+pgd =3D 0000d67c
+Unable to handle kernel paging request at virtual address 0000d67c
+pgd =3D 0000d67c
+Unable to handle kernel paging request at virtual address 0000d67c
+pgd =3D 0000d67c
+Unable to handle kernel paging request at virtual address 0000d67c
+pgd =3D 0000d67c
+Unable to handle kernel paging request at virtual address 0000d67c
+pgd =3D 0000d67c
+Unable to handle kernel paging request at virtual address 0000d67c
 
-> -	struct stat st;
-> +	off_t	st_size;
-And here.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Any pointer to  solve this will be highly appreciated.
+
+
+Regards,
+Divyanshu
+-----Original Message-----
+From: David Woodhouse [mailto:dwmw2@infradead.org]
+Sent: Monday, July 14, 2008 7:57 PM
+To: Divyanshu Verma
+Cc: linux-mtd
+Subject: Re: Regarding NAND driver based on PrimeCell Static Memory Control=
+ler (PL350 series)
+
+On Mon, 2008-07-14 at 03:33 -0700, Divyanshu Verma wrote:
+> I am trying to implement a NAND driver for our SOC. The problem I am
+> facing is that, our NAND controller does not allow me to have access to
+> hardware specific control line. In other words, I cannot follow the
+> mechanism given on http://www.linux-mtd.infradead.org/ for NAND driver
+> as I cannot write  "my_nand_hwcontrol"  function. The H/w guys say that
+> all this is taken care in the controller itself.
+>
+> I then decided to identify the NAND Chip as a MTD_BLOCK device, so that
+> I  will not require any Hwcontrol function. Now for doing so, is it
+> possible to write a kernel module for NAND which can use functions
+> exported by mtd/mtd_blkdevs.c ?
+
+It sounds like it isn't 'NAND' at all, as far as you're concerned. It's
+a disk drive of some form. Usually these things present themselves as
+IDE, so you'd use the IDE driver. If it has its own 'special' interface
+then you probably want a dedicated block driver for it; nothing to do
+with the MTD subsystem at all.
+
+--
+dwmw2
