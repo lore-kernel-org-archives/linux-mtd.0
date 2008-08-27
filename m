@@ -1,21 +1,24 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KYMuf-0007IT-9U
-	for linux-mtd@lists.infradead.org; Wed, 27 Aug 2008 15:26:25 +0000
-Date: Wed, 27 Aug 2008 17:26:22 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Zhao Shengzhe-a18689 <a18689@motorola.com>
-Subject: RE: [PATCH][MTD][NAND]Bad Block Management
-In-Reply-To: <93481F4E3CC5F042BBDE9376E50F759A026F6BD3@zmy16exm63.ds.mot.com>
-Message-ID: <Pine.LNX.4.64.0808271722410.27676@lnxricardw.se.axis.com>
-References: <1219830684.13957.25.camel@il93elnxlog2>
-	<Pine.LNX.4.64.0808271240280.21707@lnxricardw.se.axis.com>
-	<93481F4E3CC5F042BBDE9376E50F759A026F6BD3@zmy16exm63.ds.mot.com>
+Date: Wed, 27 Aug 2008 17:25:34 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Artem Bityutskiy <dedekind@infradead.org>
+Subject: Re: [PATCH 2/2][MTD] Add support for > 2GiB MTD devices
+Message-ID: <20080827152534.GB1371@logfs.org>
+References: <1219817017.18027.149.camel@sauron>
+	<000201c9080d$0bce0d20$6b01a8c0@mvista.com>
+	<20080827093920.1bdb44c2@lxorguk.ukuu.org.uk>
+	<1219827692.7107.170.camel@pmac.infradead.org>
+	<20080827143416.GA1371@logfs.org>
+	<1219848463.18027.166.camel@sauron>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	=?iso-8859-1?Q?Ricard_Wanderl=F6f?= <Ricard.Wanderlof@axis.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1219848463.18027.166.camel@sauron>
+Cc: linux-mtd-bounces@lists.infradead.org,
+	'Bruce Leonard' <brucle@earthlink.net>, Bruce_Leonard@selinc.com,
+	linux-kernel@vger.kernel.org, Tim Anderson <tanderson@mvista.com>,
+	linux-mtd@lists.infradead.org, 'Andrew Morton' <akpm@linux-foundation.org>,
+	David Woodhouse <dwmw2@infradead.org>, Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,31 +28,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, 27 August 2008 17:47:43 +0300, Artem Bityutskiy wrote:
+> 
+> The plus of sysfs I see is that I can add more files to expose more
+> information in sysfs, while I can not change MEMGETINFO ioctl. E.g., I
+> need to expose sub-page size to user-space, and I cannot do this with
+> MEMGETINFO.
 
-On Wed, 27 Aug 2008, Zhao Shengzhe-a18689 wrote:
+sysfs makes adding new attributes easier, yes.  But once added you
+cannot remove the attribute again - ever.  Which means that either way
+you need to tread carefully and think twice before making a rash
+decision.
 
-> The bad blocks will be detected by low-level hardware driver. The NAN=20
-> devices have a Status Register that indicates whether an operation is=20
-> successful or not. Additional Bad Blocks are identified when attempts to=
-=20
-> program or erase give errors in the Status Register. Since our patch is=
-=20
-> in MTD layer, so you cannot find the codes for detecting bad blocks.
+> > So what was the reason again why mtd needs two userspace interfaces
+> > instead of just one?
+> 
+> I would like to make udev creating MTD devices, instead of creating them
+> by hands. Adding MTD to LDM would anyway introduce corresponding sysfs
+> files, right? This means we would have one more interface anyway.
 
-OK.
+Could be useful, I don't mind you sending a patch.  However, does this
+means that MEMGETINFO64 or some other ioctl should not be done?  Should
+flash_erase open, read and close 8 seperate files instead of doing a
+single ioctl?  And should our support for large devices wait for the
+sysfs support that has been talked about and not done for about two
+years already?
 
-When I ran some tests on an ST 256 MiB flash a while ago, I got the=20
-impression that by the time the status register indicates a problem, the=20
-block has been worn out (in the sense that subsequent reads are not=20
-reliable) for quite a while. So another approach would be to keep track of=
-=20
-the amount of read errors encountered, together with the number of times=20
-the block has been rewritten due to excessive read errors. I'm not sure if=
-=20
-UBI does this though if one wants that level of reliability.
+Call me a sceptic.
 
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Jörn
+
+-- 
+The cheapest, fastest and most reliable components of a computer
+system are those that aren't there.
+-- Gordon Bell, DEC labratories
