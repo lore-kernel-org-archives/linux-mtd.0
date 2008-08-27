@@ -1,19 +1,18 @@
+From: "Tim Anderson" <tanderson@mvista.com>
+To: <dedekind@infradead.org>
 Subject: RE: [PATCH 2/2][MTD] Add support for > 2GiB MTD devices
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Tim Anderson <tanderson@mvista.com>
-In-Reply-To: <000101c9080a$4ec3a6b0$6b01a8c0@mvista.com>
-References: <000101c9080a$4ec3a6b0$6b01a8c0@mvista.com>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 27 Aug 2008 09:03:37 +0300
-Message-Id: <1219817017.18027.149.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Date: Tue, 26 Aug 2008 23:20:46 -0700
+Message-ID: <000201c9080d$0bce0d20$6b01a8c0@mvista.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <1219817017.18027.149.camel@sauron>
 Cc: linux-mtd-bounces@lists.infradead.org,
 	'Bruce Leonard' <brucle@earthlink.net>, Bruce_Leonard@selinc.com,
 	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
 	'Andrew Morton' <akpm@linux-foundation.org>,
 	'David Woodhouse' <dwmw2@infradead.org>
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,18 +22,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2008-08-26 at 23:01 -0700, Tim Anderson wrote:
-> I have been experimenting with this. I think there is at least 3 maybe 4
-> IOCTLS that are going to need to have a LARGE mode. The 2 most obvious ar=
-e
-> MEMGETINFO and MEMERASE.
+Artem,
 
-dwmw2 vetoed any MEMGETINFO ioctl changes, or new similar ioctls, and it
-kind of make sense, because we should use sysfs instead. But this, in
-turn, means implementing sysfs support for MTD, because MTD is not
-LinuxDeviceModel-enabled at the moment.
+I see your point. Ioctls are going away after all.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+So we should have something like:
+/sys/class/mtd/mtd0/
+
+Or just under device or platform? 
+
+> -----Original Message-----
+> From: Artem Bityutskiy [mailto:dedekind@infradead.org] 
+> Sent: Tuesday, August 26, 2008 11:04 PM
+> To: Tim Anderson
+> Cc: Bruce_Leonard@selinc.com; 'Andrew Morton'; 
+> linux-mtd-bounces@lists.infradead.org; 'David Woodhouse'; 
+> linux-mtd@lists.infradead.org; linux-kernel@vger.kernel.org; 
+> 'Bruce Leonard'
+> Subject: RE: [PATCH 2/2][MTD] Add support for > 2GiB MTD devices
+> 
+> On Tue, 2008-08-26 at 23:01 -0700, Tim Anderson wrote:
+> > I have been experimenting with this. I think there is at 
+> least 3 maybe 4
+> > IOCTLS that are going to need to have a LARGE mode. The 2 
+> most obvious are
+> > MEMGETINFO and MEMERASE.
+> 
+> dwmw2 vetoed any MEMGETINFO ioctl changes, or new similar 
+> ioctls, and it
+> kind of make sense, because we should use sysfs instead. But this, in
+> turn, means implementing sysfs support for MTD, because MTD is not
+> LinuxDeviceModel-enabled at the moment.
+> 
+> -- 
+> Best regards,
+> Artem Bityutskiy (???????? ?????)
+> 
