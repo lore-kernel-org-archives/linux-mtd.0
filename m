@@ -1,16 +1,15 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KYDeW-00046C-GY
-	for linux-mtd@lists.infradead.org; Wed, 27 Aug 2008 05:33:08 +0000
-Subject: Re: [PATCH 1/2] Clean up of code found when adding support for >
-	2GiB MTD devices
+	id 1KYDon-00057i-AZ
+	for linux-mtd@lists.infradead.org; Wed, 27 Aug 2008 05:43:45 +0000
+Subject: Re: [PATCH 2/2] Add support for > 2GiB MTD devices
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: Bruce Leonard <brucle@earthlink.net>
-In-Reply-To: <48AB3AAC.7030900@earthlink.net>
-References: <48AB3AAC.7030900@earthlink.net>
+In-Reply-To: <48AB3AAF.3010504@earthlink.net>
+References: <48AB3AAF.3010504@earthlink.net>
 Content-Type: text/plain; charset=UTF-8
-Date: Wed, 27 Aug 2008 08:29:40 +0300
-Message-Id: <1219814980.18027.123.camel@sauron>
+Date: Wed, 27 Aug 2008 08:40:17 +0300
+Message-Id: <1219815617.18027.132.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
@@ -24,22 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Bruce,
 
 On Tue, 2008-08-19 at 14:27 -0700, Bruce Leonard wrote:
-> These are just some code cleanups that I found while working on the MTD s=
-ub-system.
-> From: brucle <brucle@selinc.com>
-> Date: Wed, 13 Aug 2008 17:16:48 -0700
-> Subject: [PATCH] Code clean up preping for support of > 2GiB MTD devices
->=20
-> Signed-off-by: Bruce D. Leonard <brucle@selinc.com>
+> +/*
+> + * Inline function for determining the size of the MTD device, independa=
+nt
+> + * of old or new way of doing things.
+> + *
+> + */
+> +static inline u_int64_t device_size(struct mtd_info *a)
+> +{
+> +	return a->num_eraseblocks =3D=3D 0 ? a->size : a->num_eraseblocks * a->=
+erasesize;
+> +}
 
-For this clean-up patch,
+I do not think it is a good idea to do multiplication every time we need
+MTD device size. It is unnecessarily large overhead in terms of speed
+and code size.
 
-Acked-by: Artem Bityutskiy <dedekind@infradead.org>
-
-However, are you shure it is against the mtd-2.6.git tree?
+Did you consider a possibility of just making mtd->size 64 bit?
+Or using eraseblock:offset pairs instead of absolute address?
 
 --=20
 Best regards,
