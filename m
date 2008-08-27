@@ -1,20 +1,19 @@
-Received: from elasmtp-kukur.atl.sa.earthlink.net ([209.86.89.65])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KYFcS-0005Im-DD
-	for linux-mtd@lists.infradead.org; Wed, 27 Aug 2008 07:39:08 +0000
-Message-Id: <E38B9DE5-5BE3-4400-B5FC-F75D9A6BBDAA@earthlink.net>
-From: Bruce Leonard <brucle@earthlink.net>
-To: dedekind@infradead.org
-In-Reply-To: <1219814980.18027.123.camel@sauron>
-Content-Type: text/plain; charset=US-ASCII; format=flowed; delsp=yes
+Date: Wed, 27 Aug 2008 09:39:20 +0100
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: "Tim Anderson" <tanderson@mvista.com>
+Subject: Re: [PATCH 2/2][MTD] Add support for > 2GiB MTD devices
+Message-ID: <20080827093920.1bdb44c2@lxorguk.ukuu.org.uk>
+In-Reply-To: <000201c9080d$0bce0d20$6b01a8c0@mvista.com>
+References: <1219817017.18027.149.camel@sauron>
+	<000201c9080d$0bce0d20$6b01a8c0@mvista.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0 (Apple Message framework v926)
-Subject: Re: [PATCH 1/2] Clean up of code found when adding support for > 2GiB
-	MTD devices
-Date: Wed, 27 Aug 2008 00:39:04 -0700
-References: <48AB3AAC.7030900@earthlink.net>
-	<1219814980.18027.123.camel@sauron>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: linux-mtd-bounces@lists.infradead.org,
+	'Bruce Leonard' <brucle@earthlink.net>, Bruce_Leonard@selinc.com,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	'Andrew Morton' <akpm@linux-foundation.org>,
+	'David Woodhouse' <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem,
+On Tue, 26 Aug 2008 23:20:46 -0700
+"Tim Anderson" <tanderson@mvista.com> wrote:
 
-On Aug 26, 2008, at 10:29 PM, Artem Bityutskiy wrote:
+> Artem,
+> 
+> I see your point. Ioctls are going away after all.
 
-> Hi,
->
-> On Tue, 2008-08-19 at 14:27 -0700, Bruce Leonard wrote:
->> These are just some code cleanups that I found while working on the  
->> MTD sub-system.
->> From: brucle <brucle@selinc.com>
->> Date: Wed, 13 Aug 2008 17:16:48 -0700
->> Subject: [PATCH] Code clean up preping for support of > 2GiB MTD  
->> devices
->>
->> Signed-off-by: Bruce D. Leonard <brucle@selinc.com>
->
-> For this clean-up patch,
->
-> Acked-by: Artem Bityutskiy <dedekind@infradead.org>
->
-> However, are you shure it is against the mtd-2.6.git tree?
+I don't know where that stupid story keeps coming from. Ioctl is alive
+and well and there are more not less of them. There are lots of things
+you *cannot* do with sysfs, including synchronization and handling
+many kinds of changes to objects that can appear and disappear. Ditto
+there are problems with getting a consistent snapshot via sysfs because
+you can't atomically read multiple fields.
 
-This patch set is against the mainline, 2.6.27-rc3.  At the time I  
-posted the patch I was only a day or two out from pulling the latest  
-from Linus' tree.  It's now a couple of weeks out of date I think.
+So please stop this 'ioctls are going away' stuff, its bunkum.
 
-Bruce
+Alan
