@@ -1,17 +1,16 @@
-Date: Tue, 26 Aug 2008 19:08:35 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: "Tim Anderson" <tanderson@mvista.com>
-Subject: Re: [PATCH 2/2][MTD] Add support for > 2GiB MTD devices
-Message-Id: <20080826190835.802cd676.akpm@linux-foundation.org>
 In-Reply-To: <008601c907e5$e1bac9f0$9101320a@mvista.com>
-References: <OF7C027ED9.D9F1F324-ON882574B2.0007025B-882574B2.000767B6@selinc.com>
-	<008601c907e5$e1bac9f0$9101320a@mvista.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: 'David Woodhouse' <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Bruce_Leonard@selinc.com,
-	'Bruce Leonard' <brucle@earthlink.net>
+To: "Tim Anderson" <tanderson@mvista.com>
+Subject: RE: [PATCH 2/2][MTD] Add support for > 2GiB MTD devices
+MIME-Version: 1.0
+Message-ID: <OFE4D29536.8C5F26EB-ON882574B2.000EC79F-882574B2.000ED0B4@selinc.com>
+From: Bruce_Leonard@selinc.com
+Date: Tue, 26 Aug 2008 19:42:00 -0700
+Content-Type: text/plain; charset="US-ASCII"
+Cc: linux-mtd-bounces@lists.infradead.org,
+	'Bruce Leonard' <brucle@earthlink.net>,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	'Andrew Morton' <akpm@linux-foundation.org>,
+	'David Woodhouse' <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,8 +20,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 26 Aug 2008 18:40:26 -0700 "Tim Anderson" <tanderson@mvista.com> wrote:
+Now there's something I hadn't thought of.  Thanks, I'll look into doing 
+it that way.
 
+
+"Tim Anderson" <tanderson@mvista.com> wrote on 08/26/2008 06:40:26 PM:
+
+> Bruce,
+> 
+> Since you don't want to change the ABI you need to extend it. Andrew, 
+should
+> he add an new ioctl that passes a new structure definition? That way the
+> original code works and you have to do a new ioctl to get the new size 
+data.
+> 
 > > -----Original Message-----
 > > From: linux-mtd-bounces@lists.infradead.org 
 > > [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of 
@@ -85,18 +96,19 @@ On Tue, 26 Aug 2008 18:40:26 -0700 "Tim Anderson" <tanderson@mvista.com> wrote:
 > > since I posted 
 > > the patches.  I guess I'm more cutting edge than I thought :).
 > > 
-
-(top-posting repaired.  Please don't.)
-
-> Bruce,
+> > > Please cc linux-mtd@lists.infradead.org (at least) on MTD-related
+> > > patches, thanks.
+> > 
+> > I started with the MTD list and then also posted to lkml when 
+> > I realized I 
+> > had forgotten to CC it.
+> > 
+> > Thanks.
+> > 
+> > Bruce
+> > 
+> > ______________________________________________________
+> > Linux MTD discussion mailing list
+> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> > 
 > 
-> Since you don't want to change the ABI you need to extend it. Andrew, should
-> he add an new ioctl that passes a new structure definition? That way the
-> original code works and you have to do a new ioctl to get the new size data.
-> 
-
-Yes, I expect that a new ioctl would be best.  Sometimes it is possible
-to extend an existing one (and its associated payload) but that
-requires versioning info which usually wasn't thought of on day one.
-
-But David's the man.
