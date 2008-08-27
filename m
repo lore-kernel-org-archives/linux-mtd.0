@@ -1,18 +1,17 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KYDyz-0006Go-JV
-	for linux-mtd@lists.infradead.org; Wed, 27 Aug 2008 05:54:17 +0000
-Subject: Re: [RFC] mtd-utils: make cross build functional again
+Subject: Re: [PATCH 2/2][MTD] Add support for > 2GiB MTD devices
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Sebastian Siewior <sebastian@breakpoint.cc>
-In-Reply-To: <20080826220705.GA4834@Chamillionaire.breakpoint.cc>
-References: <20080826220705.GA4834@Chamillionaire.breakpoint.cc>
+To: Bruce_Leonard@selinc.com
+In-Reply-To: <OF7C027ED9.D9F1F324-ON882574B2.0007025B-882574B2.000767B6@selinc.com>
+References: <OF7C027ED9.D9F1F324-ON882574B2.0007025B-882574B2.000767B6@selinc.com>
 Content-Type: text/plain; charset=utf-8
-Date: Wed, 27 Aug 2008 08:50:58 +0300
-Message-Id: <1219816258.18027.138.camel@sauron>
+Date: Wed, 27 Aug 2008 08:56:37 +0300
+Message-Id: <1219816597.18027.145.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd-bounces@lists.infradead.org, Bruce Leonard <brucle@earthlink.net>,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Woodhouse <dwmw2@infradead.org>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,43 +22,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Bruce,
 
-On Wed, 2008-08-27 at 00:07 +0200, Sebastian Siewior wrote:
-> as of current HEAD "make CROSS=3Dwhatever-" breaks once we leave
-> the main Makefile.
-> With this patch everything builds except NTARGETS in ubi-utils and with
-> CROSS being undefined.
+On Tue, 2008-08-26 at 18:21 -0700, Bruce_Leonard@selinc.com wrote:
+> > This changes the kernel<->userspace ABI and is hence a big no-no.  I
+> > assume that this change will cause old userspace to malfunction on new
+> > kernels, and vice versa.
+> >=20
 >=20
-> The problem with CROSS being undefined could be solved by setting
-> BUILDDIR explicit to "native" for instance.
-> The NTARGETS thing is a little tricky. The easiest solution would be
-> probably to move the NTARGETS targets into its own Makefile.
->=20
-> Anyway, is this something worth to fix since it is almost a year broken?
-> Should the BUILDDIR thing be removed or is it used?
->=20
-> Signed-off-by: Sebastian Siewior <sebastian@breakpoint.cc>
-
-I'm very bad in Makefile, so I am not sure what is all this BUILDDIR
-stuff about. However, your patch breaks build on x86:
-
-[dedekind@gollum mtd-utils]$ make
-gcc  -o .././ubi-utils/pfi2bin pfi2bin.o peb.o error.o list.o crc32.o
-libubigen.o bootenv.o hashmap.o reader.o pfi.o
-make[1]: *** No rule to make target `.././ubi-utils/ubiattach', needed
-by `all'.  Stop.
-make[1]: Leaving directory `/home/dedekind/git/mtd-utils/ubi-utils'
-make: *** [all] Error 2
-rm doc_loadbios.o flash_info.o docfdisk.o ftl_check.o rfdformat.o
-nandwrite.o mtd_debug.o flash_otp_dump.o nftldump.o flash_lock.o
-flash_otp_info.o rfddump.o flash_unlock.o nftl_format.o flashcp.o
-flash_erase.o ftl_format.o nandtest.o nanddump.o
-
-Also, please, make sure your patch does not break make install.
-
-Thanks.
+> Well, in my posting I noted that the mtd-utils were broken because of thi=
+s=20
+> but I didn't really have any idea as to how to fix things.  I can see why=
 =20
+> it would be a big no-no to change this.  Do you have any suggestions on=20
+> what I could do differently to prevent making that change?
+
+Unfortunately, it is unacceptable to break existing stuff, even old
+crappy mtd utils :-). That's simply how we work in the kernel community.
+
+Stuff which you do is always not simple because you have to make sure
+all legacy stuff does not break. So you'll need to invest more time into
+your work.
+
+> There was a LOT of interest in this over the last few months while I was=20
+> working on it, but a very suprising silence has developed since I posted=20
+> the patches.  I guess I'm more cutting edge than I thought :).
+
+I understand your frustration. Apologies for not reacting faster.
+
+> > Please cc linux-mtd@lists.infradead.org (at least) on MTD-related
+> > patches, thanks.
+>=20
+> I started with the MTD list and then also posted to lkml when I realized =
+I=20
+> had forgotten to CC it.
+
+Yeah, sometimes MTD ML just ignores patches, I am in the same boat, but
+even if you've decided to send stuff to lkml, please, CC MTD ML anyway.
+
 --=20
 Best regards,
 Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
