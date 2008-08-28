@@ -1,17 +1,18 @@
-Received: from smtp20.orange.fr ([80.12.242.26])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KYhB7-0007yp-LS
-	for linux-mtd@lists.infradead.org; Thu, 28 Aug 2008 13:04:46 +0000
-From: =?windows-1251?B?3vDo8fLzINHy8O7o8uXr/PHy4uA=?= <Arma@online.fr>
-To: <marcbeta-subscribe@lists.gfi.com>
-Subject: =?windows-1251?B?xO7j7uLu8Psg8fLw7ujy5ev88fLi4C4g7/Dg6vLo6uAg7/Do7OXt5e3o/y4=?=
+Received: from duster.selinc.com ([12.156.93.38])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KYlbt-0002TU-Sc
+	for linux-mtd@lists.infradead.org; Thu, 28 Aug 2008 17:48:42 +0000
+In-Reply-To: <48B5CC98.9000904@gmx.net>
+To: Carl-Daniel Hailfinger <c-d.hailfinger.devel.2006@gmx.net>
+Subject: Re: [PATCH 2/2] Add support for > 2GiB MTD devices
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="windows-1251"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20080828130431.DB1F11C00094@mwinf2026.orange.fr>
-Date: Thu, 28 Aug 2008 15:04:31 +0200 (CEST)
-Reply-To: =?windows-1251?B?3vDo8fLzINHy8O7o8uXr/PHy4uA=?= <Arma@online.fr>
+Message-ID: <OFF4CB8B0C.41A8912A-ON882574B3.00613BB8-882574B3.0061CE65@selinc.com>
+From: Bruce_Leonard@selinc.com
+Date: Thu, 28 Aug 2008 10:48:32 -0700
+Content-Type: text/plain; charset="US-ASCII"
+Cc: linux-mtd-bounces@lists.infradead.org, linux-mtd@lists.infradead.org,
+	Jamie Lokier <jamie@shareable.org>, linux-kernel@vger.kernel.org,
+	Bruce Leonard <brucle@earthlink.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,43 +22,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Курсы для руководителей, юристов, менеджеров и ведущих специалистов строительных компаний.
-*****************************************************************************
-ДОГОВОРЫ В СТРОИТЕЛЬСТВЕ
-(практические рекомендации)
+linux-mtd-bounces@lists.infradead.org wrote on 08/27/2008 02:52:24 PM:
 
-В программе:
-Договоры в строительстве. Обзор договоров подрядного типа и практической сферы их применения. Анализ типичных спорных ситуаций с участием субподрядных организаций.
-Документальное оформление договорных отношений. Виды документов,  их назначение и правила составления. Правовое значение протоколов о намерениях и протоколов разногласий. Судебно-арбитражная практика по спорам, связанным с использованием предварительных договоров в строительной деятельности.
-Договорные условия. Существенные условия договора строительного подряда. Обзор судебно-арбитражной практики по спорам о несогласованных условиях договора.
-Тендерный отбор контрагентов (преимущества и недостатки). Особенности заключения договора по результатам торгов. Анализ конкретных ситуаций исполнения договоров строительного подряда с организациями, отобранными на конкурсной основе.
-Обеспечение интересов заказчика в договорных отношениях. Цена договора и порядок расчетов. Установление условий о цене с учетом инфляции, удорожания материалов, рабочей силы и других тенденций изменения рыночных цен. Основные подходы к расчетам с подрядчиками.
-Оформление сдачи-приемки работ. Основные документы, правила подписания, законодательные ограничения. Судебно-арбитражная практика оспаривания оформления сдачи-приемки работ, оплаты работ по оформленным актам. Основные меры ответственности за нарушение договорных обязательств. Практика взыскания, обобщение типичных судебных споров.
-***************************************************************************
-04 сентября | Москва 
-Стоимость участия:  9500 рублей
+> On 27.08.2008 20:51, Jamie Lokier wrote:
+> > Bruce_Leonard@selinc.com wrote:
+> > 
+> >> I'm still reluctant to change size to a 64-bit value.  There's a 
+vague 
+> >> recolection of early conversations on the list that there would be 
+little 
+> >> acceptance for that.  And that probably has to do with the ongoing 
+> >> conversation about ABI changes.  What I could do to eliminate the 
+> >> multiplication is introduce the same concept that the NAND layer 
+uses, 
+> >> shift values.  After all, erasesize should always be a power of 2, 
+making 
+> >> that a power of 2 multiplication which can be done via shifts.  By 
+> >> changing erasesize to erasesize_shift, I'd get something like this:
+> >>
+> >> return a->num_eraseblocks == 0 ? a->size : a->num_eraseblocks << 
+> >> a->erasesize_shift
+> >>
+> >> How would that suit you?
+> >> 
+> >
+> > Are you sure it's always going to be a power of 2?
+> >
+> > What if someone targets a board with 3 chips wired to shared address
+> > and parallel data buses?
+> >
+> > Or if someone makes a weird chip?  Or if you can format it in
+> > different ways according to desired ECC level (like you can with CDs)?
+> > 
+> 
+> IIRC I saw a datasheet for such a chip (selectable erasesize with
+> non-power-of-2 default) some weeks ago and it had entered production a
+> few months ago. The erasesize was alwas a multiple of 16, though. Sorry
+> for not remembering more details.
+> 
+> Regards,
+> Carl-Daniel
+> 
 
+Well in that case I don't see that there's much option other than a 
+multiplication.  If there were an odd number of eraseblocks (i.e., 3 
+chips) you could still do the shifting operations.  But if someone has 
+come up with a flash part that has a non-power of two sector/erasesize, 
+then there's no way to do it by shift.  I supose I could just change 
+erasesize to size64, make it a 64-bit type and do this:
 
-*****************************************************************************
-ПРАКТИКА ПРИМЕНЕНИЯ ЗЕМЕЛЬНОГО И ГРАДОСТРОИТЕЛЬНОГО ЗАКОНОДАТЕЛЬСТВА ПРИ СТРОИТЕЛЬСТВЕ КОТТЕДЖНОГО ПОСЕЛКА
+return a->num_eraseblocks == 0 ? a->size : a->size64
 
-В программе:
-"  Проблемы (риски) формирования, получения и изменения вида разрешённого использования земельных участков с/х назначения для строительства коттеджного посёлка.
-"  Критерии и порядок перевода (включения) земельных участков с/х назначения и лесного фонда, занятых коттеджными посёлками, в земли населённых пунктов.
-"  Приватизация земельных участков и строительство коттеджей в водоохранных зонах, проблемы приобретения в собственность прудов.
-"  Другие вопросы, связанные с получением и использованием различных земельных участков для строительства коттеджных посёлков.
-"  Особенности первичного возникновения прав на земельные участки.
-"  Полномочия по предоставлению земельных участков органов публичной власти.
-"  Типичные нарушения при предоставлении земельных участков.
-"  Дефекты правового статуса земельных участков и способы их устранения.
-"  Изменение целевого назначения и разрешенного использования земельных участков.
-"  Градостроительные и земельно-правовые ограничения на изменение правового статуса земельных участков.
-"  Влияние градостроительной документации на осуществление деятельности по застройке поселка.
-"  Особенности выбора организационно-правовой формы юридического лица - собственника участка под коттеджное строительство.
+Doesn't seem quite as elegant, but it is simpler.  What ever I do, I can't 
+change the meaning or type of size.  That's an kernel <=> userspace ABI 
+change, and we know what happens when I try to do that ;).
 
-*****************************************************************************
-04-05 сентября | Москва 
-Стоимость участия: 20400 рублей.
-*****************************************************************************
-Получите подробную программу и информацию по этому мероприятию
-по тел.: +7 (495) 229-04-33
+Bruce
+
+------------------------------------------------
+
+This e-mail may contain SEL confidential information.  The opinions
+expressed are not necessarily those of SEL.  Any unauthorized disclosure,
+distribution or other use is prohibited.  If you received this e-mail in
+error, please notify the sender, permanently delete it, and destroy any
+printout.
+
+Thank you.
+
+------------------------------------------------
