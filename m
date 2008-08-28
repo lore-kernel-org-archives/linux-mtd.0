@@ -1,17 +1,25 @@
-From: David Howells <dhowells@redhat.com>
-Subject: [PATCH 44/59] CRED: Wrap task credential accesses in the UBIFS
-	filesystem
-To: linux-kernel@vger.kernel.org
-Date: Wed, 27 Aug 2008 14:49:29 +0100
-Message-ID: <20080827134929.19980.35334.stgit@warthog.procyon.org.uk>
-In-Reply-To: <20080827134541.19980.61042.stgit@warthog.procyon.org.uk>
-References: <20080827134541.19980.61042.stgit@warthog.procyon.org.uk>
+Received: from vervifontaine.sonytel.be ([80.88.33.193]
+	helo=vervifontaine.sonycom.com)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KYjcK-0003eL-9F
+	for linux-mtd@lists.infradead.org; Thu, 28 Aug 2008 15:41:00 +0000
+Date: Thu, 28 Aug 2008 17:40:51 +0200 (CEST)
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Sender: geert@sonytel.be
+To: Jared Hulbert <jaredeh@gmail.com>
+Subject: Re: [PATCH 00/10] AXFS: Advanced XIP filesystem
+In-Reply-To: <6934efce0808220951i5a2cd6f9t70f9c522eae6f1d6@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.0808281737150.28552@vixen.sonytel.be>
+References: <48AD00C4.6060302@gmail.com>
+	<Pine.LNX.4.64.0808221650500.17105@vixen.sonytel.be>
+	<6934efce0808220951i5a2cd6f9t70f9c522eae6f1d6@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Cc: Adrian Hunter <ext-adrian.hunter@nokia.com>,
-	David Howells <dhowells@redhat.com>, linux-security-module@vger.kernel.org,
-	linux-mtd@lists.infradead.org, Serge Hallyn <serue@us.ibm.com>
+Content-Type: MULTIPART/MIXED;
+	BOUNDARY="-584349381-776896427-1219938051=:28552"
+Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
+	=?UTF-8?Q?J=C3=B6rn_Engel?= <joern@logfs.org>,
+	Linux-kernel@vger.kernel.org,
+	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,58 +29,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Wrap access to task credentials so that they can be separated more easily from
-the task_struct during the introduction of COW creds.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Change most current->(|e|s|fs)[ug]id to current_(|e|s|fs)[ug]id().
+---584349381-776896427-1219938051=:28552
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-Change some task->e?[ug]id to task_e?[ug]id().  In some places it makes more
-sense to use RCU directly rather than a convenient wrapper; these will be
-addressed by later patches.
+On Fri, 22 Aug 2008, Jared Hulbert wrote:
+> > The version in SVN seems to be slightly older than the one you submitted?
+> 
+> Oops.  Okay I must have neglected to sync at the very end.  Thanks.
+> 
+> I forgot, there is also a git repo at
+> 
+> git://git.infradead.org/users/jehulber/axfs.git
+> 
+> > Which platform(s) do you use for testing?
+> 
+> ARM, x86
+> 
+> > I gave AxFS a try on PS3 (ppc64, always use big-endian 64-bit for testing new
+> > code ;-).
+> 
+> Smart.  Hmmm, If only I had a PS3....
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-by: James Morris <jmorris@namei.org>
-Acked-by: Serge Hallyn <serue@us.ibm.com>
-Cc: Artem Bityutskiy <dedekind@infradead.org>
-Cc: Adrian Hunter <ext-adrian.hunter@nokia.com>
-Cc: linux-mtd@lists.infradead.org
----
+I heard you got one? ;-)
 
- fs/ubifs/budget.c |    2 +-
- fs/ubifs/dir.c    |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+> > When mounting the image, I got the crash below:
+> >
+> > | attempt to access beyond end of device
+> > | loop0: rw=0, want=4920, limit=4912
 
+Interestingly, it also doesn't work on UserModeLinux (x86, 32-bit):
 
-diff --git a/fs/ubifs/budget.c b/fs/ubifs/budget.c
-index 1540981..fd0df9a 100644
---- a/fs/ubifs/budget.c
-+++ b/fs/ubifs/budget.c
-@@ -375,7 +375,7 @@ long long ubifs_calc_available(const struct ubifs_info *c, int min_idx_lebs)
-  */
- static int can_use_rp(struct ubifs_info *c)
- {
--	if (current->fsuid == c->rp_uid || capable(CAP_SYS_RESOURCE) ||
-+	if (current_fsuid() == c->rp_uid || capable(CAP_SYS_RESOURCE) ||
- 	    (c->rp_gid != 0 && in_group_p(c->rp_gid)))
- 		return 1;
- 	return 0;
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 2b267c9..4884f06 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -104,13 +104,13 @@ struct inode *ubifs_new_inode(struct ubifs_info *c, const struct inode *dir,
- 	 */
- 	inode->i_flags |= (S_NOCMTIME);
- 
--	inode->i_uid = current->fsuid;
-+	inode->i_uid = current_fsuid();
- 	if (dir->i_mode & S_ISGID) {
- 		inode->i_gid = dir->i_gid;
- 		if (S_ISDIR(mode))
- 			mode |= S_ISGID;
- 	} else
--		inode->i_gid = current->fsgid;
-+		inode->i_gid = current_fsgid();
- 	inode->i_mode = mode;
- 	inode->i_mtime = inode->i_atime = inode->i_ctime =
- 			 ubifs_current_time(inode);
+| attempt to access beyond end of device
+| loop0: rw=0, want=24, limit=16
+| 
+| EIP: 0073:[<0811ec67>] CPU: 0 Not tainted ESP: 007b:19515c38 EFLAGS: 00210212
+|     Not tainted
+| EAX: 00000000 EBX: 00001000 ECX: 19484aa0 EDX: 190d9f0c
+| ESI: 195ee000 EDI: 19515cd0 EBP: 19515c6c DS: 007b ES: 007b
+| 08247af0:  [<08069ba3>] show_regs+0xb4/0xb9
+| 08247b1c:  [<080591ee>] segv+0x222/0x23a
+| 08247bbc:  [<08059296>] segv_handler+0x90/0x9a
+| 08247c68:  [<080649b8>] sig_handler_common+0x63/0x72
+| 08247ce0:  [<08064cac>] sig_handler+0x31/0x3d
+| 08247cec:  [<08064c0b>] handle_signal+0x4c/0x7a
+| 08247d0c:  [<08066327>] hard_handler+0xf/0x14
+| 08247d1c:  [<005c0420>] 0x5c0420
+| 
+| Kernel panic - not syncing: Kernel mode fault at addr 0x14, ip 0x811ec67
+| 
+| EIP: 0073:[<4010a44e>] CPU: 0 Not tainted ESP: 007b:bfa323a0 EFLAGS: 00200246
+|     Not tainted
+| EAX: ffffffda EBX: 080595f8 ECX: 080595c8 EDX: 080595d8
+| ESI: c0ed0000 EDI: 00000000 EBP: bfa323d8 DS: 007b ES: 007b
+| 08247a5c:  [<08069ba3>] show_regs+0xb4/0xb9
+| 08247a88:  [<08059462>] panic_exit+0x25/0x3b
+| 08247a9c:  [<08083642>] notifier_call_chain+0x27/0x4c
+| 08247ac4:  [<0808367e>] __atomic_notifier_call_chain+0x17/0x19
+| 08247ad4:  [<08083695>] atomic_notifier_call_chain+0x15/0x17
+| 08247af0:  [<0806fd87>] panic+0x52/0xd8
+| 08247b10:  [<080591fc>] segv+0x230/0x23a
+| 08247bbc:  [<08059296>] segv_handler+0x90/0x9a
+| 08247c68:  [<080649b8>] sig_handler_common+0x63/0x72
+| 08247ce0:  [<08064cac>] sig_handler+0x31/0x3d
+| 08247cec:  [<08064c0b>] handle_signal+0x4c/0x7a
+| 08247d0c:  [<08066327>] hard_handler+0xf/0x14
+| 08247d1c:  [<005c0420>] 0x5c0420
+
+Commandline is `mount image.axfs /mnt -o loop -t axfs'.
+
+Is there something wrong with the axfs version you submitted, or with
+mkfs.axfs?
+
+With kind regards,
+
+Geert Uytterhoeven
+Software Architect
+
+Sony Techsoft Centre Europe
+The Corporate Village · Da Vincilaan 7-D1 · B-1935 Zaventem · Belgium
+
+Phone:    +32 (0)2 700 8453
+Fax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 · RPR Brussels
+Fortis · BIC GEBABEBB · IBAN BE41293037680010
+---584349381-776896427-1219938051=:28552--
