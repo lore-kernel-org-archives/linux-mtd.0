@@ -1,12 +1,12 @@
 Received: from mail.cvg.de ([62.153.82.30])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KZ1hw-0004Sq-5d
+	id 1KZ1hw-0004St-FR
 	for linux-mtd@lists.infradead.org; Fri, 29 Aug 2008 11:00:00 +0000
 From: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 6/6] pxa3xx_nand: added warning which tells id of detected NAND
-Date: Fri, 29 Aug 2008 12:59:52 +0200
-Message-Id: <1220007592-26894-5-git-send-email-enrico.scholz@sigma-chemnitz.de>
+Subject: [PATCH 3/6] pxa3xx_nand: allow to disable builtin flash-type table
+Date: Fri, 29 Aug 2008 12:59:49 +0200
+Message-Id: <1220007592-26894-2-git-send-email-enrico.scholz@sigma-chemnitz.de>
 In-Reply-To: <1220007448-26801-1-git-send-email-enrico.scholz@sigma-chemnitz.de>
 References: <1220007448-26801-1-git-send-email-enrico.scholz@sigma-chemnitz.de>
 Sender: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
@@ -20,35 +20,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Minor patch to help debugging of NAND detection.
+This patch adds a MTD_NAND_PXA3xx_BUILTIN configuration variables which
+allows to disable usage of builtin flash-type table.  Not enabling this
+option saves some space in the generated driver.
 
 Signed-off-by: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
 ---
- drivers/mtd/nand/pxa3xx_nand.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
+ drivers/mtd/nand/Kconfig       |    7 +++++++
+ drivers/mtd/nand/pxa3xx_nand.c |    4 ++++
+ 2 files changed, 11 insertions(+), 0 deletions(-)
 
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 41f361c..1f4edfe 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -340,6 +340,13 @@ config MTD_NAND_PXA3xx
+ 	  This enables the driver for the NAND flash device found on
+ 	  PXA3xx processors
+ 
++config MTD_NAND_PXA3xx_BUILTIN
++	bool "Use builtin definitions for some NAND chips (deprecated)"
++	depends on MTD_NAND_PXA3xx
++	help
++	  This enables builtin definitions for some NAND chips. This
++	  is deprecated in favor of platform specific data.
++
+ config MTD_NAND_CM_X270
+ 	tristate "Support for NAND Flash on CM-X270 modules"
+ 	depends on MTD_NAND && MACH_ARMCORE
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 45bb2ca..3fe9cd7 100644
+index 17915d7..bff2ac3 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -901,7 +901,7 @@ static int pxa3xx_nand_detect_flash(struct pxa3xx_nand_info *info,
- 				    struct pxa3xx_nand_platform_data const *pdata)
- {
- 	struct pxa3xx_nand_flash const *f;
--	uint32_t id;
-+	uint32_t id = -1;
- 	int i;
+@@ -164,6 +164,7 @@ static int use_dma = 1;
+ module_param(use_dma, bool, 0444);
+ MODULE_PARM_DESC(use_dma, "enable DMA for data transfering to/from NAND HW");
  
- 	for (i = 0; i<pdata->num_flash; ++i) {
-@@ -933,6 +933,9 @@ static int pxa3xx_nand_detect_flash(struct pxa3xx_nand_info *info,
++#ifdef CONFIG_MTD_NAND_PXA3xx_BUILTIN
+ static struct pxa3xx_nand_cmdset smallpage_cmdset = {
+ 	.read1		= 0x0000,
+ 	.read2		= 0x0050,
+@@ -252,6 +253,7 @@ static struct pxa3xx_nand_flash *builtin_flash_types[] = {
+ 	&micron1GbX8,
+ 	&micron1GbX16,
+ };
++#endif
+ 
+ #define NDTR0_tCH(c)	(min((c), 7) << 19)
+ #define NDTR0_tCS(c)	(min((c), 7) << 16)
+@@ -908,6 +910,7 @@ static int pxa3xx_nand_detect_flash(struct pxa3xx_nand_info *info,
+ 			return 0;
  	}
- #endif
  
-+	dev_warn(&info->pdev->dev,
-+		 "failed to detect configured nand flash; found %04x instead of\n",
-+		 id);
++#ifdef CONFIG_MTD_NAND_PXA3xx_BUILTIN
+ 	for (i = 0; i < ARRAY_SIZE(builtin_flash_types); i++) {
+ 
+ 		f = builtin_flash_types[i];
+@@ -921,6 +924,7 @@ static int pxa3xx_nand_detect_flash(struct pxa3xx_nand_info *info,
+ 		if (id == f->chip_id)
+ 			return 0;
+ 	}
++#endif
+ 
  	return -ENODEV;
  }
- 
 -- 
 1.5.5.1
