@@ -1,26 +1,27 @@
-Received: from gerard.telenet-ops.be ([195.130.132.48])
+Received: from pasmtpb.tele.dk ([80.160.77.98])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KZlbs-0007ah-9u
-	for linux-mtd@lists.infradead.org; Sun, 31 Aug 2008 12:00:49 +0000
-Date: Sun, 31 Aug 2008 14:00:38 +0200 (CEST)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Sender: geert@linux-m68k.org
-To: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+	id 1KZqDV-0008NI-Qq
+	for linux-mtd@lists.infradead.org; Sun, 31 Aug 2008 16:55:58 +0000
+Date: Sun, 31 Aug 2008 18:55:40 +0200
+From: Jens Axboe <jens.axboe@oracle.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Subject: Re: MTD/block regression (was Re: Slub debugging NAND error in
 	2.6.25.10.atmel.2)
-In-Reply-To: <20080830103318N.fujita.tomonori@lab.ntt.co.jp>
-Message-ID: <Pine.LNX.4.64.0808311357020.8062@anakin>
+Message-ID: <20080831165540.GY20055@kernel.dk>
 References: <6B5648EA2E2C2D42AF2FF7691522AD92417CA6@wpr01.wprmedical.local>
 	<20080829114828.279b79bc@hskinnemo-gx745.norway.atmel.com>
 	<20080829162824.17f8746b@hskinnemo-gx745.norway.atmel.com>
 	<20080830103318N.fujita.tomonori@lab.ntt.co.jp>
+	<Pine.LNX.4.64.0808311357020.8062@anakin>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.0808311357020.8062@anakin>
 Cc: eaa@wprmedical.com, Linux/m68k <linux-m68k@vger.kernel.org>,
 	kernel@avr32linux.org,
 	Linux Kernel Development <linux-kernel@vger.kernel.org>,
-	linux-mtd@lists.infradead.org, jens.axboe@oracle.com,
-	haavard.skinnemoen@atmel.com,
+	FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>,
+	haavard.skinnemoen@atmel.com, linux-mtd@lists.infradead.org,
 	Andrew Morton <akpm@linux-foundation.org>, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -31,76 +32,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 30 Aug 2008, FUJITA Tomonori wrote:
-> On Fri, 29 Aug 2008 16:28:24 +0200
-> Haavard Skinnemoen <haavard.skinnemoen@atmel.com> wrote:
+On Sun, Aug 31 2008, Geert Uytterhoeven wrote:
+> On Sat, 30 Aug 2008, FUJITA Tomonori wrote:
+> > On Fri, 29 Aug 2008 16:28:24 +0200
 > > Haavard Skinnemoen <haavard.skinnemoen@atmel.com> wrote:
-> > > Hmm...I just saw this when booting 2.6.27-rc5 on the NGW100:
+> > > Haavard Skinnemoen <haavard.skinnemoen@atmel.com> wrote:
+> > > > Hmm...I just saw this when booting 2.6.27-rc5 on the NGW100:
+> > > > 
+> > > > kobject (91ce8410): tried to init an initialized object, something is seriously wrong.
+> > > > Call trace:
+> > > >  [<90017184>] dump_stack+0x18/0x20
+> > > >  [<900c1894>] kobject_init+0x28/0x5c
+> > > >  [<900c1bf6>] kobject_init_and_add+0xe/0x24
+> > > >  [<900beff0>] blk_register_filter+0x28/0x40
+> > > >  [<900be224>] add_disk+0x38/0x68
+> > > >  [<900e70f0>] add_mtd_blktrans_dev+0x174/0x184
+> > > >  [<900e748e>] mtdblock_add_mtd+0x36/0x3c
+> > > >  [<900e6e38>] blktrans_notify_add+0x1a/0x3a
+> > > >  [<900e533c>] add_mtd_device+0x60/0xa0
+> > > >  [<900e5f7e>] add_mtd_partitions+0x37a/0x3a0
+> > > >  [<900ec4d0>] physmap_flash_probe+0x1ec/0x21c
+> > > >  [<900e0f24>] platform_drv_probe+0x10/0x12
+> > > >  [<900e06d0>] driver_probe_device+0x84/0xf0
+> > > >  [<900e076a>] __driver_attach+0x2e/0x44
+> > > >  [<900e0096>] bus_for_each_dev+0x2e/0x4c
+> > > >  [<900e05b6>] driver_attach+0x12/0x14
+> > > >  [<900e036c>] bus_add_driver+0x6c/0x178
+> > > >  [<900e08a4>] driver_register+0x58/0xb0
+> > > >  [<900e1126>] platform_driver_register+0x56/0x5c
+> > > >  [<9000aaf6>] physmap_init+0xa/0x10
+> > > >  [<9001422a>] do_one_initcall+0x2a/0x10c
+> > > >  [<900005b8>] kernel_init+0x48/0x90
+> > > >  [<9001fcc0>] do_exit+0x0/0x4cc
 > > > 
-> > > kobject (91ce8410): tried to init an initialized object, something is seriously wrong.
-> > > Call trace:
-> > >  [<90017184>] dump_stack+0x18/0x20
-> > >  [<900c1894>] kobject_init+0x28/0x5c
-> > >  [<900c1bf6>] kobject_init_and_add+0xe/0x24
-> > >  [<900beff0>] blk_register_filter+0x28/0x40
-> > >  [<900be224>] add_disk+0x38/0x68
-> > >  [<900e70f0>] add_mtd_blktrans_dev+0x174/0x184
-> > >  [<900e748e>] mtdblock_add_mtd+0x36/0x3c
-> > >  [<900e6e38>] blktrans_notify_add+0x1a/0x3a
-> > >  [<900e533c>] add_mtd_device+0x60/0xa0
-> > >  [<900e5f7e>] add_mtd_partitions+0x37a/0x3a0
-> > >  [<900ec4d0>] physmap_flash_probe+0x1ec/0x21c
-> > >  [<900e0f24>] platform_drv_probe+0x10/0x12
-> > >  [<900e06d0>] driver_probe_device+0x84/0xf0
-> > >  [<900e076a>] __driver_attach+0x2e/0x44
-> > >  [<900e0096>] bus_for_each_dev+0x2e/0x4c
-> > >  [<900e05b6>] driver_attach+0x12/0x14
-> > >  [<900e036c>] bus_add_driver+0x6c/0x178
-> > >  [<900e08a4>] driver_register+0x58/0xb0
-> > >  [<900e1126>] platform_driver_register+0x56/0x5c
-> > >  [<9000aaf6>] physmap_init+0xa/0x10
-> > >  [<9001422a>] do_one_initcall+0x2a/0x10c
-> > >  [<900005b8>] kernel_init+0x48/0x90
-> > >  [<9001fcc0>] do_exit+0x0/0x4cc
+> > > Ok, it turns out it's not related. It's a newly introduced regression
+> > > which I've bisected down to:
+> > > 
+> > > commit abf5439370491dd6fbb4fe1a7939680d2a9bc9d4
+> > > Author: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+> > > Date:   Sat Aug 16 14:10:05 2008 +0900
+> > > 
+> > >     block: move cmdfilter from gendisk to request_queue
 > > 
-> > Ok, it turns out it's not related. It's a newly introduced regression
-> > which I've bisected down to:
+> > Really sorry about that. A fix was queued in Jens' tree:
 > > 
-> > commit abf5439370491dd6fbb4fe1a7939680d2a9bc9d4
-> > Author: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
-> > Date:   Sat Aug 16 14:10:05 2008 +0900
+> > http://marc.info/?l=linux-kernel&m=122000748432301&w=2
 > > 
-> >     block: move cmdfilter from gendisk to request_queue
+> > 
+> > > Unfortunately, I can't revert it cleanly, so it could be a false
+> > > positive. But it does sort of make sense, since it makes the filter
+> > > per-queue instead of per-gendisk, so if MTD uses the same queue for
+> > > several block devices, the filter kobject might end up being
+> > > initialized multiple times. Or something.
+> > 
+> > Right, the problem is that MTD uses the same queue for multiple
+> > gendisks. It would be great if a MTD developer could fix it.
 > 
-> Really sorry about that. A fix was queued in Jens' tree:
+> I'm also seeing it with drivers/block/ataflop.c (also a single queue) on
+> ARAnyM.
 > 
-> http://marc.info/?l=linux-kernel&m=122000748432301&w=2
+> And from looking at drivers/block/floppy.c and drivers/block/amiflop.c,
+> I guess it happens there, too.
 > 
-> 
-> > Unfortunately, I can't revert it cleanly, so it could be a false
-> > positive. But it does sort of make sense, since it makes the filter
-> > per-queue instead of per-gendisk, so if MTD uses the same queue for
-> > several block devices, the filter kobject might end up being
-> > initialized multiple times. Or something.
-> 
-> Right, the problem is that MTD uses the same queue for multiple
-> gendisks. It would be great if a MTD developer could fix it.
+> Any other single-queue drivers that got broken???
 
-I'm also seeing it with drivers/block/ataflop.c (also a single queue) on
-ARAnyM.
+The pending change will eliminate this problem so that single queue
+devices will work fine again. They should still work fine in -rc5, just
+with the annoying WARN_ON() for each device per queue.
 
-And from looking at drivers/block/floppy.c and drivers/block/amiflop.c,
-I guess it happens there, too.
-
-Any other single-queue drivers that got broken???
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+-- 
+Jens Axboe
