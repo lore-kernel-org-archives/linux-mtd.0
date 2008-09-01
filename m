@@ -1,23 +1,15 @@
-Subject: Re: [PATCH] [MTD] mtdchar.c: Fix regression in
-	MEMGETREGIONINFO	ioctl()
+Subject: Re: warning during mtd registration in 2.6.27-rc5
 From: David Woodhouse <dwmw2@infradead.org>
-To: Zev Weiss <zevweiss@gmail.com>
-In-Reply-To: <48BBDDC9.9020003@gmail.com>
-References: <48ABCC0B.40607@gmail.com>
-	<20080822153451.bb79bd1f.akpm@linux-foundation.org>
-	<48AFC5ED.50005@gmail.com>
-	<20080823222707.2fb972b5.akpm@linux-foundation.org>
-	<48B13F88.3080306@gmail.com>  <48B4D884.5040204@gmail.com>
-	<1220266884.2982.62.camel@pmac.infradead.org>
-	<48BBDDC9.9020003@gmail.com>
+To: Dmitry Baryshkov <dbaryshkov@gmail.com>
+In-Reply-To: <20080901142949.GA18081@doriath.ww600.siemens.net>
+References: <20080901142949.GA18081@doriath.ww600.siemens.net>
 Content-Type: text/plain
-Date: Mon, 01 Sep 2008 18:25:03 +0100
-Message-Id: <1220289903.2982.92.camel@pmac.infradead.org>
+Date: Mon, 01 Sep 2008 21:17:44 +0100
+Message-Id: <1220300264.2982.140.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Rodolfo Giometti <giometti@enneenne.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: axboe@kernel.dk, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,28 +19,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2008-09-01 at 05:19 -0700, Zev Weiss wrote:
-> From: Zev Weiss <zevweiss@gmail.com>
-> Date: Mon, 1 Sep 2008 05:02:12 -0700
-> Subject: [PATCH] [MTD] mtdchar.c: Fix regression in MEMGETREGIONINFO ioctl()
-> 
-> The MEMGETREGIONINFO ioctl() in mtdchar.c was clobbering user memory by
-> overwriting more than intended, due the size of struct mtd_erase_region_info
-> changing in commit 0ecbc81adfcb9f15f86b05ff576b342ce81bbef8.
-> 
-> Fix avoids this by copying struct members one by one with put_user(), as there
-> is no longer a convenient struct to use the size of as the length argument to
-> copy_to_user().
-> 
-> Signed-off-by: Zev Weiss <zevweiss@gmail.com>
+On Mon, 2008-09-01 at 18:29 +0400, Dmitry Baryshkov wrote:
+> This happens when adding mtd partitions. I've traced it to the fact that
+> mtd partition devices share the genhd queue with the whole chip block device.
+> Thus blk_register_filter receives the same pointer for the chip and for each
+> registered partition.
 
-Thanks. Your patch was whitespace-damaged, but I managed to apply it
-anyway. Please check for future patches though -- try sending patches to
-yourself and then see if they get mangled. I believe gmail is known to
-be broken unless you submit mail with SMTP.
-
-I also try to avoid the pointless types like 'u32' in MTD code -- the C
-language has perfectly good explicitly sized types; let's use them.
+Yes, the fix for that is already on its way to Linus.
 
 -- 
 David Woodhouse                            Open Source Technology Centre
