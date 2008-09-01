@@ -1,15 +1,17 @@
-Subject: Re: [PATCH resend] MTD: nandsim: allow changing some module parameters
-From: David Woodhouse <dwmw2@infradead.org>
-To: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-In-Reply-To: <20080728070631.4707.68077.sendpatchset@localhost.localdomain>
-References: <20080728070626.4707.99096.sendpatchset@localhost.localdomain>
+Message-ID: <48BBD12C.2080506@nokia.com>
+Date: Mon, 01 Sep 2008 14:25:32 +0300
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH resend] MTD: nandsim: allow changing some module	parameters
+References: <20080728070626.4707.99096.sendpatchset@localhost.localdomain>	
 	<20080728070631.4707.68077.sendpatchset@localhost.localdomain>
-Content-Type: text/plain
-Date: Mon, 01 Sep 2008 12:26:44 +0100
-Message-Id: <1220268404.2982.65.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+	<1220268404.2982.65.camel@pmac.infradead.org>
+In-Reply-To: <1220268404.2982.65.camel@pmac.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
+Reply-To: Artem.Bityutskiy@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,19 +21,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2008-07-28 at 10:06 +0300, Artem Bityutskiy wrote:
-> Grant write permissions to some nandsim module parameters
-> to make it possible to change them runtime e.g., via sysfs:
+David Woodhouse wrote:
+> On Mon, 2008-07-28 at 10:06 +0300, Artem Bityutskiy wrote:
+>> Grant write permissions to some nandsim module parameters
+>> to make it possible to change them runtime e.g., via sysfs:
+>>
+>> echo 1 > /sys/module/nandsim/parameters/rptwear
+>>
+>> There is no reason to have that file read-only. This patches
+>> also changes the permissions from octal to S_* format.
+>>
+>> Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 > 
-> echo 1 > /sys/module/nandsim/parameters/rptwear
-> 
-> There is no reason to have that file read-only. This patches
-> also changes the permissions from octal to S_* format.
-> 
-> Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> Got a current version of this?
 
-Got a current version of this?
+Please, do not apply this for now. I'll send a better version
+later. This version has a problem - we should make sure
+rptwear-related variables are initialized.
+
+Thanks.
 
 -- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
