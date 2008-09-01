@@ -1,29 +1,17 @@
-Received: from wf-out-1314.google.com ([209.85.200.170])
+Received: from smtp20.orange.fr ([193.252.22.31])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Ka8NS-0004SO-Vf
-	for linux-mtd@lists.infradead.org; Mon, 01 Sep 2008 12:19:27 +0000
-Received: by wf-out-1314.google.com with SMTP id 28so2823614wfc.24
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 01 Sep 2008 05:19:25 -0700 (PDT)
-Message-ID: <48BBDDC9.9020003@gmail.com>
-Date: Mon, 01 Sep 2008 05:19:21 -0700
-From: Zev Weiss <zevweiss@gmail.com>
+	id 1Ka8ii-0006pY-AM
+	for linux-mtd@lists.infradead.org; Mon, 01 Sep 2008 12:41:24 +0000
+From: =?windows-1251?B?x+Xs5ev87fvpIMru7Ojy5fI=?= <Elsmore@yahoo.fr>
+To: <debian-email@lists.debian.org>
+Subject: =?windows-1251?B?z/Dg4u7i7uUg8OXj8+vo8O7i4O3o5SDo8e/u6/zn7uLg7ej/IOfl7OXr/CDw4Ofr6Pft+/Ug6uDy5ePu8OjpLg==?=
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] [MTD] mtdchar.c: Fix regression in
-	MEMGETREGIONINFO	ioctl()
-References: <48ABCC0B.40607@gmail.com>	
-	<20080822153451.bb79bd1f.akpm@linux-foundation.org>	
-	<48AFC5ED.50005@gmail.com>	
-	<20080823222707.2fb972b5.akpm@linux-foundation.org>	
-	<48B13F88.3080306@gmail.com> <48B4D884.5040204@gmail.com>
-	<1220266884.2982.62.camel@pmac.infradead.org>
-In-Reply-To: <1220266884.2982.62.camel@pmac.infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+	charset="windows-1251"
 Content-Transfer-Encoding: 7bit
-Cc: Rodolfo Giometti <giometti@enneenne.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Message-Id: <20080901124111.563C21C00086@mwinf2019.orange.fr>
+Date: Mon,  1 Sep 2008 14:41:11 +0200 (CEST)
+Reply-To: =?windows-1251?B?x+Xs5ev87fvpIMru7Ojy5fI=?= <Elsmore@yahoo.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,53 +21,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Zev Weiss <zevweiss@gmail.com>
-Date: Mon, 1 Sep 2008 05:02:12 -0700
-Subject: [PATCH] [MTD] mtdchar.c: Fix regression in MEMGETREGIONINFO ioctl()
+Курс для руководителей, землеустроителей, юристов, специалистов земельных, имущественных подразделений органов власти и органов местного самоуправления.  
+*****************************************************************************
 
-The MEMGETREGIONINFO ioctl() in mtdchar.c was clobbering user memory by
-overwriting more than intended, due the size of struct mtd_erase_region_info
-changing in commit 0ecbc81adfcb9f15f86b05ff576b342ce81bbef8.
+ПРАВОВОЕ РЕГУЛИРОВАНИЕ ИСПОЛЬЗОВАНИЯ ЗЕМЕЛЬ РАЗЛИЧНЫХ КАТЕГОРИЙ. 
+Практика операций с земельными участками, регистрация прав собственности на земельные участки и объекты недвижимости.
 
-Fix avoids this by copying struct members one by one with put_user(), as there
-is no longer a convenient struct to use the size of as the length argument to
-copy_to_user().
+*****************************************************************************
+В программе:
+ - Порядок предоставления земельных участков государственной или муниципальной собственности.
 
-Signed-off-by: Zev Weiss <zevweiss@gmail.com>
----
-  drivers/mtd/mtdchar.c |   16 ++++++++++------
-  1 files changed, 10 insertions(+), 6 deletions(-)
+ - Прекращение прав на землю.  Основания и порядок прекращения.
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 13cc67a..424f318 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -410,16 +410,20 @@ static int mtd_ioctl(struct inode *inode, struct file *file,
+ - Целевое назначение земель. Перевод земель и земельных участков из одной категории в другую. Изменение вида разрешённого использования земельного участка. Раздел и объединение земельных участков (единое землепользование).
 
-  	case MEMGETREGIONINFO:
-  	{
--		struct region_info_user ur;
-+		u32 ur_idx;
-+		struct mtd_erase_region_info *kr;
-+		struct region_info_user *ur = (struct region_info_user *) argp;
+ - Контроль за использованием и охраной земель (государственный, муниципальный, общественный, производственный). Порядок привлечения к юридической ответственности за земельные правонарушения.
 
--		if (copy_from_user(&ur, argp, sizeof(struct region_info_user)))
-+		if (get_user(ur_idx,&(ur->regionindex)))
-  			return -EFAULT;
+ - Правовые особенности совершения сделок с землёй (с учётом правоприменительной практики).
 
--		if (ur.regionindex >= mtd->numeraseregions)
--			return -EINVAL;
--		if (copy_to_user(argp, &(mtd->eraseregions[ur.regionindex]),
--				sizeof(struct mtd_erase_region_info)))
-+		kr = &(mtd->eraseregions[ur_idx]);
-+
-+		if (put_user(kr->offset, &(ur->offset))
-+		    || put_user(kr->erasesize, &(ur->erasesize))
-+		    || put_user(kr->numblocks, &(ur->numblocks)))
-  			return -EFAULT;
-+
-  		break;
-  	}
+ - Особенности оборота земель с/х назначения (с учётом последних изменений законодательства).
 
--- 
-1.5.4.1
+ - Порядок государственной регистрации прав на землю и сделок с недвижимым имуществом.
+
+ - Вопросы оформления в упрощенном порядке прав граждан на отдельные объекты недвижимого имущества (земельные участки, садовые, дачные, жилые дома, индивидуальные гаражи).
+
+ - Правовое регулирование передачи земельных участков по наследству (с учётом последних изменений законодательства).
+
+ - Правовое регулирование порядка приватизации земельных участков, занятых зданиями, строениями и сооружениями, а также переоформления права постоянного (бессрочного) пользования.
+
+*****************************************************************************
+09-10 сентября | Москва 
+Стоимость участия: 17500 рублей.
+*****************************************************************************
+Получите подробную программу и информацию по этому мероприятию
+по тел.: +7 (495) 229-04-33
