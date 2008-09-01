@@ -1,14 +1,17 @@
-Subject: Re: [PATCH] resend Freescale i.MX2 NAND driver
-From: David Woodhouse <dwmw2@infradead.org>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-In-Reply-To: <20080827150156.GI4746@pengutronix.de>
-References: <20080827150156.GI4746@pengutronix.de>
-Content-Type: text/plain
-Date: Mon, 01 Sep 2008 11:52:28 +0100
-Message-Id: <1220266348.2982.60.camel@pmac.infradead.org>
-Mime-Version: 1.0
+Received: from smtp20.orange.fr ([193.252.22.29])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Ka74B-0003v5-Uh
+	for linux-mtd@lists.infradead.org; Mon, 01 Sep 2008 10:55:28 +0000
+From: =?windows-1251?B?2Oru6+Ag0eXq8OXy4PD/?= <Frostburg@yahoo.fr>
+To: <xdg@lists.freedesktop.org>
+Subject: =?windows-1251?B?2Oru6+Ag8eXq8OXy4PD/OiDq4Oog8fLg8vwg7/Du9OXx8eju7eDr7uwu?=
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="windows-1251"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Message-Id: <20080901105520.9785C1C00097@mwinf2017.orange.fr>
+Date: Mon,  1 Sep 2008 12:55:20 +0200 (CEST)
+Reply-To: =?windows-1251?B?2Oru6+Ag0eXq8OXy4PD/?= <Frostburg@yahoo.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,12 +21,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-08-27 at 17:01 +0200, Sascha Hauer wrote:
-> I received no reactions on this so far, so I send this one again. I
-> would be glad to see this in 2.6.28. Any comments on the patch?
+Курс для секретарей, помощников руководителей, офис-менеджеров, сотрудников административных отделов компании.
+***************************************************************
+ШКОЛА СЕКРЕТАРЯ: КАК СТАТЬ ПРОФЕССИОНАЛОМ
+Пятидневный практический курс
 
-Can I have a version which applies to the current git tree, please?
+В программе:
+Модуль 1: Делопроизводство в работе секретаря. Нормативно-правовая и методическая база делопроизводства. Классификация документов и  их функции. Современные требования к составлению и оформлению документов. Организация работы с документами. Номенклатура дел предприятия. 
+Модуль 2: Деловая корреспонденция. Деловая переписка. Характеристика служебной переписки. Служебные  письма. Коммерческие письма. Внутренняя переписка. Требования к тексту служебных документов. 
+Модуль 3: Организация работы офиса (офис-менеджмент). Организация рабочего места. Обеспечение жизнедеятельности офиса. Организация и хозяйственное обслуживание представительских мероприятий. Организационные вопросы взаимодействия с руководителем. Руководство административно-хозяйственной службой. 
+Модуль 4: Деловой этикет и служебная культура в работе секретаря. Правила приветствия, представления, знакомства. Эффективное взаимодействие секретаря и руководителя. Субординация, взаимоотношения между сотрудниками. Основные стили одежды. Dresscode.
+Модуль 5: Корпоративный стиль. Представительская деятельность. Корпоративные правила, приемы и стандарты. Особенности общения с иностранными партнерами и клиентами. Подарки, цветы, сувениры, их роль в деловых контактах.
+Модуль 6: Деловые коммуникации. Встречи, совещания, переговоры. Порядок подготовки и проведение коммерческих переговоров, "оперативок" и плановых совещаний. Подготовка к встрече деловых партнеров. Классификация приемов.
+Модуль 7: Мастерство телефонного общения. Особенности делового телефонного разговора. Проблемные разговоры по телефону.
+Модуль 8: Прием посетителей. Как встретить VIP - клиента (партнера)
+Модуль 9: Основные правила гостеприимства. Виды обслуживания гостей за столом.
+Уместные формы обслуживания в офисе. Гастрономический этикет.
 
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+**************************************************************
+08-12 сентября | Москва 
+Стоимость участия в полном курсе: 23400 рублей
+Вы можете принять участие во всех семинарах курса, или выбрать только интересующие Вас темы. 
+****************************************************************
+Получите подробную программу и информацию по этому мероприятию
+по тел. +7 (495) 229-04-33
