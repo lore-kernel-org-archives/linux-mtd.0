@@ -1,23 +1,19 @@
-Received: from mailgw4.ericsson.se ([193.180.251.62])
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KaRnz-0008Be-IK
-	for linux-mtd@lists.infradead.org; Tue, 02 Sep 2008 09:04:08 +0000
-Received: from mailgw4.ericsson.se (unknown [127.0.0.1])
-	by mailgw4.ericsson.se (Symantec Mail Security) with ESMTP id
-	55F3120FD7 for <linux-mtd@lists.infradead.org>;
-	Tue,  2 Sep 2008 11:04:05 +0200 (CEST)
-Received: from esealmw126.eemea.ericsson.se (unknown [153.88.254.123])
-	by mailgw4.ericsson.se (Symantec Mail Security) with ESMTP id
-	3042A2055D for <linux-mtd@lists.infradead.org>;
-	Tue,  2 Sep 2008 11:04:05 +0200 (CEST)
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C90CDA.D963BEAC"
-Subject: [PATCH] [MTD-UTILS] nandwrite: read from stdin support
-Date: Tue, 2 Sep 2008 11:04:04 +0200
-Message-ID: <816E1A2C67CC2B488292E7A0981FFD7702AC16FB@esealmw110.eemea.ericsson.se>
-From: "Tommi Airikka" <tommi.airikka@ericsson.com>
-To: <linux-mtd@lists.infradead.org>
+	id 1KaTaR-00036a-6i
+	for linux-mtd@lists.infradead.org; Tue, 02 Sep 2008 10:58:15 +0000
+Subject: Re: [PATCH] [MTD-UTILS] nandwrite: read from stdin support
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Tommi Airikka <tommi.airikka@ericsson.com>
+In-Reply-To: <816E1A2C67CC2B488292E7A0981FFD7702AC16FB@esealmw110.eemea.ericsson.se>
+References: <816E1A2C67CC2B488292E7A0981FFD7702AC16FB@esealmw110.eemea.ericsson.se>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 02 Sep 2008 13:54:29 +0300
+Message-Id: <1220352869.4036.34.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,87 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C90CDA.D963BEAC
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+On Tue, 2008-09-02 at 11:04 +0200, Tommi Airikka wrote:
+> Here is a patch that adds read from stdin support for nandwrite.
+> I have tried it with 'cat filename.jffs2 | nandwrite -i filesize -p
+> /dev/mtdX -'
+> and it did work.
 
+Looks OK for me, but I would rather call stdin "Standard input", not
+"Standard in", as you call it in the help output and in the comments.
 
-Here is a patch that adds read from stdin support for nandwrite.
-I have tried it with 'cat filename.jffs2 | nandwrite -i filesize -p
-/dev/mtdX -'
-and it did work.
+Also, it would be better to send the patch in-line, not as an
+attachment.
 
-Regards,
-Tommi Airikka
-
-------_=_NextPart_001_01C90CDA.D963BEAC
-Content-Type: application/octet-stream;
-	name="0001-nandwrite-support-reading-from-stdin.patch"
-Content-Transfer-Encoding: base64
-Content-Description: 0001-nandwrite-support-reading-from-stdin.patch
-Content-Disposition: attachment;
-	filename="0001-nandwrite-support-reading-from-stdin.patch"
-
-RnJvbSAxMDdmYWNiODdmYzg5Njc5NjhhYTQ0MWYyYzEzZGU3ODY4NGQ2ZDI4IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBUb21taSBBaXJpa2thIDx0b21taS5haXJpa2thQGVyaWNzc29u
-LmNvbT4KRGF0ZTogRnJpLCA4IEF1ZyAyMDA4IDA5OjQ0OjAwICswMjAwClN1YmplY3Q6IFtQQVRD
-SF0gbmFuZHdyaXRlOiBzdXBwb3J0IHJlYWRpbmcgZnJvbSBzdGRpbgoKQWRkcyAtaS8tLWZpbGUt
-c2l6ZSBzd2l0Y2guCklmIGlucHV0ZmlsZSBpcyAnLScsIHN0ZGluIHdpbGwgYmUgcmVhZC4KSWYg
-dXNlZCwgLWkvLS1maWxlLXNpemUgbXVzdCBiZSBzcGVjaWZpZWQuCgpTaWduZWQtb2ZmLWJ5OiBU
-b21taSBBaXJpa2thIDx0b21taS5haXJpa2thQGVyaWNzc29uLmNvbT4KLS0tCiBuYW5kd3JpdGUu
-YyB8ICAgMzYgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tCiAxIGZpbGVzIGNo
-YW5nZWQsIDMwIGluc2VydGlvbnMoKyksIDYgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvbmFu
-ZHdyaXRlLmMgYi9uYW5kd3JpdGUuYwppbmRleCBhNTQ2MmFlLi4zNTRlYWJkIDEwMDY0NAotLS0g
-YS9uYW5kd3JpdGUuYworKysgYi9uYW5kd3JpdGUuYwpAQCAtODYsNiArODYsNyBAQCB2b2lkIGRp
-c3BsYXlfaGVscCAodm9pZCkKIAkJCSIgIC1wLCAtLXBhZCAgICAgICAgICAgICBwYWQgdG8gcGFn
-ZSBzaXplXG4iCiAJCQkiICAtYiwgLS1ibG9ja2FsaWduPTF8Mnw0IHNldCBtdWx0aXBsZSBvZiBl
-cmFzZWJsb2NrcyB0byBhbGlnbiB0b1xuIgogCQkJIiAgLXEsIC0tcXVpZXQJCWRvbid0IGRpc3Bs
-YXkgcHJvZ3Jlc3MgbWVzc2FnZXNcbiIKKwkJCSIgIC1pIGJ5dGVzLCAtLWZpbGUtc2l6ZT1ieXRl
-cyBoYXMgdG8gYmUgdXNlZCB3aGVuIHJlYWRpbmcgZmlsZSBmcm9tIHN0YW5kYXJkIGluXG4iCiAJ
-CQkiICAgICAgLS1oZWxwCQlkaXNwbGF5IHRoaXMgaGVscCBhbmQgZXhpdFxuIgogCQkJIiAgICAg
-IC0tdmVyc2lvbgkJb3V0cHV0IHZlcnNpb24gaW5mb3JtYXRpb24gYW5kIGV4aXRcbiIpOwogCWV4
-aXQoMCk7CkBAIC0xMTgsNiArMTE5LDggQEAgaW50CWZvcmNlbGVnYWN5ID0gMDsKIGludAlub2Vj
-YyA9IDA7CiBpbnQJcGFkID0gMDsKIGludAlibG9ja2FsaWduID0gMTsgLypkZWZhdWx0IHRvIHVz
-aW5nIDE2SyBibG9jayBzaXplICovCitpbnQJZmlsZXNpemUgPSAwOworaW50CWZyb21fc3RkaW4g
-PSAwOwogCiB2b2lkIHByb2Nlc3Nfb3B0aW9ucyAoaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKIHsK
-QEAgLTEyNSw3ICsxMjgsNyBAQCB2b2lkIHByb2Nlc3Nfb3B0aW9ucyAoaW50IGFyZ2MsIGNoYXIg
-KmFyZ3ZbXSkKIAogCWZvciAoOzspIHsKIAkJaW50IG9wdGlvbl9pbmRleCA9IDA7Ci0JCXN0YXRp
-YyBjb25zdCBjaGFyICpzaG9ydF9vcHRpb25zID0gImFiOmZqbW5vcHFzOnkiOworCQlzdGF0aWMg
-Y29uc3QgY2hhciAqc2hvcnRfb3B0aW9ucyA9ICJhYjpmam1ub3Bxczp5aToiOwogCQlzdGF0aWMg
-Y29uc3Qgc3RydWN0IG9wdGlvbiBsb25nX29wdGlvbnNbXSA9IHsKIAkJCXsiaGVscCIsIG5vX2Fy
-Z3VtZW50LCAwLCAwfSwKIAkJCXsidmVyc2lvbiIsIG5vX2FyZ3VtZW50LCAwLCAwfSwKQEAgLTE0
-MCw2ICsxNDMsNyBAQCB2b2lkIHByb2Nlc3Nfb3B0aW9ucyAoaW50IGFyZ2MsIGNoYXIgKmFyZ3Zb
-XSkKIAkJCXsicXVpZXQiLCBub19hcmd1bWVudCwgMCwgJ3EnfSwKIAkJCXsic3RhcnQiLCByZXF1
-aXJlZF9hcmd1bWVudCwgMCwgJ3MnfSwKIAkJCXsieWFmZnMiLCBub19hcmd1bWVudCwgMCwgJ3kn
-fSwKKwkJCXsiZmlsZS1zaXplIiwgcmVxdWlyZWRfYXJndW1lbnQsIDAsICdpJ30sCiAJCQl7MCwg
-MCwgMCwgMH0sCiAJCX07CiAKQEAgLTE5Myw2ICsxOTcsOSBAQCB2b2lkIHByb2Nlc3Nfb3B0aW9u
-cyAoaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKIAkJCWNhc2UgJ2InOgogCQkJCWJsb2NrYWxpZ24g
-PSBhdG9pIChvcHRhcmcpOwogCQkJCWJyZWFrOworCQkJY2FzZSAnaSc6CisJCQkJZmlsZXNpemUg
-PSBhdG9pIChvcHRhcmcpOworCQkJCWJyZWFrOwogCQkJY2FzZSAnPyc6CiAJCQkJZXJyb3IgPSAx
-OwogCQkJCWJyZWFrOwpAQCAtMjA0LDYgKzIxMSw5IEBAIHZvaWQgcHJvY2Vzc19vcHRpb25zIChp
-bnQgYXJnYywgY2hhciAqYXJndltdKQogCiAJbXRkX2RldmljZSA9IGFyZ3Zbb3B0aW5kKytdOwog
-CWltZyA9IGFyZ3Zbb3B0aW5kXTsKKwkKKwlpZihzdHJjbXAoaW1nLCAiLSIpID09IDApCisJCWZy
-b21fc3RkaW4gPSAxOwogfQogCiAvKgpAQCAtMjI4LDYgKzIzOCwxMiBAQCBpbnQgbWFpbihpbnQg
-YXJnYywgY2hhciAqKmFyZ3YpCiAJCWV4aXQoMSk7CiAJfQogCisJLyogQ2hlY2sgaWYgZmlsZXNp
-emUgaXMgdmFsaWQgaWYgcmVhZGluZyBmcm9tIHN0YW5kYXJkIGluICovCisJaWYgKGZyb21fc3Rk
-aW4gJiYgZmlsZXNpemUgPD0gMCkgeworCQlmcHJpbnRmKHN0ZGVyciwgIkZpbGUgc2l6ZSBoYXMg
-dG8gYmUgc3BlY2lmaWVkIHdoZW4gcmVhZGluZyBmcm9tIHN0YW5kYXJkIGluLlxuIik7CisJCWV4
-aXQoMSk7CisJfQorCiAJLyogT3BlbiB0aGUgZGV2aWNlICovCiAJaWYgKChmZCA9IG9wZW4obXRk
-X2RldmljZSwgT19SRFdSKSkgPT0gLTEpIHsKIAkJcGVycm9yKCJvcGVuIGZsYXNoIik7CkBAIC0z
-MzUsMTQgKzM1MSwyMiBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqKmFyZ3YpCiAJb29iLnB0
-ciA9IG5vZWNjID8gb29icmVhZGJ1ZiA6IG9vYmJ1ZjsKIAogCS8qIE9wZW4gdGhlIGlucHV0IGZp
-bGUgKi8KLQlpZiAoKGlmZCA9IG9wZW4oaW1nLCBPX1JET05MWSkpID09IC0xKSB7Ci0JCXBlcnJv
-cigib3BlbiBpbnB1dCBmaWxlIik7Ci0JCWdvdG8gcmVzdG9yZW9vYjsKKwlpZiAoIWZyb21fc3Rk
-aW4pIHsKKwkJaWYgKChpZmQgPSBvcGVuKGltZywgT19SRE9OTFkpKSA9PSAtMSkgeworCQkJcGVy
-cm9yKCJvcGVuIGlucHV0IGZpbGUiKTsKKwkJCWdvdG8gcmVzdG9yZW9vYjsKKwkJfQogCX0KKwll
-bHNlCisJCWlmZCA9IFNURElOX0ZJTEVOTzsKIAogCS8vIGdldCBpbWFnZSBsZW5ndGgKLQlpbWds
-ZW4gPSBsc2VlayhpZmQsIDAsIFNFRUtfRU5EKTsKLQlsc2VlayAoaWZkLCAwLCBTRUVLX1NFVCk7
-CisJaWYgKCFmcm9tX3N0ZGluKSB7CisJCWltZ2xlbiA9IGxzZWVrKGlmZCwgMCwgU0VFS19FTkQp
-OworCQlsc2VlayAoaWZkLCAwLCBTRUVLX1NFVCk7CisJfQorCWVsc2UKKwkJaW1nbGVuID0gZmls
-ZXNpemU7CiAKIAlwYWdlbGVuID0gbWVtaW5mby53cml0ZXNpemUgKyAoKHdyaXRlb29iID09IDEp
-ID8gbWVtaW5mby5vb2JzaXplIDogMCk7CiAKLS0gCjEuNS41Cgo=
-
-------_=_NextPart_001_01C90CDA.D963BEAC--
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
