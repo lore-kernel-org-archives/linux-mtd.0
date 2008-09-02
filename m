@@ -1,19 +1,17 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KaTaR-00036a-6i
-	for linux-mtd@lists.infradead.org; Tue, 02 Sep 2008 10:58:15 +0000
-Subject: Re: [PATCH] [MTD-UTILS] nandwrite: read from stdin support
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Tommi Airikka <tommi.airikka@ericsson.com>
-In-Reply-To: <816E1A2C67CC2B488292E7A0981FFD7702AC16FB@esealmw110.eemea.ericsson.se>
-References: <816E1A2C67CC2B488292E7A0981FFD7702AC16FB@esealmw110.eemea.ericsson.se>
-Content-Type: text/plain; charset=utf-8
-Date: Tue, 02 Sep 2008 13:54:29 +0300
-Message-Id: <1220352869.4036.34.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from smtp20.orange.fr ([80.12.242.26])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KaTmr-0000ec-PB
+	for linux-mtd@lists.infradead.org; Tue, 02 Sep 2008 11:11:06 +0000
+From: =?windows-1251?B?zeDr7uPoIMTo8OXq8u7w8w==?= <Longlane@yahoo.fr>
+To: <debian-announce@lists.debian.org>
+Subject: =?windows-1251?B?zu/y6Ozo5+D26P8gzcTRLCDt4Ovu4+Ag7eAg7/Do4fvr/Cwg5+Dw7+vg8u379SDt4Ovu4+7i?=
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="windows-1251"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20080902111056.42C531C00091@mwinf2027.orange.fr>
+Date: Tue,  2 Sep 2008 13:10:56 +0200 (CEST)
+Reply-To: =?windows-1251?B?zeDr7uPoIMTo8OXq8u7w8w==?= <Longlane@yahoo.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +21,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Курсы для финансовых директоров, главных бухгалтеров, юристов.
+********************************************************************************
+СПОРНЫЕ ВОПРОСЫ, ВОЗНИКАЮЩИЕ ПРИ ОПТИМИЗАЦИИ НДС, НАЛОГА НА ПРИБЫЛЬ, ЗАРПЛАТНЫХ НАЛОГОВ
 
-On Tue, 2008-09-02 at 11:04 +0200, Tommi Airikka wrote:
-> Here is a patch that adds read from stdin support for nandwrite.
-> I have tried it with 'cat filename.jffs2 | nandwrite -i filesize -p
-> /dev/mtdX -'
-> and it did work.
+В программе:
+"	Применение агентских схем, как способа отсрочки от уплаты НДС.
+"	Работа с недобросовестными налогоплательщиками, анализ рисков.
+"	Анализ видоизмененных способов работы с недобросовестным контрагентом 
+"	Негативные последствия комиссионной схемы возмещения НДС из бюджета.
+"	Методика борьбы с фирмами-однодневками, ДСП указания. 
+"	Использование неясности правовой природы дополнительной выгоды, как способ экономить НДС, опираясь на нормы ГК РФ.
+"	Переквалификация агентских схем (примеры), позволяющих экономить НДС и т.д.
+"	Установление в договоре правил о переходе права собственности.
+"	Трансфертное ценообразование. 
+"	Заключение договора с помощью проведения торгов, как способ обхода ст. 40 НК РФ.
+"	Анализ (наличия/отсутствия) законных способов признания лиц взаимозависимыми "по иным основаниям" (Определение КС РФ №441-О).
+"	Вывод сотрудников в фирму на УСН с заключением договоров аутсорсинга, возмездного оказания услуг. 
+"	Обход пределов применения УСН с использованием договора простого товарищества. 
+"	Анализ размера коэффициента дефлятора для целей применения УСН.
+"	Риски и анализ судебной практики по премиальной, процентной, дивидендной и иных схем экономии ЕСН. 
+"	Рассмотрение методики ФНС по выявлению "зарплатных" схем. Анализ конкретных судебных дел. 
+"	Выявление презумпции недобросовестности, разбор способа борьбы с ней. 
+"	Типовые судебные дела о схемах выявления недобросовестности.
+"	Рассмотрение концепции планирования проведения выездных проверок. Анализ граничный показателей для проверки по данным Росстата, МНС.
+"	Потеря документов как способ ухода от доначислений.
+"	Использование ошибок налоговых органов при проведении камеральных, встречных проверках.
 
-Looks OK for me, but I would rather call stdin "Standard input", not
-"Standard in", as you call it in the help output and in the comments.
-
-Also, it would be better to send the patch in-line, not as an
-attachment.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+*****************************************************************************
+11-12 сентября | Москва 
+Стоимость участия: 17500 рублей.
+*****************************************************************************
+Получите подробную программу и информацию по этому мероприятию
+по тел.: +7 (495) 229-04-33
