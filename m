@@ -1,12 +1,17 @@
-Date: Tue, 2 Sep 2008 16:50:04 +0100 (BST)
-From: Alexey Korolev <akorolev@infradead.org>
-To: Lejin K Joy <lejin@spacomp.com>
-Subject: Re: Linux Support for Intel Flash Strata P30 
-In-Reply-To: <200809020442.m824gdo09429@dvorak.siteprotect.com>
-Message-ID: <alpine.LFD.1.10.0809021641590.19153@casper.infradead.org>
-References: <200809020442.m824gdo09429@dvorak.siteprotect.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from relay02.pair.com ([209.68.5.16])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KaYdg-0003u1-PZ
+	for linux-mtd@lists.infradead.org; Tue, 02 Sep 2008 16:21:57 +0000
+Date: Tue, 02 Sep 2008 09:21:37 -0700
+Subject: Re: [PATCH] [MTD-UTILS] nandwrite: read from stdin support
+From: Grant Erickson <gerickson@nuovations.com>
+To: Tommi Airikka <tommi.airikka@ericsson.com>
+Message-ID: <C4E2B621.1167B%gerickson@nuovations.com>
+In-Reply-To: <816E1A2C67CC2B488292E7A0981FFD7702AC16FB@esealmw110.eemea.ericsson.se>
+Mime-version: 1.0
+Content-type: text/plain;
+	charset="US-ASCII"
+Content-transfer-encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -17,19 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On 9/2/08 2:04 AM, Tommi Airikka wrote:
+> Here is a patch that adds read from stdin support for nandwrite.
+> I have tried it with 'cat filename.jffs2 | nandwrite -i filesize -p
+> /dev/mtdX -'  and it did work.
 
-> 
-> This is with reference to the mail in linux-mtd mailing list with regards to
-> Intel P30 strata flash driver problem. I am also using the same Intel P30
-> strata flash on my board. And I am stuck up in the flash driver for the
-> same. The mapping is happening and later kernel hangs saying Kernel Panic..I
-> am using Linux 2.6.25-rc7 distribution. If anyone has come to solution
-> previously could you please share it with me and help me out.
->
-Could you please send me boot-up & panic logs?
+Tommi:
 
-> Also if any patch file is available please send it .
->
-Thanks,
-Alexey 
+Thank you for this patch. Your timing is perfect since I had written about
+precisely this feature a little over a week ago:
+
+http://lists.infradead.org/pipermail/linux-mtd/2008-August/022556.html
+
+If I can get my nanddump deblocking patch completed, the following should
+work as a use case:
+
+    flash_eraseall -q <device-out>
+    nanddump -o -b -s <offset> -l <size> <device-in> | nandwrite -q -p -s
+<offset> <device-out>
+
+Regards,
+
+Grant
