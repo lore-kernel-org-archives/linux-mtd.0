@@ -1,12 +1,16 @@
-Message-ID: <8762b4397984a0e48e0bffe13c14c4ec.squirrel@webmail.midstatetel.com>
-Date: Wed, 3 Sep 2008 18:19:21 -0600 (CST)
-Subject: Award Beneficiary !!!
-From: "BMW AUTOMOBILE UK PROMO 2008" <infocenter@bmw.co.uk>
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-To: undisclosed-recipients: ;
-Reply-To: ukdpt@live.com
+Received: from qw-out-1920.google.com ([74.125.92.147])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KbDyZ-0003od-PF
+	for linux-mtd@lists.infradead.org; Thu, 04 Sep 2008 12:30:16 +0000
+Received: by qw-out-1920.google.com with SMTP id 4so399818qwk.24
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 04 Sep 2008 05:30:15 -0700 (PDT)
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH] tmio_nand: fix base address programming
+Date: Thu,  4 Sep 2008 16:27:44 +0400
+Message-Id: <1220531264-1006-1-git-send-email-dbaryshkov@gmail.com>
+Cc: Dmitry Baryshkov <dbaryshkov@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,57 +20,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Fix offset of second word used for programming base address of memory
+window. Also program tmio with offset of the FCR, not with physical
+memory location.
 
-BMW GROUP PROMOTION
-PUBLIC RELATIONS DEPARTMENT, BMW
-Automobiles 22 Garden Close, Stamford, Lincs, PE9 2YP,
-London United Kingdom.
-03/ 09 / 2008.
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Cc: Ian Molton <spyro@f2s.com>
+---
+ drivers/mtd/nand/tmio_nand.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-Attention: Winner,
-
-This is to inform you that you have been selected for a
-cash prize of £850,000.00 (Eight hundred and fifty thousand
-Great British Pounds) from the BMW  E-LOTTERY BONANZA
-International programs held on 3rd of Sept 2008, in London
-United Kingdom.
-
-The selection process was carried out through random
-selection in our computerized email selection system(ess)
-from a database of over 250,000 email addresses drawn from
-all the continents of the world which you were selected.
-The BMW e-Lottery is approved by the British Gaming Board
-and also Licensed by the The International Association of
-Gaming Regulators (IAGR). This promotional lottery is the
-3rd of its kind and we intend to sensitize the public.
-To begin the processing of your prize you are to contact
-our fiduciary claims department for more information as
-regards procedures to claim your prize.
-
-PUBLIC RELATIONS DEPARTMENT
-7 DOCK WAY, SEFTON BUSINESS PARK
-LONDON, T40 4RT
-UNITED KINGDOM.
-Sir. John Smith
-Email:ukdpt@live.com
-
-Contact him by providing him with your secret pin code
-X7PYWM2007 and your Reference Number BMW:2551256003/23.You
-are also advised to provide him with the under listed
-information's as soon as possible:
-1.Name in full.
-2.Address.
-3.Nationality.
-4.Age.
-5.Occupation.
-6.Telephone Number.
-7.Present Country.
-8.Short comment on our products. [optional]. - -
-Fax [optional].
-10.Email address.
-==================================================================
-=============================================================================================================================================
-WARNING!!! ANY MAIL RECEIVED OF THIS SUCH WITH ANY OTHER TRADE MARK OR
-ADDRESS SHOULD BE  FORWARDED TO THIS BOX IMMEDIATELY, THIS WILL HELP US TO
-FIGHT SCAM AND LOTTERY IMPOSTER'S.
-THANK YOU FOR YOUR ANTICIPATED CO-OPERATION.
+diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
+index cbab654..edb1e32 100644
+--- a/drivers/mtd/nand/tmio_nand.c
++++ b/drivers/mtd/nand/tmio_nand.c
+@@ -109,7 +109,7 @@ struct tmio_nand {
+ 
+ 	void __iomem *ccr;
+ 	void __iomem *fcr;
+-	unsigned long fcr_phys;
++	unsigned long fcr_base;
+ 
+ 	unsigned int irq;
+ 
+@@ -316,8 +316,8 @@ static int tmio_hw_init(struct platform_device *dev, struct tmio_nand *tmio)
+ 	tmio_iowrite8(0x81, tmio->ccr + CCR_ICC);
+ 
+ 	/* (10h)BaseAddress    0x1000 spba.spba2 */
+-	tmio_iowrite16(tmio->fcr_phys, tmio->ccr + CCR_BASE);
+-	tmio_iowrite16(tmio->fcr_phys >> 16, tmio->ccr + CCR_BASE + 16);
++	tmio_iowrite16(tmio->fcr_base, tmio->ccr + CCR_BASE);
++	tmio_iowrite16(tmio->fcr_base >> 16, tmio->ccr + CCR_BASE + 2);
+ 
+ 	/* (04h)Command Register I/O spcmd */
+ 	tmio_iowrite8(0x02, tmio->ccr + CCR_COMMAND);
+@@ -395,7 +395,7 @@ static int tmio_probe(struct platform_device *dev)
+ 		goto err_iomap_ccr;
+ 	}
+ 
+-	tmio->fcr_phys = (unsigned long)fcr->start;
++	tmio->fcr_base = fcr->start & 0xfffff;
+ 	tmio->fcr = ioremap(fcr->start, fcr->end - fcr->start + 1);
+ 	if (!tmio->fcr) {
+ 		retval = -EIO;
+-- 
+1.5.6.5
