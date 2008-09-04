@@ -1,15 +1,12 @@
-Received: from n58.bullet.mail.sp1.yahoo.com ([98.136.44.46])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Kb477-0007PX-5k
-	for linux-mtd@lists.infradead.org; Thu, 04 Sep 2008 01:58:25 +0000
-Date: Wed, 3 Sep 2008 18:58:22 -0700 (PDT)
-From: Kaima Ko <kaimi2005@yahoo.com>
-Subject: Finding a valid solution for upgrading an in-use jffs2 filesystem
-To: linux-mtd@lists.infradead.org
+Message-ID: <8762b4397984a0e48e0bffe13c14c4ec.squirrel@webmail.midstatetel.com>
+Date: Wed, 3 Sep 2008 18:19:21 -0600 (CST)
+Subject: Award Beneficiary !!!
+From: "BMW AUTOMOBILE UK PROMO 2008" <infocenter@bmw.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Message-ID: <342445.15201.qm@web44904.mail.sp1.yahoo.com>
-Reply-To: kaimi2005@yahoo.com
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+To: undisclosed-recipients: ;
+Reply-To: ukdpt@live.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,29 +16,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
 
-I have a jffs2 partition being mounted rw. Some executables on this jffs2
-are being loaded and run in RAM. And I am using low-level erase/copy 
-(flash_erase from mtd-util and dd command) to upgrade this jffs2 partition 
-while those executables running (and my mission is to keep them running during upgrading). I am sure that during the upgrading time, all those 
-executables (and also other applications in my system) don't access the jffs2 file system. But the upgrading isn't always successful. Very seldom, 
-but it still happened that the kernel hangs during flash erase/write. I 
-think the jffs2 garbage collector may be the cause (though I read that the 
-gc only starts when some app requires more space, but during low-level 
-erase/write and no app accesses the jffs2 so the gc would not run). To be 
-sure, I killed the gc daemon before upgrading. Since then, I don't see the 
-problem happens again.
+BMW GROUP PROMOTION
+PUBLIC RELATIONS DEPARTMENT, BMW
+Automobiles 22 Garden Close, Stamford, Lincs, PE9 2YP,
+London United Kingdom.
+03/ 09 / 2008.
 
-But with limited understanding about jffs2 and filesytem in general, I am so afraid that the things I've done still isn't a valid solution for 
-upgrading an in-use jffs2 filesystem. Can gc be the cause of the case of 
-kernel hang? Can the gc automatically starts again after I kill it? Is 
-there any other thing I must consider?
+Attention: Winner,
 
-Thank you!
-KM
+This is to inform you that you have been selected for a
+cash prize of £850,000.00 (Eight hundred and fifty thousand
+Great British Pounds) from the BMW  E-LOTTERY BONANZA
+International programs held on 3rd of Sept 2008, in London
+United Kingdom.
 
+The selection process was carried out through random
+selection in our computerized email selection system(ess)
+from a database of over 250,000 email addresses drawn from
+all the continents of the world which you were selected.
+The BMW e-Lottery is approved by the British Gaming Board
+and also Licensed by the The International Association of
+Gaming Regulators (IAGR). This promotional lottery is the
+3rd of its kind and we intend to sensitize the public.
+To begin the processing of your prize you are to contact
+our fiduciary claims department for more information as
+regards procedures to claim your prize.
 
+PUBLIC RELATIONS DEPARTMENT
+7 DOCK WAY, SEFTON BUSINESS PARK
+LONDON, T40 4RT
+UNITED KINGDOM.
+Sir. John Smith
+Email:ukdpt@live.com
 
-
-      
+Contact him by providing him with your secret pin code
+X7PYWM2007 and your Reference Number BMW:2551256003/23.You
+are also advised to provide him with the under listed
+information's as soon as possible:
+1.Name in full.
+2.Address.
+3.Nationality.
+4.Age.
+5.Occupation.
+6.Telephone Number.
+7.Present Country.
+8.Short comment on our products. [optional]. - -
+Fax [optional].
+10.Email address.
+==================================================================
+=============================================================================================================================================
+WARNING!!! ANY MAIL RECEIVED OF THIS SUCH WITH ANY OTHER TRADE MARK OR
+ADDRESS SHOULD BE  FORWARDED TO THIS BOX IMMEDIATELY, THIS WILL HELP US TO
+FIGHT SCAM AND LOTTERY IMPOSTER'S.
+THANK YOU FOR YOUR ANTICIPATED CO-OPERATION.
