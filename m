@@ -1,18 +1,20 @@
-Received: from mx1.quantum.com ([146.174.252.111])
+Received: from mtiwmhc12.worldnet.att.net ([204.127.131.116])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KbcSZ-0006MI-Mv
-	for linux-mtd@lists.infradead.org; Fri, 05 Sep 2008 14:38:52 +0000
-Subject: RE: Partitioning NAND flash
-From: Brian Szmyd <brian.szmyd@quantum.com>
-To: Eirik Aanonsen <eaa@wprmedical.com>
-In-Reply-To: <6B5648EA2E2C2D42AF2FF7691522AD92417D79@wpr01.wprmedical.local>
-References: <1220554162.4879.64.camel@lethargic>
-	<6B5648EA2E2C2D42AF2FF7691522AD92417D79@wpr01.wprmedical.local>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Fri, 05 Sep 2008 08:38:48 -0600
-Message-Id: <1220625528.4879.73.camel@lethargic>
-Mime-Version: 1.0
+	id 1KbkGr-0003Yq-Kr
+	for linux-mtd@lists.infradead.org; Fri, 05 Sep 2008 22:59:17 +0000
+From: Jeff Sutherland <jeffs@fomsystems.com>
+To: Vernon Sauder <vernoninhand@gmail.com>
+Subject: Re: mtd concatenate support for pxa2xx-flash mapping driver
+Date: Fri, 5 Sep 2008 18:59:02 -0400
+References: <200809041359.33626.jeffs@fomsystems.com>
+	<48C0B79E.2020909@gmail.com>
+In-Reply-To: <48C0B79E.2020909@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200809051859.03206.jeffs@fomsystems.com>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,32 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Eirik Aanonsen wrote:
-> It should problably be positioned in your board spesific code then.
-> Search for use of:
-> static struct mtd_partition
-> This is used for both the nand and the nor flash and contains the partiti=
-ons ( in my cases anyway )
-> ( typical place could be arch/"cpu_type"/ )
->=20
-> Regards=20
-> Eirik Aanonsen
+On Friday 05 September 2008, apparently Vernon Sauder wrote:
+> Jeff Sutherland wrote:
+> > I'm working currently in 2.6.25.  Is anyone working on mtd concatenation
+> > support for this particular driver?  $customer selected 64Mbyte NOR flash
+> > chip for root filesystem, but in reality it is two 32Mb die in one
+> > package, and I need one mtd partition > 32mb after taking care of
+> > bootloader, environment, and kernel.
+>
+> Is this the P30 strataflash 48F4400 variety? I created a custom patch
+> for that but converted to using the phymap-flash support from 2.6.25.1
+> and backported it to 2.6.24.4. I use the command line parsing.
 
-Perfect! I would have never thought to look there for MTD partitioning
-structs but I guess it makes sense. For those who care, the relevant
-files is: arch/powerpc/platforms/40x/kilauea-nand.c
+I got this sorted out today.  It turns out the physmap-flash driver will fail 
+silently if you specify a command line partition that spans twom chips.  In 
+other words, I had specified in the kernel config the total size of installed 
+flash, but had left unchecked config_mtd_concat.  On startup physmap-flash 
+would correctly identify both chips inside the 48F4400 part, and even let me 
+make a partition (passed in from the kernel command line) that spanned the 
+boundary between chips.  But jffs2 had a cow with the smaller erase blocks at 
+the 32m boundary.  Simply turning on CONFIG_MTD_CONCAT solved all the 
+problems, sigh...
 
-Much appreciated Eirik!
-
-=EF=BB=BFBrian Szmyd | brian.szmyd@quantum.com
-
------------------------------------------------------------
-The information contained in this transmission may be=20
-confidential. Any disclosure, copying, or further=20
-distribution of confidential information is not permitted=20
-unless such privilege is explicitly granted in writing by=20
-Quantum Corporation. Furthermore, Quantum Corporation is not=20
-responsible for the proper and complete transmission of the=20
-substance of this communication or for any delay in its=20
-receipt.
-------------------------------------------------------------
+Regards,
+-Jeff
