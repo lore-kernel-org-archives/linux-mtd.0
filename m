@@ -1,24 +1,18 @@
-Received: from mta.songnetworks.no ([62.73.241.56] helo=mta.tdcsong.no)
+Received: from n1.cetrtapot.si ([89.212.80.162])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KbTTL-0003MN-TI
-	for linux-mtd@lists.infradead.org; Fri, 05 Sep 2008 05:03:04 +0000
-Received: from wpr01.wprmedical.local (unknown [80.239.107.60])
-	by mta.tdcsong.no (Postfix) with ESMTP id C51E74019
-	for <linux-mtd@lists.infradead.org>;
-	Fri,  5 Sep 2008 07:02:59 +0200 (CEST)
-Subject: RE: Partitioning NAND flash
+	id 1KbVwu-0005oa-Fx
+	for linux-mtd@lists.infradead.org; Fri, 05 Sep 2008 07:41:44 +0000
+Message-ID: <48C0DD22.1090402@cetrtapot.si>
+Date: Fri, 05 Sep 2008 09:17:54 +0200
+From: Hinko Kocevar <hinko.kocevar@cetrtapot.si>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="UTF-8"
-Content-Transfer-Encoding: base64
-Content-class: urn:content-classes:message
-Date: Fri, 5 Sep 2008 07:06:56 +0200
-Message-ID: <6B5648EA2E2C2D42AF2FF7691522AD92417D79@wpr01.wprmedical.local>
-In-Reply-To: <1220554162.4879.64.camel@lethargic>
+To: Brian Szmyd <brian.szmyd@quantum.com>
+Subject: Re: Partitioning NAND flash
 References: <1220554162.4879.64.camel@lethargic>
-From: "Eirik Aanonsen" <eaa@wprmedical.com>
-To: "Brian Szmyd" <brian.szmyd@quantum.com>,
-	<linux-mtd@lists.infradead.org>
+In-Reply-To: <1220554162.4879.64.camel@lethargic>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,29 +22,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Pk5ERkMgTkFORCBEcml2ZXIgaW5pdGlhbGl6ZWQuIENoaXAtUmV2OiAweDAwMDAwMTExDQo+TkFO
-RCBkZXZpY2U6IE1hbnVmYWN0dXJlciBJRDogMHhlYywgQ2hpcCBJRDogMHg3NiAoU2Ftc3VuZyBO
-QU5EIDY0TWlCDQo+MywzViA4LWJpdCkNCj5TY2FubmluZyBkZXZpY2UgZm9yIGJhZCBibG9ja3MN
-Cj5OdW1iZXIgb2YgcGFydGl0aW9ucyAzDQo+Q3JlYXRpbmcgMyBNVEQgcGFydGl0aW9ucyBvbiAi
-TkFORCA2NE1pQiAzLDNWIDgtYml0IjoNCj4weDAwMDAwMDAwLTB4MDAwNjAwMDAgOiAidS1ib290
-Ig0KPjB4MDAwNjAwMDAtMHgwMDA2ODAwMCA6ICJlbnYiDQo+MHgwMDA2ODAwMC0weDA0MDAwMDAw
-IDogImNvbnRlbnQiDQo+DQo+TXkgcHJvYmxlbSBpcyB0aGF0IEkgd2FudCB0byByZXBhcnRpdGlv
-biB0aGUgTkFORCBmbGFzaCwgYnV0IGFtIG5vdCBzdXJlDQo+d2hlcmUgdGhlIGN1cnJlbnQgcGFy
-dGl0aW9uaW5nIHNjaGVtZSBpcyBjb21pbmcgZnJvbS4gTXkgYm9vdGFyZ3MgdG8gdGhlDQo+a2Vy
-bmVsIGRvZXMgbm90IGNvbnRhaW4gYW4gbXRkcGFydHMgc2VjdGlvbiBhbmQgaSBkb24ndCBzZWUg
-YW55DQo+cmVmZXJlbmNlIHRvIGEgInUtYm9vdCIsICJlbnYiLCAiY29udGVudCIgcGFydGl0aW9u
-IGluIHRoZSBtdGQgZHJpdmVyDQo+Y29kZSBpdHNlbGYuDQo+DQo+SSBoYXZlIHNldHVwIG15IE5P
-UiBwYXJ0aXRpb25pbmcgYnkgbW9kaWZ5aW5nIHRoZSBEVFMgcHJvdmlkZWQgYnkgdGhlDQo+bGlu
-dXggc291cmNlLCBidXQgdGhlcmUgaXMgbm90aGluZyBpbiB0aGVyZSB0aGF0IHJlZmVycyB0byB0
-aGUgTkFORA0KPmNoaXAuIEkgaGF2ZSB0cmllZCBwcm92aWRpbmcgYW4gbXRkcGFydHMgYXJndW1l
-bnQgdG8gdGhlIGtlcm5lbCBidXQgdGhpcw0KPmFwcGVhcnMgdG8gYmUgYSBuby1vcCBldmVuIHRo
-b3VnaCB0aGUgYXBwcm9wcmlhdGUgb3B0aW9uIGluIHRoZSBrZXJuZWwNCj5pcyBjb25maWd1cmVk
-Lg0KPg0KPkknbSBraW5kIG9mIGF0IGEgbG9zcyBhZnRlciBtb25rZXlpbmcgd2l0aCB0aGlzIGZv
-ciB0aGUgbGFzdCBjb3VwbGUNCj5kYXlzLiBBbnkgaGVscCBvciBkaXJlY3Rpb24gdG8gYSBnb29k
-IHNvdXJjZSBvZiBpbmZvcm1hdGlvbiB3b3VsZCBiZQ0KPmdyZWF0bHkgYXBwcmVjaWF0ZWQhDQo+
-IA0KPkJyaWFuIFN6bXlkIHwgYnJpYW4uc3pteWRAcXVhbnR1bS5jb20NCg0KSXQgc2hvdWxkIHBy
-b2JsYWJseSBiZSBwb3NpdGlvbmVkIGluIHlvdXIgYm9hcmQgc3Blc2lmaWMgY29kZSB0aGVuLg0K
-U2VhcmNoIGZvciB1c2Ugb2Y6DQpzdGF0aWMgc3RydWN0IG10ZF9wYXJ0aXRpb24NClRoaXMgaXMg
-dXNlZCBmb3IgYm90aCB0aGUgbmFuZCBhbmQgdGhlIG5vciBmbGFzaCBhbmQgY29udGFpbnMgdGhl
-IHBhcnRpdGlvbnMgKCBpbiBteSBjYXNlcyBhbnl3YXkgKQ0KKCB0eXBpY2FsIHBsYWNlIGNvdWxk
-IGJlIGFyY2gvImNwdV90eXBlIi8gKQ0KDQpSZWdhcmRzIA0KRWlyaWsgQWFub25zZW4NCg==
+Brian Szmyd wrote:
+> I am having trouble determining where the partitioning information is
+> coming from when I boot into linux 2.6.26 for my haleakala reference
+> board from amcc. When linux boots I receive the following output from
+> the MTD driver:
+> 
+> fc000000.nor_flash: Found 1 x16 devices at 0x0 in 16-bit bank
+>  Amd/Fujitsu Extended Query Table at 0x0040
+> fc000000.nor_flash: CFI does not contain boot bank location. Assuming
+> top.
+> number of CFI chips: 1
+> cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
+> RedBoot partition parsing not available
+> Creating 5 MTD partitions on "fc000000.nor_flash":
+> 0x00000000-0x001e0000 : "kernel"
+> 0x001e0000-0x00200000 : "dtb"
+> 0x00200000-0x00f60000 : "root"
+> 0x03f60000-0x03fa0000 : "env"
+> 0x03fa0000-0x04000000 : "u-boot"
+> NDFC NAND Driver initialized. Chip-Rev: 0x00000111
+> NAND device: Manufacturer ID: 0xec, Chip ID: 0x76 (Samsung NAND 64MiB
+> 3,3V 8-bit)
+> Scanning device for bad blocks
+> Number of partitions 3
+> Creating 3 MTD partitions on "NAND 64MiB 3,3V 8-bit":
+> 0x00000000-0x00060000 : "u-boot"
+> 0x00060000-0x00068000 : "env"
+> 0x00068000-0x04000000 : "content"
+> 
+> My problem is that I want to repartition the NAND flash, but am not sure
+> where the current partitioning scheme is coming from. My bootargs to the
+> kernel does not contain an mtdparts section and i don't see any
+> reference to a "u-boot", "env", "content" partition in the mtd driver
+> code itself.
+
+The NOR flash maps are located in drivers/mtd/maps and NAND maps are in 
+drivers/mtd/nand. Map defines how flash is partitioned. The information 
+can be static or from kernel cmdline or from redboot partition. Parsing
+of cmdline and reboot part. must be enabled in kernel before using.
+
+> 
+> I have setup my NOR partitioning by modifying the DTS provided by the
+> linux source, but there is nothing in there that refers to the NAND
+> chip. I have tried providing an mtdparts argument to the kernel but this
+> appears to be a no-op even though the appropriate option in the kernel
+> is configured.
+
+It is possible that parsing of cmdline for MTD is disabled. Do you 
+have /proc/config.gz on your system? Grep for 'MTD_'.
+
+> 
+> I'm kind of at a loss after monkeying with this for the last couple
+> days. Any help or direction to a good source of information would be
+> greatly appreciated!
+> 
+
+Look at the boards in drivers/mtd/maps, there a lot of examples on how to
+make a mtd map.
+
+HTH,
+Hinko
+
+
+-- 
+ČETRTA POT, d.o.o., Kranj
+Planina 3
+4000 Kranj
+Slovenia, Europe
+Tel. +386 (0) 4 280 66 03
+E-mail: hinko.kocevar@cetrtapot.si
+Http: www.cetrtapot.si
