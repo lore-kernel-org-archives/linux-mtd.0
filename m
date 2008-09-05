@@ -1,17 +1,18 @@
-Received: from n1.cetrtapot.si ([89.212.80.162])
+Received: from mx1.quantum.com ([146.174.252.111])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KbVwu-0005oa-Fx
-	for linux-mtd@lists.infradead.org; Fri, 05 Sep 2008 07:41:44 +0000
-Message-ID: <48C0DD22.1090402@cetrtapot.si>
-Date: Fri, 05 Sep 2008 09:17:54 +0200
-From: Hinko Kocevar <hinko.kocevar@cetrtapot.si>
-MIME-Version: 1.0
-To: Brian Szmyd <brian.szmyd@quantum.com>
-Subject: Re: Partitioning NAND flash
+	id 1KbcSZ-0006MI-Mv
+	for linux-mtd@lists.infradead.org; Fri, 05 Sep 2008 14:38:52 +0000
+Subject: RE: Partitioning NAND flash
+From: Brian Szmyd <brian.szmyd@quantum.com>
+To: Eirik Aanonsen <eaa@wprmedical.com>
+In-Reply-To: <6B5648EA2E2C2D42AF2FF7691522AD92417D79@wpr01.wprmedical.local>
 References: <1220554162.4879.64.camel@lethargic>
-In-Reply-To: <1220554162.4879.64.camel@lethargic>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+	<6B5648EA2E2C2D42AF2FF7691522AD92417D79@wpr01.wprmedical.local>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 05 Sep 2008 08:38:48 -0600
+Message-Id: <1220625528.4879.73.camel@lethargic>
+Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -22,74 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian Szmyd wrote:
-> I am having trouble determining where the partitioning information is
-> coming from when I boot into linux 2.6.26 for my haleakala reference
-> board from amcc. When linux boots I receive the following output from
-> the MTD driver:
-> 
-> fc000000.nor_flash: Found 1 x16 devices at 0x0 in 16-bit bank
->  Amd/Fujitsu Extended Query Table at 0x0040
-> fc000000.nor_flash: CFI does not contain boot bank location. Assuming
-> top.
-> number of CFI chips: 1
-> cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
-> RedBoot partition parsing not available
-> Creating 5 MTD partitions on "fc000000.nor_flash":
-> 0x00000000-0x001e0000 : "kernel"
-> 0x001e0000-0x00200000 : "dtb"
-> 0x00200000-0x00f60000 : "root"
-> 0x03f60000-0x03fa0000 : "env"
-> 0x03fa0000-0x04000000 : "u-boot"
-> NDFC NAND Driver initialized. Chip-Rev: 0x00000111
-> NAND device: Manufacturer ID: 0xec, Chip ID: 0x76 (Samsung NAND 64MiB
-> 3,3V 8-bit)
-> Scanning device for bad blocks
-> Number of partitions 3
-> Creating 3 MTD partitions on "NAND 64MiB 3,3V 8-bit":
-> 0x00000000-0x00060000 : "u-boot"
-> 0x00060000-0x00068000 : "env"
-> 0x00068000-0x04000000 : "content"
-> 
-> My problem is that I want to repartition the NAND flash, but am not sure
-> where the current partitioning scheme is coming from. My bootargs to the
-> kernel does not contain an mtdparts section and i don't see any
-> reference to a "u-boot", "env", "content" partition in the mtd driver
-> code itself.
+Eirik Aanonsen wrote:
+> It should problably be positioned in your board spesific code then.
+> Search for use of:
+> static struct mtd_partition
+> This is used for both the nand and the nor flash and contains the partiti=
+ons ( in my cases anyway )
+> ( typical place could be arch/"cpu_type"/ )
+>=20
+> Regards=20
+> Eirik Aanonsen
 
-The NOR flash maps are located in drivers/mtd/maps and NAND maps are in 
-drivers/mtd/nand. Map defines how flash is partitioned. The information 
-can be static or from kernel cmdline or from redboot partition. Parsing
-of cmdline and reboot part. must be enabled in kernel before using.
+Perfect! I would have never thought to look there for MTD partitioning
+structs but I guess it makes sense. For those who care, the relevant
+files is: arch/powerpc/platforms/40x/kilauea-nand.c
 
-> 
-> I have setup my NOR partitioning by modifying the DTS provided by the
-> linux source, but there is nothing in there that refers to the NAND
-> chip. I have tried providing an mtdparts argument to the kernel but this
-> appears to be a no-op even though the appropriate option in the kernel
-> is configured.
+Much appreciated Eirik!
 
-It is possible that parsing of cmdline for MTD is disabled. Do you 
-have /proc/config.gz on your system? Grep for 'MTD_'.
+=EF=BB=BFBrian Szmyd | brian.szmyd@quantum.com
 
-> 
-> I'm kind of at a loss after monkeying with this for the last couple
-> days. Any help or direction to a good source of information would be
-> greatly appreciated!
-> 
-
-Look at the boards in drivers/mtd/maps, there a lot of examples on how to
-make a mtd map.
-
-HTH,
-Hinko
-
-
--- 
-ČETRTA POT, d.o.o., Kranj
-Planina 3
-4000 Kranj
-Slovenia, Europe
-Tel. +386 (0) 4 280 66 03
-E-mail: hinko.kocevar@cetrtapot.si
-Http: www.cetrtapot.si
+-----------------------------------------------------------
+The information contained in this transmission may be=20
+confidential. Any disclosure, copying, or further=20
+distribution of confidential information is not permitted=20
+unless such privilege is explicitly granted in writing by=20
+Quantum Corporation. Furthermore, Quantum Corporation is not=20
+responsible for the proper and complete transmission of the=20
+substance of this communication or for any delay in its=20
+receipt.
+------------------------------------------------------------
