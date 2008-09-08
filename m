@@ -1,22 +1,21 @@
-Received: from rv-out-0708.google.com ([209.85.198.250])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KcmKO-0006j9-Iv
-	for linux-mtd@lists.infradead.org; Mon, 08 Sep 2008 19:23:12 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so1553788rvf.42
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 08 Sep 2008 12:23:11 -0700 (PDT)
-Message-ID: <8bd0f97a0809081223n30e96c73naa8c14c4898002f9@mail.gmail.com>
-Date: Mon, 8 Sep 2008 15:23:11 -0400
-From: "Mike Frysinger" <vapier.adi@gmail.com>
-To: "Allon Stern" <allon.stern@argonst.com>
-Subject: Re: a complex map
-In-Reply-To: <BAD66201-5E11-4E14-BE35-F23A186DEF53@argonst.com>
+Received: from ex.2n.cz ([213.29.92.11])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KcnsU-00014C-GG
+	for linux-mtd@lists.infradead.org; Mon, 08 Sep 2008 21:02:30 +0000
+Date: Mon, 8 Sep 2008 23:02:27 +0200
+To: Grant Erickson <gerickson@nuovations.com>
+Subject: Re: [PATCH 6/6] [MTD-UTILS] nandwrite: Add Support for Reading from
+	Standard Input
+Message-ID: <20080908210227.GA7461@michl.2n.cz>
+References: <20080908161418.GA7185@michl.2n.cz>
+	<C4EAA2B4.118A3%gerickson@nuovations.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-References: <BAD66201-5E11-4E14-BE35-F23A186DEF53@argonst.com>
-Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <C4EAA2B4.118A3%gerickson@nuovations.com>
+From: Ladislav Michl <ladis@linux-mips.org>
+Cc: Tommi Airikka <tommi.airikka@ericsson.com>, linux-mtd@lists.infradead.org,
+	Richard Titmuss <titmuss@slimdevices.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +25,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 8, 2008 at 2:44 PM, Allon Stern wrote:
-> I've got the unique pleasure of dealing with a hardware design
-> cramming a 64MB NOR flash onto a 23 bit address bus (Coldfire M5282).
-> The memory chip is a Numonyx Strataflash (P30). It's a single part on
-> a 16 bit data bus.
->
-> A couple of questions:
-> #1: this chip appears as two dies; Each die has four small (32K)
-> blocks at the bottom, with 128K blocks elsewhere. Is this a problem,
-> particularly if the small blocks appear in the middle of an MTD
-> partition? I'm assuming no problem. (I have concatenating support
-> enabled to allow my partition to span the two dies)
+On Mon, Sep 08, 2008 at 09:36:52AM -0700, Grant Erickson wrote:
+> On 9/8/08 9:14 AM, Ladislav Michl wrote:
+> > So what about:
+> >
+> > while (not eof)
+> >   read page (and oob if selected) data into buffer
+> 
+> What about a short read in which you only get part of a page or a whole page
+> and part of the OOB data? Bail out? Best effort?
 
-the mtd layers handle bottom/top boot devices just fine. usually
-people use those sectors to store configurations or bootloaders rather
-than filesystems though.  but that is of course your choice.
+Simply loop reading (assuming blocking read) until
+- read whole buffer (read returns something greater than zero) or
+- read returns zero (end of file) and then pad buffer or
+- read returns -1 and then bail out gracefully with strerror
+  printed to user.
 
-> #2: I control the high two address bits on the flash (A24 and A25)
-> using GPIOs. I have a customized map for this flash which sets the
-> GPIOs appropraitely for the offset being accessed. Is this is all I
-> need to do?
+> > next:
+> > if (write buffer fails)
+> >   mark bad, select next page, goto next
+> >
+> > Reading from stdin would imply padding. Care to implement that?
+> 
+> For the time being, padding must be explicitly requested.
 
-ive written a generic gpio mapping driver but i'm not sure it's been
-posted to LKML yet ... perhaps you will find it useful:
-http://blackfin.uclinux.org/git/?p=readonly-mirrors/linux-kernel.git;a=blob_plain;f=drivers/mtd/maps/gpio-addr-flash.c;hb=HEAD
+Yes, I'm just suggesting to enable it for stdin input as it IMHO makes
+sense namely with buffering described above.
 
-example platform resources can be found here:
-http://blackfin.uclinux.org/git/?p=readonly-mirrors/linux-kernel.git;a=commitdiff;h=cf8a23b05d657efbe704426ac458db2f219f5bef
+> > PS: It is remotely possible that one day I do it myself, but I'm
+> > notoriously slow on doing things I do not urgently need.
+> 
+> Understood and agreed.
+> 
+> For the present, the patch satisfies my cited use case (clearly those of
+> Richard and hopefully those of Tommi) and given the value added, I'd
+> advocate its inclusion and incremental evolution through future patches.
 
-and here:
-http://blackfin.uclinux.org/git/?p=readonly-mirrors/linux-kernel.git;a=blob_plain;f=arch/blackfin/mach-bf537/boards/tcm_bf537.c;hb=HEAD
--mike
+Sure, I cannot raise single complain against patch as I do not offer
+anything better. I just merely pointed to possible solution.
+
+Best regards,
+	ladis
