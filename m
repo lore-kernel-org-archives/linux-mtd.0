@@ -1,19 +1,12 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KcZI1-00015n-VY
-	for linux-mtd@lists.infradead.org; Mon, 08 Sep 2008 05:27:54 +0000
-Subject: Re: [PATCH 1/6] [MTD-UTILS] nandwrite: Qualifier Clean-up
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Grant Erickson <gerickson@nuovations.com>
-In-Reply-To: <1220847899-22189-1-git-send-email-gerickson@nuovations.com>
-References: <1220847899-22189-1-git-send-email-gerickson@nuovations.com>
-Content-Type: text/plain; charset=utf-8
-Date: Mon, 08 Sep 2008 08:28:02 +0300
-Message-Id: <1220851682.4036.48.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from relay02.pair.com ([209.68.5.16])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KcaV2-0003Ij-DW
+	for linux-mtd@lists.infradead.org; Mon, 08 Sep 2008 06:45:24 +0000
+From: Grant Erickson <gerickson@nuovations.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/6] [MTD-UTILS] nanddump: Qualifier Clean-up
+Date: Sun,  7 Sep 2008 23:45:21 -0700
+Message-Id: <1220856321-22712-1-git-send-email-gerickson@nuovations.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,15 +16,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2008-09-07 at 21:24 -0700, Grant Erickson wrote:
-> Static-qualified all globals except 'main' because they have no use
-> beyond file scope.
-> Constant-qualified MTD device and input positional parameter globals.
-> Constant-qualified argv array.
+Static-qualified all globals except 'main' because they have no use
+beyond file scope.
+Constant-qualified MTD device and input positional parameter globals.
+Constant-qualified argv array.
 
-Ack for whole series.
+Signed-off-by: Grant Erickson <gerickson@nuovations.com>
+---
+ nanddump.c |   34 +++++++++++++++++-----------------
+ 1 files changed, 17 insertions(+), 17 deletions(-)
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+diff --git a/nanddump.c b/nanddump.c
+index be40287..e35caf8 100644
+--- a/nanddump.c
++++ b/nanddump.c
+@@ -32,11 +32,11 @@
+ #define PROGRAM "nanddump"
+ #define VERSION "$Revision: 1.29 $"
+ 
+-struct nand_oobinfo none_oobinfo = {
++static struct nand_oobinfo none_oobinfo = {
+ 	.useecc = MTD_NANDECC_OFF,
+ };
+ 
+-void display_help (void)
++static void display_help (void)
+ {
+ 	printf("Usage: nanddump [OPTIONS] MTD-device\n"
+ 			"Dumps the contents of a nand mtd partition.\n"
+@@ -54,7 +54,7 @@ void display_help (void)
+ 	exit(0);
+ }
+ 
+-void display_version (void)
++static void display_version (void)
+ {
+ 	printf(PROGRAM " " VERSION "\n"
+ 			"\n"
+@@ -69,17 +69,17 @@ void display_version (void)
+ 
+ // Option variables
+ 
+-int	ignoreerrors;		// ignore errors
+-int	pretty_print;		// print nice in ascii
+-int	noecc;			// don't error correct
+-int	omitoob;		// omit oob data
+-unsigned long	start_addr;	// start address
+-unsigned long	length;		// dump length
+-char    *mtddev;		// mtd device name
+-char    *dumpfile;		// dump file name
+-int	omitbad;
+-
+-void process_options (int argc, char *argv[])
++static int		ignoreerrors;	// ignore errors
++static int		pretty_print;	// print nice in ascii
++static int		noecc;		// don't error correct
++static int		omitoob;	// omit oob data
++static unsigned long	start_addr;	// start address
++static unsigned long	length;		// dump length
++static const char	*mtddev;	// mtd device name
++static const char	*dumpfile;	// dump file name
++static int		omitbad;
++
++static void process_options (int argc, char * const argv[])
+ {
+ 	int error = 0;
+ 
+@@ -159,13 +159,13 @@ void process_options (int argc, char *argv[])
+ /*
+  * Buffers for reading data from flash
+  */
+-unsigned char readbuf[4096];
+-unsigned char oobbuf[128];
++static unsigned char readbuf[4096];
++static unsigned char oobbuf[128];
+ 
+ /*
+  * Main program
+  */
+-int main(int argc, char **argv)
++int main(int argc, char * const argv[])
+ {
+ 	unsigned long ofs, end_addr = 0;
+ 	unsigned long long blockstart = 1;
+-- 
+1.6.0.1
