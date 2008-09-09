@@ -1,13 +1,20 @@
-Date: Tue, 9 Sep 2008 11:17:29 +0200
-From: Sebastian Siewior <bigeasy@linutronix.de>
-To: Artem Bityutskiy <dedekind@infradead.org>,
-	Adrian Hunter <ext-adrian.hunter@nokia.com>
-Subject: [PATCH] ubifs: create the name of the background thread in every case
-Message-ID: <20080909091729.GA18689@www.tglx.de>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Kd24V-0007nG-Sr
+	for linux-mtd@lists.infradead.org; Tue, 09 Sep 2008 12:11:52 +0000
+Subject: Re: [PATCH] ubifs: create the name of the background thread in
+	every case
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Sebastian Siewior <bigeasy@linutronix.de>
+In-Reply-To: <20080909091729.GA18689@www.tglx.de>
+References: <20080909091729.GA18689@www.tglx.de>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 09 Sep 2008 15:11:47 +0300
+Message-Id: <1220962307.4036.54.camel@sauron>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, Adrian Hunter <ext-adrian.hunter@nokia.com>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,34 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If the ubifs partition is mounted RO and then remounted RW we end
-up with no thread name in ubifs_remount_rw() and the thread appears
-nameless.
+On Tue, 2008-09-09 at 11:17 +0200, Sebastian Siewior wrote:
+> If the ubifs partition is mounted RO and then remounted RW we end
+> up with no thread name in ubifs_remount_rw() and the thread appears
+> nameless.
 
-Signed-off-by: Sebastian Siewior <bigeasy@linutronix.de>
----
- fs/ubifs/super.c |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
+Pushed to ubifs-2.6.git, thanks.
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index f71e6b8..2fcf272 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -1018,14 +1018,13 @@ static int mount_ubifs(struct ubifs_info *c)
- 		goto out_dereg;
- 	}
- 
-+	sprintf(c->bgt_name, BGT_NAME_PATTERN, c->vi.ubi_num, c->vi.vol_id);
- 	if (!mounted_read_only) {
- 		err = alloc_wbufs(c);
- 		if (err)
- 			goto out_cbuf;
- 
- 		/* Create background thread */
--		sprintf(c->bgt_name, BGT_NAME_PATTERN, c->vi.ubi_num,
--			c->vi.vol_id);
- 		c->bgt = kthread_create(ubifs_bg_thread, c, c->bgt_name);
- 		if (!c->bgt)
- 			c->bgt = ERR_PTR(-EINVAL);
--- 
-1.5.4.3
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
