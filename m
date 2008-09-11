@@ -1,23 +1,17 @@
-Received: from rv-out-0708.google.com ([209.85.198.241])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KdtsQ-0001LV-0f
-	for linux-mtd@lists.infradead.org; Thu, 11 Sep 2008 21:38:58 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so659623rvf.42
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 11 Sep 2008 14:38:56 -0700 (PDT)
-Message-ID: <8bd0f97a0809111438r1cc7228al892edd621d4f4588@mail.gmail.com>
-Date: Thu, 11 Sep 2008 17:38:56 -0400
-From: "Mike Frysinger" <vapier.adi@gmail.com>
-To: fundu_1999@yahoo.com
+Received: from web63403.mail.re1.yahoo.com ([69.147.97.43])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KduZq-0001Jh-NX
+	for linux-mtd@lists.infradead.org; Thu, 11 Sep 2008 22:23:51 +0000
+Date: Thu, 11 Sep 2008 15:23:49 -0700 (PDT)
+From: Fundu <fundu_1999@yahoo.com>
 Subject: Re: Flash Mapping and gpio
-In-Reply-To: <684880.57070.qm@web63404.mail.re1.yahoo.com>
+To: Mike Frysinger <vapier.adi@gmail.com>
+In-Reply-To: <8bd0f97a0809111438r1cc7228al892edd621d4f4588@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <8bd0f97a0809111428o168053a8n6dac603529ad3d23@mail.gmail.com>
-	<684880.57070.qm@web63404.mail.re1.yahoo.com>
+Content-Type: text/plain; charset=us-ascii
+Message-ID: <565805.47147.qm@web63403.mail.re1.yahoo.com>
 Cc: linux-mtd@lists.infradead.org
+Reply-To: fundu_1999@yahoo.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +21,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 11, 2008 at 17:34, Fundu wrote:
->> you shouldnt go mucking about in common code.  this is what
->> flash
->> mapping drivers are for.
->>
->> ive already written a generic gpio one to do exactly what
->> you want
->> (but it's only been tested on nommu/Blackfin so far):
->> http://blackfin.uclinux.org/git/?p=readonly-mirrors/linux-kernel.git;a=blob_plain;f=drivers/mtd/maps/gpio-addr-flash.c;hb=HEAD
->
-> these are on 2.6 kernel. i'm using 2.4.20.
+> > these are on 2.6 kernel. i'm using 2.4.20.
+> 
+> didnt realize anyone ran ancient cruft like that anymore. 
+> big waste
+> of time.  g'luck.
+it's really not a possibility to port to 2.6 at this time. 
+is there anything else that you can point me at, i would much appreciate it.
 
-didnt realize anyone ran ancient cruft like that anymore.  big waste
-of time.  g'luck.
--mike
+how about this error 
+
+MTD do_erase_oneblock(): Wacky!  Unable to decode failure status
+MTD do_erase_oneblock(): 0x07f40000(0x00ff00ff): 0x27051956 0x27051956 0x27051956 0x27051956
+
+any ideas here, this hasn't changed much. 
+i still get these even after backing out my changes that i mentioned in the original post. 
+
+thanks !
+fundu 
+
+
+      
