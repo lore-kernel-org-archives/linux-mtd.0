@@ -1,17 +1,18 @@
-Received: from web63403.mail.re1.yahoo.com ([69.147.97.43])
+Received: from mail.avrupayazilim.com ([88.247.191.72] helo=avrupayazilim.com)
 	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KduZq-0001Jh-NX
-	for linux-mtd@lists.infradead.org; Thu, 11 Sep 2008 22:23:51 +0000
-Date: Thu, 11 Sep 2008 15:23:49 -0700 (PDT)
-From: Fundu <fundu_1999@yahoo.com>
-Subject: Re: Flash Mapping and gpio
-To: Mike Frysinger <vapier.adi@gmail.com>
-In-Reply-To: <8bd0f97a0809111438r1cc7228al892edd621d4f4588@mail.gmail.com>
+	id 1Ke28W-0001t3-19
+	for linux-mtd@lists.infradead.org; Fri, 12 Sep 2008 06:28:08 +0000
+Message-ID: <48CA0C11.6080402@multitekarge.com>
+Date: Fri, 12 Sep 2008 09:28:33 +0300
+From: Ensar Gul <ensar.gul@multitekarge.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Message-ID: <565805.47147.qm@web63403.mail.re1.yahoo.com>
-Cc: linux-mtd@lists.infradead.org
-Reply-To: fundu_1999@yahoo.com
+To: linux-mtd@lists.infradead.org
+Subject: Re: Maturity of JFFS2 + MTD NAND Flash Support?
+References: <mailman.11.1221062402.21406.linux-mtd@lists.infradead.org>
+In-Reply-To: <mailman.11.1221062402.21406.linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Reply-To: ensar.gul@multitekarge.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,24 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > these are on 2.6 kernel. i'm using 2.4.20.
-> 
-> didnt realize anyone ran ancient cruft like that anymore. 
-> big waste
-> of time.  g'luck.
-it's really not a possibility to port to 2.6 at this time. 
-is there anything else that you can point me at, i would much appreciate it.
+> AFAIK, jffs2 doesn't handle correctly bit flip on read : it won't try to 
+> copy the data on another block while the data can still be recovered 
+> by ecc.
+>
+> I believe it could be a big issue for commercial product where no 
+> corruption should happen.
+>
+>
+> Matthieu
 
-how about this error 
+Is there a solution to the problem stated above yet?
 
-MTD do_erase_oneblock(): Wacky!  Unable to decode failure status
-MTD do_erase_oneblock(): 0x07f40000(0x00ff00ff): 0x27051956 0x27051956 0x27051956 0x27051956
+By the way, I also used JFFS2 on NAND flash as root filesystem in a 
+telecom product. but the root filesystem infrequently becomes corrupt 
+without any apparent reason. I`m considering to redesign the hardware 
+and use an alternative device instead of NAND flash.
 
-any ideas here, this hasn't changed much. 
-i still get these even after backing out my changes that i mentioned in the original post. 
+any comments on this issue will be appreciated.
 
-thanks !
-fundu 
+rgds
 
-
-      
+Ensar
