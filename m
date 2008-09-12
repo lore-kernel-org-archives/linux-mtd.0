@@ -1,16 +1,18 @@
-Received: from web63403.mail.re1.yahoo.com ([69.147.97.43])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KeBuK-0003vu-PM
-	for linux-mtd@lists.infradead.org; Fri, 12 Sep 2008 16:54:09 +0000
-Date: Fri, 12 Sep 2008 09:54:07 -0700 (PDT)
-From: Fundu <fundu_1999@yahoo.com>
+Received: from smtp.argonst.com ([72.165.80.10])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KeCEC-0002k1-QH
+	for linux-mtd@lists.infradead.org; Fri, 12 Sep 2008 17:14:41 +0000
+In-Reply-To: <15184.25981.qm@web63403.mail.re1.yahoo.com>
+References: <15184.25981.qm@web63403.mail.re1.yahoo.com>
+Mime-Version: 1.0 (Apple Message framework v753.1)
+Content-Type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
+Message-Id: <1C07D857-28EB-4268-80D9-F5D628297623@argonst.com>
+Content-Transfer-Encoding: 7bit
+From: Allon Stern <allon.stern@argonst.com>
 Subject: Re: Flash Mapping and gpio
-To: linux-mtd@lists.infradead.org, Allon Stern <allon.stern@argonst.com>
-In-Reply-To: <85A33091-283C-48B9-AD6B-01E3E4BECD94@argonst.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Message-ID: <15184.25981.qm@web63403.mail.re1.yahoo.com>
-Reply-To: fundu_1999@yahoo.com
+Date: Fri, 12 Sep 2008 13:14:37 -0400
+To: linux-mtd@lists.infradead.org
+Cc: fundu_1999@yahoo.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,26 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-First off thanks Allon, I really appreciate your input.
-> static map_word __xipram custom_map_read(struct map_info
-> *map,
-> unsigned long ofs)
-> {
->       CUSTOM_BANKSWITCH(ofs);
->       return inline_map_read(map, ofs & BANK_MASK); //
-> mask out the bank
-> }
-> 
-that makes sense. but one question don't you need to adjust the offset before calling inline_map_read ? or does the macro do that for you ? 
 
-> In my case, I asserted that a copy won't be more than
-> 16MB, and two
-> the copy in two chunks, switching banks in the middle, if
-> need be.
-yeah i have setup mtd partitions such that they don't span across the banks.
+On Sep 12, 2008, at 12:54 PM, Fundu wrote:
 
-> HTH.
-yup you bet. 
+> First off thanks Allon, I really appreciate your input.
+>> static map_word __xipram custom_map_read(struct map_info
+>> *map,
+>> unsigned long ofs)
+>> {
+>>       CUSTOM_BANKSWITCH(ofs);
+>>       return inline_map_read(map, ofs & BANK_MASK); //
+>> mask out the bank
+>> }
+>>
+> that makes sense. but one question don't you need to adjust the  
+> offset before calling inline_map_read ? or does the macro do that  
+> for you ?
 
+That's what the BANK_MASK does. It contains the high address field  
+which points to the chip, and the low address bits for the bank, but  
+masks off the bits of offset that change. In this case, my chip is at  
+0xA0000000, and the banks are 16MB, so my mask is 0xA0FFFFFF.
 
-      
+-
+allon
