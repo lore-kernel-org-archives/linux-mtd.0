@@ -1,19 +1,20 @@
-Received: from rv-out-0708.google.com ([209.85.198.240])
+Received: from wf-out-1314.google.com ([209.85.200.174])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KeTHA-0006Ge-D1
-	for linux-mtd@lists.infradead.org; Sat, 13 Sep 2008 11:26:53 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so1606078rvf.42
+	id 1KeTHs-0006Jl-4S
+	for linux-mtd@lists.infradead.org; Sat, 13 Sep 2008 11:27:36 +0000
+Received: by wf-out-1314.google.com with SMTP id 28so1202899wfc.24
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 13 Sep 2008 04:26:51 -0700 (PDT)
-Message-ID: <48CBA377.9020802@gmail.com>
-Date: Sat, 13 Sep 2008 04:26:47 -0700
+	Sat, 13 Sep 2008 04:27:35 -0700 (PDT)
+Message-ID: <48CBA3A4.7020308@gmail.com>
+Date: Sat, 13 Sep 2008 04:27:32 -0700
 From: Zev Weiss <zevweiss@gmail.com>
 MIME-Version: 1.0
 To: Lennert Buytenhek <buytenh@wantstofly.org>
-Subject: Re: [PATCH 2/3] [MTD] physmap.c: Add #endif comments
-References: <48CB5E9F.9060109@gmail.com>
-	<20080913104641.GE21603@xi.wantstofly.org>
-In-Reply-To: <20080913104641.GE21603@xi.wantstofly.org>
+Subject: Re: [PATCH 1/3] [MTD] physmap.c: Check return of
+	platform_device_register()
+References: <48CB5E9A.4010000@gmail.com>
+	<20080913104542.GD21603@xi.wantstofly.org>
+In-Reply-To: <20080913104542.GD21603@xi.wantstofly.org>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
@@ -27,45 +28,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Lennert Buytenhek wrote:
-> On Fri, Sep 12, 2008 at 11:33:03PM -0700, Zev Weiss wrote:
+> On Fri, Sep 12, 2008 at 11:32:58PM -0700, Zev Weiss wrote:
 > 
->> Adding comments to a few of the less painfully-obvious #endifs.
+>> The PHYSMAP_COMPAT code had been ignoring the return value of
+>> platform_device_register() in the physmap_init() function.
 >>
 >> Signed-off-by: Zev Weiss <zevweiss@gmail.com>
 >> ---
->>   drivers/mtd/maps/physmap.c |    6 +++---
->>   1 files changed, 3 insertions(+), 3 deletions(-)
+>>   drivers/mtd/maps/physmap.c |    2 +-
+>>   1 files changed, 1 insertions(+), 1 deletions(-)
 >>
 >> diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
->> index 6fba0d4..49e2039 100644
+>> index 42d844f..6fba0d4 100644
 >> --- a/drivers/mtd/maps/physmap.c
 >> +++ b/drivers/mtd/maps/physmap.c
->> @@ -244,7 +244,7 @@ static void physmap_flash_shutdown(struct platform_device *dev)
->>   #define physmap_flash_suspend NULL
->>   #define physmap_flash_resume NULL
->>   #define physmap_flash_shutdown NULL
->> -#endif
->> +#endif /* CONFIG_PM */
->>
->>   static struct platform_driver physmap_flash_driver = {
->>   	.probe		= physmap_flash_probe,
->> @@ -302,8 +302,8 @@ void physmap_set_partitions(struct mtd_partition *parts, int
->> num_parts)
->>   	physmap_flash_data.nr_parts = num_parts;
->>   	physmap_flash_data.parts = parts;
->>   }
->> -#endif
->> -#endif
->> +#endif /* CONFIG_MTD_PARTITIONS */
->> +#endif /* PHYSMAP_COMPAT */
+>> @@ -312,7 +312,7 @@ static int __init physmap_init(void)
+>>   	err = platform_driver_register(&physmap_flash_driver);
+>>   #ifdef PHYSMAP_COMPAT
+>>   	if (err == 0)
+>> -		platform_device_register(&physmap_flash);
+>> +		err = platform_device_register(&physmap_flash);
+>>   #endif
 > 
-> I thought that this was frowned upon.  (I don't like it myself, and
-> my editor is perfectly well capable of pointing out to me which ifdef
-> matches up with which endif.)
+> I don't think you want the registration of the physmap driver to fail
+> if the compat platform device fails to register.
+> 
+> One reason that the compat platform device can fail to register can be
+> that there is already a non-compat platform device for the compat flash
+> chip, and in that case I don't think you want to fail the driver init
+> (while leaving the physmap_flash_driver registered, too!).
 > 
 
-Ah, OK -- I found it slightly hard to follow the ones that get longer than a 
-screenful or so, and I don't have my editor set to match them up nicely (though I 
-might look into that).  It's something I'm accustomed to doing and seeing, and I saw 
-no mention of it one way or another in Documentation/CodingStyle, so I didn't really 
-give it a second thought.
+Chalk another one up to ignorance on my part...sounds like a nak all 'round.
