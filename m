@@ -1,18 +1,17 @@
-Received: from mta-a2.tc.umn.edu ([134.84.119.206])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KexVy-0000oV-MZ
-	for linux-mtd@lists.infradead.org; Sun, 14 Sep 2008 19:44:11 +0000
-Date: Sun, 14 Sep 2008 12:43:37 -0700
-Subject: Re: [PATCH 1/6] [MTD-UTILS] nandwrite: Qualifier Clean-up
-From: Grant Erickson <erick205@umn.edu>
-To: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
-Message-ID: <C4F2B779.11AAC%erick205@umn.edu>
-In-Reply-To: <lyzlmh8cn1.fsf@ensc-virt.intern.sigma-chemnitz.de>
-Mime-version: 1.0
-Content-type: text/plain;
-	charset="US-ASCII"
-Content-transfer-encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 3/3] [MTD] m25p80.c
+From: David Woodhouse <dwmw2@infradead.org>
+To: Chen Gong <g.chen@freescale.com>
+In-Reply-To: <1218080495-2653-4-git-send-email-g.chen@freescale.com>
+References: <1218080495-2653-1-git-send-email-g.chen@freescale.com>
+	<1218080495-2653-2-git-send-email-g.chen@freescale.com>
+	<1218080495-2653-3-git-send-email-g.chen@freescale.com>
+	<1218080495-2653-4-git-send-email-g.chen@freescale.com>
+Content-Type: text/plain
+Date: Mon, 15 Sep 2008 00:06:38 -0700
+Message-Id: <1221462398.3201.33.camel@macbook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, viro@ftp.uk.linux.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,66 +21,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 9/9/08 10:14 AM, Enrico Scholz wrote:
-> Grant Erickson <gerickson@nuovations.com> writes:
-> >>> +static const char *mtd_device, *img;
->>> 
->>> would it be possible to split this into two declarations?  I
->>> really don't know if 'img' points to a constant or non-constant
->>> char...
->> 
->> As currently implemented, both mtd_device and img point to
->> effectively read-only information. That is, there is no need to
->> modify or to attempt to modify what they point to.
-> 
-> Sorry, I might be unclear here. My comment was about readability
-> not about correctness; e.g. without studying C standard, it is
-> not obvious to me, whether
->
-> [ Examples Omitted ]
->
-> 
-> When you think that answer to this question is trivial, then
-> please explain 'char * const *a, *b;' ;)
+On Thu, 2008-08-07 at 11:41 +0800, Chen Gong wrote:
+> @@ -547,6 +550,7 @@ static struct flash_info *__devinit jedec_probe(struct spi_device *spi)
+>         u8                      code = OPCODE_RDID;
+>         u8                      id[3];
+>         u32                     jedec;
+> +       u16                     ext_jedec;
+>         struct flash_info       *info;
+>  
+>         /* JEDEC also defines an optional "extended device information"
+	 * string for after vendor-specific data, after the three bytes
+	 * we use here.  Supporting some chips might require using it.
+	 */
+	tmp = spi_write_then_read(spi, &code, 1, id, 3);
+	if (tmp < 0) {
+		DEBUG(MTD_DEBUG_LEVEL0, "%s: error %d reading JEDEC ID\n",
+			spi->dev.bus_id, tmp);
+		return NULL;
+	}
+	jedec = id[0];
+	jedec = jedec << 8;
+	jedec |= id[1];
+>         jedec = jedec << 8;
+>         jedec |= id[2];
+>  
+> +       ext_jedec = id[3] << 8 | id[4];
+> +
 
-Fair enough. Patch submitted.
+You're trying to read off the end of the id[] array, which has only
+three elements. And you didn't ask spi_write_then_read() to read that
+many bytes _anyway_. And if you did... would it fail on chips which
+don't have the extended device information?
 
->>>> -int main(int argc, char **argv)
->>>> +int main(int argc, char * const argv[])
->>> 
->>> Is this really correct?  C standard mentions only
->>> 
->>>                int main(void) { /* ... */ }
->>>                int main(int argc, char *argv[]) { /* ... */ }
->>> 
->>> as program entry points.  I suggest to cast 'argv' to a corresponding
->>> data type when it is used.
-> 
->> adding the const qualifier simply conveys current program
->> intent. That is, the strings pointed to by argv are not
->> modified.
-> 
-> Then, you can write
-> 
-> | int main(int argc, char const * const argv[])
+Please test and send a fix, since this is already in the git tree.
 
-That's certainly possible as well; however, that was not the intent and, as
-you cite with getopt below, would not accurately reflect how the program
-respect argv.
-
-> fwiw, the const'ness if argv[] content is violated when calling
-> GNU getopt(3) as it reorders arguments.  E.g.
-> 
-> | argv[] = { "foo", "-a", "bar", "-c", NULL }
-> 
-> is changed by this function to
-> 
-> | argv[] = { "foo", "-a", "-c", "bar", NULL }
-
-Understood on the operation of getopt. The declared intent was not that
-order of the cells is constant but that the contents of the cells (i.e. the
-strings) are.
-
-Regards,
-
-Grant
+-- 
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
