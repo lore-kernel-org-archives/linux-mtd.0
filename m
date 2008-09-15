@@ -1,16 +1,27 @@
-Received: from relay01.pair.com ([209.68.5.15])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KfHZc-0001CJ-B8
-	for linux-mtd@lists.infradead.org; Mon, 15 Sep 2008 17:09:16 +0000
-Date: Mon, 15 Sep 2008 10:09:06 -0700
-Subject: JFFS2 File System Size Mismatches: Online Replication vs. Mkfs.jffs2
-From: Grant Erickson <gerickson@nuovations.com>
-To: "\"linux-mtd@lists.infradead.org\"" <linux-mtd@lists.infradead.org>
-Message-ID: <C4F3E4C2.11ACD%gerickson@nuovations.com>
-Mime-version: 1.0
-Content-type: text/plain;
-	charset="US-ASCII"
-Content-transfer-encoding: 7bit
+Received: from an-out-0708.google.com ([209.85.132.240])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KfJyQ-0003Jf-DJ
+	for linux-mtd@lists.infradead.org; Mon, 15 Sep 2008 19:43:07 +0000
+Received: by an-out-0708.google.com with SMTP id c24so240935ana.99
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 15 Sep 2008 12:43:00 -0700 (PDT)
+Message-ID: <6934efce0809151243h60a6e48bpf0c7600d4badf3c4@mail.gmail.com>
+Date: Mon, 15 Sep 2008 12:43:00 -0700
+From: "Jared Hulbert" <jaredeh@gmail.com>
+To: "Jamie Lokier" <jamie@shareable.org>
+Subject: Re: [PATCH 00/10] AXFS: Advanced XIP filesystem
+In-Reply-To: <20080915163421.GA13631@shareable.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <6934efce0809121452kd20deb6m268715f6ed83a71e@mail.gmail.com>
+	<20080915163421.GA13631@shareable.org>
+Cc: cotte@de.ibm.com, Greg Ungerer <gerg@snapgear.com>,
+	linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
+	=?UTF-8?Q?J=C3=B6rn_Engel?= <joern@logfs.org>,
+	Linux-kernel@vger.kernel.org,
+	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,54 +31,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have an interesting JFFS2 anomaly with regards to file system sizes that I
-am hoping someone on the list has some insight on. For my system, I produce
-a root file system image using mkfs.jffs2 as follows:
+>> >> I'm using Spansion MirrorBit S29GL128N, which reads at about 0.6 MByte/s.
+>>
+>> If you are using a GL, you'll probably find our P33 a good fit and at
+>> competitive prices to GL as I understand it.  That's I think 50Mhz.
+>
+> What's a GL?  Never heard of it - all I can think of is OpenGL :-)
 
-    mkfs.jffs2 --big-endian --no-cleanmarkers --pad 512 --pagesize 512  \
-    --eraseblock 16384                                                  \
-    -d /tmp/tmp.AEvYZ20385 -D root.devtable -o root.jffs2
+S29_GL_128N
 
-And I end up with an image that is 14.0 MiB in size. Compression is
-effective in reducing the image size down from 20.0 MiB, the image size when
-'-m none' is passed to mkfs.jffs2.
+> I'm not sure if cache is an option with this device - but would it
+> make a difference anyway?
 
-Installed on the target system, 'df -h' reports:
+Well the first read takes 100ns (plus the other chipset overhead
+300ns) but other reads in a page are only an extra 25ns each.  So your
+benefit is not from having the entire executable in cache it's from
+having the next 7 instructions in the cacheline for only an extra 25ns
+each instead of 400ns.
 
-    Filesystem                Size      Used Available Use% Mounted on
-    /dev/mtdblock11          20.0M     14.0M      6.0M  70% /
+> Interesting, thanks.  I'm not sure it's possible to change the way NOR
+> is being used with this chip, and it'll be a while before it's
+> economical to replace the board with a new design.
 
-However, if I then replicate, using rsync, this file system onto an
-identical, yet empty partition, I end up with a file system that 'df'
-reports as substantially smaller despite the fact that the file system BOM
-is identical, diff says everything is the same, and a random sampling of MD5
-sums shows files to be identical:
-
-    Filesystem                Size      Used Available Use% Mounted on
-    /dev/mtdblock11          20.0M     14.0M      6.0M  70% /
-    /dev/mtdblock9           20.0M      9.3M     10.7M  46% /mnt/root0
-
-The kernel is configured as:
-
-    CONFIG_JFFS2_FS=y
-    CONFIG_JFFS2_FS_DEBUG=0
-    CONFIG_JFFS2_FS_WRITEBUFFER=y
-    # CONFIG_JFFS2_FS_WBUF_VERIFY is not set
-    # CONFIG_JFFS2_SUMMARY is not set
-    # CONFIG_JFFS2_FS_XATTR is not set
-    # CONFIG_JFFS2_COMPRESSION_OPTIONS is not set
-    CONFIG_JFFS2_ZLIB=y
-    # CONFIG_JFFS2_LZO is not set
-    CONFIG_JFFS2_RTIME=y
-    # CONFIG_JFFS2_RUBIN is not set
-
-My conclusion seems to be that mkfs.jffs2 and the kernel are compressing
-things differently; however, 14.0 MiB seems to be the best I can coax out of
-mkfs.jffs2 with any of LZO, ZLIB or RTIME.
-
-Any insights or places to start digging? Have I discovered JFFS2 dark
-matter? ;-)
-
-Regards,
-
-Grant
+Usually these things can be fixed in the bootloader or by hacking the
+kernel to tweak the relevant chipset registers.
