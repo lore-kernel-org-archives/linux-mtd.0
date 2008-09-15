@@ -1,19 +1,20 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KfAAf-0002o7-CF
-	for linux-mtd@lists.infradead.org; Mon, 15 Sep 2008 09:15:02 +0000
-Date: Mon, 15 Sep 2008 11:14:55 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: "Sugathan, Rupesh" <rs@carriercomm.com>
-Subject: RE: Erase Block size
-In-Reply-To: <EE63F03D9E04774997AEBCD21FC77F253178CC@ccomm-ex1.ccomm.com>
-Message-ID: <Pine.LNX.4.64.0809151114380.14452@lnxricardw.se.axis.com>
-References: <EE63F03D9E04774997AEBCD21FC77F253178CC@ccomm-ex1.ccomm.com>
+Received: from mail-gx0-f12.google.com ([209.85.217.12])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KfDKc-0003vD-EV
+	for linux-mtd@lists.infradead.org; Mon, 15 Sep 2008 12:37:30 +0000
+Received: by gxk5 with SMTP id 5so23457891gxk.18
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 15 Sep 2008 05:37:29 -0700 (PDT)
+Message-ID: <ea2442770809150537p538f5298s9b5b003a1825b09f@mail.gmail.com>
+Date: Mon, 15 Sep 2008 14:37:29 +0200
+From: "Karl Beldan" <karl.beldan@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] [MTD] [NAND] nand_base.c: reset chip first
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	=?iso-8859-1?Q?Ricard_Wanderl=F6f?= <Ricard.Wanderlof@axis.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Cc: David.Woodhouse@intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Some chips require a RESET after power-up (e.g. Micron MT29FxGxxxxx).
+The first command sent is NAND_CMD_READID.
+Issue a NAND_CMD_RESET in nand_scan_ident before reading the device id.
+Tested with an MT29F4G08AAC.
 
-On Thu, 11 Sep 2008, Sugathan, Rupesh wrote:
+Signed-off-by: Karl Beldan <karl.beldan@gmail.com>
+---
+Prior to resetting, the chip gives a correct first ID byte though.
 
-> Thanks for sharing your solution. Can you please comment if the below
-> understanding correct.
-> Cause of the warning messages are 'empty space' within the erase block.
-> One of the problems of these empty spaces is a small waste of space in
-> Flash. Is there any other problem in having these empty space on a
-> write-able partition?
 
-No, I don't think so.
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index d1129ba..2cfac9b 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2318,6 +2318,12 @@ static struct nand_flash_dev
+*nand_get_flash_type(struct mtd_info *mtd,
+ 	/* Select the device */
+ 	chip->select_chip(mtd, 0);
 
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
-    "With Free Software you are employing the best programmers on the plane=
-t"
++	/*
++	 * Reset the chip, required by some chips (e.g. Micron MT29FxGxxxxx)
++	 * after power-up
++	 */
++	chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
++
+ 	/* Send the command for reading device ID */
+ 	chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
+
+@@ -2488,6 +2494,8 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips)
+ 	/* Check for a chip array */
+ 	for (i = 1; i < maxchips; i++) {
+ 		chip->select_chip(mtd, i);
++		/* See comment in nand_get_flash_type for reset */
++		chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
+ 		/* Send the command for reading device ID */
+ 		chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
+ 		/* Read manufacturer and device IDs */
