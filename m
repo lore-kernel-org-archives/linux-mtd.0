@@ -1,21 +1,21 @@
-Received: from rn-out-0910.google.com ([64.233.170.190])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KfEkO-0002ee-Tk
-	for linux-mtd@lists.infradead.org; Mon, 15 Sep 2008 14:08:13 +0000
-Received: by rn-out-0910.google.com with SMTP id m7so1453040rnd.3
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 15 Sep 2008 07:08:12 -0700 (PDT)
-Message-ID: <48CE6C43.8050500@gmail.com>
-Date: Mon, 15 Sep 2008 16:08:03 +0200
-From: Karl Beldan <karl.beldan@gmail.com>
+Received: from mail2.shareable.org ([80.68.89.115])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KfH23-0002R2-Rw
+	for linux-mtd@lists.infradead.org; Mon, 15 Sep 2008 16:34:36 +0000
+Date: Mon, 15 Sep 2008 17:34:21 +0100
+From: Jamie Lokier <jamie@shareable.org>
+To: Jared Hulbert <jaredeh@gmail.com>
+Subject: Re: [PATCH 00/10] AXFS: Advanced XIP filesystem
+Message-ID: <20080915163421.GA13631@shareable.org>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] [MTD] [NAND] nand_base.c: reset chip first
-References: <ea2442770809150537p538f5298s9b5b003a1825b09f@mail.gmail.com>
-In-Reply-To: <ea2442770809150537p538f5298s9b5b003a1825b09f@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: David.Woodhouse@intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6934efce0809121452kd20deb6m268715f6ed83a71e@mail.gmail.com>
+Cc: cotte@de.ibm.com, Greg Ungerer <gerg@snapgear.com>,
+	linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
+	=?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
+	Linux-kernel@vger.kernel.org,
+	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,39 +25,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some chips require a RESET after power-up (e.g. Micron MT29FxGxxxxx).
-The first command sent is NAND_CMD_READID.
-Issue a NAND_CMD_RESET in nand_scan_ident before reading the device id.
-Tested with an MT29F4G08AAC.
+Jared Hulbert wrote:
+> >> > What kind of NOR you using?  That is not what I measure with fast
+> >> > synchronous burst NOR's.
+> >>
+> >> I think the "fast" in "fast synchronous" gives it away :-)
+> >>
+> >> I'm using Spansion MirrorBit S29GL128N, which reads at about 0.6 MByte/s.
+> >
+> > By the way, what speeds do you get on fast synchronous burst NORs - and
+> > which chips are those?
+> 
+> I am only familiar with the Numonyx product line up.
+> 
+> If you are using a GL, you'll probably find our P33 a good fit and at
+> competitive prices to GL as I understand it.  That's I think 50Mhz.
 
-Signed-off-by: Karl Beldan <karl.beldan@gmail.com>
----
-Prior to resetting, the chip gives a correct first ID byte though.
-Resubmitted without(?) mail client formatting.
+What's a GL?  Never heard of it - all I can think of is OpenGL :-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index d1129ba..2cfac9b 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2318,6 +2318,12 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
- 	/* Select the device */
- 	chip->select_chip(mtd, 0);
- 
-+	/*
-+	 * Reset the chip, required by some chips (e.g. Micron MT29FxGxxxxx)
-+	 * after power-up
-+	 */
-+	chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
-+
- 	/* Send the command for reading device ID */
- 	chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
- 
-@@ -2488,6 +2494,8 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips)
- 	/* Check for a chip array */
- 	for (i = 1; i < maxchips; i++) {
- 		chip->select_chip(mtd, i);
-+		/* See comment in nand_get_flash_type for reset */
-+		chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
- 		/* Send the command for reading device ID */
- 		chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
- 		/* Read manufacturer and device IDs */
+I'm using a Sigma Designs 862x media processor.  It clocks at 166MHz
+to main RAM, has an ARM internally to run Linux, and the intensive
+work happens in coprocessors.  The NOR is not on the RAM bus, it's on
+a "peripheral bus".  About the only thing I know about the bus is it's
+16 bits wide - I have the schematic, but only the board supplier has
+access to Sigma chip documentation.
+
+> A rule of thumb is to say that copying to RAM will reduce this value
+> less than 50% because RAM should be at least a little faster than NOR.
+
+In our case, RAM is at least 100x faster :-)
+
+> Nevertheless, If you can't use a simple calculation like this to
+> explain the numbers then you have a poorly configured bus timings or
+> have your cache off.
+
+I'm not sure if cache is an option with this device - but would it
+make a difference anyway?  Launching executables like Busybox - those
+are much larger than the cache anyway, so launch time is dominated by
+bulk streaming copy speed.  Thanks for the idea, I'll look into
+whether it's possible to access this 'peripheral bus' through the
+ARM's cache and see if that speeds up streaming read time.
+
+> So, If you are only getting 0.6MB/s out of your NOR..... You're
+> using it wrong.
+
+Interesting, thanks.  I'm not sure it's possible to change the way NOR
+is being used with this chip, and it'll be a while before it's
+economical to replace the board with a new design.
+
+This is all very interesting - I had no prior experience with NOR, so
+didn't know that 0.6MB/s was slow.  It's fast compared with older
+EEPROMs after all, and had imagined that people wanting fast flash
+would use NAND.
+
+On looking at the datasheet, I see it's quite a lot faster.  I'm
+suspecting the Sigma Designs perpheral bus and the way it's wired up
+not doing it any favours.  We already have the weirdness that we have
+to patch the Linux CFI-0002 MTD code: the CPU locks up when polling
+the erase status byte, until erase is finished.  Unfortunately this is
+difficult to change now - I'm programming hardware which is already
+out in the field and cannot be redesigned.
+
+Thanks for your thoughts.
+
+-- Jamie
