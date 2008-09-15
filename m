@@ -1,28 +1,16 @@
-Received: from mail2.shareable.org ([80.68.89.115])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KfH7Z-000591-De
-	for linux-mtd@lists.infradead.org; Mon, 15 Sep 2008 16:40:17 +0000
-Date: Mon, 15 Sep 2008 17:40:12 +0100
-From: Jamie Lokier <jamie@shareable.org>
-To: Jared Hulbert <jaredeh@gmail.com>
-Subject: Re: [PATCH 00/10] AXFS: Advanced XIP filesystem
-Message-ID: <20080915164012.GB13631@shareable.org>
-References: <48AD00C4.6060302@gmail.com> <20080821110749.GA1926@shareable.org>
-	<6934efce0808210711t686a88eci6eb294dbb54d68fe@mail.gmail.com>
-	<48AE0476.80109@snapgear.com>
-	<20080822181314.GB24179@shareable.org>
-	<6934efce0808221116w76a662b0t954b0922b69d3232@mail.gmail.com>
-	<20080822183713.GC24179@shareable.org>
-	<6934efce0809121317r418c80e8s4755669cc74975c4@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6934efce0809121317r418c80e8s4755669cc74975c4@mail.gmail.com>
-Cc: cotte@de.ibm.com, Greg Ungerer <gerg@snapgear.com>,
-	linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
-	=?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
-	Linux-kernel@vger.kernel.org,
-	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
+Received: from relay01.pair.com ([209.68.5.15])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KfHZc-0001CJ-B8
+	for linux-mtd@lists.infradead.org; Mon, 15 Sep 2008 17:09:16 +0000
+Date: Mon, 15 Sep 2008 10:09:06 -0700
+Subject: JFFS2 File System Size Mismatches: Online Replication vs. Mkfs.jffs2
+From: Grant Erickson <gerickson@nuovations.com>
+To: "\"linux-mtd@lists.infradead.org\"" <linux-mtd@lists.infradead.org>
+Message-ID: <C4F3E4C2.11ACD%gerickson@nuovations.com>
+Mime-version: 1.0
+Content-type: text/plain;
+	charset="US-ASCII"
+Content-transfer-encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,38 +20,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jared Hulbert wrote:
-> > I think the "fast" in "fast synchronous" gives it away :-)
-> 
-> Yes, I suppose it does.
-> 
-> > I'm using Spansion MirrorBit S29GL128N, which reads at about 0.6 MByte/s.
-> 
-> I think you should get more like an order of magnitude higher.... Get
-> an expert to look at your timings in the bootloader.  Make sure things
-> are cached too.  ioremap_cached()...
+I have an interesting JFFS2 anomaly with regards to file system sizes that I
+am hoping someone on the list has some insight on. For my system, I produce
+a root file system image using mkfs.jffs2 as follows:
 
-Yes, looking at the Spansion datasheet, if it were interfaced properly
-it should be quite fast.  (25ns access time for in-page 16-bit reads,
-100ns for random reads).
+    mkfs.jffs2 --big-endian --no-cleanmarkers --pad 512 --pagesize 512  \
+    --eraseblock 16384                                                  \
+    -d /tmp/tmp.AEvYZ20385 -D root.devtable -o root.jffs2
 
-I'll see if ioremap_cached() makes a difference to streaming read
-performance.
+And I end up with an image that is 14.0 MiB in size. Compression is
+effective in reducing the image size down from 20.0 MiB, the image size when
+'-m none' is passed to mkfs.jffs2.
 
-The BSP suppliers have been quite cautious in places, flushing cache a
-bit too often.  (I'm not surprised - we had disk ext3 filesystem
-corruption due to insufficient cache flushing in places too.)
+Installed on the target system, 'df -h' reports:
 
-> > Oh, and it's a 166MHz ARM, so it's quite capable of decompressing
-> > faster than the NOR can deliver.
-> 
-> Depends on how you are measuring it.   You ought to be able to get at
-> least 2 orders of magnitude higher read speeds with a good sync Flash.
->  Some of the newer stuff is even faster.
+    Filesystem                Size      Used Available Use% Mounted on
+    /dev/mtdblock11          20.0M     14.0M      6.0M  70% /
 
-Thanks.
+However, if I then replicate, using rsync, this file system onto an
+identical, yet empty partition, I end up with a file system that 'df'
+reports as substantially smaller despite the fact that the file system BOM
+is identical, diff says everything is the same, and a random sampling of MD5
+sums shows files to be identical:
 
-Oh, how I look forward to the day of working with current kernels and
-current hardware.
+    Filesystem                Size      Used Available Use% Mounted on
+    /dev/mtdblock11          20.0M     14.0M      6.0M  70% /
+    /dev/mtdblock9           20.0M      9.3M     10.7M  46% /mnt/root0
 
--- Jamie
+The kernel is configured as:
+
+    CONFIG_JFFS2_FS=y
+    CONFIG_JFFS2_FS_DEBUG=0
+    CONFIG_JFFS2_FS_WRITEBUFFER=y
+    # CONFIG_JFFS2_FS_WBUF_VERIFY is not set
+    # CONFIG_JFFS2_SUMMARY is not set
+    # CONFIG_JFFS2_FS_XATTR is not set
+    # CONFIG_JFFS2_COMPRESSION_OPTIONS is not set
+    CONFIG_JFFS2_ZLIB=y
+    # CONFIG_JFFS2_LZO is not set
+    CONFIG_JFFS2_RTIME=y
+    # CONFIG_JFFS2_RUBIN is not set
+
+My conclusion seems to be that mkfs.jffs2 and the kernel are compressing
+things differently; however, 14.0 MiB seems to be the best I can coax out of
+mkfs.jffs2 with any of LZO, ZLIB or RTIME.
+
+Any insights or places to start digging? Have I discovered JFFS2 dark
+matter? ;-)
+
+Regards,
+
+Grant
