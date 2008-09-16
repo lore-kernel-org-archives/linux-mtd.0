@@ -1,16 +1,24 @@
-Subject: RE: [PATCH V2] [MTD] m25p80.c extended jedec support
-From: David Woodhouse <dwmw2@infradead.org>
-To: Chen Gong-B11801 <G.Chen@freescale.com>
-In-Reply-To: <C3C4D3116BA1F84989E53FCF1F5051870D29BB@zch01exm21.fsl.freescale.net>
-References: <1221545652-2280-1-git-send-email-g.chen@freescale.com>
-	<1221546997.3106.54.camel@macbook.infradead.org>
-	<C3C4D3116BA1F84989E53FCF1F5051870D29BB@zch01exm21.fsl.freescale.net>
-Content-Type: text/plain
-Date: Mon, 15 Sep 2008 23:51:54 -0700
-Message-Id: <1221547914.3106.56.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Received: from krynn.se.axis.com ([193.13.178.10])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KfUXB-0003SE-9v
+	for linux-mtd@lists.infradead.org; Tue, 16 Sep 2008 06:59:43 +0000
+Date: Tue, 16 Sep 2008 08:57:43 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Jamie Lokier <jamie@shareable.org>
+Subject: Re: [PATCH 00/10] AXFS: Advanced XIP filesystem
+In-Reply-To: <20080915163421.GA13631@shareable.org>
+Message-ID: <Pine.LNX.4.64.0809160856190.5966@lnxricardw.se.axis.com>
+References: <20080915163421.GA13631@shareable.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: "cotte@de.ibm.com" <cotte@de.ibm.com>, Greg Ungerer <gerg@snapgear.com>,
+	"linux-embedded@vger.kernel.org" <linux-embedded@vger.kernel.org>,
+	"nickpiggin@yahoo.com.au" <nickpiggin@yahoo.com.au>,
+	=?iso-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>,
+	"Linux-kernel@vger.kernel.org" <Linux-kernel@vger.kernel.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	"tim.bird@am.sony.com" <tim.bird@am.sony.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,21 +28,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2008-09-16 at 14:41 +0800, Chen Gong-B11801 wrote:
-> you mean I should create a patch based that tree, not torvalds's tree,
-> right ?
 
-Yes, please.
+On Mon, 15 Sep 2008, Jamie Lokier wrote:
 
-> > 
-> > What happens if you call spi_write_then_read(spi, x, x, x, 5) on a
-> > device which is only expecting to return 3 bytes. Does the call return
-> > failure? Or just pad to 5 bytes with zeroes?
-> 
-> frankly, I'm not sure to much, but from the datasheet I'v read, if CS#
-> doesn't be pulled high, it should can read zero or Hi-Z(maybe some mess data)
+> This is all very interesting - I had no prior experience with NOR, so
+> didn't know that 0.6MB/s was slow.  It's fast compared with older
+> EEPROMs after all, and had imagined that people wanting fast flash
+> would use NAND.
+>
 
-I would like to be sure that we're not going to break on older chips.
+NAND is significantly faster when writing than NOR, read speed is of the=20
+same magnitude, possibly slower in many cases.
 
--- 
-dwmw2
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
+    "With Free Software you are employing the best programmers on the plane=
+t"
