@@ -1,27 +1,26 @@
-Received: from an-out-0708.google.com ([209.85.132.240])
+Received: from nf-out-0910.google.com ([64.233.182.191])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KfJyQ-0003Jf-DJ
-	for linux-mtd@lists.infradead.org; Mon, 15 Sep 2008 19:43:07 +0000
-Received: by an-out-0708.google.com with SMTP id c24so240935ana.99
+	id 1KfSWK-0001Wu-BD
+	for linux-mtd@lists.infradead.org; Tue, 16 Sep 2008 04:50:38 +0000
+Received: by nf-out-0910.google.com with SMTP id d21so1600674nfb.22
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 15 Sep 2008 12:43:00 -0700 (PDT)
-Message-ID: <6934efce0809151243h60a6e48bpf0c7600d4badf3c4@mail.gmail.com>
-Date: Mon, 15 Sep 2008 12:43:00 -0700
-From: "Jared Hulbert" <jaredeh@gmail.com>
-To: "Jamie Lokier" <jamie@shareable.org>
-Subject: Re: [PATCH 00/10] AXFS: Advanced XIP filesystem
-In-Reply-To: <20080915163421.GA13631@shareable.org>
+	Mon, 15 Sep 2008 21:50:35 -0700 (PDT)
+Message-ID: <33a7f1bc0809152050s6b2afd4doa81f9b281cee7709@mail.gmail.com>
+Date: Tue, 16 Sep 2008 11:50:45 +0800
+From: "chen gong" <clumsycg@gmail.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Subject: Re: [PATCH 3/3] [MTD] m25p80.c
+In-Reply-To: <1221462398.3201.33.camel@macbook.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <6934efce0809121452kd20deb6m268715f6ed83a71e@mail.gmail.com>
-	<20080915163421.GA13631@shareable.org>
-Cc: cotte@de.ibm.com, Greg Ungerer <gerg@snapgear.com>,
-	linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
-	=?UTF-8?Q?J=C3=B6rn_Engel?= <joern@logfs.org>,
-	Linux-kernel@vger.kernel.org,
-	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@am.sony.com
+References: <1218080495-2653-1-git-send-email-g.chen@freescale.com>
+	<1218080495-2653-2-git-send-email-g.chen@freescale.com>
+	<1218080495-2653-3-git-send-email-g.chen@freescale.com>
+	<1218080495-2653-4-git-send-email-g.chen@freescale.com>
+	<1221462398.3201.33.camel@macbook.infradead.org>
+Cc: linux-mtd@lists.infradead.org, viro@ftp.uk.linux.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,27 +30,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> >> I'm using Spansion MirrorBit S29GL128N, which reads at about 0.6 MByte/s.
+2008/9/15 David Woodhouse <dwmw2@infradead.org>:
+> On Thu, 2008-08-07 at 11:41 +0800, Chen Gong wrote:
+>> @@ -547,6 +550,7 @@ static struct flash_info *__devinit jedec_probe(struct spi_device *spi)
+>>         u8                      code = OPCODE_RDID;
+>>         u8                      id[3];
+>>         u32                     jedec;
+>> +       u16                     ext_jedec;
+>>         struct flash_info       *info;
 >>
->> If you are using a GL, you'll probably find our P33 a good fit and at
->> competitive prices to GL as I understand it.  That's I think 50Mhz.
+>>         /* JEDEC also defines an optional "extended device information"
+>         * string for after vendor-specific data, after the three bytes
+>         * we use here.  Supporting some chips might require using it.
+>         */
+>        tmp = spi_write_then_read(spi, &code, 1, id, 3);
+>        if (tmp < 0) {
+>                DEBUG(MTD_DEBUG_LEVEL0, "%s: error %d reading JEDEC ID\n",
+>                        spi->dev.bus_id, tmp);
+>                return NULL;
+>        }
+>        jedec = id[0];
+>        jedec = jedec << 8;
+>        jedec |= id[1];
+>>         jedec = jedec << 8;
+>>         jedec |= id[2];
+>>
+>> +       ext_jedec = id[3] << 8 | id[4];
+>> +
 >
-> What's a GL?  Never heard of it - all I can think of is OpenGL :-)
+> You're trying to read off the end of the id[] array, which has only
+> three elements. And you didn't ask spi_write_then_read() to read that
+> many bytes _anyway_. And if you did... would it fail on chips which
+> don't have the extended device information?
+>
 
-S29_GL_128N
+Sorry for late. Last day is Mid-autumn Festival in our Country. We have a
+nice holiday.
+It is a stupid error that I forget to fix it from my branch. I will
+send a new patch
+to fix it soon.
 
-> I'm not sure if cache is an option with this device - but would it
-> make a difference anyway?
-
-Well the first read takes 100ns (plus the other chipset overhead
-300ns) but other reads in a page are only an extra 25ns each.  So your
-benefit is not from having the entire executable in cache it's from
-having the next 7 instructions in the cacheline for only an extra 25ns
-each instead of 400ns.
-
-> Interesting, thanks.  I'm not sure it's possible to change the way NOR
-> is being used with this chip, and it'll be a while before it's
-> economical to replace the board with a new design.
-
-Usually these things can be fixed in the bootloader or by hacking the
-kernel to tweak the relevant chipset registers.
+> Please test and send a fix, since this is already in the git tree.
+>
+> --
+> David Woodhouse                            Open Source Technology Centre
+> David.Woodhouse@intel.com                              Intel Corporation
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
