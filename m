@@ -1,22 +1,30 @@
-Received: from ik-out-1112.google.com ([66.249.90.181])
+Received: from yx-out-1718.google.com ([74.125.44.157])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KfZ92-0005xQ-Io
-	for linux-mtd@lists.infradead.org; Tue, 16 Sep 2008 11:55:01 +0000
-Received: by ik-out-1112.google.com with SMTP id c21so2470377ika.2
+	id 1KfcVN-0006Tw-LL
+	for linux-mtd@lists.infradead.org; Tue, 16 Sep 2008 15:30:18 +0000
+Received: by yx-out-1718.google.com with SMTP id 3so1338545yxi.72
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 16 Sep 2008 04:54:59 -0700 (PDT)
-Message-ID: <48CF9E98.1030706@gmail.com>
-Date: Tue, 16 Sep 2008 13:55:04 +0200
-From: Karl Beldan <karl.beldan@gmail.com>
+	Tue, 16 Sep 2008 08:30:16 -0700 (PDT)
+Message-ID: <6934efce0809160830v461a115ch305aeaadaf5d9883@mail.gmail.com>
+Date: Tue, 16 Sep 2008 08:30:16 -0700
+From: "Jared Hulbert" <jaredeh@gmail.com>
+To: "Ricard Wanderlof" <ricard.wanderlof@axis.com>
+Subject: Re: [PATCH 00/10] AXFS: Advanced XIP filesystem
+In-Reply-To: <Pine.LNX.4.64.0809160856190.5966@lnxricardw.se.axis.com>
 MIME-Version: 1.0
-To: Ben Dooks <ben-linux@fluff.org>
-Subject: Re: [PATCH] [MTD] [NAND] nand_base.c: reset chip first
-References: <ea2442770809150537p538f5298s9b5b003a1825b09f@mail.gmail.com>
-	<20080916101048.GA4322@fluff.org.uk>
-In-Reply-To: <20080916101048.GA4322@fluff.org.uk>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, David.Woodhouse@intel.com
+Content-Disposition: inline
+References: <20080915163421.GA13631@shareable.org>
+	<Pine.LNX.4.64.0809160856190.5966@lnxricardw.se.axis.com>
+Cc: "cotte@de.ibm.com" <cotte@de.ibm.com>, Greg Ungerer <gerg@snapgear.com>,
+	"linux-embedded@vger.kernel.org" <linux-embedded@vger.kernel.org>,
+	"nickpiggin@yahoo.com.au" <nickpiggin@yahoo.com.au>,
+	=?UTF-8?Q?J=C3=B6rn_Engel?= <joern@logfs.org>,
+	Jamie Lokier <jamie@shareable.org>,
+	"Linux-kernel@vger.kernel.org" <Linux-kernel@vger.kernel.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	"tim.bird@am.sony.com" <tim.bird@am.sony.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,61 +34,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ben Dooks wrote:
-> On Mon, Sep 15, 2008 at 02:37:29PM +0200, Karl Beldan wrote:
->> Some chips require a RESET after power-up (e.g. Micron MT29FxGxxxxx).
->> The first command sent is NAND_CMD_READID.
->> Issue a NAND_CMD_RESET in nand_scan_ident before reading the device id.
->> Tested with an MT29F4G08AAC.
-> 
-> This seems sensible to me, we don't really know what state the NAND
-> chip is in.
-> 
-> Does there need to be a delay after sending the reset command before
-> attempting to read the chip's identity?
->  
+> NAND is significantly faster when writing than NOR, read speed is of the
+> same magnitude, possibly slower in many cases.
 
-There's the tWB + tRST delay which is handled by the CMD_RESET case in 
-nand_command if that's what you were thinking of.
-Tested both R/B and STATUS_READY code paths.
+Right.
 
->> Signed-off-by: Karl Beldan <karl.beldan@gmail.com>
->> ---
->> Prior to resetting, the chip gives a correct first ID byte though.
->>
->>
->> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
->> index d1129ba..2cfac9b 100644
->> --- a/drivers/mtd/nand/nand_base.c
->> +++ b/drivers/mtd/nand/nand_base.c
->> @@ -2318,6 +2318,12 @@ static struct nand_flash_dev
->> *nand_get_flash_type(struct mtd_info *mtd,
->>  	/* Select the device */
->>  	chip->select_chip(mtd, 0);
->>
->> +	/*
->> +	 * Reset the chip, required by some chips (e.g. Micron MT29FxGxxxxx)
->> +	 * after power-up
->> +	 */
->> +	chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
->> +
->>  	/* Send the command for reading device ID */
->>  	chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
->>
->> @@ -2488,6 +2494,8 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips)
->>  	/* Check for a chip array */
->>  	for (i = 1; i < maxchips; i++) {
->>  		chip->select_chip(mtd, i);
->> +		/* See comment in nand_get_flash_type for reset */
->> +		chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
->>  		/* Send the command for reading device ID */
->>  		chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
->>  		/* Read manufacturer and device IDs */
->>
->> ______________________________________________________
->> Linux MTD discussion mailing list
->> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-
---
-Karl
+Specifically, read bandwidth is on the same order of magnitude.
+However the read latency of NAND is a couple orders of magnitude
+higher (100ns vs 20,000ns) so it depends on what you are doing.
