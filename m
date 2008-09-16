@@ -1,12 +1,14 @@
-From: "LOTERIE ROMANDE" <mcgrant222@gmail.com>
-Subject: LOTTERY WIN NOTIFICATION-Contact Your Claims Agent.
-Date: Tue, 16 Sep 2008 06:05:57 +0200
-Message-Id: <20080916040424.M37459@gmail.com>
+Message-ID: <48CF5F19.8020105@nokia.com>
+Date: Tue, 16 Sep 2008 10:24:09 +0300
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset=iso-8859-1
-To: undisclosed-recipients: ;
-Reply-To: mcgrant222@gmail.com
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] [MTD] [OneNAND] OMAP2: add retry after read timeout
+References: <48B274EB.4080004@nokia.com>
+In-Reply-To: <48B274EB.4080004@nokia.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,42 +18,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-La'Loterie-Romande
-Rue Marterey13,
-1002 Lausanne,
-Switzerland.
+Adrian Hunter wrote:
+> Very occasionally, (about one in a million) read operations are
+> ongoing after the timeout has expired.  So, retry three times
+> while the ongoing bit remains set.
+> 
+> Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+> ---
 
-Reference number: LR/19-CH/9642,
-Batch: LR/07/18
-
-Congratulations!
-
-You are hereby notified that your email identity has won EUR 1 000 000
-(One million Euro) after our final email draw conducted last week.Your
-email ID was attached to serial number : 25-6395 and drew the wining
-numbers; 4.36.18.2.31.39
-
-No tickets were sold.
-
-
-For further Information about your Winnings,
-Please contact your assigned release manager 
-by his email below;
-
-
-'Mac Grant'
-Foreign Services Manager,
-Information and Payment Bureau. 
-London Representative Office.
-Phone: 00 44 702 403 5806
-Fax:   00 44 870 479 4098
-
-Email  : info@macgt222.vossnet.co.uk
-          
-To avoid complications or delay, please quote your refernce and batch
-numbers in every correspondence
-
-Yours truly,
-Jean-Piere Beuret,
-Promotions Manager,
-La'Loterie-Romande
+Can I have this applied?
