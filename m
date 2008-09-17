@@ -1,19 +1,19 @@
-Received: from mta23.gyao.ne.jp ([125.63.38.249] helo=mx.gate01.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KfyU4-0008LD-5w
-	for linux-mtd@lists.infradead.org; Wed, 17 Sep 2008 14:58:24 +0000
-Date: Wed, 17 Sep 2008 23:57:32 +0900
-From: Paul Mundt <lethal@linux-sh.org>
-To: Yoshihiro Shimoda <shimoda.yoshihiro@renesas.com>
-Subject: Re: [PATCH] mtd: sh_flctl: add support for Renesas SuperH FLCTL
-Message-ID: <20080917145731.GA31104@linux-sh.org>
-References: <48C62D1E.7020906@renesas.com>
+Received: from gv-out-0910.google.com ([216.239.58.186])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Kg1TN-0005rK-SA
+	for linux-mtd@lists.infradead.org; Wed, 17 Sep 2008 18:09:55 +0000
+Received: by gv-out-0910.google.com with SMTP id n40so1749035gve.5
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 17 Sep 2008 11:09:52 -0700 (PDT)
+Date: Wed, 17 Sep 2008 22:09:41 +0400
+From: Alexander Beregalov <a.beregalov@gmail.com>
+To: dedekind@infradead.org, ext-adrian.hunter@nokia.com,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH] ubifs: fix printk format warnings
+Message-ID: <20080917180941.GB29966@orion>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <48C62D1E.7020906@renesas.com>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-sh@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,21 +23,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Sep 09, 2008 at 05:00:30PM +0900, Yoshihiro Shimoda wrote:
-> Several Renesas SuperH CPU has FLCTL. The FLCTL support NAND Flash.
-> This driver support SH7723.
-> 
-> Signed-off-by: Yoshihiro Shimoda <shimoda.yoshihiro@renesas.com>
+fs/ubifs/dir.c:428: warning: format '%llu' expects type 'long long
+unsigned int', but argument 5 has type 'long unsigned int'
 
-> +	flctl->reg = ioremap(res->start, res->end - res->start);
-> +	if (flctl->reg == NULL) {
-> +		printk(KERN_ERR "%s: ioremap error.\n", __func__);
-> +		ret = -ENOMEM;
-> +		goto err;
-> +	}
-> +
-You have an off-by-1 here, this wants to be res->end - res->start + 1.
+fs/ubifs/debug.c:541: warning: format '%llu' expects type 'long long
+unsigned int', but argument 2 has type 'long unsigned int'
 
-Other than that, it looks ok to me at first glance.
 
-Acked-by: Paul Mundt <lethal@linux-sh.org>
+Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
+---
+
+ fs/ubifs/debug.c |    2 +-
+ fs/ubifs/dir.c   |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
+index b9cb774..d7f7645 100644
+--- a/fs/ubifs/debug.c
++++ b/fs/ubifs/debug.c
+@@ -538,7 +538,7 @@ void dbg_dump_node(const struct ubifs_info *c, const void *node)
+ 		printk(KERN_DEBUG "\t%d orphan inode numbers:\n", n);
+ 		for (i = 0; i < n; i++)
+ 			printk(KERN_DEBUG "\t  ino %llu\n",
+-			       le64_to_cpu(orph->inos[i]));
++			       (unsigned long long)le64_to_cpu(orph->inos[i]));
+ 		break;
+ 	}
+ 	default:
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 4884f06..8561890 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -426,7 +426,7 @@ static int ubifs_readdir(struct file *file, void *dirent, filldir_t filldir)
+ 
+ 	while (1) {
+ 		dbg_gen("feed '%s', ino %llu, new f_pos %#x",
+-			dent->name, le64_to_cpu(dent->inum),
++			dent->name, (unsigned long long)le64_to_cpu(dent->inum),
+ 			key_hash_flash(c, &dent->key));
+ 		ubifs_assert(dent->ch.sqnum > ubifs_inode(dir)->creat_sqnum);
+ 
