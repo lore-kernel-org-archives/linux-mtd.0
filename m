@@ -1,19 +1,19 @@
-Received: from gv-out-0910.google.com ([216.239.58.186])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Kg1TN-0005rK-SA
-	for linux-mtd@lists.infradead.org; Wed, 17 Sep 2008 18:09:55 +0000
-Received: by gv-out-0910.google.com with SMTP id n40so1749035gve.5
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 17 Sep 2008 11:09:52 -0700 (PDT)
-Date: Wed, 17 Sep 2008 22:09:41 +0400
-From: Alexander Beregalov <a.beregalov@gmail.com>
-To: dedekind@infradead.org, ext-adrian.hunter@nokia.com,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH] ubifs: fix printk format warnings
-Message-ID: <20080917180941.GB29966@orion>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Received: from smtp1.linux-foundation.org ([140.211.169.13])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Kg2Dp-0001z8-Gf
+	for linux-mtd@lists.infradead.org; Wed, 17 Sep 2008 18:57:53 +0000
+Date: Wed, 17 Sep 2008 11:57:46 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Zev Weiss <zevweiss@gmail.com>
+Subject: Re: [PATCH 1/3] [MTD] physmap.c: Check return of
+	platform_device_register()
+Message-Id: <20080917115746.e36cacc6.akpm@linux-foundation.org>
+In-Reply-To: <48CB5E9A.4010000@gmail.com>
+References: <48CB5E9A.4010000@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,43 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-fs/ubifs/dir.c:428: warning: format '%llu' expects type 'long long
-unsigned int', but argument 5 has type 'long unsigned int'
+On Fri, 12 Sep 2008 23:32:58 -0700
+Zev Weiss <zevweiss@gmail.com> wrote:
 
-fs/ubifs/debug.c:541: warning: format '%llu' expects type 'long long
-unsigned int', but argument 2 has type 'long unsigned int'
+> The PHYSMAP_COMPAT code had been ignoring the return value of
+> platform_device_register() in the physmap_init() function.
+> 
+> Signed-off-by: Zev Weiss <zevweiss@gmail.com>
+> ---
+>   drivers/mtd/maps/physmap.c |    2 +-
+>   1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
+> index 42d844f..6fba0d4 100644
+> --- a/drivers/mtd/maps/physmap.c
+> +++ b/drivers/mtd/maps/physmap.c
+> @@ -312,7 +312,7 @@ static int __init physmap_init(void)
+>   	err = platform_driver_register(&physmap_flash_driver);
+>   #ifdef PHYSMAP_COMPAT
+>   	if (err == 0)
+> -		platform_device_register(&physmap_flash);
+> +		err = platform_device_register(&physmap_flash);
+>   #endif
+> 
+>   	return err;
 
+Your email client is performing space-stuffing, thus making the patches
+unapplyable.
 
-Signed-off-by: Alexander Beregalov <a.beregalov@gmail.com>
----
-
- fs/ubifs/debug.c |    2 +-
- fs/ubifs/dir.c   |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index b9cb774..d7f7645 100644
---- a/fs/ubifs/debug.c
-+++ b/fs/ubifs/debug.c
-@@ -538,7 +538,7 @@ void dbg_dump_node(const struct ubifs_info *c, const void *node)
- 		printk(KERN_DEBUG "\t%d orphan inode numbers:\n", n);
- 		for (i = 0; i < n; i++)
- 			printk(KERN_DEBUG "\t  ino %llu\n",
--			       le64_to_cpu(orph->inos[i]));
-+			       (unsigned long long)le64_to_cpu(orph->inos[i]));
- 		break;
- 	}
- 	default:
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 4884f06..8561890 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -426,7 +426,7 @@ static int ubifs_readdir(struct file *file, void *dirent, filldir_t filldir)
- 
- 	while (1) {
- 		dbg_gen("feed '%s', ino %llu, new f_pos %#x",
--			dent->name, le64_to_cpu(dent->inum),
-+			dent->name, (unsigned long long)le64_to_cpu(dent->inum),
- 			key_hash_flash(c, &dent->key));
- 		ubifs_assert(dent->ch.sqnum > ubifs_inode(dir)->creat_sqnum);
- 
+Presumably we should run platform_driver_unregister() if the
+platform_device_register() failed.
