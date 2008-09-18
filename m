@@ -1,21 +1,20 @@
-Received: from mail.renesas.com ([202.234.163.13] helo=mail01.idc.renesas.com)
+Received: from wf-out-1314.google.com ([209.85.200.174])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KgIaP-0005B4-7s
-	for linux-mtd@lists.infradead.org; Thu, 18 Sep 2008 12:26:17 +0000
-Date: Thu, 18 Sep 2008 21:25:57 +0900
-From: Yoshihiro Shimoda <shimoda.yoshihiro@renesas.com>
-Subject: Re: [PATCH] mtd: sh_flctl: add support for Renesas SuperH FLCTL
-In-reply-to: <20080917145731.GA31104@linux-sh.org>
-Sender: shimoda.yoshihiro@renesas.com
-To: Paul Mundt <lethal@linux-sh.org>
-Message-id: <48D248D5.60106@renesas.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 7bit
-References: <48C62D1E.7020906@renesas.com>
-	<20080917145731.GA31104@linux-sh.org>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-sh@vger.kernel.org
+	id 1KgL76-0002FN-Ui
+	for linux-mtd@lists.infradead.org; Thu, 18 Sep 2008 15:08:13 +0000
+Received: by wf-out-1314.google.com with SMTP id 28so3815422wfc.24
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 18 Sep 2008 08:08:11 -0700 (PDT)
+Message-ID: <8956d4ca0809180800k6915961em8018ffa439a89045@mail.gmail.com>
+Date: Fri, 19 Sep 2008 01:00:38 +1000
+From: "Mitch Davis" <mjd-linux-mtd@afork.com>
+Sender: capnkernel@gmail.com
+To: linux-mtd@lists.infradead.org
+Subject: mkfs.jffs2: device table entries not the same type as in FS
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Paul Mundt wrote:
-> On Tue, Sep 09, 2008 at 05:00:30PM +0900, Yoshihiro Shimoda wrote:
->> Several Renesas SuperH CPU has FLCTL. The FLCTL support NAND Flash.
->> This driver support SH7723.
->>
->> Signed-off-by: Yoshihiro Shimoda <shimoda.yoshihiro@renesas.com>
-> 
->> +	flctl->reg = ioremap(res->start, res->end - res->start);
->> +	if (flctl->reg == NULL) {
->> +		printk(KERN_ERR "%s: ioremap error.\n", __func__);
->> +		ret = -ENOMEM;
->> +		goto err;
->> +	}
->> +
-> You have an off-by-1 here, this wants to be res->end - res->start + 1.
-> 
-> Other than that, it looks ok to me at first glance.
-> 
-> Acked-by: Paul Mundt <lethal@linux-sh.org>
-> 
+Hello,
 
-Thank you for your comment. I'll fix up this code.
+I'm using buildroot, which can use mkfs.jffs2 to generate JFFS2
+images.  I'm having the problem that mkfs.jffs2 fails with this
+message:
 
-thanks,
-Yoshihiro Shimoda
+  % mkfs.jffs2 -e 0x20000 -l -s 0x800 -n -D device_table.txt -d root
+-o rootfs.arm-20080918.jffs2
+  mkfs.jffs2: root/dev/mem: file type does not match specified type!
+
+The problem is that there is an entry for /dev/mem (plus lots of
+others) in device_table.txt, but there is also an empty file called
+root/dev/mem in the tree I've pointed mkfs.jfffs2 at.  Now of course,
+the problem would go away if there was no empty file there, but those
+files are a consequence of generating other output types in buildroot
+using fakeroot to imitate root-owned device files.  It's not really
+possible to make them go away.
+
+Here's the code in mkfs.jffs2:
+
+  http://git.infradead.org/mtd-utils.git?a=blob;f=mkfs.jffs2.c;hb=d769da93a56590c23ce9430a1d970e31e835ae88#l320
+
+The comment says "It is ok for some types of files to not exit on disk
+(such as device nodes), but if they _do_ exist the specified mode had
+better match the actual file or strange things will happen....".
+
+What strange things?  If I change the code so it just replaces the
+existing filesystem_entry, what will break?
+
+Hoping you can help me understand that code.
+
+Thanks,
+
+Mitch.
