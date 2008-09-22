@@ -1,19 +1,23 @@
-Received: from mta23.gyao.ne.jp ([125.63.38.249] helo=mx.gate01.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KhDQr-0005FK-UL
-	for linux-mtd@lists.infradead.org; Sun, 21 Sep 2008 01:08:14 +0000
-Date: Sun, 21 Sep 2008 10:07:13 +0900
-From: Paul Mundt <lethal@linux-sh.org>
-To: Yoshihiro Shimoda <shimoda.yoshihiro@renesas.com>
-Subject: Re: [PATCH v2] mtd: sh_flctl: add support for Renesas SuperH FLCTL
-Message-ID: <20080921010713.GA2522@linux-sh.org>
-References: <48D348FC.3060301@renesas.com>
+Received: from mail-gx0-f12.google.com ([209.85.217.12])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Kheox-0001Wt-B0
+	for linux-mtd@lists.infradead.org; Mon, 22 Sep 2008 06:22:55 +0000
+Received: by gxk5 with SMTP id 5so2700965gxk.18
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 21 Sep 2008 23:22:54 -0700 (PDT)
+Message-ID: <9c9fda240809212322h4d9ac26eqfd7c3cfb9630c97b@mail.gmail.com>
+Date: Mon, 22 Sep 2008 15:22:54 +0900
+From: "Kyungmin Park" <kmpark@infradead.org>
+Sender: kyungmin78@gmail.com
+To: moorthy.apg@samsung.com
+Subject: Re: [PATCH] [MTD-UTILS] Add support for 4KB page flash devices
+In-Reply-To: <33142758.53091221828088797.JavaMail.weblogic@epml16>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <48D348FC.3060301@renesas.com>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-sh@vger.kernel.org
+References: <33142758.53091221828088797.JavaMail.weblogic@epml16>
+Cc: linux-mtd@lists.infradead.org, David.Woodhouse@intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +27,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Sep 19, 2008 at 03:38:52PM +0900, Yoshihiro Shimoda wrote:
-> Several Renesas SuperH CPU has FLCTL. The FLCTL support NAND Flash.
-> This driver support SH7723.
-> 
-> Signed-off-by: Yoshihiro Shimoda <shimoda.yoshihiro@renesas.com>
-> Acked-by: Paul Mundt <lethal@linux-sh.org>
+Hi,
+
+On Fri, Sep 19, 2008 at 9:41 PM, AYYANARPONNUSAMY GANGHEYAMOORTHY
+<moorthy.apg@samsung.com> wrote:
+> We can now use these utilities on 4KB devices.
+>
+> Signed-off-by: Rohit Hagargundgi <h.rohit@samsung.com>
 > ---
-> 
-> PATCH v2:
->  - fix size of ioremap().
-> 
->  drivers/mtd/nand/Kconfig     |    7 +
->  drivers/mtd/nand/Makefile    |    1 +
->  drivers/mtd/nand/sh_flctl.c  |  878 ++++++++++++++++++++++++++++++++++++++++++
->  include/linux/mtd/sh_flctl.h |  125 ++++++
->  4 files changed, 1011 insertions(+), 0 deletions(-)
->  create mode 100644 drivers/mtd/nand/sh_flctl.c
->  create mode 100644 include/linux/mtd/sh_flctl.h
-> 
-I'll merge the platform bits once this is applied. Optionally I can roll
-this in to my tree if dwmw2 acks it.
+> --- a/flash_otp_write.c 2008-06-27 21:51:28.000000000 +0530
+> +++ b/flash_otp_write.c 2008-07-01 16:04:12.000000000 +0530
+> @@ -18,7 +18,7 @@ int main(int argc,char *argv[])
+>        int fd, val, ret, size, wrote, len;
+>        mtd_info_t mtdInfo;
+>        off_t offset;
+> -       char *p, buf[2048];
+> +       char *p, buf[4096];
+>
+
+Is it no problem the stack overflow in application?
+How about to use malloc & free?
+
+Thank you,
+Kyungmin Park
