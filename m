@@ -1,26 +1,25 @@
 Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KhtgS-0006N5-9U
-	for linux-mtd@lists.infradead.org; Mon, 22 Sep 2008 22:15:09 +0000
+	id 1KhqsI-0007Sd-Bx
+	for linux-mtd@lists.infradead.org; Mon, 22 Sep 2008 19:15:10 +0000
 Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1KhtgM-00057O-Dc
-	for linux-mtd@lists.infradead.org; Mon, 22 Sep 2008 22:15:02 +0000
-Received: from lns-bzn-50f-62-147-234-34.adsl.proxad.net ([62.147.234.34])
+	id 1KhqsB-0001vC-22
+	for linux-mtd@lists.infradead.org; Mon, 22 Sep 2008 19:15:03 +0000
+Received: from c-24-61-246-146.hsd1.ma.comcast.net ([24.61.246.146])
 	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
 	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Mon, 22 Sep 2008 22:15:02 +0000
-Received: from moore by lns-bzn-50f-62-147-234-34.adsl.proxad.net with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Mon, 22 Sep 2008 22:15:02 +0000
+	for <linux-mtd@lists.infradead.org>; Mon, 22 Sep 2008 19:15:03 +0000
+Received: from i.am by c-24-61-246-146.hsd1.ma.comcast.net with local (Gmexim
+	0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Mon, 22 Sep 2008 19:15:03 +0000
 To: linux-mtd@lists.infradead.org
-From: Christopher Moore <moore@free.fr>
-Subject: Re: uniform flash using =?utf-8?b?Y21kc2V0XzAwMDI=?=
-Date: Mon, 22 Sep 2008 22:08:11 +0000 (UTC)
-Message-ID: <loom.20080922T213423-993@post.gmane.org>
-References: <20080709071615.GA15212@digi.com>
+From: Jim Ramsay <i.am@jimramsay.com>
+Subject: Should MTD_WRITEABLE be split into MTD_WRITEABLE and MTD_ERASEABLE?
+Date: Mon, 22 Sep 2008 15:03:32 -0400
+Message-ID: <20080922150332.57fb2252@altair.jimramsay.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/JIp9455AcSUbpTKq.2rQfcA";
+	protocol="application/pgp-signature"; micalg=PGP-SHA1
 Sender: news <news@ger.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -31,57 +30,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Uwe Kleine-König <Uwe.Kleine-Koenig <at> digi.com> writes:
+--Sig_/JIp9455AcSUbpTKq.2rQfcA
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-[snip]
-> 	physmap-flash.0: CFI does not contain boot bank location. Assuming top.
-> 
-> The last message comes from the following code in
-> cfi_cmdset_0002() (drivers/mtd/chips/cfi_cmdset_0002.c):
-> 
-> 	bootloc = extp->TopBottom;
-> 	if ((bootloc != 2) && (bootloc != 3)) {
-> 		printk(KERN_WARNING "%s: CFI does not contain boot "
-> 		       "bank location. Assuming top.\n", map->name);
-> 		bootloc = 2;
-> 	}
-> 
-> For that chip extp->TopBottom is 5.
-> 
-> I wonder what is intended here.  The only other usage of bootloc (which
-> is a local variable for cfi_cmdset_0002()) is
-> 
-> 	if (bootloc == 3 && something_else) {
-> 		...
-> 
-> So if ((bootloc != 2) && (bootloc != 3)) setting bootloc = 2 doesn't
-> change anything!?
-> 
-> If I didn't oversee something I suggest to delete the if containing the
-> warning.
-> 
+Currently, MTD partitions that do not begin and end exactly on an erase
+sector boundary are forced to be read-only (The MTD_WRITEABLE flag is
+forcibly removed).  I understand that this is required so that you
+don't try to erase that partition and accidentally blow away other
+information on other partitions that may also share the erase sector.
 
-Full ACK.
+However, in the case of embedded systems, it can be very useful to
+create a very small MTD partition for a simple write-once facility
+(such as for capturing part of a log file or crash dump), and this
+check makes such a partition impossible - Even if the code that
+actually adds the partition is clever enough to properly erase that
+area of flash before adding it.  There is no technical reason of which
+I am aware that prevents normal mtd_write code from working on a small
+non-erase-aligned partition if it has been previously erased.
 
-Nice catch, Uwe.
+So I would suggest that splitting MTD_WRITEABLE into two flags,
+MTD_WRITEABLE and MTD_ERASEABLE would be a good idea.  The current
+check for erase boundaries would then only remove MTD_ERASEABLE, whereas
+MTD_WRITEABLE could still be removed via the mtd_partition.mask_flags
+when required.
 
-The worst thing is that it says "Assuming top" but sets bootloc to
-bottom (2) :(
+Would this have more side-effects than I currently understand?  Or would
+it be a useful feature that may be considered for inclusion into MTD if
+I were to write up a patch?
 
-I figure that:
-- this code was intended for early chips with an AMD/Fujitsu V1.0 CFI PRI
-which does not contain TopBottom (such AMD chips are now handled in
-fixup_amd_bootblock()),
-- an earlier version of this code must have set bootloc to top (3) which
-would have had some effect.
+The other possibility, which is my current workaround, just adds a
+special flag (MTD_UNALIGNED) which when found in
+mtd_partition.mask_flags, skips the check erase boundary alignment
+checks and allows these small partitions to be writeable. However, I'm
+not sure what would happen if I tried to erase this small partition, so
+I think splitting the WRITEABLE flag is a much more proper solution.
 
-However the effect would possibly be undesirable in cases such as yours :(
+--=20
+Jim Ramsay
+"Me fail English?  That's unpossible!"
 
-I see you sent a patch to linux-mtd but it seems to have been completely
-ignored :(
+--Sig_/JIp9455AcSUbpTKq.2rQfcA
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Disposition: attachment; filename=signature.asc
 
-Do you know where I can find your patch in a form where I can reply to it?
-If so I shall add my ACK (FWIW) and ping it.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.9 (GNU/Linux)
 
-Cheers,
-Chris
+iEYEARECAAYFAkjX7AwACgkQelWXok6VKuib9ACgg0HO9cyFV/mu2l6kYFjlve7r
+/wYAn3c7FO6NycpyAE+zuNEtcGmcWt7y
+=K0/p
+-----END PGP SIGNATURE-----
+
+--Sig_/JIp9455AcSUbpTKq.2rQfcA--
