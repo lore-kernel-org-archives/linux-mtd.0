@@ -1,23 +1,23 @@
-Received: from bart.se.axis.com ([195.60.68.10])
+Received: from rv-out-0708.google.com ([209.85.198.243])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Ki6y7-0006yp-UL
-	for linux-mtd@lists.infradead.org; Tue, 23 Sep 2008 12:26:16 +0000
-Received: from bart.se.axis.com (bart.se.axis.com [127.0.0.1])
-	by bart.se.axis.com (Postfix) with ESMTP id 05F1A64025
+	id 1Ki9ns-0004jJ-46
+	for linux-mtd@lists.infradead.org; Tue, 23 Sep 2008 15:27:52 +0000
+Received: by rv-out-0708.google.com with SMTP id b17so2951546rvf.42
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 23 Sep 2008 14:26:02 +0200 (CEST)
-Received: from axis.com (edgar.se.axis.com [10.93.151.1])
-	by bart.se.axis.com (Postfix) with ESMTP id ED6E963EFC
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 23 Sep 2008 14:26:01 +0200 (CEST)
-Date: Tue, 23 Sep 2008 14:26:01 +0200
-From: "Edgar E. Iglesias" <edgar.iglesias@axis.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] [MTD] NAND: Add panic_write for NAND flashes
-Message-ID: <20080923122601.GB15504@edgar.se.axis.com>
+	Tue, 23 Sep 2008 08:27:50 -0700 (PDT)
+Message-ID: <8bd0f97a0809230827s5b56ed1i19b63dea4b8020f@mail.gmail.com>
+Date: Tue, 23 Sep 2008 11:27:50 -0400
+From: "Mike Frysinger" <vapier.adi@gmail.com>
+To: "Jim Ramsay" <i.am@jimramsay.com>
+Subject: Re: Should MTD_WRITEABLE be split into MTD_WRITEABLE and
+	MTD_ERASEABLE?
+In-Reply-To: <20080922150332.57fb2252@altair.jimramsay.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
+References: <20080922150332.57fb2252@altair.jimramsay.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,202 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Mon, Sep 22, 2008 at 15:03, Jim Ramsay wrote:
+> Currently, MTD partitions that do not begin and end exactly on an erase
+> sector boundary are forced to be read-only (The MTD_WRITEABLE flag is
+> forcibly removed).  I understand that this is required so that you
+> don't try to erase that partition and accidentally blow away other
+> information on other partitions that may also share the erase sector.
+>
+> However, in the case of embedded systems, it can be very useful to
+> create a very small MTD partition for a simple write-once facility
+> (such as for capturing part of a log file or crash dump), and this
+> check makes such a partition impossible - Even if the code that
+> actually adds the partition is clever enough to properly erase that
+> area of flash before adding it.  There is no technical reason of which
+> I am aware that prevents normal mtd_write code from working on a small
+> non-erase-aligned partition if it has been previously erased.
+>
+> So I would suggest that splitting MTD_WRITEABLE into two flags,
+> MTD_WRITEABLE and MTD_ERASEABLE would be a good idea.  The current
+> check for erase boundaries would then only remove MTD_ERASEABLE, whereas
+> MTD_WRITEABLE could still be removed via the mtd_partition.mask_flags
+> when required.
 
-This is a quick and dirty patch to add panic_write for NAND flashes.
-The patch seems to work OK on my CRIS board running a 2.6.26 kernel
-with a ID: 0x20, Chip ID: 0xf1 (ST Micro NAND 128MiB 3,3V 8-bit).
-Also compile tested on a fresh x86 MTD git clone.
+if you split it into MTD_ERASEABLE and MTD_APPENDABLE, then you could
+keep compatibility with:
+#define MTD_WRITABLE (MTD_ERASEABLE | MTD_APPENDABLE)
 
-If you find it useful feel free to apply it, otherwise >/dev/null.
-
-Thanks,
-
-Signed-off-by: Edgar E. Iglesias <edgar@axis.com>
-
- drivers/mtd/nand/nand_base.c |  129 +++++++++++++++++++++++++++++++++++++++---
- 1 files changed, 121 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 0a9c9cd..442a7de 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -414,6 +414,28 @@ static int nand_block_checkbad(struct mtd_info *mtd, loff_t ofs, int getchip,
- 	return nand_isbad_bbt(mtd, ofs, allowbbt);
- }
- 
-+/**
-+ * panic_nand_wait_ready - [GENERIC] Wait for the ready pin after commands.
-+ * @mtd:	MTD device structure
-+ * @timeo:	Timeout
-+ *
-+ * Helper function for nand_wait_ready used when needing to wait in interrupt
-+ * context.
-+ */
-+static void panic_nand_wait_ready(struct mtd_info *mtd, unsigned long timeo)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	int i;
-+
-+	/* Give the device 400 ms to get ready?	 */
-+	for (i = 0; i < timeo; i++) {
-+		if (chip->dev_ready(mtd))
-+			break;
-+		touch_softlockup_watchdog();
-+		mdelay(1);
-+	}
-+}
-+
- /*
-  * Wait for the ready pin, after a command
-  * The timeout is catched later.
-@@ -423,6 +445,10 @@ void nand_wait_ready(struct mtd_info *mtd)
- 	struct nand_chip *chip = mtd->priv;
- 	unsigned long timeo = jiffies + 2;
- 
-+	/* 400ms timeout?  */
-+	if (in_interrupt())
-+		return panic_nand_wait_ready(mtd, 400);
-+
- 	led_trigger_event(nand_led_trigger, LED_FULL);
- 	/* wait until command is processed or timeout occures */
- 	do {
-@@ -658,6 +684,23 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
- }
- 
- /**
-+ * panic_nand_get_device - [GENERIC] Get chip for selected access
-+ * @chip:	the nand chip descriptor
-+ * @mtd:	MTD device structure
-+ * @new_state:	the state which is requested
-+ *
-+ * Used when in panic, no locks are taken.
-+ */
-+static void
-+panic_nand_get_device(struct nand_chip *chip,
-+		      struct mtd_info *mtd, int new_state)
-+{
-+	/* Hardware controller shared among independend devices */
-+	chip->controller->active = chip;
-+	chip->state = new_state;
-+}
-+
-+/**
-  * nand_get_device - [GENERIC] Get chip for selected access
-  * @chip:	the nand chip descriptor
-  * @mtd:	MTD device structure
-@@ -697,6 +740,32 @@ nand_get_device(struct nand_chip *chip, struct mtd_info *mtd, int new_state)
- }
- 
- /**
-+ * panic_nand_wait - [GENERIC]  wait until the command is done
-+ * @mtd:	MTD device structure
-+ * @chip:	NAND chip structure
-+ * @timeo:	Timeout
-+ *
-+ * Wait for command done. This is a helper function for nand_wait used when
-+ * we are in interrupt context. May happen when in panic and trying to write
-+ * an oops trough mtdoops.
-+ */
-+static void panic_nand_wait(struct mtd_info *mtd, struct nand_chip *chip,
-+			    unsigned long timeo)
-+{
-+	int i;
-+	for (i = 0; i < timeo; i++) {
-+		if (chip->dev_ready) {
-+			if (chip->dev_ready(mtd))
-+				break;
-+		} else {
-+			if (chip->read_byte(mtd) & NAND_STATUS_READY)
-+				break;
-+		}
-+		mdelay(1);
-+        }
-+}
-+
-+/**
-  * nand_wait - [DEFAULT]  wait until the command is done
-  * @mtd:	MTD device structure
-  * @chip:	NAND chip structure
-@@ -727,15 +796,19 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
- 	else
- 		chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
- 
--	while (time_before(jiffies, timeo)) {
--		if (chip->dev_ready) {
--			if (chip->dev_ready(mtd))
--				break;
--		} else {
--			if (chip->read_byte(mtd) & NAND_STATUS_READY)
--				break;
-+	if (in_interrupt())
-+		panic_nand_wait(mtd, chip, timeo);
-+	else {
-+		while (time_before(jiffies, timeo)) {
-+			if (chip->dev_ready) {
-+				if (chip->dev_ready(mtd))
-+					break;
-+			} else {
-+				if (chip->read_byte(mtd) & NAND_STATUS_READY)
-+					break;
-+			}
-+			cond_resched();
- 		}
--		cond_resched();
- 	}
- 	led_trigger_event(nand_led_trigger, LED_OFF);
- 
-@@ -1797,6 +1870,45 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
- }
- 
- /**
-+ * panic_nand_write - [MTD Interface] NAND write with ECC
-+ * @mtd:	MTD device structure
-+ * @to:		offset to write to
-+ * @len:	number of bytes to write
-+ * @retlen:	pointer to variable to store the number of written bytes
-+ * @buf:	the data to write
-+ *
-+ * NAND write with ECC. Used when performing writes in interrupt context, this
-+ * may for example be called by mtdoops when writing an oops while in panic.
-+ */
-+static int panic_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
-+			    size_t *retlen, const uint8_t *buf)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	int ret;
-+
-+	/* Do not allow reads past end of device */
-+	if ((to + len) > mtd->size)
-+		return -EINVAL;
-+	if (!len)
-+		return 0;
-+
-+	/* Wait for the device to get ready.  */
-+	panic_nand_wait(mtd, chip, 400);
-+
-+	/* Grab the device.  */
-+	panic_nand_get_device(chip, mtd, FL_WRITING);
-+
-+	chip->ops.len = len;
-+	chip->ops.datbuf = (uint8_t *)buf;
-+	chip->ops.oobbuf = NULL;
-+
-+	ret = nand_do_write_ops(mtd, to, &chip->ops);
-+
-+	*retlen = chip->ops.retlen;
-+	return ret;
-+}
-+
-+/**
-  * nand_write - [MTD Interface] NAND write with ECC
-  * @mtd:	MTD device structure
-  * @to:		offset to write to
-@@ -2694,6 +2806,7 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	mtd->unpoint = NULL;
- 	mtd->read = nand_read;
- 	mtd->write = nand_write;
-+	mtd->panic_write = panic_nand_write;
- 	mtd->read_oob = nand_read_oob;
- 	mtd->write_oob = nand_write_oob;
- 	mtd->sync = nand_sync;
+otherwise you just volunteered to update every single
+board/driver/core out there that is using MTD_WRITABLE
+-mike
