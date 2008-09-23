@@ -1,28 +1,23 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
+Received: from bart.se.axis.com ([195.60.68.10])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Ki5zQ-0006Zn-Ju
-	for linux-mtd@lists.infradead.org; Tue, 23 Sep 2008 11:23:33 +0000
-Received: from epmmp1 (mailout1.samsung.com [203.254.224.24])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0K7N000E2BN23Y@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Tue, 23 Sep 2008 20:23:26 +0900 (KST)
-Received: from apgmoorthy ([107.108.214.61])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0K7N00JC1BMZ55@mmp1.samsung.com> for
-	linux-mtd@lists.infradead.org; Tue, 23 Sep 2008 20:23:26 +0900 (KST)
-Date: Tue, 23 Sep 2008 16:55:50 +0530
-From: apgmoorthy <moorthy.apg@samsung.com>
-Subject: RE: [PATCH] [MTD-UTILS] Add support for 4KB page flash devices
-In-reply-to: <9c9fda240809212322h4d9ac26eqfd7c3cfb9630c97b@mail.gmail.com>
-To: 'Kyungmin Park' <kmpark@infradead.org>
-Message-id: <000001c91d6f$238a6ea0$3dd66c6b@sisodomain.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7BIT
-References: <33142758.53091221828088797.JavaMail.weblogic@epml16>
-	<9c9fda240809212322h4d9ac26eqfd7c3cfb9630c97b@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, David.Woodhouse@intel.com
+	id 1Ki6y7-0006yp-UL
+	for linux-mtd@lists.infradead.org; Tue, 23 Sep 2008 12:26:16 +0000
+Received: from bart.se.axis.com (bart.se.axis.com [127.0.0.1])
+	by bart.se.axis.com (Postfix) with ESMTP id 05F1A64025
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 23 Sep 2008 14:26:02 +0200 (CEST)
+Received: from axis.com (edgar.se.axis.com [10.93.151.1])
+	by bart.se.axis.com (Postfix) with ESMTP id ED6E963EFC
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 23 Sep 2008 14:26:01 +0200 (CEST)
+Date: Tue, 23 Sep 2008 14:26:01 +0200
+From: "Edgar E. Iglesias" <edgar.iglesias@axis.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] [MTD] NAND: Add panic_write for NAND flashes
+Message-ID: <20080923122601.GB15504@edgar.se.axis.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,132 +27,202 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hello,
 
-     I find not much issue with that, but still as a fair practice , I'll
-absorb your comment in the patch. Have done the memory allocation later in
-the function to avoid unnecessary freeing code. 
-     And malloced with mtdInfo.writesize instead of constants , let us know
-your comments. 
+This is a quick and dirty patch to add panic_write for NAND flashes.
+The patch seems to work OK on my CRIS board running a 2.6.26 kernel
+with a ID: 0x20, Chip ID: 0xf1 (ST Micro NAND 128MiB 3,3V 8-bit).
+Also compile tested on a fresh x86 MTD git clone.
 
-We can now use these utilities on 4KB devices.
+If you find it useful feel free to apply it, otherwise >/dev/null.
 
-Signed-off-by: Rohit Hagargundgi <h.rohit@samsung.com>
----
---- a/flashcp.c	2008-09-23 15:36:26.000000000 +0530
-+++ b/flashcp.c	2008-09-23 15:49:42.000000000 +0530
-@@ -61,7 +61,7 @@ typedef int bool;
- #define PERCENTAGE(x,total) (((x) * 100) / (total))
- 
- /* size of read/write buffer */
--#define BUFSIZE (10 * 1024)
-+#define BUFSIZE (10 * 4096)
- 
- /* cmd-line flags */
- #define FLAG_NONE		0x00
---- a/flash_otp_write.c	2008-09-23 15:36:26.000000000 +0530
-+++ b/flash_otp_write.c	2008-09-23 16:45:01.000000000 +0530
-@@ -18,7 +18,7 @@ int main(int argc,char *argv[])
- 	int fd, val, ret, size, wrote, len;
- 	mtd_info_t mtdInfo;
- 	off_t offset;
--	char *p, buf[2048];
-+	char *p, *buf;
- 
- 	if (argc != 4 || strcmp(argv[1], "-u")) {
- 		fprintf(stderr, "Usage: %s -u <device> <offset>\n",
-argv[0]);
-@@ -64,9 +64,16 @@ int main(int argc,char *argv[])
- 		len = 256;
- 
- 	wrote = 0;
-+
-+	buf = (char *)malloc(mtdInfo.writesize);
-+	if (!buf) {
-+		return -ENOMEM;
-+	}
-+
- 	while ((size = read(0, buf, len))) {
- 		if (size < 0) {
- 			perror("read()");
-+			free(buf);
- 			return errno;
- 		}
- 		p = buf;
-@@ -79,10 +86,12 @@ int main(int argc,char *argv[])
- 			ret = write(fd, p, size);
- 			if (ret < 0) {
- 				perror("write()");
-+				free(buf);
- 				return errno;
- 			}
- 			if (ret == 0) {
- 				printf("write() returned 0 after writing %d
-bytes\n", wrote);
-+				free(buf);
- 				return 0;
- 			}
- 			p += ret;
-@@ -92,5 +101,6 @@ int main(int argc,char *argv[])
- 	}
- 
- 	printf("Wrote %d bytes of OTP user data\n", wrote);
-+	free(buf);
- 	return 0;
+Thanks,
+
+Signed-off-by: Edgar E. Iglesias <edgar@axis.com>
+
+ drivers/mtd/nand/nand_base.c |  129 +++++++++++++++++++++++++++++++++++++++---
+ 1 files changed, 121 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 0a9c9cd..442a7de 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -414,6 +414,28 @@ static int nand_block_checkbad(struct mtd_info *mtd, loff_t ofs, int getchip,
+ 	return nand_isbad_bbt(mtd, ofs, allowbbt);
  }
---- a/include/mtd/mtd-abi.h	2008-09-23 15:36:26.000000000 +0530
-+++ b/include/mtd/mtd-abi.h	2008-09-23 15:48:48.000000000 +0530
-@@ -104,7 +104,7 @@ struct nand_oobinfo {
- 	uint32_t useecc;
- 	uint32_t eccbytes;
- 	uint32_t oobfree[8][2];
--	uint32_t eccpos[32];
-+	uint32_t eccpos[128];
- };
  
- struct nand_oobfree {
-@@ -119,7 +119,7 @@ struct nand_oobfree {
-  */
- struct nand_ecclayout {
- 	uint32_t eccbytes;
--	uint32_t eccpos[64];
-+	uint32_t eccpos[128];
- 	uint32_t oobavail;
- 	struct nand_oobfree oobfree[MTD_MAX_OOBFREE_ENTRIES];
- };
-
-
-
-
-
------Original Message-----
-From: kyungmin78@gmail.com [mailto:kyungmin78@gmail.com] On Behalf Of
-Kyungmin Park
-Sent: Monday, September 22, 2008 11:53 AM
-To: moorthy.apg@samsung.com
-Cc: linux-mtd@lists.infradead.org; David.Woodhouse@intel.com
-Subject: Re: [PATCH] [MTD-UTILS] Add support for 4KB page flash devices
-
-Hi,
-
-On Fri, Sep 19, 2008 at 9:41 PM, AYYANARPONNUSAMY GANGHEYAMOORTHY
-<moorthy.apg@samsung.com> wrote:
-> We can now use these utilities on 4KB devices.
->
-> Signed-off-by: Rohit Hagargundgi <h.rohit@samsung.com>
-> ---
-> --- a/flash_otp_write.c 2008-06-27 21:51:28.000000000 +0530
-> +++ b/flash_otp_write.c 2008-07-01 16:04:12.000000000 +0530
-> @@ -18,7 +18,7 @@ int main(int argc,char *argv[])
->        int fd, val, ret, size, wrote, len;
->        mtd_info_t mtdInfo;
->        off_t offset;
-> -       char *p, buf[2048];
-> +       char *p, buf[4096];
->
-
-Is it no problem the stack overflow in application?
-How about to use malloc & free?
-
-Thank you,
-Kyungmin Park
++/**
++ * panic_nand_wait_ready - [GENERIC] Wait for the ready pin after commands.
++ * @mtd:	MTD device structure
++ * @timeo:	Timeout
++ *
++ * Helper function for nand_wait_ready used when needing to wait in interrupt
++ * context.
++ */
++static void panic_nand_wait_ready(struct mtd_info *mtd, unsigned long timeo)
++{
++	struct nand_chip *chip = mtd->priv;
++	int i;
++
++	/* Give the device 400 ms to get ready?	 */
++	for (i = 0; i < timeo; i++) {
++		if (chip->dev_ready(mtd))
++			break;
++		touch_softlockup_watchdog();
++		mdelay(1);
++	}
++}
++
+ /*
+  * Wait for the ready pin, after a command
+  * The timeout is catched later.
+@@ -423,6 +445,10 @@ void nand_wait_ready(struct mtd_info *mtd)
+ 	struct nand_chip *chip = mtd->priv;
+ 	unsigned long timeo = jiffies + 2;
+ 
++	/* 400ms timeout?  */
++	if (in_interrupt())
++		return panic_nand_wait_ready(mtd, 400);
++
+ 	led_trigger_event(nand_led_trigger, LED_FULL);
+ 	/* wait until command is processed or timeout occures */
+ 	do {
+@@ -658,6 +684,23 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
+ }
+ 
+ /**
++ * panic_nand_get_device - [GENERIC] Get chip for selected access
++ * @chip:	the nand chip descriptor
++ * @mtd:	MTD device structure
++ * @new_state:	the state which is requested
++ *
++ * Used when in panic, no locks are taken.
++ */
++static void
++panic_nand_get_device(struct nand_chip *chip,
++		      struct mtd_info *mtd, int new_state)
++{
++	/* Hardware controller shared among independend devices */
++	chip->controller->active = chip;
++	chip->state = new_state;
++}
++
++/**
+  * nand_get_device - [GENERIC] Get chip for selected access
+  * @chip:	the nand chip descriptor
+  * @mtd:	MTD device structure
+@@ -697,6 +740,32 @@ nand_get_device(struct nand_chip *chip, struct mtd_info *mtd, int new_state)
+ }
+ 
+ /**
++ * panic_nand_wait - [GENERIC]  wait until the command is done
++ * @mtd:	MTD device structure
++ * @chip:	NAND chip structure
++ * @timeo:	Timeout
++ *
++ * Wait for command done. This is a helper function for nand_wait used when
++ * we are in interrupt context. May happen when in panic and trying to write
++ * an oops trough mtdoops.
++ */
++static void panic_nand_wait(struct mtd_info *mtd, struct nand_chip *chip,
++			    unsigned long timeo)
++{
++	int i;
++	for (i = 0; i < timeo; i++) {
++		if (chip->dev_ready) {
++			if (chip->dev_ready(mtd))
++				break;
++		} else {
++			if (chip->read_byte(mtd) & NAND_STATUS_READY)
++				break;
++		}
++		mdelay(1);
++        }
++}
++
++/**
+  * nand_wait - [DEFAULT]  wait until the command is done
+  * @mtd:	MTD device structure
+  * @chip:	NAND chip structure
+@@ -727,15 +796,19 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
+ 	else
+ 		chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
+ 
+-	while (time_before(jiffies, timeo)) {
+-		if (chip->dev_ready) {
+-			if (chip->dev_ready(mtd))
+-				break;
+-		} else {
+-			if (chip->read_byte(mtd) & NAND_STATUS_READY)
+-				break;
++	if (in_interrupt())
++		panic_nand_wait(mtd, chip, timeo);
++	else {
++		while (time_before(jiffies, timeo)) {
++			if (chip->dev_ready) {
++				if (chip->dev_ready(mtd))
++					break;
++			} else {
++				if (chip->read_byte(mtd) & NAND_STATUS_READY)
++					break;
++			}
++			cond_resched();
+ 		}
+-		cond_resched();
+ 	}
+ 	led_trigger_event(nand_led_trigger, LED_OFF);
+ 
+@@ -1797,6 +1870,45 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
+ }
+ 
+ /**
++ * panic_nand_write - [MTD Interface] NAND write with ECC
++ * @mtd:	MTD device structure
++ * @to:		offset to write to
++ * @len:	number of bytes to write
++ * @retlen:	pointer to variable to store the number of written bytes
++ * @buf:	the data to write
++ *
++ * NAND write with ECC. Used when performing writes in interrupt context, this
++ * may for example be called by mtdoops when writing an oops while in panic.
++ */
++static int panic_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
++			    size_t *retlen, const uint8_t *buf)
++{
++	struct nand_chip *chip = mtd->priv;
++	int ret;
++
++	/* Do not allow reads past end of device */
++	if ((to + len) > mtd->size)
++		return -EINVAL;
++	if (!len)
++		return 0;
++
++	/* Wait for the device to get ready.  */
++	panic_nand_wait(mtd, chip, 400);
++
++	/* Grab the device.  */
++	panic_nand_get_device(chip, mtd, FL_WRITING);
++
++	chip->ops.len = len;
++	chip->ops.datbuf = (uint8_t *)buf;
++	chip->ops.oobbuf = NULL;
++
++	ret = nand_do_write_ops(mtd, to, &chip->ops);
++
++	*retlen = chip->ops.retlen;
++	return ret;
++}
++
++/**
+  * nand_write - [MTD Interface] NAND write with ECC
+  * @mtd:	MTD device structure
+  * @to:		offset to write to
+@@ -2694,6 +2806,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	mtd->unpoint = NULL;
+ 	mtd->read = nand_read;
+ 	mtd->write = nand_write;
++	mtd->panic_write = panic_nand_write;
+ 	mtd->read_oob = nand_read_oob;
+ 	mtd->write_oob = nand_write_oob;
+ 	mtd->sync = nand_sync;
