@@ -1,26 +1,28 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KhqsI-0007Sd-Bx
-	for linux-mtd@lists.infradead.org; Mon, 22 Sep 2008 19:15:10 +0000
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1KhqsB-0001vC-22
-	for linux-mtd@lists.infradead.org; Mon, 22 Sep 2008 19:15:03 +0000
-Received: from c-24-61-246-146.hsd1.ma.comcast.net ([24.61.246.146])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Mon, 22 Sep 2008 19:15:03 +0000
-Received: from i.am by c-24-61-246-146.hsd1.ma.comcast.net with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Mon, 22 Sep 2008 19:15:03 +0000
-To: linux-mtd@lists.infradead.org
-From: Jim Ramsay <i.am@jimramsay.com>
-Subject: Should MTD_WRITEABLE be split into MTD_WRITEABLE and MTD_ERASEABLE?
-Date: Mon, 22 Sep 2008 15:03:32 -0400
-Message-ID: <20080922150332.57fb2252@altair.jimramsay.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/JIp9455AcSUbpTKq.2rQfcA";
-	protocol="application/pgp-signature"; micalg=PGP-SHA1
-Sender: news <news@ger.gmane.org>
+Received: from mailout1.samsung.com ([203.254.224.24])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Ki5zQ-0006Zn-Ju
+	for linux-mtd@lists.infradead.org; Tue, 23 Sep 2008 11:23:33 +0000
+Received: from epmmp1 (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0K7N000E2BN23Y@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Tue, 23 Sep 2008 20:23:26 +0900 (KST)
+Received: from apgmoorthy ([107.108.214.61])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0K7N00JC1BMZ55@mmp1.samsung.com> for
+	linux-mtd@lists.infradead.org; Tue, 23 Sep 2008 20:23:26 +0900 (KST)
+Date: Tue, 23 Sep 2008 16:55:50 +0530
+From: apgmoorthy <moorthy.apg@samsung.com>
+Subject: RE: [PATCH] [MTD-UTILS] Add support for 4KB page flash devices
+In-reply-to: <9c9fda240809212322h4d9ac26eqfd7c3cfb9630c97b@mail.gmail.com>
+To: 'Kyungmin Park' <kmpark@infradead.org>
+Message-id: <000001c91d6f$238a6ea0$3dd66c6b@sisodomain.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7BIT
+References: <33142758.53091221828088797.JavaMail.weblogic@epml16>
+	<9c9fda240809212322h4d9ac26eqfd7c3cfb9630c97b@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org, David.Woodhouse@intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,56 +32,132 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---Sig_/JIp9455AcSUbpTKq.2rQfcA
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Currently, MTD partitions that do not begin and end exactly on an erase
-sector boundary are forced to be read-only (The MTD_WRITEABLE flag is
-forcibly removed).  I understand that this is required so that you
-don't try to erase that partition and accidentally blow away other
-information on other partitions that may also share the erase sector.
+     I find not much issue with that, but still as a fair practice , I'll
+absorb your comment in the patch. Have done the memory allocation later in
+the function to avoid unnecessary freeing code. 
+     And malloced with mtdInfo.writesize instead of constants , let us know
+your comments. 
 
-However, in the case of embedded systems, it can be very useful to
-create a very small MTD partition for a simple write-once facility
-(such as for capturing part of a log file or crash dump), and this
-check makes such a partition impossible - Even if the code that
-actually adds the partition is clever enough to properly erase that
-area of flash before adding it.  There is no technical reason of which
-I am aware that prevents normal mtd_write code from working on a small
-non-erase-aligned partition if it has been previously erased.
+We can now use these utilities on 4KB devices.
 
-So I would suggest that splitting MTD_WRITEABLE into two flags,
-MTD_WRITEABLE and MTD_ERASEABLE would be a good idea.  The current
-check for erase boundaries would then only remove MTD_ERASEABLE, whereas
-MTD_WRITEABLE could still be removed via the mtd_partition.mask_flags
-when required.
+Signed-off-by: Rohit Hagargundgi <h.rohit@samsung.com>
+---
+--- a/flashcp.c	2008-09-23 15:36:26.000000000 +0530
++++ b/flashcp.c	2008-09-23 15:49:42.000000000 +0530
+@@ -61,7 +61,7 @@ typedef int bool;
+ #define PERCENTAGE(x,total) (((x) * 100) / (total))
+ 
+ /* size of read/write buffer */
+-#define BUFSIZE (10 * 1024)
++#define BUFSIZE (10 * 4096)
+ 
+ /* cmd-line flags */
+ #define FLAG_NONE		0x00
+--- a/flash_otp_write.c	2008-09-23 15:36:26.000000000 +0530
++++ b/flash_otp_write.c	2008-09-23 16:45:01.000000000 +0530
+@@ -18,7 +18,7 @@ int main(int argc,char *argv[])
+ 	int fd, val, ret, size, wrote, len;
+ 	mtd_info_t mtdInfo;
+ 	off_t offset;
+-	char *p, buf[2048];
++	char *p, *buf;
+ 
+ 	if (argc != 4 || strcmp(argv[1], "-u")) {
+ 		fprintf(stderr, "Usage: %s -u <device> <offset>\n",
+argv[0]);
+@@ -64,9 +64,16 @@ int main(int argc,char *argv[])
+ 		len = 256;
+ 
+ 	wrote = 0;
++
++	buf = (char *)malloc(mtdInfo.writesize);
++	if (!buf) {
++		return -ENOMEM;
++	}
++
+ 	while ((size = read(0, buf, len))) {
+ 		if (size < 0) {
+ 			perror("read()");
++			free(buf);
+ 			return errno;
+ 		}
+ 		p = buf;
+@@ -79,10 +86,12 @@ int main(int argc,char *argv[])
+ 			ret = write(fd, p, size);
+ 			if (ret < 0) {
+ 				perror("write()");
++				free(buf);
+ 				return errno;
+ 			}
+ 			if (ret == 0) {
+ 				printf("write() returned 0 after writing %d
+bytes\n", wrote);
++				free(buf);
+ 				return 0;
+ 			}
+ 			p += ret;
+@@ -92,5 +101,6 @@ int main(int argc,char *argv[])
+ 	}
+ 
+ 	printf("Wrote %d bytes of OTP user data\n", wrote);
++	free(buf);
+ 	return 0;
+ }
+--- a/include/mtd/mtd-abi.h	2008-09-23 15:36:26.000000000 +0530
++++ b/include/mtd/mtd-abi.h	2008-09-23 15:48:48.000000000 +0530
+@@ -104,7 +104,7 @@ struct nand_oobinfo {
+ 	uint32_t useecc;
+ 	uint32_t eccbytes;
+ 	uint32_t oobfree[8][2];
+-	uint32_t eccpos[32];
++	uint32_t eccpos[128];
+ };
+ 
+ struct nand_oobfree {
+@@ -119,7 +119,7 @@ struct nand_oobfree {
+  */
+ struct nand_ecclayout {
+ 	uint32_t eccbytes;
+-	uint32_t eccpos[64];
++	uint32_t eccpos[128];
+ 	uint32_t oobavail;
+ 	struct nand_oobfree oobfree[MTD_MAX_OOBFREE_ENTRIES];
+ };
 
-Would this have more side-effects than I currently understand?  Or would
-it be a useful feature that may be considered for inclusion into MTD if
-I were to write up a patch?
 
-The other possibility, which is my current workaround, just adds a
-special flag (MTD_UNALIGNED) which when found in
-mtd_partition.mask_flags, skips the check erase boundary alignment
-checks and allows these small partitions to be writeable. However, I'm
-not sure what would happen if I tried to erase this small partition, so
-I think splitting the WRITEABLE flag is a much more proper solution.
 
---=20
-Jim Ramsay
-"Me fail English?  That's unpossible!"
 
---Sig_/JIp9455AcSUbpTKq.2rQfcA
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Disposition: attachment; filename=signature.asc
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
+-----Original Message-----
+From: kyungmin78@gmail.com [mailto:kyungmin78@gmail.com] On Behalf Of
+Kyungmin Park
+Sent: Monday, September 22, 2008 11:53 AM
+To: moorthy.apg@samsung.com
+Cc: linux-mtd@lists.infradead.org; David.Woodhouse@intel.com
+Subject: Re: [PATCH] [MTD-UTILS] Add support for 4KB page flash devices
 
-iEYEARECAAYFAkjX7AwACgkQelWXok6VKuib9ACgg0HO9cyFV/mu2l6kYFjlve7r
-/wYAn3c7FO6NycpyAE+zuNEtcGmcWt7y
-=K0/p
------END PGP SIGNATURE-----
+Hi,
 
---Sig_/JIp9455AcSUbpTKq.2rQfcA--
+On Fri, Sep 19, 2008 at 9:41 PM, AYYANARPONNUSAMY GANGHEYAMOORTHY
+<moorthy.apg@samsung.com> wrote:
+> We can now use these utilities on 4KB devices.
+>
+> Signed-off-by: Rohit Hagargundgi <h.rohit@samsung.com>
+> ---
+> --- a/flash_otp_write.c 2008-06-27 21:51:28.000000000 +0530
+> +++ b/flash_otp_write.c 2008-07-01 16:04:12.000000000 +0530
+> @@ -18,7 +18,7 @@ int main(int argc,char *argv[])
+>        int fd, val, ret, size, wrote, len;
+>        mtd_info_t mtdInfo;
+>        off_t offset;
+> -       char *p, buf[2048];
+> +       char *p, buf[4096];
+>
+
+Is it no problem the stack overflow in application?
+How about to use malloc & free?
+
+Thank you,
+Kyungmin Park
