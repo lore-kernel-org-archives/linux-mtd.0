@@ -1,23 +1,12 @@
-Received: from rv-out-0708.google.com ([209.85.198.243])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Ki9ns-0004jJ-46
-	for linux-mtd@lists.infradead.org; Tue, 23 Sep 2008 15:27:52 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so2951546rvf.42
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 23 Sep 2008 08:27:50 -0700 (PDT)
-Message-ID: <8bd0f97a0809230827s5b56ed1i19b63dea4b8020f@mail.gmail.com>
-Date: Tue, 23 Sep 2008 11:27:50 -0400
-From: "Mike Frysinger" <vapier.adi@gmail.com>
-To: "Jim Ramsay" <i.am@jimramsay.com>
-Subject: Re: Should MTD_WRITEABLE be split into MTD_WRITEABLE and
-	MTD_ERASEABLE?
-In-Reply-To: <20080922150332.57fb2252@altair.jimramsay.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Date: Tue, 23 Sep 2008 17:25:10 +0100
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: Export the ROM enable/disable helpers and use them in mtd
+Message-ID: <20080923172510.37419440@lxorguk.ukuu.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <20080922150332.57fb2252@altair.jimramsay.com>
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,32 +16,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 22, 2008 at 15:03, Jim Ramsay wrote:
-> Currently, MTD partitions that do not begin and end exactly on an erase
-> sector boundary are forced to be read-only (The MTD_WRITEABLE flag is
-> forcibly removed).  I understand that this is required so that you
-> don't try to erase that partition and accidentally blow away other
-> information on other partitions that may also share the erase sector.
->
-> However, in the case of embedded systems, it can be very useful to
-> create a very small MTD partition for a simple write-once facility
-> (such as for capturing part of a log file or crash dump), and this
-> check makes such a partition impossible - Even if the code that
-> actually adds the partition is clever enough to properly erase that
-> area of flash before adding it.  There is no technical reason of which
-> I am aware that prevents normal mtd_write code from working on a small
-> non-erase-aligned partition if it has been previously erased.
->
-> So I would suggest that splitting MTD_WRITEABLE into two flags,
-> MTD_WRITEABLE and MTD_ERASEABLE would be a good idea.  The current
-> check for erase boundaries would then only remove MTD_ERASEABLE, whereas
-> MTD_WRITEABLE could still be removed via the mtd_partition.mask_flags
-> when required.
+There are some other future conversions to follow if folks are ok with
+this interface being exported.
 
-if you split it into MTD_ERASEABLE and MTD_APPENDABLE, then you could
-keep compatibility with:
-#define MTD_WRITABLE (MTD_ERASEABLE | MTD_APPENDABLE)
 
-otherwise you just volunteered to update every single
-board/driver/core out there that is using MTD_WRITABLE
--mike
+mtd: intel_dc21285 switch to ROM API
+
+From: Alan Cox <alan@redhat.com>
+
+Expose the needed helpers and it becomes a nice
+simple switch over. Closes #9420
+
+Signed-off-by: Alan Cox <alan@redhat.com>
+---
+
+ drivers/mtd/maps/pci.c |   16 +++-------------
+ drivers/pci/rom.c      |    6 ++++--
+ include/linux/pci.h    |    2 ++
+ 3 files changed, 9 insertions(+), 15 deletions(-)
+
+
+diff --git a/drivers/mtd/maps/pci.c b/drivers/mtd/maps/pci.c
+index 5c6a25c..d978c2e 100644
+--- a/drivers/mtd/maps/pci.c
++++ b/drivers/mtd/maps/pci.c
+@@ -203,15 +203,8 @@ intel_dc21285_init(struct pci_dev *dev, struct map_pci_info *map)
+ 		 * not enabled, should we be allocating a new resource for it
+ 		 * or simply enabling it?
+ 		 */
+-		if (!(pci_resource_flags(dev, PCI_ROM_RESOURCE) &
+-				    IORESOURCE_ROM_ENABLE)) {
+-		     	u32 val;
+-			pci_resource_flags(dev, PCI_ROM_RESOURCE) |= IORESOURCE_ROM_ENABLE;
+-			pci_read_config_dword(dev, PCI_ROM_ADDRESS, &val);
+-			val |= PCI_ROM_ADDRESS_ENABLE;
+-			pci_write_config_dword(dev, PCI_ROM_ADDRESS, val);
+-			printk("%s: enabling expansion ROM\n", pci_name(dev));
+-		}
++		pci_enable_rom(dev);
++		printk("%s: enabling expansion ROM\n", pci_name(dev));
+ 	}
+ 
+ 	if (!len || !base)
+@@ -240,10 +233,7 @@ intel_dc21285_exit(struct pci_dev *dev, struct map_pci_info *map)
+ 	/*
+ 	 * We need to undo the PCI BAR2/PCI ROM BAR address alteration.
+ 	 */
+-	pci_resource_flags(dev, PCI_ROM_RESOURCE) &= ~IORESOURCE_ROM_ENABLE;
+-	pci_read_config_dword(dev, PCI_ROM_ADDRESS, &val);
+-	val &= ~PCI_ROM_ADDRESS_ENABLE;
+-	pci_write_config_dword(dev, PCI_ROM_ADDRESS, val);
++	pci_disable_rom(dev);
+ }
+ 
+ static unsigned long
+diff --git a/drivers/pci/rom.c b/drivers/pci/rom.c
+index bd5c0e0..1f5f614 100644
+--- a/drivers/pci/rom.c
++++ b/drivers/pci/rom.c
+@@ -21,7 +21,7 @@
+  * between the ROM and other resources, so enabling it may disable access
+  * to MMIO registers or other card memory.
+  */
+-static int pci_enable_rom(struct pci_dev *pdev)
++int pci_enable_rom(struct pci_dev *pdev)
+ {
+ 	struct resource *res = pdev->resource + PCI_ROM_RESOURCE;
+ 	struct pci_bus_region region;
+@@ -45,7 +45,7 @@ static int pci_enable_rom(struct pci_dev *pdev)
+  * Disable ROM decoding on a PCI device by turning off the last bit in the
+  * ROM BAR.
+  */
+-static void pci_disable_rom(struct pci_dev *pdev)
++void pci_disable_rom(struct pci_dev *pdev)
+ {
+ 	u32 rom_addr;
+ 	pci_read_config_dword(pdev, pdev->rom_base_reg, &rom_addr);
+@@ -260,3 +260,5 @@ void pci_cleanup_rom(struct pci_dev *pdev)
+ 
+ EXPORT_SYMBOL(pci_map_rom);
+ EXPORT_SYMBOL(pci_unmap_rom);
++EXPORT_SYMBOL_GPL(pci_enable_rom);
++EXPORT_SYMBOL_GPL(pci_disable_rom);
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index c0e1400..7a4cee0 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -631,6 +631,8 @@ int __must_check pci_assign_resource(struct pci_dev *dev, int i);
+ int pci_select_bars(struct pci_dev *dev, unsigned long flags);
+ 
+ /* ROM control related routines */
++int pci_enable_rom(struct pci_dev *pdev);
++void pci_disable_rom(struct pci_dev *pdev);
+ void __iomem __must_check *pci_map_rom(struct pci_dev *pdev, size_t *size);
+ void pci_unmap_rom(struct pci_dev *pdev, void __iomem *rom);
+ size_t pci_get_rom_size(void __iomem *rom, size_t size);
