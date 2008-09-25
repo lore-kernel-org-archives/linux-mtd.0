@@ -1,28 +1,19 @@
-Received: from mailout3.samsung.com ([203.254.224.33])
+Received: from f144.mail.ru ([194.67.57.137])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KiiQH-0001Q3-Rl
-	for linux-mtd@lists.infradead.org; Thu, 25 Sep 2008 04:25:50 +0000
-Received: from epmmp2 (mailout3.samsung.com [203.254.224.33])
-	by mailout3.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0K7Q001D6HMU3F@mailout3.samsung.com> for
-	linux-mtd@lists.infradead.org; Thu, 25 Sep 2008 13:25:42 +0900 (KST)
-Received: from amitksharma ([107.108.214.35])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0K7Q00FOAHMS6E@mmp2.samsung.com> for
-	linux-mtd@lists.infradead.org; Thu, 25 Sep 2008 13:25:42 +0900 (KST)
-Date: Thu, 25 Sep 2008 09:58:08 +0530
-From: Amit Kumar Sharma <amitsharma.9@samsung.com>
-Subject: Re: [PATCH] [MTD-UTILS] Add support for 4KB page flash
-To: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-Message-id: <FD0404D724B74475A8C9EEE977380511@sisodomain.com>
-MIME-version: 1.0
-Content-type: text/plain; reply-type=original; charset=iso-8859-1;
-	format=flowed
-Content-transfer-encoding: 7BIT
-References: <33428747.224581222231909925.JavaMail.weblogic@epml16>
-	<20080924081637.314d4f06@zod.rchland.ibm.com>
-Cc: liu.h.jason@gmail.com, linux-mtd@lists.infradead.org
+	id 1KirHa-0002gj-J4
+	for linux-mtd@lists.infradead.org; Thu, 25 Sep 2008 13:53:26 +0000
+From: Alexander Belyakov <abelyako@mail.ru>
+To: David Woodhouse <dwmw2@infradead.org>, Nicolas Pitre <nico@cam.org>,
+	=?windows-1251?Q?linux-mtd=40lists.infradead.org?=
+	<linux-mtd@lists.infradead.org>
+Subject: =?windows-1251?Q?[PATCH]_mtd=3A_fix_cfi=5Fcmdset=5F0001_FL=5FSYNCING_race_(take_2)?=
+Mime-Version: 1.0
+Date: Thu, 25 Sep 2008 17:53:24 +0400
+Content-Type: text/plain; charset=windows-1251
+Content-Transfer-Encoding: 8bit
+Message-Id: <E1KirHY-0009gF-00.abelyako-mail-ru@f144.mail.ru>
+Cc: Alexander Belyakov <abelyako@gmail.com>
+Reply-To: Alexander Belyakov <abelyako@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,30 +23,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi josh
-
-Below link is for released patch 
-http://lists.infradead.org/pipermail/linux-mtd/2008-September/023041.html
-
-Rgs
-Amit
-
------ Original Message ----- 
-From: "Josh Boyer" <jwboyer@linux.vnet.ibm.com>
-To: <amitsharma.9@samsung.com>
-Cc: <linux-mtd@lists.infradead.org>; <liu.h.jason@gmail.com>
-Sent: Wednesday, September 24, 2008 5:46 PM
-Subject: Re: [PATCH] [MTD-UTILS] Add support for 4KB page flash
+The patch fixes CFI issue with multipartitional devices leading to the set of errors or even deadlock. The problem is CFI FL_SYNCING state race with flash operations (e.g. erase suspend). It is reproduced by running intensive writes on one JFFS2 partition and simultaneously performing mount/unmount cycle on another partition of the same chip.
 
 
-> On Wed, 24 Sep 2008 04:51:50 +0000 (GMT)
-> AMIT KUMARSHARMA <amitsharma.9@samsung.com> wrote:
-> 
->> Hi Liu
->> 
->> Below is our robustness testing process.please test with latest patch ,
->> I hope your problem will solve with this patch.
-> 
-> I see no patch.
-> 
-> josh
+---
+Signed-off-by: Alexander Belyakov <abelyako@googlemail.com>
+
+diff -uNrp a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c	2008-09-08 21:40:20.000000000 +0400
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c	2008-09-19 10:47:34.000000000 +0400
+@@ -701,6 +701,10 @@ static int chip_ready (struct map_info *
+ 	struct cfi_pri_intelext *cfip = cfi->cmdset_priv;
+ 	unsigned long timeo = jiffies + HZ;
+ 
++	/* Prevent setting state FL_SYNCING for chip in suspended state. */
++	if (mode == FL_SYNCING && chip->oldstate != FL_READY)
++		goto sleep;
++
+ 	switch (chip->state) {
+ 
+ 	case FL_STATUS:
+@@ -806,8 +810,9 @@ static int get_chip(struct map_info *map
+ 	DECLARE_WAITQUEUE(wait, current);
+ 
+  retry:
+-	if (chip->priv && (mode == FL_WRITING || mode == FL_ERASING
+-			   || mode == FL_OTP_WRITE || mode == FL_SHUTDOWN)) {
++	if (chip->priv &&
++	    (mode == FL_WRITING || mode == FL_ERASING || mode == FL_OTP_WRITE
++	    || mode == FL_SHUTDOWN) && chip->state != FL_SYNCING) {
+ 		/*
+ 		 * OK. We have possibility for contention on the write/erase
+ 		 * operations which are global to the real chip and not per
+@@ -857,6 +862,14 @@ static int get_chip(struct map_info *map
+ 				return ret;
+ 			}
+ 			spin_lock(&shared->lock);
++
++			/* We should not own chip if it is already
++			 * in FL_SYNCING state. Put contender and retry. */
++			if (chip->state == FL_SYNCING) {
++				put_chip(map, contender, contender->start);
++				spin_unlock(contender->mutex);
++				goto retry;
++			}
+ 			spin_unlock(contender->mutex);
+ 		}
+ 
