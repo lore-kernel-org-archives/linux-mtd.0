@@ -1,19 +1,20 @@
-Received: from mgw1.diku.dk ([130.225.96.91])
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KjDM7-0000l3-Rz
-	for linux-mtd@lists.infradead.org; Fri, 26 Sep 2008 13:27:36 +0000
-From: Julien Brunel <brunel@diku.dk>
-To: haver@vnet.ibm.com, dedekind@infradead.org,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: [PATCH] drivers/mtd/ubi: Bad IS_ERR test
-Date: Fri, 26 Sep 2008 15:27:25 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200809261527.26007.brunel@diku.dk>
+	id 1KjEdm-0004Hp-H1
+	for linux-mtd@lists.infradead.org; Fri, 26 Sep 2008 14:49:56 +0000
+Subject: Re: [PATCH] drivers/mtd/ubi: Bad IS_ERR test
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Julien Brunel <brunel@diku.dk>
+In-Reply-To: <200809261527.26007.brunel@diku.dk>
+References: <200809261527.26007.brunel@diku.dk>
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 26 Sep 2008 17:48:48 +0300
+Message-Id: <1222440528.5012.19.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
+	haver@vnet.ibm.com, linux-kernel@vger.kernel.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,59 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In case of error, the function add_volume returns an ERR pointer. The
-result of IS_ERR, which is supposed to be used in a test as it is, is
-here checked to be less than zero, which seems odd. We suggest to
-replace this test by a simple IS_ERR test.
+On Fri, 2008-09-26 at 15:27 +0200, Julien Brunel wrote:
+> In case of error, the function add_volume returns an ERR pointer. The
+> result of IS_ERR, which is supposed to be used in a test as it is, is
+> here checked to be less than zero, which seems odd. We suggest to
+> replace this test by a simple IS_ERR test.
 
-A simplified version of the semantic match that finds this problem is
-as follows: 
-(http://www.emn.fr/x-info/coccinelle/)
+Pushed to ubi-2.6.git, thank you!
 
-// <smpl>
-@def0@
-expression x;
-position p0;
-@@
-x@p0 = add_volume(...)
-
-@protected@
-expression def0.x,E;
-position def0.p0;
-position p;
-statement S;
-@@
-x@p0
-... when != x = E
-if (!IS_ERR(x) && ...) {<... x@p ...>} else S
-
-@unprotected@
-expression def0.x,E;
-identifier fld;
-position def0.p0;
-position p != protected.p;
-@@
-x@p0
-... when != x = E
-* x@p->fld
-// </smpl>
-
-Signed-off-by:  Julien Brunel <brunel@diku.dk>
-Signed-off-by:  Julia Lawall <julia@diku.dk>
-
----
- drivers/mtd/ubi/scan.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff -p -u a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
---- a/drivers/mtd/ubi/scan.c
-+++ b/drivers/mtd/ubi/scan.c
-@@ -387,7 +387,7 @@ int ubi_scan_add_used(struct ubi_device 
- 		pnum, vol_id, lnum, ec, sqnum, bitflips);
- 
- 	sv = add_volume(si, vol_id, pnum, vid_hdr);
--	if (IS_ERR(sv) < 0)
-+	if (IS_ERR(sv))
- 		return PTR_ERR(sv);
- 
- 	if (si->max_sqnum < sqnum)
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
