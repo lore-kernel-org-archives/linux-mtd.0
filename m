@@ -1,13 +1,20 @@
-MIME-version: 1.0
-Content-transfer-encoding: 7BIT
-Content-disposition: inline
-Content-type: text/plain; charset=us-ascii
-From: "zhujisong@fudan.edu.cn" <zhujisong@fudan.edu.cn>
-Message-id: <fb30c84e40b9d.48ddade5@fudan.edu.cn>
-Date: Sat, 27 Sep 2008 03:52:05 +0100
-Content-language: zh-CN
-Subject: Our Ref: FGN /SNT/STB
-Reply-To: payout_atmoffice02@yahoo.com.hk
+Received: from galiil.marvell.com ([199.203.130.254] helo=il.marvell.com)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KjwYL-0002gI-I2
+	for linux-mtd@lists.infradead.org; Sun, 28 Sep 2008 13:43:14 +0000
+Received: from YK-HUB02.marvell.com ([10.4.102.52])
+	by il.marvell.com (8.13.1/8.13.1) with ESMTP id m8SDhC4t014797
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 28 Sep 2008 16:43:12 +0300 (IDT)
+From: Michael Meriin <meriinm@marvell.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Sun, 28 Sep 2008 16:43:08 +0300
+Subject: fclose in JFFS2 7 YAFFS2 sometimes takes 7 seconds
+Message-ID: <E0F29C1343A0404DB4C86E66F5754EE47BE03D9CF9@IL-MB01.marvell.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,42 +25,18 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
+Hi,
 
->From The Office of: Senate President David Mark
-Senate President Federal Republic of Nigeria 
-Committee On Foreign Payment
-Our Ref: FGN /SNT/STB 
+We are running Linux kernel 2.6.25 on ARM.
+In two different platforms we are using almost the same code. But on one pl=
+atform we are using JFFS2 and on the other platform YAFFS. On both platform=
+s used ONENand Flash.
+In both cases we have some process that periodically, every several seconds=
+, updates some short (300 bytes) file.
+The problem is that several times a day (1-2, in some load conditions even =
+more times) it takes 7 seconds to perform fclose system call.
+What can be the reasons for such behavior? Can it be FS garbage collection?
 
-Attn: Beneficiary 
-
-PAYMENT NOTIFICATION ON APPROVED ENTITLEMENT FUND (US$500,000)
-
-This is to notify you that your over due entitlement fund has been gazetted to be released to you after the summit meeting held at the Federal Government capital territory (Abuja) in which an indoor meeting was held between my government,International Monetary Fund (IMF), World Bank  Auditors, representatives of the European Union, Asian and American  Congress respectively concerning the debts owed to foreigners. It was agreed that all the beneficiaries under the category "A" will receive the sum of  five hundred Thousand Dollars (US$500,000) as approved and endorsed by all the parties present in the summit. Be informed that your name was stipulated under the category "A" awaiting  the receipt of his payment.
-
-Therefore, you are advised as a matter of urgency, to reconfirm the
-following details:
-
-YOUR FULL NAMES:...................
-CORRESPONDING ADDRESS:..............
-TELEPHONE / FAX NUMBERS:............
-MOBILE PHONE:.................
-OCCUPATION/POSITION:.................
-AGE/MARITAL STATUS................
-INTERNATIONAL PASSPORT/DRIVERS LISCENCE...........
-____________________________________________________________
-Send the above informations to Senator Henry William to this info below:
-Email Address:payout_atmoffice02@yahoo.com.hk
-Phone Number:+234 80 563 45055
-_____________________________________________________________
-
-Note that if you have received this message by(electronic email sending error) to your system, kindly help us by informing us to enable us sort this out as my office has been instructed by the Presidency to take the issues of the release of all payment owed to foreign beneficiaries upon herself in order to sanitize the image of this country as the former government have handed over the power to the new government  on  May 29th, 2007 and the former government did not want to leave without  the settlement of all debts as agreed / endorsed by the parties involved.
-
-It will interest you to know that as soon as we receive the above details, we will commence with all needed necessary legal procedures and issue all payments details to you, in order to approve the release of your long over due entitlement fund, as our government wants to rebuild confidence in International Co-operation and International Financial system.
-
-I want you to understand that this arrangement supersedes all the previous  arrangements given to you.Nevertheless, if we do not hear from you  within  the next seven (7) working days from today, it shall attract indefinite  postponement of your payment and my government will not be blamed for  such action, any question should be directed to this office. The federal government of Nigeria is sorry for any inconvenience the delay in releasing your entitlement fund must have caused you as a result of  unprofessional services rendered by the banking and financial institutes and that is our aim of objective.
 
 Best Regards,
-
-Senator  Henry William
-(FEDERAL REPUBLIC OF NIGERIA) 
-Tel:+234 80 563 45055                             
+              Michael Meriin
