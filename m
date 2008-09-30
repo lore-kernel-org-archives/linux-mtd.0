@@ -1,12 +1,17 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from mgw-fb01.nokia.com ([192.100.122.235])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KkZrz-0005K6-OR
-	for linux-mtd@lists.infradead.org; Tue, 30 Sep 2008 07:42:08 +0000
+	id 1KkZs1-0005KV-JP
+	for linux-mtd@lists.infradead.org; Tue, 30 Sep 2008 07:42:10 +0000
+Received: from mgw-mx03.nokia.com (mgw-mx03.nokia.com [192.100.122.230])
+	by mgw-fb01.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
+	m8U7g6ps010009
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <linux-mtd@lists.infradead.org>; Tue, 30 Sep 2008 10:42:07 +0300
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: linux-fsdevel@vger.kernel.org
-Subject: [PATCH] UBIFS: commit on sync_fs
-Date: Tue, 30 Sep 2008 12:19:12 +0300
-Message-Id: <1222766358-21886-17-git-send-email-dedekind@infradead.org>
+Subject: [PATCH] UBIFS: correct comment for commit_on_unmount
+Date: Tue, 30 Sep 2008 12:19:11 +0300
+Message-Id: <1222766358-21886-16-git-send-email-dedekind@infradead.org>
 In-Reply-To: <1222766358-21886-1-git-send-email-dedekind@infradead.org>
 References: <1222766358-21886-1-git-send-email-dedekind@infradead.org>
 Cc: linux-mtd@lists.infradead.org, Adrian Hunter <ext-adrian.hunter@nokia.com>,
@@ -22,45 +27,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Commit the journal when the FS is sync'ed. This will make
-statfs provide better free space report. And we anyway
-advice our users to sync the FS if they want better statfs
-report.
-
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/super.c |   12 ++++++++++++
- 1 files changed, 12 insertions(+), 0 deletions(-)
+ fs/ubifs/super.c |    9 +++------
+ 1 files changed, 3 insertions(+), 6 deletions(-)
 
 diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index dae1c62..7e1f3ef 100644
+index cf078b5..dae1c62 100644
 --- a/fs/ubifs/super.c
 +++ b/fs/ubifs/super.c
-@@ -418,6 +418,7 @@ static int ubifs_sync_fs(struct super_block *sb, int wait)
+@@ -1465,12 +1465,9 @@ out:
+  * commit_on_unmount - commit the journal when un-mounting.
+  * @c: UBIFS file-system description object
+  *
+- * This function is called during un-mounting and it commits the journal unless
+- * the "fast unmount" mode is enabled. It also avoids committing the journal if
+- * it contains too few data.
+- *
+- * Sometimes recovery requires the journal to be committed at least once, and
+- * this function takes care about this.
++ * This function is called during un-mounting and re-mounting, and it commits
++ * the journal unless the "fast unmount" mode is enabled. It also avoids
++ * committing the journal if it contains too few data.
+  */
+ static void commit_on_unmount(struct ubifs_info *c)
  {
- 	struct ubifs_info *c = sb->s_fs_info;
- 	int i, ret = 0, err;
-+	long long bud_bytes;
- 
- 	if (c->jheads)
- 		for (i = 0; i < c->jhead_cnt; i++) {
-@@ -425,6 +426,17 @@ static int ubifs_sync_fs(struct super_block *sb, int wait)
- 			if (err && !ret)
- 				ret = err;
- 		}
-+
-+	/* Commit the journal unless it has too few data */
-+	spin_lock(&c->buds_lock);
-+	bud_bytes = c->bud_bytes;
-+	spin_unlock(&c->buds_lock);
-+	if (bud_bytes > c->leb_size) {
-+		err = ubifs_run_commit(c);
-+		if (err)
-+			return err;
-+	}
-+
- 	/*
- 	 * We ought to call sync for c->ubi but it does not have one. If it had
- 	 * it would in turn call mtd->sync, however mtd operations are
 -- 
 1.5.4.1
