@@ -1,17 +1,17 @@
 Received: from mgw-fb01.nokia.com ([192.100.122.235])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KkZs5-0005LO-AX
-	for linux-mtd@lists.infradead.org; Tue, 30 Sep 2008 07:42:13 +0000
+	id 1KkZs6-0005Lr-8d
+	for linux-mtd@lists.infradead.org; Tue, 30 Sep 2008 07:42:14 +0000
 Received: from mgw-mx03.nokia.com (mgw-mx03.nokia.com [192.100.122.230])
 	by mgw-fb01.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
-	m8U7gAVw010034
+	m8U7gBpH010038
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <linux-mtd@lists.infradead.org>; Tue, 30 Sep 2008 10:42:10 +0300
+	for <linux-mtd@lists.infradead.org>; Tue, 30 Sep 2008 10:42:11 +0300
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: linux-fsdevel@vger.kernel.org
-Subject: [PATCH] UBIFS: remove unneeded unlikely()
-Date: Tue, 30 Sep 2008 12:18:58 +0300
-Message-Id: <1222766358-21886-3-git-send-email-dedekind@infradead.org>
+Subject: [PATCH] UBIFS: ensure data read beyond i_size is zeroed out correctly
+Date: Tue, 30 Sep 2008 12:19:07 +0300
+Message-Id: <1222766358-21886-12-git-send-email-dedekind@infradead.org>
 In-Reply-To: <1222766358-21886-1-git-send-email-dedekind@infradead.org>
 References: <1222766358-21886-1-git-send-email-dedekind@infradead.org>
 Cc: linux-mtd@lists.infradead.org, Adrian Hunter <ext-adrian.hunter@nokia.com>,
@@ -25,112 +25,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Hirofumi Nakagawa <hnakagawa@miraclelinux.com>
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
 
-IS_ERR() macro already has unlikely(), so do not use constructions
-like 'if (unlikely(IS_ERR())'.
-
-Signed-off-by: Hirofumi Nakagawa <hnakagawa@miraclelinux.com>
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
 ---
- fs/ubifs/find.c  |    4 ++--
- fs/ubifs/gc.c    |    8 ++++----
- fs/ubifs/tnc.c   |    4 ++--
- fs/ubifs/xattr.c |    2 +-
- 4 files changed, 9 insertions(+), 9 deletions(-)
+ fs/ubifs/file.c        |   10 ++++++++--
+ fs/ubifs/ubifs-media.h |    1 -
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/fs/ubifs/find.c b/fs/ubifs/find.c
-index 47814cd..717d79c 100644
---- a/fs/ubifs/find.c
-+++ b/fs/ubifs/find.c
-@@ -901,11 +901,11 @@ static int get_idx_gc_leb(struct ubifs_info *c)
- 	 * it is needed now for this commit.
- 	 */
- 	lp = ubifs_lpt_lookup_dirty(c, lnum);
--	if (unlikely(IS_ERR(lp)))
-+	if (IS_ERR(lp))
- 		return PTR_ERR(lp);
- 	lp = ubifs_change_lp(c, lp, LPROPS_NC, LPROPS_NC,
- 			     lp->flags | LPROPS_INDEX, -1);
--	if (unlikely(IS_ERR(lp)))
-+	if (IS_ERR(lp))
- 		return PTR_ERR(lp);
- 	dbg_find("LEB %d, dirty %d and free %d flags %#x",
- 		 lp->lnum, lp->dirty, lp->free, lp->flags);
-diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
-index 02aba36..a6b633a 100644
---- a/fs/ubifs/gc.c
-+++ b/fs/ubifs/gc.c
-@@ -653,7 +653,7 @@ int ubifs_gc_start_commit(struct ubifs_info *c)
- 	 */
- 	while (1) {
- 		lp = ubifs_fast_find_freeable(c);
--		if (unlikely(IS_ERR(lp))) {
-+		if (IS_ERR(lp)) {
- 			err = PTR_ERR(lp);
- 			goto out;
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index cdcfe95..2f20a49 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -147,6 +147,12 @@ static int do_readpage(struct page *page)
+ 				err = ret;
+ 				if (err != -ENOENT)
+ 					break;
++			} else if (block + 1 == beyond) {
++				int dlen = le32_to_cpu(dn->size);
++				int ilen = i_size & (UBIFS_BLOCK_SIZE - 1);
++
++				if (ilen && ilen < dlen)
++					memset(addr + ilen, 0, dlen - ilen);
+ 			}
  		}
-@@ -665,7 +665,7 @@ int ubifs_gc_start_commit(struct ubifs_info *c)
- 		if (err)
- 			goto out;
- 		lp = ubifs_change_lp(c, lp, c->leb_size, 0, lp->flags, 0);
--		if (unlikely(IS_ERR(lp))) {
-+		if (IS_ERR(lp)) {
- 			err = PTR_ERR(lp);
- 			goto out;
- 		}
-@@ -680,7 +680,7 @@ int ubifs_gc_start_commit(struct ubifs_info *c)
- 	/* Record index freeable LEBs for unmapping after commit */
- 	while (1) {
- 		lp = ubifs_fast_find_frdi_idx(c);
--		if (unlikely(IS_ERR(lp))) {
-+		if (IS_ERR(lp)) {
- 			err = PTR_ERR(lp);
- 			goto out;
- 		}
-@@ -696,7 +696,7 @@ int ubifs_gc_start_commit(struct ubifs_info *c)
- 		/* Don't release the LEB until after the next commit */
- 		flags = (lp->flags | LPROPS_TAKEN) ^ LPROPS_INDEX;
- 		lp = ubifs_change_lp(c, lp, c->leb_size, 0, flags, 1);
--		if (unlikely(IS_ERR(lp))) {
-+		if (IS_ERR(lp)) {
- 			err = PTR_ERR(lp);
- 			kfree(idx_gc);
- 			goto out;
-diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
-index 7634c59..ba13c92 100644
---- a/fs/ubifs/tnc.c
-+++ b/fs/ubifs/tnc.c
-@@ -284,7 +284,7 @@ static struct ubifs_znode *dirty_cow_znode(struct ubifs_info *c,
+ 		if (++i >= UBIFS_BLOCKS_PER_PAGE)
+@@ -601,7 +607,7 @@ static int populate_page(struct ubifs_info *c, struct page *page,
+ 
+ 	addr = zaddr = kmap(page);
+ 
+-	end_index = (i_size + PAGE_CACHE_SIZE - 1) >> PAGE_CACHE_SHIFT;
++	end_index = (i_size - 1) >> PAGE_CACHE_SHIFT;
+ 	if (!i_size || page->index > end_index) {
+ 		memset(addr, 0, PAGE_CACHE_SIZE);
+ 		goto out_hole;
+@@ -649,7 +655,7 @@ static int populate_page(struct ubifs_info *c, struct page *page,
+ 	if (end_index == page->index) {
+ 		int len = i_size & (PAGE_CACHE_SIZE - 1);
+ 
+-		if (len < read)
++		if (len && len < read)
+ 			memset(zaddr + len, 0, read - len);
  	}
  
- 	zn = copy_znode(c, znode);
--	if (unlikely(IS_ERR(zn)))
-+	if (IS_ERR(zn))
- 		return zn;
+diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
+index a9ecbd9..0b37804 100644
+--- a/fs/ubifs/ubifs-media.h
++++ b/fs/ubifs/ubifs-media.h
+@@ -75,7 +75,6 @@
+  */
+ #define UBIFS_BLOCK_SIZE  4096
+ #define UBIFS_BLOCK_SHIFT 12
+-#define UBIFS_BLOCK_MASK  0x00000FFF
  
- 	if (zbr->len) {
-@@ -1128,7 +1128,7 @@ static struct ubifs_znode *dirty_cow_bottom_up(struct ubifs_info *c,
- 			ubifs_assert(znode == c->zroot.znode);
- 			znode = dirty_cow_znode(c, &c->zroot);
- 		}
--		if (unlikely(IS_ERR(znode)) || !p)
-+		if (IS_ERR(znode) || !p)
- 			break;
- 		ubifs_assert(path[p - 1] >= 0);
- 		ubifs_assert(path[p - 1] < znode->child_cnt);
-diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-index 649bec7..cfd31e2 100644
---- a/fs/ubifs/xattr.c
-+++ b/fs/ubifs/xattr.c
-@@ -446,7 +446,7 @@ ssize_t ubifs_listxattr(struct dentry *dentry, char *buffer, size_t size)
- 		int type;
- 
- 		xent = ubifs_tnc_next_ent(c, &key, &nm);
--		if (unlikely(IS_ERR(xent))) {
-+		if (IS_ERR(xent)) {
- 			err = PTR_ERR(xent);
- 			break;
- 		}
+ /* UBIFS padding byte pattern (must not be first or last byte of node magic) */
+ #define UBIFS_PADDING_BYTE 0xCE
 -- 
 1.5.4.1
