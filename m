@@ -1,14 +1,18 @@
-Received: from web58905.mail.re1.yahoo.com ([66.196.100.234])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Kkji0-0003gW-AH
-	for linux-mtd@lists.infradead.org; Tue, 30 Sep 2008 18:12:29 +0000
-Date: Tue, 30 Sep 2008 11:12:27 -0700 (PDT)
-From: Philip Rakity <prakity@yahoo.com>
-Subject: mtdparts= documentation change
+Received: from tesla.selinc.com ([12.110.71.2])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KknhX-0005I2-Bo
+	for linux-mtd@lists.infradead.org; Tue, 30 Sep 2008 22:28:15 +0000
+Received: from edison2.selinc.com (edison2.selinc.com [12.110.71.8])
+	by tesla.selinc.com (8.12.11.20060308/8.12.11) with ESMTP id
+	m8UMSCtL015060
+	for <linux-mtd@lists.infradead.org>; Tue, 30 Sep 2008 15:28:12 -0700
 To: linux-mtd@lists.infradead.org
+Subject: UBIFS sync question
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Message-ID: <392584.84807.qm@web58905.mail.re1.yahoo.com>
+Message-ID: <OFD58EAD0A.B5E12235-ON882574D4.007AC780-882574D4.007B6DB9@selinc.com>
+From: Bruce_Leonard@selinc.com
+Date: Tue, 30 Sep 2008 15:28:10 -0700
+Content-Type: text/plain; charset="US-ASCII"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,28 +22,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Recently I tried to figure out where the name of the mtd disk came from since I was modifying cafe_nand.c to do command line parsing (patch coming for this later in the week).  I could not find an explicit reference so I hacked the code to only find out that it can be easily seen by issuing the command
+Artem,
 
-cat /proc/mtd
+We've run into a side effect that we think is probably a design choice in 
+UBIFS, but we want to make sure before we start trying to troubleshoot a 
+"bug".  What we do is open an existing  file in a UBIFS formated UBI 
+volume on a NAND flash, add a few lines to it, close the file, then 
+WITHOUT un-mounting the file system, reboot the box (simulating a power 
+outage).  When the box reboots and we look at the file, it's zero length 
+and has no contents.  I suspect it's because UBIFS does less frequent 
+syncs than say ext2 for performance reasons, and we're just losing the 
+contents of the file because there's no sync before the reboot.
 
-I know it also is in the bootup console output (now !)
-.
+Is this correct or do we need to start digging for something broken?
 
-The following patch would help make explicit how to find the name.
+Thanks.
 
---- /Volumes/unix/linux-2.6.26.5/drivers/mtd/cmdlinepart.c      2008-09-08 10:40:20.000000000 -0700
-+++ Desktop/cmdlinepart_new.c   2008-09-29 18:00:46.000000000 -0700
-@@ -11,6 +11,7 @@
- * <mtddef>  := <mtd-id>:<partdef>[,<partdef>]
- * <partdef> := <size>[@offset][<name>][ro][lk]
- * <mtd-id>  := unique name used in mapping driver/device (mtd->name)
-+ *              eg: this is the name seen in "cat /proc/mtd/" output
- * <size>    := standard linux memsize OR "-" to denote all remaining space
- * <name>    := '(' NAME ')'
- *
-
-signed off by Philip Rakity
-
-
-
-      
+Bruce
