@@ -1,17 +1,17 @@
 Received: from mgw-fb01.nokia.com ([192.100.122.235])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KkZs2-0005Ki-7a
-	for linux-mtd@lists.infradead.org; Tue, 30 Sep 2008 07:42:10 +0000
+	id 1KkZs4-0005LD-OI
+	for linux-mtd@lists.infradead.org; Tue, 30 Sep 2008 07:42:13 +0000
 Received: from mgw-mx03.nokia.com (mgw-mx03.nokia.com [192.100.122.230])
 	by mgw-fb01.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
-	m8U7g74O010014
+	m8U7g9Ur010032
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <linux-mtd@lists.infradead.org>; Tue, 30 Sep 2008 10:42:07 +0300
+	for <linux-mtd@lists.infradead.org>; Tue, 30 Sep 2008 10:42:10 +0300
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: linux-fsdevel@vger.kernel.org
-Subject: [PATCH] UBIFS: fix bulk-read handling uptodate pages
-Date: Tue, 30 Sep 2008 12:19:15 +0300
-Message-Id: <1222766358-21886-20-git-send-email-dedekind@infradead.org>
+Subject: [PATCH] UBIFS: improve garbage collection
+Date: Tue, 30 Sep 2008 12:19:14 +0300
+Message-Id: <1222766358-21886-19-git-send-email-dedekind@infradead.org>
 In-Reply-To: <1222766358-21886-1-git-send-email-dedekind@infradead.org>
 References: <1222766358-21886-1-git-send-email-dedekind@infradead.org>
 Cc: linux-mtd@lists.infradead.org, Adrian Hunter <ext-adrian.hunter@nokia.com>,
@@ -27,64 +27,146 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Adrian Hunter <ext-adrian.hunter@nokia.com>
 
-Bulk-read skips uptodate pages but this was putting its
-array index out and causing it to treat subsequent pages
-as holes.
+Make garbage collection try to keep data nodes from the same
+inode together and in ascending order.  This improves
+performance when reading those nodes especially when bulk-read
+is used.
 
 Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
 ---
- fs/ubifs/file.c |   16 +++++++++++-----
- 1 files changed, 11 insertions(+), 5 deletions(-)
+ fs/ubifs/gc.c |   82 ++++++++++++++++++++++++++++++++++++++++++++++++++-------
+ 1 files changed, 72 insertions(+), 10 deletions(-)
 
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 2f20a49..51cf511 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -595,7 +595,7 @@ out:
- static int populate_page(struct ubifs_info *c, struct page *page,
- 			 struct bu_info *bu, int *n)
+diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
+index a6b633a..0bef650 100644
+--- a/fs/ubifs/gc.c
++++ b/fs/ubifs/gc.c
+@@ -96,6 +96,48 @@ static int switch_gc_head(struct ubifs_info *c)
+ }
+ 
+ /**
++ * joinup - bring data nodes for an inode together.
++ * @c: UBIFS file-system description object
++ * @sleb: describes scanned LEB
++ * @inum: inode number
++ * @blk: block number
++ * @data: list to which to add data nodes
++ *
++ * This function looks at the first few nodes in the scanned LEB @sleb and adds
++ * them to @data if they are data nodes from @inum and have a larger block
++ * number than @blk. This function returns %0 on success and a negative error
++ * code on failure.
++ */
++static int joinup(struct ubifs_info *c, struct ubifs_scan_leb *sleb, ino_t inum,
++		  unsigned int blk, struct list_head *data)
++{
++	int err, cnt = 6, lnum = sleb->lnum, offs;
++	struct ubifs_scan_node *snod, *tmp;
++	union ubifs_key *key;
++
++	list_for_each_entry_safe(snod, tmp, &sleb->nodes, list) {
++		key = &snod->key;
++		if (key_inum(c, key) == inum &&
++		    key_type(c, key) == UBIFS_DATA_KEY &&
++		    key_block(c, key) > blk) {
++			offs = snod->offs;
++			err = ubifs_tnc_has_node(c, key, 0, lnum, offs, 0);
++			if (err < 0)
++				return err;
++			list_del(&snod->list);
++			if (err) {
++				list_add_tail(&snod->list, data);
++				blk = key_block(c, key);
++			} else
++				kfree(snod);
++			cnt = 6;
++		} else if (--cnt == 0)
++			break;
++	}
++	return 0;
++}
++
++/**
+  * move_nodes - move nodes.
+  * @c: UBIFS file-system description object
+  * @sleb: describes nodes to move
+@@ -116,16 +158,21 @@ static int switch_gc_head(struct ubifs_info *c)
+ static int move_nodes(struct ubifs_info *c, struct ubifs_scan_leb *sleb)
  {
--	int i = 0, nn = *n, offs = bu->zbranch[0].offs, hole = 1, read = 0;
-+	int i = 0, nn = *n, offs = bu->zbranch[0].offs, hole = 0, read = 0;
- 	struct inode *inode = page->mapping->host;
- 	loff_t i_size = i_size_read(inode);
- 	unsigned int page_block;
-@@ -609,6 +609,7 @@ static int populate_page(struct ubifs_info *c, struct page *page,
+ 	struct ubifs_scan_node *snod, *tmp;
+-	struct list_head large, medium, small;
++	struct list_head data, large, medium, small;
+ 	struct ubifs_wbuf *wbuf = &c->jheads[GCHD].wbuf;
+ 	int avail, err, min = INT_MAX;
++	unsigned int blk = 0;
++	ino_t inum = 0;
  
- 	end_index = (i_size - 1) >> PAGE_CACHE_SHIFT;
- 	if (!i_size || page->index > end_index) {
-+		hole = 1;
- 		memset(addr, 0, PAGE_CACHE_SIZE);
- 		goto out_hole;
- 	}
-@@ -617,10 +618,10 @@ static int populate_page(struct ubifs_info *c, struct page *page,
- 	while (1) {
- 		int err, len, out_len, dlen;
++	INIT_LIST_HEAD(&data);
+ 	INIT_LIST_HEAD(&large);
+ 	INIT_LIST_HEAD(&medium);
+ 	INIT_LIST_HEAD(&small);
  
--		if (nn >= bu->cnt ||
--		    key_block(c, &bu->zbranch[nn].key) != page_block)
-+		if (nn >= bu->cnt) {
-+			hole = 1;
- 			memset(addr, 0, UBIFS_BLOCK_SIZE);
--		else {
-+		} else if (key_block(c, &bu->zbranch[nn].key) == page_block) {
- 			struct ubifs_data_node *dn;
+-	list_for_each_entry_safe(snod, tmp, &sleb->nodes, list) {
+-		struct list_head *lst;
++	while (!list_empty(&sleb->nodes)) {
++		struct list_head *lst = sleb->nodes.next;
++
++		snod = list_entry(lst, struct ubifs_scan_node, list);
  
- 			dn = bu->buf + (bu->zbranch[nn].offs - offs);
-@@ -643,8 +644,13 @@ static int populate_page(struct ubifs_info *c, struct page *page,
- 				memset(addr + len, 0, UBIFS_BLOCK_SIZE - len);
+ 		ubifs_assert(snod->type != UBIFS_IDX_NODE);
+ 		ubifs_assert(snod->type != UBIFS_REF_NODE);
+@@ -136,7 +183,6 @@ static int move_nodes(struct ubifs_info *c, struct ubifs_scan_leb *sleb)
+ 		if (err < 0)
+ 			goto out;
  
- 			nn += 1;
--			hole = 0;
- 			read = (i << UBIFS_BLOCK_SHIFT) + len;
-+		} else if (key_block(c, &bu->zbranch[nn].key) < page_block) {
-+			nn += 1;
-+			continue;
-+		} else {
-+			hole = 1;
-+			memset(addr, 0, UBIFS_BLOCK_SIZE);
+-		lst = &snod->list;
+ 		list_del(lst);
+ 		if (!err) {
+ 			/* The node is obsolete, remove it from the list */
+@@ -145,15 +191,30 @@ static int move_nodes(struct ubifs_info *c, struct ubifs_scan_leb *sleb)
  		}
- 		if (++i >= UBIFS_BLOCKS_PER_PAGE)
- 			break;
+ 
+ 		/*
+-		 * Sort the list of nodes so that large nodes go first, and
+-		 * small nodes go last.
++		 * Sort the list of nodes so that data nodes go first, large
++		 * nodes go second, and small nodes go last.
+ 		 */
+-		if (snod->len > MEDIUM_NODE_WM)
+-			list_add(lst, &large);
++		if (key_type(c, &snod->key) == UBIFS_DATA_KEY) {
++			if (inum != key_inum(c, &snod->key)) {
++				if (inum) {
++					/*
++					 * Try to move data nodes from the same
++					 * inode together.
++					 */
++					err = joinup(c, sleb, inum, blk, &data);
++					if (err)
++						goto out;
++				}
++				inum = key_inum(c, &snod->key);
++				blk = key_block(c, &snod->key);
++			}
++			list_add_tail(lst, &data);
++		} else if (snod->len > MEDIUM_NODE_WM)
++			list_add_tail(lst, &large);
+ 		else if (snod->len > SMALL_NODE_WM)
+-			list_add(lst, &medium);
++			list_add_tail(lst, &medium);
+ 		else
+-			list_add(lst, &small);
++			list_add_tail(lst, &small);
+ 
+ 		/* And find the smallest node */
+ 		if (snod->len < min)
+@@ -164,6 +225,7 @@ static int move_nodes(struct ubifs_info *c, struct ubifs_scan_leb *sleb)
+ 	 * Join the tree lists so that we'd have one roughly sorted list
+ 	 * ('large' will be the head of the joined list).
+ 	 */
++	list_splice(&data, &large);
+ 	list_splice(&medium, large.prev);
+ 	list_splice(&small, large.prev);
+ 
 -- 
 1.5.4.1
