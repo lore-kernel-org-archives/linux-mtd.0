@@ -1,19 +1,14 @@
-Received: from smtpeu1.atmel.com ([195.65.72.27] helo=bagnes.atmel.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KkeFC-0005mT-ID
-	for linux-mtd@lists.infradead.org; Tue, 30 Sep 2008 12:22:22 +0000
-Date: Tue, 30 Sep 2008 14:22:07 +0200
-From: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
-To: "Leon Woestenberg" <leon.woestenberg@gmail.com>
-Subject: Re: [PATCH] mtd: AT49BV6416 has swapped erase regions
-Message-ID: <20080930142207.72d5edaa@hskinnemo-gx745.norway.atmel.com>
-In-Reply-To: <c384c5ea0809300502h48915058r78a6586968c1ac1a@mail.gmail.com>
-References: <1222775733-6690-1-git-send-email-haavard.skinnemoen@atmel.com>
-	<c384c5ea0809300502h48915058r78a6586968c1ac1a@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from web58905.mail.re1.yahoo.com ([66.196.100.234])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Kkji0-0003gW-AH
+	for linux-mtd@lists.infradead.org; Tue, 30 Sep 2008 18:12:29 +0000
+Date: Tue, 30 Sep 2008 11:12:27 -0700 (PDT)
+From: Philip Rakity <prakity@yahoo.com>
+Subject: mtdparts= documentation change
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Message-ID: <392584.84807.qm@web58905.mail.re1.yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +18,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-"Leon Woestenberg" <leon.woestenberg@gmail.com> wrote:
-> Haavard,
-> 
-> On Tue, Sep 30, 2008 at 1:55 PM, Haavard Skinnemoen
-> <haavard.skinnemoen@atmel.com> wrote:
-> > The CFI information read from AT49BV6416 lists the erase regions in the
-> > wrong order, causing problems when trying to erase or update the first
-> > or last 64K block.
-> >
-> Are there other Atmel designs with this bug or only the chip with this CFI ID?
+Recently I tried to figure out where the name of the mtd disk came from since I was modifying cafe_nand.c to do command line parsing (patch coming for this later in the week).  I could not find an explicit reference so I hacked the code to only find out that it can be easily seen by issuing the command
 
-That's a good question. I guess there may be others in the same family
-with the same bug. I don't really know.
+cat /proc/mtd
 
-The replacement, AT49BV642D, does not have this bug.
+I know it also is in the bootup console output (now !)
+.
 
-> I ask, because the check in u-boot is too generic; I found u-boot
-> wrongly assumes wrong order for another Atmel part, not checking on a
-> specific CFI ID.
+The following patch would help make explicit how to find the name.
 
-That's interesting...especially since u-boot only reads the low byte
-of the JEDEC ID, so adding a fixup for one particular ID may match tons
-of chips with 16-bit IDs.
+--- /Volumes/unix/linux-2.6.26.5/drivers/mtd/cmdlinepart.c      2008-09-08 10:40:20.000000000 -0700
++++ Desktop/cmdlinepart_new.c   2008-09-29 18:00:46.000000000 -0700
+@@ -11,6 +11,7 @@
+ * <mtddef>  := <mtd-id>:<partdef>[,<partdef>]
+ * <partdef> := <size>[@offset][<name>][ro][lk]
+ * <mtd-id>  := unique name used in mapping driver/device (mtd->name)
++ *              eg: this is the name seen in "cat /proc/mtd/" output
+ * <size>    := standard linux memsize OR "-" to denote all remaining space
+ * <name>    := '(' NAME ')'
+ *
 
-I'll have to check the latest u-boot and see if it breaks any of my
-boards.
+signed off by Philip Rakity
 
-Haavard
+
+
+      
