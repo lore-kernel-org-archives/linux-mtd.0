@@ -1,16 +1,24 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Kkucm-0006bS-Pc
-	for linux-mtd@lists.infradead.org; Wed, 01 Oct 2008 05:51:49 +0000
-Subject: For UBIFS users: be aware of write-back!
+	id 1Kkudo-0006fj-Uv
+	for linux-mtd@lists.infradead.org; Wed, 01 Oct 2008 05:52:53 +0000
+Subject: Re: [PATCH 1/2] [MTD] [JFFS2] MLC NAND support
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 01 Oct 2008 08:51:28 +0300
-Message-Id: <1222840288.8051.24.camel@sauron>
+To: Amit Kumar Sharma <amitsharma.9@samsung.com>
+In-Reply-To: <A51468EF349E43489C7D33B47B8A3A24@sisodomain.com>
+References: <30508484.52991221827822859.JavaMail.weblogic@epml16>
+	<9c9fda240809212333n76fa6cc6jbf1025f4f272d3f4@mail.gmail.com>
+	<001101c9222e$1914e6d0$3dd66c6b@sisodomain.com>
+	<e8775dd00809300507l44ccb38dg1dff2fb6edc7641a@mail.gmail.com>
+	<A51468EF349E43489C7D33B47B8A3A24@sisodomain.com>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 01 Oct 2008 08:52:12 +0300
+Message-Id: <1222840332.8051.26.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: Bruce_Leonard@selinc.com
+Cc: Jason Liu <liu.h.jason@gmail.com>, apgmoorthy <moorthy.apg@samsung.com>,
+	Kyungmin Park <kmpark@infradead.org>, David.Woodhouse@intel.com,
+	linux-mtd@lists.infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,33 +31,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-this e-mail informs about a quite important UBIFS feature which
-have already confused many people.
+On Wed, 2008-10-01 at 09:07 +0530, Amit Kumar Sharma wrote:
+> We are also facing many difficulty in robustness and=20
+> reliability test with Jffs2 not only this we have tested our=20
+> MLC patches on kernel 2.6.22 their Jffs2 stability was=20
+> little bit higher as compare to  2.6.27 , not only this LTP=20
+> file tests and rw test fails with Jffs2 and same driver=20
+> works fine with yaffs2 but yaffs2 also has issue with=20
+> Symlink operation  we are working for that.
 
-If you use UBIFS, and especially if you have been using JFFS2 before,
-please, read this documentation entry:
-
-http://www.linux-mtd.infradead.org/doc/ubifs.html#L_writeback
-
-Please, remember that UBIFS is _asynchronous_ FS. JFFS2 was synchronous,
-so expect some of your old applications which were fine on JFFS2 to be
-not ready to handle power cuts correctly in case of UBIFS.
-
-Just an unsorted list of important items:
-
-* Every time you write to a file, please, ask yourself: "if a
-  power cut happens now, is it OK if I loose data or that my file may
-  contain garbage or be inconsistent afterward? Is my application=20
-  ready to clean that up?"
-
-* If your application changes a configuration file, you probably
-  should use the "atomic file update" trick described at the web site.
-
-* Keep the write-back issues in mind if you write scripts as
-  well. In bash, use "sync" when needed. Smarter languages like
-  Perl have more fine-grained and efficient calls.
-
-Thanks.
+Have you tries UBIFS?
 
 --=20
 Best regards,
