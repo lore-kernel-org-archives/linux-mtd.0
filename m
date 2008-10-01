@@ -1,19 +1,12 @@
-Received: from nf-out-0910.google.com ([64.233.182.188])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Kl326-0002v1-1x
-	for linux-mtd@lists.infradead.org; Wed, 01 Oct 2008 14:50:30 +0000
-Received: by nf-out-0910.google.com with SMTP id d21so323226nfb.22
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 01 Oct 2008 07:50:28 -0700 (PDT)
-Message-ID: <1fc50b580810010750g5e817923of9a43f1caaa807da@mail.gmail.com>
-Date: Wed, 1 Oct 2008 09:50:27 -0500
-From: "Monte Copeland" <catboatmonte@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: gluebi char vs block devices
+In-Reply-To: <1222839603.8051.16.camel@sauron>
+To: dedekind@infradead.org
+Subject: Re: UBIFS sync question
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Message-ID: <OF088C9B87.F2BF9DCC-ON882574D5.005DCAFF-882574D5.005DF452@selinc.com>
+From: Bruce_Leonard@selinc.com
+Date: Wed, 1 Oct 2008 10:06:14 -0700
+Content-Type: text/plain; charset="US-ASCII"
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +16,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+> 
+> Well, you should sync the file, see
+> http://www.linux-mtd.infradead.org/doc/ubifs.html#L_writeback
+> 
 
-What is expected (correct) behavior when reading content of static UBI volumes?
+Thanks for the reply.  I found the article about ten minutes after I 
+posted the question :\.  I've gotten so used to just posting questions 
+that I momentarily forgot that there's already a source of information out 
+there.  Thanks for putting up with me and sorry for the noise.
 
-/ # cat /sys/class/ubi/ubi0_6/name
-kernel_0
-/ # cat /sys/class/ubi/ubi0_6/data_bytes
-3149958
-/ # cat /dev/mtd/kernel_0 | wc -c
-3149958
-/ # cat /dev/mtdblock/kernel_0 | wc -c
-3149824
-
-On my older UBI platform, the byte count from the
-mtdblock dev is truncated down to an even multiple
-of 512.
-
-Monte Copeland
-Austin
+Bruce
