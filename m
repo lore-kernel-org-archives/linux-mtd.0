@@ -1,18 +1,16 @@
 Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KkuSN-0005dU-9j
-	for linux-mtd@lists.infradead.org; Wed, 01 Oct 2008 05:41:03 +0000
-Subject: Re: UBIFS sync question
+	id 1Kkucm-0006bS-Pc
+	for linux-mtd@lists.infradead.org; Wed, 01 Oct 2008 05:51:49 +0000
+Subject: For UBIFS users: be aware of write-back!
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Bruce_Leonard@selinc.com
-In-Reply-To: <OFD58EAD0A.B5E12235-ON882574D4.007AC780-882574D4.007B6DB9@selinc.com>
-References: <OFD58EAD0A.B5E12235-ON882574D4.007AC780-882574D4.007B6DB9@selinc.com>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 01 Oct 2008 08:40:03 +0300
-Message-Id: <1222839603.8051.16.camel@sauron>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 01 Oct 2008 08:51:28 +0300
+Message-Id: <1222840288.8051.24.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Cc: Bruce_Leonard@selinc.com
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,33 +21,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
-On Tue, 2008-09-30 at 15:28 -0700, Bruce_Leonard@selinc.com wrote:
-> Artem,
->=20
-> We've run into a side effect that we think is probably a design choice in=
-=20
-> UBIFS, but we want to make sure before we start trying to troubleshoot a=20
-> "bug".  What we do is open an existing  file in a UBIFS formated UBI=20
-> volume on a NAND flash, add a few lines to it, close the file, then=20
-> WITHOUT un-mounting the file system, reboot the box (simulating a power=20
-> outage).  When the box reboots and we look at the file, it's zero length=20
-> and has no contents.  I suspect it's because UBIFS does less frequent=20
-> syncs than say ext2 for performance reasons, and we're just losing the=20
-> contents of the file because there's no sync before the reboot.
->=20
-> Is this correct or do we need to start digging for something broken?
+this e-mail informs about a quite important UBIFS feature which
+have already confused many people.
 
-Well, you should sync the file, see
+If you use UBIFS, and especially if you have been using JFFS2 before,
+please, read this documentation entry:
+
 http://www.linux-mtd.infradead.org/doc/ubifs.html#L_writeback
 
-However, if you open a file, and just add few lines to it, then it
-should not become empty after reboot. You should just loose whole or
-part of new data.
+Please, remember that UBIFS is _asynchronous_ FS. JFFS2 was synchronous,
+so expect some of your old applications which were fine on JFFS2 to be
+not ready to handle power cuts correctly in case of UBIFS.
 
-I think you actually truncate the file, then re-write it, instead of
-appending. This often happens in case of shell scripts - shell commands
-like truncating files.
+Just an unsorted list of important items:
+
+* Every time you write to a file, please, ask yourself: "if a
+  power cut happens now, is it OK if I loose data or that my file may
+  contain garbage or be inconsistent afterward? Is my application=20
+  ready to clean that up?"
+
+* If your application changes a configuration file, you probably
+  should use the "atomic file update" trick described at the web site.
+
+* Keep the write-back issues in mind if you write scripts as
+  well. In bash, use "sync" when needed. Smarter languages like
+  Perl have more fine-grained and efficient calls.
+
+Thanks.
 
 --=20
 Best regards,
