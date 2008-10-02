@@ -1,19 +1,19 @@
-Received: from el-out-1112.google.com ([209.85.162.179])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KlDU9-0003p7-8r
-	for linux-mtd@lists.infradead.org; Thu, 02 Oct 2008 02:00:09 +0000
-Received: by el-out-1112.google.com with SMTP id y26so223702ele.18
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 01 Oct 2008 19:00:08 -0700 (PDT)
-Message-ID: <8f6e22a70810011900x188b2d85j90d125a707a0cf09@mail.gmail.com>
-Date: Thu, 2 Oct 2008 10:00:08 +0800
-From: "zheng shi" <neversetsun@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [JFFS2] Request help on EBS option in Linux-2.6.21.5
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KlGdf-0004Um-Rf
+	for linux-mtd@lists.infradead.org; Thu, 02 Oct 2008 05:22:12 +0000
+Subject: Re: UBIFS sync question
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Bruce_Leonard@selinc.com
+In-Reply-To: <OFA2901C33.16BFD7A5-ON882574D5.0060B197-882574D5.006119C0@selinc.com>
+References: <OFA2901C33.16BFD7A5-ON882574D5.0060B197-882574D5.006119C0@selinc.com>
+Content-Type: text/plain; charset=utf-8
+Date: Thu, 02 Oct 2008 08:21:44 +0300
+Message-Id: <1222924904.8051.40.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: Josh Boyer <jwboyer@gmail.com>, linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,21 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Bruce,
 
-I'm using JFFS2 in linux-2.6.21.5.
+On Wed, 2008-10-01 at 10:40 -0700, Bruce_Leonard@selinc.com wrote:
+> Even better, he writes documentation that you don't need intimate=20
+> knowledge of the code to understand and use.  You can just read it and go=
+=20
+> "well that makes sense".  There's some documentation out there that worse=
+=20
+> than having no documentation because it either makes no sense or tells yo=
+u=20
+> absolutly nothing.  So here's three cheers for Artem and all his hard=20
+> work.  Thanks Artem.
 
-When I enabled JFFS2 summary support (EXPERIMENTAL) option, the EBS
-mechanism did promote mount time.
-But unfortunately files (size>10k) couldn't be written on flash
-permanently, i.e., though cp was done, but when remount the file just
-copied disappeared.
+Thank you. However, I forward 2 of the 3 cheers to Adrian Hunter. We
+were working with him shoulder to shoulder for a year. He implemented
+the core and the most difficult parts of it. It is just that I am more
+publicly visible.
 
-I have tried -o sync with mount option.
+Thanks.
 
-Is there anyone who has encountered the same problem?
-
-BTW, my flash is 2k-page NAND flash.
-
--- 
-Regards, neversetsun
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
