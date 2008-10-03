@@ -1,14 +1,14 @@
-Subject: Re: [JFFS2] Request help on EBS option in Linux-2.6.21.5
+Subject: Re: For UBIFS users: be aware of write-back!
 From: David Woodhouse <dwmw2@infradead.org>
-To: zheng shi <neversetsun@gmail.com>
-In-Reply-To: <8f6e22a70810011900x188b2d85j90d125a707a0cf09@mail.gmail.com>
-References: <8f6e22a70810011900x188b2d85j90d125a707a0cf09@mail.gmail.com>
+To: dedekind@infradead.org
+In-Reply-To: <1222840288.8051.24.camel@sauron>
+References: <1222840288.8051.24.camel@sauron>
 Content-Type: text/plain
-Date: Fri, 03 Oct 2008 08:03:58 +0100
-Message-Id: <1223017438.3328.14.camel@macbook.infradead.org>
+Date: Fri, 03 Oct 2008 08:15:49 +0100
+Message-Id: <1223018149.3328.21.camel@macbook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, Bruce_Leonard@selinc.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,32 +18,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2008-10-02 at 10:00 +0800, zheng shi wrote:
+On Wed, 2008-10-01 at 08:51 +0300, Artem Bityutskiy wrote:
 > 
+> this e-mail informs about a quite important UBIFS feature which
+> have already confused many people.
 > 
-> I'm using JFFS2 in linux-2.6.21.5.
+> If you use UBIFS, and especially if you have been using JFFS2 before,
+> please, read this documentation entry:
 > 
-> When I enabled JFFS2 summary support (EXPERIMENTAL) option, the EBS
-> mechanism did promote mount time.
-> But unfortunately files (size>10k) couldn't be written on flash
-> permanently, i.e., though cp was done, but when remount the file just
-> copied disappeared.
+> http://www.linux-mtd.infradead.org/doc/ubifs.html#L_writeback
+> 
+> Please, remember that UBIFS is _asynchronous_ FS. JFFS2 was synchronous,
+> so expect some of your old applications which were fine on JFFS2 to be
+> not ready to handle power cuts correctly in case of UBIFS.
 
-That's strange. Can you reproduce on an empty file system? Just mount it
-empty, write the large file, then unmount. Take a snapshot of the
-contents of the flash. Then mount it, confirm that the file is missing,
-and show me the contents of the flash.
+JFFS2 wasn't synchronous on NAND. You still needed to use fsync() as
+appropriate to ensure that written data made it to the flash and not
+just to the write-buffer.
 
-Also, build your kernel with CONFIG_JFFS2_FS_DEBUG=1 and capture all the
-debug output (over a serial port) when you mount the offending file
-system.
+Your list of things to think about is good, but it should be pointed out
+that it applies _generally_ to all systems and all file systems.
 
-The 2.6.21.5 kernel isn't particularly interesting though -- please try
-something more recent, first.
-
-> I have tried -o sync with mount option.
-
-That should make no difference.
+This is "Programming 101", and there was no excuse for people getting it
+wrong on JFFS2, either. It's not as if an fsync() was expensive in the
+cases where it did nothing.
 
 -- 
 David Woodhouse                            Open Source Technology Centre
