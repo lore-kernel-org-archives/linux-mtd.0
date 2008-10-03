@@ -1,16 +1,19 @@
-Subject: Re: For UBIFS users: be aware of write-back!
-From: David Woodhouse <dwmw2@infradead.org>
-To: dedekind@infradead.org
-In-Reply-To: <1223019946.8051.45.camel@sauron>
-References: <1222840288.8051.24.camel@sauron>
-	<1223018149.3328.21.camel@macbook.infradead.org>
-	<1223019946.8051.45.camel@sauron>
-Content-Type: text/plain
-Date: Fri, 03 Oct 2008 08:57:56 +0100
-Message-Id: <1223020676.3328.28.camel@macbook.infradead.org>
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KlfbM-0003yy-TY
+	for linux-mtd@lists.infradead.org; Fri, 03 Oct 2008 08:01:29 +0000
+Subject: Re: gluebi char vs block devices
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Monte Copeland <catboatmonte@gmail.com>
+In-Reply-To: <1fc50b580810010750g5e817923of9a43f1caaa807da@mail.gmail.com>
+References: <1fc50b580810010750g5e817923of9a43f1caaa807da@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 03 Oct 2008 11:00:52 +0300
+Message-Id: <1223020852.8051.58.camel@sauron>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Bruce_Leonard@selinc.com
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,31 +23,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2008-10-03 at 10:45 +0300, Artem Bityutskiy wrote:
-> "In contrast, JFFS2 does not have write-back support and all the JFFS2
-> file system changes go the flash synchronously. Well, this is not
-> completely true and JFFS2 does have a small buffer of a NAND page
-> size, but it is small and we may treat JFFS2 as completely
-> synchronous."
+Hi,
 
-That's quite poorly phrased. You may _not_ treat JFFS2 as completely
-synchronous. You treat it like a normal file system, or it's going to
-eat your babies.
+On Wed, 2008-10-01 at 09:50 -0500, Monte Copeland wrote:
+> Hi,
+>=20
+> What is expected (correct) behavior when reading content of static UBI vo=
+lumes?
+>=20
+> / # cat /sys/class/ubi/ubi0_6/name
+> kernel_0
+> / # cat /sys/class/ubi/ubi0_6/data_bytes
+> 3149958
+> / # cat /dev/mtd/kernel_0 | wc -c
+> 3149958
+> / # cat /dev/mtdblock/kernel_0 | wc -c
+> 3149824
+>=20
+> On my older UBI platform, the byte count from the
+> mtdblock dev is truncated down to an even multiple
+> of 512.
 
-There was a reason I was perfectly happy to make the change which made
-JFFS2 start requiring fsync() like normal file systems -- it was because
-people should have been doing it _anyway_.
+First of all, gluebi is kind of a hack. Gluebi is a small part of UBI
+which is responsible for emulating MTD devices on top of UBI volumes.
 
-Anyone who was skipping the required sync handling because they 'knew'
-that it didn't matter on JFFS2, even though it didn't cost them anything
-anyway -- and who didn't wake up at 3am every morning in a cold sweat,
-worrying that it might have broken today -- deserves to be taken out
-back and shot.
+Let me describe the situation a little.
 
-When it comes to correctness, people shouldn't have to do anything
-special for different file systems. If there is _anything_ fs-specific
-about the correctness issues, you are doing something WRONG (cf. NFS).
+* Dynamic UBI volumes have volume size parameter, which maps to
+  MTD device size well. I mean, for dynamic volumes, gluebi reports
+  MTD device size to be volume size. Everything is fine.
 
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+* Static volumes are characterized by 2 parameters - volume size
+  and data size. Volume size is how many logical eraseblocks are
+  reserved for this volume. Data size is how many bytes of data this
+  static volume stores.
+
+For static volumes gluebi reports _data size_ as MTD device size. MTD
+model assume that device size is multiple of eraseblocks.But in case of
+MTD device emulated on top of a static UBI volume this is not true. MTD
+size is not multiple of eraseblock size. And this is what confuses
+mtdblock I think.
+
+We cannot report UBI volume size as MTD device size for static volumes,
+because reading beyond data size is prohibited in UBI. It would cause
+I/O errors for mtd device.
+
+On the other hand, MTD device size which is not multiple of eraseblock
+size does not make sense.
+
+So I am not 100% sure how to fix this problem.
+
+Thanks.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
