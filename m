@@ -1,18 +1,24 @@
-Received: from tesla.selinc.com ([12.110.71.2])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KlrOY-0000qe-1y
-	for linux-mtd@lists.infradead.org; Fri, 03 Oct 2008 20:37:02 +0000
-Received: from edison2.selinc.com (edison2.selinc.com [12.110.71.8])
-	by tesla.selinc.com (8.12.11.20060308/8.12.11) with ESMTP id
-	m93KauQI027845
-	for <linux-mtd@lists.infradead.org>; Fri, 3 Oct 2008 13:36:56 -0700
-To: linux-mtd@lists.infradead.org
-Subject: [RFC] Support for > 2Gib MTD
+Received: from yw-out-1718.google.com ([74.125.46.158])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Km5WC-0007rg-4u
+	for linux-mtd@lists.infradead.org; Sat, 04 Oct 2008 11:41:52 +0000
+Received: by yw-out-1718.google.com with SMTP id 5so1111305ywm.72
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 04 Oct 2008 04:41:51 -0700 (PDT)
+Message-ID: <c384c5ea0810040441u77ebf879i8c4a2be8675ca26c@mail.gmail.com>
+Date: Sat, 4 Oct 2008 13:41:50 +0200
+From: "Leon Woestenberg" <leon.woestenberg@gmail.com>
+To: "Haavard Skinnemoen" <haavard.skinnemoen@atmel.com>
+Subject: Re: [PATCH] mtd: AT49BV6416 has swapped erase regions
+In-Reply-To: <20080930142207.72d5edaa@hskinnemo-gx745.norway.atmel.com>
 MIME-Version: 1.0
-Message-ID: <OFBFC97F2E.8869DAF6-ON882574D7.006EFDFB-882574D7.00713C5B@selinc.com>
-From: Bruce_Leonard@selinc.com
-Date: Fri, 3 Oct 2008 13:36:55 -0700
-Content-Type: text/plain; charset="US-ASCII"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <1222775733-6690-1-git-send-email-haavard.skinnemoen@atmel.com>
+	<c384c5ea0809300502h48915058r78a6586968c1ac1a@mail.gmail.com>
+	<20080930142207.72d5edaa@hskinnemo-gx745.norway.atmel.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,56 +28,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-So I'm back to work on this.  My last attempt was shot down in flames 
-because I changed the kernel-user space API.  No worries on that.  Got a 
-new plan.  Gonna' float it out there BEFORE I put a ton of work into it 
-this time.
+Hello Haavard, all,
 
-Here's a rough idea of what I'm thinking.  In .../include/mtd/mtd-abi.h 
-add new 64 bit structs like this:
+this topic has now diverted to u-boot, as Linux is fixed.  I am
+posting in the existing thread to keep the information coherent.
 
-+struct erase_info_user_64 {
-+       uint64_t start;
-+       uint64_t length;
-+}
+On Tue, Sep 30, 2008 at 2:22 PM, Haavard Skinnemoen
+<haavard.skinnemoen@atmel.com> wrote:
+> "Leon Woestenberg" <leon.woestenberg@gmail.com> wrote:
+>> Haavard,
+>> On Tue, Sep 30, 2008 at 1:55 PM, Haavard Skinnemoen
+>> <haavard.skinnemoen@atmel.com> wrote:
+>> > The CFI information read from AT49BV6416 lists the erase regions in the
+>> > wrong order, causing problems when trying to erase or update the first
+>> > or last 64K block.
+>> >
+>> Are there other Atmel designs with this bug or only the chip with this CFI ID?
+>
+> That's a good question. I guess there may be others in the same family
+> with the same bug. I don't really know.
+>
+> The replacement, AT49BV642D, does not have this bug.
+>
+>> I ask, because the check in u-boot is too generic; I found u-boot
+>> wrongly assumes wrong order for another Atmel part, not checking on a
+>> specific CFI ID.
+>
+> That's interesting...especially since u-boot only reads the low byte
+> of the JEDEC ID, so adding a fixup for one particular ID may match tons
+> of chips with 16-bit IDs.
+>
+> I'll have to check the latest u-boot and see if it breaks any of my
+> boards.
+>
+I just checked on a custom design, AP7000 with AT49BV320DT, which
+reports its top boot bit correctly.
+info->device_id == c4 for this part.
 
-+struct mtd_info_user_64 {
-+       ...
-+       uint32_t flags;
-+       uint64_t size;
-+       ...
-+}
+The u-boot flash_fixup_atmel() currently reverses geometry whenever
+the top boot bit is set, which seems wrong:
 
-These new structs would be identical to the old ones execept for the types 
-on a few fields.  To indicate that the new 64 bit interface is to be used 
-I would introduce a new flag for 'struct mtd_info_user_XX->flags', 
-something like this:
+I have to force this to zero to make that custom board work in this
+piece of code:
 
-#define MTD_LARGE_SIZE 0x4000
+/* Check the "top boot" bit in the PRI */
+if (info->ext_addr && !(flash_read_uchar(info, info->ext_addr + 6) & 1))
+  reverse_geometry = 1;
 
-In .../include/linux/mtd.h I would add new fields as follows:
+I was hesitating to come up with a patch, because some of the check is
+#ifdef'd out, and I may have missed
+a u-boot convention that I should layout my sectors as
+bottom-boot-block in u-boot, and reverse_geometry if 'top'?
 
-struct erase_info {
-        ...
-        u_int32 fail_addr;
-+       u_int64_t addr_64;
-+       u_int64_t len_64;
-+       u_int64_t fail_addr_64;
-        u_long time;
-        ...
-}
+Indeed the single byte ID check may need attention. I have to lookup
+the CFI specs to be sure.
 
-struct mtd_info {
-        ...
-        u_int32_t size;
-+       u_int64_t size_64;
-        u_int32_t erasesize;
-        ...
-}
-
-Plus a few new IOCTLs for getting info to/from user space if people want 
-to use it.
-
-Comments?
-
-Bruce
+Regards,
+-- 
+Leon
