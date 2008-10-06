@@ -1,14 +1,14 @@
-Received: from web81802.mail.mud.yahoo.com ([68.142.207.167])
+Received: from web81803.mail.mud.yahoo.com ([68.142.207.168])
 	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Kmv0x-0004MF-JC
-	for linux-mtd@lists.infradead.org; Mon, 06 Oct 2008 18:41:03 +0000
-Date: Mon, 6 Oct 2008 11:41:02 -0700 (PDT)
+	id 1KmvMY-0006g0-0G
+	for linux-mtd@lists.infradead.org; Mon, 06 Oct 2008 19:03:22 +0000
+Date: Mon, 6 Oct 2008 12:03:20 -0700 (PDT)
 From: Curt Scott <curt_scott@yahoo.com>
 Subject: OOB questions
 To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Message-ID: <747772.64619.qm@web81802.mail.mud.yahoo.com>
+Message-ID: <642914.11320.qm@web81803.mail.mud.yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
