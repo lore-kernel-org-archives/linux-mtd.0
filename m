@@ -1,24 +1,19 @@
-Received: from yw-out-1718.google.com ([74.125.46.158])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Km5WC-0007rg-4u
-	for linux-mtd@lists.infradead.org; Sat, 04 Oct 2008 11:41:52 +0000
-Received: by yw-out-1718.google.com with SMTP id 5so1111305ywm.72
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 04 Oct 2008 04:41:51 -0700 (PDT)
-Message-ID: <c384c5ea0810040441u77ebf879i8c4a2be8675ca26c@mail.gmail.com>
-Date: Sat, 4 Oct 2008 13:41:50 +0200
-From: "Leon Woestenberg" <leon.woestenberg@gmail.com>
-To: "Haavard Skinnemoen" <haavard.skinnemoen@atmel.com>
-Subject: Re: [PATCH] mtd: AT49BV6416 has swapped erase regions
-In-Reply-To: <20080930142207.72d5edaa@hskinnemo-gx745.norway.atmel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <1222775733-6690-1-git-send-email-haavard.skinnemoen@atmel.com>
-	<c384c5ea0809300502h48915058r78a6586968c1ac1a@mail.gmail.com>
-	<20080930142207.72d5edaa@hskinnemo-gx745.norway.atmel.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Kmiaw-00039Q-Bu
+	for linux-mtd@lists.infradead.org; Mon, 06 Oct 2008 05:25:22 +0000
+Subject: Re: [RFC] Support for > 2Gib MTD
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Bruce_Leonard@selinc.com
+In-Reply-To: <OFBFC97F2E.8869DAF6-ON882574D7.006EFDFB-882574D7.00713C5B@selinc.com>
+References: <OFBFC97F2E.8869DAF6-ON882574D7.006EFDFB-882574D7.00713C5B@selinc.com>
+Content-Type: text/plain; charset=utf-8
+Date: Mon, 06 Oct 2008 08:24:48 +0300
+Message-Id: <1223270688.8051.78.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,61 +23,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Haavard, all,
+Hi,
 
-this topic has now diverted to u-boot, as Linux is fixed.  I am
-posting in the existing thread to keep the information coherent.
+On Fri, 2008-10-03 at 13:36 -0700, Bruce_Leonard@selinc.com wrote:
+> Here's a rough idea of what I'm thinking.  In .../include/mtd/mtd-abi.h=20
+> add new 64 bit structs like this:
+>=20
+> +struct erase_info_user_64 {
+> +       uint64_t start;
+> +       uint64_t length;
+> +}
+>=20
+> +struct mtd_info_user_64 {
+> +       ...
+> +       uint32_t flags;
+> +       uint64_t size;
+> +       ...
+> +}
+>=20
+> These new structs would be identical to the old ones execept for the type=
+s=20
+> on a few fields.
 
-On Tue, Sep 30, 2008 at 2:22 PM, Haavard Skinnemoen
-<haavard.skinnemoen@atmel.com> wrote:
-> "Leon Woestenberg" <leon.woestenberg@gmail.com> wrote:
->> Haavard,
->> On Tue, Sep 30, 2008 at 1:55 PM, Haavard Skinnemoen
->> <haavard.skinnemoen@atmel.com> wrote:
->> > The CFI information read from AT49BV6416 lists the erase regions in the
->> > wrong order, causing problems when trying to erase or update the first
->> > or last 64K block.
->> >
->> Are there other Atmel designs with this bug or only the chip with this CFI ID?
->
-> That's a good question. I guess there may be others in the same family
-> with the same bug. I don't really know.
->
-> The replacement, AT49BV642D, does not have this bug.
->
->> I ask, because the check in u-boot is too generic; I found u-boot
->> wrongly assumes wrong order for another Atmel part, not checking on a
->> specific CFI ID.
->
-> That's interesting...especially since u-boot only reads the low byte
-> of the JEDEC ID, so adding a fixup for one particular ID may match tons
-> of chips with 16-bit IDs.
->
-> I'll have to check the latest u-boot and see if it breaks any of my
-> boards.
->
-I just checked on a custom design, AP7000 with AT49BV320DT, which
-reports its top boot bit correctly.
-info->device_id == c4 for this part.
+Please, add something like
+uint8_t padding[128]; /* Reserved for future, should be zeroed */
+to the new data structures.
 
-The u-boot flash_fixup_atmel() currently reverses geometry whenever
-the top boot bit is set, which seems wrong:
+>   To indicate that the new 64 bit interface is to be used=20
+> I would introduce a new flag for 'struct mtd_info_user_XX->flags',=20
+> something like this:
+>=20
+> #define MTD_LARGE_SIZE 0x4000
 
-I have to force this to zero to make that custom board work in this
-piece of code:
+No need for this. Because you'll change size of data structures and
+their layout, this is not going to be compatible anyway.
 
-/* Check the "top boot" bit in the PRI */
-if (info->ext_addr && !(flash_read_uchar(info, info->ext_addr + 6) & 1))
-  reverse_geometry = 1;
+> In .../include/linux/mtd.h I would add new fields as follows:
+>=20
+> struct erase_info {
+>         ...
+>         u_int32 fail_addr;
+> +       u_int64_t addr_64;
+> +       u_int64_t len_64;
+> +       u_int64_t fail_addr_64;
+>         u_long time;
+>         ...
+> }
+>=20
+> struct mtd_info {
+>         ...
+>         u_int32_t size;
+> +       u_int64_t size_64;
+>         u_int32_t erasesize;
+>         ...
+> }
 
-I was hesitating to come up with a patch, because some of the check is
-#ifdef'd out, and I may have missed
-a u-boot convention that I should layout my sectors as
-bottom-boot-block in u-boot, and reverse_geometry if 'top'?
+This is what I would avoid doing. I would try to make size 64-bit and
+amend all MTD users if needed.
 
-Indeed the single byte ID check may need attention. I have to lookup
-the CFI specs to be sure.
+> Plus a few new IOCTLs for getting info to/from user space if people want=20
+> to use it.
 
-Regards,
--- 
-Leon
+I do not mind ioctl for this, but dwmw2 expressed a desire to do this
+via sysfs instead of ioctl...
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
