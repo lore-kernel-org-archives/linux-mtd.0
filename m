@@ -1,19 +1,14 @@
-Received: from mail-gx0-f10.google.com ([209.85.217.10])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KmsUw-00074C-O7
-	for linux-mtd@lists.infradead.org; Mon, 06 Oct 2008 15:59:50 +0000
-Received: by gxk3 with SMTP id 3so5331407gxk.18
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Oct 2008 08:59:41 -0700 (PDT)
-Message-ID: <b816c8220810060859x2af5178dnc23c6cca72a5a17d@mail.gmail.com>
-Date: Mon, 6 Oct 2008 09:59:41 -0600
-From: "Steve Hurst" <creepingmalaise@gmail.com>
+Received: from web81803.mail.mud.yahoo.com ([68.142.207.168])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Kmv0w-0004M9-5f
+	for linux-mtd@lists.infradead.org; Mon, 06 Oct 2008 18:41:02 +0000
+Date: Mon, 6 Oct 2008 11:40:53 -0700 (PDT)
+From: Curt Scott <curt_scott@yahoo.com>
+Subject: OOB questions
 To: linux-mtd@lists.infradead.org
-Subject: MTD How-to?
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Content-Type: text/plain; charset=us-ascii
+Message-ID: <843688.86807.qm@web81803.mail.mud.yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +18,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+Hi,
 
-I'm an MTD noob trying to gain read/write access to a chip that
-appears to be supported in jedec_probe.c (49LF008A), using a mostly
-unchanged debian 2.6.24 kernel.  I've enabled everything I think I
-need to in the kernel, but can't seem to get things to recognize the
-chip.
+I am writing a MTD NAND (2K page) driver module for Linux 2.6.23. 
+My NAND hardware controller performs all the ECC control
+under-the-hood.  Although is has OOB bytes available there are some
+limitaitions...
 
-I've reviewed a couple of pretty old how-to's (2.2/2.4 days old), and
-visited the available pages at
-http://www.linux-mtd.infradead.org/doc/general.html, but can't find
-anything modern that lays out the steps for getting a device up and
-going.
+L1.) Page data and OOB data must be written at the same time.
+L2.) OOB data is limited to 16 bytes / page (of a 2k page).
 
-Can anyone point me at relevant documentation or a how-to?
+I have some questions about the OOB requirements for MTD/JFFS2 combo.
 
-TIA!
+Q1.) Does MTD/JFFS2 require the ability to read/write OOB bytes?  
+     Or can the system be set up operate with no OOB available?
+Q2.) Is it a requirement for OOB and non-OOB writes to happen independently?
+
+thank you for you help,
+Curt
