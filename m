@@ -1,17 +1,16 @@
-Received: from mta-blr1.sasken.com ([203.200.200.72])
+Received: from mta-blr2.sasken.com ([164.164.56.19])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Kn3wu-0006JU-LF
-	for linux-mtd@lists.infradead.org; Tue, 07 Oct 2008 04:13:29 +0000
+	id 1Kn5Kn-0001Tv-UG
+	for linux-mtd@lists.infradead.org; Tue, 07 Oct 2008 05:42:15 +0000
 Content-Class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Subject: RE: OOB questions
-Date: Tue, 7 Oct 2008 09:41:01 +0530
-Message-ID: <4F3EFCBE1C926F48A576A096FE1D0E176A0BD8@EXGZ02.sasken.com>
-References: <747772.64619.qm@web81802.mail.mud.yahoo.com>
+Subject: RE: MTD How-to?
+Date: Tue, 7 Oct 2008 09:35:01 +0530
+Message-ID: <4F3EFCBE1C926F48A576A096FE1D0E176A0BCD@EXGZ02.sasken.com>
+References: <b816c8220810060859x2af5178dnc23c6cca72a5a17d@mail.gmail.com>
 From: Ravi Vasarla <ravi.vasarla@sasken.com>
-To: "Curt Scott" <curt_scott@yahoo.com>,
-	<linux-mtd@lists.infradead.org>
+To: "Steve Hurst" <creepingmalaise@gmail.com>, <linux-mtd@lists.infradead.org>
 Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,43 +23,42 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-Yes JAFFS2 or YAFFS2 will require the ability to read or write in OOB
-bytes, refer also yaffs2 call flow for read and write operations. It is
-upto the driver or file system how it is identifying the OOB area and
-doing the operations so that file system should aware of actual read or
-write size in NAND in below it is like 2048 byte + 16 Bytes of oob area.
- While doing the raw block device read or write operation, in that case
-it is not required to send the OOB details. Also there is no such
-requirement for OOB and non OOB happens independently.
+Please check with weather given flash chip is supports the jedec probe
+and command sets. Since it quite older probe and command set method, now
+the most of the chip sets supports the CFI probe and cfi command sets 1,
+2 or 3.
+ Please write the simple probe functions which consist of probe and
+device add api and see the proc entry or konsole message for that. And
+also please verify weather it driver registered or not. If have any
+problem please provide the details of chip set and the flow of the code
+so that can understand the problem easily.
 
 Regards,
-Ravi=20
+Ravi
 
 -----Original Message-----
 From: linux-mtd-bounces@lists.infradead.org
-[mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Curt Scott
-Sent: Tuesday, October 07, 2008 12:11 AM
+[mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Steve Hurst
+Sent: Monday, October 06, 2008 9:30 PM
 To: linux-mtd@lists.infradead.org
-Subject: OOB questions
+Subject: MTD How-to?
 
-Hi,
+Hi All,
 
-I am writing a MTD NAND (2K page) driver module for Linux 2.6.23.=20
-My NAND hardware controller performs all the ECC control under-the-hood.
-Although is has OOB bytes available there are some limitaitions...
+I'm an MTD noob trying to gain read/write access to a chip that appears
+to be supported in jedec_probe.c (49LF008A), using a mostly unchanged
+debian 2.6.24 kernel.  I've enabled everything I think I need to in the
+kernel, but can't seem to get things to recognize the chip.
 
-L1.) Page data and OOB data must be written at the same time.
-L2.) OOB data is limited to 16 bytes / page (of a 2k page).
+I've reviewed a couple of pretty old how-to's (2.2/2.4 days old), and
+visited the available pages at
+http://www.linux-mtd.infradead.org/doc/general.html, but can't find
+anything modern that lays out the steps for getting a device up and
+going.
 
-I have some questions about the OOB requirements for MTD/JFFS2 combo.
+Can anyone point me at relevant documentation or a how-to?
 
-Q1.) Does MTD/JFFS2 require the ability to read/write OOB bytes? =20
-     Or can the system be set up operate with no OOB available?
-Q2.) Is it a requirement for OOB and non-OOB writes to happen
-independently?
-
-thank you for you help,
-Curt
+TIA!
 
 ______________________________________________________
 Linux MTD discussion mailing list
