@@ -1,21 +1,21 @@
-Received: from rv-out-0708.google.com ([209.85.198.246])
+Received: from mail-gx0-f10.google.com ([209.85.217.10])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KnNRz-0004El-9L
-	for linux-mtd@lists.infradead.org; Wed, 08 Oct 2008 01:02:51 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so5405486rvf.42
+	id 1KnOiI-0000hB-Hv
+	for linux-mtd@lists.infradead.org; Wed, 08 Oct 2008 02:23:47 +0000
+Received: by gxk3 with SMTP id 3so7768061gxk.18
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Oct 2008 18:02:49 -0700 (PDT)
-Message-ID: <8bd0f97a0810071802t52bc60fs6a230e30d7ed1c8f@mail.gmail.com>
-Date: Tue, 7 Oct 2008 21:02:49 -0400
-From: "Mike Frysinger" <vapier.adi@gmail.com>
-To: "Mitch Davis" <mjd-linux-mtd@afork.com>
-Subject: Re: mtd-utils: fec.c uses bcopy()
-In-Reply-To: <8956d4ca0810071727i63554837k923a0091b3ef9bd0@mail.gmail.com>
+	Tue, 07 Oct 2008 19:23:46 -0700 (PDT)
+Message-ID: <e8775dd00810071923p1b570432k4f5fae04de2fa9af@mail.gmail.com>
+Date: Wed, 8 Oct 2008 10:23:45 +0800
+From: "Jason Liu" <liu.h.jason@gmail.com>
+To: "Curt Scott" <curt_scott@yahoo.com>
+Subject: Re: OOB questions
+In-Reply-To: <825594.10285.qm@web81806.mail.mud.yahoo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <8956d4ca0810071727i63554837k923a0091b3ef9bd0@mail.gmail.com>
+References: <825594.10285.qm@web81806.mail.mud.yahoo.com>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -26,21 +26,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 7, 2008 at 20:27, Mitch Davis wrote:
-> I use buildroot to build my embedded Linux.  My run-time library is
-> uClibc, which doesn't provide bcopy().
-
-actually it does.  you just disabled support for it.
-
-> fec.c in mtd-utils uses bcopy(), so mtd-utils doesn't compile for me.
-> I'd like to fix this.
+2008/10/8 Curt Scott <curt_scott@yahoo.com>:
+> Hi Jason,
 >
->  - Should I rewrite fec.c so it uses memcpy instead?
->  - Should I just add #define NEED_BCOPY to fec.c?
->  - Should I leave fec.c unchanged and add -DNEED_BCOPY to the Makefile
-> (which would be passed to every compile?)
+> Thank you for your answers they are very helpful.  I now understand that the system I am working with is comparable to an MLC NAND system.  I have a couple more questions.
+>
+> Q1.) From what I can find looking around, my only option is to incorporate a NAND MLC patch (support for NOP=1), Is this my only option?
+> Example (http://patchwork.ozlabs.org/patch/623/)
+>
+Jffs2 will only use oob to store the cleanmarker.You can search for a
+patch with "jffs2 not use oob patch"
 
-a simple sed can fix the code as the only difference between bcopy()
-and memcpy() is the argument order.  ifdef's are pointless/ugly in
-this case.
--mike
+> Q2.) I did try and report through add_mtd_device() that mtd->oobsize=0 and mtd->oobavail=0.  After I did that, I found that the JFFS2/MTD system was calling the write/writev functions with less than a page size.
+> Example:
+> - write: addr=0, size=44
+> - write: addr=44, size=32
+>
+> Is this expected behavior?
+>
+This is correct since jffs2 has one page cache machanism.
+
+> Q3.) I have heard that it is possible to disable the OOB functionality.  Is this true?  If so, is there a way to make it work for the MLC NAND model?
+>
+Jffs2 does not support MLC nand flash if not apply some patch. I have
+found two patches so far. I once use the patch with not use oob. With
+this patch, jffs2 will not use oob to store cleanmarker.
+
+> Thank you for your help,
+> Curt
+>
+>
+>
+>
+> ----- Original Message ----
+> From: Jason Liu <liu.h.jason@gmail.com>
+> To: Curt Scott <curt_scott@yahoo.com>
+> Cc: linux-mtd@lists.infradead.org
+> Sent: Monday, October 6, 2008 9:04:33 PM
+> Subject: Re: OOB questions
+>
+> 2008/10/7 Curt Scott <curt_scott@yahoo.com>:
+>> Hi,
+>>
+>> I am writing a MTD NAND (2K page) driver module for Linux 2.6.23.
+>> My NAND hardware controller performs all the ECC control
+>> under-the-hood.  Although is has OOB bytes available there are some
+>> limitaitions...
+>>
+>> L1.) Page data and OOB data must be written at the same time.
+> Not only your NFC but also some others require to written page data
+> and oob data
+> at the same time espically for large page size nand flash since it use oob to
+> store the ECC data.
+>> L2.) OOB data is limited to 16 bytes / page (of a 2k page).
+>>
+> It should be ok for jffs2 filesystem.
+>
+>> I have some questions about the OOB requirements for MTD/JFFS2 combo.
+>>
+>> Q1.) Does MTD/JFFS2 require the ability to read/write OOB bytes?
+>>     Or can the system be set up operate with no OOB available?
+> jffs2 can work without oob.
+>> Q2.) Is it a requirement for OOB and non-OOB writes to happen independently?
+>>
+> May provide the interface to MTD layer. For MLC Nand flash, it's
+> impossible to write data and oob indepently since NOP is 1.
+> The file system should take care not  to write it without erase it for MLC.
+>
+>> thank you for you help,
+>> Curt
+>>
+>> ______________________________________________________
+>> Linux MTD discussion mailing list
+>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
+>
