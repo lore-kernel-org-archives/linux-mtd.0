@@ -1,23 +1,17 @@
-Received: from mms3.broadcom.com ([216.31.210.19])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KnT5S-0008W5-MA
-	for linux-mtd@lists.infradead.org; Wed, 08 Oct 2008 07:04:00 +0000
-Received: from mail-irva-8.broadcom.com (mail-irva-8 [10.11.18.52]) by
-	mail-irva-10.broadcom.com (Postfix) with ESMTP id 0572D2B0 for
-	<linux-mtd@lists.infradead.org>; Wed, 8 Oct 2008 00:03:44 -0700 (PDT)
-Received: from NT-SJCA-0752.brcm.ad.broadcom.com (nt-sjca-0752
-	[10.16.192.222]) by mail-sj1-12.sj.broadcom.com (Postfix) with ESMTP id
-	E00CB20501 for <linux-mtd@lists.infradead.org>; Wed, 8 Oct 2008
-	00:03:40 -0700 (PDT)
-From: "Ramgopal Kota" <rkota@broadcom.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Wed, 8 Oct 2008 00:03:21 -0700
-Subject: MTD Erase Size usage in JFFS2
-Message-ID: <6C370B347C3FE8438C9692873287D2E1100B4BF956@SJEXCHCCR01.corp.ad.broadcom.com>
-Content-Language: en-US
+Received: from mta-blr1.sasken.com ([203.200.200.72])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KnTNi-0004Yf-8Q
+	for linux-mtd@lists.infradead.org; Wed, 08 Oct 2008 07:22:51 +0000
+Content-Class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
+Subject: RE: MTD Erase Size usage in JFFS2
+Date: Wed, 8 Oct 2008 12:52:46 +0530
+Message-ID: <4F3EFCBE1C926F48A576A096FE1D0E176A0FD9@EXGZ02.sasken.com>
+References: <6C370B347C3FE8438C9692873287D2E1100B4BF956@SJEXCHCCR01.corp.ad.broadcom.com>
+From: Ravi Vasarla <ravi.vasarla@sasken.com>
+To: "Ramgopal Kota" <rkota@broadcom.com>,
+	<linux-mtd@lists.infradead.org>
 Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -28,19 +22,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Ramgopal,
+
+I guess there is no such option other than -e (Erase block size).
+Usually it is same as your block size or some times block size itself
+refer as erase size only. Provide the block size with -e option i.e.
+erase block size similar type.
+
+Regards,
+Ravi
+
+-----Original Message-----
+From: linux-mtd-bounces@lists.infradead.org
+[mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Ramgopal
+Kota
+Sent: Wednesday, October 08, 2008 12:33 PM
+To: linux-mtd@lists.infradead.org
+Subject: MTD Erase Size usage in JFFS2
+
 Hi,
 
-our board is having a 8MB flash and we are using JFFS2 as a image storage.
-Due to lead times we decided to use 4 vendors flash chips of same size, the=
-y all work fine.
+our board is having a 8MB flash and we are using JFFS2 as a image
+storage.
+Due to lead times we decided to use 4 vendors flash chips of same size,
+they all work fine.
 Each flash chip has different sector sizes.
 
- As part of  manufacturing  process, we took a working image on  one flash =
-and burn it in all  different vendor flashes,
- due to sector size mishap  they are not working as intended.
+ As part of  manufacturing  process, we took a working image on  one
+flash and burn it in all  different vendor flashes,  due to sector size
+mishap  they are not working as intended.
 
-I want to know if I can specify something similar to "-e" option in mkfs.jf=
-fs2 where I can specify the block size.
+I want to know if I can specify something similar to "-e" option in
+mkfs.jffs2 where I can specify the block size.
 
 Thanks and Regards,
 Ramgopal Kota
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SASKEN BUSINESS DISCLAIMER
+-------------------------
+This message may contain confidential, proprietary or legally privileged in=
+formation. In=20
+case you are not the original intended Recipient of the message, you must n=
+ot, directly or=20
+indirectly, use, Disclose, distribute, print, or copy any part of this mess=
+age and you are=20
+requested to delete it and inform the sender. Any views expressed in this m=
+essage are=20
+those of the individual sender unless otherwise stated. Nothing contained i=
+n this message=20
+shall be construed as an offer or acceptance of any offer by Sasken Communi=
+cation=20
+Technologies Limited ("Sasken") unless sent with that express intent and wi=
+th due=20
+authority of Sasken. Sasken has taken enough precautions to prevent the spr=
+ead of=20
+viruses. However the company accepts no liability for any damage caused by =
+any virus=20
+transmitted by this email
