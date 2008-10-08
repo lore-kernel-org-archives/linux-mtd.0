@@ -1,22 +1,20 @@
-Received: from wx-out-0506.google.com ([66.249.82.226])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KnYRr-0004zb-GV
-	for linux-mtd@lists.infradead.org; Wed, 08 Oct 2008 12:47:27 +0000
-Received: by wx-out-0506.google.com with SMTP id s15so856817wxc.24
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Oct 2008 05:47:26 -0700 (PDT)
-Date: Wed, 8 Oct 2008 08:46:07 -0400
-From: Josh Boyer <jwboyer@gmail.com>
-To: Michel Stempin <michel.stempin@telecom-design.com>
-Subject: Re: [PATCH] [MTD] gen_probe.c: Probe chips in decreasing device
-	size (most significant first)
-Message-ID: <20081008124607.GD3447@yoda.jdub.homelinux.org>
-References: <1221390552.25179.14.camel@Mikeul>
+Received: from 81-7-68-229.static.zebra.lt ([81.7.68.229] helo=teltonika.lt)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KnZyo-00008Y-Rp
+	for linux-mtd@lists.infradead.org; Wed, 08 Oct 2008 14:25:35 +0000
+Message-ID: <48ECC2D9.1070606@teltonika.lt>
+Date: Wed, 08 Oct 2008 17:25:29 +0300
+From: Paulius Zaleckas <paulius.zaleckas@teltonika.lt>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1221390552.25179.14.camel@Mikeul>
-Cc: linux-mtd@lists.infradead.org
+To: Mike Rapoport <mike@compulab.co.il>
+Subject: Re: [PATCH] [MTD] [NAND] GPIO NAND flash driver
+References: <48EC4CC5.5030809@compulab.co.il>
+In-Reply-To: <48EC4CC5.5030809@compulab.co.il>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Russ Dill <russ.dill@gmail.com>, linux-mtd <linux-mtd@lists.infradead.org>,
+	Ben Dooks <ben-linux-arm@fluff.org>, David Woodhouse <dwmw2@infradead.org>,
+	Russell King - ARM Linux <linux@arm.linux.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,15 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Sep 14, 2008 at 01:09:12PM +0200, Michel Stempin wrote:
->Probe chips in decreasing device size to detect most significant chip
->IDs first in case there are two chips with the same LSB.
->
->This case has been found between SST39VF3201 (Mfr: 0x0020, Id: 0x235B)
->and SST49LF080A (Mfr: 0x0020, Id: 0x005B) chips.
->
->Signed-off-by: Michel Stempin <michel.stempin@wanadoo.fr>
+Mike Rapoport wrote:
+> David,
+> Can you please review and ACK the below patch?
+> 
+> The patch adds support for NAND flashes connected to GPIOs.
+> 
+>  drivers/mtd/nand/Kconfig      |    6 +
+>  drivers/mtd/nand/Makefile     |    1 +
+>  drivers/mtd/nand/gpio.c       |  367 +++++++++++++++++++++++++++++++++++++++++
+>  include/linux/mtd/nand-gpio.h |   19 ++
+>  4 files changed, 393 insertions(+), 0 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index 41f361c..73e7a6e 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -56,6 +56,12 @@ config MTD_NAND_H1900
+>  	help
+>  	  This enables the driver for the iPAQ h1900 flash.
+> 
+> +config MTD_NAND_GPIO
+> +	tristate "GPIO NAND Flash driver"
+> +	depends on ARM
 
-Your patch is word-wrapped.
+&& GENERIC_GPIO
 
-josh
+> +	help
+> +	  This enables a GPIO based NAND flash driver.
+> +
+>  config MTD_NAND_SPIA
+>  	tristate "NAND Flash device on SPIA board"
+>  	depends on ARCH_P720T
