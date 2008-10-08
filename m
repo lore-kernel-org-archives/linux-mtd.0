@@ -1,26 +1,18 @@
-Received: from rv-out-0708.google.com ([209.85.198.250])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KnTUd-0005MK-LM
-	for linux-mtd@lists.infradead.org; Wed, 08 Oct 2008 07:29:59 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so5563005rvf.42
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Oct 2008 00:29:58 -0700 (PDT)
-Message-ID: <8bd0f97a0810080029o6f8250cfi734d19191eb92c1d@mail.gmail.com>
-Date: Wed, 8 Oct 2008 03:29:58 -0400
-From: "Mike Frysinger" <vapier.adi@gmail.com>
-To: "Russell King - ARM Linux" <linux@arm.linux.org.uk>
-Subject: Re: [PATCH] [MTD] [NAND] GPIO NAND flash driver
-In-Reply-To: <20081008072843.GA19401@flint.arm.linux.org.uk>
+Received: from mta-blr2.sasken.com ([164.164.56.19])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KnTV5-0005mr-6V
+	for linux-mtd@lists.infradead.org; Wed, 08 Oct 2008 07:30:28 +0000
+Content-Class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <48EC4CC5.5030809@compulab.co.il>
-	<8bd0f97a0810072320h5361c7d3q219aeaf9407a5293@mail.gmail.com>
-	<20081008072843.GA19401@flint.arm.linux.org.uk>
-Cc: Russ Dill <russ.dill@gmail.com>, linux-mtd <linux-mtd@lists.infradead.org>,
-	Ben Dooks <ben-linux-arm@fluff.org>, David Woodhouse <dwmw2@infradead.org>,
-	Mike Rapoport <mike@compulab.co.il>
+Content-Type: text/plain; charset="us-ascii"
+Subject: RE: MTD Erase Size usage in JFFS2
+Date: Wed, 8 Oct 2008 13:00:01 +0530
+Message-ID: <4F3EFCBE1C926F48A576A096FE1D0E176A0FE3@EXGZ02.sasken.com>
+References: <6C370B347C3FE8438C9692873287D2E1100B4BF956@SJEXCHCCR01.corp.ad.broadcom.com>
+From: Ravi Vasarla <ravi.vasarla@sasken.com>
+To: "Ramgopal Kota" <rkota@broadcom.com>,
+	<linux-mtd@lists.infradead.org>
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,37 +22,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 8, 2008 at 03:28, Russell King - ARM Linux wrote:
-> On Wed, Oct 08, 2008 at 02:20:13AM -0400, Mike Frysinger wrote:
->> On Wed, Oct 8, 2008 at 02:01, Mike Rapoport wrote:
->> > +/* gpio_nand_dosync()
->> > + *
->> > + * needed due to bus-reordering within the PXA itself (see section on
->> > + * I/O ordering in PXA manual (section 2.3, p35)
->> > + */
->> > +static void gpio_nand_dosync(struct gpiomtd *gpiomtd)
->> > +{
->> > +       unsigned long tmp;
->> > +
->> > +       if (gpiomtd->io_sync) {
->> > +               /*
->> > +                * this should generate the read, followed by
->> > +                * something that depends on the read
->> > +                */
->> > +               tmp = readl(gpiomtd->io_sync);
->> > +               asm volatile("mov %1, %0\n" : "=r" (tmp) : "r" (tmp));
->> > +       }
->> > +}
->>
->> there isnt much point in attempting to write a generic solution if
->> you're just going to turn around and stick straight assembly in the
->> middle of it.  why not use a real arch-generic method like a memory
->> barrier.
->
-> Linux memory barriers don't cater for what's required here.  What's
-> required is what's there - a read from a separate region with a
-> dependency on that read.  Linux has no such barrier.
+I think would have to create different images where as have to specify
+correct erase block size to give the better results.
 
-thanks, this kind of comment in the source would be useful ... but
-what is also needed is '#ifdef __arm__'
--mike
+Regards,
+Ravi=20
+
+-----Original Message-----
+From: linux-mtd-bounces@lists.infradead.org
+[mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Ramgopal
+Kota
+Sent: Wednesday, October 08, 2008 12:33 PM
+To: linux-mtd@lists.infradead.org
+Subject: MTD Erase Size usage in JFFS2
+
+Hi,
+
+our board is having a 8MB flash and we are using JFFS2 as a image
+storage.
+Due to lead times we decided to use 4 vendors flash chips of same size,
+they all work fine.
+Each flash chip has different sector sizes.
+
+ As part of  manufacturing  process, we took a working image on  one
+flash and burn it in all  different vendor flashes,  due to sector size
+mishap  they are not working as intended.
+
+I want to know if I can specify something similar to "-e" option in
+mkfs.jffs2 where I can specify the block size.
+
+Thanks and Regards,
+Ramgopal Kota
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+SASKEN BUSINESS DISCLAIMER
+-------------------------
+This message may contain confidential, proprietary or legally privileged in=
+formation. In=20
+case you are not the original intended Recipient of the message, you must n=
+ot, directly or=20
+indirectly, use, Disclose, distribute, print, or copy any part of this mess=
+age and you are=20
+requested to delete it and inform the sender. Any views expressed in this m=
+essage are=20
+those of the individual sender unless otherwise stated. Nothing contained i=
+n this message=20
+shall be construed as an offer or acceptance of any offer by Sasken Communi=
+cation=20
+Technologies Limited ("Sasken") unless sent with that express intent and wi=
+th due=20
+authority of Sasken. Sasken has taken enough precautions to prevent the spr=
+ead of=20
+viruses. However the company accepts no liability for any damage caused by =
+any virus=20
+transmitted by this email
