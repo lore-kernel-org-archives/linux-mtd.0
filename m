@@ -1,20 +1,14 @@
-Received: from 81-7-68-229.static.zebra.lt ([81.7.68.229] helo=teltonika.lt)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KnZyo-00008Y-Rp
-	for linux-mtd@lists.infradead.org; Wed, 08 Oct 2008 14:25:35 +0000
-Message-ID: <48ECC2D9.1070606@teltonika.lt>
-Date: Wed, 08 Oct 2008 17:25:29 +0300
-From: Paulius Zaleckas <paulius.zaleckas@teltonika.lt>
+Received: from web58908.mail.re1.yahoo.com ([66.196.100.237])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KnbS4-0007tV-30
+	for linux-mtd@lists.infradead.org; Wed, 08 Oct 2008 15:59:52 +0000
+Date: Wed, 8 Oct 2008 08:59:50 -0700 (PDT)
+From: Philip Rakity <prakity@yahoo.com>
+Subject: 2GB Nand flash MTD  question
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-To: Mike Rapoport <mike@compulab.co.il>
-Subject: Re: [PATCH] [MTD] [NAND] GPIO NAND flash driver
-References: <48EC4CC5.5030809@compulab.co.il>
-In-Reply-To: <48EC4CC5.5030809@compulab.co.il>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Russ Dill <russ.dill@gmail.com>, linux-mtd <linux-mtd@lists.infradead.org>,
-	Ben Dooks <ben-linux-arm@fluff.org>, David Woodhouse <dwmw2@infradead.org>,
-	Russell King - ARM Linux <linux@arm.linux.org.uk>
+Content-Type: text/plain; charset=us-ascii
+Message-ID: <46875.40483.qm@web58908.mail.re1.yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +18,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Mike Rapoport wrote:
-> David,
-> Can you please review and ACK the below patch?
-> 
-> The patch adds support for NAND flashes connected to GPIOs.
-> 
->  drivers/mtd/nand/Kconfig      |    6 +
->  drivers/mtd/nand/Makefile     |    1 +
->  drivers/mtd/nand/gpio.c       |  367 +++++++++++++++++++++++++++++++++++++++++
->  include/linux/mtd/nand-gpio.h |   19 ++
->  4 files changed, 393 insertions(+), 0 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index 41f361c..73e7a6e 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -56,6 +56,12 @@ config MTD_NAND_H1900
->  	help
->  	  This enables the driver for the iPAQ h1900 flash.
-> 
-> +config MTD_NAND_GPIO
-> +	tristate "GPIO NAND Flash driver"
-> +	depends on ARM
 
-&& GENERIC_GPIO
+I have also been looking at 2GB flash support in MTD and have something barely working.  Upon reflection it seems that the approach in MTD to deal with real flash size, erase size, page size in real units eg (2GB, 256K, 2048 bytes) causes lots of overflow issues for items that need to fit in a 4 byte field.   In my case the size of my chip is reported as 0x8000 0000 but there are 2 chips so the real size is 0 (overflow). 
 
-> +	help
-> +	  This enables a GPIO based NAND flash driver.
-> +
->  config MTD_NAND_SPIA
->  	tristate "NAND Flash device on SPIA board"
->  	depends on ARCH_P720T
+I was wondering is anyone has looked at redoing MTD to use the "shifted down" values internally and only returning the real values to user space when needed.    This is an a solution that I am going to explore over the next few days. 
+
+Any thoughts ?
+
+Philip
+
+
+
+      
