@@ -1,24 +1,22 @@
-Received: from rv-out-0708.google.com ([209.85.198.243])
+Received: from rv-out-0708.google.com ([209.85.198.251])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KnOwv-0001aO-Vc
-	for linux-mtd@lists.infradead.org; Wed, 08 Oct 2008 02:38:54 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so5447833rvf.42
+	id 1KnPqR-0005KL-1U
+	for linux-mtd@lists.infradead.org; Wed, 08 Oct 2008 03:36:15 +0000
+Received: by rv-out-0708.google.com with SMTP id b17so5472316rvf.42
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Oct 2008 19:38:52 -0700 (PDT)
-Message-ID: <8bd0f97a0810071938s3366f340redc61e87e6b020b8@mail.gmail.com>
-Date: Tue, 7 Oct 2008 22:38:52 -0400
-From: "Mike Frysinger" <vapier.adi@gmail.com>
-To: "Mitch Davis" <mjd-linux-mtd@afork.com>
-Subject: Re: mtd-utils: fec.c uses bcopy()
-In-Reply-To: <8956d4ca0810071936p21240f4dn89e161c6ef07847c@mail.gmail.com>
+	Tue, 07 Oct 2008 20:36:13 -0700 (PDT)
+Message-ID: <8f6e22a70810072036r515b00f9p4a8e23b5a456265c@mail.gmail.com>
+Date: Wed, 8 Oct 2008 11:36:13 +0800
+From: "zheng shi" <neversetsun@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [JFFS2] Request help on EBS option in Linux-2.6.21.5
+In-Reply-To: <1223017438.3328.14.camel@macbook.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <8956d4ca0810071727i63554837k923a0091b3ef9bd0@mail.gmail.com>
-	<8bd0f97a0810071802t52bc60fs6a230e30d7ed1c8f@mail.gmail.com>
-	<8956d4ca0810071936p21240f4dn89e161c6ef07847c@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
+References: <8f6e22a70810011900x188b2d85j90d125a707a0cf09@mail.gmail.com>
+	<1223017438.3328.14.camel@macbook.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,27 +26,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 7, 2008 at 22:36, Mitch Davis wrote:
-> On Wed, Oct 8, 2008 at 12:02 PM, Mike Frysinger wrote:
->> On Tue, Oct 7, 2008 at 20:27, Mitch Davis wrote:
->>> fec.c in mtd-utils uses bcopy(), so mtd-utils doesn't compile for me.
->>> I'd like to fix this.
->>>
->>>  - Should I rewrite fec.c so it uses memcpy instead?
->>>  - Should I just add #define NEED_BCOPY to fec.c?
->>>  - Should I leave fec.c unchanged and add -DNEED_BCOPY to the Makefile
->>> (which would be passed to every compile?)
->>
->> a simple sed can fix the code as the only difference between bcopy()
->> and memcpy() is the argument order.  ifdef's are pointless/ugly in
->> this case.
->
-> I agree.  I've attached a diff that makes this change.
->
-> It compiles with no warnings, but I have no way of testing it.  Any
-> suggestions what to do next?
+I got a little confused about making an empty file system.
+I think "flash_eraseall /dev/mtdX" will do, but I get messages like:
 
-use `git diff` to generate a diff instead of posting the entire file
-as an attachment.  really you should use git to send the patch, but if
-that's too much for you, just post the diff.
--mike
+...
+JFFS2: Erase block at 0x03f40000 is not formatted. It will be erased
+JFFS2: Erase block at 0x03f80000 is not formatted. It will be erased
+JFFS2: Erase block at 0x03fc0000 is not formatted. It will be erased
+Cowardly refusing to erase blocks on filesystem with no valid JFFS2 nodes
+empty_blocks 0, bad_blocks 0, c->nr_blocks 256
+
+So I changed my way:
+1. mkdir empty
+2. mkfs.jffs2 -e 0x40000 -s 0x800 --pad=0x40000 -n -d empty/ -o img/emtpy.img
+(-p 0x40000 seems not to work, it just generates an image with zero
+size, only long option --pad generates an image with 256*1024 byte)
+3. nandwrite -a -p -m /dev/mtd3 img/empty.img
+
+Have I mistaken anything?
+
+BTW,
+My NAND flash's parameter:
+page size: 2KB
+oob size: 64B
+Block size: 256KB
+
+On Fri, Oct 3, 2008 at 3:03 PM, David Woodhouse <dwmw2@infradead.org> wrote:
+> On Thu, 2008-10-02 at 10:00 +0800, zheng shi wrote:
+>>
+>>
+>> I'm using JFFS2 in linux-2.6.21.5.
+>>
+>> When I enabled JFFS2 summary support (EXPERIMENTAL) option, the EBS
+>> mechanism did promote mount time.
+>> But unfortunately files (size>10k) couldn't be written on flash
+>> permanently, i.e., though cp was done, but when remount the file just
+>> copied disappeared.
+>
+> That's strange. Can you reproduce on an empty file system? Just mount it
+> empty, write the large file, then unmount. Take a snapshot of the
+> contents of the flash. Then mount it, confirm that the file is missing,
+> and show me the contents of the flash.
+>
+> Also, build your kernel with CONFIG_JFFS2_FS_DEBUG=1 and capture all the
+> debug output (over a serial port) when you mount the offending file
+> system.
+>
+> The 2.6.21.5 kernel isn't particularly interesting though -- please try
+> something more recent, first.
+>
+>> I have tried -o sync with mount option.
+>
+> That should make no difference.
+>
+> --
+> David Woodhouse                            Open Source Technology Centre
+> David.Woodhouse@intel.com                              Intel Corporation
+>
+>
+
+
+
+-- 
+Regards, neversetsun
