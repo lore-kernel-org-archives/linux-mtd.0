@@ -1,8 +1,8 @@
-Date: Wed, 8 Oct 2008 22:27:34 +0100 (BST)
+Date: Wed, 8 Oct 2008 22:29:41 +0100 (BST)
 From: Alexey Korolev <akorolev@infradead.org>
 To: linux-mtd@lists.infradead.org
-Subject: [RFC/PATCH 3/7] LPDDR qinfo probing.
-Message-ID: <alpine.LFD.1.10.0810082225460.13328@casper.infradead.org>
+Subject: [RFC/PATCH 4/8] LPDDR QINFO records definitions
+Message-ID: <alpine.LFD.1.10.0810082227360.13328@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: nico@cam.org, dwmw2@infradead.org
@@ -15,275 +15,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-LPDDR flash chips are based on completely new kind of chips probing.
-Device capabilities are available via special request.
-We sent field request command which contains Major and Minor numbers - and
-recieve corresponend value.
-All requests are performed within PFOW window.
-Detailed information about qinfo records can be found here:
-http://www.numonyx.com/Documents/Datasheets/DS-315768_Velocity-Discrete.pdf
+There are declaraton of structures and macros definitions necessary for
+operations with QINFO in this patch.
 
 Signed-off-by: Alexey Korolev <akorolev@infradead.org>
 ---
 
-diff --git a/drivers/mtd/lpddr/qinfo_probe.c b/drivers/mtd/lpddr/qinfo_probe.c
+diff --git a/include/linux/mtd/qinfo.h b/include/linux/mtd/qinfo.h
 new file mode 100644
-index 0000000..475b728
+index 0000000..c8f91ca
 --- /dev/null
-+++ b/drivers/mtd/lpddr/qinfo_probe.c
-@@ -0,0 +1,255 @@
-+/*
-+ * Probing flash chips with QINFO records.
-+ * (C) 2008 Korolev Alexey <akorolev@infradead.org>
-+ * (C) 2008 Vasiliy Leonenko <vasiliy.leonenko@gmail.com>
-+ * 
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * as published by the Free Software Foundation; either version 2
-+ * of the License, or (at your option) any later version.
-+ * 
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ * 
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 
-+ * 02110-1301, USA.
-+ */
-+#include <linux/module.h>
-+#include <linux/types.h>
-+#include <linux/kernel.h>
-+#include <linux/init.h>
-+#include <linux/errno.h>
-+#include <linux/slab.h>
-+#include <linux/interrupt.h>
-+
-+#include <linux/mtd/xip.h>
++++ b/include/linux/mtd/qinfo.h
+@@ -0,0 +1,91 @@
 +#include <linux/mtd/map.h>
-+#include <linux/mtd/pfow.h>
-+#include <linux/mtd/qinfo.h>
++#include <linux/wait.h>
++#include <linux/spinlock.h>
++#include <linux/delay.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/flashchip.h>
++#include <linux/mtd/partitions.h>
 +
-+static int lpddr_chip_setup(struct map_info *map, struct lpddr_private *lpddr);
-+struct mtd_info *lpddr_probe(struct map_info *map);
-+static struct lpddr_private *lpddr_probe_chip(struct map_info *map);
-+static int lpddr_pfow_present(struct map_info *map,
-+			struct lpddr_private *lpddr);
++#ifndef __LINUX_MTD_QINFO_H
++#define __LINUX_MTD_QINFO_H
 +
-+static struct qinfo_query_info qinfo_array[] = {
-+	/* General device info */
-+	{0, 0, "DevSizeShift", "Device size 2^n bytes"},
-+	{0, 3, "BufSizeShift", "Program buffer size 2^n bytes"},
-+	/* Erase block information */
-+	{1, 1, "TotalBlocksNum", "Total number of blocks"},
-+	{1, 2, "UniformBlockSizeShift", "Uniform block size 2^n bytes"},
-+	/* Partition information */
-+	{2, 1, "HWPartsNum", "Number of hardware partitions"},
-+	/* Optional features */
-+	{5, 1, "SuspEraseSupp", "Suspend erase supported"},
-+	/* Operation typical time */
-+	{10, 0, "SingleWordProgTime", "Single word program 2^n u-sec"},
-+	{10, 1, "ProgBufferTime", "Program buffer write 2^n u-sec"},
-+	{10, 2, "BlockEraseTime", "Block erase 2^n m-sec"},
-+	{10, 3, "FullChipEraseTime", "Full chip erase 2^n m-sec"},
++/* lpddr_private describes lpddr flash chip in memory map
++ * @ManufactId - Chip Manufacture ID
++ * @DevId - Chip Device ID
++ * @qinfo - pointer to qinfo records describing the chip
++ * @numchips - number of chips including virual RWW partitions
++ * @chipshift - Chip/partiton size 2^chipshift
++ * @chips - per-chip data structure
++ */
++struct lpddr_private {
++	uint16_t ManufactId;
++	uint16_t DevId;
++	struct qinfo_chip *qinfo;
++	int numchips;
++	unsigned long chipshift;
++	struct flchip chips[0];
 +};
 +
-+static long lpddr_get_qinforec_pos(struct map_info *map, char *id_str)
++/* qinfo_query_info structure contains request information for
++ * each qinfo record
++ * @major - major number of qinfo record
++ * @major - minor number of qinfo record
++ * @id_str - descriptive string to access the record
++ * @desc - detailed description for the qinfo record
++ */
++struct qinfo_query_info {
++	uint8_t	major;
++	uint8_t	minor;
++	char *id_str;
++	char *desc;
++};
++
++/*
++ * qinfo_chip structure contains necessary qinfo records data
++ * @DevSizeShift - Device size 2^n bytes
++ * @BufSizeShift - Program buffer size 2^n bytes
++ * @TotalBlocksNum - Total number of blocks
++ * @UniformBlockSizeShift - Uniform block size 2^UniformBlockSizeShift bytes
++ * @HWPartsNum - Number of hardware partitions
++ * @SuspEraseSupp - Suspend erase supported
++ * @SingleWordProgTime - Single word program 2^SingleWordProgTime u-sec
++ * @ProgBufferTime - Program buffer write 2^ProgBufferTime u-sec
++ * @BlockEraseTime - Block erase 2^BlockEraseTime m-sec
++ */
++struct qinfo_chip {
++	/* General device info */
++	uint16_t DevSizeShift;
++	uint16_t BufSizeShift;
++	/* Erase block information */
++	uint16_t TotalBlocksNum;
++	uint16_t UniformBlockSizeShift;
++	/* Partition information */
++	uint16_t HWPartsNum;
++	/* Optional features */
++	uint16_t SuspEraseSupp;
++	/* Operation typical time */
++	uint16_t SingleWordProgTime;
++	uint16_t ProgBufferTime;
++	uint16_t BlockEraseTime;
++};
++
++/* defines for fixup usage */
++#define LPDDR_MFR_ANY		0xffff
++#define LPDDR_ID_ANY		0xffff
++#define NUMONYX_MFGR_ID		0x0089
++#define R18_DEVICE_ID_1G	0x893c
++
++static inline map_word lpddr_build_cmd(u_long cmd, struct map_info *map)
 +{
-+	int qinfo_lines = sizeof(qinfo_array)/sizeof(struct qinfo_query_info);
-+	int i;
-+	int bankwidth = map_bankwidth(map) * 8;
-+	int major, minor;
-+
-+	for (i = 0; i < qinfo_lines; i++) {
-+		if (strcmp(id_str, qinfo_array[i].id_str) == 0) {
-+			major = qinfo_array[i].major & ((1 << bankwidth) - 1);
-+			minor = qinfo_array[i].minor & ((1 << bankwidth) - 1);
-+			return minor | (major << bankwidth);
-+		}
-+	}
-+	printk(KERN_ERR"%s qinfo id string is wrong! \n", map->name);
-+	BUG();
-+	return -1;
-+}
-+
-+static uint16_t lpddr_info_query(struct map_info *map, char *id_str)
-+{
-+	unsigned int dsr, val;
-+	int bits_per_chip = map_bankwidth(map) * 8;
-+	unsigned long adr = lpddr_get_qinforec_pos(map, id_str);
-+	int attempts = 20;
-+
-+	/* Write a request for the PFOW record */
-+	map_write(map, CMD(LPDDR_INFO_QUERY),
-+			map->pfow_base + PFOW_COMMAND_CODE);
-+	map_write(map, CMD(adr & ((1 << bits_per_chip) - 1)),
-+			map->pfow_base + PFOW_COMMAND_ADDRESS_L);
-+	map_write(map, CMD(adr >> bits_per_chip),
-+			map->pfow_base + PFOW_COMMAND_ADDRESS_H);
-+	map_write(map, CMD(LPDDR_START_EXECUTION),
-+			map->pfow_base + PFOW_COMMAND_EXECUTE);
-+
-+	while ((attempts--) > 0) {
-+		dsr = CMDVAL(map_read(map, map->pfow_base + PFOW_DSR));
-+		if (dsr & DSR_READY_STATUS)
-+			break;
-+		udelay(10);
-+	}
-+
-+	val = CMDVAL(map_read(map, map->pfow_base + PFOW_COMMAND_DATA));
++	map_word val = { {0} };
++	val.x[0] = cmd;
 +	return val;
 +}
 +
-+static int lpddr_pfow_present(struct map_info *map, struct lpddr_private *lpddr)
-+{
-+	map_word pfow_val[4];
++#define CMD(x) lpddr_build_cmd(x, map)
++#define CMDVAL(cmd) cmd.x[0]
 +
-+	/* Check identification string */
-+	pfow_val[0] = map_read(map, map->pfow_base + PFOW_QUERY_STRING_P);
-+	pfow_val[1] = map_read(map, map->pfow_base + PFOW_QUERY_STRING_F);
-+	pfow_val[2] = map_read(map, map->pfow_base + PFOW_QUERY_STRING_O);
-+	pfow_val[3] = map_read(map, map->pfow_base + PFOW_QUERY_STRING_W);
++struct mtd_info *lpddr_cmdset(struct map_info *);
 +
-+	if (!map_word_equal(map, CMD('P'), pfow_val[0]))
-+		goto out;
-+
-+	if (!map_word_equal(map, CMD('F'), pfow_val[1]))
-+		goto out;
-+
-+	if (!map_word_equal(map, CMD('O'), pfow_val[2]))
-+		goto out;
-+
-+	if (!map_word_equal(map, CMD('W'), pfow_val[3]))
-+		goto out;
-+
-+	return 1;	/* "PFOW" is found */
-+out:
-+	printk(KERN_WARNING"%s: PFOW string at 0x%lx is not found \n",
-+					map->name, map->pfow_base);
-+	return 0;
-+}
-+
-+static int lpddr_chip_setup(struct map_info *map, struct lpddr_private *lpddr)
-+{
-+
-+	lpddr->qinfo = kmalloc(sizeof(struct qinfo_chip), GFP_KERNEL);
-+	if (!lpddr->qinfo) {
-+		printk(KERN_WARNING "%s: no memory for LPDDR qinfo structure\n",
-+				map->name);
-+		return 0;
-+	}
-+	memset(lpddr->qinfo, 0, sizeof(struct qinfo_chip));
-+
-+	/* Get the ManuID */
-+	lpddr->ManufactId = CMDVAL(map_read(map, map->pfow_base + PFOW_MANUFACTURER_ID));
-+	/* Get the DeviceID */
-+	lpddr->DevId = CMDVAL(map_read(map, map->pfow_base + PFOW_DEVICE_ID));
-+	/* read parameters from chip qinfo table */
-+	lpddr->qinfo->DevSizeShift = lpddr_info_query(map, "DevSizeShift");
-+	lpddr->qinfo->TotalBlocksNum = lpddr_info_query(map, "TotalBlocksNum");
-+	lpddr->qinfo->BufSizeShift = lpddr_info_query(map, "BufSizeShift");
-+	lpddr->qinfo->HWPartsNum = lpddr_info_query(map, "HWPartsNum");
-+	lpddr->qinfo->UniformBlockSizeShift =
-+				lpddr_info_query(map, "UniformBlockSizeShift");
-+	lpddr->qinfo->SuspEraseSupp = lpddr_info_query(map, "SuspEraseSupp");
-+	lpddr->qinfo->SingleWordProgTime =
-+				lpddr_info_query(map, "SingleWordProgTime");
-+	lpddr->qinfo->ProgBufferTime = lpddr_info_query(map, "ProgBufferTime");
-+	lpddr->qinfo->BlockEraseTime = lpddr_info_query(map, "BlockEraseTime");
-+	return 1;
-+}
-+static struct lpddr_private *lpddr_probe_chip(struct map_info *map)
-+{
-+	struct lpddr_private lpddr;
-+	struct lpddr_private *retlpddr;
-+	int numvirtchips;
-+
-+
-+	if ((map->pfow_base + 0x1000) >= map->size) {
-+		printk(KERN_NOTICE"%s Probe at base (0x%08lx) past the end of"
-+				"the map(0x%08lx)\n", map->name,
-+				(unsigned long)map->pfow_base, map->size - 1);
-+		return NULL;
-+	}
-+	memset(&lpddr, 0, sizeof(struct lpddr_private));
-+	if (!lpddr_pfow_present(map, &lpddr))
-+		return NULL;
-+
-+	if (!lpddr_chip_setup(map, &lpddr))
-+		return NULL;
-+
-+	/* Ok so we found a chip */
-+	lpddr.chipshift = lpddr.qinfo->DevSizeShift;
-+	lpddr.numchips = 1;
-+
-+	numvirtchips = lpddr.numchips * lpddr.qinfo->HWPartsNum;
-+	retlpddr = kmalloc(sizeof(struct lpddr_private) +
-+			numvirtchips * sizeof(struct flchip), GFP_KERNEL);
-+	if (!retlpddr)
-+		return NULL;
-+
-+	memset(retlpddr, 0, sizeof(struct lpddr_private) +
-+				numvirtchips * sizeof(struct flchip));
-+	memcpy(retlpddr, &lpddr, sizeof(struct lpddr_private));
-+	
-+	retlpddr->numchips = numvirtchips;
-+	retlpddr->chipshift = retlpddr->qinfo->DevSizeShift -
-+				__ffs(retlpddr->qinfo->HWPartsNum);
-+
-+	return retlpddr;
-+}
-+
-+struct mtd_info *lpddr_probe(struct map_info *map)
-+{
-+	struct mtd_info *mtd = NULL;
-+	struct lpddr_private *lpddr;
-+
-+	/* First probe the map to see if we havecan open PFOW here */
-+	lpddr = lpddr_probe_chip(map);
-+	if (!lpddr)
-+		return NULL;
-+
-+	map->fldrv_priv = lpddr;
-+	mtd = lpddr_cmdset(map);
-+	if (mtd) {
-+		if (mtd->size > map->size) {
-+			printk(KERN_WARNING "Reducing visibility of %ldKiB chip"
-+				"to %ldKiB\n", (unsigned long)mtd->size >> 10,
-+				(unsigned long)map->size >> 10);
-+			mtd->size = map->size;
-+		}
-+		return mtd;
-+	}
-+
-+	kfree(lpddr->qinfo);
-+	kfree(lpddr);
-+	map->fldrv_priv = NULL;
-+	return NULL;
-+}
-+
-+static struct mtd_chip_driver lpddr_chipdrv = {
-+	.probe		= lpddr_probe,
-+	.name		= "qinfo_probe",
-+	.module		= THIS_MODULE
-+};
-+
-+static int __init lpddr_probe_init(void)
-+{
-+	register_mtd_chip_driver(&lpddr_chipdrv);
-+	return 0;
-+}
-+
-+static void __exit lpddr_probe_exit(void)
-+{
-+	unregister_mtd_chip_driver(&lpddr_chipdrv);
-+}
-+
-+module_init(lpddr_probe_init);
-+module_exit(lpddr_probe_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Vasiliy Leonenko <vasiliy.leonenko@gmail.com>");
-+MODULE_DESCRIPTION("Driver to probe qinfo flash chips");
++#endif
 +
