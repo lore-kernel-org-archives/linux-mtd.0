@@ -1,17 +1,22 @@
-Received: from smtpout.cs.fsu.edu ([128.186.122.75] helo=mail.cs.fsu.edu)
+Received: from wa-out-1112.google.com ([209.85.146.181])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KnGo4-0003hS-DA
-	for linux-mtd@lists.infradead.org; Tue, 07 Oct 2008 17:57:13 +0000
-Message-ID: <20081007132904.6vvmlioy8co004ko@system.cs.fsu.edu>
-Date: Tue,  7 Oct 2008 13:29:04 -0400
-From: Daniel Rosenthal <danielrosenthal@acm.org>
-To: gerg@snapgear.com, dwmw2@infradead.org
-Subject: [PATCH (fixed)] Fix infinite loop in INFTL_foldchain() in
-	drivers/mtd/inftlcore.c
+	id 1KnOuN-0007o5-7J
+	for linux-mtd@lists.infradead.org; Wed, 08 Oct 2008 02:36:15 +0000
+Received: by wa-out-1112.google.com with SMTP id v33so2118294wah.2
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 07 Oct 2008 19:36:14 -0700 (PDT)
+Message-ID: <8956d4ca0810071936p21240f4dn89e161c6ef07847c@mail.gmail.com>
+Date: Wed, 8 Oct 2008 13:36:13 +1100
+From: "Mitch Davis" <mjd-linux-mtd@afork.com>
+Sender: capnkernel@gmail.com
+To: "Mike Frysinger" <vapier.adi@gmail.com>
+Subject: Re: mtd-utils: fec.c uses bcopy()
+In-Reply-To: <8bd0f97a0810071802t52bc60fs6a230e30d7ed1c8f@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/mixed;
-	boundary="=_5ywxds22qysk"
-Content-Transfer-Encoding: 7bit
+	boundary="----=_Part_49502_19170025.1223433373788"
+References: <8956d4ca0810071727i63554837k923a0091b3ef9bd0@mail.gmail.com>
+	<8bd0f97a0810071802t52bc60fs6a230e30d7ed1c8f@mail.gmail.com>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -22,137 +27,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This message is in MIME format.
-
---=_5ywxds22qysk
-Content-Type: text/plain;
-	charset=ISO-8859-1;
-	DelSp="Yes";
-	format="flowed"
+------=_Part_49502_19170025.1223433373788
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-I'm having problems with my email client, but I've attached a patch =20
-(both inline and as a regular attachment). This patch fixes a loop =20
-that is potentially infinite in INFTL_foldchain in =20
-drivers/mtd/inftlcore.c.
+On Wed, Oct 8, 2008 at 12:02 PM, Mike Frysinger <vapier.adi@gmail.com> wrote:
+> On Tue, Oct 7, 2008 at 20:27, Mitch Davis wrote:
+>
+>> fec.c in mtd-utils uses bcopy(), so mtd-utils doesn't compile for me.
+>> I'd like to fix this.
+>>
+>>  - Should I rewrite fec.c so it uses memcpy instead?
+>>  - Should I just add #define NEED_BCOPY to fec.c?
+>>  - Should I leave fec.c unchanged and add -DNEED_BCOPY to the Makefile
+>> (which would be passed to every compile?)
+>
+> a simple sed can fix the code as the only difference between bcopy()
+> and memcpy() is the argument order.  ifdef's are pointless/ugly in
+> this case.
 
-When iterating over a chain in reverse (oldest block first), this =20
-patch correctly marks the PUtable[] entry of the second to last erase =20
-block of a chain as BLOCK_NIL, regardless of whether or not it can =20
-format the last block successfully. Before, the second to last block =20
-was only marked as pointing to BLOCK_NIL if INFTL_formatblock() =20
-succeeded on the last block of the chain, which could potentially =20
-result in an infinite loop if the block was worn out and refused to =20
-format.
+I agree.  I've attached a diff that makes this change.
 
-If there are any problems with this patch please let me know. I can =20
-apply them fine after pulling them from email, but my email client =20
-(web interface) isn't fullproof, so if anybody else has problems, =20
-please let me know. (I can't send it through pine or otherwise due to =20
-network configuration.)
+It compiles with no warnings, but I have no way of testing it.  Any
+suggestions what to do next?
 
 Thanks,
-Daniel
 
-----------------------------------------------------------------
-This message was sent using IMP, the Internet Messaging Program.
+Mitch.
 
+------=_Part_49502_19170025.1223433373788
+Content-Type: application/octet-stream; name=fec.diff
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fm1cmcoz0
+Content-Disposition: attachment; filename=fec.diff
 
---=_5ywxds22qysk
-Content-Type: text/plain; charset=UTF-8;
-	name="0001-Fix-infinite-loop-in-INFTL_foldchain-in-drivers-mtd.patch"
-Content-Disposition: inline;
-	filename="0001-Fix-infinite-loop-in-INFTL_foldchain-in-drivers-mtd.patch"
-Content-Transfer-Encoding: quoted-printable
-
->From 8f1275749768d316788194cc198093b00f85d0d6 Mon Sep 17 00:00:00 2001
-From: Daniel Rosenthal <danielrosenthal@acm.org>
-Date: Sun, 5 Oct 2008 17:43:10 -0400
-Subject: [PATCH] Fix infinite loop in INFTL_foldchain in drivers/mtd/inftlco=
-re.c.
-
-
-Signed-off-by: Daniel Rosenthal <danielrosenthal@acm.org>
----
- drivers/mtd/inftlcore.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/mtd/inftlcore.c b/drivers/mtd/inftlcore.c
-index c4f9d33..50ce138 100644
---- a/drivers/mtd/inftlcore.c
-+++ b/drivers/mtd/inftlcore.c
-@@ -388,6 +388,10 @@ static u16 INFTL_foldchain(struct INFTLrecord *inftl, u=
-nsigned thisVUC, unsigned
- =09=09if (thisEUN =3D=3D targetEUN)
- =09=09=09break;
-=20
-+=09=09/* Unlink the last block from the chain. */
-+=09=09inftl->PUtable[prevEUN] =3D BLOCK_NIL;
-+
-+=09=09/* Now try to erase it. */
- =09=09if (INFTL_formatblock(inftl, thisEUN) < 0) {
- =09=09=09/*
- =09=09=09 * Could not erase : mark block as reserved.
-@@ -396,7 +400,6 @@ static u16 INFTL_foldchain(struct INFTLrecord *inftl, un=
-signed thisVUC, unsigned
- =09=09} else {
- =09=09=09/* Correctly erased : mark it as free */
- =09=09=09inftl->PUtable[thisEUN] =3D BLOCK_FREE;
--=09=09=09inftl->PUtable[prevEUN] =3D BLOCK_NIL;
- =09=09=09inftl->numfreeEUNs++;
- =09=09}
- =09}
---=20
-1.5.6.4
-
-
---=_5ywxds22qysk
-Content-Type: text/plain; charset=UTF-8;
-	name="0001-Fix-infinite-loop-in-INFTL_foldchain-in-drivers-mtd.patch"
-Content-Disposition: attachment;
-	filename="0001-Fix-infinite-loop-in-INFTL_foldchain-in-drivers-mtd.patch"
-Content-Transfer-Encoding: quoted-printable
-
->From 8f1275749768d316788194cc198093b00f85d0d6 Mon Sep 17 00:00:00 2001
-From: Daniel Rosenthal <danielrosenthal@acm.org>
-Date: Sun, 5 Oct 2008 17:43:10 -0400
-Subject: [PATCH] Fix infinite loop in INFTL_foldchain in drivers/mtd/inftlco=
-re.c.
-
-
-Signed-off-by: Daniel Rosenthal <danielrosenthal@acm.org>
----
- drivers/mtd/inftlcore.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/mtd/inftlcore.c b/drivers/mtd/inftlcore.c
-index c4f9d33..50ce138 100644
---- a/drivers/mtd/inftlcore.c
-+++ b/drivers/mtd/inftlcore.c
-@@ -388,6 +388,10 @@ static u16 INFTL_foldchain(struct INFTLrecord *inftl, u=
-nsigned thisVUC, unsigned
- =09=09if (thisEUN =3D=3D targetEUN)
- =09=09=09break;
-=20
-+=09=09/* Unlink the last block from the chain. */
-+=09=09inftl->PUtable[prevEUN] =3D BLOCK_NIL;
-+
-+=09=09/* Now try to erase it. */
- =09=09if (INFTL_formatblock(inftl, thisEUN) < 0) {
- =09=09=09/*
- =09=09=09 * Could not erase : mark block as reserved.
-@@ -396,7 +400,6 @@ static u16 INFTL_foldchain(struct INFTLrecord *inftl, un=
-signed thisVUC, unsigned
- =09=09} else {
- =09=09=09/* Correctly erased : mark it as free */
- =09=09=09inftl->PUtable[thisEUN] =3D BLOCK_FREE;
--=09=09=09inftl->PUtable[prevEUN] =3D BLOCK_NIL;
- =09=09=09inftl->numfreeEUNs++;
- =09=09}
- =09}
---=20
-1.5.6.4
-
-
---=_5ywxds22qysk--
+W1BBVENIXSBbTVREXSBtdGQtdXRpbHM6IGZlYy5jOiBiemVyby0+bWVtc2V0LCBiY29weS0+bWVt
+Y3B5LCBiY21wLT5tZW1jbXAKClRoaXMgcGF0Y2ggYWx0ZXJzIGZlYy5jIHNvIGl0IGRvZXMgbm90
+IHVzZSB0aGUgZGVwcmVjYXRlZCBiemVybywgYmNvcHkgYW5kIGJjbXAKZnVuY3Rpb25zLiAgVGhp
+cyBjYW4gaGVscCBvbiBwbGF0Zm9ybXMgdGhhdCBkbyBub3QgaGF2ZSB0aGVzZSBmdW5jdGlvbnMu
+CgpGcm9tOiBNaXRjaCBEYXZpcyA8bWl0Y2guZGF2aXNAc3ltc3RyZWFtLmNvbT4KU2lnbmVkLW9m
+Zi1ieTogTWl0Y2ggRGF2aXMgPG1pdGNoLmRhdmlzQHN5bXN0cmVhbS5jb20+CgpkaWZmIC0tZ2l0
+IGEvZmVjLmMgYi9mZWMuYwppbmRleCAwOWU4NDUzLi42ZDkwMjBmIDEwMDY0NAotLS0gYS9mZWMu
+YworKysgYi9mZWMuYwpAQCAtNDcsMTkgKzQ3LDYgQEAKICNpbmNsdWRlIDxzdHJpbmcuaD4KIAog
+LyoKLSAqIGNvbXBhdGliaWxpdHkgc3R1ZmYKLSAqLwotI2lmZGVmIE1TRE9TCS8qIGJ1dCBhbHNv
+IGZvciBvdGhlcnMsIGUuZy4gc3VuLi4uICovCi0jZGVmaW5lIE5FRURfQkNPUFkKLSNkZWZpbmUg
+YmNtcChhLGIsbikgbWVtY21wKGEsYixuKQotI2VuZGlmCi0KLSNpZmRlZiBORUVEX0JDT1BZCi0j
+ZGVmaW5lIGJjb3B5KHMsIGQsIHNpeikgICAgICAgIG1lbWNweSgoZCksIChzKSwgKHNpeikpCi0j
+ZGVmaW5lIGJ6ZXJvKGQsIHNpeikgICBtZW1zZXQoKGQpLCAnXDAnLCAoc2l6KSkKLSNlbmRpZgot
+Ci0vKgogICogc3R1ZmYgdXNlZCBmb3IgdGVzdGluZyBwdXJwb3NlcyBvbmx5CiAgKi8KIApAQCAt
+NDMzLDcgKzQyMCw3IEBAIGludmVydF9tYXQoZ2YgKnNyYywgaW50IGspCiAgICAgZ2YgKmlkX3Jv
+dyA9IE5FV19HRl9NQVRSSVgoMSwgayk7CiAgICAgZ2YgKnRlbXBfcm93ID0gTkVXX0dGX01BVFJJ
+WCgxLCBrKTsKIAotICAgIGJ6ZXJvKGlkX3JvdywgaypzaXplb2YoZ2YpKTsKKyAgICBtZW1zZXQo
+aWRfcm93LCAnXDAnLCBrKnNpemVvZihnZikpOwogICAgIERFQiggcGl2bG9vcHM9MDsgcGl2c3dh
+cHM9MCA7IC8qIGRpYWdub3N0aWMgKi8gKQogICAgIC8qCiAgICAgICogaXBpdiBtYXJrcyBlbGVt
+ZW50cyBhbHJlYWR5IHVzZWQgYXMgcGl2b3RzLgpAQCAtNTEzLDcgKzUwMCw3IEBAIGZvdW5kX3Bp
+djoKIAkgKiB3ZSBjYW4gb3B0aW1pemUgdGhlIGFkZG11bCkuCiAJICovCiAJaWRfcm93W2ljb2xd
+ID0gMTsKLQlpZiAoYmNtcChwaXZvdF9yb3csIGlkX3JvdywgaypzaXplb2YoZ2YpKSAhPSAwKSB7
+CisJaWYgKG1lbWNtcChwaXZvdF9yb3csIGlkX3JvdywgaypzaXplb2YoZ2YpKSAhPSAwKSB7CiAJ
+ICAgIGZvciAocCA9IHNyYywgaXggPSAwIDsgaXggPCBrIDsgaXgrKywgcCArPSBrICkgewogCQlp
+ZiAoaXggIT0gaWNvbCkgewogCQkgICAgYyA9IHBbaWNvbF0gOwpAQCAtNzA0LDcgKzY5MSw3IEBA
+IGZlY19uZXcoaW50IGssIGludCBuKQogICAgIC8qCiAgICAgICogdGhlIHVwcGVyIG1hdHJpeCBp
+cyBJIHNvIGRvIG5vdCBib3RoZXIgd2l0aCBhIHNsb3cgbXVsdGlwbHkKICAgICAgKi8KLSAgICBi
+emVybyhyZXR2YWwtPmVuY19tYXRyaXgsIGsqaypzaXplb2YoZ2YpICk7CisgICAgbWVtc2V0KHJl
+dHZhbC0+ZW5jX21hdHJpeCwgJ1wwJywgayprKnNpemVvZihnZikgKTsKICAgICBmb3IgKHAgPSBy
+ZXR2YWwtPmVuY19tYXRyaXgsIGNvbCA9IDAgOyBjb2wgPCBrIDsgY29sKyssIHAgKz0gaysxICkK
+IAkqcCA9IDEgOwogICAgIGZyZWUodG1wX20pOwpAQCAtNzMxLDEwICs3MTgsMTAgQEAgZmVjX2Vu
+Y29kZShzdHJ1Y3QgZmVjX3Bhcm1zICpjb2RlLCBnZiAqc3JjW10sIGdmICpmZWMsIGludCBpbmRl
+eCwgaW50IHN6KQogCXN6IC89IDIgOwogCiAgICAgaWYgKGluZGV4IDwgaykKLSAgICAgICAgIGJj
+b3B5KHNyY1tpbmRleF0sIGZlYywgc3oqc2l6ZW9mKGdmKSApIDsKKyAgICAgICAgIG1lbWNweShm
+ZWMsIHNyY1tpbmRleF0sIHN6KnNpemVvZihnZikgKSA7CiAgICAgZWxzZSBpZiAoaW5kZXggPCBj
+b2RlLT5uKSB7CiAJcCA9ICYoY29kZS0+ZW5jX21hdHJpeFtpbmRleCprXSApOwotCWJ6ZXJvKGZl
+Yywgc3oqc2l6ZW9mKGdmKSk7CisJbWVtc2V0KGZlYywgJ1wwJywgc3oqc2l6ZW9mKGdmKSk7CiAJ
+Zm9yIChpID0gMDsgaSA8IGsgOyBpKyspCiAJICAgIGFkZG11bChmZWMsIHNyY1tpXSwgcFtpXSwg
+c3ogKSA7CiAgICAgfSBlbHNlCkBAIC03NTEsMTAgKzczOCwxMCBAQCB2b2lkIGZlY19lbmNvZGVf
+bGluZWFyKHN0cnVjdCBmZWNfcGFybXMgKmNvZGUsIGdmICpzcmMsIGdmICpmZWMsIGludCBpbmRl
+eCwgaW50CiAJc3ogLz0gMiA7CiAKICAgICBpZiAoaW5kZXggPCBrKQotCSAgICBiY29weShzcmMg
+KyAoaW5kZXggKiBzeiksIGZlYywgc3oqc2l6ZW9mKGdmKSApIDsKKwkgICAgbWVtY3B5KGZlYywg
+c3JjICsgKGluZGV4ICogc3opLCBzeipzaXplb2YoZ2YpICkgOwogICAgIGVsc2UgaWYgKGluZGV4
+IDwgY29kZS0+bikgewogCXAgPSAmKGNvZGUtPmVuY19tYXRyaXhbaW5kZXgqa10gKTsKLQliemVy
+byhmZWMsIHN6KnNpemVvZihnZikpOworCW1lbXNldChmZWMsICdcMCcsIHN6KnNpemVvZihnZikp
+OwogCWZvciAoaSA9IDA7IGkgPCBrIDsgaSsrKQogCSAgICBhZGRtdWwoZmVjLCBzcmMgKyAoaSAq
+IHN6KSwgcFtpXSwgc3ogKSA7CiAgICAgfSBlbHNlCkBAIC04MTQsMTIgKzgwMSwxMiBAQCBidWls
+ZF9kZWNvZGVfbWF0cml4KHN0cnVjdCBmZWNfcGFybXMgKmNvZGUsIGdmICpwa3RbXSwgaW50IGlu
+ZGV4W10pCiAgICAgZm9yIChpID0gMCwgcCA9IG1hdHJpeCA7IGkgPCBrIDsgaSsrLCBwICs9IGsg
+KSB7CiAjaWYgMSAvKiB0aGlzIGlzIHNpbXBseSBhbiBvcHRpbWl6YXRpb24sIG5vdCB2ZXJ5IHVz
+ZWZ1bCBpbmRlZWQgKi8KIAlpZiAoaW5kZXhbaV0gPCBrKSB7Ci0JICAgIGJ6ZXJvKHAsIGsqc2l6
+ZW9mKGdmKSApOworCSAgICBtZW1zZXQocCwgJ1wwJywgaypzaXplb2YoZ2YpICk7CiAJICAgIHBb
+aV0gPSAxIDsKIAl9IGVsc2UKICNlbmRpZgogCWlmIChpbmRleFtpXSA8IGNvZGUtPm4gKQotCSAg
+ICBiY29weSggJihjb2RlLT5lbmNfbWF0cml4W2luZGV4W2ldKmtdKSwgcCwgaypzaXplb2YoZ2Yp
+ICk7IAorCSAgICBtZW1jcHkocCwgICYoY29kZS0+ZW5jX21hdHJpeFtpbmRleFtpXSprXSksIGsq
+c2l6ZW9mKGdmKSApOyAKIAllbHNlIHsKIAkgICAgZnByaW50ZihzdGRlcnIsICJkZWNvZGU6IGlu
+dmFsaWQgaW5kZXggJWQgKG1heCAlZClcbiIsCiAJCWluZGV4W2ldLCBjb2RlLT5uIC0gMSApOwpA
+QCAtODcwLDcgKzg1Nyw3IEBAIGZlY19kZWNvZGUoc3RydWN0IGZlY19wYXJtcyAqY29kZSwgZ2Yg
+KnBrdFtdLCBpbnQgaW5kZXhbXSwgaW50IHN6KQogICAgIGZvciAocm93ID0gMCA7IHJvdyA8IGsg
+OyByb3crKyApIHsKIAlpZiAoaW5kZXhbcm93XSA+PSBrKSB7CiAJICAgIG5ld19wa3Rbcm93XSA9
+IG15X21hbGxvYyAoc3ogKiBzaXplb2YgKGdmKSwgIm5ldyBwa3QgYnVmZmVyIiApOwotCSAgICBi
+emVybyhuZXdfcGt0W3Jvd10sIHN6ICogc2l6ZW9mKGdmKSApIDsKKwkgICAgbWVtc2V0KG5ld19w
+a3Rbcm93XSwgJ1wwJywgc3ogKiBzaXplb2YoZ2YpICkgOwogCSAgICBmb3IgKGNvbCA9IDAgOyBj
+b2wgPCBrIDsgY29sKysgKQogCQlhZGRtdWwobmV3X3BrdFtyb3ddLCBwa3RbY29sXSwgbV9kZWNb
+cm93KmsgKyBjb2xdLCBzeikgOwogCX0KQEAgLTg4MCw3ICs4NjcsNyBAQCBmZWNfZGVjb2RlKHN0
+cnVjdCBmZWNfcGFybXMgKmNvZGUsIGdmICpwa3RbXSwgaW50IGluZGV4W10sIGludCBzeikKICAg
+ICAgKi8KICAgICBmb3IgKHJvdyA9IDAgOyByb3cgPCBrIDsgcm93KysgKSB7CiAJaWYgKGluZGV4
+W3Jvd10gPj0gaykgewotCSAgICBiY29weShuZXdfcGt0W3Jvd10sIHBrdFtyb3ddLCBzeipzaXpl
+b2YoZ2YpKTsKKwkgICAgbWVtY3B5KHBrdFtyb3ddLCBuZXdfcGt0W3Jvd10sIHN6KnNpemVvZihn
+ZikpOwogCSAgICBmcmVlKG5ld19wa3Rbcm93XSk7CiAJfQogICAgIH0K
+------=_Part_49502_19170025.1223433373788--
