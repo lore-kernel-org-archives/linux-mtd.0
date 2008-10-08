@@ -1,27 +1,22 @@
-Received: from wx-out-0506.google.com ([66.249.82.237])
+Received: from wx-out-0506.google.com ([66.249.82.226])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KnYOy-0005nC-Kr
-	for linux-mtd@lists.infradead.org; Wed, 08 Oct 2008 12:44:28 +0000
-Received: by wx-out-0506.google.com with SMTP id s15so856554wxc.24
+	id 1KnYRr-0004zb-GV
+	for linux-mtd@lists.infradead.org; Wed, 08 Oct 2008 12:47:27 +0000
+Received: by wx-out-0506.google.com with SMTP id s15so856817wxc.24
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Oct 2008 05:44:28 -0700 (PDT)
-Date: Wed, 8 Oct 2008 08:43:09 -0400
+	Wed, 08 Oct 2008 05:47:26 -0700 (PDT)
+Date: Wed, 8 Oct 2008 08:46:07 -0400
 From: Josh Boyer <jwboyer@gmail.com>
-To: Mitch Davis <mjd-linux-mtd@afork.com>
-Subject: Re: mtd-utils: fec.c uses bcopy()
-Message-ID: <20081008124309.GC3447@yoda.jdub.homelinux.org>
-References: <8956d4ca0810071727i63554837k923a0091b3ef9bd0@mail.gmail.com>
-	<8bd0f97a0810071802t52bc60fs6a230e30d7ed1c8f@mail.gmail.com>
-	<8956d4ca0810071936p21240f4dn89e161c6ef07847c@mail.gmail.com>
-	<8bd0f97a0810071938s3366f340redc61e87e6b020b8@mail.gmail.com>
-	<8956d4ca0810072156w4fcdf1barb2d740e10d97c380@mail.gmail.com>
-	<8bd0f97a0810072207h6848895fpea038316aa583fa6@mail.gmail.com>
-	<8956d4ca0810072306t64d28c8apa888ede8c7ccbc33@mail.gmail.com>
+To: Michel Stempin <michel.stempin@telecom-design.com>
+Subject: Re: [PATCH] [MTD] gen_probe.c: Probe chips in decreasing device
+	size (most significant first)
+Message-ID: <20081008124607.GD3447@yoda.jdub.homelinux.org>
+References: <1221390552.25179.14.camel@Mikeul>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8956d4ca0810072306t64d28c8apa888ede8c7ccbc33@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>
+In-Reply-To: <1221390552.25179.14.camel@Mikeul>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,11 +26,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 08, 2008 at 05:06:07PM +1100, Mitch Davis wrote:
-> - I've sent my diff twice already.  Can you have a look at it and
->comment please? :-)
+On Sun, Sep 14, 2008 at 01:09:12PM +0200, Michel Stempin wrote:
+>Probe chips in decreasing device size to detect most significant chip
+>IDs first in case there are two chips with the same LSB.
+>
+>This case has been found between SST39VF3201 (Mfr: 0x0020, Id: 0x235B)
+>and SST49LF080A (Mfr: 0x0020, Id: 0x005B) chips.
+>
+>Signed-off-by: Michel Stempin <michel.stempin@wanadoo.fr>
 
-Why do you use '\0' for the memcpy operand instead of just
-plain 0 or 0x0?
+Your patch is word-wrapped.
 
 josh
