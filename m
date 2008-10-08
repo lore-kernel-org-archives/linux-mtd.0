@@ -1,18 +1,21 @@
-Subject: Re: [PATCH] [MTD] [NAND] GPIO NAND flash driver
-From: David Woodhouse <dwmw2@infradead.org>
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-In-Reply-To: <20081008072843.GA19401@flint.arm.linux.org.uk>
-References: <48EC4CC5.5030809@compulab.co.il>
-	<8bd0f97a0810072320h5361c7d3q219aeaf9407a5293@mail.gmail.com>
-	<20081008072843.GA19401@flint.arm.linux.org.uk>
-Content-Type: text/plain
-Date: Wed, 08 Oct 2008 09:30:20 +0100
-Message-Id: <1223454620.3145.134.camel@macbook.infradead.org>
-Mime-Version: 1.0
+Received: from smtp-vbr3.xs4all.nl ([194.109.24.23])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KnUnI-0003GZ-BR
+	for linux-mtd@lists.infradead.org; Wed, 08 Oct 2008 08:53:20 +0000
+Received: from mail3.aimsys.nl (a80-127-156-242.adsl.xs4all.nl
+	[80.127.156.242])
+	by smtp-vbr3.xs4all.nl (8.13.8/8.13.8) with ESMTP id m988rIH9013786
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 8 Oct 2008 10:53:18 +0200 (CEST)
+	(envelope-from nvbolhuis@aimvalley.nl)
+Message-ID: <48EC74FC.7070602@aimvalley.nl>
+Date: Wed, 08 Oct 2008 10:53:16 +0200
+From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: preventing multi-bit errors on NAND
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Russ Dill <russ.dill@gmail.com>, Ben Dooks <ben-linux-arm@fluff.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	Mike Frysinger <vapier.adi@gmail.com>, Mike Rapoport <mike@compulab.co.il>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +25,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-10-08 at 08:28 +0100, Russell King - ARM Linux wrote:
-> On Wed, Oct 08, 2008 at 02:20:13AM -0400, Mike Frysinger wrote:
-> > On Wed, Oct 8, 2008 at 02:01, Mike Rapoport wrote:
-> > > +/* gpio_nand_dosync()
-> > > + *
-> > > + * needed due to bus-reordering within the PXA itself (see section on
-> > > + * I/O ordering in PXA manual (section 2.3, p35)
-> > > + */
-> > > +static void gpio_nand_dosync(struct gpiomtd *gpiomtd)
-> > > +{
-> > > +       unsigned long tmp;
-> > > +
-> > > +       if (gpiomtd->io_sync) {
-> > > +               /*
-> > > +                * this should generate the read, followed by
-> > > +                * something that depends on the read
-> > > +                */
-> > > +               tmp = readl(gpiomtd->io_sync);
-> > > +               asm volatile("mov %1, %0\n" : "=r" (tmp) : "r" (tmp));
-> > > +       }
-> > > +}
-> > 
-> > there isnt much point in attempting to write a generic solution if
-> > you're just going to turn around and stick straight assembly in the
-> > middle of it.  why not use a real arch-generic method like a memory
-> > barrier.
-> 
-> Linux memory barriers don't cater for what's required here.  What's
-> required is what's there - a read from a separate region with a
-> dependency on that read.  Linux has no such barrier.
 
-Perhaps it should have? It can do nothing on other architectures...
+Some of our NAND chips (128MB, 128k blocks, 2k pages) have multi but errors
+# cat /proc/nand
+single-bit data errors : 1000
+single-bit ecc errors  : 8
+multi-bit errors       : 4
+double multi-bit errors: 5
+
+This causes some of our products (using these NAND chips) to fail horribly
+(since data is lost).
+
+Btw. we're using on old kernel/JFFS2/NAND version (linux-2.4.25, MTD CVS 2005).
+
+I studied some JFFS2/NAND/MTD source code and wonder whether we could
+have prevented this. I also looked at the latest JFFS2/NAND/MTD code
+(kernel 2.6.26) and there aren't any major ECC/bad-block changes/improvements.
+Now I have the following questions:
+
+Why not use 6 bytes ECC code (per 256 bytes) to correct at max 2 bits ?
+I know, this is not standard and would cause incompatibilities, still
+I'd like to know whether it could be done or already has been done. There's
+enough room in the OOB I believe.
+
+Why not mark a block bad when detecting a single-bit error ?
+I assume a multi-bit error was a singe-bit error before.
+A single-bit error is corrected and that's it. Nobody knows about it,
+let alone JFFS2 acts upon it.
+
+Would #defining CONFIG_MTD_NAND_VERIFY_WRITE have helped/prevented this ?
+Currently CONFIG_MTD_NAND_VERIFY_WRITE isn't #defined. It would probably
+better to actually #define it. It looks like a failed verification doesn't
+lead to a block marked bad, why not ?
+I guess that if a verification fails mtdblock will use another block
+to write the data, is this correct ?
+
 
 -- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+This message has been scanned for viruses and is believed to be clean
