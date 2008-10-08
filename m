@@ -1,11 +1,15 @@
-Date: Wed, 8 Oct 2008 22:39:11 +0100 (BST)
-From: Alexey Korolev <akorolev@infradead.org>
+Received: from web58906.mail.re1.yahoo.com ([66.196.100.235])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Kni8k-00069s-Mo
+	for linux-mtd@lists.infradead.org; Wed, 08 Oct 2008 23:08:22 +0000
+Date: Wed, 8 Oct 2008 16:08:20 -0700 (PDT)
+From: Philip Rakity <prakity@yahoo.com>
+Subject: [PATCH] [MTD] add cmdline parsing (mtdparts=) support to cafe_nand
 To: linux-mtd@lists.infradead.org
-Subject: [RFC/PATCH 8/8] LPDDR extended physmap driver to support LPDDR flash.
-Message-ID: <alpine.LFD.1.10.0810082237210.13328@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: nico@cam.org, dwmw2@infradead.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+Message-ID: <147967.8329.qm@web58906.mail.re1.yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,91 +19,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Physmap is generic map driver for different platforms and flash types.
-We added support of LPDDR to physmap.
-All changes here are related to introduction of new pfow_base parameter.
-This parameter is valid in case of LPDDR chips only.
-
-Signed-off-by: Alexey Korolev <akorolev@infradead.org>
----
-
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index 5ea1693..84522fb 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -10,8 +10,8 @@ config MTD_COMPLEX_MAPPINGS
- 	  paged mappings of flash chips.
- 
- config MTD_PHYSMAP
--	tristate "CFI Flash device in physical memory map"
--	depends on MTD_CFI || MTD_JEDECPROBE || MTD_ROM
-+	tristate "Flash device in physical memory map"
-+	depends on MTD_CFI || MTD_JEDECPROBE || MTD_ROM || MTD_LPDDR
- 	help
- 	  This provides a 'mapping' driver which allows the NOR Flash and
- 	  ROM driver code to communicate with chips which are mapped
-@@ -61,6 +61,16 @@ config MTD_PHYSMAP_BANKWIDTH
- 	  Ignore this option if you use run-time physmap configuration
- 	  (i.e., run-time calling physmap_configure()).
- 
-+config MTD_PHYSMAP_PFOWBASE
-+	hex "PFOW base address for LPDDR chips"
-+	depends on MTD_PHYSMAP && MTD_LPDDR
-+	default "0x00000000"
-+	help
-+	  This is the offset of PFOW window within address space of LPDDR flash 
-+	  device. Refer to BSP documentation to get PFOW window base offset. 
-+	  Ignore this option if you use run-time physmap configuration
-+	  (i.e., run-time calling physmap_configure()).
-+
- config MTD_PHYSMAP_OF
- 	tristate "Flash device in physical memory map based on OF description"
- 	depends on PPC_OF && (MTD_CFI || MTD_JEDECPROBE || MTD_ROM)
-diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
-index 42d844f..c2e1cb8 100644
---- a/drivers/mtd/maps/physmap.c
-+++ b/drivers/mtd/maps/physmap.c
-@@ -83,7 +83,12 @@ static int physmap_flash_remove(struct platform_device *dev)
- 	return 0;
- }
- 
--static const char *rom_probe_types[] = { "cfi_probe", "jedec_probe", "map_rom", NULL };
-+static const char *rom_probe_types[] = {
-+					"cfi_probe",
-+					"jedec_probe",
-+					"qinfo_probe",
-+					"map_rom",
-+					NULL };
- #ifdef CONFIG_MTD_PARTITIONS
- static const char *part_probe_types[] = { "cmdlinepart", "RedBoot", NULL };
- #endif
-@@ -128,6 +133,7 @@ static int physmap_flash_probe(struct platform_device *dev)
- 		info->map[i].size = dev->resource[i].end - dev->resource[i].start + 1;
- 		info->map[i].bankwidth = physmap_data->width;
- 		info->map[i].set_vpp = physmap_data->set_vpp;
-+		info->map[i].pfow_base = physmap_data->pfow_base;
- 
- 		info->map[i].virt = ioremap(info->map[i].phys, info->map[i].size);
- 		if (info->map[i].virt == NULL) {
-@@ -269,6 +275,9 @@ static struct platform_driver physmap_flash_driver = {
- #ifdef PHYSMAP_COMPAT
- static struct physmap_flash_data physmap_flash_data = {
- 	.width		= CONFIG_MTD_PHYSMAP_BANKWIDTH,
-+#ifdef CONFIG_MTD_PHYSMAP_PFOWBASE
-+	.pfow_base	= CONFIG_MTD_PHYSMAP_PFOWBASE,
-+#endif
- };
- 
- static struct resource physmap_flash_resource = {
-diff --git a/include/linux/mtd/physmap.h b/include/linux/mtd/physmap.h
-index c8e63a5..76f7cab 100644
---- a/include/linux/mtd/physmap.h
-+++ b/include/linux/mtd/physmap.h
-@@ -24,6 +24,7 @@ struct physmap_flash_data {
- 	unsigned int		width;
- 	void			(*set_vpp)(struct map_info *, int);
- 	unsigned int		nr_parts;
-+	unsigned int		pfow_base;
- 	struct mtd_partition	*parts;
- };
- 
+Adds command line mtdparts=3D support for cafe_nand flash.=0A=0ANOTE: =0AI =
+changed where add_mtd_device was done so that there is NOT a complete=0Afla=
+sh mount point following by the partitions that were added.  Before=0Athis =
+n+1 partitions were added.  1 partition for the complete flash and=0Athen n=
+ partitions.=0A=0A=0ASigned-off-by: Philip Rakity <pakity@yahoo.com>=0A--- =
+linux-2.6.26.5/drivers/mtd/nand/cafe_nand.c.orig    2008-10-08 15:47:24.000=
+000000 -0700=0A+++ linux-2.6.26.5/drivers/mtd/nand/cafe_nand.c 2008-10-08 1=
+5:52:08.000000000 -0700=0A@@ -87,8 +87,12 @@ static int timing[3];=0A modul=
+e_param_array(timing, int, &numtimings, 0644);=0A=0A #ifdef CONFIG_MTD_PART=
+ITIONS=0A+#ifdef CONFIG_MTD_CMDLINE_PARTS=0A+static const char *part_probes=
+[] =3D { "cmdlinepart", "RedBoot", NULL };=0A+#else=0A static const char *p=
+art_probes[] =3D { "RedBoot", NULL };=0A #endif=0A+#endif=0A=0A /* Hrm. Why=
+ isn't this already conditional on something in the struct device? */=0A #d=
+efine cafe_dev_dbg(dev, args...) do { if (debug) dev_dbg(dev, ##args); } wh=
+ile(0)=0A@@ -628,7 +632,7 @@ static int __devinit cafe_nand_probe(str=0A   =
+     struct cafe_priv *cafe;=0A        struct mtd_partition *parts;=0A     =
+   uint32_t ctrl;=0A-       int nr_parts;=0A+       int nr_parts =3D 0;=0A =
+       int err =3D 0;=0A=0A        /* Very old versions shared the same PCI=
+ ident for all three=0A@@ -796,17 +800,21 @@ static int __devinit cafe_nand=
+_probe(str=0A=0A        pci_set_drvdata(pdev, mtd);=0A=0A-       /* We regi=
+ster the whole device first, separate from the partitions */=0A-       add_=
+mtd_device(mtd);=0A-=0A #ifdef CONFIG_MTD_PARTITIONS=0A+#ifdef CONFIG_MTD_C=
+MDLINE_PARTS=0A+        mtd->name =3D "cafe_nand";=0A+#endif=0A        nr_p=
+arts =3D parse_mtd_partitions(mtd, part_probes, &parts, 0);=0A        if (n=
+r_parts > 0) {=0A                cafe->parts =3D parts;=0A-               d=
+ev_info(&cafe->pdev->dev, "%d RedBoot partitions found\n", nr_parts);=0A+  =
+             dev_info(&cafe->pdev->dev, "%d partitions found\n", nr_parts);=
+=0A                add_mtd_partitions(mtd, parts, nr_parts);=0A        }=0A=
+ #endif=0A+=0A+       /* We register the whole device first, separate from =
+the partitions */=0A+       if (nr_parts <=3D 0)=0A+               add_mtd_=
+device(mtd);=0A        goto out;=0A=0A  out_irq:=0A@@ -908,3 +916,4 @@ modu=
+le_exit(cafe_nand_exit);=0A MODULE_LICENSE("GPL");=0A MODULE_AUTHOR("David =
+Woodhouse <dwmw2@infradead.org>");=0A MODULE_DESCRIPTION("NAND flash driver=
+ for OLPC CAF=C9 chip");=0A+=0A=0A=0A      
