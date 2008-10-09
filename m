@@ -1,20 +1,25 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from smtp6-g19.free.fr ([212.27.42.36])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Ko1K2-0000Va-Qa
-	for linux-mtd@lists.infradead.org; Thu, 09 Oct 2008 19:37:19 +0000
-Message-ID: <48EE5EAE.1090105@grandegger.com>
-Date: Thu, 09 Oct 2008 21:42:38 +0200
-From: Wolfgang Grandegger <wg@grandegger.com>
-MIME-Version: 1.0
-To: Linuxppc-dev@ozlabs.org
-Subject: Re: [PATCH v3] [NAND] driver extension to support NAND on TQM85xx
-	modules
-References: <484CE77C.70506@grandegger.com> <486B39C8.10502@grandegger.com>
-In-Reply-To: <486B39C8.10502@grandegger.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	Anton Vorontsov <avorontsov@ru.mvista.com>, linux-mtd@lists.infradead.org
+	id 1Ko3U2-0005jN-EW
+	for linux-mtd@lists.infradead.org; Thu, 09 Oct 2008 21:55:46 +0000
+Received: from smtp6-g19.free.fr (localhost.localdomain [127.0.0.1])
+	by smtp6-g19.free.fr (Postfix) with ESMTP id DBD3C18CA2
+	for <linux-mtd@lists.infradead.org>;
+	Thu,  9 Oct 2008 23:55:44 +0200 (CEST)
+Received: from [192.168.1.9] (lns-bzn-50f-62-147-234-34.adsl.proxad.net
+	[62.147.234.34])
+	by smtp6-g19.free.fr (Postfix) with ESMTP id 9E792650
+	for <linux-mtd@lists.infradead.org>;
+	Thu,  9 Oct 2008 23:55:43 +0200 (CEST)
+Subject: [PATCH][MTD] cfi_cmdset_0002.c: Add Macronix CFI V1.0 TopBottom
+	detection
+From: Christopher Moore <moore@free.fr>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Date: Thu, 09 Oct 2008 23:55:41 +0200
+Message-Id: <1223589342.3354.11.camel@linuxvideo.moore.hd.free.fr>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,122 +29,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Wolfgang Grandegger wrote:
-> Hello,
-> 
-> I would like to ask for the status of the patch below and the related
-> ones. Any chance to get them in for 2.6.27.
+This patch adds TopBottom detection for most Macronix chips with CFI
+V1.0.
 
-Already sometime ago I asked for the status of these patches but I never
-got an answer and they did make it into 2.6.27, like the related patches
-from Anton. That's really disappointing. What do I need to do to get
-them finally accepted?
+The main purpose of this patch is to add detection of the MX29LV400C B
+used on the LaCie Ethernet Disk mini V2 NAS.
 
-Thanks,
+It detects the following parts correctly:-
+MX28F640C3B T
+MX29LV002C  B
+MX29LV002NC B
+MX29LV004C  T
+MX29LV400C  T/B
+MX29LV800C  T/B
+MX29LV160C  T/B
+MX29SL800C  T/B
+MX29SL802C  T/B
 
-Wolfgang.
+It detects the following uniform part as bottom but it should work
+correctly:-
+MX29LV040C
 
-> Wolfgang Grandegger wrote:
->> This patch extends the FSL UPM NAND driver from Anton Vorontsov to
->> support hardware which does not have the R/B pin of the NAND chip
->> connected, like the TQM8548 module:
->>
->> - The OF_GPIO dependency has been removed from the Kconfig option
->>   because GPIO is not needed. The relevant gpio_* function are then
->>   stubbed out in <linux/gpio.h>.
->>  
->> - It re-introduces the chip-delay property to define an appropriate
->>   maximum delay time (tR) required for read operations. The binding
->>   will be documented in a separate patch.
->>
->> Note: this patch is based on a patch from Anton Vorontsov aöready
->>       posted to this list:
->>
->>       http://ozlabs.org/pipermail/linuxppc-dev/2008-April/055587.html.
->>       http://ozlabs.org/pipermail/linuxppc-dev/2008-May/057158.html
->>
->> Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
->> ---
->>  drivers/mtd/nand/Kconfig   |    2 +-
->>  drivers/mtd/nand/fsl_upm.c |   17 +++++++++++++----
->>  2 files changed, 14 insertions(+), 5 deletions(-)
->>
->> Index: linux-2.6-galak/drivers/mtd/nand/Kconfig
->> ===================================================================
->> --- linux-2.6-galak.orig/drivers/mtd/nand/Kconfig
->> +++ linux-2.6-galak/drivers/mtd/nand/Kconfig
->> @@ -380,7 +380,7 @@ config MTD_NAND_FSL_ELBC
->>  
->>  config MTD_NAND_FSL_UPM
->>      tristate "Support for NAND on Freescale UPM"
->> -    depends on MTD_NAND && OF_GPIO && (PPC_83xx || PPC_85xx)
->> +    depends on MTD_NAND && (PPC_83xx || PPC_85xx)
->>      select FSL_LBC
->>      help
->>        Enables support for NAND Flash chips wired onto Freescale PowerPC
->> Index: linux-2.6-galak/drivers/mtd/nand/fsl_upm.c
->> ===================================================================
->> --- linux-2.6-galak.orig/drivers/mtd/nand/fsl_upm.c
->> +++ linux-2.6-galak/drivers/mtd/nand/fsl_upm.c
->> @@ -13,6 +13,7 @@
->>  
->>  #include <linux/kernel.h>
->>  #include <linux/module.h>
->> +#include <linux/delay.h>
->>  #include <linux/mtd/nand.h>
->>  #include <linux/mtd/nand_ecc.h>
->>  #include <linux/mtd/partitions.h>
->> @@ -36,6 +37,7 @@ struct fsl_upm_nand {
->>      uint8_t upm_cmd_offset;
->>      void __iomem *io_base;
->>      int rnb_gpio;
->> +    int chip_delay;
->>  };
->>  
->>  #define to_fsl_upm_nand(mtd) container_of(mtd, struct fsl_upm_nand, mtd)
->> @@ -58,10 +60,11 @@ static void fun_wait_rnb(struct fsl_upm_
->>      if (fun->rnb_gpio >= 0) {
->>          while (--cnt && !fun_chip_ready(&fun->mtd))
->>              cpu_relax();
->> +        if (!cnt)
->> +            dev_err(fun->dev, "tired waiting for RNB\n");
->> +    } else {
->> +        ndelay(100);
->>      }
->> -
->> -    if (!cnt)
->> -        dev_err(fun->dev, "tired waiting for RNB\n");
->>  }
->>  
->>  static void fun_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int
->> ctrl)
->> @@ -129,7 +132,7 @@ static int __devinit fun_chip_init(struc
->>      fun->chip.IO_ADDR_R = fun->io_base;
->>      fun->chip.IO_ADDR_W = fun->io_base;
->>      fun->chip.cmd_ctrl = fun_cmd_ctrl;
->> -    fun->chip.chip_delay = 50;
->> +    fun->chip.chip_delay = fun->chip_delay;
->>      fun->chip.read_byte = fun_read_byte;
->>      fun->chip.read_buf = fun_read_buf;
->>      fun->chip.write_buf = fun_write_buf;
->> @@ -233,6 +236,12 @@ static int __devinit fun_probe(struct of
->>          goto err2;
->>      }
->>  
->> +    prop = of_get_property(ofdev->node, "chip-delay", NULL);
->> +    if (prop)
->> +        fun->chip_delay = *prop;
->> +    else
->> +        fun->chip_delay = 50;
->> +
->>      fun->io_base = devm_ioremap_nocache(&ofdev->dev, io_res.start,
->>                        io_res.end - io_res.start + 1);
->>      if (!fun->io_base) {
->> _______________________________________________
->> Linuxppc-dev mailing list
->> Linuxppc-dev@ozlabs.org
->> https://ozlabs.org/mailman/listinfo/linuxppc-dev
->>
->>
-> 
-> 
+For T parts it correctly reverses the erase block table.
+For other parts it avoids the bogus "Assuming top." message.
+
+It does not detect the following correctly:-
+MX28F640C3B B
+MX29LV002C  T
+MX29LV002NC T
+MX29LV004C  B
+MX29SL400C  T/B
+MX29SL402C  T/B
+
+If desired I could supply a more complicated patch to handle these as
+well.
+
+Only the MX29LV400C B has been physically tested; others were checked
+against their data sheets.
+
+Signed-off-by: Christopher Moore <moore@free.fr>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c |   36
++++++++++++++++++++++++++++++++++++
+ 1 files changed, 36 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c
+b/drivers/mtd/chips/cfi_cmdset_0002.c
+index a972cc6..db16b7b 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -13,6 +13,8 @@
+  * XIP support hooks by Vitaly Wool (based on code for Intel flash
+  * by Nicolas Pitre)
+  *
++ * 25/09/2008 Christopher Moore: TopBottom fixup for many Macronix with
+CFI V1.0
++ *
+  * Occasionally maintained by Thayne Harbaugh tharbaugh at lnxi dot com
+  *
+  * This code is GPL
+@@ -43,6 +45,7 @@
+ 
+ #define MANUFACTURER_AMD	0x0001
+ #define MANUFACTURER_ATMEL	0x001F
++#define MANUFACTURER_MACRONIX	0x00C2
+ #define MANUFACTURER_SST	0x00BF
+ #define SST49LF004B	        0x0060
+ #define SST49LF040B	        0x0050
+@@ -144,12 +147,44 @@ static void fixup_amd_bootblock(struct mtd_info
+*mtd, void* param)
+ 
+ 	if (((major << 8) | minor) < 0x3131) {
+ 		/* CFI version 1.0 => don't trust bootloc */
++
++		DEBUG(MTD_DEBUG_LEVEL1,
++			"%s: JEDEC Vendor ID is 0x%02X Device ID is 0x%02X\n",
++			map->name, cfi->mfr, cfi->id);
++
++		/* AFAICS all 29LV400 with a bottom boot block have a device ID
++		 * of 0x22BA in 16-bit mode and 0xBA in 8-bit mode.
++		 * These were badly detected as they have the 0x80 bit set
++		 * so treat them as a special case.
++		 */
++		if (((cfi->id == 0xBA) || (cfi->id == 0x22BA)) &&
++
++			/* Macronix added CFI to their 2nd generation
++			 * MX29LV400C B/T but AFAICS no other 29LV400 (AMD,
++			 * Fujitsu, Spansion, EON, ESI and older Macronix)
++			 * has CFI.
++			 *
++			 * Therefore also check the manufacturer.
++			 * This reduces the risk of false detection due to
++			 * the 8-bit device ID.
++			 */
++			(cfi->mfr == MANUFACTURER_MACRONIX)) {
++			DEBUG(MTD_DEBUG_LEVEL1,
++				"%s: Macronix MX29LV400C with bottom boot block"
++				" detected\n", map->name);
++			extp->TopBottom = 2;	/* bottom boot */
++		} else
+ 		if (cfi->id & 0x80) {
+ 			printk(KERN_WARNING "%s: JEDEC Device ID is 0x%02X. Assuming broken
+CFI table.\n", map->name, cfi->id);
+ 			extp->TopBottom = 3;	/* top boot */
+ 		} else {
+ 			extp->TopBottom = 2;	/* bottom boot */
+ 		}
++
++		DEBUG(MTD_DEBUG_LEVEL1,
++			"%s: AMD CFI PRI V%c.%c has no boot block field;"
++			" deduced %s from Device ID\n", map->name, major, minor,
++			extp->TopBottom == 2 ? "bottom" : "top");
+ 	}
+ }
+ #endif
+@@ -243,6 +278,7 @@ static struct cfi_fixup cfi_fixup_table[] = {
+ 	{ CFI_MFR_ATMEL, CFI_ID_ANY, fixup_convert_atmel_pri, NULL },
+ #ifdef AMD_BOOTLOC_BUG
+ 	{ CFI_MFR_AMD, CFI_ID_ANY, fixup_amd_bootblock, NULL },
++	{ MANUFACTURER_MACRONIX, CFI_ID_ANY, fixup_amd_bootblock, NULL },
+ #endif
+ 	{ CFI_MFR_AMD, 0x0050, fixup_use_secsi, NULL, },
+ 	{ CFI_MFR_AMD, 0x0053, fixup_use_secsi, NULL, },
+-- 
+1.5.2.2
