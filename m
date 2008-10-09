@@ -1,19 +1,19 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Kntv5-0003TL-HS
-	for linux-mtd@lists.infradead.org; Thu, 09 Oct 2008 11:43:04 +0000
-Subject: Re: [PATCH] [UBI] Print reseved_peb when it is too large
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: dsaxena@plexity.net
-In-Reply-To: <20081008195624.GA20104@trantor.hsd1.or.comcast.net>
-References: <20081008195624.GA20104@trantor.hsd1.or.comcast.net>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 09 Oct 2008 14:41:37 +0300
-Message-Id: <1223552497.4632.4.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from gv-out-0910.google.com ([216.239.58.190])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Ko0ZY-0002ED-CR
+	for linux-mtd@lists.infradead.org; Thu, 09 Oct 2008 18:49:16 +0000
+Received: by gv-out-0910.google.com with SMTP id n40so105903gve.5
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 09 Oct 2008 11:49:14 -0700 (PDT)
+Message-ID: <fbb0532c0810091149h65db537ag7ffc42b7d39475c9@mail.gmail.com>
+Date: Fri, 10 Oct 2008 02:49:14 +0800
+From: "=?GB2312?B?wfjV8dbQ?=" <liuzz1983@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: nftl module problem
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,17 +23,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-10-08 at 12:56 -0700, Deepak Saxena wrote:
-> [UBI] Print reserved_peb when it is too large
->=20
-> This patch makes debugging a missconfigured UBI a bit easier
-> by providing the needed information in the boot log.
->=20
-> Signed-off-by: Deepak Saxena <dsaxena@laptop.org>
+hello
+    this is my first time to post email to this  list ,if I do not
+follow the rules,I am sorry
+    recently,I tried the nftl module in MTD,I found it could not work
+well, so I debug it , and found one place that I thought it was the
+wrong place.
 
-Pushed to ubi-2.6.git, thank you.
+     in the nftlcore.c file ,line 178 to 198 ,the function nftl_write
+,as follows:
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+-- static int nftl_write(struct mtd_info *mtd, loff_t offs, size_t len,
+		   --   size_t *retlen, uint8_t *buf, uint8_t *oob)
+--{
+	--struct mtd_oob_ops ops;
+	--int res;
+
+	--ops.mode = MTD_OOB_PLACE;
+
+	--ops.ooboffs = offs;------------------------------------this place
+,I thought i should be 0 ,or offs&(mtd->writesize-1), if the value is
+offs, it will be over, and cannot work
+
+
+	--ops.ooblen = mtd->oobsize;
+	--ops.oobbuf = oob;
+	--ops.datbuf = buf;
+	--ops.len = len;
+
+	--res = mtd->write_oob(mtd, offs & ~(mtd->writesize - 1), &ops);
+	--*retlen = ops.retlen;
+	--return res;
+--}
+
+  I debug it on nandsim (I made a little change on nftl to let it work
+on nandsim,just change the nftl_add_mtd function, let it can
+recongnize nandsim)
+  I change ops.ooboffs=offs into ops.oobffs=0, it can work ;
+
+ anyone could give me an answer whether my change is right?
