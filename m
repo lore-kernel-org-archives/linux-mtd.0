@@ -1,19 +1,12 @@
-Received: from gv-out-0910.google.com ([216.239.58.190])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Ko0ZY-0002ED-CR
-	for linux-mtd@lists.infradead.org; Thu, 09 Oct 2008 18:49:16 +0000
-Received: by gv-out-0910.google.com with SMTP id n40so105903gve.5
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 09 Oct 2008 11:49:14 -0700 (PDT)
-Message-ID: <fbb0532c0810091149h65db537ag7ffc42b7d39475c9@mail.gmail.com>
-Date: Fri, 10 Oct 2008 02:49:14 +0800
-From: "=?GB2312?B?wfjV8dbQ?=" <liuzz1983@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: nftl module problem
+In-Reply-To: <1223270688.8051.78.camel@sauron>
+To: dedekind@infradead.org
+Subject: Re: [RFC] Support for > 2Gib MTD
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Message-ID: <OF9C9CDDAA.CE29A97E-ON882574DD.00672609-882574DD.00675F3E@selinc.com>
+From: Bruce_Leonard@selinc.com
+Date: Thu, 9 Oct 2008 11:49:17 -0700
+Content-Type: text/plain; charset="US-ASCII"
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +16,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hello
-    this is my first time to post email to this  list ,if I do not
-follow the rules,I am sorry
-    recently,I tried the nftl module in MTD,I found it could not work
-well, so I debug it , and found one place that I thought it was the
-wrong place.
+Hi Artem,
 
-     in the nftlcore.c file ,line 178 to 198 ,the function nftl_write
-,as follows:
+Sorry for the lateness of this, had a couple of fires to put out in 
+manufacturing this week :).
 
--- static int nftl_write(struct mtd_info *mtd, loff_t offs, size_t len,
-		   --   size_t *retlen, uint8_t *buf, uint8_t *oob)
---{
-	--struct mtd_oob_ops ops;
-	--int res;
+Artem Bityutskiy <dedekind@infradead.org> wrote on 10/05/2008 10:24:48 PM:
 
-	--ops.mode = MTD_OOB_PLACE;
+> Hi,
+> 
+> On Fri, 2008-10-03 at 13:36 -0700, Bruce_Leonard@selinc.com wrote:
+> > Here's a rough idea of what I'm thinking.  In 
+.../include/mtd/mtd-abi.h 
+> > add new 64 bit structs like this:
+> > 
+> > +struct erase_info_user_64 {
+> > +       uint64_t start;
+> > +       uint64_t length;
+> > +}
+> > 
+> > +struct mtd_info_user_64 {
+> > +       ...
+> > +       uint32_t flags;
+> > +       uint64_t size;
+> > +       ...
+> > +}
+> > 
+> > These new structs would be identical to the old ones execept for the 
+types 
+> > on a few fields.
+> 
+> Please, add something like
+> uint8_t padding[128]; /* Reserved for future, should be zeroed */
+> to the new data structures.
+>
 
-	--ops.ooboffs = offs;------------------------------------this place
-,I thought i should be 0 ,or offs&(mtd->writesize-1), if the value is
-offs, it will be over, and cannot work
+Is this for future expandibility?
+ 
+> >   To indicate that the new 64 bit interface is to be used 
+> > I would introduce a new flag for 'struct mtd_info_user_XX->flags', 
+> > something like this:
+> > 
+> > #define MTD_LARGE_SIZE 0x4000
+> 
+> No need for this. Because you'll change size of data structures and
+> their layout, this is not going to be compatible anyway.
+> 
 
+How then would you indicate to user space that they need to use the new 
+64-bit structures and IOCTLs?  How does using another bit in an existing 
+'flags' field of a structure change the size and layout of the structure?
 
-	--ops.ooblen = mtd->oobsize;
-	--ops.oobbuf = oob;
-	--ops.datbuf = buf;
-	--ops.len = len;
-
-	--res = mtd->write_oob(mtd, offs & ~(mtd->writesize - 1), &ops);
-	--*retlen = ops.retlen;
-	--return res;
---}
-
-  I debug it on nandsim (I made a little change on nftl to let it work
-on nandsim,just change the nftl_add_mtd function, let it can
-recongnize nandsim)
-  I change ops.ooboffs=offs into ops.oobffs=0, it can work ;
-
- anyone could give me an answer whether my change is right?
+Bruce
