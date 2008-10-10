@@ -1,17 +1,23 @@
-Received: from plexity.net ([206.123.115.38])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KoP6D-0001TY-Lh
-	for linux-mtd@lists.infradead.org; Fri, 10 Oct 2008 21:00:37 +0000
-Date: Fri, 10 Oct 2008 14:00:36 -0700
-From: Deepak Saxena <dsaxena@plexity.net>
-To: Artem Bityutskiy <dedekind@infradead.org>
-Subject: Understanding UBIFS flash overhead
-Message-ID: <20081010210036.GA12173@trantor.hsd1.or.comcast.net>
-MIME-Version: 1.0
+Received: from caramon.arm.linux.org.uk ([78.32.30.218])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KoPvo-0004EM-Ff
+	for linux-mtd@lists.infradead.org; Fri, 10 Oct 2008 21:53:57 +0000
+Date: Fri, 10 Oct 2008 22:48:28 +0100
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: Jamie Lokier <jamie@shareable.org>
+Subject: Re: [PATCH] [MTD] [NAND] GPIO NAND flash driver
+Message-ID: <20081010214827.GP435@flint.arm.linux.org.uk>
+References: <48EF3291.5040000@compulab.co.il>
+	<20081010141916.GB16934@shareable.org>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dsaxena@plexity.net
+In-Reply-To: <20081010141916.GB16934@shareable.org>
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Mike Frysinger <vapier.adi@gmail.com>, Russ Dill <russ.dill@gmail.com>,
+	Ben Dooks <ben-linux-arm@fluff.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	Mike Rapoport <mike@compulab.co.il>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,53 +27,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, Oct 10, 2008 at 03:19:16PM +0100, Jamie Lokier wrote:
+> Mike Rapoport wrote:
+> > +#ifdef CONFIG_ARM
+> > +/* gpio_nand_dosync()
+> > + *
+> > + * needed due to bus-reordering within the PXA itself (see section on
+> > + * I/O ordering in PXA manual (section 2.3, p35)
+> > + */
+> 
+> Is CONFIG_ARM the same as "is a PXA"?
 
-Artem,
+It's good enough.
 
-I'm working on getting UBIFS going on the OLPC XO and am trying to
-understand what I am seeing in regards to file system size. 
+> > +		/*
+> > +		 * Linux memory barriers don't cater for what's required here.
+> > +		 * What's required is what's here - a read from a separate
+> > +		 * region with a dependency on that read.
+> > +		 */
+> 
+> It would be nice if this comment explained _why_ it's needed here, not
+> just what it's doing but why this MTD device in particular needs it -
+> for the benefit of someone using this driver on another architecture.
+> 
+> If the problem is that "readl" alone doesn't force a read cycle on
+> PXA, it sounds like "readl" on PXA contains a bug which may affect
+> other drivers on that architecture too, and that the right place to
+> fix it is in "readl".
 
-I have partitioned the 1GiB mtd device into a 32MiB JFFS boot partition
-for OFW, a 128KiB partition to hold the Redboot partition table,
-and the remainder (991.625) for use by UBI.
+The problem is that a write to GPIO may pass a write to the static
+memory regions, or vice versa.  So, what we do is we insert a read
+with a dependency in the execution to ensure that we stall the
+pipeline until that read - and therefore the preceding write has
+completed.
 
-The NAND device has 128KiB EBs with a 2KiB pages and we are running w/o
-sub-page writes. Plugging this into the overhead calculation, we get:
+> > +static inline void gpio_nand_dosync(struct gpiomtd *gpiomtd) {}
+> 
+> Is this dummy implementation likely to be correct on non-ARM
+> architectures, or is this just faking it so the code will compile?
 
-SP	PEB Size		128KiB
-SL	LEB Size		128KiB - 2 * 2KiB = 124 KiB
-P	Total PEBs 		991.625MiB / 128KiB = 7933
-B	Reserved PEBsg		79(1%)
-O	Overhead= SP - SL	4KiB
-
-
-UBI Overhead = (B + 4) * SP + O * (P - B - 4) 
-             = (79 + 4) * 128Kib + 4 KiB * (7933 - 79 - 4)
-             = 42024 KiB 
-             = 329.3125 PEBs (round to 329)
-
-This leaves us with 7604 PEBs or 973312KiB available for user data. 
-
-At boot up, I see:
-
-UBIFS: file system size: 995237888 bytes (971912 KiB, 949 MiB,
-UBIFS: journal size: 9023488 bytes (8812 KiB, 8 MiB, 72 LEBs)
-
-'df' returns:
-
-Filesystem             Size   Used  Avail Use% Mounted on
-mtd0                   822M   242M   581M  30% /
-
-I expect some overhead, but I'm really wondering where over 100MiB of
-space went!
-
-This is 2.6.25 with UBI 2.6.25 tree merged in. Does that tree have
-any bugfixes from 2.6.26+ backported?
-
-~Deepak
-
--- 
-   _____   __o  Deepak Saxena - Living CarFree and CareFree          (o>
-------    -\<,  "When I see an adult on a bicycle, I do not despair  //\
- ----- ( )/ ( )  for the future of the human race." -H.G Wells       V_/_
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+I suspect what's required for various architectures has yet to be
+ascertained.  To ask ARM folk to work out what's required for other
+architectures is just like asking you what's required for ARM - I'd
+guess that you've no idea what ARM would require.  In the same way,
+we have no idea what other architectures require to ensure that the
+NAND chip sees GPIO changes before actually accessing the NAND.
