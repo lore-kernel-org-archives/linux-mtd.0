@@ -1,22 +1,19 @@
-Received: from mail2.shareable.org ([80.68.89.115])
+Received: from kroah.org ([198.145.64.141] helo=coco.kroah.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KoIq0-0004wY-2Q
-	for linux-mtd@lists.infradead.org; Fri, 10 Oct 2008 14:19:28 +0000
-Date: Fri, 10 Oct 2008 15:19:16 +0100
-From: Jamie Lokier <jamie@shareable.org>
-To: Mike Rapoport <mike@compulab.co.il>
-Subject: Re: [PATCH] [MTD] [NAND] GPIO NAND flash driver
-Message-ID: <20081010141916.GB16934@shareable.org>
-References: <48EF3291.5040000@compulab.co.il>
+	id 1KoKkI-0006Vj-Ld
+	for linux-mtd@lists.infradead.org; Fri, 10 Oct 2008 16:21:42 +0000
+Date: Fri, 10 Oct 2008 09:11:58 -0700
+From: Greg KH <greg@kroah.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] USB: remove info() macro from usb mtd drivers
+Message-ID: <20081010161158.GA26633@kroah.com>
+References: <20081010051321.GA32687@kroah.com>
+	<1223620856.28324.101.camel@macbook.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <48EF3291.5040000@compulab.co.il>
-Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>,
-	Mike Frysinger <vapier.adi@gmail.com>, Russ Dill <russ.dill@gmail.com>,
-	Ben Dooks <ben-linux-arm@fluff.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1223620856.28324.101.camel@macbook.infradead.org>
+Cc: linux-usb@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,37 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Mike Rapoport wrote:
-> +#ifdef CONFIG_ARM
-> +/* gpio_nand_dosync()
-> + *
-> + * needed due to bus-reordering within the PXA itself (see section on
-> + * I/O ordering in PXA manual (section 2.3, p35)
-> + */
+On Fri, Oct 10, 2008 at 07:40:56AM +0100, David Woodhouse wrote:
+> On Thu, 2008-10-09 at 22:13 -0700, Greg KH wrote:
+> > From: Greg Kroah-Hartman <gregkh@suse.de>
+> > 
+> > USB should not be having it's own printk macros, so remove info() and
+> > use the system-wide standard of dev_info() wherever possible.
+> > 
+> > Cc: David Woodhouse <dwmw2@infradead.org>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
+> > ---
+> > David, this has been in the USB tree for a few months now, sorry for not
+> > sending it to you sooner.  I can easily keep it in my tree and send it
+> > to Linus for this merge if you want me to, or you can take it in your
+> > tree, which ever you want me to do.
+> 
+> Since you already seem to have it, you might as well keep it. Thanks.
 
-Is CONFIG_ARM the same as "is a PXA"?
+Great, will do, thanks.
 
-> +		/*
-> +		 * Linux memory barriers don't cater for what's required here.
-> +		 * What's required is what's here - a read from a separate
-> +		 * region with a dependency on that read.
-> +		 */
-
-It would be nice if this comment explained _why_ it's needed here, not
-just what it's doing but why this MTD device in particular needs it -
-for the benefit of someone using this driver on another architecture.
-
-If the problem is that "readl" alone doesn't force a read cycle on
-PXA, it sounds like "readl" on PXA contains a bug which may affect
-other drivers on that architecture too, and that the right place to
-fix it is in "readl".
-
-> +static inline void gpio_nand_dosync(struct gpiomtd *gpiomtd) {}
-
-Is this dummy implementation likely to be correct on non-ARM
-architectures, or is this just faking it so the code will compile?
-
-I can't tell from the comments.
-
-Thanks,
--- Jamie
+greg k-h
