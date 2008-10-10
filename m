@@ -1,19 +1,22 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from mail2.shareable.org ([80.68.89.115])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KoHNL-0007qG-GH
-	for linux-mtd@lists.infradead.org; Fri, 10 Oct 2008 12:45:47 +0000
-Subject: Re: [RFC] Support for > 2Gib MTD
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Bruce_Leonard@selinc.com
-In-Reply-To: <OF9C9CDDAA.CE29A97E-ON882574DD.00672609-882574DD.00675F3E@selinc.com>
-References: <OF9C9CDDAA.CE29A97E-ON882574DD.00672609-882574DD.00675F3E@selinc.com>
-Content-Type: text/plain; charset=utf-8
-Date: Fri, 10 Oct 2008 15:44:08 +0300
-Message-Id: <1223642648.3395.7.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+	id 1KoIq0-0004wY-2Q
+	for linux-mtd@lists.infradead.org; Fri, 10 Oct 2008 14:19:28 +0000
+Date: Fri, 10 Oct 2008 15:19:16 +0100
+From: Jamie Lokier <jamie@shareable.org>
+To: Mike Rapoport <mike@compulab.co.il>
+Subject: Re: [PATCH] [MTD] [NAND] GPIO NAND flash driver
+Message-ID: <20081010141916.GB16934@shareable.org>
+References: <48EF3291.5040000@compulab.co.il>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <48EF3291.5040000@compulab.co.il>
+Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>,
+	Mike Frysinger <vapier.adi@gmail.com>, Russ Dill <russ.dill@gmail.com>,
+	Ben Dooks <ben-linux-arm@fluff.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,36 +26,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2008-10-09 at 11:49 -0700, Bruce_Leonard@selinc.com wrote:
-> > Please, add something like
-> > uint8_t padding[128]; /* Reserved for future, should be zeroed */
-> > to the new data structures.
-> >
->=20
-> Is this for future expandibility?
+Mike Rapoport wrote:
+> +#ifdef CONFIG_ARM
+> +/* gpio_nand_dosync()
+> + *
+> + * needed due to bus-reordering within the PXA itself (see section on
+> + * I/O ordering in PXA manual (section 2.3, p35)
+> + */
 
-Sure.
+Is CONFIG_ARM the same as "is a PXA"?
 
-> > >   To indicate that the new 64 bit interface is to be used=20
-> > > I would introduce a new flag for 'struct mtd_info_user_XX->flags',=20
-> > > something like this:
-> > >=20
-> > > #define MTD_LARGE_SIZE 0x4000
-> >=20
-> > No need for this. Because you'll change size of data structures and
-> > their layout, this is not going to be compatible anyway.
-> >
-> How then would you indicate to user space that they need to use the new=20
-> 64-bit structures and IOCTLs?  How does using another bit in an existing=20
-> 'flags' field of a structure change the size and layout of the structure?
+> +		/*
+> +		 * Linux memory barriers don't cater for what's required here.
+> +		 * What's required is what's here - a read from a separate
+> +		 * region with a dependency on that read.
+> +		 */
 
-If you have different data structure, you cannot reuse old ioctl. You
-have to define a new ioctl for the 64-bit interface. Old code will use
-old ioctl which you do not change. New code will use new ioctl. Once we
-have new ioctls, the old one may be declared as obsolete. This is my
-understanding of how things go.
+It would be nice if this comment explained _why_ it's needed here, not
+just what it's doing but why this MTD device in particular needs it -
+for the benefit of someone using this driver on another architecture.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+If the problem is that "readl" alone doesn't force a read cycle on
+PXA, it sounds like "readl" on PXA contains a bug which may affect
+other drivers on that architecture too, and that the right place to
+fix it is in "readl".
+
+> +static inline void gpio_nand_dosync(struct gpiomtd *gpiomtd) {}
+
+Is this dummy implementation likely to be correct on non-ARM
+architectures, or is this just faking it so the code will compile?
+
+I can't tell from the comments.
+
+Thanks,
+-- Jamie
