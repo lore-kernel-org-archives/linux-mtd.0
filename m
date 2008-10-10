@@ -1,22 +1,19 @@
-Received: from rn-out-0910.google.com ([64.233.170.189])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KoGNA-0004Et-W3
-	for linux-mtd@lists.infradead.org; Fri, 10 Oct 2008 11:41:33 +0000
-Received: by rn-out-0910.google.com with SMTP id m7so340474rnd.3
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 10 Oct 2008 04:41:32 -0700 (PDT)
-Date: Fri, 10 Oct 2008 07:40:08 -0400
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: Kumar Gala <galak@kernel.crashing.org>
-Subject: Re: [PATCH] mtd: remove dead Kconfig associated with !CONFIG_PPC_MERGE
-Message-ID: <20081010114008.GA8590@yoda.jdub.homelinux.org>
-References: <1223610606-13096-1-git-send-email-galak@kernel.crashing.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1223610606-13096-1-git-send-email-galak@kernel.crashing.org>
-Sender: Josh Boyer <jwboyer@gmail.com>
-Cc: linuxppc-dev@ozlabs.org, dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KoHNL-0007qG-GH
+	for linux-mtd@lists.infradead.org; Fri, 10 Oct 2008 12:45:47 +0000
+Subject: Re: [RFC] Support for > 2Gib MTD
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Bruce_Leonard@selinc.com
+In-Reply-To: <OF9C9CDDAA.CE29A97E-ON882574DD.00672609-882574DD.00675F3E@selinc.com>
+References: <OF9C9CDDAA.CE29A97E-ON882574DD.00672609-882574DD.00675F3E@selinc.com>
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 10 Oct 2008 15:44:08 +0300
+Message-Id: <1223642648.3395.7.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,47 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 09, 2008 at 10:50:06PM -0500, Kumar Gala wrote:
->Removed the Kconfig associated with 'NDFC NanD Flash Controller'.
->We can't enable !CONFIG_PPC_MERGE so there is no way to enable
->this.  Additionally the code needs to get updated for arch/powerpc.
->
->For the time being lets just remove the Kconfig option so we can
->actually remove CONFIG_PPC_MERGE.
->
->Signed-off-by: Kumar Gala <galak@kernel.crashing.org>
+On Thu, 2008-10-09 at 11:49 -0700, Bruce_Leonard@selinc.com wrote:
+> > Please, add something like
+> > uint8_t padding[128]; /* Reserved for future, should be zeroed */
+> > to the new data structures.
+> >
+>=20
+> Is this for future expandibility?
 
-The driver does need fixing, and there are patches for it.  We just
-haven't settled on an implementation yet so:
+Sure.
 
-Acked-by: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+> > >   To indicate that the new 64 bit interface is to be used=20
+> > > I would introduce a new flag for 'struct mtd_info_user_XX->flags',=20
+> > > something like this:
+> > >=20
+> > > #define MTD_LARGE_SIZE 0x4000
+> >=20
+> > No need for this. Because you'll change size of data structures and
+> > their layout, this is not going to be compatible anyway.
+> >
+> How then would you indicate to user space that they need to use the new=20
+> 64-bit structures and IOCTLs?  How does using another bit in an existing=20
+> 'flags' field of a structure change the size and layout of the structure?
 
->---
-> drivers/mtd/nand/Kconfig |    7 -------
-> 1 files changed, 0 insertions(+), 7 deletions(-)
->
->diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
->index 41f361c..1acdff7 100644
->--- a/drivers/mtd/nand/Kconfig
->+++ b/drivers/mtd/nand/Kconfig
->@@ -163,13 +163,6 @@ config MTD_NAND_S3C2410_HWECC
-> 	  incorrect ECC generation, and if using these, the default of
-> 	  software ECC is preferable.
-> 
->-config MTD_NAND_NDFC
->-	tristate "NDFC NanD Flash Controller"
->-	depends on 4xx && !PPC_MERGE
->-	select MTD_NAND_ECC_SMC
->-	help
->-	 NDFC Nand Flash Controllers are integrated in IBM/AMCC's 4xx SoCs
->-
-> config MTD_NAND_S3C2410_CLKSTOP
-> 	bool "S3C2410 NAND IDLE clock stop"
-> 	depends on MTD_NAND_S3C2410
->-- 
->1.5.5.1
->
->_______________________________________________
->Linuxppc-dev mailing list
->Linuxppc-dev@ozlabs.org
->https://ozlabs.org/mailman/listinfo/linuxppc-dev
+If you have different data structure, you cannot reuse old ioctl. You
+have to define a new ioctl for the 64-bit interface. Old code will use
+old ioctl which you do not change. New code will use new ioctl. Once we
+have new ioctls, the old one may be declared as obsolete. This is my
+understanding of how things go.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
