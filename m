@@ -1,9 +1,16 @@
-From: Kumar Gala <galak@kernel.crashing.org>
-To: dwmw2@infradead.org
-Subject: [PATCH] mtd: remove dead Kconfig associated with !CONFIG_PPC_MERGE
-Date: Thu,  9 Oct 2008 22:50:06 -0500
-Message-Id: <1223610606-13096-1-git-send-email-galak@kernel.crashing.org>
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
+Received: from kroah.org ([198.145.64.141] helo=coco.kroah.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KoARw-0007fa-HH
+	for linux-mtd@lists.infradead.org; Fri, 10 Oct 2008 05:22:04 +0000
+Date: Thu, 9 Oct 2008 22:13:21 -0700
+From: Greg KH <greg@kroah.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] USB: remove info() macro from usb mtd drivers
+Message-ID: <20081010051321.GA32687@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-usb@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -13,35 +20,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Removed the Kconfig associated with 'NDFC NanD Flash Controller'.
-We can't enable !CONFIG_PPC_MERGE so there is no way to enable
-this.  Additionally the code needs to get updated for arch/powerpc.
+From: Greg Kroah-Hartman <gregkh@suse.de>
 
-For the time being lets just remove the Kconfig option so we can
-actually remove CONFIG_PPC_MERGE.
+USB should not be having it's own printk macros, so remove info() and
+use the system-wide standard of dev_info() wherever possible.
 
-Signed-off-by: Kumar Gala <galak@kernel.crashing.org>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
 ---
- drivers/mtd/nand/Kconfig |    7 -------
- 1 files changed, 0 insertions(+), 7 deletions(-)
+David, this has been in the USB tree for a few months now, sorry for not
+sending it to you sooner.  I can easily keep it in my tree and send it
+to Linus for this merge if you want me to, or you can take it in your
+tree, which ever you want me to do.
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 41f361c..1acdff7 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -163,13 +163,6 @@ config MTD_NAND_S3C2410_HWECC
- 	  incorrect ECC generation, and if using these, the default of
- 	  software ECC is preferable.
+thanks,
+
+greg k-h
+
+ drivers/mtd/nand/alauda.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/drivers/mtd/nand/alauda.c
++++ b/drivers/mtd/nand/alauda.c
+@@ -691,7 +691,7 @@ static int alauda_probe(struct usb_inter
+ 	al[0].port = ALAUDA_PORT_XD;
+ 	al[1].port = ALAUDA_PORT_SM;
  
--config MTD_NAND_NDFC
--	tristate "NDFC NanD Flash Controller"
--	depends on 4xx && !PPC_MERGE
--	select MTD_NAND_ECC_SMC
--	help
--	 NDFC Nand Flash Controllers are integrated in IBM/AMCC's 4xx SoCs
--
- config MTD_NAND_S3C2410_CLKSTOP
- 	bool "S3C2410 NAND IDLE clock stop"
- 	depends on MTD_NAND_S3C2410
--- 
-1.5.5.1
+-	info("alauda probed");
++	dev_info(&interface->dev, "alauda probed\n");
+ 	alauda_check_media(al);
+ 	alauda_check_media(al+1);
+ 
+@@ -716,7 +716,7 @@ static void alauda_disconnect(struct usb
+ 	if (al)
+ 		kref_put(&al->kref, alauda_delete);
+ 
+-	info("alauda gone");
++	dev_info(&interface->dev, "alauda gone");
+ }
+ 
+ static struct usb_driver alauda_driver = {
