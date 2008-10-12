@@ -1,27 +1,20 @@
-Received: from rv-out-0708.google.com ([209.85.198.240])
+Received: from fg-out-1718.google.com ([72.14.220.153])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KoQ8Y-0003Fh-Hj
-	for linux-mtd@lists.infradead.org; Fri, 10 Oct 2008 22:07:06 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so707968rvf.42
+	id 1Koueu-00019n-T9
+	for linux-mtd@lists.infradead.org; Sun, 12 Oct 2008 06:42:33 +0000
+Received: by fg-out-1718.google.com with SMTP id l26so829230fgb.26
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 10 Oct 2008 15:07:04 -0700 (PDT)
-Message-ID: <8bd0f97a0810101507y589dfd3br4da47c634e83bb36@mail.gmail.com>
-Date: Fri, 10 Oct 2008 18:07:03 -0400
-From: "Mike Frysinger" <vapier.adi@gmail.com>
-To: "Russell King - ARM Linux" <linux@arm.linux.org.uk>
-Subject: Re: [PATCH] [MTD] [NAND] GPIO NAND flash driver
-In-Reply-To: <20081010214827.GP435@flint.arm.linux.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+	Sat, 11 Oct 2008 23:42:31 -0700 (PDT)
+Subject: [PATCH] Bug on atmel_nand HW ECC : OOB info not correctly written
+From: Richard Genoud <richard.genoud@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain
+Date: Sun, 12 Oct 2008 08:42:28 +0200
+Message-Id: <1223793748.7110.13.camel@ubuntu>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <48EF3291.5040000@compulab.co.il>
-	<20081010141916.GB16934@shareable.org>
-	<20081010214827.GP435@flint.arm.linux.org.uk>
-Cc: Russ Dill <russ.dill@gmail.com>, Jamie Lokier <jamie@shareable.org>,
-	Ben Dooks <ben-linux-arm@fluff.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	Mike Rapoport <mike@compulab.co.il>, David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	Haavard Skinnemoen <hskinnemoen@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,44 +24,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 10, 2008 at 17:48, Russell King - ARM Linux wrote:
-> On Fri, Oct 10, 2008 at 03:19:16PM +0100, Jamie Lokier wrote:
->> Mike Rapoport wrote:
->> > +           /*
->> > +            * Linux memory barriers don't cater for what's required here.
->> > +            * What's required is what's here - a read from a separate
->> > +            * region with a dependency on that read.
->> > +            */
->>
->> It would be nice if this comment explained _why_ it's needed here, not
->> just what it's doing but why this MTD device in particular needs it -
->> for the benefit of someone using this driver on another architecture.
->>
->> If the problem is that "readl" alone doesn't force a read cycle on
->> PXA, it sounds like "readl" on PXA contains a bug which may affect
->> other drivers on that architecture too, and that the right place to
->> fix it is in "readl".
->
-> The problem is that a write to GPIO may pass a write to the static
-> memory regions, or vice versa.  So, what we do is we insert a read
-> with a dependency in the execution to ensure that we stall the
-> pipeline until that read - and therefore the preceding write has
-> completed.
+The functions that write the OOB info (on hardware ECC only) use the HW_SYNDROME method.
+This is not correct : the start position is "pos = eccsize + chunk" and should be eccsize.
+So, the standard (nand_write_oob_std) function should be used.
+This patch corrects this by using NAND_ECC_HW instead of NAND_ECC_HW_SYNDROME.
 
-so the function comment should read something like "make sure the gpio
-state has actually changed before returning to the higher nand layers"
+This has only been tested on small pages nand flash.
+(if anyone can test it on large pages that would be great).
 
->> > +static inline void gpio_nand_dosync(struct gpiomtd *gpiomtd) {}
->>
->> Is this dummy implementation likely to be correct on non-ARM
->> architectures, or is this just faking it so the code will compile?
->
-> I suspect what's required for various architectures has yet to be
-> ascertained.  To ask ARM folk to work out what's required for other
-> architectures is just like asking you what's required for ARM - I'd
-> guess that you've no idea what ARM would require.  In the same way,
-> we have no idea what other architectures require to ensure that the
-> NAND chip sees GPIO changes before actually accessing the NAND.
+kernel version : 2.6.27-rc2 (current git mtd-2.6)
 
-the Blackfin code should do: SSYNC();
--mike
+Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
+
+---
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 3387e0d..c98c157 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -174,48 +174,6 @@ static void atmel_write_buf16(struct mtd_info *mtd, const u8 *buf, int len)
+ }
+ 
+ /*
+- * write oob for small pages
+- */
+-static int atmel_nand_write_oob_512(struct mtd_info *mtd,
+-		struct nand_chip *chip, int page)
+-{
+-	int chunk = chip->ecc.bytes + chip->ecc.prepad + chip->ecc.postpad;
+-	int eccsize = chip->ecc.size, length = mtd->oobsize;
+-	int len, pos, status = 0;
+-	const uint8_t *bufpoi = chip->oob_poi;
+-
+-	pos = eccsize + chunk;
+-
+-	chip->cmdfunc(mtd, NAND_CMD_SEQIN, pos, page);
+-	len = min_t(int, length, chunk);
+-	chip->write_buf(mtd, bufpoi, len);
+-	bufpoi += len;
+-	length -= len;
+-	if (length > 0)
+-		chip->write_buf(mtd, bufpoi, length);
+-
+-	chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
+-	status = chip->waitfunc(mtd, chip);
+-
+-	return status & NAND_STATUS_FAIL ? -EIO : 0;
+-
+-}
+-
+-/*
+- * read oob for small pages
+- */
+-static int atmel_nand_read_oob_512(struct mtd_info *mtd,
+-		struct nand_chip *chip,	int page, int sndcmd)
+-{
+-	if (sndcmd) {
+-		chip->cmdfunc(mtd, NAND_CMD_READOOB, 0, page);
+-		sndcmd = 0;
+-	}
+-	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+-	return sndcmd;
+-}
+-
+-/*
+  * Calculate HW ECC
+  *
+  * function called after a write
+@@ -235,14 +193,14 @@ static int atmel_nand_calculate(struct mtd_info *mtd,
+ 	/* get the first 2 ECC bytes */
+ 	ecc_value = ecc_readl(host->ecc, PR);
+ 
+-	ecc_code[eccpos[0]] = ecc_value & 0xFF;
+-	ecc_code[eccpos[1]] = (ecc_value >> 8) & 0xFF;
++	ecc_code[0] = ecc_value & 0xFF;
++	ecc_code[1] = (ecc_value >> 8) & 0xFF;
+ 
+ 	/* get the last 2 ECC bytes */
+ 	ecc_value = ecc_readl(host->ecc, NPR) & ATMEL_ECC_NPARITY;
+ 
+-	ecc_code[eccpos[2]] = ecc_value & 0xFF;
+-	ecc_code[eccpos[3]] = (ecc_value >> 8) & 0xFF;
++	ecc_code[2] = ecc_value & 0xFF;
++	ecc_code[3] = (ecc_value >> 8) & 0xFF;
+ 
+ 	return 0;
+ }
+@@ -476,14 +434,12 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+ 			res = -EIO;
+ 			goto err_ecc_ioremap;
+ 		}
+-		nand_chip->ecc.mode = NAND_ECC_HW_SYNDROME;
++		nand_chip->ecc.mode = NAND_ECC_HW;
+ 		nand_chip->ecc.calculate = atmel_nand_calculate;
+ 		nand_chip->ecc.correct = atmel_nand_correct;
+ 		nand_chip->ecc.hwctl = atmel_nand_hwctl;
+ 		nand_chip->ecc.read_page = atmel_nand_read_page;
+ 		nand_chip->ecc.bytes = 4;
+-		nand_chip->ecc.prepad = 0;
+-		nand_chip->ecc.postpad = 0;
+ 	}
+ 
+ 	nand_chip->chip_delay = 20;		/* 20us command delay time */
+@@ -514,7 +470,7 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+ 		goto err_scan_ident;
+ 	}
+ 
+-	if (nand_chip->ecc.mode == NAND_ECC_HW_SYNDROME) {
++	if (nand_chip->ecc.mode == NAND_ECC_HW) {
+ 		/* ECC is calculated for the whole page (1 step) */
+ 		nand_chip->ecc.size = mtd->writesize;
+ 
+@@ -522,8 +478,6 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+ 		switch (mtd->writesize) {
+ 		case 512:
+ 			nand_chip->ecc.layout = &atmel_oobinfo_small;
+-			nand_chip->ecc.read_oob = atmel_nand_read_oob_512;
+-			nand_chip->ecc.write_oob = atmel_nand_write_oob_512;
+ 			ecc_writel(host->ecc, MR, ATMEL_ECC_PAGESIZE_528);
+ 			break;
+ 		case 1024:
