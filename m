@@ -1,32 +1,16 @@
-Received: from caramon.arm.linux.org.uk ([78.32.30.218])
+Received: from chamillionaire.breakpoint.cc ([85.10.199.196])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Koyad-0002BT-M6
-	for linux-mtd@lists.infradead.org; Sun, 12 Oct 2008 10:54:24 +0000
-Date: Sun, 12 Oct 2008 11:43:50 +0100
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+	id 1Kp1mL-0007NQ-Cp
+	for linux-mtd@lists.infradead.org; Sun, 12 Oct 2008 14:18:41 +0000
+Date: Sun, 12 Oct 2008 16:18:36 +0200
+From: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] [MTD] [NAND] GPIO NAND flash driver
-Message-ID: <20081012104349.GC29975@flint.arm.linux.org.uk>
-References: <48EF3291.5040000@compulab.co.il>
-	<20081010141916.GB16934@shareable.org>
-	<20081010214827.GP435@flint.arm.linux.org.uk>
-	<8bd0f97a0810101507y589dfd3br4da47c634e83bb36@mail.gmail.com>
-	<48F1AF0C.8080401@compulab.co.il>
-	<8bd0f97a0810120114p261e86bbib791eedfe0808ed8@mail.gmail.com>
-	<20081012082803.GA29975@flint.arm.linux.org.uk>
-	<8bd0f97a0810120156t4905c5f4t312197930febabc4@mail.gmail.com>
-	<20081012101326.GB29975@flint.arm.linux.org.uk>
-	<1223807730.6770.387.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Subject: [PATCH] mtd: remove unused mtd parameter in of_mtd_parse_partitions()
+Message-ID: <20081012141836.GA7914@Chamillionaire.breakpoint.cc>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <1223807730.6770.387.camel@macbook.infradead.org>
-Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Michael Hennerich <michael.hennerich@analog.com>,
-	Mike Frysinger <vapier.adi@gmail.com>, Russ Dill <russ.dill@gmail.com>,
-	Jamie Lokier <jamie@shareable.org>, Ben Dooks <ben-linux-arm@fluff.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	Mike Rapoport <mike@compulab.co.il>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,26 +20,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Oct 12, 2008 at 11:35:30AM +0100, David Woodhouse wrote:
-> On Sun, 2008-10-12 at 11:13 +0100, Russell King - ARM Linux wrote:
-> > Consider the loudspeaker amplifier example.  Does it
-> > matter if the amplifier is powered up for a few milliseconds on boot?
-> > No.  
-> 
-> Sometimes it does. Partly because that usually means it's also powered
-> up during wake from suspend -- so you get horrible clicks when resume.
-> Which if you suspend as often as OLPC does, for example, is a pain.
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-As I've pointed out, it's hardware dependent.
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+Repost of 19th Aug [1]
 
-If your hardware has "sleep modes" for GPIO which are preserved until
-you explicitly release the GPIO hardware from sleep state - giving you
-a chance to restore the GPIO registers on resume without the external
-hardware seeing glitches - then you set the sleep mode state so the
-GPIO for the amplifier is set as an output, and driven to the "powered
-down" level.
+[1] http://article.gmane.org/gmane.linux.drivers.mtd/22589
 
-On hardware which doesn't have that facility, then yes you do want
-pull-ups and pull-downs.  But just because your hardware doesn't have
-sensible GPIO hardware, that's no reason to outlaw setting GPIOs to
-their inactive states while unloading drivers.
+ drivers/mtd/maps/physmap_of.c    |    3 +--
+ drivers/mtd/nand/fsl_elbc_nand.c |    3 +--
+ drivers/mtd/ofpart.c             |    1 -
+ include/linux/mtd/partitions.h   |    1 -
+ 4 files changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index 49acd41..5fcfec0 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -230,8 +230,7 @@ static int __devinit of_flash_probe(struct of_device *dev,
+ 
+ #ifdef CONFIG_MTD_OF_PARTS
+ 	if (err == 0) {
+-		err = of_mtd_parse_partitions(&dev->dev, info->mtd,
+-		                              dp, &info->parts);
++		err = of_mtd_parse_partitions(&dev->dev, dp, &info->parts);
+ 		if (err < 0)
+ 			return err;
+ 	}
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+index 98ad3ce..4aa5bd6 100644
+--- a/drivers/mtd/nand/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -918,8 +918,7 @@ static int __devinit fsl_elbc_chip_probe(struct fsl_elbc_ctrl *ctrl,
+ 
+ #ifdef CONFIG_MTD_OF_PARTS
+ 	if (ret == 0) {
+-		ret = of_mtd_parse_partitions(priv->dev, &priv->mtd,
+-		                              node, &parts);
++		ret = of_mtd_parse_partitions(priv->dev, node, &parts);
+ 		if (ret < 0)
+ 			goto err;
+ 	}
+diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+index 4f80c2f..9e45b3f 100644
+--- a/drivers/mtd/ofpart.c
++++ b/drivers/mtd/ofpart.c
+@@ -20,7 +20,6 @@
+ #include <linux/mtd/partitions.h>
+ 
+ int __devinit of_mtd_parse_partitions(struct device *dev,
+-                                      struct mtd_info *mtd,
+                                       struct device_node *node,
+                                       struct mtd_partition **pparts)
+ {
+diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
+index 5014f7a..c92b4d4 100644
+--- a/include/linux/mtd/partitions.h
++++ b/include/linux/mtd/partitions.h
+@@ -73,7 +73,6 @@ struct device;
+ struct device_node;
+ 
+ int __devinit of_mtd_parse_partitions(struct device *dev,
+-                                      struct mtd_info *mtd,
+                                       struct device_node *node,
+                                       struct mtd_partition **pparts);
+ 
+-- 
+1.5.6.5
