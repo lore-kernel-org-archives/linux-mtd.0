@@ -1,27 +1,30 @@
-Received: from oceanus.site5.com ([67.43.13.2])
+Received: from caramon.arm.linux.org.uk ([78.32.30.218])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Koxov-0006nd-BO
-	for linux-mtd@lists.infradead.org; Sun, 12 Oct 2008 10:05:05 +0000
-Message-ID: <48F1CBC2.4000508@compulab.co.il>
-Date: Sun, 12 Oct 2008 12:04:50 +0200
-From: Mike Rapoport <mike@compulab.co.il>
-MIME-Version: 1.0
+	id 1Koy2q-0006e2-VT
+	for linux-mtd@lists.infradead.org; Sun, 12 Oct 2008 10:19:30 +0000
+Date: Sun, 12 Oct 2008 11:13:26 +0100
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
 To: Mike Frysinger <vapier.adi@gmail.com>
 Subject: Re: [PATCH] [MTD] [NAND] GPIO NAND flash driver
-References: <48EF3291.5040000@compulab.co.il>	
-	<20081010141916.GB16934@shareable.org>	
-	<20081010214827.GP435@flint.arm.linux.org.uk>	
-	<8bd0f97a0810101507y589dfd3br4da47c634e83bb36@mail.gmail.com>	
+Message-ID: <20081012101326.GB29975@flint.arm.linux.org.uk>
+References: <48EF3291.5040000@compulab.co.il>
+	<20081010141916.GB16934@shareable.org>
+	<20081010214827.GP435@flint.arm.linux.org.uk>
+	<8bd0f97a0810101507y589dfd3br4da47c634e83bb36@mail.gmail.com>
 	<48F1AF0C.8080401@compulab.co.il>
 	<8bd0f97a0810120114p261e86bbib791eedfe0808ed8@mail.gmail.com>
-In-Reply-To: <8bd0f97a0810120114p261e86bbib791eedfe0808ed8@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>,
+	<20081012082803.GA29975@flint.arm.linux.org.uk>
+	<8bd0f97a0810120156t4905c5f4t312197930febabc4@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8bd0f97a0810120156t4905c5f4t312197930febabc4@mail.gmail.com>
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Michael Hennerich <michael.hennerich@analog.com>,
 	Russ Dill <russ.dill@gmail.com>, Jamie Lokier <jamie@shareable.org>,
 	Ben Dooks <ben-linux-arm@fluff.org>,
 	linux-mtd <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>
+	Mike Rapoport <mike@compulab.co.il>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,503 +34,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-Mike Frysinger wrote:
-
->> The patch with (hopefully) clearer gpio_nand_dosync() comments.
+On Sun, Oct 12, 2008 at 04:56:37AM -0400, Mike Frysinger wrote:
+> On Sun, Oct 12, 2008 at 04:28, Russell King - ARM Linux wrote:
+> > Maybe you should reconsider that behaviour - this is a prime example
+> > why such behaviour is wrong.  If you leave the NAND signals floating,
+> > you're going to eat power - most CMOS based devices want inputs to be
+> > either logic high or low, and not floating otherwise they eat power.
+> >
+> > Moreover, you don't want to leave memory control lines floating - you
+> > don't want them to pick up noise which may be transmitted inside the
+> > NAND chip and may cause malfunction.
+> >
+> > Lastly, you don't want spurious writes to the NAND memory region (think
+> > DMA controller scribbling over memory because of some buggy driver) to
+> > write into the NAND, or maybe cause the NAND to erase itself.
+> >
+> > There's another reason for doing this.  Think GPIO line connected to
+> > a loudspeaker amplifier shutdown input.  Do you really want that line
+> > floating when the sound driver isn't loaded?
 > 
-> looks like it, thanks for that
+> this is what pull downs/pull ups are for.
+
+So says you.  Not everyone will agree with that statement, especially
+on designs which don't behave as you've described in your previous
+mail.
+
+> your arguments can just as readily be applied to the powering up state
+> and initialization stages.  software cant (and shouldnt) rectify crappy
+> hardware designs.
+
+No they don't.  Consider the loudspeaker amplifier example.  Does it
+matter if the amplifier is powered up for a few milliseconds on boot?
+No.  Does it matter if the amplifier stays powered up afterwards?  Yes,
+it'll kill your battery life.
+
+Does it matter if the NAND control lines are at an indeterminent state
+at boot?  Probably not, you'd hope that the boot software is small and
+don't randomly scribble into your flash storage.  The boot software may
+even setup the NAND control lines so it can read the kernel from flash.
+Does it matter while the kernel is running, which will have setup the
+entire system so there's more probability of things going wrong?
+
+Yes, it could make your platform unbootable if the NAND gets corrupted.
+
+> > On ARM, certainly PXA, the last GPIO state is preserved when free'd.
 > 
->> +static int gpio_nand_remove(struct platform_device *dev)
-> 
-> should have __devexit markings
+> if certain behavior is expected, then it should be codified.  i see no
+> mention (unless i just missed it) of expected behavior upon freeing in
+> Documentation/gpio.txt.
 
-Done.
+It doesn't.  The fact that the GPIO state is preserved when free'd on
+PXA is just that it takes _more_ code to do anything else.
 
->> +       if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
->> +               gpio_set_value(gpiomtd->plat.gpio_nwp, 0);
->> +       gpio_set_value(gpiomtd->plat.gpio_nce, 1);
->> +
->> +       gpio_free(gpiomtd->plat.gpio_cle);
->> +       gpio_free(gpiomtd->plat.gpio_ale);
->> +       gpio_free(gpiomtd->plat.gpio_nce);
->> +       if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
->> +               gpio_free(gpiomtd->plat.gpio_nwp);
-> 
-> why do you bother setting the value before releasing ?  when you
-> release, the pin tends to go to the hardware default and on the
-> Blackfin, that tends to be "tristate".  are you just banking on the
-> idea that the pin will stay the way it was last set before it gets
-> freed ?
+Moreover, all ARM processors I've seen have the ability to set GPIO
+state on low power modes, which makes the addition of lots of pull up
+and pull down resistors not only a needlessly expense for production
+runs, but also wastes power when the signal is held at the opposite
+level to which it's being pulled to.
 
-I don't quite understand the issue with setting gpio value before releasing.
-On PXA (and probably others) it will add safety measure. On the systems that
-change pin state after it was freed setting gpio value will eat several CPU
-cycles on driver unload but it definitely will not do any damage.
+So, while you see "lack of pull ups" as crappy design, others will see
+it as a power and cost saving measure.
 
->> +static int gpio_nand_probe(struct platform_device *dev)
-> 
-> should have __devinit markings
+I'll say that I've never liked this GPIO layer, because it breads ideas
+like you're putting forward, which have traditionally not been needed
+to be thought about when writing direct to the registers - where you
+have system wide control of the GPIO state without any of this "on
+gpio_free() such and such might happen" ideas.
 
-Done.
+Another example - think about a GPIO which is shared between two drivers.
+Yes, there are platforms which do this.  No single driver owns the GPIO
+signal.  What happens if it's gpio_free'd while the other driver is still
+using it?  Yes, the GPIO layer sucks for that, but like it or not, it's
+reality and the GPIO API doesn't cater for it.
 
->> +err_map:
->> +       kfree(gpiomtd);
->> +       return -ENOMEM;
-> 
-> you really should be returning "ret" rather than "-ENOMEM" as many
-> (most?) of the ways you'd get here will not be due to out of memory
-> conditions.  some error paths above will probably require you to
-> manually set "ret" to something relevant ...
-
-Fixed.
-
-> -mike
-> 
-
- drivers/mtd/nand/Kconfig      |    6 +
- drivers/mtd/nand/Makefile     |    1 +
- drivers/mtd/nand/gpio.c       |  375 +++++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/nand-gpio.h |   19 ++
- 4 files changed, 401 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 41f361c..e98991b 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -56,6 +56,12 @@ config MTD_NAND_H1900
- 	help
- 	  This enables the driver for the iPAQ h1900 flash.
-
-+config MTD_NAND_GPIO
-+	tristate "GPIO NAND Flash driver"
-+	depends on GENERIC_GPIO
-+	help
-+	  This enables a GPIO based NAND flash driver.
-+
- config MTD_NAND_SPIA
- 	tristate "NAND Flash device on SPIA board"
- 	depends on ARCH_P720T
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index b786c5d..39eefc2 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -24,6 +24,7 @@ obj-$(CONFIG_MTD_NAND_NANDSIM)		+= nandsim.o
- obj-$(CONFIG_MTD_NAND_CS553X)		+= cs553x_nand.o
- obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
- obj-$(CONFIG_MTD_NAND_ATMEL)		+= atmel_nand.o
-+obj-$(CONFIG_MTD_NAND_GPIO)		+= gpio.o
- obj-$(CONFIG_MTD_NAND_CM_X270)		+= cmx270_nand.o
- obj-$(CONFIG_MTD_NAND_BASLER_EXCITE)	+= excite_nandflash.o
- obj-$(CONFIG_MTD_NAND_PXA3xx)		+= pxa3xx_nand.o
-diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
-new file mode 100644
-index 0000000..2883b6c
---- /dev/null
-+++ b/drivers/mtd/nand/gpio.c
-@@ -0,0 +1,375 @@
-+/*
-+ * drivers/mtd/nand/gpio.c
-+ *
-+ * Updated, and converted to generic GPIO based driver by Russell King.
-+ *
-+ * Written by Ben Dooks <ben@simtec.co.uk>
-+ *   Based on 2.4 version by Mark Whittaker
-+ *
-+ * (c) 2004 Simtec Electronics
-+ *
-+ * Device driver for NAND connected via GPIO
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/init.h>
-+#include <linux/slab.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/gpio.h>
-+#include <linux/io.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/nand.h>
-+#include <linux/mtd/partitions.h>
-+#include <linux/mtd/nand-gpio.h>
-+
-+struct gpiomtd {
-+	void __iomem		*io_sync;
-+	struct mtd_info		mtd_info;
-+	struct nand_chip	nand_chip;
-+	struct gpio_nand_platdata plat;
-+};
-+
-+#define gpio_nand_getpriv(x) container_of(x, struct gpiomtd, mtd_info)
-+
-+
-+#ifdef CONFIG_ARM
-+/* gpio_nand_dosync()
-+ *
-+ * Make sure the GPIO state changes occur in-order with writes to NAND
-+ * memory region.
-+ * Needed on PXA due to bus-reordering within the SoC itself (see section on
-+ * I/O ordering in PXA manual (section 2.3, p35)
-+ */
-+static void gpio_nand_dosync(struct gpiomtd *gpiomtd)
-+{
-+	unsigned long tmp;
-+
-+	if (gpiomtd->io_sync) {
-+		/*
-+		 * Linux memory barriers don't cater for what's required here.
-+		 * What's required is what's here - a read from a separate
-+		 * region with a dependency on that read.
-+		 */
-+		tmp = readl(gpiomtd->io_sync);
-+		asm volatile("mov %1, %0\n" : "=r" (tmp) : "r" (tmp));
-+	}
-+}
-+#else
-+static inline void gpio_nand_dosync(struct gpiomtd *gpiomtd) {}
-+#endif
-+
-+static void gpio_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
-+{
-+	struct gpiomtd *gpiomtd = gpio_nand_getpriv(mtd);
-+
-+	gpio_nand_dosync(gpiomtd);
-+
-+	if (ctrl & NAND_CTRL_CHANGE) {
-+		gpio_set_value(gpiomtd->plat.gpio_nce, !(ctrl & NAND_NCE));
-+		gpio_set_value(gpiomtd->plat.gpio_cle, !!(ctrl & NAND_CLE));
-+		gpio_set_value(gpiomtd->plat.gpio_ale, !!(ctrl & NAND_ALE));
-+		gpio_nand_dosync(gpiomtd);
-+	}
-+	if (cmd == NAND_CMD_NONE)
-+		return;
-+
-+	writeb(cmd, gpiomtd->nand_chip.IO_ADDR_W);
-+	gpio_nand_dosync(gpiomtd);
-+}
-+
-+static void gpio_nand_writebuf(struct mtd_info *mtd, const u_char *buf, int len)
-+{
-+	struct nand_chip *this = mtd->priv;
-+
-+	writesb(this->IO_ADDR_W, buf, len);
-+}
-+
-+static void gpio_nand_readbuf(struct mtd_info *mtd, u_char *buf, int len)
-+{
-+	struct nand_chip *this = mtd->priv;
-+
-+	readsb(this->IO_ADDR_R, buf, len);
-+}
-+
-+static int gpio_nand_verifybuf(struct mtd_info *mtd, const u_char *buf, int len)
-+{
-+	struct nand_chip *this = mtd->priv;
-+	u8 read, *p = (u8 *) buf;
-+	int i, err = 0;
-+
-+	for (i = 0; i < len; i++) {
-+		read = readb(this->IO_ADDR_R);
-+		if (read != p[i]) {
-+			pr_debug("%s: err at %d (read %04x vs %04x)\n",
-+			       __func__, i, read, p[i]);
-+			err = -EFAULT;
-+		}
-+	}
-+	return err;
-+}
-+
-+static void gpio_nand_writebuf16(struct mtd_info *mtd, const u_char *buf,
-+				 int len)
-+{
-+	struct nand_chip *this = mtd->priv;
-+
-+	if (IS_ALIGNED((unsigned long)buf, 2)) {
-+		writesw(this->IO_ADDR_W, buf, len>>1);
-+	} else {
-+		int i;
-+		u16 *ptr = (u16 *)buf;
-+
-+		for (i = 0; i < len; i += 2, ptr++)
-+			writew(*ptr, this->IO_ADDR_W);
-+	}
-+}
-+
-+static void gpio_nand_readbuf16(struct mtd_info *mtd, u_char *buf, int len)
-+{
-+	struct nand_chip *this = mtd->priv;
-+
-+	if (IS_ALIGNED((unsigned long)buf, 2)) {
-+		readsw(this->IO_ADDR_R, buf, len>>1);
-+	} else {
-+		int i;
-+		u16 *ptr = (u16 *)buf;
-+
-+		for (i = 0; i < len; i += 2, ptr++)
-+			*ptr = readw(this->IO_ADDR_R);
-+	}
-+}
-+
-+static int gpio_nand_verifybuf16(struct mtd_info *mtd, const u_char *buf,
-+				 int len)
-+{
-+	struct nand_chip *this = mtd->priv;
-+	u16 read, *p = (u16 *) buf;
-+	int i, err = 0;
-+	len >>= 1;
-+
-+	for (i = 0; i < len; i++) {
-+		read = readw(this->IO_ADDR_R);
-+		if (read != p[i]) {
-+			pr_debug("%s: err at %d (read %04x vs %04x)\n",
-+			       __func__, i, read, p[i]);
-+			err = -EFAULT;
-+		}
-+	}
-+	return err;
-+}
-+
-+
-+static int gpio_nand_devready(struct mtd_info *mtd)
-+{
-+	struct gpiomtd *gpiomtd = gpio_nand_getpriv(mtd);
-+	return gpio_get_value(gpiomtd->plat.gpio_rdy);
-+}
-+
-+static int __devexit gpio_nand_remove(struct platform_device *dev)
-+{
-+	struct gpiomtd *gpiomtd = platform_get_drvdata(dev);
-+	struct resource *res;
-+
-+	nand_release(&gpiomtd->mtd_info);
-+
-+	res = platform_get_resource(dev, IORESOURCE_MEM, 1);
-+	iounmap(gpiomtd->io_sync);
-+	if (res)
-+		release_mem_region(res->start, res->end - res->start + 1);
-+
-+	res = platform_get_resource(dev, IORESOURCE_MEM, 0);
-+	iounmap(gpiomtd->nand_chip.IO_ADDR_R);
-+	release_mem_region(res->start, res->end - res->start + 1);
-+
-+	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
-+		gpio_set_value(gpiomtd->plat.gpio_nwp, 0);
-+	gpio_set_value(gpiomtd->plat.gpio_nce, 1);
-+
-+	gpio_free(gpiomtd->plat.gpio_cle);
-+	gpio_free(gpiomtd->plat.gpio_ale);
-+	gpio_free(gpiomtd->plat.gpio_nce);
-+	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
-+		gpio_free(gpiomtd->plat.gpio_nwp);
-+	gpio_free(gpiomtd->plat.gpio_rdy);
-+
-+	kfree(gpiomtd);
-+
-+	return 0;
-+}
-+
-+static void __iomem *request_and_remap(struct resource *res, size_t size,
-+					const char *name, int *err)
-+{
-+	void __iomem *ptr;
-+
-+	if (!request_mem_region(res->start, res->end - res->start + 1, name)) {
-+		*err = -EBUSY;
-+		return NULL;
-+	}
-+
-+	ptr = ioremap(res->start, size);
-+	if (!ptr) {
-+		release_mem_region(res->start, res->end - res->start + 1);
-+		*err = -ENOMEM;
-+	}
-+	return ptr;
-+}
-+
-+static int __devinit gpio_nand_probe(struct platform_device *dev)
-+{
-+	struct gpiomtd *gpiomtd;
-+	struct nand_chip *this;
-+	struct resource *res0, *res1;
-+	int ret;
-+
-+	if (!dev->dev.platform_data)
-+		return -EINVAL;
-+
-+	res0 = platform_get_resource(dev, IORESOURCE_MEM, 0);
-+	if (!res0)
-+		return -EINVAL;
-+
-+	gpiomtd = kzalloc(sizeof(*gpiomtd), GFP_KERNEL);
-+	if (gpiomtd == NULL) {
-+		dev_err(&dev->dev, "failed to create NAND MTD\n");
-+		return -ENOMEM;
-+	}
-+
-+	this = &gpiomtd->nand_chip;
-+	this->IO_ADDR_R = request_and_remap(res0, 2, "NAND", &ret);
-+	if (!this->IO_ADDR_R) {
-+		dev_err(&dev->dev, "unable to map NAND\n");
-+		goto err_map;
-+	}
-+
-+	res1 = platform_get_resource(dev, IORESOURCE_MEM, 1);
-+	if (res1) {
-+		gpiomtd->io_sync = request_and_remap(res1, 4, "NAND sync", &ret);
-+		if (!gpiomtd->io_sync) {
-+			dev_err(&dev->dev, "unable to map sync NAND\n");
-+			goto err_sync;
-+		}
-+	}
-+
-+	memcpy(&gpiomtd->plat, dev->dev.platform_data, sizeof(gpiomtd->plat));
-+
-+	ret = gpio_request(gpiomtd->plat.gpio_nce, "NAND NCE");
-+	if (ret)
-+		goto err_nce;
-+	gpio_direction_output(gpiomtd->plat.gpio_nce, 1);
-+	if (gpio_is_valid(gpiomtd->plat.gpio_nwp)) {
-+		ret = gpio_request(gpiomtd->plat.gpio_nwp, "NAND NWP");
-+		if (ret)
-+			goto err_nwp;
-+		gpio_direction_output(gpiomtd->plat.gpio_nwp, 1);
-+	}
-+	ret = gpio_request(gpiomtd->plat.gpio_ale, "NAND ALE");
-+	if (ret)
-+		goto err_ale;
-+	gpio_direction_output(gpiomtd->plat.gpio_ale, 0);
-+	ret = gpio_request(gpiomtd->plat.gpio_cle, "NAND CLE");
-+	if (ret)
-+		goto err_cle;
-+	gpio_direction_output(gpiomtd->plat.gpio_cle, 0);
-+	ret = gpio_request(gpiomtd->plat.gpio_rdy, "NAND RDY");
-+	if (ret)
-+		goto err_rdy;
-+	gpio_direction_input(gpiomtd->plat.gpio_rdy);
-+
-+
-+	this->IO_ADDR_W  = this->IO_ADDR_R;
-+	this->ecc.mode   = NAND_ECC_SOFT;
-+	this->options    = gpiomtd->plat.options;
-+	this->chip_delay = gpiomtd->plat.chip_delay;
-+
-+	/* install our routines */
-+	this->cmd_ctrl   = gpio_nand_cmd_ctrl;
-+	this->dev_ready  = gpio_nand_devready;
-+
-+	if (this->options & NAND_BUSWIDTH_16) {
-+		this->read_buf   = gpio_nand_readbuf16;
-+		this->write_buf  = gpio_nand_writebuf16;
-+		this->verify_buf = gpio_nand_verifybuf16;
-+	} else {
-+		this->read_buf   = gpio_nand_readbuf;
-+		this->write_buf  = gpio_nand_writebuf;
-+		this->verify_buf = gpio_nand_verifybuf;
-+	}
-+
-+	/* set the mtd private data for the nand driver */
-+	gpiomtd->mtd_info.priv = this;
-+	gpiomtd->mtd_info.owner = THIS_MODULE;
-+
-+	if (nand_scan(&gpiomtd->mtd_info, 1)) {
-+		dev_err(&dev->dev, "no nand chips found?\n");
-+		ret = -ENXIO;
-+		goto err_wp;
-+	}
-+
-+	if (gpiomtd->plat.adjust_parts)
-+		gpiomtd->plat.adjust_parts(&gpiomtd->plat,
-+					   gpiomtd->mtd_info.size);
-+
-+	add_mtd_partitions(&gpiomtd->mtd_info, gpiomtd->plat.parts,
-+			   gpiomtd->plat.num_parts);
-+	platform_set_drvdata(dev, gpiomtd);
-+
-+	return 0;
-+
-+err_wp:
-+	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
-+		gpio_set_value(gpiomtd->plat.gpio_nwp, 0);
-+	gpio_free(gpiomtd->plat.gpio_rdy);
-+err_rdy:
-+	gpio_free(gpiomtd->plat.gpio_cle);
-+err_cle:
-+	gpio_free(gpiomtd->plat.gpio_ale);
-+err_ale:
-+	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
-+		gpio_free(gpiomtd->plat.gpio_nwp);
-+err_nwp:
-+	gpio_free(gpiomtd->plat.gpio_nce);
-+err_nce:
-+	iounmap(gpiomtd->io_sync);
-+	if (res1)
-+		release_mem_region(res1->start, res1->end - res1->start + 1);
-+err_sync:
-+	iounmap(gpiomtd->nand_chip.IO_ADDR_R);
-+	release_mem_region(res0->start, res0->end - res0->start + 1);
-+err_map:
-+	kfree(gpiomtd);
-+	return ret;
-+}
-+
-+static struct platform_driver gpio_nand_driver = {
-+	.probe		= gpio_nand_probe,
-+	.remove		= gpio_nand_remove,
-+	.driver		= {
-+		.name	= "gpio-nand",
-+	},
-+};
-+
-+static int __init gpio_nand_init(void)
-+{
-+	printk(KERN_INFO "GPIO NAND driver, (c) 2004 Simtec Electronics\n");
-+
-+	return platform_driver_register(&gpio_nand_driver);
-+}
-+
-+static void __exit gpio_nand_exit(void)
-+{
-+	platform_driver_unregister(&gpio_nand_driver);
-+}
-+
-+module_init(gpio_nand_init);
-+module_exit(gpio_nand_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");
-+MODULE_DESCRIPTION("GPIO NAND Driver");
-diff --git a/include/linux/mtd/nand-gpio.h b/include/linux/mtd/nand-gpio.h
-new file mode 100644
-index 0000000..51534e5
---- /dev/null
-+++ b/include/linux/mtd/nand-gpio.h
-@@ -0,0 +1,19 @@
-+#ifndef __LINUX_MTD_NAND_GPIO_H
-+#define __LINUX_MTD_NAND_GPIO_H
-+
-+#include <linux/mtd/nand.h>
-+
-+struct gpio_nand_platdata {
-+	int	gpio_nce;
-+	int	gpio_nwp;
-+	int	gpio_cle;
-+	int	gpio_ale;
-+	int	gpio_rdy;
-+	void	(*adjust_parts)(struct gpio_nand_platdata *, size_t);
-+	struct mtd_partition *parts;
-+	unsigned int num_parts;
-+	unsigned int options;
-+	int	chip_delay;
-+};
-+
-+#endif
-
--- 
-Sincerely yours,
-Mike.
+And don't say, that's crappy hardware then.  Stop being a purist and
+become a realist.  It's reality and there is no option but to make it
+work.
