@@ -1,19 +1,21 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KpI8J-0005Il-PP
-	for linux-mtd@lists.infradead.org; Mon, 13 Oct 2008 07:46:28 +0000
-Subject: Re: Understanding UBIFS flash overhead
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: dsaxena@plexity.net
-In-Reply-To: <20081010210036.GA12173@trantor.hsd1.or.comcast.net>
-References: <20081010210036.GA12173@trantor.hsd1.or.comcast.net>
-Content-Type: text/plain; charset=utf-8
-Date: Mon, 13 Oct 2008 10:45:22 +0300
-Message-Id: <1223883922.3395.62.camel@sauron>
+Subject: Re: [PATCH] [MTD] [NAND] GPIO NAND flash driver
+From: David Woodhouse <dwmw2@infradead.org>
+To: Mike Rapoport <mike@compulab.co.il>
+In-Reply-To: <48F1AF0C.8080401@compulab.co.il>
+References: <48EF3291.5040000@compulab.co.il>
+	<20081010141916.GB16934@shareable.org>
+	<20081010214827.GP435@flint.arm.linux.org.uk>
+	<8bd0f97a0810101507y589dfd3br4da47c634e83bb36@mail.gmail.com>
+	<48F1AF0C.8080401@compulab.co.il>
+Content-Type: text/plain
+Date: Mon, 13 Oct 2008 14:59:04 +0100
+Message-Id: <1223906344.6770.603.camel@macbook.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Content-Transfer-Encoding: 7bit
+Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>,
+	Mike Frysinger <vapier.adi@gmail.com>, Russ Dill <russ.dill@gmail.com>,
+	Jamie Lokier <jamie@shareable.org>, Ben Dooks <ben-linux-arm@fluff.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,18 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2008-10-10 at 14:00 -0700, Deepak Saxena wrote:
-> I'm working on getting UBIFS going on the OLPC XO and am trying to
-> understand what I am seeing in regards to file system size.=20
+On Sun, 2008-10-12 at 10:02 +0200, Mike Rapoport wrote:
+> Mike Frysinger wrote:
+> >> The problem is that a write to GPIO may pass a write to the static
+> >> memory regions, or vice versa.  So, what we do is we insert a read
+> >> with a dependency in the execution to ensure that we stall the
+> >> pipeline until that read - and therefore the preceding write has
+> >> completed.
+> > 
+> > so the function comment should read something like "make sure the gpio
+> > state has actually changed before returning to the higher nand layers"
+> > 
+> 
+> The patch with (hopefully) clearer gpio_nand_dosync() comments.
 
-BTW, consider to try new "bulk_read" mount option which may improve file
-read speed. The "no_chk_data_crc" might be considered as well.
+Please can I have it in a form I can apply, with changelog and
+signed-off-by, and without those silly 'u16' types in it. The C language
+has perfectly good types for specifying unsigned 16-bit integers; use
+them.
 
-We'd be interested to get some digits from you to see whether
-"bulk_read" improves things for you. Please, read here:
-http://marc.info/?l=3Dlinux-kernel&m=3D122276053307842&w=3D2
+Thanks.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+-- 
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
