@@ -1,21 +1,15 @@
-Subject: Re: [PATCH] [MTD] [NAND] GPIO NAND flash driver
+Subject: Re: [PATCH] Bug on atmel_nand HW ECC : OOB info not correctly written
 From: David Woodhouse <dwmw2@infradead.org>
-To: Mike Rapoport <mike@compulab.co.il>
-In-Reply-To: <48F1AF0C.8080401@compulab.co.il>
-References: <48EF3291.5040000@compulab.co.il>
-	<20081010141916.GB16934@shareable.org>
-	<20081010214827.GP435@flint.arm.linux.org.uk>
-	<8bd0f97a0810101507y589dfd3br4da47c634e83bb36@mail.gmail.com>
-	<48F1AF0C.8080401@compulab.co.il>
-Content-Type: text/plain
-Date: Mon, 13 Oct 2008 14:59:04 +0100
-Message-Id: <1223906344.6770.603.camel@macbook.infradead.org>
+To: Richard Genoud <richard.genoud@gmail.com>
+In-Reply-To: <1223793748.7110.13.camel@ubuntu>
+References: <1223793748.7110.13.camel@ubuntu>
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 13 Oct 2008 15:01:01 +0100
+Message-Id: <1223906461.6770.604.camel@macbook.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>,
-	Mike Frysinger <vapier.adi@gmail.com>, Russ Dill <russ.dill@gmail.com>,
-	Jamie Lokier <jamie@shareable.org>, Ben Dooks <ben-linux-arm@fluff.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	Haavard Skinnemoen <hskinnemoen@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +19,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2008-10-12 at 10:02 +0200, Mike Rapoport wrote:
-> Mike Frysinger wrote:
-> >> The problem is that a write to GPIO may pass a write to the static
-> >> memory regions, or vice versa.  So, what we do is we insert a read
-> >> with a dependency in the execution to ensure that we stall the
-> >> pipeline until that read - and therefore the preceding write has
-> >> completed.
-> > 
-> > so the function comment should read something like "make sure the gpio
-> > state has actually changed before returning to the higher nand layers"
-> > 
+On Sun, 2008-10-12 at 08:42 +0200, Richard Genoud wrote:
+> The functions that write the OOB info (on hardware ECC only) use the
+> HW_SYNDROME method.
+> This is not correct : the start position is "pos = eccsize + chunk"
+> and should be eccsize.
+> So, the standard (nand_write_oob_std) function should be used.
+> This patch corrects this by using NAND_ECC_HW instead of
+> NAND_ECC_HW_SYNDROME.
 > 
-> The patch with (hopefully) clearer gpio_nand_dosync() comments.
+> This has only been tested on small pages nand flash.
+> (if anyone can test it on large pages that would be great).
+> 
+> kernel version : 2.6.27-rc2 (current git mtd-2.6)
+> 
+> Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
 
-Please can I have it in a form I can apply, with changelog and
-signed-off-by, and without those silly 'u16' types in it. The C language
-has perfectly good types for specifying unsigned 16-bit integers; use
-them.
-
-Thanks.
+Håvard?
 
 -- 
 David Woodhouse                            Open Source Technology Centre
