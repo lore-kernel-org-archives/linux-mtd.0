@@ -1,11 +1,12 @@
-Date: Tue, 14 Oct 2008 14:03:45 +0100 (BST)
+Date: Tue, 14 Oct 2008 14:10:33 +0100 (BST)
 From: Alexey Korolev <akorolev@infradead.org>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [RFC/PATCH 4/8] LPDDR QINFO records definitions
-In-Reply-To: <1223979253.6770.765.camel@macbook.infradead.org>
-Message-ID: <alpine.LFD.1.10.0810141401220.6452@casper.infradead.org>
-References: <alpine.LFD.1.10.0810082227360.13328@casper.infradead.org>
-	<1223979253.6770.765.camel@macbook.infradead.org>
+Subject: Re: [RFC/PATCH 8/8] LPDDR extended physmap driver to support LPDDR
+	flash.
+In-Reply-To: <1223979634.6770.767.camel@macbook.infradead.org>
+Message-ID: <alpine.LFD.1.10.0810141404570.6452@casper.infradead.org>
+References: <alpine.LFD.1.10.0810082237210.13328@casper.infradead.org>
+	<1223979634.6770.767.camel@macbook.infradead.org>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: linux-mtd@lists.infradead.org, nico@cam.org
@@ -18,28 +19,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
-> > 
-> > --- /dev/null
-> > +++ b/include/linux/mtd/qinfo.h
-> > @@ -0,0 +1,91 @@
-> > +#include <linux/mtd/map.h>
-> > +#include <linux/wait.h>
-> > +#include <linux/spinlock.h>
-> > +#include <linux/delay.h>
-> > +#include <linux/mtd/mtd.h>
-> > +#include <linux/mtd/flashchip.h>
-> > +#include <linux/mtd/partitions.h>
-> > +
-> > +#ifndef __LINUX_MTD_QINFO_H
-> > +#define __LINUX_MTD_QINFO_H
+Hi,
+
+> > +config MTD_PHYSMAP_PFOWBASE
+> > +       hex "PFOW base address for LPDDR chips"
+> > +       depends on MTD_PHYSMAP && MTD_LPDDR
+> > +       default "0x00000000"
 > 
-> GCC does magic optimisations to avoid looking at include files for a
-> second time -- but only if your include guard is around the _whole_
-> file, iirc. So it's best to move those #includes down below the 
-> #ifndef __LINUX_MTD_QINFO_H
->
-Correct, it seems I missed this. Thank you for notice. It will be fixed.
+> I'd rather not extend the MTD_PHYSMAP_xxx options; in fact I'd prefer to
+> phase them out completely. The platform device and the device tree
+> should be perfectly sufficient. 
+
+I did this to support physmap "compat mode" option as well as mode using platform
+device. For now both modes works well.
+If "compat mode" options are becoming obsolete it is not a problem to kick off new features from it. 
 
 Thanks,
 Alexey
