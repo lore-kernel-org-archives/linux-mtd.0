@@ -1,15 +1,14 @@
-Subject: Re: [PATCH][MTD] cfi_cmdset_0002.c: Add Macronix CFI V1.0
-	TopBottom detection
+Subject: Re: [RFC/PATCH 4/8] LPDDR QINFO records definitions
 From: David Woodhouse <dwmw2@infradead.org>
-To: Christopher Moore <moore@free.fr>
-In-Reply-To: <1223589342.3354.11.camel@linuxvideo.moore.hd.free.fr>
-References: <1223589342.3354.11.camel@linuxvideo.moore.hd.free.fr>
+To: Alexey Korolev <akorolev@infradead.org>
+In-Reply-To: <alpine.LFD.1.10.0810082227360.13328@casper.infradead.org>
+References: <alpine.LFD.1.10.0810082227360.13328@casper.infradead.org>
 Content-Type: text/plain
-Date: Tue, 14 Oct 2008 11:09:35 +0100
-Message-Id: <1223978975.6770.762.camel@macbook.infradead.org>
+Date: Tue, 14 Oct 2008 11:14:13 +0100
+Message-Id: <1223979253.6770.765.camel@macbook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: nico@cam.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,14 +18,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2008-10-09 at 23:55 +0200, Christopher Moore wrote:
-> This patch adds TopBottom detection for most Macronix chips with CFI
-> V1.0.
+On Wed, 2008-10-08 at 22:29 +0100, Alexey Korolev wrote:
+> 
+> --- /dev/null
+> +++ b/include/linux/mtd/qinfo.h
+> @@ -0,0 +1,91 @@
+> +#include <linux/mtd/map.h>
+> +#include <linux/wait.h>
+> +#include <linux/spinlock.h>
+> +#include <linux/delay.h>
+> +#include <linux/mtd/mtd.h>
+> +#include <linux/mtd/flashchip.h>
+> +#include <linux/mtd/partitions.h>
+> +
+> +#ifndef __LINUX_MTD_QINFO_H
+> +#define __LINUX_MTD_QINFO_H
 
-patching file drivers/mtd/chips/cfi_cmdset_0002.c
-patch: **** malformed patch at line 101: CFI V1.0
-
-Did you not test this after you received it back from the list?
+GCC does magic optimisations to avoid looking at include files for a
+second time -- but only if your include guard is around the _whole_
+file, iirc. So it's best to move those #includes down below the 
+#ifndef __LINUX_MTD_QINFO_H
 
 -- 
 David Woodhouse                            Open Source Technology Centre
