@@ -1,15 +1,15 @@
-Date: Tue, 14 Oct 2008 14:10:33 +0100 (BST)
-From: Alexey Korolev <akorolev@infradead.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [RFC/PATCH 8/8] LPDDR extended physmap driver to support LPDDR
-	flash.
-In-Reply-To: <1223979634.6770.767.camel@macbook.infradead.org>
-Message-ID: <alpine.LFD.1.10.0810141404570.6452@casper.infradead.org>
-References: <alpine.LFD.1.10.0810082237210.13328@casper.infradead.org>
-	<1223979634.6770.767.camel@macbook.infradead.org>
+Message-ID: <48F4A345.9090307@nokia.com>
+Date: Tue, 14 Oct 2008 16:48:53 +0300
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org, nico@cam.org
+To: Kyungmin Park <kmpark@infradead.org>
+Subject: Re: [RFC] [PATCH] [MTD] [OneNAND] Add write-while-program operation
+References: <48A43E19.7090706@nokia.com>
+	<9c9fda240808151825u2693ab3h3d7524e90a6d24af@mail.gmail.com>
+In-Reply-To: <9c9fda240808151825u2693ab3h3d7524e90a6d24af@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,20 +19,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-> > +config MTD_PHYSMAP_PFOWBASE
-> > +       hex "PFOW base address for LPDDR chips"
-> > +       depends on MTD_PHYSMAP && MTD_LPDDR
-> > +       default "0x00000000"
+Kyungmin Park wrote:
+> Hi Adrian,
 > 
-> I'd rather not extend the MTD_PHYSMAP_xxx options; in fact I'd prefer to
-> phase them out completely. The platform device and the device tree
-> should be perfectly sufficient. 
+> Before comment the patch, I first wonder which mtd user can use this feature?
+> 
+> To work correctly, the upper layer sends more than 2 pages write size.
+> umm just override the write buffer in omap2. maybe assume mtdblock?
+> 
+> Thank you,
+> Kyungmin Park
 
-I did this to support physmap "compat mode" option as well as mode using platform
-device. For now both modes works well.
-If "compat mode" options are becoming obsolete it is not a problem to kick off new features from it. 
-
-Thanks,
-Alexey
+We have decided that we would like to use write-while-program. Do you
+have any objections to including this in the OneNAND driver?
