@@ -1,15 +1,21 @@
-Message-ID: <48F4A345.9090307@nokia.com>
-Date: Tue, 14 Oct 2008 16:48:53 +0300
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
-MIME-Version: 1.0
-To: Kyungmin Park <kmpark@infradead.org>
-Subject: Re: [RFC] [PATCH] [MTD] [OneNAND] Add write-while-program operation
-References: <48A43E19.7090706@nokia.com>
-	<9c9fda240808151825u2693ab3h3d7524e90a6d24af@mail.gmail.com>
-In-Reply-To: <9c9fda240808151825u2693ab3h3d7524e90a6d24af@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Kpl8Q-0001BL-UB
+	for linux-mtd@lists.infradead.org; Tue, 14 Oct 2008 14:44:31 +0000
+Received: from vaebh105.NOE.Nokia.com (vaebh105.europe.nokia.com
+	[10.160.244.31])
+	by mgw-mx09.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
+	m9EEhkaB025602
+	for <linux-mtd@lists.infradead.org>; Tue, 14 Oct 2008 09:44:27 -0500
+Subject: Some more ubifs docs
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 14 Oct 2008 17:42:47 +0300
+Message-Id: <1223995367.4029.6.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,16 +25,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Kyungmin Park wrote:
-> Hi Adrian,
-> 
-> Before comment the patch, I first wonder which mtd user can use this feature?
-> 
-> To work correctly, the upper layer sends more than 2 pages write size.
-> umm just override the write buffer in omap2. maybe assume mtdblock?
-> 
-> Thank you,
-> Kyungmin Park
+Hi,
 
-We have decided that we would like to use write-while-program. Do you
-have any objections to including this in the OneNAND driver?
+because many people are confused about where is UBIFS used,
+I've added this piece of documentation:
+
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_raw_vs_ftl
+
+It also tries to answer the question like "what is better, FTL device +
+traditional FS or raw flash + UBIFS". Because some things may appear to
+be questionable, I'd ask people to take a look at this.
+
+Thanks.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
