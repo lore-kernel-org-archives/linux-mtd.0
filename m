@@ -1,21 +1,20 @@
-Received: from ti-out-0910.google.com ([209.85.142.188])
+Received: from plexity.net ([206.123.115.38])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KpoOh-0000Fn-0r
-	for linux-mtd@lists.infradead.org; Tue, 14 Oct 2008 18:13:31 +0000
-Received: by ti-out-0910.google.com with SMTP id a21so1386575tia.2
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 14 Oct 2008 11:13:29 -0700 (PDT)
-Message-ID: <ea11fea30810141113i81694depeb69c50a373fcf3e@mail.gmail.com>
-Date: Tue, 14 Oct 2008 23:43:29 +0530
-From: "Manish Katiyar" <mkatiyar@gmail.com>
-To: dwmw2@infradead.org, linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: Fix compilation warnings in
-	drivers/mtd/nand/cs553x_nand.c
+	id 1KpsoL-0005Oc-B1
+	for linux-mtd@lists.infradead.org; Tue, 14 Oct 2008 22:56:17 +0000
+Date: Tue, 14 Oct 2008 15:56:15 -0700
+From: Deepak Saxena <dsaxena@plexity.net>
+To: Artem Bityutskiy <dedekind@infradead.org>
+Subject: Re: Understanding UBIFS flash overhead
+Message-ID: <20081014225615.GA4490@trantor.hsd1.or.comcast.net>
+References: <20081010210036.GA12173@trantor.hsd1.or.comcast.net>
+	<1223880527.3395.53.camel@sauron>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Cc: mkatiyar@gmail.com
+In-Reply-To: <1223880527.3395.53.camel@sauron>
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dsaxena@plexity.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,34 +24,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Below patch fixes the following compilation warnings.
-drivers/mtd/nand/cs553x_nand.c:293: warning: unused variable 'mtd_parts'
-drivers/mtd/nand/cs553x_nand.c:292: warning: unused variable 'mtd_parts_nb'
+On Oct 13 2008, at 09:48, Artem Bityutskiy was caught saying:
+> I have several comments.
+> 
+> 1. We've improved df reporting, but we have not updated the back-port
+> trees for long time, so the improvements were not there. I've just
+> updated all back-ports and they contain all the recent patches we
+> consider stable. It is basically identical to ubifs-2.6.git now. Please,
+> update, things will become better. However, do not expect df to tell you
+> precise information anyway. See below.
 
+Artem,
 
-Signed-off-by: Manish Katiyar <mkatiyar@gmail.com>
+Thanks for updating the backport trees.
 
----
- drivers/mtd/nand/cs553x_nand.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+I pulled these and we go from an 822MiB filesystem to and 878MiB filesystem 
+out of 949MiB device. This is definetely an improvement, but still means 
+71MiB is being used for the journal (8MiB default in my test) and for 
+indexes (or not being properly accounted for).
 
-diff --git a/drivers/mtd/nand/cs553x_nand.c b/drivers/mtd/nand/cs553x_nand.c
-index 3370a80..9f1b451 100644
---- a/drivers/mtd/nand/cs553x_nand.c
-+++ b/drivers/mtd/nand/cs553x_nand.c
-@@ -289,8 +289,10 @@ static int __init cs553x_init(void)
- 	int i;
- 	uint64_t val;
+> 2. Let me first describe JFFS2 experience we have had. In statfs() (and
+> thus, df) JFFS2 reports physical flash space. There are some challenges
+> in calculating this space, and JFFS2 often lies in df. For example, it
+> may say it has 20MiB free, but if you start writing on it, you'll be
+> able to write only 16MiB file. Our user-space developers complained
+> about this several times. So in UBIFS we decided to report _worst-case_
+> flash space because we thought it is better not to tell less, but to be
+> honest.
+> 
+> Please, read here for information about UBIFS flash space prediction
+> challenges: http://www.linux-mtd.infradead.org/doc/ubifs.html#L_spaceacc
+> This should shed some light.
 
-+#ifdef CONFIG_MTD_PARTITIONS
- 	int mtd_parts_nb = 0;
- 	struct mtd_partition *mtd_parts = NULL;
-+#endif
+Thanks. I've read the docs, faqs, and white paper over and my understanding
+is that this is refering to free space reporting. I think we can live with 
+not-perfectly accurate numbers on this end if our applications fail nicely.
 
- 	/* If the CPU isn't a Geode GX or LX, abort */
- 	if (!is_geode())
+The fact that we're loosing ~8% of space from the start is an issue for 
+us b/c we are already running into issues with kids filling the systems 
+up quickly, so every page we can save is important. We'll have to some 
+performance analysis on tweaking the journal size but I'm wondering what 
+else is configurable (or could be made configurable via changes) to 
+decrease this? I notice there is an option to mkfs.ubifs to change the 
+index fanout and I'll read the code to understand this and see how it
+impacts the fs size.
+
+Does the reported filesystem size change dynamically w.r.t w/b and
+compression assumptions or is it completely based on static overhead
+of journal and index?
+
+Thanks again for the help,
+~Deepak
+
 -- 
-1.5.4.3
-
-Thanks -
-Manish
+   _____   __o  Deepak Saxena - Living CarFree and CareFree          (o>
+------    -\<,  "When I see an adult on a bicycle, I do not despair  //\
+ ----- ( )/ ( )  for the future of the human race." -H.G Wells       V_/_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
