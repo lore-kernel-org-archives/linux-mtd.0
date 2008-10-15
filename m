@@ -1,20 +1,25 @@
-Received: from plexity.net ([206.123.115.38])
+Received: from mail-gx0-f10.google.com ([209.85.217.10])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Kpsov-00077Z-Qs
-	for linux-mtd@lists.infradead.org; Tue, 14 Oct 2008 22:56:54 +0000
-Date: Tue, 14 Oct 2008 15:56:53 -0700
-From: Deepak Saxena <dsaxena@plexity.net>
-To: Artem Bityutskiy <dedekind@infradead.org>
-Subject: Re: Understanding UBIFS flash overhead
-Message-ID: <20081014225653.GB4490@trantor.hsd1.or.comcast.net>
-References: <20081010210036.GA12173@trantor.hsd1.or.comcast.net>
-	<1223883922.3395.62.camel@sauron>
+	id 1KpwMU-0008CZ-5O
+	for linux-mtd@lists.infradead.org; Wed, 15 Oct 2008 02:43:46 +0000
+Received: by gxk3 with SMTP id 3so6228434gxk.18
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 14 Oct 2008 19:43:44 -0700 (PDT)
+Message-ID: <9c9fda240810141943j694ad673v145a08e33e1b536c@mail.gmail.com>
+Date: Wed, 15 Oct 2008 11:43:44 +0900
+From: "Kyungmin Park" <kmpark@infradead.org>
+Sender: kyungmin78@gmail.com
+To: "Adrian Hunter" <ext-adrian.hunter@nokia.com>
+Subject: Re: [RFC] [PATCH] [MTD] [OneNAND] Add write-while-program operation
+In-Reply-To: <48F4A345.9090307@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <1223883922.3395.62.camel@sauron>
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dsaxena@plexity.net
+References: <48A43E19.7090706@nokia.com>
+	<9c9fda240808151825u2693ab3h3d7524e90a6d24af@mail.gmail.com>
+	<48F4A345.9090307@nokia.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,23 +29,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Oct 13 2008, at 10:45, Artem Bityutskiy was caught saying:
-> On Fri, 2008-10-10 at 14:00 -0700, Deepak Saxena wrote:
-> > I'm working on getting UBIFS going on the OLPC XO and am trying to
-> > understand what I am seeing in regards to file system size. 
-> 
-> BTW, consider to try new "bulk_read" mount option which may improve file
-> read speed. The "no_chk_data_crc" might be considered as well.
-> 
-> We'd be interested to get some digits from you to see whether
-> "bulk_read" improves things for you. Please, read here:
-> http://marc.info/?l=linux-kernel&m=122276053307842&w=2
+Hi Adrian,
 
-Thanks, will do.
+>
+> We have decided that we would like to use write-while-program. Do you
+> have any objections to including this in the OneNAND driver?
+>
 
+Could you merge this one to ops style?
+I think no problem to merge existing write_ops_operation instead of
+new function.
 
--- 
-   _____   __o  Deepak Saxena - Living CarFree and CareFree          (o>
-------    -\<,  "When I see an adult on a bicycle, I do not despair  //\
- ----- ( )/ ( )  for the future of the human race." -H.G Wells       V_/_
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Thank you,
+Kyungmin Park
