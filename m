@@ -1,21 +1,22 @@
-Received: from bubetka.logix.cz ([208.84.148.239] helo=maxipes.logix.cz)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KqPnN-0004Qi-UF
-	for linux-mtd@lists.infradead.org; Thu, 16 Oct 2008 10:09:30 +0000
-Received: from [192.168.157.16] (unknown [192.168.159.14])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client did not present a certificate)
-	by maxipes.logix.cz (Postfix) with ESMTP id 0CB2D33980D8
+Received: from mail-gx0-f10.google.com ([209.85.217.10])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KqQXF-0006nf-GE
+	for linux-mtd@lists.infradead.org; Thu, 16 Oct 2008 10:56:54 +0000
+Received: by gxk3 with SMTP id 3so8119048gxk.18
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 16 Oct 2008 03:09:26 -0700 (PDT)
-Message-ID: <48F71315.5080707@logix.net.nz>
-Date: Thu, 16 Oct 2008 23:10:29 +1300
-From: Michal Ludvig <mludvig@logix.net.nz>
+	Thu, 16 Oct 2008 03:56:52 -0700 (PDT)
+Message-ID: <386072610810160356p3807f538la5087debe0c76866@mail.gmail.com>
+Date: Thu, 16 Oct 2008 18:56:52 +0800
+From: "Bryan Wu" <cooloney@kernel.org>
+Sender: cooloney.lkml@gmail.com
+To: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: [BUG] re-modprobe a nand controller driver module will cause system
+	crash.
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: nandwrite/ubi memory corruption?
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,100 +26,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Hi folks,
 
-I've got an ARM board with 64MB of NAND flash with 3 logical partitions
-and am experiencing (probably) memory corruption of UBI/UBIFS on
-/dev/mtd2 after writing data with nandwrite to /dev/mtd1.
+These days I found a subtle bug which should be related with mtdcore layers.
+The detailed story is located at
+https://blackfin.uclinux.org/gf/project/uclinux-dist/tracker/?action=TrackerItemEdit&tracker_id=141&tracker_item_id=4463.
 
-These are my logical partitions on NAND:
+Briefly speaking,
+1) modprobe a nand controller driver to add_mtd_paritition().
+2) add_mtd_partition->add_devices->blktrans_notify_add->mtdblock_add_mtd->add_mtd_blktrans_dev
+3) in add_mtd_blktrans_dev, alloc_disk will be called to create a new
+gendisk structure according to the partition setting.
+4) "gd->queue = tr->blkcore_priv->rq;"
+    No matter how many partitions (in my test, 2 partitions), there
+will be the same number gendisk structures but just 1 queue.
+    They all use the same request_queue which is created in
+register_mtd_blktrans.
+5) mtdblockd kthread handles this request_queue for mtdblock layer.
+6) There is one backing_dev_info structure member (not pointer) in
+request_queue. so for several mtd partitions (serveral gendisks) there
+is only one bdi structure instance.
+7) So the problem is in add_disk(),
+    bdi_register_dev(bdi, MKDEV(disk->major, disk->first_minor));
+    For 1st partition mtdblock0, it will create /sys/class/bdi/31:0
+and register information in bdi structure instance.
+    Then for 2nd partition mtdblock1, because the bdi structure
+instance is the same as the 1st partition, it will overwrite bdi
+structure and create /sys/class/bdi/31:1.
+    So the bdi info of 1st partition are totally lost.
+8) When we rmmod the nand controller driver, del_mtd_partition will
+only remove /sys/class/bdi/31:1 but left 1st partition
+/sys/class/bdi/31:0 there.
+9) modprobe again will let the bug show up.
 
-S3C24XX NAND Driver, (c) 2004 Simtec Electronics
-s3c2410-nand s3c2410-nand: Tacls=3, 30ns Twrph0=7 70ns, Twrph1=3 30ns
-NAND device: Manufacturer ID: 0xec, Chip ID: 0x76 (Samsung NAND 64MiB
-3,3V 8-bit)
-Scanning device for bad blocks
-Creating 3 MTD partitions on "NAND 64MiB 3,3V 8-bit":
-0x00000000-0x00050000 : "boot"
-0x00050000-0x00220000 : "kernel"
-0x00220000-0x04000000 : "ubi"
-s3c2410-nand s3c2410-nand: clock idle support enabled
+I found this bug does not relate with my nand flash controller driver
+and it should be fixed in mtdblock layer.
+And if we just add only one partition, there is no such bug at all. I
+tried to solve this bug, but it related with
+mtdblock/mtd_blktrans/block/bdi. It is diffcult for me to find a way
+to satisfy all the parts with minimal changes.
 
+IMHO, can we just simply remove the bdi_register_dev (in add_disk) and
+bdi_unregister_dev (in unlink_disk)?
 
+P.S. I also found this bug in latest 2.6.27 kernel mainline.
 
-I use u-boot 1.1.4 as the bootloader and 2.6.27 as the kernel. The
-kernel image size is 1492552 bytes, that should fit into the kernel
-partition as far as I can tell.
-
-When I load the kernel in u-boot and write into NAND with 'nandw'
-command of u-boot it works fine.
-
-However when I use nandwrite from linux it does "something" but
-1) the kernel won't boot
-2) it probably corrupted the 'ubi' partition:
-
-~ # nandwrite -p /dev/mtd1 uimage26
-Writing data to block 0
-Writing data to block 4000
-[...]
-Writing data to block 164000
-Writing data to block 168000
-Writing data to block 16c000
-
-~ # ls
-UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB
-2414:15360, written 0 bytes
-UBI warning: ubi_eba_write_leb: failed to write data to PEB 2414
-UBI: recover PEB 2414, move data to PEB 2428
-UBI warning: ubi_io_read_vid_hdr: bad magic number at PEB 2414: 00000000
-instead of 55424921
-UBI warning: ubi_ro_mode: switch to read-only mode
-UBIFS error (pid 224): ubifs_wbuf_sync_nolock: cannot write 512 bytes to
-LEB 746:14336
-UBIFS error (pid 224): ubifs_bg_wbufs_sync: cannot sync write-buffer,
-error -5
-UBIFS warning (pid 224): ubifs_ro_mode: switched to read-only mode, error -5
-
-So it experienced some corruption and switched to read-only mode.
-
-Auto-completeing commands in shell doesn't work either:
-
-~ # nandd<tab>
-UBIFS error (pid 241): ubifs_read_node: bad node type (0 but expected 9)
-UBIFS error (pid 241): ubifs_read_node: bad node at LEB 757:11760
-UBIFS error (pid 241): ubifs_iget: failed to read inode 232, error -22
-UBIFS error (pid 241): ubifs_lookup: dead directory entry 'nanddump',
-error -22
-
-When I reset the board the just written kernel won't boot:
-
-NAND Flash Reading
-dst base address          = 0x30100000
-Source start block number = 20
-Source size  (0x4000*n)   = 0x180000
-status 1
-## Booting image at 30100000 ...
-status 2
-Bad Header Checksum
-status -2
-
-But after reloading a good kernel into NAND in u-boot and booting it
-everything looks ok and I can run 'ls' and 'nanddump' just fine. I can't
-tell whether the UBIFS volume is corrupted or not (is there some ubifsck
-tool available?) but nothing obvious pops up.
-
-Nandwrite is ~2 days old one from git, kernel is 2.6.27, both compiled
-with gcc 3.4.6. CPU is Samsung S3C2410 (ARM920T arch), NAND as above.
-
-So the summary is
-1) Writing a kernel image with nandwrite into a MTD partition /dev/mtd1,
-where the kernel image is smaller than the partition.
-2) Ubi/ubifs using MTD partition /dev/mtd2 gets corrupted (memory only?)
-3) The written kernel won't boot. The same one written from u-boot works
-fine.
-
-It's all 100% reproducible.
-
-Do you need any other information?
-
-Michal
+Thanks
+-Bryan
