@@ -1,24 +1,16 @@
-Received: from mail-gx0-f10.google.com ([209.85.217.10])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KqKTK-00055m-ID
-	for linux-mtd@lists.infradead.org; Thu, 16 Oct 2008 04:28:26 +0000
-Received: by gxk3 with SMTP id 3so7882478gxk.18
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 15 Oct 2008 21:28:24 -0700 (PDT)
-Message-ID: <9c9fda240810152128s24c444efue56dbf31b5c44b07@mail.gmail.com>
-Date: Thu, 16 Oct 2008 13:28:24 +0900
-From: "Kyungmin Park" <kmpark@infradead.org>
-Sender: kyungmin78@gmail.com
-To: apgmoorthy <moorthy.apg@samsung.com>
-Subject: Re: [ANNOUNCE] [PATCH] [MTD] Flex-OneNAND MTD Driver available
-In-Reply-To: <000001c92f46$18a67c70$3dd66c6b@sisodomain.com>
+Received: from po.spectrum.net.in ([202.146.192.146]
+	helo=pomail.spectrum.net.in)
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KqNar-0005QU-AW
+	for linux-mtd@lists.infradead.org; Thu, 16 Oct 2008 07:48:26 +0000
+Message-ID: <55640.80.255.59.245.1224141426.squirrel@mail.spectrum.net.in>
+Date: Thu, 16 Oct 2008 12:47:06 +0530 (IST)
+Subject: GET BACK TO ME ASAP
+From: "Sir Rotimi Paul" <nfccoir@spectrum.net.in>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <000001c92f46$18a67c70$3dd66c6b@sisodomain.com>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Reply-To: sirrotimipaul@yahoo.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,10 +20,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->
-> Please find the updated patch
->
-> Signed-off-by: Vishak G <vishak.g@samsung.com>
-> Signed-off-by: Rohit Hagargundgi <h.rohit@samsung.com>
 
-Acked-by: Kyungmin Park <kyungmin.park@samsung.com>
+
+
+Hello,
+I am Sir Rotimi Paul, the MD/CEO of ROTIMI PAUL LOAN FIRM.
+We are a reputable, legitimate and accredited money Lender.
+We give out loans to individuals and companies in need of
+financial assistance.
+We are out to heal the damage done by poverty, bad credit
+and low capital.
+
+You can contact us at:
+sirrotimipaul@yahoo.com
++2347028740626
+with the following details;
+
+Name
+Address
+Age
+Sex
+Occupation
+Phone Number
+Amount Needed
+Loan Duration
