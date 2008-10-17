@@ -1,19 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KqqJ9-0006Iv-HM
-	for linux-mtd@lists.infradead.org; Fri, 17 Oct 2008 14:28:03 +0000
-Subject: Re: [PATCH] ubifs: ubifs_compress() returns void
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-In-Reply-To: <Pine.LNX.4.64.0810171613360.9240@vixen.sonytel.be>
-References: <Pine.LNX.4.64.0810171613360.9240@vixen.sonytel.be>
-Content-Type: text/plain; charset=utf-8
-Date: Fri, 17 Oct 2008 17:25:57 +0300
-Message-Id: <1224253557.4466.37.camel@sauron>
+Received: from f225.mail.ru ([194.186.55.103])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Kqr6i-0007EM-Pt
+	for linux-mtd@lists.infradead.org; Fri, 17 Oct 2008 15:19:17 +0000
+From: Alexander Belyakov <abelyako@mail.ru>
+To: David Woodhouse <dwmw2@infradead.org>,
+	=?windows-1251?Q?linux-mtd=40lists.infradead.org?=
+	<linux-mtd@lists.infradead.org>
+Subject: [PATCH][JFFS2] Write buffer offset adjustment for NOR-ECC (Sibley)
+	flash
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, Adrian Hunter <ext-adrian.hunter@nokia.com>
-Reply-To: dedekind@infradead.org
+Date: Fri, 17 Oct 2008 19:19:13 +0400
+Content-Type: text/plain; charset=windows-1251
+Content-Transfer-Encoding: 8bit
+Message-Id: <E1Kqr6f-0005ZX-00.abelyako-mail-ru@f225.mail.ru>
+Cc: Alexander Belyakov <abelyako@gmail.com>
+Reply-To: Alexander Belyakov <abelyako@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,15 +24,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2008-10-17 at 16:16 +0200, Geert Uytterhoeven wrote:
-> Update the comment for ubifs_compress(), which incorrectly states that it
-> returnsa success/failure indicator.
->=20
-> Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+After choosing new c->nextblock, don't leave the wbuf offset field
+occasionally pointing at the start of the next physical eraseblock.
+This was causing a BUG() on NOR-ECC (Sibley) flash, where we start
+writing after the cleanmarker.
 
-Pushed to ubifs-2.6.git tree, thank you!
+Among other this fix should cover write buffer offset adjustment
+after flushing the last page of an eraseblock.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+
+Signed-off-by: Alexander Belyakov <abelyako@googlemail.com>
+
+---
+
+diff -uNrp a/fs/jffs2/nodemgmt.c b/fs/jffs2/nodemgmt.c
+--- a/fs/jffs2/nodemgmt.c	2008-08-20 22:11:37.000000000 +0400
++++ b/fs/jffs2/nodemgmt.c	2008-10-17 12:46:53.000000000 +0400
+@@ -261,6 +261,10 @@ static int jffs2_find_nextblock(struct j
+ 
+ 	jffs2_sum_reset_collected(c->summary); /* reset collected summary */
+ 
++	/* adjust write buffer offset, else we get a non contiguous write bug */
++	if (!(c->wbuf_ofs % c->sector_size) && !c->wbuf_len)
++		c->wbuf_ofs = 0xffffffff;
++
+ 	D1(printk(KERN_DEBUG "jffs2_find_nextblock(): new nextblock = 0x%08x\n", c->nextblock->offset));
+ 
+ 	return 0;
+diff -uNrp a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
+--- a/fs/jffs2/wbuf.c	2008-08-20 22:11:37.000000000 +0400
++++ b/fs/jffs2/wbuf.c	2008-10-17 12:35:45.000000000 +0400
+@@ -679,10 +679,7 @@ static int __jffs2_flush_wbuf(struct jff
+ 
+ 	memset(c->wbuf,0xff,c->wbuf_pagesize);
+ 	/* adjust write buffer offset, else we get a non contiguous write bug */
+-	if (SECTOR_ADDR(c->wbuf_ofs) == SECTOR_ADDR(c->wbuf_ofs+c->wbuf_pagesize))
+-		c->wbuf_ofs += c->wbuf_pagesize;
+-	else
+-		c->wbuf_ofs = 0xffffffff;
++	c->wbuf_ofs += c->wbuf_pagesize;
+ 	c->wbuf_len = 0;
+ 	return 0;
+ }
