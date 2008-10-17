@@ -1,18 +1,17 @@
 Received: from vervifontaine.sonytel.be ([80.88.33.193]
 	helo=vervifontaine.sonycom.com)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Kqq7o-0006fL-4U
-	for linux-mtd@lists.infradead.org; Fri, 17 Oct 2008 14:16:20 +0000
-Date: Fri, 17 Oct 2008 16:16:10 +0200 (CEST)
+	id 1KqqB8-0006SB-JZ
+	for linux-mtd@lists.infradead.org; Fri, 17 Oct 2008 14:19:46 +0000
+Date: Fri, 17 Oct 2008 16:19:45 +0200 (CEST)
 From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
 Sender: geert@sonytel.be
-To: Artem Bityutskiy <dedekind@infradead.org>,
-	Adrian Hunter <ext-adrian.hunter@nokia.com>
-Subject: [PATCH] ubifs: ubifs_compress() returns void
-Message-ID: <Pine.LNX.4.64.0810171613360.9240@vixen.sonytel.be>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] jffs2: Correct parameter names of jffs2_compress() in comments
+Message-ID: <Pine.LNX.4.64.0810171616330.9251@vixen.sonytel.be>
 MIME-Version: 1.0
 Content-Type: MULTIPART/MIXED;
-	BOUNDARY="-584349381-1043085095-1224252970=:9240"
+	BOUNDARY="-584349381-1846543263-1224253185=:9251"
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -26,28 +25,34 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
   This message is in MIME format.  The first part should be readable text,
   while the remaining parts are likely unreadable without MIME-aware tools.
 
----584349381-1043085095-1224252970=:9240
+---584349381-1846543263-1224253185=:9251
 Content-Type: TEXT/PLAIN; charset=UTF-8
 Content-Transfer-Encoding: 8BIT
 
-Update the comment for ubifs_compress(), which incorrectly states that it
-returnsa success/failure indicator.
+Make the parameter names of jffs2_compress() in its comments match with the
+actual implementation
 
 Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+---
+BTW, the first 2 parameters (struct jffs2_sb_info *c, struct jffs2_inode_info
+*f) of jffs2_compress() and jffs2_decompress() are unused, so shouldn't they
+be removed?
 
-diff --git a/fs/ubifs/compress.c b/fs/ubifs/compress.c
-index 5bb51da..a0ada59 100644
---- a/fs/ubifs/compress.c
-+++ b/fs/ubifs/compress.c
-@@ -91,8 +91,6 @@ struct ubifs_compressor *ubifs_compressors[UBIFS_COMPR_TYPES_CNT];
-  *
-  * Note, if the input buffer was not compressed, it is copied to the output
-  * buffer and %UBIFS_COMPR_NONE is returned in @compr_type.
-- *
-- * This functions returns %0 on success or a negative error code on failure.
-  */
- void ubifs_compress(const void *in_buf, int in_len, void *out_buf, int *out_len,
- 		    int *compr_type)
+diff --git a/fs/jffs2/compr.c b/fs/jffs2/compr.c
+index 86739ee..f25e70c 100644
+--- a/fs/jffs2/compr.c
++++ b/fs/jffs2/compr.c
+@@ -53,8 +53,8 @@ static int jffs2_is_best_compression(struct jffs2_compressor *this,
+ }
+ 
+ /* jffs2_compress:
+- * @data: Pointer to uncompressed data
+- * @cdata: Pointer to returned pointer to buffer for compressed data
++ * @data_in: Pointer to uncompressed data
++ * @cpage_out: Pointer to returned pointer to buffer for compressed data
+  * @datalen: On entry, holds the amount of data available for compression.
+  *	On exit, expected to hold the amount of data actually compressed.
+  * @cdatalen: On entry, holds the amount of space available for compressed
 
 With kind regards,
 
@@ -65,4 +70,4 @@ Internet: http://www.sony-europe.com/
 A division of Sony Europe (Belgium) N.V.
 VAT BE 0413.825.160 · RPR Brussels
 Fortis · BIC GEBABEBB · IBAN BE41293037680010
----584349381-1043085095-1224252970=:9240--
+---584349381-1846543263-1224253185=:9251--
