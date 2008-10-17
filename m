@@ -1,21 +1,25 @@
-Received: from fg-out-1718.google.com ([72.14.220.154])
+Received: from wf-out-1314.google.com ([209.85.200.169])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Kqc2C-0008Gl-JP
-	for linux-mtd@lists.infradead.org; Thu, 16 Oct 2008 23:13:36 +0000
-Received: by fg-out-1718.google.com with SMTP id l26so165223fgb.26
+	id 1KqdEc-0003ML-6v
+	for linux-mtd@lists.infradead.org; Fri, 17 Oct 2008 00:30:30 +0000
+Received: by wf-out-1314.google.com with SMTP id 28so304451wfc.24
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 16 Oct 2008 16:13:35 -0700 (PDT)
-Date: Fri, 17 Oct 2008 03:13:32 +0400
-From: Dmitry Baryshkov <dbaryshkov@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [GIT PULL] sharpsl-nand driver model hookup
-Message-ID: <20081016231332.GA17461@doriath.ww600.siemens.net>
-References: <20081016231127.GA17131@doriath.ww600.siemens.net>
+	Thu, 16 Oct 2008 17:30:28 -0700 (PDT)
+Message-ID: <6934efce0810161730l2aa66f30v83c6ed644e0d6707@mail.gmail.com>
+Date: Thu, 16 Oct 2008 17:30:27 -0700
+From: "Jared Hulbert" <jaredeh@gmail.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Subject: Re: [RFC/PATCH 8/8] LPDDR extended physmap driver to support LPDDR
+	flash.
+In-Reply-To: <1223979634.6770.767.camel@macbook.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <20081016231127.GA17131@doriath.ww600.siemens.net>
-Cc: Eric Miao <eric.miao@marvell.com>
+References: <alpine.LFD.1.10.0810082237210.13328@casper.infradead.org>
+	<1223979634.6770.767.camel@macbook.infradead.org>
+Cc: linux-mtd@lists.infradead.org, nico@cam.org,
+	Alexey Korolev <akorolev@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,14 +29,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 17, 2008 at 03:11:27AM +0400, Dmitry Baryshkov wrote:
-> Hi,
-> 
-> Please have a look at the patches making sharpsl-nand more clean driver,
-> correctly hooked in the driver model.
+> I'd rather not extend the MTD_PHYSMAP_xxx options; in fact I'd prefer to
+> phase them out completely. The platform device and the device tree
+> should be perfectly sufficient.
 
-Unfortunately patches from this branch have been held by mailman.
-
--- 
-With best wishes
-Dmitry
+Can you explain your plan here?  I like physmap.  The more powerful it
+is the fewer devices need to be described.
