@@ -1,23 +1,25 @@
+Received: from [2002:53a0:b870::1] (helo=xi.wantstofly.org)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Kqtdo-0007BT-Ij
+	for linux-mtd@lists.infradead.org; Fri, 17 Oct 2008 18:01:37 +0000
+Date: Fri, 17 Oct 2008 20:01:35 +0200
+From: Lennert Buytenhek <buytenh@wantstofly.org>
+To: Jared Hulbert <jaredeh@gmail.com>
 Subject: Re: [RFC/PATCH 8/8] LPDDR extended physmap driver to support LPDDR
 	flash.
-From: David Woodhouse <dwmw2@infradead.org>
-To: Jared Hulbert <jaredeh@gmail.com>
-In-Reply-To: <6934efce0810171058g7ea41c72icb9c9e91a697b394@mail.gmail.com>
+Message-ID: <20081017180135.GA4129@xi.wantstofly.org>
 References: <alpine.LFD.1.10.0810082237210.13328@casper.infradead.org>
 	<1223979634.6770.767.camel@macbook.infradead.org>
 	<6934efce0810161730l2aa66f30v83c6ed644e0d6707@mail.gmail.com>
 	<20081017010643.GE14569@xi.wantstofly.org>
 	<6934efce0810171027i2afddf0ct77acc83fcf3dbd80@mail.gmail.com>
-	<alpine.LFD.1.10.0810171828560.24182@casper.infradead.org>
-	<6934efce0810171058g7ea41c72icb9c9e91a697b394@mail.gmail.com>
-Content-Type: text/plain
-Date: Fri, 17 Oct 2008 18:59:23 +0100
-Message-Id: <1224266363.6770.1302.camel@macbook.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: nico@cam.org, linux-mtd@lists.infradead.org,
-	Alexey Korolev <akorolev@infradead.org>,
-	Lennert Buytenhek <buytenh@wantstofly.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6934efce0810171027i2afddf0ct77acc83fcf3dbd80@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org, nico@cam.org,
+	David Woodhouse <dwmw2@infradead.org>,
+	Alexey Korolev <akorolev@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,14 +29,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2008-10-17 at 10:58 -0700, Jared Hulbert wrote:
-> Right.  Which means you have to tweak the kernel sources when you
-> remap things.  I much prefer to let these kinds of options and
-> parameters not be hard coded into the kernel sources.  How about a
-> .config options or commandline input instead?
+On Fri, Oct 17, 2008 at 10:27:47AM -0700, Jared Hulbert wrote:
 
-On sensible platforms it just appears in the device-tree...
+> > IMHO it's fine if physmap gets additional options, but those extra
+> > options should be configured via platform data, and not via the legacy
+> > CONFIG_MTD_PHYSMAP_xxx kernel config options.
+> 
+> How?  Maybe I don't understand what you mean by platform data...
 
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+There are two ways to instantiate physmap-flash:
+
+1. By setting the legacy CONFIG_MTD_PHYSMAP_xxx kernel config options, eg:
+
+	arch/blackfin/configs/BF537-STAMP_defconfig:CONFIG_MTD_PHYSMAP=m
+	arch/blackfin/configs/BF537-STAMP_defconfig:CONFIG_MTD_PHYSMAP_START=0x20000000
+	arch/blackfin/configs/BF537-STAMP_defconfig:CONFIG_MTD_PHYSMAP_LEN=0x0
+	arch/blackfin/configs/BF537-STAMP_defconfig:CONFIG_MTD_PHYSMAP_BANKWIDTH=2
+
+
+2. By instantiating a physmap plaform device in your platform code, eg
+   arch/arm/mach-iop32x/glantank.c:
+
+	static struct physmap_flash_data glantank_flash_data = {
+		.width		= 2,
+	};
+
+	static struct resource glantank_flash_resource = {
+		.start		= 0xf0000000,
+		.end		= 0xf007ffff,
+		.flags		= IORESOURCE_MEM,
+	};
+
+	static struct platform_device glantank_flash_device = {
+		.name		= "physmap-flash",
+		.id		= 0,
+		.dev		= {
+			.platform_data	= &glantank_flash_data,
+		},
+		.num_resources	= 1,
+		.resource	= &glantank_flash_resource,
+	};
+
+	platform_device_register(&glantank_flash_device);
+
+
+(2) is the preferred way, and (1) only still exists because of backward
+compatibility.  If we want to add new options to physmap, we shouldn't
+introduce new kernel config options but just convert prospective users
+over to (2) while we're at it.
