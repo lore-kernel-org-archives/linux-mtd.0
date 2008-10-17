@@ -1,19 +1,20 @@
-Received: from smtp-vbr6.xs4all.nl ([194.109.24.26])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KqnWh-0004BY-Oo
-	for linux-mtd@lists.infradead.org; Fri, 17 Oct 2008 11:29:52 +0000
-Message-ID: <48F8773B.40809@cs.vu.nl>
-Date: Fri, 17 Oct 2008 13:30:03 +0200
-From: Rutger Hofman <rutger@cs.vu.nl>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: Question on how NAND flash BBT is stored in the chip
-References: <48F75131.9040002@cs.vu.nl>
-	<7ccead5b0810170027h677520dav1ea09079175b93fe@mail.gmail.com>
-In-Reply-To: <7ccead5b0810170027h677520dav1ea09079175b93fe@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Du Zhongdong <axdududu@gmail.com>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Kqo7N-0006p0-W3
+	for linux-mtd@lists.infradead.org; Fri, 17 Oct 2008 12:07:46 +0000
+Subject: Re: nandwrite/ubi memory corruption?
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Michal Ludvig <mludvig@logix.net.nz>
+In-Reply-To: <48F7BBC1.8090804@logix.net.nz>
+References: <48F71315.5080707@logix.net.nz> <1224168560.4466.2.camel@sauron>
+	<1224168977.4466.4.camel@sauron>  <48F7BBC1.8090804@logix.net.nz>
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 17 Oct 2008 15:06:14 +0300
+Message-Id: <1224245175.4466.23.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,47 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Du Zhongdong wrote:
-> 
-> On Thu, Oct 16, 2008 at 10:35 PM, Rutger Hofman <rutger@cs.vu.nl 
-> <mailto:rutger@cs.vu.nl>> wrote:
-> 
->     Good afternoon list,
-> 
->     I have a question how the BBT (bad block table) is stored in MTD NAND
->     devices. I googled for a while, and browsed the code, but I am still not
->     sure.
-> 
->     The question:
->     Is the BBT stored/retrieved using a spare layout? Is ECC
->     generation/correction done for it?
-> 
-> I'm not quite sure about what you mean by "using a spare layout",  but I 
-> think bbt is stored in the main area of the specific page(the member 
-> "int pages[NAND_MAX_CHIPS" in struct nand_bbt_descr). 
+On Fri, 2008-10-17 at 11:10 +1300, Michal Ludvig wrote:
+> Nothing was apparently broken after ubiformat, system kept running
+> smoothly. But I can't use ubiformat for writing kernel image, can I?
+>=20
+> Is there any other way to write raw kernel image to /dev/mtd1 other than
+> using nandwrite?
 
-With 'spare layout' I mean the thingy that does auto-placement etc, and 
-wraps up ECC, bad block mark(s), and user data into the spare area.
+Using nandwrite for UBI is bad by definition because you loose your
+erase-counters and screw up wear-leveling.
 
-> the function scan_write_bbt calls mtd->write_oob with struct 
-> mtd_oob_ops.mode = MTD_OOB_PLACE, tracking down this procedure I think 
-> the oob data does not change its layout when written to NAND flash.
-> 
-> hope this information might be of some help to you :)
-> 
-> 
-> 
->     This question derives from the question above: is the BBT marker pattern
->     stored within a spare layout (with slots for ECC, bad block markers
->     etc)? Or is it written verbatim (raw and unmangled) into the spare area?
-
-Thanks. When browsing the code, I thought as much, but I couldn't 
-absolutely make sure whether the spare is mangled or not.
-
-So this leaves the question: the BBT itself doesn't seem to use ECC. Is 
-there a reason why not? Wouldn't it be better if it does?
-
-Thanks,
-
-Rutger Hofman
-VU Amsterdam
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
