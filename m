@@ -1,21 +1,28 @@
-Received: from ihemail2.lucent.com ([135.245.0.35])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KqrSx-00016E-Jw
-	for linux-mtd@lists.infradead.org; Fri, 17 Oct 2008 15:42:15 +0000
-Received: from ilexp03.ndc.lucent.com (h135-3-39-50.lucent.com [135.3.39.50])
-	by ihemail2.lucent.com (8.13.8/IER-o) with ESMTP id m9HFg8cb020358
+Received: from mail-gx0-f10.google.com ([209.85.217.10])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Kqt76-0002Ex-VY
+	for linux-mtd@lists.infradead.org; Fri, 17 Oct 2008 17:27:49 +0000
+Received: by gxk3 with SMTP id 3so1500926gxk.18
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 17 Oct 2008 10:42:12 -0500 (CDT)
-Content-class: urn:content-classes:message
+	Fri, 17 Oct 2008 10:27:48 -0700 (PDT)
+Message-ID: <6934efce0810171027i2afddf0ct77acc83fcf3dbd80@mail.gmail.com>
+Date: Fri, 17 Oct 2008 10:27:47 -0700
+From: "Jared Hulbert" <jaredeh@gmail.com>
+To: "Lennert Buytenhek" <buytenh@wantstofly.org>
+Subject: Re: [RFC/PATCH 8/8] LPDDR extended physmap driver to support LPDDR
+	flash.
+In-Reply-To: <20081017010643.GE14569@xi.wantstofly.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: Mark bad eraseblock back to good
-Date: Fri, 17 Oct 2008 10:41:38 -0500
-Message-ID: <8F3CB692693422439A8F95F2D06F73E1E4D9DF@ILEXC3U01.ndc.lucent.com>
-From: "Spinelli, Claudio \(Claudio\)" <claudio@alcatel-lucent.com>
-To: <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <alpine.LFD.1.10.0810082237210.13328@casper.infradead.org>
+	<1223979634.6770.767.camel@macbook.infradead.org>
+	<6934efce0810161730l2aa66f30v83c6ed644e0d6707@mail.gmail.com>
+	<20081017010643.GE14569@xi.wantstofly.org>
+Cc: linux-mtd@lists.infradead.org, nico@cam.org,
+	David Woodhouse <dwmw2@infradead.org>,
+	Alexey Korolev <akorolev@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,12 +32,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+> IMHO it's fine if physmap gets additional options, but those extra
+> options should be configured via platform data, and not via the legacy
+> CONFIG_MTD_PHYSMAP_xxx kernel config options.
 
-I am using a nand flash that has a lot of marked bad eraseblock. I think
-that are marked bad from previous mistake in my nand flash driver.
-Does anybody have a modified flash_eraseall that marks bad eraseblock
-back to good. Or any scripts that does that?
-
-Thanks
-Claudio
+How?  Maybe I don't understand what you mean by platform data...
