@@ -1,20 +1,20 @@
-Received: from [210.17.177.166] (helo=ns1.terry.hk)
+Received: from smtp6-g19.free.fr ([212.27.42.36])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KqfCI-0005nE-0p
-	for linux-mtd@lists.infradead.org; Fri, 17 Oct 2008 02:36:15 +0000
-Received: from ns1.terry.hk (localhost.localdomain [127.0.0.1])
-	by ns1.terry.hk (Postfix) with ESMTP id 83B78B80407
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 17 Oct 2008 09:42:57 +0800 (HKT)
-Date: Fri, 17 Oct 2008 09:42:57 +0800
-Message-Id: <200810170142.m9H1gvXS004451@ns1.terry.hk>
-To: linux-mtd@lists.infradead.org
-Subject: A CALL FOR CONFIRMATION
-From: "Mr.Michael Holmer" <mholmer@firstcommercialbank.net>
+	id 1KqfFw-0006hz-9X
+	for linux-mtd@lists.infradead.org; Fri, 17 Oct 2008 02:40:00 +0000
+Message-ID: <48F7FAFF.7040902@free.fr>
+Date: Fri, 17 Oct 2008 04:39:59 +0200
+From: Chris Moore <moore@free.fr>
 MIME-Version: 1.0
-Content-Type: text/plain
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH][MTD] cfi_cmdset_0002.c: Add Macronix CFI V1.0	TopBottom
+	detection
+References: <1223589342.3354.11.camel@linuxvideo.moore.hd.free.fr>
+	<1223978975.6770.762.camel@macbook.infradead.org>
+In-Reply-To: <1223978975.6770.762.camel@macbook.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 8bit
-Reply-To: mholmer1@hotmail.com
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +24,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Attention;
+David Woodhouse a écrit :
+> On Thu, 2008-10-09 at 23:55 +0200, Christopher Moore wrote:
+>   
+>> This patch adds TopBottom detection for most Macronix chips with CFI
+>> V1.0.
+>>     
+>
+> patching file drivers/mtd/chips/cfi_cmdset_0002.c
+> patch: **** malformed patch at line 101: CFI V1.0
+>
+> Did you not test this after you received it back from the list?
+>   
 
-This message will be the last notification that I will send to you as my earlier letters to you through Post Office was returned undelivered. Hence I decided to reach you via email because this information needs urgent attention.
+(Wiping egg off face) Please accept my apologies; I am afraid that the
+line must have been wrapped by the mailer I used  :( 
 
+I ran checkpatch.pl on the patch before sending it.
+I even sent the patch to myself first.
+The worst is that I did notice that some lines were wrapped to about 72
+columns.
+However as I had previously used the same mailer to send patches to
+other people and to the LAK mailing list without problems, I figured
+that the wrapping was happening at the receiving end.
+With the intention of improving the presentation for others using the
+same mailer, I even modified the commit comment part, which I had
+written in 80 columns, down to 72 columns and tried again.
 
-I'm contacting you because you bear the same surname with our deceased client who died in 2003, and the management of my bank have issued me a notice to provide an extended next of kin of the deceased or have the account confiscated within the next 14 banking days.
- 
+I have now experimented with "git send-email" and the result seems clean
+so I shall use this in the future. The only thing that I am now worried
+about is getting the headers right so that I do not break the thread.
 
-I am the Telex Department manager of my bank and also the personal account officer to the deceased, and I will be disappointed if the labour of my deceased client is confiscated.
+I shall try sending the patch again later and I apologize in advance in
+case it breaks the thread  :( 
 
+Sorry again for wasting your time.
 
-So kindly get back to me with your full name and adress for appraisal
-
-
-Michael Holmer.
-Private E-mail: mholmer1@yahoo.com
-
-GET BACK TO ME ASAP
-
-
-
-
-
-
--- 
-This message has been scanned for viruses and
-dangerous content by MailScanner, and is
-believed to be clean.
+Cheers,
+Chris
