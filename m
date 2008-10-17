@@ -1,21 +1,23 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from trinity.fluff.org ([89.145.97.151])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KqoAl-0001x9-Tc
-	for linux-mtd@lists.infradead.org; Fri, 17 Oct 2008 12:11:16 +0000
+	id 1Kqpb6-0001iu-9L
+	for linux-mtd@lists.infradead.org; Fri, 17 Oct 2008 13:42:32 +0000
+Date: Fri, 17 Oct 2008 14:42:25 +0100
+From: Ben Dooks <ben-linux@fluff.org>
+To: Artem Bityutskiy <dedekind@infradead.org>
 Subject: Re: nandwrite/ubi memory corruption?
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Michal Ludvig <mludvig@logix.net.nz>
-In-Reply-To: <1224241375.4466.11.camel@sauron>
-References: <48F71315.5080707@logix.net.nz> <1224168560.4466.2.camel@sauron>
-	<1224168977.4466.4.camel@sauron>  <48F7BBC1.8090804@logix.net.nz>
-	<1224241375.4466.11.camel@sauron>
-Content-Type: text/plain; charset=utf-8
-Date: Fri, 17 Oct 2008 15:09:58 +0300
-Message-Id: <1224245398.4466.26.camel@sauron>
+Message-ID: <20081017134225.GK22711@trinity.fluff.org>
+References: <48F71315.5080707@logix.net.nz>
+	<20081016150135.GA11063@fluff.org.uk>
+	<48F7B59D.9000200@logix.net.nz>
+	<20081016215616.GE22711@trinity.fluff.org>
+	<1224241434.4466.13.camel@sauron>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1224241434.4466.13.camel@sauron>
+Cc: linux-mtd@lists.infradead.org, Michal Ludvig <mludvig@logix.net.nz>,
+	Ben Dooks <ben-linux@fluff.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,19 +27,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2008-10-17 at 14:02 +0300, Artem Bityutskiy wrote:
-> On Fri, 2008-10-17 at 11:10 +1300, Michal Ludvig wrote:
-> > Nothing was apparently broken after ubiformat, system kept running
-> > smoothly. But I can't use ubiformat for writing kernel image, can I?
->=20
-> No, but I do not think it would be very difficult to add this
-> functionality.
+On Fri, Oct 17, 2008 at 02:03:54PM +0300, Artem Bityutskiy wrote:
+> On Thu, 2008-10-16 at 22:56 +0100, Ben Dooks wrote:
+> > there should be a Kconfig entry to do it when the s3c2410 nand driver
+> > is selected.
+> 
+> Ben,
+> 
+> is that right that s3c2410-nand does not support sub-pages?
 
-Wait. Sorry, your kernel sit in different partition and that partition
-is not UBI. This means ubiformat will not help you and you should use
-nandwrite. Just debug nandwrite and fix it.
+do you mean reads from non-page aligned addresses? currently a whole
+page must be read/written to allow the hardware ecc unit to function
+properly.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+-- 
+Ben
+
+Q:      What's a light-year?
+A:      One-third less calories than a regular year.
