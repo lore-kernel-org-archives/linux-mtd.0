@@ -1,19 +1,20 @@
 Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Kqn85-0001uv-LD
-	for linux-mtd@lists.infradead.org; Fri, 17 Oct 2008 11:04:25 +0000
+	id 1Kqn92-0004YC-Qd
+	for linux-mtd@lists.infradead.org; Fri, 17 Oct 2008 11:05:25 +0000
 Subject: Re: nandwrite/ubi memory corruption?
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Michal Ludvig <mludvig@logix.net.nz>
-In-Reply-To: <48F7BBC1.8090804@logix.net.nz>
-References: <48F71315.5080707@logix.net.nz> <1224168560.4466.2.camel@sauron>
-	<1224168977.4466.4.camel@sauron>  <48F7BBC1.8090804@logix.net.nz>
+To: Ben Dooks <ben-linux@fluff.org>
+In-Reply-To: <20081016215616.GE22711@trinity.fluff.org>
+References: <48F71315.5080707@logix.net.nz>
+	<20081016150135.GA11063@fluff.org.uk> <48F7B59D.9000200@logix.net.nz>
+	<20081016215616.GE22711@trinity.fluff.org>
 Content-Type: text/plain; charset=utf-8
-Date: Fri, 17 Oct 2008 14:02:55 +0300
-Message-Id: <1224241375.4466.11.camel@sauron>
+Date: Fri, 17 Oct 2008 14:03:54 +0300
+Message-Id: <1224241434.4466.13.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, Michal Ludvig <mludvig@logix.net.nz>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,12 +25,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2008-10-17 at 11:10 +1300, Michal Ludvig wrote:
-> Nothing was apparently broken after ubiformat, system kept running
-> smoothly. But I can't use ubiformat for writing kernel image, can I?
+On Thu, 2008-10-16 at 22:56 +0100, Ben Dooks wrote:
+> there should be a Kconfig entry to do it when the s3c2410 nand driver
+> is selected.
 
-No, but I do not think it would be very difficult to add this
-functionality.
+Ben,
+
+is that right that s3c2410-nand does not support sub-pages?
 
 --=20
 Best regards,
