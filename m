@@ -1,32 +1,16 @@
-Received: from wf-out-1314.google.com ([209.85.200.171])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Kr1xj-0003vf-KI
-	for linux-mtd@lists.infradead.org; Sat, 18 Oct 2008 02:54:44 +0000
-Received: by wf-out-1314.google.com with SMTP id 28so957356wfc.24
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 17 Oct 2008 19:54:41 -0700 (PDT)
-Message-ID: <6934efce0810171954g106c2cb8l3a8166c1f1769a76@mail.gmail.com>
-Date: Fri, 17 Oct 2008 19:54:41 -0700
-From: "Jared Hulbert" <jaredeh@gmail.com>
-To: "Nicolas Pitre" <nico@cam.org>
-Subject: Re: [RFC/PATCH 8/8] LPDDR extended physmap driver to support LPDDR
-	flash.
-In-Reply-To: <alpine.LFD.2.00.0810171411210.26244@xanadu.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH] [MTD] [NOR] cfi_cmdset_0002.c: Add Macronix CFI V1.0
+	TopBottom detection
+From: David Woodhouse <dwmw2@infradead.org>
+To: Christopher Moore <moore@free.fr>
+In-Reply-To: <1224214342759-git-send-email-moore@free.fr>
+References: <48F7FAFF.7040902@free.fr>
+	<1224214342759-git-send-email-moore@free.fr>
+Content-Type: text/plain
+Date: Sat, 18 Oct 2008 12:42:19 +0100
+Message-Id: <1224330139.6770.1352.camel@macbook.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <alpine.LFD.1.10.0810082237210.13328@casper.infradead.org>
-	<1223979634.6770.767.camel@macbook.infradead.org>
-	<6934efce0810161730l2aa66f30v83c6ed644e0d6707@mail.gmail.com>
-	<20081017010643.GE14569@xi.wantstofly.org>
-	<6934efce0810171027i2afddf0ct77acc83fcf3dbd80@mail.gmail.com>
-	<alpine.LFD.1.10.0810171828560.24182@casper.infradead.org>
-	<6934efce0810171058g7ea41c72icb9c9e91a697b394@mail.gmail.com>
-	<alpine.LFD.2.00.0810171411210.26244@xanadu.home>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	Alexey Korolev <akorolev@infradead.org>,
-	Lennert Buytenhek <buytenh@wantstofly.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,25 +20,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> Right.  Which means you have to tweak the kernel sources when you
->> remap things.  I much prefer to let these kinds of options and
->> parameters not be hard coded into the kernel sources.
->
-> Do you have remapable hardware?  ;-)
+On Fri, 2008-10-17 at 05:32 +0200, Christopher Moore wrote:
+> It does not detect the following correctly:-
+> MX28F640C3B B
+> MX29LV002C  T
+> MX29LV002NC T
+> MX29LV004C  B
+> MX29SL400C  T/B
+> MX29SL402C  T/B
+> 
+> If desired I could supply a more complicated patch to handle these as
+> well.
 
-Yes.  Yes, I do.  I have a designed that is basically a Mainstone 2
-with a highly configurable Flash bus.
+If you could, that would be very much appreciated. Thanks.
 
-What more there are dozens of machines out there for each major
-reference design that differ only in how the various memory types are
-configured and which peripherals are included.  The different
-peripherals can be turned on or off with drivers in the .config, but
-if I add Flash on a different chipselect I have to hack .c files.
+I've applied the first patch.
 
-On a x86 system you don't have to hack .c files for every "machine"
-out there.  We don't have to tweak a device-map .c file to use a SATA
-vs a SCSI vs an IDE drive.  Why do we put up with that for Flash?  You
-can run the same zImage on PXA250/270/320 but if I dare move Flash
-around I have to recompile?  We are so close.  CFI configures most NOR
-parts, we just need a rational physmap mechanism to make this entire
-Flash config thing "machine" agnostic.  Is nobody with me on this one?
+-- 
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
