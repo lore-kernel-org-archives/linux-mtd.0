@@ -1,21 +1,22 @@
-Received: from wf-out-1314.google.com ([209.85.200.174])
+Received: from relais.videotron.ca ([24.201.245.36])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KrMRr-0000sm-1O
-	for linux-mtd@lists.infradead.org; Sun, 19 Oct 2008 00:47:11 +0000
-Received: by wf-out-1314.google.com with SMTP id 28so1283396wfc.24
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 18 Oct 2008 17:47:09 -0700 (PDT)
-Message-ID: <6934efce0810181747u1631b72dpbae3a430c2e6e270@mail.gmail.com>
-Date: Sat, 18 Oct 2008 17:47:09 -0700
-From: "Jared Hulbert" <jaredeh@gmail.com>
-To: "Nicolas Pitre" <nico@cam.org>
+	id 1KrNG0-0003ZE-1E
+	for linux-mtd@lists.infradead.org; Sun, 19 Oct 2008 01:39:00 +0000
+MIME-version: 1.0
+Content-transfer-encoding: 7BIT
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Received: from xanadu.home ([66.131.194.97]) by VL-MO-MR002.ip.videotron.ca
+	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
+	32bit))
+	with ESMTP id <0K8Y00DURPWZMQ00@VL-MO-MR002.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Sat, 18 Oct 2008 21:38:59 -0400 (EDT)
+Date: Sat, 18 Oct 2008 21:38:59 -0400 (EDT)
+From: Nicolas Pitre <nico@cam.org>
+To: Jared Hulbert <jaredeh@gmail.com>
 Subject: Re: [RFC/PATCH 8/8] LPDDR extended physmap driver to support LPDDR
 	flash.
-In-Reply-To: <alpine.LFD.2.00.0810181529360.26244@xanadu.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+In-reply-to: <6934efce0810181747u1631b72dpbae3a430c2e6e270@mail.gmail.com>
+Message-id: <alpine.LFD.2.00.0810182113160.26244@xanadu.home>
 References: <alpine.LFD.1.10.0810082237210.13328@casper.infradead.org>
 	<20081017010643.GE14569@xi.wantstofly.org>
 	<6934efce0810171027i2afddf0ct77acc83fcf3dbd80@mail.gmail.com>
@@ -26,6 +27,7 @@ References: <alpine.LFD.1.10.0810082237210.13328@casper.infradead.org>
 	<20081018154644.GD4129@xi.wantstofly.org>
 	<6934efce0810181120q719d946du5be98150d70abfb9@mail.gmail.com>
 	<alpine.LFD.2.00.0810181529360.26244@xanadu.home>
+	<6934efce0810181747u1631b72dpbae3a430c2e6e270@mail.gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
 	Alexey Korolev <akorolev@infradead.org>,
 	Lennert Buytenhek <buytenh@wantstofly.org>
@@ -38,73 +40,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> there is always platform data telling the driver
-> _where_ the controller is to be found.  In that case the controller
-> itself falls into category (3).  That's also the case for physmap.
+On Sat, 18 Oct 2008, Jared Hulbert wrote:
 
-Right, we need to tell the system where potential CFI Flash buses are
-with some kind of data.  Physmap decouples that data from the platform
-data.
+> >> The platform data requires adding a .c file to arch/arm/mach-pxa/ and
+> >> tweaks to arch/arm/mach-pxa/Kconfig and arch/arm/mach-pxa/Makefile,
+> >> no?
+> >
+> > Of course.  That's the case for every different hardware platforms.
+> 
+> I think that is pushing it.  There would be tens of thousands of x86
+> "platforms" if you took that argument to it's extreme.
 
-> No, that's not true.  In fact we're actively working towards the
-> possibility for a single defconfig, hence a single kernel binary, to
-> support many different platforms at once.
+Not really, because all x86 platforms are rather "all the same" 
+otherwise they wouldn't be compatible.  Where differences are to be 
+found, usually they can be discovered at run time.
 
-Okay, that's good.
+On ARM, many of those differences cannot be found at run time, so 
+they're statically defined and bundled on a "platform" basis.
 
->> The platform data requires adding a .c file to arch/arm/mach-pxa/ and
->> tweaks to arch/arm/mach-pxa/Kconfig and arch/arm/mach-pxa/Makefile,
->> no?
->
-> Of course.  That's the case for every different hardware platforms.
+> A lot of PXA270 hardware out there is pretty similar, there's only a
+> couple of registered platforms but there are thousands of different
+> boards.  Do we want thousands of platforms defined for the trivial
+> differences?
 
-I think that is pushing it.  There would be tens of thousands of x86
-"platforms" if you took that argument to it's extreme.
+Depends how trivial the differences are.  For those differences that 
+cannot be probed at run time then yes we want a different platform 
+defined.  You have to describe those differences somehow _anyway_, and 
+for hardware it is often better to encode them in the source directly 
+instead of relying on the user properly configuring the kernel cmdline 
+argument in the bootloader each time, especially with hardware which is 
+not expected to change.
 
->> >  But in practice, the platform
->> > data approach has a bunch of advantages over the .config approach,
->> > such as that with the platform data approach it's still possible to
->> > build a single kernel image that supports booting on multiple different
->> > boards (which is important e.g. for distributors),'
->>
->> Yes there are places where platform data approach is very useful, I
->> totally agree.  Yet there are also places where it is annoying.
->
-> Could you elaborate?
+> We have basically a respin of Mainstone with socket cards for Flash.
+> So we  alter the physmap to look at one chipselect or the other,
+> depending on what we are doing.  It's great for testing stuff.
+> 
+> That's why physmap is so important to me, I can test a stock kernel
+> for Mainstone with all kinds of unholy Flash configs without ever
+> touching the kernel.  This is very cool for us.
+> 
+> So you guys think of soldering irons when I talk about altering the
+> Flash layout, I think of swapping a card out.
 
-A lot of PXA270 hardware out there is pretty similar, there's only a
-couple of registered platforms but there are thousands of different
-boards.  Do we want thousands of platforms defined for the trivial
-differences?
+Still, those chip select lines where flash can be found certainly aren't 
+that many?  So why not always let physmap know about them all and probe 
+whatever flash that might (or might not) be connected there?
 
->> Also I'm not sure that totally accurate.  Here you can use the kernel
->> command line to alter the physmap.
->
-> Why would you ever want to do that?
+> > If you moved the flash then either you 1) modified the hardware in which
+> > case it strictly speaking can't be called under the existing name, or 2)
+> > platform data for that platform didn't acurately reflect the physical
+> > capabilities of the hardware.
+> 
+> So if I do a mild hack or revision of a board that should trigger a
+> new machine registration?  Really?  Even though today I can just tweak
+> the command line's physmap entry?
 
-We have basically a respin of Mainstone with socket cards for Flash.
-So we  alter the physmap to look at one chipselect or the other,
-depending on what we are doing.  It's great for testing stuff.
+Probably in your case the ability to override a default setting with the 
+kernel cmdline is perfectly appropriate.  But most people simply want to 
+configure their kernel for machine X and Y, and expect the kernel to 
+know the difference between those already.
 
-That's why physmap is so important to me, I can test a stock kernel
-for Mainstone with all kinds of unholy Flash configs without ever
-touching the kernel.  This is very cool for us.
+> Okay.... 2) is a pretty interesting argument.  So how do we do
+> platform data for my board that has socketable Flash?
 
-So you guys think of soldering irons when I talk about altering the
-Flash layout, I think of swapping a card out.
+Have physmap always probe CS0 and CS1.  And if you have a way to know 
+what flash bank is first then you can even have proper names for them 
+(see lubbock_init() for an example of bus width and flash bank ordering 
+determined at run time).
 
-> If you moved the flash then either you 1) modified the hardware in which
-> case it strictly speaking can't be called under the existing name, or 2)
-> platform data for that platform didn't acurately reflect the physical
-> capabilities of the hardware.
+> I don't know.  We have this cool ability to autodetect the Flash but
+> it seems like the direction we're going doesn't take advantage of
+> that.  I probably just don't see something.
 
-So if I do a mild hack or revision of a board that should trigger a
-new machine registration?  Really?  Even though today I can just tweak
-the command line's physmap entry?
+Actual flash autodetection is one thing.  Possible flash location is 
+another.
 
-Okay.... 2) is a pretty interesting argument.  So how do we do
-platform data for my board that has socketable Flash?
 
-I don't know.  We have this cool ability to autodetect the Flash but
-it seems like the direction we're going doesn't take advantage of
-that.  I probably just don't see something.
+Nicolas
