@@ -1,17 +1,18 @@
-Received: from [2002:53a0:b870::1] (helo=xi.wantstofly.org)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KrgbT-0001mz-CK
-	for linux-mtd@lists.infradead.org; Sun, 19 Oct 2008 22:18:27 +0000
-Date: Mon, 20 Oct 2008 00:18:26 +0200
-From: Lennert Buytenhek <buytenh@wantstofly.org>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd m25p80: add support for Macronix MX25L12805D
-Message-ID: <20081019221826.GK4129@xi.wantstofly.org>
-References: <20081019213646.GI4129@xi.wantstofly.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from smtp126.sbc.mail.sp1.yahoo.com ([69.147.65.185])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Krgrc-0000oW-5p
+	for linux-mtd@lists.infradead.org; Sun, 19 Oct 2008 22:35:08 +0000
+To: David Woodhouse <David.Woodhouse@intel.com>,
+	Chen Gong <g.chen@freescale.com>, linux-mtd@lists.infradead.org
+Subject: goofy mtd m25p80 patches in GIT ...
 Content-Disposition: inline
-In-Reply-To: <20081019213646.GI4129@xi.wantstofly.org>
+From: David Brownell <david-b@pacbell.net>
+Date: Sun, 19 Oct 2008 15:35:05 -0700
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200810191535.05617.david-b@pacbell.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,8 +22,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Oct 19, 2008 at 11:36:46PM +0200, Lennert Buytenhek wrote:
+[resend cc'ing linux-mtd, sorry]
 
-> Signed-off-by: Lennert Buytenhek <buytenh@marvell.com>
+I noticed a couple goofy patches in MTD GIT, while poking around
+wondering what happened to some patches that I expected would
+already have gotten upstream.  Details below.
 
-Whoops, please ignore this one.
+- Dave
+
+
+First:
+
+ http://git.kernel.org/?p=linux/kernel/git/dwmw2/mtd-2.6.git;a=commitdiff;h=faff37508a104e9ec5285d5adecaab7e8dde472a
+
+That patch is goofy because the command in question is *NOT* a block
+erase command.  It's a chip-erase command ... entirely unlike the
+existing *real* block erase commands used in the driver.
+
+Could we get a fix that provides the correct name for the operations?
+Having real block commands, and this new thing, is at the very least
+confusing...
+
+
+Second:
+
+ http://git.kernel.org/?p=linux/kernel/git/dwmw2/mtd-2.6.git;a=commitdiff;h=75d0ee2202b5740e94e913d8a52f91c6557c4c81
+
+That's just plain wrong ... the original code is correct, but the
+patch changed it to be incorrect.  (DMA from the stack is never
+legal.)
+
+Just revert this one entirely.
