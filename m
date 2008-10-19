@@ -1,18 +1,15 @@
 Received: from [2002:53a0:b870::1] (helo=xi.wantstofly.org)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Kre2y-0003D2-LF
-	for linux-mtd@lists.infradead.org; Sun, 19 Oct 2008 19:34:41 +0000
-Date: Sun, 19 Oct 2008 19:32:52 +0200
+	id 1Krfx9-0006JD-83
+	for linux-mtd@lists.infradead.org; Sun, 19 Oct 2008 21:36:48 +0000
+Date: Sun, 19 Oct 2008 23:36:46 +0200
 From: Lennert Buytenhek <buytenh@wantstofly.org>
-To: dbrownell@users.sourceforge.net,
-	spi-devel-general@lists.sourceforge.net
+To: linux-mtd@lists.infradead.org
 Subject: [PATCH] mtd m25p80: add support for Macronix MX25L12805D
-Message-ID: <20081019173252.GA16094@xi.wantstofly.org>
+Message-ID: <20081019213646.GI4129@xi.wantstofly.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Resent-Message-Id: <20081019193440.0945B7FAB3@xi.wantstofly.org>
-Cc: nico@marvell.com, prafulla@marvell.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
