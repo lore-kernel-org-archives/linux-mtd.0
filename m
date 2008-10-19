@@ -1,15 +1,34 @@
-Received: from atlantis.8hz.com ([212.129.237.78])
+Received: from wf-out-1314.google.com ([209.85.200.174])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KrLFD-0001c3-AA
-	for linux-mtd@lists.infradead.org; Sat, 18 Oct 2008 23:30:03 +0000
-Date: Sat, 18 Oct 2008 23:12:29 +0000
-From: Sean Young <sean@mess.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] Implement discard in RFD FTL
-Message-ID: <20081018231228.GA86325@atlantis.8hz.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1KrMRr-0000sm-1O
+	for linux-mtd@lists.infradead.org; Sun, 19 Oct 2008 00:47:11 +0000
+Received: by wf-out-1314.google.com with SMTP id 28so1283396wfc.24
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 18 Oct 2008 17:47:09 -0700 (PDT)
+Message-ID: <6934efce0810181747u1631b72dpbae3a430c2e6e270@mail.gmail.com>
+Date: Sat, 18 Oct 2008 17:47:09 -0700
+From: "Jared Hulbert" <jaredeh@gmail.com>
+To: "Nicolas Pitre" <nico@cam.org>
+Subject: Re: [RFC/PATCH 8/8] LPDDR extended physmap driver to support LPDDR
+	flash.
+In-Reply-To: <alpine.LFD.2.00.0810181529360.26244@xanadu.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
+References: <alpine.LFD.1.10.0810082237210.13328@casper.infradead.org>
+	<20081017010643.GE14569@xi.wantstofly.org>
+	<6934efce0810171027i2afddf0ct77acc83fcf3dbd80@mail.gmail.com>
+	<alpine.LFD.1.10.0810171828560.24182@casper.infradead.org>
+	<6934efce0810171058g7ea41c72icb9c9e91a697b394@mail.gmail.com>
+	<alpine.LFD.2.00.0810171411210.26244@xanadu.home>
+	<6934efce0810171954g106c2cb8l3a8166c1f1769a76@mail.gmail.com>
+	<20081018154644.GD4129@xi.wantstofly.org>
+	<6934efce0810181120q719d946du5be98150d70abfb9@mail.gmail.com>
+	<alpine.LFD.2.00.0810181529360.26244@xanadu.home>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Alexey Korolev <akorolev@infradead.org>,
+	Lennert Buytenhek <buytenh@wantstofly.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,193 +38,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that discard is supported implement it in RFD FTL. Stop writing to
-flash once an error has been detected and various other cleanups.
+> there is always platform data telling the driver
+> _where_ the controller is to be found.  In that case the controller
+> itself falls into category (3).  That's also the case for physmap.
 
-Signed-off-by: Sean Young <sean@mess.org>
--- 
-diff --git a/drivers/mtd/rfd_ftl.c b/drivers/mtd/rfd_ftl.c
-index e538c0a..724a0d1 100644
---- a/drivers/mtd/rfd_ftl.c
-+++ b/drivers/mtd/rfd_ftl.c
-@@ -1,7 +1,7 @@
- /*
-  * rfd_ftl.c -- resident flash disk (flash translation layer)
-  *
-- * Copyright (C) 2005  Sean Young <sean@mess.org>
-+ * Copyright (C) 2005, 2008  Sean Young <sean@mess.org>
-  *
-  * This type of flash translation layer (FTL) is used by the Embedded BIOS
-  * by General Software. It is known as the Resident Flash Disk (RFD), see:
-@@ -241,7 +241,7 @@ err:
- 
- static int rfd_ftl_readsect(struct mtd_blktrans_dev *dev, u_long sector, char *buf)
- {
--	struct partition *part = (struct partition*)dev;
-+	struct partition *part = container_of(dev, struct partition, mbd);
- 	u_long addr;
- 	size_t retlen;
- 	int rc;
-@@ -293,6 +293,7 @@ static void erase_callback(struct erase_info *erase)
- 		part->blocks[i].used_sectors = 0;
- 
- 		kfree(erase);
-+		part->errors++;
- 
- 		return;
- 	}
-@@ -317,6 +318,7 @@ static void erase_callback(struct erase_info *erase)
- 				part->mbd.mtd->name,
- 				part->blocks[i].offset);
- 		part->blocks[i].state = BLOCK_FAILED;
-+		part->errors++;
- 	}
- 	else
- 		part->blocks[i].state = BLOCK_OK;
-@@ -349,6 +351,7 @@ static int erase_block(struct partition *part, int block)
- 				"failed\n", erase->addr, erase->len,
- 				part->mbd.mtd->name);
- 		kfree(erase);
-+		part->errors++;
- 	}
- 
- err:
-@@ -383,7 +386,7 @@ static int move_block_contents(struct partition *part, int block_no, u_long *old
- 		printk(KERN_ERR PREFIX "error reading '%s' at "
- 			"0x%lx\n", part->mbd.mtd->name,
- 			part->blocks[block_no].offset);
--
-+		part->errors++;
- 		goto err;
- 	}
- 
-@@ -423,7 +426,7 @@ static int move_block_contents(struct partition *part, int block_no, u_long *old
- 			printk(KERN_ERR PREFIX "'%s': Unable to "
- 				"read sector for relocation\n",
- 				part->mbd.mtd->name);
--
-+			part->errors++;
- 			goto err;
- 		}
- 
-@@ -604,9 +607,10 @@ static int mark_sector_deleted(struct partition *part, u_long old_addr)
- 	if (rc) {
- 		printk(KERN_ERR PREFIX "error writing '%s' at "
- 			"0x%lx\n", part->mbd.mtd->name, addr);
--		if (rc)
--			goto err;
-+		part->errors++;
-+		goto err;
- 	}
-+
- 	if (block == part->current_block)
- 		part->header_cache[offset + HEADER_MAP_OFFSET] = del;
- 
-@@ -639,9 +643,9 @@ static int find_free_sector(const struct partition *part, const struct block *bl
- 	return -1;
- }
- 
--static int do_writesect(struct mtd_blktrans_dev *dev, u_long sector, char *buf, ulong *old_addr)
-+static int do_writesect(struct mtd_blktrans_dev *dev, u_long sector, char *buf, u_long *old_addr)
- {
--	struct partition *part = (struct partition*)dev;
-+	struct partition *part = container_of(dev, struct partition, mbd);
- 	struct block *block;
- 	u_long addr;
- 	int i;
-@@ -677,8 +681,8 @@ static int do_writesect(struct mtd_blktrans_dev *dev, u_long sector, char *buf,
- 	if (rc) {
- 		printk(KERN_ERR PREFIX "error writing '%s' at 0x%lx\n",
- 				part->mbd.mtd->name, addr);
--		if (rc)
--			goto err;
-+		part->errors++;
-+		goto err;
- 	}
- 
- 	part->sector_map[sector] = addr;
-@@ -697,8 +701,8 @@ static int do_writesect(struct mtd_blktrans_dev *dev, u_long sector, char *buf,
- 	if (rc) {
- 		printk(KERN_ERR PREFIX "error writing '%s' at 0x%lx\n",
- 				part->mbd.mtd->name, addr);
--		if (rc)
--			goto err;
-+		part->errors++;
-+		goto err;
- 	}
- 	block->used_sectors++;
- 	block->free_sectors--;
-@@ -709,14 +713,14 @@ err:
- 
- static int rfd_ftl_writesect(struct mtd_blktrans_dev *dev, u_long sector, char *buf)
- {
--	struct partition *part = (struct partition*)dev;
-+	struct partition *part = container_of(dev, struct partition, mbd);
- 	u_long old_addr;
- 	int i;
- 	int rc = 0;
- 
- 	pr_debug("rfd_ftl_writesect(sector=0x%lx)\n", sector);
- 
--	if (part->reserved_block == -1) {
-+	if (part->reserved_block == -1 || part->errors) {
- 		rc = -EACCES;
- 		goto err;
- 	}
-@@ -750,7 +754,7 @@ err:
- 
- static int rfd_ftl_getgeo(struct mtd_blktrans_dev *dev, struct hd_geometry *geo)
- {
--	struct partition *part = (struct partition*)dev;
-+	struct partition *part = container_of(dev, struct partition, mbd);
- 
- 	geo->heads = 1;
- 	geo->sectors = SECTORS_PER_TRACK;
-@@ -759,6 +763,30 @@ static int rfd_ftl_getgeo(struct mtd_blktrans_dev *dev, struct hd_geometry *geo)
- 	return 0;
- }
- 
-+static int rfd_ftl_discardsect(struct mtd_blktrans_dev *dev, u_long sector, 
-+								uint nr_sects)
-+{
-+	struct partition *part = container_of(dev, struct partition, mbd);
-+	u_long addr;
-+	int rc;
-+
-+	if (part->errors)
-+		return -EACCES;
-+
-+	for (rc = 0; nr_sects && rc == 0; sector++, nr_sects--) {
-+		if (sector >= part->sector_count)
-+			return -EIO;
-+
-+		addr = part->sector_map[sector];
-+		part->sector_map[sector] = -1;
-+
-+		if (addr != -1)
-+			rc = mark_sector_deleted(part, addr);
-+	}
-+
-+	return rc;
-+}
-+
- static void rfd_ftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- {
- 	struct partition *part;
-@@ -806,7 +834,7 @@ out:
- 
- static void rfd_ftl_remove_dev(struct mtd_blktrans_dev *dev)
- {
--	struct partition *part = (struct partition*)dev;
-+	struct partition *part = container_of(dev, struct partition, mbd);
- 	int i;
- 
- 	for (i=0; i<part->total_blocks; i++) {
-@@ -829,6 +857,7 @@ static struct mtd_blktrans_ops rfd_ftl_tr = {
- 
- 	.readsect	= rfd_ftl_readsect,
- 	.writesect	= rfd_ftl_writesect,
-+	.discard	= rfd_ftl_discardsect,
- 	.getgeo		= rfd_ftl_getgeo,
- 	.add_mtd	= rfd_ftl_add_mtd,
- 	.remove_dev	= rfd_ftl_remove_dev,
+Right, we need to tell the system where potential CFI Flash buses are
+with some kind of data.  Physmap decouples that data from the platform
+data.
+
+> No, that's not true.  In fact we're actively working towards the
+> possibility for a single defconfig, hence a single kernel binary, to
+> support many different platforms at once.
+
+Okay, that's good.
+
+>> The platform data requires adding a .c file to arch/arm/mach-pxa/ and
+>> tweaks to arch/arm/mach-pxa/Kconfig and arch/arm/mach-pxa/Makefile,
+>> no?
+>
+> Of course.  That's the case for every different hardware platforms.
+
+I think that is pushing it.  There would be tens of thousands of x86
+"platforms" if you took that argument to it's extreme.
+
+>> >  But in practice, the platform
+>> > data approach has a bunch of advantages over the .config approach,
+>> > such as that with the platform data approach it's still possible to
+>> > build a single kernel image that supports booting on multiple different
+>> > boards (which is important e.g. for distributors),'
+>>
+>> Yes there are places where platform data approach is very useful, I
+>> totally agree.  Yet there are also places where it is annoying.
+>
+> Could you elaborate?
+
+A lot of PXA270 hardware out there is pretty similar, there's only a
+couple of registered platforms but there are thousands of different
+boards.  Do we want thousands of platforms defined for the trivial
+differences?
+
+>> Also I'm not sure that totally accurate.  Here you can use the kernel
+>> command line to alter the physmap.
+>
+> Why would you ever want to do that?
+
+We have basically a respin of Mainstone with socket cards for Flash.
+So we  alter the physmap to look at one chipselect or the other,
+depending on what we are doing.  It's great for testing stuff.
+
+That's why physmap is so important to me, I can test a stock kernel
+for Mainstone with all kinds of unholy Flash configs without ever
+touching the kernel.  This is very cool for us.
+
+So you guys think of soldering irons when I talk about altering the
+Flash layout, I think of swapping a card out.
+
+> If you moved the flash then either you 1) modified the hardware in which
+> case it strictly speaking can't be called under the existing name, or 2)
+> platform data for that platform didn't acurately reflect the physical
+> capabilities of the hardware.
+
+So if I do a mild hack or revision of a board that should trigger a
+new machine registration?  Really?  Even though today I can just tweak
+the command line's physmap entry?
+
+Okay.... 2) is a pretty interesting argument.  So how do we do
+platform data for my board that has socketable Flash?
+
+I don't know.  We have this cool ability to autodetect the Flash but
+it seems like the direction we're going doesn't take advantage of
+that.  I probably just don't see something.
