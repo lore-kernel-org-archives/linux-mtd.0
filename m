@@ -1,32 +1,17 @@
-Received: from az33egw01.freescale.net ([192.88.158.102])
+Received: from ganesha.gnumonks.org ([2001:780:45:1d:2e0:81ff:fe28:898a])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KrqGn-0005Et-5p
-	for linux-mtd@lists.infradead.org; Mon, 20 Oct 2008 08:37:45 +0000
-Received: from az33smr02.freescale.net (az33smr02.freescale.net [10.64.34.200])
-	by az33egw01.freescale.net (8.12.11/az33egw01) with ESMTP id
-	m9K8bfEH005900 for <linux-mtd@lists.infradead.org>;
-	Mon, 20 Oct 2008 01:37:41 -0700 (MST)
-Received: from zch01exm21.fsl.freescale.net (zch01exm21.ap.freescale.net
-	[10.192.129.205])
-	by az33smr02.freescale.net (8.13.1/8.13.0) with ESMTP id m9K8bd7U018328
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 20 Oct 2008 03:37:40 -0500 (CDT)
-Content-class: urn:content-classes:message
+	id 1Krqm8-0006Vx-Cu
+	for linux-mtd@lists.infradead.org; Mon, 20 Oct 2008 09:10:08 +0000
+Date: Mon, 20 Oct 2008 11:09:47 +0200
+From: Harald Welte <laforge@gnumonks.org>
+To: Ben Dooks <ben@trinity.fluff.org>
+Subject: [PATCH] S3C24xx NAND: Correct tacls_max for S3C2410
+Message-ID: <20081020090947.GZ1048@prithivi.gnumonks.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Subject: RE: goofy mtd m25p80 patches in GIT ...
-Date: Mon, 20 Oct 2008 16:37:37 +0800
-Message-ID: <C3C4D3116BA1F84989E53FCF1F505187166DE9@zch01exm21.fsl.freescale.net>
-In-Reply-To: <200810200130.50054.david-b@pacbell.net>
-References: <200810191535.05617.david-b@pacbell.net>
-	<1224489768.6770.1527.camel@macbook.infradead.org>
-	<C3C4D3116BA1F84989E53FCF1F505187166DE0@zch01exm21.fsl.freescale.net>
-	<200810200130.50054.david-b@pacbell.net>
-From: "Chen Gong-B11801" <G.Chen@freescale.com>
-To: "David Brownell" <david-b@pacbell.net>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,40 +21,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+At least according to my S3C2410X manual, the maximum tacls setting
+for the 2410 is 8, not 4.  S3C2410 is therefore like the S3C2412 (and 2443),
+not like 2440 and 2442.
+
+Signed-of-by: Harald Welte <laforge@openmoko.org>
+
+diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+index 4413d76..251f7a3 100644
+--- a/drivers/mtd/nand/s3c2410.c
++++ b/drivers/mtd/nand/s3c2410.c
+@@ -183,10 +183,20 @@ static int s3c2410_nand_inithw(struct s3c2410_nand_in=
+fo *info,
+ {
+ 	struct s3c2410_platform_nand *plat =3D to_nand_plat(pdev);
+ 	unsigned long clkrate =3D clk_get_rate(info->clk);
+-	int tacls_max =3D (info->cpu_type =3D=3D TYPE_S3C2412) ? 8 : 4;
++	int tacls_max;
+ 	int tacls, twrph0, twrph1;
+ 	unsigned long cfg =3D 0;
 =20
-
-> -----Original Message-----
-> From: David Brownell [mailto:david-b@pacbell.net]=20
-> Sent: 2008?10?20? 16:31
-> To: Chen Gong-B11801
-> Cc: David Woodhouse; linux-mtd@lists.infradead.org
-> Subject: Re: goofy mtd m25p80 patches in GIT ...
->=20
-> On Monday 20 October 2008, Chen Gong-B11801 wrote:
-> > I prefer to the first opinion -- renaming 'erase_block' to=20
-> 'erase_chip',
-> > it looks more straightforward
->=20
-> *AND* fixing the name of the operation.
->=20
-> The pre-existing erase operations were:
->=20
->  #define OPCODE_BE_4K            0x20    /* Erase 4KiB block */
->  #define OPCODE_BE_32K           0x52    /* Erase 32KiB block */
->  #define OPCODE_SE               0xd8    /* Sector erase=20
-> (usually 64KiB) */
->=20
-> So I'm quite puzzled why you would call the chip erase
-> opcode a "block erase" opcode ... it's not a 4K block,
-> not a 32K block, not a sector (of, usually, 64K).
-
-ah, simple, because I'v gotten it from its datasheet (BE means Bulk
-Erase, not block erase here) :-)
-
->=20
-> It's more typically something like multiple MBytes.
->=20
-> Having read or skimmed several dozen SPI flash specs,
-> none of them called chip erase a "block erase" operation.
->=20
->=20
++	switch (info->cpu_type) {
++	case TYPE_S3C2410:
++	case TYPE_S3C2412:
++		tacls_max =3D 8;
++		break;
++	default:
++		tacls_max =3D 4;
++		break;
++	}
++
+ 	/* calculate the timing information for the controller */
+=20
+ 	clkrate /=3D 1000;	/* turn clock into kHz for ease of use */
+--=20
+- Harald Welte <laforge@gnumonks.org>           http://laforge.gnumonks.org/
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+"Privacy in residential applications is a desirable marketing option."
+                                                  (ETSI EN 300 175-7 Ch. A6)
