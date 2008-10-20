@@ -1,22 +1,22 @@
-Received: from smtp125.sbc.mail.sp1.yahoo.com ([69.147.65.184])
+Received: from smtp115.sbc.mail.sp1.yahoo.com ([69.147.64.88])
 	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Krq48-0003M2-AZ
-	for linux-mtd@lists.infradead.org; Mon, 20 Oct 2008 08:24:40 +0000
+	id 1KrqA8-0000n4-NW
+	for linux-mtd@lists.infradead.org; Mon, 20 Oct 2008 08:30:53 +0000
 From: David Brownell <david-b@pacbell.net>
-To: David Woodhouse <dwmw2@infradead.org>
+To: "Chen Gong-B11801" <G.Chen@freescale.com>
 Subject: Re: goofy mtd m25p80 patches in GIT ...
-Date: Mon, 20 Oct 2008 01:24:38 -0700
+Date: Mon, 20 Oct 2008 01:30:49 -0700
 References: <200810191535.05617.david-b@pacbell.net>
-	<C3C4D3116BA1F84989E53FCF1F505187166DCB@zch01exm21.fsl.freescale.net>
 	<1224489768.6770.1527.camel@macbook.infradead.org>
-In-Reply-To: <1224489768.6770.1527.camel@macbook.infradead.org>
+	<C3C4D3116BA1F84989E53FCF1F505187166DE0@zch01exm21.fsl.freescale.net>
+In-Reply-To: <C3C4D3116BA1F84989E53FCF1F505187166DE0@zch01exm21.fsl.freescale.net>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200810200124.38256.david-b@pacbell.net>
-Cc: Chen Gong-B11801 <G.Chen@freescale.com>, linux-mtd@lists.infradead.org
+Message-Id: <200810200130.50054.david-b@pacbell.net>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,22 +26,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 20 October 2008, David Woodhouse wrote:
-> I think the interface is fine -- if you ask it to erase the whole chip
-> (start == 0, len == size), then it'll use a chip erase command if it has
-> one, or fall back to erasing individual blocks.
-> 
-> I think David just wanted a cleanup to the nomenclature -- renaming
-> 'erase_block' to 'erase_chip', perhaps, and changing the #define for the
-> command?
+On Monday 20 October 2008, Chen Gong-B11801 wrote:
+> I prefer to the first opinion -- renaming 'erase_block' to 'erase_chip',
+> it looks more straightforward
 
-Exactly.  Since the existing erase block calls are not
-doing whole-chip erasure ... and since chip-erase is
-a *VERY* different operation.
+*AND* fixing the name of the operation.
 
-The MTD interface just says "erase this stuff", and
-that patch just added a special case "if <stuff> is
-the whole chip, use this operation instead of the
-existing iterate-over-blocks logic".
+The pre-existing erase operations were:
 
-- Dave
+ #define OPCODE_BE_4K            0x20    /* Erase 4KiB block */
+ #define OPCODE_BE_32K           0x52    /* Erase 32KiB block */
+ #define OPCODE_SE               0xd8    /* Sector erase (usually 64KiB) */
+
+So I'm quite puzzled why you would call the chip erase
+opcode a "block erase" opcode ... it's not a 4K block,
+not a 32K block, not a sector (of, usually, 64K).
+
+It's more typically something like multiple MBytes.
+
+Having read or skimmed several dozen SPI flash specs,
+none of them called chip erase a "block erase" operation.
