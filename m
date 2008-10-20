@@ -1,14 +1,15 @@
-Date: Mon, 20 Oct 2008 11:11:00 +0200
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Artem Bityutskiy <dedekind@infradead.org>
-Subject: Re: [RFC] ubi: tmp hack for lstat
-Message-ID: <20081020091100.GA1324@www.tglx.de>
-References: <20081019132122.GA20282@www.tglx.de>
-	<1224479637.4466.55.camel@sauron>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Received: from ganesha.gnumonks.org ([2001:780:45:1d:2e0:81ff:fe28:898a])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Krqvm-0006wR-As
+	for linux-mtd@lists.infradead.org; Mon, 20 Oct 2008 09:20:07 +0000
+Date: Mon, 20 Oct 2008 11:14:48 +0200
+From: Harald Welte <laforge@gnumonks.org>
+To: Ben Dooks <ben@trinity.fluff.org>
+Subject: [PATCH] S3C24xx NAND: allow for faster timings
+Message-ID: <20081020091447.GA1048@prithivi.gnumonks.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1224479637.4466.55.camel@sauron>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -19,34 +20,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Artem Bityutskiy | 2008-10-20 08:13:57 [+0300]:
+Tacls can actually be zero with some NAND flash devices, so we need
+to permit this.
 
->Hi,
-Hi,
+Also, the TACLS register actually specifies the actual number of
+HCLK clocks, where the TWRPH0 and TWRPH1 registers are auto-incremented
+by one HCLK clock in hardware.
 
->I've tried to stat various files in my /dev/ and all of them have size
->0. 
-None of them is a file filestem so no one of them returns something.
+Signed-off-by: Harald Welte <laforge@openmoko.org>
+---
+ drivers/mtd/nand/s3c2410.c |    9 +++------
+ 1 files changed, 3 insertions(+), 6 deletions(-)
 
->Why UBI should be different? 
-As I made the patch I though that this is the expectingt behavior.
-sda/hda return 0 but those are larger then a few MiBs so you use a fs on
-top. So either nobody care(s|d) or it works as expected.
-
->Indeed, stat should return size of the
->inode, that is normal semantics. You suggest making stat on UBI volume
->character devices return volume size. It might help your application,
->but it'll confuse other applications - for example 'du', which uses stat
->to calculate directory size. So am not sure it is good idea.
-It would report the size you would get after a read(). A cp()1 on ubi
-would copy the content of the node unless called with -a.
-
-I'm actually not sure what the expected behavior is. stat() returns
-information about a file and ubi isn't a regular file it is a character
-node. So it would be probably better to leave everything as it and
-change userspace instead.
-
->Best regards,
->Artem Bityutskiy (???????????????? ??????????)
-
-Sebastian
+diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+index 4413d76..81f66ba 100644
+--- a/drivers/mtd/nand/s3c2410.c
++++ b/drivers/mtd/nand/s3c2410.c
+@@ -168,9 +168,6 @@ static int s3c_nand_calc_rate(int wanted, unsigned long clk, int max)
+ 		return -1;
+ 	}
+ 
+-	if (result < 1)
+-		result = 1;
+-
+ 	return result;
+ }
+ 
+@@ -202,7 +199,7 @@ static int s3c2410_nand_inithw(struct s3c2410_nand_info *info,
+ 		twrph1 = 8;
+ 	}
+ 
+-	if (tacls < 0 || twrph0 < 0 || twrph1 < 0) {
++	if (tacls < 0 || twrph0 < 1 || twrph1 < 1) {
+ 		dev_err(info->device, "cannot get suitable timings\n");
+ 		return -EINVAL;
+ 	}
+@@ -213,14 +210,14 @@ static int s3c2410_nand_inithw(struct s3c2410_nand_info *info,
+  	switch (info->cpu_type) {
+  	case TYPE_S3C2410:
+ 		cfg = S3C2410_NFCONF_EN;
+-		cfg |= S3C2410_NFCONF_TACLS(tacls - 1);
++		cfg |= S3C2410_NFCONF_TACLS(tacls);
+ 		cfg |= S3C2410_NFCONF_TWRPH0(twrph0 - 1);
+ 		cfg |= S3C2410_NFCONF_TWRPH1(twrph1 - 1);
+ 		break;
+ 
+  	case TYPE_S3C2440:
+  	case TYPE_S3C2412:
+-		cfg = S3C2440_NFCONF_TACLS(tacls - 1);
++		cfg = S3C2440_NFCONF_TACLS(tacls);
+ 		cfg |= S3C2440_NFCONF_TWRPH0(twrph0 - 1);
+ 		cfg |= S3C2440_NFCONF_TWRPH1(twrph1 - 1);
+ 
+-- 
+1.5.6.5
+-- 
+- Harald Welte <laforge@gnumonks.org>           http://laforge.gnumonks.org/
+============================================================================
+"Privacy in residential applications is a desirable marketing option."
+                                                  (ETSI EN 300 175-7 Ch. A6)
