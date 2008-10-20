@@ -1,19 +1,24 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Krn6w-0008Cj-Rf
-	for linux-mtd@lists.infradead.org; Mon, 20 Oct 2008 05:15:23 +0000
-Subject: Re: [RFC] ubi: tmp hack for lstat
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-In-Reply-To: <20081019132122.GA20282@www.tglx.de>
-References: <20081019132122.GA20282@www.tglx.de>
-Content-Type: text/plain; charset=utf-8
-Date: Mon, 20 Oct 2008 08:13:57 +0300
-Message-Id: <1224479637.4466.55.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from mail.renesas.com ([202.234.163.13] helo=mail04.idc.renesas.com)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KrnUx-0007O2-PH
+	for linux-mtd@lists.infradead.org; Mon, 20 Oct 2008 05:40:12 +0000
+Date: Mon, 20 Oct 2008 14:40:05 +0900
+From: Yoshihiro Shimoda <shimoda.yoshihiro@renesas.com>
+Subject: Re: [RESEND][PATCH v2] mtd: sh_flctl: add support for Renesas SuperH
+	FLCTL
+In-reply-to: <20081020044759.GD20044@linux-sh.org>
+Sender: shimoda.yoshihiro@renesas.com
+To: Paul Mundt <lethal@linux-sh.org>
+Message-id: <48FC19B5.4060908@renesas.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=ISO-8859-1
+Content-transfer-encoding: 7bit
+References: <48F48F3E.3080806@renesas.com>
+	<20081020024701.GA19540@linux-sh.org>
+	<20081020024821.GB19540@linux-sh.org>
+	<48FC0CE6.7040307@renesas.com> <20081020044759.GD20044@linux-sh.org>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	linux-sh@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +28,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2008-10-19 at 15:21 +0200, Sebastian Andrzej Siewior wrote:
-> lstat() on /dev/ubi%d_%d returns 0 in the st_size field. This hack
-> allows to get the correct file size (as long as nobody updates the volume
-> in the meantime).
->=20
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
-> I have userpsace programs which stat() the file and process the
-> returned number bytes. The other work around is to copy the file
-> somewhere and use this file instead of /dev/ubi.
-> Artem, do you thing it is possible to implement this functionality
-> properly or would it be reasonable not to use stat() at all on ubi
-> volumes?
+Paul Mundt wrote:
+> On Mon, Oct 20, 2008 at 01:45:26PM +0900, Yoshihiro Shimoda wrote:
+>> Paul Mundt wrote:
+>>> On Mon, Oct 20, 2008 at 11:47:01AM +0900, Paul Mundt wrote:
+>>>> On Tue, Oct 14, 2008 at 09:23:26PM +0900, Yoshihiro Shimoda wrote:
+>>>>> Several Renesas SuperH CPU has FLCTL. The FLCTL support NAND Flash.
+>>>>> This driver support SH7723.
+>>>>>
+>>>>> Signed-off-by: Yoshihiro Shimoda <shimoda.yoshihiro@renesas.com>
+>>>>> Acked-by: Paul Mundt <lethal@linux-sh.org>
+>>>> Please CC Andrew on this, as no one on the MTD side of things seems to be
+>>>> awake.
+>>> Scratch that, I see this version has been applied to the MTD git.
+>>>
+>> Thank you for checking.
+>> Although I also checked, the imperfect code has been taken into git
+>> because the patch had broken. In such a case, should the whole patch
+>> be resent?
+>>
+> Just send an incremental patch on top of what has already been merged.
+> The changes are fairly minor in any event.
+> 
+Thank you for your comment.
+I will make and send an incremental patch.
 
-Hi,
-
-I've tried to stat various files in my /dev/ and all of them have size
-0. Why UBI should be different? Indeed, stat should return size of the
-inode, that is normal semantics. You suggest making stat on UBI volume
-character devices return volume size. It might help your application,
-but it'll confuse other applications - for example 'du', which uses stat
-to calculate directory size. So am not sure it is good idea.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Thanks,
+Yoshihiro Shimoda
