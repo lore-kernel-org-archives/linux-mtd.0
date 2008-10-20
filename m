@@ -1,18 +1,19 @@
-Received: from smtp128.sbc.mail.sp1.yahoo.com ([69.147.65.187])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KriAe-0002Ft-6D
-	for linux-mtd@lists.infradead.org; Sun, 19 Oct 2008 23:58:52 +0000
-From: David Brownell <david-b@pacbell.net>
-To: linux-mtd@lists.infradead.org,
- mike@compulab.co.il
-Subject: Re: [PATCH] [MTD] [NAND] GPIO NAND flash driver
-Date: Sun, 19 Oct 2008 16:51:29 -0700
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200810191651.29520.david-b@pacbell.net>
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Krn6w-0008Cj-Rf
+	for linux-mtd@lists.infradead.org; Mon, 20 Oct 2008 05:15:23 +0000
+Subject: Re: [RFC] ubi: tmp hack for lstat
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+In-Reply-To: <20081019132122.GA20282@www.tglx.de>
+References: <20081019132122.GA20282@www.tglx.de>
+Content-Type: text/plain; charset=utf-8
+Date: Mon, 20 Oct 2008 08:13:57 +0300
+Message-Id: <1224479637.4466.55.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,56 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> +#ifdef CONFIG_ARM
-> +/* gpio_nand_dosync()
-> + *
-> + * needed due to bus-reordering within the PXA itself (see section on
-> + * I/O ordering in PXA manual (section 2.3, p35)
-> + */
-> +static void gpio_nand_dosync(struct gpiomtd *gpiomtd)
+On Sun, 2008-10-19 at 15:21 +0200, Sebastian Andrzej Siewior wrote:
+> lstat() on /dev/ubi%d_%d returns 0 in the st_size field. This hack
+> allows to get the correct file size (as long as nobody updates the volume
+> in the meantime).
+>=20
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> ---
+> I have userpsace programs which stat() the file and process the
+> returned number bytes. The other work around is to copy the file
+> somewhere and use this file instead of /dev/ubi.
+> Artem, do you thing it is possible to implement this functionality
+> properly or would it be reasonable not to use stat() at all on ubi
+> volumes?
 
-I'm trying to understand why a PXA-specific issue is getting
-applied to all ARMs.  #ifdef CONFIG_ARCH_PXA would be better
-for *any* PXA-specific behavior like this.
+Hi,
 
+I've tried to stat various files in my /dev/ and all of them have size
+0. Why UBI should be different? Indeed, stat should return size of the
+inode, that is normal semantics. You suggest making stat on UBI volume
+character devices return volume size. It might help your application,
+but it'll confuse other applications - for example 'du', which uses stat
+to calculate directory size. So am not sure it is good idea.
 
-Reading the list archives, I also see some confusion about
-GPIO state after gpio_free() is called.  As soon as a GPIO
-is no longer managed (as a GPIO) by a driver, it's fair for
-the rest of the system to reconfigure it ... but platform
-specific issues like "Will *this* system reconfigure it?
-If so, how? and When?" are out-of-scope.  (Just like all
-aspects of configuring pins for GPIO v. non-GPIO usage...)
-
-The principle-of-least-surprise applies here, as it should
-apply everywhere, though ... so until something takes over
-the pin(s) used for that GPIO and reconfigures it (them) for
-another purpose, it's reasonable to expect no state changes.
-And it's likewise reasonable to expect that any kernel code
-taking it over isn't fundamentally brain-dead ...
-
-One general rule being that if you care what the hardware
-is doing, you should have its driver managing that:  don't
-unload the darn driver, if unloading it may break things!
-
-
-That's not quite the same as the confusion about state at
-low power levels.  In that case, drivers are within their
-rights to claim that if platform code changes GPIO state
-except according to driver requests, the platform is buggy.
-
-(That includes the special configuration requests that can
-be made on some platforms, covering low power modes.  I've
-seen that on a couple systems, but it's currently rare and
-thus very appropriate to treat as platform-specific.)
-
-- Dave
-
-p.s. In current kernel GIT there are two new hooks in
-     the gpiolib framework, called on gpio_request()
-     and gpio_free().  The intent is to support power
-     management ... e.g. save 50uA by keeping unused
-     GPIO banks unclocked or even powered off when not
-     in use.  Such hooks are unfortunately open to some
-     abuse ... I suspect platform-specific stupidities
-     will start to appear.  Not much I can do about it.
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
