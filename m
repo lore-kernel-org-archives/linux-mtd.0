@@ -1,8 +1,8 @@
-Date: Mon, 20 Oct 2008 17:44:45 +0100 (BST)
+Date: Mon, 20 Oct 2008 17:46:14 +0100 (BST)
 From: Alexey Korolev <akorolev@infradead.org>
 To: linux-mtd@lists.infradead.org, dwmw2@infradead.org
-Subject: [PATCH 7/8] LPDDR Makefile and KConfig (take 2)
-Message-ID: <alpine.LFD.1.10.0810201743150.29324@casper.infradead.org>
+Subject: [PATCH 8/8]LPDDR: new folder for lpddr (take 2)
+Message-ID: <alpine.LFD.1.10.0810201744480.29324@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: nico@cam.org
@@ -15,51 +15,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We have two components to manage LPDDR flash memories in Linux.
-1. It is a driver for chip probing and reading its capabilities
-2. It is a device operations driver.
+LPDDR should to solves the same problems as CFI but it is another
+interface. So it make sense to place it in own folder as it did for CFI.
 
 Signed-off-by: Alexey Korolev <akorolev@infradead.org>
 Acked-by: Jared Hulbert <jaredeh@gmail.com>
 ---
 
-diff --git a/drivers/mtd/lpddr/Kconfig b/drivers/mtd/lpddr/Kconfig
-new file mode 100644
-index 0000000..6771d82
---- /dev/null
-+++ b/drivers/mtd/lpddr/Kconfig
-@@ -0,0 +1,22 @@
-+# drivers/mtd/chips/Kconfig
+diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+index a90d50c..ad20dc3 100644
+--- a/drivers/mtd/Kconfig
++++ b/drivers/mtd/Kconfig
+@@ -316,6 +316,8 @@ source "drivers/mtd/nand/Kconfig"
+ 
+ source "drivers/mtd/onenand/Kconfig"
+ 
++source "drivers/mtd/lpddr/Kconfig"
 +
-+menu "LPDDR flash memory drivers"
-+	depends on MTD!=n
-+
-+config MTD_LPDDR
-+	tristate "Support for LPDDR flash chips"
-+	select MTD_QINFO_PROBE
-+	help
-+	  This option enables support of LPDDR (Low power double data rate) 
-+	  flash chips. Synonymous with Mobile-DDR. It is a new standard for 
-+	  DDR memories, intended for battery-operated systems.	  
-+
-+config MTD_QINFO_PROBE
-+	tristate "Detect flash chips by QINFO probe"
-+	help
-+	    Device Information for LPDDR chips is offered through the Overlay 
-+	    Window QINFO interface, permits software to be used for entire 
-+	    families of devices. This serves similar purpose of CFI on legacy
-+	    Flash products
-+endmenu
-+
-diff --git a/drivers/mtd/lpddr/Makefile b/drivers/mtd/lpddr/Makefile
-new file mode 100644
-index 0000000..0c305f5
---- /dev/null
-+++ b/drivers/mtd/lpddr/Makefile
-@@ -0,0 +1,6 @@
-+#
-+# linux/drivers/mtd/lpddr/Makefile
-+#
-+
-+obj-$(CONFIG_MTD_QINFO_PROBE)	+= qinfo_probe.o
-+obj-$(CONFIG_MTD_LPDDR)	+= lpddr_cmds.o
+ source "drivers/mtd/ubi/Kconfig"
+ 
+ endif # MTD
+diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
+index 4b77335..7fb3dfb 100644
+--- a/drivers/mtd/Makefile
++++ b/drivers/mtd/Makefile
+@@ -29,6 +29,6 @@ obj-$(CONFIG_MTD_OOPS)		+= mtdoops.o
+ nftl-objs		:= nftlcore.o nftlmount.o
+ inftl-objs		:= inftlcore.o inftlmount.o
+ 
+-obj-y		+= chips/ maps/ devices/ nand/ onenand/
++obj-y		+= chips/ lpddr/ maps/ devices/ nand/ onenand/ 
+ 
+ obj-$(CONFIG_MTD_UBI)		+= ubi/
