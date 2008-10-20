@@ -1,16 +1,20 @@
-Received: from ganesha.gnumonks.org ([2001:780:45:1d:2e0:81ff:fe28:898a])
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Krqvm-0006wR-As
-	for linux-mtd@lists.infradead.org; Mon, 20 Oct 2008 09:20:07 +0000
-Date: Mon, 20 Oct 2008 11:14:48 +0200
-From: Harald Welte <laforge@gnumonks.org>
-To: Ben Dooks <ben@trinity.fluff.org>
-Subject: [PATCH] S3C24xx NAND: allow for faster timings
-Message-ID: <20081020091447.GA1048@prithivi.gnumonks.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+	id 1Krqyj-0004Ue-0L
+	for linux-mtd@lists.infradead.org; Mon, 20 Oct 2008 09:23:09 +0000
+Subject: Re: [RFC] ubi: tmp hack for lstat
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+In-Reply-To: <20081020091100.GA1324@www.tglx.de>
+References: <20081019132122.GA20282@www.tglx.de>
+	<1224479637.4466.55.camel@sauron> <20081020091100.GA1324@www.tglx.de>
+Content-Type: text/plain; charset=utf-8
+Date: Mon, 20 Oct 2008 12:21:11 +0300
+Message-Id: <1224494471.4466.90.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,62 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Tacls can actually be zero with some NAND flash devices, so we need
-to permit this.
+On Mon, 2008-10-20 at 11:11 +0200, Sebastian Andrzej Siewior wrote:
+> I'm actually not sure what the expected behavior is. stat() returns
+> information about a file and ubi isn't a regular file it is a character
+> node. So it would be probably better to leave everything as it and
+> change userspace instead.
 
-Also, the TACLS register actually specifies the actual number of
-HCLK clocks, where the TWRPH0 and TWRPH1 registers are auto-incremented
-by one HCLK clock in hardware.
+In my understanding, stat() should return how many bytes of data inode
+contains. Stat on a character device should return amount of bytes the
+character device inode contain. In ext3 major/minor are stored as
+meta-data, so it returns 0.
 
-Signed-off-by: Harald Welte <laforge@openmoko.org>
----
- drivers/mtd/nand/s3c2410.c |    9 +++------
- 1 files changed, 3 insertions(+), 6 deletions(-)
+Yes, I also think it is better if you amend your user-space application.
 
-diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-index 4413d76..81f66ba 100644
---- a/drivers/mtd/nand/s3c2410.c
-+++ b/drivers/mtd/nand/s3c2410.c
-@@ -168,9 +168,6 @@ static int s3c_nand_calc_rate(int wanted, unsigned long clk, int max)
- 		return -1;
- 	}
- 
--	if (result < 1)
--		result = 1;
--
- 	return result;
- }
- 
-@@ -202,7 +199,7 @@ static int s3c2410_nand_inithw(struct s3c2410_nand_info *info,
- 		twrph1 = 8;
- 	}
- 
--	if (tacls < 0 || twrph0 < 0 || twrph1 < 0) {
-+	if (tacls < 0 || twrph0 < 1 || twrph1 < 1) {
- 		dev_err(info->device, "cannot get suitable timings\n");
- 		return -EINVAL;
- 	}
-@@ -213,14 +210,14 @@ static int s3c2410_nand_inithw(struct s3c2410_nand_info *info,
-  	switch (info->cpu_type) {
-  	case TYPE_S3C2410:
- 		cfg = S3C2410_NFCONF_EN;
--		cfg |= S3C2410_NFCONF_TACLS(tacls - 1);
-+		cfg |= S3C2410_NFCONF_TACLS(tacls);
- 		cfg |= S3C2410_NFCONF_TWRPH0(twrph0 - 1);
- 		cfg |= S3C2410_NFCONF_TWRPH1(twrph1 - 1);
- 		break;
- 
-  	case TYPE_S3C2440:
-  	case TYPE_S3C2412:
--		cfg = S3C2440_NFCONF_TACLS(tacls - 1);
-+		cfg = S3C2440_NFCONF_TACLS(tacls);
- 		cfg |= S3C2440_NFCONF_TWRPH0(twrph0 - 1);
- 		cfg |= S3C2440_NFCONF_TWRPH1(twrph1 - 1);
- 
--- 
-1.5.6.5
--- 
-- Harald Welte <laforge@gnumonks.org>           http://laforge.gnumonks.org/
-============================================================================
-"Privacy in residential applications is a desirable marketing option."
-                                                  (ETSI EN 300 175-7 Ch. A6)
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
