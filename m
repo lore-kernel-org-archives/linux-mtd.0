@@ -1,11 +1,20 @@
-Date: Mon, 20 Oct 2008 17:46:14 +0100 (BST)
-From: Alexey Korolev <akorolev@infradead.org>
-To: linux-mtd@lists.infradead.org, dwmw2@infradead.org
-Subject: [PATCH 8/8]LPDDR: new folder for lpddr (take 2)
-Message-ID: <alpine.LFD.1.10.0810201744480.29324@casper.infradead.org>
+Received: from ti-out-0910.google.com ([209.85.142.189])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Ks3Jv-0007we-1p
+	for linux-mtd@lists.infradead.org; Mon, 20 Oct 2008 22:33:51 +0000
+Received: by ti-out-0910.google.com with SMTP id a21so1031754tia.2
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 20 Oct 2008 15:33:48 -0700 (PDT)
+Date: Tue, 21 Oct 2008 06:33:42 +0800
+From: Huang Weiyi <weiyi.huang@gmail.com>
+To: dwmw2@infradead.org,
+ David.Woodhouse@intel.com
+Subject: [MTD] [NAND] OMAP2: remove duplicated #include
+Message-Id: <20081021063034.DBB4.WEIYI.HUANG@gmail.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: nico@cam.org
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,35 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-LPDDR should to solves the same problems as CFI but it is another
-interface. So it make sense to place it in own folder as it did for CFI.
+Removed duplicated #include <asm/arch/gpmc.h> in 
+drivers/mtd/onenand/omap2.c.
 
-Signed-off-by: Alexey Korolev <akorolev@infradead.org>
-Acked-by: Jared Hulbert <jaredeh@gmail.com>
----
+Signed-off-by: Huang Weiyi <weiyi.huang@gmail.com>
 
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index a90d50c..ad20dc3 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -316,6 +316,8 @@ source "drivers/mtd/nand/Kconfig"
- 
- source "drivers/mtd/onenand/Kconfig"
- 
-+source "drivers/mtd/lpddr/Kconfig"
-+
- source "drivers/mtd/ubi/Kconfig"
- 
- endif # MTD
-diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
-index 4b77335..7fb3dfb 100644
---- a/drivers/mtd/Makefile
-+++ b/drivers/mtd/Makefile
-@@ -29,6 +29,6 @@ obj-$(CONFIG_MTD_OOPS)		+= mtdoops.o
- nftl-objs		:= nftlcore.o nftlmount.o
- inftl-objs		:= inftlcore.o inftlmount.o
- 
--obj-y		+= chips/ maps/ devices/ nand/ onenand/
-+obj-y		+= chips/ lpddr/ maps/ devices/ nand/ onenand/ 
- 
- obj-$(CONFIG_MTD_UBI)		+= ubi/
+diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+index 8387e05..e39b21d 100644
+--- a/drivers/mtd/onenand/omap2.c
++++ b/drivers/mtd/onenand/omap2.c
+@@ -38,7 +38,6 @@
+ #include <asm/arch/gpmc.h>
+ #include <asm/arch/onenand.h>
+ #include <asm/arch/gpio.h>
+-#include <asm/arch/gpmc.h>
+ #include <asm/arch/pm.h>
+
+ #include <linux/dma-mapping.h>
