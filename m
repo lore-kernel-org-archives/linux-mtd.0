@@ -1,15 +1,22 @@
-Message-ID: <48FD7EE2.6090906@nokia.com>
-Date: Tue, 21 Oct 2008 10:04:02 +0300
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
-MIME-Version: 1.0
-To: Kyungmin Park <kmpark@infradead.org>
-Subject: Re: [REFERENCE PATCH][OneNAND] S3C64XX support
-References: <20081020093220.GA18312@july> <48FC9EB6.10000@nokia.com>
-	<9c9fda240810201601m2f5fbf9bqb5180c3617c01221@mail.gmail.com>
-In-Reply-To: <9c9fda240810201601m2f5fbf9bqb5180c3617c01221@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KsBOo-0000aL-GQ
+	for linux-mtd@lists.infradead.org; Tue, 21 Oct 2008 07:11:26 +0000
+Subject: Re: [NAND flash driver] What would mtd do if read returns -EBADMSG
+	(ecc failed)
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Du Zhongdong <axdududu@gmail.com>
+In-Reply-To: <7ccead5b0810202351n5db8e66ep1fbec555707950f6@mail.gmail.com>
+References: <7ccead5b0810202311k45ff8b98hf1b3014ed27ff777@mail.gmail.com>
+	<1224570119.4466.99.camel@sauron>
+	<7ccead5b0810202351n5db8e66ep1fbec555707950f6@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 21 Oct 2008 10:09:54 +0300
+Message-Id: <1224572994.4466.108.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,30 +26,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Kyungmin Park wrote:
-> On Tue, Oct 21, 2008 at 12:07 AM, Adrian Hunter
-> <ext-adrian.hunter@nokia.com> wrote:
->> Kyungmin Park wrote:
->>> It's OneNAND support on New Samsung Mobile CPU S3C64XX series Now it's
->>> only tested with s3c6410 with UBI & UBIFS.
->>> If you want to use it on s3c6400, you should change some values.
->>>
->>> There's some ugly hack for support s3c64xx. It will be handled more fancy
->>> later.
->>>
->>> Any comments are welcome
->> Why not just make it a separate driver and skip using onenand_base etc?
->>
-> 
-> DId you see the s3c64xx OneNAND controller?. It has its own OneNAND
-> controller and don't use the OneNAND memory access method as OMAP.
-> 
-> Yes it's possible to make an own OneNAND driver for s3c64xx, but maybe
-> a half of codes are redundant except the access method  so I want to
-> use default onenand_base and just redefine the OneNAND function for
-> s3c64xx.
+On Tue, 2008-10-21 at 14:51 +0800, Du Zhongdong wrote:
+> I got another question: if, in my nand flash driver, there's an ECC
+> error cannot be corrected during a read procedure, I think now the
+> block should be marked as a bad block
 
+Read errors do not indicate that the block became bad. For example, if
+you write twice (and different data) to the same NAND page, you'll
+probably end up with ECC errors. But the block will not be bad.
 
-I glanced at the code.  It did not look like there was much code from
-onenand_base that was needed, so wouldn't it be cleaner to just copy
-those bits?
+For example, a silly user wrote something to /dev/mtd several times. And
+you have many read errors. Is whole /dev/mtd bad? No, it does not.
+
+> , then two options:
+> 1, I mark that block BAD in my nand flash driver(specifically, I would
+> insert some code in the nand_read() function in nand_base.c to handle
+> this error);
+
+Current model is so that MTD driver is not intelligent. It just reads,
+writes, erases, etc when it is asked to. All bad block management is
+done in upper layers. So this is not your driver's pain.
+
+> 2, I return some error msg the upper layer(ie. MTD layer), which is
+> what nand_read() do at present. Then I would expect the MTD layer
+> would mark that block BAD.
+
+Not the MTD layer, but stuff like UBI or JFFS2 - the _client_ of the MTD
+layer.
+
+> I read s3c2410.c and find that it chose option 2. But I can't find the
+> place in the code where  the MTD layer mark that block BAD.
+
+Right. MTD layer does not do this. It is stupid, and marks blocks as bad
+only when someone calls mtd->block_markbad().
+
+Think about MTD as the very low layer, which just provides the interface
+to work with raw flash chip. Nothing else, no intelligence.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
