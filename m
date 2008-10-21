@@ -1,22 +1,25 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KsBOo-0000aL-GQ
-	for linux-mtd@lists.infradead.org; Tue, 21 Oct 2008 07:11:26 +0000
+Received: from fk-out-0910.google.com ([209.85.128.188])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KsBnN-0000T8-DU
+	for linux-mtd@lists.infradead.org; Tue, 21 Oct 2008 07:36:49 +0000
+Received: by fk-out-0910.google.com with SMTP id 18so2906662fks.2
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 21 Oct 2008 00:36:48 -0700 (PDT)
+Message-ID: <7ccead5b0810210036u17aad869g4919648518a6e14f@mail.gmail.com>
+Date: Tue, 21 Oct 2008 15:36:48 +0800
+From: "Du Zhongdong" <axdududu@gmail.com>
+To: dedekind@infradead.org
 Subject: Re: [NAND flash driver] What would mtd do if read returns -EBADMSG
 	(ecc failed)
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Du Zhongdong <axdududu@gmail.com>
-In-Reply-To: <7ccead5b0810202351n5db8e66ep1fbec555707950f6@mail.gmail.com>
+In-Reply-To: <1224572994.4466.108.camel@sauron>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=KOI8-R
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
 References: <7ccead5b0810202311k45ff8b98hf1b3014ed27ff777@mail.gmail.com>
 	<1224570119.4466.99.camel@sauron>
 	<7ccead5b0810202351n5db8e66ep1fbec555707950f6@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 21 Oct 2008 10:09:54 +0300
-Message-Id: <1224572994.4466.108.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+	<1224572994.4466.108.camel@sauron>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +29,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2008-10-21 at 14:51 +0800, Du Zhongdong wrote:
-> I got another question: if, in my nand flash driver, there's an ECC
-> error cannot be corrected during a read procedure, I think now the
-> block should be marked as a bad block
-
-Read errors do not indicate that the block became bad. For example, if
-you write twice (and different data) to the same NAND page, you'll
-probably end up with ECC errors. But the block will not be bad.
-
-For example, a silly user wrote something to /dev/mtd several times. And
-you have many read errors. Is whole /dev/mtd bad? No, it does not.
-
-> , then two options:
-> 1, I mark that block BAD in my nand flash driver(specifically, I would
-> insert some code in the nand_read() function in nand_base.c to handle
-> this error);
-
-Current model is so that MTD driver is not intelligent. It just reads,
-writes, erases, etc when it is asked to. All bad block management is
-done in upper layers. So this is not your driver's pain.
-
-> 2, I return some error msg the upper layer(ie. MTD layer), which is
-> what nand_read() do at present. Then I would expect the MTD layer
-> would mark that block BAD.
-
-Not the MTD layer, but stuff like UBI or JFFS2 - the _client_ of the MTD
-layer.
-
-> I read s3c2410.c and find that it chose option 2. But I can't find the
-> place in the code where  the MTD layer mark that block BAD.
-
-Right. MTD layer does not do this. It is stupid, and marks blocks as bad
-only when someone calls mtd->block_markbad().
-
-Think about MTD as the very low layer, which just provides the interface
-to work with raw flash chip. Nothing else, no intelligence.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+T24gVHVlLCBPY3QgMjEsIDIwMDggYXQgMzowOSBQTSwgQXJ0ZW0gQml0eXV0c2tpeQo8ZGVkZWtp
+bmRAaW5mcmFkZWFkLm9yZz4gd3JvdGU6Cj4gT24gVHVlLCAyMDA4LTEwLTIxIGF0IDE0OjUxICsw
+ODAwLCBEdSBaaG9uZ2Rvbmcgd3JvdGU6Cj4+IEkgZ290IGFub3RoZXIgcXVlc3Rpb246IGlmLCBp
+biBteSBuYW5kIGZsYXNoIGRyaXZlciwgdGhlcmUncyBhbiBFQ0MKPj4gZXJyb3IgY2Fubm90IGJl
+IGNvcnJlY3RlZCBkdXJpbmcgYSByZWFkIHByb2NlZHVyZSwgSSB0aGluayBub3cgdGhlCj4+IGJs
+b2NrIHNob3VsZCBiZSBtYXJrZWQgYXMgYSBiYWQgYmxvY2sKPgo+IFJlYWQgZXJyb3JzIGRvIG5v
+dCBpbmRpY2F0ZSB0aGF0IHRoZSBibG9jayBiZWNhbWUgYmFkLiBGb3IgZXhhbXBsZSwgaWYKPiB5
+b3Ugd3JpdGUgdHdpY2UgKGFuZCBkaWZmZXJlbnQgZGF0YSkgdG8gdGhlIHNhbWUgTkFORCBwYWdl
+LCB5b3UnbGwKPiBwcm9iYWJseSBlbmQgdXAgd2l0aCBFQ0MgZXJyb3JzLiBCdXQgdGhlIGJsb2Nr
+IHdpbGwgbm90IGJlIGJhZC4KPgo+IEZvciBleGFtcGxlLCBhIHNpbGx5IHVzZXIgd3JvdGUgc29t
+ZXRoaW5nIHRvIC9kZXYvbXRkIHNldmVyYWwgdGltZXMuIEFuZAo+IHlvdSBoYXZlIG1hbnkgcmVh
+ZCBlcnJvcnMuIElzIHdob2xlIC9kZXYvbXRkIGJhZD8gTm8sIGl0IGRvZXMgbm90Lgo+Cj4+ICwg
+dGhlbiB0d28gb3B0aW9uczoKPj4gMSwgSSBtYXJrIHRoYXQgYmxvY2sgQkFEIGluIG15IG5hbmQg
+Zmxhc2ggZHJpdmVyKHNwZWNpZmljYWxseSwgSSB3b3VsZAo+PiBpbnNlcnQgc29tZSBjb2RlIGlu
+IHRoZSBuYW5kX3JlYWQoKSBmdW5jdGlvbiBpbiBuYW5kX2Jhc2UuYyB0byBoYW5kbGUKPj4gdGhp
+cyBlcnJvcik7Cj4KPiBDdXJyZW50IG1vZGVsIGlzIHNvIHRoYXQgTVREIGRyaXZlciBpcyBub3Qg
+aW50ZWxsaWdlbnQuIEl0IGp1c3QgcmVhZHMsCj4gd3JpdGVzLCBlcmFzZXMsIGV0YyB3aGVuIGl0
+IGlzIGFza2VkIHRvLiBBbGwgYmFkIGJsb2NrIG1hbmFnZW1lbnQgaXMKPiBkb25lIGluIHVwcGVy
+IGxheWVycy4gU28gdGhpcyBpcyBub3QgeW91ciBkcml2ZXIncyBwYWluLgo+Cj4+IDIsIEkgcmV0
+dXJuIHNvbWUgZXJyb3IgbXNnIHRoZSB1cHBlciBsYXllcihpZS4gTVREIGxheWVyKSwgd2hpY2gg
+aXMKPj4gd2hhdCBuYW5kX3JlYWQoKSBkbyBhdCBwcmVzZW50LiBUaGVuIEkgd291bGQgZXhwZWN0
+IHRoZSBNVEQgbGF5ZXIKPj4gd291bGQgbWFyayB0aGF0IGJsb2NrIEJBRC4KPgo+IE5vdCB0aGUg
+TVREIGxheWVyLCBidXQgc3R1ZmYgbGlrZSBVQkkgb3IgSkZGUzIgLSB0aGUgX2NsaWVudF8gb2Yg
+dGhlIE1URAo+IGxheWVyLgo+Cj4+IEkgcmVhZCBzM2MyNDEwLmMgYW5kIGZpbmQgdGhhdCBpdCBj
+aG9zZSBvcHRpb24gMi4gQnV0IEkgY2FuJ3QgZmluZCB0aGUKPj4gcGxhY2UgaW4gdGhlIGNvZGUg
+d2hlcmUgIHRoZSBNVEQgbGF5ZXIgbWFyayB0aGF0IGJsb2NrIEJBRC4KPgo+IFJpZ2h0LiBNVEQg
+bGF5ZXIgZG9lcyBub3QgZG8gdGhpcy4gSXQgaXMgc3R1cGlkLCBhbmQgbWFya3MgYmxvY2tzIGFz
+IGJhZAo+IG9ubHkgd2hlbiBzb21lb25lIGNhbGxzIG10ZC0+YmxvY2tfbWFya2JhZCgpLgo+Cj4g
+VGhpbmsgYWJvdXQgTVREIGFzIHRoZSB2ZXJ5IGxvdyBsYXllciwgd2hpY2gganVzdCBwcm92aWRl
+cyB0aGUgaW50ZXJmYWNlCj4gdG8gd29yayB3aXRoIHJhdyBmbGFzaCBjaGlwLiBOb3RoaW5nIGVs
+c2UsIG5vIGludGVsbGlnZW5jZS4KPgo+IC0tCj4gQmVzdCByZWdhcmRzLAo+IEFydGVtIEJpdHl1
+dHNraXkgKOLJ1MDDy8nKIOHS1KPNKQo+Cj4KCkdvdCBpdCwgcmVhbGx5IGFwcHJlY2lhdGUgeW91
+ciBoZWxwCgpCZXN0IHJlZ2FyZHMsCkR1IFpob25nZG9uZwo=
