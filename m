@@ -1,26 +1,26 @@
-Received: from fk-out-0910.google.com ([209.85.128.184])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KsBq2-0000gW-3h
-	for linux-mtd@lists.infradead.org; Tue, 21 Oct 2008 07:39:35 +0000
-Received: by fk-out-0910.google.com with SMTP id 18so2907824fks.2
+Received: from devils.ext.ti.com ([198.47.26.153])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KsDY1-00046p-4y
+	for linux-mtd@lists.infradead.org; Tue, 21 Oct 2008 09:29:05 +0000
+Received: from dbdp20.itg.ti.com ([172.24.170.38])
+	by devils.ext.ti.com (8.13.7/8.13.7) with ESMTP id m9L9Sv8a009087
+	for <linux-mtd@lists.infradead.org>; Tue, 21 Oct 2008 04:29:03 -0500
+Received: from dbde70.ent.ti.com (localhost [127.0.0.1])
+	by dbdp20.itg.ti.com (8.13.8/8.13.8) with ESMTP id m9L9Sukq029805
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 21 Oct 2008 00:39:32 -0700 (PDT)
-Message-ID: <7ccead5b0810210039s65a37741ge330f8c89187be9c@mail.gmail.com>
-Date: Tue, 21 Oct 2008 15:39:32 +0800
-From: "Du Zhongdong" <axdududu@gmail.com>
-To: "Ricard Wanderlof" <ricard.wanderlof@axis.com>
-Subject: Re: [NAND flash driver] What would mtd do if read returns -EBADMSG
-	(ecc failed)
-In-Reply-To: <Pine.LNX.4.64.0810210915260.6120@lnxricardw.se.axis.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+	Tue, 21 Oct 2008 14:58:57 +0530 (IST)
+From: "Singh, Vimal" <vimalsingh@ti.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Tue, 21 Oct 2008 14:58:54 +0530
+Subject: RE: Mark bad eraseblock back to good
+Message-ID: <19F8576C6E063C45BE387C64729E739403DC101320@dbde02.ent.ti.com>
+References: <mailman.15.1224259204.15271.linux-mtd@lists.infradead.org>,
+	<48FC22C3.7040006@avrupayazilim.com>
+In-Reply-To: <48FC22C3.7040006@avrupayazilim.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <7ccead5b0810202311k45ff8b98hf1b3014ed27ff777@mail.gmail.com>
-	<Pine.LNX.4.64.0810210848000.6120@lnxricardw.se.axis.com>
-	<7ccead5b0810202358l60368b79q2aae53bd1afc218@mail.gmail.com>
-	<Pine.LNX.4.64.0810210915260.6120@lnxricardw.se.axis.com>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,40 +30,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 21, 2008 at 3:16 PM, Ricard Wanderlof
-<ricard.wanderlof@axis.com> wrote:
->
-> On Tue, 21 Oct 2008, Du Zhongdong wrote:
->
->>> Normally, uncorrectable errors occur after there have been correctable
->>> errors for a while. When correctable errors start occurring, this is a
->>> sign
->>> that the block should be erased and rewritten. As someone pointed out,
->>> UBI
->>> does this, plain JFFS2 does not.
->>>
->> Thanks, Rechard :)
->>
->> So, If I detect correctable errors start occurring, I can erase that blo=
-ck
->> and rewritten to it, all these can happen in my nand flash driver, am I
->> right?
->
-> Normally this would happen at a higher level, such as UBI. I'm not sure
-> exactly what you mean by 'nand flash driver', but the actual driver for a
-> specific flash should not have to contain code that is common to a whole
-> range of devices.
->
-> /Ricard
-> --
-> Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-> Axis Communications AB, Lund, Sweden            www.axis.com
-> Phone +46 46 272 2016                           Fax +46 46 13 61 30
->  --- PLEASE NOTE - I have moved - from F407 to F117 - PLEASE NOTE ---
->
+> >Does anybody have a modified flash_eraseall that marks bad eraseblock
+>  >back to good. Or any scripts that does that?
+>=20
+>=20
+> Hi
+>=20
+> If you are using u-boot, there is a u-boot command (I can not remember
+> its name) to mark bad eraseblocks as good.
+>=20
+Use 'nand scrub' (from u-boot), it really cleans NAND erasing bad blocks.
 
+NOTE: scrub option will erase all factory set bad blocks! There is no relia=
+ble way to recover them.=20
 
-Thank you, Richard, I think I got it :)
-
-Best regards,
-Du Zhongdong
+vimal=
