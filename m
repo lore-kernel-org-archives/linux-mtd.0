@@ -1,20 +1,19 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from miranda.se.axis.com ([193.13.178.8])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KsAeQ-0008Lf-1F
-	for linux-mtd@lists.infradead.org; Tue, 21 Oct 2008 06:23:30 +0000
-Subject: Re: [NAND flash driver] What would mtd do if read returns -EBADMSG
-	(ecc failed)
-From: Artem Bityutskiy <dedekind@infradead.org>
+	id 1KsB4f-0003aT-KU
+	for linux-mtd@lists.infradead.org; Tue, 21 Oct 2008 06:50:39 +0000
+Date: Tue, 21 Oct 2008 08:50:34 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
 To: Du Zhongdong <axdududu@gmail.com>
+Subject: Re: [NAND flash driver] What would mtd do if read returns -EBADMSG
+	(ecc	failed)
 In-Reply-To: <7ccead5b0810202311k45ff8b98hf1b3014ed27ff777@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.0810210848000.6120@lnxricardw.se.axis.com>
 References: <7ccead5b0810202311k45ff8b98hf1b3014ed27ff777@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Date: Tue, 21 Oct 2008 09:21:59 +0300
-Message-Id: <1224570119.4466.99.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2008-10-21 at 14:11 +0800, Du Zhongdong wrote:
+
+On Tue, 21 Oct 2008, Du Zhongdong wrote:
+
 > Hi,
->=20
+>
 > I'm doing a NAND flash driver, and I suppose if ecc cannot be
 > corrected while read something from NAND flash, that block should be
 > marked bad, is that right?
->=20
-> Reading through nand_base.c I notice that mtd->read =3D nand_read;
-> nand_read() [MTD Interface] calls nand_do_read_ops() [Internal] to do
-> the work,  and in nand_do_read_ops():
->         if (mtd->ecc_stats.failed - stats.failed)
-> 		return -EBADMSG;
-> -EBADMSG then is returned to the MTD layer. I tried to trace this
-> information in the MTD code, but there seems to be so many and I
-> cannot be sure how MTD handles this "-EBADMSG".  Any help or
-> information is appreciated.
 
-Hi, -EBADMSG means an uncorrectable ECC error. MTD layer user should
-treat it like "MTD returned some data, but it is probably corrupted,
-because there was an uncorrectable ECC error".
+No, not necessarily. A block should be marked bad if it cannot reliably=20
+hold data, i.e. if the block refuses to write or erase properly.
 
-Glance drivers/mtd/ubi/io.c if you are interested about users which
-handle this -EBADMSG.
+Normally, uncorrectable errors occur after there have been correctable=20
+errors for a while. When correctable errors start occurring, this is a=20
+sign that the block should be erased and rewritten. As someone pointed=20
+out, UBI does this, plain JFFS2 does not.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
+  --- PLEASE NOTE - I have moved - from F407 to F117 - PLEASE NOTE ---
