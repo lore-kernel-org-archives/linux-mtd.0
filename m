@@ -1,18 +1,15 @@
-Received: from co203.xi-lite.net ([149.6.83.203] helo=toronto.xi-lite.net)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KsEF9-0000uk-Cb
-	for linux-mtd@lists.infradead.org; Tue, 21 Oct 2008 10:13:39 +0000
-Message-ID: <48FDAB4F.7000102@parrot.com>
-Date: Tue, 21 Oct 2008 12:13:35 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-MIME-Version: 1.0
-To: Harald Welte <laforge@gnumonks.org>
-Subject: Re: [PATCH] S3C24xx NAND: Correct tacls_max for S3C2410
-References: <20081020090947.GZ1048@prithivi.gnumonks.org>
-In-Reply-To: <20081020090947.GZ1048@prithivi.gnumonks.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Ben Dooks <ben@trinity.fluff.org>
+Received: from [86.54.240.115] (helo=drevil.shawell.net)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KsGZx-0002ZT-Tg
+	for linux-mtd@lists.infradead.org; Tue, 21 Oct 2008 12:43:18 +0000
+From: Steve Glendinning <steve.glendinning@smsc.com>
+To: Alexander Belyakov <abelyako@googlemail.com>
+Subject: [PATCH] [JFFS2] Fix build failure with !CONFIG_JFFS2_FS_WRITEBUFFER
+Date: Tue, 21 Oct 2008 13:25:51 +0100
+Message-Id: <1224591951-30369-1-git-send-email-steve.glendinning@smsc.com>
+Cc: Steve Glendinning <steve.glendinning@smsc.com>,
+	linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>,
+	Ian Saturley <ian.saturley@smsc.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,18 +19,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Build failure introduced by 5bf1723723487ddb0b9c9641b6559da96b27cc93
+[JFFS2] Write buffer offset adjustment for NOR-ECC (Sibley) flash
 
-Harald Welte a écrit :
-> At least according to my S3C2410X manual, the maximum tacls setting
-> for the 2410 is 8, not 4.  S3C2410 is therefore like the S3C2412 (and 2443),
-> not like 2440 and 2442.
-> 
-Funny a similar patch has been posted more than 1 year ago :
-http://thread.gmane.org/gmane.linux.drivers.mtd/17363
+Signed-off-by: Steve Glendinning <steve.glendinning@smsc.com>
+---
+ fs/jffs2/nodemgmt.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-But like other patches from different people (some are really bug fix),
-there were never merged...
-
-
-Matthieu
+diff --git a/fs/jffs2/nodemgmt.c b/fs/jffs2/nodemgmt.c
+index 0875b60..21a0529 100644
+--- a/fs/jffs2/nodemgmt.c
++++ b/fs/jffs2/nodemgmt.c
+@@ -261,9 +261,11 @@ static int jffs2_find_nextblock(struct jffs2_sb_info *c)
+ 
+ 	jffs2_sum_reset_collected(c->summary); /* reset collected summary */
+ 
++#ifdef CONFIG_JFFS2_FS_WRITEBUFFER
+ 	/* adjust write buffer offset, else we get a non contiguous write bug */
+ 	if (!(c->wbuf_ofs % c->sector_size) && !c->wbuf_len)
+ 		c->wbuf_ofs = 0xffffffff;
++#endif
+ 
+ 	D1(printk(KERN_DEBUG "jffs2_find_nextblock(): new nextblock = 0x%08x\n", c->nextblock->offset));
+ 
+-- 
+1.5.5.1
