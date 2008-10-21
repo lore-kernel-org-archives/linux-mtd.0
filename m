@@ -1,25 +1,26 @@
-Received: from fk-out-0910.google.com ([209.85.128.188])
+Received: from fk-out-0910.google.com ([209.85.128.184])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KsBnN-0000T8-DU
-	for linux-mtd@lists.infradead.org; Tue, 21 Oct 2008 07:36:49 +0000
-Received: by fk-out-0910.google.com with SMTP id 18so2906662fks.2
+	id 1KsBq2-0000gW-3h
+	for linux-mtd@lists.infradead.org; Tue, 21 Oct 2008 07:39:35 +0000
+Received: by fk-out-0910.google.com with SMTP id 18so2907824fks.2
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 21 Oct 2008 00:36:48 -0700 (PDT)
-Message-ID: <7ccead5b0810210036u17aad869g4919648518a6e14f@mail.gmail.com>
-Date: Tue, 21 Oct 2008 15:36:48 +0800
+	Tue, 21 Oct 2008 00:39:32 -0700 (PDT)
+Message-ID: <7ccead5b0810210039s65a37741ge330f8c89187be9c@mail.gmail.com>
+Date: Tue, 21 Oct 2008 15:39:32 +0800
 From: "Du Zhongdong" <axdududu@gmail.com>
-To: dedekind@infradead.org
+To: "Ricard Wanderlof" <ricard.wanderlof@axis.com>
 Subject: Re: [NAND flash driver] What would mtd do if read returns -EBADMSG
 	(ecc failed)
-In-Reply-To: <1224572994.4466.108.camel@sauron>
+In-Reply-To: <Pine.LNX.4.64.0810210915260.6120@lnxricardw.se.axis.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=KOI8-R
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
 References: <7ccead5b0810202311k45ff8b98hf1b3014ed27ff777@mail.gmail.com>
-	<1224570119.4466.99.camel@sauron>
-	<7ccead5b0810202351n5db8e66ep1fbec555707950f6@mail.gmail.com>
-	<1224572994.4466.108.camel@sauron>
+	<Pine.LNX.4.64.0810210848000.6120@lnxricardw.se.axis.com>
+	<7ccead5b0810202358l60368b79q2aae53bd1afc218@mail.gmail.com>
+	<Pine.LNX.4.64.0810210915260.6120@lnxricardw.se.axis.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,36 +30,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gVHVlLCBPY3QgMjEsIDIwMDggYXQgMzowOSBQTSwgQXJ0ZW0gQml0eXV0c2tpeQo8ZGVkZWtp
-bmRAaW5mcmFkZWFkLm9yZz4gd3JvdGU6Cj4gT24gVHVlLCAyMDA4LTEwLTIxIGF0IDE0OjUxICsw
-ODAwLCBEdSBaaG9uZ2Rvbmcgd3JvdGU6Cj4+IEkgZ290IGFub3RoZXIgcXVlc3Rpb246IGlmLCBp
-biBteSBuYW5kIGZsYXNoIGRyaXZlciwgdGhlcmUncyBhbiBFQ0MKPj4gZXJyb3IgY2Fubm90IGJl
-IGNvcnJlY3RlZCBkdXJpbmcgYSByZWFkIHByb2NlZHVyZSwgSSB0aGluayBub3cgdGhlCj4+IGJs
-b2NrIHNob3VsZCBiZSBtYXJrZWQgYXMgYSBiYWQgYmxvY2sKPgo+IFJlYWQgZXJyb3JzIGRvIG5v
-dCBpbmRpY2F0ZSB0aGF0IHRoZSBibG9jayBiZWNhbWUgYmFkLiBGb3IgZXhhbXBsZSwgaWYKPiB5
-b3Ugd3JpdGUgdHdpY2UgKGFuZCBkaWZmZXJlbnQgZGF0YSkgdG8gdGhlIHNhbWUgTkFORCBwYWdl
-LCB5b3UnbGwKPiBwcm9iYWJseSBlbmQgdXAgd2l0aCBFQ0MgZXJyb3JzLiBCdXQgdGhlIGJsb2Nr
-IHdpbGwgbm90IGJlIGJhZC4KPgo+IEZvciBleGFtcGxlLCBhIHNpbGx5IHVzZXIgd3JvdGUgc29t
-ZXRoaW5nIHRvIC9kZXYvbXRkIHNldmVyYWwgdGltZXMuIEFuZAo+IHlvdSBoYXZlIG1hbnkgcmVh
-ZCBlcnJvcnMuIElzIHdob2xlIC9kZXYvbXRkIGJhZD8gTm8sIGl0IGRvZXMgbm90Lgo+Cj4+ICwg
-dGhlbiB0d28gb3B0aW9uczoKPj4gMSwgSSBtYXJrIHRoYXQgYmxvY2sgQkFEIGluIG15IG5hbmQg
-Zmxhc2ggZHJpdmVyKHNwZWNpZmljYWxseSwgSSB3b3VsZAo+PiBpbnNlcnQgc29tZSBjb2RlIGlu
-IHRoZSBuYW5kX3JlYWQoKSBmdW5jdGlvbiBpbiBuYW5kX2Jhc2UuYyB0byBoYW5kbGUKPj4gdGhp
-cyBlcnJvcik7Cj4KPiBDdXJyZW50IG1vZGVsIGlzIHNvIHRoYXQgTVREIGRyaXZlciBpcyBub3Qg
-aW50ZWxsaWdlbnQuIEl0IGp1c3QgcmVhZHMsCj4gd3JpdGVzLCBlcmFzZXMsIGV0YyB3aGVuIGl0
-IGlzIGFza2VkIHRvLiBBbGwgYmFkIGJsb2NrIG1hbmFnZW1lbnQgaXMKPiBkb25lIGluIHVwcGVy
-IGxheWVycy4gU28gdGhpcyBpcyBub3QgeW91ciBkcml2ZXIncyBwYWluLgo+Cj4+IDIsIEkgcmV0
-dXJuIHNvbWUgZXJyb3IgbXNnIHRoZSB1cHBlciBsYXllcihpZS4gTVREIGxheWVyKSwgd2hpY2gg
-aXMKPj4gd2hhdCBuYW5kX3JlYWQoKSBkbyBhdCBwcmVzZW50LiBUaGVuIEkgd291bGQgZXhwZWN0
-IHRoZSBNVEQgbGF5ZXIKPj4gd291bGQgbWFyayB0aGF0IGJsb2NrIEJBRC4KPgo+IE5vdCB0aGUg
-TVREIGxheWVyLCBidXQgc3R1ZmYgbGlrZSBVQkkgb3IgSkZGUzIgLSB0aGUgX2NsaWVudF8gb2Yg
-dGhlIE1URAo+IGxheWVyLgo+Cj4+IEkgcmVhZCBzM2MyNDEwLmMgYW5kIGZpbmQgdGhhdCBpdCBj
-aG9zZSBvcHRpb24gMi4gQnV0IEkgY2FuJ3QgZmluZCB0aGUKPj4gcGxhY2UgaW4gdGhlIGNvZGUg
-d2hlcmUgIHRoZSBNVEQgbGF5ZXIgbWFyayB0aGF0IGJsb2NrIEJBRC4KPgo+IFJpZ2h0LiBNVEQg
-bGF5ZXIgZG9lcyBub3QgZG8gdGhpcy4gSXQgaXMgc3R1cGlkLCBhbmQgbWFya3MgYmxvY2tzIGFz
-IGJhZAo+IG9ubHkgd2hlbiBzb21lb25lIGNhbGxzIG10ZC0+YmxvY2tfbWFya2JhZCgpLgo+Cj4g
-VGhpbmsgYWJvdXQgTVREIGFzIHRoZSB2ZXJ5IGxvdyBsYXllciwgd2hpY2gganVzdCBwcm92aWRl
-cyB0aGUgaW50ZXJmYWNlCj4gdG8gd29yayB3aXRoIHJhdyBmbGFzaCBjaGlwLiBOb3RoaW5nIGVs
-c2UsIG5vIGludGVsbGlnZW5jZS4KPgo+IC0tCj4gQmVzdCByZWdhcmRzLAo+IEFydGVtIEJpdHl1
-dHNraXkgKOLJ1MDDy8nKIOHS1KPNKQo+Cj4KCkdvdCBpdCwgcmVhbGx5IGFwcHJlY2lhdGUgeW91
-ciBoZWxwCgpCZXN0IHJlZ2FyZHMsCkR1IFpob25nZG9uZwo=
+On Tue, Oct 21, 2008 at 3:16 PM, Ricard Wanderlof
+<ricard.wanderlof@axis.com> wrote:
+>
+> On Tue, 21 Oct 2008, Du Zhongdong wrote:
+>
+>>> Normally, uncorrectable errors occur after there have been correctable
+>>> errors for a while. When correctable errors start occurring, this is a
+>>> sign
+>>> that the block should be erased and rewritten. As someone pointed out,
+>>> UBI
+>>> does this, plain JFFS2 does not.
+>>>
+>> Thanks, Rechard :)
+>>
+>> So, If I detect correctable errors start occurring, I can erase that blo=
+ck
+>> and rewritten to it, all these can happen in my nand flash driver, am I
+>> right?
+>
+> Normally this would happen at a higher level, such as UBI. I'm not sure
+> exactly what you mean by 'nand flash driver', but the actual driver for a
+> specific flash should not have to contain code that is common to a whole
+> range of devices.
+>
+> /Ricard
+> --
+> Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+> Axis Communications AB, Lund, Sweden            www.axis.com
+> Phone +46 46 272 2016                           Fax +46 46 13 61 30
+>  --- PLEASE NOTE - I have moved - from F407 to F117 - PLEASE NOTE ---
+>
+
+
+Thank you, Richard, I think I got it :)
+
+Best regards,
+Du Zhongdong
