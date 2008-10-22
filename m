@@ -1,25 +1,10 @@
-Received: from rv-out-0708.google.com ([209.85.198.243])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KsfBC-0007TW-72
-	for linux-mtd@lists.infradead.org; Wed, 22 Oct 2008 14:59:22 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so2866576rvf.42
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 22 Oct 2008 07:59:20 -0700 (PDT)
-Message-ID: <8bd0f97a0810220759h837794eo76c4413d6072dcf9@mail.gmail.com>
-Date: Wed, 22 Oct 2008 10:59:20 -0400
-From: "Mike Frysinger" <vapier.adi@gmail.com>
-To: "Bryan Wu" <cooloney@kernel.org>
-Subject: Re: [BUG] re-modprobe a nand controller driver module will cause
-	system crash.
-In-Reply-To: <386072610810212024l52cd86cen79061d7111c421ba@mail.gmail.com>
+Date: Wed, 22 Oct 2008 16:33:08 +0100 (BST)
+From: Alexey Korolev <akorolev@infradead.org>
+To: dwmw2@infradead.org, dedekind@infradead.org, linux-mtd@lists.infradead.org
+Subject: [PATCH][nandsim] FIX RAM wasting via kmalloc
+Message-ID: <alpine.LFD.1.10.0810221611550.30499@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <386072610810160356p3807f538la5087debe0c76866@mail.gmail.com>
-	<386072610810212024l52cd86cen79061d7111c421ba@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	LKML <linux-kernel@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,21 +14,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 21, 2008 at 23:24, Bryan Wu wrote:
-> Did anyone meet this issue before?
+Hi All,
 
-actually i think we can see the same issue with the m25p80 driver ?
-if i build it as a module and load/unload it, it crashes with same
-name errors ...
+Nandsim consumes ~2x more RAM than the density of simulated device. 
+It becomes critical if we need to simulate 256MB NAND and run stress tests 
+on it.
 
-root:/> rmmod m25p80
-root:/> modprobe m25p80
-m25p80 spi0.2: w25x10 (128 Kbytes)
-Creating 3 MTD partitions on "m25p80":
-0x00000000-0x00040000 : "bootloader(spi)"
-mtd: partition "bootloader(spi)" extends beyond the end of device
-"m25p80" -- size truncated to 0x20000
-kobject_add_internal failed for 31:0 with -EEXIST, don't try to
-register things with the same name in the same directory.
-<crash message>
--mike
+We investigated the reasons. nandsim allocates space for pages using kmalloc
+function. The size of LP nand page is 2112 bytes.
+kmalloc gets space from slab pools by chunks 2^n. So if we need to kmalloc
+2112 bytes, 4096 bytes will be consumed by system.
+The best way to avoid this issue would be using kmem_cache allocations. AFAIK
+this mechanism specially designed to handle cases when arrays of allocations
+are used.
+
+The following patch solves allocation issues.
+
+This patch is also available at my mtd-fixes git tree. Commit number is 
+ef6bcbc4f806dc554abd6507b31c64d60167d175
+
+Thanks,
+Alexey
+
+
+Signed-off-by: Alexey Korolev <akorolev@infradead.org>
+
+---
+
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index ae7c577..0551cbf 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -295,6 +295,9 @@ struct nandsim {
+ 	/* The simulated NAND flash pages array */
+ 	union ns_mem *pages;
+ 
++	/* Slab allocator for nand pages */
++	struct kmem_cache *nand_pages_slab;
++
+ 	/* Internal buffer of page + OOB size bytes */
+ 	union ns_mem buf;
+ 
+@@ -420,8 +423,8 @@ static struct mtd_info *nsmtd;
+ static u_char ns_verify_buf[NS_LARGEST_PAGE_SIZE];
+ 
+ /*
+- * Allocate array of page pointers and initialize the array to NULL
+- * pointers.
++ * Allocate array of page pointers, create slab allocation for an array
++ * and initialize the array by NULL pointers.
+  *
+  * RETURNS: 0 if success, -ENOMEM if memory alloc fails.
+  */
+@@ -437,6 +440,8 @@ static int alloc_device(struct nandsim *ns)
+ 	for (i = 0; i < ns->geom.pgnum; i++) {
+ 		ns->pages[i].byte = NULL;
+ 	}
++	ns->nand_pages_slab = kmem_cache_create("nandsim",
++						ns->geom.pgszoob, 0, 0, NULL);
+ 
+ 	return 0;
+ }
+@@ -451,8 +456,10 @@ static void free_device(struct nandsim *ns)
+ 	if (ns->pages) {
+ 		for (i = 0; i < ns->geom.pgnum; i++) {
+ 			if (ns->pages[i].byte)
+-				kfree(ns->pages[i].byte);
++				kmem_cache_free(ns->nand_pages_slab,
++						ns->pages[i].byte);
+ 		}
++		kmem_cache_destroy(ns->nand_pages_slab);
+ 		vfree(ns->pages);
+ 	}
+ }
+@@ -1279,7 +1286,7 @@ static void erase_sector(struct nandsim *ns)
+ 	for (i = 0; i < ns->geom.pgsec; i++) {
+ 		if (mypage->byte != NULL) {
+ 			NS_DBG("erase_sector: freeing page %d\n", ns->regs.row+i);
+-			kfree(mypage->byte);
++			kmem_cache_free(ns->nand_pages_slab, mypage->byte);
+ 			mypage->byte = NULL;
+ 		}
+ 		mypage++;
+@@ -1301,10 +1308,10 @@ static int prog_page(struct nandsim *ns, int num)
+ 		/*
+ 		 * We allocate memory with GFP_NOFS because a flash FS may
+ 		 * utilize this. If it is holding an FS lock, then gets here,
+-		 * then kmalloc runs writeback which goes to the FS again
+-		 * and deadlocks. This was seen in practice.
++		 * then kernel memory alloc runs writeback which goes to the FS 
++		 * again and deadlocks. This was seen in practice.
+ 		 */
+-		mypage->byte = kmalloc(ns->geom.pgszoob, GFP_NOFS);
++		mypage->byte = kmem_cache_alloc(ns->nand_pages_slab, GFP_NOFS);
+ 		if (mypage->byte == NULL) {
+ 			NS_ERR("prog_page: error allocating memory for page %d\n", ns->regs.row);
+ 			return -1;
