@@ -1,15 +1,27 @@
-Subject: Re: [PATCH][nandsim] FIX RAM wasting via kmalloc
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Alexey Korolev <akorolev@infradead.org>
-In-Reply-To: <alpine.LFD.1.10.0810221611550.30499@casper.infradead.org>
-References: <alpine.LFD.1.10.0810221611550.30499@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 22 Oct 2008 18:49:06 +0300
-Message-Id: <1224690546.4466.118.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
-Reply-To: dedekind@infradead.org
+Received: from mail-gx0-f10.google.com ([209.85.217.10])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Ksoec-0002i7-NP
+	for linux-mtd@lists.infradead.org; Thu, 23 Oct 2008 01:06:22 +0000
+Received: by gxk3 with SMTP id 3so9209619gxk.18
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 22 Oct 2008 18:06:22 -0700 (PDT)
+Message-ID: <386072610810221806v52f435dbya1d3b8e181b92559@mail.gmail.com>
+Date: Thu, 23 Oct 2008 09:06:21 +0800
+From: "Bryan Wu" <cooloney@kernel.org>
+Sender: cooloney.lkml@gmail.com
+To: "Mike Frysinger" <vapier.adi@gmail.com>
+Subject: Re: [BUG] re-modprobe a nand controller driver module will cause
+	system crash.
+In-Reply-To: <8bd0f97a0810220759h837794eo76c4413d6072dcf9@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <386072610810160356p3807f538la5087debe0c76866@mail.gmail.com>
+	<386072610810212024l52cd86cen79061d7111c421ba@mail.gmail.com>
+	<8bd0f97a0810220759h837794eo76c4413d6072dcf9@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,33 +31,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Alexey,
+On Wed, Oct 22, 2008 at 10:59 PM, Mike Frysinger <vapier.adi@gmail.com> wrote:
+> On Tue, Oct 21, 2008 at 23:24, Bryan Wu wrote:
+>> Did anyone meet this issue before?
+>
+> actually i think we can see the same issue with the m25p80 driver ?
+> if i build it as a module and load/unload it, it crashes with same
+> name errors ...
+>
 
-thanks for the patch.
+Right, this is a common bug for mtd core.
 
-On Wed, 2008-10-22 at 16:33 +0100, Alexey Korolev wrote:
-> Hi All,
->=20
-> Nandsim consumes ~2x more RAM than the density of simulated device.=20
-> It becomes critical if we need to simulate 256MB NAND and run stress test=
-s=20
-> on it.
->=20
-> We investigated the reasons. nandsim allocates space for pages using kmal=
-loc
-> function. The size of LP nand page is 2112 bytes.
-> kmalloc gets space from slab pools by chunks 2^n. So if we need to kmallo=
-c
-> 2112 bytes, 4096 bytes will be consumed by system.
-> The best way to avoid this issue would be using kmem_cache allocations. A=
-FAIK
-> this mechanism specially designed to handle cases when arrays of allocati=
-ons
-> are used.
+-Bryan
 
-Acked-by: Artem Bityutskiy <dedekind@infradead.org>
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+> root:/> rmmod m25p80
+> root:/> modprobe m25p80
+> m25p80 spi0.2: w25x10 (128 Kbytes)
+> Creating 3 MTD partitions on "m25p80":
+> 0x00000000-0x00040000 : "bootloader(spi)"
+> mtd: partition "bootloader(spi)" extends beyond the end of device
+> "m25p80" -- size truncated to 0x20000
+> kobject_add_internal failed for 31:0 with -EEXIST, don't try to
+> register things with the same name in the same directory.
+> <crash message>
+> -mike
+>
