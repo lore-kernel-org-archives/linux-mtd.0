@@ -1,15 +1,19 @@
-Subject: Re: [PATCH][nandsim] FIX RAM wasting via kmalloc
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Alexey Korolev <akorolev@infradead.org>
-In-Reply-To: <alpine.LFD.1.10.0810221611550.30499@casper.infradead.org>
-References: <alpine.LFD.1.10.0810221611550.30499@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Date: Mon, 27 Oct 2008 09:18:46 +0200
-Message-Id: <1225091926.3833.2.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
-Reply-To: dedekind@infradead.org
+Received: from fk-out-0910.google.com ([209.85.128.188])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KuNDC-0007tR-TZ
+	for linux-mtd@lists.infradead.org; Mon, 27 Oct 2008 08:12:31 +0000
+Received: by fk-out-0910.google.com with SMTP id 18so2513900fks.2
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 27 Oct 2008 01:12:29 -0700 (PDT)
+Message-ID: <d459bb380810270112i18eb2ae9q76481dab1abad2f2@mail.gmail.com>
+Date: Mon, 27 Oct 2008 10:12:28 +0200
+From: "Marco Braga" <marco.braga@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: JFFS2 losing dirs/files on NAND flash
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,27 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Alexey,
+Hello,
 
-On Wed, 2008-10-22 at 16:33 +0100, Alexey Korolev wrote:
-> Nandsim consumes ~2x more RAM than the density of simulated device.=20
-> It becomes critical if we need to simulate 256MB NAND and run stress test=
-s=20
-> on it.
+I am using JFFS2 on an ARM base board with a 128Mb NAND flash, kernel
+2.6.22.10. Sometimes the board does not boot because a directory in
+/etc has disappeared after a JFFS2 error or a file is missing data.
+I'm trying to understand at what level (hardware, kernel, MTD, file
+system) it happens. The error appears when trying to access the
+directory or file:
 
-I'm applying your patch to our local tree, just to test it. But there
-is a trailing white-space.
+JFFS2 warning: (96) jffs2_do_read_inode_internal: no data nodes found
+for ino #65
+JFFS2 notice: (96) jffs2_do_read_inode_internal: but it has children
+so we fake some modes for it
+JFFS2 warning: (96) jffs2_do_read_inode_internal: no data nodes found
+for ino #97
+JFFS2 notice: (96) jffs2_do_read_inode_internal: but it has children
+so we fake some modes for it
+...
 
-[dedekind@gollum ubifs-2.6]$ git-am nandsim
-Applying FIX RAM wasting via kmalloc
-.dotest/patch:64: trailing whitespace.
-                 * then kernel memory alloc runs writeback which goes to
-the FS
-warning: 1 line adds whitespace errors.
+I've not been able to relate it to an unclean shutdown. I've tried
+powering off the board several times without being able to make the
+problem happen. Moreover I've tried a multithreaded program that
+opens, writes, reads and deletes several files to stress the FS and it
+never happened after an overnight run.
 
-:-)
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Can you please help understanding the cause or the meaning of those log lines?
+Thank you!
