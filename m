@@ -1,18 +1,25 @@
-Received: from tesla.selinc.com ([12.110.71.2])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KuX6b-0004TN-RF
-	for linux-mtd@lists.infradead.org; Mon, 27 Oct 2008 18:46:22 +0000
-Received: from edison2.selinc.com (edison2.selinc.com [12.110.71.8])
-	by tesla.selinc.com (8.12.11.20060308/8.12.11) with ESMTP id
-	m9RIkINo012203
-	for <linux-mtd@lists.infradead.org>; Mon, 27 Oct 2008 11:46:19 -0700
-To: linux-mtd@lists.infradead.org
-Subject: Apologies to the list for failure to deliver >2GiB MTD support
+Received: from fg-out-1718.google.com ([72.14.220.157])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KubnL-0005aW-Q3
+	for linux-mtd@lists.infradead.org; Mon, 27 Oct 2008 23:46:48 +0000
+Received: by fg-out-1718.google.com with SMTP id l26so2036666fgb.26
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 27 Oct 2008 16:46:46 -0700 (PDT)
+Message-ID: <deb0f030810271646h704ba06fvfb38a8597c971555@mail.gmail.com>
+Date: Mon, 27 Oct 2008 16:46:46 -0700
+From: "Suresh Rajashekara" <suresh@mistralsolutions.com>
+To: "Marco Braga" <marco.braga@gmail.com>
+Subject: Re: JFFS2 losing dirs/files on NAND flash
+In-Reply-To: <deb0f030810270946l3ea3ff12vc8d318c2184cdf7e@mail.gmail.com>
 MIME-Version: 1.0
-Message-ID: <OFE9BEDFAA.048525FB-ON882574EF.0066A608-882574EF.00671A85@selinc.com>
-From: Bruce_Leonard@selinc.com
-Date: Mon, 27 Oct 2008 11:46:18 -0700
-Content-Type: text/plain; charset="US-ASCII"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <d459bb380810270112i18eb2ae9q76481dab1abad2f2@mail.gmail.com>
+	<deb0f030810270804q234a82ffv57d715cfbaf736f8@mail.gmail.com>
+	<d459bb380810270846h3bb5cc51h27084884e2bcaa2a@mail.gmail.com>
+	<deb0f030810270946l3ea3ff12vc8d318c2184cdf7e@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,17 +29,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-To everyone who's been helping and waiting for >2GiB support in MTD:
+Hi All,
 
-I have to apologize to you all, I will not be able to continue on this 
-effort.  I was un-expectedly sent to the field for a customer problem last 
-week, and that problem has turned into a higher priority project than the 
-one that needs the MTD support.  (Also, due to internal politics, that 
-project no longer requires the >2GiB support :-\  )  So, I won't be 
-working on this issue any more and it will be at least a year and probably 
-longer before it comes back to my plate.  Again, I'm sorry I didn't get 
-this done, there's been a fair amount of interest in it and i really 
-wanted to get it out there.  If anyone feels they want to pick up this 
-work, I'm happy to put what little I know out there.  Please let me know.
+Can this happen if the flash is exposed to X-ray/MRI machines or any
+electromagnetic radiation?
 
-Bruce
+Thanks in advance.
+
+Suresh
+
+On Mon, Oct 27, 2008 at 9:46 AM, Suresh R <suresh@mistralsolutions.com> wrote:
+> We could not switch to a new kernel because of our internal time
+> lines, but we have made some minor modifications to the application to
+> reduce the flash usage. This, however, does not solve the issue, but
+> if GC is what is causing this, we want to reduce the number of times
+> GC triggers.
+>
+> We had even planned for partition layout with more of RO partitions
+> and less of RW partitions so that we don't run in to this condition.
+> This would be ideal because, no matter what kernel you use.
+>
+> HTH,
+>
+> Suresh
+>
+> On Mon, Oct 27, 2008 at 9:16 PM, Marco Braga <marco.braga@gmail.com> wrote:
+>> Hi,
+>>
+>> and did the problem disappear when using the new kernel? How did you
+>> solve the problem?
+>> Thank you!
+>>
+>> Marco
+>>
+>>
+>> 2008/10/27 Suresh R <suresh@mistralsolutions.com>:
+>>> Hi,
+>>>
+>>> Even I have faced a similar issue with the JFFS2 on onenand on
+>>> 2.6.16-rc3. I too was not able to reproduce the issue by shutting down
+>>> abruptly, but it happens on our products on the field.
+>>>
+>>> I looks to me that it happens when switched off during a GC. I am not
+>>> sure. I was not able to prove to myself this theory. Where ever I
+>>> reported this issue, I was told to use a new kernel.
+>>>
+>>> Suresh
+>>>
+>>> On Mon, Oct 27, 2008 at 1:42 PM, Marco Braga <marco.braga@gmail.com> wrote:
+>>>> Hello,
+>>>>
+>>>> I am using JFFS2 on an ARM base board with a 128Mb NAND flash, kernel
+>>>> 2.6.22.10. Sometimes the board does not boot because a directory in
+>>>> /etc has disappeared after a JFFS2 error or a file is missing data.
+>>>> I'm trying to understand at what level (hardware, kernel, MTD, file
+>>>> system) it happens. The error appears when trying to access the
+>>>> directory or file:
+>>>>
+>>>> JFFS2 warning: (96) jffs2_do_read_inode_internal: no data nodes found
+>>>> for ino #65
+>>>> JFFS2 notice: (96) jffs2_do_read_inode_internal: but it has children
+>>>> so we fake some modes for it
+>>>> JFFS2 warning: (96) jffs2_do_read_inode_internal: no data nodes found
+>>>> for ino #97
+>>>> JFFS2 notice: (96) jffs2_do_read_inode_internal: but it has children
+>>>> so we fake some modes for it
+>>>> ...
+>>>>
+>>>> I've not been able to relate it to an unclean shutdown. I've tried
+>>>> powering off the board several times without being able to make the
+>>>> problem happen. Moreover I've tried a multithreaded program that
+>>>> opens, writes, reads and deletes several files to stress the FS and it
+>>>> never happened after an overnight run.
+>>>>
+>>>> Can you please help understanding the cause or the meaning of those log lines?
+>>>> Thank you!
+>>>>
+>>>> ______________________________________________________
+>>>> Linux MTD discussion mailing list
+>>>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>>>
+>>>
+>>
+>
