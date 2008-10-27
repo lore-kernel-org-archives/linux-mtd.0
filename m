@@ -1,24 +1,18 @@
-Received: from el-out-1112.google.com ([209.85.162.177])
+Received: from proxy01.el-me.de ([212.184.203.66] helo=proxy02.el-me.de)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KuOPn-0000lZ-Ly
-	for linux-mtd@lists.infradead.org; Mon, 27 Oct 2008 09:29:35 +0000
-Received: by el-out-1112.google.com with SMTP id y26so1066598ele.18
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 27 Oct 2008 02:29:35 -0700 (PDT)
-Message-ID: <fe810cf0810270229n6a8dce43p404cdaa27283d13b@mail.gmail.com>
-Date: Mon, 27 Oct 2008 12:29:34 +0300
-From: "Alexander Belyakov" <abelyako@googlemail.com>
-To: "Steve Glendinning" <steve.glendinning@smsc.com>
-Subject: Re: [PATCH] [JFFS2] Fix build failure with
-	!CONFIG_JFFS2_FS_WRITEBUFFER
-In-Reply-To: <1224591951-30369-1-git-send-email-steve.glendinning@smsc.com>
+	id 1KuPWG-0000lO-By
+	for linux-mtd@lists.infradead.org; Mon, 27 Oct 2008 10:40:20 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <1224591951-30369-1-git-send-email-steve.glendinning@smsc.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>,
-	Ian Saturley <ian.saturley@smsc.com>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: JFFS2 driver under 2.4.31 fails to trigger garbage
+	collection/compression
+Date: Mon, 27 Oct 2008 11:40:17 +0100
+Message-ID: <9503E3D8EC34CC4EA3FBC01F3BFAB8AE6AA502@exchange05.elmedmn.local>
+From: "Heinig Gerald" <g.heinig@el-me.de>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,15 +22,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 21, 2008 at 3:25 PM, Steve Glendinning
-<steve.glendinning@smsc.com> wrote:
-> Build failure introduced by 5bf1723723487ddb0b9c9641b6559da96b27cc93
-> [JFFS2] Write buffer offset adjustment for NOR-ECC (Sibley) flash
->
-> Signed-off-by: Steve Glendinning <steve.glendinning@smsc.com>
+Hello all,
 
-Steve,
+First off, I hope this is the correct mailing list for jffs2 under =
+kernel 2.4. If it isn't, my apologies and please point me to the correct =
+site. Thanks in advance.
 
-Thank you for finding this.
+I have encountered a problem with the jffs2 flash filesystem in kernel =
+version 2.4.31.
+Booting an NFS-root Kernel version 2.4.25 and mounting the flash =
+filesystem with a particular image will indicate 140 kbytes of free =
+space and can be written to without any problems.
+Mounting this filesystem under a 2.4.31 NFS-root kernel and trying to =
+write to it gives an error of no space left on device with 0 kbytes =
+free, which is incorrect.
+The garbage collection / compression algorithm apparently fails to =
+detect the dirty blocks and therefore does not remove them, leading to =
+erroneous memory usage accounting.
+I tried waiting for up to 2 hours for the compression algorithm to =
+start, without success.
 
-Alexander
+Anyone have any ideas.
+
+Beste Gr=FC=DFe / Best regards
+=A0
+Gerald Heinig
+Software Development
+
+------------------------------------------------------------------------
+EL-ME =
+AG=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0Fon: +49 8752 864 0
+Gewerbering =
+1=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =A0Fax: =
++49 8752 860 100
+84072 Au i. d. Hallertau=A0=A0=A0=A0=A0=A0=A0=A0 =A0www.el-me.de=20
+g.heinig@el-me.de
+
+HRB 128557 - Registergericht M=FCnchen=20
+Aufsichtsratsvorsitzender Jacobus J.Verhaegen=20
+Vorstand Reinhard R. Blum (Vorsitzender)=20
+Vorstand G=FCnther Froschermeier=20
