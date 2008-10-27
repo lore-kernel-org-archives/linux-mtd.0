@@ -1,14 +1,20 @@
-Date: Mon, 27 Oct 2008 12:59:14 +0000 (GMT)
-From: Alexey Korolev <akorolev@infradead.org>
-To: Artem Bityutskiy <dedekind@infradead.org>
-Subject: Re: [PATCH][nandsim] FIX RAM wasting via kmalloc
-In-Reply-To: <1225091926.3833.2.camel@sauron>
-Message-ID: <alpine.LFD.1.10.0810271251540.18203@casper.infradead.org>
-References: <alpine.LFD.1.10.0810221611550.30499@casper.infradead.org>
-	<1225091926.3833.2.camel@sauron>
+Received: from ti-out-0910.google.com ([209.85.142.184])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KuSAn-0007yA-3v
+	for linux-mtd@lists.infradead.org; Mon, 27 Oct 2008 13:30:21 +0000
+Received: by ti-out-0910.google.com with SMTP id a21so1240704tia.2
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 27 Oct 2008 06:30:18 -0700 (PDT)
+Message-ID: <ea11fea30810270630x2740ceb3m58df4d0093a86fee@mail.gmail.com>
+Date: Mon, 27 Oct 2008 19:00:17 +0530
+From: "Manish Katiyar" <mkatiyar@gmail.com>
+To: dwmw2@infradead.org, linux-fsdevel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH} : Fix compilation warnings in fs/jffs2/nodemgmt.c
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,101 +24,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Below patch fixes the following compilation warnings :
+fs/jffs2/nodemgmt.c: In function 'jffs2_find_nextblock':
+fs/jffs2/nodemgmt.c:265: error: 'struct jffs2_sb_info' has no member
+named 'wbuf_ofs'
+fs/jffs2/nodemgmt.c:265: error: 'struct jffs2_sb_info' has no member
+named 'wbuf_len'
+fs/jffs2/nodemgmt.c:266: error: 'struct jffs2_sb_info' has no member
+named 'wbuf_ofs'
+make[2]: *** [fs/jffs2/nodemgmt.o] Error 1
 
-> > Nandsim consumes ~2x more RAM than the density of simulated device. 
-> > It becomes critical if we need to simulate 256MB NAND and run stress tests 
-> > on it.
-> 
-> I'm applying your patch to our local tree, just to test it. But there
-> is a trailing white-space.
-> 
-> [dedekind@gollum ubifs-2.6]$ git-am nandsim
-> Applying FIX RAM wasting via kmalloc
-> .dotest/patch:64: trailing whitespace.
->                  * then kernel memory alloc runs writeback which goes to
-> the FS
-> warning: 1 line adds whitespace errors.
-> 
-> :-)
->
-Thanks. I removed the trailing space. Also for just a case did an addtional
-tests to make sure it works fine.
-I think this one should be better :)?
 
-Thanks,
-Alexey
-
-Signed-off-by: Alexey Korolev <akorolev@infradead.org>
-
+Signed-off-by: Manish Katiyar <mkatiyar@gmail.com>
 ---
+ fs/jffs2/nodemgmt.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index ae7c577..0551cbf 100644
---- a/drivers/mtd/nand/nandsim.c
-+++ b/drivers/mtd/nand/nandsim.c
-@@ -295,6 +295,9 @@ struct nandsim {
- 	/* The simulated NAND flash pages array */
- 	union ns_mem *pages;
- 
-+	/* Slab allocator for nand pages */
-+	struct kmem_cache *nand_pages_slab;
-+
- 	/* Internal buffer of page + OOB size bytes */
- 	union ns_mem buf;
- 
-@@ -420,8 +423,8 @@ static struct mtd_info *nsmtd;
- static u_char ns_verify_buf[NS_LARGEST_PAGE_SIZE];
- 
- /*
-- * Allocate array of page pointers and initialize the array to NULL
-- * pointers.
-+ * Allocate array of page pointers, create slab allocation for an array
-+ * and initialize the array by NULL pointers.
-  *
-  * RETURNS: 0 if success, -ENOMEM if memory alloc fails.
-  */
-@@ -437,6 +440,8 @@ static int alloc_device(struct nandsim *ns)
- 	for (i = 0; i < ns->geom.pgnum; i++) {
- 		ns->pages[i].byte = NULL;
- 	}
-+	ns->nand_pages_slab = kmem_cache_create("nandsim",
-+						ns->geom.pgszoob, 0, 0, NULL);
- 
- 	return 0;
- }
-@@ -451,8 +456,10 @@ static void free_device(struct nandsim *ns)
- 	if (ns->pages) {
- 		for (i = 0; i < ns->geom.pgnum; i++) {
- 			if (ns->pages[i].byte)
--				kfree(ns->pages[i].byte);
-+				kmem_cache_free(ns->nand_pages_slab,
-+						ns->pages[i].byte);
- 		}
-+		kmem_cache_destroy(ns->nand_pages_slab);
- 		vfree(ns->pages);
- 	}
- }
-@@ -1279,7 +1286,7 @@ static void erase_sector(struct nandsim *ns)
- 	for (i = 0; i < ns->geom.pgsec; i++) {
- 		if (mypage->byte != NULL) {
- 			NS_DBG("erase_sector: freeing page %d\n", ns->regs.row+i);
--			kfree(mypage->byte);
-+			kmem_cache_free(ns->nand_pages_slab, mypage->byte);
- 			mypage->byte = NULL;
- 		}
- 		mypage++;
-@@ -1301,10 +1308,10 @@ static int prog_page(struct nandsim *ns, int num)
- 		/*
- 		 * We allocate memory with GFP_NOFS because a flash FS may
- 		 * utilize this. If it is holding an FS lock, then gets here,
--		 * then kmalloc runs writeback which goes to the FS again
--		 * and deadlocks. This was seen in practice.
-+		 * then kernel memory alloc runs writeback which goes to the FS
-+		 * again and deadlocks. This was seen in practice.
- 		 */
--		mypage->byte = kmalloc(ns->geom.pgszoob, GFP_NOFS);
-+		mypage->byte = kmem_cache_alloc(ns->nand_pages_slab, GFP_NOFS);
- 		if (mypage->byte == NULL) {
- 			NS_ERR("prog_page: error allocating memory for page %d\n", ns->regs.row);
- 			return -1;
+diff --git a/fs/jffs2/nodemgmt.c b/fs/jffs2/nodemgmt.c
+index 0875b60..21a0529 100644
+--- a/fs/jffs2/nodemgmt.c
++++ b/fs/jffs2/nodemgmt.c
+@@ -261,9 +261,11 @@ static int jffs2_find_nextblock(struct jffs2_sb_info *c)
+
+ 	jffs2_sum_reset_collected(c->summary); /* reset collected summary */
+
++#ifdef CONFIG_JFFS2_FS_WRITEBUFFER
+ 	/* adjust write buffer offset, else we get a non contiguous write bug */
+ 	if (!(c->wbuf_ofs % c->sector_size) && !c->wbuf_len)
+ 		c->wbuf_ofs = 0xffffffff;
++#endif
+
+ 	D1(printk(KERN_DEBUG "jffs2_find_nextblock(): new nextblock =
+0x%08x\n", c->nextblock->offset));
+
+-- 
+1.5.4.3
+
+
+Thanks -
+Manish
