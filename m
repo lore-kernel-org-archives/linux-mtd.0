@@ -1,23 +1,24 @@
-Received: from mail-gx0-f11.google.com ([209.85.217.11])
+Received: from el-out-1112.google.com ([209.85.162.177])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KuOLY-0004uh-A3
-	for linux-mtd@lists.infradead.org; Mon, 27 Oct 2008 09:25:12 +0000
-Received: by gxk4 with SMTP id 4so2508176gxk.18
+	id 1KuOPn-0000lZ-Ly
+	for linux-mtd@lists.infradead.org; Mon, 27 Oct 2008 09:29:35 +0000
+Received: by el-out-1112.google.com with SMTP id y26so1066598ele.18
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 27 Oct 2008 02:25:10 -0700 (PDT)
-Message-ID: <fe810cf0810270225p27ab00br474b46ddb275d1f5@mail.gmail.com>
-Date: Mon, 27 Oct 2008 12:25:10 +0300
+	Mon, 27 Oct 2008 02:29:35 -0700 (PDT)
+Message-ID: <fe810cf0810270229n6a8dce43p404cdaa27283d13b@mail.gmail.com>
+Date: Mon, 27 Oct 2008 12:29:34 +0300
 From: "Alexander Belyakov" <abelyako@googlemail.com>
-To: "=?UTF-8?Q?Toralf_F=C3=B6rster?=" <toralf.foerster@gmx.de>
-Subject: Re: build issue #569 for v2.6.28-rc1-5-g23cf24c : 'struct
-	jffs2_sb_info' has no member named 'wbuf_ofs'
-In-Reply-To: <200810261652.18700.toralf.foerster@gmx.de>
+To: "Steve Glendinning" <steve.glendinning@smsc.com>
+Subject: Re: [PATCH] [JFFS2] Fix build failure with
+	!CONFIG_JFFS2_FS_WRITEBUFFER
+In-Reply-To: <1224591951-30369-1-git-send-email-steve.glendinning@smsc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <200810261652.18700.toralf.foerster@gmx.de>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1224591951-30369-1-git-send-email-steve.glendinning@smsc.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>,
+	Ian Saturley <ian.saturley@smsc.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +28,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gU3VuLCBPY3QgMjYsIDIwMDggYXQgNjo1MiBQTSwgVG9yYWxmIEbDtnJzdGVyIDx0b3JhbGYu
-Zm9lcnN0ZXJAZ214LmRlPiB3cm90ZToKPiBIZWxsbywKPgo+IHRoZSBidWlsZCAoLmNvbmZpZyBh
-dHRhY2hlZCkgZmFpbGVkLCBtYWtlIGVuZHMgd2l0aCA6Cj4gLi4uCj4gIENDICAgICAgZnMvamZm
-czIvbm9kZW1nbXQubwo+IGZzL2pmZnMyL25vZGVtZ210LmM6IEluIGZ1bmN0aW9uICdqZmZzMl9m
-aW5kX25leHRibG9jayc6Cj4gZnMvamZmczIvbm9kZW1nbXQuYzoyNjU6IGVycm9yOiAnc3RydWN0
-IGpmZnMyX3NiX2luZm8nIGhhcyBubyBtZW1iZXIKPiBuYW1lZCAnd2J1Zl9vZnMnCj4gZnMvamZm
-czIvbm9kZW1nbXQuYzoyNjU6IGVycm9yOiAnc3RydWN0IGpmZnMyX3NiX2luZm8nIGhhcyBubyBt
-ZW1iZXIKPiBuYW1lZCAnd2J1Zl9sZW4nCj4gZnMvamZmczIvbm9kZW1nbXQuYzoyNjY6IGVycm9y
-OiAnc3RydWN0IGpmZnMyX3NiX2luZm8nIGhhcyBubyBtZW1iZXIKPiBuYW1lZCAnd2J1Zl9vZnMn
-Cj4gbWFrZVsyXTogKioqIFtmcy9qZmZzMi9ub2RlbWdtdC5vXSBFcnJvciAxCj4gbWFrZVsxXTog
-KioqIFtmcy9qZmZzMl0gRXJyb3IgMgo+IG1ha2U6ICoqKiBbZnNdIEVycm9yIDIKPgo+IFRoZSBi
-dWlsZCB3YXMgbWFkZSB3aXRoIDoKPiAkPm1ha2UgcmFuZGNvbmZpZzsgbWFrZSBjbGVhbjsgbWFr
-ZQo+CgpUaGVyZSBpcyBhIGNvbW1pdCBpbiBNVEQgZ2l0IGZpeGluZyB0aGlzIGJ1aWxkIGlzc3Vl
-Cmh0dHA6Ly9naXQuaW5mcmFkZWFkLm9yZy9tdGQtMi42LmdpdD9hPWNvbW1pdDtoPWYwNGRlNTA1
-ZTNmYTMyMjcyOGQxYTg1MWUwOGJmNzA2MGIxMTc3NDMKClRoYW5rIHlvdSwKQWxleGFuZGVyCg==
+On Tue, Oct 21, 2008 at 3:25 PM, Steve Glendinning
+<steve.glendinning@smsc.com> wrote:
+> Build failure introduced by 5bf1723723487ddb0b9c9641b6559da96b27cc93
+> [JFFS2] Write buffer offset adjustment for NOR-ECC (Sibley) flash
+>
+> Signed-off-by: Steve Glendinning <steve.glendinning@smsc.com>
+
+Steve,
+
+Thank you for finding this.
+
+Alexander
