@@ -1,17 +1,19 @@
-Subject: Re: [PATCH][nandsim] FIX RAM wasting via kmalloc
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Alexey Korolev <akorolev@infradead.org>
-In-Reply-To: <alpine.LFD.1.10.0810271251540.18203@casper.infradead.org>
-References: <alpine.LFD.1.10.0810221611550.30499@casper.infradead.org>
-	<1225091926.3833.2.camel@sauron>
-	<alpine.LFD.1.10.0810271251540.18203@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 29 Oct 2008 11:27:10 +0200
-Message-Id: <1225272430.4350.16.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from nf-out-0910.google.com ([64.233.182.186])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Kv8h6-00013Z-Je
+	for linux-mtd@lists.infradead.org; Wed, 29 Oct 2008 10:54:32 +0000
+Received: by nf-out-0910.google.com with SMTP id d21so1158740nfb.22
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 29 Oct 2008 03:54:31 -0700 (PDT)
+Message-ID: <57afda040810290354wa56e1ccg90b32dd4388d5a94@mail.gmail.com>
+Date: Wed, 29 Oct 2008 19:54:31 +0900
+From: "unsik Kim" <donari75@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Question about mtd flags
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,45 +23,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2008-10-27 at 12:59 +0000, Alexey Korolev wrote:
-> Hi,
->=20
-> > > Nandsim consumes ~2x more RAM than the density of simulated device.=20
-> > > It becomes critical if we need to simulate 256MB NAND and run stress =
-tests=20
-> > > on it.
-> >=20
-> > I'm applying your patch to our local tree, just to test it. But there
-> > is a trailing white-space.
-> >=20
-> > [dedekind@gollum ubifs-2.6]$ git-am nandsim
-> > Applying FIX RAM wasting via kmalloc
-> > .dotest/patch:64: trailing whitespace.
-> >                  * then kernel memory alloc runs writeback which goes t=
-o
-> > the FS
-> > warning: 1 line adds whitespace errors.
-> >=20
-> > :-)
-> >
-> Thanks. I removed the trailing space. Also for just a case did an addtion=
-al
-> tests to make sure it works fine.
-> I think this one should be better :)?
+Hello?
 
-I suggest you to re-send your patch again, with nice commit comments,
-because when I applied this patch using git-am, I had to edit the text
-to remove junk ">" symbols. It is just nice if your patch does not
-require much editing.
+I am writing the "mflash" mtd driver and it works good. But I want to
+improve more ... (speed).
 
-Feel free to add:
+Mflash is fusion memory just like sandisk's mdoc.
 
-Tested-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Acked-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+It contains nand flash, nand flash controller, ecc engine, etc.
 
-Thanks.
+Mflash has SRAM interface and uses ATA protocol. (but not 100% compatible)
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+So, user just read, write sector like hard-disk.
+
+My question is what is the most suitable mtd flag for mflash ? (file
+system is ext2)
+
+Currently I'm using
+
+mtd.type = MTD_OTHER;
+mtd.flags = MTD_CLEAR_BITS | MTD_SET_BITS;
+mtd.ecctype = MTD_ECC_RS_DiskOnChip;
+mtd.erasesize = 4096;
+
+I see mtd stack always call mtd erase function even though mflash doesn't need.
+
+How can I fix that ?
+
+p.s. Sorry for my poor english skill.
