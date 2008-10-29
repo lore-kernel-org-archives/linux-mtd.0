@@ -1,29 +1,20 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KvDLy-0007wq-Re
-	for linux-mtd@lists.infradead.org; Wed, 29 Oct 2008 15:53:03 +0000
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1KvDLu-0006Ft-Ao
-	for linux-mtd@lists.infradead.org; Wed, 29 Oct 2008 15:52:58 +0000
-Received: from 194.95.133.35 ([194.95.133.35])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 29 Oct 2008 15:52:58 +0000
-Received: from andre.puschmann by 194.95.133.35 with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 29 Oct 2008 15:52:58 +0000
-To: linux-mtd@lists.infradead.org
-From: Andre Puschmann <andre.puschmann@imms.de>
-Subject: Re: flash read performance
-Date: Wed, 29 Oct 2008 16:52:48 +0100
-Message-ID: <gea0sh$j97$1@ger.gmane.org>
-References: <ge6old$oo3$1@ger.gmane.org>
-	<20081029114256.GA2239@yoda.jdub.homelinux.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from ogre.sisk.pl ([217.79.144.158])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KvKMv-00057u-DZ
+	for linux-mtd@lists.infradead.org; Wed, 29 Oct 2008 23:22:29 +0000
+From: "Rafael J. Wysocki" <rjw@sisk.pl>
+To: Peter Korsgaard <jacmet@sunsite.dk>
+Subject: Re: 2.6.28-rc2: (mtd)block/partitions BUG with kobject reference count
+Date: Thu, 30 Oct 2008 00:27:18 +0100
+References: <87ej1z4ep8.fsf@macbook.be.48ers.dk>
+In-Reply-To: <87ej1z4ep8.fsf@macbook.be.48ers.dk>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20081029114256.GA2239@yoda.jdub.homelinux.org>
-Sender: news <news@ger.gmane.org>
+Content-Disposition: inline
+Message-Id: <200810300027.19116.rjw@sisk.pl>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,29 +24,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Josh Boyer schrieb:
->> In my opinion the read 
->> performance is very poor, only around 1.2 to 1.4 MB/s depending on the 
->> blocksize. I think it should be possible to get much higher transfer rates.
+On Wednesday, 29 of October 2008, Peter Korsgaard wrote:
+> Hi,
 > 
-> Why do you think that?
+> I'm seing what looks like a kobject reference count issue with
+> mtdblock_ro + mtd_dataflash + mtd partitions and repeated unbind/bind.
+> I'm on 2.6.28-rc2, but I can reproduce the problem on 2.6.27 as well.
 
-I guess there is something wrong with the timing parameters and/or the 
-way the CPU core speaks to the flash controller, which results in long 
-wait-states.
-But at least for my understanding, these transfer rates have nothign to 
-do with _high speed NOR flashes_ :-)
+Is it reproducible with 2.6.26 too?
 
-
-> Why do you think that?  The chip drivers don't do DMA, so all I/O goes
-> through the CPU.
-
-Yes, DMA is not used. However, the CPU should be strong enough to do 
-this transfer faster. On the other hand, my understanding is, DMA brings 
-no speed improvements in all cases. It boosts memory transfers without 
-adding an extra overhead to the CPU. But in this case, copy data is the 
-only task.
-
-
-Regards,
-Andre
+Rafael
