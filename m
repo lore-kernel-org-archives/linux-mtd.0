@@ -1,19 +1,10 @@
-Received: from mail2.shareable.org ([80.68.89.115])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Kv9lf-0007O2-IF
-	for linux-mtd@lists.infradead.org; Wed, 29 Oct 2008 12:03:20 +0000
-Date: Wed, 29 Oct 2008 12:03:12 +0000
-From: Jamie Lokier <jamie@shareable.org>
-To: Josh Boyer <jwboyer@gmail.com>
-Subject: Re: flash read performance
-Message-ID: <20081029120312.GA846@shareable.org>
-References: <ge6old$oo3$1@ger.gmane.org>
-	<20081029114256.GA2239@yoda.jdub.homelinux.org>
+Date: Wed, 29 Oct 2008 13:14:54 +0000 (GMT)
+From: Alexey Korolev <akorolev@infradead.org>
+To: dedekind@infradead.org, linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Subject: [PATCH][nandsim]Fix RAM wasting via kmalloc (take 2)
+Message-ID: <alpine.LFD.1.10.0810291313140.30280@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20081029114256.GA2239@yoda.jdub.homelinux.org>
-Cc: Andre Puschmann <andre.puschmann@imms.de>, linux-mtd@lists.infradead.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,23 +14,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Josh Boyer wrote:
-> On Tue, Oct 28, 2008 at 11:14:05AM +0100, Andre Puschmann wrote:
-> >Hi list,
-> >
-> >I am currently trying to improve the flash read performance of my 
-> >platform. It's a gumstix verdex board with a pxa270 running at 400MHz. 
-> >My flash is a 16MB NOR Intel StrataFlash P30 (128P30T) and it's 
-> >operating in the _normal_ asynchronous mode. In my opinion the read 
-> >performance is very poor, only around 1.2 to 1.4 MB/s depending on the 
-> >blocksize. I think it should be possible to get much higher transfer rates.
-> 
-> Why do you think that?
+Hi All,
 
-Take a look at:
+Nandsim consumes ~2x more RAM than the density of simulated device. 
+It becomes critical if we need to simulate 256MB NAND and run stress tests 
+on it.
 
-http://marc.info/?l=linux-embedded&m=122125638419881&w=2
-http://marc.info/?l=linux-embedded&m=122149685932525&w=2
-http://marc.info/?l=linux-embedded&m=122185227511786&w=2
+We investigated the reasons. nandsim allocates space for pages using kmalloc
+function. The size of LP nand page is 2112 bytes.
+kmalloc gets space from slab pools by chunks 2^n. So if we need to kmalloc
+2112 bytes, 4096 bytes will be consumed by system.
+The best way to avoid this issue would be using kmem_cache allocations. AFAIK
+this mechanism specially designed to handle cases when arrays of allocations
+are used.
 
--- Jamie
+The following patch solves allocation issues.
+
+Thanks,
+Alexey
+
+Patch is also available at: 
+http://git.infradead.org/users/akorolev/mtd-fixes.git?a=commit;h=9da3e1fe56a16a4393f4e382075c189e26e0737f 
+
+
+Signed-off-by: Alexey Korolev <akorolev@infradead.org>
+Tested-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Acked-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+
+---
+
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index ae7c577..0551cbf 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -295,6 +295,9 @@ struct nandsim {
+ 	/* The simulated NAND flash pages array */
+ 	union ns_mem *pages;
+ 
++	/* Slab allocator for nand pages */
++	struct kmem_cache *nand_pages_slab;
++
+ 	/* Internal buffer of page + OOB size bytes */
+ 	union ns_mem buf;
+ 
+@@ -420,8 +423,8 @@ static struct mtd_info *nsmtd;
+ static u_char ns_verify_buf[NS_LARGEST_PAGE_SIZE];
+ 
+ /*
+- * Allocate array of page pointers and initialize the array to NULL
+- * pointers.
++ * Allocate array of page pointers, create slab allocation for an array
++ * and initialize the array by NULL pointers.
+  *
+  * RETURNS: 0 if success, -ENOMEM if memory alloc fails.
+  */
+@@ -437,6 +440,8 @@ static int alloc_device(struct nandsim *ns)
+ 	for (i = 0; i < ns->geom.pgnum; i++) {
+ 		ns->pages[i].byte = NULL;
+ 	}
++	ns->nand_pages_slab = kmem_cache_create("nandsim",
++						ns->geom.pgszoob, 0, 0, NULL);
+ 
+ 	return 0;
+ }
+@@ -451,8 +456,10 @@ static void free_device(struct nandsim *ns)
+ 	if (ns->pages) {
+ 		for (i = 0; i < ns->geom.pgnum; i++) {
+ 			if (ns->pages[i].byte)
+-				kfree(ns->pages[i].byte);
++				kmem_cache_free(ns->nand_pages_slab,
++						ns->pages[i].byte);
+ 		}
++		kmem_cache_destroy(ns->nand_pages_slab);
+ 		vfree(ns->pages);
+ 	}
+ }
+@@ -1279,7 +1286,7 @@ static void erase_sector(struct nandsim *ns)
+ 	for (i = 0; i < ns->geom.pgsec; i++) {
+ 		if (mypage->byte != NULL) {
+ 			NS_DBG("erase_sector: freeing page %d\n", ns->regs.row+i);
+-			kfree(mypage->byte);
++			kmem_cache_free(ns->nand_pages_slab, mypage->byte);
+ 			mypage->byte = NULL;
+ 		}
+ 		mypage++;
+@@ -1301,10 +1308,10 @@ static int prog_page(struct nandsim *ns, int num)
+ 		/*
+ 		 * We allocate memory with GFP_NOFS because a flash FS may
+ 		 * utilize this. If it is holding an FS lock, then gets here,
+-		 * then kmalloc runs writeback which goes to the FS again
+-		 * and deadlocks. This was seen in practice.
++		 * then kernel memory alloc runs writeback which goes to the FS
++		 * again and deadlocks. This was seen in practice.
+ 		 */
+-		mypage->byte = kmalloc(ns->geom.pgszoob, GFP_NOFS);
++		mypage->byte = kmem_cache_alloc(ns->nand_pages_slab, GFP_NOFS);
+ 		if (mypage->byte == NULL) {
+ 			NS_ERR("prog_page: error allocating memory for page %d\n", ns->regs.row);
+ 			return -1;
