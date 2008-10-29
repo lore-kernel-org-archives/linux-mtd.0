@@ -1,25 +1,19 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Kv0Yc-00041N-5K
-	for linux-mtd@lists.infradead.org; Wed, 29 Oct 2008 02:13:18 +0000
-Received: from epmmp2 (mailout1.samsung.com [203.254.224.24])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0K9H007S7A47VC@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Wed, 29 Oct 2008 11:12:07 +0900 (KST)
-Received: from spapp01.rdscm.com ([165.213.149.150])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0K9H0018WA472H@mmp2.samsung.com> for
-	linux-mtd@lists.infradead.org; Wed, 29 Oct 2008 11:12:07 +0900 (KST)
-Date: Wed, 29 Oct 2008 11:12:02 +0900
-From: Kyungmin Park <kmpark@infradead.org>
-Subject: [PATCH] [ONENAND] Add command line partition support on OMAP driver
-To: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org
-Message-id: <20081029021202.GA32306@july>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7BIT
-Content-disposition: inline
+Received: from 81-7-68-229.static.zebra.lt ([81.7.68.229] helo=teltonika.lt)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Kv5zS-00043i-8C
+	for linux-mtd@lists.infradead.org; Wed, 29 Oct 2008 08:01:19 +0000
+Message-ID: <49081849.6040509@teltonika.lt>
+Date: Wed, 29 Oct 2008 10:01:13 +0200
+From: Paulius Zaleckas <paulius.zaleckas@teltonika.lt>
+MIME-Version: 1.0
+To: Manish Katiyar <mkatiyar@gmail.com>
+Subject: Re: [PATCH} : Fix compilation warnings in fs/jffs2/nodemgmt.c
+References: <ea11fea30810270630x2740ceb3m58df4d0093a86fee@mail.gmail.com>
+In-Reply-To: <ea11fea30810270630x2740ceb3m58df4d0093a86fee@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,37 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add command line partition support on OMAP driver
+Manish Katiyar wrote:
+> Below patch fixes the following compilation warnings :
+> fs/jffs2/nodemgmt.c: In function 'jffs2_find_nextblock':
+> fs/jffs2/nodemgmt.c:265: error: 'struct jffs2_sb_info' has no member
+> named 'wbuf_ofs'
+> fs/jffs2/nodemgmt.c:265: error: 'struct jffs2_sb_info' has no member
+> named 'wbuf_len'
+> fs/jffs2/nodemgmt.c:266: error: 'struct jffs2_sb_info' has no member
+> named 'wbuf_ofs'
+> make[2]: *** [fs/jffs2/nodemgmt.o] Error 1
+> 
 
-Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
----
-diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-index a9885d1..60cf668 100644
---- a/drivers/mtd/onenand/omap2.c
-+++ b/drivers/mtd/onenand/omap2.c
-@@ -51,6 +51,10 @@
- #define ONENAND_IO_SIZE		SZ_128K
- #define ONENAND_BUFRAM_SIZE	(1024 * 5)
- 
-+#ifdef CONFIG_MTD_PARTITIONS
-+static const char *part_probes[] = { "cmdlinepart", NULL,  };
-+#endif
-+
- struct omap2_onenand {
- 	struct platform_device *pdev;
- 	int gpmc_cs;
-@@ -685,9 +689,12 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
- 	}
- 
- #ifdef CONFIG_MTD_PARTITIONS
--	if (pdata->parts != NULL)
-+	r = parse_mtd_partitions(&c->mtd, part_probes, &c->parts, 0);
-+	if (r > 0)
-+		r = add_mtd_partitions(&c->mtd, c->parts, r);
-+	else if (pdata->parts != NULL)
- 		r = add_mtd_partitions(&c->mtd, pdata->parts,
--				       pdata->nr_parts);
-+				pdata->nr_parts);
- 	else
- #endif
- 		r = add_mtd_device(&c->mtd);
+You are too late. This is already fixed and patch is in mtd git tree.
+
+> 
+> Signed-off-by: Manish Katiyar <mkatiyar@gmail.com>
