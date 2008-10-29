@@ -1,18 +1,23 @@
-Received: from nf-out-0910.google.com ([64.233.182.186])
+Received: from vervifontaine.sonytel.be ([80.88.33.193]
+	helo=vervifontaine.sonycom.com)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KvCjh-0007cu-U3
-	for linux-mtd@lists.infradead.org; Wed, 29 Oct 2008 15:13:31 +0000
-Received: by nf-out-0910.google.com with SMTP id d21so23048nfb.22
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 29 Oct 2008 08:13:26 -0700 (PDT)
-To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: 2.6.28-rc2: (mtd)block/partitions BUG with kobject reference count
-From: Peter Korsgaard <jacmet@sunsite.dk>
-Date: Wed, 29 Oct 2008 16:13:23 +0100
-Message-ID: <87ej1z4ep8.fsf@macbook.be.48ers.dk>
+	id 1KvBaa-0002LF-EJ
+	for linux-mtd@lists.infradead.org; Wed, 29 Oct 2008 14:00:00 +0000
+Date: Wed, 29 Oct 2008 14:59:46 +0100 (CET)
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Sender: geert@sonytel.be
+To: Jared Hulbert <jaredeh@gmail.com>
+Subject: Re: [PATCH 06/10] AXFS: axfs_super.c
+In-Reply-To: <48AD0101.4020505@gmail.com>
+Message-ID: <Pine.LNX.4.64.0810291456320.17174@vixen.sonytel.be>
+References: <48AD0101.4020505@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: Peter Korsgaard <jacmet@gmail.com>
+Content-Type: MULTIPART/MIXED;
+	BOUNDARY="-584349381-1773774162-1225288786=:17174"
+Cc: cotte@de.ibm.com, linux-embedded@vger.kernel.org, nickpiggin@yahoo.com.au,
+	=?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>,
+	Linux-kernel@vger.kernel.org,
+	linux-mtd <linux-mtd@lists.infradead.org>, tim.bird@AM.SONY.COM
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,259 +27,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-I'm seing what looks like a kobject reference count issue with
-mtdblock_ro + mtd_dataflash + mtd partitions and repeated unbind/bind.
-I'm on 2.6.28-rc2, but I can reproduce the problem on 2.6.27 as well.
+---584349381-1773774162-1225288786=:17174
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-The issue is that the devices/virtual/bdi/31:<index> doesn't get
-released on unbind, so the next bind BUGs with:
+On Wed, 20 Aug 2008, Jared Hulbert wrote:
+> --- /dev/null
+> +++ b/fs/axfs/axfs_super.c
 
-mtd_dataflash spi28672.1: AT45DB041x (528 KBytes) pagesize 264 bytes
-Creating 2 MTD partitions on "xdb":
-0x00000000-0x00000108 : "xdb_id"
-blktrans_notify_add(c35258f0), type = 6
-sysfs: duplicate filename '31:12' can not be created
-------------[ cut here ]------------
-Badness at fs/sysfs/dir.c:462
-NIP: c0095e74 LR: c0095e74 CTR: c00ed798
-REGS: c35c1b00 TRAP: 0700   Not tainted  (2.6.28-rc2)
-MSR: 00029032 <EE,ME,IR,DR>  CR: 22002082  XER: 20000000
-TASK = c34f1000[310] 'sh' THREAD: c35c0000
-GPR00: c0095e74 c35c1bb0 c34f1000 00000038 00001c5f ffffffff c00eddd0
-c0249b58
-GPR08: c024a004 c023e52c 00001c5f 00000001 44002084 efffffff c00fe4bc
-c00fe408
-GPR16: c00fecb0 c0100000 c00fe618 c00fe3a8 c00fe348 c00fe570 c00febdc
-00000000
-GPR24: c35bc20c c35c1cd8 c01e145c c35c1bf8 c387ca28 c35c1bc8 c355cacc
-ffffffef
-NIP [c0095e74] sysfs_add_one+0x34/0x50
-LR [c0095e74] sysfs_add_one+0x34/0x50
-Call Trace:
-[c35c1bb0] [c0095e74] sysfs_add_one+0x34/0x50 (unreliable)
-[c35c1bc0] [c0096464] create_dir+0x58/0xac
-[c35c1bf0] [c0096504] sysfs_create_dir+0x4c/0x70
-[c35c1c10] [c00cb748] kobject_add_internal+0xc4/0x1b4
-[c35c1c30] [c00cbd40] kobject_add+0x80/0x98
-[c35c1c60] [c00f1adc] device_add+0x8c/0x490
-[c35c1ca0] [c00f1fa4] device_create_vargs+0x94/0xcc
-[c35c1cd0] [c004d328] bdi_register+0x64/0x8c
-[c35c1d10] [c00c82b4] add_disk+0xe0/0x118
-[c35c1d40] [c0101254] add_mtd_blktrans_dev+0x258/0x278
-[c35c1d60] [c0101468] mtdblock_add_mtd+0x5c/0x70
-[c35c1d70] [c01008f8] blktrans_notify_add+0x58/0x98
-[c35c1d90] [c00fde90] add_mtd_device+0xdc/0x140
-[c35c1db0] [c00ff3d0] add_mtd_partitions+0x594/0x5d0
-[c35c1e00] [c01afd38] add_dataflash_otp+0x190/0x1cc
-[c35c1e30] [c01b0000] dataflash_probe+0x28c/0x2ac
-[c35c1e60] [c01056f0] spi_drv_probe+0x2c/0x3c
-[c35c1e70] [c00f43b4] driver_probe_device+0xe8/0x18c
-[c35c1e90] [c00f36b8] driver_bind+0x74/0xd4
-[c35c1eb0] [c00f2d10] drv_attr_store+0x34/0x44
-[c35c1ec0] [c0095310] sysfs_write_file+0x130/0x1a0
-[c35c1ef0] [c005c9d8] vfs_write+0xb8/0x104
-[c35c1f10] [c005ce18] sys_write+0x4c/0x8c
-[c35c1f40] [c000f3bc] ret_from_syscall+0x0/0x38
+> +static int axfs_fill_region_data(struct super_block *sb,
+> +				 struct axfs_region_desc *region, int force)
+> +{
+> +	struct axfs_super *sbi = AXFS_SB(sb);
+> +	unsigned long addr;
+> +	void *buff = NULL;
+> +	void *vaddr;
+> +	int err = -ENOMEM;
+> +	u64 size = region->size;
+> +	u64 fsoffset = region->fsoffset;
+> +	u64 end = fsoffset + size;
+> +	u64 c_size = region->compressed_size;
+> +
+> +	if (size == 0)
+> +		return 0;
+> +
+> +	if (AXFS_IS_REGION_INCORE(region))
+> +		goto incore;
+> +
+> +	if (AXFS_IS_REGION_COMPRESSED(region))
+> +		goto incore;
+> +
+> +	if (AXFS_IS_REGION_XIP(sbi, region)) {
+> +		if ((end > sbi->mmap_size) && (force))
+> +			goto incore;
+> +		addr = sbi->virt_start_addr;
+> +		addr += (unsigned long)fsoffset;
+> +		region->virt_addr = (void *)addr;
+> +		return 0;
+> +	}
+> +
+> +	if (force)
+> +		goto incore;
+> +
+> +	region->virt_addr = NULL;
+> +	return 0;
+> +
+> +incore:
+> +	region->virt_addr = vmalloc(size);
+> +	if (!region->virt_addr)
+> +		goto out;
+> +	vaddr = region->virt_addr;
+> +
+> +	if (AXFS_IS_REGION_COMPRESSED(region)) {
+> +		buff = vmalloc(c_size);
+> +		if (!buff)
+> +			goto out;
+> +		axfs_copy_metadata(sb, buff, fsoffset, c_size);
+> +		err = axfs_uncompress_block(vaddr, size, buff, c_size);
+                ^^^
+axfs_uncompress_block() doesn't return an error code, so `err' is a bit of a
+misnomer.
 
-I don't see the problem without mtd partitions or with only 1
-partition, so it seems related to the partition code.
+> +		if (!err)
+                    ^^^^
+Instead, it returns zero for error, hence this check is correct...
 
-If I enable kobject debugging I see the following:
+> +			goto out;
+> +		vfree(buff);
+> +	} else {
+> +		axfs_copy_metadata(sb, vaddr, fsoffset, size);
+> +	}
+> +
+> +	return 0;
+> +
+> +out:
+> +	if (buff)
+> +		vfree(buff);
+> +	if (region->virt_addr)
+> +		vfree(region->virt_addr);
+> +	return err;
+               ^^^
+... but it will also return zero here, which is not correct.
 
-bind:
+Probably it's better to let axfs_uncompress_block() return an (negative) error
+code (e.g. -EINVAL or -EIO) in case of failure, which you can just let
+propagate.
 
-mtd_dataflash spi28672.1: AT45DB041x (528 KBytes) pagesize 264 bytes
-Creating 2 MTD partitions on "xdb":
-0x00000000-0x00000108 : "xdb_id"
-blktrans_notify_add(c35aba44), type = 6
-kobject: 'mtdblock12' (c35d6af4): kobject_add_internal: parent: 'block', set: 'devices'
-kobject: 'mtdblock12' (c35d6af4): kobject_uevent_env
-kobject: 'mtdblock12' (c35d6af4): kobject_uevent_env: filter function caused the event to drop!
-kobject: 'holders' (c35abe58): kobject_add_internal: parent: 'mtdblock12', set: '<NULL>'
-kobject: 'slaves' (c35abec4): kobject_add_internal: parent: 'mtdblock12', set: '<NULL>'
-kobject: 'mtdblock12' (c35d6af4): kobject_uevent_env
-kobject: 'mtdblock12' (c35d6af4): fill_kobj_path: path = '/devices/virtual/block/mtdblock12'
-kobject: 'queue' (c3477a44): kobject_add_internal: parent: 'mtdblock12', set: '<NULL>'
-kobject: 'queue' (c3477a44): kobject_uevent_env
-kobject: 'queue' (c3477a44): kobject_uevent_env: filter function caused the event to drop!
-kobject: 'iosched' (c3856498): kobject_add_internal: parent: 'queue', set: '<NULL>'
-kobject: 'iosched' (c3856498): kobject_uevent_env
-kobject: 'iosched' (c3856498): kobject_uevent_env: filter function caused the event to drop!
-kobject: '31:12' (c35d6ca8): kobject_add_internal: parent: 'bdi', set: 'devices'
-kobject: '31:12' (c35d6ca8): kobject_uevent_env
-kobject: '31:12' (c35d6ca8): fill_kobj_path: path = '/devices/virtual/bdi/31:12'
-kobject: 'mtd12' (c35d6ddc): kobject_add_internal: parent: 'mtd', set: 'devices'
-kobject: 'mtd12' (c35d6ddc): kobject_uevent_env
-kobject: 'mtd12' (c35d6ddc): fill_kobj_path: path = '/devices/virtual/mtd/mtd12'
-kobject: 'mtd12ro' (c35d6f10): kobject_add_internal: parent: 'mtd', set: 'devices'
-kobject: 'mtd12ro' (c35d6f10): kobject_uevent_env
-kobject: 'mtd12ro' (c35d6f10): fill_kobj_path: path = '/devices/virtual/mtd/mtd12ro'
-0x00000108-0x00084000 : "xdb_fpga"
-blktrans_notify_add(c3506730), type = 6
-kobject: 'mtdblock13' (c35dc284): kobject_add_internal: parent: 'block', set: 'devices'
-kobject: 'mtdblock13' (c35dc284): kobject_uevent_env
-kobject: 'mtdblock13' (c35dc284): kobject_uevent_env: filter function caused the event to drop!
-kobject: 'holders' (c3543cc0): kobject_add_internal: parent: 'mtdblock13', set: '<NULL>'
-kobject: 'slaves' (c35a62f0): kobject_add_internal: parent: 'mtdblock13', set: '<NULL>'
-kobject: 'mtdblock13' (c35dc284): kobject_uevent_env
-kobject: 'mtdblock13' (c35dc284): fill_kobj_path: path = '/devices/virtual/block/mtdblock13'
-kobject: 'queue' (c3477a44): kobject_add_internal: parent: 'mtdblock13', set: '<NULL>'
-kobject: 'queue' (c3477a44): kobject_uevent_env
-kobject: 'queue' (c3477a44): kobject_uevent_env: filter function caused the event to drop!
-kobject: 'iosched' (c3856498): kobject_add_internal: parent: 'queue', set: '<NULL>'
-kobject: 'iosched' (c3856498): kobject_uevent_env
-kobject: 'iosched' (c3856498): kobject_uevent_env: filter function caused the event to drop!
-kobject: '31:13' (c35dc06c): kobject_add_internal: parent: 'bdi', set: 'devices'
-kobject: '31:13' (c35dc06c): kobject_uevent_env
-kobject: '31:13' (c35dc06c): fill_kobj_path: path = '/devices/virtual/bdi/31:13'
-kobject: 'mtd13' (c35dc438): kobject_add_internal: parent: 'mtd', set: 'devices'
-kobject: 'mtd13' (c35dc438): kobject_uevent_env
-kobject: 'mtd13' (c35dc438): fill_kobj_path: path = '/devices/virtual/mtd/mtd13'
-kobject: 'mtd13ro' (c35dc56c): kobject_add_internal: parent: 'mtd', set: 'devices'
-kobject: 'mtd13ro' (c35dc56c): kobject_uevent_env
-kobject: 'mtd13ro' (c35dc56c): fill_kobj_path: path = '/devices/virtual/mtd/mtd13ro'
+With kind regards,
 
-unbind:
+Geert Uytterhoeven
+Software Architect
 
-blktrans_notify_remove(c3506730), type = 6
-kobject: '31:13' (c35dc06c): kobject_uevent_env
-kobject: '31:13' (c35dc06c): fill_kobj_path: path = '/devices/virtual/bdi/31:13'
-kobject: '31:13' (c35dc06c): kobject_cleanup
-kobject: '31:13' (c35dc06c): calling ktype release
-kobject: '31:13': free name
-kobject: 'iosched' (c3856498): kobject_uevent_env
-kobject: 'iosched' (c3856498): kobject_uevent_env: filter function caused the event to drop!
-kobject: 'queue' (c3477a44): kobject_uevent_env
-kobject: 'queue' (c3477a44): kobject_uevent_env: filter function caused the event to drop!
-kobject: 'holders' (c3543cc0): kobject_cleanup
-kobject: 'holders' (c3543cc0): auto cleanup kobject_del
-kobject: 'holders' (c3543cc0): calling ktype release
-kobject: (c3543cc0): dynamic_kobj_release
-kobject: 'holders': free name
-kobject: 'slaves' (c35a62f0): kobject_cleanup
-kobject: 'slaves' (c35a62f0): auto cleanup kobject_del
-kobject: 'slaves' (c35a62f0): calling ktype release
-kobject: (c35a62f0): dynamic_kobj_release
-kobject: 'slaves': free name
-kobject: 'mtdblock13' (c35dc284): kobject_uevent_env
-kobject: 'mtdblock13' (c35dc284): fill_kobj_path: path = '/devices/virtual/block/mtdblock13'
-kobject: 'mtdblock13' (c35dc284): kobject_cleanup
-kobject: 'mtdblock13' (c35dc284): calling ktype release
-kobject: 'mtdblock13': free name
-kobject: 'mtd13' (c35dc438): kobject_uevent_env
-kobject: 'mtd13' (c35dc438): fill_kobj_path: path = '/devices/virtual/mtd/mtd13'
-kobject: 'mtd13' (c35dc438): kobject_cleanup
-kobject: 'mtd13' (c35dc438): calling ktype release
-kobject: 'mtd13': free name
-kobject: 'mtd13ro' (c35dc56c): kobject_uevent_env
-kobject: 'mtd13ro' (c35dc56c): fill_kobj_path: path = '/devices/virtual/mtd/mtd13ro'
-kobject: 'mtd13ro' (c35dc56c): kobject_cleanup
-kobject: 'mtd13ro' (c35dc56c): calling ktype release
-kobject: 'mtd13ro': free name
-blktrans_notify_remove(c35aba44), type = 6
-kobject: 'iosched' (c3856498): kobject_uevent_env
-kobject: 'iosched' (c3856498): kobject_uevent_env: attempted to send uevent without kset!
-kobject: 'queue' (c3477a44): kobject_uevent_env
-kobject: 'queue' (c3477a44): kobject_uevent_env: attempted to send uevent without kset!
-kobject: 'holders' (c35abe58): kobject_cleanup
-kobject: 'holders' (c35abe58): auto cleanup kobject_del
-kobject: 'holders' (c35abe58): calling ktype release
-kobject: (c35abe58): dynamic_kobj_release
-kobject: 'holders': free name
-kobject: 'slaves' (c35abec4): kobject_cleanup
-kobject: 'slaves' (c35abec4): auto cleanup kobject_del
-kobject: 'slaves' (c35abec4): calling ktype release
-kobject: (c35abec4): dynamic_kobj_release
-kobject: 'slaves': free name
-kobject: 'mtdblock12' (c35d6af4): kobject_uevent_env
-kobject: 'mtdblock12' (c35d6af4): fill_kobj_path: path = '/devices/virtual/block/mtdblock12'
-kobject: 'mtd12' (c35d6ddc): kobject_uevent_env
-kobject: 'mtd12' (c35d6ddc): fill_kobj_path: path = '/devices/virtual/mtd/mtd12'
-kobject: 'mtd12' (c35d6ddc): kobject_cleanup
-kobject: 'mtd12' (c35d6ddc): calling ktype release
-kobject: 'mtd12': free name
-kobject: 'mtd12ro' (c35d6f10): kobject_uevent_env
-kobject: 'mtd12ro' (c35d6f10): fill_kobj_path: path = '/devices/virtual/mtd/mtd12ro'
-kobject: 'mtd12ro' (c35d6f10): kobject_cleanup
-kobject: 'mtd12ro' (c35d6f10): calling ktype release
-kobject: 'mtd12ro': free name
+Sony Techsoft Centre Europe
+The Corporate Village · Da Vincilaan 7-D1 · B-1935 Zaventem · Belgium
 
-The 'attempted to send uevent without kset!' seems odd, and the fact
-that 31:12 isn't removed + release isn't called for mtdblock12.
+Phone:    +32 (0)2 700 8453
+Fax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
 
-To compare, here's the output with only 1 partition:
-
-bind:
-
-mtd_dataflash spi28672.1: AT45DB041x (528 KBytes) pagesize 264 bytes
-Creating 1 MTD partitions on "xdb":
-0x00000000-0x00000108 : "xdb_id"
-blktrans_notify_add(c354823c), type = 6
-kobject: 'mtdblock12' (c35c40a4): kobject_add_internal: parent: 'block', set: 'devices'
-kobject: 'mtdblock12' (c35c40a4): kobject_uevent_env
-kobject: 'mtdblock12' (c35c40a4): kobject_uevent_env: filter function caused the event to drop!
-kobject: 'holders' (c355ef34): kobject_add_internal: parent: 'mtdblock12', set: '<NULL>'
-kobject: 'slaves' (c3522130): kobject_add_internal: parent: 'mtdblock12', set: '<NULL>'
-kobject: 'mtdblock12' (c35c40a4): kobject_uevent_env
-kobject: 'mtdblock12' (c35c40a4): fill_kobj_path: path = '/devices/virtual/block/mtdblock12'
-kobject: 'queue' (c3477a44): kobject_add_internal: parent: 'mtdblock12', set: '<NULL>'
-kobject: 'queue' (c3477a44): kobject_uevent_env
-kobject: 'queue' (c3477a44): kobject_uevent_env: filter function caused the event to drop!
-kobject: 'iosched' (c3856498): kobject_add_internal: parent: 'queue', set: '<NULL>'
-kobject: 'iosched' (c3856498): kobject_uevent_env
-kobject: 'iosched' (c3856498): kobject_uevent_env: filter function caused the event to drop!
-kobject: '31:12' (c35c4258): kobject_add_internal: parent: 'bdi', set: 'devices'
-kobject: '31:12' (c35c4258): kobject_uevent_env
-kobject: '31:12' (c35c4258): fill_kobj_path: path = '/devices/virtual/bdi/31:12'
-kobject: 'mtd12' (c35c438c): kobject_add_internal: parent: 'mtd', set: 'devices'
-kobject: 'mtd12' (c35c438c): kobject_uevent_env
-kobject: 'mtd12' (c35c438c): fill_kobj_path: path = '/devices/virtual/mtd/mtd12'
-kobject: 'mtd12ro' (c35c44c0): kobject_add_internal: parent: 'mtd', set: 'devices'
-kobject: 'mtd12ro' (c35c44c0): kobject_uevent_env
-kobject: 'mtd12ro' (c35c44c0): fill_kobj_path: path = '/devices/virtual/mtd/mtd12ro'
-
-unbind:
-
-blktrans_notify_remove(c354823c), type = 6
-kobject: '31:12' (c35c4258): kobject_uevent_env
-kobject: '31:12' (c35c4258): fill_kobj_path: path = '/devices/virtual/bdi/31:12'
-kobject: '31:12' (c35c4258): kobject_cleanup
-kobject: '31:12' (c35c4258): calling ktype release
-kobject: '31:12': free name
-kobject: 'iosched' (c3856498): kobject_uevent_env
-kobject: 'iosched' (c3856498): kobject_uevent_env: filter function caused the event to drop!
-kobject: 'queue' (c3477a44): kobject_uevent_env
-kobject: 'queue' (c3477a44): kobject_uevent_env: filter function caused the event to drop!
-kobject: 'holders' (c355ef34): kobject_cleanup
-kobject: 'holders' (c355ef34): auto cleanup kobject_del
-kobject: 'holders' (c355ef34): calling ktype release
-kobject: (c355ef34): dynamic_kobj_release
-kobject: 'holders': free name
-kobject: 'slaves' (c3522130): kobject_cleanup
-kobject: 'slaves' (c3522130): auto cleanup kobject_del
-kobject: 'slaves' (c3522130): calling ktype release
-kobject: (c3522130): dynamic_kobj_release
-kobject: 'slaves': free name
-kobject: 'mtdblock12' (c35c40a4): kobject_uevent_env
-kobject: 'mtdblock12' (c35c40a4): fill_kobj_path: path = '/devices/virtual/block/mtdblock12'
-kobject: 'mtdblock12' (c35c40a4): kobject_cleanup
-kobject: 'mtdblock12' (c35c40a4): calling ktype release
-kobject: 'mtdblock12': free name
-kobject: 'mtd12' (c35c438c): kobject_uevent_env
-kobject: 'mtd12' (c35c438c): fill_kobj_path: path = '/devices/virtual/mtd/mtd12'
-kobject: 'mtd12' (c35c438c): kobject_cleanup
-kobject: 'mtd12' (c35c438c): calling ktype release
-kobject: 'mtd12': free name
-kobject: 'mtd12ro' (c35c44c0): kobject_uevent_env
-kobject: 'mtd12ro' (c35c44c0): fill_kobj_path: path = '/devices/virtual/mtd/mtd12ro'
-kobject: 'mtd12ro' (c35c44c0): kobject_cleanup
-kobject: 'mtd12ro' (c35c44c0): calling ktype release
-kobject: 'mtd12ro': free name
-
-I don't really know the mtd and/or block subsystem good enough to know
-where to look - Any ideas?
-
--- 
-Bye, Peter Korsgaard
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 · RPR Brussels
+Fortis · BIC GEBABEBB · IBAN BE41293037680010
+---584349381-1773774162-1225288786=:17174--
