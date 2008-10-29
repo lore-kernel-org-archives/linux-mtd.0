@@ -1,26 +1,17 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Kv6b2-0004Xn-Lw
-	for linux-mtd@lists.infradead.org; Wed, 29 Oct 2008 08:40:09 +0000
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1Kv6aw-0004GY-U9
-	for linux-mtd@lists.infradead.org; Wed, 29 Oct 2008 08:40:02 +0000
-Received: from 194.95.133.35 ([194.95.133.35])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 29 Oct 2008 08:40:02 +0000
-Received: from andre.puschmann by 194.95.133.35 with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 29 Oct 2008 08:40:02 +0000
-To: linux-mtd@lists.infradead.org
-From: Andre Puschmann <andre.puschmann@imms.de>
-Subject: flash read performance
-Date: Tue, 28 Oct 2008 11:14:05 +0100
-Message-ID: <ge6old$oo3$1@ger.gmane.org>
+Subject: Re: [PATCH][nandsim] FIX RAM wasting via kmalloc
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Alexey Korolev <akorolev@infradead.org>
+In-Reply-To: <alpine.LFD.1.10.0810271251540.18203@casper.infradead.org>
+References: <alpine.LFD.1.10.0810221611550.30499@casper.infradead.org>
+	<1225091926.3833.2.camel@sauron>
+	<alpine.LFD.1.10.0810271251540.18203@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 29 Oct 2008 11:27:10 +0200
+Message-Id: <1225272430.4350.16.camel@sauron>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
-Sender: news <news@ger.gmane.org>
+Content-Transfer-Encoding: quoted-printable
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,41 +21,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi list,
+On Mon, 2008-10-27 at 12:59 +0000, Alexey Korolev wrote:
+> Hi,
+>=20
+> > > Nandsim consumes ~2x more RAM than the density of simulated device.=20
+> > > It becomes critical if we need to simulate 256MB NAND and run stress =
+tests=20
+> > > on it.
+> >=20
+> > I'm applying your patch to our local tree, just to test it. But there
+> > is a trailing white-space.
+> >=20
+> > [dedekind@gollum ubifs-2.6]$ git-am nandsim
+> > Applying FIX RAM wasting via kmalloc
+> > .dotest/patch:64: trailing whitespace.
+> >                  * then kernel memory alloc runs writeback which goes t=
+o
+> > the FS
+> > warning: 1 line adds whitespace errors.
+> >=20
+> > :-)
+> >
+> Thanks. I removed the trailing space. Also for just a case did an addtion=
+al
+> tests to make sure it works fine.
+> I think this one should be better :)?
 
-I am currently trying to improve the flash read performance of my 
-platform. It's a gumstix verdex board with a pxa270 running at 400MHz. 
-My flash is a 16MB NOR Intel StrataFlash P30 (128P30T) and it's 
-operating in the _normal_ asynchronous mode. In my opinion the read 
-performance is very poor, only around 1.2 to 1.4 MB/s depending on the 
-blocksize. I think it should be possible to get much higher transfer rates.
+I suggest you to re-send your patch again, with nice commit comments,
+because when I applied this patch using git-am, I had to edit the text
+to remove junk ">" symbols. It is just nice if your patch does not
+require much editing.
 
-In Linux, I ran my tests with dd like this (copy 10MB):
-time dd if=/dev/mtd5 of=/dev/null bs=16k count=640
-640+0 records in
-640+0 records out
-real    0m 7.17s
-user    0m 0.00s
-sys     0m 7.17s
+Feel free to add:
 
+Tested-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Acked-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Running top in another console brings up, that the CPU load is very high
-during copy. I am not sure if the system is doing some sort of busy 
-waiting or something like that? However, it should be possible to do a 
-copy without having such a high load.
+Thanks.
 
-Mem: 17684K used, 45144K free, 0K shrd, 0K buff, 11164K cached
-CPU:   0% usr 100% sys   0% nice   0% idle   0% io   0% irq   0% softirq
-Load average: 0.10 0.17 0.09
-  PID  PPID USER     STAT   VSZ %MEM %CPU COMMAND
-  259   258 root     R     1100   2%  95% dd if /dev/mtd5 of /dev/null 
-bs 16k co
-
-
-I guess a number of people are using a similar/comparable setup. So some
-kind of user benchmark would be nice.
-I am sure this needs some more investigation, but any comment/hint is 
-more than welcome.
-
+--=20
 Best regards,
-Andre
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
