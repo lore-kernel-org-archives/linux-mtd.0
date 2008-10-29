@@ -1,19 +1,21 @@
-Received: from nf-out-0910.google.com ([64.233.182.186])
+Received: from yw-out-1718.google.com ([74.125.46.153])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Kv8h6-00013Z-Je
-	for linux-mtd@lists.infradead.org; Wed, 29 Oct 2008 10:54:32 +0000
-Received: by nf-out-0910.google.com with SMTP id d21so1158740nfb.22
+	id 1Kv9Ti-0005Xh-2p
+	for linux-mtd@lists.infradead.org; Wed, 29 Oct 2008 11:44:46 +0000
+Received: by yw-out-1718.google.com with SMTP id 5so1462285ywm.72
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 29 Oct 2008 03:54:31 -0700 (PDT)
-Message-ID: <57afda040810290354wa56e1ccg90b32dd4388d5a94@mail.gmail.com>
-Date: Wed, 29 Oct 2008 19:54:31 +0900
-From: "unsik Kim" <donari75@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Question about mtd flags
+	Wed, 29 Oct 2008 04:44:44 -0700 (PDT)
+Date: Wed, 29 Oct 2008 07:42:56 -0400
+From: Josh Boyer <jwboyer@gmail.com>
+To: Andre Puschmann <andre.puschmann@imms.de>
+Subject: Re: flash read performance
+Message-ID: <20081029114256.GA2239@yoda.jdub.homelinux.org>
+References: <ge6old$oo3$1@ger.gmane.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <ge6old$oo3$1@ger.gmane.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello?
+On Tue, Oct 28, 2008 at 11:14:05AM +0100, Andre Puschmann wrote:
+>Hi list,
+>
+>I am currently trying to improve the flash read performance of my 
+>platform. It's a gumstix verdex board with a pxa270 running at 400MHz. 
+>My flash is a 16MB NOR Intel StrataFlash P30 (128P30T) and it's 
+>operating in the _normal_ asynchronous mode. In my opinion the read 
+>performance is very poor, only around 1.2 to 1.4 MB/s depending on the 
+>blocksize. I think it should be possible to get much higher transfer rates.
 
-I am writing the "mflash" mtd driver and it works good. But I want to
-improve more ... (speed).
+Why do you think that?
 
-Mflash is fusion memory just like sandisk's mdoc.
+>In Linux, I ran my tests with dd like this (copy 10MB):
+>time dd if=/dev/mtd5 of=/dev/null bs=16k count=640
+>640+0 records in
+>640+0 records out
+>real    0m 7.17s
+>user    0m 0.00s
+>sys     0m 7.17s
+>
+>
+>Running top in another console brings up, that the CPU load is very high
+>during copy. I am not sure if the system is doing some sort of busy 
+>waiting or something like that? However, it should be possible to do a 
+>copy without having such a high load.
 
-It contains nand flash, nand flash controller, ecc engine, etc.
+Why do you think that?  The chip drivers don't do DMA, so all I/O goes
+through the CPU.
 
-Mflash has SRAM interface and uses ATA protocol. (but not 100% compatible)
-
-So, user just read, write sector like hard-disk.
-
-My question is what is the most suitable mtd flag for mflash ? (file
-system is ext2)
-
-Currently I'm using
-
-mtd.type = MTD_OTHER;
-mtd.flags = MTD_CLEAR_BITS | MTD_SET_BITS;
-mtd.ecctype = MTD_ECC_RS_DiskOnChip;
-mtd.erasesize = 4096;
-
-I see mtd stack always call mtd erase function even though mflash doesn't need.
-
-How can I fix that ?
-
-p.s. Sorry for my poor english skill.
+josh
