@@ -1,23 +1,34 @@
-Received: from ik-out-1112.google.com ([66.249.90.183])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KvKSl-0002zR-Lc
-	for linux-mtd@lists.infradead.org; Wed, 29 Oct 2008 23:28:31 +0000
-Received: by ik-out-1112.google.com with SMTP id b32so278148ika.2
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 29 Oct 2008 16:28:30 -0700 (PDT)
-To: "Rafael J. Wysocki" <rjw@sisk.pl>
-Subject: Re: 2.6.28-rc2: (mtd)block/partitions BUG with kobject reference count
-References: <87ej1z4ep8.fsf@macbook.be.48ers.dk>
-	<200810300027.19116.rjw@sisk.pl>
-From: Peter Korsgaard <jacmet@sunsite.dk>
-Date: Thu, 30 Oct 2008 00:28:27 +0100
-In-Reply-To: <200810300027.19116.rjw@sisk.pl> (Rafael J. Wysocki's message of
-	"Thu\, 30 Oct 2008 00\:27\:18 +0100")
-Message-ID: <87abcnj810.fsf@macbook.be.48ers.dk>
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KvKrG-0005t3-Gh
+	for linux-mtd@lists.infradead.org; Wed, 29 Oct 2008 23:53:50 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e3.ny.us.ibm.com (8.13.8/8.13.8) with ESMTP id m9TNrn32003522
+	for <linux-mtd@lists.infradead.org>; Wed, 29 Oct 2008 19:53:49 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.1) with ESMTP id
+	m9TNrn8t130750
+	for <linux-mtd@lists.infradead.org>; Wed, 29 Oct 2008 19:53:49 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	m9TNrnsA011676
+	for <linux-mtd@lists.infradead.org>; Wed, 29 Oct 2008 19:53:49 -0400
+Received: from linux.ibm.com (imap.raleigh.ibm.com [9.37.253.145])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.12.11) with ESMTP id
+	m9TNrnul011666
+	for <linux-mtd@lists.infradead.org>; Wed, 29 Oct 2008 19:53:49 -0400
+Message-ID: <20081029195349.imqvyxcajuoko0wo@imap.linux.ibm.com>
+Date: Wed, 29 Oct 2008 19:53:49 -0400
+From: Corinna Schultz <cschultz@linux.vnet.ibm.com>
+To: linux-mtd@lists.infradead.org
+Subject: ST M29W320D incorrectly configured
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: Peter Korsgaard <jacmet@gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain;
+	charset=ISO-8859-1;
+	DelSp="Yes";
+	format="flowed"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +38,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>>>> "Rafael" == Rafael J Wysocki <rjw@sisk.pl> writes:
+I'm having a problem getting the unlock addresses correctly configured =20
+for the ST M29W320D chip. CFI query data is shown below (from =20
+debugging statements I enabled and/or added to the driver). The chip =20
+is wired so that the #BYTE pin is low, putting the chip into x8 mode. =20
+The data bus is physically 8 bits.
 
- Rafael> On Wednesday, 29 of October 2008, Peter Korsgaard wrote:
- >> Hi,
- >> 
- >> I'm seing what looks like a kobject reference count issue with
- >> mtdblock_ro + mtd_dataflash + mtd partitions and repeated unbind/bind.
- >> I'm on 2.6.28-rc2, but I can reproduce the problem on 2.6.27 as well.
+I don't understand everything that's going on in the code, but it =20
+seems to me that the following code (taken from cfi_cmdset_0002.c, =20
+which sets the unlock addresses needed for writing and erasing) has a =20
+logic error. Maybe someone can explain it to me?
 
- Rafael> Is it reproducible with 2.6.26 too?
+  if (    /* x16 in x8 mode */
+     ((cfi->device_type =3D=3D CFI_DEVICETYPE_X8) &&
+      (cfi->cfiq->InterfaceDesc =3D=3D 2))
 
-Sorry, I haven't backported my platform support code to such "old"
-kernel. I can do it though, if you think it will help pinpoint the
-issue.
 
--- 
-Bye, Peter Korsgaard
+The reason I think this is in error is that both the device type and =20
+the interfaceDesc are defined by the hardware, and not indicative of =20
+the mode. Besides, isn't this conditional actually testing if the chip =20
+is an X8 chip and supports x8 and x16 async modes?
+
+As far as I know the only way to determine what mode the chip is in is =20
+to check the QRY string at the beginning of the query data on the chip.
+
+According to the spec, page 12 of:  =20
+http://www.amd.com/us-en/assets/content_type/DownloadableAssets/cfi_r20.pdf
+
+An x16 device in x16 mode has QRY at addresses 10, 11, and 12 (hex) =20
+and Q null R at addresses 20, 21, and 22. An x16 device in x8 mode has =20
+QQR at addresses 20, 21, 22.
+
+Since this chip is an x16 in x8 mode, the unlock addresses should be =20
+0xaaa and 0x555.
+
+As can be seen below, the device_type is 2, which is =20
+CFI_DEVICE_TYPE_X16, and the InterfaceDesc is 2. But as I understand =20
+the spec, these values don't change whether the chip is in x16 mode or =20
+in x8 mode.
+
+I'm not sure how to tell the version number of the driver, but =20
+gen_probe.c is at v 1.24, and cfi_cmdset_0002.c is at v.1.122, if that =20
+helps.
+
+
+Here's the log:
+
+physmap flash device: 400000 at ffc00000
+Number of erase regions: 4
+Primary Vendor Command Set: 0002 (AMD/Fujitsu Standard)
+Primary Algorithm Table at 0040
+Alternative Vendor Command Set: 0000 (None)
+No Alternate Algorithm Table
+Vcc Minimum:  2.7 V
+Vcc Maximum:  3.6 V
+Vpp Minimum: 11.5 V
+Vpp Maximum: 12.5 V
+Typical byte/word write timeout: 16 ?s
+Maximum byte/word write timeout: 512 ?s
+Full buffer write not supported
+Typical block erase timeout: 1024 ms
+Maximum block erase timeout: 16384 ms
+Chip erase not supported
+Device size: 0x400000 bytes (4 MiB)
+Flash Device Interface description: 0x0002
+   - supports x8 and x16 via BYTE# with asynchronous interface
+Max. bytes in buffer write: 0x1
+Number of Erase Block Regions: 4
+   Erase Region #0: BlockSize 0x4000 bytes, 1 blocks
+   Erase Region #1: BlockSize 0x2000 bytes, 2 blocks
+   Erase Region #2: BlockSize 0x8000 bytes, 1 blocks
+   Erase Region #3: BlockSize 0x10000 bytes, 63 blocks
+phys_mapped_flash: Found 1 x16 devices at 0x0 in 8-bit bank
+  Amd/Fujitsu Extended Query Table at 0x0040
+   Silicon revision: 0
+   Address sensitive unlock: Required
+   Erase Suspend: Read/write
+   Block protection: 1 sectors per group
+   Temporary block unprotect: Supported
+   Block protect/unprotect scheme: 4
+   Number of simultaneous operations: 0
+   Burst mode: Not supported
+   Page mode: Not supported
+   Vpp Supply Minimum Program/Erase Voltage: 11.5 V
+   Vpp Supply Maximum Program/Erase Voltage: 12.5 V
+   Top/Bottom Boot Block: Bottom boot
+addr_unlock1: 555, addr_unlock2: 2aa
+number of CFI chips: 1
+cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
+
+
+-Corinna Schultz
+IBM LTC
