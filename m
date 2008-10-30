@@ -1,24 +1,21 @@
-Received: from qb-out-1314.google.com ([72.14.204.171])
+Received: from rv-out-0708.google.com ([209.85.198.249])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KvfQc-0006OF-Dy
-	for linux-mtd@lists.infradead.org; Thu, 30 Oct 2008 21:51:42 +0000
-Received: by qb-out-1314.google.com with SMTP id q13so401556qbq.26
+	id 1KvfhN-0004dQ-2H
+	for linux-mtd@lists.infradead.org; Thu, 30 Oct 2008 22:09:01 +0000
+Received: by rv-out-0708.google.com with SMTP id b17so1765531rvf.42
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 30 Oct 2008 14:51:41 -0700 (PDT)
-Message-ID: <ac3eb2510810301451x7dbf18edgd03c1433099ce5e4@mail.gmail.com>
-Date: Thu, 30 Oct 2008 22:51:41 +0100
-From: "Kay Sievers" <kay.sievers@vrfy.org>
-To: "Peter Korsgaard" <jacmet@sunsite.dk>
-Subject: Re: 2.6.28-rc2: (mtd)block/partitions BUG with kobject reference count
-In-Reply-To: <87abcnj810.fsf@macbook.be.48ers.dk>
+	Thu, 30 Oct 2008 15:08:59 -0700 (PDT)
+Message-ID: <f96d234e0810301508n773734efp7a72f3da4ee50841@mail.gmail.com>
+Date: Thu, 30 Oct 2008 18:08:59 -0400
+From: "Cliff Brake" <cliff.brake@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: bus access for NAND parts
+In-Reply-To: <f96d234e0810290454p7c50e9d5t6bd0ecd65444e883@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <87ej1z4ep8.fsf@macbook.be.48ers.dk>
-	<200810300027.19116.rjw@sisk.pl> <87abcnj810.fsf@macbook.be.48ers.dk>
-Cc: "Rafael J. Wysocki" <rjw@sisk.pl>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+References: <f96d234e0810290454p7c50e9d5t6bd0ecd65444e883@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,33 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 30, 2008 at 00:28, Peter Korsgaard <jacmet@sunsite.dk> wrote:
->>>>>> "Rafael" == Rafael J Wysocki <rjw@sisk.pl> writes:
->
->  Rafael> On Wednesday, 29 of October 2008, Peter Korsgaard wrote:
->  >> Hi,
->  >>
->  >> I'm seing what looks like a kobject reference count issue with
->  >> mtdblock_ro + mtd_dataflash + mtd partitions and repeated unbind/bind.
->  >> I'm on 2.6.28-rc2, but I can reproduce the problem on 2.6.27 as well.
->
->  Rafael> Is it reproducible with 2.6.26 too?
->
-> Sorry, I haven't backported my platform support code to such "old"
-> kernel. I can do it though, if you think it will help pinpoint the
-> issue.
+On Wed, Oct 29, 2008 at 7:54 AM, Cliff Brake <cliff.brake@gmail.com> wrote:
+> I've been looking at interfacing a raw NAND device to a PXA270 and
+> have the following questions.  It seems that most devices simply use a
+> chip select for CE.  What is the mechanism that prevents the NAND
+> driver from getting pre-empted and another device access toggling the
+> read/write stobes and messing up the NAND cycle while the NAND chip
+> select is still low?  I see memory barriers that should prevent out of
+> order issues, but I've not located any mechanism yet for preventing a
+> separate device access from interfering with the NAND access.
 
-This sounds like a possible reason for the problem:
-"After digging into the mtd code, this bug is not related to our driver. It
-should be a subtle bug in mtd core code.
+Correction -- above should say:  "It seems that most devices simply use a
+_GPIO_ for CE".  The chip select is set low in software, and then
+multiple bus cycles are run to execute the address and data phases of
+the NAND operation.  So what keeps another process from interrupting
+this and running a bus cycle while the GPIO for NAND CE is still low
+-- which would toggle the strobes to the NAND cs.
 
-In add_mtd_partition, for 2 partitions, 2 gendisk structures will be
-allocated. But these 2 gendisk->queue will be set to the same
-request_queue. Then when unregistering the 1st partition, from the
-same request_queue->backing_dev_info, the bdi struct will be set to
-NULL. So for the 2nd partition (bdi == NULL), the sysfs dir of 2nd
-partition will not be removed. Finally, when modprobe the module
-again, the 2nd partition won't be added"
-https://blackfin.uclinux.org/gf/tracker/4463
+Thanks,
+Cliff
 
-Kay
+-- 
+=======================
+Cliff Brake
+http://bec-systems.com
