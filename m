@@ -1,18 +1,19 @@
-Received: from qb-out-1314.google.com ([72.14.204.172])
+Received: from yw-out-1718.google.com ([74.125.46.155])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KvhEW-000678-KD
-	for linux-mtd@lists.infradead.org; Thu, 30 Oct 2008 23:47:23 +0000
-Received: by qb-out-1314.google.com with SMTP id q13so416611qbq.26
+	id 1KvlWs-0004eY-Rh
+	for linux-mtd@lists.infradead.org; Fri, 31 Oct 2008 04:22:35 +0000
+Received: by yw-out-1718.google.com with SMTP id 5so686685ywm.72
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 30 Oct 2008 16:47:18 -0700 (PDT)
-Message-ID: <ac3eb2510810301647k5e3dfecdjfa79f7e916fcdd20@mail.gmail.com>
-Date: Fri, 31 Oct 2008 00:47:18 +0100
-From: "Kay Sievers" <kay.sievers@vrfy.org>
-To: "Peter Korsgaard" <jacmet@sunsite.dk>
+	Thu, 30 Oct 2008 21:22:33 -0700 (PDT)
+Message-ID: <386072610810302122i31844850y8aac0d6033e3cc62@mail.gmail.com>
+Date: Fri, 31 Oct 2008 12:22:33 +0800
+From: "Bryan Wu" <cooloney@kernel.org>
+Sender: cooloney.lkml@gmail.com
+To: "Kay Sievers" <kay.sievers@vrfy.org>
 Subject: Re: 2.6.28-rc2: (mtd)block/partitions BUG with kobject reference count
 In-Reply-To: <ac3eb2510810301451x7dbf18edgd03c1433099ce5e4@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 References: <87ej1z4ep8.fsf@macbook.be.48ers.dk>
@@ -29,7 +30,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 30, 2008 at 22:51, Kay Sievers <kay.sievers@vrfy.org> wrote:
+On Fri, Oct 31, 2008 at 5:51 AM, Kay Sievers <kay.sievers@vrfy.org> wrote:
 > On Thu, Oct 30, 2008 at 00:28, Peter Korsgaard <jacmet@sunsite.dk> wrote:
 >>>>>>> "Rafael" == Rafael J Wysocki <rjw@sisk.pl> writes:
 >>
@@ -58,25 +59,9 @@ On Thu, Oct 30, 2008 at 22:51, Kay Sievers <kay.sievers@vrfy.org> wrote:
 > partition will not be removed. Finally, when modprobe the module
 > again, the 2nd partition won't be added"
 > https://blackfin.uclinux.org/gf/tracker/4463
+>
 
-Looks like a bdi issue:
-  http://lkml.org/lkml/2008/10/30/519
+Yes, I found the similar issue on Blackfin. And kernel 2.6.26, 2.6.27
+and also latest 2.6.28-rc2 have this bug.
 
-Peter, if I do this (whitespace mangled, just pasted in here), the
-error goes away for me. Can you try this?
-
-Thanks,
-Kay
-
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -515,7 +515,8 @@ void add_disk(struct gendisk *disk)
-        blk_register_queue(disk);
-
-        bdi = &disk->queue->backing_dev_info;
--       bdi_register_dev(bdi, disk_devt(disk));
-+       if (!bdi->dev)
-+               bdi_register_dev(bdi, disk_devt(disk));
-        retval = sysfs_create_link(&disk_to_dev(disk)->kobj, &bdi->dev->kobj,
-                                   "bdi");
-        WARN_ON(retval);
+-Bryan
