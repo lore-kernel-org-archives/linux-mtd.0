@@ -1,15 +1,15 @@
-Received: from out01.mta.xmission.com ([166.70.13.231])
+Received: from out02.mta.xmission.com ([166.70.13.232])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KwA4X-0004AB-FP
-	for linux-mtd@lists.infradead.org; Sat, 01 Nov 2008 06:34:58 +0000
+	id 1KwAhC-00028w-1a
+	for linux-mtd@lists.infradead.org; Sat, 01 Nov 2008 07:14:54 +0000
 From: ebiederm@xmission.com (Eric W. Biederman)
 To: David Woodhouse <dwmw2@infradead.org>
 References: <20081029195349.imqvyxcajuoko0wo@imap.linux.ibm.com>
 	<1225463927.16774.106.camel@macbook.infradead.org>
-Date: Fri, 31 Oct 2008 23:33:10 -0700
+Date: Sat, 01 Nov 2008 00:04:37 -0700
 In-Reply-To: <1225463927.16774.106.camel@macbook.infradead.org> (David
 	Woodhouse's message of "Fri, 31 Oct 2008 14:38:47 +0000")
-Message-ID: <m1k5bohs61.fsf@frodo.ebiederm.org>
+Message-ID: <m11vxwhqpm.fsf@frodo.ebiederm.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Subject: Re: ST M29W320D incorrectly configured
@@ -51,8 +51,10 @@ David Woodhouse <dwmw2@infradead.org> writes:
 > That condition is doubly wrong, I think. Not only does it never trigger,
 > but it'd do the wrong thing if it _did_ trigger. I think the answer is
 > to revert this:
+
+Yep.  The logic came from a misunderstanding of how the devices would show up.
 > http://lists.infradead.org/pipermail/linux-mtd-cvs/2004-September/004096.html
->
+
 > It would be nice if we could do it that way, but these ST chips don't
 > seem to work. When they're in 16-bit mode, they really do need a byte
 > address of 0x555 for the second unlock address, not 0x554 (0x2aa*2) as
@@ -62,85 +64,37 @@ David Woodhouse <dwmw2@infradead.org> writes:
 > So I think the answer is to go back to cfi->addr_unlock[12] being _byte_
 > addresses within the chip...
 
-Forget my last I see now how we can try a 16bit device on an 8 bit bus.
-I had missed the type <<=1 in gen_probe_new_chip.  Ooops.
+And in case you prefer to go do everything in byte address here are some
+comments in line.
 
-With that said I think we need to fix cfi_send_gen_cmd as this problem
-applies to all uses of it.
+> +		cfi->addr_unlock1 = 0x555 << cfi->device_type;
+> +		cfi->addr_unlock2 = 0x2aa << cfi->device_type;
+> +
+> +		/* Handle the case of x16 chips in x8 mode which are _really_
+> +		   picky about the unlock addresses, and require that A-1 is
+> +		   set too. This is only some ST chips so far...  */
+> + if (cfi->device_type == 2 && map_bankwidth(map) == cfi_interleave(cfi))
+> + cfi->addr_unlock2 |= 1; /* i.e. 0x555 instead of 0x554 */
 
-Unless I've missed something the patch below completely fixes the problem.
+Note the correct test here is:
+		if (cfi->device_type/2 == (map_bankwidth(map)/cfi_interleave(cfi)))
+			cfi_addr_unlock2 |= 1;
 
-From: Eric W. Biederman <ebiederm@maxwell.arastra.com>
-Subject: [PATCH] mtd: Fix cfi_send_gen_cmd the handling of x16 devices in x8 mode
+You need the division or else crazy cases like interleaved x16 devices in x8 mode 
+won't work.  Testing device_type/2 == map_bankwidth(map)/cfi_interleave(cfi) automatically
+enables x32 devices in x16 mode as well.
+                        
+>   retry:
+>  	if (!cfi->numchips) {
+> + unsigned unlock_mask = 0xFFFF << (map_bankwidth(map) / cfi_interleave(cfi) -
+> 1);
+> +
 
-cfi_send_gen_cmd is only passed in the addresses:
-0, 0x55, 0x2aa, 0x555 and the addresses addr_unlock1 and addr_unlock2
-from jeded_probe.  The address 0, 0x55, and 0x555 will not be
-effected by this patch.
+Looking at the specified unlock address it looks like the loss of the low
+bit here is actually a bug in jedec_probe.  So we should not need unlock_mask.
 
-For 16bit devices in 8bit compatibility mode we need to use the
-byte address:  0xaaa and 0x555.  Which effectively match
-the word address 0x555 and 0x2aa.  Except the last has it's low byte
-set.  We need to set the low bit to maintain the alternating bit
-sequence.
+It appears you have passed over the probe sequence in cfi_probe_setup to reset
+the chip.  It doesn't seem to make a difference in this case but still it
+won't work on x16 devices in x8 mode as current written.
 
-Likewise the addresses in jedec_probe whose word address ends
-in the bits 10 also need their low bit set.
-
-So generically modify cfi_build_cmd_addr to extend alternating bit
-sequences in addresses.  And every current cfi_send_gen_cmd that
-assumes cfi_cmd_set_0002 (i.e. uses addresses 0x2aa and 0x555)
-needs to be updated.
-
-Signed-off-by: Eric W. Biederman <ebiederm@maxwell.arastra.com>
----
- drivers/mtd/chips/cfi_cmdset_0002.c |   13 -------------
- include/linux/mtd/cfi.h             |    9 ++++++++-
- 2 files changed, 8 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index a972cc6..9e7a236 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -362,19 +362,6 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
- 		/* Set the default CFI lock/unlock addresses */
- 		cfi->addr_unlock1 = 0x555;
- 		cfi->addr_unlock2 = 0x2aa;
--		/* Modify the unlock address if we are in compatibility mode */
--		if (	/* x16 in x8 mode */
--			((cfi->device_type == CFI_DEVICETYPE_X8) &&
--				(cfi->cfiq->InterfaceDesc ==
--					CFI_INTERFACE_X8_BY_X16_ASYNC)) ||
--			/* x32 in x16 mode */
--			((cfi->device_type == CFI_DEVICETYPE_X16) &&
--				(cfi->cfiq->InterfaceDesc ==
--					CFI_INTERFACE_X16_BY_X32_ASYNC)))
--		{
--			cfi->addr_unlock1 = 0xaaa;
--			cfi->addr_unlock2 = 0x555;
--		}
- 
- 	} /* CFI mode */
- 	else if (cfi->cfi_mode == CFI_MODE_JEDEC) {
-diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
-index d6fb115..0b62217 100644
---- a/include/linux/mtd/cfi.h
-+++ b/include/linux/mtd/cfi.h
-@@ -283,7 +283,14 @@ struct cfi_private {
-  */
- static inline uint32_t cfi_build_cmd_addr(uint32_t cmd_ofs, int interleave, int type)
- {
--	return (cmd_ofs * type) * interleave;
-+	uint32_t addr = cmd_ofs * type;
-+	/* Modify the unlock address if we are in compatiblity mode.
-+	 * For 16bit devices on 8 bit busses
-+	 * and 32bit devices on 16 bit busses
-+	 * set the low bit of the alternating bit sequence of the address.
-+	 */
-+	addr |= ((cmd_ofs & 2) * type) >> 2;
-+	return addr * interleave;
- }
- 
- /*
--- 
-1.5.6.5
+Eric
