@@ -1,17 +1,16 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
+Received: from mail.openmoko.org ([88.198.124.205])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KvdgP-0003b7-8w
-	for linux-mtd@lists.infradead.org; Thu, 30 Oct 2008 19:59:53 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-To: David Woodhouse <David.Woodhouse@intel.com>,
-	Chen Gong <g.chen@freescale.com>
-Subject: [PATCH] m25p80: fix detection of m25p16 flashes
-Date: Thu, 30 Oct 2008 15:59:46 -0400
-Message-Id: <1225396786-23679-1-git-send-email-vapier@gentoo.org>
-In-Reply-To: <1225286467-17955-1-git-send-email-vapier@gentoo.org>
-References: <1225286467-17955-1-git-send-email-vapier@gentoo.org>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Michael Hennerich <Michael.Hennerich@analog.com>
+	id 1Kw6xM-0000aR-B0
+	for linux-mtd@lists.infradead.org; Sat, 01 Nov 2008 03:15:21 +0000
+Date: Sat, 1 Nov 2008 01:15:05 -0200
+From: Werner Almesberger <werner@openmoko.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] nand_read_subpage vs. S3C244x NAND: non-word reads
+Message-ID: <20081101031505.GA5177@almesberger.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: Ben Dooks <ben@trinity.fluff.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,28 +20,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Commit d0e8c47c58575b9131e786edb488fd029eba443e added support for extended ids
-but seems to break on flashes which don't have an extended id defined.  If the
-table does not have an extid defined, then we should ignore it.
+In recent kernels, the optimized OOB reads in nand_read_subpage often
+make requests which aren't an exact multiple of a word, which caused
+nand/s3c2410.c to do a partial read, yielding chaos and mayhem.
 
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
-Signed-off-by: Michael Hennerich <Michael.Hennerich@analog.com>
+I'm not entirely sure whether nand_read_subpage is to blame for making
+non-word requests, or whether nand/s3c2410.c is to blame for not
+supporting them, but here's a patch for the latter.
+
+Note that s3c2410_nand_write_buf has a similar issue. RNDIN is used in
+nand_write_oob_syndrome, so this may also be a real problems.
+
+- Werner
+
+---------------------------------- cut here -----------------------------------
+
+fix-s3c-nand-read-bytes.patch
+
+With the introduction of optimized OOB reads in nand_read_subpage,
+the length of the data requested may not be a multiple of four bytes.
+
+This caused a partial read on the 2440, leading to false ECC errors
+and, worse, attempts to "correct" them.
+
+Note that there is a similar issue in s3c2440_nand_write_buf, which
+doesn't seem to cause trouble yet.
+
+Signed-off-by: Werner Almesberger <werner@openmoko.org>
+
 ---
- drivers/mtd/devices/m25p80.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index a298fed..6188fd4 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -575,7 +575,7 @@ static struct flash_info *__devinit jedec_probe(struct spi_device *spi)
- 			tmp < ARRAY_SIZE(m25p_data);
- 			tmp++, info++) {
- 		if (info->jedec_id == jedec) {
--			if (ext_jedec != 0 && info->ext_id != ext_jedec)
-+			if (info->ext_id != 0 && info->ext_id != ext_jedec)
- 				continue;
- 			return info;
- 		}
--- 
-1.6.0.2
+Index: ktrack/drivers/mtd/nand/s3c2410.c
+===================================================================
+--- ktrack.orig/drivers/mtd/nand/s3c2410.c	2008-11-01 00:29:45.000000000 -0200
++++ ktrack/drivers/mtd/nand/s3c2410.c	2008-11-01 00:38:10.000000000 -0200
+@@ -530,7 +530,14 @@
+ static void s3c2440_nand_read_buf(struct mtd_info *mtd, u_char *buf, int len)
+ {
+ 	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
++
+ 	readsl(info->regs + S3C2440_NFDATA, buf, len / 4);
++	if (unlikely(len & 3)) {
++		u32 data;
++
++		data = readl(info->regs + S3C2440_NFDATA);
++		memcpy(buf + (len & ~3), &data, len & 3);
++	}
+ }
+ 
+ static void s3c2410_nand_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
