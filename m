@@ -1,24 +1,12 @@
-Subject: Re: [PATCH 1/2] mtd: Fix cfi_send_gen_cmd the handling of x16
-	devices in x8 mode
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Eric W. Biederman" <ebiederm@xmission.com>
-In-Reply-To: <1225536182.16774.166.camel@macbook.infradead.org>
-References: <20081029195349.imqvyxcajuoko0wo@imap.linux.ibm.com>
-	<1225463927.16774.106.camel@macbook.infradead.org>
-	<m1k5bohs61.fsf@frodo.ebiederm.org>
-	<1225524813.16774.140.camel@macbook.infradead.org>
-	<m1skqbhmh2.fsf@frodo.ebiederm.org>
-	<1225529384.16774.162.camel@macbook.infradead.org>
-	<m1d4hfhhim.fsf@frodo.ebiederm.org>
-	<m163n7hh8i.fsf_-_@frodo.ebiederm.org>
-	<1225536182.16774.166.camel@macbook.infradead.org>
-Content-Type: text/plain
-Date: Sat, 01 Nov 2008 10:58:59 +0000
-Message-Id: <1225537139.16774.168.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: jwboyer@gmail.com, linux-mtd@lists.infradead.org,
-	Corinna Schultz <cschultz@linux.vnet.ibm.com>
+From: "BMW AUTOMOBILE UK" <info@bmw.co.uk>
+Subject: AWARD BENEFICIARY !!!
+Date: Sat, 1 Nov 2008 08:14:28 -0300
+Message-Id: <20081101111428.M76444@bmw.co.uk>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset=iso-8859-1
+To: undisclosed-recipients:;
+Reply-To: bmwdptoffice229@ymail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,13 +16,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2008-11-01 at 10:43 +0000, David Woodhouse wrote:
-> I think this one is still broken by your patch -- it's the exception to
-> your observation that we only ever use addresses ending in 00, 55 or aa.
 
-No, I misunderstood how that works -- your patch is fine. Although I
-think I'll split patch 1/2 into cleanup vs. the actual fix, too.
+BMW GROUP PROMOTION
+PUBLIC RELATIONS DEPARTMENT, BMW 
+Automobiles 22 Garden Close, Stamford, Lincs, PE9 2YP,
+London United Kingdom.
+01/ 11 / 2008.
 
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+Attention: Winner,
+
+This is to inform you that you have been selected for a
+cash prize of £850,000.00 (Eight hundred and fifty thousand
+Great British Pounds) from the BMW  E-LOTTERY BONANZA
+International programs held on 1st of Nov 2008, in London
+United Kingdom.
+
+The selection process was carried out through random
+selection in our computerized email selection system(ess)
+from a database of over 250,000 email addresses drawn from
+all the continents of the world which you were selected.
+The BMW e-Lottery is approved by the British Gaming Board
+and also Licensed by the The International Association of
+Gaming Regulators (IAGR). This promotional lottery is the
+3rd of its kind and we intend to sensitize the public.
+To begin the processing of your prize you are to contact
+our fiduciary claims department for more information as
+regards procedures to claim your prize.
+
+PUBLIC RELATIONS DEPARTMENT
+7 DOCK WAY, SEFTON BUSINESS PARK
+LONDON, T40 4RT
+UNITED KINGDOM.
+Sir. John Smith
+Email:bmwdpt.office@gmail.com 
+
+Contact him by providing him with your secret pin code
+X7PYWM2008 and your Reference Number BMW:2551256003/23.You
+are also advised to provide him with the under listed
+information's as soon as possible:
+1.Name in full.
+2.Address.
+3.Nationality.
+4.Age.
+5.Occupation.
+6.Telephone Number.
+7.Present Country.
+8.Short comment on our products. [optional]. - -
+9.Fax .
+10.Email address.
+11.Mode of Payment.(BY WIRE TRANSFER OR COURIER SERVICE)
+==================================================================
+==============================================================================
+===============================================================
+WARNING!!! ANY MAIL RECEIVED OF THIS SUCH WITH ANY OTHER TRADE MARK OR
+ADDRESS SHOULD BE  FORWARDED TO THIS BOX IMMEDIATELY, THIS WILL HELP US TO
+FIGHT SCAM AND LOTTERY IMPOSTER'S.
+THANK YOU FOR YOUR ANTICIPATED CO-OPERATION.
