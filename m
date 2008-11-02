@@ -1,16 +1,21 @@
-Received: from mail.openmoko.org ([88.198.124.205])
+Received: from aeryn.fluff.org.uk ([87.194.8.8] helo=kira.home.fluff.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KwVsT-0002lm-NC
-	for linux-mtd@lists.infradead.org; Sun, 02 Nov 2008 05:51:57 +0000
-Date: Sun, 2 Nov 2008 03:51:38 -0200
-From: Werner Almesberger <werner@openmoko.org>
-To: Alexey Korolev <akorolev@infradead.org>
-Subject: clarify calculation in nand_read_subpage and fix possible bug
-Message-ID: <20081102055138.GB5177@almesberger.net>
+	id 1Kwc40-0002qk-Px
+	for linux-mtd@lists.infradead.org; Sun, 02 Nov 2008 12:28:17 +0000
+Date: Sun, 2 Nov 2008 12:27:51 +0000
+From: Ben Dooks <ben-linux@fluff.org>
+To: Werner Almesberger <werner@openmoko.org>
+Subject: Re: [PATCH] nand_read_subpage vs. S3C244x NAND: non-word reads
+Message-ID: <20081102122751.GC11063@fluff.org.uk>
+References: <20081101031505.GA5177@almesberger.net>
+	<20081101124634.GB11063@fluff.org.uk>
+	<20081101161148.GN31758@almesberger.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <20081101161148.GN31758@almesberger.net>
+Cc: linux-mtd@lists.infradead.org, Ben Dooks <ben@trinity.fluff.org>,
+	Ben Dooks <ben-linux@fluff.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,76 +25,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Alexey,
+On Sat, Nov 01, 2008 at 02:11:48PM -0200, Werner Almesberger wrote:
+> Ben Dooks wrote:
+> > As noted on the openmoko list,
+> 
+> Sorry for starting two threads on the same topic. The joy of trying
+> to do the right thing with lists that don't let you cross-post unless
+> you're subscribed ...
+> 
+> > I think we can do 256byte subpage reads
+> > as long as they are aligned to 256bytes. We could make the ECC code
+> > deal with non-256 byte power-of-two aligned blocks without huge
+> > changes but my belief is that we cannot support anything that isn't
+> > a power of two.
+> 
+> In this case, the problem is a bit more subtle: the data blocks
+> retrieved are perfectly normal, i.e., 256 bytes in size and
+> properly aligned.
+> 
+> However, nand_read_subpage optimizes retrieval of the OOB data.
+> So instead of retrieving, say, 64 bytes, it only retrieves 24
+> (for a 2048 bytes page). Sometimes, not the entire page is
+> retrieved, and then we get those accesses with an odd size.
+> 
+> > I think the best thing to do is to either force the caller to read
+> > a power of two (pref. >4 bytes), so either we need some form of flag
+> > to say this, or change the behaviour of the callers to never try this.
+> 
+> If it's considered generally objectionable to call read_buf for
+> an amount of data that isn't a whole number of words, those two
+> approaches would work as well. Making nand_read_subpage align to
+> 4 bytes instead of 1/2 would be fairly simple. A flag would be a
+> bit messier.
 
-while debugging a NAND ECC problem, I tried to figure out how the
-optimized ECC position calculation in nand_read_subpage worked. A
-few pulled hairs later :-) ... I think it could be simplified a
-bit, which also helps GCC to generate more compact code for it.
+I think that if it is only a problem of reading the correct number of
+bytes for stuff like the OOB, then there's no problem in adding an
+fractional fixup after the readsl.
 
-If I understand things correctly, it also seems that the original
-algorithm had a small bug that would show with busw = 2 and
-non-contiguous ECC blocks. My analysis is below.
+-- 
+Ben (ben@fluff.org, http://www.fluff.org/)
 
-Could you please have a look at it and ack it if you think it's
-okay ?
-
-Thanks !
-
-- Werner
-
----------------------------------- cut here -----------------------------------
-
-clarify-nand-ecc-access.patch
-
-The ECC access calculation in nand_read_subpage is quite hard to
-understand. This patch makes it more readable.
-
-There is a small change in what the algorithm does: while
-if (eccpos[(start_step + num_steps) * chip->ecc.bytes] & (busw - 1))
-looks at the position of the ECC byte following the bytes we're
-currently reading,
-aligned_len = ALIGN(eccfrag_len+(pos-aligned_pos), busw);
-only looks at their length plus the additional data we have to read
-due to aligning the start position.
-
-I believe the latter to be more correct than the former, since the
-next ECC byte could be located anywhere and its location therefore
-may not give the alignment information we seek. I'm not even sure
-its position is always defined (what if we're reading the last ECC
-of the page ?).
-
-The last byte considered in the "gaps" test that checks that all ECC
-bytes are contiguous is
-  eccfrag_len-2+start_step*ecc.bytes+1 =
-  num_steps*ecc.bytes-2+start_step*ecc.bytes+1 =
-  (start_step+num+steps)*ecc.bytes-1
-so it doesn't include (start_step + num_steps) * chip->ecc.bytes.
-
-The change also saves 44 bytes on ARM.
-
----
-
-Index: ktrack/drivers/mtd/nand/nand_base.c
-===================================================================
---- ktrack.orig/drivers/mtd/nand/nand_base.c	2008-11-02 02:28:19.000000000 -0200
-+++ ktrack/drivers/mtd/nand/nand_base.c	2008-11-02 02:38:22.000000000 -0200
-@@ -851,12 +851,12 @@
- 	} else {
- 		/* send the command to read the particular ecc bytes */
- 		/* take care about buswidth alignment in read_buf */
--		aligned_pos = eccpos[start_step * chip->ecc.bytes] & ~(busw - 1);
--		aligned_len = eccfrag_len;
--		if (eccpos[start_step * chip->ecc.bytes] & (busw - 1))
--			aligned_len++;
--		if (eccpos[(start_step + num_steps) * chip->ecc.bytes] & (busw - 1))
--			aligned_len++;
-+
-+		int pos;
-+
-+		pos = eccpos[start_step * chip->ecc.bytes];
-+		aligned_pos = pos & ~(busw - 1);
-+		aligned_len = ALIGN(eccfrag_len+(pos-aligned_pos), busw);
- 
- 		chip->cmdfunc(mtd, NAND_CMD_RNDOUT, mtd->writesize + aligned_pos, -1);
- 		chip->read_buf(mtd, &chip->oob_poi[aligned_pos], aligned_len);
+  'a smiley only costs 4 bytes'
