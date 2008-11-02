@@ -1,27 +1,18 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+Received: from smtp8.server.rpi.edu ([128.113.2.228])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KwhMz-00033I-U2
-	for linux-mtd@lists.infradead.org; Sun, 02 Nov 2008 18:08:14 +0000
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1KwhMq-00051g-Jm
-	for linux-mtd@lists.infradead.org; Sun, 02 Nov 2008 18:08:04 +0000
-Received: from wireless.queued.net ([66.92.71.179])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Sun, 02 Nov 2008 18:08:04 +0000
-Received: from dilinger by wireless.queued.net with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Sun, 02 Nov 2008 18:08:04 +0000
+	id 1KwhaJ-0007rE-Cm
+	for linux-mtd@lists.infradead.org; Sun, 02 Nov 2008 18:22:00 +0000
+Received: from RPI02.localdomain (voiceflight.inc.rpi.edu [128.113.36.139])
+	by smtp8.server.rpi.edu (8.13.1/8.13.1) with SMTP id mA2ILtpG002109
+	for <linux-mtd@lists.infradead.org>; Sun, 2 Nov 2008 13:21:55 -0500
+Date: Sun, 2 Nov 2008 14:23:15 -0500
+From: "J. Scott Merritt" <merrij3@rpi.edu>
 To: linux-mtd@lists.infradead.org
-From: Andres Salomon <dilinger@queued.net>
-Subject: [PATCH] jffs2: force the jffs2 GC daemon to behave a bit better
-Date: Sun, 2 Nov 2008 13:04:49 -0500
-Message-ID: <20081102130449.0aa74adb@fred>
+Subject: ubinize corrections
+Message-Id: <20081102142315.453628de.merrij3@rpi.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Sender: news <news@ger.gmane.org>
-Cc: linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,53 +22,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Dear list,
 
-I've noticed some pretty poor behavior on OLPC machines after bootup, when
-gdm/X are starting.  The GCD monopolizes the scheduler (which in turns means
-it gets to do more nand i/o), which results in processes taking much much
-longer than they should to start.
+I believe that I have stumbled upon two problems with the latest version
+of ubinize.c in mtd-utils - one serious, and one not so serious.
 
-As an example, on an OLPC machine going from OFW to a usable X (via auto-login
-gdm) takes 2m 30s.  The majority of this time is consumed by the switch into
-graphical mode.  With this patch, we cut a full 60s off of bootup time.  After
-bootup, things are much snappier as well.
+- First, the easy one: At line 457, I believe that we should be printing
+args.subpage_size rather than ui.min_io_size.
 
-Note that we have seen a CRC node error with this patch that causes the machine
-to fail to boot, but we've also seen that problem without this patch.  
+- More seriously, I believe that the "flags" field in the ubigen_vol_info
+structures is not being properly initialized.  Line 494 allocates memory
+for these structures with malloc, so they are not cleared to zero.  The
+read_section function updates the flag field if the AUTO-RESIZE flag is
+specified, but does not otherwise initialize or clear it.
 
-Signed-off-by: Andres Salomon <dilinger@debian.org>
----
- fs/jffs2/background.c |   18 +++++++++++-------
- 1 files changed, 11 insertions(+), 7 deletions(-)
+I reckon the latter problem could be repaired either with calloc, or by
+modifying read_section to more directly set/clear the flag.
 
-diff --git a/fs/jffs2/background.c b/fs/jffs2/background.c
-index 8adebd3..f38d557 100644
---- a/fs/jffs2/background.c
-+++ b/fs/jffs2/background.c
-@@ -95,13 +95,17 @@ static int jffs2_garbage_collect_thread(void *_c)
- 			schedule();
- 		}
- 
--		/* This thread is purely an optimisation. But if it runs when
--		   other things could be running, it actually makes things a
--		   lot worse. Use yield() and put it at the back of the runqueue
--		   every time. Especially during boot, pulling an inode in
--		   with read_inode() is much preferable to having the GC thread
--		   get there first. */
--		yield();
-+		/* Problem - immediately after bootup, the GCD spends a lot
-+		 * of time in places like jffs2_kill_fragtree(); so much so
-+		 * that userspace processes (like gdm and X) are starved
-+		 * despite plenty of cond_resched()s and renicing.  Yield()
-+		 * doesn't help, either (presumably because userspace and GCD
-+		 * are generally competing for a higher latency resource -
-+		 * disk).
-+		 * This forces the GCD to slow the hell down.   Pulling an
-+		 * inode in with read_inode() is much preferable to having
-+		 * the GC thread get there first. */
-+		schedule_timeout_interruptible(msecs_to_jiffies(50));
- 
- 		/* Put_super will send a SIGKILL and then wait on the sem.
- 		 */
--- 
-1.5.6.5
+Thanks, Scott.
