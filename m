@@ -1,30 +1,30 @@
-Received: from mail128.messagelabs.com ([216.82.250.131])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KwyVj-0003ne-NA
-	for linux-mtd@lists.infradead.org; Mon, 03 Nov 2008 12:26:24 +0000
-Received: from il06exr02.mot.com (il06exr02.mot.com [129.188.137.132])
-	by motgate8.mot.com (8.12.11/Motorola) with ESMTP id mA3CQLkp003073
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 3 Nov 2008 05:26:21 -0700 (MST)
-Received: from il06vts04.mot.com (il06vts04.mot.com [129.188.137.144])
-	by il06exr02.mot.com (8.13.1/Vontu) with SMTP id mA3CQKX8005818
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 3 Nov 2008 06:26:20 -0600 (CST)
-Received: from ZMY16EXM67.ds.mot.com (zmy16exm67.ap.mot.com [10.179.4.27])
-	by il06exr02.mot.com (8.13.1/8.13.0) with ESMTP id mA3CQJUm005813
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 3 Nov 2008 06:26:20 -0600 (CST)
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-Subject: MTD password protection
-Date: Mon, 3 Nov 2008 20:26:17 +0800
-Message-ID: <B7803DC652E2F9458758AEBB6A5FD60F033A3BE0@ZMY16EXM67.ds.mot.com>
-In-Reply-To: <mailman.3.1225645202.29354.linux-mtd@lists.infradead.org>
-From: "KRISHNAN SUDHAKAR-NRD743" <sudhakark@motorola.com>
-To: <linux-mtd@lists.infradead.org>
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Kx0LQ-0000Yi-Ut
+	for linux-mtd@lists.infradead.org; Mon, 03 Nov 2008 14:23:53 +0000
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1Kx0LN-00044J-Ux
+	for linux-mtd@lists.infradead.org; Mon, 03 Nov 2008 14:23:49 +0000
+Received: from 194.95.133.35 ([194.95.133.35])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Mon, 03 Nov 2008 14:23:49 +0000
+Received: from andre.puschmann by 194.95.133.35 with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Mon, 03 Nov 2008 14:23:49 +0000
+To: linux-mtd@lists.infradead.org
+From: Andre Puschmann <andre.puschmann@imms.de>
+Subject: Re: flash read performance
+Date: Mon, 03 Nov 2008 15:23:41 +0100
+Message-ID: <490F096D.5060208@imms.de>
+References: <ge6old$oo3$1@ger.gmane.org>	<20081029114256.GA2239@yoda.jdub.homelinux.org>	<gea0sh$j97$1@ger.gmane.org>	<49097176.5010506@thomson.net>	<gec051$efd$1@ger.gmane.org>
+	<49098716.1010404@thomson.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <49098716.1010404@thomson.net>
+Sender: news <news@ger.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,45 +34,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Hi,
 
-Presently I am working on password protection for sector in spansion
-flash.
+I spent some more time on this issue and investigated some mtd-maps
+drivers.
+The kernel I am using is a 2.6.21 that comes out of the gumstix 
+svn-repo. Unfortunately, it uses a legacy driver which only does a
+ioremap() but no ioremap_nocache(). Patching the driver with this
+additional call boosts up transfers up to around 5.5MB/s, which
+is a fairly improvement.
+I will send a patch to the gumstix list. Users of newer kernel might
+not need this, as they use a newer driver (pxa2xx-flash.c) anyway.
 
-I am new to Linux I understood the MTD code flow like the following
+But I am wondering if things still can go faster?!
+Jamie, do you some information about the speed I can expect 
+theoretically? Or do I have to switch over to another operation
+mode (i.e. async) for higher speeds?
 
-1) The mtd erase operation goes through like the following
-mtdchar.c -> cfi_cmdset_0002.c -> cfi_util.c -> erase the flash(?) ->
-cfi_cmdset_0002.c (call back) -> mtdpart.c(callback) ->
-mtdchar.c(callback)
-=20
-2) In "cfi_cmdset_0002.c" the "mtd->erase" will be pointed to
-"cfi_amdstd_erase_varsize"
-    2.1) In "mtdchar.c"  case MEMERASE uses the mtd->erase pointed in
-"cfi_cmdset_0002.c" I.e. "cfi_amdstd_erase_varsize"
-    2.2) The "cfi_amdstd_erase_varsize" uses the call back function
-"mtd_erase_callback" (mtdpart.c)
-=20
-Please let me know is my understanding is correct?
+Thanks in advance.
 
-I have proceeded like,=20
-1) I have written utility "passread" which will take sector id as
-parameter.=20
-2) In mtdchar.c ioctl function added one switch case.
-3) In the mtdchar.c switch case, through function pointer calling the
-function in "cfi_cmdset_0002.c"
-4) In cfi_cmdset_0002.c file initialized the mtd->passread with the
-fucntion I need to call in "*cfi_cmdset_0002" function.
+Best regards,
+Andre
 
 
-Finally ended with "Segmentation fault" in mtdchar.c during the function
-pointer calling.
 
-I believe that the mtd->passread is not initialized. But I have
-initialized the same in "*cfi_cmdset_0002" function but still getting
-error and don't know how to do that.
-
-Please suggest me what wrong I have did?
-
-Regards
-Sudhakar
+Arnaud Mouiche schrieb:
+> I was using redboot, configured to use the optimized memcpy (yes, it 
+> gives the choice at configuration time)
+> on kernel side, I just hack memcpy_fromio to add a "weak" attribute, and 
+> rewrite it to directly use the linux optimized memcpy (shame on me for 
+> this "not suggested" methode, but speed was my goal)
+> 
+> after that, performances are equal between bootloader and linux, and 
+> really near the one reached by a DMA access, which is also the 
+> performances we can calculate from FLASH time access configuration.
+> 
+> arnaud
+> 
+> Andre Puschmann a écrit :
+>> Hi,
+>>
+>>   
+>>> I was faced with the same wondering in the past : bootloader NOR access 
+>>> was really much faster that Linux one.
+>>>     
+>> About how much faster? It really depends on the access method. I am
+>> using u-boot and if I use the basic cp.b routine its about the same
+>> _slow_ speed. I tried to use the asm-optimised memcpy routine that the 
+>> kernel has. This is much faster, around 5MB/s.
+>>
+>>   
+>>> Yes, no DMA was used (but the same on bootloader, and anyway that 
+>>> doesn't impact the data rate, only the CPU load), but even worse, Linux 
+>>> code was using memcpy_fromio which a basic byte by byte loop copy in the 
+>>> default ARM implementation.
+>>>     
+>> Yes, memcpy_fromio is quite slow. But using normal memcpy is not 
+>> suggested, only use writel()/readl() and memcpy_[from|to]io().
+>>
+>> I am not sure about the right _fast_ way to to such copies.
+>>
+>>
+>> Regards,
+>> Andre
+>>
+>>
+>> ______________________________________________________
+>> Linux MTD discussion mailing list
+>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>
+>>   
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
