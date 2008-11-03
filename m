@@ -1,26 +1,19 @@
-Received: from ey-out-1920.google.com ([74.125.78.148])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Kx189-0006ut-FT
-	for linux-mtd@lists.infradead.org; Mon, 03 Nov 2008 15:14:13 +0000
-Received: by ey-out-1920.google.com with SMTP id 4so896273eyg.24
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 03 Nov 2008 07:14:12 -0800 (PST)
-To: "Kay Sievers" <kay.sievers@vrfy.org>
-Subject: Re: 2.6.28-rc2: (mtd)block/partitions BUG with kobject reference count
-References: <87ej1z4ep8.fsf@macbook.be.48ers.dk>
-	<200810300027.19116.rjw@sisk.pl> <87abcnj810.fsf@macbook.be.48ers.dk>
-	<ac3eb2510810301451x7dbf18edgd03c1433099ce5e4@mail.gmail.com>
-	<ac3eb2510810301647k5e3dfecdjfa79f7e916fcdd20@mail.gmail.com>
-From: Peter Korsgaard <jacmet@sunsite.dk>
-Date: Mon, 03 Nov 2008 16:14:00 +0100
-In-Reply-To: <ac3eb2510810301647k5e3dfecdjfa79f7e916fcdd20@mail.gmail.com>
-	(Kay Sievers's message of "Fri\, 31 Oct 2008 00\:47\:18 +0100")
-Message-ID: <87d4hcc05j.fsf@macbook.be.48ers.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: Peter Korsgaard <jacmet@gmail.com>
-Cc: "Rafael J. Wysocki" <rjw@sisk.pl>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+Received: from smtp7.server.rpi.edu ([128.113.2.227])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Kx2cZ-0001v8-Ml
+	for linux-mtd@lists.infradead.org; Mon, 03 Nov 2008 16:49:43 +0000
+Date: Mon, 3 Nov 2008 11:49:44 -0500
+From: "J. Scott Merritt" <merrij3@rpi.edu>
+To: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Subject: Re: ubinize corrections
+Message-Id: <20081103114944.2275c36d.merrij3@rpi.edu>
+In-Reply-To: <490EB956.5050700@nokia.com>
+References: <20081102142315.453628de.merrij3@rpi.edu>
+	<490EB956.5050700@nokia.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,18 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>>>> "Kay" == Kay Sievers <kay.sievers@vrfy.org> writes:
 
-Hi,
+> From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+> Date: Mon, 3 Nov 2008 10:36:32 +0200
+> Subject: [PATCH] ubinize: correct subpage_size print and initialise vol_info to zero
+> 
+> Reported-by: "J. Scott Merritt" <merrij3@rpi.edu>
+> Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+> ---
 
- Kay> Looks like a bdi issue:
- Kay>   http://lkml.org/lkml/2008/10/30/519
+Adrian,
 
- Kay> Peter, if I do this (whitespace mangled, just pasted in here), the
- Kay> error goes away for me. Can you try this?
+Thank you.  Not sure of the protocol/sequence, but you are welcome
+to add my Acked-by: if helpful ...
 
-Sorry for the slow response - Your patch
-(http://lkml.org/lkml/2008/10/30/558) fixes the issue for me - Thanks!
-
--- 
-Bye, Peter Korsgaard
+Regards, Scott.
