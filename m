@@ -1,18 +1,18 @@
-Received: from smtp8.server.rpi.edu ([128.113.2.228])
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KwhaJ-0007rE-Cm
-	for linux-mtd@lists.infradead.org; Sun, 02 Nov 2008 18:22:00 +0000
-Received: from RPI02.localdomain (voiceflight.inc.rpi.edu [128.113.36.139])
-	by smtp8.server.rpi.edu (8.13.1/8.13.1) with SMTP id mA2ILtpG002109
-	for <linux-mtd@lists.infradead.org>; Sun, 2 Nov 2008 13:21:55 -0500
-Date: Sun, 2 Nov 2008 14:23:15 -0500
-From: "J. Scott Merritt" <merrij3@rpi.edu>
-To: linux-mtd@lists.infradead.org
-Subject: ubinize corrections
-Message-Id: <20081102142315.453628de.merrij3@rpi.edu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	id 1Kwuu2-0003a1-Fd
+	for linux-mtd@lists.infradead.org; Mon, 03 Nov 2008 08:35:14 +0000
+Message-ID: <490EB956.5050700@nokia.com>
+Date: Mon, 03 Nov 2008 10:41:58 +0200
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: "J. Scott Merritt" <merrij3@rpi.edu>
+Subject: Re: ubinize corrections
+References: <20081102142315.453628de.merrij3@rpi.edu>
+In-Reply-To: <20081102142315.453628de.merrij3@rpi.edu>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,21 +22,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear list,
+J. Scott Merritt wrote:
+> Dear list,
+> 
+> I believe that I have stumbled upon two problems with the latest version
+> of ubinize.c in mtd-utils - one serious, and one not so serious.
+> 
+> - First, the easy one: At line 457, I believe that we should be printing
+> args.subpage_size rather than ui.min_io_size.
+> 
+> - More seriously, I believe that the "flags" field in the ubigen_vol_info
+> structures is not being properly initialized.  Line 494 allocates memory
+> for these structures with malloc, so they are not cleared to zero.  The
+> read_section function updates the flag field if the AUTO-RESIZE flag is
+> specified, but does not otherwise initialize or clear it.
+> 
+> I reckon the latter problem could be repaired either with calloc, or by
+> modifying read_section to more directly set/clear the flag.
+> 
+> Thanks, Scott.
 
-I believe that I have stumbled upon two problems with the latest version
-of ubinize.c in mtd-utils - one serious, and one not so serious.
+I agree.  Here's the patch:
 
-- First, the easy one: At line 457, I believe that we should be printing
-args.subpage_size rather than ui.min_io_size.
 
-- More seriously, I believe that the "flags" field in the ubigen_vol_info
-structures is not being properly initialized.  Line 494 allocates memory
-for these structures with malloc, so they are not cleared to zero.  The
-read_section function updates the flag field if the AUTO-RESIZE flag is
-specified, but does not otherwise initialize or clear it.
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Date: Mon, 3 Nov 2008 10:36:32 +0200
+Subject: [PATCH] ubinize: correct subpage_size print and initialise vol_info to zero
 
-I reckon the latter problem could be repaired either with calloc, or by
-modifying read_section to more directly set/clear the flag.
+Reported-by: "J. Scott Merritt" <merrij3@rpi.edu>
+Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+---
+ ubi-utils/new-utils/src/ubinize.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-Thanks, Scott.
+diff --git a/ubi-utils/new-utils/src/ubinize.c b/ubi-utils/new-utils/src/ubinize.c
+index ebd5aa0..4f3e8a1 100644
+--- a/ubi-utils/new-utils/src/ubinize.c
++++ b/ubi-utils/new-utils/src/ubinize.c
+@@ -454,7 +454,7 @@ int main(int argc, char * const argv[])
+        verbose(args.verbose, "LEB size:      %d", ui.leb_size);
+        verbose(args.verbose, "PEB size:      %d", ui.peb_size);
+        verbose(args.verbose, "min. I/O size: %d", ui.min_io_size);
+-       verbose(args.verbose, "sub-page size: %d", ui.min_io_size);
++       verbose(args.verbose, "sub-page size: %d", args.subpage_size);
+        verbose(args.verbose, "VID offset:    %d", ui.vid_hdr_offs);
+        verbose(args.verbose, "data offset:   %d", ui.data_offs);
+ 
+@@ -491,7 +491,7 @@ int main(int argc, char * const argv[])
+                goto out_dict;
+        }
+ 
+-       vi = malloc(sizeof(struct ubigen_vol_info) * sects);
++       vi = calloc(sizeof(struct ubigen_vol_info), sects);
+        if (!vi) {
+                errmsg("cannot allocate memory");
+                goto out_dict;
