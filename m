@@ -1,21 +1,29 @@
-Date: Wed, 05 Nov 2008 12:13:03 +0600
-From: "Waller haley" <donotreply@mail.itabom.com.br>
-To: bcarnaghi@lssmo.org, contact@monnetteyecare.com,
-	bcarneva@wheatoncollege.edu, bcarney@bakerequipment.com,
-	bcarney@consensusmedical.com, contact@monstaff.com,
-	esth.njc@njcosmetic.com, webmaster@healthdev.net,
-	mullinam@staff.abanet.org, slayne@ushypermedia.com,
-	slayton@slaytonintl.com, psfeegn@qlnaqf.com,
-	bcarney@peacehealth.org, esthdent@club-internet.fr,
-	esther.banfield@easternhealth.ca, mullingar@pitman-training.ie,
-	info@awardhealthandsafety.co.uk, mullingar@pitman-training.net,
-	linux-mtd-request@lists.infradead.org,
-	slayton@thelionheartschool.com, mullingarchiro@eircom.net,
-	linux-mtd@lists.infradead.org, slazaretou@bankofgreece.gr
-Subject: Dent ists Directory in the US
-Message-ID: <974328y4rqp0$n4925tt0$7910h6v0@Delldim5150
-MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by casper.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1KxHMU-0004Bx-P5
+	for linux-mtd@lists.infradead.org; Tue, 04 Nov 2008 08:34:09 +0000
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1KxHJO-0007pE-NG
+	for linux-mtd@lists.infradead.org; Tue, 04 Nov 2008 08:30:54 +0000
+Received: from 194.95.133.35 ([194.95.133.35])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 04 Nov 2008 08:30:54 +0000
+Received: from andre.puschmann by 194.95.133.35 with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 04 Nov 2008 08:30:54 +0000
+To: linux-mtd@lists.infradead.org
+From: Andre Puschmann <andre.puschmann@imms.de>
+Subject: Re: flash read performance
+Date: Tue, 04 Nov 2008 09:30:44 +0100
+Message-ID: <gep17l$qts$1@ger.gmane.org>
+References: <ge6old$oo3$1@ger.gmane.org>	<20081029114256.GA2239@yoda.jdub.homelinux.org>	<gea0sh$j97$1@ger.gmane.org>	<49097176.5010506@thomson.net>	<gec051$efd$1@ger.gmane.org>	<49098716.1010404@thomson.net>
+	<490F096D.5060208@imms.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <490F096D.5060208@imms.de>
+Sender: news <news@ger.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,24 +33,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
+
+Andre Puschmann schrieb:
+> Unfortunately, it uses a legacy driver which only does a
+> ioremap() but no ioremap_nocache().
+
+Sorry, there was a typo in this statement.
+It should be ioremap_cached().
 
 
-
-
-
-Enhance your marketing efforts with this:
-
--> 164,327 Den Tists 
--> 158,464 Physical Addresses
--> 163,610 Business Contact Numbers
--> 77,632 Faxes
--> 45,748 Email Addresses
-
-for this week the reduced price is $296 (reg $498)
-
-For details please send an email to Nance@profdatanetwork.com
-
-
-
-
-to adjust your subscription status email to stopit@profdatanetwork.com
+Regards,
+Andre
