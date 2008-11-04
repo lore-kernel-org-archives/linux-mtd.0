@@ -1,22 +1,20 @@
-Received: from maat.imms.de ([194.95.250.50])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KxMw8-00055Q-1H
-	for linux-mtd@lists.infradead.org; Tue, 04 Nov 2008 14:31:16 +0000
-Message-ID: <49105CAB.3000706@imms.de>
-Date: Tue, 04 Nov 2008 15:31:07 +0100
-From: Andre Puschman <andre.puschmann@imms.de>
-MIME-Version: 1.0
-To: Jamie Lokier <jamie@shareable.org>
-Subject: Re: flash read performance
-References: <ge6old$oo3$1@ger.gmane.org>
-	<20081029114256.GA2239@yoda.jdub.homelinux.org>
-	<gea0sh$j97$1@ger.gmane.org> <49097176.5010506@thomson.net>
-	<gec051$efd$1@ger.gmane.org> <49098716.1010404@thomson.net>
-	<490F096D.5060208@imms.de> <20081104114229.GA1673@shareable.org>
-In-Reply-To: <20081104114229.GA1673@shareable.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from 3a.49.1343.static.theplanet.com ([67.19.73.58]
+	helo=pug.o-hand.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KxOHn-0002Xc-U4
+	for linux-mtd@lists.infradead.org; Tue, 04 Nov 2008 15:57:44 +0000
+Subject: Re: [PATCH] jffs2: Fix race condition in jffs2_lzo_compress()
+From: Richard Purdie <rpurdie@openedhand.com>
+To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+In-Reply-To: <Pine.LNX.4.64.0811031714590.6298@vixen.sonytel.be>
+References: <Pine.LNX.4.64.0811031714590.6298@vixen.sonytel.be>
+Content-Type: text/plain
+Date: Tue, 04 Nov 2008 15:57:40 +0000
+Message-Id: <1225814260.5433.13.camel@dax.rpnet.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Arnaud Mouiche <arnaud.mouiche@thomson.net>, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	Linux Kernel Development <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jamie Lokier schrieb:
-> I don't know much about this area, but will _writing_ to the flash
-> work reliably if ioremap_cached() is used?
->
-> -- Jamie
->   
 
-Good point. I only was into reading and so I totally forgot writing ;-)
-I gave it a try, although it was terribly slow (only a few kb/s), it worked.
-I just did a cp uImage /dev/mtd3. On the other hand, I never tried writing
-with the old driver. So I don't know if this is faster.
+On Mon, 2008-11-03 at 17:17 +0100, Geert Uytterhoeven wrote:
+> deflate_mutex protects the globals lzo_mem and lzo_compress_buf. However,
+> jffs2_lzo_compress() unlocks deflate_mutex _before_ it has copied out the
+> compressed data from lzo_compress_buf. Correct this by moving the mutex unlock
+> after the copy.
+> In addition, document what deflate_mutex actually protects.
+> 
+> Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
 
-I also did some more testing with my improved flash-timing parameters,
-which yields to read speeds of up to 18-19MB/s, which is really fast 
-compared
-to 1,3MB/s at the beginning :-)
+Acked-by: Richard Purdie <rpurdie@linux.intel.com>
 
-So for now, this is my result:
-- cache and well chosen flash-timings have great impact on (at least) 
-read performance
+This should probably be queued as a bugfix for the current -rc series.
 
-But I think transfer rates > 20MB are possible ..
-
-Anyway, with these results, booting the complete system in nearly (or 
-even less than) 2s should be possible.
-
-Regards,
-Andre
+> ---
+> Just noticed this when looking at the code.
+> The patch is untested, except for a quick compile test.
+> 
+>  fs/jffs2/compr_lzo.c |   15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
+> 
