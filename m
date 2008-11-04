@@ -1,19 +1,22 @@
-Received: from co203.xi-lite.net ([149.6.83.203] helo=toronto.xi-lite.net)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KxIsk-0008PQ-AS
-	for linux-mtd@lists.infradead.org; Tue, 04 Nov 2008 10:11:30 +0000
-Message-ID: <49101FCB.8010704@parrot.com>
-Date: Tue, 04 Nov 2008 11:11:23 +0100
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from mail2.shareable.org ([80.68.89.115])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1KxKIv-00059J-6Q
+	for linux-mtd@lists.infradead.org; Tue, 04 Nov 2008 11:42:46 +0000
+Date: Tue, 4 Nov 2008 11:42:29 +0000
+From: Jamie Lokier <jamie@shareable.org>
+To: Andre Puschmann <andre.puschmann@imms.de>
+Subject: Re: flash read performance
+Message-ID: <20081104114229.GA1673@shareable.org>
+References: <ge6old$oo3$1@ger.gmane.org>
+	<20081029114256.GA2239@yoda.jdub.homelinux.org>
+	<gea0sh$j97$1@ger.gmane.org> <49097176.5010506@thomson.net>
+	<gec051$efd$1@ger.gmane.org> <49098716.1010404@thomson.net>
+	<490F096D.5060208@imms.de>
 MIME-Version: 1.0
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: bus access for NAND parts
-References: <f96d234e0810290454p7c50e9d5t6bd0ecd65444e883@mail.gmail.com>	<f96d234e0810301508n773734efp7a72f3da4ee50841@mail.gmail.com>
-	<Pine.LNX.4.64.0810302323100.15815@lnxricardw.se.axis.com>
-In-Reply-To: <Pine.LNX.4.64.0810302323100.15815@lnxricardw.se.axis.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <490F096D.5060208@imms.de>
+Cc: Arnaud Mouiche <arnaud.mouiche@thomson.net>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ricard Wanderlof a écrit :
-> On Thu, 30 Oct 2008, Cliff Brake wrote:
+Andre Puschmann wrote:
+> Hi,
 > 
->> Correction -- above should say:  "It seems that most devices simply use a
->> _GPIO_ for CE".  The chip select is set low in software, and then
->> multiple bus cycles are run to execute the address and data phases of
->> the NAND operation.  So what keeps another process from interrupting
->> this and running a bus cycle while the GPIO for NAND CE is still low
->> -- which would toggle the strobes to the NAND cs.
-> 
-> I don't know in general, but in several systems that have multiple buses, 
-> the NAND flash can be the only device on a particular bus, so conflicts 
-> with other devices are not an issue in those cases. Otherwise, it would be 
-> as you say, I agree.
-> 
-The s3c2412 where the nand bus is shared with SDRAM. nCE is like a gpio
-set by software. But it isn't a problem because the nand flash doesn't
-care about other bus cycle if nWE/nRE is in high state (see nand
-datasheets).
+> I spent some more time on this issue and investigated some mtd-maps
+> drivers.
+> The kernel I am using is a 2.6.21 that comes out of the gumstix 
+> svn-repo. Unfortunately, it uses a legacy driver which only does a
+> ioremap() but no ioremap_nocache(). Patching the driver with this
+> additional call boosts up transfers up to around 5.5MB/s, which
+> is a fairly improvement.
+> I will send a patch to the gumstix list. Users of newer kernel might
+> not need this, as they use a newer driver (pxa2xx-flash.c) anyway.
 
-So the arbitration is done with nWE/nRE line and without nCE.
+I don't know much about this area, but will _writing_ to the flash
+work reliably if ioremap_cached() is used?
 
-Matthieu
+-- Jamie
