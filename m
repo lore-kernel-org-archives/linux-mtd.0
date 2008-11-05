@@ -1,18 +1,14 @@
 Received: from smtp1.linux-foundation.org ([140.211.169.13])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KxVpI-0004QD-2H
-	for linux-mtd@lists.infradead.org; Wed, 05 Nov 2008 00:00:48 +0000
-Date: Tue, 4 Nov 2008 16:00:27 -0800
+	id 1KxZOQ-0002zv-JU
+	for linux-mtd@lists.infradead.org; Wed, 05 Nov 2008 03:49:30 +0000
+Date: Tue, 4 Nov 2008 19:49:14 -0800
 From: Andrew Morton <akpm@linux-foundation.org>
-To: Viktor Rosendahl <Viktor.Rosendahl@nokia.com>
-Subject: Re: [PATCH 1/1] Make sure that any oops is flushed to the mtdoops
-	console
-Message-Id: <20081104160027.d80249fb.akpm@linux-foundation.org>
-In-Reply-To: <1225458328.16867.23.camel@viktor.research.nokia.com>
-References: <1224688588-2665-1-git-send-email-viktor.rosendahl@nokia.com>
-	<1224688588-2665-2-git-send-email-viktor.rosendahl@nokia.com>
-	<20081030131734.c74e614d.akpm@linux-foundation.org>
-	<1225458328.16867.23.camel@viktor.research.nokia.com>
+To: Andres Salomon <dilinger@queued.net>
+Subject: Re: [PATCH] jffs2: force the jffs2 GC daemon to behave a bit better
+Message-Id: <20081104194914.e39008ba.akpm@linux-foundation.org>
+In-Reply-To: <20081102130449.0aa74adb@fred>
+References: <20081102130449.0aa74adb@fred>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,38 +22,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 31 Oct 2008 15:05:28 +0200
-Viktor Rosendahl <Viktor.Rosendahl@nokia.com> wrote:
+On Sun, 2 Nov 2008 13:04:49 -0500 Andres Salomon <dilinger@queued.net> wrote:
 
-> On Thu, 2008-10-30 at 13:17 -0700, ext Andrew Morton wrote: 
-> > On Wed, 22 Oct 2008 18:16:28 +0300
-> > Viktor Rosendahl <viktor.rosendahl@nokia.com> wrote:
-> <clip> 
-> > >  void __attribute__((weak)) bust_spinlocks(int yes)
-> > > @@ -22,6 +23,7 @@ void __attribute__((weak)) bust_spinlocks(int yes)
-> > >  #ifdef CONFIG_VT
-> > >  		unblank_screen();
-> > >  #endif
-> > > +		console_unblank();
-> > >  		if (--oops_in_progress == 0)
-> > >  			wake_up_klogd();
-> > >  	}
-> > 
-> > That looks logical.  From my reading we can now remove that
-> > unblank_screen(), because the console_unblank() will call
-> > vt_console_driver.unblank() for us?
 > 
-> For some reason, we did not think about it here when the N810 kernel was
-> fixed. It looks good to me but if you do it, then there will be a slight
-> difference in behavior, since console_unblank() will call
-> vt_console_driver.unblank() only if the console_sem can be acquired,
-> otherwise it just returns without doing anything.
+> I've noticed some pretty poor behavior on OLPC machines after bootup, when
+> gdm/X are starting.  The GCD monopolizes the scheduler (which in turns means
+> it gets to do more nand i/o), which results in processes taking much much
+> longer than they should to start.
 > 
-> Maybe console_unblank() should be changed to not care too much about the
-> console_sem if an oops is in progress? 
+> As an example, on an OLPC machine going from OFW to a usable X (via auto-login
+> gdm) takes 2m 30s.  The majority of this time is consumed by the switch into
+> graphical mode.  With this patch, we cut a full 60s off of bootup time.  After
+> bootup, things are much snappier as well.
+> 
+> Note that we have seen a CRC node error with this patch that causes the machine
+> to fail to boot, but we've also seen that problem without this patch.  
 > 
 
-hm, yeah.  Things get messy if we take an oops with console_sem held.
+Well you've observed one of the problems with yield().  The other
+problem is that this thread can be starved for fantastic amounts of
+time when the system is busy.
 
-I'll drop the cleanup patch - I don't have time to think about and test
-anything useful like that :(
+yield() is so unpredictable that basically any use of it should be
+viewed as a bug.
+
+> ---
+>  fs/jffs2/background.c |   18 +++++++++++-------
+>  1 files changed, 11 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/jffs2/background.c b/fs/jffs2/background.c
+> index 8adebd3..f38d557 100644
+> --- a/fs/jffs2/background.c
+> +++ b/fs/jffs2/background.c
+> @@ -95,13 +95,17 @@ static int jffs2_garbage_collect_thread(void *_c)
+>  			schedule();
+>  		}
+>  
+> -		/* This thread is purely an optimisation. But if it runs when
+> -		   other things could be running, it actually makes things a
+> -		   lot worse. Use yield() and put it at the back of the runqueue
+> -		   every time. Especially during boot, pulling an inode in
+> -		   with read_inode() is much preferable to having the GC thread
+> -		   get there first. */
+> -		yield();
+> +		/* Problem - immediately after bootup, the GCD spends a lot
+> +		 * of time in places like jffs2_kill_fragtree(); so much so
+> +		 * that userspace processes (like gdm and X) are starved
+> +		 * despite plenty of cond_resched()s and renicing.  Yield()
+> +		 * doesn't help, either (presumably because userspace and GCD
+> +		 * are generally competing for a higher latency resource -
+> +		 * disk).
+> +		 * This forces the GCD to slow the hell down.   Pulling an
+> +		 * inode in with read_inode() is much preferable to having
+> +		 * the GC thread get there first. */
+> +		schedule_timeout_interruptible(msecs_to_jiffies(50));
+>  
+>  		/* Put_super will send a SIGKILL and then wait on the sem.
+>  		 */
+
+Yeah.  It doesn't matter much - almost any change you can make in there
+will improve the current code.
+
+David, I do think we should fix this in 2.6.28 (at least).
+
+Perhaps this is an application for SCHED_IDLE?
