@@ -1,16 +1,20 @@
-From: Vitaliy Gusev <vgusev@openvz.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] UBI: Don't exit from ubi_thread until kthread_should_stop()
-	is true
-Date: Wed, 5 Nov 2008 18:27:18 +0300
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200811051827.19164.vgusev@openvz.org>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	linux-mtd@lists.infradead.org
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Kxz5z-0004vJ-30
+	for linux-mtd@lists.infradead.org; Thu, 06 Nov 2008 07:15:59 +0000
+Subject: Re: ubinize corrections
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Adrian Hunter <ext-adrian.hunter@nokia.com>
+In-Reply-To: <490EB956.5050700@nokia.com>
+References: <20081102142315.453628de.merrij3@rpi.edu>
+	<490EB956.5050700@nokia.com>
+Content-Type: text/plain; charset=utf-8
+Date: Thu, 06 Nov 2008 09:13:43 +0200
+Message-Id: <1225955623.26460.20.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, "J. Scott Merritt" <merrij3@rpi.edu>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,24 +24,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If ubi_thread() exits but kthread_should_stop() is not true
-then kthread_stop() will never return and cleanup thread
-will forever stay in "D" state.
+On Mon, 2008-11-03 at 10:41 +0200, Adrian Hunter wrote:
+> J. Scott Merritt wrote:
+> > Dear list,
+> >=20
+> > I believe that I have stumbled upon two problems with the latest versio=
+n
+> > of ubinize.c in mtd-utils - one serious, and one not so serious.
+> >=20
+> > - First, the easy one: At line 457, I believe that we should be printin=
+g
+> > args.subpage_size rather than ui.min_io_size.
+> >=20
+> > - More seriously, I believe that the "flags" field in the ubigen_vol_in=
+fo
+> > structures is not being properly initialized.  Line 494 allocates memor=
+y
+> > for these structures with malloc, so they are not cleared to zero.  The
+> > read_section function updates the flag field if the AUTO-RESIZE flag is
+> > specified, but does not otherwise initialize or clear it.
+> >=20
+> > I reckon the latter problem could be repaired either with calloc, or by
+> > modifying read_section to more directly set/clear the flag.
+> >=20
+> > Thanks, Scott.
+>=20
+> I agree.  Here's the patch:
 
-Signed-off-by: Vitaliy Gusev <vgusev@openvz.org>
+Pushed, thanks for the report and the patch.
 
----
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 05d7093..dcb6dac 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -1396,7 +1396,8 @@ int ubi_thread(void *u)
- 				ubi_msg("%s: %d consecutive failures",
- 					ubi->bgt_name, WL_MAX_FAILURES);
- 				ubi_ro_mode(ubi);
--				break;
-+				ubi->thread_enabled = 0;
-+				continue;
- 			}
- 		} else
- 			failures = 0;
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
