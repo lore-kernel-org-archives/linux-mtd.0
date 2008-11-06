@@ -1,16 +1,21 @@
-Received: from lilly.ping.de ([83.97.42.2])
+Received: from exprod6og116.obsmtp.com ([64.18.1.37])
 	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Ky7TI-0003wb-FV
-	for linux-mtd@lists.infradead.org; Thu, 06 Nov 2008 16:12:37 +0000
-Date: Thu, 6 Nov 2008 17:07:06 +0100
-To: linux-mtd@lists.infradead.org
-Subject: Problem with MTD and multiple erase sizes
-Message-ID: <20081106160706.GY5081@leila.ping.de>
+	id 1Ky7UR-00061h-5w
+	for linux-mtd@lists.infradead.org; Thu, 06 Nov 2008 16:13:47 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-From: wolfgang@leila.ping.de (Wolfgang Wegner)
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: [PATCH] mtd: m25p80.c add support for non-JEDEC ID devices
+Date: Thu, 6 Nov 2008 11:13:39 -0500
+Message-ID: <BD79186B4FD85F4B8E60E381CAEE1909C92033@mi8nycmail19.Mi8.com>
+In-Reply-To: <BD79186B4FD85F4B8E60E381CAEE1909B55FFA@mi8nycmail19.Mi8.com>
+References: <BD79186B4FD85F4B8E60E381CAEE1909AEEF6B@mi8nycmail19.Mi8.com><1224330021.6770.1350.camel@macbook.infradead.org>
+	<BD79186B4FD85F4B8E60E381CAEE1909B55FFA@mi8nycmail19.Mi8.com>
+From: "hartleys" <hartleys@visionengravers.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,145 +25,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Sunday, October 19, 2008 12:32 PM, hartleys wrote:
+>>> This patch allows the m25p80 driver to support non-JEDEC ID devices.
+>>>=20
+>>> It has been tested on an EP93xx based ARM platform with a
+SST25LF020A
+>>>
+>>> 2Mbit SPI Serial Flash device.
+>>>=20
+>>> Any comments would be appreciated.
+>>
+>> Looks sane, but could I have an updated copy against the current git=20
+>> tree please?
+>
+> I assume you meant the current mtd git tree.
+>
+> Here is the updated patch based on a:
+>
+> $ git clone
+> git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git
+linux-2.6
+> $ git-clone --reference linux-2.6 git://git.infradead.org/mtd-2.6
+>=20
+> Hope this one is better.
+>
+> Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
 
-I am new to the list and also quite new to MTD, and - obviously - have
-a problem.
+Did this patch look better?
 
-I have MTD up and running with several partitions, however, I now have
-a problem accessing the last partition which consists of a region with
-a different erase size than the rest of the device.
+I see the current mtd git tree has another change.
 
-Up to now, my algorithm is as follows:
-- open device
-- get info with MEMGETINFO
-- loop over all erase blocks to do the unlocking/erase
+static inline int write_enable(struct m25p *flash)
+{
+	u8	code =3D OPCODE_WREN;
 
-This fails for the last partition because MEMGETINFO returns the erasesize
-of 0x20000 for this partition, too.
+-	return spi_write(flash->spi, &code, 1);
++	return spi_write_then_read(flash->spi, &code, 1, NULL, 0);
+}
 
-I tried using MEMGETREGIONINFO, but this fails because MEMGETREGIONCOUNT
-is 0 for this partition (most likely because there actually is only one
-erasesize used within this partition).
+Do I need to create another updated patch?
 
-Can anybody point me to what I am doing wrong here?
+Thanks,
+Hartley
 
-Thank you and best regards,
-Wolfgang
+---
 
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 697a3a2..f75c70f 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -42,6 +42,7 @@
+ #define	OPCODE_BE		0xc7	/* Erase whole flash
+block */
+ #define	OPCODE_SE		0xd8	/* Sector erase (usually
+64KiB) */
+ #define	OPCODE_RDID		0x9f	/* Read JEDEC ID */
++#define	OPCODE_RDID_NON_JEDEC	0x90	/* Read non-JEDEC ID */
+=20
+ /* Status Register bits. */
+ #define	SR_WIP			1	/* Write in progress */
+@@ -542,12 +543,16 @@ static struct flash_info __devinitdata m25p_data
+[] =3D {
+ 	{ "w25x16", 0xef3015, 0, 64 * 1024, 32, SECT_4K, },
+ 	{ "w25x32", 0xef3016, 0, 64 * 1024, 64, SECT_4K, },
+ 	{ "w25x64", 0xef3017, 0, 64 * 1024, 128, SECT_4K, },
++
++	/* Non JEDEC ID SST -- large erase sizes are "overlays",
+"sectors" are 4K */
++	{ "sst25lf020a", 0xbf43, 0, 32 * 1024, 8, SECT_4K, },
++	{ "sst25lf040a", 0xbf44, 0, 32 * 1024, 16, SECT_4K, },
+ };
+=20
+ static struct flash_info *__devinit jedec_probe(struct spi_device *spi)
+{
+ 	int			tmp;
+-	u8			code =3D OPCODE_RDID;
++	u8			code[4];
+ 	u8			id[5];
+ 	u32			jedec;
+ 	u16                     ext_jedec;
+@@ -557,6 +562,7 @@ static struct flash_info *__devinit
+jedec_probe(struct spi_device *spi)
+ 	 * string for after vendor-specific data, after the three bytes
+ 	 * we use here.  Supporting some chips might require using it.
+ 	 */
++	code[0] =3D OPCODE_RDID;
+ 	tmp =3D spi_write_then_read(spi, &code, 1, id, 5);
+ 	if (tmp < 0) {
+ 		DEBUG(MTD_DEBUG_LEVEL0, "%s: error %d reading JEDEC
+ID\n", @@ -580,6 +586,31 @@ static struct flash_info *__devinit
+jedec_probe(struct spi_device *spi)
+ 			return info;
+ 	}
+ 	dev_err(&spi->dev, "unrecognized JEDEC id %06x\n", jedec);
++
++	/* Try reading the non-JEDEC Manufacture/Device ID */
++	code[0] =3D OPCODE_RDID_NON_JEDEC;
++	code[1] =3D 0x00;
++	code[2] =3D 0x00;
++	code[3] =3D 0x00;
++	tmp =3D spi_write_then_read(spi, code, 4, id, 2);
++	if (tmp < 0) {
++		DEBUG(MTD_DEBUG_LEVEL0, "%s: error %d reading ID\n",
++			spi->dev.bus_id, tmp);
++		return NULL;
++	}
++
++	jedec =3D id[0];
++	jedec =3D jedec << 8;
++	jedec |=3D id[1];
++
++	for (tmp =3D 0, info =3D m25p_data;
++			tmp < ARRAY_SIZE(m25p_data);
++			tmp++, info++) {
++		if (info->jedec_id =3D=3D jedec)
++			return info;
++	}
++	dev_err(&spi->dev, "unrecognized id %04x\n", jedec);
++
+ 	return NULL;
+ }
+ =20
 
-Here is my kernel boot output:
-
-ASTRO5373L flash device: 2000000 at 0
-Number of erase regions: 2
-Primary Vendor Command Set: 0001 (Intel/Sharp Extended)
-Primary Algorithm Table at 010A
-Alternative Vendor Command Set: 0000 (None)
-No Alternate Algorithm Table
-Vcc Minimum:  1.7 V
-Vcc Maximum:  2.0 V
-Vpp Minimum:  8.5 V
-Vpp Maximum:  9.5 V
-Typical byte/word write timeout: 256 µs
-Maximum byte/word write timeout: 512 µs
-Typical full buffer write timeout: 512 µs
-Maximum full buffer write timeout: 1024 µs
-Typical block erase timeout: 1024 ms
-Maximum block erase timeout: 4096 ms
-Chip erase not supported
-Device size: 0x2000000 bytes (32 MiB)
-Flash Device Interface description: 0x0001
-  - x16-only asynchronous interface
-Max. bytes in buffer write: 0x40
-Number of Erase Block Regions: 2
-  Erase Region #0: BlockSize 0x20000 bytes, 255 blocks
-  Erase Region #1: BlockSize 0x8000 bytes, 4 blocks
-ASTRO5373LFlash: Found 1 x16 devices at 0x0 in 16-bit bank
- Intel/Sharp Extended Query Table at 0x010A
- Intel/Sharp Extended Query Table at 0x010A
- Intel/Sharp Extended Query Table at 0x010A
- Intel/Sharp Extended Query Table at 0x010A
- Intel/Sharp Extended Query Table at 0x010A
-Using buffer write method
-cfi_cmdset_0001: Erase suspend on write enabled
-Creating 9 MTD partitions on "ASTRO5373LFlash":
-0x00000000-0x02000000 : "Complete Flash"
-0x00000000-0x00080000 : "bootloader"
-0x00080000-0x00280000 : "kernel"
-0x00280000-0x00540000 : "root"
-0x00540000-0x00800000 : "FPGA"
-0x00800000-0x01f40000 : "data"
-0x01f40000-0x01f80000 : "Parameters1"
-0x01f80000-0x01fc0000 : "Parameters2"
-0x01fc0000-0x02000000 : "Parameters_ext"
-
-
-
-The partition in question is "Parameters_ext" which comprises 4 blocks
-of 0x8000 bytes each.
-
-For all my flash accesses I have some utility functions, here is the
-unlock part (with some additional debug stuff already):
-
-      if (ioctl(current_task.fd, MEMGETREGIONCOUNT, &region_count)) {
-	fprintf(stderr,"flash_worker_threadfunc: MEMGETREGIONCOUNT(%d) failed. %d %s\n",
-		current_task.fd, errno, strerror(errno)); 
-	retval = -2;
-	goto complete_fail;
-      }
-      region_info.regionindex = 0;
-      if (ioctl(current_task.fd, MEMGETREGIONINFO, &region_info)) {
-	fprintf(stderr,"flash_worker_threadfunc: MEMGETREGIONINFO(%d) failed. %d %s\n",
-		current_task.fd, errno, strerror(errno)); 
-	retval = -2;
-	goto complete_fail;
-      }
-      fprintf(stderr, "flash_worker_threadfunc: regioninfo(%d): %d, 0x%x, 0x%x, 0x%x\n",
-		current_task.fd,
-		region_count,
-                region_info.offset,
-                region_info.erasesize,
-                region_info.numblocks);
-      if (ioctl(current_task.fd, MEMGETINFO, &meminfo)) {
-	fprintf(stderr,"flash_worker_threadfunc: meminfo(%d) failed. %d %s\n",
-		current_task.fd, errno, strerror(errno)); 
-	retval = -2;
-	goto complete_fail;
-      }
-      fprintf(stderr, "flash_worker_threadfunc: meminfo(%d): %d, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x\n",
-		current_task.fd,
-		region_count,
-                meminfo.type,
-                meminfo.flags,
-                meminfo.size,
-                meminfo.erasesize,
-                meminfo.writesize);
-
-      if(BIT_IS_SET(current_task.command, FLASH_TASK_COMMAND_ERASE_BIT) ||
-         BIT_IS_SET(current_task.command, FLASH_TASK_COMMAND_WRITE_BIT) ||
-	 BIT_IS_SET(current_task.command, FLASH_TASK_COMMAND_UNLOCK_BIT)) {
-	erase.start = current_task.base_address;
-	erase.length = meminfo.erasesize;
-
-	while(erase.start < address_end) {
-	  fprintf(stderr,"flash_worker_thread: Performing Flash unlock on %d at offset 0x%x (size 0x%x)\n",
-		  current_task.fd, erase.start, erase.length);
-	  if (ioctl(current_task.fd, MEMUNLOCK, &erase)) {
-	    fprintf(stderr,"flash_worker_thread: unlock failed. %d %s\n", errno, strerror(errno));
-	    retval = -2;
-	    goto complete_fail;
-	  }
-	  erase.start += meminfo.erasesize;
-	}
-      }
-
-results in:
-flash_worker_threadfunc: MEMGETREGIONINFO(4) failed. 22 Invalid argument
-
-or
-
-flash_worker_threadfunc: meminfo(4): 0, 0x3, 0xc00, 0x40000, 0x20000, 0x1
-flash_worker_thread: Performing Flash unlock on 4 at offset 0x38000 (size 0x20000)
-flash_worker_thread: unlock failed. 22 Invalid argument
-
-in case I comment out the MEMGETREGIONINFO part.
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
