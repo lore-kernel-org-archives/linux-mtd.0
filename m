@@ -1,26 +1,18 @@
-Received: from mail2.shareable.org ([80.68.89.115])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KyKLJ-0001Gh-SF
-	for linux-mtd@lists.infradead.org; Fri, 07 Nov 2008 05:57:14 +0000
-Date: Fri, 7 Nov 2008 05:57:08 +0000
-From: Jamie Lokier <jamie@shareable.org>
-To: Trent Piepho <tpiepho@freescale.com>
-Subject: Re: flash read performance
-Message-ID: <20081107055708.GG17593@shareable.org>
-References: <gea0sh$j97$1@ger.gmane.org> <49097176.5010506@thomson.net>
-	<gec051$efd$1@ger.gmane.org> <49098716.1010404@thomson.net>
-	<490F096D.5060208@imms.de> <20081104114229.GA1673@shareable.org>
-	<49105CAB.3000706@imms.de>
-	<Pine.LNX.4.64.0811061815190.3864@t2.domain.actdsltmp>
-	<20081107040200.GB17593@shareable.org>
-	<Pine.LNX.4.64.0811062121130.3864@t2.domain.actdsltmp>
-MIME-Version: 1.0
+Received: from xi.wantstofly.org ([80.101.37.227])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KyMUj-00045a-4k
+	for linux-mtd@lists.infradead.org; Fri, 07 Nov 2008 08:15:05 +0000
+Date: Fri, 7 Nov 2008 09:15:02 +0100
+From: Lennert Buytenhek <buytenh@wantstofly.org>
+To: Jens Gehrlein <Jens.Gehrlein@tqs.de>
+Subject: Re: CFI: major/minor number check?
+Message-ID: <20081107081502.GE32552@xi.wantstofly.org>
+References: <47F3F98010FF784EBEE6526EAAB078D103AC7274@tq-mailsrv.tq-net.de>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.0811062121130.3864@t2.domain.actdsltmp>
-Cc: Arnaud Mouiche <arnaud.mouiche@thomson.net>,
-	Andre Puschman <andre.puschmann@imms.de>,
-	MTD mailing list <linux-mtd@lists.infradead.org>
+In-Reply-To: <47F3F98010FF784EBEE6526EAAB078D103AC7274@tq-mailsrv.tq-net.de>
+Cc: linux@ddcrew.com, dirk@upexia.nl, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,24 +22,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Trent Piepho wrote:
-> On Fri, 7 Nov 2008, Jamie Lokier wrote:
-> > Based on Andre's observation, I will soon try enabling cache for my
-> > NOR, and see if it makes a difference to cold-cache read performance.
-> > I don't expect it, but it's worth a try.
-> 
-> It possible it could help by efficiently doing the reads back-to-back with
-> no wasted cycles between them.  I think it's necessary if you want to
-> benefit from page mode, but that's something I haven't tried yet.
-> 
-> > You might also find the write operation to be unreliable, if the
-> > caching mode is write-back rather than write-through.
-> 
-> Proper use of "sync" instructions, or whatever the arch uses to insure that
-> writel() is strictly ordered should fix that.
+On Wed, Oct 29, 2008 at 04:50:05PM +0100, Jens Gehrlein wrote:
 
-I think that won't work because strongly ordered writes don't
-translate directly to bus transactions when the region is mapped with
-ioremap_cached().  The flash wants exact bus transactions.
+> Why does the MTD driver check the major and minor version
+> in the CFI primary extended table of AMD Flashes?
+> 
+> We have a Samsung K8P2815UQB NOR-Flash supporting AMD
+> command set 0x2, but returns Major.Minor = 0.0
+> Thus, the kernel does not accept the device by reporting
+> "Unknown Amd/Fujitsu Extended Query version 0.0."
 
--- Jamie
+I don't know the answer to this question, but I noticed that the
+"SAMSUNG SAMSUNG_FID_K8D6316T" (as found in the Linksys wrt350n v2
+router) also trips this version number check.
