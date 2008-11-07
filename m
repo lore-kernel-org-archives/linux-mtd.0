@@ -1,15 +1,18 @@
-Date: Fri, 7 Nov 2008 11:01:09 +0000 (GMT)
-From: Alexey Korolev <akorolev@infradead.org>
-To: Werner Almesberger <werner@openmoko.org>
-Subject: Re: clarify calculation in nand_read_subpage and fix possible bug
-In-Reply-To: <20081107050912.GM31758@almesberger.net>
-Message-ID: <alpine.LFD.2.00.0811071049170.22975@casper.infradead.org>
-References: <20081102055138.GB5177@almesberger.net>
-	<alpine.LFD.2.00.0811061739390.8644@casper.infradead.org>
-	<20081107050912.GM31758@almesberger.net>
+Received: from cp-out4.libero.it ([212.52.84.104])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KyRLw-000107-8U
+	for linux-mtd@lists.infradead.org; Fri, 07 Nov 2008 13:26:20 +0000
+Received: from libero.it (192.168.17.5) by cp-out4.libero.it (8.5.016.1)
+	id 4912CFAB00228D27 for linux-mtd@lists.infradead.org;
+	Fri, 7 Nov 2008 14:26:18 +0100
+Date: Fri,  7 Nov 2008 14:26:18 +0100
+Message-Id: <K9YTBU$F773893C838A5134DFCF103AEC9B5EF3@libero.it>
+Subject: Problems writing to JFFS2 flash
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+From: "ffileppo" <ffileppo@libero.it>
+To: "linux-mtd" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,54 +22,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Werner,
+Hi guys,
 
-Hah. You are right. But this case is so weird!
-Please send patch in form of patch with your Signed-off line and add 
-Acked-by: Alexey Korolev <akorolev@infradead.org>
+I'm having some problems with JFFS2 on my arm embedded system.
+The system has two Intel P30 Flash banks (2*32MB).
 
-Thank you very much for this patch!
+I'm running linux kernel 2.6.24, here is the definition of mtd partition =
+that I'm using:
 
-Alexey
+static struct mtd_partition mainstoneflash0_partitions[] =3D {
+	{
+		.name =3D		"U-Boot",
+		.size =3D		0x00080000,
+		.offset =3D	0,
+		.mask_flags =3D	MTD_WRITEABLE  /* force read-only */
+	},{
+		.name =3D		"Linux kernel",
+		.size =3D		0x00200000,
+		.offset =3D	0x00080000,
+	},{
+		.name =3D		"JFFS2 filesystem",
+		.size =3D		MTDPART_SIZ_FULL,
+		.offset =3D	0x00280000
+ 	}
 
-> 
-> > But I did not understand the note about a bug.
-> > What is the case when bug appears? (What is the distribution of ecc
-> > positions)
-> 
-> That bug is just for a hypothetical layout. If we assume that the
-> ECC layout can be completely arbitrary, then we could have a layout
-> that looks like this:
-> 
-> position	0 1 2 3 4 5 6 7 8 9 10
-> ECC block	- A A A B B B - C C C
-> 
-> Let's assume we want to read the ECC bytes AAA and BBB. Our bus
-> width is 2 bytes. With the original algorithm, the unaligned
-> position would be 1, the unaligned length 6. 
-> 
-> 	/* no alignment: pos = 1, length = 6 */
-> 
-> 	aligned_pos = eccpos[start_step * chip->ecc.bytes] & ~(busw - 1);
-> 
-> 	/* aligned_pos = 0, ok */
-> 
-> 	aligned_len = eccfrag_len;
-> 
-> 	/* aligned_len = 6 */
-> 
-> 	if (eccpos[start_step * chip->ecc.bytes] & (busw - 1))
-> 		aligned_len++;
-> 
-> 	/* the original start was unaligned, so aligned_len = 7 */
-> 
-> 	if (eccpos[(start_step + num_steps) * chip->ecc.bytes] & (busw - 1))
-> 		aligned_len++;
-> 
-> 	/* the next block is aligned, so aligned_len = 7 */
-> 
-> I don't know if this is something one could encounter in real life,
-> but then, there are lot of people with crazy ideas out there ;-)
-> 
-> - Werner
-> 
+};
+
+
+The problem is that after writing some data to flash, I start getting lot=
+s of these errors:
+
+Write of 200 bytes at 0x03d68084 failed. returned -30, retlen 0
+Not marking the space at 0x03d68084 as dirty because the flash driver ret=
+urned retlen zero
+
+and the flash get screwed up.
+
+I use the following commands to erase and write to flash:
+
+flash_eraseall -j /dev/mtd2
+flashcp fs-jffs2 /dev/mtd2
+
+And the command used to create the jffs2 filesystem from a ramdisk:
+
+mkfs.jffs2 -d /mnt/ -e 0x00020000 -o fs-jffs2
+
+(I've checked and the erase block size seems to be correct).
+
+Anyone knows what could be the problem here?
+I'll post more details if needed.
+
+Thank you very much,
+
+Francesco
