@@ -1,16 +1,25 @@
-Received: from mail.openmoko.org ([88.198.124.205])
+Received: from az33egw02.freescale.net ([192.88.158.103])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1KyZ1y-0001aF-Fz
-	for linux-mtd@lists.infradead.org; Fri, 07 Nov 2008 21:38:14 +0000
-Date: Fri, 7 Nov 2008 19:37:57 -0200
-From: Werner Almesberger <werner@openmoko.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] clarify and improve calculation in nand_read_subpage
-Message-ID: <20081107213757.GC5177@almesberger.net>
+	id 1KygO5-0006eu-SK
+	for linux-mtd@lists.infradead.org; Sat, 08 Nov 2008 05:29:34 +0000
+Date: Fri, 7 Nov 2008 21:28:07 -0800 (PST)
+From: Trent Piepho <tpiepho@freescale.com>
+To: Andre Puschmann <andre.puschmann@imms.de>
+Subject: Re: flash read performance
+In-Reply-To: <gf12sb$oo3$1@ger.gmane.org>
+Message-ID: <Pine.LNX.4.64.0811072052200.3864@t2.domain.actdsltmp>
+References: <ge6old$oo3$1@ger.gmane.org>
+	<20081029114256.GA2239@yoda.jdub.homelinux.org>
+	<gea0sh$j97$1@ger.gmane.org> <49097176.5010506@thomson.net>
+	<gec051$efd$1@ger.gmane.org>
+	<49098716.1010404@thomson.net> <490F096D.5060208@imms.de>
+	<20081104114229.GA1673@shareable.org> <49105CAB.3000706@imms.de>
+	<Pine.LNX.4.64.0811061815190.3864@t2.domain.actdsltmp>
+	<gf12sb$oo3$1@ger.gmane.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: Alexey Korolev <akorolev@infradead.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Jamie Lokier <jamie@shareable.org>,
+	MTD mailing list <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,50 +29,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-clarify-nand-ecc-access.patch
+On Fri, 7 Nov 2008, Andre Puschmann wrote:
+> Trent Piepho wrote:
+>> I've found that writes do not work with caching enabled.  When the CPU writes
+>> to the flash and then reads it back, it gets returned what it wrote.  That's
+>> not what is supposed to happen.
+>
+> Sure, writes should be uncached and unbuffered. But I thought the mtd
+> layer handles this correctly as there are two different ioremap's in the
+> driver:
+>
+> map.virt = ioremap(..);
+> map.cached = ioremap_cached(..);
+> map.inval_cache = inval_cache_fct();
 
-The ECC access calculation in nand_read_subpage is quite hard to
-understand. This patch makes it more readable.
+It depends on what mapping driver you're using.  It looks like only the
+pxa2xx driver uses map.cached.  The physmap or of_physmap drivers that I'm
+using don't use it.
 
-There is a small change in what the algorithm does: while
-if (eccpos[(start_step + num_steps) * chip->ecc.bytes] & (busw - 1))
-looks at the position of the ECC byte following the bytes we're
-currently reading,
-aligned_len = ALIGN(eccfrag_len+(pos-aligned_pos), busw);
-only looks at their length plus the additional data we have to read
-due to aligning the start position.
+> So, calling inval_cache_fct() just before any write operation and then
+> using the uncached mapping should do the trick, no? On the other hand, I
+> am not sure if the mtd-layer really behaves like that. Can somebody
+> confirm this?
 
-The latter is more correct than the former, since the next ECC byte
-could be located anywhere and its location therefore may not give the
-alignment information we seek.
+>From looking at the code I'd say you're right.
 
-The change also saves 44 bytes on ARM.
+> I am not familiar with GPCM and eLBC, but it sounds about the same here.
+> Same timings for writes and reads. But I use burst mode (4 words), but
+> this only applies to reads.
 
-Signed-off-by: Werner Almesberger <werner@openmoko.org>
-Acked-by: Alexey Korolev <akorolev@infradead.org>
+I've switched from GPCM to UPM, which lets me use different timings for
+read and write as well as use burst mode.
 
----
+In non-cached and guarded mode, I now get 13.61 vs 12.30 MB/s.  That's just
+from slightly better timings because I could make them different for read
+vs write.  The big difference is cached and non-guarded reads, which went
+to 44.79 MB/s from 14.24 MB/s.  That boost is from using burst mode.
 
-Index: ktrack/drivers/mtd/nand/nand_base.c
-===================================================================
---- ktrack.orig/drivers/mtd/nand/nand_base.c	2008-11-02 02:28:19.000000000 -0200
-+++ ktrack/drivers/mtd/nand/nand_base.c	2008-11-02 02:38:22.000000000 -0200
-@@ -851,12 +851,12 @@
- 	} else {
- 		/* send the command to read the particular ecc bytes */
- 		/* take care about buswidth alignment in read_buf */
--		aligned_pos = eccpos[start_step * chip->ecc.bytes] & ~(busw - 1);
--		aligned_len = eccfrag_len;
--		if (eccpos[start_step * chip->ecc.bytes] & (busw - 1))
--			aligned_len++;
--		if (eccpos[(start_step + num_steps) * chip->ecc.bytes] & (busw - 1))
--			aligned_len++;
-+
-+		int pos;
-+
-+		pos = eccpos[start_step * chip->ecc.bytes];
-+		aligned_pos = pos & ~(busw - 1);
-+		aligned_len = ALIGN(eccfrag_len+(pos-aligned_pos), busw);
- 
- 		chip->cmdfunc(mtd, NAND_CMD_RNDOUT, mtd->writesize + aligned_pos, -1);
- 		chip->read_buf(mtd, &chip->oob_poi[aligned_pos], aligned_len);
+So the answer is yes, turning on cache can boost cold-cache performance, if
+doing so lets you use page burst mode.  It makes a huge difference in fact!
+
+>> The biggest bootup delay I have now is waiting for the ethernet phy to get
+>> online, which takes almost 3 seconds.
+>
+> Same here, ethernet phy takes sooo long. Here is what I do: I am using a
+> parallel init. On script is just for loading the ethernet-module which
+> is done next to the other scripts. So 2sec is cheated, cause ethernet
+> isn't really available at this point of time.
+
+It might be the case that the ethernet module resets the PHY when it loads
+and/or when the ethernet device is opened.  That was a problem I was
+having.  The PHY would almost be done when the dhcp client would run and
+open eth0, which would start the phy all over again.
