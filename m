@@ -1,32 +1,16 @@
-Message-ID: <49185137.4040300@nokia.com>
-Date: Mon, 10 Nov 2008 17:20:23 +0200
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
-MIME-Version: 1.0
-To: Rohit <h.rohit@samsung.com>
-Subject: Re: [ANNOUNCE] [PATCH] [MTD] Flex-OneNAND MTD Driver available.
-References: <19198934.52871221827459790.JavaMail.weblogic@epml16>
-	<9c9fda240809220011w49c0875q804f836550ff3476@mail.gmail.com>
-	<000001c91e42$1aa86c50$3dd66c6b@sisodomain.com>
-	<9c9fda240809251731y48272a63j988e0001dc50d78@mail.gmail.com>
-	<1222404711.5012.5.camel@sauron>
-	<A09E9029F2344F78959A3E36179C468E@sisodomain.com>
-	<1222417176.5012.17.camel@sauron>
-	<000b01c92215$ae62d4e0$3dd66c6b@sisodomain.com>
-	<9c9fda240810091557j529495d5q284a8ab0e0d752dd@mail.gmail.com>
-	<1224331498.6770.1362.camel@macbook.infradead.org>
-	<000001c93271$5c6ab4c0$3dd66c6b@sisodomain.com>
-	<1224482040.4466.73.camel@sauron>
-	<000301c93411$74627df0$3dd66c6b@sisodomain.com>
-	<4901DB27.4020401@nokia.com>
-	<000901c93d9f$7c7ed0f0$3dd66c6b@sisodomain.com>
-	<49115EC6.9090800@nokia.com> <49145004.9010202@samsung.com>
-In-Reply-To: <49145004.9010202@samsung.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: 'Kyungmin Park' <kmpark@infradead.org>,
-	apgmoorthy <moorthy.apg@samsung.com>,
-	'David Woodhouse' <dwmw2@infradead.org>,
-	linux-mtd@lists.infradead.org, amitsharma.9@samsung.com
+Received: from atlantis.8hz.com ([212.129.237.78])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KzZ9O-0000bN-2E
+	for linux-mtd@lists.infradead.org; Mon, 10 Nov 2008 15:58:02 +0000
+Date: Mon, 10 Nov 2008 15:58:00 +0000
+From: Sean Young <sean@mess.org>
+To: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] drivers/mtd/rfd_ftl.c: implement discard
+Message-ID: <20081110155800.GA13908@atlantis.8hz.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,87 +20,194 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Rohit wrote:
-> Adrian Hunter wrote:
->>> +		this->command(mtd, FLEXONENAND_CMD_PI_ACCESS, die, 0);
->>> +		this->wait(mtd, FL_SYNCING);
->> Why is the error return not checked?
->>
->>> +
->>> +		this->command(mtd, ONENAND_CMD_READ, die, 0);
->>> +		ret = this->wait(mtd, FL_READING);
->> Why is the error return not checked?
->>
->>> +
->>> +		bdry = this->read_word(this->base + ONENAND_DATARAM);
->>> +		locked = bdry >> FLEXONENAND_PI_UNLOCK_SHIFT;
->>> +		locked = (locked == 0x3) ? 0 : 1;
->>> +		this->boundary[die] = bdry & FLEXONENAND_PI_MASK;
->>> +		this->boundary_locked[die] = locked;
->>> +		this->command(mtd, ONENAND_CMD_RESET, 0, 0);
->>> +		ret = this->wait(mtd, FL_RESETING);
->> Why is the error return not checked?
-> 
-> As per datasheet PI_ACCESS, PI_UPDATE, PI_READ and RESET always succeed.
-> PI_ERASE and PI_WRITE can fail. Added error check for PI_ERASE.
+Now that discard is supported implement it in RFD FTL. Also stop writing to
+flash once an error has been detected and various other cleanups.
 
-So if the device is behaving correctly and the driver has no bugs and there
-are no other related hardware errors, then 'ret' will always be zero.  Well,
-I would check it anyway, but that's just me.
-
->>> +	if (FLEXONENAND(this)) {
->>> +		int boundary[] =
->>> +			{FLEXONENAND_DIE0_BOUNDARY, FLEXONENAND_DIE1_BOUNDARY};
->>> +		int lock[] =
->>> +			{FLEXONENAND_DIE0_ISLOCKED, FLEXONENAND_DIE1_ISLOCKED};
->>> +		unsigned die;
->>> +
->>> +		flexonenand_get_size(mtd);
->>> +
->>> +		/* Change the device boundaries if required */
->>> +		for (die = 0; die < this->dies; die++)
->>> +			if ((!this->boundary_locked[die]) &&
->>> +			   (boundary[die] >= 0) &&
->>> +			   (boundary[die] != this->boundary[die]))
->>> +				flexonenand_set_boundary(mtd, die,
->>> +						 boundary[die], lock[die]);
->> I am not sure how you intend FLEXONENAND_DIEx_BOUNDARY and FLEXONENAND_DIEx_ISLOCKED
->> to be used.  Obviously this code presently does nothing.  If you expect the values
->> to be configured for the device, then shouldn't they be config options?
-> 
-> Ok. Added config option for boundary and lock settings.
-> Configuration of boundary / lock is optional. Default value in config is -1
-> which will not change existing boundary of Flex-OneNAND.
-> 
->> Also, ideally there should be a way for the platform driver to override them.
->>
-> 
-> Do you mean runtime configuration of boundary. Then we need to add some ioctl.
-> 
-
-No I mean a onenand driver (e.g. omap2.c) that reads the values from platform data
-and wants to set them.  It is not important.  It can be done later by whomever needs it.
-
-> diff --git a/include/linux/mtd/onenand.h b/include/linux/mtd/onenand.h
-> index 9aa2a91..d23eeef 100644
-> --- a/include/linux/mtd/onenand.h
-> +++ b/include/linux/mtd/onenand.h
-> @@ -17,8 +17,23 @@
->  #include <linux/mtd/onenand_regs.h>
->  #include <linux/mtd/bbm.h>
->  
-> +#define MAX_DIES		2
->  #define MAX_BUFFERRAM		2
->  
-> +#define FLEXONENAND_DIE0_BOUNDARY	CONFIG_MTD_FLEXONENAND_DIE0_BOUNDARY
-> +#define FLEXONENAND_DIE1_BOUNDARY	CONFIG_MTD_FLEXONENAND_DIE1_BOUNDARY
-> +
-
-CONFIG_MTD_FLEXONENAND_DIEx_BOUNDARY are not necessarily defined i.e. you
-need "#if defined ..." there as well.
-
-I briefly tested the driver with an old 'non-Flex' OneNAND and it seemd to work
-fine with no apparent effect on performance.  So I have no more issues :-)
-
-Thanks
-Adrian
+Signed-off-by: Sean Young <sean@mess.org>
+--
+diff --git a/drivers/mtd/rfd_ftl.c b/drivers/mtd/rfd_ftl.c
+index e538c0a..0d028b5 100644
+--- a/drivers/mtd/rfd_ftl.c
++++ b/drivers/mtd/rfd_ftl.c
+@@ -1,7 +1,7 @@
+ /*
+  * rfd_ftl.c -- resident flash disk (flash translation layer)
+  *
+- * Copyright (C) 2005  Sean Young <sean@mess.org>
++ * Copyright (C) 2005, 2008  Sean Young <sean@mess.org>
+  *
+  * This type of flash translation layer (FTL) is used by the Embedded BIOS
+  * by General Software. It is known as the Resident Flash Disk (RFD), see:
+@@ -241,7 +241,7 @@ err:
+ 
+ static int rfd_ftl_readsect(struct mtd_blktrans_dev *dev, u_long sector, char *buf)
+ {
+-	struct partition *part = (struct partition*)dev;
++	struct partition *part = container_of(dev, struct partition, mbd);
+ 	u_long addr;
+ 	size_t retlen;
+ 	int rc;
+@@ -293,6 +293,7 @@ static void erase_callback(struct erase_info *erase)
+ 		part->blocks[i].used_sectors = 0;
+ 
+ 		kfree(erase);
++		part->errors++;
+ 
+ 		return;
+ 	}
+@@ -317,6 +318,7 @@ static void erase_callback(struct erase_info *erase)
+ 				part->mbd.mtd->name,
+ 				part->blocks[i].offset);
+ 		part->blocks[i].state = BLOCK_FAILED;
++		part->errors++;
+ 	}
+ 	else
+ 		part->blocks[i].state = BLOCK_OK;
+@@ -349,6 +351,7 @@ static int erase_block(struct partition *part, int block)
+ 				"failed\n", erase->addr, erase->len,
+ 				part->mbd.mtd->name);
+ 		kfree(erase);
++		part->errors++;
+ 	}
+ 
+ err:
+@@ -383,7 +386,7 @@ static int move_block_contents(struct partition *part, int block_no, u_long *old
+ 		printk(KERN_ERR PREFIX "error reading '%s' at "
+ 			"0x%lx\n", part->mbd.mtd->name,
+ 			part->blocks[block_no].offset);
+-
++		part->errors++;
+ 		goto err;
+ 	}
+ 
+@@ -423,7 +426,7 @@ static int move_block_contents(struct partition *part, int block_no, u_long *old
+ 			printk(KERN_ERR PREFIX "'%s': Unable to "
+ 				"read sector for relocation\n",
+ 				part->mbd.mtd->name);
+-
++			part->errors++;
+ 			goto err;
+ 		}
+ 
+@@ -604,9 +607,10 @@ static int mark_sector_deleted(struct partition *part, u_long old_addr)
+ 	if (rc) {
+ 		printk(KERN_ERR PREFIX "error writing '%s' at "
+ 			"0x%lx\n", part->mbd.mtd->name, addr);
+-		if (rc)
+-			goto err;
++		part->errors++;
++		goto err;
+ 	}
++
+ 	if (block == part->current_block)
+ 		part->header_cache[offset + HEADER_MAP_OFFSET] = del;
+ 
+@@ -639,9 +643,10 @@ static int find_free_sector(const struct partition *part, const struct block *bl
+ 	return -1;
+ }
+ 
+-static int do_writesect(struct mtd_blktrans_dev *dev, u_long sector, char *buf, ulong *old_addr)
++static int do_writesect(struct mtd_blktrans_dev *dev, u_long sector, char *buf,
++							 u_long *old_addr)
+ {
+-	struct partition *part = (struct partition*)dev;
++	struct partition *part = container_of(dev, struct partition, mbd);
+ 	struct block *block;
+ 	u_long addr;
+ 	int i;
+@@ -677,8 +682,8 @@ static int do_writesect(struct mtd_blktrans_dev *dev, u_long sector, char *buf,
+ 	if (rc) {
+ 		printk(KERN_ERR PREFIX "error writing '%s' at 0x%lx\n",
+ 				part->mbd.mtd->name, addr);
+-		if (rc)
+-			goto err;
++		part->errors++;
++		goto err;
+ 	}
+ 
+ 	part->sector_map[sector] = addr;
+@@ -697,8 +702,8 @@ static int do_writesect(struct mtd_blktrans_dev *dev, u_long sector, char *buf,
+ 	if (rc) {
+ 		printk(KERN_ERR PREFIX "error writing '%s' at 0x%lx\n",
+ 				part->mbd.mtd->name, addr);
+-		if (rc)
+-			goto err;
++		part->errors++;
++		goto err;
+ 	}
+ 	block->used_sectors++;
+ 	block->free_sectors--;
+@@ -709,14 +714,14 @@ err:
+ 
+ static int rfd_ftl_writesect(struct mtd_blktrans_dev *dev, u_long sector, char *buf)
+ {
+-	struct partition *part = (struct partition*)dev;
++	struct partition *part = container_of(dev, struct partition, mbd);
+ 	u_long old_addr;
+ 	int i;
+ 	int rc = 0;
+ 
+ 	pr_debug("rfd_ftl_writesect(sector=0x%lx)\n", sector);
+ 
+-	if (part->reserved_block == -1) {
++	if (part->reserved_block == -1 || part->errors) {
+ 		rc = -EACCES;
+ 		goto err;
+ 	}
+@@ -750,7 +755,7 @@ err:
+ 
+ static int rfd_ftl_getgeo(struct mtd_blktrans_dev *dev, struct hd_geometry *geo)
+ {
+-	struct partition *part = (struct partition*)dev;
++	struct partition *part = container_of(dev, struct partition, mbd);
+ 
+ 	geo->heads = 1;
+ 	geo->sectors = SECTORS_PER_TRACK;
+@@ -759,6 +764,30 @@ static int rfd_ftl_getgeo(struct mtd_blktrans_dev *dev, struct hd_geometry *geo)
+ 	return 0;
+ }
+ 
++static int rfd_ftl_discardsect(struct mtd_blktrans_dev *dev, u_long sector,
++								uint nr_sects)
++{
++	struct partition *part = container_of(dev, struct partition, mbd);
++	u_long addr;
++	int rc;
++
++	if (part->errors)
++		return -EACCES;
++
++	for (rc = 0; nr_sects && rc == 0; sector++, nr_sects--) {
++		if (sector >= part->sector_count)
++			return -EIO;
++
++		addr = part->sector_map[sector];
++		part->sector_map[sector] = -1;
++
++		if (addr != -1)
++			rc = mark_sector_deleted(part, addr);
++	}
++
++	return rc;
++}
++
+ static void rfd_ftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
+ {
+ 	struct partition *part;
+@@ -806,7 +835,7 @@ out:
+ 
+ static void rfd_ftl_remove_dev(struct mtd_blktrans_dev *dev)
+ {
+-	struct partition *part = (struct partition*)dev;
++	struct partition *part = container_of(dev, struct partition, mbd);
+ 	int i;
+ 
+ 	for (i=0; i<part->total_blocks; i++) {
+@@ -829,6 +858,7 @@ static struct mtd_blktrans_ops rfd_ftl_tr = {
+ 
+ 	.readsect	= rfd_ftl_readsect,
+ 	.writesect	= rfd_ftl_writesect,
++	.discard	= rfd_ftl_discardsect,
+ 	.getgeo		= rfd_ftl_getgeo,
+ 	.add_mtd	= rfd_ftl_add_mtd,
+ 	.remove_dev	= rfd_ftl_remove_dev,
