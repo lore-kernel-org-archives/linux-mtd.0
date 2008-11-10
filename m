@@ -1,16 +1,18 @@
-Received: from atlantis.8hz.com ([212.129.237.78])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KzZ9O-0000bN-2E
-	for linux-mtd@lists.infradead.org; Mon, 10 Nov 2008 15:58:02 +0000
-Date: Mon, 10 Nov 2008 15:58:00 +0000
-From: Sean Young <sean@mess.org>
-To: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] drivers/mtd/rfd_ftl.c: implement discard
-Message-ID: <20081110155800.GA13908@atlantis.8hz.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from lilly.ping.de ([83.97.42.2])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KzZgc-0007am-LR
+	for linux-mtd@lists.infradead.org; Mon, 10 Nov 2008 16:32:23 +0000
+Date: Mon, 10 Nov 2008 17:28:50 +0100
+To: linux-mtd@lists.infradead.org
+Subject: Re: Problem with MTD and multiple erase sizes
+Message-ID: <20081110162850.GM5081@leila.ping.de>
+References: <20081106160706.GY5081@leila.ping.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20081106160706.GY5081@leila.ping.de>
+From: wolfgang@leila.ping.de (Wolfgang Wegner)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,194 +22,169 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that discard is supported implement it in RFD FTL. Also stop writing to
-flash once an error has been detected and various other cleanups.
+Hi,
 
-Signed-off-by: Sean Young <sean@mess.org>
---
-diff --git a/drivers/mtd/rfd_ftl.c b/drivers/mtd/rfd_ftl.c
-index e538c0a..0d028b5 100644
---- a/drivers/mtd/rfd_ftl.c
-+++ b/drivers/mtd/rfd_ftl.c
-@@ -1,7 +1,7 @@
- /*
-  * rfd_ftl.c -- resident flash disk (flash translation layer)
-  *
-- * Copyright (C) 2005  Sean Young <sean@mess.org>
-+ * Copyright (C) 2005, 2008  Sean Young <sean@mess.org>
-  *
-  * This type of flash translation layer (FTL) is used by the Embedded BIOS
-  * by General Software. It is known as the Resident Flash Disk (RFD), see:
-@@ -241,7 +241,7 @@ err:
- 
- static int rfd_ftl_readsect(struct mtd_blktrans_dev *dev, u_long sector, char *buf)
- {
--	struct partition *part = (struct partition*)dev;
-+	struct partition *part = container_of(dev, struct partition, mbd);
- 	u_long addr;
- 	size_t retlen;
- 	int rc;
-@@ -293,6 +293,7 @@ static void erase_callback(struct erase_info *erase)
- 		part->blocks[i].used_sectors = 0;
- 
- 		kfree(erase);
-+		part->errors++;
- 
- 		return;
- 	}
-@@ -317,6 +318,7 @@ static void erase_callback(struct erase_info *erase)
- 				part->mbd.mtd->name,
- 				part->blocks[i].offset);
- 		part->blocks[i].state = BLOCK_FAILED;
-+		part->errors++;
- 	}
- 	else
- 		part->blocks[i].state = BLOCK_OK;
-@@ -349,6 +351,7 @@ static int erase_block(struct partition *part, int block)
- 				"failed\n", erase->addr, erase->len,
- 				part->mbd.mtd->name);
- 		kfree(erase);
-+		part->errors++;
- 	}
- 
- err:
-@@ -383,7 +386,7 @@ static int move_block_contents(struct partition *part, int block_no, u_long *old
- 		printk(KERN_ERR PREFIX "error reading '%s' at "
- 			"0x%lx\n", part->mbd.mtd->name,
- 			part->blocks[block_no].offset);
--
-+		part->errors++;
- 		goto err;
- 	}
- 
-@@ -423,7 +426,7 @@ static int move_block_contents(struct partition *part, int block_no, u_long *old
- 			printk(KERN_ERR PREFIX "'%s': Unable to "
- 				"read sector for relocation\n",
- 				part->mbd.mtd->name);
--
-+			part->errors++;
- 			goto err;
- 		}
- 
-@@ -604,9 +607,10 @@ static int mark_sector_deleted(struct partition *part, u_long old_addr)
- 	if (rc) {
- 		printk(KERN_ERR PREFIX "error writing '%s' at "
- 			"0x%lx\n", part->mbd.mtd->name, addr);
--		if (rc)
--			goto err;
-+		part->errors++;
-+		goto err;
- 	}
-+
- 	if (block == part->current_block)
- 		part->header_cache[offset + HEADER_MAP_OFFSET] = del;
- 
-@@ -639,9 +643,10 @@ static int find_free_sector(const struct partition *part, const struct block *bl
- 	return -1;
- }
- 
--static int do_writesect(struct mtd_blktrans_dev *dev, u_long sector, char *buf, ulong *old_addr)
-+static int do_writesect(struct mtd_blktrans_dev *dev, u_long sector, char *buf,
-+							 u_long *old_addr)
- {
--	struct partition *part = (struct partition*)dev;
-+	struct partition *part = container_of(dev, struct partition, mbd);
- 	struct block *block;
- 	u_long addr;
- 	int i;
-@@ -677,8 +682,8 @@ static int do_writesect(struct mtd_blktrans_dev *dev, u_long sector, char *buf,
- 	if (rc) {
- 		printk(KERN_ERR PREFIX "error writing '%s' at 0x%lx\n",
- 				part->mbd.mtd->name, addr);
--		if (rc)
--			goto err;
-+		part->errors++;
-+		goto err;
- 	}
- 
- 	part->sector_map[sector] = addr;
-@@ -697,8 +702,8 @@ static int do_writesect(struct mtd_blktrans_dev *dev, u_long sector, char *buf,
- 	if (rc) {
- 		printk(KERN_ERR PREFIX "error writing '%s' at 0x%lx\n",
- 				part->mbd.mtd->name, addr);
--		if (rc)
--			goto err;
-+		part->errors++;
-+		goto err;
- 	}
- 	block->used_sectors++;
- 	block->free_sectors--;
-@@ -709,14 +714,14 @@ err:
- 
- static int rfd_ftl_writesect(struct mtd_blktrans_dev *dev, u_long sector, char *buf)
- {
--	struct partition *part = (struct partition*)dev;
-+	struct partition *part = container_of(dev, struct partition, mbd);
- 	u_long old_addr;
- 	int i;
- 	int rc = 0;
- 
- 	pr_debug("rfd_ftl_writesect(sector=0x%lx)\n", sector);
- 
--	if (part->reserved_block == -1) {
-+	if (part->reserved_block == -1 || part->errors) {
- 		rc = -EACCES;
- 		goto err;
- 	}
-@@ -750,7 +755,7 @@ err:
- 
- static int rfd_ftl_getgeo(struct mtd_blktrans_dev *dev, struct hd_geometry *geo)
- {
--	struct partition *part = (struct partition*)dev;
-+	struct partition *part = container_of(dev, struct partition, mbd);
- 
- 	geo->heads = 1;
- 	geo->sectors = SECTORS_PER_TRACK;
-@@ -759,6 +764,30 @@ static int rfd_ftl_getgeo(struct mtd_blktrans_dev *dev, struct hd_geometry *geo)
- 	return 0;
- }
- 
-+static int rfd_ftl_discardsect(struct mtd_blktrans_dev *dev, u_long sector,
-+								uint nr_sects)
-+{
-+	struct partition *part = container_of(dev, struct partition, mbd);
-+	u_long addr;
-+	int rc;
-+
-+	if (part->errors)
-+		return -EACCES;
-+
-+	for (rc = 0; nr_sects && rc == 0; sector++, nr_sects--) {
-+		if (sector >= part->sector_count)
-+			return -EIO;
-+
-+		addr = part->sector_map[sector];
-+		part->sector_map[sector] = -1;
-+
-+		if (addr != -1)
-+			rc = mark_sector_deleted(part, addr);
-+	}
-+
-+	return rc;
-+}
-+
- static void rfd_ftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- {
- 	struct partition *part;
-@@ -806,7 +835,7 @@ out:
- 
- static void rfd_ftl_remove_dev(struct mtd_blktrans_dev *dev)
- {
--	struct partition *part = (struct partition*)dev;
-+	struct partition *part = container_of(dev, struct partition, mbd);
- 	int i;
- 
- 	for (i=0; i<part->total_blocks; i++) {
-@@ -829,6 +858,7 @@ static struct mtd_blktrans_ops rfd_ftl_tr = {
- 
- 	.readsect	= rfd_ftl_readsect,
- 	.writesect	= rfd_ftl_writesect,
-+	.discard	= rfd_ftl_discardsect,
- 	.getgeo		= rfd_ftl_getgeo,
- 	.add_mtd	= rfd_ftl_add_mtd,
- 	.remove_dev	= rfd_ftl_remove_dev,
+maybe I did not give enough information...
+
+The problem actually happens with uclinux-2.6.23-uc0 in uClinux-dist-20071107,
+but as far as I can see, the code in mtdchar (ioctl) is the same in
+current kernel revisions.
+My application uses the same algorithm as eraseall, so I think the
+approach should be correct, and as the kernel correctly states the
+erase sizes during bootup, I can not see a configuration problem
+either.
+
+Any help would be greatly appreciated!
+
+Best regards,
+Wolfgang
+
+
+On Thu, Nov 06, 2008 at 05:07:06PM +0100, Wolfgang Wegner wrote:
+> Hi,
+> 
+> I am new to the list and also quite new to MTD, and - obviously - have
+> a problem.
+> 
+> I have MTD up and running with several partitions, however, I now have
+> a problem accessing the last partition which consists of a region with
+> a different erase size than the rest of the device.
+> 
+> Up to now, my algorithm is as follows:
+> - open device
+> - get info with MEMGETINFO
+> - loop over all erase blocks to do the unlocking/erase
+> 
+> This fails for the last partition because MEMGETINFO returns the erasesize
+> of 0x20000 for this partition, too.
+> 
+> I tried using MEMGETREGIONINFO, but this fails because MEMGETREGIONCOUNT
+> is 0 for this partition (most likely because there actually is only one
+> erasesize used within this partition).
+> 
+> Can anybody point me to what I am doing wrong here?
+> 
+> Thank you and best regards,
+> Wolfgang
+> 
+> 
+> Here is my kernel boot output:
+> 
+> ASTRO5373L flash device: 2000000 at 0
+> Number of erase regions: 2
+> Primary Vendor Command Set: 0001 (Intel/Sharp Extended)
+> Primary Algorithm Table at 010A
+> Alternative Vendor Command Set: 0000 (None)
+> No Alternate Algorithm Table
+> Vcc Minimum:  1.7 V
+> Vcc Maximum:  2.0 V
+> Vpp Minimum:  8.5 V
+> Vpp Maximum:  9.5 V
+> Typical byte/word write timeout: 256 µs
+> Maximum byte/word write timeout: 512 µs
+> Typical full buffer write timeout: 512 µs
+> Maximum full buffer write timeout: 1024 µs
+> Typical block erase timeout: 1024 ms
+> Maximum block erase timeout: 4096 ms
+> Chip erase not supported
+> Device size: 0x2000000 bytes (32 MiB)
+> Flash Device Interface description: 0x0001
+>   - x16-only asynchronous interface
+> Max. bytes in buffer write: 0x40
+> Number of Erase Block Regions: 2
+>   Erase Region #0: BlockSize 0x20000 bytes, 255 blocks
+>   Erase Region #1: BlockSize 0x8000 bytes, 4 blocks
+> ASTRO5373LFlash: Found 1 x16 devices at 0x0 in 16-bit bank
+>  Intel/Sharp Extended Query Table at 0x010A
+>  Intel/Sharp Extended Query Table at 0x010A
+>  Intel/Sharp Extended Query Table at 0x010A
+>  Intel/Sharp Extended Query Table at 0x010A
+>  Intel/Sharp Extended Query Table at 0x010A
+> Using buffer write method
+> cfi_cmdset_0001: Erase suspend on write enabled
+> Creating 9 MTD partitions on "ASTRO5373LFlash":
+> 0x00000000-0x02000000 : "Complete Flash"
+> 0x00000000-0x00080000 : "bootloader"
+> 0x00080000-0x00280000 : "kernel"
+> 0x00280000-0x00540000 : "root"
+> 0x00540000-0x00800000 : "FPGA"
+> 0x00800000-0x01f40000 : "data"
+> 0x01f40000-0x01f80000 : "Parameters1"
+> 0x01f80000-0x01fc0000 : "Parameters2"
+> 0x01fc0000-0x02000000 : "Parameters_ext"
+> 
+> 
+> 
+> The partition in question is "Parameters_ext" which comprises 4 blocks
+> of 0x8000 bytes each.
+> 
+> For all my flash accesses I have some utility functions, here is the
+> unlock part (with some additional debug stuff already):
+> 
+>       if (ioctl(current_task.fd, MEMGETREGIONCOUNT, &region_count)) {
+> 	fprintf(stderr,"flash_worker_threadfunc: MEMGETREGIONCOUNT(%d) failed. %d %s\n",
+> 		current_task.fd, errno, strerror(errno)); 
+> 	retval = -2;
+> 	goto complete_fail;
+>       }
+>       region_info.regionindex = 0;
+>       if (ioctl(current_task.fd, MEMGETREGIONINFO, &region_info)) {
+> 	fprintf(stderr,"flash_worker_threadfunc: MEMGETREGIONINFO(%d) failed. %d %s\n",
+> 		current_task.fd, errno, strerror(errno)); 
+> 	retval = -2;
+> 	goto complete_fail;
+>       }
+>       fprintf(stderr, "flash_worker_threadfunc: regioninfo(%d): %d, 0x%x, 0x%x, 0x%x\n",
+> 		current_task.fd,
+> 		region_count,
+>                 region_info.offset,
+>                 region_info.erasesize,
+>                 region_info.numblocks);
+>       if (ioctl(current_task.fd, MEMGETINFO, &meminfo)) {
+> 	fprintf(stderr,"flash_worker_threadfunc: meminfo(%d) failed. %d %s\n",
+> 		current_task.fd, errno, strerror(errno)); 
+> 	retval = -2;
+> 	goto complete_fail;
+>       }
+>       fprintf(stderr, "flash_worker_threadfunc: meminfo(%d): %d, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x\n",
+> 		current_task.fd,
+> 		region_count,
+>                 meminfo.type,
+>                 meminfo.flags,
+>                 meminfo.size,
+>                 meminfo.erasesize,
+>                 meminfo.writesize);
+> 
+>       if(BIT_IS_SET(current_task.command, FLASH_TASK_COMMAND_ERASE_BIT) ||
+>          BIT_IS_SET(current_task.command, FLASH_TASK_COMMAND_WRITE_BIT) ||
+> 	 BIT_IS_SET(current_task.command, FLASH_TASK_COMMAND_UNLOCK_BIT)) {
+> 	erase.start = current_task.base_address;
+> 	erase.length = meminfo.erasesize;
+> 
+> 	while(erase.start < address_end) {
+> 	  fprintf(stderr,"flash_worker_thread: Performing Flash unlock on %d at offset 0x%x (size 0x%x)\n",
+> 		  current_task.fd, erase.start, erase.length);
+> 	  if (ioctl(current_task.fd, MEMUNLOCK, &erase)) {
+> 	    fprintf(stderr,"flash_worker_thread: unlock failed. %d %s\n", errno, strerror(errno));
+> 	    retval = -2;
+> 	    goto complete_fail;
+> 	  }
+> 	  erase.start += meminfo.erasesize;
+> 	}
+>       }
+> 
+> results in:
+> flash_worker_threadfunc: MEMGETREGIONINFO(4) failed. 22 Invalid argument
+> 
+> or
+> 
+> flash_worker_threadfunc: meminfo(4): 0, 0x3, 0xc00, 0x40000, 0x20000, 0x1
+> flash_worker_thread: Performing Flash unlock on 4 at offset 0x38000 (size 0x20000)
+> flash_worker_thread: unlock failed. 22 Invalid argument
+> 
+> in case I comment out the MEMGETREGIONINFO part.
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
