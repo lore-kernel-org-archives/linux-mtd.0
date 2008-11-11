@@ -1,28 +1,18 @@
-Received: from zimbra-mta.cetrtapot.si ([89.212.80.172])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KzuN5-0004bc-GA
-	for linux-mtd@lists.infradead.org; Tue, 11 Nov 2008 14:37:35 +0000
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by zimbra-mta.cetrtapot.si (Postfix) with ESMTP id 856CF19F9B0
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 11 Nov 2008 15:28:39 +0100 (CET)
-Received: from zimbra-mta.cetrtapot.si ([127.0.0.1])
-	by localhost (zimbra-mta.cetrtapot.si [127.0.0.1]) (amavisd-new,
-	port 10024)
-	with ESMTP id kRYlZgkTCUkg for <linux-mtd@lists.infradead.org>;
-	Tue, 11 Nov 2008 15:28:38 +0100 (CET)
-Received: from [172.31.65.135] (unknown [192.168.66.2])
-	by zimbra-mta.cetrtapot.si (Postfix) with ESMTP id CB09719F99E
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 11 Nov 2008 15:28:38 +0100 (CET)
-Message-ID: <491995BE.3080206@cetrtapot.si>
-Date: Tue, 11 Nov 2008 15:25:02 +0100
-From: Hinko Kocevar <hinko.kocevar@cetrtapot.si>
-MIME-Version: 1.0
+Received: from tesla.selinc.com ([12.110.71.2])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Kzxf4-0004rD-Jl
+	for linux-mtd@lists.infradead.org; Tue, 11 Nov 2008 18:08:22 +0000
+Received: from edison2.selinc.com (edison2.selinc.com [12.110.71.8])
+	by tesla.selinc.com (8.12.11.20060308/8.12.11) with ESMTP id
+	mABI8Kv7010105
+	for <linux-mtd@lists.infradead.org>; Tue, 11 Nov 2008 10:08:20 -0800
 To: linux-mtd@lists.infradead.org
-Subject: number of MTD partitions
-Content-Type: text/plain; charset=ISO-8859-2
-Content-Transfer-Encoding: 8bit
+Subject: MTD/flash perfomance statistics
+MIME-Version: 1.0
+Message-ID: <OF05EC4818.8CEEBBD5-ON882574FE.00634AE0-882574FE.0063997B@selinc.com>
+From: Bruce_Leonard@selinc.com
+Date: Tue, 11 Nov 2008 10:08:17 -0800
+Content-Type: text/plain; charset="US-ASCII"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,22 +22,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+We're using UBIFS/UBI/MTD/NAND and we want to find out how much of our 
+time is spent accessing the flash.  Are there any tools or is there any 
+code in that chain that collects any sort of statistics on flash 
+performace/utilization?  I could do something as crude as a counter in my 
+NAND driver, but if there's anything more sophisticated that I can just 
+"use out of the box" so to speak that would be better.  Thanks.
 
-What would be better: one big or several small MTD parttions on NAND chip?
-
-It is 32M byte chip, we used to have 4 patitions each 8M byte, now I would
-like to use one 32 M byte, and are looking for pros/sons in both cases.
-
-Would n of GC at startup be better than 1?
-Would scan of 1 big partition be equal to sum of n small partition scans?
-
-Thank you,
-HK
--- 
-Hinko Koèevar, OSS developer
-ÈETRTA POT, d.o.o.
-Planina 3, 4000 Kranj, SI EU
-tel     ++386 (0) 4 280 66 03
-e-mail  hinko.kocevar@cetrtapot.si
-http    www.cetrtapot.si
+Bruce
