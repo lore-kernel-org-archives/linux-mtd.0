@@ -1,18 +1,42 @@
-Received: from lilly.ping.de ([83.97.42.2])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1KzZgc-0007am-LR
-	for linux-mtd@lists.infradead.org; Mon, 10 Nov 2008 16:32:23 +0000
-Date: Mon, 10 Nov 2008 17:28:50 +0100
-To: linux-mtd@lists.infradead.org
-Subject: Re: Problem with MTD and multiple erase sizes
-Message-ID: <20081110162850.GM5081@leila.ping.de>
-References: <20081106160706.GY5081@leila.ping.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20081106160706.GY5081@leila.ping.de>
-From: wolfgang@leila.ping.de (Wolfgang Wegner)
+Received: from mailout5.samsung.com ([203.254.224.35])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1KzjvC-0002Sb-1j
+	for linux-mtd@lists.infradead.org; Tue, 11 Nov 2008 03:28:11 +0000
+Received: from epmmp1 (mailout5.samsung.com [203.254.224.35])
+	by mailout5.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KA5000FSGAFJ4@mailout5.samsung.com> for
+	linux-mtd@lists.infradead.org; Tue, 11 Nov 2008 12:27:51 +0900 (KST)
+Received: from amitksharma ([107.108.214.35])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KA500EHCGABBS@mmp1.samsung.com> for
+	linux-mtd@lists.infradead.org; Tue, 11 Nov 2008 12:27:49 +0900 (KST)
+Date: Tue, 11 Nov 2008 09:01:05 +0530
+From: Amit Kumar Sharma <amitsharma.9@samsung.com>
+Subject: Re: [ANNOUNCE] [PATCH] [MTD] Flex-OneNAND MTD Driver available.
+To: Adrian Hunter <ext-adrian.hunter@nokia.com>, Rohit <h.rohit@samsung.com>
+Message-id: <6E87DF51DE3C4BC49C27B7FC516D051B@sisodomain.com>
+Content-transfer-encoding: 7BIT
+References: <19198934.52871221827459790.JavaMail.weblogic@epml16>
+	<9c9fda240809220011w49c0875q804f836550ff3476@mail.gmail.com>
+	<000001c91e42$1aa86c50$3dd66c6b@sisodomain.com>
+	<9c9fda240809251731y48272a63j988e0001dc50d78@mail.gmail.com>
+	<1222404711.5012.5.camel@sauron>
+	<A09E9029F2344F78959A3E36179C468E@sisodomain.com>
+	<1222417176.5012.17.camel@sauron>
+	<000b01c92215$ae62d4e0$3dd66c6b@sisodomain.com>
+	<9c9fda240810091557j529495d5q284a8ab0e0d752dd@mail.gmail.com>
+	<1224331498.6770.1362.camel@macbook.infradead.org>
+	<000001c93271$5c6ab4c0$3dd66c6b@sisodomain.com>
+	<1224482040.4466.73.camel@sauron>
+	<000301c93411$74627df0$3dd66c6b@sisodomain.com>
+	<4901DB27.4020401@nokia.com>
+	<000901c93d9f$7c7ed0f0$3dd66c6b@sisodomain.com>
+	<49115EC6.9090800@nokia.com>
+	<49145004.9010202@samsung.com> <49185137.4040300@nokia.com>
+Cc: 'Kyungmin Park' <kmpark@infradead.org>,
+	apgmoorthy <moorthy.apg@samsung.com>,
+	'David Woodhouse' <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,169 +46,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-maybe I did not give enough information...
-
-The problem actually happens with uclinux-2.6.23-uc0 in uClinux-dist-20071107,
-but as far as I can see, the code in mtdchar (ioctl) is the same in
-current kernel revisions.
-My application uses the same algorithm as eraseall, so I think the
-approach should be correct, and as the kernel correctly states the
-erase sizes during bootup, I can not see a configuration problem
-either.
-
-Any help would be greatly appreciated!
-
-Best regards,
-Wolfgang
+Hi Adrian
 
 
-On Thu, Nov 06, 2008 at 05:07:06PM +0100, Wolfgang Wegner wrote:
-> Hi,
-> 
-> I am new to the list and also quite new to MTD, and - obviously - have
-> a problem.
-> 
-> I have MTD up and running with several partitions, however, I now have
-> a problem accessing the last partition which consists of a region with
-> a different erase size than the rest of the device.
-> 
-> Up to now, my algorithm is as follows:
-> - open device
-> - get info with MEMGETINFO
-> - loop over all erase blocks to do the unlocking/erase
-> 
-> This fails for the last partition because MEMGETINFO returns the erasesize
-> of 0x20000 for this partition, too.
-> 
-> I tried using MEMGETREGIONINFO, but this fails because MEMGETREGIONCOUNT
-> is 0 for this partition (most likely because there actually is only one
-> erasesize used within this partition).
-> 
-> Can anybody point me to what I am doing wrong here?
-> 
-> Thank you and best regards,
-> Wolfgang
-> 
-> 
-> Here is my kernel boot output:
-> 
-> ASTRO5373L flash device: 2000000 at 0
-> Number of erase regions: 2
-> Primary Vendor Command Set: 0001 (Intel/Sharp Extended)
-> Primary Algorithm Table at 010A
-> Alternative Vendor Command Set: 0000 (None)
-> No Alternate Algorithm Table
-> Vcc Minimum:  1.7 V
-> Vcc Maximum:  2.0 V
-> Vpp Minimum:  8.5 V
-> Vpp Maximum:  9.5 V
-> Typical byte/word write timeout: 256 µs
-> Maximum byte/word write timeout: 512 µs
-> Typical full buffer write timeout: 512 µs
-> Maximum full buffer write timeout: 1024 µs
-> Typical block erase timeout: 1024 ms
-> Maximum block erase timeout: 4096 ms
-> Chip erase not supported
-> Device size: 0x2000000 bytes (32 MiB)
-> Flash Device Interface description: 0x0001
->   - x16-only asynchronous interface
-> Max. bytes in buffer write: 0x40
-> Number of Erase Block Regions: 2
->   Erase Region #0: BlockSize 0x20000 bytes, 255 blocks
->   Erase Region #1: BlockSize 0x8000 bytes, 4 blocks
-> ASTRO5373LFlash: Found 1 x16 devices at 0x0 in 16-bit bank
->  Intel/Sharp Extended Query Table at 0x010A
->  Intel/Sharp Extended Query Table at 0x010A
->  Intel/Sharp Extended Query Table at 0x010A
->  Intel/Sharp Extended Query Table at 0x010A
->  Intel/Sharp Extended Query Table at 0x010A
-> Using buffer write method
-> cfi_cmdset_0001: Erase suspend on write enabled
-> Creating 9 MTD partitions on "ASTRO5373LFlash":
-> 0x00000000-0x02000000 : "Complete Flash"
-> 0x00000000-0x00080000 : "bootloader"
-> 0x00080000-0x00280000 : "kernel"
-> 0x00280000-0x00540000 : "root"
-> 0x00540000-0x00800000 : "FPGA"
-> 0x00800000-0x01f40000 : "data"
-> 0x01f40000-0x01f80000 : "Parameters1"
-> 0x01f80000-0x01fc0000 : "Parameters2"
-> 0x01fc0000-0x02000000 : "Parameters_ext"
-> 
-> 
-> 
-> The partition in question is "Parameters_ext" which comprises 4 blocks
-> of 0x8000 bytes each.
-> 
-> For all my flash accesses I have some utility functions, here is the
-> unlock part (with some additional debug stuff already):
-> 
->       if (ioctl(current_task.fd, MEMGETREGIONCOUNT, &region_count)) {
-> 	fprintf(stderr,"flash_worker_threadfunc: MEMGETREGIONCOUNT(%d) failed. %d %s\n",
-> 		current_task.fd, errno, strerror(errno)); 
-> 	retval = -2;
-> 	goto complete_fail;
->       }
->       region_info.regionindex = 0;
->       if (ioctl(current_task.fd, MEMGETREGIONINFO, &region_info)) {
-> 	fprintf(stderr,"flash_worker_threadfunc: MEMGETREGIONINFO(%d) failed. %d %s\n",
-> 		current_task.fd, errno, strerror(errno)); 
-> 	retval = -2;
-> 	goto complete_fail;
->       }
->       fprintf(stderr, "flash_worker_threadfunc: regioninfo(%d): %d, 0x%x, 0x%x, 0x%x\n",
-> 		current_task.fd,
-> 		region_count,
->                 region_info.offset,
->                 region_info.erasesize,
->                 region_info.numblocks);
->       if (ioctl(current_task.fd, MEMGETINFO, &meminfo)) {
-> 	fprintf(stderr,"flash_worker_threadfunc: meminfo(%d) failed. %d %s\n",
-> 		current_task.fd, errno, strerror(errno)); 
-> 	retval = -2;
-> 	goto complete_fail;
->       }
->       fprintf(stderr, "flash_worker_threadfunc: meminfo(%d): %d, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x\n",
-> 		current_task.fd,
-> 		region_count,
->                 meminfo.type,
->                 meminfo.flags,
->                 meminfo.size,
->                 meminfo.erasesize,
->                 meminfo.writesize);
-> 
->       if(BIT_IS_SET(current_task.command, FLASH_TASK_COMMAND_ERASE_BIT) ||
->          BIT_IS_SET(current_task.command, FLASH_TASK_COMMAND_WRITE_BIT) ||
-> 	 BIT_IS_SET(current_task.command, FLASH_TASK_COMMAND_UNLOCK_BIT)) {
-> 	erase.start = current_task.base_address;
-> 	erase.length = meminfo.erasesize;
-> 
-> 	while(erase.start < address_end) {
-> 	  fprintf(stderr,"flash_worker_thread: Performing Flash unlock on %d at offset 0x%x (size 0x%x)\n",
-> 		  current_task.fd, erase.start, erase.length);
-> 	  if (ioctl(current_task.fd, MEMUNLOCK, &erase)) {
-> 	    fprintf(stderr,"flash_worker_thread: unlock failed. %d %s\n", errno, strerror(errno));
-> 	    retval = -2;
-> 	    goto complete_fail;
-> 	  }
-> 	  erase.start += meminfo.erasesize;
-> 	}
->       }
-> 
-> results in:
-> flash_worker_threadfunc: MEMGETREGIONINFO(4) failed. 22 Invalid argument
-> 
-> or
-> 
-> flash_worker_threadfunc: meminfo(4): 0, 0x3, 0xc00, 0x40000, 0x20000, 0x1
-> flash_worker_thread: Performing Flash unlock on 4 at offset 0x38000 (size 0x20000)
-> flash_worker_thread: unlock failed. 22 Invalid argument
-> 
-> in case I comment out the MEMGETREGIONINFO part.
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> Rohit wrote:
+>> Adrian Hunter wrote:
+>>>> + this->command(mtd, FLEXONENAND_CMD_PI_ACCESS, die, 
+>>>> 0);
+>>>> + this->wait(mtd, FL_SYNCING);
+>>> Why is the error return not checked?
+>>>
+>>>> +
+>>>> + this->command(mtd, ONENAND_CMD_READ, die, 0);
+>>>> + ret = this->wait(mtd, FL_READING);
+>>> Why is the error return not checked?
+>>>
+>>>> +
+>>>> + bdry = this->read_word(this->base + ONENAND_DATARAM);
+>>>> + locked = bdry >> FLEXONENAND_PI_UNLOCK_SHIFT;
+>>>> + locked = (locked == 0x3) ? 0 : 1;
+>>>> + this->boundary[die] = bdry & FLEXONENAND_PI_MASK;
+>>>> + this->boundary_locked[die] = locked;
+>>>> + this->command(mtd, ONENAND_CMD_RESET, 0, 0);
+>>>> + ret = this->wait(mtd, FL_RESETING);
+>>> Why is the error return not checked?
+>>
+>> As per datasheet PI_ACCESS, PI_UPDATE, PI_READ and RESET 
+>> always succeed.
+>> PI_ERASE and PI_WRITE can fail. Added error check for 
+>> PI_ERASE.
+>
+> So if the device is behaving correctly and the driver has 
+> no bugs and there
+> are no other related hardware errors, then 'ret' will 
+> always be zero.  Well,
+> I would check it anyway, but that's just me.
+>
+>>>> + if (FLEXONENAND(this)) {
+>>>> + int boundary[] =
+>>>> + {FLEXONENAND_DIE0_BOUNDARY, 
+>>>> FLEXONENAND_DIE1_BOUNDARY};
+>>>> + int lock[] =
+>>>> + {FLEXONENAND_DIE0_ISLOCKED, 
+>>>> FLEXONENAND_DIE1_ISLOCKED};
+>>>> + unsigned die;
+>>>> +
+>>>> + flexonenand_get_size(mtd);
+>>>> +
+>>>> + /* Change the device boundaries if required */
+>>>> + for (die = 0; die < this->dies; die++)
+>>>> + if ((!this->boundary_locked[die]) &&
+>>>> +    (boundary[die] >= 0) &&
+>>>> +    (boundary[die] != this->boundary[die]))
+>>>> + flexonenand_set_boundary(mtd, die,
+>>>> + boundary[die], lock[die]);
+>>> I am not sure how you intend FLEXONENAND_DIEx_BOUNDARY 
+>>> and FLEXONENAND_DIEx_ISLOCKED
+>>> to be used.  Obviously this code presently does nothing. 
+>>> If you expect the values
+>>> to be configured for the device, then shouldn't they be 
+>>> config options?
+>>
+>> Ok. Added config option for boundary and lock settings.
+>> Configuration of boundary / lock is optional. Default 
+>> value in config is -1
+>> which will not change existing boundary of Flex-OneNAND.
+>>
+>>> Also, ideally there should be a way for the platform 
+>>> driver to override them.
+>>>
+>>
+>> Do you mean runtime configuration of boundary. Then we 
+>> need to add some ioctl.
+>>
+>
+> No I mean a onenand driver (e.g. omap2.c) that reads the 
+> values from platform data
+> and wants to set them.  It is not important.  It can be 
+> done later by whomever needs it.
+>
+>> diff --git a/include/linux/mtd/onenand.h 
+>> b/include/linux/mtd/onenand.h
+>> index 9aa2a91..d23eeef 100644
+>> --- a/include/linux/mtd/onenand.h
+>> +++ b/include/linux/mtd/onenand.h
+>> @@ -17,8 +17,23 @@
+>>  #include <linux/mtd/onenand_regs.h>
+>>  #include <linux/mtd/bbm.h>
+>>  +#define MAX_DIES 2
+>>  #define MAX_BUFFERRAM 2
+>>  +#define FLEXONENAND_DIE0_BOUNDARY 
+>> CONFIG_MTD_FLEXONENAND_DIE0_BOUNDARY
+>> +#define FLEXONENAND_DIE1_BOUNDARY 
+>> CONFIG_MTD_FLEXONENAND_DIE1_BOUNDARY
+>> +
+>
+> CONFIG_MTD_FLEXONENAND_DIEx_BOUNDARY are not necessarily 
+> defined i.e. you
+> need "#if defined ..." there as well.
+>
+> I briefly tested the driver with an old 'non-Flex' OneNAND 
+> and it seemd to work
+> fine with no apparent effect on performance.  So I have no 
+> more issues :-)
+
+we will share iozone result on flexOneNand but during 
+testing of  FlexOneNand on kernel 2.6.22 performance results 
+are far better then 2.6.27 still we donot know the reasons.
+we checked performance for OneNand on same kernel veriosn 
+but OneNand also has down performance with 2.6.27 kernel 
+version.still a question for us?
+
+>
+ Thanks
+Amit 
