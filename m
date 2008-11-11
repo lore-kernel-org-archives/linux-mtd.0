@@ -1,26 +1,33 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Kzljs-0004BT-7v
-	for linux-mtd@lists.infradead.org; Tue, 11 Nov 2008 05:24:43 +0000
-Received: from epmmp1 (mailout1.samsung.com [203.254.224.24])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KA500G4RLNVAW@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Tue, 11 Nov 2008 14:23:55 +0900 (KST)
-Received: from localhost.localdomain ([107.108.214.120])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0KA500INBLNRER@mmp1.samsung.com> for
-	linux-mtd@lists.infradead.org; Tue, 11 Nov 2008 14:23:52 +0900 (KST)
-Date: Tue, 11 Nov 2008 11:01:32 +0530
-From: Rohit <h.rohit@samsung.com>
-Subject: [RFC] [PATCH 2/2] [MTDPARTS] Support erase regions with odd numbered
-	blocks
-To: linux-mtd@lists.infradead.org
-Message-id: <491918B4.6040005@samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 7BIT
-Cc: 'David Woodhouse' <dwmw2@infradead.org>
+Message-ID: <4919340A.8070300@nokia.com>
+Date: Tue, 11 Nov 2008 09:28:10 +0200
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: Amit Kumar Sharma <amitsharma.9@samsung.com>
+Subject: Re: [ANNOUNCE] [PATCH] [MTD] Flex-OneNAND MTD Driver available.
+References: <19198934.52871221827459790.JavaMail.weblogic@epml16>
+	<9c9fda240809220011w49c0875q804f836550ff3476@mail.gmail.com>
+	<000001c91e42$1aa86c50$3dd66c6b@sisodomain.com>
+	<9c9fda240809251731y48272a63j988e0001dc50d78@mail.gmail.com>
+	<1222404711.5012.5.camel@sauron>
+	<A09E9029F2344F78959A3E36179C468E@sisodomain.com>
+	<1222417176.5012.17.camel@sauron>
+	<000b01c92215$ae62d4e0$3dd66c6b@sisodomain.com>
+	<9c9fda240810091557j529495d5q284a8ab0e0d752dd@mail.gmail.com>
+	<1224331498.6770.1362.camel@macbook.infradead.org>
+	<000001c93271$5c6ab4c0$3dd66c6b@sisodomain.com>
+	<1224482040.4466.73.camel@sauron>
+	<000301c93411$74627df0$3dd66c6b@sisodomain.com>
+	<4901DB27.4020401@nokia.com>
+	<000901c93d9f$7c7ed0f0$3dd66c6b@sisodomain.com>
+	<49115EC6.9090800@nokia.com> <49145004.9010202@samsung.com>
+	<49185137.4040300@nokia.com>
+	<6E87DF51DE3C4BC49C27B7FC516D051B@sisodomain.com>
+In-Reply-To: <6E87DF51DE3C4BC49C27B7FC516D051B@sisodomain.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Rohit <h.rohit@samsung.com>, 'Kyungmin Park' <kmpark@infradead.org>,
+	apgmoorthy <moorthy.apg@samsung.com>,
+	'David Woodhouse' <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,75 +37,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-An erroneous partition spanning across erase regions with odd
-number of blocks may go undetected.
+Amit Kumar Sharma wrote:
+> we will share iozone result on flexOneNand but during 
+> testing of  FlexOneNand on kernel 2.6.22 performance results 
+> are far better then 2.6.27 still we donot know the reasons.
+> we checked performance for OneNand on same kernel veriosn 
+> but OneNand also has down performance with 2.6.27 kernel 
+> version.still a question for us?
 
-Examples are:
-
-     1. Region 0 has 1 block of 128KB, region 1 has blocks of 256KB.
-	A partition with offset 0 and length 256KB (gets erase size 256KB)
-	is invalid but passes all checks.
-
-     2. Region 0 has 1 block of 128KB, region 1 has 1 block of 256KB
-	and region 2 has 128KB blocks. A partition with offset 0
-	and length 512KB (gets biggest erasesize ie 256KB) is invalid.
-	Such a partition passes all checks.
-
-The patch checks if the portion of a partition present in
-each region is multiple of erase size of partition.
-
-Signed-off-by: Rohit Hagargundgi <h.rohit@samsung.com>
----
- mtdpart.c |   25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 3728913..f091943 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -425,7 +425,7 @@ static struct mtd_part *add_one_partition(struct mtd_info *master,
- 	}
- 	if (master->numeraseregions > 1) {
- 		/* Deal with variable erase size stuff */
--		int i, max = master->numeraseregions;
-+		int i, rgn, max = master->numeraseregions;
- 		u32 end = slave->offset + slave->mtd.size;
- 		struct mtd_erase_region_info *regions = master->eraseregions;
- 
-@@ -437,12 +437,35 @@ static struct mtd_part *add_one_partition(struct mtd_info *master,
- 		i--;
- 
- 		/* Pick biggest erasesize */
-+		rgn = i;
- 		for (; i < max && regions[i].offset < end; i++) {
- 			if (slave->mtd.erasesize < regions[i].erasesize) {
- 				slave->mtd.erasesize = regions[i].erasesize;
- 			}
- 		}
- 		BUG_ON(slave->mtd.erasesize == 0);
-+
-+		if (slave->mtd.flags & MTD_WRITEABLE) {
-+			/* If partition spans many erase regions,
-+			 * the partition portion present in each region
-+			 * should be multiple of biggest erase size
-+			 */
-+			unsigned portion_start, portion_end, region_end;
-+
-+			for (i = rgn; i < max && regions[i].offset < end; i++) {
-+				portion_start = max(regions[i].offset, slave->offset);
-+				region_end = regions[i].offset +
-+					     regions[i].erasesize * regions[i].numblocks;
-+				portion_end = min(end, region_end);
-+
-+				if ((portion_end - portion_start) % slave->mtd.erasesize) {
-+					slave->mtd.flags &= ~MTD_WRITEABLE;
-+					printk(KERN_WARNING"mtd: partition \"%s\" is not erase block"
-+						" aligned within erase region -- force read-only\n", part->name);
-+					break;
-+				}
-+			}
-+		}
- 	} else {
- 		/* Single erase size */
- 		slave->mtd.erasesize = master->erasesize;
----
+There have been performance regressions in the kernel since
+2.6.22 related to the scheduler among other things.  2.6.28
+should be better.
