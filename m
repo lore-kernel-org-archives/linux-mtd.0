@@ -1,19 +1,25 @@
-Received: from mba.ocn.ne.jp ([122.1.235.107] helo=smtp.mba.ocn.ne.jp)
+Received: from rn-out-0910.google.com ([64.233.170.191])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L0I41-0004Pm-Eo
-	for linux-mtd@lists.infradead.org; Wed, 12 Nov 2008 15:55:31 +0000
-Date: Thu, 13 Nov 2008 00:55:34 +0900 (JST)
-Message-Id: <20081113.005534.56563769.anemo@mba.ocn.ne.jp>
-To: linux-mtd@lists.infradead.org
+	id 1L0IG9-0002eC-Gs
+	for linux-mtd@lists.infradead.org; Wed, 12 Nov 2008 16:08:01 +0000
+Received: by rn-out-0910.google.com with SMTP id m7so442046rnd.3
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 12 Nov 2008 08:08:00 -0800 (PST)
+Message-ID: <8bd0f97a0811120808p5858d5adleeef43b1d374bee1@mail.gmail.com>
+Date: Wed, 12 Nov 2008 11:08:00 -0500
+From: "Mike Frysinger" <vapier.adi@gmail.com>
+To: "Atsushi Nemoto" <anemo@mba.ocn.ne.jp>
 Subject: Re: [PATCH] physmap: Fix leak of memory returned by
 	parse_mtd_partitions
-From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-In-Reply-To: <20081112.235733.01917391.anemo@mba.ocn.ne.jp>
-References: <20081112.235733.01917391.anemo@mba.ocn.ne.jp>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+In-Reply-To: <20081113.005534.56563769.anemo@mba.ocn.ne.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: dwmw2@infradead.org, linux-kernel@vger.kernel.org
+Content-Disposition: inline
+References: <20081112.235733.01917391.anemo@mba.ocn.ne.jp>
+	<20081113.005534.56563769.anemo@mba.ocn.ne.jp>
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +29,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 12 Nov 2008 23:57:33 +0900 (JST), Atsushi Nemoto <anemo@mba.ocn.ne.jp> wrote:
-> The mtd partition parser returns an allocated pointer array of
-> mtd_partition.  The caller must free it.  The array is used only for
-> add_mtd_partitions(), so free it just after the call.
-> 
-> Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-> ---
->  drivers/mtd/maps/physmap.c |   17 ++++++++---------
->  1 files changed, 8 insertions(+), 9 deletions(-)
+On Wed, Nov 12, 2008 at 10:55, Atsushi Nemoto wrote:
+> On Wed, 12 Nov 2008 23:57:33 +0900 (JST), Atsushi Nemoto wrote:
+>> The mtd partition parser returns an allocated pointer array of
+>> mtd_partition.  The caller must free it.  The array is used only for
+>> add_mtd_partitions(), so free it just after the call.
+>>
+>> Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+>> ---
+>>  drivers/mtd/maps/physmap.c |   17 ++++++++---------
+>>  1 files changed, 8 insertions(+), 9 deletions(-)
+>
+> And many other callers of parse_mtd_partitions() also do not free the
+> returned memory.  With a quick look, 21 of 36 have same defect.
 
-And many other callers of parse_mtd_partitions() also do not free the
-returned memory.  With a quick look, 21 of 36 have same defect.
+i wonder why we duplicate this same code block in so many places.  and
+why does every driver have to declare its own list of parsers ?  cant
+we unify all of these in one place ?
 
-drivers/mtd/devices/m25p80.c
-drivers/mtd/devices/mtd_dataflash.c
-drivers/mtd/maps/bfin-async-flash.c
-drivers/mtd/maps/edb7312.c
-drivers/mtd/maps/impa7.c
-drivers/mtd/maps/intel_vr_nor.c
-drivers/mtd/maps/solutionengine.c
-drivers/mtd/nand/atmel_nand.c
-drivers/mtd/nand/cafe_nand.c
-drivers/mtd/nand/cmx270_nand.c
-drivers/mtd/nand/cs553x_nand.c
-drivers/mtd/nand/edb7312.c
-drivers/mtd/nand/fsl_elbc_nand.c
-drivers/mtd/nand/fsl_upm.c
-drivers/mtd/nand/mxc_nand.c
-drivers/mtd/nand/orion_nand.c
-drivers/mtd/nand/ppchameleonevb.c
-drivers/mtd/nand/sharpsl.c
-drivers/mtd/nand/tmio_nand.c
-drivers/mtd/nand/ts7250.c
-drivers/mtd/onenand/generic.c
+> drivers/mtd/maps/bfin-async-flash.c
 
-Volunteers? ;)
-
----
-Atsushi Nemoto
+i can fix this one if no one else gets to it
+-mikex
