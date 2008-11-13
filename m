@@ -1,14 +1,23 @@
-Subject: Re: [PATCH][nandsim]Fix RAM wasting via kmalloc (take 2)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1L0c0J-0007oj-2o
+	for linux-mtd@lists.infradead.org; Thu, 13 Nov 2008 13:12:59 +0000
+Received: from esebh106.NOE.Nokia.com (esebh106.ntc.nokia.com [172.21.138.213])
+	by mgw-mx03.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
+	mADDCtMv021316
+	for <linux-mtd@lists.infradead.org>; Thu, 13 Nov 2008 15:12:56 +0200
+Subject: Re: [PATCH] [MTD] [NAND] nandsim: add option to use a file to
+	cache pages
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Alexey Korolev <akorolev@infradead.org>
-In-Reply-To: <alpine.LFD.1.10.0810291313140.30280@casper.infradead.org>
-References: <alpine.LFD.1.10.0810291313140.30280@casper.infradead.org>
+To: Adrian Hunter <ext-adrian.hunter@nokia.com>
+In-Reply-To: <491AE2CF.3010901@nokia.com>
+References: <491AE2CF.3010901@nokia.com>
 Content-Type: text/plain; charset=utf-8
-Date: Thu, 13 Nov 2008 15:06:02 +0200
-Message-Id: <1226581562.16925.44.camel@sauron>
+Date: Thu, 13 Nov 2008 15:09:12 +0200
+Message-Id: <1226581752.16925.48.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -19,28 +28,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-10-29 at 13:14 +0000, Alexey Korolev wrote:
-> Hi All,
+On Wed, 2008-11-12 at 16:06 +0200, Adrian Hunter wrote:
+> Add a new module parameter 'cache_file' which causes nandsim
+> to use that file instead of memory to cache nand data.
+> Using a file allows the simulation of NAND that is bigger
+> than the available memory.
 >=20
-> Nandsim consumes ~2x more RAM than the density of simulated device.=20
-> It becomes critical if we need to simulate 256MB NAND and run stress test=
-s=20
-> on it.
->=20
-> We investigated the reasons. nandsim allocates space for pages using kmal=
-loc
-> function. The size of LP nand page is 2112 bytes.
-> kmalloc gets space from slab pools by chunks 2^n. So if we need to kmallo=
-c
-> 2112 bytes, 4096 bytes will be consumed by system.
-> The best way to avoid this issue would be using kmem_cache allocations. A=
-FAIK
-> this mechanism specially designed to handle cases when arrays of allocati=
-ons
-> are used.
+> Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
 
-Would you please send a version which checks return pointer of
-kmem_cache_alloc() for NULL?
+Acked-by: Artem Bityutskiy <dedekind@infradead.org>
 
 --=20
 Best regards,
