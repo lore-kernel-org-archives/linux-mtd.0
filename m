@@ -1,14 +1,15 @@
-Date: Thu, 13 Nov 2008 13:21:52 +0000 (GMT)
+Date: Thu, 13 Nov 2008 13:26:55 +0000 (GMT)
 From: Alexey Korolev <akorolev@infradead.org>
 To: Artem Bityutskiy <dedekind@infradead.org>
-Subject: Re: [PATCH][nandsim]Fix RAM wasting via kmalloc (take 2)
-In-Reply-To: <1226581562.16925.44.camel@sauron>
-Message-ID: <alpine.LFD.2.00.0811131314190.31593@casper.infradead.org>
-References: <alpine.LFD.1.10.0810291313140.30280@casper.infradead.org>
-	<1226581562.16925.44.camel@sauron>
+Subject: Re: [PATCH] [MTD] [NAND] nandsim: add option to use a file to cache
+	pages
+In-Reply-To: <1226581752.16925.48.camel@sauron>
+Message-ID: <alpine.LFD.2.00.0811131324570.31593@casper.infradead.org>
+References: <491AE2CF.3010901@nokia.com> <1226581752.16925.48.camel@sauron>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Adrian Hunter <ext-adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,25 +19,4 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-> 
-> Would you please send a version which checks return pointer of
-> kmem_cache_alloc() for NULL?
-> 
-I think it is  unnecessary to add one more check of return pointer for NULL
-after kmem_cache_alloc() function.
-
-PLease take a look at these lines of the patch:
-----
--		mypage->byte = kmalloc(ns->geom.pgszoob, GFP_NOFS);
-+		mypage->byte = kmem_cache_alloc(ns->nand_pages_slab, GFP_NOFS);
- 		if (mypage->byte == NULL) {
- 			NS_ERR("prog_page: error allocating memory for page %d\n", ns->regs.row);
- 			return -1;
-----
-If I properly understand the code it already performs checking just after attempt of allocation. 
-So this patch version should be correct.
-
-Thanks,
-Alexey
+May be you wanted to ask about the check for  kmem_cache_create?
