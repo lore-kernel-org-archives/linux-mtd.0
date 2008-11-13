@@ -1,15 +1,15 @@
 Received: from mba.ocn.ne.jp ([122.1.235.107] helo=smtp.mba.ocn.ne.jp)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L0cb1-00034K-1S
-	for linux-mtd@lists.infradead.org; Thu, 13 Nov 2008 13:50:55 +0000
-Date: Thu, 13 Nov 2008 22:51:01 +0900 (JST)
-Message-Id: <20081113.225101.14979944.anemo@mba.ocn.ne.jp>
+	id 1L0dBD-0004yi-Ct
+	for linux-mtd@lists.infradead.org; Thu, 13 Nov 2008 14:28:20 +0000
+Date: Thu, 13 Nov 2008 23:28:23 +0900 (JST)
+Message-Id: <20081113.232823.125897716.anemo@mba.ocn.ne.jp>
 To: vapier@gentoo.org
-Subject: Re: [PATCH] mtd/physmap: use parse_mtd()
+Subject: Re: [PATCH] mtd: unify mtd partition/device registration
 From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-In-Reply-To: <1226533189-8492-1-git-send-email-vapier@gentoo.org>
+In-Reply-To: <20081113.224350.18312549.anemo@mba.ocn.ne.jp>
 References: <1226533133-7405-1-git-send-email-vapier@gentoo.org>
-	<1226533189-8492-1-git-send-email-vapier@gentoo.org>
+	<20081113.224350.18312549.anemo@mba.ocn.ne.jp>
 Mime-Version: 1.0
 Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
@@ -24,21 +24,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 12 Nov 2008 18:39:48 -0500, Mike Frysinger <vapier@gentoo.org> wrote:
-> Call parse_mtd() to handle partition/device registration rather than doing
-> it all ourself.
+On Thu, 13 Nov 2008 22:43:50 +0900 (JST), Atsushi Nemoto <anemo@mba.ocn.ne.jp> wrote:
+> On Wed, 12 Nov 2008 18:38:53 -0500, Mike Frysinger <vapier@gentoo.org> wrote:
+> > Rather than having every map/mtd driver doing the same sequence of
+> > registering partitions and/or devices, implement common parse_mtd().
+> > 
+> > Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+> > ---
+> >  drivers/mtd/mtdcore.c   |   37 +++++++++++++++++++++++++++++++++++++
+> >  include/linux/mtd/mtd.h |    3 +++
+> >  2 files changed, 40 insertions(+), 0 deletions(-)
 > 
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
-> ---
->  drivers/mtd/maps/physmap.c |   21 +--------------------
->  1 files changed, 1 insertions(+), 20 deletions(-)
+> I like this idea.
 
-You should adjust physmap_flash_remove() too.
+Some drivers call both add_mtd_device() and add_mtd_partitions().  The
+mtd_device is used to access whole flash area (like /dev/hda).  How do
+you think of these usage patterns?
 
-* remove kfree(info->parts)
-* call del_mtd_partitions() or del_mtd_device()
+maps/edb7312.c
+maps/mbx860.c
+maps/plat-ram.c
+nand/cafe_nand.c
+nand/diskonchip.c
+nand/ndfc.c
 
-Maybe del_parsed_mtd() or something is required?
+Automatic fallback to mtd_device in parse_mtd() is convenient but
+somewhat unflexible...
 
 ---
 Atsushi Nemoto
