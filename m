@@ -1,23 +1,14 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L0bKP-0004Kg-IN
-	for linux-mtd@lists.infradead.org; Thu, 13 Nov 2008 12:29:41 +0000
-Received: from vaebh105.NOE.Nokia.com (vaebh105.europe.nokia.com
-	[10.160.244.31])
-	by mgw-mx06.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
-	mADCTIq8009318
-	for <linux-mtd@lists.infradead.org>; Thu, 13 Nov 2008 14:29:38 +0200
-Subject: Re: [PATCH] [MTD] [NAND] nandsim: suppress unnecessary warning
+Subject: Re: [PATCH][nandsim]Fix RAM wasting via kmalloc (take 2)
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Adrian Hunter <ext-adrian.hunter@nokia.com>
-In-Reply-To: <491AE2F0.7040200@nokia.com>
-References: <491AE2F0.7040200@nokia.com>
+To: Alexey Korolev <akorolev@infradead.org>
+In-Reply-To: <alpine.LFD.1.10.0810291313140.30280@casper.infradead.org>
+References: <alpine.LFD.1.10.0810291313140.30280@casper.infradead.org>
 Content-Type: text/plain; charset=utf-8
-Date: Thu, 13 Nov 2008 14:27:38 +0200
-Message-Id: <1226579258.16925.42.camel@sauron>
+Date: Thu, 13 Nov 2008 15:06:02 +0200
+Message-Id: <1226581562.16925.44.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -28,13 +19,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-11-12 at 16:06 +0200, Adrian Hunter wrote:
-> nand_base sometimes reads only 2 bytes of a 4 byte id.
-> It is OK.  Do not print a warning in that case.
+On Wed, 2008-10-29 at 13:14 +0000, Alexey Korolev wrote:
+> Hi All,
 >=20
-> Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+> Nandsim consumes ~2x more RAM than the density of simulated device.=20
+> It becomes critical if we need to simulate 256MB NAND and run stress test=
+s=20
+> on it.
+>=20
+> We investigated the reasons. nandsim allocates space for pages using kmal=
+loc
+> function. The size of LP nand page is 2112 bytes.
+> kmalloc gets space from slab pools by chunks 2^n. So if we need to kmallo=
+c
+> 2112 bytes, 4096 bytes will be consumed by system.
+> The best way to avoid this issue would be using kmem_cache allocations. A=
+FAIK
+> this mechanism specially designed to handle cases when arrays of allocati=
+ons
+> are used.
 
-Acked-by: Artem Bityutskiy <dedekind@infradead.org>
+Would you please send a version which checks return pointer of
+kmem_cache_alloc() for NULL?
 
 --=20
 Best regards,
