@@ -1,18 +1,20 @@
-Subject: Re: [PATCH] [MTD] [NAND] nandsim: add option to use a file to
-	cache pages
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Alexey Korolev <akorolev@infradead.org>
-In-Reply-To: <alpine.LFD.2.00.0811131324570.31593@casper.infradead.org>
-References: <491AE2CF.3010901@nokia.com> <1226581752.16925.48.camel@sauron>
-	<alpine.LFD.2.00.0811131324570.31593@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 13 Nov 2008 15:47:58 +0200
-Message-Id: <1226584078.16925.50.camel@sauron>
+Received: from mba.ocn.ne.jp ([122.1.235.107] helo=smtp.mba.ocn.ne.jp)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1L0cb1-00034K-1S
+	for linux-mtd@lists.infradead.org; Thu, 13 Nov 2008 13:50:55 +0000
+Date: Thu, 13 Nov 2008 22:51:01 +0900 (JST)
+Message-Id: <20081113.225101.14979944.anemo@mba.ocn.ne.jp>
+To: vapier@gentoo.org
+Subject: Re: [PATCH] mtd/physmap: use parse_mtd()
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+In-Reply-To: <1226533189-8492-1-git-send-email-vapier@gentoo.org>
+References: <1226533133-7405-1-git-send-email-vapier@gentoo.org>
+	<1226533189-8492-1-git-send-email-vapier@gentoo.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Adrian Hunter <ext-adrian.hunter@nokia.com>
-Reply-To: dedekind@infradead.org
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,6 +24,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gVGh1LCAyMDA4LTExLTEzIGF0IDEzOjI2ICswMDAwLCBBbGV4ZXkgS29yb2xldiB3cm90ZToN
-Cj4ga21lbV9jYWNoZV9jcmVhdGU/DQoNClJpZ2h0IDotKQ0KDQotLSANCkJlc3QgcmVnYXJkcywN
-CkFydGVtIEJpdHl1dHNraXkgKNCR0LjRgtGO0YbQutC40Lkg0JDRgNGC0ZHQvCkNCg==
+On Wed, 12 Nov 2008 18:39:48 -0500, Mike Frysinger <vapier@gentoo.org> wrote:
+> Call parse_mtd() to handle partition/device registration rather than doing
+> it all ourself.
+> 
+> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+> ---
+>  drivers/mtd/maps/physmap.c |   21 +--------------------
+>  1 files changed, 1 insertions(+), 20 deletions(-)
+
+You should adjust physmap_flash_remove() too.
+
+* remove kfree(info->parts)
+* call del_mtd_partitions() or del_mtd_device()
+
+Maybe del_parsed_mtd() or something is required?
+
+---
+Atsushi Nemoto
