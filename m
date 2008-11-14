@@ -1,13 +1,15 @@
 Received: from smtp.gentoo.org ([140.211.166.183])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L0xh5-000086-EA
-	for linux-mtd@lists.infradead.org; Fri, 14 Nov 2008 12:22:35 +0000
+	id 1L0xhL-00008u-24
+	for linux-mtd@lists.infradead.org; Fri, 14 Nov 2008 12:22:51 +0000
 From: Mike Frysinger <vapier@gentoo.org>
 To: linux-mtd@lists.infradead.org,
 	David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH v2] mtd: unify mtd partition/device registration
-Date: Fri, 14 Nov 2008 07:22:31 -0500
-Message-Id: <1226665351-20226-1-git-send-email-vapier@gentoo.org>
+Subject: [PATCH v2] mtd/physmap: use parse_mtd()
+Date: Fri, 14 Nov 2008 07:22:48 -0500
+Message-Id: <1226665369-20248-1-git-send-email-vapier@gentoo.org>
+In-Reply-To: <1226665351-20226-1-git-send-email-vapier@gentoo.org>
+References: <1226665351-20226-1-git-send-email-vapier@gentoo.org>
 Cc: Atsushi Nemoto <anemo@mba.ocn.ne.jp>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -18,106 +20,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Rather than having every map/mtd driver doing the same sequence of
-registering partitions and/or devices, implement common parse_mtd().
+Call parse_mtd() to handle partition/device registration rather than doing
+it all ourself.
 
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
 v2:
-	- ifdef parsers in parse_mtd()
-	- add "always_whole" to parse_mtd()
-	- add unparse_mtd()
+	- call unparse_mtd()
+	- delete local nr_parts/parts in physmap_flash_info
 
- drivers/mtd/mtdcore.c   |   60 +++++++++++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/mtd.h |    5 ++++
- 2 files changed, 65 insertions(+), 0 deletions(-)
+ drivers/mtd/maps/physmap.c |   39 +++------------------------------------
+ 1 files changed, 3 insertions(+), 36 deletions(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index a9d2469..2e91785 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -292,6 +292,66 @@ void put_mtd_device(struct mtd_info *mtd)
- 	module_put(mtd->owner);
+diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
+index 42d844f..d0e11b5 100644
+--- a/drivers/mtd/maps/physmap.c
++++ b/drivers/mtd/maps/physmap.c
+@@ -28,10 +28,6 @@ struct physmap_flash_info {
+ 	struct mtd_info		*cmtd;
+ 	struct map_info		map[MAX_RESOURCES];
+ 	struct resource		*res;
+-#ifdef CONFIG_MTD_PARTITIONS
+-	int			nr_parts;
+-	struct mtd_partition	*parts;
+-#endif
+ };
+ 
+ static int physmap_flash_remove(struct platform_device *dev)
+@@ -56,18 +52,7 @@ static int physmap_flash_remove(struct platform_device *dev)
+ 
+ 	for (i = 0; i < MAX_RESOURCES; i++) {
+ 		if (info->mtd[i] != NULL) {
+-#ifdef CONFIG_MTD_PARTITIONS
+-			if (info->nr_parts) {
+-				del_mtd_partitions(info->mtd[i]);
+-				kfree(info->parts);
+-			} else if (physmap_data->nr_parts) {
+-				del_mtd_partitions(info->mtd[i]);
+-			} else {
+-				del_mtd_device(info->mtd[i]);
+-			}
+-#else
+-			del_mtd_device(info->mtd[i]);
+-#endif
++			unparse_mtd(info->mtd[i]);
+ 			map_destroy(info->mtd[i]);
+ 		}
+ 
+@@ -84,9 +69,6 @@ static int physmap_flash_remove(struct platform_device *dev)
  }
  
-+#include <linux/mtd/partitions.h>
-+
-+/**
-+ *	parse_mtd - add partitions / devices
-+ *
-+ *	If partitioning support is enabled, attempt to call parse_mtd_partitions()
-+ *	and add_mtd_partitions() with all available parsers.  Otherwise just add
-+ *	the MTD device.
-+ */
-+
-+int parse_mtd(struct mtd_info *mtd, const char **probe_types,
-+              struct mtd_partition *parts, int nr_parts, bool always_whole)
-+{
-+	int ret;
-+#ifdef CONFIG_MTD_PARTITIONS
-+	const char *default_part_probe_types[] = {
-+# ifdef CONFIG_MTD_CMDLINE_PARTS
-+		"cmdlinepart",
-+# endif
-+# ifdef CONFIG_MTD_REDBOOT_PARTS
-+		"RedBoot",
-+# endif
-+		NULL
-+	};
-+
-+	if (!probe_types)
-+		probe_types = default_part_probe_types;
-+
-+	ret = parse_mtd_partitions(mtd, probe_types, &parts, 0);
-+	if (ret > 0) {
-+		ret = add_mtd_partitions(mtd, parts, ret);
-+		kfree(parts);
-+	} else if (nr_parts)
-+		ret = add_mtd_partitions(mtd, parts, nr_parts);
-+#else
-+	always_whole = true;
-+#endif
-+
-+	if (always_whole)
-+		ret = add_mtd_device(mtd);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(parse_mtd);
-+
-+/**
-+ *	unparse_mtd - remove partitions / devices
-+ *
-+ *	Undo the parse_mtd() steps -- so unregister all partitions and devices.
-+ */
-+
-+void unparse_mtd(struct mtd_info *mtd)
-+{
-+#ifdef CONFIG_MTD_PARTITIONS
-+	del_mtd_partitions(mtd);
-+#endif
-+	del_mtd_device(mtd);
-+}
-+EXPORT_SYMBOL(unparse_mtd);
-+
- /* default_mtd_writev - default mtd writev method for MTD devices that
-  *			don't implement their own
-  */
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index eae26bb..68ceaab 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -232,6 +232,11 @@ extern struct mtd_info *get_mtd_device_nm(const char *name);
+ static const char *rom_probe_types[] = { "cfi_probe", "jedec_probe", "map_rom", NULL };
+-#ifdef CONFIG_MTD_PARTITIONS
+-static const char *part_probe_types[] = { "cmdlinepart", "RedBoot", NULL };
+-#endif
  
- extern void put_mtd_device(struct mtd_info *mtd);
+ static int physmap_flash_probe(struct platform_device *dev)
+ {
+@@ -170,23 +152,8 @@ static int physmap_flash_probe(struct platform_device *dev)
+ 	if (err)
+ 		goto err_out;
  
-+struct mtd_partition;
-+extern int parse_mtd(struct mtd_info *mtd, const char **probe_types,
-+                     struct mtd_partition *parts, int nr_parts,
-+                     bool always_whole);
-+extern void unparse_mtd(struct mtd_info *mtd);
+-#ifdef CONFIG_MTD_PARTITIONS
+-	err = parse_mtd_partitions(info->cmtd, part_probe_types, &info->parts, 0);
+-	if (err > 0) {
+-		add_mtd_partitions(info->cmtd, info->parts, err);
+-		return 0;
+-	}
+-
+-	if (physmap_data->nr_parts) {
+-		printk(KERN_NOTICE "Using physmap partition information\n");
+-		add_mtd_partitions(info->cmtd, physmap_data->parts,
+-				   physmap_data->nr_parts);
+-		return 0;
+-	}
+-#endif
+-
+-	add_mtd_device(info->cmtd);
+-	return 0;
++	return parse_mtd(info->cmtd, NULL, physmap_data->parts,
++	                 physmap_data->nr_parts, false);
  
- struct mtd_notifier {
- 	void (*add)(struct mtd_info *mtd);
+ err_out:
+ 	physmap_flash_remove(dev);
 -- 
 1.6.0.3
