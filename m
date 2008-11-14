@@ -1,16 +1,18 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
+Received: from 81-7-68-229.static.zebra.lt ([81.7.68.229] helo=teltonika.lt)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L0xhM-00009D-75
-	for linux-mtd@lists.infradead.org; Fri, 14 Nov 2008 12:22:52 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-To: linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH v2] mtd/bfin-async-flash: use parse_mtd()
-Date: Fri, 14 Nov 2008 07:22:49 -0500
-Message-Id: <1226665369-20248-2-git-send-email-vapier@gentoo.org>
-In-Reply-To: <1226665351-20226-1-git-send-email-vapier@gentoo.org>
-References: <1226665351-20226-1-git-send-email-vapier@gentoo.org>
-Cc: Atsushi Nemoto <anemo@mba.ocn.ne.jp>, linux-kernel@vger.kernel.org
+	id 1L0y0o-0002kY-UM
+	for linux-mtd@lists.infradead.org; Fri, 14 Nov 2008 12:42:59 +0000
+Message-ID: <491D724D.2030804@teltonika.lt>
+Date: Fri, 14 Nov 2008 14:42:53 +0200
+From: Paulius Zaleckas <paulius.zaleckas@teltonika.lt>
+MIME-Version: 1.0
+To: Avik Sil <savik@zilog.com>
+Subject: Re: MTD XIP related issue
+References: <130F820E6D339446BB9EEC7FAF40A06DDEDF4B@mailziel.zilog.org>
+In-Reply-To: <130F820E6D339446BB9EEC7FAF40A06DDEDF4B@mailziel.zilog.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Nicolas Pitre <nico@cam.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,81 +22,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Call parse_mtd() to handle partition/device registration rather than doing
-it all ourself.
+Avik Sil wrote:
+> While porting Linux kernel 2.6.26 on an ARM922T based custom board for
+> XIP kernel, I came across the following bug report during boot-up:
 
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
----
-v2:
-	- call unparse_mtd()
+Had the same problem. See my comments on your config file
 
- drivers/mtd/maps/bfin-async-flash.c |   32 ++++----------------------------
- 1 files changed, 4 insertions(+), 28 deletions(-)
+[...]
 
-diff --git a/drivers/mtd/maps/bfin-async-flash.c b/drivers/mtd/maps/bfin-async-flash.c
-index 6fec86a..e432f94 100644
---- a/drivers/mtd/maps/bfin-async-flash.c
-+++ b/drivers/mtd/maps/bfin-async-flash.c
-@@ -120,13 +120,8 @@ static void bfin_copy_to(struct map_info *map, unsigned long to, const void *fro
- 	switch_back(state);
- }
+> My kernel configuration is:
+
+[...]
+
+> #
+> 
+> # RAM/ROM/Flash chip drivers
+> 
+> #
+> 
+> CONFIG_MTD_CFI=y
+> 
+> # CONFIG_MTD_JEDECPROBE is not set
+> 
+> CONFIG_MTD_GEN_PROBE=y
+> 
+> # CONFIG_MTD_CFI_ADV_OPTIONS is not set
+> 
+> CONFIG_MTD_MAP_BANK_WIDTH_1=y
+> 
+> CONFIG_MTD_MAP_BANK_WIDTH_2=y
+> 
+> CONFIG_MTD_MAP_BANK_WIDTH_4=y
+
+Select only the supported BANK_WIDTH.
+The problem is that if multiple bank widths are selected, then in code which is placed
+in RAM for XIP to work appears reference to __udivsi3(if I remember correctly) and
+this function is on FLASH and FLASH at that moment is inaccessible.
+Sometimes it works because this function is already cached by CPU.
+
+Nicolas: I think there should be some way to work around this... If not maybe we should
+add compile #error if multiple bank widths and XIP are selected...
  
--#ifdef CONFIG_MTD_PARTITIONS
--static const char *part_probe_types[] = { "cmdlinepart", "RedBoot", NULL };
--#endif
--
- static int __devinit bfin_flash_probe(struct platform_device *pdev)
- {
--	int ret;
- 	struct physmap_flash_data *pdata = pdev->dev.platform_data;
- 	struct resource *memory = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	struct resource *flash_ambctl = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-@@ -150,6 +145,8 @@ static int __devinit bfin_flash_probe(struct platform_device *pdev)
- 	state->flash_ambctl0  = flash_ambctl->start;
- 	state->flash_ambctl1  = flash_ambctl->end;
+> # CONFIG_MTD_MAP_BANK_WIDTH_8 is not set
+> 
+> # CONFIG_MTD_MAP_BANK_WIDTH_16 is not set
+> 
+> # CONFIG_MTD_MAP_BANK_WIDTH_32 is not set
+> 
+> CONFIG_MTD_CFI_I1=y
+> 
+> CONFIG_MTD_CFI_I2=y
+
+Don't remember, but this may have the same effect also.
  
-+	platform_set_drvdata(pdev, state);
-+
- 	if (gpio_request(state->enet_flash_pin, DRIVER_NAME)) {
- 		pr_devinit(KERN_ERR DRIVER_NAME ": Failed to request gpio %d\n", state->enet_flash_pin);
- 		return -EBUSY;
-@@ -161,35 +158,14 @@ static int __devinit bfin_flash_probe(struct platform_device *pdev)
- 	if (!state->mtd)
- 		return -ENXIO;
- 
--#ifdef CONFIG_MTD_PARTITIONS
--	ret = parse_mtd_partitions(state->mtd, part_probe_types, &pdata->parts, 0);
--	if (ret > 0) {
--		pr_devinit(KERN_NOTICE DRIVER_NAME ": Using commandline partition definition\n");
--		add_mtd_partitions(state->mtd, pdata->parts, ret);
--
--	} else if (pdata->nr_parts) {
--		pr_devinit(KERN_NOTICE DRIVER_NAME ": Using board partition definition\n");
--		add_mtd_partitions(state->mtd, pdata->parts, pdata->nr_parts);
--
--	} else
--#endif
--	{
--		pr_devinit(KERN_NOTICE DRIVER_NAME ": no partition info available, registering whole flash at once\n");
--		add_mtd_device(state->mtd);
--	}
--
--	platform_set_drvdata(pdev, state);
--
--	return 0;
-+	return parse_mtd(state->mtd, NULL, pdata->parts, pdata->nr_parts, false);
- }
- 
- static int __devexit bfin_flash_remove(struct platform_device *pdev)
- {
- 	struct async_state *state = platform_get_drvdata(pdev);
- 	gpio_free(state->enet_flash_pin);
--#ifdef CONFIG_MTD_PARTITIONS
--	del_mtd_partitions(state->mtd);
--#endif
-+	unparse_mtd(state->mtd);
- 	map_destroy(state->mtd);
- 	kfree(state);
- 	return 0;
--- 
-1.6.0.3
+> # CONFIG_MTD_CFI_I4 is not set
+> 
+> # CONFIG_MTD_CFI_I8 is not set
+> 
+> # CONFIG_MTD_CFI_INTELEXT is not set
+> 
+> CONFIG_MTD_CFI_AMDSTD=y
+> 
+> # CONFIG_MTD_CFI_STAA is not set
+> 
+> CONFIG_MTD_CFI_UTIL=y
+> 
+> # CONFIG_MTD_RAM is not set
+> 
+> # CONFIG_MTD_ROM is not set
+> 
+> # CONFIG_MTD_ABSENT is not set
+> 
+> CONFIG_MTD_XIP=y
