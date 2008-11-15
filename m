@@ -1,25 +1,26 @@
-Received: from wf-out-1314.google.com ([209.85.200.174])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L16pH-0000Sw-QZ
-	for linux-mtd@lists.infradead.org; Fri, 14 Nov 2008 22:07:40 +0000
-Received: by wf-out-1314.google.com with SMTP id 28so1541068wfc.24
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 14 Nov 2008 14:07:38 -0800 (PST)
-Message-ID: <8bd0f97a0811141407nde33c5tb90536c4983b53b4@mail.gmail.com>
-Date: Fri, 14 Nov 2008 17:07:38 -0500
-From: "Mike Frysinger" <vapier.adi@gmail.com>
-To: "Andrew Morton" <akpm@linux-foundation.org>
-Subject: Re: [PATCH] mtd/physmap: use parse_mtd()
-In-Reply-To: <20081114134116.972fce2f.akpm@linux-foundation.org>
+Received: from az33egw02.freescale.net ([192.88.158.103])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1L1AXW-0003Us-D3
+	for linux-mtd@lists.infradead.org; Sat, 15 Nov 2008 02:05:35 +0000
+Date: Fri, 14 Nov 2008 18:02:27 -0800 (PST)
+From: Trent Piepho <tpiepho@freescale.com>
+To: Andre Puschmann <andre.puschmann@imms.de>
+Subject: Re: flash read performance
+In-Reply-To: <gfc19i$tpr$1@ger.gmane.org>
+Message-ID: <Pine.LNX.4.64.0811141745040.11673@t2.domain.actdsltmp>
+References: <ge6old$oo3$1@ger.gmane.org>
+	<20081029114256.GA2239@yoda.jdub.homelinux.org>
+	<gea0sh$j97$1@ger.gmane.org> <49097176.5010506@thomson.net>
+	<gec051$efd$1@ger.gmane.org>
+	<49098716.1010404@thomson.net> <490F096D.5060208@imms.de>
+	<20081104114229.GA1673@shareable.org> <49105CAB.3000706@imms.de>
+	<Pine.LNX.4.64.0811061815190.3864@t2.domain.actdsltmp>
+	<gf12sb$oo3$1@ger.gmane.org>
+	<Pine.LNX.4.64.0811072052200.3864@t2.domain.actdsltmp>
+	<gfc19i$tpr$1@ger.gmane.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <1226533133-7405-1-git-send-email-vapier@gentoo.org>
-	<1226533189-8492-1-git-send-email-vapier@gentoo.org>
-	<20081114134116.972fce2f.akpm@linux-foundation.org>
-Cc: linux-mtd@lists.infradead.org, Mike Frysinger <vapier@gentoo.org>,
-	dwmw2@infradead.org, linux-kernel@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,68 +30,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 14, 2008 at 16:41, Andrew Morton wrote:
-> On Wed, 12 Nov 2008 18:39:48 -0500
-> Mike Frysinger <vapier@gentoo.org> wrote:
->> Call parse_mtd() to handle partition/device registration rather than doing
->> it all ourself.
+On Tue, 11 Nov 2008, Andre Puschmann wrote:
+> Trent Piepho schrieb:
+>>> map.virt = ioremap(..);
+>>> map.cached = ioremap_cached(..);
+>>> map.inval_cache = inval_cache_fct();
 >>
->> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
->> ---
->>  drivers/mtd/maps/physmap.c |   21 +--------------------
->>  1 files changed, 1 insertions(+), 20 deletions(-)
->>
->> diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
->> index 42d844f..9b87fd8 100644
->> --- a/drivers/mtd/maps/physmap.c
->> +++ b/drivers/mtd/maps/physmap.c
->> @@ -84,9 +84,6 @@ static int physmap_flash_remove(struct platform_device *dev)
->>  }
->>
->>  static const char *rom_probe_types[] = { "cfi_probe", "jedec_probe", "map_rom", NULL };
->> -#ifdef CONFIG_MTD_PARTITIONS
->> -static const char *part_probe_types[] = { "cmdlinepart", "RedBoot", NULL };
->> -#endif
->>
->>  static int physmap_flash_probe(struct platform_device *dev)
->>  {
->> @@ -170,23 +167,7 @@ static int physmap_flash_probe(struct platform_device *dev)
->>       if (err)
->>               goto err_out;
->>
->> -#ifdef CONFIG_MTD_PARTITIONS
->> -     err = parse_mtd_partitions(info->cmtd, part_probe_types, &info->parts, 0);
->> -     if (err > 0) {
->> -             add_mtd_partitions(info->cmtd, info->parts, err);
->> -             return 0;
->> -     }
->> -
->> -     if (physmap_data->nr_parts) {
->> -             printk(KERN_NOTICE "Using physmap partition information\n");
->> -             add_mtd_partitions(info->cmtd, physmap_data->parts,
->> -                                physmap_data->nr_parts);
->> -             return 0;
->> -     }
->> -#endif
->> -
->> -     add_mtd_device(info->cmtd);
->> -     return 0;
->> +     return parse_mtd(info->cmtd, NULL, physmap_data->parts, physmap_data->nr_parts);
->>
->>  err_out:
->>       physmap_flash_remove(dev);
+>> It depends on what mapping driver you're using.  It looks like only the
+>> pxa2xx driver uses map.cached.  The physmap or of_physmap drivers that I'm
+>> using don't use it.
 >
-> This didn't apply due to
-> physmap-fix-leak-of-memory-returned-by-parse_mtd_partitions.patch.  I
-> just smashed it in anyway.  Should I drop
-> physmap-fix-leak-of-memory-returned-by-parse_mtd_partitions.patch
-> instead?  Your changelog mentioned nothing about leak-fixing?
+> The flashmap-drive I am using is custom one made for the gumstix-board.
+> However, it is almost identically to pxa2xx-driver from newer kernels.
 
-i'd like feedback from the main mtd guy(s) first, but if you're going
-to queue things, it should be with v2 that i posted rather than this
-set.
+I added support to physmap_of for using map.cached on ppc32, seems to be
+working so far.
 
-while mine doesnt explicitly mention leak fixing, it does fix it in
-the process of moving code about.  so if you do add v2, you can safely
-drop the leak fix.
--mike
+But, it turns out it doesn't work for XIP.  The flash drivers that support XIP
+implement a ->point() method that something like AXFS or cramfs+xip use to
+mmap the flash.  But these just return pointers to the uncached mapping.
+
+>> In non-cached and guarded mode, I now get 13.61 vs 12.30 MB/s.  That's just
+>> from slightly better timings because I could make them different for read
+>> vs write.  The big difference is cached and non-guarded reads, which went
+>> to 44.79 MB/s from 14.24 MB/s.  That boost is from using burst mode.
+>
+> Whop, this is great news. Btw. do you drive your flash in asynchronous
+> or in synchronous mode? Do you have an extra flash configuration
+> register that you need to modify in order to use the burst mode?
+> My intel NOR flash has an extra read configuration register (RCR).
+> However, for some reason I am not able to read/modify/read this register
+> successfully.
+
+In asynchronous mode.  I didn't have to program anything special in the flash
+chip, just program the localbus controller to use page burst transfers.
