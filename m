@@ -1,23 +1,19 @@
-Received: from wf-out-1314.google.com ([209.85.200.174])
+Received: from qb-out-1314.google.com ([72.14.204.174])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L1uIA-0005k8-08
-	for linux-mtd@lists.infradead.org; Mon, 17 Nov 2008 02:56:46 +0000
-Received: by wf-out-1314.google.com with SMTP id 28so2243664wfc.24
+	id 1L1xV7-0006gF-Vm
+	for linux-mtd@lists.infradead.org; Mon, 17 Nov 2008 06:22:22 +0000
+Received: by qb-out-1314.google.com with SMTP id q13so2346072qbq.26
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 16 Nov 2008 18:56:44 -0800 (PST)
-Message-ID: <9c9fda240811161856u2c784946wabba1dfc5009ef46@mail.gmail.com>
-Date: Mon, 17 Nov 2008 11:56:44 +0900
-From: "Kyungmin Park" <kmpark@infradead.org>
-Sender: kyungmin78@gmail.com
-To: "Adrian Hunter" <ext-adrian.hunter@nokia.com>
-Subject: Re: [PATCH][OneNAND] Write-while-program support
-In-Reply-To: <491D53B8.1010401@nokia.com>
+	Sun, 16 Nov 2008 22:22:20 -0800 (PST)
+Message-ID: <7719d8030811162222t1e2d2ba2m7702300d64310d81@mail.gmail.com>
+Date: Mon, 17 Nov 2008 14:22:19 +0800
+From: "edw edwardone" <edwrd.won@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [JFFS2] kernel BUG at fs/jffs2/readinode.c:252!
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <20081114002830.GA25979@july> <491D53B8.1010401@nokia.com>
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,222 +23,139 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-HI,
+Hi,everyone:
+I found a bug in the function jffs2_add_tn_to_tree() that may cause kernel oops.
+See these lines in this function below:
 
-On Fri, Nov 14, 2008 at 7:32 PM, Adrian Hunter
-<ext-adrian.hunter@nokia.com> wrote:
-> Kyungmin Park wrote:
->>
->> This is from Adrian hunter and modified for write_ops operation.
->
-> Thanks for looking at write-while-program.  I have a few questions though.
-> I have copied the whole function below because the diff is too confusing:
->
->> /**
->>  * onenand_write_ops_nolock - [OneNAND Interface] write main and/or
->> out-of-band
->>  * @param mtd           MTD device structure
->>  * @param to            offset to write to
->>  * @param ops           oob operation description structure
->>  *
->>  * Write main and/or oob with ECC
->>  */
->> static int onenand_write_ops_nolock(struct mtd_info *mtd, loff_t to,
->>                                struct mtd_oob_ops *ops)
->> {
->>        struct onenand_chip *this = mtd->priv;
->>        int written = 0, column, thislen = 0, subpage = 0;
->>        int prev = 0, prevlen = 0, prev_subpage = 0, first = 1;
->>        int oobwritten = 0, oobcolumn, thisooblen, oobsize;
->>        size_t len = ops->len;
->>        size_t ooblen = ops->ooblen;
->>        const u_char *buf = ops->datbuf;
->>        const u_char *oob = ops->oobbuf;
->>        u_char *oobbuf;
->>        int ret = 0;
->>
->>        DEBUG(MTD_DEBUG_LEVEL3, "onenand_write_ops_nolock: to = 0x%08x, len
->> = %i\n", (unsigned int) to, (int) len);
->>
->>        /* Initialize retlen, in case of early exit */
->>        ops->retlen = 0;
->>        ops->oobretlen = 0;
->>
->>        /* Do not allow writes past end of device */
->>        if (unlikely((to + len) > mtd->size)) {
->>                printk(KERN_ERR "onenand_write_ops_nolock: Attempt write to
->> past end of device\n");
->>                return -EINVAL;
->>        }
->>
->>        /* Reject writes, which are not page aligned */
->>        if (unlikely(NOTALIGNED(to) || NOTALIGNED(len))) {
->>                printk(KERN_ERR "onenand_write_ops_nolock: Attempt to write
->> not page aligned data\n");
->>                return -EINVAL;
->>        }
->>
->
-> The loop cannot handle the case when len is zero so I had:
->
->        if (!len)
->                return 0;
+static int jffs2_add_tn_to_tree(struct jffs2_sb_info *c,
+                struct jffs2_readinode_info *rii,
+                struct jffs2_tmp_dnode_info *tn)
+{
+    uint32_t fn_end = tn->fn->ofs + tn->fn->size;
+    struct jffs2_tmp_dnode_info *this;
 
-Yes there's length check. I wonder is it possible to write with zero?
-Is it handle at driver level or upper level such as filesystem?
-But no problem to just add length check here at this time.
+...
 
->
->>        if (ops->mode == MTD_OOB_AUTO)
->>                oobsize = this->ecclayout->oobavail;
->>        else
->>                oobsize = mtd->oobsize;
->>
->>        oobcolumn = to & (mtd->oobsize - 1);
->>
->>        column = to & (mtd->writesize - 1);
->>
->>        /* Loop until all data write */
->>        while (1) {
->>                if (written < len) {
->>                        u_char *wbuf = (u_char *) buf;
->>
->>                        thislen = min_t(int, mtd->writesize - column, len -
->> written);
->>                        thisooblen = min_t(int, oobsize - oobcolumn, ooblen
->> - oobwritten);
->>
->>                        cond_resched();
->>
->>                        this->command(mtd, ONENAND_CMD_BUFFERRAM, to,
->> thislen);
->>
->>                        /* Partial page write */
->>                        subpage = thislen < mtd->writesize;
->>                        if (subpage) {
->>                                memset(this->page_buf, 0xff,
->> mtd->writesize);
->>                                memcpy(this->page_buf + column, buf,
->> thislen);
->>                                wbuf = this->page_buf;
->>                        }
->>
->>                        this->write_bufferram(mtd, ONENAND_DATARAM, wbuf,
->> 0, mtd->writesize);
->>
->>                        if (oob) {
->>                                oobbuf = this->oob_buf;
->>
->>                                /* We send data to spare ram with oobsize
->>                                 * to prevent byte access */
->>                                memset(oobbuf, 0xff, mtd->oobsize);
->>                                if (ops->mode == MTD_OOB_AUTO)
->>                                        onenand_fill_auto_oob(mtd, oobbuf,
->> oob, oobcolumn, thisooblen);
->>                                else
->>                                        memcpy(oobbuf + oobcolumn, oob,
->> thisooblen);
->>
->>                                oobwritten += thisooblen;
->>                                oob += thisooblen;
->>                                oobcolumn = 0;
->>                        } else
->>                                oobbuf = (u_char *) ffchars;
->>
->>                        this->write_bufferram(mtd, ONENAND_SPARERAM,
->> oobbuf, 0, mtd->oobsize);
->>                } else
->>                        ONENAND_SET_NEXT_BUFFERRAM(this);
->>
->>                if (!first) {
->>                        ONENAND_SET_PREV_BUFFERRAM(this);
->>
->>                        ret = this->wait(mtd, FL_WRITING);
->>
->>                        /* In partial page write we don't update bufferram
->> */
->>                        onenand_update_bufferram(mtd, prev, !ret &&
->> !prev_subpage);
->>                        if (ONENAND_IS_2PLANE(this)) {
->
-> I do not understand how 2PLANE is compatible with write-while-program
-> because
-> 2PLANE uses both buffers so we cannot start transferring to the second
-> buffer
-> while the program is ongoing.  Does it work?
->
-> Won't MLC and FlexOneNAND have that problem too?
+    /* Find the earliest node which _may_ be relevant to this one */
+    this = jffs2_lookup_tn(&rii->tn_root, tn->fn->ofs);
+    if (this) {
+        /* If the node is coincident with another at a lower address,
+           back up until the other node is found. It may be relevant */
+        while (this->overlapped)
++        {
+            this = tn_prev(this);
++            /* CAUTION!!! >>>>>>>>> Kernel oops may occur when
+pointer 'this' got NULL value on some occasions<<<<<<<<<<<<< */
++            /* if (!this) printk("\njffs2_add_tn_to_tree:2! this ptr
+is NULL!"); */
++        }
 
-Agree, I'm not yet tested the 2PLANE features and it doesn't support
-write-while-program.
-If the 2plane and flex-onenand, it used the previous one.
+        /* First node should never be marked overlapped */
+        BUG_ON(!this);
+        dbg_readinode("'this' found %#04x-%#04x (%s)\n",
+this->fn->ofs, this->fn->ofs + this->fn->size, this->fn ? "data" :
+"hole");
+    }
 
->
->>                                ONENAND_SET_BUFFERRAM1(this);
->>                                onenand_update_bufferram(mtd, prev +
->> this->writesize, !ret && !prev_subpage);
->>                        }
->>
->>                        if (ret) {
->
-> My original patch had "written -= prevlen" here.
+...
+}
 
-Agreed.
+Please check following logs :
 
->
->>                                printk(KERN_ERR "onenand_write_ops_nolock:
->> write filaed %d\n", ret);
->>                                break;
->>                        }
->>
->>                        if (written == len) {
->>                                /* Only check verify write turn on */
->>                                ret = onenand_verify(mtd, buf - len, to -
->> len, len);
->>                                if (ret) {
->>                                        printk(KERN_ERR
->> "onenand_write_ops_nolock: verify failed %d\n", ret);
->>                                        break;
->>                                }
->
-> Why not just break here?
+	read inode #314
+	ino #314 nlink is 1
+	ino #314
+	read 336 bytes at 0x4fb2b0(0).
+	Calculates CRC (0x24d7ded4) for 268 bytes, csize 2340
+	dnode @004fb2b0: ver 15, offset 0x00, dsize 0xfc0, csize 0x924
+	insert fragment 0x00-0xfc0, ver 15 at 004fb2b0
+	root c1899c1c, offset 0
+	read 336 bytes at 0x4f8cb0(0).
+	Calculates CRC (0x4e2b63fc) for 268 bytes, csize 2284
+	dnode @004f8cb0: ver 14, offset 0x00, dsize 0x1000, csize 0x8ec
+	insert fragment 0x00-0x1000, ver 14 at 004f8cb0
+	root c1899c1c, offset 0
+	'this' found 0x00-0xfc0 (data)
+	Ponder this ver 15, 0x0-0xfc0
+	Node is overlapped by c1d9ba60 (v 15, 0x0-0xfc0)
+	read 160 bytes at 0x480360(0).
+	Calculates CRC (0x2274ab49) for 92 bytes, csize 2284
+	dnode @00480360: ver 13, offset 0x00, dsize 0x1000, csize 0x8ec
+	insert fragment 0x00-0x1000, ver 13 at 00480360
+	root c1899c1c, offset 0
+	'this' found 0x00-0xfc0 (data)
+	Ponder this ver 15, 0x0-0xfc0
+	Ponder this ver 14, 0x0-0x1000
+	check node 0x00-0x1000, phys offs 0x4f8cb0
+	check node at 0x4f8cb0, data length 2284, partial CRC 0x4e2b63fc,
+correct CRC 0xe66cd067, data starts at 0x4f8620, start checking from
+0x4f8e00 - 2016 bytes.
+	JFFS2 notice: (914) check_node_data: wrong data CRC in data node at
+0x004f8cb0: read 0xe66cd067, calculated 0x95c34d6c.
+	CRC error, mark it obsolete.
+	Bad CRC on old overlapping node. Kill it
+	Node is overlapped by c1d9ba60 (v 15, 0x0-0xfc0)
+	read 252 bytes at 0x2f5b04(0).
+	Calculates CRC (0xc0ee02f5) for 117 bytes, csize 117
+	dnode @002f5b04: ver 12, offset 0x1600, dsize 0x104, csize 0x75
+	insert fragment 0x1600-0x1704, ver 12 at 002f5b04
+	root c1899c1c, offset 5632
+	'this' found 0x00-0xfc0 (data)
+	Ponder this ver 15, 0x0-0xfc0
+	Ponder this ver 13, 0x0-0x1000
+	read 40 bytes at 0x2f59d8(0).
+	read more 512 bytes
+	Calculates CRC (0x2ceaa5f5) for 230 bytes, csize 230
+	dnode @002f59d8: ver 11, offset 0x1400, dsize 0x200, csize 0xe6
+	insert fragment 0x1400-0x1600, ver 11 at 002f59d8
+	root c1899c1c, offset 5120
+	'this' found 0x1600-0x1704 (data)
+	Ponder this ver 12, 0x1600-0x104
+	read 380 bytes at 0x2f5884(0).
+	Calculates CRC (0xc189bb7b) for 270 bytes, csize 270
+	dnode @002f5884: ver 10, offset 0x1200, dsize 0x200, csize 0x10e
+	insert fragment 0x1200-0x1400, ver 10 at 002f5884
+	root c1899c1c, offset 4608
+	'this' found 0x1400-0x1600 (data)
+	Ponder this ver 11, 0x1400-0x200
+	read 232 bytes at 0x2f5718(0).
+	Calculates CRC (0xd46d3f0) for 164 bytes, csize 294
+	dnode @002f5718: ver 9, offset 0x1000, dsize 0x200, csize 0x126
+	insert fragment 0x1000-0x1200, ver 9 at 002f5718
+	root c1899c1c, offset 4096
+	'this' found 0x1200-0x1400 (data)
+	Ponder this ver 10, 0x1200-0x200
+	read 152 bytes at 0x2f5568(0).
+	Calculates CRC (0x9ebf5675) for 84 bytes, csize 361
+	dnode @002f5568: ver 8, offset 0xe00, dsize 0x200, csize 0x169
+	insert fragment 0xe00-0x1000, ver 8 at 002f5568
+	root c1899c1c, offset 3584
+	'this' found 0x1000-0x1200 (data)
+	Ponder this ver 9, 0x1000-0x200
+	Node is overlapped by c1d9b6a0 (v 13, 0x0-0x1000)
+	read 80 bytes at 0x2f53b0(0).
+	Calculates CRC (0x483cea98) for 12 bytes, csize 372
+	dnode @002f53b0: ver 7, offset 0xc00, dsize 0x200, csize 0x174
+	insert fragment 0xc00-0xe00, ver 7 at 002f53b0
+	root c1899c1c, offset 3072
+	'this' found 0x00-0xfc0 (data)
+	Ponder this ver 15, 0x0-0xfc0
+	check node 0x00-0xfc0, phys offs 0x4fb2b0
+	check node at 0x4fb2b0, data length 2340, partial CRC 0x24d7ded4,
+correct CRC 0x9258eba7, data starts at 0x4fabe8, start checking from
+0x4fb400 - 2072 bytes.
+	JFFS2 notice: (914) check_node_data: wrong data CRC in data node at
+0x004fb2b0: read 0x9258eba7, calculated 0x223cf224.
+	CRC error, mark it obsolete.
+	Bad CRC on old overlapping node. Kill it
+	Node is overlapped by c1d9b6a0 (v 13, 0x0-0x1000)
+	read 516 bytes at 0x2f51fc(0).
+	Calculates CRC (0xf545a856) for 365 bytes, csize 365
+	dnode @002f51fc: ver 6, offset 0xa00, dsize 0x200, csize 0x16d
+	insert fragment 0xa00-0xc00, ver 6 at 002f51fc
+	root c1899c1c, offset 2560
+	
+	jffs2_add_tn_to_tree:2! this ptr is NULL!
+	(and then an OOPS occured ...)
 
-E.g., In original version, write bufferram 0 and it changes bufferam 1
-automatically.
-Same as if break here, it points out the previous bufferram.
-
->
->>                        }
->>                        ONENAND_SET_NEXT_BUFFERRAM(this);
->>
->>                        if (written == len)
->>                                break;
->>                }
->>
->>                this->command(mtd, ONENAND_CMD_PROG, to, mtd->writesize);
->>
->>                written += thislen;
->>
->>                column = 0;
->>                prev_subpage = subpage;
->>                prev = to;
->>                prevlen = thislen;
->>                to += thislen;
->>                buf += thislen;
->>                first = 0;
->>        }
->>
->>        ops->retlen = written;
->
-> Is ops->oobretlen needed here also?
-
-Okay I will added. I'm not sure YAFFS handle this one correctly. Maybe
-it used the retlen in ops operation (data + spare).
-
->
->>
->>        return ret;
->> }
-
-Thank you,
-Kyungmin Park
+yours sincere edw.
