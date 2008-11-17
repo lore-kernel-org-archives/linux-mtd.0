@@ -1,19 +1,20 @@
-Received: from mailsmtp.zilog.com ([216.103.121.9])
+Received: from host2.marvell.com ([65.219.4.2] helo=maili.marvell.com)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L20N1-0007At-OQ
-	for linux-mtd@lists.infradead.org; Mon, 17 Nov 2008 09:26:12 +0000
+	id 1L20SN-0003qK-J5
+	for linux-mtd@lists.infradead.org; Mon, 17 Nov 2008 09:31:43 +0000
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Subject: RE: MTD XIP related issue
-Date: Mon, 17 Nov 2008 14:56:02 +0530
-Message-ID: <130F820E6D339446BB9EEC7FAF40A06DDEDF4F@mailziel.zilog.org>
-In-Reply-To: <491D724D.2030804@teltonika.lt>
-From: "Avik Sil" <savik@zilog.com>
-To: "Paulius Zaleckas" <paulius.zaleckas@teltonika.lt>
-Cc: linux-mtd@lists.infradead.org, Nicolas Pitre <nico@cam.org>
+Subject: RE: [PATCH] mtd: OOPS accessing flash operations over STM flash on PXA
+Date: Mon, 17 Nov 2008 01:31:40 -0800
+Message-ID: <E913911567467945BBEB9277E27868B001494AE7@msiexch01.marvell.com>
+In-Reply-To: <1226913735-9469-1-git-send-email-den@openvz.org>
+References: <1226913735-9469-1-git-send-email-den@openvz.org>
+From: "Eric Miao" <ymiao3@marvell.com>
+To: "Denis V. Lunev" <den@openvz.org>, <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,95 +24,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thanks a lot. It's working fine now.
+Acked-by: Eric Miao <eric.miao@marvell.com>
 
--Avik
+David, please consider merge, thanks.
 
 -----Original Message-----
-From: linux-mtd-bounces@lists.infradead.org
-[mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Paulius
-Zaleckas
-Sent: Friday, November 14, 2008 6:13 PM
-To: Avik Sil
-Cc: Nicolas Pitre; linux-mtd@lists.infradead.org
-Subject: Re: MTD XIP related issue
+From: den@sw.ru [mailto:den@sw.ru] On Behalf Of Denis V. Lunev
+Sent: Monday, November 17, 2008 5:22 PM
+To: dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org; Eric Miao; Denis V. Lunev
+Subject: [PATCH] mtd: OOPS accessing flash operations over STM flash on
+PXA
 
-Avik Sil wrote:
-> While porting Linux kernel 2.6.26 on an ARM922T based custom board for
-> XIP kernel, I came across the following bug report during boot-up:
+STM 2Gb flash is a large-page NAND flash. Set operations accordingly.
+This field is dereferrenced without a check in several places resulting
+in OOPS (seen in reality).
 
-Had the same problem. See my comments on your config file
+Signed-off-by: Denis V. Lunev <den@openvz.org>
+---
+ drivers/mtd/nand/pxa3xx_nand.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-[...]
-
-> My kernel configuration is:
-
-[...]
-
-> #
->=20
-> # RAM/ROM/Flash chip drivers
->=20
-> #
->=20
-> CONFIG_MTD_CFI=3Dy
->=20
-> # CONFIG_MTD_JEDECPROBE is not set
->=20
-> CONFIG_MTD_GEN_PROBE=3Dy
->=20
-> # CONFIG_MTD_CFI_ADV_OPTIONS is not set
->=20
-> CONFIG_MTD_MAP_BANK_WIDTH_1=3Dy
->=20
-> CONFIG_MTD_MAP_BANK_WIDTH_2=3Dy
->=20
-> CONFIG_MTD_MAP_BANK_WIDTH_4=3Dy
-
-Select only the supported BANK_WIDTH.
-The problem is that if multiple bank widths are selected, then in code
-which is placed
-in RAM for XIP to work appears reference to __udivsi3(if I remember
-correctly) and
-this function is on FLASH and FLASH at that moment is inaccessible.
-Sometimes it works because this function is already cached by CPU.
-
-Nicolas: I think there should be some way to work around this... If not
-maybe we should
-add compile #error if multiple bank widths and XIP are selected...
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c
+b/drivers/mtd/nand/pxa3xx_nand.c
+index c0fa9c9..15f0a26 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -269,6 +269,7 @@ static struct pxa3xx_nand_timing stm2GbX16_timing =
+=3D
+{
 =20
-> # CONFIG_MTD_MAP_BANK_WIDTH_8 is not set
->=20
-> # CONFIG_MTD_MAP_BANK_WIDTH_16 is not set
->=20
-> # CONFIG_MTD_MAP_BANK_WIDTH_32 is not set
->=20
-> CONFIG_MTD_CFI_I1=3Dy
->=20
-> CONFIG_MTD_CFI_I2=3Dy
-
-Don't remember, but this may have the same effect also.
-=20
-> # CONFIG_MTD_CFI_I4 is not set
->=20
-> # CONFIG_MTD_CFI_I8 is not set
->=20
-> # CONFIG_MTD_CFI_INTELEXT is not set
->=20
-> CONFIG_MTD_CFI_AMDSTD=3Dy
->=20
-> # CONFIG_MTD_CFI_STAA is not set
->=20
-> CONFIG_MTD_CFI_UTIL=3Dy
->=20
-> # CONFIG_MTD_RAM is not set
->=20
-> # CONFIG_MTD_ROM is not set
->=20
-> # CONFIG_MTD_ABSENT is not set
->=20
-> CONFIG_MTD_XIP=3Dy
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+ static struct pxa3xx_nand_flash stm2GbX16 =3D {
+ 	.timing =3D &stm2GbX16_timing,
++	.cmdset	=3D &largepage_cmdset,
+ 	.page_per_block =3D 64,
+ 	.page_size =3D 2048,
+ 	.flash_width =3D 16,
+--=20
+1.5.6.4
