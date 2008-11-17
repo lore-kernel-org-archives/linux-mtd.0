@@ -1,20 +1,13 @@
-Received: from smtp120.sbc.mail.sp1.yahoo.com ([69.147.64.93])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L2BOK-0000zq-Op
-	for linux-mtd@lists.infradead.org; Mon, 17 Nov 2008 21:12:17 +0000
-From: David Brownell <david-b@pacbell.net>
-To: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: [patch/resend 2.6.28-rc5] mtd m25p80: chip erase != block erase !=
-	sector erase
-Date: Mon, 17 Nov 2008 11:38:48 -0800
+In-Reply-To: <1226468289.16925.28.camel@sauron>
+To: dedekind@infradead.org
+Subject: Re: MTD/flash perfomance statistics
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200811171138.48884.david-b@pacbell.net>
-Cc: Chen Gong <g.chen@freescale.com>, lkml <linux-kernel@vger.kernel.org>
-Reply-To: dbrownell@users.sourceforge.net
+Message-ID: <OFE19505F1.464981E8-ON88257504.0081B596-88257504.00822E2D@selinc.com>
+From: Bruce_Leonard@selinc.com
+Date: Mon, 17 Nov 2008 15:42:22 -0800
+Content-Type: text/plain; charset="KOI8-R"
+Content-Transfer-Encoding: base64
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,78 +17,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Chen Gong <g.chen@freescale.com>
-
-This fixes broken terminology added in the "m25p80.c erase enhance" patch,
-which added a chip erase command but called it "block erase".  There are
-already two block erase commands; blocks are 4KiB or 32KiB.  There's also
-a sector erase (usually 64 KiB).  Chip erase typically covers Megabytes.
-
-  OPCODE_BE   ==> OPCODE_CHIP_ERASE
-  erase_block ==> erase_chip
-
-[dbrownell@users.sourceforge.net: update sector erase comments too ]
-
-Signed-Off-by: Chen Gong <clumsycg@gmail.com>
-Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
----
- drivers/mtd/devices/m25p80.c |   23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
-
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -37,9 +37,9 @@
- #define	OPCODE_NORM_READ	0x03	/* Read data bytes (low frequency) */
- #define	OPCODE_FAST_READ	0x0b	/* Read data bytes (high frequency) */
- #define	OPCODE_PP		0x02	/* Page program (up to 256 bytes) */
--#define	OPCODE_BE_4K 		0x20	/* Erase 4KiB block */
-+#define	OPCODE_BE_4K		0x20	/* Erase 4KiB block */
- #define	OPCODE_BE_32K		0x52	/* Erase 32KiB block */
--#define	OPCODE_BE		0xc7	/* Erase whole flash block */
-+#define	OPCODE_CHIP_ERASE	0xc7	/* Erase whole flash block */
- #define	OPCODE_SE		0xd8	/* Sector erase (usually 64KiB) */
- #define	OPCODE_RDID		0x9f	/* Read JEDEC ID */
- 
-@@ -167,7 +167,7 @@ static int wait_till_ready(struct m25p *
-  *
-  * Returns 0 if successful, non-zero otherwise.
-  */
--static int erase_block(struct m25p *flash)
-+static int erase_chip(struct m25p *flash)
- {
- 	DEBUG(MTD_DEBUG_LEVEL3, "%s: %s %dKiB\n",
- 			flash->spi->dev.bus_id, __func__,
-@@ -181,7 +181,7 @@ static int erase_block(struct m25p *flas
- 	write_enable(flash);
- 
- 	/* Set up command buffer. */
--	flash->command[0] = OPCODE_BE;
-+	flash->command[0] = OPCODE_CHIP_ERASE;
- 
- 	spi_write(flash->spi, flash->command, 1);
- 
-@@ -250,15 +250,18 @@ static int m25p80_erase(struct mtd_info 
- 
- 	mutex_lock(&flash->lock);
- 
--	/* REVISIT in some cases we could speed up erasing large regions
--	 * by using OPCODE_SE instead of OPCODE_BE_4K
--	 */
--
--	/* now erase those sectors */
--	if (len == flash->mtd.size && erase_block(flash)) {
-+	/* whole-chip erase? */
-+	if (len == flash->mtd.size && erase_chip(flash)) {
- 		instr->state = MTD_ERASE_FAILED;
- 		mutex_unlock(&flash->lock);
- 		return -EIO;
-+
-+	/* REVISIT in some cases we could speed up erasing large regions
-+	 * by using OPCODE_SE instead of OPCODE_BE_4K.  We may have set up
-+	 * to use "small sector erase", but that's not always optimal.
-+	 */
-+
-+	/* "sector"-at-a-time erase */
- 	} else {
- 		while (len) {
- 			if (erase_sector(flash, addr)) {
+SGkgQXJ0ZW0sDQoNCkFydGVtIEJpdHl1dHNraXkgPGRlZGVraW5kQGluZnJhZGVhZC5vcmc+IHdy
+b3RlIG9uIDExLzExLzIwMDggMDk6Mzg6MDkgUE06DQoNCj4gT24gVHVlLCAyMDA4LTExLTExIGF0
+IDEwOjA4IC0wODAwLCBCcnVjZV9MZW9uYXJkQHNlbGluYy5jb20gd3JvdGU6DQo+ID4gV2UncmUg
+dXNpbmcgVUJJRlMvVUJJL01URC9OQU5EIGFuZCB3ZSB3YW50IHRvIGZpbmQgb3V0IGhvdyBtdWNo
+IG9mIG91ciANCg0KPiA+IHRpbWUgaXMgc3BlbnQgYWNjZXNzaW5nIHRoZSBmbGFzaC4gIEFyZSB0
+aGVyZSBhbnkgdG9vbHMgb3IgaXMgdGhlcmUgDQphbnkgDQo+ID4gY29kZSBpbiB0aGF0IGNoYWlu
+IHRoYXQgY29sbGVjdHMgYW55IHNvcnQgb2Ygc3RhdGlzdGljcyBvbiBmbGFzaCANCj4gPiBwZXJm
+b3JtYWNlL3V0aWxpemF0aW9uPyAgSSBjb3VsZCBkbyBzb21ldGhpbmcgYXMgY3J1ZGUgYXMgYSBj
+b3VudGVyIGluIA0KbXkgDQo+ID4gTkFORCBkcml2ZXIsIGJ1dCBpZiB0aGVyZSdzIGFueXRoaW5n
+IG1vcmUgc29waGlzdGljYXRlZCB0aGF0IEkgY2FuIA0KanVzdCANCj4gPiAidXNlIG91dCBvZiB0
+aGUgYm94IiBzbyB0byBzcGVhayB0aGF0IHdvdWxkIGJlIGJldHRlci4gIFRoYW5rcy4NCj4gDQo+
+IE5vdCBzdXJlIHdoYXQgZXhhY3RseSB5b3UgbmVlZCwgYnV0IHByb2JhYmx5IHlvdSB3YW50IG9w
+cm9maWxlPw0KPiANCj4gLS0gDQo+IEJlc3QgcmVnYXJkcywNCj4gQXJ0ZW0gQml0eXV0c2tpeSAo
+4snUwMPLycog4dLUo80pDQo+IA0KDQpJIGZpbmFsbHkgZ290IHRoZSBhcHAgZ3V5cyB0byBwaW4g
+ZG93biBleGFjdGx5IHdoYXQgdGhleSB3YW50LiAgSGVyZSdzIGEgDQpjb3B5IG9mIHRoZSBlbWFp
+bCBJIGdvdCBmcm9tIHRoZW06DQoNCiJUaGV5IGFwcGVhciB0byBiZSBnb2luZyB0aGUgd3Jvbmcg
+d2F5LiAgV2UncmUgbG9va2luZyBmb3IgcnVudGltZSANCmRpYWdub3N0aWMteSB0eXBlIG9mIHRo
+aW5ncyAoaS5lLiBOdW1iZXIgb2Ygd3JpdGVzIHRvIHRoZSBmbGFzaCwgbnVtYmVyIG9mIA0KYmFk
+IGJsb2Nrcywgc3RhdGlzdGljcyBmcm9tIHRoZSB3ZWFyIGxldmVsZXIgdG8gc2VlIGhvdyB0aGUg
+d2VhciBsZXZlbGluZyANCmlzIGdvaW5nLCBldGMuKSAgVGhpbmdzIHRoYXQgZG9uJ3QgdGFrZSBh
+IGxvdCBvZiBDUFUgdGltZSB0byBkbywgbGlrZSANCmNvdW50ZXJzLCB0aGF0IHdlIGNhbiB1c2Ug
+dG8gZ2l2ZSB1cyBpbmZvcm1hdGlvbiBvbiB3aGF0IGEgY3VzdG9tZXIncyBib3ggDQptYXkgb3Ig
+bWF5IG5vdCBiZSBkb2luZyBpbiB0aGUgZmllbGQuICBBIHJlYWR5IGV4YW1wbGUgdGhhdCBjb21l
+cyB0byBtaW5kIA0KaXMgZXRoZXJuZXQgc3RhdGlzdGljcywgYnl0ZXMvcGFja2V0cyBzZW50L3Jl
+Y2lldmVkLCBlcnJvciBjb3VudHMsIGV0Yy4gT3IgDQppZiB5b3Ugd2FudCBhIHN0b3JhZ2UgYW5h
+bG9nLCB0aGluZ3MgbGlrZSB5b3Ugd291bGQgc2VlIGluIA0KL3N5cy9ibG9jay9oZGEvc3RhdCBi
+dXQgYWRhcHRlZCB0byBtYWtlIHNlbnNlIGluIEZsYXNoIHN0b3JhZ2UuIg0KDQpJcyB0aGVyZSBh
+bnl0aGluZyBsaWtlIHRoYXQgZm9yIFVCSUZTL1VCSS9NVEQvTkFORCB0aGF0IHlvdSdyZSBhd2Fy
+ZSBvZj8gDQpUaGFua3MuDQoNCkJUVywgd2UncmUgaGFwcGlseSB1cCBhbmQgcnVubmluZyBVQklG
+UyBvbiBhIDJHaUIgZmxhc2ggcGFydCB3aXRoIG5vIA0KZXJyb3JzLiAgTW91bnQgdGltZXMgYXJl
+IHByZXR0eSByZXNvbmFibGUuICBJIGRvbid0IGhhdmUgY3VycmVudCB0aW1lcyANCmJlY2F1c2Ug
+SSd2ZSBiZWVuIGFib3V0IHRocmVlIGtlcm5lbCB2ZXJzaW9ucyBhaGVhZCBvZiBldmVyeW9uZSBl
+bHNlIHNvIA0KdGhlIHN0dWZmIHRoZXkndmUgYWxsIGJlZW4gdXNpbmcgdW50aWwgcmVjZW50bHkg
+ZGlkbid0IGhhdmUgc29tZSBvZiB0aGUgDQpzcGVlZCBpbXByb3ZtZW50cy4gIElmIEkgZ2V0IHRo
+ZSB0aW1lIChhbmQgcmVtZW1iZXIgdG8gZG8gaXQgOykgICkgSSdsbCANCnRyeSB0byBmbG9hdCBz
+b21lIG51bWJlcnMgb3V0IHRoZXJlLg0KDQpUaGFua3MgZm9yIGFsbCB0aGUgaGVscCBvdmVyIHRo
+ZSBsYXN0IHNldmVyYWwgbW9udGhzIGdldHRpbmcgbXkgc3R1ZmYgDQpnb2luZy4gIEl0J3MgYmVl
+biBncmVhdCB3b3JraW5nIHdpdGggeW91Lg0KDQpCcnVjZQ0K
