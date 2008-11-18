@@ -1,18 +1,18 @@
-Received: from venus.billgatliff.com ([209.251.101.201])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L2Qd1-0002Jw-Dt
-	for linux-mtd@lists.infradead.org; Tue, 18 Nov 2008 13:28:27 +0000
-Message-ID: <4922C2F5.2000306@billgatliff.com>
-Date: Tue, 18 Nov 2008 07:28:21 -0600
-From: Bill Gatliff <bgat@billgatliff.com>
-MIME-Version: 1.0
-To: Peter Jolasson <peter.jolasson@gmail.com>
-Subject: Re: read-only problem with mtd
-References: <c69bda8c0811180140i3e3ac35ai306fbd4dfcf976d3@mail.gmail.com>
-In-Reply-To: <c69bda8c0811180140i3e3ac35ai306fbd4dfcf976d3@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
+Subject: Re: [PATCH] physmap: Fix leak of memory returned by
+	parse_mtd_partitions
+From: David Woodhouse <dwmw2@infradead.org>
+To: Mike Frysinger <vapier.adi@gmail.com>
+In-Reply-To: <8bd0f97a0811120808p5858d5adleeef43b1d374bee1@mail.gmail.com>
+References: <20081112.235733.01917391.anemo@mba.ocn.ne.jp>
+	<20081113.005534.56563769.anemo@mba.ocn.ne.jp>
+	<8bd0f97a0811120808p5858d5adleeef43b1d374bee1@mail.gmail.com>
+Content-Type: text/plain
+Date: Tue, 18 Nov 2008 13:57:27 +0000
+Message-Id: <1227016647.27728.398.camel@macbook.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: Atsushi Nemoto <anemo@mba.ocn.ne.jp>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Peter Jolasson wrote:
-> (Something like reboot and specifying a new cmdline would be nice)
+On Wed, 2008-11-12 at 11:08 -0500, Mike Frysinger wrote:
+> i wonder why we duplicate this same code block in so many places.  and
+> why does every driver have to declare its own list of parsers ?  cant
+> we unify all of these in one place ?
 
-I suggest you reboot and specify a new command line.  :)
+Well, most boards only really want _one_ partition type; maybe two. And
+the probes can be quite expensive and have false positives, so we don't
+want to be doing all the probes for all devices.
 
-But seriously, the trick to that might be finding the area in the
-bootloader flash that corresponds to the kernel command line.  But if
-the target supports kexec, you might be able to just pass in a new
-command line on the, er, command line...  That would be equivalent to
-the above, but without having to modify any flash.
+It might make sense to just pass a bitmask indicating which partition
+probes to use. Assuming we can agree on an ordering, that is :)
 
-Here is an alternative to consider, though.  If you can modify the
-rootfs, then could you add in a kernel module that, when loaded, would
-undo the physmap for the kernel partition and replace it with one that
-isn't read-only?
+Another complication is that some boards have registered the whole
+device first, while others have just registered the partitions.
 
-Note that I'm not sure that the "undo" part in the above is
-technically possible.  I'll leave that as an exercise to the
-implementer.  :)
+I suspect it might be better to take the simple bug-fix approach for
+now, given that we are planning a revamp of the MTD core API anyway --
+we can redo partitions properly at the point, so they aren't just an
+evil hack.
 
-
-b.g.
 -- 
-Bill Gatliff
-bgat@billgatliff.com
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
