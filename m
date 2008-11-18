@@ -1,13 +1,17 @@
-In-Reply-To: <1226468289.16925.28.camel@sauron>
-To: dedekind@infradead.org
-Subject: Re: MTD/flash perfomance statistics
+Received: from rere.qmqm.pl ([89.167.52.164])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1L2F5a-0001LW-GU
+	for linux-mtd@lists.infradead.org; Tue, 18 Nov 2008 01:09:10 +0000
+Date: Tue, 18 Nov 2008 02:09:02 +0100
+From: =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 2.6.27.6] MTD: jedec_probe: add SST39SF040 chip
+Message-ID: <20081118010902.GA4130@rere.qmqm.pl>
 MIME-Version: 1.0
-Message-ID: <OFE19505F1.464981E8-ON88257504.0081B596-88257504.00822E2D@selinc.com>
-From: Bruce_Leonard@selinc.com
-Date: Mon, 17 Nov 2008 15:42:22 -0800
-Content-Type: text/plain; charset="KOI8-R"
-Content-Transfer-Encoding: base64
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Cc: dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,41 +21,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQXJ0ZW0sDQoNCkFydGVtIEJpdHl1dHNraXkgPGRlZGVraW5kQGluZnJhZGVhZC5vcmc+IHdy
-b3RlIG9uIDExLzExLzIwMDggMDk6Mzg6MDkgUE06DQoNCj4gT24gVHVlLCAyMDA4LTExLTExIGF0
-IDEwOjA4IC0wODAwLCBCcnVjZV9MZW9uYXJkQHNlbGluYy5jb20gd3JvdGU6DQo+ID4gV2UncmUg
-dXNpbmcgVUJJRlMvVUJJL01URC9OQU5EIGFuZCB3ZSB3YW50IHRvIGZpbmQgb3V0IGhvdyBtdWNo
-IG9mIG91ciANCg0KPiA+IHRpbWUgaXMgc3BlbnQgYWNjZXNzaW5nIHRoZSBmbGFzaC4gIEFyZSB0
-aGVyZSBhbnkgdG9vbHMgb3IgaXMgdGhlcmUgDQphbnkgDQo+ID4gY29kZSBpbiB0aGF0IGNoYWlu
-IHRoYXQgY29sbGVjdHMgYW55IHNvcnQgb2Ygc3RhdGlzdGljcyBvbiBmbGFzaCANCj4gPiBwZXJm
-b3JtYWNlL3V0aWxpemF0aW9uPyAgSSBjb3VsZCBkbyBzb21ldGhpbmcgYXMgY3J1ZGUgYXMgYSBj
-b3VudGVyIGluIA0KbXkgDQo+ID4gTkFORCBkcml2ZXIsIGJ1dCBpZiB0aGVyZSdzIGFueXRoaW5n
-IG1vcmUgc29waGlzdGljYXRlZCB0aGF0IEkgY2FuIA0KanVzdCANCj4gPiAidXNlIG91dCBvZiB0
-aGUgYm94IiBzbyB0byBzcGVhayB0aGF0IHdvdWxkIGJlIGJldHRlci4gIFRoYW5rcy4NCj4gDQo+
-IE5vdCBzdXJlIHdoYXQgZXhhY3RseSB5b3UgbmVlZCwgYnV0IHByb2JhYmx5IHlvdSB3YW50IG9w
-cm9maWxlPw0KPiANCj4gLS0gDQo+IEJlc3QgcmVnYXJkcywNCj4gQXJ0ZW0gQml0eXV0c2tpeSAo
-4snUwMPLycog4dLUo80pDQo+IA0KDQpJIGZpbmFsbHkgZ290IHRoZSBhcHAgZ3V5cyB0byBwaW4g
-ZG93biBleGFjdGx5IHdoYXQgdGhleSB3YW50LiAgSGVyZSdzIGEgDQpjb3B5IG9mIHRoZSBlbWFp
-bCBJIGdvdCBmcm9tIHRoZW06DQoNCiJUaGV5IGFwcGVhciB0byBiZSBnb2luZyB0aGUgd3Jvbmcg
-d2F5LiAgV2UncmUgbG9va2luZyBmb3IgcnVudGltZSANCmRpYWdub3N0aWMteSB0eXBlIG9mIHRo
-aW5ncyAoaS5lLiBOdW1iZXIgb2Ygd3JpdGVzIHRvIHRoZSBmbGFzaCwgbnVtYmVyIG9mIA0KYmFk
-IGJsb2Nrcywgc3RhdGlzdGljcyBmcm9tIHRoZSB3ZWFyIGxldmVsZXIgdG8gc2VlIGhvdyB0aGUg
-d2VhciBsZXZlbGluZyANCmlzIGdvaW5nLCBldGMuKSAgVGhpbmdzIHRoYXQgZG9uJ3QgdGFrZSBh
-IGxvdCBvZiBDUFUgdGltZSB0byBkbywgbGlrZSANCmNvdW50ZXJzLCB0aGF0IHdlIGNhbiB1c2Ug
-dG8gZ2l2ZSB1cyBpbmZvcm1hdGlvbiBvbiB3aGF0IGEgY3VzdG9tZXIncyBib3ggDQptYXkgb3Ig
-bWF5IG5vdCBiZSBkb2luZyBpbiB0aGUgZmllbGQuICBBIHJlYWR5IGV4YW1wbGUgdGhhdCBjb21l
-cyB0byBtaW5kIA0KaXMgZXRoZXJuZXQgc3RhdGlzdGljcywgYnl0ZXMvcGFja2V0cyBzZW50L3Jl
-Y2lldmVkLCBlcnJvciBjb3VudHMsIGV0Yy4gT3IgDQppZiB5b3Ugd2FudCBhIHN0b3JhZ2UgYW5h
-bG9nLCB0aGluZ3MgbGlrZSB5b3Ugd291bGQgc2VlIGluIA0KL3N5cy9ibG9jay9oZGEvc3RhdCBi
-dXQgYWRhcHRlZCB0byBtYWtlIHNlbnNlIGluIEZsYXNoIHN0b3JhZ2UuIg0KDQpJcyB0aGVyZSBh
-bnl0aGluZyBsaWtlIHRoYXQgZm9yIFVCSUZTL1VCSS9NVEQvTkFORCB0aGF0IHlvdSdyZSBhd2Fy
-ZSBvZj8gDQpUaGFua3MuDQoNCkJUVywgd2UncmUgaGFwcGlseSB1cCBhbmQgcnVubmluZyBVQklG
-UyBvbiBhIDJHaUIgZmxhc2ggcGFydCB3aXRoIG5vIA0KZXJyb3JzLiAgTW91bnQgdGltZXMgYXJl
-IHByZXR0eSByZXNvbmFibGUuICBJIGRvbid0IGhhdmUgY3VycmVudCB0aW1lcyANCmJlY2F1c2Ug
-SSd2ZSBiZWVuIGFib3V0IHRocmVlIGtlcm5lbCB2ZXJzaW9ucyBhaGVhZCBvZiBldmVyeW9uZSBl
-bHNlIHNvIA0KdGhlIHN0dWZmIHRoZXkndmUgYWxsIGJlZW4gdXNpbmcgdW50aWwgcmVjZW50bHkg
-ZGlkbid0IGhhdmUgc29tZSBvZiB0aGUgDQpzcGVlZCBpbXByb3ZtZW50cy4gIElmIEkgZ2V0IHRo
-ZSB0aW1lIChhbmQgcmVtZW1iZXIgdG8gZG8gaXQgOykgICkgSSdsbCANCnRyeSB0byBmbG9hdCBz
-b21lIG51bWJlcnMgb3V0IHRoZXJlLg0KDQpUaGFua3MgZm9yIGFsbCB0aGUgaGVscCBvdmVyIHRo
-ZSBsYXN0IHNldmVyYWwgbW9udGhzIGdldHRpbmcgbXkgc3R1ZmYgDQpnb2luZy4gIEl0J3MgYmVl
-biBncmVhdCB3b3JraW5nIHdpdGggeW91Lg0KDQpCcnVjZQ0K
+Detect SST39SF040 chip (512kB, a bit bigger than SST39SF020A).
+
+Signed-off-by: Micha³ Miros³aw <mirq-linux@rere.qmqm.pl>
+
+--- linux-2.6.27.6-brfix1/drivers/mtd/chips/jedec_probe.c	2008-11-16 14:24:30.000000000 +0100
++++ rechot/drivers/mtd/chips/jedec_probe.c	2008-11-18 01:28:10.000000000 +0100
+@@ -165,6 +165,7 @@
+ #define SST39LF040	0x00D7
+ #define SST39SF010A	0x00B5
+ #define SST39SF020A	0x00B6
++#define SST39SF040	0x00B7
+ #define SST49LF004B	0x0060
+ #define SST49LF040B	0x0050
+ #define SST49LF008A	0x005a
+@@ -1392,6 +1393,18 @@
+ 		}
+ 	}, {
+ 		.mfr_id		= MANUFACTURER_SST,
++		.dev_id		= SST39SF040,
++		.name		= "SST 39SF040",
++		.devtypes	= CFI_DEVICETYPE_X8,
++		.uaddr		= MTD_UADDR_0x5555_0x2AAA,
++		.dev_size	= SIZE_512KiB,
++		.cmd_set	= P_ID_AMD_STD,
++		.nr_regions	= 1,
++		.regions	= {
++			ERASEINFO(0x01000,128),
++		}
++	}, {
++		.mfr_id		= MANUFACTURER_SST,
+ 		.dev_id		= SST49LF040B,
+ 		.name		= "SST 49LF040B",
+ 		.devtypes	= CFI_DEVICETYPE_X8,
