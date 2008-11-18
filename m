@@ -1,23 +1,19 @@
-Received: from az33egw02.freescale.net ([192.88.158.103])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L2bBH-0002jM-DK
-	for linux-mtd@lists.infradead.org; Wed, 19 Nov 2008 00:44:31 +0000
-Received: from az33smr01.freescale.net (az33smr01.freescale.net [10.64.34.199])
-	by az33egw02.freescale.net (8.12.11/az33egw02) with ESMTP id
-	mAJ0iF6p003777 for <linux-mtd@lists.infradead.org>;
-	Tue, 18 Nov 2008 17:44:17 -0700 (MST)
-Received: from iconoclast.sgtl.sigmatel.com ([10.1.28.112])
-	by az33smr01.freescale.net (8.13.1/8.13.0) with ESMTP id mAJ0iE5p000138
+Received: from wf-out-1314.google.com ([209.85.200.175])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1L2W1s-0002g1-SA
+	for linux-mtd@lists.infradead.org; Tue, 18 Nov 2008 19:14:29 +0000
+Received: by wf-out-1314.google.com with SMTP id 28so3059920wfc.24
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 18 Nov 2008 18:44:14 -0600 (CST)
-Date: Tue, 18 Nov 2008 18:43:55 -0600
-To: linux-mtd@lists.infradead.org
-Subject: A question about nand_read()
-From: "Patrick Turley" <patrick.turley@freescale.com>
-Content-Type: text/plain; format=flowed; delsp=yes; charset=utf-8
+	Tue, 18 Nov 2008 11:14:27 -0800 (PST)
+Message-ID: <f383264b0811181114r326417eqee13e3ccdd06b0a@mail.gmail.com>
+Date: Tue, 18 Nov 2008 11:14:26 -0800
+From: "Matt Reimer" <mattjreimer@gmail.com>
+To: "Linux MTD" <linux-mtd@lists.infradead.org>
+Subject: [PATCH] [MTD][NAND] pxa3xx: convert from ns to clock ticks more
+	accurately
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Message-ID: <op.ukucbhx54yuz67@iconoclast.sgtl.sigmatel.com>
+Content-Type: multipart/mixed;
+	boundary="----=_Part_99038_13148393.1227035666937"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,60 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-My tree is up-to-date as I'm writing this message.
-
-I'm looking at nand_read() in nand_base.c, starting at line 1175, quoted  
-here for your convenience:
-
-
-static int nand_read(struct mtd_info *mtd, loff_t from, size_t len,
-                      size_t *retlen, uint8_t *buf)
-{
-         struct nand_chip *chip = mtd->priv;
-         int ret;
-
-         /* Do not allow reads past end of device */
-         if ((from + len) > mtd->size)
-                 return -EINVAL;
-         if (!len)
-                 return 0;
-
-         nand_get_device(chip, mtd, FL_READING);
-
-         chip->ops.len = len;
-         chip->ops.datbuf = buf;
-         chip->ops.oobbuf = NULL;
-
-         ret = nand_do_read_ops(mtd, from, &chip->ops);
-
-         *retlen = chip->ops.retlen;
-
-         nand_release_device(mtd);
-
-         return ret;
-}
+------=_Part_99038_13148393.1227035666937
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-In particular, I'm looking at the preparation to call nand_do_read_ops(),  
-where the chip->ops structure is filled in.
 
-Here's a small excerpt from nand_do_read_ops() that concerns me:
+------=_Part_99038_13148393.1227035666937
+Content-Type: text/x-patch;
+	name=0002--MTD-NAND-pxa3xx-convert-from-ns-to-clock-ticks-m.patch
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fnoxchut0
+Content-Disposition: attachment;
+	filename=0002--MTD-NAND-pxa3xx-convert-from-ns-to-clock-ticks-m.patch
 
-
-     /* Now read the page into the buffer */
-     if (unlikely(ops->mode == MTD_OOB_RAW))
-             ret = chip->ecc.read_page_raw(mtd, chip, bufpoi);
-     else if (!aligned && NAND_SUBPAGE_READ(chip) && !oob)
-             ret = chip->ecc.read_subpage(mtd, chip, col, bytes, bufpoi);
-     else
-             ret = chip->ecc.read_page(mtd, chip, bufpoi);
-     if (ret < 0)
-             break;
-
-
-Note that nand_do_read_ops() will look at the mode field of the ops  
-structure, but this field hasn't been set by nand_read().
-
-On the face of it, this looks like a bug. Is there something I don't know  
-that makes this not a bug? For example, is the value in the mode field  
-intended to persist across operations?
+RnJvbSAyMGY3ODcyY2E0NzZkZGI1MWQ1YzJiYTgyNTc2NzBiNzNjZGVhY2Y1IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBNYXR0IFJlaW1lciA8bXJlaW1lckB2cG9wLm5ldD4KRGF0ZTog
+VHVlLCAxOCBOb3YgMjAwOCAxMDo1NDozMiAtMDgwMApTdWJqZWN0OiBbUEFUQ0hdIFtNVERdW05B
+TkRdIHB4YTN4eDogY29udmVydCBmcm9tIG5zIHRvIGNsb2NrIHRpY2tzIG1vcmUgYWNjdXJhdGVs
+eQoKVGhlIHZhcmlvdXMgZmllbGRzIGluIE5EVFJ7MDF9IGFyZSBpbiB1bml0cyBvZiBjbG9jayB0
+aWNrcyBtaW51cyBvbmUsIGJ1dCB0aGUKbnMyY3ljbGUgbWFjcm8gbWlzdGFrZW5seSBhZGRzIG9u
+ZSwgaW5mbGF0aW5nIHRoZSBudW1iZXIgb2YgY2xvY2sgdGlja3MgYW5kCm1ha2luZyBpdCBpbXBv
+c3NpYmxlIHRvIHNldCBhbnkgb2YgdGhlc2UgZmllbGRzIHRvIHplcm8uCgpTaWduZWQtb2ZmLWJ5
+OiBNYXR0IFJlaW1lciA8bXJlaW1lckBzZGdzeXN0ZW1zLmNvbT4KLS0tCiBkcml2ZXJzL210ZC9u
+YW5kL3B4YTN4eF9uYW5kLmMgfCAgICAyICstCiAxIGZpbGVzIGNoYW5nZWQsIDEgaW5zZXJ0aW9u
+cygrKSwgMSBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3B4YTN4
+eF9uYW5kLmMgYi9kcml2ZXJzL210ZC9uYW5kL3B4YTN4eF9uYW5kLmMKaW5kZXggMGQ4ZmZhNi4u
+ZGNiODdhZiAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9weGEzeHhfbmFuZC5jCisrKyBi
+L2RyaXZlcnMvbXRkL25hbmQvcHhhM3h4X25hbmQuYwpAQCAtMzA5LDcgKzMwOSw3IEBAIHN0YXRp
+YyBzdHJ1Y3QgcHhhM3h4X25hbmRfZmxhc2ggKmJ1aWx0aW5fZmxhc2hfdHlwZXNbXSA9IHsKICNk
+ZWZpbmUgTkRUUjFfdEFSKGMpCShtaW4oKGMpLCAxNSkgPDwgMCkKIAogLyogY29udmVydCBuYW5v
+LXNlY29uZHMgdG8gbmFuZCBmbGFzaCBjb250cm9sbGVyIGNsb2NrIGN5Y2xlcyAqLwotI2RlZmlu
+ZSBuczJjeWNsZShucywgY2xrKQkoaW50KSgoKG5zKSAqIChjbGsgLyAxMDAwMDAwKSAvIDEwMDAp
+ICsgMSkKKyNkZWZpbmUgbnMyY3ljbGUobnMsIGNsaykJKGludCkoKChucykgKiAoY2xrIC8gMTAw
+MDAwMCkgLyAxMDAwKSAtIDEpCiAKIHN0YXRpYyB2b2lkIHB4YTN4eF9uYW5kX3NldF90aW1pbmco
+c3RydWN0IHB4YTN4eF9uYW5kX2luZm8gKmluZm8sCiAJCQkJICAgc3RydWN0IHB4YTN4eF9uYW5k
+X3RpbWluZyAqdCkKLS0gCjEuNS42LjMKCg==
+------=_Part_99038_13148393.1227035666937--
