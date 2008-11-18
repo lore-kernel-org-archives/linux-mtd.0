@@ -1,18 +1,20 @@
 Subject: Re: [PATCH] physmap: Fix leak of memory returned by
 	parse_mtd_partitions
-From: David Woodhouse <dwmw2@infradead.org>
-To: Mike Frysinger <vapier.adi@gmail.com>
-In-Reply-To: <8bd0f97a0811120808p5858d5adleeef43b1d374bee1@mail.gmail.com>
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1227016647.27728.398.camel@macbook.infradead.org>
 References: <20081112.235733.01917391.anemo@mba.ocn.ne.jp>
 	<20081113.005534.56563769.anemo@mba.ocn.ne.jp>
 	<8bd0f97a0811120808p5858d5adleeef43b1d374bee1@mail.gmail.com>
-Content-Type: text/plain
-Date: Tue, 18 Nov 2008 13:57:27 +0000
-Message-Id: <1227016647.27728.398.camel@macbook.infradead.org>
+	<1227016647.27728.398.camel@macbook.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 18 Nov 2008 16:04:38 +0200
+Message-Id: <1227017078.16925.123.camel@sauron>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Cc: Atsushi Nemoto <anemo@mba.ocn.ne.jp>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+	linux-kernel@vger.kernel.org, Mike Frysinger <vapier.adi@gmail.com>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +24,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-11-12 at 11:08 -0500, Mike Frysinger wrote:
-> i wonder why we duplicate this same code block in so many places.  and
-> why does every driver have to declare its own list of parsers ?  cant
-> we unify all of these in one place ?
+On Tue, 2008-11-18 at 13:57 +0000, David Woodhouse wrote:
+> I suspect it might be better to take the simple bug-fix approach for
+> now, given that we are planning a revamp of the MTD core API anyway --
+> we can redo partitions properly at the point, so they aren't just an
+> evil hack.
 
-Well, most boards only really want _one_ partition type; maybe two. And
-the probes can be quite expensive and have false positives, so we don't
-want to be doing all the probes for all devices.
+Off topic: is this going to really happen? Are you have real plans
+to do this?
 
-It might make sense to just pass a bitmask indicating which partition
-probes to use. Assuming we can agree on an ordering, that is :)
+Also, you also mentioned that you have sysfs for MTD, are we going to
+see them in mtd-2.6.git any time soon?
 
-Another complication is that some boards have registered the whole
-device first, while others have just registered the partitions.
-
-I suspect it might be better to take the simple bug-fix approach for
-now, given that we are planning a revamp of the MTD core API anyway --
-we can redo partitions properly at the point, so they aren't just an
-evil hack.
-
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
