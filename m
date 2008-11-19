@@ -1,19 +1,20 @@
-Received: from wf-out-1314.google.com ([209.85.200.169])
+Received: from ti-out-0910.google.com ([209.85.142.185])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L2WHP-00023H-Jt
-	for linux-mtd@lists.infradead.org; Tue, 18 Nov 2008 19:30:31 +0000
-Received: by wf-out-1314.google.com with SMTP id 28so3065462wfc.24
+	id 1L2hsL-0003u3-Qi
+	for linux-mtd@lists.infradead.org; Wed, 19 Nov 2008 07:53:26 +0000
+Received: by ti-out-0910.google.com with SMTP id a21so2171987tia.2
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 18 Nov 2008 11:30:30 -0800 (PST)
-Message-ID: <f383264b0811181130l54d043edsbf19a9371d53082@mail.gmail.com>
-Date: Tue, 18 Nov 2008 11:30:30 -0800
-From: "Matt Reimer" <mattjreimer@gmail.com>
-To: "Linux MTD" <linux-mtd@lists.infradead.org>
-Subject: [PATCH] [MTD][NAND] Only check one byte for bad block status on 8-bit
-	flash
+	Tue, 18 Nov 2008 23:53:23 -0800 (PST)
+From: "Mark" <sharkconi@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: jffs2 wear leveling performance test
+Date: Wed, 19 Nov 2008 15:53:02 +0800
+Message-ID: <8BCDB8EA41AF44B3946E66CDFC381F2C@markdesktop>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_99457_32716225.1227036630116"
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Reply-To: sharkconi@google.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,65 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-------=_Part_99457_32716225.1227036630116
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Hi All:
 
+         I'm a newer to the jffs2 file system.  I want to get some
+information about the current jffs2 wear leveling performance. 
 
+         But I don't know whether there're some useful test tools which
+shows the static information about flash block erasing times, or do I need
+to write such tool by my self?
 
-------=_Part_99457_32716225.1227036630116
-Content-Type: text/x-patch;
-	name=0001--MTD-NAND-Only-check-one-byte-for-bad-block-status.patch
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fnoxx4lf0
-Content-Disposition: attachment;
-	filename=0001--MTD-NAND-Only-check-one-byte-for-bad-block-status.patch
+         Really Thanks.
 
-RnJvbSAzZmZmNGYyNTA3ZGVlZTdiNmJiYmQ4YzhmOTk5ZjBiZjMzNzU0NmFmIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBNYXR0IFJlaW1lciA8bXJlaW1lckBzZGdzeXN0ZW1zLmNvbT4K
-RGF0ZTogVHVlLCAxOCBOb3YgMjAwOCAxMToxNjowMSAtMDgwMApTdWJqZWN0OiBbUEFUQ0hdIFtN
-VERdW05BTkRdIE9ubHkgY2hlY2sgb25lIGJ5dGUgZm9yIGJhZCBibG9jayBzdGF0dXMgb24gOC1i
-aXQgZmxhc2gKCkFjY29yZGluZyB0byB0aGUgU2Ftc3VuZyBOQU5EIGZsYXNoIGRvY3MgSSdtIHVz
-aW5nLCB0aGUgYmFkLWJsb2NrCmluZGljYXRvciBpcyBhIGJ5dGUgZm9yIDgtYml0IGZsYXNoLCBh
-bmQgYSB3b3JkIGZvciAxNi1iaXQgZmxhc2guIFRlYWNoCm5hbmRfYmJ0LmMgdG8gcmVzcGVjdCB0
-aGlzLiBBbiBlZmZlY3Qgb2YgdGhpcyBpcyB0aGF0IGZvciA4LWJpdCBwYXJ0cwp0aGUgYnl0ZSBm
-b2xsb3dpbmcgdGhlIGJhZCBibG9jayBpbmRpY2F0b3IgaXMgYXZhaWxhYmxlIGZvciB1c2UuCgpT
-aWduZWQtb2ZmLWJ5OiBNYXR0IFJlaW1lciA8bXJlaW1lckBzZGdzeXN0ZW1zLmNvbT4KLS0tCiBk
-cml2ZXJzL210ZC9uYW5kL25hbmRfYmJ0LmMgfCAgIDI5ICsrKysrKysrKysrKysrKysrKysrKysr
-KystLS0tCiAxIGZpbGVzIGNoYW5nZWQsIDI1IGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0p
-CgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9uYW5kX2JidC5jIGIvZHJpdmVycy9tdGQv
-bmFuZC9uYW5kX2JidC5jCmluZGV4IDVlMTIxY2UuLjY4NjI5MDYgMTAwNjQ0Ci0tLSBhL2RyaXZl
-cnMvbXRkL25hbmQvbmFuZF9iYnQuYworKysgYi9kcml2ZXJzL210ZC9uYW5kL25hbmRfYmJ0LmMK
-QEAgLTEwODEsNyArMTA4MSwxNCBAQCBzdGF0aWMgc3RydWN0IG5hbmRfYmJ0X2Rlc2NyIHNtYWxs
-cGFnZV9tZW1vcnliYXNlZCA9IHsKIAkucGF0dGVybiA9IHNjYW5fZmZfcGF0dGVybgogfTsKIAot
-c3RhdGljIHN0cnVjdCBuYW5kX2JidF9kZXNjciBsYXJnZXBhZ2VfbWVtb3J5YmFzZWQgPSB7Citz
-dGF0aWMgc3RydWN0IG5hbmRfYmJ0X2Rlc2NyIGxhcmdlcGFnZV9tZW1vcnliYXNlZF84Yml0ID0g
-eworCS5vcHRpb25zID0gMCwKKwkub2ZmcyA9IDAsCisJLmxlbiA9IDEsCisJLnBhdHRlcm4gPSBz
-Y2FuX2ZmX3BhdHRlcm4KK307CisKK3N0YXRpYyBzdHJ1Y3QgbmFuZF9iYnRfZGVzY3IgbGFyZ2Vw
-YWdlX21lbW9yeWJhc2VkXzE2Yml0ID0gewogCS5vcHRpb25zID0gMCwKIAkub2ZmcyA9IDAsCiAJ
-LmxlbiA9IDIsCkBAIC0xMDk1LDcgKzExMDIsMTQgQEAgc3RhdGljIHN0cnVjdCBuYW5kX2JidF9k
-ZXNjciBzbWFsbHBhZ2VfZmxhc2hiYXNlZCA9IHsKIAkucGF0dGVybiA9IHNjYW5fZmZfcGF0dGVy
-bgogfTsKIAotc3RhdGljIHN0cnVjdCBuYW5kX2JidF9kZXNjciBsYXJnZXBhZ2VfZmxhc2hiYXNl
-ZCA9IHsKK3N0YXRpYyBzdHJ1Y3QgbmFuZF9iYnRfZGVzY3IgbGFyZ2VwYWdlX2ZsYXNoYmFzZWRf
-OGJpdCA9IHsKKwkub3B0aW9ucyA9IE5BTkRfQkJUX1NDQU4yTkRQQUdFLAorCS5vZmZzID0gMCwK
-KwkubGVuID0gMSwKKwkucGF0dGVybiA9IHNjYW5fZmZfcGF0dGVybgorfTsKKworc3RhdGljIHN0
-cnVjdCBuYW5kX2JidF9kZXNjciBsYXJnZXBhZ2VfZmxhc2hiYXNlZF8xNmJpdCA9IHsKIAkub3B0
-aW9ucyA9IE5BTkRfQkJUX1NDQU4yTkRQQUdFLAogCS5vZmZzID0gMCwKIAkubGVuID0gMiwKQEAg
-LTExNzMsMTQgKzExODcsMjEgQEAgaW50IG5hbmRfZGVmYXVsdF9iYnQoc3RydWN0IG10ZF9pbmZv
-ICptdGQpCiAJCQl0aGlzLT5iYnRfbWQgPSAmYmJ0X21pcnJvcl9kZXNjcjsKIAkJfQogCQlpZiAo
-IXRoaXMtPmJhZGJsb2NrX3BhdHRlcm4pIHsKLQkJCXRoaXMtPmJhZGJsb2NrX3BhdHRlcm4gPSAo
-bXRkLT53cml0ZXNpemUgPiA1MTIpID8gJmxhcmdlcGFnZV9mbGFzaGJhc2VkIDogJnNtYWxscGFn
-ZV9mbGFzaGJhc2VkOworCQkJdGhpcy0+YmFkYmxvY2tfcGF0dGVybiA9IChtdGQtPndyaXRlc2l6
-ZSA+IDUxMikgPworCQkJICAgICh0aGlzLT5vcHRpb25zICYgTkFORF9CVVNXSURUSF8xNiA/CisJ
-CQkJJmxhcmdlcGFnZV9mbGFzaGJhc2VkXzE2Yml0IDoKKwkJCSAgICAgICAgJmxhcmdlcGFnZV9m
-bGFzaGJhc2VkXzhiaXQpIDoKKwkJCSAgICAmc21hbGxwYWdlX2ZsYXNoYmFzZWQ7CiAJCX0KIAl9
-IGVsc2UgewogCQl0aGlzLT5iYnRfdGQgPSBOVUxMOwogCQl0aGlzLT5iYnRfbWQgPSBOVUxMOwog
-CQlpZiAoIXRoaXMtPmJhZGJsb2NrX3BhdHRlcm4pIHsKIAkJCXRoaXMtPmJhZGJsb2NrX3BhdHRl
-cm4gPSAobXRkLT53cml0ZXNpemUgPiA1MTIpID8KLQkJCSAgICAmbGFyZ2VwYWdlX21lbW9yeWJh
-c2VkIDogJnNtYWxscGFnZV9tZW1vcnliYXNlZDsKKwkJCSAgICAodGhpcy0+b3B0aW9ucyAmIE5B
-TkRfQlVTV0lEVEhfMTYgPworCQkJCSZsYXJnZXBhZ2VfbWVtb3J5YmFzZWRfMTZiaXQgOgorCQkJ
-ICAgICAgICAmbGFyZ2VwYWdlX21lbW9yeWJhc2VkXzhiaXQpIDoKKwkJCSAgICAmc21hbGxwYWdl
-X21lbW9yeWJhc2VkOwogCQl9CiAJfQogCXJldHVybiBuYW5kX3NjYW5fYmJ0KG10ZCwgdGhpcy0+
-YmFkYmxvY2tfcGF0dGVybik7Ci0tIAoxLjUuNi4zCgo=
-------=_Part_99457_32716225.1227036630116--
+         
+
+         Mark
