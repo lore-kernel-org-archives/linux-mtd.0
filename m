@@ -1,20 +1,22 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from wf-out-1314.google.com ([209.85.200.170])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L2rq0-0003lh-LJ
-	for linux-mtd@lists.infradead.org; Wed, 19 Nov 2008 18:31:40 +0000
-MIME-version: 1.0
-Content-transfer-encoding: 7BIT
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Received: from xanadu.home ([66.131.194.97]) by VL-MH-MR002.ip.videotron.ca
-	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
-	32bit))
-	with ESMTP id <0KAL008KZFGG1KJ0@VL-MH-MR002.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Wed, 19 Nov 2008 13:31:29 -0500 (EST)
-Date: Wed, 19 Nov 2008 13:31:28 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH mtd-utils] fix CFLAGS handling wrt cross compilation
-Message-id: <alpine.LFD.2.00.0811191321420.27509@xanadu.home>
+	id 1L2yiL-0007rt-PN
+	for linux-mtd@lists.infradead.org; Thu, 20 Nov 2008 01:52:14 +0000
+Received: by wf-out-1314.google.com with SMTP id 28so227452wfa.27
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 19 Nov 2008 17:52:12 -0800 (PST)
+Message-ID: <8bd0f97a0811191752l69f5f93eg72692338ce2c6892@mail.gmail.com>
+Date: Wed, 19 Nov 2008 20:52:11 -0500
+From: "Mike Frysinger" <vapier.adi@gmail.com>
+To: "Nicolas Pitre" <nico@cam.org>
+Subject: Re: [PATCH mtd-utils] fix CFLAGS handling wrt cross compilation
+In-Reply-To: <alpine.LFD.2.00.0811191321420.27509@xanadu.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <alpine.LFD.2.00.0811191321420.27509@xanadu.home>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,41 +26,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Let's have the "new ubi-utils" makefile handle CFLAGS like the other 
-makefiles.  This is important when cross compiling and CFLAGS is 
-externally provided. Without this, local include files are not found due 
-to the various -I arguments which are then lost.
+On Wed, Nov 19, 2008 at 13:31, Nicolas Pitre wrote:
+> Let's have the "new ubi-utils" makefile handle CFLAGS like the other
+> makefiles.  This is important when cross compiling and CFLAGS is
+> externally provided. Without this, local include files are not found due
+> to the various -I arguments which are then lost.
+>
+> Signed-off-by: Nicolas Pitre <nico@marvell.com>
 
-Signed-off-by: Nicolas Pitre <nico@marvell.com>
-
-diff --git a/ubi-utils/new-utils/Makefile b/ubi-utils/new-utils/Makefile
-index ba4c20f..6fce7c6 100644
---- a/ubi-utils/new-utils/Makefile
-+++ b/ubi-utils/new-utils/Makefile
-@@ -2,7 +2,6 @@
- # Makefile for ubi-utils
- #
- 
--OPTFLAGS := -O2 -Wall
- KERNELHDR := ../../include
- DESTDIR := /usr/local
- SBINDIR=/usr/sbin
-@@ -10,7 +9,8 @@ MANDIR=/usr/man
- INCLUDEDIR=/usr/include
- 
- CC := $(CROSS)gcc
--CFLAGS := -Iinclude -Isrc -I$(KERNELHDR) $(OPTFLAGS) -Werror -Wall
-+CFLAGS ?= -O2 -Wall
-+CPPFLAGS := -Iinclude -Isrc -I$(KERNELHDR) $(CFLAGS) -Werror -Wall
- 
- LIBS = libubi libmtd libubigen libiniparser libscan
- UTILS = ubiupdatevol ubimkvol ubirmvol ubicrc32 ubinfo ubiattach \
-@@ -26,7 +26,7 @@ all: $(UTILS)
- 
- # The below is the rule to get an .o file from a .c file
- %.o: %.c
--	$(CC) $(CFLAGS) $< -c -o $@
-+	$(CC) $(CPPFLAGS) $< -c -o $@
- 
- # And the below is the rule to get final executable from its .o and common.o
- %: libubi.a %.o common.o
+i dont think sticking CFLAGS into CPPFLAGS is right.  they're separate
+on purpose.  you also break custom CPPFLAG injection here ... CPPFLAGS
+should be treated just like CFLAGS: appended, not strictly set.
+-mike
