@@ -1,19 +1,19 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L3DDd-000760-QR
-	for linux-mtd@lists.infradead.org; Thu, 20 Nov 2008 17:21:30 +0000
-Subject: Re: [PATCH] UBIFS: Fix Bulk read buf_len  intialization
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Brijesh Singh <brij.singh@samsung.com>
-In-Reply-To: <919AC938BD8D49A68F2667677F5034D1@sisodomain.com>
-References: <919AC938BD8D49A68F2667677F5034D1@sisodomain.com>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 20 Nov 2008 19:19:19 +0200
-Message-Id: <1227201559.3954.4.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from fg-out-1718.google.com ([72.14.220.154])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1L3EAE-0005Ml-0S
+	for linux-mtd@lists.infradead.org; Thu, 20 Nov 2008 18:22:02 +0000
+Received: by fg-out-1718.google.com with SMTP id l26so432296fgb.26
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 20 Nov 2008 10:21:59 -0800 (PST)
+Message-ID: <8fbbfb6b0811201021l3f3d9aabr90d9c54b18555cfc@mail.gmail.com>
+Date: Thu, 20 Nov 2008 23:51:59 +0530
+From: "Ankur Maheshwari" <ankur.maheshwari@gmail.com>
+To: linux-mtd@lists.infradead.org, ankur_maheshwari@in.com
+Subject: Query on UBIFS usage
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi all,
 
-right. I fixed this yesterday but forgot to push, sorry.
-Just pushed the right patches.
+I am newbee to UBIFS. I have some basic doubts on using UBIFS.
 
-Note, we consider the master branch of ubifs-2.6.git as
-experimental and we re-base it often. So if you want more
-stable UBIFS - use the linux-next branch as we noted here:
+1. I read in UBIFS FAQ that it can not be used as NFS file system. I
+am bit confuse with the statement.
+Is it possible that I use UBIFS on one of Flash partition and at the
+same time do NFS (root fs mount as NFS) boot. Is there any issue with
+it.
 
-http://www.linux-mtd.infradead.org/doc/ubifs.html#L_source
+2. Can I use UBIFS with other Flash filesystem (like SquashFS-read
+only) on other partition of same flash.
 
-Anyway, it is nice to see you reacted so quickly. Thanks.
+3. What will be better, keep using SquashFS(RO) or switch to UBIFS.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Thanks in advance.
+
+-ANM
