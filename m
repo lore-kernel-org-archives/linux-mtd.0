@@ -1,21 +1,19 @@
-Received: from outbound-mail-35.bluehost.com ([69.89.18.155])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L3CvI-0004RJ-J7
-	for linux-mtd@lists.infradead.org; Thu, 20 Nov 2008 17:02:33 +0000
-Received: from 208.123.189.57.dynamic.dejazzd.com ([208.123.189.57]
-	helo=hp-dhlii.dlasys.lcl)
-	by host200.hostmonster.com with esmtpa (Exim 4.69)
-	(envelope-from <dhlii@dlasys.net>) id 1L3CvC-00062Q-RH
-	for linux-mtd@lists.infradead.org; Thu, 20 Nov 2008 10:02:27 -0700
-Message-ID: <4925981F.2000509@dlasys.net>
-Date: Thu, 20 Nov 2008 12:02:23 -0500
-From: "David H. Lynch Jr." <dhlii@dlasys.net>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: cfi_probe geometry problem
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Reply-To: dhlii@dlasys.net
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1L3DDd-000760-QR
+	for linux-mtd@lists.infradead.org; Thu, 20 Nov 2008 17:21:30 +0000
+Subject: Re: [PATCH] UBIFS: Fix Bulk read buf_len  intialization
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Brijesh Singh <brij.singh@samsung.com>
+In-Reply-To: <919AC938BD8D49A68F2667677F5034D1@sisodomain.com>
+References: <919AC938BD8D49A68F2667677F5034D1@sisodomain.com>
+Content-Type: text/plain; charset=utf-8
+Date: Thu, 20 Nov 2008 19:19:19 +0200
+Message-Id: <1227201559.3954.4.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,46 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-    I am having difficulty getting cfi_probe working for the flash in my
-board.
+Hi,
 
-    I am trying to complete a map driver for Spansion S29GL512N NOR
-flash in Pico cards.
-    The flash shared between two CPU's so a mapping driver is required
-to enable and disable it.
+right. I fixed this yesterday but forgot to push, sorry.
+Just pushed the right patches.
 
-    I have most of the driver code working and after setting up data
-structures in probe I can issue a QRY as
+Note, we consider the master branch of ubifs-2.6.git as
+experimental and we re-base it often. So if you want more
+stable UBIFS - use the linux-next branch as we noted here:
 
-    d.x[0] = 0xf0;
-    (map->write) (map, d, 0);
-    d.x[0] = 0xff;
-    (map->write) (map, d, 0);
-    d.x[0] = 0x98;
-    (map->write) (map, d, 0x55);
-    pico_flash_copy_from(map, &buf, 0 , 64);
-    if(buf[0x20] != 'Q' && buf[0x22] != 'R' && buf[0x24] != 'Y')
-        DBG("Flash Error QRY failed\n");
-    else
-        DBG("Flash QRY %d\n");
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_source
 
-    However cfi_probe fails. this seems to be some type of geometry
-issue. When I watch CFI probe it either sends the query request to the
-wrong addresses, or it checks the wrong addresses for the results.
+Anyway, it is nice to see you reacted so quickly. Thanks.
 
-    A clue would be appreciated.
-
- 
-   
-
-
-
--- 
-Dave Lynch 					  	    DLA Systems
-Software Development:  				         Embedded Linux
-717.627.3770 	       dhlii@dlasys.net 	  http://www.dlasys.net
-fax: 1.253.369.9244 			           Cell: 1.717.587.7774
-Over 25 years' experience in platforms, languages, and technologies too numerous to list.
-
-"Any intelligent fool can make things bigger and more complex... It takes a touch of genius - and a lot of courage to move in the opposite direction."
-Albert Einstein
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
