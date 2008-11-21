@@ -1,19 +1,18 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L3Shq-00048A-7U
-	for linux-mtd@lists.infradead.org; Fri, 21 Nov 2008 09:53:42 +0000
-Subject: Re: flash_eraseall reports incorrect percentage
+	id 1L3TRL-0004mq-N9
+	for linux-mtd@lists.infradead.org; Fri, 21 Nov 2008 10:40:44 +0000
+Subject: Re: [PATCH mtd-utils] fix CFLAGS handling wrt cross compilation
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Ladislav Michl <ladis@linux-mips.org>
-In-Reply-To: <20081118185652.GA32157@michl.2n.cz>
-References: <200801301403.13149.sr@denx.de>
-	<20081118185652.GA32157@michl.2n.cz>
+To: Nicolas Pitre <nico@cam.org>
+In-Reply-To: <alpine.LFD.2.00.0811191321420.27509@xanadu.home>
+References: <alpine.LFD.2.00.0811191321420.27509@xanadu.home>
 Content-Type: text/plain; charset=utf-8
-Date: Fri, 21 Nov 2008 11:51:38 +0200
-Message-Id: <1227261098.3954.49.camel@sauron>
+Date: Fri, 21 Nov 2008 12:38:42 +0200
+Message-Id: <1227263922.3954.53.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: Stefan Roese <sr@denx.de>, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,40 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2008-11-18 at 19:56 +0100, Ladislav Michl wrote:
-> On Wed, Jan 30, 2008 at 02:03:13PM +0100, Stefan Roese wrote:
-> > It seems that the flash_eraseall utility doesn't report the correct per=
-centage=20
-> > upon completion. After erasing the last sector, the output seems not to=
- get=20
-> > updated anymore. This leads to something like this on a partition with =
-only 2=20
-> > sectors:
-> >=20
-> > flash_eraseall /dev/mtd6
-> > Erasing 256 Kibyte @ 40000 -- 50 % complete.
-> >=20
-> > I'm just posting this report as a reference. Perhaps somebody has a lit=
-tle=20
-> > time to fix it.
+On Wed, 2008-11-19 at 13:31 -0500, Nicolas Pitre wrote:
+> Let's have the "new ubi-utils" makefile handle CFLAGS like the other=20
+> makefiles.  This is important when cross compiling and CFLAGS is=20
+> externally provided. Without this, local include files are not found due=20
+> to the various -I arguments which are then lost.
 >=20
-> Well, I sacrificed a little time otherwise used to prepare supper, but
-> fridge is emty...
->=20
-> # flash_eraseall /dev/mtd4
-> Erasing 128 Kibyte @ 2800000 -- 100 % complete.
->=20
-> flash_eraseall
->  * fix percentage reporting
->  * exit()ing from main() is overkill, just return
->=20
-> Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+> Signed-off-by: Nicolas Pitre <nico@marvell.com>
 
-
-It seems others are busy, so I took a look at this. I think the patch is
-OK, pushed to mtd-utils.git.
-
-Thanks.
+Applied, thanks.
 
 --=20
 Best regards,
