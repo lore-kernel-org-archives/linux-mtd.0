@@ -1,14 +1,18 @@
-Subject: Re: [git-pull] MTD updates
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1L3Saj-0007TR-2Y
+	for linux-mtd@lists.infradead.org; Fri, 21 Nov 2008 09:46:21 +0000
+Subject: Re: Query on UBIFS usage
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: "'David Woodhouse'" <dwmw2@infradead.org>
-In-Reply-To: <1227260163.3954.38.camel@sauron>
-References: <1227260163.3954.38.camel@sauron>
+To: Ankur Maheshwari <ankur.maheshwari@gmail.com>
+In-Reply-To: <8fbbfb6b0811201021l3f3d9aabr90d9c54b18555cfc@mail.gmail.com>
+References: <8fbbfb6b0811201021l3f3d9aabr90d9c54b18555cfc@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Date: Fri, 21 Nov 2008 11:38:07 +0200
-Message-Id: <1227260287.3954.40.camel@sauron>
+Date: Fri, 21 Nov 2008 11:44:18 +0200
+Message-Id: <1227260658.3954.46.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Cc: ankur_maheshwari@in.com, linux-mtd@lists.infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -19,17 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2008-11-21 at 11:36 +0200, Artem Bityutskiy wrote:
-> David,
->=20
-> I've prepared a git tree for you to pull. It contains latest nandsim
-> changes and the 64-bit MTD change. Please, consider to pull:
->=20
-> http://git.infradead.org/users/dedekind/mtd-nandsim-2.6.git
+On Thu, 2008-11-20 at 23:51 +0530, Ankur Maheshwari wrote:
+> 1. I read in UBIFS FAQ that it can not be used as NFS file system. I
+> am bit confuse with the statement.
 
-Err,
+You cannot export UBIFS via NFS so far, because we did not implement
+NFS support inside UBIFS. In other words, UBIFS cannot be NFS server's
+backing FS. But we are planning to implement this, we just do not have
+time and do not need this.
 
-git://git.infradead.org/users/dedekind/mtd-nandsim-2.6.git master
+> Is it possible that I use UBIFS on one of Flash partition and at the
+> same time do NFS (root fs mount as NFS) boot. Is there any issue with
+> it.
+
+No, in this case you mount some other file system via NFS, co you are an
+NFS client. It should be fine.
+
+> 2. Can I use UBIFS with other Flash filesystem (like SquashFS-read
+> only) on other partition of same flash.
+
+Of course.
+
+> 3. What will be better, keep using SquashFS(RO) or switch to UBIFS.
+
+Everything depends on your needs/requirements/etc.
 
 --=20
 Best regards,
