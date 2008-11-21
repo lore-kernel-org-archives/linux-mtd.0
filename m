@@ -1,9 +1,11 @@
-Subject: [git-pull] MTD updates
+Subject: Re: [git-pull] MTD updates
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: "'David Woodhouse'" <dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 21 Nov 2008 11:36:03 +0200
-Message-Id: <1227260163.3954.38.camel@sauron>
+In-Reply-To: <1227260163.3954.38.camel@sauron>
+References: <1227260163.3954.38.camel@sauron>
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 21 Nov 2008 11:38:07 +0200
+Message-Id: <1227260287.3954.40.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd <linux-mtd@lists.infradead.org>
@@ -17,12 +19,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David,
+On Fri, 2008-11-21 at 11:36 +0200, Artem Bityutskiy wrote:
+> David,
+>=20
+> I've prepared a git tree for you to pull. It contains latest nandsim
+> changes and the 64-bit MTD change. Please, consider to pull:
+>=20
+> http://git.infradead.org/users/dedekind/mtd-nandsim-2.6.git
 
-I've prepared a git tree for you to pull. It contains latest nandsim
-changes and the 64-bit MTD change. Please, consider to pull:
+Err,
 
-http://git.infradead.org/users/dedekind/mtd-nandsim-2.6.git
+git://git.infradead.org/users/dedekind/mtd-nandsim-2.6.git master
 
 --=20
 Best regards,
