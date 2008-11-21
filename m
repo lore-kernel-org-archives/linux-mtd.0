@@ -1,19 +1,27 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L3Saj-0007TR-2Y
-	for linux-mtd@lists.infradead.org; Fri, 21 Nov 2008 09:46:21 +0000
-Subject: Re: Query on UBIFS usage
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Ankur Maheshwari <ankur.maheshwari@gmail.com>
-In-Reply-To: <8fbbfb6b0811201021l3f3d9aabr90d9c54b18555cfc@mail.gmail.com>
-References: <8fbbfb6b0811201021l3f3d9aabr90d9c54b18555cfc@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Date: Fri, 21 Nov 2008 11:44:18 +0200
-Message-Id: <1227260658.3954.46.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: ankur_maheshwari@in.com, linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from yx-out-1718.google.com ([74.125.44.158])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1L3Ses-0003Tm-FI
+	for linux-mtd@lists.infradead.org; Fri, 21 Nov 2008 09:50:38 +0000
+Received: by yx-out-1718.google.com with SMTP id 3so554893yxi.72
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 21 Nov 2008 01:50:37 -0800 (PST)
+Message-ID: <80b317760811210150w3886fe28jf1f2961360e081f5@mail.gmail.com>
+Date: Fri, 21 Nov 2008 10:50:37 +0100
+From: "Richard Genoud" <richard.genoud@gmail.com>
+To: "Haavard Skinnemoen" <haavard.skinnemoen@atmel.com>
+Subject: Re: [PATCH] Bug on atmel_nand HW ECC : OOB info not correctly written
+In-Reply-To: <80b317760810130844l53709cf8j284d81d432d2696e@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <1223793748.7110.13.camel@ubuntu>
+	<1223906461.6770.604.camel@macbook.infradead.org>
+	<20081013161353.38b8ff51@hskinnemo-gx745.norway.atmel.com>
+	<80b317760810130844l53709cf8j284d81d432d2696e@mail.gmail.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Justin Waters <justin.waters@timesys.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +31,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2008-11-20 at 23:51 +0530, Ankur Maheshwari wrote:
-> 1. I read in UBIFS FAQ that it can not be used as NFS file system. I
-> am bit confuse with the statement.
+2008/10/13 Richard Genoud <richard.genoud@gmail.com>:
+> 2008/10/13 Haavard Skinnemoen <haavard.skinnemoen@atmel.com>:
+>> I have no clue, I'm afraid. What's the difference between NAND_ECC_HW
+>> and NAND_ECC_HW_SYNDROME?
+>>
+>> I do think I have a large page NAND flash available for testing though,
+>> so I can do that. Will any potential problems be easy to spot?
+>>
+>> In other words: What are the consequences of this bug?
+>>
+>> Haavard
+>>
 
-You cannot export UBIFS via NFS so far, because we did not implement
-NFS support inside UBIFS. In other words, UBIFS cannot be NFS server's
-backing FS. But we are planning to implement this, we just do not have
-time and do not need this.
-
-> Is it possible that I use UBIFS on one of Flash partition and at the
-> same time do NFS (root fs mount as NFS) boot. Is there any issue with
-> it.
-
-No, in this case you mount some other file system via NFS, co you are an
-NFS client. It should be fine.
-
-> 2. Can I use UBIFS with other Flash filesystem (like SquashFS-read
-> only) on other partition of same flash.
-
-Of course.
-
-> 3. What will be better, keep using SquashFS(RO) or switch to UBIFS.
-
-Everything depends on your needs/requirements/etc.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+hi !
+Have you some feed-back on this patch ?
+Justin tested it successfully with a Samsung K9F2G08U0M-PCB0 256 MiB
+with 2048 Byte page size
+and 128 KiB Erase Block size on an at91sam9260-ek.
