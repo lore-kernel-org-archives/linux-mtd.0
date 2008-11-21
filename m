@@ -1,24 +1,13 @@
-Received: from mailout4.samsung.com ([203.254.224.34])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L3ANJ-0006Yz-SC
-	for linux-mtd@lists.infradead.org; Thu, 20 Nov 2008 14:19:18 +0000
-Received: from epmmp2 (mailout4.samsung.com [203.254.224.34])
-	by mailout4.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KAM00AHSYFYCC@mailout4.samsung.com> for
-	linux-mtd@lists.infradead.org; Thu, 20 Nov 2008 23:19:11 +0900 (KST)
-Received: from brijeshs ([107.108.214.195])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0KAM00ENBYFXUQ@mmp2.samsung.com> for
-	linux-mtd@lists.infradead.org; Thu, 20 Nov 2008 23:19:11 +0900 (KST)
-Date: Thu, 20 Nov 2008 19:52:31 +0530
-From: Brijesh Singh <brij.singh@samsung.com>
-Subject: [PATCH] UBIFS: Fix Bulk read buf_len  intialization
-To: dedekind@infradead.org
-Message-id: <919AC938BD8D49A68F2667677F5034D1@sisodomain.com>
-MIME-version: 1.0
-Content-type: multipart/alternative;
-	boundary="Boundary_(ID_1epS+1/uRYW+cgHooLLMaw)"
+Message-ID: <4926BFBD.7020603@nokia.com>
+Date: Fri, 21 Nov 2008 16:03:41 +0200
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: Kyungmin Park <kmpark@infradead.org>
+Subject: [PATCH] [MTD] [OneNAND] Add write-while-program support
+References: <20081117085428.GA32430@july> <492284E6.2000808@nokia.com>
+In-Reply-To: <492284E6.2000808@nokia.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -29,243 +18,257 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
+From: Kyungmin Park <kmpark@infradead.org>
+Date: Mon, 17 Nov 2008 17:54:28 +0900
 
---Boundary_(ID_1epS+1/uRYW+cgHooLLMaw)
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
+It's similar with read-while-program method.
+but it's write side performance improvement.
 
-In function bu_init in super.c, after buffer allocation, initialization of buf_len parameter is not done. So buf_len=0;
+Here's brief performance results.
+Note: Measured from OMAP3 with async OneNAND mode. (not sync mode)
 
-This causes bulk_read to be skipped in all cases.
+=================================================================
+speedtest: dev = 3
+speedtest: Size=16777216  EB size=131072  Write size=2048  EB count=128
+                Pages per EB=64  Page size=2048
+speedtest: scanning for bad blocks
+speedtest: scanned 0
+speedtest: scanned 128, found 0 bad
+speedtest: erasing
+speedtest: erased 0
+speedtest: erased 128
+speedtest: Testing eraseblock write speed
+eraseblock write speed is 2592 KiB/s
+speedtest: Testing eraseblock read speed
+eraseblock read speed is 16786 KiB/s
+speedtest: Testing page write speed
+page write speed is 2966 KiB/s
+speedtest: Testing page read speed
+page read speed is 13277 KiB/s
+speedtest: Testing 2 page write speed
+2 page write speed is 3182 KiB/s
+speedtest: Testing 2 page read speed
+2 page read speed is 14773 KiB/s
+speedtest: Testing erase speed
+erase speed is 192752 KiB/s
+speedtest: speedtest finished
+=================================================================
 
-Here is the scenario:
-ubifs_do_bulk_read() {
-...
-       err  = ubifs_tnc_get_bu_keys() ;
-        if (err)
- 	goto out_warn;
-...
-out_warn:
-            ubifs_warn("ignoring error %d and skipping bulk-read", err);
-            goto out_free;
-}
+Also it's passed all nand-tests.
 
-And function:
+Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+---
 
-ubifs_tnc_get_bu_keys() {
-                                    ...
-                            if (len > bu->buf_len) {
-        			err = -EINVAL;
-    			goto out;
-                           }
-...
-}
 
-ubifs_tnc_get_bu_keys()  returns error -EINVAL to ubifs_do_bulk_read. So it decides to skip this bulk_read.
- This condition holds forever as mutex will always be free in this case.
+Hi
 
-The following patch does the initialization....
+I have made a couple of tiny changes and tested this.  I get
+a 10% - 25% improvement in write speed when writing more than
+1 page.
 
-------------------------------------------------------------------------------------------------------------------------------
+Regards
+Adrian
 
-diff -urN ubifs-2.6.orig/fs/ubifs/super.c ubifs-2.6/fs/ubifs/super.c
---- ubifs-2.6.orig/fs/ubifs/super.c 2008-11-21 00:33:25.000000000 +0530
-+++ ubifs-2.6/fs/ubifs/super.c 2008-11-21 00:36:27.000000000 +0530
-@@ -1046,6 +1046,7 @@
-   c->bulk_read = 0;
-   return;
-  }
-+ c->bu.buf_len = c->max_bu_buf_len;
- }
+
+
+ drivers/mtd/onenand/onenand_base.c |  145 ++++++++++++++++++++++++------------
+ 1 files changed, 96 insertions(+), 49 deletions(-)
+
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index 926cf3a..b369459 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -1455,7 +1455,8 @@ static int onenand_write_ops_nolock(struct mtd_info *mtd, loff_t to,
+ 				struct mtd_oob_ops *ops)
+ {
+ 	struct onenand_chip *this = mtd->priv;
+-	int written = 0, column, thislen, subpage;
++	int written = 0, column, thislen = 0, subpage = 0;
++	int prev = 0, prevlen = 0, prev_subpage = 0, first = 1;
+ 	int oobwritten = 0, oobcolumn, thisooblen, oobsize;
+ 	size_t len = ops->len;
+ 	size_t ooblen = ops->ooblen;
+@@ -1482,6 +1483,10 @@ static int onenand_write_ops_nolock(struct mtd_info *mtd, loff_t to,
+                 return -EINVAL;
+         }
  
- /**
-
---Boundary_(ID_1epS+1/uRYW+cgHooLLMaw)
-Content-type: text/html; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
-<META content="MSHTML 6.00.6000.16735" name=GENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=#ffffff>
-<DIV><FONT face=Arial size=2>In function bu_init in super.c, after buffer 
-allocation, initialization of buf_len parameter is not done. So 
-buf_len=0;</FONT></DIV>
-<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Arial size=2>This causes bulk_read to be skipped in all 
-cases.</FONT></DIV>
-<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
-<DIV><FONT face=Arial size=2>Here is the scenario:</FONT></DIV>
-<DIV><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0">ubifs_do_bulk_read() 
-{</SPAN></DIV>
-<DIV><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0">...</SPAN></DIV>
-<DIV><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;err&nbsp; 
-=&nbsp;</FONT><FONT face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><FONT 
-face="Times New Roman">ubifs_tnc_get_bu_keys() ;</FONT></SPAN></FONT></DIV>
-<DIV><FONT size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0">if 
-(err)</SPAN></SPAN></FONT></DIV>
-<DIV><FONT size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0">&nbsp;	goto 
-out_warn;</SPAN></SPAN></FONT></DIV>
-<DIV><FONT face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0">...</SPAN></SPAN></FONT></DIV>
-<DIV><FONT face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0">out_warn:</SPAN></SPAN></FONT></DIV>
-<DIV><FONT face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-&nbsp;&nbsp;&nbsp; </SPAN></SPAN></FONT><FONT face=Arial size=2><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0">ubifs_warn("ignoring 
-error %d and skipping bulk-read", 
-err);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; goto 
-out_free;</SPAN></SPAN></SPAN></FONT></DIV>
-<DIV><FONT face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0">}</SPAN></SPAN></SPAN></FONT></DIV>
-<DIV><FONT face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"></SPAN></SPAN></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0">And 
-function:</SPAN></SPAN></SPAN></FONT></DIV>
-<DIV><FONT face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"></SPAN></SPAN></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><FONT 
-face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><FONT 
-face="Times New Roman">ubifs_tnc_get_bu_keys() 
-{</FONT></SPAN></FONT></DIV></SPAN></SPAN></SPAN></FONT>
-<DIV><FONT size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0">&nbsp;&nbsp;&nbsp; 
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
-...</SPAN></FONT></DIV>
-<DIV><FONT face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"></SPAN></FONT><FONT 
-face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0">&nbsp;&nbsp;&nbsp; 
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (len &gt; bu-&gt;buf_len) 
-{<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 			err = 
--EINVAL;<BR>&nbsp;&nbsp;&nbsp; 			goto 
-out;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-}</SPAN></SPAN></FONT></DIV>
-<DIV><FONT face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0">...</SPAN></SPAN></FONT></DIV>
-<DIV><FONT face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0">}</SPAN></SPAN></FONT></DIV>
-<DIV><FONT face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"></SPAN></SPAN></FONT><FONT 
-face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"></SPAN></SPAN></FONT><FONT 
-face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><FONT 
-face=Arial size=2></FONT></SPAN></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><FONT 
-face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><FONT 
-face="Times New Roman">ubifs_tnc_get_bu_keys()&nbsp; 
-</FONT></SPAN></FONT></SPAN></SPAN></SPAN></SPAN></SPAN></FONT><FONT face=Arial 
-size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 12px -webkit-monospace; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: pre; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><SPAN 
-class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"><FONT 
-face=Arial size=2>returns error -EINVAL to </FONT></SPAN></SPAN></FONT><FONT 
-face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0">ubifs_do_bulk_read. 
-So&nbsp;it decides to skip this&nbsp;bulk_read.</SPAN></FONT></DIV>
-<DIV><FONT face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0">&nbsp;This 
-condition holds forever as mutex will always be free in this 
-case.</SPAN></FONT></DIV>
-<DIV><FONT face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0">The 
-following&nbsp;patch does the initialization....</SPAN></FONT></DIV>
-<DIV><FONT face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0">------------------------------------------------------------------------------------------------------------------------------</SPAN></FONT></DIV>
-<DIV><FONT face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0">diff 
--urN ubifs-2.6.orig/fs/ubifs/super.c ubifs-2.6/fs/ubifs/super.c<BR>--- 
-ubifs-2.6.orig/fs/ubifs/super.c&nbsp;2008-11-21 00:33:25.000000000 +0530<BR>+++ 
-ubifs-2.6/fs/ubifs/super.c&nbsp;2008-11-21 00:36:27.000000000 +0530<BR>@@ 
--1046,6 +1046,7 @@<BR>&nbsp;&nbsp;&nbsp;c-&gt;bulk_read = 
-0;<BR>&nbsp;&nbsp;&nbsp;return;<BR>&nbsp;&nbsp;}<BR>+&nbsp;c-&gt;bu.buf_len = 
-c-&gt;max_bu_buf_len;<BR>&nbsp;}<BR>&nbsp;<BR>&nbsp;/**</SPAN></FONT></DIV>
-<DIV><FONT face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"></SPAN></FONT><FONT 
-face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"></SPAN></FONT><FONT 
-face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"></SPAN></FONT><FONT 
-face=Arial size=2><SPAN class=Apple-style-span 
-style="WORD-SPACING: 0px; FONT: 16px 'times new roman'; TEXT-TRANSFORM: none; COLOR: rgb(0,0,0); TEXT-INDENT: 0px; WHITE-SPACE: normal; LETTER-SPACING: normal; BORDER-COLLAPSE: separate; orphans: 2; widows: 2; -webkit-border-horizontal-spacing: 0px; -webkit-border-vertical-spacing: 0px; -webkit-text-decorations-in-effect: none; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0"></SPAN></FONT>&nbsp;</DIV></BODY></HTML>
-
---Boundary_(ID_1epS+1/uRYW+cgHooLLMaw)--
++	/* Check zero length */
++	if (!len)
++		return 0;
++
+ 	if (ops->mode == MTD_OOB_AUTO)
+ 		oobsize = this->ecclayout->oobavail;
+ 	else
+@@ -1492,79 +1497,121 @@ static int onenand_write_ops_nolock(struct mtd_info *mtd, loff_t to,
+ 	column = to & (mtd->writesize - 1);
+ 
+ 	/* Loop until all data write */
+-	while (written < len) {
+-		u_char *wbuf = (u_char *) buf;
++	while (1) {
++		if (written < len) {
++			u_char *wbuf = (u_char *) buf;
+ 
+-		thislen = min_t(int, mtd->writesize - column, len - written);
+-		thisooblen = min_t(int, oobsize - oobcolumn, ooblen - oobwritten);
++			thislen = min_t(int, mtd->writesize - column, len - written);
++			thisooblen = min_t(int, oobsize - oobcolumn, ooblen - oobwritten);
+ 
+-		cond_resched();
++			cond_resched();
+ 
+-		this->command(mtd, ONENAND_CMD_BUFFERRAM, to, thislen);
++			this->command(mtd, ONENAND_CMD_BUFFERRAM, to, thislen);
+ 
+-		/* Partial page write */
+-		subpage = thislen < mtd->writesize;
+-		if (subpage) {
+-			memset(this->page_buf, 0xff, mtd->writesize);
+-			memcpy(this->page_buf + column, buf, thislen);
+-			wbuf = this->page_buf;
+-		}
++			/* Partial page write */
++			subpage = thislen < mtd->writesize;
++			if (subpage) {
++				memset(this->page_buf, 0xff, mtd->writesize);
++				memcpy(this->page_buf + column, buf, thislen);
++				wbuf = this->page_buf;
++			}
+ 
+-		this->write_bufferram(mtd, ONENAND_DATARAM, wbuf, 0, mtd->writesize);
++			this->write_bufferram(mtd, ONENAND_DATARAM, wbuf, 0, mtd->writesize);
+ 
+-		if (oob) {
+-			oobbuf = this->oob_buf;
++			if (oob) {
++				oobbuf = this->oob_buf;
+ 
+-			/* We send data to spare ram with oobsize
+-			 * to prevent byte access */
+-			memset(oobbuf, 0xff, mtd->oobsize);
+-			if (ops->mode == MTD_OOB_AUTO)
+-				onenand_fill_auto_oob(mtd, oobbuf, oob, oobcolumn, thisooblen);
+-			else
+-				memcpy(oobbuf + oobcolumn, oob, thisooblen);
++				/* We send data to spare ram with oobsize
++				 * to prevent byte access */
++				memset(oobbuf, 0xff, mtd->oobsize);
++				if (ops->mode == MTD_OOB_AUTO)
++					onenand_fill_auto_oob(mtd, oobbuf, oob, oobcolumn, thisooblen);
++				else
++					memcpy(oobbuf + oobcolumn, oob, thisooblen);
+ 
+-			oobwritten += thisooblen;
+-			oob += thisooblen;
+-			oobcolumn = 0;
++				oobwritten += thisooblen;
++				oob += thisooblen;
++				oobcolumn = 0;
++			} else
++				oobbuf = (u_char *) ffchars;
++
++			this->write_bufferram(mtd, ONENAND_SPARERAM, oobbuf, 0, mtd->oobsize);
+ 		} else
+-			oobbuf = (u_char *) ffchars;
++			ONENAND_SET_NEXT_BUFFERRAM(this);
+ 
+-		this->write_bufferram(mtd, ONENAND_SPARERAM, oobbuf, 0, mtd->oobsize);
++		/*
++		 * 2 PLANE, MLC, and Flex-OneNAND doesn't support
++		 * write-while-programe feature.
++		 */
++		if (!ONENAND_IS_2PLANE(this) && !first) {
++			ONENAND_SET_PREV_BUFFERRAM(this);
+ 
+-		this->command(mtd, ONENAND_CMD_PROG, to, mtd->writesize);
++			ret = this->wait(mtd, FL_WRITING);
+ 
+-		ret = this->wait(mtd, FL_WRITING);
++			/* In partial page write we don't update bufferram */
++			onenand_update_bufferram(mtd, prev, !ret && !prev_subpage);
++			if (ret) {
++				written -= prevlen;
++				printk(KERN_ERR "onenand_write_ops_nolock: write filaed %d\n", ret);
++				break;
++			}
+ 
+-		/* In partial page write we don't update bufferram */
+-		onenand_update_bufferram(mtd, to, !ret && !subpage);
+-		if (ONENAND_IS_2PLANE(this)) {
+-			ONENAND_SET_BUFFERRAM1(this);
+-			onenand_update_bufferram(mtd, to + this->writesize, !ret && !subpage);
+-		}
++			if (written == len) {
++				/* Only check verify write turn on */
++				ret = onenand_verify(mtd, buf - len, to - len, len);
++				if (ret)
++					printk(KERN_ERR "onenand_write_ops_nolock: verify failed %d\n", ret);
++				break;
++			}
+ 
+-		if (ret) {
+-			printk(KERN_ERR "onenand_write_ops_nolock: write filaed %d\n", ret);
+-			break;
++			ONENAND_SET_NEXT_BUFFERRAM(this);
+ 		}
+ 
+-		/* Only check verify write turn on */
+-		ret = onenand_verify(mtd, buf, to, thislen);
+-		if (ret) {
+-			printk(KERN_ERR "onenand_write_ops_nolock: verify failed %d\n", ret);
+-			break;
+-		}
++		this->command(mtd, ONENAND_CMD_PROG, to, mtd->writesize);
+ 
+-		written += thislen;
++		/*
++		 * 2 PLANE, MLC, and Flex-OneNAND wait here
++		 */
++		if (ONENAND_IS_2PLANE(this)) {
++			ret = this->wait(mtd, FL_WRITING);
+ 
+-		if (written == len)
+-			break;
++			/* In partial page write we don't update bufferram */
++			onenand_update_bufferram(mtd, to, !ret && !subpage);
++			if (ret) {
++				printk(KERN_ERR "onenand_write_ops_nolock: write filaed %d\n", ret);
++				break;
++			}
++
++			/* Only check verify write turn on */
++			ret = onenand_verify(mtd, buf, to, thislen);
++			if (ret) {
++				printk(KERN_ERR "onenand_write_ops_nolock: verify failed %d\n", ret);
++				break;
++			}
++
++			written += thislen;
++
++			if (written == len)
++				break;
++
++		} else
++			written += thislen;
+ 
+ 		column = 0;
++		prev_subpage = subpage;
++		prev = to;
++		prevlen = thislen;
+ 		to += thislen;
+ 		buf += thislen;
++		first = 0;
+ 	}
+ 
++	/* In error case, clear all bufferrams */
++	if (written != len)
++		onenand_invalidate_bufferram(mtd, 0, -1);
++
+ 	ops->retlen = written;
++	ops->oobretlen = oobwritten;
+ 
+ 	return ret;
+ }
+-- 
+1.5.4.3
