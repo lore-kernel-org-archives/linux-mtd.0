@@ -1,18 +1,17 @@
-Received: from tesla.selinc.com ([12.110.71.2])
+Received: from caramon.arm.linux.org.uk ([78.32.30.218])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L3grX-00027v-Nh
-	for linux-mtd@lists.infradead.org; Sat, 22 Nov 2008 01:00:40 +0000
-Received: from edison2.selinc.com (edison2.selinc.com [12.110.71.8])
-	by tesla.selinc.com (8.12.11.20060308/8.12.11) with ESMTP id
-	mAM10aYX018385
-	for <linux-mtd@lists.infradead.org>; Fri, 21 Nov 2008 17:00:38 -0800
-To: linux-mtd@lists.infradead.org
-Subject: Async DMA question regarding dma_async_memcpy_buf_to_buf
-MIME-Version: 1.0
-Message-ID: <OF9D544051.87C6E943-ON88257509.00043C77-88257509.00058995@selinc.com>
-From: Bruce_Leonard@selinc.com
-Date: Fri, 21 Nov 2008 17:00:35 -0800
-Content-Type: text/plain; charset="US-ASCII"
+	id 1L4IFB-0005aM-Qg
+	for linux-mtd@lists.infradead.org; Sun, 23 Nov 2008 16:55:34 +0000
+Date: Sun, 23 Nov 2008 16:50:11 +0000
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Please fix or remove OMAP2 onenand driver
+Message-ID: <20081123165011.GB17438@flint.arm.linux.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,35 +21,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have a question about 
-.../drivers/dma/dmaengine.c/dma_async_memcpy_buf_to_buf() in 2.6.28-rc2. 
-It looks like it always assumes that the source pointer points to data 
-coming from the CPU and the destination pointer always points to the DMA 
-device.  I say this because of the following two lines from the function:
+Clearly this driver has been put into mainline prematurely - it takes
+no account of the relocation of headers.
 
- 479        dma_src = dma_map_single(dev->dev, src, len, DMA_TO_DEVICE);
- 480        dma_dest = dma_map_single(dev->dev, dest, len, DMA_FROM_DEVICE
-);
+It's causing a regression - omap_2430sdp_defconfig used to build in
+mainline, and it no longer does.
 
+Please fix, or remove this broken driver from mainline.
 
-As you can see 'src' is mapped DMA_TO_DEVICE indicating the data is going 
-from the CPU to the device, and 'dest' is mapped DMA_FROM_DEVICE, 
-indicating the opposite direction.  Seems to me this means the function is 
-assuming a certain direction (i.e., a write to the device), but there 
-isn't a corresponding function for going the other direction.  This leads 
-me to believe that the function is intended to operate in either 
-direction.  But this is in contradiction to both the mapped directions and 
-what I've read in LDD3, ch 15.
-
-The hardware doesn't care (I'm using an MPC8347E), as far as the DMA 
-engine is concerned these are just addresses.  All of this goes to cache 
-coherency.  The map/unmap functions are supposed to ensure that data is 
-copied and caches flushed at the right times to ensure cache coherency. So 
-the question is this; is the dma_async_memcpy_buf_to_buf() function 
-intended to be bi-directional and is it safe to pass it a 'src' pointer 
-that's actually coming from the device, or does there need to be a second 
-function for doing a copy from the device to the CPU?
-
-Thanks.
-
-Bruce
+drivers/mtd/onenand/omap2.c:38:27: error: asm/arch/gpmc.h: No such file or directory
+drivers/mtd/onenand/omap2.c:39:30: error: asm/arch/onenand.h: No such file or directory
+drivers/mtd/onenand/omap2.c:40:27: error: asm/arch/gpio.h: No such file or directory
+drivers/mtd/onenand/omap2.c:41:25: error: asm/arch/pm.h: No such file or directory
+drivers/mtd/onenand/omap2.c:45:26: error: asm/arch/dma.h: No such file or directory
+drivers/mtd/onenand/omap2.c:47:28: error: asm/arch/board.h: No such file or directory
+drivers/mtd/onenand/omap2.c: In function 'omap2_onenand_wait':
+drivers/mtd/onenand/omap2.c:153: error: implicit declaration of function 'omap_get_gpio_datain'
+drivers/mtd/onenand/omap2.c: In function 'omap2_onenand_read_bufferram':
+drivers/mtd/onenand/omap2.c:469: error: implicit declaration of function 'omap_set_dma_transfer_params'
+drivers/mtd/onenand/omap2.c:469: error: 'OMAP_DMA_DATA_TYPE_S32' undeclared (first use in this function)
+drivers/mtd/onenand/omap2.c:469: error: (Each undeclared identifier is reported only once
+drivers/mtd/onenand/omap2.c:469: error: for each function it appears in.)
+drivers/mtd/onenand/omap2.c:471: error: implicit declaration of function 'omap_set_dma_src_params'
+drivers/mtd/onenand/omap2.c:471: error: 'OMAP_DMA_AMODE_POST_INC' undeclared (first use in this function)
+drivers/mtd/onenand/omap2.c:473: error: implicit declaration of function 'omap_set_dma_dest_params'
+drivers/mtd/onenand/omap2.c:477: error: implicit declaration of function 'omap_start_dma'
+drivers/mtd/onenand/omap2.c: In function 'omap2_onenand_write_bufferram':
+drivers/mtd/onenand/omap2.c:514: error: 'OMAP_DMA_DATA_TYPE_S16' undeclared (first use in this function)
+drivers/mtd/onenand/omap2.c:516: error: 'OMAP_DMA_AMODE_POST_INC' undeclared (first use in this function)
+drivers/mtd/onenand/omap2.c: In function 'omap2_onenand_probe':
+drivers/mtd/onenand/omap2.c:595: error: dereferencing pointer to incomplete type
+drivers/mtd/onenand/omap2.c:596: error: dereferencing pointer to incomplete type
+drivers/mtd/onenand/omap2.c:597: error: dereferencing pointer to incomplete type
+drivers/mtd/onenand/omap2.c:603: error: implicit declaration of function 'gpmc_cs_request'
+drivers/mtd/onenand/omap2.c:622: error: dereferencing pointer to incomplete type
+drivers/mtd/onenand/omap2.c:623: error: dereferencing pointer to incomplete type
+drivers/mtd/onenand/omap2.c:629: error: dereferencing pointer to incomplete type
+drivers/mtd/onenand/omap2.c:633: error: implicit declaration of function 'omap_request_gpio'
+drivers/mtd/onenand/omap2.c:638: error: implicit declaration of function 'omap_set_gpio_direction'
+drivers/mtd/onenand/omap2.c:640: error: implicit declaration of function 'OMAP_GPIO_IRQ'
+drivers/mtd/onenand/omap2.c:647: error: implicit declaration of function 'omap_request_dma'
+drivers/mtd/onenand/omap2.c:651: error: implicit declaration of function 'omap_set_dma_write_mode'
+drivers/mtd/onenand/omap2.c:652: error: 'OMAP_DMA_WRITE_NON_POSTED' undeclared (first use in this function)
+drivers/mtd/onenand/omap2.c:653: error: implicit declaration of function 'omap_set_dma_src_data_pack'
+drivers/mtd/onenand/omap2.c:654: error: implicit declaration of function 'omap_set_dma_src_burst_mode'
+drivers/mtd/onenand/omap2.c:655: error: 'OMAP_DMA_DATA_BURST_8' undeclared (first use in this function)
+drivers/mtd/onenand/omap2.c:656: error: implicit declaration of function 'omap_set_dma_dest_data_pack'
+drivers/mtd/onenand/omap2.c:657: error: implicit declaration of function 'omap_set_dma_dest_burst_mode'
+drivers/mtd/onenand/omap2.c:708: error: dereferencing pointer to incomplete type
+drivers/mtd/onenand/omap2.c:709: error: dereferencing pointer to incomplete type
+drivers/mtd/onenand/omap2.c:710: error: dereferencing pointer to incomplete type
+drivers/mtd/onenand/omap2.c:725: error: implicit declaration of function 'omap_free_dma'
+drivers/mtd/onenand/omap2.c:730: error: implicit declaration of function 'omap_free_gpio'
+drivers/mtd/onenand/omap2.c:736: error: implicit declaration of function 'gpmc_cs_free'
+make[3]: *** [drivers/mtd/onenand/omap2.o] Error 1
