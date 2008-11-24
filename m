@@ -1,14 +1,15 @@
-Message-ID: <20081124031207.u6rdultzmssokwgg@www3.sbceo.org>
-Date: Mon, 24 Nov 2008 03:12:07 -0800
-From: UK NATIONAL LOTTERY 08 <popkin@sbceo.org>
-To: undisclosed-recipients:;
-Subject: Dear Lucky Winner
+Message-ID: <492A91E1.50305@nokia.com>
+Date: Mon, 24 Nov 2008 13:37:05 +0200
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset=ISO-8859-1
-Content-Disposition: inline
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: Please fix or remove OMAP2 onenand driver
+References: <20081123165011.GB17438@flint.arm.linux.org.uk>
+In-Reply-To: <20081123165011.GB17438@flint.arm.linux.org.uk>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Reply-To: christophermorgan1@live.com
+Cc: dwmw2@infradead.org, linux-omap@vger.kernel.org,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,30 +19,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Russell King - ARM Linux wrote:
+> Clearly this driver has been put into mainline prematurely - it takes
+> no account of the relocation of headers.
+> 
+> It's causing a regression - omap_2430sdp_defconfig used to build in
+> mainline, and it no longer does.
+> 
+> Please fix, or remove this broken driver from mainline.
 
-Dear Lucky Winner
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Date: Mon, 24 Nov 2008 13:34:53 +0200
+Subject: [PATCH] MTD: OMAP: OneNAND: header file relocation
 
-  We are pleased to inform you of the result of the just concluded annual
-final draws of UNITED KINGDOM NATIONAL LOTTERY international Lottery programs.
-After this automated computer ballot, your e-mail address emerged as one of two
-winners in the category \\"A\\" You are therefore been approve to claim the sum
-of 1,000,000 (One Million Pounds Sterling's) with the information below:
+Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+---
+ drivers/mtd/onenand/omap2.c |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
 
-To file for your claim fill the form below and send it to our payment
-parastatal:
-
-Name: Christopher Morgan.
-Email: christophermorgan1@live.com
-
-PAYMENT PROCESSING FORM
-============================
-(1) FULL NAME
-(2) FULL ADDRESS
-(3) NATIONALITY
-(4) DATE OF BIRTH
-(5) OCCUPATION
-(6) TELEPHONE NUMBER
-(7) SEX
-
-Sincerely,
-Mr. Liam Morris.
+diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+index e39b21d..28034ef 100644
+--- a/drivers/mtd/onenand/omap2.c
++++ b/drivers/mtd/onenand/omap2.c
+@@ -35,16 +35,16 @@
+ 
+ #include <asm/io.h>
+ #include <asm/mach/flash.h>
+-#include <asm/arch/gpmc.h>
+-#include <asm/arch/onenand.h>
+-#include <asm/arch/gpio.h>
+-#include <asm/arch/pm.h>
++#include <mach/gpmc.h>
++#include <mach/onenand.h>
++#include <mach/gpio.h>
++#include <mach/pm.h>
+ 
+ #include <linux/dma-mapping.h>
+ #include <asm/dma-mapping.h>
+-#include <asm/arch/dma.h>
++#include <mach/dma.h>
+ 
+-#include <asm/arch/board.h>
++#include <mach/board.h>
+ 
+ #define DRIVER_NAME "omap2-onenand"
+ 
+-- 
+1.5.4.3
