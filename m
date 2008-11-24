@@ -1,20 +1,21 @@
-Received: from az33egw02.freescale.net ([192.88.158.103])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L4ePB-0004Nc-W6
-	for linux-mtd@lists.infradead.org; Mon, 24 Nov 2008 16:35:22 +0000
-To: "Adrian Hunter" <ext-adrian.hunter@nokia.com>
-Subject: Re: A question about nand_read()
-From: "Patrick Turley" <patrick.turley@freescale.com>
-Content-Type: text/plain; format=flowed; delsp=yes; charset=iso-8859-15
+Received: from edmz-nat.slimdevices.com ([209.220.154.2]
+	helo=mail.slimdevices.com)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1L4eui-0006y6-T4
+	for linux-mtd@lists.infradead.org; Mon, 24 Nov 2008 17:07:57 +0000
+Received: from [127.0.0.1] (host217-44-198-192.range217-44.btcentralplus.com
+	[217.44.198.192])
+	by mail.slimdevices.com (Postfix) with ESMTPA id D3D264B022
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 24 Nov 2008 09:07:54 -0800 (PST)
+Message-ID: <492ADF69.8060602@logitech.com>
+Date: Mon, 24 Nov 2008 17:07:53 +0000
+From: Richard Titmuss <richard_titmuss@logitech.com>
 MIME-Version: 1.0
-References: <op.ukucbhx54yuz67@iconoclast.sgtl.sigmatel.com>
-	<op.uky93rcy4yuz67@pturley-home.am.freescale.net>
-	<492A7981.7040202@nokia.com>
+To: linux-mtd@lists.infradead.org
+Subject: Adding -N volume name to ubi utils
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Date: Mon, 24 Nov 2008 10:35:04 -0600
-Message-ID: <op.uk4toq184yuz67@pturley-home.am.freescale.net>
-In-Reply-To: <492A7981.7040202@nokia.com>
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,93 +25,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fair enough. I'll check it out.
+Hi,
 
+I am trying to modify the ubi tools in mtd_utils to allow the ubi volume 
+name to be specified on the command line, the relevant commands are 
+ubinfo, ubirmvol and ubiupdatevol. The idea is that you could use any of 
+the following command arguments to specify a ubi volume:
 
-On Mon, 24 Nov 2008 03:53:05 -0600, Adrian Hunter  
-<ext-adrian.hunter@nokia.com> wrote:
+   ubirmvol /dev/ubi0 -N rootfs    # ubi device node and volume name
+   ubirmvol /dev/ubi0 -n 1    # ubi device node and volume id
+   ubirmvol /dev/ubi0_1    # ubi volume node
 
-> Patrick Turley wrote:
->> No love? Is my question too n00bish?
->
-> People are busy.
->
-> You should test this yourself, and if you can make it go wrong
-> submit a patch.
->
-> I glanced at the code and it looks OK because struct nand_chip
-> is always initialised to zero and chip->ops.mode is never assigned.
->
->> On Tue, 18 Nov 2008 18:43:55 -0600, Patrick Turley   
->> <patrick.turley@freescale.com> wrote:
->>
->>> My tree is up-to-date as I'm writing this message.
->>>
->>> I'm looking at nand_read() in nand_base.c, starting at line 1175,  
->>> quoted
->>> here for your convenience:
->>>
->>>
->>> static int nand_read(struct mtd_info *mtd, loff_t from, size_t len,
->>>                       size_t *retlen, uint8_t *buf)
->>> {
->>>          struct nand_chip *chip = mtd->priv;
->>>          int ret;
->>>
->>>          /* Do not allow reads past end of device */
->>>          if ((from + len) > mtd->size)
->>>                  return -EINVAL;
->>>          if (!len)
->>>                  return 0;
->>>
->>>          nand_get_device(chip, mtd, FL_READING);
->>>
->>>          chip->ops.len = len;
->>>          chip->ops.datbuf = buf;
->>>          chip->ops.oobbuf = NULL;
->>>
->>>          ret = nand_do_read_ops(mtd, from, &chip->ops);
->>>
->>>          *retlen = chip->ops.retlen;
->>>
->>>          nand_release_device(mtd);
->>>
->>>          return ret;
->>> }
->>>
->>>
->>> In particular, I'm looking at the preparation to call  
->>> nand_do_read_ops(),
->>> where the chip->ops structure is filled in.
->>>
->>> Here's a small excerpt from nand_do_read_ops() that concerns me:
->>>
->>>
->>>      /* Now read the page into the buffer */
->>>      if (unlikely(ops->mode == MTD_OOB_RAW))
->>>              ret = chip->ecc.read_page_raw(mtd, chip, bufpoi);
->>>      else if (!aligned && NAND_SUBPAGE_READ(chip) && !oob)
->>>              ret = chip->ecc.read_subpage(mtd, chip, col, bytes,  
->>> bufpoi);
->>>      else
->>>              ret = chip->ecc.read_page(mtd, chip, bufpoi);
->>>      if (ret < 0)
->>>              break;
->>>
->>>
->>> Note that nand_do_read_ops() will look at the mode field of the ops
->>> structure, but this field hasn't been set by nand_read().
->>>
->>> On the face of it, this looks like a bug. Is there something I don't  
->>> know
->>> that makes this not a bug? For example, is the value in the mode field
->>> intended to persist across operations?
->>>
->>> ______________________________________________________
->>> Linux MTD discussion mailing list
->>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->>    ______________________________________________________
->> Linux MTD discussion mailing list
->> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->>
->
+Other than consistency the main feature this adds is support for using 
+-N to specify the volume by name to all the commands.
+
+The problem is these commands need different information to work:
+- ubinfo loads information from the /sys file system, it's easy to 
+support for all the above command arguments.
+- ubirmvol needs a ubi device node and a volume id, how can this work if 
+a volume node is specified?
+- ubiupdatevol needs a ubi volume node, how can this work if a device 
+node is specified?
+
+So my questions is how can the appropriate device node be generated by 
+these commands if it is not specified on the command line. It would be 
+possible to use something like:
+  sprintf(node, "/dev/ubi%d_%d", args.devn, args.vol_id);
+
+However I don't think that hard coding the /dev path is an acceptable 
+solution, and assume that's why the -d (device number) argument was 
+deprecated. Does anyone have any suggestions on a better solution?
+
+Thanks,
+Richard
