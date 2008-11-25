@@ -1,21 +1,16 @@
-Received: from simmts6-srv.bellnexxia.net ([206.47.199.164])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L6RSm-0003iR-QI
-	for linux-mtd@lists.infradead.org; Sat, 29 Nov 2008 15:10:29 +0000
-Received: from simip9-ac.srvr.bell.ca ([206.47.199.87])
-	by simmts6-srv.bellnexxia.net
-	(InterMail vM.5.01.06.13 201-253-122-130-113-20050324) with ESMTP id
-	<20081129151023.KUHZ10695.simmts6-srv.bellnexxia.net@simip9-ac.srvr.bell.ca>
-	for <linux-mtd@lists.infradead.org>; Sat, 29 Nov 2008 10:10:23 -0500
-From: ONLINE NOTICE <wecarehfx@ns.sympatico.ca>
-To: <info@winner.org>
-Subject: End Of Year Award
-Date: Sat, 29 Nov 2008 10:10:22 -0500
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <20081129151023.KUHZ10695.simmts6-srv.bellnexxia.net@simip9-ac.srvr.bell.ca>
-Reply-To: richard.cook50@btinternet.com
+Received: from smtp.movial.fi ([62.236.91.34])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1L4n75-00064A-Pv
+	for linux-mtd@lists.infradead.org; Tue, 25 Nov 2008 01:53:16 +0000
+From: Dmitri Vorobiev <dmitri.vorobiev@movial.fi>
+To: dwmw2@infradead.org
+Subject: [PATCH 15/20] [MTD] Make init_sbc8240_mtd function static
+Date: Tue, 25 Nov 2008 02:55:06 +0200
+Message-Id: <1227574511-23879-16-git-send-email-dmitri.vorobiev@movial.fi>
+In-Reply-To: <1227574511-23879-1-git-send-email-dmitri.vorobiev@movial.fi>
+References: <1227574511-23879-1-git-send-email-dmitri.vorobiev@movial.fi>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Dmitri Vorobiev <dmitri.vorobiev@movial.fi>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +20,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=A31,500,000.00 Pounds was won by your E-MAIL Adress in our  National Lot=
-tery. So all you have to do is to get back to this office with your Detai=
-ls via email  (richardcookdept22@btinternet.com) with your.
+The function init_sbc8240_mtd is not called from outside the
+module drivers/mtd/maps/sbc8240.c where it is defined, so it
+can become static. Add the needed keyword.
 
-Names : ..............................
-Age : ....................................
-Address : ................................
-Country : ................................
-Tel : ..........................................
-Occupation : ........................
-Sex : .......................................
+Signed-off-by: Dmitri Vorobiev <dmitri.vorobiev@movial.fi>
+---
+ drivers/mtd/maps/sbc8240.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Regards.
-Mr. Richard Cook.
+diff --git a/drivers/mtd/maps/sbc8240.c b/drivers/mtd/maps/sbc8240.c
+index 6e1e99c..d5374cd 100644
+--- a/drivers/mtd/maps/sbc8240.c
++++ b/drivers/mtd/maps/sbc8240.c
+@@ -136,7 +136,7 @@ static struct mtd_part_def sbc8240_part_banks[NUM_FLASH_BANKS];
+ #endif	/* CONFIG_MTD_PARTITIONS */
+ 
+ 
+-int __init init_sbc8240_mtd (void)
++static int __init init_sbc8240_mtd (void)
+ {
+ 	static struct _cjs {
+ 		u_long addr;
+-- 
+1.5.3
