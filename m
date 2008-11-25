@@ -1,12 +1,12 @@
 Received: from smtp.movial.fi ([62.236.91.34])
 	by casper.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1L4n79-000504-Iv
-	for linux-mtd@lists.infradead.org; Tue, 25 Nov 2008 01:53:24 +0000
+	id 1L4n79-000505-Ka
+	for linux-mtd@lists.infradead.org; Tue, 25 Nov 2008 01:53:25 +0000
 From: Dmitri Vorobiev <dmitri.vorobiev@movial.fi>
 To: dwmw2@infradead.org
-Subject: [PATCH 07/20] [MTD] Make h720x_mtd_init function static
-Date: Tue, 25 Nov 2008 02:54:58 +0200
-Message-Id: <1227574511-23879-8-git-send-email-dmitri.vorobiev@movial.fi>
+Subject: [PATCH 13/20] [MTD] Make init_redwood_flash function static
+Date: Tue, 25 Nov 2008 02:55:04 +0200
+Message-Id: <1227574511-23879-14-git-send-email-dmitri.vorobiev@movial.fi>
 In-Reply-To: <1227574511-23879-1-git-send-email-dmitri.vorobiev@movial.fi>
 References: <1227574511-23879-1-git-send-email-dmitri.vorobiev@movial.fi>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -20,27 +20,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The function h720x_mtd_init is not used outside of the file
-drivers/mtd/maps/h720x-flash.c and can therefore become static.
-This patch adds the necessary keyword.
+The function init_redwood_flash is needlessly defined global,
+make it static by this patch.
 
 Signed-off-by: Dmitri Vorobiev <dmitri.vorobiev@movial.fi>
 ---
- drivers/mtd/maps/h720x-flash.c |    2 +-
+ drivers/mtd/maps/redwood.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/maps/h720x-flash.c b/drivers/mtd/maps/h720x-flash.c
-index 3b959fa..72c724f 100644
---- a/drivers/mtd/maps/h720x-flash.c
-+++ b/drivers/mtd/maps/h720x-flash.c
-@@ -65,7 +65,7 @@ static const char *probes[] = { "cmdlinepart", NULL };
- /*
-  * Initialize FLASH support
-  */
--int __init h720x_mtd_init(void)
-+static int __init h720x_mtd_init(void)
- {
+diff --git a/drivers/mtd/maps/redwood.c b/drivers/mtd/maps/redwood.c
+index de002eb..933c0b6 100644
+--- a/drivers/mtd/maps/redwood.c
++++ b/drivers/mtd/maps/redwood.c
+@@ -122,7 +122,7 @@ struct map_info redwood_flash_map = {
  
- 	char	*part_type = NULL;
+ static struct mtd_info *redwood_mtd;
+ 
+-int __init init_redwood_flash(void)
++static int __init init_redwood_flash(void)
+ {
+ 	int err;
+ 
 -- 
 1.5.3
