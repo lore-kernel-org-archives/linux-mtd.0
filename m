@@ -1,12 +1,12 @@
 Received: from smtp.movial.fi ([62.236.91.34])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L4n77-0006D2-VE
+	id 1L4n78-0006DJ-1L
 	for linux-mtd@lists.infradead.org; Tue, 25 Nov 2008 01:53:18 +0000
 From: Dmitri Vorobiev <dmitri.vorobiev@movial.fi>
 To: dwmw2@infradead.org
-Subject: [PATCH 14/20] [MTD] Make init_rpxlite function static
-Date: Tue, 25 Nov 2008 02:55:05 +0200
-Message-Id: <1227574511-23879-15-git-send-email-dmitri.vorobiev@movial.fi>
+Subject: [PATCH 02/20] [MTD] Make alchemy_mtd_init function static
+Date: Tue, 25 Nov 2008 02:54:53 +0200
+Message-Id: <1227574511-23879-3-git-send-email-dmitri.vorobiev@movial.fi>
 In-Reply-To: <1227574511-23879-1-git-send-email-dmitri.vorobiev@movial.fi>
 References: <1227574511-23879-1-git-send-email-dmitri.vorobiev@movial.fi>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -20,27 +20,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The function init_rpxlite, which is not used outside of
-drivers/mtd/maps/rpxlite.c, can become static. Add the
-needed keyword.
+The symbol alchemy_mtd_init does not need to be global, so make it
+static in drivers/mtd/maps/alchemy-flash.c.
 
 Signed-off-by: Dmitri Vorobiev <dmitri.vorobiev@movial.fi>
 ---
- drivers/mtd/maps/rpxlite.c |    2 +-
+ drivers/mtd/maps/alchemy-flash.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/maps/rpxlite.c b/drivers/mtd/maps/rpxlite.c
-index 14d90ed..3e3ef53 100644
---- a/drivers/mtd/maps/rpxlite.c
-+++ b/drivers/mtd/maps/rpxlite.c
-@@ -23,7 +23,7 @@ static struct map_info rpxlite_map = {
- 	.phys = WINDOW_ADDR,
- };
+diff --git a/drivers/mtd/maps/alchemy-flash.c b/drivers/mtd/maps/alchemy-flash.c
+index 82811bc..845ad4f 100644
+--- a/drivers/mtd/maps/alchemy-flash.c
++++ b/drivers/mtd/maps/alchemy-flash.c
+@@ -111,7 +111,7 @@ static struct mtd_partition alchemy_partitions[] = {
  
--int __init init_rpxlite(void)
-+static int __init init_rpxlite(void)
+ static struct mtd_info *mymtd;
+ 
+-int __init alchemy_mtd_init(void)
++static int __init alchemy_mtd_init(void)
  {
- 	printk(KERN_NOTICE "RPX Lite or CLLF flash device: %x at %x\n", WINDOW_SIZE*4, WINDOW_ADDR);
- 	rpxlite_map.virt = ioremap(WINDOW_ADDR, WINDOW_SIZE * 4);
+ 	struct mtd_partition *parts;
+ 	int nb_parts = 0;
 -- 
 1.5.3
