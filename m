@@ -1,12 +1,12 @@
 Received: from smtp.movial.fi ([62.236.91.34])
 	by casper.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1L4n78-000503-VK
+	id 1L4n79-000504-Iv
 	for linux-mtd@lists.infradead.org; Tue, 25 Nov 2008 01:53:24 +0000
 From: Dmitri Vorobiev <dmitri.vorobiev@movial.fi>
 To: dwmw2@infradead.org
-Subject: [PATCH 11/20] [MTD] Make init_oct5066 function static
-Date: Tue, 25 Nov 2008 02:55:02 +0200
-Message-Id: <1227574511-23879-12-git-send-email-dmitri.vorobiev@movial.fi>
+Subject: [PATCH 07/20] [MTD] Make h720x_mtd_init function static
+Date: Tue, 25 Nov 2008 02:54:58 +0200
+Message-Id: <1227574511-23879-8-git-send-email-dmitri.vorobiev@movial.fi>
 In-Reply-To: <1227574511-23879-1-git-send-email-dmitri.vorobiev@movial.fi>
 References: <1227574511-23879-1-git-send-email-dmitri.vorobiev@movial.fi>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -20,26 +20,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The function init_oct5066 is needlessly defined global in
-drivers/mtd/maps/octagon-5066.c. Make it static.
+The function h720x_mtd_init is not used outside of the file
+drivers/mtd/maps/h720x-flash.c and can therefore become static.
+This patch adds the necessary keyword.
 
 Signed-off-by: Dmitri Vorobiev <dmitri.vorobiev@movial.fi>
 ---
- drivers/mtd/maps/octagon-5066.c |    2 +-
+ drivers/mtd/maps/h720x-flash.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/maps/octagon-5066.c b/drivers/mtd/maps/octagon-5066.c
-index 43e04c1..2b2e450 100644
---- a/drivers/mtd/maps/octagon-5066.c
-+++ b/drivers/mtd/maps/octagon-5066.c
-@@ -184,7 +184,7 @@ void cleanup_oct5066(void)
- 	release_region(PAGE_IO, 1);
- }
- 
--int __init init_oct5066(void)
-+static int __init init_oct5066(void)
+diff --git a/drivers/mtd/maps/h720x-flash.c b/drivers/mtd/maps/h720x-flash.c
+index 3b959fa..72c724f 100644
+--- a/drivers/mtd/maps/h720x-flash.c
++++ b/drivers/mtd/maps/h720x-flash.c
+@@ -65,7 +65,7 @@ static const char *probes[] = { "cmdlinepart", NULL };
+ /*
+  * Initialize FLASH support
+  */
+-int __init h720x_mtd_init(void)
++static int __init h720x_mtd_init(void)
  {
- 	int i;
- 	int ret = 0;
+ 
+ 	char	*part_type = NULL;
 -- 
 1.5.3
