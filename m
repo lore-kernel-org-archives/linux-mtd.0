@@ -1,12 +1,12 @@
 Received: from smtp.movial.fi ([62.236.91.34])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L4n78-0006D3-7D
+	id 1L4n78-0006Eg-Al
 	for linux-mtd@lists.infradead.org; Tue, 25 Nov 2008 01:53:18 +0000
 From: Dmitri Vorobiev <dmitri.vorobiev@movial.fi>
 To: dwmw2@infradead.org
-Subject: [PATCH 06/20] [MTD] Make init_fortunet function static
-Date: Tue, 25 Nov 2008 02:54:57 +0200
-Message-Id: <1227574511-23879-7-git-send-email-dmitri.vorobiev@movial.fi>
+Subject: [PATCH 05/20] [MTD] Make the init_edb7312nor function static
+Date: Tue, 25 Nov 2008 02:54:56 +0200
+Message-Id: <1227574511-23879-6-git-send-email-dmitri.vorobiev@movial.fi>
 In-Reply-To: <1227574511-23879-1-git-send-email-dmitri.vorobiev@movial.fi>
 References: <1227574511-23879-1-git-send-email-dmitri.vorobiev@movial.fi>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -20,27 +20,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The symbol init_fortunet is needlessly defined global in
-drivers/mtd/maps/fortunet.c. Make it static and clean up
-the kernel global namespace.
+The init_edb7312nor function is needlessly defined global in
+drivers/mtd/maps/edb7312.c, and this patch makes it static.
 
 Signed-off-by: Dmitri Vorobiev <dmitri.vorobiev@movial.fi>
 ---
- drivers/mtd/maps/fortunet.c |    2 +-
+ drivers/mtd/maps/edb7312.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/maps/fortunet.c b/drivers/mtd/maps/fortunet.c
-index a8e3fde..1e43124 100644
---- a/drivers/mtd/maps/fortunet.c
-+++ b/drivers/mtd/maps/fortunet.c
-@@ -181,7 +181,7 @@ __setup("MTD_Partition=", MTD_New_Partition);
- /* Backwards-spelling-compatibility */
- __setup("MTD_Partion=", MTD_New_Partition);
+diff --git a/drivers/mtd/maps/edb7312.c b/drivers/mtd/maps/edb7312.c
+index 9433738..be9e90b 100644
+--- a/drivers/mtd/maps/edb7312.c
++++ b/drivers/mtd/maps/edb7312.c
+@@ -71,7 +71,7 @@ static const char *probes[] = { "RedBoot", "cmdlinepart", NULL };
+ static int                   mtd_parts_nb = 0;
+ static struct mtd_partition *mtd_parts    = 0;
  
--int __init init_fortunet(void)
-+static int __init init_fortunet(void)
+-int __init init_edb7312nor(void)
++static int __init init_edb7312nor(void)
  {
- 	int	ix,iy;
- 	for(iy=ix=0;ix<MAX_NUM_REGIONS;ix++)
+ 	static const char *rom_probe_types[] = PROBETYPES;
+ 	const char **type;
 -- 
 1.5.3
