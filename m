@@ -1,15 +1,18 @@
-Received: from mail.cvg.de ([62.153.82.30])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L5KR8-0001EW-Cv
-	for linux-mtd@lists.infradead.org; Wed, 26 Nov 2008 13:28:10 +0000
-From: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH/mtd-utils] Separate '-m' and the mode with a space when
-	invoking 'install'
-Date: Wed, 26 Nov 2008 14:27:45 +0100
-Message-Id: <1227706065-3067-1-git-send-email-enrico.scholz@sigma-chemnitz.de>
-Sender: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
-Cc: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
+Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1L5NPX-0004An-5t
+	for linux-mtd@lists.infradead.org; Wed, 26 Nov 2008 16:38:44 +0000
+Date: Wed, 26 Nov 2008 19:38:40 +0300
+From: Anton Vorontsov <avorontsov@ru.mvista.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH for 2.6.28] NAND: fsl_upm: fix build problem with 2.6.28-rc2
+Message-ID: <20081126163840.GA21669@oksana.dev.rtsoft.ru>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf8
+Content-Disposition: inline
+Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,67 +22,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some 'install' versions (e.g. this of OpenEmbedded) require the mode
-to be a separate argument and don't understand the '-m0755' syntax:
+From: Wolfgang Grandegger <wg@grandegger.com>
 
-  .../staging/x86_64-linux/usr/bin/install-sh: ./-m0755 does not exist.
+The patch fixes following build error:
 
-Signed-off-by: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
+  CC      drivers/mtd/nand/fsl_upm.o
+drivers/mtd/nand/fsl_upm.c: In function 'fun_chip_init':
+drivers/mtd/nand/fsl_upm.c:168: warning: passing argument 2 of 'of_mtd_parse_partitions' from incompatible pointer type
+drivers/mtd/nand/fsl_upm.c:168: warning: passing argument 3 of 'of_mtd_parse_partitions' from incompatible pointer type
+drivers/mtd/nand/fsl_upm.c:168: error: too many arguments to function 'of_mtd_parse_partitions'
+make[1]: *** [drivers/mtd/nand/fsl_upm.o] Error 1
+
+The breakage was introduced in 69fd3a8d098faf41a04930afa83757c0555ee360
+("[MTD] remove unused mtd parameter in of_mtd_parse_partitions()").
+
+While at it, also add a check for the of_mtd_parse_partitions() return
+value.
+
+Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
+Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
 ---
- Makefile                     |    2 +-
- mkfs.ubifs/Makefile          |    2 +-
- ubi-utils/Makefile           |    2 +-
- ubi-utils/new-utils/Makefile |    2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/fsl_upm.c |    8 +++++---
+ 1 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index 796c31b..8319599 100644
---- a/Makefile
-+++ b/Makefile
-@@ -96,7 +96,7 @@ $(BUILDDIR)/fectest: $(BUILDDIR)/fectest.o $(BUILDDIR)/crc32.o $(BUILDDIR)/fec.o
+diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
+index 024e3ff..a83192f 100644
+--- a/drivers/mtd/nand/fsl_upm.c
++++ b/drivers/mtd/nand/fsl_upm.c
+@@ -163,9 +163,11 @@ static int __devinit fun_chip_init(struct fsl_upm_nand *fun,
+ 	ret = parse_mtd_partitions(&fun->mtd, part_types, &fun->parts, 0);
  
- install: ${TARGETS}
- 	mkdir -p ${DESTDIR}/${SBINDIR}
--	install -m0755 ${TARGETS} ${DESTDIR}/${SBINDIR}/
-+	install -m 0755 ${TARGETS} ${DESTDIR}/${SBINDIR}/
- 	mkdir -p ${DESTDIR}/${MANDIR}/man1
- 	gzip -9c mkfs.jffs2.1 > ${DESTDIR}/${MANDIR}/man1/mkfs.jffs2.1.gz
- 	$(MAKE) -C $(BUILDDIR)/ubi-utils install
-diff --git a/mkfs.ubifs/Makefile b/mkfs.ubifs/Makefile
-index a327eee..f802bff 100644
---- a/mkfs.ubifs/Makefile
-+++ b/mkfs.ubifs/Makefile
-@@ -20,4 +20,4 @@ cscope:
- 
- install: ${TARGETS}
- 	mkdir -p ${DESTDIR}/${SBINDIR}
--	install -m0755 ${TARGETS} ${DESTDIR}/${SBINDIR}/
-+	install -m 0755 ${TARGETS} ${DESTDIR}/${SBINDIR}/
-diff --git a/ubi-utils/Makefile b/ubi-utils/Makefile
-index 4cca316..63058e1 100644
---- a/ubi-utils/Makefile
-+++ b/ubi-utils/Makefile
-@@ -75,7 +75,7 @@ pfi2bin: pfi2bin.o peb.o error.o list.o crc32.o libubigen.o bootenv.o \
- 
- install: ${TARGETS}
- 	mkdir -p ${DESTDIR}/${SBINDIR}
--	install -m0755 ${TARGETS} ${DESTDIR}/${SBINDIR}/
-+	install -m 0755 ${TARGETS} ${DESTDIR}/${SBINDIR}/
- 	(cd perl && install ${PERLPROGS} ${DESTDIR}/${SBINDIR}/)
- 
- uninstall:
-diff --git a/ubi-utils/new-utils/Makefile b/ubi-utils/new-utils/Makefile
-index ba4c20f..356fc96 100644
---- a/ubi-utils/new-utils/Makefile
-+++ b/ubi-utils/new-utils/Makefile
-@@ -66,7 +66,7 @@ clean:
- 
- install: ${UTILS}
- 	mkdir -p ${DESTDIR}/${SBINDIR}
--	install -m0755 ${UTILS} ${DESTDIR}/${SBINDIR}/
-+	install -m 0755 ${UTILS} ${DESTDIR}/${SBINDIR}/
- 
- uninstall:
- 	for file in ${UTILS}; do \
+ #ifdef CONFIG_MTD_OF_PARTS
+-	if (ret == 0)
+-		ret = of_mtd_parse_partitions(fun->dev, &fun->mtd,
+-					      flash_np, &fun->parts);
++	if (ret == 0) {
++		ret = of_mtd_parse_partitions(fun->dev, flash_np, &fun->parts);
++		if (ret < 0)
++			goto err;
++	}
+ #endif
+ 	if (ret > 0)
+ 		ret = add_mtd_partitions(&fun->mtd, fun->parts, ret);
 -- 
-1.6.0.4
+1.5.6.5
