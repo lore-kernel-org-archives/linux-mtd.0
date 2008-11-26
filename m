@@ -1,22 +1,18 @@
-Received: from caramon.arm.linux.org.uk ([78.32.30.218])
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L5HJL-0000S4-GX
-	for linux-mtd@lists.infradead.org; Wed, 26 Nov 2008 10:07:56 +0000
-Date: Wed, 26 Nov 2008 09:57:27 +0000
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-To: Adrian Hunter <ext-adrian.hunter@nokia.com>, dwmw2@infradead.org
-Subject: Re: Please fix or remove OMAP2 onenand driver
-Message-ID: <20081126095726.GA7422@flint.arm.linux.org.uk>
-References: <20081123165011.GB17438@flint.arm.linux.org.uk>
-	<492A91E1.50305@nokia.com>
-	<20081124120153.GA5330@flint.arm.linux.org.uk>
-	<492AA1B4.9030803@nokia.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <492AA1B4.9030803@nokia.com>
-Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
+	id 1L5IlF-00088G-Vh
+	for linux-mtd@lists.infradead.org; Wed, 26 Nov 2008 11:40:50 +0000
+Message-ID: <492D37D7.3010908@nokia.com>
+Date: Wed, 26 Nov 2008 13:49:43 +0200
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: Brijesh Singh <brij.singh@samsung.com>
+Subject: Re: UBIFS performance
+References: <B76220C07A204128A4B86AE742992E46@sisodomain.com>
+In-Reply-To: <B76220C07A204128A4B86AE742992E46@sisodomain.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,54 +22,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 24, 2008 at 02:44:36PM +0200, Adrian Hunter wrote:
-> From: Adrian Hunter <ext-adrian.hunter@nokia.com>
-> Date: Mon, 24 Nov 2008 13:34:53 +0200
-> Subject: [PATCH] MTD: OMAP: OneNAND: header file relocation
+Brijesh Singh wrote:
+>   I am testing UBIFS and JFFS2 performance on OneNand with iozone utility. 
+> Interestingly, random read / write performance are slightly better than 
+> sequential read / write.
+> These results are consistent across multiple versions. And consistent with 
+> all different record length sizes.
 > 
-> Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+> Correct me if I am wrong, but shouldn't sequential read/write fair better 
+> than random read/write? Is this expected behavior? If yes,why?
 
-Great.
+For log-structured file systems on flash memory, there should be little
+difference between sequential and random access.
 
-Acked-by: Russell King <rmk+kernel@arm.linux.org.uk>
+That is true for UBIFS, although sequential might be slightly faster,
+because it is slightly more likely to find index nodes already cached.
 
-David, can you merge this patch for 2.6.28 please?
+We recently introduced a facility called bulk-read that offers improved
+sequential read speed.  It has lower overhead and benefits from OneNAND's
+read-while-load operation.
 
-> ---
-> drivers/mtd/onenand/omap2.c |   17 ++++++++---------
-> 1 files changed, 8 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-> index e39b21d..a7e4d98 100644
-> --- a/drivers/mtd/onenand/omap2.c
-> +++ b/drivers/mtd/onenand/omap2.c
-> @@ -32,19 +32,18 @@
-> #include <linux/platform_device.h>
-> #include <linux/interrupt.h>
-> #include <linux/delay.h>
-> +#include <linux/dma-mapping.h>
-> +#include <linux/io.h>
-> 
-> -#include <asm/io.h>
-> #include <asm/mach/flash.h>
-> -#include <asm/arch/gpmc.h>
-> -#include <asm/arch/onenand.h>
-> -#include <asm/arch/gpio.h>
-> -#include <asm/arch/pm.h>
-> +#include <mach/gpmc.h>
-> +#include <mach/onenand.h>
-> +#include <mach/gpio.h>
-> +#include <mach/pm.h>
-> 
-> -#include <linux/dma-mapping.h>
-> -#include <asm/dma-mapping.h>
-> -#include <asm/arch/dma.h>
-> +#include <mach/dma.h>
-> 
-> -#include <asm/arch/board.h>
-> +#include <mach/board.h>
-> 
-> #define DRIVER_NAME "omap2-onenand"
-> 
-> -- 
-> 1.5.4.3
+We are thinking about something for writing in bigger chunks that would
+benefit from OneNAND's write-while-program operation, but that will be good
+for either random or sequential writes.
+
+With regard to iozone, you need to be aware that it hides one of JFFS2's
+weaknesses which is how long it takes to open a file.  Unlike UBIFS and
+other file systems which just read the inode, JFFS2 has to do lots of work
+putting all the file fragments together.  The bigger the file, the longer
+it takes to open.  If you compare how long it takes to open a file and
+read it, our experience is that UBIFS is faster than JFFS2.  Whereas
+if you ignore the open time, JFFS2 is faster that UBIFS.
+
+In mtd-utils there is a simple performance test program called perf
+which includes the open time in calculations.  It is in the
+tests/fs-tests/simple directory.
+
+Also, if you want to exclude the effects of caching you may want to use
+the -e and -U options for iozone.
