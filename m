@@ -1,21 +1,25 @@
-Received: from outbound-mail-144.bluehost.com ([67.222.38.34])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L55DG-00015V-TF
-	for linux-mtd@lists.infradead.org; Tue, 25 Nov 2008 21:12:51 +0000
-Received: from 208.123.189.57.dynamic.dejazzd.com ([208.123.189.57]
-	helo=hp-dhlii.dlasys.lcl)
-	by host200.hostmonster.com with esmtpa (Exim 4.69)
-	(envelope-from <dhlii@dlasys.net>) id 1L55DD-0006PM-Ab
-	for linux-mtd@lists.infradead.org; Tue, 25 Nov 2008 14:12:47 -0700
-Message-ID: <492C6A4D.40906@dlasys.net>
-Date: Tue, 25 Nov 2008 16:12:45 -0500
-From: "David H. Lynch Jr." <dhlii@dlasys.net>
-MIME-Version: 1.0
+Received: from mailout2.samsung.com ([203.254.224.25])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1L5HFd-0008HA-MS
+	for linux-mtd@lists.infradead.org; Wed, 26 Nov 2008 10:04:06 +0000
+Received: from epmmp2 (mailout2.samsung.com [203.254.224.25])
+	by mailout2.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KAX00HV0QMNWM@mailout2.samsung.com> for
+	linux-mtd@lists.infradead.org; Wed, 26 Nov 2008 19:03:59 +0900 (KST)
+Received: from brijeshs ([107.108.214.195])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KAX00NGBQMQ5B@mmp2.samsung.com> for
+	linux-mtd@lists.infradead.org; Wed, 26 Nov 2008 19:04:03 +0900 (KST)
+Date: Wed, 26 Nov 2008 15:37:34 +0530
+From: Brijesh Singh <brij.singh@samsung.com>
+Subject: UBIFS performance
 To: linux-mtd@lists.infradead.org
-Subject: Micron NAND Flash support
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Reply-To: dhlii@dlasys.net
+Message-id: <B76220C07A204128A4B86AE742992E46@sisodomain.com>
+MIME-version: 1.0
+Content-type: text/plain; reply-type=original; charset=iso-8859-1;
+	format=flowed
+Content-transfer-encoding: 7BIT
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,23 +29,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-    I am trying to add support for Micron 29F64G08 NAND Flash to our BSP.
+Hi,
+  I am testing UBIFS and JFFS2 performance on OneNand with iozone utility. 
+Interestingly, random read / write performance are slightly better than 
+sequential read / write.
+These results are consistent across multiple versions. And consistent with 
+all different record length sizes.
 
-    Would anyone know if this chip is supported ?
-    If there is another BSP/driver that uses it or something similar
-that I can start with as a reference ?
-    Is there any howto/reference for getting started adding NAND support
-to a BSP ?
+Correct me if I am wrong, but shouldn't sequential read/write fair better 
+than random read/write? Is this expected behavior? If yes,why?
 
-
-
-
--- 
-Dave Lynch 					  	    DLA Systems
-Software Development:  				         Embedded Linux
-717.627.3770 	       dhlii@dlasys.net 	  http://www.dlasys.net
-fax: 1.253.369.9244 			           Cell: 1.717.587.7774
-Over 25 years' experience in platforms, languages, and technologies too numerous to list.
-
-"Any intelligent fool can make things bigger and more complex... It takes a touch of genius - and a lot of courage to move in the opposite direction."
-Albert Einstein
+Thanks and Regards,
+Brijesh 
