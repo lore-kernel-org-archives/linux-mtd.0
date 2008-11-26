@@ -1,18 +1,23 @@
-Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
+Received: from rv-out-0708.google.com ([209.85.198.241])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L5NPX-0004An-5t
-	for linux-mtd@lists.infradead.org; Wed, 26 Nov 2008 16:38:44 +0000
-Date: Wed, 26 Nov 2008 19:38:40 +0300
-From: Anton Vorontsov <avorontsov@ru.mvista.com>
-To: David Woodhouse <dwmw2@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH for 2.6.28] NAND: fsl_upm: fix build problem with 2.6.28-rc2
-Message-ID: <20081126163840.GA21669@oksana.dev.rtsoft.ru>
+	id 1L5Ojy-0005Eg-NG
+	for linux-mtd@lists.infradead.org; Wed, 26 Nov 2008 18:03:54 +0000
+Received: by rv-out-0708.google.com with SMTP id b17so577588rvf.42
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 26 Nov 2008 10:03:51 -0800 (PST)
+Message-ID: <52e42efe0811261003u73ec8709re1dd05650529ba7f@mail.gmail.com>
+Date: Wed, 26 Nov 2008 19:03:51 +0100
+From: "Sidney Amani" <seed95@gmail.com>
+To: "Liu Hui" <onlyflyer@gmail.com>
+Subject: Re: [UBI] UFFS : Unified Flash File System
+In-Reply-To: <2c3b11250811241730j17c97df4mb3073acfcf48bb6f@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf8
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>
+References: <52e42efe0811240928g6bc4c8a6rd7483289f0ae83a2@mail.gmail.com>
+	<2c3b11250811241730j17c97df4mb3073acfcf48bb6f@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org, Corentin Chary <corentin.chary@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,47 +27,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Wolfgang Grandegger <wg@grandegger.com>
+On Tue, Nov 25, 2008 at 2:30 AM, Liu Hui <onlyflyer@gmail.com> wrote:
+> This is interesting. I have some questions about UFFS:
+> 1)UFFS can work both with bare flash(MTD or UBI) and FTL(as a block
+> device), how do you organize the metadata of UFFS(log-structured?).
+> 2)As we know, bare flash and FTL provide very different interfaces for
+> FS. For MTD, FS should do garbage collection, wear leveling, bad block
+> management by itself; For UBI, FS should also do garbage collection
+> and wear leveling; and for FTL, FS just treat flash as block device.
 
-The patch fixes following build error:
+I get confused when you say, FS must do wear-leveling on top of UBI, I
+though UBI were doing wear leveling...
 
-  CC      drivers/mtd/nand/fsl_upm.o
-drivers/mtd/nand/fsl_upm.c: In function 'fun_chip_init':
-drivers/mtd/nand/fsl_upm.c:168: warning: passing argument 2 of 'of_mtd_parse_partitions' from incompatible pointer type
-drivers/mtd/nand/fsl_upm.c:168: warning: passing argument 3 of 'of_mtd_parse_partitions' from incompatible pointer type
-drivers/mtd/nand/fsl_upm.c:168: error: too many arguments to function 'of_mtd_parse_partitions'
-make[1]: *** [drivers/mtd/nand/fsl_upm.o] Error 1
+> What will UFFS do to treat all of kind of interfaces? Will UFFS
+> provide different strategy for different interfaces?
+>
 
-The breakage was introduced in 69fd3a8d098faf41a04930afa83757c0555ee360
-("[MTD] remove unused mtd parameter in of_mtd_parse_partitions()").
-
-While at it, also add a check for the of_mtd_parse_partitions() return
-value.
-
-Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
-Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
----
- drivers/mtd/nand/fsl_upm.c |    8 +++++---
- 1 files changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
-index 024e3ff..a83192f 100644
---- a/drivers/mtd/nand/fsl_upm.c
-+++ b/drivers/mtd/nand/fsl_upm.c
-@@ -163,9 +163,11 @@ static int __devinit fun_chip_init(struct fsl_upm_nand *fun,
- 	ret = parse_mtd_partitions(&fun->mtd, part_types, &fun->parts, 0);
- 
- #ifdef CONFIG_MTD_OF_PARTS
--	if (ret == 0)
--		ret = of_mtd_parse_partitions(fun->dev, &fun->mtd,
--					      flash_np, &fun->parts);
-+	if (ret == 0) {
-+		ret = of_mtd_parse_partitions(fun->dev, flash_np, &fun->parts);
-+		if (ret < 0)
-+			goto err;
-+	}
- #endif
- 	if (ret > 0)
- 		ret = add_mtd_partitions(&fun->mtd, fun->parts, ret);
 -- 
-1.5.6.5
+Sidney Amani
