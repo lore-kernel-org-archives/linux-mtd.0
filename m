@@ -1,29 +1,15 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+Received: from mgw1.diku.dk ([130.225.96.91])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L5dmH-000649-I7
-	for linux-mtd@lists.infradead.org; Thu, 27 Nov 2008 10:07:18 +0000
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1L5dmA-0006ZS-GU
-	for linux-mtd@lists.infradead.org; Thu, 27 Nov 2008 10:07:10 +0000
-Received: from gw-c.sigma-chemnitz.de ([62.153.82.26])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 27 Nov 2008 10:07:10 +0000
-Received: from enrico.scholz by gw-c.sigma-chemnitz.de with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 27 Nov 2008 10:07:10 +0000
-To: linux-mtd@lists.infradead.org
-From: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
-Subject: Re: [PATCH/mtd-utils] Separate '-m' and the mode with a space when
-	invoking 'install'
-Date: Thu, 27 Nov 2008 10:55:35 +0100
-Message-ID: <lywsepxzl4.fsf@ensc-virt.intern.sigma-chemnitz.de>
-References: <1227706065-3067-1-git-send-email-enrico.scholz@sigma-chemnitz.de>
-	<8bd0f97a0811261744m71593462md64fd363cbdc5062@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: news <news@ger.gmane.org>
-Cc: Mike Frysinger <vapier.adi@gmail.com>
+	id 1L5fqd-0002M7-16
+	for linux-mtd@lists.infradead.org; Thu, 27 Nov 2008 12:19:56 +0000
+Date: Thu, 27 Nov 2008 13:19:49 +0100 (CET)
+From: Julia Lawall <julia@diku.dk>
+To: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] drivers/mtd/nand/pasemi_nand.c: Add missing pci_dev_put
+Message-ID: <Pine.LNX.4.64.0811271319070.15160@pc-004.diku.dk>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,36 +19,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-"Mike Frysinger" <vapier.adi@gmail.com> writes:
+From: Julia Lawall <julia@diku.dk>
 
->> Some 'install' versions (e.g. this of OpenEmbedded) require
->> the mode to be a separate argument and don't understand the
->> '-m0755' syntax:
->
-> then why dont you fix the `install` that comes with OE
+pci_get_device increments a reference count that should be decremented
+using pci_dev_put.  I have thus added an extra label in the error handling
+code to do this.  I don't know, however, whether there should be a
+pci_dev_put before the return 0 as well.
 
-Why do you think that this 'install' needs to be fixed?  Although
-'install' is not SUSv3, this standard states:
+The semantic match that finds the problem is as follows:
+(http://www.emn.fr/x-info/coccinelle/)
 
- 12.2 Utility Syntax Guidelines
-    ...
-    Each option and option-argument should be a separate argument,
-    except as noted in Utility Argument Syntax , item (2).
+// <smpl>
+@r exists@
+local idexpression x;
+statement S,S1;
+position p1,p2,p3;
+expression E,E1;
+type T,T1;
+expression *ptr != NULL;
+@@
 
-When the patch would be more complicated I would agree to assume
-the GNU implementation of 'install' but as it is really trivial
-to add a single space, the common compatibility rules should be
-followed.
+(
+ if ((x@p1 = pci_get_device(...)) == NULL) S
+|
+ x@p1 = pci_get_device(...);
+)
+ ... when != pci_dev_put(...,(T)x,...)
+     when != if (...) { <+... pci_dev_put(...,(T)x,...) ...+> }
+     when != true x == NULL || ...
+     when != x = E
+     when != E = (T)x
+     when any
+(
+ if (x == NULL || ...) S1
+|
+ if@p2 (...) {
+  ... when != pci_dev_put(...,(T1)x,...)
+      when != if (...) { <+... pci_dev_put(...,(T1)x,...) ...+> }
+      when != x = E1
+      when != E1 = (T1)x
+(
+  return \(0\|<+...x...+>\|ptr\);
+|
+  return@p3 ...;
+)
+}
+)
 
+@ script:python @
+p1 << r.p1;
+p3 << r.p3;
+@@
 
-> rather than spuriously patching random build systems out there
-> ?
+print "* file: %s pci_get_device: %s return: %s" % (p1[0].file,p1[0].line,p3[0].line)
+// </smpl>
 
-At least 'autoconf' and 'imake' handle it correctly:
+Signed-off-by: Julia Lawall <julia@diku.dk>
 
-| INSTALL_DATA = ${INSTALL} -m 644
-| #define InstBinFlags -m 0755
+---
+ drivers/mtd/nand/pasemi_nand.c      |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
-
-
-Enrico
+diff --git a/drivers/mtd/nand/pasemi_nand.c b/drivers/mtd/nand/pasemi_nand.c
+index 75c8990..ceae196 100644
+--- a/drivers/mtd/nand/pasemi_nand.c
++++ b/drivers/mtd/nand/pasemi_nand.c
+@@ -144,7 +144,7 @@ static int __devinit pasemi_nand_probe(struct of_device *ofdev,
+ 
+ 	if (!request_region(lpcctl, 4, driver_name)) {
+ 		err = -EBUSY;
+-		goto out_ior;
++		goto out_pdev;
+ 	}
+ 
+ 	chip->cmd_ctrl = pasemi_hwcontrol;
+@@ -176,6 +176,8 @@ static int __devinit pasemi_nand_probe(struct of_device *ofdev,
+ 
+  out_lpc:
+ 	release_region(lpcctl, 4);
++ out_pdev:
++	pci_dev_put(pdev);
+  out_ior:
+ 	iounmap(chip->IO_ADDR_R);
+  out_mtd:
