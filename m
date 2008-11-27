@@ -1,24 +1,23 @@
-Received: from yw-out-1718.google.com ([74.125.46.153])
+Received: from wf-out-1314.google.com ([209.85.200.173])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L5Vt7-0000tY-Cf
-	for linux-mtd@lists.infradead.org; Thu, 27 Nov 2008 01:41:49 +0000
-Received: by yw-out-1718.google.com with SMTP id 5so486394ywm.72
+	id 1L5VvS-0006BN-Il
+	for linux-mtd@lists.infradead.org; Thu, 27 Nov 2008 01:44:14 +0000
+Received: by wf-out-1314.google.com with SMTP id 28so725362wfc.24
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 26 Nov 2008 17:41:48 -0800 (PST)
-Message-ID: <2c3b11250811261741h28ab84a1kb431b2ba76475816@mail.gmail.com>
-Date: Thu, 27 Nov 2008 09:41:47 +0800
-From: "Liu Hui" <onlyflyer@gmail.com>
-To: "Sidney Amani" <seed95@gmail.com>
-Subject: Re: [UBI] UFFS : Unified Flash File System
-In-Reply-To: <52e42efe0811261003u73ec8709re1dd05650529ba7f@mail.gmail.com>
+	Wed, 26 Nov 2008 17:44:13 -0800 (PST)
+Message-ID: <8bd0f97a0811261744m71593462md64fd363cbdc5062@mail.gmail.com>
+Date: Wed, 26 Nov 2008 20:44:13 -0500
+From: "Mike Frysinger" <vapier.adi@gmail.com>
+To: "Enrico Scholz" <enrico.scholz@sigma-chemnitz.de>
+Subject: Re: [PATCH/mtd-utils] Separate '-m' and the mode with a space when
+	invoking 'install'
+In-Reply-To: <1227706065-3067-1-git-send-email-enrico.scholz@sigma-chemnitz.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <52e42efe0811240928g6bc4c8a6rd7483289f0ae83a2@mail.gmail.com>
-	<2c3b11250811241730j17c97df4mb3073acfcf48bb6f@mail.gmail.com>
-	<52e42efe0811261003u73ec8709re1dd05650529ba7f@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, Corentin Chary <corentin.chary@gmail.com>
+References: <1227706065-3067-1-git-send-email-enrico.scholz@sigma-chemnitz.de>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,33 +27,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-You are right, it's my mistake. Wear-leveling is done by UBI.
-Thanks
+On Wed, Nov 26, 2008 at 08:27, Enrico Scholz wrote:
+> Some 'install' versions (e.g. this of OpenEmbedded) require the mode
+> to be a separate argument and don't understand the '-m0755' syntax:
 
-2008/11/27 Sidney Amani <seed95@gmail.com>:
-> On Tue, Nov 25, 2008 at 2:30 AM, Liu Hui <onlyflyer@gmail.com> wrote:
->> This is interesting. I have some questions about UFFS:
->> 1)UFFS can work both with bare flash(MTD or UBI) and FTL(as a block
->> device), how do you organize the metadata of UFFS(log-structured?).
->> 2)As we know, bare flash and FTL provide very different interfaces for
->> FS. For MTD, FS should do garbage collection, wear leveling, bad block
->> management by itself; For UBI, FS should also do garbage collection
->> and wear leveling; and for FTL, FS just treat flash as block device.
->
-> I get confused when you say, FS must do wear-leveling on top of UBI, I
-> though UBI were doing wear leveling...
->
->> What will UFFS do to treat all of kind of interfaces? Will UFFS
->> provide different strategy for different interfaces?
->>
->
-> --
-> Sidney Amani
->
-
-
-
--- 
-Thanks & Best Regards
-Liu Hui
---
+then why dont you fix the `install` that comes with OE rather than
+spuriously patching random build systems out there ?
+-mike
