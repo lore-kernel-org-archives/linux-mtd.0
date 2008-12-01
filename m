@@ -1,9 +1,11 @@
-Message-Id: <200812012223.mB1MNdQj014532@imap1.linux-foundation.org>
-Subject: [patch 3/6] drivers/mtd/maps/nettel.c: use ARRAY_SIZE
+Message-Id: <200812012223.mB1MNdrR014535@imap1.linux-foundation.org>
+Subject: [patch 4/6] physmap: fix leak of memory returned by
+	parse_mtd_partitions
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Mon, 01 Dec 2008 14:23:38 -0800
-Cc: julia@diku.dk, akpm@linux-foundation.org, linux-mtd@lists.infradead.org
+Date: Mon, 01 Dec 2008 14:23:39 -0800
+Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org,
+	anemo@mba.ocn.ne.jp, vapier.adi@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -13,47 +15,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Julia Lawall <julia@diku.dk>
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
 
-ARRAY_SIZE is more concise to use when the size of an array is divided by
-the size of its type or the size of its first element.
+The mtd partition parser returns an allocated pointer array of
+mtd_partition.  The caller must free it.  The array is used only for
+add_mtd_partitions(), so free it just after the call.
 
-The semantic patch that makes this change is as follows:
-(http://www.emn.fr/x-info/coccinelle/)
-
-// <smpl>
-@i@
-@@
-
-#include <linux/kernel.h>
-
-@depends on i using "paren.iso"@
-type T;
-T[] E;
-@@
-
-- (sizeof(E)/sizeof(E[...]))
-+ ARRAY_SIZE(E)
-// </smpl>
-
-Signed-off-by: Julia Lawall <julia@diku.dk>
+Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Mike Frysinger <vapier.adi@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- drivers/mtd/maps/nettel.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/mtd/maps/physmap.c |   17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
-diff -puN drivers/mtd/maps/nettel.c~drivers-mtd-maps-nettelc-use-array_size drivers/mtd/maps/nettel.c
---- a/drivers/mtd/maps/nettel.c~drivers-mtd-maps-nettelc-use-array_size
-+++ a/drivers/mtd/maps/nettel.c
-@@ -362,8 +362,7 @@ static int __init nettel_init(void)
+diff -puN drivers/mtd/maps/physmap.c~physmap-fix-leak-of-memory-returned-by-parse_mtd_partitions drivers/mtd/maps/physmap.c
+--- a/drivers/mtd/maps/physmap.c~physmap-fix-leak-of-memory-returned-by-parse_mtd_partitions
++++ a/drivers/mtd/maps/physmap.c
+@@ -29,7 +29,6 @@ struct physmap_flash_info {
+ 	struct map_info		map[MAX_RESOURCES];
+ #ifdef CONFIG_MTD_PARTITIONS
+ 	int			nr_parts;
+-	struct mtd_partition	*parts;
+ #endif
+ };
  
- 	intel_mtd->owner = THIS_MODULE;
+@@ -56,14 +55,10 @@ static int physmap_flash_remove(struct p
+ 	for (i = 0; i < MAX_RESOURCES; i++) {
+ 		if (info->mtd[i] != NULL) {
+ #ifdef CONFIG_MTD_PARTITIONS
+-			if (info->nr_parts) {
++			if (info->nr_parts || physmap_data->nr_parts)
+ 				del_mtd_partitions(info->mtd[i]);
+-				kfree(info->parts);
+-			} else if (physmap_data->nr_parts) {
+-				del_mtd_partitions(info->mtd[i]);
+-			} else {
++			else
+ 				del_mtd_device(info->mtd[i]);
+-			}
+ #else
+ 			del_mtd_device(info->mtd[i]);
+ #endif
+@@ -86,6 +81,9 @@ static int physmap_flash_probe(struct pl
+ 	int err = 0;
+ 	int i;
+ 	int devices_found = 0;
++#ifdef CONFIG_MTD_PARTITIONS
++	struct mtd_partition *parts;
++#endif
  
--	num_intel_partitions = sizeof(nettel_intel_partitions) /
--		sizeof(nettel_intel_partitions[0]);
-+	num_intel_partitions = ARRAY_SIZE(nettel_intel_partitions);
+ 	physmap_data = dev->dev.platform_data;
+ 	if (physmap_data == NULL)
+@@ -166,9 +164,10 @@ static int physmap_flash_probe(struct pl
+ 		goto err_out;
  
- 	if (intelboot) {
- 		/*
+ #ifdef CONFIG_MTD_PARTITIONS
+-	err = parse_mtd_partitions(info->cmtd, part_probe_types, &info->parts, 0);
++	err = parse_mtd_partitions(info->cmtd, part_probe_types, &parts, 0);
+ 	if (err > 0) {
+-		add_mtd_partitions(info->cmtd, info->parts, err);
++		add_mtd_partitions(info->cmtd, parts, err);
++		kfree(parts);
+ 		return 0;
+ 	}
+ 
 _
