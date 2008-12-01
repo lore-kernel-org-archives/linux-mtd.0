@@ -1,23 +1,16 @@
-Received: from lixom.net ([66.141.50.11] helo=mail.lixom.net)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L7GZM-0007Ok-UT
-	for linux-mtd@lists.infradead.org; Mon, 01 Dec 2008 21:44:42 +0000
-Date: Mon, 1 Dec 2008 15:57:31 -0600
-From: Olof Johansson <olof@lixom.net>
-To: Julia Lawall <julia@diku.dk>
-Subject: Re: [PATCH] drivers/mtd/nand/pasemi_nand.c: Add missing pci_dev_put
-Message-ID: <20081201215731.GA23768@lixom.net>
-References: <Pine.LNX.4.64.0811271319070.15160@pc-004.diku.dk>
-	<20081201174327.GA21274@lixom.net>
-	<Pine.LNX.4.64.0812011838440.11341@pc-004.diku.dk>
-	<20081201180812.GA21646@lixom.net>
-	<Pine.LNX.4.64.0812012109480.1541@ask.diku.dk>
+Received: from mgw1.diku.dk ([130.225.96.91])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1L7Gp9-0000jx-C0
+	for linux-mtd@lists.infradead.org; Mon, 01 Dec 2008 22:00:59 +0000
+Date: Mon, 1 Dec 2008 23:00:55 +0100 (CET)
+From: Julia Lawall <julia@diku.dk>
+To: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	olof@lixom.net
+Subject: [PATCH retry] drivers/mtd/nand/pasemi_nand.c: Add missing pci_dev_put
+Message-ID: <Pine.LNX.4.64.0812012259590.1541@ask.diku.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.0812012109480.1541@ask.diku.dk>
-Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
-	dwmw2@infradead.org, linux-kernel@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,43 +20,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Dec 01, 2008 at 09:11:09PM +0100, Julia Lawall wrote:
-> On Mon, 1 Dec 2008, Olof Johansson wrote:
-> 
-> > On Mon, Dec 01, 2008 at 06:39:01PM +0100, Julia Lawall wrote:
-> > > On Mon, 1 Dec 2008, Olof Johansson wrote:
-> > > 
-> > > > On Thu, Nov 27, 2008 at 01:19:49PM +0100, Julia Lawall wrote:
-> > > > > From: Julia Lawall <julia@diku.dk>
-> > > > > 
-> > > > > pci_get_device increments a reference count that should be decremented
-> > > > > using pci_dev_put.  I have thus added an extra label in the error handling
-> > > > > code to do this.  I don't know, however, whether there should be a
-> > > > > pci_dev_put before the return 0 as well.
-> > > > > 
-> > > > [...]
-> > > > 
-> > > > > Signed-off-by: Julia Lawall <julia@diku.dk>
-> > > > 
-> > > > Acked-by: Olof Johansson <olof@lixom.net>
-> > > 
-> > > Do you know the answer about the return 0?
-> > 
-> > Teaches me to read the patch description twice.
-> > 
-> > Either there or in pasemi_nand_remove(), doesn't matter much to me. Doing
-> > it before the return 0 is the smaller change.
-> 
-> Actually, could pci_dev_put(pdev) be placed right after:
-> 
-> lpcctl = pci_resource_start(pdev, 0);
-> 
-> Then there would only be one, and the rest of the code could go back to 
-> its original form.
+From: Julia Lawall <julia@diku.dk>
 
-Yep, even easier.
+pci_get_device increments a reference count that should be decremented
+using pci_dev_put.
 
-Thanks for catching this.
+The semantic patch that finds the problem is as follows:
+(http://www.emn.fr/x-info/coccinelle/)
 
+// <smpl>
+@r exists@
+local idexpression x;
+statement S,S1;
+position p1,p2,p3;
+expression E,E1;
+type T,T1;
+expression *ptr != NULL;
+@@
 
--Olof
+(
+ if ((x@p1 = pci_get_device(...)) == NULL) S
+|
+ x@p1 = pci_get_device(...);
+)
+ ... when != pci_dev_put(...,(T)x,...)
+     when != if (...) { <+... pci_dev_put(...,(T)x,...) ...+> }
+     when != true x == NULL || ...
+     when != x = E
+     when != E = (T)x
+     when any
+(
+ if (x == NULL || ...) S1
+|
+ if@p2 (...) {
+  ... when != pci_dev_put(...,(T1)x,...)
+      when != if (...) { <+... pci_dev_put(...,(T1)x,...) ...+> }
+      when != x = E1
+      when != E1 = (T1)x
+(
+  return \(0\|<+...x...+>\|ptr\);
+|
+  return@p3 ...;
+)
+}
+)
+
+@ script:python @
+p1 << r.p1;
+p3 << r.p3;
+@@
+
+print "* file: %s pci_get_device: %s return: %s" % (p1[0].file,p1[0].line,p3[0].line)
+// </smpl>
+
+Signed-off-by: Julia Lawall <julia@diku.dk>
+
+---
+ drivers/mtd/nand/pasemi_nand.c      |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/nand/pasemi_nand.c b/drivers/mtd/nand/pasemi_nand.c
+index 75c8990..9bd6c9a 100644
+--- a/drivers/mtd/nand/pasemi_nand.c
++++ b/drivers/mtd/nand/pasemi_nand.c
+@@ -141,6 +141,7 @@ static int __devinit pasemi_nand_probe(struct of_device *ofdev,
+ 	}
+ 
+ 	lpcctl = pci_resource_start(pdev, 0);
++	pci_dev_put(pdev);
+ 
+ 	if (!request_region(lpcctl, 4, driver_name)) {
+ 		err = -EBUSY;
