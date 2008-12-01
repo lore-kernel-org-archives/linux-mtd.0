@@ -1,24 +1,21 @@
-Received: from yw-out-1718.google.com ([74.125.46.155])
+Received: from rv-out-0708.google.com ([209.85.198.246])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L6yHr-0003NR-0J
-	for linux-mtd@lists.infradead.org; Mon, 01 Dec 2008 02:13:23 +0000
-Received: by yw-out-1718.google.com with SMTP id 5so1229949ywm.72
+	id 1L6zmz-0003jv-9f
+	for linux-mtd@lists.infradead.org; Mon, 01 Dec 2008 03:49:37 +0000
+Received: by rv-out-0708.google.com with SMTP id b17so2410626rvf.42
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 30 Nov 2008 18:13:21 -0800 (PST)
-Message-ID: <bc64b4640811301813h711332f9i7c07c826e4ba9e1f@mail.gmail.com>
-Date: Mon, 1 Dec 2008 05:13:21 +0300
-From: Dmitry <dbaryshkov@gmail.com>
-To: "Eric Miao" <eric.y.miao@gmail.com>
-Subject: Re: [GIT PULL] sharpsl-nand driver model hookup
-In-Reply-To: <f17812d70811250105n27e0e60cq16678c8efcd03de2@mail.gmail.com>
+	Sun, 30 Nov 2008 19:49:35 -0800 (PST)
+Message-ID: <f17812d70811301949s6dc4bcddt791822f8d4ff223c@mail.gmail.com>
+Date: Mon, 1 Dec 2008 11:49:35 +0800
+From: "Eric Miao" <eric.y.miao@gmail.com>
+To: "ARM Linux" <linux-arm-kernel@lists.arm.linux.org.uk>
+Subject: [ARM] pxa: explicit #include <mach/dma.h> in various drivers
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <20081016231127.GA17131@doriath.ww600.siemens.net>
-	<f17812d70811250105n27e0e60cq16678c8efcd03de2@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, Eric Miao <eric.miao@marvell.com>,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: netdev@vger.kernel.org, alsa-devel@alsa-project.org,
+	linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,78 +25,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Where 'pxa_dma_desc' and 'pxa_{request,free}_dma' are referenced.
 
-2008/11/25 Eric Miao <eric.y.miao@gmail.com>:
-> Hi Dmitry,
->
-> Sorry for late reply, I had nearly ignored this patch set. All 6 patches look
-> good to me (I was long hoping someone can get this cleaned up). With
-> the remaining board patches in your branch, poodle/corgi/spitz all boot
-> up without problems. So all
->
-> Acked-by: Eric Miao <eric.miao@marvell.com>
->
-> David,
->
-> Could you help to merge this patch series into the mtd tree?
+Signed-off-by: Eric Miao <eric.miao@marvell.com>
+---
+ drivers/mtd/nand/pxa3xx_nand.c |    2 +-
+ drivers/net/smc911x.h          |    3 +++
+ sound/arm/pxa2xx-pcm.h         |    2 +-
+ 3 files changed, 5 insertions(+), 2 deletions(-)
 
-I still don't see this serie merged. David, are there any objections
-from your side,
-will it be merged later, or did you just miss this patchserie? Thank you.
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index c0fa9c9..64b3be1 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -20,8 +20,8 @@
+ #include <linux/mtd/partitions.h>
+ #include <linux/io.h>
+ #include <linux/irq.h>
+-#include <asm/dma.h>
 
->
-> Thanks very much!
->
-> On Fri, Oct 17, 2008 at 7:11 AM, Dmitry Baryshkov <dbaryshkov@gmail.com> wrote:
->> Hi,
->>
->> Please have a look at the patches making sharpsl-nand more clean driver,
->> correctly hooked in the driver model.
->>
->> The following changes since commit 6bb7a935489dab20802dde6c2cb7d8582f4849bf:
->>  Linus Torvalds (1):
->>        Merge branch 'for-linus' of git://git.kernel.org/.../tiwai/sound-2.6
->>
->> are available in the git repository at:
->>
->>  git://git.kernel.org/pub/scm/linux/kernel/git/lumag/tosa-2.6.git misc/mtd/sharpsl-nand
->>
->> Dmitry Baryshkov (6):
->>      [MTD] sharpsl_nand: switch to driver model usage.
->>      [MTD] sharpsl_nand: make drvdata non-static
->>      [MTD] sharpsl_nand: move io addr to struct sharpsl_nand
->>      [MTD] sharpsl-nand: cleanup partitions support
->>      [MTD] sharpsl-nand: use platform_data for model-specific values
->>      [MTD] sharpsl-nand: move registration to board code
->>
->>  arch/arm/mach-pxa/corgi.c   |   54 ++++++++++
->>  arch/arm/mach-pxa/poodle.c  |   51 +++++++++
->>  arch/arm/mach-pxa/spitz.c   |   76 +++++++++++++
->>  drivers/mtd/nand/sharpsl.c  |  248 +++++++++++++++++++++----------------------
->>  include/linux/mtd/sharpsl.h |   20 ++++
->>  5 files changed, 324 insertions(+), 125 deletions(-)
->>  create mode 100644 include/linux/mtd/sharpsl.h
->>
->> --
->> With best wishes
->> Dmitry
->>
->>
->> ______________________________________________________
->> Linux MTD discussion mailing list
->> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->>
->
->
->
-> --
-> Cheers
-> - eric
->
++#include <mach/dma.h>
+ #include <mach/pxa-regs.h>
+ #include <mach/pxa3xx_nand.h>
+
+diff --git a/drivers/net/smc911x.h b/drivers/net/smc911x.h
+index cc7d85b..870b4c3 100644
+--- a/drivers/net/smc911x.h
++++ b/drivers/net/smc911x.h
+@@ -200,6 +200,9 @@ static inline void SMC_outsl(struct smc911x_local
+*lp, int reg,
 
 
+ #ifdef SMC_USE_PXA_DMA
++
++#include <mach/dma.h>
++
+ /*
+  * Define the request and free functions
+  * These are unfortunately architecture specific as no generic allocation
+diff --git a/sound/arm/pxa2xx-pcm.h b/sound/arm/pxa2xx-pcm.h
+index 5c4a4d3..65f86b5 100644
+--- a/sound/arm/pxa2xx-pcm.h
++++ b/sound/arm/pxa2xx-pcm.h
+@@ -9,7 +9,7 @@
+  * it under the terms of the GNU General Public License version 2 as
+  * published by the Free Software Foundation.
+  */
+-#include <asm/dma.h>
++#include <mach/dma.h>
 
+ struct pxa2xx_runtime_data {
+ 	int dma_ch;
 -- 
-With best wishes
-Dmitry
+1.6.0.4
