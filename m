@@ -1,18 +1,19 @@
-Received: from aibo.runbox.com ([193.71.199.94])
+Received: from mailhub.sw.ru ([195.214.232.25] helo=relay.sw.ru)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L77Zp-0000bN-Lp
-	for linux-mtd@lists.infradead.org; Mon, 01 Dec 2008 12:08:34 +0000
-Message-ID: <4933D3B5.9070507@runbox.com>
-Date: Mon, 01 Dec 2008 07:08:21 -0500
-From: Cal Page <pagcal@runbox.com>
-MIME-Version: 1.0
-To: "Ostendorf, Rainer" <Rainer.Ostendorf@BENNING.de>
-Subject: Re: Problems with JFFS2 FS during parallel write operations
-References: <0F0EC10F42A3384392AE60EF2A660B40427D98@tbbsrv56>
-In-Reply-To: <0F0EC10F42A3384392AE60EF2A660B40427D98@tbbsrv56>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+	id 1L77to-0002G1-IY
+	for linux-mtd@lists.infradead.org; Mon, 01 Dec 2008 12:29:12 +0000
+Subject: [PATCH, resend] mtd: OOPS accessing flash operations over STM
+	flash on PXA
+From: "Denis V. Lunev" <den@parallels.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain
+Date: Mon, 01 Dec 2008 15:28:18 +0300
+Message-Id: <1228134498.10480.16.camel@iris.sw.ru>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: "Denis V. Lunev" <den@openvz.org>, ymiao3@marvell.com,
+	linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,50 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-You might check the locks in mtd. I noticed they were pretty low. It 
-might make sense in your case to move them to mtdpart.c or even up into 
-yaffs_mtdif2.c for the read/write/erase functions.
+STM 2Gb flash is a large-page NAND flash. Set operations accordingly.
+This field is dereferrenced without a check in several places resulting
+in OOPS.
 
-Cal Page
+Signed-off-by: Denis V. Lunev <den@openvz.org>
+Acked-by: Eric Miao <ymiao3@marvell.com>
+---
+ drivers/mtd/nand/pxa3xx_nand.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-Ostendorf, Rainer wrote:
-> Hi list,
->
-> i'm still working on the problem described in my previous post:
->
-> [...]
->   
->> During normal operation the system runs perfectly stable, but when i 
->> start two processes running parallel, writing huge amounts of data 
->> to the flash device, i get error 
->> messages from the JFFS2 filesystem:
->>
->> ...
->> argh. node added in wrong place
->> argh. node added in wrong place
->> ...
->>
->> This message repeats for about 15-20 times while copying parallel 2 
->> files of about 6MByte to the flash via Ethernet (SCP). 
->>     
-> [...]
->
-> As i can only reproduce the corruption of the JFFS2 FS during parallel access of at leat two processes writing to the flash, i assume that the cause for the corruption is some kind of race-condition. Have there been any known problems/bugs with race conditions, that could lead to an error like this? Would it probably help to upgrade to a newer kernel version? Any hint and help would be greatly appreciated.
->
-> best regards,
-> Rainer
->
->
-> Benning Elektrotechnik und Elektronik GmbH & Co. KG Bocholt
-> Handelsregister Coesfeld HRA-Nr. 4661
-> Persönlich haftende Gesellschaft: Benning GmbH
-> Handelsregister Coesfeld HRB-Nr. 7772
-> Geschäftsführer: Th. Benning
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
->
->   
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index c0fa9c9..15f0a26 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -269,6 +269,7 @@ static struct pxa3xx_nand_timing stm2GbX16_timing = {
+ 
+ static struct pxa3xx_nand_flash stm2GbX16 = {
+ 	.timing = &stm2GbX16_timing,
++	.cmdset	= &largepage_cmdset,
+ 	.page_per_block = 64,
+ 	.page_size = 2048,
+ 	.flash_width = 16,
+-- 
+1.5.6.4
