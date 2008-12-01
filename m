@@ -1,19 +1,12 @@
-Received: from mgw1.diku.dk ([130.225.96.91])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L7Cji-0003gw-VQ
-	for linux-mtd@lists.infradead.org; Mon, 01 Dec 2008 17:39:07 +0000
-Date: Mon, 1 Dec 2008 18:39:01 +0100 (CET)
-From: Julia Lawall <julia@diku.dk>
-To: Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH] drivers/mtd/nand/pasemi_nand.c: Add missing pci_dev_put
-In-Reply-To: <20081201174327.GA21274@lixom.net>
-Message-ID: <Pine.LNX.4.64.0812011838440.11341@pc-004.diku.dk>
-References: <Pine.LNX.4.64.0811271319070.15160@pc-004.diku.dk>
-	<20081201174327.GA21274@lixom.net>
+Subject: [PATCH] mtd: Make the third arg of mtd_concat_create() const
+To: linux-mtd@lists.infradead.org
+From: Catalin Marinas <catalin.marinas@arm.com>
+Date: Mon, 01 Dec 2008 17:41:03 +0000
+Message-ID: <20081201174103.2319.36325.stgit@pc1117.cambridge.arm.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
-	dwmw2@infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +16,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 1 Dec 2008, Olof Johansson wrote:
+The "name" argument of mtd_concat_create() is used to set the
+concat->mtd.name pointer which is already "const char *". Setting the
+argument type to "const char *" avoids the warning from drivers passing
+a "const char *" pointer (like the one returned by dev_name).
 
-> On Thu, Nov 27, 2008 at 01:19:49PM +0100, Julia Lawall wrote:
-> > From: Julia Lawall <julia@diku.dk>
-> > 
-> > pci_get_device increments a reference count that should be decremented
-> > using pci_dev_put.  I have thus added an extra label in the error handling
-> > code to do this.  I don't know, however, whether there should be a
-> > pci_dev_put before the return 0 as well.
-> > 
-> [...]
-> 
-> > Signed-off-by: Julia Lawall <julia@diku.dk>
-> 
-> Acked-by: Olof Johansson <olof@lixom.net>
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+---
+ drivers/mtd/mtdconcat.c    |    2 +-
+ include/linux/mtd/concat.h |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Do you know the answer about the return 0?
-
-julia
+diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
+index 789842d..1a05cf3 100644
+--- a/drivers/mtd/mtdconcat.c
++++ b/drivers/mtd/mtdconcat.c
+@@ -691,7 +691,7 @@ static int concat_block_markbad(struct mtd_info *mtd, loff_t ofs)
+  */
+ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to concatenate */
+ 				   int num_devs,	/* number of subdevices      */
+-				   char *name)
++				   const char *name)
+ {				/* name for the new device   */
+ 	int i;
+ 	size_t size;
+diff --git a/include/linux/mtd/concat.h b/include/linux/mtd/concat.h
+index c02f3d2..e80c674 100644
+--- a/include/linux/mtd/concat.h
++++ b/include/linux/mtd/concat.h
+@@ -13,7 +13,7 @@
+ struct mtd_info *mtd_concat_create(
+     struct mtd_info *subdev[],  /* subdevices to concatenate */
+     int num_devs,               /* number of subdevices      */
+-    char *name);                /* name for the new device   */
++    const char *name);          /* name for the new device   */
+ 
+ void mtd_concat_destroy(struct mtd_info *mtd);
+ 
