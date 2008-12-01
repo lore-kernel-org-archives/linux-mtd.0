@@ -1,12 +1,21 @@
-Subject: [PATCH] mtd: Make the third arg of mtd_concat_create() const
-To: linux-mtd@lists.infradead.org
-From: Catalin Marinas <catalin.marinas@arm.com>
-Date: Mon, 01 Dec 2008 17:41:03 +0000
-Message-ID: <20081201174103.2319.36325.stgit@pc1117.cambridge.arm.com>
+Received: from lixom.net ([66.141.50.11] helo=mail.lixom.net)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1L7CzS-00054f-VC
+	for linux-mtd@lists.infradead.org; Mon, 01 Dec 2008 17:55:23 +0000
+Date: Mon, 1 Dec 2008 12:08:12 -0600
+From: Olof Johansson <olof@lixom.net>
+To: Julia Lawall <julia@diku.dk>
+Subject: Re: [PATCH] drivers/mtd/nand/pasemi_nand.c: Add missing pci_dev_put
+Message-ID: <20081201180812.GA21646@lixom.net>
+References: <Pine.LNX.4.64.0811271319070.15160@pc-004.diku.dk>
+	<20081201174327.GA21274@lixom.net>
+	<Pine.LNX.4.64.0812011838440.11341@pc-004.diku.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.0812011838440.11341@pc-004.diku.dk>
+Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
+	dwmw2@infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,41 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The "name" argument of mtd_concat_create() is used to set the
-concat->mtd.name pointer which is already "const char *". Setting the
-argument type to "const char *" avoids the warning from drivers passing
-a "const char *" pointer (like the one returned by dev_name).
+On Mon, Dec 01, 2008 at 06:39:01PM +0100, Julia Lawall wrote:
+> On Mon, 1 Dec 2008, Olof Johansson wrote:
+> 
+> > On Thu, Nov 27, 2008 at 01:19:49PM +0100, Julia Lawall wrote:
+> > > From: Julia Lawall <julia@diku.dk>
+> > > 
+> > > pci_get_device increments a reference count that should be decremented
+> > > using pci_dev_put.  I have thus added an extra label in the error handling
+> > > code to do this.  I don't know, however, whether there should be a
+> > > pci_dev_put before the return 0 as well.
+> > > 
+> > [...]
+> > 
+> > > Signed-off-by: Julia Lawall <julia@diku.dk>
+> > 
+> > Acked-by: Olof Johansson <olof@lixom.net>
+> 
+> Do you know the answer about the return 0?
 
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
----
- drivers/mtd/mtdconcat.c    |    2 +-
- include/linux/mtd/concat.h |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Teaches me to read the patch description twice.
 
-diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index 789842d..1a05cf3 100644
---- a/drivers/mtd/mtdconcat.c
-+++ b/drivers/mtd/mtdconcat.c
-@@ -691,7 +691,7 @@ static int concat_block_markbad(struct mtd_info *mtd, loff_t ofs)
-  */
- struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to concatenate */
- 				   int num_devs,	/* number of subdevices      */
--				   char *name)
-+				   const char *name)
- {				/* name for the new device   */
- 	int i;
- 	size_t size;
-diff --git a/include/linux/mtd/concat.h b/include/linux/mtd/concat.h
-index c02f3d2..e80c674 100644
---- a/include/linux/mtd/concat.h
-+++ b/include/linux/mtd/concat.h
-@@ -13,7 +13,7 @@
- struct mtd_info *mtd_concat_create(
-     struct mtd_info *subdev[],  /* subdevices to concatenate */
-     int num_devs,               /* number of subdevices      */
--    char *name);                /* name for the new device   */
-+    const char *name);          /* name for the new device   */
- 
- void mtd_concat_destroy(struct mtd_info *mtd);
- 
+Either there or in pasemi_nand_remove(), doesn't matter much to me. Doing
+it before the return 0 is the smaller change.
+
+
+-Olof
