@@ -1,21 +1,18 @@
-Received: from rv-out-0708.google.com ([209.85.198.246])
+Received: from mail.benning.ua ([217.5.235.50] helo=mailer.benning.de)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L6zmz-0003jv-9f
-	for linux-mtd@lists.infradead.org; Mon, 01 Dec 2008 03:49:37 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so2410626rvf.42
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 30 Nov 2008 19:49:35 -0800 (PST)
-Message-ID: <f17812d70811301949s6dc4bcddt791822f8d4ff223c@mail.gmail.com>
-Date: Mon, 1 Dec 2008 11:49:35 +0800
-From: "Eric Miao" <eric.y.miao@gmail.com>
-To: "ARM Linux" <linux-arm-kernel@lists.arm.linux.org.uk>
-Subject: [ARM] pxa: explicit #include <mach/dma.h> in various drivers
+	id 1L73Kn-0005Xr-5j
+	for linux-mtd@lists.infradead.org; Mon, 01 Dec 2008 07:36:45 +0000
+Content-Class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Cc: netdev@vger.kernel.org, alsa-devel@alsa-project.org,
-	linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: Problems with JFFS2 FS during parallel write operations
+Date: Mon, 1 Dec 2008 08:36:41 +0100
+Message-ID: <0F0EC10F42A3384392AE60EF2A660B40427D98@tbbsrv56>
+In-Reply-To: <0F0EC10F42A3384392AE60EF2A660B40427D93@tbbsrv56>
+From: "Ostendorf, Rainer" <Rainer.Ostendorf@BENNING.de>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,56 +22,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Where 'pxa_dma_desc' and 'pxa_{request,free}_dma' are referenced.
+Hi list,
 
-Signed-off-by: Eric Miao <eric.miao@marvell.com>
----
- drivers/mtd/nand/pxa3xx_nand.c |    2 +-
- drivers/net/smc911x.h          |    3 +++
- sound/arm/pxa2xx-pcm.h         |    2 +-
- 3 files changed, 5 insertions(+), 2 deletions(-)
+i'm still working on the problem described in my previous post:
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index c0fa9c9..64b3be1 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -20,8 +20,8 @@
- #include <linux/mtd/partitions.h>
- #include <linux/io.h>
- #include <linux/irq.h>
--#include <asm/dma.h>
+[...]
+> During normal operation the system runs perfectly stable, but when i=20
+> start two processes running parallel, writing huge amounts of data=20
+> to the flash device, i get error=20
+> messages from the JFFS2 filesystem:
+>=20
+> ...
+> argh. node added in wrong place
+> argh. node added in wrong place
+> ...
+>=20
+> This message repeats for about 15-20 times while copying parallel 2=20
+> files of about 6MByte to the flash via Ethernet (SCP).=20
+[...]
 
-+#include <mach/dma.h>
- #include <mach/pxa-regs.h>
- #include <mach/pxa3xx_nand.h>
+As i can only reproduce the corruption of the JFFS2 FS during parallel =
+access of at leat two processes writing to the flash, i assume that the =
+cause for the corruption is some kind of race-condition. Have there been =
+any known problems/bugs with race conditions, that could lead to an =
+error like this? Would it probably help to upgrade to a newer kernel =
+version? Any hint and help would be greatly appreciated.
 
-diff --git a/drivers/net/smc911x.h b/drivers/net/smc911x.h
-index cc7d85b..870b4c3 100644
---- a/drivers/net/smc911x.h
-+++ b/drivers/net/smc911x.h
-@@ -200,6 +200,9 @@ static inline void SMC_outsl(struct smc911x_local
-*lp, int reg,
+best regards,
+Rainer
 
 
- #ifdef SMC_USE_PXA_DMA
-+
-+#include <mach/dma.h>
-+
- /*
-  * Define the request and free functions
-  * These are unfortunately architecture specific as no generic allocation
-diff --git a/sound/arm/pxa2xx-pcm.h b/sound/arm/pxa2xx-pcm.h
-index 5c4a4d3..65f86b5 100644
---- a/sound/arm/pxa2xx-pcm.h
-+++ b/sound/arm/pxa2xx-pcm.h
-@@ -9,7 +9,7 @@
-  * it under the terms of the GNU General Public License version 2 as
-  * published by the Free Software Foundation.
-  */
--#include <asm/dma.h>
-+#include <mach/dma.h>
-
- struct pxa2xx_runtime_data {
- 	int dma_ch;
--- 
-1.6.0.4
+Benning Elektrotechnik und Elektronik GmbH & Co. KG Bocholt
+Handelsregister Coesfeld HRA-Nr. 4661
+Pers=F6nlich haftende Gesellschaft: Benning GmbH
+Handelsregister Coesfeld HRB-Nr. 7772
+Gesch=E4ftsf=FChrer: Th. Benning
