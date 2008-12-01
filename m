@@ -1,13 +1,13 @@
-Received: from mgw1.diku.dk ([130.225.96.91])
+Received: from mgw2.diku.dk ([130.225.96.92])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L7D7L-0005vc-RU
-	for linux-mtd@lists.infradead.org; Mon, 01 Dec 2008 18:03:32 +0000
-Date: Mon, 1 Dec 2008 19:03:28 +0100 (CET)
+	id 1L7F6v-0007hY-EM
+	for linux-mtd@lists.infradead.org; Mon, 01 Dec 2008 20:11:13 +0000
+Date: Mon, 1 Dec 2008 21:11:09 +0100 (CET)
 From: Julia Lawall <julia@diku.dk>
 To: Olof Johansson <olof@lixom.net>
 Subject: Re: [PATCH] drivers/mtd/nand/pasemi_nand.c: Add missing pci_dev_put
 In-Reply-To: <20081201180812.GA21646@lixom.net>
-Message-ID: <Pine.LNX.4.64.0812011903120.11341@pc-004.diku.dk>
+Message-ID: <Pine.LNX.4.64.0812012109480.1541@ask.diku.dk>
 References: <Pine.LNX.4.64.0811271319070.15160@pc-004.diku.dk>
 	<20081201174327.GA21274@lixom.net>
 	<Pine.LNX.4.64.0812011838440.11341@pc-004.diku.dk>
@@ -51,7 +51,11 @@ On Mon, 1 Dec 2008, Olof Johansson wrote:
 > Either there or in pasemi_nand_remove(), doesn't matter much to me. Doing
 > it before the return 0 is the smaller change.
 
-OK, I will send an adjusted patch shortly.
+Actually, could pci_dev_put(pdev) be placed right after:
 
-Thanks,
+lpcctl = pci_resource_start(pdev, 0);
+
+Then there would only be one, and the rest of the code could go back to 
+its original form.
+
 julia
