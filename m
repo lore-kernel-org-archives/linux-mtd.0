@@ -1,15 +1,15 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L7R5D-0005na-Ds
-	for linux-mtd@lists.infradead.org; Tue, 02 Dec 2008 08:58:15 +0000
-Subject: Re: Adding -N volume name to ubi utils
+	id 1L7RYH-0008Ct-Ip
+	for linux-mtd@lists.infradead.org; Tue, 02 Dec 2008 09:28:21 +0000
+Subject: Re: MTD/flash perfomance statistics
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Richard Titmuss <richard_titmuss@logitech.com>
-In-Reply-To: <492ADF69.8060602@logitech.com>
-References: <492ADF69.8060602@logitech.com>
+To: Bruce_Leonard@selinc.com
+In-Reply-To: <OFD5C7E2A2.7ED96530-ON88257508.0065AD14-88257508.0066ADDB@selinc.com>
+References: <OFD5C7E2A2.7ED96530-ON88257508.0065AD14-88257508.0066ADDB@selinc.com>
 Content-Type: text/plain; charset=utf-8
-Date: Tue, 02 Dec 2008 10:56:02 +0200
-Message-Id: <1228208162.5029.27.camel@sauron>
+Date: Tue, 02 Dec 2008 11:26:19 +0200
+Message-Id: <1228209979.5029.45.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -23,50 +23,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Fri, 2008-11-21 at 10:41 -0800, Bruce_Leonard@selinc.com wrote:
+> Okay, a bit more info has trickled in from the application guys.  We don'=
+t=20
+> know exactly what we want, but something is better than nothing :).  What=
+=20
+> we're looking for is information regarding how often we're=20
+> reading/writting the flash, how many factory bad blocks there are, how=20
+> many bad blocks have developed over time.
 
-On Mon, 2008-11-24 at 17:07 +0000, Richard Titmuss wrote:
-> I am trying to modify the ubi tools in mtd_utils to allow the ubi volume=20
-> name to be specified on the command line, the relevant commands are=20
-> ubinfo, ubirmvol and ubiupdatevol. The idea is that you could use any of=20
-> the following command arguments to specify a ubi volume:
->=20
->    ubirmvol /dev/ubi0 -N rootfs    # ubi device node and volume name
->    ubirmvol /dev/ubi0 -n 1    # ubi device node and volume id
+Well, this should be MTD feature, not UBI/UBIFS feature. And if you want
+to preserve I/O statistics over reboots, you have to save it on flash,
+which is not light-weight anymore.
 
-Looks OK.
+>   We want to be able to make a=20
+> rough estimate of how long a part is going to last, based on the part=20
+> itself (i.e., number of bad blocks)
 
->    ubirmvol /dev/ubi0_1    # ubi volume node
+There is maximum erase counter available in /sys/class/ubi/ubi0/max_ec,
+which you may use to judge how close the flash to EOL.
 
-Probably also fine.
+/sys/class/ubi/ubi0/bad_peb_count - count of bad PEB on the MTD device
+this UBI device sits on. It includes both factory-marked and dynamically
+appeared. There is way to distinguish between factory and non-factory
+bad blocks in MTD.
 
-> Other than consistency the main feature this adds is support for using=20
-> -N to specify the volume by name to all the commands.
+/sys/class/ubi/ubi0/reserved_for_bad tells you number of eraseblocks
+reserved for bad block handling. If it becomes zero, you may have
+troubles when the next bad block appears, so you may watch this value as
+well.
 
-Right.
+>  and any given customer's usage of the=20
+> product (i.e., how often is the part being accessed, how many new bad=20
+> blocks have developed, how well is the UBI wear leveling working)
 
-> The problem is these commands need different information to work:
-> - ubinfo loads information from the /sys file system, it's easy to=20
-> support for all the above command arguments.
+Well, it is easy to add more statistics, but preserving it between
+reboots is not easy.
 
-Yes.
 
-> - ubirmvol needs a ubi device node and a volume id, how can this work if=20
-> a volume node is specified?
+>  wich=20
+> will vary from customer to customer depending on how they're using the=20
+> product.  It doesn't have to be anything sophisticated and I think=20
+> primarily what the app guys are after are things that UBI probably alread=
+y=20
+> tracks for the wear leveling (i.e., number of writes and bad blocks).
 
-sysfs contains all the information. Character device gives you
-major:minor. UBI _devices_ always have minor=3D0. So you can distinguish
-between UBI volume/device chdev nodes. And you may look into all
-
-/sys/class/ubi/ubiX/ubiX_Y/dev
-
-and find the volume. Then you have all the information.
-
-> - ubiupdatevol needs a ubi volume node, how can this work if a device=20
-> node is specified?
-
-Similarly. Add corresponding scanning functions to libubi
-(mtd-utils/ubi-utils/new-utils/src/libubi.c).
+Well, loot at the above sysfs-provided info, may be it is enough?
 
 --=20
 Best regards,
