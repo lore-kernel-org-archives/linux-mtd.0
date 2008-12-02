@@ -1,21 +1,19 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L7Qp4-00040D-H1
-	for linux-mtd@lists.infradead.org; Tue, 02 Dec 2008 08:41:34 +0000
-Subject: Re: [PATCH/mtd-utils] Separate '-m' and the mode with a space when
-	invoking 'install'
+	id 1L7Qtl-0004Vd-3A
+	for linux-mtd@lists.infradead.org; Tue, 02 Dec 2008 08:46:25 +0000
+Subject: Re: UBIFS error CRC calculation on avr32 CPU
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Mike Frysinger <vapier.adi@gmail.com>
-In-Reply-To: <8bd0f97a0811261744m71593462md64fd363cbdc5062@mail.gmail.com>
-References: <1227706065-3067-1-git-send-email-enrico.scholz@sigma-chemnitz.de>
-	<8bd0f97a0811261744m71593462md64fd363cbdc5062@mail.gmail.com>
+To: Eirik Aanonsen <eaa@wprmedical.com>
+In-Reply-To: <2DE39384A09B744FA1E53FD4BF78D430535DE3@dware1013.doorway.loc>
+References: <f17812d70811301949s6dc4bcddt791822f8d4ff223c@mail.gmail.com>
+	<2DE39384A09B744FA1E53FD4BF78D430535DE3@dware1013.doorway.loc>
 Content-Type: text/plain; charset=utf-8
-Date: Tue, 02 Dec 2008 10:39:31 +0200
-Message-Id: <1228207171.5029.11.camel@sauron>
+Date: Tue, 02 Dec 2008 10:44:23 +0200
+Message-Id: <1228207463.5029.15.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>,
-	linux-mtd@lists.infradead.org
+Cc: kernel@avr32linux.org, linux-mtd <linux-mtd@lists.infradead.org>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -26,16 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-11-26 at 20:44 -0500, Mike Frysinger wrote:
-> On Wed, Nov 26, 2008 at 08:27, Enrico Scholz wrote:
-> > Some 'install' versions (e.g. this of OpenEmbedded) require the mode
-> > to be a separate argument and don't understand the '-m0755' syntax:
+On Mon, 2008-12-01 at 13:33 +0100, Eirik Aanonsen wrote:
+> Hi
 >=20
-> then why dont you fix the `install` that comes with OE rather than
-> spuriously patching random build systems out there ?
+> I get this problem running my ubi/ubifs on a partition in my system.
+> The error occurs when I try to move one file to a new location and there
+> seems to be something wrong with the file. The file contains binary data
+> and is 9.3MB large. Can anyone help me locate this error or point me in
+> the right direction?
+>=20
+> My system is a ap7002(arch =3D=3D avr32) with 32MByte SRAM, 8MByte NOR fl=
+ash
+> and 2GByte NAND flash(ubi).
+>=20
+> Cmd:
+> ----
+> /mnt/slave # mv wpr_004.wfp ../master/data/
+>=20
+> UBIFS error (pid 471): ubifs_check_node: bad CRC: calculated 0x582d0a64,
+> read 0x4932021b
+> UBIFS error (pid 471): ubifs_check_node: bad node at LEB 159:302512
+> UBIFS error (pid 471): ubifs_read_node: expected node type 1
+> UBIFS error (pid 471): do_readpage: cannot read page 24 of inode 34213,
+> error -117
+> mv: read error: Input/output error
 
-May be this point is sensible, but taking into account Enrico's answer
-it does not hurt to amend mtd-utils, so I applied his patch.
+Hmm,
+
+could you please enable UBIFS debugging and reproduce this. If there is
+no interesting/insighting information, could you please also enable
+UBIFS messages and send them. Please, glance here:
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_how_send_bugreport
 
 --=20
 Best regards,
