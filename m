@@ -1,18 +1,16 @@
-Received: from smtp-vbr10.xs4all.nl ([194.109.24.30])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L7YGw-00052s-MZ
-	for linux-mtd@lists.infradead.org; Tue, 02 Dec 2008 16:38:51 +0000
-Message-ID: <4935641B.1030906@aimvalley.nl>
-Date: Tue, 02 Dec 2008 17:36:43 +0100
-From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+Received: from web58901.mail.re1.yahoo.com ([66.196.100.230])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1L7Yxt-0002iJ-5d
+	for linux-mtd@lists.infradead.org; Tue, 02 Dec 2008 17:23:13 +0000
+Date: Tue, 2 Dec 2008 09:23:05 -0800 (PST)
+From: Philip Rakity <prakity@yahoo.com>
+Subject: setting PAD parameter with JFFS2 and NAND -- what is correct thing to
+	do ?
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-To: Andrew Xiang <andrewxiang@gmail.com>
-Subject: Re: jffs2 scan utility?
-References: <ecdd5ced0812020720p47bc8fdcw5589f6a5c6f4e95c@mail.gmail.com>
-In-Reply-To: <ecdd5ced0812020720p47bc8fdcw5589f6a5c6f4e95c@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Message-ID: <461019.6371.qm@web58901.mail.re1.yahoo.com>
+Reply-To: Philip Rakity <prakity@yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,6 +21,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-maybe jffs2dump is usefull for you.
-It simply dumps all headers of all jffs2 inodes.
-It doesn't link, uncompress or interpret them though.
+I am trying to understand what value to set the pad parameter to when making a JFFS2 image (including using sumtool) for NAND flash.
+
+The NAND flash has 2KiB sectors, 256KiB erase size, and is 2GB.  
+
+I use flase_eraseall -j when erasing the flash and the flash HAS bad blocks.  
+
+The image size is less than the 2GB size of the flash.
+
+I have tried both specifying pad (rounded up) to the erase block size and omitting pad.  When I write to the NAND there are recovered CRC errors from time to time as well as the other "errors" indicated in the FAQ.
+
+If could set pad to the SIZE of the NAND flash, but because of bad blocks I am not sure this is correct...
+
+Guidance Please.
+
+Philip
+
+
+      
