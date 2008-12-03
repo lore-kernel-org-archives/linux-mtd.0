@@ -1,24 +1,24 @@
-Received: from smtp20.doorway.no ([212.4.49.47])
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L7me1-00029m-Rr
-	for linux-mtd@lists.infradead.org; Wed, 03 Dec 2008 07:59:38 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
+	id 1L7o1I-000156-Gm
+	for linux-mtd@lists.infradead.org; Wed, 03 Dec 2008 09:27:45 +0000
 Subject: RE: UBIFS error CRC calculation on avr32 CPU
-Date: Wed, 3 Dec 2008 08:55:45 +0100
-Message-ID: <2DE39384A09B744FA1E53FD4BF78D430535E64@dware1013.doorway.loc>
-In-Reply-To: <1228230933.13686.8.camel@sauron>
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Eirik Aanonsen <eaa@wprmedical.com>
+In-Reply-To: <2DE39384A09B744FA1E53FD4BF78D430535E64@dware1013.doorway.loc>
 References: <f17812d70811301949s6dc4bcddt791822f8d4ff223c@mail.gmail.com>
 	<2DE39384A09B744FA1E53FD4BF78D430535DE3@dware1013.doorway.loc>
 	<1228207463.5029.15.camel@sauron>
 	<2DE39384A09B744FA1E53FD4BF78D430535E42@dware1013.doorway.loc>
 	<1228230933.13686.8.camel@sauron>
-From: "Eirik Aanonsen" <eaa@wprmedical.com>
-To: <dedekind@infradead.org>
+	<2DE39384A09B744FA1E53FD4BF78D430535E64@dware1013.doorway.loc>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 03 Dec 2008 11:25:25 +0200
+Message-Id: <1228296325.13686.24.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Cc: kernel@avr32linux.org, linux-mtd <linux-mtd@lists.infradead.org>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,115 +28,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBJdCBsb29rcyBsaWtlIHlvdSBpbmRlZWQgaGF2ZSBjb3JydXB0ZWQgZGF0YS4gV2hlcmUgdGhl
-ICd3cHJfMDA0LndmcCcNCj4gZmlsZSBjb21lcyBmcm9tPyBZb3Ugd3JvdGUgaXQgcHJldmlvdXNs
-eT8gT3IgeW91IHVzZWQgbWtmcy51Ymlmcz8NCj4gDQoNClRoZSBmaWxlIGlzIGEgYmluYXJ5IGZp
-bGUgZnJvbSBteSBzeXN0ZW0uIEFuZCB0aGUgZmlsZSBoYXMgYmVlbiBjaGVja2VkIGZvciBpbnRl
-Z3JpdHkgYmVmb3JlIGJlaW5nIGNvcGllZCBvdmVyIHRvIHRoZSB1YmlmcyBmaWxlIHN5c3RlbS4N
-Cldwcl8wMDQud2ZwIG9yaWdpbmF0ZXMgZnJvbSBhIHZmYXQgcGFydGl0aW9uLCBhbmQgd2FzIG1v
-dmVkIGFsb25nIHdpdGggMTAgb3RoZXIgZmlsZXMsIGFuZCB0aGVuIHdoZW4gSSB0cnkgdG8gbW92
-ZSB0aGUgZmlsZSBiYWNrIG91dCBmcm9tIHViaWZzIHRoZSByZWFkIGVycm9yIG9jY3Vycy4NCg0K
-PiA+IFVCSUZTIHdhcm5pbmcgKHBpZCA1MDApOiBtb3VudF91YmlmczogJ0xaTycgY29tcHJlc3Nv
-ciBpcyBzZXQgYnkNCj4gc3VwZXJibG9jaywgYnV0IG5vdCBjb21waWxlZCBpbiANCj4gSG1tLiBX
-aHkgeW91IGRvIG5vdCBlbmFibGUgTFpPIGNvbXByZXNzb3I/IEhvdyBkaWQgeW91DQo+IGNyZWF0
-ZSB5b3VyIGZpbGUtc3lzdGVtPw0KDQpUaGUgcGFydGl0aW9uL2ZpbHN5c3RlbSBpcyBjcmVhdGVk
-IGluc2lkZSBteSBzeXN0ZW0uDQp1Ymlta3ZvbCAvZGV2L3ViaTAgLU4gd3ByX3NsYXZlIC1zIDI1
-ME1pQg0KbW91bnQgLXQgdWJpZnMgdWJpMDp3cHJfc2xhdmUgL21udC9zbGF2ZQ0KKCBmaXJzdCBk
-b25lIGZvcm1hdCAtPiB1Ymlmb3JtYXQgL2Rldi9tdGQ1IC0+IG1vZHByb2JlIHViaSBtdGQ9NSAp
-DQoNCj4gQWxzbywgZGlkIHlvdSB0cnkgdG8gZW5hYmxlIFVCSUZTIGFuZCBVQkkgZXh0cmEgc2Vs
-Zi1jaGVja3M/IFBsZWFzZSwNCj4gdHJ5LiBUaGluZ3Mgd2lsbCBiZWNvbWUgdmVyeSBzbG93IHRo
-ZW4sIHRob3VnaCwgYnV0IHRoaXMgbWF5IGdpdmUNCj4gc29tZSB1c2VmdWwgaW5mb3JtYXRpb24u
-DQoNCkhlcmUgYXJlIHRoZSByZXN1bHQgYWZ0ZXIgZW5hYmxpbmcgdGhlc2UgdHdvIG9wdGlvbnMu
-DQpIb3cgZG8gSSBkbyBjbGVhbmluZyBpbiB1Ymlmcz8NCg0KDQpNb3VudGluZyByZXN1bHRzIGZy
-b20gdGhlIHBhcnRpdGlvbg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQoN
-Ci9tbnQgIyBtb3VudCAtdCB1YmlmcyB1YmkwOndwcl9zbGF2ZSAvbW50L3NsYXZlLw0KVUJJRlMg
-d2FybmluZyAocGlkIDM5NCk6IG1vdW50X3ViaWZzOiAnTFpPJyBjb21wcmVzc29yIGlzIHNldCBi
-eSBzdXBlcmJsb2NrLCBidXQgbm90IGNvbXBpbGVkIGluDQpVQklGUzogYmFja2dyb3VuZCB0aHJl
-YWQgInViaWZzX2JndDBfMSIgc3RhcnRlZCwgUElEIDM5NQ0KVUJJRlM6IHJlY292ZXJ5IG5lZWRl
-ZA0KVUJJRlMgZXJyb3IgKHBpZCAzOTQpOiB1Ymlmc19jaGVja19ub2RlOiBiYWQgQ1JDOiBjYWxj
-dWxhdGVkIDB4ODhkMTVjZWYsIHJlYWQgMHhkZTJmYzJkNQ0KVUJJRlMgZXJyb3IgKHBpZCAzOTQp
-OiB1Ymlmc19jaGVja19ub2RlOiBiYWQgbm9kZSBhdCBMRUIgNTU6MjM4MDE2DQpDYWxsIHRyYWNl
-Og0KIFs8OTAwMTA2OTQ+XSBkdW1wX3N0YWNrKzB4MTgvMHgyMA0KIFs8YzBhNjVkZTg+XSB1Ymlm
-c19jaGVja19ub2RlKzB4MjEwLzB4MjNjIFt1Ymlmc10NCiBbPGMwYTZiYzE0Pl0gdWJpZnNfc2Nh
-bl9hX25vZGUrMHgxMjQvMHgyNjggW3ViaWZzXQ0KIFs8YzBhNmJmOGE+XSB1Ymlmc19zY2FuKzB4
-NmUvMHgyMjAgW3ViaWZzXQ0KIFs8YzBhN2E3NWU+XSBzY2FuX2NoZWNrX2NiKzB4MTI2LzB4NTU0
-IFt1Ymlmc10NCiBbPGMwYTc5YWRlPl0gdWJpZnNfbHB0X3NjYW5fbm9sb2NrKzB4MWJlLzB4M2Q0
-IFt1Ymlmc10NCiBbPGMwYTdhYmZlPl0gZGJnX2NoZWNrX2xwcm9wcysweDcyLzB4MjE4IFt1Ymlm
-c10NCiBbPGMwYTZmNjc4Pl0gZG9fY29tbWl0KzB4OGMvMHg3ZTAgW3ViaWZzXQ0KIFs8YzBhNmZl
-MmU+XSB1Ymlmc19ydW5fY29tbWl0KzB4NjIvMHg3OCBbdWJpZnNdDQogWzxjMGE3ZTEzZT5dIHVi
-aWZzX3JjdnJ5X2djX2NvbW1pdCsweDQxMi8weDQ1YyBbdWJpZnNdDQogWzxjMGE2MzE4Yz5dIHVi
-aWZzX2ZpbGxfc3VwZXIrMHhhZjAvMHgxMjA4IFt1Ymlmc10NCiBbPGMwYTYzYWMwPl0gdWJpZnNf
-Z2V0X3NiKzB4MjFjLzB4Mjg0IFt1Ymlmc10NCiBbPDkwMDRjNjQwPl0gdmZzX2tlcm5fbW91bnQr
-MHgzMC8weDU4DQogWzw5MDA0YzY5Yz5dIGRvX2tlcm5fbW91bnQrMHgyMC8weDkwDQogWzw5MDA1
-OWUzNj5dIGRvX25ld19tb3VudCsweDNhLzB4NTgNCiBbPDkwMDVhNDQ2Pl0gZG9fbW91bnQrMHgx
-MjIvMHgxNGENCiBbPDkwMDVhNGNhPl0gc3lzX21vdW50KzB4NWMvMHg5Mg0KIFs8OTAwMGMxMzI+
-XSBzeXNjYWxsX3JldHVybisweDAvMHgxMg0KDQpVQklGUyBlcnJvciAocGlkIDM5NCk6IHViaWZz
-X3NjYW46IGJhZCBub2RlDQpVQklGUyBlcnJvciAocGlkIDM5NCk6IHViaWZzX3NjYW5uZWRfY29y
-cnVwdGlvbjogY29ycnVwdGVkIGRhdGEgYXQgTEVCIDU1OjIzODAxNg0KVUJJRlMgZXJyb3IgKHBp
-ZCAzOTQpOiB1Ymlmc19zY2FubmVkX2NvcnJ1cHRpb246IGZpcnN0IDQwOTYgYnl0ZXMgZnJvbSBM
-RUIgNTU6MjM4MDE2DQpVQklGUyBlcnJvciAocGlkIDM5NCk6IHViaWZzX3NjYW46IExFQiA1NSBz
-Y2FubmluZyBmYWlsZWQNClVCSUZTIGVycm9yIChwaWQgMzk0KTogc2Nhbl9jaGVja19jYjogc2Nh
-biBlcnJvcnMgd2VyZSBpbiBmcmVlYWJsZSBMRUIgLSBjb250aW51aW5nIGNoZWNraW5nDQpVQklG
-UyBlcnJvciAocGlkIDM5NCk6IHViaWZzX2NoZWNrX25vZGU6IGJhZCBub2RlIGxlbmd0aCAxNjAN
-ClVCSUZTIGVycm9yIChwaWQgMzk0KTogdWJpZnNfY2hlY2tfbm9kZTogYmFkIG5vZGUgYXQgTEVC
-IDU2OjUwNDU3Ng0KQ2FsbCB0cmFjZToNCiBbPDkwMDEwNjk0Pl0gZHVtcF9zdGFjaysweDE4LzB4
-MjANCiBbPGMwYTY1ZGU4Pl0gdWJpZnNfY2hlY2tfbm9kZSsweDIxMC8weDIzYyBbdWJpZnNdDQog
-WzxjMGE2YmMxND5dIHViaWZzX3NjYW5fYV9ub2RlKzB4MTI0LzB4MjY4IFt1Ymlmc10NCiBbPGMw
-YTZiZjhhPl0gdWJpZnNfc2NhbisweDZlLzB4MjIwIFt1Ymlmc10NCiBbPGMwYTdhNzVlPl0gc2Nh
-bl9jaGVja19jYisweDEyNi8weDU1NCBbdWJpZnNdDQogWzxjMGE3OWFkZT5dIHViaWZzX2xwdF9z
-Y2FuX25vbG9jaysweDFiZS8weDNkNCBbdWJpZnNdDQogWzxjMGE3YWJmZT5dIGRiZ19jaGVja19s
-cHJvcHMrMHg3Mi8weDIxOCBbdWJpZnNdDQogWzxjMGE2ZjY3OD5dIGRvX2NvbW1pdCsweDhjLzB4
-N2UwIFt1Ymlmc10NCiBbPGMwYTZmZTJlPl0gdWJpZnNfcnVuX2NvbW1pdCsweDYyLzB4NzggW3Vi
-aWZzXQ0KIFs8YzBhN2UxM2U+XSB1Ymlmc19yY3ZyeV9nY19jb21taXQrMHg0MTIvMHg0NWMgW3Vi
-aWZzXQ0KIFs8YzBhNjMxOGM+XSB1Ymlmc19maWxsX3N1cGVyKzB4YWYwLzB4MTIwOCBbdWJpZnNd
-DQogWzxjMGE2M2FjMD5dIHViaWZzX2dldF9zYisweDIxYy8weDI4NCBbdWJpZnNdDQogWzw5MDA0
-YzY0MD5dIHZmc19rZXJuX21vdW50KzB4MzAvMHg1OA0KIFs8OTAwNGM2OWM+XSBkb19rZXJuX21v
-dW50KzB4MjAvMHg5MA0KIFs8OTAwNTllMzY+XSBkb19uZXdfbW91bnQrMHgzYS8weDU4DQogWzw5
-MDA1YTQ0Nj5dIGRvX21vdW50KzB4MTIyLzB4MTRhDQogWzw5MDA1YTRjYT5dIHN5c19tb3VudCsw
-eDVjLzB4OTINCiBbPDkwMDBjMTMyPl0gc3lzY2FsbF9yZXR1cm4rMHgwLzB4MTINCg0KVUJJRlMg
-ZXJyb3IgKHBpZCAzOTQpOiB1Ymlmc19zY2FuOiBiYWQgbm9kZQ0KVUJJRlMgZXJyb3IgKHBpZCAz
-OTQpOiB1Ymlmc19zY2FubmVkX2NvcnJ1cHRpb246IGNvcnJ1cHRlZCBkYXRhIGF0IExFQiA1Njo1
-MDQ1NzYNClVCSUZTIGVycm9yIChwaWQgMzk0KTogdWJpZnNfc2Nhbm5lZF9jb3JydXB0aW9uOiBm
-aXJzdCA0MDk2IGJ5dGVzIGZyb20gTEVCIDU2OjUwNDU3Ng0KVUJJRlMgZXJyb3IgKHBpZCAzOTQp
-OiB1Ymlmc19zY2FuOiBMRUIgNTYgc2Nhbm5pbmcgZmFpbGVkDQpVQklGUyBlcnJvciAocGlkIDM5
-NCk6IHNjYW5fY2hlY2tfY2I6IHNjYW4gZXJyb3JzIHdlcmUgaW4gZnJlZWFibGUgTEVCIC0gY29u
-dGludWluZyBjaGVja2luZw0KVUJJRlMgZXJyb3IgKHBpZCAzOTQpOiB1Ymlmc19jaGVja19ub2Rl
-OiBiYWQgQ1JDOiBjYWxjdWxhdGVkIDB4OGJhOWQzODEsIHJlYWQgMHhiNzBjMzg1NQ0KVUJJRlMg
-ZXJyb3IgKHBpZCAzOTQpOiB1Ymlmc19jaGVja19ub2RlOiBiYWQgbm9kZSBhdCBMRUIgMTczOjE5
-MzgyNA0KQ2FsbCB0cmFjZToNCiBbPDkwMDEwNjk0Pl0gZHVtcF9zdGFjaysweDE4LzB4MjANCiBb
-PGMwYTY1ZGU4Pl0gdWJpZnNfY2hlY2tfbm9kZSsweDIxMC8weDIzYyBbdWJpZnNdDQogWzxjMGE2
-YmMxND5dIHViaWZzX3NjYW5fYV9ub2RlKzB4MTI0LzB4MjY4IFt1Ymlmc10NCiBbPGMwYTZiZjhh
-Pl0gdWJpZnNfc2NhbisweDZlLzB4MjIwIFt1Ymlmc10NCiBbPGMwYTdhNzVlPl0gc2Nhbl9jaGVj
-a19jYisweDEyNi8weDU1NCBbdWJpZnNdDQogWzxjMGE3OWFkZT5dIHViaWZzX2xwdF9zY2FuX25v
-bG9jaysweDFiZS8weDNkNCBbdWJpZnNdDQogWzxjMGE3YWJmZT5dIGRiZ19jaGVja19scHJvcHMr
-MHg3Mi8weDIxOCBbdWJpZnNdDQogWzxjMGE2ZjY3OD5dIGRvX2NvbW1pdCsweDhjLzB4N2UwIFt1
-Ymlmc10NCiBbPGMwYTZmZTJlPl0gdWJpZnNfcnVuX2NvbW1pdCsweDYyLzB4NzggW3ViaWZzXQ0K
-IFs8YzBhN2UxM2U+XSB1Ymlmc19yY3ZyeV9nY19jb21taXQrMHg0MTIvMHg0NWMgW3ViaWZzXQ0K
-IFs8YzBhNjMxOGM+XSB1Ymlmc19maWxsX3N1cGVyKzB4YWYwLzB4MTIwOCBbdWJpZnNdDQogWzxj
-MGE2M2FjMD5dIHViaWZzX2dldF9zYisweDIxYy8weDI4NCBbdWJpZnNdDQogWzw5MDA0YzY0MD5d
-IHZmc19rZXJuX21vdW50KzB4MzAvMHg1OA0KIFs8OTAwNGM2OWM+XSBkb19rZXJuX21vdW50KzB4
-MjAvMHg5MA0KIFs8OTAwNTllMzY+XSBkb19uZXdfbW91bnQrMHgzYS8weDU4DQogWzw5MDA1YTQ0
-Nj5dIGRvX21vdW50KzB4MTIyLzB4MTRhDQogWzw5MDA1YTRjYT5dIHN5c19tb3VudCsweDVjLzB4
-OTINCiBbPDkwMDBjMTMyPl0gc3lzY2FsbF9yZXR1cm4rMHgwLzB4MTINCg0KVUJJRlMgZXJyb3Ig
-KHBpZCAzOTQpOiB1Ymlmc19zY2FuOiBiYWQgbm9kZQ0KVUJJRlMgZXJyb3IgKHBpZCAzOTQpOiB1
-Ymlmc19zY2FubmVkX2NvcnJ1cHRpb246IGNvcnJ1cHRlZCBkYXRhIGF0IExFQiAxNzM6MTkzODI0
-DQpVQklGUyBlcnJvciAocGlkIDM5NCk6IHViaWZzX3NjYW5uZWRfY29ycnVwdGlvbjogZmlyc3Qg
-NDA5NiBieXRlcyBmcm9tIExFQiAxNzM6MTkzODI0DQpVQklGUyBlcnJvciAocGlkIDM5NCk6IHVi
-aWZzX3NjYW46IExFQiAxNzMgc2Nhbm5pbmcgZmFpbGVkDQpVQklGUyBlcnJvciAocGlkIDM5NCk6
-IGRvX2NvbW1pdDogY29tbWl0IGZhaWxlZCwgZXJyb3IgLTExNw0KVUJJRlMgd2FybmluZyAocGlk
-IDM5NCk6IHViaWZzX3JvX21vZGU6IHN3aXRjaGVkIHRvIHJlYWQtb25seSBtb2RlLCBlcnJvciAt
-MTE3DQpDYWxsIHRyYWNlOg0KIFs8OTAwMTA2OTQ+XSBkdW1wX3N0YWNrKzB4MTgvMHgyMA0KIFs8
-YzBhNmZkYTg+XSBkb19jb21taXQrMHg3YmMvMHg3ZTAgW3ViaWZzXQ0KIFs8YzBhNmZlMmU+XSB1
-Ymlmc19ydW5fY29tbWl0KzB4NjIvMHg3OCBbdWJpZnNdDQogWzxjMGE3ZTEzZT5dIHViaWZzX3Jj
-dnJ5X2djX2NvbW1pdCsweDQxMi8weDQ1YyBbdWJpZnNdDQogWzxjMGE2MzE4Yz5dIHViaWZzX2Zp
-bGxfc3VwZXIrMHhhZjAvMHgxMjA4IFt1Ymlmc10NCiBbPGMwYTYzYWMwPl0gdWJpZnNfZ2V0X3Ni
-KzB4MjFjLzB4Mjg0IFt1Ymlmc10NCiBbPDkwMDRjNjQwPl0gdmZzX2tlcm5fbW91bnQrMHgzMC8w
-eDU4DQogWzw5MDA0YzY5Yz5dIGRvX2tlcm5fbW91bnQrMHgyMC8weDkwDQogWzw5MDA1OWUzNj5d
-IGRvX25ld19tb3VudCsweDNhLzB4NTgNCiBbPDkwMDVhNDQ2Pl0gZG9fbW91bnQrMHgxMjIvMHgx
-NGENCiBbPDkwMDVhNGNhPl0gc3lzX21vdW50KzB4NWMvMHg5Mg0KIFs8OTAwMGMxMzI+XSBzeXNj
-YWxsX3JldHVybisweDAvMHgxMiANClVCSUZTIERCRyAocGlkIDM5NSk6IHViaWZzX2JnX3RocmVh
-ZDogYmFja2dyb3VuZCB0aHJlYWQgInViaWZzX2JndDBfMSIgc3RvcHMNClVCSSBEQkcgKHBpZCAz
-OTQpOiB1YmlfY2xvc2Vfdm9sdW1lOiBjbG9zZSB2b2x1bWUgMSwgbW9kZSAyDQpVQkkgREJHIChw
-aWQgMzk0KTogdWJpX2Nsb3NlX3ZvbHVtZTogY2xvc2Ugdm9sdW1lIDEsIG1vZGUgMQ0KDQptb3Vu
-dDogbW91bnRpbmcgdWJpMDp3cHJfc2xhdmUgb24gL21udC9zbGF2ZS8gZmFpbGVkOiBTdHJ1Y3R1
-cmUgbmVlZHMgY2xlYW5pbmcNCi9tbnQgIw0KDQo=
+On Wed, 2008-12-03 at 08:55 +0100, Eirik Aanonsen wrote:
+> > It looks like you indeed have corrupted data. Where the 'wpr_004.wfp'
+> > file comes from? You wrote it previously? Or you used mkfs.ubifs?
+> >=20
+> The file is a binary file from my system. And the file has been checked f=
+or integrity before being copied over to the ubifs file system.
+
+OK.
+
+> Wpr_004.wfp originates from a vfat partition, and was moved along with 10=
+ other files, and then when I try to move the file back out from ubifs the =
+read error occurs.
+
+OK, this means that the file had not been correctly written to UBIFS.
+Your NAND driver may have problems. The fact that you use NAND flash
+with 4KiB page size also suggests this, because AFAIK MTD does not
+really support 4KiB per page NANDs. You probably have some custom MTD
+diver/modifications.
+
+Could you please verify your NAND driver before trying to use UBIFS?
+Here you may get NAND tests which should do this:
+
+git://git.infradead.org/users/ahunter/nand-tests.git
+
+The tests are kernel modules. Compile them properly, then just insert
+them, may be with some parameters. Use modinfo to see the parameters,
+or look at the source code. All tests are harmless, except of torture
+test - be careful with it.
+
+Note, these tests has not been run on 4KiB-page NANDs, but they should
+work fine anyway.
+
+Could you please tell which NAND hardware you have? Is it SLC or MLC?
+
+> > Also, did you try to enable UBIFS and UBI extra self-checks? Please,
+> > try. Things will become very slow then, though, but this may give
+> > some useful information.
+>=20
+> Here are the result after enabling these two options.
+
+I see. Basically, you have broken nodes on your flash media, which means
+your files have not been written correctly for some reasons. For now I
+suspect buggy NAND driver.
+
+> How do I do cleaning in ubifs?
+
+Well, in _normal_ situations you should not need this at all, and UBIFS
+is self-recoverable. In your case you have some severe problems so you
+have data corruptions which you cannot recover anyway. You may only
+delete the corrupted files.
+
+But yes, an ckfs.ubifs user-space utility would be nice to have, and we
+were thinking to create it. At the moment, it does not exist.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
