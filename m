@@ -1,23 +1,25 @@
-Received: from gate.crashing.org ([63.228.1.57])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L7tyy-0006yn-2f
-	for linux-mtd@lists.infradead.org; Wed, 03 Dec 2008 15:49:44 +0000
-Message-Id: <4A183575-1142-4EC2-83C4-145E721E6E8D@kernel.crashing.org>
-From: Kumar Gala <galak@kernel.crashing.org>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20081126163840.GA21669@oksana.dev.rtsoft.ru>
-Content-Type: text/plain; charset=US-ASCII; format=flowed; delsp=yes
-Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0 (Apple Message framework v929.2)
+Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1L7uZR-0003j8-5b
+	for linux-mtd@lists.infradead.org; Wed, 03 Dec 2008 16:27:25 +0000
+Date: Wed, 3 Dec 2008 19:27:23 +0300
+From: Anton Vorontsov <avorontsov@ru.mvista.com>
+To: Kumar Gala <galak@kernel.crashing.org>
 Subject: Re: [PATCH for 2.6.28] NAND: fsl_upm: fix build problem with
 	2.6.28-rc2
-Date: Wed, 3 Dec 2008 09:47:53 -0600
+Message-ID: <20081203162723.GA32301@oksana.dev.rtsoft.ru>
 References: <20081126163840.GA21669@oksana.dev.rtsoft.ru>
+	<4A183575-1142-4EC2-83C4-145E721E6E8D@kernel.crashing.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf8
+Content-Disposition: inline
+In-Reply-To: <4A183575-1142-4EC2-83C4-145E721E6E8D@kernel.crashing.org>
 Cc: linux-kernel Kernel <linux-kernel@vger.kernel.org>,
 	linux-ppc list <linuxppc-dev@ozlabs.org>, linux-mtd@lists.infradead.org,
 	Andrew Morton <akpm@linux-foundation.org>,
-	Anton Vorontsov <avorontsov@ru.mvista.com>,
+	David Woodhouse <dwmw2@infradead.org>,
 	Wolfgang Grandegger <wg@grandegger.com>
+Reply-To: avorontsov@ru.mvista.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,68 +29,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, Dec 03, 2008 at 09:47:53AM -0600, Kumar Gala wrote:
+[...]
+>> The patch fixes following build error:
+>>
+>>  CC      drivers/mtd/nand/fsl_upm.o
+>> drivers/mtd/nand/fsl_upm.c: In function 'fun_chip_init':
+>> drivers/mtd/nand/fsl_upm.c:168: warning: passing argument 2 of  
+>> 'of_mtd_parse_partitions' from incompatible pointer type
+>> drivers/mtd/nand/fsl_upm.c:168: warning: passing argument 3 of  
+>> 'of_mtd_parse_partitions' from incompatible pointer type
+>> drivers/mtd/nand/fsl_upm.c:168: error: too many arguments to function 
+>> 'of_mtd_parse_partitions'
+>> make[1]: *** [drivers/mtd/nand/fsl_upm.o] Error 1
+>>
+>> The breakage was introduced in  
+>> 69fd3a8d098faf41a04930afa83757c0555ee360
+>> ("[MTD] remove unused mtd parameter in of_mtd_parse_partitions()").
+>>
+>> While at it, also add a check for the of_mtd_parse_partitions() return
+>> value.
+>>
+>> Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
+>> Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
+[...]
+> David,
+>
+> what's going on with this patch?
 
-On Nov 26, 2008, at 10:38 AM, Anton Vorontsov wrote:
+Recently I got email from Andrew's patch tracking system that
+the patch was merged into subsystem tree. Here it is:
 
-> From: Wolfgang Grandegger <wg@grandegger.com>
->
-> The patch fixes following build error:
->
->  CC      drivers/mtd/nand/fsl_upm.o
-> drivers/mtd/nand/fsl_upm.c: In function 'fun_chip_init':
-> drivers/mtd/nand/fsl_upm.c:168: warning: passing argument 2 of  
-> 'of_mtd_parse_partitions' from incompatible pointer type
-> drivers/mtd/nand/fsl_upm.c:168: warning: passing argument 3 of  
-> 'of_mtd_parse_partitions' from incompatible pointer type
-> drivers/mtd/nand/fsl_upm.c:168: error: too many arguments to  
-> function 'of_mtd_parse_partitions'
-> make[1]: *** [drivers/mtd/nand/fsl_upm.o] Error 1
->
-> The breakage was introduced in  
-> 69fd3a8d098faf41a04930afa83757c0555ee360
-> ("[MTD] remove unused mtd parameter in of_mtd_parse_partitions()").
->
-> While at it, also add a check for the of_mtd_parse_partitions() return
-> value.
->
-> Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
-> Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
-> ---
-> drivers/mtd/nand/fsl_upm.c |    8 +++++---
-> 1 files changed, 5 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
-> index 024e3ff..a83192f 100644
-> --- a/drivers/mtd/nand/fsl_upm.c
-> +++ b/drivers/mtd/nand/fsl_upm.c
-> @@ -163,9 +163,11 @@ static int __devinit fun_chip_init(struct  
-> fsl_upm_nand *fun,
-> 	ret = parse_mtd_partitions(&fun->mtd, part_types, &fun->parts, 0);
->
-> #ifdef CONFIG_MTD_OF_PARTS
-> -	if (ret == 0)
-> -		ret = of_mtd_parse_partitions(fun->dev, &fun->mtd,
-> -					      flash_np, &fun->parts);
-> +	if (ret == 0) {
-> +		ret = of_mtd_parse_partitions(fun->dev, flash_np, &fun->parts);
-> +		if (ret < 0)
-> +			goto err;
-> +	}
-> #endif
-> 	if (ret > 0)
-> 		ret = add_mtd_partitions(&fun->mtd, fun->parts, ret);
-> -- 
-> 1.5.6.5
+http://git.infradead.org/mtd-2.6.git?a=commitdiff;h=29b65861fbece04cfdf3fee352d5247369131850
 
-David,
-
-what's going on with this patch?
-
-- k
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux- 
-> kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
+-- 
+Anton Vorontsov
+email: cbouatmailru@gmail.com
+irc://irc.freenode.net/bd2
