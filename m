@@ -1,19 +1,25 @@
-Received: from relay01.pair.com ([209.68.5.15])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L7upo-0005cw-HH
-	for linux-mtd@lists.infradead.org; Wed, 03 Dec 2008 16:44:20 +0000
-Date: Wed, 03 Dec 2008 08:44:05 -0800
-Subject: Re: setting PAD parameter with JFFS2 and NAND -- what is correct
-	thing to do ?
-From: Grant Erickson <gerickson@nuovations.com>
-To: Philip Rakity <prakity@yahoo.com>
-Message-ID: <C55BF755.133A7%gerickson@nuovations.com>
-In-Reply-To: <461019.6371.qm@web58901.mail.re1.yahoo.com>
-Mime-version: 1.0
-Content-type: text/plain;
-	charset="US-ASCII"
-Content-transfer-encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Received: from gate.crashing.org ([63.228.1.57])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1L7upp-0005d0-PA
+	for linux-mtd@lists.infradead.org; Wed, 03 Dec 2008 16:44:22 +0000
+Message-Id: <965E56B6-4317-448E-9541-9CB1615E623B@kernel.crashing.org>
+From: Kumar Gala <galak@kernel.crashing.org>
+To: avorontsov@ru.mvista.com
+In-Reply-To: <20081203162723.GA32301@oksana.dev.rtsoft.ru>
+Content-Type: text/plain; charset=US-ASCII; format=flowed; delsp=yes
+Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0 (Apple Message framework v929.2)
+Subject: Re: [PATCH for 2.6.28] NAND: fsl_upm: fix build problem with
+	2.6.28-rc2
+Date: Wed, 3 Dec 2008 10:43:12 -0600
+References: <20081126163840.GA21669@oksana.dev.rtsoft.ru>
+	<4A183575-1142-4EC2-83C4-145E721E6E8D@kernel.crashing.org>
+	<20081203162723.GA32301@oksana.dev.rtsoft.ru>
+Cc: linux-kernel Kernel <linux-kernel@vger.kernel.org>,
+	linux-ppc list <linuxppc-dev@ozlabs.org>, linux-mtd@lists.infradead.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Wolfgang Grandegger <wg@grandegger.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,52 +29,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/2/08 9:23 AM, Philip Rakity wrote:
-> I am trying to understand what value to set the pad parameter to when making a
-> JFFS2 image (including using sumtool) for NAND flash.
-> 
-> The NAND flash has 2KiB sectors, 256KiB erase size, and is 2GB.
-> 
-> I use flase_eraseall -j when erasing the flash and the flash HAS bad blocks.
-> 
-> The image size is less than the 2GB size of the flash.
-> 
-> I have tried both specifying pad (rounded up) to the erase block size and
-> omitting pad.  When I write to the NAND there are recovered CRC errors from
-> time to time as well as the other "errors" indicated in the FAQ.
-> 
-> If could set pad to the SIZE of the NAND flash, but because of bad blocks I am
-> not sure this is correct...
-> 
-> Guidance Please.
-> 
-> Philip
 
-Philip:
+On Dec 3, 2008, at 10:27 AM, Anton Vorontsov wrote:
 
-You should set the padding to the page size. For the two systems I have, the
-mkfs.jffs2 commands used to build the root file systems are as follows:
+> On Wed, Dec 03, 2008 at 09:47:53AM -0600, Kumar Gala wrote:
+> [...]
+>>> The patch fixes following build error:
+>>>
+>>> CC      drivers/mtd/nand/fsl_upm.o
+>>> drivers/mtd/nand/fsl_upm.c: In function 'fun_chip_init':
+>>> drivers/mtd/nand/fsl_upm.c:168: warning: passing argument 2 of
+>>> 'of_mtd_parse_partitions' from incompatible pointer type
+>>> drivers/mtd/nand/fsl_upm.c:168: warning: passing argument 3 of
+>>> 'of_mtd_parse_partitions' from incompatible pointer type
+>>> drivers/mtd/nand/fsl_upm.c:168: error: too many arguments to  
+>>> function
+>>> 'of_mtd_parse_partitions'
+>>> make[1]: *** [drivers/mtd/nand/fsl_upm.o] Error 1
+>>>
+>>> The breakage was introduced in
+>>> 69fd3a8d098faf41a04930afa83757c0555ee360
+>>> ("[MTD] remove unused mtd parameter in of_mtd_parse_partitions()").
+>>>
+>>> While at it, also add a check for the of_mtd_parse_partitions()  
+>>> return
+>>> value.
+>>>
+>>> Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
+>>> Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
+> [...]
+>> David,
+>>
+>> what's going on with this patch?
+>
+> Recently I got email from Andrew's patch tracking system that
+> the patch was merged into subsystem tree. Here it is:
+>
+> http://git.infradead.org/mtd-2.6.git?a=commitdiff;h=29b65861fbece04cfdf3fee352d5247369131850
 
-    mkfs.jffs2 --big-endian \
-    --no-cleanmarkers \
-    --pad 512 \
-    --pagesize 512 \
-    --eraseblock 16384 \
-    -d /tmp/fs/stripped/root \
-    -D root.devtable \
-    -o root.jffs2
+is it going into 2.6.28 or waiting for .29?
 
-and:
-
-    mkfs.jffs2 --big-endian \
-    --no-cleanmarkers \
-    --pad 2048 \
-    --pagesize 2048 \
-    --eraseblock 131072 \
-    -d /tmp/fs/stripped/root \
-    -D root.devtable \
-    -o root.jffs2
-
-Regards,
-
-Grant
+- k
