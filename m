@@ -1,22 +1,14 @@
-Received: from relais.videotron.ca ([24.201.245.36])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L8FiX-0006bo-M3
-	for linux-mtd@lists.infradead.org; Thu, 04 Dec 2008 15:02:14 +0000
-MIME-version: 1.0
-Content-transfer-encoding: 7BIT
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Received: from xanadu.home ([66.131.194.97]) by VL-MH-MR001.ip.videotron.ca
-	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
-	32bit))
-	with ESMTP id <0KBC00HXYXRA2J70@VL-MH-MR001.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Thu, 04 Dec 2008 10:01:58 -0500 (EST)
-Date: Thu, 04 Dec 2008 10:01:58 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
+Received: from web58908.mail.re1.yahoo.com ([66.196.100.237])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1L8Ge1-00046X-LV
+	for linux-mtd@lists.infradead.org; Thu, 04 Dec 2008 16:01:38 +0000
+Date: Thu, 4 Dec 2008 08:01:36 -0800 (PST)
+From: Philip Rakity <prakity@yahoo.com>
+Subject: JFFS2 and NAND cleanamarker ?
 To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] [MTD] m25p80: add support for Macronix MX25L12805D
-In-reply-to: <alpine.LFD.2.00.0812032302430.14328@xanadu.home>
-Message-id: <alpine.LFD.2.00.0812041000510.14328@xanadu.home>
-References: <alpine.LFD.2.00.0812032302430.14328@xanadu.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Message-ID: <830440.56187.qm@web58908.mail.re1.yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,15 +18,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 3 Dec 2008, Nicolas Pitre wrote:
 
-> From: Lennert Buytenhek <buytenh@marvell.com>
-> 
-> Signed-off-by: Lennert Buytenhek <buytenh@marvell.com>
-> Signed-off-by: Nicolas Pitre <nico@marvell.com>
-> ---
+Thanks for the information on mkfs and nand flash.  I have been using
 
-Please scrap that -- the patch is missing an extra parameter.
+flash_eraseall -j
+and a mkfs.jffs2 script similar to yours without the --no-cleanmarkers option set.
+
+Things do appear to work.
+
+WHEN should I set or not set this option ?
+
+Philip
 
 
-Nicolas
+
+      
