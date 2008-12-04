@@ -1,20 +1,29 @@
-Received: from vervifontaine.sonytel.be ([80.88.33.193]
-	helo=vervifontaine.sonycom.com)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L89zU-0002cT-SO
-	for linux-mtd@lists.infradead.org; Thu, 04 Dec 2008 08:55:21 +0000
-Date: Thu, 4 Dec 2008 09:55:18 +0100 (CET)
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Sender: geert@sonytel.be
-To: Alexander Beregalov <a.beregalov@gmail.com>
-Subject: Re: JFFS2/UBIFS select zlib/lzo even if compression is disabled
-In-Reply-To: <a4423d670812031641r70044496pb65eea3469c56283@mail.gmail.com>
-Message-ID: <Pine.LNX.4.64.0812040950340.690@vixen.sonytel.be>
-References: <a4423d670812031641r70044496pb65eea3469c56283@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Cc: linux-mtd@lists.infradead.org
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1L8Elf-00060y-Dl
+	for linux-mtd@lists.infradead.org; Thu, 04 Dec 2008 14:01:23 +0000
+Received: from d01relay07.pok.ibm.com (d01relay07.pok.ibm.com [9.56.227.147])
+	by e4.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id mB4E0qV9018145
+	for <linux-mtd@lists.infradead.org>; Thu, 4 Dec 2008 09:00:52 -0500
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d01relay07.pok.ibm.com (8.13.8/8.13.8/NCO v9.1) with ESMTP id
+	mB4E1IJL1380542
+	for <linux-mtd@lists.infradead.org>; Thu, 4 Dec 2008 09:01:19 -0500
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	mB4E1Fbm021133
+	for <linux-mtd@lists.infradead.org>; Thu, 4 Dec 2008 07:01:15 -0700
+Date: Thu, 4 Dec 2008 09:01:07 -0500
+From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+To: Sean MacLennan <smaclennan@pikatech.com>
+Subject: Re: [PATCH] ndfc driver
+Message-ID: <20081204090107.20269571@zod.rchland.ibm.com>
+In-Reply-To: <20081203222832.3fc77d28@lappy.seanm.ca>
+References: <20081203222832.3fc77d28@lappy.seanm.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,83 +33,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 4 Dec 2008, Alexander Beregalov wrote:
-> I have found the following misbehaviour:
+On Wed, 3 Dec 2008 22:28:32 -0500
+Sean MacLennan <smaclennan@pikatech.com> wrote:
+
+Hi Sean,
+
+A couple of comments/requests below.
+
+> The current ndfc driver only compiles under arch/ppc. This arch was
+> removed from the kernel. I notice the event entry for the ndfc in
+> Kconfig has been removed in 2.6.28.
 > 
-> # CONFIG_JFFS2_COMPRESSION_OPTIONS is not set
-> CONFIG_JFFS2_ZLIB=y
-> # CONFIG_JFFS2_LZO is not set
-> CONFIG_JFFS2_RTIME=y
-> # CONFIG_JFFS2_RUBIN is not set
-> 
-> # CONFIG_UBIFS_FS_ADVANCED_COMPR is not set
-> CONFIG_UBIFS_FS_LZO=y
-> CONFIG_UBIFS_FS_ZLIB=y
-> 
-> config JFFS2_ZLIB
->         bool "JFFS2 ZLIB compression support" if JFFS2_COMPRESSION_OPTIONS
->         select ZLIB_INFLATE
->         select ZLIB_DEFLATE
->         depends on JFFS2_FS
->         default y
-> 
-> Is it an error in kconfig scripts for a long time or should it be
-> described differently in Kconfig?
-> Something like this
-> 
-> config JFFS2_ZLIB
->         bool "JFFS2 ZLIB compression support" if JFFS2_COMPRESSION_OPTIONS
->         select ZLIB_INFLATE
->         select ZLIB_DEFLATE
-> -        depends on JFFS2_FS
-> +        depends on JFFS2_FS && JFFS2_COMPRESSION_OPTIONS
-> 
-> But it looks ugly
+> This patch converts the ndfc to a proper OF (OpenFirmware) driver. I
+> can give a working example of the DTS if needed.
 
-Kconfig is correct.
+In addition to an example DTS patch (probably to warp itself), could
+you briefly write up a binding and put it in
+Documentation/powerpc/dts-bindings/amcc (or similar)?  Also please CC
+the devicetree-discuss list on that part.
 
-| config JFFS2_COMPRESSION_OPTIONS
-|         bool "Advanced compression options for JFFS2"
-|         depends on JFFS2_FS
-|         default n
-|         help
-|           Enabling this option allows you to explicitly choose which
-                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^
-|           compression modules, if any, are enabled in JFFS2.
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> The patch has been in production use on the PIKA Warp Appliance and is
+> in use by others. The Warp basically boots from NAND, so the ndfc driver
+> is very important to us.
 
+Looking over the patch it seems pretty straight-forward and I don't see
+anything immediately wrong with it.  You do have a number of
+semi-unrelated changes to the actual port to of_platform though, like
+the s/__raw_writel/out_be32 stuff, the addition of partition parsing,
+etc.  I'm wondering if you could do those fixups separately from the
+actual port.
 
-| config UBIFS_FS_ADVANCED_COMPR
-|         bool "Advanced compression options"
-|         depends on UBIFS_FS
-|         help
-|           This option allows to explicitly choose which compressions, if any,
-                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-|           are enabled in UBIFS.
-            ^^^^^^^^^^^
+Also, could you document why the data structures changed as they did in
+the changelog or perhaps in a summary email.
 
-JFFS2_COMPRESSION_OPTIONS and UBIFS_FS_ADVANCED_COMPR are not meant to
-enable/disable compression in se, but to let you _choose_ which compression
-modules to include. They're meant for advanced users who know they can leave
-out some modules.
+You also seem to only support a single NAND chip, however the NDFC can
+support multiple chips.  Have you looked at how the the fsl_elbc_nand
+driver does multiple chip support?  If not, could you at least document
+the limitation in the patch?
 
-So if you want to disable compression, you have to first enable
-JFFS2_COMPRESSION_OPTIONS resp. UBIFS_FS_ADVANCED_COMPR. After that, you can
-disable e.g. CONFIG_JFFS2_ZLIB.
+> This is a bi-monthly posting ;)
 
-With kind regards,
+Keep at it Sean.  Your work is appreciated, even if the rest of us are
+slow to review.
 
-Geert Uytterhoeven
-Software Architect
-
-Sony Techsoft Centre Europe
-The Corporate Village · Da Vincilaan 7-D1 · B-1935 Zaventem · Belgium
-
-Phone:    +32 (0)2 700 8453
-Fax:      +32 (0)2 700 8622
-E-mail:   Geert.Uytterhoeven@sonycom.com
-Internet: http://www.sony-europe.com/
-
-A division of Sony Europe (Belgium) N.V.
-VAT BE 0413.825.160 · RPR Brussels
-Fortis · BIC GEBABEBB · IBAN BE41293037680010
+josh
