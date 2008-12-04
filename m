@@ -1,25 +1,19 @@
-Received: from gate.crashing.org ([63.228.1.57])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L7upp-0005d0-PA
-	for linux-mtd@lists.infradead.org; Wed, 03 Dec 2008 16:44:22 +0000
-Message-Id: <965E56B6-4317-448E-9541-9CB1615E623B@kernel.crashing.org>
-From: Kumar Gala <galak@kernel.crashing.org>
-To: avorontsov@ru.mvista.com
-In-Reply-To: <20081203162723.GA32301@oksana.dev.rtsoft.ru>
-Content-Type: text/plain; charset=US-ASCII; format=flowed; delsp=yes
+Received: from an-out-0708.google.com ([209.85.132.240])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1L82Hn-0005q7-QW
+	for linux-mtd@lists.infradead.org; Thu, 04 Dec 2008 00:41:43 +0000
+Received: by an-out-0708.google.com with SMTP id d40so1855775and.27
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 03 Dec 2008 16:41:42 -0800 (PST)
+Message-ID: <a4423d670812031641r70044496pb65eea3469c56283@mail.gmail.com>
+Date: Thu, 4 Dec 2008 03:41:42 +0300
+From: "Alexander Beregalov" <a.beregalov@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: JFFS2/UBIFS select zlib/lzo even if compression is disabled
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0 (Apple Message framework v929.2)
-Subject: Re: [PATCH for 2.6.28] NAND: fsl_upm: fix build problem with
-	2.6.28-rc2
-Date: Wed, 3 Dec 2008 10:43:12 -0600
-References: <20081126163840.GA21669@oksana.dev.rtsoft.ru>
-	<4A183575-1142-4EC2-83C4-145E721E6E8D@kernel.crashing.org>
-	<20081203162723.GA32301@oksana.dev.rtsoft.ru>
-Cc: linux-kernel Kernel <linux-kernel@vger.kernel.org>,
-	linux-ppc list <linuxppc-dev@ozlabs.org>, linux-mtd@lists.infradead.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Wolfgang Grandegger <wg@grandegger.com>
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,44 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi
 
-On Dec 3, 2008, at 10:27 AM, Anton Vorontsov wrote:
+I have found the following misbehaviour:
 
-> On Wed, Dec 03, 2008 at 09:47:53AM -0600, Kumar Gala wrote:
-> [...]
->>> The patch fixes following build error:
->>>
->>> CC      drivers/mtd/nand/fsl_upm.o
->>> drivers/mtd/nand/fsl_upm.c: In function 'fun_chip_init':
->>> drivers/mtd/nand/fsl_upm.c:168: warning: passing argument 2 of
->>> 'of_mtd_parse_partitions' from incompatible pointer type
->>> drivers/mtd/nand/fsl_upm.c:168: warning: passing argument 3 of
->>> 'of_mtd_parse_partitions' from incompatible pointer type
->>> drivers/mtd/nand/fsl_upm.c:168: error: too many arguments to  
->>> function
->>> 'of_mtd_parse_partitions'
->>> make[1]: *** [drivers/mtd/nand/fsl_upm.o] Error 1
->>>
->>> The breakage was introduced in
->>> 69fd3a8d098faf41a04930afa83757c0555ee360
->>> ("[MTD] remove unused mtd parameter in of_mtd_parse_partitions()").
->>>
->>> While at it, also add a check for the of_mtd_parse_partitions()  
->>> return
->>> value.
->>>
->>> Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
->>> Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
-> [...]
->> David,
->>
->> what's going on with this patch?
->
-> Recently I got email from Andrew's patch tracking system that
-> the patch was merged into subsystem tree. Here it is:
->
-> http://git.infradead.org/mtd-2.6.git?a=commitdiff;h=29b65861fbece04cfdf3fee352d5247369131850
+# CONFIG_JFFS2_COMPRESSION_OPTIONS is not set
+CONFIG_JFFS2_ZLIB=y
+# CONFIG_JFFS2_LZO is not set
+CONFIG_JFFS2_RTIME=y
+# CONFIG_JFFS2_RUBIN is not set
 
-is it going into 2.6.28 or waiting for .29?
+# CONFIG_UBIFS_FS_ADVANCED_COMPR is not set
+CONFIG_UBIFS_FS_LZO=y
+CONFIG_UBIFS_FS_ZLIB=y
 
-- k
+config JFFS2_ZLIB
+        bool "JFFS2 ZLIB compression support" if JFFS2_COMPRESSION_OPTIONS
+        select ZLIB_INFLATE
+        select ZLIB_DEFLATE
+        depends on JFFS2_FS
+        default y
+
+Is it an error in kconfig scripts for a long time or should it be
+described differently in Kconfig?
+Something like this
+
+config JFFS2_ZLIB
+        bool "JFFS2 ZLIB compression support" if JFFS2_COMPRESSION_OPTIONS
+        select ZLIB_INFLATE
+        select ZLIB_DEFLATE
+-        depends on JFFS2_FS
++        depends on JFFS2_FS && JFFS2_COMPRESSION_OPTIONS
+
+But it looks ugly
