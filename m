@@ -1,26 +1,20 @@
-Received: from mgw-fb01.nokia.com ([192.100.122.235])
+Received: from mta.airbonet.com ([202.238.82.244] helo=mx09.ms.so-net.ne.jp)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L8Zcy-0004JO-OL
-	for linux-mtd@lists.infradead.org; Fri, 05 Dec 2008 12:17:49 +0000
-Received: from mgw-mx03.nokia.com (mgw-mx03.nokia.com [192.100.122.230])
-	by mgw-fb01.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
-	mB5CHi4P031668
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <linux-mtd@lists.infradead.org>; Fri, 5 Dec 2008 14:17:45 +0200
-Message-ID: <49391D78.90407@nokia.com>
-Date: Fri, 05 Dec 2008 14:24:24 +0200
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+	id 1L8cHb-0003HW-M7
+	for linux-mtd@lists.infradead.org; Fri, 05 Dec 2008 15:07:56 +0000
+Received: from Dell2300 (p02fe57.kngwnt01.ap.so-net.ne.jp [121.2.254.87])
+	by mx09.ms.so-net.ne.jp  with SMTP id mB5F7fEJ027667
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 6 Dec 2008 00:07:41 +0900 (JST)
+Message-ID: <000e01c956eb$3732cff0$0201a8c0@Dell2300>
+From: "min" <min@xj9.so-net.ne.jp>
+To: <linux-mtd@lists.infradead.org>
+Subject: Failed to erase flash while multiple erase processes are running
+Date: Sat, 6 Dec 2008 00:07:08 +0900
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] OneNAND: OMAP2: Switch to generic gpio calls
-References: <1228289844-5897-1-git-send-email-jarkko.nikula@nokia.com>
-	<1228289844-5897-3-git-send-email-jarkko.nikula@nokia.com>
-In-Reply-To: <1228289844-5897-3-git-send-email-jarkko.nikula@nokia.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; format=flowed; charset="iso-2022-jp";
+	reply-type=original
 Content-Transfer-Encoding: 7bit
-Cc: Jarkko Nikula <jarkko.nikula@nokia.com>,
-	linux-omap Mailing List <linux-omap@vger.kernel.org>,
-	linux-mtd Mailing List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,68 +24,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Jarkko Nikula <jarkko.nikula@nokia.com>
+Hello,everyone:
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@nokia.com>
-Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
----
- drivers/mtd/onenand/omap2.c |   16 ++++++++--------
- 1 files changed, 8 insertions(+), 8 deletions(-)
+I am using Linux 2.16.18(powerpc) to develop an embeded linux system.
+My Flash is S29GL256P(serval partitions are divided in it,included a data
+area(JFFS2),and a config area(no filesystem, used to write product code or
+serial number).
 
-diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-index a7e4d98..c260e2d 100644
---- a/drivers/mtd/onenand/omap2.c
-+++ b/drivers/mtd/onenand/omap2.c
-@@ -149,7 +149,7 @@ static int omap2_onenand_wait(struct mtd_info *mtd, int state)
- 
- 		INIT_COMPLETION(c->irq_done);
- 		if (c->gpio_irq) {
--			result = omap_get_gpio_datain(c->gpio_irq);
-+			result = gpio_get_value(c->gpio_irq);
- 			if (result == -1) {
- 				ctrl = read_reg(c, ONENAND_REG_CTRL_STATUS);
- 				intr = read_reg(c, ONENAND_REG_INTERRUPT);
-@@ -629,14 +629,14 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
- 	}
- 
- 	if (c->gpio_irq) {
--		if ((r = omap_request_gpio(c->gpio_irq)) < 0) {
-+		if ((r = gpio_request(c->gpio_irq, "OneNAND irq")) < 0) {
- 			dev_err(&pdev->dev,  "Failed to request GPIO%d for "
- 				"OneNAND\n", c->gpio_irq);
- 			goto err_iounmap;
- 	}
--	omap_set_gpio_direction(c->gpio_irq, 1);
-+	gpio_direction_input(c->gpio_irq);
- 
--	if ((r = request_irq(OMAP_GPIO_IRQ(c->gpio_irq),
-+	if ((r = request_irq(gpio_to_irq(c->gpio_irq),
- 			     omap2_onenand_interrupt, IRQF_TRIGGER_RISING,
- 			     pdev->dev.driver->name, c)) < 0)
- 		goto err_release_gpio;
-@@ -723,10 +723,10 @@ err_release_dma:
- 	if (c->dma_channel != -1)
- 		omap_free_dma(c->dma_channel);
- 	if (c->gpio_irq)
--		free_irq(OMAP_GPIO_IRQ(c->gpio_irq), c);
-+		free_irq(gpio_to_irq(c->gpio_irq), c);
- err_release_gpio:
- 	if (c->gpio_irq)
--		omap_free_gpio(c->gpio_irq);
-+		gpio_free(c->gpio_irq);
- err_iounmap:
- 	iounmap(c->onenand.base);
- err_release_mem_region:
-@@ -760,8 +760,8 @@ static int __devexit omap2_onenand_remove(struct platform_device *pdev)
- 	omap2_onenand_shutdown(pdev);
- 	platform_set_drvdata(pdev, NULL);
- 	if (c->gpio_irq) {
--		free_irq(OMAP_GPIO_IRQ(c->gpio_irq), c);
--		omap_free_gpio(c->gpio_irq);
-+		free_irq(gpio_to_irq(c->gpio_irq), c);
-+		gpio_free(c->gpio_irq);
- 	}
- 	iounmap(c->onenand.base);
- 	release_mem_region(c->phys_base, ONENAND_IO_SIZE);
--- 
-1.5.4.3
+I write a program to save data(for example:serial number) to config area
+with mmap function(/dev/mtdblock5),and they work ok.
+But the problem is while I am copying a file in JFFS2 area ,and concurrently
+to run My mmap program, the following error will be outputed by syslogd on
+an irregular base.
+
+Nov 28 05:43:42 kernel: Erase at 0x00220000 failed immediately: errno -5
+Nov 28 05:50:27 kernel: Erase at 0x00440000 failed immediately: errno -5
+Nov 28 06:15:27 kernel: Erase at 0x00100000 failed immediately: errno -5
+...
+
+If I execute a test shell script to copy files and mmap program
+repeatedly,in the end,it will be failed to copy file because of "No space
+left on device".The usage rate of JFFS2 area will be 100%!
+
+I debugged the Linux kernel,and found it failed in function
+do_erase_chip()
+(/drivers/mtd/chips/cfi_cmdset_0002.c)
+
+static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
+{
+ struct cfi_private *cfi = map->fldrv_priv;
+ unsigned long timeo = jiffies + HZ;
+ unsigned long int adr;
+ DECLARE_WAITQUEUE(wait, current);
+ int ret = 0;
+
+ :::
+ :::
+
+  /* Did we succeed? */
+  if (!chip_good(map, adr, map_word_ff(map))) {
+     /* reset on all failures. */
+     map_write( map, CMD(0xF0), chip->start );
+     /* FIXME - should have reset delay before continuing */
+
+     ret = -EIO;    //Fail here occasionally!!!
+  }
+ chip->state = FL_READY;
+ xip_enable(map, chip, adr);
+ put_chip(map, chip, adr);
+ spin_unlock(chip->mutex);
+
+ return ret;
+}
+
+it seems that erase failure occurs if erase process in JFFS2 copy files is
+executed while erase process in mmap program is running.
+
+Is it a known problem,and is there a patch to fix it?
+
+Any advice will be  appreciated,thank you in advance.
+
+min 
