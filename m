@@ -1,20 +1,23 @@
-Received: from mta.airbonet.com ([202.238.82.244] helo=mx09.ms.so-net.ne.jp)
+Received: from arroyo.ext.ti.com ([192.94.94.40])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L8cHb-0003HW-M7
-	for linux-mtd@lists.infradead.org; Fri, 05 Dec 2008 15:07:56 +0000
-Received: from Dell2300 (p02fe57.kngwnt01.ap.so-net.ne.jp [121.2.254.87])
-	by mx09.ms.so-net.ne.jp  with SMTP id mB5F7fEJ027667
+	id 1L8ce1-0001fP-4I
+	for linux-mtd@lists.infradead.org; Fri, 05 Dec 2008 15:31:05 +0000
+Received: from dlep95.itg.ti.com ([157.170.170.107])
+	by arroyo.ext.ti.com (8.13.7/8.13.7) with ESMTP id mB5FUvMf002455
+	for <linux-mtd@lists.infradead.org>; Fri, 5 Dec 2008 09:31:02 -0600
+Received: from dlee75.ent.ti.com (localhost [127.0.0.1])
+	by dlep95.itg.ti.com (8.13.8/8.13.8) with ESMTP id mB5FUv67000076
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 6 Dec 2008 00:07:41 +0900 (JST)
-Message-ID: <000e01c956eb$3732cff0$0201a8c0@Dell2300>
-From: "min" <min@xj9.so-net.ne.jp>
-To: <linux-mtd@lists.infradead.org>
-Subject: Failed to erase flash while multiple erase processes are running
-Date: Sat, 6 Dec 2008 00:07:08 +0900
+	Fri, 5 Dec 2008 09:30:57 -0600 (CST)
+From: "Maupin, Chase" <chase.maupin@ti.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Fri, 5 Dec 2008 09:30:54 -0600
+Subject: Support for NAND devices > 4GB
+Message-ID: <131E5DFBE7373E4C8D813795A6AA7F08025211EC67@dlee06.ent.ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="iso-2022-jp";
-	reply-type=original
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,64 +27,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,everyone:
+All,
 
-I am using Linux 2.16.18(powerpc) to develop an embeded linux system.
-My Flash is S29GL256P(serval partitions are divided in it,included a data
-area(JFFS2),and a config area(no filesystem, used to write product code or
-serial number).
+I have a Samsung NAND chip part number (K9WBG08U1M) which is a 32GB NAND ch=
+ip with 4K page sizes.  It looks like it is actually 2 chips together as it=
+ is reported in the kernel as having "2 NAND chips detected".  The kernel i=
+s properly detecting the 4K page size but it seems like there is a limitati=
+on in the mtd_info structure of 4GB for the size of the NAND.  Can anyone t=
+ell me if there is support in the Linux MTD system for NAND devices greater=
+ than 4GB?  Does anyone have a patch I could look at for this?
 
-I write a program to save data(for example:serial number) to config area
-with mmap function(/dev/mtdblock5),and they work ok.
-But the problem is while I am copying a file in JFFS2 area ,and concurrently
-to run My mmap program, the following error will be outputed by syslogd on
-an irregular base.
+I have tried changing the size element in the mtd_info structure to u_int64=
+_t and then changing the code in YAFFS2 and in the add_mtd_partitions funct=
+ion to use do_div for the division of the size element but still no success=
+.
 
-Nov 28 05:43:42 kernel: Erase at 0x00220000 failed immediately: errno -5
-Nov 28 05:50:27 kernel: Erase at 0x00440000 failed immediately: errno -5
-Nov 28 06:15:27 kernel: Erase at 0x00100000 failed immediately: errno -5
-...
+I am working in a 2.6.10 kernel (which I cannot update) and will back port =
+any patches people may have.
 
-If I execute a test shell script to copy files and mmap program
-repeatedly,in the end,it will be failed to copy file because of "No space
-left on device".The usage rate of JFFS2 area will be 100%!
+Again, any help that could be offered here would be greatly appreciated.
 
-I debugged the Linux kernel,and found it failed in function
-do_erase_chip()
-(/drivers/mtd/chips/cfi_cmdset_0002.c)
-
-static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
-{
- struct cfi_private *cfi = map->fldrv_priv;
- unsigned long timeo = jiffies + HZ;
- unsigned long int adr;
- DECLARE_WAITQUEUE(wait, current);
- int ret = 0;
-
- :::
- :::
-
-  /* Did we succeed? */
-  if (!chip_good(map, adr, map_word_ff(map))) {
-     /* reset on all failures. */
-     map_write( map, CMD(0xF0), chip->start );
-     /* FIXME - should have reset delay before continuing */
-
-     ret = -EIO;    //Fail here occasionally!!!
-  }
- chip->state = FL_READY;
- xip_enable(map, chip, adr);
- put_chip(map, chip, adr);
- spin_unlock(chip->mutex);
-
- return ret;
-}
-
-it seems that erase failure occurs if erase process in JFFS2 copy files is
-executed while erase process in mmap program is running.
-
-Is it a known problem,and is there a patch to fix it?
-
-Any advice will be  appreciated,thank you in advance.
-
-min 
+Sincerely,
+Chase Maupin
