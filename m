@@ -1,19 +1,18 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from linode.davidb.org ([72.14.176.16] helo=mail.davidb.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L8d6c-0007u3-3E
-	for linux-mtd@lists.infradead.org; Fri, 05 Dec 2008 16:00:38 +0000
-Subject: Re: Support for NAND devices > 4GB
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: "Maupin, Chase" <chase.maupin@ti.com>
-In-Reply-To: <131E5DFBE7373E4C8D813795A6AA7F08025211EC67@dlee06.ent.ti.com>
-References: <131E5DFBE7373E4C8D813795A6AA7F08025211EC67@dlee06.ent.ti.com>
-Content-Type: text/plain; charset=utf-8
-Date: Fri, 05 Dec 2008 17:58:06 +0200
-Message-Id: <1228492686.13686.56.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+	id 1L8dXc-0002WG-ME
+	for linux-mtd@lists.infradead.org; Fri, 05 Dec 2008 16:28:33 +0000
+Date: Fri, 5 Dec 2008 08:28:31 -0800
+From: David Brown <mtd@davidb.org>
+To: Du Zhongdong <axdududu@gmail.com>
+Subject: Re: [NAND] Do we support COPY_BACK operation in nand flash?
+Message-ID: <20081205162831.GA19729@linode.davidb.org>
+References: <7ccead5b0812050022hed8dbb7p4957aace524b924a@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <7ccead5b0812050022hed8dbb7p4957aace524b924a@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,47 +22,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2008-12-05 at 09:30 -0600, Maupin, Chase wrote:
-> All,
->=20
-> I have a Samsung NAND chip part number (K9WBG08U1M) which is a 32GB NAND =
-chip with 4K page sizes.  It looks like it is actually 2 chips together as =
-it is reported in the kernel as having "2 NAND chips detected".  The kernel=
- is properly detecting the 4K page size but it seems like there is a limita=
-tion in the mtd_info structure of 4GB for the size of the NAND.  Can anyone=
- tell me if there is support in the Linux MTD system for NAND devices great=
-er than 4GB?  Does anyone have a patch I could look at for this?
->=20
-> I have tried changing the size element in the mtd_info structure to u_int=
-64_t and then changing the code in YAFFS2 and in the add_mtd_partitions fun=
-ction to use do_div for the division of the size element but still no succe=
-ss.
->=20
-> I am working in a 2.6.10 kernel (which I cannot update) and will back por=
-t any patches people may have.
->=20
-> Again, any help that could be offered here would be greatly appreciated.
+On Fri, Dec 05, 2008 at 04:22:09PM +0800, Du Zhongdong wrote:
 
-Similar question was asked so many times. No, MTD does not support NANDs
-> 4GiB. Just because nobody has implemented this. The main difficulty
-here is that current user-space ABI cannot be extended, so we need to
-invent new ABI.
+>I'm trying to writing a mtd-based driver for HY27UK08BGFM nand flash,
+>and in the data sheet, there's a COPY-BACK program which is
+>'configured to quickly and efficiently rewrite data stored in one page
+>without utilizing an external memory.'
 
-However, Adrian Hunter sent a patch which changes in-kernel API and adds
-> 4GiB support. For example, we successfully ran UBIFS on a 8GiB NAND
-(well, not real NAND, but emulated by nandsim). You may try this patch.
+Do keep in mind that copy-back doesn't verify the ECC on the data, so
+if it is used for garbage collection errors will accumulate.
 
-But userspace API is still 32-bit. No-one changed it. Samsung guys tried
-to send some patches, but the patches met some criticism and they did
-not come up with better ones.
-
-Please, find the 64-bit in-kernel API changes in this git tree:
-git://git.infradead.org/users/dedekind/mtd-nandsim-2.6.git
-
-Namely, you need the "MTD: update internal API to support 64-bit device
-size" one. It works for us, and you are welcome to test it.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+David
