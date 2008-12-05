@@ -1,18 +1,25 @@
-Received: from linode.davidb.org ([72.14.176.16] helo=mail.davidb.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L8dXc-0002WG-ME
-	for linux-mtd@lists.infradead.org; Fri, 05 Dec 2008 16:28:33 +0000
-Date: Fri, 5 Dec 2008 08:28:31 -0800
-From: David Brown <mtd@davidb.org>
-To: Du Zhongdong <axdududu@gmail.com>
-Subject: Re: [NAND] Do we support COPY_BACK operation in nand flash?
-Message-ID: <20081205162831.GA19729@linode.davidb.org>
-References: <7ccead5b0812050022hed8dbb7p4957aace524b924a@mail.gmail.com>
+Received: from smtp123.sbc.mail.sp1.yahoo.com ([69.147.64.96])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1L8fCY-0003GQ-N2
+	for linux-mtd@lists.infradead.org; Fri, 05 Dec 2008 18:14:55 +0000
+From: David Brownell <david-b@pacbell.net>
+To: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Subject: Re: [PATCH] OneNAND: OMAP2: Switch to generic gpio calls
+Date: Fri, 5 Dec 2008 10:14:49 -0800
+References: <1228289844-5897-1-git-send-email-jarkko.nikula@nokia.com>
+	<1228289844-5897-3-git-send-email-jarkko.nikula@nokia.com>
+	<49391D78.90407@nokia.com>
+In-Reply-To: <49391D78.90407@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Content-Disposition: inline
-In-Reply-To: <7ccead5b0812050022hed8dbb7p4957aace524b924a@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
+Message-Id: <200812051014.50439.david-b@pacbell.net>
+Cc: linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
+	linux-omap Mailing List <linux-omap@vger.kernel.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Jarkko Nikula <jarkko.nikula@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,14 +29,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 05, 2008 at 04:22:09PM +0800, Du Zhongdong wrote:
+On Friday 05 December 2008, Adrian Hunter wrote:
+> -               if ((r = omap_request_gpio(c->gpio_irq)) < 0) {
+> +               if ((r = gpio_request(c->gpio_irq, "OneNAND irq")) < 0) {
 
->I'm trying to writing a mtd-based driver for HY27UK08BGFM nand flash,
->and in the data sheet, there's a COPY-BACK program which is
->'configured to quickly and efficiently rewrite data stored in one page
->without utilizing an external memory.'
+Worth noting that this depends on the OMAP patches which 
+make those calls be equivalent.  Those patches are going
+into 2.6.29-early via the ARM tree, as I recall; getting
+the merge order wrong would break bisectability -- but
+not buildability.
 
-Do keep in mind that copy-back doesn't verify the ECC on the data, so
-if it is used for garbage collection errors will accumulate.
-
-David
+- Dave
