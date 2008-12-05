@@ -1,19 +1,20 @@
-Received: from wa-out-1112.google.com ([209.85.146.178])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L8Vwx-0007tG-O5
-	for linux-mtd@lists.infradead.org; Fri, 05 Dec 2008 08:22:11 +0000
-Received: by wa-out-1112.google.com with SMTP id v33so2161235wah.2
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 05 Dec 2008 00:22:10 -0800 (PST)
-Message-ID: <7ccead5b0812050022hed8dbb7p4957aace524b924a@mail.gmail.com>
-Date: Fri, 5 Dec 2008 16:22:09 +0800
-From: "Du Zhongdong" <axdududu@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [NAND] Do we support COPY_BACK operation in nand flash?
+Received: from 81-7-68-229.static.zebra.lt ([81.7.68.229] helo=teltonika.lt)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1L8WBd-0001QV-IE
+	for linux-mtd@lists.infradead.org; Fri, 05 Dec 2008 08:37:22 +0000
+Message-ID: <4938E839.2010604@teltonika.lt>
+Date: Fri, 05 Dec 2008 10:37:13 +0200
+From: Paulius Zaleckas <paulius.zaleckas@teltonika.lt>
 MIME-Version: 1.0
+To: Sean MacLennan <smaclennan@pikatech.com>
+Subject: Re: Partition badness
+References: <20081203235925.3c2442e2@lappy.seanm.ca>	<493793E6.4040309@cetrtapot.si>
+	<20081204114026.06e6552b@lappy.seanm.ca>
+In-Reply-To: <20081204114026.06e6552b@lappy.seanm.ca>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	Hinko Kocevar <hinko.kocevar@cetrtapot.si>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,18 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, all.
+Sean MacLennan wrote:
+> On Thu, 04 Dec 2008 09:25:10 +0100
+> "Hinko Kocevar" <hinko.kocevar@cetrtapot.si> wrote:
+> 
+>> I had similar problems when inserting the mtd driver for the second
+>> time. This helped me:
+>> http://forum.soft32.com/linux/bdi-register-sysfs-bdi-device-queue-ftopict469102.html.
+> 
+> That patch was added, and they made it a WARN_ON()!!!!! Which means I
+> get 8 WARN_ON messages on every boot :(
+> 
+> Thanks! I'll just remove the WARN_ON.
 
-I'm trying to writing a mtd-based driver for HY27UK08BGFM nand flash,
-and in the data sheet, there's a COPY-BACK program which is
-'configured to quickly and efficiently rewrite data stored in one page
-without utilizing an external memory.'
+This WARN_ON is to detect bugs in driver... Actually MTD has to be fixed,
+but not this WARN_ON...
 
-Then I dig through the source: nand.h & nand_base.c, it seems there's
-no command for such COPY-BACK operation.
-
-I'm wondering, is there any alternative if I want to take advantage of
-this COPY-BACK operation?
-
-Best regards,
-Du Zhongdong
+> Cheers,
+>    Sean
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
