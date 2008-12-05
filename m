@@ -1,23 +1,19 @@
-Received: from www.tglx.de ([62.245.132.106])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L8Xnm-0001kG-RG
-	for linux-mtd@lists.infradead.org; Fri, 05 Dec 2008 10:20:51 +0000
-Received: from www.tglx.de (www.tglx.de [127.0.0.1])
-	by www.tglx.de (8.13.8/8.13.8/TGLX-2007100201) with ESMTP id
-	mB5AKkJE010426
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>; Fri, 5 Dec 2008 11:20:46 +0100
-Received: (from bigeasy@localhost)
-	by www.tglx.de (8.13.8/8.13.8/Submit) id mB5AKkhh010425
-	for linux-mtd@lists.infradead.org; Fri, 5 Dec 2008 11:20:46 +0100
-Date: Fri, 5 Dec 2008 11:20:46 +0100
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mkfs.ubifs: clean the hashtable target as well
-Message-ID: <20081205102046.GA9601@www.tglx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
+Received: from vps1.tull.net ([66.180.172.116])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1L8Xo0-0001lG-5N
+	for linux-mtd@lists.infradead.org; Fri, 05 Dec 2008 10:21:04 +0000
+From: Nick Andrew <nick@nick-andrew.net>
+Subject: [PATCH] Fix incorrect use of loose in fs.c
+To: David Howells <dhowells@redhat.com>,
+	David Woodhouse <David.Woodhouse@intel.com>,
+	David Woodhouse <dwmw2@infradead.org>, James Morris <jmorris@namei.org>,
+	Nick Andrew <nick@nick-andrew.net>, linux-mtd@lists.infradead.org
+Date: Fri, 05 Dec 2008 14:08:06 +1100
+Message-ID: <20081205030806.32225.66382.stgit@marcab.local.tull.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Cc: Nick Andrew <nick@nick-andrew.net>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,23 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Fix incorrect use of loose in fs.c
+
+It should be 'lose', not 'loose'. Also fix a spelling error.
+
+Signed-off-by: Nick Andrew <nick@nick-andrew.net>
 ---
- mkfs.ubifs/Makefile |    2 +-
+
+ fs/jffs2/fs.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/mkfs.ubifs/Makefile b/mkfs.ubifs/Makefile
-index f802bff..9471ac4 100644
---- a/mkfs.ubifs/Makefile
-+++ b/mkfs.ubifs/Makefile
-@@ -11,7 +11,7 @@ mkfs.ubifs: crc16.o crc32.o lpt.o compr.o hashtable/hashtable.o \
-             hashtable/hashtable_itr.o devtable.o
- 
- clean:
--	rm -f *.o $(TARGETS) cscope.*
-+	rm -f *.o hashtable/*.o $(TARGETS) cscope.*
- 
- cscope:
- 	@echo $(ALL_SOURCES) > cscope.files
--- 
-1.5.6.5
+
+diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+index 249305d..a598de9 100644
+--- a/fs/jffs2/fs.c
++++ b/fs/jffs2/fs.c
+@@ -386,7 +386,7 @@ int jffs2_remount_fs (struct super_block *sb, int *flags, char *data)
+ 	/* We stop if it was running, then restart if it needs to.
+ 	   This also catches the case where it was stopped and this
+ 	   is just a remount to restart it.
+-	   Flush the writebuffer, if neccecary, else we loose it */
++	   Flush the writebuffer, if necessary, else we lose it */
+ 	if (!(sb->s_flags & MS_RDONLY)) {
+ 		jffs2_stop_garbage_collect_thread(c);
+ 		mutex_lock(&c->alloc_sem);
