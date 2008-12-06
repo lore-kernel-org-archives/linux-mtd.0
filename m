@@ -1,25 +1,16 @@
-Received: from smtp123.sbc.mail.sp1.yahoo.com ([69.147.64.96])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L8fCY-0003GQ-N2
-	for linux-mtd@lists.infradead.org; Fri, 05 Dec 2008 18:14:55 +0000
-From: David Brownell <david-b@pacbell.net>
-To: Adrian Hunter <ext-adrian.hunter@nokia.com>
-Subject: Re: [PATCH] OneNAND: OMAP2: Switch to generic gpio calls
-Date: Fri, 5 Dec 2008 10:14:49 -0800
-References: <1228289844-5897-1-git-send-email-jarkko.nikula@nokia.com>
-	<1228289844-5897-3-git-send-email-jarkko.nikula@nokia.com>
-	<49391D78.90407@nokia.com>
-In-Reply-To: <49391D78.90407@nokia.com>
+Received: from smtp.zeuux.org ([210.51.160.52] helo=z.billxu.com)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1L8x3J-0006As-MT
+	for linux-mtd@lists.infradead.org; Sat, 06 Dec 2008 13:18:34 +0000
+Date: Sat, 6 Dec 2008 21:18:19 +0800
+From: Jianjun Kong <jianjun@zeuux.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] fs: cleanup for fs/jffs2/compr_rubin.c
+Message-ID: <20081206131819.GA23873@ubuntu>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200812051014.50439.david-b@pacbell.net>
-Cc: linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
-	linux-omap Mailing List <linux-omap@vger.kernel.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Jarkko Nikula <jarkko.nikula@nokia.com>
+Cc: David Howells <dhowells@redhat.com>, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,14 +20,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 05 December 2008, Adrian Hunter wrote:
-> -               if ((r = omap_request_gpio(c->gpio_irq)) < 0) {
-> +               if ((r = gpio_request(c->gpio_irq, "OneNAND irq")) < 0) {
 
-Worth noting that this depends on the OMAP patches which 
-make those calls be equivalent.  Those patches are going
-into 2.6.29-early via the ARM tree, as I recall; getting
-the merge order wrong would break bisectability -- but
-not buildability.
+fs/jffs2/compr_rubin.c:
+remove duplicated #include and other cleanup
 
-- Dave
+Signed-off-by: Jianjun Kong <jianjun@zeuux.org>
+---
+ fs/jffs2/compr_rubin.c |   11 +++++------
+ 1 files changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/fs/jffs2/compr_rubin.c b/fs/jffs2/compr_rubin.c
+index c73fa89..cb02050 100644
+--- a/fs/jffs2/compr_rubin.c
++++ b/fs/jffs2/compr_rubin.c
+@@ -24,8 +24,6 @@
+ #define BIT_DIVIDER_MIPS 1043
+ static int bits_mips[8] = { 277,249,290,267,229,341,212,241}; /* mips32 */
+ 
+-#include <linux/errno.h>
+-
+ struct pushpull {
+ 	unsigned char *buf;
+ 	unsigned int buflen;
+@@ -157,7 +155,8 @@ static void init_decode(struct rubin_state *rs, int div, int *bits)
+ 	/* behalve lower */
+ 	rs->rec_q = 0;
+ 
+-	for (rs->bit_number = 0; rs->bit_number++ < RUBIN_REG_SIZE; rs->rec_q = rs->rec_q * 2 + (long) (pullbit(&rs->pp)))
++	for (rs->bit_number = 0; rs->bit_number++ < RUBIN_REG_SIZE;
++		rs->rec_q = rs->rec_q * 2 + (long) (pullbit(&rs->pp)))
+ 		;
+ }
+ 
+@@ -234,14 +233,14 @@ static int out_byte(struct rubin_state *rs, unsigned char byte)
+ 	struct rubin_state rs_copy;
+ 	rs_copy = *rs;
+ 
+-	for (i=0;i<8;i++) {
+-		ret = encode(rs, rs->bit_divider-rs->bits[i],rs->bits[i],byte&1);
++	for (i=0; i<8; i++) {
++		ret = encode(rs, rs->bit_divider-rs->bits[i], rs->bits[i], byte&1);
+ 		if (ret) {
+ 			/* Failed. Restore old state */
+ 			*rs = rs_copy;
+ 			return ret;
+ 		}
+-		byte=byte>>1;
++		byte >>= 1;
+ 	}
+ 	return 0;
+ }
+-- 
+1.5.6.3
+
+-- 
+Jianjun Kong | Happy Hacking
+HOMEPAGE: http://kongove.cn/
+GTALK: kongjianjun@gmail.com
