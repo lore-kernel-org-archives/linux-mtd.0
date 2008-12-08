@@ -1,17 +1,17 @@
 Received: from mgw-fb01.nokia.com ([192.100.122.235])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L9e5d-00028A-Kr
-	for linux-mtd@lists.infradead.org; Mon, 08 Dec 2008 11:15:50 +0000
+	id 1L9e5h-0002fo-Jr
+	for linux-mtd@lists.infradead.org; Mon, 08 Dec 2008 11:15:54 +0000
 Received: from mgw-mx03.nokia.com (mgw-mx03.nokia.com [192.100.122.230])
 	by mgw-fb01.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
-	mB8BFk8e026530
+	mB8BFoT3026576
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <linux-mtd@lists.infradead.org>; Mon, 8 Dec 2008 13:15:47 +0200
+	for <linux-mtd@lists.infradead.org>; Mon, 8 Dec 2008 13:15:51 +0200
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] MTD: tests: add mtd_torturetest
-Date: Mon,  8 Dec 2008 14:50:20 +0200
-Message-Id: <1228740621-15197-8-git-send-email-dedekind@infradead.org>
+Subject: [PATCH] MTD: tests: add mtd_pagetest
+Date: Mon,  8 Dec 2008 14:50:15 +0200
+Message-Id: <1228740621-15197-3-git-send-email-dedekind@infradead.org>
 In-Reply-To: <1228740621-15197-1-git-send-email-dedekind@infradead.org>
 References: <1228740621-15197-1-git-send-email-dedekind@infradead.org>
 Cc: linux-mtd@lists.infradead.org
@@ -26,25 +26,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-This test is designed to work for very long time and it tries to
-wear few eraseblocks.
+This test checks that NAND pages read/write work fine.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- drivers/mtd/tests/mtd_torturetest.c |  530 +++++++++++++++++++++++++++++++++++
- 1 files changed, 530 insertions(+), 0 deletions(-)
- create mode 100644 drivers/mtd/tests/mtd_torturetest.c
+ drivers/mtd/tests/mtd_pagetest.c |  632 ++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 632 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/tests/mtd_pagetest.c
 
-diff --git a/drivers/mtd/tests/mtd_torturetest.c b/drivers/mtd/tests/mtd_torturetest.c
+diff --git a/drivers/mtd/tests/mtd_pagetest.c b/drivers/mtd/tests/mtd_pagetest.c
 new file mode 100644
-index 0000000..0d4797a
+index 0000000..9648818
 --- /dev/null
-+++ b/drivers/mtd/tests/mtd_torturetest.c
-@@ -0,0 +1,530 @@
++++ b/drivers/mtd/tests/mtd_pagetest.c
+@@ -0,0 +1,632 @@
 +/*
-+ * Copyright (C) 2006-2008 Artem Bityutskiy
-+ * Copyright (C) 2006-2008 Jarkko Lavinen
-+ * Copyright (C) 2006-2008 Adrian Hunter
++ * Copyright (C) 2006-2008 Nokia Corporation
 + *
 + * This program is free software; you can redistribute it and/or modify it
 + * under the terms of the GNU General Public License version 2 as published by
@@ -59,13 +56,12 @@ index 0000000..0d4797a
 + * this program; see the file COPYING. If not, write to the Free Software
 + * Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 + *
-+ * Authors: Artem Bityutskiy, Jarkko Lavinen, Adria Hunter
++ * Test page read and write on MTD device.
 + *
-+ * WARNING: this test program may kill your flash and your device. Do not
-+ * use it unless you know what you do. Authors are not responsible for any
-+ * damage caused by this program.
++ * Author: Adrian Hunter <ext-adrian.hunter@nokia.com>
 + */
 +
++#include <asm/div64.h>
 +#include <linux/init.h>
 +#include <linux/module.h>
 +#include <linux/moduleparam.h>
@@ -73,70 +69,45 @@ index 0000000..0d4797a
 +#include <linux/mtd/mtd.h>
 +#include <linux/sched.h>
 +
-+#define PRINT_PREF KERN_INFO "mtd_torturetest: "
-+#define RETRIES 3
-+
-+static int eb = 8;
-+module_param(eb, int, S_IRUGO);
-+MODULE_PARM_DESC(eb, "eraseblock number within the selected MTD device");
-+
-+static int ebcnt = 32;
-+module_param(ebcnt, int, S_IRUGO);
-+MODULE_PARM_DESC(ebcnt, "number of consecutive eraseblocks to torture");
-+
-+static int pgcnt;
-+module_param(pgcnt, int, S_IRUGO);
-+MODULE_PARM_DESC(pgcnt, "number of pages per eraseblock to torture (0 => all)");
++#define PRINT_PREF KERN_INFO "mtd_pagetest: "
 +
 +static int dev;
 +module_param(dev, int, S_IRUGO);
 +MODULE_PARM_DESC(dev, "MTD device number to use");
 +
-+static int gran = 512;
-+module_param(gran, int, S_IRUGO);
-+MODULE_PARM_DESC(gran, "how often the status information should be printed");
-+
-+static int check = 1;
-+module_param(check, int, S_IRUGO);
-+MODULE_PARM_DESC(check, "if the written data should be checked");
-+
-+static unsigned int cycles_count;
-+module_param(cycles_count, uint, S_IRUGO);
-+MODULE_PARM_DESC(cycles_count, "how many erase cycles to do "
-+			       "(infinite by default)");
-+
 +static struct mtd_info *mtd;
-+
-+/* This buffer contains 0x555555...0xAAAAAA... pattern */
-+static unsigned char *patt_5A5;
-+/* This buffer contains 0xAAAAAA...0x555555... pattern */
-+static unsigned char *patt_A5A;
-+/* This buffer contains all 0xFF bytes */
-+static unsigned char *patt_FF;
-+/* This a temporary buffer is use when checking data */
-+static unsigned char *check_buf;
-+/* How many erase cycles were done */
-+static unsigned int erase_cycles;
++static unsigned char *twopages;
++static unsigned char *writebuf;
++static unsigned char *boundary;
++static unsigned char *bbt;
 +
 +static int pgsize;
-+static struct timeval start, finish;
++static int bufsize;
++static int ebcnt;
++static int pgcnt;
++static int errcnt;
++static unsigned long next = 1;
 +
-+static void report_corrupt(unsigned char *read, unsigned char *written);
-+
-+static inline void start_timing(void)
++static inline unsigned int simple_rand(void)
 +{
-+	do_gettimeofday(&start);
++	next = next * 1103515245 + 12345;
++	return (unsigned int)((next / 65536) % 32768);
 +}
 +
-+static inline void stop_timing(void)
++static inline void simple_srand(unsigned long seed)
 +{
-+	do_gettimeofday(&finish);
++	next = seed;
 +}
 +
-+/*
-+ * Erase eraseblock number @ebnum.
-+ */
-+static inline int erase_eraseblock(int ebnum)
++static void set_random_data(unsigned char *buf, size_t len)
++{
++	size_t i;
++
++	for (i = 0; i < len; ++i)
++		buf[i] = simple_rand();
++}
++
++static int erase_eraseblock(int ebnum)
 +{
 +	int err;
 +	struct erase_info ei;
@@ -162,106 +133,421 @@ index 0000000..0d4797a
 +	return 0;
 +}
 +
-+/*
-+ * Check that the contents of eraseblock number @enbum is equivalent to the
-+ * @buf buffer.
-+ */
-+static inline int check_eraseblock(int ebnum, unsigned char *buf)
++static int write_eraseblock(int ebnum)
 +{
-+	int err, retries = 0;
-+	size_t read = 0;
-+	loff_t addr = ebnum * mtd->erasesize;
-+	size_t len = mtd->erasesize;
-+
-+	if (pgcnt) {
-+		addr = (ebnum + 1) * mtd->erasesize - pgcnt * pgsize;
-+		len = pgcnt * pgsize;
-+	}
-+
-+retry:
-+	err = mtd->read(mtd, addr, len, &read, check_buf);
-+	if (err == -EUCLEAN)
-+		printk(PRINT_PREF "single bit flip occurred at EB %d "
-+		       "MTD reported that it was fixed.\n", ebnum);
-+	else if (err) {
-+		printk(PRINT_PREF "error %d while reading EB %d, "
-+		       "read %zd\n", err, ebnum, read);
-+		return err;
-+	}
-+
-+	if (read != len) {
-+		printk(PRINT_PREF "failed to read %d bytes from EB %d, "
-+		       "read only %zd, but no error reported\n",
-+		       len, ebnum, read);
-+		return -EIO;
-+	}
-+
-+	if (memcmp(buf, check_buf, len)) {
-+		printk(PRINT_PREF "read wrong data from EB %d\n", ebnum);
-+		report_corrupt(check_buf, buf);
-+
-+		if (retries++ < RETRIES) {
-+			/* Try read again */
-+			yield();
-+			printk(PRINT_PREF "re-try reading data from EB %d\n",
-+			       ebnum);
-+			goto retry;
-+		} else {
-+			printk(PRINT_PREF "retried %d times, still errors, "
-+			       "give-up\n", RETRIES);
-+			return -EINVAL;
-+		}
-+	}
-+
-+	if (retries != 0)
-+		printk(PRINT_PREF "only attempt number %d was OK (!!!)\n",
-+		       retries);
-+
-+	return 0;
-+}
-+
-+static inline int write_pattern(int ebnum, void *buf)
-+{
-+	int err;
++	int err = 0;
 +	size_t written = 0;
 +	loff_t addr = ebnum * mtd->erasesize;
-+	size_t len = mtd->erasesize;
 +
-+	if (pgcnt) {
-+		addr = (ebnum + 1) * mtd->erasesize - pgcnt * pgsize;
-+		len = pgcnt * pgsize;
++	set_random_data(writebuf, mtd->erasesize);
++	cond_resched();
++	err = mtd->write(mtd, addr, mtd->erasesize, &written, writebuf);
++	if (err || written != mtd->erasesize)
++		printk(PRINT_PREF "error: write failed at %#llx\n",
++		       (long long)addr);
++
++	return err;
++}
++
++static int verify_eraseblock(int ebnum)
++{
++	uint32_t j;
++	size_t read = 0;
++	int err = 0, i;
++	loff_t addr0, addrn;
++	loff_t addr = ebnum * mtd->erasesize;
++
++	addr0 = 0;
++	for (i = 0; bbt[i] && i < ebcnt; ++i)
++		addr0 += mtd->erasesize;
++
++	addrn = mtd->size;
++	for (i = 0; bbt[ebcnt - i - 1] && i < ebcnt; ++i)
++		addrn -= mtd->erasesize;
++
++	set_random_data(writebuf, mtd->erasesize);
++	for (j = 0; j < pgcnt - 1; ++j, addr += pgsize) {
++		/* Do a read to set the internal dataRAMs to different data */
++		err = mtd->read(mtd, addr0, bufsize, &read, twopages);
++		if (err == -EUCLEAN)
++			err = 0;
++		if (err || read != bufsize) {
++			printk(PRINT_PREF "error: read failed at %#llx\n",
++			       (long long)addr0);
++			return err;
++		}
++		err = mtd->read(mtd, addrn - bufsize, bufsize, &read, twopages);
++		if (err == -EUCLEAN)
++			err = 0;
++		if (err || read != bufsize) {
++			printk(PRINT_PREF "error: read failed at %#llx\n",
++			       (long long)(addrn - bufsize));
++			return err;
++		}
++		memset(twopages, 0, bufsize);
++		read = 0;
++		err = mtd->read(mtd, addr, bufsize, &read, twopages);
++		if (err == -EUCLEAN)
++			err = 0;
++		if (err || read != bufsize) {
++			printk(PRINT_PREF "error: read failed at %#llx\n",
++			       (long long)addr);
++			break;
++		}
++		if (memcmp(twopages, writebuf + (j * pgsize), bufsize)) {
++			printk(PRINT_PREF "error: verify failed at %#llx\n",
++			       (long long)addr);
++			errcnt += 1;
++		}
 +	}
-+	err = mtd->write(mtd, addr, len, &written, buf);
-+	if (err) {
-+		printk(PRINT_PREF "error %d while writing EB %d, written %zd"
-+		      " bytes\n", err, ebnum, written);
++	/* Check boundary between eraseblocks */
++	if (addr <= addrn - pgsize - pgsize && !bbt[ebnum + 1]) {
++		unsigned long oldnext = next;
++		/* Do a read to set the internal dataRAMs to different data */
++		err = mtd->read(mtd, addr0, bufsize, &read, twopages);
++		if (err == -EUCLEAN)
++			err = 0;
++		if (err || read != bufsize) {
++			printk(PRINT_PREF "error: read failed at %#llx\n",
++			       (long long)addr0);
++			return err;
++		}
++		err = mtd->read(mtd, addrn - bufsize, bufsize, &read, twopages);
++		if (err == -EUCLEAN)
++			err = 0;
++		if (err || read != bufsize) {
++			printk(PRINT_PREF "error: read failed at %#llx\n",
++			       (long long)(addrn - bufsize));
++			return err;
++		}
++		memset(twopages, 0, bufsize);
++		read = 0;
++		err = mtd->read(mtd, addr, bufsize, &read, twopages);
++		if (err == -EUCLEAN)
++			err = 0;
++		if (err || read != bufsize) {
++			printk(PRINT_PREF "error: read failed at %#llx\n",
++			       (long long)addr);
++			return err;
++		}
++		memcpy(boundary, writebuf + mtd->erasesize - pgsize, pgsize);
++		set_random_data(boundary + pgsize, pgsize);
++		if (memcmp(twopages, boundary, bufsize)) {
++			printk(PRINT_PREF "error: verify failed at %#llx\n",
++			       (long long)addr);
++			errcnt += 1;
++		}
++		next = oldnext;
++	}
++	return err;
++}
++
++static int crosstest(void)
++{
++	size_t read = 0;
++	int err = 0, i;
++	loff_t addr, addr0, addrn;
++	unsigned char *pp1, *pp2, *pp3, *pp4;
++
++	printk(PRINT_PREF "crosstest\n");
++	pp1 = kmalloc(pgsize * 4, GFP_KERNEL);
++	if (!pp1) {
++		printk(PRINT_PREF "error: cannot allocate memory\n");
++		return -ENOMEM;
++	}
++	pp2 = pp1 + pgsize;
++	pp3 = pp2 + pgsize;
++	pp4 = pp3 + pgsize;
++	memset(pp1, 0, pgsize * 4);
++
++	addr0 = 0;
++	for (i = 0; bbt[i] && i < ebcnt; ++i)
++		addr0 += mtd->erasesize;
++
++	addrn = mtd->size;
++	for (i = 0; bbt[ebcnt - i - 1] && i < ebcnt; ++i)
++		addrn -= mtd->erasesize;
++
++	/* Read 2nd-to-last page to pp1 */
++	read = 0;
++	addr = addrn - pgsize - pgsize;
++	err = mtd->read(mtd, addr, pgsize, &read, pp1);
++	if (err == -EUCLEAN)
++		err = 0;
++	if (err || read != pgsize) {
++		printk(PRINT_PREF "error: read failed at %#llx\n",
++		       (long long)addr);
++		kfree(pp1);
 +		return err;
 +	}
-+	if (written != len) {
-+		printk(PRINT_PREF "written only %zd bytes of %d, but no error"
-+		       " reported\n", written, len);
-+		return -EIO;
++
++	/* Read 3rd-to-last page to pp1 */
++	read = 0;
++	addr = addrn - pgsize - pgsize - pgsize;
++	err = mtd->read(mtd, addr, pgsize, &read, pp1);
++	if (err == -EUCLEAN)
++		err = 0;
++	if (err || read != pgsize) {
++		printk(PRINT_PREF "error: read failed at %#llx\n",
++		       (long long)addr);
++		kfree(pp1);
++		return err;
 +	}
 +
++	/* Read first page to pp2 */
++	read = 0;
++	addr = addr0;
++	printk(PRINT_PREF "reading page at %#llx\n", (long long)addr);
++	err = mtd->read(mtd, addr, pgsize, &read, pp2);
++	if (err == -EUCLEAN)
++		err = 0;
++	if (err || read != pgsize) {
++		printk(PRINT_PREF "error: read failed at %#llx\n",
++		       (long long)addr);
++		kfree(pp1);
++		return err;
++	}
++
++	/* Read last page to pp3 */
++	read = 0;
++	addr = addrn - pgsize;
++	printk(PRINT_PREF "reading page at %#llx\n", (long long)addr);
++	err = mtd->read(mtd, addr, pgsize, &read, pp3);
++	if (err == -EUCLEAN)
++		err = 0;
++	if (err || read != pgsize) {
++		printk(PRINT_PREF "error: read failed at %#llx\n",
++		       (long long)addr);
++		kfree(pp1);
++		return err;
++	}
++
++	/* Read first page again to pp4 */
++	read = 0;
++	addr = addr0;
++	printk(PRINT_PREF "reading page at %#llx\n", (long long)addr);
++	err = mtd->read(mtd, addr, pgsize, &read, pp4);
++	if (err == -EUCLEAN)
++		err = 0;
++	if (err || read != pgsize) {
++		printk(PRINT_PREF "error: read failed at %#llx\n",
++		       (long long)addr);
++		kfree(pp1);
++		return err;
++	}
++
++	/* pp2 and pp4 should be the same */
++	printk(PRINT_PREF "verifying pages read at %#llx match\n",
++	       (long long)addr0);
++	if (memcmp(pp2, pp4, pgsize)) {
++		printk(PRINT_PREF "verify failed!\n");
++		errcnt += 1;
++	} else if (!err)
++		printk(PRINT_PREF "crosstest ok\n");
++	kfree(pp1);
++	return err;
++}
++
++static int erasecrosstest(void)
++{
++	size_t read = 0, written = 0;
++	int err = 0, i, ebnum, ok = 1, ebnum2;
++	loff_t addr0;
++	char *readbuf = twopages;
++
++	printk(PRINT_PREF "erasecrosstest\n");
++
++	ebnum = 0;
++	addr0 = 0;
++	for (i = 0; bbt[i] && i < ebcnt; ++i) {
++		addr0 += mtd->erasesize;
++		ebnum += 1;
++	}
++
++	ebnum2 = ebcnt - 1;
++	while (ebnum2 && bbt[ebnum2])
++		ebnum2 -= 1;
++
++	printk(PRINT_PREF "erasing block %d\n", ebnum);
++	err = erase_eraseblock(ebnum);
++	if (err)
++		return err;
++
++	printk(PRINT_PREF "writing 1st page of block %d\n", ebnum);
++	set_random_data(writebuf, pgsize);
++	strcpy(writebuf, "There is no data like this!");
++	err = mtd->write(mtd, addr0, pgsize, &written, writebuf);
++	if (err || written != pgsize) {
++		printk(PRINT_PREF "error: write failed at %#llx\n",
++		       (long long)addr0);
++		return err ? err : -1;
++	}
++
++	printk(PRINT_PREF "reading 1st page of block %d\n", ebnum);
++	memset(readbuf, 0, pgsize);
++	err = mtd->read(mtd, addr0, pgsize, &read, readbuf);
++	if (err == -EUCLEAN)
++		err = 0;
++	if (err || read != pgsize) {
++		printk(PRINT_PREF "error: read failed at %#llx\n",
++		       (long long)addr0);
++		return err ? err : -1;
++	}
++
++	printk(PRINT_PREF "verifying 1st page of block %d\n", ebnum);
++	if (memcmp(writebuf, readbuf, pgsize)) {
++		printk(PRINT_PREF "verify failed!\n");
++		errcnt += 1;
++		ok = 0;
++		return err;
++	}
++
++	printk(PRINT_PREF "erasing block %d\n", ebnum);
++	err = erase_eraseblock(ebnum);
++	if (err)
++		return err;
++
++	printk(PRINT_PREF "writing 1st page of block %d\n", ebnum);
++	set_random_data(writebuf, pgsize);
++	strcpy(writebuf, "There is no data like this!");
++	err = mtd->write(mtd, addr0, pgsize, &written, writebuf);
++	if (err || written != pgsize) {
++		printk(PRINT_PREF "error: write failed at %#llx\n",
++		       (long long)addr0);
++		return err ? err : -1;
++	}
++
++	printk(PRINT_PREF "erasing block %d\n", ebnum2);
++	err = erase_eraseblock(ebnum2);
++	if (err)
++		return err;
++
++	printk(PRINT_PREF "reading 1st page of block %d\n", ebnum);
++	memset(readbuf, 0, pgsize);
++	err = mtd->read(mtd, addr0, pgsize, &read, readbuf);
++	if (err == -EUCLEAN)
++		err = 0;
++	if (err || read != pgsize) {
++		printk(PRINT_PREF "error: read failed at %#llx\n",
++		       (long long)addr0);
++		return err ? err : -1;
++	}
++
++	printk(PRINT_PREF "verifying 1st page of block %d\n", ebnum);
++	if (memcmp(writebuf, readbuf, pgsize)) {
++		printk(PRINT_PREF "verify failed!\n");
++		errcnt += 1;
++		ok = 0;
++	}
++
++	if (ok && !err)
++		printk(PRINT_PREF "erasecrosstest ok\n");
++	return err;
++}
++
++static int erasetest(void)
++{
++	size_t read = 0, written = 0;
++	int err = 0, i, ebnum, ok = 1;
++	loff_t addr0;
++
++	printk(PRINT_PREF "erasetest\n");
++
++	ebnum = 0;
++	addr0 = 0;
++	for (i = 0; bbt[i] && i < ebcnt; ++i) {
++		addr0 += mtd->erasesize;
++		ebnum += 1;
++	}
++
++	printk(PRINT_PREF "erasing block %d\n", ebnum);
++	err = erase_eraseblock(ebnum);
++	if (err)
++		return err;
++
++	printk(PRINT_PREF "writing 1st page of block %d\n", ebnum);
++	set_random_data(writebuf, pgsize);
++	err = mtd->write(mtd, addr0, pgsize, &written, writebuf);
++	if (err || written != pgsize) {
++		printk(PRINT_PREF "error: write failed at %#llx\n",
++		       (long long)addr0);
++		return err ? err : -1;
++	}
++
++	printk(PRINT_PREF "erasing block %d\n", ebnum);
++	err = erase_eraseblock(ebnum);
++	if (err)
++		return err;
++
++	printk(PRINT_PREF "reading 1st page of block %d\n", ebnum);
++	err = mtd->read(mtd, addr0, pgsize, &read, twopages);
++	if (err == -EUCLEAN)
++		err = 0;
++	if (err || read != pgsize) {
++		printk(PRINT_PREF "error: read failed at %#llx\n",
++		       (long long)addr0);
++		return err ? err : -1;
++	}
++
++	printk(PRINT_PREF "verifying 1st page of block %d is all 0xff\n",
++	       ebnum);
++	for (i = 0; i < pgsize; ++i)
++		if (twopages[i] != 0xff) {
++			printk(PRINT_PREF "verifying all 0xff failed at %d\n",
++			       i);
++			errcnt += 1;
++			ok = 0;
++			break;
++		}
++
++	if (ok && !err)
++		printk(PRINT_PREF "erasetest ok\n");
++
++	return err;
++}
++
++static int is_block_bad(int ebnum)
++{
++	loff_t addr = ebnum * mtd->erasesize;
++	int ret;
++
++	ret = mtd->block_isbad(mtd, addr);
++	if (ret)
++		printk(PRINT_PREF "block %d is bad\n", ebnum);
++	return ret;
++}
++
++static int scan_for_bad_eraseblocks(void)
++{
++	int i, bad = 0;
++
++	bbt = kmalloc(ebcnt, GFP_KERNEL);
++	if (!bbt) {
++		printk(PRINT_PREF "error: cannot allocate memory\n");
++		return -ENOMEM;
++	}
++	memset(bbt, 0 , ebcnt);
++
++	printk(PRINT_PREF "scanning for bad eraseblocks\n");
++	for (i = 0; i < ebcnt; ++i) {
++		bbt[i] = is_block_bad(i) ? 1 : 0;
++		if (bbt[i])
++			bad += 1;
++		cond_resched();
++	}
++	printk(PRINT_PREF "scanned %d eraseblocks, %d are bad\n", i, bad);
 +	return 0;
 +}
 +
-+static int __init tort_init(void)
++static int __init mtd_pagetest_init(void)
 +{
-+	int err = 0, i, infinite = !cycles_count;
-+	int bad_ebs[ebcnt];
++	int err = 0;
++	uint64_t tmp;
++	uint32_t i;
 +
 +	printk(KERN_INFO "\n");
 +	printk(KERN_INFO "=================================================\n");
-+	printk(PRINT_PREF "Warning: this program is trying to wear out your "
-+	       "flash, stop it if this is not wanted.\n");
 +	printk(PRINT_PREF "MTD device: %d\n", dev);
-+	printk(PRINT_PREF "torture %d eraseblocks (%d-%d) of mtd%d\n",
-+	       ebcnt, eb, eb + ebcnt - 1, dev);
-+	if (pgcnt)
-+		printk(PRINT_PREF "torturing just %d pages per eraseblock\n",
-+			pgcnt);
-+	printk(PRINT_PREF "write verify %s\n", check ? "enabled" : "disabled");
 +
 +	mtd = get_mtd_device(NULL, dev);
 +	if (IS_ERR(mtd)) {
@@ -270,306 +556,121 @@ index 0000000..0d4797a
 +		return err;
 +	}
 +
-+	if (mtd->writesize == 1) {
-+		printk(PRINT_PREF "not NAND flash, assume page size is 512 "
-+		       "bytes.\n");
-+		pgsize = 512;
-+	} else
-+		pgsize = mtd->writesize;
-+
-+	if (pgcnt && (pgcnt > mtd->erasesize / pgsize || pgcnt < 0)) {
-+		printk(PRINT_PREF "error: invalid pgcnt value %d\n", pgcnt);
-+		goto out_mtd;
++	if (mtd->type != MTD_NANDFLASH) {
++		printk(PRINT_PREF "this test requires NAND flash\n");
++		goto out;
 +	}
++
++	tmp = mtd->size;
++	do_div(tmp, mtd->erasesize);
++	ebcnt = tmp;
++	pgcnt = mtd->erasesize / mtd->writesize;
++
++	printk(PRINT_PREF "MTD device size %llu, eraseblock size %u, "
++	       "page size %u, count of eraseblocks %u, pages per "
++	       "eraseblock %u, OOB size %u\n",
++	       (unsigned long long)mtd->size, mtd->erasesize,
++	       pgsize, ebcnt, pgcnt, mtd->oobsize);
 +
 +	err = -ENOMEM;
-+	patt_5A5 = kmalloc(mtd->erasesize, GFP_KERNEL);
-+	if (!patt_5A5) {
++	bufsize = pgsize * 2;
++	writebuf = kmalloc(mtd->erasesize, GFP_KERNEL);
++	if (!writebuf) {
 +		printk(PRINT_PREF "error: cannot allocate memory\n");
-+		goto out_mtd;
++		goto out;
 +	}
-+
-+	patt_A5A = kmalloc(mtd->erasesize, GFP_KERNEL);
-+	if (!patt_A5A) {
++	twopages = kmalloc(bufsize, GFP_KERNEL);
++	if (!twopages) {
 +		printk(PRINT_PREF "error: cannot allocate memory\n");
-+		goto out_patt_5A5;
++		goto out;
 +	}
-+
-+	patt_FF = kmalloc(mtd->erasesize, GFP_KERNEL);
-+	if (!patt_FF) {
++	boundary = kmalloc(bufsize, GFP_KERNEL);
++	if (!boundary) {
 +		printk(PRINT_PREF "error: cannot allocate memory\n");
-+		goto out_patt_A5A;
++		goto out;
 +	}
 +
-+	check_buf = kmalloc(mtd->erasesize, GFP_KERNEL);
-+	if (!check_buf) {
-+		printk(PRINT_PREF "error: cannot allocate memory\n");
-+		goto out_patt_FF;
++	err = scan_for_bad_eraseblocks();
++	if (err)
++		goto out;
++
++	/* Erase all eraseblocks */
++	printk(PRINT_PREF "erasing whole device\n");
++	for (i = 0; i < ebcnt; ++i) {
++		if (bbt[i])
++			continue;
++		err = erase_eraseblock(i);
++		if (err)
++			goto out;
++		cond_resched();
 +	}
++	printk(PRINT_PREF "erased %u eraseblocks\n", i);
 +
-+	err = 0;
-+
-+	/* Initialize patterns */
-+	memset(patt_FF, 0xFF, mtd->erasesize);
-+	for (i = 0; i < mtd->erasesize / pgsize; i++) {
-+		if (!(i & 1)) {
-+			memset(patt_5A5 + i * pgsize, 0x55, pgsize);
-+			memset(patt_A5A + i * pgsize, 0xAA, pgsize);
-+		} else {
-+			memset(patt_5A5 + i * pgsize, 0xAA, pgsize);
-+			memset(patt_A5A + i * pgsize, 0x55, pgsize);
-+		}
++	/* Write all eraseblocks */
++	simple_srand(1);
++	printk(PRINT_PREF "writing whole device\n");
++	for (i = 0; i < ebcnt; ++i) {
++		if (bbt[i])
++			continue;
++		err = write_eraseblock(i);
++		if (err)
++			goto out;
++		if (i % 256 == 0)
++			printk(PRINT_PREF "written up to eraseblock %u\n", i);
++		cond_resched();
 +	}
++	printk(PRINT_PREF "written %u eraseblocks\n", i);
 +
-+	/*
-+	 * Check if there is a bad eraseblock among those we are going to test.
-+	 */
-+	memset(&bad_ebs[0], 0, sizeof(int) * ebcnt);
-+	if (mtd->block_isbad) {
-+		for (i = eb; i < eb + ebcnt; i++) {
-+			err = mtd->block_isbad(mtd,
-+					       (loff_t)i * mtd->erasesize);
-+
-+			if (err < 0) {
-+				printk(PRINT_PREF "block_isbad() returned %d "
-+				       "for EB %d\n", err, i);
-+				goto out;
-+			}
-+
-+			if (err) {
-+				printk("EB %d is bad. Skip it.\n", i);
-+				bad_ebs[i - eb] = 1;
-+			}
-+		}
++	/* Check all eraseblocks */
++	simple_srand(1);
++	printk(PRINT_PREF "verifying all eraseblocks\n");
++	for (i = 0; i < ebcnt; ++i) {
++		if (bbt[i])
++			continue;
++		err = verify_eraseblock(i);
++		if (err)
++			goto out;
++		if (i % 256 == 0)
++			printk(PRINT_PREF "verified up to eraseblock %u\n", i);
++		cond_resched();
 +	}
++	printk(PRINT_PREF "verified %u eraseblocks\n", i);
 +
-+	start_timing();
-+	while (1) {
-+		int i;
-+		void *patt;
++	err = crosstest();
++	if (err)
++		goto out;
 +
-+		/* Erase all eraseblocks */
-+		for (i = eb; i < eb + ebcnt; i++) {
-+			if (bad_ebs[i - eb])
-+				continue;
-+			err = erase_eraseblock(i);
-+			if (err)
-+				goto out;
-+			cond_resched();
-+		}
++	err = erasecrosstest();
++	if (err)
++		goto out;
 +
-+		/* Check if the eraseblocks contain only 0xFF bytes */
-+		if (check) {
-+			for (i = eb; i < eb + ebcnt; i++) {
-+				if (bad_ebs[i - eb])
-+					continue;
-+				err = check_eraseblock(i, patt_FF);
-+				if (err) {
-+					printk(PRINT_PREF "verify failed"
-+					       " for 0xFF... pattern\n");
-+					goto out;
-+				}
-+				cond_resched();
-+			}
-+		}
++	err = erasetest();
++	if (err)
++		goto out;
 +
-+		/* Write the pattern */
-+		for (i = eb; i < eb + ebcnt; i++) {
-+			if (bad_ebs[i - eb])
-+				continue;
-+			if ((eb + erase_cycles) & 1)
-+				patt = patt_5A5;
-+			else
-+				patt = patt_A5A;
-+			err = write_pattern(i, patt);
-+			if (err)
-+				goto out;
-+			cond_resched();
-+		}
-+
-+		/* Verify what we wrote */
-+		if (check) {
-+			for (i = eb; i < eb + ebcnt; i++) {
-+				if (bad_ebs[i - eb])
-+					continue;
-+				if ((eb + erase_cycles) & 1)
-+					patt = patt_5A5;
-+				else
-+					patt = patt_A5A;
-+				err = check_eraseblock(i, patt);
-+				if (err) {
-+					printk(PRINT_PREF "verify failed for %s"
-+					       " pattern\n",
-+					       ((eb + erase_cycles) & 1) ?
-+					       "0x55AA55..." : "0xAA55AA...");
-+					goto out;
-+				}
-+				cond_resched();
-+			}
-+		}
-+
-+		erase_cycles += 1;
-+
-+		if (erase_cycles % gran == 0) {
-+			long ms;
-+
-+			stop_timing();
-+			ms = (finish.tv_sec - start.tv_sec) * 1000 +
-+			     (finish.tv_usec - start.tv_usec) / 1000;
-+			printk(PRINT_PREF "%08u erase cycles done, took %lu "
-+			       "milliseconds (%lu seconds)\n",
-+			       erase_cycles, ms, ms / 1000);
-+			start_timing();
-+		}
-+
-+		if (!infinite && --cycles_count == 0)
-+			break;
-+	}
++	printk(PRINT_PREF "finished with %d errors\n", errcnt);
 +out:
 +
-+	printk(PRINT_PREF "finished after %u erase cycles\n",
-+	       erase_cycles);
-+	kfree(check_buf);
-+out_patt_FF:
-+	kfree(patt_FF);
-+out_patt_A5A:
-+	kfree(patt_A5A);
-+out_patt_5A5:
-+	kfree(patt_5A5);
-+out_mtd:
++	kfree(bbt);
++	kfree(boundary);
++	kfree(twopages);
++	kfree(writebuf);
 +	put_mtd_device(mtd);
 +	if (err)
-+		printk(PRINT_PREF "error %d occurred during torturing\n", err);
++		printk(PRINT_PREF "error %d occurred\n", err);
 +	printk(KERN_INFO "=================================================\n");
 +	return err;
 +}
-+module_init(tort_init);
++module_init(mtd_pagetest_init);
 +
-+static void __exit tort_exit(void)
++static void __exit mtd_pagetest_exit(void)
 +{
 +	return;
 +}
-+module_exit(tort_exit);
++module_exit(mtd_pagetest_exit);
 +
-+static int countdiffs(unsigned char *buf, unsigned char *check_buf,
-+		      unsigned offset, unsigned len, unsigned *bytesp,
-+		      unsigned *bitsp);
-+static void print_bufs(unsigned char *read, unsigned char *written, int start,
-+		       int len);
-+
-+/*
-+ * Report the detailed information about how the read EB differs from what was
-+ * written.
-+ */
-+static void report_corrupt(unsigned char *read, unsigned char *written)
-+{
-+	int i;
-+	int bytes, bits, pages, first;
-+	int offset, len;
-+	size_t check_len = mtd->erasesize;
-+
-+	if (pgcnt)
-+		check_len = pgcnt * pgsize;
-+
-+	bytes = bits = pages = 0;
-+	for (i = 0; i < check_len; i += pgsize)
-+		if (countdiffs(written, read, i, pgsize, &bytes,
-+			       &bits) >= 0)
-+			pages++;
-+
-+	printk(PRINT_PREF "verify fails on %d pages, %d bytes/%d bits\n",
-+	       pages, bytes, bits);
-+	printk(PRINT_PREF "The following is a list of all differences between"
-+	       " what was read from flash and what was expected\n");
-+
-+	for (i = 0; i < check_len; i += pgsize) {
-+		cond_resched();
-+		bytes = bits = 0;
-+		first = countdiffs(written, read, i, pgsize, &bytes,
-+				   &bits);
-+		if (first < 0)
-+			continue;
-+
-+		printk("-------------------------------------------------------"
-+		       "----------------------------------\n");
-+
-+		printk(PRINT_PREF "Page %d has %d bytes/%d bits failing verify,"
-+		       " starting at offset 0x%x\n",
-+		       (mtd->erasesize - check_len + i) / pgsize,
-+		       bytes, bits, first);
-+
-+		offset = first & ~0x7;
-+		len    = ((first + bytes) | 0x7) + 1 - offset;
-+
-+		print_bufs(read, written, offset, len);
-+	}
-+}
-+
-+static void print_bufs(unsigned char *read, unsigned char *written, int start,
-+		       int len)
-+{
-+	int i = 0, j1, j2;
-+	char *diff;
-+
-+	printk("Offset       Read                          Written\n");
-+	while (i < len) {
-+		printk("0x%08x: ", start + i);
-+		diff = "   ";
-+		for (j1 = 0; j1 < 8 && i + j1 < len; j1++) {
-+			printk(" %02x", read[start + i + j1]);
-+			if (read[start + i + j1] != written[start + i + j1])
-+				diff = "***";
-+		}
-+
-+		while (j1 < 8) {
-+			printk(" ");
-+			j1 += 1;
-+		}
-+
-+		printk("  %s ", diff);
-+
-+		for (j2 = 0; j2 < 8 && i + j2 < len; j2++)
-+			printk(" %02x", written[start + i + j2]);
-+		printk("\n");
-+		i += 8;
-+	}
-+}
-+
-+/*
-+ * Count the number of differing bytes and bits and return the first differing
-+ * offset.
-+ */
-+static int countdiffs(unsigned char *buf, unsigned char *check_buf,
-+		      unsigned offset, unsigned len, unsigned *bytesp,
-+		      unsigned *bitsp)
-+{
-+	unsigned i, bit;
-+	int first = -1;
-+
-+	for (i = offset; i < offset + len; i++)
-+		if (buf[i] != check_buf[i]) {
-+			first = i;
-+			break;
-+		}
-+
-+	while (i < offset + len) {
-+		if (buf[i] != check_buf[i]) {
-+			(*bytesp)++;
-+			bit = 1;
-+			while (bit < 256) {
-+				if ((buf[i] & bit) != (check_buf[i] & bit))
-+					(*bitsp)++;
-+				bit <<= 1;
-+			}
-+		}
-+		i++;
-+	}
-+
-+	return first;
-+}
-+
-+MODULE_DESCRIPTION("Eraseblock torturing module");
-+MODULE_AUTHOR("Artem Bityutskiy, Jarkko Lavinen, Adrian Hunter");
++MODULE_DESCRIPTION("NAND page test");
++MODULE_AUTHOR("Adrian Hunter");
 +MODULE_LICENSE("GPL");
 -- 
 1.5.4.3
