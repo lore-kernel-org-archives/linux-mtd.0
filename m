@@ -1,8 +1,17 @@
+Received: from mgw-fb01.nokia.com ([192.100.122.235])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1L9e5Y-0001Ne-Rz
+	for linux-mtd@lists.infradead.org; Mon, 08 Dec 2008 11:15:45 +0000
+Received: from mgw-mx03.nokia.com (mgw-mx03.nokia.com [192.100.122.230])
+	by mgw-fb01.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
+	mB8BFf26026249
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <linux-mtd@lists.infradead.org>; Mon, 8 Dec 2008 13:15:42 +0200
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] MTD: tests: add mtd_subpagetest
-Date: Mon,  8 Dec 2008 14:50:19 +0200
-Message-Id: <1228740621-15197-7-git-send-email-dedekind@infradead.org>
+Subject: [PATCH] MTD: tests: add mtd_readtest
+Date: Mon,  8 Dec 2008 14:50:16 +0200
+Message-Id: <1228740621-15197-4-git-send-email-dedekind@infradead.org>
 In-Reply-To: <1228740621-15197-1-git-send-email-dedekind@infradead.org>
 References: <1228740621-15197-1-git-send-email-dedekind@infradead.org>
 Cc: linux-mtd@lists.infradead.org
@@ -17,22 +26,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-This tests makes sure sub-pages on NAND MTD device work fine.
+A simple tests which reads whole MTD device one page at a time.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- drivers/mtd/tests/mtd_subpagetest.c |  525 +++++++++++++++++++++++++++++++++++
- 1 files changed, 525 insertions(+), 0 deletions(-)
- create mode 100644 drivers/mtd/tests/mtd_subpagetest.c
+ drivers/mtd/tests/mtd_readtest.c |  253 ++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 253 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/tests/mtd_readtest.c
 
-diff --git a/drivers/mtd/tests/mtd_subpagetest.c b/drivers/mtd/tests/mtd_subpagetest.c
+diff --git a/drivers/mtd/tests/mtd_readtest.c b/drivers/mtd/tests/mtd_readtest.c
 new file mode 100644
-index 0000000..4c5e04d
+index 0000000..645e77f
 --- /dev/null
-+++ b/drivers/mtd/tests/mtd_subpagetest.c
-@@ -0,0 +1,525 @@
++++ b/drivers/mtd/tests/mtd_readtest.c
+@@ -0,0 +1,253 @@
 +/*
-+ * Copyright (C) 2006-2007 Nokia Corporation
++ * Copyright (C) 2006-2008 Nokia Corporation
 + *
 + * This program is free software; you can redistribute it and/or modify it
 + * under the terms of the GNU General Public License version 2 as published by
@@ -47,9 +56,9 @@ index 0000000..4c5e04d
 + * this program; see the file COPYING. If not, write to the Free Software
 + * Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 + *
-+ * Test sub-page read and write on MTD device.
-+ * Author: Adrian Hunter <ext-adrian.hunter@nokia.com>
++ * Check MTD device read.
 + *
++ * Author: Adrian Hunter <ext-adrian.hunter@nokia.com>
 + */
 +
 +#include <linux/init.h>
@@ -59,316 +68,103 @@ index 0000000..4c5e04d
 +#include <linux/mtd/mtd.h>
 +#include <linux/sched.h>
 +
-+#define PRINT_PREF KERN_INFO "mtd_subpagetest: "
++#define PRINT_PREF KERN_INFO "mtd_readtest: "
 +
 +static int dev;
 +module_param(dev, int, S_IRUGO);
 +MODULE_PARM_DESC(dev, "MTD device number to use");
 +
 +static struct mtd_info *mtd;
-+static unsigned char *writebuf;
-+static unsigned char *readbuf;
++static unsigned char *iobuf;
++static unsigned char *iobuf1;
 +static unsigned char *bbt;
 +
-+static int subpgsize;
-+static int bufsize;
++static int pgsize;
 +static int ebcnt;
 +static int pgcnt;
-+static int errcnt;
-+static unsigned long next = 1;
 +
-+static inline unsigned int simple_rand(void)
-+{
-+	next = next * 1103515245 + 12345;
-+	return (unsigned int)((next / 65536) % 32768);
-+}
-+
-+static inline void simple_srand(unsigned long seed)
-+{
-+	next = seed;
-+}
-+
-+static void set_random_data(unsigned char *buf, size_t len)
-+{
-+	size_t i;
-+
-+	for (i = 0; i < len; ++i)
-+		buf[i] = simple_rand();
-+}
-+
-+static inline void clear_data(unsigned char *buf, size_t len)
-+{
-+	memset(buf, 0, len);
-+}
-+
-+static int erase_eraseblock(int ebnum)
-+{
-+	int err;
-+	struct erase_info ei;
-+	loff_t addr = ebnum * mtd->erasesize;
-+
-+	memset(&ei, 0, sizeof(struct erase_info));
-+	ei.mtd  = mtd;
-+	ei.addr = addr;
-+	ei.len  = mtd->erasesize;
-+
-+	err = mtd->erase(mtd, &ei);
-+	if (err) {
-+		printk(PRINT_PREF "error %d while erasing EB %d\n", err, ebnum);
-+		return err;
-+	}
-+
-+	if (ei.state == MTD_ERASE_FAILED) {
-+		printk(PRINT_PREF "some erase error occurred at EB %d\n",
-+		       ebnum);
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
-+static int erase_whole_device(void)
-+{
-+	int err;
-+	unsigned int i;
-+
-+	printk(PRINT_PREF "erasing whole device\n");
-+	for (i = 0; i < ebcnt; ++i) {
-+		if (bbt[i])
-+			continue;
-+		err = erase_eraseblock(i);
-+		if (err)
-+			return err;
-+		cond_resched();
-+	}
-+	printk(PRINT_PREF "erased %u eraseblocks\n", i);
-+	return 0;
-+}
-+
-+static int write_eraseblock(int ebnum)
-+{
-+	size_t written = 0;
-+	int err = 0;
-+	loff_t addr = ebnum * mtd->erasesize;
-+
-+	set_random_data(writebuf, subpgsize);
-+	err = mtd->write(mtd, addr, subpgsize, &written, writebuf);
-+	if (unlikely(err || written != subpgsize)) {
-+		printk(PRINT_PREF "error: write failed at %#llx\n",
-+		       (long long)addr);
-+		if (written != subpgsize) {
-+			printk(PRINT_PREF "  write size: %#x\n", subpgsize);
-+			printk(PRINT_PREF "  written: %#x\n", written);
-+		}
-+		return err ? err : -1;
-+	}
-+
-+	addr += subpgsize;
-+
-+	set_random_data(writebuf, subpgsize);
-+	err = mtd->write(mtd, addr, subpgsize, &written, writebuf);
-+	if (unlikely(err || written != subpgsize)) {
-+		printk(PRINT_PREF "error: write failed at %#llx\n",
-+		       (long long)addr);
-+		if (written != subpgsize) {
-+			printk(PRINT_PREF "  write size: %#x\n", subpgsize);
-+			printk(PRINT_PREF "  written: %#x\n", written);
-+		}
-+		return err ? err : -1;
-+	}
-+
-+	return err;
-+}
-+
-+static int write_eraseblock2(int ebnum)
-+{
-+	size_t written = 0;
-+	int err = 0, k;
-+	loff_t addr = ebnum * mtd->erasesize;
-+
-+	for (k = 1; k < 33; ++k) {
-+		if (addr + (subpgsize * k) > (ebnum + 1) * mtd->erasesize)
-+			break;
-+		set_random_data(writebuf, subpgsize * k);
-+		err = mtd->write(mtd, addr, subpgsize * k, &written, writebuf);
-+		if (unlikely(err || written != subpgsize * k)) {
-+			printk(PRINT_PREF "error: write failed at %#llx\n",
-+			       (long long)addr);
-+			if (written != subpgsize) {
-+				printk(PRINT_PREF "  write size: %#x\n",
-+				       subpgsize * k);
-+				printk(PRINT_PREF "  written: %#08x\n",
-+				       written);
-+			}
-+			return err ? err : -1;
-+		}
-+		addr += subpgsize * k;
-+	}
-+
-+	return err;
-+}
-+
-+static void print_subpage(unsigned char *p)
-+{
-+	int i, j;
-+
-+	for (i = 0; i < subpgsize; ) {
-+		for (j = 0; i < subpgsize && j < 32; ++i, ++j)
-+			printk("%02x", *p++);
-+		printk("\n");
-+	}
-+}
-+
-+static int verify_eraseblock(int ebnum)
++static int read_eraseblock_by_page(int ebnum)
 +{
 +	size_t read = 0;
-+	int err = 0;
++	int i, ret, err = 0;
 +	loff_t addr = ebnum * mtd->erasesize;
++	void *buf = iobuf;
++	void *oobbuf = iobuf1;
 +
-+	set_random_data(writebuf, subpgsize);
-+	clear_data(readbuf, subpgsize);
-+	read = 0;
-+	err = mtd->read(mtd, addr, subpgsize, &read, readbuf);
-+	if (unlikely(err || read != subpgsize)) {
-+		if (err == -EUCLEAN && read == subpgsize) {
-+			printk(PRINT_PREF "ECC correction at %#llx\n",
-+			       (long long)addr);
-+			err = 0;
-+		} else {
++	for (i = 0; i < pgcnt; i++) {
++		memset(buf, 0 , pgcnt);
++		ret = mtd->read(mtd, addr, pgsize, &read, buf);
++		if (ret == -EUCLEAN)
++			ret = 0;
++		if (ret || read != pgsize) {
 +			printk(PRINT_PREF "error: read failed at %#llx\n",
 +			       (long long)addr);
-+			return err ? err : -1;
++			if (!err)
++				err = ret;
++			if (!err)
++				err = -EINVAL;
 +		}
-+	}
-+	if (unlikely(memcmp(readbuf, writebuf, subpgsize))) {
-+		printk(PRINT_PREF "error: verify failed at %#llx\n",
-+		       (long long)addr);
-+		printk(PRINT_PREF "------------- written----------------\n");
-+		print_subpage(writebuf);
-+		printk(PRINT_PREF "------------- read ------------------\n");
-+		print_subpage(readbuf);
-+		printk(PRINT_PREF "-------------------------------------\n");
-+		errcnt += 1;
-+	}
++		if (mtd->oobsize) {
++			struct mtd_oob_ops ops;
 +
-+	addr += subpgsize;
-+
-+	set_random_data(writebuf, subpgsize);
-+	clear_data(readbuf, subpgsize);
-+	read = 0;
-+	err = mtd->read(mtd, addr, subpgsize, &read, readbuf);
-+	if (unlikely(err || read != subpgsize)) {
-+		if (err == -EUCLEAN && read == subpgsize) {
-+			printk(PRINT_PREF "ECC correction at %#llx\n",
-+			       (long long)addr);
-+			err = 0;
-+		} else {
-+			printk(PRINT_PREF "error: read failed at %#llx\n",
-+			       (long long)addr);
-+			return err ? err : -1;
-+		}
-+	}
-+	if (unlikely(memcmp(readbuf, writebuf, subpgsize))) {
-+		printk(PRINT_PREF "error: verify failed at %#llx\n",
-+		       (long long)addr);
-+		printk(PRINT_PREF "------------- written----------------\n");
-+		print_subpage(writebuf);
-+		printk(PRINT_PREF "------------- read ------------------\n");
-+		print_subpage(readbuf);
-+		printk(PRINT_PREF "-------------------------------------\n");
-+		errcnt += 1;
-+	}
-+
-+	return err;
-+}
-+
-+static int verify_eraseblock2(int ebnum)
-+{
-+	size_t read = 0;
-+	int err = 0, k;
-+	loff_t addr = ebnum * mtd->erasesize;
-+
-+	for (k = 1; k < 33; ++k) {
-+		if (addr + (subpgsize * k) > (ebnum + 1) * mtd->erasesize)
-+			break;
-+		set_random_data(writebuf, subpgsize * k);
-+		clear_data(readbuf, subpgsize * k);
-+		read = 0;
-+		err = mtd->read(mtd, addr, subpgsize * k, &read, readbuf);
-+		if (unlikely(err || read != subpgsize * k)) {
-+			if (err == -EUCLEAN && read == subpgsize * k) {
-+				printk(PRINT_PREF "ECC correction at %#llx\n",
-+				       (long long)addr);
-+				err = 0;
-+			} else {
-+				printk(PRINT_PREF "error: read failed at "
-+				       "%#llx\n", (long long)addr);
-+				return err ? err : -1;
++			ops.mode      = MTD_OOB_PLACE;
++			ops.len       = 0;
++			ops.retlen    = 0;
++			ops.ooblen    = mtd->oobsize;
++			ops.oobretlen = 0;
++			ops.ooboffs   = 0;
++			ops.datbuf    = 0;
++			ops.oobbuf    = oobbuf;
++			ret = mtd->read_oob(mtd, addr, &ops);
++			if (ret || ops.oobretlen != mtd->oobsize) {
++				printk(PRINT_PREF "error: read oob failed at "
++						  "%#llx\n", (long long)addr);
++				if (!err)
++					err = ret;
++				if (!err)
++					err = -EINVAL;
 +			}
++			oobbuf += mtd->oobsize;
 +		}
-+		if (unlikely(memcmp(readbuf, writebuf, subpgsize * k))) {
-+			printk(PRINT_PREF "error: verify failed at %#llx\n",
-+			       (long long)addr);
-+			errcnt += 1;
-+		}
-+		addr += subpgsize * k;
++		addr += pgsize;
++		buf += pgsize;
 +	}
 +
 +	return err;
 +}
 +
-+static int verify_eraseblock_ff(int ebnum)
++static void dump_eraseblock(int ebnum)
 +{
-+	uint32_t j;
-+	size_t read = 0;
-+	int err = 0;
-+	loff_t addr = ebnum * mtd->erasesize;
++	int i, j, n;
++	char line[128];
++	int pg, oob;
 +
-+	memset(writebuf, 0xff, subpgsize);
-+	for (j = 0; j < mtd->erasesize / subpgsize; ++j) {
-+		clear_data(readbuf, subpgsize);
-+		read = 0;
-+		err = mtd->read(mtd, addr, subpgsize, &read, readbuf);
-+		if (unlikely(err || read != subpgsize)) {
-+			if (err == -EUCLEAN && read == subpgsize) {
-+				printk(PRINT_PREF "ECC correction at %#llx\n",
-+				       (long long)addr);
-+				err = 0;
-+			} else {
-+				printk(PRINT_PREF "error: read failed at "
-+				       "%#llx\n", (long long)addr);
-+				return err ? err : -1;
-+			}
-+		}
-+		if (unlikely(memcmp(readbuf, writebuf, subpgsize))) {
-+			printk(PRINT_PREF "error: verify 0xff failed at "
-+			       "%#llx\n", (long long)addr);
-+			errcnt += 1;
-+		}
-+		addr += subpgsize;
-+	}
++	printk(PRINT_PREF "dumping eraseblock %d\n", ebnum);
++	n = mtd->erasesize;
++	for (i = 0; i < n;) {
++		char *p = line;
 +
-+	return err;
-+}
-+
-+static int verify_all_eraseblocks_ff(void)
-+{
-+	int err;
-+	unsigned int i;
-+
-+	printk(PRINT_PREF "verifying all eraseblocks for 0xff\n");
-+	for (i = 0; i < ebcnt; ++i) {
-+		if (bbt[i])
-+			continue;
-+		err = verify_eraseblock_ff(i);
-+		if (err)
-+			return err;
-+		if (i % 256 == 0)
-+			printk(PRINT_PREF "verified up to eraseblock %u\n", i);
++		p += sprintf(p, "%05x: ", i);
++		for (j = 0; j < 32 && i < n; j++, i++)
++			p += sprintf(p, "%02x", (unsigned int)iobuf[i]);
++		printk(KERN_CRIT "%s\n", line);
 +		cond_resched();
 +	}
-+	printk(PRINT_PREF "verified %u eraseblocks\n", i);
-+	return 0;
++	if (!mtd->oobsize)
++		return;
++	printk(PRINT_PREF "dumping oob from eraseblock %d\n", ebnum);
++	n = mtd->oobsize;
++	for (pg = 0, i = 0; pg < pgcnt; pg++)
++		for (oob = 0; oob < n;) {
++			char *p = line;
++
++			p += sprintf(p, "%05x: ", i);
++			for (j = 0; j < 32 && oob < n; j++, oob++, i++)
++				p += sprintf(p, "%02x",
++					     (unsigned int)iobuf1[i]);
++			printk(KERN_CRIT "%s\n", line);
++			cond_resched();
++		}
 +}
 +
 +static int is_block_bad(int ebnum)
@@ -404,11 +200,10 @@ index 0000000..4c5e04d
 +	return 0;
 +}
 +
-+static int __init mtd_subpagetest_init(void)
++static int __init mtd_readtest_init(void)
 +{
-+	int err = 0;
-+	uint32_t i;
 +	uint64_t tmp;
++	int err, i;
 +
 +	printk(KERN_INFO "\n");
 +	printk(KERN_INFO "=================================================\n");
@@ -417,143 +212,85 @@ index 0000000..4c5e04d
 +	mtd = get_mtd_device(NULL, dev);
 +	if (IS_ERR(mtd)) {
 +		err = PTR_ERR(mtd);
-+		printk(PRINT_PREF "error: cannot get MTD device\n");
++		printk(PRINT_PREF "error: Cannot get MTD device\n");
 +		return err;
 +	}
 +
-+	if (mtd->type != MTD_NANDFLASH) {
-+		printk(PRINT_PREF "this test requires NAND flash\n");
-+		goto out;
-+	}
-+
-+	subpgsize = mtd->writesize >> mtd->subpage_sft;
-+	printk(PRINT_PREF "MTD device size %llu, eraseblock size %u, "
-+	       "page size %u, subpage size %u, count of eraseblocks %u, "
-+	       "pages per eraseblock %u, OOB size %u\n",
-+	       (unsigned long long)mtd->size, mtd->erasesize,
-+	       mtd->writesize, subpgsize, ebcnt, pgcnt, mtd->oobsize);
-+
-+	err = -ENOMEM;
-+	bufsize = subpgsize * 32;
-+	writebuf = kmalloc(bufsize, GFP_KERNEL);
-+	if (!writebuf) {
-+		printk(PRINT_PREF "error: cannot allocate memory\n");
-+		goto out;
-+	}
-+	readbuf = kmalloc(bufsize, GFP_KERNEL);
-+	if (!readbuf) {
-+		printk(PRINT_PREF "error: cannot allocate memory\n");
-+		goto out;
-+	}
++	if (mtd->writesize == 1) {
++		printk(PRINT_PREF "not NAND flash, assume page size is 512 "
++		       "bytes.\n");
++		pgsize = 512;
++	} else
++		pgsize = mtd->writesize;
 +
 +	tmp = mtd->size;
 +	do_div(tmp, mtd->erasesize);
 +	ebcnt = tmp;
 +	pgcnt = mtd->erasesize / mtd->writesize;
 +
++	printk(PRINT_PREF "MTD device size %llu, eraseblock size %u, "
++	       "page size %u, count of eraseblocks %u, pages per "
++	       "eraseblock %u, OOB size %u\n",
++	       (unsigned long long)mtd->size, mtd->erasesize,
++	       pgsize, ebcnt, pgcnt, mtd->oobsize);
++
++	err = -ENOMEM;
++	iobuf = kmalloc(mtd->erasesize, GFP_KERNEL);
++	if (!iobuf) {
++		printk(PRINT_PREF "error: cannot allocate memory\n");
++		goto out;
++	}
++	iobuf1 = kmalloc(mtd->erasesize, GFP_KERNEL);
++	if (!iobuf1) {
++		printk(PRINT_PREF "error: cannot allocate memory\n");
++		goto out;
++	}
++
 +	err = scan_for_bad_eraseblocks();
 +	if (err)
 +		goto out;
 +
-+	err = erase_whole_device();
-+	if (err)
-+		goto out;
-+
-+	printk(PRINT_PREF "writing whole device\n");
-+	simple_srand(1);
++	/* Read all eraseblocks 1 page at a time */
++	printk(PRINT_PREF "testing page read\n");
 +	for (i = 0; i < ebcnt; ++i) {
++		int ret;
++
 +		if (bbt[i])
 +			continue;
-+		err = write_eraseblock(i);
-+		if (unlikely(err))
-+			goto out;
-+		if (i % 256 == 0)
-+			printk(PRINT_PREF "written up to eraseblock %u\n", i);
++		ret = read_eraseblock_by_page(i);
++		if (ret) {
++			dump_eraseblock(i);
++			if (!err)
++				err = ret;
++		}
 +		cond_resched();
 +	}
-+	printk(PRINT_PREF "written %u eraseblocks\n", i);
 +
-+	simple_srand(1);
-+	printk(PRINT_PREF "verifying all eraseblocks\n");
-+	for (i = 0; i < ebcnt; ++i) {
-+		if (bbt[i])
-+			continue;
-+		err = verify_eraseblock(i);
-+		if (unlikely(err))
-+			goto out;
-+		if (i % 256 == 0)
-+			printk(PRINT_PREF "verified up to eraseblock %u\n", i);
-+		cond_resched();
-+	}
-+	printk(PRINT_PREF "verified %u eraseblocks\n", i);
-+
-+	err = erase_whole_device();
 +	if (err)
-+		goto out;
-+
-+	err = verify_all_eraseblocks_ff();
-+	if (err)
-+		goto out;
-+
-+	/* Write all eraseblocks */
-+	simple_srand(3);
-+	printk(PRINT_PREF "writing whole device\n");
-+	for (i = 0; i < ebcnt; ++i) {
-+		if (bbt[i])
-+			continue;
-+		err = write_eraseblock2(i);
-+		if (unlikely(err))
-+			goto out;
-+		if (i % 256 == 0)
-+			printk(PRINT_PREF "written up to eraseblock %u\n", i);
-+		cond_resched();
-+	}
-+	printk(PRINT_PREF "written %u eraseblocks\n", i);
-+
-+	/* Check all eraseblocks */
-+	simple_srand(3);
-+	printk(PRINT_PREF "verifying all eraseblocks\n");
-+	for (i = 0; i < ebcnt; ++i) {
-+		if (bbt[i])
-+			continue;
-+		err = verify_eraseblock2(i);
-+		if (unlikely(err))
-+			goto out;
-+		if (i % 256 == 0)
-+			printk(PRINT_PREF "verified up to eraseblock %u\n", i);
-+		cond_resched();
-+	}
-+	printk(PRINT_PREF "verified %u eraseblocks\n", i);
-+
-+	err = erase_whole_device();
-+	if (err)
-+		goto out;
-+
-+	err = verify_all_eraseblocks_ff();
-+	if (err)
-+		goto out;
-+
-+	printk(PRINT_PREF "finished with %d errors\n", errcnt);
++		printk(PRINT_PREF "finished with errors\n");
++	else
++		printk(PRINT_PREF "finished\n");
 +
 +out:
++
++	kfree(iobuf);
++	kfree(iobuf1);
 +	kfree(bbt);
-+	kfree(readbuf);
-+	kfree(writebuf);
 +	put_mtd_device(mtd);
 +	if (err)
 +		printk(PRINT_PREF "error %d occurred\n", err);
 +	printk(KERN_INFO "=================================================\n");
 +	return err;
 +}
-+module_init(mtd_subpagetest_init);
++module_init(mtd_readtest_init);
 +
-+static void __exit mtd_subpagetest_exit(void)
++static void __exit mtd_readtest_exit(void)
 +{
 +	return;
 +}
-+module_exit(mtd_subpagetest_exit);
++module_exit(mtd_readtest_exit);
 +
-+MODULE_DESCRIPTION("Subpage test module");
++MODULE_DESCRIPTION("Read test module");
 +MODULE_AUTHOR("Adrian Hunter");
 +MODULE_LICENSE("GPL");
 -- 
