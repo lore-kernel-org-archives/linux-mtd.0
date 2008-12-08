@@ -1,20 +1,24 @@
-Received: from vervifontaine.sonytel.be ([80.88.33.193]
-	helo=vervifontaine.sonycom.com)
+Received: from moutng.kundenserver.de ([212.227.126.177])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L9iCo-0002oR-N6
-	for linux-mtd@lists.infradead.org; Mon, 08 Dec 2008 15:39:31 +0000
-Date: Mon, 8 Dec 2008 16:39:20 +0100 (CET)
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Sender: geert@sonytel.be
-To: Jianjun Kong <jianjun@zeuux.org>
-Subject: Re: [PATCH] fs: cleanup for fs/jffs2/compr_rubin.c
-In-Reply-To: <20081208150554.GA22245@ubuntu>
-Message-ID: <Pine.LNX.4.64.0812081637370.5170@vixen.sonytel.be>
-References: <20081208150554.GA22245@ubuntu>
+	id 1L9iP7-0002J4-OY
+	for linux-mtd@lists.infradead.org; Mon, 08 Dec 2008 15:52:14 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: dedekind@infradead.org
+Subject: Re: UBI/DVB ioctl conflict?
+Date: Mon, 8 Dec 2008 16:50:53 +0100
+References: <20081207095811.13b51cca@zod.rchland.ibm.com>
+	<200812081041.14178.laurentp@cse-semaphore.com>
+	<1228729915.13686.95.camel@sauron>
+In-Reply-To: <1228729915.13686.95.camel@sauron>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Cc: linux-mtd@lists.infradead.org, David.Woodhouse@intel.com
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200812081650.54346.arnd@arndb.de>
+Cc: Laurent Pinchart <laurentp@cse-semaphore.com>,
+	v4l-dvb-maintainer@linuxtv.org, linux-mtd@lists.infradead.org,
+	LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,86 +28,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 8 Dec 2008, Jianjun Kong wrote:
-> fs: cleanup for fs/jffs2/compr_rubin.c
+On Monday 08 December 2008, Artem Bityutskiy wrote:
+> On Mon, 2008-12-08 at 10:41 +0100, Laurent Pinchart wrote:
+> > Correct me if I'm wrong, but doesn't this only matters for devices that would 
+> > implement both the UBI and DVB API on the same inode ? That would be quite 
+> > unlikely.
 > 
-> fs/jffs2/compr_rubin.c:
-> remove duplicated #include and other cleanup
-> 
-> Signed-off-by: Jianjun Kong <jianjun@zeuux.org>
-> ---
->  fs/jffs2/compr_rubin.c |   11 +++++------
->  1 files changed, 5 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/jffs2/compr_rubin.c b/fs/jffs2/compr_rubin.c
-> index c73fa89..cb02050 100644
-> --- a/fs/jffs2/compr_rubin.c
-> +++ b/fs/jffs2/compr_rubin.c
-> @@ -24,8 +24,6 @@
->  #define BIT_DIVIDER_MIPS 1043
->  static int bits_mips[8] = { 277,249,290,267,229,341,212,241}; /* mips32 */
->  
-> -#include <linux/errno.h>
-> -
->  struct pushpull {
->  	unsigned char *buf;
->  	unsigned int buflen;
-> @@ -157,7 +155,8 @@ static void init_decode(struct rubin_state *rs, int div, int *bits)
->  	/* behalve lower */
->  	rs->rec_q = 0;
->  
-> -	for (rs->bit_number = 0; rs->bit_number++ < RUBIN_REG_SIZE; rs->rec_q = rs->rec_q * 2 + (long) (pullbit(&rs->pp)))
-> +	for (rs->bit_number = 0; rs->bit_number++ < RUBIN_REG_SIZE;
-> +		rs->rec_q = rs->rec_q * 2 + (long) (pullbit(&rs->pp)))
->  		;
->  }
->  
-> @@ -234,14 +233,14 @@ static int out_byte(struct rubin_state *rs, unsigned char byte)
->  	struct rubin_state rs_copy;
->  	rs_copy = *rs;
->  
-> -	for (i=0;i<8;i++) {
-> -		ret = encode(rs, rs->bit_divider-rs->bits[i],rs->bits[i],byte&1);
-> +	for (i=0; i<8; i++) {
+> Yeah, I guess. But this anyway makes sense to keep ioctls
+> non-overlapping.
 
-scripts/checkpatch.pl still complains:
+We try hard (but sometimes fail) to keep every ioctl number unique.
+The reason for this is that the device drivers are not the only
+pieces of code that look at them. Specifically, three other things
+frequently cause problems here:
 
-ERROR: spaces required around that '=' (ctx:VxV)
-#47: FILE: fs/jffs2/compr_rubin.c:236:
-+       for (i=0; i<8; i++) {
-              ^
-ERROR: spaces required around that '<' (ctx:VxV)
-#47: FILE: fs/jffs2/compr_rubin.c:236:
-+       for (i=0; i<8; i++) {
-                   ^
-> +		ret = encode(rs, rs->bit_divider-rs->bits[i], rs->bits[i], byte&1);
+* strace wants to know about ioctl numbers so that it can show
+the arguments in a meaningful way when tracing a program.
 
-WARNING: line over 80 characters
+* the original 64 bit emulation for ioctl numbers in fs/compat_ioctl.c
+assumes that it should translate specific calls in a given way. This
+is not important if both device drivers handle all their ioctls through
+their own ->compat_ioctl file operation.
 
->  		if (ret) {
->  			/* Failed. Restore old state */
->  			*rs = rs_copy;
->  			return ret;
->  		}
-> -		byte=byte>>1;
-> +		byte >>= 1;
->  	}
->  	return 0;
->  }
+* A number of binary emulation layers try to convert between different
+formats (endianess, word size, ioctl numbers). The most common ones are
+Linux-on-BSD, x86-on-ia64, x86-on-powerpc and Unix-on-Linux emulation
+layers in user space.
 
-With kind regards,
-
-Geert Uytterhoeven
-Software Architect
-
-Sony Techsoft Centre Europe
-The Corporate Village · Da Vincilaan 7-D1 · B-1935 Zaventem · Belgium
-
-Phone:    +32 (0)2 700 8453
-Fax:      +32 (0)2 700 8622
-E-mail:   Geert.Uytterhoeven@sonycom.com
-Internet: http://www.sony-europe.com/
-
-A division of Sony Europe (Belgium) N.V.
-VAT BE 0413.825.160 · RPR Brussels
-Fortis · BIC GEBABEBB · IBAN BE41293037680010
+	Arnd <><
