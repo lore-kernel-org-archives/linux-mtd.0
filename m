@@ -1,15 +1,16 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L9fmp-0000Md-NT
-	for linux-mtd@lists.infradead.org; Mon, 08 Dec 2008 13:04:34 +0000
+	id 1L9fsU-0006Wj-6L
+	for linux-mtd@lists.infradead.org; Mon, 08 Dec 2008 13:10:22 +0000
 Subject: Re: [PATCH] UBI WL-Subsystem: Improvement in prot tree
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
-In-Reply-To: <1228724140.2694.27.camel@localhost.localdomain>
+In-Reply-To: <1228741326.13686.119.camel@sauron>
 References: <1228724140.2694.27.camel@localhost.localdomain>
+	<1228741326.13686.119.camel@sauron>
 Content-Type: text/plain; charset=utf-8
-Date: Mon, 08 Dec 2008 15:02:06 +0200
-Message-Id: <1228741326.13686.119.camel@sauron>
+Date: Mon, 08 Dec 2008 15:08:07 +0200
+Message-Id: <1228741687.13686.122.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -23,56 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2008-12-08 at 16:15 +0800, xiaochuan-xu wrote:
-> Hi, all.
+On Mon, 2008-12-08 at 15:02 +0200, Artem Bityutskiy wrote:
+> On Mon, 2008-12-08 at 16:15 +0800, xiaochuan-xu wrote:
+> > Hi, all.
+> >=20
+> > A new PEB protection method in UBI WL-Subsystem is implemented,
+> > It's simpler and higher efficiency than the older prot RB-tree, I think=
+.
+> >=20
+> > 1. without two prot RB-tree, there is only one prot array, But their
+> > functions are the same.
+> >=20
+> > 2. no other structure needed except @ubi_wl_entry ubi_wl_prot_entry is
+> > discarded. and we need not malloc new struct every time in
+> > ubi_wl_get_peb() function.
+> >=20
+> > 3. protarray add and del operation are O(1) operations, and check over
+> > opteration is O(n), which is better then the older prot RB-tree
+> > implement.
 >=20
-> A new PEB protection method in UBI WL-Subsystem is implemented,
-> It's simpler and higher efficiency than the older prot RB-tree, I think.
+> Hi,
 >=20
-> 1. without two prot RB-tree, there is only one prot array, But their
-> functions are the same.
->=20
-> 2. no other structure needed except @ubi_wl_entry ubi_wl_prot_entry is
-> discarded. and we need not malloc new struct every time in
-> ubi_wl_get_peb() function.
->=20
-> 3. protarray add and del operation are O(1) operations, and check over
-> opteration is O(n), which is better then the older prot RB-tree
-> implement.
+> yeah, I like the idea. Indeed there is no reason to have balanced trees
+> for this "protection" stuff, and a list should be enough. The list does
+> not have to be long, 8-16 entries are enough, so search should be quick
+> enough. Every time an eraseblock is erased, we take one element from the
+> head of the list, and we add new elements to the head of the list, so it
+> acts as a queue.
 
-Hi,
+Err, sure we add elements to the tail.
 
-yeah, I like the idea. Indeed there is no reason to have balanced trees
-for this "protection" stuff, and a list should be enough. The list does
-not have to be long, 8-16 entries are enough, so search should be quick
-enough. Every time an eraseblock is erased, we take one element from the
-head of the list, and we add new elements to the head of the list, so it
-acts as a queue.
-
-I'll accept such a change, but not with this patch, because there are
-problems. Here are some of them.
-
-1. It is line-wrapped. Please, learn how to send patches correctly.
-Please, try send it to yourself, then try to apply what you have
-received.
-
-2. Let's call it "protection list", not array.
-
-3. Please, split your patch on several pieces. One obvious piece would
-be introducing the union to
-
- struct ubi_wl_entry {
--       struct rb_node rb;
-+       union {
-+               struct rb_node rb;
-+       } u;
-
-and at the nest patches you add a list to the union. This way you will
-simplify further patches and make them easier to review because they
-will not contain huge number of changes like
-
--               e1 =3D rb_entry(p, struct ubi_wl_entry, rb);
-+               e1 =3D rb_entry(p, struct ubi_wl_entry, u.rb);
+I've created a git tree for you again (xxc-ubi-2.6.git).
 
 --=20
 Best regards,
