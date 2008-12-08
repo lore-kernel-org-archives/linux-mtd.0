@@ -1,21 +1,22 @@
-Received: from mail2.shareable.org ([80.68.89.115])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L9gCb-0003cV-MV
-	for linux-mtd@lists.infradead.org; Mon, 08 Dec 2008 13:31:10 +0000
-Date: Mon, 8 Dec 2008 13:31:06 +0000
-From: Jamie Lokier <jamie@shareable.org>
-To: Laurent Pinchart <laurentp@cse-semaphore.com>
-Subject: Re: UBI/DVB ioctl conflict?
-Message-ID: <20081208133106.GA16354@shareable.org>
-References: <20081207095811.13b51cca@zod.rchland.ibm.com>
-	<1228717226.13686.89.camel@sauron>
-	<200812081041.14178.laurentp@cse-semaphore.com>
+Received: from simmts6-qfe0.srvr.bell.ca ([206.47.199.164]
+	helo=simmts6-srv.bellnexxia.net)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1L9hYi-0001J7-SH
+	for linux-mtd@lists.infradead.org; Mon, 08 Dec 2008 14:58:05 +0000
+Received: from simip9-ac.srvr.bell.ca ([206.47.199.87])
+	by simmts6-srv.bellnexxia.net
+	(InterMail vM.5.01.06.13 201-253-122-130-113-20050324) with ESMTP id
+	<20081208145757.VQXG10695.simmts6-srv.bellnexxia.net@simip9-ac.srvr.bell.ca>
+	for <linux-mtd@lists.infradead.org>; Mon, 8 Dec 2008 09:57:57 -0500
+From: QUESTA FINANCIAL SERVICES <amendel@sympatico.ca>
+To: <info@loan.com>
+Subject: Apply for loan with 3%
+Date: Mon, 8 Dec 2008 9:57:51 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200812081041.14178.laurentp@cse-semaphore.com>
-Cc: v4l-dvb-maintainer@linuxtv.org, linux-mtd@lists.infradead.org,
-	LKML <linux-kernel@vger.kernel.org>, arnd@arndb.de
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
+Message-Id: <20081208145757.VQXG10695.simmts6-srv.bellnexxia.net@simip9-ac.srvr.bell.ca>
+Reply-To: questafinancdept@sify.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,20 +26,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Laurent Pinchart wrote:
-> Correct me if I'm wrong, but doesn't this only matters for devices
-> that would implement both the UBI and DVB API on the same inode ?
-> That would be quite unlikely.
-
-Overlapping ioctls prevent strace(1) from showing ioctls properly.
-
-For example, here's something you see often in strace of programs
-using stdio, when it calls isatty():
-
-ioctl(1, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbfaaa864) = -1 ENOTTY (Inappropriate ioctl for device)
-
-Or if it is a terminal:
-
-ioctl(1, SNDCTL_TMR_TIMEBASE or TCGETS, {c_iflags=0x6d02, c_oflags=0x5, c_cflags=0x4bf, c_lflags=0x8a3b, c_line=0, c_cc="\x03\x1c\x7f\x15\x04\x00\x01\xff\x11\x13\x1a\xff\x12\x0f\x17\x16\xff\x00\x00"}) = 0
-
--- Jamie
+Attention Sir/Madam,We Are Currently Offering Private,Commercial, Business and Personal Loans with very Minimal annual Interest Rates as Low as 3% within any repayment duration period to any part of the world.If you are interested then reply to the email address below.
+Sincerely,
+Andrew Davidson.
+Email:questafinancdept@sify.com
