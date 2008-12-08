@@ -1,19 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L9fsU-0006Wj-6L
-	for linux-mtd@lists.infradead.org; Mon, 08 Dec 2008 13:10:22 +0000
-Subject: Re: [PATCH] UBI WL-Subsystem: Improvement in prot tree
+	id 1L9fu7-0003Qq-TP
+	for linux-mtd@lists.infradead.org; Mon, 08 Dec 2008 13:12:04 +0000
+Subject: Re: ubi-utils updates for gcc-4.3.x
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
-In-Reply-To: <1228741326.13686.119.camel@sauron>
-References: <1228724140.2694.27.camel@localhost.localdomain>
-	<1228741326.13686.119.camel@sauron>
+To: Tom Rini <trini@embeddedalley.com>
+In-Reply-To: <1228734052.13686.103.camel@sauron>
+References: <20081208080138.GJ15204@smtp.west.cox.net>
+	<1228734052.13686.103.camel@sauron>
 Content-Type: text/plain; charset=utf-8
-Date: Mon, 08 Dec 2008 15:08:07 +0200
-Message-Id: <1228741687.13686.122.camel@sauron>
+Date: Mon, 08 Dec 2008 15:09:42 +0200
+Message-Id: <1228741782.13686.124.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	linux-mtd@lists.infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,37 +25,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2008-12-08 at 15:02 +0200, Artem Bityutskiy wrote:
-> On Mon, 2008-12-08 at 16:15 +0800, xiaochuan-xu wrote:
-> > Hi, all.
-> >=20
-> > A new PEB protection method in UBI WL-Subsystem is implemented,
-> > It's simpler and higher efficiency than the older prot RB-tree, I think=
-.
-> >=20
-> > 1. without two prot RB-tree, there is only one prot array, But their
-> > functions are the same.
-> >=20
-> > 2. no other structure needed except @ubi_wl_entry ubi_wl_prot_entry is
-> > discarded. and we need not malloc new struct every time in
-> > ubi_wl_get_peb() function.
-> >=20
-> > 3. protarray add and del operation are O(1) operations, and check over
-> > opteration is O(n), which is better then the older prot RB-tree
-> > implement.
+On Mon, 2008-12-08 at 13:00 +0200, Artem Bityutskiy wrote:
+> >From man scanf:
 >=20
-> Hi,
+> RETURN VALUE
+> These  functions  return  the  number  of input items successfully
+> matched and assigned, which can be fewer than provided for, or even zero
+> in the event of an early matching failure.
 >=20
-> yeah, I like the idea. Indeed there is no reason to have balanced trees
-> for this "protection" stuff, and a list should be enough. The list does
-> not have to be long, 8-16 entries are enough, so search should be quick
-> enough. Every time an eraseblock is erased, we take one element from the
-> head of the list, and we add new elements to the head of the list, so it
-> acts as a queue.
+> The value EOF is returned if the end of input is reached before either
+> the first successful conversion or a matching failure occurs.  EOF is
+> also returned  if a read error occurs, in which case the error indicator
+> for the stream (see ferror(3)) is set, and errno is set indicate the
+> error.
+>=20
+> On this basis, I would say you should test for EOF, not for 0.
+>=20
+> > +		if (!scanf("%3s", buf))
+> > +			return 0;
+>=20
+> Similarly.
+>=20
 
-Err, sure we add elements to the tail.
-
-I've created a git tree for you again (xxc-ubi-2.6.git).
+If you are fine with this, I may amend your patch and push it, because
+otherwise it looks OK for me.
 
 --=20
 Best regards,
