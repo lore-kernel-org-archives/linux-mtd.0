@@ -1,30 +1,13 @@
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
+Received: from az33egw02.freescale.net ([192.88.158.103])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L9L5N-0004ub-SI
-	for linux-mtd@lists.infradead.org; Sun, 07 Dec 2008 14:58:18 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e1.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id mB7EvfvB025303
-	for <linux-mtd@lists.infradead.org>; Sun, 7 Dec 2008 09:57:41 -0500
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.1) with ESMTP id
-	mB7EwGSd153590
-	for <linux-mtd@lists.infradead.org>; Sun, 7 Dec 2008 09:58:16 -0500
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	mB7EwGpR025131
-	for <linux-mtd@lists.infradead.org>; Sun, 7 Dec 2008 09:58:16 -0500
-Received: from zod.rchland.ibm.com (sig-9-65-59-95.mts.ibm.com [9.65.59.95])
-	by d01av01.pok.ibm.com (8.12.11.20060308/8.12.11) with ESMTP id
-	mB7EwFCg025113
-	for <linux-mtd@lists.infradead.org>; Sun, 7 Dec 2008 09:58:16 -0500
-Date: Sun, 7 Dec 2008 09:58:11 -0500
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+	id 1L9Uw2-0006oj-Lh
+	for linux-mtd@lists.infradead.org; Mon, 08 Dec 2008 01:29:19 +0000
+From: Trent Piepho <tpiepho@freescale.com>
 To: linux-mtd@lists.infradead.org
-Subject: UBI/DVB ioctl conflict?
-Message-ID: <20081207095811.13b51cca@zod.rchland.ibm.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH] POWERPC: Add cached region support to physmap_of MTD driver
+Date: Sun,  7 Dec 2008 17:28:50 -0800
+Message-Id: <1228699730-16398-1-git-send-email-tpiepho@freescale.com>
+Cc: linuxppc-dev@ozlabs.org, Trent Piepho <tpiepho@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,11 +17,143 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I received a bug report where someone noticed that the UBI ioctls can
-conflict with the dvb subsystem.  Looking it over, it seems that both
-subsystems use 'o' as the magic, and do have a set of somewhat
-conflicting sequence numbers as the secondary arg.
+The MTD system supports operation where a direct mapped flash chip is
+mapped twice.  The normal mapping is a standard ioremap(), which is
+non-cached and guarded on powerpc.  The second mapping is used only for
+reads and can be cached and non-guarded.  Currently, only the pxa2xx
+mapping driver makes use of this feature.  This patch adds support to the
+physmap_of driver on PPC32 platforms for this cached mapping mode.
 
-Is this a problem?
+Because the flash chip doesn't participate in the cache coherency protocol,
+it's necessary to invalidate the cache for parts of flash that are modified
+with a program or erase operation.  This is platform specific, for instance
+the pxa2xx driver uses an ARM specific function.  This patch adds
+invalidate_dcache_icache_range() for PPC32 and uses it.  Because of XIP,
+it's entirely possible that the flash might be in the icache(*), so the
+existing invalidate_dcache_range() function isn't enough.
 
-josh
+Of course, a cached mapping can increase performance if the data is read
+from cache instead of flash.  But less obvious is that it can provide a
+significant performance increase for cold-cache reads that still come from
+flash.  It allows efficient back-to-back reads and if the flash chip &
+controller support page burst mode, it allows that to be used as well.
+
+The figures are for *cold-cache* read performance, measured on a Freescale
+MPC8572 controlling a Spansion S29GL064N NOR flash chip.  With and without
+the flash being mapped cached and with and without the localbus controller
+being programmed to use page burst mode:
+
+Non-cached, w/o bursts: 13.61 MB/s
+Non-cached, w/ bursts:  13.61 MB/s
+Cached, w/o bursts:     16.75 MB/s 23% increase
+Cached, w/ bursts:      44.79 MB/s 229% increase!
+
+Even without any cache hits, the cached mapping provides a significant
+increase in performance via improved bus utilization.  Enabling burst
+transfers is even more significant.
+
+(*) The MTD device's ->point() method, which is the mechanism for
+supporting mmap and XIP, only allows for mmapping the uncached region.  So
+you can't actually XIP anything in the cache.  But this could be fixed.
+
+Signed-off-by: Trent Piepho <tpiepho@freescale.com>
+---
+Should this go in via powerpc tree or mtd?
+
+ arch/powerpc/include/asm/cacheflush.h |    2 ++
+ arch/powerpc/kernel/misc_32.S         |   21 +++++++++++++++++++++
+ drivers/mtd/maps/physmap_of.c         |   20 ++++++++++++++++++++
+ 3 files changed, 43 insertions(+), 0 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/cacheflush.h b/arch/powerpc/include/asm/cacheflush.h
+index ba667a3..385c26c 100644
+--- a/arch/powerpc/include/asm/cacheflush.h
++++ b/arch/powerpc/include/asm/cacheflush.h
+@@ -49,6 +49,8 @@ extern void flush_dcache_range(unsigned long start, unsigned long stop);
+ #ifdef CONFIG_PPC32
+ extern void clean_dcache_range(unsigned long start, unsigned long stop);
+ extern void invalidate_dcache_range(unsigned long start, unsigned long stop);
++extern void invalidate_dcache_icache_range(unsigned long start,
++					   unsigned long stop);
+ #endif /* CONFIG_PPC32 */
+ #ifdef CONFIG_PPC64
+ extern void flush_inval_dcache_range(unsigned long start, unsigned long stop);
+diff --git a/arch/powerpc/kernel/misc_32.S b/arch/powerpc/kernel/misc_32.S
+index bdc8b0e..ad12c9a 100644
+--- a/arch/powerpc/kernel/misc_32.S
++++ b/arch/powerpc/kernel/misc_32.S
+@@ -636,6 +636,27 @@ _GLOBAL(invalidate_dcache_range)
+ 	blr
+ 
+ /*
++ * Like above, but invalidate both the D-cache and I-cache.  Used when a cached
++ * region has been modified from a source that does not participate in the cache
++ * coherency protocol.
++ *
++ * invalidate_dcache_icache_range(unsigned long start, unsigned long stop)
++ */
++_GLOBAL(invalidate_dcache_icache_range)
++	clrrwi	r3, r3, L1_CACHE_SHIFT	/* start &= ~((1<<SHIFT)-1) */
++	subf	r4,r3,r4
++	addi	r4,r4,L1_CACHE_BYTES-1
++	srwi.	r4,r4,L1_CACHE_SHIFT	/* count = (start-stop+BYTES-1)/BYTES */
++	beqlr				/* if (!count) return */
++	mtctr	r4
++1:	dcbi	0,r3
++	icbi	0,r3
++	addi	r3,r3,L1_CACHE_BYTES
++	bdnz	1b
++	sync				/* wait for [id]cbi's to get to ram */
++	blr
++
++/*
+  * Flush a particular page from the data cache to RAM.
+  * Note: this is necessary because the instruction cache does *not*
+  * snoop from the data cache.
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index 5fcfec0..e834298 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -32,6 +32,16 @@ struct of_flash {
+ #endif
+ };
+ 
++#ifdef CONFIG_PPC32
++#include <asm/cacheflush.h>
++static void ppc32_inval_cache(struct map_info *map, unsigned long from,
++			      ssize_t len)
++{
++	invalidate_dcache_icache_range((unsigned long)map->cached + from,
++	                               (unsigned long)map->cached + from + len);
++}
++#endif
++
+ #ifdef CONFIG_MTD_PARTITIONS
+ #define OF_FLASH_PARTS(info)	((info)->parts)
+ 
+@@ -106,6 +116,8 @@ static int of_flash_remove(struct of_device *dev)
+ 
+ 	if (info->map.virt)
+ 		iounmap(info->map.virt);
++	if (info->map.cached)
++		iounmap(info->map.cached);
+ 
+ 	if (info->res) {
+ 		release_resource(info->res);
+@@ -205,6 +217,14 @@ static int __devinit of_flash_probe(struct of_device *dev,
+ 		dev_err(&dev->dev, "Failed to ioremap() flash region\n");
+ 		goto err_out;
+ 	}
++#ifdef CONFIG_PPC32
++	/* Don't use no-cache or guarded flags */
++	info->map.cached = ioremap_flags(info->map.phys, info->map.size, 0);
++	if (!info->map.cached)
++		dev_warn(&dev->dev, "Failed to ioremap() cached flash region\n");
++	else
++		info->map.inval_cache = ppc32_inval_cache;
++#endif
+ 
+ 	simple_map_init(&info->map);
+ 
+-- 
+1.5.4.1
