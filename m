@@ -1,20 +1,22 @@
-Received: from toronto-hs-216-138-233-67.s-ip.magma.ca ([216.138.233.67]
-	helo=yow.seanm.ca)
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L9qov-0006Ba-R3
-	for linux-mtd@lists.infradead.org; Tue, 09 Dec 2008 00:51:26 +0000
-Date: Mon, 8 Dec 2008 19:51:24 -0500
-From: Sean MacLennan <smaclennan@pikatech.com>
-To: "Josh Boyer" <jwboyer@linux.vnet.ibm.com>
+Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1L9s4D-0007lQ-J5
+	for linux-mtd@lists.infradead.org; Tue, 09 Dec 2008 02:11:18 +0000
+Date: Tue, 9 Dec 2008 05:11:15 +0300
+From: Anton Vorontsov <avorontsov@ru.mvista.com>
+To: Sean MacLennan <smaclennan@pikatech.com>
 Subject: Re: [PATCH] ndfc driver
-Message-ID: <20081208195124.14988307@lappy.seanm.ca>
-In-Reply-To: <20081204090107.20269571@zod.rchland.ibm.com>
+Message-ID: <20081209021115.GA13948@oksana.dev.rtsoft.ru>
 References: <20081203222832.3fc77d28@lappy.seanm.ca>
 	<20081204090107.20269571@zod.rchland.ibm.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
+	<20081208193446.37e27e26@lappy.seanm.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf8
+Content-Disposition: inline
+In-Reply-To: <20081208193446.37e27e26@lappy.seanm.ca>
+Cc: linuxppc-dev@ozlabs.org, devicetree-discuss@ozlabs.org,
+	linux-mtd@lists.infradead.org
+Reply-To: avorontsov@ru.mvista.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +26,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 4 Dec 2008 09:01:07 -0500
-"Josh Boyer" <jwboyer@linux.vnet.ibm.com> wrote:
+Hi Sean,
 
-> You also seem to only support a single NAND chip, however the NDFC can
-> support multiple chips.  Have you looked at how the the fsl_elbc_nand
-> driver does multiple chip support?  If not, could you at least
-> document the limitation in the patch?
+On Mon, Dec 08, 2008 at 07:34:46PM -0500, Sean MacLennan wrote:
+> On Thu, 4 Dec 2008 09:01:07 -0500
+> "Josh Boyer" <jwboyer@linux.vnet.ibm.com> wrote:
+> 
+> > In addition to an example DTS patch (probably to warp itself), could
+> > you briefly write up a binding and put it in
+> > Documentation/powerpc/dts-bindings/amcc (or similar)?  Also please CC
+> > the devicetree-discuss list on that part.
+> 
+> Here is a start at the doc. I have sent it as a patch, but could just
+> as easily send raw text.
+> 
+> The example comes from the warp dts, just with less partitions, so I
+> have not included a warp dts patch here.
+> 
+> Cheers,
+>    Sean
+> 
+> diff --git a/Documentation/powerpc/dts-bindings/amcc/ndfc.txt
+> b/Documentation/powerpc/dts-bindings/amcc/ndfc.txt new file mode 100644
+> index 0000000..668f4a9
+> --- /dev/null
+> +++ b/Documentation/powerpc/dts-bindings/amcc/ndfc.txt
+> @@ -0,0 +1,31 @@
+> +AMCC NDFC (NanD Flash Controller)
+> +
+> +Required properties:
+> +- compatible : "amcc,ndfc".
+> +- reg : should specify chip select and size used for the chip (0x2000).
+> +
+> +Optional properties:
+> +- ccr : NDFC config and control register value (default 0).
+> +- bank-settings : NDFC bank configuration register value (default 0).
+> +- partition(s) - follows the OF MTD standard for partitions
+> +
+> +Example:
+> +
+> +nand@1,0 {
+> +	compatible = "amcc,ndfc";
 
-Signed-off-by: Sean MacLennan <smaclennan@pikatech.com>
----
-diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
-index 0352d5c..3dd85e8 100644
---- a/drivers/mtd/nand/ndfc.c
-+++ b/drivers/mtd/nand/ndfc.c
-@@ -2,11 +2,15 @@
-  *  drivers/mtd/ndfc.c
-  *
-  *  Overview:
-- *   Platform independend driver for NDFC (NanD Flash Controller)
-+ *   Platform independent driver for NDFC (NanD Flash Controller)
-  *   integrated into EP440 cores
-  *
-  *   Ported to an OF platform driver by Sean MacLennan
-  *
-+ *   The NDFC supports multiple chips, but this driver only supports a
-+ *   single chip since I do not have access to any boards with
-+ *   multiple chips.
-+ *
-  *  Author: Thomas Gleixner
-  *
-  *  Copyright 2006 IBM
+The first line in this file says that this is a controller...
+
+> +	reg = <0x00000001 0x00000000 0x00002000>;
+> +	ccr = <0x00001000>;
+> +	bank-settings = <0x80002222>;
+> +	#address-cells = <1>;
+> +	#size-cells = <1>;
+> +	partition@0 {
+
+So this is a controller with partitions? ;-)
+
+Recalling my own mistakes with the FSL UPM NAND controller bindings,
+and Josh's comment:
+
+http://www.mail-archive.com/linuxppc-dev@ozlabs.org/msg16572.html
+
+I think the bindings should look like this:
+
+nand-controller@.. {
+	...controller's properties...
+
+	nand-chip@... {
+		...chip's properties...
+
+		partition@... {
+			...partition's properties...
+		};
+	};
+
+	nand-chip@... {
+		...
+	};
+};
+
+Sure, I understand that there are plenty of boards with the "old"
+scheme flashed into the firmware... Just something you might
+want to consider for the future updates for the driver/bindings.
+
+Thanks,
+
+-- 
+Anton Vorontsov
+email: cbouatmailru@gmail.com
+irc://irc.freenode.net/bd2
