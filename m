@@ -1,30 +1,20 @@
-Received: from e31.co.us.ibm.com ([32.97.110.149])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L9tKs-0005RP-2q
-	for linux-mtd@lists.infradead.org; Tue, 09 Dec 2008 03:32:34 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e31.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id mB93VDpe027578
-	for <linux-mtd@lists.infradead.org>; Mon, 8 Dec 2008 20:31:13 -0700
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.1) with ESMTP id
-	mB93WV0O211406
-	for <linux-mtd@lists.infradead.org>; Mon, 8 Dec 2008 20:32:31 -0700
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	mB93WVjK000383
-	for <linux-mtd@lists.infradead.org>; Mon, 8 Dec 2008 20:32:31 -0700
-Date: Mon, 8 Dec 2008 22:32:27 -0500
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: Sean MacLennan <smaclennan@pikatech.com>
+Received: from toronto-hs-216-138-233-67.s-ip.magma.ca ([216.138.233.67]
+	helo=yow.seanm.ca)
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1L9ucJ-0006Au-Mu
+	for linux-mtd@lists.infradead.org; Tue, 09 Dec 2008 04:54:41 +0000
+Date: Mon, 8 Dec 2008 23:54:37 -0500
+From: Sean MacLennan <smaclennan@pikatech.com>
+To: "Josh Boyer" <jwboyer@linux.vnet.ibm.com>
 Subject: Re: [PATCH] ndfc driver
-Message-ID: <20081208223227.19a702a9@zod.rchland.ibm.com>
-In-Reply-To: <20081208214512.461276d2@lappy.seanm.ca>
+Message-ID: <20081208235437.08323e3a@lappy.seanm.ca>
+In-Reply-To: <20081208223227.19a702a9@zod.rchland.ibm.com>
 References: <20081203222832.3fc77d28@lappy.seanm.ca>
 	<20081204090107.20269571@zod.rchland.ibm.com>
 	<20081208193446.37e27e26@lappy.seanm.ca>
 	<20081209021115.GA13948@oksana.dev.rtsoft.ru>
 	<20081208214512.461276d2@lappy.seanm.ca>
+	<20081208223227.19a702a9@zod.rchland.ibm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -39,19 +29,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 8 Dec 2008 21:45:12 -0500
-Sean MacLennan <smaclennan@pikatech.com> wrote:
+On Mon, 8 Dec 2008 22:32:27 -0500
+"Josh Boyer" <jwboyer@linux.vnet.ibm.com> wrote:
 
-> On Tue, 9 Dec 2008 05:11:15 +0300
-> "Anton Vorontsov" <avorontsov@ru.mvista.com> wrote:
-> 
-> > So this is a controller with partitions? ;-)
-> 
-> Actually, I did it this way to mimic the look of the NOR. Really, we
-> shouldn't care about the NAND chip.
+> Except there is no controller in front of the NOR.  It's all just
+> MMIOs.  With NDFC, there is a controller, you have to do things to it
+> to talk to different chips, etc.
 
-Except there is no controller in front of the NOR.  It's all just
-MMIOs.  With NDFC, there is a controller, you have to do things to it
-to talk to different chips, etc.
+Ok, I have the following dts working... would this be better? It
+basically follows the fsl,upm-nand model. I can produce a new patch to
+ndfc.c for this:
 
-josh
+ndfc@1,0 {
+	compatible = "amcc,ndfc";
+	reg = <0x00000001 0x00000000 0x00002000>;
+	ccr = <0x00001000>;
+	bank-settings = <0x80002222>;
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	nand {
+    		#address-cells = <1>;
+    		#size-cells = <1>;
+
+    		partition@0 {
+    			label = "kernel";
+    			reg = <0x00000000 0x00200000>;
+    		};
+    		partition@200000 {
+    			label = "root";
+    			reg = <0x00200000 0x03E00000>;
+    		};	
+    		partition@40000000 {
+    			label = "persistent";
+    			reg = <0x04000000 0x04000000>;
+    		};
+    		partition@80000000 {
+    			label = "persistent1";
+    			reg = <0x08000000 0x04000000>;
+    		};
+    		partition@C0000000 {
+    			label = "persistent2";
+    			reg = <0x0C000000 0x04000000>;
+    		};
+    	};
+};
+
+
+Here is the boot output for both the NOR and the NAND (just for
+comparison):
+
+ffc00000.nor: Found 1 x16 devices at 0x0 in 16-bit bank
+ Amd/Fujitsu Extended Query Table at 0x0040
+ffc00000.nor: CFI does not contain boot bank location. Assuming top.
+number of CFI chips: 1
+cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
+RedBoot partition parsing not available
+Creating 4 MTD partitions on "ffc00000.nor":
+0x00000000-0x00020000 : "splash"
+0x00300000-0x00340000 : "fpga"
+0x00340000-0x00380000 : "env"
+0x00380000-0x00400000 : "u-boot"
+NAND device: Manufacturer ID: 0xec, Chip ID: 0xda (Samsung NAND 256MiB 3,3V 8-bit)
+Scanning device for bad blocks
+Creating 5 MTD partitions on "d0000000.ndfc.nand":
+0x00000000-0x00200000 : "kernel"
+0x00200000-0x04000000 : "root"
+0x04000000-0x08000000 : "persistent"
+0x08000000-0x0c000000 : "persistent1"
+0x0c000000-0x10000000 : "persistent2"
+
+If everybody likes this better, I can produce a code patch.
+
+Cheers,
+   Sean
