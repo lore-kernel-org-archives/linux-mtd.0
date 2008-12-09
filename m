@@ -1,16 +1,19 @@
-Received: from [202.202.0.36] (helo=cqu.edu.cn)
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LA133-00069w-CC
-	for linux-mtd@lists.infradead.org; Tue, 09 Dec 2008 11:46:42 +0000
-Message-ID: <428823053.23007@cqu.edu.cn>
-Subject: [PATCH 4/4] UBI WL-Subsys: Improvement in prot tree
-From: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Tue, 09 Dec 2008 19:46:03 +0800
-Message-Id: <1228823163.2753.18.camel@localhost.localdomain>
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1LA1iT-0007xD-C5
+	for linux-mtd@lists.infradead.org; Tue, 09 Dec 2008 12:29:29 +0000
+Subject: Re: [PATCH 1/4] UBI WL-Subsys: Improvement in prot tree
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
+In-Reply-To: <1228823052.2753.13.camel@localhost.localdomain>
+References: <1228823052.2753.13.camel@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 09 Dec 2008 14:27:13 +0200
+Message-Id: <1228825633.13686.174.camel@sauron>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,40 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From e3af46580d374fc5da79212c17ef9f0179299bd0 Mon Sep 17 00:00:00 2001
-From: Xiaochuan-Xu <xiaochuan-xu@cqu.edu.cn>
-Date: Tue, 9 Dec 2008 19:27:40 +0800
-Subject: [PATCH] Adjust severial macros
+On Tue, 2008-12-09 at 19:44 +0800, xiaochuan-xu wrote:
+> Hi, Artem,
+>=20
+> >From e87d521a9771d4ea8e5a6e4b5d5956b11d19e4c7 Mon Sep 17 00:00:00 2001
+> From: Xiaochuan-Xu <xiaochuan-xu@cqu.edu.cn>
+> Date: Tue, 9 Dec 2008 15:20:18 +0800
+> Subject: [PATCH] Modify the ubi_wl_entry struct
+>=20
+> Signed-off-by: Xiaochuan-Xu <xiaochuan-xu@cqu.edu.cn>
 
-In order to fulfill the identical function of the currenty
-prot RB-tree. *_PROTECTION macros are increased respectively
+Hi,
 
-Signed-off-by: Xiaochuan-Xu <xiaochuan-xu@cqu.edu.cn>
----
- drivers/mtd/ubi/wl.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+this patch is fine and I've pushed it to xxc-ubi-2.6.git.
 
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 0b1e8c7..603435f 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -130,9 +130,9 @@
-  * How many erase cycles are short term, unknown, and long term physical
-  * eraseblocks protected.
-  */
--#define ST_PROTECTION 16
--#define U_PROTECTION  10
--#define LT_PROTECTION 4
-+#define ST_PROTECTION 17
-+#define U_PROTECTION  11
-+#define LT_PROTECTION 5
- 
- /* Number of prot lists, must be bigger than 'ST_PROTECTION' */
- #define PROT_LISTS_LEN (ST_PROTECTION+1)
--- 
-1.5.3.2
-
-
--- 
-Yours sincerely
-xiaochuan-xu(cqu.edu.cn)
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
