@@ -1,15 +1,15 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LA1iT-0007xD-C5
-	for linux-mtd@lists.infradead.org; Tue, 09 Dec 2008 12:29:29 +0000
-Subject: Re: [PATCH 1/4] UBI WL-Subsys: Improvement in prot tree
+	id 1LA2CD-0003Pu-72
+	for linux-mtd@lists.infradead.org; Tue, 09 Dec 2008 13:00:13 +0000
+Subject: Re: [PATCH 2/4] UBI WL-Subsys: Improvement in prot tree
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
-In-Reply-To: <1228823052.2753.13.camel@localhost.localdomain>
-References: <1228823052.2753.13.camel@localhost.localdomain>
+In-Reply-To: <1228823094.2753.14.camel@localhost.localdomain>
+References: <1228823094.2753.14.camel@localhost.localdomain>
 Content-Type: text/plain; charset=utf-8
-Date: Tue, 09 Dec 2008 14:27:13 +0200
-Message-Id: <1228825633.13686.174.camel@sauron>
+Date: Tue, 09 Dec 2008 14:58:00 +0200
+Message-Id: <1228827480.13686.182.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -24,18 +24,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Tue, 2008-12-09 at 19:44 +0800, xiaochuan-xu wrote:
-> Hi, Artem,
->=20
-> >From e87d521a9771d4ea8e5a6e4b5d5956b11d19e4c7 Mon Sep 17 00:00:00 2001
-> From: Xiaochuan-Xu <xiaochuan-xu@cqu.edu.cn>
-> Date: Tue, 9 Dec 2008 15:20:18 +0800
-> Subject: [PATCH] Modify the ubi_wl_entry struct
->=20
-> Signed-off-by: Xiaochuan-Xu <xiaochuan-xu@cqu.edu.cn>
+> +/*
+> + * It's impossible that the first field of rb_node structure is equal to=
+ 0x2
+> + * and 0x3, so Ox2 is used to check whether the physical eraseblock is i=
+n one
+> + * of prot lists or not. 0x3 is used for prot list head's mark.
+> + */
+> +#define PROT_LIST_NODE 0x2
+> +#define PROT_LIST_HEAD 0x3
 
-Hi,
+This is hacky a bit. AFAIK, rb-tree code does have optimizations which
+use the lowest bits of pointers, so I am not sure 2 and 3 are completely
+impossible.=20
 
-this patch is fine and I've pushed it to xxc-ubi-2.6.git.
+But I think this is anyway not needed at all. The only reason you need
+this is to quickly find out if the entry is in the protection list or
+not, right? And from the code I see the only user of this is the
+'paranoid_check_in_prot_lists()' function. But this is just a debugging
+function, which is normally compiled out. You do not have to optimize it
+at all. Just let it walk the list and check.
+
+So, please, let's get rid of these constants.
 
 --=20
 Best regards,
