@@ -1,33 +1,16 @@
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LA0hC-0005PK-W1
-	for linux-mtd@lists.infradead.org; Tue, 09 Dec 2008 11:24:07 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e2.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id mB9BNQit018068
-	for <linux-mtd@lists.infradead.org>; Tue, 9 Dec 2008 06:23:26 -0500
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.1) with ESMTP id
-	mB9BO6rQ196626
-	for <linux-mtd@lists.infradead.org>; Tue, 9 Dec 2008 06:24:06 -0500
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	mB9BO5UZ018744
-	for <linux-mtd@lists.infradead.org>; Tue, 9 Dec 2008 06:24:06 -0500
-Date: Tue, 9 Dec 2008 06:24:01 -0500
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: Stefan Roese <sr@denx.de>
-Subject: Re: [PATCH] ndfc driver
-Message-ID: <20081209062401.502f2c48@zod.rchland.ibm.com>
-In-Reply-To: <200812090710.27781.sr@denx.de>
-References: <20081203222832.3fc77d28@lappy.seanm.ca>
-	<20081204090107.20269571@zod.rchland.ibm.com>
-	<20081208193446.37e27e26@lappy.seanm.ca>
-	<200812090710.27781.sr@denx.de>
+Received: from [202.202.0.36] (helo=cqu.edu.cn)
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1LA11M-00028e-W9
+	for linux-mtd@lists.infradead.org; Tue, 09 Dec 2008 11:44:58 +0000
+Message-ID: <428822942.22476@cqu.edu.cn>
+Subject: [PATCH 1/4] UBI WL-Subsys: Improvement in prot tree
+From: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Date: Tue, 09 Dec 2008 19:44:12 +0800
+Message-Id: <1228823052.2753.13.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linuxppc-dev@ozlabs.org, devicetree-discuss@ozlabs.org,
-	linux-mtd@lists.infradead.org, Sean MacLennan <smaclennan@pikatech.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,55 +20,212 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 9 Dec 2008 07:10:27 +0100
-Stefan Roese <sr@denx.de> wrote:
+Hi, Artem,
 
-> On Tuesday 09 December 2008, Sean MacLennan wrote:
-> > On Thu, 4 Dec 2008 09:01:07 -0500
-> >
-> > "Josh Boyer" <jwboyer@linux.vnet.ibm.com> wrote:
-> > > In addition to an example DTS patch (probably to warp itself), could
-> > > you briefly write up a binding and put it in
-> > > Documentation/powerpc/dts-bindings/amcc (or similar)?  Also please CC
-> > > the devicetree-discuss list on that part.
-> >
-> > Here is a start at the doc. I have sent it as a patch, but could just
-> > as easily send raw text.
-> >
-> > The example comes from the warp dts, just with less partitions, so I
-> > have not included a warp dts patch here.
-> >
-> > Cheers,
-> >    Sean
-> >
-> > diff --git a/Documentation/powerpc/dts-bindings/amcc/ndfc.txt
-> > b/Documentation/powerpc/dts-bindings/amcc/ndfc.txt new file mode 100644
-> > index 0000000..668f4a9
-> > --- /dev/null
-> > +++ b/Documentation/powerpc/dts-bindings/amcc/ndfc.txt
-> > @@ -0,0 +1,31 @@
-> > +AMCC NDFC (NanD Flash Controller)
-> > +
-> > +Required properties:
-> > +- compatible : "amcc,ndfc".
-> 
-> The 4xx NAND controller was first implemented on the 440EP, IIRC. So I'm 
-> pretty sure that this controller is an IBM core and not am AMCC core. So this 
-> should be "ibm,ndfc".
+>From e87d521a9771d4ea8e5a6e4b5d5956b11d19e4c7 Mon Sep 17 00:00:00 2001
+From: Xiaochuan-Xu <xiaochuan-xu@cqu.edu.cn>
+Date: Tue, 9 Dec 2008 15:20:18 +0800
+Subject: [PATCH] Modify the ubi_wl_entry struct
 
-That is true.  It's an IBM blue logic core.
+Signed-off-by: Xiaochuan-Xu <xiaochuan-xu@cqu.edu.cn>
+---
+ drivers/mtd/ubi/ubi.h |    6 ++++--
+ drivers/mtd/ubi/wl.c  |   45 +++++++++++++++++++++++----------------------
+ 2 files changed, 27 insertions(+), 24 deletions(-)
+
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index 1c3fa18..46a4763 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -95,7 +95,7 @@ enum {
  
-> And with this change it makes no sense to put this file "ndfc.txt" into the 
-> amcc directory.
-> 
-> Josh, where should this go then?
+ /**
+  * struct ubi_wl_entry - wear-leveling entry.
+- * @rb: link in the corresponding RB-tree
++ * @u.rb: link in the corresponding (free/used) RB-tree
+  * @ec: erase counter
+  * @pnum: physical eraseblock number
+  *
+@@ -104,7 +104,9 @@ enum {
+  * RB-trees. See WL sub-system for details.
+  */
+ struct ubi_wl_entry {
+-	struct rb_node rb;
++	union {
++		struct rb_node rb;
++	} u;
+ 	int ec;
+ 	int pnum;
+ };
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index abf65ea..0279bf9 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -220,7 +220,7 @@ static void wl_tree_add(struct ubi_wl_entry *e, struct rb_root *root)
+ 		struct ubi_wl_entry *e1;
+ 
+ 		parent = *p;
+-		e1 = rb_entry(parent, struct ubi_wl_entry, rb);
++		e1 = rb_entry(parent, struct ubi_wl_entry, u.rb);
+ 
+ 		if (e->ec < e1->ec)
+ 			p = &(*p)->rb_left;
+@@ -235,8 +235,8 @@ static void wl_tree_add(struct ubi_wl_entry *e, struct rb_root *root)
+ 		}
+ 	}
+ 
+-	rb_link_node(&e->rb, parent, p);
+-	rb_insert_color(&e->rb, root);
++	rb_link_node(&e->u.rb, parent, p);
++	rb_insert_color(&e->u.rb, root);
+ }
+ 
+ /**
+@@ -331,7 +331,7 @@ static int in_wl_tree(struct ubi_wl_entry *e, struct rb_root *root)
+ 	while (p) {
+ 		struct ubi_wl_entry *e1;
+ 
+-		e1 = rb_entry(p, struct ubi_wl_entry, rb);
++		e1 = rb_entry(p, struct ubi_wl_entry, u.rb);
+ 
+ 		if (e->pnum == e1->pnum) {
+ 			ubi_assert(e == e1);
+@@ -413,14 +413,14 @@ static struct ubi_wl_entry *find_wl_entry(struct rb_root *root, int max)
+ 	struct rb_node *p;
+ 	struct ubi_wl_entry *e;
+ 
+-	e = rb_entry(rb_first(root), struct ubi_wl_entry, rb);
++	e = rb_entry(rb_first(root), struct ubi_wl_entry, u.rb);
+ 	max += e->ec;
+ 
+ 	p = root->rb_node;
+ 	while (p) {
+ 		struct ubi_wl_entry *e1;
+ 
+-		e1 = rb_entry(p, struct ubi_wl_entry, rb);
++		e1 = rb_entry(p, struct ubi_wl_entry, u.rb);
+ 		if (e1->ec >= max)
+ 			p = p->rb_left;
+ 		else {
+@@ -491,12 +491,13 @@ retry:
+ 		 * eraseblock with erase counter greater or equivalent than the
+ 		 * lowest erase counter plus %WL_FREE_MAX_DIFF.
+ 		 */
+-		first = rb_entry(rb_first(&ubi->free), struct ubi_wl_entry, rb);
+-		last = rb_entry(rb_last(&ubi->free), struct ubi_wl_entry, rb);
++		first = rb_entry(rb_first(&ubi->free), struct ubi_wl_entry,
++					u.rb);
++		last = rb_entry(rb_last(&ubi->free), struct ubi_wl_entry, u.rb);
+ 
+ 		if (last->ec - first->ec < WL_FREE_MAX_DIFF)
+ 			e = rb_entry(ubi->free.rb_node,
+-					struct ubi_wl_entry, rb);
++					struct ubi_wl_entry, u.rb);
+ 		else {
+ 			medium_ec = (first->ec + WL_FREE_MAX_DIFF)/2;
+ 			e = find_wl_entry(&ubi->free, medium_ec);
+@@ -508,7 +509,7 @@ retry:
+ 		 * For short term data we pick a physical eraseblock with the
+ 		 * lowest erase counter as we expect it will be erased soon.
+ 		 */
+-		e = rb_entry(rb_first(&ubi->free), struct ubi_wl_entry, rb);
++		e = rb_entry(rb_first(&ubi->free), struct ubi_wl_entry, u.rb);
+ 		protect = ST_PROTECTION;
+ 		break;
+ 	default:
+@@ -522,7 +523,7 @@ retry:
+ 	 * be protected from being moved for some time.
+ 	 */
+ 	paranoid_check_in_wl_tree(e, &ubi->free);
+-	rb_erase(&e->rb, &ubi->free);
++	rb_erase(&e->u.rb, &ubi->free);
+ 	prot_tree_add(ubi, e, pe, protect);
+ 
+ 	dbg_wl("PEB %d EC %d, protection %d", e->pnum, e->ec, protect);
+@@ -779,7 +780,7 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
+ 		 * highly worn-out free physical eraseblock. If the erase
+ 		 * counters differ much enough, start wear-leveling.
+ 		 */
+-		e1 = rb_entry(rb_first(&ubi->used), struct ubi_wl_entry, rb);
++		e1 = rb_entry(rb_first(&ubi->used), struct ubi_wl_entry, u.rb);
+ 		e2 = find_wl_entry(&ubi->free, WL_FREE_MAX_DIFF);
+ 
+ 		if (!(e2->ec - e1->ec >= UBI_WL_THRESHOLD)) {
+@@ -788,21 +789,21 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
+ 			goto out_cancel;
+ 		}
+ 		paranoid_check_in_wl_tree(e1, &ubi->used);
+-		rb_erase(&e1->rb, &ubi->used);
++		rb_erase(&e1->u.rb, &ubi->used);
+ 		dbg_wl("move PEB %d EC %d to PEB %d EC %d",
+ 		       e1->pnum, e1->ec, e2->pnum, e2->ec);
+ 	} else {
+ 		/* Perform scrubbing */
+ 		scrubbing = 1;
+-		e1 = rb_entry(rb_first(&ubi->scrub), struct ubi_wl_entry, rb);
++		e1 = rb_entry(rb_first(&ubi->scrub), struct ubi_wl_entry, u.rb);
+ 		e2 = find_wl_entry(&ubi->free, WL_FREE_MAX_DIFF);
+ 		paranoid_check_in_wl_tree(e1, &ubi->scrub);
+-		rb_erase(&e1->rb, &ubi->scrub);
++		rb_erase(&e1->u.rb, &ubi->scrub);
+ 		dbg_wl("scrub PEB %d to PEB %d", e1->pnum, e2->pnum);
+ 	}
+ 
+ 	paranoid_check_in_wl_tree(e2, &ubi->free);
+-	rb_erase(&e2->rb, &ubi->free);
++	rb_erase(&e2->u.rb, &ubi->free);
+ 	ubi->move_from = e1;
+ 	ubi->move_to = e2;
+ 	spin_unlock(&ubi->wl_lock);
+@@ -1012,7 +1013,7 @@ static int ensure_wear_leveling(struct ubi_device *ubi)
+ 		 * erase counter of free physical eraseblocks is greater then
+ 		 * %UBI_WL_THRESHOLD.
+ 		 */
+-		e1 = rb_entry(rb_first(&ubi->used), struct ubi_wl_entry, rb);
++		e1 = rb_entry(rb_first(&ubi->used), struct ubi_wl_entry, u.rb);
+ 		e2 = find_wl_entry(&ubi->free, WL_FREE_MAX_DIFF);
+ 
+ 		if (!(e2->ec - e1->ec >= UBI_WL_THRESHOLD))
+@@ -1214,10 +1215,10 @@ retry:
+ 	} else {
+ 		if (in_wl_tree(e, &ubi->used)) {
+ 			paranoid_check_in_wl_tree(e, &ubi->used);
+-			rb_erase(&e->rb, &ubi->used);
++			rb_erase(&e->u.rb, &ubi->used);
+ 		} else if (in_wl_tree(e, &ubi->scrub)) {
+ 			paranoid_check_in_wl_tree(e, &ubi->scrub);
+-			rb_erase(&e->rb, &ubi->scrub);
++			rb_erase(&e->u.rb, &ubi->scrub);
+ 		} else {
+ 			err = prot_tree_del(ubi, e->pnum);
+ 			if (err) {
+@@ -1279,7 +1280,7 @@ retry:
+ 
+ 	if (in_wl_tree(e, &ubi->used)) {
+ 		paranoid_check_in_wl_tree(e, &ubi->used);
+-		rb_erase(&e->rb, &ubi->used);
++		rb_erase(&e->u.rb, &ubi->used);
+ 	} else {
+ 		int err;
+ 
+@@ -1361,11 +1362,11 @@ static void tree_destroy(struct rb_root *root)
+ 		else if (rb->rb_right)
+ 			rb = rb->rb_right;
+ 		else {
+-			e = rb_entry(rb, struct ubi_wl_entry, rb);
++			e = rb_entry(rb, struct ubi_wl_entry, u.rb);
+ 
+ 			rb = rb_parent(rb);
+ 			if (rb) {
+-				if (rb->rb_left == &e->rb)
++				if (rb->rb_left == &e->u.rb)
+ 					rb->rb_left = NULL;
+ 				else
+ 					rb->rb_right = NULL;
+-- 
+1.5.3.2
 
-I declare it to be: dts-bindings/4xx/
 
-mostly because I don't want the bindings scattered across two
-directories simply because of the timeframe they showed up in the
-marketplace.
-
-If there are better ideas, I'm all ears.
-
-josh
+-- 
+Yours sincerely
+xiaochuan-xu(cqu.edu.cn)
