@@ -1,23 +1,23 @@
-Received: from moutng.kundenserver.de ([212.227.126.177])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L9vny-0006M6-4z
-	for linux-mtd@lists.infradead.org; Tue, 09 Dec 2008 06:10:46 +0000
-From: Stefan Roese <sr@denx.de>
-To: linuxppc-dev@ozlabs.org
-Subject: Re: [PATCH] ndfc driver
-Date: Tue, 9 Dec 2008 07:10:27 +0100
-References: <20081203222832.3fc77d28@lappy.seanm.ca>
-	<20081204090107.20269571@zod.rchland.ibm.com>
-	<20081208193446.37e27e26@lappy.seanm.ca>
-In-Reply-To: <20081208193446.37e27e26@lappy.seanm.ca>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200812090710.27781.sr@denx.de>
-Cc: linux-mtd@lists.infradead.org, devicetree-discuss@ozlabs.org,
-	Sean MacLennan <smaclennan@pikatech.com>
+Received: from az33egw02.freescale.net ([192.88.158.103])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1L9wEi-0005sc-Ie
+	for linux-mtd@lists.infradead.org; Tue, 09 Dec 2008 06:38:24 +0000
+Received: from az33smr01.freescale.net (az33smr01.freescale.net [10.64.34.199])
+	by az33egw02.freescale.net (8.14.3/az33egw02) with ESMTP id
+	mB96aLu1010842 for <linux-mtd@lists.infradead.org>;
+	Mon, 8 Dec 2008 23:36:22 -0700 (MST)
+Received: from zch01exm21.fsl.freescale.net (zch01exm21.ap.freescale.net
+	[10.192.129.205])
+	by az33smr01.freescale.net (8.13.1/8.13.0) with ESMTP id mB96aKvA018853
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 9 Dec 2008 00:36:21 -0600 (CST)
+From: Jason Jin <Jason.jin@freescale.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] Set the fsl elbc ECCM according the settings in bootloader.
+Date: Tue,  9 Dec 2008 14:32:31 +0800
+Message-Id: <1228804351-20463-1-git-send-email-Jason.jin@freescale.com>
+Cc: scottwood@freescale.com, dwmw2@infradead.org,
+	Jason Jin <Jason.jin@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,43 +27,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 09 December 2008, Sean MacLennan wrote:
-> On Thu, 4 Dec 2008 09:01:07 -0500
->
-> "Josh Boyer" <jwboyer@linux.vnet.ibm.com> wrote:
-> > In addition to an example DTS patch (probably to warp itself), could
-> > you briefly write up a binding and put it in
-> > Documentation/powerpc/dts-bindings/amcc (or similar)?  Also please CC
-> > the devicetree-discuss list on that part.
->
-> Here is a start at the doc. I have sent it as a patch, but could just
-> as easily send raw text.
->
-> The example comes from the warp dts, just with less partitions, so I
-> have not included a warp dts patch here.
->
-> Cheers,
->    Sean
->
-> diff --git a/Documentation/powerpc/dts-bindings/amcc/ndfc.txt
-> b/Documentation/powerpc/dts-bindings/amcc/ndfc.txt new file mode 100644
-> index 0000000..668f4a9
-> --- /dev/null
-> +++ b/Documentation/powerpc/dts-bindings/amcc/ndfc.txt
-> @@ -0,0 +1,31 @@
-> +AMCC NDFC (NanD Flash Controller)
-> +
-> +Required properties:
-> +- compatible : "amcc,ndfc".
+The ECCM maybe set in bootloader, Get ECCM settings from the bootloader,
+can avoid the image written by bootloader cannot read out by kernel.
 
-The 4xx NAND controller was first implemented on the 440EP, IIRC. So I'm 
-pretty sure that this controller is an IBM core and not am AMCC core. So this 
-should be "ibm,ndfc".
+But the limitation of doing it this way is that, it could break large page
+NAND if it is written with NAND disabled in u-boot and read with NAND
+enabled, or vice versa.
 
-And with this change it makes no sense to put this file "ndfc.txt" into the 
-amcc directory.
+Signed-off-by: Jason Jin <Jason.jin@freescale.com>
+Acked-by: Scott Wood <scottwood@freescale.com>
+---
+ drivers/mtd/nand/fsl_elbc_nand.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
-Josh, where should this go then?
-
-Best regards,
-Stefan
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+index 4aa5bd6..65929db 100644
+--- a/drivers/mtd/nand/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -777,7 +777,9 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
+ 	/* Fill in fsl_elbc_mtd structure */
+ 	priv->mtd.priv = chip;
+ 	priv->mtd.owner = THIS_MODULE;
+-	priv->fmr = 0; /* rest filled in later */
++
++	/* Set the ECCM according to the settings in bootloader.*/
++	priv->fmr = in_be32(&lbc->fmr) & FMR_ECCM;
+ 
+ 	/* fill in nand_chip structure */
+ 	/* set up function call table */
+-- 
+1.5.4
