@@ -1,19 +1,19 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.gentoo.org ([140.211.166.183])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LA2Ha-0000Bq-Cx
-	for linux-mtd@lists.infradead.org; Tue, 09 Dec 2008 13:05:46 +0000
-Subject: Re: [PATCH 4/4] UBI WL-Subsys: Improvement in prot tree
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
-In-Reply-To: <1228823163.2753.18.camel@localhost.localdomain>
-References: <1228823163.2753.18.camel@localhost.localdomain>
+	id 1LA2dN-0005rZ-4c
+	for linux-mtd@lists.infradead.org; Tue, 09 Dec 2008 13:28:17 +0000
+Received: from localhost.localdomain (localhost [127.0.0.1])
+	by smtp.gentoo.org (Postfix) with ESMTP id 01BEB65192
+	for <linux-mtd@lists.infradead.org>;
+	Tue,  9 Dec 2008 13:28:03 +0000 (UTC)
+From: Mike Frysinger <vapier@gentoo.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] ubiformat.c: fix printf(%d, size_t) warning
+Date: Tue,  9 Dec 2008 08:28:03 -0500
+Message-Id: <1228829283-27226-1-git-send-email-vapier@gentoo.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Date: Tue, 09 Dec 2008 15:03:23 +0200
-Message-Id: <1228827803.13686.189.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,50 +23,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2008-12-09 at 19:46 +0800, xiaochuan-xu wrote:
-> >From e3af46580d374fc5da79212c17ef9f0179299bd0 Mon Sep 17 00:00:00 2001
-> From: Xiaochuan-Xu <xiaochuan-xu@cqu.edu.cn>
-> Date: Tue, 9 Dec 2008 19:27:40 +0800
-> Subject: [PATCH] Adjust severial macros
->=20
-> In order to fulfill the identical function of the currenty
-> prot RB-tree. *_PROTECTION macros are increased respectively
->=20
-> Signed-off-by: Xiaochuan-Xu <xiaochuan-xu@cqu.edu.cn>
-> ---
->  drivers/mtd/ubi/wl.c |    6 +++---
->  1 files changed, 3 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-> index 0b1e8c7..603435f 100644
-> --- a/drivers/mtd/ubi/wl.c
-> +++ b/drivers/mtd/ubi/wl.c
-> @@ -130,9 +130,9 @@
->   * How many erase cycles are short term, unknown, and long term physical
->   * eraseblocks protected.
->   */
-> -#define ST_PROTECTION 16
-> -#define U_PROTECTION  10
-> -#define LT_PROTECTION 4
-> +#define ST_PROTECTION 17
-> +#define U_PROTECTION  11
-> +#define LT_PROTECTION 5
+A size_t should be printed using %zu (unsigned size_t) rather than %d.  This
+fixes the following warning on my system:
+gcc -O2 -Werror -Wall -Iinclude -Isrc -I../../include src/ubiformat.c -c -o ubiformat.o
+cc1: warnings being treated as errors
+src/ubiformat.c: In function ‘read_all’:
+src/ubiformat.c:345: error: format ‘%d’ expects type ‘int’, but argument 3 has type ‘size_t’
+src/ubiformat.c:352: error: format ‘%d’ expects type ‘int’, but argument 3 has type ‘size_t’
+make: *** [ubiformat.o] Error 1
 
-I doubt these constants make much sense. I would suggest you to get rid
-of them and simplify things. Let's have only one constant instead of 3.
-This will allow us to implement efficient protection queue which you
-will not need to walk at all.
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+---
+ ubi-utils/new-utils/src/ubiformat.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-So I'd suggest you to send a separate "preparation" patch which
-introduces one constant instead of 3. E.g.,
-
-#define PROTECTION 10
-
-It may be re-named to PROT_LIST_LEN later, probably.
-
-How does this plan sound to you?
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+diff --git a/ubi-utils/new-utils/src/ubiformat.c b/ubi-utils/new-utils/src/ubiformat.c
+index fb4f2ee..7a6d1b7 100644
+--- a/ubi-utils/new-utils/src/ubiformat.c
++++ b/ubi-utils/new-utils/src/ubiformat.c
+@@ -342,14 +342,14 @@ static int read_all(int fd, void *buf, size_t len)
+ 	while (len > 0) {
+ 		ssize_t l = read(fd, buf, len);
+ 		if (l == 0)
+-			return errmsg("eof reached; %d bytes remaining", len);
++			return errmsg("eof reached; %zu bytes remaining", len);
+ 		else if (l > 0) {
+ 			buf += l;
+ 			len -= l;
+ 		} else if (errno == EINTR || errno == EAGAIN)
+ 			continue;
+ 		else
+-			return sys_errmsg("reading failed; %d bytes remaining", len);
++			return sys_errmsg("reading failed; %zu bytes remaining", len);
+ 	}
+ 
+ 	return 0;
+-- 
+1.6.0.4
