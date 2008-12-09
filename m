@@ -1,19 +1,19 @@
-Received: from smtp.zeuux.org ([210.51.160.52] helo=z.billxu.com)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L9qfh-0004ll-Rq
-	for linux-mtd@lists.infradead.org; Tue, 09 Dec 2008 00:41:54 +0000
-Date: Tue, 9 Dec 2008 08:32:25 +0800
-From: Jianjun Kong <jianjun@zeuux.org>
-To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Subject: [PATCH] fs: cleanup for fs/jffs2/compr_rubin.c
-Message-ID: <20081209003225.GA7198@ubuntu>
-References: <20081208150554.GA22245@ubuntu>
-	<Pine.LNX.4.64.0812081637370.5170@vixen.sonytel.be>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.0812081637370.5170@vixen.sonytel.be>
-Cc: linux-mtd@lists.infradead.org, David.Woodhouse@intel.com
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1L9zzF-0006oJ-Vj
+	for linux-mtd@lists.infradead.org; Tue, 09 Dec 2008 10:38:42 +0000
+Subject: Re: [PATCH] [UBI] 0/4 notifications
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: dpervushin@gmail.com
+In-Reply-To: <1228759154.7622.26.camel@hp.diimka.lan>
+References: <1228759154.7622.26.camel@hp.diimka.lan>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 09 Dec 2008 12:36:21 +0200
+Message-Id: <1228818981.13686.171.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,82 +23,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Dec 08, 2008 at 04:39:20PM +0100, Geert Uytterhoeven wrote:
->On Mon, 8 Dec 2008, Jianjun Kong wrote:
->> fs: cleanup for fs/jffs2/compr_rubin.c
+On Mon, 2008-12-08 at 20:59 +0300, dmitry pervushin wrote:
+> I am glad to present the serie of patches that implement volume
+> notifications in UBI and based on these notifications reworked MTD
+> emulation layer and a simple mtdblock-like FTL.
+>=20
+> UBI volume notifications is intended to create the API to get clients
+> notified about volume creation/deletion, renaming and changing(actually,
+> resizing). A client can subscribe to these notifications using
+> ubi_volume_register and cancel the subsription using
+> ubi_volume_unregister. When UBI volume change occurs, the atomic
+> notifier will be called. Client also can request "added" event on all
+> volumes that existed before client subscribed to the notifications.
+>=20
+> Using notifications instead of calling functions ubi_gluebi_xxx allows
+> MTD emulation layer to be more flexible; say, now is it possible to
+> build it as a module and load/unload it on demand.
+>=20
+> The simple FTL uses the same notification mechanism and provides
+> mtdblock-like layer.
 
-<sign> 
-  
->> -	for (i=0;i<8;i++) {
->> -		ret = encode(rs, rs->bit_divider-rs->bits[i],rs->bits[i],byte&1);
->> +	for (i=0; i<8; i++) {
->
->scripts/checkpatch.pl still complains:
->
->ERROR: spaces required around that '=' (ctx:VxV)
->#47: FILE: fs/jffs2/compr_rubin.c:236:
->+       for (i=0; i<8; i++) {
->              ^
->ERROR: spaces required around that '<' (ctx:VxV)
->#47: FILE: fs/jffs2/compr_rubin.c:236:
->+       for (i=0; i<8; i++) {
->                   ^
->> +		ret = encode(rs, rs->bit_divider-rs->bits[i], rs->bits[i], byte&1);
->
->WARNING: line over 80 characters
+Hi,
 
-Thanks for your reply. 
-Another new patch.
+minor general notes:
 
->From f52c81569442247b530abfdf123d2a1f44619300 Mon Sep 17 00:00:00 2001
-From: Jianjun Kong <jianjun@zeuux.org>
-Date: Tue, 9 Dec 2008 08:24:31 +0800
-Subject: [PATCH] fs: cleanup for fs/jffs2/compr_rubin.c
+1. Please, make sure checkpatch.pl is happy - here are complaints about
+trailing white-spaces.
 
-remove duplicated #include and other clean
+2. Would you please add kernel-doc style comments functions you
+introduce? Lets maintain consistent code style please.
 
-Signed-off-by: Jianjun Kong <jianjun@zeuux.org>
-Reported-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
----
- fs/jffs2/compr_rubin.c |    7 +++----
- 1 files changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/fs/jffs2/compr_rubin.c b/fs/jffs2/compr_rubin.c
-index c73fa89..35f1652 100644
---- a/fs/jffs2/compr_rubin.c
-+++ b/fs/jffs2/compr_rubin.c
-@@ -24,8 +24,6 @@
- #define BIT_DIVIDER_MIPS 1043
- static int bits_mips[8] = { 277,249,290,267,229,341,212,241}; /* mips32 */
- 
--#include <linux/errno.h>
--
- struct pushpull {
- 	unsigned char *buf;
- 	unsigned int buflen;
-@@ -157,7 +155,8 @@ static void init_decode(struct rubin_state *rs, int div, int *bits)
- 	/* behalve lower */
- 	rs->rec_q = 0;
- 
--	for (rs->bit_number = 0; rs->bit_number++ < RUBIN_REG_SIZE; rs->rec_q = rs->rec_q * 2 + (long) (pullbit(&rs->pp)))
-+	for (rs->bit_number = 0; rs->bit_number++ < RUBIN_REG_SIZE;
-+		rs->rec_q = rs->rec_q * 2 + (long) (pullbit(&rs->pp)))
- 		;
- }
- 
-@@ -241,7 +240,7 @@ static int out_byte(struct rubin_state *rs, unsigned char byte)
- 			*rs = rs_copy;
- 			return ret;
- 		}
--		byte=byte>>1;
-+		byte >>= 1;
- 	}
- 	return 0;
- }
--- 
-1.5.6.3
-
--- 
-Jianjun Kong |Happy Hacking
-Homepage: http://kongove.cn
-Gtalk:kongjianjun@gmail.com
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
