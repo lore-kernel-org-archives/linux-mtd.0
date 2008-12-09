@@ -1,23 +1,21 @@
-Received: from moutng.kundenserver.de ([212.227.126.186])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1L9ml4-0002fJ-5K
-	for linux-mtd@lists.infradead.org; Mon, 08 Dec 2008 20:31:10 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: Artem Bityutskiy <dedekind@yandex.ru>
-Subject: Re: UBI/DVB ioctl conflict?
-Date: Mon, 8 Dec 2008 21:30:13 +0100
-References: <20081207095811.13b51cca@zod.rchland.ibm.com>
-	<200812081650.54346.arnd@arndb.de> <493D4C63.5040502@yandex.ru>
-In-Reply-To: <493D4C63.5040502@yandex.ru>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
+Received: from toronto-hs-216-138-233-67.s-ip.magma.ca ([216.138.233.67]
+	helo=yow.seanm.ca)
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1L9qYr-0003fV-Qh
+	for linux-mtd@lists.infradead.org; Tue, 09 Dec 2008 00:34:50 +0000
+Date: Mon, 8 Dec 2008 19:34:46 -0500
+From: Sean MacLennan <smaclennan@pikatech.com>
+To: "Josh Boyer" <jwboyer@linux.vnet.ibm.com>
+Subject: Re: [PATCH] ndfc driver
+Message-ID: <20081208193446.37e27e26@lappy.seanm.ca>
+In-Reply-To: <20081204090107.20269571@zod.rchland.ibm.com>
+References: <20081203222832.3fc77d28@lappy.seanm.ca>
+	<20081204090107.20269571@zod.rchland.ibm.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200812082130.14420.arnd@arndb.de>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Laurent Pinchart <laurentp@cse-semaphore.com>,
-	linux-mtd@lists.infradead.org, v4l-dvb-maintainer@linuxtv.org
+Cc: linuxppc-dev@ozlabs.org, devicetree-discuss@ozlabs.org,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,17 +25,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 08 December 2008, Artem Bityutskiy wrote:
-> Arnd Bergmann wrote:
-> > We try hard (but sometimes fail) to keep every ioctl number unique.
-> > The reason for this is that the device drivers are not the only
-> > pieces of code that look at them. Specifically, three other things
-> > frequently cause problems here:
-> 
-> Thanks for the reply. Do you know the status of the
-> Documentation/ioctl/ioctl-number.txt file - it does not seem to be up-to-date.
-> Should I document add UBI ioctls there?
+On Thu, 4 Dec 2008 09:01:07 -0500
+"Josh Boyer" <jwboyer@linux.vnet.ibm.com> wrote:
 
-Yes, please. The best we can do is if everyone documents his own stuff.
+> In addition to an example DTS patch (probably to warp itself), could
+> you briefly write up a binding and put it in
+> Documentation/powerpc/dts-bindings/amcc (or similar)?  Also please CC
+> the devicetree-discuss list on that part.
 
-	Arnd <><
+Here is a start at the doc. I have sent it as a patch, but could just
+as easily send raw text.
+
+The example comes from the warp dts, just with less partitions, so I
+have not included a warp dts patch here.
+
+Cheers,
+   Sean
+
+diff --git a/Documentation/powerpc/dts-bindings/amcc/ndfc.txt
+b/Documentation/powerpc/dts-bindings/amcc/ndfc.txt new file mode 100644
+index 0000000..668f4a9
+--- /dev/null
++++ b/Documentation/powerpc/dts-bindings/amcc/ndfc.txt
+@@ -0,0 +1,31 @@
++AMCC NDFC (NanD Flash Controller)
++
++Required properties:
++- compatible : "amcc,ndfc".
++- reg : should specify chip select and size used for the chip (0x2000).
++
++Optional properties:
++- ccr : NDFC config and control register value (default 0).
++- bank-settings : NDFC bank configuration register value (default 0).
++- partition(s) - follows the OF MTD standard for partitions
++
++Example:
++
++nand@1,0 {
++	compatible = "amcc,ndfc";
++	reg = <0x00000001 0x00000000 0x00002000>;
++	ccr = <0x00001000>;
++	bank-settings = <0x80002222>;
++	#address-cells = <1>;
++	#size-cells = <1>;
++
++	partition@0 {
++		label = "kernel";
++		reg = <0x00000000 0x00200000>;
++	};
++	partition@200000 {
++		label = "root";
++		reg = <0x00200000 0x03E00000>;
++	};
++};
++
