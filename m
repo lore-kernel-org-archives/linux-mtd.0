@@ -1,15 +1,15 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LA2CD-0003Pu-72
-	for linux-mtd@lists.infradead.org; Tue, 09 Dec 2008 13:00:13 +0000
-Subject: Re: [PATCH 2/4] UBI WL-Subsys: Improvement in prot tree
+	id 1LA2Ha-0000Bq-Cx
+	for linux-mtd@lists.infradead.org; Tue, 09 Dec 2008 13:05:46 +0000
+Subject: Re: [PATCH 4/4] UBI WL-Subsys: Improvement in prot tree
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
-In-Reply-To: <1228823094.2753.14.camel@localhost.localdomain>
-References: <1228823094.2753.14.camel@localhost.localdomain>
+In-Reply-To: <1228823163.2753.18.camel@localhost.localdomain>
+References: <1228823163.2753.18.camel@localhost.localdomain>
 Content-Type: text/plain; charset=utf-8
-Date: Tue, 09 Dec 2008 14:58:00 +0200
-Message-Id: <1228827480.13686.182.camel@sauron>
+Date: Tue, 09 Dec 2008 15:03:23 +0200
+Message-Id: <1228827803.13686.189.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -23,29 +23,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2008-12-09 at 19:44 +0800, xiaochuan-xu wrote:
-> +/*
-> + * It's impossible that the first field of rb_node structure is equal to=
- 0x2
-> + * and 0x3, so Ox2 is used to check whether the physical eraseblock is i=
-n one
-> + * of prot lists or not. 0x3 is used for prot list head's mark.
-> + */
-> +#define PROT_LIST_NODE 0x2
-> +#define PROT_LIST_HEAD 0x3
+On Tue, 2008-12-09 at 19:46 +0800, xiaochuan-xu wrote:
+> >From e3af46580d374fc5da79212c17ef9f0179299bd0 Mon Sep 17 00:00:00 2001
+> From: Xiaochuan-Xu <xiaochuan-xu@cqu.edu.cn>
+> Date: Tue, 9 Dec 2008 19:27:40 +0800
+> Subject: [PATCH] Adjust severial macros
+>=20
+> In order to fulfill the identical function of the currenty
+> prot RB-tree. *_PROTECTION macros are increased respectively
+>=20
+> Signed-off-by: Xiaochuan-Xu <xiaochuan-xu@cqu.edu.cn>
+> ---
+>  drivers/mtd/ubi/wl.c |    6 +++---
+>  1 files changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+> index 0b1e8c7..603435f 100644
+> --- a/drivers/mtd/ubi/wl.c
+> +++ b/drivers/mtd/ubi/wl.c
+> @@ -130,9 +130,9 @@
+>   * How many erase cycles are short term, unknown, and long term physical
+>   * eraseblocks protected.
+>   */
+> -#define ST_PROTECTION 16
+> -#define U_PROTECTION  10
+> -#define LT_PROTECTION 4
+> +#define ST_PROTECTION 17
+> +#define U_PROTECTION  11
+> +#define LT_PROTECTION 5
 
-This is hacky a bit. AFAIK, rb-tree code does have optimizations which
-use the lowest bits of pointers, so I am not sure 2 and 3 are completely
-impossible.=20
+I doubt these constants make much sense. I would suggest you to get rid
+of them and simplify things. Let's have only one constant instead of 3.
+This will allow us to implement efficient protection queue which you
+will not need to walk at all.
 
-But I think this is anyway not needed at all. The only reason you need
-this is to quickly find out if the entry is in the protection list or
-not, right? And from the code I see the only user of this is the
-'paranoid_check_in_prot_lists()' function. But this is just a debugging
-function, which is normally compiled out. You do not have to optimize it
-at all. Just let it walk the list and check.
+So I'd suggest you to send a separate "preparation" patch which
+introduces one constant instead of 3. E.g.,
 
-So, please, let's get rid of these constants.
+#define PROTECTION 10
+
+It may be re-named to PROT_LIST_LEN later, probably.
+
+How does this plan sound to you?
 
 --=20
 Best regards,
