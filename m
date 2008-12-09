@@ -1,19 +1,14 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LA5qX-0001Kt-4P
-	for linux-mtd@lists.infradead.org; Tue, 09 Dec 2008 16:54:05 +0000
-Subject: Re: [PATCH] mkfs.ubifs: fix "smal" typo
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <1228841460-3350-1-git-send-email-vapier@gentoo.org>
-References: <1228841460-3350-1-git-send-email-vapier@gentoo.org>
-Content-Type: text/plain; charset=utf-8
-Date: Tue, 09 Dec 2008 18:51:15 +0200
-Message-Id: <1228841475.13686.204.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from web58904.mail.re1.yahoo.com ([66.196.100.233])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1LA641-0001zK-HY
+	for linux-mtd@lists.infradead.org; Tue, 09 Dec 2008 17:08:02 +0000
+Date: Tue, 9 Dec 2008 09:07:59 -0800 (PST)
+From: Philip Rakity <prakity@yahoo.com>
+Subject: Minor Error in UBIFS FAQ
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Message-ID: <69731.17422.qm@web58904.mail.re1.yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,15 +18,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2008-12-09 at 11:51 -0500, Mike Frysinger wrote:
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
-> ---
->  mkfs.ubifs/mkfs.ubifs.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
+Could not find FAQ to generate patch.  Did we mean UBIFS images (see below)
 
-Pushed, thanks.
+How to create an UBIFS image?
+Creating UBIFS images might be a little trickier than creating JFFS2 images.
+First of all, you have to understand that UBIFS works on top of UBI which works
+on top or MTD which basically represents your raw flash. This means, that if
+you need to create an image which would be flashed to the raw flash, you should
+first create an UBIFS image, than UBI image. In other words, the process has 2
+steps.
+However, as described here,
+UBI has a volume update facility and there is an ubiupdatevol utility
+for this. So you may update UBI volumes on your running system as well.
+In this case you only need an UBIFS image, and you do not have to make the
+UBI image, i.e., the process has only 1 step in this case.
+So, there are 2 utilities:
+	* mkfs.ubifs which creates UBIFS images;
+	* ubinize which creates UBI images out of UBI images.  <==== ERROR  out of UBIFS images
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+
+      
