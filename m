@@ -1,19 +1,33 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1L9zzR-0006ow-N2
-	for linux-mtd@lists.infradead.org; Tue, 09 Dec 2008 10:38:54 +0000
-Subject: Re: [PATCH] [UBI] 1/4 UBI volume notifications - UBI changes
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: dpervushin@gmail.com
-In-Reply-To: <1228759160.7622.28.camel@hp.diimka.lan>
-References: <1228759160.7622.28.camel@hp.diimka.lan>
-Content-Type: text/plain; charset=utf-8
-Date: Tue, 09 Dec 2008 12:36:29 +0200
-Message-Id: <1228818989.13686.172.camel@sauron>
+	id 1LA0hC-0005PK-W1
+	for linux-mtd@lists.infradead.org; Tue, 09 Dec 2008 11:24:07 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e2.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id mB9BNQit018068
+	for <linux-mtd@lists.infradead.org>; Tue, 9 Dec 2008 06:23:26 -0500
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.1) with ESMTP id
+	mB9BO6rQ196626
+	for <linux-mtd@lists.infradead.org>; Tue, 9 Dec 2008 06:24:06 -0500
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	mB9BO5UZ018744
+	for <linux-mtd@lists.infradead.org>; Tue, 9 Dec 2008 06:24:06 -0500
+Date: Tue, 9 Dec 2008 06:24:01 -0500
+From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+To: Stefan Roese <sr@denx.de>
+Subject: Re: [PATCH] ndfc driver
+Message-ID: <20081209062401.502f2c48@zod.rchland.ibm.com>
+In-Reply-To: <200812090710.27781.sr@denx.de>
+References: <20081203222832.3fc77d28@lappy.seanm.ca>
+	<20081204090107.20269571@zod.rchland.ibm.com>
+	<20081208193446.37e27e26@lappy.seanm.ca>
+	<200812090710.27781.sr@denx.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linuxppc-dev@ozlabs.org, devicetree-discuss@ozlabs.org,
+	linux-mtd@lists.infradead.org, Sean MacLennan <smaclennan@pikatech.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,139 +37,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2008-12-08 at 20:59 +0300, dmitry pervushin wrote:
-<snip>
->  /**
-> + * ubi_enum_volumes - enumerate all existing volumes
-> + */
-> +int ubi_enum_volumes(void *context,
-> +	void (*enumerator)(void *context, int ubi, const char *volume_name))
-> +{
-> +	int ubi_num, i, count =3D 0;
-> +	struct ubi_device *ubi;
-> +
-> +	spin_lock(&ubi_devices_lock);
-> +	for (ubi_num =3D 0; ubi_num < UBI_MAX_DEVICES; ubi_num++) {
-> +		ubi =3D ubi_devices[ubi_num];
-> +		if (!ubi)
-> +			continue;
-> +		spin_lock(&ubi->volumes_lock);
-> +		for (i =3D 0; i < ubi->vtbl_slots; i++) {
-> +			if (!ubi->volumes[i])
-> +				continue;
-> +			enumerator(context, ubi_num, ubi->volumes[i]->name);
-> +			count++;
-> +		}
-> +		spin_unlock(&ubi->volumes_lock);
-> +	}
-> +	spin_unlock(&ubi_devices_lock);
-> +	return count;
-> +}
+On Tue, 9 Dec 2008 07:10:27 +0100
+Stefan Roese <sr@denx.de> wrote:
 
-Could you please initialize 'struct ubi_volume_notification' straight in
-this function, instead of having 'enumerator' call-back? I think this
-would be much more readable. I do not see the reason for this
-complexity.
+> On Tuesday 09 December 2008, Sean MacLennan wrote:
+> > On Thu, 4 Dec 2008 09:01:07 -0500
+> >
+> > "Josh Boyer" <jwboyer@linux.vnet.ibm.com> wrote:
+> > > In addition to an example DTS patch (probably to warp itself), could
+> > > you briefly write up a binding and put it in
+> > > Documentation/powerpc/dts-bindings/amcc (or similar)?  Also please CC
+> > > the devicetree-discuss list on that part.
+> >
+> > Here is a start at the doc. I have sent it as a patch, but could just
+> > as easily send raw text.
+> >
+> > The example comes from the warp dts, just with less partitions, so I
+> > have not included a warp dts patch here.
+> >
+> > Cheers,
+> >    Sean
+> >
+> > diff --git a/Documentation/powerpc/dts-bindings/amcc/ndfc.txt
+> > b/Documentation/powerpc/dts-bindings/amcc/ndfc.txt new file mode 100644
+> > index 0000000..668f4a9
+> > --- /dev/null
+> > +++ b/Documentation/powerpc/dts-bindings/amcc/ndfc.txt
+> > @@ -0,0 +1,31 @@
+> > +AMCC NDFC (NanD Flash Controller)
+> > +
+> > +Required properties:
+> > +- compatible : "amcc,ndfc".
+> 
+> The 4xx NAND controller was first implemented on the 440EP, IIRC. So I'm 
+> pretty sure that this controller is an IBM core and not am AMCC core. So this 
+> should be "ibm,ndfc".
 
-<snip>
-> +/**
->   * ubi_get_device - get UBI device.
->   * @ubi_num: UBI device number
->   *
-> @@ -842,6 +870,8 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_=
-num, int vid_hdr_offset)
->  			goto out_detach;
->  	}
-> =20
-> +	/* when processing uif_init, we already might want to open the volume *=
-/
-> +	ubi_devices[ubi_num] =3D ubi;
->  	err =3D uif_init(ubi);
->  	if (err)
->  		goto out_nofree;
+That is true.  It's an IBM blue logic core.
+ 
+> And with this change it makes no sense to put this file "ndfc.txt" into the 
+> amcc directory.
+> 
+> Josh, where should this go then?
 
-I do not understand this change. The point is to prevent anyone from
-opening the volume before it is completely initialized. What you do -
-you allow the volume to be opened while it is in the middle of
-initialization, which is wrong. E.g., what if the initialization fails
-at some point?
+I declare it to be: dts-bindings/4xx/
 
-And this change does not seem to be relevant to this patch.
+mostly because I don't want the bindings scattered across two
+directories simply because of the timeframe they showed up in the
+marketplace.
 
-<snip>
-> --- a/drivers/mtd/ubi/cdev.c
-> +++ b/drivers/mtd/ubi/cdev.c
-> @@ -395,7 +395,7 @@ static ssize_t vol_cdev_write(struct file *file, cons=
-t char __user *buf,
->  			vol->corrupted =3D 1;
->  		}
->  		vol->checked =3D 1;
-> -		ubi_gluebi_updated(vol);
-> +		ubi_volume_notify(UBI_VOLUME_CHANGED, ubi->ubi_num, vol->name);
->  		revoke_exclusive(desc, UBI_READWRITE);
->  	}
+If there are better ideas, I'm all ears.
 
-Could you please remove gluebi as a separate patch?
-
-> diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
-<snip>
-> +
-> +static void do_notify_added(void *context, int ubi, const char *name)
-> +{
-> +	struct notifier_block *nb =3D context;
-> +	struct ubi_volume_notification nt;
-> +
-> +	nt.ubi_device =3D ubi;
-> +	nt.volume_name =3D name;
-> +	nb->notifier_call(context, UBI_VOLUME_ADDED, &nt);
-> +}
-
-As I said above, this call-back function does not seem to be reasonable.
-
-> diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-<snip>
-> -#ifdef CONFIG_MTD_UBI_GLUEBI
-> -	/*
-> -	 * Gluebi-related stuff may be compiled out.
-> -	 * Note: this should not be built into UBI but should be a separate
-> -	 * ubimtd driver which works on top of UBI and emulates MTD devices.
-> -	 */
-> -	struct ubi_volume_desc *gluebi_desc;
-> -	int gluebi_refcount;
-> -	struct mtd_info gluebi_mtd;
-> -#endif
->  };
-
-Similar. May this stuff be removed in a separate patch please? It'll
-make things easier to review.
-
-<snip>
-> +int ubi_register_volume_notifier(struct notifier_block *nb,
-> +		int ignore_existing);
-> +int ubi_unregister_volume_notifier(struct notifier_block *nb);
-> +
-> +struct ubi_volume_notification {
-> +	int ubi_device;
-> +	const char *volume_name;
-> +};
-
-This should have volume ID instead of name. Indeed, the ID is unique and
-never changes, while name may change, so ID is better for volume
-identification purposes.
-
-<snip>
-> +enum ubi_volume_notification_type {
-> +	UBI_VOLUME_ADDED,
-> +	UBI_VOLUME_DELETED,
-> +	UBI_VOLUME_CHANGED,
-> +	UBI_VOLUME_RENAMING,
-> +	UBI_VOLUME_RENAMED,
-> +};
-
-I do not see a reason for 2 rename notifications. Why? For me it looks
-like one is enough.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+josh
