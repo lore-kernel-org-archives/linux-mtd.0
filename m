@@ -1,18 +1,19 @@
-Received: from mail3.raymarine.com ([213.206.137.1]
-	helo=RMUKMAIL.raymarine.com)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LAOAZ-0006wu-Pe
-	for linux-mtd@lists.infradead.org; Wed, 10 Dec 2008 12:28:00 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1LAOZf-0001Ed-IY
+	for linux-mtd@lists.infradead.org; Wed, 10 Dec 2008 12:53:55 +0000
+Subject: Re: Ubifs
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: =?UTF-8?Q?=D0=96=D0=B5=D0=BA=D0=B0?= <vortexx@ukr.net>
+In-Reply-To: <00a101c95abc$ba2a0fc0$3503200a@head.local>
+References: <00a101c95abc$ba2a0fc0$3503200a@head.local>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 10 Dec 2008 14:51:26 +0200
+Message-Id: <1228913486.13686.265.camel@sauron>
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Subject: Mounting UBIFS fails intermittently
-Date: Wed, 10 Dec 2008 12:27:49 -0000
-Message-ID: <B8993E4AF7E2B44A80FE742A85665EF00ADA1BF3@rmukmail.raymarine.com>
-From: "Manish Jain" <Manish.Jain@raymarine.com>
-To: <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,42 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello All,
+On Wed, 2008-12-10 at 13:44 +0200, =D0=96=D0=B5=D0=BA=D0=B0 wrote:
+> Hi Artem!!!=20
+> On my system after create UBI device /dev/ubi0_0 it was not created...
+> I did check... here is a result
+>=20
+> # cat /sys/class/ubi/ubi0/dev
+> 253:0
+> # ls -l /dev/ubi0
+> brw-rw----    1 root     root     253,   0 Jan  1 00:11 /dev/ubi0=20
 
-In our system , we have created two partition in Nand flash. One is =
-mounted as root and the other(which is quite big)is mounted for keeping =
-data.
-The problem is that data mount fails intermittently.
+Just pushed a fix which makes ubi utilities to be more verbose about
+errors.
 
-Here is the kernel error log, when we try to mount ubifs.
-
- error (pid 303): ubifs_scan: corrupt empty space at LEB 1:4160
-UBIFS error (pid 303): ubifs_scanned_corruption: corrupted data at LEB =
-1:4160
-00000000: 49269565 00000000 49269553 00000000 00000000 00000000 00000000 =
-00000002  e.&I....S.&I....................
-00000020: 00000000 00000000 000041fd 00000000 00000000 00000000 00000000 =
-00000000  .........A......................
-00000040: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 =
-00000000  ................................
-00000060: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff =
-ffffffff  ................................
-00000080: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff =
-ffffffff  ................................
-000000a0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff =
-ffffffff  ................................
- ...
- ...
-00000fa0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff =
-ffffffff  ................................
-00000fc0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff =
-ffffffff  ................................
-00000fe0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff =
-ffffffff  ................................
-UBIFS error (pid 303): ubifs_scan: LEB 1 scanning failed
-UBIFS error (pid 303): ubifs_recover_master_node: failed to recover =
-master node
-
-Kind Regards,
-Manish
-Reply
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
