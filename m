@@ -1,16 +1,23 @@
-Received: from jupiter.malva.ua ([62.244.5.114])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LAPSd-0003vB-5E
-	for linux-mtd@lists.infradead.org; Wed, 10 Dec 2008 13:50:43 +0000
-Message-ID: <00ee01c95ace$4a2ff6f0$3503200a@head.local>
-From: =?koi8-r?B?9sXLwQ==?= <vortexx@ukr.net>
-To: <linux-mtd@lists.infradead.org>
-Subject: Ubifs
-Date: Wed, 10 Dec 2008 15:50:40 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="koi8-r"
-Content-Transfer-Encoding: 7bit
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1LAPf8-0003Mg-98
+	for linux-mtd@lists.infradead.org; Wed, 10 Dec 2008 14:03:38 +0000
+Subject: RE: Mounting UBIFS fails intermittently
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Manish Jain <Manish.Jain@raymarine.com>
+In-Reply-To: <B8993E4AF7E2B44A80FE742A85665EF00ADA1D74@rmukmail.raymarine.com>
+References: <B8993E4AF7E2B44A80FE742A85665EF00ADA1BF3@rmukmail.raymarine.com>
+	<1228913998.13686.275.camel@sauron>
+	<B8993E4AF7E2B44A80FE742A85665EF00ADA1D73@rmukmail.raymarine.com>
+	<1228915942.13686.282.camel@sauron>
+	<B8993E4AF7E2B44A80FE742A85665EF00ADA1D74@rmukmail.raymarine.com>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 10 Dec 2008 16:01:01 +0200
+Message-Id: <1228917661.13686.288.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,23 +27,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-thank you for a prompt, a problem is decided!!!
+On Wed, 2008-12-10 at 13:39 +0000, Manish Jain wrote:
+> Can you please suggest any alternate to ubiformat, I would like to try th=
+at out.
 
-# mknod /dev/ubi0 c 253 0
-# ubiattach /dev/ubi_ctrl -m 0
-UBI device number 0, total 2048 LEBs (31457280 bytes, 30.0 MiB), available
-2024
-LEBs (31088640 bytes, 29.6 MiB), LEB size 15360 bytes (15.0 KiB)
-# ubimkvol /dev/ubi0 -N test -s 29MiB
-nand_wp: C0 ST 80
-nand_wp: C0 ST 80
-nand_wp: C0 ST 80
-nand_wp: C0 ST 80
-nand_wp: C0 ST 80
-nand_wp: C0 ST 80
-nand_wp: C0 ST 80
-nand_wp: C0 ST 80
-Volume ID 0, size 1980 LEBs (30412800 bytes, 29.0 MiB), LEB size 15360 bytes
-(15.0 KiB), dynamic, name "test", alignment 1
+Well, ubiformat is kind of the right solution, because it preserves
+erase counters.
 
-best regards, Evgeny
+But you may try nandwrite which is available in mtd-utils. It destroys
+erase counters, but it is OK if you are developing.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
