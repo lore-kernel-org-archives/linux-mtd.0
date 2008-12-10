@@ -1,23 +1,16 @@
-Received: from mail3.raymarine.com ([213.206.137.1]
-	helo=RMUKMAIL.raymarine.com)
+Received: from jupiter.malva.ua ([62.244.5.114])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LAPHf-0002bn-Hu
-	for linux-mtd@lists.infradead.org; Wed, 10 Dec 2008 13:39:25 +0000
-Content-class: urn:content-classes:message
+	id 1LAPSd-0003vB-5E
+	for linux-mtd@lists.infradead.org; Wed, 10 Dec 2008 13:50:43 +0000
+Message-ID: <00ee01c95ace$4a2ff6f0$3503200a@head.local>
+From: =?koi8-r?B?9sXLwQ==?= <vortexx@ukr.net>
+To: <linux-mtd@lists.infradead.org>
+Subject: Ubifs
+Date: Wed, 10 Dec 2008 15:50:40 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="koi8-r"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: Mounting UBIFS fails intermittently
-Date: Wed, 10 Dec 2008 13:39:19 -0000
-Message-ID: <B8993E4AF7E2B44A80FE742A85665EF00ADA1D74@rmukmail.raymarine.com>
-References: <B8993E4AF7E2B44A80FE742A85665EF00ADA1BF3@rmukmail.raymarine.com>
-	<1228913998.13686.275.camel@sauron>
-	<B8993E4AF7E2B44A80FE742A85665EF00ADA1D73@rmukmail.raymarine.com>
-	<1228915942.13686.282.camel@sauron>
-From: "Manish Jain" <Manish.Jain@raymarine.com>
-To: <dedekind@infradead.org>
-Cc: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,36 +20,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Can you please suggest any alternate to ubiformat, I would like to try =
-that out.
+thank you for a prompt, a problem is decided!!!
 
-Kind Regards,
-Manish
+# mknod /dev/ubi0 c 253 0
+# ubiattach /dev/ubi_ctrl -m 0
+UBI device number 0, total 2048 LEBs (31457280 bytes, 30.0 MiB), available
+2024
+LEBs (31088640 bytes, 29.6 MiB), LEB size 15360 bytes (15.0 KiB)
+# ubimkvol /dev/ubi0 -N test -s 29MiB
+nand_wp: C0 ST 80
+nand_wp: C0 ST 80
+nand_wp: C0 ST 80
+nand_wp: C0 ST 80
+nand_wp: C0 ST 80
+nand_wp: C0 ST 80
+nand_wp: C0 ST 80
+nand_wp: C0 ST 80
+Volume ID 0, size 1980 LEBs (30412800 bytes, 29.0 MiB), LEB size 15360 bytes
+(15.0 KiB), dynamic, name "test", alignment 1
 
------Original Message-----
-From: Artem Bityutskiy [mailto:dedekind@infradead.org]=20
-Sent: 10 December 2008 13:32
-To: Manish Jain
-Cc: linux-mtd@lists.infradead.org
-Subject: RE: Mounting UBIFS fails intermittently
-
-On Wed, 2008-12-10 at 13:12 +0000, Manish Jain wrote:
-> Thanks Artem.
->=20
-> I'll try tests for case 1.
->=20
-> With respect to case2:
->=20
-> Within our flash, we have two partitions. And there is singe image of =
-flash contents(namely er.ubi).
-> We flash our file image using ubiformat command.:
->=20
-> Ubiformat /dev/mtd5 -y -s 512 -f /CFCard/er.ubi
-
-well, providing your sub-page size is really 512 bytes, this should be
-doing the right things. Although I do not utilize ubiformat myself, so I
-am not 100% sure it does not have bugs which may lead to what you see.
-
---=20
-Best regards,
-Artem Bityutskiy (=E2=C9=D4=C0=C3=CB=C9=CA =E1=D2=D4=A3=CD)
+best regards, Evgeny
