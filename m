@@ -1,16 +1,12 @@
-Received: from jupiter.malva.ua ([62.244.5.114])
+Received: from moutng.kundenserver.de ([212.227.126.171])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LAKxj-0008O4-QO
-	for linux-mtd@lists.infradead.org; Wed, 10 Dec 2008 09:02:32 +0000
-Message-ID: <003401c95aa6$078be750$3503200a@head.local>
-From: =?koi8-r?B?9sXLwQ==?= <vortexx@ukr.net>
-To: <linux-mtd@lists.infradead.org>
-Subject: Ubifs
-Date: Wed, 10 Dec 2008 11:02:29 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="koi8-r"
-Content-Transfer-Encoding: 7bit
+	id 1LALar-000347-2T
+	for linux-mtd@lists.infradead.org; Wed, 10 Dec 2008 09:42:57 +0000
+From: Stefan Roese <sr@denx.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] UBI: Return -ENOMEM upon failing malloc
+Date: Wed, 10 Dec 2008 10:42:54 +0100
+Message-Id: <1228902174-24597-1-git-send-email-sr@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,29 +16,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Return with correct error code (-ENOMEM) from ubi_attach_mtd_dev() upon
+failing malloc().
 
-Hi all,
-I wanna have a try ubifs on nand, and do as written on
-http://www.linux-mtd.infradead.org/faq/ubifs.html
-1. compile, install and boot the kernel (2.6.26-rc3)
-the configuration option for ubi and nand is default on as module.
-2. make the mtd-utils.
-3. create a ubi when I got the error
+Signed-off-by: Stefan Roese <sr@denx.de>
+---
+ drivers/mtd/ubi/build.c |   16 +++++++++++-----
+ 1 files changed, 11 insertions(+), 5 deletions(-)
 
-# ubiattach /dev/ubi_ctrl -m 0
-UBI device number 0, total 2048 LEBs (31457280 bytes, 30.0 MiB), available
-2024
-LEBs (31088640 bytes, 29.6 MiB), LEB size 15360 bytes (15.0 KiB)
-# ubinfo
-UBI version:                    1
-Count of UBI devices:           1
-UBI control device major/minor: 10:63
-Present UBI devices:            ubi0
-# ubimkvol /dev/ubi0 -N test -s 30MiB
-ubimkvol: error!: "/dev/ubi0" is not an UBI device node
-
-I did miss any step installation mtd-tools or create UBI device...
-
-Thanks!!!
-
- best regards, Evgeny
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index c7630a2..485c0fc 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -816,18 +816,24 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
+ 		goto out_free;
+ 
+ 	ubi->peb_buf1 = vmalloc(ubi->peb_size);
+-	if (!ubi->peb_buf1)
++	if (!ubi->peb_buf1) {
++		err = -ENOMEM;
+ 		goto out_free;
++	}
+ 
+ 	ubi->peb_buf2 = vmalloc(ubi->peb_size);
+-	if (!ubi->peb_buf2)
+-		 goto out_free;
++	if (!ubi->peb_buf2) {
++		err = -ENOMEM;
++		goto out_free;
++	}
+ 
+ #ifdef CONFIG_MTD_UBI_DEBUG
+ 	mutex_init(&ubi->dbg_buf_mutex);
+ 	ubi->dbg_peb_buf = vmalloc(ubi->peb_size);
+-	if (!ubi->dbg_peb_buf)
+-		 goto out_free;
++	if (!ubi->dbg_peb_buf) {
++		err = -ENOMEM;
++		goto out_free;
++	}
+ #endif
+ 
+ 	err = attach_by_scanning(ubi);
+-- 
+1.6.0.5
