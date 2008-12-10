@@ -1,16 +1,23 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LAWbf-0001Pk-Uo
-	for linux-mtd@lists.infradead.org; Wed, 10 Dec 2008 21:28:32 +0000
-Received: from localhost.localdomain (localhost [127.0.0.1])
-	by smtp.gentoo.org (Postfix) with ESMTP id 9BFCE65565
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 10 Dec 2008 21:28:27 +0000 (UTC)
-From: Mike Frysinger <vapier@gentoo.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] unify all common build system parts
-Date: Wed, 10 Dec 2008 16:28:26 -0500
-Message-Id: <1228944506-5792-1-git-send-email-vapier@gentoo.org>
+Received: from toronto-hs-216-138-233-67.s-ip.magma.ca ([216.138.233.67]
+	helo=yow.seanm.ca)
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1LAYIG-0002EM-Rw
+	for linux-mtd@lists.infradead.org; Wed, 10 Dec 2008 23:16:38 +0000
+Date: Wed, 10 Dec 2008 18:16:34 -0500
+From: Sean MacLennan <smaclennan@pikatech.com>
+To: "Stefan Roese" <sr@denx.de>
+Subject: Re: [PATCH] ndfc driver
+Message-ID: <20081210181634.2aac2023@lappy.seanm.ca>
+In-Reply-To: <200812090710.27781.sr@denx.de>
+References: <20081203222832.3fc77d28@lappy.seanm.ca>
+	<20081204090107.20269571@zod.rchland.ibm.com>
+	<20081208193446.37e27e26@lappy.seanm.ca>
+	<200812090710.27781.sr@denx.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	devicetree-discuss@ozlabs.org, Arnd Bergmann <arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,468 +27,498 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Rather than duplicating the same thing over and over in every Makefile, move
-it all to common.mk.
+Here is an updated patch. Doc has been moved to 4xx and amcc changed to
+ibm.
 
-Other things fixed here:
- - doing subdirs in parallel
- - fix src!=build compiling in subdirs
+Arnd: I removed your acked-by just in case you don't approve of the new
+flash layout. Feel free to ack again.
 
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+Cheers,
+   Sean
+
+Port of the ndfc driver to an OF platform driver.
+
+Signed-off-by: Sean MacLennan <smaclennan@pikatech.com>
 ---
- Makefile                     |   77 +++++++++++-----------------------------
- common.mk                    |   58 ++++++++++++++++++++++++++++++
- mkfs.ubifs/Makefile          |   20 +++++-----
- ubi-utils/Makefile           |   77 ++++++++++++++--------------------------
- ubi-utils/new-utils/Makefile |   79 +++++++++++++++--------------------------
- 5 files changed, 145 insertions(+), 166 deletions(-)
- create mode 100644 common.mk
-
-diff --git a/Makefile b/Makefile
-index 8319599..ac623e3 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,30 +1,15 @@
- 
- # -*- sh -*-
- 
--PREFIX=/usr
--EXEC_PREFIX=$(PREFIX)
--SBINDIR=$(EXEC_PREFIX)/sbin
--MANDIR=$(PREFIX)/share/man
--INCLUDEDIR=$(PREFIX)/include
--
--#CROSS=arm-linux-
--CC := $(CROSS)gcc
--CFLAGS ?= -O2 -g
--CFLAGS += -Wall
- CPPFLAGS += -I./include $(ZLIBCPPFLAGS) $(LZOCPPFLAGS)
- 
--ifeq ($(origin CROSS),undefined)
--  BUILDDIR := .
--else
--# Remove the trailing slash to make the directory name
--  BUILDDIR := $(CROSS:-=)
--endif
--
- ifeq ($(WITHOUT_XATTR), 1)
-   CPPFLAGS += -DWITHOUT_XATTR
- endif
- 
--RAWTARGETS = ftl_format flash_erase flash_eraseall nanddump doc_loadbios \
-+SUBDIRS = mkfs.ubifs ubi-utils
-+
-+TARGETS = ftl_format flash_erase flash_eraseall nanddump doc_loadbios \
- 	ftl_check mkfs.jffs2 flash_lock flash_unlock flash_info \
- 	flash_otp_info flash_otp_dump mtd_debug flashcp nandwrite nandtest \
- 	jffs2dump \
-@@ -33,68 +18,48 @@ RAWTARGETS = ftl_format flash_erase flash_eraseall nanddump doc_loadbios \
- 	serve_image recv_image \
- 	sumtool #jffs2reader
- 
--TARGETS = $(foreach target,$(RAWTARGETS),$(BUILDDIR)/$(target))
--
- SYMLINKS =
- 
--%: %.o
--	$(CC) $(CFLAGS) $(LDFLAGS) -g -o $@ $^
--
--$(BUILDDIR)/%.o: %.c
--	mkdir -p $(BUILDDIR)
--	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $< -g -Wp,-MD,$(BUILDDIR)/.$(<F).dep
--
--.SUFFIXES:
-+include common.mk
- 
--all: $(TARGETS)
--	$(MAKE) -C $(BUILDDIR)/ubi-utils
--	$(MAKE) -C $(BUILDDIR)/mkfs.ubifs
--
--IGNORE=${wildcard $(BUILDDIR)/.*.c.dep}
---include ${IGNORE}
--
--clean:
--	rm -f $(BUILDDIR)/*.o $(TARGETS) $(BUILDDIR)/.*.c.dep $(SYMLINKS)
--	if [ "$(BUILDDIR)x" != ".x" ]; then rm -rf $(BUILDDIR); fi
--	$(MAKE) -C $(BUILDDIR)/ubi-utils clean
--	$(MAKE) -C $(BUILDDIR)/mkfs.ubifs clean
-+clean::
-+	-rm -f $(SYMLINKS)
-+ifneq ($(BUILDDIR)/.git,)
-+ifneq ($(BUILDDIR),.)
-+ifneq ($(BUILDDIR),$(PWD))
-+	rm -rf $(BUILDDIR)
-+endif
-+endif
-+endif
- 
- $(SYMLINKS):
- 	ln -sf ../fs/jffs2/$@ $@
- 
--$(BUILDDIR)/mkfs.jffs2: $(BUILDDIR)/crc32.o \
--			$(BUILDDIR)/compr_rtime.o \
--			$(BUILDDIR)/mkfs.jffs2.o \
--			$(BUILDDIR)/compr_zlib.o \
--			$(BUILDDIR)/compr_lzo.o \
--			$(BUILDDIR)/compr.o \
--			$(BUILDDIR)/rbtree.o
--	$(CC) $(LDFLAGS) -o $@ $^ $(ZLIBLDFLAGS) -lz $(LZOLDFLAGS) -llzo2
-+$(BUILDDIR)/mkfs.jffs2: $(addprefix $(BUILDDIR)/,\
-+	crc32.o compr_rtime.o mkfs.jffs2.o compr_zlib.o compr_lzo.o \
-+	compr.o rbtree.o)
-+LDFLAGS_mkfs.jffs2 = $(ZLIBLDFLAGS) $(LZOLDFLAGS)
-+LDLIBS_mkfs.jffs2  = -lz -llzo2
- 
- $(BUILDDIR)/flash_eraseall: $(BUILDDIR)/crc32.o $(BUILDDIR)/flash_eraseall.o
--	$(CC) $(LDFLAGS) -o $@ $^
- 
- $(BUILDDIR)/jffs2reader: $(BUILDDIR)/jffs2reader.o
--	$(CC) $(LDFLAGS) -o $@ $^ $(ZLIBLDFLAGS) -lz
-+LDFLAGS_jffs2reader = $(ZLIBLDFLAGS) $(LZOLDFLAGS)
-+LDLIBS_jffs2reader  = -lz -llzo2
- 
- $(BUILDDIR)/jffs2dump: $(BUILDDIR)/jffs2dump.o $(BUILDDIR)/crc32.o
--	$(CC) $(LDFLAGS) -o $@ $^
- 
- $(BUILDDIR)/sumtool: $(BUILDDIR)/sumtool.o $(BUILDDIR)/crc32.o
--	$(CC) $(LDFLAGS) -o $@ $^
- 
- $(BUILDDIR)/serve_image: $(BUILDDIR)/serve_image.o $(BUILDDIR)/crc32.o $(BUILDDIR)/fec.o
--	$(CC) $(LDFLAGS) -o $@ $^
- 
- $(BUILDDIR)/recv_image: $(BUILDDIR)/recv_image.o $(BUILDDIR)/crc32.o $(BUILDDIR)/fec.o
--	$(CC) $(LDFLAGS) -o $@ $^
- 
- $(BUILDDIR)/fectest: $(BUILDDIR)/fectest.o $(BUILDDIR)/crc32.o $(BUILDDIR)/fec.o
--	$(CC) $(LDFLAGS) -o $@ $^
- 
- 
- 
--install: ${TARGETS}
-+install:: ${TARGETS}
- 	mkdir -p ${DESTDIR}/${SBINDIR}
- 	install -m 0755 ${TARGETS} ${DESTDIR}/${SBINDIR}/
- 	mkdir -p ${DESTDIR}/${MANDIR}/man1
-diff --git a/common.mk b/common.mk
+diff --git a/Documentation/powerpc/dts-bindings/4xx/ndfc.txt b/Documentation/powerpc/dts-bindings/4xx/ndfc.txt
 new file mode 100644
-index 0000000..5dd21ab
+index 0000000..869f0b5
 --- /dev/null
-+++ b/common.mk
-@@ -0,0 +1,58 @@
-+CC := $(CROSS)gcc
-+AR := $(CROSS)ar
-+RANLIB := $(CROSS)ranlib
-+CFLAGS ?= -O2 -g
-+CFLAGS += -Wall -Wwrite-strings -W
++++ b/Documentation/powerpc/dts-bindings/4xx/ndfc.txt
+@@ -0,0 +1,39 @@
++AMCC NDFC (NanD Flash Controller)
 +
-+DESTDIR ?= /usr/local
-+PREFIX=/usr
-+EXEC_PREFIX=$(PREFIX)
-+SBINDIR=$(EXEC_PREFIX)/sbin
-+MANDIR=$(PREFIX)/share/man
-+INCLUDEDIR=$(PREFIX)/include
++Required properties:
++- compatible : "ibm,ndfc".
++- reg : should specify chip select and size used for the chip (0x2000).
 +
-+ifndef BUILDDIR
-+ifeq ($(origin CROSS),undefined)
-+  BUILDDIR := $(PWD)
-+else
-+# Remove the trailing slash to make the directory name
-+  BUILDDIR := $(PWD)/$(CROSS:-=)
-+endif
-+endif
++Optional properties:
++- ccr : NDFC config and control register value (default 0).
++- bank-settings : NDFC bank configuration register value (default 0).
 +
-+override TARGETS := $(addprefix $(BUILDDIR)/,$(TARGETS))
++Notes:
++- partition(s) - follows the OF MTD standard for partitions
 +
-+SUBDIRS_ALL = $(patsubst %,subdirs_%_all,$(SUBDIRS))
-+SUBDIRS_CLEAN = $(patsubst %,subdirs_%_clean,$(SUBDIRS))
-+SUBDIRS_INSTALL = $(patsubst %,subdirs_%_install,$(SUBDIRS))
++Example:
 +
-+all:: $(TARGETS) $(SUBDIRS_ALL)
++ndfc@1,0 {
++	compatible = "ibm,ndfc";
++	reg = <0x00000001 0x00000000 0x00002000>;
++	ccr = <0x00001000>;
++	bank-settings = <0x80002222>;
++	#address-cells = <1>;
++	#size-cells = <1>;
 +
-+clean:: $(SUBDIRS_CLEAN)
-+	rm -f $(BUILDDIR)/*.o $(TARGETS) $(BUILDDIR)/.*.c.dep
++	nand {
++		#address-cells = <1>;
++		#size-cells = <1>;
 +
-+install:: $(TARGETS) $(SUBDIRS_INSTALL)
++		partition@0 {
++			label = "kernel";
++			reg = <0x00000000 0x00200000>;
++		};
++		partition@200000 {
++			label = "root";
++			reg = <0x00200000 0x03E00000>;
++		};
++	};
++};
 +
-+$(BUILDDIR)/%: $(BUILDDIR)/%.o
-+	$(CC) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_$(notdir $@)) -g -o $@ $^ $(LDLIBS) $(LDLIBS_$(notdir $@))
 +
-+$(BUILDDIR)/%.a:
-+	$(AR) crv $@ $^
-+	$(RANLIB) $@
-+
-+$(BUILDDIR)/%.o: %.c
-+	mkdir -p $(dir $@)
-+	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $< -g -Wp,-MD,$(BUILDDIR)/.$(<F).dep
-+
-+subdirs_%:
-+	d=$(patsubst subdirs_%,%,$@); \
-+	t=`echo $$d | sed s:.*_::` d=`echo $$d | sed s:_.*::`; \
-+	$(MAKE) BUILDDIR=$(BUILDDIR)/$$d -C $$d $$t
-+
-+.SUFFIXES:
-+
-+IGNORE=${wildcard $(BUILDDIR)/.*.c.dep}
-+-include ${IGNORE}
-+
-+PHONY += all clean install
-+.PHONY: $(PHONY)
-diff --git a/mkfs.ubifs/Makefile b/mkfs.ubifs/Makefile
-index 9471ac4..e5bf9ce 100644
---- a/mkfs.ubifs/Makefile
-+++ b/mkfs.ubifs/Makefile
-@@ -1,23 +1,23 @@
--DESTDIR := /usr/local
--SBINDIR=/usr/sbin
- ALL_SOURCES=*.[ch] hashtable/*.[ch]
--CFLAGS += -Wall
--LDLIBS += -lz -llzo2 -lm -luuid
-+
- TARGETS = mkfs.ubifs
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 1c2e945..5705f85 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -163,6 +163,13 @@ config MTD_NAND_S3C2410_HWECC
+ 	  incorrect ECC generation, and if using these, the default of
+ 	  software ECC is preferable.
  
--all: $(TARGETS)
-+LDLIBS_mkfs.ubifs = -lz -llzo2 -lm -luuid
++config MTD_NAND_NDFC
++	tristate "NDFC NanD Flash Controller"
++	depends on 4xx
++	select MTD_NAND_ECC_SMC
++	help
++	 NDFC Nand Flash Controllers are integrated in IBM/AMCC's 4xx SoCs
 +
-+include ../common.mk
- 
--mkfs.ubifs: crc16.o crc32.o lpt.o compr.o hashtable/hashtable.o \
--            hashtable/hashtable_itr.o devtable.o
-+$(BUILDDIR)/mkfs.ubifs: $(addprefix $(BUILDDIR)/,\
-+	crc16.o crc32.o lpt.o compr.o devtable.o \
-+	hashtable/hashtable.o hashtable/hashtable_itr.o)
- 
--clean:
--	rm -f *.o hashtable/*.o $(TARGETS) cscope.*
-+clean::
-+	rm -f $(BUILDDIR)/hashtable/*.o cscope.*
- 
- cscope:
- 	@echo $(ALL_SOURCES) > cscope.files
- 	@cscope -bR
- 	@rm cscope.files
- 
--install: ${TARGETS}
-+install:: ${TARGETS}
- 	mkdir -p ${DESTDIR}/${SBINDIR}
- 	install -m 0755 ${TARGETS} ${DESTDIR}/${SBINDIR}/
-diff --git a/ubi-utils/Makefile b/ubi-utils/Makefile
-index 63058e1..3be813a 100644
---- a/ubi-utils/Makefile
-+++ b/ubi-utils/Makefile
-@@ -3,77 +3,54 @@
- #
- 
- KERNELHDR := ../include
--DESTDIR := /usr/local
--SBINDIR=/usr/sbin
--MANDIR=/usr/share/man
--INCLUDEDIR=/usr/include
- 
--CC := $(CROSS)gcc
- CFLAGS ?= -O2 -g -Werror
--CFLAGS += -Wall -Wwrite-strings -W
- CPPFLAGS += -I./inc -I./src -I$(KERNELHDR) \
- 	-std=gnu99 -DPACKAGE_VERSION=\"1.0\"
- 
- PERLPROGS = mkpfi ubicrc32.pl
- 
--NTARGETS = ubiattach ubicrc32 ubidetach ubimkvol ubinfo ubinize \
--	ubirmvol ubiupdatevol ubiformat
-+SUBDIRS = new-utils
-+
- TARGETS = pfiflash pddcustomize ubimirror bin2nand nand2bin ubigen \
--	mkbootenv unubi pfi2bin $(NTARGETS)
-+	mkbootenv unubi pfi2bin
- 
- vpath   %.c ./src
- 
--%: %.o
--	$(CC) $(LDFLAGS) -g -o $@ $^
+ config MTD_NAND_S3C2410_CLKSTOP
+ 	bool "S3C2410 NAND IDLE clock stop"
+ 	depends on MTD_NAND_S3C2410
+diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
+index 955959e..582cf80 100644
+--- a/drivers/mtd/nand/ndfc.c
++++ b/drivers/mtd/nand/ndfc.c
+@@ -2,12 +2,20 @@
+  *  drivers/mtd/ndfc.c
+  *
+  *  Overview:
+- *   Platform independend driver for NDFC (NanD Flash Controller)
++ *   Platform independent driver for NDFC (NanD Flash Controller)
+  *   integrated into EP440 cores
+  *
++ *   Ported to an OF platform driver by Sean MacLennan
++ *
++ *   The NDFC supports multiple chips, but this driver only supports a
++ *   single chip since I do not have access to any boards with
++ *   multiple chips.
++ *
+  *  Author: Thomas Gleixner
+  *
+  *  Copyright 2006 IBM
++ *  Copyright 2008 PIKA Technologies
++ *    Sean MacLennan <smaclennan@pikatech.com>
+  *
+  *  This program is free software; you can redistribute	 it and/or modify it
+  *  under  the terms of	 the GNU General  Public License as published by the
+@@ -21,27 +29,20 @@
+ #include <linux/mtd/partitions.h>
+ #include <linux/mtd/ndfc.h>
+ #include <linux/mtd/mtd.h>
+-#include <linux/platform_device.h>
 -
--%.o: %.c
--	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $< -g -Wp,-MD,.$(shell basename $<).dep
++#include <linux/of_platform.h>
+ #include <asm/io.h>
+-#ifdef CONFIG_40x
+-#include <asm/ibm405.h>
+-#else
+-#include <asm/ibm44x.h>
+-#endif
 -
--all: $(TARGETS)
+-struct ndfc_nand_mtd {
+-	struct mtd_info			mtd;
+-	struct nand_chip		chip;
+-	struct platform_nand_chip	*pl_chip;
+-};
+ 
+-static struct ndfc_nand_mtd ndfc_mtd[NDFC_MAX_BANKS];
+ 
+ struct ndfc_controller {
+-	void __iomem		*ndfcbase;
+-	struct nand_hw_control	ndfc_control;
+-	atomic_t		childs_active;
++	struct of_device *ofdev;
++	void __iomem *ndfcbase;
++	struct mtd_info mtd;
++	struct nand_chip chip;
++	int chip_select;
++	struct nand_hw_control ndfc_control;
++#ifdef CONFIG_MTD_PARTITIONS
++	struct mtd_partition *parts;
++#endif
+ };
+ 
+ static struct ndfc_controller ndfc_ctrl;
+@@ -50,17 +51,14 @@ static void ndfc_select_chip(struct mtd_info *mtd, int chip)
+ {
+ 	uint32_t ccr;
+ 	struct ndfc_controller *ndfc = &ndfc_ctrl;
+-	struct nand_chip *nandchip = mtd->priv;
+-	struct ndfc_nand_mtd *nandmtd = nandchip->priv;
+-	struct platform_nand_chip *pchip = nandmtd->pl_chip;
+ 
+-	ccr = __raw_readl(ndfc->ndfcbase + NDFC_CCR);
++	ccr = in_be32(ndfc->ndfcbase + NDFC_CCR);
+ 	if (chip >= 0) {
+ 		ccr &= ~NDFC_CCR_BS_MASK;
+-		ccr |= NDFC_CCR_BS(chip + pchip->chip_offset);
++		ccr |= NDFC_CCR_BS(chip + ndfc->chip_select);
+ 	} else
+ 		ccr |= NDFC_CCR_RESET_CE;
+-	__raw_writel(ccr, ndfc->ndfcbase + NDFC_CCR);
++	out_be32(ndfc->ndfcbase + NDFC_CCR, ccr);
+ }
+ 
+ static void ndfc_hwcontrol(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+@@ -80,7 +78,7 @@ static int ndfc_ready(struct mtd_info *mtd)
+ {
+ 	struct ndfc_controller *ndfc = &ndfc_ctrl;
+ 
+-	return __raw_readl(ndfc->ndfcbase + NDFC_STAT) & NDFC_STAT_IS_READY;
++	return in_be32(ndfc->ndfcbase + NDFC_STAT) & NDFC_STAT_IS_READY;
+ }
+ 
+ static void ndfc_enable_hwecc(struct mtd_info *mtd, int mode)
+@@ -88,9 +86,9 @@ static void ndfc_enable_hwecc(struct mtd_info *mtd, int mode)
+ 	uint32_t ccr;
+ 	struct ndfc_controller *ndfc = &ndfc_ctrl;
+ 
+-	ccr = __raw_readl(ndfc->ndfcbase + NDFC_CCR);
++	ccr = in_be32(ndfc->ndfcbase + NDFC_CCR);
+ 	ccr |= NDFC_CCR_RESET_ECC;
+-	__raw_writel(ccr, ndfc->ndfcbase + NDFC_CCR);
++	out_be32(ndfc->ndfcbase + NDFC_CCR, ccr);
+ 	wmb();
+ }
+ 
+@@ -102,9 +100,10 @@ static int ndfc_calculate_ecc(struct mtd_info *mtd,
+ 	uint8_t *p = (uint8_t *)&ecc;
+ 
+ 	wmb();
+-	ecc = __raw_readl(ndfc->ndfcbase + NDFC_ECC);
+-	ecc_code[0] = p[1];
+-	ecc_code[1] = p[2];
++	ecc = in_be32(ndfc->ndfcbase + NDFC_ECC);
++	/* The NDFC uses Smart Media (SMC) bytes order */
++	ecc_code[0] = p[2];
++	ecc_code[1] = p[1];
+ 	ecc_code[2] = p[3];
+ 
+ 	return 0;
+@@ -123,7 +122,7 @@ static void ndfc_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
+ 	uint32_t *p = (uint32_t *) buf;
+ 
+ 	for(;len > 0; len -= 4)
+-		*p++ = __raw_readl(ndfc->ndfcbase + NDFC_DATA);
++		*p++ = in_be32(ndfc->ndfcbase + NDFC_DATA);
+ }
+ 
+ static void ndfc_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
+@@ -132,7 +131,7 @@ static void ndfc_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
+ 	uint32_t *p = (uint32_t *) buf;
+ 
+ 	for(;len > 0; len -= 4)
+-		__raw_writel(*p++, ndfc->ndfcbase + NDFC_DATA);
++		out_be32(ndfc->ndfcbase + NDFC_DATA, *p++);
+ }
+ 
+ static int ndfc_verify_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
+@@ -141,7 +140,7 @@ static int ndfc_verify_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
+ 	uint32_t *p = (uint32_t *) buf;
+ 
+ 	for(;len > 0; len -= 4)
+-		if (*p++ != __raw_readl(ndfc->ndfcbase + NDFC_DATA))
++		if (*p++ != in_be32(ndfc->ndfcbase + NDFC_DATA))
+ 			return -EFAULT;
+ 	return 0;
+ }
+@@ -149,10 +148,19 @@ static int ndfc_verify_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
+ /*
+  * Initialize chip structure
+  */
+-static void ndfc_chip_init(struct ndfc_nand_mtd *mtd)
++static int ndfc_chip_init(struct ndfc_controller *ndfc,
++			  struct device_node *node)
+ {
+-	struct ndfc_controller *ndfc = &ndfc_ctrl;
+-	struct nand_chip *chip = &mtd->chip;
++#ifdef CONFIG_MTD_PARTITIONS
++#ifdef CONFIG_MTD_CMDLINE_PARTS
++	static const char *part_types[] = { "cmdlinepart", NULL };
++#else
++	static const char *part_types[] = { NULL };
++#endif
++#endif
++	struct device_node *flash_np;
++	struct nand_chip *chip = &ndfc->chip;
++	int ret;
+ 
+ 	chip->IO_ADDR_R = ndfc->ndfcbase + NDFC_DATA;
+ 	chip->IO_ADDR_W = ndfc->ndfcbase + NDFC_DATA;
+@@ -160,8 +168,6 @@ static void ndfc_chip_init(struct ndfc_nand_mtd *mtd)
+ 	chip->dev_ready = ndfc_ready;
+ 	chip->select_chip = ndfc_select_chip;
+ 	chip->chip_delay = 50;
+-	chip->priv = mtd;
+-	chip->options = mtd->pl_chip->options;
+ 	chip->controller = &ndfc->ndfc_control;
+ 	chip->read_buf = ndfc_read_buf;
+ 	chip->write_buf = ndfc_write_buf;
+@@ -172,143 +178,136 @@ static void ndfc_chip_init(struct ndfc_nand_mtd *mtd)
+ 	chip->ecc.mode = NAND_ECC_HW;
+ 	chip->ecc.size = 256;
+ 	chip->ecc.bytes = 3;
+-	chip->ecclayout = chip->ecc.layout = mtd->pl_chip->ecclayout;
+-	mtd->mtd.priv = chip;
+-	mtd->mtd.owner = THIS_MODULE;
+-}
 -
--IGNORE=${wildcard .*.c.dep}
---include ${IGNORE}
+-static int ndfc_chip_probe(struct platform_device *pdev)
+-{
+-	struct platform_nand_chip *nc = pdev->dev.platform_data;
+-	struct ndfc_chip_settings *settings = nc->priv;
+-	struct ndfc_controller *ndfc = &ndfc_ctrl;
+-	struct ndfc_nand_mtd *nandmtd;
 -
--$(NTARGETS):
--	$(MAKE) -C new-utils $@
--	mv new-utils/$@ $@
+-	if (nc->chip_offset >= NDFC_MAX_BANKS || nc->nr_chips > NDFC_MAX_BANKS)
+-		return -EINVAL;
 -
--clean:
--	rm -rf *.o $(TARGETS) .*.c.dep
--	$(MAKE) -C new-utils clean
-+include ../common.mk
+-	/* Set the bank settings */
+-	__raw_writel(settings->bank_settings,
+-		     ndfc->ndfcbase + NDFC_BCFG0 + (nc->chip_offset << 2));
  
--pddcustomize: pddcustomize.o error.o libubimirror.o bootenv.o hashmap.o \
--		libubi.o crc32.o
--	$(CC) $(LDFLAGS) -o $@ $^
-+$(BUILDDIR)/pddcustomize: $(addprefix $(BUILDDIR)/,\
-+	pddcustomize.o error.o libubimirror.o bootenv.o hashmap.o \
-+	libubi.o crc32.o)
+-	nandmtd = &ndfc_mtd[pdev->id];
+-	if (nandmtd->pl_chip)
+-		return -EBUSY;
++	ndfc->mtd.priv = chip;
++	ndfc->mtd.owner = THIS_MODULE;
  
--pfiflash: pfiflash.o libpfiflash.o list.o reader.o error.o libubimirror.o \
--		bootenv.o hashmap.o pfi.o libubi.o crc32.o
--	$(CC) $(LDFLAGS) -o $@ $^
-+$(BUILDDIR)/pfiflash: $(addprefix $(BUILDDIR)/,\
-+	pfiflash.o libpfiflash.o list.o reader.o error.o libubimirror.o \
-+	bootenv.o hashmap.o pfi.o libubi.o crc32.o)
- 
--ubimirror: ubimirror.o error.o libubimirror.o bootenv.o hashmap.o \
--		libubi.o crc32.o
--	$(CC) $(LDFLAGS) -o $@ $^
-+$(BUILDDIR)/ubimirror: $(addprefix $(BUILDDIR)/,\
-+	ubimirror.o error.o libubimirror.o bootenv.o hashmap.o \
-+	libubi.o crc32.o)
- 
--nand2bin: nand2bin.o nandecc.o nandcorr.o
--	$(CC) $(LDFLAGS) -o $@ $^
-+$(BUILDDIR)/nand2bin: $(addprefix $(BUILDDIR)/,\
-+	nand2bin.o nandecc.o nandcorr.o)
- 
--bin2nand: bin2nand.o error.o nandecc.o
--	$(CC) $(LDFLAGS) -o $@ $^
-+$(BUILDDIR)/bin2nand: $(addprefix $(BUILDDIR)/,\
-+	bin2nand.o error.o nandecc.o)
- 
--ubigen: ubigen.o libubigen.o crc32.o
--	$(CC) $(LDFLAGS) -o $@ $^
-+$(BUILDDIR)/ubigen: $(addprefix $(BUILDDIR)/,\
-+	ubigen.o libubigen.o crc32.o)
- 
--mkbootenv: mkbootenv.o bootenv.o hashmap.o error.o crc32.o
--	$(CC) $(LDFLAGS) -o $@ $^
-+$(BUILDDIR)/mkbootenv: $(addprefix $(BUILDDIR)/,\
-+	mkbootenv.o bootenv.o hashmap.o error.o crc32.o)
- 
--unubi: unubi.o crc32.o unubi_analyze.o eb_chain.o
--	$(CC) $(LDFLAGS) -o $@ $^
-+$(BUILDDIR)/unubi: $(addprefix $(BUILDDIR)/,\
-+	unubi.o crc32.o unubi_analyze.o eb_chain.o)
- 
--pfi2bin: pfi2bin.o peb.o error.o list.o crc32.o libubigen.o bootenv.o \
--		hashmap.o reader.o pfi.o
--	$(CC) $(LDFLAGS) -o $@ $^
-+$(BUILDDIR)/pfi2bin: $(addprefix $(BUILDDIR)/,\
-+	pfi2bin.o peb.o error.o list.o crc32.o libubigen.o bootenv.o \
-+	hashmap.o reader.o pfi.o)
- 
--install: ${TARGETS}
-+install::
- 	mkdir -p ${DESTDIR}/${SBINDIR}
- 	install -m 0755 ${TARGETS} ${DESTDIR}/${SBINDIR}/
- 	(cd perl && install ${PERLPROGS} ${DESTDIR}/${SBINDIR}/)
-diff --git a/ubi-utils/new-utils/Makefile b/ubi-utils/new-utils/Makefile
-index 9ba0d95..6ae60b3 100644
---- a/ubi-utils/new-utils/Makefile
-+++ b/ubi-utils/new-utils/Makefile
-@@ -3,76 +3,55 @@
- #
- 
- KERNELHDR := ../../include
--DESTDIR := /usr/local
--SBINDIR=/usr/sbin
--MANDIR=/usr/man
--INCLUDEDIR=/usr/include
+-	nandmtd->pl_chip = nc;
+-	ndfc_chip_init(nandmtd);
 -
--CC := $(CROSS)gcc
--AR := $(CROSS)ar
--RANLIB := $(CROSS)ranlib
--CFLAGS ?= -O2
--CFLAGS += -Werror -Wall
+-	/* Scan for chips */
+-	if (nand_scan(&nandmtd->mtd, nc->nr_chips)) {
+-		nandmtd->pl_chip = NULL;
++	flash_np = of_get_next_child(node, NULL);
++	if (!flash_np)
+ 		return -ENODEV;
 +
-+#CFLAGS += -Werror
- CPPFLAGS += -Iinclude -Isrc -I$(KERNELHDR)
--LDFLAGS += -L.
++	ndfc->mtd.name = kasprintf(GFP_KERNEL, "%s.%s",
++				   ndfc->ofdev->dev.bus_id, flash_np->name);
++	if (!ndfc->mtd.name) {
++		ret = -ENOMEM;
++		goto err;
+ 	}
  
- LIBS = libubi libmtd libubigen libiniparser libscan
--UTILS = ubiupdatevol ubimkvol ubirmvol ubicrc32 ubinfo ubiattach \
--        ubidetach ubinize ubiformat
-+TARGETS = ubiupdatevol ubimkvol ubirmvol ubicrc32 ubinfo ubiattach \
-+          ubidetach ubinize ubiformat
+-#ifdef CONFIG_MTD_PARTITIONS
+-	printk("Number of partitions %d\n", nc->nr_partitions);
+-	if (nc->nr_partitions) {
+-		/* Add the full device, so complete dumps can be made */
+-		add_mtd_device(&nandmtd->mtd);
+-		add_mtd_partitions(&nandmtd->mtd, nc->partitions,
+-				   nc->nr_partitions);
++	ret = nand_scan(&ndfc->mtd, 1);
++	if (ret)
++		goto err;
  
- vpath %.c src
+-	} else
+-#else
+-		add_mtd_device(&nandmtd->mtd);
++#ifdef CONFIG_MTD_PARTITIONS
++	ret = parse_mtd_partitions(&ndfc->mtd, part_types, &ndfc->parts, 0);
++	if (ret < 0)
++		goto err;
++
++#ifdef CONFIG_MTD_OF_PARTS
++	if (ret == 0) {
++		ret = of_mtd_parse_partitions(&ndfc->ofdev->dev, flash_np,
++					      &ndfc->parts);
++		if (ret < 0)
++			goto err;
++	}
+ #endif
  
--all: $(UTILS)
+-	atomic_inc(&ndfc->childs_active);
+-	return 0;
+-}
++	if (ret > 0)
++		ret = add_mtd_partitions(&ndfc->mtd, ndfc->parts, ret);
++	else
++#endif
++		ret = add_mtd_device(&ndfc->mtd);
+ 
+-static int ndfc_chip_remove(struct platform_device *pdev)
+-{
+-	return 0;
++err:
++	of_node_put(flash_np);
++	if (ret)
++		kfree(ndfc->mtd.name);
++	return ret;
+ }
+ 
+-static int ndfc_nand_probe(struct platform_device *pdev)
++static int __devinit ndfc_probe(struct of_device *ofdev,
++				const struct of_device_id *match)
+ {
+-	struct platform_nand_ctrl *nc = pdev->dev.platform_data;
+-	struct ndfc_controller_settings *settings = nc->priv;
+-	struct resource *res = pdev->resource;
+ 	struct ndfc_controller *ndfc = &ndfc_ctrl;
+-	unsigned long long phys = settings->ndfc_erpn | res->start;
++	const u32 *reg;
++	u32 ccr;
++	int err, len;
+ 
+-#ifndef CONFIG_PHYS_64BIT
+-	ndfc->ndfcbase = ioremap((phys_addr_t)phys, res->end - res->start + 1);
+-#else
+-	ndfc->ndfcbase = ioremap64(phys, res->end - res->start + 1);
+-#endif
++	spin_lock_init(&ndfc->ndfc_control.lock);
++	init_waitqueue_head(&ndfc->ndfc_control.wq);
++	ndfc->ofdev = ofdev;
++	dev_set_drvdata(&ofdev->dev, ndfc);
++
++	/* Read the reg property to get the chip select */
++	reg = of_get_property(ofdev->node, "reg", &len);
++	if (reg == NULL || len != 12) {
++		dev_err(&ofdev->dev, "unable read reg property (%d)\n", len);
++		return -ENOENT;
++	}
++	ndfc->chip_select = reg[0];
++
++	ndfc->ndfcbase = of_iomap(ofdev->node, 0);
+ 	if (!ndfc->ndfcbase) {
+-		printk(KERN_ERR "NDFC: ioremap failed\n");
++		dev_err(&ofdev->dev, "failed to get memory\n");
+ 		return -EIO;
+ 	}
+ 
+-	__raw_writel(settings->ccr_settings, ndfc->ndfcbase + NDFC_CCR);
++	ccr = NDFC_CCR_BS(ndfc->chip_select);
+ 
+-	spin_lock_init(&ndfc->ndfc_control.lock);
+-	init_waitqueue_head(&ndfc->ndfc_control.wq);
++	/* It is ok if ccr does not exist - just default to 0 */
++	reg = of_get_property(ofdev->node, "ccr", NULL);
++	if (reg)
++		ccr |= *reg;
+ 
+-	platform_set_drvdata(pdev, ndfc);
++	out_be32(ndfc->ndfcbase + NDFC_CCR, ccr);
+ 
+-	printk("NDFC NAND Driver initialized. Chip-Rev: 0x%08x\n",
+-	       __raw_readl(ndfc->ndfcbase + NDFC_REVID));
++	/* Set the bank settings if given */
++	reg = of_get_property(ofdev->node, "bank-settings", NULL);
++	if (reg) {
++		int offset = NDFC_BCFG0 + (ndfc->chip_select << 2);
++		out_be32(ndfc->ndfcbase + offset, *reg);
++	}
++
++	err = ndfc_chip_init(ndfc, ofdev->node);
++	if (err) {
++		iounmap(ndfc->ndfcbase);
++		return err;
++	}
+ 
+ 	return 0;
+ }
+ 
+-static int ndfc_nand_remove(struct platform_device *pdev)
++static int __devexit ndfc_remove(struct of_device *ofdev)
+ {
+-	struct ndfc_controller *ndfc = platform_get_drvdata(pdev);
++	struct ndfc_controller *ndfc = dev_get_drvdata(&ofdev->dev);
+ 
+-	if (atomic_read(&ndfc->childs_active))
+-		return -EBUSY;
++	nand_release(&ndfc->mtd);
+ 
+-	if (ndfc) {
+-		platform_set_drvdata(pdev, NULL);
+-		iounmap(ndfc_ctrl.ndfcbase);
+-		ndfc_ctrl.ndfcbase = NULL;
+-	}
+ 	return 0;
+ }
+ 
+-/* driver device registration */
 -
--# The below cancels existing implicite rule to make programs from .c files,
--# in order to force make using our rule defined below
--%: %.c
+-static struct platform_driver ndfc_chip_driver = {
+-	.probe		= ndfc_chip_probe,
+-	.remove		= ndfc_chip_remove,
+-	.driver		= {
+-		.name	= "ndfc-chip",
+-		.owner	= THIS_MODULE,
+-	},
++static const struct of_device_id ndfc_match[] = {
++	{ .compatible = "ibm,ndfc", },
++	{}
+ };
++MODULE_DEVICE_TABLE(of, ndfc_match);
+ 
+-static struct platform_driver ndfc_nand_driver = {
+-	.probe		= ndfc_nand_probe,
+-	.remove		= ndfc_nand_remove,
+-	.driver		= {
+-		.name	= "ndfc-nand",
+-		.owner	= THIS_MODULE,
++static struct of_platform_driver ndfc_driver = {
++	.driver = {
++		.name	= "ndfc",
+ 	},
++	.match_table = ndfc_match,
++	.probe = ndfc_probe,
++	.remove = __devexit_p(ndfc_remove),
+ };
+ 
+ static int __init ndfc_nand_init(void)
+ {
+-	int ret;
 -
--# The below is the rule to get an .o file from a .c file
--%.o: %.c
--	$(CC) $(CFLAGS) $(CPPFLAGS) $< -c -o $@
-+include ../../common.mk
+-	spin_lock_init(&ndfc_ctrl.ndfc_control.lock);
+-	init_waitqueue_head(&ndfc_ctrl.ndfc_control.wq);
+-
+-	ret = platform_driver_register(&ndfc_nand_driver);
+-	if (!ret)
+-		ret = platform_driver_register(&ndfc_chip_driver);
+-	return ret;
++	return of_register_platform_driver(&ndfc_driver);
+ }
  
- # And the below is the rule to get final executable from its .o and common.o
--%: libubi.a %.o common.o
--	$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.o, $^) -lubi -o $@
-+$(TARGETS): $(addprefix $(BUILDDIR)/,\
-+	libubi.a common.o)
-+#	$(CC) $(CFLAGS) $(filter %.o, $^) -L. -lubi -o $@
+ static void __exit ndfc_nand_exit(void)
+ {
+-	platform_driver_unregister(&ndfc_chip_driver);
+-	platform_driver_unregister(&ndfc_nand_driver);
++	of_unregister_platform_driver(&ndfc_driver);
+ }
  
--ubicrc32: ubicrc32.o crc32.o
--	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
-+$(BUILDDIR)/ubicrc32: $(addprefix $(BUILDDIR)/,\
-+	ubicrc32.o crc32.o)
-+#	$(CC) $(CFLAGS) -o $@ $^
+ module_init(ndfc_nand_init);
+@@ -316,6 +315,4 @@ module_exit(ndfc_nand_exit);
  
--ubinize: ubinize.o common.o crc32.o libiniparser.a libubigen.a
--	$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.o, $^) -liniparser -lubigen -o $@
-+$(BUILDDIR)/ubinize: $(addprefix $(BUILDDIR)/,\
-+	ubinize.o common.o crc32.o libiniparser.a libubigen.a)
-+#	$(CC) $(CFLAGS) $(filter %.o, $^) -L. -liniparser -lubigen -o $@
- 
--ubiformat: ubiformat.o common.o crc32.o libmtd.a libscan.a libubi.a libubigen.a
--	$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.o, $^) -lmtd -lscan -lubi -lubigen -o $@
-+$(BUILDDIR)/ubiformat: $(addprefix $(BUILDDIR)/,\
-+	ubiformat.o common.o crc32.o libmtd.a libscan.a libubi.a libubigen.a)
-+#	$(CC) $(CFLAGS) $(filter %.o, $^) -L. -lmtd -lscan -lubi -lubigen -o $@
- 
--libubi.a: libubi.o
--	$(AR) crv $@ $^
--	$(RANLIB) $@
-+$(BUILDDIR)/libubi.a: $(BUILDDIR)/libubi.o
- 
--libmtd.a: libmtd.o
--	$(AR) crv $@ $^
--	$(RANLIB) $@
-+$(BUILDDIR)/libmtd.a: $(BUILDDIR)/libmtd.o
- 
--libubigen.a: libubigen.o
--	$(AR) crv $@ $^
--	$(RANLIB) $@
-+$(BUILDDIR)/libubigen.a: $(BUILDDIR)/libubigen.o
- 
--libiniparser.a: libiniparser.o dictionary.o
--	$(AR) crv $@ $^
--	$(RANLIB) $@
-+$(BUILDDIR)/libiniparser.a: $(addprefix $(BUILDDIR)/,\
-+	libiniparser.o dictionary.o)
- 
--libscan.a: libscan.o crc32.o
--	$(AR) crv $@ $^
--	$(RANLIB) $@
-+$(BUILDDIR)/libscan.a: $(addprefix $(BUILDDIR)/,\
-+	libscan.o crc32.o)
- 
--clean:
--	rm -rf *.o $(addsuffix .a, $(LIBS)) $(UTILS) .*.c.dep
-+clean::
-+	rm -f $(addsuffix .a, $(LIBS))
- 
--install: ${UTILS}
-+install::
- 	mkdir -p ${DESTDIR}/${SBINDIR}
--	install -m 0755 ${UTILS} ${DESTDIR}/${SBINDIR}/
-+	install -m 0755 ${TARGETS} ${DESTDIR}/${SBINDIR}/
- 
- uninstall:
--	for file in ${UTILS}; do \
-+	for file in ${TARGETS}; do \
- 		$(RM) ${DESTDIR}/${SBINDIR}/$$file; \
- 	done
--- 
-1.6.0.4
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Thomas Gleixner <tglx@linutronix.de>");
+-MODULE_DESCRIPTION("Platform driver for NDFC");
+-MODULE_ALIAS("platform:ndfc-chip");
+-MODULE_ALIAS("platform:ndfc-nand");
++MODULE_DESCRIPTION("OF Platform driver for NDFC");
