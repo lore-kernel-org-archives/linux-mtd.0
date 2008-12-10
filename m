@@ -1,12 +1,19 @@
-Received: from moutng.kundenserver.de ([212.227.126.171])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LALar-000347-2T
-	for linux-mtd@lists.infradead.org; Wed, 10 Dec 2008 09:42:57 +0000
-From: Stefan Roese <sr@denx.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] UBI: Return -ENOMEM upon failing malloc
-Date: Wed, 10 Dec 2008 10:42:54 +0100
-Message-Id: <1228902174-24597-1-git-send-email-sr@denx.de>
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1LAMY1-0002Dr-6U
+	for linux-mtd@lists.infradead.org; Wed, 10 Dec 2008 10:44:05 +0000
+Subject: Re: CONFIG_MTD_UBI_DEBUG_DISABLE_BGT=y corrupts slab?
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Don Mullis <don.mullis@gmail.com>
+In-Reply-To: <493F6ED2.5080402@gmail.com>
+References: <493F6ED2.5080402@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 10 Dec 2008 12:41:54 +0200
+Message-Id: <1228905714.13686.236.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,47 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Return with correct error code (-ENOMEM) from ubi_attach_mtd_dev() upon
-failing malloc().
+On Tue, 2008-12-09 at 23:25 -0800, Don Mullis wrote:
+> With CONFIG_MTD_UBI_DEBUG_DISABLE_BGT=3Dy, I get various corruption-cause=
+d=20
+> OOPSes after a remount:
+>=20
+>    # umount /cache
+>    # mount -t ubifs  -o ro ubi:cache /cache
 
-Signed-off-by: Stefan Roese <sr@denx.de>
----
- drivers/mtd/ubi/build.c |   16 +++++++++++-----
- 1 files changed, 11 insertions(+), 5 deletions(-)
+Hmm, I ran integrity test on UBIFS and had this UBI config option
+enabled (as well ass emulate write and erase errors options enabled)
+yesterday, and it worked fine - not slab problems and UBI was able to
+recover from all errors, so the integrity check test worked fine.
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index c7630a2..485c0fc 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -816,18 +816,24 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
- 		goto out_free;
- 
- 	ubi->peb_buf1 = vmalloc(ubi->peb_size);
--	if (!ubi->peb_buf1)
-+	if (!ubi->peb_buf1) {
-+		err = -ENOMEM;
- 		goto out_free;
-+	}
- 
- 	ubi->peb_buf2 = vmalloc(ubi->peb_size);
--	if (!ubi->peb_buf2)
--		 goto out_free;
-+	if (!ubi->peb_buf2) {
-+		err = -ENOMEM;
-+		goto out_free;
-+	}
- 
- #ifdef CONFIG_MTD_UBI_DEBUG
- 	mutex_init(&ubi->dbg_buf_mutex);
- 	ubi->dbg_peb_buf = vmalloc(ubi->peb_size);
--	if (!ubi->dbg_peb_buf)
--		 goto out_free;
-+	if (!ubi->dbg_peb_buf) {
-+		err = -ENOMEM;
-+		goto out_free;
-+	}
- #endif
- 
- 	err = attach_by_scanning(ubi);
--- 
-1.6.0.5
+But that was the latest UBIFS from the ubifs-2.6.git tree.
+
+> I'm using a 2.6.25 kernel with the 100+ UBIFS-related patches from=20
+> kernel.org back-ported into it, so some mismatch there is possible.
+
+We have UBI/UBIFS backport trees, could you try ubifs-v2.6.26.git
+please? It has all the UBI/UBIFS patches back-ported. Or you may just
+take the patches from ubifs-v2.6.26.git and apply them to your tree.
+Please, glance here:
+
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_source
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
