@@ -1,22 +1,17 @@
-Received: from rv-out-0708.google.com ([209.85.198.240])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LAQx0-0000Pc-5V
-	for linux-mtd@lists.infradead.org; Wed, 10 Dec 2008 15:26:10 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so451866rvf.42
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 10 Dec 2008 07:26:09 -0800 (PST)
-Message-ID: <f17812d70812100726y305a90f8i251d4b9c12640ab4@mail.gmail.com>
-Date: Wed, 10 Dec 2008 23:26:09 +0800
-From: "Eric Miao" <eric.y.miao@gmail.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: [PATCH 2/2] [MTD][NAND] pxa3xx: convert from ns to clock ticks more
-	accurately
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [GIT PULL] sharpsl-nand driver model hookup
+From: David Woodhouse <dwmw2@infradead.org>
+To: Dmitry <dbaryshkov@gmail.com>
+In-Reply-To: <bc64b4640811301813h711332f9i7c07c826e4ba9e1f@mail.gmail.com>
+References: <20081016231127.GA17131@doriath.ww600.siemens.net>
+	<f17812d70811250105n27e0e60cq16678c8efcd03de2@mail.gmail.com>
+	<bc64b4640811301813h711332f9i7c07c826e4ba9e1f@mail.gmail.com>
+Content-Type: text/plain
+Date: Wed, 10 Dec 2008 15:59:08 +0000
+Message-Id: <1228924748.21454.44.camel@macbook.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	ARM Linux <linux-arm-kernel@lists.arm.linux.org.uk>
+Cc: linux-mtd@lists.infradead.org, Eric Miao <eric.miao@marvell.com>,
+	Eric Miao <eric.y.miao@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,34 +21,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From e12b9d1a578bc2d70dc2233af3caf06e672dfcce Mon Sep 17 00:00:00 2001
-From: Matt Reimer <mreimer@vpop.net>
-Date: Tue, 18 Nov 2008 10:54:32 -0800
-Subject: [PATCH] [MTD][NAND] pxa3xx: convert from ns to clock ticks
-more accurately
+On Mon, 2008-12-01 at 05:13 +0300, Dmitry wrote:
+> 
+> I still don't see this serie merged. David, are there any objections
+> from your side,
+> will it be merged later, or did you just miss this patchserie? Thank
+> you.
 
-The various fields in NDTR{01} are in units of clock ticks minus one, but the
-ns2cycle macro mistakenly adds one, inflating the number of clock ticks and
-making it impossible to set any of these fields to zero.
+It's merged now. I had some other things to go to Linus before 2.6.28,
+and now I'm collecting bits for 2.6.29. Thanks.
 
-Signed-off-by: Matt Reimer <mreimer@vpop.net>
-Signed-off-by: Eric Miao <eric.miao@marvell.com>
----
- drivers/mtd/nand/pxa3xx_nand.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index b797c1c..1e4f383 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -297,7 +297,7 @@ static struct pxa3xx_nand_flash *builtin_flash_types[] = {
- #define NDTR1_tAR(c)	(min((c), 15) << 0)
-
- /* convert nano-seconds to nand flash controller clock cycles */
--#define ns2cycle(ns, clk)	(int)(((ns) * (clk / 1000000) / 1000) + 1)
-+#define ns2cycle(ns, clk)	(int)(((ns) * (clk / 1000000) / 1000) - 1)
-
- static void pxa3xx_nand_set_timing(struct pxa3xx_nand_info *info,
- 				   const struct pxa3xx_nand_timing *t)
 -- 
-1.6.0.4
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
