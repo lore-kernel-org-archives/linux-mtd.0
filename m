@@ -1,22 +1,21 @@
-Received: from [202.202.0.36] (helo=cqu.edu.cn)
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LAOrA-0007wm-Mb
-	for linux-mtd@lists.infradead.org; Wed, 10 Dec 2008 13:12:01 +0000
-Message-ID: <428914065.25267@cqu.edu.cn>
-Subject: Re: [PATCH 4/4] UBI WL-Subsys: Improvement in prot tree
-From: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
-To: dedekind@infradead.org
-In-Reply-To: <1228898668.13686.223.camel@sauron>
-References: <1228823163.2753.18.camel@localhost.localdomain>
-	<1228827803.13686.189.camel@sauron>
-	<1228884752.3225.80.camel@localhost.localdomain>
-	<1228898668.13686.223.camel@sauron>
-Content-Type: text/plain
-Date: Wed, 10 Dec 2008 21:11:05 +0800
-Message-Id: <1228914665.3655.31.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Received: from mail3.raymarine.com ([213.206.137.1]
+	helo=RMUKMAIL.raymarine.com)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1LAOs7-0002ci-Se
+	for linux-mtd@lists.infradead.org; Wed, 10 Dec 2008 13:13:00 +0000
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="koi8-r"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: Mounting UBIFS fails intermittently
+Date: Wed, 10 Dec 2008 13:12:56 -0000
+Message-ID: <B8993E4AF7E2B44A80FE742A85665EF00ADA1D73@rmukmail.raymarine.com>
+References: <B8993E4AF7E2B44A80FE742A85665EF00ADA1BF3@rmukmail.raymarine.com>
+	<1228913998.13686.275.camel@sauron>
+From: "Manish Jain" <Manish.Jain@raymarine.com>
+To: <dedekind@infradead.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,30 +25,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Thanks Artem.
 
-On Wed, 2008-12-10 at 10:44 +0200, Artem Bityutskiy wrote:
-> 
-> I think it does not matter much and we may use the same constant for
-> short term and unknown eraseblocks. I do not see much difference
-> between
-> 8 or 16. Does it really matter? We just want to prevent this
-> eraseblock
-> from being moved for some reasonable "time". And everything depends on
-> work-load of course. So I think just using the same constant for all
-> PEB
+I'll try tests for case 1.
 
-My opposite experiment indicates that such unified-protection-time
-method seems to be not better than the different-protection-time one in
-run time. the system run time fluctuates. 
+With respect to case2:
 
-One major reason, I think, is short term (youngest) PEBs got together in
-the protection "queue", when they wear out the protection time and be
-flushed to used RB-tree, quantities of wear-leveling worker may trigger
-one time. 
+Within our flash, we have two partitions. And there is singe image of =
+flash contents(namely er.ubi).
+We flash our file image using ubiformat command.:
 
-> types is reasonable. This will be simpler.
-> 
-> But of course, the best way is to test things.
--- 
-Yours sincerely
-xiaochuan-xu(cqu.edu.cn)
+Ubiformat /dev/mtd5 -y -s 512 -f /CFCard/er.ubi
+
+Though this problem is intermittent, but it is more likely to happen =
+when we re-format mtd device.
+
+Kind Regards,
+Manish
+
+
+
+-----Original Message-----
+From: Artem Bityutskiy [mailto:dedekind@infradead.org]=20
+Sent: 10 December 2008 13:00
+To: Manish Jain
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Mounting UBIFS fails intermittently
+
+On Wed, 2008-12-10 at 12:27 +0000, Manish Jain wrote:
+> Hello All,
+>=20
+> In our system , we have created two partition in Nand flash. One is =
+mounted as root and the other(which is quite big)is mounted for keeping =
+data.
+> The problem is that data mount fails intermittently.
+>=20
+> Here is the kernel error log, when we try to mount ubifs.
+
+I saw huge amount of e-mails like this, but for JFFS2. In most of the
+cases the reporters had one of:
+1. flash problems - the driver or HW was broken
+2. flashed images incorrectly
+
+Please, check these 2 cases. To check the first ones, please use
+mtd-tests git repository:
+git://git.infradead.org/users/dedekind/mtd-tests-2.6.git
+(http://git.infradead.org/users/dedekind/mtd-tests-2.6.git)
+
+The tests are not in main-line so far, so you have to take the 8 patches
+from the above git tree, apply them to your tree, enable the tests and
+compile.
+
+The tests are kernel modules. Please, make sure they work without errors
+for you. Note, be careful with the torture test - either do not run it
+or realize what it is doing before running.
+
+Vs. the second possible issue - just describe how you flash your UBIFS
+image to your "data" partition, if you do this at all.
+
+--=20
+Best regards,
+Artem Bityutskiy (=E2=C9=D4=C0=C3=CB=C9=CA =E1=D2=D4=A3=CD)
