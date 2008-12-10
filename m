@@ -1,15 +1,16 @@
-Received: from wf-out-1314.google.com ([209.85.200.175])
+Received: from rv-out-0708.google.com ([209.85.198.240])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LAQwP-0008Eg-4c
-	for linux-mtd@lists.infradead.org; Wed, 10 Dec 2008 15:25:33 +0000
-Received: by wf-out-1314.google.com with SMTP id 28so192276wfc.24
+	id 1LAQx0-0000Pc-5V
+	for linux-mtd@lists.infradead.org; Wed, 10 Dec 2008 15:26:10 +0000
+Received: by rv-out-0708.google.com with SMTP id b17so451866rvf.42
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 10 Dec 2008 07:25:31 -0800 (PST)
-Message-ID: <f17812d70812100725g1826a878yef86f086c06133b7@mail.gmail.com>
-Date: Wed, 10 Dec 2008 23:25:31 +0800
+	Wed, 10 Dec 2008 07:26:09 -0800 (PST)
+Message-ID: <f17812d70812100726y305a90f8i251d4b9c12640ab4@mail.gmail.com>
+Date: Wed, 10 Dec 2008 23:26:09 +0800
 From: "Eric Miao" <eric.y.miao@gmail.com>
 To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/2] [MTD][NAND] pxa3xx: fix non-page-aligned reads
+Subject: [PATCH 2/2] [MTD][NAND] pxa3xx: convert from ns to clock ticks more
+	accurately
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
@@ -25,49 +26,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From 64957c00b7da6101a6b9aa221f6ae26a2e7d88b3 Mon Sep 17 00:00:00 2001
+>From e12b9d1a578bc2d70dc2233af3caf06e672dfcce Mon Sep 17 00:00:00 2001
 From: Matt Reimer <mreimer@vpop.net>
-Date: Tue, 18 Nov 2008 10:47:42 -0800
-Subject: [PATCH] [MTD][NAND] pxa3xx: fix non-page-aligned reads
+Date: Tue, 18 Nov 2008 10:54:32 -0800
+Subject: [PATCH] [MTD][NAND] pxa3xx: convert from ns to clock ticks
+more accurately
 
-Reads from non-page-aligned addresses were broken because while the
-address to read from was correctly written to NDCB*, a full page was
-always read. Fix this by ignoring the column and only using the page
-address.
-
-I suspect this whole-page behavior is due to the controller's need to
-read the entire page in order to generate correct ECC. In the non-ECC
-case this could be optimized to use the column address, and to set the
-read length to what is being requested rather than the length of an
-entire page.
+The various fields in NDTR{01} are in units of clock ticks minus one, but the
+ns2cycle macro mistakenly adds one, inflating the number of clock ticks and
+making it impossible to set any of these fields to zero.
 
 Signed-off-by: Matt Reimer <mreimer@vpop.net>
 Signed-off-by: Eric Miao <eric.miao@marvell.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/pxa3xx_nand.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index ce5752a..b797c1c 100644
+index b797c1c..1e4f383 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -367,14 +367,14 @@ static int prepare_read_prog_cmd(struct
-pxa3xx_nand_info *info,
- 		/* large block, 2 cycles for column address
- 		 * row address starts from 3rd cycle
- 		 */
--		info->ndcb1 |= (page_addr << 16) | (column & 0xffff);
-+		info->ndcb1 |= page_addr << 16;
- 		if (info->row_addr_cycles == 3)
- 			info->ndcb2 = (page_addr >> 16) & 0xff;
- 	} else
- 		/* small block, 1 cycles for column address
- 		 * row address starts from 2nd cycle
- 		 */
--		info->ndcb1 = (page_addr << 8) | (column & 0xff);
-+		info->ndcb1 = page_addr << 8;
+@@ -297,7 +297,7 @@ static struct pxa3xx_nand_flash *builtin_flash_types[] = {
+ #define NDTR1_tAR(c)	(min((c), 15) << 0)
 
- 	if (cmd == cmdset->program)
- 		info->ndcb0 |= NDCB0_CMD_TYPE(1) | NDCB0_AUTO_RS;
+ /* convert nano-seconds to nand flash controller clock cycles */
+-#define ns2cycle(ns, clk)	(int)(((ns) * (clk / 1000000) / 1000) + 1)
++#define ns2cycle(ns, clk)	(int)(((ns) * (clk / 1000000) / 1000) - 1)
+
+ static void pxa3xx_nand_set_timing(struct pxa3xx_nand_info *info,
+ 				   const struct pxa3xx_nand_timing *t)
 -- 
 1.6.0.4
