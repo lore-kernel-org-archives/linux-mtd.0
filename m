@@ -1,17 +1,14 @@
-Subject: Re: [GIT PULL] sharpsl-nand driver model hookup
+Subject: Re: [patch 1/6] physmap: make map_info customizable
 From: David Woodhouse <dwmw2@infradead.org>
-To: Dmitry <dbaryshkov@gmail.com>
-In-Reply-To: <bc64b4640811301813h711332f9i7c07c826e4ba9e1f@mail.gmail.com>
-References: <20081016231127.GA17131@doriath.ww600.siemens.net>
-	<f17812d70811250105n27e0e60cq16678c8efcd03de2@mail.gmail.com>
-	<bc64b4640811301813h711332f9i7c07c826e4ba9e1f@mail.gmail.com>
+To: anemo@mba.ocn.ne.jp
+In-Reply-To: <200812012223.mB1MNbjl014522@imap1.linux-foundation.org>
+References: <200812012223.mB1MNbjl014522@imap1.linux-foundation.org>
 Content-Type: text/plain
-Date: Wed, 10 Dec 2008 15:59:08 +0000
-Message-Id: <1228924748.21454.44.camel@macbook.infradead.org>
+Date: Wed, 10 Dec 2008 16:14:39 +0000
+Message-Id: <1228925679.21454.69.camel@macbook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Eric Miao <eric.miao@marvell.com>,
-	Eric Miao <eric.y.miao@gmail.com>
+Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,15 +18,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2008-12-01 at 05:13 +0300, Dmitry wrote:
+Atsushi Nemoto <anemo@mba.ocn.ne.jp> wrote:
+> Add a hook to physmap_flash_data for map_info initialization.  This makes
+> platform code can customize map operations.
 > 
-> I still don't see this serie merged. David, are there any objections
-> from your side,
-> will it be merged later, or did you just miss this patchserie? Thank
-> you.
+> Background: I wrote this patch to support RBTX4939 board, which requires
+> custom map->{read,write,copy_from} function.  I think extending the
+> physmap driver is better than adding a new map driver.
 
-It's merged now. I had some other things to go to Linus before 2.6.28,
-and now I'm collecting bits for 2.6.29. Thanks.
+Hm. I'm unconvinced -- surely you're calling into a function which does
+everything that a 'new map driver' would have to do anyway?
+
+Would you advocate that we remove _all_ the dedicated map drivers and
+replace them with this method?
+
+Can't you enable physmap without CONFIG_MTD_COMPLEX_MAPPINGS being set
+anyway? The 'special' functions can't be used in that config, and we
+just assume that direct access works.
 
 -- 
 David Woodhouse                            Open Source Technology Centre
