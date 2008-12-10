@@ -1,27 +1,20 @@
-Received: from toronto-hs-216-138-233-67.s-ip.magma.ca ([216.138.233.67]
-	helo=yow.seanm.ca)
+Received: from [202.202.0.36] (helo=cqu.edu.cn)
 	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LAGGY-0007hR-Oa
-	for linux-mtd@lists.infradead.org; Wed, 10 Dec 2008 04:01:39 +0000
-Date: Tue, 9 Dec 2008 23:01:35 -0500
-From: Sean MacLennan <smaclennan@pikatech.com>
-To: "Mitch Bradley" <wmb@firmworks.com>
-Subject: Re: [PATCH] ndfc driver
-Message-ID: <20081209230135.35e1b9d1@lappy.seanm.ca>
-In-Reply-To: <493E24D8.6040406@firmworks.com>
-References: <20081203222832.3fc77d28@lappy.seanm.ca>
-	<20081204090107.20269571@zod.rchland.ibm.com>
-	<20081208193446.37e27e26@lappy.seanm.ca>
-	<20081209021115.GA13948@oksana.dev.rtsoft.ru>
-	<20081208214512.461276d2@lappy.seanm.ca>
-	<20081208223227.19a702a9@zod.rchland.ibm.com>
-	<20081208235437.08323e3a@lappy.seanm.ca>
-	<493E24D8.6040406@firmworks.com>
+	id 1LAH5F-0000AV-KX
+	for linux-mtd@lists.infradead.org; Wed, 10 Dec 2008 04:54:02 +0000
+Message-ID: <428884192.13309@cqu.edu.cn>
+Subject: Re: [PATCH 4/4] UBI WL-Subsys: Improvement in prot tree
+From: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
+To: dedekind@infradead.org
+In-Reply-To: <1228827803.13686.189.camel@sauron>
+References: <1228823163.2753.18.camel@localhost.localdomain>
+	<1228827803.13686.189.camel@sauron>
+Content-Type: text/plain
+Date: Wed, 10 Dec 2008 12:52:32 +0800
+Message-Id: <1228884752.3225.80.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linuxppc-dev@ozlabs.org, devicetree-discuss@ozlabs.org,
-	avorontsov@ru.mvista.com, linux-mtd@lists.infradead.org
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,30 +24,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 08 Dec 2008 21:57:12 -1000
-"Mitch Bradley" <wmb@firmworks.com> wrote:
 
-> One address/size cell isn't enough for the next generation of NAND
-> FLASH chips.
+> > +#define ST_PROTECTION 17
+> > +#define U_PROTECTION  11
+> > +#define LT_PROTECTION 5
+> 
+> I doubt these constants make much sense. I would suggest you to get rid
+> of them and simplify things. Let's have only one constant instead of 3.
+
+
+> This will allow us to implement efficient protection queue
+>  which you will not need to walk at all.
+Sorry, I don't quite follow this meaning.
+You mean one protection list (not lists) could filfull the function?
+
+> So I'd suggest you to send a separate "preparation" patch which
+> introduces one constant instead of 3. E.g.,
+> 
+> #define PROTECTION 10
+> 
+> It may be re-named to PROT_LIST_LEN later, probably.
+> 
+> How does this plan sound to you?
 > 
 
-I am no dts expert, but I thought I could put:
+These three constants are the part of the whole Wear-leveling algorithm,
+not only for the protection tree/lists. especially for the GET mothed. 
+As far as I could see, Different type data should protect different
+'time'. protection 'time' classification makes sense. By means of the
+classification, we can implement some more improvement, for instance:
 
-	nand {
-		#address-cells = <1>;
-		#size-cells = <1>;
+1. UBI_LONGTERM data's PEB may not be protected, but insert into the
+USED RB-tree directly, whereas other type data should do.
 
-in my dts and you could put:
+2. We may split the @dtype into more sub-type. Take the UBI_UNKNOWN as
+an example, it seems to have many UBI_UNKNOWN type date in the current
+UBI/UBIFS implementation. We may be able to dynamic evaluate the real
+type of these UBI_UNKNOWN data in the EBA Sub-system and then GET more
+optimal PEB, although this seems to be not so easy.
 
-	nand {
-		#address-cells = <2>;
-		#size-cells = <2>;
+fundamentally, the question, in my opinion, is not one or three
+constants, but how much 'time' corresponding type data should be
+protected.
 
-and, assuming we specified the reg entry right, everything would just
-work. Is that assumption wrong?
+Listen with your suggestion. Thanks.
 
-And if the assumption is true, should I make a note in the doc that you
-can make the address and size bigger?
-
-Cheers,
-   Sean
+-- 
+Yours sincerely
+xiaochuan-xu(cqu.edu.cn)
