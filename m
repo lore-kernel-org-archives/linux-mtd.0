@@ -1,16 +1,15 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LAens-0007RA-BJ
-	for linux-mtd@lists.infradead.org; Thu, 11 Dec 2008 06:13:40 +0000
-Subject: Re: CONFIG_MTD_UBI_DEBUG_DISABLE_BGT=y corrupts slab?
+	id 1LAera-00072m-GJ
+	for linux-mtd@lists.infradead.org; Thu, 11 Dec 2008 06:17:30 +0000
+Subject: Re: [PATCH] unify all common build system parts
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Don Mullis <don.mullis@gmail.com>
-In-Reply-To: <49400626.8030408@gmail.com>
-References: <493F6ED2.5080402@gmail.com> <1228905714.13686.236.camel@sauron>
-	<49400626.8030408@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 11 Dec 2008 08:11:30 +0200
-Message-Id: <1228975890.13686.370.camel@sauron>
+To: Mike Frysinger <vapier@gentoo.org>
+In-Reply-To: <1228944506-5792-1-git-send-email-vapier@gentoo.org>
+References: <1228944506-5792-1-git-send-email-vapier@gentoo.org>
+Content-Type: text/plain; charset=utf-8
+Date: Thu, 11 Dec 2008 08:14:57 +0200
+Message-Id: <1228976097.13686.373.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -24,33 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-12-10 at 10:10 -0800, Don Mullis wrote:
-> Artem Bityutskiy wrote:
-> > Hmm, I ran integrity test on UBIFS and had this UBI config option
-> > enabled (as well ass emulate write and erase errors options enabled)
-> > yesterday, and it worked fine - not slab problems and UBI was able to
-> > recover from all errors, so the integrity check test worked fine.
-> >=20
-> > But that was the latest UBIFS from the ubifs-2.6.git tree.
+On Wed, 2008-12-10 at 16:28 -0500, Mike Frysinger wrote:
+> Rather than duplicating the same thing over and over in every Makefile, m=
+ove
+> it all to common.mk.
 >=20
-> Thanks for testing, that helps me narrow the search.
-
-Note, the CONFIG_MTD_UBI_DEBUG_DISABLE_BGT is debugging option, which
-was introduce to test UBI correctness, because theoretically it should
-work even if the thread dies or does not exist. However, UBI becomes
-less efficient without the thread, so I'd recommend to use it only for
-developing/test purposes.
-
-> > We have UBI/UBIFS backport trees, could you try ubifs-v2.6.26.git
-> > please? It has all the UBI/UBIFS patches back-ported. Or you may just
-> > take the patches from ubifs-v2.6.26.git and apply them to your tree.
+> Other things fixed here:
+>  - doing subdirs in parallel
+>  - fix src!=3Dbuild compiling in subdirs
 >=20
-> I assume you meant "ubifs-v2.6.25.git" -- I'm stuck at 2.6.25 for
-> the present due to some out-of-tree drivers.  I'll try extracting
-> patches from git://git.infradead.org/~dedekind/ubifs-v2.6.25.git
-> and applying them to my tree.
+> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 
-Right, I meant ubifs-v2.6.25.git.
+I'm sorry, but frankly, I am very bad in Makefile stuff, so I cannot
+really review your patch. So let's hope other people do this and wait a
+little. If they do not, I'll try to do what I can later.
 
 --=20
 Best regards,
