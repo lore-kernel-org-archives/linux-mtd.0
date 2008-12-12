@@ -1,15 +1,15 @@
 Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LB2FG-0008OQ-VF
-	for linux-mtd@lists.infradead.org; Fri, 12 Dec 2008 07:15:31 +0000
-Subject: Re: UBIFS:  HELP --- cannot figure out correct linux bootlin
+	id 1LB2L9-0001UE-VT
+	for linux-mtd@lists.infradead.org; Fri, 12 Dec 2008 07:21:36 +0000
+Subject: Re: [PATCH] unify all common build system parts
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Philip Rakity <prakity@yahoo.com>
-In-Reply-To: <725079.80117.qm@web58905.mail.re1.yahoo.com>
-References: <725079.80117.qm@web58905.mail.re1.yahoo.com>
+To: Mike Frysinger <vapier@gentoo.org>
+In-Reply-To: <1228944506-5792-1-git-send-email-vapier@gentoo.org>
+References: <1228944506-5792-1-git-send-email-vapier@gentoo.org>
 Content-Type: text/plain; charset=utf-8
-Date: Fri, 12 Dec 2008 09:13:17 +0200
-Message-Id: <1229065997.13686.410.camel@sauron>
+Date: Fri, 12 Dec 2008 09:19:05 +0200
+Message-Id: <1229066345.13686.413.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -23,21 +23,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2008-12-11 at 14:37 -0800, Philip Rakity wrote:
-> Found the problem:=20
+On Wed, 2008-12-10 at 16:28 -0500, Mike Frysinger wrote:
+> Rather than duplicating the same thing over and over in every Makefile, m=
+ove
+> it all to common.mk.
 >=20
-> Can we add a note to the UBI and UBIFS FAQ and Howto:  ?
+> Other things fixed here:
+>  - doing subdirs in parallel
+>  - fix src!=3Dbuild compiling in subdirs
 >=20
-> Note:  UBI and UBIFS must not be modules if you are using UBIFS for the l=
-inux rootfs
+> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 
-Well, this is said for UBI at this FAQ entry:
-http://www.linux-mtd.infradead.org/faq/ubi.html#L_attachmtd
+I've tried do test your patch and found an issue.
 
-I've extended the UBIFS FAQ entry and added this information:
-http://www.linux-mtd.infradead.org/faq/ubifs.html#L_mount_ubifs
+$ make
+... build is ok ...
+$ make install DESTDIR=3D/home/dedekind/tmp/
+... error ...
 
-Thanks for suggestion.
+Could you please take a look at this?
 
 --=20
 Best regards,
