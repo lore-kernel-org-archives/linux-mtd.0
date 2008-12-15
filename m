@@ -1,19 +1,14 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from az33egw02.freescale.net ([192.88.158.103])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LCE8U-0001Az-7f
-	for linux-mtd@lists.infradead.org; Mon, 15 Dec 2008 14:09:27 +0000
-Subject: Re: [PATCH] [UBI] 1/5 - UBI notifications, take two
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: dpervushin@gmail.com
-In-Reply-To: <1229339635.7900.21.camel@hp.diimka.lan>
-References: <1229339635.7900.21.camel@hp.diimka.lan>
-Content-Type: text/plain; charset=utf-8
-Date: Mon, 15 Dec 2008 16:04:39 +0200
-Message-Id: <1229349879.4911.45.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+	id 1LCI8E-0004pI-FD
+	for linux-mtd@lists.infradead.org; Mon, 15 Dec 2008 18:25:26 +0000
+From: Trent Piepho <tpiepho@freescale.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] POWERPC: MTD: Add cached map support to physmap_of MTD driver
+Date: Mon, 15 Dec 2008 10:25:18 -0800
+Message-Id: <1229365518-20538-1-git-send-email-tpiepho@freescale.com>
+Cc: linuxppc-dev@ozlabs.org, Trent Piepho <xyzzy@speakeasy.org>,
+	Trent Piepho <tpiepho@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,116 +18,141 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thanks for the patch, but I have some concerns. Please clarify some
-things.
+The MTD system supports operation where a direct mapped flash chip is
+mapped twice.  The normal mapping is a standard ioremap(), which is
+non-cached and guarded on powerpc.  The second mapping is used only for
+reads and can be cached and non-guarded.  Currently, only the pxa2xx
+mapping driver makes use of this feature.  This patch adds support to the
+physmap_of driver on PPC32 platforms for this cached mapping mode.
 
-1. If X is subscribed to the notification, you assume that can X open
-UBI volumes from within the notification. At least I can see this in
-your "simple FTL". But this is recursion, ant it is very tricky. And I
-see problems related to this in your code. I may be mistaken, though.
-See below.
+Because the flash chip doesn't participate in the cache coherency protocol,
+it's necessary to invalidate the cache for parts of flash that are modified
+with a program or erase operation.  This is platform specific, for instance
+the pxa2xx driver uses an ARM specific function.  This patch adds
+invalidate_dcache_icache_range() for PPC32 and uses it.  Because of XIP,
+it's entirely possible that the flash might be in the icache(*), so the
+existing invalidate_dcache_range() function isn't enough.
 
-Could you please document things like this at the kernel-doc comments of
-the 'ubi_unregister_volume_notifier()' function? Even if no UBI API
-calls are allowed, this should be documented there.
+Of course, a cached mapping can increase performance if the data is read
+from cache instead of flash.  But less obvious is that it can provide a
+significant performance increase for cold-cache reads that still come from
+flash.  It allows efficient back-to-back reads and if the flash chip &
+controller support page burst mode, it allows that to be used as well.
 
-Some of my notes below are very minor and are really nit-picking. I do
-not _require_ you to fix them, although would appreciate.
+The figures are for *cold-cache* read performance, measured on a Freescale
+MPC8572 controlling a Spansion S29GL064N NOR flash chip.  With and without
+the flash being mapped cached and with and without the localbus controller
+being programmed to use page burst mode:
 
-On Mon, 2008-12-15 at 14:13 +0300, dmitry pervushin wrote:
-> Index: ubifs-2.6/drivers/mtd/ubi/build.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- ubifs-2.6.orig/drivers/mtd/ubi/build.c
-> +++ ubifs-2.6/drivers/mtd/ubi/build.c
-> @@ -122,6 +122,51 @@ static struct device_attribute dev_mtd_n
->  	__ATTR(mtd_num, S_IRUGO, dev_attribute_show, NULL);
-> =20
->  /**
-> + * ubi_enum_volumes - enumerate all existing volumes and send notificati=
-on
-Dot at the end please. Glance at other doc-book comments, let's be
-consistent.
-> + *
-Kernel-doc used to issue an error if there is an empty line like this
-between the function name and parameters list. Again, glance at other
-doc-book comments, let's be consistent.
-> + * @t: notification type to send
-> + * @ubi: UBI device number
-> + * @nb: notifier to be called
-> + *
-> + * Walk on volume list that are created on device @ubi, or if @ubi < 0, =
-on all
-> + * available UBI devices. For each volume, send the notification - eithe=
-r
-> + * system-wide if @nb is NULL, or only to the registered @nb
-%NULL, dot.
-> + *
-> + * Returns number of volumes processed
-Dot.
-> + */
-> +int ubi_enum_volumes(enum ubi_volume_notification_type t, int ubi,
-> +		struct notifier_block *nb)
-Other UBI code always alling the second line to the start of parameters
-description. E.g., glance at 'dev_attribute_show()'.
+Non-cached, w/o bursts: 13.61 MB/s
+Non-cached, w/ bursts:  13.61 MB/s
+Cached, w/o bursts:     16.75 MB/s 23% increase
+Cached, w/ bursts:      44.79 MB/s 229% increase!
 
-'ubi' name is used only for 'struct ubi_info' everywhere, please, pick a
-different name. I would rename it to 'ubi_num', as the other code has.
-> +{
-> +	int ubi_num, i, count =3D 0;
-And I'd re-name this 'ubi_num' to 'n' or something.
-> +	struct ubi_device *ubi_dev;
-> +	struct ubi_volume_notification nt;
-> +
-> +	ubi_num =3D ubi < 0 ? 0 : ubi;
-> +	spin_lock(&ubi_devices_lock);
-> +	do {
-> +		nt.ubi_num =3D ubi_num++;
-> +		ubi_dev =3D ubi_devices[nt.ubi_num];
-> +		if (!ubi_dev)
-> +			continue;
-> +		spin_lock(&ubi_dev->volumes_lock);
-> +		for (i =3D 0; i < ubi_dev->vtbl_slots; i++) {
-> +			if (!ubi_dev->volumes[i])
-> +				continue;
-> +			nt.vol_id =3D ubi_dev->volumes[i]->vol_id;
-> +			if (nb)
-> +				nb->notifier_call(nb, t, &nt);
-> +			else
-> +				blocking_notifier_call_chain(&ubi_notifiers,
-> +					t, &nt);
-And here the rest of the UBI code would use
+Even without any cache hits, the cached mapping provides a significant
+increase in performance via improved bus utilization.  Enabling burst
+transfers is even more significant.
 
-		blocking_notifier_call_chain(&ubi_notifiers,
-		                             t, &nt);
-> +			count++;
-> +		}
-> +		spin_unlock(&ubi_dev->volumes_lock);
-> +	} while (ubi < 0 && ubi_num < UBI_MAX_DEVICES);
-> +	spin_unlock(&ubi_devices_lock);
-> +	return count;
-> +}
+(*) The MTD device's ->point() method, which is the mechanism for
+supporting mmap and XIP, only allows for mmapping the uncached region.  So
+you can't actually XIP anything in the cache.  But this could be fixed.
 
-So you call notifiers from withing spin-locks. Are they really blocking
-notifiers? Note, if you call any UBI kernel API function from the
-notifier, you'll deadlock. E.g., if you call 'ubi_get_device_info()',
-you'll deadlock on 'ubi_devices_lock'. Did you test your code?
+Signed-off-by: Trent Piepho <tpiepho@freescale.com>
+---
+ arch/powerpc/include/asm/cacheflush.h |    2 ++
+ arch/powerpc/kernel/misc_32.S         |   21 +++++++++++++++++++++
+ drivers/mtd/maps/physmap_of.c         |   20 ++++++++++++++++++++
+ 3 files changed, 43 insertions(+), 0 deletions(-)
 
-I guess you should prohibit recursion and pass full UBI device/volume
-information _inside_ the notifier. And the subsystems which work above
-UBI should never _open_ UBI volumes from within notifiers. E.g., the
-"simple FTL" stuff should open the UBI volume only when the
-corresponding FTL block device is opened, not in the notifier.
-
-Also, this function seems to be over-complicated. I'd have 2 separate
-functions instead - one for the purposes of build.c and one for kapi.c.
-These "negative or positive @ubi, %NULL or non-%NULL @np" are too
-confusing.
-
-Enough, there were more tiny things though.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+diff --git a/arch/powerpc/include/asm/cacheflush.h b/arch/powerpc/include/asm/cacheflush.h
+index ba667a3..385c26c 100644
+--- a/arch/powerpc/include/asm/cacheflush.h
++++ b/arch/powerpc/include/asm/cacheflush.h
+@@ -49,6 +49,8 @@ extern void flush_dcache_range(unsigned long start, unsigned long stop);
+ #ifdef CONFIG_PPC32
+ extern void clean_dcache_range(unsigned long start, unsigned long stop);
+ extern void invalidate_dcache_range(unsigned long start, unsigned long stop);
++extern void invalidate_dcache_icache_range(unsigned long start,
++					   unsigned long stop);
+ #endif /* CONFIG_PPC32 */
+ #ifdef CONFIG_PPC64
+ extern void flush_inval_dcache_range(unsigned long start, unsigned long stop);
+diff --git a/arch/powerpc/kernel/misc_32.S b/arch/powerpc/kernel/misc_32.S
+index d108715..5e6a154 100644
+--- a/arch/powerpc/kernel/misc_32.S
++++ b/arch/powerpc/kernel/misc_32.S
+@@ -639,6 +639,27 @@ _GLOBAL(invalidate_dcache_range)
+ 	blr
+ 
+ /*
++ * Like above, but invalidate both the D-cache and I-cache.  Used when a cached
++ * region has been modified from a source that does not participate in the cache
++ * coherency protocol.
++ *
++ * invalidate_dcache_icache_range(unsigned long start, unsigned long stop)
++ */
++_GLOBAL(invalidate_dcache_icache_range)
++	clrrwi	r3, r3, L1_CACHE_SHIFT	/* start &= ~((1<<SHIFT)-1) */
++	subf	r4,r3,r4
++	addi	r4,r4,L1_CACHE_BYTES-1
++	srwi.	r4,r4,L1_CACHE_SHIFT	/* count = (start-stop+BYTES-1)/BYTES */
++	beqlr				/* if (!count) return */
++	mtctr	r4
++1:	dcbi	0,r3
++	icbi	0,r3
++	addi	r3,r3,L1_CACHE_BYTES
++	bdnz	1b
++	sync				/* wait for [id]cbi's to get to ram */
++	blr
++
++/*
+  * Flush a particular page from the data cache to RAM.
+  * Note: this is necessary because the instruction cache does *not*
+  * snoop from the data cache.
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index 5fcfec0..e834298 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -32,6 +32,16 @@ struct of_flash {
+ #endif
+ };
+ 
++#ifdef CONFIG_PPC32
++#include <asm/cacheflush.h>
++static void ppc32_inval_cache(struct map_info *map, unsigned long from,
++			      ssize_t len)
++{
++	invalidate_dcache_icache_range((unsigned long)map->cached + from,
++	                               (unsigned long)map->cached + from + len);
++}
++#endif
++
+ #ifdef CONFIG_MTD_PARTITIONS
+ #define OF_FLASH_PARTS(info)	((info)->parts)
+ 
+@@ -106,6 +116,8 @@ static int of_flash_remove(struct of_device *dev)
+ 
+ 	if (info->map.virt)
+ 		iounmap(info->map.virt);
++	if (info->map.cached)
++		iounmap(info->map.cached);
+ 
+ 	if (info->res) {
+ 		release_resource(info->res);
+@@ -205,6 +217,14 @@ static int __devinit of_flash_probe(struct of_device *dev,
+ 		dev_err(&dev->dev, "Failed to ioremap() flash region\n");
+ 		goto err_out;
+ 	}
++#ifdef CONFIG_PPC32
++	/* Don't use no-cache or guarded flags */
++	info->map.cached = ioremap_flags(info->map.phys, info->map.size, 0);
++	if (!info->map.cached)
++		dev_warn(&dev->dev, "Failed to ioremap() cached flash region\n");
++	else
++		info->map.inval_cache = ppc32_inval_cache;
++#endif
+ 
+ 	simple_map_init(&info->map);
+ 
+-- 
+1.5.4.1
