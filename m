@@ -1,19 +1,19 @@
 Received: from rcsinet14.oracle.com ([148.87.113.126]
 	helo=rgminet14.oracle.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LCNo3-0000Y9-IG
-	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2008 00:28:59 +0000
-Received: from rgminet11.oracle.com (rcsinet11.oracle.com [148.87.113.123])
+	id 1LCNo5-0000YI-Me
+	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2008 00:29:01 +0000
+Received: from rgminet13.oracle.com (rcsinet13.oracle.com [148.87.113.125])
 	by rgminet14.oracle.com (Switch-3.3.1/Switch-3.3.1) with ESMTP id
-	mBFNeS3T014057
+	mBFNfIPK014433
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <linux-mtd@lists.infradead.org>; Mon, 15 Dec 2008 23:40:53 GMT
-Message-ID: <4946EA7F.1@oracle.com>
-Date: Mon, 15 Dec 2008 15:38:39 -0800
+	for <linux-mtd@lists.infradead.org>; Mon, 15 Dec 2008 23:41:44 GMT
+Message-ID: <4946EA3D.8060604@oracle.com>
+Date: Mon, 15 Dec 2008 15:37:33 -0800
 From: Randy Dunlap <randy.dunlap@oracle.com>
 MIME-Version: 1.0
 To: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: [PATCH -next] mtd: fix nettel printk formats
+Subject: [PATCH -next] mtd: fix nandsim sched.h references
 References: <20081216020642.fc1007d9.sfr@canb.auug.org.au>
 In-Reply-To: <20081216020642.fc1007d9.sfr@canb.auug.org.au>
 Content-Type: text/plain; charset=ISO-8859-1
@@ -32,25 +32,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Randy Dunlap <randy.dunlap@oracle.com>
 
-Fix printk format references:
+Fix sched.h references:
 
-drivers/mtd/maps/nettel.c:361: warning: format '%d' expects type 'int', but argument 2 has type 'uint64_t'
+build-r7149.out:/local/linsrc/linux-next-20081215/drivers/mtd/nand/nandsim.c:1326: error: dereferencing pointer to incomplete type
+build-r7149.out:/local/linsrc/linux-next-20081215/drivers/mtd/nand/nandsim.c:1326: error: 'PF_MEMALLOC' undeclared (first use in this function)
+build-r7149.out:/local/linsrc/linux-next-20081215/drivers/mtd/nand/nandsim.c:1328: error: dereferencing pointer to incomplete type
+build-r7149.out:/local/linsrc/linux-next-20081215/drivers/mtd/nand/nandsim.c:1335: error: dereferencing pointer to incomplete type
+build-r7149.out:/local/linsrc/linux-next-20081215/drivers/mtd/nand/nandsim.c:1335: error: 'PF_MEMALLOC' undeclared (first use in this function)
+build-r7149.out:make[4]: *** [drivers/mtd/nand/nandsim.o] Error 1
 
 Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
 ---
- drivers/mtd/maps/nettel.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/nandsim.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- linux-next-20081215.orig/drivers/mtd/maps/nettel.c
-+++ linux-next-20081215/drivers/mtd/maps/nettel.c
-@@ -357,8 +357,8 @@ static int __init nettel_init(void)
- 		*intel1par = 0;
- 	}
- 
--	printk(KERN_NOTICE "SNAPGEAR: Intel flash device size = %dK\n",
--		(intel_mtd->size >> 10));
-+	printk(KERN_NOTICE "SNAPGEAR: Intel flash device size = %lluK\n",
-+		(unsigned long long)(intel_mtd->size >> 10));
- 
- 	intel_mtd->owner = THIS_MODULE;
+--- linux-next-20081215.orig/drivers/mtd/nand/nandsim.c
++++ linux-next-20081215/drivers/mtd/nand/nandsim.c
+@@ -38,6 +38,7 @@
+ #include <linux/delay.h>
+ #include <linux/list.h>
+ #include <linux/random.h>
++#include <linux/sched.h>
+ #include <linux/fs.h>
+ #include <linux/pagemap.h>
  
