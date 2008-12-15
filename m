@@ -1,22 +1,15 @@
-Received: from simmts12-qfe0.srvr.bell.ca ([206.47.199.141]
-	helo=simmts12-srv.bellnexxia.net)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LCMob-0002Tj-MZ
-	for linux-mtd@lists.infradead.org; Mon, 15 Dec 2008 23:25:30 +0000
-Received: from simip9-ac.srvr.bell.ca ([206.47.199.87])
-	by simmts12-srv.bellnexxia.net
-	(InterMail vM.5.01.06.13 201-253-122-130-113-20050324) with ESMTP id
-	<20081215232526.EIHI1599.simmts12-srv.bellnexxia.net@simip9-ac.srvr.bell.ca>
-	for <linux-mtd@lists.infradead.org>; Mon, 15 Dec 2008 18:25:26 -0500
-From: COMPAQ ELECTRONICS <galbraith@sympatico.ca>
-To: <info@lotto.org>
-Subject: Claims of =?iso-8859-1?B?ozUwMCwwMDA=?= pounds
-Date: Mon, 15 Dec 2008 18:25:26 -0500
+Message-ID: <4946E7DC.7010403@oracle.com>
+Date: Mon, 15 Dec 2008 15:27:24 -0800
+From: Randy Dunlap <randy.dunlap@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <20081215232526.EIHI1599.simmts12-srv.bellnexxia.net@simip9-ac.srvr.bell.ca>
-Reply-To: jerry.smith400@btinternet.com
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: linux-next: Tree for December 15 (MTD)
+References: <20081216020642.fc1007d9.sfr@canb.auug.org.au>
+In-Reply-To: <20081216020642.fc1007d9.sfr@canb.auug.org.au>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-next@vger.kernel.org,
+	David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,21 +19,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Claims of =A3500,000 pounds  has been won by you in our COMPAQ ELECTRONIC=
-S SEASONAL AWARD 2008 .get back to this office with your =
+Stephen Rothwell wrote:
+> Hi all,
+> 
+> Changes since 20081212:
+> 
+> New tree:
+> 	boot-params
+> 
+> Undropped tree:
+> 	mtd
 
 
-Names =
+On i386 builds, I'm seeing
 
-Address =
+build-r7137.out:mtd_dataflash.c:(.text+0x10dff4): undefined reference to `__umoddi3'
+build-r7137.out:mtd_dataflash.c:(.text+0x10e010): undefined reference to `__umoddi3'
+build-r7137.out:mtd_dataflash.c:(.text+0x10e09f): undefined reference to `__udivdi3'
 
-Country
-Phone No
-Occupation
-Sex
-Age
+which are caused by % and / operations where the denominator is a variable:
 
-And sent to (jerrysmith001@live.com)
+	/* Sanity checks */
+	if ((instr->addr + instr->len) > mtd->size
+			|| (instr->len % priv->page_size) != 0
+			|| (instr->addr % priv->page_size) != 0)
+		return -EINVAL;
 
-Best Regards
-Mrs Sarah Wood
+...
+		/* Calculate flash page address; use block erase (for speed) if
+		 * we're at a block boundary and need to erase the whole block.
+		 */
+		pageaddr = instr->addr / priv->page_size;
+
+
+~Randy
