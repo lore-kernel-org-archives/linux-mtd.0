@@ -1,22 +1,22 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from bear.ext.ti.com ([192.94.94.41])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LC5Y2-0004h6-Mj
-	for linux-mtd@lists.infradead.org; Mon, 15 Dec 2008 04:59:14 +0000
-Message-ID: <59034.192.168.10.89.1229317139.squirrel@dbdmail.itg.ti.com>
-In-Reply-To: <1229094690.13686.426.camel@sauron>
-References: <35044.192.168.10.89.1229077681.squirrel@dbdmail.itg.ti.com>
-	<37466.192.168.10.89.1229084724.squirrel@dbdmail.itg.ti.com>
-	<20081212100650.2c31279e@zod.rchland.ibm.com>
-	<1229094690.13686.426.camel@sauron>
-Date: Mon, 15 Dec 2008 10:28:59 +0530 (IST)
-Subject: Re: [PATCH] [MTD] [NAND] : Correcting file name in the header
-	section.
+	id 1LC6Hb-00067A-4Q
+	for linux-mtd@lists.infradead.org; Mon, 15 Dec 2008 05:46:19 +0000
+Received: from dlep36.itg.ti.com ([157.170.170.91])
+	by bear.ext.ti.com (8.13.7/8.13.7) with ESMTP id mBF5kDNV019657
+	for <linux-mtd@lists.infradead.org>; Sun, 14 Dec 2008 23:46:18 -0600
+Received: from webmail.ti.com (localhost [127.0.0.1])
+	by dlep36.itg.ti.com (8.13.8/8.13.8) with ESMTP id mBF5kAuU021054
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 14 Dec 2008 23:46:11 -0600 (CST)
+Message-ID: <64077.192.168.10.89.1229319972.squirrel@dbdmail.itg.ti.com>
+Date: Mon, 15 Dec 2008 11:16:12 +0530 (IST)
+Subject: [PATCH] [MTD] [NAND] : Removing file name from the header section.
 From: "Manasa Gangaiah" <x0099189@ti.com>
-To: dedekind@infradead.org
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
 Content-Type: text/plain;charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,21 +26,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> On Fri, 2008-12-12 at 10:06 -0500, Josh Boyer wrote:
->> On Fri, 12 Dec 2008 17:55:24 +0530 (IST)
->> "Manasa Gangaiah" <x0099189@ti.com> wrote:
->>
->> > This patch corrects the file name in the header section.
->> >
->> > Signed-off-by: Manasa Gangaiah <manasa.gangaiah@ti.com>
->>
->> NAK.
->>
->> It would be better to remove them entirely.  That way they don't need
->> to be updated again if the file is renamed or moved.
->
-> Agree, there is little point in putting file name and path there.
+This patch removes the file name in the header section.
 
-Thanks for the comments. Will make changes and send the patch.
+Signed-off-by: Manasa Gangaiah <manasa.gangaiah@ti.com>
+---
 
-- manasa
+ drivers/mtd/nand/autcpu12.c  |    1 -
+ drivers/mtd/nand/nand_base.c |    1 -
+ drivers/mtd/nand/nand_bbt.c  |    1 -
+ drivers/mtd/nand/nandids.c   |    1 -
+ drivers/mtd/nand/ndfc.c      |    1 -
+ 5 files changed, 5 deletions(-)
+--- a/drivers/mtd/nand/autcpu12.c	2008-12-12 17:32:38.000000000 +0530
++++ b/drivers/mtd/nand/autcpu12.c	2008-12-15 10:31:16.000000000 +0530
+@@ -1,5 +1,4 @@
+ /*
+- *  drivers/mtd/autcpu12.c
+  *
+  *  Copyright (c) 2002 Thomas Gleixner <tgxl@linutronix.de>
+  *
+--- a/drivers/mtd/nand/nand_base.c	2008-12-12 16:59:41.000000000 +0530
++++ b/drivers/mtd/nand/nand_base.c	2008-12-15 10:31:28.000000000 +0530
+@@ -1,5 +1,4 @@
+ /*
+- *  drivers/mtd/nand.c
+  *
+  *  Overview:
+  *   This is the generic MTD driver for NAND flash devices. It should be
+--- a/drivers/mtd/nand/nand_bbt.c	2008-12-12 17:42:50.000000000 +0530
++++ b/drivers/mtd/nand/nand_bbt.c	2008-12-15 10:31:38.000000000 +0530
+@@ -1,5 +1,4 @@
+ /*
+- *  drivers/mtd/nand_bbt.c
+  *
+  *  Overview:
+  *   Bad block table support for the NAND driver
+--- a/drivers/mtd/nand/nandids.c	2008-12-12 17:24:52.000000000 +0530
++++ b/drivers/mtd/nand/nandids.c	2008-12-15 10:31:46.000000000 +0530
+@@ -1,5 +1,4 @@
+ /*
+- *  drivers/mtd/nandids.c
+  *
+  *  Copyright (C) 2002 Thomas Gleixner (tglx@linutronix.de)
+  *
+--- a/drivers/mtd/nand/ndfc.c	2008-12-12 17:28:56.000000000 +0530
++++ b/drivers/mtd/nand/ndfc.c	2008-12-15 10:31:53.000000000 +0530
+@@ -1,5 +1,4 @@
+ /*
+- *  drivers/mtd/ndfc.c
+  *
+  *  Overview:
+  *   Platform independend driver for NDFC (NanD Flash Controller)
