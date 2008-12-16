@@ -1,33 +1,24 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LCTaM-0004AX-4I
-	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2008 06:39:14 +0000
-Subject: Re: [PATCH 4/4] UBI WL-Subsys: Improvement in prot tree
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
-In-Reply-To: <1229395691.2691.18.camel@localhost.localdomain>
-References: <1228823163.2753.18.camel@localhost.localdomain>
-	<1228827803.13686.189.camel@sauron>
-	<1228884752.3225.80.camel@localhost.localdomain>
-	<1228898668.13686.223.camel@sauron>
-	<1228913251.3655.10.camel@localhost.localdomain>
-	<1228931859.13686.350.camel@sauron>
-	<1228981865.2702.9.camel@localhost.localdomain>
-	<1229022841.13686.384.camel@sauron>
-	<1229332169.5306.1.camel@localhost.localdomain>
-	<1229332781.13686.447.camel@sauron>
-	<1229343610.2687.52.camel@localhost.localdomain>
-	<1229343746.4911.2.camel@sauron>
-	<1229347894.2687.56.camel@localhost.localdomain>
-	<1229356809.4911.57.camel@sauron>
-	<1229395691.2691.18.camel@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8
-Date: Tue, 16 Dec 2008 08:36:31 +0200
-Message-Id: <1229409391.4911.75.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+Received: from rv-out-0708.google.com ([209.85.198.249])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1LCVTW-0005H6-6I
+	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2008 08:40:18 +0000
+Received: by rv-out-0708.google.com with SMTP id b17so3152520rvf.42
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 16 Dec 2008 00:40:16 -0800 (PST)
+Message-ID: <76d9e2a30812160040u263e275aqa04c0e4b726365cc@mail.gmail.com>
+Date: Tue, 16 Dec 2008 10:40:16 +0200
+From: "Hai Zaar" <haizaar@haizaar.com>
+To: dedekind@infradead.org
+Subject: Re: [PATCH] nandwrite - handle situation when read returns less bytes
+	the expected
+In-Reply-To: <1229408910.4911.72.camel@sauron>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+References: <76d9e2a30812140559y6ade25c0jf55fd8a7b299e83a@mail.gmail.com>
+	<1229408910.4911.72.camel@sauron>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,23 +28,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2008-12-16 at 10:48 +0800, xiaochuan-xu wrote:
-> >From e43d4e5cbaf1adb3af680a6dec53c142c68014ed Mon Sep 17 00:00:00 2001
-> From: Xiaochuan-Xu <xiaochuan-xu@cqu.edu.cn>
-> Date: Tue, 16 Dec 2008 10:44:07 +0800
-> Subject: [PATCH] delete idle varialbe abs_ec
->=20
-> @wl->abs_ec is useless any more in the Simplify Protection
-> PEB Queue implementation.
->=20
-> Signed-off-by: Xiaochuan-Xu <xiaochuan-xu@cqu.edu.cn>
-
-Applied, committed using git-commit -a --amend (changed your
-original patch in-place).
-
-Thanks.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+T24gVHVlLCBEZWMgMTYsIDIwMDggYXQgODoyOCBBTSwgQXJ0ZW0gQml0eXV0c2tpeQo8ZGVkZWtp
+bmRAaW5mcmFkZWFkLm9yZz4gd3JvdGU6Cj4KPiBZb3VyIHBhdGNoIGRvZXMgbm90IGFwcGx5LiBJ
+dCBsb29rcyBsaWtlIGl0IGlzIG5vdCBhZ2FpbnN0IHRoZSBsYXRlc3QKPiBtdGQtdXRpbHMuIEhv
+dyBhYm91dCB0aGlzIHBhdGNoPwpZZXMsIG15IHBhdGNoIGlzIGFnYWluc3QgbXRkLXV0aWxzLTEu
+Mi4wLiBZb3VycyBpcyBzdXJlbHkgYmV0dGVyIHNpbmNlCml0IGNvdmVycyBvb2IgcmVhZGluZyBh
+cyB3ZWxsLgoKPgo+IEZyb206IEFydGVtIEJpdHl1dHNraXkgPEFydGVtLkJpdHl1dHNraXlAbm9r
+aWEuY29tPgo+IERhdGU6IFR1ZSwgMTYgRGVjIDIwMDggMTA6MDI6MTYgKzAyMDAKPiBTdWJqZWN0
+OiBbUEFUQ0hdIG5hbmR3cml0ZTogY29ycmVjdCBkYXRhIHJlYWRpbmcKPgo+IFRoZSAicmVhZCIg
+c3lzY2FsbCBkb2VzIG5vdCBuZWNlc3NhcmlseSByZXR1cm4gYWxsIHRoZSByZXF1ZXN0ZWQKPiBk
+YXRhLCBpbiB3aGljaCBjYXNlIHRoZSBjYWxsZXIgaGFzIHRvIHRyeSBhZ2FpbiBhbmQgcmVhZCBt
+b3JlLgo+IFRha2UgdGhpcyBpbnRvIGFjY291bnQgd2hlbiByZWFkaW5nIGlucHV0IGRhdGEuCj4K
+PiBTaWduZWQtb2ZmLWJ5OiBBcnRlbSBCaXR5dXRza2l5IDxBcnRlbS5CaXR5dXRza2l5QG5va2lh
+LmNvbT4KPiAtLS0KPiAgbmFuZHdyaXRlLmMgfCAgIDMxICsrKysrKysrKysrKysrKysrKysrKysr
+LS0tLS0tLS0KPiAgMSBmaWxlcyBjaGFuZ2VkLCAyMyBpbnNlcnRpb25zKCspLCA4IGRlbGV0aW9u
+cygtKQo+Cj4gZGlmZiAtLWdpdCBhL25hbmR3cml0ZS5jIGIvbmFuZHdyaXRlLmMKPiBpbmRleCBm
+YzIzZTg1Li4wYjJhOWVlIDEwMDY0NAo+IC0tLSBhL25hbmR3cml0ZS5jCj4gKysrIGIvbmFuZHdy
+aXRlLmMKPiBAQCAtMjYwLDYgKzI2MCw3IEBAIGludCBtYWluKGludCBhcmdjLCBjaGFyICogY29u
+c3QgYXJndltdKQo+ICAgICAgICBpbnQgcmV0LCByZWFkbGVuOwo+ICAgICAgICBpbnQgb29iaW5m
+b2NoYW5nZWQgPSAwOwo+ICAgICAgICBzdHJ1Y3QgbmFuZF9vb2JpbmZvIG9sZF9vb2JpbmZvOwo+
+ICsgICAgICAgaW50IHJlYWRjbnQgPSAwOwo+Cj4gICAgICAgIHByb2Nlc3Nfb3B0aW9ucyhhcmdj
+LCBhcmd2KTsKPgo+IEBAIC00NzcsNiArNDc4LDggQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIg
+KiBjb25zdCBhcmd2W10pCj4gICAgICAgICAgICAgICAgcmVhZGxlbiA9IG1lbWluZm8ud3JpdGVz
+aXplOwo+Cj4gICAgICAgICAgICAgICAgaWYgKGlmZCAhPSBTVERJTl9GSUxFTk8pIHsKPiArICAg
+ICAgICAgICAgICAgICAgICAgICBpbnQgdGlueWNudCA9IDA7Cj4gKwo+ICAgICAgICAgICAgICAg
+ICAgICAgICAgaWYgKHBhZCAmJiAoaW1nbGVuIDwgcmVhZGxlbikpCj4gICAgICAgICAgICAgICAg
+ICAgICAgICB7Cj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJlYWRsZW4gPSBpbWds
+ZW47Cj4gQEAgLTQ4NCwxMSArNDg3LDE1IEBAIGludCBtYWluKGludCBhcmdjLCBjaGFyICogY29u
+c3QgYXJndltdKQo+ICAgICAgICAgICAgICAgICAgICAgICAgfQo+Cj4gICAgICAgICAgICAgICAg
+ICAgICAgICAvKiBSZWFkIFBhZ2UgRGF0YSBmcm9tIGlucHV0IGZpbGUgKi8KPiAtICAgICAgICAg
+ICAgICAgICAgICAgICBpZiAoKGNudCA9IHJlYWQoaWZkLCB3cml0ZWJ1ZiwgcmVhZGxlbikpICE9
+IHJlYWRsZW4pIHsKPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChjbnQgPT0g
+MCkgICAvLyBFT0YKPiArICAgICAgICAgICAgICAgICAgICAgICB3aGlsZSh0aW55Y250IDwgcmVh
+ZGxlbikgewo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY250ID0gcmVhZChpZmQs
+IHdyaXRlYnVmICsgdGlueWNudCwgcmVhZGxlbiAtIHRpbnljbnQpOwo+ICsgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgaWYgKGNudCA9PSAwKSB7IC8vIEVPRgo+ICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIGJyZWFrOwo+IC0gICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgcGVycm9yICgiRmlsZSBJL08gZXJyb3Igb24gaW5wdXQgZmlsZSIpOwo+IC0gICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgZ290byBjbG9zZWFsbDsKPiArICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIH0gZWxzZSBpZiAoY250IDwgMCkgewo+ICsgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICBwZXJyb3IgKCJGaWxlIEkvTyBlcnJvciBvbiBpbnB1
+dCBmaWxlIik7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdvdG8g
+Y2xvc2VhbGw7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9Cj4gKyAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICB0aW55Y250ICs9IGNudDsKPiAgICAgICAgICAgICAgICAg
+ICAgICAgIH0KPiAgICAgICAgICAgICAgICB9IGVsc2Ugewo+ICAgICAgICAgICAgICAgICAgICAg
+ICAgaW50IHRpbnljbnQgPSAwOwo+IEBAIC01MjIsMTEgKzUyOSwxOSBAQCBpbnQgbWFpbihpbnQg
+YXJnYywgY2hhciAqIGNvbnN0IGFyZ3ZbXSkKPiAgICAgICAgICAgICAgICB9Cj4KPiAgICAgICAg
+ICAgICAgICBpZiAod3JpdGVvb2IpIHsKPiAtICAgICAgICAgICAgICAgICAgICAgICAvKiBSZWFk
+IE9PQiBkYXRhIGZyb20gaW5wdXQgZmlsZSwgZXhpdCBvbiBmYWlsdXJlICovCj4gLSAgICAgICAg
+ICAgICAgICAgICAgICAgaWYgKChjbnQgPSByZWFkKGlmZCwgb29icmVhZGJ1ZiwgbWVtaW5mby5v
+b2JzaXplKSkgIT0gbWVtaW5mby5vb2JzaXplKSB7Cj4gLSAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBwZXJyb3IgKCJGaWxlIEkvTyBlcnJvciBvbiBpbnB1dCBmaWxlIik7Cj4gLSAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICBnb3RvIGNsb3NlYWxsOwo+ICsgICAgICAgICAgICAg
+ICAgICAgICAgIGludCB0aW55Y250ID0gMDsKPiArCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
+d2hpbGUodGlueWNudCA8IHJlYWRsZW4pIHsKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIGNudCA9IHJlYWQoaWZkLCBvb2JyZWFkYnVmICsgdGlueWNudCwgbWVtaW5mby5vb2JzaXpl
+IC0gdGlueWNudCk7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAoY250ID09
+IDApIHsgLy8gRU9GCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJy
+ZWFrOwo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfSBlbHNlIGlmIChjbnQgPCAw
+KSB7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBlcnJvciAoIkZp
+bGUgSS9PIGVycm9yIG9uIGlucHV0IGZpbGUiKTsKPiArICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgZ290byBjbG9zZWFsbDsKPiArICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIH0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRpbnljbnQgKz0gY250
+Owo+ICAgICAgICAgICAgICAgICAgICAgICAgfQo+ICsKPiAgICAgICAgICAgICAgICAgICAgICAg
+IGlmICghbm9lY2MpIHsKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaW50IGksIHN0
+YXJ0LCBsZW47Cj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8qCj4gLS0KPiAxLjUu
+NC4zCj4KPiAtLQo+IEJlc3QgcmVnYXJkcywKPiBBcnRlbSBCaXR5dXRza2l5ICjQkdC40YLRjtGG
+0LrQuNC5INCQ0YDRgtGR0LwpCj4KPgoKCgotLSAKWmFhcgo=
