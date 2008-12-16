@@ -1,15 +1,20 @@
-Message-ID: <4946E7DC.7010403@oracle.com>
-Date: Mon, 15 Dec 2008 15:27:24 -0800
-From: Randy Dunlap <randy.dunlap@oracle.com>
+Received: from ozlabs.org ([203.10.76.45])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1LCNgd-0008Ot-UG
+	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2008 00:21:21 +0000
 MIME-Version: 1.0
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: linux-next: Tree for December 15 (MTD)
-References: <20081216020642.fc1007d9.sfr@canb.auug.org.au>
-In-Reply-To: <20081216020642.fc1007d9.sfr@canb.auug.org.au>
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-next@vger.kernel.org,
-	David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>
+Message-ID: <18758.62580.416920.482077@cargo.ozlabs.ibm.com>
+Date: Tue, 16 Dec 2008 11:21:08 +1100
+From: Paul Mackerras <paulus@samba.org>
+To: Trent Piepho <tpiepho@freescale.com>
+Subject: Re: [PATCH] POWERPC: MTD: Add cached map support to physmap_of MTD
+	driver
+In-Reply-To: <1229365518-20538-1-git-send-email-tpiepho@freescale.com>
+References: <1229365518-20538-1-git-send-email-tpiepho@freescale.com>
+Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	Trent Piepho <xyzzy@speakeasy.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,37 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Stephen Rothwell wrote:
-> Hi all,
-> 
-> Changes since 20081212:
-> 
-> New tree:
-> 	boot-params
-> 
-> Undropped tree:
-> 	mtd
+Trent Piepho writes:
 
+> The MTD system supports operation where a direct mapped flash chip is
+> mapped twice.  The normal mapping is a standard ioremap(), which is
+> non-cached and guarded on powerpc.  The second mapping is used only for
+> reads and can be cached and non-guarded.  Currently, only the pxa2xx
+> mapping driver makes use of this feature.  This patch adds support to the
+> physmap_of driver on PPC32 platforms for this cached mapping mode.
 
-On i386 builds, I'm seeing
+Note that having two mappings of the same physical address that differ
+in cacheability is a programming error according to the PowerPC
+architecture.
 
-build-r7137.out:mtd_dataflash.c:(.text+0x10dff4): undefined reference to `__umoddi3'
-build-r7137.out:mtd_dataflash.c:(.text+0x10e010): undefined reference to `__umoddi3'
-build-r7137.out:mtd_dataflash.c:(.text+0x10e09f): undefined reference to `__udivdi3'
+Do you know that the processor implementations where you want to do
+this can cope with having two mappings with different cacheability?
 
-which are caused by % and / operations where the denominator is a variable:
-
-	/* Sanity checks */
-	if ((instr->addr + instr->len) > mtd->size
-			|| (instr->len % priv->page_size) != 0
-			|| (instr->addr % priv->page_size) != 0)
-		return -EINVAL;
-
-...
-		/* Calculate flash page address; use block erase (for speed) if
-		 * we're at a block boundary and need to erase the whole block.
-		 */
-		pageaddr = instr->addr / priv->page_size;
-
-
-~Randy
+Paul.
