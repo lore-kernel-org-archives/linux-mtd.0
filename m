@@ -1,8 +1,8 @@
-Date: Tue, 16 Dec 2008 18:13:58 +0000 (GMT)
+Date: Tue, 16 Dec 2008 18:15:33 +0000 (GMT)
 From: Alexey Korolev <akorolev@infradead.org>
 To: dwmw2@infradead.org, jaredeh@gmail.com
-Subject: [PATCH 2/8] LPDDR QINFO records definitions
-Message-ID: <alpine.LFD.2.00.0812161811530.15885@casper.infradead.org>
+Subject: [PATCH 3/8] LPDDR PFOW definition
+Message-ID: <alpine.LFD.2.00.0812161814020.15885@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: linux-mtd@lists.infradead.org
@@ -15,107 +15,177 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There are declaraton of structures and macros definitions 
-necessary for operations with QINFO in this patch.
+LPDDR chips use PFOW window for sending commands, reading status and
+capabilites requesting.
+This pfow.h - contains definitions for PFOW window fileds, possible commands,
+error flags and some common macro function to avoid code duplications.
 
 Signed-off-by: Alexey Korolev <akorolev@infradead.org>
 Acked-by: Jared Hulbert <jaredeh@gmail.com>
 ---
 
-diff --git a/include/linux/mtd/qinfo.h b/include/linux/mtd/qinfo.h
+diff --git a/include/linux/mtd/pfow.h b/include/linux/mtd/pfow.h
 new file mode 100644
-index 0000000..c8f91ca
+index 0000000..f67ee6a
 --- /dev/null
-+++ b/include/linux/mtd/qinfo.h
-@@ -0,0 +1,91 @@
-+#ifndef __LINUX_MTD_QINFO_H
-+#define __LINUX_MTD_QINFO_H
-+
-+#include <linux/mtd/map.h>
-+#include <linux/wait.h>
-+#include <linux/spinlock.h>
-+#include <linux/delay.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/flashchip.h>
-+#include <linux/mtd/partitions.h>
-+
-+/* lpddr_private describes lpddr flash chip in memory map
-+ * @ManufactId - Chip Manufacture ID
-+ * @DevId - Chip Device ID
-+ * @qinfo - pointer to qinfo records describing the chip
-+ * @numchips - number of chips including virual RWW partitions
-+ * @chipshift - Chip/partiton size 2^chipshift
-+ * @chips - per-chip data structure
++++ b/include/linux/mtd/pfow.h
+@@ -0,0 +1,159 @@
++/* Primary function overlay window definitions
++ * and service functions used by LPDDR chips
 + */
-+struct lpddr_private {
-+	uint16_t ManufactId;
-+	uint16_t DevId;
-+	struct qinfo_chip *qinfo;
-+	int numchips;
-+	unsigned long chipshift;
-+	struct flchip chips[0];
-+};
++#ifndef __LINUX_MTD_PFOW_H
++#define __LINUX_MTD_PFOW_H
 +
-+/* qinfo_query_info structure contains request information for
-+ * each qinfo record
-+ * @major - major number of qinfo record
-+ * @major - minor number of qinfo record
-+ * @id_str - descriptive string to access the record
-+ * @desc - detailed description for the qinfo record
-+ */
-+struct qinfo_query_info {
-+	uint8_t	major;
-+	uint8_t	minor;
-+	char *id_str;
-+	char *desc;
-+};
++#include <linux/mtd/qinfo.h>
 +
-+/*
-+ * qinfo_chip structure contains necessary qinfo records data
-+ * @DevSizeShift - Device size 2^n bytes
-+ * @BufSizeShift - Program buffer size 2^n bytes
-+ * @TotalBlocksNum - Total number of blocks
-+ * @UniformBlockSizeShift - Uniform block size 2^UniformBlockSizeShift bytes
-+ * @HWPartsNum - Number of hardware partitions
-+ * @SuspEraseSupp - Suspend erase supported
-+ * @SingleWordProgTime - Single word program 2^SingleWordProgTime u-sec
-+ * @ProgBufferTime - Program buffer write 2^ProgBufferTime u-sec
-+ * @BlockEraseTime - Block erase 2^BlockEraseTime m-sec
-+ */
-+struct qinfo_chip {
-+	/* General device info */
-+	uint16_t DevSizeShift;
-+	uint16_t BufSizeShift;
-+	/* Erase block information */
-+	uint16_t TotalBlocksNum;
-+	uint16_t UniformBlockSizeShift;
-+	/* Partition information */
-+	uint16_t HWPartsNum;
-+	/* Optional features */
-+	uint16_t SuspEraseSupp;
-+	/* Operation typical time */
-+	uint16_t SingleWordProgTime;
-+	uint16_t ProgBufferTime;
-+	uint16_t BlockEraseTime;
-+};
++/* PFOW registers addressing */
++/* Address of symbol "P" */
++#define PFOW_QUERY_STRING_P			0x0000
++/* Address of symbol "F" */
++#define PFOW_QUERY_STRING_F			0x0002
++/* Address of symbol "O" */
++#define PFOW_QUERY_STRING_O			0x0004
++/* Address of symbol "W" */
++#define PFOW_QUERY_STRING_W			0x0006
++/* Identification info for LPDDR chip */
++#define PFOW_MANUFACTURER_ID			0x0020
++#define PFOW_DEVICE_ID				0x0022
++/* Address in PFOW where prog buffer can can be found */
++#define PFOW_PROGRAM_BUFFER_OFFSET		0x0040
++/* Size of program buffer in words */
++#define PFOW_PROGRAM_BUFFER_SIZE		0x0042
++/* Address command code register */
++#define PFOW_COMMAND_CODE			0x0080
++/* command data register */
++#define PFOW_COMMAND_DATA			0x0084
++/* command address register lower address bits */
++#define PFOW_COMMAND_ADDRESS_L			0x0088
++/* command address register upper address bits */
++#define PFOW_COMMAND_ADDRESS_H			0x008a
++/* number of bytes to be proggrammed lower address bits */
++#define PFOW_DATA_COUNT_L			0x0090
++/* number of bytes to be proggrammed higher address bits */
++#define PFOW_DATA_COUNT_H			0x0092
++/* command execution register, the only possible value is 0x01 */
++#define PFOW_COMMAND_EXECUTE			0x00c0
++/* 0x01 should be written at this address to clear buffer */
++#define PFOW_CLEAR_PROGRAM_BUFFER		0x00c4
++/* device program/erase suspend register */
++#define PFOW_PROGRAM_ERASE_SUSPEND		0x00c8
++/* device status register */
++#define PFOW_DSR				0x00cc
 +
-+/* defines for fixup usage */
-+#define LPDDR_MFR_ANY		0xffff
-+#define LPDDR_ID_ANY		0xffff
-+#define NUMONYX_MFGR_ID		0x0089
-+#define R18_DEVICE_ID_1G	0x893c
++/* LPDDR memory device command codes */
++/* They are possible values of PFOW command code register */
++#define LPDDR_WORD_PROGRAM		0x0041
++#define LPDDR_BUFF_PROGRAM		0x00E9
++#define LPDDR_BLOCK_ERASE		0x0020
++#define LPDDR_LOCK_BLOCK		0x0061
++#define LPDDR_UNLOCK_BLOCK		0x0062
++#define LPDDR_READ_BLOCK_LOCK_STATUS	0x0065
++#define LPDDR_INFO_QUERY		0x0098
++#define LPDDR_READ_OTP			0x0097
++#define LPDDR_PROG_OTP			0x00C0
++#define LPDDR_RESUME			0x00D0
 +
-+static inline map_word lpddr_build_cmd(u_long cmd, struct map_info *map)
++/* Defines possible value of PFOW command execution register */
++#define LPDDR_START_EXECUTION			0x0001
++
++/* Defines possible value of PFOW program/erase suspend register */
++#define LPDDR_SUSPEND				0x0001
++
++/* Possible values of PFOW device status register */
++/* access R - read; RC read & clearable */
++#define DSR_DPS			(1<<1) /* RC; device protect status
++					* 0 - not protected 1 - locked */
++#define DSR_PSS			(1<<2) /* R; program suspend status;
++					* 0-prog in progress/completed,
++					* 1- prog suspended */
++#define DSR_VPPS		(1<<3) /* RC; 0-Vpp OK, * 1-Vpp low */
++#define DSR_PROGRAM_STATUS	(1<<4) /* RC; 0-successful, 1-error */
++#define DSR_ERASE_STATUS	(1<<5) /* RC; erase or blank check status;
++					* 0-success erase/blank check,
++					* 1 blank check error */
++#define DSR_ESS			(1<<6) /* R; erase suspend status;
++					* 0-erase in progress/complete,
++					* 1 erase suspended */
++#define DSR_READY_STATUS	(1<<7) /* R; Device status
++					* 0-busy,
++					* 1-ready */
++#define DSR_RPS			(0x3<<8) /* RC;  region program status
++					* 00 - Success,
++					* 01-re-program attempt in region with
++					* object mode data,
++					* 10-object mode program w attempt in
++					* region with control mode data
++					* 11-attempt to program invalid half
++					* with 0x41 command */
++#define DSR_AOS			(1<<12) /* RC; 1- AO related failure */
++#define DSR_AVAILABLE		(1<<15) /* R; Device availbility
++					* 1 - Device available
++					* 0 - not available */
++
++/* The superset of all possible error bits in DSR */
++#define DSR_ERR			0x133A
++
++static inline void send_pfow_command(struct map_info *map,
++				unsigned long cmd_code, unsigned long adr,
++				unsigned long len, map_word *datum)
 +{
-+	map_word val = { {0} };
-+	val.x[0] = cmd;
-+	return val;
++	int bits_per_chip = map_bankwidth(map) * 8;
++	int chipnum;
++	struct lpddr_private *lpddr = map->fldrv_priv;
++	chipnum = adr >> lpddr->chipshift;
++
++	map_write(map, CMD(cmd_code), map->pfow_base + PFOW_COMMAND_CODE);
++	map_write(map, CMD(adr & ((1<<bits_per_chip) - 1)),
++				map->pfow_base + PFOW_COMMAND_ADDRESS_L);
++	map_write(map, CMD(adr>>bits_per_chip),
++				map->pfow_base + PFOW_COMMAND_ADDRESS_H);
++	if (len) {
++		map_write(map, CMD(len & ((1<<bits_per_chip) - 1)),
++					map->pfow_base + PFOW_DATA_COUNT_L);
++		map_write(map, CMD(len>>bits_per_chip),
++					map->pfow_base + PFOW_DATA_COUNT_H);
++	}
++	if (datum)
++		map_write(map, *datum, map->pfow_base + PFOW_COMMAND_DATA);
++
++	/* Command execution start */
++	map_write(map, CMD(LPDDR_START_EXECUTION), 
++			map->pfow_base + PFOW_COMMAND_EXECUTE);
 +}
 +
-+#define CMD(x) lpddr_build_cmd(x, map)
-+#define CMDVAL(cmd) cmd.x[0]
++static inline void print_drs_error(unsigned dsr)
++{
++	int prog_status = (dsr & DSR_RPS) >> 8;
 +
-+struct mtd_info *lpddr_cmdset(struct map_info *);
-+
-+#endif
-+
++	if (!(dsr & DSR_AVAILABLE))
++		printk(KERN_NOTICE"DSR.15: (0) Device not Available\n");
++	if (prog_status & 0x03)
++		printk(KERN_NOTICE"DSR.9,8: (11) Attempt to program invalid "
++						"half with 41h command\n");
++	else if (prog_status & 0x02)
++		printk(KERN_NOTICE"DSR.9,8: (10) Object Mode Program attempt "
++					"in region with Control Mode data\n");
++	else if (prog_status &  0x01)
++		printk(KERN_NOTICE"DSR.9,8: (01) Program attempt in region "
++						"with Object Mode data\n");
++	if (!(dsr & DSR_READY_STATUS))
++		printk(KERN_NOTICE"DSR.7: (0) Device is Busy\n");
++	if (dsr & DSR_ESS)
++		printk(KERN_NOTICE"DSR.6: (1) Erase Suspended\n");
++	if (dsr & DSR_ERASE_STATUS)
++		printk(KERN_NOTICE"DSR.5: (1) Erase/Blank check error\n");
++	if (dsr & DSR_PROGRAM_STATUS)
++		printk(KERN_NOTICE"DSR.4: (1) Program Error\n");
++	if (dsr & DSR_VPPS)
++		printk(KERN_NOTICE"DSR.3: (1) Vpp low detect, operation "
++					"aborted\n");
++	if (dsr & DSR_PSS)
++		printk(KERN_NOTICE"DSR.2: (1) Program suspended\n");
++	if (dsr & DSR_DPS)
++		printk(KERN_NOTICE"DSR.1: (1) Aborted Erase/Program attempt "
++					"on locked block\n");
++}
++#endif /* __LINUX_MTD_PFOW_H */
