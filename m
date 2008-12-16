@@ -1,23 +1,22 @@
-Received: from djurbala-pt.tunnel.tserv2.fmt.ipv6.he.net
-	([2001:470:1f01:ffff::eb] helo=gate.crashing.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LCVlg-0007NS-39
-	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2008 08:59:04 +0000
-Subject: Re: [PATCH] POWERPC: MTD: Add cached map support to physmap_of MTD
-	driver
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-To: Trent Piepho <tpiepho@freescale.com>
-In-Reply-To: <Pine.LNX.4.64.0812151653050.28806@t2.domain.actdsltmp>
-References: <1229365518-20538-1-git-send-email-tpiepho@freescale.com>
-	<18758.62580.416920.482077@cargo.ozlabs.ibm.com>
-	<Pine.LNX.4.64.0812151653050.28806@t2.domain.actdsltmp>
-Content-Type: text/plain
-Date: Tue, 16 Dec 2008 19:56:56 +1100
-Message-Id: <1229417816.7319.4.camel@pasglop>
-Mime-Version: 1.0
+Received: from wf-out-1314.google.com ([209.85.200.171])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1LCVsF-0005LG-3q
+	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2008 09:05:51 +0000
+Received: by wf-out-1314.google.com with SMTP id 28so2938709wfc.24
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 16 Dec 2008 01:05:49 -0800 (PST)
+Message-ID: <8bd0f97a0812160105l292b57b1v77ad3b4314512942@mail.gmail.com>
+Date: Tue, 16 Dec 2008 04:05:49 -0500
+From: "Mike Frysinger" <vapier.adi@gmail.com>
+To: "Manuel Lauss" <mano@roarinelk.homelinux.net>
+Subject: Re: NAND "low-level format"?
+In-Reply-To: <20081216085501.GA7866@roarinelk.homelinux.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: linuxppc-dev@ozlabs.org, Paul Mackerras <paulus@samba.org>,
-	xyzzy@speakeasy.org, MTD mailing list <linux-mtd@lists.infradead.org>
+Content-Disposition: inline
+References: <20081216085501.GA7866@roarinelk.homelinux.net>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,21 +26,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2008-12-15 at 17:11 -0800, Trent Piepho wrote:
-> Shame, as it provides a huge speed up.  I suppose an alternative would be
-> to map the chip twice at different physical addresses, by just configuring
-> the chip select to be twice the size it should be, and giving them
-> different cacheability.
+On Tue, Dec 16, 2008 at 03:55, Manuel Lauss wrote:
+> My question is: is there a utility of sorts which can reclaim the falsely
+> marked bad sectors for linux use?
 
-Nice trick. That would probably work.
-
-> Or changing the mapping for writes and then changing it back.  It wouldn't
-> be necessary to change the whole thing, just the page being written to.
-
-Right though changing mappings can be expensive. It might be worth
-looking at using fixmap for that tho, which is the fastest way to setup
-and tear down mappings, especially since we can (though we don't today)
-implement a bypass on those to directly load the TLB.
-
-Cheers,
-Ben.
+there prob is a nand util to do it under Linux (i'd d/l mtd-utils and
+build it up and see what you get), but if you're using u-boot, you can
+use "nand scrub"
+-mike
