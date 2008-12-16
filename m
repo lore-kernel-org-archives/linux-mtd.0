@@ -1,24 +1,16 @@
-Received: from rv-out-0708.google.com ([209.85.198.249])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LCVTW-0005H6-6I
-	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2008 08:40:18 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so3152520rvf.42
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 16 Dec 2008 00:40:16 -0800 (PST)
-Message-ID: <76d9e2a30812160040u263e275aqa04c0e4b726365cc@mail.gmail.com>
-Date: Tue, 16 Dec 2008 10:40:16 +0200
-From: "Hai Zaar" <haizaar@haizaar.com>
-To: dedekind@infradead.org
-Subject: Re: [PATCH] nandwrite - handle situation when read returns less bytes
-	the expected
-In-Reply-To: <1229408910.4911.72.camel@sauron>
+Received: from fnoeppeil48.netpark.at ([217.175.205.176]
+	helo=roarinelk.homelinux.net)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1LCVhu-00071b-2y
+	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2008 08:55:10 +0000
+Date: Tue, 16 Dec 2008 09:55:01 +0100
+From: Manuel Lauss <mano@roarinelk.homelinux.net>
+To: linux-mtd@lists.infradead.org
+Subject: NAND "low-level format"?
+Message-ID: <20081216085501.GA7866@roarinelk.homelinux.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-References: <76d9e2a30812140559y6ade25c0jf55fd8a7b299e83a@mail.gmail.com>
-	<1229408910.4911.72.camel@sauron>
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,70 +20,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gVHVlLCBEZWMgMTYsIDIwMDggYXQgODoyOCBBTSwgQXJ0ZW0gQml0eXV0c2tpeQo8ZGVkZWtp
-bmRAaW5mcmFkZWFkLm9yZz4gd3JvdGU6Cj4KPiBZb3VyIHBhdGNoIGRvZXMgbm90IGFwcGx5LiBJ
-dCBsb29rcyBsaWtlIGl0IGlzIG5vdCBhZ2FpbnN0IHRoZSBsYXRlc3QKPiBtdGQtdXRpbHMuIEhv
-dyBhYm91dCB0aGlzIHBhdGNoPwpZZXMsIG15IHBhdGNoIGlzIGFnYWluc3QgbXRkLXV0aWxzLTEu
-Mi4wLiBZb3VycyBpcyBzdXJlbHkgYmV0dGVyIHNpbmNlCml0IGNvdmVycyBvb2IgcmVhZGluZyBh
-cyB3ZWxsLgoKPgo+IEZyb206IEFydGVtIEJpdHl1dHNraXkgPEFydGVtLkJpdHl1dHNraXlAbm9r
-aWEuY29tPgo+IERhdGU6IFR1ZSwgMTYgRGVjIDIwMDggMTA6MDI6MTYgKzAyMDAKPiBTdWJqZWN0
-OiBbUEFUQ0hdIG5hbmR3cml0ZTogY29ycmVjdCBkYXRhIHJlYWRpbmcKPgo+IFRoZSAicmVhZCIg
-c3lzY2FsbCBkb2VzIG5vdCBuZWNlc3NhcmlseSByZXR1cm4gYWxsIHRoZSByZXF1ZXN0ZWQKPiBk
-YXRhLCBpbiB3aGljaCBjYXNlIHRoZSBjYWxsZXIgaGFzIHRvIHRyeSBhZ2FpbiBhbmQgcmVhZCBt
-b3JlLgo+IFRha2UgdGhpcyBpbnRvIGFjY291bnQgd2hlbiByZWFkaW5nIGlucHV0IGRhdGEuCj4K
-PiBTaWduZWQtb2ZmLWJ5OiBBcnRlbSBCaXR5dXRza2l5IDxBcnRlbS5CaXR5dXRza2l5QG5va2lh
-LmNvbT4KPiAtLS0KPiAgbmFuZHdyaXRlLmMgfCAgIDMxICsrKysrKysrKysrKysrKysrKysrKysr
-LS0tLS0tLS0KPiAgMSBmaWxlcyBjaGFuZ2VkLCAyMyBpbnNlcnRpb25zKCspLCA4IGRlbGV0aW9u
-cygtKQo+Cj4gZGlmZiAtLWdpdCBhL25hbmR3cml0ZS5jIGIvbmFuZHdyaXRlLmMKPiBpbmRleCBm
-YzIzZTg1Li4wYjJhOWVlIDEwMDY0NAo+IC0tLSBhL25hbmR3cml0ZS5jCj4gKysrIGIvbmFuZHdy
-aXRlLmMKPiBAQCAtMjYwLDYgKzI2MCw3IEBAIGludCBtYWluKGludCBhcmdjLCBjaGFyICogY29u
-c3QgYXJndltdKQo+ICAgICAgICBpbnQgcmV0LCByZWFkbGVuOwo+ICAgICAgICBpbnQgb29iaW5m
-b2NoYW5nZWQgPSAwOwo+ICAgICAgICBzdHJ1Y3QgbmFuZF9vb2JpbmZvIG9sZF9vb2JpbmZvOwo+
-ICsgICAgICAgaW50IHJlYWRjbnQgPSAwOwo+Cj4gICAgICAgIHByb2Nlc3Nfb3B0aW9ucyhhcmdj
-LCBhcmd2KTsKPgo+IEBAIC00NzcsNiArNDc4LDggQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIg
-KiBjb25zdCBhcmd2W10pCj4gICAgICAgICAgICAgICAgcmVhZGxlbiA9IG1lbWluZm8ud3JpdGVz
-aXplOwo+Cj4gICAgICAgICAgICAgICAgaWYgKGlmZCAhPSBTVERJTl9GSUxFTk8pIHsKPiArICAg
-ICAgICAgICAgICAgICAgICAgICBpbnQgdGlueWNudCA9IDA7Cj4gKwo+ICAgICAgICAgICAgICAg
-ICAgICAgICAgaWYgKHBhZCAmJiAoaW1nbGVuIDwgcmVhZGxlbikpCj4gICAgICAgICAgICAgICAg
-ICAgICAgICB7Cj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJlYWRsZW4gPSBpbWds
-ZW47Cj4gQEAgLTQ4NCwxMSArNDg3LDE1IEBAIGludCBtYWluKGludCBhcmdjLCBjaGFyICogY29u
-c3QgYXJndltdKQo+ICAgICAgICAgICAgICAgICAgICAgICAgfQo+Cj4gICAgICAgICAgICAgICAg
-ICAgICAgICAvKiBSZWFkIFBhZ2UgRGF0YSBmcm9tIGlucHV0IGZpbGUgKi8KPiAtICAgICAgICAg
-ICAgICAgICAgICAgICBpZiAoKGNudCA9IHJlYWQoaWZkLCB3cml0ZWJ1ZiwgcmVhZGxlbikpICE9
-IHJlYWRsZW4pIHsKPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChjbnQgPT0g
-MCkgICAvLyBFT0YKPiArICAgICAgICAgICAgICAgICAgICAgICB3aGlsZSh0aW55Y250IDwgcmVh
-ZGxlbikgewo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY250ID0gcmVhZChpZmQs
-IHdyaXRlYnVmICsgdGlueWNudCwgcmVhZGxlbiAtIHRpbnljbnQpOwo+ICsgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgaWYgKGNudCA9PSAwKSB7IC8vIEVPRgo+ICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIGJyZWFrOwo+IC0gICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgcGVycm9yICgiRmlsZSBJL08gZXJyb3Igb24gaW5wdXQgZmlsZSIpOwo+IC0gICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgZ290byBjbG9zZWFsbDsKPiArICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIH0gZWxzZSBpZiAoY250IDwgMCkgewo+ICsgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICBwZXJyb3IgKCJGaWxlIEkvTyBlcnJvciBvbiBpbnB1
-dCBmaWxlIik7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdvdG8g
-Y2xvc2VhbGw7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9Cj4gKyAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICB0aW55Y250ICs9IGNudDsKPiAgICAgICAgICAgICAgICAg
-ICAgICAgIH0KPiAgICAgICAgICAgICAgICB9IGVsc2Ugewo+ICAgICAgICAgICAgICAgICAgICAg
-ICAgaW50IHRpbnljbnQgPSAwOwo+IEBAIC01MjIsMTEgKzUyOSwxOSBAQCBpbnQgbWFpbihpbnQg
-YXJnYywgY2hhciAqIGNvbnN0IGFyZ3ZbXSkKPiAgICAgICAgICAgICAgICB9Cj4KPiAgICAgICAg
-ICAgICAgICBpZiAod3JpdGVvb2IpIHsKPiAtICAgICAgICAgICAgICAgICAgICAgICAvKiBSZWFk
-IE9PQiBkYXRhIGZyb20gaW5wdXQgZmlsZSwgZXhpdCBvbiBmYWlsdXJlICovCj4gLSAgICAgICAg
-ICAgICAgICAgICAgICAgaWYgKChjbnQgPSByZWFkKGlmZCwgb29icmVhZGJ1ZiwgbWVtaW5mby5v
-b2JzaXplKSkgIT0gbWVtaW5mby5vb2JzaXplKSB7Cj4gLSAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBwZXJyb3IgKCJGaWxlIEkvTyBlcnJvciBvbiBpbnB1dCBmaWxlIik7Cj4gLSAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICBnb3RvIGNsb3NlYWxsOwo+ICsgICAgICAgICAgICAg
-ICAgICAgICAgIGludCB0aW55Y250ID0gMDsKPiArCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
-d2hpbGUodGlueWNudCA8IHJlYWRsZW4pIHsKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIGNudCA9IHJlYWQoaWZkLCBvb2JyZWFkYnVmICsgdGlueWNudCwgbWVtaW5mby5vb2JzaXpl
-IC0gdGlueWNudCk7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAoY250ID09
-IDApIHsgLy8gRU9GCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJy
-ZWFrOwo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfSBlbHNlIGlmIChjbnQgPCAw
-KSB7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBlcnJvciAoIkZp
-bGUgSS9PIGVycm9yIG9uIGlucHV0IGZpbGUiKTsKPiArICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgZ290byBjbG9zZWFsbDsKPiArICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIH0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRpbnljbnQgKz0gY250
-Owo+ICAgICAgICAgICAgICAgICAgICAgICAgfQo+ICsKPiAgICAgICAgICAgICAgICAgICAgICAg
-IGlmICghbm9lY2MpIHsKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaW50IGksIHN0
-YXJ0LCBsZW47Cj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8qCj4gLS0KPiAxLjUu
-NC4zCj4KPiAtLQo+IEJlc3QgcmVnYXJkcywKPiBBcnRlbSBCaXR5dXRza2l5ICjQkdC40YLRjtGG
-0LrQuNC5INCQ0YDRgtGR0LwpCj4KPgoKCgotLSAKWmFhcgo=
+Hello, 
+
+I have a few devices here which have data written to NAND by WindowsCE. 
+When booting linux, all sectors which have been written to by wince are
+identified as bad:
+
+NAND device: Manufacturer ID: 0xec, Chip ID: 0xdc (Samsung NAND 512MiB 3,3V 8-bit)
+Scanning device for bad blocks
+Bad eraseblock 0 at 0x00000000
+Bad eraseblock 1 at 0x00020000
+Bad eraseblock 2 at 0x00040000
+Bad eraseblock 3 at 0x00060000
+Bad eraseblock 4 at 0x00080000
+Bad eraseblock 5 at 0x000a0000
+Bad eraseblock 6 at 0x000c0000
+Bad eraseblock 7 at 0x000e0000
+...
+Bad eraseblock 214 at 0x01ac0000
+Bad eraseblock 215 at 0x01ae0000
+Bad eraseblock 216 at 0x01b00000
+Bad eraseblock 1990 at 0x0f8c0000
+Bad eraseblock 2236 at 0x11780000
+Bad eraseblock 3257 at 0x19720000
+Bad eraseblock 3426 at 0x1ac40000
+Bad eraseblock 3687 at 0x1cce000
+
+Only the last 5 sectors are actually really bad;  the wince people told me
+their nand driver does not touch any of the factory-marked bad blocks.
+
+My question is: is there a utility of sorts which can reclaim the falsely
+marked bad sectors for linux use?
+
+Thanks,
+	Manuel Lauss
