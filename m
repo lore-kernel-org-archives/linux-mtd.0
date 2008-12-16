@@ -1,22 +1,11 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LCX3P-0005jx-OJ
-	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2008 10:21:28 +0000
-Subject: Re: [PATCH] nandwrite - handle situation when read returns less
-	bytes the expected
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Hai Zaar <haizaar@haizaar.com>
-In-Reply-To: <76d9e2a30812160040u263e275aqa04c0e4b726365cc@mail.gmail.com>
-References: <76d9e2a30812140559y6ade25c0jf55fd8a7b299e83a@mail.gmail.com>
-	<1229408910.4911.72.camel@sauron>
-	<76d9e2a30812160040u263e275aqa04c0e4b726365cc@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Date: Tue, 16 Dec 2008 12:18:34 +0200
-Message-Id: <1229422714.17960.2.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Date: Tue, 16 Dec 2008 18:09:04 +0000 (GMT)
+From: Alexey Korolev <akorolev@infradead.org>
+To: dwmw2@infradead.org, jaredeh@gmail.com
+Subject: [RFC/PATCH 0/8] LPDDR a new kind of non-volatile memoriy (take three)
+Message-ID: <alpine.LFD.2.00.0812161751390.15885@casper.infradead.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,103 +15,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2008-12-16 at 10:40 +0200, Hai Zaar wrote:
-> On Tue, Dec 16, 2008 at 8:28 AM, Artem Bityutskiy
-> <dedekind@infradead.org> wrote:
-> >
-> > Your patch does not apply. It looks like it is not against the latest
-> > mtd-utils. How about this patch?
-> Yes, my patch is against mtd-utils-1.2.0. Yours is surely better since
-> it covers oob reading as well.
+Hi
 
-Would be nice if you tried my patch and confirmed it works, because I
-did not test it.
+This is a third post of LPDDR patches. In this serie you may find drivers
+for new kind of flash memory. Comparing to version 2 changes are not so 
+large (64 bit API warnings were fixed). All patches could be taken from
+http://git.infradead.org/users/akorolev/lpddr.git
 
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Subject: [PATCH] nandwrite: correct data reading
 
-The "read" syscall does not necessarily return all the requested
-data, in which case the caller has to try again and read more.
-Take this into account when reading input data.
+I'd like to present a  set of patches which introduces support of new kind 
+of non-volatile memory intended to work on devices with LPDDR bus.
+LPDDR non voliatile memories behavior is described in standard
+http://www.jedec.org/Home/press/press_release/07-NV1-Brelease11-29-07.pdf
 
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- nandwrite.c |   32 +++++++++++++++++++++-----------
- 1 files changed, 21 insertions(+), 11 deletions(-)
+LPDDR non volatile memory interface is intended to solve the same tasks
+as CFI for platforms with LPDDR bus.
+The main difference between original CFI chips and non-CFI LPDDR chips
+is related to existence of the overlay window (PFOW). All commands, device
+information, chip status should be transfered/recieved through the PFOW.
 
-diff --git a/nandwrite.c b/nandwrite.c
-index fc23e85..b4bc871 100644
---- a/nandwrite.c
-+++ b/nandwrite.c
-@@ -262,7 +262,6 @@ int main(int argc, char * const argv[])
- 	struct nand_oobinfo old_oobinfo;
-=20
- 	process_options(argc, argv);
--
- 	erase_buffer(oobbuf, sizeof(oobbuf));
-=20
- 	if (pad && writeoob) {
-@@ -438,6 +437,8 @@ int main(int argc, char * const argv[])
- 	 * length or zero.
- 	 */
- 	while (imglen && (mtdoffset < meminfo.size)) {
-+		int tinycnt =3D 0;
-+
- 		// new eraseblock , check for bad block(s)
- 		// Stay in the loop to be sure if the mtdoffset changes because
- 		// of a bad block, that the next block that will be written to
-@@ -484,15 +485,17 @@ int main(int argc, char * const argv[])
- 			}
-=20
- 			/* Read Page Data from input file */
--			if ((cnt =3D read(ifd, writebuf, readlen)) !=3D readlen) {
--				if (cnt =3D=3D 0)	// EOF
-+			while(tinycnt < readlen) {
-+				cnt =3D read(ifd, writebuf + tinycnt, readlen - tinycnt);
-+				if (cnt =3D=3D 0) { // EOF
- 					break;
--				perror ("File I/O error on input file");
--				goto closeall;
-+				} else if (cnt < 0) {
-+					perror ("File I/O error on input file");
-+					goto closeall;
-+				}
-+				tinycnt +=3D cnt;
- 			}
- 		} else {
--			int tinycnt =3D 0;
--
- 			while(tinycnt < readlen) {
- 				cnt =3D read(ifd, writebuf + tinycnt, readlen - tinycnt);
- 				if (cnt =3D=3D 0) { // EOF
-@@ -522,11 +525,18 @@ int main(int argc, char * const argv[])
- 		}
-=20
- 		if (writeoob) {
--			/* Read OOB data from input file, exit on failure */
--			if ((cnt =3D read(ifd, oobreadbuf, meminfo.oobsize)) !=3D meminfo.oobsi=
-ze) {
--				perror ("File I/O error on input file");
--				goto closeall;
-+			tinycnt =3D 0;
-+			while(tinycnt < readlen) {
-+				cnt =3D read(ifd, oobreadbuf + tinycnt, meminfo.oobsize - tinycnt);
-+				if (cnt =3D=3D 0) { // EOF
-+					break;
-+				} else if (cnt < 0) {
-+					perror ("File I/O error on input file");
-+					goto closeall;
-+				}
-+				tinycnt +=3D cnt;
- 			}
-+
- 			if (!noecc) {
- 				int i, start, len;
- 				/*
---=20
-1.5.4.3
+For eaxmple if we are doing erase operation chip will be in
+read array mode (no in status mode) and chip status can be recieved by
+reading the particular field inside the PFOW. It should bring nice
+features in future; as well as grouped and well extendable device
+capabilities list based on new standard of quinfo records.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+The only serious disadvantage of having overlay window is related to
+platform dependency as PFOW could be opened or closed by LPDDR memory 
+controller which implementation depends on platform.
+
+Our primary goal was to develop platform independed code. So we decided
+to place place memory controller configuration and setting up PFOW window 
+on shoulders of bootloader.
+
+In other aspects LPDDR implementation is close to NOR flash chips.
+LPDDR memory performs similar functions as CFI chips. As legacy CFI
+flashes LPDDR chips needs to be mapped into memory region.
+
+Special thanks to
+Roman Borisov for intial enabling,
+Vasilliy Leonenko for help in development and validation
+Jared Hulbert for code reviews and good advices
+
+ drivers/mtd/Kconfig         |    2 ++
+ drivers/mtd/Makefile        |    2 +-
+ drivers/mtd/maps/Kconfig    |    4 ++--
+ drivers/mtd/maps/physmap.c  |    8 +++++++-
+ include/linux/mtd/map.h     |    1 +
+ include/linux/mtd/physmap.h |    1 +
+ drivers/mtd/lpddr/Kconfig       |   22 ++
+ drivers/mtd/lpddr/Makefile      |    6 +
+ drivers/mtd/lpddr/lpddr_cmds.c  |  796 +++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/lpddr/qinfo_probe.c |  255 +++++++++++++
+ include/linux/mtd/pfow.h        |  159 ++++++++
+ include/linux/mtd/qinfo.h       |   91 +++++
+ 12 files changed, 1343 insertions(+), 4 deletions(-)
