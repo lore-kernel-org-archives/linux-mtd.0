@@ -1,19 +1,23 @@
 Received: from henry.synapsedev.com ([66.147.194.230] helo=henry.synapse.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LCgjy-00041I-5G
-	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2008 20:42:02 +0000
+	id 1LCgyG-0005wv-SS
+	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2008 20:56:49 +0000
 Received: from friendly.synapse.com (localhost.localdomain [127.0.0.1])
-	by henry.synapse.com (Postfix) with ESMTP id A4B39D2C1CF
+	by henry.synapse.com (Postfix) with ESMTP id 0B0A5D2C1CF
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 16 Dec 2008 12:18:45 -0800 (PST)
+	Tue, 16 Dec 2008 12:56:48 -0800 (PST)
 Received: from zealous.synapse.com ([10.75.2.7])
 	by friendly.synapse.com with smtp (Exim 4.69)
-	(envelope-from <elf@synapse.com>) id 1LCgNQ-0004bh-Kr
-	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2008 12:18:45 -0800
+	(envelope-from <elf@synapse.com>) id 1LCgyF-0006Uo-0X
+	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2008 12:56:48 -0800
 From: "Marc Singer" <elf@synapse.com>
-Date: Tue, 16 Dec 2008 12:18:47 -0800
+Date: Tue, 16 Dec 2008 12:56:50 -0800
 To: linux-mtd@lists.infradead.org
-Message-ID: <20081216201847.GA13482@zealous.synapse.com>
+Subject: [PATCH] Revised the detection for broken boot-region detection.
+	MACRONIX parts have a custom implementation of the fixup.  AMD
+	implemtation restore to original version that has worked fine since
+	2001.
+Message-ID: <20081216205650.GA13729@zealous.synapse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -25,13 +29,6 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-
->From 7d97bd20cdee6fff79595dbfb2f24da6a840d02d Mon Sep 17 00:00:00 2001
-From: Marc Singer <elf@zealous.synapse.com>
-Date: Tue, 16 Dec 2008 12:14:42 -0800
-Subject: [PATCH] Revised the detection for broken boot-region detection.  MACRONIX
- parts have a custom implementation of the fixup.  AMD implemtation
- restore to original version that has worked fine since 2001.
 
 Signed-off-by: Marc Singer <elf@zealous.synapse.com>
 ---
