@@ -1,22 +1,23 @@
-Received: from wf-out-1314.google.com ([209.85.200.171])
+Received: from rv-out-0708.google.com ([209.85.198.240])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LCVsF-0005LG-3q
-	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2008 09:05:51 +0000
-Received: by wf-out-1314.google.com with SMTP id 28so2938709wfc.24
+	id 1LCVu4-0007tf-RL
+	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2008 09:07:45 +0000
+Received: by rv-out-0708.google.com with SMTP id b17so3160937rvf.42
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 16 Dec 2008 01:05:49 -0800 (PST)
-Message-ID: <8bd0f97a0812160105l292b57b1v77ad3b4314512942@mail.gmail.com>
-Date: Tue, 16 Dec 2008 04:05:49 -0500
+	Tue, 16 Dec 2008 01:07:44 -0800 (PST)
+Message-ID: <8bd0f97a0812160107o7a741630jc7c24ae63700a369@mail.gmail.com>
+Date: Tue, 16 Dec 2008 04:07:44 -0500
 From: "Mike Frysinger" <vapier.adi@gmail.com>
-To: "Manuel Lauss" <mano@roarinelk.homelinux.net>
-Subject: Re: NAND "low-level format"?
-In-Reply-To: <20081216085501.GA7866@roarinelk.homelinux.net>
+To: dedekind@infradead.org
+Subject: Re: [PATCH] unify all common build system parts
+In-Reply-To: <1229066345.13686.413.camel@sauron>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <20081216085501.GA7866@roarinelk.homelinux.net>
-Cc: linux-mtd@lists.infradead.org
+References: <1228944506-5792-1-git-send-email-vapier@gentoo.org>
+	<1229066345.13686.413.camel@sauron>
+Cc: linux-mtd@lists.infradead.org, Mike Frysinger <vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,11 +27,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 16, 2008 at 03:55, Manuel Lauss wrote:
-> My question is: is there a utility of sorts which can reclaim the falsely
-> marked bad sectors for linux use?
+On Fri, Dec 12, 2008 at 02:19, Artem Bityutskiy wrote:
+> On Wed, 2008-12-10 at 16:28 -0500, Mike Frysinger wrote:
+>> Rather than duplicating the same thing over and over in every Makefile, move
+>> it all to common.mk.
+>>
+>> Other things fixed here:
+>>  - doing subdirs in parallel
+>>  - fix src!=build compiling in subdirs
+>>
+>> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+>
+> I've tried do test your patch and found an issue.
+>
+> $ make
+> ... build is ok ...
+> $ make install DESTDIR=/home/dedekind/tmp/
+> ... error ...
+>
+> Could you please take a look at this?
 
-there prob is a nand util to do it under Linux (i'd d/l mtd-utils and
-build it up and see what you get), but if you're using u-boot, you can
-use "nand scrub"
+i havent forgotten this ... it's just that the machine i normally do
+work on is in an area that was hit by an ice storm and has been w/out
+power for a couple of days now ... hopefully i should have an update
+for you by the end of the week assuming trees are cleared & power
+lines fixed ...
 -mike
