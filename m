@@ -1,19 +1,32 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LCTTb-0003Ky-BQ
-	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2008 06:32:15 +0000
-Subject: Re: [PATCH] nandwrite - handle situation when read returns less
-	bytes the expected
+	id 1LCTaM-0004AX-4I
+	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2008 06:39:14 +0000
+Subject: Re: [PATCH 4/4] UBI WL-Subsys: Improvement in prot tree
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Hai Zaar <haizaar@codefidence.com>
-In-Reply-To: <76d9e2a30812140559y6ade25c0jf55fd8a7b299e83a@mail.gmail.com>
-References: <76d9e2a30812140559y6ade25c0jf55fd8a7b299e83a@mail.gmail.com>
+To: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
+In-Reply-To: <1229395691.2691.18.camel@localhost.localdomain>
+References: <1228823163.2753.18.camel@localhost.localdomain>
+	<1228827803.13686.189.camel@sauron>
+	<1228884752.3225.80.camel@localhost.localdomain>
+	<1228898668.13686.223.camel@sauron>
+	<1228913251.3655.10.camel@localhost.localdomain>
+	<1228931859.13686.350.camel@sauron>
+	<1228981865.2702.9.camel@localhost.localdomain>
+	<1229022841.13686.384.camel@sauron>
+	<1229332169.5306.1.camel@localhost.localdomain>
+	<1229332781.13686.447.camel@sauron>
+	<1229343610.2687.52.camel@localhost.localdomain>
+	<1229343746.4911.2.camel@sauron>
+	<1229347894.2687.56.camel@localhost.localdomain>
+	<1229356809.4911.57.camel@sauron>
+	<1229395691.2691.18.camel@localhost.localdomain>
 Content-Type: text/plain; charset=utf-8
-Date: Tue, 16 Dec 2008 08:28:30 +0200
-Message-Id: <1229408910.4911.72.camel@sauron>
+Date: Tue, 16 Dec 2008 08:36:31 +0200
+Message-Id: <1229409391.4911.75.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,104 +37,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2008-12-14 at 15:59 +0200, Hai Zaar wrote:
-> Good day!
-> I've found a bug: nandwrite does not handle the situation when read
-> syscall returns less bytes when expected. Instead of requesting more
-> input, nandwrite just aborts with error.
-> The bug is especially triggered when input comes from stdin[1] which
-> is filled from remote host.
+On Tue, 2008-12-16 at 10:48 +0800, xiaochuan-xu wrote:
+> >From e43d4e5cbaf1adb3af680a6dec53c142c68014ed Mon Sep 17 00:00:00 2001
+> From: Xiaochuan-Xu <xiaochuan-xu@cqu.edu.cn>
+> Date: Tue, 16 Dec 2008 10:44:07 +0800
+> Subject: [PATCH] delete idle varialbe abs_ec
 >=20
-> [1] http://lists.infradead.org/pipermail/linux-mtd/2008-September/022913.=
-html.
-> BTW - is it going to be applied?
+> @wl->abs_ec is useless any more in the Simplify Protection
+> PEB Queue implementation.
 >=20
-> P.S. I'm not on the list, so please CC me.
+> Signed-off-by: Xiaochuan-Xu <xiaochuan-xu@cqu.edu.cn>
 
-Your patch does not apply. It looks like it is not against the latest
-mtd-utils. How about this patch?
+Applied, committed using git-commit -a --amend (changed your
+original patch in-place).
 
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Date: Tue, 16 Dec 2008 10:02:16 +0200
-Subject: [PATCH] nandwrite: correct data reading
-
-The "read" syscall does not necessarily return all the requested
-data, in which case the caller has to try again and read more.
-Take this into account when reading input data.
-
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- nandwrite.c |   31 +++++++++++++++++++++++--------
- 1 files changed, 23 insertions(+), 8 deletions(-)
-
-diff --git a/nandwrite.c b/nandwrite.c
-index fc23e85..0b2a9ee 100644
---- a/nandwrite.c
-+++ b/nandwrite.c
-@@ -260,6 +260,7 @@ int main(int argc, char * const argv[])
- 	int ret, readlen;
- 	int oobinfochanged =3D 0;
- 	struct nand_oobinfo old_oobinfo;
-+	int readcnt =3D 0;
-=20
- 	process_options(argc, argv);
-=20
-@@ -477,6 +478,8 @@ int main(int argc, char * const argv[])
- 		readlen =3D meminfo.writesize;
-=20
- 		if (ifd !=3D STDIN_FILENO) {
-+			int tinycnt =3D 0;
-+
- 			if (pad && (imglen < readlen))
- 			{
- 				readlen =3D imglen;
-@@ -484,11 +487,15 @@ int main(int argc, char * const argv[])
- 			}
-=20
- 			/* Read Page Data from input file */
--			if ((cnt =3D read(ifd, writebuf, readlen)) !=3D readlen) {
--				if (cnt =3D=3D 0)	// EOF
-+			while(tinycnt < readlen) {
-+				cnt =3D read(ifd, writebuf + tinycnt, readlen - tinycnt);
-+				if (cnt =3D=3D 0) { // EOF
- 					break;
--				perror ("File I/O error on input file");
--				goto closeall;
-+				} else if (cnt < 0) {
-+					perror ("File I/O error on input file");
-+					goto closeall;
-+				}
-+				tinycnt +=3D cnt;
- 			}
- 		} else {
- 			int tinycnt =3D 0;
-@@ -522,11 +529,19 @@ int main(int argc, char * const argv[])
- 		}
-=20
- 		if (writeoob) {
--			/* Read OOB data from input file, exit on failure */
--			if ((cnt =3D read(ifd, oobreadbuf, meminfo.oobsize)) !=3D meminfo.oobsi=
-ze) {
--				perror ("File I/O error on input file");
--				goto closeall;
-+			int tinycnt =3D 0;
-+
-+			while(tinycnt < readlen) {
-+				cnt =3D read(ifd, oobreadbuf + tinycnt, meminfo.oobsize - tinycnt);
-+				if (cnt =3D=3D 0) { // EOF
-+					break;
-+				} else if (cnt < 0) {
-+					perror ("File I/O error on input file");
-+					goto closeall;
-+				}
-+				tinycnt +=3D cnt;
- 			}
-+
- 			if (!noecc) {
- 				int i, start, len;
- 				/*
---=20
-1.5.4.3
+Thanks.
 
 --=20
 Best regards,
