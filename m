@@ -1,8 +1,8 @@
 Received: from [202.202.0.36] (helo=cqu.edu.cn)
 	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LCPl7-0001cf-4l
-	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2008 02:34:05 +0000
-Message-ID: <429394196.23259@cqu.edu.cn>
+	id 1LCPzM-0003MY-2R
+	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2008 02:48:48 +0000
+Message-ID: <429395560.30413@cqu.edu.cn>
 Subject: Re: [PATCH 4/4] UBI WL-Subsys: Improvement in prot tree
 From: xiaochuan-xu <xiaochuan-xu@cqu.edu.cn>
 To: dedekind@infradead.org
@@ -22,8 +22,8 @@ References: <1228823163.2753.18.camel@localhost.localdomain>
 	<1229347894.2687.56.camel@localhost.localdomain>
 	<1229356809.4911.57.camel@sauron>
 Content-Type: text/plain
-Date: Tue, 16 Dec 2008 10:33:08 +0800
-Message-Id: <1229394788.2691.14.camel@localhost.localdomain>
+Date: Tue, 16 Dec 2008 10:48:11 +0800
+Message-Id: <1229395691.2691.18.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd <linux-mtd@lists.infradead.org>
@@ -36,76 +36,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-On Mon, 2008-12-15 at 18:00 +0200, Artem Bityutskiy wrote:
-> Amended and pushed to ubi-2.6.git tree.
-Thanks!
-
-These two sentences should switch in the 'ubi_wl_get_peb()' function:
-
--	prot_queue_add(ubi, e);
- 	dbg_wl("PEB %d EC %d", e->pnum, e->ec);
-+	prot_queue_add(ubi, e);
-
-"get" message should print before "add to prot-queue",
-which is more descriptive IMO.
-
-
->From 83811c383bf70039aae53e1bbc7311899ea4abcd Mon Sep 17 00:00:00 2001
+>From e43d4e5cbaf1adb3af680a6dec53c142c68014ed Mon Sep 17 00:00:00 2001
 From: Xiaochuan-Xu <xiaochuan-xu@cqu.edu.cn>
-Date: Tue, 16 Dec 2008 10:10:20 +0800
-Subject: [PATCH] several comments amendment
+Date: Tue, 16 Dec 2008 10:44:07 +0800
+Subject: [PATCH] delete idle varialbe abs_ec
+
+@wl->abs_ec is useless any more in the Simplify Protection
+PEB Queue implementation.
 
 Signed-off-by: Xiaochuan-Xu <xiaochuan-xu@cqu.edu.cn>
 ---
- drivers/mtd/ubi/wl.c |    7 +++----
- 1 files changed, 3 insertions(+), 4 deletions(-)
+ drivers/mtd/ubi/ubi.h |    2 --
+ drivers/mtd/ubi/wl.c  |    1 -
+ 2 files changed, 0 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index a4b921b..4a8ec48 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -328,7 +328,6 @@ struct ubi_wl_entry;
+  * @wl_scheduled: non-zero if the wear-leveling was scheduled
+  * @lookuptbl: a table to quickly find a &struct ubi_wl_entry object for any
+  *             physical eraseblock
+- * @abs_ec: absolute erase counter
+  * @move_from: physical eraseblock from where the data is being moved
+  * @move_to: physical eraseblock where the data is being moved to
+  * @move_to_put: if the "to" PEB was put
+@@ -410,7 +409,6 @@ struct ubi_device {
+ 	struct rw_semaphore work_sem;
+ 	int wl_scheduled;
+ 	struct ubi_wl_entry **lookuptbl;
+-	unsigned long long abs_ec;
+ 	struct ubi_wl_entry *move_from;
+ 	struct ubi_wl_entry *move_to;
+ 	int move_to_put;
 diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index d50060f..4fe3f25 100644
+index 4fe3f25..0b5a595 100644
 --- a/drivers/mtd/ubi/wl.c
 +++ b/drivers/mtd/ubi/wl.c
-@@ -56,7 +56,7 @@
-  * As it was said, for the UBI sub-system all physical eraseblocks are either
-  * "free" or "used". Free eraseblock are kept in the @wl->free RB-tree, while
-  * used eraseblocks are kept in @wl->used or @wl->scrub RB-trees, or in
-- * (temporarily) in the @wl->pq queue.
-+ * (temporarily) the @wl->pq queue.
-  *
-  * When the WL sub-system returns a physical eraseblock, the physical
-  * eraseblock is protected from being moved for some "time". For this reason,
-@@ -143,7 +143,6 @@
-  * struct ubi_work - UBI work description data structure.
-  * @list: a link in the list of pending works
-  * @func: worker function
-- * @priv: private data of the worker function
-  * @e: physical eraseblock to erase
-  * @torture: if the physical eraseblock has to be tortured
-  *
-@@ -455,8 +454,8 @@ retry:
- 	 * be protected from being moved for some time.
- 	 */
- 	rb_erase(&e->u.rb, &ubi->free);
--	prot_queue_add(ubi, e);
- 	dbg_wl("PEB %d EC %d", e->pnum, e->ec);
-+	prot_queue_add(ubi, e);
- 	spin_unlock(&ubi->wl_lock);
- 	return e->pnum;
- }
-@@ -1223,7 +1222,7 @@ int ubi_wl_flush(struct ubi_device *ubi)
- 	int err;
+@@ -982,7 +982,6 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
+ 		kfree(wl_wrk);
  
- 	/*
--	 * Erase while the pending works queue is not empty, but not more then
-+	 * Erase while the pending works queue is not empty, but not more than
- 	 * the number of currently pending works.
- 	 */
- 	dbg_wl("flush (%d pending works)", ubi->works_count);
+ 		spin_lock(&ubi->wl_lock);
+-		ubi->abs_ec += 1;
+ 		wl_tree_add(e, &ubi->free);
+ 		spin_unlock(&ubi->wl_lock);
+ 
 -- 
 1.5.3.2
 
 
 
+On Mon, 2008-12-15 at 18:00 +0200, Artem Bityutskiy wrote:
+> Amended and pushed to ubi-2.6.git tree. Please, check.
 -- 
 Yours sincerely
 xiaochuan-xu(cqu.edu.cn)
