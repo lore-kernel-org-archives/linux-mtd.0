@@ -1,20 +1,20 @@
-Received: from rv-out-0708.google.com ([209.85.198.243])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LBrV1-0004yl-ED
-	for linux-mtd@lists.infradead.org; Sun, 14 Dec 2008 13:59:15 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so2257608rvf.42
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 14 Dec 2008 05:59:09 -0800 (PST)
-Message-ID: <76d9e2a30812140559y6ade25c0jf55fd8a7b299e83a@mail.gmail.com>
-Date: Sun, 14 Dec 2008 15:59:09 +0200
-From: "Hai Zaar" <haizaar@codefidence.com>
-Sender: haizaar@haizaar.com
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] nandwrite - handle situation when read returns less bytes the
-	expected
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_10270_14342493.1229263149434"
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1LCTTb-0003Ky-BQ
+	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2008 06:32:15 +0000
+Subject: Re: [PATCH] nandwrite - handle situation when read returns less
+	bytes the expected
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Hai Zaar <haizaar@codefidence.com>
+In-Reply-To: <76d9e2a30812140559y6ade25c0jf55fd8a7b299e83a@mail.gmail.com>
+References: <76d9e2a30812140559y6ade25c0jf55fd8a7b299e83a@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 16 Dec 2008 08:28:30 +0200
+Message-Id: <1229408910.4911.72.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,51 +24,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-------=_Part_10270_14342493.1229263149434
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On Sun, 2008-12-14 at 15:59 +0200, Hai Zaar wrote:
+> Good day!
+> I've found a bug: nandwrite does not handle the situation when read
+> syscall returns less bytes when expected. Instead of requesting more
+> input, nandwrite just aborts with error.
+> The bug is especially triggered when input comes from stdin[1] which
+> is filled from remote host.
+>=20
+> [1] http://lists.infradead.org/pipermail/linux-mtd/2008-September/022913.=
+html.
+> BTW - is it going to be applied?
+>=20
+> P.S. I'm not on the list, so please CC me.
 
-Good day!
-I've found a bug: nandwrite does not handle the situation when read
-syscall returns less bytes when expected. Instead of requesting more
-input, nandwrite just aborts with error.
-The bug is especially triggered when input comes from stdin[1] which
-is filled from remote host.
+Your patch does not apply. It looks like it is not against the latest
+mtd-utils. How about this patch?
 
-[1] http://lists.infradead.org/pipermail/linux-mtd/2008-September/022913.html.
-BTW - is it going to be applied?
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Date: Tue, 16 Dec 2008 10:02:16 +0200
+Subject: [PATCH] nandwrite: correct data reading
 
-P.S. I'm not on the list, so please CC me.
--- 
-Zaar
+The "read" syscall does not necessarily return all the requested
+data, in which case the caller has to try again and read more.
+Take this into account when reading input data.
 
-------=_Part_10270_14342493.1229263149434
-Content-Type: text/x-diff; name=mtd-utils-1.2.0-all-read-fix.patch
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fopr1ft90
-Content-Disposition: attachment;
- filename=mtd-utils-1.2.0-all-read-fix.patch
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ nandwrite.c |   31 +++++++++++++++++++++++--------
+ 1 files changed, 23 insertions(+), 8 deletions(-)
 
-cmVhZCBzeXNjYWxsIGNhbiByZXR1cm4gbGVzcyBieXRlcyB0aGVuIHJlcXVlc3RlZCAtIGhhbmRs
-ZSB0aGlzLgpUaGlzIGJ1ZyBpcyB0cmlnZ2VyZWQgd2hlbiByZWFkaW5nIGZyb20gc3RkaW4gdGhh
-dCBjb21lcyBmcm9tIHJlbW90ZSBob3N0CgpBdXRob3I6IEhhaSBaYWFyIDxoYWl6YWFyQGhhaXph
-YXIuY29tPgoKLS0tIG10ZC11dGlscy0xLjIuMC9uYW5kd3JpdGUuYy5vcmlnCTIwMDgtMTItMTQg
-MTQ6NTY6MTEuMDAwMDAwMDAwICswMjAwCisrKyBtdGQtdXRpbHMtMS4yLjAvbmFuZHdyaXRlLmMJ
-MjAwOC0xMi0xNCAxNToxMTo1Ni4wMDAwMDAwMDAgKzAyMDAKQEAgLTIxOCw2ICsyMTgsNyBAQAog
-CWludCByZXQsIHJlYWRsZW47CiAJaW50IG9vYmluZm9jaGFuZ2VkID0gMDsKIAlzdHJ1Y3QgbmFu
-ZF9vb2JpbmZvIG9sZF9vb2JpbmZvOworCWludCByZWFkY250ID0gMDsKIAogCXByb2Nlc3Nfb3B0
-aW9ucyhhcmdjLCBhcmd2KTsKIApAQCAtNDA1LDEyICs0MDYsMjIgQEAKIAkJfQogCiAJCS8qIFJl
-YWQgUGFnZSBEYXRhIGZyb20gaW5wdXQgZmlsZSAqLwotCQlpZiAoKGNudCA9IHJlYWQoaWZkLCB3
-cml0ZWJ1ZiwgcmVhZGxlbikpICE9IHJlYWRsZW4pIHsKLQkJCWlmIChjbnQgPT0gMCkJLy8gRU9G
-Ci0JCQkJYnJlYWs7Ci0JCQlwZXJyb3IgKCJGaWxlIEkvTyBlcnJvciBvbiBpbnB1dCBmaWxlIik7
-Ci0JCQlnb3RvIGNsb3NlYWxsOworCQlyZWFkY250ID0gMDsKKwkJd2hpbGUgKHJlYWRjbnQgPCBy
-ZWFkbGVuKSB7CisJCQlpZiAoKGNudCA9IHJlYWQoaWZkLCB3cml0ZWJ1ZiArIHJlYWRjbnQsIHJl
-YWRsZW4gLSByZWFkY250KSkgPCAwKSB7CisJCQkJcGVycm9yICgiRmlsZSBJL08gZXJyb3Igb24g
-aW5wdXQgZmlsZSIpOworCQkJCWdvdG8gY2xvc2VhbGw7CisJCQl9IGVsc2UgeworCQkJCWlmICgo
-Y250ID09IDApICYmIChyZWFkY250ID09IDApKSB7CS8vIEVPRgorCQkJCQlicmVhazsKKwkJCQl9
-IGVsc2UgeworCQkJCQlyZWFkY250ICs9IGNudDsKKwkJCQl9CisJCQl9CisKIAkJfQorCQlpZiAo
-KGNudCA9PSAwKSAmJiAocmVhZGNudCA9PSAwKSkJLy8gRU9GCisJCQlicmVhazsKIAogCQlpZiAo
-d3JpdGVvb2IpIHsKIAkJCS8qIFJlYWQgT09CIGRhdGEgZnJvbSBpbnB1dCBmaWxlLCBleGl0IG9u
-IGZhaWx1cmUgKi8K
-------=_Part_10270_14342493.1229263149434--
+diff --git a/nandwrite.c b/nandwrite.c
+index fc23e85..0b2a9ee 100644
+--- a/nandwrite.c
++++ b/nandwrite.c
+@@ -260,6 +260,7 @@ int main(int argc, char * const argv[])
+ 	int ret, readlen;
+ 	int oobinfochanged =3D 0;
+ 	struct nand_oobinfo old_oobinfo;
++	int readcnt =3D 0;
+=20
+ 	process_options(argc, argv);
+=20
+@@ -477,6 +478,8 @@ int main(int argc, char * const argv[])
+ 		readlen =3D meminfo.writesize;
+=20
+ 		if (ifd !=3D STDIN_FILENO) {
++			int tinycnt =3D 0;
++
+ 			if (pad && (imglen < readlen))
+ 			{
+ 				readlen =3D imglen;
+@@ -484,11 +487,15 @@ int main(int argc, char * const argv[])
+ 			}
+=20
+ 			/* Read Page Data from input file */
+-			if ((cnt =3D read(ifd, writebuf, readlen)) !=3D readlen) {
+-				if (cnt =3D=3D 0)	// EOF
++			while(tinycnt < readlen) {
++				cnt =3D read(ifd, writebuf + tinycnt, readlen - tinycnt);
++				if (cnt =3D=3D 0) { // EOF
+ 					break;
+-				perror ("File I/O error on input file");
+-				goto closeall;
++				} else if (cnt < 0) {
++					perror ("File I/O error on input file");
++					goto closeall;
++				}
++				tinycnt +=3D cnt;
+ 			}
+ 		} else {
+ 			int tinycnt =3D 0;
+@@ -522,11 +529,19 @@ int main(int argc, char * const argv[])
+ 		}
+=20
+ 		if (writeoob) {
+-			/* Read OOB data from input file, exit on failure */
+-			if ((cnt =3D read(ifd, oobreadbuf, meminfo.oobsize)) !=3D meminfo.oobsi=
+ze) {
+-				perror ("File I/O error on input file");
+-				goto closeall;
++			int tinycnt =3D 0;
++
++			while(tinycnt < readlen) {
++				cnt =3D read(ifd, oobreadbuf + tinycnt, meminfo.oobsize - tinycnt);
++				if (cnt =3D=3D 0) { // EOF
++					break;
++				} else if (cnt < 0) {
++					perror ("File I/O error on input file");
++					goto closeall;
++				}
++				tinycnt +=3D cnt;
+ 			}
++
+ 			if (!noecc) {
+ 				int i, start, len;
+ 				/*
+--=20
+1.5.4.3
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
