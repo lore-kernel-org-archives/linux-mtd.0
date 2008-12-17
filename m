@@ -1,15 +1,15 @@
 Received: from smtp6.centerbeam.com ([64.95.134.54])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LCjp4-0002BU-5G
-	for linux-mtd@lists.infradead.org; Tue, 16 Dec 2008 23:59:30 +0000
+	id 1LCjrF-0006xo-Ht
+	for linux-mtd@lists.infradead.org; Wed, 17 Dec 2008 00:01:45 +0000
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Subject: 
-Date: Tue, 16 Dec 2008 15:59:29 -0800
-Message-ID: <705901BA1DF18142AB3DE716DDF374F801FBD2F0@CBA0E2K03.CBA0.centerbeam.com>
+Subject: how does 'mv' command work in jffs2/NAND
+Date: Tue, 16 Dec 2008 16:01:45 -0800
+Message-ID: <705901BA1DF18142AB3DE716DDF374F801FBD2F5@CBA0E2K03.CBA0.centerbeam.com>
 From: "Manu Rao" <MRao@AlienTechnology.com>
 To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,6 +20,7 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+
 
 We have an embedded system with ARM9, running linux 2.6.22 and jffs2 on
 Samsung nand.
@@ -44,3 +45,4 @@ Any pointers appreciated.
 Thanks
 Manu Rao
 San Jose, CA
+PS: Please ignore previous posting without subject.
