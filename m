@@ -1,14 +1,22 @@
-Received: from web58902.mail.re1.yahoo.com ([66.196.100.231])
+Received: from smtp118.sbc.mail.sp1.yahoo.com ([69.147.64.91])
 	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LD03h-0000xR-Cl
-	for linux-mtd@lists.infradead.org; Wed, 17 Dec 2008 17:19:41 +0000
-Date: Wed, 17 Dec 2008 09:19:40 -0800 (PST)
-From: Philip Rakity <prakity@yahoo.com>
-Subject: UBIFS FAQ Questions: minor edits
-To: linux-mtd@lists.infradead.org
+	id 1LD0Uq-0005ie-Q4
+	for linux-mtd@lists.infradead.org; Wed, 17 Dec 2008 17:47:45 +0000
+From: David Brownell <david-b@pacbell.net>
+To: Nicolas Pitre <nico@cam.org>
+Subject: Re: [PATCH] MTD: fix dataflash 64-bit divisions
+Date: Wed, 17 Dec 2008 09:47:38 -0800
+References: <1229532627.17960.37.camel@sauron>
+	<alpine.LFD.2.00.0812171205290.30035@xanadu.home>
+In-Reply-To: <alpine.LFD.2.00.0812171205290.30035@xanadu.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Message-ID: <425263.69282.qm@web58902.mail.re1.yahoo.com>
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200812170947.38709.david-b@pacbell.net>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,15 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-a) Order backwards ?
-How to create an UBIFS image?
+On Wednesday 17 December 2008, Nicolas Pitre wrote:
+> On Wed, 17 Dec 2008, Artem Bityutskiy wrote:
+> 
+> > -	if ((instr->addr + instr->len) > mtd->size
+> > -			|| (instr->len % priv->page_size) != 0
+> > -			|| (instr->addr % priv->page_size) != 0)
+> > +	if (instr->addr + instr->len > mtd->size)
+> > +		return -EINVAL;
+> > +	tmp = instr->len;
+> > +	if (do_div(tmp, priv->page_size))
+> > +		return -EINVAL;
+> > +	tmp = instr->addr;
+> > +	if (do_div(tmp, priv->page_size))
+> >  		return -EINVAL;
+> 
+> Is it possible to have priv->page_size not a power of two?
 
-	* mkfs.ubifs which creates UBIFS images;
-	* ubinize which creates UBIFS images out of UBI images.Isn't this the other way around ?  uninize creates UBI images from UBIFS images ?
+Yes, and in fact it's probably more common to have some
+extra bytes at the end of a page.  See the table right
+before dataflash_probe(); the one before jedec_probe()
+lists parts that can be made to use binary page sizes.
 
-
-b) please add a sentence or two saying how to burn ubi images.  something like
-The ubi image may be burn into flash using the ubiformat utility (see here) or by a commercial flash burner.
-
-
-      
+If these were NAND chips you'd think of it as OOB area ...
+except it's addressible the normal way.  In particular,
+the common "read all bytes starting at page N" operation
+include those extra bytes.  And you *do* want to use
+those primitives, to avoid a roundtrip over SPI for each
+1056 or 528 (etc) page.
