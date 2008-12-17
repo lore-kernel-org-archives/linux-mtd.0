@@ -1,23 +1,21 @@
-Received: from az33egw02.freescale.net ([192.88.158.103])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LD3Ys-0008R6-Pf
-	for linux-mtd@lists.infradead.org; Wed, 17 Dec 2008 21:04:08 +0000
-Date: Wed, 17 Dec 2008 13:01:54 -0800 (PST)
-From: Trent Piepho <tpiepho@freescale.com>
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PATCH] POWERPC: MTD: Add cached map support to physmap_of MTD
-	driver
-In-Reply-To: <1229417816.7319.4.camel@pasglop>
-Message-ID: <Pine.LNX.4.64.0812171211390.28806@t2.domain.actdsltmp>
-References: <1229365518-20538-1-git-send-email-tpiepho@freescale.com>
-	<18758.62580.416920.482077@cargo.ozlabs.ibm.com>
-	<Pine.LNX.4.64.0812151653050.28806@t2.domain.actdsltmp>
-	<1229417816.7319.4.camel@pasglop>
+Received: from smtp7-g19.free.fr ([212.27.42.64])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1LD4IE-0006Dj-SS
+	for linux-mtd@lists.infradead.org; Wed, 17 Dec 2008 21:50:59 +0000
+Message-ID: <49497440.7050204@free.fr>
+Date: Wed, 17 Dec 2008 22:50:56 +0100
+From: Chris Moore <moore@free.fr>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linuxppc-dev@ozlabs.org, Paul Mackerras <paulus@samba.org>,
-	Trent Piepho <xyzzy@speakeasy.org>,
-	MTD mailing list <linux-mtd@lists.infradead.org>
+To: Marc Singer <elf@synapse.com>
+Subject: Re: [PATCH] Revised the detection for broken boot-region detection.
+	MACRONIX parts have a custom implementation of the fixup.
+	AMD	implemtation
+	restore to original version that has worked fine since	2001.
+References: <20081216205650.GA13729@zealous.synapse.com>
+In-Reply-To: <20081216205650.GA13729@zealous.synapse.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, u.kleine-koenig@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,65 +25,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 16 Dec 2008, Benjamin Herrenschmidt wrote:
-> On Mon, 2008-12-15 at 17:11 -0800, Trent Piepho wrote:
->> Shame, as it provides a huge speed up.  I suppose an alternative would be
->> to map the chip twice at different physical addresses, by just configuring
->> the chip select to be twice the size it should be, and giving them
->> different cacheability.
->
-> Nice trick. That would probably work.
+Hi Marc and the list,
 
-Thinking about it more, this is probably the way to do it.  Mapping the
-same address twice appeared to worked for me, but it looks like it's a bad
-thing to do.  To bad I didn't have time to finish this.
+I am afraid to admit that I was the author of the modifications that you 
+obviously did not like :(
+Let me also admit that I am a newbie to MTD, to CFI and to NOR flash 
+devices so please correct me if I write anything stupid.
 
-Creating two copies of the flash chip will take twice the physical address
-space, but the virtual address space used is the same as mapping the chip
-twice.  Since kernel virtual address space <= physical address space, there
-really shouldn't be a problem with that.
+You say in the subject "AMD implemtation restore to original version 
+that has worked fine since 2001".
+You seem to imply by this that my modifications broke some previously 
+working AMD parts.
+I apologize if this is the case but I cannot see how.
+Which AMD part(s) did I break?
+(However I did realize after submitting my patch that it could possibly 
+break certain Macronix parts using AMD CFI PRI V1.0 that were previously 
+working more by luck than judgement.)
 
-Probably do something like this to the dts:
+Before submitting my patch I carefully considered whether to modify the 
+AMD fixup or to add a Macronix specific one as you did.
+It seemed to me that:-
+a) In the context of the fixup AMD referred to the "Primary Vendor 
+Command Set and Control Interface ID Code" used and not to the 
+manufacturer of the part.
+For this Macronix also use the "AMD/Fujitsu Standard Command Set".
+b) Although AIUI each manufacturer is free to choose his own Device ID 
+allocations, in practice most manufacturers use the same Device ID when 
+they clone another manufacturer's part.
+For example IIRC, AMD, Fujitsu, Spansion, EON, ESI and Macronix all use:-
+- 0xBA/0x22BA for their 29LV400 B parts
+- 0xB9/0x22B9 for their 29LV400 T parts
+I therefore concluded that it was legitimate and useful in terms of 
+avoiding duplicate code to handle Macronix in the AMD fixup routine.
+You prefer to separate the fixup routines and I accept your decision (it 
+was a close call for me).
 
-  localbus {
--	ranges = <0x1 0x0 0xe8000000 0x08000000>;
-+	ranges = <0x1 0x0 0xe0000000 0x10000000>;  /* CS size x2 */
--       nor@1,0 {
-+       nor@1,0x08000000 {
- 		compatible = "cfi-flash";
--		reg = <0x1 0x0 0x08000000>;
-+		reg = <0x1 0x08000000 0x08000000>;
-+		cached-alias = <&cached_nor>;
-         };
-+	cached_nor: nor@1,0 {
-+		compatible = "alias";
-+		reg = <0x1 0 0x08000000>;
-+	};
-  }
+However I do have one objection:-
+Your Macronix version is not equivalent to mine and I believe that my 
+version handles more parts correctly ;-)
 
-Since physmap_of is an openfirmware driver, it won't be a problem to have
-if look for "cached-alias" to get the range to map as cached.  The MTD
-layer only supports one "map->phys" address, but I don't think this address
-is used for anything on powerpc.
+Instead of:-
 
->> Or changing the mapping for writes and then changing it back.  It wouldn't
->> be necessary to change the whole thing, just the page being written to.
->
-> Right though changing mappings can be expensive. It might be worth
-> looking at using fixmap for that tho, which is the fastest way to setup
-> and tear down mappings, especially since we can (though we don't today)
-> implement a bypass on those to directly load the TLB.
++                switch (cfi->id) {
++                                /* Macronix MX29LV400CT */
++                case 0x00ba:
++                case 0x22ba:
++                        extp->TopBottom = 2;                 /* bottom-boot */
++                        break;
++                        	/* Macronix MX29LV400CB */
++                case 0x00b9:
++                case 0x22b9:
++                        extp->TopBottom = 3;                 /* top-boot */
++                        break;
++                default:
++                                /* Fall back is to assume we have
++                                 * bottom-boot. */
++                        extp->TopBottom = 2; /* bottom-boot */
++                        break;
++                }
 
-The MTD layer appears to program flash one word at a time, so writing to
-flash would mean changing maps on a per word basis.  Of course flash is
-slow too so maybe the relative cost is not that much.  It takes more
-modifications to MTD than the previous method.
 
-> The problem gets worsened by the fact that cores that support
-> speculative loads and prefetch will potentially bring anything mapped
-> into the cache even if it's not directly accessed.
+I would prefer:-
 
-This is really the whole point of mapping it cached.  Since the cpu can
-prefetch data, it's able to use more efficient back-to-back reads or page
-burst mode to read a whole cache line at once.  The latter can more than
-triple the read rate.
++                switch (cfi->id) {
++                                /* Macronix MX29LV400CB */
++                case 0x00ba:
++                case 0x22ba:
++                        extp->TopBottom = 2;                 /* bottom-boot */
++                        break;
++                default:
++                        extp->TopBottom = (cfi->id & 0x80)
++                                ? 3 /* top-boot */
++                                : 2 /* bottom-boot */;
++                        break;
++                }
+
+
+David Woodhouse asked me to add correct handling of a few Macronix parts 
+which are incorrectly detected by my code and I shall do this once your 
+patch goes through.
+
+There is one other point that I would like to make (again).
+IMHO the patch from Uwe Kleine-Koenig in this thread should be applied:-
+http://thread.gmane.org/gmane.linux.drivers.mtd/22267
+See also this thread:-
+http://thread.gmane.org/gmane.linux.drivers.mtd/22176
+
+Sorry for this long ramble.
+
+Cheers,
+Chris
