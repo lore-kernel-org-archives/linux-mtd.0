@@ -1,18 +1,23 @@
-Received: from avas-mr17.fibertel.com.ar ([24.232.0.249])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LCraV-00059C-HQ
-	for linux-mtd@lists.infradead.org; Wed, 17 Dec 2008 08:17:00 +0000
-From: "hearse" <Lionel@mail.handson.com.au>
-Content-class: urn:content-classes:message
-To: <jhashemi@ayrecruiting.com>
-Subject: Healthcare Industry Directory
-Message-ID: <DCOLIVOSCRBHZXFZ0st00000c65@dcolivos.alparamisnet.local>
-Date: 17 Dec 2008 06:16:39 -0200
-Cc: fkasagi@thtlab.t.u-tokyo.ac.jp, nogalesdentallaser@gmail.com,
-	viagraonline-196@techemail.com, aasfdt@bellsouth.net,
-	linux-mtd@lists.infradead.org, hcr@soton.ac.uk,
-	events@migrainetrust.org, margaret.murray@sfh-tr.nhs.uk
-Reply-To: hearse <noemailreply@contactpluscorp.com>
+Received: from www.tglx.de ([62.245.132.106])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1LCtRg-0003FO-Ka
+	for linux-mtd@lists.infradead.org; Wed, 17 Dec 2008 10:16:00 +0000
+Received: from www.tglx.de (www.tglx.de [127.0.0.1])
+	by www.tglx.de (8.13.8/8.13.8/TGLX-2007100201) with ESMTP id
+	mBHAFsdH005347
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <linux-mtd@lists.infradead.org>; Wed, 17 Dec 2008 11:15:54 +0100
+Received: (from bigeasy@localhost)
+	by www.tglx.de (8.13.8/8.13.8/Submit) id mBHAFsfo005346
+	for linux-mtd@lists.infradead.org; Wed, 17 Dec 2008 11:15:54 +0100
+Date: Wed, 17 Dec 2008 11:15:54 +0100
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] ubiupdatevol: make the -t parameter work again
+Message-ID: <20081217101554.GA4999@www.tglx.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +27,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The execution of
+|./ubiupdatevol /dev/ubi0 -t
+will fail because 'argv[optind + 1]' is undefined and the later executed
+'strcmp(args.img, "-")' will segfault.
+So I can hack around and supply a dummy image or fix it that way.
 
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ ubi-utils/new-utils/src/ubiupdatevol.c |   13 +++++++++----
+ 1 files changed, 9 insertions(+), 4 deletions(-)
 
-Certified Medical Doctors in the USA 
-
-788,359 in total <> 17,910 emails
-
-Featuring coverage for more than 30 specialties like Internal Medicine, Family Practice, Opthalmology, Anesthesiologists, Cardiologists and more
-
-you can sort by many different fields 
-
-reduced price is now: $395
-
-
-======= Included in the package are the four databases listed here: =======
-
-List of American Pharma Companies
-47,000 personal emails and names of decision makers
-
-American Hospital Mailing List
-Full data for all the major positions in more than 7k facilities
-
-Contact List of American Dentists
-A complete Listing or dentists and related services (valued at $399)
-
-US Chiropractor Contact List
-100,000 Chiropractors in the USA (worth $250 alone)
-
-area representative:      Keller@idocinfo.com
-
-  
-
-from today until this Friday
-
-
-to stop this email in future email us at unlisting@idocinfo.com
+diff --git a/ubi-utils/new-utils/src/ubiupdatevol.c b/ubi-utils/new-utils/src/ubiupdatevol.c
+index 5eeaa3c..c83731c 100644
+--- a/ubi-utils/new-utils/src/ubiupdatevol.c
++++ b/ubi-utils/new-utils/src/ubiupdatevol.c
+@@ -157,10 +157,15 @@ static int parse_opt(int argc, char * const argv[])
+ 	args.node = argv[optind];
+ 	args.img  = argv[optind + 1];
+ 
+-	if (strcmp(args.img, "-") == 0)
+-		args.use_stdin = 1;
+-	if (args.use_stdin && !args.size)
+-		return errmsg("file size must be specified if input is stdin");
++	if (args.img && args.truncate)
++		return errmsg("You can't truncate and specify an image (use -h for help)");
++
++	if (args.img && !args.truncate) {
++		if (strcmp(args.img, "-") == 0)
++			args.use_stdin = 1;
++		if (args.use_stdin && !args.size)
++			return errmsg("file size must be specified if input is stdin");
++	}
+ 
+ 	return 0;
+ }
+-- 
+1.5.6.5
