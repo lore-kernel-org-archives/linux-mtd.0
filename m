@@ -1,21 +1,23 @@
-Received: from www.tglx.de ([62.245.132.106])
+Received: from aibo.runbox.com ([87.238.52.70])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LCvA1-0004T9-8C
-	for linux-mtd@lists.infradead.org; Wed, 17 Dec 2008 12:05:54 +0000
-Message-ID: <4948EB1C.1000906@linutronix.de>
-Date: Wed, 17 Dec 2008 13:05:48 +0100
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+	id 1LCvw7-0001Mi-4R
+	for linux-mtd@lists.infradead.org; Wed, 17 Dec 2008 12:55:35 +0000
+Received: from [10.9.9.161] (helo=patch.runbox.com)
+	by greyhound.runbox.com with esmtp (Exim 4.50) id 1LCvw8-0005jU-H6
+	for linux-mtd@lists.infradead.org; Wed, 17 Dec 2008 13:55:36 +0100
+Received: from [74.94.155.177] (helo=[192.168.12.139])
+	by patch.runbox.com with esmtpsa (uid:263104 )
+	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.63) id 1LCvw5-0007sK-Bc
+	for linux-mtd@lists.infradead.org; Wed, 17 Dec 2008 13:55:33 +0100
+Message-ID: <4948F6C2.4070006@runbox.com>
+Date: Wed, 17 Dec 2008 07:55:30 -0500
+From: Cal Page <pagcal@runbox.com>
 MIME-Version: 1.0
-To: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: [RFC] remove -W from build process
-References: <20081217101924.GB4999@www.tglx.de>	
-	<8bd0f97a0812170229x40d7a9d1jb53a3bac2d5bd5a1@mail.gmail.com>	
-	<4948DF7C.7060802@linutronix.de>
-	<8bd0f97a0812170317s7485cd01rf7a332234c84ff97@mail.gmail.com>
-In-Reply-To: <8bd0f97a0812170317s7485cd01rf7a332234c84ff97@mail.gmail.com>
+To: ubifs <linux-mtd@lists.infradead.org>
+Subject: ubifs: Inconsistency detected by ld.so: rtld.c: 1213: dl_main:
+	Assertion `_rtld_local._dl_rtld_map.l_libname' failed!
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +27,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Mike Frysinger wrote:
-> On Wed, Dec 17, 2008 at 06:16, Sebastian Andrzej Siewior wrote:
->> Mike Frysinger wrote:
->>> On Wed, Dec 17, 2008 at 05:19, Sebastian Andrzej Siewior wrote:
->>>> Would it be possible to use autotools for a clean build environment?
->>> it would make no difference here
->> It won't fix compile error, right. I thing it could be easier the handle
->> CFLAGS, cross builds, install, build dir, rebuilds, ...
->> Alternatively one could clean up the current make scripts but I thing it
->> would be easier to handle this with auto tools.
-> 
-> ive already posted a patch to cleanup the build system and it should
-> address every issue you highlighted here ...
+I can move data on and off the ubifs ok, but when I try to execute something,
+I get the following error.
 
-Cool. I thing you refer to "unify all common build system parts". It looks 
-promising and smaller than my attempt.
+What's wrong?
 
-> -mike
+Inconsistency detected by ld.so: rtld.c: 1213: dl_main: Assertion `_rtld_local._dl_rtld_map.l_libname' failed!
 
-Sebastian
--- 
-Firmensitz: 88690 Uhldingen, Auf dem Berg 3
-Registergericht: Amtsgericht Freiburg i. Br., HRB 700 806;
-StNr. 87007/07777; Ust-Id Nr.: DE252739476
-Geschäftsführer: Heinz Egger, Thomas Gleixner
+Cal Page
