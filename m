@@ -1,35 +1,23 @@
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
+Received: from aibo.runbox.com ([87.238.52.70])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LCwQT-0004Gx-NR
-	for linux-mtd@lists.infradead.org; Wed, 17 Dec 2008 13:26:58 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e3.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id mBHDPvsB028687
-	for <linux-mtd@lists.infradead.org>; Wed, 17 Dec 2008 08:25:57 -0500
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.1) with ESMTP id
-	mBHDQlRD164374
-	for <linux-mtd@lists.infradead.org>; Wed, 17 Dec 2008 08:26:47 -0500
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	mBHEQvB7032702
-	for <linux-mtd@lists.infradead.org>; Wed, 17 Dec 2008 09:26:57 -0500
-Date: Wed, 17 Dec 2008 08:26:37 -0500
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: Sean MacLennan <smaclennan@pikatech.com>, dwmw2@infradead.org
-Subject: Re: [PATCH] ndfc driver
-Message-ID: <20081217132637.GA3049@localhost.localdomain>
-References: <20081203222832.3fc77d28@lappy.seanm.ca>
-	<20081204090107.20269571@zod.rchland.ibm.com>
-	<20081208193446.37e27e26@lappy.seanm.ca>
-	<200812090710.27781.sr@denx.de>
-	<20081210181634.2aac2023@lappy.seanm.ca>
+	id 1LCySa-0008TM-Hl
+	for linux-mtd@lists.infradead.org; Wed, 17 Dec 2008 15:37:17 +0000
+Received: from [10.9.9.161] (helo=patch.runbox.com)
+	by greyhound.runbox.com with esmtp (Exim 4.50) id 1LCySb-0004lF-PJ
+	for linux-mtd@lists.infradead.org; Wed, 17 Dec 2008 16:37:17 +0100
+Received: from [74.94.155.203] (helo=[192.168.12.139])
+	by patch.runbox.com with esmtpsa (uid:263104 )
+	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.63) id 1LCySX-0000yO-OC
+	for linux-mtd@lists.infradead.org; Wed, 17 Dec 2008 16:37:14 +0100
+Message-ID: <49491CA7.5020200@runbox.com>
+Date: Wed, 17 Dec 2008 10:37:11 -0500
+From: Cal Page <pagcal@runbox.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20081210181634.2aac2023@lappy.seanm.ca>
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Stefan Roese <sr@denx.de>, devicetree-discuss@ozlabs.org,
-	Arnd Bergmann <arnd@arndb.de>
+To: ubifs <linux-mtd@lists.infradead.org>
+Subject: ubifs backtrace for - BUG: scheduling while atomic - when runs out
+	of space
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,508 +27,196 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 10, 2008 at 06:16:34PM -0500, Sean MacLennan wrote:
->Here is an updated patch. Doc has been moved to 4xx and amcc changed to
->ibm.
->
->Arnd: I removed your acked-by just in case you don't approve of the new
->flash layout. Feel free to ack again.
->
->Cheers,
->   Sean
->
->Port of the ndfc driver to an OF platform driver.
->
->Signed-off-by: Sean MacLennan <smaclennan@pikatech.com>
+Here is backtrace.
 
-Acked-By: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+Can you see the problem?
 
-David, if you have no objections I'd like to take this patch
-through my tree.  I'll fixup the subject and commit log when
-I do.
+Thanks,
+Cal Page
 
-josh
+!!! Note: BUG() placed at kernel/sched.c schedule() at 'scheduling while atomic'
 
->---
->diff --git a/Documentation/powerpc/dts-bindings/4xx/ndfc.txt b/Documentation/powerpc/dts-bindings/4xx/ndfc.txt
->new file mode 100644
->index 0000000..869f0b5
->--- /dev/null
->+++ b/Documentation/powerpc/dts-bindings/4xx/ndfc.txt
->@@ -0,0 +1,39 @@
->+AMCC NDFC (NanD Flash Controller)
->+
->+Required properties:
->+- compatible : "ibm,ndfc".
->+- reg : should specify chip select and size used for the chip (0x2000).
->+
->+Optional properties:
->+- ccr : NDFC config and control register value (default 0).
->+- bank-settings : NDFC bank configuration register value (default 0).
->+
->+Notes:
->+- partition(s) - follows the OF MTD standard for partitions
->+
->+Example:
->+
->+ndfc@1,0 {
->+	compatible = "ibm,ndfc";
->+	reg = <0x00000001 0x00000000 0x00002000>;
->+	ccr = <0x00001000>;
->+	bank-settings = <0x80002222>;
->+	#address-cells = <1>;
->+	#size-cells = <1>;
->+
->+	nand {
->+		#address-cells = <1>;
->+		#size-cells = <1>;
->+
->+		partition@0 {
->+			label = "kernel";
->+			reg = <0x00000000 0x00200000>;
->+		};
->+		partition@200000 {
->+			label = "root";
->+			reg = <0x00200000 0x03E00000>;
->+		};
->+	};
->+};
->+
->+
->diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
->index 1c2e945..5705f85 100644
->--- a/drivers/mtd/nand/Kconfig
->+++ b/drivers/mtd/nand/Kconfig
->@@ -163,6 +163,13 @@ config MTD_NAND_S3C2410_HWECC
-> 	  incorrect ECC generation, and if using these, the default of
-> 	  software ECC is preferable.
->
->+config MTD_NAND_NDFC
->+	tristate "NDFC NanD Flash Controller"
->+	depends on 4xx
->+	select MTD_NAND_ECC_SMC
->+	help
->+	 NDFC Nand Flash Controllers are integrated in IBM/AMCC's 4xx SoCs
->+
-> config MTD_NAND_S3C2410_CLKSTOP
-> 	bool "S3C2410 NAND IDLE clock stop"
-> 	depends on MTD_NAND_S3C2410
->diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
->index 955959e..582cf80 100644
->--- a/drivers/mtd/nand/ndfc.c
->+++ b/drivers/mtd/nand/ndfc.c
->@@ -2,12 +2,20 @@
->  *  drivers/mtd/ndfc.c
->  *
->  *  Overview:
->- *   Platform independend driver for NDFC (NanD Flash Controller)
->+ *   Platform independent driver for NDFC (NanD Flash Controller)
->  *   integrated into EP440 cores
->  *
->+ *   Ported to an OF platform driver by Sean MacLennan
->+ *
->+ *   The NDFC supports multiple chips, but this driver only supports a
->+ *   single chip since I do not have access to any boards with
->+ *   multiple chips.
->+ *
->  *  Author: Thomas Gleixner
->  *
->  *  Copyright 2006 IBM
->+ *  Copyright 2008 PIKA Technologies
->+ *    Sean MacLennan <smaclennan@pikatech.com>
->  *
->  *  This program is free software; you can redistribute	 it and/or modify it
->  *  under  the terms of	 the GNU General  Public License as published by the
->@@ -21,27 +29,20 @@
-> #include <linux/mtd/partitions.h>
-> #include <linux/mtd/ndfc.h>
-> #include <linux/mtd/mtd.h>
->-#include <linux/platform_device.h>
->-
->+#include <linux/of_platform.h>
-> #include <asm/io.h>
->-#ifdef CONFIG_40x
->-#include <asm/ibm405.h>
->-#else
->-#include <asm/ibm44x.h>
->-#endif
->-
->-struct ndfc_nand_mtd {
->-	struct mtd_info			mtd;
->-	struct nand_chip		chip;
->-	struct platform_nand_chip	*pl_chip;
->-};
->
->-static struct ndfc_nand_mtd ndfc_mtd[NDFC_MAX_BANKS];
->
-> struct ndfc_controller {
->-	void __iomem		*ndfcbase;
->-	struct nand_hw_control	ndfc_control;
->-	atomic_t		childs_active;
->+	struct of_device *ofdev;
->+	void __iomem *ndfcbase;
->+	struct mtd_info mtd;
->+	struct nand_chip chip;
->+	int chip_select;
->+	struct nand_hw_control ndfc_control;
->+#ifdef CONFIG_MTD_PARTITIONS
->+	struct mtd_partition *parts;
->+#endif
-> };
->
-> static struct ndfc_controller ndfc_ctrl;
->@@ -50,17 +51,14 @@ static void ndfc_select_chip(struct mtd_info *mtd, int chip)
-> {
-> 	uint32_t ccr;
-> 	struct ndfc_controller *ndfc = &ndfc_ctrl;
->-	struct nand_chip *nandchip = mtd->priv;
->-	struct ndfc_nand_mtd *nandmtd = nandchip->priv;
->-	struct platform_nand_chip *pchip = nandmtd->pl_chip;
->
->-	ccr = __raw_readl(ndfc->ndfcbase + NDFC_CCR);
->+	ccr = in_be32(ndfc->ndfcbase + NDFC_CCR);
-> 	if (chip >= 0) {
-> 		ccr &= ~NDFC_CCR_BS_MASK;
->-		ccr |= NDFC_CCR_BS(chip + pchip->chip_offset);
->+		ccr |= NDFC_CCR_BS(chip + ndfc->chip_select);
-> 	} else
-> 		ccr |= NDFC_CCR_RESET_CE;
->-	__raw_writel(ccr, ndfc->ndfcbase + NDFC_CCR);
->+	out_be32(ndfc->ndfcbase + NDFC_CCR, ccr);
-> }
->
-> static void ndfc_hwcontrol(struct mtd_info *mtd, int cmd, unsigned int ctrl)
->@@ -80,7 +78,7 @@ static int ndfc_ready(struct mtd_info *mtd)
-> {
-> 	struct ndfc_controller *ndfc = &ndfc_ctrl;
->
->-	return __raw_readl(ndfc->ndfcbase + NDFC_STAT) & NDFC_STAT_IS_READY;
->+	return in_be32(ndfc->ndfcbase + NDFC_STAT) & NDFC_STAT_IS_READY;
-> }
->
-> static void ndfc_enable_hwecc(struct mtd_info *mtd, int mode)
->@@ -88,9 +86,9 @@ static void ndfc_enable_hwecc(struct mtd_info *mtd, int mode)
-> 	uint32_t ccr;
-> 	struct ndfc_controller *ndfc = &ndfc_ctrl;
->
->-	ccr = __raw_readl(ndfc->ndfcbase + NDFC_CCR);
->+	ccr = in_be32(ndfc->ndfcbase + NDFC_CCR);
-> 	ccr |= NDFC_CCR_RESET_ECC;
->-	__raw_writel(ccr, ndfc->ndfcbase + NDFC_CCR);
->+	out_be32(ndfc->ndfcbase + NDFC_CCR, ccr);
-> 	wmb();
-> }
->
->@@ -102,9 +100,10 @@ static int ndfc_calculate_ecc(struct mtd_info *mtd,
-> 	uint8_t *p = (uint8_t *)&ecc;
->
-> 	wmb();
->-	ecc = __raw_readl(ndfc->ndfcbase + NDFC_ECC);
->-	ecc_code[0] = p[1];
->-	ecc_code[1] = p[2];
->+	ecc = in_be32(ndfc->ndfcbase + NDFC_ECC);
->+	/* The NDFC uses Smart Media (SMC) bytes order */
->+	ecc_code[0] = p[2];
->+	ecc_code[1] = p[1];
-> 	ecc_code[2] = p[3];
->
-> 	return 0;
->@@ -123,7 +122,7 @@ static void ndfc_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
-> 	uint32_t *p = (uint32_t *) buf;
->
-> 	for(;len > 0; len -= 4)
->-		*p++ = __raw_readl(ndfc->ndfcbase + NDFC_DATA);
->+		*p++ = in_be32(ndfc->ndfcbase + NDFC_DATA);
-> }
->
-> static void ndfc_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
->@@ -132,7 +131,7 @@ static void ndfc_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
-> 	uint32_t *p = (uint32_t *) buf;
->
-> 	for(;len > 0; len -= 4)
->-		__raw_writel(*p++, ndfc->ndfcbase + NDFC_DATA);
->+		out_be32(ndfc->ndfcbase + NDFC_DATA, *p++);
-> }
->
-> static int ndfc_verify_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
->@@ -141,7 +140,7 @@ static int ndfc_verify_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
-> 	uint32_t *p = (uint32_t *) buf;
->
-> 	for(;len > 0; len -= 4)
->-		if (*p++ != __raw_readl(ndfc->ndfcbase + NDFC_DATA))
->+		if (*p++ != in_be32(ndfc->ndfcbase + NDFC_DATA))
-> 			return -EFAULT;
-> 	return 0;
-> }
->@@ -149,10 +148,19 @@ static int ndfc_verify_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
-> /*
->  * Initialize chip structure
->  */
->-static void ndfc_chip_init(struct ndfc_nand_mtd *mtd)
->+static int ndfc_chip_init(struct ndfc_controller *ndfc,
->+			  struct device_node *node)
-> {
->-	struct ndfc_controller *ndfc = &ndfc_ctrl;
->-	struct nand_chip *chip = &mtd->chip;
->+#ifdef CONFIG_MTD_PARTITIONS
->+#ifdef CONFIG_MTD_CMDLINE_PARTS
->+	static const char *part_types[] = { "cmdlinepart", NULL };
->+#else
->+	static const char *part_types[] = { NULL };
->+#endif
->+#endif
->+	struct device_node *flash_np;
->+	struct nand_chip *chip = &ndfc->chip;
->+	int ret;
->
-> 	chip->IO_ADDR_R = ndfc->ndfcbase + NDFC_DATA;
-> 	chip->IO_ADDR_W = ndfc->ndfcbase + NDFC_DATA;
->@@ -160,8 +168,6 @@ static void ndfc_chip_init(struct ndfc_nand_mtd *mtd)
-> 	chip->dev_ready = ndfc_ready;
-> 	chip->select_chip = ndfc_select_chip;
-> 	chip->chip_delay = 50;
->-	chip->priv = mtd;
->-	chip->options = mtd->pl_chip->options;
-> 	chip->controller = &ndfc->ndfc_control;
-> 	chip->read_buf = ndfc_read_buf;
-> 	chip->write_buf = ndfc_write_buf;
->@@ -172,143 +178,136 @@ static void ndfc_chip_init(struct ndfc_nand_mtd *mtd)
-> 	chip->ecc.mode = NAND_ECC_HW;
-> 	chip->ecc.size = 256;
-> 	chip->ecc.bytes = 3;
->-	chip->ecclayout = chip->ecc.layout = mtd->pl_chip->ecclayout;
->-	mtd->mtd.priv = chip;
->-	mtd->mtd.owner = THIS_MODULE;
->-}
->-
->-static int ndfc_chip_probe(struct platform_device *pdev)
->-{
->-	struct platform_nand_chip *nc = pdev->dev.platform_data;
->-	struct ndfc_chip_settings *settings = nc->priv;
->-	struct ndfc_controller *ndfc = &ndfc_ctrl;
->-	struct ndfc_nand_mtd *nandmtd;
->-
->-	if (nc->chip_offset >= NDFC_MAX_BANKS || nc->nr_chips > NDFC_MAX_BANKS)
->-		return -EINVAL;
->-
->-	/* Set the bank settings */
->-	__raw_writel(settings->bank_settings,
->-		     ndfc->ndfcbase + NDFC_BCFG0 + (nc->chip_offset << 2));
->
->-	nandmtd = &ndfc_mtd[pdev->id];
->-	if (nandmtd->pl_chip)
->-		return -EBUSY;
->+	ndfc->mtd.priv = chip;
->+	ndfc->mtd.owner = THIS_MODULE;
->
->-	nandmtd->pl_chip = nc;
->-	ndfc_chip_init(nandmtd);
->-
->-	/* Scan for chips */
->-	if (nand_scan(&nandmtd->mtd, nc->nr_chips)) {
->-		nandmtd->pl_chip = NULL;
->+	flash_np = of_get_next_child(node, NULL);
->+	if (!flash_np)
-> 		return -ENODEV;
->+
->+	ndfc->mtd.name = kasprintf(GFP_KERNEL, "%s.%s",
->+				   ndfc->ofdev->dev.bus_id, flash_np->name);
->+	if (!ndfc->mtd.name) {
->+		ret = -ENOMEM;
->+		goto err;
-> 	}
->
->-#ifdef CONFIG_MTD_PARTITIONS
->-	printk("Number of partitions %d\n", nc->nr_partitions);
->-	if (nc->nr_partitions) {
->-		/* Add the full device, so complete dumps can be made */
->-		add_mtd_device(&nandmtd->mtd);
->-		add_mtd_partitions(&nandmtd->mtd, nc->partitions,
->-				   nc->nr_partitions);
->+	ret = nand_scan(&ndfc->mtd, 1);
->+	if (ret)
->+		goto err;
->
->-	} else
->-#else
->-		add_mtd_device(&nandmtd->mtd);
->+#ifdef CONFIG_MTD_PARTITIONS
->+	ret = parse_mtd_partitions(&ndfc->mtd, part_types, &ndfc->parts, 0);
->+	if (ret < 0)
->+		goto err;
->+
->+#ifdef CONFIG_MTD_OF_PARTS
->+	if (ret == 0) {
->+		ret = of_mtd_parse_partitions(&ndfc->ofdev->dev, flash_np,
->+					      &ndfc->parts);
->+		if (ret < 0)
->+			goto err;
->+	}
-> #endif
->
->-	atomic_inc(&ndfc->childs_active);
->-	return 0;
->-}
->+	if (ret > 0)
->+		ret = add_mtd_partitions(&ndfc->mtd, ndfc->parts, ret);
->+	else
->+#endif
->+		ret = add_mtd_device(&ndfc->mtd);
->
->-static int ndfc_chip_remove(struct platform_device *pdev)
->-{
->-	return 0;
->+err:
->+	of_node_put(flash_np);
->+	if (ret)
->+		kfree(ndfc->mtd.name);
->+	return ret;
-> }
->
->-static int ndfc_nand_probe(struct platform_device *pdev)
->+static int __devinit ndfc_probe(struct of_device *ofdev,
->+				const struct of_device_id *match)
-> {
->-	struct platform_nand_ctrl *nc = pdev->dev.platform_data;
->-	struct ndfc_controller_settings *settings = nc->priv;
->-	struct resource *res = pdev->resource;
-> 	struct ndfc_controller *ndfc = &ndfc_ctrl;
->-	unsigned long long phys = settings->ndfc_erpn | res->start;
->+	const u32 *reg;
->+	u32 ccr;
->+	int err, len;
->
->-#ifndef CONFIG_PHYS_64BIT
->-	ndfc->ndfcbase = ioremap((phys_addr_t)phys, res->end - res->start + 1);
->-#else
->-	ndfc->ndfcbase = ioremap64(phys, res->end - res->start + 1);
->-#endif
->+	spin_lock_init(&ndfc->ndfc_control.lock);
->+	init_waitqueue_head(&ndfc->ndfc_control.wq);
->+	ndfc->ofdev = ofdev;
->+	dev_set_drvdata(&ofdev->dev, ndfc);
->+
->+	/* Read the reg property to get the chip select */
->+	reg = of_get_property(ofdev->node, "reg", &len);
->+	if (reg == NULL || len != 12) {
->+		dev_err(&ofdev->dev, "unable read reg property (%d)\n", len);
->+		return -ENOENT;
->+	}
->+	ndfc->chip_select = reg[0];
->+
->+	ndfc->ndfcbase = of_iomap(ofdev->node, 0);
-> 	if (!ndfc->ndfcbase) {
->-		printk(KERN_ERR "NDFC: ioremap failed\n");
->+		dev_err(&ofdev->dev, "failed to get memory\n");
-> 		return -EIO;
-> 	}
->
->-	__raw_writel(settings->ccr_settings, ndfc->ndfcbase + NDFC_CCR);
->+	ccr = NDFC_CCR_BS(ndfc->chip_select);
->
->-	spin_lock_init(&ndfc->ndfc_control.lock);
->-	init_waitqueue_head(&ndfc->ndfc_control.wq);
->+	/* It is ok if ccr does not exist - just default to 0 */
->+	reg = of_get_property(ofdev->node, "ccr", NULL);
->+	if (reg)
->+		ccr |= *reg;
->
->-	platform_set_drvdata(pdev, ndfc);
->+	out_be32(ndfc->ndfcbase + NDFC_CCR, ccr);
->
->-	printk("NDFC NAND Driver initialized. Chip-Rev: 0x%08x\n",
->-	       __raw_readl(ndfc->ndfcbase + NDFC_REVID));
->+	/* Set the bank settings if given */
->+	reg = of_get_property(ofdev->node, "bank-settings", NULL);
->+	if (reg) {
->+		int offset = NDFC_BCFG0 + (ndfc->chip_select << 2);
->+		out_be32(ndfc->ndfcbase + offset, *reg);
->+	}
->+
->+	err = ndfc_chip_init(ndfc, ofdev->node);
->+	if (err) {
->+		iounmap(ndfc->ndfcbase);
->+		return err;
->+	}
->
-> 	return 0;
-> }
->
->-static int ndfc_nand_remove(struct platform_device *pdev)
->+static int __devexit ndfc_remove(struct of_device *ofdev)
-> {
->-	struct ndfc_controller *ndfc = platform_get_drvdata(pdev);
->+	struct ndfc_controller *ndfc = dev_get_drvdata(&ofdev->dev);
->
->-	if (atomic_read(&ndfc->childs_active))
->-		return -EBUSY;
->+	nand_release(&ndfc->mtd);
->
->-	if (ndfc) {
->-		platform_set_drvdata(pdev, NULL);
->-		iounmap(ndfc_ctrl.ndfcbase);
->-		ndfc_ctrl.ndfcbase = NULL;
->-	}
-> 	return 0;
-> }
->
->-/* driver device registration */
->-
->-static struct platform_driver ndfc_chip_driver = {
->-	.probe		= ndfc_chip_probe,
->-	.remove		= ndfc_chip_remove,
->-	.driver		= {
->-		.name	= "ndfc-chip",
->-		.owner	= THIS_MODULE,
->-	},
->+static const struct of_device_id ndfc_match[] = {
->+	{ .compatible = "ibm,ndfc", },
->+	{}
-> };
->+MODULE_DEVICE_TABLE(of, ndfc_match);
->
->-static struct platform_driver ndfc_nand_driver = {
->-	.probe		= ndfc_nand_probe,
->-	.remove		= ndfc_nand_remove,
->-	.driver		= {
->-		.name	= "ndfc-nand",
->-		.owner	= THIS_MODULE,
->+static struct of_platform_driver ndfc_driver = {
->+	.driver = {
->+		.name	= "ndfc",
-> 	},
->+	.match_table = ndfc_match,
->+	.probe = ndfc_probe,
->+	.remove = __devexit_p(ndfc_remove),
-> };
->
-> static int __init ndfc_nand_init(void)
-> {
->-	int ret;
->-
->-	spin_lock_init(&ndfc_ctrl.ndfc_control.lock);
->-	init_waitqueue_head(&ndfc_ctrl.ndfc_control.wq);
->-
->-	ret = platform_driver_register(&ndfc_nand_driver);
->-	if (!ret)
->-		ret = platform_driver_register(&ndfc_chip_driver);
->-	return ret;
->+	return of_register_platform_driver(&ndfc_driver);
-> }
->
-> static void __exit ndfc_nand_exit(void)
-> {
->-	platform_driver_unregister(&ndfc_chip_driver);
->-	platform_driver_unregister(&ndfc_nand_driver);
->+	of_unregister_platform_driver(&ndfc_driver);
-> }
->
-> module_init(ndfc_nand_init);
->@@ -316,6 +315,4 @@ module_exit(ndfc_nand_exit);
->
-> MODULE_LICENSE("GPL");
-> MODULE_AUTHOR("Thomas Gleixner <tglx@linutronix.de>");
->-MODULE_DESCRIPTION("Platform driver for NDFC");
->-MODULE_ALIAS("platform:ndfc-chip");
->-MODULE_ALIAS("platform:ndfc-nand");
->+MODULE_DESCRIPTION("OF Platform driver for NDFC");
+Backtrace: 
+
+[<c0e1e640>] (schedule+0x0/0x6dc) from [<c0d2245c>] (wait_op_done+0xb0/0x150)
+[<c0d223ac>] (wait_op_done+0x0/0x150) from [<c0d22740>] (send_prog_page+0x64/0x74)
+ r5 = C0F2ABE0  r4 = C661FAC0 
+[<c0d226dc>] (send_prog_page+0x0/0x74) from [<c0d22934>] (mxc_nand_command+0x16c/0x3ec)
+[<c0d227c8>] (mxc_nand_command+0x0/0x3ec) from [<c0d1ddd8>] (nand_write_page+0x80/0xd4)
+[<c0d1dd58>] (nand_write_page+0x0/0xd4) from [<c0d1e83c>] (nand_do_write_ops+0x2b0/0x340)
+ r7 = 0004AA60  r6 = C4B07000  r5 = 00000000  r4 = 00000800
+[<c0d1e58c>] (nand_do_write_ops+0x0/0x340) from [<c0d1f71c>] (nand_write+0xa0/0xc0)
+[<c0d1f67c>] (nand_write+0x0/0xc0) from [<c0d153e8>] (part_write+0xb0/0xec)
+[<c0d15338>] (part_write+0x0/0xec) from [<c0d2a6b0>] (ubi_io_write+0x78/0xb4)
+ r7 = FFFFFFE2  r6 = C4B07000  r5 = 00000000  r4 = 00010000
+[<c0d2a638>] (ubi_io_write+0x0/0xb4) from [<c0d28af0>] (ubi_eba_write_leb+0x94/0x83c)
+[<c0d28a5c>] (ubi_eba_write_leb+0x0/0x83c) from [<c0d27d9c>] (ubi_leb_write+0xec/0x104)
+[<c0d27cb0>] (ubi_leb_write+0x0/0x104) from [<c0c77fac>] (dbg_leb_write+0x9c/0xb8)
+ r8 = C4B07000  r7 = 0000003C  r6 = C509BB00  r5 = 00000800  r4 = C44DE000 
+[<c0c77f10>] (dbg_leb_write+0x0/0xb8) from [<c0c542ac>] (ubifs_wbuf_write_nolock+0x444/0x6f4)
+[<c0c53e68>] (ubifs_wbuf_write_nolock+0x0/0x6f4) from [<c0c46f30>] (write_head+0x10c/0x150)
+[<c0c46e24>] (write_head+0x0/0x150) from [<c0c470d0>] (ubifs_jnl_write_inode+0x12c/0x25c)
+[<c0c46fa4>] (ubifs_jnl_write_inode+0x0/0x25c) from [<c0c50c38>] (ubifs_write_inode+0x118/0x18c)
+[<c0c50b20>] (ubifs_write_inode+0x0/0x18c) from [<c0bf2e68>] (__writeback_single_inode+0x200/0x384)
+ r7 = C405C5EC  r6 = C459EC00  r5 = C405C554  r4 = 00000001
+[<c0bf2c68>] (__writeback_single_inode+0x0/0x384) from [<c0bf32a0>] (sync_sb_inodes+0x1d8/0x2c8)
+[<c0bf30c8>] (sync_sb_inodes+0x0/0x2c8) from [<c0bf35a4>] (generic_sync_sb_inodes+0x10/0x14)
+[<c0bf3594>] (generic_sync_sb_inodes+0x0/0x14) from [<c0c65534>] (ubifs_budget_space+0x98c/0xe98)
+[<c0c64ba8>] (ubifs_budget_space+0x0/0xe98) from [<c0c4a578>] (ubifs_prepare_write+0x18c/0x1a4)
+[<c0c4a3ec>] (ubifs_prepare_write+0x0/0x1a4) from [<c0bb22f4>] (generic_file_buffered_write+0x2a0/0x694)
+[<c0bb2058>] (generic_file_buffered_write+0x4/0x694) from [<c0bb2c24>] (__generic_file_aio_write_nolock+0x53c/0x5bc)
+[<c0bb26e8>] (__generic_file_aio_write_nolock+0x0/0x5bc) from [<c0bb2d20>] (generic_file_aio_write+0x7c/0xf0)
+[<c0bb2ca8>] (generic_file_aio_write+0x4/0xf0) from [<c0c49220>] (ubifs_aio_write+0x1b4/0x244)
+[<c0c49070>] (ubifs_aio_write+0x4/0x244) from [<c0bd2718>] (do_sync_write+0xc0/0x114)
+[<c0bd2658>] (do_sync_write+0x0/0x114) from [<c0bd30d8>] (vfs_write+0xb8/0x194)
+ r6 = C44DFF80  r5 = BEF15AF8  r4 = C5183CA0 
+[<c0bd3020>] (vfs_write+0x0/0x194) from [<c0bd37f0>] (sys_write+0x4c/0x80)
+ r7 = 00000004  r6 = 00000000  r5 = 0006E000  r4 = C5183CA0
+[<c0bd37a4>] (sys_write+0x0/0x80) from [<c0b6fde0>] (ret_fast_syscall+0x0/0x2c)
+ r6 = 4001D660  r5 = BEF15AF8  r4 = 00002000 
+Code: e59f0650 ebf5b444 ebf554f6 e3a03000 (e5833000) 
+
+!!! More Info
+UBI: attaching mtd12 to ubi0
+UBI: physical eraseblock size:   131072 bytes (128 KiB)
+UBI: logical eraseblock size:    126976 bytes
+UBI: smallest flash I/O unit:    2048
+UBI: sub-page size:              512
+UBI: VID header offset:          2048 (aligned 2048)
+UBI: data offset:                4096
+UBI: attached mtd12 to ubi0
+UBI: MTD device name:            "nand_part2"
+UBI: MTD device size:            512 MiB
+UBI: number of good PEBs:        4095
+UBI: number of bad PEBs:         1
+UBI: max. allowed volumes:       128
+UBI: wear-leveling threshold:    4096
+UBI: number of internal volumes: 1
+UBI: number of user volumes:     2
+UBI: available PEBs:             0
+UBI: total number of reserved PEBs: 4095
+UBI: number of PEBs reserved for bad PEB handling: 40
+UBI: max/mean erase counter: 8/4
+UBI: background thread "ubi_bgt0d" started, PID 2066
+UBI device number 0, total 4095 LEBs (519966720 bytes, 495.9 MiB), available 0 LEBs (0 bytes), LEB size 126976 bytes (124.0 KiB)
+
+UBIFS: background thread "ubifs_bgt0_0" started, PID 2255
+UBIFS: mounted UBI device 0, volume 0, name "config_data"
+UBIFS: file system size: 19935232 bytes (19468 KiB, 19 MiB, 157 LEBs)
+UBIFS: journal size: 1015809 bytes (992 KiB, 0 MiB, 8 LEBs)
+UBIFS: default compressor: LZO
+UBIFS: media format 4, latest format 4
+UBIFS DBG (pid 2254): mount_ubifs: compiled on:         Dec 17 2008 at 07:07:21
+UBIFS DBG (pid 2254): mount_ubifs: min. I/O unit size:  2048 bytes
+UBIFS DBG (pid 2254): mount_ubifs: LEB size:            126976 bytes (124 KiB)
+UBIFS DBG (pid 2254): mount_ubifs: data journal heads:  1
+UBIFS DBG (pid 2254): mount_ubifs: UUID:                884BA528-F897-45BF-8F93-65BB2FAD7541
+UBIFS DBG (pid 2254): mount_ubifs: fast unmount:        0
+UBIFS DBG (pid 2254): mount_ubifs: big_lpt              0
+UBIFS DBG (pid 2254): mount_ubifs: log LEBs:            3 (3 - 5)
+UBIFS DBG (pid 2254): mount_ubifs: LPT area LEBs:       2 (6 - 7)
+UBIFS DBG (pid 2254): mount_ubifs: orphan area LEBs:    1 (8 - 8)
+UBIFS DBG (pid 2254): mount_ubifs: main area LEBs:      157 (9 - 165)
+UBIFS DBG (pid 2254): mount_ubifs: index LEBs:          1
+UBIFS DBG (pid 2254): mount_ubifs: total index bytes:   17152 (16 KiB, 0 MiB)
+UBIFS DBG (pid 2254): mount_ubifs: key hash type:       0
+UBIFS DBG (pid 2254): mount_ubifs: tree fanout:         8
+UBIFS DBG (pid 2254): mount_ubifs: reserved GC LEB:     20
+UBIFS DBG (pid 2254): mount_ubifs: first main LEB:      9
+UBIFS DBG (pid 2254): mount_ubifs: dead watermark:      2048
+UBIFS DBG (pid 2254): mount_ubifs: dark watermark:      6144
+UBIFS DBG (pid 2254): mount_ubifs: max. dark space:     964608 (942 KiB, 0 MiB)
+UBIFS DBG (pid 2254): mount_ubifs: maximum bud bytes:   634881 (620 KiB, 0 MiB)
+UBIFS DBG (pid 2254): mount_ubifs: BG commit bud bytes: 515840 (503 KiB, 0 MiB)
+UBIFS DBG (pid 2254): mount_ubifs: current bud bytes    112640 (110 KiB, 0 MiB)
+UBIFS DBG (pid 2254): mount_ubifs: max. seq. number:    30143
+UBIFS DBG (pid 2254): mount_ubifs: commit number:       59
+
+Note: after mount, FILL DISK PARTITION HERE !!!
+
+BUG: scheduling while atomic: tar/0xffffffff/2256
+Unable to handle kernel NULL pointer dereference at virtual address 00000000
+pgd = c4220000
+[00000000] *pgd=a420e031, *pte=00000000, *ppte=00000000
+Internal error: Oops: 817 [#1]
+Modules linked in:
+CPU: 0
+PC is at schedule+0x64/0x6dc
+LR is at schedule+0x60/0x6dc
+pc : [<c0e1e6a4>]    lr : [<c0e1e6a0>]    Not tainted
+sp : c44df834  ip : c44df834  fp : c44df86c
+r10: c661fa00  r9 : c661fba8  r8 : ffffffff
+r7 : ffffffff  r6 : 00000010  r5 : c0d2245c  r4 : c44df870
+r3 : 00000000  r2 : ffffffff  r1 : 00000001  r0 : 00000035
+Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  Segment user
+Control: 5317F
+Table: A4220000  DAC: 00000015
+Process tar (pid: 2256, stack limit = 0xc44de250)
+Stack: (0xc44df834 to 0xc44e0000)
+f820:                                              c44de000 c44df870 00000004 
+f840: 00000080 c44df870 00000000 00000010 ffffffff ffffffff c661fba8 c661fa00 
+f860: c44df898 c44df870 c0d2245c c0e1e650 00000000 c44cc580 c0ba16f0 c0f2abec 
+f880: c0f2abec c661fac0 c0f2abe0 c44df8a8 c44df89c c0d22740 c0d223bc c44df8d0 
+f8a0: c44df8ac c0d22934 c0d226ec c661fac0 c661fa00 c4b07000 0004aa60 00000000 
+f8c0: c661fac0 c44df8f4 c44df8d4 c0d1ddd8 c0d227d8 c44df8e0 00000800 00000000 
+f8e0: c4b07000 0004aa60 c44df948 c44df8f8 c0d1e83c c0d1dd68 00000000 00000000 
+f900: c661fa00 00000000 0004aa60 0000003f 00000000 00000800 00000000 c4b07000 
+f920: c661fac0 00000800 c661fa00 00000800 25530000 00000000 c661fba8 c44df974 
+f940: c44df94c c0d1f71c c0d1e59c 00000000 05530000 00000000 ffffc7d7 000002a9 
+f960: 00000800 00010000 c44df99c c44df978 c0d153e8 c0d1f68c c44df9ac c4b07000 
+f980: 00010000 00000000 c4b07000 ffffffe2 c44df9d8 c44df9a0 c0d2a6b0 c0d15348 
+f9a0: c44df9ac c4b07000 c0e20a50 c44df9c8 c509bb00 0000003c 00000800 c4b07000 
+f9c0: 000002a9 0000f000 00000000 c44dfa44 c44df9dc c0d28af0 c0d2a648 00000800 
+f9e0: 000002db 00000000 c0f285d8 c44dfa08 c44df9fc c0d08718 c0b84e10 c4b07000 
+fa00: 0000003c c66a1000 c603c800 000000f0 00000000 00000038 00000000 c509bb00 
+fa20: 0000003c 00000800 c4b07000 00000002 0000f000 00000000 c44dfa74 c44dfa48 
+fa40: c0d27d9c c0d28a6c 0000f000 00000800 00000002 c44de000 00000800 c509bb00 
+fa60: 0000003c c4b07000 c44dfaa8 c44dfa78 c0c77fac c0d27cc0 00000800 00000002 
+fa80: c44de000 c4b07800 c459ee60 000000a0 000000a0 c44dfb40 c4b07800 c44dfae8 
+faa0: c44dfaac c0c542ac c0c77f20 00000800 00000002 000000a0 000000a0 c60cc3e0 
+fac0: c44de000 c4b07800 00000060 00000001 000000a0 c44dfb40 c459ee60 c44dfb24 
+fae0: c44dfaec c0c46f30 c0c53e78 c0c46e1c c0c53b1c 00000001 c60cc3e0 00000000 
+fb00: c4b07800 c405c554 c60cc3e0 000000a0 00000000 00000000 c44dfb6c c44dfb28 
+fb20: c0c470d0 c0c46e34 c44dfb40 c44dfb3c 00000000 c44dfb40 c0cfd888 0000f780 
+fb40: 0000003c 00000001 c405c554 c405c698 c4b07800 00000000 00000000 c44dfc60 
+fb60: c44dfb94 c44dfb70 c0c50c38 c0c46fb4 c44dfc60 c44dfb94 00000001 c405c554 
+fb80: c459ec00 c405c5ec c44dfbdc c44dfb98 c0bf2e68 c0c50b30 0000001e 00000102 
+fba0: c44de000 00000000 c44dfbd4 c44de000 c0e88780 c459ec00 c405c554 c4b07804 
+fbc0: c44dfc60 c44de000 ffffc7d7 00000000 c44dfc08 c44dfbe0 c0bf32a0 c0bf2c78 
+fbe0: 00000010 c44dfc60 00000000 c44de000 00f3bc70 00000000 c4b07800 c44dfc18 
+fc00: c44dfc0c c0bf35a4 c0bf30d8 c44dfcc0 c44dfc1c c0c65534 c0bf35a4 0000000a 
+fc20: c44dfc3c c44dfc30 00e8e290 00000000 00000fa0 00000000 c44dfcc4 000000c0 
+fc40: 00000000 00001030 00000000 000000a0 00000000 000000c0 00001030 000000a0 
+fc60: 00000000 00000000 00000000 00000010 00000000 00000000 00000000 ffffffff 
+fc80: 7fffffff 00000000 00000000 00000000 00000000 00000000 00000000 00000000 
+fca0: 00001000 c43fe444 c4b07800 bef16af8 0000006f c44dfcfc c44dfcc4 c0c4a578 
+fcc0: c0c64bb8 00200008 00000000 00000000 00000000 00000000 00001000 00001000 
+fce0: c0f84500 00001000 00000000 00000000 c44dfd9c c44dfd00 c0bb22f4 c0c4a3fc 
+fd00: 00000001 c44dfeb4 00000001 00001000 c5183ca0 c43fe4dc c0e9893c c43fe444 
+fd20: 00001000 c44de000 c44dff38 00000000 00000002 00000000 c0f844e0 c0f84500 
+fd40: c0b6f9d8 c0b707b4 bef163d8 c26b6900 000006a0 706f7264 676e6970 20707520 
+fd60: 33206f74 72662033 73656d61 c5183164 20000e47 00000000 ffffffff c43fe444 
+fd80: c44dfefc 0006e000 00000000 00002000 c44dfe10 c44dfda4 c0bb2c24 c0bb2068 
+fda0: 0006f000 00000000 c44dfefc 00001000 00001000 c44dfefc c44dff38 c44dfeb4 
+fdc0: c5183ca0 c43fe4dc 00002000 00000000 00000001 c0be9494 00000002 c44dfefc 
+fde0: c5183120 c4f0b174 c43fe4b0 c44dfeb4 c43fe444 0006e000 00000000 00000001 
+fe00: c44dff38 c44dfe4c c44dfe14 c0bb2d20 c0bb26f8 00000000 00000e5a c5183ca0 
+fe20: c43fe4dc 00000000 c43fe444 c44dff80 c0f22208 c4b07800 00000001 c44dfeb4 
+fe40: c44dfea8 c44dfe54 c0c49220 c0bb2cb8 0006e000 00000000 c44dff38 c44dfe70 
+fe60: c0bb0604 c44dff38 00000001 c44dfefc 00002000 00000000 bef17af8 00000000 
+fe80: c44dfeb4 c5183ca0 c44dff80 00002000 c0b6ff84 c44de000 ffffffff c44dff58 
+fea0: c44dfeb0 c0bd2718 c0c49080 0006e000 00000000 c44dfee8 c44dfec4 00000000 
+fec0: 00000001 ffffffff c5183ca0 00000000 00000000 00000000 00000000 c44cc580 
+fee0: 00000000 00000000 c0bd0cd4 c44cc580 c0ba16f0 c44dfef4 c44dfef4 0006e000 
+ff00: 00000000 c44dff08 c517e914 c7c0caa0 5e692e1f 00002000 c51cd006 00000300 
+ff20: 00000000 00000000 00000000 c4f0b1d8 00000001 c5182134 bef15af8 00002000 
+ff40: c5183ca0 bef15af8 c44dff80 c44dff7c c44dff5c c0bd30d8 c0bd2668 00000000 
+ff60: c5183ca0 0006e000 00000000 00000004 c44dffa4 c44dff80 c0bd37f0 c0bd3030 
+ff80: 0006e000 00000000 00000000 00002000 bef15af8 4001d660 00000000 c44dffa8 
+ffa0: c0b6fde0 c0bd37b4 00002000 bef15af8 00000004 bef15af8 00002000 00071604 
+ffc0: 00002000 bef15af8 4001d660 00000004 00000000 00000004 ffffffff 00000003 
+ffe0: 00000000 bef15ad0 0000d9d4 40103e74 60000010 00000004 00000000 00000000 
+
+Backtrace: (see above)
+
+Kernel panic - not syncing: Aiee, killing interrupt handler!
