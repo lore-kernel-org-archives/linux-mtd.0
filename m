@@ -1,23 +1,23 @@
-Received: from mail-ew0-f13.google.com ([209.85.219.13])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LD2TA-0008Q8-Ce
-	for linux-mtd@lists.infradead.org; Wed, 17 Dec 2008 19:54:12 +0000
-Received: by ewy6 with SMTP id 6so85611ewy.18
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 17 Dec 2008 11:54:05 -0800 (PST)
-Subject: Re: [PATCH] [UBI] 1/5 - UBI notifications, take two
-From: dmitry pervushin <dpervushin@gmail.com>
-To: dedekind@infradead.org
-In-Reply-To: <1229349879.4911.45.camel@sauron>
-References: <1229339635.7900.21.camel@hp.diimka.lan>
-	<1229349879.4911.45.camel@sauron>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 17 Dec 2008 22:53:56 +0300
-Message-Id: <1229543636.7900.53.camel@hp.diimka.lan>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dpervushin@gmail.com
+Received: from az33egw02.freescale.net ([192.88.158.103])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1LD3Ys-0008R6-Pf
+	for linux-mtd@lists.infradead.org; Wed, 17 Dec 2008 21:04:08 +0000
+Date: Wed, 17 Dec 2008 13:01:54 -0800 (PST)
+From: Trent Piepho <tpiepho@freescale.com>
+To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: [PATCH] POWERPC: MTD: Add cached map support to physmap_of MTD
+	driver
+In-Reply-To: <1229417816.7319.4.camel@pasglop>
+Message-ID: <Pine.LNX.4.64.0812171211390.28806@t2.domain.actdsltmp>
+References: <1229365518-20538-1-git-send-email-tpiepho@freescale.com>
+	<18758.62580.416920.482077@cargo.ozlabs.ibm.com>
+	<Pine.LNX.4.64.0812151653050.28806@t2.domain.actdsltmp>
+	<1229417816.7319.4.camel@pasglop>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linuxppc-dev@ozlabs.org, Paul Mackerras <paulus@samba.org>,
+	Trent Piepho <xyzzy@speakeasy.org>,
+	MTD mailing list <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,39 +27,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2008-12-15 at 16:04 +0200, Artem Bityutskiy wrote:
-> Thanks for the patch, but I have some concerns. Please clarify some
-> things.
-> 
-> 1. If X is subscribed to the notification, you assume that can X open
-> UBI volumes from within the notification. At least I can see this in
-> your "simple FTL". But this is recursion, ant it is very tricky. And I
-> see problems related to this in your code. I may be mistaken, though.
-> See below.
-Thanks for reporting this. This is really a problem, and I'd suggest to
-create additional mode in addition to
-UBI_READONLY/UBI_READWRITE/UBI_EXCLUSIVE, say, UBI_OPEN_INTERNAL, to
-increase reference count on the volume. 
-> So you call notifiers from withing spin-locks. Are they really blocking
-> notifiers? Note, if you call any UBI kernel API function from the
-> notifier, you'll deadlock. E.g., if you call 'ubi_get_device_info()',
-> you'll deadlock on 'ubi_devices_lock'. Did you test your code?
-> 
-> I guess you should prohibit recursion and pass full UBI device/volume
-> information _inside_ the notifier. And the subsystems which work above
-> UBI should never _open_ UBI volumes from within notifiers. E.g., the
-> "simple FTL" stuff should open the UBI volume only when the
-> corresponding FTL block device is opened, not in the notifier.
-Although it is a good idea and it will save some time for notified
-modules -- it won't help me. The block device created by ftl could be
-opened immediately after creating, err.., actually, in the middle of
-creating - e.g., to read partition table.
+On Tue, 16 Dec 2008, Benjamin Herrenschmidt wrote:
+> On Mon, 2008-12-15 at 17:11 -0800, Trent Piepho wrote:
+>> Shame, as it provides a huge speed up.  I suppose an alternative would be
+>> to map the chip twice at different physical addresses, by just configuring
+>> the chip select to be twice the size it should be, and giving them
+>> different cacheability.
+>
+> Nice trick. That would probably work.
 
-The ubi_enum_volumes could open the volume with the flag
-UBI_OPEN_INTERNAL and thus release spinlock when calling notifiers.
+Thinking about it more, this is probably the way to do it.  Mapping the
+same address twice appeared to worked for me, but it looks like it's a bad
+thing to do.  To bad I didn't have time to finish this.
 
-Comments?
-> -- 
-> Best regards,
-> Artem Bityutskiy (Битюцкий Артём)
-> 
+Creating two copies of the flash chip will take twice the physical address
+space, but the virtual address space used is the same as mapping the chip
+twice.  Since kernel virtual address space <= physical address space, there
+really shouldn't be a problem with that.
+
+Probably do something like this to the dts:
+
+  localbus {
+-	ranges = <0x1 0x0 0xe8000000 0x08000000>;
++	ranges = <0x1 0x0 0xe0000000 0x10000000>;  /* CS size x2 */
+-       nor@1,0 {
++       nor@1,0x08000000 {
+ 		compatible = "cfi-flash";
+-		reg = <0x1 0x0 0x08000000>;
++		reg = <0x1 0x08000000 0x08000000>;
++		cached-alias = <&cached_nor>;
+         };
++	cached_nor: nor@1,0 {
++		compatible = "alias";
++		reg = <0x1 0 0x08000000>;
++	};
+  }
+
+Since physmap_of is an openfirmware driver, it won't be a problem to have
+if look for "cached-alias" to get the range to map as cached.  The MTD
+layer only supports one "map->phys" address, but I don't think this address
+is used for anything on powerpc.
+
+>> Or changing the mapping for writes and then changing it back.  It wouldn't
+>> be necessary to change the whole thing, just the page being written to.
+>
+> Right though changing mappings can be expensive. It might be worth
+> looking at using fixmap for that tho, which is the fastest way to setup
+> and tear down mappings, especially since we can (though we don't today)
+> implement a bypass on those to directly load the TLB.
+
+The MTD layer appears to program flash one word at a time, so writing to
+flash would mean changing maps on a per word basis.  Of course flash is
+slow too so maybe the relative cost is not that much.  It takes more
+modifications to MTD than the previous method.
+
+> The problem gets worsened by the fact that cores that support
+> speculative loads and prefetch will potentially bring anything mapped
+> into the cache even if it's not directly accessed.
+
+This is really the whole point of mapping it cached.  Since the cpu can
+prefetch data, it's able to use more efficient back-to-back reads or page
+burst mode to read a whole cache line at once.  The latter can more than
+triple the read rate.
