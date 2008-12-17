@@ -1,17 +1,25 @@
-Received: from smtp6.centerbeam.com ([64.95.134.54])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LCjrF-0006xo-Ht
-	for linux-mtd@lists.infradead.org; Wed, 17 Dec 2008 00:01:45 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: how does 'mv' command work in jffs2/NAND
-Date: Tue, 16 Dec 2008 16:01:45 -0800
-Message-ID: <705901BA1DF18142AB3DE716DDF374F801FBD2F5@CBA0E2K03.CBA0.centerbeam.com>
-From: "Manu Rao" <MRao@AlienTechnology.com>
-To: <linux-mtd@lists.infradead.org>
+Received: from toronto-hs-216-138-233-67.s-ip.magma.ca ([216.138.233.67]
+	helo=yow.seanm.ca)
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1LCnnU-0007G1-Q7
+	for linux-mtd@lists.infradead.org; Wed, 17 Dec 2008 04:14:09 +0000
+Date: Tue, 16 Dec 2008 23:14:00 -0500
+From: Sean MacLennan <smaclennan@pikatech.com>
+To: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+Subject: Re: [PATCH] ndfc driver
+Message-ID: <20081216231400.5ba6afa1@lappy.seanm.ca>
+In-Reply-To: <20081210181634.2aac2023@lappy.seanm.ca>
+References: <20081203222832.3fc77d28@lappy.seanm.ca>
+	<20081204090107.20269571@zod.rchland.ibm.com>
+	<20081208193446.37e27e26@lappy.seanm.ca>
+	<200812090710.27781.sr@denx.de>
+	<20081210181634.2aac2023@lappy.seanm.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linuxppc-dev@ozlabs.org, Stefan Roese <sr@denx.de>,
+	linux-mtd@lists.infradead.org, Arnd
+	Bergmann <arnd@arndb.de>, devicetree-discuss@ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,28 +29,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, 10 Dec 2008 18:16:34 -0500
+"Sean MacLennan" <sean.maclennan@ottawa.kanatek.ca> wrote:
 
-We have an embedded system with ARM9, running linux 2.6.22 and jffs2 on
-Samsung nand.
-As part of our bootup process, we modify the /etc/inittab so that the
-getty login screen is replaced with our application.
+> Here is an updated patch. Doc has been moved to 4xx and amcc changed
+> to ibm.
 
-  if sed "/^#*T0/cT0:23:respawn:/sbin/getty -L -n -l /our_app/app ttyS0"
-/etc/inittab > /etc/inittab_tmp; then
-	mv /etc/inittab_tmp /etc/inittab
+Anybody? Even if it is not perfect, it would be better to have
+a driver that at least compiles ;)
 
-We have recently discovered units where the inittab has a length of
-zero. My conjecture was that this had to do with the write-buffering,
-and when I add a sync after the move, I don't see the problem anymore.
-
-My boss, whose a hardware guy, insists that if we have a FileA that is
-being replaced with a FileB, we should always have access to either
-FileA or FileB, and that agrees with how I thought JFFS2 worked. But
-without any doubt, inittab is getting zeroed out.
-
-How does a move in the Filesystem occur? How can the size become zero?
-Any pointers appreciated.
-Thanks
-Manu Rao
-San Jose, CA
-PS: Please ignore previous posting without subject.
+Cheers,
+   Sean
