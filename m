@@ -1,16 +1,15 @@
 Subject: Re: [PATCH] MTD: fix dataflash 64-bit divisions
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Nicolas Pitre <nico@cam.org>
-In-Reply-To: <alpine.LFD.2.00.0812171205290.30035@xanadu.home>
+To: David Brownell <david-b@pacbell.net>
+In-Reply-To: <200812170956.55539.david-b@pacbell.net>
 References: <1229532627.17960.37.camel@sauron>
-	<alpine.LFD.2.00.0812171205290.30035@xanadu.home>
+	<200812170956.55539.david-b@pacbell.net>
 Content-Type: text/plain; charset=utf-8
-Date: Thu, 18 Dec 2008 08:20:07 +0200
-Message-Id: <1229581207.17960.55.camel@sauron>
+Date: Thu, 18 Dec 2008 08:26:57 +0200
+Message-Id: <1229581617.17960.63.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: David Brownell <david-b@pacbell.net>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
 	David Woodhouse <dwmw2@infradead.org>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,18 +21,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-12-17 at 12:15 -0500, Nicolas Pitre wrote:
-> > -		pageaddr =3D instr->addr / priv->page_size;
-> > +		tmp =3D instr->len;
-> > +		do_div(tmp, priv->page_size);
-> > +		pageaddr =3D tmp;
+On Wed, 2008-12-17 at 09:56 -0800, David Brownell wrote:
+> On Wednesday 17 December 2008, Artem Bityutskiy wrote:
+> > From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> > Date: Wed, 17 Dec 2008 19:42:38 +0200
+> > Subject: [PATCH] MTD: fix dataflash 64-bit divisions
+> >=20
+> > MTD has recently been upgraded for 64-bit support, see commit
+> > number 69423d99fc182a81f3c5db3eb5c140acc6fc64be in the
+> > mtd-2.6.git tree (git://git.infradead.org/mtd-2.6.git)
 >=20
-> Here I suggest you include <linux/math64.h> and use this instead:
->=20
-> 	pageaddr =3D div_u64(instr->addr, priv->page_size);
+> Hmm, in another thread I was just reading about how Linux
+> would only support the first 2 GBytes of a 4 GByte NAND
+> chip (Samsung MT29F16G08DAA) ... the updates to support
+> large pages were easy, but signed 32-bit offsets prevented
+> the full size from being recognized.  Slightly older parts
+> integrated four dies with 2K pages, not two with 4KB ones,
+> and gave no trouble.
 
-Indeed, these div_u64()/div_u64_rem() functions seem to be nicer. Never
-used them before.
+Yeah, we still do not support 4KiB pages, and >2GiB NANDs.
+
+> Would this be part of a set of patches making 4 GByte
+> (and eventually, larger) NAND chips behave?
+
+Well, this patch does only part of the job - it changes
+in-kernel API. Yes, makes >4GiB NANDs behave, and we tested
+it with NAND simulator (nandsim).
+
+However, all the user-space interfaces are still 32-bit.
+And the interfaces are not extendible, so someone should
+invent completely new MTD interfaces.
+
+And to support 4KiB-page NANDs, which have 128bytes OOB,
+one needs to change user-space interfaces (ioctls), because
+they support 64-bit OOBs at max. On the other hand, I
+personally do not care about OOB support, because it is
+in general better to avoid any use of OOB.
 
 --=20
 Best regards,
