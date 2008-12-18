@@ -1,20 +1,19 @@
-Received: from yw-out-1718.google.com ([74.125.46.153])
+Received: from rn-out-0910.google.com ([64.233.170.188])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LDJgL-00058N-QD
-	for linux-mtd@lists.infradead.org; Thu, 18 Dec 2008 14:16:54 +0000
-Received: by yw-out-1718.google.com with SMTP id 5so169919ywm.72
+	id 1LDJjr-0007Ap-SN
+	for linux-mtd@lists.infradead.org; Thu, 18 Dec 2008 14:20:32 +0000
+Received: by rn-out-0910.google.com with SMTP id k50so565292rnd.3
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 18 Dec 2008 06:16:53 -0800 (PST)
-Message-ID: <52e42efe0812180616u59242b0eucccaccdd5e276f22@mail.gmail.com>
-Date: Thu, 18 Dec 2008 15:16:53 +0100
+	Thu, 18 Dec 2008 06:20:31 -0800 (PST)
+Message-ID: <52e42efe0812180615u19344697la740e4ca1a060aff@mail.gmail.com>
+Date: Thu, 18 Dec 2008 15:15:03 +0100
 From: "Sidney Amani" <amani_s@epitech.net>
 Sender: seed95@gmail.com
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] Makefile export libraries headers
+Subject: [PATCH 0/2] mtd-utils export libraries
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Content-Type: multipart/alternative;
+	boundary="----=_Part_25161_4808573.1229609703445"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From 9d61143fdeb85b0239bd8e755114c50a45a151ef Mon Sep 17 00:00:00 2001
-From: Sidney Amani <amani_s@epitech.net>
-Date: Wed, 17 Dec 2008 12:50:54 +0100
-Subject: [PATCH] Makefile export libraries headers
+------=_Part_25161_4808573.1229609703445
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Export headers, if we want to use the previoulsy exported
-shared libraries we will need them.
+Hi,
 
-Signed-off-by: Sidney Amani <amani_s@epitech.net>
-Signed-off-by: Corentin Chary <chary_c@epitech.net>
----
- ubi-utils/new-utils/Makefile |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
+We are currently working on an UBI based userspace filesystem.
 
-diff --git a/ubi-utils/new-utils/Makefile b/ubi-utils/new-utils/Makefile
-index a975a99..560e391 100644
---- a/ubi-utils/new-utils/Makefile
-+++ b/ubi-utils/new-utils/Makefile
-@@ -6,7 +6,7 @@ KERNELHDR := ../../include
- DESTDIR := /usr/local
- SBINDIR=/usr/sbin
- MANDIR=/usr/man
--INCLUDEDIR=/usr/include
-+INCLUDEDIR=/include
- LIBDIR=/lib
+We wanted to use libubi. So here is our patch to export shared libraries and
+headers. This is done for each library in LIBS.
 
- CC := $(CROSS)gcc
-@@ -74,6 +74,9 @@ clean:
- install: ${UTILS}
- 	mkdir -p ${DESTDIR}/${SBINDIR}
- 	install -m 0755 ${UTILS} ${DESTDIR}/${SBINDIR}/
-+	for i in $(addsuffix .h, $(LIBS)); do \
-+		[ -f include/$$i ] &&  install -m 0755 include/$$i  ${DESTDIR}/${LIBDIR}/; \
-+	done
- 	for i in $(addsuffix .so, $(LIBS)); do \
- 		[ -f $$i ] &&  install -m 0755 $$i  ${DESTDIR}/${LIBDIR}/; \
- 	done
+
+
 -- 
-1.5.6.4
+Sidney Amani
+
+------=_Part_25161_4808573.1229609703445
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+<meta name="qrichtext" content="1"><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><style type="text/css">
+p, li { white-space: pre-wrap; }
+</style>
+<p style="margin: 0px; text-indent: 0px;"></p>
+<p style="margin: 0px; text-indent: 0px;">Hi,</p>
+<p style="margin: 0px; text-indent: 0px;">We are currently working on an UBI based userspace filesystem.</p>
+<p style="margin: 0px; text-indent: 0px;">We wanted to use libubi. So here is our patch to export shared libraries and headers. This is done for each library in LIBS.</p>
+<p style="margin: 0px; text-indent: 0px;"></p><br clear="all"><br>-- <br>Sidney Amani<br>
+
+------=_Part_25161_4808573.1229609703445--
