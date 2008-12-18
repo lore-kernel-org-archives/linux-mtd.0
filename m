@@ -1,10 +1,9 @@
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: linux-mtd@lists.infradead.org
-Date: Thu, 18 Dec 2008 14:09:56 +0200
-Message-Id: <20081218120956.29978.4145.sendpatchset@localhost.localdomain>
-Subject: [PATCH v3] MTD: fix dataflash 64-bit divisions
-Cc: David Brownell <david-b@pacbell.net>, David Woodhouse <dwmw2@infradead.org>,
-	Nicolas Pitre <nico@cam.org>
+Date: Thu, 18 Dec 2008 14:10:05 +0200
+Message-Id: <20081218121005.29980.41658.sendpatchset@localhost.localdomain>
+Subject: [PATCH v3] MTD: fix m25p80 64-bit divisions
+Cc: David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,7 +14,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Subject: [PATCH] MTD: fix dataflash 64-bit divisions
+Subject: [PATCH] MTD: fix m25p80 64-bit divisions
 
 MTD has recently been upgraded for 64-bit support, see commit
 number 69423d99fc182a81f3c5db3eb5c140acc6fc64be in the
@@ -29,8 +28,7 @@ and the 'addr'/'len' fields in 'struct erase_info'. This
 means we have to use 'do_div' to divide them.
 
 This patch fixes the following linking error:
-ERROR: "__udivdi3" [drivers/mtd/devices/mtd_dataflash.ko] undefined!
-ERROR: "__umoddi3" [drivers/mtd/devices/mtd_dataflash.ko] undefined!
+ERROR: "__umoddi3" [drivers/mtd/devices/m25p80.ko] undefined!
 
 This patch changes divisions of 64-bit variable so that they use
 'do_div'. This patch also change some print placeholders to
@@ -38,70 +36,106 @@ get rid of gcc warnings.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: David Brownell <david-b@pacbell.net>
-Cc: Nicolas Pitre <nico@cam.org>
 ---
- drivers/mtd/devices/mtd_dataflash.c |   24 +++++++++++++++---------
- 1 files changed, 15 insertions(+), 9 deletions(-)
+ drivers/mtd/devices/m25p80.c |   37 +++++++++++++++++++------------------
+ 1 files changed, 19 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-index 6dd9aff..6806897 100644
---- a/drivers/mtd/devices/mtd_dataflash.c
-+++ b/drivers/mtd/devices/mtd_dataflash.c
-@@ -16,6 +16,7 @@
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 6659b22..9be0229 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -20,6 +20,7 @@
  #include <linux/device.h>
+ #include <linux/interrupt.h>
  #include <linux/mutex.h>
- #include <linux/err.h>
 +#include <linux/math64.h>
  
- #include <linux/spi/spi.h>
- #include <linux/spi/flash.h>
-@@ -152,15 +153,20 @@ static int dataflash_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	struct spi_message	msg;
- 	unsigned		blocksize = priv->page_size << 3;
- 	uint8_t			*command;
-+	uint32_t		rem;
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+@@ -169,9 +170,9 @@ static int wait_till_ready(struct m25p *flash)
+  */
+ static int erase_chip(struct m25p *flash)
+ {
+-	DEBUG(MTD_DEBUG_LEVEL3, "%s: %s %dKiB\n",
++	DEBUG(MTD_DEBUG_LEVEL3, "%s: %s %lldKiB\n",
+ 			flash->spi->dev.bus_id, __func__,
+-			flash->mtd.size / 1024);
++			(long long)(flash->mtd.size >> 10));
  
--	DEBUG(MTD_DEBUG_LEVEL2, "%s: erase addr=0x%x len 0x%x\n",
--			spi->dev.bus_id,
--			instr->addr, instr->len);
-+	DEBUG(MTD_DEBUG_LEVEL2, "%s: erase addr=0x%llx len 0x%llx\n",
-+			spi->dev.bus_id, (long long)instr->addr,
-+			(long long)instr->len);
+ 	/* Wait until finished previous write command. */
+ 	if (wait_till_ready(flash))
+@@ -232,18 +233,18 @@ static int m25p80_erase(struct mtd_info *mtd, struct erase_info *instr)
+ {
+ 	struct m25p *flash = mtd_to_m25p(mtd);
+ 	u32 addr,len;
++	uint32_t rem;
  
- 	/* Sanity checks */
--	if ((instr->addr + instr->len) > mtd->size
--			|| (instr->len % priv->page_size) != 0
--			|| (instr->addr % priv->page_size) != 0)
-+	if (instr->addr + instr->len > mtd->size)
-+		return -EINVAL;
-+	div_u64_rem(instr->len, priv->page_size, &rem);
-+	if (rem)
-+		return -EINVAL;
-+	div_u64_rem(instr->addr, priv->page_size, &rem);
+-	DEBUG(MTD_DEBUG_LEVEL2, "%s: %s %s 0x%08x, len %d\n",
++	DEBUG(MTD_DEBUG_LEVEL2, "%s: %s %s 0x%llx, len %lld\n",
+ 			flash->spi->dev.bus_id, __func__, "at",
+-			(u32)instr->addr, instr->len);
++			(long long)instr->addr, (long long)instr->len);
+ 
+ 	/* sanity checks */
+ 	if (instr->addr + instr->len > flash->mtd.size)
+ 		return -EINVAL;
+-	if ((instr->addr % mtd->erasesize) != 0
+-			|| (instr->len % mtd->erasesize) != 0) {
++	div_u64_rem(instr->len, mtd->erasesize, &rem);
 +	if (rem)
  		return -EINVAL;
+-	}
  
- 	spi_message_init(&msg);
-@@ -178,7 +184,7 @@ static int dataflash_erase(struct mtd_info *mtd, struct erase_info *instr)
- 		/* Calculate flash page address; use block erase (for speed) if
- 		 * we're at a block boundary and need to erase the whole block.
- 		 */
--		pageaddr = instr->addr / priv->page_size;
-+		pageaddr = div_u64(instr->len, priv->page_size);
- 		do_block = (pageaddr & 0x7) == 0 && instr->len >= blocksize;
- 		pageaddr = pageaddr << priv->page_offset;
+ 	addr = instr->addr;
+ 	len = instr->len;
+@@ -677,24 +678,24 @@ static int __devinit m25p_probe(struct spi_device *spi)
+ 		flash->mtd.erasesize = info->sector_size;
+ 	}
  
-@@ -667,8 +673,8 @@ add_dataflash_otp(struct spi_device *spi, char *name,
- 	if (revision >= 'c')
- 		otp_tag = otp_setup(device, revision);
+-	dev_info(&spi->dev, "%s (%d Kbytes)\n", info->name,
+-			flash->mtd.size / 1024);
++	dev_info(&spi->dev, "%s (%lld Kbytes)\n", info->name,
++			(long long)flash->mtd.size >> 10);
  
--	dev_info(&spi->dev, "%s (%d KBytes) pagesize %d bytes%s\n",
--			name, DIV_ROUND_UP(device->size, 1024),
-+	dev_info(&spi->dev, "%s (%lld KBytes) pagesize %d bytes%s\n",
-+			name, (long long)((device->size + 1023) >> 10),
- 			pagesize, otp_tag);
- 	dev_set_drvdata(&spi->dev, priv);
+ 	DEBUG(MTD_DEBUG_LEVEL2,
+-		"mtd .name = %s, .size = 0x%.8x (%uMiB) "
++		"mtd .name = %s, .size = 0x%llx (%lldMiB) "
+ 			".erasesize = 0x%.8x (%uKiB) .numeraseregions = %d\n",
+ 		flash->mtd.name,
+-		flash->mtd.size, flash->mtd.size / (1024*1024),
++		(long long)flash->mtd.size, (long long)(flash->mtd.size >> 20),
+ 		flash->mtd.erasesize, flash->mtd.erasesize / 1024,
+ 		flash->mtd.numeraseregions);
  
+ 	if (flash->mtd.numeraseregions)
+ 		for (i = 0; i < flash->mtd.numeraseregions; i++)
+ 			DEBUG(MTD_DEBUG_LEVEL2,
+-				"mtd.eraseregions[%d] = { .offset = 0x%.8x, "
++				"mtd.eraseregions[%d] = { .offset = 0x%llx, "
+ 				".erasesize = 0x%.8x (%uKiB), "
+ 				".numblocks = %d }\n",
+-				i, flash->mtd.eraseregions[i].offset,
++				i, (long long)flash->mtd.eraseregions[i].offset,
+ 				flash->mtd.eraseregions[i].erasesize,
+ 				flash->mtd.eraseregions[i].erasesize / 1024,
+ 				flash->mtd.eraseregions[i].numblocks);
+@@ -722,12 +723,12 @@ static int __devinit m25p_probe(struct spi_device *spi)
+ 		if (nr_parts > 0) {
+ 			for (i = 0; i < nr_parts; i++) {
+ 				DEBUG(MTD_DEBUG_LEVEL2, "partitions[%d] = "
+-					"{.name = %s, .offset = 0x%.8x, "
+-						".size = 0x%.8x (%uKiB) }\n",
++					"{.name = %s, .offset = 0x%llx, "
++						".size = 0x%llx (%lldKiB) }\n",
+ 					i, parts[i].name,
+-					parts[i].offset,
+-					parts[i].size,
+-					parts[i].size / 1024);
++					(long long)parts[i].offset,
++					(long long)parts[i].size,
++					(long long)(parts[i].size >> 10));
+ 			}
+ 			flash->partitioned = 1;
+ 			return add_mtd_partitions(&flash->mtd, parts, nr_parts);
 -- 
 1.5.4.3
