@@ -1,24 +1,16 @@
-Received: from mail-bw0-f12.google.com ([209.85.218.12])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LDP6K-0002K0-Kq
-	for linux-mtd@lists.infradead.org; Thu, 18 Dec 2008 20:04:05 +0000
-Received: by bwz5 with SMTP id 5so1271144bwz.18
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1LDPMv-0007ov-FX
+	for linux-mtd@lists.infradead.org; Thu, 18 Dec 2008 20:21:14 +0000
+Received: from localhost.localdomain (localhost [127.0.0.1])
+	by smtp.gentoo.org (Postfix) with ESMTP id 2F7BC660DC
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 18 Dec 2008 12:04:02 -0800 (PST)
-Message-ID: <71cd59b00812181200n20b31037qc0d6ab8c2fda3114@mail.gmail.com>
-Date: Thu, 18 Dec 2008 21:00:51 +0100
-From: "Corentin Chary" <chary_c@epitech.net>
-Sender: corentin.chary@gmail.com
-To: "Josh Boyer" <jwboyer@gmail.com>
-Subject: Re: [PATCH 1/2] Makefile export shared libraries
-In-Reply-To: <20081218191235.GD18201@yoda.jdub.homelinux.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <52e42efe0812180616q28c10c72nae087e214c014676@mail.gmail.com>
-	<20081218191235.GD18201@yoda.jdub.homelinux.org>
-Cc: Sidney Amani <amani_s@epitech.net>, linux-mtd@lists.infradead.org
+	Thu, 18 Dec 2008 20:21:09 +0000 (UTC)
+From: Mike Frysinger <vapier@gentoo.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v2] unify all common build system parts
+Date: Thu, 18 Dec 2008 16:05:18 -0500
+Message-Id: <1229634318-12997-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,27 +20,474 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 18, 2008 at 8:12 PM, Josh Boyer <jwboyer@gmail.com> wrote:
->
-> I don't see where you actually create a shared library here.  There
-> is no soname set, for example.  I'm not opposed to creating shared
-> libraries, but it should be done properly so that if the API/ABI
-> changes then we can bump the soname, etc.
+Rather than duplicating the same thing over and over in every Makefile,
+move it all to common.mk.
 
-The rules  which create the .so are:
+Other things fixed here:
+ - doing subdirs in parallel
+ - fix src!=build compiling in subdirs
 
-shared: $(addsuffix .so, $(LIBS))
-%.pic.o: %.c
-      $(CC) $(CFLAGS) -fPIC $(CPPFLAGS) $< -c -o $@
-%.so: %.pic.o
-      $(CC) $(LDFLAGS) -shared -o $@ $^
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+---
+v2
+	- fix install by removing unneeded `make -C install` in top level Makefile
 
-We forgot to add -Wl,-soname,foo .
-Is there anything else ?
-If it's ok we will re-send the patch tomorow.
+ Makefile                     |   79 +++++++++++------------------------------
+ common.mk                    |   58 ++++++++++++++++++++++++++++++
+ mkfs.ubifs/Makefile          |   20 +++++-----
+ ubi-utils/Makefile           |   77 ++++++++++++++--------------------------
+ ubi-utils/new-utils/Makefile |   79 +++++++++++++++--------------------------
+ 5 files changed, 145 insertions(+), 168 deletions(-)
+ create mode 100644 common.mk
 
-
-
+diff --git a/Makefile b/Makefile
+index 8319599..969ab87 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,30 +1,15 @@
+ 
+ # -*- sh -*-
+ 
+-PREFIX=/usr
+-EXEC_PREFIX=$(PREFIX)
+-SBINDIR=$(EXEC_PREFIX)/sbin
+-MANDIR=$(PREFIX)/share/man
+-INCLUDEDIR=$(PREFIX)/include
+-
+-#CROSS=arm-linux-
+-CC := $(CROSS)gcc
+-CFLAGS ?= -O2 -g
+-CFLAGS += -Wall
+ CPPFLAGS += -I./include $(ZLIBCPPFLAGS) $(LZOCPPFLAGS)
+ 
+-ifeq ($(origin CROSS),undefined)
+-  BUILDDIR := .
+-else
+-# Remove the trailing slash to make the directory name
+-  BUILDDIR := $(CROSS:-=)
+-endif
+-
+ ifeq ($(WITHOUT_XATTR), 1)
+   CPPFLAGS += -DWITHOUT_XATTR
+ endif
+ 
+-RAWTARGETS = ftl_format flash_erase flash_eraseall nanddump doc_loadbios \
++SUBDIRS = mkfs.ubifs ubi-utils
++
++TARGETS = ftl_format flash_erase flash_eraseall nanddump doc_loadbios \
+ 	ftl_check mkfs.jffs2 flash_lock flash_unlock flash_info \
+ 	flash_otp_info flash_otp_dump mtd_debug flashcp nandwrite nandtest \
+ 	jffs2dump \
+@@ -33,71 +18,49 @@ RAWTARGETS = ftl_format flash_erase flash_eraseall nanddump doc_loadbios \
+ 	serve_image recv_image \
+ 	sumtool #jffs2reader
+ 
+-TARGETS = $(foreach target,$(RAWTARGETS),$(BUILDDIR)/$(target))
+-
+ SYMLINKS =
+ 
+-%: %.o
+-	$(CC) $(CFLAGS) $(LDFLAGS) -g -o $@ $^
+-
+-$(BUILDDIR)/%.o: %.c
+-	mkdir -p $(BUILDDIR)
+-	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $< -g -Wp,-MD,$(BUILDDIR)/.$(<F).dep
+-
+-.SUFFIXES:
++include common.mk
+ 
+-all: $(TARGETS)
+-	$(MAKE) -C $(BUILDDIR)/ubi-utils
+-	$(MAKE) -C $(BUILDDIR)/mkfs.ubifs
+-
+-IGNORE=${wildcard $(BUILDDIR)/.*.c.dep}
+--include ${IGNORE}
+-
+-clean:
+-	rm -f $(BUILDDIR)/*.o $(TARGETS) $(BUILDDIR)/.*.c.dep $(SYMLINKS)
+-	if [ "$(BUILDDIR)x" != ".x" ]; then rm -rf $(BUILDDIR); fi
+-	$(MAKE) -C $(BUILDDIR)/ubi-utils clean
+-	$(MAKE) -C $(BUILDDIR)/mkfs.ubifs clean
++clean::
++	-rm -f $(SYMLINKS)
++ifneq ($(BUILDDIR)/.git,)
++ifneq ($(BUILDDIR),.)
++ifneq ($(BUILDDIR),$(PWD))
++	rm -rf $(BUILDDIR)
++endif
++endif
++endif
+ 
+ $(SYMLINKS):
+ 	ln -sf ../fs/jffs2/$@ $@
+ 
+-$(BUILDDIR)/mkfs.jffs2: $(BUILDDIR)/crc32.o \
+-			$(BUILDDIR)/compr_rtime.o \
+-			$(BUILDDIR)/mkfs.jffs2.o \
+-			$(BUILDDIR)/compr_zlib.o \
+-			$(BUILDDIR)/compr_lzo.o \
+-			$(BUILDDIR)/compr.o \
+-			$(BUILDDIR)/rbtree.o
+-	$(CC) $(LDFLAGS) -o $@ $^ $(ZLIBLDFLAGS) -lz $(LZOLDFLAGS) -llzo2
++$(BUILDDIR)/mkfs.jffs2: $(addprefix $(BUILDDIR)/,\
++	crc32.o compr_rtime.o mkfs.jffs2.o compr_zlib.o compr_lzo.o \
++	compr.o rbtree.o)
++LDFLAGS_mkfs.jffs2 = $(ZLIBLDFLAGS) $(LZOLDFLAGS)
++LDLIBS_mkfs.jffs2  = -lz -llzo2
+ 
+ $(BUILDDIR)/flash_eraseall: $(BUILDDIR)/crc32.o $(BUILDDIR)/flash_eraseall.o
+-	$(CC) $(LDFLAGS) -o $@ $^
+ 
+ $(BUILDDIR)/jffs2reader: $(BUILDDIR)/jffs2reader.o
+-	$(CC) $(LDFLAGS) -o $@ $^ $(ZLIBLDFLAGS) -lz
++LDFLAGS_jffs2reader = $(ZLIBLDFLAGS) $(LZOLDFLAGS)
++LDLIBS_jffs2reader  = -lz -llzo2
+ 
+ $(BUILDDIR)/jffs2dump: $(BUILDDIR)/jffs2dump.o $(BUILDDIR)/crc32.o
+-	$(CC) $(LDFLAGS) -o $@ $^
+ 
+ $(BUILDDIR)/sumtool: $(BUILDDIR)/sumtool.o $(BUILDDIR)/crc32.o
+-	$(CC) $(LDFLAGS) -o $@ $^
+ 
+ $(BUILDDIR)/serve_image: $(BUILDDIR)/serve_image.o $(BUILDDIR)/crc32.o $(BUILDDIR)/fec.o
+-	$(CC) $(LDFLAGS) -o $@ $^
+ 
+ $(BUILDDIR)/recv_image: $(BUILDDIR)/recv_image.o $(BUILDDIR)/crc32.o $(BUILDDIR)/fec.o
+-	$(CC) $(LDFLAGS) -o $@ $^
+ 
+ $(BUILDDIR)/fectest: $(BUILDDIR)/fectest.o $(BUILDDIR)/crc32.o $(BUILDDIR)/fec.o
+-	$(CC) $(LDFLAGS) -o $@ $^
+ 
+ 
+ 
+-install: ${TARGETS}
++install:: ${TARGETS}
+ 	mkdir -p ${DESTDIR}/${SBINDIR}
+ 	install -m 0755 ${TARGETS} ${DESTDIR}/${SBINDIR}/
+ 	mkdir -p ${DESTDIR}/${MANDIR}/man1
+ 	gzip -9c mkfs.jffs2.1 > ${DESTDIR}/${MANDIR}/man1/mkfs.jffs2.1.gz
+-	$(MAKE) -C $(BUILDDIR)/ubi-utils install
+-	$(MAKE) -C $(BUILDDIR)/mkfs.ubifs install
+diff --git a/common.mk b/common.mk
+new file mode 100644
+index 0000000..5dd21ab
+--- /dev/null
++++ b/common.mk
+@@ -0,0 +1,58 @@
++CC := $(CROSS)gcc
++AR := $(CROSS)ar
++RANLIB := $(CROSS)ranlib
++CFLAGS ?= -O2 -g
++CFLAGS += -Wall -Wwrite-strings -W
++
++DESTDIR ?= /usr/local
++PREFIX=/usr
++EXEC_PREFIX=$(PREFIX)
++SBINDIR=$(EXEC_PREFIX)/sbin
++MANDIR=$(PREFIX)/share/man
++INCLUDEDIR=$(PREFIX)/include
++
++ifndef BUILDDIR
++ifeq ($(origin CROSS),undefined)
++  BUILDDIR := $(PWD)
++else
++# Remove the trailing slash to make the directory name
++  BUILDDIR := $(PWD)/$(CROSS:-=)
++endif
++endif
++
++override TARGETS := $(addprefix $(BUILDDIR)/,$(TARGETS))
++
++SUBDIRS_ALL = $(patsubst %,subdirs_%_all,$(SUBDIRS))
++SUBDIRS_CLEAN = $(patsubst %,subdirs_%_clean,$(SUBDIRS))
++SUBDIRS_INSTALL = $(patsubst %,subdirs_%_install,$(SUBDIRS))
++
++all:: $(TARGETS) $(SUBDIRS_ALL)
++
++clean:: $(SUBDIRS_CLEAN)
++	rm -f $(BUILDDIR)/*.o $(TARGETS) $(BUILDDIR)/.*.c.dep
++
++install:: $(TARGETS) $(SUBDIRS_INSTALL)
++
++$(BUILDDIR)/%: $(BUILDDIR)/%.o
++	$(CC) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_$(notdir $@)) -g -o $@ $^ $(LDLIBS) $(LDLIBS_$(notdir $@))
++
++$(BUILDDIR)/%.a:
++	$(AR) crv $@ $^
++	$(RANLIB) $@
++
++$(BUILDDIR)/%.o: %.c
++	mkdir -p $(dir $@)
++	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $< -g -Wp,-MD,$(BUILDDIR)/.$(<F).dep
++
++subdirs_%:
++	d=$(patsubst subdirs_%,%,$@); \
++	t=`echo $$d | sed s:.*_::` d=`echo $$d | sed s:_.*::`; \
++	$(MAKE) BUILDDIR=$(BUILDDIR)/$$d -C $$d $$t
++
++.SUFFIXES:
++
++IGNORE=${wildcard $(BUILDDIR)/.*.c.dep}
++-include ${IGNORE}
++
++PHONY += all clean install
++.PHONY: $(PHONY)
+diff --git a/mkfs.ubifs/Makefile b/mkfs.ubifs/Makefile
+index 9471ac4..e5bf9ce 100644
+--- a/mkfs.ubifs/Makefile
++++ b/mkfs.ubifs/Makefile
+@@ -1,23 +1,23 @@
+-DESTDIR := /usr/local
+-SBINDIR=/usr/sbin
+ ALL_SOURCES=*.[ch] hashtable/*.[ch]
+-CFLAGS += -Wall
+-LDLIBS += -lz -llzo2 -lm -luuid
++
+ TARGETS = mkfs.ubifs
+ 
+-all: $(TARGETS)
++LDLIBS_mkfs.ubifs = -lz -llzo2 -lm -luuid
++
++include ../common.mk
+ 
+-mkfs.ubifs: crc16.o crc32.o lpt.o compr.o hashtable/hashtable.o \
+-            hashtable/hashtable_itr.o devtable.o
++$(BUILDDIR)/mkfs.ubifs: $(addprefix $(BUILDDIR)/,\
++	crc16.o crc32.o lpt.o compr.o devtable.o \
++	hashtable/hashtable.o hashtable/hashtable_itr.o)
+ 
+-clean:
+-	rm -f *.o hashtable/*.o $(TARGETS) cscope.*
++clean::
++	rm -f $(BUILDDIR)/hashtable/*.o cscope.*
+ 
+ cscope:
+ 	@echo $(ALL_SOURCES) > cscope.files
+ 	@cscope -bR
+ 	@rm cscope.files
+ 
+-install: ${TARGETS}
++install:: ${TARGETS}
+ 	mkdir -p ${DESTDIR}/${SBINDIR}
+ 	install -m 0755 ${TARGETS} ${DESTDIR}/${SBINDIR}/
+diff --git a/ubi-utils/Makefile b/ubi-utils/Makefile
+index 63058e1..3be813a 100644
+--- a/ubi-utils/Makefile
++++ b/ubi-utils/Makefile
+@@ -3,77 +3,54 @@
+ #
+ 
+ KERNELHDR := ../include
+-DESTDIR := /usr/local
+-SBINDIR=/usr/sbin
+-MANDIR=/usr/share/man
+-INCLUDEDIR=/usr/include
+ 
+-CC := $(CROSS)gcc
+ CFLAGS ?= -O2 -g -Werror
+-CFLAGS += -Wall -Wwrite-strings -W
+ CPPFLAGS += -I./inc -I./src -I$(KERNELHDR) \
+ 	-std=gnu99 -DPACKAGE_VERSION=\"1.0\"
+ 
+ PERLPROGS = mkpfi ubicrc32.pl
+ 
+-NTARGETS = ubiattach ubicrc32 ubidetach ubimkvol ubinfo ubinize \
+-	ubirmvol ubiupdatevol ubiformat
++SUBDIRS = new-utils
++
+ TARGETS = pfiflash pddcustomize ubimirror bin2nand nand2bin ubigen \
+-	mkbootenv unubi pfi2bin $(NTARGETS)
++	mkbootenv unubi pfi2bin
+ 
+ vpath   %.c ./src
+ 
+-%: %.o
+-	$(CC) $(LDFLAGS) -g -o $@ $^
+-
+-%.o: %.c
+-	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $< -g -Wp,-MD,.$(shell basename $<).dep
+-
+-all: $(TARGETS)
+-
+-IGNORE=${wildcard .*.c.dep}
+--include ${IGNORE}
+-
+-$(NTARGETS):
+-	$(MAKE) -C new-utils $@
+-	mv new-utils/$@ $@
+-
+-clean:
+-	rm -rf *.o $(TARGETS) .*.c.dep
+-	$(MAKE) -C new-utils clean
++include ../common.mk
+ 
+-pddcustomize: pddcustomize.o error.o libubimirror.o bootenv.o hashmap.o \
+-		libubi.o crc32.o
+-	$(CC) $(LDFLAGS) -o $@ $^
++$(BUILDDIR)/pddcustomize: $(addprefix $(BUILDDIR)/,\
++	pddcustomize.o error.o libubimirror.o bootenv.o hashmap.o \
++	libubi.o crc32.o)
+ 
+-pfiflash: pfiflash.o libpfiflash.o list.o reader.o error.o libubimirror.o \
+-		bootenv.o hashmap.o pfi.o libubi.o crc32.o
+-	$(CC) $(LDFLAGS) -o $@ $^
++$(BUILDDIR)/pfiflash: $(addprefix $(BUILDDIR)/,\
++	pfiflash.o libpfiflash.o list.o reader.o error.o libubimirror.o \
++	bootenv.o hashmap.o pfi.o libubi.o crc32.o)
+ 
+-ubimirror: ubimirror.o error.o libubimirror.o bootenv.o hashmap.o \
+-		libubi.o crc32.o
+-	$(CC) $(LDFLAGS) -o $@ $^
++$(BUILDDIR)/ubimirror: $(addprefix $(BUILDDIR)/,\
++	ubimirror.o error.o libubimirror.o bootenv.o hashmap.o \
++	libubi.o crc32.o)
+ 
+-nand2bin: nand2bin.o nandecc.o nandcorr.o
+-	$(CC) $(LDFLAGS) -o $@ $^
++$(BUILDDIR)/nand2bin: $(addprefix $(BUILDDIR)/,\
++	nand2bin.o nandecc.o nandcorr.o)
+ 
+-bin2nand: bin2nand.o error.o nandecc.o
+-	$(CC) $(LDFLAGS) -o $@ $^
++$(BUILDDIR)/bin2nand: $(addprefix $(BUILDDIR)/,\
++	bin2nand.o error.o nandecc.o)
+ 
+-ubigen: ubigen.o libubigen.o crc32.o
+-	$(CC) $(LDFLAGS) -o $@ $^
++$(BUILDDIR)/ubigen: $(addprefix $(BUILDDIR)/,\
++	ubigen.o libubigen.o crc32.o)
+ 
+-mkbootenv: mkbootenv.o bootenv.o hashmap.o error.o crc32.o
+-	$(CC) $(LDFLAGS) -o $@ $^
++$(BUILDDIR)/mkbootenv: $(addprefix $(BUILDDIR)/,\
++	mkbootenv.o bootenv.o hashmap.o error.o crc32.o)
+ 
+-unubi: unubi.o crc32.o unubi_analyze.o eb_chain.o
+-	$(CC) $(LDFLAGS) -o $@ $^
++$(BUILDDIR)/unubi: $(addprefix $(BUILDDIR)/,\
++	unubi.o crc32.o unubi_analyze.o eb_chain.o)
+ 
+-pfi2bin: pfi2bin.o peb.o error.o list.o crc32.o libubigen.o bootenv.o \
+-		hashmap.o reader.o pfi.o
+-	$(CC) $(LDFLAGS) -o $@ $^
++$(BUILDDIR)/pfi2bin: $(addprefix $(BUILDDIR)/,\
++	pfi2bin.o peb.o error.o list.o crc32.o libubigen.o bootenv.o \
++	hashmap.o reader.o pfi.o)
+ 
+-install: ${TARGETS}
++install::
+ 	mkdir -p ${DESTDIR}/${SBINDIR}
+ 	install -m 0755 ${TARGETS} ${DESTDIR}/${SBINDIR}/
+ 	(cd perl && install ${PERLPROGS} ${DESTDIR}/${SBINDIR}/)
+diff --git a/ubi-utils/new-utils/Makefile b/ubi-utils/new-utils/Makefile
+index 9ba0d95..6ae60b3 100644
+--- a/ubi-utils/new-utils/Makefile
++++ b/ubi-utils/new-utils/Makefile
+@@ -3,76 +3,55 @@
+ #
+ 
+ KERNELHDR := ../../include
+-DESTDIR := /usr/local
+-SBINDIR=/usr/sbin
+-MANDIR=/usr/man
+-INCLUDEDIR=/usr/include
+-
+-CC := $(CROSS)gcc
+-AR := $(CROSS)ar
+-RANLIB := $(CROSS)ranlib
+-CFLAGS ?= -O2
+-CFLAGS += -Werror -Wall
++
++#CFLAGS += -Werror
+ CPPFLAGS += -Iinclude -Isrc -I$(KERNELHDR)
+-LDFLAGS += -L.
+ 
+ LIBS = libubi libmtd libubigen libiniparser libscan
+-UTILS = ubiupdatevol ubimkvol ubirmvol ubicrc32 ubinfo ubiattach \
+-        ubidetach ubinize ubiformat
++TARGETS = ubiupdatevol ubimkvol ubirmvol ubicrc32 ubinfo ubiattach \
++          ubidetach ubinize ubiformat
+ 
+ vpath %.c src
+ 
+-all: $(UTILS)
+-
+-# The below cancels existing implicite rule to make programs from .c files,
+-# in order to force make using our rule defined below
+-%: %.c
+-
+-# The below is the rule to get an .o file from a .c file
+-%.o: %.c
+-	$(CC) $(CFLAGS) $(CPPFLAGS) $< -c -o $@
++include ../../common.mk
+ 
+ # And the below is the rule to get final executable from its .o and common.o
+-%: libubi.a %.o common.o
+-	$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.o, $^) -lubi -o $@
++$(TARGETS): $(addprefix $(BUILDDIR)/,\
++	libubi.a common.o)
++#	$(CC) $(CFLAGS) $(filter %.o, $^) -L. -lubi -o $@
+ 
+-ubicrc32: ubicrc32.o crc32.o
+-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
++$(BUILDDIR)/ubicrc32: $(addprefix $(BUILDDIR)/,\
++	ubicrc32.o crc32.o)
++#	$(CC) $(CFLAGS) -o $@ $^
+ 
+-ubinize: ubinize.o common.o crc32.o libiniparser.a libubigen.a
+-	$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.o, $^) -liniparser -lubigen -o $@
++$(BUILDDIR)/ubinize: $(addprefix $(BUILDDIR)/,\
++	ubinize.o common.o crc32.o libiniparser.a libubigen.a)
++#	$(CC) $(CFLAGS) $(filter %.o, $^) -L. -liniparser -lubigen -o $@
+ 
+-ubiformat: ubiformat.o common.o crc32.o libmtd.a libscan.a libubi.a libubigen.a
+-	$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.o, $^) -lmtd -lscan -lubi -lubigen -o $@
++$(BUILDDIR)/ubiformat: $(addprefix $(BUILDDIR)/,\
++	ubiformat.o common.o crc32.o libmtd.a libscan.a libubi.a libubigen.a)
++#	$(CC) $(CFLAGS) $(filter %.o, $^) -L. -lmtd -lscan -lubi -lubigen -o $@
+ 
+-libubi.a: libubi.o
+-	$(AR) crv $@ $^
+-	$(RANLIB) $@
++$(BUILDDIR)/libubi.a: $(BUILDDIR)/libubi.o
+ 
+-libmtd.a: libmtd.o
+-	$(AR) crv $@ $^
+-	$(RANLIB) $@
++$(BUILDDIR)/libmtd.a: $(BUILDDIR)/libmtd.o
+ 
+-libubigen.a: libubigen.o
+-	$(AR) crv $@ $^
+-	$(RANLIB) $@
++$(BUILDDIR)/libubigen.a: $(BUILDDIR)/libubigen.o
+ 
+-libiniparser.a: libiniparser.o dictionary.o
+-	$(AR) crv $@ $^
+-	$(RANLIB) $@
++$(BUILDDIR)/libiniparser.a: $(addprefix $(BUILDDIR)/,\
++	libiniparser.o dictionary.o)
+ 
+-libscan.a: libscan.o crc32.o
+-	$(AR) crv $@ $^
+-	$(RANLIB) $@
++$(BUILDDIR)/libscan.a: $(addprefix $(BUILDDIR)/,\
++	libscan.o crc32.o)
+ 
+-clean:
+-	rm -rf *.o $(addsuffix .a, $(LIBS)) $(UTILS) .*.c.dep
++clean::
++	rm -f $(addsuffix .a, $(LIBS))
+ 
+-install: ${UTILS}
++install::
+ 	mkdir -p ${DESTDIR}/${SBINDIR}
+-	install -m 0755 ${UTILS} ${DESTDIR}/${SBINDIR}/
++	install -m 0755 ${TARGETS} ${DESTDIR}/${SBINDIR}/
+ 
+ uninstall:
+-	for file in ${UTILS}; do \
++	for file in ${TARGETS}; do \
+ 		$(RM) ${DESTDIR}/${SBINDIR}/$$file; \
+ 	done
 -- 
-Corentin Chary
-http://xf.iksaif.net
+1.6.0.4
