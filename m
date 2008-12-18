@@ -1,10 +1,23 @@
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1LDGms-0001BW-Ll
+	for linux-mtd@lists.infradead.org; Thu, 18 Dec 2008 11:11:27 +0000
+Subject: Re: [PATCH] [UBI] 1/5 - UBI notifications, take two
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: linux-mtd@lists.infradead.org
-Date: Thu, 18 Dec 2008 13:09:21 +0200
-Message-Id: <20081218110921.29709.59605.sendpatchset@localhost.localdomain>
-Subject: [PATCH v2] MTD: fix dataflash 64-bit divisions
-Cc: David Brownell <david-b@pacbell.net>, David Woodhouse <dwmw2@infradead.org>,
-	Nicolas Pitre <nico@cam.org>
+To: dpervushin@gmail.com
+In-Reply-To: <1229598476.7900.62.camel@hp.diimka.lan>
+References: <1229339635.7900.21.camel@hp.diimka.lan>
+	<1229349879.4911.45.camel@sauron>
+	<1229543636.7900.53.camel@hp.diimka.lan>
+	<1229585500.17960.99.camel@sauron>
+	<1229598476.7900.62.camel@hp.diimka.lan>
+Content-Type: text/plain; charset=utf-8
+Date: Thu, 18 Dec 2008 13:11:43 +0200
+Message-Id: <1229598703.17960.104.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -14,92 +27,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Subject: [PATCH] MTD: fix dataflash 64-bit divisions
+On Thu, 2008-12-18 at 14:07 +0300, dmitry pervushin wrote:
+> On Thu, 2008-12-18 at 09:31 +0200, Artem Bityutskiy wrote:
+> > On Wed, 2008-12-17 at 22:53 +0300, dmitry pervushin wrote:
+> > > > So you call notifiers from withing spin-locks. Are they really bloc=
+king
+> > > > notifiers? Note, if you call any UBI kernel API function from the
+> > > > notifier, you'll deadlock. E.g., if you call 'ubi_get_device_info()=
+',
+> > > > you'll deadlock on 'ubi_devices_lock'. Did you test your code?
+> > > >=20
+> > > > I guess you should prohibit recursion and pass full UBI device/volu=
+me
+> > > > information _inside_ the notifier. And the subsystems which work ab=
+ove
+> > > > UBI should never _open_ UBI volumes from within notifiers. E.g., th=
+e
+> > > > "simple FTL" stuff should open the UBI volume only when the
+> > > > corresponding FTL block device is opened, not in the notifier.
+> > > Although it is a good idea and it will save some time for notified
+> > > modules -- it won't help me. The block device created by ftl could be
+> > > opened immediately after creating, err.., actually, in the middle of
+> > > creating - e.g., to read partition table.
+> > >=20
+> > > The ubi_enum_volumes could open the volume with the flag
+> > > UBI_OPEN_INTERNAL and thus release spinlock when calling notifiers.
+> >=20
+> > You may introduce a "ubi_get_volume(struct ubi_info *ubi, int vol_id)"
+> > function, similar to the existing "ubi_get_device(int ubi_num)"
+> > function. However, it looks like you may just use UBI_READONLY instead.
+> > It will not prevent the "notifyees" to open the volume in UBI_READWRITE
+> > mode.
+> But will prevent opening in UBI_EXCLUSIVE. OK, get_volume/put_volume
+> looks as the right way to go.
 
-MTD has recently been upgraded for 64-bit support, see commit
-number 69423d99fc182a81f3c5db3eb5c140acc6fc64be in the
-mtd-2.6.git tree (git://git.infradead.org/mtd-2.6.git)
-or see this URL:
-http://git.infradead.org/mtd-2.6.git?a=commit;h=69423d99fc182a81f3c5db3eb5c140acc6fc64be
+It will prevent exlusive, as well as get/put must prevent exclusive, so
+there should be no difference for you at all. Exclusive is used when the
+module is removed or re-sized, and there must be zero users if these
+operations are performed.
 
-Some variables in MTD data structures which were 32-bit
-became 64-bit. Namely, the 'size' field in 'struct mtd_info'
-and the 'addr'/'len' fields in 'struct erase_info'. This
-means we have to use 'do_div' to divide them.
-
-This patch fixes the following linking error:
-ERROR: "__udivdi3" [drivers/mtd/devices/mtd_dataflash.ko] undefined!
-ERROR: "__umoddi3" [drivers/mtd/devices/mtd_dataflash.ko] undefined!
-
-This patch changes divisions of 64-bit variable so that they use
-'do_div'. This patch also change some print placeholders to
-get rid of gcc warnings.
-
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: David Brownell <david-b@pacbell.net>
-Cc: Nicolas Pitre <nico@cam.org>
----
- drivers/mtd/devices/mtd_dataflash.c |   20 +++++++++++++-------
- 1 files changed, 13 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-index 6dd9aff..ea687d3 100644
---- a/drivers/mtd/devices/mtd_dataflash.c
-+++ b/drivers/mtd/devices/mtd_dataflash.c
-@@ -16,6 +16,7 @@
- #include <linux/device.h>
- #include <linux/mutex.h>
- #include <linux/err.h>
-+#include <linux/math64.h>
- 
- #include <linux/spi/spi.h>
- #include <linux/spi/flash.h>
-@@ -152,15 +153,20 @@ static int dataflash_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	struct spi_message	msg;
- 	unsigned		blocksize = priv->page_size << 3;
- 	uint8_t			*command;
-+	uint32_t		rem;
- 
--	DEBUG(MTD_DEBUG_LEVEL2, "%s: erase addr=0x%x len 0x%x\n",
-+	DEBUG(MTD_DEBUG_LEVEL2, "%s: erase addr=0x%llx len 0x%llx\n",
- 			spi->dev.bus_id,
- 			instr->addr, instr->len);
- 
- 	/* Sanity checks */
--	if ((instr->addr + instr->len) > mtd->size
--			|| (instr->len % priv->page_size) != 0
--			|| (instr->addr % priv->page_size) != 0)
-+	if (instr->addr + instr->len > mtd->size)
-+		return -EINVAL;
-+	div_u64_rem(instr->len, priv->page_size, &rem);
-+	if (rem)
-+		return -EINVAL;
-+	div_u64_rem(instr->addr, priv->page_size, &rem);
-+	if (rem)
- 		return -EINVAL;
- 
- 	spi_message_init(&msg);
-@@ -178,7 +184,7 @@ static int dataflash_erase(struct mtd_info *mtd, struct erase_info *instr)
- 		/* Calculate flash page address; use block erase (for speed) if
- 		 * we're at a block boundary and need to erase the whole block.
- 		 */
--		pageaddr = instr->addr / priv->page_size;
-+		pageaddr = div_u64(instr->len, priv->page_size);
- 		do_block = (pageaddr & 0x7) == 0 && instr->len >= blocksize;
- 		pageaddr = pageaddr << priv->page_offset;
- 
-@@ -667,8 +673,8 @@ add_dataflash_otp(struct spi_device *spi, char *name,
- 	if (revision >= 'c')
- 		otp_tag = otp_setup(device, revision);
- 
--	dev_info(&spi->dev, "%s (%d KBytes) pagesize %d bytes%s\n",
--			name, DIV_ROUND_UP(device->size, 1024),
-+	dev_info(&spi->dev, "%s (%lld KBytes) pagesize %d bytes%s\n",
-+			name, (device->size + 1023) >> 10,
- 			pagesize, otp_tag);
- 	dev_set_drvdata(&spi->dev, priv);
- 
--- 
-1.5.4.3
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
