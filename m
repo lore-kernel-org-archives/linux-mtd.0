@@ -1,20 +1,19 @@
-Date: Thu, 18 Dec 2008 13:29:52 +0100
-From: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
-To: "Richard Genoud" <richard.genoud@gmail.com>
-Subject: Re: [PATCH] Bug on atmel_nand HW ECC : OOB info not correctly written
-Message-ID: <20081218132952.70418c4d@hskinnemoen-d830>
-In-Reply-To: <80b317760811210150w3886fe28jf1f2961360e081f5@mail.gmail.com>
-References: <1223793748.7110.13.camel@ubuntu>
-	<1223906461.6770.604.camel@macbook.infradead.org>
-	<20081013161353.38b8ff51@hskinnemo-gx745.norway.atmel.com>
-	<80b317760810130844l53709cf8j284d81d432d2696e@mail.gmail.com>
-	<80b317760811210150w3886fe28jf1f2961360e081f5@mail.gmail.com>
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1LDIKZ-0008La-Si
+	for linux-mtd@lists.infradead.org; Thu, 18 Dec 2008 12:50:20 +0000
+Subject: Re: UBIFS FAQ Questions: minor edits
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Philip Rakity <prakity@yahoo.com>
+In-Reply-To: <425263.69282.qm@web58902.mail.re1.yahoo.com>
+References: <425263.69282.qm@web58902.mail.re1.yahoo.com>
+Content-Type: text/plain; charset=utf-8
+Date: Thu, 18 Dec 2008 14:51:25 +0200
+Message-Id: <1229604685.17960.109.camel@sauron>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Justin Waters <justin.waters@timesys.com>
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,20 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Richard Genoud wrote:
-> Have you some feed-back on this patch ?
-> Justin tested it successfully with a Samsung K9F2G08U0M-PCB0 256 MiB
-> with 2048 Byte page size
-> and 128 KiB Erase Block size on an at91sam9260-ek.
+On Wed, 2008-12-17 at 09:19 -0800, Philip Rakity wrote:
+> a) Order backwards ?
+> How to create an UBIFS image?
+>=20
+> 	* mkfs.ubifs which creates UBIFS images;
+> 	* ubinize which creates UBIFS images out of UBI images.Isn't this the ot=
+her way around ?  uninize creates UBI images from UBIFS images ?
+>=20
+>=20
+> b) please add a sentence or two saying how to burn ubi images.  something=
+ like
+> The ubi image may be burn into flash using the ubiformat utility (see her=
+e) or by a commercial flash burner.
 
-Sorry about not responding earlier, but FWIW, I have successfully
-booted a avr32 board after this patch was merged, and I can't see any
-obvious problems. So I think it works fine.
+Done, thanks for suggestiions.
 
-The NAND chip I have is also a Samsung one:
-
-NAND device: Manufacturer ID: 0xec, Chip ID: 0xda (Samsung NAND 256MiB 3,3V 8-bit)
-
-with 2K page size.
-
-Haavard
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
