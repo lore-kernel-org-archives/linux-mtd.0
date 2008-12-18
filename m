@@ -1,25 +1,9 @@
-Received: from mail-ew0-f13.google.com ([209.85.219.13])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LDGjf-0006RJ-2I
-	for linux-mtd@lists.infradead.org; Thu, 18 Dec 2008 11:08:07 +0000
-Received: by ewy6 with SMTP id 6so422381ewy.18
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 18 Dec 2008 03:08:06 -0800 (PST)
-Subject: Re: [PATCH] [UBI] 1/5 - UBI notifications, take two
-From: dmitry pervushin <dpervushin@gmail.com>
-To: dedekind@infradead.org
-In-Reply-To: <1229585500.17960.99.camel@sauron>
-References: <1229339635.7900.21.camel@hp.diimka.lan>
-	<1229349879.4911.45.camel@sauron>
-	<1229543636.7900.53.camel@hp.diimka.lan>
-	<1229585500.17960.99.camel@sauron>
-Content-Type: text/plain
-Date: Thu, 18 Dec 2008 14:07:56 +0300
-Message-Id: <1229598476.7900.62.camel@hp.diimka.lan>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dpervushin@gmail.com
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: linux-mtd@lists.infradead.org
+Date: Thu, 18 Dec 2008 13:09:27 +0200
+Message-Id: <20081218110927.29710.97896.sendpatchset@localhost.localdomain>
+Subject: [PATCH v2] MTD: fix m25p80 64-bit divisions
+Cc: David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,30 +13,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2008-12-18 at 09:31 +0200, Artem Bityutskiy wrote:
-> On Wed, 2008-12-17 at 22:53 +0300, dmitry pervushin wrote:
-> > > So you call notifiers from withing spin-locks. Are they really blocking
-> > > notifiers? Note, if you call any UBI kernel API function from the
-> > > notifier, you'll deadlock. E.g., if you call 'ubi_get_device_info()',
-> > > you'll deadlock on 'ubi_devices_lock'. Did you test your code?
-> > > 
-> > > I guess you should prohibit recursion and pass full UBI device/volume
-> > > information _inside_ the notifier. And the subsystems which work above
-> > > UBI should never _open_ UBI volumes from within notifiers. E.g., the
-> > > "simple FTL" stuff should open the UBI volume only when the
-> > > corresponding FTL block device is opened, not in the notifier.
-> > Although it is a good idea and it will save some time for notified
-> > modules -- it won't help me. The block device created by ftl could be
-> > opened immediately after creating, err.., actually, in the middle of
-> > creating - e.g., to read partition table.
-> > 
-> > The ubi_enum_volumes could open the volume with the flag
-> > UBI_OPEN_INTERNAL and thus release spinlock when calling notifiers.
-> 
-> You may introduce a "ubi_get_volume(struct ubi_info *ubi, int vol_id)"
-> function, similar to the existing "ubi_get_device(int ubi_num)"
-> function. However, it looks like you may just use UBI_READONLY instead.
-> It will not prevent the "notifyees" to open the volume in UBI_READWRITE
-> mode.
-But will prevent opening in UBI_EXCLUSIVE. OK, get_volume/put_volume
-looks as the right way to go.
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Subject: [PATCH] MTD: fix m25p80 64-bit divisions
+
+MTD has recently been upgraded for 64-bit support, see commit
+number 69423d99fc182a81f3c5db3eb5c140acc6fc64be in the
+mtd-2.6.git tree (git://git.infradead.org/mtd-2.6.git)
+or see this URL:
+http://git.infradead.org/mtd-2.6.git?a=commit;h=69423d99fc182a81f3c5db3eb5c140acc6fc64be
+
+Some variables in MTD data structures which were 32-bit
+became 64-bit. Namely, the 'size' field in 'struct mtd_info'
+and the 'addr'/'len' fields in 'struct erase_info'. This
+means we have to use 'do_div' to divide them.
+
+This patch fixes the following linking error:
+ERROR: "__umoddi3" [drivers/mtd/devices/m25p80.ko] undefined!
+
+This patch changes divisions of 64-bit variable so that they use
+'do_div'. This patch also change some print placeholders to
+get rid of gcc warnings.
+
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+---
+ drivers/mtd/devices/m25p80.c |   31 ++++++++++++++++---------------
+ 1 files changed, 16 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 6659b22..7ac2025 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -20,6 +20,7 @@
+ #include <linux/device.h>
+ #include <linux/interrupt.h>
+ #include <linux/mutex.h>
++#include <linux/math64.h>
+ 
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+@@ -169,9 +170,9 @@ static int wait_till_ready(struct m25p *flash)
+  */
+ static int erase_chip(struct m25p *flash)
+ {
+-	DEBUG(MTD_DEBUG_LEVEL3, "%s: %s %dKiB\n",
++	DEBUG(MTD_DEBUG_LEVEL3, "%s: %s %lluKiB\n",
+ 			flash->spi->dev.bus_id, __func__,
+-			flash->mtd.size / 1024);
++			flash->mtd.size >> 10);
+ 
+ 	/* Wait until finished previous write command. */
+ 	if (wait_till_ready(flash))
+@@ -232,18 +233,18 @@ static int m25p80_erase(struct mtd_info *mtd, struct erase_info *instr)
+ {
+ 	struct m25p *flash = mtd_to_m25p(mtd);
+ 	u32 addr,len;
++	uint32_t rem;
+ 
+-	DEBUG(MTD_DEBUG_LEVEL2, "%s: %s %s 0x%08x, len %d\n",
++	DEBUG(MTD_DEBUG_LEVEL2, "%s: %s %s 0x%llx, len %llu\n",
+ 			flash->spi->dev.bus_id, __func__, "at",
+-			(u32)instr->addr, instr->len);
++			instr->addr, instr->len);
+ 
+ 	/* sanity checks */
+ 	if (instr->addr + instr->len > flash->mtd.size)
+ 		return -EINVAL;
+-	if ((instr->addr % mtd->erasesize) != 0
+-			|| (instr->len % mtd->erasesize) != 0) {
++	div_u64_rem(instr->len, mtd->erasesize, &rem);
++	if (rem)
+ 		return -EINVAL;
+-	}
+ 
+ 	addr = instr->addr;
+ 	len = instr->len;
+@@ -677,21 +678,21 @@ static int __devinit m25p_probe(struct spi_device *spi)
+ 		flash->mtd.erasesize = info->sector_size;
+ 	}
+ 
+-	dev_info(&spi->dev, "%s (%d Kbytes)\n", info->name,
+-			flash->mtd.size / 1024);
++	dev_info(&spi->dev, "%s (%llu Kbytes)\n", info->name,
++			flash->mtd.size >> 10);
+ 
+ 	DEBUG(MTD_DEBUG_LEVEL2,
+-		"mtd .name = %s, .size = 0x%.8x (%uMiB) "
++		"mtd .name = %s, .size = 0x%llx (%lluMiB) "
+ 			".erasesize = 0x%.8x (%uKiB) .numeraseregions = %d\n",
+ 		flash->mtd.name,
+-		flash->mtd.size, flash->mtd.size / (1024*1024),
++		flash->mtd.size, flash->mtd.size >> 20,
+ 		flash->mtd.erasesize, flash->mtd.erasesize / 1024,
+ 		flash->mtd.numeraseregions);
+ 
+ 	if (flash->mtd.numeraseregions)
+ 		for (i = 0; i < flash->mtd.numeraseregions; i++)
+ 			DEBUG(MTD_DEBUG_LEVEL2,
+-				"mtd.eraseregions[%d] = { .offset = 0x%.8x, "
++				"mtd.eraseregions[%d] = { .offset = 0x%llx, "
+ 				".erasesize = 0x%.8x (%uKiB), "
+ 				".numblocks = %d }\n",
+ 				i, flash->mtd.eraseregions[i].offset,
+@@ -722,12 +723,12 @@ static int __devinit m25p_probe(struct spi_device *spi)
+ 		if (nr_parts > 0) {
+ 			for (i = 0; i < nr_parts; i++) {
+ 				DEBUG(MTD_DEBUG_LEVEL2, "partitions[%d] = "
+-					"{.name = %s, .offset = 0x%.8x, "
+-						".size = 0x%.8x (%uKiB) }\n",
++					"{.name = %s, .offset = 0x%llx, "
++						".size = 0x%llx (%lluKiB) }\n",
+ 					i, parts[i].name,
+ 					parts[i].offset,
+ 					parts[i].size,
+-					parts[i].size / 1024);
++					parts[i].size >> 10);
+ 			}
+ 			flash->partitioned = 1;
+ 			return add_mtd_partitions(&flash->mtd, parts, nr_parts);
+-- 
+1.5.4.3
