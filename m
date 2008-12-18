@@ -1,23 +1,24 @@
-Received: from yx-out-1718.google.com ([74.125.44.158])
+Received: from wf-out-1314.google.com ([209.85.200.172])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LDPN0-0007pD-2E
-	for linux-mtd@lists.infradead.org; Thu, 18 Dec 2008 20:21:18 +0000
-Received: by yx-out-1718.google.com with SMTP id 3so254611yxi.72
+	id 1LDPQ9-0007zr-Oh
+	for linux-mtd@lists.infradead.org; Thu, 18 Dec 2008 20:24:34 +0000
+Received: by wf-out-1314.google.com with SMTP id 28so617862wfc.24
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 18 Dec 2008 12:21:17 -0800 (PST)
-Message-ID: <8bd0f97a0812181221u2d17c2ectee16202b42c5a4fe@mail.gmail.com>
-Date: Thu, 18 Dec 2008 15:21:16 -0500
+	Thu, 18 Dec 2008 12:24:32 -0800 (PST)
+Message-ID: <8bd0f97a0812181224w450cb529l9108eaddbf66081c@mail.gmail.com>
+Date: Thu, 18 Dec 2008 15:24:32 -0500
 From: "Mike Frysinger" <vapier.adi@gmail.com>
 To: dedekind@infradead.org
-Subject: Re: [PATCH] unify all common build system parts
-In-Reply-To: <1229066345.13686.413.camel@sauron>
+Subject: Re: [PATCH 0/2] mtd-utils export libraries
+In-Reply-To: <1229611038.30575.11.camel@sauron>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <1228944506-5792-1-git-send-email-vapier@gentoo.org>
-	<1229066345.13686.413.camel@sauron>
-Cc: linux-mtd@lists.infradead.org, Mike Frysinger <vapier@gentoo.org>
+References: <52e42efe0812180615u19344697la740e4ca1a060aff@mail.gmail.com>
+	<1229611038.30575.11.camel@sauron>
+Cc: linux-mtd@lists.infradead.org, Sidney Amani <amani_s@epitech.net>,
+	Mike Frysinger <vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +28,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 12, 2008 at 02:19, Artem Bityutskiy wrote:
-> On Wed, 2008-12-10 at 16:28 -0500, Mike Frysinger wrote:
->> Rather than duplicating the same thing over and over in every Makefile, move
->> it all to common.mk.
+On Thu, Dec 18, 2008 at 09:37, Artem Bityutskiy wrote:
+> On Thu, 2008-12-18 at 15:15 +0100, Sidney Amani wrote:
+>> We are currently working on an UBI based userspace filesystem.
 >>
->> Other things fixed here:
->>  - doing subdirs in parallel
->>  - fix src!=build compiling in subdirs
->>
->> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+>> We wanted to use libubi. So here is our patch to export shared
+>> libraries and headers. This is done for each library in LIBS.
 >
-> I've tried do test your patch and found an issue.
->
-> $ make
-> ... build is ok ...
-> $ make install DESTDIR=/home/dedekind/tmp/
-> ... error ...
->
-> Could you please take a look at this?
+> Hi, thanks for the patches. However, Mike (CCed) sent a major build
+> system rework patch recently, but there was an issue and I am waiting
+> for a new patch from him. Mike, could you please let me know if I
+> should wait for a new version of your patch or try to apply these
+> ones?
 
-looks like i forgot to delete the two make's in the toplevel install
-... the recursive dir part is taken care of common.mk now
+i think the first question is, is this actually desirable.  a shared
+library implies stable ABI and a thought out API.  if neither of these
+have been done, but you still want to export the libs, the first thing
+to do would be to just export PIC static libs.
 -mike
