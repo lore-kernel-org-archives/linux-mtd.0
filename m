@@ -1,19 +1,22 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from aibo.runbox.com ([87.238.52.70])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LDIKZ-0008La-Si
-	for linux-mtd@lists.infradead.org; Thu, 18 Dec 2008 12:50:20 +0000
-Subject: Re: UBIFS FAQ Questions: minor edits
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Philip Rakity <prakity@yahoo.com>
-In-Reply-To: <425263.69282.qm@web58902.mail.re1.yahoo.com>
-References: <425263.69282.qm@web58902.mail.re1.yahoo.com>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 18 Dec 2008 14:51:25 +0200
-Message-Id: <1229604685.17960.109.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+	id 1LDJ1z-0006MD-B1
+	for linux-mtd@lists.infradead.org; Thu, 18 Dec 2008 13:35:11 +0000
+Received: from [10.9.9.162] (helo=pepper.runbox.com)
+	by greyhound.runbox.com with esmtp (Exim 4.50) id 1LDJ1p-0004bG-Qb
+	for linux-mtd@lists.infradead.org; Thu, 18 Dec 2008 14:35:02 +0100
+Received: from [74.94.155.177] (helo=[192.168.12.139])
+	by pepper.runbox.com with esmtpsa (uid:263104 )
+	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA:32) (Exim 4.50) id 1LDJ1m-0006oq-37
+	for linux-mtd@lists.infradead.org; Thu, 18 Dec 2008 14:34:58 +0100
+Message-ID: <494A517E.2000405@runbox.com>
+Date: Thu, 18 Dec 2008 08:34:54 -0500
+From: Cal Page <pagcal@runbox.com>
+MIME-Version: 1.0
+To: ubifs <linux-mtd@lists.infradead.org>
+Subject: ubifs: another scheduling while atomic back trace
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,23 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-12-17 at 09:19 -0800, Philip Rakity wrote:
-> a) Order backwards ?
-> How to create an UBIFS image?
->=20
-> 	* mkfs.ubifs which creates UBIFS images;
-> 	* ubinize which creates UBIFS images out of UBI images.Isn't this the ot=
-her way around ?  uninize creates UBI images from UBIFS images ?
->=20
->=20
-> b) please add a sentence or two saying how to burn ubi images.  something=
- like
-> The ubi image may be burn into flash using the ubiformat utility (see her=
-e) or by a commercial flash burner.
+I tracked it down to fs/ubifs/journal.c in make_reservation()?
 
-Done, thanks for suggestiions.
+the code is:
+    again:
+       down_read()
+       err = reserve_space()
+       if ( !err) return 0
+       up_read()
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+shouldn't we to the up as part of the if? ie
+
+    if ( !err ) { up_read(); return 0; };
+
+Also, I notice fs/fs-writeback.c in writeback_inodes does a 
+down_read_trylock. Won't this interfear with the down_read above?
+
+Cal Page
