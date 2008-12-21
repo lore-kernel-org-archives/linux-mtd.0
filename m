@@ -1,15 +1,15 @@
-Received: from corclem3.parker.com ([12.4.27.61] helo=parker.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LE75m-0008MR-7P
-	for linux-mtd@lists.infradead.org; Sat, 20 Dec 2008 19:02:26 +0000
-Subject: Allan Scheirer is out of the office.
-From: allan.scheirer@parker.com
+Received: from web58907.mail.re1.yahoo.com ([66.196.100.236])
+	by casper.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LETLe-0000vP-0Y
+	for linux-mtd@lists.infradead.org; Sun, 21 Dec 2008 18:48:21 +0000
+References: <mailman.11.1229706002.1545.linux-mtd@lists.infradead.org>
+Date: Sun, 21 Dec 2008 10:47:15 -0800 (PST)
+From: Philip Rakity <prakity@yahoo.com>
+Subject: Re: UBIFS option to make volume not do compression
 To: linux-mtd@lists.infradead.org
-Message-ID: <OF66BD4150.8356E336-ON85257525.006891ED-85257525.006891EF@parker.com>
-Date: Sat, 20 Dec 2008 14:02:11 -0500
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
+Content-Type: text/plain; charset=us-ascii
+Message-ID: <509116.73555.qm@web58907.mail.re1.yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,14 +20,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-I will be out of the office starting Fri 12/19/2008 and will not return
-until Mon 01/05/2009.
+>From Documentation/filesystems/ubifs.txt:
 
-I will respond to your message when I return.
+>compr=none              override defoult comressor and set it to "none"
+>compr=lzo               override defoult comressor and set it to "lzo"
+>compr=zlib              override defoult comressor and set it to "zlib"
 
-"PLEASE NOTE: The preceding information may be confidential or
-privileged. It only should be used or disseminated for the purpose
-of conducting business with Parker. If you are not an intended
-recipient, please notify the sender by replying to this message and
-then delete the information from your system. Thank you for your
-cooperation."
+>Just make sure you use up-to-date UBIFS, because this was added
+>recently. And I guess this should also be mentioned somewhere on the web
+>site.
+
+Source browsed the mtd git on the mtd website.  No references to the above in
+the documentation.  Did I look at wrong git ?
+
+An FAQ edit would be nice.
+
+Philip
+
+
+
+      
