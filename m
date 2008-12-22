@@ -1,23 +1,22 @@
-Received: from wf-out-1314.google.com ([209.85.200.169])
+Received: from vervifontaine.sonytel.be ([80.88.33.193]
+	helo=vervifontaine.sonycom.com)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LEeba-0004n1-3I
-	for linux-mtd@lists.infradead.org; Mon, 22 Dec 2008 06:49:30 +0000
-Received: by wf-out-1314.google.com with SMTP id 28so1967400wfc.24
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 21 Dec 2008 22:49:28 -0800 (PST)
-Message-ID: <8bd0f97a0812212249k47eb5949x1931022de14030b8@mail.gmail.com>
-Date: Mon, 22 Dec 2008 01:49:28 -0500
-From: "Mike Frysinger" <vapier.adi@gmail.com>
-To: dedekind@infradead.org
-Subject: Re: [PATCH v2] unify all common build system parts
-In-Reply-To: <1229928143.2756.26.camel@sauron>
+	id 1LEgsJ-0004nD-LD
+	for linux-mtd@lists.infradead.org; Mon, 22 Dec 2008 09:14:55 +0000
+Date: Mon, 22 Dec 2008 10:14:46 +0100 (CET)
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Sender: geert@sonytel.be
+To: Artem Bityutskiy <dedekind@infradead.org>
+Subject: Re: UBIFS option to make volume not do compression
+In-Reply-To: <1229927039.2756.18.camel@sauron>
+Message-ID: <Pine.LNX.4.64.0812221012350.12551@vixen.sonytel.be>
+References: <mailman.11.1229706002.1545.linux-mtd@lists.infradead.org>
+	<509116.73555.qm@web58907.mail.re1.yahoo.com>
+	<1229927039.2756.18.camel@sauron>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <1229634318-12997-1-git-send-email-vapier@gentoo.org>
-	<1229928143.2756.26.camel@sauron>
-Cc: linux-mtd@lists.infradead.org, Mike Frysinger <vapier@gentoo.org>
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Cc: Philip Rakity <prakity@yahoo.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,17 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Dec 22, 2008 at 01:42, Artem Bityutskiy wrote:
-> On Thu, 2008-12-18 at 16:05 -0500, Mike Frysinger wrote:
->> Rather than duplicating the same thing over and over in every Makefile,
->> move it all to common.mk.
->>
->> Other things fixed here:
->>  - doing subdirs in parallel
->>  - fix src!=build compiling in subdirs
->
-> Thanks, tested, pushed.
+On Mon, 22 Dec 2008, Artem Bityutskiy wrote:
+> On Sun, 2008-12-21 at 10:47 -0800, Philip Rakity wrote:
+> > >From Documentation/filesystems/ubifs.txt:
+> > 
+> > >compr=none              override defoult comressor and set it to "none"
+                                         ^       ^
+				      default compressor
 
-thanks a lot.  feel free to send complaints my way wrt the build
-system in case i broke something or you want assistance :).
--mike
+> > >compr=lzo               override defoult comressor and set it to "lzo"
+> > >compr=zlib              override defoult comressor and set it to "zlib"
+> > 
+> > >Just make sure you use up-to-date UBIFS, because this was added
+> > >recently. And I guess this should also be mentioned somewhere on the web
+> > >site.
+> > 
+> > Source browsed the mtd git on the mtd website.  No references to the above in
+> > the documentation.  Did I look at wrong git ?
+> > 
+> > An FAQ edit would be nice.
+> 
+> You may find the up-to-date ubifs.txt in the ubifs-2.6.git
+> (see http://www.linux-mtd.infradead.org/doc/ubifs.html#L_source) or
+> in the current Linus's tree.
+
+It's not in Linus' current tree.
+
+With kind regards,
+
+Geert Uytterhoeven
+Software Architect
+
+Sony Techsoft Centre Europe
+The Corporate Village · Da Vincilaan 7-D1 · B-1935 Zaventem · Belgium
+
+Phone:    +32 (0)2 700 8453
+Fax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 · RPR Brussels
+Fortis · BIC GEBABEBB · IBAN BE41293037680010
