@@ -1,18 +1,20 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
+Received: from node3.inaccessnetworks.com ([212.205.200.118]
+	helo=vm-dmz.priv.inaccessnetworks.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LF4DA-0005Zr-6Y
-	for linux-mtd@lists.infradead.org; Tue, 23 Dec 2008 10:10:04 +0000
-Received: from localhost.localdomain (localhost [127.0.0.1])
-	by smtp.gentoo.org (Postfix) with ESMTP id 92EAB64C0F
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 23 Dec 2008 10:09:54 +0000 (UTC)
-From: Mike Frysinger <vapier@gentoo.org>
+	id 1LF6LD-0004dM-1T
+	for linux-mtd@lists.infradead.org; Tue, 23 Dec 2008 12:26:27 +0000
+Received: from bender.priv.inaccessnetworks.com ([192.168.1.223])
+	by vm-dmz.priv.inaccessnetworks.com with esmtp (Exim 4.69)
+	(envelope-from <knakos@inaccessnetworks.com>) id 1LF6LB-0001Go-J2
+	for linux-mtd@lists.infradead.org; Tue, 23 Dec 2008 14:26:25 +0200
+Message-ID: <4950D8EA.7010905@inaccessnetworks.com>
+Date: Tue, 23 Dec 2008 14:26:18 +0200
+From: Kostas Nakos <knakos@inaccessnetworks.com>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mkfs.jffs2: fix dir creation in /
-Date: Tue, 23 Dec 2008 05:54:24 -0500
-Message-Id: <1230029664-22328-1-git-send-email-vapier@gentoo.org>
-In-Reply-To: <8bd0f97a0806200828u2aefc887n37cb48b4cf75528b@mail.gmail.com>
-References: <8bd0f97a0806200828u2aefc887n37cb48b4cf75528b@mail.gmail.com>
+Subject: [PATCH] ndfc driver
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,44 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With older mtd-utils, creating a directory in the root worked fine.  With
-current git, the parent dir search algo breaks this.
+Hello list,
 
-For example, just take the current git tree, build it up, and then run:
-$ ./mkfs.jffs2 -d . -D device_table.txt -o /dev/null
-mkfs.jffs2: skipping device_table entry '/dev': no parent directory!
-mkfs.jffs2: skipping device_table entry '/dev/mem': no parent directory!
-...
-Doing `mkdir ./dev` first works around the issue, but where's the fun in
-that.
+with respect to Sean's updated patch ( 
+http://lists.infradead.org/pipermail/linux-mtd/2008-December/023932.html 
+) of the ndfc driver:
 
-I've "fixed" the issue in interpret_table_entry() by special casing the
-root directory "/" and having the code return the root directory rather
-than attempting to do a search for it.
+We are using an AMCC PPC440EPx based board which requires the ndfc 
+driver to handle the nand memory. We have encountered 2 problems with 
+this latest patch:
 
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
----
-i mentioned this back in June with no response:
-http://lists.infradead.org/pipermail/linux-mtd/2008-June/022089.html
+1) Kernel oops after of_iomap() of ndfc_probe(). The external nand 
+memory is bound to chip select 0. The respective dts "reg" line was 'reg 
+= <0 d0000000 2000>;'. Using chip selects greater than zero do not crash 
+the kernel.
 
- mkfs.jffs2.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
+2) Byte order wrong in ndfc_calculate_ecc(). ecc_code[0] and ecc_code[1] 
+have been exchanged in this version of the patch which lead to ecc 
+errors being reported during mounting (and of course, a failed mount 
+operation).
 
-diff --git a/mkfs.jffs2.c b/mkfs.jffs2.c
-index 7255536..a419bb8 100644
---- a/mkfs.jffs2.c
-+++ b/mkfs.jffs2.c
-@@ -565,7 +565,10 @@ static int interpret_table_entry(struct filesystem_entry *root, char *line)
- 		 * try and find our parent now) */
- 		tmp = strdup(name);
- 		dir = dirname(tmp);
--		parent = find_filesystem_entry(root, dir, S_IFDIR);
-+		if (!strcmp(dir, "/"))
-+			parent = root;
-+		else
-+			parent = find_filesystem_entry(root, dir, S_IFDIR);
- 		free(tmp);
- 		if (parent == NULL) {
- 			error_msg ("skipping device_table entry '%s': no parent directory!", name);
--- 
-1.6.0.4
+These problems have been solved: (1) -hackish way- by using a dts line 
+like this 'reg = <1 d0000000 2000>;' and calculating the chip select in 
+ndfc_probe() like this 'ndfc->chip_select = reg[0] - 1;'. (2) has been 
+fixed by returning to the previous byte order of ecc_code.
+
+Cheers,
+Kostas
