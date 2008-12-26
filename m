@@ -1,26 +1,20 @@
-Received: from rv-out-0708.google.com ([209.85.198.247])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LFV2d-0006cy-FR
-	for linux-mtd@lists.infradead.org; Wed, 24 Dec 2008 14:48:55 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so3086307rvf.42
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 24 Dec 2008 06:48:53 -0800 (PST)
-Message-ID: <76d9e2a30812240648y38e0b62crffddf0930b49d125@mail.gmail.com>
-Date: Wed, 24 Dec 2008 16:48:53 +0200
-From: "Hai Zaar" <haizaar@haizaar.com>
-To: dedekind@infradead.org
-Subject: Re: [PATCH] nandwrite - handle situation when read returns less bytes
-	the expected
-In-Reply-To: <1229422714.17960.2.camel@sauron>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-References: <76d9e2a30812140559y6ade25c0jf55fd8a7b299e83a@mail.gmail.com>
-	<1229408910.4911.72.camel@sauron>
-	<76d9e2a30812160040u263e275aqa04c0e4b726365cc@mail.gmail.com>
-	<1229422714.17960.2.camel@sauron>
-Cc: linux-mtd@lists.infradead.org, Gilad Ben-Yossef <gilad@codefidence.com>
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1LGBwU-0003PT-VM
+	for linux-mtd@lists.infradead.org; Fri, 26 Dec 2008 12:37:27 +0000
+Subject: Re: [PATCH] mkfs.jffs2: fix dir creation in /
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Mike Frysinger <vapier@gentoo.org>
+In-Reply-To: <1230029664-22328-1-git-send-email-vapier@gentoo.org>
+References: <8bd0f97a0806200828u2aefc887n37cb48b4cf75528b@mail.gmail.com>
+	<1230029664-22328-1-git-send-email-vapier@gentoo.org>
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 26 Dec 2008 14:38:02 +0200
+Message-Id: <1230295082.11802.2.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,81 +24,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gVHVlLCBEZWMgMTYsIDIwMDggYXQgMTI6MTggUE0sIEFydGVtIEJpdHl1dHNraXkKPGRlZGVr
-aW5kQGluZnJhZGVhZC5vcmc+IHdyb3RlOgo+IE9uIFR1ZSwgMjAwOC0xMi0xNiBhdCAxMDo0MCAr
-MDIwMCwgSGFpIFphYXIgd3JvdGU6Cj4+IE9uIFR1ZSwgRGVjIDE2LCAyMDA4IGF0IDg6MjggQU0s
-IEFydGVtIEJpdHl1dHNraXkKPj4gPGRlZGVraW5kQGluZnJhZGVhZC5vcmc+IHdyb3RlOgo+PiA+
-Cj4+ID4gWW91ciBwYXRjaCBkb2VzIG5vdCBhcHBseS4gSXQgbG9va3MgbGlrZSBpdCBpcyBub3Qg
-YWdhaW5zdCB0aGUgbGF0ZXN0Cj4+ID4gbXRkLXV0aWxzLiBIb3cgYWJvdXQgdGhpcyBwYXRjaD8K
-Pj4gWWVzLCBteSBwYXRjaCBpcyBhZ2FpbnN0IG10ZC11dGlscy0xLjIuMC4gWW91cnMgaXMgc3Vy
-ZWx5IGJldHRlciBzaW5jZQo+PiBpdCBjb3ZlcnMgb29iIHJlYWRpbmcgYXMgd2VsbC4KPgo+IFdv
-dWxkIGJlIG5pY2UgaWYgeW91IHRyaWVkIG15IHBhdGNoIGFuZCBjb25maXJtZWQgaXQgd29ya3Ms
-IGJlY2F1c2UgSQo+IGRpZCBub3QgdGVzdCBpdC4KSSd2ZSB0cmllZCB0aGUgcGF0Y2ggd2l0aCB0
-aGUgbGF0ZXN0IGdpdCB2ZXJzaW9uIG9mIG10ZC11dGlscyBhbmQgSQpjb25maXJtIHRoYXQgaXQg
-d29ya3Mgb24gQVJNIGF0OTFzYW05MjYwIGJvYXJkLgpUaGFua3MhCgo+Cj4gRnJvbTogQXJ0ZW0g
-Qml0eXV0c2tpeSA8QXJ0ZW0uQml0eXV0c2tpeUBub2tpYS5jb20+Cj4gU3ViamVjdDogW1BBVENI
-XSBuYW5kd3JpdGU6IGNvcnJlY3QgZGF0YSByZWFkaW5nCj4KPiBUaGUgInJlYWQiIHN5c2NhbGwg
-ZG9lcyBub3QgbmVjZXNzYXJpbHkgcmV0dXJuIGFsbCB0aGUgcmVxdWVzdGVkCj4gZGF0YSwgaW4g
-d2hpY2ggY2FzZSB0aGUgY2FsbGVyIGhhcyB0byB0cnkgYWdhaW4gYW5kIHJlYWQgbW9yZS4KPiBU
-YWtlIHRoaXMgaW50byBhY2NvdW50IHdoZW4gcmVhZGluZyBpbnB1dCBkYXRhLgo+Cj4gU2lnbmVk
-LW9mZi1ieTogQXJ0ZW0gQml0eXV0c2tpeSA8QXJ0ZW0uQml0eXV0c2tpeUBub2tpYS5jb20+Cj4g
-LS0tCj4gIG5hbmR3cml0ZS5jIHwgICAzMiArKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0t
-LQo+ICAxIGZpbGVzIGNoYW5nZWQsIDIxIGluc2VydGlvbnMoKyksIDExIGRlbGV0aW9ucygtKQo+
-Cj4gZGlmZiAtLWdpdCBhL25hbmR3cml0ZS5jIGIvbmFuZHdyaXRlLmMKPiBpbmRleCBmYzIzZTg1
-Li5iNGJjODcxIDEwMDY0NAo+IC0tLSBhL25hbmR3cml0ZS5jCj4gKysrIGIvbmFuZHdyaXRlLmMK
-PiBAQCAtMjYyLDcgKzI2Miw2IEBAIGludCBtYWluKGludCBhcmdjLCBjaGFyICogY29uc3QgYXJn
-dltdKQo+ICAgICAgICBzdHJ1Y3QgbmFuZF9vb2JpbmZvIG9sZF9vb2JpbmZvOwo+Cj4gICAgICAg
-IHByb2Nlc3Nfb3B0aW9ucyhhcmdjLCBhcmd2KTsKPiAtCj4gICAgICAgIGVyYXNlX2J1ZmZlcihv
-b2JidWYsIHNpemVvZihvb2JidWYpKTsKPgo+ICAgICAgICBpZiAocGFkICYmIHdyaXRlb29iKSB7
-Cj4gQEAgLTQzOCw2ICs0MzcsOCBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqIGNvbnN0IGFy
-Z3ZbXSkKPiAgICAgICAgICogbGVuZ3RoIG9yIHplcm8uCj4gICAgICAgICAqLwo+ICAgICAgICB3
-aGlsZSAoaW1nbGVuICYmIChtdGRvZmZzZXQgPCBtZW1pbmZvLnNpemUpKSB7Cj4gKyAgICAgICAg
-ICAgICAgIGludCB0aW55Y250ID0gMDsKPiArCj4gICAgICAgICAgICAgICAgLy8gbmV3IGVyYXNl
-YmxvY2sgLCBjaGVjayBmb3IgYmFkIGJsb2NrKHMpCj4gICAgICAgICAgICAgICAgLy8gU3RheSBp
-biB0aGUgbG9vcCB0byBiZSBzdXJlIGlmIHRoZSBtdGRvZmZzZXQgY2hhbmdlcyBiZWNhdXNlCj4g
-ICAgICAgICAgICAgICAgLy8gb2YgYSBiYWQgYmxvY2ssIHRoYXQgdGhlIG5leHQgYmxvY2sgdGhh
-dCB3aWxsIGJlIHdyaXR0ZW4gdG8KPiBAQCAtNDg0LDE1ICs0ODUsMTcgQEAgaW50IG1haW4oaW50
-IGFyZ2MsIGNoYXIgKiBjb25zdCBhcmd2W10pCj4gICAgICAgICAgICAgICAgICAgICAgICB9Cj4K
-PiAgICAgICAgICAgICAgICAgICAgICAgIC8qIFJlYWQgUGFnZSBEYXRhIGZyb20gaW5wdXQgZmls
-ZSAqLwo+IC0gICAgICAgICAgICAgICAgICAgICAgIGlmICgoY250ID0gcmVhZChpZmQsIHdyaXRl
-YnVmLCByZWFkbGVuKSkgIT0gcmVhZGxlbikgewo+IC0gICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgaWYgKGNudCA9PSAwKSAgIC8vIEVPRgo+ICsgICAgICAgICAgICAgICAgICAgICAgIHdo
-aWxlKHRpbnljbnQgPCByZWFkbGVuKSB7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBjbnQgPSByZWFkKGlmZCwgd3JpdGVidWYgKyB0aW55Y250LCByZWFkbGVuIC0gdGlueWNudCk7
-Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAoY250ID09IDApIHsgLy8gRU9G
-Cj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7Cj4gLSAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICBwZXJyb3IgKCJGaWxlIEkvTyBlcnJvciBvbiBpbnB1
-dCBmaWxlIik7Cj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnb3RvIGNsb3NlYWxs
-Owo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfSBlbHNlIGlmIChjbnQgPCAwKSB7
-Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBlcnJvciAoIkZpbGUg
-SS9PIGVycm9yIG9uIGlucHV0IGZpbGUiKTsKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgZ290byBjbG9zZWFsbDsKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIH0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRpbnljbnQgKz0gY250Owo+
-ICAgICAgICAgICAgICAgICAgICAgICAgfQo+ICAgICAgICAgICAgICAgIH0gZWxzZSB7Cj4gLSAg
-ICAgICAgICAgICAgICAgICAgICAgaW50IHRpbnljbnQgPSAwOwo+IC0KPiAgICAgICAgICAgICAg
-ICAgICAgICAgIHdoaWxlKHRpbnljbnQgPCByZWFkbGVuKSB7Cj4gICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIGNudCA9IHJlYWQoaWZkLCB3cml0ZWJ1ZiArIHRpbnljbnQsIHJlYWRsZW4g
-LSB0aW55Y250KTsKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaWYgKGNudCA9PSAw
-KSB7IC8vIEVPRgo+IEBAIC01MjIsMTEgKzUyNSwxOCBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hh
-ciAqIGNvbnN0IGFyZ3ZbXSkKPiAgICAgICAgICAgICAgICB9Cj4KPiAgICAgICAgICAgICAgICBp
-ZiAod3JpdGVvb2IpIHsKPiAtICAgICAgICAgICAgICAgICAgICAgICAvKiBSZWFkIE9PQiBkYXRh
-IGZyb20gaW5wdXQgZmlsZSwgZXhpdCBvbiBmYWlsdXJlICovCj4gLSAgICAgICAgICAgICAgICAg
-ICAgICAgaWYgKChjbnQgPSByZWFkKGlmZCwgb29icmVhZGJ1ZiwgbWVtaW5mby5vb2JzaXplKSkg
-IT0gbWVtaW5mby5vb2JzaXplKSB7Cj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBw
-ZXJyb3IgKCJGaWxlIEkvTyBlcnJvciBvbiBpbnB1dCBmaWxlIik7Cj4gLSAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICBnb3RvIGNsb3NlYWxsOwo+ICsgICAgICAgICAgICAgICAgICAgICAg
-IHRpbnljbnQgPSAwOwo+ICsgICAgICAgICAgICAgICAgICAgICAgIHdoaWxlKHRpbnljbnQgPCBy
-ZWFkbGVuKSB7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbnQgPSByZWFkKGlm
-ZCwgb29icmVhZGJ1ZiArIHRpbnljbnQsIG1lbWluZm8ub29ic2l6ZSAtIHRpbnljbnQpOwo+ICsg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaWYgKGNudCA9PSAwKSB7IC8vIEVPRgo+ICsg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBicmVhazsKPiArICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIH0gZWxzZSBpZiAoY250IDwgMCkgewo+ICsgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwZXJyb3IgKCJGaWxlIEkvTyBlcnJvciBvbiBp
-bnB1dCBmaWxlIik7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdv
-dG8gY2xvc2VhbGw7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9Cj4gKyAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICB0aW55Y250ICs9IGNudDsKPiAgICAgICAgICAgICAg
-ICAgICAgICAgIH0KPiArCj4gICAgICAgICAgICAgICAgICAgICAgICBpZiAoIW5vZWNjKSB7Cj4g
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGludCBpLCBzdGFydCwgbGVuOwo+ICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAvKgo+IC0tCj4gMS41LjQuMwo+Cj4gLS0KPiBCZXN0
-IHJlZ2FyZHMsCj4gQXJ0ZW0gQml0eXV0c2tpeSAo0JHQuNGC0Y7RhtC60LjQuSDQkNGA0YLRkdC8
-KQo+Cj4KCgoKLS0gClphYXIK
+On Tue, 2008-12-23 at 05:54 -0500, Mike Frysinger wrote:
+> diff --git a/mkfs.jffs2.c b/mkfs.jffs2.c
+> index 7255536..a419bb8 100644
+> --- a/mkfs.jffs2.c
+> +++ b/mkfs.jffs2.c
+> @@ -565,7 +565,10 @@ static int interpret_table_entry(struct filesystem_e=
+ntry *root, char *line)
+>  		 * try and find our parent now) */
+>  		tmp =3D strdup(name);
+>  		dir =3D dirname(tmp);
+> -		parent =3D find_filesystem_entry(root, dir, S_IFDIR);
+> +		if (!strcmp(dir, "/"))
+> +			parent =3D root;
+> +		else
+> +			parent =3D find_filesystem_entry(root, dir, S_IFDIR);
+>  		free(tmp);
+>  		if (parent =3D=3D NULL) {
+>  			error_msg ("skipping device_table entry '%s': no parent directory!", =
+name);
+
+I think that you should instead modify 'find_filesystem_entry()' and
+make it return the root (of the tree you build the image for, AFAIU)
+when you call it like 'find_filesystem_entry(root, "/", S_IFDIR)'. Looks
+more logical to me.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
