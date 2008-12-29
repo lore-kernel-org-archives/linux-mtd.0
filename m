@@ -1,13 +1,13 @@
 Received: from woodchuck.wormnet.eu ([2a01:348:0:6:4d4b:69df:0:1])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LHQ22-0005AK-28
-	for linux-mtd@lists.infradead.org; Mon, 29 Dec 2008 21:52:19 +0000
-Date: Mon, 29 Dec 2008 21:52:07 +0000
+	id 1LHQ3M-0000RC-5s
+	for linux-mtd@lists.infradead.org; Mon, 29 Dec 2008 21:53:36 +0000
+Date: Mon, 29 Dec 2008 21:53:30 +0000
 From: Alexander Clouter <alex@digriz.org.uk>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH RFC 2/3] [MTD] NAND: hooks for ts78xx.c to use ts7xxx.c
+Subject: [PATCH RFC 3/3] [MTD] NAND: hooks for ts72xx.c to use ts7xxx.c
 	NAND driver
-Message-ID: <20081229215207.GH3381@woodchuck>
+Message-ID: <20081229215330.GI3381@woodchuck>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -20,186 +20,259 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[PATCH RFC] [MTD] NAND: add hooks so TS78xx can use the NAND
+[PATCH RFC] [MTD] NAND: add hooks so ts72xx.c can use the NAND
 
-Add the NAND hooks in the platform code for the ts78xx.c
+Add the NAND hooks in the platform code for the ts78xx.c.  Completely 
+removes the hooks used by the ts7200.c NAND driver, which probably is a 
+bad idea.
 
 Signed-off-by: Alexander Clouter <alex@digriz.org.uk>
 ---
- arch/arm/mach-orion5x/ts78xx-fpga.h  |    1 +
- arch/arm/mach-orion5x/ts78xx-setup.c |  115 ++++++++++++++++++++++++++++++++++
- 2 files changed, 116 insertions(+), 0 deletions(-)
+ arch/arm/mach-ep93xx/include/mach/ts72xx.h |   20 +---
+ arch/arm/mach-ep93xx/ts72xx.c              |  175 ++++++++++++++++++++--------
+ 2 files changed, 130 insertions(+), 65 deletions(-)
 
-diff --git a/arch/arm/mach-orion5x/ts78xx-fpga.h b/arch/arm/mach-orion5x/ts78xx-fpga.h
-index 247e7ea..44c2b3c 100644
---- a/arch/arm/mach-orion5x/ts78xx-fpga.h
-+++ b/arch/arm/mach-orion5x/ts78xx-fpga.h
-@@ -12,6 +12,7 @@ struct fpga_device {
- struct fpga_devices {
- 	/* Technologic Systems */
- 	struct fpga_device ts_rtc;
-+	struct fpga_device ts_nand;
- };
+diff --git a/arch/arm/mach-ep93xx/include/mach/ts72xx.h b/arch/arm/mach-ep93xx/include/mach/ts72xx.h
+index 34ddec0..474f30d 100644
+--- a/arch/arm/mach-ep93xx/include/mach/ts72xx.h
++++ b/arch/arm/mach-ep93xx/include/mach/ts72xx.h
+@@ -44,20 +44,12 @@
+ #define TS72XX_NOR_PHYS_BASE		0x60000000
+ #define TS72XX_NOR2_PHYS_BASE		0x62000000
  
- struct ts78xx_fpga_data {
-diff --git a/arch/arm/mach-orion5x/ts78xx-setup.c b/arch/arm/mach-orion5x/ts78xx-setup.c
-index 2d020ac..b0fb96d 100644
---- a/arch/arm/mach-orion5x/ts78xx-setup.c
-+++ b/arch/arm/mach-orion5x/ts78xx-setup.c
-@@ -15,6 +15,9 @@
- #include <linux/mv643xx_eth.h>
- #include <linux/ata_platform.h>
+-#define TS72XX_NAND1_DATA_PHYS_BASE	0x60000000
+-#define TS72XX_NAND2_DATA_PHYS_BASE	0x70000000
+-#define TS72XX_NAND_DATA_VIRT_BASE	0xfebfc000
+-#define TS72XX_NAND_DATA_SIZE		0x00001000
+-
+-#define TS72XX_NAND1_CONTROL_PHYS_BASE	0x60400000
+-#define TS72XX_NAND2_CONTROL_PHYS_BASE	0x70400000
+-#define TS72XX_NAND_CONTROL_VIRT_BASE	0xfebfb000
+-#define TS72XX_NAND_CONTROL_SIZE	0x00001000
+-
+-#define TS72XX_NAND1_BUSY_PHYS_BASE	0x60800000
+-#define TS72XX_NAND2_BUSY_PHYS_BASE	0x70800000
+-#define TS72XX_NAND_BUSY_VIRT_BASE	0xfebfa000
+-#define TS72XX_NAND_BUSY_SIZE		0x00001000
++
++#define TS72XX_NAND_DATA_PHYS_BASE	0x60000000
++#define TS72XX_NAND_CONTROL_PHYS_BASE	0x60400000
++#define TS72XX_NAND_BUSY_PHYS_BASE	0x60800000
++#define TS72XX_NAND_IO_SIZE		4
++#define TS72XX_NAND1_NAND2_DIFF		0x10000000
+ 
+ 
+ #define TS72XX_RTC_INDEX_VIRT_BASE	0xfebf9000
+diff --git a/arch/arm/mach-ep93xx/ts72xx.c b/arch/arm/mach-ep93xx/ts72xx.c
+index 7ee024d..0d51910 100644
+--- a/arch/arm/mach-ep93xx/ts72xx.c
++++ b/arch/arm/mach-ep93xx/ts72xx.c
+@@ -19,6 +19,9 @@
+ #include <linux/mtd/physmap.h>
+ #include <linux/platform_device.h>
  #include <linux/m48t86.h>
 +#include <linux/mtd/nand.h>
 +#include <linux/mtd/partitions.h>
 +#include <linux/mtd/ts7xxx.h>
- #include <asm/mach-types.h>
- #include <asm/mach/arch.h>
- #include <asm/mach/map.h>
-@@ -159,11 +162,118 @@ static void ts78xx_ts_rtc_unload(void)
- #endif
+ #include <linux/io.h>
+ #include <linux/i2c.h>
+ #include <mach/hardware.h>
+@@ -55,61 +58,10 @@ static struct map_desc ts72xx_io_desc[] __initdata = {
+ 	}
+ };
  
- /*****************************************************************************
+-static struct map_desc ts72xx_nand_io_desc[] __initdata = {
+-	{
+-		.virtual	= TS72XX_NAND_DATA_VIRT_BASE,
+-		.pfn		= __phys_to_pfn(TS72XX_NAND1_DATA_PHYS_BASE),
+-		.length		= TS72XX_NAND_DATA_SIZE,
+-		.type		= MT_DEVICE,
+-	}, {
+-		.virtual	= TS72XX_NAND_CONTROL_VIRT_BASE,
+-		.pfn		= __phys_to_pfn(TS72XX_NAND1_CONTROL_PHYS_BASE),
+-		.length		= TS72XX_NAND_CONTROL_SIZE,
+-		.type		= MT_DEVICE,
+-	}, {
+-		.virtual	= TS72XX_NAND_BUSY_VIRT_BASE,
+-		.pfn		= __phys_to_pfn(TS72XX_NAND1_BUSY_PHYS_BASE),
+-		.length		= TS72XX_NAND_BUSY_SIZE,
+-		.type		= MT_DEVICE,
+-	}
+-};
+-
+-static struct map_desc ts72xx_alternate_nand_io_desc[] __initdata = {
+-	{
+-		.virtual	= TS72XX_NAND_DATA_VIRT_BASE,
+-		.pfn		= __phys_to_pfn(TS72XX_NAND2_DATA_PHYS_BASE),
+-		.length		= TS72XX_NAND_DATA_SIZE,
+-		.type		= MT_DEVICE,
+-	}, {
+-		.virtual	= TS72XX_NAND_CONTROL_VIRT_BASE,
+-		.pfn		= __phys_to_pfn(TS72XX_NAND2_CONTROL_PHYS_BASE),
+-		.length		= TS72XX_NAND_CONTROL_SIZE,
+-		.type		= MT_DEVICE,
+-	}, {
+-		.virtual	= TS72XX_NAND_BUSY_VIRT_BASE,
+-		.pfn		= __phys_to_pfn(TS72XX_NAND2_BUSY_PHYS_BASE),
+-		.length		= TS72XX_NAND_BUSY_SIZE,
+-		.type		= MT_DEVICE,
+-	}
+-};
+-
+ static void __init ts72xx_map_io(void)
+ {
+ 	ep93xx_map_io();
+ 	iotable_init(ts72xx_io_desc, ARRAY_SIZE(ts72xx_io_desc));
+-
+-	/*
+-	 * The TS-7200 has NOR flash, the other models have NAND flash.
+-	 */
+-	if (!board_is_ts7200()) {
+-		if (is_ts9420_installed()) {
+-			iotable_init(ts72xx_alternate_nand_io_desc,
+-				ARRAY_SIZE(ts72xx_alternate_nand_io_desc));
+-		} else {
+-			iotable_init(ts72xx_nand_io_desc,
+-				ARRAY_SIZE(ts72xx_nand_io_desc));
+-		}
+-	}
+ }
+ 
+ static struct physmap_flash_data ts72xx_flash_data = {
+@@ -132,6 +84,125 @@ static struct platform_device ts72xx_flash = {
+ 	.resource	= &ts72xx_flash_resource,
+ };
+ 
++/*****************************************************************************
 + * NAND Flash
 + ****************************************************************************/
-+#ifdef CONFIG_MTD_NAND_TS7XXX
-+#define TS_NAND_IOBASE		TS78XX_FPGA_REGS_PHYS_BASE
-+#define TS_NAND_SIZE		SZ_4K
-+#define TS_NAND_CTRL_OFFSET	0x800
-+#define TS_NAND_DATA_OFFSET	0x804
-+
-+static struct mtd_partition ts78xx_ts_nand_parts512[] = {
++static struct mtd_partition ts72xx_nand_parts32[] = {
 +	{
-+		.name		= "mbr",
++		.name		= "TS-BOOTROM",
 +		.offset		= 0,
 +		.size		= SZ_128K,
 +		.mask_flags	= MTD_WRITEABLE,
 +	}, {
-+		.name		= "kernel",
++		.name		= "Linux",
 +		.offset		= MTDPART_OFS_APPEND,
-+		.size		= SZ_4M,
++		.size		= 29 * SZ_1M,
 +	}, {
-+		.name		= "initrd",
-+		.offset		= MTDPART_OFS_APPEND,
-+		.size		= SZ_4M,
-+	}, {
-+		.name		= "rootfs",
++		.name		= "RedBoot",
 +		.offset		= MTDPART_OFS_APPEND,
 +		.size		= MTDPART_SIZ_FULL,
 +	}
 +};
 +
-+static struct ts7xxx_nand_data ts78xx_ts_nand_data = {
++static struct mtd_partition ts72xx_nand_parts128[] = {
++	{
++		.name		= "TS-BOOTROM",
++		.offset		= 0,
++		.size		= SZ_128K,
++		.mask_flags	= MTD_WRITEABLE,
++	}, {
++		.name		= "Linux",
++		.offset		= MTDPART_OFS_APPEND,
++		.size		= 125 * SZ_1M,
++	}, {
++		.name		= "RedBoot",
++		.offset		= MTDPART_OFS_APPEND,
++		.size		= MTDPART_SIZ_FULL,
++	}
++};
++
++static struct ts7xxx_nand_data ts72xx_nand_data = {
 +	.partitions	= NULL,
 +	.nr_partitions	= 0,
 +
 +	.ioports	= {
 +		.ctrl	= {
 +			.res	= 0,
-+			.offset	= TS_NAND_CTRL_OFFSET,
++			.offset	= 0,
 +		},
 +		.data	= {
-+			.res	= 0,
-+			.offset	= TS_NAND_DATA_OFFSET,
++			.res	= 1,
++			.offset	= 0,
 +		},
 +
 +		.busy	= {
-+			.res	= 0,
-+			.offset	= TS_NAND_CTRL_OFFSET,
++			.res	= 2,
++			.offset	= 0,
 +		},
 +	},
 +};
 +
-+static struct resource ts78xx_ts_nand_flash_resource[] = {
++static struct resource ts72xx_nand_flash_resource[] = {
 +	{
 +		.flags		= IORESOURCE_MEM,
-+		.start		= TS_NAND_IOBASE,
-+		.end		= TS_NAND_IOBASE + TS_NAND_SIZE - 1,
++		.start		= TS72XX_NAND_DATA_PHYS_BASE,
++		.end		= TS72XX_NAND_DATA_PHYS_BASE
++					+ TS72XX_NAND_IO_SIZE - 1,
++	}, {
++		.flags		= IORESOURCE_MEM,
++		.start		= TS72XX_NAND_DATA_PHYS_BASE,
++		.end		= TS72XX_NAND_DATA_PHYS_BASE
++					+ TS72XX_NAND_IO_SIZE - 1,
++	}, {
++		.flags		= IORESOURCE_MEM,
++		.start		= TS72XX_NAND_BUSY_PHYS_BASE,
++		.end		= TS72XX_NAND_BUSY_PHYS_BASE
++					+ TS72XX_NAND_IO_SIZE - 1,
 +	},
 +};
 +
-+static struct ts7xxx_nand_data *ts78xx_ts_nand(unsigned int size)
++static struct ts7xxx_nand_data *ts72xx_nand(unsigned int size)
 +{
++	unsigned int i;
++
 +	/*
-+	 * currently only the TS-7800 is out there with a 512MiB NAND
++	 * The TS-72[56]0's come with either 32MiB or 128MiB of NAND
 +	 */
-+	if (size == 512 * SZ_1M) {
-+		ts78xx_ts_nand_data.partitions = ts78xx_ts_nand_parts512;
-+		ts78xx_ts_nand_data.nr_partitions
-+					= ARRAY_SIZE(ts78xx_ts_nand_parts512);
++	if (size == 32 * SZ_1M) {
++		ts72xx_nand_data.partitions = ts72xx_nand_parts32;
++		ts72xx_nand_data.nr_partitions
++					= ARRAY_SIZE(ts72xx_nand_parts32);
++	} else if (size == 128 * SZ_1M) {
++		ts72xx_nand_data.partitions = ts72xx_nand_parts128;
++		ts72xx_nand_data.nr_partitions
++					= ARRAY_SIZE(ts72xx_nand_parts128);
 +	}
 +
-+	return &ts78xx_ts_nand_data;
++	/* we only munch this on the init (when size is zero) */
++	if (size == 0 && is_ts9420_installed()) {
++		for (i = 0; i < ARRAY_SIZE(ts72xx_nand_flash_resource); i++) {
++			ts72xx_nand_flash_resource[i].start
++				+= TS72XX_NAND1_NAND2_DIFF;
++			ts72xx_nand_flash_resource[i].end
++				+= TS72XX_NAND1_NAND2_DIFF;
++		}
++	}
++
++	return &ts72xx_nand_data;
 +};
 +
-+static struct platform_device ts78xx_ts_nand_device = {
++static struct platform_device ts72xx_nand_flash = {
 +	.name		= "ts7xxx_nand",
 +	.id		= -1,
 +	.dev		= {
-+		.platform_data	= &ts78xx_ts_nand,
++		.platform_data	= &ts72xx_nand,
 +	},
-+	.num_resources	= ARRAY_SIZE(ts78xx_ts_nand_flash_resource),
-+	.resource	= ts78xx_ts_nand_flash_resource,
++	.num_resources	= ARRAY_SIZE(ts72xx_nand_flash_resource),
++	.resource	= ts72xx_nand_flash_resource,
 +};
 +
-+static void ts78xx_ts_nand_load(void)
-+{
-+	if (ts78xx_fpga.supports.ts_nand.init == 0) {
-+		ts78xx_fpga.supports.ts_nand.init = 1;
-+		platform_device_register(&ts78xx_ts_nand_device);
-+	} else
-+		platform_device_add(&ts78xx_ts_nand_device);
-+};
++/****************************************************************************/
 +
-+static void ts78xx_ts_nand_unload(void)
-+{
-+	platform_device_del(&ts78xx_ts_nand_device);
-+}
-+#else
-+static void ts78xx_ts_nand_load(void)
-+{
-+}
-+
-+static void ts78xx_ts_nand_unload(void)
-+{
-+}
-+#endif
-+
-+/*****************************************************************************
-  * FPGA 'hotplug' support code
-  ****************************************************************************/
- static void ts78xx_fpga_devices_zero_init(void)
+ static unsigned char ts72xx_rtc_readbyte(unsigned long addr)
  {
- 	ts78xx_fpga.supports.ts_rtc.init = 0;
-+	ts78xx_fpga.supports.ts_nand.init = 0;
- }
+ 	__raw_writeb(addr, TS72XX_RTC_INDEX_VIRT_BASE);
+@@ -167,6 +238,8 @@ static void __init ts72xx_init_machine(void)
+ 	ep93xx_init_devices();
+ 	if (board_is_ts7200())
+ 		platform_device_register(&ts72xx_flash);
++	if (!board_is_ts7200())
++		platform_device_register(&ts72xx_nand_flash);
+ 	platform_device_register(&ts72xx_rtc_device);
  
- static void ts78xx_fpga_supports(void)
-@@ -172,6 +282,7 @@ static void ts78xx_fpga_supports(void)
- 	switch (ts78xx_fpga.id) {
- 	case TS7800_REV_B:
- 		ts78xx_fpga.supports.ts_rtc.present = 1;
-+		ts78xx_fpga.supports.ts_nand.present = 1;
- 		break;
- 	}
- }
-@@ -186,6 +297,8 @@ static int ts78xx_fpga_load_devices(void)
- 			printk(KERN_INFO "TS-78xx RTC not detected or enabled\n");
- 		ret |= tmp;
- 	}
-+	if (ts78xx_fpga.supports.ts_nand.present == 1)
-+		ts78xx_ts_nand_load();
- 
- 	return ret;
- }
-@@ -196,6 +309,8 @@ static int ts78xx_fpga_unload_devices(void)
- 
- 	if (ts78xx_fpga.supports.ts_rtc.present == 1)
- 		ts78xx_ts_rtc_unload();
-+	if (ts78xx_fpga.supports.ts_nand.present == 1)
-+		ts78xx_ts_nand_unload();
- 
- 	return ret;
- }
+ 	ep93xx_register_eth(&ts72xx_eth_data, 1);
 -- 
 1.5.6.5
