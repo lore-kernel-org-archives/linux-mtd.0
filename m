@@ -1,17 +1,23 @@
-Received: from mgw2.diku.dk ([130.225.96.92])
+Received: from node3.inaccessnetworks.com ([212.205.200.118]
+	helo=vm-dmz.priv.inaccessnetworks.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LHFEr-000540-GE
-	for linux-mtd@lists.infradead.org; Mon, 29 Dec 2008 10:20:45 +0000
-Date: Mon, 29 Dec 2008 11:20:42 +0100 (CET)
-From: Julia Lawall <julia@diku.dk>
-To: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
-	gregkh@suse.de, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: [PATCH 5/13] drivers/mtd/nand: use USB API functions rather than
-	constants
-Message-ID: <Pine.LNX.4.64.0812291120220.9555@pc-004.diku.dk>
+	id 1LHFpP-0000n6-3s
+	for linux-mtd@lists.infradead.org; Mon, 29 Dec 2008 10:58:31 +0000
+Received: from bender.priv.inaccessnetworks.com ([192.168.1.223])
+	by vm-dmz.priv.inaccessnetworks.com with esmtp (Exim 4.69)
+	(envelope-from <knakos@inaccessnetworks.com>) id 1LHFpN-00068A-Oe
+	for linux-mtd@lists.infradead.org; Mon, 29 Dec 2008 12:58:29 +0200
+Message-ID: <4958AD4E.8090608@inaccessnetworks.com>
+Date: Mon, 29 Dec 2008 12:58:22 +0200
+From: Kostas Nakos <knakos@inaccessnetworks.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] ndfc driver
+References: <4950D8EA.7010905@inaccessnetworks.com>
+	<20081223170040.4e58de3f@lappy.seanm.ca>
+In-Reply-To: <20081223170040.4e58de3f@lappy.seanm.ca>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,81 +27,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Julia Lawall <julia@diku.dk>
+Sean MacLennan wrote:
+> I am not a DTS expert, I just use it ;) But are you sure the second
+> value should be d0000000?
 
-This set of patches introduces calls to the following set of functions:
+Alright, with:
 
-usb_endpoint_dir_in(epd)
-usb_endpoint_dir_out(epd)
-usb_endpoint_is_bulk_in(epd)
-usb_endpoint_is_bulk_out(epd)
-usb_endpoint_is_int_in(epd)
-usb_endpoint_is_int_out(epd)
-usb_endpoint_num(epd)
-usb_endpoint_type(epd)
-usb_endpoint_xfer_bulk(epd)
-usb_endpoint_xfer_control(epd)
-usb_endpoint_xfer_int(epd)
-usb_endpoint_xfer_isoc(epd)
+<0 0 2000>  ->
 
-In some cases, introducing one of these functions is not possible, and it
-just replaces an explicit integer value by one of the following constants:
+__ioremap(): phys addr 0x0 is RAM lr c0008c94
+ndfc 0.ndfc: failed to get memory
+ndfc: probe of 0.ndfc failed with error -5
 
-USB_ENDPOINT_XFER_BULK
-USB_ENDPOINT_XFER_CONTROL
-USB_ENDPOINT_XFER_INT
-USB_ENDPOINT_XFER_ISOC
+I notice that the 0xd0000000 value is also defined in the (our) platform 
+include for our platform in u-boot (include/configs/...):
 
-An extract of the semantic patch that makes these changes is as follows:
-(http://www.emn.fr/x-info/coccinelle/)
+#define CFG_NAND_ADDR           0xd0000000
 
-// <smpl>
-@r1@ struct usb_endpoint_descriptor *epd; @@
+> Are you using u-boot and, if so, what version? The ecc_code was
+> changed to match u-boot. We are using a heavily modified 1.3.3.
 
-- ((epd->bmAttributes & \(USB_ENDPOINT_XFERTYPE_MASK\|3\)) ==
-- \(USB_ENDPOINT_XFER_CONTROL\|0\))
-+ usb_endpoint_xfer_control(epd)
+The uboot version string is:
 
-@r5@ struct usb_endpoint_descriptor *epd; @@
+U-Boot 1.3.3-svn2646 (Jul 11 2008 - 15:45:55)
 
-- ((epd->bEndpointAddress & \(USB_ENDPOINT_DIR_MASK\|0x80\)) ==
--  \(USB_DIR_IN\|0x80\))
-+ usb_endpoint_dir_in(epd)
-
-@inc@
-@@
-
-#include <linux/usb.h>
-
-@depends on !inc && (r1||r5)@
-@@
-
-+ #include <linux/usb.h>
-  #include <linux/usb/...>
-// </smpl>
-
-Signed-off-by: Julia Lawall <julia@diku.dk>
-
----
- drivers/mtd/nand/alauda.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/nand/alauda.c b/drivers/mtd/nand/alauda.c
-index 9623803..6d96491 100644
---- a/drivers/mtd/nand/alauda.c
-+++ b/drivers/mtd/nand/alauda.c
-@@ -676,11 +676,11 @@ static int alauda_probe(struct usb_interface *interface,
- 		goto error;
- 
- 	al->write_out = usb_sndbulkpipe(al->dev,
--			ep_wr->bEndpointAddress & USB_ENDPOINT_NUMBER_MASK);
-+			usb_endpoint_num(ep_wr));
- 	al->bulk_in = usb_rcvbulkpipe(al->dev,
--			ep_in->bEndpointAddress & USB_ENDPOINT_NUMBER_MASK);
-+			usb_endpoint_num(ep_in));
- 	al->bulk_out = usb_sndbulkpipe(al->dev,
--			ep_out->bEndpointAddress & USB_ENDPOINT_NUMBER_MASK);
-+			usb_endpoint_num(ep_out));
- 
- 	/* second device is identical up to now */
- 	memcpy(al+1, al, sizeof(*al));
+Best Regards,
+Kostas
