@@ -1,13 +1,15 @@
-Date: Wed, 31 Dec 2008 17:14:58 +0000 (GMT)
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Cal Page <pagcal@runbox.com>
-Subject: Re: ubifs: partition won't mount: duplicate sqnum in replay ???
-In-Reply-To: <495A6931.9030108@runbox.com>
-Message-ID: <alpine.LFD.2.00.0812311700020.5058@casper.infradead.org>
-References: <495A6931.9030108@runbox.com>
+Received: from web15703.mail.cnb.yahoo.com ([202.165.102.70])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1LJ2bN-00085F-QK
+	for linux-mtd@lists.infradead.org; Sat, 03 Jan 2009 09:15:27 +0000
+Date: Sat, 3 Jan 2009 17:15:23 +0800 (CST)
+From: peter meng <mengsanshui@yahoo.com.cn>
+Subject: Question relates 2K page size flash chip
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Cc: ubifs <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Message-ID: <448671.97417.qm@web15703.mail.cnb.yahoo.com>
+Reply-To: mengsanshui@yahoo.com.cn
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,51 +19,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi
+
+I met a problem that use K9F1G08 flash with 2K page size on Linux .
+I tried jffs2 and yaffs2 file system but occurs same error info as following 
+
+----------------------------------------------------------
+NAND device: Manufacturer ID: 0xec, Chip ID: 0xa1 (Samsung NAND 128MiB 1,8V 8-bit)
+NAND_ECC_NONE selected by board driver. This is not recommended !!
+Scanning device for bad blocks
+nand_read_oob: from = 0x00000000, len = 64
+Bad eraseblock 0 at 0x00000000
+nand_read_oob: from = 0x00020000, len = 64
+Bad eraseblock 0 at 0x00020000
+........
+........
+nand_isbad_bbt(): bbt info for offs 0x007a0000: (block 61) 0x03
+block 46 is bad
+nand_isbad_bbt(): bbt info for offs 0x007c0000: (block 62) 0x03
+block 47 is bad
+nand_isbad_bbt(): bbt info for offs 0x007e0000: (block 63) 0x03
+block 48 is bad
+VFS: Mounted root (yaffs2 filesystem).
+Freeing init memory: 88K
+Warning: unable to open an initial console.
+Failed to execute /linuxrc.  Attempting defaults...
+Kernel panic - not syncing: No init found.  Try passing init= option to kernel.
+
+------------------------------------------------------------
+
+I checked the /dev/console and /linuxrc is exist on rootfs .
+
+Seems this problem is caused since 2K page size with flash ,so how to resolve this problem ? Whether need do related work within u-boot because I suppose u-boot given wrong data format to flash that Linux mtd does not know it ?
 
 
-On Tue, 30 Dec 2008, Cal Page wrote:
 
-> If /var/log is on the nand, and I do a (cd /var/log; tar -cvf 
-> /someotherdevice.tar .) I notice ubifs_shrinker get called. nr is 128, and 
-> clean_zn_cnt starts out at 1500 or so. But after tar has run a bit, 
-> clean_zn_cnt bobbles around 400 or so. If I then kill the tar, and wait about 
-> a minuite, clean_zn_cnt makes it back up to the 1500.
+Thanks Advanced .
+Best Regards.
+Peter Meng
 
-Do you have debugging checks disabled? Disable them, because otherwise
-they will pull whole UBIFS index into RAM all the time. This is because
-they check whole index for consistency all the time.
 
-> Where is the code that recycles the memory?
 
-Err, in shrinker.c.
-
-There are several things related to UBIFS which take memory and may be
-shrunk: TNC cache, dentry cache, inode cache, and page cache. Only the
-TNC cache eviction is implemented by UBIFS. UBIFS just registers the
-shrinker, and then the MM (memory management) kernel subsystem calls it
-whenever it thinks some memory should be freed. The other stuff is
-fully implemented in VFS/MM subsystems.
-
-Sd, TNC was my guess. Most of the ram is usually taken by page cache 
-(which caches file's data). But it have to be freed on memory pressure, 
-and this mechanism should work well.
-
-Note, each znode takes 256 bytes. You do not seem to have too many of 
-them.
-
-> Is it the per file system daemons 
-> that get created on mount?
-
-Usually what happens is that someone (anyone) allocates memory using
-kmalloc/page_alloc/etc, and if the core MM system sees that there is no 
-free memory, it starts producing it by freeing the page cache and other 
-caches, calling registered shrinkers, etc.
-
-> How can I change the memory hold timers in UBIFS 
-> so it'll let go a lot earlier?
-
-AFAIK, there are no timers. Things are freed when free ram is about to
-end. All decisions are made by kernel memory management (mm) subsystem.
-I do not much details about mm.
-
-Artem.
+      
