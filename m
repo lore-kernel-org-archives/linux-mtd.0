@@ -1,19 +1,19 @@
-Received: from fg-out-1718.google.com ([72.14.220.152])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LJoBs-0004YU-Jg
-	for linux-mtd@lists.infradead.org; Mon, 05 Jan 2009 12:04:16 +0000
-Received: by fg-out-1718.google.com with SMTP id 13so543774fge.26
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 05 Jan 2009 04:04:14 -0800 (PST)
-Message-ID: <c70ff3ad0901050404p72ac5a5dt61792e4d77449ab@mail.gmail.com>
-Date: Mon, 5 Jan 2009 14:04:14 +0200
-From: "saeed bishara" <saeed.bishara@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: flash_unlock fails to unlock my m25p32 flash
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1LJpJg-00082L-Cd
+	for linux-mtd@lists.infradead.org; Mon, 05 Jan 2009 13:16:25 +0000
+Subject: Re: about the _dtype_ parameter
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: =?UTF-8?Q?=E8=AE=B8=E5=B0=8F=E5=B7=9D?= <xiaochuan-xu@cqu.edu.cn>
+In-Reply-To: <TWMHGPGDBZQLPDUUCZBAWZYAUCWM.20061402067@cqu.edu.cn>
+References: <TWMHGPGDBZQLPDUUCZBAWZYAUCWM.20061402067@cqu.edu.cn>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 05 Jan 2009 15:15:43 +0200
+Message-Id: <1231161343.6608.3.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,12 +24,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Hi,
-    I'm using kernel based in version 2.6.26.5, and my board has a 4M
-Flash ST-M25P32-VMF6P connected through spi.
-    I have read access, and write access works when I do protect off
-from uboot. but I can't do unlock from linux (flash_unlock fails on
--1 EOPNOTSUPP (Operation not supported)). the mtd-utils version is
-20080508-1.
 
-   Is this version of the kernel support unlocking? if yes, what does
-my system missing?
+On Sun, 2009-01-04 at 01:07 +0800, =E8=AE=B8=E5=B0=8F=E5=B7=9D wrote:
+> In my test, I found that the third parameter of ubi_wl_get_peb()
+> function _dtype_ is always UBI_SHORTTERM.
+
+Which test?
+
+> How does the UBIFS classify the data type?
+
+Did you grep for this fs/ubifs? I think mostly we use UBI_UNKNOWN.
+
+> and would we better classify these UBI_SHORTTERM data more
+> fine granularity? Which is good for efficient wear-leveling scheme
+> IMO.
+
+May be. I've never done any good experiments for this.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
