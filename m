@@ -1,20 +1,19 @@
-Received: from mail-bw0-f12.google.com ([209.85.218.12])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LJq8Z-0005bB-V1
-	for linux-mtd@lists.infradead.org; Mon, 05 Jan 2009 14:09:00 +0000
-Received: by mail-bw0-f12.google.com with SMTP id 5so16342293bwz.18
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 05 Jan 2009 06:08:59 -0800 (PST)
-Message-ID: <71cd59b00901050607l4356c850y2be8ea93d8437fbd@mail.gmail.com>
-Date: Mon, 5 Jan 2009 15:07:19 +0100
-From: "Corentin Chary" <corentincj@iksaif.net>
-Sender: corentin.chary@gmail.com
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 3/3] UBI: is_mapped operation via ioctl
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1LJqNf-0008BJ-4P
+	for linux-mtd@lists.infradead.org; Mon, 05 Jan 2009 14:24:35 +0000
+Subject: Re: [PATCH 0/3] Export UBI map/unmap/is_mapped in userspace
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Corentin Chary <corentin.chary@gmail.com>
+In-Reply-To: <200901051458.17322.corentin.chary@gmail.com>
+References: <200901051458.17322.corentin.chary@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 05 Jan 2009 16:24:12 +0200
+Message-Id: <1231165452.6608.15.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,52 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Corentin Chary <corentincj@iksaif.net>
+Hi,
 
-UBI: is_mapped operation via ioctl
+On Mon, 2009-01-05 at 14:58 +0100, Corentin Chary wrote:
+> These are three patch to make a usespace program able to use map/unmap 
+> operation and to query if a LEB is mapped.
+> We are trying to do an UBI based userspace filesystem (using fuse) and we 
+> needed these, but it could also be used for testing purpose.
 
-Signed-off-by: Corentin Chary <corentincj@iksaif.net>
----
- drivers/mtd/ubi/cdev.c |   12 ++++++++++++
- include/mtd/ubi-user.h |    2 ++
- 2 files changed, 14 insertions(+), 0 deletions(-)
+OK.
 
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index 7a9080c..1bf21eb 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -542,6 +542,18 @@ static int vol_cdev_ioctl(struct inode *inode,
-struct file *file,
- 		err = ubi_leb_unmap(desc, lnum);
- 		break;
- 	}
-+	case UBI_IOISMAP:
-+	{
-+		int32_t lnum;
-+
-+		err = get_user(lnum, (__user int32_t *)argp);
-+		if (err) {
-+			err = -EFAULT;
-+			break;
-+		}
-+		err = ubi_is_mapped(desc, lnum);
-+		break;
-+	}
+> CONFIG_MTD_UBI_DEBUG_USERSPACE_IO is needed to enable theses functions.
 
- #endif
+In your patches I do not see why these ioctl's are enabled only if the
+CONFIG_MTD_UBI_DEBUG_USERSPACE_IO configuration option is switched on.
+It looks like the ioctl's are always enabled.
 
-diff --git a/include/mtd/ubi-user.h b/include/mtd/ubi-user.h
-index bcff3a0..a65c4ab 100644
---- a/include/mtd/ubi-user.h
-+++ b/include/mtd/ubi-user.h
-@@ -137,6 +137,8 @@
- #define UBI_IOMAP   _IOW(UBI_VOL_IOC_MAGIC, 3, struct ubi_map_req)
- /* Unmap an eraseblock */
- #define UBI_IOUNMAP _IOW(UBI_VOL_IOC_MAGIC, 4, int32_t)
-+/* check whether an eraseblock is mapped */
-+#define UBI_IOISMAP _IOW(UBI_VOL_IOC_MAGIC, 5, int32_t)
+Well, you probably also need direct LEB write functionality, which is
+present only as a debugging option so far. We may make it non-debugging
+at some point, I guess. The reason why we disabled this is because we
+wanted to prevent dump users from doing stupid things.
 
- /* Maximum MTD device name length supported by UBI */
- #define MAX_UBI_MTD_NAME_LEN 127
 -- 
-1.6.0.6
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
