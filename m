@@ -1,16 +1,16 @@
 Received: from mail-bw0-f12.google.com ([209.85.218.12])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LJq6e-0005bB-S1
-	for linux-mtd@lists.infradead.org; Mon, 05 Jan 2009 14:07:01 +0000
-Received: by bwz5 with SMTP id 5so16342293bwz.18
+	id 1LJq7Q-0005eC-KZ
+	for linux-mtd@lists.infradead.org; Mon, 05 Jan 2009 14:07:48 +0000
+Received: by bwz5 with SMTP id 5so16342971bwz.18
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 05 Jan 2009 06:06:59 -0800 (PST)
-Message-ID: <71cd59b00901050605s4ec76e9avb146bb61deaf2159@mail.gmail.com>
-Date: Mon, 5 Jan 2009 15:05:26 +0100
+	Mon, 05 Jan 2009 06:07:47 -0800 (PST)
+Message-ID: <71cd59b00901050606m5630aa05ra30b6d6b86d21932@mail.gmail.com>
+Date: Mon, 5 Jan 2009 15:06:14 +0100
 From: "Corentin Chary" <corentincj@iksaif.net>
 Sender: corentin.chary@gmail.com
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/3] UBI: map operation via ioctl
+Subject: [PATCH 2/3] UBI: unmap operation via ioctl
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
@@ -26,70 +26,51 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Corentin Chary <corentincj@iksaif.net>
 
-UBI: map operation via ioctl
+UBI: unmap operation via ioctl
 
 Signed-off-by: Corentin Chary <corentincj@iksaif.net>
 ---
- drivers/mtd/ubi/cdev.c |   13 +++++++++++++
- include/mtd/ubi-user.h |   16 ++++++++++++++++
- 2 files changed, 29 insertions(+), 0 deletions(-)
+ drivers/mtd/ubi/cdev.c |   12 ++++++++++++
+ include/mtd/ubi-user.h |    3 ++-
+ 2 files changed, 14 insertions(+), 1 deletions(-)
 
 diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index 98cf31e..db47121 100644
+index db47121..7a9080c 100644
 --- a/drivers/mtd/ubi/cdev.c
 +++ b/drivers/mtd/ubi/cdev.c
-@@ -518,6 +518,19 @@ static int vol_cdev_ioctl(struct inode *inode,
+@@ -530,6 +530,18 @@ static int vol_cdev_ioctl(struct inode *inode,
 struct file *file,
- 		err = ubi_wl_flush(ubi);
+ 		err = ubi_leb_map(desc, req.lnum, req.dtype);
  		break;
  	}
-+	case UBI_IOMAP:
++	case UBI_IOUNMAP:
 +	{
-+		struct ubi_map_req req;
-+		err = copy_from_user(&req, argp,
-+				sizeof(struct ubi_map_req));
++		int32_t lnum;
++
++		err = get_user(lnum, (__user int32_t *)argp);
 +		if (err) {
 +			err = -EFAULT;
 +			break;
 +		}
-+		err = ubi_leb_map(desc, req.lnum, req.dtype);
++		err = ubi_leb_unmap(desc, lnum);
 +		break;
 +	}
-+
+
  #endif
 
- 	default:
 diff --git a/include/mtd/ubi-user.h b/include/mtd/ubi-user.h
-index ccdc562..8222f12 100644
+index 8222f12..bcff3a0 100644
 --- a/include/mtd/ubi-user.h
 +++ b/include/mtd/ubi-user.h
-@@ -133,6 +133,9 @@
- #define UBI_IOCEBER _IOW(UBI_VOL_IOC_MAGIC, 1, int32_t)
- /* An atomic eraseblock change command */
+@@ -135,7 +135,8 @@
  #define UBI_IOCEBCH _IOW(UBI_VOL_IOC_MAGIC, 2, int32_t)
-+/* Map an eraseblock */
-+#define UBI_IOMAP   _IOW(UBI_VOL_IOC_MAGIC, 3, struct ubi_map_req)
-+
+ /* Map an eraseblock */
+ #define UBI_IOMAP   _IOW(UBI_VOL_IOC_MAGIC, 3, struct ubi_map_req)
+-
++/* Unmap an eraseblock */
++#define UBI_IOUNMAP _IOW(UBI_VOL_IOC_MAGIC, 4, int32_t)
 
  /* Maximum MTD device name length supported by UBI */
  #define MAX_UBI_MTD_NAME_LEN 127
-@@ -319,4 +322,17 @@ struct ubi_leb_change_req {
- 	int8_t  padding[7];
- } __attribute__ ((packed));
-
-+/**
-+ * struct ubi_map_req - a data structure used in map
-+ *                      eraseblock requests.
-+ * @lnum: logical eraseblock number to change
-+ * @dtype: data type (%UBI_LONGTERM, %UBI_SHORTTERM, %UBI_UNKNOWN)
-+ * @padding: reserved for future, not used, has to be zeroed
-+ */
-+struct ubi_map_req {
-+	int32_t lnum;
-+	int8_t  dtype;
-+	int8_t  padding[3];
-+} __attribute__ ((packed));
-+
- #endif /* __UBI_USER_H__ */
 -- 
 1.6.0.6
