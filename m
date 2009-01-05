@@ -1,23 +1,19 @@
-Received: from mail-bw0-f12.google.com ([209.85.218.12])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LJqeI-0002VF-6Z
-	for linux-mtd@lists.infradead.org; Mon, 05 Jan 2009 14:41:46 +0000
-Received: by bwz5 with SMTP id 5so16371301bwz.18
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 05 Jan 2009 06:41:45 -0800 (PST)
-Message-ID: <71cd59b00901050639p25f2572au392c706c3dc5b2a3@mail.gmail.com>
-Date: Mon, 5 Jan 2009 15:39:11 +0100
-From: "Corentin Chary" <corentin.chary@gmail.com>
-To: dedekind@infradead.org
-Subject: Re: [PATCH 0/3] Export UBI map/unmap/is_mapped in userspace
-In-Reply-To: <1231165452.6608.15.camel@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <200901051458.17322.corentin.chary@gmail.com>
-	<1231165452.6608.15.camel@localhost.localdomain>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1LJrAC-0006dL-Lq
+	for linux-mtd@lists.infradead.org; Mon, 05 Jan 2009 15:14:45 +0000
+Subject: Re: about the _dtype_ parameter
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: xiaochuan xu <xiaochuanxv@gmail.com>
+In-Reply-To: <ff5b6bcd0901050659k4679c64egffcfa054da4c9034@mail.gmail.com>
+References: <ff5b6bcd0901050659k4679c64egffcfa054da4c9034@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 05 Jan 2009 17:14:07 +0200
+Message-Id: <1231168447.6608.26.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,17 +23,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> In your patches I do not see why these ioctl's are enabled only if the
-> CONFIG_MTD_UBI_DEBUG_USERSPACE_IO configuration option is switched on.
-> It looks like the ioctl's are always enabled.
->
-Look the litle "#endif" at the end, it's the one for "#ifdef
-CONFIG_MTD_UBI_DEBUG_USERSPACE_IO" used for UBI_IOCEBER
+On Mon, 2009-01-05 at 22:59 +0800, xiaochuan xu wrote:
+> Hi,
+> 
+> >> In my test, I found that the third parameter of ubi_wl_get_peb()
+> >> function _dtype_ is always UBI_SHORTTERM.
+> 
+> >Which test?
+> I write a temporary file in the ubifs with O_TRUNC flag over and over.
+> I see that all the @dtype variables are equal to 2 not 3.
+> why does this happen?
 
-We make these using CONFIG_MTD_UBI_DEBUG_USERSPACE_IO only because
-direct write and erase use that too.
-But if you make it non-debugging, it'll be easier for us.
+Hmm, indeed, UBIFS uses UBI_SHORTTERM in 'reserve_space()', which looks
+wrong - thanks for noticing. Could you please try the attached patch?
+
+> Even though, as you say, most of the data are type of UBI_UNKNOWN,
+> the @dtype variable seems to make less sense in the current implemenation.
+> If this is ture, I think it's necessary to implement a
+> dynamic-data-type-classification
+> policy.
+
+Agree. I'll be happy to merge such an improvement, but I do not have
+plans to do this myself.
+
+Patch:
+
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index 10ae25b..6a885c5 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -208,7 +208,7 @@ again:
+ 	offs = 0;
+ 
+ out:
+-	err = ubifs_wbuf_seek_nolock(wbuf, lnum, offs, UBI_SHORTTERM);
++	err = ubifs_wbuf_seek_nolock(wbuf, lnum, offs, UBI_UNKNOWN);
+ 	if (err)
+ 		goto out_unlock;
 
 -- 
-Corentin Chary
-http://xf.iksaif.net
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
