@@ -1,20 +1,20 @@
 Received: from mail-bw0-f12.google.com ([209.85.218.12])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LJq3Z-0004uH-7H
-	for linux-mtd@lists.infradead.org; Mon, 05 Jan 2009 14:03:49 +0000
-Received: by bwz5 with SMTP id 5so16339680bwz.18
+	id 1LJq6e-0005bB-S1
+	for linux-mtd@lists.infradead.org; Mon, 05 Jan 2009 14:07:01 +0000
+Received: by bwz5 with SMTP id 5so16342293bwz.18
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 05 Jan 2009 06:03:47 -0800 (PST)
-From: Corentin Chary <corentin.chary@gmail.com>
+	Mon, 05 Jan 2009 06:06:59 -0800 (PST)
+Message-ID: <71cd59b00901050605s4ec76e9avb146bb61deaf2159@mail.gmail.com>
+Date: Mon, 5 Jan 2009 15:05:26 +0100
+From: "Corentin Chary" <corentincj@iksaif.net>
+Sender: corentin.chary@gmail.com
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 0/3] Export UBI map/unmap/is_mapped in userspace
-Date: Mon, 5 Jan 2009 14:58:16 +0100
+Subject: [PATCH 1/3] UBI: map operation via ioctl
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200901051458.17322.corentin.chary@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,11 +24,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-These are three patch to make a usespace program able to use map/unmap 
-operation and to query if a LEB is mapped.
-We are trying to do an UBI based userspace filesystem (using fuse) and we 
-needed these, but it could also be used for testing purpose.
-CONFIG_MTD_UBI_DEBUG_USERSPACE_IO is needed to enable theses functions.
+From: Corentin Chary <corentincj@iksaif.net>
 
-Thanks
+UBI: map operation via ioctl
+
+Signed-off-by: Corentin Chary <corentincj@iksaif.net>
+---
+ drivers/mtd/ubi/cdev.c |   13 +++++++++++++
+ include/mtd/ubi-user.h |   16 ++++++++++++++++
+ 2 files changed, 29 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+index 98cf31e..db47121 100644
+--- a/drivers/mtd/ubi/cdev.c
++++ b/drivers/mtd/ubi/cdev.c
+@@ -518,6 +518,19 @@ static int vol_cdev_ioctl(struct inode *inode,
+struct file *file,
+ 		err = ubi_wl_flush(ubi);
+ 		break;
+ 	}
++	case UBI_IOMAP:
++	{
++		struct ubi_map_req req;
++		err = copy_from_user(&req, argp,
++				sizeof(struct ubi_map_req));
++		if (err) {
++			err = -EFAULT;
++			break;
++		}
++		err = ubi_leb_map(desc, req.lnum, req.dtype);
++		break;
++	}
++
+ #endif
+
+ 	default:
+diff --git a/include/mtd/ubi-user.h b/include/mtd/ubi-user.h
+index ccdc562..8222f12 100644
+--- a/include/mtd/ubi-user.h
++++ b/include/mtd/ubi-user.h
+@@ -133,6 +133,9 @@
+ #define UBI_IOCEBER _IOW(UBI_VOL_IOC_MAGIC, 1, int32_t)
+ /* An atomic eraseblock change command */
+ #define UBI_IOCEBCH _IOW(UBI_VOL_IOC_MAGIC, 2, int32_t)
++/* Map an eraseblock */
++#define UBI_IOMAP   _IOW(UBI_VOL_IOC_MAGIC, 3, struct ubi_map_req)
++
+
+ /* Maximum MTD device name length supported by UBI */
+ #define MAX_UBI_MTD_NAME_LEN 127
+@@ -319,4 +322,17 @@ struct ubi_leb_change_req {
+ 	int8_t  padding[7];
+ } __attribute__ ((packed));
+
++/**
++ * struct ubi_map_req - a data structure used in map
++ *                      eraseblock requests.
++ * @lnum: logical eraseblock number to change
++ * @dtype: data type (%UBI_LONGTERM, %UBI_SHORTTERM, %UBI_UNKNOWN)
++ * @padding: reserved for future, not used, has to be zeroed
++ */
++struct ubi_map_req {
++	int32_t lnum;
++	int8_t  dtype;
++	int8_t  padding[3];
++} __attribute__ ((packed));
++
+ #endif /* __UBI_USER_H__ */
+-- 
+1.6.0.6
