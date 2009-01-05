@@ -1,21 +1,21 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LKAZr-0002WN-0W
-	for linux-mtd@lists.infradead.org; Tue, 06 Jan 2009 11:58:31 +0000
-Subject: Re: [PATCH 3/3] UBI: is_mapped operation via ioctl
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Corentin Chary <corentin.chary@gmail.com>
-In-Reply-To: <71cd59b00901060125hcc12353jaee277cd6f52c2da@mail.gmail.com>
-References: <71cd59b00901050607l4356c850y2be8ea93d8437fbd@mail.gmail.com>
-	<1231166009.6608.20.camel@localhost.localdomain>
-	<71cd59b00901060125hcc12353jaee277cd6f52c2da@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 06 Jan 2009 13:58:55 +0200
-Message-Id: <1231243135.6608.36.camel@localhost.localdomain>
+Received: from ns.konzeptpark.de ([195.226.66.162] helo=mail.konzeptpark.de)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1LJvoX-0001Fs-N8
+	for linux-mtd@lists.infradead.org; Mon, 05 Jan 2009 20:12:42 +0000
+Received: from KPLADC0001 (cantor.konzeptpark.de [172.25.0.211])
+	by mail.konzeptpark.de (Postfix) with SMTP id 8143823838
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  5 Jan 2009 21:09:09 +0100 (CET)
+Received: from [172.25.0.211] (helo=kpladc0001.konzeptpark.intra)
+	by KPLADC0001 with AVK MailGateway;
+	for <linux-mtd@lists.infradead.org>; Mon, 05 Jan 2009 21:12:33 +0100
+Subject: [PATCH][MTD-UTILS][compr_lzo.c] Fix calls to liblzo library
+From: Carsten Schlote <c.schlote@konzeptpark.de>
+To: Linux MTD Dev <linux-mtd@lists.infradead.org>
+Content-Type: multipart/mixed; boundary="=-+9FQgOzMPnQbBIcnuBJ1"
+Date: Mon, 05 Jan 2009 21:12:30 +0100
+Message-Id: <1231186350.6612.11.camel@kplaws107lx>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,12 +25,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-01-06 at 10:25 +0100, Corentin Chary wrote:
-> > Otherwise, the patches look OK for me.
-> Do you want me to send the corrected patch or is it ok ?
 
-No, thanks, I think I can tweak your patch myself a bit later.
+--=-+9FQgOzMPnQbBIcnuBJ1
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+
+This patch fixes the calls to liblzo. Some things shouldn't ever worked
+before. I noticed the problem on 64bit Linux - suddently 
+mkfs.jffs2 starts segfaulting.
+
+The -t option didn't work as well.
+
+Now LZO compression and -t option of mkfs.jffs2 is functional again.
+
+http://www.vahanus.net/cgi-bin/gitweb.cgi?p=mtd-utils.git;a=commit;h=5cec421106993009ad43e6188ce44906138c2d38
 
 -- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+Carsten Schlote <c.schlote@konzeptpark.de>
+konzeptpark.de
+
+--=-+9FQgOzMPnQbBIcnuBJ1
+Content-Disposition: attachment; filename="commit-5cec421"
+Content-Type: text/plain; name="commit-5cec421"; charset="UTF-8"
+Content-Transfer-Encoding: base64
+
+Y29tbWl0IDVjZWM0MjExMDY5OTMwMDlhZDQzZTYxODhjZTQ0OTA2MTM4YzJkMzgNCkF1dGhvcjog
+Q2Fyc3RlbiBTY2hsb3RlIDxjLnNjaGxvdGVAa29uemVwdHBhcmsuZGU+DQpEYXRlOiAgIE1vbiBK
+YW4gNSAxODo1ODoyMiAyMDA5ICswMTAwDQoNCiAgICBbUEFUQ0hdW2NvbXByX2x6by5jXSBGaXgg
+Y2FsbHMgdG8gTFpPIGxpYnJhcnkNCiAgICANCiAgICBGaXhlZCB0aGUgY2FsbHMgdG8gTFpPIGxp
+YnJhcnkuIEkgd29uZGVyIGhvdyB0aGlzIGNvdWxkIGV2ZXINCiAgICB3b3JrIGJlZm9yZS4NCiAg
+ICANCiAgICBOb3cgTFpPIGNvbXByZXNzaW9uIGFuZCAtdCBvcHRpb24gaW4gbWtmcy5qZmZzMiBh
+cmUgd29ya2luZy4NCiAgICANCiAgICBTaWduZWQtb2ZmLWJ5OiBDYXJzdGVuIFNjaGxvdGUgPGMu
+c2NobG90ZUBrb256ZXB0cGFyay5kZT4NCg0KZGlmZiAtLWdpdCBhL2NvbXByX2x6by5jIGIvY29t
+cHJfbHpvLmMNCmluZGV4IGEwYmIzNjIuLmY0YWU2OTcgMTAwNjQ0DQotLS0gYS9jb21wcl9sem8u
+Yw0KKysrIGIvY29tcHJfbHpvLmMNCkBAIC00OCwxNyArNDgsMTkgQEAgc3RhdGljIHZvaWQgKmx6
+b19jb21wcmVzc19idWY7DQogc3RhdGljIGludCBqZmZzMl9sem9fY21wcih1bnNpZ25lZCBjaGFy
+ICpkYXRhX2luLCB1bnNpZ25lZCBjaGFyICpjcGFnZV9vdXQsDQogCQkJICB1aW50MzJfdCAqc291
+cmNlbGVuLCB1aW50MzJfdCAqZHN0bGVuLCB2b2lkICptb2RlbCkNCiB7DQotCXVpbnQzMl90IGNv
+bXByZXNzX3NpemU7DQorCWx6b191aW50IGNvbXByZXNzX3NpemU7DQogCWludCByZXQ7DQogDQog
+CXJldCA9IGx6bzF4Xzk5OV9jb21wcmVzcyhkYXRhX2luLCAqc291cmNlbGVuLCBsem9fY29tcHJl
+c3NfYnVmLCAmY29tcHJlc3Nfc2l6ZSwgbHpvX21lbSk7DQogDQotCWlmIChyZXQgIT0gTFpPX0Vf
+T0spDQorCWlmIChyZXQgIT0gTFpPX0VfT0spIHsNCisJCXByaW50ZihfX0ZJTEVfXyAiOkdvdCBj
+b21wcmVzcyBlcnJvcjogcmV0PSVkLCBjbD0lbGQsIGRlc3RsZW49JWxkXG4iLHJldCxjb21wcmVz
+c19zaXplLChsb25nIGludCkoKmRzdGxlbikpOw0KIAkJcmV0dXJuIC0xOw0KKwl9DQogDQogCWlm
+IChjb21wcmVzc19zaXplID4gKmRzdGxlbikNCiAJCXJldHVybiAtMTsNCi0NCisJDQogCW1lbWNw
+eShjcGFnZV9vdXQsIGx6b19jb21wcmVzc19idWYsIGNvbXByZXNzX3NpemUpOw0KIAkqZHN0bGVu
+ID0gY29tcHJlc3Nfc2l6ZTsNCiANCkBAIC02OSwxMiArNzEsMTUgQEAgc3RhdGljIGludCBqZmZz
+Ml9sem9fZGVjb21wcmVzcyh1bnNpZ25lZCBjaGFyICpkYXRhX2luLCB1bnNpZ25lZCBjaGFyICpj
+cGFnZV9vdXQNCiAJCQkJIHVpbnQzMl90IHNyY2xlbiwgdWludDMyX3QgZGVzdGxlbiwgdm9pZCAq
+bW9kZWwpDQogew0KIAlpbnQgcmV0Ow0KLQl1aW50MzJfdCBkbDsNCisJbHpvX3VpbnQgZGw7DQog
+DQorCWRsID0gZGVzdGxlbjsNCiAJcmV0ID0gbHpvMXhfZGVjb21wcmVzc19zYWZlKGRhdGFfaW4s
+c3JjbGVuLGNwYWdlX291dCwmZGwsTlVMTCk7DQogDQotCWlmIChyZXQgIT0gTFpPX0VfT0sgfHwg
+ZGwgIT0gZGVzdGxlbikNCisJaWYgKChyZXQgIT0gTFpPX0VfT0spIHx8IChkbCAhPSBkZXN0bGVu
+KSkgew0KKwkJcHJpbnRmKF9fRklMRV9fICI6R290IGRlY29tcHJlc3MgZXJyb3I6IHJldD0lZCwg
+ZGw9JWxkLCBkZXN0bGVuPSVsZFxuIixyZXQsZGwsKGxvbmcgaW50KWRlc3RsZW4pOw0KIAkJcmV0
+dXJuIC0xOw0KKwl9DQogDQogCXJldHVybiAwOw0KIH0NCkBAIC05MiwxMiArOTcsMjIgQEAgaW50
+IGpmZnMyX2x6b19pbml0KHZvaWQpDQogew0KIAlpbnQgcmV0Ow0KIA0KKwlsem9faW5pdCgpOw0K
+KwkNCiAJbHpvX21lbSA9IG1hbGxvYyhMWk8xWF85OTlfTUVNX0NPTVBSRVNTKTsNCiAJaWYgKCFs
+em9fbWVtKQ0KIAkJcmV0dXJuIC0xOw0KIA0KIAkvKiBXb3JzZSBjYXNlIExaTyBjb21wcmVzc2lv
+biBzaXplIGZyb20gdGhlaXIgRkFRICovDQotCWx6b19jb21wcmVzc19idWYgPSBtYWxsb2MocGFn
+ZV9zaXplICsgKHBhZ2Vfc2l6ZSAvIDE2KSArIDY0ICsgMyk7DQorCS8qIERhbmdlcm91czogU2Vl
+bXMgdG8gYmUgd3JvbmcgZm9yIDY0Yml0IGludGVsIHBsYXRmb3Jtcy4gQXQgbGVhc3QgaXQgcmVz
+dWx0cw0KKyAgICAgICAgICAgICAgICBpbnRvIHMgU0VHVi4NCisNCisJbHpvX2NvbXByZXNzX2J1
+ZiA9IG1hbGxvYyhwYWdlX3NpemUgKyAocGFnZV9zaXplIC8gMTYpICsgNjQgKyAzKTsgDQorDQor
+CSAgIFRoZSBsaW5lIGJlbG93IGZpeGVzIHRoZSBTRUdWLiBObyBmdXJ0aGVyIHdvcmsgaGFzIGJl
+IGRvbmUgdG8gZGV0ZXJtaW5lDQorICAgICAgICAgICB0aGUgc21hbGxlc3QgcG9zc2libGUgc2l6
+ZSBmb3IgYSB3b3JzdGNhc2Ugc2NlbmFyaW8gKHVuY29tcHJlc3NhYmxlIGRhdGEpDQorCSovDQor
+CWx6b19jb21wcmVzc19idWYgPSBtYWxsb2MoMipwYWdlX3NpemUpOw0KIAlpZiAoIWx6b19jb21w
+cmVzc19idWYpIHsNCiAJCWZyZWUobHpvX21lbSk7DQogCQlyZXR1cm4gLTE7DQo=
+
+
+--=-+9FQgOzMPnQbBIcnuBJ1--
