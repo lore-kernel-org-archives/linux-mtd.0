@@ -1,19 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LJpJg-00082L-Cd
-	for linux-mtd@lists.infradead.org; Mon, 05 Jan 2009 13:16:25 +0000
-Subject: Re: about the _dtype_ parameter
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: =?UTF-8?Q?=E8=AE=B8=E5=B0=8F=E5=B7=9D?= <xiaochuan-xu@cqu.edu.cn>
-In-Reply-To: <TWMHGPGDBZQLPDUUCZBAWZYAUCWM.20061402067@cqu.edu.cn>
-References: <TWMHGPGDBZQLPDUUCZBAWZYAUCWM.20061402067@cqu.edu.cn>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 05 Jan 2009 15:15:43 +0200
-Message-Id: <1231161343.6608.3.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from mail-bw0-f12.google.com ([209.85.218.12])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1LJq3Z-0004uH-7H
+	for linux-mtd@lists.infradead.org; Mon, 05 Jan 2009 14:03:49 +0000
+Received: by bwz5 with SMTP id 5so16339680bwz.18
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 05 Jan 2009 06:03:47 -0800 (PST)
+From: Corentin Chary <corentin.chary@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 0/3] Export UBI map/unmap/is_mapped in userspace
+Date: Mon, 5 Jan 2009 14:58:16 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200901051458.17322.corentin.chary@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +25,10 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Hi,
+These are three patch to make a usespace program able to use map/unmap 
+operation and to query if a LEB is mapped.
+We are trying to do an UBI based userspace filesystem (using fuse) and we 
+needed these, but it could also be used for testing purpose.
+CONFIG_MTD_UBI_DEBUG_USERSPACE_IO is needed to enable theses functions.
 
-On Sun, 2009-01-04 at 01:07 +0800, =E8=AE=B8=E5=B0=8F=E5=B7=9D wrote:
-> In my test, I found that the third parameter of ubi_wl_get_peb()
-> function _dtype_ is always UBI_SHORTTERM.
-
-Which test?
-
-> How does the UBIFS classify the data type?
-
-Did you grep for this fs/ubifs? I think mostly we use UBI_UNKNOWN.
-
-> and would we better classify these UBI_SHORTTERM data more
-> fine granularity? Which is good for efficient wear-leveling scheme
-> IMO.
-
-May be. I've never done any good experiments for this.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Thanks
