@@ -1,24 +1,13 @@
-Received: from rv-out-0708.google.com ([209.85.198.251])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LKOy2-0000Kn-GU
-	for linux-mtd@lists.infradead.org; Wed, 07 Jan 2009 03:20:26 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so8197278rvf.42
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 06 Jan 2009 19:20:25 -0800 (PST)
-Message-ID: <f17812d70901061920r66b273e1t233a7c3c81d84e63@mail.gmail.com>
-Date: Wed, 7 Jan 2009 11:20:25 +0800
-From: "Eric Miao" <eric.y.miao@gmail.com>
-To: "Marcel Ziswiler" <marcel@ziswiler.com>
-Subject: Re: [PATCH 3/3] Fix compilation without MTD partitioning support
-In-Reply-To: <1231296053-2378-4-git-send-email-marcel@ziswiler.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Message-Id: <56202C2B-2CE6-4AB3-86FC-A4FF30B41953@kernel.crashing.org>
+From: Kumar Gala <galak@kernel.crashing.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=US-ASCII; format=flowed; delsp=yes
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <1231296053-2378-1-git-send-email-marcel@ziswiler.com>
-	<1231296053-2378-2-git-send-email-marcel@ziswiler.com>
-	<1231296053-2378-3-git-send-email-marcel@ziswiler.com>
-	<1231296053-2378-4-git-send-email-marcel@ziswiler.com>
+Mime-Version: 1.0 (Apple Message framework v929.2)
+Subject: Fwd: [PATCH] Set the fsl elbc ECCM according the settings in
+	bootloader.
+Date: Tue, 6 Jan 2009 13:38:42 -0600
+References: <1228707663-26995-1-git-send-email-Jason.jin@freescale.com>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -29,57 +18,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 7, 2009 at 10:40 AM, Marcel Ziswiler <marcel@ziswiler.com> wrote:
-> This fixes compilation without MTD partitioning support previously failing.
+
+Begin forwarded message:
+
+> From: Jason Jin <Jason.jin@freescale.com>
+> Date: December 7, 2008 9:41:03 PM CST
+> To: galak@kernel.crashing.org
+> Cc: linuxppc-dev@ozlabs.org, scottwood@freescale.com, Jason Jin <Jason.jin@freescale.com 
+> >
+> Subject: [PATCH] Set the fsl elbc ECCM according the settings in  
+> bootloader.
 >
-> Signed-off-by: Marcel Ziswiler <marcel@ziswiler.com>
+> The ECCM maybe set in bootloader, Get ECCM settings from the  
+> bootloader,
+> can avoid the image written by bootloader cannot read out by kernel.
+>
+> But the limitation of doing it this way is that, it could break  
+> large page
+> NAND if it is written with NAND disabled in u-boot and read with NAND
+> enabled, or vice versa.
+>
+> Signed-off-by: Jason Jin <Jason.jin@freescale.com>
 > ---
->  drivers/mtd/nand/pxa3xx_nand.c |    6 ++++++
->  1 files changed, 6 insertions(+), 0 deletions(-)
+> drivers/mtd/nand/fsl_elbc_nand.c |    4 +++-
+> 1 files changed, 3 insertions(+), 1 deletions(-)
 >
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> index d2da717..90cadc9 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -1162,7 +1162,11 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
->                goto fail_free_irq;
->        }
+> diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/ 
+> fsl_elbc_nand.c
+> index 4aa5bd6..65929db 100644
+> --- a/drivers/mtd/nand/fsl_elbc_nand.c
+> +++ b/drivers/mtd/nand/fsl_elbc_nand.c
+> @@ -777,7 +777,9 @@ static int fsl_elbc_chip_init(struct  
+> fsl_elbc_mtd *priv)
+> 	/* Fill in fsl_elbc_mtd structure */
+> 	priv->mtd.priv = chip;
+> 	priv->mtd.owner = THIS_MODULE;
+> -	priv->fmr = 0; /* rest filled in later */
+> +
+> +	/* Set the ECCM according to the settings in bootloader.*/
+> +	priv->fmr = in_be32(&lbc->fmr) & FMR_ECCM;
 >
-> +#ifdef CONFIG_MTD_PARTITIONS
->        return add_mtd_partitions(mtd, pdata->parts, pdata->nr_parts);
-> +#else
-> +       return 0;
-> +#endif
->
+> 	/* fill in nand_chip structure */
+> 	/* set up function call table */
+> -- 
+> 1.5.4
 
-or maybe
+This patch seems to have gotten lost on the linuxppc-dev list.  Wanted  
+to make sure you saw it (would be nice for .29) (or if you Ack I'll  
+deal w/it via the powerpc tree)
 
-#ifdef CONFIG_MTD_PARTITIONS
-        ret = add_mtd_partitions(...)
-#endif
-        return ret;
-
-I don't personally like mutual exclusive #ifdef.
-
->  fail_free_irq:
->        free_irq(IRQ_NAND, info);
-> @@ -1193,7 +1197,9 @@ static int pxa3xx_nand_remove(struct platform_device *pdev)
->        platform_set_drvdata(pdev, NULL);
->
->        del_mtd_device(mtd);
-> +#ifdef CONFIG_MTD_PARTITIONS
->        del_mtd_partitions(mtd);
-> +#endif
->        free_irq(IRQ_NAND, info);
->        if (use_dma) {
->                pxa_free_dma(info->data_dma_ch);
-> --
-> 1.6.0.6
->
->
-
-Otherwise looks OK to me.
-
--- 
-Cheers
-- eric
+- k
