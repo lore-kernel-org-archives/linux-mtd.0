@@ -1,12 +1,21 @@
-Message-ID: <31645.41.220.75.3.1231240620.squirrel@secure.svn.net>
-Date: Tue, 6 Jan 2009 03:17:00 -0800 (PST)
-Subject: Urgent Information...
-From: "John White" <john.whiteee@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1LKAZr-0002WN-0W
+	for linux-mtd@lists.infradead.org; Tue, 06 Jan 2009 11:58:31 +0000
+Subject: Re: [PATCH 3/3] UBI: is_mapped operation via ioctl
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Corentin Chary <corentin.chary@gmail.com>
+In-Reply-To: <71cd59b00901060125hcc12353jaee277cd6f52c2da@mail.gmail.com>
+References: <71cd59b00901050607l4356c850y2be8ea93d8437fbd@mail.gmail.com>
+	<1231166009.6608.20.camel@localhost.localdomain>
+	<71cd59b00901060125hcc12353jaee277cd6f52c2da@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 06 Jan 2009 13:58:55 +0200
+Message-Id: <1231243135.6608.36.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To: undisclosed-recipients:;
-Reply-To: john.whitee@gmail.com
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,26 +25,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, 2009-01-06 at 10:25 +0100, Corentin Chary wrote:
+> > Otherwise, the patches look OK for me.
+> Do you want me to send the corrected patch or is it ok ?
 
+No, thanks, I think I can tweak your patch myself a bit later.
 
-
-Dear Partner,
-
-Please permit me to introduce myself; I am John White, Head HR Department,
-RBS Group United Kingdom.
-
-I possess valuable and classfied information of great interest which i
-wish to share with you. I also need to ascertain your dispositions towards
-receiving and utilising information from me, that guarantees you being
-legally acknowledged as the sole surviving relative (next of kin) to Mrs.
-Fiona Watts.
-
-You must maintain a great deal of confidentiality towards this endeavour.
-
-I can be reached on my confidential Tel: +44 704 577 8558 or mail back at
-john.whitee@gmail.com should you be interested.
-
-Thank you for your time.
-
-Sincerely,
-John White.
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
