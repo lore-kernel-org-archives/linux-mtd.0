@@ -1,23 +1,12 @@
-Received: from mail-bw0-f12.google.com ([209.85.218.12])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LK8Bn-0000Yp-MJ
-	for linux-mtd@lists.infradead.org; Tue, 06 Jan 2009 09:25:31 +0000
-Received: by bwz5 with SMTP id 5so17210351bwz.18
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 06 Jan 2009 01:25:30 -0800 (PST)
-Message-ID: <71cd59b00901060125hcc12353jaee277cd6f52c2da@mail.gmail.com>
-Date: Tue, 6 Jan 2009 10:25:30 +0100
-From: "Corentin Chary" <corentin.chary@gmail.com>
-To: dedekind@infradead.org
-Subject: Re: [PATCH 3/3] UBI: is_mapped operation via ioctl
-In-Reply-To: <1231166009.6608.20.camel@localhost.localdomain>
+Message-ID: <31645.41.220.75.3.1231240620.squirrel@secure.svn.net>
+Date: Tue, 6 Jan 2009 03:17:00 -0800 (PST)
+Subject: Urgent Information...
+From: "John White" <john.whiteee@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <71cd59b00901050607l4356c850y2be8ea93d8437fbd@mail.gmail.com>
-	<1231166009.6608.20.camel@localhost.localdomain>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+To: undisclosed-recipients:;
+Reply-To: john.whitee@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,5 +16,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Otherwise, the patches look OK for me.
-Do you want me to send the corrected patch or is it ok ?
+
+
+
+Dear Partner,
+
+Please permit me to introduce myself; I am John White, Head HR Department,
+RBS Group United Kingdom.
+
+I possess valuable and classfied information of great interest which i
+wish to share with you. I also need to ascertain your dispositions towards
+receiving and utilising information from me, that guarantees you being
+legally acknowledged as the sole surviving relative (next of kin) to Mrs.
+Fiona Watts.
+
+You must maintain a great deal of confidentiality towards this endeavour.
+
+I can be reached on my confidential Tel: +44 704 577 8558 or mail back at
+john.whitee@gmail.com should you be interested.
+
+Thank you for your time.
+
+Sincerely,
+John White.
