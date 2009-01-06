@@ -1,24 +1,19 @@
-Received: from yw-out-1718.google.com ([74.125.46.158])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LKDf6-0005sN-VJ
-	for linux-mtd@lists.infradead.org; Tue, 06 Jan 2009 15:16:09 +0000
-Received: by yw-out-1718.google.com with SMTP id 5so2807879ywm.72
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 06 Jan 2009 07:16:07 -0800 (PST)
-Message-ID: <8bd0f97a0901060716h5c518faau77a7af884f5133c2@mail.gmail.com>
-Date: Tue, 6 Jan 2009 10:16:07 -0500
-From: "Mike Frysinger" <vapier.adi@gmail.com>
-To: "Sidney Amani" <amani_s@epitech.net>
-Subject: Re: [PATCH 0/2] mtd-utils export libraries
-In-Reply-To: <8bd0f97a0812181224w450cb529l9108eaddbf66081c@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <52e42efe0812180615u19344697la740e4ca1a060aff@mail.gmail.com>
-	<1229611038.30575.11.camel@sauron>
-	<8bd0f97a0812181224w450cb529l9108eaddbf66081c@mail.gmail.com>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1LKDzs-0002lH-9x
+	for linux-mtd@lists.infradead.org; Tue, 06 Jan 2009 15:37:37 +0000
+Subject: Re: [PATCH 1/3] UBI: map operation via ioctl
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Corentin Chary <corentincj@iksaif.net>
+In-Reply-To: <71cd59b00901050605s4ec76e9avb146bb61deaf2159@mail.gmail.com>
+References: <71cd59b00901050605s4ec76e9avb146bb61deaf2159@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 06 Jan 2009 17:38:13 +0200
+Message-Id: <1231256293.6608.55.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,26 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 18, 2008 at 15:24, Mike Frysinger wrote:
-> On Thu, Dec 18, 2008 at 09:37, Artem Bityutskiy wrote:
->> On Thu, 2008-12-18 at 15:15 +0100, Sidney Amani wrote:
->>> We are currently working on an UBI based userspace filesystem.
->>>
->>> We wanted to use libubi. So here is our patch to export shared
->>> libraries and headers. This is done for each library in LIBS.
->>
->> Hi, thanks for the patches. However, Mike (CCed) sent a major build
->> system rework patch recently, but there was an issue and I am waiting
->> for a new patch from him. Mike, could you please let me know if I
->> should wait for a new version of your patch or try to apply these
->> ones?
->
-> i think the first question is, is this actually desirable.  a shared
-> library implies stable ABI and a thought out API.  if neither of these
-> have been done, but you still want to export the libs, the first thing
-> to do would be to just export PIC static libs.
+On Mon, 2009-01-05 at 15:05 +0100, Corentin Chary wrote:
+> From: Corentin Chary <corentincj@iksaif.net>
+> 
+> UBI: map operation via ioctl
+> 
+> Signed-off-by: Corentin Chary <corentincj@iksaif.net>
 
-any feedback ?  the build cleanup was merged, but i think we need to
-chat about what you're actually trying to accomplish before we export
-shared libraries willy nilly ...
--mike
+Argh. The patch is corrupted:
+
+patching file drivers/mtd/ubi/cdev.c
+patch: **** malformed patch at line 11: struct file *file,
+
+Could you please glance at Documentation/SubmittingPatches in the
+kernel tree? Could you please re-send the series properly? Or send
+me the patches as an attachment. Thanks.
+
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
