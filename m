@@ -1,21 +1,21 @@
-Received: from ns.konzeptpark.de ([195.226.66.162] helo=mail.konzeptpark.de)
+Received: from rv-out-0708.google.com ([209.85.198.245])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LJvoX-0001Fs-N8
-	for linux-mtd@lists.infradead.org; Mon, 05 Jan 2009 20:12:42 +0000
-Received: from KPLADC0001 (cantor.konzeptpark.de [172.25.0.211])
-	by mail.konzeptpark.de (Postfix) with SMTP id 8143823838
+	id 1LKBbC-0002aF-KO
+	for linux-mtd@lists.infradead.org; Tue, 06 Jan 2009 13:04:03 +0000
+Received: by rv-out-0708.google.com with SMTP id b17so7839366rvf.42
 	for <linux-mtd@lists.infradead.org>;
-	Mon,  5 Jan 2009 21:09:09 +0100 (CET)
-Received: from [172.25.0.211] (helo=kpladc0001.konzeptpark.intra)
-	by KPLADC0001 with AVK MailGateway;
-	for <linux-mtd@lists.infradead.org>; Mon, 05 Jan 2009 21:12:33 +0100
-Subject: [PATCH][MTD-UTILS][compr_lzo.c] Fix calls to liblzo library
-From: Carsten Schlote <c.schlote@konzeptpark.de>
-To: Linux MTD Dev <linux-mtd@lists.infradead.org>
-Content-Type: multipart/mixed; boundary="=-+9FQgOzMPnQbBIcnuBJ1"
-Date: Mon, 05 Jan 2009 21:12:30 +0100
-Message-Id: <1231186350.6612.11.camel@kplaws107lx>
-Mime-Version: 1.0
+	Tue, 06 Jan 2009 05:03:56 -0800 (PST)
+Date: Wed, 7 Jan 2009 08:02:55 -0500
+From: Josh Boyer <jwboyer@gmail.com>
+To: Carsten Schlote <c.schlote@konzeptpark.de>
+Subject: Re: [PATCH][MTD-UTILS][compr_lzo.c] Fix calls to liblzo library
+Message-ID: <20090107130255.GA2333@yoda.jdub.homelinux.org>
+References: <1231186350.6612.11.camel@kplaws107lx>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1231186350.6612.11.camel@kplaws107lx>
+Cc: Linux MTD Dev <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,74 +25,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, Jan 05, 2009 at 09:12:30PM +0100, Carsten Schlote wrote:
+>This patch fixes the calls to liblzo. Some things shouldn't ever worked
+>before. I noticed the problem on 64bit Linux - suddently 
+>mkfs.jffs2 starts segfaulting.
+>
+>The -t option didn't work as well.
+>
+>Now LZO compression and -t option of mkfs.jffs2 is functional again.
+>
+>http://www.vahanus.net/cgi-bin/gitweb.cgi?p=mtd-utils.git;a=commit;h=5cec421106993009ad43e6188ce44906138c2d38
+>
+>-- 
+>Carsten Schlote <c.schlote@konzeptpark.de>
+>konzeptpark.de
 
---=-+9FQgOzMPnQbBIcnuBJ1
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+>commit 5cec421106993009ad43e6188ce44906138c2d38
+>Author: Carsten Schlote <c.schlote@konzeptpark.de>
+>Date:   Mon Jan 5 18:58:22 2009 +0100
+>
+>    [PATCH][compr_lzo.c] Fix calls to LZO library
+>    
+>    Fixed the calls to LZO library. I wonder how this could ever
+>    work before.
+>    
+>    Now LZO compression and -t option in mkfs.jffs2 are working.
+>    
+>    Signed-off-by: Carsten Schlote <c.schlote@konzeptpark.de>
+>
+>diff --git a/compr_lzo.c b/compr_lzo.c
+>index a0bb362..f4ae697 100644
+>--- a/compr_lzo.c
+>+++ b/compr_lzo.c
+>@@ -48,17 +48,19 @@ static void *lzo_compress_buf;
+> static int jffs2_lzo_cmpr(unsigned char *data_in, unsigned char *cpage_out,
+> 			  uint32_t *sourcelen, uint32_t *dstlen, void *model)
+> {
+>-	uint32_t compress_size;
+>+	lzo_uint compress_size;
 
-This patch fixes the calls to liblzo. Some things shouldn't ever worked
-before. I noticed the problem on 64bit Linux - suddently 
-mkfs.jffs2 starts segfaulting.
+What is the lzo_uint type?  If it's some odd thing that changes
+size based on compile options, I'm not overly thrilled.  Anyway,
+it's not immediately obvious to me why uint32_t doesn't work.
 
-The -t option didn't work as well.
+> 	int ret;
+> 
+> 	ret = lzo1x_999_compress(data_in, *sourcelen, lzo_compress_buf, &compress_size, lzo_mem);
+> 
+>-	if (ret != LZO_E_OK)
+>+	if (ret != LZO_E_OK) {
+>+		printf(__FILE__ ":Got compress error: ret=%d, cl=%ld, destlen=%ld\n",ret,compress_size,(long int)(*dstlen));
+> 		return -1;
+>+	}
+> 
+> 	if (compress_size > *dstlen)
+> 		return -1;
+>-
+>+	
 
-Now LZO compression and -t option of mkfs.jffs2 is functional again.
+Unneeded whitespace change.
 
-http://www.vahanus.net/cgi-bin/gitweb.cgi?p=mtd-utils.git;a=commit;h=5cec421106993009ad43e6188ce44906138c2d38
+> 	memcpy(cpage_out, lzo_compress_buf, compress_size);
+> 	*dstlen = compress_size;
+> 
+>@@ -69,12 +71,15 @@ static int jffs2_lzo_decompress(unsigned char *data_in, unsigned char *cpage_out
+> 				 uint32_t srclen, uint32_t destlen, void *model)
+> {
+> 	int ret;
+>-	uint32_t dl;
+>+	lzo_uint dl;
+> 
+>+	dl = destlen;
+> 	ret = lzo1x_decompress_safe(data_in,srclen,cpage_out,&dl,NULL);
+> 
+>-	if (ret != LZO_E_OK || dl != destlen)
+>+	if ((ret != LZO_E_OK) || (dl != destlen)) {
+>+		printf(__FILE__ ":Got decompress error: ret=%d, dl=%ld, destlen=%ld\n",ret,dl,(long int)destlen);
+> 		return -1;
+>+	}
+> 
+> 	return 0;
+> }
+>@@ -92,12 +97,22 @@ int jffs2_lzo_init(void)
+> {
+> 	int ret;
+> 
+>+	lzo_init();
+>+	
+> 	lzo_mem = malloc(LZO1X_999_MEM_COMPRESS);
+> 	if (!lzo_mem)
+> 		return -1;
+> 
+> 	/* Worse case LZO compression size from their FAQ */
+>-	lzo_compress_buf = malloc(page_size + (page_size / 16) + 64 + 3);
+>+	/* Dangerous: Seems to be wrong for 64bit intel platforms. At least it results
+>+                into s SEGV.
+>+
+>+	lzo_compress_buf = malloc(page_size + (page_size / 16) + 64 + 3); 
+>+
+>+	   The line below fixes the SEGV. No further work has be done to determine
+>+           the smallest possible size for a worstcase scenario (uncompressable data)
+>+	*/
+>+	lzo_compress_buf = malloc(2*page_size);
 
--- 
-Carsten Schlote <c.schlote@konzeptpark.de>
-konzeptpark.de
+Don't leave comments in the code about why things are dangerous and then
+leave the code itself commented out.  A comment about why you need to
+allocate a certain size is fine, but this is pretty ugly.  For a minute
+I thought you were doing two mallocs and ignoring the first one because
+I didn't see the multi-line /* comment.
 
---=-+9FQgOzMPnQbBIcnuBJ1
-Content-Disposition: attachment; filename="commit-5cec421"
-Content-Type: text/plain; name="commit-5cec421"; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Did you poke around with gdb at all to determine why it segfaults?
 
-Y29tbWl0IDVjZWM0MjExMDY5OTMwMDlhZDQzZTYxODhjZTQ0OTA2MTM4YzJkMzgNCkF1dGhvcjog
-Q2Fyc3RlbiBTY2hsb3RlIDxjLnNjaGxvdGVAa29uemVwdHBhcmsuZGU+DQpEYXRlOiAgIE1vbiBK
-YW4gNSAxODo1ODoyMiAyMDA5ICswMTAwDQoNCiAgICBbUEFUQ0hdW2NvbXByX2x6by5jXSBGaXgg
-Y2FsbHMgdG8gTFpPIGxpYnJhcnkNCiAgICANCiAgICBGaXhlZCB0aGUgY2FsbHMgdG8gTFpPIGxp
-YnJhcnkuIEkgd29uZGVyIGhvdyB0aGlzIGNvdWxkIGV2ZXINCiAgICB3b3JrIGJlZm9yZS4NCiAg
-ICANCiAgICBOb3cgTFpPIGNvbXByZXNzaW9uIGFuZCAtdCBvcHRpb24gaW4gbWtmcy5qZmZzMiBh
-cmUgd29ya2luZy4NCiAgICANCiAgICBTaWduZWQtb2ZmLWJ5OiBDYXJzdGVuIFNjaGxvdGUgPGMu
-c2NobG90ZUBrb256ZXB0cGFyay5kZT4NCg0KZGlmZiAtLWdpdCBhL2NvbXByX2x6by5jIGIvY29t
-cHJfbHpvLmMNCmluZGV4IGEwYmIzNjIuLmY0YWU2OTcgMTAwNjQ0DQotLS0gYS9jb21wcl9sem8u
-Yw0KKysrIGIvY29tcHJfbHpvLmMNCkBAIC00OCwxNyArNDgsMTkgQEAgc3RhdGljIHZvaWQgKmx6
-b19jb21wcmVzc19idWY7DQogc3RhdGljIGludCBqZmZzMl9sem9fY21wcih1bnNpZ25lZCBjaGFy
-ICpkYXRhX2luLCB1bnNpZ25lZCBjaGFyICpjcGFnZV9vdXQsDQogCQkJICB1aW50MzJfdCAqc291
-cmNlbGVuLCB1aW50MzJfdCAqZHN0bGVuLCB2b2lkICptb2RlbCkNCiB7DQotCXVpbnQzMl90IGNv
-bXByZXNzX3NpemU7DQorCWx6b191aW50IGNvbXByZXNzX3NpemU7DQogCWludCByZXQ7DQogDQog
-CXJldCA9IGx6bzF4Xzk5OV9jb21wcmVzcyhkYXRhX2luLCAqc291cmNlbGVuLCBsem9fY29tcHJl
-c3NfYnVmLCAmY29tcHJlc3Nfc2l6ZSwgbHpvX21lbSk7DQogDQotCWlmIChyZXQgIT0gTFpPX0Vf
-T0spDQorCWlmIChyZXQgIT0gTFpPX0VfT0spIHsNCisJCXByaW50ZihfX0ZJTEVfXyAiOkdvdCBj
-b21wcmVzcyBlcnJvcjogcmV0PSVkLCBjbD0lbGQsIGRlc3RsZW49JWxkXG4iLHJldCxjb21wcmVz
-c19zaXplLChsb25nIGludCkoKmRzdGxlbikpOw0KIAkJcmV0dXJuIC0xOw0KKwl9DQogDQogCWlm
-IChjb21wcmVzc19zaXplID4gKmRzdGxlbikNCiAJCXJldHVybiAtMTsNCi0NCisJDQogCW1lbWNw
-eShjcGFnZV9vdXQsIGx6b19jb21wcmVzc19idWYsIGNvbXByZXNzX3NpemUpOw0KIAkqZHN0bGVu
-ID0gY29tcHJlc3Nfc2l6ZTsNCiANCkBAIC02OSwxMiArNzEsMTUgQEAgc3RhdGljIGludCBqZmZz
-Ml9sem9fZGVjb21wcmVzcyh1bnNpZ25lZCBjaGFyICpkYXRhX2luLCB1bnNpZ25lZCBjaGFyICpj
-cGFnZV9vdXQNCiAJCQkJIHVpbnQzMl90IHNyY2xlbiwgdWludDMyX3QgZGVzdGxlbiwgdm9pZCAq
-bW9kZWwpDQogew0KIAlpbnQgcmV0Ow0KLQl1aW50MzJfdCBkbDsNCisJbHpvX3VpbnQgZGw7DQog
-DQorCWRsID0gZGVzdGxlbjsNCiAJcmV0ID0gbHpvMXhfZGVjb21wcmVzc19zYWZlKGRhdGFfaW4s
-c3JjbGVuLGNwYWdlX291dCwmZGwsTlVMTCk7DQogDQotCWlmIChyZXQgIT0gTFpPX0VfT0sgfHwg
-ZGwgIT0gZGVzdGxlbikNCisJaWYgKChyZXQgIT0gTFpPX0VfT0spIHx8IChkbCAhPSBkZXN0bGVu
-KSkgew0KKwkJcHJpbnRmKF9fRklMRV9fICI6R290IGRlY29tcHJlc3MgZXJyb3I6IHJldD0lZCwg
-ZGw9JWxkLCBkZXN0bGVuPSVsZFxuIixyZXQsZGwsKGxvbmcgaW50KWRlc3RsZW4pOw0KIAkJcmV0
-dXJuIC0xOw0KKwl9DQogDQogCXJldHVybiAwOw0KIH0NCkBAIC05MiwxMiArOTcsMjIgQEAgaW50
-IGpmZnMyX2x6b19pbml0KHZvaWQpDQogew0KIAlpbnQgcmV0Ow0KIA0KKwlsem9faW5pdCgpOw0K
-KwkNCiAJbHpvX21lbSA9IG1hbGxvYyhMWk8xWF85OTlfTUVNX0NPTVBSRVNTKTsNCiAJaWYgKCFs
-em9fbWVtKQ0KIAkJcmV0dXJuIC0xOw0KIA0KIAkvKiBXb3JzZSBjYXNlIExaTyBjb21wcmVzc2lv
-biBzaXplIGZyb20gdGhlaXIgRkFRICovDQotCWx6b19jb21wcmVzc19idWYgPSBtYWxsb2MocGFn
-ZV9zaXplICsgKHBhZ2Vfc2l6ZSAvIDE2KSArIDY0ICsgMyk7DQorCS8qIERhbmdlcm91czogU2Vl
-bXMgdG8gYmUgd3JvbmcgZm9yIDY0Yml0IGludGVsIHBsYXRmb3Jtcy4gQXQgbGVhc3QgaXQgcmVz
-dWx0cw0KKyAgICAgICAgICAgICAgICBpbnRvIHMgU0VHVi4NCisNCisJbHpvX2NvbXByZXNzX2J1
-ZiA9IG1hbGxvYyhwYWdlX3NpemUgKyAocGFnZV9zaXplIC8gMTYpICsgNjQgKyAzKTsgDQorDQor
-CSAgIFRoZSBsaW5lIGJlbG93IGZpeGVzIHRoZSBTRUdWLiBObyBmdXJ0aGVyIHdvcmsgaGFzIGJl
-IGRvbmUgdG8gZGV0ZXJtaW5lDQorICAgICAgICAgICB0aGUgc21hbGxlc3QgcG9zc2libGUgc2l6
-ZSBmb3IgYSB3b3JzdGNhc2Ugc2NlbmFyaW8gKHVuY29tcHJlc3NhYmxlIGRhdGEpDQorCSovDQor
-CWx6b19jb21wcmVzc19idWYgPSBtYWxsb2MoMipwYWdlX3NpemUpOw0KIAlpZiAoIWx6b19jb21w
-cmVzc19idWYpIHsNCiAJCWZyZWUobHpvX21lbSk7DQogCQlyZXR1cm4gLTE7DQo=
-
-
---=-+9FQgOzMPnQbBIcnuBJ1--
+josh
