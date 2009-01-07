@@ -1,21 +1,25 @@
-Received: from ns.konzeptpark.de ([195.226.66.162] helo=mail.konzeptpark.de)
+Received: from yx-out-1718.google.com ([74.125.44.154])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LKVxL-0004Fs-M4
-	for linux-mtd@lists.infradead.org; Wed, 07 Jan 2009 10:48:12 +0000
-Content-class: urn:content-classes:message
+	id 1LKXgi-00018j-5v
+	for linux-mtd@lists.infradead.org; Wed, 07 Jan 2009 12:39:10 +0000
+Received: by yx-out-1718.google.com with SMTP id 3so2979360yxi.72
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 07 Jan 2009 04:39:04 -0800 (PST)
+Message-ID: <52e42efe0901070439s223d8bb3hae377c2c0584c3ec@mail.gmail.com>
+Date: Wed, 7 Jan 2009 13:39:04 +0100
+From: "Sidney Amani" <amani_s@epitech.net>
+Sender: seed95@gmail.com
+Subject: Re: [PATCH 0/2] mtd-utils export libraries
+Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <8bd0f97a0901060716h5c518faau77a7af884f5133c2@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: AW: [PATCH][MTD-UTILS][compr_lzo.c] Fix calls to liblzo library
-Date: Wed, 7 Jan 2009 11:48:07 +0100
-Message-ID: <46597312D56D2A47A3A6E9C1D0D9B7AE01426F71@kpladc0001.konzeptpark.intra>
-In-Reply-To: <20090107130255.GA2333@yoda.jdub.homelinux.org>
-References: <1231186350.6612.11.camel@kplaws107lx>
-	<20090107130255.GA2333@yoda.jdub.homelinux.org>
-From: "Carsten Schlote" <c.schlote@konzeptpark.de>
-To: "Josh Boyer" <jwboyer@gmail.com>
-Cc: Linux MTD Dev <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <52e42efe0812180615u19344697la740e4ca1a060aff@mail.gmail.com>
+	<1229611038.30575.11.camel@sauron>
+	<8bd0f97a0812181224w450cb529l9108eaddbf66081c@mail.gmail.com>
+	<8bd0f97a0901060716h5c518faau77a7af884f5133c2@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,58 +29,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Josh,
+Hi Mike,
 
-> > ...
-> >+	lzo_compress_buf =3D malloc(2*page_size);
->=20
-> Don't leave comments in the code about why things are dangerous and
-> then
-> leave the code itself commented out.  A comment about why you need to
-> allocate a certain size is fine, but this is pretty ugly.  For a
-minute
-> I thought you were doing two mallocs and ignoring the first one
-because
-> I didn't see the multi-line /* comment.
->=20
-> Did you poke around with gdb at all to determine why it segfaults?
+What we are trying to do is an UBI based userspace filesystem (using fuse).
+We use the libubi to get volumes and devices info (ubi_get_dev_info,
+ubi_get_vol_info, ubi_get_dev_info1, ubi_get_vol_info1).
+Otherwise we communicate with the UBI volume through the cdev driver.
+I am not sure a shared library is really desirable, probably not,
+anyway it's not fundamental for us...
+I particularly though that it could be useful for ubi-tools but I also
+realize that it's much more restrictive to have shared libraries.
 
-Not yet due to lack of time problem (HW series ramp-up right now). The
-comment was left to trigger questions like yours :-) =20
+On Tue, Jan 6, 2009 at 4:16 PM, Mike Frysinger <vapier.adi@gmail.com> wrote:
+> On Thu, Dec 18, 2008 at 15:24, Mike Frysinger wrote:
+>> On Thu, Dec 18, 2008 at 09:37, Artem Bityutskiy wrote:
+>>> On Thu, 2008-12-18 at 15:15 +0100, Sidney Amani wrote:
+>>>> We are currently working on an UBI based userspace filesystem.
+>>>>
+>>>> We wanted to use libubi. So here is our patch to export shared
+>>>> libraries and headers. This is done for each library in LIBS.
+>>>
+>>> Hi, thanks for the patches. However, Mike (CCed) sent a major build
+>>> system rework patch recently, but there was an issue and I am waiting
+>>> for a new patch from him. Mike, could you please let me know if I
+>>> should wait for a new version of your patch or try to apply these
+>>> ones?
+>>
+>> i think the first question is, is this actually desirable.  a shared
+>> library implies stable ABI and a thought out API.  if neither of these
+>> have been done, but you still want to export the libs, the first thing
+>> to do would be to just export PIC static libs.
+>
+> any feedback ?  the build cleanup was merged, but i think we need to
+> chat about what you're actually trying to accomplish before we export
+> shared libraries willy nilly ...
+> -mike
+>
 
-I came across this problem, when I compiled my ptxdist projects on
-Ubuntu64 at home. Suddently mkfs.jffs2 segfaulted - it always worked
-fine on IA32.
 
-So I spent some time to fix this problem, as they are:
-- Wrong usage of LZO API calls for decompression. Caused -t to fail,
-also
-  on IA32. This is now fixed correctly by setting the destlen to the
-  allowed maximum before calling the 'safe' decompression function.
-- Crash on AMD64 with the currently supplied work buffer - just
-increased the buffer
-  until it worked again - that's a hack, but a working one.
-  Possible suspects:=20
-    - Compiler uses different value and structure alignments on 64bit
-hosts
-      increasing size of structures and arrays.
 
-I agree that it is undesireable to 'guess' workbuffer sizes. I had no
-time to check and figure out, if there is an appropriate LZO API call to
-derive a safe size for a workbuffer for a given algorythm and
-compression parameters.
-
-Frankly spoken, the previous formula is no solution either. The comments
-says: 'Taken from their FAQs'. Beside the note, just some hardcoded
-numbers are used to get some size. There is no explanation, what these
-values mean or from what and where these constants are taken.
-
-The correct solution is to query the size from the LZO library itself -
-should the estimate be wrong, just fix the library and all applications
-will work again.
-
-If somebody knows how to get the correct information from LZO library -
-just fix and post a patch, or tell me where to find this information and
-I will fix and post a patch.=20
-
-Carsten
+-- 
+Sidney Amani
