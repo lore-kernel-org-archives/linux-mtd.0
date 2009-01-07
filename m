@@ -1,18 +1,21 @@
-Received: from mail.karo-electronics.de ([213.146.116.110])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LKUHk-0002gN-J7
-	for linux-mtd@lists.infradead.org; Wed, 07 Jan 2009 09:01:09 +0000
-Message-ID: <18788.28493.320590.496280@ipc1.ka-ro>
-Date: Wed, 7 Jan 2009 10:01:01 +0100
-From: =?iso-8859-15?q?Lothar_Wa=DFmann?= <LW@KARO-electronics.de>
-To: "Eric Miao" <eric.y.miao@gmail.com>
-Subject: Re: [PATCH 2/3] Coding style clean-up
-In-Reply-To: <f17812d70901061918i6e39893ue7ac9e15fa4654d3@mail.gmail.com>
-References: <1231296053-2378-1-git-send-email-marcel@ziswiler.com>
-	<1231296053-2378-2-git-send-email-marcel@ziswiler.com>
-	<1231296053-2378-3-git-send-email-marcel@ziswiler.com>
-	<f17812d70901061918i6e39893ue7ac9e15fa4654d3@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, Marcel Ziswiler <marcel@ziswiler.com>
+Received: from mail-bw0-f12.google.com ([209.85.218.12])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1LKUgh-00046j-Ha
+	for linux-mtd@lists.infradead.org; Wed, 07 Jan 2009 09:26:56 +0000
+Received: by bwz5 with SMTP id 5so18283790bwz.18
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 07 Jan 2009 01:26:53 -0800 (PST)
+Sender: Corentin Chary <corentin.chary@gmail.com>
+From: Corentin Chary <corentincj@iksaif.net>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 0/3] Export UBI map/unmap/is_mapped in userspace v2
+Date: Wed, 7 Jan 2009 10:22:46 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200901071022.46343.corentincj@iksaif.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +25,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi,x
+These are three patch to make a usespace program able to use map/unmap 
+operation and to query if a LEB is mapped.
+We are trying to do an UBI based userspace filesystem (using fuse) and we 
+needed these, but it could also be used for testing purpose.
+CONFIG_MTD_UBI_DEBUG_USERSPACE_IO is needed to enable theses functions.
 
-> > -	dev_warn(&info->pdev->dev,
-> > -		 "failed to detect configured nand flash; found %04x instead of\n",
-> > -		 id);
-> > +	dev_warn(&info->pdev->dev, "failed to detect configured nand flash; "
-> > +			"found %04x instead of\n", id);
-> 
-> This is OK.
-> 
-I personally don't like strings being split up to fit the line length
-limitation. It makes it just harder to locate a certain kernel message
-in the source code. Anyway the message text seems to be incomplete:
-'found %04x instead of' what?
+The patch can also be download here:
+http://xf.iksaif.net/dev/uffs/linux/ubi/
 
 
-Lothar Waßmann
--- 
-___________________________________________________________
+Thanks
 
-Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Geschäftsführer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
-
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+--
+Corentin Chary
+http://xf.iksaif.net
