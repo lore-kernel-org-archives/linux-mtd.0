@@ -1,15 +1,25 @@
-Received: from mailout5.parasun.com ([204.174.16.215])
+Received: from mout-xforward.kundenserver.de ([212.227.17.5])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LKe6U-0001jR-9F
-	for linux-mtd@lists.infradead.org; Wed, 07 Jan 2009 19:30:12 +0000
-Message-ID: <4742.80.255.59.243.1231355787.squirrel@webmail.htva.net>
-Date: Wed, 7 Jan 2009 11:16:27 -0800 (PST)
-Subject: XMISSION SUBSCRIBES
-From: "XMISSION" <info@xmission.com>
+	id 1LKeSz-0000Ls-Lw
+	for linux-mtd@lists.infradead.org; Wed, 07 Jan 2009 19:53:26 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: linuxppc-dev@ozlabs.org
+Subject: Re: [patch 0/6] ps3vram driver patches
+Date: Wed, 7 Jan 2009 20:53:05 +0100
+References: <4963CDCA.4080802@am.sony.com> <200901071944.45680.arnd@arndb.de>
+	<49650128.8020200@am.sony.com>
+In-Reply-To: <49650128.8020200@am.sony.com>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Reply-To: hmit.netcontractor1@contractor.net
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Message-Id: <200901072053.06037.arnd@arndb.de>
+Cc: David Woodhouse <David.Woodhouse@intel.com>,
+	Geoff Levand <geoffrey.levand@am.sony.com>,
+	Jim Paris <jim@jtan.com>, linux-mtd@lists.infradead.org,
+	Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>,
+	Vivien Chappelier <vivien.chappelier@free.fr>, cbe-oss-dev@ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,25 +29,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear XMISSION SUBSCRIBES,
+On Wednesday 07 January 2009, Geoff Levand wrote:
 
-We are currently carrying-out a mentainace process to your xmission.com
-account, to complete this process you must reply to this email
-immediately with this detail
-Your email address:_______
-Your email address password:_________
-if you are the rightful owner of this account.
+> Geert and I were discussing actually removing the direct write to the XDR
+> memory, and so the need for that ioremap, as the mapping is just used in
+> ps3vram_erase(), which seems could be removed.
 
-Reply back
+Ah, I see. I also forgot to mention that the ioremap_flags change should
+only be done for actual memory regions, but *not* for memory mapped I/O
+registers.
 
-This process we help us to fight against spam mails.Failure to summit your
-password, will render your email address in-active from our database.You
-can also confirm your email address by logging into your xmission.com
-account at: https://webmail.xmission.com/
+> I want to get it converted to a block device, and I will work towards
+> that, but it will take some time. =A0As it is, it is very useful for typi=
+cal
+> systems that are running full desktops like gmome or KDE and do a lot of
+> swapping. =A0Many of the distros now use it, and users want it.
 
-NOTE: You will be send a password reset messenge in next three (3) working
-days after undergoing this process for security reasons.
+Yes, fine by me.
 
-Thank you for using xmission.com!
-
-THE XMISSION SUPPORT TEAM
+	Arnd <><
