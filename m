@@ -1,21 +1,18 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from mail.karo-electronics.de ([213.146.116.110])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LKUAb-00088X-Sp
-	for linux-mtd@lists.infradead.org; Wed, 07 Jan 2009 08:53:46 +0000
-Subject: Re: [PATCH 1/3] UBI: map operation via ioctl
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Corentin Chary <corentincj@iksaif.net>
-In-Reply-To: <200901061820.30465.corentincj@iksaif.net>
-References: <71cd59b00901050605s4ec76e9avb146bb61deaf2159@mail.gmail.com>
-	<1231256293.6608.55.camel@localhost.localdomain>
-	<200901061820.30465.corentincj@iksaif.net>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 07 Jan 2009 10:54:16 +0200
-Message-Id: <1231318456.6608.62.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+	id 1LKUHk-0002gN-J7
+	for linux-mtd@lists.infradead.org; Wed, 07 Jan 2009 09:01:09 +0000
+Message-ID: <18788.28493.320590.496280@ipc1.ka-ro>
+Date: Wed, 7 Jan 2009 10:01:01 +0100
+From: =?iso-8859-15?q?Lothar_Wa=DFmann?= <LW@KARO-electronics.de>
+To: "Eric Miao" <eric.y.miao@gmail.com>
+Subject: Re: [PATCH 2/3] Coding style clean-up
+In-Reply-To: <f17812d70901061918i6e39893ue7ac9e15fa4654d3@mail.gmail.com>
+References: <1231296053-2378-1-git-send-email-marcel@ziswiler.com>
+	<1231296053-2378-2-git-send-email-marcel@ziswiler.com>
+	<1231296053-2378-3-git-send-email-marcel@ziswiler.com>
+	<f17812d70901061918i6e39893ue7ac9e15fa4654d3@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org, Marcel Ziswiler <marcel@ziswiler.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,19 +22,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-01-06 at 18:20 +0100, Corentin Chary wrote:
-> From bafefa6ed036173c65b7f51c6a4a4ce5004ad09f Mon Sep 17 00:00:00 2001
-> From: Corentin Chary <corentincj@iksaif.net>
-> Date: Mon, 5 Jan 2009 14:44:11 +0100
-> Subject: [PATCH 1/3] UBI: map operation via ioctl
-> 
-> UBI: map operation via ioctl
-> 
-> Signed-off-by: Corentin Chary <corentincj@iksaif.net>
+Hi,
 
-Now this patch applies, but the second one does not. Could you please
-resend whole series instead?
+> > -	dev_warn(&info->pdev->dev,
+> > -		 "failed to detect configured nand flash; found %04x instead of\n",
+> > -		 id);
+> > +	dev_warn(&info->pdev->dev, "failed to detect configured nand flash; "
+> > +			"found %04x instead of\n", id);
+> 
+> This is OK.
+> 
+I personally don't like strings being split up to fit the line length
+limitation. It makes it just harder to locate a certain kernel message
+in the source code. Anyway the message text seems to be incomplete:
+'found %04x instead of' what?
 
+
+Lothar Wa�mann
 -- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+___________________________________________________________
+
+Ka-Ro electronics GmbH | Pascalstra�e 22 | D - 52076 Aachen
+Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
+Gesch�ftsf�hrer: Matthias Kaussen
+Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+
+www.karo-electronics.de | info@karo-electronics.de
+___________________________________________________________
