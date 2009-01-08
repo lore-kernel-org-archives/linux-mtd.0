@@ -1,18 +1,19 @@
-Received: from vpn.static.83-173-204-231.cybernet.ch ([83.173.204.231]
-	helo=localhost.localdomain)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LKibW-00087o-1v
-	for linux-mtd@lists.infradead.org; Thu, 08 Jan 2009 00:18:30 +0000
-From: Marcel Ziswiler <marcel@ziswiler.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/3 v2] [MTD] [NAND] pxa3xx_nand.c: Coding style clean-up
-Date: Thu,  8 Jan 2009 01:06:39 +0100
-Message-Id: <1231373200-19248-3-git-send-email-marcel@ziswiler.com>
-In-Reply-To: <1231373200-19248-2-git-send-email-marcel@ziswiler.com>
-References: <1231373200-19248-1-git-send-email-marcel@ziswiler.com>
-	<1231373200-19248-2-git-send-email-marcel@ziswiler.com>
-Cc: Marcel Ziswiler <marcel.ziswiler@noser.com>, eric.y.miao@gmail.com,
-	Marcel Ziswiler <marcel@ziswiler.com>, LW@KARO-electronics.de
+	id 1LKof3-0005lB-Ax
+	for linux-mtd@lists.infradead.org; Thu, 08 Jan 2009 06:46:33 +0000
+Subject: Re: UBIFS volume corruption (bad node at LEB 0:0)
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: David Bergeron <mho.linux-mtd@b2n.ca>
+In-Reply-To: <8EEAB966-52F4-48A3-8FCA-A50BBE8486B7@b2n.ca>
+References: <8EEAB966-52F4-48A3-8FCA-A50BBE8486B7@b2n.ca>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 08 Jan 2009 08:46:45 +0200
+Message-Id: <1231397205.6608.119.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,73 +23,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Run it through checkpatch and cleaned up obvious style problems.
+On Wed, 2009-01-07 at 23:13 -0500, David Bergeron wrote:
+> Hello all,
+> 
+> I'm getting some sort of volume corruption problem with UBIFS after  
+> doing
+> rootfs updates using rsync.
+> 
+> I've cooked up a minimalist test trying to eliminate possible  
+> interference.
+> The following steps will trigger the corruption almost every time. No  
+> errors
+> or warnings are produced during this procedure, every step behaves as  
+> expected:
+> 
+> boot kernel ubi.mtd=0 root=ubi0:rootfs rootfstype=ubifs ro init=/bin/ 
+> bash
+> 
+> # mount -t proc none /proc
+> # ifconfig ...
+> # mount -o remount,rw,sync /
+> # rsync -aHxvi --delete ... /
+> # mount -o remount,ro /
+> # reboot -d -f
+> 
+> When rebooting, the kernel fails to mount the rootfs with the  
+> following error:
+> 
+> [   61.033142] UBIFS error (pid 1): ubifs_read_node: bad node type (11  
+> but expected 6)
+> [   61.040965] UBIFS error (pid 1): ubifs_read_node: bad node at LEB 0:0
 
-Signed-off-by: Marcel Ziswiler <marcel.ziswiler@noser.com>
----
- drivers/mtd/nand/pxa3xx_nand.c |   17 +++++++++--------
- 1 files changed, 9 insertions(+), 8 deletions(-)
+Hmm, 11 is an orphan node, 6 is the superblock node. Indeed LEB 0 has to
+contain superblock node and cannot contain orphans.
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index dc1cc76..45122ab 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -362,7 +362,8 @@ static int prepare_read_prog_cmd(struct pxa3xx_nand_info *info,
- 	info->ndcb0 = cmd | ((cmd & 0xff00) ? NDCB0_DBC : 0);
- 	info->ndcb1 = 0;
- 	info->ndcb2 = 0;
--	info->ndcb0 |= NDCB0_ADDR_CYC(info->row_addr_cycles + info->col_addr_cycles);
-+	info->ndcb0 |= NDCB0_ADDR_CYC(info->row_addr_cycles +
-+				      info->col_addr_cycles);
- 
- 	if (info->col_addr_cycles == 2) {
- 		/* large block, 2 cycles for column address
-@@ -670,9 +671,9 @@ static void pxa3xx_nand_cmdfunc(struct mtd_info *mtd, unsigned command,
- 		pxa3xx_nand_do_cmd(info, NDSR_RDDREQ | NDSR_DBERR);
- 
- 		if (info->retcode == ERR_DBERR) {
--			/* for blank page (all 0xff), HW will calculate its ECC as
--			 * 0, which is different from the ECC information within
--			 * OOB, ignore such double bit errors
-+			/* for blank page (all 0xff), HW will calculate its ECC
-+			 * as 0, which is different from the ECC information
-+			 * within OOB, ignore such double bit errors
- 			 */
- 			if (is_buf_blank(info->data_buff, mtd->writesize))
- 				info->retcode = ERR_NONE;
-@@ -922,13 +923,13 @@ static int pxa3xx_nand_config_flash(struct pxa3xx_nand_info *info,
- }
- 
- static int pxa3xx_nand_detect_flash(struct pxa3xx_nand_info *info,
--				    const struct pxa3xx_nand_platform_data *pdata)
-+		const struct pxa3xx_nand_platform_data *pdata)
- {
- 	const struct pxa3xx_nand_flash *f;
- 	uint32_t id = -1;
- 	int i;
- 
--	for (i = 0; i<pdata->num_flash; ++i) {
-+	for (i = 0; i < pdata->num_flash; i++) {
- 		f = pdata->flash + i;
- 
- 		if (pxa3xx_nand_config_flash(info, f))
-@@ -958,7 +959,7 @@ static int pxa3xx_nand_detect_flash(struct pxa3xx_nand_info *info,
- #endif
- 
- 	dev_warn(&info->pdev->dev,
--		 "failed to detect configured nand flash; found %04x instead of\n",
-+		 "failed to detect configured NAND flash; found id %04x\n",
- 		 id);
- 	return -ENODEV;
- }
-@@ -1025,7 +1026,7 @@ static void pxa3xx_nand_init_mtd(struct mtd_info *mtd,
- 	const struct pxa3xx_nand_flash *f = info->flash_info;
- 	struct nand_chip *this = &info->nand_chip;
- 
--	this->options = (f->flash_width == 16) ? NAND_BUSWIDTH_16: 0;
-+	this->options = (f->flash_width == 16) ? NAND_BUSWIDTH_16 : 0;
- 
- 	this->waitfunc		= pxa3xx_nand_waitfunc;
- 	this->select_chip	= pxa3xx_nand_select_chip;
+We do not think we tested UBIFS re-mounting well enough, so I would not
+be surprised to see bugs there.
+
+> I'm running a fresh 2.6.28.0. mtd-utils were built from git on  
+> 2008-11-19.
+> About 3 weeks ago I also tried with an mtd-2.6.git master branch  
+> patched kernel
+> to no avail.
+> 
+> Note that in my few attempts, when I do NOT remount read-only before  
+> rebooting,
+> the filesystem has so far remained functional (albeit being left  
+> unclean) and it
+> boots as expected. The error msg is always the same. A certain amount of
+> filesystem changes is necessary to trigger the problem, simply  
+> touching a file
+> is not enough. I have not determined exactly what operations rsync  
+> needs to
+> perform to reach breaking point, but sometimes everything goes well.
+
+Hmm, OK. I'll try to look at this and figure out what is going wrong.
+What would help a lot is if I was able to reproduce this at my setup. So
+you may help by sending a shell script which reproduces this issue, if
+you can. And it is better to work with nandsim, because this is the tool
+I use here
+(http://www.linux-mtd.infradead.org/faq/nand.html#L_nand_nandsim)
+
 -- 
-1.6.0.6
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
