@@ -1,16 +1,20 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from node3.inaccessnetworks.com ([212.205.200.118]
+	helo=vm-dmz.priv.inaccessnetworks.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LKwh1-0002aQ-S4
-	for linux-mtd@lists.infradead.org; Thu, 08 Jan 2009 15:21:09 +0000
-Date: Thu, 8 Jan 2009 16:21:02 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: mtd device names
-Message-ID: <20090108152102.GH8021@pengutronix.de>
+	id 1LKwwv-0007LI-1l
+	for linux-mtd@lists.infradead.org; Thu, 08 Jan 2009 15:37:34 +0000
+Message-ID: <49661DA5.2020606@inaccessnetworks.com>
+Date: Thu, 08 Jan 2009 17:37:09 +0200
+From: Kostas Nakos <knakos@inaccessnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: Juergen Beisert <jbe@pengutronix.de>, David Woodhouse <dwmw2@infradead.org>
+To: Sean MacLennan <smaclennan@pikatech.com>
+Subject: Re: [PATCH] ndfc driver
+References: <4950D8EA.7010905@inaccessnetworks.com>	<20081223170040.4e58de3f@lappy.seanm.ca>	<4958AD4E.8090608@inaccessnetworks.com>	<20090105202340.7fd0f8c1@lappy.seanm.ca>	<49647B16.50006@inaccessnetworks.com>
+	<20090107122147.2a29a657@lappy.seanm.ca>
+In-Reply-To: <20090107122147.2a29a657@lappy.seanm.ca>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,29 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Sean MacLennan wrote:
+> The ndfc entry must be a child of the ebc entry. So move the ndfc into
+> the ebc entry, and change the reg back to <0 0 2000>. It should then
+> work.
 
-Hi,
+OK, I tried that. I had the same crashes, unless I reverted to my hacks 
+and also set the address to 0xd0000000. So, exactly the same behavior. 
+Note also that the dts in use has been derived from a sequoia-based dev 
+board setup, back in 2.6.26. Let me know if there's anything else you 
+want me to try out.
 
-Some time ago I posted a NAND driver for Freescale i.MX SoCs which already
-went upstream.
-
-After doing a nand_scan I did a
-
-	mtd->name = DRIVER_NAME;
-
-With the result that the NAND device showed up as mxc_nand. While
-merging upstream this line was removed, so now NAND devices show up as
-"NAND 64MiB 3,3V 8-bit". Using this string with command line partitions
-is really inconvenient. Because of the whitespaces you need proper
-quoting in the command line (try this in U-Boot). In addition one needs
-to change the environment for different NAND chips.
-
-What's the reason this line was removed? Any chance to revert it?
-
-Sascha
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Thanks for your efforts,
+Kostas
