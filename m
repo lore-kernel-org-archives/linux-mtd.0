@@ -1,19 +1,25 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LKof3-0005lB-Ax
-	for linux-mtd@lists.infradead.org; Thu, 08 Jan 2009 06:46:33 +0000
-Subject: Re: UBIFS volume corruption (bad node at LEB 0:0)
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: David Bergeron <mho.linux-mtd@b2n.ca>
-In-Reply-To: <8EEAB966-52F4-48A3-8FCA-A50BBE8486B7@b2n.ca>
-References: <8EEAB966-52F4-48A3-8FCA-A50BBE8486B7@b2n.ca>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 08 Jan 2009 08:46:45 +0200
-Message-Id: <1231397205.6608.119.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from vervifontaine.sonytel.be ([80.88.33.193]
+	helo=vervifontaine.sonycom.com)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1LKsDk-0002nH-BU
+	for linux-mtd@lists.infradead.org; Thu, 08 Jan 2009 10:34:37 +0000
+Date: Thu, 8 Jan 2009 11:34:25 +0100 (CET)
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Sender: geert@sonytel.be
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [patch 0/6] ps3vram driver patches
+In-Reply-To: <200901072053.06037.arnd@arndb.de>
+Message-ID: <Pine.LNX.4.64.0901081120240.25621@vixen.sonytel.be>
+References: <4963CDCA.4080802@am.sony.com> <200901071944.45680.arnd@arndb.de>
+	<49650128.8020200@am.sony.com> <200901072053.06037.arnd@arndb.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Cc: David Woodhouse <David.Woodhouse@intel.com>,
+	Geoff Levand <geoffrey.levand@am.sony.com>,
+	Jim Paris <jim@jtan.com>, linuxppc-dev@ozlabs.org,
+	linux-mtd@lists.infradead.org,
+	Vivien Chappelier <vivien.chappelier@free.fr>, cbe-oss-dev@ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,67 +29,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-01-07 at 23:13 -0500, David Bergeron wrote:
-> Hello all,
-> 
-> I'm getting some sort of volume corruption problem with UBIFS after  
-> doing
-> rootfs updates using rsync.
-> 
-> I've cooked up a minimalist test trying to eliminate possible  
-> interference.
-> The following steps will trigger the corruption almost every time. No  
-> errors
-> or warnings are produced during this procedure, every step behaves as  
-> expected:
-> 
-> boot kernel ubi.mtd=0 root=ubi0:rootfs rootfstype=ubifs ro init=/bin/ 
-> bash
-> 
-> # mount -t proc none /proc
-> # ifconfig ...
-> # mount -o remount,rw,sync /
-> # rsync -aHxvi --delete ... /
-> # mount -o remount,ro /
-> # reboot -d -f
-> 
-> When rebooting, the kernel fails to mount the rootfs with the  
-> following error:
-> 
-> [   61.033142] UBIFS error (pid 1): ubifs_read_node: bad node type (11  
-> but expected 6)
-> [   61.040965] UBIFS error (pid 1): ubifs_read_node: bad node at LEB 0:0
+On Wed, 7 Jan 2009, Arnd Bergmann wrote:
+> On Wednesday 07 January 2009, Geoff Levand wrote:
+> > Geert and I were discussing actually removing the direct write to the XDR
+> > memory, and so the need for that ioremap, as the mapping is just used in
+> > ps3vram_erase(), which seems could be removed.
 
-Hmm, 11 is an orphan node, 6 is the superblock node. Indeed LEB 0 has to
-contain superblock node and cannot contain orphans.
+ps3vram_erase() writes all ones to the memory, as that's what done when
+erasing real FLASH. I do not know if the MTD layer can handle it if we don't
+"erase" it to ones.
 
-We do not think we tested UBIFS re-mounting well enough, so I would not
-be surprised to see bugs there.
+David?
 
-> I'm running a fresh 2.6.28.0. mtd-utils were built from git on  
-> 2008-11-19.
-> About 3 weeks ago I also tried with an mtd-2.6.git master branch  
-> patched kernel
-> to no avail.
+> Ah, I see. I also forgot to mention that the ioremap_flags change should
+> only be done for actual memory regions, but *not* for memory mapped I/O
+> registers.
+
+This is DDR memory for the RSX.
+
+> > I want to get it converted to a block device, and I will work towards
+> > that, but it will take some time. 燗s it is, it is very useful for typical
+> > systems that are running full desktops like gmome or KDE and do a lot of
+> > swapping. 燤any of the distros now use it, and users want it.
 > 
-> Note that in my few attempts, when I do NOT remount read-only before  
-> rebooting,
-> the filesystem has so far remained functional (albeit being left  
-> unclean) and it
-> boots as expected. The error msg is always the same. A certain amount of
-> filesystem changes is necessary to trigger the problem, simply  
-> touching a file
-> is not enough. I have not determined exactly what operations rsync  
-> needs to
-> perform to reach breaking point, but sometimes everything goes well.
+> Yes, fine by me.
 
-Hmm, OK. I'll try to look at this and figure out what is going wrong.
-What would help a lot is if I was able to reproduce this at my setup. So
-you may help by sending a shell script which reproduces this issue, if
-you can. And it is better to work with nandsim, because this is the tool
-I use here
-(http://www.linux-mtd.infradead.org/faq/nand.html#L_nand_nandsim)
+One disadvantage of this approach is that it makes life more difficult for
+distro maintainers: their userland has to support both the MTD and the block
+version.
 
--- 
-Best regards,
-Artem Bityutskiy (袘懈褌褞褑泻懈泄 袗褉褌褢屑)
+With kind regards,
+
+Geert Uytterhoeven
+Software Architect
+
+Sony Techsoft Centre Europe
+The Corporate Village 路 Da Vincilaan 7-D1 路 B-1935 Zaventem 路 Belgium
+
+Phone:    +32 (0)2 700 8453
+Fax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 路 RPR Brussels
+Fortis 路 BIC GEBABEBB 路 IBAN BE41293037680010
