@@ -1,19 +1,15 @@
-Received: from fg-out-1718.google.com ([72.14.220.152])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LLTP6-0005hQ-Ce
-	for linux-mtd@lists.infradead.org; Sat, 10 Jan 2009 02:16:48 +0000
-Received: by fg-out-1718.google.com with SMTP id 13so1539696fge.26
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 09 Jan 2009 18:16:46 -0800 (PST)
-Date: Sat, 10 Jan 2009 05:16:41 +0300
-From: Alexander Beregalov <a.beregalov@gmail.com>
-To: akorolev@infradead.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: mtd/lpddr/qinfo_probe.c needs lpddr_cmds to be compiled
-Message-ID: <20090110021641.GA26951@orion>
+Message-ID: <49682F42.8070304@oracle.com>
+Date: Fri, 09 Jan 2009 21:16:50 -0800
+From: Randy Dunlap <randy.dunlap@oracle.com>
 MIME-Version: 1.0
+To: Alexander Beregalov <a.beregalov@gmail.com>
+Subject: Re: mtd/lpddr/qinfo_probe.c needs lpddr_cmds to be compiled
+References: <20090110021641.GA26951@orion>
+In-Reply-To: <20090110021641.GA26951@orion>
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	akorolev@infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,9 +19,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-drivers/built-in.o: In function `lpddr_probe':
-drivers/mtd/lpddr/qinfo_probe.c:215:
-undefined reference to `lpddr_cmdset'
+Alexander Beregalov wrote:
+> drivers/built-in.o: In function `lpddr_probe':
+> drivers/mtd/lpddr/qinfo_probe.c:215:
+> undefined reference to `lpddr_cmdset'
+> 
+> # CONFIG_MTD_LPDDR is not set
+> CONFIG_MTD_QINFO_PROBE=y
+> --
 
-# CONFIG_MTD_LPDDR is not set
-CONFIG_MTD_QINFO_PROBE=y
+This patch has been posted, just needs to be merged (hint):
+---
+
+
+Signed-off-by: Alexey Korolev <akorolev@infradead.org>
+---
+diff --git a/drivers/mtd/lpddr/Kconfig b/drivers/mtd/lpddr/Kconfig
+index acd4ea9..5a401d8 100644
+--- a/drivers/mtd/lpddr/Kconfig
++++ b/drivers/mtd/lpddr/Kconfig
+@@ -12,6 +12,7 @@ config MTD_LPDDR
+ 	  DDR memories, intended for battery-operated systems.
+ 
+ config MTD_QINFO_PROBE
++	depends on MTD_LPDDR
+ 	tristate "Detect flash chips by QINFO probe"
+ 	help
+ 	    Device Information for LPDDR chips is offered through the Overlay
