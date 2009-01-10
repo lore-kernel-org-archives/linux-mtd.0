@@ -1,18 +1,19 @@
-Received: from mail2.shareable.org ([80.68.89.115])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1LLT0y-0003E3-02
-	for linux-mtd@lists.infradead.org; Sat, 10 Jan 2009 01:51:53 +0000
-Date: Sat, 10 Jan 2009 01:51:50 +0000
-From: Jamie Lokier <jamie@shareable.org>
-To: Adam Yergovich <ayergo@jkmicro.com>
-Subject: Re: Access entire device with mtdblock0
-Message-ID: <20090110015150.GH1972@shareable.org>
-References: <4967F2B2.4060405@jkmicro.com>
+Received: from fg-out-1718.google.com ([72.14.220.152])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1LLTP6-0005hQ-Ce
+	for linux-mtd@lists.infradead.org; Sat, 10 Jan 2009 02:16:48 +0000
+Received: by fg-out-1718.google.com with SMTP id 13so1539696fge.26
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 09 Jan 2009 18:16:46 -0800 (PST)
+Date: Sat, 10 Jan 2009 05:16:41 +0300
+From: Alexander Beregalov <a.beregalov@gmail.com>
+To: akorolev@infradead.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: mtd/lpddr/qinfo_probe.c needs lpddr_cmds to be compiled
+Message-ID: <20090110021641.GA26951@orion>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4967F2B2.4060405@jkmicro.com>
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,19 +23,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Adam Yergovich wrote:
-> There was a grand feature in the 2.4 flavor of MTD that i used wherein 
-> mtdblock0 was assigned the entirety of the device.  This made updating 
-> the flash image very easy.
-> 
-> I've since started messing around with 2.6 flavors, and while i have a 
-> working map that gives the partitions i can no longer access the entire 
-> device.  I've tried a few things without success to get it to work.
-> 
-> Any recommendations on a simple way to create a partition using the 
-> entirety of flash?
+drivers/built-in.o: In function `lpddr_probe':
+drivers/mtd/lpddr/qinfo_probe.c:215:
+undefined reference to `lpddr_cmdset'
 
-Hey, I use that feature with 2.4 too, and I'm looking at porting a
-device to 2.6.  I'll be interested in the answer.
-
--- Jamie
+# CONFIG_MTD_LPDDR is not set
+CONFIG_MTD_QINFO_PROBE=y
