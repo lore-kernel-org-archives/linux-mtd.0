@@ -1,19 +1,19 @@
-Received: from ernst.netinsight.se ([194.16.221.21])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LLJZj-00035z-WF
-	for linux-mtd@lists.infradead.org; Fri, 09 Jan 2009 15:47:08 +0000
-Message-ID: <49677171.3080300@users.sourceforge.net>
-Date: Fri, 09 Jan 2009 16:46:57 +0100
-From: =?UTF-8?B?QW5kZXJzIEdyYWZzdHLDtm0=?=
- <grfstrm@users.sourceforge.net>
+Received: from dcn237-231.dcn.davis.ca.us ([168.150.237.231]
+	helo=rusty.jkmicro.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1LLSBE-0000C8-Am
+	for linux-mtd@lists.infradead.org; Sat, 10 Jan 2009 00:58:24 +0000
+Received: from [10.10.1.107] (dcn237-230.dcn.davis.ca.us [168.150.237.230])
+	by rusty.jkmicro.com (8.12.8/8.12.8) with ESMTP id n09LKQU0025405
+	for <linux-mtd@lists.infradead.org>; Fri, 9 Jan 2009 13:20:26 -0800
+Message-ID: <4967F2B2.4060405@jkmicro.com>
+Date: Fri, 09 Jan 2009 16:58:26 -0800
+From: Adam Yergovich <ayergo@jkmicro.com>
 MIME-Version: 1.0
-To: Matt Witherspoon <spoon@vt.edu>
-Subject: Re: BUG in jffs2 with MTD map using cached mapping
-References: <1231256507.49637bbb174b6@webmail.vt.edu>
-In-Reply-To: <1231256507.49637bbb174b6@webmail.vt.edu>
-Content-Type: text/plain; charset=UTF-8
+To: linux-mtd@lists.infradead.org
+Subject: Access entire device with mtdblock0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,16 +23,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Matt Witherspoon wrote:
-> I performed a bisection and the offending commit is
-> 205c109a7a96d9a3d8ffe64c4068b70811fef5e8. Before this commit, neither the BUG
-> nor the node CRC failure occured.
-> 
-> One notable difference between my board and Mainstone is that my flash chip is
-> using the 0002 command set.
-> 
-> I'm stumped at this point... Any suggestions on where to dig further?
+Hello MTD,
 
-I'd say that the BUG_ON is a secondary error. A broken error path.
+There was a grand feature in the 2.4 flavor of MTD that i used wherein 
+mtdblock0 was assigned the entirety of the device.  This made updating 
+the flash image very easy.
 
-http://lists.infradead.org/pipermail/linux-mtd/2008-April/021473.html
+I've since started messing around with 2.6 flavors, and while i have a 
+working map that gives the partitions i can no longer access the entire 
+device.  I've tried a few things without success to get it to work.
+
+Any recommendations on a simple way to create a partition using the 
+entirety of flash?
+
+-Adam
