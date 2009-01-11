@@ -1,16 +1,16 @@
-Message-ID: <496A23AC.1090909@oracle.com>
-Date: Sun, 11 Jan 2009 08:51:56 -0800
-From: Randy Dunlap <randy.dunlap@oracle.com>
-MIME-Version: 1.0
-To: Alexey Korolev <akorolev@infradead.org>
+Date: Sun, 11 Jan 2009 18:16:11 +0000 (GMT)
+From: Alexey Korolev <akorolev@infradead.org>
+To: Randy Dunlap <randy.dunlap@oracle.com>, dwmw2@infradead.org
 Subject: Re: mtd/lpddr/qinfo_probe.c needs lpddr_cmds to be compiled
+In-Reply-To: <496A23AC.1090909@oracle.com>
+Message-ID: <alpine.LFD.2.00.0901111812490.12586@casper.infradead.org>
 References: <20090110021641.GA26951@orion> <49682F42.8070304@oracle.com>
 	<alpine.LFD.2.00.0901110958360.20119@casper.infradead.org>
-In-Reply-To: <alpine.LFD.2.00.0901110958360.20119@casper.infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org, Alexander Beregalov <a.beregalov@gmail.com>
+	<496A23AC.1090909@oracle.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Alexander Beregalov <a.beregalov@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,49 +20,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Alexey Korolev wrote:
-> Hi Randy,
+Randy,
+Yes, it has alreay been merged today.
+
+David,
+Thank you very much!
+
 > 
-> I've just checked 2.6.29-rc1. It contains LPDDR patches but does not contain this patch. 
-> Do you know whom I should ask to make this included?
-
-MAINTAINERS file:
-
-MEMORY TECHNOLOGY DEVICES (MTD)
-P:      David Woodhouse
-M:      dwmw2@infradead.org
-
-> Thanks,
-> Alexey
+> MAINTAINERS file:
 > 
->>> drivers/built-in.o: In function `lpddr_probe':
->>> drivers/mtd/lpddr/qinfo_probe.c:215:
->>> undefined reference to `lpddr_cmdset'
->>>
->>> # CONFIG_MTD_LPDDR is not set
->>> CONFIG_MTD_QINFO_PROBE=y
->>> --
->> This patch has been posted, just needs to be merged (hint):
->> ---
->>
->>
->> Signed-off-by: Alexey Korolev <akorolev@infradead.org>
->> ---
->> diff --git a/drivers/mtd/lpddr/Kconfig b/drivers/mtd/lpddr/Kconfig
->> index acd4ea9..5a401d8 100644
->> --- a/drivers/mtd/lpddr/Kconfig
->> +++ b/drivers/mtd/lpddr/Kconfig
->> @@ -12,6 +12,7 @@ config MTD_LPDDR
->>  	  DDR memories, intended for battery-operated systems.
->>  
->>  config MTD_QINFO_PROBE
->> +	depends on MTD_LPDDR
->>  	tristate "Detect flash chips by QINFO probe"
->>  	help
->>  	    Device Information for LPDDR chips is offered through the Overlay
->>
->>
-
-
--- 
-~Randy
+> MEMORY TECHNOLOGY DEVICES (MTD)
+> P:      David Woodhouse
+> M:      dwmw2@infradead.org
+> 
+> > Thanks,
+> > Alexey
+> > 
+> >>> drivers/built-in.o: In function `lpddr_probe':
+> >>> drivers/mtd/lpddr/qinfo_probe.c:215:
+> >>> undefined reference to `lpddr_cmdset'
+> >>>
+> >>> # CONFIG_MTD_LPDDR is not set
+> >>> CONFIG_MTD_QINFO_PROBE=y
+> >>> --
+> >> This patch has been posted, just needs to be merged (hint):
+> >> ---
+> >>
+> >>
+> >> Signed-off-by: Alexey Korolev <akorolev@infradead.org>
+> >> ---
+> >> diff --git a/drivers/mtd/lpddr/Kconfig b/drivers/mtd/lpddr/Kconfig
+> >> index acd4ea9..5a401d8 100644
+> >> --- a/drivers/mtd/lpddr/Kconfig
+> >> +++ b/drivers/mtd/lpddr/Kconfig
+> >> @@ -12,6 +12,7 @@ config MTD_LPDDR
+> >>  	  DDR memories, intended for battery-operated systems.
+> >>  
+> >>  config MTD_QINFO_PROBE
+> >> +	depends on MTD_LPDDR
+> >>  	tristate "Detect flash chips by QINFO probe"
+> >>  	help
+> >>  	    Device Information for LPDDR chips is offered through the Overlay
+> >>
+> >>
+> 
+> 
+> -- 
+> ~Randy
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
