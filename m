@@ -1,13 +1,14 @@
-Message-Id: <200901101610.n0AG9wvH007995@smtp5.jaring.my>
-From: "SCOTLAND  PROMOTIONS"<globamaxfinanceltd1@gmail.com>
-Subject: Scotland National Lottery. Announce you today, 10th January 2009!!!
-Date: Sat, 10 Jan 2009 18:10:40 +0200
+Date: Sun, 11 Jan 2009 10:03:26 +0000 (GMT)
+From: Alexey Korolev <akorolev@infradead.org>
+To: Randy Dunlap <randy.dunlap@oracle.com>
+Subject: Re: mtd/lpddr/qinfo_probe.c needs lpddr_cmds to be compiled
+In-Reply-To: <49682F42.8070304@oracle.com>
+Message-ID: <alpine.LFD.2.00.0901110958360.20119@casper.infradead.org>
+References: <20090110021641.GA26951@orion> <49682F42.8070304@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-To: undisclosed-recipients:;
-Reply-To: globamaxfinanceltd1@gmail.com
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	linux-kernel@vger.kernel.org, Alexander Beregalov <a.beregalov@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,46 +18,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SCOTLAND  PROMOTIONS
+Hi Randy,
 
-Scotland National Lottery.
+I've just checked 2.6.29-rc1. It contains LPDDR patches but does not contain this patch. 
+Do you know whom I should ask to make this included?
 
-Announce you today, 10th January 2009,as one of its lucky winners.
-Your email address emerged as one of the two winners of GBP1,500,000.00 
-cash, each  in the Category "A".
+Thanks,
+Alexey
 
-Draws held on the 1st January 2009 for our E-business promotional
-draws from 21,000 Email-addresses of individuals/companies base
-on computer balloting all over the world.
-
-You are attached with
-
-Ref NO:-S/L0N15-SS000-SON
-Batch No: 11/SLLSLSL/000-SL SL
-Serial NO:S15-15.
-
-Please don?t reply to this.
-
-Contact the Claims agents
-
-GLOBAL MAX FINANCE LIMITED:
-
-Dr. Martins McSmith
-Tel:+44 703 186 0550  OR
-Email: globamaxfinanceltd@gmail.com  
-
-With your
-Full Names:
-Age:
-Country:
-Occupation;
-Telephone:
-Fax Number:
-
-For claims.
-
-Thank you.
-
-Sincerely
-Mrs.Stella Andrew
-NB: ENDEAVOUR TO CALL Dr.Martins McSmith on Tel:+44 703 186 0550
+> > drivers/built-in.o: In function `lpddr_probe':
+> > drivers/mtd/lpddr/qinfo_probe.c:215:
+> > undefined reference to `lpddr_cmdset'
+> > 
+> > # CONFIG_MTD_LPDDR is not set
+> > CONFIG_MTD_QINFO_PROBE=y
+> > --
+> 
+> This patch has been posted, just needs to be merged (hint):
+> ---
+> 
+> 
+> Signed-off-by: Alexey Korolev <akorolev@infradead.org>
+> ---
+> diff --git a/drivers/mtd/lpddr/Kconfig b/drivers/mtd/lpddr/Kconfig
+> index acd4ea9..5a401d8 100644
+> --- a/drivers/mtd/lpddr/Kconfig
+> +++ b/drivers/mtd/lpddr/Kconfig
+> @@ -12,6 +12,7 @@ config MTD_LPDDR
+>  	  DDR memories, intended for battery-operated systems.
+>  
+>  config MTD_QINFO_PROBE
+> +	depends on MTD_LPDDR
+>  	tristate "Detect flash chips by QINFO probe"
+>  	help
+>  	    Device Information for LPDDR chips is offered through the Overlay
+> 
+> 
