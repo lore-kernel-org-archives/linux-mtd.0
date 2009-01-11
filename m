@@ -1,16 +1,16 @@
-Date: Sun, 11 Jan 2009 18:16:11 +0000 (GMT)
-From: Alexey Korolev <akorolev@infradead.org>
-To: Randy Dunlap <randy.dunlap@oracle.com>, dwmw2@infradead.org
-Subject: Re: mtd/lpddr/qinfo_probe.c needs lpddr_cmds to be compiled
-In-Reply-To: <496A23AC.1090909@oracle.com>
-Message-ID: <alpine.LFD.2.00.0901111812490.12586@casper.infradead.org>
-References: <20090110021641.GA26951@orion> <49682F42.8070304@oracle.com>
-	<alpine.LFD.2.00.0901110958360.20119@casper.infradead.org>
-	<496A23AC.1090909@oracle.com>
+Received: from sovereign.computergmbh.de ([85.214.69.204])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1LM9Db-0005l4-5Y
+	for linux-mtd@lists.infradead.org; Sun, 11 Jan 2009 22:55:55 +0000
+Date: Sun, 11 Jan 2009 23:55:39 +0100 (CET)
+From: Jan Engelhardt <jengelh@medozas.de>
+Sender: jengelh@sovereign.computergmbh.de
+To: David Woodhouse <David.Woodhouse@intel.com>
+Subject: mtd: constify VFTs
+Message-ID: <alpine.LSU.2.00.0901112354590.20643@fbirervta.pbzchgretzou.qr>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Alexander Beregalov <a.beregalov@gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,55 +20,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Randy,
-Yes, it has alreay been merged today.
+parent 9850cd2553595f0efa726b0ba45e7b47def8ded2 (v2.6.29-rc1-8-g9850cd2)
+commit 1b4a88617720bf38c46614bf9308ccbb150979bb
+Author: Jan Engelhardt <jengelh@medozas.de>
+Date:   Sun Jan 11 23:55:02 2009 +0100
 
-David,
-Thank you very much!
+mtd: constify VFTs
 
-> 
-> MAINTAINERS file:
-> 
-> MEMORY TECHNOLOGY DEVICES (MTD)
-> P:      David Woodhouse
-> M:      dwmw2@infradead.org
-> 
-> > Thanks,
-> > Alexey
-> > 
-> >>> drivers/built-in.o: In function `lpddr_probe':
-> >>> drivers/mtd/lpddr/qinfo_probe.c:215:
-> >>> undefined reference to `lpddr_cmdset'
-> >>>
-> >>> # CONFIG_MTD_LPDDR is not set
-> >>> CONFIG_MTD_QINFO_PROBE=y
-> >>> --
-> >> This patch has been posted, just needs to be merged (hint):
-> >> ---
-> >>
-> >>
-> >> Signed-off-by: Alexey Korolev <akorolev@infradead.org>
-> >> ---
-> >> diff --git a/drivers/mtd/lpddr/Kconfig b/drivers/mtd/lpddr/Kconfig
-> >> index acd4ea9..5a401d8 100644
-> >> --- a/drivers/mtd/lpddr/Kconfig
-> >> +++ b/drivers/mtd/lpddr/Kconfig
-> >> @@ -12,6 +12,7 @@ config MTD_LPDDR
-> >>  	  DDR memories, intended for battery-operated systems.
-> >>  
-> >>  config MTD_QINFO_PROBE
-> >> +	depends on MTD_LPDDR
-> >>  	tristate "Detect flash chips by QINFO probe"
-> >>  	help
-> >>  	    Device Information for LPDDR chips is offered through the Overlay
-> >>
-> >>
-> 
-> 
-> -- 
-> ~Randy
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+Signed-off-by: Jan Engelhardt <jengelh@medozas.de>
+---
+ drivers/mtd/ubi/cdev.c |    6 +++---
+ drivers/mtd/ubi/ubi.h  |    6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+index 98cf31e..56001c8 100644
+--- a/drivers/mtd/ubi/cdev.c
++++ b/drivers/mtd/ubi/cdev.c
+@@ -987,20 +987,20 @@ static int ctrl_cdev_ioctl(struct inode *inode, struct file *file,
+ }
+ 
+ /* UBI control character device operations */
+-struct file_operations ubi_ctrl_cdev_operations = {
++const struct file_operations ubi_ctrl_cdev_operations = {
+ 	.ioctl = ctrl_cdev_ioctl,
+ 	.owner = THIS_MODULE,
+ };
+ 
+ /* UBI character device operations */
+-struct file_operations ubi_cdev_operations = {
++const struct file_operations ubi_cdev_operations = {
+ 	.owner = THIS_MODULE,
+ 	.ioctl = ubi_cdev_ioctl,
+ 	.llseek = no_llseek,
+ };
+ 
+ /* UBI volume character device operations */
+-struct file_operations ubi_vol_cdev_operations = {
++const struct file_operations ubi_vol_cdev_operations = {
+ 	.owner   = THIS_MODULE,
+ 	.open    = vol_cdev_open,
+ 	.release = vol_cdev_release,
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index 4a8ec48..381f0e1 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -449,9 +449,9 @@ struct ubi_device {
+ };
+ 
+ extern struct kmem_cache *ubi_wl_entry_slab;
+-extern struct file_operations ubi_ctrl_cdev_operations;
+-extern struct file_operations ubi_cdev_operations;
+-extern struct file_operations ubi_vol_cdev_operations;
++extern const struct file_operations ubi_ctrl_cdev_operations;
++extern const struct file_operations ubi_cdev_operations;
++extern const struct file_operations ubi_vol_cdev_operations;
+ extern struct class *ubi_class;
+ extern struct mutex ubi_devices_mutex;
+ 
+-- 
+# Created with git-export-patch
