@@ -1,20 +1,19 @@
-Received: from mail-bw0-f12.google.com ([209.85.218.12])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LMUub-0008SW-Ac
-	for linux-mtd@lists.infradead.org; Mon, 12 Jan 2009 22:05:36 +0000
-Received: by bwz5 with SMTP id 5so23545021bwz.18
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 12 Jan 2009 14:05:31 -0800 (PST)
-Message-ID: <8b67d60901121401o752dd888m70d3e2bcaffc170d@mail.gmail.com>
-Date: Mon, 12 Jan 2009 22:01:48 +0000
-From: "Adrian McMenamin" <lkmladrian@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Hot unplugging a device in the middle of a read
+Received: from mail2.shareable.org ([80.68.89.115])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LMVQX-0005ye-6d
+	for linux-mtd@lists.infradead.org; Mon, 12 Jan 2009 22:38:35 +0000
+Date: Mon, 12 Jan 2009 22:38:31 +0000
+From: Jamie Lokier <jamie@shareable.org>
+To: uClinux development list <uclinux-dev@uclinux.org>
+Subject: Re: [uClinux-dev] Re: DQ5 Checks in mtd drivers
+Message-ID: <20090112223831.GA26430@shareable.org>
+References: <CCD96CEE-EA39-4B40-A26E-3B5ADE8B9802@logicaloutcome.ca>
+	<FF3C6138-2FA3-440D-BCF3-0DF37826A00E@logicaloutcome.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Cc: Adrian McMenamin <adrian@newgolddream.dyndns.info>
+In-Reply-To: <FF3C6138-2FA3-440D-BCF3-0DF37826A00E@logicaloutcome.ca>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,49 +23,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am working on a map driver for the virtual memory unit (VMU) flash
-on the SEGA Dreamcast. I have a specifc concurrency issue which maybe
-somebody here could help with.
+Glenn Henshaw wrote:
+>   Since no one seems interested,
 
-The VMUs are pluggable devices - users can just push them in and pull
-them out when they like.
+Sometimes you just have to post again.  People are too busy to respond
+to every message, so some get missed.  It doesn't mean nobody cares.
+This is normal on many mailing lists like this.
 
-It would be a perverse way to behave but it does mean users can whack
-the thing in and pull it out straight away.
+But note that 2.4 kernels are not supported by official MTD authors
+any more, since they are way too old.  If the problem is still present
+in current 2.6 kernels, then they may be interested in your fix.
 
-With the block translation layer turned on this results in a crash -
-how do I tell the mtd/translation/block layer that the device has
-gone?
+> does this absolve me from my GPL obligation to submit the code
+> upstream?
 
-(The ouput below has some additional debug messages I have added)
+It doesn't change or absolve any obligations.
 
-[  184.105630] mtdblock: read on "vmu1.1.0" at 0x7400, size 0x200
-[  184.122698] mtdblock: read on "vmu1.1.0" at 0x7600, size 0x200
-[  184.139001] mtdblock: read on "vmu1.1.0" at 0x7800, size 0x200
-[  184.156062] mtdblock: read on "vmu1.1.0" at 0x7a00, size 0x200
-[  184.172359] mtdblock: read on "vmu1.1.0" at 0x7c00, size 0x200
-[  184.189424] mtdblock: read on "vmu1.1.0" at 0x7e00, size 0x200
-[  184.206051] mtdblock: read on "vmu1.1.0" at 0x8000, size 0x200
-[  184.222790] mtdblock: read on "vmu1.1.0" at 0x8200, size 0x200
-[  184.239093] mtdblock: read on "vmu1.1.0" at 0x8400, size 0x200
-[  184.256158] mtdblock: read on "vmu1.1.0" at 0x8600, size 0x200
-[  184.268478] Maple bus device detaching at (1, 1) busy is 1
-[  184.275221] In vmu_disconnect
-[  184.277538] Removing MTD device #0 (vmu1.1.0) with use count 1
-[  184.302421] releasing device at (1, 1) and address 0x8C8B1980 with
-queue at 0x8C5C8180
-[  185.570107] end_request: I/O error, dev mtdblock0, sector 64
-[  185.575136] Buffer I/O error on device mtdblock0, logical block 8
-[  185.584332] Unable to handle kernel paging request at virtual
-address 6b6b6b6b
-[  185.590955] pc = 8c1511e8
-[  185.593649] *pde = 00000000
-[  185.596531] Oops: 0000 [#1]
-[  185.599395] Modules linked in:
-[  185.602626]
-[  185.604072] Pid : 824, Comm:                 mtdblockd
-[  185.608210] CPU : 0                  Not tainted
-(2.6.28-06142-ga079e18-dirty #188)
-[  185.608240]
-[  185.617027] PC is at strnlen+0x8/0x60
-[  185.620791] PR is at string+0x2e/0xc0
+You haven't understood the GPL.  The GPL does not create any
+obligation to submit the code upstream, or to make it public.
+
+The GPL means when you give someone compiled code, you have to give
+_those_ people the exact corresponding source code (i.e. with your
+changes, exact same version etc.), or you must give them access to
+that source code.  The GPL explains several different ways you can
+do this.
+
+So you do have an obligation, but it's not what you've implied, and it
+doesn't have anything to do with upstream.
+
+Publishing the changes publically and submitting the code upstream is
+a good idea anyway, for many reasons, but it's not an obligation.
+
+> > I have just managed to update a system from an older 2.4 kernel to
+> >the most recent 2.4.34.5-uc0 version.
+
+I know the feeling, as I'm just forward porting something using 2.4.26
+right now, and I know someone doing the same for a device using 2.4.19
+:-)
+
+> >It looks like there were some checks added to the AMD FLASH drivers
+> >that totally break SST FLASH devices.
+> >
+> > 1) Where is the best place to complain? Was the old functionality
+> >hidden somewhere?
+> > 2) Where is the best place to submit the patch to support SST
+> >39VF320x and 39VF640x devices?
+
+If the problem is present in current 2.6 kernels, it would be good to
+post about it again, this time explaining that it's in 2.6 kernels.
+
+The MTD authors have moved on from 2.4 kernels a long time ago and no
+longer support them.
+
+If the patch is reasonably clear and sane, and doesn't break anything
+else (such as other flashes) you may submit it to the general Linux
+2.4 maintainer, Willy Tarreau <w@1wt.eu> last time I looked.  I guess
+if nobody reviews your patch but it's an important and well-contained
+fix, that's the best you can do.
+
+-- Jamie
