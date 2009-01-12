@@ -1,16 +1,18 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
+Received: from s018.panelboxmanager.com ([72.55.186.38])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LMPKj-00089K-0d
-	for linux-mtd@lists.infradead.org; Mon, 12 Jan 2009 16:08:11 +0000
-Received: from localhost.localdomain (localhost [127.0.0.1])
-	by smtp.gentoo.org (Postfix) with ESMTP id AAA5064DCC
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 12 Jan 2009 16:08:07 +0000 (UTC)
-From: Mike Frysinger <vapier@gentoo.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] ubi-utils: fix warning in fprintf() code
-Date: Mon, 12 Jan 2009 11:08:07 -0500
-Message-Id: <1231776487-21240-1-git-send-email-vapier@gentoo.org>
+	id 1LMTrf-0005UM-D6
+	for linux-mtd@lists.infradead.org; Mon, 12 Jan 2009 20:58:31 +0000
+Message-Id: <FF3C6138-2FA3-440D-BCF3-0DF37826A00E@logicaloutcome.ca>
+From: Glenn Henshaw <lists@logicaloutcome.ca>
+To: linux-mtd@lists.infradead.org,
+	uClinux development list <uclinux-dev@uclinux.org>
+In-Reply-To: <CCD96CEE-EA39-4B40-A26E-3B5ADE8B9802@logicaloutcome.ca>
+Content-Type: text/plain; charset=US-ASCII; format=flowed; delsp=yes
+Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0 (Apple Message framework v930.3)
+Subject: Re: DQ5 Checks in mtd drivers
+Date: Mon, 12 Jan 2009 15:58:21 -0500
+References: <CCD96CEE-EA39-4B40-A26E-3B5ADE8B9802@logicaloutcome.ca>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,32 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When building with gcc security warnings enabled, the ubimirror.c code
-triggers this warning:
-./src/ubimirror.c: In function 'main':
-./src/ubimirror.c:206: error: format not a string literal and no format arguments
+   Since no one seems interested, does this absolve me from my GPL  
+obligation to submit the code upstream?
 
-Since the buffer in question should be a straight string anyways, avoid
-ugly printf exploits by outputting the string indirectly:
-	printf("%s", buffer)
+    ... Glenn
 
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
----
- ubi-utils/src/ubimirror.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+On 7-Jan-09, at 8:25 PM, Glenn Henshaw wrote:
 
-diff --git a/ubi-utils/src/ubimirror.c b/ubi-utils/src/ubimirror.c
-index 2cc4596..a20e1af 100644
---- a/ubi-utils/src/ubimirror.c
-+++ b/ubi-utils/src/ubimirror.c
-@@ -203,7 +203,7 @@ main(int argc, char **argv) {
- 		       err_buf, sizeof(err_buf));
- 	if( rc ){
- 		err_buf[sizeof err_buf - 1] = '\0';
--		fprintf(stderr, err_buf);
-+		fprintf(stderr, "%s", err_buf);
- 		if( rc < 0 )
- 			rc = -rc;
- 	}
+>  I have just managed to update a system from an older 2.4 kernel to
+> the most recent 2.4.34.5-uc0 version. It looks like there were some
+> checks added to the AMD FLASH drivers that totally break SST FLASH
+> devices.
+>
+>  1) Where is the best place to complain? Was the old functionality
+> hidden somewhere?
+>  2) Where is the best place to submit the patch to support SST
+> 39VF320x and 39VF640x devices?
+>
+>   ... Glenn
+
+
 -- 
-1.6.1
+Glenn Henshaw                     Logical Outcome Ltd.
+e: lists@logicaloutcome.ca     w: www.logicaloutcome.ca
