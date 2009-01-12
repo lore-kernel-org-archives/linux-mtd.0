@@ -1,22 +1,17 @@
-Received: from ti-out-0910.google.com ([209.85.142.189])
+Received: from mailbox-us-s-12.mailhostingserver.com ([75.125.101.9])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LMK09-00006e-U1
-	for linux-mtd@lists.infradead.org; Mon, 12 Jan 2009 10:26:34 +0000
-Received: by ti-out-0910.google.com with SMTP id a21so10135129tia.2
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 12 Jan 2009 02:26:30 -0800 (PST)
-Message-ID: <70B175DB52584932819754004995AB59@PC200810230421>
-From: "xiaochuan-xu" <xiaochuanxv@gmail.com>
-To: <dedekind@infradead.org>
-References: <ff5b6bcd0901050659k4679c64egffcfa054da4c9034@mail.gmail.com>
-	<1231168447.6608.26.camel@localhost.localdomain>
-Subject: Re: about the _dtype_ parameter
-Date: Mon, 12 Jan 2009 17:26:59 +0800
+	id 1LMLZj-00033M-1x
+	for linux-mtd@lists.infradead.org; Mon, 12 Jan 2009 12:07:23 +0000
+Date: Mon, 12 Jan 2009 12:57:41 +0100
+From: Matthias Kaehlcke <matthias@kaehlcke.net>
+To: dwmw2@infradead.org
+Subject: [BUG] 2.6.29-rc1: /proc/mtd partition names obfuscated
+Message-ID: <20090112115741.GA23365@traven>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="UTF-8"
-Content-Transfer-Encoding: base64
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,16 +21,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQXJ0ZW0sDQoNCj4+IEkgd3JpdGUgYSB0ZW1wb3JhcnkgZmlsZSBpbiB0aGUgdWJpZnMgd2l0
-aCBPX1RSVU5DIGZsYWcgb3ZlciBhbmQgb3Zlci4NCj4+IEkgc2VlIHRoYXQgYWxsIHRoZSBAZHR5
-cGUgdmFyaWFibGVzIGFyZSBlcXVhbCB0byAyIG5vdCAzLg0KPj4gd2h5IGRvZXMgdGhpcyBoYXBw
-ZW4/DQoNCj4gUGF0Y2g6DQo+IA0KPiBkaWZmIC0tZ2l0IGEvZnMvdWJpZnMvam91cm5hbC5jIGIv
-ZnMvdWJpZnMvam91cm5hbC5jDQo+IGluZGV4IDEwYWUyNWIuLjZhODg1YzUgMTAwNjQ0DQo+IC0t
-LSBhL2ZzL3ViaWZzL2pvdXJuYWwuYw0KPiArKysgYi9mcy91Ymlmcy9qb3VybmFsLmMNCj4gQEAg
-LTIwOCw3ICsyMDgsNyBAQCBhZ2FpbjoNCj4gIG9mZnMgPSAwOw0KPiANCj4gb3V0Og0KPiAtIGVy
-ciA9IHViaWZzX3didWZfc2Vla19ub2xvY2sod2J1ZiwgbG51bSwgb2ZmcywgVUJJX1NIT1JUVEVS
-TSk7DQo+ICsgZXJyID0gdWJpZnNfd2J1Zl9zZWVrX25vbG9jayh3YnVmLCBsbnVtLCBvZmZzLCB3
-YnVmLT5kdHlwZSk7DQo+ICBpZiAoZXJyKQ0KPiAgZ290byBvdXRfdW5sb2NrOw0KPiANCg0KSSd2
-IGFwcGxpZWQgdGhpcyBwYXRjaCwgYnV0IHRoZSBAZHR5cGUgdmFyaWFibGVzIGFyZSBzdGlsbCBl
-cXVhbCB0byBVQklfU0hPUlRURVJNICgyKSEgOi0oDQpBcmUgdGhlcmUgc29tZSBtb3JlIGJ1Z3M/
-DQoNCkJlc3QgcmVnYXJkcywNClhpYW9jaHVhbi1YdQ==
+i'm running 2.6.29-rc1 on a edb9302 (ARM) board. the partitioning of
+the flash is passed as usual as parameter:
+
+cat /proc/cmdline
+console=ttyAM0,115200
+mtdparts=physmap-flash.0:256k(u-boot),128k(cfg_boot),128k(cfg_boot.bak),1664k(kernel_1),6144k(rootfs_1),1664k(kernel_2),6144k(rootfs_2),128k(cfg_app),128k(cfg_app.bak)
+
+
+dmesg shows that the command line is interpreted correctly:
+
+9 cmdlinepart partitions found on MTD device physmap-flash.0
+Creating 9 MTD partitions on "physmap-flash.0":
+0x000000000000-0x000000040000 : "u-boot"
+0x000000040000-0x000000060000 : "cfg_boot"
+0x000000060000-0x000000080000 : "cfg_boot.bak"
+0x000000080000-0x000000220000 : "kernel_1"
+0x000000220000-0x000000820000 : "rootfs_1"
+0x000000820000-0x0000009c0000 : "kernel_2"
+0x0000009c0000-0x000000fc0000 : "rootfs_2"
+0x000000fc0000-0x000000fe0000 : "cfg_app"
+0x000000fe0000-0x000001000000 : "cfg_app.bak"
+
+
+but when looking at /proc/mtd, the partition names are somehow, 'obfuscated':
+
+ cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 00040000 00020000 ""
+mtd1: 00020000 00020000 ""
+mtd2: 00020000 00020000 ""
+mtd3: 001a0000 00020000 "�"
+mtd4: 00600000 00020000 ""
+mtd5: 001a0000 00020000 ""
+mtd6: 00600000 00020000 ""
+mtd7: 00020000 00020000 ""
+mtd8: 00020000 00020000 "s"
+
+-- 
+Matthias Kaehlcke
+Embedded Linux Engineer
+Barcelona
+
+               For to be free is not merely to cast off
+               one's chains, but to live in a way that
+              respects and enhances the freedom of others
+                           (Nelson Mandela)
+                                                                 .''`.
+    using free software / Debian GNU/Linux | http://debian.org  : :'  :
+                                                                `. `'`
+gpg --keyserver pgp.mit.edu --recv-keys 47D8E5D4                  `-
