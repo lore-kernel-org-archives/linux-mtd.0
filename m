@@ -1,17 +1,16 @@
-Received: from mailbox-us-s-12.mailhostingserver.com ([75.125.101.9])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1LMLZj-00033M-1x
-	for linux-mtd@lists.infradead.org; Mon, 12 Jan 2009 12:07:23 +0000
-Date: Mon, 12 Jan 2009 12:57:41 +0100
-From: Matthias Kaehlcke <matthias@kaehlcke.net>
-To: dwmw2@infradead.org
-Subject: [BUG] 2.6.29-rc1: /proc/mtd partition names obfuscated
-Message-ID: <20090112115741.GA23365@traven>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LMPKg-00089I-Lf
+	for linux-mtd@lists.infradead.org; Mon, 12 Jan 2009 16:08:09 +0000
+Received: from localhost.localdomain (localhost [127.0.0.1])
+	by smtp.gentoo.org (Postfix) with ESMTP id 968BA64AC8
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 12 Jan 2009 16:08:03 +0000 (UTC)
+From: Mike Frysinger <vapier@gentoo.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] common.mk: tweak rules to workaround make-3.80 bugs
+Date: Mon, 12 Jan 2009 11:08:03 -0500
+Message-Id: <1231776483-21207-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,53 +20,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-i'm running 2.6.29-rc1 on a edb9302 (ARM) board. the partitioning of
-the flash is passed as usual as parameter:
+I got some reports from people who use make-3.80 that mtd-utils wasn't
+building correctly the first time.  Turns out that older versions of make
+misbehave with pattern rules and full paths.  So I've tweaked the code a
+little to work with make-3.80 and make-3.81 (the latest release).
 
-cat /proc/cmdline
-console=ttyAM0,115200
-mtdparts=physmap-flash.0:256k(u-boot),128k(cfg_boot),128k(cfg_boot.bak),1664k(kernel_1),6144k(rootfs_1),1664k(kernel_2),6144k(rootfs_2),128k(cfg_app),128k(cfg_app.bak)
+Also, I added a small optimization to avoid running `mkdir` when building
+in-tree.
 
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+---
+ common.mk |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
 
-dmesg shows that the command line is interpreted correctly:
-
-9 cmdlinepart partitions found on MTD device physmap-flash.0
-Creating 9 MTD partitions on "physmap-flash.0":
-0x000000000000-0x000000040000 : "u-boot"
-0x000000040000-0x000000060000 : "cfg_boot"
-0x000000060000-0x000000080000 : "cfg_boot.bak"
-0x000000080000-0x000000220000 : "kernel_1"
-0x000000220000-0x000000820000 : "rootfs_1"
-0x000000820000-0x0000009c0000 : "kernel_2"
-0x0000009c0000-0x000000fc0000 : "rootfs_2"
-0x000000fc0000-0x000000fe0000 : "cfg_app"
-0x000000fe0000-0x000001000000 : "cfg_app.bak"
-
-
-but when looking at /proc/mtd, the partition names are somehow, 'obfuscated':
-
- cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 00040000 00020000 ""
-mtd1: 00020000 00020000 ""
-mtd2: 00020000 00020000 ""
-mtd3: 001a0000 00020000 "�"
-mtd4: 00600000 00020000 ""
-mtd5: 001a0000 00020000 ""
-mtd6: 00600000 00020000 ""
-mtd7: 00020000 00020000 ""
-mtd8: 00020000 00020000 "s"
-
+diff --git a/common.mk b/common.mk
+index 5dd21ab..77d28bf 100644
+--- a/common.mk
++++ b/common.mk
+@@ -19,6 +19,7 @@ else
+   BUILDDIR := $(PWD)/$(CROSS:-=)
+ endif
+ endif
++override BUILDDIR := $(patsubst %/,%,$(BUILDDIR))
+ 
+ override TARGETS := $(addprefix $(BUILDDIR)/,$(TARGETS))
+ 
+@@ -33,7 +34,7 @@ clean:: $(SUBDIRS_CLEAN)
+ 
+ install:: $(TARGETS) $(SUBDIRS_INSTALL)
+ 
+-$(BUILDDIR)/%: $(BUILDDIR)/%.o
++%: %.o
+ 	$(CC) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_$(notdir $@)) -g -o $@ $^ $(LDLIBS) $(LDLIBS_$(notdir $@))
+ 
+ $(BUILDDIR)/%.a:
+@@ -41,7 +42,9 @@ $(BUILDDIR)/%.a:
+ 	$(RANLIB) $@
+ 
+ $(BUILDDIR)/%.o: %.c
++ifneq ($(BUILDDIR),$(CURDIR))
+ 	mkdir -p $(dir $@)
++endif
+ 	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $< -g -Wp,-MD,$(BUILDDIR)/.$(<F).dep
+ 
+ subdirs_%:
 -- 
-Matthias Kaehlcke
-Embedded Linux Engineer
-Barcelona
-
-               For to be free is not merely to cast off
-               one's chains, but to live in a way that
-              respects and enhances the freedom of others
-                           (Nelson Mandela)
-                                                                 .''`.
-    using free software / Debian GNU/Linux | http://debian.org  : :'  :
-                                                                `. `'`
-gpg --keyserver pgp.mit.edu --recv-keys 47D8E5D4                  `-
+1.6.1
