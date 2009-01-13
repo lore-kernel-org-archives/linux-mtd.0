@@ -1,19 +1,25 @@
-Received: from mail2.shareable.org ([80.68.89.115])
+Received: from comal.ext.ti.com ([198.47.26.152])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LMVQX-0005ye-6d
-	for linux-mtd@lists.infradead.org; Mon, 12 Jan 2009 22:38:35 +0000
-Date: Mon, 12 Jan 2009 22:38:31 +0000
-From: Jamie Lokier <jamie@shareable.org>
-To: uClinux development list <uclinux-dev@uclinux.org>
-Subject: Re: [uClinux-dev] Re: DQ5 Checks in mtd drivers
-Message-ID: <20090112223831.GA26430@shareable.org>
-References: <CCD96CEE-EA39-4B40-A26E-3B5ADE8B9802@logicaloutcome.ca>
-	<FF3C6138-2FA3-440D-BCF3-0DF37826A00E@logicaloutcome.ca>
+	id 1LMdAq-0004gI-Sj
+	for linux-mtd@lists.infradead.org; Tue, 13 Jan 2009 06:54:55 +0000
+Received: from dlep36.itg.ti.com ([157.170.170.91])
+	by comal.ext.ti.com (8.13.7/8.13.7) with ESMTP id n0D6sknI014571
+	for <linux-mtd@lists.infradead.org>; Tue, 13 Jan 2009 00:54:51 -0600
+Received: from webmail.ti.com (localhost [127.0.0.1])
+	by dlep36.itg.ti.com (8.13.8/8.13.8) with ESMTP id n0D6sih7011632
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 13 Jan 2009 00:54:45 -0600 (CST)
+Message-ID: <36189.192.168.10.88.1231829685.squirrel@dbdmail.itg.ti.com>
+In-Reply-To: <57799.192.168.10.89.1229076658.squirrel@dbdmail.itg.ti.com>
+References: <57799.192.168.10.89.1229076658.squirrel@dbdmail.itg.ti.com>
+Date: Tue, 13 Jan 2009 12:24:45 +0530 (IST)
+Subject: Re: [PATCH] [MTD] [NAND] nand_base.c: Allowing core driver to
+	choose      ECC block size for SW ECC scheme.
+From: "vimal singh" <vimalsingh@ti.com>
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <FF3C6138-2FA3-440D-BCF3-0DF37826A00E@logicaloutcome.ca>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,62 +29,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Glenn Henshaw wrote:
->   Since no one seems interested,
+Haven't seen any response on my patch, but didn't see it in git either.
+Is there a problem or an issue I need to resolve?
 
-Sometimes you just have to post again.  People are too busy to respond
-to every message, so some get missed.  It doesn't mean nobody cares.
-This is normal on many mailing lists like this.
+--
+vimal
 
-But note that 2.4 kernels are not supported by official MTD authors
-any more, since they are way too old.  If the problem is still present
-in current 2.6 kernels, then they may be interested in your fix.
-
-> does this absolve me from my GPL obligation to submit the code
-> upstream?
-
-It doesn't change or absolve any obligations.
-
-You haven't understood the GPL.  The GPL does not create any
-obligation to submit the code upstream, or to make it public.
-
-The GPL means when you give someone compiled code, you have to give
-_those_ people the exact corresponding source code (i.e. with your
-changes, exact same version etc.), or you must give them access to
-that source code.  The GPL explains several different ways you can
-do this.
-
-So you do have an obligation, but it's not what you've implied, and it
-doesn't have anything to do with upstream.
-
-Publishing the changes publically and submitting the code upstream is
-a good idea anyway, for many reasons, but it's not an obligation.
-
-> > I have just managed to update a system from an older 2.4 kernel to
-> >the most recent 2.4.34.5-uc0 version.
-
-I know the feeling, as I'm just forward porting something using 2.4.26
-right now, and I know someone doing the same for a device using 2.4.19
-:-)
-
-> >It looks like there were some checks added to the AMD FLASH drivers
-> >that totally break SST FLASH devices.
-> >
-> > 1) Where is the best place to complain? Was the old functionality
-> >hidden somewhere?
-> > 2) Where is the best place to submit the patch to support SST
-> >39VF320x and 39VF640x devices?
-
-If the problem is present in current 2.6 kernels, it would be good to
-post about it again, this time explaining that it's in 2.6 kernels.
-
-The MTD authors have moved on from 2.4 kernels a long time ago and no
-longer support them.
-
-If the patch is reasonably clear and sane, and doesn't break anything
-else (such as other flashes) you may submit it to the general Linux
-2.4 maintainer, Willy Tarreau <w@1wt.eu> last time I looked.  I guess
-if nobody reviews your patch but it's an important and well-contained
-fix, that's the best you can do.
-
--- Jamie
+2008/12/12 Vimal Singh <vimalsingh@ti.com>:
+> This patch allows core driver to choose ECC block size in sw ecc case.
+>
+> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+> ---
+> Current nand driver supports 256 and 512 byte software ecc.
+> This patch provides driver the flexibility to choose ecc size.
+> '256' bytes will be used by default if not provided by core driver.
+>
+> --- a/drivers/mtd/nand/nand_base.c	2008-12-12 14:26:30.050002000 +0530
+> +++ b/drivers/mtd/nand/nand_base.c	2008-12-12 14:27:05.330000000 +0530
+> @@ -2622,7 +2622,8 @@ int nand_scan_tail(struct mtd_info *mtd)
+>  		chip->ecc.write_page = nand_write_page_swecc;
+>  		chip->ecc.read_oob = nand_read_oob_std;
+>  		chip->ecc.write_oob = nand_write_oob_std;
+> -		chip->ecc.size = 256;
+> +		if (!chip->ecc.size)
+> +			chip->ecc.size = 256;
+>  		chip->ecc.bytes = 3;
+>  		break;
+>
+>
+>
