@@ -1,21 +1,21 @@
-Received: from lilly.ping.de ([83.97.42.2])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LN4I9-00035f-5A
-	for linux-mtd@lists.infradead.org; Wed, 14 Jan 2009 11:52:16 +0000
-Date: Wed, 14 Jan 2009 12:50:57 +0100
-To: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: Access entire device with mtdblock0
-Message-ID: <20090114115056.GD7994@leila.ping.de>
-References: <4967F2B2.4060405@jkmicro.com>
-	<8bd0f97a0901131510k25addc8es917fb4e827bb2cf@mail.gmail.com>
-	<878wpeclf1.fsf@macbook.be.48ers.dk>
-	<8bd0f97a0901140258n3cdc2637hdfcd8f162205c654@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8bd0f97a0901140258n3cdc2637hdfcd8f162205c654@mail.gmail.com>
-From: wolfgang@leila.ping.de (Wolfgang Wegner)
-Cc: linux-mtd@lists.infradead.org, Adam Yergovich <ayergo@jkmicro.com>
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LN4wu-0002Xm-IJ
+	for linux-mtd@lists.infradead.org; Wed, 14 Jan 2009 12:34:23 +0000
+Subject: Re: Some problem in real application
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Jacky Lam <jackylam.gsl@gmail.com>
+In-Reply-To: <496D3E5B.5040206@gmail.com>
+References: <496B05EF.7060401@gsl.com.hk>
+	<1231836808.5973.11.camel@localhost.localdomain>
+	<496D3E5B.5040206@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 14 Jan 2009 14:34:44 +0200
+Message-Id: <1231936484.5973.54.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,24 +25,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 14, 2009 at 05:58:43AM -0500, Mike Frysinger wrote:
-> On Wed, Jan 14, 2009 at 04:00, Peter Korsgaard wrote:
-> > "Mike" == Mike Frysinger <writes:
-> >>> Any recommendations on a simple way to create a partition using the
-> >>> entirety of flash?
-> >>
-> >> looks like no one responded.  i'm pretty sure the answer is to use
-> >> add_mtd_device() even in face of add_mtd_partitions().
-> >
-> > Why not just add a partition spanning the entire device in addition to
-> > the other partitions?
-> 
-> i was not aware partition tables allowed for overlaps.  if that's
-> true, then the answer is obvious and easy to implement in boards ...
+On Wed, 2009-01-14 at 09:22 +0800, Jacky Lam wrote:  
+>     That means  I can still use nanddump utility to extract the nand
+> raw image and put it back to a blank new flash?
 
-They are allowed, but I have not been able yet to do a correct query
-for erase_size in case of a partition covering a whole device having
-multiple different-sized erase regions.
+I think so. But read the link I sent you.
 
-Regards,
-Wolfgang
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
