@@ -1,17 +1,22 @@
-Received: from [116.215.90.5] (helo=mail.capstone.com)
+Received: from mail-bw0-f11.google.com ([209.85.218.11])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LMtmZ-0001AX-Dz
-	for linux-mtd@lists.infradead.org; Wed, 14 Jan 2009 00:38:58 +0000
-From: "Arthur handout" <Gale@d5152fb0e.access.telenet.be>
-To: fabio.pedrina@parl.ch
-Subject: D.entists Directory for the United States
-Content-Type: text/plain;
-Content-Transfer-Encoding: 7Bit
-Message-ID: <MAILE2NSAW4eE2FGwQ20000b2b9@mail.capstone.com>
-Date: 14 Jan 2009 08:28:19 +0800
-Cc: ck@millipore.com, linux-mtd@lists.infradead.org,
-	businessofadvance@gmail.com, cat@pharmcat.demon.co.uk
-Reply-To: Arthur handout <nosendemailhere@contactpluscorp.com>
+	id 1LMtzQ-0002xc-UT
+	for linux-mtd@lists.infradead.org; Wed, 14 Jan 2009 00:52:15 +0000
+Received: by bwz4 with SMTP id 4so52889bwz.18
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 13 Jan 2009 16:52:10 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <8b67d60901131318g43ede8e0ha88982d2f2be837c@mail.gmail.com>
+References: <8b67d60901121401o752dd888m70d3e2bcaffc170d@mail.gmail.com>
+	<8b67d60901131318g43ede8e0ha88982d2f2be837c@mail.gmail.com>
+Date: Wed, 14 Jan 2009 00:52:10 +0000
+Message-ID: <8b67d60901131652g6ebd3089hbf71a510f2625aa7@mail.gmail.com>
+Subject: Re: Hot unplugging a device in the middle of a read
+From: Adrian McMenamin <lkmladrian@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Adrian McMenamin <adrian@newgolddream.dyndns.info>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,21 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+2009/1/13 Adrian McMenamin <lkmladrian@gmail.com>:
+> 2009/1/12 Adrian McMenamin <lkmladrian@gmail.com>:
+>> I am working on a map driver for the virtual memory unit (VMU) flash
+>
+>> [  184.277538] Removing MTD device #0 (vmu1.1.0) with use count 1
+>
+> Having looked through the sources I can see that this is indicating
+> there is an additional user in play - because when I pull the VMU out
+> when not in the middle of the initial reads I don't get this message
+> (as use count is obviously 0) even though the code path is the same.
+>
+> Can I just put in an extra 'put'? Or is there some other way of doing this?
+>
 
-
-Have a look at this new Database
-
-++> 164,564 D.entists 
-++> 158,351 Physical Addresses
-++> 163,579 Tel #'s
-++> 77,468 Office Fax Numbers 
-++> 45,268 Contact emails
-
-during this week only the new lowered price is $298
-
-To inquire please write to Chen@idocinfo.com
-
-
-
-
-visit this link to complain about SP#M please email unlisting@idocinfo.com 
+For the sake of completeness for those searching on google - I wrote a
+function that checks if the usecount > 0, if it is, then I just have
+to live with the block read errors but I don't crash the system
+because I don't delete the mtd_info
