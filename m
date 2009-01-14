@@ -1,23 +1,24 @@
-Received: from mail-ew0-f13.google.com ([209.85.219.13])
+Received: from ti-out-0910.google.com ([209.85.142.185])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LN1bb-0003ka-78
-	for linux-mtd@lists.infradead.org; Wed, 14 Jan 2009 09:00:10 +0000
-Received: by ewy6 with SMTP id 6so463574ewy.18
+	id 1LN1eB-0001I8-7E
+	for linux-mtd@lists.infradead.org; Wed, 14 Jan 2009 09:03:00 +0000
+Received: by ti-out-0910.google.com with SMTP id a21so323107tia.2
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 14 Jan 2009 01:00:05 -0800 (PST)
-Sender: Peter Korsgaard <jacmet@gmail.com>
-To: "Mike Frysinger" <vapier.adi@gmail.com>
-Subject: Re: Access entire device with mtdblock0
-References: <4967F2B2.4060405@jkmicro.com>
-	<8bd0f97a0901131510k25addc8es917fb4e827bb2cf@mail.gmail.com>
-From: Peter Korsgaard <jacmet@sunsite.dk>
-Date: Wed, 14 Jan 2009 10:00:02 +0100
-In-Reply-To: <8bd0f97a0901131510k25addc8es917fb4e827bb2cf@mail.gmail.com>
-	(Mike Frysinger's message of "Tue\, 13 Jan 2009 18\:10\:22 -0500")
-Message-ID: <878wpeclf1.fsf@macbook.be.48ers.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-mtd@lists.infradead.org, Adam Yergovich <ayergo@jkmicro.com>
+	Wed, 14 Jan 2009 01:02:44 -0800 (PST)
+Subject: Re: about the _dtype_ parameter
+From: xiaochuanxv <xiaochuanxv@gmail.com>
+To: dedekind@infradead.org
+In-Reply-To: <1231839695.5973.15.camel@localhost.localdomain>
+References: <ff5b6bcd0901050659k4679c64egffcfa054da4c9034@mail.gmail.com>
+	<1231168447.6608.26.camel@localhost.localdomain>
+	<70B175DB52584932819754004995AB59@PC200810230421>
+	<1231839695.5973.15.camel@localhost.localdomain>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 15 Jan 2009 01:02:28 +0800
+Message-Id: <1231952548.3615.66.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +28,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>>>> "Mike" == Mike Frysinger <vapier.adi@gmail.com> writes:
+Sorry, a mistake in writing: 
 
-Hi,
+(Suppose wr-ratio represent the ratio of erasures due to wear-leveling
+to erasure total physical erase-block erasures. )
+I found that when most of the @dtype is equal to UBI_SHORTTERM, the
+wr-ratio is approximately equal to 0.1%, whereas is greater than
+ 
+0.4% 
 
- >> Any recommendations on a simple way to create a partition using the
- >> entirety of flash?
-
- Mike> looks like no one responded.  i'm pretty sure the answer is to use
- Mike> add_mtd_device() even in face of add_mtd_partitions().
-
-Why not just add a partition spanning the entire device in addition to
-the other partitions?
+when @dtype is always UBI_UNKNOWN. It seem that the data type call-back
+policy does NOT make any sense in the current implementation.
 
 -- 
-Bye, Peter Korsgaard
+Best regards,
+Xiaochuan Xu (许小川)
