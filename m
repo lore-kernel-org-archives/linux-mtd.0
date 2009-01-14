@@ -1,22 +1,24 @@
-Received: from mail-bw0-f11.google.com ([209.85.218.11])
+Received: from wf-out-1314.google.com ([209.85.200.170])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LMtzQ-0002xc-UT
-	for linux-mtd@lists.infradead.org; Wed, 14 Jan 2009 00:52:15 +0000
-Received: by bwz4 with SMTP id 4so52889bwz.18
+	id 1LN1Fj-0000fU-QU
+	for linux-mtd@lists.infradead.org; Wed, 14 Jan 2009 08:37:34 +0000
+Received: by wf-out-1314.google.com with SMTP id 28so436640wfc.24
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 13 Jan 2009 16:52:10 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <8b67d60901131318g43ede8e0ha88982d2f2be837c@mail.gmail.com>
-References: <8b67d60901121401o752dd888m70d3e2bcaffc170d@mail.gmail.com>
-	<8b67d60901131318g43ede8e0ha88982d2f2be837c@mail.gmail.com>
-Date: Wed, 14 Jan 2009 00:52:10 +0000
-Message-ID: <8b67d60901131652g6ebd3089hbf71a510f2625aa7@mail.gmail.com>
-Subject: Re: Hot unplugging a device in the middle of a read
-From: Adrian McMenamin <lkmladrian@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Adrian McMenamin <adrian@newgolddream.dyndns.info>
+	Wed, 14 Jan 2009 00:37:30 -0800 (PST)
+Subject: Re: about the _dtype_ parameter
+From: "xiaochuanxv@gmail.com" <xiaochuanxv@gmail.com>
+To: dedekind@infradead.org
+In-Reply-To: <1231839695.5973.15.camel@localhost.localdomain>
+References: <ff5b6bcd0901050659k4679c64egffcfa054da4c9034@mail.gmail.com>
+	<1231168447.6608.26.camel@localhost.localdomain>
+	<70B175DB52584932819754004995AB59@PC200810230421>
+	<1231839695.5973.15.camel@localhost.localdomain>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 15 Jan 2009 00:37:02 +0800
+Message-Id: <1231951022.3615.60.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,21 +28,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2009/1/13 Adrian McMenamin <lkmladrian@gmail.com>:
-> 2009/1/12 Adrian McMenamin <lkmladrian@gmail.com>:
->> I am working on a map driver for the virtual memory unit (VMU) flash
->
->> [  184.277538] Removing MTD device #0 (vmu1.1.0) with use count 1
->
-> Having looked through the sources I can see that this is indicating
-> there is an additional user in play - because when I pull the VMU out
-> when not in the middle of the initial reads I don't get this message
-> (as use count is obviously 0) even though the code path is the same.
->
-> Can I just put in an extra 'put'? Or is there some other way of doing this?
->
+Hi,
 
-For the sake of completeness for those searching on google - I wrote a
-function that checks if the usecount > 0, if it is, then I just have
-to live with the block read errors but I don't crash the system
-because I don't delete the mtd_info
+On Tue, 2009-01-13 at 11:41 +0200, Artem Bityutskiy wrote:
+> 
+> Tried the latest ubifs-2.6 tree and @dtype is always UBI_UNKNOWN (3).
+> This is also strange though, I'll look at this.
+
+Unfortunately, if the @dtype is always UBI_UNKNOWN, this result in a
+great increase in the physical erase-block erasures due to wear-leveling
+processes.
+
+(Suppose wr-ratio represent the ratio of erasures due to wear-leveling
+to erasure total physical erase-block erasures. )
+I found that when most of the @dtype is equal to UBI_SHORTTERM, the
+wr-ratio is approximately equal to 0.1%, whereas is greater than 4% when
+@dtype is always UBI_UNKNOWN. It seem that the data type call-back
+policy does NOT make any sense in the current implementation.
+
+FYI, An simple way is of making all data type UBI_SHORTTERM only,
+although a bit of data are long term data. Go further and say, @dtype
+can be got rid off from UBI clients (e.g., UBIFS), or classifying the
+data type as TWO type(UBI_SHORTTERM and UBI_LOANGTERM).
+
+
+-- 
+Best regards,
+Xiaochuan Xu (许小川)
