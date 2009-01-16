@@ -1,24 +1,21 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LNpli-0003EY-RV
-	for linux-mtd@lists.infradead.org; Fri, 16 Jan 2009 14:33:57 +0000
-Subject: Re: [PATCH] UBI: add ioctl compatibility
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Arnd Bergmann <arnd@arndb.de>
-In-Reply-To: <200901161324.35271.arnd@arndb.de>
-References: <1232036381.25068.10.camel@localhost.localdomain>
-	<200901151734.23870.arnd@arndb.de>
-	<1232104138.25068.22.camel@localhost.localdomain>
-	<200901161324.35271.arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 16 Jan 2009 16:34:07 +0200
-Message-Id: <1232116447.25068.27.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>
-Reply-To: dedekind@infradead.org
+Received: from wf-out-1314.google.com ([209.85.200.172])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LNpoA-0007vm-PI
+	for linux-mtd@lists.infradead.org; Fri, 16 Jan 2009 14:36:29 +0000
+Received: by wf-out-1314.google.com with SMTP id 28so1620052wfc.24
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 16 Jan 2009 06:36:25 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1232105373.25068.25.camel@localhost.localdomain>
+References: <de9b121e0901150854w7b88abcendc36e4a5311890aa@mail.gmail.com>
+	<1232105373.25068.25.camel@localhost.localdomain>
+Date: Fri, 16 Jan 2009 15:36:25 +0100
+Message-ID: <de9b121e0901160636l1d946e9bhaf5c269a5131ea7d@mail.gmail.com>
+Subject: Re: Problem with ubiformat
+From: Johan <kungjohan@gmail.com>
+To: dedekind@infradead.org, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=KOI8-R
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,164 +25,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-01-16 at 13:24 +0100, Arnd Bergmann wrote:
-> On Friday 16 January 2009, Artem Bityutskiy wrote:
-> > Thank you Arnd. Here is the corrected patch. Tested on x68_64 + 32-bit
-> > UBI tools.
-> > 
-> 
-> Looks better now, but the compat_ versions are still missing the
-> compat_ptr() conversions. Those only make a difference on s390,
-> so you wouldn't see the problem on x86_64.
+This is my output of flash_eraseall, so it looks like the same
+input/output error exist in flash_eraseall but it continues anyway.
 
-Ok, here is the new patch.
+# flash_eraseall /dev/mtd0
+Erasing 128 Kibyte @ fba0000 -- 24 % complete.
+Skipping bad block at 0x0fbc0000
+Erasing 128 Kibyte @ 105e0000 -- 25 % complete.
+Skipping bad block at 0x10600000
+Erasing 128 Kibyte @ 14160000 -- 31 % complete.
+flash_eraseall: /dev/mtd0: MTD Erase failure: Input/output error
+Erasing 128 Kibyte @ 17620000 -- 36 % complete.
+Skipping bad block at 0x17640000
+Erasing 128 Kibyte @ 205e0000 -- 50 % complete.
+Skipping bad block at 0x20600000
+Erasing 128 Kibyte @ 22d20000 -- 54 % complete.
+Skipping bad block at 0x22d40000
+Erasing 128 Kibyte @ 2dd80000 -- 71 % complete.
+Skipping bad block at 0x2dda0000
+Erasing 128 Kibyte @ 32e20000 -- 79 % complete.
+Skipping bad block at 0x32e40000
+Erasing 128 Kibyte @ 33220000 -- 79 % complete.
+Skipping bad block at 0x33240000
 
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Subject: [PATCH] UBI: add ioctl compatibility
+Skipping bad block at 0x33260000
+Erasing 128 Kibyte @ 3b240000 -- 92 % complete.
+flash_eraseall: /dev/mtd0: MTD Erase failure: Input/output error
+Erasing 128 Kibyte @ 3ce00000 -- 95 % complete.
+Skipping bad block at 0x3ce20000
+Erasing 128 Kibyte @ 3fec0000 -- 99 % complete.
+Skipping bad block at 0x3fee0000
 
-UBI ioctl's do not work when running 64-bit kernel and 32-bit
-user-land. Fix this by adding the compat_ioctl method.
+Skipping bad block at 0x3ff00000
 
-Also, UBI serializes all ioctls, so more than one ioctl at a time
-is not a problem. Amd UBI does not seem to depend on anything else,
-so use unlocked_ioctl instead of ioctl (no BKL needed).
+Skipping bad block at 0x3ff20000
 
-Reported-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- drivers/mtd/ubi/cdev.c |   66 ++++++++++++++++++++++++++++++++++--------------
- 1 files changed, 47 insertions(+), 19 deletions(-)
+Skipping bad block at 0x3ff40000
 
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index d99935c..820f50e 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -40,6 +40,7 @@
- #include <linux/ioctl.h>
- #include <linux/capability.h>
- #include <linux/uaccess.h>
-+#include <linux/compat.h>
- #include <mtd/ubi-user.h>
- #include <asm/div64.h>
- #include "ubi.h"
-@@ -401,8 +402,8 @@ static ssize_t vol_cdev_write(struct file *file, const char __user *buf,
- 	return count;
- }
- 
--static int vol_cdev_ioctl(struct inode *inode, struct file *file,
--			  unsigned int cmd, unsigned long arg)
-+static long vol_cdev_ioctl(struct file *file, unsigned int cmd,
-+			   unsigned long arg)
- {
- 	int err = 0;
- 	struct ubi_volume_desc *desc = file->private_data;
-@@ -566,6 +567,14 @@ static int vol_cdev_ioctl(struct inode *inode, struct file *file,
- 	return err;
- }
- 
-+static long vol_cdev_compat_ioctl(struct file *file, unsigned int cmd,
-+				  unsigned long arg)
-+{
-+	unsigned long translated_arg = (unsigned long)compat_ptr(arg);
-+
-+	return vol_cdev_ioctl(file, cmd, translated_arg);
-+}
-+
- /**
-  * verify_mkvol_req - verify volume creation request.
-  * @ubi: UBI device description object
-@@ -800,8 +809,8 @@ out_free:
- 	return err;
- }
- 
--static int ubi_cdev_ioctl(struct inode *inode, struct file *file,
--			  unsigned int cmd, unsigned long arg)
-+static long ubi_cdev_ioctl(struct file *file, unsigned int cmd,
-+			   unsigned long arg)
- {
- 	int err = 0;
- 	struct ubi_device *ubi;
-@@ -811,7 +820,7 @@ static int ubi_cdev_ioctl(struct inode *inode, struct file *file,
- 	if (!capable(CAP_SYS_RESOURCE))
- 		return -EPERM;
- 
--	ubi = ubi_get_by_major(imajor(inode));
-+	ubi = ubi_get_by_major(imajor(file->f_mapping->host));
- 	if (!ubi)
- 		return -ENODEV;
- 
-@@ -947,8 +956,16 @@ static int ubi_cdev_ioctl(struct inode *inode, struct file *file,
- 	return err;
- }
- 
--static int ctrl_cdev_ioctl(struct inode *inode, struct file *file,
--			   unsigned int cmd, unsigned long arg)
-+static long ubi_cdev_compat_ioctl(struct file *file, unsigned int cmd,
-+				  unsigned long arg)
-+{
-+	unsigned long translated_arg = (unsigned long)compat_ptr(arg);
-+
-+	return ubi_cdev_ioctl(file, cmd, translated_arg);
-+}
-+
-+static long ctrl_cdev_ioctl(struct file *file, unsigned int cmd,
-+			    unsigned long arg)
- {
- 	int err = 0;
- 	void __user *argp = (void __user *)arg;
-@@ -1024,26 +1041,37 @@ static int ctrl_cdev_ioctl(struct inode *inode, struct file *file,
- 	return err;
- }
- 
-+static long ctrl_cdev_compat_ioctl(struct file *file, unsigned int cmd,
-+				   unsigned long arg)
-+{
-+	unsigned long translated_arg = (unsigned long)compat_ptr(arg);
-+
-+	return ctrl_cdev_ioctl(file, cmd, translated_arg);
-+}
-+
- /* UBI control character device operations */
- const struct file_operations ubi_ctrl_cdev_operations = {
--	.ioctl = ctrl_cdev_ioctl,
--	.owner = THIS_MODULE,
-+	.owner          = THIS_MODULE,
-+	.unlocked_ioctl = ctrl_cdev_ioctl,
-+	.compat_ioctl   = ctrl_cdev_compat_ioctl,
- };
- 
- /* UBI character device operations */
- const struct file_operations ubi_cdev_operations = {
--	.owner = THIS_MODULE,
--	.ioctl = ubi_cdev_ioctl,
--	.llseek = no_llseek,
-+	.owner          = THIS_MODULE,
-+	.llseek         = no_llseek,
-+	.unlocked_ioctl = ubi_cdev_ioctl,
-+	.compat_ioctl   = ubi_cdev_compat_ioctl,
- };
- 
- /* UBI volume character device operations */
- const struct file_operations ubi_vol_cdev_operations = {
--	.owner   = THIS_MODULE,
--	.open    = vol_cdev_open,
--	.release = vol_cdev_release,
--	.llseek  = vol_cdev_llseek,
--	.read    = vol_cdev_read,
--	.write   = vol_cdev_write,
--	.ioctl   = vol_cdev_ioctl,
-+	.owner          = THIS_MODULE,
-+	.open           = vol_cdev_open,
-+	.release        = vol_cdev_release,
-+	.llseek         = vol_cdev_llseek,
-+	.read           = vol_cdev_read,
-+	.write          = vol_cdev_write,
-+	.unlocked_ioctl = vol_cdev_ioctl,
-+	.compat_ioctl   = vol_cdev_compat_ioctl,
- };
--- 
-1.6.0.6
+Skipping bad block at 0x3ff60000
 
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+Skipping bad block at 0x3ff80000
+
+Skipping bad block at 0x3ffa0000
+
+Skipping bad block at 0x3ffc0000
+
+Skipping bad block at 0x3ffe0000
+
+#
+
+Looking at my bootup sequence:
+
+[42949374.580000] NAND device: Manufacturer ID: 0xad, Chip ID: 0xd3
+(Hynix NAND 1GiB 3,3V 8-bit)
+[42949374.590000] AT91 NAND: 8-bit, Software ECC
+[42949374.590000] Scanning device for bad blocks
+[42949374.690000] Bad eraseblock 2014 at 0x0fbc0000
+[42949374.690000] Bad eraseblock 2096 at 0x10600000
+[42949374.740000] Bad eraseblock 2994 at 0x17640000
+[42949374.790000] Bad eraseblock 4144 at 0x20600000
+[42949374.810000] Bad eraseblock 4458 at 0x22d40000
+[42949374.880000] Bad eraseblock 5869 at 0x2dda0000
+[42949374.910000] Bad eraseblock 6514 at 0x32e40000
+[42949374.910000] Bad eraseblock 6546 at 0x33240000
+[42949374.920000] Bad eraseblock 6547 at 0x33260000
+[42949374.980000] Bad eraseblock 7793 at 0x3ce20000
+[42949375.000000] Bad eraseblock 8183 at 0x3fee0000
+[42949375.000000] Bad eraseblock 8184 at 0x3ff00000
+[42949375.010000] Bad eraseblock 8185 at 0x3ff20000
+[42949375.010000] Bad eraseblock 8186 at 0x3ff40000
+[42949375.020000] Bad eraseblock 8187 at 0x3ff60000
+[42949375.020000] Bad eraseblock 8188 at 0x3ff80000
+[42949375.030000] Bad eraseblock 8189 at 0x3ffa0000
+[42949375.030000] Bad eraseblock 8190 at 0x3ffc0000
+[42949375.040000] Bad eraseblock 8191 at 0x3ffe0000
+[42949375.040000] Creating 1 MTD partitions on "atmel_nand":
+[42949375.050000] 0x00000000-0x40000000 : "NAND flash partition"
+
+There is no bad eraseblock 2571 at that position, but I assume that it
+should be marked so?
+
+/Johan
+
+2009/1/16 Artem Bityutskiy <dedekind@infradead.org>:
+> On Thu, 2009-01-15 at 17:54 +0100, Johan wrote:
+>> I have a problem with ubiformat on one of my boards, the same command
+>> works on another board.
+>>
+>> #
+>> # ubiformat /dev/mtd0
+>> ubiformat: mtd0 (NAND), size 1073741824 bytes (1024.0 MiB), 131072
+>> eraseblocks of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
+>> libscan: scanning eraseblock 8191 -- 100 % complete
+>> ubiformat: 2567 eraseblocks have valid erase counter, mean value is 3
+>> ubiformat: 5606 eraseblocks are supposedly empty
+>> ubiformat: bad eraseblocks: 2014, 2096, 2994, 4144, 4458, 5869, 6514,
+>> 6546, 6547, 7793, 8183, 8184, 8185, 8186, 8187, 8188, 8189, 8190, 8191
+>> ubiformat: warning!: only 2567 of 8173 eraseblocks have valid erase coun=
+ter
+>> ubiformat: erase counter 0 will be used for all eraseblocks
+>> ubiformat: note, arbitrary erase counter value may be specified using -e=
+ option
+>> ubiformat: continue? (yes/no)  yes
+>> ubiformat: use erase counter 0 for all eraseblocks
+>> ubiformat: formatting eraseblock 2571 -- 31 % complete  ubiformat:
+>> error!: failed to erase eraseblock 2571
+>>            error 5 (Input/output error)
+>> #
+>>
+>> I am using mtd-utils snapshot from 2008-12-18.
+>>
+>> Any ideas to what the problem might be?
+>
+> I guess eraseblock number 2571 is bad and ubiformat cannot erase it.
+> Probably we should teach ubiformat taking care about bad eraseblocks by
+> marking them as bad. It should be easy. Try flash_eraseall - does it
+> complain about eraseblock 2571?
+>
+> --
+> Best regards,
+> Artem Bityutskiy (=E2=C9=D4=C0=C3=CB=C9=CA =E1=D2=D4=A3=CD)
+>
+>
