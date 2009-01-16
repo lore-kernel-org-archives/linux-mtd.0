@@ -1,21 +1,18 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LNmZD-000593-9n
-	for linux-mtd@lists.infradead.org; Fri, 16 Jan 2009 11:08:50 +0000
-Subject: Re: [PATCH] UBI: add ioctl compatibility
+	id 1LNmsy-0001MI-MC
+	for linux-mtd@lists.infradead.org; Fri, 16 Jan 2009 11:29:15 +0000
+Subject: Re: Problem with ubiformat
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Arnd Bergmann <arnd@arndb.de>
-In-Reply-To: <200901151734.23870.arnd@arndb.de>
-References: <1232036381.25068.10.camel@localhost.localdomain>
-	<200901151734.23870.arnd@arndb.de>
+To: Johan <kungjohan@gmail.com>
+In-Reply-To: <de9b121e0901150854w7b88abcendc36e4a5311890aa@mail.gmail.com>
+References: <de9b121e0901150854w7b88abcendc36e4a5311890aa@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 16 Jan 2009 13:08:58 +0200
-Message-Id: <1232104138.25068.22.camel@localhost.localdomain>
+Date: Fri, 16 Jan 2009 13:29:33 +0200
+Message-Id: <1232105373.25068.25.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -26,126 +23,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-01-15 at 17:34 +0100, Arnd Bergmann wrote:
-> On Thursday 15 January 2009, Artem Bityutskiy wrote:
+On Thu, 2009-01-15 at 17:54 +0100, Johan wrote:
+> I have a problem with ubiformat on one of my boards, the same command
+> works on another board.
 > 
-> > would you please glance if this patch all-right?
+> #
+> # ubiformat /dev/mtd0
+> ubiformat: mtd0 (NAND), size 1073741824 bytes (1024.0 MiB), 131072
+> eraseblocks of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
+> libscan: scanning eraseblock 8191 -- 100 % complete
+> ubiformat: 2567 eraseblocks have valid erase counter, mean value is 3
+> ubiformat: 5606 eraseblocks are supposedly empty
+> ubiformat: bad eraseblocks: 2014, 2096, 2994, 4144, 4458, 5869, 6514,
+> 6546, 6547, 7793, 8183, 8184, 8185, 8186, 8187, 8188, 8189, 8190, 8191
+> ubiformat: warning!: only 2567 of 8173 eraseblocks have valid erase counter
+> ubiformat: erase counter 0 will be used for all eraseblocks
+> ubiformat: note, arbitrary erase counter value may be specified using -e option
+> ubiformat: continue? (yes/no)  yes
+> ubiformat: use erase counter 0 for all eraseblocks
+> ubiformat: formatting eraseblock 2571 -- 31 % complete  ubiformat:
+> error!: failed to erase eraseblock 2571
+>            error 5 (Input/output error)
+> #
 > 
-> No, it's not. New ioctl numbers should not be added to fs/compat_ioctl.c
-> but rather to the file that implements the file operations (ubi/cdev.c).
+> I am using mtd-utils snapshot from 2008-12-18.
+> 
+> Any ideas to what the problem might be?
 
-Thank you Arnd. Here is the corrected patch. Tested on x68_64 + 32-bit
-UBI tools.
-
->From 8d1e92e1e277e3f9fb51491b248f3c6cbfc86083 Mon Sep 17 00:00:00 2001
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Date: Fri, 16 Jan 2009 14:08:35 +0200
-Subject: [PATCH] UBI: add ioctl compatibility
-
-UBI ioctl's do not work when running 64-bit kernel and 32-bit
-user-land. Fix this by adding the compat_ioctl method.
-
-Also, UBI serializes all ioctls, so more than one ioctl at a time,
-and UBI does not seem to depend on anything else, so use
-unlocked_ioctl instead of ioctl (no BKL needed).
-
-Reported-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- drivers/mtd/ubi/cdev.c |   41 ++++++++++++++++++++++-------------------
- 1 files changed, 22 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index a4a6e9a..c5f8a91 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -402,8 +402,8 @@ static ssize_t vol_cdev_write(struct file *file, const char __user *buf,
- 	return count;
- }
- 
--static int vol_cdev_ioctl(struct inode *inode, struct file *file,
--			  unsigned int cmd, unsigned long arg)
-+static long vol_cdev_ioctl(struct file *file, unsigned int cmd,
-+			   unsigned long arg)
- {
- 	int err = 0;
- 	struct ubi_volume_desc *desc = file->private_data;
-@@ -803,8 +803,8 @@ out_free:
- 	return err;
- }
- 
--static int ubi_cdev_ioctl(struct inode *inode, struct file *file,
--			  unsigned int cmd, unsigned long arg)
-+static long ubi_cdev_ioctl(struct file *file, unsigned int cmd,
-+			   unsigned long arg)
- {
- 	int err = 0;
- 	struct ubi_device *ubi;
-@@ -814,7 +814,7 @@ static int ubi_cdev_ioctl(struct inode *inode, struct file *file,
- 	if (!capable(CAP_SYS_RESOURCE))
- 		return -EPERM;
- 
--	ubi = ubi_get_by_major(imajor(inode));
-+	ubi = ubi_get_by_major(imajor(file->f_mapping->host));
- 	if (!ubi)
- 		return -ENODEV;
- 
-@@ -950,8 +950,8 @@ static int ubi_cdev_ioctl(struct inode *inode, struct file *file,
- 	return err;
- }
- 
--static int ctrl_cdev_ioctl(struct inode *inode, struct file *file,
--			   unsigned int cmd, unsigned long arg)
-+static long ctrl_cdev_ioctl(struct file *file, unsigned int cmd,
-+			    unsigned long arg)
- {
- 	int err = 0;
- 	void __user *argp = (void __user *)arg;
-@@ -1029,24 +1029,27 @@ static int ctrl_cdev_ioctl(struct inode *inode, struct file *file,
- 
- /* UBI control character device operations */
- const struct file_operations ubi_ctrl_cdev_operations = {
--	.ioctl = ctrl_cdev_ioctl,
--	.owner = THIS_MODULE,
-+	.owner          = THIS_MODULE,
-+	.unlocked_ioctl = ctrl_cdev_ioctl,
-+	.compat_ioctl   = ctrl_cdev_ioctl,
- };
- 
- /* UBI character device operations */
- const struct file_operations ubi_cdev_operations = {
--	.owner = THIS_MODULE,
--	.ioctl = ubi_cdev_ioctl,
--	.llseek = no_llseek,
-+	.owner          = THIS_MODULE,
-+	.llseek         = no_llseek,
-+	.unlocked_ioctl = ubi_cdev_ioctl,
-+	.compat_ioctl   = ubi_cdev_ioctl,
- };
- 
- /* UBI volume character device operations */
- const struct file_operations ubi_vol_cdev_operations = {
--	.owner   = THIS_MODULE,
--	.open    = vol_cdev_open,
--	.release = vol_cdev_release,
--	.llseek  = vol_cdev_llseek,
--	.read    = vol_cdev_read,
--	.write   = vol_cdev_write,
--	.ioctl   = vol_cdev_ioctl,
-+	.owner          = THIS_MODULE,
-+	.open           = vol_cdev_open,
-+	.release        = vol_cdev_release,
-+	.llseek         = vol_cdev_llseek,
-+	.read           = vol_cdev_read,
-+	.write          = vol_cdev_write,
-+	.unlocked_ioctl = vol_cdev_ioctl,
-+	.compat_ioctl   = vol_cdev_ioctl,
- };
--- 
-1.6.0.6
-
-
+I guess eraseblock number 2571 is bad and ubiformat cannot erase it.
+Probably we should teach ubiformat taking care about bad eraseblocks by
+marking them as bad. It should be easy. Try flash_eraseall - does it
+complain about eraseblock 2571?
 
 -- 
 Best regards,
