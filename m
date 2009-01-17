@@ -1,14 +1,18 @@
-Subject: Re: [GIT PULL -tip] fix 33 make headers_check warnings
-From: David Woodhouse <dwmw2@infradead.org>
+Received: from terminus.zytor.com ([198.137.202.10])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LOJk5-0004Ni-BJ
+	for linux-mtd@lists.infradead.org; Sat, 17 Jan 2009 22:34:15 +0000
+Message-ID: <49725B1E.604@kernel.org>
+Date: Sat, 17 Jan 2009 14:26:38 -0800
+From: "H. Peter Anvin" <hpa@kernel.org>
+MIME-Version: 1.0
 To: Sam Ravnborg <sam@ravnborg.org>
-In-Reply-To: <20090117221932.GA4956@uranus.ravnborg.org>
+Subject: Re: [GIT PULL -tip] fix 33 make headers_check warnings
 References: <1232223441.3966.22.camel@localhost.localdomain>
 	<1232228261.27094.0.camel@macbook.infradead.org>
 	<20090117221932.GA4956@uranus.ravnborg.org>
-Content-Type: text/plain
-Date: Sun, 18 Jan 2009 09:23:00 +1100
-Message-Id: <1232230980.27094.15.camel@macbook.infradead.org>
-Mime-Version: 1.0
+In-Reply-To: <20090117221932.GA4956@uranus.ravnborg.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Cc: urs.thuermann@volkswagen.de, neilb@suse.de, greg@kroah.com,
 	bfields@fieldses.org, linux-mtd@lists.infradead.org,
@@ -21,7 +25,8 @@ Cc: urs.thuermann@volkswagen.de, neilb@suse.de, greg@kroah.com,
 	linux-usb@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
 	Jaswinder Singh Rajput <jaswinder@kernel.org>,
 	oliver.hartkopp@volkswagen.de, spi-devel-general@lists.sourceforge.net,
-	Andrew Morton <akpm@linux-foundation.org>
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,13 +36,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2009-01-17 at 23:19 +0100, Sam Ravnborg wrote:
+Sam Ravnborg wrote:
+>>>  
+>> That patch looks wrong, and unnecessary. It was fine before.
 > Nope - include/linux/dvb/audio.h failed to include linux/types.h
 > despite the fact that is uses __u32 etc.
+> 
+> But why the _kernel_ should include a userspace header is
+> much more questionable.
+> 
 
-Er, good point. I saw the <stdint.h> and assumed it was using only
-proper C types... but then it wouldn't have triggered the warning, would
-it? Too much time in tin cans and not enough sleep...
+<stdint.h> is one of a handful of headers provided by gcc itself.
 
--- 
-dwmw2
+	-hpa
