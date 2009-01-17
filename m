@@ -1,22 +1,15 @@
-Received: from simmts6-qfe0.srvr.bell.ca ([206.47.199.164]
-	helo=simmts6-srv.bellnexxia.net)
+Received: from eastrmmtao104.cox.net ([68.230.240.46])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LOCAD-0005FJ-5F
-	for linux-mtd@lists.infradead.org; Sat, 17 Jan 2009 14:28:43 +0000
-Received: from simip9-ac.srvr.bell.ca ([206.47.199.87])
-	by simmts6-srv.bellnexxia.net
-	(InterMail vM.5.01.06.13 201-253-122-130-113-20050324) with ESMTP id
-	<20090117142837.NQMQ1652.simmts6-srv.bellnexxia.net@simip9-ac.srvr.bell.ca>
-	for <linux-mtd@lists.infradead.org>; Sat, 17 Jan 2009 09:28:37 -0500
-From: Sir.George Harris <vankleef@sympatico.ca>
-To: <info@resultlotto.org>
-Subject: Contact Dr Kelvin Moore
-Date: Sat, 17 Jan 2009 9:28:37 -0500
+	id 1LOFQB-0006sh-Nn
+	for linux-mtd@lists.infradead.org; Sat, 17 Jan 2009 17:57:26 +0000
+Message-ID: <20090117125719.BNLBP.480765.imail@eastrmwml38>
+Date: Sat, 17 Jan 2009 12:57:19 -0500
+From: wins!!!! <cmfuller@cox.net>
+Subject: Congratulations....... Contact Mr Steve Baker For Claims!
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <20090117142837.NQMQ1652.simmts6-srv.bellnexxia.net@simip9-ac.srvr.bell.ca>
-Reply-To: kelvinmoore_001@btinternet.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Reply-To: albertthomas08@jmail.co.za
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +19,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=A31,532,720.00 GBP has won you in our Uk Promo Anniversary Bonanza.get b=
-ack to this office with your requirement  to(dr.kelvinmoore01@btinternet.=
-com) Provide your. =
+We wish to inform you that your email address was indicated and was
+
+ 
+
+drawn,also attached to a serial numbers FTS/8070337201/06 and drew
+
+ 
+
+ the lucky numbers 15-22-24-48-50-37(30) which subsequently won you
+
+ 
+
+ 1,000,000.00 (One Million Great Britain Pounds) from the Free Online
+
+ 
+
+Promotion.The draws was registered as Draw number one was
+
+ 
+
+conducted in Brockley,on the 16th january  2009.Find below the details of
+
+ 
+
+the Claims dept and contact him with the following details for verifications:
+
+ 
+
+FULL NAME    FULL ADDRESS   NATIONALITY       AGE OCCUPATION
+
+ 
+
+ MOBILE/TEL EPHONE NUMBER  DATE OFWINNING AWARD  SEX
 
 
-1.Name in full------------------------------
-2.Address---------------------------------
-3.Nationality-------------------------------
-4.Age-------------------------------------
-5.Sex-------------------------------------
-6.Occupation------------------------------
-7.Phone/Fax------------------------------
+AGENT NAME:    MR STEVE BAKER
 
-Promotion Manager
-Sir.George Harris =
+AGENT E MAIL:         stevebaker001@hotmail.com
