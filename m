@@ -1,19 +1,16 @@
-Received: from trinity.fluff.org ([89.145.97.151])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LOsUL-00075X-Sw
-	for linux-mtd@lists.infradead.org; Mon, 19 Jan 2009 11:40:21 +0000
-Date: Mon, 19 Jan 2009 11:40:08 +0000
-From: Ben Dooks <ben-linux@fluff.org>
-To: Mike Rapoport <mike@compulab.co.il>
-Subject: Re: [PATCH] MTD: NAND: pxa3xx_nand: allow building as module
-Message-ID: <20090119114008.GC2425@trinity.fluff.org>
-References: <1232364431-7941-1-git-send-email-mike@compulab.co.il>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1232364431-7941-1-git-send-email-mike@compulab.co.il>
-Cc: linux-mtd@lists.infradead.org, eric.miao@marvell.com,
-	linux-arm-kernel@lists.arm.linux.org.uk
+Message-ID: <4974CBB3.4020102@oracle.com>
+Date: Mon, 19 Jan 2009 10:51:31 -0800
+From: Randy Dunlap <randy.dunlap@oracle.com>
+MIME-Version: 1.0
+To: =?ISO-8859-1?Q?Toralf_F=F6rster?= <toralf.foerster@gmx.de>
+Subject: Re: build issue #583 for v2.6.29-rc2-13-gf3b8436 : undefined reference
+	to `lpddr_cmdset'
+References: <200901191938.08911.toralf.foerster@gmx.de>
+In-Reply-To: <200901191938.08911.toralf.foerster@gmx.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, Alexey Korolev <akorolev@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,67 +20,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jan 19, 2009 at 01:27:11PM +0200, Mike Rapoport wrote:
+Toralf Förster wrote:
+> Hello,
 > 
-> Signed-off-by: Mike Rapoport <mike@compulab.co.il>
-> ---
->  drivers/mtd/nand/Kconfig       |    2 +-
->  drivers/mtd/nand/pxa3xx_nand.c |   10 ++++++++++
->  2 files changed, 11 insertions(+), 1 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index 8b12e6e..d3966d0 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -334,7 +334,7 @@ config MTD_NAND_ATMEL_ECC_NONE
->  endchoice
->  
->  config MTD_NAND_PXA3xx
-> -	bool "Support for NAND flash devices on PXA3xx"
-> +	tristate "Support for NAND flash devices on PXA3xx"
->  	depends on MTD_NAND && PXA3xx
->  	help
->  	  This enables the driver for the NAND flash device found on
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> index cc55cbc..628ba08 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -123,6 +123,7 @@ struct pxa3xx_nand_info {
->  
->  	struct clk		*clk;
->  	void __iomem		*mmio_base;
-> +	struct resource		*res;
->  
->  	unsigned int 		buf_start;
->  	unsigned int		buf_count;
-> @@ -1079,6 +1080,7 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
->  
->  	this = &info->nand_chip;
->  	mtd->priv = info;
-> +	mtd->owner = THIS_MODULE;
->  
->  	info->clk = clk_get(&pdev->dev, NULL);
->  	if (IS_ERR(info->clk)) {
-> @@ -1125,6 +1127,7 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
->  		goto fail_put_clk;
->  	}
->  
-> +	info->res = r;
->  	info->mmio_base = ioremap(r->start, r->end - r->start + 1);
->  	if (info->mmio_base == NULL) {
->  		dev_err(&pdev->dev, "ioremap() failed\n");
-> @@ -1199,6 +1202,13 @@ static int pxa3xx_nand_remove(struct platform_device *pdev)
->  				info->data_buff, info->data_buff_phys);
->  	} else
->  		kfree(info->data_buff);
-> +
-> +	iounmap(info->mmio_base);
-> +	release_mem_region(info->res->start, info->res->end - info->res->start + 1);
+> the build (.config attached) failed, make ends with :
+> ...
+>   CC      arch/x86/lib/usercopy_32.o
+>   AR      arch/x86/lib/lib.a
+>   LD      vmlinux.o
+>   MODPOST vmlinux.o
+> WARNING: modpost: Found 1 section mismatch(es).
+> To see full details build your kernel with:
+> 'make CONFIG_DEBUG_SECTION_MISMATCH=y'
+>   KSYM    .tmp_kallsyms0.S
+>   AS      .tmp_kallsyms0.o
+>   GEN     .version
+>   CHK     include/linux/compile.h
+>   UPD     include/linux/compile.h
+>   CC      init/version.o
+>   LD      init/built-in.o
+>   LD      .tmp_vmlinux1
+> drivers/built-in.o: In function `lpddr_probe':
+> (.text+0x17a1ae): undefined reference to `lpddr_cmdset'
+> make: *** [.tmp_vmlinux1] Error 1
 
-resource_size() is probably better for the second argument.
+
+Repeating an email reply from last week:
+
+This patch has been posted, just needs to be merged (hint):
+---
+
+
+Signed-off-by: Alexey Korolev <akorolev@infradead.org>
+---
+diff --git a/drivers/mtd/lpddr/Kconfig b/drivers/mtd/lpddr/Kconfig
+index acd4ea9..5a401d8 100644
+--- a/drivers/mtd/lpddr/Kconfig
++++ b/drivers/mtd/lpddr/Kconfig
+@@ -12,6 +12,7 @@ config MTD_LPDDR
+ 	  DDR memories, intended for battery-operated systems.
+ 
+ config MTD_QINFO_PROBE
++	depends on MTD_LPDDR
+ 	tristate "Detect flash chips by QINFO probe"
+ 	help
+ 	    Device Information for LPDDR chips is offered through the Overlay
 
 -- 
-Ben
-
-Q:      What's a light-year?
-A:      One-third less calories than a regular year.
+~Randy
