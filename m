@@ -1,30 +1,19 @@
-Received: from hera.kernel.org ([140.211.167.34])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LOkHY-00007e-DZ
-	for linux-mtd@lists.infradead.org; Mon, 19 Jan 2009 02:54:32 +0000
-Subject: Re: [GIT PULL -tip] fix 33 make headers_check warnings
-From: Jaswinder Singh Rajput <jaswinder@kernel.org>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-In-Reply-To: <20090119112429.78f5dc33.sfr@canb.auug.org.au>
-References: <1232223441.3966.22.camel@localhost.localdomain>
-	<20090119112429.78f5dc33.sfr@canb.auug.org.au>
-Content-Type: text/plain
-Date: Mon, 19 Jan 2009 08:23:14 +0530
-Message-Id: <1232333594.3129.31.camel@localhost.localdomain>
-Mime-Version: 1.0
+Received: from mail64.messagelabs.com ([216.82.249.227])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LOlMJ-0004Hx-PD
+	for linux-mtd@lists.infradead.org; Mon, 19 Jan 2009 04:03:34 +0000
+Received: from [192.168.65.100] (arasv [192.168.65.100])
+	by mail.magtech.com.au (Postfix) with ESMTP id A16A7D7FD9
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 19 Jan 2009 15:03:28 +1100 (EST)
+Message-ID: <4973FB90.5080309@magtech.com.au>
+Date: Mon, 19 Jan 2009 15:03:28 +1100
+From: Aras Vaichas <arasv@magtech.com.au>
+MIME-Version: 1.0
+To: MTD-LIST <linux-mtd@lists.infradead.org>
+Subject: problem updating jffs2 rootfs partition
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: urs.thuermann@volkswagen.de, neilb@suse.de, greg@kroah.com,
-	bfields@fieldses.org, linux-mtd@lists.infradead.org,
-	dbrownell@users.sourceforge.net,
-	x86 maintainers <x86@kernel.org>, tiwai@suse.de,
-	Ingo Molnar <mingo@elte.hu>, linux-media@vger.kernel.org,
-	mchehab@infradead.org, linux-raid@vger.kernel.org,
-	netfilter@vger.kernel.org, linux-nfs@vger.kernel.org,
-	netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	netfilter-devel@vger.kernel.org, oliver.hartkopp@volkswagen.de,
-	spi-devel-general@lists.sourceforge.net,
-	Andrew Morton <akpm@linux-foundation.org>, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,35 +23,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-01-19 at 11:24 +1100, Stephen Rothwell wrote:
-> On Sun, 18 Jan 2009 01:47:21 +0530 Jaswinder Singh Rajput <jaswinder@kernel.org> wrote:
-> >
-> > diff --git a/include/linux/nfsd/stats.h b/include/linux/nfsd/stats.h
-> > index 7678cfb..0b53cfe 100644
-> > --- a/include/linux/nfsd/stats.h
-> > +++ b/include/linux/nfsd/stats.h
-> > @@ -29,9 +29,11 @@ struct nfsd_stats {
-> >  	unsigned int	ra_size;	/* size of ra cache */
-> >  	unsigned int	ra_depth[11];	/* number of times ra entry was found that deep
-> >  					 * in the cache (10percentiles). [10] = not found */
-> > +#ifdef __KERNEL__
-> >  #ifdef CONFIG_NFSD_V4
-> >  	unsigned int	nfs4_opcount[LAST_NFS4_OP + 1];	/* count of individual nfsv4 operations */
-> >  #endif
-> > +#endif /* __KERNEL__ */
-> >  
-> >  };
-> 
-> The only variable in the kernel of type "struct nfsd_stats" is only
-> exported to user mode via procfs, so this whole structure could probably
-> go inside __KERNEL__.  Then looking harder, I wonder if this header
-> should be exported to user mode at all.
-> 
+Hi, I need to update a jffs2 root partition on a running system.
 
-I was in doubt may be this will be used by some userspace utilities.
+I'm using a statically linked version of flash_eraseall and nandwrite to 
+prepare the NAND chip and then write a jffs2 image on to it.
 
-Once I got confirmation that it is not required in userspace, I will
-remove it :-)
+This is what I do:
 
---
-JSR
+* ftp the upgrade script onto the device, and run the install script 
+which does:
+ * copy all the installation files to a tmpfs /tmp directory
+ * kill all non-essential processes, and those that are accessing the 
+root partition (like syslogd)
+ * 'umount /' which remounts root as read-only
+ * flash_eraseall
+ * nandwrite
+ * reboot
+
+The problem is that sometimes I get jffs2 errors, and sometimes the 
+upgrade fails due to corruption of the nand.
+
+
+During a nandwrite I will sometimes get errors like this:
+...
+Writing data to block 4f0000
+Writing data to block 4f4000
+jffs2_flush_wbuf(): Write failed with -5
+Write of 71 bytes at 0x004f01f8 failed. returned -5, retlen 0
+Not marking the space at 0x004f01f8 as dirty because the flash driver 
+returned retlen zero
+jffs2_flush_wbuf(): Write failed with -5
+Write of 71 bytes at 0x004ec1f8 failed. returned -5, retlen 0
+Not marking the space at 0x004ec1f8 as dirty because the flash driver 
+returned retlen zero
+Node CRC ffffffff != calculated CRC f09e7845 for node at 00ef7b4c
+jffs2_flush_wbuf(): Write failed with -5
+...
+Writing data to block 5fc000
+Writing data to block 600000
+mtd->read(0x1000 bytes from 0x480000) returned ECC error
+Newly-erased block contained word 0xe0021985 at offset 0x00480000
+mtd->read(0x1000 bytes from 0x4a8000) returned ECC error
+Newly-erased block contained word 0xe0021985 at offset 0x004a8000
+mtd->read(0x1000 bytes from 0x4cc000) returned ECC error
+Newly-erased block contained word 0xe0021985 at offset 0x004cc000
+Header CRC failed on REF_PRISTINE node at 0x01d08fc8: Read 0xffffffff, 
+calculated 0x44660075
+JFFS2 notice: (45) read_unknown: node header CRC failed at 0x1d0a100. 
+But it must have been OK earlier.
+JFFS2 notice: (45) read_unknown: node header CRC failed at 0x1d09b0c. 
+But it must have been OK earlier.
+JFFS2 notice: (45) read_unknown: node header CRC failed at 0x1d095bc. 
+But it must have been OK earlier.
+JFFS2 notice: (45) read_unknown: node header CRC failed at 0x1d08fc8. 
+But it must have been OK earlier.
+JFFS2 warning: (45) jffs2_do_read_inode_internal: no data nodes found 
+for ino #151
+Eep. read_inode() failed for ino #151. nlink 1
+Writing data to block 604000
+Writing data to block 608000
+...
+
+What is happening, and how can I avoid it?
+
+Is the problem that jffs2 is performing garbage collection on the root 
+partition?
+
+Aras
+
+
+
+______________________________________________________________________
+This email has been scanned by the MessageLabs Email Security System.
+For more information please visit http://www.messagelabs.com/email 
+______________________________________________________________________
