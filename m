@@ -1,21 +1,23 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LOpvy-0007NJ-AP
-	for linux-mtd@lists.infradead.org; Mon, 19 Jan 2009 08:56:41 +0000
-Subject: Re: UBIFS volume corruption (bad node at LEB 0:0)
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: David Bergeron <mho.linux-mtd@b2n.ca>
-In-Reply-To: <A64FA742-7434-4BAD-9CCC-8BED4D4F7326@b2n.ca>
-References: <8EEAB966-52F4-48A3-8FCA-A50BBE8486B7@b2n.ca>
-	<1231397205.6608.119.camel@localhost.localdomain>
-	<A64FA742-7434-4BAD-9CCC-8BED4D4F7326@b2n.ca>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 19 Jan 2009 10:56:02 +0200
-Message-Id: <1232355362.31319.16.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from mail-bw0-f11.google.com ([209.85.218.11])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LOqah-00060p-Hv
+	for linux-mtd@lists.infradead.org; Mon, 19 Jan 2009 09:38:46 +0000
+Received: by bwz4 with SMTP id 4so331bwz.18
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 19 Jan 2009 01:38:42 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <71cd59b00901180924t4b61a22cw325b18789dd953b2@mail.gmail.com>
+References: <200901071022.46343.corentincj@iksaif.net>
+	<alpine.LFD.2.00.0901181441410.4913@casper.infradead.org>
+	<71cd59b00901180924t4b61a22cw325b18789dd953b2@mail.gmail.com>
+Date: Mon, 19 Jan 2009 10:38:42 +0100
+Message-ID: <71cd59b00901190138n1e21a769lb6afc28b02c5fb75@mail.gmail.com>
+Subject: Re: [PATCH 0/3] Export UBI map/unmap/is_mapped in userspace v2
+From: Corentin Chary <corentin.chary@gmail.com>
+To: Artem Bityutskiy <dedekind@infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,99 +27,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-01-16 at 10:34 -0500, David Bergeron wrote:
-> On 2009-01-08, at 1:46, Artem Bityutskiy wrote:
-> > On Wed, 2009-01-07 at 23:13 -0500, David Bergeron wrote:
-> >> # mount -o remount,rw,sync /
-> >> # rsync -aHxvi --delete ... /
-> >> # mount -o remount,ro /
-> >> # reboot -d -f
-> >>
-> >> When rebooting, the kernel fails to mount the rootfs with the
-> >> following error:
-> >>
-> >> [   61.033142] UBIFS error (pid 1): ubifs_read_node: bad node type  
-> >> (11
-> >> but expected 6)
-> >> [   61.040965] UBIFS error (pid 1): ubifs_read_node: bad node at  
-> >> LEB 0:0
-> >
-> > Hmm, OK. I'll try to look at this and figure out what is going wrong.
-> > What would help a lot is if I was able to reproduce this at my  
-> > setup. So
-> > you may help by sending a shell script which reproduces this issue, if
-> > you can. And it is better to work with nandsim, because this is the  
-> > tool
-> > I use here
-> 
-> Hi Artem,
-> 
-> So I am able to reproduce it on nandsim, with the following setup, it  
-> takes on average ~30 cycles of rsync & remount before it breaks, which  
-> is much more resilient than with my real setup.
-> 
-> Couple of observations:
-> - It is the read-only mount followed by a 'remount,rw' that is the  
-> problem enabler, nothing bad happens without doing that.
-> - I first tried to play with extracting tarballs but it ran fine for  
-> hours, when I went back to rsync'ing files it broke almost immediately.
-> - rsync hops between syncing two rootfs userlands, mostly identical  
-> besides a bunch of mtime differences and one having more files (55% vs  
-> 88% used capacity), so far it always breaks after rsync has grown the  
-> data footprint, shrinking seems to go well.
-> 
-> I will keep poking around this issue, let me know if you want me to  
-> try anything.
+Hi Artem,
+Here is a draft (won't apply, won't compile).
+Do you think this would be ok ?
+Thanks
 
-Just tried to reproduce this on my x86_64 host without success.
-Below is the script I used. I guess SystemA and SystemB contents
-matters. I tried to put /bin from Fedora to SystemA, and /bin from
-Debian to SystemB.
+---
+diff --cc drivers/mtd/ubi/cdev.c
+index 9ddbade,f9631eb..0000000
+--- a/drivers/mtd/ubi/cdev.c
++++ b/drivers/mtd/ubi/cdev.c
+@@@ -263,8 -259,8 +259,6 @@@ static ssize_t vol_cdev_read(struct fil
+  	return err ? err : count_save - count;
+  }
 
-Would you share your SystemA and SystemB?
+--#ifdef CONFIG_MTD_UBI_DEBUG_USERSPACE_IO
+--
+  /*
+   * This function allows to directly write to dynamic UBI volumes, without
+   * issuing the volume update operation. Available only as a debugging feature.
+@@@ -279,8 -275,7 +273,10 @@@ static ssize_t vol_cdev_direct_write(st
+  	int lnum, off, len, tbuf_size, err = 0;
+  	size_t count_save = count;
+  	char *tbuf;
++
+++	if (!vol->direct_ioctl)
+++	  return -EPERM;
+ +
+  	dbg_gen("requested: write %zd bytes to offset %lld of volume %u",
+  		count, *offp, vol->vol_id);
 
-#!/bin/sh -x
+@@@ -347,10 -339,10 +340,6 @@@
+  	return err ? err : count_save - count;
+  }
 
-UBIFS=ubi0:rootfs
-MNT=/mnt/ubifs
-SystemA=/home/dedekind/tmp/rsync/A
-SystemB=/home/dedekind/tmp/rsync/B
-step=1
-count=0
+--#else
+--#define vol_cdev_direct_write(file, buf, count, offp) (-EPERM)
+--#endif /* CONFIG_MTD_UBI_DEBUG_USERSPACE_IO */
+--
+  static ssize_t vol_cdev_write(struct file *file, const char __user *buf,
+  			      size_t count, loff_t *offp)
+  {
+@@@ -560,8 -551,7 +548,20 @@@ static long vol_cdev_ioctl(struct file
+  		err = ubi_is_mapped(desc, lnum);
+  		break;
+  	}
+- #endif
++
+++	case UBI_IOVOLDIRIO:
+++	{
+++		int32_t directio;
+++
+++		err = get_user(directio, (__user int32_t *)argp);
+++		if (err) {
+++			err = -EFAULT;
+++			break;
+++		}
+++		err = desc->vol->direct_ioctl = (directio > 0);
+++		break;
+++	}
+ +
+  	default:
+  		err = -ENOTTY;
+  		break;
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index 381f0e1..25a77eb 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -206,6 +206,7 @@ struct ubi_volume_desc;
+  * @upd_marker: %1 if the update marker is set for this volume
+  * @updating: %1 if the volume is being updated
+  * @changing_leb: %1 if the atomic LEB change ioctl command is in progress
++ * @direct_ioctl: %1 if direct write operation are enabled for users
+(via ioctl())
+  *
+  * @gluebi_desc: gluebi UBI volume descriptor
+  * @gluebi_refcount: reference count of the gluebi MTD device
+@@ -253,6 +254,7 @@ struct ubi_volume {
+ 	unsigned int upd_marker:1;
+ 	unsigned int updating:1;
+ 	unsigned int changing_leb:1;
++	unsigned int direct_ioctl:1;
 
-umount $MNT &> /dev/null
-rmmod ubifs &> /dev/null
-rmmod ubi &> /dev/null
-rmmod nandsim &> /dev/null
+ #ifdef CONFIG_MTD_UBI_GLUEBI
+ 	/*
+diff --git a/include/mtd/ubi-user.h b/include/mtd/ubi-user.h
+index 82113e1..1fa7a28 100644
+--- a/include/mtd/ubi-user.h
++++ b/include/mtd/ubi-user.h
+@@ -175,6 +175,8 @@
+ #define UBI_IOCEBUNMAP _IOW(UBI_VOL_IOC_MAGIC, 4, int32_t)
+ /* Check if LEB is mapped command */
+ #define UBI_IOCEBISMAP _IOR(UBI_VOL_IOC_MAGIC, 5, int32_t)
++/* Set direct-io availability */
++#define UBI_IOVOLDIRIO _IOW(UBI_VOL_IOC_MAGIC, 6, int32_t)
 
-# Prepare UBIFS
-modprobe nandsim first_id_byte=0x20 second_id_byte=0xa2 third_id_byte=0x00 fourth_id_byte=0x15 || exit 1
-modprobe ubi
-udevsettle
-ubiformat /dev/mtd0 -s 512 -y || { echo ubiformat; exit 1; }
-ubiattach /dev/ubi_ctrl -m 0  || { echo ubiattach; exit 1; }
-ubimkvol /dev/ubi0 -N rootfs -s 40MiB || { echo ubimkvol; exit 1; }
-mount -t ubifs $UBIFS $MNT || { echo mount; exit 1; }
-umount $MNT
-
-# Start the test
-while true; do
-mount -t ubifs -o ro $UBIFS $MNT || { echo GAME OVER score $count; break; }
-mount -o remount,rw,sync $MNT
-
-case $step in
-   1)
-     rsync -aHx --delete SystemA $MNT
-     step=2 ;;
-   2)
-     rsync -aHx --delete SystemB $MNT
-     step=1 ;;
-esac
-
-umount $MNT
-count=$((count+1))
-done
-
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+ /* Maximum MTD device name length supported by UBI */
+ #define MAX_UBI_MTD_NAME_LEN 127
