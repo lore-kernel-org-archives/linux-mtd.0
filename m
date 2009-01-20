@@ -1,26 +1,17 @@
-Received: from mail-bw0-f14.google.com ([209.85.218.14])
+Received: from smtp6.centerbeam.com ([64.95.134.54])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LPKVc-0008Sg-MA
-	for linux-mtd@lists.infradead.org; Tue, 20 Jan 2009 17:35:31 +0000
-Received: by bwz7 with SMTP id 7so78282bwz.18
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 20 Jan 2009 09:35:27 -0800 (PST)
+	id 1LPMmG-0006Yq-PH
+	for linux-mtd@lists.infradead.org; Tue, 20 Jan 2009 20:00:51 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-In-Reply-To: <1232361760.22350.25.camel@localhost.localdomain>
-References: <200901071022.46343.corentincj@iksaif.net>
-	<alpine.LFD.2.00.0901181441410.4913@casper.infradead.org>
-	<71cd59b00901180924t4b61a22cw325b18789dd953b2@mail.gmail.com>
-	<71cd59b00901190138n1e21a769lb6afc28b02c5fb75@mail.gmail.com>
-	<1232359769.22350.24.camel@localhost.localdomain>
-	<1232361760.22350.25.camel@localhost.localdomain>
-Date: Tue, 20 Jan 2009 18:34:11 +0100
-Message-ID: <71cd59b00901200934t141db76axcec187f20f35d4cf@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Export UBI map/unmap/is_mapped in userspace v2
-From: Corentin Chary <corentin.chary@gmail.com>
-To: dedekind@infradead.org
-Content-Type: text/plain; charset=KOI8-R
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Subject: [JFFS2] kernel BUG at fs/jffs2/readinode.c:252
+Date: Tue, 20 Jan 2009 12:00:43 -0800
+Message-ID: <705901BA1DF18142AB3DE716DDF374F802189B86@CBA0E2K03.CBA0.centerbeam.com>
+From: "Manu Rao" <MRao@AlienTechnology.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,28 +21,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ok, thanks for your comments.
-We'll do that and send the result next week.
+Hi all.
+I have a kernel oops occurring at a point in /fs/jffs2/readinode.c on an
+AT91 board /2.6.22 kernel/jffs2 Filesys on Samsung NAND flash.
 
-On Mon, Jan 19, 2009 at 11:42 AM, Artem Bityutskiy
-<dedekind@infradead.org> wrote:
-> On Mon, 2009-01-19 at 12:09 +0200, Artem Bityutskiy wrote:
->> Hi,
->>
->> Some obvious things are commented below.
->>
->
-> Err, and also do not forget to zap the CONFIG_MTD_UBI_DEBUG_USERSPACE_IO
-> from UBI Kconfig.
->
-> --
-> Best regards,
-> Artem Bityutskiy (=E2=C9=D4=C0=C3=CB=C9=CA =E1=D2=D4=A3=CD)
->
->
+Gdb led me to line 252:
+		...
+	while (this->overlapped)
+            this =3D tn_prev(this);
 
+      /* First node should never be marked overlapped */
+      BUG_ON(!this);
+      dbg_readinode("'this' found %#04x-%#04x (%s)\n",
+		...
 
+My problem occurs when 'this' becomes NULL. I have structured the loop
+differently and that makes the OOPS go away, but I am concerned about
+the actual cause for the OOPS. From what I can tell, the structure/flag
+is in memory, and not in the flash.
 
---=20
-Corentin Chary
-http://xf.iksaif.net
+What could cause this to happen? I am also not sure if the BUG_ON should
+read BUG_ON(!this) or BUG_ON(!this->overlapped) as suggested by the
+comment.
+
+Any/All help appreciated.
