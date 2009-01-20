@@ -1,25 +1,23 @@
-Received: from rv-out-0708.google.com ([209.85.198.250])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LPCTt-00061N-L5
-	for linux-mtd@lists.infradead.org; Tue, 20 Jan 2009 09:01:12 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so3198840rvf.42
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 20 Jan 2009 01:01:08 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1232436828-15176-2-git-send-email-mike@compulab.co.il>
-References: <f17812d70901191916u3891547ds393942a4e444a351@mail.gmail.com>
-	<1232436828-15176-1-git-send-email-mike@compulab.co.il>
-	<1232436828-15176-2-git-send-email-mike@compulab.co.il>
-Date: Tue, 20 Jan 2009 17:01:08 +0800
-Message-ID: <f17812d70901200101x5497047aw93c26ca0ccf8ef05@mail.gmail.com>
-Subject: Re: [PATCH] MTD: NAND: pxa3xx_nand: use resource_size instead of
-	'r->end - r->start + 1'
-From: Eric Miao <eric.y.miao@gmail.com>
-To: Mike Rapoport <mike@compulab.co.il>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, eric.miao@marvell.com,
-	linux-arm-kernel@lists.arm.linux.org.uk, ben-linux@fluff.org
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LPCUU-0000Bi-Kt
+	for linux-mtd@lists.infradead.org; Tue, 20 Jan 2009 09:01:49 +0000
+Subject: Re: UBIFS volume corruption (bad node at LEB 0:0)
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: David Bergeron <mho.linux-mtd@b2n.ca>
+In-Reply-To: <3A5BB4FC-6A13-4B8A-94B2-80FCF75E2BBF@b2n.ca>
+References: <8EEAB966-52F4-48A3-8FCA-A50BBE8486B7@b2n.ca>
+	<1231397205.6608.119.camel@localhost.localdomain>
+	<A64FA742-7434-4BAD-9CCC-8BED4D4F7326@b2n.ca>
+	<1232355362.31319.16.camel@localhost.localdomain>
+	<3A5BB4FC-6A13-4B8A-94B2-80FCF75E2BBF@b2n.ca>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 20 Jan 2009 11:01:30 +0200
+Message-Id: <1232442090.22350.45.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,58 +27,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 20, 2009 at 3:33 PM, Mike Rapoport <mike@compulab.co.il> wrote:
->
-> Signed-off-by: Mike Rapoport <mike@compulab.co.il>
+On Mon, 2009-01-19 at 22:44 -0500, David Bergeron wrote:
+> So here's my sysadmin grade speculation (I'm no filesystem guru):
+> - A script is executed & open
+> - It is soon deleted and replaced by a new one but cannot be released  
+> just yet
+Right, and UBIFS (well, and other FSes) calls such files "orphans" -
+they are opened, but deleted. Indeed UBIFS does not do final removal for
+such files until after the final close().
 
-OK
+> - There is little time between the file becoming unreferenced and the  
+> filesystem becoming read-only
+> - [wild speculation] Something goes wrong, the LEB it used had to be  
+> orphaned but it's too late, some bad pointer gives LEB 0 the axe
 
-> ---
->  drivers/mtd/nand/pxa3xx_nand.c |    6 +++---
->  1 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> index cc55cbc..ffa960b 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -1118,14 +1118,14 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
->                goto fail_put_clk;
->        }
->
-> -       r = request_mem_region(r->start, r->end - r->start + 1, pdev->name);
-> +       r = request_mem_region(r->start, resource_size(r), pdev->name);
->        if (r == NULL) {
->                dev_err(&pdev->dev, "failed to request memory resource\n");
->                ret = -EBUSY;
->                goto fail_put_clk;
->        }
->
-> -       info->mmio_base = ioremap(r->start, r->end - r->start + 1);
-> +       info->mmio_base = ioremap(r->start, resource_size(r));
->        if (info->mmio_base == NULL) {
->                dev_err(&pdev->dev, "ioremap() failed\n");
->                ret = -ENODEV;
-> @@ -1174,7 +1174,7 @@ fail_free_buf:
->  fail_free_io:
->        iounmap(info->mmio_base);
->  fail_free_res:
-> -       release_mem_region(r->start, r->end - r->start + 1);
-> +       release_mem_region(r->start, resource_size(r));
->  fail_put_clk:
->        clk_disable(info->clk);
->        clk_put(info->clk);
-> --
-> 1.5.6.4
->
->
-> -------------------------------------------------------------------
-> List admin: http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel
-> FAQ:        http://www.arm.linux.org.uk/mailinglists/faq.php
-> Etiquette:  http://www.arm.linux.org.uk/mailinglists/etiquette.php
->
-
-
+Yeah, our current theory is that you have your script running, which
+means it is opened, and it is orphan now, and you re-mount the FS R/O,
+and end up with a R/O FS + an orphan. We never considered this scenario
+before. And the scenario is a little nasty because UBIFS may want to
+write when you release the orphan (close the file), but the FS is R/O.
+We'll work on this, thanks for excellent bug description!
 
 -- 
-Cheers
-- eric
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
