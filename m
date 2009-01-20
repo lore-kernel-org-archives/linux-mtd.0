@@ -1,19 +1,24 @@
-Received: from lennier.cc.vt.edu ([198.82.162.213])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LP54K-0007kJ-M2
-	for linux-mtd@lists.infradead.org; Tue, 20 Jan 2009 01:06:20 +0000
-From: "Matt Witherspoon" <spoon@naxs.net>
-To: linux-mtd@lists.infradead.org
-Date: Mon, 19 Jan 2009 20:05:31 -0500
+Received: from rv-out-0708.google.com ([209.85.198.242])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LP76i-0006Vu-8y
+	for linux-mtd@lists.infradead.org; Tue, 20 Jan 2009 03:16:54 +0000
+Received: by rv-out-0708.google.com with SMTP id b17so3088822rvf.42
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 19 Jan 2009 19:16:50 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: BUG in jffs2 with MTD map using cached mapping
-Message-ID: <4974DD0B.1686.AA118F3@spoon.naxs.net>
-In-reply-to: <49677171.3080300@users.sourceforge.net>
-References: <49677171.3080300@users.sourceforge.net>
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: Quoted-printable
-Content-description: Mail message body
-Cc: =?ISO-8859-1?Q?Anders_Grafstr=F6m?= <grfstrm@users.sourceforge.net>
+In-Reply-To: <20090119114008.GC2425@trinity.fluff.org>
+References: <1232364431-7941-1-git-send-email-mike@compulab.co.il>
+	<20090119114008.GC2425@trinity.fluff.org>
+Date: Tue, 20 Jan 2009 11:16:50 +0800
+Message-ID: <f17812d70901191916u3891547ds393942a4e444a351@mail.gmail.com>
+Subject: Re: [PATCH] MTD: NAND: pxa3xx_nand: allow building as module
+From: Eric Miao <eric.y.miao@gmail.com>
+To: Ben Dooks <ben-linux@fluff.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, eric.miao@marvell.com,
+	linux-arm-kernel@lists.arm.linux.org.uk,
+	Mike Rapoport <mike@compulab.co.il>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +28,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I=B4m replying to this again from a different address; hopefully I can get=
- the reply-to header right 
-this time so it will make it through.
+On Mon, Jan 19, 2009 at 7:40 PM, Ben Dooks <ben-linux@fluff.org> wrote:
+> On Mon, Jan 19, 2009 at 01:27:11PM +0200, Mike Rapoport wrote:
+>>
+>> Signed-off-by: Mike Rapoport <mike@compulab.co.il>
+>> ---
+>>  drivers/mtd/nand/Kconfig       |    2 +-
+>>  drivers/mtd/nand/pxa3xx_nand.c |   10 ++++++++++
+>>  2 files changed, 11 insertions(+), 1 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+>> index 8b12e6e..d3966d0 100644
+>> --- a/drivers/mtd/nand/Kconfig
+>> +++ b/drivers/mtd/nand/Kconfig
+>> @@ -334,7 +334,7 @@ config MTD_NAND_ATMEL_ECC_NONE
+>>  endchoice
+>>
+>>  config MTD_NAND_PXA3xx
+>> -     bool "Support for NAND flash devices on PXA3xx"
+>> +     tristate "Support for NAND flash devices on PXA3xx"
+>>       depends on MTD_NAND && PXA3xx
+>>       help
+>>         This enables the driver for the NAND flash device found on
+>> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+>> index cc55cbc..628ba08 100644
+>> --- a/drivers/mtd/nand/pxa3xx_nand.c
+>> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+>> @@ -123,6 +123,7 @@ struct pxa3xx_nand_info {
+>>
+>>       struct clk              *clk;
+>>       void __iomem            *mmio_base;
+>> +     struct resource         *res;
+>>
+>>       unsigned int            buf_start;
+>>       unsigned int            buf_count;
+>> @@ -1079,6 +1080,7 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
+>>
+>>       this = &info->nand_chip;
+>>       mtd->priv = info;
+>> +     mtd->owner = THIS_MODULE;
+>>
+>>       info->clk = clk_get(&pdev->dev, NULL);
+>>       if (IS_ERR(info->clk)) {
+>> @@ -1125,6 +1127,7 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
+>>               goto fail_put_clk;
+>>       }
+>>
+>> +     info->res = r;
+>>       info->mmio_base = ioremap(r->start, r->end - r->start + 1);
+>>       if (info->mmio_base == NULL) {
+>>               dev_err(&pdev->dev, "ioremap() failed\n");
+>> @@ -1199,6 +1202,13 @@ static int pxa3xx_nand_remove(struct platform_device *pdev)
+>>                               info->data_buff, info->data_buff_phys);
+>>       } else
+>>               kfree(info->data_buff);
+>> +
+>> +     iounmap(info->mmio_base);
+>> +     release_mem_region(info->res->start, info->res->end - info->res->start + 1);
+>
+> resource_size() is probably better for the second argument.
+>
 
-On 9 Jan 2009 at 10:47, Anders Grafstr=F6m wrote:
-> Matt Witherspoon wrote:
-> > I performed a bisection and the offending commit is
-> > 205c109a7a96d9a3d8ffe64c4068b70811fef5e8. Before this commit, neither =
-the BUG
-> > nor the node CRC failure occured.
-> I'd say that the BUG_ON is a secondary error. A broken error path.
-> http://lists.infradead.org/pipermail/linux-mtd/2008-April/021473.html
-
-You may be right in that it=B4s related, but that patch doesn=B4t really f=
-ix the root problem (bogus 
-CRC errors).
-
-Before commit 205c109a7a96d9a3d8ffe64c4068b70811fef5e8 (jffs2: convert to =
-new aops) 
-everything was fine. I never got CRC errors and certainly no BUGs. I never=
- saw any file 
-corruption.
-
-After 205c10 (and still in 2.6.28), I see the CRC error and the BUG when I=
- copy a file. Copied 
-files end up being truncated.
-
-By applying the patch that Anders is referring to, I no longer get the BUG=
-. However, I do still 
-get CRC errors and copied files are still truncated.
-
-If I simply comment out the BUG_ON, I still get the CRC errors but files a=
-ppear to be copying 
-okay. I have done various diffs on copied files (after rebooting, etc) and=
- still have not seen 
-any corruption or truncation.
-
-I still don=B4t know what to make of this. Any help would be great.
+And maybe we don't even need to introduce the 'info->res', which is
+always valid by platform_get_resource() again in _remove().
