@@ -1,24 +1,19 @@
-Received: from mailout5.samsung.com ([203.254.224.35])
+Received: from rv-out-0708.google.com ([209.85.198.246])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LPb94-00010F-4S
-	for linux-mtd@lists.infradead.org; Wed, 21 Jan 2009 11:21:21 +0000
-Received: from epmmp2 (mailout5.samsung.com [203.254.224.35])
-	by mailout5.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KDT00EGWJJBGS@mailout5.samsung.com> for
-	linux-mtd@lists.infradead.org; Wed, 21 Jan 2009 20:21:11 +0900 (KST)
-Received: from amitksharma ([107.108.214.35])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0KDT00KBEJJB4T@mmp2.samsung.com> for
-	linux-mtd@lists.infradead.org; Wed, 21 Jan 2009 20:21:12 +0900 (KST)
-Date: Wed, 21 Jan 2009 16:55:35 +0530
-From: Amit Kumar Sharma <amitsharma.9@samsung.com>
-Subject: Re: Request for MTD utils for oneNAND
-To: Naveen Kumar GADDIPATI <naveen.gaddipati@stnwireless.com>,
-	linux-mtd@lists.infradead.org
-Message-id: <06E5C2E78F64416188F324DCB2316DBC@sisodomain.com>
-Content-transfer-encoding: 7BIT
-References: <003401c97bac$64f8ad20$d232c90a@blr.st.com>
+	id 1LPbXg-00059c-F7
+	for linux-mtd@lists.infradead.org; Wed, 21 Jan 2009 11:46:46 +0000
+Received: by rv-out-0708.google.com with SMTP id b17so3771600rvf.42
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 21 Jan 2009 03:46:43 -0800 (PST)
+MIME-Version: 1.0
+Sender: samuel.csyeung@gmail.com
+Date: Wed, 21 Jan 2009 19:46:43 +0800
+Message-ID: <e02747520901210346s78a534abgb9d4222cd3ef65ba@mail.gmail.com>
+Subject: Support of NAND flash > 2GiB
+From: Sam Yeung <s2ksam@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,28 +23,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Naveen
-You can use same mtd utils from mtd git.we have no special 
-utils for OneNAND.
+Hi, does the current kernel support NAND flash > 2GiB?
+I saw someone attempted to patch the kernel last year for 8GiB Nand
+device but learnt it was rejected as it broke the old stuff.
+I hope to see any news about the > 2GiB nand device support.
 
-Thanks
-Amit
------ Original Message ----- 
-From: "Naveen Kumar GADDIPATI" 
-<naveen.gaddipati@stnwireless.com>
-To: <linux-mtd@lists.infradead.org>
-Sent: Wednesday, January 21, 2009 3:11 PM
-Subject: Request for MTD utils for oneNAND
-
-
-> Hi,
->
-> Is there any separate mtd utils for oneNAND?
->
-> Thanks and Regards,
-> Naveen
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/ 
+Best Regard,
+Sam
