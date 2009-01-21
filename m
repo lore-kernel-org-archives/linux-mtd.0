@@ -1,32 +1,30 @@
-Received: from hera.kernel.org ([140.211.167.34])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LPR8D-0003Mx-G2
-	for linux-mtd@lists.infradead.org; Wed, 21 Jan 2009 00:39:45 +0000
-Subject: Re: [GIT PULL -tip] fix 33 make headers_check warnings
-From: Jaswinder Singh Rajput <jaswinder@kernel.org>
-To: "H. Peter Anvin" <hpa@kernel.org>
-In-Reply-To: <49725B1E.604@kernel.org>
-References: <1232223441.3966.22.camel@localhost.localdomain>
-	<1232228261.27094.0.camel@macbook.infradead.org>
-	<20090117221932.GA4956@uranus.ravnborg.org> <49725B1E.604@kernel.org>
-Content-Type: text/plain
-Date: Wed, 21 Jan 2009 06:08:39 +0530
-Message-Id: <1232498319.3123.34.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: urs.thuermann@volkswagen.de, neilb@suse.de, greg@kroah.com,
-	bfields@fieldses.org, linux-mtd@lists.infradead.org,
-	Sam Ravnborg <sam@ravnborg.org>, dbrownell@users.sourceforge.net,
-	x86 maintainers <x86@kernel.org>, tiwai@suse.de,
-	Ingo Molnar <mingo@elte.hu>, linux-media@vger.kernel.org,
-	mchehab@infradead.org, linux-raid@vger.kernel.org,
-	netfilter@vger.kernel.org, linux-nfs@vger.kernel.org,
-	netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	netfilter-devel@vger.kernel.org, oliver.hartkopp@volkswagen.de,
-	spi-devel-general@lists.sourceforge.net,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>
+Received: from moutng.kundenserver.de ([212.227.126.177])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LPRG3-0004hx-Gh
+	for linux-mtd@lists.infradead.org; Wed, 21 Jan 2009 00:47:54 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: linuxppc-dev@ozlabs.org
+Subject: Re: [PATCH] powerpc: more printing warning fixes for the l64 to ll64
+	conversion
+Date: Wed, 21 Jan 2009 01:46:41 +0100
+References: <20090121111651.7d6e87ec.sfr@canb.auug.org.au>
+In-Reply-To: <20090121111651.7d6e87ec.sfr@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Message-Id: <200901210146.43379.arnd@arndb.de>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+	Nick Spence <nick.spence@freescale.com>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Scott Wood <scottwood@freescale.com>,
+	Egor Martovetsky <egor@pasemi.com>, Doug@ozlabs.org,
+	linux-mtd@lists.infradead.org,
+	Thompson <dougthompson@xmission.com>, Johansson <olof@lixom.net>,
+	Paul Mackerras <paulus@samba.org>, Olof@ozlabs.org,
+	David Woodhouse <dwmw2@infradead.org>,
+	bluesmoke-devel@lists.sourceforge.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,41 +34,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2009-01-17 at 14:26 -0800, H. Peter Anvin wrote:
-> Sam Ravnborg wrote:
-> >>>  
-> >> That patch looks wrong, and unnecessary. It was fine before.
-> > Nope - include/linux/dvb/audio.h failed to include linux/types.h
-> > despite the fact that is uses __u32 etc.
-> > 
-> > But why the _kernel_ should include a userspace header is
-> > much more questionable.
-> > 
-> 
-> <stdint.h> is one of a handful of headers provided by gcc itself.
-> 
+On Wednesday 21 January 2009, Stephen Rothwell wrote:
+> =A0drivers/edac/cell_edac.c =A0 =A0 =A0 =A0 | =A0 =A08 ++++----
+> =A0drivers/mtd/nand/fsl_elbc_nand.c | =A0 =A06 +++---
+> =A0drivers/mtd/nand/pasemi_nand.c =A0 | =A0 =A04 ++--
+> =A03 files changed, 9 insertions(+), 9 deletions(-)
+>=20
+> If noone minds (seeing as how simple this patch is) we could just merge
+> it via the powerpc tree.
 
-Should I reintroduce my patch to solve this warning of 'make headers_check':
- usr/include/linux/dvb/audio.h:133: found __[us]{8,16,32,64} type without #include <linux/types.h>
+=46ine with me (cell_edac bits in particular).
 
-diff --git a/include/linux/dvb/audio.h b/include/linux/dvb/audio.h
-index 89412e1..758a48c 100644
---- a/include/linux/dvb/audio.h
-+++ b/include/linux/dvb/audio.h
-@@ -24,9 +24,8 @@
- #ifndef _DVBAUDIO_H_
- #define _DVBAUDIO_H_
- 
--#ifdef __KERNEL__
- #include <linux/types.h>
--#else
-+#ifndef __KERNEL__
- #include <stdint.h>
- #endif
-
-Or you guys have some better plan.
-
-Thanks,
-
---
-JSR
+Acked-by: Arnd Bergmann <arnd@arndb.de>
