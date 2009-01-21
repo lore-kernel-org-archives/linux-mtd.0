@@ -1,26 +1,18 @@
-Received: from lixom.net ([66.141.50.11] helo=mail.lixom.net)
+Received: from mail-bw0-f18.google.com ([209.85.218.18])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LPS8R-0004Bp-05
-	for linux-mtd@lists.infradead.org; Wed, 21 Jan 2009 01:44:05 +0000
-Date: Tue, 20 Jan 2009 19:46:59 -0600
-From: Olof Johansson <olof@lixom.net>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH] powerpc: more printing warning fixes for the l64 to
-	ll64 conversion
-Message-ID: <20090121014659.GA7000@lixom.net>
-References: <20090121111651.7d6e87ec.sfr@canb.auug.org.au>
+	id 1LPZOW-00019R-V1
+	for linux-mtd@lists.infradead.org; Wed, 21 Jan 2009 09:29:11 +0000
+Received: by bwz11 with SMTP id 11so25659bwz.18
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 21 Jan 2009 01:29:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20090121111651.7d6e87ec.sfr@canb.auug.org.au>
-Cc: Nick Spence <nick.spence@freescale.com>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	linuxppc-dev@ozlabs.org, Egor Martovetsky <egor@pasemi.com>,
-	Paul Mackerras <paulus@samba.org>,
-	Doug Thompson <dougthompson@xmission.com>,
-	Scott Wood <scottwood@freescale.com>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>,
-	bluesmoke-devel@lists.sourceforge.net
+Date: Wed, 21 Jan 2009 10:29:05 +0100
+Message-ID: <d459bb380901210129sb54eb47j2a67a11710f185b5@mail.gmail.com>
+Subject: JFFS2 losing files on mount
+From: Marco Braga <marco.braga@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,11 +22,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 21, 2009 at 11:16:51AM +1100, Stephen Rothwell wrote:
-> These are all powerpc specific drivers.
-> 
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Hi,
 
-pasemi_nand.c pieces:
+I am doing some power failure tests on an ARM7 based device using
+JFFS2 on NAND flash and I am a bit disappointed by the early results.
+At the moment I've done only some informal tests so I don't have a
+detailed bug report or logs to provide. Information gathered on the
+net gave me the impression that JFFS2 could withstand repeated power
+failures without major damages. Losing last written data is not a
+problem, but preserving filesystem consistency is.
 
-Acked-by: Olof Johansson <olof@lixom.net>
+The worst situation happened to me is a JFFS2 file system that keeps
+loosing files after mount. This is what happened: After a lot of power
+cycles, errors during mount are increasing (nothing really strange:
+lost inodes, ECC errors, etc.), but infos on the internet say that
+they must be considered "warnings". After last reboot, all the files
+in the JFFS2 partition are lost on mount. Not a good situation...
+I copy some more files in the fs, without any apparent problem. If I
+read back them, they are ok. I sync the file system, check the files
+again. Everything seems fine. Then I umount the partition, and mount
+it back again. The same errors appear and the content of the file
+system is lost again. All previous files are lost. This happened every
+time I retried the same thing on that partition. At the end I had to
+erase the partition and rebuild the JFFS2 file system again.
+
+Disappearing file is not a good thing, but a filesystem that loses all
+files every time it is mounted is even worse.
+
+I'd like to hear your experiences. What do you think?
+
+Regards,
+Marco
