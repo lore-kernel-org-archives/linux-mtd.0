@@ -1,28 +1,22 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from chilli.pcug.org.au ([203.10.76.44] helo=smtps.tip.net.au)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LPORY-00084h-Vh
-	for linux-mtd@lists.infradead.org; Tue, 20 Jan 2009 21:47:36 +0000
-MIME-version: 1.0
-Content-transfer-encoding: 7BIT
-Content-type: text/plain; charset=US-ASCII; format=flowed; delsp=yes
-Received: from [IPv6:::1] ([74.59.45.108]) by VL-MH-MR001.ip.videotron.ca
-	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
-	32bit))
-	with ESMTP id <0KDS00L9MHV6OHB0@VL-MH-MR001.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Tue, 20 Jan 2009 16:47:30 -0500 (EST)
-Message-id: <C23A12FF-63CB-4E5C-B200-9FFCBBB0CFA4@b2n.ca>
-From: David Bergeron <mho.linux-mtd@b2n.ca>
-To: dedekind@infradead.org
-In-reply-to: <1232442090.22350.45.camel@localhost.localdomain>
-Subject: Re: UBIFS volume corruption (bad node at LEB 0:0)
-Date: Tue, 20 Jan 2009 16:47:29 -0500
-References: <8EEAB966-52F4-48A3-8FCA-A50BBE8486B7@b2n.ca>
-	<1231397205.6608.119.camel@localhost.localdomain>
-	<A64FA742-7434-4BAD-9CCC-8BED4D4F7326@b2n.ca>
-	<1232355362.31319.16.camel@localhost.localdomain>
-	<3A5BB4FC-6A13-4B8A-94B2-80FCF75E2BBF@b2n.ca>
-	<1232442090.22350.45.camel@localhost.localdomain>
-Cc: linux-mtd@lists.infradead.org
+	id 1LPQmD-0000lH-OX
+	for linux-mtd@lists.infradead.org; Wed, 21 Jan 2009 00:17:04 +0000
+Date: Wed, 21 Jan 2009 11:16:51 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: [PATCH] powerpc: more printing warning fixes for the l64 to ll64
+	conversion
+Message-Id: <20090121111651.7d6e87ec.sfr@canb.auug.org.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Nick Spence <nick.spence@freescale.com>, Olof, Johansson <olof@lixom.net>,
+	Doug, linuxppc-dev@ozlabs.org, Egor Martovetsky <egor@pasemi.com>,
+	Paul Mackerras <paulus@samba.org>, Thompson <dougthompson@xmission.com>,
+	Scott Wood <scottwood@freescale.com>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>,
+	bluesmoke-devel@lists.sourceforge.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,40 +26,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2009-01-20, at 4:01, Artem Bityutskiy wrote:
-> Yeah, our current theory is that you have your script running, which
-> means it is opened, and it is orphan now, and you re-mount the FS R/O,
-> and end up with a R/O FS + an orphan. We never considered this  
-> scenario
-> before. And the scenario is a little nasty because UBIFS may want to
-> write when you release the orphan (close the file), but the FS is R/O.
-> We'll work on this, thanks for excellent bug description!
+These are all powerpc specific drivers.
 
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ drivers/edac/cell_edac.c         |    8 ++++----
+ drivers/mtd/nand/fsl_elbc_nand.c |    6 +++---
+ drivers/mtd/nand/pasemi_nand.c   |    4 ++--
+ 3 files changed, 9 insertions(+), 9 deletions(-)
 
-I'm afraid I've misguided you here. It's actually not the case. The  
-script is *not* open when I re-mount r/o, the kernel simply will not  
-allow that to happen, and I get a "Device or resource busy" error if I  
-even try.
+If noone minds (seeing as how simple this patch is) we could just merge
+it via the powerpc tree.
 
-considering:
+diff --git a/drivers/edac/cell_edac.c b/drivers/edac/cell_edac.c
+index cd2e3b8..24f3ca8 100644
+--- a/drivers/edac/cell_edac.c
++++ b/drivers/edac/cell_edac.c
+@@ -36,7 +36,7 @@ static void cell_edac_count_ce(struct mem_ctl_info *mci, int chan, u64 ar)
+ 	struct csrow_info		*csrow = &mci->csrows[0];
+ 	unsigned long			address, pfn, offset, syndrome;
+ 
+-	dev_dbg(mci->dev, "ECC CE err on node %d, channel %d, ar = 0x%016lx\n",
++	dev_dbg(mci->dev, "ECC CE err on node %d, channel %d, ar = 0x%016llx\n",
+ 		priv->node, chan, ar);
+ 
+ 	/* Address decoding is likely a bit bogus, to dbl check */
+@@ -58,7 +58,7 @@ static void cell_edac_count_ue(struct mem_ctl_info *mci, int chan, u64 ar)
+ 	struct csrow_info		*csrow = &mci->csrows[0];
+ 	unsigned long			address, pfn, offset;
+ 
+-	dev_dbg(mci->dev, "ECC UE err on node %d, channel %d, ar = 0x%016lx\n",
++	dev_dbg(mci->dev, "ECC UE err on node %d, channel %d, ar = 0x%016llx\n",
+ 		priv->node, chan, ar);
+ 
+ 	/* Address decoding is likely a bit bogus, to dbl check */
+@@ -169,7 +169,7 @@ static int __devinit cell_edac_probe(struct platform_device *pdev)
+ 
+ 	/* Get channel population */
+ 	reg = in_be64(&regs->mic_mnt_cfg);
+-	dev_dbg(&pdev->dev, "MIC_MNT_CFG = 0x%016lx\n", reg);
++	dev_dbg(&pdev->dev, "MIC_MNT_CFG = 0x%016llx\n", reg);
+ 	chanmask = 0;
+ 	if (reg & CBE_MIC_MNT_CFG_CHAN_0_POP)
+ 		chanmask |= 0x1;
+@@ -180,7 +180,7 @@ static int __devinit cell_edac_probe(struct platform_device *pdev)
+ 			 "Yuck ! No channel populated ? Aborting !\n");
+ 		return -ENODEV;
+ 	}
+-	dev_dbg(&pdev->dev, "Initial FIR = 0x%016lx\n",
++	dev_dbg(&pdev->dev, "Initial FIR = 0x%016llx\n",
+ 		in_be64(&regs->mic_fir));
+ 
+ 	/* Allocate & init EDAC MC data structure */
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+index 65929db..0f22e1a 100644
+--- a/drivers/mtd/nand/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -676,7 +676,7 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
+ 
+ 	dev_dbg(ctrl->dev, "fsl_elbc_init: nand->numchips = %d\n",
+ 	        chip->numchips);
+-	dev_dbg(ctrl->dev, "fsl_elbc_init: nand->chipsize = %ld\n",
++	dev_dbg(ctrl->dev, "fsl_elbc_init: nand->chipsize = %lld\n",
+ 	        chip->chipsize);
+ 	dev_dbg(ctrl->dev, "fsl_elbc_init: nand->pagemask = %8x\n",
+ 	        chip->pagemask);
+@@ -703,7 +703,7 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
+ 	dev_dbg(ctrl->dev, "fsl_elbc_init: nand->ecc.layout = %p\n",
+ 	        chip->ecc.layout);
+ 	dev_dbg(ctrl->dev, "fsl_elbc_init: mtd->flags = %08x\n", mtd->flags);
+-	dev_dbg(ctrl->dev, "fsl_elbc_init: mtd->size = %d\n", mtd->size);
++	dev_dbg(ctrl->dev, "fsl_elbc_init: mtd->size = %lld\n", mtd->size);
+ 	dev_dbg(ctrl->dev, "fsl_elbc_init: mtd->erasesize = %d\n",
+ 	        mtd->erasesize);
+ 	dev_dbg(ctrl->dev, "fsl_elbc_init: mtd->writesize = %d\n",
+@@ -932,7 +932,7 @@ static int __devinit fsl_elbc_chip_probe(struct fsl_elbc_ctrl *ctrl,
+ #endif
+ 		add_mtd_device(&priv->mtd);
+ 
+-	printk(KERN_INFO "eLBC NAND device at 0x%zx, bank %d\n",
++	printk(KERN_INFO "eLBC NAND device at 0x%llx, bank %d\n",
+ 	       res.start, priv->bank);
+ 	return 0;
+ 
+diff --git a/drivers/mtd/nand/pasemi_nand.c b/drivers/mtd/nand/pasemi_nand.c
+index 9bd6c9a..a8b9376 100644
+--- a/drivers/mtd/nand/pasemi_nand.c
++++ b/drivers/mtd/nand/pasemi_nand.c
+@@ -107,7 +107,7 @@ static int __devinit pasemi_nand_probe(struct of_device *ofdev,
+ 	if (pasemi_nand_mtd)
+ 		return -ENODEV;
+ 
+-	pr_debug("pasemi_nand at %lx-%lx\n", res.start, res.end);
++	pr_debug("pasemi_nand at %llx-%llx\n", res.start, res.end);
+ 
+ 	/* Allocate memory for MTD device structure and private data */
+ 	pasemi_nand_mtd = kzalloc(sizeof(struct mtd_info) +
+@@ -170,7 +170,7 @@ static int __devinit pasemi_nand_probe(struct of_device *ofdev,
+ 		goto out_lpc;
+ 	}
+ 
+-	printk(KERN_INFO "PA Semi NAND flash at %08lx, control at I/O %x\n",
++	printk(KERN_INFO "PA Semi NAND flash at %08llx, control at I/O %x\n",
+ 	       res.start, lpcctl);
+ 
+ 	return 0;
+-- 
+1.6.0.5
 
-exec /bin/sh -xc "lsof; sync; sleep 2; lsof; sync; sleep 2; \
-                   mount -o remount,ro /; sleep 2; reboot -df;"
-
-The running & orphaned script is history as soon as 'exec'. lsof  
-confirms this. UBIFS gets two sync() + 4 seconds before the filesystem  
-goes read-only to clean up, it should be plenty of time and opportunity.
-
-There's gotta be something else. Especially since it doesn't break if  
-I tell the kernel to mount 'rw' in the first place (bad practice, but  
-a possible temporary workaround for me nonetheless).
-
-One thing I wonder, UBIFS itself mentions "UBIFS: mounted read-only",  
-is it just information for the human reader? or is UBIFS perhaps  
-behaving as in read-only operation somewhere, even /after/ becoming  
-writable, which could cause it mishandle the cleaning up of the orphan?
-
-I very much appreciate all the time you've put looking at this.
-
-Best regards,
--david
+-- 
+Cheers,
+Stephen Rothwell                    sfr@canb.auug.org.au
+http://www.canb.auug.org.au/~sfr/
