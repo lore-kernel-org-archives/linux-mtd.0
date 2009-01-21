@@ -1,16 +1,27 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LPhL2-0000tk-SN
-	for linux-mtd@lists.infradead.org; Wed, 21 Jan 2009 17:58:08 +0000
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/2] maps/mtd-ram: refactor probe and remove
-Date: Wed, 21 Jan 2009 18:41:24 +0100
-Message-Id: <1232559685-2268-2-git-send-email-w.sang@pengutronix.de>
-In-Reply-To: <1232559685-2268-1-git-send-email-w.sang@pengutronix.de>
-References: <1232559685-2268-1-git-send-email-w.sang@pengutronix.de>
-Cc: linuxppc-dev@ozlabs.org, Wolfram Sang <w.sang@pengutronix.de>,
-	ben-linux@fluff.org
+Received: from chilli.pcug.org.au ([203.10.76.44] helo=smtps.tip.net.au)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LPlNu-0004gF-3r
+	for linux-mtd@lists.infradead.org; Wed, 21 Jan 2009 22:17:21 +0000
+Date: Thu, 22 Jan 2009 09:17:05 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Scott Wood <scottwood@freescale.com>
+Subject: Re: [PATCH] powerpc: more printing warning fixes for the l64 to
+	ll64 conversion
+Message-Id: <20090122091705.2010ed70.sfr@canb.auug.org.au>
+In-Reply-To: <20090121181324.GA32224@ld0162-tx32.am.freescale.net>
+References: <20090121111651.7d6e87ec.sfr@canb.auug.org.au>
+	<20090121181324.GA32224@ld0162-tx32.am.freescale.net>
+Mime-Version: 1.0
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+	micalg="PGP-SHA1";
+	boundary="Signature=_Thu__22_Jan_2009_09_17_05_+1100_oX88Uq5GcTzb4WMo"
+Cc: Nick Spence <nick.spence@freescale.com>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>, David,
+	linuxppc-dev@ozlabs.org, Egor, Paul Mackerras <paulus@samba.org>,
+	Doug Thompson <dougthompson@xmission.com>,
+	Olof Johansson <olof@lixom.net>, linux-mtd@lists.infradead.org,
+	Woodhouse <dwmw2@infradead.org>, bluesmoke-devel@lists.sourceforge.net,
+	Martovetsky <egor@pasemi.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,246 +31,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Refactor the probe and remove routines of the mtd-ram driver to export
-a generic part which can later be accessed by an of-counterpart of this
-driver. Tested with a phyCORE-MPC5200B-IO.
+--Signature=_Thu__22_Jan_2009_09_17_05_+1100_oX88Uq5GcTzb4WMo
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
----
- drivers/mtd/maps/plat-ram.c  |  123 +++++++++++++++++++++---------------------
- include/linux/mtd/plat-ram.h |    4 ++
- 2 files changed, 66 insertions(+), 61 deletions(-)
+On Wed, 21 Jan 2009 12:13:24 -0600 Scott Wood <scottwood@freescale.com> wro=
+te:
+>
+> On Wed, Jan 21, 2009 at 11:16:51AM +1100, Stephen Rothwell wrote:
+> > -	printk(KERN_INFO "eLBC NAND device at 0x%zx, bank %d\n",
+> > +	printk(KERN_INFO "eLBC NAND device at 0x%llx, bank %d\n",
+> >  	       res.start, priv->bank);
+>=20
+> This won't work if resource_size_t is 32-bit; it needs a cast.
 
-diff --git a/drivers/mtd/maps/plat-ram.c b/drivers/mtd/maps/plat-ram.c
-index e7dd9c8..1582cd6 100644
---- a/drivers/mtd/maps/plat-ram.c
-+++ b/drivers/mtd/maps/plat-ram.c
-@@ -50,16 +50,6 @@ struct platram_info {
- 	struct platdata_mtd_ram	*pdata;
- };
- 
--/* to_platram_info()
-- *
-- * device private data to struct platram_info conversion
--*/
--
--static inline struct platram_info *to_platram_info(struct platform_device *dev)
--{
--	return (struct platram_info *)platform_get_drvdata(dev);
--}
--
- /* platram_setrw
-  *
-  * call the platform device's set rw/ro control
-@@ -77,18 +67,14 @@ static inline void platram_setrw(struct platram_info *info, int to)
- 		(info->pdata->set_rw)(info->dev, to);
- }
- 
--/* platram_remove
-- *
-- * called to remove the device from the driver's control
--*/
--
--static int platram_remove(struct platform_device *pdev)
-+int __platram_remove(struct device *dev)
- {
--	struct platram_info *info = to_platram_info(pdev);
-+	struct platram_info *info;
- 
--	platform_set_drvdata(pdev, NULL);
-+	dev_dbg(dev, "removing device\n");
- 
--	dev_dbg(&pdev->dev, "removing device\n");
-+	info = dev_get_drvdata(dev);
-+	dev_set_drvdata(dev, NULL);
- 
- 	if (info == NULL)
- 		return 0;
-@@ -123,68 +109,49 @@ static int platram_remove(struct platform_device *pdev)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(__platram_remove);
- 
--/* platram_probe
-+/* platram_remove
-  *
-- * called from device drive system when a device matching our
-- * driver is found.
-+ * called to remove the device from the driver's control
- */
- 
--static int platram_probe(struct platform_device *pdev)
-+static int platram_remove(struct platform_device *pdev)
-+{
-+	return __platram_remove(&pdev->dev);
-+}
-+
-+int __platram_probe(struct device *dev, const char *name,
-+			struct resource *res, struct platdata_mtd_ram *pdata)
- {
--	struct platdata_mtd_ram	*pdata;
- 	struct platram_info *info;
--	struct resource *res;
- 	int err = 0;
- 
--	dev_dbg(&pdev->dev, "probe entered\n");
--
--	if (pdev->dev.platform_data == NULL) {
--		dev_err(&pdev->dev, "no platform data supplied\n");
--		err = -ENOENT;
--		goto exit_error;
--	}
--
--	pdata = pdev->dev.platform_data;
--
- 	info = kzalloc(sizeof(*info), GFP_KERNEL);
- 	if (info == NULL) {
--		dev_err(&pdev->dev, "no memory for flash info\n");
-+		dev_err(dev, "no memory for flash info\n");
- 		err = -ENOMEM;
- 		goto exit_error;
- 	}
- 
--	platform_set_drvdata(pdev, info);
-+	dev_set_drvdata(dev, info);
- 
--	info->dev = &pdev->dev;
-+	info->dev = dev;
- 	info->pdata = pdata;
- 
--	/* get the resource for the memory mapping */
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--
--	if (res == NULL) {
--		dev_err(&pdev->dev, "no memory resource specified\n");
--		err = -ENOENT;
--		goto exit_free;
--	}
--
--	dev_dbg(&pdev->dev, "got platform resource %p (0x%llx)\n", res,
--		(unsigned long long)res->start);
--
- 	/* setup map parameters */
- 
- 	info->map.phys = res->start;
- 	info->map.size = (res->end - res->start) + 1;
- 	info->map.name = pdata->mapname != NULL ?
--			(char *)pdata->mapname : (char *)pdev->name;
-+			(char *)pdata->mapname : (char *)name;
- 	info->map.bankwidth = pdata->bankwidth;
- 
- 	/* register our usage of the memory area */
- 
--	info->area = request_mem_region(res->start, info->map.size, pdev->name);
-+	info->area = request_mem_region(res->start, info->map.size, name);
- 	if (info->area == NULL) {
--		dev_err(&pdev->dev, "failed to request memory region\n");
-+		dev_err(dev, "failed to request memory region\n");
- 		err = -EIO;
- 		goto exit_free;
- 	}
-@@ -192,17 +159,17 @@ static int platram_probe(struct platform_device *pdev)
- 	/* remap the memory area */
- 
- 	info->map.virt = ioremap(res->start, info->map.size);
--	dev_dbg(&pdev->dev, "virt %p, %lu bytes\n", info->map.virt, info->map.size);
-+	dev_dbg(dev, "virt %p, %lu bytes\n", info->map.virt, info->map.size);
- 
- 	if (info->map.virt == NULL) {
--		dev_err(&pdev->dev, "failed to ioremap() region\n");
-+		dev_err(dev, "failed to ioremap() region\n");
- 		err = -EIO;
- 		goto exit_free;
- 	}
- 
- 	simple_map_init(&info->map);
- 
--	dev_dbg(&pdev->dev, "initialised map, probing for mtd\n");
-+	dev_dbg(dev, "initialised map, probing for mtd\n");
- 
- 	/* probe for the right mtd map driver
- 	 * supplied by the platform_data struct */
-@@ -218,7 +185,7 @@ static int platram_probe(struct platform_device *pdev)
- 		info->mtd = do_map_probe("map_ram", &info->map);
- 
- 	if (info->mtd == NULL) {
--		dev_err(&pdev->dev, "failed to probe for map_ram\n");
-+		dev_err(dev, "failed to probe for map_ram\n");
- 		err = -ENOMEM;
- 		goto exit_free;
- 	}
-@@ -249,20 +216,54 @@ static int platram_probe(struct platform_device *pdev)
- #endif /* CONFIG_MTD_PARTITIONS */
- 
- 	if (add_mtd_device(info->mtd)) {
--		dev_err(&pdev->dev, "add_mtd_device() failed\n");
-+		dev_err(dev, "add_mtd_device() failed\n");
- 		err = -ENOMEM;
- 	}
- 
- 	if (!err)
--		dev_info(&pdev->dev, "registered mtd device\n");
-+		dev_info(dev, "registered mtd device\n");
- 
- 	return err;
- 
-  exit_free:
--	platram_remove(pdev);
-+	__platram_remove(dev);
-  exit_error:
- 	return err;
- }
-+EXPORT_SYMBOL_GPL(__platram_probe);
-+
-+/* platram_probe
-+ *
-+ * called from device drive system when a device matching our
-+ * driver is found.
-+*/
-+
-+static int platram_probe(struct platform_device *pdev)
-+{
-+	struct platdata_mtd_ram	*pdata;
-+	struct resource *res;
-+
-+	dev_dbg(&pdev->dev, "probe entered\n");
-+
-+	pdata = pdev->dev.platform_data;
-+	if (pdata == NULL) {
-+		dev_err(&pdev->dev, "no platform data supplied\n");
-+		return -ENOENT;
-+	}
-+
-+	/* get the resource for the memory mapping */
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (res == NULL) {
-+		dev_err(&pdev->dev, "no memory resource specified\n");
-+		return -ENOENT;
-+	}
-+
-+	dev_dbg(&pdev->dev, "got platform resource %p (0x%llx)\n", res,
-+		(unsigned long long)res->start);
-+
-+	return __platram_probe(&pdev->dev, pdev->name, res, pdata);
-+}
- 
- /* device driver info */
- 
-diff --git a/include/linux/mtd/plat-ram.h b/include/linux/mtd/plat-ram.h
-index e07890a..c522562 100644
---- a/include/linux/mtd/plat-ram.h
-+++ b/include/linux/mtd/plat-ram.h
-@@ -31,4 +31,8 @@ struct platdata_mtd_ram {
- 	void	(*set_rw)(struct device *dev, int to);
- };
- 
-+extern int __platram_probe(struct device *dev, const char *name,
-+			struct resource *res, struct platdata_mtd_ram *pdata);
-+extern int __platram_remove(struct device *dev);
-+
- #endif /* __LINUX_MTD_PLATRAM_H */
--- 
-1.5.6.5
+Right.  Rats!  I'll fix and repost.
+
+> ACK the other two fsl_elbc fixes.
+
+Thanks.
+
+--=20
+Cheers,
+Stephen Rothwell                    sfr@canb.auug.org.au
+http://www.canb.auug.org.au/~sfr/
+
+--Signature=_Thu__22_Jan_2009_09_17_05_+1100_oX88Uq5GcTzb4WMo
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkl3nuEACgkQjjKRsyhoI8zSJgCdEX6lkSSAMqa/IYrYqgPvuX4c
+VskAoKDTeaXNFx/c57gqqpgLWewXEdAU
+=MynJ
+-----END PGP SIGNATURE-----
+
+--Signature=_Thu__22_Jan_2009_09_17_05_+1100_oX88Uq5GcTzb4WMo--
