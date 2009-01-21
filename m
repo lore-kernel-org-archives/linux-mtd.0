@@ -1,13 +1,35 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from az33egw02.freescale.net ([192.88.158.103])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LPh51-0006aJ-9U
-	for linux-mtd@lists.infradead.org; Wed, 21 Jan 2009 17:41:33 +0000
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: mtd-ram: add of-support
-Date: Wed, 21 Jan 2009 18:41:23 +0100
-Message-Id: <1232559685-2268-1-git-send-email-w.sang@pengutronix.de>
-Cc: linuxppc-dev@ozlabs.org, ben-linux@fluff.org
+	id 1LPha0-00061G-Sg
+	for linux-mtd@lists.infradead.org; Wed, 21 Jan 2009 18:13:35 +0000
+Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
+	by az33egw02.freescale.net (8.14.3/az33egw02) with ESMTP id
+	n0LIDPis019501 for <linux-mtd@lists.infradead.org>;
+	Wed, 21 Jan 2009 11:13:26 -0700 (MST)
+Received: from ld0162-tx32.am.freescale.net (ld0162-tx32.am.freescale.net
+	[10.82.19.112])
+	by de01smr01.freescale.net (8.13.1/8.13.0) with ESMTP id n0LIDPZ0021814
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 21 Jan 2009 12:13:25 -0600 (CST)
+Date: Wed, 21 Jan 2009 12:13:24 -0600
+From: Scott Wood <scottwood@freescale.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH] powerpc: more printing warning fixes for the l64 to ll64
+	conversion
+Message-ID: <20090121181324.GA32224@ld0162-tx32.am.freescale.net>
+References: <20090121111651.7d6e87ec.sfr@canb.auug.org.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20090121111651.7d6e87ec.sfr@canb.auug.org.au>
+Cc: Nick Spence <nick.spence@freescale.com>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	linuxppc-dev@ozlabs.org, Egor Martovetsky <egor@pasemi.com>,
+	Paul Mackerras <paulus@samba.org>,
+	Doug Thompson <dougthompson@xmission.com>,
+	Olof Johansson <olof@lixom.net>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>,
+	bluesmoke-devel@lists.sourceforge.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,22 +39,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Wed, Jan 21, 2009 at 11:16:51AM +1100, Stephen Rothwell wrote:
+> -	printk(KERN_INFO "eLBC NAND device at 0x%zx, bank %d\n",
+> +	printk(KERN_INFO "eLBC NAND device at 0x%llx, bank %d\n",
+>  	       res.start, priv->bank);
 
-as we needed an of-mtd-ram driver to support SRAM on the
-phyCORE-MPC5200B-IO, I did the following:
+This won't work if resource_size_t is 32-bit; it needs a cast.
 
-Patch 1:
-  refactor plat-ram.c to have generic probe and remove
-  routines
+ACK the other two fsl_elbc fixes.
 
-Patch 2:
-  use the new routines for an of-driver
-
-Looking forward to comments. (Sidenote: Converting all these platform
-drivers to support of is really tiring, sigh. Isn't there any other
-way?)
-
-Kind regards,
-
-   Wolfram
+-Scott
