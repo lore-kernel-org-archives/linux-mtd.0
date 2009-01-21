@@ -1,18 +1,13 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LPeeP-00073K-1i
-	for linux-mtd@lists.infradead.org; Wed, 21 Jan 2009 15:05:55 +0000
-Date: Wed, 21 Jan 2009 16:05:49 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Marco Braga <marco.braga@gmail.com>
-Subject: Re: JFFS2 losing files on mount
-In-Reply-To: <d459bb380901210129sb54eb47j2a67a11710f185b5@mail.gmail.com>
-Message-ID: <Pine.LNX.4.64.0901211603040.12232@lnxricardw.se.axis.com>
-References: <d459bb380901210129sb54eb47j2a67a11710f185b5@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+	id 1LPh51-0006aJ-9U
+	for linux-mtd@lists.infradead.org; Wed, 21 Jan 2009 17:41:33 +0000
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: mtd-ram: add of-support
+Date: Wed, 21 Jan 2009 18:41:23 +0100
+Message-Id: <1232559685-2268-1-git-send-email-w.sang@pengutronix.de>
+Cc: linuxppc-dev@ozlabs.org, ben-linux@fluff.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,24 +17,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello,
 
-On Wed, 21 Jan 2009, Marco Braga wrote:
+as we needed an of-mtd-ram driver to support SRAM on the
+phyCORE-MPC5200B-IO, I did the following:
 
-> I am doing some power failure tests on an ARM7 based device using
-> JFFS2 on NAND flash and I am a bit disappointed by the early results.
-> ...
-> I'd like to hear your experiences. What do you think?
+Patch 1:
+  refactor plat-ram.c to have generic probe and remove
+  routines
 
-We use JFFS2 on both an ARM9-platform and on our own CRIS platform. We=20
-never unmount the device in preparation for power down; when someone pulls=
-=20
-the plug, the system just dies. While we do occasionally see warning=20
-messages about incomplete nodes during the next boot-up, we have never=20
-experienced anything as severe as you mention, and we have not lost any=20
-files on the JFFS2 filesystem either.
+Patch 2:
+  use the new routines for an of-driver
 
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Looking forward to comments. (Sidenote: Converting all these platform
+drivers to support of is really tiring, sigh. Isn't there any other
+way?)
+
+Kind regards,
+
+   Wolfram
