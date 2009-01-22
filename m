@@ -1,27 +1,28 @@
-Received: from chilli.pcug.org.au ([203.10.76.44] helo=smtps.tip.net.au)
+Received: from rv-out-0708.google.com ([209.85.198.241])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LPmmj-0007hJ-D3
-	for linux-mtd@lists.infradead.org; Wed, 21 Jan 2009 23:47:04 +0000
-Date: Thu, 22 Jan 2009 10:16:28 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Scott Wood <scottwood@freescale.com>
-Subject: [PATCH v2] powerpc: more printing warning fixes for the l64 to ll64
-	conversion
-Message-Id: <20090122101628.d4f1d8b3.sfr@canb.auug.org.au>
-In-Reply-To: <20090122091705.2010ed70.sfr@canb.auug.org.au>
-References: <20090121111651.7d6e87ec.sfr@canb.auug.org.au>
-	<20090121181324.GA32224@ld0162-tx32.am.freescale.net>
-	<20090122091705.2010ed70.sfr@canb.auug.org.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	id 1LPuXZ-0006oe-Gi
+	for linux-mtd@lists.infradead.org; Thu, 22 Jan 2009 08:03:56 +0000
+Received: by rv-out-0708.google.com with SMTP id b17so4253444rvf.42
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 22 Jan 2009 00:03:52 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <49781B05.4050902@compulab.co.il>
+References: <f17812d70901191916u3891547ds393942a4e444a351@mail.gmail.com>
+	<1232436828-15176-1-git-send-email-mike@compulab.co.il>
+	<1232436828-15176-2-git-send-email-mike@compulab.co.il>
+	<1232436828-15176-3-git-send-email-mike@compulab.co.il>
+	<1232436828-15176-4-git-send-email-mike@compulab.co.il>
+	<49781B05.4050902@compulab.co.il>
+Date: Thu, 22 Jan 2009 16:03:51 +0800
+Message-ID: <f17812d70901220003s2a82ed26obaa73cc1bd4b8ab3@mail.gmail.com>
+Subject: Re: [PATCH] MTD: NAND: pxa3xx_nand: add ability to keep controller
+	settings defined by OBM/bootloader
+From: Eric Miao <eric.y.miao@gmail.com>
+To: Mike Rapoport <mike@compulab.co.il>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: Nick Spence <nick.spence@freescale.com>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	linuxppc-dev@ozlabs.org, Egor Martovetsky <egor@pasemi.com>,
-	Paul Mackerras <paulus@samba.org>,
-	Doug Thompson <dougthompson@xmission.com>,
-	Olof Johansson <olof@lixom.net>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org, eric.miao@marvell.com,
+	linux-arm-kernel@lists.arm.linux.org.uk, ben-linux@fluff.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,123 +32,195 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-These are all powerpc specific drivers.
+On Thu, Jan 22, 2009 at 3:06 PM, Mike Rapoport <mike@compulab.co.il> wrote:
+> Eric,
+> Any comments?
 
-res.start in fsl_elbc_nand.c needs to be cast since it may be either 32
-or 64 bit.  Thanks to Scott Wood for noticing.
+Yes, I'm OK with this.
 
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Acked-by: Arnd Bergmann <arnd@arndb.de> call_edac bits in particular
-Acked-by: Olof Johansson <olof@lixom.net> pasemi_nand peices
-Acked-by: Scott Wood <scottwood@freescale.com> fsl_elbc fixes
----
- drivers/edac/cell_edac.c         |    8 ++++----
- drivers/mtd/nand/fsl_elbc_nand.c |    8 ++++----
- drivers/mtd/nand/pasemi_nand.c   |    4 ++--
- 3 files changed, 10 insertions(+), 10 deletions(-)
+Acked-by: Eric Miao <eric.miao@marvell.com>
 
-The only change here is the cast noted above.  I removed bluesmoke-devel
-because they reject my postings.
+>
+> Mike Rapoport wrote:
+>> Signed-off-by: Mike Rapoport <mike@compulab.co.il>
+>> ---
+>>  arch/arm/mach-pxa/include/mach/pxa3xx_nand.h |    3 +
+>>  drivers/mtd/nand/pxa3xx_nand.c               |  103 +++++++++++++++++++++++++-
+>>  2 files changed, 105 insertions(+), 1 deletions(-)
+>>
+>> diff --git a/arch/arm/mach-pxa/include/mach/pxa3xx_nand.h b/arch/arm/mach-pxa/include/mach/pxa3xx_nand.h
+>> index eb35fca..3478eae 100644
+>> --- a/arch/arm/mach-pxa/include/mach/pxa3xx_nand.h
+>> +++ b/arch/arm/mach-pxa/include/mach/pxa3xx_nand.h
+>> @@ -49,6 +49,9 @@ struct pxa3xx_nand_platform_data {
+>>        */
+>>       int     enable_arbiter;
+>>
+>> +     /* allow platform code to keep OBM/bootloader defined NFC config */
+>> +     int     keep_config;
+>> +
+>>       const struct mtd_partition              *parts;
+>>       unsigned int                            nr_parts;
+>>
+>> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+>> index ead4a7a..2857a6a 100644
+>> --- a/drivers/mtd/nand/pxa3xx_nand.c
+>> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+>> @@ -171,7 +171,13 @@ static int use_dma = 1;
+>>  module_param(use_dma, bool, 0444);
+>>  MODULE_PARM_DESC(use_dma, "enable DMA for data transfering to/from NAND HW");
+>>
+>> -#ifdef CONFIG_MTD_NAND_PXA3xx_BUILTIN
+>> +/*
+>> + * Default NAND flash controller configuration setup by the
+>> + * bootloader. This configuration is used only when pdata->keep_config is set
+>> + */
+>> +static struct pxa3xx_nand_timing default_timing;
+>> +static struct pxa3xx_nand_flash default_flash;
+>> +
+>>  static struct pxa3xx_nand_cmdset smallpage_cmdset = {
+>>       .read1          = 0x0000,
+>>       .read2          = 0x0050,
+>> @@ -198,6 +204,7 @@ static struct pxa3xx_nand_cmdset largepage_cmdset = {
+>>       .lock_status    = 0x007A,
+>>  };
+>>
+>> +#ifdef CONFIG_MTD_NAND_PXA3xx_BUILTIN
+>>  static struct pxa3xx_nand_timing samsung512MbX16_timing = {
+>>       .tCH    = 10,
+>>       .tCS    = 0,
+>> @@ -297,9 +304,23 @@ static struct pxa3xx_nand_flash *builtin_flash_types[] = {
+>>  #define NDTR1_tWHR(c)        (min((c), 15) << 4)
+>>  #define NDTR1_tAR(c) (min((c), 15) << 0)
+>>
+>> +#define tCH_NDTR0(r) (((r) >> 19) & 0x7)
+>> +#define tCS_NDTR0(r) (((r) >> 16) & 0x7)
+>> +#define tWH_NDTR0(r) (((r) >> 11) & 0x7)
+>> +#define tWP_NDTR0(r) (((r) >> 8) & 0x7)
+>> +#define tRH_NDTR0(r) (((r) >> 3) & 0x7)
+>> +#define tRP_NDTR0(r) (((r) >> 0) & 0x7)
+>> +
+>> +#define tR_NDTR1(r)  (((r) >> 16) & 0xffff)
+>> +#define tWHR_NDTR1(r)        (((r) >> 4) & 0xf)
+>> +#define tAR_NDTR1(r) (((r) >> 0) & 0xf)
+>> +
+>>  /* convert nano-seconds to nand flash controller clock cycles */
+>>  #define ns2cycle(ns, clk)    (int)(((ns) * (clk / 1000000) / 1000) - 1)
+>>
+>> +/* convert nand flash controller clock cycles to nano-seconds */
+>> +#define cycle2ns(c, clk)     ((((c) + 1) * 1000000 + clk / 500) / (clk / 1000))
+>> +
+>>  static void pxa3xx_nand_set_timing(struct pxa3xx_nand_info *info,
+>>                                  const struct pxa3xx_nand_timing *t)
+>>  {
+>> @@ -921,6 +942,82 @@ static int pxa3xx_nand_config_flash(struct pxa3xx_nand_info *info,
+>>       return 0;
+>>  }
+>>
+>> +static void pxa3xx_nand_detect_timing(struct pxa3xx_nand_info *info,
+>> +                                   struct pxa3xx_nand_timing *t)
+>> +{
+>> +     unsigned long nand_clk = clk_get_rate(info->clk);
+>> +     uint32_t ndtr0 = nand_readl(info, NDTR0CS0);
+>> +     uint32_t ndtr1 = nand_readl(info, NDTR1CS0);
+>> +
+>> +     t->tCH = cycle2ns(tCH_NDTR0(ndtr0), nand_clk);
+>> +     t->tCS = cycle2ns(tCS_NDTR0(ndtr0), nand_clk);
+>> +     t->tWH = cycle2ns(tWH_NDTR0(ndtr0), nand_clk);
+>> +     t->tWP = cycle2ns(tWP_NDTR0(ndtr0), nand_clk);
+>> +     t->tRH = cycle2ns(tRH_NDTR0(ndtr0), nand_clk);
+>> +     t->tRP = cycle2ns(tRP_NDTR0(ndtr0), nand_clk);
+>> +
+>> +     t->tR = cycle2ns(tR_NDTR1(ndtr1), nand_clk);
+>> +     t->tWHR = cycle2ns(tWHR_NDTR1(ndtr1), nand_clk);
+>> +     t->tAR = cycle2ns(tAR_NDTR1(ndtr1), nand_clk);
+>> +}
+>> +
+>> +static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
+>> +{
+>> +     uint32_t ndcr = nand_readl(info, NDCR);
+>> +     struct nand_flash_dev *type = NULL;
+>> +     uint32_t id = -1;
+>> +     int i;
+>> +
+>> +     default_flash.page_per_block = ndcr & NDCR_PG_PER_BLK ? 64 : 32;
+>> +     default_flash.page_size = ndcr & NDCR_PAGE_SZ ? 2048 : 512;
+>> +     default_flash.flash_width = ndcr & NDCR_DWIDTH_M ? 16 : 8;
+>> +     default_flash.dfc_width = ndcr & NDCR_DWIDTH_C ? 16 : 8;
+>> +
+>> +     if (default_flash.page_size == 2048)
+>> +             default_flash.cmdset = &largepage_cmdset;
+>> +     else
+>> +             default_flash.cmdset = &smallpage_cmdset;
+>> +
+>> +     /* set info fields needed to __readid */
+>> +     info->flash_info = &default_flash;
+>> +     info->read_id_bytes = (default_flash.page_size == 2048) ? 4 : 2;
+>> +     info->reg_ndcr = ndcr;
+>> +
+>> +     if (__readid(info, &id))
+>> +             return -ENODEV;
+>> +
+>> +     /* Lookup the flash id */
+>> +     id = (id >> 8) & 0xff;          /* device id is byte 2 */
+>> +     for (i = 0; nand_flash_ids[i].name != NULL; i++) {
+>> +             if (id == nand_flash_ids[i].id) {
+>> +                     type =  &nand_flash_ids[i];
+>> +                     break;
+>> +             }
+>> +     }
+>> +
+>> +     if (!type)
+>> +             return -ENODEV;
+>> +
+>> +     /* fill the missing flash information */
+>> +     i = __ffs(default_flash.page_per_block * default_flash.page_size);
+>> +     default_flash.num_blocks = type->chipsize << (20 - i);
+>> +
+>> +     info->oob_size = (default_flash.page_size == 2048) ? 64 : 16;
+>> +
+>> +     /* calculate addressing information */
+>> +     info->col_addr_cycles = (default_flash.page_size == 2048) ? 2 : 1;
+>> +
+>> +     if (default_flash.num_blocks * default_flash.page_per_block > 65536)
+>> +             info->row_addr_cycles = 3;
+>> +     else
+>> +             info->row_addr_cycles = 2;
+>> +
+>> +     pxa3xx_nand_detect_timing(info, &default_timing);
+>> +     default_flash.timing = &default_timing;
+>> +
+>> +     return 0;
+>> +}
+>> +
+>>  static int pxa3xx_nand_detect_flash(struct pxa3xx_nand_info *info,
+>>                                   const struct pxa3xx_nand_platform_data *pdata)
+>>  {
+>> @@ -928,6 +1025,10 @@ static int pxa3xx_nand_detect_flash(struct pxa3xx_nand_info *info,
+>>       uint32_t id = -1;
+>>       int i;
+>>
+>> +     if (pdata->keep_config)
+>> +             if (pxa3xx_nand_detect_config(info) == 0)
+>> +                     return 0;
+>> +
+>>       for (i = 0; i<pdata->num_flash; ++i) {
+>>               f = pdata->flash + i;
+>>
+>
+> --
+> Sincerely yours,
+> Mike.
+>
+>
+> -------------------------------------------------------------------
+> List admin: http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel
+> FAQ:        http://www.arm.linux.org.uk/mailinglists/faq.php
+> Etiquette:  http://www.arm.linux.org.uk/mailinglists/etiquette.php
+>
 
-diff --git a/drivers/edac/cell_edac.c b/drivers/edac/cell_edac.c
-index cd2e3b8..24f3ca8 100644
---- a/drivers/edac/cell_edac.c
-+++ b/drivers/edac/cell_edac.c
-@@ -36,7 +36,7 @@ static void cell_edac_count_ce(struct mem_ctl_info *mci, int chan, u64 ar)
- 	struct csrow_info		*csrow = &mci->csrows[0];
- 	unsigned long			address, pfn, offset, syndrome;
- 
--	dev_dbg(mci->dev, "ECC CE err on node %d, channel %d, ar = 0x%016lx\n",
-+	dev_dbg(mci->dev, "ECC CE err on node %d, channel %d, ar = 0x%016llx\n",
- 		priv->node, chan, ar);
- 
- 	/* Address decoding is likely a bit bogus, to dbl check */
-@@ -58,7 +58,7 @@ static void cell_edac_count_ue(struct mem_ctl_info *mci, int chan, u64 ar)
- 	struct csrow_info		*csrow = &mci->csrows[0];
- 	unsigned long			address, pfn, offset;
- 
--	dev_dbg(mci->dev, "ECC UE err on node %d, channel %d, ar = 0x%016lx\n",
-+	dev_dbg(mci->dev, "ECC UE err on node %d, channel %d, ar = 0x%016llx\n",
- 		priv->node, chan, ar);
- 
- 	/* Address decoding is likely a bit bogus, to dbl check */
-@@ -169,7 +169,7 @@ static int __devinit cell_edac_probe(struct platform_device *pdev)
- 
- 	/* Get channel population */
- 	reg = in_be64(&regs->mic_mnt_cfg);
--	dev_dbg(&pdev->dev, "MIC_MNT_CFG = 0x%016lx\n", reg);
-+	dev_dbg(&pdev->dev, "MIC_MNT_CFG = 0x%016llx\n", reg);
- 	chanmask = 0;
- 	if (reg & CBE_MIC_MNT_CFG_CHAN_0_POP)
- 		chanmask |= 0x1;
-@@ -180,7 +180,7 @@ static int __devinit cell_edac_probe(struct platform_device *pdev)
- 			 "Yuck ! No channel populated ? Aborting !\n");
- 		return -ENODEV;
- 	}
--	dev_dbg(&pdev->dev, "Initial FIR = 0x%016lx\n",
-+	dev_dbg(&pdev->dev, "Initial FIR = 0x%016llx\n",
- 		in_be64(&regs->mic_fir));
- 
- 	/* Allocate & init EDAC MC data structure */
-diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index 65929db..1f6eb25 100644
---- a/drivers/mtd/nand/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -676,7 +676,7 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
- 
- 	dev_dbg(ctrl->dev, "fsl_elbc_init: nand->numchips = %d\n",
- 	        chip->numchips);
--	dev_dbg(ctrl->dev, "fsl_elbc_init: nand->chipsize = %ld\n",
-+	dev_dbg(ctrl->dev, "fsl_elbc_init: nand->chipsize = %lld\n",
- 	        chip->chipsize);
- 	dev_dbg(ctrl->dev, "fsl_elbc_init: nand->pagemask = %8x\n",
- 	        chip->pagemask);
-@@ -703,7 +703,7 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
- 	dev_dbg(ctrl->dev, "fsl_elbc_init: nand->ecc.layout = %p\n",
- 	        chip->ecc.layout);
- 	dev_dbg(ctrl->dev, "fsl_elbc_init: mtd->flags = %08x\n", mtd->flags);
--	dev_dbg(ctrl->dev, "fsl_elbc_init: mtd->size = %d\n", mtd->size);
-+	dev_dbg(ctrl->dev, "fsl_elbc_init: mtd->size = %lld\n", mtd->size);
- 	dev_dbg(ctrl->dev, "fsl_elbc_init: mtd->erasesize = %d\n",
- 	        mtd->erasesize);
- 	dev_dbg(ctrl->dev, "fsl_elbc_init: mtd->writesize = %d\n",
-@@ -932,8 +932,8 @@ static int __devinit fsl_elbc_chip_probe(struct fsl_elbc_ctrl *ctrl,
- #endif
- 		add_mtd_device(&priv->mtd);
- 
--	printk(KERN_INFO "eLBC NAND device at 0x%zx, bank %d\n",
--	       res.start, priv->bank);
-+	printk(KERN_INFO "eLBC NAND device at 0x%llx, bank %d\n",
-+	       (unsigned long long)res.start, priv->bank);
- 	return 0;
- 
- err:
-diff --git a/drivers/mtd/nand/pasemi_nand.c b/drivers/mtd/nand/pasemi_nand.c
-index 9bd6c9a..a8b9376 100644
---- a/drivers/mtd/nand/pasemi_nand.c
-+++ b/drivers/mtd/nand/pasemi_nand.c
-@@ -107,7 +107,7 @@ static int __devinit pasemi_nand_probe(struct of_device *ofdev,
- 	if (pasemi_nand_mtd)
- 		return -ENODEV;
- 
--	pr_debug("pasemi_nand at %lx-%lx\n", res.start, res.end);
-+	pr_debug("pasemi_nand at %llx-%llx\n", res.start, res.end);
- 
- 	/* Allocate memory for MTD device structure and private data */
- 	pasemi_nand_mtd = kzalloc(sizeof(struct mtd_info) +
-@@ -170,7 +170,7 @@ static int __devinit pasemi_nand_probe(struct of_device *ofdev,
- 		goto out_lpc;
- 	}
- 
--	printk(KERN_INFO "PA Semi NAND flash at %08lx, control at I/O %x\n",
-+	printk(KERN_INFO "PA Semi NAND flash at %08llx, control at I/O %x\n",
- 	       res.start, lpcctl);
- 
- 	return 0;
+
+
 -- 
-1.6.0.5
-
--- 
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-http://www.canb.auug.org.au/~sfr/
+Cheers
+- eric
