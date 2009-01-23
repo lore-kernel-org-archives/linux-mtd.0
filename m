@@ -1,19 +1,36 @@
-Received: from mail145.messagelabs.com ([216.82.242.163])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LQEHN-0004Ur-UY
-	for linux-mtd@lists.infradead.org; Fri, 23 Jan 2009 05:08:32 +0000
-Received: from [192.168.65.100] (arasv [192.168.65.100])
-	by mail.magtech.com.au (Postfix) with ESMTP id B268619438F
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 23 Jan 2009 16:08:26 +1100 (EST)
-Message-ID: <497950CC.4020901@magtech.com.au>
-Date: Fri, 23 Jan 2009 16:08:28 +1100
-From: Aras Vaichas <arasv@magtech.com.au>
-MIME-Version: 1.0
-To: MTD-LIST <linux-mtd@lists.infradead.org>
-Subject: how to disable jffs2
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Received: from hera.kernel.org ([140.211.167.34])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LQOPS-0001zX-93
+	for linux-mtd@lists.infradead.org; Fri, 23 Jan 2009 15:57:30 +0000
+Subject: Re: [GIT PULL -tip] fix 33 make headers_check warnings
+From: Jaswinder Singh Rajput <jaswinder@kernel.org>
+To: Kyle McMartin <kyle@infradead.org>
+In-Reply-To: <20090118041800.GB671@bombadil.infradead.org>
+References: <1232223441.3966.22.camel@localhost.localdomain>
+	<1232228261.27094.0.camel@macbook.infradead.org>
+	<20090117221932.GA4956@uranus.ravnborg.org>
+	<1232247901.3097.12.camel@localhost.localdomain>
+	<20090118033339.GA671@bombadil.infradead.org>
+	<1232249904.3097.15.camel@localhost.localdomain>
+	<20090118041800.GB671@bombadil.infradead.org>
+Content-Type: text/plain
+Date: Fri, 23 Jan 2009 21:26:07 +0530
+Message-Id: <1232726167.3504.16.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Cc: urs.thuermann@volkswagen.de, neilb@suse.de, greg@kroah.com,
+	bfields@fieldses.org, linux-mtd@lists.infradead.org,
+	Sam Ravnborg <sam@ravnborg.org>, dbrownell@users.sourceforge.net,
+	x86 maintainers <x86@kernel.org>, tiwai@suse.de,
+	Ingo Molnar <mingo@elte.hu>, linux-media@vger.kernel.org,
+	mchehab@infradead.org, linux-raid@vger.kernel.org,
+	netfilter@vger.kernel.org, linux-nfs@vger.kernel.org,
+	netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	netfilter-devel@vger.kernel.org, oliver.hartkopp@volkswagen.de,
+	spi-devel-general@lists.sourceforge.net,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,23 +40,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, I want to update a root filing system which is jffs2 on NAND.
+On Sat, 2009-01-17 at 23:18 -0500, Kyle McMartin wrote:
+> On Sun, Jan 18, 2009 at 09:08:24AM +0530, Jaswinder Singh Rajput wrote:
+> > If this file is _ONLY_ for userspace and kernel cannot use it then what
+> > is the point of keeping this file in kernel headers.
+> > 
+> 
+> There is effectively no point, especially when they reference a variable
+> that may or may not exist in the userspace code including it... It seems
+> entirely mtd-utils dependent.
+> 
+> Dave, will you queue Adrian's patch to nuke it?
 
-If I just go ahead and erase then nandwrite to my nand I tend to get 
-random errors which sometimes cause failures..
+What is the status of include/mtd/jffs2-user.h
 
-I posted details of this earlier, but did not get a reply:
-http://lists.infradead.org/pipermail/linux-mtd/2009-January/024311.html
-
-Is it possible to somehow switch off the jffs2 on the root partition so 
-I can reflash the chip?
-
-If I re-mount the rootfs as read-only, is the jffs2 still able to write 
-to the nand chip?
-
-Aras
-
-______________________________________________________________________
-This email has been scanned by the MessageLabs Email Security System.
-For more information please visit http://www.messagelabs.com/email 
-______________________________________________________________________
+--
+JSR
