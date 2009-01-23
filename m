@@ -1,21 +1,18 @@
 Received: from hera.kernel.org ([140.211.167.34])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LQOPS-0001zX-93
-	for linux-mtd@lists.infradead.org; Fri, 23 Jan 2009 15:57:30 +0000
+	id 1LQOSZ-0002Zj-PB
+	for linux-mtd@lists.infradead.org; Fri, 23 Jan 2009 16:00:44 +0000
 Subject: Re: [GIT PULL -tip] fix 33 make headers_check warnings
 From: Jaswinder Singh Rajput <jaswinder@kernel.org>
-To: Kyle McMartin <kyle@infradead.org>
-In-Reply-To: <20090118041800.GB671@bombadil.infradead.org>
+To: "H. Peter Anvin" <hpa@kernel.org>
+In-Reply-To: <1232498319.3123.34.camel@localhost.localdomain>
 References: <1232223441.3966.22.camel@localhost.localdomain>
 	<1232228261.27094.0.camel@macbook.infradead.org>
-	<20090117221932.GA4956@uranus.ravnborg.org>
-	<1232247901.3097.12.camel@localhost.localdomain>
-	<20090118033339.GA671@bombadil.infradead.org>
-	<1232249904.3097.15.camel@localhost.localdomain>
-	<20090118041800.GB671@bombadil.infradead.org>
+	<20090117221932.GA4956@uranus.ravnborg.org> <49725B1E.604@kernel.org>
+	<1232498319.3123.34.camel@localhost.localdomain>
 Content-Type: text/plain
-Date: Fri, 23 Jan 2009 21:26:07 +0530
-Message-Id: <1232726167.3504.16.camel@localhost.localdomain>
+Date: Fri, 23 Jan 2009 21:29:19 +0530
+Message-Id: <1232726359.3504.18.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: urs.thuermann@volkswagen.de, neilb@suse.de, greg@kroah.com,
@@ -40,19 +37,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2009-01-17 at 23:18 -0500, Kyle McMartin wrote:
-> On Sun, Jan 18, 2009 at 09:08:24AM +0530, Jaswinder Singh Rajput wrote:
-> > If this file is _ONLY_ for userspace and kernel cannot use it then what
-> > is the point of keeping this file in kernel headers.
+
+On Wed, 2009-01-21 at 06:08 +0530, Jaswinder Singh Rajput wrote:
+> On Sat, 2009-01-17 at 14:26 -0800, H. Peter Anvin wrote:
+> > Sam Ravnborg wrote:
+> > >>>  
+> > >> That patch looks wrong, and unnecessary. It was fine before.
+> > > Nope - include/linux/dvb/audio.h failed to include linux/types.h
+> > > despite the fact that is uses __u32 etc.
+> > > 
+> > > But why the _kernel_ should include a userspace header is
+> > > much more questionable.
+> > > 
+> > 
+> > <stdint.h> is one of a handful of headers provided by gcc itself.
 > > 
 > 
-> There is effectively no point, especially when they reference a variable
-> that may or may not exist in the userspace code including it... It seems
-> entirely mtd-utils dependent.
+> Should I reintroduce my patch to solve this warning of 'make headers_check':
+>  usr/include/linux/dvb/audio.h:133: found __[us]{8,16,32,64} type without #include <linux/types.h>
 > 
-> Dave, will you queue Adrian's patch to nuke it?
+> diff --git a/include/linux/dvb/audio.h b/include/linux/dvb/audio.h
+> index 89412e1..758a48c 100644
+> --- a/include/linux/dvb/audio.h
+> +++ b/include/linux/dvb/audio.h
+> @@ -24,9 +24,8 @@
+>  #ifndef _DVBAUDIO_H_
+>  #define _DVBAUDIO_H_
+>  
+> -#ifdef __KERNEL__
+>  #include <linux/types.h>
+> -#else
+> +#ifndef __KERNEL__
+>  #include <stdint.h>
+>  #endif
+> 
 
-What is the status of include/mtd/jffs2-user.h
+It seems one have objection for this. So I will again insert this in my
+new patchset.
 
 --
 JSR
