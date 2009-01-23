@@ -1,33 +1,16 @@
-Received: from hera.kernel.org ([140.211.167.34])
+Received: from cursor.subgra.de ([78.46.252.50])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LQOXN-0003Jj-Ic
-	for linux-mtd@lists.infradead.org; Fri, 23 Jan 2009 16:05:42 +0000
-Subject: Re: [GIT PULL -tip] fix 33 make headers_check warnings
-From: Jaswinder Singh Rajput <jaswinder@kernel.org>
-To: "H. Peter Anvin" <hpa@kernel.org>
-In-Reply-To: <1232726359.3504.18.camel@localhost.localdomain>
-References: <1232223441.3966.22.camel@localhost.localdomain>
-	<1232228261.27094.0.camel@macbook.infradead.org>
-	<20090117221932.GA4956@uranus.ravnborg.org> <49725B1E.604@kernel.org>
-	<1232498319.3123.34.camel@localhost.localdomain>
-	<1232726359.3504.18.camel@localhost.localdomain>
-Content-Type: text/plain
-Date: Fri, 23 Jan 2009 21:34:18 +0530
-Message-Id: <1232726658.3504.22.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: urs.thuermann@volkswagen.de, neilb@suse.de, greg@kroah.com,
-	bfields@fieldses.org, linux-mtd@lists.infradead.org,
-	Sam Ravnborg <sam@ravnborg.org>, dbrownell@users.sourceforge.net,
-	x86 maintainers <x86@kernel.org>, tiwai@suse.de,
-	Ingo Molnar <mingo@elte.hu>, linux-media@vger.kernel.org,
-	mchehab@infradead.org, linux-raid@vger.kernel.org,
-	netfilter@vger.kernel.org, linux-nfs@vger.kernel.org,
-	netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	netfilter-devel@vger.kernel.org, oliver.hartkopp@volkswagen.de,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>
+	id 1LQOaz-0003cO-TK
+	for linux-mtd@lists.infradead.org; Fri, 23 Jan 2009 16:09:28 +0000
+Date: Fri, 23 Jan 2009 16:51:42 +0100
+From: Benjamin Krill <ben@codiert.org>
+To: linux-mtd@lists.infradead.org, dwg@au1.ibm.com, linuxppc-dev@ozlabs.org,
+	vwool@ru.mvista.com
+Subject: [PATCH] Check name property to determine partition nodes.
+Message-ID: <20090123155142.GA481@codiert.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,46 +20,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-01-23 at 21:29 +0530, Jaswinder Singh Rajput wrote:
-> On Wed, 2009-01-21 at 06:08 +0530, Jaswinder Singh Rajput wrote:
-> > On Sat, 2009-01-17 at 14:26 -0800, H. Peter Anvin wrote:
-> > > Sam Ravnborg wrote:
-> > > >>>  
-> > > >> That patch looks wrong, and unnecessary. It was fine before.
-> > > > Nope - include/linux/dvb/audio.h failed to include linux/types.h
-> > > > despite the fact that is uses __u32 etc.
-> > > > 
-> > > > But why the _kernel_ should include a userspace header is
-> > > > much more questionable.
-> > > > 
-> > > 
-> > > <stdint.h> is one of a handful of headers provided by gcc itself.
-> > > 
-> > 
-> > Should I reintroduce my patch to solve this warning of 'make headers_check':
-> >  usr/include/linux/dvb/audio.h:133: found __[us]{8,16,32,64} type without #include <linux/types.h>
-> > 
-> > diff --git a/include/linux/dvb/audio.h b/include/linux/dvb/audio.h
-> > index 89412e1..758a48c 100644
-> > --- a/include/linux/dvb/audio.h
-> > +++ b/include/linux/dvb/audio.h
-> > @@ -24,9 +24,8 @@
-> >  #ifndef _DVBAUDIO_H_
-> >  #define _DVBAUDIO_H_
-> >  
-> > -#ifdef __KERNEL__
-> >  #include <linux/types.h>
-> > -#else
-> > +#ifndef __KERNEL__
-> >  #include <stdint.h>
-> >  #endif
-> > 
-> 
-> It seems one have objection for this. So I will again insert this in my
-> new patchset.
-> 
+SLOF has a further node which could not be evaluate
+by the current routine. The current routine returns
+because the node hasn't the required reg property. As
+fix this patch adds a check to determine the partition
+child nodes.
 
-oops, s/seems one/seems no one ;-)
+Signed-off-by: Benjamin Krill <ben@codiert.org>
+---
+ drivers/mtd/ofpart.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
---
-JSR
+diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+index 9e45b3f..c852cc2 100644
+--- a/drivers/mtd/ofpart.c
++++ b/drivers/mtd/ofpart.c
+@@ -46,6 +46,11 @@ int __devinit of_mtd_parse_partitions(struct device *dev,
+ 		const u32 *reg;
+ 		int len;
+ 
++		/* check if this is a partition node */
++		partname = of_get_property(pp, "name", &len);
++		if (strcmp(partname, "partition") != 0)
++			continue;
++
+ 		reg = of_get_property(pp, "reg", &len);
+ 		if (!reg || (len != 2 * sizeof(u32))) {
+ 			of_node_put(pp);
+-- 
+1.6.0.6
