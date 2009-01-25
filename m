@@ -1,36 +1,18 @@
-Received: from mail-in-10.arcor-online.net ([151.189.21.50])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LR8N1-00066i-Uo
-	for linux-mtd@lists.infradead.org; Sun, 25 Jan 2009 17:02:07 +0000
-Received: from mail-in-19-z2.arcor-online.net (mail-in-19-z2.arcor-online.net
-	[151.189.8.36])
-	by mail-in-10.arcor-online.net (Postfix) with ESMTP id B5B991F5087
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 25 Jan 2009 18:01:54 +0100 (CET)
-Received: from mail-in-11.arcor-online.net (mail-in-11.arcor-online.net
-	[151.189.21.51])
-	by mail-in-19-z2.arcor-online.net (Postfix) with ESMTP id 9FC336BD8D
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 25 Jan 2009 18:01:54 +0100 (CET)
-Received: from bunny.home (dslb-088-070-072-031.pools.arcor-ip.net
-	[88.70.72.31])
-	by mail-in-11.arcor-online.net (Postfix) with ESMTP id B5D8B249270
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 25 Jan 2009 18:01:53 +0100 (CET)
-Received: from fox.localnet (fox.home [192.168.2.13])
-	by bunny.home (Postfix) with ESMTPS id B529425104BE
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 25 Jan 2009 18:01:49 +0100 (CET)
-From: Matthias Fuchs <matthias.fuchs@esd-electronics.com>
+Received: from hrndva-omtalb.mail.rr.com ([71.74.56.125])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LR9JL-0007Gg-2B
+	for linux-mtd@lists.infradead.org; Sun, 25 Jan 2009 18:02:22 +0000
+Received: from 3lyw4 ([76.94.247.237]) by hrndva-omta06.mail.rr.com with ESMTP
+	id <20090125180218.ZJXZ10307.hrndva-omta06.mail.rr.com@3lyw4>
+	for <linux-mtd@lists.infradead.org>; Sun, 25 Jan 2009 18:02:18 +0000
+From: "Lawrence Auster" <lawrence.auster@att.net>
+Subject: Jewish Lobby Gives Obama His Marching Orders
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: Add open firmware GPIO NAND driver
-Date: Sun, 25 Jan 2009 18:01:51 +0100
-MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200901251801.52179.matthias.fuchs@esd-electronics.com>
+	charset="US-ASCII"
+Date: Sun, 25 Jan 2009 19:02:08 +0100
+Message-Id: <20090125180218.ZJXZ10307.hrndva-omta06.mail.rr.com@3lyw4>
+Reply-To: lawrence.auster@att.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,430 +22,156 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds a GPIO based nand driver that is configured through
-the open firmware flat device tree. It's based on the gpio platform
-nand driver.
+Jewish Lobby Gives Obama His Marching Orders
+By Michael Collins Piper
 
-The driver is tested on a PPC405EP based PowerPC board with a single
-8 bit NAND chip. nCE, ALE, CLE and RDY are connected to the CPUs GPIO
-pins GPIO1..4.
+THE POWERFUL JEWISH LOBBY in Washington is already issuing marching orders to President-elect Barack Obama. One of the most influential voices of the lobby has published an array of “working papers” designed to tell the president how he must maintain the “special relationship” between the United States and Israel, increase pressure on a variety of Arab and Muslim states that are perceived as dangers to Israel, and generally assure that Israel’s interests will always be first and foremost in the conduct of U.S. foreign policy, not only in the Middle East but around the globe.
 
-The driver does not handle:
- - 16 bit NAND chips (no hardware for testing)
- - any other interfacing than ALE, CLE, nCE, RDY via GPIO and databus via
-   8 bit mem'mapped access
- - multiple NAND chips
+The Jewish Institute for National Security Affairs (JINSA), a particularly vocal force in the Jewish lobby, published an entire edition of its Journal of International Security Affairs (dated fall 2008), sending the official word to Obama. JINSA was founded by one Stephen Bryen who—along with a host of other well known names connected to JINSA—was once investigated by the FBI on charges of espionage for Israel.
 
-Just as an idea: this driver could replace ppchameleonevb.c.
+A variety of articles in the journal addressing “Middle East Policy and the Next President” and “Iran, Iraq and Beyond,” make it clear that JINSA—best known as a nest of the infamous “neo-conservatives” who misdirected U.S. foreign policy during the outgoing Bush administration, sparking the war in Iraq and continuing to clamor for action against Iran—wants Obama to pursue Bush-style policies.
 
-Signed-off-by: Matthias Fuchs <matthias.fuchs@esd-electronics.com>
----
- drivers/mtd/nand/Kconfig   |    6 +
- drivers/mtd/nand/Makefile  |    1 +
- drivers/mtd/nand/of_gpio.c |  366 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 373 insertions(+), 0 deletions(-)
- create mode 100644 drivers/mtd/nand/of_gpio.c
+AIPAC is particularly obsessed with using U.S. military and economic power to force Arab and Muslim nations to “reform” from within. Talk of “democracy” flows freely within AIPAC’s assorted essays, demanding that Israel’s neighbors conform to the Western version of democracy. But when the Palestinian people voted the Hamas movement into power in the Palestinian Authority in the occupied West Bank and the Gaza strip, AIPAC and other elements in the Jewish lobby immediately began calling for the United States to reject that freely elected government.
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 8b12e6e..1853c63 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -62,6 +62,12 @@ config MTD_NAND_GPIO
- 	help
- 	  This enables a GPIO based NAND flash driver.
- 
-+config MTD_NAND_OF_GPIO
-+	tristate "Open Firmware GPIO NAND Flash driver"
-+	depends on GENERIC_GPIO && PPC_OF
-+	help
-+	  This enables a GPIO based NAND flash driver.
-+
- config MTD_NAND_SPIA
- 	tristate "NAND Flash device on SPIA board"
- 	depends on ARCH_P720T
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index b661586..d89332b 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -24,6 +24,7 @@ obj-$(CONFIG_MTD_NAND_CS553X)		+= cs553x_nand.o
- obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
- obj-$(CONFIG_MTD_NAND_ATMEL)		+= atmel_nand.o
- obj-$(CONFIG_MTD_NAND_GPIO)		+= gpio.o
-+obj-$(CONFIG_MTD_NAND_OF_GPIO)		+= of_gpio.o
- obj-$(CONFIG_MTD_NAND_CM_X270)		+= cmx270_nand.o
- obj-$(CONFIG_MTD_NAND_BASLER_EXCITE)	+= excite_nandflash.o
- obj-$(CONFIG_MTD_NAND_PXA3xx)		+= pxa3xx_nand.o
-diff --git a/drivers/mtd/nand/of_gpio.c b/drivers/mtd/nand/of_gpio.c
-new file mode 100644
-index 0000000..2c45e3b
---- /dev/null
-+++ b/drivers/mtd/nand/of_gpio.c
-@@ -0,0 +1,366 @@
-+/*
-+ * drivers/mtd/nand/of_gpio.c
-+ *
-+ * Open Firmware device driver for NAND connected via GPIO
-+ *
-+ * Copyright 2009 esd Gmbh
-+ *   Matthias Fuchs <matthias.fuchs@esd-electronics.com>
-+ *
-+ * Based on GPIO platform NAND driver by
-+ * Ben Dooks <ben@simtec.co.uk> and Russel King
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ *
-+ * Sample device tree bindings:
-+ *
-+ *	...
-+ *	nand@1,0 {
-+ *		compatible = "gpio-nand";
-+ *		reg = <0x00000001 0x00000000 0x00002000>;
-+ *		chip-delay = <50>;
-+ *		options = <0x00000000>;
-+ *		#address-cells = <1>;
-+ *		#size-cells = <1>;
-+ *
-+ *		gpios =	<&GPIO 1 0
-+ *			 &GPIO 2 0
-+ *			 &GPIO 3 0
-+ *			 &GPIO 4 0>;
-+ *
-+ *		nand {
-+ *			#address-cells = <1>;
-+ *			#size-cells = <1>;
-+ *
-+ *			partition@0 {
-+ *				...
-+ *			};
-+ *			...
-+ *		};
-+ *	};
-+ *	...
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/init.h>
-+#include <linux/slab.h>
-+#include <linux/module.h>
-+#include <linux/gpio.h>
-+#include <linux/of_gpio.h>
-+#include <linux/io.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/nand.h>
-+#include <linux/mtd/partitions.h>
-+#include <linux/of_platform.h>
-+
-+struct of_gpio_nand_controller {
-+	struct of_device *ofdev;
-+	void __iomem *base;
-+	int gpio_nce;
-+	int gpio_cle;
-+	int gpio_ale;
-+	int gpio_rdy;
-+	struct mtd_info mtd;
-+	struct nand_chip chip;
-+#ifdef CONFIG_MTD_PARTITIONS
-+	struct mtd_partition *parts;
-+#endif
-+};
-+
-+static struct of_gpio_nand_controller of_gpio_nand_ctrl;
-+
-+static void
-+of_gpio_nand_hwcontrol(struct mtd_info *mtd, int cmd, unsigned int ctrl)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	struct of_gpio_nand_controller *of_gpio_nand = &of_gpio_nand_ctrl;
-+
-+	if (ctrl & NAND_CTRL_CHANGE) {
-+		gpio_set_value(of_gpio_nand->gpio_nce, !(ctrl & NAND_NCE));
-+		gpio_set_value(of_gpio_nand->gpio_cle, !!(ctrl & NAND_CLE));
-+		gpio_set_value(of_gpio_nand->gpio_ale, !!(ctrl & NAND_ALE));
-+	}
-+	if (cmd == NAND_CMD_NONE)
-+		return;
-+
-+	writeb(cmd, chip->IO_ADDR_W);
-+}
-+
-+static void
-+of_gpio_nand_writebuf(struct mtd_info *mtd, const u_char *buf, int len)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+
-+	writesb(chip->IO_ADDR_W, buf, len);
-+}
-+
-+static void of_gpio_nand_readbuf(struct mtd_info *mtd, u_char *buf, int len)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+
-+	readsb(chip->IO_ADDR_R, buf, len);
-+}
-+
-+static int
-+of_gpio_nand_verifybuf(struct mtd_info *mtd, const u_char *buf, int len)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	unsigned char read, *p = (unsigned char *)buf;
-+	int i, err = 0;
-+
-+	for (i = 0; i < len; i++) {
-+		read = readb(chip->IO_ADDR_R);
-+		if (read != p[i]) {
-+			pr_debug("%s: err at %d (read %04x vs %04x)\n",
-+				 __func__, i, read, p[i]);
-+			err = -EFAULT;
-+		}
-+	}
-+	return err;
-+}
-+
-+static int of_gpio_nand_devready(struct mtd_info *mtd)
-+{
-+	struct of_gpio_nand_controller *of_gpio_nand = &of_gpio_nand_ctrl;
-+
-+	return gpio_get_value(of_gpio_nand->gpio_rdy);
-+}
-+
-+static int of_gpio_nand_chip_init(struct of_gpio_nand_controller *of_gpio_nand,
-+				  struct device_node *node)
-+{
-+#ifdef CONFIG_MTD_PARTITIONS
-+#ifdef CONFIG_MTD_CMDLINE_PARTS
-+	static const char *part_types[] = { "cmdlinepart", NULL };
-+#else
-+	static const char *part_types[] = { NULL };
-+#endif
-+#endif
-+	struct device_node *flash_np;
-+	struct nand_chip *chip = &of_gpio_nand->chip;
-+	int ret;
-+	const u32 *reg;
-+
-+	chip->IO_ADDR_R = of_gpio_nand->base;
-+	chip->IO_ADDR_W = of_gpio_nand->base;
-+	chip->cmd_ctrl = of_gpio_nand_hwcontrol;
-+	chip->dev_ready = of_gpio_nand_devready;
-+	chip->read_buf = of_gpio_nand_readbuf;
-+	chip->write_buf = of_gpio_nand_writebuf;
-+	chip->verify_buf = of_gpio_nand_verifybuf;
-+	chip->ecc.mode   = NAND_ECC_SOFT;
-+
-+	reg = of_get_property(node, "chip-delay", NULL);
-+	if (reg)
-+		chip->chip_delay = *reg;
-+
-+	reg = of_get_property(node, "options", NULL);
-+	if (reg)
-+		chip->options = *reg;
-+
-+	if (chip->options & NAND_BUSWIDTH_16) {
-+		dev_err(&of_gpio_nand->ofdev->dev,
-+			"16 bit bus width not supported\n");
-+		return -ENOENT;
-+	}
-+
-+	of_gpio_nand->mtd.priv = chip;
-+	of_gpio_nand->mtd.owner = THIS_MODULE;
-+
-+	flash_np = of_get_next_child(node, NULL);
-+	if (!flash_np)
-+		return -ENODEV;
-+
-+	of_gpio_nand->mtd.name = kasprintf(GFP_KERNEL, "%s.%s",
-+					   of_gpio_nand->ofdev->dev.bus_id,
-+					   flash_np->name);
-+	if (!of_gpio_nand->mtd.name) {
-+		ret = -ENOMEM;
-+		goto err;
-+	}
-+
-+	ret = nand_scan(&of_gpio_nand->mtd, 1);
-+	if (ret)
-+		goto err;
-+
-+#ifdef CONFIG_MTD_PARTITIONS
-+	ret = parse_mtd_partitions(&of_gpio_nand->mtd, part_types,
-+				   &of_gpio_nand->parts, 0);
-+	if (ret < 0)
-+		goto err;
-+
-+#ifdef CONFIG_MTD_OF_PARTS
-+	if (ret == 0) {
-+		ret = of_mtd_parse_partitions(&of_gpio_nand->ofdev->dev,
-+					      flash_np,
-+					      &of_gpio_nand->parts);
-+		if (ret < 0)
-+			goto err;
-+	}
-+#endif
-+
-+	if (ret > 0)
-+		ret = add_mtd_partitions(&of_gpio_nand->mtd,
-+					 of_gpio_nand->parts, ret);
-+	else
-+#endif
-+		ret = add_mtd_device(&of_gpio_nand->mtd);
-+
-+err:
-+	of_node_put(flash_np);
-+	if (ret)
-+		kfree(of_gpio_nand->mtd.name);
-+	return ret;
-+}
-+
-+static int __devinit of_gpio_nand_probe(struct of_device *ofdev,
-+					const struct of_device_id *match)
-+{
-+	struct of_gpio_nand_controller *of_gpio_nand = &of_gpio_nand_ctrl;
-+	struct device *dev = &ofdev->dev;
-+	int ret;
-+
-+	of_gpio_nand->ofdev = ofdev;
-+	dev_set_drvdata(&ofdev->dev, of_gpio_nand);
-+
-+	of_gpio_nand->base = of_iomap(ofdev->node, 0);
-+	if (!of_gpio_nand->base) {
-+		dev_err(&ofdev->dev, "failed to get memory\n");
-+		return -EIO;
-+	}
-+
-+	if (of_gpio_count(ofdev->node) != 4) {
-+		ret = -ENOENT;
-+		goto err_nce;
-+	}
-+
-+	/* CE# */
-+	ret = of_get_gpio(ofdev->node, 0);
-+	if (ret < 0) {
-+		dev_err(dev, "Invalid gpio spec 0\n");
-+		goto err_nce;
-+	} else {
-+		of_gpio_nand->gpio_nce = ret;
-+		ret = gpio_request(of_gpio_nand->gpio_nce, ofdev->node->name);
-+		if (ret) {
-+			dev_err(dev, "Requesting gpio %d failed\n",
-+				of_gpio_nand->gpio_nce);
-+			goto err_nce;
-+		}
-+		gpio_direction_output(of_gpio_nand->gpio_nce, 1);
-+	}
-+
-+	/* CLE */
-+	ret = of_get_gpio(ofdev->node, 1);
-+	if (ret < 0) {
-+		dev_err(dev, "Invalid gpio spec 1\n");
-+		goto err_cle;
-+	} else {
-+		of_gpio_nand->gpio_cle = ret;
-+		ret = gpio_request(of_gpio_nand->gpio_cle, ofdev->node->name);
-+		if (ret) {
-+			dev_err(dev, "Requesting gpio %d failed\n",
-+				of_gpio_nand->gpio_cle);
-+			goto err_cle;
-+		}
-+		gpio_direction_output(of_gpio_nand->gpio_cle, 0);
-+	}
-+
-+	/* ALE */
-+	ret = of_get_gpio(ofdev->node, 2);
-+	if (ret < 0) {
-+		dev_err(dev, "Invalid gpio spec 2\n");
-+		goto err_ale;
-+	} else {
-+		of_gpio_nand->gpio_ale = ret;
-+		ret = gpio_request(of_gpio_nand->gpio_ale, ofdev->node->name);
-+		if (ret) {
-+			dev_err(dev, "Requesting gpio %d failed\n",
-+				of_gpio_nand->gpio_ale);
-+			goto err_ale;
-+		}
-+		gpio_direction_output(of_gpio_nand->gpio_ale, 0);
-+	}
-+
-+	/* RDY */
-+	ret = of_get_gpio(ofdev->node, 3);
-+	if (ret < 0) {
-+		dev_err(dev, "Invalid gpio spec 3\n");
-+		goto err_rdy;
-+	} else {
-+		of_gpio_nand->gpio_rdy = ret;
-+		ret = gpio_request(of_gpio_nand->gpio_rdy, ofdev->node->name);
-+		if (ret) {
-+			dev_err(dev, "Requesting gpio %d failed\n",
-+				of_gpio_nand->gpio_rdy);
-+			goto err_rdy;
-+		}
-+		gpio_direction_input(of_gpio_nand->gpio_rdy);
-+	}
-+
-+	ret = of_gpio_nand_chip_init(of_gpio_nand, ofdev->node);
-+	if (ret == 0)
-+		return 0;
-+
-+	gpio_free(of_gpio_nand->gpio_rdy);
-+err_rdy:
-+	gpio_free(of_gpio_nand->gpio_ale);
-+err_ale:
-+	gpio_free(of_gpio_nand->gpio_cle);
-+err_cle:
-+	gpio_free(of_gpio_nand->gpio_nce);
-+err_nce:
-+	iounmap(of_gpio_nand->base);
-+
-+	return ret;
-+}
-+
-+static int __devexit of_gpio_nand_remove(struct of_device *ofdev)
-+{
-+	struct of_gpio_nand_controller *of_gpio_nand =
-+		dev_get_drvdata(&ofdev->dev);
-+
-+	nand_release(&of_gpio_nand->mtd);
-+
-+	gpio_free(of_gpio_nand->gpio_rdy);
-+	gpio_free(of_gpio_nand->gpio_ale);
-+	gpio_free(of_gpio_nand->gpio_cle);
-+	gpio_free(of_gpio_nand->gpio_nce);
-+	iounmap(of_gpio_nand->base);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id of_gpio_nand_match[] = {
-+	{ .compatible = "gpio-nand", },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, of_gpio_nand_match);
-+
-+static struct of_platform_driver of_gpio_nand_driver = {
-+	.driver = {
-+		.name	= "of_gpio_nand",
-+	},
-+	.match_table = of_gpio_nand_match,
-+	.probe = of_gpio_nand_probe,
-+	.remove = __devexit_p(of_gpio_nand_remove),
-+};
-+
-+static int __init of_gpio_nand_init(void)
-+{
-+	return of_register_platform_driver(&of_gpio_nand_driver);
-+}
-+
-+static void __exit of_gpio_nand_exit(void)
-+{
-+	of_unregister_platform_driver(&of_gpio_nand_driver);
-+}
-+
-+module_init(of_gpio_nand_init);
-+module_exit(of_gpio_nand_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Matthias Fuchs <matthias.fuchs@esd-electronics.com>");
-+MODULE_DESCRIPTION("Open Firmware GPIO NAND Driver");
--- 
-1.5.6.3
+Now, of course, Hamas is largely only in control of the beleaguered Gaza—which many refer to as “ghetto”— and the Palestinian statehood movement has been eviscerated, at least for now. This makes AIPAC and the lobby for Israel quite happy, for Israel has long encouraged U.S. policies—and helped create conditions—that have the effect of “divide and conquer” in the Arab and Muslim world.
+
+Israel is not like any other nation in the world, in that it seems to thrive best (and enjoys the benefits of) having its neighbors quarreling among themselves and rent within. Other nations prefer neighbors that are peaceful and internally secure. Israel wants its neighbors in chaos, because this prevents them from waging war against Israel, either individually or united. And although in the wake of the debacle in Iraq, which led many Israelis and their allies in the United States to suddenly proclaim that the Iraq war should never have been waged, the fact is that Israel and its U.S.-based agents-in-place were the prime movers behind that war and it was Israeli intelligence that was providing what critics now recognize was the “bad intelligence” that led the Bush administration to “mistakenly” conclude that Iraq was working toward an assembly of nuclear weapons to rival that of Israel.
+
+The Israelis and their American spokesmen evidently now believe that if they tell the “big lie” often enough—the lie that Israel’s interests played no part in orchestrating the debacle in Iraq—that it will make Americans forget that Israel was the foremost advocate of the war in the first place.
+
+However, the evisceration of Iraq by the United States is part and parcel of a long-standing Israeli national security policy aimed toward “balkanizing” the Muslim world.
+
+Yet, AIPAC, in its journal, is now working to perpetuate the myth of Iraqi nuclear weapons and suggesting that Iraq’s weapons were transported into Syria, another nation which has been on the “wish list for war” of Israel and its lobby in America. And AIPAC makes it clear that the destruction of Iran’s nuclear development program is a “must.”
+
+AIPAC is not the only Israeli lobby unit sending the message to the new president. Commentary magazine, long affiliated with the American Jewish Committee, has—in recent issues—been trumpeting a similar bellicose refrain directed at Obama. The editorial director of the Jewish lobby journal is John Podhoretz, a longtime close personal and political associate of the ubiquitous William Kristol, editor of the Weekly Standard magazine, which is the most infamous voice of the neo-conservative, hard-line pro-Israel elements operating in the media, in the think tanks, and in official policy making and national security and intelligence circles in Washington.
+
+Their fathers, Irving Kristol and Norman Podhoretz, are two of the founding fathers of the neoconservative network, both Trotskyite Marxists who announced their “conversion” to conservatism during the latter days of the Cold War, banging the drum for intensified U.S. support for Israel.
+
+A complete overview of the neo-conservative power structure and its rather bizarre origins in the days when American Jewish communists like Kristol and Podhoretz turned on the Soviet Union when then- Soviet chief Josef Stalin began moving against Jewish and Zionist elements inside Russia can be found in The High Priests of War and The Judas Goats, two works by this author.
+
+Whether President Obama intends real change, as he promised, or whether he will advance the Israeli agenda (which saw its power expand exponentially in the Republican administration of George W. Bush) remains to be seen. But “the lobby” is making its voice heard and Obama knows that he better not ignore it.
+
+A journalist specializing in media critique, Michael Collins Piper is the author of The High Priests of War, The New Jerusalem, Dirty Secrets, The Judas Goats, The Golem, Target Traficant and My First Days in the White House All are available from AFP.
+
+Source : http://www.americanfreepress.net/html/jewish_lobby_164.html
+
+-------------------------------------------------------------------------------------------------
+
+Obama -- The Judas Goat
+1/25/2009
+By David Duke
+
+Judas Goat\ A goat that leads other goats or sheep to slaughter. Also, one who entices into danger and betrays others. The name is an allusion to Judas Iscariot, who betrayed Jesus for 30 pieces of slaughter. (From Merriam Webster’s Dictionary)
+
+Barack Hussein Obama is a Judas Goat.
+
+Extremist Jews guided Barack Hussein Obama’s career from day one, even all the way back to Harvard Law School.  Radical Zionist hitman, David Axelrod previously orchestrated the Jewish-financed and organized defeat of perceived anti-Zionist Sen. Charles Percy. He is the man who ran Obama’s campaign for President and who is his chief handler. Obama’s campaign was overwhelmingly financed by the most powerful Zionist bankers in the world. His campaign’s largest contribution source was the Zionist international banking firm of Goldman Sachs. (FEC campaign records). In both Obama’s Senate and Presidential campaign he prostrated himself before AIPAC (American Israel Public Affairs Committee) promising even more money and blood for Israel’s terrorism than even the supine John McCain, and even more money and blood than the previous Shabbez Goy in the White House, George Bush. Before the Israeli terrorism and mass murder in Gaza, he went to Israel and said that he supported Israel’s planned murderous terrorism against the men, women and children of Gaza.
+
+His first act as President-elect was to appoint a rabid Zionist, Israeli dual citizen who served in the Israeli Army as his Chief of Staff, Rahm Emmanuel. As thousands of women and children in Gaza were killed or maimed, Obama remained silent. Within a few days as President Obama supported indiscriminate American missile strikes in villages of our ally Pakistan, a clear continuation of Bush’s policies.  He completely supports the theft of trillions of American taxpayer dollars to the Zionist international bankers. Eighty percent of American Jews voted for Obama, and all the main leaders of the Jewish Supremacist state of Israel have proclaimed Obama as the perfect man for U.S. President.
+
+What better for the Zionists to have their own servant perceived as a clean break from the Jewish extremist-controlled Bush administration? What better than for the Zionists than to have their Shabbez Goy be treated by the world’s press and even by much of the anti-Zionist community as a man of “real change?” What better for the Zionists than for the world to think that Obama will be a change from the Zionist-controlled policies when he willing to do anything that Israel demands? What better for the Zionist murderers to have their craven puppet be looked at by the whole world as a man of honor and integrity and fairness.
+
+In the slaughterhouse, the Judas Goat is often painted with bright colors, adorned with strong, sweet scents to lure the sheep to their pens and to their death. Obama, the Judas Goat of our time, is looked upon by millions of Zionist-propagandized sheep as the man who will lead them to salvation.
+
+Instead, he leads America, Palestine and the world to the bloody altar of Jewish Supremacism.
+
+Any supposed anti-Zionist who praises Barack Obama is actually aiding this Judas Goat to lead us all to slaughter. Every person who truly opposes Jewish extremism must speak out and expose the Judas Goat named Barack Obama!
+
+-- Dr. David Duke
+
+Former Member of the House of Representatives
+
+State of Louisiana
+
+United States of America
+
+It is up to you the people of the United States who can still think freely,  and up to all of the people of the world who are able to see through the deceptions of the Zionist-influenced Global media  -- to get this simple, powerful message to everyone on earth. Email this message to your friends, post it on forums and websites and put links to it on every website, facebook or other media in the world. Go and seek out media and Internet sites not controlled by Zionist power. Make youtube videos of this message, (use the short audio and find good illustrative pictures) and post it untill your fingers are worn and tired, print it and mail it to newspapers or any media outlet that has still not fallen under the propaganda of the Zionists. Let the world know the truth. Person by person, in the USA, Canada, UK, France, Germany, Italy, japan, Russia, China, Africa, Palestine, South America and across the whole world this Judas Goat must be exposed for what he is, so that when begins to do his evil for Israel, the whole world will know exactly what is going on and resist!
+
+Source : http://www.davidduke.com/general/obama-the-judas-goat_7317.html
+
+
+------------------------
+
+Why is the President of Israel, the terrorist who just oversaw the Zionist mass murder and maiming of thousands of Palestinians so happy
+that Obama is President of the USA?
+by David Duke
+
+
+Read the excerpt from the Israeli News about how President Perez and Israel think that Obama’s becoming U.S. President is great day
+for Israel.
+
+"Israel’s President Shimon Peres ecstatic over the election of Obama"
+Ronen Medzini Israel News Jan. 21
+
+“Today is a great day not only for the United States of America, but for the entire world,” President Shimon Peres wrote in a letter
+addressed to Barack Obama on the day of his inauguration as president of the United States.
+
+“Obama was elected by the United States, but as a matter of fact, he was chosen by the whole of humankind,”
+
+Why is Peres so ecstatic?
+
+Why shouldn’t he be, he knows that Obama is completely in the grip of the extremist Jewish Zionists in America, and he knows that the
+greater Obama’s popularity and idol worship, the more Obama can do for the International Zionist Cause.
+
+Any thinking and caring human being who realizes that the Zionist-controlled American foreign policy has been a disaster for the robbed
+and murdered people of Palestine, Lebanon, Iraq and a catastrophe for the 50,000 American wounded in Iraq and Afghanistan, as well
+as an economic catastrophe for the hardworking Americans who pay trillions to finance these wars for Israel -- must wake up the fact that
+supporting Obama and increasing his popularity  will only aid Zionist terrorism, war, and their murder and oppression of the Palestinians. It
+will also hasten the economic suffering of billions of people around the world as his popularity enables him to more easily aid the Zionist
+International Bankers steal the wealth of the United States, Europe and the world.  Obama is totally in the bloodstained and green ink-
+stained hands of the Zionists. The hard truth is that the more good will and support Obama has also gives more power to support the
+Zionist agenda!
+
+Mark my words. The Obama Presidency will be disaster for America and for the world.
+
+Obama was put into office by the Zionists. His top two cohorts for years have been the radical Jews David Axelrod and Rahm
+Emmanuel. Both have long records of radical Zionism and have been attack dogs against anyone perceived as having the slightest
+opposition to Israel. One such victim was Sen. Charles Percy, who both men worked to defeat and destroy because he dared to only be
+99 percent rather than 100 percent pro-Israel. Rahm Emmanuel, a dual citizen of Israel who went to fight for Israel, he has a long
+pedigree of Jewish extremism. His father served in the Irgun Terrorist Gang and he himself is named after an Irgun terrorist.
+
+Zionist leaders in Chicago actually call Obama “the first Jewish President” and boast that Jews were key players in Obama’s every step
+up the ladder to President.
+
+from the very earliest days, extremist Jews were the largest contributors to his campaign. In the beginning of his Presidential bid, three
+Hollywood Jews that constantly make movies about Jewish suffering, but never about the Zionist terrorism and theft against the
+Palestinian people, Steven Spielberg, David Geffen, and Jeffrey Katzenberg raised 1.2 million for Obama in a single Hollywood party.
+
+By the time Obama’s campaign was in full swing, he had huge support from the criminal Zionist International Banking firms such as
+Goldman Sachs and Lehman brothers. Goldman Sachs was Obama’s biggest single contributor, and his vast war chest came not from
+American manufacturing firms like GM or even American oil companies, (not one was in his top twenty) it was overwhelmingly dominated
+by Zionist international bankers, the same ones whose thievery and fraud are giving the world this economic depression.
+
+For those looking for meaningful social and political change, do you really think it will come from this man who has already been bought
+heart, head and soul by the most powerful czars of the international financial establishment and the biggest globalists in the world?
+
+I know that many are desperate for change, so desperate that you want to believe anything. But in the face of these facts can’t you see
+that Obama will be even more dangerous to freedom and justice than even George Bush and his band of Neocons were. What better
+way to wipe out George Bush’s hated legacy and make the world believe that America has really changed than with the election of
+Obama. But, all the real Zionist power, Zionist media power, and Zionist financial power in America is still in place, even stronger than
+ever.
+
+Many Americans and others around the world who want to do good are now telling us how wonderful Obama will be as president. What
+a great change it will be from the old policies. This is because of the Zionist-Controlled media hype, promoting Obama. The fact is that
+these poor sods are ignorantly helping the radical Zionist agenda in Israel and around the world.
+
+Every day that you don’t help expose Obama for the Zionist servant that he actually is, his popularity will be a greater danger to peace
+and freedom.
+
+If the Zionist terrorist Shimon Perez is happy about the coronation of Obama, then why in the hell should you be?
+
+–David Duke
+
+Source : http://www.davidduke.com/general/7303_7303.html
+-------------------------------------
+
+You or someone using your email adress is currently subscribed to the Lawrence Auster
+Newletter. If you wish to unsubscribe from our mailing list, please let us know by calling "to 1 212 865 1284
+
+Thanks,
+
+Lawrence Auster,
+238 W 101 St Apt. 3B
+New York, NY  10025
+Contact: lawrence.auster@att.net
+-------------------------------------
