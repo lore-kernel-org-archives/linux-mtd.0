@@ -1,14 +1,19 @@
-Received: from iksaif.net ([88.191.73.63])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LRk8t-0005rG-Kr
-	for linux-mtd@lists.infradead.org; Tue, 27 Jan 2009 09:22:14 +0000
-From: Sidney Amani <seed@uffs.org>
-To: Artem Bityutskiy <dedekind@infradead.org>
-Subject: [PATCH] UBI: ioctl instead of CONFIG_MTD_UBI_DEBUG_USERSPACE_IO
-Date: Tue, 27 Jan 2009 10:11:46 +0100
-Message-Id: <1233047506-30435-1-git-send-email-seed@uffs.org>
-Cc: Corentin Chary <corentincj@iksaif.net>, Sidney Amani <seed@uffs.org>,
-	linux-mtd@lists.infradead.org
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LRnAB-0006lT-2E
+	for linux-mtd@lists.infradead.org; Tue, 27 Jan 2009 12:35:33 +0000
+Subject: Re: UBIFS performance with no_chk_data_crc option
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Reuben Dowle <Reuben.Dowle@navico.com>
+In-Reply-To: <70F6AAAFDC054F41B9994A9BCD3DF64E08308B18@exch01-aklnz.MARINE.NET.INT>
+References: <70F6AAAFDC054F41B9994A9BCD3DF64E08308B18@exch01-aklnz.MARINE.NET.INT>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 27 Jan 2009 14:35:12 +0200
+Message-Id: <1233059712.7085.7.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,199 +23,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Introduce a new ioctl UBI_IOCSETPROP to set properties
-on a volume. Also add the first property:
-UBI_PROP_DIRECT_WRITE, this property is used to set the
-ability to use direct writes in userspace
+On Tue, 2009-01-27 at 13:09 +1300, Reuben Dowle wrote:
+> It seems to me that enabling the no_chk_data_crc option actually causes
+> SLOWER read performance. I get these results:
 
-Signed-off-by: Sidney Amani <seed@uffs.org>
-Signed-off-by: Corentin Chary <corentincj@iksaif.net>
----
- drivers/mtd/ubi/Kconfig.debug |   10 ----------
- drivers/mtd/ubi/cdev.c        |   33 +++++++++++++++++++++++++++------
- drivers/mtd/ubi/ubi.h         |    5 ++++-
- include/mtd/ubi-user.h        |   34 ++++++++++++++++++++++++++++++++++
- 4 files changed, 65 insertions(+), 17 deletions(-)
+Reuben,
 
-diff --git a/drivers/mtd/ubi/Kconfig.debug b/drivers/mtd/ubi/Kconfig.debug
-index 1e2ee22..2246f15 100644
---- a/drivers/mtd/ubi/Kconfig.debug
-+++ b/drivers/mtd/ubi/Kconfig.debug
-@@ -33,16 +33,6 @@ config MTD_UBI_DEBUG_DISABLE_BGT
- 	  This option switches the background thread off by default. The thread
- 	  may be also be enabled/disabled via UBI sysfs.
- 
--config MTD_UBI_DEBUG_USERSPACE_IO
--	bool "Direct user-space write/erase support"
--	default n
--	depends on MTD_UBI_DEBUG
--	help
--	  By default, users cannot directly write and erase individual
--	  eraseblocks of dynamic volumes, and have to use update operation
--	  instead. This option enables this capability - it is very useful for
--	  debugging and testing.
--
- config MTD_UBI_DEBUG_EMULATE_BITFLIPS
- 	bool "Emulate flash bit-flips"
- 	depends on MTD_UBI_DEBUG
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index f9631eb..350b744 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -259,8 +259,6 @@ static ssize_t vol_cdev_read(struct file *file, __user char *buf, size_t count,
- 	return err ? err : count_save - count;
- }
- 
--#ifdef CONFIG_MTD_UBI_DEBUG_USERSPACE_IO
--
- /*
-  * This function allows to directly write to dynamic UBI volumes, without
-  * issuing the volume update operation. Available only as a debugging feature.
-@@ -276,6 +274,9 @@ static ssize_t vol_cdev_direct_write(struct file *file, const char __user *buf,
- 	size_t count_save = count;
- 	char *tbuf;
- 
-+	if (!vol->direct_writes)
-+		return -EPERM;
-+
- 	dbg_gen("requested: write %zd bytes to offset %lld of volume %u",
- 		count, *offp, vol->vol_id);
- 
-@@ -339,10 +340,6 @@ static ssize_t vol_cdev_direct_write(struct file *file, const char __user *buf,
- 	return err ? err : count_save - count;
- }
- 
--#else
--#define vol_cdev_direct_write(file, buf, count, offp) (-EPERM)
--#endif /* CONFIG_MTD_UBI_DEBUG_USERSPACE_IO */
--
- static ssize_t vol_cdev_write(struct file *file, const char __user *buf,
- 			      size_t count, loff_t *offp)
- {
-@@ -552,6 +549,30 @@ static long vol_cdev_ioctl(struct file *file, unsigned int cmd,
- 		break;
- 	}
- 
-+	/* UBI ioctl set property */
-+	case UBI_IOCSETPROP:
-+	{
-+		struct ubi_set_prop_req req;
-+
-+		err = copy_from_user(&req, argp,
-+				sizeof(struct ubi_set_prop_req));
-+		if (err) {
-+			err = -EFAULT;
-+			break;
-+		}
-+		switch (req.property) {
-+		case UBI_PROP_DIRECT_WRITE:
-+			mutex_lock(&ubi->volumes_mutex);
-+			desc->vol->direct_writes = !!req.value;
-+			mutex_unlock(&ubi->volumes_mutex);
-+			break;
-+		default:
-+			err = -EINVAL;
-+			break;
-+		}
-+		break;
-+	}
-+
- 	default:
- 		err = -ENOTTY;
- 		break;
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 381f0e1..7acedfc 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -206,6 +206,7 @@ struct ubi_volume_desc;
-  * @upd_marker: %1 if the update marker is set for this volume
-  * @updating: %1 if the volume is being updated
-  * @changing_leb: %1 if the atomic LEB change ioctl command is in progress
-+ * @direct_writes: %1 if direct write operation are enabled for users
-  *
-  * @gluebi_desc: gluebi UBI volume descriptor
-  * @gluebi_refcount: reference count of the gluebi MTD device
-@@ -253,6 +254,7 @@ struct ubi_volume {
- 	unsigned int upd_marker:1;
- 	unsigned int updating:1;
- 	unsigned int changing_leb:1;
-+	unsigned int direct_writes:1;
- 
- #ifdef CONFIG_MTD_UBI_GLUEBI
- 	/*
-@@ -304,7 +306,8 @@ struct ubi_wl_entry;
-  * @vtbl_size: size of the volume table in bytes
-  * @vtbl: in-RAM volume table copy
-  * @volumes_mutex: protects on-flash volume table and serializes volume
-- *                 changes, like creation, deletion, update, re-size and re-name
-+ *                 changes, like creation, deletion, update, re-size,
-+ *                 re-name and set property
-  *
-  * @max_ec: current highest erase counter value
-  * @mean_ec: current mean erase counter value
-diff --git a/include/mtd/ubi-user.h b/include/mtd/ubi-user.h
-index 82113e1..aa2e24b 100644
---- a/include/mtd/ubi-user.h
-+++ b/include/mtd/ubi-user.h
-@@ -124,6 +124,14 @@
-  * To check if a logical eraseblock is mapped to a physical eraseblock, the
-  * %UBI_IOCEBISMAP ioctl command should be used. It returns %0 if the LEB is
-  * not mapped, and %1 if it is mapped.
-+ *
-+ * Set an UBI volume property
-+ * ~~~~~~~~~~~~~~~~~~~~~~~~~
-+ *
-+ * To set an UBI volume property the %UBI_IOCSETPROP ioctl command should be
-+ * used. A pointer to a &struct ubi_set_prop_req object is expected to be
-+ * passed. The ioctl sets the property and the value provided by the &struct
-+ * ubi_set_prop_req object.
-  */
- 
- /*
-@@ -175,6 +183,8 @@
- #define UBI_IOCEBUNMAP _IOW(UBI_VOL_IOC_MAGIC, 4, int32_t)
- /* Check if LEB is mapped command */
- #define UBI_IOCEBISMAP _IOR(UBI_VOL_IOC_MAGIC, 5, int32_t)
-+/* Set an UBI volume property */
-+#define UBI_IOCSETPROP _IOW(UBI_VOL_IOC_MAGIC, 6, struct ubi_set_prop_req)
- 
- /* Maximum MTD device name length supported by UBI */
- #define MAX_UBI_MTD_NAME_LEN 127
-@@ -210,6 +220,16 @@ enum {
- 	UBI_STATIC_VOLUME  = 4,
- };
- 
-+/*
-+ * UBI set property ioctl constants
-+ *
-+ * @UBI_PROP_DIRECT_WRITE: allow / disallow user to directly write and
-+ *                         erase individual eraseblocks on dynamic volumes
-+ */
-+enum {
-+       UBI_PROP_DIRECT_WRITE = 1,
-+};
-+
- /**
-  * struct ubi_attach_req - attach MTD device request.
-  * @ubi_num: UBI device number to create
-@@ -373,4 +393,18 @@ struct ubi_map_req {
- 	int8_t  padding[3];
- } __attribute__ ((packed));
- 
-+
-+/**
-+ * struct ubi_set_prop_req - a data structure used to set an ubi volume
-+ *                           property
-+ * @property: property to set (%UBI_PROP_DIRECT_WRITE)
-+ * @padding: reserved for future, not used, has to be zeroed
-+ * @value: value to set
-+ */
-+struct ubi_set_prop_req {
-+       uint8_t  property;
-+       uint8_t  padding[7];
-+       uint64_t value;
-+}  __attribute__ ((packed));
-+
- #endif /* __UBI_USER_H__ */
+thanks for noticing this. We've fixed the issue. You may find the fix in
+the linux-next branch of the ubifs-2.6.git tree:
+
+commit 6f7ab6d458bbfc2f55d295fa3e6b9e69cdb1d517
+Author: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Date:   Tue Jan 27 16:12:31 2009 +0200
+
+    UBIFS: fix no_chk_data_crc
+
+    When data CRC checking is disabled, UBIFS returns incorrect return
+    code from the 'try_read_node()' function (0 instead of 1, which means
+    CRC error), which make the caller re-read the data node again, but using
+    a different code patch, so the second read is fine. Thus, we read the
+    same node twice. And the result of this is that UBIFS is slower
+    with no_chk_data_crc option than it is with chk_data_crc option.
+    This patches fixes the problem.
+
+    Reported-by: Reuben Dowle <Reuben.Dowle@navico.com>
+    Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+
+This patch has also been pushed to all UBIFS back-port git trees.
+
 -- 
-1.6.1
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
