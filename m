@@ -1,18 +1,19 @@
-Received: from carallon.force9.co.uk ([80.229.37.120] helo=carallon.f9.co.uk)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LRrFE-0003Ea-3F
-	for linux-mtd@lists.infradead.org; Tue, 27 Jan 2009 16:57:02 +0000
-Received: from [127.0.0.1] by carallon.f9.co.uk (MDaemon PRO v9.6.5)
-	with ESMTP id md50000339027.msg
-	for <linux-mtd@lists.infradead.org>; Tue, 27 Jan 2009 16:56:38 +0000
-Message-ID: <497F3CBF.4000309@carallon.com>
-Date: Tue, 27 Jan 2009 16:56:31 +0000
-From: Will Wagner <will_wagner@carallon.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: NAND and JFFS2 newbie question
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from smtp1.linux-foundation.org ([140.211.169.13])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LRvH8-0004LG-8u
+	for linux-mtd@lists.infradead.org; Tue, 27 Jan 2009 21:15:17 +0000
+Date: Tue, 27 Jan 2009 13:14:54 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Subject: Re: [PATCH 2/5] RBTX4939: Add MTD support
+Message-Id: <20090127131454.d2f147df.akpm@linux-foundation.org>
+In-Reply-To: <1232460738-4714-2-git-send-email-anemo@mba.ocn.ne.jp>
+References: <1232460738-4714-2-git-send-email-anemo@mba.ocn.ne.jp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
+	dwmw2@infradead.org, ralf@linux-mips.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,55 +23,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+On Tue, 20 Jan 2009 23:12:16 +0900
+Atsushi Nemoto <anemo@mba.ocn.ne.jp> wrote:
 
-I have an arm iMx31 board with 128M of NAND flash. It all appears to be working however I 
-get a lot of error/warning messages and I'd just like to check I am doing things right.
+> +static void rbtx4939_flash_copy_from(struct map_info *map, void *to,
+> +				     unsigned long from, ssize_t len)
+> +{
+> +	u8 bdipsw = readb(rbtx4939_bdipsw_addr) & 0x0f;
+> +	unsigned char shift;
+> +	ssize_t curlen;
+> +
+> +	from += (unsigned long)map->virt;
+> +	if (bdipsw & 8) {
+> +		/* BOOT Mode: USER ROM1 / USER ROM2 */
+> +		shift = bdipsw & 3;
+> +		while (len) {
+> +			curlen = min((unsigned long)len,
+> +				     0x400000 -	(from & (0x400000 - 1)));
+> +			memcpy(to,
+> +			       (void *)((from & ~0xc00000) |
+> +					((((from >> 22) + shift) & 3) << 22)),
+> +			       curlen);
+> +			len -= curlen;
+> +			from += curlen;
+> +			to += curlen;
+> +		}
+> +		return;
+> +	}
+> +#ifdef __BIG_ENDIAN
+> +	if (bdipsw == 0) {
+> +		/* BOOT Mode: Monitor ROM */
+> +		while (len) {
+> +			curlen = min((unsigned long)len,
+> +				     0x400000 - (from & (0x400000 - 1)));
+> +			memcpy(to, (void *)(from ^ 0x400000), curlen);
+> +			len -= curlen;
+> +			from += curlen;
+> +			to += curlen;
+> +		}
+> +		return;
+> +	}
+> +#endif
+> +	memcpy(to, (void *)from, len);
+> +}
 
-The NAND chip is a ST NAND01G-B2B used in 8-bit mode which has 2048+64 byte pages and 128k 
-block size. Linux is 2.6.24.7 with Freescale patches for MTD support on the iMx31 chip.
+min_t is the preferred way of preventing that warning.
 
-I am wanting to create a JFFS2 partition on the device. The partition is created using:
+Well.  Actually the preferred way is to get the types right - often the
+code simply goofed, and people use casts/min_t to hide that.  But in
+this case, yes, casting literal constants to ssize_t would be a bit
+silly.
 
-mkfs.jffs2 -s 2 -e 128 -c 12 -o fs.jffs2 -r jffs2_fs
-
-Are these the correct arguments for the flash device I am using?
-
-On the target I then do:
- > flash_eraseall /dev/mtd4
-Erasing 128 Kibyte @ 5f60000 -- 99 % complete.
-Skipping bad block at 0x05f80000
-
-Skipping bad block at 0x05fa0000
-
-Skipping bad block at 0x05fc0000
-
-Skipping bad block at 0x05fe0000
-
- > nandwrite -p /dev/mtdblock4 fs.jffs2
-Writing data to block 0
-
- > mount -t jffs2 /dev/mtdblock4 /flashfs
-JFFS2 doesn't use OOB.
-CLEANMARKER node found at 0x00000000 has totlen 0xc != normal 0x0
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x05fc0010: 0xffff instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x05fe0010: 0xffff instead
-# nand_erase: attempt to erase a bad block at page 0x0000ff80
-Erase at 0x05fc0000 failed immediately: errno -5
-nand_erase: attempt to erase a bad block at page 0x0000ffc0
-Erase at 0x05fe0000 failed immediately: errno -5
-
-Does this seem right? Why doesn't it use OOB and why is the cleanmarker wrong?
-
-It all seems to be working but any advice on whether I am doing things write and if the 
-output is all acceptable warnings would be much appreciated.
-
-Thanks,
-
-Will
--- 
-------------------------------------------------------------------------
-Will Wagner                                     will_wagner@carallon.com
-Development Manager                      Office Tel: +44 (0)20 7371 2032
-Carallon Ltd, Studio G20, Shepherds Building, Rockley Rd, London W14 0DA
-------------------------------------------------------------------------
+--- a/arch/mips/txx9/rbtx4939/setup.c~mtd-rbtx4939-add-mtd-support-fix
++++ a/arch/mips/txx9/rbtx4939/setup.c
+@@ -335,7 +335,7 @@ static void rbtx4939_flash_copy_from(str
+ 		/* BOOT Mode: USER ROM1 / USER ROM2 */
+ 		shift = bdipsw & 3;
+ 		while (len) {
+-			curlen = min((unsigned long)len,
++			curlen = min_t(unsigned long, len,
+ 				     0x400000 -	(from & (0x400000 - 1)));
+ 			memcpy(to,
+ 			       (void *)((from & ~0xc00000) |
+@@ -351,7 +351,7 @@ static void rbtx4939_flash_copy_from(str
+ 	if (bdipsw == 0) {
+ 		/* BOOT Mode: Monitor ROM */
+ 		while (len) {
+-			curlen = min((unsigned long)len,
++			curlen = min_t(unsigned long, len,
+ 				     0x400000 - (from & (0x400000 - 1)));
+ 			memcpy(to, (void *)(from ^ 0x400000), curlen);
+ 			len -= curlen;
+_
