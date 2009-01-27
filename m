@@ -1,22 +1,18 @@
-Received: from mail-ew0-f20.google.com ([209.85.219.20])
+Received: from carallon.force9.co.uk ([80.229.37.120] helo=carallon.f9.co.uk)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LRomD-0005vs-6F
-	for linux-mtd@lists.infradead.org; Tue, 27 Jan 2009 14:18:56 +0000
-Received: by ewy13 with SMTP id 13so1835723ewy.18
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 27 Jan 2009 06:18:51 -0800 (PST)
+	id 1LRrFE-0003Ea-3F
+	for linux-mtd@lists.infradead.org; Tue, 27 Jan 2009 16:57:02 +0000
+Received: from [127.0.0.1] by carallon.f9.co.uk (MDaemon PRO v9.6.5)
+	with ESMTP id md50000339027.msg
+	for <linux-mtd@lists.infradead.org>; Tue, 27 Jan 2009 16:56:38 +0000
+Message-ID: <497F3CBF.4000309@carallon.com>
+Date: Tue, 27 Jan 2009 16:56:31 +0000
+From: Will Wagner <will_wagner@carallon.com>
 MIME-Version: 1.0
-In-Reply-To: <1233061619.7085.14.camel@localhost.localdomain>
-References: <1233047506-30435-1-git-send-email-seed@uffs.org>
-	<1233061619.7085.14.camel@localhost.localdomain>
-Date: Tue, 27 Jan 2009 15:18:50 +0100
-Message-ID: <71cd59b00901270618q78f9c711q89f13f5828358236@mail.gmail.com>
-Subject: Re: [PATCH] UBI: ioctl instead of CONFIG_MTD_UBI_DEBUG_USERSPACE_IO
-From: Corentin Chary <corentin.chary@gmail.com>
-To: dedekind@infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+To: linux-mtd@lists.infradead.org
+Subject: NAND and JFFS2 newbie question
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Sidney Amani <seed@uffs.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,34 +22,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 27, 2009 at 2:06 PM, Artem Bityutskiy
-<dedekind@infradead.org> wrote:
-> On Tue, 2009-01-27 at 10:11 +0100, Sidney Amani wrote:
->> Introduce a new ioctl UBI_IOCSETPROP to set properties
->> on a volume. Also add the first property:
->> UBI_PROP_DIRECT_WRITE, this property is used to set the
->> ability to use direct writes in userspace
->>
->> Signed-off-by: Sidney Amani <seed@uffs.org>
->> Signed-off-by: Corentin Chary <corentincj@iksaif.net>
->
-> But I have to warn you, that now you are responsible for writing
-> eraseblocks properly:
->
-> 1. Sequentially, from the beginning to the end.
-> 2. Writes have to be aligned to min I/O unit size
-> 3. You cannot write more than once to the same place
->
-> Be careful.
+Hi All,
 
-We are aware of that =).
-We are currently working on a libubi in userspace wich will provide
-the same interface the kernel does (and will also do the same checks:
-aligned writes, etc ...). It should be finished this week. I'll send a
-mail here when it's done.
+I have an arm iMx31 board with 128M of NAND flash. It all appears to be working however I 
+get a lot of error/warning messages and I'd just like to check I am doing things right.
 
-Thanks.
+The NAND chip is a ST NAND01G-B2B used in 8-bit mode which has 2048+64 byte pages and 128k 
+block size. Linux is 2.6.24.7 with Freescale patches for MTD support on the iMx31 chip.
 
+I am wanting to create a JFFS2 partition on the device. The partition is created using:
+
+mkfs.jffs2 -s 2 -e 128 -c 12 -o fs.jffs2 -r jffs2_fs
+
+Are these the correct arguments for the flash device I am using?
+
+On the target I then do:
+ > flash_eraseall /dev/mtd4
+Erasing 128 Kibyte @ 5f60000 -- 99 % complete.
+Skipping bad block at 0x05f80000
+
+Skipping bad block at 0x05fa0000
+
+Skipping bad block at 0x05fc0000
+
+Skipping bad block at 0x05fe0000
+
+ > nandwrite -p /dev/mtdblock4 fs.jffs2
+Writing data to block 0
+
+ > mount -t jffs2 /dev/mtdblock4 /flashfs
+JFFS2 doesn't use OOB.
+CLEANMARKER node found at 0x00000000 has totlen 0xc != normal 0x0
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x05fc0010: 0xffff instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x05fe0010: 0xffff instead
+# nand_erase: attempt to erase a bad block at page 0x0000ff80
+Erase at 0x05fc0000 failed immediately: errno -5
+nand_erase: attempt to erase a bad block at page 0x0000ffc0
+Erase at 0x05fe0000 failed immediately: errno -5
+
+Does this seem right? Why doesn't it use OOB and why is the cleanmarker wrong?
+
+It all seems to be working but any advice on whether I am doing things write and if the 
+output is all acceptable warnings would be much appreciated.
+
+Thanks,
+
+Will
 -- 
-Corentin Chary
-http://xf.iksaif.net
+------------------------------------------------------------------------
+Will Wagner                                     will_wagner@carallon.com
+Development Manager                      Office Tel: +44 (0)20 7371 2032
+Carallon Ltd, Studio G20, Shepherds Building, Rockley Rd, London W14 0DA
+------------------------------------------------------------------------
