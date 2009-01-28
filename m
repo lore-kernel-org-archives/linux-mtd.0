@@ -1,16 +1,18 @@
-Message-ID: <4980165A.3070805@nokia.com>
-Date: Wed, 28 Jan 2009 10:24:58 +0200
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Received: from mail.kernelconcepts.de ([212.60.202.196])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LS9Xy-0003pL-KK
+	for linux-mtd@lists.infradead.org; Wed, 28 Jan 2009 12:29:37 +0000
+Message-ID: <49804FA3.7010604@kernelconcepts.de>
+Date: Wed, 28 Jan 2009 13:29:23 +0100
+From: Nils Faerber <nils.faerber@kernelconcepts.de>
 MIME-Version: 1.0
-To: "kyungmin78@gmail.com" <kyungmin78@gmail.com>
-Subject: Re: UBIFS volume corruption (bad node at LEB 0:0)
-References: <8EEAB966-52F4-48A3-8FCA-A50BBE8486B7@b2n.ca>	<1232961503.22350.89.camel@localhost.localdomain>
-	<9c9fda240901271820x23993c55hba3fa5078ea6426@mail.gmail.com>
-In-Reply-To: <9c9fda240901271820x23993c55hba3fa5078ea6426@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: Will Wagner <will_wagner@carallon.com>
+Subject: Re: NAND and JFFS2 newbie question
+References: <497F3CBF.4000309@carallon.com>
+In-Reply-To: <497F3CBF.4000309@carallon.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: David Bergeron <mho.linux-mtd@b2n.ca>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,66 +22,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Kyungmin Park wrote:
-> Hi,
+Will Wagner schrieb:
+> Hi All,
 > 
-> On Mon, Jan 26, 2009 at 6:18 PM, Artem Bityutskiy
-> <dedekind@infradead.org> wrote:
->> On Wed, 2009-01-07 at 23:13 -0500, David Bergeron wrote:
->>> Hello all,
->>>
->>> I'm getting some sort of volume corruption problem with UBIFS after
->>> doing
->>> rootfs updates using rsync.
->>>
->>> I've cooked up a minimalist test trying to eliminate possible
->>> interference.
->>> The following steps will trigger the corruption almost every time.
->>> No
->>> errors
->>> or warnings are produced during this procedure, every step behaves
->>> as
->>> expected:
->> David,
->>
->> we think we've fixed this bug. The reason was that when mounting RO,
->> then re-mounting read-write, the orphan sub-system was not properly
->> initialized. The fix is available at the ubifs-v2.6.28.git tree. I've
->> back-ported all stable changes and fixes to the tree. You need this fix:
->>
->> commit b3718eedf4ab91307f64a79ad8eb911ca401bd22
->> Author: Adrian Hunter <ext-adrian.hunter@nokia.com>
->> Date:   Mon Jan 26 10:55:40 2009 +0200
->>
->>    UBIFS: ensure orphan area head is initialized
->>
->>    When mounting read-only the orphan area head is
->>    not initialized.  It must be initialized when
->>    remounting read/write, but it was not.  This patch
->>    fixes that.
->>
->>    [Artem: sorry, added comment tweaking noise]
->>    Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
->>    Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
->>
->> However, I recommend you to incorporate all UBI/UBIFS changes since
->> 2.6.28, because there were other bug-fixes.
->>
->> You may find information about back-port trees here:
->> http://www.linux-mtd.infradead.org/doc/ubifs.html#L_source
->>
->> Please, send us some feed-back about whether your problem has been
->> solved.
->>
+> I have an arm iMx31 board with 128M of NAND flash. It all appears to be working however I 
+> get a lot of error/warning messages and I'd just like to check I am doing things right.
 > 
-> I got the similar problem with orphan node handling. with this patch,
-> it's solved. but there are strange ones.
+> The NAND chip is a ST NAND01G-B2B used in 8-bit mode which has 2048+64 byte pages and 128k 
+> block size. Linux is 2.6.24.7 with Freescale patches for MTD support on the iMx31 chip.
 > 
-> I boot with ubifs with ro mode. and then I remount it as rw. after
-> some work, I remount it as ro. at that case.
-> It displayed "Device busy" so I can't change the mode. Did you have any clue?
+> I am wanting to create a JFFS2 partition on the device. The partition is created using:
+> 
+> mkfs.jffs2 -s 2 -e 128 -c 12 -o fs.jffs2 -r jffs2_fs
 
-Speaking of orphans, it is not possible to remount rw->ro with files that are
-pending for deletion on any file system e.g. open file, unlink it, try to
-remount ro => device busy error.  The unlinked file must be closed first so
-that the file system can delete it.
+I guess one of the problems will be that the sizes you specified are way
+too small. Fomr the man-page of mkfs.jffs2:
+"Options that take SIZE arguments can be specified as either decimal
+(e.g., 65536), octal (0200000), or hexidecimal (0x1000)"
+
+So for an eraseblocksize of 128kbytes you would specify "-e 131072".
+
+Wrong settings can confuse jffs2 pretty easily.
+
+> Thanks,
+> Will
+Cheers
+  nils faerber
+
+-- 
+kernel concepts GbR        Tel: +49-271-771091-12
+Sieghuetter Hauptweg 48    Fax: +49-271-771091-19
+D-57072 Siegen             Mob: +49-176-21024535
+http://www.kernelconcepts.de
