@@ -1,19 +1,23 @@
-Received: from smtp1.linux-foundation.org ([140.211.169.13])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LRvH8-0004LG-8u
-	for linux-mtd@lists.infradead.org; Tue, 27 Jan 2009 21:15:17 +0000
-Date: Tue, 27 Jan 2009 13:14:54 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-Subject: Re: [PATCH 2/5] RBTX4939: Add MTD support
-Message-Id: <20090127131454.d2f147df.akpm@linux-foundation.org>
-In-Reply-To: <1232460738-4714-2-git-send-email-anemo@mba.ocn.ne.jp>
-References: <1232460738-4714-2-git-send-email-anemo@mba.ocn.ne.jp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from mail-gx0-f20.google.com ([209.85.217.20])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LS02K-00071g-9p
+	for linux-mtd@lists.infradead.org; Wed, 28 Jan 2009 02:20:31 +0000
+Received: by gxk13 with SMTP id 13so5941993gxk.18
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 27 Jan 2009 18:20:14 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1232961503.22350.89.camel@localhost.localdomain>
+References: <8EEAB966-52F4-48A3-8FCA-A50BBE8486B7@b2n.ca>
+	<1232961503.22350.89.camel@localhost.localdomain>
+Date: Wed, 28 Jan 2009 11:20:14 +0900
+Message-ID: <9c9fda240901271820x23993c55hba3fa5078ea6426@mail.gmail.com>
+Subject: Re: UBIFS volume corruption (bad node at LEB 0:0)
+From: Kyungmin Park <kyungmin78@gmail.com>
+To: dedekind@infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
-	dwmw2@infradead.org, ralf@linux-mips.org, linux-kernel@vger.kernel.org
+Cc: David Bergeron <mho.linux-mtd@b2n.ca>, linux-mtd@lists.infradead.org
+Reply-To: kyungmin78@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,75 +27,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 20 Jan 2009 23:12:16 +0900
-Atsushi Nemoto <anemo@mba.ocn.ne.jp> wrote:
+Hi,
 
-> +static void rbtx4939_flash_copy_from(struct map_info *map, void *to,
-> +				     unsigned long from, ssize_t len)
-> +{
-> +	u8 bdipsw = readb(rbtx4939_bdipsw_addr) & 0x0f;
-> +	unsigned char shift;
-> +	ssize_t curlen;
-> +
-> +	from += (unsigned long)map->virt;
-> +	if (bdipsw & 8) {
-> +		/* BOOT Mode: USER ROM1 / USER ROM2 */
-> +		shift = bdipsw & 3;
-> +		while (len) {
-> +			curlen = min((unsigned long)len,
-> +				     0x400000 -	(from & (0x400000 - 1)));
-> +			memcpy(to,
-> +			       (void *)((from & ~0xc00000) |
-> +					((((from >> 22) + shift) & 3) << 22)),
-> +			       curlen);
-> +			len -= curlen;
-> +			from += curlen;
-> +			to += curlen;
-> +		}
-> +		return;
-> +	}
-> +#ifdef __BIG_ENDIAN
-> +	if (bdipsw == 0) {
-> +		/* BOOT Mode: Monitor ROM */
-> +		while (len) {
-> +			curlen = min((unsigned long)len,
-> +				     0x400000 - (from & (0x400000 - 1)));
-> +			memcpy(to, (void *)(from ^ 0x400000), curlen);
-> +			len -= curlen;
-> +			from += curlen;
-> +			to += curlen;
-> +		}
-> +		return;
-> +	}
-> +#endif
-> +	memcpy(to, (void *)from, len);
-> +}
+On Mon, Jan 26, 2009 at 6:18 PM, Artem Bityutskiy
+<dedekind@infradead.org> wrote:
+> On Wed, 2009-01-07 at 23:13 -0500, David Bergeron wrote:
+>> Hello all,
+>>
+>> I'm getting some sort of volume corruption problem with UBIFS after
+>> doing
+>> rootfs updates using rsync.
+>>
+>> I've cooked up a minimalist test trying to eliminate possible
+>> interference.
+>> The following steps will trigger the corruption almost every time.
+>> No
+>> errors
+>> or warnings are produced during this procedure, every step behaves
+>> as
+>> expected:
+>
+> David,
+>
+> we think we've fixed this bug. The reason was that when mounting RO,
+> then re-mounting read-write, the orphan sub-system was not properly
+> initialized. The fix is available at the ubifs-v2.6.28.git tree. I've
+> back-ported all stable changes and fixes to the tree. You need this fix:
+>
+> commit b3718eedf4ab91307f64a79ad8eb911ca401bd22
+> Author: Adrian Hunter <ext-adrian.hunter@nokia.com>
+> Date:   Mon Jan 26 10:55:40 2009 +0200
+>
+>    UBIFS: ensure orphan area head is initialized
+>
+>    When mounting read-only the orphan area head is
+>    not initialized.  It must be initialized when
+>    remounting read/write, but it was not.  This patch
+>    fixes that.
+>
+>    [Artem: sorry, added comment tweaking noise]
+>    Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+>    Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+>
+> However, I recommend you to incorporate all UBI/UBIFS changes since
+> 2.6.28, because there were other bug-fixes.
+>
+> You may find information about back-port trees here:
+> http://www.linux-mtd.infradead.org/doc/ubifs.html#L_source
+>
+> Please, send us some feed-back about whether your problem has been
+> solved.
+>
 
-min_t is the preferred way of preventing that warning.
+I got the similar problem with orphan node handling. with this patch,
+it's solved. but there are strange ones.
 
-Well.  Actually the preferred way is to get the types right - often the
-code simply goofed, and people use casts/min_t to hide that.  But in
-this case, yes, casting literal constants to ssize_t would be a bit
-silly.
+I boot with ubifs with ro mode. and then I remount it as rw. after
+some work, I remount it as ro. at that case.
+It displayed "Device busy" so I can't change the mode. Did you have any clue?
 
---- a/arch/mips/txx9/rbtx4939/setup.c~mtd-rbtx4939-add-mtd-support-fix
-+++ a/arch/mips/txx9/rbtx4939/setup.c
-@@ -335,7 +335,7 @@ static void rbtx4939_flash_copy_from(str
- 		/* BOOT Mode: USER ROM1 / USER ROM2 */
- 		shift = bdipsw & 3;
- 		while (len) {
--			curlen = min((unsigned long)len,
-+			curlen = min_t(unsigned long, len,
- 				     0x400000 -	(from & (0x400000 - 1)));
- 			memcpy(to,
- 			       (void *)((from & ~0xc00000) |
-@@ -351,7 +351,7 @@ static void rbtx4939_flash_copy_from(str
- 	if (bdipsw == 0) {
- 		/* BOOT Mode: Monitor ROM */
- 		while (len) {
--			curlen = min((unsigned long)len,
-+			curlen = min_t(unsigned long, len,
- 				     0x400000 - (from & (0x400000 - 1)));
- 			memcpy(to, (void *)(from ^ 0x400000), curlen);
- 			len -= curlen;
-_
+Thank you,
+Kyungmin Park
