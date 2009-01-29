@@ -1,28 +1,19 @@
-Received: from mk-filter-1-a-1.mail.uk.tiscali.com ([212.74.100.52])
+Received: from 85-125-81-139.sh-erlachgasse.sh-wien.inode.at ([85.125.81.139]
+	helo=eval4)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LSUFX-00049J-69
-	for linux-mtd@lists.infradead.org; Thu, 29 Jan 2009 10:36:08 +0000
-Message-ID: <509354d63a44246cefe01bd35eb1374c.squirrel@newgolddream.dyndns.info>
-In-Reply-To: <20090129025754.GC31096@linux-sh.org>
-References: <1233186456.6734.16.camel@localhost.localdomain>
-	<1233187069.6734.21.camel@localhost.localdomain>
-	<1233187750.6734.27.camel@localhost.localdomain>
-	<1233188287.6734.32.camel@localhost.localdomain>
-	<20090129025754.GC31096@linux-sh.org>
-Date: Thu, 29 Jan 2009 10:34:43 -0000 (UTC)
-Subject: Re: [PATCH RFC] sh: maple: Add support for SEGA Dreamcast VMU and
-	clean up maple bus driver (3/3)
-From: "Adrian McMenamin" <adrian@newgolddream.dyndns.info>
-To: "Paul Mundt" <lethal@linux-sh.org>,
-	"Adrian McMenamin" <adrian@newgolddream.dyndns.info>,
-	"Greg KH" <greg@kroah.com>, "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
-	"dwmw2" <dwmw2@infradead.org>, "linux-sh" <linux-sh@vger.kernel.org>,
-	"LKML" <linux-kernel@vger.kernel.org>,
-	"linux-input" <linux-input@vger.kernel.org>,
-	"MTD" <linux-mtd@lists.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-15
-Content-Transfer-Encoding: 8bit
+	id 1LScLr-00076B-KQ
+	for linux-mtd@lists.infradead.org; Thu, 29 Jan 2009 19:15:02 +0000
+To: expo@medi.ru, linux-mtd@lists.infradead.org,
+	shannon@bradfordareaschools.org, student@sie.arizona.edu,
+	office@gasthof-boeck.at, pastlife@empirenet.com,
+	redandwhite@volny.cz, younga@nonprofitalliance.org,
+	klarose@comsys.com, randy.bloom@wcg.org, ptlpearl@nahealth.com,
+	sophiaxu@sunlink.biz
+From: "" <dontemailhere@85-125-81-139.sh-erlachgasse.sh-wien.inode.at>
+Subject: ***BULK*** Physician Marketing List
+Message-ID: <EVAL46QcWY9pgXVWz1j00001ffd@eval4>
+Date: 29 Jan 2009 20:15:21 +0100
+Reply-To: noreplyplease@wellpricedlists.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,18 +23,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, January 29, 2009 2:57 am, Paul Mundt wrote:
-> On Thu, Jan 29, 2009 at 12:18:07AM +0000, Adrian McMenamin wrote:
->> +	if (!(mdev->function & MAPLE_FUNC_KEYBOARD)) {
->> +		error = EINVAL;
->> +		goto fail;
->> +	}
->>
-> What is this all about? If the function doesn't match, you should never
-> enter the probe routine in the first place. The bus code should already
-> get this right.
->
+Currently Practicing MDs in America 
 
-It does, it is a fragment of old code from when the bus code was wrong
-which for reasons which pass understanding I rewrote rather than just
-excised.
+Coverage in many different areas of medicine such as Endocrinology, Pathology, Urology, Neurology, Plastic Surgery, Psychiatry, Cardiology and much more 
+
+you can sort by many different fields like city, state or zip
+
+Reduced to only: $397
+
+
+=== Also you will get this data below with your purchase: <><><>
+
+>> Chiropractors
+
+**> Physical Therapists
+
+<> Massage Therapists
+
+==> Acupuncturists
+
+area representative:: Stewart@mylistsource.com
+  
+this offer is only valid until Jan 30 2009 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   to terminate please send a blank message to disable@mylistsource.com
