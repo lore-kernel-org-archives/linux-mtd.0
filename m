@@ -1,26 +1,28 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LSLSn-00082z-6f
-	for linux-mtd@lists.infradead.org; Thu, 29 Jan 2009 01:13:03 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-To: Adrian McMenamin <adrian@newgolddream.dyndns.info>
-Subject: Re: [PATCH RFC] sh: maple: Add support for SEGA Dreamcast VMU and
-	clean up maple bus driver (2/3)
-Date: Wed, 28 Jan 2009 20:12:54 -0500
+Received: from mk-filter-1-a-1.mail.uk.tiscali.com ([212.74.100.52])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LSUFX-00049J-69
+	for linux-mtd@lists.infradead.org; Thu, 29 Jan 2009 10:36:08 +0000
+Message-ID: <509354d63a44246cefe01bd35eb1374c.squirrel@newgolddream.dyndns.info>
+In-Reply-To: <20090129025754.GC31096@linux-sh.org>
 References: <1233186456.6734.16.camel@localhost.localdomain>
-	<200901281944.57894.vapier@gentoo.org>
-	<1233190170.6734.36.camel@localhost.localdomain>
-In-Reply-To: <1233190170.6734.36.camel@localhost.localdomain>
+	<1233187069.6734.21.camel@localhost.localdomain>
+	<1233187750.6734.27.camel@localhost.localdomain>
+	<1233188287.6734.32.camel@localhost.localdomain>
+	<20090129025754.GC31096@linux-sh.org>
+Date: Thu, 29 Jan 2009 10:34:43 -0000 (UTC)
+Subject: Re: [PATCH RFC] sh: maple: Add support for SEGA Dreamcast VMU and
+	clean up maple bus driver (3/3)
+From: "Adrian McMenamin" <adrian@newgolddream.dyndns.info>
+To: "Paul Mundt" <lethal@linux-sh.org>,
+	"Adrian McMenamin" <adrian@newgolddream.dyndns.info>,
+	"Greg KH" <greg@kroah.com>, "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
+	"dwmw2" <dwmw2@infradead.org>, "linux-sh" <linux-sh@vger.kernel.org>,
+	"LKML" <linux-kernel@vger.kernel.org>,
+	"linux-input" <linux-input@vger.kernel.org>,
+	"MTD" <linux-mtd@lists.infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1586976.Qj0ey7Ajbh";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-Message-Id: <200901282012.56699.vapier@gentoo.org>
-Cc: linux-sh <linux-sh@vger.kernel.org>, Greg KH <greg@kroah.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	LKML <linux-kernel@vger.kernel.org>, Paul Mundt <lethal@linux-sh.org>,
-	MTD <linux-mtd@lists.infradead.org>,
-	linux-input <linux-input@vger.kernel.org>, dwmw2 <dwmw2@infradead.org>
+Content-Type: text/plain;charset=iso-8859-15
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,47 +32,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---nextPart1586976.Qj0ey7Ajbh
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-On Wednesday 28 January 2009 19:49:30 Adrian McMenamin wrote:
-> On Wed, 2009-01-28 at 19:44 -0500, Mike Frysinger wrote:
-> > On Wednesday 28 January 2009 19:09:10 Adrian McMenamin wrote:
-> > > +static struct maple_driver vmu_flash_driver = {
-> > > +	.function =	MAPLE_FUNC_MEMCARD,
-> > > +	.drv = {
-> > > +		.name =		"Dreamcast_visual_memory",
-> >
-> > i thought there was like a 16byte limit or something on this ?
+On Thu, January 29, 2009 2:57 am, Paul Mundt wrote:
+> On Thu, Jan 29, 2009 at 12:18:07AM +0000, Adrian McMenamin wrote:
+>> +	if (!(mdev->function & MAPLE_FUNC_KEYBOARD)) {
+>> +		error = EINVAL;
+>> +		goto fail;
+>> +	}
+>>
+> What is this all about? If the function doesn't match, you should never
+> enter the probe routine in the first place. The bus code should already
+> get this right.
 >
-> Don't think so, it's just a const char* isn't it?
 
-yeah, looks like.  not sure what i remember.
--mike
-
---nextPart1586976.Qj0ey7Ajbh
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
-
-iQIcBAABAgAGBQJJgQKYAAoJEEFjO5/oN/WBuasQAJyBRG8GcuCDrYc49MXpbpoh
-Yf/mR628/d71apzAQACOiIerICXWlKUY/OloGQtUUeByCQJSBPtKRNKjFyVM4t3p
-hT9KY6fcmGlD84fQ7cBBCYhj7hiWZOj0r3oKw0Dmo2WjyTDTL3BnXFvuxwSaTGL2
-yxfDCvzfin8KU3/2IKOy5wss7pe7RilHrxreW+X3v0X2Zd6eDgHUDcYyU0Cqi7lH
-hhjnjMuQHQDI1PSOvZ0mDPsOnoilgFOg79iI9n5MF3D9DwotsXtzqmbJ/Oinvenr
-gk74XZ2xsaXM9aYxD8I2mFL6KE+31PhmHFasvhy88l7NSsRk8Tn+SmqVLLz5oAgI
-Ytf6nKGGoNJDWsAA7Qq2ALmy4X36IdToq7+QPZmGg8WZqLjznfAxTrdzfdeRd4dT
-lkoe8q7MhbEtdbJkhg3ZrNR8Y0058z+zLZGI1wSfZSOc10CUixQV1xCDvppmhEPH
-XgIvK96EmPTBP1TTb5ySRmaf6Qd6ZI2yBMA9DsOZUHosDartwdIKaaLI3lDvM9Lt
-koXTSaYZ3SzB0xsUy4OzTNjJRw6npPT8M58SgAAXWuaCpNWlbpXI0yzhJX/C29Qn
-h/gu2ho1ML2XUNTHDAcT1P8k7GMqj8BHmQ00JZK6c/CwpQXtSt4DXCNCf1jLw43t
-49UpsmV13u/4TBNF4XBD
-=5Oby
------END PGP SIGNATURE-----
-
---nextPart1586976.Qj0ey7Ajbh--
+It does, it is a fragment of old code from when the bus code was wrong
+which for reasons which pass understanding I rewrote rather than just
+excised.
