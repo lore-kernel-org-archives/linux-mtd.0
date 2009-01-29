@@ -1,21 +1,21 @@
 Received: from smtp.gentoo.org ([140.211.166.183])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LSL1i-0002Fx-UC
-	for linux-mtd@lists.infradead.org; Thu, 29 Jan 2009 00:45:05 +0000
+	id 1LSLSn-00082z-6f
+	for linux-mtd@lists.infradead.org; Thu, 29 Jan 2009 01:13:03 +0000
 From: Mike Frysinger <vapier@gentoo.org>
 To: Adrian McMenamin <adrian@newgolddream.dyndns.info>
 Subject: Re: [PATCH RFC] sh: maple: Add support for SEGA Dreamcast VMU and
 	clean up maple bus driver (2/3)
-Date: Wed, 28 Jan 2009 19:44:55 -0500
+Date: Wed, 28 Jan 2009 20:12:54 -0500
 References: <1233186456.6734.16.camel@localhost.localdomain>
-	<1233187069.6734.21.camel@localhost.localdomain>
-	<1233187750.6734.27.camel@localhost.localdomain>
-In-Reply-To: <1233187750.6734.27.camel@localhost.localdomain>
+	<200901281944.57894.vapier@gentoo.org>
+	<1233190170.6734.36.camel@localhost.localdomain>
+In-Reply-To: <1233190170.6734.36.camel@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart5751798.d1G9QpNVWd";
+Content-Type: multipart/signed; boundary="nextPart1586976.Qj0ey7Ajbh";
 	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
-Message-Id: <200901281944.57894.vapier@gentoo.org>
+Message-Id: <200901282012.56699.vapier@gentoo.org>
 Cc: linux-sh <linux-sh@vger.kernel.org>, Greg KH <greg@kroah.com>,
 	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
 	LKML <linux-kernel@vger.kernel.org>, Paul Mundt <lethal@linux-sh.org>,
@@ -30,41 +30,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---nextPart5751798.d1G9QpNVWd
+--nextPart1586976.Qj0ey7Ajbh
 Content-Type: text/plain;
   charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-On Wednesday 28 January 2009 19:09:10 Adrian McMenamin wrote:
-> +static struct maple_driver vmu_flash_driver = {
-> +	.function =	MAPLE_FUNC_MEMCARD,
-> +	.drv = {
-> +		.name =		"Dreamcast_visual_memory",
+On Wednesday 28 January 2009 19:49:30 Adrian McMenamin wrote:
+> On Wed, 2009-01-28 at 19:44 -0500, Mike Frysinger wrote:
+> > On Wednesday 28 January 2009 19:09:10 Adrian McMenamin wrote:
+> > > +static struct maple_driver vmu_flash_driver = {
+> > > +	.function =	MAPLE_FUNC_MEMCARD,
+> > > +	.drv = {
+> > > +		.name =		"Dreamcast_visual_memory",
+> >
+> > i thought there was like a 16byte limit or something on this ?
+>
+> Don't think so, it's just a const char* isn't it?
 
-i thought there was like a 16byte limit or something on this ?
+yeah, looks like.  not sure what i remember.
 -mike
 
---nextPart5751798.d1G9QpNVWd
+--nextPart1586976.Qj0ey7Ajbh
 Content-Type: application/pgp-signature; name=signature.asc 
 Content-Description: This is a digitally signed message part.
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.9 (GNU/Linux)
 
-iQIcBAABAgAGBQJJgPwJAAoJEEFjO5/oN/WB7WoQAIdrOqh+Lprp/P1q8n5dZmH1
-+PxDZu7ZBqiL5qr+BCS3ltAvPYtZt4Ajvn78ypx4fzegH0NVZdXMQ6kvLs5JKRnY
-bLR4yXP0tBeaFXF80o4FFHxr7VPrMMXIaQUovgKagN87988km4RRRhBCQCzEfzGv
-FeVtilrzxkCYFsg2noCThoEFWdx03QOMlrcx50IQUhtj2hWR/qegh0vIoBDwjCxf
-viTYFunr3DqT1SfgzYFBaFFJB/vxAV8fQGLl8GrhRCHgwMcB9E2+WNOLYA5WL+uW
-+MvF+T+/MhY5QU3ztKAODAOR9ycl72eX5aMzx39vJhRWTIt62nzftvfy7MHW0pq9
-J3MVH9nJSJpPoEvLca9VjlpexOzy8+4EvUIL53bcaGJpGHuA8m0/unQci4GuYMRY
-LsjNvGLCbz+XUolNe6oOIwnMMMQb+YYjz7eaRRU4ov9+ZqGCJfUiIgSUoZN9U86v
-cIWRBazjow2EXt8iwz+DOHJXdNgbtUZu25dpL1foU79T81f6TpfaVsoCsnfKhpdE
-1ewteCXUjAeQR9Cd/CwDTk8/gQabYutJMtjz5Uh/4i48S0wtgSOew/GaTnsaUAXJ
-uJtCJJ/Mrq4G8DyULkTQa+b3Zv79Iy7wAbZwZAfXXYJ6sXBf+jD3+mc43nkwt+j5
-6RWyfz99uZR4X0RVEEsE
-=iCdt
+iQIcBAABAgAGBQJJgQKYAAoJEEFjO5/oN/WBuasQAJyBRG8GcuCDrYc49MXpbpoh
+Yf/mR628/d71apzAQACOiIerICXWlKUY/OloGQtUUeByCQJSBPtKRNKjFyVM4t3p
+hT9KY6fcmGlD84fQ7cBBCYhj7hiWZOj0r3oKw0Dmo2WjyTDTL3BnXFvuxwSaTGL2
+yxfDCvzfin8KU3/2IKOy5wss7pe7RilHrxreW+X3v0X2Zd6eDgHUDcYyU0Cqi7lH
+hhjnjMuQHQDI1PSOvZ0mDPsOnoilgFOg79iI9n5MF3D9DwotsXtzqmbJ/Oinvenr
+gk74XZ2xsaXM9aYxD8I2mFL6KE+31PhmHFasvhy88l7NSsRk8Tn+SmqVLLz5oAgI
+Ytf6nKGGoNJDWsAA7Qq2ALmy4X36IdToq7+QPZmGg8WZqLjznfAxTrdzfdeRd4dT
+lkoe8q7MhbEtdbJkhg3ZrNR8Y0058z+zLZGI1wSfZSOc10CUixQV1xCDvppmhEPH
+XgIvK96EmPTBP1TTb5ySRmaf6Qd6ZI2yBMA9DsOZUHosDartwdIKaaLI3lDvM9Lt
+koXTSaYZ3SzB0xsUy4OzTNjJRw6npPT8M58SgAAXWuaCpNWlbpXI0yzhJX/C29Qn
+h/gu2ho1ML2XUNTHDAcT1P8k7GMqj8BHmQ00JZK6c/CwpQXtSt4DXCNCf1jLw43t
+49UpsmV13u/4TBNF4XBD
+=5Oby
 -----END PGP SIGNATURE-----
 
---nextPart5751798.d1G9QpNVWd--
+--nextPart1586976.Qj0ey7Ajbh--
