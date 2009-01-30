@@ -1,27 +1,18 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
+Received: from mailbox-us-s-12.mailhostingserver.com ([75.125.101.9])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LSsko-0003Ye-1a
-	for linux-mtd@lists.infradead.org; Fri, 30 Jan 2009 12:45:52 +0000
-Received: from ep_ms13_bk (mailout1.samsung.com [203.254.224.24])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KEA00GJ2BFZT9@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 30 Jan 2009 21:45:35 +0900 (KST)
-Received: from ep_spt04 (ms13.samsung.com [203.254.225.109])
-	by ms13.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTP id <0KEA00JLPBFXZK@ms13.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 30 Jan 2009 21:45:34 +0900 (KST)
-Content-return: prohibited
-Date: Fri, 30 Jan 2009 12:45:35 +0000 (GMT)
-From: BRIJESH SINGH <brij.singh@samsung.com>
-Subject: Regarding UBI scalability
-To: linux-mtd@lists.infradead.org
-Message-id: <31956721.196931233319535527.JavaMail.weblogic@epml10>
-MIME-version: 1.0
-MIME-version: 1.0
-Content-type: text/plain; charset=windows-1252
-Content-transfer-encoding: base64
-Reply-To: brij.singh@samsung.com
+	id 1LSteY-0004g9-1q
+	for linux-mtd@lists.infradead.org; Fri, 30 Jan 2009 13:43:29 +0000
+Date: Fri, 30 Jan 2009 14:43:18 +0100
+From: Matthias Kaehlcke <matthias@kaehlcke.net>
+To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Subject: [BUG] physmap_flash_probe() frees memory still in use
+Message-ID: <20090130134317.GV9390@traven>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mtd@lists.infradead.org,
+	David Woodhouse <David.Woodhouse@intel.com>,
+	Mike Frysinger <vapier.adi@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,14 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksDQogICAgSSBoYXZlIGdvbmUgdGhyb3VnaCBVQkkgZG9jdW1lbnRhdGlvbiB3aGljaCBjbGVh
-cmx5IG1lbnRpb25zIHRoYXQgVUJJIGRvZXNuJ3Qgc2NhbGUgdmVyeSB3ZWxsLihCb290IHRpbWUg
-YW5kIE1lbW9yeSBjb25zdW1wdGlvbiBpbmNyZWFzZXMgd2l0aCBzaXplIG9mIGRldmljZS4pVGhp
-cyBpcyB2ZXJ5IHNpbWlsYXIgdG8gSkZGUzIgc2NhbGFiaWxpdHkgaXNzdWVzLiBMb2csIGpvdXJu
-YWwobGlrZSBVQklGUyBMUFQpICBjb21iaW5hdGlvbiBtaWdodCBzdXJlbHkgaGVscCBvbiB0aGlz
-IGlzc3VlLg0KDQogIEkgd291bGQgbGlrZSB0byB3b3JrIG9uIHRoaXMgZW5oYW5jZW1lbnQgd2l0
-aCB0aGUgY29tbXVuaXR5LiBCZWZvcmUgdGhhdCBJIGp1c3Qgd2FudGVkIHRvIGNoZWNrIGlmIGFu
-eSBvbmUgaXMgYWxyZWFkeSB3b3JraW5nIG9uIGl0Lg0KICBBcyB0aGlzIGEgd2VsbCBrbm93biBp
-c3N1ZSwgSSBhbSBzdXJlIHNvbWVib2R5IHdpbGwgaGF2ZSBzb21lIGRlc2lnbiBzdWdnZXN0aW9u
-cy4gQW55IGRlc2lnbiBzdWdnZXN0aW9ucyB3aWxsIGJlIGFwcHJlY2lhdGVkLg0KIA0KVGhhbmtz
-LA0KQnJpamVzaA0KIA0KDQo=
+as i reported earlier in this month
+(http://lkml.org/lkml/2009/1/12/141) MTD partition names are screwed
+up in 2.6.29-rcX.
+
+commit 176bf2e0f10ecf1d20a97db3bd5bb2e6ba0b5668 deals with a memory
+leak and frees the pointer array of mtd_partition after the call to
+add_mtd_partitions(). the problem is that mtd_table[x]->name still
+points to the freed memory.
+
+-- 
+Matthias Kaehlcke
+Embedded Linux Engineer
+Barcelona
+
+               For to be free is not merely to cast off
+               one's chains, but to live in a way that
+              respects and enhances the freedom of others
+                           (Nelson Mandela)
+                                                                 .''`.
+    using free software / Debian GNU/Linux | http://debian.org  : :'  :
+                                                                `. `'`
+gpg --keyserver pgp.mit.edu --recv-keys 47D8E5D4                  `-
