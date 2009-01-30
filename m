@@ -1,18 +1,20 @@
-Received: from mailbox-us-s-12.mailhostingserver.com ([75.125.101.9])
+Received: from mba.ocn.ne.jp ([122.1.235.107] helo=smtp.mba.ocn.ne.jp)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LSteY-0004g9-1q
-	for linux-mtd@lists.infradead.org; Fri, 30 Jan 2009 13:43:29 +0000
-Date: Fri, 30 Jan 2009 14:43:18 +0100
-From: Matthias Kaehlcke <matthias@kaehlcke.net>
-To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-Subject: [BUG] physmap_flash_probe() frees memory still in use
-Message-ID: <20090130134317.GV9390@traven>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mtd@lists.infradead.org,
-	David Woodhouse <David.Woodhouse@intel.com>,
-	Mike Frysinger <vapier.adi@gmail.com>, linux-kernel@vger.kernel.org
+	id 1LSvfm-0007qf-Ps
+	for linux-mtd@lists.infradead.org; Fri, 30 Jan 2009 15:53:05 +0000
+Date: Sat, 31 Jan 2009 00:52:50 +0900 (JST)
+Message-Id: <20090131.005250.95064457.anemo@mba.ocn.ne.jp>
+To: matthias@kaehlcke.net
+Subject: Re: [BUG] physmap_flash_probe() frees memory still in use
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+In-Reply-To: <20090130134317.GV9390@traven>
+References: <20090130134317.GV9390@traven>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org,
+	David.Woodhouse@intel.com, vapier.adi@gmail.com,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +24,113 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-as i reported earlier in this month
-(http://lkml.org/lkml/2009/1/12/141) MTD partition names are screwed
-up in 2.6.29-rcX.
+On Fri, 30 Jan 2009 14:43:18 +0100, Matthias Kaehlcke <matthias@kaehlcke.net> wrote:
+> as i reported earlier in this month
+> (http://lkml.org/lkml/2009/1/12/141) MTD partition names are screwed
+> up in 2.6.29-rcX.
+> 
+> commit 176bf2e0f10ecf1d20a97db3bd5bb2e6ba0b5668 deals with a memory
+> leak and frees the pointer array of mtd_partition after the call to
+> add_mtd_partitions(). the problem is that mtd_table[x]->name still
+> points to the freed memory.
+
+Oh Yes, I had missed that point.  And looking at physmap driver again,
+I found that del_mtd_partition() and del_mtd_device() are abused.
+Though these APIs are robust enough, deleting right things in right
+order would be better.
+
+Could you test this patch?  I cannot test it until Monday.
+
+
+------------------------------------------------------
+Subject: [MTD] physmap: Fix wrong free and del_mtd_{partition,device}
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
 
 commit 176bf2e0f10ecf1d20a97db3bd5bb2e6ba0b5668 deals with a memory
 leak and frees the pointer array of mtd_partition after the call to
 add_mtd_partitions(). the problem is that mtd_table[x]->name still
 points to the freed memory.
 
--- 
-Matthias Kaehlcke
-Embedded Linux Engineer
-Barcelona
+Aldo physmap_flash_remove() should call del_mtd_partitions() or
+del_mtd_device() only once.
 
-               For to be free is not merely to cast off
-               one's chains, but to live in a way that
-              respects and enhances the freedom of others
-                           (Nelson Mandela)
-                                                                 .''`.
-    using free software / Debian GNU/Linux | http://debian.org  : :'  :
-                                                                `. `'`
-gpg --keyserver pgp.mit.edu --recv-keys 47D8E5D4                  `-
+Reported-by: Matthias Kaehlcke <matthias@kaehlcke.net>
+Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+---
+diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
+index 8774366..4b122e7 100644
+--- a/drivers/mtd/maps/physmap.c
++++ b/drivers/mtd/maps/physmap.c
+@@ -29,6 +29,7 @@ struct physmap_flash_info {
+ 	struct map_info		map[MAX_RESOURCES];
+ #ifdef CONFIG_MTD_PARTITIONS
+ 	int			nr_parts;
++	struct mtd_partition	*parts;
+ #endif
+ };
+ 
+@@ -45,25 +46,26 @@ static int physmap_flash_remove(struct platform_device *dev)
+ 
+ 	physmap_data = dev->dev.platform_data;
+ 
+-#ifdef CONFIG_MTD_CONCAT
+-	if (info->cmtd != info->mtd[0]) {
++#ifdef CONFIG_MTD_PARTITIONS
++	if (info->nr_parts) {
++		del_mtd_partitions(info->cmtd);
++		kfree(info->parts);
++	} else if (physmap_data->nr_parts)
++		del_mtd_partitions(info->cmtd);
++	else
+ 		del_mtd_device(info->cmtd);
++#else
++	del_mtd_device(info->cmtd);
++#endif
++
++#ifdef CONFIG_MTD_CONCAT
++	if (info->cmtd != info->mtd[0])
+ 		mtd_concat_destroy(info->cmtd);
+-	}
+ #endif
+ 
+ 	for (i = 0; i < MAX_RESOURCES; i++) {
+-		if (info->mtd[i] != NULL) {
+-#ifdef CONFIG_MTD_PARTITIONS
+-			if (info->nr_parts || physmap_data->nr_parts)
+-				del_mtd_partitions(info->mtd[i]);
+-			else
+-				del_mtd_device(info->mtd[i]);
+-#else
+-			del_mtd_device(info->mtd[i]);
+-#endif
++		if (info->mtd[i] != NULL)
+ 			map_destroy(info->mtd[i]);
+-		}
+ 	}
+ 	return 0;
+ }
+@@ -86,9 +88,6 @@ static int physmap_flash_probe(struct platform_device *dev)
+ 	int err = 0;
+ 	int i;
+ 	int devices_found = 0;
+-#ifdef CONFIG_MTD_PARTITIONS
+-	struct mtd_partition *parts;
+-#endif
+ 
+ 	physmap_data = dev->dev.platform_data;
+ 	if (physmap_data == NULL)
+@@ -167,10 +166,11 @@ static int physmap_flash_probe(struct platform_device *dev)
+ 		goto err_out;
+ 
+ #ifdef CONFIG_MTD_PARTITIONS
+-	err = parse_mtd_partitions(info->cmtd, part_probe_types, &parts, 0);
++	err = parse_mtd_partitions(info->cmtd, part_probe_types,
++				&info->parts, 0);
+ 	if (err > 0) {
+-		add_mtd_partitions(info->cmtd, parts, err);
+-		kfree(parts);
++		add_mtd_partitions(info->cmtd, info->parts, err);
++		info->nr_parts = err;
+ 		return 0;
+ 	}
+ 
