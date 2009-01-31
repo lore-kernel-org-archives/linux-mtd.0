@@ -1,20 +1,17 @@
-Received: from dcn237-231.dcn.davis.ca.us ([168.150.237.231]
-	helo=rusty.jkmicro.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LT3PQ-0003kk-Fr
-	for linux-mtd@lists.infradead.org; Sat, 31 Jan 2009 00:08:32 +0000
-Message-ID: <49839668.20502@jkmicro.com>
-Date: Fri, 30 Jan 2009 16:08:08 -0800
-From: Adam Yergovich <ayergo@jkmicro.com>
+Message-ID: <20090131082738.spmap4cusso444ck@webmail.bangor.ac.uk>
+Date: Sat, 31 Jan 2009 08:27:38 +0000
+From: European Commission <elsc06@bangor.ac.uk>
+To: undisclosed-recipients:;
+Subject: FINAL NOTICE: REGARDING YOUR JANUARY 2009 SME GRANT/FUNDING
+	EC-078419XN
 MIME-Version: 1.0
-To: Wolfgang Wegner <wolfgang@leila.ping.de>
-Subject: Re: Access entire device with mtdblock0
-References: <4967F2B2.4060405@jkmicro.com>	<8bd0f97a0901131510k25addc8es917fb4e827bb2cf@mail.gmail.com>	<878wpeclf1.fsf@macbook.be.48ers.dk>	<8bd0f97a0901140258n3cdc2637hdfcd8f162205c654@mail.gmail.com>
-	<20090114115056.GD7994@leila.ping.de>
-In-Reply-To: <20090114115056.GD7994@leila.ping.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>
+Content-Type: text/plain;
+	charset=ISO-8859-1;
+	DelSp="Yes";
+	format="flowed"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Reply-To: sme.grants@live.co.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,51 +21,241 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Wolfgang Wegner wrote:
-> On Wed, Jan 14, 2009 at 05:58:43AM -0500, Mike Frysinger wrote:
->> On Wed, Jan 14, 2009 at 04:00, Peter Korsgaard wrote:
->>> "Mike" == Mike Frysinger <writes:
->>>>> Any recommendations on a simple way to create a partition using the
->>>>> entirety of flash?
->>>> looks like no one responded.  i'm pretty sure the answer is to use
->>>> add_mtd_device() even in face of add_mtd_partitions().
->>> Why not just add a partition spanning the entire device in addition to
->>> the other partitions?
->> i was not aware partition tables allowed for overlaps.  if that's
->> true, then the answer is obvious and easy to implement in boards ...
-> 
-> They are allowed, but I have not been able yet to do a correct query
-> for erase_size in case of a partition covering a whole device having
-> multiple different-sized erase regions.
-> 
-> Regards,
-> Wolfgang
-
-Hello All,
-
-Sorry for the delay in trying this out, I have been exceptionally busy.
-
-The short story is: i got it all to work.
-
-The long story is:
-
-In reviewing the code i found that add_mtd_device was already being 
-called after the partitioning.  As it wasn't giving mtdblock0 as the 
-entire region it didn't seem to be the solution.
-
-I played around some more, and found disabling the mtd partitioning 
-would give me one partition including all of flash.  If you'll note in 
-the code (which has been present in physmap.c for some time i believe) 
-it was getting to the add_mtd_device and adding it if and only if the 
-redboot section was not called.
-
-I moved the add_mtd_device() call to before the redboot partitioning and 
-it all worked brilliantly.
-
-I would like to suggest that this is perhaps a better construct overall 
-as it adds a nice feature.
-
-Hopefully this is at very least useful to someone who looks at this in 
-the future.  I thank you all for your help in this.
-
--Adam
+=0A=
+=0A=
+European Commission=0A=
+Enterprise and Industry DG=0A=
+Communication and Information Unit/R4=0A=
+BREY 13/ 092=0A=
+B - 1049 Brussels (Belgium)=0A=
+=0A=
+Released: January 2009.=0A=
+=0A=
+We bring to your notice the decision by the board of trustees of The Europe=
+an=0A=
+Union to choose you as one of the final recipients of a cash=20=20=0A=
+grant/donation for=0A=
+your own personal, educational, and business development (SME funding).=0A=
+=0A=
+To promote growth and creating new jobs in the European economy, we are giv=
+ing=0A=
+out a yearly donation of =A3402,000.00 (four hundred and two thousand pound=
+s) to=0A=
+10 lucky recipients who have been selected from over 25,000 websites all ov=
+er=0A=
+the globe, as funding/aid from the European Union, European=20=20=0A=
+Commission, and the=0A=
+United Nations in accordance with enabling acts of Parliament.=0A=
+=0A=
+Please contact paying office (England)=0A=
+=0A=
+Name: Dr. Dominic Brett=0A=
+E-mail: sme.grants@live.co.uk=0A=
+=0A=
+Remember to quote your identification numbers. Find your=20=20=0A=
+identification numbers=0A=
+below:=0A=
+=0A=
+BATCH NUMBER: EC-078419XN=0A=
+UNIQUE NUMBER: SME48153=0A=
+=0A=
+Note that these numbers fall within your location file.=0A=
+=0A=
+Thank you and accept my congratulations once again!=0A=
+=0A=
+Janet Williamson=0A=
+Information Officer and Coordinator,=0A=
+Scottish European Resources Network=0A=
+=0A=
++++++CONFIDENTIALITY NOTICE+++++=0A=
+the information in this e-mail may be confidential and/or privileged.=20=20=
+=0A=
+If you are=0A=
+not the intended recipient or an authorized representative of the intended=
+=0A=
+recipient, you are hereby notified that any review, dissemination or=20=20=
+=0A=
+copying of=0A=
+this e-mail and its attachments, if any, or the information contained=20=20=
+=0A=
+herein is=0A=
+prohibited. If you have received this e-mail in error, please=20=20=0A=
+immediately notify=0A=
+the sender by return e-mail and delete this e-mail from your computer syste=
+m.=0A=
+Thank you.=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+----------------------------------------------------------------=0A=
+This message was sent using IMP, the Internet Messaging Program.=0A=
+=0A=
+=0A=
+--=20=0A=
+Gall y neges e-bost hon, ac unrhyw atodiadau a anfonwyd gyda hi,=0A=
+gynnwys deunydd cyfrinachol ac wedi eu bwriadu i'w defnyddio'n unig=0A=
+gan y sawl y cawsant eu cyfeirio ato (atynt). Os ydych wedi derbyn y=0A=
+neges e-bost hon trwy gamgymeriad, rhowch wybod i'r anfonwr ar=0A=
+unwaith a dil=EBwch y neges. Os na fwriadwyd anfon y neges atoch chi,=0A=
+rhaid i chi beidio =E2 defnyddio, cadw neu ddatgelu unrhyw wybodaeth a=0A=
+gynhwysir ynddi. Mae unrhyw farn neu safbwynt yn eiddo i'r sawl a'i=0A=
+hanfonodd yn unig  ac nid yw o anghenraid yn cynrychioli barn=0A=
+Prifysgol Bangor. Nid yw Prifysgol Bangor yn gwarantu=0A=
+bod y neges e-bost hon neu unrhyw atodiadau yn rhydd rhag firysau neu=0A=
+100% yn ddiogel. Oni bai fod hyn wedi ei ddatgan yn uniongyrchol yn=0A=
+nhestun yr e-bost, nid bwriad y neges e-bost hon yw ffurfio contract=0A=
+rhwymol - mae rhestr o lofnodwyr awdurdodedig ar gael o Swyddfa=0A=
+Cyllid Prifysgol Bangor.  www.bangor.ac.uk=0A=
+=0A=
+This email and any attachments may contain confidential material and=0A=
+is solely for the use of the intended recipient(s).  If you have=0A=
+received this email in error, please notify the sender immediately=0A=
+and delete this email.  If you are not the intended recipient(s), you=0A=
+must not use, retain or disclose any information contained in this=0A=
+email.  Any views or opinions are solely those of the sender and do=0A=
+not necessarily represent those of the Bangor University.=0A=
+Bangor University does not guarantee that this email or=0A=
+any attachments are free from viruses or 100% secure.  Unless=0A=
+expressly stated in the body of the text of the email, this email is=0A=
+not intended to form a binding contract - a list of authorised=0A=
+signatories is available from the Bangor University Finance=0A=
+Office.  www.bangor.ac.uk=0A=
+=0A=
