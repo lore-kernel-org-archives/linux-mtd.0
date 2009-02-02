@@ -1,11 +1,19 @@
-Date: Sun, 01 Feb 2009 17:36:32 +0100
-From: "Sarah" <sarah_edward1101@centrum.sk>
-MIME-Version: 1.0
-Message-ID: <200902011736.26389@centrum.cz>
-Subject: Greetings from Edward & Sarah Samura.
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LTv9B-00008U-Nx
+	for linux-mtd@lists.infradead.org; Mon, 02 Feb 2009 09:31:20 +0000
+Subject: Re: Regarding UBI scalability
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: brij.singh@samsung.com
+In-Reply-To: <31956721.196931233319535527.JavaMail.weblogic@epml10>
+References: <31956721.196931233319535527.JavaMail.weblogic@epml10>
 Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 02 Feb 2009 11:31:18 +0200
+Message-Id: <1233567078.7085.62.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To: unlisted-recipients:; (no To-header on input)
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,16 +23,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Greetings from Edward & Sarah Samura.
+On Fri, 2009-01-30 at 12:45 +0000, BRIJESH SINGH wrote:
+> Hi,
+>     I have gone through UBI documentation which clearly mentions that
+> UBI doesn't scale very well.(Boot time and Memory consumption
+> increases with size of device.)This is very similar to JFFS2
+> scalability issues. Log, journal(like UBIFS LPT)  combination might
+> surely help on this issue.
 
-Dearest One,
-It is my pleasure to introduce you to a business that will make the beginning of never-ending family relations and l hope this proposal will not come to you as an embarrassment. l am Edward Samura, the only son of late Dr  Isaac Samura who was a famous cocoa merchant. my late father operated his cocoa business in Bouake- Cote d' ivoire under partnership, but unfortunately my late father was poisoned by his business associates in order to claims the newly awarded contract and his wealth in a cocktail party held in his honour as the director of the company. When he was poisoned, he was rushed to the hospital.
- 
-It was in the hospital,he secretly disclosed to me the cause of his sickness and why he was poisoned. There he informed me that he deposited the sum of US$6.300M. (Six Million three Hundred Thousand United Dollars) in a suspense coded account to a bank here in Abidjan Cote d' Ivoire and that l and my little sister was made the next of kin to inherit the money in his record file. He therefore advised me to look for a reliable, trust worthy and God fearing person who will assist us transfer the money abroad strictly for investment purposes. This is because he didn’t want his associate on raise eyebrow on his fund. He also advised me to avoid his associates and our family members who will be running after our dear lives; 
+Right.
 
-thefeore I am soliciting for your assistance to help me and my little sister transfer the money into your account for an investment purpose over there in your country. I hope to travel to your country with my sister after the successful transfer of this money. The contact of the bank will be given to you as soon as you show your interest and willingness to us. you can instruct them on where and how the money will be transferred. I am offering you 15% of the total sum as commission for your assistance. May I strongly re-emphasise that this transaction is highly confidential, hitch free and this will be successfully concluded within 10 days on your willingness. I look forward to hear from you soon.
- 
-Thank you and God bless you. 
- 
-Yours Sincerely.
-Edward & Sarah Samura.
+>   I would like to work on this enhancement with the community. Before
+> that I just wanted to check if any one is already working on it.
+
+No, I do not think so.
+
+>   As this a well known issue, I am sure somebody will have some design
+> suggestions. Any design suggestions will be appreciated.
+
+You could look at the old JFFS3 design document:
+
+http://www.linux-mtd.infradead.org/doc/JFFS3design.pdf
+
+at the "The superblock" section, which describes the idea of how to have
+a data structure which refers everything else in the media: journal,
+root nodes of the trees, etc.
+
+An then you should think about how to store the EBA table on flash. And
+how to store the erase counters on the flash. Many ideas may be borrowed
+from UBIFS in this area.
+
+I may help you in terms of design suggestions / review, and some code
+review. But I do not really have time to seriously work on this.
+
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
