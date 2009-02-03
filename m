@@ -1,24 +1,22 @@
-Received: from mail-bw0-f21.google.com ([209.85.218.21])
+Received: from mail-gx0-f20.google.com ([209.85.217.20])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LUKUG-0005bT-3G
-	for linux-mtd@lists.infradead.org; Tue, 03 Feb 2009 12:34:47 +0000
-Received: by bwz14 with SMTP id 14so1128712bwz.18
+	id 1LUKUi-0006ix-UZ
+	for linux-mtd@lists.infradead.org; Tue, 03 Feb 2009 12:35:15 +0000
+Received: by gxk13 with SMTP id 13so1619796gxk.18
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 03 Feb 2009 04:34:43 -0800 (PST)
-Sender: Corentin Chary <corentin.chary@gmail.com>
-From: Corentin Chary <corentincj@iksaif.net>
-To: linux-mtd@lists.infradead.org
-Subject: Request for review: NandFS
-Date: Tue, 3 Feb 2009 13:27:59 +0100
+	Tue, 03 Feb 2009 04:35:11 -0800 (PST)
+Date: Tue, 3 Feb 2009 07:35:07 -0500
+From: Josh Boyer <jwboyer@gmail.com>
+To: David Brownell <david-b@pacbell.net>
+Subject: Re: [patch 2.6.29-rc3] =?iso-8859-1?Q?NAND?=
+	=?iso-8859-1?B?OiCgZml4?= broken debug messages
+Message-ID: <20090203123507.GB2296@yoda.jdub.homelinux.org>
+References: <200902021813.20748.david-b@pacbell.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200902031327.59536.corentincj@iksaif.net>
-Cc: linux-fsdevel@vger.kernel.org,
-	Gregory CLEMENT <gclement@adeneo.adetelgroup.com>,
-	HIBLOT Jean-Jacques <jjhiblot@adeneo.adetelgroup.com>
+In-Reply-To: <200902021813.20748.david-b@pacbell.net>
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,52 +26,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-Here is NandFS, a NAND Flash Filesystem.
-NandFS is similar to YAFFS2 (in some ways), but the codebase is much more
-cleaner and simpler. And we'll try to go mainline.
+On Mon, Feb 02, 2009 at 06:13:20PM -0800, David Brownell wrote:
+>From: David Brownell <dbrownell@users.sourceforge.net>
+>
+>Fix incorrect debug messages (*write* not read); someone
+>committed some cut'n'paste bugs.  There might be more,
+>I only noticed these since I was looking for nand_read
+>usage and landed in some very wrong functions.
+>
+>Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
+>---
+> drivers/mtd/nand/nand_base.c |    8 ++++----
+> 1 file changed, 4 insertions(+), 4 deletions(-)
+>
+>--- a/drivers/mtd/nand/nand_base.c
+>+++ b/drivers/mtd/nand/nand_base.c
+>@@ -1948,7 +1948,7 @@ static int nand_do_write_oob(struct mtd_
+> 	}
+> 
+> 	if (unlikely(ops->ooboffs >= len)) {
+>-		DEBUG(MTD_DEBUG_LEVEL0, "nand_read_oob: "
+>+		DEBUG(MTD_DEBUG_LEVEL0, "nand_do_write_oob: "
+> 			"Attempt to start write outside oob\n");
+> 		return -EINVAL;
+> 	}
+>@@ -1958,7 +1958,7 @@ static int nand_do_write_oob(struct mtd_
+> 		     ops->ooboffs + ops->ooblen >
+> 			((mtd->size >> chip->page_shift) -
+> 			 (to >> chip->page_shift)) * len)) {
+>-		DEBUG(MTD_DEBUG_LEVEL0, "nand_read_oob: "
+>+		DEBUG(MTD_DEBUG_LEVEL0, "do_nand_write_oob: "
 
-Development started at Adeneo (http://www.adeneo-embedded.com/srt/en/home) in 
-2007. After a long pause, I re-started to clean the code in october 2008.
+This is wrong too.  The function is called 'nand_do_write_oob'.
 
-With the new UBIFS, we might think than there is no room for another flash 
-filesystem. But another GPLed filesystem can't hurt anyone. Some of us may 
-have heard some words about UFFS, but this project is in no way related to 
-NandFS.
+Which leads me to wonder why we aren't doing something like:
 
-*IMPORTANT*: NandFS is under active development, and can't be considered safe 
-or stable !
+	DEBUG(MTD_DEBUG_LEVEL0, "%s: <message>\n", __func__);
 
-NandFS aims to be:
-- Simple
-- Clean
-- Ram-Efficient
-- Power-Failure-Resistant
-- Write-Optimized (write-back + internal caches)
-- Wear-Leveling
-
-NandFS work-in-progress:
-- writeback and "budgeting"
-- kernel-doc
-
-NandFS short term todo:
-- (A lot of) Test
-- Better locking (no more "Big NandFS Lock")
-- checkpoint/summary support
-- ram usage optimizations
-- xattr support
-- acl support
-
-The code can be found at http://git.iksaif.net/
-
-I'm currently working on kernel-doc, but the more important is done.
-There is no whitepaper to explain how it works right now, but nandfs.h and 
-scan.c explains a lot and they are well commented.
-
-It's all Licenced under GPLv2.
-
-Please post your question/comments/bugs/patches.
-
--- 
-Corentin Chary
-http://xf.iksaif.net
+josh
