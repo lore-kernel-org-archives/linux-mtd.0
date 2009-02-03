@@ -1,12 +1,22 @@
-Received: from mail-fx0-f10.google.com ([209.85.220.10])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LUJDV-0001ag-1W
-	for linux-mtd@lists.infradead.org; Tue, 03 Feb 2009 11:13:23 +0000
-Received: by fxm3 with SMTP id 3so1712146fxm.18
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 03 Feb 2009 03:13:20 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1233658015.24809.105.camel@localhost.localdomain>
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LUJab-0006p0-Pb
+	for linux-mtd@lists.infradead.org; Tue, 03 Feb 2009 11:37:16 +0000
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1LUJaZ-0004Vf-Cg
+	for linux-mtd@lists.infradead.org; Tue, 03 Feb 2009 11:37:11 +0000
+Received: from gw-c.sigma-chemnitz.de ([62.153.82.26])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 03 Feb 2009 11:37:11 +0000
+Received: from enrico.scholz by gw-c.sigma-chemnitz.de with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 03 Feb 2009 11:37:11 +0000
+To: linux-mtd@lists.infradead.org
+From: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
+Subject: Re: Regarding UBI scalability
+Date: Tue, 03 Feb 2009 12:27:30 +0100
+Message-ID: <ly7i47iwv1.fsf@ensc-virt.intern.sigma-chemnitz.de>
 References: <31956721.196931233319535527.JavaMail.weblogic@epml10>
 	<1233567078.7085.62.camel@localhost.localdomain>
 	<618F1BB69C6C43C895C260C527C4F159@sisodomain.com>
@@ -14,18 +24,11 @@ References: <31956721.196931233319535527.JavaMail.weblogic@epml10>
 	<1233572259.7085.64.camel@localhost.localdomain>
 	<4986D677.3020500@nokia.com>
 	<71cd59b00902021544w594d4acandc0183bc523aafb0@mail.gmail.com>
-	<1233658015.24809.105.camel@localhost.localdomain>
-Date: Tue, 3 Feb 2009 12:13:19 +0100
-Message-ID: <71cd59b00902030313v47c2861anb8078e1f75de7eeb@mail.gmail.com>
-Subject: Re: Regarding UBI scalability
-From: Corentin Chary <corentin.chary@gmail.com>
-To: dedekind@infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Amit Kumar Sharma <amitsharma.9@samsung.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Adrian Hunter <ext-adrian.hunter@nokia.com>,
-	"brij.singh@samsung.com" <brij.singh@samsung.com>
+	<6b5362aa0902030235t4175ec11re9b6335df558e6a@mail.gmail.com>
+	<1233658130.24809.107.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Sender: news <news@ger.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,38 +38,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Feb 3, 2009 at 11:46 AM, Artem Bityutskiy
-<dedekind@infradead.org> wrote:
-> On Tue, 2009-02-03 at 00:44 +0100, Corentin Chary wrote:
->> I was wondering how it is possible to get atomic operations using such tables ?
->> The first thing that come to my mind is TFAT (two tables, one for
->> operation in progress,
->> the other considered as always "valid"). But I'm not sure it' the good
->> way to do such a thing.
->
-> Journal + commit mechanisms should allow doing this.
+Artem Bityutskiy <dedekind@infradead.org> writes:
 
-I'm asking some other questions, because in UFFS we are working on
-something like that, but not for UBI2. But if I can help for UBI2,
-I'll.
+> For UBI2 I would just forget about static volumes support. They
+> are not so necessary, and a rare user needs them
 
-A journal node, would probably take less than 16 B. With min_io_size
->= 512 B (sometime 2KB), a journal for map/unmap operation will take
-some time before being written.
+I store my kernel, the 2nd level bootloader and bootenv in such
+volumes.  Having the number of used bytes available without
+introducing special storage formats simplifies things in the
+initial bootloader and when writing images into the volumes.
 
-I see two solutions, based on periodic journal write with padding to
-have min_io_size bytes to write:
-- based on time (every X ms)
-- based on changes (every X changes)
-- based on both
-
-But there is probably more clever solutions.
-
-One other thing is the table will have to move on the flash for wear
-leveling, but for that we can use the "anchors" as defined in JFFS3
-pdf.
+This is nothing which can not be changed, but static volumes are
+not a rare needs imo.
 
 
--- 
-Corentin Chary
-http://xf.iksaif.net
+Enrico
