@@ -1,19 +1,20 @@
-Received: from gate.crashing.org ([63.228.1.57])
-	by casper.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LUZbC-0002Vr-DA
-	for linux-mtd@lists.infradead.org; Wed, 04 Feb 2009 04:42:57 +0000
-Subject: Re: [PATCH v2] Check name property to determine partition nodes.
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-To: Benjamin Krill <ben@codiert.org>
-In-Reply-To: <20090123161805.GA2598@codiert.org>
-References: <20090123161805.GA2598@codiert.org>
+Received: from mk-filter-4-a-1.mail.uk.tiscali.com ([212.74.100.55])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LUOmH-0002Pa-NR
+	for linux-mtd@lists.infradead.org; Tue, 03 Feb 2009 17:09:40 +0000
+Subject: [PATCH] sh: maple: Add support for VMU devices (v4) [3/3]
+From: Adrian McMenamin <adrian@newgolddream.dyndns.info>
+To: greg KH <greg@kroah.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>
+In-Reply-To: <1233680383.20790.2.camel@localhost.localdomain>
+References: <1233680383.20790.2.camel@localhost.localdomain>
 Content-Type: text/plain
-Date: Wed, 04 Feb 2009 15:09:02 +1100
-Message-Id: <1233720542.16867.187.camel@pasglop>
+Date: Tue, 03 Feb 2009 17:09:13 +0000
+Message-Id: <1233680953.20790.12.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linuxppc-dev@ozlabs.org, vwool@ru.mvista.com, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, dwg@au1.ibm.com
+Cc: linux-sh <linux-sh@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	Paul Mundt <lethal@linux-sh.org>, MTD <linux-mtd@lists.infradead.org>,
+	linux-input <linux-input@vger.kernel.org>, dwmw2 <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +24,121 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-01-23 at 17:18 +0100, Benjamin Krill wrote:
-> SLOF has a further node which could not be evaluate
-> by the current routine. The current routine returns
-> because the node hasn't the required reg property. As
-> fix this patch adds a check to determine the partition
-> child nodes. If the node is not an partition the number
-> of total partitions will be decreased and loop continue
-> with the next nodes.
+This patch updates the Maple keyboard driver to reflect changes in the
+maple bus code and also to tidy up some dubious legacy code.
 
-Somebody on the MTD list is taking that ? David ? Or should I merge it
-via powerpc ?
+Signed-off-by: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+---
 
-Cheers,
-Ben.
-
-> Signed-off-by: Benjamin Krill <ben@codiert.org>
-> ---
->  drivers/mtd/ofpart.c |    7 +++++++
->  1 files changed, 7 insertions(+), 0 deletions(-)
-> 
-> diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-> index 9e45b3f..3e164f0 100644
-> --- a/drivers/mtd/ofpart.c
-> +++ b/drivers/mtd/ofpart.c
-> @@ -46,6 +46,13 @@ int __devinit of_mtd_parse_partitions(struct device *dev,
->  		const u32 *reg;
->  		int len;
->  
-> +		/* check if this is a partition node */
-> +		partname = of_get_property(pp, "name", &len);
-> +		if (strcmp(partname, "partition") != 0) {
-> +			nr_parts--;
-> +			continue;
-> +		}
-> +
->  		reg = of_get_property(pp, "reg", &len);
->  		if (!reg || (len != 2 * sizeof(u32))) {
->  			of_node_put(pp);
+diff --git a/drivers/input/keyboard/maple_keyb.c b/drivers/input/keyboard/maple_keyb.c
+index 22f17a5..42ff911 100644
+--- a/drivers/input/keyboard/maple_keyb.c
++++ b/drivers/input/keyboard/maple_keyb.c
+@@ -1,8 +1,8 @@
+ /*
+  * SEGA Dreamcast keyboard driver
+  * Based on drivers/usb/usbkbd.c
+- * Copyright YAEGASHI Takeshi, 2001
+- * Porting to 2.6 Copyright Adrian McMenamin, 2007, 2008
++ * Copyright (c) YAEGASHI Takeshi, 2001
++ * Porting to 2.6 Copyright (c) Adrian McMenamin, 2007 - 2009
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+@@ -33,7 +33,7 @@ static DEFINE_MUTEX(maple_keyb_mutex);
+ 
+ #define NR_SCANCODES 256
+ 
+-MODULE_AUTHOR("YAEGASHI Takeshi, Adrian McMenamin");
++MODULE_AUTHOR("Adrian McMenamin <adrian@mcmen.demon.co.uk");
+ MODULE_DESCRIPTION("SEGA Dreamcast keyboard driver");
+ MODULE_LICENSE("GPL");
+ 
+@@ -115,7 +115,7 @@ static void dc_scan_kbd(struct dc_kbd *kbd)
+ 				input_event(dev, EV_MSC, MSC_SCAN, code);
+ 				input_report_key(dev, keycode, 0);
+ 			} else
+-				printk(KERN_DEBUG "maple_keyb: "
++				dev_dbg(&dev->dev,
+ 					"Unknown key (scancode %#x) released.",
+ 					code);
+ 		}
+@@ -127,7 +127,7 @@ static void dc_scan_kbd(struct dc_kbd *kbd)
+ 				input_event(dev, EV_MSC, MSC_SCAN, code);
+ 				input_report_key(dev, keycode, 1);
+ 			} else
+-				printk(KERN_DEBUG "maple_keyb: "
++				dev_dbg(&dev->dev,
+ 					"Unknown key (scancode %#x) pressed.",
+ 					code);
+ 		}
+@@ -140,7 +140,7 @@ static void dc_kbd_callback(struct mapleq *mq)
+ {
+ 	struct maple_device *mapledev = mq->dev;
+ 	struct dc_kbd *kbd = maple_get_drvdata(mapledev);
+-	unsigned long *buf = mq->recvbuf;
++	unsigned long *buf = (unsigned long *)(mq->recvbuf->buf);
+ 
+ 	/*
+ 	 * We should always get the lock because the only
+@@ -159,22 +159,30 @@ static void dc_kbd_callback(struct mapleq *mq)
+ 
+ static int probe_maple_kbd(struct device *dev)
+ {
+-	struct maple_device *mdev = to_maple_dev(dev);
+-	struct maple_driver *mdrv = to_maple_driver(dev->driver);
++	struct maple_device *mdev;
++	struct maple_driver *mdrv;
+ 	int i, error;
+ 	struct dc_kbd *kbd;
+ 	struct input_dev *idev;
+ 
+-	if (!(mdev->function & MAPLE_FUNC_KEYBOARD))
+-		return -EINVAL;
++	mdev = to_maple_dev(dev);
++	if (!mdev) {
++		error = -EINVAL;
++		goto fail;
++	}
+ 
+ 	kbd = kzalloc(sizeof(struct dc_kbd), GFP_KERNEL);
+-	idev = input_allocate_device();
+-	if (!kbd || !idev) {
++	if (!kbd) {
+ 		error = -ENOMEM;
+ 		goto fail;
+ 	}
+ 
++	idev = input_allocate_device();
++	if (!idev) {
++		error = -ENOMEM;
++		goto fail_idev_alloc;
++	}
++
+ 	kbd->dev = idev;
+ 	memcpy(kbd->keycode, dc_kbd_keycode, sizeof(kbd->keycode));
+ 
+@@ -195,7 +203,7 @@ static int probe_maple_kbd(struct device *dev)
+ 
+ 	error = input_register_device(idev);
+ 	if (error)
+-		goto fail;
++		goto fail_register;
+ 
+ 	/* Maple polling is locked to VBLANK - which may be just 50/s */
+ 	maple_getcond_callback(mdev, dc_kbd_callback, HZ/50,
+@@ -207,10 +215,12 @@ static int probe_maple_kbd(struct device *dev)
+ 
+ 	return error;
+ 
+-fail:
++fail_register:
++	maple_set_drvdata(mdev, NULL);
+ 	input_free_device(idev);
++fail_idev_alloc:
+ 	kfree(kbd);
+-	maple_set_drvdata(mdev, NULL);
++fail:
+ 	return error;
+ }
+ 
