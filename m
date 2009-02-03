@@ -1,24 +1,29 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LU9SR-0006i6-Sc
-	for linux-mtd@lists.infradead.org; Tue, 03 Feb 2009 00:48:22 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-To: Adrian McMenamin <adrian@newgolddream.dyndns.info>
-Subject: Re: [PATCH] sh: maple: Add support for VMU devices (v2) [1/3]
-Date: Mon, 2 Feb 2009 19:48:01 -0500
-References: <1233619569.13918.12.camel@localhost.localdomain>
-	<1233620263.13918.31.camel@localhost.localdomain>
-In-Reply-To: <1233620263.13918.31.camel@localhost.localdomain>
+Received: from qb-out-1314.google.com ([72.14.204.172])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LUId4-0002y5-9G
+	for linux-mtd@lists.infradead.org; Tue, 03 Feb 2009 10:35:44 +0000
+Received: by qb-out-1314.google.com with SMTP id q13so758479qbq.26
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 03 Feb 2009 02:35:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart3028677.rxxFT817vE";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
+In-Reply-To: <71cd59b00902021544w594d4acandc0183bc523aafb0@mail.gmail.com>
+References: <31956721.196931233319535527.JavaMail.weblogic@epml10>
+	<1233567078.7085.62.camel@localhost.localdomain>
+	<618F1BB69C6C43C895C260C527C4F159@sisodomain.com>
+	<4986D3F6.5030208@nokia.com>
+	<1233572259.7085.64.camel@localhost.localdomain>
+	<4986D677.3020500@nokia.com>
+	<71cd59b00902021544w594d4acandc0183bc523aafb0@mail.gmail.com>
+Date: Tue, 3 Feb 2009 16:05:40 +0530
+Message-ID: <6b5362aa0902030235t4175ec11re9b6335df558e6a@mail.gmail.com>
+Subject: Re: Regarding UBI scalability
+From: Brijesh Singh <brijesh.s.singh@gmail.com>
+To: Corentin Chary <corentin.chary@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Message-Id: <200902021948.04031.vapier@gentoo.org>
-Cc: linux-sh <linux-sh@vger.kernel.org>, greg KH <greg@kroah.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	LKML <linux-kernel@vger.kernel.org>, Paul Mundt <lethal@linux-sh.org>,
-	MTD <linux-mtd@lists.infradead.org>,
-	linux-input <linux-input@vger.kernel.org>, dwmw2 <dwmw2@infradead.org>
+Cc: Amit Kumar Sharma <amitsharma.9@samsung.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Adrian Hunter <ext-adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,55 +33,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---nextPart3028677.rxxFT817vE
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+On Tue, Feb 3, 2009 at 5:14 AM, Corentin Chary <corentin.chary@gmail.com> wrote:
+> On Mon, Feb 2, 2009 at 12:18 PM, Adrian Hunter
+> <ext-adrian.hunter@nokia.com> wrote:
+>> Artem Bityutskiy wrote:
+>>> On Mon, 2009-02-02 at 13:07 +0200, Adrian Hunter wrote:
+>>>> I would suggest an intermediate step.  Create UBI2 which is
+>>>> similar to UBI but stores eraseblock information in one place,
+>>>> instead of at the beginning of each eraseblock.  Such an approach
+>>>> might be OK up to as much as 64GiB, and would probably perform
+>>>> better than a fully scalable version.
+>>>>
+>>>> Then look at creating UBI3, which is fully scalable.
+>>>
+>>> Yes, I assume UBI2 should store mapping/erasure information in separate
+>>> tables, not in each eraseblock. So we should get rid of eraseblock
+>>> headers.
+>>
+>> Yes that is what I meant.  You could probably make do with as little as
+>> 12 bytes per eraseblock so a 64GiB flash with 512KiB eraseblock size
+>> would need 1536KiB table, which could be read in a second or two, so
+>> mount time is OK.
 
-On Monday 02 February 2009 19:17:43 Adrian McMenamin wrote:
-> +	if (src_ofs >=3D ((card->parts)[partition]).numblocks * card->blocklen)
-> +	if (num > ((card->parts)[partition]).numblocks)
-> +	pcache =3D (card->parts[partition]).pcache;
+Adrian,to my understanding, this is minimum info needed per physical
+erase block...
 
-ive only quoted some, but the use of parenthesis here is pointless and imo=
-=20
-makes the code harder to read.  it's like trying to parse lisp ;).
+Erase count                   -8 bytes
+Lnum                             -4 bytes
+Volume ID                      -4 byte(Can make it 1 byte for now as
+vol limit=128)
+Header CRC                   -4 bytes(Only for static volumes.)
+i.e. Minimum 20 bytes.  Is there any other way to make it 12?
+And how to update the table relatively efficiently?
 
-> +	vblock =3D kmalloc(sizeof(struct vmu_block), GFP_KERNEL);
+> Hi,
+> I was wondering how it is possible to get atomic operations using such tables ?
+May be keeping a commit block and journal will help.(*Like UBIFS design)
 
-sizeof(*vblock) ?
-
-> +static int __init vmu_flash_map_init(void)
-> +{
-> +	maple_driver_register(&vmu_flash_driver);
-> +	return 0;
-> +}
-
-shouldnt this be:
-	return maple_driver_register(&vmu_flash_driver);
-=2Dmike
-
---nextPart3028677.rxxFT817vE
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
-
-iQIcBAABAgAGBQJJh5RDAAoJEEFjO5/oN/WBRykP/iv7lqy/HPvyJ6uGn9lnDJTQ
-U/SP1CdoPdRekhY4cn0dmjmHhVk6NXtSy5Pm+TXJ3c024WEdU5MSu0h4ZVvJ77cF
-v44SU7rSBwvaGruUhMEpRzMdmBvaqrun4G7NhHcK5KT6Qkc9mKuC1vPVfJ8n9Na1
-4dTQv3dScf1y7RmETJwdUcfrleIE3bDODXOhI3MXoRKVpI96KRWJUp/bNGwxUEzB
-Gq6+lObXsCWD2rIhgMkRVC6dstb1A/RRkseH12DGyY51ke6mLMsnDuhAMJ0fhn/r
-jbwIrI//G+Hj00uWrmoBLz3idom9kgW2sTJRtjrnVg0++mqLpl+X9MMUdBHb1gsK
-Nz+JD6CVwdeZIfzEAJCBO6xa4U7v22cS9abxnpZd2Y7AsCyYgGCikymFoNlXMwr8
-39voMlruHucFzXABa0OTldRsUYjnO2GbmGtj3ARcBLIW1Vfpsn95TgPjMj4m6KlH
-gXHkFXFr6NpHOe98RgNBD9zrf+rPcOorWyGRAIpmwyzVoli3IEswgJhbbyeD15aE
-hxy8dmcmd689i/rMCc0Wr43zpW5WH22ugHwP1+kwDIJZeT+ATJ8L1WW1xvVKdLcp
-PTOZFij5W4laVhUGIsZMrNf13v5AJpRL4ouTbFiX02fIyROE5lcA86C+aehyEx2k
-ULxC3loEadAwU/58cap4
-=Iz4Y
------END PGP SIGNATURE-----
-
---nextPart3028677.rxxFT817vE--
+Thanks,
+Brijesh
