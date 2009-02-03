@@ -1,11 +1,12 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LUIps-0003Qu-H0
-	for linux-mtd@lists.infradead.org; Tue, 03 Feb 2009 10:48:59 +0000
-Subject: Re: Regarding UBI scalability
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Brijesh Singh <brijesh.s.singh@gmail.com>
-In-Reply-To: <6b5362aa0902030235t4175ec11re9b6335df558e6a@mail.gmail.com>
+Received: from mail-fx0-f10.google.com ([209.85.220.10])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LUJDV-0001ag-1W
+	for linux-mtd@lists.infradead.org; Tue, 03 Feb 2009 11:13:23 +0000
+Received: by fxm3 with SMTP id 3so1712146fxm.18
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 03 Feb 2009 03:13:20 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1233658015.24809.105.camel@localhost.localdomain>
 References: <31956721.196931233319535527.JavaMail.weblogic@epml10>
 	<1233567078.7085.62.camel@localhost.localdomain>
 	<618F1BB69C6C43C895C260C527C4F159@sisodomain.com>
@@ -13,17 +14,18 @@ References: <31956721.196931233319535527.JavaMail.weblogic@epml10>
 	<1233572259.7085.64.camel@localhost.localdomain>
 	<4986D677.3020500@nokia.com>
 	<71cd59b00902021544w594d4acandc0183bc523aafb0@mail.gmail.com>
-	<6b5362aa0902030235t4175ec11re9b6335df558e6a@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 03 Feb 2009 12:48:50 +0200
-Message-Id: <1233658130.24809.107.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+	<1233658015.24809.105.camel@localhost.localdomain>
+Date: Tue, 3 Feb 2009 12:13:19 +0100
+Message-ID: <71cd59b00902030313v47c2861anb8078e1f75de7eeb@mail.gmail.com>
+Subject: Re: Regarding UBI scalability
+From: Corentin Chary <corentin.chary@gmail.com>
+To: dedekind@infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Cc: Amit Kumar Sharma <amitsharma.9@samsung.com>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
 	Adrian Hunter <ext-adrian.hunter@nokia.com>,
-	Corentin Chary <corentin.chary@gmail.com>
-Reply-To: dedekind@infradead.org
+	"brij.singh@samsung.com" <brij.singh@samsung.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,43 +35,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-02-03 at 16:05 +0530, Brijesh Singh wrote:
-> On Tue, Feb 3, 2009 at 5:14 AM, Corentin Chary <corentin.chary@gmail.com> wrote:
-> > On Mon, Feb 2, 2009 at 12:18 PM, Adrian Hunter
-> > <ext-adrian.hunter@nokia.com> wrote:
-> >> Artem Bityutskiy wrote:
-> >>> On Mon, 2009-02-02 at 13:07 +0200, Adrian Hunter wrote:
-> >>>> I would suggest an intermediate step.  Create UBI2 which is
-> >>>> similar to UBI but stores eraseblock information in one place,
-> >>>> instead of at the beginning of each eraseblock.  Such an approach
-> >>>> might be OK up to as much as 64GiB, and would probably perform
-> >>>> better than a fully scalable version.
-> >>>>
-> >>>> Then look at creating UBI3, which is fully scalable.
-> >>>
-> >>> Yes, I assume UBI2 should store mapping/erasure information in separate
-> >>> tables, not in each eraseblock. So we should get rid of eraseblock
-> >>> headers.
-> >>
-> >> Yes that is what I meant.  You could probably make do with as little as
-> >> 12 bytes per eraseblock so a 64GiB flash with 512KiB eraseblock size
-> >> would need 1536KiB table, which could be read in a second or two, so
-> >> mount time is OK.
-> 
-> Adrian,to my understanding, this is minimum info needed per physical
-> erase block...
-> 
-> Erase count                   -8 bytes
-> Lnum                             -4 bytes
-> Volume ID                      -4 byte(Can make it 1 byte for now as
-> vol limit=128)
-> Header CRC                   -4 bytes(Only for static volumes.)
-> i.e. Minimum 20 bytes.  Is there any other way to make it 12?
-> And how to update the table relatively efficiently?
+On Tue, Feb 3, 2009 at 11:46 AM, Artem Bityutskiy
+<dedekind@infradead.org> wrote:
+> On Tue, 2009-02-03 at 00:44 +0100, Corentin Chary wrote:
+>> I was wondering how it is possible to get atomic operations using such tables ?
+>> The first thing that come to my mind is TFAT (two tables, one for
+>> operation in progress,
+>> the other considered as always "valid"). But I'm not sure it' the good
+>> way to do such a thing.
+>
+> Journal + commit mechanisms should allow doing this.
 
-For UBI2 I would just forget about static volumes support. They are not
-so necessary, and a rare user needs them. This would simplify things.
+I'm asking some other questions, because in UFFS we are working on
+something like that, but not for UBI2. But if I can help for UBI2,
+I'll.
+
+A journal node, would probably take less than 16 B. With min_io_size
+>= 512 B (sometime 2KB), a journal for map/unmap operation will take
+some time before being written.
+
+I see two solutions, based on periodic journal write with padding to
+have min_io_size bytes to write:
+- based on time (every X ms)
+- based on changes (every X changes)
+- based on both
+
+But there is probably more clever solutions.
+
+One other thing is the table will have to move on the flash for wear
+leveling, but for that we can use the "anchors" as defined in JFFS3
+pdf.
+
 
 -- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+Corentin Chary
+http://xf.iksaif.net
