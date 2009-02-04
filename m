@@ -1,15 +1,22 @@
-Message-ID: <49896448.20407@nokia.com>
-Date: Wed, 04 Feb 2009 11:47:52 +0200
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Received: from yw-out-1718.google.com ([74.125.46.153])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LUk5A-0004FB-4M
+	for linux-mtd@lists.infradead.org; Wed, 04 Feb 2009 15:54:34 +0000
+Received: by yw-out-1718.google.com with SMTP id 5so895691ywm.72
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 04 Feb 2009 07:54:31 -0800 (PST)
 MIME-Version: 1.0
-To: "brij.singh@samsung.com" <brij.singh@samsung.com>
-Subject: Re: Regarding UBI scalability
-References: <7824366.270131233573513030.JavaMail.weblogic@epml10>
-In-Reply-To: <7824366.270131233573513030.JavaMail.weblogic@epml10>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <1233733240.5138.28.camel@localhost.localdomain>
+References: <oqvdrrrpaf.fsf@castrovalva.Ivy.NET>
+	<1233733240.5138.28.camel@localhost.localdomain>
+Date: Wed, 4 Feb 2009 10:54:30 -0500
+Message-ID: <8bd0f97a0902040754j1ed15757gfcf1e03fdd8083d2@mail.gmail.com>
+Subject: Re: 3GB limit? *2* GB limit?!
+From: Mike Frysinger <vapier.adi@gmail.com>
+To: dedekind@infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: AMIT KUMARSHARMA <amitsharma.9@samsung.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Miles Nordin <carton@ivy.net>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,36 +26,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ext BRIJESH SINGH wrote:
-> Hi,
-> 
-> Artem Bityutskiy wrote:
->> On Mon, 2009-02-02 at 13:07 +0200, Adrian Hunter wrote:
->>> I would suggest an intermediate step.  Create UBI2 which is
->>> similar to UBI but stores eraseblock information in one place,
->>> instead of at the beginning of each eraseblock.  Such an approach
->>> might be OK up to as much as 64GiB, and would probably perform
->>> better than a fully scalable version.
->>>
->>> Then look at creating UBI3, which is fully scalable.
->> Yes, I assume UBI2 should store mapping/erasure information in separate
->> tables, not in each eraseblock. So we should get rid of eraseblock
->> headers.
-> 
-> Yes that is what I meant.  You could probably make do with as little as
-> 12 bytes per eraseblock so a 64GiB flash with 512KiB eraseblock size
-> would need 1536KiB table, which could be read in a second or two, so
-> mount time is OK.
-> 
-> I have an idea for how to update the table relatively efficiently if you
-> are interested.
-> 
-> I am definitely interested. But apart from on flash headers, I am also interested in memory consumption scaling.
-> UBIFS solved this problem quite interestingly. Can something similar be borrowed for UBI?
-> 
-> Thanks and Regards,
-> Brijesh
+On Wed, Feb 4, 2009 at 02:40, Artem Bityutskiy wrote:
+> On Tue, 2009-02-03 at 19:58 -0500, Miles Nordin wrote:
+>> -----8<-----
+>> # uname -a
+>> Linux fishstick 2.6.25-gentoo-r8 #2 SMP PREEMPT Wed Feb 4 05:23:36 UTC 2009 i686 AMD Phenom(tm) 9850 Quad-Core Processor AuthenticAMD GNU/Linux
+>> # ls -l /dev/mtd*
+>> ls: cannot access /dev/mtd*: No such file or directory
+>> # modprobe block2mtd block2mtd=/dev/sdj,128KiB
+>> # modprobe mtdchar
+>> # ls -l /dev/mtd*
+>> crw-rw---- 1 root root 90, 0 Feb  4 06:29 /dev/mtd0
+>> crw-rw---- 1 root root 90, 1 Feb  4 06:29 /dev/mtd0ro
+>> fishstick devices # ubiformat /dev/mtd0
+>> ubiformat: mtd0 (RAM-based), size 3246391296 bytes (3.0 GiB), 131072 eraseblocks of 131072 bytes (128.0 KiB), min. I/O size 1 bytes
+>> libscan: scanning eraseblock 16384 -- 66 % complete  libmtd: error!: cannot seek mtd0 to offset 18446744071562067968
+>>         error 22 (Invalid argument)
+>> ubiformat: error!: failed to scan mtd0 (/dev/mtd0)
+>> # fdisk /dev/sdj
+>> Device contains neither a valid DOS partition table, nor Sun, SGI
+>
+> MTD user-space interface is 32-bit, and is simited by 2GiB. You have to
+> upgrade it to use larger devices.
 
-I would leave the memory consumption issue for UBI3.
-
-Do you have a target memory consumption in mind?
+you mean the MTD user-space code he is currently using, not current
+MTD user-space in general ?
+-mike
