@@ -1,15 +1,24 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LUcNM-0000Yx-Rd
-	for linux-mtd@lists.infradead.org; Wed, 04 Feb 2009 07:40:51 +0000
-Subject: Re: 3GB limit?  *2* GB limit?!
+	id 1LUcOS-0000eC-M0
+	for linux-mtd@lists.infradead.org; Wed, 04 Feb 2009 07:41:59 +0000
+Subject: Re: Regarding UBI scalability
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Miles Nordin <carton@Ivy.NET>
-In-Reply-To: <oqvdrrrpaf.fsf@castrovalva.Ivy.NET>
-References: <oqvdrrrpaf.fsf@castrovalva.Ivy.NET>
+To: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
+In-Reply-To: <ly7i47iwv1.fsf@ensc-virt.intern.sigma-chemnitz.de>
+References: <31956721.196931233319535527.JavaMail.weblogic@epml10>
+	<1233567078.7085.62.camel@localhost.localdomain>
+	<618F1BB69C6C43C895C260C527C4F159@sisodomain.com>
+	<4986D3F6.5030208@nokia.com>
+	<1233572259.7085.64.camel@localhost.localdomain>
+	<4986D677.3020500@nokia.com>
+	<71cd59b00902021544w594d4acandc0183bc523aafb0@mail.gmail.com>
+	<6b5362aa0902030235t4175ec11re9b6335df558e6a@mail.gmail.com>
+	<1233658130.24809.107.camel@localhost.localdomain>
+	<ly7i47iwv1.fsf@ensc-virt.intern.sigma-chemnitz.de>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 04 Feb 2009 09:40:40 +0200
-Message-Id: <1233733240.5138.28.camel@localhost.localdomain>
+Date: Wed, 04 Feb 2009 09:41:40 +0200
+Message-Id: <1233733300.5138.29.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -23,32 +32,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-02-03 at 19:58 -0500, Miles Nordin wrote:
-> I'm trying to experiment with ubifs on a 16GB USB stick.  I've
-> downloaded and built:
+On Tue, 2009-02-03 at 12:27 +0100, Enrico Scholz wrote:
+> Artem Bityutskiy <dedekind@infradead.org> writes:
+> 
+> > For UBI2 I would just forget about static volumes support. They
+> > are not so necessary, and a rare user needs them
+> 
+> I store my kernel, the 2nd level bootloader and bootenv in such
+> volumes.  Having the number of used bytes available without
+> introducing special storage formats simplifies things in the
+> initial bootloader and when writing images into the volumes.
+> 
+> This is nothing which can not be changed, but static volumes are
+> not a rare needs imo.
 
-snip
-
-> -----8<-----
-> # uname -a
-> Linux fishstick 2.6.25-gentoo-r8 #2 SMP PREEMPT Wed Feb 4 05:23:36 UTC 2009 i686 AMD Phenom(tm) 9850 Quad-Core Processor AuthenticAMD GNU/Linux
-> # ls -l /dev/mtd*
-> ls: cannot access /dev/mtd*: No such file or directory
-> # modprobe block2mtd block2mtd=/dev/sdj,128KiB
-> # modprobe mtdchar
-> # ls -l /dev/mtd*
-> crw-rw---- 1 root root 90, 0 Feb  4 06:29 /dev/mtd0
-> crw-rw---- 1 root root 90, 1 Feb  4 06:29 /dev/mtd0ro
-> fishstick devices # ubiformat /dev/mtd0
-> ubiformat: mtd0 (RAM-based), size 3246391296 bytes (3.0 GiB), 131072 eraseblocks of 131072 bytes (128.0 KiB), min. I/O size 1 bytes
-> libscan: scanning eraseblock 16384 -- 66 % complete  libmtd: error!: cannot seek mtd0 to offset 18446744071562067968
->         error 22 (Invalid argument)
-> ubiformat: error!: failed to scan mtd0 (/dev/mtd0)
-> # fdisk /dev/sdj
-> Device contains neither a valid DOS partition table, nor Sun, SGI 
-
-MTD user-space interface is 32-bit, and is simited by 2GiB. You have to
-upgrade it to use larger devices.
+Ok, thanks for this information. Probably static volumes are not that
+useless as I thought.
 
 -- 
 Best regards,
