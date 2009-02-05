@@ -1,22 +1,22 @@
-Received: from exprod6og106.obsmtp.com ([64.18.1.191])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LVD9Q-0006zu-Dv
-	for linux-mtd@lists.infradead.org; Thu, 05 Feb 2009 22:56:52 +0000
-Content-class: urn:content-classes:message
+Received: from wa-out-1112.google.com ([209.85.146.179])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LVDWt-0000WR-Eq
+	for linux-mtd@lists.infradead.org; Thu, 05 Feb 2009 23:21:07 +0000
+Received: by wa-out-1112.google.com with SMTP id j4so242535wah.2
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 05 Feb 2009 15:21:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: Access entire device with mtdblock0
-Date: Thu, 5 Feb 2009 17:56:30 -0500
-Message-ID: <BD79186B4FD85F4B8E60E381CAEE19090120BA94@mi8nycmail19.Mi8.com>
-In-Reply-To: <49839668.20502@jkmicro.com>
-References: <4967F2B2.4060405@jkmicro.com>	<8bd0f97a0901131510k25addc8es917fb4e827bb2cf@mail.gmail.com>	<878wpeclf1.fsf@macbook.be.48ers.dk>	<8bd0f97a0901140258n3cdc2637hdfcd8f162205c654@mail.gmail.com><20090114115056.GD7994@leila.ping.de>
-	<49839668.20502@jkmicro.com>
-From: "hartleys" <hartleys@visionengravers.com>
-To: "Adam Yergovich" <ayergo@jkmicro.com>,
-	"Wolfgang Wegner" <wolfgang@leila.ping.de>
-Cc: linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>
+In-Reply-To: <1233826226.17790.9.camel@localhost.localdomain>
+References: <a5e2b64d0902042249k1c5ba5a3qce9d2f68f0523827@mail.gmail.com>
+	<1233826226.17790.9.camel@localhost.localdomain>
+Date: Fri, 6 Feb 2009 08:21:06 +0900
+Message-ID: <a5e2b64d0902051521p146eef06lc2076b290f924b62@mail.gmail.com>
+Subject: Re: Issues with UBIFS xattr support
+From: Tim <timasyk@gmail.com>
+To: dedekind@infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,69 +26,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday, January 30, 2009 5:08 PM, Adam Yergovich wrote:
-> Wolfgang Wegner wrote:
->> On Wed, Jan 14, 2009 at 05:58:43AM -0500, Mike Frysinger wrote:
->>> On Wed, Jan 14, 2009 at 04:00, Peter Korsgaard wrote:
->>>> "Mike" =3D=3D Mike Frysinger <writes:
->>>>>> Any recommendations on a simple way to create a partition using=20
->>>>>> the entirety of flash?
->>>>> looks like no one responded.  i'm pretty sure the answer is to use
->>>>> add_mtd_device() even in face of add_mtd_partitions().
->>>> Why not just add a partition spanning the entire device in addition
-
->>>> to the other partitions?
->>> i was not aware partition tables allowed for overlaps.  if that's=20
->>> true, then the answer is obvious and easy to implement in boards ...
->>=20
->> They are allowed, but I have not been able yet to do a correct query=20
->> for erase_size in case of a partition covering a whole device having=20
->> multiple different-sized erase regions.
->>=20
->> Regards,
->> Wolfgang
+2009/2/5 Artem Bityutskiy <dedekind@infradead.org>:
+> On Thu, 2009-02-05 at 15:49 +0900, Tim wrote:
+>> I found that UBIFS does not fully support xattr manipulation.
 >
-> Hello All,
->=20
-> Sorry for the delay in trying this out, I have been exceptionally
-busy.
->=20
-> The short story is: i got it all to work.
->=20
-> The long story is:
->=20
-> In reviewing the code i found that add_mtd_device was already being
-> called after the partitioning.  As it wasn't giving mtdblock0 as the
-> entire region it didn't seem to be the solution.
->=20
-> I played around some more, and found disabling the mtd partitioning
-> would give me one partition including all of flash.  If you'll note
-> in the code (which has been present in physmap.c for some time I
-> believe) it was getting to the add_mtd_device and adding it if and
-> only if the redboot section was not called.
->=20
-> I moved the add_mtd_device() call to before the redboot partitioning
-> and it all worked brilliantly.
->=20
-> I would like to suggest that this is perhaps a better construct
-> overall as it adds a nice feature.
->=20
-> Hopefully this is at very least useful to someone who looks at this
-> in the future.  I thank you all for your help in this.
+> This is right. We have very limited xattr support, which has never been
+> tested well, because we do not use it.
+>
+> http://www.linux-mtd.infradead.org/doc/ubifs.html#L_xattr
+>
+>> I use security context files labeling (in SELinux) that heavily relies
+>> on proper manipulation of xattr by the filesystem.
+>> And issues are:
+>> - ubifs does not store xattr in inode for symbolic link files;
+>
+> Hmm, ok, this should not be too difficult to fix.
+>
+>> - if new file is created on ubifs, xattr should be automatically
+>> updated with security context label, but it does not.
+>
+> I'm very bad in security. Do you mean you need ACL support?
+> This is not supported.
+(I'm not good in filesystems, so sorry if I use some terms inappropriately)
+No ACL is required, just security namespace in xattr.
+When new file is created, then new inode should have proper contents
+of xattr in security namespace. It is typically done by calling
+security_inode_init_security() and updating xattr  in a function
+responsible for new inode creation. security_inode_init_security()
+will take care on computing required value for xattr security
+namespace for new inode.
 
-It appears this was originally thought about for mtd partitions.
+Then security namespace will be fully supported, I think. And security
+engineers will be happy to use ubifs with SELinux :)
 
-In mdtpart.c, add_mtd_partitions() has a comment above it:
+>> Maybe there is a patch that fixes those issues already?
+>
+> Unfortunately not, you should find a sane SW engineer with a
+> clue and he may upgrade UBIFS, it is doable. We would of course
+> assist.
+Oh... I will try to find one :)
 
-/*
- * This function, given a master MTD object and a partition table,
-creates
- * and registers slave MTD objects which are bound to the master
-according to
- * the partition definitions.
- * (Q: should we register the master MTD object as well?)
- */
-
-Maybe it was just never revisited?
-
-Hartley
+Tim
