@@ -1,20 +1,18 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LV0VN-0000a7-UR
-	for linux-mtd@lists.infradead.org; Thu, 05 Feb 2009 09:26:44 +0000
-Subject: Re: 3GB limit?  *2* GB limit?!
+	id 1LV0Z5-0003yu-Do
+	for linux-mtd@lists.infradead.org; Thu, 05 Feb 2009 09:30:34 +0000
+Subject: Re: Issues with UBIFS xattr support
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Miles Nordin <carton@Ivy.NET>
-In-Reply-To: <oqab92rqd4.fsf@castrovalva.Ivy.NET>
-References: <oqvdrrrpaf.fsf@castrovalva.Ivy.NET>
-	<1233733240.5138.28.camel@localhost.localdomain>
-	<oqab92rqd4.fsf@castrovalva.Ivy.NET>
+To: Tim <timasyk@gmail.com>
+In-Reply-To: <a5e2b64d0902042249k1c5ba5a3qce9d2f68f0523827@mail.gmail.com>
+References: <a5e2b64d0902042249k1c5ba5a3qce9d2f68f0523827@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 05 Feb 2009 11:26:35 +0200
-Message-Id: <1233825995.17790.5.camel@localhost.localdomain>
+Date: Thu, 05 Feb 2009 11:30:26 +0200
+Message-Id: <1233826226.17790.9.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: mtd <linux-mtd@lists.infradead.org>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -25,28 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-02-04 at 13:47 -0500, Miles Nordin wrote:
-> >>>>> "ab" == Artem Bityutskiy <dedekind@infradead.org> writes:
-> 
->     ab> MTD user-space interface is 32-bit, and is simited by
->     ab> 2GiB. You have to upgrade it to use larger devices.
-> 
-> I am using mtd-tools from git, pulled a couple days ago.  or thought I
-> was.  What do you mean by upgrade?  Do you mean ``redesign the
-> interface and rewrite the tools'' or ``use Linux/amd64'' or ``pull
-> something else from git''?
+On Thu, 2009-02-05 at 15:49 +0900, Tim wrote:
+> I found that UBIFS does not fully support xattr manipulation.
 
-Miles,
+This is right. We have very limited xattr support, which has never been
+tested well, because we do not use it.
 
-please, glance at the include/mtd/mtd-abi.h file. This file defines the
-interface between user-space applications and MTD devices. Notice that
-the "size" field in the "struct mtd_info_user" data structure is 32-bit.
-So the size of the MTD device is limited by 4GiB. Look at other data
-structures and notice a similar thing.
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_xattr
 
-Thus, you have to invent a new user-space interface for MTD. Internally,
-it is 64-bit already. You do not have to have amd64. You have to code,
-unfortunately.
+> I use security context files labeling (in SELinux) that heavily relies
+> on proper manipulation of xattr by the filesystem.
+> And issues are:
+> - ubifs does not store xattr in inode for symbolic link files;
+
+Hmm, ok, this should not be too difficult to fix.
+
+> - if new file is created on ubifs, xattr should be automatically
+> updated with security context label, but it does not.
+
+I'm very bad in security. Do you mean you need ACL support?
+This is not supported.
+
+> Maybe there is a patch that fixes those issues already?
+
+Unfortunately not, you should find a sane SW engineer with a
+clue and he may upgrade UBIFS, it is doable. We would of course
+assist.
 
 -- 
 Best regards,
