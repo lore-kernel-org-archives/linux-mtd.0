@@ -1,12 +1,18 @@
-Message-ID: <35139.80.89.176.36.1233805565.squirrel@www.bateriaspioneiro.com.br>
-Date: Thu, 5 Feb 2009 03:46:05 -0000 (GMT)
-Subject: Attn: Beneficiary,
-From: "Mr Williams Ibru" <williamsibru47@gmail.com>
+Received: from rv-out-0708.google.com ([209.85.198.249])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LUy3B-0000jj-E5
+	for linux-mtd@lists.infradead.org; Thu, 05 Feb 2009 06:49:27 +0000
+Received: by rv-out-0708.google.com with SMTP id b17so110103rvf.42
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 04 Feb 2009 22:49:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-To: undisclosed-recipients:;
-Reply-To: mrrricky.stevennn@gmail.com
+Date: Thu, 5 Feb 2009 15:49:23 +0900
+Message-ID: <a5e2b64d0902042249k1c5ba5a3qce9d2f68f0523827@mail.gmail.com>
+Subject: Issues with UBIFS xattr support
+From: Tim <timasyk@gmail.com>
+To: mtd <linux-mtd@lists.infradead.org>, Artem.Bityutskiy@nokia.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,48 +22,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+I found that UBIFS does not fully support xattr manipulation.
 
+I use security context files labeling (in SELinux) that heavily relies
+on proper manipulation of xattr by the filesystem.
+And issues are:
+- ubifs does not store xattr in inode for symbolic link files;
+- if new file is created on ubifs, xattr should be automatically
+updated with security context label, but it does not.
 
+Maybe there is a patch that fixes those issues already?
 
-
-
-
-Attn: Beneficiary,
-
-We hereby officially notifying you about the present arrangement to pay
-you, your over due contract/inheritance, which you could not complete
-the process of the released of your transfer pin code through the Digitalis
-Payment System.
-
-We have decided to pay you,without any delay but through (ATM Master
-Express Credit Card) This arrangement was initiated/constituted by
-the World Bank and Paris Club,due to fraudulent activities going on
-within the African Region.
-
-The World Bank and Paris Club introduced this payment arrangement as to
-enable our contractors/inheritance beneficiary to receive their fund without
-any interference.the ATM Master Express Credit Card was contracted and
-powered by GOLD CARD WORLD WIDE.
-
-Reconfirm the following information to us for Security reason.
-
-.1)YOUR FULL NAME
-.2)YOUR RECEIVING ADDRESS
-.3)YOUR TELEPHONE NUMBER
-.4)YOUR PROFESSION
-
-we will proceed to dispatch the card directly to your nominated home
-address to you absolutely have nothing to worry about all we need is
-your Prompt Response and Co-operation by Gods Grace we will have a
-successful Transaction.
-
-Contact the ATM CARD department with this email
-mrrricky.stevennn@gmail.com
-Mr.Ricky Steven
-
-
-CONGRATULATIONS IN ADVANCE.
-BEST REGARDS,
-
-MR WILLIAMS IBRU
-DIRECTOR,
+Kindest regards,
+Tim
