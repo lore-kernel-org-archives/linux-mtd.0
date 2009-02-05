@@ -1,15 +1,20 @@
-Received: from smtp4-g21.free.fr ([212.27.42.4])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LVBoV-0003ba-Dj
-	for linux-mtd@lists.infradead.org; Thu, 05 Feb 2009 21:31:11 +0000
-From: Corentin Chary <corentincj@iksaif.net>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] UBI: add fsync capability
-Date: Thu,  5 Feb 2009 22:25:52 +0100
-Message-Id: <1233869152-23992-2-git-send-email-corentincj@iksaif.net>
-In-Reply-To: <1233869152-23992-1-git-send-email-corentincj@iksaif.net>
-References: <1233869152-23992-1-git-send-email-corentincj@iksaif.net>
-Cc: Corentin Chary <corentincj@iksaif.net>
+Received: from smtp123.sbc.mail.sp1.yahoo.com ([69.147.64.96])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LVClx-0003Wq-PN
+	for linux-mtd@lists.infradead.org; Thu, 05 Feb 2009 22:32:38 +0000
+From: David Brownell <david-b@pacbell.net>
+To: Linux MTD <linux-mtd@lists.infradead.org>
+Subject: [patch 2.6.29-rc3] NAND:
+	=?iso-8859-1?q?=A0fix_broken_debug_messages?= (v2)
+Date: Thu, 5 Feb 2009 14:32:34 -0800
+References: <200902021813.20748.david-b@pacbell.net>
+In-Reply-To: <200902021813.20748.david-b@pacbell.net>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+Message-Id: <200902051432.34788.david-b@pacbell.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,42 +24,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now, we can call fsync() on an UBI volume.
+From: David Brownell <dbrownell@users.sourceforge.net>
 
-Signed-off-by: Corentin Chary <corentincj@iksaif.net>
+Fix incorrect debug messages (*write* not read); someone
+committed some cut'n'paste bugs.  There might be more,
+I only noticed these since I was looking for nand_read
+usage and landed in some very wrong functions.
+
+IMO all MTD debugging message framework is goofed, anyway.
+It uses "DEBUG" in a way that's incompatible with usage
+most everywhere else in the kernel, and which prevents
+normal pr_dbg() and dev_dbg() calls from working right.
+
+Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
 ---
- drivers/mtd/ubi/cdev.c |   12 ++++++++++++
- 1 files changed, 12 insertions(+), 0 deletions(-)
+Fix a goofed string.
 
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index f9631eb..9e2a108 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -186,6 +186,17 @@ static loff_t vol_cdev_llseek(struct file *file, loff_t offset, int origin)
- 	return new_offset;
- }
+ drivers/mtd/nand/nand_base.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1948,7 +1948,7 @@ static int nand_do_write_oob(struct mtd_
+ 	}
  
-+static int vol_cdev_fsync(struct file *file, struct dentry *dentry,
-+			  int datasync)
-+{
-+	struct ubi_volume_desc *desc = file->private_data;
-+	struct ubi_volume *vol = desc->vol;
-+	struct ubi_device *ubi = vol->ubi;
-+
-+	return ubi_sync(ubi->ubi_num);
-+}
-+
-+
- static ssize_t vol_cdev_read(struct file *file, __user char *buf, size_t count,
- 			     loff_t *offp)
- {
-@@ -1053,6 +1064,7 @@ const struct file_operations ubi_vol_cdev_operations = {
- 	.llseek         = vol_cdev_llseek,
- 	.read           = vol_cdev_read,
- 	.write          = vol_cdev_write,
-+	.fsync		= vol_cdev_fsync,
- 	.unlocked_ioctl = vol_cdev_ioctl,
- 	.compat_ioctl   = vol_cdev_compat_ioctl,
- };
--- 
-1.6.1.1
+ 	if (unlikely(ops->ooboffs >= len)) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "nand_read_oob: "
++		DEBUG(MTD_DEBUG_LEVEL0, "nand_do_write_oob: "
+ 			"Attempt to start write outside oob\n");
+ 		return -EINVAL;
+ 	}
+@@ -1958,7 +1958,7 @@ static int nand_do_write_oob(struct mtd_
+ 		     ops->ooboffs + ops->ooblen >
+ 			((mtd->size >> chip->page_shift) -
+ 			 (to >> chip->page_shift)) * len)) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "nand_read_oob: "
++		DEBUG(MTD_DEBUG_LEVEL0, "nand_do_write_oob: "
+ 			"Attempt write beyond end of device\n");
+ 		return -EINVAL;
+ 	}
+@@ -2014,8 +2014,8 @@ static int nand_write_oob(struct mtd_inf
+ 
+ 	/* Do not allow writes past end of device */
+ 	if (ops->datbuf && (to + ops->len) > mtd->size) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "nand_read_oob: "
+-		      "Attempt read beyond end of device\n");
++		DEBUG(MTD_DEBUG_LEVEL0, "nand_write_oob: "
++		      "Attempt write beyond end of device\n");
+ 		return -EINVAL;
+ 	}
+ 
