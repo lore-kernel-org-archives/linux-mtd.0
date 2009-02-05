@@ -1,25 +1,20 @@
-Received: from yw-out-1718.google.com ([74.125.46.152])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LVCgs-0002hy-0D
-	for linux-mtd@lists.infradead.org; Thu, 05 Feb 2009 22:27:22 +0000
-Received: by yw-out-1718.google.com with SMTP id 5so222052ywm.72
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 05 Feb 2009 14:27:21 -0800 (PST)
+Received: from smtp127.sbc.mail.sp1.yahoo.com ([69.147.65.186])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LVCnK-0003gf-Q5
+	for linux-mtd@lists.infradead.org; Thu, 05 Feb 2009 22:34:07 +0000
+From: David Brownell <david-b@pacbell.net>
+To: Linux MTD <linux-mtd@lists.infradead.org>
+Subject: Re: [patch 2.6.29-rc3] NAND: fix "raw" reads with ECC syndrome layouts
+Date: Thu, 5 Feb 2009 14:34:00 -0800
+References: <200902021734.12505.david-b@pacbell.net>
+In-Reply-To: <200902021734.12505.david-b@pacbell.net>
 MIME-Version: 1.0
-In-Reply-To: <20090205140255.b711b929.akpm@linux-foundation.org>
-References: <1233822411-10210-1-git-send-email-cooloney@kernel.org>
-	<1233822411-10210-3-git-send-email-cooloney@kernel.org>
-	<20090205140255.b711b929.akpm@linux-foundation.org>
-Date: Thu, 5 Feb 2009 17:27:21 -0500
-Message-ID: <8bd0f97a0902051427m2513bd07hddf4611696658b42@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mtd/maps: blackfin async flash maps: bfin-async mtd
-	driver needs complex mappings
-From: Mike Frysinger <vapier.adi@gmail.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Bryan Wu <cooloney@kernel.org>,
-	dwmw2@infradead.org, linux-kernel@vger.kernel.org
+Content-Disposition: inline
+Message-Id: <200902051434.00831.david-b@pacbell.net>
+Cc: Kevin Hilman <khilman@deeprootsystems.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,33 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Feb 5, 2009 at 17:02, Andrew Morton wrote:
-> On Thu,  5 Feb 2009 16:26:50 +0800 Bryan Wu wrote:
->> From: Mike Frysinger <vapier.adi@gmail.com>
->>
->> Signed-off-by: Mike Frysinger <vapier.adi@gmail.com>
->> Signed-off-by: Bryan Wu <cooloney@kernel.org>
->
-> This is an underwhelming changelog.
->
->>  drivers/mtd/maps/Kconfig |    2 +-
->>  1 files changed, 1 insertions(+), 1 deletions(-)
->>
->> diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
->> index 0225cbb..043d50f 100644
->> --- a/drivers/mtd/maps/Kconfig
->> +++ b/drivers/mtd/maps/Kconfig
->> @@ -491,7 +491,7 @@ config MTD_PCMCIA_ANONYMOUS
->>
->>  config MTD_BFIN_ASYNC
->>       tristate "Blackfin BF533-STAMP Flash Chip Support"
->> -     depends on BFIN533_STAMP && MTD_CFI
->> +     depends on BFIN533_STAMP && MTD_CFI && MTD_COMPLEX_MAPPINGS
->>       select MTD_PARTITIONS
->>       default y
->>       help
->
-> I assume this corrects a build error?
+On Monday 02 February 2009, David Brownell wrote:
+> The current syndrome-based drivers in mainline all seem to use one
+> chunk per page; which is presumably why they've not hit this bug.
 
-yes ... bfin-async uses complex mappings and so needs it
--mike
+Hmm, no comments?  It seems the ECC_HW_SYNDROME stuff isn't
+especially familiar to many folk...
+
+
+> Fix ... by adding read/write page_raw_syndrome() routines as
+> siblings of the existing non-raw routines; "raw" just means to
+> bypass the ECC computations, not mutate data and OOB layout.
