@@ -1,23 +1,17 @@
-Received: from mk-filter-1-a-1.mail.uk.tiscali.com ([212.74.100.52])
+Received: from mail-ew0-f20.google.com ([209.85.219.20])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LWFts-0002QR-AM
-	for linux-mtd@lists.infradead.org; Sun, 08 Feb 2009 20:05:14 +0000
-Subject: [PATCH] sh: maple: add support for Visual Memory Card devices, and
-	make consequential changes to maple input drivers - 2/3 - v5
-From: Adrian McMenamin <adrian@newgolddream.dyndns.info>
-To: Greg KH <greg@kroah.com>
-In-Reply-To: <1234122069.6736.8.camel@localhost.localdomain>
-References: <1234122069.6736.8.camel@localhost.localdomain>
-Content-Type: text/plain
-Date: Sun, 08 Feb 2009 20:04:33 +0000
-Message-Id: <1234123473.6736.29.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-sh <linux-sh@vger.kernel.org>, Greg KH <greg@kroah.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	LKML <linux-kernel@vger.kernel.org>, Paul Mundt <lethal@linux-sh.org>,
-	MTD <linux-mtd@lists.infradead.org>,
-	linux-input <linux-input@vger.kernel.org>, dwmw2 <dwmw2@infradead.org>
+	id 1LVMpi-0001mK-4R
+	for linux-mtd@lists.infradead.org; Fri, 06 Feb 2009 09:17:10 +0000
+Received: by ewy13 with SMTP id 13so1208986ewy.18
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 06 Feb 2009 01:17:08 -0800 (PST)
+MIME-Version: 1.0
+Date: Fri, 6 Feb 2009 10:17:08 +0100
+Message-ID: <87c084000902060117u5f4b4b5eg2a98a6889c61e868@mail.gmail.com>
+Subject: JFFS2 error: on mounting
+From: saravanan chanemouganandam <chanemouganandam@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: multipart/alternative; boundary=0015174c198235009904623c7c30
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,1009 +21,337 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Change the maple bus driver to support the visual memory unit driver.
+--0015174c198235009904623c7c30
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-The maple bus driver currently only supports synchronous polling of attached devices status. These changes allow
-the bus to handle asynchronous commands such as block reads and writes. 
+Hi all,
 
-Signed-off-by: Adrian McMenamin <adrian@mcmen.demon.co.uk>
----
-diff --git a/drivers/sh/maple/maple.c b/drivers/sh/maple/maple.c
-index 63f0de2..b68a06b 100644
---- a/drivers/sh/maple/maple.c
-+++ b/drivers/sh/maple/maple.c
-@@ -1,16 +1,10 @@
- /*
-  * Core maple bus functionality
-  *
-- *  Copyright (C) 2007, 2008 Adrian McMenamin
-+ *  Copyright (C) 2007 - 2009 Adrian McMenamin
-  *  Copyright (C) 2001 - 2008 Paul Mundt
-- *
-- * Based on 2.4 code by:
-- *
-- *  Copyright (C) 2000-2001 YAEGASHI Takeshi
-+ *  Copyright (C) 2000 - 2001 YAEGASHI Takeshi
-  *  Copyright (C) 2001 M. R. Brown
-- *  Copyright (C) 2001 Paul Mundt
-- *
-- * and others.
-  *
-  * This file is subject to the terms and conditions of the GNU General Public
-  * License.  See the file "COPYING" in the main directory of this archive
-@@ -32,7 +26,7 @@
- #include <mach/dma.h>
- #include <mach/sysasic.h>
- 
--MODULE_AUTHOR("Yaegashi Takeshi, Paul Mundt, M. R. Brown, Adrian McMenamin");
-+MODULE_AUTHOR("Adrian McMenamin <adrian@mcmen.demon.co.uk>");
- MODULE_DESCRIPTION("Maple bus driver for Dreamcast");
- MODULE_LICENSE("GPL v2");
- MODULE_SUPPORTED_DEVICE("{{SEGA, Dreamcast/Maple}}");
-@@ -49,7 +43,7 @@ static LIST_HEAD(maple_sentq);
- /* mutex to protect queue of waiting packets */
- static DEFINE_MUTEX(maple_wlist_lock);
- 
--static struct maple_driver maple_dummy_driver;
-+static struct maple_driver maple_unsupported_device;
- static struct device maple_bus;
- static int subdevice_map[MAPLE_PORTS];
- static unsigned long *maple_sendbuf, *maple_sendptr, *maple_lastptr;
-@@ -62,8 +56,9 @@ struct maple_device_specify {
- 	int unit;
- };
- 
--static bool checked[4];
--static struct maple_device *baseunits[4];
-+static bool checked[MAPLE_PORTS];
-+static bool empty[MAPLE_PORTS];
-+static struct maple_device *baseunits[MAPLE_PORTS];
- 
- /**
-  * maple_driver_register - register a maple driver
-@@ -97,12 +92,20 @@ void maple_driver_unregister(struct maple_driver *drv)
- EXPORT_SYMBOL_GPL(maple_driver_unregister);
- 
- /* set hardware registers to enable next round of dma */
--static void maplebus_dma_reset(void)
-+static void maple_dma_reset(void)
- {
- 	ctrl_outl(MAPLE_MAGIC, MAPLE_RESET);
- 	/* set trig type to 0 for software trigger, 1 for hardware (VBLANK) */
- 	ctrl_outl(1, MAPLE_TRIGTYPE);
--	ctrl_outl(MAPLE_2MBPS | MAPLE_TIMEOUT(50000), MAPLE_SPEED);
-+	/*
-+	* Maple system register
-+	* bits 31 - 16	timeout in units of 20nsec
-+	* bit 12	hard trigger - set 0 to keep responding to VBLANK
-+	* bits 9 - 8	set 00 for 2 Mbps, 01 for 1 Mbps
-+	* bits 3 - 0	delay (in 1.3ms) between VBLANK and start of DMA
-+	* max delay is 11
-+	*/
-+	ctrl_outl(MAPLE_2MBPS | MAPLE_TIMEOUT(0xFFFF), MAPLE_SPEED);
- 	ctrl_outl(PHYSADDR(maple_sendbuf), MAPLE_DMAADDR);
- 	ctrl_outl(1, MAPLE_ENABLE);
- }
-@@ -134,21 +137,16 @@ static void maple_release_device(struct device *dev)
- {
- 	struct maple_device *mdev;
- 	struct mapleq *mq;
--	if (!dev)
--		return;
-+
- 	mdev = to_maple_dev(dev);
- 	mq = mdev->mq;
--	if (mq) {
--		if (mq->recvbufdcsp)
--			kmem_cache_free(maple_queue_cache, mq->recvbufdcsp);
--		kfree(mq);
--		mq = NULL;
--	}
-+	kmem_cache_free(maple_queue_cache, mq->recvbuf);
-+	kfree(mq);
- 	kfree(mdev);
- }
- 
- /**
-- * maple_add_packet - add a single instruction to the queue
-+ * maple_add_packet - add a single instruction to the maple bus queue
-  * @mdev: maple device
-  * @function: function on device being queried
-  * @command: maple command to add
-@@ -158,68 +156,12 @@ static void maple_release_device(struct device *dev)
- int maple_add_packet(struct maple_device *mdev, u32 function, u32 command,
- 	size_t length, void *data)
- {
--	int locking, ret = 0;
-+	int ret = 0;
- 	void *sendbuf = NULL;
- 
--	mutex_lock(&maple_wlist_lock);
--	/* bounce if device already locked */
--	locking = mutex_is_locked(&mdev->mq->mutex);
--	if (locking) {
--		ret = -EBUSY;
--		goto out;
--	}
--
--	mutex_lock(&mdev->mq->mutex);
--
- 	if (length) {
--		sendbuf = kmalloc(length * 4, GFP_KERNEL);
-+		sendbuf = kzalloc(length * 4, GFP_KERNEL);
- 		if (!sendbuf) {
--			mutex_unlock(&mdev->mq->mutex);
--			ret = -ENOMEM;
--			goto out;
--		}
--		((__be32 *)sendbuf)[0] = cpu_to_be32(function);
--	}
--
--	mdev->mq->command = command;
--	mdev->mq->length = length;
--	if (length > 1)
--		memcpy(sendbuf + 4, data, (length - 1) * 4);
--	mdev->mq->sendbuf = sendbuf;
--
--	list_add(&mdev->mq->list, &maple_waitq);
--out:
--	mutex_unlock(&maple_wlist_lock);
--	return ret;
--}
--EXPORT_SYMBOL_GPL(maple_add_packet);
--
--/**
-- * maple_add_packet_sleeps - add a single instruction to the queue
-- * @mdev: maple device
-- * @function: function on device being queried
-- * @command: maple command to add
-- * @length: length of command string (in 32 bit words)
-- * @data: remainder of command string
-- *
-- * Same as maple_add_packet(), but waits for the lock to become free.
-- */
--int maple_add_packet_sleeps(struct maple_device *mdev, u32 function,
--	u32 command, size_t length, void *data)
--{
--	int locking, ret = 0;
--	void *sendbuf = NULL;
--
--	locking = mutex_lock_interruptible(&mdev->mq->mutex);
--	if (locking) {
--		ret = -EIO;
--		goto out;
--	}
--
--	if (length) {
--		sendbuf = kmalloc(length * 4, GFP_KERNEL);
--		if (!sendbuf) {
--			mutex_unlock(&mdev->mq->mutex);
- 			ret = -ENOMEM;
- 			goto out;
- 		}
-@@ -233,38 +175,35 @@ int maple_add_packet_sleeps(struct maple_device *mdev, u32 function,
- 	mdev->mq->sendbuf = sendbuf;
- 
- 	mutex_lock(&maple_wlist_lock);
--	list_add(&mdev->mq->list, &maple_waitq);
-+	list_add_tail(&mdev->mq->list, &maple_waitq);
- 	mutex_unlock(&maple_wlist_lock);
- out:
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(maple_add_packet_sleeps);
-+EXPORT_SYMBOL_GPL(maple_add_packet);
- 
- static struct mapleq *maple_allocq(struct maple_device *mdev)
- {
- 	struct mapleq *mq;
- 
--	mq = kmalloc(sizeof(*mq), GFP_KERNEL);
-+	mq = kzalloc(sizeof(*mq), GFP_KERNEL);
- 	if (!mq)
- 		goto failed_nomem;
- 
-+	INIT_LIST_HEAD(&mq->list);
- 	mq->dev = mdev;
--	mq->recvbufdcsp = kmem_cache_zalloc(maple_queue_cache, GFP_KERNEL);
--	mq->recvbuf = (void *) P2SEGADDR(mq->recvbufdcsp);
-+	mq->recvbuf = kmem_cache_zalloc(maple_queue_cache, GFP_KERNEL);
- 	if (!mq->recvbuf)
- 		goto failed_p2;
--	/*
--	 * most devices do not need the mutex - but
--	 * anything that injects block reads or writes
--	 * will rely on it
--	 */
--	mutex_init(&mq->mutex);
-+	mq->recvbuf->buf = &((mq->recvbuf->bufx)[0]);
- 
- 	return mq;
- 
- failed_p2:
- 	kfree(mq);
- failed_nomem:
-+	dev_err(&mdev->dev, "could not allocate memory for device (%d, %d)\n",
-+		mdev->port, mdev->unit);
- 	return NULL;
- }
- 
-@@ -272,12 +211,16 @@ static struct maple_device *maple_alloc_dev(int port, int unit)
- {
- 	struct maple_device *mdev;
- 
-+	/* zero this out to avoid kobj subsystem
-+	* thinking it has already been registered */
-+
- 	mdev = kzalloc(sizeof(*mdev), GFP_KERNEL);
- 	if (!mdev)
- 		return NULL;
- 
- 	mdev->port = port;
- 	mdev->unit = unit;
-+
- 	mdev->mq = maple_allocq(mdev);
- 
- 	if (!mdev->mq) {
-@@ -286,19 +229,14 @@ static struct maple_device *maple_alloc_dev(int port, int unit)
- 	}
- 	mdev->dev.bus = &maple_bus_type;
- 	mdev->dev.parent = &maple_bus;
-+	init_waitqueue_head(&mdev->maple_wait);
- 	return mdev;
- }
- 
- static void maple_free_dev(struct maple_device *mdev)
- {
--	if (!mdev)
--		return;
--	if (mdev->mq) {
--		if (mdev->mq->recvbufdcsp)
--			kmem_cache_free(maple_queue_cache,
--				mdev->mq->recvbufdcsp);
--		kfree(mdev->mq);
--	}
-+	kmem_cache_free(maple_queue_cache, mdev->mq->recvbuf);
-+	kfree(mdev->mq);
- 	kfree(mdev);
- }
- 
-@@ -320,7 +258,7 @@ static void maple_build_block(struct mapleq *mq)
- 	maple_lastptr = maple_sendptr;
- 
- 	*maple_sendptr++ = (port << 16) | len | 0x80000000;
--	*maple_sendptr++ = PHYSADDR(mq->recvbuf);
-+	*maple_sendptr++ = PHYSADDR(mq->recvbuf->buf);
- 	*maple_sendptr++ =
- 	    mq->command | (to << 8) | (from << 16) | (len << 24);
- 	while (len-- > 0)
-@@ -333,20 +271,28 @@ static void maple_send(void)
- 	int i, maple_packets = 0;
- 	struct mapleq *mq, *nmq;
- 
--	if (!list_empty(&maple_sentq))
-+	if (!maple_dma_done())
- 		return;
-+
-+	/* disable DMA */
-+	ctrl_outl(0, MAPLE_ENABLE);
-+
-+	if (!list_empty(&maple_sentq))
-+		goto finish;
-+
- 	mutex_lock(&maple_wlist_lock);
--	if (list_empty(&maple_waitq) || !maple_dma_done()) {
-+	if (list_empty(&maple_waitq)) {
- 		mutex_unlock(&maple_wlist_lock);
--		return;
-+		goto finish;
- 	}
--	mutex_unlock(&maple_wlist_lock);
-+
- 	maple_lastptr = maple_sendbuf;
- 	maple_sendptr = maple_sendbuf;
--	mutex_lock(&maple_wlist_lock);
-+
- 	list_for_each_entry_safe(mq, nmq, &maple_waitq, list) {
- 		maple_build_block(mq);
--		list_move(&mq->list, &maple_sentq);
-+		list_del_init(&mq->list);
-+		list_add_tail(&mq->list, &maple_sentq);
- 		if (maple_packets++ > MAPLE_MAXPACKETS)
- 			break;
- 	}
-@@ -356,10 +302,13 @@ static void maple_send(void)
- 			dma_cache_sync(0, maple_sendbuf + i * PAGE_SIZE,
- 				       PAGE_SIZE, DMA_BIDIRECTIONAL);
- 	}
-+
-+finish:
-+	maple_dma_reset();
- }
- 
- /* check if there is a driver registered likely to match this device */
--static int check_matching_maple_driver(struct device_driver *driver,
-+static int maple_check_matching_driver(struct device_driver *driver,
- 					void *devptr)
- {
- 	struct maple_driver *maple_drv;
-@@ -374,10 +323,7 @@ static int check_matching_maple_driver(struct device_driver *driver,
- 
- static void maple_detach_driver(struct maple_device *mdev)
- {
--	if (!mdev)
--		return;
- 	device_unregister(&mdev->dev);
--	mdev = NULL;
- }
- 
- /* process initial MAPLE_COMMAND_DEVINFO for each device or port */
-@@ -385,9 +331,9 @@ static void maple_attach_driver(struct maple_device *mdev)
- {
- 	char *p, *recvbuf;
- 	unsigned long function;
--	int matched, retval;
-+	int matched, error;
- 
--	recvbuf = mdev->mq->recvbuf;
-+	recvbuf = mdev->mq->recvbuf->buf;
- 	/* copy the data as individual elements in
- 	* case of memory optimisation */
- 	memcpy(&mdev->devinfo.function, recvbuf + 4, 4);
-@@ -395,7 +341,6 @@ static void maple_attach_driver(struct maple_device *mdev)
- 	memcpy(&mdev->devinfo.area_code, recvbuf + 20, 1);
- 	memcpy(&mdev->devinfo.connector_direction, recvbuf + 21, 1);
- 	memcpy(&mdev->devinfo.product_name[0], recvbuf + 22, 30);
--	memcpy(&mdev->devinfo.product_licence[0], recvbuf + 52, 60);
- 	memcpy(&mdev->devinfo.standby_power, recvbuf + 112, 2);
- 	memcpy(&mdev->devinfo.max_power, recvbuf + 114, 2);
- 	memcpy(mdev->product_name, mdev->devinfo.product_name, 30);
-@@ -414,43 +359,41 @@ static void maple_attach_driver(struct maple_device *mdev)
- 		else
- 			break;
- 
--	printk(KERN_INFO "Maple device detected: %s\n",
--		mdev->product_name);
--	printk(KERN_INFO "Maple device: %s\n", mdev->product_licence);
--
- 	function = be32_to_cpu(mdev->devinfo.function);
- 
-+	dev_info(&mdev->dev, "detected %s: function 0x%lX: at (%d, %d)\n",
-+		mdev->product_name, function, mdev->port, mdev->unit);
-+
- 	if (function > 0x200) {
- 		/* Do this silently - as not a real device */
- 		function = 0;
--		mdev->driver = &maple_dummy_driver;
-+		mdev->driver = &maple_unsupported_device;
- 		sprintf(mdev->dev.bus_id, "%d:0.port", mdev->port);
-+
- 	} else {
--		printk(KERN_INFO
--			"Maple bus at (%d, %d): Function 0x%lX\n",
--			mdev->port, mdev->unit, function);
- 
- 		matched =
- 			bus_for_each_drv(&maple_bus_type, NULL, mdev,
--				check_matching_maple_driver);
-+				maple_check_matching_driver);
- 
- 		if (matched == 0) {
- 			/* Driver does not exist yet */
--			printk(KERN_INFO
--				"No maple driver found.\n");
--			mdev->driver = &maple_dummy_driver;
-+			dev_info(&mdev->dev, "no driver found\n");
-+			mdev->driver = &maple_unsupported_device;
- 		}
- 		sprintf(mdev->dev.bus_id, "%d:0%d.%lX", mdev->port,
- 			mdev->unit, function);
- 	}
-+
- 	mdev->function = function;
- 	mdev->dev.release = &maple_release_device;
--	retval = device_register(&mdev->dev);
--	if (retval) {
--		printk(KERN_INFO
--		"Maple bus: Attempt to register device"
--		" (%x, %x) failed.\n",
--		mdev->port, mdev->unit);
-+
-+	mdev->busy = 0;
-+	error = device_register(&mdev->dev);
-+	if (error) {
-+		dev_warn(&mdev->dev, "could not register device at"
-+			" (%d, %d), with error 0x%X\n", mdev->unit,
-+			mdev->port, error);
- 		maple_free_dev(mdev);
- 		mdev = NULL;
- 		return;
-@@ -462,7 +405,7 @@ static void maple_attach_driver(struct maple_device *mdev)
-  * port and unit then return 1 - allows identification
-  * of which devices need to be attached or detached
-  */
--static int detach_maple_device(struct device *device, void *portptr)
-+static int check_maple_device(struct device *device, void *portptr)
- {
- 	struct maple_device_specify *ds;
- 	struct maple_device *mdev;
-@@ -477,21 +420,25 @@ static int detach_maple_device(struct device *device, void *portptr)
- static int setup_maple_commands(struct device *device, void *ignored)
- {
- 	int add;
--	struct maple_device *maple_dev = to_maple_dev(device);
--
--	if ((maple_dev->interval > 0)
--	    && time_after(jiffies, maple_dev->when)) {
--		/* bounce if we cannot lock */
--		add = maple_add_packet(maple_dev,
--			be32_to_cpu(maple_dev->devinfo.function),
-+	struct maple_device *mdev = to_maple_dev(device);
-+	if ((mdev->interval > 0) && (mdev->busy == 0) &&
-+		time_after(jiffies, mdev->when)) {
-+		/* bounce if we cannot add */
-+		add = maple_add_packet(mdev,
-+			be32_to_cpu(mdev->devinfo.function),
- 			MAPLE_COMMAND_GETCOND, 1, NULL);
- 		if (!add)
--			maple_dev->when = jiffies + maple_dev->interval;
-+			mdev->when = jiffies + mdev->interval;
- 	} else {
- 		if (time_after(jiffies, maple_pnp_time))
--			/* This will also bounce */
--			maple_add_packet(maple_dev, 0,
--				MAPLE_COMMAND_DEVINFO, 0, NULL);
-+			/* Ensure we don't have block reads and devinfo
-+			* calls interfering with one another - so flag the
-+			* device as busy */
-+			if (mdev->busy == 0) {
-+				mdev->busy = 1;
-+				maple_add_packet(mdev, 0,
-+					MAPLE_COMMAND_DEVINFO, 0, NULL);
-+			}
- 	}
- 	return 0;
- }
-@@ -499,29 +446,50 @@ static int setup_maple_commands(struct device *device, void *ignored)
- /* VBLANK bottom half - implemented via workqueue */
- static void maple_vblank_handler(struct work_struct *work)
- {
--	if (!list_empty(&maple_sentq) || !maple_dma_done())
-+	int x, locking;
-+	struct maple_device *mdev;
-+
-+	if (!maple_dma_done())
- 		return;
- 
- 	ctrl_outl(0, MAPLE_ENABLE);
- 
-+	if (!list_empty(&maple_sentq))
-+		goto finish;
-+
-+	/*
-+	* Set up essential commands - to fetch data and
-+	* check devices are still present
-+	*/
- 	bus_for_each_dev(&maple_bus_type, NULL, NULL,
--			 setup_maple_commands);
-+		setup_maple_commands);
-+
-+	if (time_after(jiffies, maple_pnp_time)) {
-+		/*
-+		* Scan the empty ports - bus is flakey and may have
-+		* mis-reported emptyness
-+		*/
-+		for (x = 0; x < MAPLE_PORTS; x++) {
-+			if (checked[x] && empty[x]) {
-+				mdev = baseunits[x];
-+				if (!mdev)
-+					break;
-+				mdev->busy = 1;
-+				locking = maple_add_packet(mdev, 0,
-+					MAPLE_COMMAND_DEVINFO, 0, NULL);
-+				if (!locking)
-+					break;
-+				}
-+			}
- 
--	if (time_after(jiffies, maple_pnp_time))
- 		maple_pnp_time = jiffies + MAPLE_PNP_INTERVAL;
--
--	mutex_lock(&maple_wlist_lock);
--	if (!list_empty(&maple_waitq) && list_empty(&maple_sentq)) {
--		mutex_unlock(&maple_wlist_lock);
--		maple_send();
--	} else {
--		mutex_unlock(&maple_wlist_lock);
- 	}
- 
--	maplebus_dma_reset();
-+finish:
-+	maple_send();
- }
- 
--/* handle devices added via hotplugs - placing them on queue for DEVINFO*/
-+/* handle devices added via hotplugs - placing them on queue for DEVINFO */
- static void maple_map_subunits(struct maple_device *mdev, int submask)
- {
- 	int retval, k, devcheck;
-@@ -533,7 +501,7 @@ static void maple_map_subunits(struct maple_device *mdev, int submask)
- 		ds.unit = k + 1;
- 		retval =
- 		    bus_for_each_dev(&maple_bus_type, NULL, &ds,
--				     detach_maple_device);
-+				     check_maple_device);
- 		if (retval) {
- 			submask = submask >> 1;
- 			continue;
-@@ -543,6 +511,7 @@ static void maple_map_subunits(struct maple_device *mdev, int submask)
- 			mdev_add = maple_alloc_dev(mdev->port, k + 1);
- 			if (!mdev_add)
- 				return;
-+			mdev_add->busy = 1;
- 			maple_add_packet(mdev_add, 0, MAPLE_COMMAND_DEVINFO,
- 				0, NULL);
- 			/* mark that we are checking sub devices */
-@@ -564,27 +533,45 @@ static void maple_clean_submap(struct maple_device *mdev)
- }
- 
- /* handle empty port or hotplug removal */
--static void maple_response_none(struct maple_device *mdev,
--				struct mapleq *mq)
--{
--	if (mdev->unit != 0) {
--		list_del(&mq->list);
--		maple_clean_submap(mdev);
--		printk(KERN_INFO
--		       "Maple bus device detaching at (%d, %d)\n",
--		       mdev->port, mdev->unit);
-+static void maple_response_none(struct maple_device *mdev)
-+{
-+	maple_clean_submap(mdev);
-+
-+	if (likely(mdev->unit != 0)) {
-+		/*
-+		* Block devices play up
-+		* and give the impression they have
-+		* been removed even when still in place or
-+		* trip the mtd layer when they have
-+		* really gone - this code traps that eventuality
-+		* and ensures we aren't overloaded with useless
-+		* error messages
-+		*/
-+		if (mdev->can_unload) {
-+			if (!mdev->can_unload(mdev)) {
-+				mdev->busy = 2;
-+				wake_up(&mdev->maple_wait);
-+				return;
-+			}
-+		}
-+
-+		dev_info(&mdev->dev, "detaching device at (%d, %d)\n",
-+			mdev->port, mdev->unit);
- 		maple_detach_driver(mdev);
- 		return;
--	}
--	if (!started || !fullscan) {
--		if (checked[mdev->port] == false) {
--			checked[mdev->port] = true;
--			printk(KERN_INFO "No maple devices attached"
--				" to port %d\n", mdev->port);
-+	} else {
-+		if (!started || !fullscan) {
-+			if (checked[mdev->port] == false) {
-+				checked[mdev->port] = true;
-+				empty[mdev->port] = true;
-+				dev_info(&mdev->dev, "no devices"
-+					" to port %d\n", mdev->port);
-+			}
-+			return;
- 		}
--		return;
- 	}
--	maple_clean_submap(mdev);
-+	/* Some hardware devices generate false detach messages on unit 0 */
-+	mdev->busy = 0;
- }
- 
- /* preprocess hotplugs or scans */
-@@ -599,8 +586,11 @@ static void maple_response_devinfo(struct maple_device *mdev,
- 		} else {
- 			if (mdev->unit != 0)
- 				maple_attach_driver(mdev);
-+			if (mdev->unit == 0) {
-+				empty[mdev->port] = false;
-+				maple_attach_driver(mdev);
-+			}
- 		}
--		return;
- 	}
- 	if (mdev->unit == 0) {
- 		submask = recvbuf[2] & 0x1F;
-@@ -611,6 +601,17 @@ static void maple_response_devinfo(struct maple_device *mdev,
- 	}
- }
- 
-+static void maple_response_fileerr(struct maple_device *mdev, void *recvbuf)
-+{
-+	if (mdev->fileerr_handler) {
-+		mdev->fileerr_handler(mdev, recvbuf);
-+		return;
-+	} else
-+		dev_warn(&mdev->dev, "device at (%d, %d) reports"
-+			"file error 0x%X\n", mdev->port, mdev->unit,
-+			((int *)recvbuf)[1]);
-+}
-+
- static void maple_port_rescan(void)
- {
- 	int i;
-@@ -621,12 +622,6 @@ static void maple_port_rescan(void)
- 		if (checked[i] == false) {
- 			fullscan = 0;
- 			mdev = baseunits[i];
--			/*
--			 *  test lock in case scan has failed
--			 *  but device is still locked
--			 */
--			if (mutex_is_locked(&mdev->mq->mutex))
--				mutex_unlock(&mdev->mq->mutex);
- 			maple_add_packet(mdev, 0, MAPLE_COMMAND_DEVINFO,
- 				0, NULL);
- 		}
-@@ -637,7 +632,7 @@ static void maple_port_rescan(void)
- static void maple_dma_handler(struct work_struct *work)
- {
- 	struct mapleq *mq, *nmq;
--	struct maple_device *dev;
-+	struct maple_device *mdev;
- 	char *recvbuf;
- 	enum maple_code code;
- 
-@@ -646,43 +641,56 @@ static void maple_dma_handler(struct work_struct *work)
- 	ctrl_outl(0, MAPLE_ENABLE);
- 	if (!list_empty(&maple_sentq)) {
- 		list_for_each_entry_safe(mq, nmq, &maple_sentq, list) {
--			recvbuf = mq->recvbuf;
-+			mdev = mq->dev;
-+			recvbuf = mq->recvbuf->buf;
-+			dma_cache_sync(&mdev->dev, recvbuf, 0x400,
-+				DMA_FROM_DEVICE);
- 			code = recvbuf[0];
--			dev = mq->dev;
- 			kfree(mq->sendbuf);
--			mutex_unlock(&mq->mutex);
- 			list_del_init(&mq->list);
--
- 			switch (code) {
- 			case MAPLE_RESPONSE_NONE:
--				maple_response_none(dev, mq);
-+				maple_response_none(mdev);
- 				break;
- 
- 			case MAPLE_RESPONSE_DEVINFO:
--				maple_response_devinfo(dev, recvbuf);
-+				maple_response_devinfo(mdev, recvbuf);
-+				mdev->busy = 0;
- 				break;
- 
- 			case MAPLE_RESPONSE_DATATRF:
--				if (dev->callback)
--					dev->callback(mq);
-+				if (mdev->callback)
-+					mdev->callback(mq);
-+				mdev->busy = 0;
-+				wake_up(&mdev->maple_wait);
- 				break;
- 
- 			case MAPLE_RESPONSE_FILEERR:
-+				maple_response_fileerr(mdev, recvbuf);
-+				mdev->busy = 0;
-+				wake_up(&mdev->maple_wait);
-+				break;
-+
- 			case MAPLE_RESPONSE_AGAIN:
- 			case MAPLE_RESPONSE_BADCMD:
- 			case MAPLE_RESPONSE_BADFUNC:
--				printk(KERN_DEBUG
--				       "Maple non-fatal error 0x%X\n",
--				       code);
-+				dev_warn(&mdev->dev, "non-fatal error"
-+					" 0x%X at (%d, %d)\n", code,
-+					mdev->port, mdev->unit);
-+				mdev->busy = 0;
- 				break;
- 
- 			case MAPLE_RESPONSE_ALLINFO:
--				printk(KERN_DEBUG
--				       "Maple - extended device information"
--					" not supported\n");
-+				dev_notice(&mdev->dev, "extended"
-+				" device information request for (%d, %d)"
-+				" but call is not supported\n", mdev->port,
-+				mdev->unit);
-+				mdev->busy = 0;
- 				break;
- 
- 			case MAPLE_RESPONSE_OK:
-+				mdev->busy = 0;
-+				wake_up(&mdev->maple_wait);
- 				break;
- 
- 			default:
-@@ -699,20 +707,19 @@ static void maple_dma_handler(struct work_struct *work)
- 		if (!fullscan)
- 			maple_port_rescan();
- 		/* mark that we have been through the first scan */
--		if (started == 0)
--			started = 1;
-+		started = 1;
- 	}
--	maplebus_dma_reset();
-+	maple_send();
- }
- 
--static irqreturn_t maplebus_dma_interrupt(int irq, void *dev_id)
-+static irqreturn_t maple_dma_interrupt(int irq, void *dev_id)
- {
- 	/* Load everything into the bottom half */
- 	schedule_work(&maple_dma_process);
- 	return IRQ_HANDLED;
- }
- 
--static irqreturn_t maplebus_vblank_interrupt(int irq, void *dev_id)
-+static irqreturn_t maple_vblank_interrupt(int irq, void *dev_id)
- {
- 	schedule_work(&maple_vblank_process);
- 	return IRQ_HANDLED;
-@@ -720,14 +727,14 @@ static irqreturn_t maplebus_vblank_interrupt(int irq, void *dev_id)
- 
- static int maple_set_dma_interrupt_handler(void)
- {
--	return request_irq(HW_EVENT_MAPLE_DMA, maplebus_dma_interrupt,
--		IRQF_SHARED, "maple bus DMA", &maple_dummy_driver);
-+	return request_irq(HW_EVENT_MAPLE_DMA, maple_dma_interrupt,
-+		IRQF_SHARED, "maple bus DMA", &maple_unsupported_device);
- }
- 
- static int maple_set_vblank_interrupt_handler(void)
- {
--	return request_irq(HW_EVENT_VSYNC, maplebus_vblank_interrupt,
--		IRQF_SHARED, "maple bus VBLANK", &maple_dummy_driver);
-+	return request_irq(HW_EVENT_VSYNC, maple_vblank_interrupt,
-+		IRQF_SHARED, "maple bus VBLANK", &maple_unsupported_device);
- }
- 
- static int maple_get_dma_buffer(void)
-@@ -740,7 +747,7 @@ static int maple_get_dma_buffer(void)
- 	return 0;
- }
- 
--static int match_maple_bus_driver(struct device *devptr,
-+static int maple_match_bus_driver(struct device *devptr,
- 				  struct device_driver *drvptr)
- {
- 	struct maple_driver *maple_drv = to_maple_driver(drvptr);
-@@ -765,16 +772,18 @@ static void maple_bus_release(struct device *dev)
- {
- }
- 
--static struct maple_driver maple_dummy_driver = {
-+static struct maple_driver maple_unsupported_device = {
- 	.drv = {
--		.name = "maple_dummy_driver",
-+		.name = "maple_unsupported_device",
- 		.bus = &maple_bus_type,
- 	},
- };
--
-+/**
-+ * maple_bus_type - core maple bus structure
-+ */
- struct bus_type maple_bus_type = {
- 	.name = "maple",
--	.match = match_maple_bus_driver,
-+	.match = maple_match_bus_driver,
- 	.uevent = maple_bus_uevent,
- };
- EXPORT_SYMBOL_GPL(maple_bus_type);
-@@ -788,7 +797,8 @@ static int __init maple_bus_init(void)
- {
- 	int retval, i;
- 	struct maple_device *mdev[MAPLE_PORTS];
--	ctrl_outl(0, MAPLE_STATE);
-+
-+	ctrl_outl(0, MAPLE_ENABLE);
- 
- 	retval = device_register(&maple_bus);
- 	if (retval)
-@@ -798,36 +808,33 @@ static int __init maple_bus_init(void)
- 	if (retval)
- 		goto cleanup_device;
- 
--	retval = driver_register(&maple_dummy_driver.drv);
-+	retval = driver_register(&maple_unsupported_device.drv);
- 	if (retval)
- 		goto cleanup_bus;
- 
- 	/* allocate memory for maple bus dma */
- 	retval = maple_get_dma_buffer();
- 	if (retval) {
--		printk(KERN_INFO
--		       "Maple bus: Failed to allocate Maple DMA buffers\n");
-+		dev_err(&maple_bus, "failed to allocate DMA buffers\n");
- 		goto cleanup_basic;
- 	}
- 
- 	/* set up DMA interrupt handler */
- 	retval = maple_set_dma_interrupt_handler();
- 	if (retval) {
--		printk(KERN_INFO
--		       "Maple bus: Failed to grab maple DMA IRQ\n");
-+		dev_err(&maple_bus, "bus failed to grab maple "
-+			"DMA IRQ\n");
- 		goto cleanup_dma;
- 	}
- 
- 	/* set up VBLANK interrupt handler */
- 	retval = maple_set_vblank_interrupt_handler();
- 	if (retval) {
--		printk(KERN_INFO "Maple bus: Failed to grab VBLANK IRQ\n");
-+		dev_err(&maple_bus, "bus failed to grab VBLANK IRQ\n");
- 		goto cleanup_irq;
- 	}
- 
--	maple_queue_cache =
--	    kmem_cache_create("maple_queue_cache", 0x400, 0,
--			      SLAB_HWCACHE_ALIGN, NULL);
-+	maple_queue_cache = KMEM_CACHE(maple_buffer, SLAB_HWCACHE_ALIGN);
- 
- 	if (!maple_queue_cache)
- 		goto cleanup_bothirqs;
-@@ -838,23 +845,23 @@ static int __init maple_bus_init(void)
- 	/* setup maple ports */
- 	for (i = 0; i < MAPLE_PORTS; i++) {
- 		checked[i] = false;
-+		empty[i] = false;
- 		mdev[i] = maple_alloc_dev(i, 0);
--		baseunits[i] = mdev[i];
- 		if (!mdev[i]) {
- 			while (i-- > 0)
- 				maple_free_dev(mdev[i]);
- 			goto cleanup_cache;
- 		}
-+		baseunits[i] = mdev[i];
-+		mdev[i]->busy = 1;
- 		maple_add_packet(mdev[i], 0, MAPLE_COMMAND_DEVINFO, 0, NULL);
- 		subdevice_map[i] = 0;
- 	}
- 
--	/* setup maplebus hardware */
--	maplebus_dma_reset();
--	/* initial detection */
-+	maple_pnp_time = jiffies + HZ;
-+	/* prepare initial queue */
- 	maple_send();
--	maple_pnp_time = jiffies;
--	printk(KERN_INFO "Maple bus core now registered.\n");
-+	dev_info(&maple_bus, "bus core now registered\n");
- 
- 	return 0;
- 
-@@ -871,7 +878,7 @@ cleanup_dma:
- 	free_pages((unsigned long) maple_sendbuf, MAPLE_DMA_PAGES);
- 
- cleanup_basic:
--	driver_unregister(&maple_dummy_driver.drv);
-+	driver_unregister(&maple_unsupported_device.drv);
- 
- cleanup_bus:
- 	bus_unregister(&maple_bus_type);
-@@ -880,7 +887,7 @@ cleanup_device:
- 	device_unregister(&maple_bus);
- 
- cleanup:
--	printk(KERN_INFO "Maple bus registration failed\n");
-+	printk(KERN_ERR "Maple bus registration failed\n");
- 	return retval;
- }
- /* Push init to later to ensure hardware gets detected */
-diff --git a/include/linux/maple.h b/include/linux/maple.h
-index c23d3f5..3bbad7f 100644
---- a/include/linux/maple.h
-+++ b/include/linux/maple.h
-@@ -8,33 +8,49 @@ extern struct bus_type maple_bus_type;
- 
- /* Maple Bus command and response codes */
- enum maple_code {
--	MAPLE_RESPONSE_FILEERR = -5,
--	MAPLE_RESPONSE_AGAIN = -4,	/* request should be retransmitted */
--	MAPLE_RESPONSE_BADCMD = -3,
--	MAPLE_RESPONSE_BADFUNC = -2,
--	MAPLE_RESPONSE_NONE = -1,	/* unit didn't respond at all */
--	MAPLE_COMMAND_DEVINFO = 1,
--	MAPLE_COMMAND_ALLINFO = 2,
--	MAPLE_COMMAND_RESET = 3,
--	MAPLE_COMMAND_KILL = 4,
--	MAPLE_RESPONSE_DEVINFO = 5,
--	MAPLE_RESPONSE_ALLINFO = 6,
--	MAPLE_RESPONSE_OK = 7,
--	MAPLE_RESPONSE_DATATRF = 8,
--	MAPLE_COMMAND_GETCOND = 9,
--	MAPLE_COMMAND_GETMINFO = 10,
--	MAPLE_COMMAND_BREAD = 11,
--	MAPLE_COMMAND_BWRITE = 12,
--	MAPLE_COMMAND_SETCOND = 14
-+	MAPLE_RESPONSE_FILEERR =	-5,
-+	MAPLE_RESPONSE_AGAIN,	/* retransmit */
-+	MAPLE_RESPONSE_BADCMD,
-+	MAPLE_RESPONSE_BADFUNC,
-+	MAPLE_RESPONSE_NONE,	/* unit didn't respond*/
-+	MAPLE_COMMAND_DEVINFO =		1,
-+	MAPLE_COMMAND_ALLINFO,
-+	MAPLE_COMMAND_RESET,
-+	MAPLE_COMMAND_KILL,
-+	MAPLE_RESPONSE_DEVINFO,
-+	MAPLE_RESPONSE_ALLINFO,
-+	MAPLE_RESPONSE_OK,
-+	MAPLE_RESPONSE_DATATRF,
-+	MAPLE_COMMAND_GETCOND,
-+	MAPLE_COMMAND_GETMINFO,
-+	MAPLE_COMMAND_BREAD,
-+	MAPLE_COMMAND_BWRITE,
-+	MAPLE_COMMAND_BSYNC,
-+	MAPLE_COMMAND_SETCOND,
-+	MAPLE_COMMAND_MICCONTROL
-+};
-+
-+enum maple_file_errors {
-+	MAPLE_FILEERR_INVALID_PARTITION =	0x01000000,
-+	MAPLE_FILEERR_PHASE_ERROR =		0x02000000,
-+	MAPLE_FILEERR_INVALID_BLOCK =		0x04000000,
-+	MAPLE_FILEERR_WRITE_ERROR =		0x08000000,
-+	MAPLE_FILEERR_INVALID_WRITE_LENGTH =	0x10000000,
-+	MAPLE_FILEERR_BAD_CRC = 		0x20000000
-+};
-+
-+struct maple_buffer {
-+	char bufx[0x400];
-+	void *buf;
- };
- 
- struct mapleq {
- 	struct list_head list;
- 	struct maple_device *dev;
--	void *sendbuf, *recvbuf, *recvbufdcsp;
-+	struct maple_buffer *recvbuf;
-+	void *sendbuf, *recvbuf_p2;
- 	unsigned char length;
- 	enum maple_code command;
--	struct mutex mutex;
- };
- 
- struct maple_devinfo {
-@@ -52,11 +68,15 @@ struct maple_device {
- 	struct maple_driver *driver;
- 	struct mapleq *mq;
- 	void (*callback) (struct mapleq * mq);
-+	void (*fileerr_handler)(struct maple_device *mdev, void *recvbuf);
-+	int (*can_unload)(struct maple_device *mdev);
- 	unsigned long when, interval, function;
- 	struct maple_devinfo devinfo;
- 	unsigned char port, unit;
- 	char product_name[32];
- 	char product_licence[64];
-+	int busy;
-+	wait_queue_head_t maple_wait;
- 	struct device dev;
- };
- 
-@@ -72,7 +92,7 @@ void maple_getcond_callback(struct maple_device *dev,
- int maple_driver_register(struct maple_driver *);
- void maple_driver_unregister(struct maple_driver *);
- 
--int maple_add_packet_sleeps(struct maple_device *mdev, u32 function,
-+int maple_add_packet(struct maple_device *mdev, u32 function,
- 	u32 command, u32 length, void *data);
- void maple_clear_dev(struct maple_device *mdev);
- 
+I am a newbie to JFFS2 flash file system. On my Intel IXP425 wireless board,
+I am have severe issue with JFFS2. The onboard 8MB flash has
+the following partitions and flashed with OpenWRT linux kernels and  jffs2
+rootfs and Config data images.
+
+root@OpenWRT:~# cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 00060000 00020000 "RedBoot"
+mtd1: 00140000 00020000 "kernel1"
+mtd2: 00500000 00020000 "rootfs1"
+mtd3: 00140000 00020000 "kernel2"
+mtd4: 00500000 00020000 "rootfs2"
+mtd5: 00100000 00020000 "Config"
+mtd6: 00020000 00020000 "RedBoot config"
+mtd7: 00020000 00020000 "FIS directory"
+
+root@OpenWRT:~# mount
+rootfs on / type rootfs (rw)
+/dev/root on / type jffs2 (rw)
+proc on /proc type proc (rw)
+sysfs on /sys type sysfs (rw)
+tmpfs on /tmp type tmpfs (rw,nosuid,nodev)
+tmpfs on /dev type tmpfs (rw)
+devpts on /dev/pts type devpts (rw,mode=600)
+/dev/mtdblock5 on /mnt/rw type jffs2 (rw)
+When the board is up and running for the first time, on updating the Config
+(mtd5) parition  from GUI web, and on next reboot the system gets
+failed to mount the Config jffs2 (mtd5) partition and throws the following
+error
+......
+ Intel/Sharp Extended Query Table at 0x010A
+Using buffer write method
+Using auto-unlock on power-up/resume
+cfi_cmdset_0001: Erase suspend on write enabled
+Searching for RedBoot partition table in IXP4XX-Flash.0 at offset 0xfe0000
+8 RedBoot partitions found on MTD device IXP4XX-Flash.0
+Creating 8 MTD partitions on "IXP4XX-Flash.0":
+0x00000000-0x00060000 : "RedBoot"
+0x00060000-0x001a0000 : "kernel1"
+0x001a0000-0x006a0000 : "rootfs1"
+0x006a0000-0x007e0000 : "kernel2"
+0x007e0000-0x00ce0000 : "rootfs2"
+*0x00ce0000-0x00de0000 : "config"*
+0x00fc0000-0x00fe0000 : "RedBoot config"
+0x00fe0000-0x01000000 : "FIS directory"
+i2c /dev entries driver
+i2c-gpio i2c-gpio.0: using pins 9 (SDA) and 10 (SCL)
+IXP4xx Watchdog Timer: heartbeat 60 sec
+Registered led device: pronghorn:green:status
+nf_conntrack version 0.5.0 (1024 buckets, 4096 max)
+ip_tables: (C) 2000-2006 Netfilter Core Team
+TCP westwood registered
+NET: Registered protocol family 17
+Bridge firewalling registered
+802.1Q VLAN Support v1.8 Ben Greear <greearb@candelatech.com>
+All bugs added by David S. Miller <davem@redhat.com>
+XScale DSP coprocessor detected.
+drivers/rtc/hctosys.c: unable to open rtc device (rtc0)
+VFS: Mounted root (jffs2 filesystem) readonly.
+Freeing init memory: 100K
+Please be patient, while OpenWrt loads ...
+*JFFS2 error: (1863) jffs2_link_node_ref: Adding new ref c3d992f0 at
+(0x00000000-0x00000030) not immediately after previo
+us (0x00000000-0x00000000)
+Unable to handle kernel NULL pointer dereference at virtual address 00000000
+pgd = c3cf8000
+*[00000000] *pgd=03e13031, *pte=00000000, *ppte=00000000
+Internal error: Oops: 817 [#1]
+Modules linked in:
+CPU: 0    Not tainted  (2.6.26.2 #17)
+pc : [<c00c0d54>]    lr : [<c020630c>]    psr: 60000013
+sp : c3df5be4  ip : c020630c  fp : c3df5c14
+r10: c3df7800  r9 : 00000006  r8 : c3cfd0a8
+r7 : 00000030  r6 : c3df7200  r5 : c3d992f0  r4 : c3df7800
+r3 : 00000000  r2 : a0000013  r1 : 00000001  r0 : 00000096
+Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
+Control: 000039ff  Table: 03cf8000  DAC: 00000015
+Process mount (pid: 1863, stack limit = 0xc3df4260)
+Stack: (0xc3df5be4 to 0xc3df6000)
+5be0:          00000000 00000030 00000000 00000000 00000030 c3df7800
+00000000
+5c00: c3df7200 c3df7200 c3df5c38 c3df5c18 c00cd5c8 c00c0c60 c3cfd0a8
+00000000
+5c20: c3e18020 00000000 c3d7be00 c3df5c90 c3df5c3c c00cda1c c00cd574
+c3cfd0a8
+5c40: c3d7be15 c3e18038 c3e18000 00020000 00005024 00000000 c3cfd0a8
+19852006
+5c60: 00005024 c3df5c90 00000008 c3df7200 00005024 c3e18000 c3df7800
+c3d92ff8
+5c80: 00000000 c3df5d14 c3df5c94 c00c5e38 c00cd6c8 c0220ae4 000000d2
+ffffffff
+5ca0: 000000ef 00000000 00000000 00000000 00001000 c3d7bd40 00000000
+c006e188
+5cc0: c3d92000 000000d2 00000000 00000000 c3df7200 c3df72dc c3df72c4
+c3df5cfc
+5ce0: c3df5cec c006e3b0 c3d92000 c3df72b4 c3df72bc c3df72dc c3df72c4
+c3df72cc
+5d00: c3df7200 00000000 c3df5d4c c3df5d18 c00c8b4c c00c5b48 c3df5d4c
+c3df5d28
+5d20: 00000000 00020000 00100000 c3df7200 c3df7400 c3c59d00 c00caf10
+c3c19a00
+5d40: c3df5d6c c3df5d50 c00caa10 c00c89c8 c3df7200 c3df7400 00000001
+c3e14000
+5d60: c3df5d8c c3df5d70 c00cafac c00ca8e4 c3df7400 c3df7400 00008000
+c3e14000
+5d80: c3df5db4 c3df5d90 c01125cc c00caf1c c3d02000 c3e14000 c020a2d8
+00008000
+5da0: c020a2d8 c3e14000 c3df5de0 c3df5db8 c0112690 c0112578 c3c19a00
+c00caf10
+5dc0: c3c59d00 01f00005 c3d02000 c3df5df0 00008000 c3df5e6c c3df5de4
+c011280c
+5de0: c011263c 00000005 c00caf10 c3c59d00 c3c59d80 c38c245c c3df5e50
+c3df5e08
+5e00: c00e1810 00000001 00000001 00000000 00000000 c021ca58 000000d0
+c3c59d00
+5e20: 00008000 c3df5e48 00008000 c3df5e60 c3df5e3c c00738b4 c0073634
+c3d74000
+5e40: 0000000f c3c59d00 c3d02000 c020a2d8 00008000 c3e14000 c3d74000
+c3e14000
+5e60: c3df5e84 c3df5e70 c00cadd8 c01126ac c00caf10 c3c59d00 c3df5eac
+c3df5e88
+5e80: c0077dcc c00cadc0 c3c59d00 00008000 c3d02000 c3e14000 c3d74000
+c020a2d8
+5ea0: c3df5ed0 c3df5eb0 c0077e6c c0077d80 00008000 c3d74000 c3df5efc
+00000000
+5ec0: c3d02000 c3df5ef0 c3df5ed4 c008dbc0 c0077e3c 00008000 00000000
+c3df5efc
+5ee0: c3d91000 c3df5f74 c3df5ef4 c008dd60 c008db70 c3d02000 c3e14000
+c3d66180
+5f00: c38fc7c0 c0021620 c0021194 c3e14fe8 00000001 00000001 00000000
+00001000
+5f20: 0006a018 00000018 c3e14000 c3df5f84 c3df4000 00000000 c3df5f74
+00000000
+5f40: c3df5f54 00000000 c01bb46c 00000000 c3d91000 beabff9f 00008000
+c0021be4
+5f60: c3df4000 00000000 c3df5fa4 c3df5f78 c008de14 c008dbfc c3e14000
+c3d02000
+5f80: c3d74000 c3e14000 0006a018 beabfdd0 4009b608 00000015 00000000
+c3df5fa8
+5fa0: c0021a40 c008dd94 0006a018 beabfdd0 beabff9f beabffae beabff99
+00008000
+5fc0: 0006a018 beabfdd0 4009b608 0006a018 00000042 beabfee0 00000000
+00000000
+5fe0: 40051ed4 beabfa50 0002c15c 40051ee0 20000010 beabff9f 00000000
+00000000
+Backtrace:
+Function entered at [<c00c0c54>] from [<c00cd5c8>]
+ r8:c3df7200 r7:c3df7200 r6:00000000 r5:c3df7800 r4:00000030
+Function entered at [<c00cd568>] from [<c00cda1c>]
+ r7:c3d7be00 r6:00000000 r5:c3e18020 r4:00000000
+Function entered at [<c00cd6bc>] from [<c00c5e38>]
+Function entered at [<c00c5b3c>] from [<c00c8b4c>]
+Function entered at [<c00c89bc>] from [<c00caa10>]
+Function entered at [<c00ca8d8>] from [<c00cafac>]
+ r7:c3e14000 r6:00000001 r5:c3df7400 r4:c3df7200
+Function entered at [<c00caf10>] from [<c01125cc>]
+ r7:c3e14000 r6:00008000 r5:c3df7400 r4:c3df7400
+Function entered at [<c011256c>] from [<c0112690>]
+Function entered at [<c0112630>] from [<c011280c>]
+ r7:00008000 r6:c3df5df0 r5:c3d02000 r4:01f00005
+Function entered at [<c01126a0>] from [<c00cadd8>]
+Function entered at [<c00cadb4>] from [<c0077dcc>]
+Function entered at [<c0077d74>] from [<c0077e6c>]
+ r8:c020a2d8 r7:c3d74000 r6:c3e14000 r5:c3d02000 r4:00008000
+Function entered at [<c0077e30>] from [<c008dbc0>]
+ r8:c3d02000 r7:00000000 r6:c3df5efc r5:c3d74000 r4:00008000
+Function entered at [<c008db64>] from [<c008dd60>]
+ r7:c3d91000 r6:c3df5efc r5:00000000 r4:00008000
+Function entered at [<c008dbf0>] from [<c008de14>]
+Function entered at [<c008dd88>] from [<c0021a40>]
+ r7:00000015 r6:4009b608 r5:beabfdd0 r4:0006a018
+Code: e59f00bc e59f20bc ebfdc884 e3a03000 (e5833000)
+---[ end trace eefb6b43ebe2bec4 ]---
+- init -
+Can anyboy tell me how the changes to the jffs2 Config (mtd5) parition
+affects the bootup ?
+
+--0015174c198235009904623c7c30
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<div>Hi all,</div>
+<div>&nbsp;</div>
+<div>I am a newbie to JFFS2 flash file system. On my Intel IXP425 wireless =
+board, I am have severe issue with JFFS2. The onboard 8MB flash has</div>
+<div>the following partitions and flashed with OpenWRT linux kernels and &n=
+bsp;jffs2 rootfs and Config data images.</div>
+<div>&nbsp;</div>
+<div><a href=3D"mailto:root@OpenWRT">root@OpenWRT</a>:~# cat /proc/mtd<br>d=
+ev:&nbsp;&nbsp;&nbsp; size&nbsp;&nbsp; erasesize&nbsp; name<br>mtd0: 000600=
+00 00020000 &quot;RedBoot&quot;<br>mtd1: 00140000 00020000 &quot;kernel1&qu=
+ot;<br>mtd2: 00500000 00020000 &quot;rootfs1&quot;<br>
+mtd3: 00140000 00020000 &quot;kernel2&quot;<br>mtd4: 00500000 00020000 &quo=
+t;rootfs2&quot;<br>mtd5: 00100000 00020000 &quot;Config&quot;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+<div>mtd6: 00020000 00020000 &quot;RedBoot config&quot;<br>mtd7: 00020000 0=
+0020000 &quot;FIS directory&quot;</div>
+<div>&nbsp;</div>
+<div><a href=3D"mailto:root@OpenWRT">root@OpenWRT</a>:~# mount<br>rootfs on=
+ / type rootfs (rw)<br>/dev/root on / type jffs2 (rw)<br>proc on /proc type=
+ proc (rw)<br>sysfs on /sys type sysfs (rw)<br>tmpfs on /tmp type tmpfs (rw=
+,nosuid,nodev)<br>
+tmpfs on /dev type tmpfs (rw)<br>devpts on /dev/pts type devpts (rw,mode=3D=
+600)<br>/dev/mtdblock5 on /mnt/rw type jffs2 (rw)<br></div>
+<div>When the board is up and running for the first time, on updating the C=
+onfig (mtd5) parition &nbsp;from GUI web,&nbsp;and on next reboot the syste=
+m gets </div>
+<div>failed to mount the Config jffs2 (mtd5)&nbsp;partition and throws the =
+following error</div>
+<div>......</div>
+<div>&nbsp;Intel/Sharp Extended Query Table at 0x010A<br>Using buffer write=
+ method<br>Using auto-unlock on power-up/resume<br>cfi_cmdset_0001: Erase s=
+uspend on write enabled<br>Searching for RedBoot partition table in IXP4XX-=
+Flash.0 at offset 0xfe0000<br>
+8 RedBoot partitions found on MTD device IXP4XX-Flash.0<br>Creating 8 MTD p=
+artitions on &quot;IXP4XX-Flash.0&quot;:<br>0x00000000-0x00060000 : &quot;R=
+edBoot&quot;<br>0x00060000-0x001a0000 : &quot;kernel1&quot;<br>0x001a0000-0=
+x006a0000 : &quot;rootfs1&quot;<br>
+0x006a0000-0x007e0000 : &quot;kernel2&quot;<br>0x007e0000-0x00ce0000 : &quo=
+t;rootfs2&quot;<br><strong>0x00ce0000-0x00de0000 : &quot;config&quot;</stro=
+ng><br>0x00fc0000-0x00fe0000 : &quot;RedBoot config&quot;<br>0x00fe0000-0x0=
+1000000 : &quot;FIS directory&quot;<br>
+i2c /dev entries driver<br>i2c-gpio i2c-gpio.0: using pins 9 (SDA) and 10 (=
+SCL)<br>IXP4xx Watchdog Timer: heartbeat 60 sec<br>Registered led device: p=
+ronghorn:green:status<br>nf_conntrack version 0.5.0 (1024 buckets, 4096 max=
+)<br>
+ip_tables: (C) 2000-2006 Netfilter Core Team<br>TCP westwood registered<br>=
+NET: Registered protocol family 17<br>Bridge firewalling registered<br>802.=
+1Q VLAN Support v1.8 Ben Greear &lt;<a href=3D"mailto:greearb@candelatech.c=
+om">greearb@candelatech.com</a>&gt;<br>
+All bugs added by David S. Miller &lt;<a href=3D"mailto:davem@redhat.com">d=
+avem@redhat.com</a>&gt;<br>XScale DSP coprocessor detected.<br>drivers/rtc/=
+hctosys.c: unable to open rtc device (rtc0)<br>VFS: Mounted root (jffs2 fil=
+esystem) readonly.<br>
+Freeing init memory: 100K<br>Please be patient, while OpenWrt loads ...<br>=
+<strong>JFFS2 error: (1863) jffs2_link_node_ref: Adding new ref c3d992f0 at=
+ (0x00000000-0x00000030) not immediately after previo<br>us (0x00000000-0x0=
+0000000)<br>
+Unable to handle kernel NULL pointer dereference at virtual address 0000000=
+0<br>pgd =3D c3cf8000<br></strong>[00000000] *pgd=3D03e13031, *pte=3D000000=
+00, *ppte=3D00000000<br>Internal error: Oops: 817 [#1]<br>Modules linked in=
+:<br>
+CPU: 0&nbsp;&nbsp;&nbsp; Not tainted&nbsp; (2.6.26.2 #17)<br>pc : [&lt;c00c=
+0d54&gt;]&nbsp;&nbsp;&nbsp; lr : [&lt;c020630c&gt;]&nbsp;&nbsp;&nbsp; psr: =
+60000013<br>sp : c3df5be4&nbsp; ip : c020630c&nbsp; fp : c3df5c14<br>r10: c=
+3df7800&nbsp; r9 : 00000006&nbsp; r8 : c3cfd0a8<br>r7 : 00000030&nbsp; r6 :=
+ c3df7200&nbsp; r5 : c3d992f0&nbsp; r4 : c3df7800<br>
+r3 : 00000000&nbsp; r2 : a0000013&nbsp; r1 : 00000001&nbsp; r0 : 00000096<b=
+r>Flags: nZCv&nbsp; IRQs on&nbsp; FIQs on&nbsp; Mode SVC_32&nbsp; ISA ARM&n=
+bsp; Segment user<br>Control: 000039ff&nbsp; Table: 03cf8000&nbsp; DAC: 000=
+00015<br>Process mount (pid: 1863, stack limit =3D 0xc3df4260)<br>
+Stack: (0xc3df5be4 to 0xc3df6000)<br>5be0:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp; 00000000 00000030 00000000 00000000 00000030 c3df7800=
+ 00000000 <br>5c00: c3df7200 c3df7200 c3df5c38 c3df5c18 c00cd5c8 c00c0c60 c=
+3cfd0a8 00000000 <br>5c20: c3e18020 00000000 c3d7be00 c3df5c90 c3df5c3c c00=
+cda1c c00cd574 c3cfd0a8 <br>
+5c40: c3d7be15 c3e18038 c3e18000 00020000 00005024 00000000 c3cfd0a8 198520=
+06 <br>5c60: 00005024 c3df5c90 00000008 c3df7200 00005024 c3e18000 c3df7800=
+ c3d92ff8 <br>5c80: 00000000 c3df5d14 c3df5c94 c00c5e38 c00cd6c8 c0220ae4 0=
+00000d2 ffffffff <br>
+5ca0: 000000ef 00000000 00000000 00000000 00001000 c3d7bd40 00000000 c006e1=
+88 <br>5cc0: c3d92000 000000d2 00000000 00000000 c3df7200 c3df72dc c3df72c4=
+ c3df5cfc <br>5ce0: c3df5cec c006e3b0 c3d92000 c3df72b4 c3df72bc c3df72dc c=
+3df72c4 c3df72cc <br>
+5d00: c3df7200 00000000 c3df5d4c c3df5d18 c00c8b4c c00c5b48 c3df5d4c c3df5d=
+28 <br>5d20: 00000000 00020000 00100000 c3df7200 c3df7400 c3c59d00 c00caf10=
+ c3c19a00 <br>5d40: c3df5d6c c3df5d50 c00caa10 c00c89c8 c3df7200 c3df7400 0=
+0000001 c3e14000 <br>
+5d60: c3df5d8c c3df5d70 c00cafac c00ca8e4 c3df7400 c3df7400 00008000 c3e140=
+00 <br>5d80: c3df5db4 c3df5d90 c01125cc c00caf1c c3d02000 c3e14000 c020a2d8=
+ 00008000 <br>5da0: c020a2d8 c3e14000 c3df5de0 c3df5db8 c0112690 c0112578 c=
+3c19a00 c00caf10 <br>
+5dc0: c3c59d00 01f00005 c3d02000 c3df5df0 00008000 c3df5e6c c3df5de4 c01128=
+0c <br>5de0: c011263c 00000005 c00caf10 c3c59d00 c3c59d80 c38c245c c3df5e50=
+ c3df5e08 <br>5e00: c00e1810 00000001 00000001 00000000 00000000 c021ca58 0=
+00000d0 c3c59d00 <br>
+5e20: 00008000 c3df5e48 00008000 c3df5e60 c3df5e3c c00738b4 c0073634 c3d740=
+00 <br>5e40: 0000000f c3c59d00 c3d02000 c020a2d8 00008000 c3e14000 c3d74000=
+ c3e14000 <br>5e60: c3df5e84 c3df5e70 c00cadd8 c01126ac c00caf10 c3c59d00 c=
+3df5eac c3df5e88 <br>
+5e80: c0077dcc c00cadc0 c3c59d00 00008000 c3d02000 c3e14000 c3d74000 c020a2=
+d8 <br>5ea0: c3df5ed0 c3df5eb0 c0077e6c c0077d80 00008000 c3d74000 c3df5efc=
+ 00000000 <br>5ec0: c3d02000 c3df5ef0 c3df5ed4 c008dbc0 c0077e3c 00008000 0=
+0000000 c3df5efc <br>
+5ee0: c3d91000 c3df5f74 c3df5ef4 c008dd60 c008db70 c3d02000 c3e14000 c3d661=
+80 <br>5f00: c38fc7c0 c0021620 c0021194 c3e14fe8 00000001 00000001 00000000=
+ 00001000 <br>5f20: 0006a018 00000018 c3e14000 c3df5f84 c3df4000 00000000 c=
+3df5f74 00000000 <br>
+5f40: c3df5f54 00000000 c01bb46c 00000000 c3d91000 beabff9f 00008000 c0021b=
+e4 <br>5f60: c3df4000 00000000 c3df5fa4 c3df5f78 c008de14 c008dbfc c3e14000=
+ c3d02000 <br>5f80: c3d74000 c3e14000 0006a018 beabfdd0 4009b608 00000015 0=
+0000000 c3df5fa8 <br>
+5fa0: c0021a40 c008dd94 0006a018 beabfdd0 beabff9f beabffae beabff99 000080=
+00 <br>5fc0: 0006a018 beabfdd0 4009b608 0006a018 00000042 beabfee0 00000000=
+ 00000000 <br>5fe0: 40051ed4 beabfa50 0002c15c 40051ee0 20000010 beabff9f 0=
+0000000 00000000 <br>
+Backtrace: <br>Function entered at [&lt;c00c0c54&gt;] from [&lt;c00cd5c8&gt=
+;]<br>&nbsp;r8:c3df7200 r7:c3df7200 r6:00000000 r5:c3df7800 r4:00000030<br>=
+Function entered at [&lt;c00cd568&gt;] from [&lt;c00cda1c&gt;]<br>&nbsp;r7:=
+c3d7be00 r6:00000000 r5:c3e18020 r4:00000000<br>
+Function entered at [&lt;c00cd6bc&gt;] from [&lt;c00c5e38&gt;]<br>Function =
+entered at [&lt;c00c5b3c&gt;] from [&lt;c00c8b4c&gt;]<br>Function entered a=
+t [&lt;c00c89bc&gt;] from [&lt;c00caa10&gt;]<br>Function entered at [&lt;c0=
+0ca8d8&gt;] from [&lt;c00cafac&gt;]<br>
+&nbsp;r7:c3e14000 r6:00000001 r5:c3df7400 r4:c3df7200<br>Function entered a=
+t [&lt;c00caf10&gt;] from [&lt;c01125cc&gt;]<br>&nbsp;r7:c3e14000 r6:000080=
+00 r5:c3df7400 r4:c3df7400<br>Function entered at [&lt;c011256c&gt;] from [=
+&lt;c0112690&gt;]<br>
+Function entered at [&lt;c0112630&gt;] from [&lt;c011280c&gt;]<br>&nbsp;r7:=
+00008000 r6:c3df5df0 r5:c3d02000 r4:01f00005<br>Function entered at [&lt;c0=
+1126a0&gt;] from [&lt;c00cadd8&gt;]<br>Function entered at [&lt;c00cadb4&gt=
+;] from [&lt;c0077dcc&gt;]<br>
+Function entered at [&lt;c0077d74&gt;] from [&lt;c0077e6c&gt;]<br>&nbsp;r8:=
+c020a2d8 r7:c3d74000 r6:c3e14000 r5:c3d02000 r4:00008000<br>Function entere=
+d at [&lt;c0077e30&gt;] from [&lt;c008dbc0&gt;]<br>&nbsp;r8:c3d02000 r7:000=
+00000 r6:c3df5efc r5:c3d74000 r4:00008000<br>
+Function entered at [&lt;c008db64&gt;] from [&lt;c008dd60&gt;]<br>&nbsp;r7:=
+c3d91000 r6:c3df5efc r5:00000000 r4:00008000<br>Function entered at [&lt;c0=
+08dbf0&gt;] from [&lt;c008de14&gt;]<br>Function entered at [&lt;c008dd88&gt=
+;] from [&lt;c0021a40&gt;]<br>
+&nbsp;r7:00000015 r6:4009b608 r5:beabfdd0 r4:0006a018<br>Code: e59f00bc e59=
+f20bc ebfdc884 e3a03000 (e5833000) <br>---[ end trace eefb6b43ebe2bec4 ]---=
+<br>- init -<br></div>
+<div>Can anyboy tell me how the changes to the jffs2 Config (mtd5) parition=
+ affects the bootup ?</div>
+
+--0015174c198235009904623c7c30--
