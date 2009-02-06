@@ -1,43 +1,22 @@
-Received: from fgwmail9.fujitsu.co.jp ([192.51.44.39])
+Received: from an-out-0708.google.com ([209.85.132.249])
 	by casper.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LVOzp-00038R-LI
-	for linux-mtd@lists.infradead.org; Fri, 06 Feb 2009 11:35:48 +0000
-Received: from fgwmail6.fujitsu.co.jp (fgwmail6.fujitsu.co.jp [192.51.44.36])
-	by fgwmail9.fujitsu.co.jp (Fujitsu Gateway) with ESMTP id
-	n16B6Jpw001905 for <linux-mtd@lists.infradead.org> (envelope-from
-	iram.shahzad@jp.fujitsu.com); Fri, 6 Feb 2009 20:06:19 +0900
-Received: from m2.gw.fujitsu.co.jp ([10.0.50.72])
-	by fgwmail6.fujitsu.co.jp (Fujitsu Gateway) with ESMTP id
-	n16B5Prt026217 for <linux-mtd@lists.infradead.org> (envelope-from
-	iram.shahzad@jp.fujitsu.com); Fri, 6 Feb 2009 20:05:26 +0900
-Received: from smail (m2 [127.0.0.1])
-	by outgoing.m2.gw.fujitsu.co.jp (Postfix) with ESMTP id 7E23D45DE55
+	id 1LVO3C-0002GQ-EP
+	for linux-mtd@lists.infradead.org; Fri, 06 Feb 2009 10:35:13 +0000
+Received: by an-out-0708.google.com with SMTP id c37so299388anc.27
 	for <linux-mtd@lists.infradead.org>;
-	Fri,  6 Feb 2009 20:05:25 +0900 (JST)
-Received: from s2.gw.fujitsu.co.jp (s2.gw.fujitsu.co.jp [10.0.50.92])
-	by m2.gw.fujitsu.co.jp (Postfix) with ESMTP id 4748445DE51
-	for <linux-mtd@lists.infradead.org>;
-	Fri,  6 Feb 2009 20:05:25 +0900 (JST)
-Received: from s2.gw.fujitsu.co.jp (localhost.localdomain [127.0.0.1])
-	by s2.gw.fujitsu.co.jp (Postfix) with ESMTP id 21047E38004
-	for <linux-mtd@lists.infradead.org>;
-	Fri,  6 Feb 2009 20:05:25 +0900 (JST)
-Received: from m106.s.css.fujitsu.com (m106.s.css.fujitsu.com [10.249.87.106])
-	by s2.gw.fujitsu.co.jp (Postfix) with ESMTP id CD64A1DB803B
-	for <linux-mtd@lists.infradead.org>;
-	Fri,  6 Feb 2009 20:05:24 +0900 (JST)
-Message-ID: <D7819ED4DC5A46FDB0E7557B1ABBE32A@sky>
-From: "Iram Shahzad" <iram.shahzad@jp.fujitsu.com>
-To: "Ricard Wanderlof" <ricard.wanderlof@axis.com>
-References: <4C336FC8FE0F441DA6FAB8337E58BB54@sky>
-	<Pine.LNX.4.64.0902061056160.19761@lnxricardw.se.axis.com>
-Subject: Re: cannot access NAND STL partition
-Date: Fri, 6 Feb 2009 20:07:07 +0900
+	Fri, 06 Feb 2009 02:34:50 -0800 (PST)
+Message-ID: <498C1245.3040802@gmail.com>
+Date: Fri, 06 Feb 2009 04:34:45 -0600
+From: Nishanth Menon <menon.nishanth@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="iso-8859-1";
-	reply-type=response
+To: Reuben Dowle <Reuben.Dowle@navico.com>,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] MTD: NAND Add support for MLC nand with alternate BB
+	marker	locations
+References: <70F6AAAFDC054F41B9994A9BCD3DF64E08611EC4@exch01-aklnz.MARINE.NET.INT>
+In-Reply-To: <70F6AAAFDC054F41B9994A9BCD3DF64E08611EC4@exch01-aklnz.MARINE.NET.INT>
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -47,39 +26,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> I assume BML = Block Management Layer and STL = Sector Transition Layer?
-> From an MTD and JFFS2 point of view the terminology sounds slightly odd, 
-> exactly what type of file system are you using and exactly what type of 
-> BML and STL are you referring to?
+Reuben Dowle said the following on 02/03/2009 09:20 PM:
+> This patch adds support for some MLC NAND flashes that place the BB
+> marker in the LAST page of the bad block rather than the FIRST page used
+> for SLC NAND and other types of MLC nand.
+>
+> Lifted from Samsung datasheet for K9LG8G08U0A (1Gbyte MLC NAND):
+> "
+>
+>   
+link to the datasheet might be quick ;)..
+> Signed-off-by: Reuben Dowle <reuben.dowle at navico.com>
+> ---
+>  drivers/mtd/nand/nand_base.c |   12 ++++++++++++
+>  drivers/mtd/nand/nand_bbt.c  |    3 +++
+>  include/linux/mtd/nand.h     |    3 ++-
+>  3 files changed, 17 insertions(+), 1 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> old mode 100644
+> new mode 100755
+> index 0c3afcc..a76ff7b
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -306,6 +306,9 @@ static int nand_block_bad(struct mtd_info *mtd,
+> loff_t ofs, int getchip)
+>  
+>  	page = (int)(ofs >> chip->page_shift) & chip->pagemask;
+>  
+> +	if( chip->options & NAND_BB_LAST_PAGE )
+>   
+formatting... if( chip Vs if (chip.. did you run checkpatch.pl to verify
+the patch?
+> +		ofs += (mtd->erasesize - mtd->writesize);
+>   
+Would we consider extending bbt_desc as a generic handling technique for
+all current and future NAND and kill the need ofchip->options for
+BB_LAST_PAGE, ALL_PAGES etc? The argument being: what if a different
+manufacturer uses last 2 pages of nand or 2 pages at a different page
+offset - in all cases ALL_PAGES would not be efficient enough)..
 
-To simplify the problem, I have kept filesystem out of the discussion.
-I am talking about raw read/write. In other words, I am reading the
-NAND in the following two ways and then checking whether the read
-data is expected data or not:
-
-   From u-boot:
-      onenand read 0x50000000 0x0c500000 0x20000
-
-   From Linux:
-     hexdump -C /dev/mtdblock0
-
-Both ways I see the same data.
-
-If I write the flash from u-boot or Linux using "onenand write", "dd" etc,
-I can read the expected data in the above ways.
-
-The problem starts when I write the flash with the flash writer.
-The flash writer can write either in BML or STL details of which
-I don't know. I guess the words refer to Block Management Layer and
-Sector Translation Layer.
-
-I also guess that when writing in BML, it writes raw data, so when read
-from u-boot/Linux, the data is as expected; but when writing in STL,
-it does some kind of translation for wear leveling etc. So I thought if
-there is a similar kind of translation layer in Linux, then I can put it
-on top of the raw Linux onenand driver to get the expected result.
-
-Many thanks for the reply.
-
-Best regards
-Iram
+Regards,
+Nishanth Menon
+Regards,
+Nishanth Menon
