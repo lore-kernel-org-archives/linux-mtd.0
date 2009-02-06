@@ -1,15 +1,43 @@
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+Received: from fgwmail7.fujitsu.co.jp ([192.51.44.37])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LVH9J-0001Qd-6s
-	for linux-mtd@lists.infradead.org; Fri, 06 Feb 2009 03:13:01 +0000
-Message-ID: <498BAAB1.5030104@cn.fujitsu.com>
-Date: Fri, 06 Feb 2009 11:12:49 +0800
-From: Wei Yongjun <yjwei@cn.fujitsu.com>
+	id 1LVJpq-0006uf-AH
+	for linux-mtd@lists.infradead.org; Fri, 06 Feb 2009 06:05:06 +0000
+Received: from m5.gw.fujitsu.co.jp ([10.0.50.75])
+	by fgwmail7.fujitsu.co.jp (Fujitsu Gateway) with ESMTP id
+	n1664xn0013932 for <linux-mtd@lists.infradead.org> (envelope-from
+	iram.shahzad@jp.fujitsu.com); Fri, 6 Feb 2009 15:04:59 +0900
+Received: from smail (m5 [127.0.0.1])
+	by outgoing.m5.gw.fujitsu.co.jp (Postfix) with ESMTP id 5484F45DE51
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  6 Feb 2009 15:04:59 +0900 (JST)
+Received: from s5.gw.fujitsu.co.jp (s5.gw.fujitsu.co.jp [10.0.50.95])
+	by m5.gw.fujitsu.co.jp (Postfix) with ESMTP id 358F645DE4D
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  6 Feb 2009 15:04:59 +0900 (JST)
+Received: from s5.gw.fujitsu.co.jp (localhost.localdomain [127.0.0.1])
+	by s5.gw.fujitsu.co.jp (Postfix) with ESMTP id 053E8E08006
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  6 Feb 2009 15:04:59 +0900 (JST)
+Received: from ml13.s.css.fujitsu.com (ml13.s.css.fujitsu.com [10.249.87.103])
+	by s5.gw.fujitsu.co.jp (Postfix) with ESMTP id AB826E08002
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  6 Feb 2009 15:04:58 +0900 (JST)
+Received: from ml13.css.fujitsu.com (ml13 [127.0.0.1])
+	by ml13.s.css.fujitsu.com (Postfix) with ESMTP id 8950CFD0003
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  6 Feb 2009 15:04:58 +0900 (JST)
+Received: from sky (x154150.ao.fst.fujitsu.com [10.90.154.150])
+	by ml13.s.css.fujitsu.com (Postfix) with SMTP id 3DB76FD0001
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  6 Feb 2009 15:04:58 +0900 (JST)
+Message-ID: <4C336FC8FE0F441DA6FAB8337E58BB54@sky>
+From: "Iram Shahzad" <iram.shahzad@jp.fujitsu.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: cannot access NAND STL partition
+Date: Fri, 6 Feb 2009 15:06:42 +0900
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: fs/jffs2/malloc.c: kmem_cache_alloc/memset -> kmem_cache_zalloc
-Content-Type: text/plain; charset=GB2312
+Content-Type: text/plain; format=flowed; charset="iso-2022-jp";
+	reply-type=original
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -20,40 +48,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Used kmem_cache_zalloc instead of kmem_cache_alloc/memset.
+Hi
 
-Signed-off-by: Wei Yongjun <yjwei@cn.fujitsu.com>
----
- fs/jffs2/malloc.c |    6 ++----
- 1 files changed, 2 insertions(+), 4 deletions(-)
+I am having the following problem related to reading data
+from NAND. Any hints will be highly appreciated.
 
-diff --git a/fs/jffs2/malloc.c b/fs/jffs2/malloc.c
-index f921125..9eff2bd 100644
---- a/fs/jffs2/malloc.c
-+++ b/fs/jffs2/malloc.c
-@@ -284,10 +284,9 @@ void jffs2_free_inode_cache(struct jffs2_inode_cache *x)
- struct jffs2_xattr_datum *jffs2_alloc_xattr_datum(void)
- {
- 	struct jffs2_xattr_datum *xd;
--	xd = kmem_cache_alloc(xattr_datum_cache, GFP_KERNEL);
-+	xd = kmem_cache_zalloc(xattr_datum_cache, GFP_KERNEL);
- 	dbg_memalloc("%p\n", xd);
- 
--	memset(xd, 0, sizeof(struct jffs2_xattr_datum));
- 	xd->class = RAWNODE_CLASS_XATTR_DATUM;
- 	xd->node = (void *)xd;
- 	INIT_LIST_HEAD(&xd->xindex);
-@@ -303,10 +302,9 @@ void jffs2_free_xattr_datum(struct jffs2_xattr_datum *xd)
- struct jffs2_xattr_ref *jffs2_alloc_xattr_ref(void)
- {
- 	struct jffs2_xattr_ref *ref;
--	ref = kmem_cache_alloc(xattr_ref_cache, GFP_KERNEL);
-+	ref = kmem_cache_zalloc(xattr_ref_cache, GFP_KERNEL);
- 	dbg_memalloc("%p\n", ref);
- 
--	memset(ref, 0, sizeof(struct jffs2_xattr_ref));
- 	ref->class = RAWNODE_CLASS_XATTR_REF;
- 	ref->node = (void *)ref;
- 	return ref;
--- 
-1.5.3.8
+Problem in short:
+-------------------
+I can read some partitions but cannot read other ones.
+
+Problem in long:
+-------------------
+I need to access my rootfs from Linux. The rootfs is located
+in NAND. If I write the rootfs in the NAND using u-boot or
+Linux itself, then I can read the rootfs from Linux without
+problem.
+
+But the flash has to be programmed using a special flash
+writer. While doing this the flash is divided into several
+partitions, some partitions are STL and the others are BML.
+Now I find that u-boot/Linux can read BML partitions correctly
+but cannot read STL partitions. Reading STL partition gives
+unexpected data.
+
+For test, I am able to place my rootfs in the BML partition
+in which case everything works fine. But finally I have to
+place the rootfs in STL partition.
+
+Do you have any idea how can Linux read data from STL partition?
+I guess I need some kind of translation layer on top of my
+low level NAND driver but am not sure about that.
+Currently I am using the following components.
+    drivers/mtd/cmdlinepart + drivers/mtd/onenand
+
+Is FTL/NFTL used for this purpose?
+
+Best regards
+Iram
