@@ -1,44 +1,20 @@
-Received: from fgwmail7.fujitsu.co.jp ([192.51.44.37])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LVJpq-0006uf-AH
-	for linux-mtd@lists.infradead.org; Fri, 06 Feb 2009 06:05:06 +0000
-Received: from m5.gw.fujitsu.co.jp ([10.0.50.75])
-	by fgwmail7.fujitsu.co.jp (Fujitsu Gateway) with ESMTP id
-	n1664xn0013932 for <linux-mtd@lists.infradead.org> (envelope-from
-	iram.shahzad@jp.fujitsu.com); Fri, 6 Feb 2009 15:04:59 +0900
-Received: from smail (m5 [127.0.0.1])
-	by outgoing.m5.gw.fujitsu.co.jp (Postfix) with ESMTP id 5484F45DE51
-	for <linux-mtd@lists.infradead.org>;
-	Fri,  6 Feb 2009 15:04:59 +0900 (JST)
-Received: from s5.gw.fujitsu.co.jp (s5.gw.fujitsu.co.jp [10.0.50.95])
-	by m5.gw.fujitsu.co.jp (Postfix) with ESMTP id 358F645DE4D
-	for <linux-mtd@lists.infradead.org>;
-	Fri,  6 Feb 2009 15:04:59 +0900 (JST)
-Received: from s5.gw.fujitsu.co.jp (localhost.localdomain [127.0.0.1])
-	by s5.gw.fujitsu.co.jp (Postfix) with ESMTP id 053E8E08006
-	for <linux-mtd@lists.infradead.org>;
-	Fri,  6 Feb 2009 15:04:59 +0900 (JST)
-Received: from ml13.s.css.fujitsu.com (ml13.s.css.fujitsu.com [10.249.87.103])
-	by s5.gw.fujitsu.co.jp (Postfix) with ESMTP id AB826E08002
-	for <linux-mtd@lists.infradead.org>;
-	Fri,  6 Feb 2009 15:04:58 +0900 (JST)
-Received: from ml13.css.fujitsu.com (ml13 [127.0.0.1])
-	by ml13.s.css.fujitsu.com (Postfix) with ESMTP id 8950CFD0003
-	for <linux-mtd@lists.infradead.org>;
-	Fri,  6 Feb 2009 15:04:58 +0900 (JST)
-Received: from sky (x154150.ao.fst.fujitsu.com [10.90.154.150])
-	by ml13.s.css.fujitsu.com (Postfix) with SMTP id 3DB76FD0001
-	for <linux-mtd@lists.infradead.org>;
-	Fri,  6 Feb 2009 15:04:58 +0900 (JST)
-Message-ID: <4C336FC8FE0F441DA6FAB8337E58BB54@sky>
-From: "Iram Shahzad" <iram.shahzad@jp.fujitsu.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: cannot access NAND STL partition
-Date: Fri, 6 Feb 2009 15:06:42 +0900
-MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="iso-2022-jp";
-	reply-type=original
-Content-Transfer-Encoding: 7bit
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LVLF1-0000p0-G8
+	for linux-mtd@lists.infradead.org; Fri, 06 Feb 2009 07:35:11 +0000
+Subject: Re: [PATCH 1/2] MTD: add fsync capability
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Mike Frysinger <vapier.adi@gmail.com>
+In-Reply-To: <8bd0f97a0902051400t6c9e7525h28597ae442501751@mail.gmail.com>
+References: <1233869152-23992-1-git-send-email-corentincj@iksaif.net>
+	<8bd0f97a0902051400t6c9e7525h28597ae442501751@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 06 Feb 2009 09:34:43 +0200
+Message-Id: <1233905683.17790.14.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Corentin Chary <corentincj@iksaif.net>, linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -48,40 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
+On Thu, 2009-02-05 at 17:00 -0500, Mike Frysinger wrote:
+> On Thu, Feb 5, 2009 at 16:25, Corentin Chary wrote:
+> > +static int mtd_fsync(struct file *file, struct dentry *dentry, int datasync)
+> > +{
+> > +       struct mtd_file_info *mfi = file->private_data;
+> > +       struct mtd_info *mtd = mfi->mtd;
+> > +
+> > +       DEBUG(MTD_DEBUG_LEVEL0, "MTD_fsync\n");
+> > +
+> > +       /* Only sync if opened RW */
+> > +       if ((file->f_mode & FMODE_WRITE) && mtd->sync)
+> > +               mtd->sync(mtd);
+> > +
+> > +       return 0;
+> > +} /* mtd_fsync */
+> 
+> adding a comment to mark the end of a function isnt common ... i'd
+> drop that.  otherwise, the patch looks pretty straightforward to me,
+> but i'm not a big VFS guru ;).
+> -mike
 
-I am having the following problem related to reading data
-from NAND. Any hints will be highly appreciated.
+The patch looks fine for me, except of the weird end comment, and
+the ancient ugly "DEBUG(MTD_DEBUG_LEVEL0, "MTD_fsync\n");" ...
 
-Problem in short:
--------------------
-I can read some partitions but cannot read other ones.
-
-Problem in long:
--------------------
-I need to access my rootfs from Linux. The rootfs is located
-in NAND. If I write the rootfs in the NAND using u-boot or
-Linux itself, then I can read the rootfs from Linux without
-problem.
-
-But the flash has to be programmed using a special flash
-writer. While doing this the flash is divided into several
-partitions, some partitions are STL and the others are BML.
-Now I find that u-boot/Linux can read BML partitions correctly
-but cannot read STL partitions. Reading STL partition gives
-unexpected data.
-
-For test, I am able to place my rootfs in the BML partition
-in which case everything works fine. But finally I have to
-place the rootfs in STL partition.
-
-Do you have any idea how can Linux read data from STL partition?
-I guess I need some kind of translation layer on top of my
-low level NAND driver but am not sure about that.
-Currently I am using the following components.
-    drivers/mtd/cmdlinepart + drivers/mtd/onenand
-
-Is FTL/NFTL used for this purpose?
-
-Best regards
-Iram
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
