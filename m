@@ -1,21 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LVLUA-00037o-F7
-	for linux-mtd@lists.infradead.org; Fri, 06 Feb 2009 07:50:50 +0000
-Message-ID: <498BEBC8.3000302@yandex.ru>
-Date: Fri, 06 Feb 2009 09:50:32 +0200
-From: Artem Bityutskiy <dedekind@yandex.ru>
-MIME-Version: 1.0
+	id 1LVLei-0004ss-Sq
+	for linux-mtd@lists.infradead.org; Fri, 06 Feb 2009 08:01:45 +0000
+Subject: Re: [PATCH 2/2] UBI: add fsync capability
+From: Artem Bityutskiy <dedekind@infradead.org>
 To: Corentin Chary <corentincj@iksaif.net>
-Subject: Re: Request for review: NandFS
-References: <200902031327.59536.corentincj@iksaif.net>
-In-Reply-To: <200902031327.59536.corentincj@iksaif.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <1233869152-23992-2-git-send-email-corentincj@iksaif.net>
+References: <1233869152-23992-1-git-send-email-corentincj@iksaif.net>
+	<1233869152-23992-2-git-send-email-corentincj@iksaif.net>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 06 Feb 2009 10:01:34 +0200
+Message-Id: <1233907294.17790.26.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-fsdevel@vger.kernel.org,
-	HIBLOT Jean-Jacques <jjhiblot@adeneo.adetelgroup.com>,
-	Gregory CLEMENT <gclement@adeneo.adetelgroup.com>,
-	linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Corentin Chary wrote:
-> Hi,
-> Here is NandFS, a NAND Flash Filesystem.
-> NandFS is similar to YAFFS2 (in some ways), but the codebase is much more
-> cleaner and simpler. And we'll try to go mainline.
+On Thu, 2009-02-05 at 22:25 +0100, Corentin Chary wrote:
+> Now, we can call fsync() on an UBI volume.
 > 
-> Development started at Adeneo (http://www.adeneo-embedded.com/srt/en/home) in 
-> 2007. After a long pause, I re-started to clean the code in october 2008.
-> 
-> With the new UBIFS, we might think than there is no room for another flash 
-> filesystem. But another GPLed filesystem can't hurt anyone. Some of us may 
-> have heard some words about UFFS, but this project is in no way related to 
-> NandFS.
-> 
-> *IMPORTANT*: NandFS is under active development, and can't be considered safe 
-> or stable !
+> Signed-off-by: Corentin Chary <corentincj@iksaif.net>
+> ---
+>  drivers/mtd/ubi/cdev.c |   12 ++++++++++++
+>  1 files changed, 12 insertions(+), 0 deletions(-)
 
-Probably you have a very good motivation to do work from
-scratch, but what is sad that instead of joining us and
-improving UBI/UBIFS stack, you spend your time creating new
-file-system.
-
-Almost nobody is interested in new unscalable solutions, and
-you really waste your time, because we already have 3 of them,
-at least.
-
-There are so many things to improve in UBI/UBIFS, and there
-is a possibility to create a scalable UBI2. You may do a lot
-of exciting things in the area, instead.
-
-Please, think about joining us instead :-)
+Pushed to ubi-2.6.git, thank you!
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
