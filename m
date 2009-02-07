@@ -1,25 +1,11 @@
-Received: from mail-fx0-f16.google.com ([209.85.220.16])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LVlLQ-00007h-LO
-	for linux-mtd@lists.infradead.org; Sat, 07 Feb 2009 11:27:35 +0000
-Received: by fxm9 with SMTP id 9so368050fxm.18
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 07 Feb 2009 03:27:30 -0800 (PST)
+Date: Sat, 7 Feb 2009 08:50:03 -0800
+Message-ID: <4966B964000075EB@ms3.isc.cl>
+From: "Accept Your Winning" <sriquelme@adsl.tie.cl>
+Subject: Francaise des Jeux
 MIME-Version: 1.0
-In-Reply-To: <498C40A2.8050100@billgatliff.com>
-References: <200902031327.59536.corentincj@iksaif.net>
-	<498BEBC8.3000302@yandex.ru> <498C40A2.8050100@billgatliff.com>
-Date: Sat, 7 Feb 2009 12:27:30 +0100
-Message-ID: <71cd59b00902070327u2185377r5735cdd1a68249b8@mail.gmail.com>
-Subject: Re: Request for review: NandFS
-From: Corentin Chary <corentin.chary@gmail.com>
-To: Bill Gatliff <bgat@billgatliff.com>
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <dedekind@yandex.ru>, linux-fsdevel@vger.kernel.org,
-	Gregory CLEMENT <gclement@adeneo.adetelgroup.com>,
-	HIBLOT Jean-Jacques <jjhiblot@adeneo.adetelgroup.com>,
-	linux-mtd@lists.infradead.org
+Reply-To: fdjeux@strompost.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,33 +15,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> Please, think about joining us instead :-)
->>
->
-> Of course, if NandFS is better than UBI/UBIFS, then maybe you should think
-> about joining him instead!  :)
+La Francaise des Jeux Loterie
+Bureau central
+Gestion et services centraux:
+2 Rue Frochot
+Paris, Ile-de-France 75009
+France
 
-Yep, I think you should do that ! :)
+After this automated computer ballot, your e-mail address attached to serial
+ which consequently emerged as our only winner in the United Nations Booklet
 
-Seriously, NandFS may not be scalable, but with checkpoints and
-writeback it'll should get better performances than JFFS/YAFFS.
-And as it only use mtd, it should be more easily portable to something
-else that linux.
+You been approved for a lump prize off of 2,000,000.00 in
+ cash credited to File Number LFDJL/08/8007
 
-But I know that we now need scalable solutions, and it's why I work on
-another project ( http://uffs.org/ ). What we are trying to do with
-that is totaly different. We will try to do something portable (linux,
-windows, fuse (for MacOSX and *BSD)). And more important we wan't to
-make it work on raw NAND, *and* on block devices based on NAND. For
-that we've got EBM, which is very similar to UBI (and uses UBI on
-Linux) to talk to raw NAND or block devices. You may look at
-http://uffs.org/pages/documentation .
-For the core filesystem, we may make something new or use a modified
-version of UBIFS (in this case, the project may be re-named).
-Anyway, by working on UFFS, we will contribute to UBI/UBIFS and UBI2
-(ebm on block devices will look like UBI2).
+Contact for acceptance:
 
+La-Francaise des Jeux Loterie
+Information and Payment Bureau:
+United Kingdom Office
+Fax:  44 870 974 4065
+Email:fdjeux@strompost.com
 
--- 
-Corentin Chary
-http://xf.iksaif.net
+Regards
+Christophe Blanchard-Dignac
+Chief Executive Officer
