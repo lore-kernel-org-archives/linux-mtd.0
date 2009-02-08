@@ -1,18 +1,15 @@
-Received: from smtp126.sbc.mail.sp1.yahoo.com ([69.147.65.185])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LVyVf-0002Jy-Tv
-	for linux-mtd@lists.infradead.org; Sun, 08 Feb 2009 01:31:04 +0000
-From: David Brownell <david-b@pacbell.net>
-To: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: [patch 2.6.29-rc3-git] NAND: davinci_nand driver
-Date: Sat, 7 Feb 2009 17:30:50 -0800
+Received: from woodchuck.wormnet.eu ([2a01:348:0:6:4d4b:69df:0:1])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LW5Ve-0004Oa-5k
+	for linux-mtd@lists.infradead.org; Sun, 08 Feb 2009 08:59:29 +0000
+Date: Sun, 8 Feb 2009 08:59:19 +0000
+From: Alexander Clouter <alex@digriz.org.uk>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] [MTD] NAND: add ts7xxx driver
+Message-ID: <20090208085919.GD11872@woodchuck>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200902071730.51660.david-b@pacbell.net>
-Cc: DaVinci <davinci-linux-open-source@linux.davincidsp.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,730 +19,438 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: David Brownell <dbrownell@users.sourceforge.net>
+This patch adds support for the NAND found in Technologic Systems ARM
+boards[1].  The platform specific parts (IO address and parititoning
+schemes) have been moved into platform specific files whilst the driver
+it's self can be used as a complete replacement for the ts7250 NAND
+driver.
 
-This is a device driver for the NAND flash controller found on the
-various DaVinci family chips.  It handles up to four SoC chipselects,
-and some flavors of secondary chipselect (e.g. based on upper bits
-of the address bus) as used with some multichip packages.  (Including
-the 2 GByte chips used on some TI devel boards.)
+[1] http://www.embeddedarm.com/products/arm-sbc.php
 
-The 1-bit ECC hardware is supported (3 bytes ECC per 512 bytes data);
-but not yet the newer 4-bit ECC (10 bytes ECC per 512 bytes data), as
-available on chips like the DM355 or OMAP-L137 and needed with the
-more error-prone MLC NAND chips.
-
-This is a cleaned-up version of code that's been in use for several
-years now; sanity checked with the new drivers/mtd/tests.
-
-Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
+Signed-off-by: Alexander Clouter <alex@digriz.org.uk>
 ---
-NOTE:  matches current version in DaVinci GIT tree, which means
-it depends on <mach/cpu.h> which isn't (yet) in mainline.
+ drivers/mtd/nand/Kconfig        |    8 +-
+ drivers/mtd/nand/Makefile       |    1 +
+ drivers/mtd/nand/ts7xxx.c       |  334 +++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/nand-ts7xxx.h |   35 ++++
+ 4 files changed, 377 insertions(+), 1 deletions(-)
+ create mode 100644 drivers/mtd/nand/ts7xxx.c
+ create mode 100644 include/linux/mtd/nand-ts7xxx.h
 
-ALSO:  includes <mach/nand.h> ... arguably that should be part
-of the same set of patches that include <mach/cpu.h> and board
-setup code patches that use that platform data.
-
- arch/arm/mach-davinci/include/mach/nand.h |   80 +++
- drivers/mtd/nand/Kconfig                  |    7 
- drivers/mtd/nand/Makefile                 |    1 
- drivers/mtd/nand/davinci_nand.c           |  587 ++++++++++++++++++++++++++++
- 4 files changed, 675 insertions(+)
-
---- /dev/null
-+++ b/arch/arm/mach-davinci/include/mach/nand.h
-@@ -0,0 +1,80 @@
-+/*
-+ * mach-davinci/nand.h
-+ *
-+ * Copyright (C) 2006 Texas Instruments.
-+ *
-+ * Ported to 2.6.23 Copyright (C) 2008 by
-+ *   Sander Huijsen <Shuijsen@optelecom-nkf.com>
-+ *   Troy Kisky <troy.kisky@boundarydevices.com>
-+ *   Dirk Behme <Dirk.Behme@gmail.com>
-+ *
-+ * --------------------------------------------------------------------------
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-+ */
-+
-+#ifndef __ARCH_ARM_DAVINCI_NAND_H
-+#define __ARCH_ARM_DAVINCI_NAND_H
-+
-+#include <linux/mtd/nand.h>
-+
-+#define NRCSR_OFFSET		0x00
-+#define AWCCR_OFFSET		0x04
-+#define A1CR_OFFSET		0x10
-+#define NANDFCR_OFFSET		0x60
-+#define NANDFSR_OFFSET		0x64
-+#define NANDF1ECC_OFFSET	0x70
-+
-+/* 4-bit ECC syndrome registers */
-+#define NAND_4BIT_ECC_LOAD_OFFSET	0xbc
-+#define NAND_4BIT_ECC1_OFFSET		0xc0
-+#define NAND_4BIT_ECC2_OFFSET		0xc4
-+#define NAND_4BIT_ECC3_OFFSET		0xc8
-+#define NAND_4BIT_ECC4_OFFSET		0xcc
-+#define NAND_ERR_ADD1_OFFSET		0xd0
-+#define NAND_ERR_ADD2_OFFSET		0xd4
-+#define NAND_ERR_ERRVAL1_OFFSET		0xd8
-+#define NAND_ERR_ERRVAL2_OFFSET		0xdc
-+
-+/* NOTE:  boards don't need to use these address bits
-+ * for ALE/CLE unless they support booting from NAND.
-+ * They're used unless platform data overrides them.
-+ */
-+#define	MASK_ALE		0x08
-+#define	MASK_CLE		0x10
-+
-+struct davinci_nand_pdata {		/* platform_data */
-+	u32			mask_ale;
-+	u32			mask_cle;
-+
-+	/* for packages using two chipselects */
-+	u32			mask_chipsel;
-+
-+	/* board's default static partition info */
-+	struct mtd_partition	*parts;
-+	unsigned		nr_parts;
-+
-+	/* none  == NAND_ECC_NONE (strongly *not* advised!!)
-+	 * soft  == NAND_ECC_SOFT
-+	 * 1-bit == NAND_ECC_HW
-+	 * 4-bit == NAND_ECC_HW_SYNDROME (not on all chips)
-+	 */
-+	nand_ecc_modes_t	ecc_mode;
-+
-+	/* e.g. NAND_BUSWIDTH_16 or NAND_USE_FLASH_BBT */
-+	unsigned		options;
-+};
-+
-+#endif	/* __ARCH_ARM_DAVINCI_NAND_H */
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index f8ae040..6c9d344 100644
 --- a/drivers/mtd/nand/Kconfig
 +++ b/drivers/mtd/nand/Kconfig
-@@ -427,4 +427,11 @@ config MTD_NAND_SH_FLCTL
- 	  Several Renesas SuperH CPU has FLCTL. This option enables support
- 	  for NAND Flash using FLCTL. This driver support SH7723.
+@@ -76,10 +76,16 @@ config MTD_NAND_AMS_DELTA
  
-+config MTD_NAND_DAVINCI
-+        tristate "Support NAND on DaVinci SoC"
-+        depends on ARCH_DAVINCI
-+        help
-+	  Enable the driver for NAND flash chips on Texas Instruments
-+	  DaVinci processors.
+ config MTD_NAND_TS7250
+ 	tristate "NAND Flash device on TS-7250 board"
+-	depends on MACH_TS72XX
++	depends on MACH_TS72XX && !MTD_NAND_TS7XXX
+ 	help
+ 	  Support for NAND flash on Technologic Systems TS-7250 platform.
+ 
++config MTD_NAND_TS7XXX
++	tristate "NAND Flash device on TS-7xxx boards"
++	depends on MACH_TS72XX || MACH_TS78XX
++	help
++	  Support for NAND flash on Technologic Systems TS-7xxx platforms.
 +
- endif # MTD_NAND
+ config MTD_NAND_IDS
+ 	tristate
+ 
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index b661586..68694c7 100644
 --- a/drivers/mtd/nand/Makefile
 +++ b/drivers/mtd/nand/Makefile
-@@ -36,5 +36,6 @@ obj-$(CONFIG_MTD_NAND_FSL_ELBC)		+= fsl_
- obj-$(CONFIG_MTD_NAND_FSL_UPM)		+= fsl_upm.o
- obj-$(CONFIG_MTD_NAND_SH_FLCTL)		+= sh_flctl.o
- obj-$(CONFIG_MTD_NAND_MXC)		+= mxc_nand.o
-+obj-$(CONFIG_MTD_NAND_DAVINCI)		+= davinci_nand.o
- 
- nand-objs := nand_base.o nand_bbt.o
+@@ -19,6 +19,7 @@ obj-$(CONFIG_MTD_NAND_H1900)		+= h1910.o
+ obj-$(CONFIG_MTD_NAND_RTC_FROM4)	+= rtc_from4.o
+ obj-$(CONFIG_MTD_NAND_SHARPSL)		+= sharpsl.o
+ obj-$(CONFIG_MTD_NAND_TS7250)		+= ts7250.o
++obj-$(CONFIG_MTD_NAND_TS7XXX)		+= ts7xxx.o
+ obj-$(CONFIG_MTD_NAND_NANDSIM)		+= nandsim.o
+ obj-$(CONFIG_MTD_NAND_CS553X)		+= cs553x_nand.o
+ obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
+diff --git a/drivers/mtd/nand/ts7xxx.c b/drivers/mtd/nand/ts7xxx.c
+new file mode 100644
+index 0000000..a2bc309
 --- /dev/null
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -0,0 +1,587 @@
++++ b/drivers/mtd/nand/ts7xxx.c
+@@ -0,0 +1,334 @@
 +/*
-+ * davinci_nand.c - NAND Flash Driver for DaVinci family chips
++ * drivers/mtd/nand/ts7xxx.c
 + *
-+ * Copyright (C) 2006 Texas Instruments.
++ * Copyright (C) 2008 Alexander Clouter (alex@digriz.org.uk)
 + *
-+ * Port to 2.6.23 Copyright (C) 2008 by:
-+ *   Sander Huijsen <Shuijsen@optelecom-nkf.com>
-+ *   Troy Kisky <troy.kisky@boundarydevices.com>
-+ *   Dirk Behme <Dirk.Behme@gmail.com>
++ * Derived from drivers/mtd/nand/ts7250.c
++ *   Copyright (C) 2004 Technologic Systems (support@embeddedARM.com)
++ *
++ * More information of course gleaned from Technologic Systems driver
++ * in their supplied kernel drivers/mtd/nand/ts7800.c and
++ * ts-7800-nand-regmap.txt; of course also the existing ts7250.c driver
 + *
 + * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
 + *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ * Overview:
++ *   This is a device driver for the NAND flash device found on the TS-7xxx
++ *   board ranges.  DMA and HW ECC support is only available on the TS-78xx
 + */
 +
-+#include <linux/kernel.h>
-+#include <linux/init.h>
 +#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/err.h>
-+#include <linux/clk.h>
-+#include <linux/io.h>
++#include <linux/init.h>
++#include <linux/mtd/mtd.h>
 +#include <linux/mtd/nand.h>
++#include <linux/mtd/nand_ecc.h>
 +#include <linux/mtd/partitions.h>
-+
-+#include <mach/cpu.h>
-+#include <mach/nand.h>
-+
++#include <linux/mtd/nand-ts7xxx.h>
++#include <linux/platform_device.h>
++#include <linux/io.h>
 +#include <asm/mach-types.h>
 +
-+
-+#ifdef CONFIG_MTD_PARTITIONS
-+static inline int mtd_has_partitions(void) { return 1; }
-+#else
-+static inline int mtd_has_partitions(void) { return 0; }
++/* needed for board_is_ts7200() */
++#ifdef CONFIG_MACH_TS72XX
++#include <mach/hardware.h>
 +#endif
 +
-+#ifdef CONFIG_MTD_CMDLINE_PARTS
-+static inline int mtd_has_cmdlinepart(void) { return 1; }
-+#else
-+static inline int mtd_has_cmdlinepart(void) { return 0; }
-+#endif
++/*
++ * MTD structure for TS7xxx board
++ */
++static struct mtd_info *ts7xxx_mtd;
 +
++static struct ts7xxx_nand_data *ts7xxx_nand_data;
++static void __iomem **ts7xxx_iobase;
++static void __iomem *ts7xxx_ioctrl;
++static void __iomem *ts7xxx_iodata;
++static void __iomem *ts7xxx_iobusy;
 +
 +/*
-+ * This is a device driver for the NAND flash controller found on the
-+ * various DaVinci family chips.  It handles up to four SoC chipselects,
-+ * and some flavors of secondary chipselect (e.g. based on A12) as used
-+ * with multichip packages.
++ * hardware specific access to control-lines
 + *
-+ * The 1-bit ECC hardware is supported, but not yet the newer 4-bit ECC
-+ * available on chips like the DM355 and OMAP-L137 and needed with the
-+ * more error-prone MLC NAND chips.
-+ *
-+ * This driver assumes EM_WAIT connects all the NAND devices' RDY/nBUSY
-+ * outputs in a "wire-AND" configuration, with no per-chip signals.
++ * ctrl:
++ * NAND_NCE: bit 0 -> bit 2
++ * NAND_CLE: bit 1 -> bit 1
++ * NAND_ALE: bit 2 -> bit 0
 + */
-+struct davinci_nand_info {
-+	struct mtd_info		mtd;
-+	struct nand_chip	chip;
-+
-+	struct device		*dev;
-+	struct clk		*clk;
-+	bool			partitioned;
-+
-+	void __iomem		*base;
-+	void __iomem		*vaddr;
-+
-+	u32			ioaddr;
-+	u32			current_cs;
-+
-+	u32			mask_chipsel;
-+	u32			mask_ale;
-+	u32			mask_cle;
-+
-+	u32			core_chipsel;
-+};
-+
-+static DEFINE_SPINLOCK(davinci_nand_lock);
-+
-+#define to_davinci_nand(m) container_of(m, struct davinci_nand_info, mtd)
-+
-+
-+static inline unsigned int davinci_nand_readl(struct davinci_nand_info *info,
-+		int offset)
++static void ts7xxx_hwcontrol(struct mtd_info *mtd, int cmd, unsigned int ctrl)
 +{
-+	return __raw_readl(info->base + offset);
-+}
++	struct nand_chip *this = mtd->priv;
 +
-+static inline void davinci_nand_writel(struct davinci_nand_info *info,
-+		int offset, unsigned long value)
-+{
-+	__raw_writel(value, info->base + offset);
-+}
-+
-+/*----------------------------------------------------------------------*/
-+
-+/*
-+ * Access to hardware control lines:  ALE, CLE, secondary chipselect.
-+ */
-+
-+static void nand_davinci_hwcontrol(struct mtd_info *mtd, int cmd,
-+				   unsigned int ctrl)
-+{
-+	struct davinci_nand_info	*info = to_davinci_nand(mtd);
-+	u32				addr = info->current_cs;
-+	struct nand_chip		*nand = mtd->priv;
-+
-+	/* Did the control lines change? */
 +	if (ctrl & NAND_CTRL_CHANGE) {
-+		if ((ctrl & NAND_CTRL_CLE) == NAND_CTRL_CLE)
-+			addr |= info->mask_cle;
-+		else if ((ctrl & NAND_CTRL_ALE) == NAND_CTRL_ALE)
-+			addr |= info->mask_ale;
++		unsigned char bits;
 +
-+		nand->IO_ADDR_W = (void __iomem __force *)addr;
++		bits = (ctrl & NAND_NCE) << 2;
++		bits |= ctrl & NAND_CLE;
++		bits |= (ctrl & NAND_ALE) >> 2;
++
++		writeb((readb(ts7xxx_ioctrl) & ~0x7) | bits, ts7xxx_ioctrl);
 +	}
 +
 +	if (cmd != NAND_CMD_NONE)
-+		iowrite8(cmd, nand->IO_ADDR_W);
++		writeb(cmd, this->IO_ADDR_W);
 +}
 +
-+static void nand_davinci_select_chip(struct mtd_info *mtd, int chip)
++static int ts7xxx_device_ready(struct mtd_info *mtd)
 +{
-+	struct davinci_nand_info	*info = to_davinci_nand(mtd);
-+	u32				addr = info->ioaddr;
-+
-+	/* maybe kick in a second chipselect */
-+	if (chip > 0)
-+		addr |= info->mask_chipsel;
-+	info->current_cs = addr;
-+
-+	info->chip.IO_ADDR_W = (void __iomem __force *)addr;
-+	info->chip.IO_ADDR_R = info->chip.IO_ADDR_W;
++	return readb(ts7xxx_iobusy) & 0x20;
 +}
 +
-+/*----------------------------------------------------------------------*/
-+
++#ifdef CONFIG_MACH_TS78XX
 +/*
-+ * 1-bit hardware ECC ... context maintained for each core chipselect
++ * The HW ECC offloading functions, gives about a 9% performance increase
++ * for 'dd if=/dev/mtdblockX' and 5% for nanddump.
 + */
-+
-+static inline u32 nand_davinci_readecc_1bit(struct mtd_info *mtd)
++static void ts7xxx_enable_hwecc(struct mtd_info *mtd, int mode)
 +{
-+	struct davinci_nand_info *info = to_davinci_nand(mtd);
++	unsigned int ecc;
 +
-+	return davinci_nand_readl(info, NANDF1ECC_OFFSET
-+			+ 4 * info->core_chipsel);
++	/* we loop as the FIFO might need emptying */
++	do {
++		ecc = readl(ts7xxx_ioctrl);
++		writel(ecc | 0x8, ts7xxx_ioctrl);
++	} while ((ecc & 0x18) != 0x18);
 +}
 +
-+static void nand_davinci_hwctl_1bit(struct mtd_info *mtd, int mode)
++static int ts7xxx_calculate_ecc(struct mtd_info *mtd, const uint8_t *dat,
++				uint8_t *ecc_code)
 +{
-+	struct davinci_nand_info *info;
-+	u32 retval;
-+	unsigned long flags;
++	unsigned int i, ecc;
 +
-+	info = to_davinci_nand(mtd);
++	for (i = 0; i < 8; i++) {
++		/*
++		 * TS told me that their HW ECC implementation spits out on the
++		 * 22 LSB's and not the MSB's which is why we right shift
++		 * trimming the top and not the bottom!
++		 */
++		ecc = (readl(ts7xxx_ioctrl) >> 6) | 0x03;
 +
-+	/* Reset ECC hardware */
-+	nand_davinci_readecc_1bit(mtd);
-+
-+	spin_lock_irqsave(&davinci_nand_lock, flags);
-+
-+	/* Restart ECC hardware */
-+	retval = davinci_nand_readl(info, NANDFCR_OFFSET);
-+	retval |= BIT(8 + info->core_chipsel);
-+	davinci_nand_writel(info, NANDFCR_OFFSET, retval);
-+
-+	spin_unlock_irqrestore(&davinci_nand_lock, flags);
-+}
-+
-+/*
-+ * Read hardware ECC value and pack into three bytes
-+ */
-+static int nand_davinci_calculate_1bit(struct mtd_info *mtd,
-+				      const u_char *dat, u_char *ecc_code)
-+{
-+	unsigned int ecc_val = nand_davinci_readecc_1bit(mtd);
-+	unsigned int tmp = (ecc_val & 0x0fff) | ((ecc_val & 0x0fff0000) >> 4);
-+
-+	/* invert so that erased block ecc is correct */
-+	tmp = ~tmp;
-+	ecc_code[0] = (u_char)(tmp);
-+	ecc_code[1] = (u_char)(tmp >> 8);
-+	ecc_code[2] = (u_char)(tmp >> 16);
++		*ecc_code++ = (ecc >> 16) & 0xff;
++		*ecc_code++ = (ecc >>  8) & 0xff;
++		*ecc_code++ = (ecc >>  0) & 0xff;
++	};
 +
 +	return 0;
 +}
 +
-+static int nand_davinci_correct_1bit(struct mtd_info *mtd, u_char *dat,
-+				     u_char *read_ecc, u_char *calc_ecc)
++static int ts7xx_correct_data(struct mtd_info *mtd, uint8_t *dat,
++				uint8_t *read_ecc, uint8_t *calc_ecc)
 +{
-+	struct nand_chip *chip = mtd->priv;
-+	u_int32_t eccNand = read_ecc[0] | (read_ecc[1] << 8) |
-+					  (read_ecc[2] << 16);
-+	u_int32_t eccCalc = calc_ecc[0] | (calc_ecc[1] << 8) |
-+					  (calc_ecc[2] << 16);
-+	u_int32_t diff = eccCalc ^ eccNand;
++	int ret = 0;
++	unsigned int i;
 +
-+	if (diff) {
-+		if ((((diff >> 12) ^ diff) & 0xfff) == 0xfff) {
-+			/* Correctable error */
-+			if ((diff >> (12 + 3)) < chip->ecc.size) {
-+				dat[diff >> (12 + 3)] ^= BIT((diff >> 12) & 7);
-+				return 1;
-+			} else {
-+				return -1;
-+			}
-+		} else if (!(diff & (diff - 1))) {
-+			/* Single bit ECC error in the ECC itself,
-+			 * nothing to fix */
-+			return 1;
-+		} else {
-+			/* Uncorrectable error */
-+			return -1;
-+		}
-+
-+	}
-+	return 0;
-+}
-+
-+/*----------------------------------------------------------------------*/
-+
-+/*
-+ * NOTE:  NAND boot requires ALE == EM_A[1], CLE == EM_A[2], so that's
-+ * how these chips are normally wired.  This translates to both 8 and 16
-+ * bit busses using ALE == BIT(3) in byte addresses, and CLE == BIT(4).
-+ *
-+ * For now we assume that configuration, or any other one which ignores
-+ * the two LSBs for NAND access ... so we can issue 32-bit reads/writes
-+ * and have that transparently morphed into multiple NAND operations.
-+ */
-+static void nand_davinci_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+
-+	if ((0x03 & ((unsigned)buf)) == 0 && (0x03 & len) == 0)
-+		ioread32_rep(chip->IO_ADDR_R, buf, len >> 2);
-+	else if ((0x01 & ((unsigned)buf)) == 0 && (0x01 & len) == 0)
-+		ioread16_rep(chip->IO_ADDR_R, buf, len >> 1);
-+	else
-+		ioread8_rep(chip->IO_ADDR_R, buf, len);
-+}
-+
-+static void nand_davinci_write_buf(struct mtd_info *mtd,
-+		const uint8_t *buf, int len)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+
-+	if ((0x03 & ((unsigned)buf)) == 0 && (0x03 & len) == 0)
-+		iowrite32_rep(chip->IO_ADDR_R, buf, len >> 2);
-+	else if ((0x01 & ((unsigned)buf)) == 0 && (0x01 & len) == 0)
-+		iowrite16_rep(chip->IO_ADDR_R, buf, len >> 1);
-+	else
-+		iowrite8_rep(chip->IO_ADDR_R, buf, len);
-+}
-+
-+/*
-+ * Check hardware register for wait status. Returns 1 if device is ready,
-+ * 0 if it is still busy.
-+ */
-+static int nand_davinci_dev_ready(struct mtd_info *mtd)
-+{
-+	struct davinci_nand_info *info = to_davinci_nand(mtd);
-+
-+	return davinci_nand_readl(info, NANDFSR_OFFSET) & BIT(0);
-+}
-+
-+static void __init nand_dm6446evm_flash_init(struct davinci_nand_info *info)
-+{
-+	u32 regval, tmp;
-+
-+	/*
-+	 * NAND FLASH timings @ PLL1 == 459 MHz
-+	 *  - AEMIF.CLK freq   = PLL1/6 = 459/6 = 76.5 MHz
-+	 *  - AEMIF.CLK period = 1/76.5 MHz = 13.1 ns
-+	 */
-+	regval = 0
-+		| (0 << 31)           /* selectStrobe */
-+		| (0 << 30)           /* extWait (never with NAND) */
-+		| (1 << 26)           /* writeSetup      10 ns */
-+		| (3 << 20)           /* writeStrobe     40 ns */
-+		| (1 << 17)           /* writeHold       10 ns */
-+		| (0 << 13)           /* readSetup       10 ns */
-+		| (3 << 7)            /* readStrobe      60 ns */
-+		| (0 << 4)            /* readHold        10 ns */
-+		| (3 << 2)            /* turnAround      ?? ns */
-+		| (0 << 0)            /* asyncSize       8-bit bus */
-+		;
-+	tmp = davinci_nand_readl(info, A1CR_OFFSET);
-+	if (tmp != regval) {
-+		dev_dbg(info->dev, "Warning: NAND config: Set A1CR " \
-+		       "reg to 0x%08x, was 0x%08x, should be done by " \
-+		       "bootloader.\n", regval, tmp);
-+		davinci_nand_writel(info, A1CR_OFFSET, regval);
-+	}
-+}
-+
-+/*----------------------------------------------------------------------*/
-+
-+static int __init nand_davinci_probe(struct platform_device *pdev)
-+{
-+	struct davinci_nand_pdata	*pdata = pdev->dev.platform_data;
-+	struct davinci_nand_info	*info;
-+	struct resource			*res1;
-+	struct resource			*res2;
-+	void __iomem			*vaddr;
-+	void __iomem			*base;
-+	int				ret;
-+	u32				val;
-+	nand_ecc_modes_t		ecc_mode;
-+
-+	/* which external chipselect will we be managing? */
-+	if (pdev->id < 0 || pdev->id > 3)
-+		return -ENODEV;
-+
-+	info = kzalloc(sizeof(*info), GFP_KERNEL);
-+	if (!info) {
-+		dev_err(&pdev->dev, "unable to allocate memory\n");
-+		ret = -ENOMEM;
-+		goto err_nomem;
++	for (i = 0; i < 8; i++) {
++		ret |= nand_correct_data(mtd, dat + (256 * i),
++						&read_ecc[i * 3],
++						&calc_ecc[i * 3]);
 +	}
 +
-+	platform_set_drvdata(pdev, info);
-+
-+	res1 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	res2 = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-+	if (!res1 || !res2) {
-+		dev_err(&pdev->dev, "resource missing\n");
-+		ret = -EINVAL;
-+		goto err_res;
-+	}
-+
-+	vaddr = ioremap(res1->start, res1->end - res1->start);
-+	base = ioremap(res2->start, res2->end - res2->start);
-+	if (!vaddr || !base) {
-+		dev_err(&pdev->dev, "ioremap failed\n");
-+		ret = -EINVAL;
-+		goto err_ioremap;
-+
-+	}
-+
-+	info->dev		= &pdev->dev;
-+	info->base		= base;
-+	info->vaddr		= vaddr;
-+
-+	info->mtd.priv		= &info->chip;
-+	info->mtd.name		= dev_name(&pdev->dev);
-+	info->mtd.owner		= THIS_MODULE;
-+
-+	info->chip.IO_ADDR_R	= vaddr;
-+	info->chip.IO_ADDR_W	= vaddr;
-+	info->chip.chip_delay	= 0;
-+	info->chip.select_chip	= nand_davinci_select_chip;
-+
-+	/* options such as NAND_USE_FLASH_BBT or 16-bit widths */
-+	info->chip.options	= pdata ? pdata->options : 0;
-+
-+	info->ioaddr		= (u32 __force) vaddr;
-+
-+	info->current_cs	= info->ioaddr;
-+	info->core_chipsel	= pdev->id;
-+	info->mask_chipsel	= pdata->mask_chipsel;
-+
-+	/* use nandboot-capable ALE/CLE masks by default */
-+	if (pdata && pdata->mask_ale)
-+		info->mask_ale	= pdata->mask_cle;
-+	else
-+		info->mask_ale	= MASK_ALE;
-+	if (pdata && pdata->mask_cle)
-+		info->mask_cle	= pdata->mask_cle;
-+	else
-+		info->mask_cle	= MASK_CLE;
-+
-+	/* Set address of hardware control function */
-+	info->chip.cmd_ctrl	= nand_davinci_hwcontrol;
-+	info->chip.dev_ready	= nand_davinci_dev_ready;
-+
-+	/* Speed up buffer I/O */
-+	info->chip.read_buf     = nand_davinci_read_buf;
-+	info->chip.write_buf    = nand_davinci_write_buf;
-+
-+	/* use board-specific ECC config; else, the best available */
-+	if (pdata)
-+		ecc_mode = pdata->ecc_mode;
-+	else if (cpu_is_davinci_dm355())
-+		ecc_mode = NAND_ECC_HW_SYNDROME;
-+	else
-+		ecc_mode = NAND_ECC_HW;
-+
-+	switch (ecc_mode) {
-+	case NAND_ECC_NONE:
-+	case NAND_ECC_SOFT:
-+		break;
-+	case NAND_ECC_HW:
-+		info->chip.ecc.calculate = nand_davinci_calculate_1bit;
-+		info->chip.ecc.correct = nand_davinci_correct_1bit;
-+		info->chip.ecc.hwctl = nand_davinci_hwctl_1bit;
-+		info->chip.ecc.size = 512;
-+		info->chip.ecc.bytes = 3;
-+		break;
-+	case NAND_ECC_HW_SYNDROME:
-+		/* FIXME implement */
-+		info->chip.ecc.size = 512;
-+		info->chip.ecc.bytes = 10;
-+
-+		dev_warn(&pdev->dev, "4-bit ECC nyet supported\n");
-+		/* FALL THROUGH */
-+	default:
-+		ret = -EINVAL;
-+		goto err_ecc;
-+	}
-+	info->chip.ecc.mode = ecc_mode;
-+
-+	info->clk = clk_get(&pdev->dev, "AEMIFCLK");
-+	if (IS_ERR(info->clk)) {
-+		ret = PTR_ERR(info->clk);
-+		dev_dbg(&pdev->dev, "unable to get AEMIFCLK, err %d\n", ret);
-+		goto err_clk;
-+	}
-+
-+	ret = clk_enable(info->clk);
-+	if (ret < 0) {
-+		dev_dbg(&pdev->dev, "unable to enable AEMIFCLK, err %d\n", ret);
-+		goto err_clk_enable;
-+	}
-+
-+	/* EMIF timings should normally be set by the boot loader,
-+	 * especially after boot-from-NAND.  The *only* reason to
-+	 * have this special casing for the DM6446 EVM is to work
-+	 * with boot-from-NOR ... with CS0 manually re-jumpered
-+	 * (after startup) so it addresses the NAND flash, not NOR.
-+	 * Even for dev boards, that's unusually rude...
-+	 */
-+	if (machine_is_davinci_evm())
-+		nand_dm6446evm_flash_init(info);
-+
-+	spin_lock_irq(&davinci_nand_lock);
-+
-+	/* put CSxNAND into NAND mode */
-+	val = davinci_nand_readl(info, NANDFCR_OFFSET);
-+	val |= BIT(info->core_chipsel);
-+	davinci_nand_writel(info, NANDFCR_OFFSET, val);
-+
-+	spin_unlock_irq(&davinci_nand_lock);
-+
-+	/* Scan to find existence of the device(s) */
-+	ret = nand_scan(&info->mtd, pdata->mask_chipsel ? 2 : 1);
-+	if (ret < 0) {
-+		dev_dbg(&pdev->dev, "no NAND chip(s) found\n");
-+		goto err_scan;
-+	}
-+
-+	if (mtd_has_partitions()) {
-+		struct mtd_partition	*mtd_parts = NULL;
-+		int			mtd_parts_nb = 0;
-+
-+		if (mtd_has_cmdlinepart()) {
-+			static const char *probes[] __initconst =
-+				{ "cmdlinepart", NULL };
-+
-+			const char		*master_name;
-+
-+			/* Set info->mtd.name = 0 temporarily */
-+			master_name		= info->mtd.name;
-+			info->mtd.name		= (char *)0;
-+
-+			/* info->mtd.name == 0, means: don't bother checking
-+			   <mtd-id> */
-+			mtd_parts_nb = parse_mtd_partitions(&info->mtd, probes,
-+							    &mtd_parts, 0);
-+
-+			/* Restore info->mtd.name */
-+			info->mtd.name = master_name;
-+		}
-+
-+		if (mtd_parts_nb <= 0 && pdata) {
-+			mtd_parts = pdata->parts;
-+			mtd_parts_nb = pdata->nr_parts;
-+		}
-+
-+		/* Register any partitions */
-+		if (mtd_parts_nb > 0) {
-+			ret = add_mtd_partitions(&info->mtd,
-+					mtd_parts, mtd_parts_nb);
-+			if (ret == 0)
-+				info->partitioned = true;
-+		}
-+
-+	} else if (pdata && pdata->nr_parts) {
-+		dev_warn(&pdev->dev, "ignoring %d default partitions on %s\n",
-+				pdata->nr_parts, info->mtd.name);
-+	}
-+
-+	/* If there's no partition info, just package the whole chip
-+	 * as a single MTD device.
-+	 */
-+	if (!info->partitioned)
-+		ret = add_mtd_device(&info->mtd) ? -ENODEV : 0;
-+
-+	if (ret < 0)
-+		goto err_scan;
-+
-+	val = davinci_nand_readl(info, NRCSR_OFFSET);
-+	dev_info(&pdev->dev, "controller rev. %d.%d\n",
-+	       (val >> 8) & 0xff, val & 0xff);
-+
-+	return 0;
-+
-+err_scan:
-+	clk_disable(info->clk);
-+
-+err_clk_enable:
-+	clk_put(info->clk);
-+
-+err_ecc:
-+err_clk:
-+	if (base)
-+		iounmap(base);
-+	if (vaddr)
-+		iounmap(vaddr);
-+
-+err_ioremap:
-+	kfree(info);
-+
-+err_nomem:
-+err_res:
 +	return ret;
 +}
++#endif
 +
-+static int __exit nand_davinci_remove(struct platform_device *pdev)
++static void ts7xxx_nand_cleanup(struct platform_device *pdev)
 +{
-+	struct davinci_nand_info *info = platform_get_drvdata(pdev);
-+	int status;
++	unsigned int i;
 +
-+	if (mtd_has_partitions() && info->partitioned)
-+		status = del_mtd_partitions(&info->mtd);
++	for (i = 0; i < pdev->num_resources; i++) {
++		if (ts7xxx_iobase[i])
++			iounmap(ts7xxx_iobase[i]);
++	}
++	kfree(ts7xxx_iobase);
++	kfree(ts7xxx_mtd);
++}
++
++/*
++ * Main initialization routine
++ */
++static int __devinit ts7xxx_nand_probe(struct platform_device *pdev)
++{
++	struct nand_chip *this;
++	unsigned int i;
++	struct ts7xxx_nand_data	*(*ts7xxx_nand_data_func)(unsigned int)
++						= pdev->dev.platform_data;
++#ifdef CONFIG_MTD_PARTITIONS
++#ifdef CONFIG_MTD_CMDLINE_PARTS
++	static const char *part_probes[] = { "cmdlinepart", NULL };
++#endif
++	struct mtd_partition *mtd_parts = NULL;
++	int mtd_parts_nb = 0;
++	const char *part_type = NULL;
++#endif
++
++#ifdef CONFIG_MACH_TS72XX
++	if (!machine_is_ts72xx() || board_is_ts7200())
++		return -ENXIO;
++#endif
++#ifdef CONFIG_MACH_TS78XX
++	if (!machine_is_ts78xx())
++		return -ENXIO;
++#endif
++
++	/* Allocate memory for MTD device structure and private data */
++	ts7xxx_mtd = kmalloc(sizeof(struct mtd_info)
++					+ sizeof(struct nand_chip),
++				GFP_KERNEL);
++	if (!ts7xxx_mtd) {
++		printk(KERN_ERR "Unable to allocate TS7xxx NAND "
++				"MTD device structure.\n");
++		return -ENOMEM;
++	}
++
++	/*
++	 * this is runtime as we do not know the size of the NAND, and thus
++	 * its partitioning scheme, until we scan it here
++	 *
++	 * N.B. we use a dummy size of zero to get the currently useful info
++	 */
++	ts7xxx_nand_data = (*ts7xxx_nand_data_func)(0);
++
++	ts7xxx_iobase = kmalloc(pdev->num_resources * sizeof(void __iomem *),
++					GFP_KERNEL);
++	if (!ts7xxx_iobase) {
++		printk(KERN_ERR "ts7xxx: Unable to allocate ioremap array.\n");
++		kfree(ts7xxx_mtd);
++		return -ENOMEM;
++	}
++	memset(ts7xxx_iobase, 0, pdev->num_resources * sizeof(void __iomem *));
++
++	for (i = 0; i < pdev->num_resources; i++) {
++		ts7xxx_iobase[i] = ioremap(pdev->resource[i].start,
++					pdev->resource[i].end
++						- pdev->resource[i].start + 1);
++		if (!ts7xxx_iobase[i]) {
++			printk(KERN_ERR "ts7xxx: ioremap failed\n");
++			ts7xxx_nand_cleanup(pdev);
++			return -EIO;
++		}
++	}
++
++	ts7xxx_ioctrl = ts7xxx_iobase[ts7xxx_nand_data->ioports.ctrl.res]
++				+ ts7xxx_nand_data->ioports.ctrl.offset;
++	ts7xxx_iodata = ts7xxx_iobase[ts7xxx_nand_data->ioports.data.res]
++				+ ts7xxx_nand_data->ioports.data.offset;
++	ts7xxx_iobusy = ts7xxx_iobase[ts7xxx_nand_data->ioports.busy.res]
++				+ ts7xxx_nand_data->ioports.busy.offset;
++
++	/* Get pointer to private data */
++	this = (struct nand_chip *)(&ts7xxx_mtd[1]);
++
++	/* Initialize structures */
++	memset(ts7xxx_mtd, 0, sizeof(struct mtd_info));
++	memset(this, 0, sizeof(struct nand_chip));
++
++	/* Link the private data with the MTD structure */
++	ts7xxx_mtd->priv = this;
++	ts7xxx_mtd->owner = THIS_MODULE;
++
++	/* insert callbacks */
++	this->IO_ADDR_R = this->IO_ADDR_W = ts7xxx_iodata;
++	this->cmd_ctrl = ts7xxx_hwcontrol;
++	this->dev_ready = ts7xxx_device_ready;
++	this->chip_delay = 15;
++
++	do {
++		this->ecc.mode = NAND_ECC_SOFT;
++
++#ifdef CONFIG_MACH_TS78XX
++		if (!machine_is_ts78xx()) {
++			this->options = NAND_USE_FLASH_BBT;
++			this->ecc.mode = NAND_ECC_HW;
++			/* the HW ECC has an eight entry FIFO */
++			this->ecc.size = 8 * 256;
++			this->ecc.bytes = 8 * 3;
++			this->ecc.hwctl  = ts7xxx_enable_hwecc;
++			this->ecc.calculate = ts7xxx_calculate_ecc;
++			this->ecc.correct  = ts7xx_correct_data;
++			break;
++		}
++#endif
++	} while (0);
++
++	printk(KERN_NOTICE "Searching for NAND flash...\n");
++	/* Scan to find existence of the device */
++	if (nand_scan(ts7xxx_mtd, 1)) {
++		ts7xxx_nand_cleanup(pdev);
++		return -ENODEV;
++	}
++
++#ifdef CONFIG_MTD_PARTITIONS
++	ts7xxx_mtd->name = "ts7xxx-nand";
++#ifdef CONFIG_MTD_CMDLINE_PARTS
++	mtd_parts_nb = parse_mtd_partitions(ts7xxx_mtd,
++						part_probes, &mtd_parts, 0);
++	if (mtd_parts_nb > 0)
++		part_type = "command line";
 +	else
-+		status = del_mtd_device(&info->mtd);
++		mtd_parts_nb = 0;
++#endif
 +
-+	iounmap(info->base);
-+	iounmap(info->vaddr);
++	if (mtd_parts_nb == 0) {
++		/*
++		 * ...and now we can use size to find the partitioning scheme
++		 */
++		ts7xxx_nand_data = (*ts7xxx_nand_data_func)(ts7xxx_mtd->size);
 +
-+	nand_release(&info->mtd);
++		if (ts7xxx_nand_data->partitions == NULL) {
++			printk(KERN_ERR
++				"ts7xxx_nand: unsupported NAND size, received "
++				"no paritioning scheme from platform\n");
++			ts7xxx_nand_cleanup(pdev);
++			/* FIXME: is this the most suitable return value? */
++			return -ENXIO;
++		}
 +
-+	clk_disable(info->clk);
-+	clk_put(info->clk);
++		mtd_parts = ts7xxx_nand_data->partitions;
++		mtd_parts_nb = ts7xxx_nand_data->nr_partitions;
++		part_type = "static";
++	}
 +
-+	kfree(info);
++	/* Register the partitions */
++	printk(KERN_NOTICE "Using %s partition definition\n", part_type);
++	add_mtd_partitions(ts7xxx_mtd, mtd_parts, mtd_parts_nb);
++#endif
++
++	/* Return happy */
++	return 0;
++}
++
++static int __devexit ts7xxx_nand_remove(struct platform_device *pdev)
++{
++#ifdef CONFIG_MTD_PARTITIONS
++	del_mtd_partitions(ts7xxx_mtd);
++#endif
++	ts7xxx_nand_cleanup(pdev);
 +
 +	return 0;
 +}
 +
-+static struct platform_driver nand_davinci_driver = {
-+	.remove		= __exit_p(nand_davinci_remove),
++/* driver device registration */
++static struct platform_driver ts7xxx_nand_driver = {
 +	.driver		= {
-+		.name	= "davinci_nand",
++		.name	= "ts7xxx_nand",
++		.owner	= THIS_MODULE,
 +	},
++	.probe		= ts7xxx_nand_probe,
++	.remove		= __devexit_p(ts7xxx_nand_remove),
 +};
-+MODULE_ALIAS("platform:davinci_nand");
 +
-+static int __init nand_davinci_init(void)
++static int __init ts7xxx_nand_init(void)
 +{
-+	return platform_driver_probe(&nand_davinci_driver, nand_davinci_probe);
++	return platform_driver_register(&ts7xxx_nand_driver);
 +}
-+module_init(nand_davinci_init);
 +
-+static void __exit nand_davinci_exit(void)
++static void __exit ts7xxx_nand_exit(void)
 +{
-+	platform_driver_unregister(&nand_davinci_driver);
++	platform_driver_unregister(&ts7xxx_nand_driver);
 +}
-+module_exit(nand_davinci_exit);
 +
++MODULE_AUTHOR("Alexander Clouter <alex@digriz.org.uk>");
++MODULE_DESCRIPTION("MTD NAND driver for Technologic Systems TS-7xxx boards");
 +MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Texas Instruments");
-+MODULE_DESCRIPTION("Davinci NAND flash driver");
 +
++module_init(ts7xxx_nand_init);
++module_exit(ts7xxx_nand_exit);
+diff --git a/include/linux/mtd/nand-ts7xxx.h b/include/linux/mtd/nand-ts7xxx.h
+new file mode 100644
+index 0000000..955209a
+--- /dev/null
++++ b/include/linux/mtd/nand-ts7xxx.h
+@@ -0,0 +1,35 @@
++/*
++ * linux/include/linux/mtd/nand-ts7xxx.h
++ *
++ * Copyright (c) 2008 Alexander Clouter <alex@digriz.org.uk>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/mtd/partitions.h>
++
++struct ts7xxx_ioport_entry {
++	unsigned int			res;
++	unsigned int			offset;
++};
++
++struct ts7xxx_ioports {
++	struct ts7xxx_ioport_entry	ctrl;
++	struct ts7xxx_ioport_entry	data;
++
++	struct ts7xxx_ioport_entry	busy;
++};
++
++/*
++ * struct ts7xxx_nand_data - chip level device structure
++ * @nr_partitions:	number of partitions pointed to by partitions (or zero)
++ * @partitions:		mtd partition list
++ */
++struct ts7xxx_nand_data {
++	int				nr_partitions;
++	struct mtd_partition		*partitions;
++
++	struct ts7xxx_ioports		ioports;
++};
+-- 
+1.5.6.5
