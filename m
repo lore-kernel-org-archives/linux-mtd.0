@@ -1,21 +1,20 @@
-Received: from woodchuck.wormnet.eu ([2a01:348:0:6:4d4b:69df:0:1])
+Received: from mk-filter-1-a-1.mail.uk.tiscali.com ([212.74.100.52])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LW7Kv-0002uH-4n
-	for linux-mtd@lists.infradead.org; Sun, 08 Feb 2009 10:56:31 +0000
-Date: Sun, 8 Feb 2009 10:56:28 +0000
-From: Alexander Clouter <alex@digriz.org.uk>
-To: Lennert Buytenhek <buytenh@wantstofly.org>
-Subject: Re: [PATCH] [MTD] NAND: add ts7xxx driver
-Message-ID: <20090208105628.GG11872@woodchuck>
-References: <20090208085919.GD11872@woodchuck>
-	<20090208102147.GL13433@xi.wantstofly.org>
-	<20090208103904.GE11872@woodchuck>
-	<20090208105226.GF11872@woodchuck>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20090208105226.GF11872@woodchuck>
-Cc: linux-mtd@lists.infradead.org
+	id 1LWFYG-0007b0-LN
+	for linux-mtd@lists.infradead.org; Sun, 08 Feb 2009 19:42:51 +0000
+Subject: [PATCH] sh: maple: add support for Visual Memory Card devices, and
+	make consequential changes to maple input drivers - 0/3 - v5
+From: Adrian McMenamin <adrian@newgolddream.dyndns.info>
+To: paul mundt <lethal@users.sourceforge.net>, Greg KH <greg@kroah.com>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>, dwmw2 <dwmw2@infradead.org>
+Content-Type: text/plain
+Date: Sun, 08 Feb 2009 19:41:09 +0000
+Message-Id: <1234122069.6736.8.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-input <linux-input@vger.kernel.org>,
+	MTD <linux-mtd@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-sh <linux-sh@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,42 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+This series of patches adds support for the Dreamcast Visual Memory
+Unit, reworking the maple bus code to ensure it supports asynchronous
+reads and writes. A consequential amendment to the keyboard and joystick
+drivers are also included.
 
-* Alexander Clouter <alex@digriz.org.uk> [2009-02-08 10:52:26+0000]:
-> 
-> * Alexander Clouter <alex@digriz.org.uk> [2009-02-08 10:39:04+0000]:
-> > 
-> > * Lennert Buytenhek <buytenh@wantstofly.org> [2009-02-08 11:21:47+0100]:
-> > > 
-> > > On Sun, Feb 08, 2009 at 08:59:19AM +0000, Alexander Clouter wrote:
-> > > >
-> > > > This patch adds support for the NAND found in Technologic Systems ARM
-> > > > boards[1].  The platform specific parts (IO address and parititoning
-> > > > schemes) have been moved into platform specific files whilst the driver
-> > > > it's self can be used as a complete replacement for the ts7250 NAND
-> > > > driver.
-> > > 
-> > > Why don't you morph the ts7250 into the form you want instead of adding
-> > > a parallel driver for the same thing?
-> > >
-> > 
-> > [snipped rant]
-> > 
-> > The driver I threw together makes a rather radical change to put all the 
-> > partitioning and iomem resources ranges back into the platform specific 
-> > code where they belong.  It was just easier to start clean, plus I 
-> > learnt a good deal about the MTD subsystem in the process, although 
-> > that's not a good reason for submission I know.
-> > 
-> Attached is the kind of change that affects the platform code.  
-> Meanwhile if I was to morph the ts7250 driver my first step would be to 
-> trim a huge chunk of the platform specific code that's in the NAND 
-> driver and then at the same time get the ARM platform driver amended 
-> otherwise you end up with a NAND less board.
-> 
-Unsure if it even attached so incase it did not:
+This version (v5) fixes a memory leak in the VMU code that was present
+when read or write requests timed out in v4. It also adds the joystick
+fix.
 
-http://stuff.digriz.org.uk/ts7xxx-nand/0002--ARM-ep93xx-add-hooks-to-ts7xxx-NAND-driver.patch
+The VMU is a 'smart' flash chip where access is controlled by a
+microcontroller so that, for instance, flash erases appear to be
+transparent to the end user. The VMU does, however, show typical
+flash-type behaviour (eg phased writes) and the MTD layer and the chip
+work well together (eg in the way they handle apparent hotplug events
+during a block write).
 
-Cheers
+This version tidies up some style issues raised with version 2.
+
+Signed-off-by: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+---
+ drivers/input/joystick/maplecontrol.c |    4 +-
+ drivers/input/keyboard/maple_keyb.c   |   40 +-
+ drivers/mtd/maps/Kconfig              |   12 +-
+ drivers/mtd/maps/Makefile             |    1 +
+ drivers/mtd/maps/vmu-flash.c          |  827 +++++++++++++++++++++++++++++++++
+ drivers/sh/maple/maple.c              |  463 ++++++++++---------
+ include/linux/maple.h                 |   62 ++-
+ 7 files changed, 1142 insertions(+), 267 deletions(-)
