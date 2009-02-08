@@ -1,28 +1,19 @@
-Received: from mail-gx0-f20.google.com ([209.85.217.20])
+Received: from woodchuck.wormnet.eu ([2a01:348:0:6:4d4b:69df:0:1])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LW6x4-00081j-Kk
-	for linux-mtd@lists.infradead.org; Sun, 08 Feb 2009 10:32:05 +0000
-Received: by gxk13 with SMTP id 13so1380750gxk.18
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 08 Feb 2009 02:31:49 -0800 (PST)
+	id 1LW745-0000JV-Nu
+	for linux-mtd@lists.infradead.org; Sun, 08 Feb 2009 10:39:08 +0000
+Date: Sun, 8 Feb 2009 10:39:04 +0000
+From: Alexander Clouter <alex@digriz.org.uk>
+To: Lennert Buytenhek <buytenh@wantstofly.org>
+Subject: Re: [PATCH] [MTD] NAND: add ts7xxx driver
+Message-ID: <20090208103904.GE11872@woodchuck>
+References: <20090208085919.GD11872@woodchuck>
+	<20090208102147.GL13433@xi.wantstofly.org>
 MIME-Version: 1.0
-Sender: kyungmin78@gmail.com
-In-Reply-To: <71cd59b00902080148l5304b4eie4dd3868ec12337e@mail.gmail.com>
-References: <7824366.270131233573513030.JavaMail.weblogic@epml10>
-	<49896448.20407@nokia.com>
-	<6b5362aa0902050140q3c6cbe85ye03d9b5ee59c7f48@mail.gmail.com>
-	<71cd59b00902080148l5304b4eie4dd3868ec12337e@mail.gmail.com>
-Date: Sun, 8 Feb 2009 19:31:49 +0900
-Message-ID: <9c9fda240902080231r51c4bcf3o37c0044bf9d924ee@mail.gmail.com>
-Subject: Re: Regarding UBI scalability
-From: Kyungmin Park <kmpark@infradead.org>
-To: Corentin Chary <corentin.chary@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: AMIT KUMARSHARMA <amitsharma.9@samsung.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Adrian Hunter <ext-adrian.hunter@nokia.com>,
-	Brijesh Singh <brij.singh@samsung.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20090208102147.GL13433@xi.wantstofly.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,59 +25,50 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-On Sun, Feb 8, 2009 at 6:48 PM, Corentin Chary <corentin.chary@gmail.com> wrote:
-> On Thu, Feb 5, 2009 at 10:40 AM, Brijesh Singh <brij.singh@samsung.com> wrote:
->> On Wed, Feb 4, 2009 at 3:17 PM, Adrian Hunter
->> <ext-adrian.hunter@nokia.com> wrote:
->>> ext BRIJESH SINGH wrote:
->>>> Hi,
->>>>
->>>> Artem Bityutskiy wrote:
->>>>> On Mon, 2009-02-02 at 13:07 +0200, Adrian Hunter wrote:
->>>>>> I would suggest an intermediate step.  Create UBI2 which is
->>>>>> similar to UBI but stores eraseblock information in one place,
->>>>>> instead of at the beginning of each eraseblock.  Such an approach
->>>>>> might be OK up to as much as 64GiB, and would probably perform
->>>>>> better than a fully scalable version.
->>>>>>
->>>>>> Then look at creating UBI3, which is fully scalable.
->>>>> Yes, I assume UBI2 should store mapping/erasure information in separate
->>>>> tables, not in each eraseblock. So we should get rid of eraseblock
->>>>> headers.
->>>>
->>>> Yes that is what I meant.  You could probably make do with as little as
->>>> 12 bytes per eraseblock so a 64GiB flash with 512KiB eraseblock size
->>>> would need 1536KiB table, which could be read in a second or two, so
->>>> mount time is OK.
->>>>
->>>> I have an idea for how to update the table relatively efficiently if you
->>>> are interested.
->>>>
->>>> I am definitely interested. But apart from on flash headers, I am also interested in memory consumption scaling.
->>>> UBIFS solved this problem quite interestingly. Can something similar be borrowed for UBI?
->>>>
->>>> Thanks and Regards,
->>>> Brijesh
->>>
->>> I would leave the memory consumption issue for UBI3.
+* Lennert Buytenhek <buytenh@wantstofly.org> [2009-02-08 11:21:47+0100]:
+> 
+> On Sun, Feb 08, 2009 at 08:59:19AM +0000, Alexander Clouter wrote:
+> >
+> > This patch adds support for the NAND found in Technologic Systems ARM
+> > boards[1].  The platform specific parts (IO address and parititoning
+> > schemes) have been moved into platform specific files whilst the driver
+> > it's self can be used as a complete replacement for the ts7250 NAND
+> > driver.
+> 
+> Why don't you morph the ts7250 into the form you want instead of adding
+> a parallel driver for the same thing?
 >
-> As you are working on UBI2, have you a git tree or something ? I may
-> have some time to help :)
-> Thanks
->
+...because when I sent this to you last year for some offlist comment 
+action you did not grumble that it was a separate driver.  Then after a 
+year of reposting twice to this list with no comment or feedback what so 
+ever I guess I made the mistake of assuming it was not 'displeasing' to 
+the community.
 
-One more requested feature.
-How about to scan ubi image and bad block table at simultaneously?
-Now there's two full device scan, bbt and ubi at booting time.
-As internal LEA mapping layout, how about to add bbt layout?
+Sorry to sound grumpy, but after trying to post cpufreq, timeriomem, 
+nand and arm patches over the past two years with a 90% resulting in the 
+silent treatment it feels like a brick has hit me in the face with "hey 
+instead just morph the current driver".
 
-It's also helpful to MLC since MLC doesn't have read oob so it calls
-page read command to build bbt.
-As you know it takes long time.
+Bah.
 
-I'm not sure if internal LEA maping is supported, it's meaningful work or not.
+</rant>
 
-How do you think?
+The driver I threw together makes a rather radical change to put all the 
+partitioning and iomem resources ranges back into the platform specific 
+code where they belong.  It was just easier to start clean, plus I 
+learnt a good deal about the MTD subsystem in the process, although 
+that's not a good reason for submission I know.
 
-Thank you,
-Kyungmin Park
+As the feedback from ts72[056]0 users has been pretty...well...dire and 
+I have no access to the platform I cannot be certain this patch safely 
+works for those users.  I had the view that once I can get a solid 
+confirmation that the ts72[056]0 users are happy I was hoping that the 
+7250.c driver would just become obsolete?
+
+So, is it back to square one for me?
+
+Cheers
+
+-- 
+Alexander Clouter
+.sigmonster says: You will never know hunger.
