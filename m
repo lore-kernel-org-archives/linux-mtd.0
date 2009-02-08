@@ -1,23 +1,31 @@
-Received: from mk-filter-1-a-1.mail.uk.tiscali.com ([212.74.100.52])
+Received: from mail.oksatcom.it ([83.216.172.7] helo=mail.satcom.it)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LWFwW-0002UW-JI
-	for linux-mtd@lists.infradead.org; Sun, 08 Feb 2009 20:07:55 +0000
-Subject: Re: [PATCH] sh: maple: add support for Visual Memory Card devices,
-	and make consequential changes to maple input drivers - 0/3 - v5
-From: Adrian McMenamin <adrian@newgolddream.dyndns.info>
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-In-Reply-To: <1234122069.6736.8.camel@localhost.localdomain>
-References: <1234122069.6736.8.camel@localhost.localdomain>
-Content-Type: text/plain
-Date: Sun, 08 Feb 2009 20:07:37 +0000
-Message-Id: <1234123657.6736.32.camel@localhost.localdomain>
-Mime-Version: 1.0
+	id 1LWJ0z-0004GC-UA
+	for linux-mtd@lists.infradead.org; Sun, 08 Feb 2009 23:24:44 +0000
+Received: from localhost.localdomain (83.216.178.43) by mail.satcom.it
+	(7.3.117) id 497CE606001E13A1 for linux-mtd@lists.infradead.org;
+	Mon, 9 Feb 2009 00:24:39 +0100
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by localhost.localdomain (Postfix) with ESMTP id D03D8400E9B
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  9 Feb 2009 00:24:38 +0100 (CET)
+Received: from localhost.localdomain ([127.0.0.1])
+	by localhost (localhost.localdomain [127.0.0.1]) (amavisd-new,
+	port 10024)
+	with ESMTP id KwfcoxdmSLqT for <linux-mtd@lists.infradead.org>;
+	Mon,  9 Feb 2009 00:24:38 +0100 (CET)
+Received: from [192.168.0.74] (unknown [192.168.0.74])
+	by localhost.localdomain (Postfix) with ESMTP id 6DFD6400E9A
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  9 Feb 2009 00:24:38 +0100 (CET)
+Message-ID: <498F69B7.6010404@tecnasrl.com>
+Date: Mon, 09 Feb 2009 00:24:39 +0100
+From: Francesco Lodi - Tecna Srl <francesco.lodi@tecnasrl.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: NAND with an OOB size of 128
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: linux-sh <linux-sh@vger.kernel.org>, Greg KH <greg@kroah.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	LKML <linux-kernel@vger.kernel.org>, Paul Mundt <lethal@linux-sh.org>,
-	MTD <linux-mtd@lists.infradead.org>,
-	linux-input <linux-input@vger.kernel.org>, dwmw2 <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,139 +35,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Consequential changes to the maple input drivers as well as a cleanup of
-the keyboard code.
+Hi all,
+I am trying to make this Micron NAND flash to work:
+http://www.micron.com/products/partdetail?part=MT29F32G08QAAWP
+it is a 32 gigabit divided into two 16 gigabit device and now, for
+simplicity, I am working only on the first one.
+The kernel I am using is the last 2.6.28.4.
+The flash has a spare area of 218 bytes so the MTD driver calculate an
+OOB size of 128 bytes and then it throws a BUG in the function
+nand_scan_tail ("no oob scheme defined for oobsize 128").
+I have tried to add this schema at the beginning on nand_base.c:
 
-Signed-off-by: Adrian McMenamin <adrian@mcmen.demon.co.uk>
----
-diff --git a/drivers/input/joystick/maplecontrol.c b/drivers/input/joystick/maplecontrol.c
-index e50047b..77cfde5 100644
---- a/drivers/input/joystick/maplecontrol.c
-+++ b/drivers/input/joystick/maplecontrol.c
-@@ -3,7 +3,7 @@
-  *	Based on drivers/usb/iforce.c
-  *
-  *	Copyright Yaegashi Takeshi, 2001
-- *	Adrian McMenamin, 2008
-+ *	Adrian McMenamin, 2008 - 2009
-  */
- 
- #include <linux/kernel.h>
-@@ -29,7 +29,7 @@ static void dc_pad_callback(struct mapleq *mq)
- 	struct maple_device *mapledev = mq->dev;
- 	struct dc_pad *pad = maple_get_drvdata(mapledev);
- 	struct input_dev *dev = pad->dev;
--	unsigned char *res = mq->recvbuf;
-+	unsigned char *res = mq->recvbuf->buf;
- 
- 	buttons = ~le16_to_cpup((__le16 *)(res + 8));
- 
-diff --git a/drivers/input/keyboard/maple_keyb.c b/drivers/input/keyboard/maple_keyb.c
-index 22f17a5..5aa2361 100644
---- a/drivers/input/keyboard/maple_keyb.c
-+++ b/drivers/input/keyboard/maple_keyb.c
-@@ -1,8 +1,8 @@
- /*
-  * SEGA Dreamcast keyboard driver
-  * Based on drivers/usb/usbkbd.c
-- * Copyright YAEGASHI Takeshi, 2001
-- * Porting to 2.6 Copyright Adrian McMenamin, 2007, 2008
-+ * Copyright (c) YAEGASHI Takeshi, 2001
-+ * Porting to 2.6 Copyright (c) Adrian McMenamin, 2007 - 2009
-  *
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-@@ -33,7 +33,7 @@ static DEFINE_MUTEX(maple_keyb_mutex);
- 
- #define NR_SCANCODES 256
- 
--MODULE_AUTHOR("YAEGASHI Takeshi, Adrian McMenamin");
-+MODULE_AUTHOR("Adrian McMenamin <adrian@mcmen.demon.co.uk");
- MODULE_DESCRIPTION("SEGA Dreamcast keyboard driver");
- MODULE_LICENSE("GPL");
- 
-@@ -115,7 +115,7 @@ static void dc_scan_kbd(struct dc_kbd *kbd)
- 				input_event(dev, EV_MSC, MSC_SCAN, code);
- 				input_report_key(dev, keycode, 0);
- 			} else
--				printk(KERN_DEBUG "maple_keyb: "
-+				dev_dbg(&dev->dev,
- 					"Unknown key (scancode %#x) released.",
- 					code);
- 		}
-@@ -127,7 +127,7 @@ static void dc_scan_kbd(struct dc_kbd *kbd)
- 				input_event(dev, EV_MSC, MSC_SCAN, code);
- 				input_report_key(dev, keycode, 1);
- 			} else
--				printk(KERN_DEBUG "maple_keyb: "
-+				dev_dbg(&dev->dev,
- 					"Unknown key (scancode %#x) pressed.",
- 					code);
- 		}
-@@ -140,7 +140,7 @@ static void dc_kbd_callback(struct mapleq *mq)
- {
- 	struct maple_device *mapledev = mq->dev;
- 	struct dc_kbd *kbd = maple_get_drvdata(mapledev);
--	unsigned long *buf = mq->recvbuf;
-+	unsigned long *buf = (unsigned long *)(mq->recvbuf->buf);
- 
- 	/*
- 	 * We should always get the lock because the only
-@@ -159,22 +159,27 @@ static void dc_kbd_callback(struct mapleq *mq)
- 
- static int probe_maple_kbd(struct device *dev)
- {
--	struct maple_device *mdev = to_maple_dev(dev);
--	struct maple_driver *mdrv = to_maple_driver(dev->driver);
-+	struct maple_device *mdev;
-+	struct maple_driver *mdrv;
- 	int i, error;
- 	struct dc_kbd *kbd;
- 	struct input_dev *idev;
- 
--	if (!(mdev->function & MAPLE_FUNC_KEYBOARD))
--		return -EINVAL;
-+	mdev = to_maple_dev(dev);
-+	mdrv = to_maple_driver(dev->driver);
- 
- 	kbd = kzalloc(sizeof(struct dc_kbd), GFP_KERNEL);
--	idev = input_allocate_device();
--	if (!kbd || !idev) {
-+	if (!kbd) {
- 		error = -ENOMEM;
- 		goto fail;
- 	}
- 
-+	idev = input_allocate_device();
-+	if (!idev) {
-+		error = -ENOMEM;
-+		goto fail_idev_alloc;
-+	}
-+
- 	kbd->dev = idev;
- 	memcpy(kbd->keycode, dc_kbd_keycode, sizeof(kbd->keycode));
- 
-@@ -195,7 +200,7 @@ static int probe_maple_kbd(struct device *dev)
- 
- 	error = input_register_device(idev);
- 	if (error)
--		goto fail;
-+		goto fail_register;
- 
- 	/* Maple polling is locked to VBLANK - which may be just 50/s */
- 	maple_getcond_callback(mdev, dc_kbd_callback, HZ/50,
-@@ -207,10 +212,12 @@ static int probe_maple_kbd(struct device *dev)
- 
- 	return error;
- 
--fail:
-+fail_register:
-+	maple_set_drvdata(mdev, NULL);
- 	input_free_device(idev);
-+fail_idev_alloc:
- 	kfree(kbd);
--	maple_set_drvdata(mdev, NULL);
-+fail:
- 	return error;
- }
- 
+static struct nand_ecclayout nand_oob_128 = {
+    .eccbytes = 48,
+    .eccpos = {
+    80,  81,  82,  83,  84,  85,  86,  87,
+    88,  89,  90,  91,  92,  93,  94,  95,
+    96,  97,  98,  99, 100, 101, 102, 103,
+    104, 105, 106, 107, 108, 109, 110, 111,
+    112, 113, 114, 115, 116, 117, 118, 119,
+    120, 121, 122, 123, 124, 125, 126, 127},
+    .oobfree = {
+        {.offset = 2,
+         .length = 78}}
+};
+
+and then adding:
+        case 128:
+            chip->ecc.layout = &nand_oob_128;
+in nand_scan_tail.
+
+Doing that resolve the kernel BUG but flash_eraseall claims that it
+can't read oobinfo.
+I have resolved also this problem by expanding the array eccpos in the
+structure nand_oobinfo to 64 even in the kernel than in the user space
+utility.
+
+Now flash_eraseall -j works fine but when I mount the device it ends with:
+Cowardly refusing to erase block on filesystem with no valid JFFS2 node
+
+After erasing the flash without the -j option I was able to mount the
+device but whenever I copy a file into it I have a kernel BUG at
+fs/jffs2/file.c:251
+
+Now I am stuck at this point and I am asking if you have any suggestion
+on how to use this flash.
+
+Thanks,
+Francesco
