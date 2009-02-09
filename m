@@ -1,20 +1,19 @@
-Received: from krynn.se.axis.com ([193.13.178.10])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LWZ3v-0000uz-Pw
-	for linux-mtd@lists.infradead.org; Mon, 09 Feb 2009 16:32:50 +0000
-Date: Mon, 9 Feb 2009 17:32:37 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Dzuy Nguyen <dzuy@infinity-studios.com>
-Subject: Re: jffs2: Too few erase blocks (1)
-In-Reply-To: <49904E48.7000805@infinity-studios.com>
-Message-ID: <Pine.LNX.4.64.0902091731030.22663@lnxricardw.se.axis.com>
-References: <498FC4BB.7060903@infinity-studios.com>
-	<Pine.LNX.4.64.0902090947080.19761@lnxricardw.se.axis.com>
-	<49904E48.7000805@infinity-studios.com>
+Received: from exprod6og115.obsmtp.com ([64.18.1.35])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LWZRS-0004GD-W5
+	for linux-mtd@lists.infradead.org; Mon, 09 Feb 2009 16:57:10 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: [PATCH] [MTD] NAND: add ts7xxx driver
+Date: Mon, 9 Feb 2009 11:56:25 -0500
+Message-ID: <BD79186B4FD85F4B8E60E381CAEE19090120BF36@mi8nycmail19.Mi8.com>
+In-Reply-To: <20090208085919.GD11872@woodchuck>
+References: <20090208085919.GD11872@woodchuck>
+From: "hartleys" <hartleys@visionengravers.com>
+To: "Alexander Clouter" <alex@digriz.org.uk>, <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Sunday, February 08, 2009 1:59 AM, Alexander Clouter wrote:
+> This patch adds support for the NAND found in Technologic
+> Systems ARM boards[1].  The platform specific parts (IO=20
+>address and parititoning schemes) have been moved into
+> platform specific files whilst the driver it's self can
+> be used as a complete replacement for the ts7250 NAND driver.
+>
+> [1] http://www.embeddedarm.com/products/arm-sbc.php
+>
+> Signed-off-by: Alexander Clouter <alex@digriz.org.uk>
 
-On Mon, 9 Feb 2009, Dzuy Nguyen wrote:
+With a little work the generic plat_nand driver could probably be used
+instead of this new driver or the original ts7250 driver.
 
-> Thanks, Ricard.  I didn't realize that jffs2 is not suitable for a small
-> partition.  Yes,
-> 64K is all I can afford.  I suppose I can dd the file, but doesn't that
-> provide no wear
-> leveling feature that jffs2 does?
+The only thing special about the original ts7250 driver appears to be
+the fall-back partitioning scheme that uses the size of the device to
+figure out what static mtd_partition table to use.
 
-No. But with one eraseblock you can't get much wear levelling anyway.
+This driver uses a similar approach but passes a callback to the
+platform driver to use instead.  It also adds some conditional ecc
+support.
 
-It might not be too difficult to write an application that appends=20
-new data to existing data to the partition, erasing the whole block when=20
-it fills up and write the latest. Then you need something that will search=
-=20
-for the latest version of the file. Something that jffs2 does, but on a=20
-smaller scale, acceptable for your application.
+It might be more useful to create a generic patch for plat_nand that
+adds this functionality and then obsolete the old ts7250 driver.
 
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+I have been using the plat_nand driver on a custom ep93xx based board
+for quite a while with no problems.
+
+Regards,
+Hartley
