@@ -1,26 +1,21 @@
-Received: from mk-filter-1-a-1.mail.uk.tiscali.com ([212.74.100.52])
+Received: from el-out-1112.google.com ([209.85.162.176])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LWduQ-0004Ir-H9
-	for linux-mtd@lists.infradead.org; Mon, 09 Feb 2009 21:43:22 +0000
-Subject: Re: [PATCH] sh: maple: add support for Visual Memory Card devices,
-	and make consequential changes to maple input drivers - 2/3 - v5
-From: Adrian McMenamin <adrian@newgolddream.dyndns.info>
-To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <200902091433.57126.vapier@gentoo.org>
-References: <1234122069.6736.8.camel@localhost.localdomain>
-	<20090209065632.GA21980@linux-sh.org>
-	<1234207053.6756.11.camel@localhost.localdomain>
-	<200902091433.57126.vapier@gentoo.org>
-Content-Type: text/plain
-Date: Mon, 09 Feb 2009 21:41:56 +0000
-Message-Id: <1234215716.6756.18.camel@localhost.localdomain>
-Mime-Version: 1.0
+	id 1LWebk-0001tX-G2
+	for linux-mtd@lists.infradead.org; Mon, 09 Feb 2009 22:28:06 +0000
+Received: by el-out-1112.google.com with SMTP id z25so1521197ele.18
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 09 Feb 2009 14:28:03 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <BD79186B4FD85F4B8E60E381CAEE19090120C059@mi8nycmail19.Mi8.com>
+References: <BD79186B4FD85F4B8E60E381CAEE19090120C059@mi8nycmail19.Mi8.com>
+Date: Mon, 9 Feb 2009 17:28:03 -0500
+Message-ID: <8bd0f97a0902091428u5e629485ke7762cbffe8b97dc@mail.gmail.com>
+Subject: Re: [PATCH] mtd: add setup/teardown callbacks to plat_nand
+From: Mike Frysinger <vapier.adi@gmail.com>
+To: hartleys <hartleys@visionengravers.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: linux-sh <linux-sh@vger.kernel.org>, Greg KH <greg@kroah.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	LKML <linux-kernel@vger.kernel.org>, Paul Mundt <lethal@linux-sh.org>,
-	MTD <linux-mtd@lists.infradead.org>,
-	linux-input <linux-input@vger.kernel.org>, dwmw2 <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,24 +25,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-02-09 at 14:33 -0500, Mike Frysinger wrote:
+On Mon, Feb 9, 2009 at 16:37, hartleys wrote:
+> Add optional setup and teardown callbacks to the plat_nand driver.
+>
+> Some platforms may require additional setup, such as configuring the
+> memory controller, before the nand device can be accessed.  This patch
+> provides an optional callback to handle this setup as well as a callback
+> to teardown the setup.
 
-> 
-> then you'd end up with 4 clearly marked files (assuming your log message for 
-> each change is clear).  in the summary, you should then make statements like:
-> Patch 1 (... subject ...) in this series can be applied by itself for the bus 
-> driver.  Then patch 2 (... subject ...) and 3 (... subject ...) can be applied 
-> as they need the bus changes.
-> -mike
+on our platforms, we've been putting the setup into the board init
+code.  but it would certainly be much saner to have explicit steps for
+it in the plat_nand code as you suggest.
 
-
-Fair enough.
-
-I ought to resubmit patches anyway because previous code has a memory
-leak/race which I've now fixed with a couple of extra lines.
-
-But the basic point here is that changing the bus code is necessary to
-get the VMU driver (or *any* VMU driver) to work, but changing the bus
-driver also breaks the two existing drivers in mainline that use the
-bus. The breakage in terms of lines to be fixed is small, but it still
-needs to be done 'all at once'.
+i think having the naming convention follow existing practices would
+be better.  then we dont have to keep our index of synonyms around.
+i.e. change "setup" to "probe" and "teardown" to "remove"
+-mike
