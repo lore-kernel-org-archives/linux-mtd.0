@@ -1,17 +1,26 @@
-Received: from exprod6og115.obsmtp.com ([64.18.1.35])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LWdpn-0003dR-J4
-	for linux-mtd@lists.infradead.org; Mon, 09 Feb 2009 21:38:34 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-Subject: [PATCH] mtd: add setup/teardown callbacks to plat_nand
-Date: Mon, 9 Feb 2009 16:37:35 -0500
-Message-ID: <BD79186B4FD85F4B8E60E381CAEE19090120C059@mi8nycmail19.Mi8.com>
-From: "hartleys" <hartleys@visionengravers.com>
-To: <linux-mtd@lists.infradead.org>
+Received: from mk-filter-1-a-1.mail.uk.tiscali.com ([212.74.100.52])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LWduQ-0004Ir-H9
+	for linux-mtd@lists.infradead.org; Mon, 09 Feb 2009 21:43:22 +0000
+Subject: Re: [PATCH] sh: maple: add support for Visual Memory Card devices,
+	and make consequential changes to maple input drivers - 2/3 - v5
+From: Adrian McMenamin <adrian@newgolddream.dyndns.info>
+To: Mike Frysinger <vapier@gentoo.org>
+In-Reply-To: <200902091433.57126.vapier@gentoo.org>
+References: <1234122069.6736.8.camel@localhost.localdomain>
+	<20090209065632.GA21980@linux-sh.org>
+	<1234207053.6756.11.camel@localhost.localdomain>
+	<200902091433.57126.vapier@gentoo.org>
+Content-Type: text/plain
+Date: Mon, 09 Feb 2009 21:41:56 +0000
+Message-Id: <1234215716.6756.18.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-sh <linux-sh@vger.kernel.org>, Greg KH <greg@kroah.com>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	LKML <linux-kernel@vger.kernel.org>, Paul Mundt <lethal@linux-sh.org>,
+	MTD <linux-mtd@lists.infradead.org>,
+	linux-input <linux-input@vger.kernel.org>, dwmw2 <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,85 +30,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add optional setup and teardown callbacks to the plat_nand driver.
+On Mon, 2009-02-09 at 14:33 -0500, Mike Frysinger wrote:
 
-Some platforms may require additional setup, such as configuring the
-memory controller, before the nand device can be accessed.  This patch
-provides an optional callback to handle this setup as well as a callback
-to teardown the setup.
+> 
+> then you'd end up with 4 clearly marked files (assuming your log message for 
+> each change is clear).  in the summary, you should then make statements like:
+> Patch 1 (... subject ...) in this series can be applied by itself for the bus 
+> driver.  Then patch 2 (... subject ...) and 3 (... subject ...) can be applied 
+> as they need the bus changes.
+> -mike
 
-Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
 
----
+Fair enough.
 
-diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
-index 75f9f48..81b4919 100644
---- a/drivers/mtd/nand/plat_nand.c
-+++ b/drivers/mtd/nand/plat_nand.c
-@@ -70,6 +70,13 @@ static int __init plat_nand_probe(struct
-platform_device *pdev)
-=20
- 	platform_set_drvdata(pdev, data);
-=20
-+	/* Handle any platform specific setup */
-+	if (pdata->ctrl.setup) {
-+		res =3D pdata->ctrl.setup(pdev);
-+		if (res)
-+			goto out;
-+	}
-+
- 	/* Scan to find existance of the device */
- 	if (nand_scan(&data->mtd, 1)) {
- 		res =3D -ENXIO;
-@@ -99,6 +106,8 @@ static int __init plat_nand_probe(struct
-platform_device *pdev)
-=20
- 	nand_release(&data->mtd);
- out:
-+	if (pdata->ctrl.teardown)
-+		pdata->ctrl.teardown(pdev);
- 	platform_set_drvdata(pdev, NULL);
- 	iounmap(data->io_base);
- 	kfree(data);
-@@ -111,15 +120,15 @@ out:
- static int __devexit plat_nand_remove(struct platform_device *pdev)
- {
- 	struct plat_nand_data *data =3D platform_get_drvdata(pdev);
--#ifdef CONFIG_MTD_PARTITIONS
- 	struct platform_nand_data *pdata =3D pdev->dev.platform_data;
--#endif
-=20
- 	nand_release(&data->mtd);
- #ifdef CONFIG_MTD_PARTITIONS
- 	if (data->parts && data->parts !=3D pdata->chip.partitions)
- 		kfree(data->parts);
- #endif
-+	if (pdata->ctrl.teardown)
-+		pdata->ctrl.teardown(pdev);
- 	iounmap(data->io_base);
- 	kfree(data);
-=20
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index db5b63d..5ca8f5e 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -579,6 +579,8 @@ struct platform_nand_chip {
-=20
- /**
-  * struct platform_nand_ctrl - controller level device structure
-+ * @setup:		platform specific function to setup hardware
-+ * @teardown:		platform specific function to teardown hardware
-  * @hwcontrol:		platform specific hardware control structure
-  * @dev_ready:		platform specific function to read ready/busy
-pin
-  * @select_chip:	platform specific chip select function
-@@ -589,6 +591,8 @@ struct platform_nand_chip {
-  * All fields are optional and depend on the hardware driver
-requirements
-  */
- struct platform_nand_ctrl {
-+	int		(*setup)(struct platform_device *pdev);
-+	void		(*teardown)(struct platform_device *pdev);
- 	void		(*hwcontrol)(struct mtd_info *mtd, int cmd);
- 	int		(*dev_ready)(struct mtd_info *mtd);
- 	void		(*select_chip)(struct mtd_info *mtd, int chip);=20
+I ought to resubmit patches anyway because previous code has a memory
+leak/race which I've now fixed with a couple of extra lines.
+
+But the basic point here is that changing the bus code is necessary to
+get the VMU driver (or *any* VMU driver) to work, but changing the bus
+driver also breaks the two existing drivers in mainline that use the
+bus. The breakage in terms of lines to be fixed is small, but it still
+needs to be done 'all at once'.
