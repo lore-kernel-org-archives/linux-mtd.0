@@ -1,23 +1,18 @@
-Subject: Re: Regarding UBI scalability
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Kyungmin Park <kmpark@infradead.org>
-In-Reply-To: <9c9fda240902080231r51c4bcf3o37c0044bf9d924ee@mail.gmail.com>
-References: <7824366.270131233573513030.JavaMail.weblogic@epml10>
-	<49896448.20407@nokia.com>
-	<6b5362aa0902050140q3c6cbe85ye03d9b5ee59c7f48@mail.gmail.com>
-	<71cd59b00902080148l5304b4eie4dd3868ec12337e@mail.gmail.com>
-	<9c9fda240902080231r51c4bcf3o37c0044bf9d924ee@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 09 Feb 2009 10:46:22 +0200
-Message-Id: <1234169182.17790.92.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: AMIT KUMARSHARMA <amitsharma.9@samsung.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Adrian Hunter <ext-adrian.hunter@nokia.com>,
-	Corentin Chary <corentin.chary@gmail.com>,
-	Brijesh Singh <brij.singh@samsung.com>
-Reply-To: dedekind@infradead.org
+Received: from krynn.se.axis.com ([193.13.178.10])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LWRqc-0001mW-4x
+	for linux-mtd@lists.infradead.org; Mon, 09 Feb 2009 08:50:49 +0000
+Date: Mon, 9 Feb 2009 09:50:22 +0100 (CET)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Dzuy Nguyen <dzuy@infinity-studios.com>
+Subject: Re: jffs2: Too few erase blocks (1)
+In-Reply-To: <498FC4BB.7060903@infinity-studios.com>
+Message-ID: <Pine.LNX.4.64.0902090947080.19761@lnxricardw.se.axis.com>
+References: <498FC4BB.7060903@infinity-studios.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +22,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2009-02-08 at 19:31 +0900, Kyungmin Park wrote:
-> One more requested feature.
-> How about to scan ubi image and bad block table at simultaneously?
-> Now there's two full device scan, bbt and ubi at booting time.
-> As internal LEA mapping layout, how about to add bbt layout?
-> 
-> It's also helpful to MLC since MLC doesn't have read oob so it calls
-> page read command to build bbt.
-> As you know it takes long time.
-> 
-> I'm not sure if internal LEA maping is supported, it's meaningful work or not.
-> 
-> How do you think?
 
-Well, doing scanning twice is not very good indeed. I guess what you
-could do is to make MTD avoid scanning and building the bad block
-table at all and build it lazily. But then you need 2 bits per
-eraseblock, not just one. IOW, sure, it is possible to optimize this.
+On Mon, 9 Feb 2009, Dzuy Nguyen wrote:
 
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+> I've allocated a small (64K) "user_config" partition in my flash for
+> persistence storage:
+>
+> mtd0: 00020000 00010000 "u-boot"
+> mtd1: 00010000 00010000 "Config"
+> mtd2: 00100000 00010000 "vmlinux"
+> mtd3: 002a0000 00010000 "rootfs"
+> mtd4: 00010000 00010000 "user_config"
+> mtd5: 00020000 00010000 "ART"
+>
+> When I tried to mount -t jffs2 /dev/mtdblock4, I get
+>
+> jffs2: Too few erase blocks (1)
+>
+> I understand that my erasesize is 64K, which gives me only 1 block,
+> and jffs2 needs more than 1 block, but the kernel defaults the erasesize
+> to 64K.
+
+The kernel does that probably because that is the size of the blocks on=20
+your flash chip. It is not so much a default as detection of the=20
+properties of the chip.
+
+> If I made a jffs2 file with eraseblock=3D8, would this work or would I ha=
+ve
+> to set it at the kernel?
+
+You need to allocate more space if you want to use jffs2 quite simply. The=
+=20
+exact number is not exact; 8 should be ok, meaning you need to partition=20
+your flash so you have 64K * 8 =3D 512K in your user_config partition.
+
+If you can't afford that much space, you could consider writing your user=
+=20
+configurations to a file and just dumping the file with dd into your flash=
+=20
+partition. Not at all as flexible, but doable in a pinch.
+
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
