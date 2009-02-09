@@ -1,20 +1,30 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LWUVs-0004ST-Ek
-	for linux-mtd@lists.infradead.org; Mon, 09 Feb 2009 11:41:23 +0000
-Date: Mon, 9 Feb 2009 12:41:17 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Michal Ludvig <mludvig@logix.net.nz>
-Subject: Re: Writing Linux kernel to MTD
-In-Reply-To: <49900F6A.1030508@logix.net.nz>
-Message-ID: <Pine.LNX.4.64.0902091240040.19761@lnxricardw.se.axis.com>
-References: <498FAE9A.4030208@logix.net.nz>
-	<Pine.LNX.4.64.0902091007480.19761@lnxricardw.se.axis.com>
-	<49900F6A.1030508@logix.net.nz>
+Received: from mail-ew0-f20.google.com ([209.85.219.20])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LWVzb-0001B4-FD
+	for linux-mtd@lists.infradead.org; Mon, 09 Feb 2009 13:16:10 +0000
+Received: by ewy13 with SMTP id 13so2751996ewy.18
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 09 Feb 2009 05:16:05 -0800 (PST)
+Sender: Peter Korsgaard <jacmet@gmail.com>
+To: Adam Yergovich <ayergo@jkmicro.com>
+Subject: Re: Access entire device with mtdblock0
+References: <4967F2B2.4060405@jkmicro.com>
+	<8bd0f97a0901131510k25addc8es917fb4e827bb2cf@mail.gmail.com>
+	<878wpeclf1.fsf@macbook.be.48ers.dk>
+	<8bd0f97a0901140258n3cdc2637hdfcd8f162205c654@mail.gmail.com>
+	<20090114115056.GD7994@leila.ping.de> <49839668.20502@jkmicro.com>
+	<BD79186B4FD85F4B8E60E381CAEE19090120BA94@mi8nycmail19.Mi8.com>
+	<498B852E.6010809@jkmicro.com>
+From: Peter Korsgaard <jacmet@sunsite.dk>
+Date: Mon, 09 Feb 2009 14:15:37 +0100
+In-Reply-To: <498B852E.6010809@jkmicro.com> (Adam Yergovich's message of "Thu\,
+	05 Feb 2009 16\:32\:46 -0800")
+Message-ID: <87tz737nuu.fsf@macbook.be.48ers.dk>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: Wolfgang Wegner <wolfgang@leila.ping.de>,
+	hartleys <hartleys@visionengravers.com>, linux-mtd@lists.infradead.org,
+	Mike Frysinger <vapier.adi@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +34,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+>>>>> "Adam" == Adam Yergovich <ayergo@jkmicro.com> writes:
 
-On Mon, 9 Feb 2009, Michal Ludvig wrote:
+Hi,
 
->> My instinctive reaction is that there may be a difference in the way the
->> Linux and u-boot drivers access the NAND device in terms of bus timing
->> etc, so that the Linux driver breaks the timing causing bad
->> communication with the device. I.e., the timing setup of the Linux
->> driver is at fault here.
->
-> Interesting idea, however I happily use UBIFS filesystem at the same
-> time in the same NAND Flash and observe no problems. If it's broken it's
-> broken in a very reliable and stable way...
+ Adam> If that assumption is correct, I think it should be changed to either:
 
-Sounds like it's not that then.
+ Adam> 1) Call it before partitioning so it does add the device.
 
->> Another similar condition I have experienced is that due to a
->> misconfiguration one of the control bits to the NAND flash was
->> inadvertently mapped to a network indicator LED, causing NAND read/write
->> to fail if network traffic occurred at the same time.
->
-> Just in case I disabled network altogether and did the write test from
-> UBIFSroot instead of from development NFSroot and it's still failing.
->
-> Any other ideas?
+ Adam> -or-
 
-Well, chances that's a contention with the network led is probably small,=
-=20
-but it could be some sort of other hardware interdependency.
+ Adam> 2) Change the function such that it works any time and thus the physmap 
+ Adam> call should work as originally written.
 
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+It would be bad to change this now to do it automatically as it would
+screw up the mtd numbering.
+
+Why not just create an extra partition with the entire size if you
+need it?
+
+-- 
+Bye, Peter Korsgaard
