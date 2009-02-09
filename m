@@ -1,27 +1,19 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LWbtK-0006I7-4r
-	for linux-mtd@lists.infradead.org; Mon, 09 Feb 2009 19:34:06 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-To: Adrian McMenamin <adrian@newgolddream.dyndns.info>
-Subject: Re: [PATCH] sh: maple: add support for Visual Memory Card devices,
-	and make consequential changes to maple input drivers - 2/3 - v5
-Date: Mon, 9 Feb 2009 14:33:55 -0500
-References: <1234122069.6736.8.camel@localhost.localdomain>
-	<20090209065632.GA21980@linux-sh.org>
-	<1234207053.6756.11.camel@localhost.localdomain>
-In-Reply-To: <1234207053.6756.11.camel@localhost.localdomain>
+Received: from woodchuck.wormnet.eu ([2a01:348:0:6:4d4b:69df:0:1])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LWcEv-00012a-1w
+	for linux-mtd@lists.infradead.org; Mon, 09 Feb 2009 19:56:34 +0000
+Date: Mon, 9 Feb 2009 19:56:20 +0000
+From: Alexander Clouter <alex@digriz.org.uk>
+To: hartleys <hartleys@visionengravers.com>
+Subject: Re: [PATCH] [MTD] NAND: add ts7xxx driver
+Message-ID: <20090209195619.GZ11872@woodchuck>
+References: <20090208085919.GD11872@woodchuck>
+	<BD79186B4FD85F4B8E60E381CAEE19090120BFB5@mi8nycmail19.Mi8.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200902091433.57126.vapier@gentoo.org>
-Cc: linux-sh <linux-sh@vger.kernel.org>, Greg KH <greg@kroah.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	LKML <linux-kernel@vger.kernel.org>, Paul Mundt <lethal@linux-sh.org>,
-	MTD <linux-mtd@lists.infradead.org>,
-	linux-input <linux-input@vger.kernel.org>, dwmw2 <dwmw2@infradead.org>
+In-Reply-To: <BD79186B4FD85F4B8E60E381CAEE19090120BFB5@mi8nycmail19.Mi8.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,49 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 09 February 2009 14:17:33 Adrian McMenamin wrote:
-> On Mon, 2009-02-09 at 15:56 +0900, Paul Mundt wrote:
-> > On Sun, Feb 08, 2009 at 08:04:33PM +0000, Adrian McMenamin wrote:
-> > > Change the maple bus driver to support the visual memory unit driver.
-> > >
-> > > The maple bus driver currently only supports synchronous polling of
-> > > attached devices status. These changes allow the bus to handle
-> > > asynchronous commands such as block reads and writes.
-> > >
-> > > Signed-off-by: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-> >
-> > The ordering of your patch series is a bit vague. Do the changes to the
-> > maple bus code need to be made before the VMU patch can be applied? Do
-> > the input driver changes have to be made at the same time as the changes
-> > to the bus code, or are they ok to leave as a separate patch after the
-> > bus changes?
-> >
-> > All of these seem to have some interdependency issues that haven't been
-> > noted at all, making it incredibly difficult to apply incrementally. Your
-> > subject for the series also seems to imply you have no idea how they
-> > logically structure, and that you simply hacked things up until the point
-> > where everything worked, rather than paying attention to logical
-> > incremental changes to show how you got from point A to point B without
-> > breaking bisection along the way.
+Hi,
+
+* hartleys <hartleys@visionengravers.com> [2009-02-09 14:00:48-0500]:
+> 
+> Sunday, February 08, 2009 1:59 AM, Alexander Clouter wrote:
 >
-> You are right. I haven' made it fully clear in this post. But I did in
-> previous posts eg:
+> > This patch adds support for the NAND found in Technologic
+> > Systems ARM boards[1].  The platform specific parts (IO 
+> > address and parititoning schemes) have been moved into
+> > platform specific files whilst the driver it's self can 
+> > be used as a complete replacement for the ts7250 NAND
+> > driver.
 >
-> "This series of patches adds support for the Dreamcast Visual Memory
-> Unit, reworking the maple bus code to ensure it supports asynchronous
-> reads and writes. A consequential amendment to the keyboard driver is
-> also included."
+> I think the TS-7800 series is Marvell 88F5182 based but the TS-7200
+> series is Cirrus ep93xx based.
+>
+> There is are already a nand driver for each of these, orion_nand.c and
+> ts7250.c.  Both appear to be just variations of the plat_nand.c driver.
+> 
+You would have hoped TS would use the NAND silicon already on the 
+Marvell chip, but no they decided to use up FPGA LUT's to re-invent the 
+wheel; although I do think their just pulled over the FPGA bitstream 
+they were using in the TS-7200 series.
 
-that isnt terribly clear.  it might be for you, but for the people attempting 
-to coordinate source code, it really isnt.
+Cheers
 
-using git, you can format patches and number them and include a cover letter.  
-that would make everything clear for people.
-git format-patch -n --cover-letter HEAD~3
-
-then you'd end up with 4 clearly marked files (assuming your log message for 
-each change is clear).  in the summary, you should then make statements like:
-Patch 1 (... subject ...) in this series can be applied by itself for the bus 
-driver.  Then patch 2 (... subject ...) and 3 (... subject ...) can be applied 
-as they need the bus changes.
--mike
+-- 
+Alexander Clouter
+.sigmonster says: Lonely is a man without love.
+                  		-- Englebert Humperdinck
