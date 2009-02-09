@@ -1,21 +1,17 @@
-Received: from exprod6og105.obsmtp.com ([64.18.1.189])
+Received: from exprod6ob114.obsmtp.com ([64.18.1.32] helo=psmtp.com)
 	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LWf2L-0005iO-Ol
-	for linux-mtd@lists.infradead.org; Mon, 09 Feb 2009 22:55:36 +0000
+	id 1LWfbL-00011b-M6
+	for linux-mtd@lists.infradead.org; Mon, 09 Feb 2009 23:31:46 +0000
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="US-ASCII"
 Content-Transfer-Encoding: quoted-printable
-Subject: RE: [PATCH] mtd: add setup/teardown callbacks to plat_nand
-Date: Mon, 9 Feb 2009 17:55:20 -0500
-Message-ID: <BD79186B4FD85F4B8E60E381CAEE19090120C0C9@mi8nycmail19.Mi8.com>
-In-Reply-To: <8bd0f97a0902091428u5e629485ke7762cbffe8b97dc@mail.gmail.com>
-References: <BD79186B4FD85F4B8E60E381CAEE19090120C059@mi8nycmail19.Mi8.com>
-	<8bd0f97a0902091428u5e629485ke7762cbffe8b97dc@mail.gmail.com>
+Subject: [PATCH] mtd: Allow platform to set partitions at runtime
+Date: Mon, 9 Feb 2009 18:31:18 -0500
+Message-ID: <BD79186B4FD85F4B8E60E381CAEE19090120C0F4@mi8nycmail19.Mi8.com>
 From: "hartleys" <hartleys@visionengravers.com>
-To: "Mike Frysinger" <vapier.adi@gmail.com>
-Cc: linux-mtd@lists.infradead.org
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,124 +21,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, February 09, 2009 3:28 PM, Mike Frysinger wrote:
-> On Mon, Feb 9, 2009 at 16:37, hartleys wrote:
->> Add optional setup and teardown callbacks to the plat_nand driver.
->>
->> Some platforms may require additional setup, such as configuring
->> the memory controller, before the nand device can be accessed.=20
->> This patch provides an optional callback to handle this setup as
->> well as a callback to teardown the setup.
->
-> on our platforms, we've been putting the setup into the board init
-> code.  but it would certainly be much saner to have explicit steps
-> for it in the plat_nand code as you suggest.
->
-> i think having the naming convention follow existing practices
-> would be better.  then we dont have to keep our index of synonyms
-> around. i.e. change "setup" to "probe" and "teardown" to "remove"
-> -mike
+Add a callback to allow platform to initialize the static partitions.
 
-I've seen both naming conventions used in various drivers.  I'm not sure
-which is the best option.
+Static partitions on a nand device could vary depending on the size of
+the device.  This patch allows an optional platform callback to be used
+to setup this partition information at runtime.
 
-The "setup", or "probe", callback doesn't/shouldn't to any actual
-probing for the nand device, that's handled by the driver.  It's only
-purpose should be to correctly configure the hardware to allow the probe
-to work.
+Scan order is:
+	1) chip.part_probe_types
+	2) chip.set_parts
+	3) chip.partitions
+	4) full mtd device (fallback for no partitions)
 
-But, here is the patch again with the changes as suggested.
-
-I also noticed that a header was missing in linux/mtd/nand.h due to the
-callbacks.  I wasn't sure what various platforms might need so I just
-coded this to pass the struct platform_device.  I guess they could both
-just be a void parameter.  Any suggestions...
-
-Thanks,
-Hartley
+Some of the existing nand drivers could possibly be replaced by the
+plat_nand driver by using this patch.  These include autcpu12.c and
+ts7250.c drivers.
 
 Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
 
 ---
 
 diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
-index 75f9f48..600fbe9 100644
+index 75f9f48..f10b5a6 100644
 --- a/drivers/mtd/nand/plat_nand.c
 +++ b/drivers/mtd/nand/plat_nand.c
-@@ -70,6 +70,13 @@ static int __init plat_nand_probe(struct
+@@ -86,6 +86,8 @@ static int __init plat_nand_probe(struct
 platform_device *pdev)
-=20
- 	platform_set_drvdata(pdev, data);
-=20
-+	/* Handle any platform specific setup */
-+	if (pdata->ctrl.probe) {
-+		res =3D pdata->ctrl.probe(pdev);
-+		if (res)
-+			goto out;
-+	}
-+
- 	/* Scan to find existance of the device */
- 	if (nand_scan(&data->mtd, 1)) {
- 		res =3D -ENXIO;
-@@ -99,6 +106,8 @@ static int __init plat_nand_probe(struct
-platform_device *pdev)
-=20
- 	nand_release(&data->mtd);
- out:
-+	if (pdata->ctrl.remove)
-+		pdata->ctrl.remove(pdev);
- 	platform_set_drvdata(pdev, NULL);
- 	iounmap(data->io_base);
- 	kfree(data);
-@@ -111,15 +120,15 @@ out:
- static int __devexit plat_nand_remove(struct platform_device *pdev)
- {
- 	struct plat_nand_data *data =3D platform_get_drvdata(pdev);
--#ifdef CONFIG_MTD_PARTITIONS
- 	struct platform_nand_data *pdata =3D pdev->dev.platform_data;
--#endif
-=20
- 	nand_release(&data->mtd);
- #ifdef CONFIG_MTD_PARTITIONS
- 	if (data->parts && data->parts !=3D pdata->chip.partitions)
- 		kfree(data->parts);
- #endif
-+	if (pdata->ctrl.remove)
-+		pdata->ctrl.remove(pdev);
- 	iounmap(data->io_base);
- 	kfree(data);
-=20
+ 			return 0;
+ 		}
+ 	}
++	if (pdata->chip.set_parts)
++		pdata->chip.set_parts(data->mtd.size, &pdata->chip);
+ 	if (pdata->chip.partitions) {
+ 		data->parts =3D pdata->chip.partitions;
+ 		res =3D add_mtd_partitions(&data->mtd, data->parts,
 diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index db5b63d..8534924 100644
+index db5b63d..4eaf328 100644
 --- a/include/linux/mtd/nand.h
 +++ b/include/linux/mtd/nand.h
-@@ -18,6 +18,7 @@
- #ifndef __LINUX_MTD_NAND_H
- #define __LINUX_MTD_NAND_H
-=20
-+#include <linux/platform_device.h>
- #include <linux/wait.h>
- #include <linux/spinlock.h>
- #include <linux/mtd/mtd.h>
-@@ -579,6 +580,8 @@ struct platform_nand_chip {
-=20
- /**
-  * struct platform_nand_ctrl - controller level device structure
-+ * @probe:		platform specific function to probe/setup
-hardware
-+ * @remove:		platform specific function to remove/teardown
-hardware
-  * @hwcontrol:		platform specific hardware control structure
-  * @dev_ready:		platform specific function to read ready/busy
-pin
-  * @select_chip:	platform specific chip select function
-@@ -589,6 +592,8 @@ struct platform_nand_chip {
-  * All fields are optional and depend on the hardware driver
-requirements
+@@ -563,6 +563,7 @@ extern int nand_do_read(struct mtd_info *mtd, loff_t
+from, size_t len,
+  * @options:		Option flags, e.g. 16bit buswidth
+  * @ecclayout:		ecc layout info structure
+  * @part_probe_types:	NULL-terminated array of probe types
++ * @set_parts:		platform specific function to set partitions
+  * @priv:		hardware controller specific settings
   */
- struct platform_nand_ctrl {
-+	int		(*probe)(struct platform_device *pdev);
-+	void		(*remove)(struct platform_device *pdev);
- 	void		(*hwcontrol)(struct mtd_info *mtd, int cmd);
- 	int		(*dev_ready)(struct mtd_info *mtd);
- 	void		(*select_chip)(struct mtd_info *mtd, int chip);=20
+ struct platform_nand_chip {
+@@ -574,6 +575,8 @@ struct platform_nand_chip {
+ 	int			chip_delay;
+ 	unsigned int		options;
+ 	const char		**part_probe_types;
++	void			(*set_parts)(uint64_t size,
++					struct platform_nand_chip
+*chip);
+ 	void			*priv;
+ };
+ =20
