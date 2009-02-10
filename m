@@ -1,27 +1,18 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LWgE9-00069i-Jf
-	for linux-mtd@lists.infradead.org; Tue, 10 Feb 2009 00:11:52 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-To: Adrian McMenamin <adrian@newgolddream.dyndns.info>
-Subject: Re: [PATCH] sh: maple: add support for Visual Memory Card devices,
-	and make consequential changes to maple input drivers - 2/3 - v5
-Date: Mon, 9 Feb 2009 19:11:43 -0500
-References: <1234122069.6736.8.camel@localhost.localdomain>
-	<200902091433.57126.vapier@gentoo.org>
-	<1234215716.6756.18.camel@localhost.localdomain>
-In-Reply-To: <1234215716.6756.18.camel@localhost.localdomain>
+Received: from mail.mystique-magazine.com ([205.238.173.42])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LWk1Z-00080J-3h
+	for linux-mtd@lists.infradead.org; Tue, 10 Feb 2009 04:15:07 +0000
+Message-ID: <4990FF85.70709@infinity-studios.com>
+Date: Mon, 09 Feb 2009 22:16:05 -0600
+From: Dzuy Nguyen <dzuy@infinity-studios.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200902091911.46383.vapier@gentoo.org>
-Cc: linux-sh <linux-sh@vger.kernel.org>, Greg KH <greg@kroah.com>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	LKML <linux-kernel@vger.kernel.org>, Paul Mundt <lethal@linux-sh.org>,
-	MTD <linux-mtd@lists.infradead.org>,
-	linux-input <linux-input@vger.kernel.org>, dwmw2 <dwmw2@infradead.org>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: jffs2: Too few erase blocks (1)
+References: <498FC4BB.7060903@infinity-studios.com>	<Pine.LNX.4.64.0902090947080.19761@lnxricardw.se.axis.com>	<49904E48.7000805@infinity-studios.com>
+	<Pine.LNX.4.64.0902091731030.22663@lnxricardw.se.axis.com>
+In-Reply-To: <Pine.LNX.4.64.0902091731030.22663@lnxricardw.se.axis.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,15 +22,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 09 February 2009 16:41:56 Adrian McMenamin wrote:
-> But the basic point here is that changing the bus code is necessary to
-> get the VMU driver (or *any* VMU driver) to work, but changing the bus
-> driver also breaks the two existing drivers in mainline that use the
-> bus. The breakage in terms of lines to be fixed is small, but it still
-> needs to be done 'all at once'.
+I think I'll just use ext2.  ext2 doesn't mind small partition.  Writing
+to it
+should work the same as dd.
 
-the bus change and the resulting fallout in those drivers should be 1 
-changeset.  if you want to do more work than just transitioning those drivers, 
-that should be additional patches that depend on that bus changeset.  that way 
-bisection will not break as Paul highlighted.
--mike
+Ricard Wanderlof wrote:
+> On Mon, 9 Feb 2009, Dzuy Nguyen wrote:
+>
+>   
+>> Thanks, Ricard.  I didn't realize that jffs2 is not suitable for a small
+>> partition.  Yes,
+>> 64K is all I can afford.  I suppose I can dd the file, but doesn't that
+>> provide no wear
+>> leveling feature that jffs2 does?
+>>     
+>
+> No. But with one eraseblock you can't get much wear levelling anyway.
+>
+> It might not be too difficult to write an application that appends 
+> new data to existing data to the partition, erasing the whole block when 
+> it fills up and write the latest. Then you need something that will search 
+> for the latest version of the file. Something that jffs2 does, but on a 
+> smaller scale, acceptable for your application.
+>
+> /Ricard
+> --
+> Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+> Axis Communications AB, Lund, Sweden            www.axis.com
+> Phone +46 46 272 2016                           Fax +46 46 13 61 30
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>   
