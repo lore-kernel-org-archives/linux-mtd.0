@@ -1,11 +1,14 @@
-Message-Id: <200902112127.n1BLR6XF031345@imap1.linux-foundation.org>
-Subject: [patch 9/9] fs/jffs2/malloc.c: kmem_cache_alloc/memset ->
-	kmem_cache_zalloc
+Received: from smtp1.linux-foundation.org ([140.211.169.13])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LXMcV-0005cm-QG
+	for linux-mtd@lists.infradead.org; Wed, 11 Feb 2009 21:27:51 +0000
+Message-Id: <200902112127.n1BLR4sP031247@imap1.linux-foundation.org>
+Subject: [patch 6/9] mtd: RBTX4939: add MTD support
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Wed, 11 Feb 2009 13:27:06 -0800
+Date: Wed, 11 Feb 2009 13:27:04 -0800
 Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org,
-	yjwei@cn.fujitsu.com
+	anemo@mba.ocn.ne.jp, ralf@linux-mips.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,43 +18,218 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Wei Yongjun <yjwei@cn.fujitsu.com>
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
 
-Used kmem_cache_zalloc instead of kmem_cache_alloc/memset.
+Add platform support for NOR flash chips on RBTX4939 board.
+This board has complex flash mappings, controlled by its DIPSW setting.
 
-Signed-off-by: Wei Yongjun <yjwei@cn.fujitsu.com>
+[akpm@linux-foundation.org: Use min_t]
+Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
 Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- fs/jffs2/malloc.c |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ arch/mips/include/asm/txx9/rbtx4939.h |    9 +
+ arch/mips/txx9/rbtx4939/setup.c       |  157 ++++++++++++++++++++++++
+ 2 files changed, 166 insertions(+)
 
-diff -puN fs/jffs2/malloc.c~fs-jffs2-mallocc-kmem_cache_alloc-memset-kmem_cache_zalloc fs/jffs2/malloc.c
---- a/fs/jffs2/malloc.c~fs-jffs2-mallocc-kmem_cache_alloc-memset-kmem_cache_zalloc
-+++ a/fs/jffs2/malloc.c
-@@ -284,10 +284,9 @@ void jffs2_free_inode_cache(struct jffs2
- struct jffs2_xattr_datum *jffs2_alloc_xattr_datum(void)
- {
- 	struct jffs2_xattr_datum *xd;
--	xd = kmem_cache_alloc(xattr_datum_cache, GFP_KERNEL);
-+	xd = kmem_cache_zalloc(xattr_datum_cache, GFP_KERNEL);
- 	dbg_memalloc("%p\n", xd);
+diff -puN arch/mips/include/asm/txx9/rbtx4939.h~mtd-rbtx4939-add-mtd-support arch/mips/include/asm/txx9/rbtx4939.h
+--- a/arch/mips/include/asm/txx9/rbtx4939.h~mtd-rbtx4939-add-mtd-support
++++ a/arch/mips/include/asm/txx9/rbtx4939.h
+@@ -130,4 +130,13 @@
+ void rbtx4939_prom_init(void);
+ void rbtx4939_irq_setup(void);
  
--	memset(xd, 0, sizeof(struct jffs2_xattr_datum));
- 	xd->class = RAWNODE_CLASS_XATTR_DATUM;
- 	xd->node = (void *)xd;
- 	INIT_LIST_HEAD(&xd->xindex);
-@@ -303,10 +302,9 @@ void jffs2_free_xattr_datum(struct jffs2
- struct jffs2_xattr_ref *jffs2_alloc_xattr_ref(void)
- {
- 	struct jffs2_xattr_ref *ref;
--	ref = kmem_cache_alloc(xattr_ref_cache, GFP_KERNEL);
-+	ref = kmem_cache_zalloc(xattr_ref_cache, GFP_KERNEL);
- 	dbg_memalloc("%p\n", ref);
++struct mtd_partition;
++struct map_info;
++struct rbtx4939_flash_data {
++	unsigned int width;
++	unsigned int nr_parts;
++	struct mtd_partition *parts;
++	void (*map_init)(struct map_info *map);
++};
++
+ #endif /* __ASM_TXX9_RBTX4939_H */
+diff -puN arch/mips/txx9/rbtx4939/setup.c~mtd-rbtx4939-add-mtd-support arch/mips/txx9/rbtx4939/setup.c
+--- a/arch/mips/txx9/rbtx4939/setup.c~mtd-rbtx4939-add-mtd-support
++++ a/arch/mips/txx9/rbtx4939/setup.c
+@@ -16,6 +16,9 @@
+ #include <linux/leds.h>
+ #include <linux/interrupt.h>
+ #include <linux/smc91x.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/partitions.h>
++#include <linux/mtd/map.h>
+ #include <asm/reboot.h>
+ #include <asm/txx9/generic.h>
+ #include <asm/txx9/pci.h>
+@@ -282,6 +285,159 @@ static void rbtx4939_7segled_putc(unsign
+ 	__rbtx4939_7segled_putc(pos, val);
+ }
  
--	memset(ref, 0, sizeof(struct jffs2_xattr_ref));
- 	ref->class = RAWNODE_CLASS_XATTR_REF;
- 	ref->node = (void *)ref;
- 	return ref;
++#if defined(CONFIG_MTD_RBTX4939) || defined(CONFIG_MTD_RBTX4939_MODULE)
++/* special mapping for boot rom */
++static unsigned long rbtx4939_flash_fixup_ofs(unsigned long ofs)
++{
++	u8 bdipsw = readb(rbtx4939_bdipsw_addr) & 0x0f;
++	unsigned char shift;
++
++	if (bdipsw & 8) {
++		/* BOOT Mode: USER ROM1 / USER ROM2 */
++		shift = bdipsw & 3;
++		/* rotate A[23:22] */
++		return (ofs & ~0xc00000) | ((((ofs >> 22) + shift) & 3) << 22);
++	}
++#ifdef __BIG_ENDIAN
++	if (bdipsw == 0)
++		/* BOOT Mode: Monitor ROM */
++		ofs ^= 0x400000;	/* swap A[22] */
++#endif
++	return ofs;
++}
++
++static map_word rbtx4939_flash_read16(struct map_info *map, unsigned long ofs)
++{
++	map_word r;
++
++	ofs = rbtx4939_flash_fixup_ofs(ofs);
++	r.x[0] = __raw_readw(map->virt + ofs);
++	return r;
++}
++
++static void rbtx4939_flash_write16(struct map_info *map, const map_word datum,
++				   unsigned long ofs)
++{
++	ofs = rbtx4939_flash_fixup_ofs(ofs);
++	__raw_writew(datum.x[0], map->virt + ofs);
++	mb();	/* see inline_map_write() in mtd/map.h */
++}
++
++static void rbtx4939_flash_copy_from(struct map_info *map, void *to,
++				     unsigned long from, ssize_t len)
++{
++	u8 bdipsw = readb(rbtx4939_bdipsw_addr) & 0x0f;
++	unsigned char shift;
++	ssize_t curlen;
++
++	from += (unsigned long)map->virt;
++	if (bdipsw & 8) {
++		/* BOOT Mode: USER ROM1 / USER ROM2 */
++		shift = bdipsw & 3;
++		while (len) {
++			curlen = min_t(unsigned long, len,
++				     0x400000 -	(from & (0x400000 - 1)));
++			memcpy(to,
++			       (void *)((from & ~0xc00000) |
++					((((from >> 22) + shift) & 3) << 22)),
++			       curlen);
++			len -= curlen;
++			from += curlen;
++			to += curlen;
++		}
++		return;
++	}
++#ifdef __BIG_ENDIAN
++	if (bdipsw == 0) {
++		/* BOOT Mode: Monitor ROM */
++		while (len) {
++			curlen = min_t(unsigned long, len,
++				     0x400000 - (from & (0x400000 - 1)));
++			memcpy(to, (void *)(from ^ 0x400000), curlen);
++			len -= curlen;
++			from += curlen;
++			to += curlen;
++		}
++		return;
++	}
++#endif
++	memcpy(to, (void *)from, len);
++}
++
++static void rbtx4939_flash_map_init(struct map_info *map)
++{
++	map->read = rbtx4939_flash_read16;
++	map->write = rbtx4939_flash_write16;
++	map->copy_from = rbtx4939_flash_copy_from;
++}
++
++static void __init rbtx4939_mtd_init(void)
++{
++	static struct {
++		struct platform_device dev;
++		struct resource res;
++		struct rbtx4939_flash_data data;
++	} pdevs[4];
++	int i;
++	static char names[4][8];
++	static struct mtd_partition parts[4];
++	struct rbtx4939_flash_data *boot_pdata = &pdevs[0].data;
++	u8 bdipsw = readb(rbtx4939_bdipsw_addr) & 0x0f;
++
++	if (bdipsw & 8) {
++		/* BOOT Mode: USER ROM1 / USER ROM2 */
++		boot_pdata->nr_parts = 4;
++		for (i = 0; i < boot_pdata->nr_parts; i++) {
++			sprintf(names[i], "img%d", 4 - i);
++			parts[i].name = names[i];
++			parts[i].size = 0x400000;
++			parts[i].offset = MTDPART_OFS_NXTBLK;
++		}
++	} else if (bdipsw == 0) {
++		/* BOOT Mode: Monitor ROM */
++		boot_pdata->nr_parts = 2;
++		strcpy(names[0], "big");
++		strcpy(names[1], "little");
++		for (i = 0; i < boot_pdata->nr_parts; i++) {
++			parts[i].name = names[i];
++			parts[i].size = 0x400000;
++			parts[i].offset = MTDPART_OFS_NXTBLK;
++		}
++	} else {
++		/* BOOT Mode: ROM Emulator */
++		boot_pdata->nr_parts = 2;
++		parts[0].name = "boot";
++		parts[0].offset = 0xc00000;
++		parts[0].size = 0x400000;
++		parts[1].name = "user";
++		parts[1].offset = 0;
++		parts[1].size = 0xc00000;
++	}
++	boot_pdata->parts = parts;
++	boot_pdata->map_init = rbtx4939_flash_map_init;
++
++	for (i = 0; i < ARRAY_SIZE(pdevs); i++) {
++		struct resource *r = &pdevs[i].res;
++		struct platform_device *dev = &pdevs[i].dev;
++
++		r->start = 0x1f000000 - i * 0x1000000;
++		r->end = r->start + 0x1000000 - 1;
++		r->flags = IORESOURCE_MEM;
++		pdevs[i].data.width = 2;
++		dev->num_resources = 1;
++		dev->resource = r;
++		dev->id = i;
++		dev->name = "rbtx4939-flash";
++		dev->dev.platform_data = &pdevs[i].data;
++		platform_device_register(dev);
++	}
++}
++#else
++static void __init rbtx4939_mtd_init(void)
++{
++}
++#endif
++
+ static void __init rbtx4939_arch_init(void)
+ {
+ 	rbtx4939_pci_setup();
+@@ -333,6 +489,7 @@ static void __init rbtx4939_device_init(
+ 	    platform_device_add_data(pdev, &smc_pdata, sizeof(smc_pdata)) ||
+ 	    platform_device_add(pdev))
+ 		platform_device_put(pdev);
++	rbtx4939_mtd_init();
+ 	/* TC58DVM82A1FT: tDH=10ns, tWP=tRP=tREADID=35ns */
+ 	tx4939_ndfmc_init(10, 35,
+ 			  (1 << 1) | (1 << 2),
 _
