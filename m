@@ -1,15 +1,10 @@
-Received: from smtp1.linux-foundation.org ([140.211.169.13])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LXMOF-0001EZ-16
-	for linux-mtd@lists.infradead.org; Wed, 11 Feb 2009 21:13:17 +0000
-Message-Id: <200902112112.n1BLCIrR010250@imap1.linux-foundation.org>
-Subject: [patch for 2.6.29? 2/4] mtd/maps: blackfin async flash maps - fix
-	bug: dont leak resources when initializing in case of errors
+Message-Id: <200902112127.n1BLR2HX031153@imap1.linux-foundation.org>
+Subject: [patch 4/9] jffs2: force the jffs2 GC daemon to behave a bit better
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Wed, 11 Feb 2009 13:12:18 -0800
-Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org,
-	cooloney@kernel.org, vapier.adi@gmail.com
+Date: Wed, 11 Feb 2009 13:27:02 -0800
+Cc: dilinger@debian.org, akpm@linux-foundation.org,
+	linux-mtd@lists.infradead.org, dilinger@queued.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,38 +14,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Mike Frysinger <vapier.adi@gmail.com>
+From: Andres Salomon <dilinger@queued.net>
 
-Signed-off-by: Mike Frysinger <vapier.adi@gmail.com>
-Signed-off-by: Bryan Wu <cooloney@kernel.org>
+I've noticed some pretty poor behavior on OLPC machines after bootup, when
+gdm/X are starting.  The GCD monopolizes the scheduler (which in turns
+means it gets to do more nand i/o), which results in processes taking much
+much longer than they should to start.
+
+As an example, on an OLPC machine going from OFW to a usable X (via
+auto-login gdm) takes 2m 30s.  The majority of this time is consumed by
+the switch into graphical mode.  With this patch, we cut a full 60s off of
+bootup time.  After bootup, things are much snappier as well.
+
+Note that we have seen a CRC node error with this patch that causes the machine
+to fail to boot, but we've also seen that problem without this patch.
+
+Signed-off-by: Andres Salomon <dilinger@debian.org>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- drivers/mtd/maps/bfin-async-flash.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/jffs2/background.c |   18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-diff -puN drivers/mtd/maps/bfin-async-flash.c~mtd-maps-blackfin-async-flash-maps-fix-bug-dont-leak-resources-when-initializing-in-case-of-errors drivers/mtd/maps/bfin-async-flash.c
---- a/drivers/mtd/maps/bfin-async-flash.c~mtd-maps-blackfin-async-flash-maps-fix-bug-dont-leak-resources-when-initializing-in-case-of-errors
-+++ a/drivers/mtd/maps/bfin-async-flash.c
-@@ -152,14 +152,18 @@ static int __devinit bfin_flash_probe(st
+diff -puN fs/jffs2/background.c~jffs2-force-the-jffs2-gc-daemon-to-behave-a-bit-better fs/jffs2/background.c
+--- a/fs/jffs2/background.c~jffs2-force-the-jffs2-gc-daemon-to-behave-a-bit-better
++++ a/fs/jffs2/background.c
+@@ -95,13 +95,17 @@ static int jffs2_garbage_collect_thread(
+ 			spin_unlock(&c->erase_completion_lock);
+ 			
  
- 	if (gpio_request(state->enet_flash_pin, DRIVER_NAME)) {
- 		pr_devinit(KERN_ERR DRIVER_NAME ": Failed to request gpio %d\n", state->enet_flash_pin);
-+		kfree(state);
- 		return -EBUSY;
- 	}
- 	gpio_direction_output(state->enet_flash_pin, 1);
+-		/* This thread is purely an optimisation. But if it runs when
+-		   other things could be running, it actually makes things a
+-		   lot worse. Use yield() and put it at the back of the runqueue
+-		   every time. Especially during boot, pulling an inode in
+-		   with read_inode() is much preferable to having the GC thread
+-		   get there first. */
+-		yield();
++		/* Problem - immediately after bootup, the GCD spends a lot
++		 * of time in places like jffs2_kill_fragtree(); so much so
++		 * that userspace processes (like gdm and X) are starved
++		 * despite plenty of cond_resched()s and renicing.  Yield()
++		 * doesn't help, either (presumably because userspace and GCD
++		 * are generally competing for a higher latency resource -
++		 * disk).
++		 * This forces the GCD to slow the hell down.   Pulling an
++		 * inode in with read_inode() is much preferable to having
++		 * the GC thread get there first. */
++		schedule_timeout_interruptible(msecs_to_jiffies(50));
  
- 	pr_devinit(KERN_NOTICE DRIVER_NAME ": probing %d-bit flash bus\n", state->map.bankwidth * 8);
- 	state->mtd = do_map_probe(memory->name, &state->map);
--	if (!state->mtd)
-+	if (!state->mtd) {
-+		gpio_free(state->enet_flash_pin);
-+		kfree(state);
- 		return -ENXIO;
-+	}
- 
- #ifdef CONFIG_MTD_PARTITIONS
- 	ret = parse_mtd_partitions(state->mtd, part_probe_types, &pdata->parts, 0);
+ 		/* Put_super will send a SIGKILL and then wait on the sem.
+ 		 */
 _
