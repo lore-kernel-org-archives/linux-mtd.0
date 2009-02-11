@@ -1,10 +1,10 @@
 Received: from smtp1.linux-foundation.org ([140.211.169.13])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LXMOE-000149-2r
-	for linux-mtd@lists.infradead.org; Wed, 11 Feb 2009 21:13:05 +0000
-Message-Id: <200902112112.n1BLCKlR010256@imap1.linux-foundation.org>
-Subject: [patch for 2.6.29? 4/4] mtd/maps: blackfin async flash maps: fix up
-	memory leak
+	id 1LXMOC-0000wp-9I
+	for linux-mtd@lists.infradead.org; Wed, 11 Feb 2009 21:13:14 +0000
+Message-Id: <200902112112.n1BLCJ3U010253@imap1.linux-foundation.org>
+Subject: [patch for 2.6.29? 3/4] mtd/maps: blackfin async flash maps:
+	bfin-async mtd driver needs complex mappings
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
 Date: Wed, 11 Feb 2009 13:12:19 -0800
@@ -21,24 +21,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Mike Frysinger <vapier.adi@gmail.com>
 
+Correct a build error.  bfin-async uses complex mappings and so needs it.
+
 Signed-off-by: Mike Frysinger <vapier.adi@gmail.com>
 Signed-off-by: Bryan Wu <cooloney@kernel.org>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- drivers/mtd/maps/bfin-async-flash.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/maps/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff -puN drivers/mtd/maps/bfin-async-flash.c~mtd-maps-blackfin-async-flash-maps-fix-up-memory-leak drivers/mtd/maps/bfin-async-flash.c
---- a/drivers/mtd/maps/bfin-async-flash.c~mtd-maps-blackfin-async-flash-maps-fix-up-memory-leak
-+++ a/drivers/mtd/maps/bfin-async-flash.c
-@@ -170,6 +170,7 @@ static int __devinit bfin_flash_probe(st
- 	if (ret > 0) {
- 		pr_devinit(KERN_NOTICE DRIVER_NAME ": Using commandline partition definition\n");
- 		add_mtd_partitions(state->mtd, pdata->parts, ret);
-+		kfree(pdata->parts);
+diff -puN drivers/mtd/maps/Kconfig~mtd-maps-blackfin-async-flash-maps-bfin-async-mtd-driver-needs-complex-mappings drivers/mtd/maps/Kconfig
+--- a/drivers/mtd/maps/Kconfig~mtd-maps-blackfin-async-flash-maps-bfin-async-mtd-driver-needs-complex-mappings
++++ a/drivers/mtd/maps/Kconfig
+@@ -491,7 +491,7 @@ config MTD_PCMCIA_ANONYMOUS
  
- 	} else if (pdata->nr_parts) {
- 		pr_devinit(KERN_NOTICE DRIVER_NAME ": Using board partition definition\n");
+ config MTD_BFIN_ASYNC
+ 	tristate "Blackfin BF533-STAMP Flash Chip Support"
+-	depends on BFIN533_STAMP && MTD_CFI
++	depends on BFIN533_STAMP && MTD_CFI && MTD_COMPLEX_MAPPINGS
+ 	select MTD_PARTITIONS
+ 	default y
+ 	help
 _
