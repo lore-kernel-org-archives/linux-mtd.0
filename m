@@ -1,15 +1,11 @@
-Received: from smtp1.linux-foundation.org ([140.211.169.13])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LXMcB-0005Y6-7z
-	for linux-mtd@lists.infradead.org; Wed, 11 Feb 2009 21:27:30 +0000
-Message-Id: <200902112127.n1BLR1P2031102@imap1.linux-foundation.org>
-Subject: [patch 3/9] mtd: Blackfin NFC Driver: drop pointless casts with
-	set_dma_callback()
+Message-Id: <200902112127.n1BLR6XF031345@imap1.linux-foundation.org>
+Subject: [patch 9/9] fs/jffs2/malloc.c: kmem_cache_alloc/memset ->
+	kmem_cache_zalloc
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Wed, 11 Feb 2009 13:27:01 -0800
+Date: Wed, 11 Feb 2009 13:27:06 -0800
 Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org,
-	cooloney@kernel.org, vapier.adi@gmail.com
+	yjwei@cn.fujitsu.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,27 +15,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Mike Frysinger <vapier.adi@gmail.com>
+From: Wei Yongjun <yjwei@cn.fujitsu.com>
 
-Signed-off-by: Mike Frysinger <vapier.adi@gmail.com>
-Signed-off-by: Bryan Wu <cooloney@kernel.org>
+Used kmem_cache_zalloc instead of kmem_cache_alloc/memset.
+
+Signed-off-by: Wei Yongjun <yjwei@cn.fujitsu.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- drivers/mtd/nand/bf5xx_nand.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/jffs2/malloc.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff -puN drivers/mtd/nand/bf5xx_nand.c~blackfin-nfc-driver-drop-pointless-casts-with-set_dma_callback drivers/mtd/nand/bf5xx_nand.c
---- a/drivers/mtd/nand/bf5xx_nand.c~blackfin-nfc-driver-drop-pointless-casts-with-set_dma_callback
-+++ a/drivers/mtd/nand/bf5xx_nand.c
-@@ -572,7 +572,7 @@ static int bf5xx_nand_dma_init(struct bf
- 	SSYNC();
- #endif
+diff -puN fs/jffs2/malloc.c~fs-jffs2-mallocc-kmem_cache_alloc-memset-kmem_cache_zalloc fs/jffs2/malloc.c
+--- a/fs/jffs2/malloc.c~fs-jffs2-mallocc-kmem_cache_alloc-memset-kmem_cache_zalloc
++++ a/fs/jffs2/malloc.c
+@@ -284,10 +284,9 @@ void jffs2_free_inode_cache(struct jffs2
+ struct jffs2_xattr_datum *jffs2_alloc_xattr_datum(void)
+ {
+ 	struct jffs2_xattr_datum *xd;
+-	xd = kmem_cache_alloc(xattr_datum_cache, GFP_KERNEL);
++	xd = kmem_cache_zalloc(xattr_datum_cache, GFP_KERNEL);
+ 	dbg_memalloc("%p\n", xd);
  
--	set_dma_callback(CH_NFC, (void *) bf5xx_nand_dma_irq, (void *) info);
-+	set_dma_callback(CH_NFC, bf5xx_nand_dma_irq, info);
+-	memset(xd, 0, sizeof(struct jffs2_xattr_datum));
+ 	xd->class = RAWNODE_CLASS_XATTR_DATUM;
+ 	xd->node = (void *)xd;
+ 	INIT_LIST_HEAD(&xd->xindex);
+@@ -303,10 +302,9 @@ void jffs2_free_xattr_datum(struct jffs2
+ struct jffs2_xattr_ref *jffs2_alloc_xattr_ref(void)
+ {
+ 	struct jffs2_xattr_ref *ref;
+-	ref = kmem_cache_alloc(xattr_ref_cache, GFP_KERNEL);
++	ref = kmem_cache_zalloc(xattr_ref_cache, GFP_KERNEL);
+ 	dbg_memalloc("%p\n", ref);
  
- 	/* Turn off the DMA channel first */
- 	disable_dma(CH_NFC);
+-	memset(ref, 0, sizeof(struct jffs2_xattr_ref));
+ 	ref->class = RAWNODE_CLASS_XATTR_REF;
+ 	ref->node = (void *)ref;
+ 	return ref;
 _
