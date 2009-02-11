@@ -1,12 +1,13 @@
 Received: from smtp1.linux-foundation.org ([140.211.169.13])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LXMbx-0005Y0-RH
-	for linux-mtd@lists.infradead.org; Wed, 11 Feb 2009 21:27:17 +0000
-Message-Id: <200902112127.n1BLR0u5031090@imap1.linux-foundation.org>
-Subject: [patch 1/9] mtd: Blackfin NFC Driver: do not clobber DMAC1_PERIMUX
+	id 1LXMcB-0005Y6-7z
+	for linux-mtd@lists.infradead.org; Wed, 11 Feb 2009 21:27:30 +0000
+Message-Id: <200902112127.n1BLR1P2031102@imap1.linux-foundation.org>
+Subject: [patch 3/9] mtd: Blackfin NFC Driver: drop pointless casts with
+	set_dma_callback()
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Wed, 11 Feb 2009 13:27:00 -0800
+Date: Wed, 11 Feb 2009 13:27:01 -0800
 Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org,
 	cooloney@kernel.org, vapier.adi@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,54 +21,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Mike Frysinger <vapier.adi@gmail.com>
 
-Only set DMAC1_PERIMUX once we have requested and been granted the dma
-channel to prevent breaking other peripherals in the error case
-
 Signed-off-by: Mike Frysinger <vapier.adi@gmail.com>
 Signed-off-by: Bryan Wu <cooloney@kernel.org>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- drivers/mtd/nand/bf5xx_nand.c |   14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ drivers/mtd/nand/bf5xx_nand.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff -puN drivers/mtd/nand/bf5xx_nand.c~blackfin-nfc-driver-do-not-clobber-dmac1_perimux drivers/mtd/nand/bf5xx_nand.c
---- a/drivers/mtd/nand/bf5xx_nand.c~blackfin-nfc-driver-do-not-clobber-dmac1_perimux
+diff -puN drivers/mtd/nand/bf5xx_nand.c~blackfin-nfc-driver-drop-pointless-casts-with-set_dma_callback drivers/mtd/nand/bf5xx_nand.c
+--- a/drivers/mtd/nand/bf5xx_nand.c~blackfin-nfc-driver-drop-pointless-casts-with-set_dma_callback
 +++ a/drivers/mtd/nand/bf5xx_nand.c
-@@ -552,7 +552,6 @@ static void bf5xx_nand_dma_write_buf(str
- static int bf5xx_nand_dma_init(struct bf5xx_nand_info *info)
- {
- 	int ret;
--	unsigned short val;
+@@ -572,7 +572,7 @@ static int bf5xx_nand_dma_init(struct bf
+ 	SSYNC();
+ #endif
  
- 	/* Do not use dma */
- 	if (!hardware_ecc)
-@@ -560,13 +559,6 @@ static int bf5xx_nand_dma_init(struct bf
- 
- 	init_completion(&info->dma_completion);
- 
--#ifdef CONFIG_BF54x
--	/* Setup DMAC1 channel mux for NFC which shared with SDH */
--	val = bfin_read_DMAC1_PERIMUX();
--	val &= 0xFFFE;
--	bfin_write_DMAC1_PERIMUX(val);
--	SSYNC();
--#endif
- 	/* Request NFC DMA channel */
- 	ret = request_dma(CH_NFC, "BF5XX NFC driver");
- 	if (ret < 0) {
-@@ -574,6 +566,12 @@ static int bf5xx_nand_dma_init(struct bf
- 		return ret;
- 	}
- 
-+#ifdef CONFIG_BF54x
-+	/* Setup DMAC1 channel mux for NFC which shared with SDH */
-+	bfin_write_DMAC1_PERIMUX(bfin_read_DMAC1_PERIMUX() & ~1);
-+	SSYNC();
-+#endif
-+
- 	set_dma_callback(CH_NFC, (void *) bf5xx_nand_dma_irq, (void *) info);
+-	set_dma_callback(CH_NFC, (void *) bf5xx_nand_dma_irq, (void *) info);
++	set_dma_callback(CH_NFC, bf5xx_nand_dma_irq, info);
  
  	/* Turn off the DMA channel first */
+ 	disable_dma(CH_NFC);
 _
