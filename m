@@ -1,10 +1,15 @@
-Message-Id: <200902112127.n1BLR2HX031153@imap1.linux-foundation.org>
-Subject: [patch 4/9] jffs2: force the jffs2 GC daemon to behave a bit better
+Received: from smtp1.linux-foundation.org ([140.211.169.13])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LXMby-0005Y3-Hy
+	for linux-mtd@lists.infradead.org; Wed, 11 Feb 2009 21:27:17 +0000
+Message-Id: <200902112127.n1BLR1fK031093@imap1.linux-foundation.org>
+Subject: [patch 2/9] mtd: Blackfin NFC Driver: mark bf5xx_nand_add_partition()
+	as __devinit
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Wed, 11 Feb 2009 13:27:02 -0800
-Cc: dilinger@debian.org, akpm@linux-foundation.org,
-	linux-mtd@lists.infradead.org, dilinger@queued.net
+Date: Wed, 11 Feb 2009 13:27:00 -0800
+Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org,
+	cooloney@kernel.org, vapier.adi@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -14,55 +19,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Andres Salomon <dilinger@queued.net>
+From: Mike Frysinger <vapier.adi@gmail.com>
 
-I've noticed some pretty poor behavior on OLPC machines after bootup, when
-gdm/X are starting.  The GCD monopolizes the scheduler (which in turns
-means it gets to do more nand i/o), which results in processes taking much
-much longer than they should to start.
+The bf5xx_nand_add_partition() func is only called by __devinit functions,
+so put it into the __devinit section as well
 
-As an example, on an OLPC machine going from OFW to a usable X (via
-auto-login gdm) takes 2m 30s.  The majority of this time is consumed by
-the switch into graphical mode.  With this patch, we cut a full 60s off of
-bootup time.  After bootup, things are much snappier as well.
-
-Note that we have seen a CRC node error with this patch that causes the machine
-to fail to boot, but we've also seen that problem without this patch.
-
-Signed-off-by: Andres Salomon <dilinger@debian.org>
+Signed-off-by: Mike Frysinger <vapier.adi@gmail.com>
+Signed-off-by: Bryan Wu <cooloney@kernel.org>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- fs/jffs2/background.c |   18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ drivers/mtd/nand/bf5xx_nand.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff -puN fs/jffs2/background.c~jffs2-force-the-jffs2-gc-daemon-to-behave-a-bit-better fs/jffs2/background.c
---- a/fs/jffs2/background.c~jffs2-force-the-jffs2-gc-daemon-to-behave-a-bit-better
-+++ a/fs/jffs2/background.c
-@@ -95,13 +95,17 @@ static int jffs2_garbage_collect_thread(
- 			spin_unlock(&c->erase_completion_lock);
- 			
+diff -puN drivers/mtd/nand/bf5xx_nand.c~blackfin-nfc-driver-mark-bf5xx_nand_add_partition-as-__devinit drivers/mtd/nand/bf5xx_nand.c
+--- a/drivers/mtd/nand/bf5xx_nand.c~blackfin-nfc-driver-mark-bf5xx_nand_add_partition-as-__devinit
++++ a/drivers/mtd/nand/bf5xx_nand.c
+@@ -630,7 +630,7 @@ static int bf5xx_nand_hw_init(struct bf5
+ /*
+  * Device management interface
+  */
+-static int bf5xx_nand_add_partition(struct bf5xx_nand_info *info)
++static int __devinit bf5xx_nand_add_partition(struct bf5xx_nand_info *info)
+ {
+ 	struct mtd_info *mtd = &info->mtd;
  
--		/* This thread is purely an optimisation. But if it runs when
--		   other things could be running, it actually makes things a
--		   lot worse. Use yield() and put it at the back of the runqueue
--		   every time. Especially during boot, pulling an inode in
--		   with read_inode() is much preferable to having the GC thread
--		   get there first. */
--		yield();
-+		/* Problem - immediately after bootup, the GCD spends a lot
-+		 * of time in places like jffs2_kill_fragtree(); so much so
-+		 * that userspace processes (like gdm and X) are starved
-+		 * despite plenty of cond_resched()s and renicing.  Yield()
-+		 * doesn't help, either (presumably because userspace and GCD
-+		 * are generally competing for a higher latency resource -
-+		 * disk).
-+		 * This forces the GCD to slow the hell down.   Pulling an
-+		 * inode in with read_inode() is much preferable to having
-+		 * the GC thread get there first. */
-+		schedule_timeout_interruptible(msecs_to_jiffies(50));
- 
- 		/* Put_super will send a SIGKILL and then wait on the sem.
- 		 */
 _
