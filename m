@@ -1,19 +1,23 @@
-Date: Wed, 11 Feb 2009 10:05:32 +0100
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Artem Bityutskiy <dedekind@infradead.org>
-Subject: [PATCH] get rid of "compare between signed and unsigned" warnings
-Message-ID: <20090211090532.GB32207@www.tglx.de>
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LXCG0-00011X-AJ
+	for linux-mtd@lists.infradead.org; Wed, 11 Feb 2009 10:23:54 +0000
+Subject: Re: [PATCH v3] ubiformat: make it work on mtd parts > 2GiB
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+In-Reply-To: <20090211090429.GA32207@www.tglx.de>
 References: <20090210095614.GA1995@www.tglx.de>
 	<1234260416.17790.109.camel@localhost.localdomain>
-	<4991542C.4080206@linutronix.de>
-	<1234261659.17790.117.camel@localhost.localdomain>
-	<49915BAF.2070709@linutronix.de>
-	<1234337444.17790.124.camel@localhost.localdomain>
+	<20090210103354.GA8405@www.tglx.de>
+	<1234337417.17790.123.camel@localhost.localdomain>
+	<20090211090429.GA32207@www.tglx.de>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 11 Feb 2009 12:23:40 +0200
+Message-Id: <1234347820.17790.133.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <1234337444.17790.124.camel@localhost.localdomain>
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +27,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy said once:
-|I mean, IMO most of these warnings are not really sane, and cleaning
-|that up just adds mess - you stop understanding why is something signed
-|or unsigned  :-)
+On Wed, 2009-02-11 at 10:04 +0100, Sebastian Andrzej Siewior wrote:
+> I have here a mtd part which is 3 GiB with a flash page size of 256KiB.
+> The 2GiB limit is at erase block 8192. In mtd_is_bad() the computation
+> for the MEMGETBADBLOCK ioctl() looks like the following:
+...snip...
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- common.mk |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Pushed both patches, thank you.
 
-diff --git a/common.mk b/common.mk
-index 65fc1cc..0e8c62b 100644
---- a/common.mk
-+++ b/common.mk
-@@ -2,7 +2,7 @@ CC := $(CROSS)gcc
- AR := $(CROSS)ar
- RANLIB := $(CROSS)ranlib
- CFLAGS ?= -O2 -g
--CFLAGS += -Wall -Wwrite-strings -W -D_FILE_OFFSET_BITS=64
-+CFLAGS += -Wall -Wextra -Wwrite-strings -Wno-sign-compare -D_FILE_OFFSET_BITS=64
- 
- DESTDIR ?= /usr/local
- PREFIX=/usr
 -- 
-1.5.6.5
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
