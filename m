@@ -1,18 +1,17 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LXArU-0005Or-PQ
-	for linux-mtd@lists.infradead.org; Wed, 11 Feb 2009 08:54:31 +0000
-Date: Wed, 11 Feb 2009 09:54:21 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Roel Kluin <roel.kluin@gmail.com>
-Subject: Re: [PATCH] max_retries reaches -1, not 0
-Message-ID: <20090211085421.GA23048@pengutronix.de>
-References: <499202F4.3020408@gmail.com>
+Message-ID: <499292A2.9070708@linutronix.de>
+Date: Wed, 11 Feb 2009 09:56:02 +0100
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <499202F4.3020408@gmail.com>
-Cc: linux-mtd@lists.infradead.org, David.Woodhouse@intel.com
+To: dedekind@infradead.org
+Subject: Re: [PATCH v2] ubiformat: make it work on mtd parts > 2GiB
+References: <20090210095614.GA1995@www.tglx.de>	
+	<1234260416.17790.109.camel@localhost.localdomain>	
+	<20090210103354.GA8405@www.tglx.de>
+	<1234337417.17790.123.camel@localhost.localdomain>
+In-Reply-To: <1234337417.17790.123.camel@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,35 +21,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Feb 10, 2009 at 11:43:00PM +0100, Roel Kluin wrote:
-> With while (max_retries-- > 0) { ... } max_retries reaches -1, not 0,
-> so we shouldn't DEBUG() on a max_retries of 0.
-
-Yes, indeed.
-
+Artem Bityutskiy wrote:
+> On Tue, 2009-02-10 at 11:33 +0100, Sebastian Andrzej Siewior wrote:
+>> diff --git a/ubi-utils/new-utils/src/libmtd.c b/ubi-utils/new-utils/src/libmtd.c
+>> index aab4b0e..69705dd 100644
+>> --- a/ubi-utils/new-utils/src/libmtd.c
+>> +++ b/ubi-utils/new-utils/src/libmtd.c
+>> @@ -189,7 +189,7 @@ int mtd_is_bad(const struct mtd_info *mtd, int eb)
+>>  	if (!mtd->allows_bb)
+>>  		return 0;
+>>  
+>> -	seek = eb * mtd->eb_size;
+>> +	seek = (unsigned int)eb * mtd->eb_size;
 > 
-> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+> I believe this should be:
+> 
+> seek = (off_t)eb * mtd->eb_size;
+> 
+> instead.
+Yes, indeed.
+> 
 
-Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
-
-> ---
-> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-> index 21fd4f1..5c34148 100644
-> --- a/drivers/mtd/nand/mxc_nand.c
-> +++ b/drivers/mtd/nand/mxc_nand.c
-> @@ -192,7 +192,7 @@ static void wait_op_done(struct mxc_nand_host *host, int max_retries,
->  			}
->  			udelay(1);
->  		}
-> -		if (max_retries <= 0)
-> +		if (max_retries < 0)
->  			DEBUG(MTD_DEBUG_LEVEL0, "%s(%d): INT not set\n",
->  			      __func__, param);
->  	}
-
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Sebastian
