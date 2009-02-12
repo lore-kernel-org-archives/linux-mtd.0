@@ -1,21 +1,23 @@
-Received: from smtp1.linux-foundation.org ([140.211.169.13])
+Received: from devils.ext.ti.com ([198.47.26.153])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LXPfq-00007M-PT
-	for linux-mtd@lists.infradead.org; Thu, 12 Feb 2009 00:43:29 +0000
-Date: Wed, 11 Feb 2009 16:42:47 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-Subject: Re: [patch for 2.6.29? 4/4] mtd/maps: blackfin async flash maps:
-	fix up memory leak
-Message-Id: <20090211164247.8119de8d.akpm@linux-foundation.org>
-In-Reply-To: <20090212.093531.235975795.nemoto@toshiba-tops.co.jp>
-References: <200902112112.n1BLCKlR010256@imap1.linux-foundation.org>
-	<20090212.093531.235975795.nemoto@toshiba-tops.co.jp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, cooloney@kernel.org, dwmw2@infradead.org,
-	vapier.adi@gmail.com
+	id 1LXV53-00083R-7J
+	for linux-mtd@lists.infradead.org; Thu, 12 Feb 2009 06:29:51 +0000
+Received: from dbdp20.itg.ti.com ([172.24.170.38])
+	by devils.ext.ti.com (8.13.7/8.13.7) with ESMTP id n1C6Tdsb007709
+	for <linux-mtd@lists.infradead.org>; Thu, 12 Feb 2009 00:29:46 -0600
+Received: from dbde71.ent.ti.com (localhost [127.0.0.1])
+	by dbdp20.itg.ti.com (8.13.8/8.13.8) with ESMTP id n1C6Tcsa022020
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 12 Feb 2009 11:59:39 +0530 (IST)
+From: "Singh, Vimal" <vimalsingh@ti.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Thu, 12 Feb 2009 11:55:44 +0530
+Subject: lock/unlock feature for NAND flash
+Message-ID: <19F8576C6E063C45BE387C64729E739403FA62F9D0@dbde02.ent.ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +27,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 12 Feb 2009 09:35:31 +0900 (JST)
-Atsushi Nemoto <anemo@mba.ocn.ne.jp> wrote:
+Hi,
 
-> On Wed, 11 Feb 2009 13:12:19 -0800, akpm@linux-foundation.org wrote:
-> > @@ -170,6 +170,7 @@ static int __devinit bfin_flash_probe(st
-> >  	if (ret > 0) {
-> >  		pr_devinit(KERN_NOTICE DRIVER_NAME ": Using commandline partition definition\n");
-> >  		add_mtd_partitions(state->mtd, pdata->parts, ret);
-> > +		kfree(pdata->parts);
-> >  
-> >  	} else if (pdata->nr_parts) {
-> >  		pr_devinit(KERN_NOTICE DRIVER_NAME ": Using board partition definition\n");
-> 
-> As Matthias Kaehlcke pointed out in mail titled "[BUG]
-> physmap_flash_probe() frees memory still in use", this fix introduce
-> another bug.
-> 
-> Revised patch for physmap driver is:
-> http://lists.infradead.org/pipermail/linux-mtd/2009-February/024590.html
-> 
-> Mike, please update this blackfin patch too.
-> 
+Is there any specific reason kernel dose not support NAND flash lock/unlock=
+ feature, or it is just not implemented?
 
-I don't have a copy of that patch.  You're on you own, guys..
+---
+vimal=
