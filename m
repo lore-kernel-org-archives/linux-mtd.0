@@ -1,23 +1,16 @@
-Received: from wa-out-1112.google.com ([209.85.146.180])
+Received: from wa-out-1112.google.com ([209.85.146.181])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LXkb9-0000Ps-2v
-	for linux-mtd@lists.infradead.org; Thu, 12 Feb 2009 23:04:01 +0000
-Received: by wa-out-1112.google.com with SMTP id j4so483007wah.2
+	id 1LXrHB-00026H-CK
+	for linux-mtd@lists.infradead.org; Fri, 13 Feb 2009 06:11:52 +0000
+Received: by wa-out-1112.google.com with SMTP id j4so564012wah.2
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 Feb 2009 15:03:57 -0800 (PST)
+	Thu, 12 Feb 2009 22:11:47 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1234427114.17790.139.camel@localhost.localdomain>
-References: <a5e2b64d0902042249k1c5ba5a3qce9d2f68f0523827@mail.gmail.com>
-	<1233826226.17790.9.camel@localhost.localdomain>
-	<a5e2b64d0902051521p146eef06lc2076b290f924b62@mail.gmail.com>
-	<1233905992.17790.19.camel@localhost.localdomain>
-	<a5e2b64d0902112248x6fa8b0f2w65ee131086e87bfd@mail.gmail.com>
-	<1234427114.17790.139.camel@localhost.localdomain>
-Date: Fri, 13 Feb 2009 08:03:57 +0900
-Message-ID: <a5e2b64d0902121503r78c4cf6eg6323ffe94f7fa8ca@mail.gmail.com>
-Subject: Re: Issues with UBIFS xattr support
-From: Tim <timasyk@gmail.com>
-To: dedekind@infradead.org, mtd <linux-mtd@lists.infradead.org>
+Date: Fri, 13 Feb 2009 11:41:47 +0530
+Message-ID: <dbd2e5640902122211k662ca81by4865bc5b6e90b13b@mail.gmail.com>
+Subject: off line nand program
+From: Nagaraja SK <nagaraja.sk@gmail.com>
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,15 +22,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2009/2/12 Artem Bityutskiy <dedekind@infradead.org>:
-> On Thu, 2009-02-12 at 15:48 +0900, Tim wrote:
->> > And the "security." namespace seems to be supported. Although
->> > it might be not fully supported. I mean, I tested reading, writing,
->> > changing xattrs - this works. But some security namespace-specific
->> > things might be missing.
-I have another question regarding xattr.
-If I create new ubifs filesystem image using mkfs.ubifs, does this
-utility read xattrs of original files and include them into the image?
-I'm especially interested in "security." namespace.
+Hi,
+We are using  K9K8G08U0A nand chip ,could some please tell me how do
+we go about programming nand chip off line for mass production.
 
-Tim
+Any help and info is greatly appreciated.
+
+Thanks in advance.
+
+Nagaraj.
