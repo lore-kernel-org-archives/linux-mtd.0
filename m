@@ -1,19 +1,18 @@
-Received: from nix1.fastnix.com ([70.84.250.228])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LXrbl-0006AH-Bz
-	for linux-mtd@lists.infradead.org; Fri, 13 Feb 2009 06:33:09 +0000
-Received: from [61.95.205.93] (helo=[192.168.10.172])
-	by nix1.fastnix.com with esmtpa (Exim 4.69)
-	(envelope-from <nagaraja@ncoretech.com>) id 1LXrbe-0001uz-VN
-	for linux-mtd@lists.infradead.org; Fri, 13 Feb 2009 12:02:59 +0530
-Message-ID: <4995170A.7000709@ncoretech.com>
-Date: Fri, 13 Feb 2009 12:15:30 +0530
-From: Nagaraja <nagaraja@ncoretech.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: off line nand program
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Subject: Re: [patch for 2.6.29? 4/4] mtd/maps: blackfin async flash maps:
+	fix up memory leak
+From: David Woodhouse <dwmw2@infradead.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+In-Reply-To: <20090211164247.8119de8d.akpm@linux-foundation.org>
+References: <200902112112.n1BLCKlR010256@imap1.linux-foundation.org>
+	<20090212.093531.235975795.nemoto@toshiba-tops.co.jp>
+	<20090211164247.8119de8d.akpm@linux-foundation.org>
+Content-Type: text/plain
+Date: Sat, 14 Feb 2009 08:57:39 +0000
+Message-Id: <1234601859.3564.95.camel@macbook.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Cc: Atsushi Nemoto <anemo@mba.ocn.ne.jp>, linux-mtd@lists.infradead.org,
+	cooloney@kernel.org, vapier.adi@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,12 +22,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-We are using  K9K8G08U0A nand chip ,could some please tell me how do we 
-go about programming nand chip off line for mass production.
+On Wed, 2009-02-11 at 16:42 -0800, Andrew Morton wrote:
+>  
+> > 
+> > Revised patch for physmap driver is:
+> >
+> http://lists.infradead.org/pipermail/linux-mtd/2009-February/024590.html
+> > 
+> > Mike, please update this blackfin patch too.
+> > 
+> 
+> I don't have a copy of that patch.  You're on you own, guys..
 
-Any help and info is greatly appreciated.
+Er, wasn't your [1/4] actually Nemoto-san's latest physmap patch?
 
-Thanks in advance.
+Mike, please can I have an updated version of the blackfin patch?
 
-Nagaraj.
+Nemoto-san, thank you for taking care of this.
+
+-- 
+dwmw2
