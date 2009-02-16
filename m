@@ -1,13 +1,13 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LaY20-0001qQ-LY
-	for linux-mtd@lists.infradead.org; Fri, 20 Feb 2009 16:15:19 +0000
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: [RESEND PATCH 0/2] mtd-ram: add of-support
-Date: Fri, 20 Feb 2009 17:15:10 +0100
-Message-Id: <1235146512-15170-1-git-send-email-w.sang@pengutronix.de>
-Cc: dwmw2@infradead.org, ben-linux@fluff.org
+From: "Anthony" <tonicb107@gmail.com>
+Subject: Non-Investment Account.
+Date: Mon, 16 Feb 2009 07:37:48 -0000
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20090216073756.38FE9108983@ns.ict-tower.com>
+To: undisclosed-recipients:;
+Reply-To: icbton5@aol.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,18 +17,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi,
 
-as we needed an of-mtd-ram driver to support SRAM on the
-phyCORE-MPC5200B-IO, I did the following:
+Pardon me for not having the pleasure of knowing your mindset before making you this offer and it is utterly confidential and genuine by virtue of its nature.I write to solicit your assistance in a funds transfer deal involving US$3.5M.
 
-Patch 1: refactor plat-ram.c to have generic probe and remove routines
+This fund has been stashed out of the excess profit made last year by my branch office the International Commercial Bank which I am the manager.
 
-Patch 2: use the new routines for an of-driver
 
-It works fine here with and without OF. Any chance this can be scheduled
-for 2.6.30?
+I have already submitted an approved end of the year report for the year 2007 to my head office here in Accra-Ghana and they will never know of this excess. I have since then, placed this amount on a Non-Investment Account without a
+beneficiary.
 
-Regards,
+Upon your response, I will configure your name on our database as holder of the Non-Investment Account. I will then guide you on how to apply to my head office for the Account Closure/ bank-to-bank remittance of the funds to your designated bank account.
 
-   Wolfram
+
+If you concur with this proposal, I intend for you to retain 30% of the funds while 70% shall be for me.
+
+Kindly forward your response to: icbton6@aim.com
+
+Mobile: +233-24-468-5072
+With Regards,
+
+Anthony Aka
