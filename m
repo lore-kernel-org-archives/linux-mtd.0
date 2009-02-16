@@ -1,13 +1,11 @@
-Message-ID: <4999928F.1010304@nokia.com>
-Date: Mon, 16 Feb 2009 18:21:35 +0200
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Date: Mon, 16 Feb 2009 21:29:31 +0100 (CET)
+From: Thomas Gleixner <tglx@linutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] JFFS2: fix mount crash caused by removed nodes
+Message-ID: <alpine.LFD.2.00.0902162125190.3523@localhost.localdomain>
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] mtdoops: allow MTD selection by name
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
-	Viktor Rosendahl <Viktor.Rosendahl@nokia.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,72 +15,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-MTD's have both an index number and a name.  Formerly,
-the MTD selected for mtdoops was done only by index
-number.  With this patch, a name can be used instead.
+Impact: fix long standing mount scan bug
 
-For example, the kernel command line:
+At scan time we observed following scenario:
 
-	console=ttyMTD5
+   node A inserted
+   node B inserted
+   node C inserted -> sets overlapped flag on node B
 
-selects MTD 5 for mtdoops.  But now this is also possible:
+   node A is removed -> overlapped flag on node B remains
+   
+   while (tn->overlapped)
+   	 tn = tn_prev(tn);
 
-	console=ttyMTD,log
+   ==> crash, when tn_prev(B) is referenced.
 
-which selects the MTD named "log" for mtdoops.
+When the ultimate node is removed at scan time and the overlapped flag
+is set on the penultimate node, then nothing updates the overlapped
+flag of that node. The overlapped iterators blindly expect that the
+ultimate node does not have the overlapped flag set, which causes the
+scan code to crash.
 
-This has the advantage that partitions can be added or
-removed that would affect the MTD index number but not the
-name, without having to then change the kernel command line.
+It would be a huge overhead to go through the node chain on node
+removal and fix up the overlapped flags, so detecting such a case on
+the fly in the overlapped iterators is a simpler and reliable
+solution.
 
-Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@kernel.org
 ---
- drivers/mtd/mtdoops.c |   11 ++++++++++-
- 1 files changed, 10 insertions(+), 1 deletions(-)
+ fs/jffs2/readinode.c |   42 +++++++++++++++++++++++++++++++++---------
+ 1 file changed, 33 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-index 1a6b3be..fdf504f 100644
---- a/drivers/mtd/mtdoops.c
-+++ b/drivers/mtd/mtdoops.c
-@@ -44,6 +44,7 @@ static struct mtdoops_context {
- 	int oops_pages;
- 	int nextpage;
- 	int nextcount;
-+	char *name;
- 
- 	void *oops_buf;
- 
-@@ -273,6 +274,9 @@ static void mtdoops_notify_add(struct mtd_info *mtd)
+Index: linux-2.6/fs/jffs2/readinode.c
+===================================================================
+--- linux-2.6.orig/fs/jffs2/readinode.c
++++ linux-2.6/fs/jffs2/readinode.c
+@@ -220,7 +220,7 @@ static int jffs2_add_tn_to_tree(struct j
+ 				struct jffs2_tmp_dnode_info *tn)
  {
- 	struct mtdoops_context *cxt = &oops_cxt;
+ 	uint32_t fn_end = tn->fn->ofs + tn->fn->size;
+-	struct jffs2_tmp_dnode_info *this;
++	struct jffs2_tmp_dnode_info *this, *ptn;
  
-+	if (cxt->name && !strcmp(mtd->name, cxt->name))
-+		cxt->mtd_index = mtd->index;
+ 	dbg_readinode("insert fragment %#04x-%#04x, ver %u at %08x\n", tn->fn->ofs, fn_end, tn->version, ref_offset(tn->fn->raw));
+ 
+@@ -251,11 +251,18 @@ static int jffs2_add_tn_to_tree(struct j
+ 	if (this) {
+ 		/* If the node is coincident with another at a lower address,
+ 		   back up until the other node is found. It may be relevant */
+-		while (this->overlapped)
+-			this = tn_prev(this);
+-
+-		/* First node should never be marked overlapped */
+-		BUG_ON(!this);
++		while (this->overlapped) {
++			ptn = tn_prev(this);
++			if (!ptn) {
++				/*
++				 * We killed a node which set the overlapped
++				 * flags during the scan. Fix it up.
++				 */
++				this->overlapped = 0;
++				break;
++			}
++			this = ptn;
++		}
+ 		dbg_readinode("'this' found %#04x-%#04x (%s)\n", this->fn->ofs, this->fn->ofs + this->fn->size, this->fn ? "data" : "hole");
+ 	}
+ 
+@@ -360,7 +367,17 @@ static int jffs2_add_tn_to_tree(struct j
+ 			}
+ 			if (!this->overlapped)
+ 				break;
+-			this = tn_prev(this);
 +
- 	if ((mtd->index != cxt->mtd_index) || cxt->mtd_index < 0)
- 		return;
++			ptn = tn_prev(this);
++			if (!ptn) {
++				/*
++				 * We killed a node which set the overlapped
++				 * flags during the scan. Fix it up.
++				 */
++				this->overlapped = 0;
++				break;
++			}
++			this = ptn;
+ 		}
+ 	}
  
-@@ -383,8 +387,12 @@ static int __init mtdoops_console_setup(struct console *co, char *options)
- {
- 	struct mtdoops_context *cxt = co->data;
+@@ -456,8 +473,15 @@ static int jffs2_build_inode_fragtree(st
+ 		eat_last(&rii->tn_root, &last->rb);
+ 		ver_insert(&ver_root, last);
  
--	if (cxt->mtd_index != -1)
-+	if (cxt->mtd_index != -1 || cxt->name)
- 		return -EBUSY;
-+	if (options) {
-+		cxt->name = kstrdup(options, GFP_KERNEL);
-+		return 0;
-+	}
- 	if (co->index == -1)
- 		return -EINVAL;
+-		if (unlikely(last->overlapped))
+-			continue;
++		if (unlikely(last->overlapped)) {
++			if (pen)
++				continue;
++			/*
++			 * We killed a node which set the overlapped
++			 * flags during the scan. Fix it up.
++			 */
++			last->overlapped = 0;
++		}
  
-@@ -432,6 +440,7 @@ static void __exit mtdoops_console_exit(void)
- 
- 	unregister_mtd_user(&mtdoops_notifier);
- 	unregister_console(&mtdoops_console);
-+	kfree(cxt->name);
- 	vfree(cxt->oops_buf);
- }
- 
--- 
-1.5.6.3
+ 		/* Now we have a bunch of nodes in reverse version
+ 		   order, in the tree at ver_root. Most of the time,
