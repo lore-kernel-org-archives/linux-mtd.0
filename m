@@ -1,18 +1,13 @@
-Subject: Re: [patch for 2.6.29? 4/4] mtd/maps: blackfin async flash maps:
-	fix up memory leak
-From: David Woodhouse <dwmw2@infradead.org>
-To: Andrew Morton <akpm@linux-foundation.org>
-In-Reply-To: <20090211164247.8119de8d.akpm@linux-foundation.org>
-References: <200902112112.n1BLCKlR010256@imap1.linux-foundation.org>
-	<20090212.093531.235975795.nemoto@toshiba-tops.co.jp>
-	<20090211164247.8119de8d.akpm@linux-foundation.org>
-Content-Type: text/plain
-Date: Sat, 14 Feb 2009 08:57:39 +0000
-Message-Id: <1234601859.3564.95.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Atsushi Nemoto <anemo@mba.ocn.ne.jp>, linux-mtd@lists.infradead.org,
-	cooloney@kernel.org, vapier.adi@gmail.com
+Date: Mon, 16 Feb 2009 04:07:30 +0100
+From: "meredithgibbs" <meredithgibbs02@centrum.sk>
+MIME-Version: 1.0
+Message-ID: <200902160407.9691@centrum.cz>
+References: <200902160351.6173@centrum.cz>
+In-Reply-To: <200902160351.6173@centrum.cz>
+Subject: Re: from,Meredith Gibbs,
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To: unlisted-recipients:; (no To-header on input)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,23 +17,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-02-11 at 16:42 -0800, Andrew Morton wrote:
->  
-> > 
-> > Revised patch for physmap driver is:
-> >
-> http://lists.infradead.org/pipermail/linux-mtd/2009-February/024590.html
-> > 
-> > Mike, please update this blackfin patch too.
-> > 
-> 
-> I don't have a copy of that patch.  You're on you own, guys..
+from,Meredith Gibbs,
 
-Er, wasn't your [1/4] actually Nemoto-san's latest physmap patch?
+Dearest one ,
+ 
+It's my pleasure to acquaint you with this proposal for financial and business assistance .I know my message will come to you as a surprise. I am named Meredith Gibbs and i the Younger daugther of late Dr.Gibbs Martin ex Director of the F.G.P.C.C.
+ 
+I was totally convinced to write you in reference to the transfer of US$10.750m to your account for onward investment ( Hotel industries and estate building  management) in your country. Considering the political tension which reigns here, I urgently want the dispatchment of this money.
+ 
+Please if you are interested, reply urgently this mail for more information.
+Remain bless while expecting your prompt co-operation.
+ 
+Regard, 
 
-Mike, please can I have an updated version of the blackfin patch?
-
-Nemoto-san, thank you for taking care of this.
-
--- 
-dwmw2
+Meredith Gibbs.
+ 
+ 
