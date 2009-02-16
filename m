@@ -1,18 +1,13 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LZ5h1-0002m9-W5
-	for linux-mtd@lists.infradead.org; Mon, 16 Feb 2009 15:47:38 +0000
-Message-ID: <49998C2D.7000505@nokia.com>
-Date: Mon, 16 Feb 2009 17:54:21 +0200
+Message-ID: <4999928F.1010304@nokia.com>
+Date: Mon, 16 Feb 2009 18:21:35 +0200
 From: Adrian Hunter <ext-adrian.hunter@nokia.com>
 MIME-Version: 1.0
-To: "Adam S. Turowski" <a.turowski@wb.com.pl>
-Subject: Re: [UBIFS] Filesystem capacity
-References: <49997BBF.7080906@wb.com.pl>
-In-Reply-To: <49997BBF.7080906@wb.com.pl>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtdoops: allow MTD selection by name
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
+	Viktor Rosendahl <Viktor.Rosendahl@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,53 +17,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Adam S. Turowski wrote:
-> Hi,
-> Can anyone explain differences in filesystem capacity between jffs2 and
-> ubifs?
-> Kernel 2.6.28
-> mtd3 29MB nor flash
-> mtd4 31MB nand flash
-> File created by dd-ing from /dev/urandom:
-> jffs2:
-> nor: 28361 kB
-> nand: 31200 kB
-> 
-> ubifs:
-> one volume created on mtd3
-> UBIFS: mounted UBI device 0, volume 0, name "root"
-> UBIFS: file system size:   28676736 bytes (28004 KiB, 27 MiB, 219 LEBs)
-> UBIFS: journal size:       1440384 bytes (1406 KiB, 1 MiB, 11 LEBs)
-> UBIFS: media format:       4 (latest is 4)
-> UBIFS: default compressor: LZO
-> UBIFS: reserved for root:  1417227 bytes (1384 KiB)
-> 
-> one volume created on mtd4
-> UBIFS: mounted UBI device 1, volume 0, name "data"
-> UBIFS: file system size:   31870976 bytes (31124 KiB, 30 MiB, 2008 LEBs)
-> UBIFS: journal size:       1603072 bytes (1565 KiB, 1 MiB, 101 LEBs)
-> UBIFS: media format:       4 (latest is 4)
-> UBIFS: default compressor: LZO
-> UBIFS: reserved for root:  1575089 bytes (1538 KiB)
-> 
-> nor: 26960 kB (I can live with that)
-> nand: 23552 kB (With that I cannot)
-> 
-> Any suggestions?
+MTD's have both an index number and a name.  Formerly,
+the MTD selected for mtdoops was done only by index
+number.  With this patch, a name can be used instead.
 
-It is because the LEB size is relatively small, and UBIFS does not
-fit data into the ends of eraseblocks the way JFFS2 does.  Your options
-are:
-	1. use JFFS2
-	2. amend your NAND driver to pretend that eraseblocks are bigger
-than they really are, by treating 2 (or 4 or 8 etc) as one eraseblock
-	3. create another MTD driver that sits on top of the NAND driver
-and does the same as 2
+For example, the kernel command line:
 
-The disadvantage of 2 or 3 is that it also multiples the effective number
-of bad blocks.
+	console=ttyMTD5
 
-Note that the problem is exacerbated by writing un-compressible (e.g. random)
-data because you end up fitting only 3 x 4.1K data nodes per 16K eraseblock.
+selects MTD 5 for mtdoops.  But now this is also possible:
 
-If you are interested in 3, I could help.
+	console=ttyMTD,log
+
+which selects the MTD named "log" for mtdoops.
+
+This has the advantage that partitions can be added or
+removed that would affect the MTD index number but not the
+name, without having to then change the kernel command line.
+
+Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+---
+ drivers/mtd/mtdoops.c |   11 ++++++++++-
+ 1 files changed, 10 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
+index 1a6b3be..fdf504f 100644
+--- a/drivers/mtd/mtdoops.c
++++ b/drivers/mtd/mtdoops.c
+@@ -44,6 +44,7 @@ static struct mtdoops_context {
+ 	int oops_pages;
+ 	int nextpage;
+ 	int nextcount;
++	char *name;
+ 
+ 	void *oops_buf;
+ 
+@@ -273,6 +274,9 @@ static void mtdoops_notify_add(struct mtd_info *mtd)
+ {
+ 	struct mtdoops_context *cxt = &oops_cxt;
+ 
++	if (cxt->name && !strcmp(mtd->name, cxt->name))
++		cxt->mtd_index = mtd->index;
++
+ 	if ((mtd->index != cxt->mtd_index) || cxt->mtd_index < 0)
+ 		return;
+ 
+@@ -383,8 +387,12 @@ static int __init mtdoops_console_setup(struct console *co, char *options)
+ {
+ 	struct mtdoops_context *cxt = co->data;
+ 
+-	if (cxt->mtd_index != -1)
++	if (cxt->mtd_index != -1 || cxt->name)
+ 		return -EBUSY;
++	if (options) {
++		cxt->name = kstrdup(options, GFP_KERNEL);
++		return 0;
++	}
+ 	if (co->index == -1)
+ 		return -EINVAL;
+ 
+@@ -432,6 +440,7 @@ static void __exit mtdoops_console_exit(void)
+ 
+ 	unregister_mtd_user(&mtdoops_notifier);
+ 	unregister_console(&mtdoops_console);
++	kfree(cxt->name);
+ 	vfree(cxt->oops_buf);
+ }
+ 
+-- 
+1.5.6.3
