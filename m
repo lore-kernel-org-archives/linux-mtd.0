@@ -1,17 +1,20 @@
-Received: from ey-out-1920.google.com ([74.125.78.144])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LZQY3-0006gv-HR
-	for linux-mtd@lists.infradead.org; Tue, 17 Feb 2009 14:03:46 +0000
-Received: by ey-out-1920.google.com with SMTP id 4so228075eyg.24
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 17 Feb 2009 06:03:42 -0800 (PST)
-Sender: Peter Korsgaard <jacmet@gmail.com>
-From: Peter Korsgaard <jacmet@sunsite.dk>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd-utils: handle non-power-of-2 erase size (E.G. for
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LZRnv-0003r4-4j
+	for linux-mtd@lists.infradead.org; Tue, 17 Feb 2009 15:24:14 +0000
+Subject: Re: [PATCH] mtd-utils: handle non-power-of-2 erase size (E.G. for
 	dataflash)
-Date: Tue, 17 Feb 2009 15:03:40 +0100
-Message-Id: <1234879420-29736-1-git-send-email-jacmet@sunsite.dk>
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Peter Korsgaard <jacmet@sunsite.dk>
+In-Reply-To: <1234879420-29736-1-git-send-email-jacmet@sunsite.dk>
+References: <1234879420-29736-1-git-send-email-jacmet@sunsite.dk>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 17 Feb 2009 17:18:38 +0200
+Message-Id: <1234883918.17790.266.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,27 +24,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, 2009-02-17 at 15:03 +0100, Peter Korsgaard wrote:
+> Signed-off-by: Peter Korsgaard <jacmet@sunsite.dk>
 
-Signed-off-by: Peter Korsgaard <jacmet@sunsite.dk>
----
- flashcp.c |    5 +++--
- 1 files changed, 3 insertions(+), 2 deletions(-)
+Pushed, thanks.
 
-diff --git a/flashcp.c b/flashcp.c
-index 7f7764a..8775022 100644
---- a/flashcp.c
-+++ b/flashcp.c
-@@ -255,8 +255,9 @@ int main (int argc,char *argv[])
- #warning "Check for smaller erase regions"
- 
- 	erase.start = 0;
--	erase.length = filestat.st_size & ~(mtd.erasesize - 1);
--	if (filestat.st_size % mtd.erasesize) erase.length += mtd.erasesize;
-+	erase.length = (filestat.st_size + mtd.erasesize - 1) / mtd.erasesize;
-+	erase.length *= mtd.erasesize;
-+
- 	if (flags & FLAG_VERBOSE)
- 	{
- 		/* if the user wants verbose output, erase 1 block at a time and show him/her what's going on */
 -- 
-1.5.6.5
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
