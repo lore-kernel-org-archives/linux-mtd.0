@@ -1,22 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LZJBX-0005hc-4z
-	for linux-mtd@lists.infradead.org; Tue, 17 Feb 2009 06:12:02 +0000
+Received: from v006910.home.net.pl ([212.85.123.52])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LZKYS-0007HF-Hm
+	for linux-mtd@lists.infradead.org; Tue, 17 Feb 2009 07:39:47 +0000
+Message-ID: <499A69BA.6080005@wb.com.pl>
+Date: Tue, 17 Feb 2009 08:39:38 +0100
+From: "Adam S. Turowski" <a.turowski@wb.com.pl>
+MIME-Version: 1.0
+To: dedekind@infradead.org
 Subject: Re: [UBIFS] Filesystem capacity
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Jamie Lokier <jamie@shareable.org>
-In-Reply-To: <20090217003921.GB20713@shareable.org>
 References: <49997BBF.7080906@wb.com.pl> <49998C2D.7000505@nokia.com>
-	<20090217003921.GB20713@shareable.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 17 Feb 2009 08:11:51 +0200
-Message-Id: <1234851111.17790.218.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "Adam S. Turowski" <a.turowski@wb.com.pl>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	<1234850859.17790.213.camel@localhost.localdomain>
+In-Reply-To: <1234850859.17790.213.camel@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
 	Adrian Hunter <ext-adrian.hunter@nokia.com>
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-02-17 at 00:39 +0000, Jamie Lokier wrote:
-> > The disadvantage of 2 or 3 is that it also multiples the effective number
-> > of bad blocks.
+Artem Bityutskiy pisze:
+> Well, UBIFS does try to squeeze small nodes to the ends of eraseblocks.
+> And I am not convinced it is worse than JFFS2 in this respect, unless
+> someone shows this with a test. Where did you get those numbers?
+> Did you try to measure how much you can really fit? Did you read this:
+> http://www.linux-mtd.infradead.org/faq/ubifs.html#L_df_report
+> ?
 > 
-> Is this a major flaw of UBIFS?  I was thinking of using UBIFS for a
-> project but this makes me wonder if it's a good idea.
 
-I do not see any major flaw.
+As I wrote in my first post, I used dd from /dev/urandom to create files 
+and those were sizes of those files.
+df also reports the same:
+Filesystem                Size      Used Available Use% Mounted on
+ubi0:root                24.9M     24.9M         0 100% /part_root
+ubi1:data                22.4M     22.4M         0 100% /part_data
 
-> What does "UBIFS does not fit data into the ends of eraseblocks the
-> way JFFS2 does" mean?
-
-JFFS2 can split nodes on 2 parts and put 1 part to the end of one
-eraseblock, and the second part to the beginning of another eraseblocks.
-UBIFS does not split data blocks. This is the difference.
-
-However, UBIFS tries to write small data nodes to the ends of
-eraseblocks to minimize the wastage. And I am not sure JFFS2 is doing
-better job, but I did not deliberately compared them.
-
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+--
+Regards,
+Adam Turowski
