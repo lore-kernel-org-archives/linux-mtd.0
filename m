@@ -1,20 +1,23 @@
-Received: from cursor.subgra.de ([78.46.252.50])
+Received: from buzzloop.caiaq.de ([212.112.241.133])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LZh89-0006BQ-Kq
-	for linux-mtd@lists.infradead.org; Wed, 18 Feb 2009 07:46:08 +0000
-Date: Wed, 18 Feb 2009 08:47:39 +0100
-From: Benjamin Krill <ben@codiert.org>
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PATCH v2] Check name property to determine partition nodes.
-Message-ID: <20090218074738.GC12204@codiert.org>
-References: <20090123161805.GA2598@codiert.org>
-	<1233720542.16867.187.camel@pasglop>
+	id 1LZt8U-00019G-D1
+	for linux-mtd@lists.infradead.org; Wed, 18 Feb 2009 20:35:17 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by buzzloop.caiaq.de (Postfix) with ESMTP id 0FFCE7F4029
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 18 Feb 2009 21:35:06 +0100 (CET)
+Received: from buzzloop.caiaq.de ([127.0.0.1])
+	by localhost (buzzloop.caiaq.de [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id eyoDXThIml27 for <linux-mtd@lists.infradead.org>;
+	Wed, 18 Feb 2009 21:35:03 +0100 (CET)
+Date: Wed, 18 Feb 2009 21:35:03 +0100
+From: Daniel Mack <daniel@caiaq.de>
+To: linux-mtd@lists.infradead.org
+Subject: pxa3xx: NAND chip initial reset
+Message-ID: <20090218203503.GA20149@buzzloop.caiaq.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1233720542.16867.187.camel@pasglop>
-Cc: linuxppc-dev@ozlabs.org, vwool@ru.mvista.com, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, dwg@au1.ibm.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,19 +27,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Benjamin Herrenschmidt | 2009-02-04 15:09:02 [+1100]:
->On Fri, 2009-01-23 at 17:18 +0100, Benjamin Krill wrote:
->> SLOF has a further node which could not be evaluate
->> by the current routine. The current routine returns
->> because the node hasn't the required reg property. As
->> fix this patch adds a check to determine the partition
->> child nodes. If the node is not an partition the number
->> of total partitions will be decreased and loop continue
->> with the next nodes.
->
->Somebody on the MTD list is taking that ? David ? Or should I merge it
->via powerpc ?
+Hi,
 
-Could somebody merge it for the next release?
+On my PXA300 based system, I'm facing a problem with a recent Micron
+NAND chip which needs to get a reset command to make it wake up
+initially. The pxa3xx_nand.c does not seem to do this.
 
- Ben
+I've seen a post[1] from October 2008 which addresses exactly this
+issue, but the mentioned commit (in the follow-up) does not fix it for
+me. I did some print tracing and the generic code path is not entered
+because the platform driver's probe routine returns with an error.
+Before I dig into all the mtd code, I'd like to ask whether anyone can
+come up with a simple idea of how to do this.
+
+Thanks,
+Daniel
+
+[1] http://lists.infradead.org/pipermail/linux-mtd/2008-October/023419.html
