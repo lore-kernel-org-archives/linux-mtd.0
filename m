@@ -1,23 +1,22 @@
-Received: from buzzloop.caiaq.de ([212.112.241.133])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LZt8U-00019G-D1
-	for linux-mtd@lists.infradead.org; Wed, 18 Feb 2009 20:35:17 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by buzzloop.caiaq.de (Postfix) with ESMTP id 0FFCE7F4029
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 18 Feb 2009 21:35:06 +0100 (CET)
-Received: from buzzloop.caiaq.de ([127.0.0.1])
-	by localhost (buzzloop.caiaq.de [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id eyoDXThIml27 for <linux-mtd@lists.infradead.org>;
-	Wed, 18 Feb 2009 21:35:03 +0100 (CET)
-Date: Wed, 18 Feb 2009 21:35:03 +0100
-From: Daniel Mack <daniel@caiaq.de>
-To: linux-mtd@lists.infradead.org
-Subject: pxa3xx: NAND chip initial reset
-Message-ID: <20090218203503.GA20149@buzzloop.caiaq.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Received: from [202.230.225.126] (helo=topsms.toshiba-tops.co.jp)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LZwuo-0007Z0-KU
+	for linux-mtd@lists.infradead.org; Thu, 19 Feb 2009 00:37:25 +0000
+Date: Thu, 19 Feb 2009 09:37:15 +0900 (JST)
+Message-Id: <20090219.093715.229615835.nemoto@toshiba-tops.co.jp>
+To: vapier.adi@gmail.com
+Subject: Re: [patch for 2.6.29? 4/4] mtd/maps: blackfin async flash maps:
+	fix up memory leak
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+In-Reply-To: <8bd0f97a0902171202i449ede68k3dd726039b4c2f4a@mail.gmail.com>
+References: <20090211164247.8119de8d.akpm@linux-foundation.org>
+	<1234601859.3564.95.camel@macbook.infradead.org>
+	<8bd0f97a0902171202i449ede68k3dd726039b4c2f4a@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
+	dwmw2@infradead.org, cooloney@kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +26,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Tue, 17 Feb 2009 15:02:11 -0500, Mike Frysinger <vapier.adi@gmail.com> wrote:
+> i'm not entirely sure what the change is by reading that patch.  what
+> i've got is attached.
 
-On my PXA300 based system, I'm facing a problem with a recent Micron
-NAND chip which needs to get a reset command to make it wake up
-initially. The pxa3xx_nand.c does not seem to do this.
-
-I've seen a post[1] from October 2008 which addresses exactly this
-issue, but the mentioned commit (in the follow-up) does not fix it for
-me. I did some print tracing and the generic code path is not entered
-because the platform driver's probe routine returns with an error.
-Before I dig into all the mtd code, I'd like to ask whether anyone can
-come up with a simple idea of how to do this.
-
-Thanks,
-Daniel
-
-[1] http://lists.infradead.org/pipermail/linux-mtd/2008-October/023419.html
+Looks fine for me.  Thanks.
+---
+Atsushi Nemoto
