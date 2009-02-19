@@ -1,19 +1,17 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LaBTq-0003xb-PJ
-	for linux-mtd@lists.infradead.org; Thu, 19 Feb 2009 16:10:33 +0000
-Subject: Re: UBI attach and mounting problem after rebooting
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Subramani Venkatesh <subbu31mani@gmail.com>
-In-Reply-To: <25dd9bf10902190658p4e0adea3s8f8bba6f5cfd01d6@mail.gmail.com>
-References: <25dd9bf10902190658p4e0adea3s8f8bba6f5cfd01d6@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 19 Feb 2009 18:10:18 +0200
-Message-Id: <1235059818.17790.373.camel@localhost.localdomain>
+Received: from smtpbg93.qq.com ([119.147.10.252])
+	by casper.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1La87g-0006F4-Hx
+	for linux-mtd@lists.infradead.org; Thu, 19 Feb 2009 12:35:28 +0000
+From: "=?ISO-8859-1?B?ZXE2MTM=?=" <eq613@qq.com>
+To: "=?ISO-8859-1?B?bGludXgtbXRk?=" <linux-mtd@lists.infradead.org>
+Sender: eq613@qq.com
+Subject: how to get mtd partitions info in chip->ecc.read_page 
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Content-Type: text/plain;
+	charset="ISO-8859-1"
+Content-Transfer-Encoding: base64
+Date: Thu, 19 Feb 2009 20:27:15 +0800
+Message-ID: <tencent_775DAF1410FC6C15664A8A35@qq.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,37 +21,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Thu, 2009-02-19 at 09:58 -0500, Subramani Venkatesh wrote:
-> UBI error: ubi_io_read: error -74 while reading 64 bytes from PEB
-> 798:0, read 64 bytes
-> UBI error: ubi_io_read: error -74 while reading 64 bytes from PEB
-> 799:0, read 64 bytes
-> UBI error: ubi_read_volume_table: the layout volume was not found
-> UBI error: ubi_init: cannot attach mtd4
-> UBI error: ubi_init: UBI error: cannot initialize UBI, error -22
-
--71 is -EBADMSG which means that ECC error occurred. IOW, your NAND
-driver reports that it cannot read 64 bytes from eraseblock 798,
-offset 0, and UBI has nothing else to do but stopping.
-
-You should look closer at what your driver do. I think it might be
-not handling sub-pages correctly. You may experiment and force UBI
-not to use sub-pages, and if it helps, you have your problem a little
-bit narrowed down.
-
-I've just created a FAQ entry which tells how to force UBI
-not to use sub-pages:
-http://www.linux-mtd.infradead.org/faq/ubi.html#L_force_no_subpage
-
-Also, you may try to attach an empty flash and play with it. If it
-works fine, this may be something to do with how you flash your
-initial images. Indeed, the program you use for flashing may screw
-up ECCs somehow.
-
-HTH.
-
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+aW4gdGhlIHJlYWRfcGFnZSBmdW5jdGlvbiwgSSB3YW50IHRvIGRvIHNvbWUgc3BlY2lhbCBm
+b3IgZGlmZmVyZW50IG5hbmQgcGFydGl0aW9uLCBidXQgdGhlIA0KY2hpcC0+ZWNjLnJlYWRf
+cGFnZShtdGQsIGNoaXAsIGJ1ZnBvaSk7IC8vbXRkPXNsYXZlLT5tYXN0ZXIsIGJ1dCBpIHdh
+bnQgZ2V0IHRoZSBtdGRfaW5mbyBvZiBzbGF2ZSANCg0KaXMgdGhlcmUgc29tZSBtZXRob3Jk
+ID8NCg0Kc3RydWN0IG10ZF9wYXJ0IHsNCiBzdHJ1Y3QgbXRkX2luZm8gbXRkOyAgLy93YW50
+IHRoaXMgDQogc3RydWN0IG10ZF9pbmZvICptYXN0ZXI7ICAgIC8vIGJ1dCBnZXQgdGhpcyAN
+CiB1X2ludDMyX3Qgb2Zmc2V0Ow0KIGludCBpbmRleDsNCiBzdHJ1Y3QgbGlzdF9oZWFkIGxp
+c3Q7DQogaW50IHJlZ2lzdGVyZWQ7DQp9Ow0KDQoNCnRoZSBjb250YWluZXJfb2YgZG9lcyBu
+b3Qgd29yazoNCg0Kc3RydWN0IG10ZF9wYXJ0ICogIG10ZG1hc3Rlcl90b19tdGRfcGFydCgg
+c3RydWN0IG10ZF9pbmZvICoqbXRkKXsNCiByZXR1cm4gY29udGFpbmVyX29mKG10ZCxzdHJ1
+Y3QgbXRkX3BhcnQsbWFzdGVyKTsNCn0gDQoNCiBzdHJ1Y3QgbXRkX3BhcnQgKiBtdGRfcGFy
+dD1tdGRtYXN0ZXJfdG9fbXRkX3BhcnQoJm10ZCk7DQogc3RydWN0IG10ZF9pbmZvICAgKiAg
+c2xhdmVwYXJ0PShzdHJ1Y3QgbXRkX2luZm8qKShtdGRfcGFydCk7
