@@ -1,15 +1,19 @@
-Received: from mx1.kathrein.de ([217.6.102.140])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1La24q-0003cR-HY
-	for linux-mtd@lists.infradead.org; Thu, 19 Feb 2009 06:08:07 +0000
-To: linux-mtd@lists.infradead.org
-Subject: Bad Block Table support when using UBI
-Message-ID: <OF2FCA2B38.DF3448AE-ONC1257562.00219024-C1257562.0021AECD@kathrein.de>
-Date: Thu, 19 Feb 2009 07:07:53 +0100
-From: "Torsten Fleischer" <torsten.fleischer@kathrein.de>
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1La2Bj-0004jq-Ed
+	for linux-mtd@lists.infradead.org; Thu, 19 Feb 2009 06:15:14 +0000
+Subject: Re: Bad Block Table support when using UBI
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Torsten Fleischer <torsten.fleischer@kathrein.de>
+In-Reply-To: <OF2FCA2B38.DF3448AE-ONC1257562.00219024-C1257562.0021AECD@kathrein.de>
+References: <OF2FCA2B38.DF3448AE-ONC1257562.00219024-C1257562.0021AECD@kathrein.de>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 19 Feb 2009 08:14:50 +0200
+Message-Id: <1235024090.17790.299.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,34 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+On Thu, 2009-02-19 at 07:07 +0100, Torsten Fleischer wrote:
+> This e-mail is confidential and may contain privileged information. If
+> you have received this communication in error, please notify us
+> immediately by responding to this email and then delete it from your
+> system. The sender therefore does not accept liability for any errors
+> or omissions in the contents of this message which arise as a result
+> of e-mail transmission. We believe but do not warrant that this e-mail
+> and any attachments are virus free. You must therefore take full
+> responsibility for virus checking. 
 
-I've tested UBI and UBIFS on the eval board MPC8313ERDB. This board=20
-contains a 32 MiB NAND Flash (SLC small block).
-The fsl=5Felbc=5Fnand driver that is used for the MPC8313's NAND flash=20
-interface reserves 4 erase blocks at the end of the device
-for the bad block table.
+According to your disclaimer I'm notifying you that some intruder from
+your company sent this e-mail to a public mailing list, please fire him.
+I'm deleting this e-mail from my mailbox as your disclaimer asks me to
+do, but unfortunately it is archived and you would have to pay piles of
+money to remove it from the mailing list archives.
 
-Do I need the bad block table support when using UBI?
+Seriously, vs. bad block table: UBI does not have it's own block table,
+and it asks this information from the driver. So probably it is ok for
+the driver to store the BBT, although your flash is not big, so simple
+scanning and building BBT in RAM would save you some flash space.
 
-Best regards
-Torsten Fleischer
-
-
-
---=20
-Registergericht / Register court: Amtsgericht Traunstein, HRA 460 / local c=
-ourt Traunstein, certificate of registration no. 460=20
-Gesch=E4ftsf=FChrender pers=F6nlich haftender Gesellschafter / Personally l=
-iable managing partner: Prof. Dr. Dr. h.c. Anton Kathrein, Dipl.-Betriebswi=
-rt (MBA-equivalent)=20
-Erf=FCllungsort und Gerichtsstand / Place of performance and place of juris=
-diction: Rosenheim=20
-
-This e-mail is confidential and may contain privileged information. If you =
-have received this communication in error, please notify us immediately by =
-responding to this email and then delete it from your system. The sender th=
-erefore does not accept liability for any errors or omissions in the conten=
-ts of this message which arise as a result of e-mail transmission. We belie=
-ve but do not warrant that this e-mail and any attachments are virus free. =
-You must therefore take full responsibility for virus checking. =
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
