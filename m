@@ -1,17 +1,22 @@
-Received: from smtpbg93.qq.com ([119.147.10.252])
-	by casper.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1La87g-0006F4-Hx
-	for linux-mtd@lists.infradead.org; Thu, 19 Feb 2009 12:35:28 +0000
-From: "=?ISO-8859-1?B?ZXE2MTM=?=" <eq613@qq.com>
-To: "=?ISO-8859-1?B?bGludXgtbXRk?=" <linux-mtd@lists.infradead.org>
-Sender: eq613@qq.com
-Subject: how to get mtd partitions info in chip->ecc.read_page 
-Mime-Version: 1.0
+Received: from 68.143.134.205.nw.nuvox.net ([68.143.134.205]
+	helo=smtpgateway.raleigh.signalscape.com)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LaG1k-0000lW-22
+	for linux-mtd@lists.infradead.org; Thu, 19 Feb 2009 21:01:51 +0000
+Received: from smtpgateway.raleigh.signalscape.com (127.0.0.1) by
+	smtpgateway.raleigh.signalscape.com (MlfMTA v3.2r9) id
+	hjn2ui0171s0 for <linux-mtd@lists.infradead.org>;
+	Thu, 19 Feb 2009 15:34:31 -0500 (envelope-from <bobr@signalscape.com>)
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="ISO-8859-1"
-Content-Transfer-Encoding: base64
-Date: Thu, 19 Feb 2009 20:27:15 +0800
-Message-ID: <tencent_775DAF1410FC6C15664A8A35@qq.com>
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: Updated JFFS2 info
+Date: Thu, 19 Feb 2009 15:47:01 -0500
+Message-ID: <CDF639F6A8F1EA4DB0F86DEFD506216C018E41F8@penn.raleigh.signalscape.com>
+From: "Richards, Bob" <bobr@signalscape.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,16 +26,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-aW4gdGhlIHJlYWRfcGFnZSBmdW5jdGlvbiwgSSB3YW50IHRvIGRvIHNvbWUgc3BlY2lhbCBm
-b3IgZGlmZmVyZW50IG5hbmQgcGFydGl0aW9uLCBidXQgdGhlIA0KY2hpcC0+ZWNjLnJlYWRf
-cGFnZShtdGQsIGNoaXAsIGJ1ZnBvaSk7IC8vbXRkPXNsYXZlLT5tYXN0ZXIsIGJ1dCBpIHdh
-bnQgZ2V0IHRoZSBtdGRfaW5mbyBvZiBzbGF2ZSANCg0KaXMgdGhlcmUgc29tZSBtZXRob3Jk
-ID8NCg0Kc3RydWN0IG10ZF9wYXJ0IHsNCiBzdHJ1Y3QgbXRkX2luZm8gbXRkOyAgLy93YW50
-IHRoaXMgDQogc3RydWN0IG10ZF9pbmZvICptYXN0ZXI7ICAgIC8vIGJ1dCBnZXQgdGhpcyAN
-CiB1X2ludDMyX3Qgb2Zmc2V0Ow0KIGludCBpbmRleDsNCiBzdHJ1Y3QgbGlzdF9oZWFkIGxp
-c3Q7DQogaW50IHJlZ2lzdGVyZWQ7DQp9Ow0KDQoNCnRoZSBjb250YWluZXJfb2YgZG9lcyBu
-b3Qgd29yazoNCg0Kc3RydWN0IG10ZF9wYXJ0ICogIG10ZG1hc3Rlcl90b19tdGRfcGFydCgg
-c3RydWN0IG10ZF9pbmZvICoqbXRkKXsNCiByZXR1cm4gY29udGFpbmVyX29mKG10ZCxzdHJ1
-Y3QgbXRkX3BhcnQsbWFzdGVyKTsNCn0gDQoNCiBzdHJ1Y3QgbXRkX3BhcnQgKiBtdGRfcGFy
-dD1tdGRtYXN0ZXJfdG9fbXRkX3BhcnQoJm10ZCk7DQogc3RydWN0IG10ZF9pbmZvICAgKiAg
-c2xhdmVwYXJ0PShzdHJ1Y3QgbXRkX2luZm8qKShtdGRfcGFydCk7
+
+Does any current white paper documentation for JFFS2 exist?  I mean
+something other than the often referenced document "JFFS: The Journaling
+Flash File System" that is pre-2004.  While I can dig around in the
+code, but my customer does not want us to spend that kind of time.
+
+Thanks
