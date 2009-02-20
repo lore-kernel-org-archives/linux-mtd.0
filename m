@@ -1,22 +1,16 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LbVz6-0007SS-LS
-	for linux-mtd@lists.infradead.org; Mon, 23 Feb 2009 08:16:19 +0000
-Received: from dlep36.itg.ti.com ([157.170.170.91])
-	by comal.ext.ti.com (8.13.7/8.13.7) with ESMTP id n1N8G9xf009742
-	for <linux-mtd@lists.infradead.org>; Mon, 23 Feb 2009 02:16:14 -0600
-Received: from webmail.ti.com (localhost [127.0.0.1])
-	by dlep36.itg.ti.com (8.13.8/8.13.8) with ESMTP id n1N8G6DB021639
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 Feb 2009 02:16:08 -0600 (CST)
-Message-ID: <58688.192.168.10.89.1235376968.squirrel@dbdmail.itg.ti.com>
-Date: Mon, 23 Feb 2009 13:46:08 +0530 (IST)
-Subject: [PATCH] [MTD] [NAND] nand_ecc.c: Bug fix in nand ecc
-From: "vimal singh" <vimalsingh@ti.com>
+	id 1LaY20-0001qU-Lc
+	for linux-mtd@lists.infradead.org; Fri, 20 Feb 2009 16:15:19 +0000
+From: Wolfram Sang <w.sang@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH 2/2] maps/mtd-ram: add an of-platform driver
+Date: Fri, 20 Feb 2009 17:15:12 +0100
+Message-Id: <1235146512-15170-3-git-send-email-w.sang@pengutronix.de>
+In-Reply-To: <1235146512-15170-1-git-send-email-w.sang@pengutronix.de>
+References: <1235146512-15170-1-git-send-email-w.sang@pengutronix.de>
+Cc: dwmw2@infradead.org, Wolfram Sang <w.sang@pengutronix.de>,
+	ben-linux@fluff.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +20,179 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Type of 'byte_addr' needed to change for 512 byte ecc support.
+Create an of-aware driver using the now exported generic functions from
+plat-ram.c. A typical oftree snipplet for it looks like this:
 
-Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+sram@04e00000 {
+	compatible = "mtd-ram";
+	reg = <0x04e00000 0x00200000>;
+	bank-width = <2>;
+};
+
+Partitions on this device are not yet supported. Tested on a
+phyCORE-MPC5200B-IO.
+
+Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
 ---
+ drivers/mtd/maps/Kconfig  |    6 ++
+ drivers/mtd/maps/Makefile |    1 +
+ drivers/mtd/maps/of-ram.c |  120 +++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 127 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/maps/of-ram.c
 
-diff --git a/drivers/mtd/nand/nand_ecc.c b/drivers/mtd/nand/nand_ecc.c index
-868147a..6b19058 100644
---- a/drivers/mtd/nand/nand_ecc.c
-+++ b/drivers/mtd/nand/nand_ecc.c
-@@ -429,7 +429,8 @@ int nand_correct_data(struct mtd_info *mtd, unsigned char
-*buf,
- 		      unsigned char *read_ecc, unsigned char *calc_ecc)
- {
- 	unsigned char b0, b1, b2;
--	unsigned char byte_addr, bit_addr;
-+	uint32_t byte_addr;
-+	unsigned char bit_addr;
- 	/* 256 or 512 bytes/ecc  */
- 	const uint32_t eccsize_mult =
- 			(((struct nand_chip *)mtd->priv)->ecc.size) >> 8;
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 0225cbb..b238b6d 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -551,5 +551,11 @@ config MTD_PLATRAM
+ 
+ 	  This selection automatically selects the map_ram driver.
+ 
++config MTD_OFRAM
++	tristate "Map driver for of-device RAM (mtd-ram)"
++	depends on MTD_PLATRAM && OF
++	help
++	  Map driver for RAM areas described via the of-device
++	  system.
+ endmenu
+ 
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index 6d9ba35..f8e3908 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -58,6 +58,7 @@ obj-$(CONFIG_MTD_WRSBC8260)	+= wr_sbc82xx_flash.o
+ obj-$(CONFIG_MTD_DMV182)	+= dmv182.o
+ obj-$(CONFIG_MTD_SHARP_SL)	+= sharpsl-flash.o
+ obj-$(CONFIG_MTD_PLATRAM)	+= plat-ram.o
++obj-$(CONFIG_MTD_OFRAM)		+= of-ram.o
+ obj-$(CONFIG_MTD_OMAP_NOR)	+= omap_nor.o
+ obj-$(CONFIG_MTD_INTEL_VR_NOR)	+= intel_vr_nor.o
+ obj-$(CONFIG_MTD_BFIN_ASYNC)	+= bfin-async-flash.o
+diff --git a/drivers/mtd/maps/of-ram.c b/drivers/mtd/maps/of-ram.c
+new file mode 100644
+index 0000000..4d334a9
+--- /dev/null
++++ b/drivers/mtd/maps/of-ram.c
+@@ -0,0 +1,120 @@
++/*
++ * drivers/mtd/maps/of-ram.c
++ *
++ * Generic of device based RAM map
++ *
++ * Copyright (C) 2009 Wolfram Sang, Pengutronix
++ *
++ * Using plat-ram.c by Ben Dooks
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 as published by
++ * the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/device.h>
++#include <linux/platform_device.h>
++#include <linux/of_device.h>
++#include <linux/of_platform.h>
++#include <linux/mtd/plat-ram.h>
++
++static int of_ram_probe(struct of_device *op, const struct of_device_id *match)
++{
++	struct platdata_mtd_ram *pdata;
++	struct resource *resource;
++	const char *name;
++	const u32 *bankwidth;
++	int ret = -ENOMEM;
++
++	pdata = kzalloc(sizeof(*pdata), GFP_KERNEL);
++	if (!pdata)
++		goto bad0;
++	op->dev.platform_data = pdata;
++
++	name = of_get_property(op->node, "name", NULL);
++	if (!name) {
++		ret = -ENOENT;
++		dev_dbg(&op->dev, "could not get node name\n");
++		goto bad1;
++	}
++
++	resource = kzalloc(sizeof(struct resource), GFP_KERNEL);
++	if (!resource)
++		goto bad1;
++
++	if (of_address_to_resource(op->node, 0, resource)) {
++		ret = -ENXIO;
++		dev_dbg(&op->dev, "could not create resource\n");
++		goto bad2;
++	}
++
++	bankwidth = of_get_property(op->node, "bank-width", NULL);
++	if (*bankwidth == 0) {
++		ret = -ENOENT;
++		dev_dbg(&op->dev, "bank width not set\n");
++		goto bad2;
++	}
++	pdata->bankwidth = *bankwidth;
++
++	ret = __platram_probe(&op->dev, name, resource, pdata);
++	kfree(resource);
++
++	if (ret)
++		goto bad1;
++
++	return 0;
++
++ bad2:
++	kfree(resource);
++ bad1:
++	op->dev.platform_data = NULL;
++	kfree(pdata);
++ bad0:
++	return ret;
++}
++
++static int of_ram_remove(struct of_device *op)
++{
++	int ret;
++	struct platdata_mtd_ram *pdata = op->dev.platform_data;
++
++	ret = __platram_remove(&op->dev);
++	op->dev.platform_data = NULL;
++	kfree(pdata);
++	return ret;
++}
++
++static struct of_device_id of_ram_match[] = {
++	{ .compatible = "mtd-ram", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, of_ram_match);
++
++static struct of_platform_driver of_ram_driver = {
++	.owner = THIS_MODULE,
++	.name = "of-ram",
++	.match_table = of_ram_match,
++	.probe = of_ram_probe,
++	.remove = of_ram_remove,
++};
++
++static int __init of_ram_init(void)
++{
++	return of_register_platform_driver(&of_ram_driver);
++}
++
++static void __exit of_ram_exit(void)
++{
++	of_unregister_platform_driver(&of_ram_driver);
++}
++
++module_init(of_ram_init);
++module_exit(of_ram_exit);
++
++MODULE_AUTHOR("Wolfram Sang");
++MODULE_DESCRIPTION("MTD OF RAM map driver");
++MODULE_LICENSE("GPL v2");
+-- 
+1.5.6.5
