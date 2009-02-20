@@ -1,12 +1,12 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LaY20-0001qU-Lc
-	for linux-mtd@lists.infradead.org; Fri, 20 Feb 2009 16:15:19 +0000
+	id 1LaY20-0001qS-Lf
+	for linux-mtd@lists.infradead.org; Fri, 20 Feb 2009 16:15:22 +0000
 From: Wolfram Sang <w.sang@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] maps/mtd-ram: add an of-platform driver
-Date: Fri, 20 Feb 2009 17:15:12 +0100
-Message-Id: <1235146512-15170-3-git-send-email-w.sang@pengutronix.de>
+Subject: [PATCH 1/2] maps/mtd-ram: refactor probe and remove
+Date: Fri, 20 Feb 2009 17:15:11 +0100
+Message-Id: <1235146512-15170-2-git-send-email-w.sang@pengutronix.de>
 In-Reply-To: <1235146512-15170-1-git-send-email-w.sang@pengutronix.de>
 References: <1235146512-15170-1-git-send-email-w.sang@pengutronix.de>
 Cc: dwmw2@infradead.org, Wolfram Sang <w.sang@pengutronix.de>,
@@ -20,179 +20,246 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Create an of-aware driver using the now exported generic functions from
-plat-ram.c. A typical oftree snipplet for it looks like this:
-
-sram@04e00000 {
-	compatible = "mtd-ram";
-	reg = <0x04e00000 0x00200000>;
-	bank-width = <2>;
-};
-
-Partitions on this device are not yet supported. Tested on a
-phyCORE-MPC5200B-IO.
+Refactor the probe and remove routines of the mtd-ram driver to export a
+generic part which can later be accessed by an of-counterpart of this driver.
+Tested with a phyCORE-i.MX27 (ARM, non-of) and a phyCORE-MPC5200B-IO (PPC, of).
 
 Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
 ---
- drivers/mtd/maps/Kconfig  |    6 ++
- drivers/mtd/maps/Makefile |    1 +
- drivers/mtd/maps/of-ram.c |  120 +++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 127 insertions(+), 0 deletions(-)
- create mode 100644 drivers/mtd/maps/of-ram.c
+ drivers/mtd/maps/plat-ram.c  |  123 +++++++++++++++++++++---------------------
+ include/linux/mtd/plat-ram.h |    4 ++
+ 2 files changed, 66 insertions(+), 61 deletions(-)
 
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index 0225cbb..b238b6d 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -551,5 +551,11 @@ config MTD_PLATRAM
+diff --git a/drivers/mtd/maps/plat-ram.c b/drivers/mtd/maps/plat-ram.c
+index e7dd9c8..1582cd6 100644
+--- a/drivers/mtd/maps/plat-ram.c
++++ b/drivers/mtd/maps/plat-ram.c
+@@ -50,16 +50,6 @@ struct platram_info {
+ 	struct platdata_mtd_ram	*pdata;
+ };
  
- 	  This selection automatically selects the map_ram driver.
+-/* to_platram_info()
+- *
+- * device private data to struct platram_info conversion
+-*/
+-
+-static inline struct platram_info *to_platram_info(struct platform_device *dev)
+-{
+-	return (struct platram_info *)platform_get_drvdata(dev);
+-}
+-
+ /* platram_setrw
+  *
+  * call the platform device's set rw/ro control
+@@ -77,18 +67,14 @@ static inline void platram_setrw(struct platram_info *info, int to)
+ 		(info->pdata->set_rw)(info->dev, to);
+ }
  
-+config MTD_OFRAM
-+	tristate "Map driver for of-device RAM (mtd-ram)"
-+	depends on MTD_PLATRAM && OF
-+	help
-+	  Map driver for RAM areas described via the of-device
-+	  system.
- endmenu
+-/* platram_remove
+- *
+- * called to remove the device from the driver's control
+-*/
+-
+-static int platram_remove(struct platform_device *pdev)
++int __platram_remove(struct device *dev)
+ {
+-	struct platram_info *info = to_platram_info(pdev);
++	struct platram_info *info;
  
-diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index 6d9ba35..f8e3908 100644
---- a/drivers/mtd/maps/Makefile
-+++ b/drivers/mtd/maps/Makefile
-@@ -58,6 +58,7 @@ obj-$(CONFIG_MTD_WRSBC8260)	+= wr_sbc82xx_flash.o
- obj-$(CONFIG_MTD_DMV182)	+= dmv182.o
- obj-$(CONFIG_MTD_SHARP_SL)	+= sharpsl-flash.o
- obj-$(CONFIG_MTD_PLATRAM)	+= plat-ram.o
-+obj-$(CONFIG_MTD_OFRAM)		+= of-ram.o
- obj-$(CONFIG_MTD_OMAP_NOR)	+= omap_nor.o
- obj-$(CONFIG_MTD_INTEL_VR_NOR)	+= intel_vr_nor.o
- obj-$(CONFIG_MTD_BFIN_ASYNC)	+= bfin-async-flash.o
-diff --git a/drivers/mtd/maps/of-ram.c b/drivers/mtd/maps/of-ram.c
-new file mode 100644
-index 0000000..4d334a9
---- /dev/null
-+++ b/drivers/mtd/maps/of-ram.c
-@@ -0,0 +1,120 @@
-+/*
-+ * drivers/mtd/maps/of-ram.c
-+ *
-+ * Generic of device based RAM map
-+ *
-+ * Copyright (C) 2009 Wolfram Sang, Pengutronix
-+ *
-+ * Using plat-ram.c by Ben Dooks
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of the GNU General Public License version 2 as published by
-+ * the Free Software Foundation.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/types.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/device.h>
-+#include <linux/platform_device.h>
-+#include <linux/of_device.h>
-+#include <linux/of_platform.h>
-+#include <linux/mtd/plat-ram.h>
-+
-+static int of_ram_probe(struct of_device *op, const struct of_device_id *match)
+-	platform_set_drvdata(pdev, NULL);
++	dev_dbg(dev, "removing device\n");
+ 
+-	dev_dbg(&pdev->dev, "removing device\n");
++	info = dev_get_drvdata(dev);
++	dev_set_drvdata(dev, NULL);
+ 
+ 	if (info == NULL)
+ 		return 0;
+@@ -123,68 +109,49 @@ static int platram_remove(struct platform_device *pdev)
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(__platram_remove);
+ 
+-/* platram_probe
++/* platram_remove
+  *
+- * called from device drive system when a device matching our
+- * driver is found.
++ * called to remove the device from the driver's control
+ */
+ 
+-static int platram_probe(struct platform_device *pdev)
++static int platram_remove(struct platform_device *pdev)
 +{
-+	struct platdata_mtd_ram *pdata;
-+	struct resource *resource;
-+	const char *name;
-+	const u32 *bankwidth;
-+	int ret = -ENOMEM;
++	return __platram_remove(&pdev->dev);
++}
 +
-+	pdata = kzalloc(sizeof(*pdata), GFP_KERNEL);
-+	if (!pdata)
-+		goto bad0;
-+	op->dev.platform_data = pdata;
++int __platram_probe(struct device *dev, const char *name,
++			struct resource *res, struct platdata_mtd_ram *pdata)
+ {
+-	struct platdata_mtd_ram	*pdata;
+ 	struct platram_info *info;
+-	struct resource *res;
+ 	int err = 0;
+ 
+-	dev_dbg(&pdev->dev, "probe entered\n");
+-
+-	if (pdev->dev.platform_data == NULL) {
+-		dev_err(&pdev->dev, "no platform data supplied\n");
+-		err = -ENOENT;
+-		goto exit_error;
+-	}
+-
+-	pdata = pdev->dev.platform_data;
+-
+ 	info = kzalloc(sizeof(*info), GFP_KERNEL);
+ 	if (info == NULL) {
+-		dev_err(&pdev->dev, "no memory for flash info\n");
++		dev_err(dev, "no memory for flash info\n");
+ 		err = -ENOMEM;
+ 		goto exit_error;
+ 	}
+ 
+-	platform_set_drvdata(pdev, info);
++	dev_set_drvdata(dev, info);
+ 
+-	info->dev = &pdev->dev;
++	info->dev = dev;
+ 	info->pdata = pdata;
+ 
+-	/* get the resource for the memory mapping */
+-
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-
+-	if (res == NULL) {
+-		dev_err(&pdev->dev, "no memory resource specified\n");
+-		err = -ENOENT;
+-		goto exit_free;
+-	}
+-
+-	dev_dbg(&pdev->dev, "got platform resource %p (0x%llx)\n", res,
+-		(unsigned long long)res->start);
+-
+ 	/* setup map parameters */
+ 
+ 	info->map.phys = res->start;
+ 	info->map.size = (res->end - res->start) + 1;
+ 	info->map.name = pdata->mapname != NULL ?
+-			(char *)pdata->mapname : (char *)pdev->name;
++			(char *)pdata->mapname : (char *)name;
+ 	info->map.bankwidth = pdata->bankwidth;
+ 
+ 	/* register our usage of the memory area */
+ 
+-	info->area = request_mem_region(res->start, info->map.size, pdev->name);
++	info->area = request_mem_region(res->start, info->map.size, name);
+ 	if (info->area == NULL) {
+-		dev_err(&pdev->dev, "failed to request memory region\n");
++		dev_err(dev, "failed to request memory region\n");
+ 		err = -EIO;
+ 		goto exit_free;
+ 	}
+@@ -192,17 +159,17 @@ static int platram_probe(struct platform_device *pdev)
+ 	/* remap the memory area */
+ 
+ 	info->map.virt = ioremap(res->start, info->map.size);
+-	dev_dbg(&pdev->dev, "virt %p, %lu bytes\n", info->map.virt, info->map.size);
++	dev_dbg(dev, "virt %p, %lu bytes\n", info->map.virt, info->map.size);
+ 
+ 	if (info->map.virt == NULL) {
+-		dev_err(&pdev->dev, "failed to ioremap() region\n");
++		dev_err(dev, "failed to ioremap() region\n");
+ 		err = -EIO;
+ 		goto exit_free;
+ 	}
+ 
+ 	simple_map_init(&info->map);
+ 
+-	dev_dbg(&pdev->dev, "initialised map, probing for mtd\n");
++	dev_dbg(dev, "initialised map, probing for mtd\n");
+ 
+ 	/* probe for the right mtd map driver
+ 	 * supplied by the platform_data struct */
+@@ -218,7 +185,7 @@ static int platram_probe(struct platform_device *pdev)
+ 		info->mtd = do_map_probe("map_ram", &info->map);
+ 
+ 	if (info->mtd == NULL) {
+-		dev_err(&pdev->dev, "failed to probe for map_ram\n");
++		dev_err(dev, "failed to probe for map_ram\n");
+ 		err = -ENOMEM;
+ 		goto exit_free;
+ 	}
+@@ -249,20 +216,54 @@ static int platram_probe(struct platform_device *pdev)
+ #endif /* CONFIG_MTD_PARTITIONS */
+ 
+ 	if (add_mtd_device(info->mtd)) {
+-		dev_err(&pdev->dev, "add_mtd_device() failed\n");
++		dev_err(dev, "add_mtd_device() failed\n");
+ 		err = -ENOMEM;
+ 	}
+ 
+ 	if (!err)
+-		dev_info(&pdev->dev, "registered mtd device\n");
++		dev_info(dev, "registered mtd device\n");
+ 
+ 	return err;
+ 
+  exit_free:
+-	platram_remove(pdev);
++	__platram_remove(dev);
+  exit_error:
+ 	return err;
+ }
++EXPORT_SYMBOL_GPL(__platram_probe);
 +
-+	name = of_get_property(op->node, "name", NULL);
-+	if (!name) {
-+		ret = -ENOENT;
-+		dev_dbg(&op->dev, "could not get node name\n");
-+		goto bad1;
++/* platram_probe
++ *
++ * called from device drive system when a device matching our
++ * driver is found.
++*/
++
++static int platram_probe(struct platform_device *pdev)
++{
++	struct platdata_mtd_ram	*pdata;
++	struct resource *res;
++
++	dev_dbg(&pdev->dev, "probe entered\n");
++
++	pdata = pdev->dev.platform_data;
++	if (pdata == NULL) {
++		dev_err(&pdev->dev, "no platform data supplied\n");
++		return -ENOENT;
 +	}
 +
-+	resource = kzalloc(sizeof(struct resource), GFP_KERNEL);
-+	if (!resource)
-+		goto bad1;
++	/* get the resource for the memory mapping */
 +
-+	if (of_address_to_resource(op->node, 0, resource)) {
-+		ret = -ENXIO;
-+		dev_dbg(&op->dev, "could not create resource\n");
-+		goto bad2;
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (res == NULL) {
++		dev_err(&pdev->dev, "no memory resource specified\n");
++		return -ENOENT;
 +	}
 +
-+	bankwidth = of_get_property(op->node, "bank-width", NULL);
-+	if (*bankwidth == 0) {
-+		ret = -ENOENT;
-+		dev_dbg(&op->dev, "bank width not set\n");
-+		goto bad2;
-+	}
-+	pdata->bankwidth = *bankwidth;
++	dev_dbg(&pdev->dev, "got platform resource %p (0x%llx)\n", res,
++		(unsigned long long)res->start);
 +
-+	ret = __platram_probe(&op->dev, name, resource, pdata);
-+	kfree(resource);
-+
-+	if (ret)
-+		goto bad1;
-+
-+	return 0;
-+
-+ bad2:
-+	kfree(resource);
-+ bad1:
-+	op->dev.platform_data = NULL;
-+	kfree(pdata);
-+ bad0:
-+	return ret;
++	return __platram_probe(&pdev->dev, pdev->name, res, pdata);
 +}
+ 
+ /* device driver info */
+ 
+diff --git a/include/linux/mtd/plat-ram.h b/include/linux/mtd/plat-ram.h
+index e07890a..c522562 100644
+--- a/include/linux/mtd/plat-ram.h
++++ b/include/linux/mtd/plat-ram.h
+@@ -31,4 +31,8 @@ struct platdata_mtd_ram {
+ 	void	(*set_rw)(struct device *dev, int to);
+ };
+ 
++extern int __platram_probe(struct device *dev, const char *name,
++			struct resource *res, struct platdata_mtd_ram *pdata);
++extern int __platram_remove(struct device *dev);
 +
-+static int of_ram_remove(struct of_device *op)
-+{
-+	int ret;
-+	struct platdata_mtd_ram *pdata = op->dev.platform_data;
-+
-+	ret = __platram_remove(&op->dev);
-+	op->dev.platform_data = NULL;
-+	kfree(pdata);
-+	return ret;
-+}
-+
-+static struct of_device_id of_ram_match[] = {
-+	{ .compatible = "mtd-ram", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, of_ram_match);
-+
-+static struct of_platform_driver of_ram_driver = {
-+	.owner = THIS_MODULE,
-+	.name = "of-ram",
-+	.match_table = of_ram_match,
-+	.probe = of_ram_probe,
-+	.remove = of_ram_remove,
-+};
-+
-+static int __init of_ram_init(void)
-+{
-+	return of_register_platform_driver(&of_ram_driver);
-+}
-+
-+static void __exit of_ram_exit(void)
-+{
-+	of_unregister_platform_driver(&of_ram_driver);
-+}
-+
-+module_init(of_ram_init);
-+module_exit(of_ram_exit);
-+
-+MODULE_AUTHOR("Wolfram Sang");
-+MODULE_DESCRIPTION("MTD OF RAM map driver");
-+MODULE_LICENSE("GPL v2");
+ #endif /* __LINUX_MTD_PLATRAM_H */
 -- 
 1.5.6.5
