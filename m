@@ -1,13 +1,16 @@
-From: "Anthony" <tonicb107@gmail.com>
-Subject: Non-Investment Account.
-Date: Mon, 16 Feb 2009 07:37:48 -0000
+Received: from [193.140.142.6] (helo=mail.inonu.edu.tr)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Lamlm-0004Ao-Cw
+	for linux-mtd@lists.infradead.org; Sat, 21 Feb 2009 07:59:33 +0000
+From: "Ms. Mok Charlotte" <maerkurt@inonu.edu.tr>
+Subject: Good News
+Date: Sat, 21 Feb 2009 08:38:25 +0200
+Message-Id: <20090221063825.M89940@inonu.edu.tr>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20090216073756.38FE9108983@ns.ict-tower.com>
+	charset=iso-8859-9
 To: undisclosed-recipients:;
-Reply-To: icbton5@aol.com
+Reply-To: ms.mok_charlotte_1969@msn.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,24 +20,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Security Code: RUM/ATM/AMF/882
 
-Pardon me for not having the pleasure of knowing your mindset before making you this offer and it is utterly confidential and genuine by virtue of its nature.I write to solicit your assistance in a funds transfer deal involving US$3.5M.
+Dear Beneificary,
 
-This fund has been stashed out of the excess profit made last year by my branch office the International Commercial Bank which I am the manager.
+Committee of foreign payment in partnership with the United States Government.We are
+happy to inform you that an ATM Master cash card has been accredited in your favour,
+with the sum of $6.8 million USD. Kindly contact Ms. Mok Charlotte on her
+email:ms.mok_charlotte_1969@msn.com, with the following details information provided
+below to enable the delivery of your ATM Master Cad:
 
+Your Full Name:
+Shipping Address:
+Phone Number:
+Fax Number:
+Occupation:
+Age:
+Sex:
+Date of Birth:
+Country:
 
-I have already submitted an approved end of the year report for the year 2007 to my head office here in Accra-Ghana and they will never know of this excess. I have since then, placed this amount on a Non-Investment Account without a
-beneficiary.
+Contact Ms. Mok Charlotte for further Insight on how to claim your ATM Master card.
 
-Upon your response, I will configure your name on our database as holder of the Non-Investment Account. I will then guide you on how to apply to my head office for the Account Closure/ bank-to-bank remittance of the funds to your designated bank account.
+Kindest Regards,
+Mr. Charles Brown
+Dispatch Officer
 
-
-If you concur with this proposal, I intend for you to retain 30% of the funds while 70% shall be for me.
-
-Kindly forward your response to: icbton6@aim.com
-
-Mobile: +233-24-468-5072
-With Regards,
-
-Anthony Aka
+Note: Don't reply to this e-mail:maerkurt@inonu.edu.tr
