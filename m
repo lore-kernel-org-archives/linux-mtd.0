@@ -1,15 +1,21 @@
-Received: from exprod7ob108.obsmtp.com ([64.18.2.168])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LbyN1-0003js-01
-	for linux-mtd@lists.infradead.org; Tue, 24 Feb 2009 14:34:53 +0000
-From: "Financial District Forum/Lender Company Inc."
-	<financialdistrict.loanlenders@gmail.com>
-Subject: APPLY FOR A LOAN AT LOW INTEREST RATE
-Date: Tue, 24 Feb 2009 09:00:53 -0500
-Message-ID: <web-6966836@be1.fdu.edu>
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Received: from mba.ocn.ne.jp ([122.1.235.107] helo=smtp.mba.ocn.ne.jp)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LbyO5-0004C7-V5
+	for linux-mtd@lists.infradead.org; Tue, 24 Feb 2009 14:36:01 +0000
+Date: Tue, 24 Feb 2009 23:36:00 +0900 (JST)
+Message-Id: <20090224.233600.27954115.anemo@mba.ocn.ne.jp>
+To: s.hauer@pengutronix.de
+Subject: Re: [PATCH] physmap: Fix leak of memory returned by
+	parse_mtd_partitions
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+In-Reply-To: <20090224133505.GJ21900@pengutronix.de>
+References: <20081112.235733.01917391.anemo@mba.ocn.ne.jp>
+	<20090224133505.GJ21900@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, vapier.adi@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,47 +25,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello 
- 
+On Tue, 24 Feb 2009 14:35:05 +0100, Sascha Hauer <s.hauer@pengutronix.de> wrote:
+> On Wed, Nov 12, 2008 at 11:57:33PM +0900, Atsushi Nemoto wrote:
+> > The mtd partition parser returns an allocated pointer array of
+> > mtd_partition.  The caller must free it.  The array is used only for
+> > add_mtd_partitions(), so free it just after the call.
+> 
+> This patch breaks command line parsing support. With command line
+> partition parsing the struct mtd_partition array is allocated, but only
+> once. On my board with NAND and NOR (both with command line partition
+> parsing) It fails badly in parse_cmdline_partitions() when the second
+> device gets parsed.
+> 
+> The following patch fixes it, but I don't know if this is
+> the correct solution. Does anybody have more insights on this?
 
-I am Mr Ramsey Williams, i am a private loan lender,the C.E.O OF Financial District Forum/Lender Company Inc. i am a registered and certified loan lender with the federal 
-ministry of finance and the government at large. 
+Do your NAND and NOR have same mtd-id?  The cmdlinepart allocates
+mtd_partition aray for each mtd-id.  So usually another array will be
+returned for NAND and NOR.
 
-We give out loans to all, in need, we give out both short 
-term and long term loans (secured and unsecured ) to all in 
-need, no matter where you are in the world and do not worry 
-about your credit state. 
+The physmap patch has another bug and fixes are on the way mainline:
 
-We give out loans at the lowest interest rate of 3%, and our repayment terms and schedule are negotiable and affordable. 
+http://git.infradead.org/mtd-2.6.git?a=commit;h=e480814f138cd5d78a8efe397756ba6b6518fdb6
 
-We Offer Private, Commercial and Personal Loans with very 
-Minimal annual Interest Rates within 1year to 50years 
-repayment duration period to any part of the world. 
+But this seems not enough, as you wrote.  If multiple mtd have same
+mtd-id, bad things can happen.  And more seriously, if I load physmap
+driver _again_ after unload, cmdlinepart will return a freed pointer
+on the second time.
 
-Loan is given out in Pounds, Euro and $USD. 
+Hmm, little memory leak is less serious than crash.  Now I start
+thinking reverting the commit 176bf2e0 will be best for 2.6.29
+release.
 
-However, Our method, offers you the chance to state the 
-amount of loan needed and also the duration you can afford. 
+I'm not sure for long term solutions.
 
-An interested applicant should fill in the application form 
-below and contact us:via:financialdistrict.loanlenders@gmail.com
+A) make all parsers return kmalloc-ed mtd_partition array each time
+   and fix memory leak in each driver
 
-* Applicant full name: 
+B) make all parsers return mtd_partition array allocated only once,
+   and fix drivers which free the mtd_partition array.
 
-* Applicant Contact Address: 
+David, how do you think?
 
-* Phone No: 
-
-* Country: 
-
-* Age: 
-
-* Marital Status: 
-
-* Amount Required As Loan: 
-
-*Proposed Terms/Duration Of Loan: 
-
-*Annual Income:
-
-*Sex:
+---
+Atsushi Nemoto
