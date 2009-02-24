@@ -1,23 +1,18 @@
-Received: from exprod7og109.obsmtp.com ([64.18.2.171])
-	by bombadil.infradead.org with smtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lc0gc-0007eJ-9Q
-	for linux-mtd@lists.infradead.org; Tue, 24 Feb 2009 17:03:17 +0000
-Received: from milmhbs0.lsil.com (mhbs.lsil.com [147.145.1.30])
-	by mail0.lsil.com (8.12.11/8.12.11) with ESMTP id n1OH3BbL015211
+Received: from wa-out-1112.google.com ([209.85.146.180])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Lc0ny-0006wX-1O
+	for linux-mtd@lists.infradead.org; Tue, 24 Feb 2009 17:10:52 +0000
+Received: by wa-out-1112.google.com with SMTP id j4so1398617wah.2
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 24 Feb 2009 09:03:11 -0800 (PST)
-Received: from PALHUB01.lsi.com (palhub01.lsi.com [128.94.213.114])
-	by milmhbs0.lsil.com (8.12.11/8.12.11) with ESMTP id n1OH3EKa024719
-	for <linux-mtd@lists.infradead.org>; Tue, 24 Feb 2009 09:03:14 -0800
-Message-ID: <49A4284D.3040700@lsi.com>
-Date: Tue, 24 Feb 2009 11:03:09 -0600
-From: John Jacques <john.jacques@lsi.com>
+	Tue, 24 Feb 2009 09:10:49 -0800 (PST)
 MIME-Version: 1.0
-To: <linux-mtd@lists.infradead.org>
-Subject: JFFS2 and SMP
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Reply-To: john.jacques@lsi.com
+Date: Tue, 24 Feb 2009 22:40:49 +0530
+Message-ID: <8ccea6aa0902240910k6da07085u7e122cb010a99a02@mail.gmail.com>
+Subject: query on UBIFS
+From: Chakradhar thota <thota.chakradhar@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +22,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With linux 2.6.21 and ARM's patch-2.6.21-arm1 patch, I was able to use
-JFFS2 file systems on  NAND device without any problems.  With either
-ARM patch for 2.6.24 kernel_src_patch-2.6.24-arm2 or
-kernel_src_patch-2.6.24-arm3), creating a small partition and writing a
-single file (a kernel image) to it fails, within one or two tries, as
-follows.
+Hi ,
 
-Data CRC 1659d2d9 != calculated CRC e07bc570 for node at 005a4a38
-cp: writing `/mnt/linux.img': Input/output error
+=A0 I am in the process of using UBIfs on my embedded device.
+=A0 but i came across that JFFS2 cannot be used as swap partition.
+=A0 what about UBIfs? will UBIfs support swap paritition?
+=A0 what are the various issues to be taken care if it supports?
+=A0 thanks in advance.
 
-With only one core enabled, but still using the SMP kernel that fails
-above, there are no failures (at least with a script running the test
-over the weekend).
-
-Enabling JFFS2 debugging adds nothing to the above error output.
-
-Any ideas?
+regards,
+Chakri
