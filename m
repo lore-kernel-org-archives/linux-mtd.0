@@ -1,22 +1,23 @@
-Received: from [202.230.225.126] (helo=topsms.toshiba-tops.co.jp)
+Received: from yx-out-1718.google.com ([74.125.44.154])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lc8ci-0002MU-Dp
-	for linux-mtd@lists.infradead.org; Wed, 25 Feb 2009 01:31:49 +0000
-Date: Wed, 25 Feb 2009 10:31:40 +0900 (JST)
-Message-Id: <20090225.103140.155095402.nemoto@toshiba-tops.co.jp>
-To: s.hauer@pengutronix.de
-Subject: Re: [PATCH] physmap: Fix leak of memory returned by
-	parse_mtd_partitions
-From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-In-Reply-To: <20090224152958.GN21900@pengutronix.de>
-References: <20090224133505.GJ21900@pengutronix.de>
-	<20090224.233600.27954115.anemo@mba.ocn.ne.jp>
-	<20090224152958.GN21900@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, vapier.adi@gmail.com
+	id 1Lc8zz-0005kk-2e
+	for linux-mtd@lists.infradead.org; Wed, 25 Feb 2009 01:55:49 +0000
+Received: by yx-out-1718.google.com with SMTP id 3so1075115yxi.72
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 24 Feb 2009 17:55:46 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <200902241509.54649.david-b@pacbell.net>
+References: <200902241509.54649.david-b@pacbell.net>
+Date: Tue, 24 Feb 2009 22:55:45 -0300
+Message-ID: <82ecf08e0902241755y5a7be725gb84116433b7d3be2@mail.gmail.com>
+Subject: Re: [patch/RESEND 2.6.29-rc3-git] NAND: davinci_nand driver
+From: Thiago Galesi <thiagogalesi@gmail.com>
+To: dbrownell@users.sourceforge.net
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: DaVinci <davinci-linux-open-source@linux.davincidsp.com>,
+	Linux MTD <linux-mtd@lists.infradead.org>,
+	lkml <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,34 +27,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 24 Feb 2009 16:29:58 +0100, Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> > The physmap patch has another bug and fixes are on the way mainline:
-> > 
-> > http://git.infradead.org/mtd-2.6.git?a=commit;h=e480814f138cd5d78a8efe397756ba6b6518fdb6
-> > 
-> > But this seems not enough, as you wrote.  If multiple mtd have same
-> > mtd-id, bad things can happen.  And more seriously, if I load physmap
-> > driver _again_ after unload, cmdlinepart will return a freed pointer
-> > on the second time.
-> > 
-> > Hmm, little memory leak is less serious than crash.  Now I start
-> > thinking reverting the commit 176bf2e0 will be best for 2.6.29
-> > release.
-> 
-> Even when reverting the commit the same problem still exists because the
-> array then gets freed in physmap_flash_remove(). This won't hurt me
-> though because I never use mtd drivers as modules.
+OK a couple of things
+ +
+> +
+> +#ifdef CONFIG_MTD_PARTITIONS
+> +static inline int mtd_has_partitions(void) { return 1; }
+> +#else
+> +static inline int mtd_has_partitions(void) { return 0; }
+> +#endif
+> +
+> +#ifdef CONFIG_MTD_CMDLINE_PARTS
+> +static inline int mtd_has_cmdlinepart(void) { return 1; }
+> +#else
+> +static inline int mtd_has_cmdlinepart(void) { return 0; }
+> +#endif
 
-If the commit reverted, kfree() in physmap_flash_remove never be
-called due to another bug (info->nr_parts is not set properly).  But
-unloading the physmap module will lead crash anyway since master mtd
-device will be freed without deleting slave mtd devices if cmdlinepart
-was used.
+I'm not sure stylewise this is the best way. Even though #ifdefs stays
+outside of functions, this is a case where maybe it's better to put it
+inside or rething the need / usage for these functions.
 
-So I think either reverting the commit or applying the above fix in
-mtd-2.6 git tree can fix regression from 2.6.28.  Both work well
-unless unloading the physmap module after booting with mtdparts=
-option.
+> +static int nand_davinci_calculate_1bit(struct mtd_info *mtd,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ const u_char *dat, u_char *ecc_code)
 
----
-Atsushi Nemoto
+(and others)
+
+My beef here is the use of u_char. This is really not a standart C
+type or a standart Linux type (u8/u32 etc), so we should aim for those
+(yes, I hate typing unsigned blah blah blah) but you can use u8 for
+that.
+
+> +static void nand_davinci_read_buf(struct mtd_info *mtd, uint8_t *buf, in=
+t len)
+> +{
+> + =A0 =A0 =A0 struct nand_chip *chip =3D mtd->priv;
+> +
+> + =A0 =A0 =A0 if ((0x03 & ((unsigned)buf)) =3D=3D 0 && (0x03 & len) =3D=
+=3D 0)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ioread32_rep(chip->IO_ADDR_R, buf, len >> 2=
+);
+> + =A0 =A0 =A0 else if ((0x01 & ((unsigned)buf)) =3D=3D 0 && (0x01 & len) =
+=3D=3D 0)
+
+What are those 0x03 and 0x01 (and other places as well), you'll have
+to spell out those, preferably using defines.
+
+--=20
+-
+Thiago Galesi
