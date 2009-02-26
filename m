@@ -1,25 +1,22 @@
-Received: from mail-fx0-f165.google.com ([209.85.220.165])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LdBDB-0006z1-HL
-	for linux-mtd@lists.infradead.org; Fri, 27 Feb 2009 22:29:44 +0000
-Received: by fxm9 with SMTP id 9so693234fxm.18
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 27 Feb 2009 14:29:39 -0800 (PST)
-To: David Brownell <david-b@pacbell.net>
-Subject: Re: [patch/RESEND 2.6.29-rc3-git] NAND: davinci_nand driver
+Received: from smtp124.sbc.mail.sp1.yahoo.com ([69.147.64.97])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LcpUg-0004mK-NW
+	for linux-mtd@lists.infradead.org; Thu, 26 Feb 2009 23:18:21 +0000
+From: David Brownell <david-b@pacbell.net>
+To: Andrew Morton <akpm@linux-foundation.org>,
+ linux-mtd@lists.infradead.org
+Subject: [patch 2.6.29-rc6-mmotm] MTD: partitioning utility predicates
+Date: Thu, 26 Feb 2009 15:18:16 -0800
 References: <200902241509.54649.david-b@pacbell.net>
 	<20090226123341.a2421733.akpm@linux-foundation.org>
-	<200902261515.22197.david-b@pacbell.net>
-From: Kevin Hilman <khilman@deeprootsystems.com>
-In-Reply-To: <200902261515.22197.david-b@pacbell.net> (David Brownell's
-	message of "Thu\, 26 Feb 2009 15\:15\:21 -0800")
-Date: Fri, 27 Feb 2009 14:29:32 -0800
-Message-ID: <87k57ba4z7.fsf@deeprootsystems.com>
+In-Reply-To: <20090226123341.a2421733.akpm@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mtd@lists.infradead.org,
-	davinci-linux-open-source@linux.davincidsp.com,
-	linux-kernel@vger.kernel.org
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200902261518.16378.david-b@pacbell.net>
+Cc: linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,165 +26,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Brownell <david-b@pacbell.net> writes:
+From: David Brownell <dbrownell@users.sourceforge.net>
 
-> On Thursday 26 February 2009, Andrew Morton wrote:
->
->> > + * Copyright (C) 2006 Texas Instruments.
->> > + *
->> > + * Ported to 2.6.23 Copyright (C) 2008 by
->> > + *   Sander Huijsen <Shuijsen@optelecom-nkf.com>
->> > + *   Troy Kisky <troy.kisky@boundarydevices.com>
->> > + *   Dirk Behme <Dirk.Behme@gmail.com>
->> 
->> hm.  What's the story with authorship, attributions and signoffs here?
->
-> Written by TI (PSP team in India, ISTR) with no individual
-> authorship credited, and shipped with a MontaVista 2.6.10
-> kernel.  Ported as noted; I could presumably add my own
-> copyright given recent updates I've made.  Likewise Felipe
-> Balbi.  Kevin Hilman has signed off on various patches as
-> part of merging them to the DaVinci tree.
->
-> (To the TI team reading this via the DaVinci list:  I think
-> Andrew is hinting that a Signed-off-By from a TI person
-> would be a Nice Thing.  Same for Dirk, and maybe others.)
->
->
->> > ...
->> >
->> > +#ifdef CONFIG_MTD_PARTITIONS
->> > +static inline int mtd_has_partitions(void) { return 1; }
->> > +#else
->> > +static inline int mtd_has_partitions(void) { return 0; }
->> > +#endif
->> > +
->> > +#ifdef CONFIG_MTD_CMDLINE_PARTS
->> > +static inline int mtd_has_cmdlinepart(void) { return 1; }
->> > +#else
->> > +static inline int mtd_has_cmdlinepart(void) { return 0; }
->> > +#endif
->> 
->> These definitions shouldn't be buried in a .c file.
->
-> I will send along a patch to move them to <linux/mtd/...> headers,
-> now that there seems to be a bit of recognition that the current
-> ifdef-centric approach in the MTD mapping drivers is trouble.  ;)
->
->
->> >
->> > ...
->> >
->> > +static void nand_davinci_hwctl_1bit(struct mtd_info *mtd, int mode)
->> > +{
->> > +	struct davinci_nand_info *info;
->> > +	u32 retval;
->> 
->> The identifier `retval' is usually used to identify the value which
->> this function will return.
->
-> True; resolved in the appended fixup patch.
->
->
->> > +static int nand_davinci_calculate_1bit(struct mtd_info *mtd,
->> > +				      const u_char *dat, u_char *ecc_code)
->> > +{
->> > +	unsigned int ecc_val = nand_davinci_readecc_1bit(mtd);
->> > +	unsigned int tmp = (ecc_val & 0x0fff) | ((ecc_val & 0x0fff0000) >> 4);
->> 
->> argh.
->
-> It seems the best-dressed pirates have parrots named "argh"!  ;)
->
->
->> > +	/* invert so that erased block ecc is correct */
->> > +	tmp = ~tmp;
->> > +	ecc_code[0] = (u_char)(tmp);
->> > +	ecc_code[1] = (u_char)(tmp >> 8);
->> > +	ecc_code[2] = (u_char)(tmp >> 16);
->> 
->> Is there some library facility which is being open-coded here?
->
-> I don't know of such a facility:  24-bit integer into 3-byte buffer.
->
->
->> > +	return 0;
->> > +}
->> > +
->> >
->> > ...
->> >
->> > +static int __init nand_davinci_probe(struct platform_device *pdev)
->> > +{
->> > +		... deletia ...
->> > +
->> > +	info = kzalloc(sizeof(*info), GFP_KERNEL);
->> > +	if (!info) {
->> > +		dev_err(&pdev->dev, "unable to allocate memory\n");
->> > +		ret = -ENOMEM;
->> > +		goto err_nomem;
->> > +	}
->> > +
->> > +	platform_set_drvdata(pdev, info);
->> > +
->> > +	res1 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> > +	res2 = platform_get_resource(pdev, IORESOURCE_MEM, 1);
->> > +	if (!res1 || !res2) {
->> > +		dev_err(&pdev->dev, "resource missing\n");
->> > +		ret = -EINVAL;
->> > +		goto err_res;
->> 
->> This leaks `info'.
->> 
->> Please check all the error path unwinding here.
->
-> OK -- that does look buggish.
->
-> (Kevin -- I suggest you merge this to the DaVinci tree to
-> make the eventual resync-with-mainline easier.)
->
+Move mtd_has_partitions() and mtd_has_cmdlinepart() inlines from
+a DaVinci-specific driver to the <linux/mtd/partitions.h> header.
 
-Done.
+Use those to eliminate #ifdefs in two drivers which had their
+own definitions of mtd_has_partitions().
 
-It also needs this cleanup bit below which is in DaVinci git now that
-we've deprecated the use of the davinci cpu_is_* macros in drivers.
+Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
+---
+Quite a lot of other MTD drivers could benefit from using use one
+or both of these to remove #ifdeffery.  Maybe some Janitors
+would like to help?
 
-This could be just folded into current patch if desired.
+ drivers/mtd/devices/m25p80.c        |   17 ++++++-----------
+ drivers/mtd/devices/mtd_dataflash.c |   16 ++++++----------
+ drivers/mtd/nand/davinci_nand.c     |   13 -------------
+ include/linux/mtd/partitions.h      |   12 ++++++++++++
+ 4 files changed, 24 insertions(+), 34 deletions(-)
 
-Thanks,
-
-Kevin
-
-
-commit 1bacc33ccc9bd0f3c109bf8a8550e9b6f99397bd
-Author: Kevin Hilman <khilman@deeprootsystems.com>
-Date:   Thu Feb 26 17:15:18 2009 -0800
-
-    MTD: NAND: drop usage of cpu_is_* macro
-    
-    Usage of davinci-specific cpu_is macros is not allowed in drivers.
-    These options should be passed in through platform_data.
-    
-    Signed-off-by: Kevin Hilman <khilman@deeprootsystems.com>
-
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index aa70b4e..a2f78ad 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -65,12 +65,6 @@
+ #define FAST_READ_DUMMY_BYTE 0
+ #endif
+ 
+-#ifdef CONFIG_MTD_PARTITIONS
+-#define	mtd_has_partitions()	(1)
+-#else
+-#define	mtd_has_partitions()	(0)
+-#endif
+-
+ /****************************************************************************/
+ 
+ struct m25p {
+@@ -708,12 +702,13 @@ static int __devinit m25p_probe(struct s
+ 		struct mtd_partition	*parts = NULL;
+ 		int			nr_parts = 0;
+ 
+-#ifdef CONFIG_MTD_CMDLINE_PARTS
+-		static const char *part_probes[] = { "cmdlinepart", NULL, };
++		if (mtd_has_cmdlinepart()) {
++			static const char *part_probes[]
++					= { "cmdlinepart", NULL, };
+ 
+-		nr_parts = parse_mtd_partitions(&flash->mtd,
+-				part_probes, &parts, 0);
+-#endif
++			nr_parts = parse_mtd_partitions(&flash->mtd,
++					part_probes, &parts, 0);
++		}
+ 
+ 		if (nr_parts <= 0 && data && data->parts) {
+ 			parts = data->parts;
+--- a/drivers/mtd/devices/mtd_dataflash.c
++++ b/drivers/mtd/devices/mtd_dataflash.c
+@@ -98,12 +98,6 @@ struct dataflash {
+ 	struct mtd_info		mtd;
+ };
+ 
+-#ifdef CONFIG_MTD_PARTITIONS
+-#define	mtd_has_partitions()	(1)
+-#else
+-#define	mtd_has_partitions()	(0)
+-#endif
+-
+ /* ......................................................................... */
+ 
+ /*
+@@ -682,11 +676,13 @@ add_dataflash_otp(struct spi_device *spi
+ 		struct mtd_partition	*parts;
+ 		int			nr_parts = 0;
+ 
+-#ifdef CONFIG_MTD_CMDLINE_PARTS
+-		static const char *part_probes[] = { "cmdlinepart", NULL, };
++		if (mtd_has_cmdlinepart()) {
++			static const char *part_probes[]
++					= { "cmdlinepart", NULL, };
+ 
+-		nr_parts = parse_mtd_partitions(device, part_probes, &parts, 0);
+-#endif
++			nr_parts = parse_mtd_partitions(device,
++					part_probes, &parts, 0);
++		}
+ 
+ 		if (nr_parts <= 0 && pdata && pdata->parts) {
+ 			parts = pdata->parts;
 --- a/drivers/mtd/nand/davinci_nand.c
 +++ b/drivers/mtd/nand/davinci_nand.c
-@@ -33,7 +33,6 @@
- #include <linux/mtd/nand.h>
- #include <linux/mtd/partitions.h>
- 
--#include <mach/cpu.h>
- #include <mach/nand.h>
- 
+@@ -39,19 +39,6 @@
  #include <asm/mach-types.h>
-@@ -392,8 +391,6 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
- 	/* use board-specific ECC config; else, the best available */
- 	if (pdata)
- 		ecc_mode = pdata->ecc_mode;
--	else if (cpu_is_davinci_dm355())
--		ecc_mode = NAND_ECC_HW_SYNDROME;
- 	else
- 		ecc_mode = NAND_ECC_HW;
  
+ 
+-#ifdef CONFIG_MTD_PARTITIONS
+-static inline int mtd_has_partitions(void) { return 1; }
+-#else
+-static inline int mtd_has_partitions(void) { return 0; }
+-#endif
+-
+-#ifdef CONFIG_MTD_CMDLINE_PARTS
+-static inline int mtd_has_cmdlinepart(void) { return 1; }
+-#else
+-static inline int mtd_has_cmdlinepart(void) { return 0; }
+-#endif
+-
+-
+ /*
+  * This is a device driver for the NAND flash controller found on the
+  * various DaVinci family chips.  It handles up to four SoC chipselects,
+--- a/include/linux/mtd/partitions.h
++++ b/include/linux/mtd/partitions.h
+@@ -76,4 +76,16 @@ int __devinit of_mtd_parse_partitions(st
+                                       struct device_node *node,
+                                       struct mtd_partition **pparts);
+ 
++#ifdef CONFIG_MTD_PARTITIONS
++static inline int mtd_has_partitions(void) { return 1; }
++#else
++static inline int mtd_has_partitions(void) { return 0; }
++#endif
++
++#ifdef CONFIG_MTD_CMDLINE_PARTS
++static inline int mtd_has_cmdlinepart(void) { return 1; }
++#else
++static inline int mtd_has_cmdlinepart(void) { return 0; }
++#endif
++
+ #endif
