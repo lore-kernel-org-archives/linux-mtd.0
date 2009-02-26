@@ -1,15 +1,15 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lcatg-0000hd-Jt
-	for linux-mtd@lists.infradead.org; Thu, 26 Feb 2009 07:43:11 +0000
-Subject: Re: [PATCH] add generated binaries to gitignore
+	id 1LcauM-0000iV-Kn
+	for linux-mtd@lists.infradead.org; Thu, 26 Feb 2009 07:43:53 +0000
+Subject: Re: [PATCH] make sure compiler supports warning flags
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <1235605133-2059-1-git-send-email-vapier@gentoo.org>
-References: <1235605133-2059-1-git-send-email-vapier@gentoo.org>
+In-Reply-To: <1235605127-2024-1-git-send-email-vapier@gentoo.org>
+References: <1235605127-2024-1-git-send-email-vapier@gentoo.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 26 Feb 2009 09:42:47 +0200
-Message-Id: <1235634167.25808.26.camel@localhost.localdomain>
+Date: Thu, 26 Feb 2009 09:43:36 +0200
+Message-Id: <1235634216.25808.27.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -24,18 +24,15 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Wed, 2009-02-25 at 18:38 -0500, Mike Frysinger wrote:
+> Some compilers (like gcc-3.3) don't support all the newer -W flags that we
+> are using.  So import the compiler check found in the kernel and test each
+> flag we add.  The := is important so we only do the compiler tests once
+> per `make` rather than every time we compile a file.
+> 
 > Signed-off-by: Mike Frysinger <vapier@gentoo.org>
-> ---
->  .gitignore                     |   30 ++++++++++++++++++++++++++++++
->  mkfs.ubifs/.gitignore          |    1 +
->  ubi-utils/.gitignore           |    9 +++++++++
->  ubi-utils/new-utils/.gitignore |   10 ++++++++++
->  4 files changed, 50 insertions(+), 0 deletions(-)
->  create mode 100644 mkfs.ubifs/.gitignore
->  create mode 100644 ubi-utils/.gitignore
->  create mode 100644 ubi-utils/new-utils/.gitignore
 
-Pushed, thank you!
+Looks fine for me, but I cannot really review this, so lets wait a
+little, and if there are no complaints I'll push it. Thanks!
 
 -- 
 Best regards,
