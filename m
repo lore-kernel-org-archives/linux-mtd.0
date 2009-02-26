@@ -1,19 +1,22 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LcauM-0000iV-Kn
-	for linux-mtd@lists.infradead.org; Thu, 26 Feb 2009 07:43:53 +0000
-Subject: Re: [PATCH] make sure compiler supports warning flags
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <1235605127-2024-1-git-send-email-vapier@gentoo.org>
+Received: from mail-gx0-f160.google.com ([209.85.217.160])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LcbbP-0006jO-Hr
+	for linux-mtd@lists.infradead.org; Thu, 26 Feb 2009 08:28:22 +0000
+Received: by gxk4 with SMTP id 4so1083883gxk.18
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 26 Feb 2009 00:28:18 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1235634216.25808.27.camel@localhost.localdomain>
 References: <1235605127-2024-1-git-send-email-vapier@gentoo.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 26 Feb 2009 09:43:36 +0200
-Message-Id: <1235634216.25808.27.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+	<1235634216.25808.27.camel@localhost.localdomain>
+Date: Thu, 26 Feb 2009 03:28:18 -0500
+Message-ID: <8bd0f97a0902260028q1df6c376ta6537f83f2407f02@mail.gmail.com>
+Subject: Re: [PATCH] make sure compiler supports warning flags
+From: Mike Frysinger <vapier.adi@gmail.com>
+To: dedekind@infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, Mike Frysinger <vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,17 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-02-25 at 18:38 -0500, Mike Frysinger wrote:
-> Some compilers (like gcc-3.3) don't support all the newer -W flags that we
-> are using.  So import the compiler check found in the kernel and test each
-> flag we add.  The := is important so we only do the compiler tests once
-> per `make` rather than every time we compile a file.
-> 
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+On Thu, Feb 26, 2009 at 02:43, Artem Bityutskiy wrote:
+> On Wed, 2009-02-25 at 18:38 -0500, Mike Frysinger wrote:
+>> Some compilers (like gcc-3.3) don't support all the newer -W flags that =
+we
+>> are using. =A0So import the compiler check found in the kernel and test =
+each
+>> flag we add. =A0The :=3D is important so we only do the compiler tests o=
+nce
+>> per `make` rather than every time we compile a file.
+>>
+>> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+>
+> Looks fine for me, but I cannot really review this, so lets wait a
+> little, and if there are no complaints I'll push it. Thanks!
 
-Looks fine for me, but I cannot really review this, so lets wait a
-little, and if there are no complaints I'll push it. Thanks!
-
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+that's good because i just realized i left stupid debugging echo in there :=
+/
+-mike
