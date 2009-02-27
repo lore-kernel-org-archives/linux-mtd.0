@@ -1,22 +1,22 @@
-Received: from smtp128.sbc.mail.sp1.yahoo.com ([69.147.65.187])
+Received: from n17.bullet.mail.mud.yahoo.com ([68.142.206.144])
 	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LcpRt-000123-U1
-	for linux-mtd@lists.infradead.org; Thu, 26 Feb 2009 23:15:29 +0000
+	id 1LctP4-0004Gg-HI
+	for linux-mtd@lists.infradead.org; Fri, 27 Feb 2009 03:28:49 +0000
 From: David Brownell <david-b@pacbell.net>
 To: Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [patch/RESEND 2.6.29-rc3-git] NAND: davinci_nand driver
-Date: Thu, 26 Feb 2009 15:15:21 -0800
-References: <200902241509.54649.david-b@pacbell.net>
-	<20090226123341.a2421733.akpm@linux-foundation.org>
-In-Reply-To: <20090226123341.a2421733.akpm@linux-foundation.org>
+Subject: Re: [patch/RESEND 2.6.29-rc6] NAND: fix "raw" reads with ECC syndrome
+	layouts
+Date: Thu, 26 Feb 2009 19:28:43 -0800
+References: <200902241508.13835.david-b@pacbell.net>
+	<20090226122543.797eac77.akpm@linux-foundation.org>
+In-Reply-To: <20090226122543.797eac77.akpm@linux-foundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Content-Disposition: inline
-Message-Id: <200902261515.22197.david-b@pacbell.net>
-Cc: davinci-linux-open-source@linux.davincidsp.com,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Message-Id: <200902261928.43642.david-b@pacbell.net>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,230 +27,95 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Thursday 26 February 2009, Andrew Morton wrote:
-
-> > + * Copyright (C) 2006 Texas Instruments.
-> > + *
-> > + * Ported to 2.6.23 Copyright (C) 2008 by
-> > + *   Sander Huijsen <Shuijsen@optelecom-nkf.com>
-> > + *   Troy Kisky <troy.kisky@boundarydevices.com>
-> > + *   Dirk Behme <Dirk.Behme@gmail.com>
+> > +     temp = chip->ecc.steps;
+> > +     do {
+> > +             ...
+> > +     } while (--temp);
 > 
-> hm.  What's the story with authorship, attributions and signoffs here?
+> It would be clearer to code this as a plain old up-counting for loop.
 
-Written by TI (PSP team in India, ISTR) with no individual
-authorship credited, and shipped with a MontaVista 2.6.10
-kernel.  Ported as noted; I could presumably add my own
-copyright given recent updates I've made.  Likewise Felipe
-Balbi.  Kevin Hilman has signed off on various patches as
-part of merging them to the DaVinci tree.
-
-(To the TI team reading this via the DaVinci list:  I think
-Andrew is hinting that a Signed-off-By from a TI person
-would be a Nice Thing.  Same for Dirk, and maybe others.)
+Downside:  GCC adds a pointless jump-to-loop-test instruction at
+the top of the loop ... but we know there's at least one step,
+so there's no need to do that.  And up-counting needs an extra
+variable, with initialization etc.
 
 
-> > ...
-> >
-> > +#ifdef CONFIG_MTD_PARTITIONS
-> > +static inline int mtd_has_partitions(void) { return 1; }
-> > +#else
-> > +static inline int mtd_has_partitions(void) { return 0; }
-> > +#endif
-> > +
-> > +#ifdef CONFIG_MTD_CMDLINE_PARTS
-> > +static inline int mtd_has_cmdlinepart(void) { return 1; }
-> > +#else
-> > +static inline int mtd_has_cmdlinepart(void) { return 0; }
-> > +#endif
-> 
-> These definitions shouldn't be buried in a .c file.
-
-I will send along a patch to move them to <linux/mtd/...> headers,
-now that there seems to be a bit of recognition that the current
-ifdef-centric approach in the MTD mapping drivers is trouble.  ;)
-
-
-> >
-> > ...
-> >
-> > +static void nand_davinci_hwctl_1bit(struct mtd_info *mtd, int mode)
-> > +{
-> > +	struct davinci_nand_info *info;
-> > +	u32 retval;
-> 
-> The identifier `retval' is usually used to identify the value which
-> this function will return.
-
-True; resolved in the appended fixup patch.
-
-
-> > +static int nand_davinci_calculate_1bit(struct mtd_info *mtd,
-> > +				      const u_char *dat, u_char *ecc_code)
-> > +{
-> > +	unsigned int ecc_val = nand_davinci_readecc_1bit(mtd);
-> > +	unsigned int tmp = (ecc_val & 0x0fff) | ((ecc_val & 0x0fff0000) >> 4);
-> 
-> argh.
-
-It seems the best-dressed pirates have parrots named "argh"!  ;)
-
-
-> > +	/* invert so that erased block ecc is correct */
-> > +	tmp = ~tmp;
-> > +	ecc_code[0] = (u_char)(tmp);
-> > +	ecc_code[1] = (u_char)(tmp >> 8);
-> > +	ecc_code[2] = (u_char)(tmp >> 16);
-> 
-> Is there some library facility which is being open-coded here?
-
-I don't know of such a facility:  24-bit integer into 3-byte buffer.
-
-
-> > +	return 0;
-> > +}
-> > +
-> >
-> > ...
-> >
-> > +static int __init nand_davinci_probe(struct platform_device *pdev)
-> > +{
-> > +		... deletia ...
-> > +
-> > +	info = kzalloc(sizeof(*info), GFP_KERNEL);
-> > +	if (!info) {
-> > +		dev_err(&pdev->dev, "unable to allocate memory\n");
-> > +		ret = -ENOMEM;
-> > +		goto err_nomem;
-> > +	}
-> > +
-> > +	platform_set_drvdata(pdev, info);
-> > +
-> > +	res1 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > +	res2 = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-> > +	if (!res1 || !res2) {
-> > +		dev_err(&pdev->dev, "resource missing\n");
-> > +		ret = -EINVAL;
-> > +		goto err_res;
-> 
-> This leaks `info'.
-> 
-> Please check all the error path unwinding here.
-
-OK -- that does look buggish.
-
-(Kevin -- I suggest you merge this to the DaVinci tree to
-make the eventual resync-with-mainline easier.)
-
-=====================
+======== CUT HERE
 From: David Brownell <dbrownell@users.sourceforge.net>
 
-Minor fixes to the davinci-nand driver patch.
+Cosmetic fixes to the patch fixing raw HW_SYNDROME read/write.
 
 Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
 ---
- drivers/mtd/nand/davinci_nand.c |   35 ++++++++++++++++-------------------
- 1 file changed, 16 insertions(+), 19 deletions(-)
+ drivers/mtd/nand/nand_base.c |   28 +++++++++++++---------------
+ 1 file changed, 13 insertions(+), 15 deletions(-)
 
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -161,7 +161,7 @@ static inline u32 nand_davinci_readecc_1
- static void nand_davinci_hwctl_1bit(struct mtd_info *mtd, int mode)
- {
- 	struct davinci_nand_info *info;
--	u32 retval;
-+	u32 nandcfr;
- 	unsigned long flags;
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -773,10 +773,9 @@ static int nand_read_page_raw_syndrome(s
+ 	int eccsize = chip->ecc.size;
+ 	int eccbytes = chip->ecc.bytes;
+ 	uint8_t *oob = chip->oob_poi;
+-	int temp;
++	int steps, size;
  
- 	info = to_davinci_nand(mtd);
-@@ -172,9 +172,9 @@ static void nand_davinci_hwctl_1bit(stru
- 	spin_lock_irqsave(&davinci_nand_lock, flags);
+-	temp = chip->ecc.steps;
+-	do {
++	for (steps = chip->ecc.steps; steps > 0; steps--) {
+ 		chip->read_buf(mtd, buf, eccsize);
+ 		buf += eccsize;
  
- 	/* Restart ECC hardware */
--	retval = davinci_nand_readl(info, NANDFCR_OFFSET);
--	retval |= BIT(8 + info->core_chipsel);
--	davinci_nand_writel(info, NANDFCR_OFFSET, retval);
-+	nandcfr = davinci_nand_readl(info, NANDFCR_OFFSET);
-+	nandcfr |= BIT(8 + info->core_chipsel);
-+	davinci_nand_writel(info, NANDFCR_OFFSET, nandcfr);
+@@ -792,11 +791,11 @@ static int nand_read_page_raw_syndrome(s
+ 			chip->read_buf(mtd, oob, chip->ecc.postpad);
+ 			oob += chip->ecc.postpad;
+ 		}
+-	} while (--temp);
++	}
  
- 	spin_unlock_irqrestore(&davinci_nand_lock, flags);
- }
-@@ -186,13 +186,13 @@ static int nand_davinci_calculate_1bit(s
- 				      const u_char *dat, u_char *ecc_code)
- {
- 	unsigned int ecc_val = nand_davinci_readecc_1bit(mtd);
--	unsigned int tmp = (ecc_val & 0x0fff) | ((ecc_val & 0x0fff0000) >> 4);
-+	unsigned int ecc24 = (ecc_val & 0x0fff) | ((ecc_val & 0x0fff0000) >> 4);
- 
- 	/* invert so that erased block ecc is correct */
--	tmp = ~tmp;
--	ecc_code[0] = (u_char)(tmp);
--	ecc_code[1] = (u_char)(tmp >> 8);
--	ecc_code[2] = (u_char)(tmp >> 16);
-+	ecc24 = ~ecc24;
-+	ecc_code[0] = (u_char)(ecc24);
-+	ecc_code[1] = (u_char)(ecc24 >> 8);
-+	ecc_code[2] = (u_char)(ecc24 >> 16);
+-	temp = mtd->oobsize - (oob - chip->oob_poi);
+-	if (temp)
+-		chip->read_buf(mtd, oob, temp);
++	size = mtd->oobsize - (oob - chip->oob_poi);
++	if (size)
++		chip->read_buf(mtd, oob, size);
  
  	return 0;
  }
-@@ -278,7 +278,7 @@ static int nand_davinci_dev_ready(struct
+@@ -1542,7 +1541,7 @@ static void nand_write_page_raw(struct m
+  * @chip:	nand chip info structure
+  * @buf:	data buffer
+  *
+- * We need a special oob layout and handling even when ECC isn't used.
++ * We need a special oob layout and handling even when ECC isn't checked.
+  */
+ static void nand_write_page_raw_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+ 				const uint8_t *buf)
+@@ -1550,10 +1549,9 @@ static void nand_write_page_raw_syndrome
+ 	int eccsize = chip->ecc.size;
+ 	int eccbytes = chip->ecc.bytes;
+ 	uint8_t *oob = chip->oob_poi;
+-	int temp;
++	int steps, size;
  
- static void __init nand_dm6446evm_flash_init(struct davinci_nand_info *info)
- {
--	u32 regval, tmp;
-+	u32 regval, a1cr;
+-	temp = chip->ecc.steps;
+-	do {
++	for (steps = chip->ecc.steps; steps > 0; steps--) {
+ 		chip->write_buf(mtd, buf, eccsize);
+ 		buf += eccsize;
  
- 	/*
- 	 * NAND FLASH timings @ PLL1 == 459 MHz
-@@ -297,11 +297,11 @@ static void __init nand_dm6446evm_flash_
- 		| (3 << 2)            /* turnAround      ?? ns */
- 		| (0 << 0)            /* asyncSize       8-bit bus */
- 		;
--	tmp = davinci_nand_readl(info, A1CR_OFFSET);
--	if (tmp != regval) {
-+	a1cr = davinci_nand_readl(info, A1CR_OFFSET);
-+	if (a1cr != regval) {
- 		dev_dbg(info->dev, "Warning: NAND config: Set A1CR " \
- 		       "reg to 0x%08x, was 0x%08x, should be done by " \
--		       "bootloader.\n", regval, tmp);
-+		       "bootloader.\n", regval, a1cr);
- 		davinci_nand_writel(info, A1CR_OFFSET, regval);
- 	}
+@@ -1569,11 +1567,11 @@ static void nand_write_page_raw_syndrome
+ 			chip->write_buf(mtd, oob, chip->ecc.postpad);
+ 			oob += chip->ecc.postpad;
+ 		}
+-	} while (--temp);
++	}
+ 
+-	temp = mtd->oobsize - (oob - chip->oob_poi);
+-	if (temp)
+-		chip->write_buf(mtd, oob, temp);
++	size = mtd->oobsize - (oob - chip->oob_poi);
++	if (size)
++		chip->write_buf(mtd, oob, size);
  }
-@@ -338,7 +338,7 @@ static int __init nand_davinci_probe(str
- 	if (!res1 || !res2) {
- 		dev_err(&pdev->dev, "resource missing\n");
- 		ret = -EINVAL;
--		goto err_res;
-+		goto err_nomem;
- 	}
- 
- 	vaddr = ioremap(res1->start, res1->end - res1->start);
-@@ -347,7 +347,6 @@ static int __init nand_davinci_probe(str
- 		dev_err(&pdev->dev, "ioremap failed\n");
- 		ret = -EINVAL;
- 		goto err_ioremap;
--
- 	}
- 
- 	info->dev		= &pdev->dev;
-@@ -525,16 +524,14 @@ err_clk_enable:
- 
- err_ecc:
- err_clk:
-+err_ioremap:
- 	if (base)
- 		iounmap(base);
- 	if (vaddr)
- 		iounmap(vaddr);
- 
--err_ioremap:
--	kfree(info);
--
- err_nomem:
--err_res:
-+	kfree(info);
- 	return ret;
- }
- 
+ /**
+  * nand_write_page_swecc - [REPLACABLE] software ecc based page write function
