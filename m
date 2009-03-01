@@ -1,21 +1,19 @@
-Received: from yw-out-1718.google.com ([74.125.46.153])
+Received: from mail-ew0-f172.google.com ([209.85.219.172])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LdrvA-00059H-ST
-	for linux-mtd@lists.infradead.org; Sun, 01 Mar 2009 20:05:59 +0000
-Received: by yw-out-1718.google.com with SMTP id 4so1164241ywq.72
+	id 1LdsNl-0000La-I6
+	for linux-mtd@lists.infradead.org; Sun, 01 Mar 2009 20:35:44 +0000
+Received: by ewy20 with SMTP id 20so2117938ewy.18
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 01 Mar 2009 12:05:55 -0800 (PST)
+	Sun, 01 Mar 2009 12:35:27 -0800 (PST)
+Message-ID: <49AAF190.6050404@gmail.com>
+Date: Sun, 01 Mar 2009 21:35:28 +0100
+From: Roel Kluin <roel.kluin@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20090301163512.17419.qmail@pro-236-98.rediffmailpro.com>
-References: <20090301163512.17419.qmail@pro-236-98.rediffmailpro.com>
-Date: Sun, 1 Mar 2009 14:05:55 -0600
-Message-ID: <cb8016980903011205v76d9582en2cedc5e2a3190e6a@mail.gmail.com>
-Subject: Re: nand with jffs2
-From: Abraham Arce <abraham.arce.moreno@gmail.com>
-To: Syed Ismail <ismail.riyaz@dyansys.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+To: dwmw2@infradead.org
+Subject: [PATCH] jffs2_acl_count() tests < 0 on unsigned
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,42 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Syed,
+This patch wasn't tested in any way.
+------------------------------>8-------------8<---------------------------------
+size_t s is unsigned and cannot be less than 0.
 
-On Sun, Mar 1, 2009 at 10:35 AM, Syed Ismail <ismail.riyaz@dyansys.com> wro=
-te:
->
-> Hi
-> I am having problems using nand flash on my mx31 ads board. I use two 1 g=
-b nand parts. I first want to ensure 1 gb works. File system used is jffs2 =
-on linux 2.6.24.
-> =A0If I make a mtd partition that has no bad blocks, I can erase it using=
- flash_eraseall =96j and then mount it with =96t jffs2 option. If I use thi=
-s partition for root file system, it works fine, but some jffs2 warnings co=
-me up, like crc errors.
-> If I make a mtd partition that contain bad blocks, when mounting i get a =
-lot of mtd-> read ecc errors, followed by jffs2 messages. It=92s like bad b=
-locks are also being read, though when I do nand write, bad blocks get skip=
-ped.
-> The final 5 or 6 blocks always are shown as bad blocks when I do flash_er=
-aseall( I have tried with four different chips). If my mtd partition contai=
-ns these last 5 blocks, mounting gives input/output error, with messages of=
- "Cowardly refusing to erase blocks on filesystem with no valid JFFS2 nodes=
- ".
-
-I was having same issue when trying to mount a onenand blockdevice
-after formatted with -j option, are you using a OneNAND device?
-
-# mount -t jffs2  /dev/mtdblock13 /mnt/flashdevice/
-Cowardly refusing to erase blocks on filesystem with no valid JFFS2 nodes
-empty_blocks 0, bad_blocks 9, c->nr_blocks 2025
-mount: mounting /dev/mtdblock13 on /mnt/flashdevice/ failed
-
-give a try erasing all without the -j option and mount again...
-
-> One more thing is that, when I mount I get message of =93jffs2 not using =
-oob=94.
-> Can anyone help me here? Thanks
-
-Best Regards
-Abraham
+Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+---
+diff --git a/fs/jffs2/acl.c b/fs/jffs2/acl.c
+index d987137..6e63e8b 100644
+--- a/fs/jffs2/acl.c
++++ b/fs/jffs2/acl.c
+@@ -38,12 +38,12 @@ static int jffs2_acl_count(size_t size)
+ 	size_t s;
+ 
+ 	size -= sizeof(struct jffs2_acl_header);
+-	s = size - 4 * sizeof(struct jffs2_acl_entry_short);
+-	if (s < 0) {
++	if (size < 4 * sizeof(struct jffs2_acl_entry_short)) {
+ 		if (size % sizeof(struct jffs2_acl_entry_short))
+ 			return -1;
+ 		return size / sizeof(struct jffs2_acl_entry_short);
+ 	} else {
++		s = size - 4 * sizeof(struct jffs2_acl_entry_short);
+ 		if (s % sizeof(struct jffs2_acl_entry))
+ 			return -1;
+ 		return s / sizeof(struct jffs2_acl_entry) + 4;
