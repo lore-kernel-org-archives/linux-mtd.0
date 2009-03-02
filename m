@@ -1,19 +1,14 @@
-Received: from mail-ew0-f172.google.com ([209.85.219.172])
+Received: from nwd2mail11.analog.com ([137.71.25.57])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LdsNl-0000La-I6
-	for linux-mtd@lists.infradead.org; Sun, 01 Mar 2009 20:35:44 +0000
-Received: by ewy20 with SMTP id 20so2117938ewy.18
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 01 Mar 2009 12:35:27 -0800 (PST)
-Message-ID: <49AAF190.6050404@gmail.com>
-Date: Sun, 01 Mar 2009 21:35:28 +0100
-From: Roel Kluin <roel.kluin@gmail.com>
-MIME-Version: 1.0
+	id 1Le3Yo-0002HR-Jv
+	for linux-mtd@lists.infradead.org; Mon, 02 Mar 2009 08:31:41 +0000
+From: graff.yang@gmail.com
 To: dwmw2@infradead.org
-Subject: [PATCH] jffs2_acl_count() tests < 0 on unsigned
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mtd@lists.infradead.org
+Subject: [PATCH] [MTD] [CHIPS] cfi_cmdset_0001.c: Fix a bug in
+	inval_cache_and_wait_for_operation().
+Date: Mon,  2 Mar 2009 16:31:29 +0800
+Message-Id: <12359826893947-git-send-email-graff.yang@gmail.com>
+Cc: Graff Yang <graff.yang@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +18,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch wasn't tested in any way.
------------------------------->8-------------8<---------------------------------
-size_t s is unsigned and cannot be less than 0.
+From: Graff Yang <graff.yang@gmail.com>
 
-Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+If the inval_cache_and_wait_for_operation() is re-entered by write operation when erase
+operation is in progress, the chip->erase_suspended will be cleared, this cause the erase
+timeo is not reset and will result time out error for erase.
+
+Signed-off-by: Graff Yang <graff.yang@gmail.com>
 ---
-diff --git a/fs/jffs2/acl.c b/fs/jffs2/acl.c
-index d987137..6e63e8b 100644
---- a/fs/jffs2/acl.c
-+++ b/fs/jffs2/acl.c
-@@ -38,12 +38,12 @@ static int jffs2_acl_count(size_t size)
- 	size_t s;
- 
- 	size -= sizeof(struct jffs2_acl_header);
--	s = size - 4 * sizeof(struct jffs2_acl_entry_short);
--	if (s < 0) {
-+	if (size < 4 * sizeof(struct jffs2_acl_entry_short)) {
- 		if (size % sizeof(struct jffs2_acl_entry_short))
- 			return -1;
- 		return size / sizeof(struct jffs2_acl_entry_short);
- 	} else {
-+		s = size - 4 * sizeof(struct jffs2_acl_entry_short);
- 		if (s % sizeof(struct jffs2_acl_entry))
- 			return -1;
- 		return s / sizeof(struct jffs2_acl_entry) + 4;
+ drivers/mtd/chips/cfi_cmdset_0001.c |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index 5157e3c..a254fc3 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -1223,10 +1223,14 @@ static int inval_cache_and_wait_for_operation(
+ 			remove_wait_queue(&chip->wq, &wait);
+ 			spin_lock(chip->mutex);
+ 		}
+-		if (chip->erase_suspended || chip->write_suspended)  {
+-			/* Suspend has occured while sleep: reset timeout */
++		if (chip->erase_suspended && chip_state == FL_ERASING)  {
++			/* Erase suspend occured while sleep: reset timeout */
+ 			timeo = reset_timeo;
+ 			chip->erase_suspended = 0;
++		}
++		if (chip->write_suspended && chip_state == FL_WRITING)  {
++			/* Write suspend occured while sleep: reset timeout */
++			timeo = reset_timeo;
+ 			chip->write_suspended = 0;
+ 		}
+ 	}
+-- 
+1.5.2.5
