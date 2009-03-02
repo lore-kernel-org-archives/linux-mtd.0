@@ -1,14 +1,26 @@
-Received: from nwd2mail11.analog.com ([137.71.25.57])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Le3Yo-0002HR-Jv
-	for linux-mtd@lists.infradead.org; Mon, 02 Mar 2009 08:31:41 +0000
-From: graff.yang@gmail.com
-To: dwmw2@infradead.org
-Subject: [PATCH] [MTD] [CHIPS] cfi_cmdset_0001.c: Fix a bug in
-	inval_cache_and_wait_for_operation().
-Date: Mon,  2 Mar 2009 16:31:29 +0800
-Message-Id: <12359826893947-git-send-email-graff.yang@gmail.com>
-Cc: Graff Yang <graff.yang@gmail.com>, linux-mtd@lists.infradead.org
+Received: from bear.ext.ti.com ([192.94.94.41])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Le3bx-0002QE-Ma
+	for linux-mtd@lists.infradead.org; Mon, 02 Mar 2009 08:34:56 +0000
+From: "Rajashekhara, Sudhakar" <sudhakar.raj@ti.com>
+To: "me@felipebalbi.com" <me@felipebalbi.com>, David Brownell
+	<david-b@pacbell.net>
+Date: Mon, 2 Mar 2009 14:03:08 +0530
+Subject: RE: [patch/RESEND 2.6.29-rc3-git] NAND: davinci_nand driver
+Message-ID: <FF55437E1F14DA4BAEB721A458B670170697FE564B@dbde02.ent.ti.com>
+References: <200902241509.54649.david-b@pacbell.net>
+	<20090226123341.a2421733.akpm@linux-foundation.org>
+	<200902261515.22197.david-b@pacbell.net>, <20090227175244.GD16801@frodo>
+In-Reply-To: <20090227175244.GD16801@frodo>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"davinci-linux-open-source@linux.davincidsp.com"
+	<davinci-linux-open-source@linux.davincidsp.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,37 +30,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Graff Yang <graff.yang@gmail.com>
+I and one of my colleague Vinod, who is no more with TI, worked on this dri=
+ver. I can sign-off this driver.
 
-If the inval_cache_and_wait_for_operation() is re-entered by write operation when erase
-operation is in progress, the chip->erase_suspended will be cleared, this cause the erase
-timeo is not reset and will result time out error for erase.
+Signed-off-by: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
 
-Signed-off-by: Graff Yang <graff.yang@gmail.com>
----
- drivers/mtd/chips/cfi_cmdset_0001.c |    8 ++++++--
- 1 files changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index 5157e3c..a254fc3 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -1223,10 +1223,14 @@ static int inval_cache_and_wait_for_operation(
- 			remove_wait_queue(&chip->wq, &wait);
- 			spin_lock(chip->mutex);
- 		}
--		if (chip->erase_suspended || chip->write_suspended)  {
--			/* Suspend has occured while sleep: reset timeout */
-+		if (chip->erase_suspended && chip_state == FL_ERASING)  {
-+			/* Erase suspend occured while sleep: reset timeout */
- 			timeo = reset_timeo;
- 			chip->erase_suspended = 0;
-+		}
-+		if (chip->write_suspended && chip_state == FL_WRITING)  {
-+			/* Write suspend occured while sleep: reset timeout */
-+			timeo = reset_timeo;
- 			chip->write_suspended = 0;
- 		}
- 	}
--- 
-1.5.2.5
+Regards, Sudhakar
+>=20
+> On Thu, Feb 26, 2009 at 03:15:21PM -0800, David Brownell wrote:
+> > (To the TI team reading this via the DaVinci list:  I think Andrew=20
+> > is hinting that a Signed-off-By from a TI person would be a Nice=20
+> > Thing.  Same for Dirk, and maybe others.)
+>=20
+> If it's really necessary, feel free to add mine:
+>=20
+> Signed-off-by: Felipe Balbi <me@felipebalbi.com>
+>=20
+> --
+> balbi
+>=20
+> _______________________________________________
+> Davinci-linux-open-source mailing list=20
+> Davinci-linux-open-source@linux.davincidsp.com
+> http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source=
