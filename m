@@ -1,26 +1,19 @@
-Received: from mailout5.samsung.com ([203.254.224.35])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LeOF2-0001kF-1r
-	for linux-mtd@lists.infradead.org; Tue, 03 Mar 2009 06:36:50 +0000
-Received: from epmmp1 (mailout5.samsung.com [203.254.224.35])
-	by mailout5.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KFX00KSI3OPF4@mailout5.samsung.com> for
-	linux-mtd@lists.infradead.org; Tue, 03 Mar 2009 15:36:25 +0900 (KST)
-Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0KFX000BQ3OPRV@mmp1.samsung.com> for
-	linux-mtd@lists.infradead.org; Tue, 03 Mar 2009 15:36:25 +0900 (KST)
-Date: Tue, 03 Mar 2009 15:36:18 +0900
-From: Kyungmin Park <kmpark@infradead.org>
-Subject: [PATCH 2/3] [MTD] [OneNAND] Add write-while-program support
-To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Message-id: <20090303063618.GA30263@july>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7BIT
-Content-disposition: inline
-Cc: ext-adrian.hunter@nokia.com
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LeOHN-00020J-Ck
+	for linux-mtd@lists.infradead.org; Tue, 03 Mar 2009 06:39:04 +0000
+Subject: Re: libubiio : userspace UBI input output library
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Sidney Amani <seed95@gmail.com>
+In-Reply-To: <52e42efe0903010645t7de56621t59de14626953e0fe@mail.gmail.com>
+References: <52e42efe0903010645t7de56621t59de14626953e0fe@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 03 Mar 2009 08:38:31 +0200
+Message-Id: <1236062311.4261.43.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,247 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It's similar with read-while-program method.
-but it's write side performance improvement.
+On Sun, 2009-03-01 at 15:45 +0100, Sidney Amani wrote:
+> Hi list,
+> 
+> UBIIO library is an user-space library which exports same functions in
+> UBI Linux kernel module.
+> It provides exactly the same API as the kernel does, that way kernel
+> code can be used in user-space without any change.
+> The code is widely inspired with libubi source code.
+> 
+> Documentation can be found at http://uffs.org/api/libubiio.html
+> It is obviously the same as UBI kernel API, but there is actually few
+> differences in return values.
+> 
+> The code can be found at http://git.uffs.org/
+> 
+> We would like to know if you are interested in it and want to include
+> it in mtdutils.
 
-Here's brief performance results.
-Note: Measured from OMAP3 with async OneNAND mode. (not sync mode)
+Hi, I guess this is useful. Just wonder, if you are targeted to
+mtd-utils, why not to develop in there from the very beginning? Use
+similar coding style, clean-up current code if needed, etc?
 
-=================================================================
-speedtest: dev = 3
-speedtest: Size=16777216  EB size=131072  Write size=2048  EB count=128
-                Pages per EB=64  Page size=2048
-speedtest: scanning for bad blocks
-speedtest: scanned 0
-speedtest: scanned 128, found 0 bad
-speedtest: erasing
-speedtest: erased 0
-speedtest: erased 128
-speedtest: Testing eraseblock write speed
-eraseblock write speed is 2592 KiB/s
-speedtest: Testing eraseblock read speed
-eraseblock read speed is 16786 KiB/s
-speedtest: Testing page write speed
-page write speed is 2966 KiB/s
-speedtest: Testing page read speed
-page read speed is 13277 KiB/s
-speedtest: Testing 2 page write speed
-2 page write speed is 3182 KiB/s
-speedtest: Testing 2 page read speed
-2 page read speed is 14773 KiB/s
-speedtest: Testing erase speed
-erase speed is 192752 KiB/s
-speedtest: speedtest finished
-=================================================================
-
-Also it's passed all nand-tests.
-
->From Adrian
-
-I have made a couple of tiny changes and tested this.  I get
-a 10% - 25% improvement in write speed when writing more than
-1 page.
-
-Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
-Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
----
- drivers/mtd/onenand/onenand_base.c |  145 ++++++++++++++++++++++++------------
- 1 files changed, 96 insertions(+), 49 deletions(-)
-
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index 4481df7..7af863a 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -1778,7 +1778,8 @@ static int onenand_write_ops_nolock(struct mtd_info *mtd, loff_t to,
- 				struct mtd_oob_ops *ops)
- {
- 	struct onenand_chip *this = mtd->priv;
--	int written = 0, column, thislen, subpage;
-+	int written = 0, column, thislen = 0, subpage = 0;
-+	int prev = 0, prevlen = 0, prev_subpage = 0, first = 1;
- 	int oobwritten = 0, oobcolumn, thisooblen, oobsize;
- 	size_t len = ops->len;
- 	size_t ooblen = ops->ooblen;
-@@ -1805,6 +1806,10 @@ static int onenand_write_ops_nolock(struct mtd_info *mtd, loff_t to,
-                 return -EINVAL;
-         }
- 
-+	/* Check zero length */
-+	if (!len)
-+		return 0;
-+
- 	if (ops->mode == MTD_OOB_AUTO)
- 		oobsize = this->ecclayout->oobavail;
- 	else
-@@ -1815,79 +1820,121 @@ static int onenand_write_ops_nolock(struct mtd_info *mtd, loff_t to,
- 	column = to & (mtd->writesize - 1);
- 
- 	/* Loop until all data write */
--	while (written < len) {
--		u_char *wbuf = (u_char *) buf;
-+	while (1) {
-+		if (written < len) {
-+			u_char *wbuf = (u_char *) buf;
- 
--		thislen = min_t(int, mtd->writesize - column, len - written);
--		thisooblen = min_t(int, oobsize - oobcolumn, ooblen - oobwritten);
-+			thislen = min_t(int, mtd->writesize - column, len - written);
-+			thisooblen = min_t(int, oobsize - oobcolumn, ooblen - oobwritten);
- 
--		cond_resched();
-+			cond_resched();
- 
--		this->command(mtd, ONENAND_CMD_BUFFERRAM, to, thislen);
-+			this->command(mtd, ONENAND_CMD_BUFFERRAM, to, thislen);
- 
--		/* Partial page write */
--		subpage = thislen < mtd->writesize;
--		if (subpage) {
--			memset(this->page_buf, 0xff, mtd->writesize);
--			memcpy(this->page_buf + column, buf, thislen);
--			wbuf = this->page_buf;
--		}
-+			/* Partial page write */
-+			subpage = thislen < mtd->writesize;
-+			if (subpage) {
-+				memset(this->page_buf, 0xff, mtd->writesize);
-+				memcpy(this->page_buf + column, buf, thislen);
-+				wbuf = this->page_buf;
-+			}
- 
--		this->write_bufferram(mtd, ONENAND_DATARAM, wbuf, 0, mtd->writesize);
-+			this->write_bufferram(mtd, ONENAND_DATARAM, wbuf, 0, mtd->writesize);
- 
--		if (oob) {
--			oobbuf = this->oob_buf;
-+			if (oob) {
-+				oobbuf = this->oob_buf;
- 
--			/* We send data to spare ram with oobsize
--			 * to prevent byte access */
--			memset(oobbuf, 0xff, mtd->oobsize);
--			if (ops->mode == MTD_OOB_AUTO)
--				onenand_fill_auto_oob(mtd, oobbuf, oob, oobcolumn, thisooblen);
--			else
--				memcpy(oobbuf + oobcolumn, oob, thisooblen);
-+				/* We send data to spare ram with oobsize
-+				 * to prevent byte access */
-+				memset(oobbuf, 0xff, mtd->oobsize);
-+				if (ops->mode == MTD_OOB_AUTO)
-+					onenand_fill_auto_oob(mtd, oobbuf, oob, oobcolumn, thisooblen);
-+				else
-+					memcpy(oobbuf + oobcolumn, oob, thisooblen);
- 
--			oobwritten += thisooblen;
--			oob += thisooblen;
--			oobcolumn = 0;
-+				oobwritten += thisooblen;
-+				oob += thisooblen;
-+				oobcolumn = 0;
-+			} else
-+				oobbuf = (u_char *) ffchars;
-+
-+			this->write_bufferram(mtd, ONENAND_SPARERAM, oobbuf, 0, mtd->oobsize);
- 		} else
--			oobbuf = (u_char *) ffchars;
-+			ONENAND_SET_NEXT_BUFFERRAM(this);
- 
--		this->write_bufferram(mtd, ONENAND_SPARERAM, oobbuf, 0, mtd->oobsize);
-+		/*
-+		 * 2 PLANE, MLC, and Flex-OneNAND doesn't support
-+		 * write-while-programe feature.
-+		 */
-+		if (!ONENAND_IS_2PLANE(this) && !first) {
-+			ONENAND_SET_PREV_BUFFERRAM(this);
- 
--		this->command(mtd, ONENAND_CMD_PROG, to, mtd->writesize);
-+			ret = this->wait(mtd, FL_WRITING);
- 
--		ret = this->wait(mtd, FL_WRITING);
-+			/* In partial page write we don't update bufferram */
-+			onenand_update_bufferram(mtd, prev, !ret && !prev_subpage);
-+			if (ret) {
-+				written -= prevlen;
-+				printk(KERN_ERR "onenand_write_ops_nolock: write filaed %d\n", ret);
-+				break;
-+			}
- 
--		/* In partial page write we don't update bufferram */
--		onenand_update_bufferram(mtd, to, !ret && !subpage);
--		if (ONENAND_IS_2PLANE(this)) {
--			ONENAND_SET_BUFFERRAM1(this);
--			onenand_update_bufferram(mtd, to + this->writesize, !ret && !subpage);
--		}
-+			if (written == len) {
-+				/* Only check verify write turn on */
-+				ret = onenand_verify(mtd, buf - len, to - len, len);
-+				if (ret)
-+					printk(KERN_ERR "onenand_write_ops_nolock: verify failed %d\n", ret);
-+				break;
-+			}
- 
--		if (ret) {
--			printk(KERN_ERR "onenand_write_ops_nolock: write filaed %d\n", ret);
--			break;
-+			ONENAND_SET_NEXT_BUFFERRAM(this);
- 		}
- 
--		/* Only check verify write turn on */
--		ret = onenand_verify(mtd, buf, to, thislen);
--		if (ret) {
--			printk(KERN_ERR "onenand_write_ops_nolock: verify failed %d\n", ret);
--			break;
--		}
-+		this->command(mtd, ONENAND_CMD_PROG, to, mtd->writesize);
- 
--		written += thislen;
-+		/*
-+		 * 2 PLANE, MLC, and Flex-OneNAND wait here
-+		 */
-+		if (ONENAND_IS_2PLANE(this)) {
-+			ret = this->wait(mtd, FL_WRITING);
- 
--		if (written == len)
--			break;
-+			/* In partial page write we don't update bufferram */
-+			onenand_update_bufferram(mtd, to, !ret && !subpage);
-+			if (ret) {
-+				printk(KERN_ERR "onenand_write_ops_nolock: write filaed %d\n", ret);
-+				break;
-+			}
-+
-+			/* Only check verify write turn on */
-+			ret = onenand_verify(mtd, buf, to, thislen);
-+			if (ret) {
-+				printk(KERN_ERR "onenand_write_ops_nolock: verify failed %d\n", ret);
-+				break;
-+			}
-+
-+			written += thislen;
-+
-+			if (written == len)
-+				break;
-+
-+		} else
-+			written += thislen;
- 
- 		column = 0;
-+		prev_subpage = subpage;
-+		prev = to;
-+		prevlen = thislen;
- 		to += thislen;
- 		buf += thislen;
-+		first = 0;
- 	}
- 
-+	/* In error case, clear all bufferrams */
-+	if (written != len)
-+		onenand_invalidate_bufferram(mtd, 0, -1);
-+
- 	ops->retlen = written;
-+	ops->oobretlen = oobwritten;
- 
- 	return ret;
- }
 -- 
-1.5.3.3
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
