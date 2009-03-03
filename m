@@ -1,26 +1,26 @@
-Received: from mailout4.samsung.com ([203.254.224.34])
+Received: from mailout5.samsung.com ([203.254.224.35])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LeOFB-0001l4-Uc
-	for linux-mtd@lists.infradead.org; Tue, 03 Mar 2009 06:36:48 +0000
-Received: from epmmp2 (mailout4.samsung.com [203.254.224.34])
-	by mailout4.samsung.com
+	id 1LeOF2-0001kF-1r
+	for linux-mtd@lists.infradead.org; Tue, 03 Mar 2009 06:36:50 +0000
+Received: from epmmp1 (mailout5.samsung.com [203.254.224.35])
+	by mailout5.samsung.com
 	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KFX00B8A3P2RB@mailout4.samsung.com> for
-	linux-mtd@lists.infradead.org; Tue, 03 Mar 2009 15:36:38 +0900 (KST)
+	with ESMTP id <0KFX00KSI3OPF4@mailout5.samsung.com> for
+	linux-mtd@lists.infradead.org; Tue, 03 Mar 2009 15:36:25 +0900 (KST)
 Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0KFX00GW53P25Q@mmp2.samsung.com> for
-	linux-mtd@lists.infradead.org; Tue, 03 Mar 2009 15:36:38 +0900 (KST)
-Date: Tue, 03 Mar 2009 15:36:31 +0900
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KFX000BQ3OPRV@mmp1.samsung.com> for
+	linux-mtd@lists.infradead.org; Tue, 03 Mar 2009 15:36:25 +0900 (KST)
+Date: Tue, 03 Mar 2009 15:36:18 +0900
 From: Kyungmin Park <kmpark@infradead.org>
-Subject: [PATCH 3/3] [MTD] [OneNAND] Add bbt_wait & unlock_all as	replaceable
-	for some platform
+Subject: [PATCH 2/3] [MTD] [OneNAND] Add write-while-program support
 To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Message-id: <20090303063631.GA30269@july>
+Message-id: <20090303063618.GA30263@july>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
 Content-transfer-encoding: 7BIT
 Content-disposition: inline
+Cc: ext-adrian.hunter@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,88 +30,247 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add bbt_wait & unlock_all as replaceable for some platform such as s3c64xx
-s3c64xx has its own OneNAND controller and another interface
+It's similar with read-while-program method.
+but it's write side performance improvement.
+
+Here's brief performance results.
+Note: Measured from OMAP3 with async OneNAND mode. (not sync mode)
+
+=================================================================
+speedtest: dev = 3
+speedtest: Size=16777216  EB size=131072  Write size=2048  EB count=128
+                Pages per EB=64  Page size=2048
+speedtest: scanning for bad blocks
+speedtest: scanned 0
+speedtest: scanned 128, found 0 bad
+speedtest: erasing
+speedtest: erased 0
+speedtest: erased 128
+speedtest: Testing eraseblock write speed
+eraseblock write speed is 2592 KiB/s
+speedtest: Testing eraseblock read speed
+eraseblock read speed is 16786 KiB/s
+speedtest: Testing page write speed
+page write speed is 2966 KiB/s
+speedtest: Testing page read speed
+page read speed is 13277 KiB/s
+speedtest: Testing 2 page write speed
+2 page write speed is 3182 KiB/s
+speedtest: Testing 2 page read speed
+2 page read speed is 14773 KiB/s
+speedtest: Testing erase speed
+erase speed is 192752 KiB/s
+speedtest: speedtest finished
+=================================================================
+
+Also it's passed all nand-tests.
+
+>From Adrian
+
+I have made a couple of tiny changes and tested this.  I get
+a 10% - 25% improvement in write speed when writing more than
+1 page.
 
 Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
 ---
- drivers/mtd/onenand/onenand_base.c |   12 ++++++++++--
- include/linux/mtd/onenand.h        |    5 +++++
- 2 files changed, 15 insertions(+), 2 deletions(-)
+ drivers/mtd/onenand/onenand_base.c |  145 ++++++++++++++++++++++++------------
+ 1 files changed, 96 insertions(+), 49 deletions(-)
 
 diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index 7af863a..565599b 100644
+index 4481df7..7af863a 100644
 --- a/drivers/mtd/onenand/onenand_base.c
 +++ b/drivers/mtd/onenand/onenand_base.c
-@@ -1511,7 +1511,7 @@ int onenand_bbt_read_oob(struct mtd_info *mtd, loff_t from,
+@@ -1778,7 +1778,8 @@ static int onenand_write_ops_nolock(struct mtd_info *mtd, loff_t to,
+ 				struct mtd_oob_ops *ops)
+ {
+ 	struct onenand_chip *this = mtd->priv;
+-	int written = 0, column, thislen, subpage;
++	int written = 0, column, thislen = 0, subpage = 0;
++	int prev = 0, prevlen = 0, prev_subpage = 0, first = 1;
+ 	int oobwritten = 0, oobcolumn, thisooblen, oobsize;
+ 	size_t len = ops->len;
+ 	size_t ooblen = ops->ooblen;
+@@ -1805,6 +1806,10 @@ static int onenand_write_ops_nolock(struct mtd_info *mtd, loff_t to,
+                 return -EINVAL;
+         }
  
- 		onenand_update_bufferram(mtd, from, 0);
- 
--		ret = onenand_bbt_wait(mtd, FL_READING);
-+		ret = this->bbt_wait(mtd, FL_READING);
- 		if (unlikely(ret))
- 			ret = onenand_recover_lsb(mtd, from, ret);
- 
-@@ -2532,6 +2532,10 @@ static void onenand_unlock_all(struct mtd_info *mtd)
- 		    & ONENAND_CTRL_ONGO)
- 			continue;
- 
-+		/* Don't check lock status */
-+		if (this->options & ONENAND_SKIP_UNLOCK_CHECK)
-+			return;
++	/* Check zero length */
++	if (!len)
++		return 0;
 +
- 		/* Check lock status */
- 		if (onenand_check_lock_status(this))
- 			return;
-@@ -3407,6 +3411,10 @@ int onenand_scan(struct mtd_info *mtd, int maxchips)
- 		this->command = onenand_command;
- 	if (!this->wait)
- 		onenand_setup_wait(mtd);
-+	if (!this->bbt_wait)
-+		this->bbt_wait = onenand_bbt_wait;
-+	if (!this->unlock_all)
-+		this->unlock_all = onenand_unlock_all;
+ 	if (ops->mode == MTD_OOB_AUTO)
+ 		oobsize = this->ecclayout->oobavail;
+ 	else
+@@ -1815,79 +1820,121 @@ static int onenand_write_ops_nolock(struct mtd_info *mtd, loff_t to,
+ 	column = to & (mtd->writesize - 1);
  
- 	if (!this->read_bufferram)
- 		this->read_bufferram = onenand_read_bufferram;
-@@ -3524,7 +3532,7 @@ int onenand_scan(struct mtd_info *mtd, int maxchips)
- 	mtd->owner = THIS_MODULE;
+ 	/* Loop until all data write */
+-	while (written < len) {
+-		u_char *wbuf = (u_char *) buf;
++	while (1) {
++		if (written < len) {
++			u_char *wbuf = (u_char *) buf;
  
- 	/* Unlock whole block */
--	onenand_unlock_all(mtd);
-+	this->unlock_all(mtd);
+-		thislen = min_t(int, mtd->writesize - column, len - written);
+-		thisooblen = min_t(int, oobsize - oobcolumn, ooblen - oobwritten);
++			thislen = min_t(int, mtd->writesize - column, len - written);
++			thisooblen = min_t(int, oobsize - oobcolumn, ooblen - oobwritten);
  
- 	ret = this->scan_bbt(mtd);
- 	if ((!FLEXONENAND(this)) || ret)
-diff --git a/include/linux/mtd/onenand.h b/include/linux/mtd/onenand.h
-index 1ce6c39..c3aed89 100644
---- a/include/linux/mtd/onenand.h
-+++ b/include/linux/mtd/onenand.h
-@@ -97,6 +97,8 @@ struct onenand_bufferram {
-  * @command:		[REPLACEABLE] hardware specific function for writing
-  *			commands to the chip
-  * @wait:		[REPLACEABLE] hardware specific function for wait on ready
-+ * @bbt_wait:		[REPLACEABLE] hardware specific function for bbt wait on ready
-+ * @unlock_all:		[REPLACEABLE] hardware specific function for unlock all
-  * @read_bufferram:	[REPLACEABLE] hardware specific function for BufferRAM Area
-  * @write_bufferram:	[REPLACEABLE] hardware specific function for BufferRAM Area
-  * @read_word:		[REPLACEABLE] hardware specific function for read
-@@ -141,6 +143,8 @@ struct onenand_chip {
+-		cond_resched();
++			cond_resched();
  
- 	int (*command)(struct mtd_info *mtd, int cmd, loff_t address, size_t len);
- 	int (*wait)(struct mtd_info *mtd, int state);
-+	int (*bbt_wait)(struct mtd_info *mtd, int state);
-+	void (*unlock_all)(struct mtd_info *mtd);
- 	int (*read_bufferram)(struct mtd_info *mtd, int area,
- 			unsigned char *buffer, int offset, size_t count);
- 	int (*write_bufferram)(struct mtd_info *mtd, int area,
-@@ -207,6 +211,7 @@ struct onenand_chip {
- #define ONENAND_HAS_CONT_LOCK		(0x0001)
- #define ONENAND_HAS_UNLOCK_ALL		(0x0002)
- #define ONENAND_HAS_2PLANE		(0x0004)
-+#define ONENAND_SKIP_UNLOCK_CHECK	(0x0100)
- #define ONENAND_PAGEBUF_ALLOC		(0x1000)
- #define ONENAND_OOBBUF_ALLOC		(0x2000)
+-		this->command(mtd, ONENAND_CMD_BUFFERRAM, to, thislen);
++			this->command(mtd, ONENAND_CMD_BUFFERRAM, to, thislen);
  
+-		/* Partial page write */
+-		subpage = thislen < mtd->writesize;
+-		if (subpage) {
+-			memset(this->page_buf, 0xff, mtd->writesize);
+-			memcpy(this->page_buf + column, buf, thislen);
+-			wbuf = this->page_buf;
+-		}
++			/* Partial page write */
++			subpage = thislen < mtd->writesize;
++			if (subpage) {
++				memset(this->page_buf, 0xff, mtd->writesize);
++				memcpy(this->page_buf + column, buf, thislen);
++				wbuf = this->page_buf;
++			}
+ 
+-		this->write_bufferram(mtd, ONENAND_DATARAM, wbuf, 0, mtd->writesize);
++			this->write_bufferram(mtd, ONENAND_DATARAM, wbuf, 0, mtd->writesize);
+ 
+-		if (oob) {
+-			oobbuf = this->oob_buf;
++			if (oob) {
++				oobbuf = this->oob_buf;
+ 
+-			/* We send data to spare ram with oobsize
+-			 * to prevent byte access */
+-			memset(oobbuf, 0xff, mtd->oobsize);
+-			if (ops->mode == MTD_OOB_AUTO)
+-				onenand_fill_auto_oob(mtd, oobbuf, oob, oobcolumn, thisooblen);
+-			else
+-				memcpy(oobbuf + oobcolumn, oob, thisooblen);
++				/* We send data to spare ram with oobsize
++				 * to prevent byte access */
++				memset(oobbuf, 0xff, mtd->oobsize);
++				if (ops->mode == MTD_OOB_AUTO)
++					onenand_fill_auto_oob(mtd, oobbuf, oob, oobcolumn, thisooblen);
++				else
++					memcpy(oobbuf + oobcolumn, oob, thisooblen);
+ 
+-			oobwritten += thisooblen;
+-			oob += thisooblen;
+-			oobcolumn = 0;
++				oobwritten += thisooblen;
++				oob += thisooblen;
++				oobcolumn = 0;
++			} else
++				oobbuf = (u_char *) ffchars;
++
++			this->write_bufferram(mtd, ONENAND_SPARERAM, oobbuf, 0, mtd->oobsize);
+ 		} else
+-			oobbuf = (u_char *) ffchars;
++			ONENAND_SET_NEXT_BUFFERRAM(this);
+ 
+-		this->write_bufferram(mtd, ONENAND_SPARERAM, oobbuf, 0, mtd->oobsize);
++		/*
++		 * 2 PLANE, MLC, and Flex-OneNAND doesn't support
++		 * write-while-programe feature.
++		 */
++		if (!ONENAND_IS_2PLANE(this) && !first) {
++			ONENAND_SET_PREV_BUFFERRAM(this);
+ 
+-		this->command(mtd, ONENAND_CMD_PROG, to, mtd->writesize);
++			ret = this->wait(mtd, FL_WRITING);
+ 
+-		ret = this->wait(mtd, FL_WRITING);
++			/* In partial page write we don't update bufferram */
++			onenand_update_bufferram(mtd, prev, !ret && !prev_subpage);
++			if (ret) {
++				written -= prevlen;
++				printk(KERN_ERR "onenand_write_ops_nolock: write filaed %d\n", ret);
++				break;
++			}
+ 
+-		/* In partial page write we don't update bufferram */
+-		onenand_update_bufferram(mtd, to, !ret && !subpage);
+-		if (ONENAND_IS_2PLANE(this)) {
+-			ONENAND_SET_BUFFERRAM1(this);
+-			onenand_update_bufferram(mtd, to + this->writesize, !ret && !subpage);
+-		}
++			if (written == len) {
++				/* Only check verify write turn on */
++				ret = onenand_verify(mtd, buf - len, to - len, len);
++				if (ret)
++					printk(KERN_ERR "onenand_write_ops_nolock: verify failed %d\n", ret);
++				break;
++			}
+ 
+-		if (ret) {
+-			printk(KERN_ERR "onenand_write_ops_nolock: write filaed %d\n", ret);
+-			break;
++			ONENAND_SET_NEXT_BUFFERRAM(this);
+ 		}
+ 
+-		/* Only check verify write turn on */
+-		ret = onenand_verify(mtd, buf, to, thislen);
+-		if (ret) {
+-			printk(KERN_ERR "onenand_write_ops_nolock: verify failed %d\n", ret);
+-			break;
+-		}
++		this->command(mtd, ONENAND_CMD_PROG, to, mtd->writesize);
+ 
+-		written += thislen;
++		/*
++		 * 2 PLANE, MLC, and Flex-OneNAND wait here
++		 */
++		if (ONENAND_IS_2PLANE(this)) {
++			ret = this->wait(mtd, FL_WRITING);
+ 
+-		if (written == len)
+-			break;
++			/* In partial page write we don't update bufferram */
++			onenand_update_bufferram(mtd, to, !ret && !subpage);
++			if (ret) {
++				printk(KERN_ERR "onenand_write_ops_nolock: write filaed %d\n", ret);
++				break;
++			}
++
++			/* Only check verify write turn on */
++			ret = onenand_verify(mtd, buf, to, thislen);
++			if (ret) {
++				printk(KERN_ERR "onenand_write_ops_nolock: verify failed %d\n", ret);
++				break;
++			}
++
++			written += thislen;
++
++			if (written == len)
++				break;
++
++		} else
++			written += thislen;
+ 
+ 		column = 0;
++		prev_subpage = subpage;
++		prev = to;
++		prevlen = thislen;
+ 		to += thislen;
+ 		buf += thislen;
++		first = 0;
+ 	}
+ 
++	/* In error case, clear all bufferrams */
++	if (written != len)
++		onenand_invalidate_bufferram(mtd, 0, -1);
++
+ 	ops->retlen = written;
++	ops->oobretlen = oobwritten;
+ 
+ 	return ret;
+ }
 -- 
 1.5.3.3
