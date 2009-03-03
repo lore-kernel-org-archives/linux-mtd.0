@@ -1,26 +1,16 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Le3bx-0002QE-Ma
-	for linux-mtd@lists.infradead.org; Mon, 02 Mar 2009 08:34:56 +0000
-From: "Rajashekhara, Sudhakar" <sudhakar.raj@ti.com>
-To: "me@felipebalbi.com" <me@felipebalbi.com>, David Brownell
-	<david-b@pacbell.net>
-Date: Mon, 2 Mar 2009 14:03:08 +0530
-Subject: RE: [patch/RESEND 2.6.29-rc3-git] NAND: davinci_nand driver
-Message-ID: <FF55437E1F14DA4BAEB721A458B670170697FE564B@dbde02.ent.ti.com>
-References: <200902241509.54649.david-b@pacbell.net>
-	<20090226123341.a2421733.akpm@linux-foundation.org>
-	<200902261515.22197.david-b@pacbell.net>, <20090227175244.GD16801@frodo>
-In-Reply-To: <20090227175244.GD16801@frodo>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <20090303030923.yzh03j5q848cs4go@shared7.no-wires.co.uk>
+Date: Tue, 03 Mar 2009 03:09:23 +0000
+From: EQUITY TRUST FINANCE <migraceo@migracao.gov.tl>
+To: undisclosed-recipients:;
+Subject: APPLY FOR LOAN AT 2% INTEREST RATE
 MIME-Version: 1.0
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"davinci-linux-open-source@linux.davincidsp.com"
-	<davinci-linux-open-source@linux.davincidsp.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain;
+	charset=ISO-8859-1;
+	DelSp="Yes";
+	format="flowed"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Reply-To: equitytrustfinance@ymail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,26 +20,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I and one of my colleague Vinod, who is no more with TI, worked on this dri=
-ver. I can sign-off this driver.
 
-Signed-off-by: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
 
-Regards, Sudhakar
->=20
-> On Thu, Feb 26, 2009 at 03:15:21PM -0800, David Brownell wrote:
-> > (To the TI team reading this via the DaVinci list:  I think Andrew=20
-> > is hinting that a Signed-off-By from a TI person would be a Nice=20
-> > Thing.  Same for Dirk, and maybe others.)
->=20
-> If it's really necessary, feel free to add mine:
->=20
-> Signed-off-by: Felipe Balbi <me@felipebalbi.com>
->=20
-> --
-> balbi
->=20
-> _______________________________________________
-> Davinci-linux-open-source mailing list=20
-> Davinci-linux-open-source@linux.davincidsp.com
-> http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source=
+EQUITY TRUST FINANCE COMPANY
+81-82 Burley Road, Leeds LS3 1LR
+Liverpool  England. UK
+www.equitytrustfinance.net
+
+What is your situation? Need 100% financing, Can't verify income, Can't veri=
+fy
+employment, Recently self-employed, Bankruptcy, Collections, Credit Issues.
+Contact us today for loans and you will be given the best of all financial
+support. We offer out loans at soft interest rate. Get your self financially
+equipped by applying for a loan with us.Loans are only available to applican=
+ts
+who are 18 years or over, in full time employment (minimum of 16 hours per
+week) and a bank account holder. Calls may be recorded for training purposes=
+.
+EQUITY TRUST FINANCE COMPANY is authorised and regulated by the Financial
+Services Authority. Registered in England No.62-1206786. FOR MORE ENQUIRY
+PLEASE CONTACT US VIA  E-MAIL: equitytrustf@consultant.com or
+equitytrustfinance@live.com
+
+Tell +447035940012
+       +447035975278
+
+
+Best Regards
+Mr. Ashley Cromwell
+C.E.O/General Consult
+EQUITY TRUST FINANCE COMPANY
