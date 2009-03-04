@@ -1,10 +1,11 @@
-Message-Id: <200903042001.n24K1f2p028801@imap1.linux-foundation.org>
-Subject: [patch 15/15] jffs2_acl_count() tests < 0 on unsigned
+Message-Id: <200903042001.n24K1ZjP028773@imap1.linux-foundation.org>
+Subject: [patch 08/15] fs/jffs2/malloc.c: kmem_cache_alloc/memset ->
+	kmem_cache_zalloc
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Wed, 04 Mar 2009 12:01:41 -0800
-Cc: roel.kluin@gmail.com, akpm@linux-foundation.org,
-	linux-mtd@lists.infradead.org
+Date: Wed, 04 Mar 2009 12:01:35 -0800
+Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org,
+	yjwei@cn.fujitsu.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -14,34 +15,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Roel Kluin <roel.kluin@gmail.com>
+From: Wei Yongjun <yjwei@cn.fujitsu.com>
 
-size_t s is unsigned and cannot be less than 0.
+Used kmem_cache_zalloc instead of kmem_cache_alloc/memset.
 
-Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+Signed-off-by: Wei Yongjun <yjwei@cn.fujitsu.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- fs/jffs2/acl.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/jffs2/malloc.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff -puN fs/jffs2/acl.c~jffs2_acl_count-tests-0-on-unsigned fs/jffs2/acl.c
---- a/fs/jffs2/acl.c~jffs2_acl_count-tests-0-on-unsigned
-+++ a/fs/jffs2/acl.c
-@@ -38,12 +38,12 @@ static int jffs2_acl_count(size_t size)
- 	size_t s;
+diff -puN fs/jffs2/malloc.c~fs-jffs2-mallocc-kmem_cache_alloc-memset-kmem_cache_zalloc fs/jffs2/malloc.c
+--- a/fs/jffs2/malloc.c~fs-jffs2-mallocc-kmem_cache_alloc-memset-kmem_cache_zalloc
++++ a/fs/jffs2/malloc.c
+@@ -284,10 +284,9 @@ void jffs2_free_inode_cache(struct jffs2
+ struct jffs2_xattr_datum *jffs2_alloc_xattr_datum(void)
+ {
+ 	struct jffs2_xattr_datum *xd;
+-	xd = kmem_cache_alloc(xattr_datum_cache, GFP_KERNEL);
++	xd = kmem_cache_zalloc(xattr_datum_cache, GFP_KERNEL);
+ 	dbg_memalloc("%p\n", xd);
  
- 	size -= sizeof(struct jffs2_acl_header);
--	s = size - 4 * sizeof(struct jffs2_acl_entry_short);
--	if (s < 0) {
-+	if (size < 4 * sizeof(struct jffs2_acl_entry_short)) {
- 		if (size % sizeof(struct jffs2_acl_entry_short))
- 			return -1;
- 		return size / sizeof(struct jffs2_acl_entry_short);
- 	} else {
-+		s = size - 4 * sizeof(struct jffs2_acl_entry_short);
- 		if (s % sizeof(struct jffs2_acl_entry))
- 			return -1;
- 		return s / sizeof(struct jffs2_acl_entry) + 4;
+-	memset(xd, 0, sizeof(struct jffs2_xattr_datum));
+ 	xd->class = RAWNODE_CLASS_XATTR_DATUM;
+ 	xd->node = (void *)xd;
+ 	INIT_LIST_HEAD(&xd->xindex);
+@@ -303,10 +302,9 @@ void jffs2_free_xattr_datum(struct jffs2
+ struct jffs2_xattr_ref *jffs2_alloc_xattr_ref(void)
+ {
+ 	struct jffs2_xattr_ref *ref;
+-	ref = kmem_cache_alloc(xattr_ref_cache, GFP_KERNEL);
++	ref = kmem_cache_zalloc(xattr_ref_cache, GFP_KERNEL);
+ 	dbg_memalloc("%p\n", ref);
+ 
+-	memset(ref, 0, sizeof(struct jffs2_xattr_ref));
+ 	ref->class = RAWNODE_CLASS_XATTR_REF;
+ 	ref->node = (void *)ref;
+ 	return ref;
 _
