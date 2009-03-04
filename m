@@ -1,9 +1,9 @@
-Message-Id: <200903042001.n24K1d6N028791@imap1.linux-foundation.org>
-Subject: [patch 12/15] mtd: nand: drop usage of cpu_is_* macro
+Message-Id: <200903042001.n24K1f2p028801@imap1.linux-foundation.org>
+Subject: [patch 15/15] jffs2_acl_count() tests < 0 on unsigned
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Wed, 04 Mar 2009 12:01:39 -0800
-Cc: khilman@deeprootsystems.com, david-b@pacbell.net, akpm@linux-foundation.org,
+Date: Wed, 04 Mar 2009 12:01:41 -0800
+Cc: roel.kluin@gmail.com, akpm@linux-foundation.org,
 	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -14,38 +14,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Kevin Hilman <khilman@deeprootsystems.com>
+From: Roel Kluin <roel.kluin@gmail.com>
 
-Usage of davinci-specific cpu_is macros is not allowed in drivers. 
-These options should be passed in through platform_data.
+size_t s is unsigned and cannot be less than 0.
 
-Signed-off-by: Kevin Hilman <khilman@deeprootsystems.com>
-Cc: David Brownell <david-b@pacbell.net>
+Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- drivers/mtd/nand/davinci_nand.c |    3 ---
- 1 file changed, 3 deletions(-)
+ fs/jffs2/acl.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff -puN drivers/mtd/nand/davinci_nand.c~mtd-nand-drop-usage-of-cpu_is_-macro drivers/mtd/nand/davinci_nand.c
---- a/drivers/mtd/nand/davinci_nand.c~mtd-nand-drop-usage-of-cpu_is_-macro
-+++ a/drivers/mtd/nand/davinci_nand.c
-@@ -33,7 +33,6 @@
- #include <linux/mtd/nand.h>
- #include <linux/mtd/partitions.h>
+diff -puN fs/jffs2/acl.c~jffs2_acl_count-tests-0-on-unsigned fs/jffs2/acl.c
+--- a/fs/jffs2/acl.c~jffs2_acl_count-tests-0-on-unsigned
++++ a/fs/jffs2/acl.c
+@@ -38,12 +38,12 @@ static int jffs2_acl_count(size_t size)
+ 	size_t s;
  
--#include <mach/cpu.h>
- #include <mach/nand.h>
- 
- #include <asm/mach-types.h>
-@@ -392,8 +391,6 @@ static int __init nand_davinci_probe(str
- 	/* use board-specific ECC config; else, the best available */
- 	if (pdata)
- 		ecc_mode = pdata->ecc_mode;
--	else if (cpu_is_davinci_dm355())
--		ecc_mode = NAND_ECC_HW_SYNDROME;
- 	else
- 		ecc_mode = NAND_ECC_HW;
- 
+ 	size -= sizeof(struct jffs2_acl_header);
+-	s = size - 4 * sizeof(struct jffs2_acl_entry_short);
+-	if (s < 0) {
++	if (size < 4 * sizeof(struct jffs2_acl_entry_short)) {
+ 		if (size % sizeof(struct jffs2_acl_entry_short))
+ 			return -1;
+ 		return size / sizeof(struct jffs2_acl_entry_short);
+ 	} else {
++		s = size - 4 * sizeof(struct jffs2_acl_entry_short);
+ 		if (s % sizeof(struct jffs2_acl_entry))
+ 			return -1;
+ 		return s / sizeof(struct jffs2_acl_entry) + 4;
 _
