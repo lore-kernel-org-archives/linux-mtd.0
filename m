@@ -1,5 +1,5 @@
-Message-ID: <44456.83.138.172.76.1236200094.squirrel@mail2.uefs.br>
-Date: Wed, 4 Mar 2009 21:54:54 +0100 (WAT)
+Message-ID: <54381.83.138.172.76.1236200167.squirrel@mail2.uefs.br>
+Date: Wed, 4 Mar 2009 21:56:07 +0100 (WAT)
 Subject: Congratulations !!!
 From: "UK NATIONAL LOTTERY" <funky105@yahoo.co.uk>
 MIME-Version: 1.0
