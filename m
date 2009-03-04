@@ -1,12 +1,22 @@
-Message-ID: <49AE3384.6040008@nokia.com>
-Date: Wed, 04 Mar 2009 09:53:40 +0200
-From: Adrian Hunter <adrian.hunter@nokia.com>
+Received: from simmts12-qfe0.srvr.bell.ca ([206.47.199.141]
+	helo=simmts12-srv.bellnexxia.net)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LenKq-00071W-Cw
+	for linux-mtd@lists.infradead.org; Wed, 04 Mar 2009 09:24:18 +0000
+Received: from simip10-ac.srvr.bell.ca ([206.47.199.89])
+	by simmts12-srv.bellnexxia.net
+	(InterMail vM.5.01.06.13 201-253-122-130-113-20050324) with ESMTP id
+	<20090304092411.UPDW1599.simmts12-srv.bellnexxia.net@simip10-ac.srvr.bell.ca>
+	for <linux-mtd@lists.infradead.org>; Wed, 4 Mar 2009 04:24:11 -0500
+From: Micosoft Online Notice <wfinnie@nbnet.nb.ca>
+To: <info@uk.com>
+Subject: winner
+Date: Wed, 4 Mar 2009 4:24:11 -0500
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] mtdoops: fix a bit of spin lock usage
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd Mailing List <linux-mtd@lists.infradead.org>
+Message-Id: <20090304092411.UPDW1599.simmts12-srv.bellnexxia.net@simip10-ac.srvr.bell.ca>
+Reply-To: pgraffin.uk.org@live.co.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,37 +26,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-- do not leave spin lock locked
-- initialise spin lock
+microsoft has awarded you the sum of 250,000pounds in the microsoft award please for claim your name country sex age telephone email pgraffin.uk.org@live.co.uk
 
-Signed-off-by: Adrian Hunter <adrian.hunter@nokia.com>
----
- drivers/mtd/mtdoops.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-index 0a0dad6..3f63fad 100644
---- a/drivers/mtd/mtdoops.c
-+++ b/drivers/mtd/mtdoops.c
-@@ -358,8 +358,10 @@ mtdoops_console_write(struct console *co, const char *s, unsigned int count)
- 	spin_lock_irqsave(&cxt->writecount_lock, flags);
- 
- 	/* Check ready status didn't change whilst waiting for the lock */
--	if (!cxt->ready)
-+	if (!cxt->ready) {
-+		spin_unlock_irqrestore(&cxt->writecount_lock, flags);
- 		return;
-+	}
- 
- 	if (cxt->writecount == 0) {
- 		u32 *stamp = cxt->oops_buf;
-@@ -417,6 +419,7 @@ static int __init mtdoops_console_init(void)
- 
- 	cxt->mtd_index = -1;
- 	cxt->oops_buf = vmalloc(OOPS_PAGE_SIZE);
-+	spin_lock_init(&cxt->writecount_lock);
- 
- 	if (!cxt->oops_buf) {
- 		printk(KERN_ERR "Failed to allocate mtdoops buffer workspace\n");
--- 
-1.5.6.3
+regard
+Mr. P. Griffin 
+Co-ordinator
