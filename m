@@ -1,19 +1,28 @@
-Received: from smtp1.linux-foundation.org ([140.211.169.13])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LebZ6-0004Ht-4R
-	for linux-mtd@lists.infradead.org; Tue, 03 Mar 2009 20:50:15 +0000
-Date: Tue, 3 Mar 2009 12:49:48 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Rohit Hagargundgi <h.rohit@samsung.com>
-Subject: Re: [PATCH 1/3] [MTD] Flex-OneNAND support
-Message-Id: <20090303124948.dda294e5.akpm@linux-foundation.org>
-In-Reply-To: <20090303063605.GA30258@july>
-References: <20090303063605.GA30258@july>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: h.rohit@samsung.com, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+Received: from mailout3.samsung.com ([203.254.224.33])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LejtR-00079J-5z
+	for linux-mtd@lists.infradead.org; Wed, 04 Mar 2009 05:43:47 +0000
+Received: from ep_ms13_bk (mailout3.samsung.com [203.254.224.33])
+	by mailout3.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KFY00HHOVVUKU@mailout3.samsung.com> for
+	linux-mtd@lists.infradead.org; Wed, 04 Mar 2009 14:43:07 +0900 (KST)
+Received: from ep_spt04 (ms13.samsung.com [203.254.225.109])
+	by ms13.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTP id <0KFY0017JVVUDZ@ms13.samsung.com> for
+	linux-mtd@lists.infradead.org; Wed, 04 Mar 2009 14:43:06 +0900 (KST)
+Content-return: prohibited
+Date: Wed, 04 Mar 2009 05:43:06 +0000 (GMT)
+From: AMUL KUMAR SAHA <amul.saha@samsung.com>
+Subject: JFFS2 : non-existent inode
+To: dwmw2@infradead.org
+Message-id: <12102132.458451236145386653.JavaMail.weblogic@epml05>
+MIME-version: 1.0
+MIME-version: 1.0
+Content-type: text/plain; charset=windows-1252
+Content-transfer-encoding: base64
+Cc: linux-mtd@lists.infradead.org
+Reply-To: amul.saha@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,320 +32,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 03 Mar 2009 15:36:05 +0900
-Rohit Hagargundgi <h.rohit@samsung.com> wrote:
-
-> This is a repost of the Flex-OneNAND devices support.
-> Changes since the last post:
->  - Fix bug which caused 2X program in OneNAND to fail.
->  - Fix bug with eraseregions containing odd number of blocks.
->  - Add routine to check blocks are erased before changing boundary.
-
-"changes since last post" is not interesting information in the
-mainline git commit, so I habitually delete it.
-
-After that, we end up without any useful changelog at all.  Is that
-really optimal?
-
-> ---
->  drivers/mtd/onenand/Kconfig        |   62 +++
->  drivers/mtd/onenand/onenand_base.c |  827 ++++++++++++++++++++++++++++++++----
->  drivers/mtd/onenand/onenand_bbt.c  |   13 +-
->  drivers/mtd/onenand/onenand_sim.c  |   76 +++-
->  include/linux/mtd/onenand.h        |   41 ++
->  include/linux/mtd/onenand_regs.h   |   20 +-
->  6 files changed, 950 insertions(+), 89 deletions(-)
-> 
-> diff --git a/drivers/mtd/onenand/Kconfig b/drivers/mtd/onenand/Kconfig
-> index 79fa79e..0c8fa54 100644
-> --- a/drivers/mtd/onenand/Kconfig
-> +++ b/drivers/mtd/onenand/Kconfig
-> @@ -71,4 +71,66 @@ config MTD_ONENAND_SIM
->  	  The simulator may simulate various OneNAND flash chips for the
->  	  OneNAND MTD layer.
->  
-> +config MTD_FLEXONENAND_BOUNDARY
-> +	bool "Flex-OneNAND Boundary Configuration"
-> +	depends on MTD_ONENAND
-> +	default n
-> +	help
-> +	  Set SLC and MLC regions of Flex-OneNAND
-> +
-> +config MTD_FLEXONENAND_DIE0_BOUNDARY
-> +	int "Last SLC Block of Flex-OneNAND (min = 0, max = 1023)"
-> +	depends on MTD_ONENAND && MTD_FLEXONENAND_BOUNDARY
-> +	default "-1"
-> +	help
-> +	  Configure Partition Information (PI) of Flex-OneNAND
-> +
-> +	  Entered value indicates index of last SLC block on Flex-OneNAND.
-> +	  The remaining blocks are configured as MLC blocks.
-> +
-> +	  A value of -1 means that PI remains unchanged.
-> +
-> +	  This setting applies to :
-> +		- SDP Flex-OneNAND
-> +		- Die 1 of DDP Flex-OneNAND.
-> +
-> +config MTD_FLEXONENAND_DIE0_ISLOCKED
-> +	bool "Lock Boundary of Flex-OneNAND"
-> +	depends on MTD_ONENAND && MTD_FLEXONENAND_BOUNDARY
-> +	default n
-> +	help
-> +	  Configure if Flex-OneNAND boundary should be locked.
-> +	  Once locked, the boundary cannot be changed.
-> +
-> +	  This setting applies to :
-> +		- SDP Flex-OneNAND
-> +		- Die 1 of DDP Flex-OneNAND
-> +
-> +config MTD_FLEXONENAND_DDP_BOUNDARY
-> +	bool "Flex-OneNAND DDP Boundary Configuration"
-> +	depends on MTD_ONENAND && MTD_FLEXONENAND_BOUNDARY
-> +	default n
-> +	help
-> +	  Set SLC and MLC regions of Die 2 of Flex-OneNAND DDP
-> +
-> +config MTD_FLEXONENAND_DIE1_BOUNDARY
-> +	int "Last SLC Block of Flex-OneNAND Die 2 (min = 0, max = 1023)"
-> +	depends on MTD_ONENAND && MTD_FLEXONENAND_BOUNDARY && MTD_FLEXONENAND_DDP_BOUNDARY
-> +	default "-1"
-> +	help
-> +	  Configure Partition Information (PI) for Die 2 of DDP Flex-OneNAND.
-> +
-> +	  Entered value indicates index of last SLC block on Flex-OneNAND.
-> +	  The remaining blocks are configured as MLC blocks.
-> +
-> +	  A value of -1 means that PI remains unchanged.
-> +
-> +config MTD_FLEXONENAND_DIE1_ISLOCKED
-> +	bool "Lock Boundary of Flex-OneNAND Die 2"
-> +	depends on MTD_ONENAND && MTD_FLEXONENAND_BOUNDARY && MTD_FLEXONENAND_DDP_BOUNDARY
-> +	default n
-> +	help
-> +	  Configure if boundary for Die 2 of DDP Flex-OneNAND should be locked.
-> +	  Once locked, the boundary cannot be changed.
-
-This looks quite user-unfriendly to me.  People will need to rebuild
-their kernel (or request a new one from their provider) just to alter
-some obscure MTD option.
-
-It is about 100000000000 times better for people to be able to compile
-or distribute a single kernel image, and for the users of those kernels
-to be able to select options at boot-time or at runtime.
-
-Can that be done here?
-
->
-> ...
->
-> +static loff_t flexonenand_get_addr(struct onenand_chip *this, int block)
-> +{
-> +	loff_t ofs = 0;
-> +	int die = 0, boundary;
-> +
-> +	if (ONENAND_IS_DDP(this) && block >= this->density_mask) {
-> +		block -= this->density_mask;
-> +		die = 1;
-> +		ofs = this->diesize[0];
-> +	}
-> +
-> +	boundary = this->boundary[die];
-> +	ofs += block << (this->erase_shift - 1);
-> +	if (block > (boundary + 1))
-> +		ofs += (block - boundary - 1) << (this->erase_shift - 1);
-
-Both `block' and `boundary' have 32-bit types.  Are you sure that the
-left-shift cannot overflow?
-
-> +	return ofs;
-> +}
-> +
-> +inline loff_t onenand_get_addr(struct onenand_chip *this, int block)
-> +{
-> +	if (!FLEXONENAND(this))
-> +		return block << this->erase_shift;
-
-Ditto.
-
-> +	return flexonenand_get_addr(this, block);
-> +}
-> +
->
-> ...
->
-> +static inline int onenand_read_ecc(struct onenand_chip *this)
-> +{
-> +	int ecc, i, result = 0;
-> +
-> +	if (!FLEXONENAND(this))
-> +		return this->read_word(this->base + ONENAND_REG_ECC_STATUS);
-> +
-> +	for (i = 0; i < 4; i++) {
-> +		ecc = this->read_word(this->base + ONENAND_REG_ECC_STATUS + i);
-> +		if (likely(!ecc))
-> +			continue;
-> +		if (ecc & FLEXONENAND_UNCORRECTABLE_ERROR)
-> +			return ONENAND_ECC_2BIT_ALL;
-> +		else
-> +			result = ONENAND_ECC_1BIT_ALL;
-> +	}
-> +
-> +	return result;
-> +}
-
-This patch does too much manual inlining.  THis function in particular
-(which has two callsites) is waaaaaaaay too large to be inlined.
-
->
-> ...
->
-> +static int onenand_mlc_read_ops_nolock(struct mtd_info *mtd, loff_t from,
-> +				struct mtd_oob_ops *ops)
-> +{
-> +	struct onenand_chip *this = mtd->priv;
-> +	struct mtd_ecc_stats stats;
-> +	size_t len = ops->len;
-> +	size_t ooblen = ops->ooblen;
-> +	u_char *buf = ops->datbuf;
-> +	u_char *oobbuf = ops->oobbuf;
-> +	int read = 0, column, thislen;
-> +	int oobread = 0, oobcolumn, thisooblen, oobsize;
-> +	int ret = 0;
-> +	int writesize = this->writesize;
-> +
-> +	DEBUG(MTD_DEBUG_LEVEL3, "onenand_mlc_read_ops_nolock: from = 0x%08x, len = %i\n", (unsigned int) from, (int) len);
-> +
-> +	if (ops->mode == MTD_OOB_AUTO)
-> +		oobsize = this->ecclayout->oobavail;
-> +	else
-> +		oobsize = mtd->oobsize;
-> +
-> +	oobcolumn = from & (mtd->oobsize - 1);
-> +
-> +	/* Do not allow reads past end of device */
-> +	if (from + len > mtd->size) {
-> +		printk(KERN_ERR "onenand_mlc_read_ops_nolock: Attempt read beyond end of device\n");
-> +		ops->retlen = 0;
-> +		ops->oobretlen = 0;
-> +		return -EINVAL;
-> +	}
-> +
-> +	stats = mtd->ecc_stats;
-> +
-> +	while (read < len) {
-> +		cond_resched();
-> +
-> +		thislen = min_t(int, writesize, len - read);
-
-Use of min_t is often a sign that the types are wrong.
-
-`len' and `read' should have type size_t.  Probably other things should
-be size_t as well.
-
-> +		column = from & (writesize - 1);
-> +		if (column + thislen > writesize)
-> +			thislen = writesize - column;
-> +
-> +		if (!onenand_check_bufferram(mtd, from)) {
-> +			this->command(mtd, ONENAND_CMD_READ, from, writesize);
-> +
-> +			ret = this->wait(mtd, FL_READING);
-> +			if (unlikely(ret))
-> +				ret = onenand_recover_lsb(mtd, from, ret);
-> +			onenand_update_bufferram(mtd, from, !ret);
-> +			if (ret == -EBADMSG)
-> +				ret = 0;
-> +		}
-> +
-> +		this->read_bufferram(mtd, ONENAND_DATARAM, buf, column, thislen);
-> +		if (oobbuf) {
-> +			thisooblen = oobsize - oobcolumn;
-> +			thisooblen = min_t(int, thisooblen, ooblen - oobread);
-> +
-> +			if (ops->mode == MTD_OOB_AUTO)
-> +				onenand_transfer_auto_oob(mtd, oobbuf, oobcolumn, thisooblen);
-> +			else
-> +				this->read_bufferram(mtd, ONENAND_SPARERAM, oobbuf, oobcolumn, thisooblen);
-> +			oobread += thisooblen;
-> +			oobbuf += thisooblen;
-> +			oobcolumn = 0;
-> +		}
-> +
-> +		read += thislen;
-> +		if (read == len)
-> +			break;
-> +
-> +		from += thislen;
-> +		buf += thislen;
-> +	}
-> +
-> +	/*
-> +	 * Return success, if no ECC failures, else -EBADMSG
-> +	 * fs driver will take care of that, because
-> +	 * retlen == desired len and result == -EBADMSG
-> +	 */
-> +	ops->retlen = read;
-> +	ops->oobretlen = oobread;
-> +
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (mtd->ecc_stats.failed - stats.failed)
-> +		return -EBADMSG;
-> +
-> +	return mtd->ecc_stats.corrected - stats.corrected ? -EUCLEAN : 0;
-> +}
-
-I wonder what the heck EUCLEAN was invented for and whether MTD's
-extensive use of it is appropriate.
-
->
-> ...
->
-> --- a/include/linux/mtd/onenand.h
-> +++ b/include/linux/mtd/onenand.h
-> @@ -17,8 +17,32 @@
->  #include <linux/mtd/onenand_regs.h>
->  #include <linux/mtd/bbm.h>
->  
-> +#define MAX_DIES		2
->  #define MAX_BUFFERRAM		2
->  
-> +#if defined CONFIG_MTD_FLEXONENAND_DIE0_BOUNDARY
-
-Plain old `#ifdef' is more common.
-
-> +#define FLEXONENAND_DIE0_BOUNDARY	CONFIG_MTD_FLEXONENAND_DIE0_BOUNDARY
-> +#else
-> +#define FLEXONENAND_DIE0_BOUNDARY	-1
-> +#endif
-> +
-> +#if defined CONFIG_MTD_FLEXONENAND_DIE1_BOUNDARY
-> +#define FLEXONENAND_DIE1_BOUNDARY	CONFIG_MTD_FLEXONENAND_DIE1_BOUNDARY
-> +#else
-> +#define FLEXONENAND_DIE1_BOUNDARY	-1
-> +#endif
-> +
-> +#if defined CONFIG_MTD_FLEXONENAND_DIE0_ISLOCKED
-> +#define FLEXONENAND_DIE0_ISLOCKED	1
-> +#else
-> +#define FLEXONENAND_DIE0_ISLOCKED	0
-> +#endif
-> +#if defined CONFIG_MTD_FLEXONENAND_DIE1_ISLOCKED
-> +#define FLEXONENAND_DIE1_ISLOCKED	1
-> +#else
-> +#define FLEXONENAND_DIE1_ISLOCKED	0
-> +#endif
-> +
->
-> ...
->
-> +#define ONENAND_IS_MLC(this)						\
-> +	(this->technology & ONENAND_TECHNOLOGY_IS_MLC)
-
-hm, I wonder why all these things were implemented as macros.
-
->
-> ...
->
+SGVsbG8gRGF2aWQsDQoNCkVudmlyb25tZW50IDogRmxleC1PbmVOQU5EIDhHYiwgQXBvbGxvbiBC
+b2FyZCwgbGludXgtMi42LjI2DQoNCkkgaGF2ZSBqdXN0IHN0YXJ0ZWQgd2l0aCBKRkZTMiAgLiAg
+DQoNCldlIHdlcmUgcnVubmluZyBmc3N0cmVzcyBvbiA1IEJvYXJkcyBmb3IgNSBEYXlzIC4NCk9u
+IDIgb3V0IG9mIDUgYm9hcmRzLCB3ZSBvYnNlcnZlZCB0aGUgbWVzc2FnZSAicmVxdWVzdGllZCB0
+byByZWFkIGFuIG5vbmV4aXN0ZW50IGlubyIsDQpPbiBSZXBldGl0aW9uLCB0aGUgQlVHIHNlZW1z
+IHRvIGJlIHJhbmRvbS4NCg0KRHdlbGxlZCBpbnNpZGUgdGhlIGNvZGUgYW5kIHRob3VnaHQgb2Yg
+YSBwb3NzaWJsZSBzY2VuYXJpbyBmb3IgdGhlIG9jY3VyZW5jZS4NCkkgZm91bmQgdGhlIGZvbGxv
+d2luZyBleHBsYW5hdGlvbiB0byBpdCwgYXBwcm9wcmlhdGU7IHRvIG15IG1pbmltYWwga25vd2xl
+ZGdlIDoNCg0KMSkgMiBvciBtb3JlIHByb2Nlc3NlcyhzYXksIFAxIGFuZCBQMikgaGFuZGxpbmcg
+R0MoamZmczJfZ2NfZmV0Y2hfaW5vZGUpIGVudGVyIHRoZSBmdW5jdGlvbiBqZmZzMl9pZ2V0IGFs
+bW9zdCB0b2dldGhlciwgYmVmb3JlIGdldHRpbmcgYSBtdXRleF9sb2NrLg0KMikgV2hlbiBhIHJl
+cXVlc3QgZm9yIGEgbG9jayBpcyByYWlzZWQsIG9uZSBvZiB0aGUgcHJvY2Vzc2VzKFAxKSBnZXRz
+IHRoZSBtdXRleF9sb2NrKCZmLT5zZW0pIGFuZCB0aGUgb3RoZXIgb25lIHdhaXRzLg0KMykgUDEg
+ZGVsZXRlcyB0aGUgaW5vZGUtY2FjaGUoZi0+aW5vY2FjaGUpLCBhbmQgcmVsZWFzZXMgdGhlIGxv
+Y2suDQo0KSBOb3csIHdoZW4gUDIgZW5kcyB1cCBjYWxsaW5nIGpmZnMyX2RvX3JlYWRfaW5vZGUg
+d2l0aCAnaW5vZGUtPmlubycgYXZhaWxhYmxlIGxvY2FsbHkgaW4gdGhhdCBmdW5jdGlvbiAodW5h
+d2FyZSBvZiB0aGUgZmFjdCB0aGF0LCB0aGlzIHBhcnRpY3VsYXIgaW5vZGUgd2FzIGp1c3QgZGVz
+dHJveWVkKS4NCjUpIEpGRlMyLUVycm9yIHdpdGggdGhlIG1lc3NhZ2UgInJlcXVlc3RpZWQgdG8g
+cmVhZCBhbiBub25leGlzdGVudCBpbm8iIGlzIGRpc3BsYXllZC4NCg0KSW4gdGhlIG1lYW4gdGlt
+ZSwgSSBoYXZlIGNvbWUgdXAgd2l0aCBteSBvd24gZml4IHRvIHRoaXMgc2l0dWF0aW9uLiBKdXN0
+IHdhbnRpbmcgdG8ga25vdyBpZiBteSBleHBsYW5hdGlvbiBtYWtlcyBzZW5zZSwgc28gdGhhdCBJ
+IGNhbiBnbyBhaGVhZCB3aXRoIHBvc3RpbmcgdGhlIHBhdGNoIGluIG1haWxpbmctbGlzdC4NCg0K
+VGhhbmtzIGFuZCBSZWdhcmRzLA0KDQpBbXVsIEt1bWFyIFNhaGENCk1lbW9yeSBTb2x1dGlvbnMg
+R3JvdXANClNhbXN1bmcgSW5kaWEgU29mdHdhcmUgT3BlcmF0aW9ucw==
