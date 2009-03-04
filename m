@@ -1,11 +1,10 @@
-Message-Id: <200903042001.n24K1ZjP028773@imap1.linux-foundation.org>
-Subject: [patch 08/15] fs/jffs2/malloc.c: kmem_cache_alloc/memset ->
-	kmem_cache_zalloc
+Message-Id: <200903042001.n24K1eFx028795@imap1.linux-foundation.org>
+Subject: [patch 13/15] mtd: we don't need no misc devices
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Wed, 04 Mar 2009 12:01:35 -0800
-Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org,
-	yjwei@cn.fujitsu.com
+Date: Wed, 04 Mar 2009 12:01:40 -0800
+Cc: akpm@linux-foundation.org, dbrownell@users.sourceforge.net,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,43 +14,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Wei Yongjun <yjwei@cn.fujitsu.com>
+From: David Brownell <dbrownell@users.sourceforge.net>
 
-Used kmem_cache_zalloc instead of kmem_cache_alloc/memset.
+Remove <linux/miscdevice.h> from various drivers which don't actually use
+any of its contents.  There are still a number of these left in
+arch-specific bits of the tree.
 
-Signed-off-by: Wei Yongjun <yjwei@cn.fujitsu.com>
+(Found by diffing results of "grep -rl" for linux/miscdevice.h and for
+misc_register, examining the differences, and verifying removals with a
+build test.)
+
+Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- fs/jffs2/malloc.c |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/mtd/devices/doc2000.c     |    1 -
+ drivers/mtd/devices/doc2001.c     |    1 -
+ drivers/mtd/devices/doc2001plus.c |    1 -
+ drivers/mtd/devices/docecc.c      |    1 -
+ drivers/mtd/inftlmount.c          |    1 -
+ drivers/mtd/nftlcore.c            |    1 -
+ 6 files changed, 6 deletions(-)
 
-diff -puN fs/jffs2/malloc.c~fs-jffs2-mallocc-kmem_cache_alloc-memset-kmem_cache_zalloc fs/jffs2/malloc.c
---- a/fs/jffs2/malloc.c~fs-jffs2-mallocc-kmem_cache_alloc-memset-kmem_cache_zalloc
-+++ a/fs/jffs2/malloc.c
-@@ -284,10 +284,9 @@ void jffs2_free_inode_cache(struct jffs2
- struct jffs2_xattr_datum *jffs2_alloc_xattr_datum(void)
- {
- 	struct jffs2_xattr_datum *xd;
--	xd = kmem_cache_alloc(xattr_datum_cache, GFP_KERNEL);
-+	xd = kmem_cache_zalloc(xattr_datum_cache, GFP_KERNEL);
- 	dbg_memalloc("%p\n", xd);
- 
--	memset(xd, 0, sizeof(struct jffs2_xattr_datum));
- 	xd->class = RAWNODE_CLASS_XATTR_DATUM;
- 	xd->node = (void *)xd;
- 	INIT_LIST_HEAD(&xd->xindex);
-@@ -303,10 +302,9 @@ void jffs2_free_xattr_datum(struct jffs2
- struct jffs2_xattr_ref *jffs2_alloc_xattr_ref(void)
- {
- 	struct jffs2_xattr_ref *ref;
--	ref = kmem_cache_alloc(xattr_ref_cache, GFP_KERNEL);
-+	ref = kmem_cache_zalloc(xattr_ref_cache, GFP_KERNEL);
- 	dbg_memalloc("%p\n", ref);
- 
--	memset(ref, 0, sizeof(struct jffs2_xattr_ref));
- 	ref->class = RAWNODE_CLASS_XATTR_REF;
- 	ref->node = (void *)ref;
- 	return ref;
+diff -puN drivers/mtd/devices/doc2000.c~mtd-we-dont-need-no-misc-devices drivers/mtd/devices/doc2000.c
+--- a/drivers/mtd/devices/doc2000.c~mtd-we-dont-need-no-misc-devices
++++ a/drivers/mtd/devices/doc2000.c
+@@ -10,7 +10,6 @@
+ #include <asm/errno.h>
+ #include <asm/io.h>
+ #include <asm/uaccess.h>
+-#include <linux/miscdevice.h>
+ #include <linux/delay.h>
+ #include <linux/slab.h>
+ #include <linux/sched.h>
+diff -puN drivers/mtd/devices/doc2001.c~mtd-we-dont-need-no-misc-devices drivers/mtd/devices/doc2001.c
+--- a/drivers/mtd/devices/doc2001.c~mtd-we-dont-need-no-misc-devices
++++ a/drivers/mtd/devices/doc2001.c
+@@ -10,7 +10,6 @@
+ #include <asm/errno.h>
+ #include <asm/io.h>
+ #include <asm/uaccess.h>
+-#include <linux/miscdevice.h>
+ #include <linux/delay.h>
+ #include <linux/slab.h>
+ #include <linux/init.h>
+diff -puN drivers/mtd/devices/doc2001plus.c~mtd-we-dont-need-no-misc-devices drivers/mtd/devices/doc2001plus.c
+--- a/drivers/mtd/devices/doc2001plus.c~mtd-we-dont-need-no-misc-devices
++++ a/drivers/mtd/devices/doc2001plus.c
+@@ -14,7 +14,6 @@
+ #include <asm/errno.h>
+ #include <asm/io.h>
+ #include <asm/uaccess.h>
+-#include <linux/miscdevice.h>
+ #include <linux/delay.h>
+ #include <linux/slab.h>
+ #include <linux/init.h>
+diff -puN drivers/mtd/devices/docecc.c~mtd-we-dont-need-no-misc-devices drivers/mtd/devices/docecc.c
+--- a/drivers/mtd/devices/docecc.c~mtd-we-dont-need-no-misc-devices
++++ a/drivers/mtd/devices/docecc.c
+@@ -26,7 +26,6 @@
+ #include <asm/errno.h>
+ #include <asm/io.h>
+ #include <asm/uaccess.h>
+-#include <linux/miscdevice.h>
+ #include <linux/delay.h>
+ #include <linux/slab.h>
+ #include <linux/init.h>
+diff -puN drivers/mtd/inftlmount.c~mtd-we-dont-need-no-misc-devices drivers/mtd/inftlmount.c
+--- a/drivers/mtd/inftlmount.c~mtd-we-dont-need-no-misc-devices
++++ a/drivers/mtd/inftlmount.c
+@@ -28,7 +28,6 @@
+ #include <asm/errno.h>
+ #include <asm/io.h>
+ #include <asm/uaccess.h>
+-#include <linux/miscdevice.h>
+ #include <linux/delay.h>
+ #include <linux/slab.h>
+ #include <linux/init.h>
+diff -puN drivers/mtd/nftlcore.c~mtd-we-dont-need-no-misc-devices drivers/mtd/nftlcore.c
+--- a/drivers/mtd/nftlcore.c~mtd-we-dont-need-no-misc-devices
++++ a/drivers/mtd/nftlcore.c
+@@ -15,7 +15,6 @@
+ #include <asm/errno.h>
+ #include <asm/io.h>
+ #include <asm/uaccess.h>
+-#include <linux/miscdevice.h>
+ #include <linux/delay.h>
+ #include <linux/slab.h>
+ #include <linux/init.h>
 _
