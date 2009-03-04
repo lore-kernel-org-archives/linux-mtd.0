@@ -1,8 +1,8 @@
-Message-Id: <200903042001.n24K1feH028798@imap1.linux-foundation.org>
-Subject: [patch 14/15] mtd: partitioning utility predicates
+Message-Id: <200903042001.n24K1a8R028776@imap1.linux-foundation.org>
+Subject: [patch 09/15] NAND: fix "raw" reads with ECC syndrome layouts
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Wed, 04 Mar 2009 12:01:41 -0800
+Date: Wed, 04 Mar 2009 12:01:36 -0800
 Cc: akpm@linux-foundation.org, dbrownell@users.sourceforge.net,
 	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -16,136 +16,197 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: David Brownell <dbrownell@users.sourceforge.net>
 
-Move mtd_has_partitions() and mtd_has_cmdlinepart() inlines from a
-DaVinci-specific driver to the <linux/mtd/partitions.h> header.
+The syndrome based page read/write routines store ECC, and possibly other
+"OOB" data, right after each chunk of ECC'd data.  With ECC chunk size of
+512 bytes and a large page (2KB) NAND, the layout is:
 
-Use those to eliminate #ifdefs in two drivers which had their own
-definitions of mtd_has_partitions().
+  data-0 OOB-0 data-1 OOB-1 data-2 OOB-2 data-3 OOB-3 OOB-leftover
 
-Quite a lot of other MTD drivers could benefit from using use one or both
-of these to remove #ifdeffery.  Maybe some Janitors would like to help.
+Where OOBx is (prepad, ECC, postpad).  However, the current "raw" routines
+use a traditional layout -- data OOB, disregarding the prepad and postpad
+values -- so when they're used with that type of ECC hardware, those calls
+mix up the data and OOB.  Which means, in particular, that bad block
+tables won't be found on startup, with data corruption and related chaos
+ensuing.
+
+The current syndrome-based drivers in mainline all seem to use one chunk
+per page; presumably they haven't noticed such bugs.
+
+Fix this, by adding read/write page_raw_syndrome() routines as siblings of
+the existing non-raw routines; "raw" just means to bypass the ECC
+computations, not change data and OOB layout.
 
 Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- drivers/mtd/devices/m25p80.c        |   17 ++++++-----------
- drivers/mtd/devices/mtd_dataflash.c |   16 ++++++----------
- drivers/mtd/nand/davinci_nand.c     |   13 -------------
- include/linux/mtd/partitions.h      |   12 ++++++++++++
- 4 files changed, 24 insertions(+), 34 deletions(-)
+ drivers/mtd/nand/nand_base.c |   99 +++++++++++++++++++++++++++++++--
+ 1 file changed, 95 insertions(+), 4 deletions(-)
 
-diff -puN drivers/mtd/devices/m25p80.c~mtd-partitioning-utility-predicates drivers/mtd/devices/m25p80.c
---- a/drivers/mtd/devices/m25p80.c~mtd-partitioning-utility-predicates
-+++ a/drivers/mtd/devices/m25p80.c
-@@ -65,12 +65,6 @@
- #define FAST_READ_DUMMY_BYTE 0
- #endif
+diff -puN drivers/mtd/nand/nand_base.c~nand-fix-raw-reads-with-ecc-syndrome-layouts drivers/mtd/nand/nand_base.c
+--- a/drivers/mtd/nand/nand_base.c~nand-fix-raw-reads-with-ecc-syndrome-layouts
++++ a/drivers/mtd/nand/nand_base.c
+@@ -748,6 +748,8 @@ static int nand_wait(struct mtd_info *mt
+  * @mtd:	mtd info structure
+  * @chip:	nand chip info structure
+  * @buf:	buffer to store read data
++ *
++ * Not for syndrome calculating ecc controllers, which use a special oob layout
+  */
+ static int nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 			      uint8_t *buf)
+@@ -758,6 +760,47 @@ static int nand_read_page_raw(struct mtd
+ }
  
--#ifdef CONFIG_MTD_PARTITIONS
--#define	mtd_has_partitions()	(1)
--#else
--#define	mtd_has_partitions()	(0)
--#endif
--
- /****************************************************************************/
- 
- struct m25p {
-@@ -708,12 +702,13 @@ static int __devinit m25p_probe(struct s
- 		struct mtd_partition	*parts = NULL;
- 		int			nr_parts = 0;
- 
--#ifdef CONFIG_MTD_CMDLINE_PARTS
--		static const char *part_probes[] = { "cmdlinepart", NULL, };
-+		if (mtd_has_cmdlinepart()) {
-+			static const char *part_probes[]
-+					= { "cmdlinepart", NULL, };
- 
--		nr_parts = parse_mtd_partitions(&flash->mtd,
--				part_probes, &parts, 0);
--#endif
-+			nr_parts = parse_mtd_partitions(&flash->mtd,
-+					part_probes, &parts, 0);
-+		}
- 
- 		if (nr_parts <= 0 && data && data->parts) {
- 			parts = data->parts;
-diff -puN drivers/mtd/devices/mtd_dataflash.c~mtd-partitioning-utility-predicates drivers/mtd/devices/mtd_dataflash.c
---- a/drivers/mtd/devices/mtd_dataflash.c~mtd-partitioning-utility-predicates
-+++ a/drivers/mtd/devices/mtd_dataflash.c
-@@ -98,12 +98,6 @@ struct dataflash {
- 	struct mtd_info		mtd;
- };
- 
--#ifdef CONFIG_MTD_PARTITIONS
--#define	mtd_has_partitions()	(1)
--#else
--#define	mtd_has_partitions()	(0)
--#endif
--
- /* ......................................................................... */
- 
- /*
-@@ -682,11 +676,13 @@ add_dataflash_otp(struct spi_device *spi
- 		struct mtd_partition	*parts;
- 		int			nr_parts = 0;
- 
--#ifdef CONFIG_MTD_CMDLINE_PARTS
--		static const char *part_probes[] = { "cmdlinepart", NULL, };
-+		if (mtd_has_cmdlinepart()) {
-+			static const char *part_probes[]
-+					= { "cmdlinepart", NULL, };
- 
--		nr_parts = parse_mtd_partitions(device, part_probes, &parts, 0);
--#endif
-+			nr_parts = parse_mtd_partitions(device,
-+					part_probes, &parts, 0);
-+		}
- 
- 		if (nr_parts <= 0 && pdata && pdata->parts) {
- 			parts = pdata->parts;
-diff -puN drivers/mtd/nand/davinci_nand.c~mtd-partitioning-utility-predicates drivers/mtd/nand/davinci_nand.c
---- a/drivers/mtd/nand/davinci_nand.c~mtd-partitioning-utility-predicates
-+++ a/drivers/mtd/nand/davinci_nand.c
-@@ -38,19 +38,6 @@
- #include <asm/mach-types.h>
- 
- 
--#ifdef CONFIG_MTD_PARTITIONS
--static inline int mtd_has_partitions(void) { return 1; }
--#else
--static inline int mtd_has_partitions(void) { return 0; }
--#endif
--
--#ifdef CONFIG_MTD_CMDLINE_PARTS
--static inline int mtd_has_cmdlinepart(void) { return 1; }
--#else
--static inline int mtd_has_cmdlinepart(void) { return 0; }
--#endif
--
--
- /*
-  * This is a device driver for the NAND flash controller found on the
-  * various DaVinci family chips.  It handles up to four SoC chipselects,
-diff -puN include/linux/mtd/partitions.h~mtd-partitioning-utility-predicates include/linux/mtd/partitions.h
---- a/include/linux/mtd/partitions.h~mtd-partitioning-utility-predicates
-+++ a/include/linux/mtd/partitions.h
-@@ -76,4 +76,16 @@ int __devinit of_mtd_parse_partitions(st
-                                       struct device_node *node,
-                                       struct mtd_partition **pparts);
- 
-+#ifdef CONFIG_MTD_PARTITIONS
-+static inline int mtd_has_partitions(void) { return 1; }
-+#else
-+static inline int mtd_has_partitions(void) { return 0; }
-+#endif
+ /**
++ * nand_read_page_raw_syndrome - [Intern] read raw page data without ecc
++ * @mtd:	mtd info structure
++ * @chip:	nand chip info structure
++ * @buf:	buffer to store read data
++ *
++ * We need a special oob layout and handling even when OOB isn't used.
++ */
++static int nand_read_page_raw_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
++			      uint8_t *buf)
++{
++	int eccsize = chip->ecc.size;
++	int eccbytes = chip->ecc.bytes;
++	uint8_t *oob = chip->oob_poi;
++	int steps, size;
 +
-+#ifdef CONFIG_MTD_CMDLINE_PARTS
-+static inline int mtd_has_cmdlinepart(void) { return 1; }
-+#else
-+static inline int mtd_has_cmdlinepart(void) { return 0; }
-+#endif
++	for (steps = chip->ecc.steps; steps > 0; steps--) {
++		chip->read_buf(mtd, buf, eccsize);
++		buf += eccsize;
 +
- #endif
++		if (chip->ecc.prepad) {
++			chip->read_buf(mtd, oob, chip->ecc.prepad);
++			oob += chip->ecc.prepad;
++		}
++
++		chip->read_buf(mtd, oob, eccbytes);
++		oob += eccbytes;
++
++		if (chip->ecc.postpad) {
++			chip->read_buf(mtd, oob, chip->ecc.postpad);
++			oob += chip->ecc.postpad;
++		}
++	}
++
++	size = mtd->oobsize - (oob - chip->oob_poi);
++	if (size)
++		chip->read_buf(mtd, oob, size);
++
++	return 0;
++}
++
++/**
+  * nand_read_page_swecc - [REPLACABLE] software ecc based page read function
+  * @mtd:	mtd info structure
+  * @chip:	nand chip info structure
+@@ -1482,6 +1525,8 @@ static int nand_read_oob(struct mtd_info
+  * @mtd:	mtd info structure
+  * @chip:	nand chip info structure
+  * @buf:	data buffer
++ *
++ * Not for syndrome calculating ecc controllers, which use a special oob layout
+  */
+ static void nand_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 				const uint8_t *buf)
+@@ -1491,6 +1536,44 @@ static void nand_write_page_raw(struct m
+ }
+ 
+ /**
++ * nand_write_page_raw_syndrome - [Intern] raw page write function
++ * @mtd:	mtd info structure
++ * @chip:	nand chip info structure
++ * @buf:	data buffer
++ *
++ * We need a special oob layout and handling even when ECC isn't checked.
++ */
++static void nand_write_page_raw_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
++				const uint8_t *buf)
++{
++	int eccsize = chip->ecc.size;
++	int eccbytes = chip->ecc.bytes;
++	uint8_t *oob = chip->oob_poi;
++	int steps, size;
++
++	for (steps = chip->ecc.steps; steps > 0; steps--) {
++		chip->write_buf(mtd, buf, eccsize);
++		buf += eccsize;
++
++		if (chip->ecc.prepad) {
++			chip->write_buf(mtd, oob, chip->ecc.prepad);
++			oob += chip->ecc.prepad;
++		}
++
++		chip->read_buf(mtd, oob, eccbytes);
++		oob += eccbytes;
++
++		if (chip->ecc.postpad) {
++			chip->write_buf(mtd, oob, chip->ecc.postpad);
++			oob += chip->ecc.postpad;
++		}
++	}
++
++	size = mtd->oobsize - (oob - chip->oob_poi);
++	if (size)
++		chip->write_buf(mtd, oob, size);
++}
++/**
+  * nand_write_page_swecc - [REPLACABLE] software ecc based page write function
+  * @mtd:	mtd info structure
+  * @chip:	nand chip info structure
+@@ -2569,10 +2652,6 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	 * check ECC mode, default to software if 3byte/512byte hardware ECC is
+ 	 * selected and we have 256 byte pagesize fallback to software ECC
+ 	 */
+-	if (!chip->ecc.read_page_raw)
+-		chip->ecc.read_page_raw = nand_read_page_raw;
+-	if (!chip->ecc.write_page_raw)
+-		chip->ecc.write_page_raw = nand_write_page_raw;
+ 
+ 	switch (chip->ecc.mode) {
+ 	case NAND_ECC_HW:
+@@ -2581,6 +2660,10 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 			chip->ecc.read_page = nand_read_page_hwecc;
+ 		if (!chip->ecc.write_page)
+ 			chip->ecc.write_page = nand_write_page_hwecc;
++		if (!chip->ecc.read_page_raw)
++			chip->ecc.read_page_raw = nand_read_page_raw;
++		if (!chip->ecc.write_page_raw)
++			chip->ecc.write_page_raw = nand_write_page_raw;
+ 		if (!chip->ecc.read_oob)
+ 			chip->ecc.read_oob = nand_read_oob_std;
+ 		if (!chip->ecc.write_oob)
+@@ -2602,6 +2685,10 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 			chip->ecc.read_page = nand_read_page_syndrome;
+ 		if (!chip->ecc.write_page)
+ 			chip->ecc.write_page = nand_write_page_syndrome;
++		if (!chip->ecc.read_page_raw)
++			chip->ecc.read_page_raw = nand_read_page_raw_syndrome;
++		if (!chip->ecc.write_page_raw)
++			chip->ecc.write_page_raw = nand_write_page_raw_syndrome;
+ 		if (!chip->ecc.read_oob)
+ 			chip->ecc.read_oob = nand_read_oob_syndrome;
+ 		if (!chip->ecc.write_oob)
+@@ -2620,6 +2707,8 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		chip->ecc.read_page = nand_read_page_swecc;
+ 		chip->ecc.read_subpage = nand_read_subpage;
+ 		chip->ecc.write_page = nand_write_page_swecc;
++		chip->ecc.read_page_raw = nand_read_page_raw;
++		chip->ecc.write_page_raw = nand_write_page_raw;
+ 		chip->ecc.read_oob = nand_read_oob_std;
+ 		chip->ecc.write_oob = nand_write_oob_std;
+ 		chip->ecc.size = 256;
+@@ -2632,6 +2721,8 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		chip->ecc.read_page = nand_read_page_raw;
+ 		chip->ecc.write_page = nand_write_page_raw;
+ 		chip->ecc.read_oob = nand_read_oob_std;
++		chip->ecc.read_page_raw = nand_read_page_raw;
++		chip->ecc.write_page_raw = nand_write_page_raw;
+ 		chip->ecc.write_oob = nand_write_oob_std;
+ 		chip->ecc.size = mtd->writesize;
+ 		chip->ecc.bytes = 0;
 _
