@@ -1,31 +1,14 @@
-Received: from vervifontaine.sonytel.be ([80.88.33.193]
-	helo=vervifontaine.sonycom.com)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LfGhf-0006ij-6W
-	for linux-mtd@lists.infradead.org; Thu, 05 Mar 2009 16:46:01 +0000
-Date: Thu, 5 Mar 2009 17:45:39 +0100 (CET)
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Sender: geert@sonytel.be
-To: Jens Axboe <jens.axboe@oracle.com>
-Subject: Re: [PATCH/RFC] ps3/block: Add ps3vram-ng driver for accessing video
-	RAM as block device
-In-Reply-To: <20090305110940.GY11787@kernel.dk>
-Message-ID: <alpine.LRH.2.00.0903051325450.2618@vixen.sonytel.be>
-References: <alpine.LRH.2.00.0903041444300.32279@vixen.sonytel.be>
-	<20090305083701.GQ11787@kernel.dk>
-	<alpine.LRH.2.00.0903051146440.2618@vixen.sonytel.be>
-	<20090305110940.GY11787@kernel.dk>
+Received: from mail01.svc.cra.dublin.eircom.net ([159.134.118.17])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LfHre-0007hb-RR
+	for linux-mtd@lists.infradead.org; Thu, 05 Mar 2009 18:00:14 +0000
+Date: Thu, 5 Mar 2009 17:51:08 +0000 (GMT)
+From: "Dr. EVANS AKUNNE." <evakunne@eircom.net>
+Message-ID: <17172376.47331236275468005.JavaMail.root@webmailbox103.eircom.net>
+Subject: Good News,
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-Cc: Arnd Bergmann <arnd@arndb.de>, Geoff Levand <geoffrey.levand@am.sony.com>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Linux Kernel Development <linux-kernel@vger.kernel.org>,
-	Jim Paris <jim@jtan.com>, Linux/PPC Development <linuxppc-dev@ozlabs.org>,
-	linux-mtd@lists.infradead.org,
-	Vivien Chappelier <vivien.chappelier@free.fr>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Cell Broadband Engine OSS Development <cbe-oss-dev@ozlabs.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,102 +18,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 5 Mar 2009, Jens Axboe wrote:
-> On Thu, Mar 05 2009, Geert Uytterhoeven wrote:
-> > On Thu, 5 Mar 2009, Jens Axboe wrote:
-> > > On Wed, Mar 04 2009, Geert Uytterhoeven wrote:
-> > > > Below is the rewrite of the PS3 Video RAM Storage Driver as a plain block
-> > > > device, as requested by Arnd Bergmann.
+Respected, 
 
-> > > I'd rewrite this as a ->make_request_fn handler instead. Then you can
-> > > get rid of the kernel thread. IOW, change
-> > >
-> > > queue = blk_init_queue(ps3vram_request, &priv->lock);
-> > >
-> > > to
-> > >
-> > > queue = blk_alloc_queue(GFP_KERNEL);
-> > > blk_queue_make_request(queue, ps3vram_make_request);
-> > 
-> > Thanks, I didn't know that part...
-> > 
-> > > Add error handling of course, and call blk_queue_max_*() to set your
-> > > limits for this device.
-> > 
-> > I took out the blk_queue_max_*() calls (compared to ps3disk.c), as
-> > none of the limits apply, and the defaults are fine.
-> > 
-> > Is that OK, or is it better to make it explicit?
-> 
-> I think it's always good to make it explicit. Plus for this case you
-> definitely need it, as blk_init_queue() wont do it for you anymore.
+I  want use this medium to inform you that I have deposited your ATM DEBIT CARD of Usd$1.2M United states dollars to the Chronopost Delivery services here in Benin Republic, due to I have waited enough to hear from you to effect the transfer of your funds through UNITED BANK FOR AFRICA (UBA), but because of the late response I now decide to deposit the ATM DEBIT CARD to the Chronoposte delivery services.
 
-blk_queue_make_request() does it for me, too:
+I have paid them their delivery charges & insurance coverage fee, the only fee to be paid is their security safe keeping fee of $215 dollars.
 
-void blk_queue_make_request(struct request_queue *q, make_request_fn *mfn)
-{
-	...
-	blk_queue_max_phys_segments(q, MAX_PHYS_SEGMENTS);
-	blk_queue_max_hw_segments(q, MAX_HW_SEGMENTS);
-	...
-	blk_queue_max_segment_size(q, MAX_SEGMENT_SIZE);
-	...
-	blk_queue_max_sectors(q, SAFE_MAX_SECTORS);
-	...
-}
+I will be travelling to meet my boss in South America and I will not come back till next month,therefore I will advise you to contact the Chronopost shipment officer through his contact informations listed below to avoid them increasing their security safe keeping fee.
 
-struct request_queue *
-blk_init_queue_node(request_fn_proc *rfn, spinlock_t *lock, int node_id)
-{
-	...
-	blk_queue_max_segment_size(q, MAX_SEGMENT_SIZE);
+Note that I packaged the ATM DEBIT CARD inside a magazine where nobody will notice the content, I also told the shipment officer Rev.Dominic, that is ordinary African magazine which I want to deliver to my friend to avoid further delay unless you delayed to send their security safe keeping fee.
 
-	blk_queue_max_hw_segments(q, MAX_HW_SEGMENTS);
-	blk_queue_max_phys_segments(q, MAX_PHYS_SEGMENTS);
-	...
-}
+Below is the shippment officer contact informations including his email address with the parcel reference number, note that without you indicating your parcel reference number as listed below the Chronopost delivery services will not listen to you because they will be imagining if you want to steal another persons parcel.
 
-> > > Then add a ps3vram_make_request() ala:
-> > 
-> > > static void ps3vram_do_request(struct request_queue *q, struct bio *bio)
-> > > {
+Attention: Rev. Dominic Amacha 
+Shipment Officer Of Chronopost 
+Delivery Services Benin Republic
+E-mail: chronopostexpres@netcourrier.com 
+Tell: +229 96 183 883.
+Office Fax: +229 21 32 42 46 
+Nos of parcel :Eg6972
+Parcel Code Nos:#017211501
 
-> > > }
-> > >
-> > > I just typed it here, so if it doesn't compile you get to keep the
-> > > pieces :-)
-> > 
-> > OK, I'll give it a try...
-> > 
-> > BTW, does this mean the `simple' way, which I used based on LDD3, is
-> > deprecated?
-> 
-> Depends.. It's obviously not a very effective approach, since you punt
-> to a thread for each request. But if you need the IO scheduler helping
-> you with merging and sorting (for a rotational device), it still has
-> some merit. For this particular case, the ->make_request_fn approach is
-> much better.
+Also below is the information they are requesting to deliver the ATM DEBIT CARD in form of African Magazine to your recieving address, this is to avoid wrong delivery.
 
-Without the thread, performance indeed increased.
+Full name......................
+Home address...................
+Country........................
+Telphone.......................
+Ocupation......................
 
-But then I noticed ps3vram_make_request() may be called concurrently, so I had
-to add a mutex to avoid data corruption. This slows the driver down, and in the
-end, the version with a thread turns out to be ca. 1% faster. The version
-without a thread is about 50 lines less code, though.
+Please make sure the information is complete as they promised that once they receive their security safe keeping fee within 2 to 3 working days the magazine will arrived to your door step according to the assurance given to me from the shipment officer.
 
-With kind regards,
+You can call the shipment officer on his private line to confirm this delivery on +229 96 183 883, let me know immediately you receive your ATM DEBIT CARD.
 
-Geert Uytterhoeven
-Software Architect
+Your ATM DEBIT CARD withdrawing access pin code number is (1144) take note, once you receive the card you take it to any atm automated machine nearest you,slot the card and enter the pin code number (1144) for withdrawal, the maximum amount you will withdrew in any automated atm machine any where in the world is usd$1,500 per hour and you can cover USD$25,000. ( Twenty Five thousand United State dollars) per day. 
 
-Sony Techsoft Centre Europe
-The Corporate Village · Da Vincilaan 7-D1 · B-1935 Zaventem · Belgium
+Thanks.
 
-Phone:    +32 (0)2 700 8453
-Fax:      +32 (0)2 700 8622
-E-mail:   Geert.Uytterhoeven@sonycom.com
-Internet: http://www.sony-europe.com/
+Dr.Evans Akunne.
 
-A division of Sony Europe (Belgium) N.V.
-VAT BE 0413.825.160 · RPR Brussels
-Fortis · BIC GEBABEBB · IBAN BE41293037680010
+
+
+ 
