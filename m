@@ -1,30 +1,18 @@
-Received: from vervifontaine.sonytel.be ([80.88.33.193]
-	helo=vervifontaine.sonycom.com)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LfAkS-0000iW-PK
-	for linux-mtd@lists.infradead.org; Thu, 05 Mar 2009 10:24:19 +0000
-Date: Thu, 5 Mar 2009 11:24:15 +0100 (CET)
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Sender: geert@sonytel.be
-To: Olaf Hering <olaf@aepfle.de>
-Subject: Re: [PATCH/RFC] ps3/block: Add ps3vram-ng driver for accessing video
-	RAM as block device
-In-Reply-To: <alpine.LRH.2.00.0903050856490.26681@vixen.sonytel.be>
-Message-ID: <alpine.LRH.2.00.0903051123240.2618@vixen.sonytel.be>
-References: <alpine.LRH.2.00.0903041444300.32279@vixen.sonytel.be>
-	<AA44F8E7-5FBC-4378-A86D-C094ECABD625@aepfle.de>
-	<alpine.LRH.2.00.0903050856490.26681@vixen.sonytel.be>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-Cc: Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Linux Kernel Development <linux-kernel@vger.kernel.org>,
-	Jim Paris <jim@jtan.com>, Linux/PPC Development <linuxppc-dev@ozlabs.org>,
-	linux-mtd@lists.infradead.org,
-	Vivien Chappelier <vivien.chappelier@free.fr>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Cell Broadband Engine OSS Development <cbe-oss-dev@ozlabs.org>
+Subject: Re: [PATCH] mtdoops: allow MTD selection by name
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1234872527.17790.259.camel@localhost.localdomain>
+References: <4999928F.1010304@nokia.com>
+	<1234872527.17790.259.camel@localhost.localdomain>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 05 Mar 2009 12:27:50 +0200
+Message-Id: <1236248870.4261.85.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
+	Adrian Hunter <ext-adrian.hunter@nokia.com>,
+	Viktor Rosendahl <Viktor.Rosendahl@nokia.com>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,29 +22,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 5 Mar 2009, Geert Uytterhoeven wrote:
-> On Thu, 5 Mar 2009, Olaf Hering wrote:
-> > I see our old mtddriver does not have modalias support for autoloading.
+On Tue, 2009-02-17 at 14:08 +0200, Artem Bityutskiy wrote:
+> On Mon, 2009-02-16 at 18:21 +0200, Adrian Hunter wrote:
+> > MTD's have both an index number and a name.  Formerly,
+> > the MTD selected for mtdoops was done only by index
+> > number.  With this patch, a name can be used instead.
+> > 
+> > For example, the kernel command line:
+> > 
+> > 	console=ttyMTD5
+> > 
+> > selects MTD 5 for mtdoops.  But now this is also possible:
+> > 
+> > 	console=ttyMTD,log
+> > 
+> > which selects the MTD named "log" for mtdoops.
+> > 
+> > This has the advantage that partitions can be added or
+> > removed that would affect the MTD index number but not the
+> > name, without having to then change the kernel command line.
+> > 
+> > Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
 > 
-> You forgot to backport commit 0a2d15b928e0b1673d4ed5f48d95af211b6fcc06
-> ("mtd/ps3vram: Add modalias support to the ps3vram driver") to the openSuSE
-> tree?
+> Acked-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Or do you mean that udev doesn't load mtdblock automatically?
+David, would you please push this patch ?
 
-With kind regards,
-
-Geert Uytterhoeven
-Software Architect
-
-Sony Techsoft Centre Europe
-The Corporate Village � Da Vincilaan 7-D1 � B-1935 Zaventem � Belgium
-
-Phone:    +32 (0)2 700 8453
-Fax:      +32 (0)2 700 8622
-E-mail:   Geert.Uytterhoeven@sonycom.com
-Internet: http://www.sony-europe.com/
-
-A division of Sony Europe (Belgium) N.V.
-VAT BE 0413.825.160 � RPR Brussels
-Fortis � BIC GEBABEBB � IBAN BE41293037680010
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
