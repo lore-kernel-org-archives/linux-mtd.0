@@ -1,18 +1,21 @@
-Received: from mx1.suse.de ([195.135.220.2])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lf7pi-00081g-9n
-	for linux-mtd@lists.infradead.org; Thu, 05 Mar 2009 07:17:32 +0000
-Message-Id: <AA44F8E7-5FBC-4378-A86D-C094ECABD625@aepfle.de>
-From: Olaf Hering <olaf@aepfle.de>
-To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-In-Reply-To: <alpine.LRH.2.00.0903041444300.32279@vixen.sonytel.be>
-Content-Type: text/plain; charset=US-ASCII; format=flowed; delsp=yes
-Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0 (Apple Message framework v930.3)
+Received: from vervifontaine.sonytel.be ([80.88.33.193]
+	helo=vervifontaine.sonycom.com)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Lf8UY-0000c3-Hc
+	for linux-mtd@lists.infradead.org; Thu, 05 Mar 2009 07:59:56 +0000
+Date: Thu, 5 Mar 2009 08:59:40 +0100 (CET)
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Sender: geert@sonytel.be
+To: Olaf Hering <olaf@aepfle.de>
 Subject: Re: [PATCH/RFC] ps3/block: Add ps3vram-ng driver for accessing video
 	RAM as block device
-Date: Thu, 5 Mar 2009 08:17:24 +0100
+In-Reply-To: <AA44F8E7-5FBC-4378-A86D-C094ECABD625@aepfle.de>
+Message-ID: <alpine.LRH.2.00.0903050856490.26681@vixen.sonytel.be>
 References: <alpine.LRH.2.00.0903041444300.32279@vixen.sonytel.be>
+	<AA44F8E7-5FBC-4378-A86D-C094ECABD625@aepfle.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
 Cc: Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
 	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
 	Linux Kernel Development <linux-kernel@vger.kernel.org>,
@@ -30,31 +33,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 04.03.2009 um 14:57 schrieb Geert Uytterhoeven:
+On Thu, 5 Mar 2009, Olaf Hering wrote:
+> Am 04.03.2009 um 14:57 schrieb Geert Uytterhoeven:
+> >Ideally, we think it would be best if the existing MTD-based ps3vram driver
+> >would be replaced by the new block-based ps3vram driver before 2.6.29 is
+> >released. This would relieve the burden of supporting two different swap
+> >space
+> >schemes on PS3 (swap on /dev/mtdblock0 vs. /dev/ps3vram) from the distro
+> >maintainer's shoulders, as in that case there would never have been a stable
+> >kernel version containing the MTD-based ps3vram driver.
+> 
+> openSuSE already ships with the ps3vram driver since a two releases.
+> A simple name based udev rule could symlink ps3vram to mtdblock0, so an
+> upgrade
+> will not break existing setups.
 
-> Ideally, we think it would be best if the existing MTD-based ps3vram  
-> driver
-> would be replaced by the new block-based ps3vram driver before  
-> 2.6.29 is
-> released. This would relieve the burden of supporting two different  
-> swap space
-> schemes on PS3 (swap on /dev/mtdblock0 vs. /dev/ps3vram) from the  
-> distro
-> maintainer's shoulders, as in that case there would never have been  
-> a stable
-> kernel version containing the MTD-based ps3vram driver.
+OK.
 
-openSuSE already ships with the ps3vram driver since a two releases.
-A simple name based udev rule could symlink ps3vram to mtdblock0, so  
-an upgrade
-will not break existing setups.
+> >+obj-$(CONFIG_PS3_VRAM)		+= ps3vram_ng.o
+> 
+> Please give the driver the obvious name "ps3vram", that way upgrading will be
+> smooth.
 
-> +obj-$(CONFIG_PS3_VRAM)		+= ps3vram_ng.o
+Sure, as I said:
 
-Please give the driver the obvious name "ps3vram", that way upgrading  
-will be smooth.
+| I'll submit a patch to remove the MTD
+| ps3vram and add the new driver as ps3vram (instead of ps3vram-ng).
 
-I see our old mtddriver does not have modalias support for autoloading.
-Hopefully the new driver has this feature.
+> I see our old mtddriver does not have modalias support for autoloading.
 
-Olaf
+You forgot to backport commit 0a2d15b928e0b1673d4ed5f48d95af211b6fcc06
+("mtd/ps3vram: Add modalias support to the ps3vram driver") to the openSuSE
+tree?
+
+> Hopefully the new driver has this feature.
+
+Yes, it has.
+
+With kind regards,
+
+Geert Uytterhoeven
+Software Architect
+
+Sony Techsoft Centre Europe
+The Corporate Village · Da Vincilaan 7-D1 · B-1935 Zaventem · Belgium
+
+Phone:    +32 (0)2 700 8453
+Fax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 · RPR Brussels
+Fortis · BIC GEBABEBB · IBAN BE41293037680010
