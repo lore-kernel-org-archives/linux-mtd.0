@@ -1,26 +1,27 @@
-Received: from brick.kernel.dk ([93.163.65.50] helo=kernel.dk)
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lf94i-0006qs-Tm
-	for linux-mtd@lists.infradead.org; Thu, 05 Mar 2009 08:37:09 +0000
-Date: Thu, 5 Mar 2009 09:37:01 +0100
-From: Jens Axboe <jens.axboe@oracle.com>
-To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Subject: Re: [PATCH/RFC] ps3/block: Add ps3vram-ng driver for accessing
-	video  RAM as block device
-Message-ID: <20090305083701.GQ11787@kernel.dk>
-References: <alpine.LRH.2.00.0903041444300.32279@vixen.sonytel.be>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.00.0903041444300.32279@vixen.sonytel.be>
-Cc: Arnd Bergmann <arnd@arndb.de>, Geoff Levand <geoffrey.levand@am.sony.com>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Linux Kernel Development <linux-kernel@vger.kernel.org>,
-	Jim Paris <jim@jtan.com>, Linux/PPC Development <linuxppc-dev@ozlabs.org>,
-	linux-mtd@lists.infradead.org,
-	Vivien Chappelier <vivien.chappelier@free.fr>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Cell Broadband Engine OSS Development <cbe-oss-dev@ozlabs.org>
+	id 1Lf9ZC-0002aj-S8
+	for linux-mtd@lists.infradead.org; Thu, 05 Mar 2009 09:08:37 +0000
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1Lf9Z5-0001xT-S6
+	for linux-mtd@lists.infradead.org; Thu, 05 Mar 2009 09:08:28 +0000
+Received: from woodchuck.wormnet.eu ([77.75.105.223])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 05 Mar 2009 09:08:27 +0000
+Received: from alex by woodchuck.wormnet.eu with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 05 Mar 2009 09:08:27 +0000
+To: linux-mtd@lists.infradead.org
+From: Alexander Clouter <alex@digriz.org.uk>
+Subject: Re: [PATCH] mtd: add setup/teardown callbacks to plat_nand
+Date: Thu, 5 Mar 2009 08:54:49 +0000
+Message-ID: <slrngqv4qp.3ih.alex@woodchuck.wormnet.eu>
+References: <BD79186B4FD85F4B8E60E381CAEE19090120C059@mi8nycmail19.Mi8.com>
+	<8bd0f97a0902091428u5e629485ke7762cbffe8b97dc@mail.gmail.com>
+	<BD79186B4FD85F4B8E60E381CAEE19090120C0C9@mi8nycmail19.Mi8.com>
+	<BD79186B4FD85F4B8E60E381CAEE1909013B6E03@mi8nycmail19.Mi8.com>
+Sender: news <news@ger.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,90 +31,164 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 04 2009, Geert Uytterhoeven wrote:
-> 	Hi,
-> 
-> Below is the rewrite of the PS3 Video RAM Storage Driver as a plain block
-> device, as requested by Arnd Bergmann.
-> 
-> The MTD-based PS3 Video RAM Storage Driver was integrated into the mainline
-> kernel in 2.6.29-rc1.
-> 
-> Ideally, we think it would be best if the existing MTD-based ps3vram driver
-> would be replaced by the new block-based ps3vram driver before 2.6.29 is
-> released. This would relieve the burden of supporting two different swap space
-> schemes on PS3 (swap on /dev/mtdblock0 vs. /dev/ps3vram) from the distro
-> maintainer's shoulders, as in that case there would never have been a stable
-> kernel version containing the MTD-based ps3vram driver.
-> 
-> What do you think? If this is accepted, I'll submit a patch to remove the MTD
-> ps3vram and add the new driver as ps3vram (instead of ps3vram-ng).
-> 
-> Thanks for your (review and other) comments!
+* hartleys <hartleys@visionengravers.com> [Wed, 4 Mar 2009 19:19:24 -0500]:
+>
+> Any other comments on this patch?  If it looks ok how do I get it
+> applied?
+>
+You can add a Tested-By from me if you want, I used it, then stopped as 
+the dma engine loaded after my platform driver which made it half as 
+useful (the remove was still helpful) :-/
 
-I'd rewrite this as a ->make_request_fn handler instead. Then you can
-get rid of the kernel thread. IOW, change
+I'm just waiting for (write|read)_buf and others that were even touted 
+back in October 2007[1] :(
 
-queue = blk_init_queue(ps3vram_request, &priv->lock);
+Cheers
 
-to
+[1] http://www.infradead.org/pipermail/linux-mtd/2007-October/019659.html
 
-queue = blk_alloc_queue(GFP_KERNEL);
-blk_queue_make_request(queue, ps3vram_make_request);
+> -----Original Message-----
+> From: linux-mtd-bounces@lists.infradead.org
+> [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of hartleys
+> Sent: Monday, February 09, 2009 3:55 PM
+> To: Mike Frysinger
+> Cc: linux-mtd@lists.infradead.org
+> Subject: RE: [PATCH] mtd: add setup/teardown callbacks to plat_nand
+>
+> On Monday, February 09, 2009 3:28 PM, Mike Frysinger wrote:
+>> On Mon, Feb 9, 2009 at 16:37, hartleys wrote:
+>>> Add optional setup and teardown callbacks to the plat_nand driver.
+>>>
+>>> Some platforms may require additional setup, such as configuring
+>>> the memory controller, before the nand device can be accessed. 
+>>> This patch provides an optional callback to handle this setup as
+>>> well as a callback to teardown the setup.
+>>
+>> on our platforms, we've been putting the setup into the board init
+>> code.  but it would certainly be much saner to have explicit steps
+>> for it in the plat_nand code as you suggest.
+>>
+>> i think having the naming convention follow existing practices
+>> would be better.  then we dont have to keep our index of synonyms
+>> around. i.e. change "setup" to "probe" and "teardown" to "remove"
+>> -mike
+>
+> I've seen both naming conventions used in various drivers.  I'm not sure
+> which is the best option.
+>
+> The "setup", or "probe", callback doesn't/shouldn't to any actual
+> probing for the nand device, that's handled by the driver.  It's only
+> purpose should be to correctly configure the hardware to allow the probe
+> to work.
+>
+> But, here is the patch again with the changes as suggested.
+>
+> I also noticed that a header was missing in linux/mtd/nand.h due to the
+> callbacks.  I wasn't sure what various platforms might need so I just
+> coded this to pass the struct platform_device.  I guess they could both
+> just be a void parameter.  Any suggestions...
+>
+> Thanks,
+> Hartley
+>
+> Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
+>
+> ---
+>
+> diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
+> index 75f9f48..600fbe9 100644
+> --- a/drivers/mtd/nand/plat_nand.c
+> +++ b/drivers/mtd/nand/plat_nand.c
+> @@ -70,6 +70,13 @@ static int __init plat_nand_probe(struct
+> platform_device *pdev)
+>  
+>  	platform_set_drvdata(pdev, data);
+>  
+> +	/* Handle any platform specific setup */
+> +	if (pdata->ctrl.probe) {
+> +		res = pdata->ctrl.probe(pdev);
+> +		if (res)
+> +			goto out;
+> +	}
+> +
+>  	/* Scan to find existance of the device */
+>  	if (nand_scan(&data->mtd, 1)) {
+>  		res = -ENXIO;
+> @@ -99,6 +106,8 @@ static int __init plat_nand_probe(struct
+> platform_device *pdev)
+>  
+>  	nand_release(&data->mtd);
+>  out:
+> +	if (pdata->ctrl.remove)
+> +		pdata->ctrl.remove(pdev);
+>  	platform_set_drvdata(pdev, NULL);
+>  	iounmap(data->io_base);
+>  	kfree(data);
+> @@ -111,15 +120,15 @@ out:
+>  static int __devexit plat_nand_remove(struct platform_device *pdev)
+>  {
+>  	struct plat_nand_data *data = platform_get_drvdata(pdev);
+> -#ifdef CONFIG_MTD_PARTITIONS
+>  	struct platform_nand_data *pdata = pdev->dev.platform_data;
+> -#endif
+>  
+>  	nand_release(&data->mtd);
+>  #ifdef CONFIG_MTD_PARTITIONS
+>  	if (data->parts && data->parts != pdata->chip.partitions)
+>  		kfree(data->parts);
+>  #endif
+> +	if (pdata->ctrl.remove)
+> +		pdata->ctrl.remove(pdev);
+>  	iounmap(data->io_base);
+>  	kfree(data);
+>  
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index db5b63d..8534924 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -18,6 +18,7 @@
+>  #ifndef __LINUX_MTD_NAND_H
+>  #define __LINUX_MTD_NAND_H
+>  
+> +#include <linux/platform_device.h>
+>  #include <linux/wait.h>
+>  #include <linux/spinlock.h>
+>  #include <linux/mtd/mtd.h>
+> @@ -579,6 +580,8 @@ struct platform_nand_chip {
+>  
+>  /**
+>   * struct platform_nand_ctrl - controller level device structure
+> + * @probe:		platform specific function to probe/setup
+> hardware
+> + * @remove:		platform specific function to remove/teardown
+> hardware
+>   * @hwcontrol:		platform specific hardware control structure
+>   * @dev_ready:		platform specific function to read ready/busy
+> pin
+>   * @select_chip:	platform specific chip select function
+> @@ -589,6 +592,8 @@ struct platform_nand_chip {
+>   * All fields are optional and depend on the hardware driver
+> requirements
+>   */
+>  struct platform_nand_ctrl {
+> +	int		(*probe)(struct platform_device *pdev);
+> +	void		(*remove)(struct platform_device *pdev);
+>  	void		(*hwcontrol)(struct mtd_info *mtd, int cmd);
+>  	int		(*dev_ready)(struct mtd_info *mtd);
+>  	void		(*select_chip)(struct mtd_info *mtd, int chip); 
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
 
-Add error handling of course, and call blk_queue_max_*() to set your
-limits for this device. Then add a ps3vram_make_request() ala:
 
-static void ps3vram_do_request(struct request_queue *q, struct bio *bio)
-{
-	struct ps3_system_bus_device *dev = q->queuedata;
-	struct ps3vram_priv *priv = dev->core.driver_data;
-	int write, res, err = -EIO;
-        struct bio_vec *bv;
-	sector_t sector;
-	loff_t offset;
-	size_t len, retlen;
-        int i;
-
-	write = bio_data_dir(bio) == WRITE;
-
-	sector = bio->bi_sector;
-        bio_for_each_segment(bv, bio, i) {
-                char *ptr = page_address(bv->bv_page) + bv->bv_offset;
-
-                len = bv->bv_len;
-	        offset = sector << 9;
-
-        	if (write)
-	        	res = ps3vram_write(dev, offset, len, &retlen, ptr);
-        	else
-	        	res = ps3vram_read(dev, offset, len, &retlen, ptr);
-
-	        if (res) {
-        		dev_err(&dev->core, "%s failed\n", op);
-	        	goto out;
-        	}
-
-        	if (retlen != len) {
-	        	dev_err(&dev->core, "Short %s\n", op);
-		        goto out;
-        	}
-                sector += (len >> 9);
-        }
-
-	dev_dbg(&dev->core, "%s completed\n", op);
-        err = 0;
-out:
-        bio_endio(bio, err);
-}
-
-I just typed it here, so if it doesn't compile you get to keep the
-pieces :-)
-
-Since ps3 is very RAM limited, I didn't bother with any highmem mapping
-for the bio, since I gather that isn't an issue on that platform. You
-may want to detail that in a comment above the page_addres() thing at
-the top of the loop, though.
+Cheers
 
 -- 
-Jens Axboe
+Alexander Clouter
+.sigmonster says: What this country needs is a good five cent nickel.
