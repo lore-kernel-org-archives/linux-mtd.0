@@ -1,15 +1,33 @@
-Received: from mba.ocn.ne.jp ([122.1.235.107] helo=smtp.mba.ocn.ne.jp)
+Received: from vervifontaine.sonytel.be ([80.88.33.193]
+	helo=vervifontaine.sonycom.com)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LfXnl-0008CC-E3
-	for linux-mtd@lists.infradead.org; Fri, 06 Mar 2009 11:01:16 +0000
-From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtdpart: Make all partition parsers return allocated array
-Date: Fri,  6 Mar 2009 20:01:08 +0900
-Message-Id: <1236337268-4891-1-git-send-email-anemo@mba.ocn.ne.jp>
-Cc: Eugene Konev <ejka@openwrt.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+	id 1LfZTV-0004pK-Q3
+	for linux-mtd@lists.infradead.org; Fri, 06 Mar 2009 12:48:28 +0000
+Date: Fri, 6 Mar 2009 13:48:24 +0100 (CET)
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Sender: geert@sonytel.be
+To: Jens Axboe <jens.axboe@oracle.com>
+Subject: Re: [PATCH/RFC] ps3/block: Add ps3vram-ng driver for accessing video
+	RAM as block device
+In-Reply-To: <20090306074639.GN11787@kernel.dk>
+Message-ID: <alpine.LRH.2.00.0903061347360.16809@vixen.sonytel.be>
+References: <alpine.LRH.2.00.0903041444300.32279@vixen.sonytel.be>
+	<20090305083701.GQ11787@kernel.dk>
+	<alpine.LRH.2.00.0903051146440.2618@vixen.sonytel.be>
+	<20090305110940.GY11787@kernel.dk>
+	<alpine.LRH.2.00.0903051325450.2618@vixen.sonytel.be>
+	<20090306074639.GN11787@kernel.dk>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+Cc: Arnd Bergmann <arnd@arndb.de>, Geoff Levand <geoffrey.levand@am.sony.com>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	Jim Paris <jim@jtan.com>, Linux/PPC Development <linuxppc-dev@ozlabs.org>,
+	linux-mtd@lists.infradead.org,
+	Vivien Chappelier <vivien.chappelier@free.fr>,
 	David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org, Felix Fietkau <nbd@openwrt.org>
+	Cell Broadband Engine OSS Development <cbe-oss-dev@ozlabs.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,59 +37,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently redboot and afx parser return allocated mtd_partition array
-and cmdlinepart and ar7 return persistent array.
+On Fri, 6 Mar 2009, Jens Axboe wrote:
+> On Thu, Mar 05 2009, Geert Uytterhoeven wrote:
+> > But then I noticed ps3vram_make_request() may be called concurrently,
+> > so I had to add a mutex to avoid data corruption. This slows the
+> > driver down, and in the end, the version with a thread turns out to be
+> > ca. 1% faster. The version without a thread is about 50 lines less
+> > code, though.
+> 
+> That is correct, ->make_request_fn may get reentered. I'm not surprised
+> that performance dropped if you just shoved everything under a mutex.
+> You could be a little more smart and queue concurrent bio's for
+> processing when the current one is complete though, there are several
+> approaches there that be a lot faster than going all the way through the
+> IO stack and scheduler just to avoid concurrency.
 
-This patch make cmdlinepart and ar7 also return allocated array, so
-that all users can free it regardless of parser type.
+Yes, using a spinlock and queueing requests on a list if the driver is busy can
+be done after 2.6.29...
 
-Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
----
- drivers/mtd/ar7part.c     |    6 ++++--
- drivers/mtd/cmdlinepart.c |    6 +++++-
- 2 files changed, 9 insertions(+), 3 deletions(-)
+With kind regards,
 
-diff --git a/drivers/mtd/ar7part.c b/drivers/mtd/ar7part.c
-index ecf170b..6697a1e 100644
---- a/drivers/mtd/ar7part.c
-+++ b/drivers/mtd/ar7part.c
-@@ -44,8 +44,6 @@ struct ar7_bin_rec {
- 	unsigned int address;
- };
- 
--static struct mtd_partition ar7_parts[AR7_PARTS];
--
- static int create_mtd_partitions(struct mtd_info *master,
- 				 struct mtd_partition **pparts,
- 				 unsigned long origin)
-@@ -57,7 +55,11 @@ static int create_mtd_partitions(struct mtd_info *master,
- 	unsigned int root_offset = ROOT_OFFSET;
- 
- 	int retries = 10;
-+	struct mtd_partition *ar7_parts;
- 
-+	ar7_parts = kzalloc(sizeof(*ar7_parts) * AR7_PARTS, GFP_KERNEL);
-+	if (!ar7_parts)
-+		return -ENOMEM;
- 	ar7_parts[0].name = "loader";
- 	ar7_parts[0].offset = 0;
- 	ar7_parts[0].size = master->erasesize;
-diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
-index 50a3403..5011fa7 100644
---- a/drivers/mtd/cmdlinepart.c
-+++ b/drivers/mtd/cmdlinepart.c
-@@ -335,7 +335,11 @@ static int parse_cmdline_partitions(struct mtd_info *master,
- 				}
- 				offset += part->parts[i].size;
- 			}
--			*pparts = part->parts;
-+			*pparts = kmemdup(part->parts,
-+					sizeof(*part->parts) * part->num_parts,
-+					GFP_KERNEL);
-+			if (!*pparts)
-+				return -ENOMEM;
- 			return part->num_parts;
- 		}
- 	}
--- 
-1.5.6.3
+Geert Uytterhoeven
+Software Architect
+
+Sony Techsoft Centre Europe
+The Corporate Village · Da Vincilaan 7-D1 · B-1935 Zaventem · Belgium
+
+Phone:    +32 (0)2 700 8453
+Fax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 · RPR Brussels
+Fortis · BIC GEBABEBB · IBAN BE41293037680010
