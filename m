@@ -1,30 +1,15 @@
-Received: from brick.kernel.dk ([93.163.65.50] helo=kernel.dk)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LfUlf-0005gn-Pv
-	for linux-mtd@lists.infradead.org; Fri, 06 Mar 2009 07:46:55 +0000
-Date: Fri, 6 Mar 2009 08:46:39 +0100
-From: Jens Axboe <jens.axboe@oracle.com>
-To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Subject: Re: [PATCH/RFC] ps3/block: Add ps3vram-ng driver for accessing
-	video    RAM as block device
-Message-ID: <20090306074639.GN11787@kernel.dk>
-References: <alpine.LRH.2.00.0903041444300.32279@vixen.sonytel.be>
-	<20090305083701.GQ11787@kernel.dk>
-	<alpine.LRH.2.00.0903051146440.2618@vixen.sonytel.be>
-	<20090305110940.GY11787@kernel.dk>
-	<alpine.LRH.2.00.0903051325450.2618@vixen.sonytel.be>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.00.0903051325450.2618@vixen.sonytel.be>
-Cc: Arnd Bergmann <arnd@arndb.de>, Geoff Levand <geoffrey.levand@am.sony.com>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Linux Kernel Development <linux-kernel@vger.kernel.org>,
-	Jim Paris <jim@jtan.com>, Linux/PPC Development <linuxppc-dev@ozlabs.org>,
-	linux-mtd@lists.infradead.org,
-	Vivien Chappelier <vivien.chappelier@free.fr>,
+Received: from mba.ocn.ne.jp ([122.1.235.107] helo=smtp.mba.ocn.ne.jp)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LfXnl-0008CC-E3
+	for linux-mtd@lists.infradead.org; Fri, 06 Mar 2009 11:01:16 +0000
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtdpart: Make all partition parsers return allocated array
+Date: Fri,  6 Mar 2009 20:01:08 +0900
+Message-Id: <1236337268-4891-1-git-send-email-anemo@mba.ocn.ne.jp>
+Cc: Eugene Konev <ejka@openwrt.org>, Sascha Hauer <s.hauer@pengutronix.de>,
 	David Woodhouse <dwmw2@infradead.org>,
-	Cell Broadband Engine OSS Development <cbe-oss-dev@ozlabs.org>
+	linux-kernel@vger.kernel.org, Felix Fietkau <nbd@openwrt.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,100 +19,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 05 2009, Geert Uytterhoeven wrote:
-> On Thu, 5 Mar 2009, Jens Axboe wrote:
-> > On Thu, Mar 05 2009, Geert Uytterhoeven wrote:
-> > > On Thu, 5 Mar 2009, Jens Axboe wrote:
-> > > > On Wed, Mar 04 2009, Geert Uytterhoeven wrote:
-> > > > > Below is the rewrite of the PS3 Video RAM Storage Driver as a plain block
-> > > > > device, as requested by Arnd Bergmann.
-> 
-> > > > I'd rewrite this as a ->make_request_fn handler instead. Then you can
-> > > > get rid of the kernel thread. IOW, change
-> > > >
-> > > > queue = blk_init_queue(ps3vram_request, &priv->lock);
-> > > >
-> > > > to
-> > > >
-> > > > queue = blk_alloc_queue(GFP_KERNEL);
-> > > > blk_queue_make_request(queue, ps3vram_make_request);
-> > >
-> > > Thanks, I didn't know that part...
-> > >
-> > > > Add error handling of course, and call blk_queue_max_*() to set your
-> > > > limits for this device.
-> > >
-> > > I took out the blk_queue_max_*() calls (compared to ps3disk.c), as
-> > > none of the limits apply, and the defaults are fine.
-> > >
-> > > Is that OK, or is it better to make it explicit?
-> >
-> > I think it's always good to make it explicit. Plus for this case you
-> > definitely need it, as blk_init_queue() wont do it for you anymore.
-> 
-> blk_queue_make_request() does it for me, too:
-> 
-> void blk_queue_make_request(struct request_queue *q, make_request_fn *mfn)
-> {
-> 	...
-> 	blk_queue_max_phys_segments(q, MAX_PHYS_SEGMENTS);
-> 	blk_queue_max_hw_segments(q, MAX_HW_SEGMENTS);
-> 	...
-> 	blk_queue_max_segment_size(q, MAX_SEGMENT_SIZE);
-> 	...
-> 	blk_queue_max_sectors(q, SAFE_MAX_SECTORS);
-> 	...
-> }
-> 
-> struct request_queue *
-> blk_init_queue_node(request_fn_proc *rfn, spinlock_t *lock, int node_id)
-> {
-> 	...
-> 	blk_queue_max_segment_size(q, MAX_SEGMENT_SIZE);
-> 
-> 	blk_queue_max_hw_segments(q, MAX_HW_SEGMENTS);
-> 	blk_queue_max_phys_segments(q, MAX_PHYS_SEGMENTS);
-> 	...
-> }
+Currently redboot and afx parser return allocated mtd_partition array
+and cmdlinepart and ar7 return persistent array.
 
-Indeed, there's some duplicated code in blk_init_queue_node(), I'll make
-sure to get rid of that!
+This patch make cmdlinepart and ar7 also return allocated array, so
+that all users can free it regardless of parser type.
 
-> > > > Then add a ps3vram_make_request() ala:
-> > >
-> > > > static void ps3vram_do_request(struct request_queue *q, struct bio *bio)
-> > > > {
-> 
-> > > > }
-> > > >
-> > > > I just typed it here, so if it doesn't compile you get to keep the
-> > > > pieces :-)
-> > >
-> > > OK, I'll give it a try...
-> > >
-> > > BTW, does this mean the `simple' way, which I used based on LDD3, is
-> > > deprecated?
-> >
-> > Depends.. It's obviously not a very effective approach, since you punt
-> > to a thread for each request. But if you need the IO scheduler helping
-> > you with merging and sorting (for a rotational device), it still has
-> > some merit. For this particular case, the ->make_request_fn approach is
-> > much better.
-> 
-> Without the thread, performance indeed increased.
-> 
-> But then I noticed ps3vram_make_request() may be called concurrently,
-> so I had to add a mutex to avoid data corruption. This slows the
-> driver down, and in the end, the version with a thread turns out to be
-> ca. 1% faster. The version without a thread is about 50 lines less
-> code, though.
+Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+---
+ drivers/mtd/ar7part.c     |    6 ++++--
+ drivers/mtd/cmdlinepart.c |    6 +++++-
+ 2 files changed, 9 insertions(+), 3 deletions(-)
 
-That is correct, ->make_request_fn may get reentered. I'm not surprised
-that performance dropped if you just shoved everything under a mutex.
-You could be a little more smart and queue concurrent bio's for
-processing when the current one is complete though, there are several
-approaches there that be a lot faster than going all the way through the
-IO stack and scheduler just to avoid concurrency.
-
+diff --git a/drivers/mtd/ar7part.c b/drivers/mtd/ar7part.c
+index ecf170b..6697a1e 100644
+--- a/drivers/mtd/ar7part.c
++++ b/drivers/mtd/ar7part.c
+@@ -44,8 +44,6 @@ struct ar7_bin_rec {
+ 	unsigned int address;
+ };
+ 
+-static struct mtd_partition ar7_parts[AR7_PARTS];
+-
+ static int create_mtd_partitions(struct mtd_info *master,
+ 				 struct mtd_partition **pparts,
+ 				 unsigned long origin)
+@@ -57,7 +55,11 @@ static int create_mtd_partitions(struct mtd_info *master,
+ 	unsigned int root_offset = ROOT_OFFSET;
+ 
+ 	int retries = 10;
++	struct mtd_partition *ar7_parts;
+ 
++	ar7_parts = kzalloc(sizeof(*ar7_parts) * AR7_PARTS, GFP_KERNEL);
++	if (!ar7_parts)
++		return -ENOMEM;
+ 	ar7_parts[0].name = "loader";
+ 	ar7_parts[0].offset = 0;
+ 	ar7_parts[0].size = master->erasesize;
+diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
+index 50a3403..5011fa7 100644
+--- a/drivers/mtd/cmdlinepart.c
++++ b/drivers/mtd/cmdlinepart.c
+@@ -335,7 +335,11 @@ static int parse_cmdline_partitions(struct mtd_info *master,
+ 				}
+ 				offset += part->parts[i].size;
+ 			}
+-			*pparts = part->parts;
++			*pparts = kmemdup(part->parts,
++					sizeof(*part->parts) * part->num_parts,
++					GFP_KERNEL);
++			if (!*pparts)
++				return -ENOMEM;
+ 			return part->num_parts;
+ 		}
+ 	}
 -- 
-Jens Axboe
+1.5.6.3
