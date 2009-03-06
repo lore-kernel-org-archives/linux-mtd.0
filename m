@@ -1,34 +1,19 @@
-Received: from brick.kernel.dk ([93.163.65.50] helo=kernel.dk)
+Received: from smtp1.linux-foundation.org ([140.211.169.13])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LffKs-0001pB-OE
-	for linux-mtd@lists.infradead.org; Fri, 06 Mar 2009 19:04:00 +0000
-Date: Fri, 6 Mar 2009 20:03:50 +0100
-From: Jens Axboe <jens.axboe@oracle.com>
-To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Subject: Re: [PATCH/RFC] ps3/block: Add ps3vram-ng driver for accessing
-	video      RAM as block device
-Message-ID: <20090306190350.GD11787@kernel.dk>
-References: <alpine.LRH.2.00.0903041444300.32279@vixen.sonytel.be>
-	<20090305083701.GQ11787@kernel.dk>
-	<alpine.LRH.2.00.0903051146440.2618@vixen.sonytel.be>
-	<20090305110940.GY11787@kernel.dk>
-	<alpine.LRH.2.00.0903051325450.2618@vixen.sonytel.be>
-	<20090306074639.GN11787@kernel.dk>
-	<alpine.LRH.2.00.0903061347360.16809@vixen.sonytel.be>
-	<20090306125832.GX11787@kernel.dk>
-	<alpine.LRH.2.00.0903061525340.16809@vixen.sonytel.be>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.00.0903061525340.16809@vixen.sonytel.be>
-Cc: Arnd Bergmann <arnd@arndb.de>, Geoff Levand <geoffrey.levand@am.sony.com>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Linux Kernel Development <linux-kernel@vger.kernel.org>,
-	Jim Paris <jim@jtan.com>, Linux/PPC Development <linuxppc-dev@ozlabs.org>,
-	linux-mtd@lists.infradead.org,
-	Vivien Chappelier <vivien.chappelier@free.fr>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Cell Broadband Engine OSS Development <cbe-oss-dev@ozlabs.org>
+	id 1LfhXG-00027x-Ib
+	for linux-mtd@lists.infradead.org; Fri, 06 Mar 2009 21:24:53 +0000
+Date: Fri, 6 Mar 2009 13:24:38 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: "hartleys" <hartleys@visionengravers.com>
+Subject: Re: [PATCH] mtd: plat_nand: add platform probe/remove callbacks
+Message-Id: <20090306132438.e55fef0d.akpm@linux-foundation.org>
+In-Reply-To: <BD79186B4FD85F4B8E60E381CAEE1909013B7114@mi8nycmail19.Mi8.com>
+References: <BD79186B4FD85F4B8E60E381CAEE1909013B7114@mi8nycmail19.Mi8.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: vitalywool@gmail.com, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, alex@digriz.org.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,38 +23,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Mar 06 2009, Geert Uytterhoeven wrote:
-> On Fri, 6 Mar 2009, Jens Axboe wrote:
-> > On Fri, Mar 06 2009, Geert Uytterhoeven wrote:
-> > > On Fri, 6 Mar 2009, Jens Axboe wrote:
-> > > > On Thu, Mar 05 2009, Geert Uytterhoeven wrote:
-> > > > > But then I noticed ps3vram_make_request() may be called concurrently,
-> > > > > so I had to add a mutex to avoid data corruption. This slows the
-> > > > > driver down, and in the end, the version with a thread turns out to be
-> > > > > ca. 1% faster. The version without a thread is about 50 lines less
-> > > > > code, though.
-> > > >
-> > > > That is correct, ->make_request_fn may get reentered. I'm not surprised
-> > > > that performance dropped if you just shoved everything under a mutex.
-> > > > You could be a little more smart and queue concurrent bio's for
-> > > > processing when the current one is complete though, there are several
-> > > > approaches there that be a lot faster than going all the way through the
-> > > > IO stack and scheduler just to avoid concurrency.
-> > >
-> > > Yes, using a spinlock and queueing requests on a list if the driver is
-> > > busy can be done after 2.6.29...
-> >
-> > Certainly. Even just replacing your current mutex with a spinlock during
-> > the memcpy() would surely be a lot faster. Or even just grabbing the
-> > mutex before calling into the write for the duration of the bio. The way
-> > you do it is certain context switch death :-)
+On Thu, 5 Mar 2009 18:58:12 -0500
+"hartleys" <hartleys@visionengravers.com> wrote:
+
+> From: "hartleys" <hartleys@visionengravers.com>
+
+You might want to change your email setup so that the above reads "H
+Hartley Sweeten <hsweeten@visionengravers.com>" or whatever.  Because
+most patch-merging people's tools will end up marking this commit as
+being from someone called "hartleys".
+
+Alternatively, put an explicit From: line at the top of the changelog.
+
+> To: <linux-kernel@vger.kernel.org>
+> Cc: <linux-mtd@lists.infradead.org>, "Alexander Clouter" <alex@digriz.org.uk>, "Andrew Morton" <akpm@linux-foundation.org>, <vitalywool@gmail.com>
+> Subject: [PATCH] mtd: plat_nand: add platform probe/remove callbacks
+> Date: Thu, 5 Mar 2009 18:58:12 -0500
 > 
-> It's not just the memcpy(). ps3vram_{up,down}load() call msleep(), so
-> I cannot use a spinlock.
+> Add optional probe and remove callbacks to the plat_nand driver.
+> 
+> Some platforms may require additional setup, such as configuring
+> the memory controller, before the nand device can be accessed.
+> This patch provides an optional callback to handle this setup as
+> well as a callback to teardown the setup.
+> 
+> This patch was originally submitted to linux-mtd but it was
+> suggested I post it here for a broader review.
 
-Ah right, I hadn't looked close enough. But putting the mutex_lock()
-outside of the bio_for_each_segment() is going to be much faster than
-getting/releasing it for each segment.
+Looks OK to me, but I'm an MTD ignoramus.
 
--- 
-Jens Axboe
+> Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
+> Tested-By: Alexander Clouter <alex@digriz.org.uk>
+> 
+> ---
+> 
+> diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
+> index 75f9f48..600fbe9 100644
+
+The patch was quite wordwrapped.  Please fix your email client for next
+time.
