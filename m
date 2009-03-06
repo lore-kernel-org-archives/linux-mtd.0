@@ -1,25 +1,30 @@
-Received: from mail.gmx.net ([213.165.64.20])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LfMw8-0006GS-Kg
-	for linux-mtd@lists.infradead.org; Thu, 05 Mar 2009 23:25:11 +0000
-Date: Fri, 6 Mar 2009 00:25:06 +0100 (CET)
-From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-To: =?utf-8?Q?Rog=C3=A9rio?= Brito <rbrito@ime.usp.br>
-Subject: [PATCH] powerpc: fix linkstation and storcenter compilation breakage
-In-Reply-To: <20090304214541.GA2917@ime.usp.br>
-Message-ID: <Pine.LNX.4.64.0903060016500.4980@axis700.grange>
-References: <20090302094303.GA29819@ime.usp.br>
-	<20090303024837.GC24834@bilbo.ozlabs.org>
-	<20090303083455.GA22397@ime.usp.br>
-	<Pine.LNX.4.64.0903040828150.4864@axis700.grange>
-	<20090304214541.GA2917@ime.usp.br>
+Received: from brick.kernel.dk ([93.163.65.50] helo=kernel.dk)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LfUlf-0005gn-Pv
+	for linux-mtd@lists.infradead.org; Fri, 06 Mar 2009 07:46:55 +0000
+Date: Fri, 6 Mar 2009 08:46:39 +0100
+From: Jens Axboe <jens.axboe@oracle.com>
+To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Subject: Re: [PATCH/RFC] ps3/block: Add ps3vram-ng driver for accessing
+	video    RAM as block device
+Message-ID: <20090306074639.GN11787@kernel.dk>
+References: <alpine.LRH.2.00.0903041444300.32279@vixen.sonytel.be>
+	<20090305083701.GQ11787@kernel.dk>
+	<alpine.LRH.2.00.0903051146440.2618@vixen.sonytel.be>
+	<20090305110940.GY11787@kernel.dk>
+	<alpine.LRH.2.00.0903051325450.2618@vixen.sonytel.be>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, Kumar Gala <galak@kernel.crashing.org>,
-	Tony Breeds <tony@bakeyournoodle.com>,
-	linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	torvalds@linux-foundation.org,
-	Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LRH.2.00.0903051325450.2618@vixen.sonytel.be>
+Cc: Arnd Bergmann <arnd@arndb.de>, Geoff Levand <geoffrey.levand@am.sony.com>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	Jim Paris <jim@jtan.com>, Linux/PPC Development <linuxppc-dev@ozlabs.org>,
+	linux-mtd@lists.infradead.org,
+	Vivien Chappelier <vivien.chappelier@free.fr>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Cell Broadband Engine OSS Development <cbe-oss-dev@ozlabs.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,359 +34,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Defining flash partition table in platform code is deprecated, and due to 
-recent changes linkstation and storcenter do not compile any more with 
-their default configurations because of undefined references to 
-physmap_set_partitions(). Instead of fixing them by using the correct 
-kernel configuration macro in preprocessor conditional, remove partition 
-table definitions altogether. Instead add support for partition definition 
-on the command-line and in device tree to the default configurations.
+On Thu, Mar 05 2009, Geert Uytterhoeven wrote:
+> On Thu, 5 Mar 2009, Jens Axboe wrote:
+> > On Thu, Mar 05 2009, Geert Uytterhoeven wrote:
+> > > On Thu, 5 Mar 2009, Jens Axboe wrote:
+> > > > On Wed, Mar 04 2009, Geert Uytterhoeven wrote:
+> > > > > Below is the rewrite of the PS3 Video RAM Storage Driver as a plain block
+> > > > > device, as requested by Arnd Bergmann.
+> 
+> > > > I'd rewrite this as a ->make_request_fn handler instead. Then you can
+> > > > get rid of the kernel thread. IOW, change
+> > > >
+> > > > queue = blk_init_queue(ps3vram_request, &priv->lock);
+> > > >
+> > > > to
+> > > >
+> > > > queue = blk_alloc_queue(GFP_KERNEL);
+> > > > blk_queue_make_request(queue, ps3vram_make_request);
+> > >
+> > > Thanks, I didn't know that part...
+> > >
+> > > > Add error handling of course, and call blk_queue_max_*() to set your
+> > > > limits for this device.
+> > >
+> > > I took out the blk_queue_max_*() calls (compared to ps3disk.c), as
+> > > none of the limits apply, and the defaults are fine.
+> > >
+> > > Is that OK, or is it better to make it explicit?
+> >
+> > I think it's always good to make it explicit. Plus for this case you
+> > definitely need it, as blk_init_queue() wont do it for you anymore.
+> 
+> blk_queue_make_request() does it for me, too:
+> 
+> void blk_queue_make_request(struct request_queue *q, make_request_fn *mfn)
+> {
+> 	...
+> 	blk_queue_max_phys_segments(q, MAX_PHYS_SEGMENTS);
+> 	blk_queue_max_hw_segments(q, MAX_HW_SEGMENTS);
+> 	...
+> 	blk_queue_max_segment_size(q, MAX_SEGMENT_SIZE);
+> 	...
+> 	blk_queue_max_sectors(q, SAFE_MAX_SECTORS);
+> 	...
+> }
+> 
+> struct request_queue *
+> blk_init_queue_node(request_fn_proc *rfn, spinlock_t *lock, int node_id)
+> {
+> 	...
+> 	blk_queue_max_segment_size(q, MAX_SEGMENT_SIZE);
+> 
+> 	blk_queue_max_hw_segments(q, MAX_HW_SEGMENTS);
+> 	blk_queue_max_phys_segments(q, MAX_PHYS_SEGMENTS);
+> 	...
+> }
 
-Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
----
-Kumar, could you push this up ASAP, please? This fixes
+Indeed, there's some duplicated code in blk_init_queue_node(), I'll make
+sure to get rid of that!
 
-[Bug #12811] undefined reference to `physmap_set_partitions' on powerpc
+> > > > Then add a ps3vram_make_request() ala:
+> > >
+> > > > static void ps3vram_do_request(struct request_queue *q, struct bio *bio)
+> > > > {
+> 
+> > > > }
+> > > >
+> > > > I just typed it here, so if it doesn't compile you get to keep the
+> > > > pieces :-)
+> > >
+> > > OK, I'll give it a try...
+> > >
+> > > BTW, does this mean the `simple' way, which I used based on LDD3, is
+> > > deprecated?
+> >
+> > Depends.. It's obviously not a very effective approach, since you punt
+> > to a thread for each request. But if you need the IO scheduler helping
+> > you with merging and sorting (for a rotational device), it still has
+> > some merit. For this particular case, the ->make_request_fn approach is
+> > much better.
+> 
+> Without the thread, performance indeed increased.
+> 
+> But then I noticed ps3vram_make_request() may be called concurrently,
+> so I had to add a mutex to avoid data corruption. This slows the
+> driver down, and in the end, the version with a thread turns out to be
+> ca. 1% faster. The version without a thread is about 50 lines less
+> code, though.
 
-diff --git a/arch/powerpc/configs/linkstation_defconfig b/arch/powerpc/configs/linkstation_defconfig
-index aa5855a..15900dc 100644
---- a/arch/powerpc/configs/linkstation_defconfig
-+++ b/arch/powerpc/configs/linkstation_defconfig
-@@ -1,7 +1,7 @@
- #
- # Automatically generated make config: don't edit
--# Linux kernel version: 2.6.29-rc2
--# Mon Jan 26 15:35:29 2009
-+# Linux kernel version: 2.6.29-rc6
-+# Fri Mar  6 00:07:38 2009
- #
- # CONFIG_PPC64 is not set
- 
-@@ -71,6 +71,15 @@ CONFIG_POSIX_MQUEUE=y
- # CONFIG_BSD_PROCESS_ACCT is not set
- # CONFIG_TASKSTATS is not set
- # CONFIG_AUDIT is not set
-+
-+#
-+# RCU Subsystem
-+#
-+CONFIG_CLASSIC_RCU=y
-+# CONFIG_TREE_RCU is not set
-+# CONFIG_PREEMPT_RCU is not set
-+# CONFIG_TREE_RCU_TRACE is not set
-+# CONFIG_PREEMPT_RCU_TRACE is not set
- CONFIG_IKCONFIG=y
- CONFIG_IKCONFIG_PROC=y
- CONFIG_LOG_BUF_SHIFT=14
-@@ -88,6 +97,7 @@ CONFIG_NAMESPACES=y
- # CONFIG_IPC_NS is not set
- # CONFIG_USER_NS is not set
- # CONFIG_PID_NS is not set
-+# CONFIG_NET_NS is not set
- CONFIG_BLK_DEV_INITRD=y
- CONFIG_INITRAMFS_SOURCE=""
- CONFIG_CC_OPTIMIZE_FOR_SIZE=y
-@@ -153,11 +163,6 @@ CONFIG_DEFAULT_AS=y
- # CONFIG_DEFAULT_CFQ is not set
- # CONFIG_DEFAULT_NOOP is not set
- CONFIG_DEFAULT_IOSCHED="anticipatory"
--CONFIG_CLASSIC_RCU=y
--# CONFIG_TREE_RCU is not set
--# CONFIG_PREEMPT_RCU is not set
--# CONFIG_TREE_RCU_TRACE is not set
--# CONFIG_PREEMPT_RCU_TRACE is not set
- # CONFIG_FREEZER is not set
- 
- #
-@@ -294,7 +299,6 @@ CONFIG_NET=y
- #
- # Networking options
- #
--# CONFIG_NET_NS is not set
- CONFIG_COMPAT_NET_DEV_OPS=y
- CONFIG_PACKET=y
- CONFIG_PACKET_MMAP=y
-@@ -508,8 +512,8 @@ CONFIG_MTD_CONCAT=y
- CONFIG_MTD_PARTITIONS=y
- # CONFIG_MTD_TESTS is not set
- # CONFIG_MTD_REDBOOT_PARTS is not set
--# CONFIG_MTD_CMDLINE_PARTS is not set
--# CONFIG_MTD_OF_PARTS is not set
-+CONFIG_MTD_CMDLINE_PARTS=y
-+CONFIG_MTD_OF_PARTS=y
- # CONFIG_MTD_AR7_PARTS is not set
- 
- #
-@@ -587,7 +591,6 @@ CONFIG_MTD_PHYSMAP=y
- # LPDDR flash memory drivers
- #
- # CONFIG_MTD_LPDDR is not set
--# CONFIG_MTD_QINFO_PROBE is not set
- 
- #
- # UBI - Unsorted block images
-@@ -617,13 +620,19 @@ CONFIG_BLK_DEV_RAM_SIZE=8192
- # CONFIG_BLK_DEV_HD is not set
- CONFIG_MISC_DEVICES=y
- # CONFIG_PHANTOM is not set
--# CONFIG_EEPROM_93CX6 is not set
- # CONFIG_SGI_IOC4 is not set
- # CONFIG_TIFM_CORE is not set
- # CONFIG_ICS932S401 is not set
- # CONFIG_ENCLOSURE_SERVICES is not set
- # CONFIG_HP_ILO is not set
- # CONFIG_C2PORT is not set
-+
-+#
-+# EEPROM support
-+#
-+# CONFIG_EEPROM_AT24 is not set
-+CONFIG_EEPROM_LEGACY=m
-+# CONFIG_EEPROM_93CX6 is not set
- CONFIG_HAVE_IDE=y
- # CONFIG_IDE is not set
- 
-@@ -839,6 +848,7 @@ CONFIG_R8169=y
- # CONFIG_QLA3XXX is not set
- # CONFIG_ATL1 is not set
- # CONFIG_ATL1E is not set
-+# CONFIG_ATL1C is not set
- # CONFIG_JME is not set
- CONFIG_NETDEV_10000=y
- # CONFIG_CHELSIO_T1 is not set
-@@ -1037,8 +1047,6 @@ CONFIG_I2C_MPC=y
- # Miscellaneous I2C Chip support
- #
- # CONFIG_DS1682 is not set
--# CONFIG_EEPROM_AT24 is not set
--CONFIG_EEPROM_LEGACY=m
- # CONFIG_SENSORS_PCF8574 is not set
- # CONFIG_PCF8575 is not set
- # CONFIG_SENSORS_PCA9539 is not set
-diff --git a/arch/powerpc/configs/storcenter_defconfig b/arch/powerpc/configs/storcenter_defconfig
-index 86512c8..9490346 100644
---- a/arch/powerpc/configs/storcenter_defconfig
-+++ b/arch/powerpc/configs/storcenter_defconfig
-@@ -1,7 +1,7 @@
- #
- # Automatically generated make config: don't edit
--# Linux kernel version: 2.6.29-rc2
--# Mon Jan 26 15:35:46 2009
-+# Linux kernel version: 2.6.29-rc6
-+# Fri Mar  6 00:09:08 2009
- #
- # CONFIG_PPC64 is not set
- 
-@@ -71,6 +71,15 @@ CONFIG_SYSVIPC_SYSCTL=y
- # CONFIG_BSD_PROCESS_ACCT is not set
- # CONFIG_TASKSTATS is not set
- # CONFIG_AUDIT is not set
-+
-+#
-+# RCU Subsystem
-+#
-+CONFIG_CLASSIC_RCU=y
-+# CONFIG_TREE_RCU is not set
-+# CONFIG_PREEMPT_RCU is not set
-+# CONFIG_TREE_RCU_TRACE is not set
-+# CONFIG_PREEMPT_RCU_TRACE is not set
- # CONFIG_IKCONFIG is not set
- CONFIG_LOG_BUF_SHIFT=14
- CONFIG_GROUP_SCHED=y
-@@ -144,11 +153,6 @@ CONFIG_IOSCHED_CFQ=y
- CONFIG_DEFAULT_CFQ=y
- # CONFIG_DEFAULT_NOOP is not set
- CONFIG_DEFAULT_IOSCHED="cfq"
--CONFIG_CLASSIC_RCU=y
--# CONFIG_TREE_RCU is not set
--# CONFIG_PREEMPT_RCU is not set
--# CONFIG_TREE_RCU_TRACE is not set
--# CONFIG_PREEMPT_RCU_TRACE is not set
- # CONFIG_FREEZER is not set
- 
- #
-@@ -377,8 +381,8 @@ CONFIG_MTD=y
- CONFIG_MTD_PARTITIONS=y
- # CONFIG_MTD_TESTS is not set
- # CONFIG_MTD_REDBOOT_PARTS is not set
--# CONFIG_MTD_CMDLINE_PARTS is not set
--# CONFIG_MTD_OF_PARTS is not set
-+CONFIG_MTD_CMDLINE_PARTS=y
-+CONFIG_MTD_OF_PARTS=y
- # CONFIG_MTD_AR7_PARTS is not set
- 
- #
-@@ -452,7 +456,6 @@ CONFIG_MTD_PHYSMAP=y
- # LPDDR flash memory drivers
- #
- # CONFIG_MTD_LPDDR is not set
--# CONFIG_MTD_QINFO_PROBE is not set
- 
- #
- # UBI - Unsorted block images
-@@ -478,13 +481,19 @@ CONFIG_BLK_DEV=y
- # CONFIG_BLK_DEV_HD is not set
- CONFIG_MISC_DEVICES=y
- # CONFIG_PHANTOM is not set
--# CONFIG_EEPROM_93CX6 is not set
- # CONFIG_SGI_IOC4 is not set
- # CONFIG_TIFM_CORE is not set
- # CONFIG_ICS932S401 is not set
- # CONFIG_ENCLOSURE_SERVICES is not set
- # CONFIG_HP_ILO is not set
- # CONFIG_C2PORT is not set
-+
-+#
-+# EEPROM support
-+#
-+# CONFIG_EEPROM_AT24 is not set
-+# CONFIG_EEPROM_LEGACY is not set
-+# CONFIG_EEPROM_93CX6 is not set
- CONFIG_HAVE_IDE=y
- CONFIG_IDE=y
- 
-@@ -677,6 +686,7 @@ CONFIG_R8169=y
- # CONFIG_QLA3XXX is not set
- # CONFIG_ATL1 is not set
- # CONFIG_ATL1E is not set
-+# CONFIG_ATL1C is not set
- # CONFIG_JME is not set
- # CONFIG_NETDEV_10000 is not set
- # CONFIG_TR is not set
-@@ -818,8 +828,6 @@ CONFIG_I2C_MPC=y
- # Miscellaneous I2C Chip support
- #
- # CONFIG_DS1682 is not set
--# CONFIG_EEPROM_AT24 is not set
--# CONFIG_EEPROM_LEGACY is not set
- # CONFIG_SENSORS_PCF8574 is not set
- # CONFIG_PCF8575 is not set
- # CONFIG_SENSORS_PCA9539 is not set
-@@ -1159,6 +1167,7 @@ CONFIG_JFFS2_RTIME=y
- # CONFIG_SYSV_FS is not set
- # CONFIG_UFS_FS is not set
- # CONFIG_NETWORK_FILESYSTEMS is not set
-+CONFIG_EXPORTFS=m
- 
- #
- # Partition Types
-diff --git a/arch/powerpc/platforms/embedded6xx/linkstation.c b/arch/powerpc/platforms/embedded6xx/linkstation.c
-index 2ca7be6..244f997 100644
---- a/arch/powerpc/platforms/embedded6xx/linkstation.c
-+++ b/arch/powerpc/platforms/embedded6xx/linkstation.c
-@@ -12,7 +12,6 @@
- 
- #include <linux/kernel.h>
- #include <linux/initrd.h>
--#include <linux/mtd/physmap.h>
- #include <linux/of_platform.h>
- 
- #include <asm/time.h>
-@@ -22,39 +21,6 @@
- 
- #include "mpc10x.h"
- 
--static struct mtd_partition linkstation_physmap_partitions[] = {
--	{
--		.name   = "mtd_firmimg",
--		.offset = 0x000000,
--		.size   = 0x300000,
--	},
--	{
--		.name   = "mtd_bootcode",
--		.offset = 0x300000,
--		.size   = 0x070000,
--	},
--	{
--		.name   = "mtd_status",
--		.offset = 0x370000,
--		.size   = 0x010000,
--	},
--	{
--		.name   = "mtd_conf",
--		.offset = 0x380000,
--		.size   = 0x080000,
--	},
--	{
--		.name   = "mtd_allflash",
--		.offset = 0x000000,
--		.size   = 0x400000,
--	},
--	{
--		.name   = "mtd_data",
--		.offset = 0x310000,
--		.size   = 0x0f0000,
--	},
--};
--
- static __initdata struct of_device_id of_bus_ids[] = {
- 	{ .type = "soc", },
- 	{ .compatible = "simple-bus", },
-@@ -99,10 +65,6 @@ static int __init linkstation_add_bridge(struct device_node *dev)
- static void __init linkstation_setup_arch(void)
- {
- 	struct device_node *np;
--#ifdef CONFIG_MTD_PHYSMAP
--	physmap_set_partitions(linkstation_physmap_partitions,
--			       ARRAY_SIZE(linkstation_physmap_partitions));
--#endif
- 
- 	/* Lookup PCI host bridges */
- 	for_each_compatible_node(np, "pci", "mpc10x-pci")
-diff --git a/arch/powerpc/platforms/embedded6xx/storcenter.c b/arch/powerpc/platforms/embedded6xx/storcenter.c
-index 8864e48..613070e 100644
---- a/arch/powerpc/platforms/embedded6xx/storcenter.c
-+++ b/arch/powerpc/platforms/embedded6xx/storcenter.c
-@@ -14,7 +14,6 @@
- #include <linux/kernel.h>
- #include <linux/pci.h>
- #include <linux/initrd.h>
--#include <linux/mtd/physmap.h>
- #include <linux/of_platform.h>
- 
- #include <asm/system.h>
-@@ -26,32 +25,6 @@
- #include "mpc10x.h"
- 
- 
--#ifdef CONFIG_MTD_PHYSMAP
--static struct mtd_partition storcenter_physmap_partitions[] = {
--	{
--		.name   = "kernel",
--		.offset = 0x000000,
--		.size   = 0x170000,
--	},
--	{
--		.name   = "rootfs",
--		.offset = 0x170000,
--		.size   = 0x590000,
--	},
--	{
--		.name   = "uboot",
--		.offset = 0x700000,
--		.size   = 0x040000,
--	},
--	{
--		.name   = "config",
--		.offset = 0x740000,
--		.size   = 0x0c0000,
--	},
--};
--#endif
--
--
- static __initdata struct of_device_id storcenter_of_bus[] = {
- 	{ .name = "soc", },
- 	{},
-@@ -96,11 +69,6 @@ static void __init storcenter_setup_arch(void)
- {
- 	struct device_node *np;
- 
--#ifdef CONFIG_MTD_PHYSMAP
--	physmap_set_partitions(storcenter_physmap_partitions,
--			       ARRAY_SIZE(storcenter_physmap_partitions));
--#endif
--
- 	/* Lookup PCI host bridges */
- 	for_each_compatible_node(np, "pci", "mpc10x-pci")
- 		storcenter_add_bridge(np);
+That is correct, ->make_request_fn may get reentered. I'm not surprised
+that performance dropped if you just shoved everything under a mutex.
+You could be a little more smart and queue concurrent bio's for
+processing when the current one is complete though, there are several
+approaches there that be a lot faster than going all the way through the
+IO stack and scheduler just to avoid concurrency.
+
+-- 
+Jens Axboe
