@@ -1,37 +1,14 @@
-Received: from vervifontaine.sonytel.be ([80.88.33.193]
-	helo=vervifontaine.sonycom.com)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LgdOP-0006BG-Oi
-	for linux-mtd@lists.infradead.org; Mon, 09 Mar 2009 11:11:36 +0000
-Date: Mon, 9 Mar 2009 11:43:14 +0100 (CET)
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Sender: geert@sonytel.be
-To: Jens Axboe <jens.axboe@oracle.com>
-Subject: Re: [PATCH/RFC] ps3/block: Add ps3vram-ng driver for accessing video
-	RAM as block device
-In-Reply-To: <20090306190350.GD11787@kernel.dk>
-Message-ID: <alpine.LRH.2.00.0903091142500.19484@vixen.sonytel.be>
-References: <alpine.LRH.2.00.0903041444300.32279@vixen.sonytel.be>
-	<20090305083701.GQ11787@kernel.dk>
-	<alpine.LRH.2.00.0903051146440.2618@vixen.sonytel.be>
-	<20090305110940.GY11787@kernel.dk>
-	<alpine.LRH.2.00.0903051325450.2618@vixen.sonytel.be>
-	<20090306074639.GN11787@kernel.dk>
-	<alpine.LRH.2.00.0903061347360.16809@vixen.sonytel.be>
-	<20090306125832.GX11787@kernel.dk>
-	<alpine.LRH.2.00.0903061525340.16809@vixen.sonytel.be>
-	<20090306190350.GD11787@kernel.dk>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-Cc: Arnd Bergmann <arnd@arndb.de>, Geoff Levand <geoffrey.levand@am.sony.com>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Linux Kernel Development <linux-kernel@vger.kernel.org>,
-	Jim Paris <jim@jtan.com>, Linux/PPC Development <linuxppc-dev@ozlabs.org>,
-	linux-mtd@lists.infradead.org,
-	Vivien Chappelier <vivien.chappelier@free.fr>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Cell Broadband Engine OSS Development <cbe-oss-dev@ozlabs.org>
+Subject: Re: JFFS2 : non-existent inode
+From: David Woodhouse <dwmw2@infradead.org>
+To: amul.saha@samsung.com
+In-Reply-To: <12102132.458451236145386653.JavaMail.weblogic@epml05>
+References: <12102132.458451236145386653.JavaMail.weblogic@epml05>
+Content-Type: text/plain
+Date: Mon, 09 Mar 2009 13:51:06 +0000
+Message-Id: <1236606666.572.178.camel@macbook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,56 +18,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 6 Mar 2009, Jens Axboe wrote:
-> On Fri, Mar 06 2009, Geert Uytterhoeven wrote:
-> > On Fri, 6 Mar 2009, Jens Axboe wrote:
-> > > On Fri, Mar 06 2009, Geert Uytterhoeven wrote:
-> > > > On Fri, 6 Mar 2009, Jens Axboe wrote:
-> > > > > On Thu, Mar 05 2009, Geert Uytterhoeven wrote:
-> > > > > > But then I noticed ps3vram_make_request() may be called concurrently,
-> > > > > > so I had to add a mutex to avoid data corruption. This slows the
-> > > > > > driver down, and in the end, the version with a thread turns out to be
-> > > > > > ca. 1% faster. The version without a thread is about 50 lines less
-> > > > > > code, though.
-> > > > >
-> > > > > That is correct, ->make_request_fn may get reentered. I'm not surprised
-> > > > > that performance dropped if you just shoved everything under a mutex.
-> > > > > You could be a little more smart and queue concurrent bio's for
-> > > > > processing when the current one is complete though, there are several
-> > > > > approaches there that be a lot faster than going all the way through the
-> > > > > IO stack and scheduler just to avoid concurrency.
-> > > >
-> > > > Yes, using a spinlock and queueing requests on a list if the driver is
-> > > > busy can be done after 2.6.29...
-> > >
-> > > Certainly. Even just replacing your current mutex with a spinlock during
-> > > the memcpy() would surely be a lot faster. Or even just grabbing the
-> > > mutex before calling into the write for the duration of the bio. The way
-> > > you do it is certain context switch death :-)
-> > 
-> > It's not just the memcpy(). ps3vram_{up,down}load() call msleep(), so
-> > I cannot use a spinlock.
+On Wed, 2009-03-04 at 05:43 +0000, AMUL KUMAR SAHA wrote:
+> Hello David,
 > 
-> Ah right, I hadn't looked close enough. But putting the mutex_lock()
-> outside of the bio_for_each_segment() is going to be much faster than
-> getting/releasing it for each segment.
+> Environment : Flex-OneNAND 8Gb, Apollon Board, linux-2.6.26
+> 
+> I have just started with JFFS2  .  
+> 
+> We were running fsstress on 5 Boards for 5 Days .
+> On 2 out of 5 boards, we observed the message "requestied to read an nonexistent ino",
+> On Repetition, the BUG seems to be random.
+> 
+> Dwelled inside the code and thought of a possible scenario for the occurence.
+> I found the following explanation to it, appropriate; to my minimal knowledge :
+> 
+> 1) 2 or more processes(say, P1 and P2) handling
+> GC(jffs2_gc_fetch_inode) enter the function jffs2_iget almost
+> together, before getting a mutex_lock.
 
-It doesn't seem to make any measurable difference, so I'm gonna leave it for
-now.
+They shouldn't be very close together -- GC is protected by the
+alloc_sem mutex, and shouldn't be happening concurrently at all. But
+maybe it's one thread doing GC while another thread is actually trying
+to open the inode in question for real?
 
-With kind regards,
+> 2) When a request for a lock is raised, one of the processes(P1) gets
+> the mutex_lock(&f->sem) and the other one waits.
 
-Geert Uytterhoeven
-Software Architect
+It uses iget_locked(). The first caller will get a _locked_ inode with
+the I_NEW bit set. It will go ahead and fill in the inode appropriately,
+then call unlock_new_inode() to clear the I_NEW bit and unlock the
+inode.
 
-Sony Techsoft Centre Europe
-The Corporate Village · Da Vincilaan 7-D1 · B-1935 Zaventem · Belgium
+Then the second caller will return from iget_locked(). The I_NEW bit
+won't be set, and it'll return immediately. So I don't think your
+scenario is possible.
 
-Phone:    +32 (0)2 700 8453
-Fax:      +32 (0)2 700 8622
-E-mail:   Geert.Uytterhoeven@sonycom.com
-Internet: http://www.sony-europe.com/
+> 3) P1 deletes the inode-cache(f->inocache), and releases the lock.
 
-A division of Sony Europe (Belgium) N.V.
-VAT BE 0413.825.160 · RPR Brussels
-Fortis · BIC GEBABEBB · IBAN BE41293037680010
+Why would it delete the inode-cache? Doesn't that only ever happen in GC
+when the final physical node of the inode has been deleted from the
+medium?
+
+> 4) Now, when P2 ends up calling jffs2_do_read_inode with 'inode->ino'
+> available locally in that function (unaware of the fact that, this
+> particular inode was just destroyed).
+> 5) JFFS2-Error with the message "requestied to read an nonexistent
+> ino" is displayed.
+
+Hm, can you make that a WARN() and show the backtrace?
+
+
+> In the mean time, I have come up with my own fix to this situation.
+> Just wanting to know if my explanation makes sense, so that I can go
+> ahead with posting the patch in mailing-list.
+
+You might be close, but I'm not convinced you have it exactly right.
+
+-- 
+dwmw2
