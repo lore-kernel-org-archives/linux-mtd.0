@@ -1,30 +1,23 @@
-Received: from va3ehsobe005.messaging.microsoft.com ([216.32.180.15]
-	helo=VA3EHSOBE006.bigfish.com)
+Received: from buzzloop.caiaq.de ([212.112.241.133])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lgjdv-00048M-Ke
-	for linux-mtd@lists.infradead.org; Mon, 09 Mar 2009 17:52:02 +0000
-Message-ID: <49B5572F.4010007@am.sony.com>
-Date: Mon, 9 Mar 2009 10:51:43 -0700
-From: Geoff Levand <geoffrey.levand@am.sony.com>
+	id 1LgnBb-00089X-SU
+	for linux-mtd@lists.infradead.org; Mon, 09 Mar 2009 21:39:02 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by buzzloop.caiaq.de (Postfix) with ESMTP id F07AA7F4029
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  9 Mar 2009 22:38:57 +0100 (CET)
+Received: from buzzloop.caiaq.de ([127.0.0.1])
+	by localhost (buzzloop.caiaq.de [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id Xt9LZJTT22Eb for <linux-mtd@lists.infradead.org>;
+	Mon,  9 Mar 2009 22:38:55 +0100 (CET)
+Date: Mon, 9 Mar 2009 22:38:55 +0100
+From: Daniel Mack <daniel@caiaq.de>
+To: linux-mtd@lists.infradead.org
+Subject: PXA3xx NAND driver
+Message-ID: <20090309213855.GA1366@buzzloop.caiaq.de>
 MIME-Version: 1.0
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PATCH] ps3/block: Replace mtd/ps3vram by block/ps3vram
-References: <alpine.LRH.2.00.0903041444300.32279@vixen.sonytel.be>
-	<1236209255.6696.75.camel@pasglop>
-	<20090305065423.GK11787@kernel.dk>
-	<alpine.LRH.2.00.0903061349010.16809@vixen.sonytel.be>
-In-Reply-To: <alpine.LRH.2.00.0903061349010.16809@vixen.sonytel.be>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: 7bit
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Linux Kernel Development <linux-kernel@vger.kernel.org>,
-	Jim Paris <jim@jtan.com>, Linux/PPC Development <linuxppc-dev@ozlabs.org>,
-	linux-mtd@lists.infradead.org, Jens Axboe <jens.axboe@oracle.com>,
-	Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>,
-	Vivien Chappelier <vivien.chappelier@free.fr>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Cell Broadband Engine OSS Development <cbe-oss-dev@ozlabs.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,26 +27,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/06/2009 04:54 AM, Geert Uytterhoeven wrote:
-> Convert the PS3 Video RAM Storage Driver from an MTD driver to a plain block
-> device driver.
-> 
-> The ps3vram driver exposes unused video RAM on the PS3 as a block device
-> suitable for storage or swap.  Fast data transfer is achieved using a local
-> cache in system RAM and DMA transfers via the GPU.
-> 
-> The new driver is ca. 50% faster for reading, and ca. 10% for writing.
-> 
->  arch/powerpc/platforms/ps3/Kconfig |    7 +
->  drivers/block/Makefile             |    1 +
->  drivers/block/ps3vram.c            |  865 ++++++++++++++++++++++++++++++++++++
->  drivers/mtd/devices/Kconfig        |    7 -
->  drivers/mtd/devices/Makefile       |    1 -
->  drivers/mtd/devices/ps3vram.c      |  768 --------------------------------
->  6 files changed, 873 insertions(+), 776 deletions(-)
->  create mode 100644 drivers/block/ps3vram.c
->  delete mode 100644 drivers/mtd/devices/ps3vram.c
+Hi,
 
-Looks good, certainly an improvement.
+I was glancing over the PXA3xx NAND driver recently and wondered why it
+differs much from other driver implementations (it has its own list of
+devices, does not let the core do the ident work, ...). Is there any
+reason for that or would patches that change this be welcome?
 
-Acked-by: Geoff Levand <geoffrey.levand@am.sony.com>
+In particular, due to this exceptional approach, the driver does not
+benefit from the initial NAND reset command added in ef89a88013.
+
+Thanks,
+Daniel
