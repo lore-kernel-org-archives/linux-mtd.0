@@ -1,21 +1,35 @@
-Received: from yx-out-1718.google.com ([74.125.44.153])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LgXz4-0003zE-9d
-	for linux-mtd@lists.infradead.org; Mon, 09 Mar 2009 05:25:04 +0000
-Received: by yx-out-1718.google.com with SMTP id 3so628171yxi.72
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 08 Mar 2009 22:25:01 -0700 (PDT)
+Received: from brick.kernel.dk ([93.163.65.50] helo=kernel.dk)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Lgd2G-00081w-6C
+	for linux-mtd@lists.infradead.org; Mon, 09 Mar 2009 10:48:42 +0000
+Date: Mon, 9 Mar 2009 11:48:33 +0100
+From: Jens Axboe <jens.axboe@oracle.com>
+To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Subject: Re: [PATCH/RFC] ps3/block: Add ps3vram-ng driver for accessing
+	video       RAM as block device
+Message-ID: <20090309104833.GM11787@kernel.dk>
+References: <20090305083701.GQ11787@kernel.dk>
+	<alpine.LRH.2.00.0903051146440.2618@vixen.sonytel.be>
+	<20090305110940.GY11787@kernel.dk>
+	<alpine.LRH.2.00.0903051325450.2618@vixen.sonytel.be>
+	<20090306074639.GN11787@kernel.dk>
+	<alpine.LRH.2.00.0903061347360.16809@vixen.sonytel.be>
+	<20090306125832.GX11787@kernel.dk>
+	<alpine.LRH.2.00.0903061525340.16809@vixen.sonytel.be>
+	<20090306190350.GD11787@kernel.dk>
+	<alpine.LRH.2.00.0903091142500.19484@vixen.sonytel.be>
 MIME-Version: 1.0
-In-Reply-To: <9cedca740903012308x14b0da70kf40dc2c37b252497@mail.gmail.com>
-References: <9cedca740903012308x14b0da70kf40dc2c37b252497@mail.gmail.com>
-Date: Mon, 9 Mar 2009 13:25:00 +0800
-Message-ID: <bae050c10903082225o327c5c17obec5946cecdb675e@mail.gmail.com>
-Subject: Re: UBIFS without UBI
-From: Nancy <nancydreaming@gmail.com>
-To: chandrasekhar gobburu <chandrasekhar.gobburu@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LRH.2.00.0903091142500.19484@vixen.sonytel.be>
+Cc: Arnd Bergmann <arnd@arndb.de>, Geoff Levand <geoffrey.levand@am.sony.com>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	Jim Paris <jim@jtan.com>, Linux/PPC Development <linuxppc-dev@ozlabs.org>,
+	linux-mtd@lists.infradead.org,
+	Vivien Chappelier <vivien.chappelier@free.fr>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Cell Broadband Engine OSS Development <cbe-oss-dev@ozlabs.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,16 +39,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 2, 2009 at 3:08 PM, chandrasekhar gobburu
-<chandrasekhar.gobburu@gmail.com> wrote:
-> Hi,
->
-> I want to know if anybody has started porting UBIFS directly on MTD
-> device(bypassing UBI layer in between UBIFS and MTD).
+On Mon, Mar 09 2009, Geert Uytterhoeven wrote:
+> On Fri, 6 Mar 2009, Jens Axboe wrote:
+> > On Fri, Mar 06 2009, Geert Uytterhoeven wrote:
+> > > On Fri, 6 Mar 2009, Jens Axboe wrote:
+> > > > On Fri, Mar 06 2009, Geert Uytterhoeven wrote:
+> > > > > On Fri, 6 Mar 2009, Jens Axboe wrote:
+> > > > > > On Thu, Mar 05 2009, Geert Uytterhoeven wrote:
+> > > > > > > But then I noticed ps3vram_make_request() may be called concurrently,
+> > > > > > > so I had to add a mutex to avoid data corruption. This slows the
+> > > > > > > driver down, and in the end, the version with a thread turns out to be
+> > > > > > > ca. 1% faster. The version without a thread is about 50 lines less
+> > > > > > > code, though.
+> > > > > >
+> > > > > > That is correct, ->make_request_fn may get reentered. I'm not surprised
+> > > > > > that performance dropped if you just shoved everything under a mutex.
+> > > > > > You could be a little more smart and queue concurrent bio's for
+> > > > > > processing when the current one is complete though, there are several
+> > > > > > approaches there that be a lot faster than going all the way through the
+> > > > > > IO stack and scheduler just to avoid concurrency.
+> > > > >
+> > > > > Yes, using a spinlock and queueing requests on a list if the driver is
+> > > > > busy can be done after 2.6.29...
+> > > >
+> > > > Certainly. Even just replacing your current mutex with a spinlock during
+> > > > the memcpy() would surely be a lot faster. Or even just grabbing the
+> > > > mutex before calling into the write for the duration of the bio. The way
+> > > > you do it is certain context switch death :-)
+> > >
+> > > It's not just the memcpy(). ps3vram_{up,down}load() call msleep(), so
+> > > I cannot use a spinlock.
+> >
+> > Ah right, I hadn't looked close enough. But putting the mutex_lock()
+> > outside of the bio_for_each_segment() is going to be much faster than
+> > getting/releasing it for each segment.
+> 
+> It doesn't seem to make any measurable difference, so I'm gonna leave it for
+> now.
 
-Why you tired to do that? Is there any need to porting UBIFS directly
-on MTD device?
+It will depend on where the bio's are coming from. If they are all
+single segment, then there will be no difference. If they contain
+multiple segments, you reduce the lock/release by that amount.
+
+But yeah, just leave it as-is for now. You can send a final patch for
+inclusion though. Unless I'm mistaken, I only saw the original and then
+an incremental patch for changing it to ->make_request_fn?
 
 -- 
-Best wishes,
-Nancy
+Jens Axboe
