@@ -1,20 +1,13 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LhLjC-0006Ut-DE
-	for linux-mtd@lists.infradead.org; Wed, 11 Mar 2009 10:32:06 +0000
-Message-ID: <49B792F8.7020609@nokia.com>
-Date: Wed, 11 Mar 2009 12:31:20 +0200
-From: Adrian Hunter <adrian.hunter@nokia.com>
+From: "MILESTONE GLOBAL FINANCE COMPANY"
+	<milestoneloanprocessingunit@rocketmail.com>
+Message-ID: <W812484995255991236781659@nocme1bl6.telenet-ops.be>
+Date: Wed, 11 Mar 2009 14:27:39 +0000
+Subject: LOAN OFFER!!!
 MIME-Version: 1.0
-To: Iram Shahzad <iram.shahzad@jp.fujitsu.com>
-Subject: Re: UBIFS recovery truncates file to zero size
-References: <F8252D21B3AD45E1A003F69611EA04E0@sky>
-	<6b5362aa0903110251y3b0d23bcy61b20db12ba8c1e1@mail.gmail.com>
-In-Reply-To: <6b5362aa0903110251y3b0d23bcy61b20db12ba8c1e1@mail.gmail.com>
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Brijesh Singh <brij.singh@samsung.com>
+To: undisclosed-recipients:;
+Reply-To: milestoneloanprocessingunit@rocketmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,20 +17,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brijesh Singh wrote:
-> On Wed, Mar 11, 2009 at 2:46 PM, Iram Shahzad
-> <iram.shahzad@jp.fujitsu.com> wrote:
->> I am having the following problem with UBIFS (Linux 2.6.25 + ubifs-v2.6.25).
->> Please could you tell me if this is a known issue.
->>
->> Problem
->>   If the power is switched off abruptly while a file is being written,
->>   in the next boot the contents of the file is lost. That is, the file
->>   becomes zero sized. The problem is reproducable.
-> 
-> May be because of write-back support.  Try disabling it.mount with sync option.
 
-There was also a problem with busybox implementation of vi which truncated
-the file to zero length.  See revision 21928 here:
 
-	http://sources.busybox.net/index.py/trunk/busybox/editors/vi.c?view=log&pathrev=22471
+
+MILESTONE GLOBAL FINANCE COMPANY
+4 Cressingham Rd,
+Stretford, Manchester,
+M32 9DW
+England
+
+What is your situation? Need 100% financing, Can't verify income, Can't verify
+employment, Recently self-employed, Bankruptcy, Collections, Credit Issues.
+Contact us today for loans and you will be given the best of all financial
+support. We offer out loans at soft interest rate. Get your self financially
+equipped by applying for a loan with us.Loans are only available to applicants
+who are 18 years or over, in full time employment (minimum of 16 hours per
+week) and a bank account holder. Calls may be recorded for training purposes.
+MILESTONE GLOBAL FINANCE COMPANY is authorised and regulated by the Financial
+Services Authority. Registered in England No.63-1266986. The 4 Cressingham Rd,
+Stretford, Manchester, M32 9DW England FOR MORE ENQUIRY CONTACT US VIA E-MAIL
+Email: milestoneloanprocessingunit@rocketmail.com or milestoneglobalfinance@ymail.com
+
+Tel:+447045751766
+       +447045751446
+Fax: +44-870-135-6453
+
+Best Regards
+Mr. Arnold Clarke
+General Consultant
