@@ -1,19 +1,21 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from mail2.shareable.org ([80.68.89.115])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lhi6s-0007wS-TM
-	for linux-mtd@lists.infradead.org; Thu, 12 Mar 2009 10:26:02 +0000
-Message-ID: <49B8E317.2010901@nokia.com>
-Date: Thu, 12 Mar 2009 12:25:27 +0200
-From: Adrian Hunter <adrian.hunter@nokia.com>
-MIME-Version: 1.0
+	id 1LhipX-0001EB-Rf
+	for linux-mtd@lists.infradead.org; Thu, 12 Mar 2009 11:12:10 +0000
+Date: Thu, 12 Mar 2009 11:11:25 +0000
+From: Jamie Lokier <jamie@shareable.org>
 To: Iram Shahzad <iram.shahzad@jp.fujitsu.com>
 Subject: Re: UBIFS recovery truncates file to zero size
-References: <F8252D21B3AD45E1A003F69611EA04E0@sky>	<70F6AAAFDC054F41B9994A9BCD3DF64E08F94AF6@exch01-aklnz.MARINE.NET.INT>	<870F4B77E68142C19452EA191DE5A0F5@sky>
-	<49B8C742.80902@nokia.com> <B2B24529967640E8A501ADADDE1E9908@sky>
+Message-ID: <20090312111125.GB6995@shareable.org>
+References: <F8252D21B3AD45E1A003F69611EA04E0@sky>
+	<70F6AAAFDC054F41B9994A9BCD3DF64E08F94AF6@exch01-aklnz.MARINE.NET.INT>
+	<870F4B77E68142C19452EA191DE5A0F5@sky> <49B8C742.80902@nokia.com>
+	<B2B24529967640E8A501ADADDE1E9908@sky>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <B2B24529967640E8A501ADADDE1E9908@sky>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +26,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Iram Shahzad wrote:
->>> For the write back enabled case, I was expecting the
->>> following behaviour:
->>>     power went down before the file is sync-ed, so
->>>     on the next booting the file will be in its old state,
->>>     that is it will contain the contents which it had before
->>>     this write.
->>>
->>> But instead of being in the old state, it becomes empty file.
->>> Is this really expected(correct) behaviour?
->> No.  How were you updating the file?
+> >>For the write back enabled case, I was expecting the
+> >>following behaviour:
+> >>    power went down before the file is sync-ed, so
+> >>    on the next booting the file will be in its old state,
+> >>    that is it will contain the contents which it had before
+> >>    this write.
+> >>
+> >>But instead of being in the old state, it becomes empty file.
+> >>Is this really expected(correct) behaviour?
+> >
+> >No.  How were you updating the file?
 > 
 > The file is updated by a Java application in the following way.
 > 
 > -----
 > FileOutputStream str = new FileOutputStream(aFilename);
-> // some write here
-> str.flush();
-> str.close();
-> -----
-> 
+
+"new FileOutputStream" truncates the file.
+
 > I switch off the power after confirming that the str.close() has been
 > executed.
 > 
@@ -52,19 +53,17 @@ Iram Shahzad wrote:
 > the next boot. However my question still remains for the case
 > when I do not call str.getFD().sync:
 > "why the file becomes empty rather than being in its old state?".
-> 
-> Thanks
-> Iram
-> 
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
 
-What makes you think that:
+str.getFD().sync() won't be reliable if you lose power _between_ "new
+FileOutputStream" and sync().  If that happens, the file may still be
+truncated.
 
-FileOutputStream str = new FileOutputStream(aFilename);
+If you are just appending data, use "new FileOutputStream(aFileName,
+true)", write, flush, sync, close.
 
-does not truncate the file to zero length?
+If you are changing the file contents, instead write to a temporary
+file in the same directory, then sync the temporary file (after
+flush), then do an atomic rename over the original file, then open the
+directory and sync that somehow.
+
+-- Jamie
