@@ -1,12 +1,24 @@
-Message-ID: <4145.82.158.125.188.1237235919.squirrel@webmail.unet.cz>
-Date: Mon, 16 Mar 2009 21:38:39 +0100 (CET)
-Subject: BEQUEST
-From: "HOWARTH MAITLNAD SOLICITORS" <howarthmaitland@aol.com>
+Received: from mail145.messagelabs.com ([216.82.242.163])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LjMEn-0006Hu-5E
+	for linux-mtd@lists.infradead.org; Mon, 16 Mar 2009 23:28:59 +0000
+Message-ID: <49BEE0B1.7020507@magtech.com.au>
+Date: Tue, 17 Mar 2009 10:28:49 +1100
+From: Aras Vaichas <arasv@magtech.com.au>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: 8bit
-To: undisclosed-recipients:;
-Reply-To: howarthmaitland@aol.com
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: [patch 4/9] jffs2: force the jffs2 GC daemon to behave a bit
+	better
+References: <200902112127.n1BLR2HX031153@imap1.linux-foundation.org>
+	<Pine.LNX.4.64.0902121016250.19761@lnxricardw.se.axis.com>
+In-Reply-To: <Pine.LNX.4.64.0902121016250.19761@lnxricardw.se.axis.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"dilinger@debian.org" <dilinger@debian.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"dilinger@queued.net" <dilinger@queued.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,33 +28,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Ricard Wanderlof wrote:
+> On Wed, 11 Feb 2009, akpm@linux-foundation.org wrote:
+>
+>   
+>> I've noticed some pretty poor behavior on OLPC machines after bootup, when
+>> gdm/X are starting.  The GCD monopolizes the scheduler (which in turns
+>> means it gets to do more nand i/o), which results in processes taking much
+>> much longer than they should to start.
+>>     
+>
+> Can't really comment on how well the patch works, but we've also noticed a 
+> similar slowdown on our systems during startup, so the idea as such is 
+> welcome at any rate.
+>   
+I just posted a message to linux-arm-kernel regarding a similar problem 
+I have an at91rm9200 based machine with NAND and JFFS2.
 
+I suspected that garbage collection was causing delays of up to 3+ 
+seconds during which time my watchdog patting daemon was not being 
+scheduled ...
 
+This was causing the watchdog timer to reset my machine but *only* when 
+it was under significant NAND load  i.e. boot time, loading up the main 
+application while GCD was running.
 
-Attention:
+My solution was to double the watchdog timeout.
 
-On behalf of the Trustees and Executor of the estate of Late Engr.
-Mohammed Madij. I once again try to notify you as my earlier letter were
-returned undelivered. I hereby attempt to reach you again by this same
-email address on the WILL. I wish to notify you that Late Engr.Mohammed
-Madij made you a beneficiary to his WILL. He left you 15% of some funds
-amounting to Thirty Million, One Hundred Thousand Dollars (USD$30,
-100.000.00) to you in the Codicil and last testament to his WILL.
+Aras
 
-This may sound strange and unbelievable to you, but it is real and true.
-Being a widely traveled man, he must have been in contact with you in the
-past or simply you were nominated to him by one of his numerous friends
-abroad who wished you good. Late Engr.Mohammed Madij until his death was a
-member of the Helicopter Society and the Institute of Electronic &
-Electrical Engineers.  His great philanthropy earned him numerous awards
-during his life time. Late Engr.Mohammed Madij died on the 13th day of
-December, 2004 at the age of 80 years, and his WILL is now ready for
-execution. According to him this money is to support your humanitarian
-activities and to help the poor and the needy in our society. Please if I
-reach you as I am hopeful, endeavor to get back to me as soon as possible
-to enable me conclude my job. I hope to hear from you in no distant time.
-
-
-Yours in Service,
-
-Barrister Martin Byrom
+______________________________________________________________________
+This email has been scanned by the MessageLabs Email Security System.
+For more information please visit http://www.messagelabs.com/email 
+______________________________________________________________________
