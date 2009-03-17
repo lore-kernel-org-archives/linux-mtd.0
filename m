@@ -1,21 +1,18 @@
 Received: from [213.79.90.228] (helo=buildserver.ru.mvista.com)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Ljewc-0001dl-Jd
-	for linux-mtd@lists.infradead.org; Tue, 17 Mar 2009 19:27:30 +0000
-Date: Tue, 17 Mar 2009 22:01:26 +0300
+	id 1Ljewp-0001qV-Ky
+	for linux-mtd@lists.infradead.org; Tue, 17 Mar 2009 19:27:41 +0000
+Date: Tue, 17 Mar 2009 22:27:35 +0300
 From: Anton Vorontsov <avorontsov@ru.mvista.com>
 To: Wolfgang Grandegegr <wg@grandegger.com>
-Subject: Re: [PATCH 3/4] NAND: FSL-UPM: Add wait flags to support
-	board/chip specific delays
-Message-ID: <20090317190126.GA4287@oksana.dev.rtsoft.ru>
+Subject: Re: [PATCH 1/4] NAND: FSL-UPM: add multi chip support
+Message-ID: <20090317192735.GC4287@oksana.dev.rtsoft.ru>
 References: <1237281143-8768-1-git-send-email-wg@grandegger.com>
 	<1237281143-8768-2-git-send-email-wg@grandegger.com>
-	<1237281143-8768-3-git-send-email-wg@grandegger.com>
-	<1237281143-8768-4-git-send-email-wg@grandegger.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf8
 Content-Disposition: inline
-In-Reply-To: <1237281143-8768-4-git-send-email-wg@grandegger.com>
+In-Reply-To: <1237281143-8768-2-git-send-email-wg@grandegger.com>
 Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
 Reply-To: avorontsov@ru.mvista.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,30 +24,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 17, 2009 at 10:12:21AM +0100, Wolfgang Grandegegr wrote:
+On Tue, Mar 17, 2009 at 10:12:19AM +0100, Wolfgang Grandegegr wrote:
 > From: Wolfgang Grandegger <wg@grandegger.com>
 > 
-> The NAND flash on the TQM8548_BE modules requires a short delay after
-> running the UPM pattern. The TQM8548_BE requires a further short delay
-> after writing out a buffer. Normally the R/B pin should be checked, but
-> it's not connected on the TQM8548_BE. The existing driver uses similar
-> fixed delay points. To manage these extra delays in a more general way,
-> I introduced the "wait_flags" field allowing the board-specific driver
-> to specify various types of extra delay.
+> This patch adds support for multi-chip NAND devices to the FSL-UPM
+> driver. This requires support for multiple GPIOs for the RNB pins.
 > 
 > Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
 > ---
+>  drivers/mtd/nand/fsl_upm.c |   90 +++++++++++++++++++++++++++++++++----------
+>  1 files changed, 69 insertions(+), 21 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
+> index 7815a40..ca7e85a 100644
+> --- a/drivers/mtd/nand/fsl_upm.c
+> +++ b/drivers/mtd/nand/fsl_upm.c
+> @@ -23,6 +23,8 @@
+>  #include <linux/io.h>
+>  #include <asm/fsl_lbc.h>
+>  
+> +#define FSL_UPM_NAND_MAX_CHIPS 4
 
-Just a nitpick...
+Is there any reason to hardcode max chips? Some obscure limit in the
+UPMs maybe?
 
-> +	prop = of_get_property(ofdev->node, "wait-flags", &size);
-> +	if (prop && size == sizeof(uint32_t))
-> +		fun->wait_flags = *prop;
-> +	else
-> +		fun->wait_flags = (FSL_UPM_WAIT_RUN_PATTERN |
-> +				   FSL_UPM_WAIT_WRITE_BYTE);
-
-No need for parenthesis here.
+Otherwise we'd better allocate the rnb_gpios dynamically, depending
+on the num-chips property.
 
 Thanks,
 
