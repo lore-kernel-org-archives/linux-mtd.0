@@ -1,15 +1,24 @@
-Received: from xenbox.codefidence.com ([92.48.73.16])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Ljbfs-0003M5-3q
-	for linux-mtd@lists.infradead.org; Tue, 17 Mar 2009 15:58:00 +0000
-Message-ID: <49BFC87D.5050608@codefidence.com>
-Date: Tue, 17 Mar 2009 17:57:49 +0200
-From: Gilad Ben-Yossef <gilad@codefidence.com>
+Received: from [213.79.90.228] (helo=buildserver.ru.mvista.com)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Ljet5-00041x-Bp
+	for linux-mtd@lists.infradead.org; Tue, 17 Mar 2009 19:24:01 +0000
+Date: Tue, 17 Mar 2009 22:23:41 +0300
+From: Anton Vorontsov <avorontsov@ru.mvista.com>
+To: Wolfgang Grandegegr <wg@grandegger.com>
+Subject: Re: [PATCH 4/4] powerpc/85xx: TQM8548: Update DTS file for
+	multi-chip support
+Message-ID: <20090317192341.GB4287@oksana.dev.rtsoft.ru>
+References: <1237281143-8768-1-git-send-email-wg@grandegger.com>
+	<1237281143-8768-2-git-send-email-wg@grandegger.com>
+	<1237281143-8768-3-git-send-email-wg@grandegger.com>
+	<1237281143-8768-4-git-send-email-wg@grandegger.com>
+	<1237281143-8768-5-git-send-email-wg@grandegger.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Loop back mounted files on UBIFS file system
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf8
+Content-Disposition: inline
+In-Reply-To: <1237281143-8768-5-git-send-email-wg@grandegger.com>
+Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
+Reply-To: avorontsov@ru.mvista.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,73 +28,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+On Tue, Mar 17, 2009 at 10:12:22AM +0100, Wolfgang Grandegegr wrote:
+> From: Wolfgang Grandegger <wg@grandegger.com>
+> 
+> This patch adds multi-chip support for the Micron MT29F8G08FAB NAND
+> flash memory on the TQM8548 modules.
+> 
+> This patch should go through the powerpc/85xx channel.
+> 
+> Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
+> ---
+>  arch/powerpc/boot/dts/tqm8548.dts |    5 +++++
+>  1 files changed, 5 insertions(+), 0 deletions(-)
+> 
+> diff --git a/arch/powerpc/boot/dts/tqm8548.dts b/arch/powerpc/boot/dts/tqm8548.dts
+> index 81d3fbb..e5c3c67 100644
+> --- a/arch/powerpc/boot/dts/tqm8548.dts
+> +++ b/arch/powerpc/boot/dts/tqm8548.dts
+> @@ -389,6 +389,11 @@
+>  			reg = <3 0x0 0x800>;
+>  			fsl,upm-addr-offset = <0x10>;
+>  			fsl,upm-cmd-offset = <0x08>;
+> +			wait-flags = <0x05>;
+
+Should be at least fsl,upm-wait-flags. (And the flags should
+be documented in dts-bindings ;-).
+
+> +			/* Multi-chip device */
+> +			fsl,upm-mar-chip-offset = <0x200>;
+> +			max-chips = <2>;
+
+num-chips would be more appropriate, no?
+
+> +			chip-offset = <0x200>;
+
+I believe this is from some old code...
 
 
-I am trying to loop back mount a file (which contains a FAT32 file 
-system image), which resides on a UBIFS file system.
-
-
-
-Command I try:
-
-*# losetup -o 4096 /dev/loop/0 /mnt/ubifs/fat32
-***
-
-
-Where /nnt/ubifs/ is the mount point of a valid UBIFS file system.
-
-
-The response I get is:
-
-
-losetup: /dev/loop/0: No such device or address
-
-
-Trying a loopback mount from any other file system (such as tmpfs) works.
-
-
-Trying to do any other activity with the UBIFS file system works as well.
-
-
-Please note that I am NOT trying to loop back mount a file containing a 
-UBIFS file system image and I read the FAQ and understand that this is 
-not directly possible, disregarding nandsim. I am trying to do the 
-opposite - loopback mount a file residing on an UBIFS file system.
-
-
-Googling around I've found another post citing what seems like the very 
-same behaviour. The answer there was a reference to the above mentioned 
-FAQ entry, which I believe is not relevant for the aforementioned reasons.
-
-
-Kernel version is 2.6.24 with the last back ported UBIFS support. I 
-realize that this is an old version and no longer maintained and I'd be 
-happy to try the latest and greatest, just wanted to make sure this is 
-something that is supposed to work rather then that I am trying to do 
-the impossible.
-
-
-
-Many thanks,
-
-Gilad
+Thanks!
 
 -- 
-Gilad Ben-Yossef 
-Chief Coffee Drinker
-
-Codefidence Ltd.
-The code is free, your time isn't.(TM)
-
-Web:    http://codefidence.com
-Email:  gilad@codefidence.com
-Office: +972-8-9316883 ext. 201
-Fax:    +972-8-9316885
-Mobile: +972-52-8260388
-
-	The Doctor: Don't worry, Reinette, just a nightmare. 
-	Everyone has nightmares. Even monsters from under the 
-	bed have nightmares, don't you, monster?
-	Reinette: What do monsters have nightmares about?
-	The Doctor: Me! 
+Anton Vorontsov
+email: cbouatmailru@gmail.com
+irc://irc.freenode.net/bd2
