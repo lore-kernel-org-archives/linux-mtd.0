@@ -1,26 +1,15 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from xenbox.codefidence.com ([92.48.73.16])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LjaHr-0002KV-Ix
-	for linux-mtd@lists.infradead.org; Tue, 17 Mar 2009 14:29:06 +0000
-Message-ID: <49BFB351.6020301@nokia.com>
-Date: Tue, 17 Mar 2009 16:27:29 +0200
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+	id 1Ljbfs-0003M5-3q
+	for linux-mtd@lists.infradead.org; Tue, 17 Mar 2009 15:58:00 +0000
+Message-ID: <49BFC87D.5050608@codefidence.com>
+Date: Tue, 17 Mar 2009 17:57:49 +0200
+From: Gilad Ben-Yossef <gilad@codefidence.com>
 MIME-Version: 1.0
-To: Jiri Kosina <jkosina@suse.cz>
-Subject: Re: [PATCH v2 06/15] NULL noise: drivers/mtd/tests/mtd_*test.c
-References: <20090305190954.30062.44759.stgit@f10box.hanneseder.net>
-	<20090305191457.30062.43881.stgit@f10box.hanneseder.net>
-	<49B0BE07.5080803@nokia.com>
-	<alpine.LNX.2.00.0903171421200.11733@jikos.suse.cz>
-In-Reply-To: <alpine.LNX.2.00.0903171421200.11733@jikos.suse.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-	Hannes Eder <hannes@hanneseder.net>,
-	"trivial@kernel.org" <trivial@kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	linux-mtd@lists.infradead.org
-Reply-To: Artem.Bityutskiy@nokia.com
+To: linux-mtd@lists.infradead.org
+Subject: Loop back mounted files on UBIFS file system
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,23 +19,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jiri Kosina wrote:
->>>   drivers/mtd/tests/mtd_oobtest.c:673:41: warning: Using plain integer as
->>> NULL pointer
->>>   drivers/mtd/tests/mtd_oobtest.c:701:33: warning: Using plain integer as
->>> NULL pointer
->>>   drivers/mtd/tests/mtd_readtest.c:74:41: warning: Using plain integer as
->>> NULL pointer
->>>
->>> Signed-off-by: Hannes Eder <hannes@hanneseder.net>
->>> Acked-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
->> Yes, please, take this patch.
-> 
-> Doesn't seem to be present in current -next/-mmotim, applied to trivial
-> tree.
+Hi All,
 
-Fine with me. (CCed linux-mtd).
+
+I am trying to loop back mount a file (which contains a FAT32 file 
+system image), which resides on a UBIFS file system.
+
+
+
+Command I try:
+
+*# losetup -o 4096 /dev/loop/0 /mnt/ubifs/fat32
+***
+
+
+Where /nnt/ubifs/ is the mount point of a valid UBIFS file system.
+
+
+The response I get is:
+
+
+losetup: /dev/loop/0: No such device or address
+
+
+Trying a loopback mount from any other file system (such as tmpfs) works.
+
+
+Trying to do any other activity with the UBIFS file system works as well.
+
+
+Please note that I am NOT trying to loop back mount a file containing a 
+UBIFS file system image and I read the FAQ and understand that this is 
+not directly possible, disregarding nandsim. I am trying to do the 
+opposite - loopback mount a file residing on an UBIFS file system.
+
+
+Googling around I've found another post citing what seems like the very 
+same behaviour. The answer there was a reference to the above mentioned 
+FAQ entry, which I believe is not relevant for the aforementioned reasons.
+
+
+Kernel version is 2.6.24 with the last back ported UBIFS support. I 
+realize that this is an old version and no longer maintained and I'd be 
+happy to try the latest and greatest, just wanted to make sure this is 
+something that is supposed to work rather then that I am trying to do 
+the impossible.
+
+
+
+Many thanks,
+
+Gilad
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Gilad Ben-Yossef 
+Chief Coffee Drinker
+
+Codefidence Ltd.
+The code is free, your time isn't.(TM)
+
+Web:    http://codefidence.com
+Email:  gilad@codefidence.com
+Office: +972-8-9316883 ext. 201
+Fax:    +972-8-9316885
+Mobile: +972-52-8260388
+
+	The Doctor: Don't worry, Reinette, just a nightmare. 
+	Everyone has nightmares. Even monsters from under the 
+	bed have nightmares, don't you, monster?
+	Reinette: What do monsters have nightmares about?
+	The Doctor: Me! 
