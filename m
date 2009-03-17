@@ -1,19 +1,18 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-out.m-online.net ([212.18.0.9])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LjVLe-0002Ma-41
-	for linux-mtd@lists.infradead.org; Tue, 17 Mar 2009 09:12:50 +0000
+	id 1LjVLe-0002Mb-44
+	for linux-mtd@lists.infradead.org; Tue, 17 Mar 2009 09:12:57 +0000
 From: Wolfgang Grandegegr <wg@grandegger.com>
 To: linux-mtd@lists.infradead.org
 Subject: [PATCH 4/4] powerpc/85xx: TQM8548: Update DTS file for multi-chip
 	support
-Date: Tue, 17 Mar 2009 10:12:23 +0100
-Message-Id: <1237281143-8768-6-git-send-email-wg@grandegger.com>
-In-Reply-To: <1237281143-8768-5-git-send-email-wg@grandegger.com>
+Date: Tue, 17 Mar 2009 10:12:22 +0100
+Message-Id: <1237281143-8768-5-git-send-email-wg@grandegger.com>
+In-Reply-To: <1237281143-8768-4-git-send-email-wg@grandegger.com>
 References: <1237281143-8768-1-git-send-email-wg@grandegger.com>
 	<1237281143-8768-2-git-send-email-wg@grandegger.com>
 	<1237281143-8768-3-git-send-email-wg@grandegger.com>
 	<1237281143-8768-4-git-send-email-wg@grandegger.com>
-	<1237281143-8768-5-git-send-email-wg@grandegger.com>
 Cc: linuxppc-dev@ozlabs.org, Anton Vorontsov <avorontsov@ru.mvista.com>,
 	Wolfgang Grandegger <wg@grandegger.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,7 +29,7 @@ From: Wolfgang Grandegger <wg@grandegger.com>
 This patch adds multi-chip support for the Micron MT29F8G08FAB NAND
 flash memory on the TQM8548 modules.
 
-It should go through the powerpc/85xx maintainer.
+This patch should go through the powerpc/85xx channel.
 
 Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
 ---
