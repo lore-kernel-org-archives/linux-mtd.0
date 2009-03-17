@@ -1,14 +1,20 @@
-Subject: Re: infineon danube/twinpass mtd support
-From: David Woodhouse <dwmw2@infradead.org>
-To: john@phrozen.org
-In-Reply-To: <20090307133031.448mc2vls04wsgc4@webmail.phrozen.org>
-References: <20090307133031.448mc2vls04wsgc4@webmail.phrozen.org>
-Content-Type: text/plain
-Date: Tue, 17 Mar 2009 10:37:18 +0000
-Message-Id: <1237286238.27681.158.camel@macbook.infradead.org>
-Mime-Version: 1.0
+Received: from djurbala-pt.tunnel.tserv2.fmt.ipv6.he.net
+	([2001:470:1f01:ffff::eb] helo=gate.crashing.org)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LjZmo-0005HG-2S
+	for linux-mtd@lists.infradead.org; Tue, 17 Mar 2009 13:56:57 +0000
+Message-Id: <0AF2700E-820D-4B45-B87C-2CF39185CCA6@kernel.crashing.org>
+From: Kumar Gala <galak@kernel.crashing.org>
+To: Wolfgang Grandegegr <wg@grandegger.com>
+In-Reply-To: <1237281143-8768-1-git-send-email-wg@grandegger.com>
+Content-Type: text/plain; charset=US-ASCII; format=flowed; delsp=yes
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Mime-Version: 1.0 (Apple Message framework v930.3)
+Subject: Re: [PATCH 0/4] NAND: Multi-chip support for FSL-UPM for TQM8548
+	modules
+Date: Tue, 17 Mar 2009 08:56:44 -0500
+References: <1237281143-8768-1-git-send-email-wg@grandegger.com>
+Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,44 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2009-03-07 at 13:30 +0100, john@phrozen.org wrote:
-> 
-> we rewrote the infineon danube/twinpass support a while back and  
-> bumped the original vendor code to 2.6. we are currently looking into  
-> some left over details, before sending the patches upstream.
-> 
-> 1 open issue is the mtd map. the danube has a EBU (External Bus Unit)  
-> which connects pci and mtd to the mips core. for PCI to work, the EBU  
-> needs to endiness swap in-/ex-gress DMA data. however, due to a design  
-> issue(?!) the EBU only swaps MTD one way. hence we needed to add some  
-> complex mappings.
 
-Your issue is that your address lines to the flash are effectively
-swapped, so what the _chip_ thinks is address 0x0002 isn't actually
-appearing at that location when you try to read/write it.
+On Mar 17, 2009, at 4:12 AM, Wolfgang Grandegegr wrote:
 
-That doesn't _matter_ for the data, if you're thinking of it as a ROM
-chip. You need to be able to just execute code directly from it when the
-CPU starts up, and you want to be able to just memcpy directly from it
--- so you want your data to _appear_ unmangled, which means that inside
-the _chip_ it's actually swapped. But that doesn't matter because you
-have no way of telling unless you take the chip out and put it in a
-normal machine or PROM programmer. 
+> The following patch series adds generic support for multi-chip NAND  
+> devices
+> to the FSL-UPM driver and support for the Micron MT29F8G08FAB NAND  
+> flash
+> memory on the TQM8548 modules:
+>
+> [PATCH 1/4] NAND: FSL-UPM: add multi chip support
+> [PATCH 2/4] NAND: FSL-UPM: add support for selecting chips via MAR
+> [PATCH 3/4] NAND: FSL-UPM: Add wait flags to support board/chip  
+> specific delays
+> [PATCH 4/4] powerpc/85xx: TQM8548: Update DTS file for multi-chip  
+> support
+>
+> Wolfgang.
 
-That's just for _data_, though.
+You need to update:
 
-The chip _does_ care which address the magic unlock commands are sent
-to. It has to be address 0x555 on the chip, otherwise it'll ignore you.
+Documentation/powerpc/dts-bindings/fsl/upm-nand.txt
 
-So one option is just to mangle the unlock addresses... except that the
-probe is also going to be screwed up because the CFI table is going to
-be swapped, too.
+I see some new properties defined in this code and not documented ;)
 
-I suspect the best answer is to add an extra argument to the map
-driver's write function, indicating whether it's a command or data
-cycle. And your map driver will only mangle the addresses for the
-_command_ cycles.
-
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+- k
