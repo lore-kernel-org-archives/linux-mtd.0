@@ -1,20 +1,18 @@
 Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Ljrx9-0006S9-Go
-	for linux-mtd@lists.infradead.org; Wed, 18 Mar 2009 09:20:54 +0000
-Subject: Re: [PATCH] [MTD] mtd-utils: Use new 64-bit ioctls to access >4GiB
-	devices
-From: Artem Bityutskiy <dedekind@infradead.org>
+	id 1Ljsy9-0000Iu-W5
+	for linux-mtd@lists.infradead.org; Wed, 18 Mar 2009 10:26:00 +0000
+Message-ID: <49C0CC3F.3030907@nokia.com>
+Date: Wed, 18 Mar 2009 12:26:07 +0200
+From: Adrian Hunter <adrian.hunter@nokia.com>
+MIME-Version: 1.0
 To: Kevin Cernekee <kpc.mtd@gmail.com>
-In-Reply-To: <a95a62fe0903171813x404fcb4bsf29dc5ce9495dbb5@mail.gmail.com>
-References: <a95a62fe0903171813x404fcb4bsf29dc5ce9495dbb5@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 18 Mar 2009 11:20:29 +0200
-Message-Id: <1237368029.3622.6.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Subject: Re: [PATCH] [MTD] CORE: New ioctl calls for >4GiB device support
+References: <a95a62fe0903171813g141cea70g5d984b4649bfcad4@mail.gmail.com>
+In-Reply-To: <a95a62fe0903171813g141cea70g5d984b4649bfcad4@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,19 +22,268 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-03-17 at 18:13 -0700, Kevin Cernekee wrote:
+Kevin Cernekee wrote:
+> Extend the MTD user ABI to access >4GiB devices using 64-bit offsets.
+> 
+> New ioctls: MEMGETINFO64 MEMERASE64 MEMWRITEOOB64 MEMREADOOB64 MEMLOCK64
+>             MEMUNLOCK64 MEMGETREGIONINFO64
+> 
+> Signed-off-by: Kevin Cernekee <kpc.mtd@gmail.com>
+> ---
+
+What about compat ioctls?
+
+>  drivers/mtd/mtdchar.c  |  128 ++++++++++++++++++++++++++++++++++++++++++-----
+>  include/mtd/mtd-abi.h  |   36 +++++++++++++
+>  include/mtd/mtd-user.h |    2 +
+>  3 files changed, 152 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+> index e9ec59e..4bde913 100644
+> --- a/drivers/mtd/mtdchar.c
+> +++ b/drivers/mtd/mtdchar.c
+> @@ -387,6 +387,7 @@ static int mtd_ioctl(struct inode *inode, struct file *file,
+>  	int ret = 0;
+>  	u_long size;
+>  	struct mtd_info_user info;
+> +	struct mtd_info_user64 info64;
+> 
+>  	DEBUG(MTD_DEBUG_LEVEL0, "MTD_ioctl\n");
+> 
+> @@ -425,6 +426,26 @@ static int mtd_ioctl(struct inode *inode, struct
+> file *file,
+>  		break;
+>  	}
+> 
+> +	case MEMGETREGIONINFO64:
+> +	{
+> +		uint32_t ur_idx;
+> +		struct mtd_erase_region_info *kr;
+> +		struct region_info_user64 *ur =
+> +			(struct region_info_user64 *) argp;
+> +
+> +		if (get_user(ur_idx, &(ur->regionindex)))
+> +			return -EFAULT;
+> +
+> +		kr = &(mtd->eraseregions[ur_idx]);
+> +
+> +		if (put_user(kr->offset, &(ur->offset))
+> +		    || put_user(kr->erasesize, &(ur->erasesize))
+> +		    || put_user(kr->numblocks, &(ur->numblocks)))
+> +			return -EFAULT;
+> +
+> +		break;
+> +	}
+> +
+>  	case MEMGETINFO:
+>  		info.type	= mtd->type;
+>  		info.flags	= mtd->flags;
+> @@ -439,7 +460,19 @@ static int mtd_ioctl(struct inode *inode, struct
+> file *file,
+>  			return -EFAULT;
+>  		break;
+> 
+> +	case MEMGETINFO64:
+> +		info64.type	= mtd->type;
+> +		info64.flags	= mtd->flags;
+> +		info64.size	= mtd->size;
+> +		info64.erasesize = mtd->erasesize;
+> +		info64.writesize = mtd->writesize;
+> +		info64.oobsize	= mtd->oobsize;
+> +		if (copy_to_user(argp, &info64, sizeof(struct mtd_info_user64)))
+> +			return -EFAULT;
+> +		break;
+> +
+>  	case MEMERASE:
+> +	case MEMERASE64:
+>  	{
+>  		struct erase_info *erase;
+> 
+> @@ -450,20 +483,32 @@ static int mtd_ioctl(struct inode *inode, struct
+> file *file,
+>  		if (!erase)
+>  			ret = -ENOMEM;
+>  		else {
+> -			struct erase_info_user einfo;
+> -
+>  			wait_queue_head_t waitq;
+>  			DECLARE_WAITQUEUE(wait, current);
+> 
+>  			init_waitqueue_head(&waitq);
+> 
+> -			if (copy_from_user(&einfo, argp,
+> -				    sizeof(struct erase_info_user))) {
+> -				kfree(erase);
+> -				return -EFAULT;
+> +			if(cmd == MEMERASE64) {
+> +				struct erase_info_user64 einfo64;
+> +
+> +				if (copy_from_user(&einfo64, argp,
+> +					    sizeof(struct erase_info_user64))) {
+> +					kfree(erase);
+> +					return -EFAULT;
+> +				}
+> +				erase->addr = einfo64.start;
+> +				erase->len = einfo64.length;
+> +			} else {
+> +				struct erase_info_user einfo32;
+> +
+> +				if (copy_from_user(&einfo32, argp,
+> +					    sizeof(struct erase_info_user))) {
+> +					kfree(erase);
+> +					return -EFAULT;
+> +				}
+> +				erase->addr = einfo32.start;
+> +				erase->len = einfo32.length;
+>  			}
+> -			erase->addr = einfo.start;
+> -			erase->len = einfo.length;
+>  			erase->mtd = mtd;
+>  			erase->callback = mtdchar_erase_callback;
+>  			erase->priv = (unsigned long)&waitq;
+> @@ -495,8 +540,9 @@ static int mtd_ioctl(struct inode *inode, struct file *file,
+>  	}
+> 
+>  	case MEMWRITEOOB:
+> +	case MEMWRITEOOB64:
+>  	{
+> -		struct mtd_oob_buf buf;
+> +		struct mtd_oob_buf64 buf;
+>  		struct mtd_oob_ops ops;
+>  		struct mtd_oob_buf __user *user_buf = argp;
+>  	        uint32_t retlen;
+> @@ -504,8 +550,21 @@ static int mtd_ioctl(struct inode *inode, struct
+> file *file,
+>  		if(!(file->f_mode & FMODE_WRITE))
+>  			return -EPERM;
+> 
+> -		if (copy_from_user(&buf, argp, sizeof(struct mtd_oob_buf)))
+> -			return -EFAULT;
+> +		if (cmd == MEMWRITEOOB64) {
+> +			if (copy_from_user(&buf, argp,
+> +				    sizeof(struct mtd_oob_buf64)))
+> +				return -EFAULT;
+> +		} else {
+> +			struct mtd_oob_buf buf32;
+> +
+> +			if (copy_from_user(&buf32, argp,
+> +				    sizeof(struct mtd_oob_buf)))
+> +				return -EFAULT;
+> +
+> +			buf.start = buf32.start;
+> +			buf.length = buf32.length;
+> +			buf.ptr = buf32.ptr;
+> +		}
+> 
+>  		if (buf.length > 4096)
+>  			return -EINVAL;
+
+This bit is not 64-bit safe:
+
+		buf.start &= ~(mtd->oobsize - 1);
+
+
+This bit needs to use the right structure:
+
+		if (copy_to_user(&user_buf->length, &retlen, sizeof(buf.length)))
+			ret = -EFAULT;
+
+> @@ -551,12 +610,25 @@ static int mtd_ioctl(struct inode *inode, struct
+> file *file,
+>  	}
+> 
+>  	case MEMREADOOB:
+> +	case MEMREADOOB64:
+>  	{
+> -		struct mtd_oob_buf buf;
+> +		struct mtd_oob_buf64 buf;
+>  		struct mtd_oob_ops ops;
+> 
+> -		if (copy_from_user(&buf, argp, sizeof(struct mtd_oob_buf)))
+> -			return -EFAULT;
+> +		if (cmd == MEMREADOOB64) {
+> +			if (copy_from_user(&buf, argp,
+> +				    sizeof(struct mtd_oob_buf64)))
+> +				return -EFAULT;
+> +		} else {
+> +			struct mtd_oob_buf buf32;
+> +
+> +			if (copy_from_user(&buf32, argp,
+> +				    sizeof(struct mtd_oob_buf)))
+> +				return -EFAULT;
+> +			buf.start = buf32.start;
+> +			buf.length = buf32.length;
+> +			buf.ptr = buf32.ptr;
+> +		}
+> 
+>  		if (buf.length > 4096)
+>  			return -EINVAL;
+
+Same as above:
+
+		buf.start &= ~(mtd->oobsize - 1);
+
+
+This bit needs attention:
+		if (put_user(ops.oobretlen, (uint32_t __user *)argp))
+			ret = -EFAULT;
+argp points to 'start' not 'length' and 'start' may be 64 or 32 bits.
+
+That original behaviour is kind-of a bug but it has consequences for
+userspace, so it is not clear what the best course of action is.
+Refer:
+
+http://lists.infradead.org/pipermail/linux-mtd/2009-January/024194.html
+
+> @@ -608,6 +680,20 @@ static int mtd_ioctl(struct inode *inode, struct
+> file *file,
+>  		break;
+>  	}
+> 
+> +	case MEMLOCK64:
+> +	{
+> +		struct erase_info_user64 einfo64;
+> +
+> +		if (copy_from_user(&einfo64, argp, sizeof(einfo64)))
+> +			return -EFAULT;
+> +
+> +		if (!mtd->lock)
+> +			ret = -EOPNOTSUPP;
+> +		else
+> +			ret = mtd->lock(mtd, einfo64.start, einfo64.length);
+> +		break;
+> +	}
+> +
+>  	case MEMUNLOCK:
+>  	{
+>  		struct erase_info_user einfo;
+> @@ -622,6 +708,20 @@ static int mtd_ioctl(struct inode *inode, struct
+> file *file,
+>  		break;
+>  	}
+> 
+> +	case MEMUNLOCK64:
+> +	{
+> +		struct erase_info_user64 einfo64;
+> +
+> +		if (copy_from_user(&einfo64, argp, sizeof(einfo64)))
+> +			return -EFAULT;
+> +
+> +		if (!mtd->unlock)
+> +			ret = -EOPNOTSUPP;
+> +		else
+> +			ret = mtd->unlock(mtd, einfo64.start, einfo64.length);
+> +		break;
+> +	}
+> +
+>  	/* Legacy interface */
+>  	case MEMGETOOBSEL:
+>  	{
 > diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
-> index 86defe1..10ebb7c 100644
+> index c6c61cd..10ebb7c 100644
 > --- a/include/mtd/mtd-abi.h
 > +++ b/include/mtd/mtd-abi.h
-> @@ -1,6 +1,4 @@
->  /*
-> - * $Id: mtd-abi.h,v 1.13 2005/11/07 11:14:56 gleixner Exp $
-> - *
->   * Portions of MTD ABI definition which are shared by kernel and user space
->   */
-> 
-> @@ -12,10 +10,21 @@ struct erase_info_user {
+> @@ -10,12 +10,23 @@ struct erase_info_user {
 >  	uint32_t length;
 >  };
 > 
@@ -48,27 +295,19 @@ On Tue, 2009-03-17 at 18:13 -0700, Kevin Cernekee wrote:
 >  struct mtd_oob_buf {
 >  	uint32_t start;
 >  	uint32_t length;
-> -	unsigned char *ptr;
-> +	unsigned char __user *ptr;
-> +};
-> +
+>  	unsigned char __user *ptr;
+>  };
+> 
 > +struct mtd_oob_buf64 {
 > +	uint64_t start;
 > +	uint32_t length;
 > +	unsigned char __user *ptr;
->  };
-> 
+> +};
+> +
 >  #define MTD_ABSENT		0
-> @@ -29,7 +38,7 @@ struct mtd_oob_buf {
->  #define MTD_WRITEABLE		0x400	/* Device is writeable */
->  #define MTD_BIT_WRITEABLE	0x800	/* Single bits can be flipped */
->  #define MTD_NO_ERASE		0x1000	/* No erase necessary */
-> -#define MTD_STUPID_LOCK		0x2000	/* Always locked after reset */
-> +#define MTD_POWERUP_LOCK	0x2000	/* Always locked after reset */
-> 
->  // Some common devices / combinations of capabilities
->  #define MTD_CAP_ROM		0
-> @@ -62,6 +71,15 @@ struct mtd_info_user {
+>  #define MTD_RAM			1
+>  #define MTD_ROM			2
+> @@ -60,6 +71,15 @@ struct mtd_info_user {
 >  	uint32_t eccsize;
 >  };
 > 
@@ -84,7 +323,7 @@ On Tue, 2009-03-17 at 18:13 -0700, Kevin Cernekee wrote:
 >  struct region_info_user {
 >  	uint32_t offset;		/* At which this region starts,
 >  					 * from the beginning of the MTD */
-> @@ -70,6 +88,14 @@ struct region_info_user {
+> @@ -68,6 +88,14 @@ struct region_info_user {
 >  	uint32_t regionindex;
 >  };
 > 
@@ -95,19 +334,38 @@ On Tue, 2009-03-17 at 18:13 -0700, Kevin Cernekee wrote:
 > +	uint32_t numblocks;		/* Number of blocks in this region */
 > +	uint32_t regionindex;
 > +};
+> +
+>  struct otp_info {
+>  	uint32_t start;
+>  	uint32_t length;
+> @@ -94,6 +122,14 @@ struct otp_info {
+>  #define ECCGETSTATS		_IOR('M', 18, struct mtd_ecc_stats)
+>  #define MTDFILEMODE		_IO('M', 19)
+> 
+> +#define MEMGETINFO64		_IOR('M', 20, struct mtd_info_user64)
+> +#define MEMERASE64		_IOW('M', 21, struct erase_info_user64)
+> +#define MEMWRITEOOB64		_IOWR('M', 22, struct mtd_oob_buf64)
+> +#define MEMREADOOB64		_IOWR('M', 23, struct mtd_oob_buf64)
+> +#define MEMLOCK64		_IOW('M', 24, struct erase_info_user64)
+> +#define MEMUNLOCK64		_IOW('M', 25, struct erase_info_user64)
+> +#define MEMGETREGIONINFO64	_IOWR('M', 26, struct region_info_user64)
+> +
+>  /*
+>   * Obsolete legacy interface. Keep it in order not to break userspace
+>   * interfaces
+> diff --git a/include/mtd/mtd-user.h b/include/mtd/mtd-user.h
+> index 170ceca..30e55a2 100644
+> --- a/include/mtd/mtd-user.h
+> +++ b/include/mtd/mtd-user.h
+> @@ -7,6 +7,8 @@
+> 
+>  #include <stdint.h>
+> 
+> +#define __user
+> +
 
-I think dwmw2 put it clearly that he will not accept new
-_informational_ ioctls like MEMGETINFO64 and so on. This should
-be exposed via sysfs instead.
+Don't do that.  Use "make headers_install" to make headers for user space.
 
-Vs other inctl's, could you please reserve some space there for
-possible future inmprovements by adding
-
-uint8_t padding[128]; /* Unused, reserved for future, should be 0'd */
-
-or something like this, please? We suffered from lack of fields like
-this in the past.
-
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+>  /* This file is blessed for inclusion by userspace */
+>  #include <mtd/mtd-abi.h>
+> 
