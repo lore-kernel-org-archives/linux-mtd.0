@@ -1,19 +1,20 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LjqXU-00019C-GB
-	for linux-mtd@lists.infradead.org; Wed, 18 Mar 2009 07:50:18 +0000
-Date: Wed, 18 Mar 2009 08:50:08 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Kevin Cernekee <kpc.mtd@gmail.com>
+	id 1Ljrx9-0006S9-Go
+	for linux-mtd@lists.infradead.org; Wed, 18 Mar 2009 09:20:54 +0000
 Subject: Re: [PATCH] [MTD] mtd-utils: Use new 64-bit ioctls to access >4GiB
 	devices
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Kevin Cernekee <kpc.mtd@gmail.com>
 In-Reply-To: <a95a62fe0903171813x404fcb4bsf29dc5ce9495dbb5@mail.gmail.com>
-Message-ID: <Pine.LNX.4.64.0903180848080.20271@lnxricardw.se.axis.com>
 References: <a95a62fe0903171813x404fcb4bsf29dc5ce9495dbb5@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 18 Mar 2009 11:20:29 +0200
+Message-Id: <1237368029.3622.6.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +24,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, 2009-03-17 at 18:13 -0700, Kevin Cernekee wrote:
+> diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
+> index 86defe1..10ebb7c 100644
+> --- a/include/mtd/mtd-abi.h
+> +++ b/include/mtd/mtd-abi.h
+> @@ -1,6 +1,4 @@
+>  /*
+> - * $Id: mtd-abi.h,v 1.13 2005/11/07 11:14:56 gleixner Exp $
+> - *
+>   * Portions of MTD ABI definition which are shared by kernel and user space
+>   */
+> 
+> @@ -12,10 +10,21 @@ struct erase_info_user {
+>  	uint32_t length;
+>  };
+> 
+> +struct erase_info_user64 {
+> +	uint64_t start;
+> +	uint64_t length;
+> +};
+> +
+>  struct mtd_oob_buf {
+>  	uint32_t start;
+>  	uint32_t length;
+> -	unsigned char *ptr;
+> +	unsigned char __user *ptr;
+> +};
+> +
+> +struct mtd_oob_buf64 {
+> +	uint64_t start;
+> +	uint32_t length;
+> +	unsigned char __user *ptr;
+>  };
+> 
+>  #define MTD_ABSENT		0
+> @@ -29,7 +38,7 @@ struct mtd_oob_buf {
+>  #define MTD_WRITEABLE		0x400	/* Device is writeable */
+>  #define MTD_BIT_WRITEABLE	0x800	/* Single bits can be flipped */
+>  #define MTD_NO_ERASE		0x1000	/* No erase necessary */
+> -#define MTD_STUPID_LOCK		0x2000	/* Always locked after reset */
+> +#define MTD_POWERUP_LOCK	0x2000	/* Always locked after reset */
+> 
+>  // Some common devices / combinations of capabilities
+>  #define MTD_CAP_ROM		0
+> @@ -62,6 +71,15 @@ struct mtd_info_user {
+>  	uint32_t eccsize;
+>  };
+> 
+> +struct mtd_info_user64 {
+> +	uint32_t type;
+> +	uint32_t flags;
+> +	uint64_t size;	 // Total size of the MTD
+> +	uint32_t erasesize;
+> +	uint32_t writesize;
+> +	uint32_t oobsize;   // Amount of OOB data per block (e.g. 16)
+> +};
+> +
+>  struct region_info_user {
+>  	uint32_t offset;		/* At which this region starts,
+>  					 * from the beginning of the MTD */
+> @@ -70,6 +88,14 @@ struct region_info_user {
+>  	uint32_t regionindex;
+>  };
+> 
+> +struct region_info_user64 {
+> +	uint64_t offset;		/* At which this region starts,
+> +					 * from the beginning of the MTD */
+> +	uint32_t erasesize;		/* For this region */
+> +	uint32_t numblocks;		/* Number of blocks in this region */
+> +	uint32_t regionindex;
+> +};
 
-On Wed, 18 Mar 2009, Kevin Cernekee wrote:
+I think dwmw2 put it clearly that he will not accept new
+_informational_ ioctls like MEMGETINFO64 and so on. This should
+be exposed via sysfs instead.
 
-> This patch depends on "CORE: New ioctl calls for >4GiB device support".
->
-> Use the new kernel ioctls to support >4GiB flash devices in mtd-utils.
+Vs other inctl's, could you please reserve some space there for
+possible future inmprovements by adding
 
-> -               if(ioctl(Fd,MEMGETREGIONINFO,&(reginfo[i])) !=3D 0)
-> +               if(ioctl(Fd,MEMGETREGIONINFO64,&(reginfo[i])) !=3D 0)
+uint8_t padding[128]; /* Unused, reserved for future, should be 0'd */
 
-Wouldn't it be an idea to support both the old and new calls for a while=20
-(using compile time switching), in case someone wants to grab a newer=20
-version of mtdtools but doesn't have a newer kernel for whatever reason?
+or something like this, please? We suffered from lack of fields like
+this in the past.
 
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
