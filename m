@@ -1,18 +1,23 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from az33egw02.freescale.net ([192.88.158.103])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Ljvpk-0004sj-LU
-	for linux-mtd@lists.infradead.org; Wed, 18 Mar 2009 13:29:31 +0000
-Message-ID: <49C0F741.4070807@nokia.com>
-Date: Wed, 18 Mar 2009 15:29:37 +0200
-From: Adrian Hunter <adrian.hunter@nokia.com>
+	id 1Lk0rm-0005qC-UP
+	for linux-mtd@lists.infradead.org; Wed, 18 Mar 2009 18:51:58 +0000
+Date: Wed, 18 Mar 2009 13:51:30 -0500
+From: Scott Wood <scottwood@freescale.com>
+To: Wolfgang Grandegegr <wg@grandegger.com>
+Subject: Re: [PATCH 4/4] powerpc/85xx: TQM8548: Update DTS file for
+	multi-chip support
+Message-ID: <20090318185130.GD3410@loki.buserror.net>
+References: <1237281143-8768-1-git-send-email-wg@grandegger.com>
+	<1237281143-8768-2-git-send-email-wg@grandegger.com>
+	<1237281143-8768-3-git-send-email-wg@grandegger.com>
+	<1237281143-8768-4-git-send-email-wg@grandegger.com>
+	<1237281143-8768-5-git-send-email-wg@grandegger.com>
 MIME-Version: 1.0
-To: Gilad Ben-Yossef <gilad@codefidence.com>
-Subject: Re: Loop back mounted files on UBIFS file system
-References: <49BFC87D.5050608@codefidence.com>
-In-Reply-To: <49BFC87D.5050608@codefidence.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1237281143-8768-5-git-send-email-wg@grandegger.com>
+Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,65 +27,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Gilad Ben-Yossef wrote:
-> Hi All,
-> 
-> 
-> I am trying to loop back mount a file (which contains a FAT32 file 
-> system image), which resides on a UBIFS file system.
-> 
-> 
-> 
-> Command I try:
-> 
-> *# losetup -o 4096 /dev/loop/0 /mnt/ubifs/fat32
-> ***
-> 
-> 
-> Where /nnt/ubifs/ is the mount point of a valid UBIFS file system.
-> 
-> 
-> The response I get is:
-> 
-> 
-> losetup: /dev/loop/0: No such device or address
+On Tue, Mar 17, 2009 at 10:12:22AM +0100, Wolfgang Grandegegr wrote:
+> --- a/arch/powerpc/boot/dts/tqm8548.dts
+> +++ b/arch/powerpc/boot/dts/tqm8548.dts
+> @@ -389,6 +389,11 @@
+>  			reg = <3 0x0 0x800>;
+>  			fsl,upm-addr-offset = <0x10>;
+>  			fsl,upm-cmd-offset = <0x08>;
+> +			wait-flags = <0x05>;
+> +			/* Multi-chip device */
+> +			fsl,upm-mar-chip-offset = <0x200>;
+> +			max-chips = <2>;
+> +			chip-offset = <0x200>;
 
-I tried it quickly with a recent kernel and also on 2.6.24 
+Device-specific properties (especially vaguely-named ones like wait-flags)
+should have at least an "fsl," prefix (or better, an "fsl,upm-" or
+"fsl,upm-nand-" prefix).
 
-	git://git.infradead.org/users/dedekind/ubifs-v2.6.24.git
+Please update Documentation/powerpc/dts-bindings/fsl/upm-nand.txt with the
+definitions of these new properties.
 
-and it seemed to work.  I could mount and read and write.
-
-/dev/loop/0 does exist doesn't it?  What does losetup -f say?
-
-> 
-> 
-> Trying a loopback mount from any other file system (such as tmpfs) works.
-> 
-> 
-> Trying to do any other activity with the UBIFS file system works as well.
-> 
-> 
-> Please note that I am NOT trying to loop back mount a file containing a 
-> UBIFS file system image and I read the FAQ and understand that this is 
-> not directly possible, disregarding nandsim. I am trying to do the 
-> opposite - loopback mount a file residing on an UBIFS file system.
-> 
-> 
-> Googling around I've found another post citing what seems like the very 
-> same behaviour. The answer there was a reference to the above mentioned 
-> FAQ entry, which I believe is not relevant for the aforementioned reasons.
-> 
-> 
-> Kernel version is 2.6.24 with the last back ported UBIFS support. I 
-> realize that this is an old version and no longer maintained and I'd be 
-> happy to try the latest and greatest, just wanted to make sure this is 
-> something that is supposed to work rather then that I am trying to do 
-> the impossible.
-> 
-> 
-> 
-> Many thanks,
-> 
-> Gilad
-> 
+-Scott
