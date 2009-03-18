@@ -1,21 +1,17 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-out.m-online.net ([212.18.0.10])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LjqIp-00074u-61
-	for linux-mtd@lists.infradead.org; Wed, 18 Mar 2009 07:35:09 +0000
-Message-ID: <49C0A422.3040704@grandegger.com>
-Date: Wed, 18 Mar 2009 08:34:58 +0100
+	id 1LjqOs-00086U-Lz
+	for linux-mtd@lists.infradead.org; Wed, 18 Mar 2009 07:41:24 +0000
+Message-ID: <49C0A59D.3040105@grandegger.com>
+Date: Wed, 18 Mar 2009 08:41:17 +0100
 From: Wolfgang Grandegger <wg@grandegger.com>
 MIME-Version: 1.0
 To: avorontsov@ru.mvista.com
-Subject: Re: [PATCH 4/4] powerpc/85xx: TQM8548: Update DTS file for	multi-chip
-	support
+Subject: Re: [PATCH 1/4] NAND: FSL-UPM: add multi chip support
 References: <1237281143-8768-1-git-send-email-wg@grandegger.com>
 	<1237281143-8768-2-git-send-email-wg@grandegger.com>
-	<1237281143-8768-3-git-send-email-wg@grandegger.com>
-	<1237281143-8768-4-git-send-email-wg@grandegger.com>
-	<1237281143-8768-5-git-send-email-wg@grandegger.com>
-	<20090317192341.GB4287@oksana.dev.rtsoft.ru>
-In-Reply-To: <20090317192341.GB4287@oksana.dev.rtsoft.ru>
+	<20090317192735.GC4287@oksana.dev.rtsoft.ru>
+In-Reply-To: <20090317192735.GC4287@oksana.dev.rtsoft.ru>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
@@ -29,48 +25,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Anton Vorontsov wrote:
-> On Tue, Mar 17, 2009 at 10:12:22AM +0100, Wolfgang Grandegegr wrote:
+> On Tue, Mar 17, 2009 at 10:12:19AM +0100, Wolfgang Grandegegr wrote:
 >> From: Wolfgang Grandegger <wg@grandegger.com>
 >>
->> This patch adds multi-chip support for the Micron MT29F8G08FAB NAND
->> flash memory on the TQM8548 modules.
->>
->> This patch should go through the powerpc/85xx channel.
+>> This patch adds support for multi-chip NAND devices to the FSL-UPM
+>> driver. This requires support for multiple GPIOs for the RNB pins.
 >>
 >> Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
 >> ---
->>  arch/powerpc/boot/dts/tqm8548.dts |    5 +++++
->>  1 files changed, 5 insertions(+), 0 deletions(-)
+>>  drivers/mtd/nand/fsl_upm.c |   90 +++++++++++++++++++++++++++++++++----------
+>>  1 files changed, 69 insertions(+), 21 deletions(-)
 >>
->> diff --git a/arch/powerpc/boot/dts/tqm8548.dts b/arch/powerpc/boot/dts/tqm8548.dts
->> index 81d3fbb..e5c3c67 100644
->> --- a/arch/powerpc/boot/dts/tqm8548.dts
->> +++ b/arch/powerpc/boot/dts/tqm8548.dts
->> @@ -389,6 +389,11 @@
->>  			reg = <3 0x0 0x800>;
->>  			fsl,upm-addr-offset = <0x10>;
->>  			fsl,upm-cmd-offset = <0x08>;
->> +			wait-flags = <0x05>;
+>> diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
+>> index 7815a40..ca7e85a 100644
+>> --- a/drivers/mtd/nand/fsl_upm.c
+>> +++ b/drivers/mtd/nand/fsl_upm.c
+>> @@ -23,6 +23,8 @@
+>>  #include <linux/io.h>
+>>  #include <asm/fsl_lbc.h>
+>>  
+>> +#define FSL_UPM_NAND_MAX_CHIPS 4
 > 
-> Should be at least fsl,upm-wait-flags. (And the flags should
-> be documented in dts-bindings ;-).
+> Is there any reason to hardcode max chips? Some obscure limit in the
+> UPMs maybe?
 
-OK.
+Not really. It's limited by NAND_MAX_CHIP. See
+http://lxr.linux.no/linux+v2.6.28.8/include/linux/mtd/nand.h#L40
 
->> +			/* Multi-chip device */
->> +			fsl,upm-mar-chip-offset = <0x200>;
->> +			max-chips = <2>;
-> 
-> num-chips would be more appropriate, no?
+> Otherwise we'd better allocate the rnb_gpios dynamically, depending
+> on the num-chips property.
 
-Yep.
-
-> 
->> +			chip-offset = <0x200>;
-> 
-> I believe this is from some old code...
-
-No, it's the address offset between the multiple chips. As Kumar already
-pointed out, I also need to document the new properties.
+Could be done.
 
 Wolfgang.
