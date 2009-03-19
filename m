@@ -1,20 +1,31 @@
-Received: from hrndva-commlb.mail.rr.com ([71.74.57.9])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LkLJV-0004Z9-J8
-	for linux-mtd@lists.infradead.org; Thu, 19 Mar 2009 16:41:56 +0000
-Received: from rrcs-agw-01.hrndva.rr.com ([24.28.200.151])
-	by hrndva-comm-mta03.mail.rr.com with ESMTP id
-	<20090319164149.DIZU11557.hrndva-comm-mta03.mail.rr.com@rrcs-agw-01.hrndva.rr.com>
-	for <linux-mtd@lists.infradead.org>; Thu, 19 Mar 2009 16:41:49 +0000
-Message-Id: <7h9gbp$cgtmka@rrcs-agw-01b.hrndva.rr.com>
-From: Mrs. Caroline bryan <wpdesign@la.twcbc.com>
-To: <info@co.uk>
-Subject: Dear Sir/Madam,
-Date: Thu, 19 Mar 2009 11:41:49 -0500
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
-Reply-To: ukagentoffice09@googlemail.com
+Received: from az33egw02.freescale.net ([192.88.158.103])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LkLgX-0007sw-Bz
+	for linux-mtd@lists.infradead.org; Thu, 19 Mar 2009 17:05:45 +0000
+Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
+	by az33egw02.freescale.net (8.14.3/az33egw02) with ESMTP id
+	n2JH5VUV023547 for <linux-mtd@lists.infradead.org>;
+	Thu, 19 Mar 2009 10:05:31 -0700 (MST)
+Received: from ld0162-tx32.am.freescale.net (ld0162-tx32.am.freescale.net
+	[10.82.19.112])
+	by de01smr01.freescale.net (8.13.1/8.13.0) with ESMTP id n2JH5Ud8021069
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 19 Mar 2009 12:05:30 -0500 (CDT)
+Date: Thu, 19 Mar 2009 12:05:30 -0500
+From: Scott Wood <scottwood@freescale.com>
+To: Wolfgang Grandegger <wg@grandegger.com>
+Subject: Re: [PATCH v2 4/5] powerpc: NAND: FSL UPM: document new bindings
+Message-ID: <20090319170530.GA2744@ld0162-tx32.am.freescale.net>
+References: <1237475768-11481-1-git-send-email-wg@grandegger.com>
+	<1237475768-11481-2-git-send-email-wg@grandegger.com>
+	<1237475768-11481-3-git-send-email-wg@grandegger.com>
+	<1237475768-11481-4-git-send-email-wg@grandegger.com>
+	<1237475768-11481-5-git-send-email-wg@grandegger.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1237475768-11481-5-git-send-email-wg@grandegger.com>
+Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,25 +35,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Sir/Madam,
+On Thu, Mar 19, 2009 at 04:16:07PM +0100, Wolfgang Grandegger wrote:
+> +Optional properties:
+> +- fsl,upm-mar-offset : use the UPM machine address register to drive a
+> +  		       custom chip select logic using the specified
+> +		       offset.
 
-We are pleased to inform you that your e-mail address has won the UK Sweepstakes International Programme.Therefore you have been approve for a lump sum payout (1,000,000.00 GBP) One Million Pounds in the Uk Sweepstakes International Program held on 18th Of March 2009, and release 
-19th March 2009. Your e-mail ID emerged as one of the winners in the 1st category. 
+Your example uses the name fsl,upm-mar-chip-offset instead.
 
-Please fill the form below and send it to our payment department with the contact given below. 
+> +- chip-offset : address offset between chips for multi-chip support.
 
-Contact Person: Martin James 
-Email: ukagentoffice09@googlemail.com
+How is this different from fsl,upm-mar-offset?
 
-
-PAYMENT PROCESSING FORM 
-
-1.Full Name: 
-2.Full Address: 
-3.Status: 
-4.Occupation: 
-5.Phone Number: 
-6.Country: 
-
-Yours faithfully, 
-Mrs. Caroline bryan
+-Scott
