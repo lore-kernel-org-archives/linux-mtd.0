@@ -1,31 +1,20 @@
-Received: from az33egw02.freescale.net ([192.88.158.103])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LkLgX-0007sw-Bz
-	for linux-mtd@lists.infradead.org; Thu, 19 Mar 2009 17:05:45 +0000
-Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
-	by az33egw02.freescale.net (8.14.3/az33egw02) with ESMTP id
-	n2JH5VUV023547 for <linux-mtd@lists.infradead.org>;
-	Thu, 19 Mar 2009 10:05:31 -0700 (MST)
-Received: from ld0162-tx32.am.freescale.net (ld0162-tx32.am.freescale.net
-	[10.82.19.112])
-	by de01smr01.freescale.net (8.13.1/8.13.0) with ESMTP id n2JH5Ud8021069
+Received: from mail-qy0-f109.google.com ([209.85.221.109])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LkXPC-0000oV-Rv
+	for linux-mtd@lists.infradead.org; Fri, 20 Mar 2009 05:36:37 +0000
+Received: by qyk7 with SMTP id 7so1392629qyk.28
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 19 Mar 2009 12:05:30 -0500 (CDT)
-Date: Thu, 19 Mar 2009 12:05:30 -0500
-From: Scott Wood <scottwood@freescale.com>
-To: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH v2 4/5] powerpc: NAND: FSL UPM: document new bindings
-Message-ID: <20090319170530.GA2744@ld0162-tx32.am.freescale.net>
-References: <1237475768-11481-1-git-send-email-wg@grandegger.com>
-	<1237475768-11481-2-git-send-email-wg@grandegger.com>
-	<1237475768-11481-3-git-send-email-wg@grandegger.com>
-	<1237475768-11481-4-git-send-email-wg@grandegger.com>
-	<1237475768-11481-5-git-send-email-wg@grandegger.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1237475768-11481-5-git-send-email-wg@grandegger.com>
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
+	Thu, 19 Mar 2009 22:36:29 -0700 (PDT)
+MIME-Version: 1.0
+Date: Thu, 19 Mar 2009 22:36:29 -0700
+Message-ID: <a95a62fe0903192236x3e8ea891rb59e8758d5d20456@mail.gmail.com>
+Subject: [PATCH 0/2] [MTD]: Extend ABI/utilities for >4GiB device support
+	(take 2)
+From: Kevin Cernekee <kpc.mtd@gmail.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	dwmw2@infradead.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,16 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 19, 2009 at 04:16:07PM +0100, Wolfgang Grandegger wrote:
-> +Optional properties:
-> +- fsl,upm-mar-offset : use the UPM machine address register to drive a
-> +  		       custom chip select logic using the specified
-> +		       offset.
+Based on feedback from this list, here is a new patch incorporating the
+following changes from last time (kernel side):
 
-Your example uses the name fsl,upm-mar-chip-offset instead.
+Added compat_ioctls for all MTD ABI calls
+Fixed erroneous uses of 32-bit masks on 64-bit flash offsets
+Fixed incorrect user structure reference
+Changed MEMREADOOB64 to store returned length in "length" element
+Removed __user hack
+Added padding to the end of each new struct
+Added padding for 32-bit fields that may need to be widened someday
+Added major/minor/patchlevel versions to mtd-abi.h
+Added an ioctl to read the kernel's ABI version information
 
-> +- chip-offset : address offset between chips for multi-chip support.
+Here are the mtd-utils changes from last time:
 
-How is this different from fsl,upm-mar-offset?
+Added ioctl wrappers to provide compatibility with the current ABI
+Added memset() operations to clear the new reserved fields (W/WR)
+Remove libmtd changes.  Not ready to integrate/test this yet.
 
--Scott
+Outstanding issues:
+
+dwmw2, could you please comment on my sysfs/ioctl proposal here and let
+me know if the patch is OK as it stands:
+
+http://lists.infradead.org/pipermail/linux-mtd/2009-March/024901.html
+
+Thanks.
