@@ -1,22 +1,19 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LkJym-0002fA-14
-	for linux-mtd@lists.infradead.org; Thu, 19 Mar 2009 15:16:27 +0000
-From: Wolfgang Grandegger <wg@grandegger.com>
-To: linux-mtd@lists.infradead.org,
-	linuxppc-dev@ozlabs.org
-Subject: [PATCH v2 5/5] powerpc/85xx: TQM8548: Update DTS file for multi-chip
-	support
-Date: Thu, 19 Mar 2009 16:16:08 +0100
-Message-Id: <1237475768-11481-6-git-send-email-wg@grandegger.com>
-In-Reply-To: <1237475768-11481-5-git-send-email-wg@grandegger.com>
-References: <1237475768-11481-1-git-send-email-wg@grandegger.com>
-	<1237475768-11481-2-git-send-email-wg@grandegger.com>
-	<1237475768-11481-3-git-send-email-wg@grandegger.com>
-	<1237475768-11481-4-git-send-email-wg@grandegger.com>
-	<1237475768-11481-5-git-send-email-wg@grandegger.com>
-Cc: Anton Vorontsov <avorontsov@ru.mvista.com>,
-	Wolfgang Grandegger <wg@grandegger.com>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by casper.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LkZrZ-0005ew-8d
+	for linux-mtd@lists.infradead.org; Fri, 20 Mar 2009 08:14:04 +0000
+Message-ID: <49C34F9E.2090701@nokia.com>
+Date: Fri, 20 Mar 2009 10:11:10 +0200
+From: Adrian Hunter <adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: Kevin Cernekee <kpc.mtd@gmail.com>
+Subject: Re: [PATCH 1/2] [MTD] CORE: New ioctl calls for >4GiB device support
+	(take 2)
+References: <a95a62fe0903192237u64b67efdubd328c8f0cd61b49@mail.gmail.com>
+In-Reply-To: <a95a62fe0903192237u64b67efdubd328c8f0cd61b49@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,64 +23,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds multi-chip support for the Micron MT29F8G08FAB NAND
-flash memory on the TQM8548 modules.
+Kevin Cernekee wrote:
+> Extend the MTD user ABI to access >4GiB devices using 64-bit offsets.
+> Add compat_ioctl support to the MTD ABI.
+> 
+> New ioctls: MEMABIINFO MEMGETINFO64 MEMERASE64 MEMWRITEOOB64 MEMREADOOB64
+>             MEMLOCK64 MEMUNLOCK64 MEMGETREGIONINFO64
+> 
+> Signed-off-by: Kevin Cernekee <kpc.mtd@gmail.com>
+> ---
+>  drivers/mtd/compat_ioctl.c |  233 +++++++++++++
+>  drivers/mtd/compat_ioctl.h |   89 +++++
+>  drivers/mtd/mtdchar.c      |  817 ++++++++++++++++++++++++++++---------------
+>  include/mtd/mtd-abi.h      |   69 ++++-
+>  include/mtd/mtd-user.h     |    4 +
+>  5 files changed, 921 insertions(+), 291 deletions(-)
+>  create mode 100644 drivers/mtd/compat_ioctl.c
+>  create mode 100644 drivers/mtd/compat_ioctl.h
+> 
+> diff --git a/drivers/mtd/compat_ioctl.c b/drivers/mtd/compat_ioctl.c
+> new file mode 100644
+> index 0000000..ee98f71
+> --- /dev/null
+> +++ b/drivers/mtd/compat_ioctl.c
+> @@ -0,0 +1,233 @@
+> +/*
+> + * MTD compat_ioctl implementation
 
-Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
----
- arch/powerpc/boot/dts/tqm8548-bigflash.dts |    7 ++++++-
- arch/powerpc/boot/dts/tqm8548.dts          |    7 ++++++-
- 2 files changed, 12 insertions(+), 2 deletions(-)
+That is not how it is done.  See fs/compat_ioctl.c
 
-diff --git a/arch/powerpc/boot/dts/tqm8548-bigflash.dts b/arch/powerpc/boot/dts/tqm8548-bigflash.dts
-index 29a2b6f..2730467 100644
---- a/arch/powerpc/boot/dts/tqm8548-bigflash.dts
-+++ b/arch/powerpc/boot/dts/tqm8548-bigflash.dts
-@@ -389,6 +389,11 @@
- 			reg = <3 0x0 0x800>;
- 			fsl,upm-addr-offset = <0x10>;
- 			fsl,upm-cmd-offset = <0x08>;
-+			fsl,upm-wait-flags = <0x5>;
-+			/* Multi-chip device */
-+			fsl,upm-mar-chip-offset = <0x200>;
-+			num-chips = <2>;
-+			chip-offset = <0x200>;
- 			chip-delay = <25>; // in micro-seconds
- 
- 			nand@0 {
-@@ -397,7 +402,7 @@
- 
- 				partition@0 {
- 					    label = "fs";
--					    reg = <0x00000000 0x01000000>;
-+					    reg = <0x00000000 0x10000000>;
- 				};
- 			};
- 		};
-diff --git a/arch/powerpc/boot/dts/tqm8548.dts b/arch/powerpc/boot/dts/tqm8548.dts
-index 81d3fbb..d7477fc 100644
---- a/arch/powerpc/boot/dts/tqm8548.dts
-+++ b/arch/powerpc/boot/dts/tqm8548.dts
-@@ -389,6 +389,11 @@
- 			reg = <3 0x0 0x800>;
- 			fsl,upm-addr-offset = <0x10>;
- 			fsl,upm-cmd-offset = <0x08>;
-+			fsl,upm-wait-flags = <0x5>;
-+			/* Multi-chip device */
-+			fsl,upm-mar-chip-offset = <0x200>;
-+			num-chips = <2>;
-+			chip-offset = <0x200>;
- 			chip-delay = <25>; // in micro-seconds
- 
- 			nand@0 {
-@@ -397,7 +402,7 @@
- 
- 				partition@0 {
- 					    label = "fs";
--					    reg = <0x00000000 0x01000000>;
-+					    reg = <0x00000000 0x10000000>;
- 				};
- 			};
- 		};
--- 
-1.6.0.6
+<snip>
+
+> 
+> +struct mtd_abi_info {
+> +       uint32_t major;
+> +       uint32_t minor;
+> +       uint32_t patchlevel;
+> +       uint32_t res0[8];
+> +};
+> +
+
+ioctl versioning is unlikely to be accepted by the wider community.
+Try posting to LKML for more feedback on that.
