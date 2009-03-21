@@ -1,20 +1,16 @@
-Received: from hrndva-commlb.mail.rr.com ([71.74.57.8])
+Received: from tomts31-srv.bellnexxia.net ([209.226.175.105])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LkrlN-0005Ep-8f
-	for linux-mtd@lists.infradead.org; Sat, 21 Mar 2009 03:20:51 +0000
-Received: from rrcs-agw-01.hrndva.rr.com ([24.28.200.151])
-	by hrndva-comm-mta03.mail.rr.com with ESMTP id
-	<20090321032042.FWHW15682.hrndva-comm-mta03.mail.rr.com@rrcs-agw-01.hrndva.rr.com>
-	for <linux-mtd@lists.infradead.org>; Sat, 21 Mar 2009 03:20:42 +0000
-Message-Id: <7h9gbp$chtj20@rrcs-agw-01b.hrndva.rr.com>
-From: British Telecom Plc <rjewel@rrbiznet.com>
-To: <info@bt.org>
-Subject: British Online Promo
-Date: Fri, 20 Mar 2009 22:20:42 -0500
+	id 1LkyPs-0003PB-Bd
+	for linux-mtd@lists.infradead.org; Sat, 21 Mar 2009 10:27:06 +0000
+From: Claims Dept. <phoenixrising@bellnet.ca>
+To: <info@ukmsn.com>
+Subject: Winner
+Date: Sat, 21 Mar 2009 6:26:29 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Reply-To: btclaimsoffice09@btinternet.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Message-Id: <20090321102653.CUPP1756.tomts31-srv.bellnexxia.net@toip37-bus.srvr.bell.ca>
+Reply-To: dr.p.griffin009@live.co.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,18 +20,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Sum Of £1,000,000.00 Pounds has been won by your EMAIL Address in our 2009 Sweepstakes Promo. Do get back to this office with your claims requirement such as
+Microsoft has award you the sum of 250,000 pounds in the microsoft award from claim your name address occupation age sex telephone 
 
-1.Name in full
-2.Address
-3.Nationality
-4.Age
-5.Sex
-6.Occupation
-7.Phone/Fax
-8.Present Country
-
-Reply to this confidential Email Address: btclaimsoffice09@btinternet.com
-
-Best Regards
-mrs. Rose Wood.
+Regard
+p graffin
+co-ordinator
+pinkett.griffin0091@hotmail.com
