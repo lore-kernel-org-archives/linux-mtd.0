@@ -1,19 +1,21 @@
-Received: from mta-blr1.sasken.com ([203.200.200.72])
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lln8P-0000gx-Fx
-	for linux-mtd@lists.infradead.org; Mon, 23 Mar 2009 16:36:28 +0000
-From: Ravi Vasarla <ravi.vasarla@sasken.com>
-To: Ico Hristo <ico.yankov@gmail.com>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>
-Date: Mon, 23 Mar 2009 22:03:21 +0530
-Subject: RE: Create remove resize MTD partitions at runtime...is it possible?
-Message-ID: <022F54DCE6CCCD45A5F9DF0B0B7BFEEB063562407F@EXGMBX01.sasken.com>
-References: <5cd8ec960903230511m11d0bd2clb440d0f634f278b2@mail.gmail.com>
-In-Reply-To: <5cd8ec960903230511m11d0bd2clb440d0f634f278b2@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
+	id 1Llq0Y-0002HR-1n
+	for linux-mtd@lists.infradead.org; Mon, 23 Mar 2009 19:40:44 +0000
+From: Juergen Beisert <jbe@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Date: Mon, 23 Mar 2009 20:29:32 +0100
+References: <200903230852.02597.jbe@pengutronix.de>
+	<022F54DCE6CCCD45A5F9DF0B0B7BFEEB063562407E@EXGMBX01.sasken.com>
+In-Reply-To: <022F54DCE6CCCD45A5F9DF0B0B7BFEEB063562407E@EXGMBX01.sasken.com>
 MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Message-Id: <200903232029.32897.jbe@pengutronix.de>
+Subject: Re: DOC2000 flash: Do I miss something?
+Cc: Ravi Vasarla <ravi.vasarla@sasken.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,63 +25,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Montag, 23. M=E4rz 2009, Ravi Vasarla wrote:
+> Hi,
+>
+> Kindly check the DOC2000 driver which is available under  -> Device
+> Drivers-> Memory Technology Devices (MTD)-> Memory Technology Device (MTD)
+> support (MTD [=3Dm])-> NAND Flash Device Drivers (Which has recommanded t=
+oo).
+> The below error message due to the way old doc driver implemented.
 
-What do you mean the system up? does it means the MTD driver is loaded, the=
-n you want to change the mtd partition? in that case it is not possible to =
-change the mtd partitions details.
- As the entire partition is mapped by the respective MTD driver only once, =
-so once it is configured as read only then it will only change by MTD drive=
-r modification.
+What is the correct setup of this device to make it work?
+
+I tried:
+
+$ flash_eraseall /dev/mtd0
+$ nandwrite -a /dev/mtd0 root.jffs2
+
+$ mount -t jffs2 /dev/mtdblock0 /mnt
+When I try to mount it, I get many of these messages:
+[...]
+CLEANMARKER node found at 0x003e4000 has totlen 0xc !=3D normal 0x0
+CLEANMARKER node found at 0x003e8000 has totlen 0xc !=3D normal 0x0
+CLEANMARKER node found at 0x003ec000 has totlen 0xc !=3D normal 0x0
+CLEANMARKER node found at 0x003f0000 has totlen 0xc !=3D normal 0x0
+CLEANMARKER node found at 0x003f4000 has totlen 0xc !=3D normal 0x0
+CLEANMARKER node found at 0x003f8000 has totlen 0xc !=3D normal 0x0
+[...]
+
+But the mount seems successfull, as I can see the files and I can also modi=
+fy=20
+some text files in this filesystem. After unmount and reboot at the next=20
+mount again I see many of these messages:
+[...]
+CLEANMARKER node found at 0x003fc000 has totlen 0xc !=3D normal 0x0
+CLEANMARKER node found at 0x00400000 has totlen 0xc !=3D normal 0x0
+CLEANMARKER node found at 0x00404000 has totlen 0xc !=3D normal 0x0
+CLEANMARKER node found at 0x00408000 has totlen 0xc !=3D normal 0x0
+CLEANMARKER node found at 0x0040c000 has totlen 0xc !=3D normal 0x0
+CLEANMARKER node found at 0x00410000 has totlen 0xc !=3D normal 0x0
+[...]
+
+But now also these ones:
+[...]
+mtd->read(0x3a50 bytes from 0x4105b0) returned ECC error
+mtd->read(0x1a14 bytes from 0x4125ec) returned ECC error
+Empty flash at 0x004125e8 ends at 0x00412600
+mtd->read(0x1cc bytes from 0x412834) returned ECC error
+mtd->read(0x200 bytes from 0x412600) returned ECC error
+mtd->read(0x33 bytes from 0x412800) returned ECC error
+
+Device broken or setup wrong?
 
 Regards,
-Ravi
+Juergen
 
-________________________________________
-From: linux-mtd-bounces@lists.infradead.org [linux-mtd-bounces@lists.infrad=
-ead.org] On Behalf Of Ico Hristo [ico.yankov@gmail.com]
-Sent: Monday, March 23, 2009 17:41
-To: linux-mtd@lists.infradead.org
-Subject: Create remove resize MTD partitions at runtime...is it possible?
-
-Hello,
-
-I'm trying to find out whether I can create and MTD partition after
-the system is loaded. I'm running custom embedded linux on arm9 custom
-board, the four MTD partitions are defined in cmdlinepart and the
-first one is marked as read-only. The concrete question is whether
-it's possilbe and what should I do to create mtd4 that overlaps mtd0
-and mtd1 dynamically while the system is up and running (in ramdisk) ?
-
-I've researched the topic and mtd source tree and the best I could do
-is create new MTD within the boudries of existing one (this also could
-solve my problem, but does not overrides the read-only attribute on
-mtd0). Any help would be greatly appreciated.
-
-Best regards,
-Hristo Yankov
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-SASKEN BUSINESS DISCLAIMER
--------------------------
-This message may contain confidential, proprietary or legally privileged in=
-formation. In=20
-case you are not the original intended Recipient of the message, you must n=
-ot, directly or=20
-indirectly, use, Disclose, distribute, print, or copy any part of this mess=
-age and you are=20
-requested to delete it and inform the sender. Any views expressed in this m=
-essage are=20
-those of the individual sender unless otherwise stated. Nothing contained i=
-n this message=20
-shall be construed as an offer or acceptance of any offer by Sasken Communi=
-cation=20
-Technologies Limited ("Sasken") unless sent with that express intent and wi=
-th due=20
-authority of Sasken. Sasken has taken enough precautions to prevent the spr=
-ead of=20
-viruses. However the company accepts no liability for any damage caused by =
-any virus=20
-transmitted by this email
+=2D-=20
+Pengutronix e.K.                              | Juergen Beisert            =
+ |
+Linux Solutions for Science and Industry      | Phone: +49-8766-939 228    =
+ |
+Vertretung Sued/Muenchen, Germany             | Fax:   +49-5121-206917-5555=
+ |
+Amtsgericht Hildesheim, HRA 2686              | http://www.pengutronix.de/ =
+ |
