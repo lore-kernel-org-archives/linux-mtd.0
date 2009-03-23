@@ -1,19 +1,21 @@
-Received: from mta-blr1.sasken.com ([203.200.200.72])
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Llgka-00074s-GO
-	for linux-mtd@lists.infradead.org; Mon, 23 Mar 2009 09:47:27 +0000
-From: Ravi Vasarla <ravi.vasarla@sasken.com>
-To: Juergen Beisert <jbe@pengutronix.de>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>
-Date: Mon, 23 Mar 2009 15:14:35 +0530
-Subject: RE: DOC2000 flash: Do I miss something?
-Message-ID: <022F54DCE6CCCD45A5F9DF0B0B7BFEEB063562407E@EXGMBX01.sasken.com>
+	id 1LlhHb-000561-J4
+	for linux-mtd@lists.infradead.org; Mon, 23 Mar 2009 10:21:34 +0000
+From: Juergen Beisert <jbe@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Date: Mon, 23 Mar 2009 11:21:21 +0100
 References: <200903230852.02597.jbe@pengutronix.de>
-In-Reply-To: <200903230852.02597.jbe@pengutronix.de>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
+	<022F54DCE6CCCD45A5F9DF0B0B7BFEEB063562407E@EXGMBX01.sasken.com>
+In-Reply-To: <022F54DCE6CCCD45A5F9DF0B0B7BFEEB063562407E@EXGMBX01.sasken.com>
 MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Message-Id: <200903231121.21801.jbe@pengutronix.de>
+Subject: Re: DOC2000 flash: Do I miss something?
+Cc: Ravi Vasarla <ravi.vasarla@sasken.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,81 +27,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-Kindly check the DOC2000 driver which is available under  -> Device Drivers=
--> Memory Technology Devices (MTD)-> Memory Technology Device (MTD) support=
- (MTD [=3Dm])-> NAND Flash Device Drivers (Which has recommanded too).
- The below error message due to the way old doc driver implemented.
+On Montag, 23. M=E4rz 2009, Ravi Vasarla wrote:
+> Kindly check the DOC2000 driver which is available under  -> Device
+> Drivers-> Memory Technology Devices (MTD)-> Memory Technology Device (MTD)
+> support (MTD [=3Dm])-> NAND Flash Device Drivers (Which has recommanded t=
+oo).
+> The below error message due to the way old doc driver implemented.
 
-Regards,
-Ravi Kumar
-
-
-________________________________________
-From: linux-mtd-bounces@lists.infradead.org [linux-mtd-bounces@lists.infrad=
-ead.org] On Behalf Of Juergen Beisert [jbe@pengutronix.de]
-Sent: Monday, March 23, 2009 13:22
-To: linux-mtd@lists.infradead.org
-Subject: DOC2000 flash: Do I miss something?
-
-Hi,
-
-I'm trying to use a DiskOnChip device (MD2202-D16) on my x86 based board.
-I activated all available DOC drivers in the current 2.6.28.8 kernel, but o=
-nly
-the DOC2000 driver will work with this device:
+Ups. With the new driver it seems to work now. Didn't look into the NAND=20
+submenu, yet.
 
 [...]
-DiskOnChip 2000 found at address 0xD8000
-Flash chip found: Manufacturer ID: 98, Chip ID: 73 (Toshiba:NAND 16MiB 3,3V=
- 8-bit)
-1 flash chips found. Total DiskOnChip size: 16 MiB
-mtd: Giving out device 0 to DiskOnChip 2000
-Ignoring DiskOnChip 2000 at 0xDA000 - already configured
-DiskOnChip failed TOGGLE test, dropping.
+DiskOnChip found at 0xd8000
+DiskOnChip 2000 responds to DWORD access
+Detected 1 chips per floor.
+NAND device: Manufacturer ID: 0x98, Chip ID: 0x73 (Toshiba NAND 16MiB 3,3V=
+=20
+8-bit)
+ECC error scanning DOC at 0x10000
+=46ound DiskOnChip ANAND Media Header at 0x10000
+ECC error scanning DOC at 0x14000
+=46ound DiskOnChip ANAND Media Header at 0x14000
+    DataOrgID        =3D ANAND
+    NumEraseUnits    =3D 1020
+    FirstPhysicalEUN =3D 4
+    FormattedSize    =3D 16334848
+    UnitSizeFactor   =3D 255
+Bad block table at page 129, version 0x55
+Bad block table at page 161, version 0x55
+=46ound alias of DOC at 0xd8000 to 0xda000
+Possible DiskOnChip at 0xe2000 failed TOGGLE test, dropping.
 [...]
 
-$ cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 01000000 00004000 "DiskOnChip 2000"
+Looks better now ;-)
 
-$ ls /dev/mtd*
-/dev/mtd0       /dev/mtd0ro     /dev/mtdblock0
-
-But I can't work with it:
-
-$ flash_eraseall /dev/mtd0
-/dev/mtd0: Bad block check not available
-
-$ nandwrite -j /dev/mtd0 root.jffs2
-MEMGETINFO: Inappropriate ioctl for device
-
-Is it due to this driver is marked as "depricated"? What can I use an an
-alternative to make the device work again?
+Thank you very much.
 
 Regards,
 Juergen
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-SASKEN BUSINESS DISCLAIMER
--------------------------
-This message may contain confidential, proprietary or legally privileged in=
-formation. In=20
-case you are not the original intended Recipient of the message, you must n=
-ot, directly or=20
-indirectly, use, Disclose, distribute, print, or copy any part of this mess=
-age and you are=20
-requested to delete it and inform the sender. Any views expressed in this m=
-essage are=20
-those of the individual sender unless otherwise stated. Nothing contained i=
-n this message=20
-shall be construed as an offer or acceptance of any offer by Sasken Communi=
-cation=20
-Technologies Limited ("Sasken") unless sent with that express intent and wi=
-th due=20
-authority of Sasken. Sasken has taken enough precautions to prevent the spr=
-ead of=20
-viruses. However the company accepts no liability for any damage caused by =
-any virus=20
-transmitted by this email
