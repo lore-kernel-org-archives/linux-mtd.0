@@ -1,18 +1,12 @@
-Received: from mail-ew0-f177.google.com ([209.85.219.177])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Llj0I-0003jD-0Y
-	for linux-mtd@lists.infradead.org; Mon, 23 Mar 2009 12:11:48 +0000
-Received: by ewy25 with SMTP id 25so1662936ewy.18
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 Mar 2009 05:11:40 -0700 (PDT)
+Message-ID: <49C78990.8020100@nokia.com>
+Date: Mon, 23 Mar 2009 15:07:28 +0200
+From: Adrian Hunter <adrian.hunter@nokia.com>
 MIME-Version: 1.0
-Date: Mon, 23 Mar 2009 14:11:39 +0200
-Message-ID: <5cd8ec960903230511m11d0bd2clb440d0f634f278b2@mail.gmail.com>
-Subject: Create remove resize MTD partitions at runtime...is it possible?
-From: Ico Hristo <ico.yankov@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] OMAP: OneNAND: panic_write may be in an interrupt context
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
+Cc: linux-mtd Mailing List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,19 +16,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+>From 92a79a1a210845d64077e7ac100ddde8f251018b Mon Sep 17 00:00:00 2001
+From: Adrian Hunter <adrian.hunter@nokia.com>
+Date: Mon, 23 Mar 2009 14:57:38 +0200
+Subject: [PATCH] OMAP: OneNAND: panic_write may be in an interrupt context
 
-I'm trying to find out whether I can create and MTD partition after
-the system is loaded. I'm running custom embedded linux on arm9 custom
-board, the four MTD partitions are defined in cmdlinepart and the
-first one is marked as read-only. The concrete question is whether
-it's possilbe and what should I do to create mtd4 that overlaps mtd0
-and mtd1 dynamically while the system is up and running (in ramdisk) ?
+panic_write may read in an interrupt context.
 
-I've researched the topic and mtd source tree and the best I could do
-is create new MTD within the boudries of existing one (this also could
-solve my problem, but does not overrides the read-only attribute on
-mtd0). Any help would be greatly appreciated.
+Signed-off-by: Adrian Hunter <adrian.hunter@nokia.com>
+---
+ drivers/mtd/onenand/omap2.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
 
-Best regards,
-Hristo Yankov
+diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+index 77a4f14..2c199b3 100644
+--- a/drivers/mtd/onenand/omap2.c
++++ b/drivers/mtd/onenand/omap2.c
+@@ -294,6 +294,10 @@ static int omap3_onenand_read_bufferram(struct mtd_info *mtd, int area,
+ 	if (bram_offset & 3 || (size_t)buf & 3 || count < 384)
+ 		goto out_copy;
+ 
++	/* panic_write() may be in an interrupt context */
++	if (in_interrupt())
++		goto out_copy;
++
+ 	if (buf >= high_memory) {
+ 		struct page *p1;
+ 
+-- 
+1.5.6.3
