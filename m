@@ -1,21 +1,18 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LlhHb-000561-J4
-	for linux-mtd@lists.infradead.org; Mon, 23 Mar 2009 10:21:34 +0000
-From: Juergen Beisert <jbe@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Date: Mon, 23 Mar 2009 11:21:21 +0100
-References: <200903230852.02597.jbe@pengutronix.de>
-	<022F54DCE6CCCD45A5F9DF0B0B7BFEEB063562407E@EXGMBX01.sasken.com>
-In-Reply-To: <022F54DCE6CCCD45A5F9DF0B0B7BFEEB063562407E@EXGMBX01.sasken.com>
+Received: from mail-ew0-f177.google.com ([209.85.219.177])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Llj0I-0003jD-0Y
+	for linux-mtd@lists.infradead.org; Mon, 23 Mar 2009 12:11:48 +0000
+Received: by ewy25 with SMTP id 25so1662936ewy.18
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 23 Mar 2009 05:11:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200903231121.21801.jbe@pengutronix.de>
-Subject: Re: DOC2000 flash: Do I miss something?
-Cc: Ravi Vasarla <ravi.vasarla@sasken.com>
+Date: Mon, 23 Mar 2009 14:11:39 +0200
+Message-ID: <5cd8ec960903230511m11d0bd2clb440d0f634f278b2@mail.gmail.com>
+Subject: Create remove resize MTD partitions at runtime...is it possible?
+From: Ico Hristo <ico.yankov@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,43 +22,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hello,
 
-On Montag, 23. M=E4rz 2009, Ravi Vasarla wrote:
-> Kindly check the DOC2000 driver which is available under  -> Device
-> Drivers-> Memory Technology Devices (MTD)-> Memory Technology Device (MTD)
-> support (MTD [=3Dm])-> NAND Flash Device Drivers (Which has recommanded t=
-oo).
-> The below error message due to the way old doc driver implemented.
+I'm trying to find out whether I can create and MTD partition after
+the system is loaded. I'm running custom embedded linux on arm9 custom
+board, the four MTD partitions are defined in cmdlinepart and the
+first one is marked as read-only. The concrete question is whether
+it's possilbe and what should I do to create mtd4 that overlaps mtd0
+and mtd1 dynamically while the system is up and running (in ramdisk) ?
 
-Ups. With the new driver it seems to work now. Didn't look into the NAND=20
-submenu, yet.
+I've researched the topic and mtd source tree and the best I could do
+is create new MTD within the boudries of existing one (this also could
+solve my problem, but does not overrides the read-only attribute on
+mtd0). Any help would be greatly appreciated.
 
-[...]
-DiskOnChip found at 0xd8000
-DiskOnChip 2000 responds to DWORD access
-Detected 1 chips per floor.
-NAND device: Manufacturer ID: 0x98, Chip ID: 0x73 (Toshiba NAND 16MiB 3,3V=
-=20
-8-bit)
-ECC error scanning DOC at 0x10000
-=46ound DiskOnChip ANAND Media Header at 0x10000
-ECC error scanning DOC at 0x14000
-=46ound DiskOnChip ANAND Media Header at 0x14000
-    DataOrgID        =3D ANAND
-    NumEraseUnits    =3D 1020
-    FirstPhysicalEUN =3D 4
-    FormattedSize    =3D 16334848
-    UnitSizeFactor   =3D 255
-Bad block table at page 129, version 0x55
-Bad block table at page 161, version 0x55
-=46ound alias of DOC at 0xd8000 to 0xda000
-Possible DiskOnChip at 0xe2000 failed TOGGLE test, dropping.
-[...]
-
-Looks better now ;-)
-
-Thank you very much.
-
-Regards,
-Juergen
+Best regards,
+Hristo Yankov
