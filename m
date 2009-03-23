@@ -1,25 +1,16 @@
-Received: from relais.videotron.ca ([24.201.245.36])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LlurT-0002Sf-WD
-	for linux-mtd@lists.infradead.org; Tue, 24 Mar 2009 00:51:30 +0000
-MIME-version: 1.0
-Content-transfer-encoding: 7BIT
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Received: from xanadu.home ([66.131.194.97]) by VL-MH-MR001.ip.videotron.ca
-	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
-	32bit))
-	with ESMTP id <0KGZ00EB0JPNKBF1@VL-MH-MR001.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Mon, 23 Mar 2009 20:51:23 -0400 (EDT)
-Date: Mon, 23 Mar 2009 20:51:23 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-To: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH] pxa2xx-flash.c: fix memory leak
-In-reply-to: <20090324003145.GC13851@buzzloop.caiaq.de>
-Message-id: <alpine.LFD.2.00.0903232051040.26337@xanadu.home>
-References: <1237853943-6472-1-git-send-email-daniel@caiaq.de>
-	<alpine.LFD.2.00.0903232021480.26337@xanadu.home>
-	<20090324003145.GC13851@buzzloop.caiaq.de>
-Cc: linux-mtd@lists.infradead.org
+Received: from chamillionaire.breakpoint.cc ([85.10.199.196])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Llsqb-0001p5-VK
+	for linux-mtd@lists.infradead.org; Mon, 23 Mar 2009 22:42:28 +0000
+From: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+To: linux-mtd@lists.infradead.org
+Subject: [RFC/PATCH] flash_eraseall: extra care if NOR flash is not
+	BIT_WRITEABLE
+Date: Mon, 23 Mar 2009 23:42:18 +0100
+Message-Id: <1237848138-18157-4-git-send-email-sebastian@breakpoint.cc>
+In-Reply-To: <1237848138-18157-1-git-send-email-sebastian@breakpoint.cc>
+References: <1237848138-18157-1-git-send-email-sebastian@breakpoint.cc>
+Cc: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,17 +20,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 24 Mar 2009, Daniel Mack wrote:
+this is difficult because it depends on CONFIG_JFFS2_FS_WRITEBUFFER
 
-> On Mon, Mar 23, 2009 at 08:22:26PM -0400, Nicolas Pitre wrote:
-> > > Signed-off-by: Daniel Mack <daniel@caiaq.de>
-> > > Cc: Nicolas Pitre <nico@cam.org>
-> > 
-> > Acked-by: Nicolas Pitre <nico@cam.org>
-> 
-> Thanks - any idea which channel to choose to make it go mainline?
+Signed-off-by: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+---
+ flash_eraseall.c |   14 +++++++++++++-
+ 1 files changed, 13 insertions(+), 1 deletions(-)
 
-The MTD tree.
-
-
-Nicolas
+diff --git a/flash_eraseall.c b/flash_eraseall.c
+index 0a4010e..3591db5 100644
+--- a/flash_eraseall.c
++++ b/flash_eraseall.c
+@@ -64,12 +64,24 @@ static int prepare_clean_marker(mtd_info_t *meminfo)
+ 
+ 	cleanmarker.magic = cpu_to_je16(JFFS2_MAGIC_BITMASK);
+ 	cleanmarker.nodetype = cpu_to_je16(JFFS2_NODETYPE_CLEANMARKER);
++	cleanmarker.totlen = cpu_to_je32(sizeof(struct jffs2_unknown_node));
+ 
+ 	switch (meminfo->type) {
+ 	case MTD_ROM:
+ 	case MTD_RAM:
++		break;
++
+ 	case MTD_NORFLASH:
+-		cleanmarker.totlen = cpu_to_je32(sizeof(struct jffs2_unknown_node));
++		/* only if the kernel is compiled with
++		 * CONFIG_JFFS2_FS_WRITEBUFFER
++		 * Now, how to check that?
++		 */
++		if (!(meminfo->flags & MTD_BIT_WRITEABLE)) {
++			int l;
++
++			l = meminfo->writesize > 16 ? meminfo->writesize : 16;
++			cleanmarker.totlen = cpu_to_je32(l);
++		}
+ 		break;
+ 
+ 	case MTD_DATAFLASH:
+-- 
+1.6.0.6
