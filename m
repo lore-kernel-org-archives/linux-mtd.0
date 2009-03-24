@@ -1,21 +1,33 @@
-Received: from west-smtp1.trimble.com ([155.63.128.51])
+Received: from wbmler4.mail.xerox.com ([13.13.138.219])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LmA2o-0004QF-25
-	for linux-mtd@lists.infradead.org; Tue, 24 Mar 2009 17:04:13 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: UBIFS Corrupt during power failure
-Date: Tue, 24 Mar 2009 11:04:02 -0600
-Message-ID: <C77C279BA71FD14985DC8E75FB265AB702DEF104@usw-am-xch-02.am.trimblecorp.net>
-In-Reply-To: <49C8FC89.7040709@nokia.com>
-References: <C77C279BA71FD14985DC8E75FB265AB702DEEF07@usw-am-xch-02.am.trimblecorp.net>
-	<49C8FC89.7040709@nokia.com>
-From: "Eric Holmberg" <Eric_Holmberg@Trimble.com>
-To: "Adrian Hunter" <adrian.hunter@nokia.com>
-Cc: linux-mtd@lists.infradead.org
+	id 1LmB9P-00060w-Fh
+	for linux-mtd@lists.infradead.org; Tue, 24 Mar 2009 18:15:05 +0000
+Received: from wbmlir2.mail.xerox.com (wbmlir2.mail.xerox.com [13.131.8.222])
+	by wbmler4.mail.xerox.com (8.14.2/8.13.8) with ESMTP id
+	n2OIEs98014980
+	for <linux-mtd@lists.infradead.org>; Tue, 24 Mar 2009 14:14:54 -0400
+Received: from wbmlir2.mail.xerox.com (localhost [127.0.0.1])
+	by wbmlir2.mail.xerox.com (8.14.2/8.13.6) with ESMTP id n2OIEhDF022293
+	for <linux-mtd@lists.infradead.org>; Tue, 24 Mar 2009 14:14:43 -0400
+Received: from hermes.opbu.xerox.com (hermes.opbu.xerox.com [13.62.6.81])
+	by wbmlir2.mail.xerox.com (8.14.2/8.13.6) with ESMTP id n2OIEgkG022253
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <linux-mtd@lists.infradead.org>; Tue, 24 Mar 2009 14:14:42 -0400
+Received: from pogo.cesa.opbu.xerox.com (ns158-4.cesa.opbu.xerox.com
+	[13.253.158.23])
+	by hermes.opbu.xerox.com (8.13.8+Sun/8.13.8) with ESMTP id
+	n2OIEdL2010036 for <linux-mtd@lists.infradead.org>;
+	Tue, 24 Mar 2009 11:14:42 -0700 (PDT)
+Received: from cesa.opbu.xerox.com (gto.cesa.opbu.xerox.com [13.62.136.98])
+	by pogo.cesa.opbu.xerox.com (8.13.6+Sun/8.13.6) with ESMTP id
+	n2OIEdBZ026558 for <linux-mtd@lists.infradead.org>;
+	Tue, 24 Mar 2009 11:14:39 -0700 (PDT)
+Message-Id: <200903241814.n2OIEdBZ026558@pogo.cesa.opbu.xerox.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] drivers/mtd/chips/cfi_cmdset_0001.c: correct block lock
+	timeout
+Date: Tue, 24 Mar 2009 11:14:39 -0700
+From: Andrew Klossner <andrew@cesa.opbu.xerox.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,42 +37,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Adrian,
+The time parameters to WAIT_TIMEOUT are in units of microseconds, so
+one second must be expressed as 1000000 not 1000000/HZ.
 
-> Please enable UBIFS debugging and set the UBIFS Default message level
-to 3.
+The Intel Strataflash part with which this patch was tested takes 0.7
+seconds to lock/unlock, so one second does indeed seem to be a good
+timeout value.
 
-Thanks for the response.  Enabling UBIFS debugging and setting to level
-3 only provides slightly more information. =20
-
-[42949375.480000] UBIFS: recovery needed
-[42949376.450000] UBIFS error (pid 1): ubifs_scan: corrupt empty space
-at LEB 4:44512
-[42949376.460000] UBIFS error (pid 1): ubifs_scanned_corruption:
-corrupted data at LEB 4:44512
-[42949376.470000] UBIFS error (pid 1): ubifs_scanned_corruption: first
-4096 bytes from LEB 4:44512
-[42949376.490000] UBIFS error (pid 1): ubifs_scan: LEB 4 scanning failed
-[42949376.540000] UBIFS error (pid 1): ubifs_recover_leb: corrupt empty
-space at LEB 4:480
-[42949376.550000] UBIFS error (pid 1): ubifs_scanned_corruption:
-corrupted data at LEB 4:480
-[42949376.560000] UBIFS error (pid 1): ubifs_scanned_corruption: first
-4096 bytes from LEB 4:480
-[42949376.580000] UBIFS error (pid 1): ubifs_recover_leb: LEB 4 scanning
-failed
-[42949376.600000] VFS: Cannot open root device "ubi0:rootfs" or
-unknown-block(0,0)
-
-
-> Also, could you tell us what MTD drivers you are using?
-I'm using the physmap CFI flash driver for a CFI-compliant S29GL256P90F
-256Mbit NOR flash chip.  Is that what you're asking for?
-
-I'll keep working on a better way to reproduce the problem.  Let me know
-if I need to add some printk statements somewhere and/or enable UBI or
-MTD debugging.
-
-Thanks,
-
-Eric
+Signed-off-by: Andrew Klossner <andrew@cesa.opbu.xerox.com>
+---
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index f5ab6fa..97f3c71 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -2041,7 +2041,7 @@ static int __xipram do_xxlock_oneblock(struct map_info *map, struct flchip *chip
+ 	 * If Instant Individual Block Locking supported then no need
+ 	 * to delay.
+ 	 */
+-	udelay = (!extp || !(extp->FeatureSupport & (1 << 5))) ? 1000000/HZ : 0;
++	udelay = (!extp || !(extp->FeatureSupport & (1 << 5))) ? 1000000 : 0;
+ 
+ 	ret = WAIT_TIMEOUT(map, chip, adr, udelay, udelay * 100);
+ 	if (ret) {
