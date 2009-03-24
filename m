@@ -1,17 +1,18 @@
 Received: from mta-blr1.sasken.com ([203.200.200.72])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lm0T7-0002mR-2D
-	for linux-mtd@lists.infradead.org; Tue, 24 Mar 2009 06:50:44 +0000
+	id 1Lm0fY-0004Lw-2f
+	for linux-mtd@lists.infradead.org; Tue, 24 Mar 2009 07:03:36 +0000
 From: Ravi Vasarla <ravi.vasarla@sasken.com>
 To: Juergen Beisert <jbe@pengutronix.de>, "linux-mtd@lists.infradead.org"
 	<linux-mtd@lists.infradead.org>
-Date: Tue, 24 Mar 2009 12:16:50 +0530
+Date: Tue, 24 Mar 2009 12:30:48 +0530
 Subject: RE: DOC2000 flash: Do I miss something?
-Message-ID: <022F54DCE6CCCD45A5F9DF0B0B7BFEEB0635624080@EXGMBX01.sasken.com>
+Message-ID: <022F54DCE6CCCD45A5F9DF0B0B7BFEEB0635624081@EXGMBX01.sasken.com>
 References: <200903230852.02597.jbe@pengutronix.de>
 	<022F54DCE6CCCD45A5F9DF0B0B7BFEEB063562407E@EXGMBX01.sasken.com>,
-	<200903232029.32897.jbe@pengutronix.de>
-In-Reply-To: <200903232029.32897.jbe@pengutronix.de>
+	<200903232029.32897.jbe@pengutronix.de>,
+	<022F54DCE6CCCD45A5F9DF0B0B7BFEEB0635624080@EXGMBX01.sasken.com>
+In-Reply-To: <022F54DCE6CCCD45A5F9DF0B0B7BFEEB0635624080@EXGMBX01.sasken.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
@@ -27,9 +28,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
+Forgotton to add the info for cleanmarker, info is available at=20
+http://www.infradead.org/pipermail/linux-mtd/2007-June/018584.html
+http://www.infradead.org/pipermail/linux-mtd/2004-June/009835.html
+
+Regards,
+Ravi
+
+________________________________________
+From: linux-mtd-bounces@lists.infradead.org [linux-mtd-bounces@lists.infrad=
+ead.org] On Behalf Of Ravi Vasarla [ravi.vasarla@sasken.com]
+Sent: Tuesday, March 24, 2009 12:16
+To: Juergen Beisert; linux-mtd@lists.infradead.org
+Subject: RE: DOC2000 flash: Do I miss something?
+
+Hi,
+
 Just check with nandwrite with option -j (--jffs2 oob layout) instead of au=
 toplace oob layout. Also check the oob structure is filled in nandwrite and=
- respective info is=20
+ respective info is
 available at diskonchip.c file should match.
  The below message is coming due to mis matching the oob and ecc layout.  W=
 hich should be same in diskonchip.c with respect to writing the data using =
@@ -108,6 +125,32 @@ Vertretung Sued/Muenchen, Germany             | Fax:   +49-5121-206917-5555=
  |
 Amtsgericht Hildesheim, HRA 2686              | http://www.pengutronix.de/ =
  |
+SASKEN BUSINESS DISCLAIMER
+-------------------------
+This message may contain confidential, proprietary or legally privileged in=
+formation. In
+case you are not the original intended Recipient of the message, you must n=
+ot, directly or
+indirectly, use, Disclose, distribute, print, or copy any part of this mess=
+age and you are
+requested to delete it and inform the sender. Any views expressed in this m=
+essage are
+those of the individual sender unless otherwise stated. Nothing contained i=
+n this message
+shall be construed as an offer or acceptance of any offer by Sasken Communi=
+cation
+Technologies Limited ("Sasken") unless sent with that express intent and wi=
+th due
+authority of Sasken. Sasken has taken enough precautions to prevent the spr=
+ead of
+viruses. However the company accepts no liability for any damage caused by =
+any virus
+transmitted by this email
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
 SASKEN BUSINESS DISCLAIMER
 -------------------------
 This message may contain confidential, proprietary or legally privileged in=
