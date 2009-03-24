@@ -1,18 +1,23 @@
-Subject: Re: [PATCH v2] Check name property to determine partition nodes.
-From: David Woodhouse <dwmw2@infradead.org>
-To: Benjamin Krill <ben@codiert.org>
-In-Reply-To: <20090324132733.GN11318@codiert.org>
-References: <20090123161805.GA2598@codiert.org>
-	<1233720542.16867.187.camel@pasglop>
-	<20090218074738.GC12204@codiert.org>
-	<20090324132733.GN11318@codiert.org>
-Content-Type: text/plain
-Date: Tue, 24 Mar 2009 14:04:54 +0000
-Message-Id: <1237903494.9441.1364.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>, dwg@au1.ibm.com,
-	linux-mtd@lists.infradead.org, linuxppc-dev@ozlabs.org
+Received: from bear.ext.ti.com ([192.94.94.41])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Lm8QV-0004zC-Bp
+	for linux-mtd@lists.infradead.org; Tue, 24 Mar 2009 15:20:34 +0000
+Received: from dbdp20.itg.ti.com ([172.24.170.38])
+	by bear.ext.ti.com (8.13.7/8.13.7) with ESMTP id n2OFKDb9004762
+	for <linux-mtd@lists.infradead.org>; Tue, 24 Mar 2009 10:20:19 -0500
+Received: from dbde70.ent.ti.com (localhost [127.0.0.1])
+	by dbdp20.itg.ti.com (8.13.8/8.13.8) with ESMTP id n2OFKCTs014422
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 24 Mar 2009 20:50:13 +0530 (IST)
+From: "Singh, Vimal" <vimalsingh@ti.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Tue, 24 Mar 2009 20:50:11 +0530
+Subject: Is high_memory check in omap2.c for OneNAND is sufficient?
+Message-ID: <19F8576C6E063C45BE387C64729E73940427A869DA@dbde02.ent.ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,24 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-03-24 at 14:27 +0100, Benjamin Krill wrote:
-> >>On Fri, 2009-01-23 at 17:18 +0100, Benjamin Krill wrote:
-> >>> SLOF has a further node which could not be evaluate
-> >>> by the current routine. The current routine returns
-> >>> because the node hasn't the required reg property. As
-> >>> fix this patch adds a check to determine the partition
-> >>> child nodes. If the node is not an partition the number
-> >>> of total partitions will be decreased and loop continue
-> >>> with the next nodes.
-> >>
-> >>Somebody on the MTD list is taking that ? David ? Or should I merge it
-> >>via powerpc ?
-> >
-> >Could somebody merge it for the next release?
-> 
-> Again, new try to get it somewhere merged.
+Hi,
 
-Applied; thanks.
+There is check for 'high_memory' in 'drivers/mtd/onenand/omap2.c', always b=
+efore doing 'dma_map_single'.
+Snippet:
+----------------------
+        if (buf >=3D high_memory) {
+                struct page *p1;
+----------------------
+This check seems not sufficient. There should be a check for upper boundary=
+ too.
+Thinking scenario when 'buf' is less than 'high_memory', but somewhere near=
+ to it, and 'count' is big enough to beyond 'high_memory'.
+Then again, function 'dma_cache_maint' will report bug.
 
--- 
-dwmw2
+Snippet:
+--------------
+void dma_cache_maint(const void *start, size_t size, int direction)
+{
+        const void *end =3D start + size;
+
+        BUG_ON(!virt_addr_valid(start) || !virt_addr_valid(end - 1));
+-------------
+
+Should we replace "if (buf >=3D high_memory)" with "if (buf >=3D high_memor=
+y || (buf + count -1) >=3D high_memory)"...?
+
+---
+vimal=
