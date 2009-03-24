@@ -1,21 +1,13 @@
-Received: from chamillionaire.breakpoint.cc ([85.10.199.196])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lm2Q1-0003JS-BP
-	for linux-mtd@lists.infradead.org; Tue, 24 Mar 2009 08:55:39 +0000
-Date: Tue, 24 Mar 2009 09:55:30 +0100
-From: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-To: Artem Bityutskiy <dedekind@infradead.org>
-Subject: Re: [RFC/PATCH] flash_eraseall: extra care if NOR flash is not
-	BIT_WRITEABLE
-Message-ID: <20090324085530.GA21444@Chamillionaire.breakpoint.cc>
-References: <1237848138-18157-1-git-send-email-sebastian@breakpoint.cc>
-	<1237848138-18157-4-git-send-email-sebastian@breakpoint.cc>
-	<1237874727.14602.95.camel@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <1237874727.14602.95.camel@localhost.localdomain>
-Cc: linux-mtd@lists.infradead.org
+Date: Tue, 24 Mar 2009 18:27:24 +0900
+From: Yoshihiro Shimoda <shimoda.yoshihiro@renesas.com>
+Subject: [PATCH] sh_flctl: fix hardware ecc handling for 2048 byte page
+Sender: shimoda.yoshihiro@renesas.com
+To: dwmw2@infradead.org
+Message-id: <49C8A77C.9070902@renesas.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=ISO-8859-1
+Content-transfer-encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-sh@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,55 +17,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Artem Bityutskiy | 2009-03-24 08:05:27 [+0200]:
 
->On Mon, 2009-03-23 at 23:42 +0100, Sebastian Andrzej Siewior wrote:
->> this is difficult because it depends on CONFIG_JFFS2_FS_WRITEBUFFER
->> 
->> Signed-off-by: Sebastian Andrzej Siewior <sebastian at breakpoint.cc>
->> ---
->>  flash_eraseall.c |   14 +++++++++++++-
->>  1 files changed, 13 insertions(+), 1 deletions(-)
->> 
->> diff --git a/flash_eraseall.c b/flash_eraseall.c
->> index 0a4010e..3591db5 100644
->> --- a/flash_eraseall.c
->> +++ b/flash_eraseall.c
->> @@ -64,12 +64,24 @@ static int prepare_clean_marker(mtd_info_t *meminfo)
->>  
->>  	cleanmarker.magic = cpu_to_je16(JFFS2_MAGIC_BITMASK);
->>  	cleanmarker.nodetype = cpu_to_je16(JFFS2_NODETYPE_CLEANMARKER);
->> +	cleanmarker.totlen = cpu_to_je32(sizeof(struct jffs2_unknown_node));
->>  
->>  	switch (meminfo->type) {
->>  	case MTD_ROM:
->>  	case MTD_RAM:
->> +		break;
->> +
->>  	case MTD_NORFLASH:
->> -		cleanmarker.totlen = cpu_to_je32(sizeof(struct jffs2_unknown_node));
->> +		/* only if the kernel is compiled with
->> +		 * CONFIG_JFFS2_FS_WRITEBUFFER
->> +		 * Now, how to check that?
->> +		 */
->> +		if (!(meminfo->flags & MTD_BIT_WRITEABLE)) {
->> +			int l;
->> +
->> +			l = meminfo->writesize > 16 ? meminfo->writesize : 16;
->> +			cleanmarker.totlen = cpu_to_je32(l);
->> +		}
->
->Sorry, not sure which problem this patch is trying to solve?
-CONFIG_JFFS2_FS_WRITEBUFFER enabled and MTD_BIT_WRITEABLE missing in
-flags.
-This is from jffs2_nor_wbuf_flash_setup() which is only executed if
-jffs2_nor_wbuf_flash() evaluates 1 which is only the case if
-CONFIG_JFFS2_FS_WRITEBUFFER is enabled and MTD_BIT_WRITEABLE is not
-available in flags.
-So to this write, we have to evaluate CONFIG_JFFS2_FS_WRITEBUFFER, don't
-we?
+Signed-off-by: Jeremy Baker <Jeremy.Baker@renesas.com>
+Signed-off-by: Yoshihiro Shimoda <shimoda.yoshihiro@renesas.com>
+---
+ drivers/mtd/nand/sh_flctl.c |   18 ++++++++++++------
+ 1 files changed, 12 insertions(+), 6 deletions(-)
 
->Best regards,
->Artem Bityutskiy (???????? ?????)
+diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
+index 821acb0..2bc8966 100644
+--- a/drivers/mtd/nand/sh_flctl.c
++++ b/drivers/mtd/nand/sh_flctl.c
+@@ -58,7 +58,7 @@ static struct nand_bbt_descr flctl_4secc_smallpage = {
+ };
 
-Sebastian
+ static struct nand_bbt_descr flctl_4secc_largepage = {
+-	.options = 0,
++	.options = NAND_BBT_SCAN2NDPAGE,
+ 	.offs = 58,
+ 	.len = 2,
+ 	.pattern = scan_ff_pattern,
+@@ -149,7 +149,7 @@ static void wait_wfifo_ready(struct sh_flctl *flctl)
+ 	printk(KERN_ERR "wait_wfifo_ready(): Timeout occured \n");
+ }
+
+-static int wait_recfifo_ready(struct sh_flctl *flctl)
++static int wait_recfifo_ready(struct sh_flctl *flctl, int sector_number)
+ {
+ 	uint32_t timeout = LOOP_TIMEOUT_MAX;
+ 	int checked[4];
+@@ -183,7 +183,12 @@ static int wait_recfifo_ready(struct sh_flctl *flctl)
+ 				uint8_t org;
+ 				int index;
+
+-				index = data >> 16;
++				if (flctl->page_size)
++					index = (512 * sector_number) +
++						(data >> 16);
++				else
++					index = data >> 16;
++
+ 				org = flctl->done_buff[index];
+ 				flctl->done_buff[index] = org ^ (data & 0xFF);
+ 				checked[i] = 1;
+@@ -238,14 +243,14 @@ static void read_fiforeg(struct sh_flctl *flctl, int rlen, int offset)
+ 	}
+ }
+
+-static int read_ecfiforeg(struct sh_flctl *flctl, uint8_t *buff)
++static int read_ecfiforeg(struct sh_flctl *flctl, uint8_t *buff, int sector)
+ {
+ 	int i;
+ 	unsigned long *ecc_buf = (unsigned long *)buff;
+ 	void *fifo_addr = (void *)FLECFIFO(flctl);
+
+ 	for (i = 0; i < 4; i++) {
+-		if (wait_recfifo_ready(flctl))
++		if (wait_recfifo_ready(flctl , sector))
+ 			return 1;
+ 		ecc_buf[i] = readl(fifo_addr);
+ 		ecc_buf[i] = be32_to_cpu(ecc_buf[i]);
+@@ -384,7 +389,8 @@ static void execmd_read_page_sector(struct mtd_info *mtd, int page_addr)
+ 		read_fiforeg(flctl, 512, 512 * sector);
+
+ 		ret = read_ecfiforeg(flctl,
+-			&flctl->done_buff[mtd->writesize + 16 * sector]);
++			&flctl->done_buff[mtd->writesize + 16 * sector],
++			sector);
+
+ 		if (ret)
+ 			flctl->hwecc_cant_correct[sector] = 1;
+-- 
+1.5.5
