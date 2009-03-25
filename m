@@ -1,23 +1,17 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from kroah.org ([198.145.64.141] helo=coco.kroah.org)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LmMgI-0006fU-Sm
-	for linux-mtd@lists.infradead.org; Wed, 25 Mar 2009 06:33:49 +0000
-Subject: Re: [RFC/PATCH] flash_eraseall: extra care if NOR flash is not
-	BIT_WRITEABLE
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-In-Reply-To: <20090324085530.GA21444@Chamillionaire.breakpoint.cc>
-References: <1237848138-18157-1-git-send-email-sebastian@breakpoint.cc>
-	<1237848138-18157-4-git-send-email-sebastian@breakpoint.cc>
-	<1237874727.14602.95.camel@localhost.localdomain>
-	<20090324085530.GA21444@Chamillionaire.breakpoint.cc>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 25 Mar 2009 08:33:27 +0200
-Message-Id: <1237962807.14602.99.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+	id 1LmH03-0002VZ-Aq
+	for linux-mtd@lists.infradead.org; Wed, 25 Mar 2009 00:29:49 +0000
+From: Greg Kroah-Hartman <gregkh@suse.de>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 06/61] mtd: struct device - replace bus_id with dev_name(),
+	dev_set_name()
+Date: Tue, 24 Mar 2009 17:26:10 -0700
+Message-Id: <1237940825-22904-6-git-send-email-gregkh@suse.de>
+In-Reply-To: <20090325001659.GA22461@kroah.com>
+References: <20090325001659.GA22461@kroah.com>
+Cc: linux-mtd@lists.infradead.org, Kay Sievers <kay.sievers@vrfy.org>,
+	dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,17 +21,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-03-24 at 09:55 +0100, Sebastian Andrzej Siewior wrote:
-> * Artem Bityutskiy | 2009-03-24 08:05:27 [+0200]:
-> 
-> >On Mon, 2009-03-23 at 23:42 +0100, Sebastian Andrzej Siewior wrote:
-> >> this is difficult because it depends on CONFIG_JFFS2_FS_WRITEBUFFER
-> >> 
-> >> Signed-off-by: Sebastian Andrzej Siewior <sebastian at breakpoint.cc>
+From: Kay Sievers <kay.sievers@vrfy.org>
 
-It sounds wrong to me to make flash_eraseall depend on how JFFS2 is
-compiled...
+Cc: dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org
+Acked-by: Greg Kroah-Hartman <gregkh@suse.de>
+Signed-off-by: Kay Sievers <kay.sievers@vrfy.org>
+---
+ drivers/mtd/nand/ndfc.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
+diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
+index 582cf80..89bf85a 100644
+--- a/drivers/mtd/nand/ndfc.c
++++ b/drivers/mtd/nand/ndfc.c
+@@ -187,7 +187,7 @@ static int ndfc_chip_init(struct ndfc_controller *ndfc,
+ 		return -ENODEV;
+ 
+ 	ndfc->mtd.name = kasprintf(GFP_KERNEL, "%s.%s",
+-				   ndfc->ofdev->dev.bus_id, flash_np->name);
++			dev_name(&ndfc->ofdev->dev), flash_np->name);
+ 	if (!ndfc->mtd.name) {
+ 		ret = -ENOMEM;
+ 		goto err;
 -- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+1.6.2
