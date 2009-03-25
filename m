@@ -1,15 +1,25 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LmQ25-0001oE-Ao
-	for linux-mtd@lists.infradead.org; Wed, 25 Mar 2009 10:08:44 +0000
-From: Wolfgang Grandegger <wg@grandegger.com>
-To: linux-mtd@lists.infradead.org,
-	linuxppc-dev@ozlabs.org
-Subject: [PATCH v3 0/4] NAND: Multi-chip support for FSL-UPM for TQM8548
-	modules
-Date: Wed, 25 Mar 2009 11:08:17 +0100
-Message-Id: <1237975701-23201-1-git-send-email-wg@grandegger.com>
-Cc: Anton Vorontsov <avorontsov@ru.mvista.com>
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LmPNE-0003gP-1r
+	for linux-mtd@lists.infradead.org; Wed, 25 Mar 2009 09:26:18 +0000
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1LmPNB-0004Yf-4l
+	for linux-mtd@lists.infradead.org; Wed, 25 Mar 2009 09:26:09 +0000
+Received: from 217.147.39.138 ([217.147.39.138])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 25 Mar 2009 09:26:09 +0000
+Received: from augulis.darius by 217.147.39.138 with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 25 Mar 2009 09:26:09 +0000
+To: linux-mtd@lists.infradead.org
+From: Darius Augulis <augulis.darius@gmail.com>
+Subject: [PATCH] Fixup for Numonyx M29W128 chips
+Date: Wed, 25 Mar 2009 11:23:51 +0200
+Message-ID: <gqctb6$ie0$1@ger.gmane.org>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="------------080608060702060902080402"
+Sender: news <news@ger.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,20 +29,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is my third version of the patch series adding generic support
-for multi-chip NAND devices to the FSL-UPM driver and support for
-the Micron MT29F8G08FAB NAND flash memory on the TQM8548 modules.
-It addresses the issues reported on the mailing list, e.g. the new
-bindings are now documented as well.
+This is a multi-part message in MIME format.
+--------------080608060702060902080402
+Content-Type: text/plain; charset=ISO-8859-13; format=flowed
+Content-Transfer-Encoding: 7bit
 
-[PATCH v3 1/4] NAND: FSL-UPM: add multi chip support
-[PATCH v3 2/4] NAND: FSL-UPM: Add wait flags to support board/chip specific delays
-[PATCH v3 3/4] powerpc: NAND: FSL UPM: document new bindings
-[PATCH v3 4/4] powerpc/85xx: TQM8548: Update DTS file for multi-chip support
 
-Please consider these patches for inclusion into kernel version 2.6.30. 
-Patch 3 and 4 should go through the powerpc maintainer(s).
+--------------080608060702060902080402
+Content-Type: text/plain;
+ name="patch-mtd-fixup-M29W128G"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="patch-mtd-fixup-M29W128G"
 
-Thanks.
+From: Darius Augulis <augulis.darius@gmail.com>
 
-Wolfgang.
+Prevent NUMONYX M29W128G memories from using write buffer,
+because it doesn't work properly.
+
+Signed-off-by: Darius Augulis <augulis.darius@gmail.com>
+
+Index: linux-2.6.29/drivers/mtd/chips/cfi_cmdset_0002.c
+===================================================================
+--- linux-2.6.29.orig/drivers/mtd/chips/cfi_cmdset_0002.c
++++ linux-2.6.29/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -282,6 +282,16 @@ static void fixup_s29gl032n_sectors(stru
+ 	}
+ }
+ 
++static void fixup_M29W128G_write_buffer(struct mtd_info *mtd, void *param)
++{
++	struct map_info *map = mtd->priv;
++	struct cfi_private *cfi = map->fldrv_priv;
++	if (cfi->cfiq->BufWriteTimeoutTyp) {
++		pr_warning("Don't use write buffer on ST flash M29W128G\n");
++		cfi->cfiq->BufWriteTimeoutTyp = 0;
++	}
++}
++
+ static struct cfi_fixup cfi_fixup_table[] = {
+ 	{ CFI_MFR_ATMEL, CFI_ID_ANY, fixup_convert_atmel_pri, NULL },
+ #ifdef AMD_BOOTLOC_BUG
+@@ -298,6 +308,7 @@ static struct cfi_fixup cfi_fixup_table[
+ 	{ CFI_MFR_AMD, 0x1301, fixup_s29gl064n_sectors, NULL, },
+ 	{ CFI_MFR_AMD, 0x1a00, fixup_s29gl032n_sectors, NULL, },
+ 	{ CFI_MFR_AMD, 0x1a01, fixup_s29gl032n_sectors, NULL, },
++	{ CFI_MFR_ST,  0x227E, fixup_M29W128G_write_buffer, NULL, },
+ #if !FORCE_WORD_WRITE
+ 	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_use_write_buffers, NULL, },
+ #endif
+
+--------------080608060702060902080402--
