@@ -1,20 +1,23 @@
-Received: from chamillionaire.breakpoint.cc ([85.10.199.196])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LmUg6-0008OR-Km
-	for linux-mtd@lists.infradead.org; Wed, 25 Mar 2009 15:06:13 +0000
-Date: Wed, 25 Mar 2009 16:05:51 +0100
-From: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+Received: from [213.79.90.228] (helo=buildserver.ru.mvista.com)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LmUlX-0001PV-6Y
+	for linux-mtd@lists.infradead.org; Wed, 25 Mar 2009 15:11:58 +0000
+Date: Wed, 25 Mar 2009 18:11:38 +0300
+From: Anton Vorontsov <avorontsov@ru.mvista.com>
 To: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH 1/2] NAND: Add support for oob size 128
-Message-ID: <20090325150551.GA4414@Chamillionaire.breakpoint.cc>
-References: <20090325104836.325599143@denx.de>
-	<20090325105020.607040279@denx.de>
+Subject: Re: [PATCH v3 3/4] powerpc: NAND: FSL UPM: document new bindings
+Message-ID: <20090325151138.GC32313@oksana.dev.rtsoft.ru>
+References: <1237975701-23201-1-git-send-email-wg@grandegger.com>
+	<1237975701-23201-2-git-send-email-wg@grandegger.com>
+	<1237975701-23201-3-git-send-email-wg@grandegger.com>
+	<1237975701-23201-4-git-send-email-wg@grandegger.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=utf8
 Content-Disposition: inline
-In-Reply-To: <20090325105020.607040279@denx.de>
-Cc: David Woodhouse <dwmw2@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
-	linux-mtd@lists.infradead.org, Ilya Yanok <yanok@emcraft.com>
+In-Reply-To: <1237975701-23201-4-git-send-email-wg@grandegger.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org,
+	devicetree-discuss@ozlabs.org, linux-mtd@lists.infradead.org
+Reply-To: avorontsov@ru.mvista.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,83 +27,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Wolfgang Grandegger | 2009-03-25 11:48:37 [+0100]:
+On Wed, Mar 25, 2009 at 11:08:20AM +0100, Wolfgang Grandegger wrote:
+> This patch adds documentation for the new NAND FSL UPM bindings for:
+> 
+>  NAND: FSL-UPM: add multi chip support
+>  NAND: FSL-UPM: Add wait flags to support board/chip specific delays
+> 
+> Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
+> ---
 
->Signed-off-by: Ilya Yanok <yanok@emcraft.com>
->Acked-by: Wolfgang Grandegger <wg@grandegger.com>
+To me it looks good.
 
-You seem to forgot a few bits (subpage_sft & max page size). I had this
-patch in my tree like for ever and forgot post it here. I did however
-merge the mtd-utils bits allready :)
+Acked-by: Anton Vorontsov <avorontsov@ru.mvista.com>
 
-From: Thomas Gleixner <tglx@linutronix.de>
-Date: Wed, 12 Dec 2007 17:27:03 +0100
-Subject: [PATCH] [MTD] Add support for 4k pages.
+>  .../powerpc/dts-bindings/fsl/upm-nand.txt          |   39 +++++++++++++++++++-
+>  1 files changed, 37 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/powerpc/dts-bindings/fsl/upm-nand.txt b/Documentation/powerpc/dts-bindings/fsl/upm-nand.txt
+> index 84a04d5..0272e70 100644
+> --- a/Documentation/powerpc/dts-bindings/fsl/upm-nand.txt
+> +++ b/Documentation/powerpc/dts-bindings/fsl/upm-nand.txt
+> @@ -5,9 +5,22 @@ Required properties:
+>  - reg : should specify localbus chip select and size used for the chip.
+>  - fsl,upm-addr-offset : UPM pattern offset for the address latch.
+>  - fsl,upm-cmd-offset : UPM pattern offset for the command latch.
+> -- gpios : may specify optional GPIO connected to the Ready-Not-Busy pin.
+>  
+> -Example:
+> +Optional properties:
+> +- fsl,upm-wait-flags : add chip-dependent short delays after running the
+> +  		       UPM pattern (0x1), after writing a data byte (0x2)
+> +		       or after writing out a buffer (0x4).
+> +- gpios : may specify optional GPIOs connected to the Ready-Not-Busy pins
+> +	  (R/B#). For multi-chip devices, "num-chips" GPIO definitions are
+> +	  required.
+> +- chip-delay : chip dependent delay for transfering data from array to
+> +	       read registers (tR). Required if property "gpios" is not
+> +	       used (R/B# pins not connected).
+> +- num-chips : number of chips per device for multi-chip support.
+> +- chip-offset : address offset between chips for multi-chip support. The
+> + 		corresponding address lines are used to select the chip.
+> +
+> +Examples:
+>  
+>  upm@1,0 {
+>  	compatible = "fsl,upm-nand";
+> @@ -26,3 +39,25 @@ upm@1,0 {
+>  		};
+>  	};
+>  };
+> +
+> +upm@3,0 {
+> +	compatible = "fsl,upm-nand";
+> +	reg = <3 0x0 0x800>;
+> +	fsl,upm-addr-offset = <0x10>;
+> +	fsl,upm-cmd-offset = <0x08>;
+> +	fsl,upm-wait-flags = <0x5>;
+> +	/* Multi-chip device */
+> +	num-chips = <2>;
+> +	chip-offset = <0x200>;
+> +	chip-delay = <25>; // in micro-seconds
+> +
+> +	nand@0 {
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +
+> +		partition@0 {
+> +			    label = "fs";
+> +			    reg = <0x00000000 0x10000000>;
+> +		};
+> +	};
+> +};
+> -- 
+> 1.6.0.6
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Sebastian Siewior <bigeasy@linutronix.de>
----
- drivers/mtd/nand/nand_base.c |   18 ++++++++++++++++++
- include/linux/mtd/nand.h     |    4 ++--
- 2 files changed, 20 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 0a9c9cd..c3266fd 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -82,6 +82,20 @@ static struct nand_ecclayout nand_oob_64 = {
- 		 .length = 38}}
- };
- 
-+static struct nand_ecclayout nand_oob_128 = {
-+	.eccbytes = 48,
-+	.eccpos = {
-+		   80, 81, 82, 83, 84, 85, 86, 87,
-+		   88, 89, 90, 91, 92, 93, 94, 95,
-+		   96, 97, 98, 99, 100, 101, 102, 103,
-+		   104, 105, 106, 107, 108, 109, 110, 111,
-+		   112, 113, 114, 115, 116, 117, 118, 119,
-+		   120, 121, 122, 123, 124, 125, 126, 127},
-+	.oobfree = {
-+		{.offset = 2,
-+		 .length = 78}}
-+};
-+
- static int nand_get_device(struct nand_chip *chip, struct mtd_info *mtd,
- 			   int new_state);
- 
-@@ -2550,6 +2564,9 @@ int nand_scan_tail(struct mtd_info *mtd)
- 		case 64:
- 			chip->ecc.layout = &nand_oob_64;
- 			break;
-+		case 128:
-+			chip->ecc.layout = &nand_oob_128;
-+			break;
- 		default:
- 			printk(KERN_WARNING "No oob scheme defined for "
- 			       "oobsize %d\n", mtd->oobsize);
-@@ -2671,6 +2688,7 @@ int nand_scan_tail(struct mtd_info *mtd)
- 			break;
- 		case 4:
- 		case 8:
-+		case 16:
- 			mtd->subpage_sft = 2;
- 			break;
- 		}
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 733d3f3..b90e683 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -43,8 +43,8 @@ extern void nand_wait_ready(struct mtd_info *mtd);
-  * is supported now. If you add a chip with bigger oobsize/page
-  * adjust this accordingly.
-  */
--#define NAND_MAX_OOBSIZE	64
--#define NAND_MAX_PAGESIZE	2048
-+#define NAND_MAX_OOBSIZE	128
-+#define NAND_MAX_PAGESIZE	4096
- 
- /*
-  * Constants for hardware specific CLE/ALE/NCE function
 -- 
-1.6.0.6
+Anton Vorontsov
+email: cbouatmailru@gmail.com
+irc://irc.freenode.net/bd2
