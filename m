@@ -1,22 +1,20 @@
-Received: from [213.79.90.228] (helo=buildserver.ru.mvista.com)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LmUbP-00078M-Qj
-	for linux-mtd@lists.infradead.org; Wed, 25 Mar 2009 15:01:31 +0000
-Date: Wed, 25 Mar 2009 18:01:10 +0300
-From: Anton Vorontsov <avorontsov@ru.mvista.com>
+Received: from chamillionaire.breakpoint.cc ([85.10.199.196])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LmUg6-0008OR-Km
+	for linux-mtd@lists.infradead.org; Wed, 25 Mar 2009 15:06:13 +0000
+Date: Wed, 25 Mar 2009 16:05:51 +0100
+From: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
 To: Wolfgang Grandegger <wg@grandegger.com>
-Subject: Re: [PATCH v3 2/4] NAND: FSL-UPM: Add wait flags to support
-	board/chip specific delays
-Message-ID: <20090325150110.GB32313@oksana.dev.rtsoft.ru>
-References: <1237975701-23201-1-git-send-email-wg@grandegger.com>
-	<1237975701-23201-2-git-send-email-wg@grandegger.com>
-	<1237975701-23201-3-git-send-email-wg@grandegger.com>
+Subject: Re: [PATCH 1/2] NAND: Add support for oob size 128
+Message-ID: <20090325150551.GA4414@Chamillionaire.breakpoint.cc>
+References: <20090325104836.325599143@denx.de>
+	<20090325105020.607040279@denx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf8
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <1237975701-23201-3-git-send-email-wg@grandegger.com>
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
-Reply-To: avorontsov@ru.mvista.com
+In-Reply-To: <20090325105020.607040279@denx.de>
+Cc: David Woodhouse <dwmw2@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
+	linux-mtd@lists.infradead.org, Ilya Yanok <yanok@emcraft.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,32 +24,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 25, 2009 at 11:08:19AM +0100, Wolfgang Grandegger wrote:
-> The NAND flash on the TQM8548_BE modules requires a short delay after
-> running the UPM pattern. The TQM8548_BE requires a further short delay
-> after writing out a buffer. Normally the R/B pin should be checked, but
-> it's not connected on the TQM8548_BE. The existing driver uses similar
-> fixed delay points. To manage these extra delays in a more general way,
-> I introduced the "wait-flags" property allowing the board-specific driver
-> to specify various types of extra delay.
-> 
-> Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
+* Wolfgang Grandegger | 2009-03-25 11:48:37 [+0100]:
 
-Acked-by: Anton Vorontsov <avorontsov@ru.mvista.com>
+>Signed-off-by: Ilya Yanok <yanok@emcraft.com>
+>Acked-by: Wolfgang Grandegger <wg@grandegger.com>
 
-[...]
-> +	prop = of_get_property(ofdev->node, "fsl,upm-wait-flags", &size);
-> +	if (prop && size == sizeof(uint32_t))
-> +		fun->wait_flags = *prop;
-> +	else
-> +		fun->wait_flags =
-> +			FSL_UPM_WAIT_RUN_PATTERN | FSL_UPM_WAIT_WRITE_BYTE;
+You seem to forgot a few bits (subpage_sft & max page size). I had this
+patch in my tree like for ever and forgot post it here. I did however
+merge the mtd-utils bits allready :)
 
-I'd write it as
-		fun->wait_flags = FSL_UPM_WAIT_RUN_PATTERN |
-				  FSL_UPM_WAIT_WRITE_BYTE;
+From: Thomas Gleixner <tglx@linutronix.de>
+Date: Wed, 12 Dec 2007 17:27:03 +0100
+Subject: [PATCH] [MTD] Add support for 4k pages.
 
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Sebastian Siewior <bigeasy@linutronix.de>
+---
+ drivers/mtd/nand/nand_base.c |   18 ++++++++++++++++++
+ include/linux/mtd/nand.h     |    4 ++--
+ 2 files changed, 20 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 0a9c9cd..c3266fd 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -82,6 +82,20 @@ static struct nand_ecclayout nand_oob_64 = {
+ 		 .length = 38}}
+ };
+ 
++static struct nand_ecclayout nand_oob_128 = {
++	.eccbytes = 48,
++	.eccpos = {
++		   80, 81, 82, 83, 84, 85, 86, 87,
++		   88, 89, 90, 91, 92, 93, 94, 95,
++		   96, 97, 98, 99, 100, 101, 102, 103,
++		   104, 105, 106, 107, 108, 109, 110, 111,
++		   112, 113, 114, 115, 116, 117, 118, 119,
++		   120, 121, 122, 123, 124, 125, 126, 127},
++	.oobfree = {
++		{.offset = 2,
++		 .length = 78}}
++};
++
+ static int nand_get_device(struct nand_chip *chip, struct mtd_info *mtd,
+ 			   int new_state);
+ 
+@@ -2550,6 +2564,9 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		case 64:
+ 			chip->ecc.layout = &nand_oob_64;
+ 			break;
++		case 128:
++			chip->ecc.layout = &nand_oob_128;
++			break;
+ 		default:
+ 			printk(KERN_WARNING "No oob scheme defined for "
+ 			       "oobsize %d\n", mtd->oobsize);
+@@ -2671,6 +2688,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 			break;
+ 		case 4:
+ 		case 8:
++		case 16:
+ 			mtd->subpage_sft = 2;
+ 			break;
+ 		}
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 733d3f3..b90e683 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -43,8 +43,8 @@ extern void nand_wait_ready(struct mtd_info *mtd);
+  * is supported now. If you add a chip with bigger oobsize/page
+  * adjust this accordingly.
+  */
+-#define NAND_MAX_OOBSIZE	64
+-#define NAND_MAX_PAGESIZE	2048
++#define NAND_MAX_OOBSIZE	128
++#define NAND_MAX_PAGESIZE	4096
+ 
+ /*
+  * Constants for hardware specific CLE/ALE/NCE function
 -- 
-Anton Vorontsov
-email: cbouatmailru@gmail.com
-irc://irc.freenode.net/bd2
+1.6.0.6
