@@ -1,15 +1,21 @@
-Received: from relay01.mail-hub.dodo.com.au ([203.220.32.149])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LmKTV-0007ht-ES
-	for linux-mtd@lists.infradead.org; Wed, 25 Mar 2009 04:12:27 +0000
-Message-ID: <20090325151158.1378.49C9A96D4EA95-49C9@webmail.dodo.com.au>
-Date: Wed, 25 Mar 2009 15:11:58 +1100
-From: "INFO@GOOGLELOTTOWIN.COM" <ppearson@dodo.com.au>
-Subject: =?iso-8859-1?Q?Attn=3A_Google_Anniversary_Winner=21=21_=28your_email_have_won_=A3500=2C000_GBP=29?=
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LmMer-00060g-6A
+	for linux-mtd@lists.infradead.org; Wed, 25 Mar 2009 06:32:19 +0000
+Subject: RE: UBIFS Corrupt during power failure
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Eric Holmberg <Eric_Holmberg@Trimble.com>
+In-Reply-To: <C77C279BA71FD14985DC8E75FB265AB702DEF104@usw-am-xch-02.am.trimblecorp.net>
+References: <C77C279BA71FD14985DC8E75FB265AB702DEEF07@usw-am-xch-02.am.trimblecorp.net>
+	<49C8FC89.7040709@nokia.com>
+	<C77C279BA71FD14985DC8E75FB265AB702DEF104@usw-am-xch-02.am.trimblecorp.net>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 25 Mar 2009 08:32:05 +0200
+Message-Id: <1237962725.14602.98.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="iso-8859-1";
-MIME-Version: 1.0
-Reply-To: "INFO@GOOGLELOTTOWIN.COM" <fh11.dept@live.com>
+Cc: linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,25 +25,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Sir/Madam,
-This mail is to notify you that you have been selected as a winner to
-receive the sum of �500,000 British Pounds
-in our on-going Google anniversary lotto draws.
-Your email address was attached to the following winning numbers that made
-you one of our 10lucky winners for this year draw :
-Ticket number:00869575733664,
-CGPN:7-22-71-00-66-12,
-Serial numbers:BTD/8070447706/06,
-Lucky numbers:12-12-23-35-40-41(12)
+On Tue, 2009-03-24 at 11:04 -0600, Eric Holmberg wrote:
+> Hi Adrian,
+> 
+> > Please enable UBIFS debugging and set the UBIFS Default message level
+> to 3.
+> 
+> Thanks for the response.  Enabling UBIFS debugging and setting to level
+> 3 only provides slightly more information.  
+> 
+> [42949375.480000] UBIFS: recovery needed
+> [42949376.450000] UBIFS error (pid 1): ubifs_scan: corrupt empty space
+> at LEB 4:44512
+> [42949376.460000] UBIFS error (pid 1): ubifs_scanned_corruption:
+> corrupted data at LEB 4:44512
+> [42949376.470000] UBIFS error (pid 1): ubifs_scanned_corruption: first
+> 4096 bytes from LEB 4:44512
+> [42949376.490000] UBIFS error (pid 1): ubifs_scan: LEB 4 scanning failed
+> [42949376.540000] UBIFS error (pid 1): ubifs_recover_leb: corrupt empty
+> space at LEB 4:480
+> [42949376.550000] UBIFS error (pid 1): ubifs_scanned_corruption:
+> corrupted data at LEB 4:480
+> [42949376.560000] UBIFS error (pid 1): ubifs_scanned_corruption: first
+> 4096 bytes from LEB 4:480
+> [42949376.580000] UBIFS error (pid 1): ubifs_recover_leb: LEB 4 scanning
+> failed
+> [42949376.600000] VFS: Cannot open root device "ubi0:rootfs" or
+> unknown-block(0,0)
 
-For more details and how to claim your prize,contact the processing agent
-(Mr Francis Henson) with the email addresses below
-by sending your winning numbers,full names, sex and location.
-Agent E-mail(s): hensonworld@gmail.com,fh11.dept@live.com.
-Wishing you goodluck as you'll spend your
-fortune!!
+There should be more, they are probably just not printed to the console.
+Try typing dmesg or booting with "ignore_loglevel" option in the kernel
+command line. For more information, please read the "Debugging messages"
+here:
 
-________________________________________________
+http://www.linux-mtd.infradead.org/faq/ubi.html#L_how_debug
 
-This message
-was sent using Dodo Webmail - www.dodo.com.au
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
