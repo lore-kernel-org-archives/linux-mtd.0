@@ -1,19 +1,20 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LmQ25-0001oF-B1
-	for linux-mtd@lists.infradead.org; Wed, 25 Mar 2009 10:08:48 +0000
-From: Wolfgang Grandegger <wg@grandegger.com>
-To: linux-mtd@lists.infradead.org,
-	linuxppc-dev@ozlabs.org
-Subject: [PATCH v3 3/4] powerpc: NAND: FSL UPM: document new bindings
-Date: Wed, 25 Mar 2009 11:08:20 +0100
-Message-Id: <1237975701-23201-4-git-send-email-wg@grandegger.com>
-In-Reply-To: <1237975701-23201-3-git-send-email-wg@grandegger.com>
-References: <1237975701-23201-1-git-send-email-wg@grandegger.com>
-	<1237975701-23201-2-git-send-email-wg@grandegger.com>
-	<1237975701-23201-3-git-send-email-wg@grandegger.com>
-Cc: Anton Vorontsov <avorontsov@ru.mvista.com>,
-	Wolfgang Grandegger <wg@grandegger.com>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LmQZE-0007jB-7k
+	for linux-mtd@lists.infradead.org; Wed, 25 Mar 2009 10:42:47 +0000
+Message-ID: <49CA0AC4.9030702@nokia.com>
+Date: Wed, 25 Mar 2009 12:43:16 +0200
+From: Adrian Hunter <adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: "Singh, Vimal" <vimalsingh@ti.com>
+Subject: Re: Is high_memory check in omap2.c for OneNAND is sufficient?
+References: <19F8576C6E063C45BE387C64729E73940427A869DA@dbde02.ent.ti.com>,
+	<49C8FFCA.1010703@nokia.com>
+	<19F8576C6E063C45BE387C64729E73940427A869DB@dbde02.ent.ti.com>
+In-Reply-To: <19F8576C6E063C45BE387C64729E73940427A869DB@dbde02.ent.ti.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,70 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds documentation for the new NAND FSL UPM bindings for:
+Singh, Vimal wrote:
+> From: Adrian Hunter [adrian.hunter@nokia.com]
+>> Singh, Vimal wrote:
+>>> There is check for 'high_memory' in 'drivers/mtd/onenand/omap2.c', always before doing 'dma_map_single'.
+>>> Snippet:
+>>> ----------------------
+>>>         if (buf >= high_memory) {
+>>>                 struct page *p1;
+>>> ----------------------
+>>> This check seems not sufficient. There should be a check for upper boundary too.
+>>> Thinking scenario when 'buf' is less than 'high_memory', but somewhere near to it, and 'count' is big enough to beyond 'high_memory'.
+>> AFAIK it is not possible to allocate memory that crosses the high_memory boundary.
+> 
+> Do you mean 'buf' can not cross 'high_memory' boundary?
 
- NAND: FSL-UPM: add multi chip support
- NAND: FSL-UPM: Add wait flags to support board/chip specific delays
+Yes.
 
-Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
----
- .../powerpc/dts-bindings/fsl/upm-nand.txt          |   39 +++++++++++++++++++-
- 1 files changed, 37 insertions(+), 2 deletions(-)
+> But then I have seen a case where it was crossing that and BUG was reported by function 'dma_cache_maint'.
 
-diff --git a/Documentation/powerpc/dts-bindings/fsl/upm-nand.txt b/Documentation/powerpc/dts-bindings/fsl/upm-nand.txt
-index 84a04d5..0272e70 100644
---- a/Documentation/powerpc/dts-bindings/fsl/upm-nand.txt
-+++ b/Documentation/powerpc/dts-bindings/fsl/upm-nand.txt
-@@ -5,9 +5,22 @@ Required properties:
- - reg : should specify localbus chip select and size used for the chip.
- - fsl,upm-addr-offset : UPM pattern offset for the address latch.
- - fsl,upm-cmd-offset : UPM pattern offset for the command latch.
--- gpios : may specify optional GPIO connected to the Ready-Not-Busy pin.
- 
--Example:
-+Optional properties:
-+- fsl,upm-wait-flags : add chip-dependent short delays after running the
-+  		       UPM pattern (0x1), after writing a data byte (0x2)
-+		       or after writing out a buffer (0x4).
-+- gpios : may specify optional GPIOs connected to the Ready-Not-Busy pins
-+	  (R/B#). For multi-chip devices, "num-chips" GPIO definitions are
-+	  required.
-+- chip-delay : chip dependent delay for transfering data from array to
-+	       read registers (tR). Required if property "gpios" is not
-+	       used (R/B# pins not connected).
-+- num-chips : number of chips per device for multi-chip support.
-+- chip-offset : address offset between chips for multi-chip support. The
-+ 		corresponding address lines are used to select the chip.
-+
-+Examples:
- 
- upm@1,0 {
- 	compatible = "fsl,upm-nand";
-@@ -26,3 +39,25 @@ upm@1,0 {
- 		};
- 	};
- };
-+
-+upm@3,0 {
-+	compatible = "fsl,upm-nand";
-+	reg = <3 0x0 0x800>;
-+	fsl,upm-addr-offset = <0x10>;
-+	fsl,upm-cmd-offset = <0x08>;
-+	fsl,upm-wait-flags = <0x5>;
-+	/* Multi-chip device */
-+	num-chips = <2>;
-+	chip-offset = <0x200>;
-+	chip-delay = <25>; // in micro-seconds
-+
-+	nand@0 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+
-+		partition@0 {
-+			    label = "fs";
-+			    reg = <0x00000000 0x10000000>;
-+		};
-+	};
-+};
--- 
-1.6.0.6
+Is it possible that 'buf' or 'count' is wrong?
