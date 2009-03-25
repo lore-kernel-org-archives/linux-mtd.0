@@ -1,16 +1,18 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LmQgg-00012C-9X
-	for linux-mtd@lists.infradead.org; Wed, 25 Mar 2009 10:50:41 +0000
-Message-Id: <20090325105020.607040279@denx.de>
-Date: Wed, 25 Mar 2009 11:48:37 +0100
-From: Wolfgang Grandegger <wg@grandegger.com>
+Received: from pro-237-183.rediffmailpro.com ([202.137.237.183])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LmS3b-0005sP-D7
+	for linux-mtd@lists.infradead.org; Wed, 25 Mar 2009 12:18:14 +0000
+Date: 25 Mar 2009 12:10:41 -0000
+Message-ID: <20090325121041.19271.qmail@pro-237-183.rediffmailpro.com>
+MIME-Version: 1.0
+From: "Syed Ismail" <ismail.riyaz@dyansys.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/2] NAND: Add support for oob size 128
-References: <20090325104836.325599143@denx.de>
-Content-Disposition: inline; filename=0005-NAND-support-for-oob-size-128.patch
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	Wolfgang Grandegger <wg@grandegger.com>, Ilya Yanok <yanok@emcraft.com>
+Subject: mounting shows lost+found only
+Content-type: text/plain;
+	charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Reply-To: Syed Ismail <ismail.riyaz@dyansys.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,58 +22,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Ilya Yanok <yanok@emcraft.com>
-Acked-by: Wolfgang Grandegger <wg@grandegger.com>
----
- drivers/mtd/nand/nand_base.c |   17 +++++++++++++++++
- include/linux/mtd/nand.h     |    2 +-
- 2 files changed, 18 insertions(+), 1 deletion(-)
 
-Index: linux-2.6/drivers/mtd/nand/nand_base.c
-===================================================================
---- linux-2.6.orig/drivers/mtd/nand/nand_base.c
-+++ linux-2.6/drivers/mtd/nand/nand_base.c
-@@ -82,6 +82,20 @@ static struct nand_ecclayout nand_oob_64
- 		 .length = 38}}
- };
- 
-+static struct nand_ecclayout nand_oob_128 = {
-+	.eccbytes = 48,
-+	.eccpos = {
-+		    80,  81,  82,  83,  84,  85,  86,  87,
-+		    88,  89,  90,  91,  92,  93,  94,  95,
-+		    96,  97,  98,  99, 100, 101, 102, 103,
-+		   104, 105, 106, 107, 108, 109, 110, 111,
-+		   112, 113, 114, 115, 116, 117, 118, 119,
-+		   120, 121, 122, 123, 124, 125, 126, 127},
-+	.oobfree = {
-+		{.offset = 2,
-+		 .length = 78}}
-+};
-+
- static int nand_get_device(struct nand_chip *chip, struct mtd_info *mtd,
- 			   int new_state);
- 
-@@ -2555,6 +2569,9 @@ int nand_scan_tail(struct mtd_info *mtd)
- 		case 64:
- 			chip->ecc.layout = &nand_oob_64;
- 			break;
-+		case 128:
-+			chip->ecc.layout = &nand_oob_128;
-+			break;
- 		default:
- 			printk(KERN_WARNING "No oob scheme defined for "
- 			       "oobsize %d\n", mtd->oobsize);
-Index: linux-2.6/include/linux/mtd/nand.h
-===================================================================
---- linux-2.6.orig/include/linux/mtd/nand.h
-+++ linux-2.6/include/linux/mtd/nand.h
-@@ -43,7 +43,7 @@ extern void nand_wait_ready(struct mtd_i
-  * is supported now. If you add a chip with bigger oobsize/page
-  * adjust this accordingly.
-  */
--#define NAND_MAX_OOBSIZE	64
-+#define NAND_MAX_OOBSIZE	128
- #define NAND_MAX_PAGESIZE	2048
- 
- /*
+	=0A=0AHi=0AI am having problems using yaffs2 on nand chip(2KB page size) o=
+n my mx31 ads based board.=0AI got the yaffs2 from http://www.aleph1.co.uk/=
+cgi-bin/viewcvs.cgi/yaffs2/ and integrated it with 2.6.22 kernel.=0A=0ADid =
+flash_eraseall on a nand mtd partition of 2 MB.=0A1) Then mounted it as yaf=
+fs2 in a directory, mnt=0Als showed=0Alost+found=0A=0Acopied a file into mn=
+t, acceseed,mosidifed file and listed it. Fine=0AThen unmounted.=0ANanddump=
+ -p showed data lots of values other than 0xff,meaning data is present.=0A=
+=0A2)When i mounted same partition again, all i got was lost+found=0Als sho=
+wed=0Alost+found=0A=0AThe file i copied before dissapeared.=0AAlso nanddump=
+ showed only 0xff values throughout the partition.=0A=0AAny help appreciate=
+d.=0A=0AP.S. I have successfully used jffs2 on the same board and same chip.
