@@ -1,24 +1,21 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LmlMO-0002Js-34
-	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 08:54:55 +0000
-Message-ID: <49CB42EF.2080908@nokia.com>
-Date: Thu, 26 Mar 2009 10:55:11 +0200
-From: Adrian Hunter <adrian.hunter@nokia.com>
-MIME-Version: 1.0
-To: "Singh, Vimal" <vimalsingh@ti.com>
-Subject: Re: Is high_memory check in omap2.c for OneNAND is sufficient?
-References: <19F8576C6E063C45BE387C64729E73940427A869DA@dbde02.ent.ti.com>,
-	<49C8FFCA.1010703@nokia.com>
-	<19F8576C6E063C45BE387C64729E73940427A869DB@dbde02.ent.ti.com>,
-	<49CA0AC4.9030702@nokia.com>
-	<19F8576C6E063C45BE387C64729E73940427A869E7@dbde02.ent.ti.com>,
-	<49CB3938.9010207@nokia.com>
-	<19F8576C6E063C45BE387C64729E73940427A869EA@dbde02.ent.ti.com>
-In-Reply-To: <19F8576C6E063C45BE387C64729E73940427A869EA@dbde02.ent.ti.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+	id 1LmmFf-0004SH-Cv
+	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 09:52:02 +0000
+Subject: Re: ubifs version 1 compatibility
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Hamish Moffatt <hamish@cloud.net.au>
+In-Reply-To: <20090326074443.GA7842@cloud.net.au>
+References: <20090326051508.GA4760@cloud.net.au>
+	<1238049297.3321.20.camel@localhost.localdomain>
+	<20090326074443.GA7842@cloud.net.au>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 26 Mar 2009 11:50:23 +0200
+Message-Id: <1238061023.3321.67.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,51 +25,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ext Singh, Vimal wrote:
-> From: Adrian Hunter [adrian.hunter@nokia.com]
->> Singh, Vimal wrote:
->>> From: Adrian Hunter [adrian.hunter@nokia.com]
->>>> Singh, Vimal wrote:
->>>>> From: Adrian Hunter [adrian.hunter@nokia.com]
->>>>>> Singh, Vimal wrote:
->>>>>>> There is check for 'high_memory' in 'drivers/mtd/onenand/omap2.c', always before doing 'dma_map_single'.
->>>>>>> Snippet:
->>>>>>> ----------------------
->>>>>>>         if (buf >= high_memory) {
->>>>>>>                 struct page *p1;
->>>>>>> ----------------------
->>>>>>> This check seems not sufficient. There should be a check for upper boundary too.
->>>>>>> Thinking scenario when 'buf' is less than 'high_memory', but somewhere near to it, and 'count' is big enough to beyond 'high_memory'.
->>>>>> AFAIK it is not possible to allocate memory that crosses the high_memory boundary.
->>>>> Do you mean 'buf' can not cross 'high_memory' boundary?
->>>> Yes.
->>> If so, then I wonder why above check is present in code...
->>>
->> Which check?
->>
+On Thu, 2009-03-26 at 18:44 +1100, Hamish Moffatt wrote:
+> Yes our version 1 media is from pre-mainline UBIFS and we took our
+> chances by including it. We are shipping one product using 2.6.24 with
+> old backported UBIFS and it's working very well. I don't have any
+> expectations of support for the old version, so thanks for your
+> assistance thus far.
 > 
-> I mean, if 'buf' can cross 'high_memory' boundary then why do we nedd "if (buf >= high_memory)" check and re-manipulating 'buf' in code (in drivers/mtd/onenand/omap2.c).
+> Fortunately the kernel upgrade is for a newer product where we have some
+> more flexibility in fixing this problem.
 > 
-> I am really confuse now... when this particular condition will occur.
->  
+> We can upgrade our boot loader to 2.6.29 also so that it can read UBIFS
+> v4 media. This has to be co-ordinated with the main firmware image but
+> this is reasonable.
 > 
+> We do have one volatile UBIFS volume that we want to preserve. Is there
+> any way we could convert it? For example a user-space utility that could
+> read the old media version?
 
-buf can be below high_memory but in that case buf + count cannot be high_memory or above.
+I was looking at the version changes, and this bugfix:
 
-The addresses below high_memory are mapped differently to those above high_memory.
+http://git.infradead.org/users/dedekind/ubifs-historical-3.git?a=commit;h=b9903987e8efb5252b692ffc7c2b190f4a0e83b8
 
-If you kmalloc, you get an address below high_memory.
+makes it very difficult to turn old image into new one. This will
+basically mean we need:
 
-If you vmalloc, you get an address above high_memory.
+1. extract files from the old image
+2. feed them to mkfs.ubifs.
 
-Never does a memory allocation cross above and below high_memory.
+> Maybe before upgrade we could run mkfs.ubifs using the contents of the
+> existing volume to create the new format, unmount it and ubiupdatevol it..
 
-That is my understanding (on OMAP at least), but I am far from a guru, so please correct me if I am wrong.
+The easiest way to do this is to boot the old kernel,
+e.g. in vmware, extract the files using the nandsim technique:
+http://www.linux-mtd.infradead.org/faq/ubifs.html#L_ubifs_nandsim
 
->>>>> But then I have seen a case where it was crossing that and BUG was reported by function 'dma_cache_maint'.
->>>> Is it possible that 'buf' or 'count' is wrong?
->>> I do not think so...
->>>
-> 
-> 
-> 
+then feed them to mkfs.ubifs.
+
+But yes, a user-space utility to extract files from an image would be
+of course nicer, but again it is something which is not easy to do.
+
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
