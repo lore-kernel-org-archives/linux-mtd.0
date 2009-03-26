@@ -1,19 +1,21 @@
-Received: from proxy01.el-me.de ([212.184.203.66] helo=proxy02.el-me.de)
+Received: from mail-bw0-f159.google.com ([209.85.218.159])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lmp2H-0001qH-9i
-	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 12:50:24 +0000
-Content-class: urn:content-classes:message
+	id 1Lmp81-0003zR-3Z
+	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 12:56:19 +0000
+Received: by bwz3 with SMTP id 3so566038bwz.18
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 26 Mar 2009 05:56:10 -0700 (PDT)
+Message-ID: <49CB7AEA.2000009@gmail.com>
+Date: Thu, 26 Mar 2009 14:54:02 +0200
+From: Darius Augulis <augulis.darius@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: DirEntry without INodes - trying to access a "nonexistant ino"
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 26 Mar 2009 13:50:12 +0100
-Message-ID: <9503E3D8EC34CC4EA3FBC01F3BFAB8AE205F5B@exchange05.elmedmn.local>
-From: "Kreitner Richard" <r.kreitner@de.ccv.eu>
-To: <linux-mtd@lists.infradead.org>
-Cc: =?iso-8859-1?Q?Froschermeier_G=FCnther?= <g.froschermeier@de.ccv.eu>,
-	Liegl Uwe <u.liegl@de.ccv.eu>
+To: massimo cirillo <maxcir@gmail.com>
+Subject: Re: [PATCH] Fixup for Numonyx M29W128 chips
+References: <62cbdcd90903260402q61725160v7f1538762fbd76bc@mail.gmail.com>
+In-Reply-To: <62cbdcd90903260402q61725160v7f1538762fbd76bc@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,53 +25,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
-Hello,
+I'm getting jffs2 errors after write to flash. I don't have the output 
+log now, but the idea is that after write to flash, jffs2 does not find 
+magic numbers anymore. File system is broken.
+It's completely resolved when write buffers are not used. I could make 
+patch which disables write buffer only for M29W128 chips. Anyway it's 
+not working, one who needs more performace, is welcome to fix this in 
+better way...
 
-I am currently analyzing the JFFS2 file system of some embedded Linux =
-devices (Kernel 2.4.31) which were returned due to a file system =
-corruption in the SRAM.
+Darius.
 
-What I found out so far is that there is a file consisting only of a =
-single DirEntry but no corresponding INodes. As far as I understand the =
-JFFS2, there has to be at least one zero size data INode belonging to a =
-DirEntry to get a valid file. The driver also complains about this in =
-the debug log (see below).
-
-Trying to access the corrupt file which is not always the same in every =
-image, results in an input/output error (e.g. by using the ls command). =
-Our application wants to set permissions on it during the boot process =
-and stops at this point with a fatal error.
-
-In the case of the failing devices, the application is configured to =
-continuously write a log file (600K ringbuffer) over a long period (up =
-to 3 months), so there's heavy activity in the file system and the =
-Garbage Collector should run very often.
-
-Is it possible that the INode is overwritten with the data of another =
-INode due to a bug in the Garbage Collector?
-
-Or can anyone imagine of something else that could cause a problem like =
-this?
-
-...
-Dirent 0: ".", ino #25
-Dirent 1: "..", ino #2
-Dirent 2: "eserver", ino #50, type 4
-jffs2_readdir() out, offset =3D 3
-jffs2_readdir() for dir_i #50
-Dirent 0: ".", ino #50
-Dirent 1: "..", ino #25
-Dirent 2: "profiles.tlv", ino #683, type 8
-Dirent 3: "transactionlog.tlv", ino #55, type 8
-Skipping deletion dirent "configuration.tlv.tmp"
-Dirent 5: "configuration.tlv", ino #686, type 8
-Dirent 6: "terminallog.tlv", ino #58, type 8
-Dirent 7: "transactionhistory.tlv", ino #56, type 8
-jffs2_readdir() out, offset =3D 8
-jffs2_do_read_inode() on nonexistent ino 55
-...
-
-Regards
-=A0
-R. Kreitner
+massimo cirillo wrote:
+> Hi Darius,
+> what kind of failure did you experiment with M29W?
+>
+> In my opinion, complete removal of the buffer program feature is not a
+> good solution,
+> because you are taking away an important feature of the device, that results in
+> a very high performance decrease.
+>
+> Moreover, if you make the fix applicable to all devices with 0x227E device ID,
+> you are removing the same feature from other devices too, such as M29EW
+> that has a much bigger buffer thus resulting in a dramatic performance decrease
+> for this device.
+>
+>   
