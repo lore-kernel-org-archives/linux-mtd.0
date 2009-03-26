@@ -1,21 +1,26 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LmjZa-0006Pf-Ou
-	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 07:00:38 +0000
-Subject: RE: UBIFS Corrupt during power failure
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Eric Holmberg <Eric_Holmberg@Trimble.com>
-In-Reply-To: <C77C279BA71FD14985DC8E75FB265AB702DEF104@usw-am-xch-02.am.trimblecorp.net>
-References: <C77C279BA71FD14985DC8E75FB265AB702DEEF07@usw-am-xch-02.am.trimblecorp.net>
-	<49C8FC89.7040709@nokia.com>
-	<C77C279BA71FD14985DC8E75FB265AB702DEF104@usw-am-xch-02.am.trimblecorp.net>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 26 Mar 2009 08:59:30 +0200
-Message-Id: <1238050770.3321.41.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>
-Reply-To: dedekind@infradead.org
+Received: from mail-out.m-online.net ([212.18.0.9])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LmkE5-0000Kc-DS
+	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 07:42:16 +0000
+Message-ID: <49CB31CB.2010704@grandegger.com>
+Date: Thu, 26 Mar 2009 08:42:03 +0100
+From: Wolfgang Grandegger <wg@grandegger.com>
+MIME-Version: 1.0
+To: Grant Likely <grant.likely@secretlab.ca>
+Subject: Re: [PATCH v3 3/4] powerpc: NAND: FSL UPM: document new bindings
+References: <1237975701-23201-1-git-send-email-wg@grandegger.com>	
+	<1237975701-23201-2-git-send-email-wg@grandegger.com>	
+	<1237975701-23201-3-git-send-email-wg@grandegger.com>	
+	<1237975701-23201-4-git-send-email-wg@grandegger.com>	
+	<fa686aa40903251048g479d63f8i5a715defdbfc33d4@mail.gmail.com>	
+	<49CA9899.30604@grandegger.com>
+	<fa686aa40903252209r52a1bc1cn995a7da16bc3527f@mail.gmail.com>
+In-Reply-To: <fa686aa40903252209r52a1bc1cn995a7da16bc3527f@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linuxppc-dev@ozlabs.org,
+	devicetree-discuss list <devicetree-discuss@ozlabs.org>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +30,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-03-24 at 11:04 -0600, Eric Holmberg wrote:
-> > Also, could you tell us what MTD drivers you are using?
-> I'm using the physmap CFI flash driver for a CFI-compliant S29GL256P90F
-> 256Mbit NOR flash chip.  Is that what you're asking for?
+Grant Likely wrote:
+> On Wed, Mar 25, 2009 at 2:48 PM, Wolfgang Grandegger <wg@grandegger.com> wrote:
+>> Grant Likely wrote:
+>>> For the chip offset, it's not clear what the meaning is.  First, does
+>>> the UPM controller support access of multiple chips simultaneously?
+>> The offset drives the corresponding address lines, which are used to
+>> select the chip. That's how it's done on the TQM8548 board. In
+>> principle, the chips could also be selected through dedicated GPIO pins.
+>> Well, I'm not a hardware guy.
 > 
-> I'll keep working on a better way to reproduce the problem.  Let me know
-> if I need to add some printk statements somewhere and/or enable UBI or
-> MTD debugging.
+> Heh.  I mean elaborate in the binding documentation.  :-)
+> 
+>>> If so, then can you elaborate in the description on how board design
+>>> translates to a chip-offset value.  If it cannot, then it might be
+>>> better to have multiple tuples in the 'reg' property for each discrete
+>>> chip.  Multiple reg tuples would also remove the need for the
+>>> num-chips property.
+>> The node still describes one device mapping all relevant control
+>> registers. How about using fsl,upm-chip-offsets = <0x200 0x400>. It
+>> would be more generic and makes num-chips obsolete as well. And the
+>> property would be reserved for that way of implementing the chip select
+>> in hardware.
+> 
+> It really sounds like this binding is describing multiple NAND chips
+> mapped to different base addresses (and looking at the fsm_upm.c
+> driver appears to confirm it).  So, does this work?  reg = <3 0x200 4
+>  3 0x400 4>;
 
-Any news? I am afraid your problem will be that UBIFS floods to much.
-In that case try to enable debugging in the config, but do not enable
-any debugging messages. Even with this UBIFS should give useful dumps
-when this error happens:
+The chip-offset, and not the address, needs to be added to the MAR
+register as well before running the pattern:
 
-http://www.linux-mtd.infradead.org/doc/ubifs.html#L_how_send_bugreport
+        mar = cmd << (32 - fun->upm.width);
 
-And BTW, we did not test UBIFS well enough on NOR, and never tested
-unclean reboots on NOR, but tested them _a lot_ on NAND. So there
-may be some problems, but hopefully we can fix them.
+        if (fun->chip_offset && fun->chip_number > 0)
 
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+                mar |= fun->chip_number * fun->chip_offset;
+
+        fsl_upm_run_pattern(&fun->upm, chip->IO_ADDR_R, mar);
+
+
+> It is true that other methods could be used for implementing the chip
+> select, but that is *not* what the proposed binding describes.  This
+> proposed binding describes NAND chips selected by address lines
+> (particular addresses), and in this case I think using reg is the
+> natural description.
+
+OK, the chips are selected by accessing a defined address range. Will
+prepare a patch using the reg property.
+
+Wolfgang.
+
+
+
+
+> g.
+> 
