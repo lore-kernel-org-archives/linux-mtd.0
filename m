@@ -1,26 +1,20 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LmkE5-0000Kc-DS
-	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 07:42:16 +0000
-Message-ID: <49CB31CB.2010704@grandegger.com>
-Date: Thu, 26 Mar 2009 08:42:03 +0100
-From: Wolfgang Grandegger <wg@grandegger.com>
+Received: from risingsoftware.com ([207.192.70.63]
+	helo=li32-63.members.linode.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LmkGk-0000W1-MV
+	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 07:45:01 +0000
+Date: Thu, 26 Mar 2009 18:44:43 +1100
+From: Hamish Moffatt <hamish@cloud.net.au>
+To: Artem Bityutskiy <dedekind@infradead.org>
+Subject: Re: ubifs version 1 compatibility
+Message-ID: <20090326074443.GA7842@cloud.net.au>
+References: <20090326051508.GA4760@cloud.net.au>
+	<1238049297.3321.20.camel@localhost.localdomain>
 MIME-Version: 1.0
-To: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH v3 3/4] powerpc: NAND: FSL UPM: document new bindings
-References: <1237975701-23201-1-git-send-email-wg@grandegger.com>	
-	<1237975701-23201-2-git-send-email-wg@grandegger.com>	
-	<1237975701-23201-3-git-send-email-wg@grandegger.com>	
-	<1237975701-23201-4-git-send-email-wg@grandegger.com>	
-	<fa686aa40903251048g479d63f8i5a715defdbfc33d4@mail.gmail.com>	
-	<49CA9899.30604@grandegger.com>
-	<fa686aa40903252209r52a1bc1cn995a7da16bc3527f@mail.gmail.com>
-In-Reply-To: <fa686aa40903252209r52a1bc1cn995a7da16bc3527f@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linuxppc-dev@ozlabs.org,
-	devicetree-discuss list <devicetree-discuss@ozlabs.org>,
-	linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1238049297.3321.20.camel@localhost.localdomain>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,59 +24,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Grant Likely wrote:
-> On Wed, Mar 25, 2009 at 2:48 PM, Wolfgang Grandegger <wg@grandegger.com> wrote:
->> Grant Likely wrote:
->>> For the chip offset, it's not clear what the meaning is.  First, does
->>> the UPM controller support access of multiple chips simultaneously?
->> The offset drives the corresponding address lines, which are used to
->> select the chip. That's how it's done on the TQM8548 board. In
->> principle, the chips could also be selected through dedicated GPIO pins.
->> Well, I'm not a hardware guy.
+On Thu, Mar 26, 2009 at 08:34:57AM +0200, Artem Bityutskiy wrote:
+> On Thu, 2009-03-26 at 16:15 +1100, Hamish Moffatt wrote:
+> > Hi Artem and all,
+> > 
+> > I'm upgrading my embedded system which uses UBIFS from 2.6.24 (with a
+> > slightly updated ubifs) to 2.6.29.
+> > 
+> > I notice that the new kernel won't read my existing file systems as it
+> > says they are too old - version 1. The code checks for version 3 or 4 I
+> > see.
+> > 
+> > My application firmware is generated with mkfs.ubifs and programmed via
+> > ubiupdatevol, but the boot loader on my devices is based on the older
+> > kernel and won't be able to read it. And I have read-write file systems
+> > that will be formatted with the old version too.
 > 
-> Heh.  I mean elaborate in the binding documentation.  :-)
+> I've took a brief look. UBIFS went into mainline with format version 4,
+> and versions 1,2,3 were more development versions. There were changes in
+> the truncation node format and in inode node format. I would probably
+> be possible to have compatibility mode, but it is big job :-(
 > 
->>> If so, then can you elaborate in the description on how board design
->>> translates to a chip-offset value.  If it cannot, then it might be
->>> better to have multiple tuples in the 'reg' property for each discrete
->>> chip.  Multiple reg tuples would also remove the need for the
->>> num-chips property.
->> The node still describes one device mapping all relevant control
->> registers. How about using fsl,upm-chip-offsets = <0x200 0x400>. It
->> would be more generic and makes num-chips obsolete as well. And the
->> property would be reserved for that way of implementing the chip select
->> in hardware.
+> Your boot-loader is Linux kernel-based, right? Does it have write
+> support, or it is read-only?
 > 
-> It really sounds like this binding is describing multiple NAND chips
-> mapped to different base addresses (and looking at the fsm_upm.c
-> driver appears to confirm it).  So, does this work?  reg = <3 0x200 4
->  3 0x400 4>;
-
-The chip-offset, and not the address, needs to be added to the MAR
-register as well before running the pattern:
-
-        mar = cmd << (32 - fun->upm.width);
-
-        if (fun->chip_offset && fun->chip_number > 0)
-
-                mar |= fun->chip_number * fun->chip_offset;
-
-        fsl_upm_run_pattern(&fun->upm, chip->IO_ADDR_R, mar);
-
-
-> It is true that other methods could be used for implementing the chip
-> select, but that is *not* what the proposed binding describes.  This
-> proposed binding describes NAND chips selected by address lines
-> (particular addresses), and in this case I think using reg is the
-> natural description.
-
-OK, the chips are selected by accessing a defined address range. Will
-prepare a patch using the reg property.
-
-Wolfgang.
-
-
-
-
-> g.
+> Is it possible to upgrade the boot-loader at the same time you upgrade
+> the kernel on your devices?
 > 
+> Side note: now when u-boot supports UBIFS, we need to re-think our
+> versioning scheme and strictly preserve R/O compatibility.
+
+Hi Artem,
+
+Yes our version 1 media is from pre-mainline UBIFS and we took our
+chances by including it. We are shipping one product using 2.6.24 with
+old backported UBIFS and it's working very well. I don't have any
+expectations of support for the old version, so thanks for your
+assistance thus far.
+
+Fortunately the kernel upgrade is for a newer product where we have some
+more flexibility in fixing this problem.
+
+We can upgrade our boot loader to 2.6.29 also so that it can read UBIFS
+v4 media. This has to be co-ordinated with the main firmware image but
+this is reasonable.
+
+We do have one volatile UBIFS volume that we want to preserve. Is there
+any way we could convert it? For example a user-space utility that could
+read the old media version?
+
+Maybe before upgrade we could run mkfs.ubifs using the contents of the
+existing volume to create the new format, unmount it and ubiupdatevol it..
+
+
+regards
+Hamish
+-- 
+Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
