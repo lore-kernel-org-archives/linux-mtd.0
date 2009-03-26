@@ -1,26 +1,32 @@
-Received: from krynn.se.axis.com ([193.13.178.10])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lmruf-0007NE-KR
-	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 15:54:44 +0000
-Date: Thu, 26 Mar 2009 16:54:21 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-Subject: Re: [RFC/PATCH] flash_eraseall: extra care if NOR flash is not
-	BIT_WRITEABLE
-In-Reply-To: <20090326154142.GA15963@Chamillionaire.breakpoint.cc>
-Message-ID: <Pine.LNX.4.64.0903261650100.9213@lnxricardw.se.axis.com>
-References: <1237848138-18157-1-git-send-email-sebastian@breakpoint.cc>
-	<1237848138-18157-4-git-send-email-sebastian@breakpoint.cc>
-	<1237874727.14602.95.camel@localhost.localdomain>
-	<20090324085530.GA21444@Chamillionaire.breakpoint.cc>
-	<1237962807.14602.99.camel@localhost.localdomain>
-	<20090326134418.GB21993@shareable.org>
-	<20090326154142.GA15963@Chamillionaire.breakpoint.cc>
+Received: from yx-out-1718.google.com ([74.125.44.152])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Lms4N-0008Hs-23
+	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 16:04:46 +0000
+Received: by yx-out-1718.google.com with SMTP id 34so372099yxf.72
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 26 Mar 2009 09:04:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Jamie Lokier <jamie@shareable.org>
+In-Reply-To: <49CBA062.5050000@grandegger.com>
+References: <1237975701-23201-1-git-send-email-wg@grandegger.com>
+	<1237975701-23201-2-git-send-email-wg@grandegger.com>
+	<1237975701-23201-3-git-send-email-wg@grandegger.com>
+	<1237975701-23201-4-git-send-email-wg@grandegger.com>
+	<fa686aa40903251048g479d63f8i5a715defdbfc33d4@mail.gmail.com>
+	<49CA9899.30604@grandegger.com>
+	<fa686aa40903252209r52a1bc1cn995a7da16bc3527f@mail.gmail.com>
+	<49CB31CB.2010704@grandegger.com>
+	<fa686aa40903260727y3266e394g5e574680fe70bbbf@mail.gmail.com>
+	<49CBA062.5050000@grandegger.com>
+Date: Thu, 26 Mar 2009 10:04:37 -0600
+Message-ID: <fa686aa40903260904s67258fbbge3c87e06946c5f58@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] powerpc: NAND: FSL UPM: document new bindings
+From: Grant Likely <grant.likely@secretlab.ca>
+To: Wolfgang Grandegger <wg@grandegger.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linuxppc-dev@ozlabs.org,
+	devicetree-discuss list <devicetree-discuss@ozlabs.org>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,42 +36,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, Mar 26, 2009 at 9:33 AM, Wolfgang Grandegger <wg@grandegger.com> wr=
+ote:
+> Grant Likely wrote:
+>> Does using the reg property give the driver enough information to
+>> reliably program the MAR for NAND connections that use the address
+>> line chip select scheme? =A0Related to that, should the binding include
+>
+> In principle yes:
+>
+> =A0if (i > 0)
+> =A0 =A0 =A0offset[i] =3D resource[i].start - resource[0].start;
 
-On Thu, 26 Mar 2009, Sebastian Andrzej Siewior wrote:
+Ewww.  That's ugly.
 
-> I'm sorry. That is actually my point. The layout of the cleanmarker=20
-> (which are used only by JFFS2) depends on a specific kernel switch in=20
-> case of NOR flash which is not BIT_WRITEABLE and userland can't know=20
-> that. I've sent a patch to remove the -j option because the generated=20
-> cleanmaker *may* be wrong. Artem replied that he would like to see this=
-=20
-> fixed. So here is an attempt to fix this: black listed ubi & data flash=
-=20
-> but I dunno how fix the NOR case where does not have BIT_WRITEABLE bit.=
-=20
-> A commandline switch for those who know what they do? Why don't rip out=
-=20
-> -j and let the kernel create clean marker if it needs it?
+>> a property that explicitly states that an address line chip select
+>> scheme is being used?
+>
+> That's why I'm still in favor of:
+>
+> =A0fsl,upm-multi-chip-offsets =3D <0x200 0x400>
+>
+> That would state that the address line chip select scheme is used with
+> the specified offsets. It also allows for a more elegant solution
+> (code-wise).
 
-There can be a performance benefit to having the image contain=20
-cleanmarkers rather than the kernel having to do it. Specifically, if a=20
-cleanmarker is missing, the kernel doesn't know if it's because it's a=20
-virgin image or because a previous erase failed (typically because of a=20
-power fail during erase). In the case of a failed erase, the sector might=
-=20
-not be properly erased (i.e. even though the bytes might read 0xFF they=20
-might not be properly erase, resulting in spurious bitflips later). So,=20
-the kernel must erase the sector (which for a NOR flash is a slow=20
-operation) before writing the cleanmarker.
+Alright.  Then at the very least the property name should reflect that
+address lines CS is used to reduce the chance of confusion with
+another multi-chip scheme.  Something like
+fsl,upm-addr-line-cs-offsets maybe?
 
-For a given application it may be possible to skip the=20
-erase-before-writing-cleanmarker, but in the general case it is necessary,=
-=20
-which slows system startup (the flash cannot be used while it is being=20
-erased).
+Here is another thought.  The binding is describing that address lines
+are used to activate CS lines.  Offset for chip access purposes is
+derived from the address line, but it doesn't directly describe the
+hardware.  The following may be a better description of the hardware.
 
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+fsl,upm-addr-line-cs =3D <9 10>;
+
+g.
+
+
+
+--=20
+Grant Likely, B.Sc., P.Eng.
+Secret Lab Technologies Ltd.
