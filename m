@@ -1,21 +1,22 @@
-Received: from smtp117.sbc.mail.sp1.yahoo.com ([69.147.64.90])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LmkNo-0001wI-MR
-	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 07:52:19 +0000
-From: David Brownell <david-b@pacbell.net>
-To: Linux MTD <linux-mtd@lists.infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: [patch/rfc 2.6.29 2/2] MTD: support driver model updates
-Date: Thu, 26 Mar 2009 00:42:50 -0700
-References: <200903260039.34013.david-b@pacbell.net>
-In-Reply-To: <200903260039.34013.david-b@pacbell.net>
+Received: from risingsoftware.com ([207.192.70.63]
+	helo=li32-63.members.linode.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LmoKA-0004WL-N3
+	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 12:05:00 +0000
+Date: Thu, 26 Mar 2009 23:04:31 +1100
+From: Hamish Moffatt <hamish@cloud.net.au>
+To: Artem Bityutskiy <dedekind@infradead.org>
+Subject: Re: ubifs version 1 compatibility
+Message-ID: <20090326120431.GA13745@cloud.net.au>
+References: <20090326051508.GA4760@cloud.net.au>
+	<1238049297.3321.20.camel@localhost.localdomain>
+	<20090326074443.GA7842@cloud.net.au>
+	<1238061023.3321.67.camel@localhost.localdomain>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200903260042.50236.david-b@pacbell.net>
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Cc: Kay Sievers <kay.sievers@vrfy.org>
+In-Reply-To: <1238061023.3321.67.camel@localhost.localdomain>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,109 +26,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: David Brownell <dbrownell@users.sourceforge.net>
+On Thu, Mar 26, 2009 at 11:50:23AM +0200, Artem Bityutskiy wrote:
+> On Thu, 2009-03-26 at 18:44 +1100, Hamish Moffatt wrote:
+> makes it very difficult to turn old image into new one. This will
+> basically mean we need:
+> 
+> 1. extract files from the old image
+> 2. feed them to mkfs.ubifs.
+> 
+> > Maybe before upgrade we could run mkfs.ubifs using the contents of the
+> > existing volume to create the new format, unmount it and ubiupdatevol it..
+> 
+> The easiest way to do this is to boot the old kernel,
+> e.g. in vmware, extract the files using the nandsim technique:
+> http://www.linux-mtd.infradead.org/faq/ubifs.html#L_ubifs_nandsim
+> 
+> then feed them to mkfs.ubifs.
 
-Follow-on patch to the previous driver model patch for the MTD
-framework.  This one makes various MTD drivers connect to the
-driver model tree, so /sys/devices/virtual/mtd/* nodes are no
-longer present ... mostly drivers used on boards I have handy.
+Well I have these files on embedded devices out in the real world. The
+volume is storing user data, so I need to do this change in-place.
 
-Based on a patch from Kay Sievers.
+> But yes, a user-space utility to extract files from an image would be
+> of course nicer, but again it is something which is not easy to do.
 
-Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
----
- drivers/mtd/devices/m25p80.c        |    2 ++
- drivers/mtd/devices/mtd_dataflash.c |    2 ++
- drivers/mtd/maps/omap_nor.c         |    2 ++
- drivers/mtd/maps/physmap.c          |    1 +
- drivers/mtd/maps/plat-ram.c         |    1 +
- drivers/mtd/nand/davinci_nand.c     |    2 ++
- drivers/mtd/nand/mxc_nand.c         |    1 +
- drivers/mtd/onenand/omap2.c         |    2 ++
- 8 files changed, 13 insertions(+)
+OK I will investigate having the system build a new file system with
+a new mkfs.ubifs while running the old kernel.. Alternatively I may be
+able to stash the data somewhere else and copy it back when the new
+kernel first boots.. I probably have some space in NOR for a small JFFS2
+volume. Or I'll tar directly to an mtdblock device or something :)
 
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -678,6 +678,8 @@ static int __devinit m25p_probe(struct s
- 		flash->mtd.erasesize = info->sector_size;
- 	}
- 
-+	flash->mtd.dev.parent = &spi->dev;
-+
- 	dev_info(&spi->dev, "%s (%lld Kbytes)\n", info->name,
- 			(long long)flash->mtd.size >> 10);
- 
---- a/drivers/mtd/devices/mtd_dataflash.c
-+++ b/drivers/mtd/devices/mtd_dataflash.c
-@@ -670,6 +670,8 @@ add_dataflash_otp(struct spi_device *spi
- 	device->write = dataflash_write;
- 	device->priv = priv;
- 
-+	device->dev.parent = &spi->dev;
-+
- 	if (revision >= 'c')
- 		otp_tag = otp_setup(device, revision);
- 
---- a/drivers/mtd/maps/omap_nor.c
-+++ b/drivers/mtd/maps/omap_nor.c
-@@ -115,6 +115,8 @@ static int __init omapflash_probe(struct
- 	}
- 	info->mtd->owner = THIS_MODULE;
- 
-+	info->mtd->dev.parent = &pdev->dev;
-+
- #ifdef CONFIG_MTD_PARTITIONS
- 	err = parse_mtd_partitions(info->mtd, part_probes, &info->parts, 0);
- 	if (err > 0)
---- a/drivers/mtd/maps/physmap.c
-+++ b/drivers/mtd/maps/physmap.c
-@@ -147,6 +147,7 @@ static int physmap_flash_probe(struct pl
- 			devices_found++;
- 		}
- 		info->mtd[i]->owner = THIS_MODULE;
-+		info->mtd[i]->dev.parent = &dev->dev;
- 	}
- 
- 	if (devices_found == 1) {
---- a/drivers/mtd/maps/plat-ram.c
-+++ b/drivers/mtd/maps/plat-ram.c
-@@ -224,6 +224,7 @@ static int platram_probe(struct platform
- 	}
- 
- 	info->mtd->owner = THIS_MODULE;
-+	info->mtd->dev.parent = &pdev->dev;
- 
- 	platram_setrw(info, PLATRAM_RW);
- 
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -358,6 +358,8 @@ static int __init nand_davinci_probe(str
- 	info->mtd.name		= dev_name(&pdev->dev);
- 	info->mtd.owner		= THIS_MODULE;
- 
-+	info->mtd.dev.parent	= &pdev->dev;
-+
- 	info->chip.IO_ADDR_R	= vaddr;
- 	info->chip.IO_ADDR_W	= vaddr;
- 	info->chip.chip_delay	= 0;
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -866,6 +866,7 @@ static int __init mxcnd_probe(struct pla
- 	mtd = &host->mtd;
- 	mtd->priv = this;
- 	mtd->owner = THIS_MODULE;
-+	mtd->dev.parent = &pdev->dev;
- 
- 	/* 50 us command delay time */
- 	this->chip_delay = 5;
---- a/drivers/mtd/onenand/omap2.c
-+++ b/drivers/mtd/onenand/omap2.c
-@@ -672,6 +672,8 @@ static int __devinit omap2_onenand_probe
- 	c->mtd.priv = &c->onenand;
- 	c->mtd.owner = THIS_MODULE;
- 
-+	c->mtd.dev.parent = &pdev->dev;
-+
- 	if (c->dma_channel >= 0) {
- 		struct onenand_chip *this = &c->onenand;
- 
+
+thanks
+Hamish
+-- 
+Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
