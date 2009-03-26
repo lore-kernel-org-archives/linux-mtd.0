@@ -1,21 +1,16 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-bw0-f159.google.com ([209.85.218.159])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lmxqa-0001LF-O5
-	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 22:15:05 +0000
-Message-ID: <49CBFE52.6090706@grandegger.com>
-Date: Thu, 26 Mar 2009 23:14:42 +0100
-From: Wolfgang Grandegger <wg@grandegger.com>
-MIME-Version: 1.0
-To: avorontsov@ru.mvista.com
-Subject: Re: [PATCH v3 3/4] powerpc: NAND: FSL UPM: document new bindings
-References: <1237975701-23201-4-git-send-email-wg@grandegger.com>	<fa686aa40903251048g479d63f8i5a715defdbfc33d4@mail.gmail.com>	<49CA9899.30604@grandegger.com>	<fa686aa40903252209r52a1bc1cn995a7da16bc3527f@mail.gmail.com>	<49CB31CB.2010704@grandegger.com>	<fa686aa40903260727y3266e394g5e574680fe70bbbf@mail.gmail.com>	<49CBA062.5050000@grandegger.com>	<fa686aa40903260904s67258fbbge3c87e06946c5f58@mail.gmail.com>	<49CBAED4.8030802@grandegger.com>	<fa686aa40903261002l2c8e0d41s6e5ad4bc049058bf@mail.gmail.com>
-	<20090326173302.GA23187@oksana.dev.rtsoft.ru>
-In-Reply-To: <20090326173302.GA23187@oksana.dev.rtsoft.ru>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org,
-	devicetree-discuss list <devicetree-discuss@ozlabs.org>,
-	linux-mtd@lists.infradead.org
+	id 1LmyGD-0003Ll-4d
+	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 22:41:25 +0000
+Received: by bwz3 with SMTP id 3so836018bwz.18
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 26 Mar 2009 15:41:14 -0700 (PDT)
+From: Yauhen Kharuzhy <jekhor@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtdpart: Make ecc_stats more realistic.
+Date: Fri, 27 Mar 2009 00:41:09 +0200
+Message-Id: <1238107269-28883-1-git-send-email-jekhor@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Yauhen Kharuzhy <jekhor@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,49 +20,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Anton Vorontsov wrote:
-> On Thu, Mar 26, 2009 at 11:02:06AM -0600, Grant Likely wrote:
-> []
->>>> Here is another thought.  The binding is describing that address lines
->>>> are used to activate CS lines.  Offset for chip access purposes is
->>>> derived from the address line, but it doesn't directly describe the
->>>> hardware.  The following may be a better description of the hardware.
->>>>
->>>> fsl,upm-addr-line-cs = <9 10>;
->>> The TQM8548 hardware has some logic connected to the two address lines
->>> allowing to select up to 4 chips with two address lines:
->>>
->>>  fsl,upm-addr-line-cs-offsets = <0x0 0x200 0x400 0x600>
->> Ah.  I see.  This is board specific then.  I think it is premature to
->> try and define a generic solution here because it depends on custom
->> board hardware and different boards could use very different logic.
->> The next board could end up doing something completely different.  I'd
->> rather start to see trends in multiple boards implementing the same
->> scheme before trying to craft a generic scheme.
->>
->> In other words, this device is not register-level compatible with the
->> fsl,upm-nand device.  Give the node a new compatible value
->> (tqc,tqm8548-upm-nand) and add another entry to the of_fun_match table
->> for the new device.  Use the .data element in the match table to
->> supply an alternate fun_cmd_ctrl() function for this board (instead of
->> using a property value do decide which fun_cmd_ctrl() behaviour to
->> use).  New boards that *do* use the same addressing scheme can claim
->> compatibility with tqc,tqm8548-upm-nand.
-> 
-> I don't like this. :-/
-> 
-> UPM is an universal thing, so there are thousands of ways we can
-> connect NAND to the UPM. Of which only ~10 would be sane (others are
-> insane, and nobody would do this. If they do, _then_ we'll fall back
-> to <board>-upm-nand scheme for a particular board).
+In the existing implementation, ecc_stats fields are incremented only by
+one, regardless of master mtd errors number. For example, if there are N
+errors were corrected by ECC, partition ecc_stats.corrected will be
+incremented by one.
 
-Yep.
+This commit changes simple increment to sum of old value and parent mtd
+error count.
 
-> I don't see any problem with fsl,upm-addr-line-cs-offsets. It can
-> describe any scheme in "addr lines are cs" connection, it's a common
-> setup for multi-chip memory, we shouldn't treat it is as something
-> extraordinary.
+Signed-off-by: Yauhen Kharuzhy <jekhor@gmail.com>
+---
+ drivers/mtd/mtdpart.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
 
-I fully agree. I'm going to provide a patch on monday.
-
-Wolfgang.
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 3728913..2704a61 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -48,8 +48,11 @@ static int part_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 		size_t *retlen, u_char *buf)
+ {
+ 	struct mtd_part *part = PART(mtd);
++	struct mtd_ecc_stats stats;
+ 	int res;
+ 
++	stats = part->master->ecc_stats;
++
+ 	if (from >= mtd->size)
+ 		len = 0;
+ 	else if (from + len > mtd->size)
+@@ -58,9 +61,9 @@ static int part_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 				   len, retlen, buf);
+ 	if (unlikely(res)) {
+ 		if (res == -EUCLEAN)
+-			mtd->ecc_stats.corrected++;
++			mtd->ecc_stats.corrected += part->master->ecc_stats.corrected - stats.corrected;
+ 		if (res == -EBADMSG)
+-			mtd->ecc_stats.failed++;
++			mtd->ecc_stats.failed += part->master->ecc_stats.failed - stats.failed;
+ 	}
+ 	return res;
+ }
+-- 
+1.6.2
