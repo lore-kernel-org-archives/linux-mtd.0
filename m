@@ -1,20 +1,23 @@
-Received: from mail-bw0-f159.google.com ([209.85.218.159])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lmp81-0003zR-3Z
-	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 12:56:19 +0000
-Received: by bwz3 with SMTP id 3so566038bwz.18
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 26 Mar 2009 05:56:10 -0700 (PDT)
-Message-ID: <49CB7AEA.2000009@gmail.com>
-Date: Thu, 26 Mar 2009 14:54:02 +0200
-From: Darius Augulis <augulis.darius@gmail.com>
+Received: from risingsoftware.com ([207.192.70.63]
+	helo=li32-63.members.linode.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LmpRF-0003pU-TS
+	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 13:16:18 +0000
+Date: Fri, 27 Mar 2009 00:15:50 +1100
+From: Hamish Moffatt <hamish@cloud.net.au>
+To: Artem Bityutskiy <dedekind@infradead.org>
+Subject: Re: ubifs version 1 compatibility
+Message-ID: <20090326131550.GA15665@cloud.net.au>
+References: <20090326051508.GA4760@cloud.net.au>
+	<1238049297.3321.20.camel@localhost.localdomain>
+	<20090326074443.GA7842@cloud.net.au>
+	<1238061023.3321.67.camel@localhost.localdomain>
+	<20090326120431.GA13745@cloud.net.au>
+	<1238069525.3321.83.camel@localhost.localdomain>
 MIME-Version: 1.0
-To: massimo cirillo <maxcir@gmail.com>
-Subject: Re: [PATCH] Fixup for Numonyx M29W128 chips
-References: <62cbdcd90903260402q61725160v7f1538762fbd76bc@mail.gmail.com>
-In-Reply-To: <62cbdcd90903260402q61725160v7f1538762fbd76bc@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1238069525.3321.83.camel@localhost.localdomain>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,30 +28,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Thu, Mar 26, 2009 at 02:12:05PM +0200, Artem Bityutskiy wrote:
+> On Thu, 2009-03-26 at 23:04 +1100, Hamish Moffatt wrote:
+> > On Thu, Mar 26, 2009 at 11:50:23AM +0200, Artem Bityutskiy wrote:
+> > > On Thu, 2009-03-26 at 18:44 +1100, Hamish Moffatt wrote:
+> > > makes it very difficult to turn old image into new one. This will
+> > > basically mean we need:
+> > > 
+> > > 1. extract files from the old image
+> > > 2. feed them to mkfs.ubifs.
+> > > 
+> > > > Maybe before upgrade we could run mkfs.ubifs using the contents of the
+> > > > existing volume to create the new format, unmount it and ubiupdatevol it..
+> > > 
+> > > The easiest way to do this is to boot the old kernel,
+> > > e.g. in vmware, extract the files using the nandsim technique:
+> > > http://www.linux-mtd.infradead.org/faq/ubifs.html#L_ubifs_nandsim
+> > > 
+> > > then feed them to mkfs.ubifs.
+> > 
+> > Well I have these files on embedded devices out in the real world. The
+> > volume is storing user data, so I need to do this change in-place.
+> 
+> Let me make sure I understand the need.
+> 
+> So you have devises with v1 format in the wild. You want to upgrade
+> those devices. While upgrading, you will re-write some UBI volumes, but
+> after upgrade the user-data volume should contains exactly the same data
+> as before the upgrade, right?
 
-I'm getting jffs2 errors after write to flash. I don't have the output 
-log now, but the idea is that after write to flash, jffs2 does not find 
-magic numbers anymore. File system is broken.
-It's completely resolved when write buffers are not used. I could make 
-patch which disables write buffer only for M29W128 chips. Anyway it's 
-not working, one who needs more performace, is welcome to fix this in 
-better way...
+Yes, that's what I need.
 
-Darius.
 
-massimo cirillo wrote:
-> Hi Darius,
-> what kind of failure did you experiment with M29W?
->
-> In my opinion, complete removal of the buffer program feature is not a
-> good solution,
-> because you are taking away an important feature of the device, that results in
-> a very high performance decrease.
->
-> Moreover, if you make the fix applicable to all devices with 0x227E device ID,
-> you are removing the same feature from other devices too, such as M29EW
-> that has a much bigger buffer thus resulting in a dramatic performance decrease
-> for this device.
->
->   
+
+thanks
+Hamish
+-- 
+Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
