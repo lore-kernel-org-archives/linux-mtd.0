@@ -1,19 +1,18 @@
 Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LmoSS-0007E2-Lg
-	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 12:13:23 +0000
-Subject: Re: ubifs version 1 compatibility
+	id 1LmosH-0008LH-1j
+	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 12:40:03 +0000
+Subject: Re: Problem with ubiformat
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Hamish Moffatt <hamish@cloud.net.au>
-In-Reply-To: <20090326120431.GA13745@cloud.net.au>
-References: <20090326051508.GA4760@cloud.net.au>
-	<1238049297.3321.20.camel@localhost.localdomain>
-	<20090326074443.GA7842@cloud.net.au>
-	<1238061023.3321.67.camel@localhost.localdomain>
-	<20090326120431.GA13745@cloud.net.au>
+To: Johan <kungjohan@gmail.com>
+In-Reply-To: <1232117176.25068.32.camel@localhost.localdomain>
+References: <de9b121e0901150854w7b88abcendc36e4a5311890aa@mail.gmail.com>
+	<1232105373.25068.25.camel@localhost.localdomain>
+	<de9b121e0901160636l1d946e9bhaf5c269a5131ea7d@mail.gmail.com>
+	<1232117176.25068.32.camel@localhost.localdomain>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 26 Mar 2009 14:12:05 +0200
-Message-Id: <1238069525.3321.83.camel@localhost.localdomain>
+Date: Thu, 26 Mar 2009 14:39:49 +0200
+Message-Id: <1238071189.3321.87.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -27,33 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-03-26 at 23:04 +1100, Hamish Moffatt wrote:
-> On Thu, Mar 26, 2009 at 11:50:23AM +0200, Artem Bityutskiy wrote:
-> > On Thu, 2009-03-26 at 18:44 +1100, Hamish Moffatt wrote:
-> > makes it very difficult to turn old image into new one. This will
-> > basically mean we need:
-> > 
-> > 1. extract files from the old image
-> > 2. feed them to mkfs.ubifs.
-> > 
-> > > Maybe before upgrade we could run mkfs.ubifs using the contents of the
-> > > existing volume to create the new format, unmount it and ubiupdatevol it..
-> > 
-> > The easiest way to do this is to boot the old kernel,
-> > e.g. in vmware, extract the files using the nandsim technique:
-> > http://www.linux-mtd.infradead.org/faq/ubifs.html#L_ubifs_nandsim
-> > 
-> > then feed them to mkfs.ubifs.
+On Fri, 2009-01-16 at 16:46 +0200, Artem Bityutskiy wrote:
+> On Fri, 2009-01-16 at 15:36 +0100, Johan wrote:
+> > This is my output of flash_eraseall, so it looks like the same
+> > input/output error exist in flash_eraseall but it continues anyway.
 > 
-> Well I have these files on embedded devices out in the real world. The
-> volume is storing user data, so I need to do this change in-place.
+> Yeah, ubiformat should not panic as well. I think it should ask the user
+> whether to:
+> a) continue
+> b) stop
+> c) mark the eraseblock as bad and continue
 
-Let me make sure I understand the need.
+Done.
 
-So you have devises with v1 format in the wild. You want to upgrade
-those devices. While upgrading, you will re-write some UBI volumes, but
-after upgrade the user-data volume should contains exactly the same data
-as before the upgrade, right?
+http://git.infradead.org/mtd-utils.git?a=commit;h=0e9ed134f2092cef975f05aea2c1e415137e0c10
 
 -- 
 Best regards,
