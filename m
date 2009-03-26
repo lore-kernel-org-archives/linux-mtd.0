@@ -1,23 +1,30 @@
-Received: from west-smtp1.trimble.com ([155.63.128.51])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LmqHC-0002YD-Tj
-	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 14:09:53 +0000
-Content-class: urn:content-classes:message
+Received: from yw-out-1718.google.com ([74.125.46.154])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LmqYp-0001Iz-GP
+	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 14:28:06 +0000
+Received: by yw-out-1718.google.com with SMTP id 9so342024ywk.72
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 26 Mar 2009 07:27:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+In-Reply-To: <49CB31CB.2010704@grandegger.com>
+References: <1237975701-23201-1-git-send-email-wg@grandegger.com>
+	<1237975701-23201-2-git-send-email-wg@grandegger.com>
+	<1237975701-23201-3-git-send-email-wg@grandegger.com>
+	<1237975701-23201-4-git-send-email-wg@grandegger.com>
+	<fa686aa40903251048g479d63f8i5a715defdbfc33d4@mail.gmail.com>
+	<49CA9899.30604@grandegger.com>
+	<fa686aa40903252209r52a1bc1cn995a7da16bc3527f@mail.gmail.com>
+	<49CB31CB.2010704@grandegger.com>
+Date: Thu, 26 Mar 2009 08:27:55 -0600
+Message-ID: <fa686aa40903260727y3266e394g5e574680fe70bbbf@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] powerpc: NAND: FSL UPM: document new bindings
+From: Grant Likely <grant.likely@secretlab.ca>
+To: Wolfgang Grandegger <wg@grandegger.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Subject: RE: UBIFS Corrupt during power failure
-Date: Thu, 26 Mar 2009 08:09:41 -0600
-Message-ID: <C77C279BA71FD14985DC8E75FB265AB702DEFBF5@usw-am-xch-02.am.trimblecorp.net>
-In-Reply-To: <1238050770.3321.41.camel@localhost.localdomain>
-References: <C77C279BA71FD14985DC8E75FB265AB702DEEF07@usw-am-xch-02.am.trimblecorp.net>
-	<49C8FC89.7040709@nokia.com>
-	<C77C279BA71FD14985DC8E75FB265AB702DEF104@usw-am-xch-02.am.trimblecorp.net>
-	<1238050770.3321.41.camel@localhost.localdomain>
-From: "Eric Holmberg" <Eric_Holmberg@Trimble.com>
-To: <dedekind@infradead.org>
-Cc: linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>
+Cc: linuxppc-dev@ozlabs.org,
+	devicetree-discuss list <devicetree-discuss@ozlabs.org>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,37 +34,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > > Also, could you tell us what MTD drivers you are using?
-> > I'm using the physmap CFI flash driver for a CFI-compliant=20
-> > S29GL256P90F 256Mbit NOR flash chip.  Is that what you're asking
-for?
-> >=20
-> > I'll keep working on a better way to reproduce the problem.  Let me=20
-> > know if I need to add some printk statements somewhere and/or enable
-
-> > UBI or MTD debugging.
+On Thu, Mar 26, 2009 at 1:42 AM, Wolfgang Grandegger <wg@grandegger.com> wr=
+ote:
+> Grant Likely wrote:
+>> On Wed, Mar 25, 2009 at 2:48 PM, Wolfgang Grandegger <wg@grandegger.com>=
+ wrote:
+>>> Grant Likely wrote:
+>>>> For the chip offset, it's not clear what the meaning is. =A0First, doe=
+s
+>>>> the UPM controller support access of multiple chips simultaneously?
+>>> The offset drives the corresponding address lines, which are used to
+>>> select the chip. That's how it's done on the TQM8548 board. In
+>>> principle, the chips could also be selected through dedicated GPIO pins=
+.
+>>> Well, I'm not a hardware guy.
+>>
+>> Heh. =A0I mean elaborate in the binding documentation. =A0:-)
+>>
+>>>> If so, then can you elaborate in the description on how board design
+>>>> translates to a chip-offset value. =A0If it cannot, then it might be
+>>>> better to have multiple tuples in the 'reg' property for each discrete
+>>>> chip. =A0Multiple reg tuples would also remove the need for the
+>>>> num-chips property.
+>>> The node still describes one device mapping all relevant control
+>>> registers. How about using fsl,upm-chip-offsets =3D <0x200 0x400>. It
+>>> would be more generic and makes num-chips obsolete as well. And the
+>>> property would be reserved for that way of implementing the chip select
+>>> in hardware.
+>>
+>> It really sounds like this binding is describing multiple NAND chips
+>> mapped to different base addresses (and looking at the fsm_upm.c
+>> driver appears to confirm it). =A0So, does this work? =A0reg =3D <3 0x20=
+0 4
+>> =A03 0x400 4>;
 >
-> Any news? I am afraid your problem will be that UBIFS floods to much.
-> In that case try to enable debugging in the config, but do not enable
-any debugging messages. Even with > this UBIFS should give useful dumps
-when this error happens:
+> The chip-offset, and not the address, needs to be added to the MAR
+> register as well before running the pattern:
+>
+> =A0 =A0 =A0 =A0mar =3D cmd << (32 - fun->upm.width);
+>
+> =A0 =A0 =A0 =A0if (fun->chip_offset && fun->chip_number > 0)
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0mar |=3D fun->chip_number * fun->chip_offs=
+et;
+>
+> =A0 =A0 =A0 =A0fsl_upm_run_pattern(&fun->upm, chip->IO_ADDR_R, mar);
+>
+>
+>> It is true that other methods could be used for implementing the chip
+>> select, but that is *not* what the proposed binding describes. =A0This
+>> proposed binding describes NAND chips selected by address lines
+>> (particular addresses), and in this case I think using reg is the
+>> natural description.
+>
+> OK, the chips are selected by accessing a defined address range. Will
+> prepare a patch using the reg property.
 
-I had to work on some other issues yesterday, but I'm back to the UBIFS
-error.  Adding the kernel boot arg "ignore_loglevel" has enabled the
-flood of UBIFS messages.  I will be working on the issue today and will
-let you know what I find.
+Hold on a sec.  I'm debating from my experience with device tree
+bindings, but I'm fairly ignorant about the implementation of NAND on
+UPM.  It *looks* to me like reg is sufficient, but if I'm wrong then
+tell me so and why.  Your comment above about fsl_upm_run_pattern()
+makes me doubt my position.
 
-> http://www.linux-mtd.infradead.org/doc/ubifs.html#L_how_send_bugreport
->=20
-> And BTW, we did not test UBIFS well enough on NOR, and never tested
-unclean reboots on NOR, but tested > > them _a lot_ on NAND. So there
-may be some problems, but hopefully we can fix them.
+Does using the reg property give the driver enough information to
+reliably program the MAR for NAND connections that use the address
+line chip select scheme?  Related to that, should the binding include
+a property that explicitly states that an address line chip select
+scheme is being used?
 
-Thank you very much for that information -- I will keep that in mind as
-I go through the code.
+g.
 
-Regards,
-
-Eric Holmberg
-Trimble Navigation
-Westminster, Colorado
+--=20
+Grant Likely, B.Sc., P.Eng.
+Secret Lab Technologies Ltd.
