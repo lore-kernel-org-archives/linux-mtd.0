@@ -1,24 +1,19 @@
-Received: from risingsoftware.com ([207.192.70.63]
-	helo=li32-63.members.linode.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lmhwc-0004Bs-OA
-	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 05:16:05 +0000
-Received: from c122-107-142-134.eburwd5.vic.optusnet.com.au ([122.107.142.134]
-	helo=noddy.cloud.net.au) by li32-63.members.linode.com with esmtpsa
-	(TLS-1.0:RSA_AES_256_CBC_SHA1:32) (Exim 4.63)
-	(envelope-from <hamish@cloud.net.au>) id 1Lmhw0-00032d-Ja
-	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 01:15:20 -0400
-Received: from hamish by noddy.cloud.net.au with local (Exim 4.69)
-	(envelope-from <hamish@cloud.net.au>) id 1Lmhvo-0001K5-Of
-	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 16:15:08 +1100
-Date: Thu, 26 Mar 2009 16:15:08 +1100
-From: Hamish Moffatt <hamish@cloud.net.au>
-To: linux-mtd@lists.infradead.org
-Subject: ubifs version 1 compatibility
-Message-ID: <20090326051508.GA4760@cloud.net.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+	id 1LmigI-0006Tp-CB
+	for linux-mtd@lists.infradead.org; Thu, 26 Mar 2009 06:03:28 +0000
+Subject: Re: ubifs version 1 compatibility
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Hamish Moffatt <hamish@cloud.net.au>
+In-Reply-To: <20090326051508.GA4760@cloud.net.au>
+References: <20090326051508.GA4760@cloud.net.au>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 26 Mar 2009 08:02:05 +0200
+Message-Id: <1238047325.3321.7.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,24 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem and all,
+On Thu, 2009-03-26 at 16:15 +1100, Hamish Moffatt wrote:
+> Hi Artem and all,
+> 
+> I'm upgrading my embedded system which uses UBIFS from 2.6.24 (with a
+> slightly updated ubifs) to 2.6.29.
+> 
+> I notice that the new kernel won't read my existing file systems as it
+> says they are too old - version 1. The code checks for version 3 or 4 I
+> see.
 
-I'm upgrading my embedded system which uses UBIFS from 2.6.24 (with a
-slightly updated ubifs) to 2.6.29.
+Hmm, you use version 1 which has been there _before_ UBIFS went to
+mainline. We really did not expect this.
 
-I notice that the new kernel won't read my existing file systems as it
-says they are too old - version 1. The code checks for version 3 or 4 I
-see.
+> My application firmware is generated with mkfs.ubifs and programmed via
+> ubiupdatevol, but the boot loader on my devices is based on the older
+> kernel and won't be able to read it. And I have read-write file systems
+> that will be formatted with the old version too.
 
-My application firmware is generated with mkfs.ubifs and programmed via
-ubiupdatevol, but the boot loader on my devices is based on the older
-kernel and won't be able to read it. And I have read-write file systems
-that will be formatted with the old version too.
+I need to take a closer look and realize what were the changes between
+v1 and v3 and if it is possible to make current UBIFS support it. Then
+we could teach mkfs.ubifs generate version 1 FSes, and you could keep
+using v1. But we need some time to investigate how feasible is this.
 
-
-Is there any solution?
-
-thanks
-Hamish
 -- 
-Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
