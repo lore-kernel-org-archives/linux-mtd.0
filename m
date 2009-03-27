@@ -1,16 +1,16 @@
 Received: from hrndva-commlb.mail.rr.com ([71.74.57.9])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LnBc0-00018c-Ar
-	for linux-mtd@lists.infradead.org; Fri, 27 Mar 2009 12:56:46 +0000
+	id 1LnBc3-00019c-8M
+	for linux-mtd@lists.infradead.org; Fri, 27 Mar 2009 12:56:49 +0000
 Received: from rrcs-agw-01.hrndva.rr.com ([24.28.200.151])
 	by hrndva-comm-mta02.mail.rr.com with ESMTP id
-	<20090327125638.NBLJ29095.hrndva-comm-mta02.mail.rr.com@rrcs-agw-01.hrndva.rr.com>
-	for <linux-mtd@lists.infradead.org>; Fri, 27 Mar 2009 12:56:38 +0000
-Message-Id: <7h9gbp$ckj5sq@rrcs-agw-01b.hrndva.rr.com>
+	<20090327125643.NBND29095.hrndva-comm-mta02.mail.rr.com@rrcs-agw-01.hrndva.rr.com>
+	for <linux-mtd@lists.infradead.org>; Fri, 27 Mar 2009 12:56:43 +0000
+Message-Id: <7h9gbp$ckj5t2@rrcs-agw-01b.hrndva.rr.com>
 From: Siemens News Center <feetfirst@winch.twcbc.com>
 To: <info@lili.com>
 Subject: Email Your Info Immediately
-Date: Fri, 27 Mar 2009 7:56:38 -0500
+Date: Fri, 27 Mar 2009 7:56:39 -0500
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 7bit
