@@ -1,21 +1,22 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-bw0-f159.google.com ([209.85.218.159])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LoFB3-0007h9-Dx
-	for linux-mtd@lists.infradead.org; Mon, 30 Mar 2009 10:57:20 +0000
-Message-ID: <49D0A586.4080503@grandegger.com>
-Date: Mon, 30 Mar 2009 12:57:10 +0200
-From: Wolfgang Grandegger <wg@grandegger.com>
+	id 1LoH2A-0000Oc-Ti
+	for linux-mtd@lists.infradead.org; Mon, 30 Mar 2009 12:56:18 +0000
+Received: by bwz3 with SMTP id 3so2077399bwz.18
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 30 Mar 2009 05:56:07 -0700 (PDT)
 MIME-Version: 1.0
-To: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-Subject: Re: [PATCH 1/2] NAND: Add support for oob size 128
-References: <20090325104836.325599143@denx.de>
-	<20090325105020.607040279@denx.de>
-	<20090325150551.GA4414@Chamillionaire.breakpoint.cc>
-In-Reply-To: <20090325150551.GA4414@Chamillionaire.breakpoint.cc>
-Content-Type: text/plain; charset=ISO-8859-15
+In-Reply-To: <49CB7AEA.2000009@gmail.com>
+References: <62cbdcd90903260402q61725160v7f1538762fbd76bc@mail.gmail.com>
+	<49CB7AEA.2000009@gmail.com>
+Date: Mon, 30 Mar 2009 14:56:06 +0200
+Message-ID: <62cbdcd90903300556hb66dca5u94e1d52b67c85240@mail.gmail.com>
+Subject: Re: [PATCH] Fixup for Numonyx M29W128 chips
+From: massimo cirillo <maxcir@gmail.com>
+To: Darius Augulis <augulis.darius@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
-	linux-mtd@lists.infradead.org, Ilya Yanok <yanok@emcraft.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,94 +26,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sebastian,
-
-Sebastian Andrzej Siewior wrote:
-> * Wolfgang Grandegger | 2009-03-25 11:48:37 [+0100]:
-> 
->> Signed-off-by: Ilya Yanok <yanok@emcraft.com>
->> Acked-by: Wolfgang Grandegger <wg@grandegger.com>
-> 
-> You seem to forgot a few bits (subpage_sft & max page size). I had this
-> patch in my tree like for ever and forgot post it here. I did however
-> merge the mtd-utils bits allready :)
-
-I see. Your patch works fine for my board as well and I have added my
-"acked-by" line below. David, could you please consider this patch for
-kernel inclusion.
-
+Hi ,
+We performed a complete validation test session on this device,
+using jffs2 in the 2.6.26.1 release kernel, without any failures.
+Could you specify the test case and the related failure?
+What kernel version did you use? Did you apply any patch?
 Thanks,
+Massimo
 
-Wolfgang.
-
-> From: Thomas Gleixner <tglx@linutronix.de>
-> Date: Wed, 12 Dec 2007 17:27:03 +0100
-> Subject: [PATCH] [MTD] Add support for 4k pages.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Sebastian Siewior <bigeasy@linutronix.de>
-Acked-by: Wolfgang Grandegger <wg@grandegger.com
-
-> ---
->  drivers/mtd/nand/nand_base.c |   18 ++++++++++++++++++
->  include/linux/mtd/nand.h     |    4 ++--
->  2 files changed, 20 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 0a9c9cd..c3266fd 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -82,6 +82,20 @@ static struct nand_ecclayout nand_oob_64 = {
->  		 .length = 38}}
->  };
->  
-> +static struct nand_ecclayout nand_oob_128 = {
-> +	.eccbytes = 48,
-> +	.eccpos = {
-> +		   80, 81, 82, 83, 84, 85, 86, 87,
-> +		   88, 89, 90, 91, 92, 93, 94, 95,
-> +		   96, 97, 98, 99, 100, 101, 102, 103,
-> +		   104, 105, 106, 107, 108, 109, 110, 111,
-> +		   112, 113, 114, 115, 116, 117, 118, 119,
-> +		   120, 121, 122, 123, 124, 125, 126, 127},
-> +	.oobfree = {
-> +		{.offset = 2,
-> +		 .length = 78}}
-> +};
-> +
->  static int nand_get_device(struct nand_chip *chip, struct mtd_info *mtd,
->  			   int new_state);
->  
-> @@ -2550,6 +2564,9 @@ int nand_scan_tail(struct mtd_info *mtd)
->  		case 64:
->  			chip->ecc.layout = &nand_oob_64;
->  			break;
-> +		case 128:
-> +			chip->ecc.layout = &nand_oob_128;
-> +			break;
->  		default:
->  			printk(KERN_WARNING "No oob scheme defined for "
->  			       "oobsize %d\n", mtd->oobsize);
-> @@ -2671,6 +2688,7 @@ int nand_scan_tail(struct mtd_info *mtd)
->  			break;
->  		case 4:
->  		case 8:
-> +		case 16:
->  			mtd->subpage_sft = 2;
->  			break;
->  		}
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index 733d3f3..b90e683 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -43,8 +43,8 @@ extern void nand_wait_ready(struct mtd_info *mtd);
->   * is supported now. If you add a chip with bigger oobsize/page
->   * adjust this accordingly.
->   */
-> -#define NAND_MAX_OOBSIZE	64
-> -#define NAND_MAX_PAGESIZE	2048
-> +#define NAND_MAX_OOBSIZE	128
-> +#define NAND_MAX_PAGESIZE	4096
->  
->  /*
->   * Constants for hardware specific CLE/ALE/NCE function
+2009/3/26 Darius Augulis <augulis.darius@gmail.com>:
+> Hi,
+>
+> I'm getting jffs2 errors after write to flash. I don't have the output log
+> now, but the idea is that after write to flash, jffs2 does not find magic
+> numbers anymore. File system is broken.
+> It's completely resolved when write buffers are not used. I could make patch
+> which disables write buffer only for M29W128 chips. Anyway it's not working,
+> one who needs more performace, is welcome to fix this in better way...
+>
+> Darius.
+>
+> massimo cirillo wrote:
+>>
+>> Hi Darius,
+>> what kind of failure did you experiment with M29W?
+>>
+>> In my opinion, complete removal of the buffer program feature is not a
+>> good solution,
+>> because you are taking away an important feature of the device, that
+>> results in
+>> a very high performance decrease.
+>>
+>> Moreover, if you make the fix applicable to all devices with 0x227E device
+>> ID,
+>> you are removing the same feature from other devices too, such as M29EW
+>> that has a much bigger buffer thus resulting in a dramatic performance
+>> decrease
+>> for this device.
+>>
+>>
+>
+>
