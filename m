@@ -1,13 +1,18 @@
 Received: from cathcart.site5.com ([74.54.107.137])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LnseR-0001DH-S0
-	for linux-mtd@lists.infradead.org; Sun, 29 Mar 2009 10:54:12 +0000
+	id 1LoB5n-0000Kc-NL
+	for linux-mtd@lists.infradead.org; Mon, 30 Mar 2009 06:35:37 +0000
+Message-ID: <49D0682E.4080500@compulab.co.il>
+Date: Mon, 30 Mar 2009 09:35:26 +0300
 From: Mike Rapoport <mike@compulab.co.il>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] MTD: maps/pxa2xx_flash: fix build breakage
-Date: Sun, 29 Mar 2009 13:53:53 +0300
-Message-Id: <1238324033-30754-1-git-send-email-mike@compulab.co.il>
-Cc: nico@cam.org
+MIME-Version: 1.0
+To: =?ISO-8859-1?Q?Zach=E1r_Bal=E1zs?= <bzachar@direkt-kfki.hu>
+Subject: Re: nand driver help
+References: <49CCEB89.1050906@direkt-kfki.hu>
+In-Reply-To: <49CCEB89.1050906@direkt-kfki.hu>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,30 +22,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-  LD      init/built-in.o
-  LD      .tmp_vmlinux1
-`pxa2xx_flash_remove' referenced in section `.data' of
-drivers/built-in.o: defined in discarded section `.exit.text' of
-drivers/built-in.o
-make: *** [.tmp_vmlinux1] Error 1
 
-Signed-off-by: Mike Rapoport <mike@compulab.co.il>
----
- drivers/mtd/maps/pxa2xx-flash.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/maps/pxa2xx-flash.c b/drivers/mtd/maps/pxa2xx-flash.c
-index e9026cb..572d32f 100644
---- a/drivers/mtd/maps/pxa2xx-flash.c
-+++ b/drivers/mtd/maps/pxa2xx-flash.c
-@@ -117,7 +117,7 @@ static int __init pxa2xx_flash_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
--static int __exit pxa2xx_flash_remove(struct platform_device *dev)
-+static int __devexit pxa2xx_flash_remove(struct platform_device *dev)
- {
- 	struct pxa2xx_flash_info *info = platform_get_drvdata(dev);
- 
+Zachár Balázs wrote:
+> Hi,
+> 
+> I have a pxa270 based board, and I try to create the nand driver for the 2.6.28-7 main kernel... On this board, the nand flash is connected directly to the pxa27x PCMCIA socket's pins... (see this
+> pdf: http://pubs.gumstix.org/documents/PXA%20Documentation/PXA270/PXA270%20Connecting%20NAND%20Flash%20%5B28014402%5D.pdf)
+> 
+
+[ snip ]
+
+> 
+> On my board the NAND AL signal is connected to MA20 so if I "access" to 0x2010_0000 (PCMCIA0 address: 0x2000_0000) it should decoded as AL=1 operation.
+> If I right, if I "access" to the PCMCIA1 address (PCMCIA1 address: 0x3000_0000) it should decoded as a CL=1 operation.
+> The R/Bn (ready_notbusy) signal is connected to GPIO55 and the WP signal is connected to GPIO56.
+> 
+> I write this hwcontrol function for my board's cmd_crtl function, but I think it isn't work(bdevelb_ALE_io_base=ioremap(0x20100000, 0x1000),bdevelb_CLE_io_base=ioremap(0x30000000, 0x1000)):
+> static void bdevelb_nand_hwcontrol(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+> {
+> 	struct nand_chip *chip = mtd->priv;
+> 
+> 	if (ctrl & NAND_CTRL_CHANGE) {
+>                 if ( ctrl & NAND_ALE )
+>                         writeb(0xff, bdevelb_ALE_io_base);
+>                 if ( ctrl & NAND_CLE )
+>                         writeb(0xff, bdevelb_CLE_io_base);
+>         }
+> 
+>         if (cmd != NAND_CMD_NONE)
+>                 writeb(cmd, chip->IO_ADDR_W);
+
+You should set chip->IO_ADDW_W to either bdevelb_ALE_io_base or
+bdevelb_CLE_io_base, depending  on the ctrl value:
+
+ 	if (ctrl & NAND_CTRL_CHANGE) {
+                 if ( ctrl & NAND_ALE )
+                         chip->IO_ADDR_W = bdevelb_ALE_io_base;
+                 if ( ctrl & NAND_CLE )
+                         chip->IO_ADDR_W = bdevelb_CLE_io_base;
+        }
+
+
+> }
+> 
+> Is this function good for this connection scheme?
+> What is it mean "access" to an address? Can be enough a readb funtion?
+> 
+> regards,
+> Balazs
+> 
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
+
 -- 
-1.5.6.4
+Sincerely yours,
+Mike.
