@@ -1,16 +1,16 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-out.m-online.net ([212.18.0.9])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LoENT-00025z-36
-	for linux-mtd@lists.infradead.org; Mon, 30 Mar 2009 10:06:17 +0000
-Message-Id: <20090330100555.111388782@denx.de>
-Date: Mon, 30 Mar 2009 12:02:43 +0200
+	id 1LoENt-0002DK-9R
+	for linux-mtd@lists.infradead.org; Mon, 30 Mar 2009 10:06:32 +0000
+Message-Id: <20090330100555.428525142@denx.de>
+Date: Mon, 30 Mar 2009 12:02:45 +0200
 From: Wolfgang Grandegger <wg@grandegger.com>
 To: linux-mtd@lists.infradead.org,
  linuxppc-dev@ozlabs.org
-Subject: [PATCH v4 2/4] NAND: FSL-UPM: Add wait flags to support board/chip
-	specific delays
+Subject: [PATCH v4 4/4] powerpc/85xx: TQM8548: Update DTS file for multi-chip
+	support
 References: <20090330100241.346785618@denx.de>
-Content-Disposition: inline; filename=nand-fsl-upm-wait-flags.patch
+Content-Disposition: inline; filename=powerpc-tqm8548-fsl-upm-multi-chip.patch
 Cc: Anton Vorontsov <avorontsov@ru.mvista.com>,
 	Wolfgang Grandegger <wg@grandegger.com>, devicetree-discuss@ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,76 +22,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The NAND flash on the TQM8548_BE modules requires a short delay after
-running the UPM pattern. The TQM8548_BE requires a further short delay
-after writing out a buffer. Normally the R/B pin should be checked, but
-it's not connected on the TQM8548_BE. The existing driver uses similar
-fixed delay points. To manage these extra delays in a more general way,
-I introduced the "fsl,ump-wait-flags" property allowing the board-
-specific driver to specify various types of extra delay.
+This patch adds multi-chip support for the Micron MT29F8G08FAB NAND
+flash memory on the TQM8548 modules.
 
 Signed-off-by: Wolfgang Grandegger <wg@grandegger.com>
 ---
- drivers/mtd/nand/fsl_upm.c |   20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+ arch/powerpc/boot/dts/tqm8548-bigflash.dts |    7 +++++--
+ arch/powerpc/boot/dts/tqm8548.dts          |    7 +++++--
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
-Index: linux-2.6/drivers/mtd/nand/fsl_upm.c
+Index: linux-2.6/arch/powerpc/boot/dts/tqm8548-bigflash.dts
 ===================================================================
---- linux-2.6.orig/drivers/mtd/nand/fsl_upm.c	2009-03-30 12:01:35.634720440 +0200
-+++ linux-2.6/drivers/mtd/nand/fsl_upm.c	2009-03-30 12:01:38.918718552 +0200
-@@ -23,6 +23,10 @@
- #include <linux/io.h>
- #include <asm/fsl_lbc.h>
+--- linux-2.6.orig/arch/powerpc/boot/dts/tqm8548-bigflash.dts	2009-03-30 12:01:22.015719619 +0200
++++ linux-2.6/arch/powerpc/boot/dts/tqm8548-bigflash.dts	2009-03-30 12:01:45.007720662 +0200
+@@ -380,10 +380,13 @@
+ 		upm@3,0 {
+ 			#address-cells = <0>;
+ 			#size-cells = <0>;
+-			compatible = "fsl,upm-nand";
++			compatible = "tqc,tqm8548-upm-nand", "fsl,upm-nand";
+ 			reg = <3 0x0 0x800>;
+ 			fsl,upm-addr-offset = <0x10>;
+ 			fsl,upm-cmd-offset = <0x08>;
++			/* Micron MT29F8G08FAB multi-chip device */
++			fsl,upm-addr-line-cs-offsets = <0x0 0x200>;
++			fsl,upm-wait-flags = <0x5>;
+ 			chip-delay = <25>; // in micro-seconds
  
-+#define FSL_UPM_WAIT_RUN_PATTERN  0x1
-+#define FSL_UPM_WAIT_WRITE_BYTE   0x2
-+#define FSL_UPM_WAIT_WRITE_BUFFER 0x4
-+
- struct fsl_upm_nand {
- 	struct device *dev;
- 	struct mtd_info mtd;
-@@ -41,6 +45,7 @@
- 	uint32_t mchip_count;
- 	uint32_t mchip_number;
- 	int chip_delay;
-+	uint32_t wait_flags;
- };
+ 			nand@0 {
+@@ -392,7 +395,7 @@
  
- #define to_fsl_upm_nand(mtd) container_of(mtd, struct fsl_upm_nand, mtd)
-@@ -96,7 +101,8 @@
- 		fun->mchip_offsets[fun->mchip_number];
- 	fsl_upm_run_pattern(&fun->upm, chip->IO_ADDR_R, mar);
+ 				partition@0 {
+ 					    label = "fs";
+-					    reg = <0x00000000 0x01000000>;
++					    reg = <0x00000000 0x10000000>;
+ 				};
+ 			};
+ 		};
+Index: linux-2.6/arch/powerpc/boot/dts/tqm8548.dts
+===================================================================
+--- linux-2.6.orig/arch/powerpc/boot/dts/tqm8548.dts	2009-03-30 12:01:22.015719619 +0200
++++ linux-2.6/arch/powerpc/boot/dts/tqm8548.dts	2009-03-30 12:01:45.008720246 +0200
+@@ -380,10 +380,13 @@
+ 		upm@3,0 {
+ 			#address-cells = <0>;
+ 			#size-cells = <0>;
+-			compatible = "fsl,upm-nand";
++			compatible = "tqc,tqm8548-upm-nand", "fsl,upm-nand";
+ 			reg = <3 0x0 0x800>;
+ 			fsl,upm-addr-offset = <0x10>;
+ 			fsl,upm-cmd-offset = <0x08>;
++			/* Micron MT29F8G08FAB multi-chip device */
++			fsl,upm-addr-line-cs-offsets = <0x0 0x200>;
++			fsl,upm-wait-flags = <0x5>;
+ 			chip-delay = <25>; // in micro-seconds
  
--	fun_wait_rnb(fun);
-+	if (fun->wait_flags & FSL_UPM_WAIT_RUN_PATTERN)
-+		fun_wait_rnb(fun);
- }
+ 			nand@0 {
+@@ -392,7 +395,7 @@
  
- static void fun_select_chip(struct mtd_info *mtd, int mchip_nr)
-@@ -138,8 +144,11 @@
- 
- 	for (i = 0; i < len; i++) {
- 		out_8(fun->chip.IO_ADDR_W, buf[i]);
--		fun_wait_rnb(fun);
-+		if (fun->wait_flags & FSL_UPM_WAIT_WRITE_BYTE)
-+			fun_wait_rnb(fun);
- 	}
-+	if (fun->wait_flags & FSL_UPM_WAIT_WRITE_BUFFER)
-+		fun_wait_rnb(fun);
- }
- 
- static int __devinit fun_chip_init(struct fsl_upm_nand *fun,
-@@ -285,6 +294,13 @@
- 	else
- 		fun->chip_delay = 50;
- 
-+	prop = of_get_property(ofdev->node, "fsl,upm-wait-flags", &size);
-+	if (prop && size == sizeof(uint32_t))
-+		fun->wait_flags = *prop;
-+	else
-+		fun->wait_flags = FSL_UPM_WAIT_RUN_PATTERN |
-+				  FSL_UPM_WAIT_WRITE_BYTE;
-+
- 	fun->io_base = devm_ioremap_nocache(&ofdev->dev, io_res.start,
- 					    io_res.end - io_res.start + 1);
- 	if (!fun->io_base) {
+ 				partition@0 {
+ 					    label = "fs";
+-					    reg = <0x00000000 0x01000000>;
++					    reg = <0x00000000 0x10000000>;
+ 				};
+ 			};
+ 		};
