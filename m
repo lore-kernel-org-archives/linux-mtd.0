@@ -1,24 +1,23 @@
-Received: from smtp116.sbc.mail.sp1.yahoo.com ([69.147.64.89])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LomTo-0006Fg-QU
-	for linux-mtd@lists.infradead.org; Tue, 31 Mar 2009 22:30:57 +0000
-From: David Brownell <david-b@pacbell.net>
-To: "Mike McTernan" <mmcternan@airvana.com>
-Subject: Re: [PATCH] [MTD] devices/mtd_dataflash: Add SW sector protection
-	support
-Date: Tue, 31 Mar 2009 15:30:44 -0700
-References: <AcmXQvsMZtFKpGUCSJK7bv2cngp9Eg==>
-	<200903231335.32064.david-b@pacbell.net>
-	<4B3F8896E1733D4787DDB0EA1C7FF91F7EFFCE@ukmail.uk.wirelessworld.airvananet.com>
-In-Reply-To: <4B3F8896E1733D4787DDB0EA1C7FF91F7EFFCE@ukmail.uk.wirelessworld.airvananet.com>
+Received: from mail-bw0-f159.google.com ([209.85.218.159])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LonmH-0003ap-HW
+	for linux-mtd@lists.infradead.org; Tue, 31 Mar 2009 23:54:04 +0000
+Received: by bwz3 with SMTP id 3so2829634bwz.18
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 31 Mar 2009 16:53:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: inline
-Message-Id: <200903311530.45069.david-b@pacbell.net>
-Cc: linux-mtd@lists.infradead.org, Ulf Samuelsson <ulf.samuelsson@atmel.com>,
-	Mike Frysinger <vapier.adi@gmail.com>
+In-Reply-To: <200903311418.53772.david-b@pacbell.net>
+References: <200903260042.42091.david-b@pacbell.net>
+	<200903311418.53772.david-b@pacbell.net>
+Date: Wed, 1 Apr 2009 01:51:48 +0200
+Message-ID: <ac3eb2510903311651i4c5f6805tc74fe04ee765be9c@mail.gmail.com>
+Subject: Re: [patch/rfc 2.6.29 1/2] MTD: driver model updates
+From: Kay Sievers <kay.sievers@vrfy.org>
+To: David Brownell <david-b@pacbell.net>, dwmw2@infradead.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Linux MTD <linux-mtd@lists.infradead.org>,
+	LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,23 +27,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 31 March 2009, Mike McTernan wrote:
-> > The terminology is confusing ... there are now two kinds 
-> > of "sector" in the driver.  Call one of them "lock sector"
-> > or somesuch,
-> 
-> It's as per the datasheet figure 4-1; the device has pages, blocks and
-> sectors.  Blocks aren't very interesting so are not in the driver, but
-> pages and sectors are.  But I see only one use of sectors in this
-> driver, what am I missing?
+On Tue, Mar 31, 2009 at 23:18, David Brownell <david-b@pacbell.net> wrote:
+> On Thursday 26 March 2009, David Brownell wrote:
+>> From: David Brownell <dbrownell@users.sourceforge.net>
+>>
+>> Update driver model support in the MTD framework, so it fits
+>> better into the current udev-based hotplug framework:
+>
+> Hmm, no comments? =C2=A0I had understood there was interest over on
+> the MTD side of things in exposing more information through
+> sysfs, to help avoid the need to add Even More Ioctls as part
+> of support for things like NAND chips with 4KB pages, or which
+> handle more than 4GBytes ...
 
-See current usage of the word "sector" in the driver.
-Maybe that just needs to be corrected ("page"?).
+Please have a look at this. We got asked repeatedly to provide better
+hotplug/udev integration, and the patches, and having the parent
+device properly assigned, would solve some of the problems people run
+into currently.
 
-
-> > so it makes sense to check the count of such sectors
-> 
-> Could you clarify what you mean here?
-
-You use "zero sectors" to indicate whether it supports that
-new mechanism.
+Thanks,
+Kay
