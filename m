@@ -1,26 +1,18 @@
-Received: from airmail.airvana.com ([12.6.244.135]
-	helo=airmail.wirelessworld.airvananet.com)
+Received: from mail-gx0-f160.google.com ([209.85.217.160])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lom9B-000178-Mm
-	for linux-mtd@lists.infradead.org; Tue, 31 Mar 2009 22:09:37 +0000
-Content-class: urn:content-classes:message
+	id 1LomTR-0005C7-Lb
+	for linux-mtd@lists.infradead.org; Tue, 31 Mar 2009 22:30:37 +0000
+Received: by gxk4 with SMTP id 4so3682185gxk.18
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 31 Mar 2009 15:30:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: [PATCH] [MTD] devices/mtd_dataflash: Add SW sector protection
-	support
-Date: Tue, 31 Mar 2009 22:08:26 -0000
-Message-ID: <4B3F8896E1733D4787DDB0EA1C7FF91F7EFFCE@ukmail.uk.wirelessworld.airvananet.com>
-In-Reply-To: <200903231335.32064.david-b@pacbell.net>
-References: <AcmXQvsMZtFKpGUCSJK7bv2cngp9Eg==>
-	<4B3F8896E1733D4787DDB0EA1C7FF91F7556E7@ukmail.uk.wirelessworld.airvananet.com>
-	<8bd0f97a0902251050i3d6fc22qaad178a1d7e5b51b@mail.gmail.com>
-	<200903231335.32064.david-b@pacbell.net>
-From: "Mike McTernan" <mmcternan@airvana.com>
-To: "David Brownell" <david-b@pacbell.net>,
-	"Mike Frysinger" <vapier.adi@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Ulf Samuelsson <ulf.samuelsson@atmel.com>
+Date: Tue, 31 Mar 2009 15:30:24 -0700
+Message-ID: <1c3f4270903311530u287184d4x8fce867c8dbbd7ed@mail.gmail.com>
+Subject: copy problem with mtd partition
+From: Manoj <manoj23@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,32 +22,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 23 March 2009 20:36, David Brownell wrote:
+Hi,
 
-> I took a really quick look at this.=20
+I have two mtd partitons on a NAND flash and one of them keeps the
+jffs2 filesystem. I can mount the jffs2 fs, read and write files off
+of the mounted directory. But when I  copy a big file (11 MB) to any
+location in the mounted directory, the call never returns. The
+partition is 112MB big. Sometimes, a small file copy can produce the
+problem.
 
-Many thanks.
+I enabled jffs2 debugging and I see this in dmesg:
 
-> The terminology is confusing ... there are now two kinds=20
-> of "sector" in the driver.  Call one of them "lock sector"
-> or somesuch,
+[  167.250000] jffs2_erase_pending_blocks completed
+[  167.250000] jffs2_reserve_space: ret is -11
+[  167.250000] jffs2_erase_pending_blocks completed
+[  167.250000] jffs2_reserve_space: ret is -11
+[  167.250000] jffs2_erase_pending_blocks completed
+[  167.250000] jffs2_reserve_space: ret is -11
+[  167.250000] jffs2_erase_pending_blocks completed
+[  167.250000] jffs2_reserve_space: ret is -11
+[  167.250000] jffs2_erase_pending_blocks completed
+[  167.250000] jffs2_reserve_space: ret is -11
+[  167.250000] jffs2_erase_pending_blocks completed
+[  167.250000] jffs2_reserve_space: ret is -11
+[  167.250000] jffs2_erase_pending_blocks completed
+[  167.250000] jffs2_reserve_space: ret is -11
+[  167.250000] jffs2_erase_pending_blocks completed
+[  167.250000] jffs2_reserve_space: ret is -11
 
-It's as per the datasheet figure 4-1; the device has pages, blocks and
-sectors.  Blocks aren't very interesting so are not in the driver, but
-pages and sectors are.  But I see only one use of sectors in this
-driver, what am I missing?
+It seems like jffs2 can't find a block to write to? What could be wrong?
 
-> so it makes sense to check the count of such sectors
+Please cc me in the reply as I am not subscribed.
 
-Could you clarify what you mean here?
-
-> stylistically, it'd be better not to #ifdef the guts of
-> the lock/unlock methods.  #define them as NULL when
-> SWPROT is not configured, and don't even set those
-> methods for devices that don't support those ops.
-
-That's easily changed.
-
-Kind Regards,
-
-Mike
+Thanks.
