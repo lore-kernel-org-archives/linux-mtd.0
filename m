@@ -1,21 +1,16 @@
-Received: from moutng.kundenserver.de ([212.227.126.171])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LobYl-00071x-Al
-	for linux-mtd@lists.infradead.org; Tue, 31 Mar 2009 10:51:18 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: Kevin Cernekee <kpc.mtd@gmail.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv4] MTD: New ioctl calls for >4GiB device support
-Date: Tue, 31 Mar 2009 12:51:03 +0200
-References: <a95a62fe0903301814k75ce56f5xef0a04c5c188012@mail.gmail.com>
-In-Reply-To: <a95a62fe0903301814k75ce56f5xef0a04c5c188012@mail.gmail.com>
+Received: from cathcart.site5.com ([74.54.107.137])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LocND-0002sx-5h
+	for linux-mtd@lists.infradead.org; Tue, 31 Mar 2009 11:43:25 +0000
+Message-ID: <49D201BC.3050404@compulab.co.il>
+Date: Tue, 31 Mar 2009 14:42:52 +0300
+From: Mike Rapoport <mike@compulab.co.il>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200903311251.04746.arnd@arndb.de>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: [PATCH RESEND] MTD: maps/pxa2xx_flash: fix build breakage
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: nico@cam.org, ARM Linux <linux-arm-kernel@lists.arm.linux.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,23 +20,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 31 March 2009, Kevin Cernekee wrote:
-> +struct mtd_oob_buf64 {
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0uint64_t start;
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0uint32_t res0;
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0uint32_t length;
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0unsigned char __user *ptr;
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0uint32_t res1[8];
-> +};
+  LD      init/built-in.o
+  LD      .tmp_vmlinux1
+`pxa2xx_flash_remove' referenced in section `.data' of
+drivers/built-in.o: defined in discarded section `.exit.text' of
+drivers/built-in.o
+make: *** [.tmp_vmlinux1] Error 1
 
-Does this have to use an indirect pointer? We normally try to avoid
-ioctl interfaces like this, because they are hard to trace and you
-need a compat wrapper. You might be able to at least avoid the wrapper
-by defining the data structure with a __u64 to take the pointer.
+Signed-off-by: Mike Rapoport <mike@compulab.co.il>
+---
+ drivers/mtd/maps/pxa2xx-flash.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-If you leave the data structure the way it is, you should at least
-move the compat_ioctl handling into mtdchar.c from compat_ioctl.c.
-It will simplify your code and help reduce the size of the common
-ioctl handling.
+diff --git a/drivers/mtd/maps/pxa2xx-flash.c b/drivers/mtd/maps/pxa2xx-flash.c
+index e9026cb..572d32f 100644
+--- a/drivers/mtd/maps/pxa2xx-flash.c
++++ b/drivers/mtd/maps/pxa2xx-flash.c
+@@ -117,7 +117,7 @@ static int __init pxa2xx_flash_probe(struct platform_device *pdev)
+ 	return 0;
+ }
 
-	Arnd <><
+-static int __exit pxa2xx_flash_remove(struct platform_device *dev)
++static int __devexit pxa2xx_flash_remove(struct platform_device *dev)
+ {
+ 	struct pxa2xx_flash_info *info = platform_get_drvdata(dev);
+
+-- 
+1.5.6.4
+
+
+
+-- 
+Sincerely yours,
+Mike.
