@@ -1,16 +1,17 @@
-Received: from cathcart.site5.com ([74.54.107.137])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LocND-0002sx-5h
-	for linux-mtd@lists.infradead.org; Tue, 31 Mar 2009 11:43:25 +0000
-Message-ID: <49D201BC.3050404@compulab.co.il>
-Date: Tue, 31 Mar 2009 14:42:52 +0300
-From: Mike Rapoport <mike@compulab.co.il>
-MIME-Version: 1.0
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: [PATCH RESEND] MTD: maps/pxa2xx_flash: fix build breakage
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: nico@cam.org, ARM Linux <linux-arm-kernel@lists.arm.linux.org.uk>
+Received: from wa-out-1112.google.com ([209.85.146.183])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Loe8u-0007Nn-5h
+	for linux-mtd@lists.infradead.org; Tue, 31 Mar 2009 13:36:46 +0000
+Received: by wa-out-1112.google.com with SMTP id j5so1488678wah.2
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 31 Mar 2009 06:36:37 -0700 (PDT)
+From: subbu31mani@gmail.com
+To: sjhill@realitydiluted.com
+Subject: [RFC][PATCH] NAND flash-unlock support in MTD
+Date: Tue, 31 Mar 2009 09:36:34 -0400
+Message-Id: <1238506594-32114-1-git-send-email-subbu31mani@gmail.com>
+Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org,
+	omapandroid-discussion@omapzoom.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,36 +21,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-  LD      init/built-in.o
-  LD      .tmp_vmlinux1
-`pxa2xx_flash_remove' referenced in section `.data' of
-drivers/built-in.o: defined in discarded section `.exit.text' of
-drivers/built-in.o
-make: *** [.tmp_vmlinux1] Error 1
-
-Signed-off-by: Mike Rapoport <mike@compulab.co.il>
----
- drivers/mtd/maps/pxa2xx-flash.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/mtd/maps/pxa2xx-flash.c b/drivers/mtd/maps/pxa2xx-flash.c
-index e9026cb..572d32f 100644
---- a/drivers/mtd/maps/pxa2xx-flash.c
-+++ b/drivers/mtd/maps/pxa2xx-flash.c
-@@ -117,7 +117,7 @@ static int __init pxa2xx_flash_probe(struct platform_device *pdev)
- 	return 0;
- }
-
--static int __exit pxa2xx_flash_remove(struct platform_device *dev)
-+static int __devexit pxa2xx_flash_remove(struct platform_device *dev)
- {
- 	struct pxa2xx_flash_info *info = platform_get_drvdata(dev);
-
--- 
-1.5.6.4
-
-
-
--- 
-Sincerely yours,
-Mike.
++#define NAND_CMD_UNLOCK1        0x23
++#define NAND_CMD_UNLOCK2        0x24
++/**
++ * @brief platform specific unlock function
++ *
++ * @param mtd - mtd info
++ * @param ofs - offset to start unlock from
++ * @param len - length to unlock
++ *
++ * @return - unlock status
++ */
++static int nand_unlock(struct mtd_info *mtd, loff_t ofs, size_t len)
++{
++        int ret = 0;
++        int chipnr;
++        int status;
++        unsigned long page;
++        struct nand_chip *this = mtd->priv;
++        printk(KERN_INFO "nand_unlock: start: %08x, length: %d!\n",
++                        (int)ofs, (int)len);
++
++        /* select the NAND device */
++        chipnr = (int)(ofs >> this->chip_shift);
++        this->select_chip(mtd, chipnr);
++        /* check the WP bit */
++        this->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
++        if ((this->read_byte(mtd) & 0x80) == 0) {
++                printk(KERN_ERR "nand_unlock: Device is write protected!\n");
++                ret = -EINVAL;
++                goto out;
++        }
++
++        if ((ofs & (mtd->writesize - 1)) != 0) {
++                printk(KERN_ERR "nand_unlock: Start address must be"
++                                "beginning of nand page!\n");
++                ret = -EINVAL;
++                goto out;
++        }
++
++        if (len == 0 || (len & (mtd->writesize - 1)) != 0) {
++                printk(KERN_ERR "nand_unlock: Length must be a multiple of "
++                                "nand page size!\n");
++                ret = -EINVAL;
++                goto out;
++        }
++
++        /* submit address of first page to unlock */
++        page = (unsigned long)(ofs >> this->page_shift);
++        this->cmdfunc(mtd, NAND_CMD_UNLOCK1, -1, page & this->pagemask);
++
++        /* submit ADDRESS of LAST page to unlock */
++        page += (unsigned long)((ofs + len) >> this->page_shift) ;
++        this->cmdfunc(mtd, NAND_CMD_UNLOCK2, -1, page & this->pagemask);
++
++        /* call wait ready function */
++        status = this->waitfunc(mtd, this);
++        udelay(1000);
++        /* see if device thinks it succeeded */
++        if (status & 0x01) {
++                /* there was an error */
++                printk(KERN_ERR "nand_unlock: error status =0x%08x ", status);
++                ret = -EIO;
++                goto out;
++        }
++
++ out:
++        /* de-select the NAND device */
++        this->select_chip(mtd, -1);
++        return ret;
++}
++
++
+ /**
+  * single_erease_cmd - [GENERIC] NAND standard block erase command function
+  * @mtd:	MTD device structure
+@@ -2794,7 +2866,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	mtd->write_oob = nand_write_oob;
+ 	mtd->sync = nand_sync;
+ 	mtd->lock = NULL;
+-	mtd->unlock = NULL;
++	mtd->unlock = nand_unlock;
+ 	mtd->suspend = nand_suspend;
+ 	mtd->resume = nand_resume;
+ 	mtd->block_isbad = nand_block_isbad;
