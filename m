@@ -1,18 +1,24 @@
-Received: from mail-gx0-f160.google.com ([209.85.217.160])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LomTR-0005C7-Lb
-	for linux-mtd@lists.infradead.org; Tue, 31 Mar 2009 22:30:37 +0000
-Received: by gxk4 with SMTP id 4so3682185gxk.18
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 31 Mar 2009 15:30:24 -0700 (PDT)
+Received: from smtp116.sbc.mail.sp1.yahoo.com ([69.147.64.89])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LomTo-0006Fg-QU
+	for linux-mtd@lists.infradead.org; Tue, 31 Mar 2009 22:30:57 +0000
+From: David Brownell <david-b@pacbell.net>
+To: "Mike McTernan" <mmcternan@airvana.com>
+Subject: Re: [PATCH] [MTD] devices/mtd_dataflash: Add SW sector protection
+	support
+Date: Tue, 31 Mar 2009 15:30:44 -0700
+References: <AcmXQvsMZtFKpGUCSJK7bv2cngp9Eg==>
+	<200903231335.32064.david-b@pacbell.net>
+	<4B3F8896E1733D4787DDB0EA1C7FF91F7EFFCE@ukmail.uk.wirelessworld.airvananet.com>
+In-Reply-To: <4B3F8896E1733D4787DDB0EA1C7FF91F7EFFCE@ukmail.uk.wirelessworld.airvananet.com>
 MIME-Version: 1.0
-Date: Tue, 31 Mar 2009 15:30:24 -0700
-Message-ID: <1c3f4270903311530u287184d4x8fce867c8dbbd7ed@mail.gmail.com>
-Subject: copy problem with mtd partition
-From: Manoj <manoj23@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+Message-Id: <200903311530.45069.david-b@pacbell.net>
+Cc: linux-mtd@lists.infradead.org, Ulf Samuelsson <ulf.samuelsson@atmel.com>,
+	Mike Frysinger <vapier.adi@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,36 +28,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Tuesday 31 March 2009, Mike McTernan wrote:
+> > The terminology is confusing ... there are now two kinds 
+> > of "sector" in the driver.  Call one of them "lock sector"
+> > or somesuch,
+> 
+> It's as per the datasheet figure 4-1; the device has pages, blocks and
+> sectors.  Blocks aren't very interesting so are not in the driver, but
+> pages and sectors are.  But I see only one use of sectors in this
+> driver, what am I missing?
 
-I have two mtd partitons on a NAND flash and one of them keeps the
-jffs2 filesystem. I can mount the jffs2 fs, read and write files off
-of the mounted directory. But when I  copy a big file (11 MB) to any
-location in the mounted directory, the call never returns. The
-partition is 112MB big. Sometimes, a small file copy can produce the
-problem.
+See current usage of the word "sector" in the driver.
+Maybe that just needs to be corrected ("page"?).
 
-I enabled jffs2 debugging and I see this in dmesg:
 
-[  167.250000] jffs2_erase_pending_blocks completed
-[  167.250000] jffs2_reserve_space: ret is -11
-[  167.250000] jffs2_erase_pending_blocks completed
-[  167.250000] jffs2_reserve_space: ret is -11
-[  167.250000] jffs2_erase_pending_blocks completed
-[  167.250000] jffs2_reserve_space: ret is -11
-[  167.250000] jffs2_erase_pending_blocks completed
-[  167.250000] jffs2_reserve_space: ret is -11
-[  167.250000] jffs2_erase_pending_blocks completed
-[  167.250000] jffs2_reserve_space: ret is -11
-[  167.250000] jffs2_erase_pending_blocks completed
-[  167.250000] jffs2_reserve_space: ret is -11
-[  167.250000] jffs2_erase_pending_blocks completed
-[  167.250000] jffs2_reserve_space: ret is -11
-[  167.250000] jffs2_erase_pending_blocks completed
-[  167.250000] jffs2_reserve_space: ret is -11
+> > so it makes sense to check the count of such sectors
+> 
+> Could you clarify what you mean here?
 
-It seems like jffs2 can't find a block to write to? What could be wrong?
-
-Please cc me in the reply as I am not subscribed.
-
-Thanks.
+You use "zero sectors" to indicate whether it supports that
+new mechanism.
