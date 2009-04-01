@@ -1,21 +1,23 @@
-Received: from n30.bullet.mail.mud.yahoo.com ([68.142.207.49])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lor17-0005Vd-4g
-	for linux-mtd@lists.infradead.org; Wed, 01 Apr 2009 03:21:35 +0000
-From: David Brownell <david-b@pacbell.net>
-To: Kevin Cernekee <kpc.mtd@gmail.com>
-Subject: Re: [patch/rfc 2.6.29 1/2] MTD: driver model updates
-Date: Tue, 31 Mar 2009 20:21:25 -0700
+Received: from qw-out-1920.google.com ([74.125.92.147])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LosNs-0000Yv-Qw
+	for linux-mtd@lists.infradead.org; Wed, 01 Apr 2009 04:49:11 +0000
+Received: by qw-out-1920.google.com with SMTP id 5so2196397qwf.24
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 31 Mar 2009 21:49:03 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <200903312021.25165.david-b@pacbell.net>
 References: <200903260042.42091.david-b@pacbell.net>
 	<200903311418.53772.david-b@pacbell.net>
 	<a95a62fe0903311817i76f9f6d8qf7470fd14a62b912@mail.gmail.com>
-In-Reply-To: <a95a62fe0903311817i76f9f6d8qf7470fd14a62b912@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+	<200903312021.25165.david-b@pacbell.net>
+Date: Tue, 31 Mar 2009 21:49:03 -0700
+Message-ID: <a95a62fe0903312149j482c1684k564896e1981f9819@mail.gmail.com>
+Subject: Re: [patch/rfc 2.6.29 1/2] MTD: driver model updates
+From: Kevin Cernekee <kpc.mtd@gmail.com>
+To: David Brownell <david-b@pacbell.net>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200903312021.25165.david-b@pacbell.net>
 Cc: Kay Sievers <kay.sievers@vrfy.org>,
 	Linux MTD <linux-mtd@lists.infradead.org>,
 	LKML <linux-kernel@vger.kernel.org>
@@ -28,45 +30,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 31 March 2009, Kevin Cernekee wrote:
-> On Tue, Mar 31, 2009 at 2:18 PM, David Brownell <david-b@pacbell.net> wrote:
-> > Hmm, no comments?  I had understood there was interest over on
-> > the MTD side of things in exposing more information through
-> > sysfs, to help avoid the need to add Even More Ioctls as part
-> > of support for things like NAND chips with 4KB pages, or which
-> > handle more than 4GBytes ...
-> 
-> Based on this post:
-> http://lists.infradead.org/pipermail/linux-mtd/2009-March/025060.html
-> 
-> I am inferring that the following attributes are wanted in the MTD
-> sysfs interface:
-> 
-> 1) mtd_info_user fields - type, flags, size, erasesize, writesize,
-> oobsize.  So far we have "type," but it should be easy to add the
-> rest.
+On 3/31/09, David Brownell <david-b@pacbell.net> wrote:
+>> 2) region_info_user fields?  Not really sure how this would work.
+>> Maybe a separate subdirectory for each region?
+>
+> I'm not sure I've ever had reason to care about a "region" (whatever
+> that is!) with MTD hardware.
 
-Yes, easy to add those.  As noted in the $SUBJECT patch, the set
-consisting of just "type" is a "starter set".  :)
+Erase Block Regions.  From the CFI spec:
 
-For procfs elimination, a name/label would be needed too; that can
-be an input to, or output from, cmdlinepart.
+"x specifies the number of regions within the device containing one or
+more contiguous Erase Blocks of the same size.  For example, a 128KB
+device (1Mb) having blocking of 16KB, 8KB, four 2KB, two 16KB, and one
+64KB is considered to have 5 Erase Block Regions."
 
-My question about the $SUBJECT patch is whether there's any reason
-not to use that as the start of such driver model enhancements.
-I'm thinking the answer to that seems to be "no", and that someone
-more involved in *using* those sysfs attributes would be a better
-choice for growing that set of attributes.
+This is fairly common on parallel NOR devices.  Probably less so on
+huge NAND devices.
 
+> I suspect that a lot of interesting questions could come up in
+> the context of enhancing mtd-utils to work with sysfs and bigger
+> NAND chips.  Some might relate to "regions".
 
-> 2) region_info_user fields?  Not really sure how this would work.
-> Maybe a separate subdirectory for each region?
+Right, this sysfs requirement raises a number of issues that need to
+be fully thought out in order to make sure the new interface is a
+suitable replacement for the "INFO" ioctls.  For instance:
 
-I'm not sure I've ever had reason to care about a "region" (whatever
-that is!) with MTD hardware.
+1) If each region is a subdirectory, are user programs supposed to use
+readdir() to count them?  Is ioctl(MEMGETREGIONCOUNT) still the
+preferred method?  Or do we make a new "regioncount" sysfs attribute?
 
-I suspect that a lot of interesting questions could come up in
-the context of enhancing mtd-utils to work with sysfs and bigger
-NAND chips.  Some might relate to "regions".
+(A somewhat related question is whether MEMGETREGIONCOUNT only exists
+because it was impossible to expand the MEMGETINFO struct.  After all,
+it's just copying another field from the mtd_info struct.)
 
-- Dave
+2) How are user programs expected to access MTD sysfs?  Do we
+introduce a new libsysfs dependency, or roll our own implementation?
+Are there any past examples of ioctls being phased out in favor of
+sysfs, particularly in subsystems that are popular on embedded
+platforms?
+
+3) What should the mtd-utils changes look like?  Do we define
+backward-compatibility wrapper functions that try to work the same way
+the ioctls used to?  New libraries and layers of abstraction?  Or
+something in the middle?
