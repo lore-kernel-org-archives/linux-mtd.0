@@ -1,14 +1,14 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lp2uH-00044H-BS
-	for linux-mtd@lists.infradead.org; Wed, 01 Apr 2009 16:03:30 +0000
+	id 1Lp3N7-0000DA-QM
+	for linux-mtd@lists.infradead.org; Wed, 01 Apr 2009 16:33:08 +0000
 From: nsnehaprabha@ti.com
 To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
 	davinci-linux-open-source@linux.davincidsp.com
 Subject: [PATCH] MTD-NAND: Changes to read_page APIs to support
 	NAND_ECC_HW_SYNDROME mode on TI DaVinci DM355
-Date: Wed,  1 Apr 2009 12:03:04 -0400
-Message-Id: <1238601784-9563-1-git-send-email-nsnehaprabha@ti.com>
+Date: Wed,  1 Apr 2009 12:32:53 -0400
+Message-Id: <1238603573-9849-1-git-send-email-nsnehaprabha@ti.com>
 Cc: Sneha Narnakaje <nsnehaprabha@ti.com>, Sandeep Paulraj <s-paulraj@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
