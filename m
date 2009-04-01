@@ -1,23 +1,19 @@
-Received: from moutng.kundenserver.de ([212.227.126.188])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lp1mG-0005Pf-Vs
-	for linux-mtd@lists.infradead.org; Wed, 01 Apr 2009 14:51:00 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: Kevin Cernekee <kpc.mtd@gmail.com>
-Subject: Re: [PATCHv4] MTD: New ioctl calls for >4GiB device support
-Date: Wed, 1 Apr 2009 16:50:22 +0200
-References: <a95a62fe0903301814k75ce56f5xef0a04c5c188012@mail.gmail.com>
-	<200903311251.04746.arnd@arndb.de>
-	<a95a62fe0903311129g7ecf6997k2f06f6d9a2abe2c@mail.gmail.com>
-In-Reply-To: <a95a62fe0903311129g7ecf6997k2f06f6d9a2abe2c@mail.gmail.com>
+Received: from cathcart.site5.com ([74.54.107.137])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Lp2EN-0001HM-5n
+	for linux-mtd@lists.infradead.org; Wed, 01 Apr 2009 15:20:01 +0000
+Message-ID: <49D38610.2050304@compulab.co.il>
+Date: Wed, 01 Apr 2009 18:19:44 +0300
+From: Mike Rapoport <mike@compulab.co.il>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200904011650.22928.arnd@arndb.de>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-kernel@vger.kernel.org
+To: bzachar@direkt-kfki.hu
+Subject: Re: nand driver help
+References: <49CCEB89.1050906@direkt-kfki.hu> <49D0682E.4080500@compulab.co.il>
+	<1411.192.168.200.50.1238430347.squirrel@webmail.direkt-kfki.hu>
+In-Reply-To: <1411.192.168.200.50.1238430347.squirrel@webmail.direkt-kfki.hu>
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,69 +23,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 31 March 2009, Kevin Cernekee wrote:
-> On Tue, Mar 31, 2009 at 3:51 AM, Arnd Bergmann <arnd@arndb.de> wrote:
-> > On Tuesday 31 March 2009, Kevin Cernekee wrote:
-> >> +struct mtd_oob_buf64 {
-> >> +       uint64_t start;
-> >> +       uint32_t res0;
-> >> +       uint32_t length;
-> >> +       unsigned char __user *ptr;
-> >> +       uint32_t res1[8];
-> >> +};
-> >
-> > Does this have to use an indirect pointer? We normally try to avoid
-> > ioctl interfaces like this, because they are hard to trace and you
-> > need a compat wrapper. You might be able to at least avoid the wrapper
-> > by defining the data structure with a __u64 to take the pointer.
+
+
+bzachar@direkt-kfki.hu wrote:
+>>
+>> Zachár Balázs wrote:
+>>> Hi,
+>>>
+>>> I have a pxa270 based board, and I try to create the nand driver for the
+>>> 2.6.28-7 main kernel... On this board, the nand flash is connected
+>>> directly to the pxa27x PCMCIA socket's pins... (see this
+>>> pdf:
+>>> http://pubs.gumstix.org/documents/PXA%20Documentation/PXA270/PXA270%20Connecting%20NAND%20Flash%20%5B28014402%5D.pdf)
+>>>
+>> [ snip ]
+>>
+>>> On my board the NAND AL signal is connected to MA20 so if I "access" to
+>>> 0x2010_0000 (PCMCIA0 address: 0x2000_0000) it should decoded as AL=1
+>>> operation.
+>>> If I right, if I "access" to the PCMCIA1 address (PCMCIA1 address:
+>>> 0x3000_0000) it should decoded as a CL=1 operation.
+>>> The R/Bn (ready_notbusy) signal is connected to GPIO55 and the WP signal
+>>> is connected to GPIO56.
+>>>
+>>> I write this hwcontrol function for my board's cmd_crtl function, but I
+>>> think it isn't work(bdevelb_ALE_io_base=ioremap(0x20100000,
+>>> 0x1000),bdevelb_CLE_io_base=ioremap(0x30000000, 0x1000)):
+>>> static void bdevelb_nand_hwcontrol(struct mtd_info *mtd, int cmd,
+>>> unsigned int ctrl)
+>>> {
+>>> 	struct nand_chip *chip = mtd->priv;
+>>>
+>>> 	if (ctrl & NAND_CTRL_CHANGE) {
+>>>                 if ( ctrl & NAND_ALE )
+>>>                         writeb(0xff, bdevelb_ALE_io_base);
+>>>                 if ( ctrl & NAND_CLE )
+>>>                         writeb(0xff, bdevelb_CLE_io_base);
+>>>         }
+>>>
+>>>         if (cmd != NAND_CMD_NONE)
+>>>                 writeb(cmd, chip->IO_ADDR_W);
+>> You should set chip->IO_ADDW_W to either bdevelb_ALE_io_base or
+>> bdevelb_CLE_io_base, depending  on the ctrl value:
+>>
+>>  	if (ctrl & NAND_CTRL_CHANGE) {
+>>                  if ( ctrl & NAND_ALE )
+>>                          chip->IO_ADDR_W = bdevelb_ALE_io_base;
+>>                  if ( ctrl & NAND_CLE )
+>>                          chip->IO_ADDR_W = bdevelb_CLE_io_base;
+>>         }
+>>
 > 
-> Could you please point out another ioctl that is set up this way, so
-> that I can follow the same conventions?
-
-struct signalfd_siginfo uses __u64 to store pointers, and so does
-the sg_io_v4 ioctl. Some of the ioctls in kvm.h also use __u64
-for addresses.
-
-> Are we ever worried about pointers that are larger than 64 bits, or
-> ints that are larger than 32 bits?  Or is it generally OK to assume
-> this will never happen?
-
-None of these is a worry, as we already rely on the size of int, long
-and pointer in a lot of ways.
-
-> > If you leave the data structure the way it is, you should at least
-> > move the compat_ioctl handling into mtdchar.c from compat_ioctl.c.
-> > It will simplify your code and help reduce the size of the common
-> > ioctl handling.
+> Firstly, many thanks for your help!
 > 
-> Is this what you are recommending?
+> I modified your code to this (the modification based on the orig (2.6.16)
+> driver):
+>         if (ctrl & NAND_CTRL_CHANGE) {
+>                 if ( ctrl & NAND_ALE )
+>                         chip->IO_ADDR_W = bdevelb_ALE_io_base;
+>                 else
+>                 if ( ctrl & NAND_CLE )
+>                         chip->IO_ADDR_W = bdevelb_CLE_io_base;
+>                 else
+>                         chip->IO_ADDR_W = bdevelb_io_base;
 > 
-> 1) Leave existing MTD COMPATIBLE_IOCTLs in fs/compat_ioctl.c
+> For the first look, it works, but I will make a complete test at tomarrow...
+> What do you think about this code?
+
+seems Ok.
+
+> regars,
+> Balazs Zachar
 > 
-> 2) Implement compat_ioctl handler in mtdchar.c for MEMREADOOB64_32 and
-> MEMWRITEOOB64_32
 > 
-> 3) For all other commands, the new handler should return -ENOIOCTLCMD
-> and let fs/compat_ioctl.c handle them
+>>> }
+>>>
+>>> Is this function good for this connection scheme?
+>>> What is it mean "access" to an address? Can be enough a readb funtion?
+>>>
+>>> regards,
+>>> Balazs
+>>>
+>>>
+>>>
+>>> ______________________________________________________
+>>> Linux MTD discussion mailing list
+>>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>>
+>> --
+>> Sincerely yours,
+>> Mike.
+>>
+>>
+> 
+> 
+> 
 
-Yes, that would be good.
-
-> Would it be a good idea to move MTDREADOOB32 / MEMWRITEOOB32 out of
-> fs/compat_ioctl.c at the same time, so that everything is in one
-> place?
-
-Yes, I'd like to see this as a separate patch either before or
-after the other one. I have the long-term goal of getting rid of
-all the wrapper functions in fs/compat_ioctl.c, but it's stalled
-for some time.
-
-> If the compat wrappers are moved to mtdchar.c , does that imply that
-> they should be reimplemented "natively" instead of using
-> compat_alloc_user_space(), copy_in_user(), and sys_ioctl() to cause
-> them to reinvoke the 64-bit versions?
-
-Right, that is what I mean with 'simplify your code'.
-
-Thanks,
-
-	Arnd <><
+-- 
+Sincerely yours,
+Mike.
