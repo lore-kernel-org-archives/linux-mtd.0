@@ -1,24 +1,22 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from bear.ext.ti.com ([192.94.94.41])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LovoR-0000ud-MT
-	for linux-mtd@lists.infradead.org; Wed, 01 Apr 2009 08:28:50 +0000
-Subject: Re: [patch/rfc 2.6.29 1/2] MTD: driver model updates
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-In-Reply-To: <Pine.LNX.4.64.0904011023560.9213@lnxricardw.se.axis.com>
-References: <200903260042.42091.david-b@pacbell.net>
-	<200903311418.53772.david-b@pacbell.net>
-	<Pine.LNX.4.64.0904010920570.9213@lnxricardw.se.axis.com>
-	<200904010105.33674.david-b@pacbell.net>
-	<Pine.LNX.4.64.0904011023560.9213@lnxricardw.se.axis.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 01 Apr 2009 11:28:12 +0300
-Message-Id: <1238574492.20906.71.camel@localhost.localdomain>
-Mime-Version: 1.0
+	id 1Lox8z-0000eO-8b
+	for linux-mtd@lists.infradead.org; Wed, 01 Apr 2009 09:54:07 +0000
+Received: from dlep34.itg.ti.com ([157.170.170.115])
+	by bear.ext.ti.com (8.13.7/8.13.7) with ESMTP id n319rrCZ029897
+	for <linux-mtd@lists.infradead.org>; Wed, 1 Apr 2009 04:53:58 -0500
+Received: from webmail.ti.com (localhost [127.0.0.1])
+	by dlep34.itg.ti.com (8.13.7/8.13.7) with ESMTP id n319rnPZ003508
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 1 Apr 2009 04:53:51 -0500 (CDT)
+Message-ID: <34437.192.168.10.89.1238579632.squirrel@dbdmail.itg.ti.com>
+Date: Wed, 1 Apr 2009 15:23:52 +0530 (IST)
+Subject: [resending][PATCH] [MTD] [NAND] nand_ecc.c: Bug fix in nand ecc
+From: "vimal singh" <vimalsingh@ti.com>
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
-Cc: David Brownell <david-b@pacbell.net>, Kay Sievers <kay.sievers@vrfy.org>,
-	Linux MTD <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,19 +26,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-04-01 at 10:25 +0200, Ricard Wanderlof wrote:
-> On Wed, 1 Apr 2009, David Brownell wrote:
-> 
-> > Erasing an MTD partition may require an ioctl forever.  :)
-> 
-> Well, I can imagine that one actually being accomplished with a simple 
-> write to a sysfs file ... but we might not want to make it that simple.
+I do not see this patch on tree, yet.
 
-Of course we are talking only about _informational_ interfaces, when
-MTD provides various information - size, name, type, etc.
-Of course erasing, marking blocks bad, etc should be implemented
-as ioctl.
+------------------------------ Original Message -------------------------------
+Subject: [PATCH] [MTD] [NAND] nand_ecc.c: Bug fix in nand ecc
+From:    "vimal singh" <vimalsingh@ti.com>
+Date:    Mon, February 23, 2009 1:46 pm
+To:      linux-mtd@lists.infradead.org
+-------------------------------------------------------------------------------
 
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+Type of 'byte_addr' needed to change for 512 byte ecc support.
+
+Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+---
+
+diff --git a/drivers/mtd/nand/nand_ecc.c b/drivers/mtd/nand/nand_ecc.c index
+868147a..6b19058 100644
+--- a/drivers/mtd/nand/nand_ecc.c
++++ b/drivers/mtd/nand/nand_ecc.c
+@@ -429,7 +429,8 @@ int nand_correct_data(struct mtd_info *mtd, unsigned char
+*buf,
+ 		      unsigned char *read_ecc, unsigned char *calc_ecc)
+ {
+ 	unsigned char b0, b1, b2;
+-	unsigned char byte_addr, bit_addr;
++	uint32_t byte_addr;
++	unsigned char bit_addr;
+ 	/* 256 or 512 bytes/ecc  */
+ 	const uint32_t eccsize_mult =
+ 			(((struct nand_chip *)mtd->priv)->ecc.size) >> 8;
