@@ -1,22 +1,23 @@
-Received: from n22b.bullet.mail.mud.yahoo.com ([68.142.206.159])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LotbB-0001gP-S9
-	for linux-mtd@lists.infradead.org; Wed, 01 Apr 2009 06:07:01 +0000
-From: David Brownell <david-b@pacbell.net>
-To: dedekind@infradead.org
-Subject: Re: [patch/rfc 2.6.29 2/2] MTD: support driver model updates
-Date: Tue, 31 Mar 2009 22:57:37 -0700
+Received: from mail-ew0-f177.google.com ([209.85.219.177])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LotdB-0003eh-7n
+	for linux-mtd@lists.infradead.org; Wed, 01 Apr 2009 06:09:04 +0000
+Received: by ewy25 with SMTP id 25so3723623ewy.18
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 31 Mar 2009 23:08:54 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1238564771.20906.26.camel@localhost.localdomain>
 References: <200903260039.34013.david-b@pacbell.net>
 	<200903260042.50236.david-b@pacbell.net>
 	<1238564771.20906.26.camel@localhost.localdomain>
-In-Reply-To: <1238564771.20906.26.camel@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: inline
-Message-Id: <200903312257.37434.david-b@pacbell.net>
-Cc: Kay Sievers <kay.sievers@vrfy.org>,
+Date: Wed, 1 Apr 2009 10:08:54 +0400
+Message-ID: <acd2a5930903312308j47f23c92h95816403a4254230@mail.gmail.com>
+Subject: Re: [patch/rfc 2.6.29 2/2] MTD: support driver model updates
+From: Vitaly Wool <vitalywool@gmail.com>
+To: dedekind@infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: David Brownell <david-b@pacbell.net>, Kay Sievers <kay.sievers@vrfy.org>,
 	Linux MTD <linux-mtd@lists.infradead.org>,
 	LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,24 +29,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 31 March 2009, Artem Bityutskiy wrote:
-> > --- a/drivers/mtd/nand/mxc_nand.c
-> > +++ b/drivers/mtd/nand/mxc_nand.c
-> > @@ -866,6 +866,7 @@ static int __init mxcnd_probe(struct pla
-> >       mtd = &host->mtd;
-> >       mtd->priv = this;
-> >       mtd->owner = THIS_MODULE;
-> > +     mtd->dev.parent = &pdev->dev;
-> 
 > Could this be done for all NANDs in nand_base.c instead?
 
-By adding the device as a parameter to nand_scan(),
-and presumably nand_scan_ident() ... which is a more
-invasive API change, and would require a "flag day"
-to convert all drivers.
+Why would it be reasonable?
 
-My default assumption for API changes is to avoid
-flag days.  They can be done, yes, but I don't see
-a compelling reason to choose one here.
-
-- Dave
+Thanks,
+   Vitaly
