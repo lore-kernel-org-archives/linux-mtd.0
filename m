@@ -1,23 +1,23 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lp0jU-0001Co-Ec
-	for linux-mtd@lists.infradead.org; Wed, 01 Apr 2009 13:44:03 +0000
-From: Juergen Beisert <jbe@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Date: Wed, 1 Apr 2009 15:43:43 +0200
-References: <200903260042.42091.david-b@pacbell.net>
-	<200903311418.53772.david-b@pacbell.net>
-	<ac3eb2510903311651i4c5f6805tc74fe04ee765be9c@mail.gmail.com>
-In-Reply-To: <ac3eb2510903311651i4c5f6805tc74fe04ee765be9c@mail.gmail.com>
+Received: from moutng.kundenserver.de ([212.227.126.188])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Lp1mG-0005Pf-Vs
+	for linux-mtd@lists.infradead.org; Wed, 01 Apr 2009 14:51:00 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: Kevin Cernekee <kpc.mtd@gmail.com>
+Subject: Re: [PATCHv4] MTD: New ioctl calls for >4GiB device support
+Date: Wed, 1 Apr 2009 16:50:22 +0200
+References: <a95a62fe0903301814k75ce56f5xef0a04c5c188012@mail.gmail.com>
+	<200903311251.04746.arnd@arndb.de>
+	<a95a62fe0903311129g7ecf6997k2f06f6d9a2abe2c@mail.gmail.com>
+In-Reply-To: <a95a62fe0903311129g7ecf6997k2f06f6d9a2abe2c@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200904011543.44124.jbe@pengutronix.de>
-Subject: Re: [patch/rfc 2.6.29 1/2] MTD: driver model updates
-Cc: David Brownell <david-b@pacbell.net>, Kay Sievers <kay.sievers@vrfy.org>,
-	dwmw2@infradead.org, LKML <linux-kernel@vger.kernel.org>
+Message-Id: <200904011650.22928.arnd@arndb.de>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,81 +27,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David, Kay,
-
-On Mittwoch, 1. April 2009, Kay Sievers wrote:
-> On Tue, Mar 31, 2009 at 23:18, David Brownell <david-b@pacbell.net> wrote:
-> > On Thursday 26 March 2009, David Brownell wrote:
-> >> From: David Brownell <dbrownell@users.sourceforge.net>
-> >>
-> >> Update driver model support in the MTD framework, so it fits
-> >> better into the current udev-based hotplug framework:
+On Tuesday 31 March 2009, Kevin Cernekee wrote:
+> On Tue, Mar 31, 2009 at 3:51 AM, Arnd Bergmann <arnd@arndb.de> wrote:
+> > On Tuesday 31 March 2009, Kevin Cernekee wrote:
+> >> +struct mtd_oob_buf64 {
+> >> +       uint64_t start;
+> >> +       uint32_t res0;
+> >> +       uint32_t length;
+> >> +       unsigned char __user *ptr;
+> >> +       uint32_t res1[8];
+> >> +};
 > >
-> > Hmm, no comments? =C2=A0I had understood there was interest over on
-> > the MTD side of things in exposing more information through
-> > sysfs, to help avoid the need to add Even More Ioctls as part
-> > of support for things like NAND chips with 4KB pages, or which
-> > handle more than 4GBytes ...
->
-> Please have a look at this. We got asked repeatedly to provide better
-> hotplug/udev integration, and the patches, and having the parent
-> device properly assigned, would solve some of the problems people run
-> into currently.
+> > Does this have to use an indirect pointer? We normally try to avoid
+> > ioctl interfaces like this, because they are hard to trace and you
+> > need a compat wrapper. You might be able to at least avoid the wrapper
+> > by defining the data structure with a __u64 to take the pointer.
+> 
+> Could you please point out another ioctl that is set up this way, so
+> that I can follow the same conventions?
 
-Without patch:
-=2D-------------
+struct signalfd_siginfo uses __u64 to store pointers, and so does
+the sg_io_v4 ioctl. Some of the ioctls in kvm.h also use __u64
+for addresses.
 
-$ udevadm info -a -p /sys/block/mtdblock0
-[...]
-  looking at device '/devices/virtual/block/mtdblock0':
-    KERNEL=3D=3D"mtdblock0"
-    SUBSYSTEM=3D=3D"block"
-    DRIVER=3D=3D""
-    ATTR{range}=3D=3D"1"
-    ATTR{removable}=3D=3D"0"
-    ATTR{size}=3D=3D"256"
-    ATTR{capability}=3D=3D"10"
-    ATTR{stat}=3D=3D"       0        0        0        0        0        0 =
-       0        0        0        0        0"
+> Are we ever worried about pointers that are larger than 64 bits, or
+> ints that are larger than 32 bits?  Or is it generally OK to assume
+> this will never happen?
 
-And nearly the same data for the other flash device. No chance to detect if
-this one is the NOR or the NAND type...
+None of these is a worry, as we already rely on the size of int, long
+and pointer in a lot of ways.
 
-With the patch:
-=2D--------------
+> > If you leave the data structure the way it is, you should at least
+> > move the compat_ioctl handling into mtdchar.c from compat_ioctl.c.
+> > It will simplify your code and help reduce the size of the common
+> > ioctl handling.
+> 
+> Is this what you are recommending?
+> 
+> 1) Leave existing MTD COMPATIBLE_IOCTLs in fs/compat_ioctl.c
+> 
+> 2) Implement compat_ioctl handler in mtdchar.c for MEMREADOOB64_32 and
+> MEMWRITEOOB64_32
+> 
+> 3) For all other commands, the new handler should return -ENOIOCTLCMD
+> and let fs/compat_ioctl.c handle them
 
-$ udevadm info -a -p /sys/block/mtdblock0
-[...]
-  looking at parent device '/devices/platform/physmap-flash.0':
-    KERNELS=3D=3D"physmap-flash.0"
-    SUBSYSTEMS=3D=3D"platform"
-    DRIVERS=3D=3D"physmap-flash"
-    ATTRS{modalias}=3D=3D"platform:physmap-flash"
+Yes, that would be good.
 
-The second flash device is of NAND type and 'udevadm' shows:
+> Would it be a good idea to move MTDREADOOB32 / MEMWRITEOOB32 out of
+> fs/compat_ioctl.c at the same time, so that everything is in one
+> place?
 
-$ udevadm info -a -p /sys/block/mtdblock4
-[...]
-  looking at parent device '/devices/platform/mxc_nand.0':
-    KERNELS=3D=3D"mxc_nand.0"
-    SUBSYSTEMS=3D=3D"platform"
-    DRIVERS=3D=3D"mxc_nand"
-    ATTRS{modalias}=3D=3D"platform:mxc_nand"
+Yes, I'd like to see this as a separate patch either before or
+after the other one. I have the long-term goal of getting rid of
+all the wrapper functions in fs/compat_ioctl.c, but it's stalled
+for some time.
 
-\o/
+> If the compat wrappers are moved to mtdchar.c , does that imply that
+> they should be reimplemented "natively" instead of using
+> compat_alloc_user_space(), copy_in_user(), and sys_ioctl() to cause
+> them to reinvoke the 64-bit versions?
 
-I will try now to define some udev rules to match for my different flash
-memories.
+Right, that is what I mean with 'simplify your code'.
 
-Thank you,
-Juergen
+Thanks,
 
-=2D-=20
-Pengutronix e.K.                              | Juergen Beisert            =
- |
-Linux Solutions for Science and Industry      | Phone: +49-8766-939 228    =
- |
-Vertretung Sued/Muenchen, Germany             | Fax:   +49-5121-206917-5555=
- |
-Amtsgericht Hildesheim, HRA 2686              | http://www.pengutronix.de/ =
- |
+	Arnd <><
