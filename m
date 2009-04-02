@@ -1,18 +1,19 @@
-Received: from mail-bw0-f159.google.com ([209.85.218.159])
+Received: from qw-out-1920.google.com ([74.125.92.144])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LpOUc-0006EW-7C
-	for linux-mtd@lists.infradead.org; Thu, 02 Apr 2009 15:06:16 +0000
-Received: by bwz3 with SMTP id 3so600600bwz.18
+	id 1LpWOp-0002Je-LH
+	for linux-mtd@lists.infradead.org; Thu, 02 Apr 2009 23:32:50 +0000
+Received: by qw-out-1920.google.com with SMTP id 5so659894qwf.24
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 02 Apr 2009 08:06:08 -0700 (PDT)
+	Thu, 02 Apr 2009 16:32:42 -0700 (PDT)
 MIME-Version: 1.0
-Date: Thu, 2 Apr 2009 20:36:07 +0530
-Message-ID: <ce9ab5790904020806o649f80bck2ee44ca7adf5ac04@mail.gmail.com>
-Subject: RE Problem in cloning mtd git
-From: vimal singh <vimal.newwork@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Date: Thu, 2 Apr 2009 16:32:42 -0700
+Message-ID: <a95a62fe0904021632l14ddb299l7818f2f2d32c20ac@mail.gmail.com>
+Subject: [PATCH] MTD: nandsim should delete its partitions on module unload
+From: Kevin Cernekee <kpc.mtd@gmail.com>
+To: dwmw2@infradead.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,52 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 2, 2009 at 5:42 PM, Geert Uytterhoeven
-<Geert.Uytterhoeven@sonycom.com> wrote:
-> On Thu, 2 Apr 2009, vimal singh wrote:
->> >> $ git clone --reference linux-2.6 git://git.infradead.org/mtd-2.6.git=
- mtd-2.6
->> >> warning: templates not found /home_lbp/share/git-core/templates/
->> >> Initialized empty Git repository in /home2/vimal/mtd-2.6/.git/
->> >> fatal: Unable to look up git.infradead.org (port 9418) (Temporary
->> >> failure in name resolution)
->> >> fetch-pack from 'git://git.infradead.org/mtd-2.6.git' failed.
->> >>
->> >> Any help regarding this is welcome...
->> >
->> > Alternatively, you can add the MTD stuff as a remote to your existing
->> > repository:
->> >
->> > % cd linux-2.6
->> > % git remote add mtd git://git.infradead.org/mtd-2.6.git
->> > % git remote update
->> >
->> I tried this right now and I see this:
->> >From http://www.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6
->> =A0 =A015f7176..833bb30 =A0master =A0 =A0 -> origin/master
->> Updating mtd
->> fatal: Unable to look up git.infradead.org (port 9418) (Temporary
->> failure in name resolution)
->
-> Local DNS problem? =A0Try 18.85.46.34 instead of git.infradead.org.
-
-Yes looks like... I still see problem:
-
-$ git remote add mtd git://18.85.46.34/mtd-2.6.git
-$ git remote update
-Updating origin
-Updating mtd
-18.85.46.34[0: 18.85.46.34]: errno=3DConnection timed out
-fatal: unable to connect a socket (Connection timed out)
-error: Could not fetch mtd
-
-
-
+Signed-off-by: Kevin Cernekee <kpc.mtd@gmail.com>
 ---
-Regards,
+ drivers/mtd/nand/nandsim.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-\/ | |\/| /-\ |_
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index cd0711b..f4fda9b 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -2349,6 +2349,7 @@ static void __exit ns_cleanup_module(void)
+ 	struct nandsim *ns = (struct nandsim *)(((struct nand_chip
+*)nsmtd->priv)->priv);
+ 	int i;
 
-____ =A0 __o
------- =A0 -\<,
------ =A0( )/ ( )
++	del_mtd_partitions(nsmtd);
+ 	free_nandsim(ns);    /* Free nandsim private resources */
+ 	nand_release(nsmtd); /* Unregister driver */
+ 	for (i = 0;i < ARRAY_SIZE(ns->partitions); ++i)
+-- 
+1.5.6.3
