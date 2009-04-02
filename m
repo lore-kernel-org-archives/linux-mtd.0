@@ -1,22 +1,18 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LpLyx-0001OY-H7
-	for linux-mtd@lists.infradead.org; Thu, 02 Apr 2009 12:25:26 +0000
-Subject: Re: ubifs error when do bonnie++ test
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Jason Liu <liu.h.jason@gmail.com>
-In-Reply-To: <e8775dd00904020249k6dd1146chfae6e74c11a01f82@mail.gmail.com>
-References: <e8775dd00904012244o30200226p4e748d89d2a9b9c7@mail.gmail.com>
-	<49D47252.3020701@nokia.com>
-	<e8775dd00904020249k6dd1146chfae6e74c11a01f82@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 02 Apr 2009 15:25:05 +0300
-Message-Id: <1238675105.20906.95.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Linux mtd <linux-mtd@lists.infradead.org>,
-	Adrian Hunter <adrian.hunter@nokia.com>
-Reply-To: dedekind@infradead.org
+Received: from fg-out-1718.google.com ([72.14.220.156])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LpNRa-0001FH-SU
+	for linux-mtd@lists.infradead.org; Thu, 02 Apr 2009 13:59:05 +0000
+Received: by fg-out-1718.google.com with SMTP id e21so357112fga.3
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 02 Apr 2009 06:58:56 -0700 (PDT)
+MIME-Version: 1.0
+Date: Thu, 2 Apr 2009 15:58:56 +0200
+Message-ID: <72795ccb0904020658s35f8fd6aw97798be53ed7d559@mail.gmail.com>
+Subject: Ubiattach problem after flashing an image
+From: simon polette <spolette@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,42 +22,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-04-02 at 17:49 +0800, Jason Liu wrote:
-> 2009/4/2 Adrian Hunter <adrian.hunter@nokia.com>:
-> > Jason Liu wrote:
-> >>
-> >> I'm working on the 2.6.26 with ubifs enabled, but after some stress
-> >> test, ubifs give some err. The following is the steps to reproduce.
-> >
-> > Please apply all recent UBIFS patches and enable debugging and try
-> > again.
-> >
-> > You could also enable debugging checks, but that will really slow it down.
-> >
-> >
-> After apply all the patches from users/dedekind/ubifs-v2.6.26.git
-> I still get errors with bonnie++ test and only run 3times compared 390
-> times without the patch
-> 
-> Using uid:0, gid:0.
-> Writing with putc()...done
-> Writing intelligently...done
-> Rewriting...done
-> Reading with getc()...done
-> Reading intelligently...done
-> start 'em...done...done...done...
-> Create files in sequential order...done.
-> Stat files in sequential order...Expected 16384 files but only got 16385
-> Cleaning up test directory after error.
-> 
-> Could you please help on this?Does this means UBIFS has some bugs?
+Hi,
 
-Your eraseblock size is rather not-typical. We did not test UBIFS
-on such big eraseblocks, so yes, there may be bugs.
+I'm using the last mtd utils version provided by the git mtd
+repository. I want to flash an ubi image built with mkfs.ubfis and
+ubinize into a Nand flash. Once the nand is flashed, when I try to
+attach ubi, I get this error :
 
-Please, enable UBIFS extra checks and run the tests. Then when it
-fails, type dmesg and send the messages please.
+# ubiattach  /dev/ubi_ctrl -m 2
+[  968.980000] UBI: attaching mtd2 to ubi1
+[  969.000000] UBI: physical eraseblock size:   131072 bytes (128 KiB)
+[  969.030000] UBI: logical eraseblock size:    129024 bytes
+[  969.050000] UBI: smallest flash I/O unit:    2048
+[  969.060000] UBI: sub-page size:              512
+[  969.080000] UBI: VID header offset:          512 (aligned 512)
+[  969.100000] UBI: data offset:                2048
+[  969.330000] UBI error: vtbl_check: volume table check failed:
+record 1, error 9
+ubiattach: error!: cannot attach mtd2
+           error 22 (Invalid argument)
 
--- 
+The ubi image I use is ok because I already successfully flashed it
+and used it with this hardware. This error appeared since I upgraded
+both mtd utils and Linux kernel, but even if come back to the previous
+versions I was used to work with, this error persist. I think I'm
+doing something wrong, but don't know where at all.
+Any idea is welcome.
 Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+
+Simon Polette
