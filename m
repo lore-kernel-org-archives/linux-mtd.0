@@ -1,18 +1,21 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LpLvs-0002lR-O4
-	for linux-mtd@lists.infradead.org; Thu, 02 Apr 2009 12:22:16 +0000
-Subject: Re: Create, Flash and Mount UBIFS Images
+	id 1LpLyx-0001OY-H7
+	for linux-mtd@lists.infradead.org; Thu, 02 Apr 2009 12:25:26 +0000
+Subject: Re: ubifs error when do bonnie++ test
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Manuel Sahm <Manuel.Sahm@feig.de>
-In-Reply-To: <49D4BF5A.187F.00BC.1@feig.de>
-References: <49D4BF5A.187F.00BC.1@feig.de>
+To: Jason Liu <liu.h.jason@gmail.com>
+In-Reply-To: <e8775dd00904020249k6dd1146chfae6e74c11a01f82@mail.gmail.com>
+References: <e8775dd00904012244o30200226p4e748d89d2a9b9c7@mail.gmail.com>
+	<49D47252.3020701@nokia.com>
+	<e8775dd00904020249k6dd1146chfae6e74c11a01f82@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 02 Apr 2009 15:21:56 +0300
-Message-Id: <1238674916.20906.93.camel@localhost.localdomain>
+Date: Thu, 02 Apr 2009 15:25:05 +0300
+Message-Id: <1238675105.20906.95.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: Linux mtd <linux-mtd@lists.infradead.org>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,28 +26,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-04-02 at 13:36 +0200, Manuel Sahm wrote:
-> Hello, 
+On Thu, 2009-04-02 at 17:49 +0800, Jason Liu wrote:
+> 2009/4/2 Adrian Hunter <adrian.hunter@nokia.com>:
+> > Jason Liu wrote:
+> >>
+> >> I'm working on the 2.6.26 with ubifs enabled, but after some stress
+> >> test, ubifs give some err. The following is the steps to reproduce.
+> >
+> > Please apply all recent UBIFS patches and enable debugging and try
+> > again.
+> >
+> > You could also enable debugging checks, but that will really slow it down.
+> >
+> >
+> After apply all the patches from users/dedekind/ubifs-v2.6.26.git
+> I still get errors with bonnie++ test and only run 3times compared 390
+> times without the patch
 > 
-> Could anybody explain me how to build an ubi.img that I could flash
-> inside my system ? 
+> Using uid:0, gid:0.
+> Writing with putc()...done
+> Writing intelligently...done
+> Rewriting...done
+> Reading with getc()...done
+> Reading intelligently...done
+> start 'em...done...done...done...
+> Create files in sequential order...done.
+> Stat files in sequential order...Expected 16384 files but only got 16385
+> Cleaning up test directory after error.
 > 
-> NAND Flash: Micron 256 MByte 
-> Physical Eraseblock Size = 131072 
-> Logical Eraseblock Size = 129024 
-> Min I/O Size = 2048 
-> SubPage = 512 
-> 
-> The Partition /dev/mtd6 is 32MByte. 
-> 
-> 
-> I did the following steps: 
-> On my host I created the file through: 
-> 
-> mkfs.ubifs -d /exports/ -m 2048 -e 129024 -o ubifs.img -x "none" -c
-> 2047 
+> Could you please help on this?Does this means UBIFS has some bugs?
 
-Are you sure -c 2047 is a sane value for a 32MiB volume? 
+Your eraseblock size is rather not-typical. We did not test UBIFS
+on such big eraseblocks, so yes, there may be bugs.
+
+Please, enable UBIFS extra checks and run the tests. Then when it
+fails, type dmesg and send the messages please.
 
 -- 
 Best regards,
