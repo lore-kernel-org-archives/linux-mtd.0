@@ -1,20 +1,22 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LpLls-0001Wh-4e
-	for linux-mtd@lists.infradead.org; Thu, 02 Apr 2009 12:11:55 +0000
-Message-ID: <49D4ABAE.7060808@nokia.com>
-Date: Thu, 02 Apr 2009 15:12:30 +0300
-From: Adrian Hunter <adrian.hunter@nokia.com>
+Received: from vervifontaine.sonytel.be ([80.88.33.193]
+	helo=pophost.sonytel.be)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LpLmw-0001fL-TE
+	for linux-mtd@lists.infradead.org; Thu, 02 Apr 2009 12:13:01 +0000
+Date: Thu, 2 Apr 2009 14:12:53 +0200 (CEST)
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Sender: geert@sonytel.be
+To: vimal singh <vimal.newwork@gmail.com>
+Subject: Re: Problem in cloning mtd git
+In-Reply-To: <ce9ab5790904020503h41c4e8e1t2067654b6d4a6194@mail.gmail.com>
+Message-ID: <alpine.LRH.2.00.0904021411520.17667@vixen.sonytel.be>
+References: <ce9ab5790904020439j7a23e93eu3f73bd26cdc4f9d4@mail.gmail.com>
+	<alpine.LRH.2.00.0904021351080.17667@vixen.sonytel.be>
+	<ce9ab5790904020503h41c4e8e1t2067654b6d4a6194@mail.gmail.com>
 MIME-Version: 1.0
-To: Jason Liu <liu.h.jason@gmail.com>
-Subject: Re: ubifs error when do bonnie++ test
-References: <e8775dd00904012244o30200226p4e748d89d2a9b9c7@mail.gmail.com>	
-	<49D47252.3020701@nokia.com>
-	<e8775dd00904020249k6dd1146chfae6e74c11a01f82@mail.gmail.com>
-In-Reply-To: <e8775dd00904020249k6dd1146chfae6e74c11a01f82@mail.gmail.com>
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Linux mtd <linux-mtd@lists.infradead.org>
+Content-Type: TEXT/PLAIN; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jason Liu wrote:
-> 2009/4/2 Adrian Hunter <adrian.hunter@nokia.com>:
->> Jason Liu wrote:
->>> I'm working on the 2.6.26 with ubifs enabled, but after some stress
->>> test, ubifs give some err. The following is the steps to reproduce.
->> Please apply all recent UBIFS patches and enable debugging and try
->> again.
->>
->> You could also enable debugging checks, but that will really slow it down.
->>
->>
-> After apply all the patches from users/dedekind/ubifs-v2.6.26.git
-> I still get errors with bonnie++ test and only run 3times compared 390
-> times without the patch
-> 
-> Using uid:0, gid:0.
-> Writing with putc()...done
-> Writing intelligently...done
-> Rewriting...done
-> Reading with getc()...done
-> Reading intelligently...done
-> start 'em...done...done...done...
-> Create files in sequential order...done.
-> Stat files in sequential order...Expected 16384 files but only got 16385
-> Cleaning up test directory after error.
-> 
-> Could you please help on this?Does this means UBIFS has some bugs?
-> 
+On Thu, 2 Apr 2009, vimal singh wrote:
+> >> $ git clone --reference linux-2.6 git://git.infradead.org/mtd-2.6.git mtd-2.6
+> >> warning: templates not found /home_lbp/share/git-core/templates/
+> >> Initialized empty Git repository in /home2/vimal/mtd-2.6/.git/
+> >> fatal: Unable to look up git.infradead.org (port 9418) (Temporary
+> >> failure in name resolution)
+> >> fetch-pack from 'git://git.infradead.org/mtd-2.6.git' failed.
+> >>
+> >> Any help regarding this is welcome...
+> >
+> > Alternatively, you can add the MTD stuff as a remote to your existing
+> > repository:
+> >
+> > % cd linux-2.6
+> > % git remote add mtd git://git.infradead.org/mtd-2.6.git
+> > % git remote update
+> >
+> I tried this right now and I see this:
+> >From http://www.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6
+>    15f7176..833bb30  master     -> origin/master
+> Updating mtd
+> fatal: Unable to look up git.infradead.org (port 9418) (Temporary
+> failure in name resolution)
 
-I will see if I can reproduce this.
+Local DNS problem?  Try 18.85.46.34 instead of git.infradead.org.
 
-Maybe you could try with debugging checks enabled.
+With kind regards,
+
+Geert Uytterhoeven
+Software Architect
+
+Sony Techsoft Centre Europe
+The Corporate Village · Da Vincilaan 7-D1 · B-1935 Zaventem · Belgium
+
+Phone:    +32 (0)2 700 8453
+Fax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 · RPR Brussels
+Fortis · BIC GEBABEBB · IBAN BE41293037680010
