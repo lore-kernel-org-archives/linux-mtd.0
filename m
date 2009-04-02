@@ -1,18 +1,18 @@
-Received: from fg-out-1718.google.com ([72.14.220.156])
+Received: from mail-bw0-f159.google.com ([209.85.218.159])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LpNRa-0001FH-SU
-	for linux-mtd@lists.infradead.org; Thu, 02 Apr 2009 13:59:05 +0000
-Received: by fg-out-1718.google.com with SMTP id e21so357112fga.3
+	id 1LpOUc-0006EW-7C
+	for linux-mtd@lists.infradead.org; Thu, 02 Apr 2009 15:06:16 +0000
+Received: by bwz3 with SMTP id 3so600600bwz.18
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 02 Apr 2009 06:58:56 -0700 (PDT)
+	Thu, 02 Apr 2009 08:06:08 -0700 (PDT)
 MIME-Version: 1.0
-Date: Thu, 2 Apr 2009 15:58:56 +0200
-Message-ID: <72795ccb0904020658s35f8fd6aw97798be53ed7d559@mail.gmail.com>
-Subject: Ubiattach problem after flashing an image
-From: simon polette <spolette@gmail.com>
+Date: Thu, 2 Apr 2009 20:36:07 +0530
+Message-ID: <ce9ab5790904020806o649f80bck2ee44ca7adf5ac04@mail.gmail.com>
+Subject: RE Problem in cloning mtd git
+From: vimal singh <vimal.newwork@gmail.com>
 To: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,32 +22,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Thu, Apr 2, 2009 at 5:42 PM, Geert Uytterhoeven
+<Geert.Uytterhoeven@sonycom.com> wrote:
+> On Thu, 2 Apr 2009, vimal singh wrote:
+>> >> $ git clone --reference linux-2.6 git://git.infradead.org/mtd-2.6.git=
+ mtd-2.6
+>> >> warning: templates not found /home_lbp/share/git-core/templates/
+>> >> Initialized empty Git repository in /home2/vimal/mtd-2.6/.git/
+>> >> fatal: Unable to look up git.infradead.org (port 9418) (Temporary
+>> >> failure in name resolution)
+>> >> fetch-pack from 'git://git.infradead.org/mtd-2.6.git' failed.
+>> >>
+>> >> Any help regarding this is welcome...
+>> >
+>> > Alternatively, you can add the MTD stuff as a remote to your existing
+>> > repository:
+>> >
+>> > % cd linux-2.6
+>> > % git remote add mtd git://git.infradead.org/mtd-2.6.git
+>> > % git remote update
+>> >
+>> I tried this right now and I see this:
+>> >From http://www.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6
+>> =A0 =A015f7176..833bb30 =A0master =A0 =A0 -> origin/master
+>> Updating mtd
+>> fatal: Unable to look up git.infradead.org (port 9418) (Temporary
+>> failure in name resolution)
+>
+> Local DNS problem? =A0Try 18.85.46.34 instead of git.infradead.org.
 
-I'm using the last mtd utils version provided by the git mtd
-repository. I want to flash an ubi image built with mkfs.ubfis and
-ubinize into a Nand flash. Once the nand is flashed, when I try to
-attach ubi, I get this error :
+Yes looks like... I still see problem:
 
-# ubiattach  /dev/ubi_ctrl -m 2
-[  968.980000] UBI: attaching mtd2 to ubi1
-[  969.000000] UBI: physical eraseblock size:   131072 bytes (128 KiB)
-[  969.030000] UBI: logical eraseblock size:    129024 bytes
-[  969.050000] UBI: smallest flash I/O unit:    2048
-[  969.060000] UBI: sub-page size:              512
-[  969.080000] UBI: VID header offset:          512 (aligned 512)
-[  969.100000] UBI: data offset:                2048
-[  969.330000] UBI error: vtbl_check: volume table check failed:
-record 1, error 9
-ubiattach: error!: cannot attach mtd2
-           error 22 (Invalid argument)
+$ git remote add mtd git://18.85.46.34/mtd-2.6.git
+$ git remote update
+Updating origin
+Updating mtd
+18.85.46.34[0: 18.85.46.34]: errno=3DConnection timed out
+fatal: unable to connect a socket (Connection timed out)
+error: Could not fetch mtd
 
-The ubi image I use is ok because I already successfully flashed it
-and used it with this hardware. This error appeared since I upgraded
-both mtd utils and Linux kernel, but even if come back to the previous
-versions I was used to work with, this error persist. I think I'm
-doing something wrong, but don't know where at all.
-Any idea is welcome.
-Best regards,
 
-Simon Polette
+
+---
+Regards,
+
+\/ | |\/| /-\ |_
+
+____ =A0 __o
+------ =A0 -\<,
+----- =A0( )/ ( )
