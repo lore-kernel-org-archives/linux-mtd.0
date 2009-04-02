@@ -1,16 +1,17 @@
-Received: from an-out-0708.google.com ([209.85.132.243])
+Received: from rv-out-0708.google.com ([209.85.198.249]
+	helo=rv-out-0506.google.com)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lp5sO-0001NG-7U
-	for linux-mtd@lists.infradead.org; Wed, 01 Apr 2009 19:13:35 +0000
-Received: by an-out-0708.google.com with SMTP id c2so129293anc.27
+	id 1LpFj6-0003Ac-VO
+	for linux-mtd@lists.infradead.org; Thu, 02 Apr 2009 05:44:40 +0000
+Received: by rv-out-0506.google.com with SMTP id k29so2603051rvb.2
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 01 Apr 2009 12:13:26 -0700 (PDT)
+	Wed, 01 Apr 2009 22:44:30 -0700 (PDT)
 MIME-Version: 1.0
-Date: Wed, 1 Apr 2009 12:13:25 -0700
-Message-ID: <1c3f4270904011213v3ec90c98q7b942f78099c7568@mail.gmail.com>
-Subject: [resend] Problem with copying a file to JFFS2 partition
-From: Manoj <manoj23@gmail.com>
-To: linux-mtd@lists.infradead.org
+Date: Thu, 2 Apr 2009 13:44:30 +0800
+Message-ID: <e8775dd00904012244o30200226p4e748d89d2a9b9c7@mail.gmail.com>
+Subject: ubifs error when do bonnie++ test
+From: Jason Liu <liu.h.jason@gmail.com>
+To: Linux mtd <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,38 +23,174 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sorry for the repost, but trying again.
+I'm working on the 2.6.26 with ubifs enabled, but after some stress
+test, ubifs give some err. The following is the steps to reproduce.
 
-Hi,
+$ ubiattach /dev/ubi_ctrl -m 2
+UBI: attaching mtd2 to ubi1
+UBI: physical eraseblock size:   1048576 bytes (1024 KiB)
+UBI: logical eraseblock size:    1032192 bytes
+UBI: smallest flash I/O unit:    8192
+UBI: VID header offset:          8192 (aligned 8192)
+UBI: data offset:                16384
+UBI: empty MTD device detected
+UBI: create volume table (copy #1)
+UBI: create volume table (copy #2)
+UBI: attached mtd2 to ubi1
+UBI: MTD device name:            "nand.rootfs"
+UBI: MTD device size:            128 MiB
+UBI: number of good PEBs:        128
+UBI: number of bad PEBs:         0
+UBI: max. allowed volumes:       128
+UBI: wear-leveling threshold:    4096
+UBI: number of internal volumes: 1
+UBI: number of user volumes:     0
+UBI: available PEBs:             122
+UBI: total number of reserved PEBs: 6
+UBI: number of PEBs reserved for bad PEB handling: 2
+UBI: max/mean erase counter: 0/0
+UBI: background thread "ubi_bgt1d" started, PID 2166
+UBI device number 1, total 128 LEBs (132120576 bytes, 126.0 MiB),
+available 122 LEBs (125927424 byt
+es, 120.1 MiB), LEB size 1032192 bytes (1008.0 KiB)
 
-I have two mtd partitions on a NAND flash and one of them keeps the
-jffs2 filesystem. I can mount the jffs2 fs, read and write files off
-of the mounted directory. But when I  copy a big file (11 MB) to any
-location in the mounted directory, the call never returns. The
-partition is 112MB big. Sometimes, a small file copy can produce the
-problem. The jffs2 fs was created with cleanmarker enabled.
+$ ubimkvol /dev/ubi1 -N test -m
+Set volume size to 125927424
+Volume ID 0, size 122 LEBs (125927424 bytes, 120.1 MiB), LEB size
+1032192 bytes (1008.0 KiB), dynam
+ic, name "test", alignment 1
 
-I enabled jffs2 debugging and I see this in dmesg:
+$ mount -t ubifs ubi1:test /mnt/ubifs
+UBIFS: default file-system created
+UBIFS: mounted UBI device 1, volume 0, name "test"
+UBIFS: file system size:   116637696 bytes (113904 KiB, 111 MiB, 113 LEBs)
+UBIFS: journal size:       8257537 bytes (8064 KiB, 7 MiB, 6 LEBs)
+UBIFS: media format:       4 (latest is 4)
+UBIFS: default compressor: LZO
+UBIFS: reserved for root:  5182151 bytes (5060 KiB)
 
-[  167.250000] jffs2_erase_pending_blocks completed
-[  167.250000] jffs2_reserve_space: ret is -11
-[  167.250000] jffs2_erase_pending_blocks completed
-[  167.250000] jffs2_reserve_space: ret is -11
-[  167.250000] jffs2_erase_pending_blocks completed
-[  167.250000] jffs2_reserve_space: ret is -11
-[  167.250000] jffs2_erase_pending_blocks completed
-[  167.250000] jffs2_reserve_space: ret is -11
-[  167.250000] jffs2_erase_pending_blocks completed
-[  167.250000] jffs2_reserve_space: ret is -11
-[  167.250000] jffs2_erase_pending_blocks completed
-[  167.250000] jffs2_reserve_space: ret is -11
-[  167.250000] jffs2_erase_pending_blocks completed
-[  167.250000] jffs2_reserve_space: ret is -11
-[  167.250000] jffs2_erase_pending_blocks completed
-[  167.250000] jffs2_reserve_space: ret is -11
+$ ./bonnie\+\+ -d /mnt/ubifs -s 32 -r 16 -u 0:0 -m FSL -x 1000
 
-It seems like jffs2 can't find a block to write to? What could be wrong?
+when running at 390 times, the following error shows up:
 
-Please cc me in the reply as I am not subscribed.
+Reading intelligently...done
+start 'em...done...done...done...
+Create files in sequential order...done.
+Stat files in sequential order...done.
+Delete files in sequential order...done.
+Create files in random order...done.
+Stat files in random order...done.
+Delete files in random order...UBI: scrubbed PEB 54, data moved to PEB 69
+UBIFS error (pid 4500): ubifs_check_node: bad magic 0x4811831,
+expected 0x6101831
+UBIFS error (pid 4500): ubifs_check_node: bad node at LEB 22:163392
+UBIFS error (pid 4500): ubifs_read_node: expected node type 2
+UBIFS warning (pid 4500): ubifs_ro_mode: switched to read-only mode, error -117
+Can't delete file Q0010289
+Cleaning up test directory after error.
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 400 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 400 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 400 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 400 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 384 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 400 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 384 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 384 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 400 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 392 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 400 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 400 bytes in
+jhead 1, error -30
+UBIFS error (pid 4500): make_reservation: cannot reserve 400 bytes in
+jhead 1, error -30
 
-Thanks.
+When power down and re-attach the mtd2, I get the following information:
+$ ubiattach /dev/ubi_ctrl -m 2
+UBI: attaching mtd2 to ubi1
+UBI: physical eraseblock size:   1048576 bytes (1024 KiB)
+UBI: logical eraseblock size:    1032192 bytes
+UBI: smallest flash I/O unit:    8192
+UBI: VID header offset:          8192 (aligned 8192)
+UBI: data offset:                16384
+UBI: attached mtd2 to ubi1
+UBI: MTD device name:            "nand.rootfs"
+UBI: MTD device size:            128 MiB
+UBI: number of good PEBs:        128
+UBI: number of bad PEBs:         0
+UBI: max. allowed volumes:       128
+UBI: wear-leveling threshold:    4096
+UBI: number of internal volumes: 1
+UBI: number of user volumes:     1
+UBI: available PEBs:             0
+UBI: total number of reserved PEBs: 128
+UBI: number of PEBs reserved for bad PEB handling: 2
+UBI: max/mean erase counter: 1342/101
+UBI: background thread "ubi_bgt1d" started, PID 1994
+UBI device number 1, total 128 LEBs (132120576 bytes, 126.0 MiB),
+available 0 LEBs (0 bytes), LEB s
+ize 1032192 bytes (1008.0 KiB)
+
+I found the available PEBs became 0 and total number of reserved PEBs:
+128?  What happened and why happen?
+Please give your kind help on this? Thanks,
