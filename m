@@ -1,22 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LpdXA-0000ix-Cd
-	for linux-mtd@lists.infradead.org; Fri, 03 Apr 2009 07:09:54 +0000
-Subject: Re: [patch/rfc 2.6.29 1/2] MTD: driver model updates
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Kevin Cernekee <kpc.mtd@gmail.com>
-In-Reply-To: <1238742215.20906.99.camel@localhost.localdomain>
-References: <200903260042.42091.david-b@pacbell.net>
-	<a95a62fe0904021641j17a7c26dv5652de4a19bad662@mail.gmail.com>
-	<1238742215.20906.99.camel@localhost.localdomain>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 03 Apr 2009 10:09:40 +0300
-Message-Id: <1238742580.20906.104.camel@localhost.localdomain>
+Received: from mail.feig.de ([195.145.139.42] helo=srv-mail02.feig.de)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LpdtJ-0003tS-57
+	for linux-mtd@lists.infradead.org; Fri, 03 Apr 2009 07:32:54 +0000
+Message-Id: <49D5D7AE.187F.00BC.1@feig.de>
+Date: Fri, 03 Apr 2009 09:32:31 +0200
+From: "Manuel Sahm" <Manuel.Sahm@feig.de>
+To: <dedekind@infradead.org>
+Subject: Re: Re: Create, Flash and Mount UBIFS Images
+References: <49D4BF5A.187F.00BC.1@feig.de>
+	<1238674916.20906.93.camel@localhost.localdomain>
+In-Reply-To: <1238674916.20906.93.camel@localhost.localdomain>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: david-b@pacbell.net, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Reply-To: dedekind@infradead.org
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +24,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-04-03 at 10:03 +0300, Artem Bityutskiy wrote:
-> On Thu, 2009-04-02 at 16:41 -0700, Kevin Cernekee wrote:
-> > Here is a follow-up patch to apply on top of David Brownell's original
-> > MTD driver model patch at:
-> > 
-> > http://lists.infradead.org/pipermail/linux-mtd/2009-March/025005.html
-> > 
-> > Changes:
-> > 
-> > 1) Add more sysfs attributes: mtd_flags, mtd_size, mtd_erasesize,
-> > mtd_writesize, mtd_oobsize, mtd_numeraseregions, mtd_name .
-> 
-> Please, do not all the "mtd_" prefix to the file names. This is
-> redundant information because we already know this is about
-> mtd from the path.
+Hello, thank you for your help.
+ I got something working, but don´t know really what I´ve done:
+ 
+OK, let me gibve you some more information about my sytem:
+ 
+My 256MB NAND Flash is divided into 7 MTD partitions:
+mtd0: 128KiB        (First Level Bootloader)
+mtd1: 896KiB        (UBoot)
+mtd2: 4MiB           (Kernel)
+mtd3: 40MiB         (RFS) 
+mtd4: 20MiB         (Private Partition)
+mtd5: 20 MiB        (Private Partition2)
+mtd6: 32Mib         (Backup Partition)
+ 
+Now I at first I need to build an ubi image with mkfs.ubifs and with
+ubinze on my host. I tried it with this settings:
+mkfs.ubifs -d /exports/ -m 2048 -e 129024  -c 326    -o RFS.ubifs
+ 
+There is my first question:
+----------------------------------------
+What about the pramater -c ?
+In the FAQ: -c 2047: specifies maximum file-system size in logical
+eraseblocks; this means that it will be possible to use the resulting
+file-system on volumes up to this size (less or equivalent); so in this
+particular case, the resulting FS may be put on volumes up to about
+251MiB (129024 multiplied by 2047); See this section for more details.
 
-Sorry, s/all/add/.
+So my MTD Partition is 40MiB; Logical Ersablocksize is 129024 Bytes; 
+--> (40MiB / 129024)+1 = c     --> c=326
+Is this correct ?
+
+Now I go on with ubinize:
+ubinize -p128KiB -m 2048 -s 512 -O 512 -o RFS.ubi    config.ini
+with config.ini:
+[RFS]
+mode=ubi
+image=RFS.ubifs
+vol_size=30MiB
+vol_id=0
+vol_type=dynamic
+vol_name=RFS
+vol_alignment=1
+
+There is my second question:
+-----------------------------------------
+Did I miss something in the ini File ?
+What about the line vol_flags=autoresize - Do I need this one ?
+
+There is my third question:
+-----------------------------------------
+vol_size=30MiB -> The mtd partition is 40MiB, but if I use
+vol_size=40MiB there appears an error concerning a table ?
+Which value should I use ?
+
+There is my fourth question:
+-----------------------------------------
+Now the ubi image is created -> I flashed it into the nand an put the
+kernel paramter mtd.ubi in the kernel command line.
+After the ubi images are attached and mounted, there seems to less
+memory ?
+There should by 30MiB instead of 28 MiB ?
+What about the journal size ?
+Is my user Memory = UBIFS: file system size - UBIFS: journal size ?
+
+UBIFS: recovery needed
+UBIFS: recovery completed
+UBIFS: mounted UBI device 0, volume 0, name "RFS"
+UBIFS: file system size:   30191616 bytes (29484 KiB, 28 MiB, 234
+LEBs)
+UBIFS: journal size:       5548032 bytes (5418 KiB, 5 MiB, 43 LEBs)
+UBIFS: media format:       4 (latest is 4)
+UBIFS: default compressor: LZO
+UBIFS: reserved for root:  0 bytes (0 KiB)
+VFS: Mounted root (ubifs filesystem).
+
+df -h returns
+Filesystem           1K-blocks      Used        Available   Use%   
+Mounted on
+ubi0_0                   27256         17788      9468         65%     
+/
+
+
+
+
+Thank you very much
+Manuel
+
+>>> Artem Bityutskiy <dedekind@infradead.org> 02.04.2009 14:21 >>>
+On Thu, 2009-04-02 at 13:36 +0200, Manuel Sahm wrote:
+> Hello, 
+> 
+> Could anybody explain me how to build an ubi.img that I could flash
+> inside my system ? 
+> 
+> NAND Flash: Micron 256 MByte 
+> Physical Eraseblock Size = 131072 
+> Logical Eraseblock Size = 129024 
+> Min I/O Size = 2048 
+> SubPage = 512 
+> 
+> The Partition /dev/mtd6 is 32MByte. 
+> 
+> 
+> I did the following steps: 
+> On my host I created the file through: 
+> 
+> mkfs.ubifs -d /exports/ -m 2048 -e 129024 -o ubifs.img -x "none" -c
+> 2047 
+
+Are you sure -c 2047 is a sane value for a 32MiB volume? 
+
 -- 
 Best regards,
 Artem Bityutskiy (Битюцкий Артём)
