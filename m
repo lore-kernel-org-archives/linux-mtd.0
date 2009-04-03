@@ -1,18 +1,16 @@
-Received: from rv-out-0708.google.com ([209.85.198.250])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LpgFB-00046A-UZ
-	for linux-mtd@lists.infradead.org; Fri, 03 Apr 2009 10:03:33 +0000
-Received: by rv-out-0708.google.com with SMTP id k29so281138rvb.2
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 03 Apr 2009 03:03:23 -0700 (PDT)
-MIME-Version: 1.0
-Date: Fri, 3 Apr 2009 15:33:23 +0530
-Message-ID: <d7ca49770904030303y293921b8o767bd5fd8c11af0@mail.gmail.com>
-Subject: jffs2 on a 32k partition.
-From: Manish D <manish2312@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Subject: Re: [patch/rfc 2.6.29 1/2] MTD: driver model updates
+From: David Woodhouse <dwmw2@infradead.org>
+To: David Brownell <david-b@pacbell.net>
+In-Reply-To: <200903260042.42091.david-b@pacbell.net>
+References: <200903260042.42091.david-b@pacbell.net>
+Content-Type: text/plain
+Date: Fri, 03 Apr 2009 11:04:22 +0100
+Message-Id: <1238753062.3711.109.camel@macbook.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Cc: Kay Sievers <kay.sievers@vrfy.org>,
+	Linux MTD <linux-mtd@lists.infradead.org>,
+	LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,34 +20,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Thu, 2009-03-26 at 00:42 -0700, David Brownell wrote:
+> 
+> @@ -343,6 +343,11 @@ static struct mtd_part *add_one_partitio
+>         slave->mtd.name = part->name;
+>         slave->mtd.owner = master->owner;
+>  
+> +       /* NOTE:  we don't arrange MTDs as a tree; it'd be error-prone
+> +        * to have the same data be in two different partitions.
+> +        */
+> +       slave->mtd.dev.parent = master->dev.parent;
 
+Can you elaborate on that? I think we _do_ want to arrange partitions as
+sub-devices of the master, don't we? And I'd rather not change the way
+they appear at a later date; I'd prefer them to be that way from the
+beginning.
 
-I have a 32k flash partition that is used with jffs2. (4k * 8
-eraseblock). [linux kernel 2.4.32]
-Some of the files in this partition, do get updated often and stores
-only config files.
+>         slave->mtd.read = part_read;
+>         slave->mtd.write = part_write;
+>  
+> @@ -493,7 +498,9 @@ out_register:
+>   * This function, given a master MTD object and a partition table, creates
+>   * and registers slave MTD objects which are bound to the master according to
+>   * the partition definitions.
+> - * (Q: should we register the master MTD object as well?)
+> + *
+> + * We don't register the master, or expect the caller to have done so,
+> + * for reasons of data integrity.
+>   */
 
-Problem i am facing is, I am not able to use more than 10-12k of flash
-for data. If I reboot, (let jffs2 run pass1/2), i might be able to add
-upto 1k sometimes. But never more than that.
+Again, can you elaborate?
 
-I am not really sure why so much of flash space is not allowed to be
-used. I understand 32k is a really small partition for any filesystem,
-but understanding jffs2 overheads (approx 200 bytes per file), i am
-not sure why i am not able to use rest of the space.
-Is gcd thread not freeing up flash space ? or with small number of
-eraseblocks wear-levelling.
-Any pointers on understanding this would really help. Is there any
-other way out ?
+A lot of devices do just that. Where you have a partition table of some
+kind that's actually stored on the flash, that might be the only way to
+access it.
 
-I plan to move to raw read-write now without wear-levelling (with a
-smarter write algorithm to even out writes to one of 8 blocks).
+I really don't like the way our partitioning works at the moment.
 
-Would really appreciate inputs and pointers on how i can go about
-using jffs2 (disabling gcd / wear levelling ? ) on such a small
-partition.
-
-
-Regards,
--Manish
+-- 
+dwmw2
