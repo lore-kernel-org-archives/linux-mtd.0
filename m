@@ -1,14 +1,19 @@
-Subject: Re: [PATCH] MTD: nandsim should delete its partitions on module unload
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LpdRZ-0006Zd-Bs
+	for linux-mtd@lists.infradead.org; Fri, 03 Apr 2009 07:04:07 +0000
+Subject: Re: [patch/rfc 2.6.29 1/2] MTD: driver model updates
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: Kevin Cernekee <kpc.mtd@gmail.com>
-In-Reply-To: <a95a62fe0904021632l14ddb299l7818f2f2d32c20ac@mail.gmail.com>
-References: <a95a62fe0904021632l14ddb299l7818f2f2d32c20ac@mail.gmail.com>
+In-Reply-To: <a95a62fe0904021641j17a7c26dv5652de4a19bad662@mail.gmail.com>
+References: <200903260042.42091.david-b@pacbell.net>
+	<a95a62fe0904021641j17a7c26dv5652de4a19bad662@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 03 Apr 2009 10:01:10 +0300
-Message-Id: <1238742070.20906.97.camel@localhost.localdomain>
+Date: Fri, 03 Apr 2009 10:03:35 +0300
+Message-Id: <1238742215.20906.99.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+Cc: david-b@pacbell.net, linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,27 +25,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-04-02 at 16:32 -0700, Kevin Cernekee wrote:
-> Signed-off-by: Kevin Cernekee <kpc.mtd@gmail.com>
-> ---
->  drivers/mtd/nand/nandsim.c |    1 +
->  1 files changed, 1 insertions(+), 0 deletions(-)
+On Thu, 2009-04-02 at 16:41 -0700, Kevin Cernekee wrote:
+> Here is a follow-up patch to apply on top of David Brownell's original
+> MTD driver model patch at:
 > 
-> diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-> index cd0711b..f4fda9b 100644
-> --- a/drivers/mtd/nand/nandsim.c
-> +++ b/drivers/mtd/nand/nandsim.c
-> @@ -2349,6 +2349,7 @@ static void __exit ns_cleanup_module(void)
->  	struct nandsim *ns = (struct nandsim *)(((struct nand_chip
-> *)nsmtd->priv)->priv);
-The patch is line-wrapped.
+> http://lists.infradead.org/pipermail/linux-mtd/2009-March/025005.html
+> 
+> Changes:
+> 
+> 1) Add more sysfs attributes: mtd_flags, mtd_size, mtd_erasesize,
+> mtd_writesize, mtd_oobsize, mtd_numeraseregions, mtd_name .
 
->  	int i;
-> 
-> +	del_mtd_partitions(nsmtd);
->  	free_nandsim(ns);    /* Free nandsim private resources */
->  	nand_release(nsmtd); /* Unregister driver */
->  	for (i = 0;i < ARRAY_SIZE(ns->partitions); ++i)
+Please, do not all the "mtd_" prefix to the file names. This is
+redundant information because we already know this is about
+mtd from the path.
 
 -- 
 Best regards,
