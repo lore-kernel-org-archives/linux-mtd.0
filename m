@@ -1,18 +1,16 @@
 Received: from mail-qy0-f122.google.com ([209.85.221.122])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LpWXd-0003lv-9a
-	for linux-mtd@lists.infradead.org; Thu, 02 Apr 2009 23:41:55 +0000
-Received: by qyk28 with SMTP id 28so1701062qyk.28
+	id 1LpXcR-0004nz-0F
+	for linux-mtd@lists.infradead.org; Fri, 03 Apr 2009 00:50:58 +0000
+Received: by qyk28 with SMTP id 28so1746059qyk.28
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 02 Apr 2009 16:41:48 -0700 (PDT)
+	Thu, 02 Apr 2009 17:50:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <200903260042.42091.david-b@pacbell.net>
-References: <200903260042.42091.david-b@pacbell.net>
-Date: Thu, 2 Apr 2009 16:41:47 -0700
-Message-ID: <a95a62fe0904021641j17a7c26dv5652de4a19bad662@mail.gmail.com>
-Subject: Re: [patch/rfc 2.6.29 1/2] MTD: driver model updates
+Date: Thu, 2 Apr 2009 17:50:49 -0700
+Message-ID: <a95a62fe0904021750m7fd01695q3724be49b66a82d@mail.gmail.com>
+Subject: [PATCHv5] MTD: New ioctl calls for >4GiB device support
 From: Kevin Cernekee <kpc.mtd@gmail.com>
-To: david-b@pacbell.net
+To: dwmw2@infradead.org
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
@@ -25,174 +23,341 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Here is a follow-up patch to apply on top of David Brownell's original
-MTD driver model patch at:
+Extend the MTD user ABI to access >4GiB devices using 64-bit offsets.
 
-http://lists.infradead.org/pipermail/linux-mtd/2009-March/025005.html
+New ioctls: MEMERASE64 MEMWRITEOOB64 MEMREADOOB64 MEMLOCK64 MEMUNLOCK64
 
-Changes:
+Delta from v4 @ http://tinyurl.com/d6g2ee :
 
-1) Add more sysfs attributes: mtd_flags, mtd_size, mtd_erasesize,
-mtd_writesize, mtd_oobsize, mtd_numeraseregions, mtd_name .
+1) Remove MEMGETINFO64, MEMGETREGIONINFO64, in the hopes that they can
+be handled through sysfs instead.
 
-2) Move core_initcall() code into init_mtd().  The original approach
-does not work if CONFIG_MTD=m .
-
-3) Add device_unregister() in del_mtd_device() so that devices get
-removed from sysfs as each driver is unloaded.
+2) Use __u64 to store the MEMREADOOB64/MEMWRITEOOB64 user pointer, so
+that no compat_ioctl handler is needed.
 
 Signed-off-by: Kevin Cernekee <kpc.mtd@gmail.com>
 ---
- drivers/mtd/mtdcore.c |  107 ++++++++++++++++++++++++++++++++++++++++---------
- 1 files changed, 88 insertions(+), 19 deletions(-)
+ drivers/mtd/mtdchar.c  |  131 +++++++++++++++++++++++++++++++++++++++--------
+ fs/compat_ioctl.c      |    5 ++
+ include/mtd/mtd-abi.h  |   20 +++++++
+ include/mtd/mtd-user.h |    2 +
+ 4 files changed, 135 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index a88f8bc..19897ba 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -91,9 +91,87 @@ static ssize_t mtd_type_show(struct device *dev,
- }
- static DEVICE_ATTR(mtd_type, S_IRUGO, mtd_type_show, NULL);
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 763d3f0..625dc3b 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -417,6 +417,7 @@ static int mtd_ioctl(struct inode *inode, struct file *file,
+ 		break;
 
-+static ssize_t mtd_flags_show(struct device *dev,
-+		struct device_attribute *attr, char *buf)
-+{
-+	struct mtd_info *mtd = dev_to_mtd(dev);
+ 	case MEMERASE:
++	case MEMERASE64:
+ 	{
+ 		struct erase_info *erase;
+
+@@ -427,20 +428,32 @@ static int mtd_ioctl(struct inode *inode, struct
+file *file,
+ 		if (!erase)
+ 			ret = -ENOMEM;
+ 		else {
+-			struct erase_info_user einfo;
+-
+ 			wait_queue_head_t waitq;
+ 			DECLARE_WAITQUEUE(wait, current);
+
+ 			init_waitqueue_head(&waitq);
+
+-			if (copy_from_user(&einfo, argp,
+-				    sizeof(struct erase_info_user))) {
+-				kfree(erase);
+-				return -EFAULT;
++			if (cmd == MEMERASE64) {
++				struct erase_info_user64 einfo64;
 +
-+	return snprintf(buf, PAGE_SIZE, "0x%lx\n", (unsigned long)mtd->flags);
++				if (copy_from_user(&einfo64, argp,
++					    sizeof(struct erase_info_user64))) {
++					kfree(erase);
++					return -EFAULT;
++				}
++				erase->addr = einfo64.start;
++				erase->len = einfo64.length;
++			} else {
++				struct erase_info_user einfo32;
 +
-+}
-+static DEVICE_ATTR(mtd_flags, S_IRUGO, mtd_flags_show, NULL);
++				if (copy_from_user(&einfo32, argp,
++					    sizeof(struct erase_info_user))) {
++					kfree(erase);
++					return -EFAULT;
++				}
++				erase->addr = einfo32.start;
++				erase->len = einfo32.length;
+ 			}
+-			erase->addr = einfo.start;
+-			erase->len = einfo.length;
+ 			erase->mtd = mtd;
+ 			erase->callback = mtdchar_erase_callback;
+ 			erase->priv = (unsigned long)&waitq;
+@@ -472,17 +485,38 @@ static int mtd_ioctl(struct inode *inode, struct
+file *file,
+ 	}
+
+ 	case MEMWRITEOOB:
++	case MEMWRITEOOB64:
+ 	{
+-		struct mtd_oob_buf buf;
++		struct mtd_oob_buf64 buf;
+ 		struct mtd_oob_ops ops;
+-		struct mtd_oob_buf __user *user_buf = argp;
+ 	        uint32_t retlen;
++		uint32_t __user *retp, *usr_ptr;
+
+ 		if(!(file->f_mode & FMODE_WRITE))
+ 			return -EPERM;
+
+-		if (copy_from_user(&buf, argp, sizeof(struct mtd_oob_buf)))
+-			return -EFAULT;
++		if (cmd == MEMWRITEOOB64) {
++			struct mtd_oob_buf64 __user *user_buf = argp;
 +
-+static ssize_t mtd_size_show(struct device *dev,
-+		struct device_attribute *attr, char *buf)
-+{
-+	struct mtd_info *mtd = dev_to_mtd(dev);
++			if (copy_from_user(&buf, argp,
++				    sizeof(struct mtd_oob_buf64)))
++				return -EFAULT;
++			retp = &user_buf->length;
++			usr_ptr = (void __user *)(uintptr_t)buf.usr_ptr;
++		} else {
++			struct mtd_oob_buf __user *user_buf = argp;
++			struct mtd_oob_buf buf32;
 +
-+	return snprintf(buf, PAGE_SIZE, "%llu\n",
-+		(unsigned long long)mtd->size);
++			if (copy_from_user(&buf32, argp,
++				    sizeof(struct mtd_oob_buf)))
++				return -EFAULT;
 +
-+}
-+static DEVICE_ATTR(mtd_size, S_IRUGO, mtd_size_show, NULL);
++			buf.start = buf32.start;
++			buf.length = buf32.length;
 +
-+static ssize_t mtd_erasesize_show(struct device *dev,
-+		struct device_attribute *attr, char *buf)
-+{
-+	struct mtd_info *mtd = dev_to_mtd(dev);
++			retp = &user_buf->length;
++			usr_ptr = (void __user *)buf32.ptr;
++		}
+
+ 		if (buf.length > 4096)
+ 			return -EINVAL;
+@@ -490,7 +524,7 @@ static int mtd_ioctl(struct inode *inode, struct file *file,
+ 		if (!mtd->write_oob)
+ 			ret = -EOPNOTSUPP;
+ 		else
+-			ret = access_ok(VERIFY_READ, buf.ptr,
++			ret = access_ok(VERIFY_READ, usr_ptr,
+ 					buf.length) ? 0 : EFAULT;
+
+ 		if (ret)
+@@ -508,18 +542,18 @@ static int mtd_ioctl(struct inode *inode, struct
+file *file,
+ 		if (!ops.oobbuf)
+ 			return -ENOMEM;
+
+-		if (copy_from_user(ops.oobbuf, buf.ptr, buf.length)) {
++		if (copy_from_user(ops.oobbuf, usr_ptr, buf.length)) {
+ 			kfree(ops.oobbuf);
+ 			return -EFAULT;
+ 		}
+
+-		buf.start &= ~(mtd->oobsize - 1);
++		buf.start &= ~((uint64_t)mtd->oobsize - 1);
+ 		ret = mtd->write_oob(mtd, buf.start, &ops);
+
+ 		if (ops.oobretlen > 0xFFFFFFFFU)
+ 			ret = -EOVERFLOW;
+ 		retlen = ops.oobretlen;
+-		if (copy_to_user(&user_buf->length, &retlen, sizeof(buf.length)))
++		if (copy_to_user(retp, &retlen, sizeof(buf.length)))
+ 			ret = -EFAULT;
+
+ 		kfree(ops.oobbuf);
+@@ -528,12 +562,35 @@ static int mtd_ioctl(struct inode *inode, struct
+file *file,
+ 	}
+
+ 	case MEMREADOOB:
++	case MEMREADOOB64:
+ 	{
+-		struct mtd_oob_buf buf;
++		struct mtd_oob_buf64 buf;
+ 		struct mtd_oob_ops ops;
++		uint32_t __user *retp, *usr_ptr;
+
+-		if (copy_from_user(&buf, argp, sizeof(struct mtd_oob_buf)))
+-			return -EFAULT;
++		if (cmd == MEMREADOOB64) {
++			struct mtd_oob_buf64 __user *user_buf = argp;
 +
-+	return snprintf(buf, PAGE_SIZE, "%lu\n", (unsigned long)mtd->erasesize);
++			if (copy_from_user(&buf, user_buf,
++				    sizeof(struct mtd_oob_buf64)))
++				return -EFAULT;
 +
-+}
-+static DEVICE_ATTR(mtd_erasesize, S_IRUGO, mtd_erasesize_show, NULL);
++			retp = &user_buf->length;
++			usr_ptr = (void __user *)(uintptr_t)buf.usr_ptr;
++		} else {
++			struct mtd_oob_buf __user *user_buf = argp;
++			struct mtd_oob_buf buf32;
 +
-+static ssize_t mtd_writesize_show(struct device *dev,
-+		struct device_attribute *attr, char *buf)
-+{
-+	struct mtd_info *mtd = dev_to_mtd(dev);
++			if (copy_from_user(&buf32, user_buf,
++				    sizeof(struct mtd_oob_buf)))
++				return -EFAULT;
++			buf.start = buf32.start;
++			buf.length = buf32.length;
 +
-+	return snprintf(buf, PAGE_SIZE, "%lu\n", (unsigned long)mtd->writesize);
++			/* MEMREADOOB returned length goes in "start" field */
++			retp = &user_buf->start;
++			usr_ptr = (void __user *)buf32.ptr;
++		}
+
+ 		if (buf.length > 4096)
+ 			return -EINVAL;
+@@ -541,7 +598,7 @@ static int mtd_ioctl(struct inode *inode, struct file *file,
+ 		if (!mtd->read_oob)
+ 			ret = -EOPNOTSUPP;
+ 		else
+-			ret = access_ok(VERIFY_WRITE, buf.ptr,
++			ret = access_ok(VERIFY_WRITE, usr_ptr,
+ 					buf.length) ? 0 : -EFAULT;
+ 		if (ret)
+ 			return ret;
+@@ -558,12 +615,12 @@ static int mtd_ioctl(struct inode *inode, struct
+file *file,
+ 		if (!ops.oobbuf)
+ 			return -ENOMEM;
+
+-		buf.start &= ~(mtd->oobsize - 1);
++		buf.start &= ~((uint64_t)mtd->oobsize - 1);
+ 		ret = mtd->read_oob(mtd, buf.start, &ops);
+
+-		if (put_user(ops.oobretlen, (uint32_t __user *)argp))
++		if (put_user(ops.oobretlen, retp))
+ 			ret = -EFAULT;
+-		else if (ops.oobretlen && copy_to_user(buf.ptr, ops.oobbuf,
++		else if (ops.oobretlen && copy_to_user(usr_ptr, ops.oobbuf,
+ 						    ops.oobretlen))
+ 			ret = -EFAULT;
+
+@@ -585,6 +642,20 @@ static int mtd_ioctl(struct inode *inode, struct
+file *file,
+ 		break;
+ 	}
+
++	case MEMLOCK64:
++	{
++		struct erase_info_user64 einfo64;
 +
-+}
-+static DEVICE_ATTR(mtd_writesize, S_IRUGO, mtd_writesize_show, NULL);
++		if (copy_from_user(&einfo64, argp, sizeof(einfo64)))
++			return -EFAULT;
 +
-+static ssize_t mtd_oobsize_show(struct device *dev,
-+		struct device_attribute *attr, char *buf)
-+{
-+	struct mtd_info *mtd = dev_to_mtd(dev);
++		if (!mtd->lock)
++			ret = -EOPNOTSUPP;
++		else
++			ret = mtd->lock(mtd, einfo64.start, einfo64.length);
++		break;
++	}
 +
-+	return snprintf(buf, PAGE_SIZE, "%lu\n", (unsigned long)mtd->oobsize);
+ 	case MEMUNLOCK:
+ 	{
+ 		struct erase_info_user einfo;
+@@ -599,6 +670,20 @@ static int mtd_ioctl(struct inode *inode, struct
+file *file,
+ 		break;
+ 	}
+
++	case MEMUNLOCK64:
++	{
++		struct erase_info_user64 einfo64;
 +
-+}
-+static DEVICE_ATTR(mtd_oobsize, S_IRUGO, mtd_oobsize_show, NULL);
++		if (copy_from_user(&einfo64, argp, sizeof(einfo64)))
++			return -EFAULT;
 +
-+static ssize_t mtd_numeraseregions_show(struct device *dev,
-+		struct device_attribute *attr, char *buf)
-+{
-+	struct mtd_info *mtd = dev_to_mtd(dev);
++		if (!mtd->unlock)
++			ret = -EOPNOTSUPP;
++		else
++			ret = mtd->unlock(mtd, einfo64.start, einfo64.length);
++		break;
++	}
 +
-+	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->numeraseregions);
+ 	/* Legacy interface */
+ 	case MEMGETOOBSEL:
+ 	{
+diff --git a/fs/compat_ioctl.c b/fs/compat_ioctl.c
+index 45e59d3..d7be0ea 100644
+--- a/fs/compat_ioctl.c
++++ b/fs/compat_ioctl.c
+@@ -2434,6 +2434,11 @@ COMPATIBLE_IOCTL(MEMGETREGIONCOUNT)
+ COMPATIBLE_IOCTL(MEMGETREGIONINFO)
+ COMPATIBLE_IOCTL(MEMGETBADBLOCK)
+ COMPATIBLE_IOCTL(MEMSETBADBLOCK)
++COMPATIBLE_IOCTL(MEMERASE64)
++COMPATIBLE_IOCTL(MEMWRITEOOB64)
++COMPATIBLE_IOCTL(MEMREADOOB64)
++COMPATIBLE_IOCTL(MEMLOCK64)
++COMPATIBLE_IOCTL(MEMUNLOCK64)
+ /* NBD */
+ ULONG_IOCTL(NBD_SET_SOCK)
+ ULONG_IOCTL(NBD_SET_BLKSIZE)
+diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
+index c6c61cd..6414dc6 100644
+--- a/include/mtd/mtd-abi.h
++++ b/include/mtd/mtd-abi.h
+@@ -5,17 +5,31 @@
+ #ifndef __MTD_ABI_H__
+ #define __MTD_ABI_H__
+
++#include <linux/types.h>
 +
-+}
-+static DEVICE_ATTR(mtd_numeraseregions, S_IRUGO, mtd_numeraseregions_show,
-+	NULL);
-+
-+static ssize_t mtd_name_show(struct device *dev,
-+		struct device_attribute *attr, char *buf)
-+{
-+	struct mtd_info *mtd = dev_to_mtd(dev);
-+
-+	return snprintf(buf, PAGE_SIZE, "%s\n", mtd->name);
-+
-+}
-+static DEVICE_ATTR(mtd_name, S_IRUGO, mtd_name_show, NULL);
-+
- static struct attribute *mtd_attrs[] = {
- 	&dev_attr_mtd_type.attr,
--	/* FIXME provide a /proc/mtd superset */
-+	&dev_attr_mtd_flags.attr,
-+	&dev_attr_mtd_size.attr,
-+	&dev_attr_mtd_erasesize.attr,
-+	&dev_attr_mtd_writesize.attr,
-+	&dev_attr_mtd_oobsize.attr,
-+	&dev_attr_mtd_numeraseregions.attr,
-+	&dev_attr_mtd_name.attr,
- 	NULL,
+ struct erase_info_user {
+ 	uint32_t start;
+ 	uint32_t length;
  };
 
-@@ -236,6 +314,8 @@ int del_mtd_device (struct mtd_info *mtd)
- 	} else {
- 		struct mtd_notifier *not;
-
-+		device_unregister(&mtd->dev);
++struct erase_info_user64 {
++	__u64    start;
++	__u64    length;
++};
 +
- 		/* No need to get a refcount on the module containing
- 		   the notifier, since we hold the mtd_table_mutex */
- 		list_for_each_entry(not, &mtd_notifiers, list)
-@@ -455,24 +535,6 @@ EXPORT_SYMBOL_GPL(register_mtd_user);
- EXPORT_SYMBOL_GPL(unregister_mtd_user);
- EXPORT_SYMBOL_GPL(default_mtd_writev);
+ struct mtd_oob_buf {
+ 	uint32_t start;
+ 	uint32_t length;
+ 	unsigned char __user *ptr;
+ };
 
--static int __init mtd_setup(void)
--{
--	mtd_class = class_create(THIS_MODULE, "mtd");
--
--	if (IS_ERR(mtd_class)) {
--		pr_err("Error creating mtd class.\n");
--		return PTR_ERR(mtd_class);
--	}
--	return 0;
--}
--core_initcall(mtd_setup);
--
--static void __exit mtd_teardown(void)
--{
--	class_destroy(mtd_class);
--}
--__exitcall(mtd_teardown);
--
- #ifdef CONFIG_PROC_FS
-
- /*====================================================================*/
-@@ -528,6 +590,12 @@ done:
-
- static int __init init_mtd(void)
- {
-+	mtd_class = class_create(THIS_MODULE, "mtd");
++struct mtd_oob_buf64 {
++	__u64    start;
++	__u32    res0;
++	__u32    length;
++	__u64    usr_ptr;
++};
 +
-+	if (IS_ERR(mtd_class)) {
-+		pr_err("Error creating mtd class.\n");
-+		return PTR_ERR(mtd_class);
-+	}
- 	if ((proc_mtd = create_proc_entry( "mtd", 0, NULL )))
- 		proc_mtd->read_proc = mtd_read_proc;
- 	return 0;
-@@ -537,6 +605,7 @@ static void __exit cleanup_mtd(void)
- {
-         if (proc_mtd)
- 		remove_proc_entry( "mtd", NULL);
-+	class_destroy(mtd_class);
- }
+ #define MTD_ABSENT		0
+ #define MTD_RAM			1
+ #define MTD_ROM			2
+@@ -94,6 +108,12 @@ struct otp_info {
+ #define ECCGETSTATS		_IOR('M', 18, struct mtd_ecc_stats)
+ #define MTDFILEMODE		_IO('M', 19)
 
- module_init(init_mtd);
++#define MEMERASE64		_IOW('M', 20, struct erase_info_user64)
++#define MEMWRITEOOB64		_IOWR('M', 21, struct mtd_oob_buf64)
++#define MEMREADOOB64		_IOWR('M', 22, struct mtd_oob_buf64)
++#define MEMLOCK64		_IOW('M', 23, struct erase_info_user64)
++#define MEMUNLOCK64		_IOW('M', 24, struct erase_info_user64)
++
+ /*
+  * Obsolete legacy interface. Keep it in order not to break userspace
+  * interfaces
+diff --git a/include/mtd/mtd-user.h b/include/mtd/mtd-user.h
+index 170ceca..a5ec18e 100644
+--- a/include/mtd/mtd-user.h
++++ b/include/mtd/mtd-user.h
+@@ -16,4 +16,6 @@ typedef struct region_info_user region_info_t;
+ typedef struct nand_oobinfo nand_oobinfo_t;
+ typedef struct nand_ecclayout nand_ecclayout_t;
+
++typedef struct erase_info_user64 erase_info64_t;
++
+ #endif /* __MTD_USER_H__ */
 -- 
 1.5.6.3
