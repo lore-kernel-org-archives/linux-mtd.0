@@ -1,17 +1,23 @@
-Received: from ti-out-0910.google.com ([209.85.142.191])
+Received: from mail-gx0-f160.google.com ([209.85.217.160])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LpNSN-0002Ru-28
-	for linux-mtd@lists.infradead.org; Thu, 02 Apr 2009 14:00:01 +0000
-Received: by ti-out-0910.google.com with SMTP id a20so508908tia.2
+	id 1Lpk1D-000635-0F
+	for linux-mtd@lists.infradead.org; Fri, 03 Apr 2009 14:05:22 +0000
+Received: by gxk4 with SMTP id 4so2467136gxk.18
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 02 Apr 2009 06:59:42 -0700 (PDT)
+	Fri, 03 Apr 2009 07:05:13 -0700 (PDT)
 MIME-Version: 1.0
-Date: Thu, 2 Apr 2009 19:29:42 +0530
-Message-ID: <5730fc040904020659w360c53c6u6cdc513d5c3055d9@mail.gmail.com>
-Subject: Kernel OOPS - JFFS2 file system on NOR flash
-From: hari prasath <gehariprasath@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: multipart/alternative; boundary=0016e6513cb008b03d046692d89d
+In-Reply-To: <1238752534-7718-1-git-send-email-sr@denx.de>
+References: <1238752534-7718-1-git-send-email-sr@denx.de>
+Date: Fri, 3 Apr 2009 08:04:58 -0600
+Message-ID: <fa686aa40904030704t5bd1debfk5a23aeed3ccae2ed@mail.gmail.com>
+Subject: Re: [PATCH] mtd: physmap_of: Add multiple regions and concatenation
+	support
+From: Grant Likely <grant.likely@secretlab.ca>
+To: Stefan Roese <sr@denx.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linuxppc-dev@ozlabs.org, devicetree-discuss <devicetree-discuss@ozlabs.org>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,221 +27,188 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---0016e6513cb008b03d046692d89d
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+On Fri, Apr 3, 2009 at 3:55 AM, Stefan Roese <sr@denx.de> wrote:
+> This patch adds support to handle multiple non-identical chips in one
+> flash device tree node. It also adds concat support to physmap_of. This
+> makes it possible to support e.g. the Intel P30 48F4400 chips which
+> internally consists of 2 non-identical NOR chips on one die. Additionally
+> partitions now can span over multiple chips.
+>
+> To describe such a chip's, multiple "reg" tuples are now supported in one
+> flash device tree node. Here an dts example:
+>
+> =A0 =A0 =A0 =A0flash@f0000000,0 {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0#address-cells =3D <1>;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0#size-cells =3D <1>;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0compatible =3D "cfi-flash";
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0reg =3D <0 0x00000000 0x02000000
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 0 0x02000000 0x02000000>;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0bank-width =3D <2>;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0partition@0 {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0label =3D "test-part1";
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0reg =3D <0 0x04000000>;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0};
+> =A0 =A0 =A0 =A0};
 
-Dear all,
+Binding looks good to me.  Add a variant of this blurb to
+Documentation/powerpc/booting-without-of.txt.  For extra credit,
+factor out the MTD stuff and move it to
+Documentation/powerpc/dts-bindings/.  Remember to cc: the
+devicetree-discuss@ozlabs.org list when you post the binding
+documentation.
 
-I have a embedded device with 32MB NOR flash. I am mounting a part of this
-as a MTD device.
+> Signed-off-by: Stefan Roese <sr@denx.de>
+> CC: Grant Likely <grant.likely@secretlab.ca>
+> ---
+> =A0drivers/mtd/maps/physmap_of.c | =A0174 ++++++++++++++++++++++++++++---=
+----------
+> =A01 files changed, 120 insertions(+), 54 deletions(-)
+>
+> diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.=
+c
+> index 5fcfec0..c1c2d08 100644
+> --- a/drivers/mtd/maps/physmap_of.c
+> +++ b/drivers/mtd/maps/physmap_of.c
+> @@ -20,13 +20,17 @@
+> =A0#include <linux/mtd/mtd.h>
+> =A0#include <linux/mtd/map.h>
+> =A0#include <linux/mtd/partitions.h>
+> +#include <linux/mtd/concat.h>
+> =A0#include <linux/of.h>
+> =A0#include <linux/of_platform.h>
+>
+> +#define MAX_RESOURCES =A0 =A0 =A0 =A0 =A04
+> +
 
-Now i have a script which echo's a string to a file in the flash. At certain
-stage, the 'echo' process becomes a Demon. 'dmesg' shows that 'Kernel unable
-to handle page request is generated"
+Why is this static?  Instead you could define:
 
-The output of 'dmesg' is given below for reference.
+struct of_flash_list {
+        struct mtd_info *mtd;
+        struct map_info map;
+        struct resource *res;
+};
 
-I am using linux kernel 2.6.22 and my NOR flash is a Intel P30 device.
+struct of_flash {
+        struct mtd_info         *cmtd;
+#ifdef CONFIG_MTD_PARTITIONS
+        struct mtd_partition    *parts;
+#endif
+        int list_size; /* number of elements in of_flash_list */
+        struct of_flash_list     list[0];
+};
 
-argh. node added in wrong place
-Unable to handle kernel paging request at virtual address ffffffee
-pgd = c3df8000
-[ffffffee] *pgd=a0002021, *pte=00000000, *ppte=00000000
-Internal error: Oops: f3 [#1]
-Modules linked in: modem_driver Gpio_ctrl
-CPU: 0    Not tainted  (2.6.22 #1)
-PC is at jffs2_add_full_dnode_to_inode+0xb8/0x408
-LR is at jffs2_add_full_dnode_to_inode+0x60/0x408
-pc : [<c00e4ddc>]    lr : [<c00e4d84>]    psr: a0000013
-sp : c3db9c50  ip : c3846fb0  fp : c3db9c74
-r10: c2894200  r9 : 000015bc  r8 : c3be4cf8
-r7 : c2d941ac  r6 : c3846aa0  r5 : c3846fb0  r4 : c2d94198
-r3 : c3be4cf8  r2 : ffffffea  r1 : 000015bc  r0 : 000015bc
-Flags: NzCv  IRQs on  FIQs on  Mode SVC_32  Segment user
-Control: 0000397f  Table: a3df8000  DAC: 00000015
-Process echo (pid: 4474, stack limit = 0xc3db8260)
-Stack: (0xc3db9c50 to 0xc3dba000)
-9c40:                                     c3be4cf8 c2d8af98 c2d94198
-c2894200
-9c60: 00000000 00000000 c3db9ccc c3db9c78 c00e986c c00e4d30 00000022
-00000003
-9c80: 00000000 00000000 c38085bc 00000022 00000022 c38085bc 00008cb0
-2bdf0c0b
-9ca0: 2bdf0c0b c2d94198 000005bc c2894200 c2d8af98 c2d941c4 000005bc
-c036d100
-9cc0: c3db9d18 c3db9cd0 c00e481c c00e9618 000015bc 00000022 c3db9ce4
-00000000
-9ce0: 000005de 00000000 49d2e5da 49d2e5da 00000022 c3db8000 00000000
-00000022
-9d00: c036d100 40000000 000005bc c3db9db4 c3db9d1c c005db24 c00e46f4
-c004f91c
-9d20: 000005de c2d941c4 c023b510 c2d94258 c1b3e720 00000001 c3db9e9c
-00000000
-9d40: 00000000 c3db9e94 50d941c4 00000000 00000000 c3db9de4 c2894400
-c3db9d94
-9d60: c3db9d6c c00945f8 c00eefe0 c3db9d94 c3db9d7c c2d941c4 c3db9d98
-00000001
-9d80: c3db9de4 000015bc c3db9db8 000015bc 00000000 c3db9de8 c3db9de4
-000015bc
-9da0: 00000000 00000000 c3db9e48 c3db9dbc c005e4c4 c005d718 000015bc
-00000000
-9dc0: c3db9ee4 00000022 00000000 00000000 c2d94258 c1b3e720 c3db9ee4
-c3db9e94
-9de0: c3db9e9c 00000022 000015bc 00000000 00000022 00000001 00000044
-000200d2
-9e00: c02cf2b0 00000000 000200d2 c02cf2ac 00000000 c3d23d60 c1b39d00
-c3db9e68
-9e20: c3db9e9c c2d941c4 00000000 00000000 c3db9ee4 00000001 c2d9422c
-c3db9e88
-9e40: c3db9e4c c005e578 c005dfd4 c3d8a800 c3db9e78 c2d94258 c1b3e720
-c3db9e94
-9e60: 00000000 00000000 c3db9e9c c3db9ee4 c1b3e720 c3db9e94 c3db9f78
-c3db9f4c
-9e80: c3db9e90 c0077940 c005e504 00000000 00000000 40000000 00000022
-00069000
-9ea0: c3db9ebc 00000000 00000001 ffffffff c1b3e720 00000000 00000000
-00000000
-9ec0: 00000000 c1b39d00 00000000 00000000 c281e4a8 c1b39d00 c004c740
-c3db9edc
-9ee0: c3db9edc 00000000 00000000 c3db8000 00069000 c3db9f4c c3db9f04
-c0069da8
-9f00: 00000022 c0029834 00000000 00000000 00000000 00000000 c3df8000
-00000000
-9f20: 00000002 c1b3e720 40000000 c0077880 00000022 c3db9f78 c3db8000
-00000002
-9f40: c3db9f74 c3db9f50 c0077a5c c007788c c0027254 c1b3e740 c1b3e720
-c3db9f78
-9f60: 00000000 00000000 c3db9fa4 c3db9f78 c0077ba0 c007799c 00000000
-00000000
-9f80: 00000000 40000000 00000022 0017ba08 00000004 c0023f84 00000000
-c3db9fa8
-9fa0: c0023de0 c0077b60 40000000 00000022 00000001 40000000 00000022
-40000000
-9fc0: 40000000 00000022 0017ba08 00000022 00000022 00192304 00000002
-000082d0
-9fe0: 00000000 be85fc14 000b9804 000e1704 60000010 00000001 00000000
-00000000
-Backtrace:
-[<c00e4d24>] (jffs2_add_full_dnode_to_inode+0x0/0x408) from [<c00e986c>]
-(jffs2_write_inode_range+0x260/0x36c)
-[<c00e960c>] (jffs2_write_inode_range+0x0/0x36c) from [<c00e481c>]
-(jffs2_commit_write+0x134/0x270)
-[<c00e46e8>] (jffs2_commit_write+0x0/0x270) from [<c005db24>]
-(generic_file_buffered_write+0x41c/0x610)
-[<c005d70c>] (generic_file_buffered_write+0x4/0x610) from [<c005e4c4>]
-(__generic_file_aio_write_nolock+0x4fc/0x52c)
-[<c005dfc8>] (__generic_file_aio_write_nolock+0x0/0x52c) from [<c005e578>]
-(generic_file_aio_write+0x84/0x100)
-[<c005e4f8>] (generic_file_aio_write+0x4/0x100) from [<c0077940>]
-(do_sync_write+0xc0/0x110)
-[<c0077880>] (do_sync_write+0x0/0x110) from [<c0077a5c>]
-(vfs_write+0xcc/0x150)
-[<c0077990>] (vfs_write+0x0/0x150) from [<c0077ba0>] (sys_write+0x4c/0x74)
- r8:00000000 r7:00000000 r6:c3db9f78 r5:c1b3e720 r4:c1b3e740
-[<c0077b54>] (sys_write+0x0/0x74) from [<c0023de0>]
-(ret_fast_syscall+0x0/0x2c)
- r8:c0023f84 r7:00000004 r6:0017ba08 r5:00000022 r4:40000000
-Code: 13833003 15823004 e596300c e5932000 (e5923004)
-Node totlen on flash (0x00000046) != totlen from node ref (0x00000058)
-Node totlen on flash (0x00000000) != totlen from node ref (0x0000005c)
+Using a zero length array at the end of the structure allows you to do
+this after counting the number of reg tuples:
 
+f =3D kzalloc(sizeof(struct of_flash) + sizeof(struct of_flash_list)*num_ch=
+ips);
 
--- 
-Best Regards,
-G.E.Hari Prasath
+That eliminates a needless hard limit to the number of flash chips.
 
---0016e6513cb008b03d046692d89d
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+> =A0struct of_flash {
+> - =A0 =A0 =A0 struct mtd_info =A0 =A0 =A0 =A0 *mtd;
+> - =A0 =A0 =A0 struct map_info =A0 =A0 =A0 =A0 map;
+> - =A0 =A0 =A0 struct resource =A0 =A0 =A0 =A0 *res;
+> + =A0 =A0 =A0 struct mtd_info =A0 =A0 =A0 =A0 *mtd[MAX_RESOURCES];
+> + =A0 =A0 =A0 struct mtd_info =A0 =A0 =A0 =A0 *cmtd;
+> + =A0 =A0 =A0 struct map_info =A0 =A0 =A0 =A0 map[MAX_RESOURCES];
+> + =A0 =A0 =A0 struct resource =A0 =A0 =A0 =A0 *res[MAX_RESOURCES];
+> =A0#ifdef CONFIG_MTD_PARTITIONS
+> =A0 =A0 =A0 =A0struct mtd_partition =A0 =A0*parts;
+> =A0#endif
+> @@ -88,28 +92,40 @@ static int parse_obsolete_partitions(struct of_device=
+ *dev,
+> =A0static int of_flash_remove(struct of_device *dev)
+> =A0{
+> =A0 =A0 =A0 =A0struct of_flash *info;
+> + =A0 =A0 =A0 int i;
+>
+> =A0 =A0 =A0 =A0info =3D dev_get_drvdata(&dev->dev);
+> =A0 =A0 =A0 =A0if (!info)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return 0;
+> =A0 =A0 =A0 =A0dev_set_drvdata(&dev->dev, NULL);
+>
+> - =A0 =A0 =A0 if (info->mtd) {
+> +#ifdef CONFIG_MTD_CONCAT
+> + =A0 =A0 =A0 if (info->cmtd !=3D info->mtd[0]) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 del_mtd_device(info->cmtd);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 mtd_concat_destroy(info->cmtd);
+> + =A0 =A0 =A0 }
+> +#endif
+> +
+> + =A0 =A0 =A0 if (info->cmtd) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (OF_FLASH_PARTS(info)) {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 del_mtd_partitions(info->mt=
+d);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 del_mtd_partitions(info->cm=
+td);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0kfree(OF_FLASH_PARTS(info)=
+);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 del_mtd_device(info->mtd);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 del_mtd_device(info->cmtd);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 map_destroy(info->mtd);
+> =A0 =A0 =A0 =A0}
+>
+> - =A0 =A0 =A0 if (info->map.virt)
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 iounmap(info->map.virt);
+> + =A0 =A0 =A0 for (i =3D 0; i < MAX_RESOURCES; i++) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (info->mtd[i])
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 map_destroy(info->mtd[i]);
+> +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (info->map[i].virt)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 iounmap(info->map[i].virt);
+>
+> - =A0 =A0 =A0 if (info->res) {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 release_resource(info->res);
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 kfree(info->res);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (info->res[i]) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 release_resource(info->res[=
+i]);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 kfree(info->res[i]);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+> =A0 =A0 =A0 =A0}
+>
+> =A0 =A0 =A0 =A0return 0;
+> @@ -164,15 +180,25 @@ static int __devinit of_flash_probe(struct of_devic=
+e *dev,
+> =A0 =A0 =A0 =A0const char *probe_type =3D match->data;
+> =A0 =A0 =A0 =A0const u32 *width;
+> =A0 =A0 =A0 =A0int err;
+> -
+> - =A0 =A0 =A0 err =3D -ENXIO;
+> - =A0 =A0 =A0 if (of_address_to_resource(dp, 0, &res)) {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_err(&dev->dev, "Can't get IO address fr=
+om device tree\n");
+> + =A0 =A0 =A0 int i;
+> + =A0 =A0 =A0 int count;
+> + =A0 =A0 =A0 const u32 *p;
+> + =A0 =A0 =A0 int devices_found =3D 0;
+> +
+> + =A0 =A0 =A0 /*
+> + =A0 =A0 =A0 =A0* Get number of "reg" tuples. Scan for MTD devices on ar=
+ea's
+> + =A0 =A0 =A0 =A0* described by each "reg" region. This makes it possible=
+ (including
+> + =A0 =A0 =A0 =A0* the concat support) to support the Intel P30 48F4400 c=
+hips which
+> + =A0 =A0 =A0 =A0* consists internally of 2 non-identical NOR chips on on=
+e die.
+> + =A0 =A0 =A0 =A0*/
+> + =A0 =A0 =A0 p =3D of_get_property(dp, "reg", &count);
+> + =A0 =A0 =A0 if (count % 12 !=3D 0) {
 
-Dear all,<br><br>I have a embedded device with 32MB NOR flash. I am mountin=
-g a part of this as a MTD device.<br><br>Now i have a script which echo&#39=
-;s a string to a file in the flash. At certain stage, the &#39;echo&#39; pr=
-ocess becomes a Demon. &#39;dmesg&#39; shows that &#39;Kernel unable to han=
-dle page request is generated&quot;<br>
-<br>The output of &#39;dmesg&#39; is given below for reference.<br><br>I am=
- using linux kernel 2.6.22 and my NOR flash is a Intel P30 device.<br><br>a=
-rgh. node added in wrong place<br>Unable to handle kernel paging request at=
- virtual address ffffffee<br>
-pgd =3D c3df8000<br>[ffffffee] *pgd=3Da0002021, *pte=3D00000000, *ppte=3D00=
-000000<br>Internal error: Oops: f3 [#1]<br>Modules linked in: modem_driver =
-Gpio_ctrl<br>CPU: 0=C2=A0=C2=A0=C2=A0 Not tainted=C2=A0 (2.6.22 #1)<br>PC i=
-s at jffs2_add_full_dnode_to_inode+0xb8/0x408<br>
-LR is at jffs2_add_full_dnode_to_inode+0x60/0x408<br>pc : [&lt;c00e4ddc&gt;=
-]=C2=A0=C2=A0=C2=A0 lr : [&lt;c00e4d84&gt;]=C2=A0=C2=A0=C2=A0 psr: a0000013=
-<br>sp : c3db9c50=C2=A0 ip : c3846fb0=C2=A0 fp : c3db9c74<br>r10: c2894200=
-=C2=A0 r9 : 000015bc=C2=A0 r8 : c3be4cf8<br>r7 : c2d941ac=C2=A0 r6 : c3846a=
-a0=C2=A0 r5 : c3846fb0=C2=A0 r4 : c2d94198<br>
-r3 : c3be4cf8=C2=A0 r2 : ffffffea=C2=A0 r1 : 000015bc=C2=A0 r0 : 000015bc<b=
-r>Flags: NzCv=C2=A0 IRQs on=C2=A0 FIQs on=C2=A0 Mode SVC_32=C2=A0 Segment u=
-ser<br>Control: 0000397f=C2=A0 Table: a3df8000=C2=A0 DAC: 00000015<br>Proce=
-ss echo (pid: 4474, stack limit =3D 0xc3db8260)<br>
-Stack: (0xc3db9c50 to 0xc3dba000)<br>9c40:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 c3be4cf8 c2d8af98 c2d94198 c2894200 <br>9=
-c60: 00000000 00000000 c3db9ccc c3db9c78 c00e986c c00e4d30 00000022 0000000=
-3 <br>9c80: 00000000 00000000 c38085bc 00000022 00000022 c38085bc 00008cb0 =
-2bdf0c0b <br>
-9ca0: 2bdf0c0b c2d94198 000005bc c2894200 c2d8af98 c2d941c4 000005bc c036d1=
-00 <br>9cc0: c3db9d18 c3db9cd0 c00e481c c00e9618 000015bc 00000022 c3db9ce4=
- 00000000 <br>9ce0: 000005de 00000000 49d2e5da 49d2e5da 00000022 c3db8000 0=
-0000000 00000022 <br>
-9d00: c036d100 40000000 000005bc c3db9db4 c3db9d1c c005db24 c00e46f4 c004f9=
-1c <br>9d20: 000005de c2d941c4 c023b510 c2d94258 c1b3e720 00000001 c3db9e9c=
- 00000000 <br>9d40: 00000000 c3db9e94 50d941c4 00000000 00000000 c3db9de4 c=
-2894400 c3db9d94 <br>
-9d60: c3db9d6c c00945f8 c00eefe0 c3db9d94 c3db9d7c c2d941c4 c3db9d98 000000=
-01 <br>9d80: c3db9de4 000015bc c3db9db8 000015bc 00000000 c3db9de8 c3db9de4=
- 000015bc <br>9da0: 00000000 00000000 c3db9e48 c3db9dbc c005e4c4 c005d718 0=
-00015bc 00000000 <br>
-9dc0: c3db9ee4 00000022 00000000 00000000 c2d94258 c1b3e720 c3db9ee4 c3db9e=
-94 <br>9de0: c3db9e9c 00000022 000015bc 00000000 00000022 00000001 00000044=
- 000200d2 <br>9e00: c02cf2b0 00000000 000200d2 c02cf2ac 00000000 c3d23d60 c=
-1b39d00 c3db9e68 <br>
-9e20: c3db9e9c c2d941c4 00000000 00000000 c3db9ee4 00000001 c2d9422c c3db9e=
-88 <br>9e40: c3db9e4c c005e578 c005dfd4 c3d8a800 c3db9e78 c2d94258 c1b3e720=
- c3db9e94 <br>9e60: 00000000 00000000 c3db9e9c c3db9ee4 c1b3e720 c3db9e94 c=
-3db9f78 c3db9f4c <br>
-9e80: c3db9e90 c0077940 c005e504 00000000 00000000 40000000 00000022 000690=
-00 <br>9ea0: c3db9ebc 00000000 00000001 ffffffff c1b3e720 00000000 00000000=
- 00000000 <br>9ec0: 00000000 c1b39d00 00000000 00000000 c281e4a8 c1b39d00 c=
-004c740 c3db9edc <br>
-9ee0: c3db9edc 00000000 00000000 c3db8000 00069000 c3db9f4c c3db9f04 c0069d=
-a8 <br>9f00: 00000022 c0029834 00000000 00000000 00000000 00000000 c3df8000=
- 00000000 <br>9f20: 00000002 c1b3e720 40000000 c0077880 00000022 c3db9f78 c=
-3db8000 00000002 <br>
-9f40: c3db9f74 c3db9f50 c0077a5c c007788c c0027254 c1b3e740 c1b3e720 c3db9f=
-78 <br>9f60: 00000000 00000000 c3db9fa4 c3db9f78 c0077ba0 c007799c 00000000=
- 00000000 <br>9f80: 00000000 40000000 00000022 0017ba08 00000004 c0023f84 0=
-0000000 c3db9fa8 <br>
-9fa0: c0023de0 c0077b60 40000000 00000022 00000001 40000000 00000022 400000=
-00 <br>9fc0: 40000000 00000022 0017ba08 00000022 00000022 00192304 00000002=
- 000082d0 <br>9fe0: 00000000 be85fc14 000b9804 000e1704 60000010 00000001 0=
-0000000 00000000 <br>
-Backtrace: <br>[&lt;c00e4d24&gt;] (jffs2_add_full_dnode_to_inode+0x0/0x408)=
- from [&lt;c00e986c&gt;] (jffs2_write_inode_range+0x260/0x36c)<br>[&lt;c00e=
-960c&gt;] (jffs2_write_inode_range+0x0/0x36c) from [&lt;c00e481c&gt;] (jffs=
-2_commit_write+0x134/0x270)<br>
-[&lt;c00e46e8&gt;] (jffs2_commit_write+0x0/0x270) from [&lt;c005db24&gt;] (=
-generic_file_buffered_write+0x41c/0x610)<br>[&lt;c005d70c&gt;] (generic_fil=
-e_buffered_write+0x4/0x610) from [&lt;c005e4c4&gt;] (__generic_file_aio_wri=
-te_nolock+0x4fc/0x52c)<br>
-[&lt;c005dfc8&gt;] (__generic_file_aio_write_nolock+0x0/0x52c) from [&lt;c0=
-05e578&gt;] (generic_file_aio_write+0x84/0x100)<br>[&lt;c005e4f8&gt;] (gene=
-ric_file_aio_write+0x4/0x100) from [&lt;c0077940&gt;] (do_sync_write+0xc0/0=
-x110)<br>
-[&lt;c0077880&gt;] (do_sync_write+0x0/0x110) from [&lt;c0077a5c&gt;] (vfs_w=
-rite+0xcc/0x150)<br>[&lt;c0077990&gt;] (vfs_write+0x0/0x150) from [&lt;c007=
-7ba0&gt;] (sys_write+0x4c/0x74)<br>=C2=A0r8:00000000 r7:00000000 r6:c3db9f7=
-8 r5:c1b3e720 r4:c1b3e740<br>
-[&lt;c0077b54&gt;] (sys_write+0x0/0x74) from [&lt;c0023de0&gt;] (ret_fast_s=
-yscall+0x0/0x2c)<br>=C2=A0r8:c0023f84 r7:00000004 r6:0017ba08 r5:00000022 r=
-4:40000000<br>Code: 13833003 15823004 e596300c e5932000 (e5923004) <br>Node=
- totlen on flash (0x00000046) !=3D totlen from node ref (0x00000058)<br>
-Node totlen on flash (0x00000000) !=3D totlen from node ref (0x0000005c)<br=
-><br clear=3D"all"><br>-- <br>Best Regards, =C2=A0<br>G.E.Hari Prasath <br>=
-<br><br><br><br>
+This doesn't work.  You cannot know the size of each reg tuple until
+#address-cells/#size-cells is parsed for the parent node.  It won't
+always be 12.  Use of_n_addr_cells() + of_n_size_cells() to determine
+size of each tuple.
 
---0016e6513cb008b03d046692d89d--
+Other than that, I think it looks good, but I'll look again when you repost=
+.
+
+g.
+
+--=20
+Grant Likely, B.Sc., P.Eng.
+Secret Lab Technologies Ltd.
