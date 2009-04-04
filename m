@@ -1,24 +1,20 @@
-Received: from risingsoftware.com ([207.192.70.63]
-	helo=li32-63.members.linode.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lq5PG-0002Nx-4T
-	for linux-mtd@lists.infradead.org; Sat, 04 Apr 2009 12:55:48 +0000
-Received: from c122-107-142-134.eburwd5.vic.optusnet.com.au ([122.107.142.134]
-	helo=noddy.cloud.net.au) by li32-63.members.linode.com with esmtpsa
-	(TLS-1.0:RSA_AES_256_CBC_SHA1:32) (Exim 4.63)
-	(envelope-from <hamish@cloud.net.au>) id 1Lq5Oi-0006C2-20
-	for linux-mtd@lists.infradead.org; Sat, 04 Apr 2009 08:54:56 -0400
-Received: from hamish by noddy.cloud.net.au with local (Exim 4.69)
-	(envelope-from <hamish@cloud.net.au>) id 1Lq5Ob-00037I-Ex
-	for linux-mtd@lists.infradead.org; Sat, 04 Apr 2009 23:54:49 +1100
-Date: Sat, 4 Apr 2009 23:54:49 +1100
-From: Hamish Moffatt <hamish@cloud.net.au>
-To: linux-mtd@lists.infradead.org
-Subject: new mtd-utils release with mkfs.ubifs
-Message-ID: <20090404125449.GA11964@cloud.net.au>
+Received: from yx-out-1718.google.com ([74.125.44.158])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Lq5hR-00056L-Ue
+	for linux-mtd@lists.infradead.org; Sat, 04 Apr 2009 13:14:24 +0000
+Received: by yx-out-1718.google.com with SMTP id 34so929800yxf.72
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 04 Apr 2009 06:14:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20090404125449.GA11964@cloud.net.au>
+References: <20090404125449.GA11964@cloud.net.au>
+Date: Sat, 4 Apr 2009 09:14:16 -0400
+Message-ID: <8bd0f97a0904040614y434e8560nb954fcef9bdb5619@mail.gmail.com>
+Subject: Re: new mtd-utils release with mkfs.ubifs
+From: Mike Frysinger <vapier.adi@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,14 +24,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Sat, Apr 4, 2009 at 08:54, Hamish Moffatt wrote:
+> Are there any plans to make another formal release of mtd-utils now that
+> mkfs.ubifs is included and the ubi utilities have been rearranged?
+>
+> This would help with distros that need mkfs.ubifs eg buildroot.
 
-Are there any plans to make another formal release of mtd-utils now that
-mkfs.ubifs is included and the ubi utilities have been rearranged?
-
-This would help with distros that need mkfs.ubifs eg buildroot.
-
-thanks
-Hamish
--- 
-Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
+meh, grabbing snapshots from the mtd-utils.git interface is trivial
+-mike
