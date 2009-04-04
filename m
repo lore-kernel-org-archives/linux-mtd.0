@@ -1,21 +1,26 @@
-Received: from mail-gx0-f160.google.com ([209.85.217.160])
+Received: from mx002.twitter.com ([128.121.146.151]
+	helo=postmaster.twitter.com)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lq0xo-0004Tz-Hv
-	for linux-mtd@lists.infradead.org; Sat, 04 Apr 2009 08:10:59 +0000
-Received: by gxk4 with SMTP id 4so3394914gxk.18
+	id 1Lq1jN-0002Is-S2
+	for linux-mtd@lists.infradead.org; Sat, 04 Apr 2009 09:00:08 +0000
+Received: from twitter-web054 (web054.twitter.com [10.209.32.56])
+	by postmaster.twitter.com (Postfix) with ESMTP id 2CB123D0C55
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 04 Apr 2009 01:10:50 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20090404073155.GA12392@turtle.localnet>
-References: <20090404073155.GA12392@turtle.localnet>
-Date: Sat, 4 Apr 2009 04:10:50 -0400
-Message-ID: <8bd0f97a0904040110o6e595583m177fcbabad82d37e@mail.gmail.com>
-Subject: Re: [PATCH] Fix erase timeout in M25P80 driver
-From: Mike Frysinger <vapier.adi@gmail.com>
-To: Peter Horton <zero@colonel-panic.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, tbm@cyrius.com
+	Sat,  4 Apr 2009 09:00:02 +0000 (UTC)
+Received: from twitter.com (localhost [127.0.0.1])
+	by twitter-web054 (Postfix) with ESMTP id 5E95E10380B6
+	for <linux-mtd@lists.infradead.org>;
+	Sat,  4 Apr 2009 08:59:59 +0000 (UTC)
+Date: Sat, 4 Apr 2009 08:59:59 +0000
+From: Twitter
+	<twitter-invite-linux-mtd=lists.infradead.org@postmaster.twitter.com>
+Sender: Twitter
+	<twitter-invite-linux-mtd=lists.infradead.org@postmaster.twitter.com>
+To: linux-mtd@lists.infradead.org
+Message-Id: <49d7218f5d940_52de155557fdec30338b0@twitter-web054.twitter.com.tmail>
+Subject: Robin Singh wants to keep up with you on Twitter
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +30,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Apr 4, 2009 at 03:31, Peter Horton wrote:
-> =C2=A0static int wait_till_ready(struct m25p *flash)
-> =C2=A0{
-> - =C2=A0 =C2=A0 =C2=A0 int count;
-> +# =C2=A0 =C2=A0 =C2=A0define DIV_U(n,d) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 (((n)+(d)-1)/(d))
-> +
-> + =C2=A0 =C2=A0 =C2=A0 unsigned long deadline;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0int sr;
->
-> - =C2=A0 =C2=A0 =C2=A0 /* one chip guarantees max 5 msec wait here after =
-page writes,
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0* but potentially three seconds (!) after pa=
-ge erase.
-> + =C2=A0 =C2=A0 =C2=A0 deadline =3D jiffies + DIV_U(MAX_READY_WAIT_TIMEOU=
-T * HZ, 1000);
+To find out more about Twitter, visit the link below:
 
-there's already a macro for working with jiffies and time.  dont start
-writing yet another one with its own ugly magic.  just look in
-linux/jiffies.h.
+http://twitter.com/i/664873afc2d21762cbb5299fe496fcd2f056a1c1
 
-> + =C2=A0 =C2=A0 =C2=A0 /* this can take a long time for sector erase.
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0* we should probably have a separate timeout
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0* for program and erase and we should check
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0* for signals ...
+Thanks,
+-The Twitter Team
 
-timeouts only occur when there's a problem.  a problematic system is
-not normal, so having longer (and common) timeouts is fine because
-they should never be reached.
--mike
+About Twitter
+
+Twitter is a unique approach to communication and networking based on the simple concept of status. What are you doing? What are your friends doing—right now? With Twitter, you may answer this question over SMS or the Web and the responses are shared between contacts.
+
+This message was sent by a Twitter user who entered your email address. If you'd prefer not to receive emails when other people invite you to Twitter, click here:
+http://twitter.com/i/optout/5817d5821c2bd25dc4dd8393213cdb94f56069cd
