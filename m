@@ -1,22 +1,23 @@
-Received: from wf-out-1314.google.com ([209.85.200.168])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lq8rA-0005lQ-7Z
-	for linux-mtd@lists.infradead.org; Sat, 04 Apr 2009 16:36:38 +0000
-Received: by wf-out-1314.google.com with SMTP id 23so1574716wfg.24
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 04 Apr 2009 09:36:30 -0700 (PDT)
-Date: Sat, 4 Apr 2009 12:36:23 -0400
-From: Josh Boyer <jwboyer@gmail.com>
-To: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: new mtd-utils release with mkfs.ubifs
-Message-ID: <20090404163623.GA6104@hansolo.jdub.homelinux.org>
-References: <20090404125449.GA11964@cloud.net.au>
-	<8bd0f97a0904040614y434e8560nb954fcef9bdb5619@mail.gmail.com>
+Received: from smtp118.sbc.mail.sp1.yahoo.com ([69.147.64.91])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Lq9Ve-0000zU-QT
+	for linux-mtd@lists.infradead.org; Sat, 04 Apr 2009 17:18:29 +0000
+From: David Brownell <david-b@pacbell.net>
+To: Kevin Cernekee <kpc.mtd@gmail.com>,
+ dwmw2@infradead.org
+Subject: Re: [patch/rfc 2.6.29 1/2] MTD: driver model updates
+Date: Sat, 4 Apr 2009 10:18:19 -0700
+References: <200903260042.42091.david-b@pacbell.net>
+	<1238742215.20906.99.camel@localhost.localdomain>
+	<a95a62fe0904031300i82bdf42h5bc854a002e0091e@mail.gmail.com>
+In-Reply-To: <a95a62fe0904031300i82bdf42h5bc854a002e0091e@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Content-Disposition: inline
-In-Reply-To: <8bd0f97a0904040614y434e8560nb954fcef9bdb5619@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
+Message-Id: <200904041018.19657.david-b@pacbell.net>
+Cc: Linux MTD <linux-mtd@lists.infradead.org>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,17 +27,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Apr 04, 2009 at 09:14:16AM -0400, Mike Frysinger wrote:
->On Sat, Apr 4, 2009 at 08:54, Hamish Moffatt wrote:
->> Are there any plans to make another formal release of mtd-utils now that
->> mkfs.ubifs is included and the ubi utilities have been rearranged?
->>
->> This would help with distros that need mkfs.ubifs eg buildroot.
->
->meh, grabbing snapshots from the mtd-utils.git interface is trivial
+On Friday 03 April 2009, Kevin Cernekee wrote:
+> @@ -413,6 +590,12 @@ done:
+> 
+>  static int __init init_mtd(void)
+>  {
+> +       mtd_class = class_create(THIS_MODULE, "mtd");
+> +
+> +       if (IS_ERR(mtd_class)) {
+> +               pr_err("Error creating mtd class.\n");
+> +               return PTR_ERR(mtd_class);
+> +       }
 
-It is, yes.  But as soon as I get time (and remember how) I'll do
-a release.  Might be worth waiting for the 64b-bit and/or > 4GiB
-stuff to settle though.
+The reason I had the class creation code in its own initcall
+is to ensure that it's there even when procfs isn't.  This
+init_mtd() stuff is only there if procfs is configured.
 
-josh
+So I don't much like this part of Kevin's change ... unless
+MTD becomes dependent on procfs.  If there's an issue with
+CONFIG_MTD=m then there's a better fix than this.
+
+
+>         if ((proc_mtd = create_proc_entry( "mtd", 0, NULL )))
+>                 proc_mtd->read_proc = mtd_read_proc;
+>         return 0;
+> @@ -422,6 +605,7 @@ static void __exit cleanup_mtd(void)
+>  {
+>          if (proc_mtd)
+>                 remove_proc_entry( "mtd", NULL);
+> +       class_destroy(mtd_class);
+>  }
+> 
+>  module_init(init_mtd);
