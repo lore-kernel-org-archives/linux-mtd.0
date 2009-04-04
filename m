@@ -1,25 +1,20 @@
-Received: from mail-qy0-f122.google.com ([209.85.221.122])
+Received: from hrndva-commlb.mail.rr.com ([71.74.57.8])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LppsU-0001nB-62
-	for linux-mtd@lists.infradead.org; Fri, 03 Apr 2009 20:20:45 +0000
-Received: by qyk28 with SMTP id 28so2483554qyk.28
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 03 Apr 2009 13:20:37 -0700 (PDT)
+	id 1Lpvkh-0000dB-7x
+	for linux-mtd@lists.infradead.org; Sat, 04 Apr 2009 02:37:07 +0000
+Received: from rrcs-agw-02.hrndva.rr.com ([24.28.200.152])
+	by hrndva-comm-mta01.mail.rr.com with ESMTP id
+	<20090404023656.PCDK17525.hrndva-comm-mta01.mail.rr.com@rrcs-agw-02.hrndva.rr.com>
+	for <linux-mtd@lists.infradead.org>; Sat, 4 Apr 2009 02:36:56 +0000
+Message-Id: <7hp5m9$cm88so@rrcs-agw-02b.hrndva.rr.com>
+From: Joan <wrobinson@rrbiznet.com>
+To: <info@Global.org>
+Subject: Dear Sir/Madam
+Date: Fri, 3 Apr 2009 21:36:56 -0500
 MIME-Version: 1.0
-In-Reply-To: <49D5B351.5040601@nokia.com>
-References: <a95a62fe0904021632l14ddb299l7818f2f2d32c20ac@mail.gmail.com>
-	<49D5B351.5040601@nokia.com>
-Date: Fri, 3 Apr 2009 13:20:37 -0700
-Message-ID: <a95a62fe0904031320i2ce699ffm7aa94bce0a049bdd@mail.gmail.com>
-Subject: Re: [PATCH] MTD: nandsim should delete its partitions on module
-	unload
-From: Kevin Cernekee <kpc.mtd@gmail.com>
-To: Adrian Hunter <adrian.hunter@nokia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Reply-To: jerry.smith333@googlemail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,10 +24,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 2, 2009 at 11:57 PM, Adrian Hunter <adrian.hunter@nokia.com> wrote:
-> Doesn't nand_release() already do that?
-
-Yes.  The problem I was seeing (attempt to reregister mtd* sysfs
-entries) was caused by something else.  I retract the patch.
-
-Thanks.
+Your email ID has been awarded £950.000.00 GBP in our Global Online draw,Contact this office via:
+Name:....................
+Country:.................
+Sex:.....................
+Age: .....................
+Address:...................
