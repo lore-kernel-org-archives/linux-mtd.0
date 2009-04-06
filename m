@@ -1,17 +1,17 @@
-Message-Id: <ED6AE3E4-62EE-484E-A9E7-7E5C7D5CAF85@kernel.crashing.org>
-From: Kumar Gala <galak@kernel.crashing.org>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1239028475.11870.34.camel@macbook.infradead.org>
-Content-Type: text/plain; charset=US-ASCII; format=flowed; delsp=yes
-Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0 (Apple Message framework v930.3)
-Subject: Re: NAND: pending patches for FSL-UPM and Socrates-NAND
-Date: Mon, 6 Apr 2009 09:37:09 -0500
-References: <49DA065A.2050204@grandegger.com>
-	<692AD100-F140-4388-ADC9-A14B6D7371FC@kernel.crashing.org>
-	<1239028475.11870.34.camel@macbook.infradead.org>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Wolfgang Grandegger <wg@grandegger.com>
+Received: from mx01.promotionbasis.de ([213.131.232.150])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LqsXO-00052g-O7
+	for linux-mtd@lists.infradead.org; Mon, 06 Apr 2009 17:23:17 +0000
+To: liuw@sutterhealth.org, liuziliang1985@pharmnet.com.cn,
+	liuzixing1981@boraid.com, liuzp@staff.chinabyte.com,
+	len4363@gmail.com, lcop@pharmacie.univ-mrs.fr,
+	lefdental@fibertel.com.ar, lgentry@hcwbenefits.com,
+	lgentle@hotmail.com, littlepace@primacare.ie
+Subject: MD Directory
+From: "" <nosendhere@eins.promotionbasis.de>
+Message-Id: <20090406165556.75672C333@mx01.promotionbasis.de>
+Date: Mon,  6 Apr 2009 18:55:55 +0200 (CEST)
+Reply-To: nosendhere@eins.promotionbasis.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,51 +21,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Current Medical Doctors in the USA 
 
-On Apr 6, 2009, at 9:34 AM, David Woodhouse wrote:
+Coverage for many different medical specialties
 
-> On Mon, 2009-04-06 at 09:02 -0500, Kumar Gala wrote:
->> On Apr 6, 2009, at 8:40 AM, Wolfgang Grandegger wrote:
->>
->>> Hello,
->>>
->>> I would like to ask for the status of the following patches:
->>>
->>> [PATCH v4 0/4] NAND: Multi-chip support for FSL-UPM for TQM8548	
->>> modules
->>>
->>> NAND: FSL-UPM: add multi chip support
->>> http://lists.infradead.org/pipermail/linux-mtd/2009-March/ 
->>> 025070.html
->>>
->>> NAND: FSL-UPM: Add wait flags to support board/chip specific delays
->>> http://lists.infradead.org/pipermail/linux-mtd/2009-March/ 
->>> 025071.html
->>>
->>> powerpc: NAND: FSL UPM: document new bindings
->>> http://lists.infradead.org/pipermail/linux-mtd/2009-March/ 
->>> 025072.html
->>>
->>> powerpc/85xx: TQM8548: Update DTS file for multi-chip support
->>> http://lists.infradead.org/pipermail/linux-mtd/2009-March/ 
->>> 025051.html
->>
->> I can take all 4 via the powerpc tree if David ack's the first two.
->> (or I can just deal with the last two).
->>
->>> Re: [PATCH 1/2] NAND: Add support for oob size 128
->>> http://lists.infradead.org/pipermail/linux-mtd/2009-March/ 
->>> 025046.html
->>>
->>> [PATCH 2/2] NAND: Add support for NAND on the Socrates board
->>> http://lists.infradead.org/pipermail/linux-mtd/2009-March/ 
->>> 024982.html
->>
->> These are best handled by David.
->
-> I've just applied all six, and was about to send Linus the pull  
-> request.
+you can sort by many different fields like state or zip
 
-that's fine by me.
+Reduced to only: $395
 
-- k
+
+***** Receive the items below as a Bon.US if  you order this week ===
+
+** Dentists
+
+** Veterinarians
+
+--> Physical Therapists
+
+**> Visiting Nurses & RN's
+
+send email to:: Clayton@medexecdata.com
+  
+only during this week ..............................................................   to adjust your subscription status email to cut@medexecdata.com
