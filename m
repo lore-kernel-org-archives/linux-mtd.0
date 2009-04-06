@@ -1,20 +1,17 @@
-Received: from 81-7-68-229.static.zebra.lt ([81.7.68.229] helo=teltonika.lt)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LqobM-0007dY-E0
-	for linux-mtd@lists.infradead.org; Mon, 06 Apr 2009 13:11:07 +0000
-Received: from unknown (HELO [127.0.0.1]) (paulius.zaleckas@[217.147.39.138])
-	(envelope-sender <paulius.zaleckas@teltonika.lt>)
-	by teltonika.lt (qmail-ldap-1.03) with SMTP
-	for <linux-mtd@lists.infradead.org>; 6 Apr 2009 13:13:48 -0000
-From: Paulius Zaleckas <paulius.zaleckas@teltonika.lt>
-Subject: [PATCH] mtd: fix Kconfig comment about 'armflash'
-To: linux-mtd@lists.infradead.org, trivial@kernel.org
-Date: Mon, 06 Apr 2009 16:10:54 +0300
-Message-ID: <20090406131054.16163.11343.stgit@Programuotojas>
+Received: from mail-out.m-online.net ([212.18.0.10])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Lqp4I-00069W-Or
+	for linux-mtd@lists.infradead.org; Mon, 06 Apr 2009 13:41:00 +0000
+Message-ID: <49DA065A.2050204@grandegger.com>
+Date: Mon, 06 Apr 2009 15:40:42 +0200
+From: Wolfgang Grandegger <wg@grandegger.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: NAND: pending patches for FSL-UPM and Socrates-NAND
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: linux-kernel@vger.kernel.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	Kumar Gala <galak@kernel.crashing.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +21,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The real 'armflash' map driver is selected by CONFIG_MTD_ARM_INTEGRATOR
+Hello,
 
-Signed-off-by: Paulius Zaleckas <paulius.zaleckas@teltonika.lt>
----
+I would like to ask for the status of the following patches:
 
- drivers/mtd/Kconfig |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+[PATCH v4 0/4] NAND: Multi-chip support for FSL-UPM for TQM8548	modules
+
+  NAND: FSL-UPM: add multi chip support
+  http://lists.infradead.org/pipermail/linux-mtd/2009-March/025070.html
+
+  NAND: FSL-UPM: Add wait flags to support board/chip specific delays
+  http://lists.infradead.org/pipermail/linux-mtd/2009-March/025071.html
+
+  powerpc: NAND: FSL UPM: document new bindings
+  http://lists.infradead.org/pipermail/linux-mtd/2009-March/025072.html
+
+  powerpc/85xx: TQM8548: Update DTS file for multi-chip support
+  http://lists.infradead.org/pipermail/linux-mtd/2009-March/025051.html
 
 
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index 7d04fb9..b8e35a0 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -154,7 +154,8 @@ config MTD_AFS_PARTS
- 
- 	  You will still need the parsing functions to be called by the driver
- 	  for your particular device. It won't happen automatically. The
--	  'armflash' map driver (CONFIG_MTD_ARMFLASH) does this, for example.
-+	  'armflash' map driver (CONFIG_MTD_ARM_INTEGRATOR) does this, for
-+	  example.
- 
- config MTD_OF_PARTS
- 	tristate "Flash partition map based on OF description"
+Re: [PATCH 1/2] NAND: Add support for oob size 128
+  http://lists.infradead.org/pipermail/linux-mtd/2009-March/025046.html
+
+[PATCH 2/2] NAND: Add support for NAND on the Socrates board
+  http://lists.infradead.org/pipermail/linux-mtd/2009-March/024982.html
+
+Thanks,
+
+Wolfgang.
