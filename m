@@ -1,25 +1,14 @@
-Received: from n19.bullet.mail.mud.yahoo.com ([68.142.206.146])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lr0vX-0001bs-I0
-	for linux-mtd@lists.infradead.org; Tue, 07 Apr 2009 02:20:46 +0000
-From: David Brownell <david-b@pacbell.net>
-To: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] MTD-NAND: Changes to read_page APIs to support
-	NAND_ECC_HW_SYNDROME mode on TI DaVinci DM355
-Date: Mon, 6 Apr 2009 18:49:22 -0700
-References: <1238601784-9563-1-git-send-email-nsnehaprabha@ti.com>
-	<200904051556.05368.david-b@pacbell.net>
-	<alpine.LFD.2.00.0904070042300.21577@localhost.localdomain>
-In-Reply-To: <alpine.LFD.2.00.0904070042300.21577@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200904061849.23110.david-b@pacbell.net>
-Cc: linux-mtd@lists.infradead.org,
-	davinci-linux-open-source@linux.davincidsp.com,
-	nsnehaprabha@ti.com, linux-kernel@vger.kernel.org
+Subject: [GIT *] MTD for 2.6.30
+From: David Woodhouse <dwmw2@infradead.org>
+To: torvalds@linux-foundation.org
+In-Reply-To: <1238857258.4068.26.camel@macbook.infradead.org>
+References: <1238857258.4068.26.camel@macbook.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 06 Apr 2009 07:38:14 -0700
+Message-Id: <1239028694.11870.39.camel@macbook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,186 +18,214 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 06 April 2009, Thomas Gleixner wrote:
-> David, Sneha,
-> 
-> I'm answering both mails in one go.
-> 
-> On Sun, 5 Apr 2009, David Brownell wrote:
-> 
-> > On Wednesday 01 April 2009, nsnehaprabha@ti.com wrote:
-> > > From: Sneha Narnakaje <nsnehaprabha@ti.com>
-> > > 
-> > > The NAND controller on TI DaVinci DM355 supports NAND devices
-> > > with large page size (2K and 4K), but the HW ECC is handled
-> > > for every 512byte read/write chunks. The current HW_SYNDROME
-> > > read_page/write_page APIs in the NAND core (nand_base) use the
-> > > "infix OOB" scheme.
-> 
-> For a damned good reason. If you want to use HW_SYNDROME mode then you
-> better have the syndrome right after the data.
-> 
-> data - ecc - data - ecc ...
-> 
-> That's how HW_SYNDROME generators work. It's not about the write side,
-> It's about the read side. You read n bytes of data and m btes of ecc
-> in _ONE_ go
+Please pull from git://git.infradead.org/mtd-2.6.git
 
-Nit:  the current code issues up to four read_buf() calls there, not
-one; always at least two:  data, prepad, ecc, postpad (pads optional).
-The write side is relevant since it's got to issue matching writes.
+Most notable change is that it starts to drag the MTD subsystem into the
+21st century, by adding basic support for the driver model. We now
+attempt to hook devices up properly to their appropriate parent, and
+expose device characteristics in sysfs instead of only through the
+ioctls which we inherited from the PCMCIA subsystem years ago.
 
-Which causes another little issue:  the pre-pad may be ECC-protected,
-but parts of the MTD stack don't entirely seem prepared for that.  As
-in, it looks like some code assumes writing prepad won't affect ECC.
-They may write it ... causing up to 8*6 = 48 bits of ECC error in this
-case, more than can be corrected.  (I think that would be tools, not
-normal kernel code.)
+There's more to do here, but this is a reasonable start. Next I want to
+redo the way we handle MTD "partitions", which have always been a dirty
+hack.
 
+Other than that... David Howells' romfs-XIP bits which have been pending
+for ages, a couple of new board drivers, support for multiple NAND chips
+on certain Freescale-based boards, various fixes and hardware
+workarounds, and a new NOR flash chip ident. Nothing massively exciting.
 
-> and the hardware will tell you whether there is a bit flip 
-> or not. You can even do full hardware error correction this way. And
-> it has been done.
->  
-> See also: http://linux-mtd.infradead.org/tech/mtdnand/x111.html#AEN140
+There's a trivial conflict in drivers/mtd/maps/Makefile which I've left
+as an exercise for the reader.
 
-That information is partially obsolete.  Those NAND_ECC_HWx_y
-constants are gone, the method names changed too.  And I think
-the current code tolerates BCH and other ECC schemes not just
-the Reed-Solomon subset.
+(Please also pull the iommu-2.6.git tree which was submitted a couple of
+days ago)
 
-FWIW, this hardware would be NAND_ECC_HW10_518; not one of those
-now-obsolete constants.  Yes; 518, == 512 + 6, so the data and
-"prepad" can all be ECC-protected.
+Adrian Hunter (3):
+      [MTD] mtdoops: allow MTD selection by name
+      [MTD] mtdoops: fix a bit of spin lock usage
+      [MTD] [OneNAND] omap2: panic_write may be in an interrupt context
 
-And of course, the point of this patch is to support the read
-side *without* forcing that "choice" of "infix OOB".
+Atsushi Nemoto (5):
+      [MTD] [NAND] TXx9: add NDFMC support
+      [MTD] RBTX4939: add MTD support
+      [MTD] TXx9 SoC NAND Flash Memory Controller driver
+      [MTD] RBTX4939 map driver
+      [MTD] mtdpart: Make all partition parsers return allocated array
 
+Benjamin Krill (1):
+      [MTD] ofpart: Check name property to determine partition nodes.
 
-> > Makes me wonder if there should be a new NAND_ECC_HW_* mode,
-> > which doesn't use "infix OOB" ... since that's the problem.
-> > 
-> > Given bugs recently uncovered in that area, it seems that
-> > these DaVinci chips may be the first to use ECC_HW_SYNDROME
-> > in multi-chunk mode (and thus "infix OOB" in its full glory,
-> > rather than single-chunk subset which matches traditional
-> > layout with OOB at the end).
-> 
-> Sorry, HW_SYNDROME was used in multi chunk mode from the very
-> beginning. See above.
+Bernd Schmidt (1):
+      [MTD] Fix a bad dependency in the Blackfin code
 
-That's hard to believe; 52ff49df7fab18e56fa31b43143c4150c2547836
-merged today.  Lack of that pretty much trashed a 2 GByte NAND
-chip I have ... the standard raw page r/w calls ignored multi chunk
-layout issues, so the BBT detection lost horribly.  Trashed the
-existing BBT table -- EVERY TIME IT BOOTED.  Data corruption bugs
-like that, and "code in use", do not mix at all convincingly.
+Darius Augulis (1):
+      [MTD] [NOR] Fixup for Numonyx M29W128 chips
 
-The main current in-tree HW_SYNDROME driver is cafe_nand ... which
-looks to force single-chunk mode.
+David Brownell (7):
+      [MTD] [NAND] fix "raw" reads with ECC syndrome layouts
+      [MTD] [NAND] davinci_nand driver
+      [MTD] [NAND] fix broken debug messages
+      [MTD] we don't need no misc devices
+      [MTD] partitioning utility predicates
+      [MTD] driver model updates
+      [MTD] support driver model updates
 
-Maybe bugs crept in over time.  The other two drivers using that
-code (referenced in the URL above) are from the days when large
-page chips weren't routine.  Diskonchip is now obsolete (and the
-docs I've found refer to 512 byte pages, single-chunk territory);
-and that "AND" flash (not NAND!) stuff is at best rare.  Hence my
-assumption that multi-chunk mode has never actually been used, even
-if the code has been in place.
+David Howells (4):
+      NOMMU: Present backing device capabilities for MTD chardevs
+      NOMMU: Add support for direct mapping through mtdconcat if possible
+      NOMMU: Make it possible for RomFS to use MTD devices directly
+      NOMMU: Fix the RomFS Kconfig to ensure at least one backing store is selected
 
+David Woodhouse (3):
+      [MTD] [NAND] Add parent info for CAFÉ controller
+      [MTD] [NOR] Add device parent info to physmap_of
 
-> If your device does not do that or you do not want to utilize it for
-> whatever reasons then just use the NAND_ECC_HW mode which lets you
-> place your ECC data where ever you want.
+Dmitry Eremin-Solenikov (1):
+      [MTD] [MAPS] Drop now unused sharpsl-flash map
 
-So you basically agree with my comment that this shouldn't use
-HW_SYNDROME code paths unless it uses the "infix OOB" scheme.
+Graff Yang (1):
+      [MTD] [CHIPS] cfi_cmdset_0001.c: Fix a bug in inval_cache_and_wait_for_operation().
 
+Kay Sievers (1):
+      [MTD] struct device - replace bus_id with dev_name(), dev_set_name()
 
-SEPARATE ISSUE:  when is using that "infix OOB" appropriate?
+Kevin Cernekee (2):
+      [MTD] driver model updates (part 2)
+      [MTD] sysfs support should not depend on CONFIG_PROC_FS
 
-> > > The core APIs overwrite NAND manufacturer's bad block meta
-> > > data, thus complicating the jobs of non-Linux NAND programmers
-> > > (end equipment manufacturering). These APIs also imply ECC
-> > > protection for the prepad bytes, causing nand raw_write
-> > > operations to fail.
-> > 
-> > All of those seem like reasons to avoid NAND_ECC_HW_SYNDROME
-> > unless the ECC chunksize matches the page size ... that is,
-> > to only use it when "infix OOB" won't apply.
-> 
-> Wrong, see above
+Kevin Hilman (1):
+      [MTD] [NAND] davinci: drop usage of cpu_is_* macro
 
-Hardly.  It's clearly arguable; see my comments above, and even
-yours (!) about not wanting to use it for "whatever reasons".
-Like the reasons quoted right there... there are indeed downsides
-to this "infix OOB" approach, which could make it worth avoiding.
+Kyungmin Park (1):
+      [MTD] [OneNAND] Add write-while-program support
 
+Marcin Slusarz (1):
+      [MTD] fix use after free in register_mtd_blktrans
 
-> > I particularly dislike clobbering the bad block data, since
-> > once that's done it can't easily be recovered.  Preferable
-> > to leave those markers in place, so that the chip can still
-> > be re-initialized cleanly.
-> 
-> And how do you utilize the "data-ecc-data-ecc..." scheme _WITHOUT_
-> clobbering the bad block marker bytes ???
+Mike Frysinger (3):
+      [MTD] [NAND] Blackfin NFC Driver: do not clobber DMAC1_PERIMUX
+      [MTD] [NAND] Blackfin NFC Driver: mark bf5xx_nand_add_partition() as __devinit
+      [MTD] [NAND] Blackfin NFC Driver: drop pointless casts with set_dma_callback()
 
-You don't.  You'd use a different scheme.
+Mike Rapoport (3):
+      [MTD] [NAND] pxa3xx_nand: use resource_size instead of 'r->end - r->start + 1'
+      [MTD] [NAND] pxa3xx_nand: allow building as module
+      [MTD] [NAND] pxa3xx_nand: add ability to keep controller settings defined by OBM/bootloader
 
+Roel Kluin (1):
+      [JFFS2] jffs2_acl_count() tests < 0 on unsigned
 
-> That's why we have the bad block table mechanism.
+Scott James Remnant (2):
+      [MTD] Auto-load mtdchar module when device opened.
+      [MTD] Auto-load nftl module when device opened.
 
-Sure, when it works.  Of course it's _nice_ to be able to
-recreate such a table too, and treat a table-in-flash
-as just a boot accelerator.
+Thomas Gleixner (1):
+      [MTD] [NAND] Add support for 4KiB pages.
 
-Maybe "nice" matters only during development; maybe not.
-I was able to manually re-mark 256 MBytes as "block not
-actually bad", after hitting that BBT-corrupting bug above.
-(The other blocks ... I won't worry about for now.)
+Uwe Kleine-König (2):
+      [MTD] [MAPS] move sa1100 flash's probe function to .devinit.text
+      [MTD] [NAND] move gen_nand's probe function to .devinit.text
 
-Now I think other folk won't see that *same* failure.
-So maybe the backup BBT will suffice to recover from
-such things in the future, in conjunction with system
-software which disallows (re)creation of BBT-in-flash
-from both Linux and the boot loader.
+Wei Yongjun (1):
+      [JFFS2] kmem_cache_alloc/memset -> kmem_cache_zalloc
 
+Wolfgang Grandegger (5):
+      [MTD] [NAND] Add support for NAND on the Socrates board
+      [MTD] [NAND] FSL-UPM: add multi chip support
+      [MTD] [NAND] FSL-UPM: Add wait flags to support board/chip specific delays
+      powerpc: NAND: FSL UPM: document new bindings
+      powerpc/85xx: TQM8548: Update DTS file for multi-chip support
 
-> And this is not a Linux kernel hackers oddity, 
-> just have a look at DiskOnChip devices which do exactly the same. It's
-> dictated by the hardware and there is nothing you can do about it -
-> aside of falling back to software ECC and giving up the HW
-> acceleration.
+Yauhen Kharuzhy (1):
+      [MTD] mtdpart: Make ecc_stats more realistic.
 
-Or ... using patches like Sneha provided.
+Yegor Yefremov (1):
+      [MTD] [CHIPS] Add JEDEC probe support for the SST 39VF3201 flash chip
 
-Or ... by using hardware like OMAP3, which seems to have
-hardware buffers for the ECC syndrome stuff.  Support for
-"normal" OOB layout (vs infix) from the hardware's BCH
-syndrome calculation/correction module, if I read right.
+Yoshihiro Shimoda (1):
+      [MTD] [NAND] sh_flctl: fix hardware ecc handling for 2048 byte page
 
-The "infix OOB" is a software policy.  Maybe it's natural
-to choose that with some hardware.  But it's not dictated
-hardware; as shown by Sneha's patches.
+ .../powerpc/dts-bindings/fsl/upm-nand.txt          |   39 ++-
+ arch/arm/mach-davinci/include/mach/nand.h          |   80 +++
+ arch/arm/mach-pxa/include/mach/pxa3xx_nand.h       |    3 +
+ arch/blackfin/kernel/process.c                     |    2 +-
+ arch/mips/include/asm/txx9/ndfmc.h                 |   30 +
+ arch/mips/include/asm/txx9/rbtx4939.h              |    9 +
+ arch/mips/include/asm/txx9/tx4938.h                |    1 +
+ arch/mips/include/asm/txx9/tx4939.h                |    2 +
+ arch/mips/txx9/generic/setup.c                     |   21 +
+ arch/mips/txx9/generic/setup_tx4938.c              |   21 +
+ arch/mips/txx9/generic/setup_tx4939.c              |   17 +
+ arch/mips/txx9/rbtx4938/setup.c                    |    2 +
+ arch/mips/txx9/rbtx4939/setup.c                    |  161 +++++
+ arch/powerpc/boot/dts/tqm8548-bigflash.dts         |    7 +-
+ arch/powerpc/boot/dts/tqm8548.dts                  |    7 +-
+ arch/powerpc/sysdev/fsl_lbc.c                      |    2 +-
+ drivers/mtd/Makefile                               |    2 +-
+ drivers/mtd/ar7part.c                              |    6 +-
+ drivers/mtd/chips/cfi_cmdset_0001.c                |    8 +-
+ drivers/mtd/chips/cfi_cmdset_0002.c                |   11 +
+ drivers/mtd/chips/jedec_probe.c                    |   16 +
+ drivers/mtd/chips/map_ram.c                        |   17 +
+ drivers/mtd/chips/map_rom.c                        |   17 +
+ drivers/mtd/cmdlinepart.c                          |    6 +-
+ drivers/mtd/devices/doc2000.c                      |    1 -
+ drivers/mtd/devices/doc2001.c                      |    1 -
+ drivers/mtd/devices/doc2001plus.c                  |    1 -
+ drivers/mtd/devices/docecc.c                       |    1 -
+ drivers/mtd/devices/m25p80.c                       |   19 +-
+ drivers/mtd/devices/mtd_dataflash.c                |   18 +-
+ drivers/mtd/devices/mtdram.c                       |   14 +
+ drivers/mtd/inftlmount.c                           |    1 -
+ drivers/mtd/internal.h                             |   17 +
+ drivers/mtd/maps/Kconfig                           |   12 +-
+ drivers/mtd/maps/Makefile                          |    2 +-
+ drivers/mtd/maps/omap_nor.c                        |    2 +
+ drivers/mtd/maps/physmap.c                         |    1 +
+ drivers/mtd/maps/physmap_of.c                      |    1 +
+ drivers/mtd/maps/plat-ram.c                        |    1 +
+ drivers/mtd/maps/rbtx4939-flash.c                  |  208 ++++++
+ drivers/mtd/maps/sa1100-flash.c                    |    2 +-
+ drivers/mtd/maps/sharpsl-flash.c                   |  116 ----
+ drivers/mtd/mtd_blkdevs.c                          |    4 +-
+ drivers/mtd/mtdbdi.c                               |   43 ++
+ drivers/mtd/mtdchar.c                              |  111 ++--
+ drivers/mtd/mtdconcat.c                            |   47 ++
+ drivers/mtd/mtdcore.c                              |  208 ++++++-
+ drivers/mtd/mtdoops.c                              |   16 +-
+ drivers/mtd/mtdpart.c                              |   31 +-
+ drivers/mtd/nand/Kconfig                           |   21 +-
+ drivers/mtd/nand/Makefile                          |    3 +
+ drivers/mtd/nand/bf5xx_nand.c                      |   18 +-
+ drivers/mtd/nand/cafe_nand.c                       |    1 +
+ drivers/mtd/nand/davinci_nand.c                    |  570 +++++++++++++++++
+ drivers/mtd/nand/fsl_upm.c                         |  119 +++-
+ drivers/mtd/nand/mxc_nand.c                        |    1 +
+ drivers/mtd/nand/nand_base.c                       |  125 ++++-
+ drivers/mtd/nand/plat_nand.c                       |    2 +-
+ drivers/mtd/nand/pxa3xx_nand.c                     |  119 ++++-
+ drivers/mtd/nand/sh_flctl.c                        |   18 +-
+ drivers/mtd/nand/socrates_nand.c                   |  325 ++++++++++
+ drivers/mtd/nand/txx9ndfmc.c                       |  428 +++++++++++++
+ drivers/mtd/nftlcore.c                             |    3 +-
+ drivers/mtd/ofpart.c                               |    7 +
+ drivers/mtd/onenand/omap2.c                        |    6 +
+ drivers/mtd/onenand/onenand_base.c                 |  145 +++--
+ fs/jffs2/acl.c                                     |    4 +-
+ fs/jffs2/malloc.c                                  |    6 +-
+ fs/romfs/Kconfig                                   |   48 ++-
+ fs/romfs/Makefile                                  |    9 +-
+ fs/romfs/inode.c                                   |  665 --------------------
+ fs/romfs/internal.h                                |   47 ++
+ fs/romfs/mmap-nommu.c                              |   75 +++
+ fs/romfs/storage.c                                 |  261 ++++++++
+ fs/romfs/super.c                                   |  648 +++++++++++++++++++
+ include/linux/mtd/mtd.h                            |   21 +
+ include/linux/mtd/nand.h                           |    4 +-
+ include/linux/mtd/partitions.h                     |   12 +
+ 78 files changed, 4080 insertions(+), 996 deletions(-)
 
-
-> This patch is utter nonsense. The whole functionality is already
-> there. Just use the correct mode: NAND_ECC_HW. Place your ECC data
-> where you want or where your commercial counterparts want them to show
-> up. Using NAND_ECC_HW_SYNDROME for your case is just plain wrong.
-
-Well, ISTR that you said otherwise above ... yeah, quoting you (above):
-
-> > If your device does not do that or you do not want to utilize it for
-> > whatever reasons then just use the NAND_ECC_HW mode which lets you
-> > place your ECC data where ever you want.
-
-And that's exactly what these patches do:  enable just such choices.
-The $SUBJECT patch would be needed to use NAND_ECC_HW with this 4-bit
-ECC hardware, and not be forced to "choose" the infix-OOB policy.
-
-
-How strongly you believe in supporting those choices is yet another
-question.  But you should at least be arguing from real facts, not
-from mis-apprehensions.
-
-- Dave
+-- 
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
