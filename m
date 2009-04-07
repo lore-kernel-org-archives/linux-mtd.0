@@ -1,16 +1,25 @@
-Received: from [124.109.28.26] (helo=webmail.pdmo.mof.go.th)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lr7k9-0007dD-Ea
-	for linux-mtd@lists.infradead.org; Tue, 07 Apr 2009 09:37:31 +0000
-From: "Ratigar_Manasveewong" <ratigar@pdmo.mof.go.th>
-Subject: Contact Mr.Aravid Durff
-Date: Tue, 7 Apr 2009 04:24:07 +0100
-Message-Id: <20090407032243.M88868@pdmo.mof.go.th>
+Received: from bear.ext.ti.com ([192.94.94.41])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LrCth-00034y-HN
+	for linux-mtd@lists.infradead.org; Tue, 07 Apr 2009 15:07:40 +0000
+From: "Narnakaje, Snehaprabha" <nsnehaprabha@ti.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+Date: Tue, 7 Apr 2009 10:07:16 -0500
+Subject: RE: [PATCH] MTD-NAND: Changes to read_page APIs to support
+	NAND_ECC_HW_SYNDROME mode on TI DaVinci DM355
+Message-ID: <7A436F7769CA33409C6B44B358BFFF0CFFAA8FCA@dlee02.ent.ti.com>
+References: <1238601784-9563-1-git-send-email-nsnehaprabha@ti.com>
+	<alpine.LFD.2.00.0904070102260.21577@localhost.localdomain>
+In-Reply-To: <alpine.LFD.2.00.0904070102260.21577@localhost.localdomain>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset=utf-8
-To: undisclosed-recipients:;
-Reply-To: durff@btinternet.com
+Cc: "davinci-linux-open-source@linux.davincidsp.com"
+	<davinci-linux-open-source@linux.davincidsp.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Paulraj, Sandeep" <s-paulraj@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,56 +29,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-CONGRATULATION
-===============================================================we are pleased
-to inform you of the release, of the recent results of 
-The UK E-LOTTERY SEASONAL AWARD 2009 INTERNATIONAL EMAIL PROMOTION PROGRAM
-Held on the 21st Of 
-March 2009. You were entered as dependent clients with: Reference 
-Serial Number: F2-003-036 and Batch number FR/45-300-06. Your email 
-Address 
-Attached to the ticket number: 37-2-48-41-46-25-43 that draws the 
-Lucky Winning Number, which consequently won the Daily Jackpot in Super Bulk 
-Category. You have been approved for a payment of (£1,000,000.00 GBP) in cash
-credited to File reference number: TFR/9900034943/JPT.
-Congratulations!!! To file for your claim, please contact your fiduciary agent
-immediately via the email below:
- Mr. Aravid Durff
-UK E-LOTTERY SEASONAL AWARD 2009 INTERNATIONAL EMAIL PROMOTION PROGRAM 
-(Fiduciary Department) 
-82 Victoria Street 
-Victoria London SW1 U.K 
-Email: araviddurff@yahoo.co.uk
+Thomas,
 
-THE FOLLOWING INFORMATION SHOULD BE SUPPLIED COMPREHENSIVELY BY THE 
-BENEFICIARY OF THE STATED FUNDS,
-FOR VERIFICATION BEFORE TRANSFER. 
+> -----Original Message-----
+> From: Thomas Gleixner [mailto:tglx@linutronix.de]
+> Sent: Monday, April 06, 2009 7:08 PM
+> To: Narnakaje, Snehaprabha
+> Cc: linux-mtd@lists.infradead.org; linux-kernel@vger.kernel.org; davinci-
+> linux-open-source@linux.davincidsp.com; Paulraj, Sandeep
+> Subject: Re: [PATCH] MTD-NAND: Changes to read_page APIs to support
+> NAND_ECC_HW_SYNDROME mode on TI DaVinci DM355
+>=20
+> Sneha,
+>=20
+> On Wed, 1 Apr 2009, nsnehaprabha@ti.com wrote:
+>=20
+> Would you please care to CC the still caring but admittedly lazy and
+> distracted maintainer on such patches ?
 
-1.FULL NAMES OF BENEFICIARY: 
-2. RESIDENTIAL ADDRESS: 
-3. DATE AND PLACE OF BIRTH: 
-4. PHONE/FAX NUMBERS: 
-5. NAME AND ADDRESS OF NEXT OF KIN: 
-6. SEX: 
-7. OCCUPATION: 
-8. MARITAL STATUS: 
-9. NATIONALITY: 
-=============================================================== 
-I.......HEREBY DECLARE THAT THE ABOVE DATA ARE TRUE. IN CASE OF 
-ANY 
-UNFORSEEN CIRCUMSTANCE, MY NEXT OF KIN HAS THE RIGHT TO CLAIM MY TOTAL WINNINGS. 
-(SUPER STANDARD AGENT) SHALL ACT AS MY AGENT IN FACILITATING 
-THE TRANSFER OF THE TOTAL FUND TO ME. 
-=============================================================== 
-This email and its attachments are confidential and intended for the 
-Exclusive use of the addressee(s).This email and its attachments
- May also be privileged or protected by legal rules. If you have received this 
-By mistake please let us know by reply immediately and/or destroy the 
-Email and its attachments without reading, 
-Online Co-ordinator: John Habra
-===============================================================
-UK E-LOTTERY SEASONAL AWARD  2009 INTERNATIONAL EMAIL PROMOTION PROGRAM
-Sweepstakes International Program. 
-Copyright © 1995-2009
-Inc. All rights Reserved. 
-Terms of Service - Guideline
+Who would that be?
+
+Is the list below correct?
+
+Steven J. Hill (sjhill@realitydiluted.com)
+Thomas Gleixner (tglx@linuxtronix.de)
+David Woodhouse (dwmw2@infradead.org)
+
+>=20
+> > From: Sneha Narnakaje <nsnehaprabha@ti.com>
+> >
+> > The NAND controller on TI DaVinci DM355 supports NAND devices with larg=
+e
+> page size (2K and 4K), but the HW ECC is handled for every 512byte
+> read/write chunks. The current HW_SYNDROME read_page/write_page APIs in
+> the NAND core (nand_base) use the "infix OOB" scheme. The core APIs
+> overwrite NAND manufacturer's bad block meta data, thus complicating the
+> jobs of non-Linux NAND programmers (end equipment manufacturering). These
+> APIs also imply ECC protection for the prepad bytes, causing nand
+> raw_write operations to fail.
+>=20
+> Please use proper line breaks. 523 characters do not fit into a
+> terminal.
+
+OK.
+
+Thanks
+Sneha
+=20
+>=20
+> Thanks,
+>=20
+> 	tglx
+>=20
+>=20
