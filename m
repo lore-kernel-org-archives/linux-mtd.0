@@ -1,22 +1,29 @@
-Received: from mo-p05-ob.rzone.de ([81.169.146.180])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LrEZ3-0006gt-Df
-	for linux-mtd@lists.infradead.org; Tue, 07 Apr 2009 16:54:28 +0000
-From: Stefan Roese <sr@denx.de>
-To: Scott Wood <scottwood@freescale.com>
-Subject: Re: [PATCH 3/4 v2] mtd/powerpc: Remove unused "device-width" property
-Date: Tue, 7 Apr 2009 18:54:16 +0200
-References: <1239093575-12147-1-git-send-email-sr@denx.de>
-	<49DB8271.8050501@freescale.com>
-In-Reply-To: <49DB8271.8050501@freescale.com>
+Received: from comal.ext.ti.com ([198.47.26.152])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LrG7k-00081o-5E
+	for linux-mtd@lists.infradead.org; Tue, 07 Apr 2009 18:34:22 +0000
+From: "Narnakaje, Snehaprabha" <nsnehaprabha@ti.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+Date: Tue, 7 Apr 2009 13:34:01 -0500
+Subject: RE: [PATCH] MTD-NAND: Changes to read_page APIs to support
+	NAND_ECC_HW_SYNDROME mode on TI DaVinci DM355
+Message-ID: <7A436F7769CA33409C6B44B358BFFF0CFFAA9253@dlee02.ent.ti.com>
+References: <1238601784-9563-1-git-send-email-nsnehaprabha@ti.com>
+	<200904051556.05368.david-b@pacbell.net>
+	<alpine.LFD.2.00.0904070042300.21577@localhost.localdomain>
+	<200904061849.23110.david-b@pacbell.net>
+	<7A436F7769CA33409C6B44B358BFFF0CFFAA90C0@dlee02.ent.ti.com>
+	<alpine.LFD.2.00.0904071831550.21577@localhost.localdomain>
+In-Reply-To: <alpine.LFD.2.00.0904071831550.21577@localhost.localdomain>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200904071854.16818.sr@denx.de>
-Cc: linuxppc-dev@ozlabs.org, devicetree-discuss@ozlabs.org,
-	linux-mtd@lists.infradead.org
+Cc: David Brownell <david-b@pacbell.net>,
+	"davinci-linux-open-source@linux.davincidsp.com"
+	<davinci-linux-open-source@linux.davincidsp.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,24 +33,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 07 April 2009, Scott Wood wrote:
-> Stefan Roese wrote:
-> > This property is unused. It's not handled as all by the physmap_of
-> > driver. So let's remove it from the documentation.
+Thomas,
+
+> -----Original Message-----
+> From: Thomas Gleixner [mailto:tglx@linutronix.de]
+> Sent: Tuesday, April 07, 2009 12:46 PM
+> To: Narnakaje, Snehaprabha
+> Cc: David Brownell; davinci-linux-open-source@linux.davincidsp.com; linux=
+-
+> mtd@lists.infradead.org; linux-kernel@vger.kernel.org
+> Subject: RE: [PATCH] MTD-NAND: Changes to read_page APIs to support
+> NAND_ECC_HW_SYNDROME mode on TI DaVinci DM355
+>=20
+> On Tue, 7 Apr 2009, Narnakaje, Snehaprabha wrote:
+> > > And that's exactly what these patches do:  enable just such choices.
+> > > The $SUBJECT patch would be needed to use NAND_ECC_HW with this 4-bit
+> > > ECC hardware, and not be forced to "choose" the infix-OOB policy.
 > >
-> > Signed-off-by: Stefan Roese <sr@denx.de>
-> > CC: Grant Likely <grant.likely@secretlab.ca>
->
-> The device tree describes the hardware, not what Linux happens to do
-> with it at the moment.
->
-> I'd rather keep it.
+> > I had looked read_page/write_page APIs of the NAND_ECC_HW mode to
+> > see if we can use this mode for DaVinci DM355 device.
+> >
+> > The read_page handler for NAND_ECC_HW mode reads the data and ECC
+> > from hardware for each chunk. It then reads the OOB and extracts ecc
+> > code from it, before using the ECC from hardware and ecc code from
+> > OOB for data correction.
+> >
+> > On DaVinci DM355 device, we need to pass the ecc code/syndrome
+> > extracted from OOB area, in order to read the HW ECC for each data
+> > chunk. This is where we differ from NAND_ECC_HW mode.
+>=20
+> I have to admit that I'm slightly confused. Is the below description
+> correct?
+>=20
+> On write you generate the ECC via hardware and store it in the OOB
+> area, right ?
 
-I find it rather confusing to "see" such bindings that are not supported. One 
-could expect something to happen/change after defining this property. So in 
-general I think adding unsupported properties to the Documentation is a bad 
-idea. But that's just my 2 cents. If the general opinion is to keep this 
-property, I'll keep it in of course.
+Yes. For a large page (e.g. 2K+64), ECC should be stored in the 64bytes OOB=
+ region. The NAND controller on DaVinci DM355 device is capable of generati=
+ng HW ECC (4-bit) for every 512bytes. This means, we have 4 eccsteps. The E=
+CC should be generated by the HW for every 512byte chunk write and stored t=
+emporarily in a buffer until all 4 eccsteps have been tried. The ECC from t=
+he temporary buffer is then written to the OOB area.
 
-Best regards,
-Stefan
+>=20
+> On read you read the oob data first and extract the ECC. Then you feed
+> the extracted ECC into the HW generator and read the data. Is this
+> correct ?
+
+Almost, read OOB, read data and then feed the extracted ECC into HW generat=
+or. Read the ECC status to see any correction required on the read data. Ag=
+ain, reading data, feeding the extracted ECC into HW generator and the corr=
+ection will have to be repeated for # of times - eccsteps.
+
+>=20
+> > The read_page/write_page APIs for NAND_ECC_HW_SYNDROME have the
+> > other problem that David mentioned - overwriting NAND manufacturers
+> > bad block meta data, when used with large page NAND chips. These
+> > APIs do not handle the "eccsteps" properly. The OOB is read/written
+> > after every data chunk, thus you actually have overwritten the
+> > factory bad block information, when these APIs handle the last data
+> > chunk. OOB should be read/written after the entire data (a page) is
+> > read/written.
+>=20
+> Again, that is _how_ the NAND_ECC_HW_SYNDROME functions work. And if
+> your hardware needs a completely different mode, then we need to
+> analyse what's the best solution for it.
+
+Based on the description above, NAND_ECC_HW_SYNDROME fitted well, with the =
+exception of overriding the read_page/write_page APIs (to fix the bugs ment=
+ioned above). I have not sent the actual NAND driver to the linux-mtd yet, =
+since the initial version (supported only 1-bit HW ECC) submitted by David =
+Brownell was still in review (no comments and not approved yet). While comi=
+ng up with read_page API in the DaVinci NAND driver, we realized the need t=
+o pass "page" parameter. The read_page API in the DaVinci NAND driver requi=
+red to call chip->cmdfunc to adjust the read location (page vs. OOB). The "=
+page" parameter has to be passed to the chip->cmdfunc.
+This patch was a "preparation" patch for the DaVinci NAND driver 4-bit ECC =
+support. It added the "page" parameter to the "read_page" and "read_page_ra=
+w" handlers, fixed few other bugs.
+
+>=20
+> Right now the provided information is way to diffuse to do that.
+>=20
+> You provided a patch without explaining what your hardware needs and
+> showing how the actual user of the modified API looks like and how the
+> functionality is implemented.
+>=20
+> Thanks,
+>=20
+> 	tglx
