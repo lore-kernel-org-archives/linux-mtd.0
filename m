@@ -1,14 +1,16 @@
-Received: from mo-p05-ob.rzone.de ([81.169.146.180])
+Received: from [124.109.28.26] (helo=webmail.pdmo.mof.go.th)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lr6qQ-0006tU-Bx
-	for linux-mtd@lists.infradead.org; Tue, 07 Apr 2009 08:39:53 +0000
-From: Stefan Roese <sr@denx.de>
-To: linuxppc-dev@ozlabs.org,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH 4/4 v2] mtd/powerpc: Describe multiple "reg" tuples usage
-Date: Tue,  7 Apr 2009 10:39:43 +0200
-Message-Id: <1239093583-12201-1-git-send-email-sr@denx.de>
-Cc: Grant Likely <grant.likely@secretlab.ca>, devicetree-discuss@ozlabs.org
+	id 1Lr7k9-0007dD-Ea
+	for linux-mtd@lists.infradead.org; Tue, 07 Apr 2009 09:37:31 +0000
+From: "Ratigar_Manasveewong" <ratigar@pdmo.mof.go.th>
+Subject: Contact Mr.Aravid Durff
+Date: Tue, 7 Apr 2009 04:24:07 +0100
+Message-Id: <20090407032243.M88868@pdmo.mof.go.th>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset=utf-8
+To: undisclosed-recipients:;
+Reply-To: durff@btinternet.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,46 +20,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Stefan Roese <sr@denx.de>
-CC: Grant Likely <grant.likely@secretlab.ca>
----
- Documentation/powerpc/dts-bindings/mtd-physmap.txt |   20 +++++++++++++++++++-
- 1 files changed, 19 insertions(+), 1 deletions(-)
+CONGRATULATION
+===============================================================we are pleased
+to inform you of the release, of the recent results of 
+The UK E-LOTTERY SEASONAL AWARD 2009 INTERNATIONAL EMAIL PROMOTION PROGRAM
+Held on the 21st Of 
+March 2009. You were entered as dependent clients with: Reference 
+Serial Number: F2-003-036 and Batch number FR/45-300-06. Your email 
+Address 
+Attached to the ticket number: 37-2-48-41-46-25-43 that draws the 
+Lucky Winning Number, which consequently won the Daily Jackpot in Super Bulk 
+Category. You have been approved for a payment of (£1,000,000.00 GBP) in cash
+credited to File reference number: TFR/9900034943/JPT.
+Congratulations!!! To file for your claim, please contact your fiduciary agent
+immediately via the email below:
+ Mr. Aravid Durff
+UK E-LOTTERY SEASONAL AWARD 2009 INTERNATIONAL EMAIL PROMOTION PROGRAM 
+(Fiduciary Department) 
+82 Victoria Street 
+Victoria London SW1 U.K 
+Email: araviddurff@yahoo.co.uk
 
-diff --git a/Documentation/powerpc/dts-bindings/mtd-physmap.txt b/Documentation/powerpc/dts-bindings/mtd-physmap.txt
-index ab1115e..a3fa9e0 100644
---- a/Documentation/powerpc/dts-bindings/mtd-physmap.txt
-+++ b/Documentation/powerpc/dts-bindings/mtd-physmap.txt
-@@ -5,7 +5,10 @@ file systems on embedded devices.
- 
-  - compatible : should contain the specific model of flash chip(s)
-    used, if known, followed by either "cfi-flash" or "jedec-flash"
-- - reg : Address range of the flash chip
-+ - reg : Address range(s) of the flash chip(s)
-+   It's possible to (optionally) define multiple "reg" tuples so that the
-+   Intel P30 48F4400 chip which consists internally of 2 non-identical
-+   NOR chips on one die can also be supported.
-  - bank-width : Width (in bytes) of the flash bank.  Equal to the
-    device width times the number of interleaved chips.
-  - #address-cells, #size-cells : Must be present if the flash has
-@@ -58,3 +61,18 @@ Example:
- 			read-only;
- 		};
- 	};
-+
-+Here an example with multiple "reg" tuples (e.g. Intel P30):
-+
-+	flash@f0000000,0 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "cfi-flash";
-+		reg = <0 0x00000000 0x02000000
-+		       0 0x02000000 0x02000000>;
-+		bank-width = <2>;
-+		partition@0 {
-+			label = "test-part1";
-+			reg = <0 0x04000000>;
-+		};
-+	};
--- 
-1.6.2.2
+THE FOLLOWING INFORMATION SHOULD BE SUPPLIED COMPREHENSIVELY BY THE 
+BENEFICIARY OF THE STATED FUNDS,
+FOR VERIFICATION BEFORE TRANSFER. 
+
+1.FULL NAMES OF BENEFICIARY: 
+2. RESIDENTIAL ADDRESS: 
+3. DATE AND PLACE OF BIRTH: 
+4. PHONE/FAX NUMBERS: 
+5. NAME AND ADDRESS OF NEXT OF KIN: 
+6. SEX: 
+7. OCCUPATION: 
+8. MARITAL STATUS: 
+9. NATIONALITY: 
+=============================================================== 
+I.......HEREBY DECLARE THAT THE ABOVE DATA ARE TRUE. IN CASE OF 
+ANY 
+UNFORSEEN CIRCUMSTANCE, MY NEXT OF KIN HAS THE RIGHT TO CLAIM MY TOTAL WINNINGS. 
+(SUPER STANDARD AGENT) SHALL ACT AS MY AGENT IN FACILITATING 
+THE TRANSFER OF THE TOTAL FUND TO ME. 
+=============================================================== 
+This email and its attachments are confidential and intended for the 
+Exclusive use of the addressee(s).This email and its attachments
+ May also be privileged or protected by legal rules. If you have received this 
+By mistake please let us know by reply immediately and/or destroy the 
+Email and its attachments without reading, 
+Online Co-ordinator: John Habra
+===============================================================
+UK E-LOTTERY SEASONAL AWARD  2009 INTERNATIONAL EMAIL PROMOTION PROGRAM
+Sweepstakes International Program. 
+Copyright © 1995-2009
+Inc. All rights Reserved. 
+Terms of Service - Guideline
