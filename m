@@ -1,20 +1,19 @@
-Received: from n21.bullet.mail.mud.yahoo.com ([68.142.206.160])
+Received: from smtp118.sbc.mail.sp1.yahoo.com ([69.147.64.91])
 	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LrL88-0003fq-H6
-	for linux-mtd@lists.infradead.org; Tue, 07 Apr 2009 23:55:06 +0000
+	id 1LrQxB-0001CB-VD
+	for linux-mtd@lists.infradead.org; Wed, 08 Apr 2009 06:08:18 +0000
 From: David Brownell <david-b@pacbell.net>
-To: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: [patch 2.6.30-rc1] NAND:  don't walk past end of oobfree[]
-Date: Tue, 7 Apr 2009 16:54:55 -0700
+To: DaVinci <davinci-linux-open-source@linux.davincidsp.com>,
+	Linux MTD <linux-mtd@lists.infradead.org>
+Subject: [patch 2.6.30-rc1] NAND: minor davinci_nand cleanup
+Date: Tue, 7 Apr 2009 23:08:02 -0700
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200904071654.55886.david-b@pacbell.net>
-Cc: dwmw2@infradead.org, Thomas Gleixner <tglx@linutronix.de>, "Narnakaje,
-	Snehaprabha" <nsnehaprabha@ti.com>
-Reply-To: dbrownell@users.sourceforge.net
+Message-Id: <200904072308.02757.david-b@pacbell.net>
+Cc: Thomas Gleixner <tglx@linutronix.de>, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +25,90 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: David Brownell <dbrownell@users.sourceforge.net>
 
-Resolve issue noted by Sneha:  when computing oobavail from
-the list of free areas in the OOB, don't assume there will
-always be an unused slot at the end.  With ECC_HW_SYNDROME
-and 4K page chips, it's fairly likely there *won't* be one.
+Make the DaVinci NAND driver require platform_data with
+board-specific configuration.  We can't actually do any
+kind of sane job of configuring it otherwise.
+
+Also fix the comment about picking the "best" ECC mode.
+We can't do that any more; it relied on knowing what kind
+of CPU we're using, they don't all support 4-bit ECC.
 
 Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
-Cc: "Narnakaje, Snehaprabha" <nsnehaprabha@ti.com>"
 ---
-Seems appropriate for a 2.6.30-rc merge.
+Applies to the DaVinci tree too.  FWIW, I've sanity tested
+the davinci_nand driver in mainline (dm6446evm) -- works!
 
- drivers/mtd/nand/nand_base.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/davinci_nand.c |   27 +++++++++++----------------
+ 1 file changed, 11 insertions(+), 16 deletions(-)
 
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2756,7 +2756,8 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	 * the out of band area
- 	 */
- 	chip->ecc.layout->oobavail = 0;
--	for (i = 0; chip->ecc.layout->oobfree[i].length; i++)
-+	for (i = 0; chip->ecc.layout->oobfree[i].length
-+			&& i < ARRAY_SIZE(chip->ecc.layout->oobfree); i++)
- 		chip->ecc.layout->oobavail +=
- 			chip->ecc.layout->oobfree[i].length;
- 	mtd->oobavail = chip->ecc.layout->oobavail;
+--- a/drivers/mtd/nand/davinci_nand.c
++++ b/drivers/mtd/nand/davinci_nand.c
+@@ -306,6 +306,10 @@ static int __init nand_davinci_probe(str
+ 	uint32_t			val;
+ 	nand_ecc_modes_t		ecc_mode;
+ 
++	/* insist on board-specific configuration */
++	if (!pdata)
++		return -ENODEV;
++
+ 	/* which external chipselect will we be managing? */
+ 	if (pdev->id < 0 || pdev->id > 3)
+ 		return -ENODEV;
+@@ -351,7 +355,7 @@ static int __init nand_davinci_probe(str
+ 	info->chip.select_chip	= nand_davinci_select_chip;
+ 
+ 	/* options such as NAND_USE_FLASH_BBT or 16-bit widths */
+-	info->chip.options	= pdata ? pdata->options : 0;
++	info->chip.options	= pdata->options;
+ 
+ 	info->ioaddr		= (uint32_t __force) vaddr;
+ 
+@@ -360,14 +364,8 @@ static int __init nand_davinci_probe(str
+ 	info->mask_chipsel	= pdata->mask_chipsel;
+ 
+ 	/* use nandboot-capable ALE/CLE masks by default */
+-	if (pdata && pdata->mask_ale)
+-		info->mask_ale	= pdata->mask_cle;
+-	else
+-		info->mask_ale	= MASK_ALE;
+-	if (pdata && pdata->mask_cle)
+-		info->mask_cle	= pdata->mask_cle;
+-	else
+-		info->mask_cle	= MASK_CLE;
++	info->mask_ale		= pdata->mask_cle ? : MASK_ALE;
++	info->mask_cle		= pdata->mask_cle ? : MASK_CLE;
+ 
+ 	/* Set address of hardware control function */
+ 	info->chip.cmd_ctrl	= nand_davinci_hwcontrol;
+@@ -377,11 +375,8 @@ static int __init nand_davinci_probe(str
+ 	info->chip.read_buf     = nand_davinci_read_buf;
+ 	info->chip.write_buf    = nand_davinci_write_buf;
+ 
+-	/* use board-specific ECC config; else, the best available */
+-	if (pdata)
+-		ecc_mode = pdata->ecc_mode;
+-	else
+-		ecc_mode = NAND_ECC_HW;
++	/* Use board-specific ECC config */
++	ecc_mode		= pdata->ecc_mode;
+ 
+ 	switch (ecc_mode) {
+ 	case NAND_ECC_NONE:
+@@ -469,7 +464,7 @@ static int __init nand_davinci_probe(str
+ 			info->mtd.name = master_name;
+ 		}
+ 
+-		if (mtd_parts_nb <= 0 && pdata) {
++		if (mtd_parts_nb <= 0) {
+ 			mtd_parts = pdata->parts;
+ 			mtd_parts_nb = pdata->nr_parts;
+ 		}
+@@ -482,7 +477,7 @@ static int __init nand_davinci_probe(str
+ 				info->partitioned = true;
+ 		}
+ 
+-	} else if (pdata && pdata->nr_parts) {
++	} else if (pdata->nr_parts) {
+ 		dev_warn(&pdev->dev, "ignoring %d default partitions on %s\n",
+ 				pdata->nr_parts, info->mtd.name);
+ 	}
