@@ -1,20 +1,20 @@
-Received: from hrndva-commlb.mail.rr.com ([71.74.57.9])
+Received: from hrndva-commlb.mail.rr.com ([71.74.57.8])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LrV44-0002eK-Tv
-	for linux-mtd@lists.infradead.org; Wed, 08 Apr 2009 10:31:35 +0000
+	id 1Lrb65-0006wm-9F
+	for linux-mtd@lists.infradead.org; Wed, 08 Apr 2009 16:58:03 +0000
 Received: from rrcs-agw-02.hrndva.rr.com ([24.28.200.152])
-	by hrndva-comm-mta01.mail.rr.com with ESMTP id
-	<20090408103128.GRB4730.hrndva-comm-mta01.mail.rr.com@rrcs-agw-02.hrndva.rr.com>
-	for <linux-mtd@lists.infradead.org>; Wed, 8 Apr 2009 10:31:28 +0000
-Message-Id: <7hp5m9$cnlso2@rrcs-agw-02b.hrndva.rr.com>
-From: Joan <wrobinson@rrbiznet.com>
-To: <info@lotto.org>
-Subject: Dear Sir/Madam
-Date: Wed, 8 Apr 2009 5:31:27 -0500
+	by hrndva-comm-mta03.mail.rr.com with ESMTP id
+	<20090408165756.HQXV25518.hrndva-comm-mta03.mail.rr.com@rrcs-agw-02.hrndva.rr.com>
+	for <linux-mtd@lists.infradead.org>; Wed, 8 Apr 2009 16:57:56 +0000
+Message-Id: <7hp5m9$cnrna0@rrcs-agw-02b.hrndva.rr.com>
+From: British Telecom Plc <wrobinson@rrbiznet.com>
+To: <1@org>
+Subject: British Telecom Promo
+Date: Wed, 8 Apr 2009 11:57:56 -0500
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
-Reply-To: jerry.smith333@googlemail.com
+Reply-To: btpromo11@btinternet.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,13 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Your email ID has been awarded £950.000.00  GBP in our Global draw program,Reply this office via: 
+You have just been awarded the sum of  £1,000,000 GBP in the on going BRITISH TELECOM AWARD PROMO. For Claims, email your details to: Email: btpromo11@btinternet.com
 
-1.Full Name:
-2.Full Address:
-3.Occupation:
-4.Phone Number:
-5.Country:
+Names:............
+Address:..............
+Country:.................
+Age:..........
+Sex:..............
+Phone/cellphone........
 
-Yours faithfully,
-Mrs Joan Thomas
+RegardS,
+Marcus Steve
+Customer Care Officer
