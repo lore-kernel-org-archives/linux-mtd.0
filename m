@@ -1,19 +1,18 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LrnSi-0007zv-Ai
-	for linux-mtd@lists.infradead.org; Thu, 09 Apr 2009 06:10:15 +0000
-Subject: Re: Volume write-protected
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: DATACOM - Nedel <nedel@datacom-telematica.com.br>
-In-Reply-To: <49DCD7C9.2050802@datacom-telematica.com.br>
-References: <49DCD7C9.2050802@datacom-telematica.com.br>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 09 Apr 2009 09:09:21 +0300
-Message-Id: <1239257361.3390.5.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from mail-bw0-f159.google.com ([209.85.218.159])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Lrohe-0004pK-Mb
+	for linux-mtd@lists.infradead.org; Thu, 09 Apr 2009 07:29:45 +0000
+Received: by bwz3 with SMTP id 3so502707bwz.18
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 09 Apr 2009 00:29:37 -0700 (PDT)
+MIME-Version: 1.0
+Date: Thu, 9 Apr 2009 08:29:37 +0100
+Message-ID: <756a7fcc0904090029k627c20abv175515fcf09ca3f2@mail.gmail.com>
+Subject: nandwrite problem
+From: Donal Morrissey <donal.morrissey@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,37 +22,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-04-08 at 13:58 -0300, DATACOM - Nedel wrote:
-> # mount -t ubifs ubi0!ubipart /mnt/flash/
-> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 
-> 8188:512, written 0 bytes
-> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 
-> 8191:512, written 0 bytes
-> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 
-> 8190:512, written 0 bytes
-> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 
-> 8189:512, written 0 bytes
+Hello All,
+I'm having problems in using the nandwrite command for my cirius logic
+EP9302 arm based processor card. I am able to load the images
+correctly via redboot, but not via the nandwrite shell command.
 
--5 is EIO, Input/output error. UBI tries to write 512 bytes, which is
-one subpage, to offset 512 (i.e., it writes the second subpage). And
-the MTD layer returns 512. So the issue is somewhere below UBI.
+I'm using redboot, kernel 2.6.8.1-crus2.0.8 and nandwrite v1.32.
 
-Possibly, your flash does not support sub-pages, but it declares that
-it does. You should look at your MTD driver. The other possibility is
-to force UBI not to use subpages.
+Here is the redboot output:
+---------------------------
+RedBoot> fis list
+Name              FLASH addr  Mem addr    Length      Entry point
+RedBoot           0x60000000  0x60000000  0x00040000  0x00000000
+RedBoot config    0x60FC0000  0x60FC0000  0x00001000  0x00000000
+FIS directory     0x60FE0000  0x60FE0000  0x00020000  0x00000000
+config1           0x60040000  0x00800000  0x00020000  0x00000000
+config2           0x60060000  0x00800000  0x00020000  0x00000000
+ramdisk.gz        0x60080000  0x00800000  0x00400000  0x00800000
+zImage            0x60480000  0x00080000  0x00140000  0x00080000
 
-> UBI error: ubi_io_write: read-only mode
-> UBI error: erase_worker: failed to erase PEB 8188, error -30
-> UBI error: do_work: work failed with error code -30
-> UBI error: ubi_thread: ubi_bgt0d: work failed with error code -30
-> UBIFS error (pid 6550): ubifs_write_node: cannot write 2048 bytes to LEB 
-> 1:2048, error -30
-> mount: ubi0!ubipart is write-protected, mounting read-only
+Here are the MTD Devices
+------------------------
+~ # cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 00040000 00020000 "RedBoot"
+mtd1: 00020000 00020000 "config1"
+mtd2: 00020000 00020000 "config2"
+mtd3: 00400000 00020000 "ramdisk.gz"
+mtd4: 00140000 00020000 "zImage"
+mtd5: 00a00000 00020000 "unallocated"
+mtd6: 00001000 00020000 "RedBoot config"
+mtd7: 00020000 00020000 "FIS directory"
 
-UBI attaches the volume in R/O mode, because of the write error.
-UBI tries to be nice to you, and instead of totally refusing the
-MTD device, it attaches it R/O.
+I'm trying to update the ramdisk.gz which is located in /dev/mtd3:
 
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+~ # mtd_debug info /dev/mtd3
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CLEAR_BITS
+mtd.size = 4194304 (4M)
+mtd.erasesize = 131072 (128K)
+mtd.oobblock = 0
+mtd.oobsize = 0
+mtd.ecctype = MTD_ECC_NONE
+regions = 0
+
+You can see that the oobblock and oobsize are 0! When I try to run the
+nandwrite command I get the following:
+
+~ # nandwrite /dev/mtd3 ramRamdisk.gz
+Unknown flash (not normal NAND)
+
+Having looked at the nandwrite command source code, this problem is
+caused by the oobblock and oobsize members of the mtf info being 0!
+
+Does anyone know why the values are incorrect or how to get around this issue?
+
+Best Regards,
+Donal
