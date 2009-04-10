@@ -1,23 +1,20 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LsFnM-0003PY-3p
-	for linux-mtd@lists.infradead.org; Fri, 10 Apr 2009 12:25:27 +0000
-Subject: RE: UBIFS Corrupt during power failure
+	id 1LsFp8-0003Tp-Tv
+	for linux-mtd@lists.infradead.org; Fri, 10 Apr 2009 12:27:18 +0000
+Subject: Re: ubifs error when do bonnie++ test
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Eric Holmberg <Eric_Holmberg@Trimble.com>
-In-Reply-To: <C77C279BA71FD14985DC8E75FB265AB702E4C3CA@usw-am-xch-02.am.trimblecorp.net>
-References: <C77C279BA71FD14985DC8E75FB265AB702DEEF07@usw-am-xch-02.am.trimblecorp.net>
-	<49C8FC89.7040709@nokia.com>
-	<C77C279BA71FD14985DC8E75FB265AB702DEF104@usw-am-xch-02.am.trimblecorp.net>
-	<1238050770.3321.41.camel@localhost.localdomain>
-	<C77C279BA71FD14985DC8E75FB265AB702DEFBF5@usw-am-xch-02.am.trimblecorp.net>
-	<C77C279BA71FD14985DC8E75FB265AB702E4C3CA@usw-am-xch-02.am.trimblecorp.net>
+To: Jason Liu <liu.h.jason@gmail.com>
+In-Reply-To: <e8775dd00904020249k6dd1146chfae6e74c11a01f82@mail.gmail.com>
+References: <e8775dd00904012244o30200226p4e748d89d2a9b9c7@mail.gmail.com>
+	<49D47252.3020701@nokia.com>
+	<e8775dd00904020249k6dd1146chfae6e74c11a01f82@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 10 Apr 2009 15:25:10 +0300
-Message-Id: <1239366310.3390.9.camel@localhost.localdomain>
+Date: Fri, 10 Apr 2009 15:27:01 +0300
+Message-Id: <1239366421.3390.12.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Urs Muff <urs_muff@Trimble.com>, linux-mtd@lists.infradead.org,
+Cc: Linux mtd <linux-mtd@lists.infradead.org>,
 	Adrian Hunter <adrian.hunter@nokia.com>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,13 +26,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-03-30 at 13:00 -0600, Eric Holmberg wrote:
-> Here is a basic summary of my findings to date for debugging corruption
-> of the root UBIFS volume which is located on NOR flash.  Please comment
-> if you have any suggestions.
+On Thu, 2009-04-02 at 17:49 +0800, Jason Liu wrote:
+> 2009/4/2 Adrian Hunter <adrian.hunter@nokia.com>:
+> > Jason Liu wrote:
+> >>
+> >> I'm working on the 2.6.26 with ubifs enabled, but after some stress
+> >> test, ubifs give some err. The following is the steps to reproduce.
+> >
+> > Please apply all recent UBIFS patches and enable debugging and try
+> > again.
+> >
+> > You could also enable debugging checks, but that will really slow it down.
+> >
+> >
+> After apply all the patches from users/dedekind/ubifs-v2.6.26.git
+> I still get errors with bonnie++ test and only run 3times compared 390
+> times without the patch
 > 
+> Using uid:0, gid:0.
+> Writing with putc()...done
+> Writing intelligently...done
+> Rewriting...done
+> Reading with getc()...done
+> Reading intelligently...done
+> start 'em...done...done...done...
+> Create files in sequential order...done.
+> Stat files in sequential order...Expected 16384 files but only got 16385
+> Cleaning up test directory after error.
 
-Hi, any news? Have you tried to enable UBI/UBIFS extra checks?
+So have you tried to enable UBIFS extra checks?
 
 -- 
 Best regards,
