@@ -1,21 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LsFp8-0003Tp-Tv
-	for linux-mtd@lists.infradead.org; Fri, 10 Apr 2009 12:27:18 +0000
-Subject: Re: ubifs error when do bonnie++ test
+	id 1LsFt0-0004OJ-6x
+	for linux-mtd@lists.infradead.org; Fri, 10 Apr 2009 12:31:17 +0000
+Subject: Re: [RFC/PATCH] flash_eraseall: extra care if NOR flash is not
+	BIT_WRITEABLE
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Jason Liu <liu.h.jason@gmail.com>
-In-Reply-To: <e8775dd00904020249k6dd1146chfae6e74c11a01f82@mail.gmail.com>
-References: <e8775dd00904012244o30200226p4e748d89d2a9b9c7@mail.gmail.com>
-	<49D47252.3020701@nokia.com>
-	<e8775dd00904020249k6dd1146chfae6e74c11a01f82@mail.gmail.com>
+To: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+In-Reply-To: <1237848138-18157-4-git-send-email-sebastian@breakpoint.cc>
+References: <1237848138-18157-1-git-send-email-sebastian@breakpoint.cc>
+	<1237848138-18157-4-git-send-email-sebastian@breakpoint.cc>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 10 Apr 2009 15:27:01 +0300
-Message-Id: <1239366421.3390.12.camel@localhost.localdomain>
+Date: Fri, 10 Apr 2009 15:30:55 +0300
+Message-Id: <1239366655.3390.14.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Linux mtd <linux-mtd@lists.infradead.org>,
-	Adrian Hunter <adrian.hunter@nokia.com>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,35 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-04-02 at 17:49 +0800, Jason Liu wrote:
-> 2009/4/2 Adrian Hunter <adrian.hunter@nokia.com>:
-> > Jason Liu wrote:
-> >>
-> >> I'm working on the 2.6.26 with ubifs enabled, but after some stress
-> >> test, ubifs give some err. The following is the steps to reproduce.
-> >
-> > Please apply all recent UBIFS patches and enable debugging and try
-> > again.
-> >
-> > You could also enable debugging checks, but that will really slow it down.
-> >
-> >
-> After apply all the patches from users/dedekind/ubifs-v2.6.26.git
-> I still get errors with bonnie++ test and only run 3times compared 390
-> times without the patch
+On Mon, 2009-03-23 at 23:42 +0100, Sebastian Andrzej Siewior wrote:
+> this is difficult because it depends on CONFIG_JFFS2_FS_WRITEBUFFER
 > 
-> Using uid:0, gid:0.
-> Writing with putc()...done
-> Writing intelligently...done
-> Rewriting...done
-> Reading with getc()...done
-> Reading intelligently...done
-> start 'em...done...done...done...
-> Create files in sequential order...done.
-> Stat files in sequential order...Expected 16384 files but only got 16385
-> Cleaning up test directory after error.
 
-So have you tried to enable UBIFS extra checks?
+So do you still support your patches? I think that if your patches
+
+a. do not break anything
+b. have at least some improvements, even if they do not work for all
+cases
+
+then we may just take them.
 
 -- 
 Best regards,
