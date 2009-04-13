@@ -1,18 +1,19 @@
-Received: from mail.ruggedcom.com ([204.50.190.93])
+Received: from sorrow.cyrius.com ([65.19.161.204])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LtRGr-0002hl-7o
-	for linux-mtd@lists.infradead.org; Mon, 13 Apr 2009 18:52:47 +0000
-Message-ID: <49E389F4.3060502@RuggedCom.com>
-Date: Mon, 13 Apr 2009 14:52:36 -0400
-From: Richard Retanubun <RichardRetanubun@RuggedCom.com>
+	id 1LtS1V-0001jO-Ob
+	for linux-mtd@lists.infradead.org; Mon, 13 Apr 2009 19:41:12 +0000
+Date: Mon, 13 Apr 2009 21:33:11 +0200
+From: Martin Michlmayr <tbm@cyrius.com>
+To: Peter Horton <zero@colonel-panic.org>
+Subject: Re: [PATCH] mtd: fix timeout in M25P80 driver
+Message-ID: <20090413193311.GA16597@deprecation.cyrius.com>
+References: <20090413142633.GA1560@sloth.localnet>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: Re: [PATCH] Fixup for Numonyx M29W128 chips
-References: <49D31937.6080403@gmail.com>
-In-Reply-To: <49D31937.6080403@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: augulis.darius@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20090413142633.GA1560@sloth.localnet>
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,24 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Darius,
+* Peter Horton <zero@colonel-panic.org> [2009-04-13 15:26]:
+> Extend erase timeout in M25P80 SPI Flash driver.
+> 
+> The M25P80 drivers fails erasing sectors on a M25P128 because the ready
+> wait timeout is too short. Change the timeout from a simple loop count to a
+> suitable number of seconds.
+> 
+> Signed-off-by: Peter Horton <zero@colonel-panic.org>
 
-I am tracking this patch that you submitted for the MTD mailing list and
-I think I am missing the rest of the discussion between this
+Tested-by: Martin Michlmayr <tbm@cyrius.com>
 
-http://lists.infradead.org/pipermail/linux-mtd/2009-April/025089.html
+This solves the problem I've seen on the QNAP TS-219.
 
-and the patch being committed to the kernel.org mainline here:
-
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=history;f=drivers/mtd/chips/cfi_cmdset_0002.c;h=61ea833e09086e631024f298575678ff3f123ea3;hb=HEAD
-
-I am planning to use this flash part on our design also and was wondering if you got a chance to
-exercise the part as an mtdblock or mtdchar device and if the issue persist there or is is only limited to using
-the part with jffs2? when the issue does happen, does it happen ALL the time or some of the time?
-
-Sorry if I'm re-asking somethings that you have explained before, feel free to point me to the
-proper discussion thread if I am.
-
-Thanks in advance for your time,
-
-- Richard Retanubun.
+-- 
+Martin Michlmayr
+http://www.cyrius.com/
