@@ -1,23 +1,25 @@
-Received: from mail-gx0-f208.google.com ([209.85.217.208])
+Received: from rv-out-0708.google.com ([209.85.198.248])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lssx3-00024O-Tn
-	for linux-mtd@lists.infradead.org; Sun, 12 Apr 2009 06:14:05 +0000
-Received: by gxk4 with SMTP id 4so3827983gxk.18
+	id 1LtG00-00008O-Ts
+	for linux-mtd@lists.infradead.org; Mon, 13 Apr 2009 06:50:39 +0000
+Received: by rv-out-0708.google.com with SMTP id l33so1715840rvb.42
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 11 Apr 2009 23:13:57 -0700 (PDT)
+	Sun, 12 Apr 2009 23:50:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1239093568-12094-1-git-send-email-sr@denx.de>
-References: <1239093568-12094-1-git-send-email-sr@denx.de>
-From: Grant Likely <grant.likely@secretlab.ca>
-Date: Sun, 12 Apr 2009 00:07:16 -0600
-Message-ID: <fa686aa40904112307m23cc1f77t92994b60617803b4@mail.gmail.com>
-Subject: Re: [PATCH 2/4 v2] mtd/powerpc: Factor out MTD physmap bindings into
-	mtd-physmap.txt
-To: Stefan Roese <sr@denx.de>
-Content-Type: text/plain; charset=ISO-8859-1
+In-Reply-To: <1239366421.3390.12.camel@localhost.localdomain>
+References: <e8775dd00904012244o30200226p4e748d89d2a9b9c7@mail.gmail.com>
+	<49D47252.3020701@nokia.com>
+	<e8775dd00904020249k6dd1146chfae6e74c11a01f82@mail.gmail.com>
+	<1239366421.3390.12.camel@localhost.localdomain>
+Date: Mon, 13 Apr 2009 14:50:30 +0800
+Message-ID: <e8775dd00904122350h23a9983axd507c88f283150f@mail.gmail.com>
+Subject: Re: ubifs error when do bonnie++ test
+From: Jason Liu <liu.h.jason@gmail.com>
+To: dedekind@infradead.org
+Content-Type: text/plain; charset=KOI8-R
 Content-Transfer-Encoding: quoted-printable
-Cc: linuxppc-dev@ozlabs.org, devicetree-discuss@ozlabs.org,
-	linux-mtd@lists.infradead.org
+Cc: Linux mtd <linux-mtd@lists.infradead.org>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,274 +29,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 7, 2009 at 2:39 AM, Stefan Roese <sr@denx.de> wrote:
-> Signed-off-by: Stefan Roese <sr@denx.de>
-Acked-by: Grant Likely <grant.likely@secretlab.ca>
+2009/4/10 Artem Bityutskiy <dedekind@infradead.org>:
+> On Thu, 2009-04-02 at 17:49 +0800, Jason Liu wrote:
+>> 2009/4/2 Adrian Hunter <adrian.hunter@nokia.com>:
+>> > Jason Liu wrote:
+>> >>
+>> >> I'm working on the 2.6.26 with ubifs enabled, but after some stress
+>> >> test, ubifs give some err. The following is the steps to reproduce.
+>> >
+>> > Please apply all recent UBIFS patches and enable debugging and try
+>> > again.
+>> >
+>> > You could also enable debugging checks, but that will really slow it d=
+own.
+>> >
+>> >
+>> After apply all the patches from users/dedekind/ubifs-v2.6.26.git
+>> I still get errors with bonnie++ test and only run 3times compared 390
+>> times without the patch
+>>
+>> Using uid:0, gid:0.
+>> Writing with putc()...done
+>> Writing intelligently...done
+>> Rewriting...done
+>> Reading with getc()...done
+>> Reading intelligently...done
+>> start 'em...done...done...done...
+>> Create files in sequential order...done.
+>> Stat files in sequential order...Expected 16384 files but only got 16385
+>> Cleaning up test directory after error.
+>
+> So have you tried to enable UBIFS extra checks?
+Yes, The test is in progress. It's really slow after enable UBIFS
+debug and extra checks.It will cost half hour for one test.And the
+test case failed without debug off after 600 round of test.So it will
+cost 600 * 0,5 =3D 300 hours with debug on, longer than 10 days.
 
-But you should really have a commit message of some sort describing
-the reason for the change.
-
-g.
-
-> ---
-> =A0Documentation/powerpc/booting-without-of.txt =A0 =A0 =A0 | =A0 89 +++-=
-----------------
-> =A0Documentation/powerpc/dts-bindings/mtd-physmap.txt | =A0 63 ++++++++++=
-++++
-> =A02 files changed, 75 insertions(+), 77 deletions(-)
-> =A0create mode 100644 Documentation/powerpc/dts-bindings/mtd-physmap.txt
 >
-> diff --git a/Documentation/powerpc/booting-without-of.txt b/Documentation=
-/powerpc/booting-without-of.txt
-> index 0ab0230..d16b7a1 100644
-> --- a/Documentation/powerpc/booting-without-of.txt
-> +++ b/Documentation/powerpc/booting-without-of.txt
-> @@ -43,12 +43,11 @@ Table of Contents
-> =A0 =A0 2) Representing devices without a current OF specification
-> =A0 =A0 =A0 a) PHY nodes
-> =A0 =A0 =A0 b) Interrupt controllers
-> - =A0 =A0 =A0c) CFI or JEDEC memory-mapped NOR flash
-> - =A0 =A0 =A0d) 4xx/Axon EMAC ethernet nodes
-> - =A0 =A0 =A0e) Xilinx IP cores
-> - =A0 =A0 =A0f) USB EHCI controllers
-> - =A0 =A0 =A0g) MDIO on GPIOs
-> - =A0 =A0 =A0h) SPI busses
-> + =A0 =A0 =A0c) 4xx/Axon EMAC ethernet nodes
-> + =A0 =A0 =A0d) Xilinx IP cores
-> + =A0 =A0 =A0e) USB EHCI controllers
-> + =A0 =A0 =A0f) MDIO on GPIOs
-> + =A0 =A0 =A0g) SPI busses
->
-> =A0 VII - Marvell Discovery mv64[345]6x System Controller chips
-> =A0 =A0 1) The /system-controller node
-> @@ -999,7 +998,7 @@ compatibility.
-> =A0 =A0 =A0 translation of SOC addresses for memory mapped SOC registers.
-> =A0 =A0 - bus-frequency: Contains the bus frequency for the SOC node.
-> =A0 =A0 =A0 Typically, the value of this field is filled in by the boot
-> - =A0 =A0 =A0loader.
-> + =A0 =A0 =A0loader.
->
->
-> =A0 Recommended properties:
-> @@ -1287,71 +1286,7 @@ platforms are moved over to use the flattened-devi=
-ce-tree model.
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0device_type =3D "open-pic";
-> =A0 =A0 =A0 =A0};
->
-> - =A0 c) CFI or JEDEC memory-mapped NOR flash
-> -
-> - =A0 =A0Flash chips (Memory Technology Devices) are often used for solid=
- state
-> - =A0 =A0file systems on embedded devices.
-> -
-> - =A0 =A0 - compatible : should contain the specific model of flash chip(=
-s)
-> - =A0 =A0 =A0 used, if known, followed by either "cfi-flash" or "jedec-fl=
-ash"
-> - =A0 =A0 - reg : Address range of the flash chip
-> - =A0 =A0 - bank-width : Width (in bytes) of the flash bank. =A0Equal to =
-the
-> - =A0 =A0 =A0 device width times the number of interleaved chips.
-> - =A0 =A0 - device-width : (optional) Width of a single flash chip. =A0If
-> - =A0 =A0 =A0 omitted, assumed to be equal to 'bank-width'.
-> - =A0 =A0 - #address-cells, #size-cells : Must be present if the flash ha=
-s
-> - =A0 =A0 =A0 sub-nodes representing partitions (see below). =A0In this c=
-ase
-> - =A0 =A0 =A0 both #address-cells and #size-cells must be equal to 1.
-> -
-> - =A0 =A0For JEDEC compatible devices, the following additional propertie=
-s
-> - =A0 =A0are defined:
-> -
-> - =A0 =A0 - vendor-id : Contains the flash chip's vendor id (1 byte).
-> - =A0 =A0 - device-id : Contains the flash chip's device id (1 byte).
-> -
-> - =A0 =A0In addition to the information on the flash bank itself, the
-> - =A0 =A0device tree may optionally contain additional information
-> - =A0 =A0describing partitions of the flash address space. =A0This can be
-> - =A0 =A0used on platforms which have strong conventions about which
-> - =A0 =A0portions of the flash are used for what purposes, but which don'=
-t
-> - =A0 =A0use an on-flash partition table such as RedBoot.
-> -
-> - =A0 =A0Each partition is represented as a sub-node of the flash device.
-> - =A0 =A0Each node's name represents the name of the corresponding
-> - =A0 =A0partition of the flash device.
-> -
-> - =A0 =A0Flash partitions
-> - =A0 =A0 - reg : The partition's offset and size within the flash bank.
-> - =A0 =A0 - label : (optional) The label / name for this flash partition.
-> - =A0 =A0 =A0 If omitted, the label is taken from the node name (excludin=
-g
-> - =A0 =A0 =A0 the unit address).
-> - =A0 =A0 - read-only : (optional) This parameter, if present, is a hint =
-to
-> - =A0 =A0 =A0 Linux that this flash partition should only be mounted
-> - =A0 =A0 =A0 read-only. =A0This is usually used for flash partitions
-> - =A0 =A0 =A0 containing early-boot firmware images or data which should =
-not
-> - =A0 =A0 =A0 be clobbered.
-> -
-> - =A0 =A0Example:
-> -
-> - =A0 =A0 =A0 flash@ff000000 {
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 compatible =3D "amd,am29lv128ml", "cfi-flas=
-h";
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 reg =3D <ff000000 01000000>;
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 bank-width =3D <4>;
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 device-width =3D <1>;
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 #address-cells =3D <1>;
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 #size-cells =3D <1>;
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 fs@0 {
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 label =3D "fs";
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 reg =3D <0 f80000>;
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 };
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 firmware@f80000 {
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 label =3D"firmware";
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 reg =3D <f80000 80000>;
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 read-only;
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 };
-> - =A0 =A0 =A0 };
-> -
-> - =A0 =A0d) 4xx/Axon EMAC ethernet nodes
-> + =A0 =A0c) 4xx/Axon EMAC ethernet nodes
->
-> =A0 =A0 The EMAC ethernet controller in IBM and AMCC 4xx chips, and also
-> =A0 =A0 the Axon bridge. =A0To operate this needs to interact with a ths
-> @@ -1499,7 +1434,7 @@ platforms are moved over to use the flattened-devic=
-e-tree model.
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 available.
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 For Axon: 0x0000012a
->
-> - =A0 e) Xilinx IP cores
-> + =A0 d) Xilinx IP cores
->
-> =A0 =A0The Xilinx EDK toolchain ships with a set of IP cores (devices) fo=
-r use
-> =A0 =A0in Xilinx Spartan and Virtex FPGAs. =A0The devices cover the whole=
- range
-> @@ -1761,7 +1696,7 @@ platforms are moved over to use the flattened-devic=
-e-tree model.
-> =A0 =A0 =A0 listed above, nodes for these devices should include a phy-ha=
-ndle
-> =A0 =A0 =A0 property, and may include other common network device propert=
-ies
-> =A0 =A0 =A0 like local-mac-address.
-> -
-> +
-> =A0 =A0 =A0 iv) Xilinx Uartlite
->
-> =A0 =A0 =A0 Xilinx uartlite devices are simple fixed speed serial ports.
-> @@ -1793,7 +1728,7 @@ platforms are moved over to use the flattened-devic=
-e-tree model.
-> =A0 =A0 =A0 =A0- reg-offset : A value of 3 is required
-> =A0 =A0 =A0 =A0- reg-shift : A value of 2 is required
->
-> - =A0 =A0f) USB EHCI controllers
-> + =A0 =A0e) USB EHCI controllers
->
-> =A0 =A0 Required properties:
-> =A0 =A0 =A0 - compatible : should be "usb-ehci".
-> @@ -1819,7 +1754,7 @@ platforms are moved over to use the flattened-devic=
-e-tree model.
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 big-endian;
-> =A0 =A0 =A0 =A0 =A0 };
->
-> - =A0 g) MDIO on GPIOs
-> + =A0 f) MDIO on GPIOs
->
-> =A0 =A0Currently defined compatibles:
-> =A0 =A0- virtual,gpio-mdio
-> @@ -1839,7 +1774,7 @@ platforms are moved over to use the flattened-devic=
-e-tree model.
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 &qe_pio_c 6>;
-> =A0 =A0 =A0 =A0};
->
-> - =A0 =A0h) SPI (Serial Peripheral Interface) busses
-> + =A0 =A0g) SPI (Serial Peripheral Interface) busses
->
-> =A0 =A0 SPI busses can be described with a node for the SPI master device
-> =A0 =A0 and a set of child nodes for each SPI slave on the bus. =A0For th=
-is
-> diff --git a/Documentation/powerpc/dts-bindings/mtd-physmap.txt b/Documen=
-tation/powerpc/dts-bindings/mtd-physmap.txt
-> new file mode 100644
-> index 0000000..cd474f9
-> --- /dev/null
-> +++ b/Documentation/powerpc/dts-bindings/mtd-physmap.txt
-> @@ -0,0 +1,63 @@
-> +CFI or JEDEC memory-mapped NOR flash
-> +
-> +Flash chips (Memory Technology Devices) are often used for solid state
-> +file systems on embedded devices.
-> +
-> + - compatible : should contain the specific model of flash chip(s)
-> + =A0 used, if known, followed by either "cfi-flash" or "jedec-flash"
-> + - reg : Address range of the flash chip
-> + - bank-width : Width (in bytes) of the flash bank. =A0Equal to the
-> + =A0 device width times the number of interleaved chips.
-> + - device-width : (optional) Width of a single flash chip. =A0If
-> + =A0 omitted, assumed to be equal to 'bank-width'.
-> + - #address-cells, #size-cells : Must be present if the flash has
-> + =A0 sub-nodes representing partitions (see below). =A0In this case
-> + =A0 both #address-cells and #size-cells must be equal to 1.
-> +
-> +For JEDEC compatible devices, the following additional properties
-> +are defined:
-> +
-> + - vendor-id : Contains the flash chip's vendor id (1 byte).
-> + - device-id : Contains the flash chip's device id (1 byte).
-> +
-> +In addition to the information on the flash bank itself, the
-> +device tree may optionally contain additional information
-> +describing partitions of the flash address space. =A0This can be
-> +used on platforms which have strong conventions about which
-> +portions of the flash are used for what purposes, but which don't
-> +use an on-flash partition table such as RedBoot.
-> +
-> +Each partition is represented as a sub-node of the flash device.
-> +Each node's name represents the name of the corresponding
-> +partition of the flash device.
-> +
-> +Flash partitions
-> + - reg : The partition's offset and size within the flash bank.
-> + - label : (optional) The label / name for this flash partition.
-> + =A0 If omitted, the label is taken from the node name (excluding
-> + =A0 the unit address).
-> + - read-only : (optional) This parameter, if present, is a hint to
-> + =A0 Linux that this flash partition should only be mounted
-> + =A0 read-only. =A0This is usually used for flash partitions
-> + =A0 containing early-boot firmware images or data which should not
-> + =A0 be clobbered.
-> +
-> +Example:
-> +
-> + =A0 =A0 =A0 flash@ff000000 {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 compatible =3D "amd,am29lv128ml", "cfi-flas=
-h";
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 reg =3D <ff000000 01000000>;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 bank-width =3D <4>;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 device-width =3D <1>;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 #address-cells =3D <1>;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 #size-cells =3D <1>;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 fs@0 {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 label =3D "fs";
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 reg =3D <0 f80000>;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 };
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 firmware@f80000 {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 label =3D"firmware";
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 reg =3D <f80000 80000>;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 read-only;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 };
-> + =A0 =A0 =A0 };
 > --
-> 1.6.2.2
+> Best regards,
+> Artem Bityutskiy (=E2=C9=D4=C0=C3=CB=C9=CA =E1=D2=D4=A3=CD)
 >
 >
-
-
-
---=20
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
