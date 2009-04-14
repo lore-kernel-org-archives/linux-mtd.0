@@ -1,19 +1,23 @@
-Received: from mta-blr1.sasken.com ([203.200.200.72])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LthQn-0002yk-Fe
-	for linux-mtd@lists.infradead.org; Tue, 14 Apr 2009 12:08:08 +0000
-From: Ravi Vasarla <ravi.vasarla@sasken.com>
-To: Vaibhav AGARWAL <vaibhav.agarwal@st.com>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>
-Date: Tue, 14 Apr 2009 17:34:46 +0530
-Subject: RE: Size of Samsung NAND id 0xD5 in nand_flash_ids[]
-Message-ID: <022F54DCE6CCCD45A5F9DF0B0B7BFEEB12CC085F9E@EXGMBX01.sasken.com>
-References: <49E46F86.8070301@st.com>
-In-Reply-To: <49E46F86.8070301@st.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
+Received: from mo-p05-ob.rzone.de ([81.169.146.181])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Lthy4-0007aV-23
+	for linux-mtd@lists.infradead.org; Tue, 14 Apr 2009 12:42:30 +0000
+From: Stefan Roese <sr@denx.de>
+To: Grant Likely <grant.likely@secretlab.ca>
+Subject: Re: [PATCH 1/4 v2] mtd: physmap_of: Add multiple regions and
+	concatenation support
+Date: Tue, 14 Apr 2009 14:42:19 +0200
+References: <1239093559-12043-1-git-send-email-sr@denx.de>
+	<fa686aa40904112258n1cc23b48t80b135b7016e9760@mail.gmail.com>
+In-Reply-To: <fa686aa40904112258n1cc23b48t80b135b7016e9760@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200904141442.19456.sr@denx.de>
+Cc: linuxppc-dev@ozlabs.org, devicetree-discuss@ozlabs.org,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,54 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Vaibhav,
+On Sunday 12 April 2009, Grant Likely wrote:
+> On Tue, Apr 7, 2009 at 2:39 AM, Stefan Roese <sr@denx.de> wrote:
+> > This patch adds support to handle multiple non-identical chips in one
+> > flash device tree node. It also adds concat support to physmap_of. This
+> > makes it possible to support e.g. the Intel P30 48F4400 chips which
+> > internally consists of 2 non-identical NOR chips on one die. Additionally
+> > partitions now can span over multiple chips.
+>
+> [...]
+>
+> > Signed-off-by: Stefan Roese <sr@denx.de>
+> > CC: Grant Likely <grant.likely@secretlab.ca>
+>
+> Looks good to me.  To comments below, but neither are enough to hold back
+> my:
+>
+> Reviewd-by: Grant Likely <grant.likely@secretlab.ca>
 
-In 32 bit operation, max data can be represented upto 4GiB - 1. In this giv=
-en condition you can map the pages of size 4GiB - 1=20
- (As highest msb in 32 bit operation is represented by 2^31 only);
+Thanks.
 
-Regards,
-Ravi Kumar
+> However, I have not tested this.  I'd like to hear of some larger
+> field testing before it is merged.
 
-________________________________________
-From: linux-mtd-bounces@lists.infradead.org [linux-mtd-bounces@lists.infrad=
-ead.org] On Behalf Of Vaibhav AGARWAL [vaibhav.agarwal@st.com]
-Sent: Tuesday, April 14, 2009 16:42
-To: linux-mtd@lists.infradead.org
-Subject: Size of Samsung NAND id 0xD5 in nand_flash_ids[]
+OK, I'll address your latest comments and resend a (hopefully) last version of 
+this patchset.
 
-Hi,
+Thanks.
 
-I m using Samsung K9WBG08U1M NAND. And after looking at Samsung's
-product decoder sheet, I can decode it's size as 4GiB. However, on
-matching it's signature id i.e. 0xD5 in 'nand_flash_ids[]' table, I can
-see it's size defined to be 2GiB by mtd framework. Is there any specific
-reason for doing so?
-
-Regards,
-Vaibhav.
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-SASKEN BUSINESS DISCLAIMER
--------------------------
-This message may contain confidential, proprietary or legally privileged in=
-formation. In=20
-case you are not the original intended Recipient of the message, you must n=
-ot, directly or=20
-indirectly, use, Disclose, distribute, print, or copy any part of this mess=
-age and you are=20
-requested to delete it and inform the sender. Any views expressed in this m=
-essage are=20
-those of the individual sender unless otherwise stated. Nothing contained i=
-n this message=20
-shall be construed as an offer or acceptance of any offer by Sasken Communi=
-cation=20
-Technologies Limited ("Sasken") unless sent with that express intent and wi=
-th due=20
-authority of Sasken. Sasken has taken enough precautions to prevent the spr=
-ead of=20
-viruses. However the company accepts no liability for any damage caused by =
-any virus=20
-transmitted by this email
+Stefan
