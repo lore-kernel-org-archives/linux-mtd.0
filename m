@@ -1,31 +1,23 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LtbsI-0005Kv-01
-	for linux-mtd@lists.infradead.org; Tue, 14 Apr 2009 06:12:09 +0000
-Subject: RE: UBIFS Corrupt during power failure
+	id 1LtbyG-0006FG-PL
+	for linux-mtd@lists.infradead.org; Tue, 14 Apr 2009 06:18:19 +0000
+Subject: Re: ubifs error when do bonnie++ test
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Eric Holmberg <Eric_Holmberg@Trimble.com>
-In-Reply-To: <C77C279BA71FD14985DC8E75FB265AB702FE53F4@usw-am-xch-02.am.trimblecorp.net>
-References: <C77C279BA71FD14985DC8E75FB265AB702DEEF07@usw-am-xch-02.am.trimblecorp.net>
-	<49C8FC89.7040709@nokia.com>
-	<C77C279BA71FD14985DC8E75FB265AB702DEF104@usw-am-xch-02.am.trimblecorp.net>
-	<1238050770.3321.41.camel@localhost.localdomain>
-	<C77C279BA71FD14985DC8E75FB265AB702DEFBF5@usw-am-xch-02.am.trimblecorp.net>
-	<C77C279BA71FD14985DC8E75FB265AB702E4C3CA@usw-am-xch-02.am.trimblecorp.net>
-	<1239366310.3390.9.camel@localhost.localdomain>
-	<C77C279BA71FD14985DC8E75FB265AB702FE51AC@usw-am-xch-02.am.trimblecorp.net>
-	<1239376652.3390.49.camel@localhost.localdomain>
-	<1239378582.3390.66.camel@localhost.localdomain>
-	<C77C279BA71FD14985DC8E75FB265AB702FE5324@usw-am-xch-02.am.trimblecorp.net>
-	<1239383500.3390.76.camel@localhost.localdomain>
-	<C77C279BA71FD14985DC8E75FB265AB702FE53F4@usw-am-xch-02.am.trimblecorp.net>
+To: Jason Liu <liu.h.jason@gmail.com>
+In-Reply-To: <e8775dd00904122350h23a9983axd507c88f283150f@mail.gmail.com>
+References: <e8775dd00904012244o30200226p4e748d89d2a9b9c7@mail.gmail.com>
+	<49D47252.3020701@nokia.com>
+	<e8775dd00904020249k6dd1146chfae6e74c11a01f82@mail.gmail.com>
+	<1239366421.3390.12.camel@localhost.localdomain>
+	<e8775dd00904122350h23a9983axd507c88f283150f@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 14 Apr 2009 09:11:40 +0300
-Message-Id: <1239689500.3390.82.camel@localhost.localdomain>
+Date: Tue, 14 Apr 2009 09:17:54 +0300
+Message-Id: <1239689874.3390.88.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Adrian Hunter <adrian.hunter@nokia.com>, linux-mtd@lists.infradead.org,
-	Urs Muff <urs_muff@Trimble.com>
+Cc: Linux mtd <linux-mtd@lists.infradead.org>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -36,53 +28,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-04-10 at 12:33 -0600, Eric Holmberg wrote:
-> > On Fri, 2009-04-10 at 11:00 -0600, Eric Holmberg wrote:
-> > > Thank you very much for your help so far. 
-> > NP, this is all I can do now without having real NOR and much time :-)
-> > 
-> > >  I am going to do two things:
-> > >  1. Turn off write buffering which converts the NOR minimum 
-> > I/O size from 1 to effectively 32 16-bit words (64 bytes) and 
-> > re-run all of the tests.
-> > 
-> > Err, which buffering? Is this something at the flash driver level? 
-> 
-> This is for the CFI flash interface.  The
-> drivers/mtd/chips/cfi_cmdset_0002.c driver has write buffers which is
-> uses to do a "block" write to the NOR flash which for my chip allows
-> writing up to 32 16-bit words. 
+On Mon, 2009-04-13 at 14:50 +0800, Jason Liu wrote:
+> 2009/4/10 Artem Bityutskiy <dedekind@infradead.org>:
+> > On Thu, 2009-04-02 at 17:49 +0800, Jason Liu wrote:
+> >> 2009/4/2 Adrian Hunter <adrian.hunter@nokia.com>:
+> >> > Jason Liu wrote:
+> >> >>
+> >> >> I'm working on the 2.6.26 with ubifs enabled, but after some stress
+> >> >> test, ubifs give some err. The following is the steps to reproduce.
+> >> >
+> >> > Please apply all recent UBIFS patches and enable debugging and try
+> >> > again.
+> >> >
+> >> > You could also enable debugging checks, but that will really slow it down.
+> >> >
+> >> >
+> >> After apply all the patches from users/dedekind/ubifs-v2.6.26.git
+> >> I still get errors with bonnie++ test and only run 3times compared 390
+> >> times without the patch
+> >>
+> >> Using uid:0, gid:0.
+> >> Writing with putc()...done
+> >> Writing intelligently...done
+> >> Rewriting...done
+> >> Reading with getc()...done
+> >> Reading intelligently...done
+> >> start 'em...done...done...done...
+> >> Create files in sequential order...done.
+> >> Stat files in sequential order...Expected 16384 files but only got 16385
+> >> Cleaning up test directory after error.
+> >
+> > So have you tried to enable UBIFS extra checks?
+> Yes, The test is in progress. It's really slow after enable UBIFS
+> debug and extra checks.It will cost half hour for one test.And the
+> test case failed without debug off after 600 round of test.So it will
+> cost 600 * 0,5 = 300 hours with debug on, longer than 10 days.
 
-Oh, this is something from the CFI standard? Then we may just add this
-knowledge to UBIFS: if this is NOR, then UBIFS knows that the up to 64
-bytes may contain garbage.
+When you reproduce this, please, do not forget to type dmesg
+and save the output. Also, it is good idea to save an image
+of your flash.
 
->  This is what I used for the tests with
-> U-Boot and it is why you see patterns such as the one below.  The code I
-> used to write this pattern to flash wrote the entire block in 1 write.
-> The CFI driver then broke up the writes into 64-byte writes.
-> Apparently, it didn't do them in order (or the flash chip didn't), which
-> is why you have aa55aa0a values after ffffffff values.  Turning off the
-> write buffering in the CFI driver by setting FORCE_WORD_WRITE to 1
-> should solve this (although it will now probably be somewhere between
-> 10x and 32x slower).
+Could you please tell what is your flash device? I see this:
+UBI: physical eraseblock size:   1048576 bytes (1024 KiB)
+UBI: logical eraseblock size:    1032192 bytes
+UBI: smallest flash I/O unit:    8192
+UBI: VID header offset:          8192 (aligned 8192)
+UBI: data offset:                16384
 
-Yes, it is worth disabling this and test. If it helps, we can add
-some CFI/NOR-awareness to UBIFS.
-
-> 30352250  aa55aa0a aa55aa0a aa55aa0a aa55aa0a 
-> 30352260  aa55aa0a aa55aa0a aa55aa0a aa55aa0a 
-> 30352270  aa55aa0a aa55aa0a aa55aa0a aa55aa0a 
-> 30352280  ffffffff ffffffff ffffffff ffffffff 
-> 30352290  ffffffff ffffffff ffffffff ffffffff 
-> 303522a0  ffffffff ffffffff ffffffff ffffffff 
-> 303522b0  aa55aa0a aa55aa0a aa55aa0a aa55aa0a 
-> 303522c0  ffffffff ffffffff ffffffff ffffffff 
-> 303522d0  ffffffff ffffffff ffffffff ffffffff 
-> 
-> Does that make sense now, or am I on the wrong path?
-
-Yes, makes perfect sense for me.
+So your flash have huge PEB size of 1MiB. Min I/O unit size is
+also huge - 8KiB. And no sub-pages. What is this device? Some
+kind of NAND?
 
 -- 
 Best regards,
