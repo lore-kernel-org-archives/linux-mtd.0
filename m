@@ -1,19 +1,23 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LteXU-0001os-GY
-	for linux-mtd@lists.infradead.org; Tue, 14 Apr 2009 09:02:52 +0000
-Subject: Re: ubifs corrupt
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: jerry <jerrydreaming@gmail.com>
-In-Reply-To: <71103bce0904140105l2aea95b4i2bfe460abacf66ec@mail.gmail.com>
-References: <71103bce0904140105l2aea95b4i2bfe460abacf66ec@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 14 Apr 2009 12:02:24 +0300
-Message-Id: <1239699744.3390.115.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from eu1sys200aog102.obsmtp.com ([207.126.144.113])
+	by bombadil.infradead.org with smtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LtgXS-0002VK-6o
+	for linux-mtd@lists.infradead.org; Tue, 14 Apr 2009 11:11:09 +0000
+Received: from zeta.dmz-eu.st.com (ns2.st.com [164.129.230.9])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B80B8DA78
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 14 Apr 2009 11:09:35 +0000 (GMT)
+Received: from mail1.dlh.st.com (mail1.dlh.st.com [10.199.8.21])
+	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B58894C286
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 14 Apr 2009 11:10:44 +0000 (GMT)
+Message-ID: <49E46F86.8070301@st.com>
+Date: Tue, 14 Apr 2009 16:42:06 +0530
+From: Vaibhav AGARWAL <vaibhav.agarwal@st.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Size of Samsung NAND id 0xD5 in nand_flash_ids[]
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +27,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+Hi,
 
-On Tue, 2009-04-14 at 16:05 +0800, jerry wrote:
-> I'm getting some problem with UBIFS when the power is switched off abruptly
->  during a write to flash(nandflash 2k/page). In the next boot the contents of
->  the file is not found and prints the following information.
-> 
-> UBIFS error (pid 358): ubifs_check_node: bad magic 0xffffffff,
-> expected 0x6101831
-> UBIFS error (pid 358): ubifs_check_node: bad node at LEB 27:251264
-> UBIFS error (pid 358): ubifs_read_node: expected node type 2
-> UBIFS error (pid 358): ubifs_check_node: bad magic 0xffffffff,
-> expected 0x6101831
-> UBIFS error (pid 358): ubifs_check_node: bad node at LEB 27:251264
-> UBIFS error (pid 358): ubifs_read_node: expected node type 2
-> problem renaming the file /Settings/qpe.conf.new to /Settings/qpe.conf
-> UBIFS error (pid 358): ubifs_check_node: bad magic 0xffffffff,
-> expected 0x6101831
-> UBIFS error (pid 358): ubifs_check_node: bad node at LEB 27:251264
-> UBIFS error (pid 358): ubifs_read_node: expected node type 2
-> 
-> I think the qpe.conf is writting when the power is off and The problem
-> is reproducable.
-> 
-> Please could you tell me if this is a known issue.
-> 
-> Thanks for your help and time!
+I m using Samsung K9WBG08U1M NAND. And after looking at Samsung's 
+product decoder sheet, I can decode it's size as 4GiB. However, on 
+matching it's signature id i.e. 0xD5 in 'nand_flash_ids[]' table, I can 
+see it's size defined to be 2GiB by mtd framework. Is there any specific 
+reason for doing so?
 
-Could you please, check what Adrian pointed. And if this does
-not help, could you please send a bug report as described here:
-http://www.linux-mtd.infradead.org/doc/ubifs.html#L_how_send_bugreport
-
-We are usually especially interested in items 1, 3, 4.
-
-Thanks!
-
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+Regards,
+Vaibhav.
