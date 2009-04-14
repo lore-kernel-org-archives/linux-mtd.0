@@ -1,24 +1,18 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LtbyG-0006FG-PL
-	for linux-mtd@lists.infradead.org; Tue, 14 Apr 2009 06:18:19 +0000
-Subject: Re: ubifs error when do bonnie++ test
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Jason Liu <liu.h.jason@gmail.com>
-In-Reply-To: <e8775dd00904122350h23a9983axd507c88f283150f@mail.gmail.com>
-References: <e8775dd00904012244o30200226p4e748d89d2a9b9c7@mail.gmail.com>
-	<49D47252.3020701@nokia.com>
-	<e8775dd00904020249k6dd1146chfae6e74c11a01f82@mail.gmail.com>
-	<1239366421.3390.12.camel@localhost.localdomain>
-	<e8775dd00904122350h23a9983axd507c88f283150f@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 14 Apr 2009 09:17:54 +0300
-Message-Id: <1239689874.3390.88.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Linux mtd <linux-mtd@lists.infradead.org>,
-	Adrian Hunter <adrian.hunter@nokia.com>
-Reply-To: dedekind@infradead.org
+Received: from rv-out-0708.google.com ([209.85.198.246])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LtdeC-0003PZ-8h
+	for linux-mtd@lists.infradead.org; Tue, 14 Apr 2009 08:05:43 +0000
+Received: by rv-out-0708.google.com with SMTP id l33so2233529rvb.42
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 14 Apr 2009 01:05:35 -0700 (PDT)
+MIME-Version: 1.0
+Date: Tue, 14 Apr 2009 16:05:35 +0800
+Message-ID: <71103bce0904140105l2aea95b4i2bfe460abacf66ec@mail.gmail.com>
+Subject: ubifs corrupt
+From: jerry <jerrydreaming@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,57 +22,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-04-13 at 14:50 +0800, Jason Liu wrote:
-> 2009/4/10 Artem Bityutskiy <dedekind@infradead.org>:
-> > On Thu, 2009-04-02 at 17:49 +0800, Jason Liu wrote:
-> >> 2009/4/2 Adrian Hunter <adrian.hunter@nokia.com>:
-> >> > Jason Liu wrote:
-> >> >>
-> >> >> I'm working on the 2.6.26 with ubifs enabled, but after some stress
-> >> >> test, ubifs give some err. The following is the steps to reproduce.
-> >> >
-> >> > Please apply all recent UBIFS patches and enable debugging and try
-> >> > again.
-> >> >
-> >> > You could also enable debugging checks, but that will really slow it down.
-> >> >
-> >> >
-> >> After apply all the patches from users/dedekind/ubifs-v2.6.26.git
-> >> I still get errors with bonnie++ test and only run 3times compared 390
-> >> times without the patch
-> >>
-> >> Using uid:0, gid:0.
-> >> Writing with putc()...done
-> >> Writing intelligently...done
-> >> Rewriting...done
-> >> Reading with getc()...done
-> >> Reading intelligently...done
-> >> start 'em...done...done...done...
-> >> Create files in sequential order...done.
-> >> Stat files in sequential order...Expected 16384 files but only got 16385
-> >> Cleaning up test directory after error.
-> >
-> > So have you tried to enable UBIFS extra checks?
-> Yes, The test is in progress. It's really slow after enable UBIFS
-> debug and extra checks.It will cost half hour for one test.And the
-> test case failed without debug off after 600 round of test.So it will
-> cost 600 * 0,5 = 300 hours with debug on, longer than 10 days.
+Hi Artem,
 
-When you reproduce this, please, do not forget to type dmesg
-and save the output. Also, it is good idea to save an image
-of your flash.
+I'm getting some problem with UBIFS when the power is switched off abruptly
+ during a write to flash(nandflash 2k/page). In the next boot the contents of
+ the file is not found and prints the following information.
 
-Could you please tell what is your flash device? I see this:
-UBI: physical eraseblock size:   1048576 bytes (1024 KiB)
-UBI: logical eraseblock size:    1032192 bytes
-UBI: smallest flash I/O unit:    8192
-UBI: VID header offset:          8192 (aligned 8192)
-UBI: data offset:                16384
+UBIFS error (pid 358): ubifs_check_node: bad magic 0xffffffff,
+expected 0x6101831
+UBIFS error (pid 358): ubifs_check_node: bad node at LEB 27:251264
+UBIFS error (pid 358): ubifs_read_node: expected node type 2
+UBIFS error (pid 358): ubifs_check_node: bad magic 0xffffffff,
+expected 0x6101831
+UBIFS error (pid 358): ubifs_check_node: bad node at LEB 27:251264
+UBIFS error (pid 358): ubifs_read_node: expected node type 2
+problem renaming the file /Settings/qpe.conf.new to /Settings/qpe.conf
+UBIFS error (pid 358): ubifs_check_node: bad magic 0xffffffff,
+expected 0x6101831
+UBIFS error (pid 358): ubifs_check_node: bad node at LEB 27:251264
+UBIFS error (pid 358): ubifs_read_node: expected node type 2
 
-So your flash have huge PEB size of 1MiB. Min I/O unit size is
-also huge - 8KiB. And no sub-pages. What is this device? Some
-kind of NAND?
+I think the qpe.conf is writting when the power is off and The problem
+is reproducable.
 
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+Please could you tell me if this is a known issue.
+
+Thanks for your help and time!
+
+Regards,
+
+Jerry
