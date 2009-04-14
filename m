@@ -1,21 +1,20 @@
-Received: from mail-fx0-f166.google.com ([209.85.220.166])
+Received: from mail.sunshinecable.com ([209.52.200.3])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LtmxJ-0000Jm-De
-	for linux-mtd@lists.infradead.org; Tue, 14 Apr 2009 18:02:03 +0000
-Received: by fxm10 with SMTP id 10so3034869fxm.18
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 14 Apr 2009 11:01:55 -0700 (PDT)
-Message-ID: <49E4CFB3.9010706@gmail.com>
-Date: Tue, 14 Apr 2009 21:02:27 +0300
-From: Darius Augulis <augulis.darius@gmail.com>
+	id 1Ltq6N-0005eO-Db
+	for linux-mtd@lists.infradead.org; Tue, 14 Apr 2009 21:23:37 +0000
+Message-ID: <20090414070143.pg0qlsn0yss80w4o@mail.sunshinecable.com>
+Date: Tue, 14 Apr 2009 07:01:43 -0700
+From: lucaszonge <lucaszonge@yahoo.ca>
+To: undisclosed-recipients:;
+Subject: Group Finance Director
 MIME-Version: 1.0
-To: Richard Retanubun <RichardRetanubun@RuggedCom.com>
-Subject: Re: [PATCH] Fixup for Numonyx M29W128 chips
-References: <49D31937.6080403@gmail.com> <49E389F4.3060502@RuggedCom.com>
-In-Reply-To: <49E389F4.3060502@RuggedCom.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+	charset=ISO-8859-1;
+	DelSp="Yes";
+	format="flowed"
+Content-Disposition: inline
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Reply-To: l.zonge@yahoo.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,50 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Richard Retanubun wrote:
-> Hi Darius,
+-- 
+DR.LUCAS ZONGE.
+Group Finance Director
+FIRST NATIONAL BANK SOUTH AFRICA
+Tel: +27-73-598-9758
 
-Hi Richard,
+  I discovered a dormant account in my office, as Group finance director
+  with FNB bank SOUTH AFRICA. It will be in my interest to transfer this fund
+worth $10,000,000 million dollars in an account offshore.
 
-> 
-> I am tracking this patch that you submitted for the MTD mailing list and
-> I think I am missing the rest of the discussion between this
-> 
-> http://lists.infradead.org/pipermail/linux-mtd/2009-April/025089.html
-> 
-> and the patch being committed to the kernel.org mainline here:
-> 
-> http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=history;f=drivers/mtd/chips/cfi_cmdset_0002.c;h=61ea833e09086e631024f298575678ff3f123ea3;hb=HEAD 
-> 
+  If you can assist in getting the money transferred, contact me immediately.
+Remember this is absolutely confidential. Your contact phone numbers and name
+will be necessary
+  for this effect.
 
-actually there is nothing to miss because discussion was finished with 
-04/01/2009 post from myself. Seem David found it ready to main line.
-If you thing it is regression please mail to ML.
+  Regards and respect,
 
-> 
-> I am planning to use this flash part on our design also and was 
-> wondering if you got a chance to
-> exercise the part as an mtdblock or mtdchar device and if the issue 
-> persist there or is is only limited to using
-> the part with jffs2? when the issue does happen, does it happen ALL the 
-> time or some of the time?
+  DR.LUCAS ZONGE.
 
-I used it only with jffs2. If write buffer is enabled, error occurs 
-every time.
 
-> 
-> Sorry if I'm re-asking somethings that you have explained before, feel 
-> free to point me to the
-> proper discussion thread if I am.
-
-I thing this ML is the only place where this patch was discussed.
-
-> 
-> Thanks in advance for your time,
-> 
-> - Richard Retanubun.
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+----------------------------------------------------------------
+This message was sent using IMP, the Internet Messaging Program.
