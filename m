@@ -1,30 +1,19 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from mail2.shareable.org ([80.68.89.115])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lu7jK-0006qM-Cp
-	for linux-mtd@lists.infradead.org; Wed, 15 Apr 2009 16:13:01 +0000
-Subject: Re: UBIFS Corrupt during power failure
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Jamie Lokier <jamie@shareable.org>
-In-Reply-To: <20090415160921.GA4325@shareable.org>
-References: <C77C279BA71FD14985DC8E75FB265AB702FE51AC@usw-am-xch-02.am.trimblecorp.net>
-	<1239376652.3390.49.camel@localhost.localdomain>
-	<1239378582.3390.66.camel@localhost.localdomain>
-	<C77C279BA71FD14985DC8E75FB265AB702FE5324@usw-am-xch-02.am.trimblecorp.net>
-	<1239383500.3390.76.camel@localhost.localdomain>
-	<C77C279BA71FD14985DC8E75FB265AB702FE53F4@usw-am-xch-02.am.trimblecorp.net>
-	<1239689500.3390.82.camel@localhost.localdomain>
-	<20090414180010.GC32311@shareable.org>
-	<1239775237.3390.144.camel@localhost.localdomain>
-	<C77C279BA71FD14985DC8E75FB265AB70305C5D8@usw-am-xch-02.am.trimblecorp.net>
-	<20090415160921.GA4325@shareable.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 15 Apr 2009 19:12:03 +0300
-Message-Id: <1239811923.3390.191.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Urs Muff <urs_muff@Trimble.com>, Eric Holmberg <Eric_Holmberg@Trimble.com>,
-	linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>
-Reply-To: dedekind@infradead.org
+	id 1Lu7zU-0000re-Na
+	for linux-mtd@lists.infradead.org; Wed, 15 Apr 2009 16:29:43 +0000
+Date: Wed, 15 Apr 2009 17:29:23 +0100
+From: Jamie Lokier <jamie@shareable.org>
+To: Artem Bityutskiy <dedekind@infradead.org>
+Subject: Re: Run UBIFS on top of IDE mode NAND disk?
+Message-ID: <20090415162923.GC4325@shareable.org>
+References: <000001c9bd90$e726cdb0$0470150a@cisco.com>
+	<1239776240.3390.151.camel@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1239776240.3390.151.camel@localhost.localdomain>
+Cc: linux-mtd@lists.infradead.org, Subodh Nijsure <sunijsur@cisco.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,12 +23,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-04-15 at 17:09 +0100, Jamie Lokier wrote:
-> Do the CFI block writes have to be aligned (to 64 bytes) offset, or
-> can the 64 bytes start at any word position?
+Artem Bityutskiy wrote:
+> Hi,
+> 
+> On Tue, 2009-04-14 at 23:10 -0700, Subodh Nijsure wrote: 
+> > I have board with 4GB NAND memory chip, it is configured to
+> > operate in IDE mode. And currently I am creating ext3 file-system
+> > on it.  This chip also have on-board controller that does
+> > wear-levelling, ECC so the quesitons are:
+> >  
+> > Can I (Should I) run UBIFS on of it and gain more of wear-levelling or its
+> > not worth it? 
+> 
+> Vs "Can I": if this is raw NAND, you just need an MTD driver for it.
+> Then you can use UBI/UBIFS on top of that.
+> 
+> Vs "Should I": you really should not ask questions like this. It is a
+> question of your design. Look at your NAND and how many erase cycles
+> each eraseblock survives. Then roughly calculate how many years or
+> months it should survive with ext3, which has fixed-position journal
+> and inode table and bitmap. Then decide whether you need WL or not.
+> Everything depends on your requirements.
+> 
+> Also, if this is raw NAND, then HW does not hide bad blocks for you,
+> right? How will you manage bad eraseblocks then, ext3 cannot do this.
+> It just panics in case of any I/O error.
 
-Yeah, good question. I wanted to ask the same.
+But the on board controller does wear-levelling, he said.
 
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+I think the question is whether the on board controller's
+wear-levelling is good or not.  If it's low quality, UBI will do it
+better.  If the controller is good quality, there's no need for UBI on
+top of it.
+
+I guess that two layers of good quality wear levelling just adds more
+wear, because they both copy data around.
+
+If it can be used as raw NAND, and the chip really is a NAND with
+standard NAND properties, _and_ if it's possible to disable the
+controller's wear levelling and get direct NAND access, then at least
+you know that UBI provides a good quality wear levelling
+implementation, and you have access to some statistics too.
+
+-- Jamie
