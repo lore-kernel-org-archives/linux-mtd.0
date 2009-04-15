@@ -1,29 +1,15 @@
-Received: from mail2.shareable.org ([80.68.89.115])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LuC0f-00070p-9i
-	for linux-mtd@lists.infradead.org; Wed, 15 Apr 2009 20:47:12 +0000
-Date: Wed, 15 Apr 2009 21:46:56 +0100
-From: Jamie Lokier <jamie@shareable.org>
-To: Nicolas Pitre <nico@cam.org>
-Subject: Re: UBIFS Corrupt during power failure
-Message-ID: <20090415204656.GA10707@shareable.org>
-References: <20090414180010.GC32311@shareable.org>
-	<1239775237.3390.144.camel@localhost.localdomain>
-	<C77C279BA71FD14985DC8E75FB265AB70305C5D8@usw-am-xch-02.am.trimblecorp.net>
-	<20090415160921.GA4325@shareable.org>
-	<C77C279BA71FD14985DC8E75FB265AB70305C6B2@usw-am-xch-02.am.trimblecorp.net>
-	<20090415164416.GD4325@shareable.org>
-	<alpine.LFD.2.00.0904151422170.6741@xanadu.home>
-	<20090415183806.GA8669@shareable.org>
-	<C77C279BA71FD14985DC8E75FB265AB70305C86F@usw-am-xch-02.am.trimblecorp.net>
-	<alpine.LFD.2.00.0904151556000.6741@xanadu.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LFD.2.00.0904151556000.6741@xanadu.home>
-Cc: Adrian Hunter <adrian.hunter@nokia.com>,
-	Eric Holmberg <Eric_Holmberg@Trimble.com>,
-	linux-mtd@lists.infradead.org, Urs Muff <urs_muff@trimble.com>
+Date: Wed, 15 Apr 2009 16:10:41 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Peter Horton <zero@colonel-panic.org>
+Subject: Re: [PATCH] mtd: fix timeout in M25P80 driver
+Message-Id: <20090415161041.10d1aa71.akpm@linux-foundation.org>
+In-Reply-To: <20090413142633.GA1560@sloth.localnet>
+References: <20090413142633.GA1560@sloth.localnet>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,35 +19,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Nicolas Pitre wrote:
-> > > Can MTD and/or UBI join two chips to look like a single partition in
-> > > that way and avoid pauses for erase by writing to the other part?
-> > 
-> > The CONFIG_MTD_CONCAT option will join multiple chips together into a
-> > single MTD device, but I haven't looked into the code to see if it
-> > allows simultaneous operations on the separate chips.
+On Mon, 13 Apr 2009 15:26:33 +0100
+Peter Horton <zero@colonel-panic.org> wrote:
+
+> Extend erase timeout in M25P80 SPI Flash driver.
 > 
-> It does.
+> The M25P80 drivers fails erasing sectors on a M25P128 because the ready
+> wait timeout is too short. Change the timeout from a simple loop count to a
+> suitable number of seconds.
 > 
-> > Nothing like RAID0 on flash :)
-> 
-> Well, the concat layer does not offer any kind of stripe management. I 
-> think someone posted a set of patches a while ago to add such a 
-> capability though.
+> Signed-off-by: Peter Horton <zero@colonel-panic.org>
+> ---
+> Index: linux-2.6.29-git12/drivers/mtd/devices/m25p80.c
+> ===================================================================
+> --- linux-2.6.29-git12.orig/drivers/mtd/devices/m25p80.c	2009-04-12 21:41:16.000000000 +0000
+> +++ linux-2.6.29-git12/drivers/mtd/devices/m25p80.c	2009-04-12 21:43:01.000000000 +0000
+> @@ -54,7 +54,7 @@
+>  #define	SR_SRWD			0x80	/* SR write protect */
+>  
+>  /* Define max times to check status register before we give up. */
+> -#define	MAX_READY_WAIT_COUNT	100000
+> +#define	MAX_READY_WAIT_JIFFIES	(10 * HZ)	/* eg. M25P128 specs 6s max sector erase */
+>  #define	CMD_SIZE		4
+>  
+>  #ifdef CONFIG_M25PXX_USE_FAST_READ
+> @@ -145,20 +145,20 @@
+>   */
+>  static int wait_till_ready(struct m25p *flash)
+>  {
+> -	int count;
+> +	unsigned long deadline;
+>  	int sr;
+>  
+> -	/* one chip guarantees max 5 msec wait here after page writes,
+> -	 * but potentially three seconds (!) after page erase.
+> -	 */
+> -	for (count = 0; count < MAX_READY_WAIT_COUNT; count++) {
+> +	deadline = jiffies + MAX_READY_WAIT_JIFFIES;
+> +
+> +	do {
+>  		if ((sr = read_sr(flash)) < 0)
+>  			break;
+>  		else if (!(sr & SR_WIP))
+>  			return 0;
+>  
+> -		/* REVISIT sometimes sleeping would be best */
+> -	}
+> +		cond_resched();
+> +
+> +	} while (!time_after_eq(jiffies, deadline));
+>  
+>  	return 1;
 
-If MTD concat write/erase operations can run in parallel, then the
-powerfail-corruption-block that UBIFS is scanning for will be one
-block per underlying device, not one block for the whole MTD.
+ow, so it sits there chewing electricity for up to ten seconds.
 
-That means a single number describing the powerfail-corruption-block
-is not enough for MTD concat devices.
+How much time does this really take, in the real world?
 
-However provided they are distinct erase blocks, maybe this does not
-affect UBIFS's classification of dead blocks.
-
-If they are arranged as stripes, the MTD concat's overall
-powerfail-corruption-block size must be set to the maximum of the
-underlying MTD's value and the strip size.  Alignment is left as an
-exercise...
-
--- Jamie
+It would be better to fall back to (say) msleep(1) if we find out that
+the device is being slow to respond.
