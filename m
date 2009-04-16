@@ -1,18 +1,14 @@
-Received: from mail.wantstofly.org ([2001:888:11ff:97::11])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LuT9G-0002wy-Ps
-	for linux-mtd@lists.infradead.org; Thu, 16 Apr 2009 15:05:10 +0000
-Date: Thu, 16 Apr 2009 17:06:30 +0200
-From: Lennert Buytenhek <buytenh@wantstofly.org>
-To: David Howells <dhowells@redhat.com>
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <20090416150630.GR1760@mail.wantstofly.org>
+References: <20090416150630.GR1760@mail.wantstofly.org>
+	<5680.1239894019@redhat.com>
+To: Lennert Buytenhek <buytenh@wantstofly.org>
 Subject: Re: Bug in physmap driver?
-Message-ID: <20090416150630.GR1760@mail.wantstofly.org>
-References: <5680.1239894019@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5680.1239894019@redhat.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Date: Thu, 16 Apr 2009 16:09:41 +0100
+Message-ID: <11416.1239894581@redhat.com>
+Sender: dhowells@redhat.com
+Cc: dhowells@redhat.com, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,15 +18,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 16, 2009 at 04:00:19PM +0100, David Howells wrote:
+Lennert Buytenhek <buytenh@wantstofly.org> wrote:
 
-> In physmap_flash_probe(), isn't the '+ 1' in:
-> 
-> 		info->map[i].size = dev->resource[i].end - dev->resource[i].start + 1;
-> 
-> incorrect?  It results in an artificially inflated size:
-> 
-> (gdb) p info->map[0]
-> $7 = {name = 0xc08aa520 "physmap-flash.0", size = 0x200001,
+> That would suggest that dev->resource[i].end is off-by-one?
 
-That would suggest that dev->resource[i].end is off-by-one?
+Actually, that's a good question: should end be one after the last useful
+addres, or should it be that last useful address?
+
+David
