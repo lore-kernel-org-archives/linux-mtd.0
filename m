@@ -1,20 +1,24 @@
-Received: from mail-fx0-f166.google.com ([209.85.220.166])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LuUQG-00015e-Fc
-	for linux-mtd@lists.infradead.org; Thu, 16 Apr 2009 16:26:54 +0000
-Received: by fxm10 with SMTP id 10so589013fxm.18
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 16 Apr 2009 09:26:40 -0700 (PDT)
-Subject: mtd: remove driver-core BUS_ID_SIZE
-From: Kay Sievers <kay.sievers@vrfy.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain
-Date: Thu, 16 Apr 2009 18:26:36 +0200
-Message-Id: <1239899196.17211.11.camel@poy>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Greg Kroah-Hartman <gregkh@suse.de>,
-	linux-mtd <linux-mtd@lists.infradead.org>
+Received: from baythorne.infradead.org ([2001:8b0:10b:1::1])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LuWTx-00010r-LT
+	for linux-mtd@lists.infradead.org; Thu, 16 Apr 2009 18:38:41 +0000
+Date: Thu, 16 Apr 2009 19:38:26 +0100 (BST)
+From: David Woodhouse <dwmw2@infradead.org>
+To: Artem Bityutskiy <dedekind@infradead.org>
+Subject: Re: [PATCH 1/3 v3] mtd: physmap_of: Add multiple regions and
+	concatenation support
+In-Reply-To: <1239889899.3390.216.camel@localhost.localdomain>
+Message-ID: <alpine.LFD.2.00.0904161936090.12608@baythorne.infradead.org>
+References: <1239883845-17804-1-git-send-email-sr@denx.de>
+	<fa686aa40904160626k118cea3cvc0db38a2277e45b8@mail.gmail.com>
+	<200904161537.59048.sr@denx.de>
+	<fa686aa40904160646v75a98e02s446fd89c08cfebae@mail.gmail.com>
+	<1239889899.3390.216.camel@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Cc: Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org,
+	Stefan Roese <sr@denx.de>, linux-mtd@lists.infradead.org,
+	devicetree-discuss@ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +28,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Kay Sievers <kay.sievers@vrfy.org>
-Subject: mtd: remove driver-core BUS_ID_SIZE
+On Thu, 16 Apr 2009, Artem Bityutskiy wrote:
 
-The name size limit is gone from the driver-core, the BUS_ID_SIZE
-value will be removed.
+> On Thu, 2009-04-16 at 07:46 -0600, Grant Likely wrote:
+>> On Thu, Apr 16, 2009 at 7:37 AM, Stefan Roese <sr@denx.de> wrote:
+>>> On Thursday 16 April 2009, Grant Likely wrote:
+>>>>> Signed-off-by: Stefan Roese <sr@denx.de>
+>>>>> Reviewd-by: Grant Likely <grant.likely@secretlab.ca>
+>>>>
+>>>> Yup, still looks good to me.  What boards has this been tested on?
+>>>
+>>> I tested this version on PPC405EX Kilauea equipped only one "standard"
+>>> Spansion S29GL512 NOR chip. And a slightly modified version on an MPC8360
+>>> board (kmeter1) which is equipped with the Intel P30 part mentioned in the
+>>> bindings description. Slightly modified since this board support is not yet
+>>> pushed upstream and currently using v2.6.28 (physmap_of.c has received minor
+>>> modifications after 2.6.28 release).
+>>
+>> Okay.  It will be good to get this one into -next for some testing
+>> exposure.  Unless he asks me to do otherwise, I'll leave this one to
+>> David to pick up.
+>
+> David usually picks up stuff just before or during merge window,
+> so if you want linux-next exposure, you need to have some extra
+> care.
 
-Cc: dwmw2@infradead.org
-Cc: linux-mtd@lists.infradead.org
-Acked-by: Greg Kroah-Hartman <gregkh@suse.de>
-Signed-off-by: Kay Sievers <kay.sievers@vrfy.org>
----
- drivers/mtd/nand/txx9ndfmc.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I don't necessarily do that on purpose; it just works out that way when 
+I'm busy.
 
---- a/drivers/mtd/nand/txx9ndfmc.c
-+++ b/drivers/mtd/nand/txx9ndfmc.c
-@@ -64,7 +64,7 @@ struct txx9ndfmc_priv {
- 	struct nand_chip chip;
- 	struct mtd_info mtd;
- 	int cs;
--	char mtdname[BUS_ID_SIZE + 2];
-+	char mtdname[20 + 2];
- };
- 
- #define MAX_TXX9NDFMC_DEV	4
+-- 
+dwmw2
