@@ -1,27 +1,20 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from mail-fx0-f166.google.com ([209.85.220.166])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LuUNB-0005Ar-0N
-	for linux-mtd@lists.infradead.org; Thu, 16 Apr 2009 16:23:39 +0000
-MIME-version: 1.0
-Content-transfer-encoding: 7BIT
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Received: from xanadu.home ([66.131.194.97]) by VL-MH-MR001.ip.videotron.ca
-	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
-	32bit))
-	with ESMTP id <0KI7003Z3C76HE60@VL-MH-MR001.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Thu, 16 Apr 2009 12:23:30 -0400 (EDT)
-Date: Thu, 16 Apr 2009 12:23:30 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-To: David Howells <dhowells@redhat.com>
-Subject: Re: Bug in physmap driver?
-In-reply-to: <13360.1239895664@redhat.com>
-Message-id: <alpine.LFD.2.00.0904161222280.6741@xanadu.home>
-References: <20090416151433.GS1760@mail.wantstofly.org>
-	<20090416150630.GR1760@mail.wantstofly.org>
-	<5680.1239894019@redhat.com>
-	<11416.1239894581@redhat.com> <13360.1239895664@redhat.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	Lennert Buytenhek <buytenh@wantstofly.org>
+	id 1LuUQG-00015e-Fc
+	for linux-mtd@lists.infradead.org; Thu, 16 Apr 2009 16:26:54 +0000
+Received: by fxm10 with SMTP id 10so589013fxm.18
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 16 Apr 2009 09:26:40 -0700 (PDT)
+Subject: mtd: remove driver-core BUS_ID_SIZE
+From: Kay Sievers <kay.sievers@vrfy.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain
+Date: Thu, 16 Apr 2009 18:26:36 +0200
+Message-Id: <1239899196.17211.11.camel@poy>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Greg Kroah-Hartman <gregkh@suse.de>,
+	linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,13 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 16 Apr 2009, David Howells wrote:
+From: Kay Sievers <kay.sievers@vrfy.org>
+Subject: mtd: remove driver-core BUS_ID_SIZE
 
-> Do you by any chance know what the 'width' field of struct physmap_flash_data
-> means?  Is it the total width of the data bus going to the flash chips?  Or is
-> it the width of each flash chip?
+The name size limit is gone from the driver-core, the BUS_ID_SIZE
+value will be removed.
 
-It's the total bus width.
+Cc: dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org
+Acked-by: Greg Kroah-Hartman <gregkh@suse.de>
+Signed-off-by: Kay Sievers <kay.sievers@vrfy.org>
+---
+ drivers/mtd/nand/txx9ndfmc.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-Nicolas
+--- a/drivers/mtd/nand/txx9ndfmc.c
++++ b/drivers/mtd/nand/txx9ndfmc.c
+@@ -64,7 +64,7 @@ struct txx9ndfmc_priv {
+ 	struct nand_chip chip;
+ 	struct mtd_info mtd;
+ 	int cs;
+-	char mtdname[BUS_ID_SIZE + 2];
++	char mtdname[20 + 2];
+ };
+ 
+ #define MAX_TXX9NDFMC_DEV	4
