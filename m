@@ -1,29 +1,12 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LupBr-0007TC-4H
-	for linux-mtd@lists.infradead.org; Fri, 17 Apr 2009 14:37:22 +0000
-Subject: Re: UBIFS Corrupt during power failure
+Subject: [PATCH] MTD: expose subpage size via sysfs
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Jamie Lokier <jamie@shareable.org>
-In-Reply-To: <20090417135149.GA7129@shareable.org>
-References: <C77C279BA71FD14985DC8E75FB265AB702FE53F4@usw-am-xch-02.am.trimblecorp.net>
-	<1239689500.3390.82.camel@localhost.localdomain>
-	<20090414180010.GC32311@shareable.org>
-	<1239775237.3390.144.camel@localhost.localdomain>
-	<C77C279BA71FD14985DC8E75FB265AB70305C5D8@usw-am-xch-02.am.trimblecorp.net>
-	<20090415160921.GA4325@shareable.org>
-	<C77C279BA71FD14985DC8E75FB265AB70305C6B2@usw-am-xch-02.am.trimblecorp.net>
-	<1239860798.3390.205.camel@localhost.localdomain>
-	<20090416213400.GA10578@shareable.org>
-	<1239958593.3390.293.camel@localhost.localdomain>
-	<20090417135149.GA7129@shareable.org>
+To: David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 17 Apr 2009 17:36:58 +0300
-Message-Id: <1239979018.3390.298.camel@localhost.localdomain>
+Date: Fri, 17 Apr 2009 18:11:36 +0300
+Message-Id: <1239981096.3390.300.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Urs Muff <urs_muff@Trimble.com>, Eric Holmberg <Eric_Holmberg@Trimble.com>,
-	linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -34,31 +17,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-04-17 at 14:51 +0100, Jamie Lokier wrote:
-> Artem Bityutskiy wrote:
-> > Jamie, thanks for feedback!
-> 
-> Thanks for the new sections in the UBI FAQ!
-> > Yeah...
-> > 
-> > >    That makes the range of parallel writes, and so
-> > >    corruption-on-power-loss, even larger than max(N * strip_size, N *
-> > >    block_size).  The range is as large as the whole write, if one chip
-> > >    is writing much faster than the others, so it cannot be represented
-> > >    by a small number.
-> > 
-> > Then I guess we should just introduce mtd->max_corruption ? This would
-> > mean maximum amount of bytes corruption may span in vase of power cuts?
-> 
-> With that name maybe whoever implements striping will remember think
-> about parallelism and limit it :-)
-> 
->   /* Max size of corrupted block when a write command is interrupted
->      by reset or power failure. */
->   u32 max_write_corruption;
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Subject: [PATCH] MTD: expose subpage size via sysfs
 
-Yeah, let's wait for Eric's results and then will work on
-extending MTD device model with this parameter.
+MTD has got sysfs support in 2.6.30-rc1. But subpage size is not
+exposed there - do this.
+
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ drivers/mtd/mtdcore.c |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index fdd6ae8..ae6f15e 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -132,6 +132,17 @@ static ssize_t mtd_writesize_show(struct device *dev,
+ }
+ static DEVICE_ATTR(writesize, S_IRUGO, mtd_writesize_show, NULL);
+
++static ssize_t mtd_subpage_size_show(struct device *dev,
++               struct device_attribute *attr, char *buf)
++{
++       struct mtd_info *mtd = dev_to_mtd(dev);
++       unsigned int subpage_size = mtd->writesize >> mtd->subpage_sft;
++
++       return snprintf(buf, PAGE_SIZE, "%u\n", subpage_size);
++
++}
++static DEVICE_ATTR(subpage_size, S_IRUGO, mtd_subpage_size_show, NULL);
++
+ static ssize_t mtd_oobsize_show(struct device *dev,
+                struct device_attribute *attr, char *buf)
+ {
+@@ -169,6 +180,7 @@ static struct attribute *mtd_attrs[] = {
+        &dev_attr_size.attr,
+        &dev_attr_erasesize.attr,
+        &dev_attr_writesize.attr,
++       &dev_attr_subpage_size.attr,
+        &dev_attr_oobsize.attr,
+        &dev_attr_numeraseregions.attr,
+        &dev_attr_name.attr,
+--
+1.6.0.6
 
 -- 
 Best regards,
