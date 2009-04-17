@@ -1,16 +1,22 @@
-Subject: Re: [PATCH 2/4] [MTD] Add MEMERASE64 ioctl for >4GiB devices
+Subject: Re: [PATCH 1/3 v3] mtd: physmap_of: Add multiple regions and
+	concatenation support
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Kevin Cernekee <kpc.mtd@gmail.com>
-In-Reply-To: <a95a62fe0904082252h41afa872j2ef6fb9d1d76dc27@mail.gmail.com>
-References: <a95a62fe0904082252h41afa872j2ef6fb9d1d76dc27@mail.gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <alpine.LFD.2.00.0904161936090.12608@baythorne.infradead.org>
+References: <1239883845-17804-1-git-send-email-sr@denx.de>
+	<fa686aa40904160626k118cea3cvc0db38a2277e45b8@mail.gmail.com>
+	<200904161537.59048.sr@denx.de>
+	<fa686aa40904160646v75a98e02s446fd89c08cfebae@mail.gmail.com>
+	<1239889899.3390.216.camel@localhost.localdomain>
+	<alpine.LFD.2.00.0904161936090.12608@baythorne.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 17 Apr 2009 10:30:16 +0300
-Message-Id: <1239953416.3390.243.camel@localhost.localdomain>
+Date: Fri, 17 Apr 2009 11:26:18 +0300
+Message-Id: <1239956778.3390.262.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Linux MTD <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org,
+	Stefan Roese <sr@denx.de>, linux-mtd@lists.infradead.org,
+	devicetree-discuss@ozlabs.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,15 +27,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-04-08 at 22:52 -0700, Kevin Cernekee wrote:
-> New MEMERASE/MEMREADOOB/MEMWRITEOOB ioctls are needed in order to support
-> 64-bit offsets into large NAND flash devices.
+On Thu, 2009-04-16 at 19:38 +0100, David Woodhouse wrote:
+> On Thu, 16 Apr 2009, Artem Bityutskiy wrote:
 > 
-> Signed-off-by: Kevin Cernekee <kpc.mtd@gmail.com>
+> > On Thu, 2009-04-16 at 07:46 -0600, Grant Likely wrote:
+> >> On Thu, Apr 16, 2009 at 7:37 AM, Stefan Roese <sr@denx.de> wrote:
+> >>> On Thursday 16 April 2009, Grant Likely wrote:
+> >>>>> Signed-off-by: Stefan Roese <sr@denx.de>
+> >>>>> Reviewd-by: Grant Likely <grant.likely@secretlab.ca>
+> >>>>
+> >>>> Yup, still looks good to me.  What boards has this been tested on?
+> >>>
+> >>> I tested this version on PPC405EX Kilauea equipped only one "standard"
+> >>> Spansion S29GL512 NOR chip. And a slightly modified version on an MPC8360
+> >>> board (kmeter1) which is equipped with the Intel P30 part mentioned in the
+> >>> bindings description. Slightly modified since this board support is not yet
+> >>> pushed upstream and currently using v2.6.28 (physmap_of.c has received minor
+> >>> modifications after 2.6.28 release).
+> >>
+> >> Okay.  It will be good to get this one into -next for some testing
+> >> exposure.  Unless he asks me to do otherwise, I'll leave this one to
+> >> David to pick up.
+> >
+> > David usually picks up stuff just before or during merge window,
+> > so if you want linux-next exposure, you need to have some extra
+> > care.
 > 
+> I don't necessarily do that on purpose; it just works out that way when 
+> I'm busy.
 
-Kevin, are you going to re-send patches 2-4, taking into account
-Arnd's and Andrew's suggestions?
+Yeah, not that I try to blame you, but I think we need to expose stuff
+to linux-next. And people who send patches are frustrated when their
+stuff gets no attention for very long time.
+
+I understand that MTD tree maintenance is a burden, and you are very
+busy, and no one pays you for this job. Thanks for doing it!
+
+I'm going to try to help you. I've just created a git tree where
+I'll push patches I consider OK and I approve. Here it is:
+git://git.infradead.org/users/dedekind/l2-mtd-2.6.git
+
+My hope is that you would look at that tree from time to time
+and pull it. At least you may be sure I looked at the patches and
+did some validation. This should save your time and help MTD
+users.
+
+Thanks.
 
 -- 
 Best regards,
