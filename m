@@ -1,15 +1,15 @@
-Subject: Re: [PATCH] mtd: fix timeout in M25P80 driver
+Subject: Re: mtd: remove driver-core BUS_ID_SIZE
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Peter Horton <zero@colonel-panic.org>
-In-Reply-To: <20090413142633.GA1560@sloth.localnet>
-References: <20090413142633.GA1560@sloth.localnet>
+To: Kay Sievers <kay.sievers@vrfy.org>
+In-Reply-To: <1239899196.17211.11.camel@poy>
+References: <1239899196.17211.11.camel@poy>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 17 Apr 2009 10:24:20 +0300
-Message-Id: <1239953060.3390.239.camel@localhost.localdomain>
+Date: Fri, 17 Apr 2009 10:25:48 +0300
+Message-Id: <1239953148.3390.240.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	Greg Kroah-Hartman <gregkh@suse.de>, David Woodhouse <dwmw2@infradead.org>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -20,58 +20,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-04-13 at 15:26 +0100, Peter Horton wrote:
-> Extend erase timeout in M25P80 SPI Flash driver.
+On Thu, 2009-04-16 at 18:26 +0200, Kay Sievers wrote:
+> From: Kay Sievers <kay.sievers@vrfy.org>
+> Subject: mtd: remove driver-core BUS_ID_SIZE
 > 
-> The M25P80 drivers fails erasing sectors on a M25P128 because the ready
-> wait timeout is too short. Change the timeout from a simple loop count to a
-> suitable number of seconds.
+> The name size limit is gone from the driver-core, the BUS_ID_SIZE
+> value will be removed.
 > 
-> Signed-off-by: Peter Horton <zero@colonel-panic.org>
+> Cc: dwmw2@infradead.org
+> Cc: linux-mtd@lists.infradead.org
+> Acked-by: Greg Kroah-Hartman <gregkh@suse.de>
+> Signed-off-by: Kay Sievers <kay.sievers@vrfy.org>
 > ---
-> Index: linux-2.6.29-git12/drivers/mtd/devices/m25p80.c
-> ===================================================================
-> --- linux-2.6.29-git12.orig/drivers/mtd/devices/m25p80.c	2009-04-12 21:41:16.000000000 +0000
-> +++ linux-2.6.29-git12/drivers/mtd/devices/m25p80.c	2009-04-12 21:43:01.000000000 +0000
-> @@ -54,7 +54,7 @@
->  #define	SR_SRWD			0x80	/* SR write protect */
+>  drivers/mtd/nand/txx9ndfmc.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> --- a/drivers/mtd/nand/txx9ndfmc.c
+> +++ b/drivers/mtd/nand/txx9ndfmc.c
+> @@ -64,7 +64,7 @@ struct txx9ndfmc_priv {
+>  	struct nand_chip chip;
+>  	struct mtd_info mtd;
+>  	int cs;
+> -	char mtdname[BUS_ID_SIZE + 2];
+> +	char mtdname[20 + 2];
+>  };
 >  
->  /* Define max times to check status register before we give up. */
-> -#define	MAX_READY_WAIT_COUNT	100000
-> +#define	MAX_READY_WAIT_JIFFIES	(10 * HZ)	/* eg. M25P128 specs 6s max sector erase */
->  #define	CMD_SIZE		4
->  
->  #ifdef CONFIG_M25PXX_USE_FAST_READ
-> @@ -145,20 +145,20 @@
->   */
->  static int wait_till_ready(struct m25p *flash)
->  {
-> -	int count;
-> +	unsigned long deadline;
->  	int sr;
->  
-> -	/* one chip guarantees max 5 msec wait here after page writes,
-> -	 * but potentially three seconds (!) after page erase.
-> -	 */
-Why did you remove the comment? Is it wrong or useless?
+>  #define MAX_TXX9NDFMC_DEV	4
 
-> -	for (count = 0; count < MAX_READY_WAIT_COUNT; count++) {
-> +	deadline = jiffies + MAX_READY_WAIT_JIFFIES;
-> +
-> +	do {
->  		if ((sr = read_sr(flash)) < 0)
->  			break;
->  		else if (!(sr & SR_WIP))
->  			return 0;
->  
-> -		/* REVISIT sometimes sleeping would be best */
-> -	}
-> +		cond_resched();
-> +
-> +	} while (!time_after_eq(jiffies, deadline));
->  
->  	return 1;
->  }
+Pushed, to l2-mtd-2.6.git. This does not guarantee anything,
+it just mean I'll ping dwmw2 to pull from that tree.
 
 -- 
 Best regards,
