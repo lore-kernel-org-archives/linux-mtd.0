@@ -1,28 +1,29 @@
-Received: from yw-out-1718.google.com ([74.125.46.157])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LunRN-00011m-05
-	for linux-mtd@lists.infradead.org; Fri, 17 Apr 2009 12:45:16 +0000
-Received: by yw-out-1718.google.com with SMTP id 9so577736ywk.72
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 17 Apr 2009 05:45:06 -0700 (PDT)
+Received: from mail2.shareable.org ([80.68.89.115])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LuoU2-0008FZ-SJ
+	for linux-mtd@lists.infradead.org; Fri, 17 Apr 2009 13:52:10 +0000
+Date: Fri, 17 Apr 2009 14:51:49 +0100
+From: Jamie Lokier <jamie@shareable.org>
+To: Artem Bityutskiy <dedekind@infradead.org>
+Subject: Re: UBIFS Corrupt during power failure
+Message-ID: <20090417135149.GA7129@shareable.org>
+References: <C77C279BA71FD14985DC8E75FB265AB702FE53F4@usw-am-xch-02.am.trimblecorp.net>
+	<1239689500.3390.82.camel@localhost.localdomain>
+	<20090414180010.GC32311@shareable.org>
+	<1239775237.3390.144.camel@localhost.localdomain>
+	<C77C279BA71FD14985DC8E75FB265AB70305C5D8@usw-am-xch-02.am.trimblecorp.net>
+	<20090415160921.GA4325@shareable.org>
+	<C77C279BA71FD14985DC8E75FB265AB70305C6B2@usw-am-xch-02.am.trimblecorp.net>
+	<1239860798.3390.205.camel@localhost.localdomain>
+	<20090416213400.GA10578@shareable.org>
+	<1239958593.3390.293.camel@localhost.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <alpine.LFD.2.00.0904161936090.12608@baythorne.infradead.org>
-References: <1239883845-17804-1-git-send-email-sr@denx.de>
-	<fa686aa40904160626k118cea3cvc0db38a2277e45b8@mail.gmail.com>
-	<200904161537.59048.sr@denx.de>
-	<fa686aa40904160646v75a98e02s446fd89c08cfebae@mail.gmail.com>
-	<1239889899.3390.216.camel@localhost.localdomain>
-	<alpine.LFD.2.00.0904161936090.12608@baythorne.infradead.org>
-Date: Fri, 17 Apr 2009 08:45:06 -0400
-Message-ID: <625fc13d0904170545i25929e98qeaa060b850c67955@mail.gmail.com>
-Subject: Re: [PATCH 1/3 v3] mtd: physmap_of: Add multiple regions and
-	concatenation support
-From: Josh Boyer <jwboyer@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linuxppc-dev@ozlabs.org, Stefan Roese <sr@denx.de>,
-	linux-mtd@lists.infradead.org, devicetree-discuss@ozlabs.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1239958593.3390.293.camel@localhost.localdomain>
+Cc: Urs Muff <urs_muff@Trimble.com>, Eric Holmberg <Eric_Holmberg@Trimble.com>,
+	linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,23 +33,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 16, 2009 at 2:38 PM, David Woodhouse <dwmw2@infradead.org> wrot=
-e:
-> On Thu, 16 Apr 2009, Artem Bityutskiy wrote:
->
->> On Thu, 2009-04-16 at 07:46 -0600, Grant Likely wrote:
->>> Okay. =A0It will be good to get this one into -next for some testing
->>> exposure. =A0Unless he asks me to do otherwise, I'll leave this one to
->>> David to pick up.
->>
->> David usually picks up stuff just before or during merge window,
->> so if you want linux-next exposure, you need to have some extra
->> care.
->
-> I don't necessarily do that on purpose; it just works out that way when I=
-'m
-> busy.
+Artem Bityutskiy wrote:
+> Jamie, thanks for feedback!
 
-Are you ever _not_ busy? ;)
+Thanks for the new sections in the UBI FAQ!
+> Yeah...
+> 
+> >    That makes the range of parallel writes, and so
+> >    corruption-on-power-loss, even larger than max(N * strip_size, N *
+> >    block_size).  The range is as large as the whole write, if one chip
+> >    is writing much faster than the others, so it cannot be represented
+> >    by a small number.
+> 
+> Then I guess we should just introduce mtd->max_corruption ? This would
+> mean maximum amount of bytes corruption may span in vase of power cuts?
 
-josh
+With that name maybe whoever implements striping will remember think
+about parallelism and limit it :-)
+
+  /* Max size of corrupted block when a write command is interrupted
+     by reset or power failure. */
+  u32 max_write_corruption;
+
+-- Jamie
+
+
+
+
+> 
+> -- 
+> Best regards,
+> Artem Bityutskiy (Битюцкий Артём)
+> 
