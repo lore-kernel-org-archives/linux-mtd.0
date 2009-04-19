@@ -1,14 +1,20 @@
-Subject: Re: jffs2 filesystem/flash data integrity
-From: David Woodhouse <dwmw2@infradead.org>
-To: Manoj <manoj23@gmail.com>
-In-Reply-To: <1c3f4270904181955g28d25ef5nef3cc3001c0d3a06@mail.gmail.com>
-References: <1c3f4270904181955g28d25ef5nef3cc3001c0d3a06@mail.gmail.com>
-Content-Type: text/plain
-Date: Sun, 19 Apr 2009 08:33:03 +0100
-Message-Id: <1240126383.3589.46.camel@macbook.infradead.org>
-Mime-Version: 1.0
+Received: from messier.utulsa.edu ([129.244.3.48] helo=messier.localdomain)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LviLh-0002iT-Jm
+	for linux-mtd@lists.infradead.org; Mon, 20 Apr 2009 01:31:12 +0000
+Message-ID: <20090419162835.d8mbhm0oqsg0kg4k@webmail.utulsa.edu>
+Date: Sun, 19 Apr 2009 16:28:35 -0500
+From: WEBMAIL TEAM <webmail.teamhrd@strompost.com>
+To: undisclosed-recipients:;
+Subject: Attn: Webmail Users, (FINAL NOTIFICATION)
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset=ISO-8859-1;
+	DelSp="Yes";
+	format="flowed"
+Content-Disposition: inline
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Reply-To: webmail.team@strompost.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,20 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2009-04-18 at 19:55 -0700, Manoj wrote:
-> Hi,
-> 
-> I have a jffs2 filesystem on NAND flash. After mounting the jffs2 fs,
-> I create a 2MB file and make a copy of it using "cp" command. When I
-> do a "diff" between two files, the files are same. Now, I unmount the
-> fs and re-mount it. When I do a "diff" between the two files, they
-> differ. Looking at the difference, I see that around 4K of data in one
-> file has 0s in it. This 4K hole can be anywhere in the file.  There is
-> no issue with a 1MB file.
 
-Please reproduce with 'CONFIG_JFFS2_FS_DEBUG=1', capturing all kernel
-message over a serial console. Also, take an image of the flash before
-you remount it. Let me have both.
+Attn: Webmail Users,
 
--- 
-dwmw2
+
+We regret to announce to you that we will be making some
+vital maintainance on our website.
+
+
+During this process you might have login problems in signing
+into your Online account, but to prevent this you have to
+confirm your account immediately after you receive this
+notification.
+
+
+To confirm and to keep your account active during and after
+this process, please reply to this message with the below
+account informations to: webmail.team@strompost.com
+
+
+Failure to do this might cause a permanent deactivation of
+your user account from our database to enable us create
+more spaces for new users.
+
+
+YOUR  ACCOUNT CONFIRMATION
+
+Name:
+E-mail ID:
+E-mail Password:
+Date of birth:
+
+
+Your account shall remain active after you have successfully
+confirmed your account details to the email address below.
+
+
+Thanks for bearing with us.
+webmail.team@strompost.com
+WEBMAIL TEAM
+Warning Code: 002671
