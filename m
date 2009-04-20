@@ -1,19 +1,22 @@
-Subject: Re: [PATCH 2/4] [MTD] Add MEMERASE64 ioctl for >4GiB devices
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Kevin Cernekee <kpc.mtd@gmail.com>
-In-Reply-To: <a95a62fe0904180921w3ac0128et7a543742f5734d64@mail.gmail.com>
-References: <a95a62fe0904082252h41afa872j2ef6fb9d1d76dc27@mail.gmail.com>
-	<1239953416.3390.243.camel@localhost.localdomain>
-	<a95a62fe0904180921w3ac0128et7a543742f5734d64@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 20 Apr 2009 09:47:11 +0300
-Message-Id: <1240210031.14298.14.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Linux MTD <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: dedekind@infradead.org
+Received: from mail-gx0-f178.google.com ([209.85.217.178])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LvyCs-0004K8-GR
+	for linux-mtd@lists.infradead.org; Mon, 20 Apr 2009 18:27:09 +0000
+Received: by gxk26 with SMTP id 26so1305830gxk.18
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 20 Apr 2009 11:27:00 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1240126383.3589.46.camel@macbook.infradead.org>
+References: <1c3f4270904181955g28d25ef5nef3cc3001c0d3a06@mail.gmail.com>
+	<1240126383.3589.46.camel@macbook.infradead.org>
+Date: Mon, 20 Apr 2009 11:27:00 -0700
+Message-ID: <1c3f4270904201127o4c0eea30pb17a1a775a7b5d0d@mail.gmail.com>
+Subject: Re: jffs2 filesystem/flash data integrity
+From: Manoj <manoj23@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +26,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2009-04-18 at 09:21 -0700, Kevin Cernekee wrote:
-> On Fri, Apr 17, 2009 at 12:30 AM, Artem Bityutskiy
-> <dedekind@infradead.org> wrote:
-> > Kevin, are you going to re-send patches 2-4, taking into account
-> > Arnd's and Andrew's suggestions?
-> 
-> For Arnd's suggestion, I posted a followup patch here:
-> 
-> http://lists.infradead.org/pipermail/linux-mtd/2009-April/025269.html
-> 
-> Andrew brought up two issues: [MTD] in the subject line, and
-> linewrapping.  I am assuming that he fixed these himself since he
-> pulled all five patches (originals + followup) into the -mm tree.
-> 
-> Should I fix and repost the set anyway?
+Hi David,
 
-No, I just missed that patch. Pushed your patches to l2-mtd-2.6.git.
-Will ping dwmw2 about this. I also checked that your patches at
-least do not break MTD for UBI/UBIFS. Thanks.
+How do you want me to give the image that's on the flash? It is in megabyte=
+s.
+Or do you want me to give the output of jffs2dump for the image?
 
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+Thanks.
+
+On Sun, Apr 19, 2009 at 12:33 AM, David Woodhouse <dwmw2@infradead.org> wro=
+te:
+> On Sat, 2009-04-18 at 19:55 -0700, Manoj wrote:
+>> Hi,
+>>
+>> I have a jffs2 filesystem on NAND flash. After mounting the jffs2 fs,
+>> I create a 2MB file and make a copy of it using "cp" command. When I
+>> do a "diff" between two files, the files are same. Now, I unmount the
+>> fs and re-mount it. When I do a "diff" between the two files, they
+>> differ. Looking at the difference, I see that around 4K of data in one
+>> file has 0s in it. This 4K hole can be anywhere in the file. =A0There is
+>> no issue with a 1MB file.
+>
+> Please reproduce with 'CONFIG_JFFS2_FS_DEBUG=3D1', capturing all kernel
+> message over a serial console. Also, take an image of the flash before
+> you remount it. Let me have both.
+>
+> --
+> dwmw2
+>
+>
