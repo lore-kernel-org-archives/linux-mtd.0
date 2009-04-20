@@ -1,20 +1,19 @@
-Received: from messier.utulsa.edu ([129.244.3.48] helo=messier.localdomain)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LviLh-0002iT-Jm
-	for linux-mtd@lists.infradead.org; Mon, 20 Apr 2009 01:31:12 +0000
-Message-ID: <20090419162835.d8mbhm0oqsg0kg4k@webmail.utulsa.edu>
-Date: Sun, 19 Apr 2009 16:28:35 -0500
-From: WEBMAIL TEAM <webmail.teamhrd@strompost.com>
-To: undisclosed-recipients:;
-Subject: Attn: Webmail Users, (FINAL NOTIFICATION)
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset=ISO-8859-1;
-	DelSp="Yes";
-	format="flowed"
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-Reply-To: webmail.team@strompost.com
+Subject: Re: [PATCH 2/4] [MTD] Add MEMERASE64 ioctl for >4GiB devices
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Kevin Cernekee <kpc.mtd@gmail.com>
+In-Reply-To: <a95a62fe0904180921w3ac0128et7a543742f5734d64@mail.gmail.com>
+References: <a95a62fe0904082252h41afa872j2ef6fb9d1d76dc27@mail.gmail.com>
+	<1239953416.3390.243.camel@localhost.localdomain>
+	<a95a62fe0904180921w3ac0128et7a543742f5734d64@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 20 Apr 2009 09:47:11 +0300
+Message-Id: <1240210031.14298.14.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Linux MTD <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Sat, 2009-04-18 at 09:21 -0700, Kevin Cernekee wrote:
+> On Fri, Apr 17, 2009 at 12:30 AM, Artem Bityutskiy
+> <dedekind@infradead.org> wrote:
+> > Kevin, are you going to re-send patches 2-4, taking into account
+> > Arnd's and Andrew's suggestions?
+> 
+> For Arnd's suggestion, I posted a followup patch here:
+> 
+> http://lists.infradead.org/pipermail/linux-mtd/2009-April/025269.html
+> 
+> Andrew brought up two issues: [MTD] in the subject line, and
+> linewrapping.  I am assuming that he fixed these himself since he
+> pulled all five patches (originals + followup) into the -mm tree.
+> 
+> Should I fix and repost the set anyway?
 
-Attn: Webmail Users,
+No, I just missed that patch. Pushed your patches to l2-mtd-2.6.git.
+Will ping dwmw2 about this. I also checked that your patches at
+least do not break MTD for UBI/UBIFS. Thanks.
 
-
-We regret to announce to you that we will be making some
-vital maintainance on our website.
-
-
-During this process you might have login problems in signing
-into your Online account, but to prevent this you have to
-confirm your account immediately after you receive this
-notification.
-
-
-To confirm and to keep your account active during and after
-this process, please reply to this message with the below
-account informations to: webmail.team@strompost.com
-
-
-Failure to do this might cause a permanent deactivation of
-your user account from our database to enable us create
-more spaces for new users.
-
-
-YOUR  ACCOUNT CONFIRMATION
-
-Name:
-E-mail ID:
-E-mail Password:
-Date of birth:
-
-
-Your account shall remain active after you have successfully
-confirmed your account details to the email address below.
-
-
-Thanks for bearing with us.
-webmail.team@strompost.com
-WEBMAIL TEAM
-Warning Code: 002671
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
