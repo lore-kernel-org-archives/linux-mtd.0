@@ -1,22 +1,14 @@
-Received: from mail-gx0-f178.google.com ([209.85.217.178])
+Received: from msr39.hinet.net ([168.95.4.139])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LvyCs-0004K8-GR
-	for linux-mtd@lists.infradead.org; Mon, 20 Apr 2009 18:27:09 +0000
-Received: by gxk26 with SMTP id 26so1305830gxk.18
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 20 Apr 2009 11:27:00 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1240126383.3589.46.camel@macbook.infradead.org>
-References: <1c3f4270904181955g28d25ef5nef3cc3001c0d3a06@mail.gmail.com>
-	<1240126383.3589.46.camel@macbook.infradead.org>
-Date: Mon, 20 Apr 2009 11:27:00 -0700
-Message-ID: <1c3f4270904201127o4c0eea30pb17a1a775a7b5d0d@mail.gmail.com>
-Subject: Re: jffs2 filesystem/flash data integrity
-From: Manoj <manoj23@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+	id 1Lw7aQ-00077U-OE
+	for linux-mtd@lists.infradead.org; Tue, 21 Apr 2009 04:28:05 +0000
+From: Thomas Chou <thomas@wytron.com.tw>
+To: Nios2 development list <nios2-dev@sopc.et.ntust.edu.tw>,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH] [MTD][NAND] fix section error in plat_nand
+Date: Tue, 21 Apr 2009 12:27:34 +0800
+Message-Id: <1240288054-11396-1-git-send-email-thomas@wytron.com.tw>
+Cc: Thomas Chou <thomas@wytron.com.tw>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,32 +18,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David,
+With CONFIG_HOTPLUG=n, the following eror occurred during link:
+local symbol 0: discarded in section `.devexit.text' from
+drivers/built-in.o
 
-How do you want me to give the image that's on the flash? It is in megabyte=
-s.
-Or do you want me to give the output of jffs2dump for the image?
+It was caused by improper section reference. The __devexit_p()
+should be added to the .remove function.
 
-Thanks.
+Signed-off-by: Thomas Chou <thomas@wytron.com.tw>
+---
+ drivers/mtd/nand/plat_nand.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-On Sun, Apr 19, 2009 at 12:33 AM, David Woodhouse <dwmw2@infradead.org> wro=
-te:
-> On Sat, 2009-04-18 at 19:55 -0700, Manoj wrote:
->> Hi,
->>
->> I have a jffs2 filesystem on NAND flash. After mounting the jffs2 fs,
->> I create a 2MB file and make a copy of it using "cp" command. When I
->> do a "diff" between two files, the files are same. Now, I unmount the
->> fs and re-mount it. When I do a "diff" between the two files, they
->> differ. Looking at the difference, I see that around 4K of data in one
->> file has 0s in it. This 4K hole can be anywhere in the file. =A0There is
->> no issue with a 1MB file.
->
-> Please reproduce with 'CONFIG_JFFS2_FS_DEBUG=3D1', capturing all kernel
-> message over a serial console. Also, take an image of the flash before
-> you remount it. Let me have both.
->
-> --
-> dwmw2
->
->
+diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
+index 75f9f48..1b67619 100644
+--- a/drivers/mtd/nand/plat_nand.c
++++ b/drivers/mtd/nand/plat_nand.c
+@@ -128,7 +128,7 @@ static int __devexit plat_nand_remove(struct platform_device *pdev)
+ 
+ static struct platform_driver plat_nand_driver = {
+ 	.probe		= plat_nand_probe,
+-	.remove		= plat_nand_remove,
++	.remove		= __devexit_p(plat_nand_remove),
+ 	.driver		= {
+ 		.name	= "gen_nand",
+ 		.owner	= THIS_MODULE,
+-- 
+1.6.0.6
