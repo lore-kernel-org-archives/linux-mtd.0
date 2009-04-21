@@ -1,14 +1,20 @@
-Received: from msr39.hinet.net ([168.95.4.139])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lw7aQ-00077U-OE
-	for linux-mtd@lists.infradead.org; Tue, 21 Apr 2009 04:28:05 +0000
-From: Thomas Chou <thomas@wytron.com.tw>
-To: Nios2 development list <nios2-dev@sopc.et.ntust.edu.tw>,
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Lw8vu-0005H4-Lj
+	for linux-mtd@lists.infradead.org; Tue, 21 Apr 2009 05:54:33 +0000
+Subject: Re: [PATCH] [MTD][NAND] fix section error in plat_nand
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Thomas Chou <thomas@wytron.com.tw>
+In-Reply-To: <1240288054-11396-1-git-send-email-thomas@wytron.com.tw>
+References: <1240288054-11396-1-git-send-email-thomas@wytron.com.tw>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 21 Apr 2009 08:53:51 +0300
+Message-Id: <1240293231.14298.17.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Nios2 development list <nios2-dev@sopc.et.ntust.edu.tw>,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH] [MTD][NAND] fix section error in plat_nand
-Date: Tue, 21 Apr 2009 12:27:34 +0800
-Message-Id: <1240288054-11396-1-git-send-email-thomas@wytron.com.tw>
-Cc: Thomas Chou <thomas@wytron.com.tw>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,30 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With CONFIG_HOTPLUG=n, the following eror occurred during link:
-local symbol 0: discarded in section `.devexit.text' from
-drivers/built-in.o
+On Tue, 2009-04-21 at 12:27 +0800, Thomas Chou wrote:
+> With CONFIG_HOTPLUG=n, the following eror occurred during link:
+> local symbol 0: discarded in section `.devexit.text' from
+> drivers/built-in.o
+> 
+> It was caused by improper section reference. The __devexit_p()
+> should be added to the .remove function.
+> 
+> Signed-off-by: Thomas Chou <thomas@wytron.com.tw>
 
-It was caused by improper section reference. The __devexit_p()
-should be added to the .remove function.
+Taken to l2-mtd tree, thanks.
 
-Signed-off-by: Thomas Chou <thomas@wytron.com.tw>
----
- drivers/mtd/nand/plat_nand.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
-index 75f9f48..1b67619 100644
---- a/drivers/mtd/nand/plat_nand.c
-+++ b/drivers/mtd/nand/plat_nand.c
-@@ -128,7 +128,7 @@ static int __devexit plat_nand_remove(struct platform_device *pdev)
- 
- static struct platform_driver plat_nand_driver = {
- 	.probe		= plat_nand_probe,
--	.remove		= plat_nand_remove,
-+	.remove		= __devexit_p(plat_nand_remove),
- 	.driver		= {
- 		.name	= "gen_nand",
- 		.owner	= THIS_MODULE,
 -- 
-1.6.0.6
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
