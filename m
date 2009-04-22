@@ -1,23 +1,16 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LwXAi-0002kY-8X
-	for linux-mtd@lists.infradead.org; Wed, 22 Apr 2009 07:47:15 +0000
-Subject: Re: [patch/RESEND 2.6.30-rc2 1/3] NAND: don't walk past end of
-	oobfree[]
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: David Brownell <david-b@pacbell.net>
-In-Reply-To: <200904211951.21270.david-b@pacbell.net>
-References: <200904211951.21270.david-b@pacbell.net>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 22 Apr 2009 10:45:24 +0300
-Message-Id: <1240386324.19218.13.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: dwmw2@infradead.org, Thomas Gleixner <tglx@linutronix.de>,
-	Linux MTD <linux-mtd@lists.infradead.org>, "Narnakaje,
-	Snehaprabha" <nsnehaprabha@ti.com>,
-	Andrew Morton <akpm@linux-foundation.org>
-Reply-To: dedekind@infradead.org
+Received: from mail-bw0-f160.google.com ([209.85.218.160])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LweQY-0005dT-6b
+	for linux-mtd@lists.infradead.org; Wed, 22 Apr 2009 15:32:05 +0000
+Received: by bwz4 with SMTP id 4so26421bwz.18
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 22 Apr 2009 08:31:55 -0700 (PDT)
+From: Vladimir Barinov <vova.barinov@gmail.com>
+To: dwmw2@infradead.org
+Subject: [PATCH] [MTD] MXC NAND driver fixes (v4)
+Date: Wed, 22 Apr 2009 19:31:50 +0400
+Message-Id: <1240414310-9245-1-git-send-email-vbarinov@embeddedalley.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,23 +20,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-04-21 at 19:51 -0700, David Brownell wrote:
-> From: David Brownell <dbrownell@users.sourceforge.net>
-> 
-> Resolve issue noted by Sneha:  when computing oobavail from
-> the list of free areas in the OOB, don't assume there will
-> always be an unused slot at the end.  With ECC_HW_SYNDROME
-> and 4KB page chips, it's fairly likely there *won't* be one.
-> 
-> Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
-> Cc: "Narnakaje, Snehaprabha" <nsnehaprabha@ti.com>"
+The following patch fixes:
+ - re-initialization of host->col_addr which is used as byte index
+   between the successive READID flash commands.
+ - compile error when CONFIG_PM is enabled
+ - pass on the error code from clk_get()
+ - return -ENOMEM in case of failed ioremap()
+ - pass on the return value of platform_driver_probe() directly
+ - remove excessive printk
+ - let command line partition table parsing with mxc_nand name.
+   The cmd_line parsing is done via <mtd-id> name that differs
+   from mxc_nand by default and looks like "NAND 256MiB 1,8V 8-bit"
 
-Hi,
+Signed-off-by: Vladimir Barinov <vbarinov@embeddedalley.com>
+Signed-off-by: Lothar Wassmann <LW@KARO-electronics.de>
+Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ drivers/mtd/nand/mxc_nand.c |   43 +++++++++++++++++++++++--------------------
+ 1 files changed, 23 insertions(+), 20 deletions(-)
 
-not that I tested your stuff, but it looks OK for me. So I've
-added the series to my l2-mtd tree, which means I'll ping
-dwmw2 about pulling it at some point. No guarantees, though.
-
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index bad048a..d4dbcbe 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -831,6 +831,7 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 		break;
+ 
+ 	case NAND_CMD_READID:
++		host->col_addr = 0;
+ 		send_read_id(host);
+ 		break;
+ 
+@@ -866,6 +867,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	mtd = &host->mtd;
+ 	mtd->priv = this;
+ 	mtd->owner = THIS_MODULE;
++	mtd->name = "mxc_nand";
+ 
+ 	/* 50 us command delay time */
+ 	this->chip_delay = 5;
+@@ -881,8 +883,10 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	this->verify_buf = mxc_nand_verify_buf;
+ 
+ 	host->clk = clk_get(&pdev->dev, "nfc");
+-	if (IS_ERR(host->clk))
++	if (IS_ERR(host->clk)) {
++		err = PTR_ERR(host->clk);
+ 		goto eclk;
++	}
+ 
+ 	clk_enable(host->clk);
+ 	host->clk_act = 1;
+@@ -895,7 +899,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 
+ 	host->regs = ioremap(res->start, res->end - res->start + 1);
+ 	if (!host->regs) {
+-		err = -EIO;
++		err = -ENOMEM;
+ 		goto eres;
+ 	}
+ 
+@@ -1010,30 +1014,35 @@ static int __devexit mxcnd_remove(struct platform_device *pdev)
+ #ifdef CONFIG_PM
+ static int mxcnd_suspend(struct platform_device *pdev, pm_message_t state)
+ {
+-	struct mtd_info *info = platform_get_drvdata(pdev);
++	struct mtd_info *mtd = platform_get_drvdata(pdev);
++	struct nand_chip *nand_chip = mtd->priv;
++	struct mxc_nand_host *host = nand_chip->priv;
+ 	int ret = 0;
+ 
+ 	DEBUG(MTD_DEBUG_LEVEL0, "MXC_ND : NAND suspend\n");
+-	if (info)
+-		ret = info->suspend(info);
+-
+-	/* Disable the NFC clock */
+-	clk_disable(nfc_clk);	/* FIXME */
++	if (mtd) {
++		ret = mtd->suspend(mtd);
++		/* Disable the NFC clock */
++		clk_disable(host->clk);
++	}
+ 
+ 	return ret;
+ }
+ 
+ static int mxcnd_resume(struct platform_device *pdev)
+ {
+-	struct mtd_info *info = platform_get_drvdata(pdev);
++	struct mtd_info *mtd = platform_get_drvdata(pdev);
++	struct nand_chip *nand_chip = mtd->priv;
++	struct mxc_nand_host *host = nand_chip->priv;
+ 	int ret = 0;
+ 
+ 	DEBUG(MTD_DEBUG_LEVEL0, "MXC_ND : NAND resume\n");
+-	/* Enable the NFC clock */
+-	clk_enable(nfc_clk);	/* FIXME */
+ 
+-	if (info)
+-		info->resume(info);
++	if (mtd) {
++		/* Enable the NFC clock */
++		clk_enable(host->clk);
++		mtd->resume(mtd);
++	}
+ 
+ 	return ret;
+ }
+@@ -1054,13 +1063,7 @@ static struct platform_driver mxcnd_driver = {
+ 
+ static int __init mxc_nd_init(void)
+ {
+-	/* Register the device driver structure. */
+-	pr_info("MXC MTD nand Driver\n");
+-	if (platform_driver_probe(&mxcnd_driver, mxcnd_probe) != 0) {
+-		printk(KERN_ERR "Driver register failed for mxcnd_driver\n");
+-		return -ENODEV;
+-	}
+-	return 0;
++	return platform_driver_probe(&mxcnd_driver, mxcnd_probe);
+ }
+ 
+ static void __exit mxc_nd_cleanup(void)
 -- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+1.5.6
