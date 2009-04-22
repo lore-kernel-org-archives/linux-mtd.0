@@ -1,16 +1,20 @@
-Subject: [PATCH 3/3] MTD: remove the 'flags' sysfs file
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1240306101.19218.2.camel@localhost.localdomain>
-References: <1240306101.19218.2.camel@localhost.localdomain>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 21 Apr 2009 12:32:35 +0300
-Message-Id: <1240306355.19218.5.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Brownell <david-b@pacbell.net>,
-	linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+Received: from n13a.bullet.mail.mud.yahoo.com ([68.142.207.51])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LwSl0-0004O9-3x
+	for linux-mtd@lists.infradead.org; Wed, 22 Apr 2009 03:04:24 +0000
+To: Linux MTD <linux-mtd@lists.infradead.org>
+Subject: [patch/RESEND 2.6.30-rc2 1/3] NAND: don't walk past end of oobfree[]
+Content-Disposition: inline
+From: David Brownell <david-b@pacbell.net>
+Date: Tue, 21 Apr 2009 19:51:20 -0700
+MIME-Version: 1.0
+Message-Id: <200904211951.21270.david-b@pacbell.net>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: dwmw2@infradead.org, Thomas Gleixner <tglx@linutronix.de>, "Narnakaje,
+	Snehaprabha" <nsnehaprabha@ti.com>,
+	Andrew Morton <akpm@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,49 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It is bad idea to export the MTD flags via sysfs. It is much
-cleaner to create a per-flag sysfs file which contains 0 or
-1. It is difficult for users to parse '0x400'. We have ioctls
-which return the flags, no need to add this to sysfs.
+From: David Brownell <dbrownell@users.sourceforge.net>
 
-Cc: David Brownell <david-b@pacbell.net>
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Resolve issue noted by Sneha:  when computing oobavail from
+the list of free areas in the OOB, don't assume there will
+always be an unused slot at the end.  With ECC_HW_SYNDROME
+and 4KB page chips, it's fairly likely there *won't* be one.
+
+Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
+Cc: "Narnakaje, Snehaprabha" <nsnehaprabha@ti.com>"
 ---
- drivers/mtd/mtdcore.c |   11 -----------
- 1 files changed, 0 insertions(+), 11 deletions(-)
+RESEND refreshed 7-april version.
+Still seems appropriate for a 2.6.30-rc merge.
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 07105a8..8067d0c 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -91,16 +91,6 @@ static ssize_t mtd_type_show(struct device *dev,
- }
- static DEVICE_ATTR(type, S_IRUGO, mtd_type_show, NULL);
- 
--static ssize_t mtd_flags_show(struct device *dev,
--		struct device_attribute *attr, char *buf)
--{
--	struct mtd_info *mtd = dev_to_mtd(dev);
--
--	return snprintf(buf, PAGE_SIZE, "0x%lx\n", (unsigned long)mtd->flags);
--
--}
--static DEVICE_ATTR(flags, S_IRUGO, mtd_flags_show, NULL);
--
- static ssize_t mtd_size_show(struct device *dev,
- 		struct device_attribute *attr, char *buf)
- {
-@@ -196,7 +186,6 @@ static DEVICE_ATTR(writable, S_IRUGO, mtd_writable_show, NULL);
- 
- static struct attribute *mtd_attrs[] = {
- 	&dev_attr_type.attr,
--	&dev_attr_flags.attr,
- 	&dev_attr_size.attr,
- 	&dev_attr_erasesize.attr,
- 	&dev_attr_writesize.attr,
--- 
-1.6.0.6
+ drivers/mtd/nand/nand_base.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2756,7 +2756,8 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	 * the out of band area
+ 	 */
+ 	chip->ecc.layout->oobavail = 0;
+-	for (i = 0; chip->ecc.layout->oobfree[i].length; i++)
++	for (i = 0; chip->ecc.layout->oobfree[i].length
++			&& i < ARRAY_SIZE(chip->ecc.layout->oobfree); i++)
+ 		chip->ecc.layout->oobavail +=
+ 			chip->ecc.layout->oobfree[i].length;
+ 	mtd->oobavail = chip->ecc.layout->oobavail;
