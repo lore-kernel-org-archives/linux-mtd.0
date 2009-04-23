@@ -1,16 +1,15 @@
-Received: from mail-bw0-f160.google.com ([209.85.218.160])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LweQY-0005dT-6b
-	for linux-mtd@lists.infradead.org; Wed, 22 Apr 2009 15:32:05 +0000
-Received: by bwz4 with SMTP id 4so26421bwz.18
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 22 Apr 2009 08:31:55 -0700 (PDT)
-From: Vladimir Barinov <vova.barinov@gmail.com>
-To: dwmw2@infradead.org
-Subject: [PATCH] [MTD] MXC NAND driver fixes (v4)
-Date: Wed, 22 Apr 2009 19:31:50 +0400
-Message-Id: <1240414310-9245-1-git-send-email-vbarinov@embeddedalley.com>
-Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] [MTD] MXC NAND driver fixes (v4)
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Vladimir Barinov <vova.barinov@gmail.com>
+In-Reply-To: <1240414310-9245-1-git-send-email-vbarinov@embeddedalley.com>
+References: <1240414310-9245-1-git-send-email-vbarinov@embeddedalley.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 23 Apr 2009 09:46:03 +0300
+Message-Id: <1240469163.19218.16.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,127 +19,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The following patch fixes:
- - re-initialization of host->col_addr which is used as byte index
-   between the successive READID flash commands.
- - compile error when CONFIG_PM is enabled
- - pass on the error code from clk_get()
- - return -ENOMEM in case of failed ioremap()
- - pass on the return value of platform_driver_probe() directly
- - remove excessive printk
- - let command line partition table parsing with mxc_nand name.
-   The cmd_line parsing is done via <mtd-id> name that differs
-   from mxc_nand by default and looks like "NAND 256MiB 1,8V 8-bit"
+On Wed, 2009-04-22 at 19:31 +0400, Vladimir Barinov wrote:
+> The following patch fixes:
+>  - re-initialization of host->col_addr which is used as byte index
+>    between the successive READID flash commands.
+>  - compile error when CONFIG_PM is enabled
+>  - pass on the error code from clk_get()
+>  - return -ENOMEM in case of failed ioremap()
+>  - pass on the return value of platform_driver_probe() directly
+>  - remove excessive printk
+>  - let command line partition table parsing with mxc_nand name.
+>    The cmd_line parsing is done via <mtd-id> name that differs
+>    from mxc_nand by default and looks like "NAND 256MiB 1,8V 8-bit"
+> 
+> Signed-off-by: Vladimir Barinov <vbarinov@embeddedalley.com>
+> Signed-off-by: Lothar Wassmann <LW@KARO-electronics.de>
+> Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
+> ---
+>  drivers/mtd/nand/mxc_nand.c |   43 +++++++++++++++++++++++--------------------
+>  1 files changed, 23 insertions(+), 20 deletions(-)
 
-Signed-off-by: Vladimir Barinov <vbarinov@embeddedalley.com>
-Signed-off-by: Lothar Wassmann <LW@KARO-electronics.de>
-Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- drivers/mtd/nand/mxc_nand.c |   43 +++++++++++++++++++++++--------------------
- 1 files changed, 23 insertions(+), 20 deletions(-)
+Your patch does not apply to the latest mtd-2.6.git
 
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index bad048a..d4dbcbe 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -831,6 +831,7 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
- 		break;
- 
- 	case NAND_CMD_READID:
-+		host->col_addr = 0;
- 		send_read_id(host);
- 		break;
- 
-@@ -866,6 +867,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 	mtd = &host->mtd;
- 	mtd->priv = this;
- 	mtd->owner = THIS_MODULE;
-+	mtd->name = "mxc_nand";
- 
- 	/* 50 us command delay time */
- 	this->chip_delay = 5;
-@@ -881,8 +883,10 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 	this->verify_buf = mxc_nand_verify_buf;
- 
- 	host->clk = clk_get(&pdev->dev, "nfc");
--	if (IS_ERR(host->clk))
-+	if (IS_ERR(host->clk)) {
-+		err = PTR_ERR(host->clk);
- 		goto eclk;
-+	}
- 
- 	clk_enable(host->clk);
- 	host->clk_act = 1;
-@@ -895,7 +899,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 
- 	host->regs = ioremap(res->start, res->end - res->start + 1);
- 	if (!host->regs) {
--		err = -EIO;
-+		err = -ENOMEM;
- 		goto eres;
- 	}
- 
-@@ -1010,30 +1014,35 @@ static int __devexit mxcnd_remove(struct platform_device *pdev)
- #ifdef CONFIG_PM
- static int mxcnd_suspend(struct platform_device *pdev, pm_message_t state)
- {
--	struct mtd_info *info = platform_get_drvdata(pdev);
-+	struct mtd_info *mtd = platform_get_drvdata(pdev);
-+	struct nand_chip *nand_chip = mtd->priv;
-+	struct mxc_nand_host *host = nand_chip->priv;
- 	int ret = 0;
- 
- 	DEBUG(MTD_DEBUG_LEVEL0, "MXC_ND : NAND suspend\n");
--	if (info)
--		ret = info->suspend(info);
--
--	/* Disable the NFC clock */
--	clk_disable(nfc_clk);	/* FIXME */
-+	if (mtd) {
-+		ret = mtd->suspend(mtd);
-+		/* Disable the NFC clock */
-+		clk_disable(host->clk);
-+	}
- 
- 	return ret;
- }
- 
- static int mxcnd_resume(struct platform_device *pdev)
- {
--	struct mtd_info *info = platform_get_drvdata(pdev);
-+	struct mtd_info *mtd = platform_get_drvdata(pdev);
-+	struct nand_chip *nand_chip = mtd->priv;
-+	struct mxc_nand_host *host = nand_chip->priv;
- 	int ret = 0;
- 
- 	DEBUG(MTD_DEBUG_LEVEL0, "MXC_ND : NAND resume\n");
--	/* Enable the NFC clock */
--	clk_enable(nfc_clk);	/* FIXME */
- 
--	if (info)
--		info->resume(info);
-+	if (mtd) {
-+		/* Enable the NFC clock */
-+		clk_enable(host->clk);
-+		mtd->resume(mtd);
-+	}
- 
- 	return ret;
- }
-@@ -1054,13 +1063,7 @@ static struct platform_driver mxcnd_driver = {
- 
- static int __init mxc_nd_init(void)
- {
--	/* Register the device driver structure. */
--	pr_info("MXC MTD nand Driver\n");
--	if (platform_driver_probe(&mxcnd_driver, mxcnd_probe) != 0) {
--		printk(KERN_ERR "Driver register failed for mxcnd_driver\n");
--		return -ENODEV;
--	}
--	return 0;
-+	return platform_driver_probe(&mxcnd_driver, mxcnd_probe);
- }
- 
- static void __exit mxc_nd_cleanup(void)
+[dedekind@eru l2-mtd-2.6.git]$ git-am vova                                                                                                                                             
+Applying: MXC NAND driver fixes (v4)                                                                                                                                                   
+error: patch failed: drivers/mtd/nand/mxc_nand.c:866                                                                                                                                   
+error: drivers/mtd/nand/mxc_nand.c: patch does not apply                                                                                                                               
+Patch failed at 0001.                                                                                                                                                                  
+When you have resolved this problem run "git am --resolved".                                                                                                                           
+If you would prefer to skip this patch, instead run "git am --skip".                                                                                                                   
+To restore the original branch and stop patching run "git am --abort".                                                                                                                 
+                                                                                                                                                     
+[dedekind@eru l2-mtd-2.6.git]$ patch -p1 < vova                                                                                                                                        
+patching file drivers/mtd/nand/mxc_nand.c                                                                                                                                              
+Hunk #2 FAILED at 867.                                                                                                                                                                 
+Hunk #3 succeeded at 884 (offset 1 line).                                                                                                                                              
+Hunk #5 succeeded at 1015 (offset 1 line).                                                                                                                                             
+1 out of 6 hunks FAILED -- saving rejects to file drivers/mtd/nand/mxc_nand.c.rej                                                                                                      
+
+[dedekind@eru l2-mtd-2.6.git]$ cat drivers/mtd/nand/mxc_nand.c.rej
+***************
+*** 866,871 ****
+        mtd = &host->mtd;
+        mtd->priv = this;
+        mtd->owner = THIS_MODULE;
+
+        /* 50 us command delay time */
+        this->chip_delay = 5;
+--- 867,873 ----
+        mtd = &host->mtd;
+        mtd->priv = this;
+        mtd->owner = THIS_MODULE;
++       mtd->name = "mxc_nand";
+
+        /* 50 us command delay time */
+        this->chip_delay = 5;
+
 -- 
-1.5.6
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
