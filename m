@@ -1,13 +1,21 @@
-Subject: [PATCH] Add armflash support for multiple blocks of flash
-To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-From: Catalin Marinas <catalin.marinas@arm.com>
-Date: Thu, 23 Apr 2009 17:41:10 +0100
-Message-ID: <20090423164110.31264.42300.stgit@pc1117.cambridge.arm.com>
+Received: from 30.mail-out.ovh.net ([213.186.62.213])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Lx65j-0002Wp-1i
+	for linux-mtd@lists.infradead.org; Thu, 23 Apr 2009 21:04:25 +0000
+Date: Thu, 23 Apr 2009 22:57:03 +0200
+From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+To: Alessandro Rubini <rubini-list@gnudd.com>,
+	linux-arm-kernel@lists.arm.linux.org.uk,
+	andrea.gallo@stericsson.com, STEricsson_nomadik_linux@list.st.com,
+	linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 4/6] Nand driver for Nomadik 8815 SoC (on NHK8815 board)
+Message-ID: <20090423205703.GC4071@game.jcrosoft.org>
+References: <cover.1240384958.git.rubini@gnudd.com>
+	<afa4979bd00ccb47ba28fcbbeec29f07a60c28e5.1240384958.git.rubini@gnudd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Cc: Russell King <linux@arm.linux.org.uk>,
-	David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <afa4979bd00ccb47ba28fcbbeec29f07a60c28e5.1240384958.git.rubini@gnudd.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,323 +25,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds MTD concatenation support to integrator-flash.c for
-platforms with more than one block of flash memory (e.g. RealView
-PB11MPCore). The implementation is based on the sa1100-flash.c one.
+On 09:41 Wed 22 Apr     , Alessandro Rubini wrote:
+> From: Alessandro Rubini <rubini@unipv.it>
+> 
+> The patch is incremental over base Nomadik support
+> as posted to linux-arm-kernel.
+> 
+> Signed-off-by: Alessandro Rubini <rubini@unipv.it>
+> Acked-by: Andrea Gallo <andrea.gallo@stericsson.com>
+> ---
+> 
+> This and one-nand are Cc: to the mtd list, the other patches
+> have been sent only to linux-arm-kernel.
+> 
+>  arch/arm/configs/nhk15_defconfig              |    1 +
+>  arch/arm/mach-nomadik/board-8815nhk.c         |   98 ++++++++-
+>  arch/arm/mach-nomadik/include/mach/fsmc.h     |   29 +++
+>  arch/arm/mach-nomadik/include/mach/hardware.h |    5 +-
+>  arch/arm/mach-nomadik/include/mach/nand.h     |   16 ++
+>  drivers/mtd/nand/Kconfig                      |    6 +
+>  drivers/mtd/nand/Makefile                     |    1 +
+>  drivers/mtd/nand/nomadik_nand.c               |  329 +++++++++++++++++++++++++
+>  8 files changed, 482 insertions(+), 3 deletions(-)
+>  create mode 100644 arch/arm/mach-nomadik/include/mach/fsmc.h
+>  create mode 100644 arch/arm/mach-nomadik/include/mach/nand.h
+>  create mode 100644 drivers/mtd/nand/nomadik_nand.c
+> 
+> diff --git a/arch/arm/configs/nhk15_defconfig b/arch/arm/configs/nhk15_defconfig
+> index cf11d79..1697efe 100644
+> --- a/arch/arm/configs/nhk15_defconfig
+> +++ b/arch/arm/configs/nhk15_defconfig
+> @@ -476,6 +476,7 @@ CONFIG_MTD_NAND_IDS=y
+>  # CONFIG_MTD_NAND_DISKONCHIP is not set
+>  # CONFIG_MTD_NAND_NANDSIM is not set
+>  # CONFIG_MTD_NAND_PLATFORM is not set
+> +CONFIG_MTD_NAND_NOMADIK=y
+>  # CONFIG_MTD_ONENAND is not set
+>  
+>  #
+> diff --git a/arch/arm/mach-nomadik/board-8815nhk.c b/arch/arm/mach-nomadik/board-8815nhk.c
+> index d6483bf..b7be6c2 100644
+> --- a/arch/arm/mach-nomadik/board-8815nhk.c
+> +++ b/arch/arm/mach-nomadik/board-8815nhk.c
+> @@ -19,12 +19,107 @@
+>  #include <linux/io.h>
+>  #include <linux/param.h>
+>  #include <asm/setup.h>
+> +#include <linux/mtd/mtd.h>
+> +#include <linux/mtd/nand.h>
+> +#include <linux/mtd/partitions.h>
+> +#include <asm/sizes.h>
+>  #include <asm/mach-types.h>
+>  #include <asm/mach/arch.h>
+>  #include <asm/mach/irq.h>
+>  
+>  #include <mach/hardware.h>
+>  #include <mach/setup.h>
+> +#include <mach/nand.h>
+> +#include <mach/fsmc.h>
+> +
+> +/* These adresses span 16MB, so use three individual pages */
+> +static struct resource nhk8815_nand_resources[] = {
+> +	{
+> +		.name = "nand_addr",
+> +		.start = NAND_IO_ADDR,
+> +		.end = NAND_IO_ADDR + 0xfff,
+> +		.flags = IORESOURCE_MEM,
+> +	}, {
+> +		.name = "nand_cmd",
+> +		.start = NAND_IO_CMD,
+> +		.end = NAND_IO_CMD + 0xfff,
+> +		.flags = IORESOURCE_MEM,
+> +	}, {
+> +		.name = "nand_data",
+> +		.start = NAND_IO_DATA,
+> +		.end = NAND_IO_DATA + 0xfff,
+> +		.flags = IORESOURCE_MEM,
+> +	}
+> +};
+> +
+> +static int nhk8815_nand_init(void)
+> +{
+> +	/* FSMC setup for nand chip select (8-bit nand in 8815NHK) */
+use macro to generate these FSMC will make ore readable and easier to update
+> +	writel(0x0000000E, FSMC_PCR(0));
+> +	writel(0x000D0A00, FSMC_PMEM(0));
+> +	writel(0x00100A00, FSMC_PATT(0));
+> +
+otherwise looks fine
 
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Russell King <linux@arm.linux.org.uk>
-Cc: David Woodhouse <dwmw2@infradead.org>
----
- drivers/mtd/maps/integrator-flash.c |  226 +++++++++++++++++++++++++----------
- 1 files changed, 164 insertions(+), 62 deletions(-)
-
-diff --git a/drivers/mtd/maps/integrator-flash.c b/drivers/mtd/maps/integrator-flash.c
-index c9681a3..b08a798 100644
---- a/drivers/mtd/maps/integrator-flash.c
-+++ b/drivers/mtd/maps/integrator-flash.c
-@@ -36,27 +36,33 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/map.h>
- #include <linux/mtd/partitions.h>
-+#include <linux/mtd/concat.h>
- 
- #include <asm/mach/flash.h>
- #include <mach/hardware.h>
- #include <asm/system.h>
- 
--#ifdef CONFIG_ARCH_P720T
--#define FLASH_BASE		(0x04000000)
--#define FLASH_SIZE		(64*1024*1024)
--#endif
-+#define SUBDEV_NAME_SIZE	(BUS_ID_SIZE + 2)
- 
--struct armflash_info {
-+struct armflash_subdev_info {
-+	char			name[SUBDEV_NAME_SIZE];
-+	struct mtd_info		*mtd;
-+	struct map_info		map;
- 	struct flash_platform_data *plat;
-+};
-+
-+struct armflash_info {
- 	struct resource		*res;
- 	struct mtd_partition	*parts;
- 	struct mtd_info		*mtd;
--	struct map_info		map;
-+	int			nr_subdev;
-+	struct armflash_subdev_info subdev[0];
- };
- 
- static void armflash_set_vpp(struct map_info *map, int on)
- {
--	struct armflash_info *info = container_of(map, struct armflash_info, map);
-+	struct armflash_subdev_info *info =
-+		container_of(map, struct armflash_subdev_info, map);
- 
- 	if (info->plat && info->plat->set_vpp)
- 		info->plat->set_vpp(on);
-@@ -64,32 +70,17 @@ static void armflash_set_vpp(struct map_info *map, int on)
- 
- static const char *probes[] = { "cmdlinepart", "RedBoot", "afs", NULL };
- 
--static int armflash_probe(struct platform_device *dev)
-+static int armflash_subdev_probe(struct armflash_subdev_info *subdev,
-+				 struct resource *res)
- {
--	struct flash_platform_data *plat = dev->dev.platform_data;
--	struct resource *res = dev->resource;
--	unsigned int size = res->end - res->start + 1;
--	struct armflash_info *info;
--	int err;
-+	struct flash_platform_data *plat = subdev->plat;
-+	resource_size_t size = res->end - res->start + 1;
- 	void __iomem *base;
-+	int err = 0;
- 
--	info = kzalloc(sizeof(struct armflash_info), GFP_KERNEL);
--	if (!info) {
--		err = -ENOMEM;
--		goto out;
--	}
--
--	info->plat = plat;
--	if (plat && plat->init) {
--		err = plat->init();
--		if (err)
--			goto no_resource;
--	}
--
--	info->res = request_mem_region(res->start, size, "armflash");
--	if (!info->res) {
-+	if (!request_mem_region(res->start, size, subdev->name)) {
- 		err = -EBUSY;
--		goto no_resource;
-+		goto out;
- 	}
- 
- 	base = ioremap(res->start, size);
-@@ -101,27 +92,132 @@ static int armflash_probe(struct platform_device *dev)
- 	/*
- 	 * look for CFI based flash parts fitted to this board
- 	 */
--	info->map.size		= size;
--	info->map.bankwidth	= plat->width;
--	info->map.phys		= res->start;
--	info->map.virt		= base;
--	info->map.name		= dev_name(&dev->dev);
--	info->map.set_vpp	= armflash_set_vpp;
-+	subdev->map.size	= size;
-+	subdev->map.bankwidth	= plat->width;
-+	subdev->map.phys	= res->start;
-+	subdev->map.virt	= base;
-+	subdev->map.name	= subdev->name;
-+	subdev->map.set_vpp	= armflash_set_vpp;
- 
--	simple_map_init(&info->map);
-+	simple_map_init(&subdev->map);
- 
- 	/*
- 	 * Also, the CFI layer automatically works out what size
- 	 * of chips we have, and does the necessary identification
- 	 * for us automatically.
- 	 */
--	info->mtd = do_map_probe(plat->map_name, &info->map);
--	if (!info->mtd) {
-+	subdev->mtd = do_map_probe(plat->map_name, &subdev->map);
-+	if (!subdev->mtd) {
- 		err = -ENXIO;
- 		goto no_device;
- 	}
- 
--	info->mtd->owner = THIS_MODULE;
-+	subdev->mtd->owner = THIS_MODULE;
-+
-+	/* Successful? */
-+	if (err == 0)
-+		return err;
-+
-+	if (subdev->mtd)
-+		map_destroy(subdev->mtd);
-+ no_device:
-+	iounmap(base);
-+ no_mem:
-+	release_mem_region(res->start, size);
-+ out:
-+	return err;
-+}
-+
-+static void armflash_subdev_remove(struct armflash_subdev_info *subdev)
-+{
-+	if (subdev->mtd)
-+		map_destroy(subdev->mtd);
-+	if (subdev->map.virt)
-+		iounmap(subdev->map.virt);
-+	release_mem_region(subdev->map.phys, subdev->map.size);
-+}
-+
-+static int armflash_probe(struct platform_device *dev)
-+{
-+	struct flash_platform_data *plat = dev->dev.platform_data;
-+	unsigned int size;
-+	struct armflash_info *info;
-+	int i, nr, err;
-+
-+	/* Count the number of devices */
-+	for (nr = 0; ; nr++)
-+		if (!platform_get_resource(dev, IORESOURCE_MEM, nr))
-+			break;
-+	if (nr == 0) {
-+		err = -ENODEV;
-+		goto out;
-+	}
-+
-+	size = sizeof(struct armflash_info) +
-+		sizeof(struct armflash_subdev_info) * nr;
-+	info = kzalloc(size, GFP_KERNEL);
-+	if (!info) {
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+
-+	if (plat && plat->init) {
-+		err = plat->init();
-+		if (err)
-+			goto no_resource;
-+	}
-+
-+	for (i = 0; i < nr; i++) {
-+		struct armflash_subdev_info *subdev = &info->subdev[i];
-+		struct resource *res;
-+
-+		res = platform_get_resource(dev, IORESOURCE_MEM, i);
-+		if (!res)
-+			break;
-+
-+		if (nr == 1)
-+			/* No MTD concatenation, just use the default name */
-+			snprintf(subdev->name, SUBDEV_NAME_SIZE, "%s",
-+				 dev_name(&dev->dev));
-+		else
-+			snprintf(subdev->name, SUBDEV_NAME_SIZE, "%s-%d",
-+				 dev_name(&dev->dev), i);
-+		subdev->plat = plat;
-+
-+		err = armflash_subdev_probe(subdev, res);
-+		if (err)
-+			break;
-+	}
-+	info->nr_subdev = i;
-+
-+	if (err)
-+		goto subdev_err;
-+
-+	if (info->nr_subdev == 1)
-+		info->mtd = info->subdev[0].mtd;
-+	else if (info->nr_subdev > 1) {
-+#ifdef CONFIG_MTD_CONCAT
-+		struct mtd_info *cdev[info->nr_subdev];
-+
-+		/*
-+		 * We detected multiple devices.  Concatenate them together.
-+		 */
-+		for (i = 0; i < info->nr_subdev; i++)
-+			cdev[i] = info->subdev[i].mtd;
-+
-+		info->mtd = mtd_concat_create(cdev, info->nr_subdev,
-+					      dev_name(&dev->dev));
-+		if (info->mtd == NULL)
-+			err = -ENXIO;
-+#else
-+		printk(KERN_ERR "armflash: multiple devices found but "
-+		       "MTD concat support disabled.\n");
-+		err = -ENXIO;
-+#endif
-+	}
-+
-+	if (err < 0)
-+		goto cleanup;
- 
- 	err = parse_mtd_partitions(info->mtd, probes, &info->parts, 0);
- 	if (err > 0) {
-@@ -131,28 +227,30 @@ static int armflash_probe(struct platform_device *dev)
- 			       "mtd partition registration failed: %d\n", err);
- 	}
- 
--	if (err == 0)
-+	if (err == 0) {
- 		platform_set_drvdata(dev, info);
-+		return err;
-+	}
- 
- 	/*
--	 * If we got an error, free all resources.
-+	 * We got an error, free all resources.
- 	 */
--	if (err < 0) {
--		if (info->mtd) {
--			del_mtd_partitions(info->mtd);
--			map_destroy(info->mtd);
--		}
--		kfree(info->parts);
--
-- no_device:
--		iounmap(base);
-- no_mem:
--		release_mem_region(res->start, size);
-- no_resource:
--		if (plat && plat->exit)
--			plat->exit();
--		kfree(info);
-+ cleanup:
-+	if (info->mtd) {
-+		del_mtd_partitions(info->mtd);
-+#ifdef CONFIG_MTD_CONCAT
-+		if (info->mtd != info->subdev[0].mtd)
-+			mtd_concat_destroy(info->mtd);
-+#endif
- 	}
-+	kfree(info->parts);
-+ subdev_err:
-+	for (i = info->nr_subdev - 1; i >= 0; i--)
-+		armflash_subdev_remove(&info->subdev[i]);
-+ no_resource:
-+	if (plat && plat->exit)
-+		plat->exit();
-+	kfree(info);
-  out:
- 	return err;
- }
-@@ -160,22 +258,26 @@ static int armflash_probe(struct platform_device *dev)
- static int armflash_remove(struct platform_device *dev)
- {
- 	struct armflash_info *info = platform_get_drvdata(dev);
-+	struct flash_platform_data *plat = dev->dev.platform_data;
-+	int i;
- 
- 	platform_set_drvdata(dev, NULL);
- 
- 	if (info) {
- 		if (info->mtd) {
- 			del_mtd_partitions(info->mtd);
--			map_destroy(info->mtd);
-+#ifdef CONFIG_MTD_CONCAT
-+			if (info->mtd != info->subdev[0].mtd)
-+				mtd_concat_destroy(info->mtd);
-+#endif
- 		}
- 		kfree(info->parts);
- 
--		iounmap(info->map.virt);
--		release_resource(info->res);
--		kfree(info->res);
-+		for (i = info->nr_subdev - 1; i >= 0; i--)
-+			armflash_subdev_remove(&info->subdev[i]);
- 
--		if (info->plat && info->plat->exit)
--			info->plat->exit();
-+		if (plat && plat->exit)
-+			plat->exit();
- 
- 		kfree(info);
- 	}
+Best Regards,
+J.
