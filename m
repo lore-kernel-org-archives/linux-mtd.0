@@ -1,19 +1,20 @@
-Received: from mail.gmx.net ([213.165.64.20])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LxReb-0001rR-GL
-	for linux-mtd@lists.infradead.org; Fri, 24 Apr 2009 20:05:53 +0000
-Date: Fri, 24 Apr 2009 22:05:39 +0200 (CEST)
-From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-To: =?utf-8?Q?Rog=C3=A9rio?= Brito <rbrito@ime.usp.br>
-Subject: Re: Regarding the linkstation defconfig
-In-Reply-To: <20090424065816.GA15525@ime.usp.br>
-Message-ID: <Pine.LNX.4.64.0904242158210.8309@axis700.grange>
-References: <20090424065816.GA15525@ime.usp.br>
+Received: from caramon.arm.linux.org.uk ([78.32.30.218])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LxRgF-00067l-Ea
+	for linux-mtd@lists.infradead.org; Fri, 24 Apr 2009 20:07:34 +0000
+Date: Fri, 24 Apr 2009 20:59:28 +0100
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: Catalin Marinas <catalin.marinas@arm.com>,
+	David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] Add armflash support for multiple blocks of flash
+Message-ID: <20090424195928.GI28748@n2100.arm.linux.org.uk>
+References: <20090423164110.31264.42300.stgit@pc1117.cambridge.arm.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Kumar Gala <galak@kernel.crashing.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20090423164110.31264.42300.stgit@pc1117.cambridge.arm.com>
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,68 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 24 Apr 2009, Rog=C3=A9rio Brito wrote:
+On Thu, Apr 23, 2009 at 05:41:10PM +0100, Catalin Marinas wrote:
+> This patch adds MTD concatenation support to integrator-flash.c for
+> platforms with more than one block of flash memory (e.g. RealView
+> PB11MPCore). The implementation is based on the sa1100-flash.c one.
+> 
+> Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Russell King <linux@arm.linux.org.uk>
 
-> Hi, Guennadi, Kumar & Co.
->=20
-> Guennadi, since you seem to be the one responsible for the
-> linkstation/kurobox in the kernel,
+Acked-by: Russell King <rmk+kernel@arm.linux.org.uk>
 
-That's not howI interpret my role in linkstation development / support.
-
-> I would like to ask you a few things
-> that I couldn't quite understand. Please, forgive my ignorance here
-> while I ask you some things:
->=20
-> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
->  01. why is anticipatory the default scheduler for linkstations when CFQ
->      is the default scheduler for the rest of the kernel?
->=20
->  02. since kuroboxes/linkstations are meant to store files, is there any
->      reason why they don't have support for large blk devs enabled by
->      default?
->=20
->  03. why is CONFIG_MIGRATION enabled in such low memory devices?
->=20
->  04. why is CONFIG_BLK_DEV_RAM enabled by default?
->=20
->  05. why is SCSI_LOWLEVEL enabled, if no device under that tree is used?
->=20
->  06. idem for CONFIG_NETDEV_10000.
->=20
->  07. idem for CONFIG_WIRELESS.
->=20
->  08. idem for CONFIG_HWMON.
->=20
->  09. idem for CONFIG_CRYPTO_HW.
->=20
->  10. any reason why CONFIG_VIDEO_OUTPUT_CONTROL is configured as a
->      module?
->=20
->  11. any reason why CIFS is not configured with extended attributes,
->      while both ext3 and nfs are?
->=20
->  12. wouldn't it be a good thing to enable CONFIG_PRINTK_TIME?
-> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-As I already replied to you earlier, I am not particularly interested in=20
-fine-tuning and optimisation of defconfigs. IMHO *_defconfigs are only=20
-examples of board configuration, that are known to build and work. The=20
-rest is up to the user / packager.
-
-> Perhaps similar remarks would apply to the other device that you
-> maintain? I forgot its name.
->=20
-> Again, please, forgive my ignorance here regarding the questions above.
-> I'm really looking for some clarification and to get things in shape
-> both on my systems and in the default kernel configuration, in general.
-
-Feel free to submit patches with reasoning to the powerpc ML and=20
-respective maintainer as per MAINTAINERS file.
-
-Thanks
-Guennadi
----
-Guennadi Liakhovetski, Ph.D.
-Freelance Open-Source Software Developer
-http://www.open-technology.de/
+David, please merge via the mtd tree, thanks.
