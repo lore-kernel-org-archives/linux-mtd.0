@@ -1,22 +1,18 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LxG1C-0004x6-7Q
-	for linux-mtd@lists.infradead.org; Fri, 24 Apr 2009 07:40:30 +0000
-Subject: RE: [resending][PATCH] [MTD] [NAND] nand_ecc.c: Bug fix in nand ecc
+	id 1LxGY2-00042o-SI
+	for linux-mtd@lists.infradead.org; Fri, 24 Apr 2009 08:14:22 +0000
+Subject: Re: [PATCH] [MTD] [NAND] Add OMAP2 / OMAP3 NAND driver
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: vimalsingh@ti.com
-In-Reply-To: <19F8576C6E063C45BE387C64729E739404321C6025@dbde02.ent.ti.com>
-References: <34437.192.168.10.89.1238579632.squirrel@dbdmail.itg.ti.com>
-	,<1238580110.20906.73.camel@localhost.localdomain>
-	,<19F8576C6E063C45BE387C64729E73940427A869F3@dbde02.ent.ti.com>
-	<19F8576C6E063C45BE387C64729E739404321C6025@dbde02.ent.ti.com>
+To: vimal singh <vimalsingh@ti.com>
+In-Reply-To: <49321.192.168.10.89.1239008519.squirrel@dbdmail.itg.ti.com>
+References: <49321.192.168.10.89.1239008519.squirrel@dbdmail.itg.ti.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 24 Apr 2009 10:39:57 +0300
-Message-Id: <1240558797.22645.1.camel@localhost.localdomain>
+Date: Fri, 24 Apr 2009 11:13:34 +0300
+Message-Id: <1240560814.22645.21.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Frans Meulenbroeks <fransmeulenbroeks@gmail.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,31 +23,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Few comments of stylistic nature are below.
 
-On Fri, 2009-04-24 at 12:02 +0530, Singh, Vimal wrote:
-> It looks like Frans is not active to this list, now a days...
-> so can some one else review this patch:
-> http://lists.infradead.org/pipermail/linux-mtd/2009-April/025094.html
+On Mon, 2009-04-06 at 14:31 +0530, vimal singh wrote:
+> +/*
+> + * drivers/mtd/nand/omap2.c
+Would it be possible to remove the above?
+
+> +#define GPMC_IRQ_STATUS		0x18
+> +#define GPMC_ECC_CONFIG		0x1F4
+> +#define GPMC_ECC_CONTROL	0x1F8
+> +#define GPMC_ECC_SIZE_CONFIG	0x1FC
+> +#define GPMC_ECC1_RESULT	0x200
+> +
+> +#define	DRIVER_NAME	"omap2-nand"
+Are you going to change driver name often? If not, do not
+define this.
+
+> +#define	NAND_IO_SIZE	SZ_4K
+Confusing variable, can you please add a comment?
+
+> +
+> +#define	NAND_WP_ON	1
+> +#define	NAND_WP_OFF	0
+I think these defines should be killed.
+
+> +#define TF(value)	(value ? 1 : 0)\
+Could this define be killed please?
 
 
-It did not apply. Please, send patches which can be applied.
+> +
+> +/*
+> + * omap_nand_wp - This function enable or disable the Write Protect feature on
+> + * NAND device
+> + * @mtd: MTD device structure
+> + * @mode: WP ON/OFF
+> + */
 
-Please, fix you e-mail. Is your address really
-"IMCEAEX-_O=TI_OU=BD_CN=RECIPIENTS_CN=X0094262@dlee86.itg.ti.com" ?
+Kerneldoc comments should start with /**
 
-But I fixed both - your patch and your e-mail. Please, check your other
-patches and re-send them if they are corrupted. Please, take a look at
-Documentation/SubmittingPatches
+> +/*
+> + * hardware specific access to control-lines
+> + * NOTE: boards may use different bits for these!!
+> + *
+> + * ctrl:
+> + * NAND_NCE: bit 0 - don't care
+> + * NAND_CLE: bit 1 -> Command Latch
+> + * NAND_ALE: bit 2 -> Address Latch
+> + */
 
-I've amended your patch a little. Instead of using 'uint32_t', I
-made it to be 'int'. I do not see any reason to limit the compiler
-and CPU by 32 bits. I do not appreciate unreasonable usage of these
-'uint32_t' and similar types, and I think 'int' is perfectly fine
-in your case. Could you please verify this? It is here:
-http://git.infradead.org/users/dedekind/l2-mtd-2.6.git?a=commit;h=e3b8cec094d12aabbfd77c462b1932537e1c239e
+If you try to use kerneldoc comments, use them everywhere,
+be consistent please.
 
-Thanks!
+Documentation/kernel-doc-nano-HOWTO.txt
+
+Glance at all comments.
+
+> +static int omap_verify_buf(struct mtd_info *mtd, const u_char * buf, int len)
+> +{
+> +	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
+> +							mtd);
+It is less ugly to do:
+
+struct omap_nand_info *info;
+
+info = container_of(mtd, struct omap_nand_info, mtd);
+
+> +	u16 *p = (u16 *) buf;
+> +
+> +	len >>= 1;
+> +
+> +	while (len--) {
+> +
+> +		if (*p++ != cpu_to_le16(readw(info->nand.IO_ADDR_R)))
+> +			return -EFAULT;
+> +	}
+> +
+> +	return 0;
+> +}
+Very sparse code, too many blank lines...
 
 -- 
 Best regards,
