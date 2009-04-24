@@ -1,13 +1,20 @@
-Message-ID: <39788.192.168.10.89.1240571078.squirrel@dbdmail.itg.ti.com>
-Date: Fri, 24 Apr 2009 16:34:38 +0530 (IST)
-Subject: Re: [PATCH] [MTD] [NAND] Add OMAP2 / OMAP3 NAND driver
-From: "vimal singh" <vimalsingh@ti.com>
-To: dedekind@infradead.org
+Received: from mail2.shareable.org ([80.68.89.115])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LxNRE-0004tc-BY
+	for linux-mtd@lists.infradead.org; Fri, 24 Apr 2009 15:35:47 +0000
+Date: Fri, 24 Apr 2009 16:35:35 +0100
+From: Jamie Lokier <jamie@shareable.org>
+To: Miles Nordin <carton@Ivy.NET>
+Subject: Re: mtdblock caching and syncing
+Message-ID: <20090424153535.GH9307@shareable.org>
+References: <20090409141556.GG15952@nortel.com>
+	<20090409145100.GB7538@yoda.jdub.homelinux.org>
+	<20090409160247.GI15952@nortel.com>
+	<oqws9bs022.fsf@castrovalva.Ivy.NET>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-References: 
-In-Reply-To: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <oqws9bs022.fsf@castrovalva.Ivy.NET>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -18,101 +25,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 24, 2009 at 1:43 PM, Artem Bityutskiy <dedekind@infradead.org> wrote:
-> Few comments of stylistic nature are below.
-> On Mon, 2009-04-06 at 14:31 +0530, vimal singh wrote:
->> +/*
->> + * drivers/mtd/nand/omap2.c
-> Would it be possible to remove the above?
-Sure, I'll do this.
+Miles Nordin wrote:
+> >>>>> "dg" == Doug Graham <dgraham@nortel.com> writes:
+> 
+>     dg> I would assume that [hard drives] don't leave dirty data in
+>     dg> their cache for an unbounded period of time.
+> 
+> ZFS always, ext3 mounted with barrier=1 (or by default in SLES only)
+> and only when not using LVM2, and HFS+ on Mac OS X when using their
+> bullshit fcntl F_FULLSYNC API, all at least claim to issue SYNC CACHE
+> commands to the drives and wait for the drive to write to platter.
+> It's also possible for people who care to turn off the write cache in
+> their drives.  For drives connected to RAID controllers that have a
+> battery-backed write cache, I've hard of database-oriented sysadmins
+> who actually do this as a best-practice not a freak experiment---in
+> general, at least for SCSI drives, DBA's are likely to be aware of and
+> control their drives' write cache settings.  There is some FUD about
+> drives existing that ignore the SYNC CACHE command (but not SCSI
+> drives), but so far the people I've seen spreading this FUD refuse to
+> name the specific drives, so they are likely to be really old drives,
+> or even just made-up excuses from developers of buggy filesystems and
+> block layers.
 
->> +#define GPMC_IRQ_STATUS              0x18
->> +#define GPMC_ECC_CONFIG              0x1F4
->> +#define GPMC_ECC_CONTROL     0x1F8
->> +#define GPMC_ECC_SIZE_CONFIG 0x1FC
->> +#define GPMC_ECC1_RESULT     0x200
->> +
->> +#define      DRIVER_NAME     "omap2-nand"
-> Are you going to change driver name often? If not, do not
-> define this.
-This seems ok to me. Removing this macro has no benefit. But have
-to replace 'DRIVER_NAME' with '"omap2-nand"' 2-3 places.
+Yes, that is all true.
 
->> +#define      NAND_IO_SIZE    SZ_4K
-> Confusing variable, can you please add a comment?
-This is the size which will be IO remapped for the device.
-I'll add the comment in code.
+> Anyway, the point is, mtdblock is behind the curve here, yes.
 
->> +
->> +#define      NAND_WP_ON      1
->> +#define      NAND_WP_OFF     0
-> I think these defines should be killed.
-Since 'NAND_WP_ON' is not being used in code, I can remove this macro. But
-'NAND_WP_OFF' is used and it makes code more readable. I can still remove  this
-if really required.
+> and for hard drive-backed filesystems the situation will probably
+> get even better soon.
 
+There's a lot of discussion about fsync and barriers recently, so yes.
+Same for SSDs.
 
->> +#define TF(value)    (value ? 1 : 0)\
-> Could this define be killed please?
-Humm.. This is being used in so many places. Lets it be there.
-Anyway, I have planes to change this HW ECC correction method, where I'll
-remove all these macros.
+> And finally, devices which use FLASH tend to get their cords yanked
+> more often so IMHO it matters.
 
->> +
->> +/*
->> + * omap_nand_wp - This function enable or disable the Write Protect feature on
->> + * NAND device
->> + * @mtd: MTD device structure
->> + * @mode: WP ON/OFF
->> + */
-> Kerneldoc comments should start with /**
-I'll correct this.
+That is the single most important reason!
 
->> +/*
->> + * hardware specific access to control-lines
->> + * NOTE: boards may use different bits for these!!
->> + *
->> + * ctrl:
->> + * NAND_NCE: bit 0 - don't care
->> + * NAND_CLE: bit 1 -> Command Latch
->> + * NAND_ALE: bit 2 -> Address Latch
->> + */
-> If you try to use kerneldoc comments, use them everywhere,
-> be consistent please.
-> Documentation/kernel-doc-nano-HOWTO.txt
-> Glance at all comments.
-I'll correct these.
-
->> +static int omap_verify_buf(struct mtd_info *mtd, const u_char * buf, int
-len)
->> +{
->> +     struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
-+                                                     mtd);
-> It is less ugly to do:
-> struct omap_nand_info *info;
-> info = container_of(mtd, struct omap_nand_info, mtd);
-I do not think it is too ugly. Rather doing this will just increase number of
-lines of code.
-
->> +     u16 *p = (u16 *) buf;
->> +
->> +     len >>= 1;
->> +
->> +     while (len--) {
->> +
->> +             if (*p++ != cpu_to_le16(readw(info->nand.IO_ADDR_R)))
->> +                      return -EFAULT;
->> +     }
->> +
->> +     return 0;
->> +}
-> Very sparse code, too many blank lines...
-OK, I'll remove extra blank lines.
-
----
-Regards,
-\/ | |\/| /-\ |_
-
-____      __o
-------   -\<,
------  ( )/ ( )
+-- Jamie
