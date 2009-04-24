@@ -1,20 +1,21 @@
-Received: from caramon.arm.linux.org.uk ([78.32.30.218])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LxRgF-00067l-Ea
-	for linux-mtd@lists.infradead.org; Fri, 24 Apr 2009 20:07:34 +0000
-Date: Fri, 24 Apr 2009 20:59:28 +0100
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-To: Catalin Marinas <catalin.marinas@arm.com>,
-	David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] Add armflash support for multiple blocks of flash
-Message-ID: <20090424195928.GI28748@n2100.arm.linux.org.uk>
-References: <20090423164110.31264.42300.stgit@pc1117.cambridge.arm.com>
+Received: from 30.mail-out.ovh.net ([213.186.62.213])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LxS0V-00065N-BT
+	for linux-mtd@lists.infradead.org; Fri, 24 Apr 2009 20:28:29 +0000
+Date: Fri, 24 Apr 2009 22:27:36 +0200
+From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+To: Alessandro Rubini <rubini-list@gnudd.com>,
+	linux-arm-kernel@lists.arm.linux.org.uk,
+	andrea.gallo@stericsson.com, STEricsson_nomadik_linux@list.st.com,
+	linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 5/6] OneNand driver for Nomadik 8815 SoC (on NHK8815 board)
+Message-ID: <20090424202736.GI2953@game.jcrosoft.org>
+References: <cover.1240384958.git.rubini@gnudd.com>
+	<e06507b00cbf2bcb35e80dec547f8ef91c67158b.1240384958.git.rubini@gnudd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20090423164110.31264.42300.stgit@pc1117.cambridge.arm.com>
-Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+In-Reply-To: <e06507b00cbf2bcb35e80dec547f8ef91c67158b.1240384958.git.rubini@gnudd.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,14 +25,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 23, 2009 at 05:41:10PM +0100, Catalin Marinas wrote:
-> This patch adds MTD concatenation support to integrator-flash.c for
-> platforms with more than one block of flash memory (e.g. RealView
-> PB11MPCore). The implementation is based on the sa1100-flash.c one.
+On 09:41 Wed 22 Apr     , Alessandro Rubini wrote:
+> From: Alessandro Rubini <rubini@unipv.it>
 > 
-> Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Russell King <linux@arm.linux.org.uk>
+> Add the platform_device and the configuration used to activate
+> the OneNand device found on the NHK8815 evaluation kit.
+it will be nice to known on which one you boot at runtime
+> 
+> Signed-off-by: Alessandro Rubini <rubini@unipv.it>
+> Acked-by: Andrea Gallo <andrea.gallo@stericsson.com>
+> ---
+> 
+> This and one-nand are Cc: to the mtd list, the other patches
+> have been sent only to linux-arm-kernel.
+> 
+> +	},
+> +};
+> +
+> +static struct platform_device nhk8815_onenand_device = {
+> +	.name		= "onenand",
+> +	.id		= -1,
+> +	.dev		= {
+> +		.platform_data	= &nhk8815_onenand_data,
+> +	},
+> +	.resource	= nhk8815_onenand_resource,
+> +	.num_resources	= ARRAY_SIZE(nhk8815_onenand_resource),
+> +};
+> +
+> +static void __init nhk8815_onenand_init(void)
+> +{
+> +#ifdef CONFIG_ONENAND
+> +       /* Set up SMCS0 for OneNand */
+> +       writel(0x000030db, FSMC_BCR0);
+> +       writel(0x02100551, FSMC_BTR0);
+same as nand it will be better, more readable and easier to maintain to use macro
+to generate these SMCSx config instead hard code value
 
-Acked-by: Russell King <rmk+kernel@arm.linux.org.uk>
+otherwise looks fine
 
-David, please merge via the mtd tree, thanks.
+Best Regards,
+J.
