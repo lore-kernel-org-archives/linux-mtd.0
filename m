@@ -1,19 +1,34 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.flash.net.br ([201.46.240.48] helo=smtp.gru.flash.tv.br)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LxcPb-0006xk-Rw
-	for linux-mtd@lists.infradead.org; Sat, 25 Apr 2009 07:35:07 +0000
-Subject: Re: [PATCH, UBI] ubi notifications
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: dpervushin@embeddedalley.com
-In-Reply-To: <1240609183.32546.19.camel@hp.diimka.lan>
-References: <1240609183.32546.19.camel@hp.diimka.lan>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 25 Apr 2009 10:34:44 +0300
-Message-Id: <1240644884.22645.90.camel@localhost.localdomain>
-Mime-Version: 1.0
+	id 1LxU7W-0003Xx-QI
+	for linux-mtd@lists.infradead.org; Fri, 24 Apr 2009 22:43:53 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by smtp.gru.flash.tv.br (Postfix) with ESMTP id 501541E6F7F
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 24 Apr 2009 19:34:19 -0300 (BRT)
+Received: from smtp.gru.flash.tv.br ([127.0.0.1])
+	by localhost (smtp.gru.flash.tv.br [127.0.0.1]) (amavisd-new,
+	port 10024)
+	with ESMTP id jfbWrXocqaZv for <linux-mtd@lists.infradead.org>;
+	Fri, 24 Apr 2009 19:34:14 -0300 (BRT)
+Received: from chagas.nectar.ath.cx (unknown [187.22.248.170])
+	by smtp.gru.flash.tv.br (Postfix) with ESMTPA id AD55B1E6F53
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 24 Apr 2009 19:34:09 -0300 (BRT)
+Date: Fri, 24 Apr 2009 19:33:55 -0300
+From: =?utf-8?Q?Rog=C3=A9rio?= Brito <rbrito@ime.usp.br>
+To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Subject: [PATCH] powerpc: minimizing the configuration of linkstation_defconfig
+Message-ID: <20090424223355.GB7858@ime.usp.br>
+References: <20090424065816.GA15525@ime.usp.br>
+	<Pine.LNX.4.64.0904242158210.8309@axis700.grange>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+In-Reply-To: <Pine.LNX.4.64.0904242158210.8309@axis700.grange>
+Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	Kumar Gala <galak@kernel.crashing.org>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,518 +38,728 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2009-04-25 at 01:39 +0400, dmitry pervushin wrote:
-> Hi all,
-> 
-> UBI volume notifications is intended to create the API to get clients
-> notified about volume creation/deletion, renaming and changing(actually,
-> resizing). A client can subscribe to these notifications using
-> ubi_volume_register and cancel the subsription using
-> ubi_volume_unregister. When UBI volume change occurs, the atomic
-> notifier will be called. Client also can request "added" event on all
-> volumes that existed before client subscribed to the notifications.
-> 
-> Using notifications instead of calling functions ubi_gluebi_xxx allows
-> MTD emulation layer to be more flexible; say, now is it possible to
-> build it as a module and load/unload it on demand.
-> 
-> Thanks Artem Bityutskiy for reviewing the patch and many very valuable
-> comments.
-> 
-> Signed-off-by: dmitry pervushin <dpervushin@embeddedalley.com>
+This patch addresses the following issues:
 
-Hi,
 
-thanks for the patch. Is it possible to submit it together
-with a user? E.g., AFAIR you separated out gluebi, could
-this be also submitted? I would be much happier to see a
-new interface functions + a user, not just the interface
-functions alone.
+01. makes CFQ the default scheduler, to be in line with the rest of the kernel.
 
-I've inlined a slightly midified version of your patch
-for you, because I found it easier to fix minor things
-rather than request you about this.
+02. since linkstations are meant to store files, enable large blk devices.
 
-I've changed the following:
+03. disable CONFIG_MIGRATION in in such low memory devices.
 
-1. Moved definitions in include/linux/mtd/ubi.h to different
-   positions.
-2. Removed '/**' for enums, because last time I tried kerneldoc
-   it did not accept enums.
-3. Made your ubi_volume_notification_type enums anonymous, because named
-   enums make few sense in C - there is no strict type checking for them
-   anyway, and they just hurt readability.
-4. Renamed "t" to "ntype".
-5. Removed:
-       dbg_gen("%s: %s volume id %d on device %d\n",
-                i       __func__,
-                       ubi_notification(t),
-                       volume_id,
-                       ubi_num);
-   If you want it, look how dbg_gen() is defined, and add proper print.
+04. disable CONFIG_BLK_DEV_RAM.
 
-6. Since the print was the only user of 'ubi_notification()', I killed
-   that too. I did not like it because it is inline, with static
-   local variable as well. If you want it, please re-add it. Make it
-   non-inline, make it debug-only, because it is used only from
-   gen_dbg().
+05. disable CONFIG_SCSI_LOWLEVEL, as no device under that tree is used.
 
-Some other minor changes in comments.
+06. idem for CONFIG_NETDEV_10000.
 
-Anyway, I am going to be unavailable next week. Please, try to send
-both API add and the user. Also, there is a note below.
+07. idem for CONFIG_WIRELESS.
 
-> ---
->  drivers/mtd/ubi/build.c |   73 ++++++++++++++++++++++++++++++++++++++++++++++--
->  drivers/mtd/ubi/cdev.c  |    2 +
->  drivers/mtd/ubi/kapi.c  |   46 ++++++++++++++++++++++++++++++
->  drivers/mtd/ubi/ubi.h   |   37 ++++++++++++++++++++++++
->  drivers/mtd/ubi/vmt.c   |    7 ++++
->  include/linux/mtd/ubi.h |   36 +++++++++++++++++++++++
->  6 files changed, 198 insertions(+), 3 deletions(-)
-> 
-> Index: linux-2.6/drivers/mtd/ubi/build.c
-> ===================================================================
-> --- linux-2.6.orig/drivers/mtd/ubi/build.c
-> +++ linux-2.6/drivers/mtd/ubi/build.c
-> @@ -122,6 +122,69 @@ static struct device_attribute dev_mtd_n
->  	__ATTR(mtd_num, S_IRUGO, dev_attribute_show, NULL);
->  
->  /**
-> + * ubi_enum_volumes - enumerate volumes on device and send notification.
-> + * @t: notification type to send
-> + * @ubi: UBI device
-> + * @nb: notifier to be called, or %NULL to send to system-wide notification
-> + *
-> + * Walk on the list of volumes that are created on device @ubi and send the
-> + * notification specified by @t.
-> + *
-> + * Returns number of volumes processed.
-> + */
-> +int ubi_enum_volumes(enum ubi_volume_notification_type t,
-> +		     struct ubi_device *ubi, struct notifier_block *nb)
-> +{
-> +	int i, count = 0;
-> +	struct ubi_volume_notification nt;
-> +
-> +	nt.ubi_num = ubi->ubi_num;
-> +
-> +	spin_lock(&ubi->volumes_lock);
-> +	for (i = 0; i < ubi->vtbl_slots; i++) {
-> +		if (!ubi->volumes[i])
-> +			continue;
-> +		nt.vol_id = ubi->volumes[i]->vol_id;
-> +		spin_unlock(&ubi->volumes_lock);
+08. idem for CONFIG_HWMON.
 
-What prevents the volume to be removed at this point? Shouldn't
-you get a volume reference? Like in 'ubi_open_volume()'? Or
-like in 'vol_attribute_show()' ?
+09. idem for CONFIG_CRYPTO_HW.
 
-        get_device(&vol->dev);
-        vol->ref_count += 1;
+10. disable CONFIG_VIDEO_OUTPUT_CONTROL.
 
-> +		if (nb)
-> +			nb->notifier_call(nb, t, &nt);
-> +		else
-> +			blocking_notifier_call_chain(&ubi_notifiers,
-> +						     t, &nt);
-> +		count++;
-And of course then release the reference here...
-> +		spin_lock(&ubi->volumes_lock);
-> +	}
-> +	spin_unlock(&ubi->volumes_lock);
-> +	return count;
-> +}
+11. keep consistency and disable extended attributes in CIFS, ext3, and NFS.
 
-> +int ubi_enum_all_volumes(enum ubi_volume_notification_type t,
-> +			 struct notifier_block *nb)
-> +{
-> +	int n;
-> +	struct ubi_device *ubi;
-> +	int count = 0;
-> +
-> +	spin_lock(&ubi_devices_lock);
-> +	for (n = 0; n < UBI_MAX_DEVICES; n++) {
-> +		ubi = ubi_devices[n];
-> +		spin_unlock(&ubi_devices_lock);
-You got the pointer. You dropped the lock. Now you are
-preempted and whole UBI device is removed (e.g., by
-'ubi_detach_mtd_dev()' ioctl). Then what happens?
+12. enable CONFIG_PRINTK_TIME.
 
-Shouldn't you take a reference to the device before releasing
-the lock? Something similar to what 'ubi_get_device()' does:
+Signed-off-by: Rogério Brito <rbrito@ime.usp.br>
 
-ubi->ref_count += 1;
-get_device(&ubi->dev);
-
-> +		if (ubi)
-> +			count += ubi_enum_volumes(t, ubi, nb);
-> +		spin_lock(&ubi_devices_lock);
-And release the reference here...
-
-> +	}
-> +	spin_unlock(&ubi_devices_lock);
-> +	return count;
-> +}
-
-Your patch with my nicifications. I did not have time to look
-nicify everything, though, just some stuff.
-
-From: Dmitry Pervushin <dpervushin@embeddedalley.com>
-Subject: [PATCH] UBI: add notifiers notifications
-
-UBI volume notifications are intended to create the API to get clients
-notified about volume creation/deletion, renaming and changing(actually,
-resizing). A client can subscribe to these notifications using
-ubi_volume_register and cancel the subscription using
-ubi_volume_unregister. When UBI volume change occurs, the atomic
-notifier will be called. Client also can request "added" event on all
-volumes that existed before client subscribed to the notifications.
-
-Using notifications instead of calling functions ubi_gluebi_xxx allows
-MTD emulation layer to be more flexible; say, now is it possible to
-build it as a module and load/unload it on demand.
-
-Thanks Artem Bityutskiy for reviewing the patch and many very valuable
-comments.
-
-Signed-off-by: Dmitry Pervushin <dpervushin@embeddedalley.com>
 ---
- drivers/mtd/ubi/build.c |   71 +++++++++++++++++++++++++++++++++++++++++++++--
- drivers/mtd/ubi/cdev.c  |    2 +
- drivers/mtd/ubi/kapi.c  |   46 ++++++++++++++++++++++++++++++
- drivers/mtd/ubi/ubi.h   |   24 ++++++++++++++++
- drivers/mtd/ubi/vmt.c   |    7 ++++
- include/linux/mtd/ubi.h |   36 ++++++++++++++++++++++++
- 6 files changed, 183 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 4048db8..6607204 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -122,6 +122,67 @@ static struct device_attribute dev_mtd_num =
- 	__ATTR(mtd_num, S_IRUGO, dev_attribute_show, NULL);
+Dear Kumar, please, apply this one.
+
+I have another patch regarding one regression regarding MTD &
+PHYSMAP_COMPAT that I plan to send on top of this one.
+
+Thanks.
+
+--- a/arch/powerpc/configs/linkstation_defconfig	2009-04-22 21:43:45.000000000 -0300
++++ b/arch/powerpc/configs/linkstation_defconfig	2009-04-24 18:07:12.000000000 -0300
+@@ -1,7 +1,7 @@
+ #
+ # Automatically generated make config: don't edit
+-# Linux kernel version: 2.6.29-rc6
+-# Fri Mar  6 00:07:38 2009
++# Linux kernel version: 2.6.30-rc3
++# Fri Apr 24 18:07:12 2009
+ #
+ # CONFIG_PPC64 is not set
  
- /**
-+ * ubi_enum_volumes - "enumerate" volumes.
-+ * @ntype: notification type to send (%UBI_VOLUME_ADDED, etc)
-+ * @ubi: UBI device description object
-+ * @nb: notifier to be called or %NULL to send to system-wide notification
-+ *
-+ * This function walks all volumes of UBI device @ubi and sends the
-+ * notification specified by @ntype. Returns number of sent notifications.
-+ */
-+int ubi_enum_volumes(int ntype, struct ubi_device *ubi,
-+		     struct notifier_block *nb)
-+{
-+	struct ubi_volume_notification nt;
-+	int i, count = 0;
+@@ -14,6 +14,7 @@ CONFIG_6xx=y
+ # CONFIG_40x is not set
+ # CONFIG_44x is not set
+ # CONFIG_E200 is not set
++CONFIG_PPC_BOOK3S=y
+ CONFIG_PPC_FPU=y
+ # CONFIG_ALTIVEC is not set
+ CONFIG_PPC_STD_MMU=y
+@@ -54,6 +55,7 @@ CONFIG_GENERIC_BUG=y
+ CONFIG_DEFAULT_UIMAGE=y
+ # CONFIG_PPC_DCR_NATIVE is not set
+ # CONFIG_PPC_DCR_MMIO is not set
++CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC=y
+ CONFIG_DEFCONFIG_LIST="/lib/modules/$UNAME_RELEASE/.config"
+ 
+ #
+@@ -68,6 +70,7 @@ CONFIG_SWAP=y
+ CONFIG_SYSVIPC=y
+ CONFIG_SYSVIPC_SYSCTL=y
+ CONFIG_POSIX_MQUEUE=y
++CONFIG_POSIX_MQUEUE_SYSCTL=y
+ # CONFIG_BSD_PROCESS_ACCT is not set
+ # CONFIG_TASKSTATS is not set
+ # CONFIG_AUDIT is not set
+@@ -100,21 +103,24 @@ CONFIG_NAMESPACES=y
+ # CONFIG_NET_NS is not set
+ CONFIG_BLK_DEV_INITRD=y
+ CONFIG_INITRAMFS_SOURCE=""
++CONFIG_RD_GZIP=y
++CONFIG_RD_BZIP2=y
++CONFIG_RD_LZMA=y
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_SYSCTL=y
++CONFIG_ANON_INODES=y
+ # CONFIG_EMBEDDED is not set
+ CONFIG_SYSCTL_SYSCALL=y
+ CONFIG_KALLSYMS=y
+ # CONFIG_KALLSYMS_ALL is not set
+ # CONFIG_KALLSYMS_EXTRA_PASS is not set
++# CONFIG_STRIP_ASM_SYMS is not set
+ CONFIG_HOTPLUG=y
+ CONFIG_PRINTK=y
+ CONFIG_BUG=y
+ CONFIG_ELF_CORE=y
+-# CONFIG_COMPAT_BRK is not set
+ CONFIG_BASE_FULL=y
+ CONFIG_FUTEX=y
+-CONFIG_ANON_INODES=y
+ CONFIG_EPOLL=y
+ CONFIG_SIGNALFD=y
+ CONFIG_TIMERFD=y
+@@ -124,10 +130,12 @@ CONFIG_AIO=y
+ CONFIG_VM_EVENT_COUNTERS=y
+ CONFIG_PCI_QUIRKS=y
+ CONFIG_SLUB_DEBUG=y
++# CONFIG_COMPAT_BRK is not set
+ # CONFIG_SLAB is not set
+ CONFIG_SLUB=y
+ # CONFIG_SLOB is not set
+ # CONFIG_PROFILING is not set
++# CONFIG_MARKERS is not set
+ CONFIG_HAVE_OPROFILE=y
+ # CONFIG_KPROBES is not set
+ CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS=y
+@@ -135,6 +143,7 @@ CONFIG_HAVE_IOREMAP_PROT=y
+ CONFIG_HAVE_KPROBES=y
+ CONFIG_HAVE_KRETPROBES=y
+ CONFIG_HAVE_ARCH_TRACEHOOK=y
++# CONFIG_SLOW_WORK is not set
+ # CONFIG_HAVE_GENERIC_DMA_COHERENT is not set
+ CONFIG_SLABINFO=y
+ CONFIG_RT_MUTEXES=y
+@@ -146,8 +155,7 @@ CONFIG_MODULE_UNLOAD=y
+ # CONFIG_MODVERSIONS is not set
+ # CONFIG_MODULE_SRCVERSION_ALL is not set
+ CONFIG_BLOCK=y
+-# CONFIG_LBD is not set
+-# CONFIG_BLK_DEV_IO_TRACE is not set
++CONFIG_LBD=y
+ # CONFIG_BLK_DEV_BSG is not set
+ # CONFIG_BLK_DEV_INTEGRITY is not set
+ 
+@@ -158,18 +166,16 @@ CONFIG_IOSCHED_NOOP=y
+ CONFIG_IOSCHED_AS=y
+ CONFIG_IOSCHED_DEADLINE=y
+ CONFIG_IOSCHED_CFQ=y
+-CONFIG_DEFAULT_AS=y
++# CONFIG_DEFAULT_AS is not set
+ # CONFIG_DEFAULT_DEADLINE is not set
+-# CONFIG_DEFAULT_CFQ is not set
++CONFIG_DEFAULT_CFQ=y
+ # CONFIG_DEFAULT_NOOP is not set
+-CONFIG_DEFAULT_IOSCHED="anticipatory"
++CONFIG_DEFAULT_IOSCHED="cfq"
+ # CONFIG_FREEZER is not set
+ 
+ #
+ # Platform support
+ #
+-CONFIG_PPC_MULTIPLATFORM=y
+-CONFIG_CLASSIC32=y
+ # CONFIG_PPC_CHRP is not set
+ # CONFIG_MPC5121_ADS is not set
+ # CONFIG_MPC5121_GENERIC is not set
+@@ -191,6 +197,8 @@ CONFIG_LINKSTATION=y
+ CONFIG_MPC10X_BRIDGE=y
+ CONFIG_MPC10X_OPENPIC=y
+ # CONFIG_MPC10X_STORE_GATHERING is not set
++# CONFIG_AMIGAONE is not set
++CONFIG_PPC_OF_BOOT_TRAMPOLINE=y
+ # CONFIG_IPIC is not set
+ CONFIG_MPIC=y
+ # CONFIG_MPIC_WEIRD is not set
+@@ -244,15 +252,18 @@ CONFIG_FLATMEM=y
+ CONFIG_FLAT_NODE_MEM_MAP=y
+ CONFIG_PAGEFLAGS_EXTENDED=y
+ CONFIG_SPLIT_PTLOCK_CPUS=4
+-CONFIG_MIGRATION=y
++# CONFIG_MIGRATION is not set
+ # CONFIG_PHYS_ADDR_T_64BIT is not set
+ CONFIG_ZONE_DMA_FLAG=1
+ CONFIG_BOUNCE=y
+ CONFIG_VIRT_TO_BUS=y
+ CONFIG_UNEVICTABLE_LRU=y
++CONFIG_HAVE_MLOCK=y
++CONFIG_HAVE_MLOCKED_PAGE_BIT=y
+ CONFIG_PPC_4K_PAGES=y
+ # CONFIG_PPC_16K_PAGES is not set
+ # CONFIG_PPC_64K_PAGES is not set
++# CONFIG_PPC_256K_PAGES is not set
+ CONFIG_FORCE_MAX_ZONEORDER=11
+ CONFIG_PROC_DEVICETREE=y
+ # CONFIG_CMDLINE_BOOL is not set
+@@ -277,6 +288,7 @@ CONFIG_ARCH_SUPPORTS_MSI=y
+ # CONFIG_PCI_LEGACY is not set
+ # CONFIG_PCI_DEBUG is not set
+ # CONFIG_PCI_STUB is not set
++# CONFIG_PCI_IOV is not set
+ # CONFIG_PCCARD is not set
+ # CONFIG_HOTPLUG_PCI is not set
+ # CONFIG_HAS_RAPIDIO is not set
+@@ -299,7 +311,6 @@ CONFIG_NET=y
+ #
+ # Networking options
+ #
+-CONFIG_COMPAT_NET_DEV_OPS=y
+ CONFIG_PACKET=y
+ CONFIG_PACKET_MMAP=y
+ CONFIG_UNIX=y
+@@ -371,6 +382,7 @@ CONFIG_NETFILTER_XTABLES=m
+ # CONFIG_NETFILTER_XT_TARGET_CLASSIFY is not set
+ # CONFIG_NETFILTER_XT_TARGET_CONNMARK is not set
+ # CONFIG_NETFILTER_XT_TARGET_DSCP is not set
++CONFIG_NETFILTER_XT_TARGET_HL=m
+ # CONFIG_NETFILTER_XT_TARGET_MARK is not set
+ # CONFIG_NETFILTER_XT_TARGET_NFLOG is not set
+ # CONFIG_NETFILTER_XT_TARGET_NFQUEUE is not set
+@@ -379,6 +391,7 @@ CONFIG_NETFILTER_XTABLES=m
+ # CONFIG_NETFILTER_XT_TARGET_TRACE is not set
+ # CONFIG_NETFILTER_XT_TARGET_TCPMSS is not set
+ # CONFIG_NETFILTER_XT_TARGET_TCPOPTSTRIP is not set
++# CONFIG_NETFILTER_XT_MATCH_CLUSTER is not set
+ # CONFIG_NETFILTER_XT_MATCH_COMMENT is not set
+ # CONFIG_NETFILTER_XT_MATCH_CONNBYTES is not set
+ # CONFIG_NETFILTER_XT_MATCH_CONNLIMIT is not set
+@@ -389,6 +402,7 @@ CONFIG_NETFILTER_XTABLES=m
+ # CONFIG_NETFILTER_XT_MATCH_ESP is not set
+ # CONFIG_NETFILTER_XT_MATCH_HASHLIMIT is not set
+ # CONFIG_NETFILTER_XT_MATCH_HELPER is not set
++# CONFIG_NETFILTER_XT_MATCH_HL is not set
+ # CONFIG_NETFILTER_XT_MATCH_IPRANGE is not set
+ # CONFIG_NETFILTER_XT_MATCH_LENGTH is not set
+ # CONFIG_NETFILTER_XT_MATCH_LIMIT is not set
+@@ -465,6 +479,7 @@ CONFIG_IP_NF_ARP_MANGLE=m
+ # CONFIG_LAPB is not set
+ # CONFIG_ECONET is not set
+ # CONFIG_WAN_ROUTER is not set
++# CONFIG_PHONET is not set
+ # CONFIG_NET_SCHED is not set
+ # CONFIG_DCB is not set
+ 
+@@ -477,14 +492,7 @@ CONFIG_IP_NF_ARP_MANGLE=m
+ # CONFIG_IRDA is not set
+ # CONFIG_BT is not set
+ # CONFIG_AF_RXRPC is not set
+-# CONFIG_PHONET is not set
+-CONFIG_WIRELESS=y
+-# CONFIG_CFG80211 is not set
+-CONFIG_WIRELESS_OLD_REGULATORY=y
+-CONFIG_WIRELESS_EXT=y
+-CONFIG_WIRELESS_EXT_SYSFS=y
+-# CONFIG_LIB80211 is not set
+-# CONFIG_MAC80211 is not set
++# CONFIG_WIRELESS is not set
+ # CONFIG_WIMAX is not set
+ # CONFIG_RFKILL is not set
+ # CONFIG_NET_9P is not set
+@@ -611,10 +619,7 @@ CONFIG_BLK_DEV_LOOP=y
+ # CONFIG_BLK_DEV_NBD is not set
+ # CONFIG_BLK_DEV_SX8 is not set
+ # CONFIG_BLK_DEV_UB is not set
+-CONFIG_BLK_DEV_RAM=y
+-CONFIG_BLK_DEV_RAM_COUNT=2
+-CONFIG_BLK_DEV_RAM_SIZE=8192
+-# CONFIG_BLK_DEV_XIP is not set
++# CONFIG_BLK_DEV_RAM is not set
+ # CONFIG_CDROM_PKTCDVD is not set
+ # CONFIG_ATA_OVER_ETH is not set
+ # CONFIG_BLK_DEV_HD is not set
+@@ -625,6 +630,7 @@ CONFIG_MISC_DEVICES=y
+ # CONFIG_ICS932S401 is not set
+ # CONFIG_ENCLOSURE_SERVICES is not set
+ # CONFIG_HP_ILO is not set
++# CONFIG_ISL29003 is not set
+ # CONFIG_C2PORT is not set
+ 
+ #
+@@ -673,48 +679,9 @@ CONFIG_SCSI_WAIT_SCAN=m
+ # CONFIG_SCSI_ISCSI_ATTRS is not set
+ # CONFIG_SCSI_SAS_LIBSAS is not set
+ # CONFIG_SCSI_SRP_ATTRS is not set
+-CONFIG_SCSI_LOWLEVEL=y
+-# CONFIG_ISCSI_TCP is not set
+-# CONFIG_SCSI_CXGB3_ISCSI is not set
+-# CONFIG_BLK_DEV_3W_XXXX_RAID is not set
+-# CONFIG_SCSI_3W_9XXX is not set
+-# CONFIG_SCSI_ACARD is not set
+-# CONFIG_SCSI_AACRAID is not set
+-# CONFIG_SCSI_AIC7XXX is not set
+-# CONFIG_SCSI_AIC7XXX_OLD is not set
+-# CONFIG_SCSI_AIC79XX is not set
+-# CONFIG_SCSI_AIC94XX is not set
+-# CONFIG_SCSI_DPT_I2O is not set
+-# CONFIG_SCSI_ADVANSYS is not set
+-# CONFIG_SCSI_ARCMSR is not set
+-# CONFIG_MEGARAID_NEWGEN is not set
+-# CONFIG_MEGARAID_LEGACY is not set
+-# CONFIG_MEGARAID_SAS is not set
+-# CONFIG_SCSI_HPTIOP is not set
+-# CONFIG_SCSI_BUSLOGIC is not set
+-# CONFIG_LIBFC is not set
+-# CONFIG_FCOE is not set
+-# CONFIG_SCSI_DMX3191D is not set
+-# CONFIG_SCSI_EATA is not set
+-# CONFIG_SCSI_FUTURE_DOMAIN is not set
+-# CONFIG_SCSI_GDTH is not set
+-# CONFIG_SCSI_IPS is not set
+-# CONFIG_SCSI_INITIO is not set
+-# CONFIG_SCSI_INIA100 is not set
+-# CONFIG_SCSI_MVSAS is not set
+-# CONFIG_SCSI_STEX is not set
+-# CONFIG_SCSI_SYM53C8XX_2 is not set
+-# CONFIG_SCSI_IPR is not set
+-# CONFIG_SCSI_QLOGIC_1280 is not set
+-# CONFIG_SCSI_QLA_FC is not set
+-# CONFIG_SCSI_QLA_ISCSI is not set
+-# CONFIG_SCSI_LPFC is not set
+-# CONFIG_SCSI_DC395x is not set
+-# CONFIG_SCSI_DC390T is not set
+-# CONFIG_SCSI_NSP32 is not set
+-# CONFIG_SCSI_DEBUG is not set
+-# CONFIG_SCSI_SRP is not set
++# CONFIG_SCSI_LOWLEVEL is not set
+ # CONFIG_SCSI_DH is not set
++# CONFIG_SCSI_OSD_INITIATOR is not set
+ CONFIG_ATA=y
+ # CONFIG_ATA_NONSTANDARD is not set
+ CONFIG_SATA_PMP=y
+@@ -791,6 +758,7 @@ CONFIG_PATA_SIL680=y
+ # CONFIG_I2O is not set
+ # CONFIG_MACINTOSH_DRIVERS is not set
+ CONFIG_NETDEVICES=y
++CONFIG_COMPAT_NET_DEV_OPS=y
+ # CONFIG_DUMMY is not set
+ # CONFIG_BONDING is not set
+ # CONFIG_MACVLAN is not set
+@@ -805,6 +773,8 @@ CONFIG_MII=y
+ # CONFIG_SUNGEM is not set
+ # CONFIG_CASSINI is not set
+ # CONFIG_NET_VENDOR_3COM is not set
++# CONFIG_ETHOC is not set
++# CONFIG_DNET is not set
+ CONFIG_NET_TULIP=y
+ # CONFIG_DE2104X is not set
+ CONFIG_TULIP=y
+@@ -833,6 +803,7 @@ CONFIG_NETDEV_1000=y
+ # CONFIG_E1000E is not set
+ # CONFIG_IP1000 is not set
+ # CONFIG_IGB is not set
++# CONFIG_IGBVF is not set
+ # CONFIG_NS83820 is not set
+ # CONFIG_HAMACHI is not set
+ # CONFIG_YELLOWFIN is not set
+@@ -843,30 +814,14 @@ CONFIG_R8169=y
+ # CONFIG_VIA_VELOCITY is not set
+ # CONFIG_TIGON3 is not set
+ # CONFIG_BNX2 is not set
++# CONFIG_FSL_PQ_MDIO is not set
+ # CONFIG_GIANFAR is not set
+-# CONFIG_MV643XX_ETH is not set
+ # CONFIG_QLA3XXX is not set
+ # CONFIG_ATL1 is not set
+ # CONFIG_ATL1E is not set
+ # CONFIG_ATL1C is not set
+ # CONFIG_JME is not set
+-CONFIG_NETDEV_10000=y
+-# CONFIG_CHELSIO_T1 is not set
+-CONFIG_CHELSIO_T3_DEPENDS=y
+-# CONFIG_CHELSIO_T3 is not set
+-# CONFIG_ENIC is not set
+-# CONFIG_IXGBE is not set
+-# CONFIG_IXGB is not set
+-# CONFIG_S2IO is not set
+-# CONFIG_MYRI10GE is not set
+-# CONFIG_NETXEN_NIC is not set
+-# CONFIG_NIU is not set
+-# CONFIG_MLX4_EN is not set
+-# CONFIG_MLX4_CORE is not set
+-# CONFIG_TEHUTI is not set
+-# CONFIG_BNX2X is not set
+-# CONFIG_QLGE is not set
+-# CONFIG_SFC is not set
++# CONFIG_NETDEV_10000 is not set
+ # CONFIG_TR is not set
+ 
+ #
+@@ -874,7 +829,6 @@ CONFIG_CHELSIO_T3_DEPENDS=y
+ #
+ # CONFIG_WLAN_PRE80211 is not set
+ # CONFIG_WLAN_80211 is not set
+-# CONFIG_IWLWIFI_LEDS is not set
+ 
+ #
+ # Enable WiMAX (Networking options) to see the WiMAX drivers
+@@ -985,6 +939,7 @@ CONFIG_LEGACY_PTY_COUNT=256
+ # CONFIG_HVC_UDBG is not set
+ # CONFIG_IPMI_HANDLER is not set
+ CONFIG_HW_RANDOM=y
++CONFIG_HW_RANDOM_TIMERIOMEM=y
+ # CONFIG_NVRAM is not set
+ # CONFIG_R3964 is not set
+ # CONFIG_APPLICOM is not set
+@@ -1050,7 +1005,6 @@ CONFIG_I2C_MPC=y
+ # CONFIG_SENSORS_PCF8574 is not set
+ # CONFIG_PCF8575 is not set
+ # CONFIG_SENSORS_PCA9539 is not set
+-# CONFIG_SENSORS_PCF8591 is not set
+ # CONFIG_SENSORS_MAX6875 is not set
+ # CONFIG_SENSORS_TSL2550 is not set
+ # CONFIG_I2C_DEBUG_CORE is not set
+@@ -1062,64 +1016,7 @@ CONFIG_ARCH_WANT_OPTIONAL_GPIOLIB=y
+ # CONFIG_GPIOLIB is not set
+ # CONFIG_W1 is not set
+ # CONFIG_POWER_SUPPLY is not set
+-CONFIG_HWMON=y
+-# CONFIG_HWMON_VID is not set
+-# CONFIG_SENSORS_AD7414 is not set
+-# CONFIG_SENSORS_AD7418 is not set
+-# CONFIG_SENSORS_ADM1021 is not set
+-# CONFIG_SENSORS_ADM1025 is not set
+-# CONFIG_SENSORS_ADM1026 is not set
+-# CONFIG_SENSORS_ADM1029 is not set
+-# CONFIG_SENSORS_ADM1031 is not set
+-# CONFIG_SENSORS_ADM9240 is not set
+-# CONFIG_SENSORS_ADT7462 is not set
+-# CONFIG_SENSORS_ADT7470 is not set
+-# CONFIG_SENSORS_ADT7473 is not set
+-# CONFIG_SENSORS_ADT7475 is not set
+-# CONFIG_SENSORS_ATXP1 is not set
+-# CONFIG_SENSORS_DS1621 is not set
+-# CONFIG_SENSORS_I5K_AMB is not set
+-# CONFIG_SENSORS_F71805F is not set
+-# CONFIG_SENSORS_F71882FG is not set
+-# CONFIG_SENSORS_F75375S is not set
+-# CONFIG_SENSORS_GL518SM is not set
+-# CONFIG_SENSORS_GL520SM is not set
+-# CONFIG_SENSORS_IT87 is not set
+-# CONFIG_SENSORS_LM63 is not set
+-# CONFIG_SENSORS_LM75 is not set
+-# CONFIG_SENSORS_LM77 is not set
+-# CONFIG_SENSORS_LM78 is not set
+-# CONFIG_SENSORS_LM80 is not set
+-# CONFIG_SENSORS_LM83 is not set
+-# CONFIG_SENSORS_LM85 is not set
+-# CONFIG_SENSORS_LM87 is not set
+-# CONFIG_SENSORS_LM90 is not set
+-# CONFIG_SENSORS_LM92 is not set
+-# CONFIG_SENSORS_LM93 is not set
+-# CONFIG_SENSORS_LTC4245 is not set
+-# CONFIG_SENSORS_MAX1619 is not set
+-# CONFIG_SENSORS_MAX6650 is not set
+-# CONFIG_SENSORS_PC87360 is not set
+-# CONFIG_SENSORS_PC87427 is not set
+-# CONFIG_SENSORS_SIS5595 is not set
+-# CONFIG_SENSORS_DME1737 is not set
+-# CONFIG_SENSORS_SMSC47M1 is not set
+-# CONFIG_SENSORS_SMSC47M192 is not set
+-# CONFIG_SENSORS_SMSC47B397 is not set
+-# CONFIG_SENSORS_ADS7828 is not set
+-# CONFIG_SENSORS_THMC50 is not set
+-# CONFIG_SENSORS_VIA686A is not set
+-# CONFIG_SENSORS_VT1211 is not set
+-# CONFIG_SENSORS_VT8231 is not set
+-# CONFIG_SENSORS_W83781D is not set
+-# CONFIG_SENSORS_W83791D is not set
+-# CONFIG_SENSORS_W83792D is not set
+-# CONFIG_SENSORS_W83793 is not set
+-# CONFIG_SENSORS_W83L785TS is not set
+-# CONFIG_SENSORS_W83L786NG is not set
+-# CONFIG_SENSORS_W83627HF is not set
+-# CONFIG_SENSORS_W83627EHF is not set
+-# CONFIG_HWMON_DEBUG_CHIP is not set
++# CONFIG_HWMON is not set
+ # CONFIG_THERMAL is not set
+ # CONFIG_THERMAL_HWMON is not set
+ # CONFIG_WATCHDOG is not set
+@@ -1166,7 +1063,7 @@ CONFIG_SSB_POSSIBLE=y
+ # CONFIG_AGP is not set
+ # CONFIG_DRM is not set
+ # CONFIG_VGASTATE is not set
+-CONFIG_VIDEO_OUTPUT_CONTROL=m
++# CONFIG_VIDEO_OUTPUT_CONTROL is not set
+ # CONFIG_FB is not set
+ # CONFIG_BACKLIGHT_LCD_SUPPORT is not set
+ 
+@@ -1195,7 +1092,6 @@ CONFIG_HID=m
+ #
+ # Special HID drivers
+ #
+-CONFIG_HID_COMPAT=y
+ CONFIG_USB_SUPPORT=y
+ CONFIG_USB_ARCH_HAS_HCD=y
+ CONFIG_USB_ARCH_HAS_OHCI=y
+@@ -1250,11 +1146,11 @@ CONFIG_USB_PRINTER=m
+ # CONFIG_USB_TMC is not set
+ 
+ #
+-# NOTE: USB_STORAGE depends on SCSI but BLK_DEV_SD may also be needed;
++# NOTE: USB_STORAGE depends on SCSI but BLK_DEV_SD may
+ #
+ 
+ #
+-# see USB_STORAGE Help for more information
++# also be needed; see USB_STORAGE Help for more info
+ #
+ CONFIG_USB_STORAGE=m
+ # CONFIG_USB_STORAGE_DEBUG is not set
+@@ -1290,7 +1186,7 @@ CONFIG_USB_SERIAL_CONSOLE=y
+ # CONFIG_USB_SERIAL_CH341 is not set
+ # CONFIG_USB_SERIAL_WHITEHEAT is not set
+ # CONFIG_USB_SERIAL_DIGI_ACCELEPORT is not set
+-# CONFIG_USB_SERIAL_CP2101 is not set
++# CONFIG_USB_SERIAL_CP210X is not set
+ # CONFIG_USB_SERIAL_CYPRESS_M8 is not set
+ # CONFIG_USB_SERIAL_EMPEG is not set
+ CONFIG_USB_SERIAL_FTDI_SIO=y
+@@ -1314,11 +1210,13 @@ CONFIG_USB_SERIAL_FTDI_SIO=y
+ # CONFIG_USB_SERIAL_NAVMAN is not set
+ # CONFIG_USB_SERIAL_PL2303 is not set
+ # CONFIG_USB_SERIAL_OTI6858 is not set
++# CONFIG_USB_SERIAL_QUALCOMM is not set
+ # CONFIG_USB_SERIAL_SPCP8X5 is not set
+ # CONFIG_USB_SERIAL_HP4X is not set
+ # CONFIG_USB_SERIAL_SAFE is not set
+ # CONFIG_USB_SERIAL_SIEMENS_MPI is not set
+ # CONFIG_USB_SERIAL_SIERRAWIRELESS is not set
++# CONFIG_USB_SERIAL_SYMBOL is not set
+ # CONFIG_USB_SERIAL_TI is not set
+ # CONFIG_USB_SERIAL_CYBERJACK is not set
+ # CONFIG_USB_SERIAL_XIRCOM is not set
+@@ -1341,7 +1239,6 @@ CONFIG_USB_SERIAL_FTDI_SIO=y
+ # CONFIG_USB_LED is not set
+ # CONFIG_USB_CYPRESS_CY7C63 is not set
+ # CONFIG_USB_CYTHERM is not set
+-# CONFIG_USB_PHIDGET is not set
+ # CONFIG_USB_IDMOUSE is not set
+ # CONFIG_USB_FTDI_ELAN is not set
+ # CONFIG_USB_APPLEDISPLAY is not set
+@@ -1357,6 +1254,7 @@ CONFIG_USB_SERIAL_FTDI_SIO=y
+ #
+ # OTG and related infrastructure
+ #
++# CONFIG_NOP_USB_XCEIV is not set
+ # CONFIG_UWB is not set
+ # CONFIG_MMC is not set
+ # CONFIG_MEMSTICK is not set
+@@ -1418,8 +1316,9 @@ CONFIG_RTC_DRV_RS5C372=y
+ #
+ # on-CPU RTC drivers
+ #
+-# CONFIG_RTC_DRV_PPC is not set
++# CONFIG_RTC_DRV_GENERIC is not set
+ # CONFIG_DMADEVICES is not set
++# CONFIG_AUXDISPLAY is not set
+ # CONFIG_UIO is not set
+ # CONFIG_STAGING is not set
+ 
+@@ -1430,21 +1329,20 @@ CONFIG_EXT2_FS=y
+ # CONFIG_EXT2_FS_XATTR is not set
+ # CONFIG_EXT2_FS_XIP is not set
+ CONFIG_EXT3_FS=y
+-CONFIG_EXT3_FS_XATTR=y
+-# CONFIG_EXT3_FS_POSIX_ACL is not set
+-# CONFIG_EXT3_FS_SECURITY is not set
++# CONFIG_EXT3_DEFAULTS_TO_ORDERED is not set
++# CONFIG_EXT3_FS_XATTR is not set
+ # CONFIG_EXT4_FS is not set
+ CONFIG_JBD=y
+-CONFIG_FS_MBCACHE=y
+ # CONFIG_REISERFS_FS is not set
+ # CONFIG_JFS_FS is not set
+-CONFIG_FS_POSIX_ACL=y
++# CONFIG_FS_POSIX_ACL is not set
+ CONFIG_FILE_LOCKING=y
+ CONFIG_XFS_FS=m
+ # CONFIG_XFS_QUOTA is not set
+ # CONFIG_XFS_POSIX_ACL is not set
+ # CONFIG_XFS_RT is not set
+ # CONFIG_XFS_DEBUG is not set
++# CONFIG_GFS2_FS is not set
+ # CONFIG_OCFS2_FS is not set
+ # CONFIG_BTRFS_FS is not set
+ CONFIG_DNOTIFY=y
+@@ -1456,6 +1354,11 @@ CONFIG_INOTIFY_USER=y
+ # CONFIG_FUSE_FS is not set
+ 
+ #
++# Caches
++#
++# CONFIG_FSCACHE is not set
 +
-+	nt.ubi_num = ubi->ubi_num;
-+
-+	spin_lock(&ubi->volumes_lock);
-+	for (i = 0; i < ubi->vtbl_slots; i++) {
-+		if (!ubi->volumes[i])
-+			continue;
-+		nt.vol_id = ubi->volumes[i]->vol_id;
-+		spin_unlock(&ubi->volumes_lock);
-+		if (nb)
-+			nb->notifier_call(nb, ntype, &nt);
-+		else
-+			blocking_notifier_call_chain(&ubi_notifiers,
-+						     ntype, &nt);
-+		count++;
-+		spin_lock(&ubi->volumes_lock);
-+	}
-+	spin_unlock(&ubi->volumes_lock);
-+
-+	return count;
-+}
-+
-+/**
-+ * ubi_enum_all_volumes - enumerate all existing volumes and send notification.
-+ * @ntype: notification type to send (%UBI_VOLUME_ADDED, etc)
-+ * @nb: notifier to be called, or %NULL to send to system-wide notification
-+ *
-+ * This function walks all UBI devices and all volumes on the device, and sends
-+ * the notification specified by @ntype. Returns number of sent notifications.
-+ */
-+int ubi_enum_all_volumes(int ntype, struct notifier_block *nb)
-+{
-+	struct ubi_device *ubi;
-+	int i, count = 0;
-+
-+	spin_lock(&ubi_devices_lock);
-+	for (i = 0; i < UBI_MAX_DEVICES; i++) {
-+		ubi = ubi_devices[i];
-+		spin_unlock(&ubi_devices_lock);
-+		if (ubi)
-+			count += ubi_enum_volumes(ntype, ubi, nb);
-+		spin_lock(&ubi_devices_lock);
-+	}
-+	spin_unlock(&ubi_devices_lock);
-+	return count;
-+}
-+
-+/**
-  * ubi_get_device - get UBI device.
-  * @ubi_num: UBI device number
-  *
-@@ -877,6 +938,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
- 	wake_up_process(ubi->bgt_thread);
++#
+ # CD-ROM/DVD Filesystems
+ #
+ CONFIG_ISO9660_FS=m
+@@ -1507,10 +1410,11 @@ CONFIG_MISC_FILESYSTEMS=y
+ # CONFIG_ROMFS_FS is not set
+ # CONFIG_SYSV_FS is not set
+ # CONFIG_UFS_FS is not set
++# CONFIG_NILFS2_FS is not set
+ CONFIG_NETWORK_FILESYSTEMS=y
+ CONFIG_NFS_FS=y
+ CONFIG_NFS_V3=y
+-CONFIG_NFS_V3_ACL=y
++# CONFIG_NFS_V3_ACL is not set
+ CONFIG_NFS_V4=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NFSD=m
+@@ -1520,11 +1424,9 @@ CONFIG_NFSD_V3=y
+ CONFIG_LOCKD=y
+ CONFIG_LOCKD_V4=y
+ CONFIG_EXPORTFS=m
+-CONFIG_NFS_ACL_SUPPORT=y
+ CONFIG_NFS_COMMON=y
+ CONFIG_SUNRPC=y
+ CONFIG_SUNRPC_GSS=y
+-# CONFIG_SUNRPC_REGISTER_V4 is not set
+ CONFIG_RPCSEC_GSS_KRB5=y
+ # CONFIG_RPCSEC_GSS_SPKM3 is not set
+ # CONFIG_SMB_FS is not set
+@@ -1584,6 +1486,7 @@ CONFIG_NLS_ISO8859_1=m
+ # CONFIG_NLS_KOI8_U is not set
+ CONFIG_NLS_UTF8=m
+ # CONFIG_DLM is not set
++# CONFIG_BINARY_PRINTF is not set
  
- 	ubi_devices[ubi_num] = ubi;
-+	ubi_enum_volumes(UBI_VOLUME_ADDED, ubi, NULL);
- 	return ubi_num;
+ #
+ # Library routines
+@@ -1597,20 +1500,23 @@ CONFIG_CRC_ITU_T=m
+ CONFIG_CRC32=y
+ # CONFIG_CRC7 is not set
+ CONFIG_LIBCRC32C=m
+-CONFIG_ZLIB_INFLATE=m
++CONFIG_ZLIB_INFLATE=y
+ CONFIG_ZLIB_DEFLATE=m
++CONFIG_DECOMPRESS_GZIP=y
++CONFIG_DECOMPRESS_BZIP2=y
++CONFIG_DECOMPRESS_LZMA=y
+ CONFIG_TEXTSEARCH=y
+ CONFIG_TEXTSEARCH_KMP=m
+-CONFIG_PLIST=y
+ CONFIG_HAS_IOMEM=y
+ CONFIG_HAS_IOPORT=y
+ CONFIG_HAS_DMA=y
+ CONFIG_HAVE_LMB=y
++CONFIG_NLATTR=y
  
- out_uif:
-@@ -921,14 +983,17 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
+ #
+ # Kernel hacking
+ #
+-# CONFIG_PRINTK_TIME is not set
++CONFIG_PRINTK_TIME=y
+ CONFIG_ENABLE_WARN_DEPRECATED=y
+ CONFIG_ENABLE_MUST_CHECK=y
+ CONFIG_FRAME_WARN=1024
+@@ -1623,6 +1529,9 @@ CONFIG_DEBUG_KERNEL=y
+ CONFIG_DETECT_SOFTLOCKUP=y
+ # CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC is not set
+ CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC_VALUE=0
++CONFIG_DETECT_HUNG_TASK=y
++# CONFIG_BOOTPARAM_HUNG_TASK_PANIC is not set
++CONFIG_BOOTPARAM_HUNG_TASK_PANIC_VALUE=0
+ CONFIG_SCHED_DEBUG=y
+ # CONFIG_SCHEDSTATS is not set
+ # CONFIG_TIMER_STATS is not set
+@@ -1652,9 +1561,12 @@ CONFIG_DEBUG_MEMORY_INIT=y
+ # CONFIG_FAULT_INJECTION is not set
+ # CONFIG_LATENCYTOP is not set
+ CONFIG_SYSCTL_SYSCALL_CHECK=y
++# CONFIG_DEBUG_PAGEALLOC is not set
+ CONFIG_HAVE_FUNCTION_TRACER=y
++CONFIG_HAVE_FUNCTION_GRAPH_TRACER=y
+ CONFIG_HAVE_DYNAMIC_FTRACE=y
+ CONFIG_HAVE_FTRACE_MCOUNT_RECORD=y
++CONFIG_TRACING_SUPPORT=y
  
- 	spin_lock(&ubi_devices_lock);
- 	ubi = ubi_devices[ubi_num];
--	if (!ubi) {
--		spin_unlock(&ubi_devices_lock);
-+	spin_unlock(&ubi_devices_lock);
-+
-+	if (!ubi)
- 		return -EINVAL;
--	}
-+	ubi_enum_volumes(UBI_VOLUME_DELETED, ubi, NULL);
+ #
+ # Tracers
+@@ -1662,17 +1574,19 @@ CONFIG_HAVE_FTRACE_MCOUNT_RECORD=y
+ # CONFIG_FUNCTION_TRACER is not set
+ # CONFIG_SCHED_TRACER is not set
+ # CONFIG_CONTEXT_SWITCH_TRACER is not set
++# CONFIG_EVENT_TRACER is not set
+ # CONFIG_BOOT_TRACER is not set
+ # CONFIG_TRACE_BRANCH_PROFILING is not set
+ # CONFIG_STACK_TRACER is not set
+-# CONFIG_DYNAMIC_PRINTK_DEBUG is not set
++# CONFIG_KMEMTRACE is not set
++# CONFIG_WORKQUEUE_TRACER is not set
++# CONFIG_BLK_DEV_IO_TRACE is not set
+ # CONFIG_SAMPLES is not set
+ CONFIG_HAVE_ARCH_KGDB=y
+ # CONFIG_KGDB is not set
+ CONFIG_PRINT_STACK_DEPTH=64
+ # CONFIG_DEBUG_STACKOVERFLOW is not set
+ # CONFIG_DEBUG_STACK_USAGE is not set
+-# CONFIG_DEBUG_PAGEALLOC is not set
+ # CONFIG_CODE_PATCHING_SELFTEST is not set
+ # CONFIG_FTR_FIXUP_SELFTEST is not set
+ # CONFIG_MSI_BITMAP_SELFTEST is not set
+@@ -1703,10 +1617,12 @@ CONFIG_CRYPTO_BLKCIPHER2=y
+ CONFIG_CRYPTO_HASH=y
+ CONFIG_CRYPTO_HASH2=y
+ CONFIG_CRYPTO_RNG2=y
++CONFIG_CRYPTO_PCOMP=y
+ CONFIG_CRYPTO_MANAGER=y
+ CONFIG_CRYPTO_MANAGER2=y
+ # CONFIG_CRYPTO_GF128MUL is not set
+ # CONFIG_CRYPTO_NULL is not set
++CONFIG_CRYPTO_WORKQUEUE=y
+ # CONFIG_CRYPTO_CRYPTD is not set
+ # CONFIG_CRYPTO_AUTHENC is not set
+ # CONFIG_CRYPTO_TEST is not set
+@@ -1776,14 +1692,13 @@ CONFIG_CRYPTO_TWOFISH_COMMON=m
+ # Compression
+ #
+ CONFIG_CRYPTO_DEFLATE=m
++# CONFIG_CRYPTO_ZLIB is not set
+ # CONFIG_CRYPTO_LZO is not set
  
-+	spin_lock(&ubi_devices_lock);
- 	if (ubi->ref_count) {
- 		if (!anyway) {
- 			spin_unlock(&ubi_devices_lock);
-+			ubi_enum_volumes(UBI_VOLUME_ADDED, ubi, NULL);
- 			return -EBUSY;
- 		}
- 		/* This may only happen if there is a bug */
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index f8e0f68..b7541f6 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -394,6 +394,8 @@ static ssize_t vol_cdev_write(struct file *file, const char __user *buf,
- 		}
- 		vol->checked = 1;
- 		ubi_gluebi_updated(vol);
-+		ubi_volume_notify(UBI_VOLUME_CHANGED,
-+				ubi->ubi_num, vol->vol_id);
- 		revoke_exclusive(desc, UBI_READWRITE);
- 	}
- 
-diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
-index 4abbe57..db247e7 100644
---- a/drivers/mtd/ubi/kapi.c
-+++ b/drivers/mtd/ubi/kapi.c
-@@ -656,3 +656,49 @@ int ubi_sync(int ubi_num)
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(ubi_sync);
-+
-+BLOCKING_NOTIFIER_HEAD(ubi_notifiers);
-+
-+/**
-+ * ubi_register_volume_notifier - register the volume notification function.
-+ * @nb: pointer to the filled struct &notifier_block
-+ * @ignore_existing: boolean flag; if set to 1, UBI will not send notifications
-+ * 		     about ADDing existing volumes
-+ *
-+ * The function @nb.notifier_call will be called when volume is added,
-+ * removed, resized or renamed. Its first parameter is &enum
-+ * ubi_volume_notification_type, and the second points to the structure
-+ * that contains information about "changed" volume - ubi_num and
-+ * volume_id. When the notifier is called, it is safe to use all UBI API.
-+ *
-+ * Returns %0 on success, error code otherwise.
-+ */
-+int ubi_register_volume_notifier(struct notifier_block *nb,
-+				 int ignore_existing)
-+{
-+	int err;
-+
-+	err = blocking_notifier_chain_register(&ubi_notifiers, nb);
-+	if (err != 0)
-+		return err;
-+	if (ignore_existing)
-+		return err;
-+	down_read(&ubi_notifiers.rwsem);
-+
-+	ubi_enum_all_volumes(UBI_VOLUME_ADDED, nb);
-+	up_read(&ubi_notifiers.rwsem);
-+	return err;
-+}
-+EXPORT_SYMBOL_GPL(ubi_register_volume_notifier);
-+
-+/**
-+ * ubi_unregister_volume_notifier - unregister the volume notifier.
-+ * @nb: pointer to the filled struct &notifier_block
-+ *
-+ * Returns %0 on success, error code otherwise
-+ */
-+int ubi_unregister_volume_notifier(struct notifier_block *nb)
-+{
-+	return blocking_notifier_chain_unregister(&ubi_notifiers, nb);
-+}
-+EXPORT_SYMBOL_GPL(ubi_unregister_volume_notifier);
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index c055511..983bee1 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -38,6 +38,7 @@
- #include <linux/vmalloc.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/ubi.h>
-+#include <linux/notifier.h>
- 
- #include "ubi-media.h"
- #include "scan.h"
-@@ -457,6 +458,7 @@ extern const struct file_operations ubi_cdev_operations;
- extern const struct file_operations ubi_vol_cdev_operations;
- extern struct class *ubi_class;
- extern struct mutex ubi_devices_mutex;
-+extern struct blocking_notifier_head ubi_notifiers;
- 
- /* vtbl.c */
- int ubi_change_vtbl_record(struct ubi_device *ubi, int idx,
-@@ -549,6 +551,9 @@ struct ubi_device *ubi_get_device(int ubi_num);
- void ubi_put_device(struct ubi_device *ubi);
- struct ubi_device *ubi_get_by_major(int major);
- int ubi_major2num(int major);
-+int ubi_enum_volumes(int ntype, struct ubi_device *ubi,
-+		     struct notifier_block *nb);
-+int ubi_enum_all_volumes(int ntype, struct notifier_block *nb);
- 
- /*
-  * ubi_rb_for_each_entry - walk an RB-tree.
-@@ -564,6 +569,25 @@ int ubi_major2num(int major);
- 	     rb = rb_next(rb), pos = container_of(rb, typeof(*pos), member))
- 
- /**
-+ * ubi_volume_notify - notify all registered clients about volume changes.
-+ * @ntype: notification type to send (%UBI_VOLUME_ADDED, etc)
-+ * @ubi_num: UBI device number
-+ * @vol_id: ID of the created/removed/changed volume
-+ *
-+ * This is a helper function which notifies all subscribers about a volume
-+ * change event. Returns zero in case of success and a negative error code in
-+ * case of failure.
-+ */
-+static inline int ubi_volume_notify(int ntype, int ubi_num, int vol_id)
-+{
-+       struct ubi_volume_notification nt;
-+
-+       nt.ubi_num = ubi_num;
-+       nt.vol_id = vol_id;
-+       return blocking_notifier_call_chain(&ubi_notifiers, ntype, &nt);
-+}
-+
-+/**
-  * ubi_zalloc_vid_hdr - allocate a volume identifier header object.
-  * @ubi: UBI device description object
-  * @gfp_flags: GFP flags to allocate with
-diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index df54835..faf8d09 100644
---- a/drivers/mtd/ubi/vmt.c
-+++ b/drivers/mtd/ubi/vmt.c
-@@ -358,6 +358,7 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
- 	ubi->vol_count += 1;
- 	spin_unlock(&ubi->volumes_lock);
- 
-+	ubi_volume_notify(UBI_VOLUME_ADDED, ubi->ubi_num, vol->vol_id);
- 	err = paranoid_check_volumes(ubi);
- 	return err;
- 
-@@ -419,6 +420,8 @@ int ubi_remove_volume(struct ubi_volume_desc *desc, int no_vtbl)
- 	if (ubi->ro_mode)
- 		return -EROFS;
- 
-+	ubi_volume_notify(UBI_VOLUME_DELETED, ubi->ubi_num, vol_id);
-+
- 	spin_lock(&ubi->volumes_lock);
- 	if (vol->ref_count > 1) {
- 		/*
-@@ -475,6 +478,7 @@ out_err:
- 	ubi->volumes[vol_id] = vol;
- out_unlock:
- 	spin_unlock(&ubi->volumes_lock);
-+	ubi_volume_notify(UBI_VOLUME_ADDED, ubi->ubi_num, vol_id);
- 	return err;
- }
- 
-@@ -587,6 +591,7 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, int reserved_pebs)
- 			(long long)vol->used_ebs * vol->usable_leb_size;
- 	}
- 
-+	ubi_volume_notify(UBI_VOLUME_CHANGED, ubi->ubi_num, vol->vol_id);
- 	err = paranoid_check_volumes(ubi);
- 	return err;
- 
-@@ -632,6 +637,8 @@ int ubi_rename_volumes(struct ubi_device *ubi, struct list_head *rename_list)
- 			vol->name_len = re->new_name_len;
- 			memcpy(vol->name, re->new_name, re->new_name_len + 1);
- 			spin_unlock(&ubi->volumes_lock);
-+			ubi_volume_notify(UBI_VOLUME_RENAMED,
-+					  ubi->ubi_num, vol->vol_id);
- 		}
- 	}
- 
-diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
-index 6316faf..83e1eef 100644
---- a/include/linux/mtd/ubi.h
-+++ b/include/linux/mtd/ubi.h
-@@ -132,6 +132,38 @@ struct ubi_device_info {
- 	dev_t cdev;
- };
- 
-+/*
-+ * struct ubi_volume_notification - information about changed volume.
-+ * @ubi_num: UBI device number where the changed volume persists
-+ * @vol_id: changed volume id
-+ *
-+ * Each notification about changed volume takes two parameters - first one
-+ * is of type &enum ubi_volume_notification_type and indicates the type of
-+ * volume change, and the second parameter is a pointer to the &struct
-+ * ubi_volume_notification and describes the subject of change.
-+ */
-+struct ubi_volume_notification {
-+	int ubi_num;
-+	int vol_id;
-+};
-+
-+/*
-+ * enum - type of volume_change.
-+ * @UBI_VOLUME_ADDED: volume has been added
-+ * @UBI_VOLUME_DELETED: volume has been deleted
-+ * @UBI_VOLUME_CHANGED: volume size has been changed
-+ * @UBI_VOLUME_RENAMED: volume name has been changed
-+ *
-+ * Variable of this type is passed as the first parameter to the notification
-+ * function.
-+ */
-+enum {
-+	UBI_VOLUME_ADDED,
-+	UBI_VOLUME_DELETED,
-+	UBI_VOLUME_CHANGED,
-+	UBI_VOLUME_RENAMED,
-+};
-+
- /* UBI descriptor given to users when they open UBI volumes */
- struct ubi_volume_desc;
- 
-@@ -141,6 +173,10 @@ void ubi_get_volume_info(struct ubi_volume_desc *desc,
- struct ubi_volume_desc *ubi_open_volume(int ubi_num, int vol_id, int mode);
- struct ubi_volume_desc *ubi_open_volume_nm(int ubi_num, const char *name,
- 					   int mode);
-+int ubi_register_volume_notifier(struct notifier_block *nb,
-+				 int ignore_existing);
-+int ubi_unregister_volume_notifier(struct notifier_block *nb);
-+
- void ubi_close_volume(struct ubi_volume_desc *desc);
- int ubi_leb_read(struct ubi_volume_desc *desc, int lnum, char *buf, int offset,
- 		 int len, int check);
--- 
-1.6.0.6
+ #
+ # Random Number Generation
+ #
+ # CONFIG_CRYPTO_ANSI_CPRNG is not set
+-CONFIG_CRYPTO_HW=y
+-# CONFIG_CRYPTO_DEV_HIFN_795X is not set
+-# CONFIG_CRYPTO_DEV_TALITOS is not set
++# CONFIG_CRYPTO_HW is not set
+ # CONFIG_PPC_CLOCK is not set
+ # CONFIG_VIRTUALIZATION is not set
 
 -- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+Rogério Brito : rbrito@{mackenzie,ime.usp}.br : GPG key 1024D/7C2CAEB8
+http://www.ime.usp.br/~rbrito : http://meusite.mackenzie.com.br/rbrito
+Projects: algorithms.berlios.de : lame.sf.net : vrms.alioth.debian.org
