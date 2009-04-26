@@ -1,29 +1,23 @@
-Received: from yw-out-1718.google.com ([74.125.46.158])
+Received: from mail-qy0-f108.google.com ([209.85.221.108])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LxjHq-0007DT-RY
-	for linux-mtd@lists.infradead.org; Sat, 25 Apr 2009 14:55:33 +0000
-Received: by yw-out-1718.google.com with SMTP id 9so972304ywk.72
+	id 1Lxu1C-0002jg-Ru
+	for linux-mtd@lists.infradead.org; Sun, 26 Apr 2009 02:23:05 +0000
+Received: by qyk6 with SMTP id 6so3516895qyk.28
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 25 Apr 2009 07:55:25 -0700 (PDT)
+	Sat, 25 Apr 2009 19:22:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1240565461.22645.25.camel@localhost.localdomain>
-References: <34437.192.168.10.89.1238579632.squirrel@dbdmail.itg.ti.com>
-	<1238580110.20906.73.camel@localhost.localdomain>
-	<19F8576C6E063C45BE387C64729E73940427A869F3@dbde02.ent.ti.com>
-	<19F8576C6E063C45BE387C64729E739404321C6025@dbde02.ent.ti.com>
-	<1240558797.22645.1.camel@localhost.localdomain>
-	<19F8576C6E063C45BE387C64729E739404321C6027@dbde02.ent.ti.com>
-	<1240565461.22645.25.camel@localhost.localdomain>
-Date: Sat, 25 Apr 2009 16:55:25 +0200
-Message-ID: <ac9c93b10904250755o244caf2fq9e6bd138b673c0e0@mail.gmail.com>
-Subject: Re: [resending][PATCH] [MTD] [NAND] nand_ecc.c: Bug fix in nand ecc
-From: Frans Meulenbroeks <fransmeulenbroeks@gmail.com>
-To: dedekind@infradead.org
+Sender: kyungmin78@gmail.com
+In-Reply-To: <3cc7a0df0904250127y3f2dbb65t50f349c3e9dfb969@mail.gmail.com>
+References: <3cc7a0df0904250127y3f2dbb65t50f349c3e9dfb969@mail.gmail.com>
+Date: Sun, 26 Apr 2009 11:22:56 +0900
+Message-ID: <9c9fda240904251922t7b2f6979j5a94115b0079c10a@mail.gmail.com>
+Subject: Re: [PATCH] Onenand Reset IOBE bit in SYS_CFG register in
+	onenand_release
+From: Kyungmin Park <kmpark@infradead.org>
+To: Gaurav Singh <gausinghnsit@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: "Singh,
-	Vimal" <IMCEAEX-_O=TI_OU=BD_CN=RECIPIENTS_CN=X0094262@dlee86.itg.ti.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Transfer-Encoding: quoted-printable
+Cc: Linux mtd group <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,10 +27,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Vimal, Artem,
+Hi,
 
-Thanks for fixing this. I thought I had acked the original patch but
-apparently I didn't. Sorry.
-I'm happy with the patch as it is now. Glad you solved it.
+On Sat, Apr 25, 2009 at 5:27 PM, Gaurav Singh <gausinghnsit@gmail.com> wrot=
+e:
+> Hi all,
+>
+> I am a Linux enthusiast and was using ONENAND device of an embedded
+> ARM device (Nomadik board - made and distributed by
+> STMicroelectronics). =A0The device is Muxed OneNAND 128MB 1.8V 16-bit
+> (0x30) OneNAND version =3D 0x0221 according to the probe prints. Looks
+> like a 1Gb Mux Onenand flash. The driver for this device is using the
+> interrupt mode operation.
+> Interestingly the GPIO interrupt pin of ONENAND is shared with a pin
+> of the NAND device. I was trying to use both NAND and ONENAND drivers
+> as modules and found that after inserting the ONENAND driver and
+> removing it I could not work with the NAND driver. This is inspite of
+> the fact all pins used by the ONENAND driver have been freed including
+> the interrupt pin. The NAND driver is able to acquire the common pin
+> but cannot write to this pin. Infact the ONENAND interrupt GPIO pin is
+> unusable even after the ONENAND driver is removed from the system.
+> I noticed that before the interrupt pin is acquired by the ONENAND
+> driver we are setting the IOBE bit in the SYS_CFG register as high. At
+> remove time this bit has not been reset. Resetting this bit and
+> repeating my test I found that the fix worked and the pin could now be
+> used by the NAND driver.
 
-Frans.
+Interesting, share interrupt pin between OneNAND and NAND.
+Do you check the performance gain from interrupt use?
+Even though there's code to use interrupt wait, in my board, there's
+no performance gain.
+
+Anyway follow patch fix your problem, I'm okay to apply.
+except one code style issue. please place curly brace '{' after if statemen=
+t
+
+Thank you,
+Kyungmin Park
+
+>
+> Proposed PATCH is as given below:
+>
+>
+> diff --git a/drivers/mtd/onenand/onenand_base.c
+> b/drivers/mtd/onenand/onenand_base.c
+> index 0e168d8..9b2f9aa 100644
+> --- a/drivers/mtd/onenand/onenand_base.c
+> +++ b/drivers/mtd/onenand/onenand_base.c
+> @@ -2728,6 +2728,13 @@ void onenand_release(struct mtd_info *mtd)
+> =A0 =A0 =A0 =A0/* Deregister partitions */
+> =A0 =A0 =A0 =A0del_mtd_partitions (mtd);
+> =A0#endif
+> + =A0 =A0 =A0 /* Reset the IOBE bit in SYS_CFG Register */
+> + =A0 =A0 =A0 =A0if ( this->wait =3D=3D onenand_interrupt_wait )
+> + =A0 =A0 =A0 {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 int syscfg =3D this->read_word(this->base +=
+ ONENAND_REG_SYS_CFG1);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 syscfg &=3D ~ONENAND_SYS_CFG1_IOBE;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 this->write_word(syscfg, this->base + ONENA=
+ND_REG_SYS_CFG1);
+> + =A0 =A0 =A0 }
+> =A0 =A0 =A0 =A0/* Deregister the device */
+> =A0 =A0 =A0 =A0del_mtd_device (mtd);
+>
+> Will this proposed patch also help saving some power lost due to
+> output leakage current as IOBE is still enabled and the INT pin is
+> connected to the ONENAND instead of in High impedence state ?
+
+Reasonable
+
+>
+> Regards
+> Gaurav Singh
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
