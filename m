@@ -1,20 +1,12 @@
-Received: from 32.27.354a.static.theplanet.com ([74.53.39.50]
-	helo=UrlSunMail2.dellwebserver.com)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LyKkY-0003LQ-Oi
-	for linux-mtd@lists.infradead.org; Mon, 27 Apr 2009 06:55:41 +0000
-Received: from Internet5 [192.168.50.21] by Proxy+ with ESMTP
-	for <linux-mtd@lists.infradead.org>; Mon, 27 Apr 2009 12:23:58 +0530
-From: "Shailesh Panchal" <Shailesh.Panchal@Matrixtelesol.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: Jffs2 file system get corrupt with multiple read/wite operation 
-Date: Mon, 27 Apr 2009 12:24:09 +0530
-Message-ID: <!~!UENERkVCMDkAAQACAAAAAAAAAAAAAAAAABgAAAAAAAAA/hGuTXQOIEaZbnWSCvcMzsKAAAAQAAAA0+flS67tW0Sy8Dcm03xziQEAAAAA@Matrixtelesol.com>
+Message-ID: <59607.192.168.10.89.1240816226.squirrel@dbdmail.itg.ti.com>
+Date: Mon, 27 Apr 2009 12:40:26 +0530 (IST)
+Subject: [resending] [PATCH] [MTD] [NAND] Add OMAP2 / OMAP3 NAND driver
+From: "vimal singh" <vimalsingh@ti.com>
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Reply-To: Shailesh Panchal <Shailesh.Panchal@Matrixtelesol.com>
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Cc: linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,567 +16,808 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+I am sending this patch again, after Fixing Artem's comments. Also CC'ed to lkml.
 
-Dear All,
-
-I am newbe in linux-kernel development, currently we are working on custom
-MPc8360 board,
-We facing problem with jffs2 file system, when we read/write the jffs2 file
-system,
-It gets corrupt, help me. Here I am sending u kernel booting message with
-jffs2 error,
+--
+Best regards,
+vimal
 
 
-I am using the linux-2.6.22 with Spansion flash S29GL256n. 
+This driver is present in the OMAP tree, now pushing it to MTD.
 
+Original author(s):
+	Jian Zhang <jzhang@ti.com>
 
-U-Boot 1.3.4 (Jan 22 2009 - 17:40:24) MPC83XX
+Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+---
+ drivers/mtd/nand/Kconfig  |    6
+ drivers/mtd/nand/Makefile |    1
+ drivers/mtd/nand/omap2.c  |  752 ++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 759 insertions(+)
 
-Reset Status: Software Hard, External/Internal Soft, External/Internal Hard
+Index: mtd-2.6/drivers/mtd/nand/Kconfig
+===================================================================
+--- mtd-2.6.orig/drivers/mtd/nand/Kconfig
++++ mtd-2.6/drivers/mtd/nand/Kconfig
+@@ -74,6 +74,12 @@ config MTD_NAND_AMS_DELTA
+ 	help
+ 	  Support for NAND flash on Amstrad E3 (Delta).
 
-CPU:   e300c1, MPC8360EA, Rev: 2.1 at 396 MHz, CSB: 264 MHz
-Board: UCP - CPU card
-I2C:   ready
-DRAM:  256 MB (DDR2, 64-bit, ECC off, 264 MHz)
-FLASH: 32 MB
-In:    serial
-Out:   serial
-Err:   serial
-Net:   FSL UEC0, FSL UEC1
-Hit any key to stop autoboot:  3 \0x08\0x08\0x08 2 \0x08\0x08\0x08 1
-\0x08\0x08\0x08 0 
-## Booting kernel from Legacy Image at ffd00000 ...
-   Image Name:   Linux-2.6.22
-   Image Type:   PowerPC Linux Kernel Image (gzip compressed)
-   Data Size:    1382700 Bytes =  1.3 MB
-   Load Address: 00000000
-   Entry Point:  00000000
-   Verifying Checksum ... OK
-   Uncompressing Kernel Image ... OK
-## Flattened Device Tree blob at fff00000
-   Booting using the fdt blob at 0xfff00000
-   Loading Device Tree to 007fa000, end 007fffff ... OK
-Using MPC836x MDS machine description
-Linux version 2.6.22 (saileshpanchal@saileshpanchal) (gcc version 4.3.2
-(GCC) ) #312 Mon Apr 20 11:11:03 IST 2009
-Ethernet PHY reset Done !
-
-HW Revision is 2.1
-Zone PFN ranges:
-  DMA             0 ->    65536
-  Normal      65536 ->    65536
-early_node_map[1] active PFN ranges
-    0:        0 ->    65536
-Built 1 zonelists.  Total pages: 65024
-Kernel command line: root=/dev/mtdblock1 rootfstype=jffs2
-console=ttyS0,115200 clock=tsc
-Warning! clock= boot option is deprecated. Use clocksource=xyz
-IPIC (128 IRQ sources) at fdefd700
-QEIC (64 IRQ sources) at fdefc080
-PID hash table entries: 1024 (order: 10, 4096 bytes)
-Console: colour dummy device 80x25
-Dentry cache hash table entries: 32768 (order: 5, 131072 bytes)
-Inode-cache hash table entries: 16384 (order: 4, 65536 bytes)
-Memory: 256316k/262144k available (2732k kernel code, 5524k reserved, 128k
-data, 108k bss, 140k init)
-Mount-cache hash table entries: 512
-NET: Registered protocol family 16
-Generic PHY: Registered new driver
-SCSI subsystem initialized
-usbcore: registered new interface driver usbfs
-usbcore: registered new interface driver hub
-usbcore: registered new device driver usb
-NET: Registered protocol family 2
-IP route cache hash table entries: 2048 (order: 1, 8192 bytes)
-TCP established hash table entries: 8192 (order: 4, 65536 bytes)
-TCP bind hash table entries: 8192 (order: 3, 32768 bytes)
-TCP: Hash tables configured (established 8192 bind 8192)
-TCP reno registered
-JFFS2 version 2.2. (NAND) \0xc2\0xa9 2001-2006 Red Hat, Inc.
-io scheduler noop registered
-io scheduler anticipatory registered (default)
-io scheduler deadline registered
-io scheduler cfq registered
-Serial: 8250/16550 driver $Revision: 1.90 $ 4 ports, IRQ sharing disabled
-serial8250.0: ttyS0 at MMIO 0xe0004500 (irq = 16) is a 16550A
-serial8250.0: ttyS1 at MMIO 0xe0004600 (irq = 17) is a 16550A
-RAMDISK driver initialized: 16 RAM disks of 32768K size 1024 blocksize
-loop: module loaded
-UCC Ethernet Controller MII Bus: probed
-ucc_geth: QE UCC Gigabit Ethernet Controller
-
-PHY interface = 1<6>
-Max speed = 1000<6>ucc_geth: UCC1 at 0xe0102000 (irq = 22) 
-calling register_netdev in ucc_geth.c
-eth0: MTU=1500 (frame
-size=1518,rx_buffer_size=1536,truesize=1792,sk_buff=160)
-
-PHY interface = 1<6>
-Max speed = 1000<6>ucc_geth: UCC2 at 0xe0103000 (irq = 23) 
-calling register_netdev in ucc_geth.c
-eth1: MTU=1500 (frame
-size=1518,rx_buffer_size=1536,truesize=1792,sk_buff=160)
-
-PHY interface = 4<6>
-Max speed = 100<6>ucc_geth: UCC5 at 0xe0102400 (irq = 40) 
-calling register_netdev in ucc_geth.c
-eth2: MTU=1500 (frame
-size=1518,rx_buffer_size=1536,truesize=1792,sk_buff=160)
-
-PHY interface = 4<6>
-Max speed = 100<6>ucc_geth: UCC8 at 0xe0103600 (irq = 43) 
-calling register_netdev in ucc_geth.c
-eth3: MTU=1500 (frame
-size=1518,rx_buffer_size=1536,truesize=1792,sk_buff=160)
-SKB Handler initialized(max=64)
-Vitesse VSC8641: Registered new driver
-Fixed PHY: Registered new driver
-PPP generic driver version 2.4.2
-NET: Registered protocol family 24
-MPC8360E MDS flash device: 2000000 at fe000000 Partition number 4
-Number of erase regions: 1
-Primary Vendor Command Set: 0002 (AMD/Fujitsu Standard)
-Primary Algorithm Table at 0040
-Alternative Vendor Command Set: 0000 (None)
-No Alternate Algorithm Table
-Vcc Minimum:  2.7 V
-Vcc Maximum:  3.6 V
-No Vpp line
-Typical byte/word write timeout: 64 \0xc2\0xb5s
-Maximum byte/word write timeout: 512 \0xc2\0xb5s
-Typical full buffer write timeout: 64 \0xc2\0xb5s
-Maximum full buffer write timeout: 2048 \0xc2\0xb5s
-Typical block erase timeout: 512 ms
-Maximum block erase timeout: 4096 ms
-Typical chip erase timeout: 524288 ms
-Maximum chip erase timeout: 2097152 ms
-Device size: 0x2000000 bytes (32 MiB)
-Flash Device Interface description: 0x0002
-  - supports x8 and x16 via BYTE# with asynchronous interface
-Max. bytes in buffer write: 0x40
-Number of Erase Block Regions: 1
-  Erase Region #0: BlockSize 0x20000 bytes, 256 blocks
-MPC8360E MDS Flash Map Info: Found 1 x16 devices at 0x0 in 16-bit bank
- Amd/Fujitsu Extended Query Table at 0x0040
-  Silicon revision: 10
-  Address sensitive unlock: Required
-  Erase Suspend: Read/write
-  Block protection: 1 sectors per group
-  Temporary block unprotect: Not supported
-  Block protect/unprotect scheme: 8
-  Number of simultaneous operations: 0
-  Burst mode: Not supported
-  Page mode: 8 word page
-  Vpp Supply Minimum Program/Erase Voltage: 11.5 V
-  Vpp Supply Maximum Program/Erase Voltage: 12.5 V
-  Top/Bottom Boot Block: Uniform, Top WP
-MPC8360E MDS Flash Map Info: CFI does not contain boot bank location.
-Assuming top.
-number of CFI chips: 1
-cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
-Creating 4 MTD partitions on "MPC8360E MDS Flash Map Info":
-0x00000000-0x00100000 : "U-Boot"
-0x00100000-0x01d00000 : "JFFS2"
-0x01d00000-0x01f00000 : "Kernel"
-0x01f00000-0x02000000 : "dtb"
-MPC8360E MDS flash device (MPC8360E MDS Flash Map Info) initialized
-fhci_hcd_of: 2007 June Freescale QE USB Host Driver 
-fhci_hcd_of e01006c0.usb: FHCI HOST Controller
-fhci_hcd_of e01006c0.usb: new USB bus registered, assigned bus number 1
-fhci_hcd_of e01006c0.usb: irq 24, io base 0x00000000
-usb usb1: configuration #1 chosen from 1 choice
-hub 1-0:1.0: USB hub found
-hub 1-0:1.0: 1 port detected
-Initializing USB Mass Storage driver...
-usbcore: registered new interface driver usb-storage
-USB Mass Storage support registered.
-rtc-s35390a: dev (254:0)
-rtc-s35390a 1-0030: rtc core: registered rtc-s35390a as rtc0
-usbcore: registered new interface driver usbhid
-drivers/hid/usbhid/hid-core.c: v2.6:USB HID core driver
-TCP cubic registered
-NET: Registered protocol family 1
-NET: Registered protocol family 17
-rtc-s35390a 1-0030: setting the system clock to 2009-04-22 12:08:48
-(1240402128)
-VFS: Mounted root (jffs2 filesystem).
-Freeing unused kernel memory: 140k init
-set the host name 
-Mounting filesystems
-Set up default network : 
-Setting up networking on loopback device: 
-
-Using QE_CLK_DUMMY in register 1 for UCC 0<6>
-Using QE_CLK_DUMMY in register 3 for UCC 1fixed_mdio_get_phydev = 0
-fixed_mdio_get_phydev = 1
-mv: cannot rename '/matrix/MacConfig.sh': No such file or directory
-Trying 100/FULL
-Trying 100/FULL
-PHY: 1:01 - Link is Up - 100/Full
-PHY: 1:02 - Link is Up - 100/Full
-Starting telnetd: 
-Starting proftpd: 
-now run usr application
-
-Using QE_CLK_DUMMY in register 1 for UCC 0<6>
-Using QE_CLK_DUMMY in register 3 for UCC 1ifconfig: SIOCSIFHWADDR: Device or
-resource busy
-ifconfig: SIOCSIFHWADDR: Device or resource busy
-******************************************
- Create the Ramdisk partition
-******************************************
-10944 inodes
-32768 blocks
-Firstdatazone=350 (350)
-Zonesize=1024
-Maxsize=268966912
-******************************************
- Run Matrix Driver
-******************************************
-Starting Matrix Gpio Driver
-<4>Gpio: module license 'unspecified' taints kernel.
-Major Number :  252
-Starting Hpi Driver
-Major Number :  251
-******************************************
- Run application
-******************************************
-IpcQueue Appl started
-IPC_INFO: Media msg queue Id = 0
-IPC_INFO: Radius msg queue Id = 32769
-IPC_INFO: SysLog msg queue Id = 65538
-IPC_INFO: Smtp msg queue Id = 98307
-IPC_INFO: DynDns msg queue Id = 131076
-Sccessfully set application as SuperUser
-Sccessfully set application Priority
-sysLog: Successfully get syslog msg queue Id =65538
-Registered SIGTERM Signal in MediaClient
-Application Modified Date: Apr 18 2009 09:49:36
-Sccessfully set application as SuperUser
-Sccessfully set application Priority
-TEST: Failed to open NetWork.cfg file
-passwd: unknown user 1234
-cp: cannot stat '../SnmpClient/Matrix_Change/snmpd.conf': No such file or
-directory
-Failed to set file pointer: No such file or directory
-
-IP-PBX login: root
-Password: 
-Apr 22 12:11:15 login[861]: root login on 'ttyS0'
--sh: id: not found
--sh: id: not found
-# ps
-PID   USER     TIME   COMMAND
-    1 root       0:04 init       
-    2 root       0:00 [kthreadd]
-    3 root       0:00 [ksoftirqd/0]
-    4 root       0:00 [watchdog/0]
-    5 root       0:00 [events/0]
-    6 root       0:00 [khelper]
-   31 root       0:00 [kblockd/0]
-   35 root       0:00 [khubd]
-   68 root       0:00 [pdflush]
-   69 root       0:06 [pdflush]
-   70 root       0:00 [kswapd0]
-   71 root       0:00 [aio/0]
-  701 root       0:00 [scsi_tgtd/0]
-  704 root       0:00 [mtdblockd]
-  735 root       0:00 [jffs2_gcd_mtd1]
-  754 root       0:00 /usr/sbin/telnetd 
-  761 admin      0:00 proftpd: (accepting connections)       
-  790 root       0:00 ./matrix/appl/IpcQueue 
-  792 root       0:00 ./matrix/appl/sysLogClient 
-  794 root       0:00 ./matrix/appl/SmtpClient 
-  796 root       0:00 ./matrix/appl/RadiusClient 
-  798 root       0:08 ./matrix/appl/MediaClient 
-  800 root       1:03 ./matrix/appl/IpPbx 
-  860 root       0:00 ./webs 
-  861 root       0:00 -sh 
-  867 root       0:00 ps 
-
-/bin/df
-Filesystem           1K-blocks      Used Available Use% Mounted on
-/dev/root                28672     12248     16424  43% /
-# /bin/df
-Filesystem           1K-blocks      Used Available Use% Mounted on
-/dev/root                28672     12660     16012  44% /
-# /bin/df
-Filesystem           1K-blocks      Used Available Use% Mounted on
-/dev/root                28672     12704     15968  44% /
-# ps
-argh. node added in wrong place at 0x016e8d28(2)
-nextblock 0x016e0000, expected at 016e9100
-Unable to handle kernel paging request for data at address 0xffffffee
-Faulting instruction address: 0xc00ed594
-Oops: Kernel access of bad area, sig: 11 [#1]
-DEBUG_PAGEALLOC MPC836x MDS
-Modules linked in: DspHpi(P) Gpio(P)
-NIP: c00ed594 LR: c00f1530 CTR: c017c49c
-REGS: cf7e5b20 TRAP: 0300   Tainted: P        (2.6.22)
-MSR: 00009032 <EE,ME,IR,DR>  CR: 88222088  XER: 00000000
-DAR: ffffffee, DSISR: 20000000
-TASK = cff4c7f0[861] 'sh' THREAD: cf7e4000
-GPR00: c00f1530 cf7e5bd0 cff4c7f0 c0760800 ffffffea 00000000 ce9edd78
-00000084 
-GPR08: cefed598 00000000 00000000 cec3d968 28222024 1005f0f4 cf7e5c18
-cf7e5c24 
-GPR16: cf7e5c20 cf7e5c1c fffff000 ffffe002 00001985 00000000 00000000
-00001000 
-GPR24: 00000049 cef9a000 00000000 c0760800 ffffffea ceda9cd8 c0760800
-cee564b4 
-Call Trace:
-[cf7e5bd0] [c00ec4f0]  (unreliable)
-[cf7e5c10] [c00f1530] 
-[cf7e5c80] [c00eb43c] 
-[cf7e5cc0] [c00439f0] 
-[cf7e5d80] [c004432c] 
-[cf7e5e00] [c0044568] 
-[cf7e5e30] [c0063a54] 
-[cf7e5ef0] [c0064564] 
-[cf7e5f10] [c0064724] 
-[cf7e5f40] [c000f0cc] 
---- Exception: c01Instruction dump:
-7d295810 7d294910 7d2900d0 7d234b78 4e800020 9421ffc0 7c0802a6 bf210024 
-7c9c2379 7c7e1b78 90010044 41820380 <809c0004> 548007be 2f800001 419e021c 
-
-
-
-Welcome to MATRIX IP-PBX
-IP-PBX login: root
-Password: 
-Write of 117 bytes at 0x01580fd0 failed. returned -5, retlen 116
-argh. node added in wrong place at 0x01580fd0(1)
-nextblock 0x01580000, expected at 01581568
-Apr 22 12:14:26 login[882]: root login on 'ttyS0'
--sh: id: not found
--sh: id: not found
-# Node CRC 684614c0 != calculated CRC ed530c06 for node at 01580fd0
-
-
-Reboot system 
-
-
-U-Boot 1.3.4 (Jan 22 2009 - 17:40:24) MPC83XX
-
-Reset Status:
-
-CPU:   e300c1, MPC8360EA, Rev: 2.1 at 396 MHz, CSB: 264 MHz
-Board: UCP - CPU card
-I2C:   ready
-DRAM:  256 MB (DDR2, 64-bit, ECC off, 264 MHz)
-FLASH: 32 MB
-In:    serial
-Out:   serial
-Err:   serial
-Net:   FSL UEC0, FSL UEC1
-Hit any key to stop autoboot:  3 \0x08\0x08\0x08 2 \0x08\0x08\0x08 1
-\0x08\0x08\0x08 0 
-## Booting kernel from Legacy Image at ffd00000 ...
-   Image Name:   Linux-2.6.22
-   Image Type:   PowerPC Linux Kernel Image (gzip compressed)
-   Data Size:    1382700 Bytes =  1.3 MB
-   Load Address: 00000000
-   Entry Point:  00000000
-   Verifying Checksum ... OK
-   Uncompressing Kernel Image ... OK
-## Flattened Device Tree blob at fff00000
-   Booting using the fdt blob at 0xfff00000
-   Loading Device Tree to 007fa000, end 007fffff ... OK
-Using MPC836x MDS machine description
-Linux version 2.6.22 (saileshpanchal@saileshpanchal) (gcc version 4.3.2
-(GCC) ) #312 Mon Apr 20 11:11:03 IST 2009
-Ethernet PHY reset Done !
-
-HW Revision is 2.1
-Zone PFN ranges:
-  DMA             0 ->    65536
-  Normal      65536 ->    65536
-early_node_map[1] active PFN ranges
-    0:        0 ->    65536
-Built 1 zonelists.  Total pages: 65024
-Kernel command line: root=/dev/mtdblock1 rootfstype=jffs2
-console=ttyS0,115200 clock=tsc
-Warning! clock= boot option is deprecated. Use clocksource=xyz
-IPIC (128 IRQ sources) at fdefd700
-QEIC (64 IRQ sources) at fdefc080
-PID hash table entries: 1024 (order: 10, 4096 bytes)
-Console: colour dummy device 80x25
-Dentry cache hash table entries: 32768 (order: 5, 131072 bytes)
-Inode-cache hash table entries: 16384 (order: 4, 65536 bytes)
-Memory: 256316k/262144k available (2732k kernel code, 5524k reserved, 128k
-data, 108k bss, 140k init)
-Mount-cache hash table entries: 512
-NET: Registered protocol family 16
-Generic PHY: Registered new driver
-SCSI subsystem initialized
-usbcore: registered new interface driver usbfs
-usbcore: registered new interface driver hub
-usbcore: registered new device driver usb
-NET: Registered protocol family 2
-IP route cache hash table entries: 2048 (order: 1, 8192 bytes)
-TCP established hash table entries: 8192 (order: 4, 65536 bytes)
-TCP bind hash table entries: 8192 (order: 3, 32768 bytes)
-TCP: Hash tables configured (established 8192 bind 8192)
-TCP reno registered
-JFFS2 version 2.2. (NAND) \0xc2\0xa9 2001-2006 Red Hat, Inc.
-io scheduler noop registered
-io scheduler anticipatory registered (default)
-io scheduler deadline registered
-io scheduler cfq registered
-Serial: 8250/16550 driver $Revision: 1.90 $ 4 ports, IRQ sharing disabled
-serial8250.0: ttyS0 at MMIO 0xe0004500 (irq = 16) is a 16550A
-serial8250.0: ttyS1 at MMIO 0xe0004600 (irq = 17) is a 16550A
-RAMDISK driver initialized: 16 RAM disks of 32768K size 1024 blocksize
-loop: module loaded
-UCC Ethernet Controller MII Bus: probed
-ucc_geth: QE UCC Gigabit Ethernet Controller
-
-PHY interface = 1<6>
-Max speed = 1000<6>ucc_geth: UCC1 at 0xe0102000 (irq = 22) 
-calling register_netdev in ucc_geth.c
-eth0: MTU=1500 (frame
-size=1518,rx_buffer_size=1536,truesize=1792,sk_buff=160)
-
-PHY interface = 1<6>
-Max speed = 1000<6>ucc_geth: UCC2 at 0xe0103000 (irq = 23) 
-calling register_netdev in ucc_geth.c
-eth1: MTU=1500 (frame
-size=1518,rx_buffer_size=1536,truesize=1792,sk_buff=160)
-
-PHY interface = 4<6>
-Max speed = 100<6>ucc_geth: UCC5 at 0xe0102400 (irq = 40) 
-calling register_netdev in ucc_geth.c
-eth2: MTU=1500 (frame
-size=1518,rx_buffer_size=1536,truesize=1792,sk_buff=160)
-
-PHY interface = 4<6>
-Max speed = 100<6>ucc_geth: UCC8 at 0xe0103600 (irq = 43) 
-calling register_netdev in ucc_geth.c
-eth3: MTU=1500 (frame
-size=1518,rx_buffer_size=1536,truesize=1792,sk_buff=160)
-SKB Handler initialized(max=64)
-Vitesse VSC8641: Registered new driver
-Fixed PHY: Registered new driver
-PPP generic driver version 2.4.2
-NET: Registered protocol family 24
-MPC8360E MDS flash device: 2000000 at fe000000 Partition number 4
-Number of erase regions: 1
-Primary Vendor Command Set: 0002 (AMD/Fujitsu Standard)
-Primary Algorithm Table at 0040
-Alternative Vendor Command Set: 0000 (None)
-No Alternate Algorithm Table
-Vcc Minimum:  2.7 V
-Vcc Maximum:  3.6 V
-No Vpp line
-Typical byte/word write timeout: 64 \0xc2\0xb5s
-Maximum byte/word write timeout: 512 \0xc2\0xb5s
-Typical full buffer write timeout: 64 \0xc2\0xb5s
-Maximum full buffer write timeout: 2048 \0xc2\0xb5s
-Typical block erase timeout: 512 ms
-Maximum block erase timeout: 4096 ms
-Typical chip erase timeout: 524288 ms
-Maximum chip erase timeout: 2097152 ms
-Device size: 0x2000000 bytes (32 MiB)
-Flash Device Interface description: 0x0002
-  - supports x8 and x16 via BYTE# with asynchronous interface
-Max. bytes in buffer write: 0x40
-Number of Erase Block Regions: 1
-  Erase Region #0: BlockSize 0x20000 bytes, 256 blocks
-MPC8360E MDS Flash Map Info: Found 1 x16 devices at 0x0 in 16-bit bank
- Amd/Fujitsu Extended Query Table at 0x0040
-  Silicon revision: 10
-  Address sensitive unlock: Required
-  Erase Suspend: Read/write
-  Block protection: 1 sectors per group
-  Temporary block unprotect: Not supported
-  Block protect/unprotect scheme: 8
-  Number of simultaneous operations: 0
-  Burst mode: Not supported
-  Page mode: 8 word page
-  Vpp Supply Minimum Program/Erase Voltage: 11.5 V
-  Vpp Supply Maximum Program/Erase Voltage: 12.5 V
-  Top/Bottom Boot Block: Uniform, Top WP
-MPC8360E MDS Flash Map Info: CFI does not contain boot bank location.
-Assuming top.
-number of CFI chips: 1
-cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
-Creating 4 MTD partitions on "MPC8360E MDS Flash Map Info":
-0x00000000-0x00100000 : "U-Boot"
-0x00100000-0x01d00000 : "JFFS2"
-0x01d00000-0x01f00000 : "Kernel"
-0x01f00000-0x02000000 : "dtb"
-MPC8360E MDS flash device (MPC8360E MDS Flash Map Info) initialized
-fhci_hcd_of: 2007 June Freescale QE USB Host Driver 
-fhci_hcd_of e01006c0.usb: FHCI HOST Controller
-fhci_hcd_of e01006c0.usb: new USB bus registered, assigned bus number 1
-fhci_hcd_of e01006c0.usb: irq 24, io base 0x00000000
-usb usb1: configuration #1 chosen from 1 choice
-hub 1-0:1.0: USB hub found
-hub 1-0:1.0: 1 port detected
-Initializing USB Mass Storage driver...
-usbcore: registered new interface driver usb-storage
-USB Mass Storage support registered.
-rtc-s35390a: dev (254:0)
-rtc-s35390a 1-0030: rtc core: registered rtc-s35390a as rtc0
-usbcore: registered new interface driver usbhid
-drivers/hid/usbhid/hid-core.c: v2.6:USB HID core driver
-TCP cubic registered
-NET: Registered protocol family 1
-NET: Registered protocol family 17
-rtc-s35390a 1-0030: setting the system clock to 2009-04-22 12:16:00
-(1240402560)
-jffs2_scan_eraseblock(): Node at 0x01580fd0 {0x1985, 0xe002, 0x00000014) has
-invalid CRC 0xb1012000 (calculated 0xcf8473ca)
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x01580fd8:
-0xb101 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x01580ff0:
-0x49ef instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x01580ff4:
-0x49ef instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x01580ff8:
-0x49ef instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x01581008:
-0x0600 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0158100c:
-0x0483 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x01581010:
-0x6846 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x01581014:
-0x785e instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x01581018:
-0x6700 instead
-Further such events for this erase block will not be printed
-jffs2_scan_eraseblock(): Node at 0x016e8d28 {0x1985, 0xe002, 0x00000044) has
-invalid CRC 0x00ca022e (calculated 0xa4ef223e)
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x016e8d30:
-0x00ca instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x016e8d48:
-0x49ef instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x016e8d4c:
-0x49ef instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x016e8d50:
-0x49ef instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x016e8d68:
-0x8810 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x016e8d6c:
-0x785e instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x016e8d70:
-0x3f48 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x016e8d74:
-0x1cc7 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x016e8d78:
-0x6988 instead
-Further such events for this erase block will not be printed
-VFS: Mounted root (jffs2 filesystem).
-Freeing unused kernel memory: 140k init
-set the host name 
-Mounting filesystems
-Set up default network : 
-Setting up networking on loopback device: 
-
-Using QE_CLK_DUMMY in register 1 for UCC 0<6>
-Using QE_CLK_DUMMY in register 3 for UCC 1
-
-
-Regards,
-shailesh
++config MTD_NAND_OMAP2
++	tristate "NAND Flash device on OMAP2 and OMAP3"
++	depends on ARM && MTD_NAND && (ARCH_OMAP2 || ARCH_OMAP3)
++	help
++          Support for NAND flash on Texas Instruments OMAP2 and OMAP3 platforms.
++
+ config MTD_NAND_TS7250
+ 	tristate "NAND Flash device on TS-7250 board"
+ 	depends on MACH_TS72XX
+Index: mtd-2.6/drivers/mtd/nand/Makefile
+===================================================================
+--- mtd-2.6.orig/drivers/mtd/nand/Makefile
++++ mtd-2.6/drivers/mtd/nand/Makefile
+@@ -25,6 +25,7 @@ obj-$(CONFIG_MTD_NAND_CS553X)		+= cs553x
+ obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
+ obj-$(CONFIG_MTD_NAND_ATMEL)		+= atmel_nand.o
+ obj-$(CONFIG_MTD_NAND_GPIO)		+= gpio.o
++obj-$(CONFIG_MTD_NAND_OMAP2) 		+= omap2.o
+ obj-$(CONFIG_MTD_NAND_CM_X270)		+= cmx270_nand.o
+ obj-$(CONFIG_MTD_NAND_BASLER_EXCITE)	+= excite_nandflash.o
+ obj-$(CONFIG_MTD_NAND_PXA3xx)		+= pxa3xx_nand.o
+Index: mtd-2.6/drivers/mtd/nand/omap2.c
+===================================================================
+--- /dev/null
++++ mtd-2.6/drivers/mtd/nand/omap2.c
+@@ -0,0 +1,752 @@
++/*
++ * Copyright (c) 2004 Texas Instruments, Jian Zhang <jzhang@ti.com>
++ * Copyright (c) 2004 Micron Technology Inc.
++ * Copyright (c) 2004 David Brownell
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/platform_device.h>
++#include <linux/dma-mapping.h>
++#include <linux/delay.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/nand.h>
++#include <linux/mtd/partitions.h>
++#include <linux/io.h>
++
++#include <asm/dma.h>
++
++#include <mach/gpmc.h>
++#include <mach/nand.h>
++
++#define GPMC_IRQ_STATUS		0x18
++#define GPMC_ECC_CONFIG		0x1F4
++#define GPMC_ECC_CONTROL	0x1F8
++#define GPMC_ECC_SIZE_CONFIG	0x1FC
++#define GPMC_ECC1_RESULT	0x200
++
++#define	DRIVER_NAME	"omap2-nand"
++
++/* size (4 KB) for IO mapping */
++#define	NAND_IO_SIZE	SZ_4K
++
++#define	NAND_WP_OFF	0
++#define NAND_WP_BIT	0x00000010
++#define WR_RD_PIN_MONITORING	0x00600000
++
++#define	GPMC_BUF_FULL	0x00000001
++#define	GPMC_BUF_EMPTY	0x00000000
++
++#define NAND_Ecc_P1e		(1 << 0)
++#define NAND_Ecc_P2e		(1 << 1)
++#define NAND_Ecc_P4e		(1 << 2)
++#define NAND_Ecc_P8e		(1 << 3)
++#define NAND_Ecc_P16e		(1 << 4)
++#define NAND_Ecc_P32e		(1 << 5)
++#define NAND_Ecc_P64e		(1 << 6)
++#define NAND_Ecc_P128e		(1 << 7)
++#define NAND_Ecc_P256e		(1 << 8)
++#define NAND_Ecc_P512e		(1 << 9)
++#define NAND_Ecc_P1024e		(1 << 10)
++#define NAND_Ecc_P2048e		(1 << 11)
++
++#define NAND_Ecc_P1o		(1 << 16)
++#define NAND_Ecc_P2o		(1 << 17)
++#define NAND_Ecc_P4o		(1 << 18)
++#define NAND_Ecc_P8o		(1 << 19)
++#define NAND_Ecc_P16o		(1 << 20)
++#define NAND_Ecc_P32o		(1 << 21)
++#define NAND_Ecc_P64o		(1 << 22)
++#define NAND_Ecc_P128o		(1 << 23)
++#define NAND_Ecc_P256o		(1 << 24)
++#define NAND_Ecc_P512o		(1 << 25)
++#define NAND_Ecc_P1024o		(1 << 26)
++#define NAND_Ecc_P2048o		(1 << 27)
++
++#define TF(value)	(value ? 1 : 0)
++
++#define P2048e(a)	(TF(a & NAND_Ecc_P2048e)	<< 0)
++#define P2048o(a)	(TF(a & NAND_Ecc_P2048o)	<< 1)
++#define P1e(a)		(TF(a & NAND_Ecc_P1e)		<< 2)
++#define P1o(a)		(TF(a & NAND_Ecc_P1o)		<< 3)
++#define P2e(a)		(TF(a & NAND_Ecc_P2e)		<< 4)
++#define P2o(a)		(TF(a & NAND_Ecc_P2o)		<< 5)
++#define P4e(a)		(TF(a & NAND_Ecc_P4e)		<< 6)
++#define P4o(a)		(TF(a & NAND_Ecc_P4o)		<< 7)
++
++#define P8e(a)		(TF(a & NAND_Ecc_P8e)		<< 0)
++#define P8o(a)		(TF(a & NAND_Ecc_P8o)		<< 1)
++#define P16e(a)		(TF(a & NAND_Ecc_P16e)		<< 2)
++#define P16o(a)		(TF(a & NAND_Ecc_P16o)		<< 3)
++#define P32e(a)		(TF(a & NAND_Ecc_P32e)		<< 4)
++#define P32o(a)		(TF(a & NAND_Ecc_P32o)		<< 5)
++#define P64e(a)		(TF(a & NAND_Ecc_P64e)		<< 6)
++#define P64o(a)		(TF(a & NAND_Ecc_P64o)		<< 7)
++
++#define P128e(a)	(TF(a & NAND_Ecc_P128e)		<< 0)
++#define P128o(a)	(TF(a & NAND_Ecc_P128o)		<< 1)
++#define P256e(a)	(TF(a & NAND_Ecc_P256e)		<< 2)
++#define P256o(a)	(TF(a & NAND_Ecc_P256o)		<< 3)
++#define P512e(a)	(TF(a & NAND_Ecc_P512e)		<< 4)
++#define P512o(a)	(TF(a & NAND_Ecc_P512o)		<< 5)
++#define P1024e(a)	(TF(a & NAND_Ecc_P1024e)	<< 6)
++#define P1024o(a)	(TF(a & NAND_Ecc_P1024o)	<< 7)
++
++#define P8e_s(a)	(TF(a & NAND_Ecc_P8e)		<< 0)
++#define P8o_s(a)	(TF(a & NAND_Ecc_P8o)		<< 1)
++#define P16e_s(a)	(TF(a & NAND_Ecc_P16e)		<< 2)
++#define P16o_s(a)	(TF(a & NAND_Ecc_P16o)		<< 3)
++#define P1e_s(a)	(TF(a & NAND_Ecc_P1e)		<< 4)
++#define P1o_s(a)	(TF(a & NAND_Ecc_P1o)		<< 5)
++#define P2e_s(a)	(TF(a & NAND_Ecc_P2e)		<< 6)
++#define P2o_s(a)	(TF(a & NAND_Ecc_P2o)		<< 7)
++
++#define P4e_s(a)	(TF(a & NAND_Ecc_P4e)		<< 0)
++#define P4o_s(a)	(TF(a & NAND_Ecc_P4o)		<< 1)
++
++#ifdef CONFIG_MTD_PARTITIONS
++static const char *part_probes[] = { "cmdlinepart", NULL };
++#endif
++
++struct omap_nand_info {
++	struct nand_hw_control		controller;
++	struct omap_nand_platform_data	*pdata;
++	struct mtd_info			mtd;
++	struct mtd_partition		*parts;
++	struct nand_chip		nand;
++	struct platform_device		*pdev;
++
++	int				gpmc_cs;
++	unsigned long			phys_base;
++	void __iomem			*gpmc_cs_baseaddr;
++	void __iomem			*gpmc_baseaddr;
++};
++
++/**
++ * omap_nand_wp - This function enable or disable the Write Protect feature on
++ * NAND device
++ * @mtd: MTD device structure
++ * @mode: WP ON/OFF
++ */
++static void omap_nand_wp(struct mtd_info *mtd, int mode)
++{
++	struct omap_nand_info *info = container_of(mtd,
++						struct omap_nand_info, mtd);
++
++	unsigned long config = __raw_readl(info->gpmc_baseaddr + GPMC_CONFIG);
++
++	if (mode)
++		config &= ~(NAND_WP_BIT);	/* WP is ON */
++	else
++		config |= (NAND_WP_BIT);	/* WP is OFF */
++
++	__raw_writel(config, (info->gpmc_baseaddr + GPMC_CONFIG));
++}
++
++/**
++ * hardware specific access to control-lines
++ * NOTE: boards may use different bits for these!!
++ *
++ * @ctrl:
++ * NAND_NCE: bit 0 - don't care
++ * NAND_CLE: bit 1 -> Command Latch
++ * NAND_ALE: bit 2 -> Address Latch
++ */
++static void omap_hwcontrol(struct mtd_info *mtd, int cmd, unsigned int ctrl)
++{
++	struct omap_nand_info *info = container_of(mtd,
++					struct omap_nand_info, mtd);
++	switch (ctrl) {
++	case NAND_CTRL_CHANGE | NAND_CTRL_CLE:
++		info->nand.IO_ADDR_W = info->gpmc_cs_baseaddr +
++						GPMC_CS_NAND_COMMAND;
++		info->nand.IO_ADDR_R = info->gpmc_cs_baseaddr +
++						GPMC_CS_NAND_DATA;
++		break;
++
++	case NAND_CTRL_CHANGE | NAND_CTRL_ALE:
++		info->nand.IO_ADDR_W = info->gpmc_cs_baseaddr +
++						GPMC_CS_NAND_ADDRESS;
++		info->nand.IO_ADDR_R = info->gpmc_cs_baseaddr +
++						GPMC_CS_NAND_DATA;
++		break;
++
++	case NAND_CTRL_CHANGE | NAND_NCE:
++		info->nand.IO_ADDR_W = info->gpmc_cs_baseaddr +
++						GPMC_CS_NAND_DATA;
++		info->nand.IO_ADDR_R = info->gpmc_cs_baseaddr +
++						GPMC_CS_NAND_DATA;
++		break;
++	}
++
++	if (cmd != NAND_CMD_NONE)
++		__raw_writeb(cmd, info->nand.IO_ADDR_W);
++}
++
++/**
++ * omap_read_buf16 - read data from NAND controller into buffer
++ * @mtd: MTD device structure
++ * @buf: buffer to store date
++ * @len: number of bytes to read
++ */
++static void omap_read_buf16(struct mtd_info *mtd, u_char *buf, int len)
++{
++	struct nand_chip *nand = mtd->priv;
++
++	__raw_readsw(nand->IO_ADDR_R, buf, len / 2);
++}
++
++/**
++ * omap_write_buf16 - write buffer to NAND controller
++ * @mtd: MTD device structure
++ * @buf: data buffer
++ * @len: number of bytes to write
++ */
++static void omap_write_buf16(struct mtd_info *mtd, const u_char * buf, int len)
++{
++	struct omap_nand_info *info = container_of(mtd,
++						struct omap_nand_info, mtd);
++	u16 *p = (u16 *) buf;
++
++	/* FIXME try bursts of writesw() or DMA ... */
++	len >>= 1;
++
++	while (len--) {
++		writew(*p++, info->nand.IO_ADDR_W);
++
++		while (GPMC_BUF_EMPTY == (readl(info->gpmc_baseaddr +
++						GPMC_STATUS) & GPMC_BUF_FULL));
++	}
++}
++/**
++ * omap_verify_buf - Verify chip data against buffer
++ * @mtd: MTD device structure
++ * @buf: buffer containing the data to compare
++ * @len: number of bytes to compare
++ */
++static int omap_verify_buf(struct mtd_info *mtd, const u_char * buf, int len)
++{
++	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
++							mtd);
++	u16 *p = (u16 *) buf;
++
++	len >>= 1;
++	while (len--) {
++		if (*p++ != cpu_to_le16(readw(info->nand.IO_ADDR_R)))
++			return -EFAULT;
++	}
++
++	return 0;
++}
++
++#ifdef CONFIG_MTD_NAND_OMAP_HWECC
++/**
++ * omap_hwecc_init-Initialize the Hardware ECC for NAND flash in GPMC controller
++ * @mtd: MTD device structure
++ */
++static void omap_hwecc_init(struct mtd_info *mtd)
++{
++	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
++							mtd);
++	register struct nand_chip *chip = mtd->priv;
++	unsigned long val = 0x0;
++
++	/* Read from ECC Control Register */
++	val = __raw_readl(info->gpmc_baseaddr + GPMC_ECC_CONTROL);
++	/* Clear all ECC | Enable Reg1 */
++	val = ((0x00000001<<8) | 0x00000001);
++	__raw_writel(val, info->gpmc_baseaddr + GPMC_ECC_CONTROL);
++
++	/* Read from ECC Size Config Register */
++	val = __raw_readl(info->gpmc_baseaddr + GPMC_ECC_SIZE_CONFIG);
++	/* ECCSIZE1=512 | Select eccResultsize[0-3] */
++	val = ((((chip->ecc.size >> 1) - 1) << 22) | (0x0000000F));
++	__raw_writel(val, info->gpmc_baseaddr + GPMC_ECC_SIZE_CONFIG);
++}
++
++/**
++ * gen_true_ecc - This function will generate true ECC value, which can be used
++ * when correcting data read from NAND flash memory core
++ * @ecc_buf: buffer to store ecc code
++ */
++static void gen_true_ecc(u8 *ecc_buf)
++{
++	u32 tmp = ecc_buf[0] | (ecc_buf[1] << 16) |
++		((ecc_buf[2] & 0xF0) << 20) | ((ecc_buf[2] & 0x0F) << 8);
++
++	ecc_buf[0] = ~(P64o(tmp) | P64e(tmp) | P32o(tmp) | P32e(tmp) |
++			P16o(tmp) | P16e(tmp) | P8o(tmp) | P8e(tmp));
++	ecc_buf[1] = ~(P1024o(tmp) | P1024e(tmp) | P512o(tmp) | P512e(tmp) |
++			P256o(tmp) | P256e(tmp) | P128o(tmp) | P128e(tmp));
++	ecc_buf[2] = ~(P4o(tmp) | P4e(tmp) | P2o(tmp) | P2e(tmp) | P1o(tmp) |
++			P1e(tmp) | P2048o(tmp) | P2048e(tmp));
++}
++
++/**
++ * omap_compare_ecc - This function compares two ECC's and indicates if there
++ * is an error. If the error can be corrected it will be corrected to the
++ * buffer
++ * @ecc_data1:  ecc code from nand spare area
++ * @ecc_data2:  ecc code from hardware register obtained from hardware ecc
++ * @page_data:  page data
++ */
++static int omap_compare_ecc(u8 *ecc_data1,	/* read from NAND memory */
++			    u8 *ecc_data2,	/* read from register */
++			    u8 *page_data)
++{
++	uint	i;
++	u8	tmp0_bit[8], tmp1_bit[8], tmp2_bit[8];
++	u8	comp0_bit[8], comp1_bit[8], comp2_bit[8];
++	u8	ecc_bit[24];
++	u8	ecc_sum = 0;
++	u8	find_bit = 0;
++	uint	find_byte = 0;
++	int	isEccFF;
++
++	isEccFF = ((*(u32 *)ecc_data1 & 0xFFFFFF) == 0xFFFFFF);
++
++	gen_true_ecc(ecc_data1);
++	gen_true_ecc(ecc_data2);
++
++	for (i = 0; i <= 2; i++) {
++		*(ecc_data1 + i) = ~(*(ecc_data1 + i));
++		*(ecc_data2 + i) = ~(*(ecc_data2 + i));
++	}
++
++	for (i = 0; i < 8; i++) {
++		tmp0_bit[i]     = *ecc_data1 % 2;
++		*ecc_data1	= *ecc_data1 / 2;
++	}
++
++	for (i = 0; i < 8; i++) {
++		tmp1_bit[i]	 = *(ecc_data1 + 1) % 2;
++		*(ecc_data1 + 1) = *(ecc_data1 + 1) / 2;
++	}
++
++	for (i = 0; i < 8; i++) {
++		tmp2_bit[i]	 = *(ecc_data1 + 2) % 2;
++		*(ecc_data1 + 2) = *(ecc_data1 + 2) / 2;
++	}
++
++	for (i = 0; i < 8; i++) {
++		comp0_bit[i]     = *ecc_data2 % 2;
++		*ecc_data2       = *ecc_data2 / 2;
++	}
++
++	for (i = 0; i < 8; i++) {
++		comp1_bit[i]     = *(ecc_data2 + 1) % 2;
++		*(ecc_data2 + 1) = *(ecc_data2 + 1) / 2;
++	}
++
++	for (i = 0; i < 8; i++) {
++		comp2_bit[i]     = *(ecc_data2 + 2) % 2;
++		*(ecc_data2 + 2) = *(ecc_data2 + 2) / 2;
++	}
++
++	for (i = 0; i < 6; i++)
++		ecc_bit[i] = tmp2_bit[i + 2] ^ comp2_bit[i + 2];
++
++	for (i = 0; i < 8; i++)
++		ecc_bit[i + 6] = tmp0_bit[i] ^ comp0_bit[i];
++
++	for (i = 0; i < 8; i++)
++		ecc_bit[i + 14] = tmp1_bit[i] ^ comp1_bit[i];
++
++	ecc_bit[22] = tmp2_bit[0] ^ comp2_bit[0];
++	ecc_bit[23] = tmp2_bit[1] ^ comp2_bit[1];
++
++	for (i = 0; i < 24; i++)
++		ecc_sum += ecc_bit[i];
++
++	switch (ecc_sum) {
++	case 0:
++		/* Not reached because this function is not called if
++		 *  ECC values are equal
++		 */
++		return 0;
++
++	case 1:
++		/* Uncorrectable error */
++		DEBUG(MTD_DEBUG_LEVEL0, "ECC UNCORRECTED_ERROR 1\n");
++		return -1;
++
++	case 11:
++		/* UN-Correctable error */
++		DEBUG(MTD_DEBUG_LEVEL0, "ECC UNCORRECTED_ERROR B\n");
++		return -1;
++
++	case 12:
++		/* Correctable error */
++		find_byte = (ecc_bit[23] << 8) +
++			    (ecc_bit[21] << 7) +
++			    (ecc_bit[19] << 6) +
++			    (ecc_bit[17] << 5) +
++			    (ecc_bit[15] << 4) +
++			    (ecc_bit[13] << 3) +
++			    (ecc_bit[11] << 2) +
++			    (ecc_bit[9]  << 1) +
++			    ecc_bit[7];
++
++		find_bit = (ecc_bit[5] << 2) + (ecc_bit[3] << 1) + ecc_bit[1];
++
++		DEBUG(MTD_DEBUG_LEVEL0, "Correcting single bit ECC error at "
++				"offset: %d, bit: %d\n", find_byte, find_bit);
++
++		page_data[find_byte] ^= (1 << find_bit);
++
++		return 0;
++	default:
++		if (isEccFF) {
++			if (ecc_data2[0] == 0 &&
++			    ecc_data2[1] == 0 &&
++			    ecc_data2[2] == 0)
++				return 0;
++		}
++		DEBUG(MTD_DEBUG_LEVEL0, "UNCORRECTED_ERROR default\n");
++		return -1;
++	}
++}
++
++/**
++ * omap_correct_data - Compares the ecc read from nand spare area with ECC
++ * registers values and corrects one bit error if it has occured
++ * @mtd: MTD device structure
++ * @dat: page data
++ * @read_ecc: ecc read from nand flash
++ * @calc_ecc: ecc read from ECC registers
++ */
++static int omap_correct_data(struct mtd_info *mtd, u_char * dat,
++				u_char * read_ecc, u_char * calc_ecc)
++{
++	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
++							mtd);
++	int blockCnt = 0, i = 0, ret = 0;
++
++	/* Ex NAND_ECC_HW12_2048 */
++	if ((info->nand.ecc.mode == NAND_ECC_HW) &&
++			(info->nand.ecc.size  == 2048))
++		blockCnt = 4;
++	else
++		blockCnt = 1;
++
++	for (i = 0; i < blockCnt; i++) {
++		if (memcmp(read_ecc, calc_ecc, 3) != 0) {
++			ret = omap_compare_ecc(read_ecc, calc_ecc, dat);
++			if (ret < 0) return ret;
++		}
++		read_ecc += 3;
++		calc_ecc += 3;
++		dat      += 512;
++	}
++	return 0;
++}
++
++/**
++ * omap_calcuate_ecc - Generate non-inverted ECC bytes.
++ * Using noninverted ECC can be considered ugly since writing a blank
++ * page ie. padding will clear the ECC bytes. This is no problem as long
++ * nobody is trying to write data on the seemingly unused page. Reading
++ * an erased page will produce an ECC mismatch between generated and read
++ * ECC bytes that has to be dealt with separately.
++ * @mtd: MTD device structure
++ * @dat: The pointer to data on which ecc is computed
++ * @ecc_code: The ecc_code buffer
++ */
++static int omap_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
++				u_char *ecc_code)
++{
++	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
++							mtd);
++	unsigned long val = 0x0;
++	unsigned long reg;
++
++	/* Start Reading from HW ECC1_Result = 0x200 */
++	reg = (unsigned long)(info->gpmc_baseaddr + GPMC_ECC1_RESULT);
++	val = __raw_readl(reg);
++	*ecc_code++ = val;          /* P128e, ..., P1e */
++	*ecc_code++ = val >> 16;    /* P128o, ..., P1o */
++	/* P2048o, P1024o, P512o, P256o, P2048e, P1024e, P512e, P256e */
++	*ecc_code++ = ((val >> 8) & 0x0f) | ((val >> 20) & 0xf0);
++	reg += 4;
++
++	return 0;
++}
++
++/**
++ * omap_enable_hwecc - This function enables the hardware ecc functionality
++ * @mtd: MTD device structure
++ * @mode: Read/Write mode
++ */
++static void omap_enable_hwecc(struct mtd_info *mtd, int mode)
++{
++	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
++							mtd);
++	register struct nand_chip *chip = mtd->priv;
++	unsigned int dev_width = (chip->options & NAND_BUSWIDTH_16) ? 1 : 0;
++	unsigned long val = __raw_readl(info->gpmc_baseaddr + GPMC_ECC_CONFIG);
++
++	switch (mode) {
++	case NAND_ECC_READ    :
++		__raw_writel(0x101, info->gpmc_baseaddr + GPMC_ECC_CONTROL);
++		/* (ECC 16 or 8 bit col) | ( CS  )  | ECC Enable */
++		val = (dev_width << 7) | (info->gpmc_cs << 1) | (0x1);
++		break;
++	case NAND_ECC_READSYN :
++		 __raw_writel(0x100, info->gpmc_baseaddr + GPMC_ECC_CONTROL);
++		/* (ECC 16 or 8 bit col) | ( CS  )  | ECC Enable */
++		val = (dev_width << 7) | (info->gpmc_cs << 1) | (0x1);
++		break;
++	case NAND_ECC_WRITE   :
++		__raw_writel(0x101, info->gpmc_baseaddr + GPMC_ECC_CONTROL);
++		/* (ECC 16 or 8 bit col) | ( CS  )  | ECC Enable */
++		val = (dev_width << 7) | (info->gpmc_cs << 1) | (0x1);
++		break;
++	default:
++		DEBUG(MTD_DEBUG_LEVEL0, "Error: Unrecognized Mode[%d]!\n",
++					mode);
++		break;
++	}
++
++	__raw_writel(val, info->gpmc_baseaddr + GPMC_ECC_CONFIG);
++}
++#endif
++
++/**
++ * omap_wait - Wait function is called during Program and erase
++ * operations and the way it is called from MTD layer, we should wait
++ * till the NAND chip is ready after the programming/erase operation
++ * has completed.
++ * @mtd: MTD device structure
++ * @chip: NAND Chip structure
++ */
++static int omap_wait(struct mtd_info *mtd, struct nand_chip *chip)
++{
++	register struct nand_chip *this = mtd->priv;
++	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
++							mtd);
++	int status = 0;
++
++	this->IO_ADDR_W = (void *) info->gpmc_cs_baseaddr +
++						GPMC_CS_NAND_COMMAND;
++	this->IO_ADDR_R = (void *) info->gpmc_cs_baseaddr + GPMC_CS_NAND_DATA;
++
++	while (!(status & 0x40)) {
++		 __raw_writeb(NAND_CMD_STATUS & 0xFF, this->IO_ADDR_W);
++		status = __raw_readb(this->IO_ADDR_R);
++	}
++	return status;
++}
++
++/**
++ * omap_dev_ready - calls the platform specific dev_ready function
++ * @mtd: MTD device structure
++ */
++static int omap_dev_ready(struct mtd_info *mtd)
++{
++	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
++							mtd);
++	unsigned int val = __raw_readl(info->gpmc_baseaddr + GPMC_IRQ_STATUS);
++
++	if ((val & 0x100) == 0x100) {
++		/* Clear IRQ Interrupt */
++		val |= 0x100;
++		val &= ~(0x0);
++		__raw_writel(val, info->gpmc_baseaddr + GPMC_IRQ_STATUS);
++	} else {
++		unsigned int cnt = 0;
++		while (cnt++ < 0x1FF) {
++			if  ((val & 0x100) == 0x100)
++				return 0;
++			val = __raw_readl(info->gpmc_baseaddr +
++							GPMC_IRQ_STATUS);
++		}
++	}
++
++	return 1;
++}
++
++static int __devinit omap_nand_probe(struct platform_device *pdev)
++{
++	struct omap_nand_info		*info;
++	struct omap_nand_platform_data	*pdata;
++	int				err;
++	unsigned long 			val;
++
++
++	pdata = pdev->dev.platform_data;
++	if (pdata == NULL) {
++		dev_err(&pdev->dev, "platform data missing\n");
++		return -ENODEV;
++	}
++
++	info = kzalloc(sizeof(struct omap_nand_info), GFP_KERNEL);
++	if (!info) return -ENOMEM;
++
++	platform_set_drvdata(pdev, info);
++
++	spin_lock_init(&info->controller.lock);
++	init_waitqueue_head(&info->controller.wq);
++
++	info->pdev = pdev;
++
++	info->gpmc_cs		= pdata->cs;
++	info->gpmc_baseaddr	= pdata->gpmc_baseaddr;
++	info->gpmc_cs_baseaddr	= pdata->gpmc_cs_baseaddr;
++
++	info->mtd.priv		= &info->nand;
++	info->mtd.name		= dev_name(&pdev->dev);
++	info->mtd.owner		= THIS_MODULE;
++
++	err = gpmc_cs_request(info->gpmc_cs, NAND_IO_SIZE, &info->phys_base);
++	if (err < 0) {
++		dev_err(&pdev->dev, "Cannot request GPMC CS\n");
++		goto out_free_info;
++	}
++
++	/* Enable RD PIN Monitoring Reg */
++	if (pdata->dev_ready) {
++		val  = gpmc_cs_read_reg(info->gpmc_cs, GPMC_CS_CONFIG1);
++		val |= WR_RD_PIN_MONITORING;
++		gpmc_cs_write_reg(info->gpmc_cs, GPMC_CS_CONFIG1, val);
++	}
++
++	val  = gpmc_cs_read_reg(info->gpmc_cs, GPMC_CS_CONFIG7);
++	val &= ~(0xf << 8);
++	val |=  (0xc & 0xf) << 8;
++	gpmc_cs_write_reg(info->gpmc_cs, GPMC_CS_CONFIG7, val);
++
++	/* NAND write protect off */
++	omap_nand_wp(&info->mtd, NAND_WP_OFF);
++
++	if (!request_mem_region(info->phys_base, NAND_IO_SIZE,
++				pdev->dev.driver->name)) {
++		err = -EBUSY;
++		goto out_free_cs;
++	}
++
++	info->nand.IO_ADDR_R = ioremap(info->phys_base, NAND_IO_SIZE);
++	if (!info->nand.IO_ADDR_R) {
++		err = -ENOMEM;
++		goto out_release_mem_region;
++	}
++	info->nand.controller = &info->controller;
++
++	info->nand.IO_ADDR_W = info->nand.IO_ADDR_R;
++	info->nand.cmd_ctrl  = omap_hwcontrol;
++
++	/* REVISIT:  only supports 16-bit NAND flash */
++
++	info->nand.read_buf   = omap_read_buf16;
++	info->nand.write_buf  = omap_write_buf16;
++	info->nand.verify_buf = omap_verify_buf;
++
++	/*
++	* If RDY/BSY line is connected to OMAP then use the omap ready funcrtion
++	* and the generic nand_wait function which reads the status register
++	* after monitoring the RDY/BSY line.Otherwise use a standard chip delay
++	* which is slightly more than tR (AC Timing) of the NAND device and read
++	* status register until you get a failure or success
++	*/
++	if (pdata->dev_ready) {
++		info->nand.dev_ready = omap_dev_ready;
++		info->nand.chip_delay = 0;
++	} else {
++		info->nand.waitfunc = omap_wait;
++		info->nand.chip_delay = 50;
++	}
++
++	info->nand.options  |= NAND_SKIP_BBTSCAN;
++	if ((gpmc_cs_read_reg(info->gpmc_cs, GPMC_CS_CONFIG1) & 0x3000)
++								== 0x1000)
++		info->nand.options  |= NAND_BUSWIDTH_16;
++
++#ifdef CONFIG_MTD_NAND_OMAP_HWECC
++	info->nand.ecc.bytes		= 3;
++	info->nand.ecc.size		= 512;
++	info->nand.ecc.calculate	= omap_calculate_ecc;
++	info->nand.ecc.hwctl		= omap_enable_hwecc;
++	info->nand.ecc.correct		= omap_correct_data;
++	info->nand.ecc.mode		= NAND_ECC_HW;
++
++	/* init HW ECC */
++	omap_hwecc_init(&info->mtd);
++#else
++	info->nand.ecc.mode = NAND_ECC_SOFT;
++#endif
++
++	/* DIP switches on some boards change between 8 and 16 bit
++	 * bus widths for flash.  Try the other width if the first try fails.
++	 */
++	if (nand_scan(&info->mtd, 1)) {
++		info->nand.options ^= NAND_BUSWIDTH_16;
++		if (nand_scan(&info->mtd, 1)) {
++			err = -ENXIO;
++			goto out_release_mem_region;
++		}
++	}
++
++#ifdef CONFIG_MTD_PARTITIONS
++	err = parse_mtd_partitions(&info->mtd, part_probes, &info->parts, 0);
++	if (err > 0)
++		add_mtd_partitions(&info->mtd, info->parts, err);
++	else if (pdata->parts)
++		add_mtd_partitions(&info->mtd, pdata->parts, pdata->nr_parts);
++	else
++#endif
++		add_mtd_device(&info->mtd);
++
++	platform_set_drvdata(pdev, &info->mtd);
++
++	return 0;
++
++out_release_mem_region:
++	release_mem_region(info->phys_base, NAND_IO_SIZE);
++out_free_cs:
++	gpmc_cs_free(info->gpmc_cs);
++out_free_info:
++	kfree(info);
++
++	return err;
++}
++
++static int omap_nand_remove(struct platform_device *pdev)
++{
++	struct mtd_info *mtd = platform_get_drvdata(pdev);
++	struct omap_nand_info *info = mtd->priv;
++
++	platform_set_drvdata(pdev, NULL);
++	/* Release NAND device, its internal structures and partitions */
++	nand_release(&info->mtd);
++	iounmap(info->nand.IO_ADDR_R);
++	kfree(&info->mtd);
++	return 0;
++}
++
++static struct platform_driver omap_nand_driver = {
++	.probe		= omap_nand_probe,
++	.remove		= omap_nand_remove,
++	.driver		= {
++		.name	= DRIVER_NAME,
++		.owner	= THIS_MODULE,
++	},
++};
++
++static int __init omap_nand_init(void)
++{
++	printk(KERN_INFO "%s driver initializing\n", DRIVER_NAME);
++	return platform_driver_register(&omap_nand_driver);
++}
++
++static void __exit omap_nand_exit(void)
++{
++	platform_driver_unregister(&omap_nand_driver);
++}
++
++module_init(omap_nand_init);
++module_exit(omap_nand_exit);
++
++MODULE_ALIAS(DRIVER_NAME);
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("Glue layer for NAND flash on TI OMAP boards");
