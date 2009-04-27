@@ -1,18 +1,16 @@
-Received: from qw-out-1920.google.com ([74.125.92.147])
+Received: from mlbe2k1.cs.myharris.net ([137.237.90.88])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LyXy3-0003eO-LS
-	for linux-mtd@lists.infradead.org; Mon, 27 Apr 2009 21:02:31 +0000
-Received: by qw-out-1920.google.com with SMTP id 4so141513qwk.24
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 27 Apr 2009 14:02:21 -0700 (PDT)
+	id 1LyY5s-0004a9-05
+	for linux-mtd@lists.infradead.org; Mon, 27 Apr 2009 21:10:39 +0000
+Message-ID: <49F61F32.3020003@harris.com>
+Date: Mon, 27 Apr 2009 17:10:10 -0400
+From: "Steven A. Falco" <sfalco@harris.com>
 MIME-Version: 1.0
-Date: Mon, 27 Apr 2009 16:02:21 -0500
-Message-ID: <587a08410904271402h6e9cf4fl8d4bb843cd03990f@mail.gmail.com>
-Subject: Mounting NAND flash as the root file system
-From: Jatin Sharma <sharmaj@gmail.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Subject: [PATCH] Bug in m25p80.c during whole-chip erase
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+Cc: dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,63 +20,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
-I am working with Kernel  2.6.10 and am having issues with mounting
-the NAND fs.
+There is a logic error in "whole chip erase" for the m25p80 family.  If
+the whole device is successfully erased, erase_chip() will return 0, and
+the code will fall through to the "else" clause, and do sector-by-sector
+erase in addition to the whole-chip erase.  This patch corrects that.
 
-The kernel is able mount is ramdisk when the file system is embedded
-in the kernel. My task is to boot the board from NOR and have the NAND
-FS mounted once it has booted. From the kernel logs, it seems the NAND
-driver is able to identify the chip.
+Also, the MAX_READY_WAIT_COUNT is insufficient for an m25p16 connected
+to a 400 MHz powerpc.  Increasing it allows me to successfully program
+the device on my board.
 
-<6>io scheduler cfq registered
-RAMDISK driver initialized: 1 RAM disks of 20000K size 1024 blocksize
-<6>loop: loaded (max 8 devices)
-WP-SED: Initializing Ethernet card...
-get_ethernet_addr: 00:00:77:b3:61:b8
-WP-SED: Ethernet card initialized.
-BCM> Registering BCM driver with major 244
-<6>elevator: using anticipatory as default io scheduler
-<5>Interphase NAND Flash chip @ bd400000 CE  <5>(using Interphase NAND
-command handler)
-Nand Base address = bd400000
-Device ready = 1
-Read NAND Status Register = 0xe0
-Set NAND protection and read status  = 0x60
-Clear NAND protection and read status  = 0xe0
-<5>NAND Clear Write protect
-<6>NAND device: Manufacturer ID: 0x20, Chip ID: 0xd3 (ST Micro NAND
-1GiB 3,3V 8-bit)
-<6>Scanning device for bad blocks
-<4>Bad eraseblock 290 at 0x02440000
-<4>Bad eraseblock 1058 at 0x08440000
-<4>Bad eraseblock 2328 at 0x12300000
-<4>Bad eraseblock 3049 at 0x17d20000
-<4>Bad eraseblock 3780 at 0x1d880000
-<4>Bad eraseblock 5249 at 0x29020000
-<4>Bad eraseblock 7051 at 0x37160000
-<5>Using static partition definition
-<5>Creating 1 MTD partitions on "NAND 1GiB 3,3V 8-bit":
-<5>0x00000000-0x20000000 : "NAND Flash0"
-<6>mtd: Giving out device 0 to NAND Flash0
-<5>Sizes: page=2048B OOB=64B Chip=1024MB (8b wide)
+Signed-off-by: Steven A. Falco <sfalco@harris.com>
+---
 
-
-When I boot the kernel using ramdisk (FS in RAM), I am able to run the
-flash_eraseall utility successfully. But the mount command fails:
-
-WDS# mount -t jffs2 /dev/mtd0 /mnt
-mount: mounting /dev/mtd0 on /mnt failed
-
-Before mounting, I have written a jffs2.img (same as that from
-ramdisk.gz) to this partition using nandwrite command:
-
-# /usr/bin/nandwrite /dev/mtd0 /mnt/nfs/jffs2.img
-
-Being fairly new to this area, I am curious how can I debug the mount
-problem. Once I am able to mount this jffs2.img, I will try to boot
-into it.
-
-
-Thanks,
-Jatin
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 6659b22..3a2fed8 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -53,7 +53,7 @@
+ #define	SR_SRWD			0x80	/* SR write protect */
+ 
+ /* Define max times to check status register before we give up. */
+-#define	MAX_READY_WAIT_COUNT	100000
++#define	MAX_READY_WAIT_COUNT	1000000
+ #define	CMD_SIZE		4
+ 
+ #ifdef CONFIG_M25PXX_USE_FAST_READ
+@@ -251,10 +251,12 @@ static int m25p80_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	mutex_lock(&flash->lock);
+ 
+ 	/* whole-chip erase? */
+-	if (len == flash->mtd.size && erase_chip(flash)) {
+-		instr->state = MTD_ERASE_FAILED;
+-		mutex_unlock(&flash->lock);
+-		return -EIO;
++	if (len == flash->mtd.size) {
++		if (erase_chip(flash)) {
++			instr->state = MTD_ERASE_FAILED;
++			mutex_unlock(&flash->lock);
++			return -EIO;
++		}
+ 
+ 	/* REVISIT in some cases we could speed up erasing large regions
+ 	 * by using OPCODE_SE instead of OPCODE_BE_4K.  We may have set up
