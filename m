@@ -1,23 +1,18 @@
-Received: from djurbala-pt.tunnel.tserv2.fmt.ipv6.he.net
-	([2001:470:1f01:ffff::eb] helo=gate.crashing.org)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LyWcj-0003wX-1J
-	for linux-mtd@lists.infradead.org; Mon, 27 Apr 2009 19:36:21 +0000
-Message-Id: <2CE2BC61-1C6B-4D01-870B-BC460730AD79@kernel.crashing.org>
-From: Kumar Gala <galak@kernel.crashing.org>
-To: =?ISO-8859-1?Q?Rog=E9rio_Brito?= <rbrito@ime.usp.br>
-In-Reply-To: <20090424223355.GB7858@ime.usp.br>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed; delsp=yes
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Apple Message framework v930.3)
-Subject: Re: [PATCH] powerpc: minimizing the configuration of
-	linkstation_defconfig
-Date: Mon, 27 Apr 2009 14:29:52 -0500
-References: <20090424065816.GA15525@ime.usp.br>
-	<Pine.LNX.4.64.0904242158210.8309@axis700.grange>
-	<20090424223355.GB7858@ime.usp.br>
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Guennadi Liakhovetski <g.liakhovetski@gmx.de>, linux-kernel@vger.kernel.org
+Received: from qw-out-1920.google.com ([74.125.92.147])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LyXy3-0003eO-LS
+	for linux-mtd@lists.infradead.org; Mon, 27 Apr 2009 21:02:31 +0000
+Received: by qw-out-1920.google.com with SMTP id 4so141513qwk.24
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 27 Apr 2009 14:02:21 -0700 (PDT)
+MIME-Version: 1.0
+Date: Mon, 27 Apr 2009 16:02:21 -0500
+Message-ID: <587a08410904271402h6e9cf4fl8d4bb843cd03990f@mail.gmail.com>
+Subject: Mounting NAND flash as the root file system
+From: Jatin Sharma <sharmaj@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,61 +22,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello,
+I am working with Kernel  2.6.10 and am having issues with mounting
+the NAND fs.
 
-On Apr 24, 2009, at 5:33 PM, Rog=E9rio Brito wrote:
+The kernel is able mount is ramdisk when the file system is embedded
+in the kernel. My task is to boot the board from NOR and have the NAND
+FS mounted once it has booted. From the kernel logs, it seems the NAND
+driver is able to identify the chip.
 
-> This patch addresses the following issues:
->
->
-> 01. makes CFQ the default scheduler, to be in line with the rest of =20=
+<6>io scheduler cfq registered
+RAMDISK driver initialized: 1 RAM disks of 20000K size 1024 blocksize
+<6>loop: loaded (max 8 devices)
+WP-SED: Initializing Ethernet card...
+get_ethernet_addr: 00:00:77:b3:61:b8
+WP-SED: Ethernet card initialized.
+BCM> Registering BCM driver with major 244
+<6>elevator: using anticipatory as default io scheduler
+<5>Interphase NAND Flash chip @ bd400000 CE  <5>(using Interphase NAND
+command handler)
+Nand Base address = bd400000
+Device ready = 1
+Read NAND Status Register = 0xe0
+Set NAND protection and read status  = 0x60
+Clear NAND protection and read status  = 0xe0
+<5>NAND Clear Write protect
+<6>NAND device: Manufacturer ID: 0x20, Chip ID: 0xd3 (ST Micro NAND
+1GiB 3,3V 8-bit)
+<6>Scanning device for bad blocks
+<4>Bad eraseblock 290 at 0x02440000
+<4>Bad eraseblock 1058 at 0x08440000
+<4>Bad eraseblock 2328 at 0x12300000
+<4>Bad eraseblock 3049 at 0x17d20000
+<4>Bad eraseblock 3780 at 0x1d880000
+<4>Bad eraseblock 5249 at 0x29020000
+<4>Bad eraseblock 7051 at 0x37160000
+<5>Using static partition definition
+<5>Creating 1 MTD partitions on "NAND 1GiB 3,3V 8-bit":
+<5>0x00000000-0x20000000 : "NAND Flash0"
+<6>mtd: Giving out device 0 to NAND Flash0
+<5>Sizes: page=2048B OOB=64B Chip=1024MB (8b wide)
 
-> the kernel.
->
-> 02. since linkstations are meant to store files, enable large blk =20
-> devices.
->
-> 03. disable CONFIG_MIGRATION in in such low memory devices.
->
-> 04. disable CONFIG_BLK_DEV_RAM.
 
-do we not allow booting a ramdisk?
+When I boot the kernel using ramdisk (FS in RAM), I am able to run the
+flash_eraseall utility successfully. But the mount command fails:
 
-> 05. disable CONFIG_SCSI_LOWLEVEL, as no device under that tree is =20
-> used.
->
-> 06. idem for CONFIG_NETDEV_10000.
->
-> 07. idem for CONFIG_WIRELESS.
->
-> 08. idem for CONFIG_HWMON.
->
-> 09. idem for CONFIG_CRYPTO_HW.
->
-> 10. disable CONFIG_VIDEO_OUTPUT_CONTROL.
->
-> 11. keep consistency and disable extended attributes in CIFS, ext3, =20=
+WDS# mount -t jffs2 /dev/mtd0 /mnt
+mount: mounting /dev/mtd0 on /mnt failed
 
-> and NFS.
->
-> 12. enable CONFIG_PRINTK_TIME.
->
-> Signed-off-by: Rog=E9rio Brito <rbrito@ime.usp.br>
->
-> ---
->
-> Dear Kumar, please, apply this one.
->
-> I have another patch regarding one regression regarding MTD &
-> PHYSMAP_COMPAT that I plan to send on top of this one.
->
-> Thanks.
+Before mounting, I have written a jffs2.img (same as that from
+ramdisk.gz) to this partition using nandwrite command:
 
-Ok, can we look at just specifying such info in the linkstation device =20=
+# /usr/bin/nandwrite /dev/mtd0 /mnt/nfs/jffs2.img
 
-tree.
+Being fairly new to this area, I am curious how can I debug the mount
+problem. Once I am able to mount this jffs2.img, I will try to boot
+into it.
 
-Also, can you break this defconfig update into two patches.  1. that =20
-just updates to 2.6.30-rc3 (or latest) and 2. that makes the various =20
-changes you've listed above.
 
-- k=
+Thanks,
+Jatin
