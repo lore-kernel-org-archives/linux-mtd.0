@@ -1,25 +1,19 @@
-Received: from djurbala-pt.tunnel.tserv2.fmt.ipv6.he.net
-	([2001:470:1f01:ffff::eb] helo=gate.crashing.org)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LynKW-00038t-I6
-	for linux-mtd@lists.infradead.org; Tue, 28 Apr 2009 13:26:41 +0000
-Message-Id: <F78629F9-59D2-4974-8461-06B7FAC2625D@kernel.crashing.org>
-From: Kumar Gala <galak@kernel.crashing.org>
-To: =?ISO-8859-1?Q?Rog=E9rio_Brito?= <rbrito@ime.usp.br>
-In-Reply-To: <20090428022711.GA30538@ime.usp.br>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed; delsp=yes
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Apple Message framework v930.3)
-Subject: Re: [PATCH] powerpc: minimizing the configuration of
-	linkstation_defconfig
-Date: Tue, 28 Apr 2009 08:16:34 -0500
-References: <20090424065816.GA15525@ime.usp.br>
-	<Pine.LNX.4.64.0904242158210.8309@axis700.grange>
-	<20090424223355.GB7858@ime.usp.br>
-	<2CE2BC61-1C6B-4D01-870B-BC460730AD79@kernel.crashing.org>
-	<20090428022711.GA30538@ime.usp.br>
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Guennadi Liakhovetski <g.liakhovetski@gmx.de>, linux-kernel@vger.kernel.org
+Received: from mlbe2k1.cs.myharris.net ([137.237.90.88])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LynY8-00010K-Em
+	for linux-mtd@lists.infradead.org; Tue, 28 Apr 2009 13:40:57 +0000
+Message-ID: <49F70752.5030702@harris.com>
+Date: Tue, 28 Apr 2009 09:40:34 -0400
+From: "Steven A. Falco" <sfalco@harris.com>
+MIME-Version: 1.0
+To: Mike Frysinger <vapier.adi@gmail.com>
+Subject: Re: [PATCH] Bug in m25p80.c during whole-chip erase
+References: <49F61F32.3020003@harris.com>
+	<8bd0f97a0904271426p30df3a97ke31af72dcf96531f@mail.gmail.com>
+In-Reply-To: <8bd0f97a0904271426p30df3a97ke31af72dcf96531f@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,53 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-On Apr 27, 2009, at 9:27 PM, Rog=E9rio Brito wrote:
-
-> Hi, Kumar.
->
-> On Apr 27 2009, Kumar Gala wrote:
+Mike Frysinger wrote:
+> On Mon, Apr 27, 2009 at 17:10, Steven A. Falco wrote:
+>> There is a logic error in "whole chip erase" for the m25p80 family.  If
+>> the whole device is successfully erased, erase_chip() will return 0, and
+>> the code will fall through to the "else" clause, and do sector-by-sector
+>> erase in addition to the whole-chip erase.  This patch corrects that.
 >>
->> On Apr 24, 2009, at 5:33 PM, Rog=E9rio Brito wrote:
->>> 04. disable CONFIG_BLK_DEV_RAM.
->>
->> do we not allow booting a ramdisk?
->
-> Well, do we need a block device in ram to use initramfs?
->
-> (...)
+>> Also, the MAX_READY_WAIT_COUNT is insufficient for an m25p16 connected
+>> to a 400 MHz powerpc.  Increasing it allows me to successfully program
+>> the device on my board.
+> 
+> in general, trying to set timeouts "close" to the spec gains nothing
+> with spi flash devices.  the timeout limit is hit only when an error
+> occurs, and errors should not occur during the normal run of things.
+> on the other side, having a timeout be wrongly hit when the device is
+> operating correctly is a much worse situation to be in.
+> -mike
+> 
 
-I'm pretty sure we need this for old initrd style ramdisks so I'd =20
-prefer we leave it enabled.
+Right.  This chip takes 13 seconds (typical) to bulk erase, according to
+the Numonyx data sheet.  So increasing the timeout to account for such
+a slow part is necessary, and allows me to successfully erase the part.
 
->>> Dear Kumar, please, apply this one.
->>>
->>> I have another patch regarding one regression regarding MTD &
->>> PHYSMAP_COMPAT that I plan to send on top of this one.
->>
->> Ok, can we look at just specifying such info in the linkstation =20
->> device
->> tree.
->
-> Thanks. The MTD & PHYMAP_COMPAT are the things that have been =20
-> bugging me
-> and my main reason to keep with the bleeding edge kernels is to get =20=
+Are there any changes you'd like to see in this patch, or is it ok as
+written?
 
-> things
-> whey they were (regarding mtd) as in kernel 2.6.28.
->
-> As I have no experience with MTD devices, I would appreciate a =20
-> reference to
-> their workings... All that I know is that all my /dev/mtd* devices =20
-> are gone
-> if I boot a 2.6.29* kernel.
->
-> Of course, I can do a git bisect process (since the MTD subsystem =20
-> doesn't
-> work as it did in the past even if I enable PHYMAP_COMPAT and put =20
-> the same
-> settings there, quite unfortunately).
-
-ok.. I killed my kurobox long ago so can't be much help here.
-
-- k=
+	Steve
