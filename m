@@ -1,27 +1,23 @@
-Received: from djurbala-pt.tunnel.tserv2.fmt.ipv6.he.net
-	([2001:470:1f01:ffff::eb] helo=gate.crashing.org)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lyooa-0001fc-I6
-	for linux-mtd@lists.infradead.org; Tue, 28 Apr 2009 15:01:48 +0000
-Message-Id: <982CAD05-5F4A-4A33-B991-16162CFFE1D8@kernel.crashing.org>
-From: Kumar Gala <galak@kernel.crashing.org>
-To: =?ISO-8859-1?Q?Rog=E9rio_Brito?= <rbrito@ime.usp.br>
-In-Reply-To: <20090428144814.GA14926@ime.usp.br>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed; delsp=yes
+Received: from mail-gx0-f159.google.com ([209.85.217.159])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LypjS-0002VK-Ar
+	for linux-mtd@lists.infradead.org; Tue, 28 Apr 2009 16:01:15 +0000
+Received: by gxk3 with SMTP id 3so1159100gxk.18
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 28 Apr 2009 08:59:25 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <49F70752.5030702@harris.com>
+References: <49F61F32.3020003@harris.com>
+	<8bd0f97a0904271426p30df3a97ke31af72dcf96531f@mail.gmail.com>
+	<49F70752.5030702@harris.com>
+Date: Tue, 28 Apr 2009 11:58:27 -0400
+Message-ID: <8bd0f97a0904280858p7a08c061oc47f3e64b098c5d9@mail.gmail.com>
+Subject: Re: [PATCH] Bug in m25p80.c during whole-chip erase
+From: Mike Frysinger <vapier.adi@gmail.com>
+To: "Steven A. Falco" <sfalco@harris.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Apple Message framework v930.3)
-Subject: Re: [PATCH] powerpc: minimizing the configuration of
-	linkstation_defconfig
-Date: Tue, 28 Apr 2009 09:54:27 -0500
-References: <20090424065816.GA15525@ime.usp.br>
-	<Pine.LNX.4.64.0904242158210.8309@axis700.grange>
-	<20090424223355.GB7858@ime.usp.br>
-	<2CE2BC61-1C6B-4D01-870B-BC460730AD79@kernel.crashing.org>
-	<20090428022711.GA30538@ime.usp.br>
-	<F78629F9-59D2-4974-8461-06B7FAC2625D@kernel.crashing.org>
-	<20090428144814.GA14926@ime.usp.br>
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Guennadi Liakhovetski <g.liakhovetski@gmx.de>, linux-kernel@vger.kernel.org
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,19 +27,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-On Apr 28, 2009, at 9:48 AM, Rog=E9rio Brito wrote:
-
-> On Apr 28 2009, Kumar Gala wrote:
->> I'm pretty sure we need this for old initrd style ramdisks so I'd =20
->> prefer
->> we leave it enabled.
+On Tue, Apr 28, 2009 at 09:40, Steven A. Falco wrote:
+> Mike Frysinger wrote:
+>> On Mon, Apr 27, 2009 at 17:10, Steven A. Falco wrote:
+>>> There is a logic error in "whole chip erase" for the m25p80 family. =C2=
+=A0If
+>>> the whole device is successfully erased, erase_chip() will return 0, an=
+d
+>>> the code will fall through to the "else" clause, and do sector-by-secto=
+r
+>>> erase in addition to the whole-chip erase. =C2=A0This patch corrects th=
+at.
+>>>
+>>> Also, the MAX_READY_WAIT_COUNT is insufficient for an m25p16 connected
+>>> to a 400 MHz powerpc. =C2=A0Increasing it allows me to successfully pro=
+gram
+>>> the device on my board.
+>>
+>> in general, trying to set timeouts "close" to the spec gains nothing
+>> with spi flash devices. =C2=A0the timeout limit is hit only when an erro=
+r
+>> occurs, and errors should not occur during the normal run of things.
+>> on the other side, having a timeout be wrongly hit when the device is
+>> operating correctly is a much worse situation to be in.
 >
-> Oh, for oldstyle it is needed. You're right. It is better to keep it =20=
+> Right. =C2=A0This chip takes 13 seconds (typical) to bulk erase, accordin=
+g to
+> the Numonyx data sheet. =C2=A0So increasing the timeout to account for su=
+ch
+> a slow part is necessary, and allows me to successfully erase the part.
+>
+> Are there any changes you'd like to see in this patch, or is it ok as
+> written?
 
-> in
-> the defconfig. Just drop the hunk from the patch that I sent you.
-
-just send a new patch w/this fixed.
-
-- k=
+changes look fine to me, but i'm not in any position to get things
+merged for you ;)
+-mike
