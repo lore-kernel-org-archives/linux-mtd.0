@@ -1,26 +1,26 @@
 Received: from smtp.flash.net.br ([201.46.240.48] helo=smtp.gru.flash.tv.br)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LynQa-0005AR-L3
-	for linux-mtd@lists.infradead.org; Tue, 28 Apr 2009 13:32:59 +0000
+	id 1LyqQe-0000Dc-U2
+	for linux-mtd@lists.infradead.org; Tue, 28 Apr 2009 16:45:15 +0000
 Received: from localhost (localhost [127.0.0.1])
-	by smtp.gru.flash.tv.br (Postfix) with ESMTP id 43B9F1E6B76
+	by smtp.gru.flash.tv.br (Postfix) with ESMTP id 9ED331E6CDD
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 28 Apr 2009 10:32:34 -0300 (BRT)
+	Tue, 28 Apr 2009 13:44:49 -0300 (BRT)
 Received: from smtp.gru.flash.tv.br ([127.0.0.1])
 	by localhost (smtp.gru.flash.tv.br [127.0.0.1]) (amavisd-new,
 	port 10024)
-	with ESMTP id FTViFfrcWUHq for <linux-mtd@lists.infradead.org>;
-	Tue, 28 Apr 2009 10:32:20 -0300 (BRT)
+	with ESMTP id fTqVnqAZ-xro for <linux-mtd@lists.infradead.org>;
+	Tue, 28 Apr 2009 13:44:36 -0300 (BRT)
 Received: from chagas.nectar.ath.cx (unknown [187.22.248.170])
-	by smtp.gru.flash.tv.br (Postfix) with ESMTPA id 83CC31E6CE5
+	by smtp.gru.flash.tv.br (Postfix) with ESMTPA id 54AEC1E6B59
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 28 Apr 2009 10:32:15 -0300 (BRT)
-Date: Tue, 28 Apr 2009 10:32:00 -0300
+	Tue, 28 Apr 2009 13:44:30 -0300 (BRT)
+Date: Tue, 28 Apr 2009 13:44:16 -0300
 From: =?utf-8?Q?Rog=C3=A9rio?= Brito <rbrito@ime.usp.br>
 To: Kumar Gala <galak@kernel.crashing.org>
 Subject: [PATCH 2/2] powerpc: minimizing the configuration of
 	linkstation_defconfig
-Message-ID: <20090428133200.GB12828@ime.usp.br>
+Message-ID: <20090428164416.GA25750@ime.usp.br>
 References: <20090424065816.GA15525@ime.usp.br>
 	<Pine.LNX.4.64.0904242158210.8309@axis700.grange>
 	<20090424223355.GB7858@ime.usp.br>
@@ -41,8 +41,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch addresses the following issues:
 
+This patch addresses the following issues:
 
 01. makes CFQ the default scheduler, to be in line with the rest of  
 the kernel.
@@ -52,31 +52,29 @@ devices.
 
 03. disable CONFIG_MIGRATION in in such low memory devices.
 
-04. disable CONFIG_BLK_DEV_RAM.
-
-05. disable CONFIG_SCSI_LOWLEVEL, as no device under that tree is  
+04. disable CONFIG_SCSI_LOWLEVEL, as no device under that tree is  
 used.
 
-06. idem for CONFIG_NETDEV_10000.
+05. idem for CONFIG_NETDEV_10000.
 
-07. idem for CONFIG_WIRELESS.
+06. idem for CONFIG_WIRELESS.
 
-08. idem for CONFIG_HWMON.
+07. idem for CONFIG_HWMON.
 
-09. idem for CONFIG_CRYPTO_HW.
+08. idem for CONFIG_CRYPTO_HW.
 
-10. disable CONFIG_VIDEO_OUTPUT_CONTROL.
+09. disable CONFIG_VIDEO_OUTPUT_CONTROL.
 
-11. keep consistency and disable extended attributes in CIFS, ext3,  
+10. keep consistency and disable extended attributes in CIFS, ext3,  
 and NFS.
 
-12. enable CONFIG_PRINTK_TIME.
+11. enable CONFIG_PRINTK_TIME.
 
 Signed-off-by: Rogério Brito <rbrito@ime.usp.br>
 
 ---
 
-This is the patch for tidying the defconfig.
+Here is the fixed patch. Thank you very much, Kumar.
 
 --- a/arch/powerpc/configs/linkstation_defconfig	2009-04-28 09:53:38.000000000 -0300
 +++ b/arch/powerpc/configs/linkstation_defconfig	2009-04-28 10:14:11.000000000 -0300
@@ -137,18 +135,6 @@ This is the patch for tidying the defconfig.
  # CONFIG_WIMAX is not set
  # CONFIG_RFKILL is not set
  # CONFIG_NET_9P is not set
-@@ -625,10 +619,7 @@
- # CONFIG_BLK_DEV_NBD is not set
- # CONFIG_BLK_DEV_SX8 is not set
- # CONFIG_BLK_DEV_UB is not set
--CONFIG_BLK_DEV_RAM=y
--CONFIG_BLK_DEV_RAM_COUNT=2
--CONFIG_BLK_DEV_RAM_SIZE=8192
--# CONFIG_BLK_DEV_XIP is not set
-+# CONFIG_BLK_DEV_RAM is not set
- # CONFIG_CDROM_PKTCDVD is not set
- # CONFIG_ATA_OVER_ETH is not set
- # CONFIG_BLK_DEV_HD is not set
 @@ -688,49 +679,7 @@
  # CONFIG_SCSI_ISCSI_ATTRS is not set
  # CONFIG_SCSI_SAS_LIBSAS is not set
@@ -367,7 +353,6 @@ This is the patch for tidying the defconfig.
 +# CONFIG_CRYPTO_HW is not set
  # CONFIG_PPC_CLOCK is not set
  # CONFIG_VIRTUALIZATION is not set
-
 
 -- 
 Rogério Brito : rbrito@{mackenzie,ime.usp}.br : GPG key 1024D/7C2CAEB8
