@@ -1,24 +1,24 @@
-Received: from yx-out-1718.google.com ([74.125.44.155])
+Received: from qw-out-1920.google.com ([74.125.92.150])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lyd5i-0005SP-KU
-	for linux-mtd@lists.infradead.org; Tue, 28 Apr 2009 02:30:54 +0000
-Received: by yx-out-1718.google.com with SMTP id 6so198304yxn.72
+	id 1LyePJ-0007CQ-BI
+	for linux-mtd@lists.infradead.org; Tue, 28 Apr 2009 03:55:04 +0000
+Received: by qw-out-1920.google.com with SMTP id 4so287840qwk.24
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 27 Apr 2009 19:30:36 -0700 (PDT)
+	Mon, 27 Apr 2009 20:54:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1240305332.4008.91.camel@macbook.infradead.org>
-References: <1c3f4270904181955g28d25ef5nef3cc3001c0d3a06@mail.gmail.com>
-	<1240126383.3589.46.camel@macbook.infradead.org>
-	<1c3f4270904201127o4c0eea30pb17a1a775a7b5d0d@mail.gmail.com>
-	<1240305332.4008.91.camel@macbook.infradead.org>
-Date: Mon, 27 Apr 2009 19:30:36 -0700
-Message-ID: <1c3f4270904271930l796c2fber9fb234efa6239a24@mail.gmail.com>
-Subject: Re: jffs2 filesystem/flash data integrity
-From: Manoj <manoj23@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3cc7a0df0904260309g4486ad02u9bc8ebe886fc9d8@mail.gmail.com>
+References: <3cc7a0df0904250127y3f2dbb65t50f349c3e9dfb969@mail.gmail.com>
+	<9c9fda240904251922t7b2f6979j5a94115b0079c10a@mail.gmail.com>
+	<3cc7a0df0904260309g4486ad02u9bc8ebe886fc9d8@mail.gmail.com>
+Date: Tue, 28 Apr 2009 09:24:54 +0530
+Message-ID: <3cc7a0df0904272054l1fe78063jfde4ff73e6ae960d@mail.gmail.com>
+Subject: Re: [PATCH] Onenand Reset IOBE bit in SYS_CFG register in
+	onenand_release
+From: Gaurav Singh <gausinghnsit@gmail.com>
+To: Kyungmin Park <kmpark@infradead.org>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: Linux mtd group <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,34 +28,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David,
+Hi,
 
-When I set 'CONFIG_JFFS2_FS_DEBUG=1', the problem goes away :-(.  With
-that flag set to 0, I occasionally see
-"JFFS2 notice: (133) jffs2_get_inode_nodes: Node header CRC failed at
-xxxx" messages. Should I worry about it?
+> I think that the interrupt mode will help when there is high load on
+> the CPU. Will run tests in interrupt and polling mode in two
+> scenarios. 1. Copy of a large file to ONENAND with no CPU load. 2.
+> Copy of a Large file to ONENAND with an infinite loop running in the
+> background - this generates CPU load. Little bit busy today but will
+> run it and mail the results by tomorrow. In my opinion Scenario 2
+> should give better results in interrupt mode.
 
-When I make a copy of the file, does it get written to the flash right
-away or does the write happen later? I am doing a "sync" after the
-"cp" command. An interesting thing to note is that the 0s can appear
-in both original and the copied file.
+Interrupt mode is giving better results than the normal polling mode.
+In terms of time taken to copy both the modes are taking the same time
+for both scenarios. But in the case of interrupt mode the CPU usage is
+coming out to be less as indicated by top. Average CPU usage in
+Scenario 2 is 40% for interrupt mode whereas it is 57% for polling
+mode.
 
-As a separate test, I write 3MB of data and read it back with
-mtd_debug utility; the compare passes.
+ diff --git a/drivers/mtd/onenand/onenand_base.c
+ b/drivers/mtd/onenand/onenand_base.c
+ index 0e168d8..9b2f9aa 100644
+ --- a/drivers/mtd/onenand/onenand_base.c
+ +++ b/drivers/mtd/onenand/onenand_base.c
+ @@ -2728,6 +2728,13 @@ void onenand_release(struct mtd_info *mtd)
+        /* Deregister partitions */
+        del_mtd_partitions (mtd);
+  #endif
+ +       /* Reset the IOBE bit in SYS_CFG Register */
+ +        if ( this->wait == onenand_interrupt_wait ) {
+ +               int syscfg = this->read_word(this->base +
+ONENAND_REG_SYS_CFG1);
+ +               syscfg &= ~ONENAND_SYS_CFG1_IOBE;
+ +               this->write_word(syscfg, this->base + ONENAND_REG_SYS_CFG1);
+ +       }
+        /* Deregister the device */
+        del_mtd_device (mtd);
 
-Thanks.
-
-
-On Tue, Apr 21, 2009 at 2:15 AM, David Woodhouse <dwmw2@infradead.org> wrote:
-> On Mon, 2009-04-20 at 11:27 -0700, Manoj wrote:
->> How do you want me to give the image that's on the flash? It is in
->> megabytes. Or do you want me to give the output of jffs2dump for the
->> image?
->
-> The output of jffs2dump might be sufficient, but the image itself is
-> probably best, if you can. Stick it on a web/ftp site somewhere?
->
-> --
-> dwmw2
->
->
+Regards
+Gaurav Singh
