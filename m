@@ -1,26 +1,18 @@
-Received: from mail-qy0-f176.google.com ([209.85.221.176])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LyeTu-0007pt-UV
-	for linux-mtd@lists.infradead.org; Tue, 28 Apr 2009 03:59:49 +0000
-Received: by qyk6 with SMTP id 6so935488qyk.28
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 27 Apr 2009 20:59:41 -0700 (PDT)
+Received: from miranda.se.axis.com ([193.13.178.8])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LyhfE-0006ZJ-Et
+	for linux-mtd@lists.infradead.org; Tue, 28 Apr 2009 07:23:42 +0000
+Date: Tue, 28 Apr 2009 09:23:31 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Jatin Sharma <sharmaj@gmail.com>
+Subject: Re: Mounting NAND flash as the root file system
+In-Reply-To: <587a08410904271402h6e9cf4fl8d4bb843cd03990f@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.0904280922270.25523@lnxricardw.se.axis.com>
+References: <587a08410904271402h6e9cf4fl8d4bb843cd03990f@mail.gmail.com>
 MIME-Version: 1.0
-Sender: kyungmin78@gmail.com
-In-Reply-To: <3cc7a0df0904272054l1fe78063jfde4ff73e6ae960d@mail.gmail.com>
-References: <3cc7a0df0904250127y3f2dbb65t50f349c3e9dfb969@mail.gmail.com>
-	<9c9fda240904251922t7b2f6979j5a94115b0079c10a@mail.gmail.com>
-	<3cc7a0df0904260309g4486ad02u9bc8ebe886fc9d8@mail.gmail.com>
-	<3cc7a0df0904272054l1fe78063jfde4ff73e6ae960d@mail.gmail.com>
-Date: Tue, 28 Apr 2009 12:59:40 +0900
-Message-ID: <9c9fda240904272059k10a1ecb8xf5d2a8e6dcdc4158@mail.gmail.com>
-Subject: Re: [PATCH] Onenand Reset IOBE bit in SYS_CFG register in
-	onenand_release
-From: Kyungmin Park <kmpark@infradead.org>
-To: Gaurav Singh <gausinghnsit@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Linux mtd group <linux-mtd@lists.infradead.org>
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,28 +22,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 28, 2009 at 12:54 PM, Gaurav Singh <gausinghnsit@gmail.com> wrote:
-> Hi,
->
->> I think that the interrupt mode will help when there is high load on
->> the CPU. Will run tests in interrupt and polling mode in two
->> scenarios. 1. Copy of a large file to ONENAND with no CPU load. 2.
->> Copy of a Large file to ONENAND with an infinite loop running in the
->> background - this generates CPU load. Little bit busy today but will
->> run it and mail the results by tomorrow. In my opinion Scenario 2
->> should give better results in interrupt mode.
->
-> Interrupt mode is giving better results than the normal polling mode.
-> In terms of time taken to copy both the modes are taking the same time
-> for both scenarios. But in the case of interrupt mode the CPU usage is
-> coming out to be less as indicated by top. Average CPU usage in
-> Scenario 2 is 40% for interrupt mode whereas it is 57% for polling
-> mode.
->
 
-Thank you for info.
-Right, in view of CPU interrupt mode is better, but not much
-performance gain. overall read/write performance.
+On Mon, 27 Apr 2009, Jatin Sharma wrote:
 
-Thank you,
-Kyungmin Park
+> When I boot the kernel using ramdisk (FS in RAM), I am able to run the
+> flash_eraseall utility successfully. But the mount command fails:
+>
+> WDS# mount -t jffs2 /dev/mtd0 /mnt
+> mount: mounting /dev/mtd0 on /mnt failed
+
+You should be using the block device - /dev/mtdblock0 - and not the=20
+character device when mounting.
+
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
