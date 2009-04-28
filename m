@@ -1,15 +1,18 @@
-Message-ID: <49F852EB.1080701@nokia.com>
-Date: Wed, 29 Apr 2009 16:15:23 +0300
-From: Adrian Hunter <adrian.hunter@nokia.com>
+Received: from co203.xi-lite.net ([149.6.83.203])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Lypy6-0006xS-Hf
+	for linux-mtd@lists.infradead.org; Tue, 28 Apr 2009 16:16:01 +0000
+Received: from ONYX.xi-lite.lan (unknown [193.34.35.244])
+	by co203.xi-lite.net (Postfix) with ESMTP id F252A6581C4
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 28 Apr 2009 16:15:32 +0000 (GMT)
+Message-ID: <49F72BA3.3030506@parrot.com>
+Date: Tue, 28 Apr 2009 18:15:31 +0200
+From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-To: Mika Korhonen <mika.j.korhonen@gmail.com>
-Subject: Re: [PATCH] OMAP OneNAND: add missing __devexit_p wrappers
-References: <7948530904290459q36d9c3fcq2db0dedcf88549d2@mail.gmail.com>
-In-Reply-To: <7948530904290459q36d9c3fcq2db0dedcf88549d2@mail.gmail.com>
-Content-Type: multipart/mixed; boundary="------------060606050107020605040104"
-Cc: linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	David Woodhouse <dwmw2@infradead.org>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH - resend] m25p80 : add m45pe10 ids
+Content-Type: multipart/mixed; boundary="------------060309060106010506040904"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,54 +22,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------060606050107020605040104
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+--------------060309060106010506040904
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
 
-Mika Korhonen wrote:
-> The patch follows as attachment as gmail damages whitespaces and
-> git-send-mail is right now out of question.
+Hi,
 
-This goes via MTD mailing list.
+this patch add m45pe10 [1] chip support to m25p80 driver.
+
+[1] http://www.numonyx.com/Documents/Datasheets/M45PE10.pdf
+
+Signed-off-by: Matthieu CASTET <matthieu.castet@parrot.com>
 
 
---------------060606050107020605040104
-Content-Type: text/x-diff;
- name="0001-OMAP-OneNAND-add-missing-__devexit_p-wrappers.patch"
+--------------060309060106010506040904
+Content-Type: text/x-diff; name="m45pe10.diff"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename*0="0001-OMAP-OneNAND-add-missing-__devexit_p-wrappers.patch"
+Content-Disposition: inline; filename="m45pe10.diff"
 
->From b72b537ff229a8d62540569bc543c419702ecb05 Mon Sep 17 00:00:00 2001
-From: Mika Korhonen <mika.j.korhonen@gmail.com>
-Date: Wed, 29 Apr 2009 14:10:34 +0300
-Subject: [PATCH] OMAP OneNAND: add missing __devexit_p wrappers
-
-Fixes build in configurations where devexit functions get discarded
-
-Signed-off-by: Mika Korhonen <mika.j.korhonen@gmail.com>
----
- drivers/mtd/onenand/omap2.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-index f2e9de1..4882935 100644
---- a/drivers/mtd/onenand/omap2.c
-+++ b/drivers/mtd/onenand/omap2.c
-@@ -778,8 +778,8 @@ static int __devexit omap2_onenand_remove(struct platform_device *pdev)
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 76a7675..a888299 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -528,6 +528,7 @@ static struct flash_info __devinitdata m25p_data [] = {
+ 	{ "m25p64",  0x202017,  0, 64 * 1024, 128, },
+ 	{ "m25p128", 0x202018, 0, 256 * 1024, 64, },
  
- static struct platform_driver omap2_onenand_driver = {
- 	.probe		= omap2_onenand_probe,
--	.remove		= omap2_onenand_remove,
--	.shutdown	= omap2_onenand_shutdown,
-+	.remove		= __devexit_p(omap2_onenand_remove),
-+	.shutdown	= __devexit_p(omap2_onenand_shutdown),
- 	.driver		= {
- 		.name	= DRIVER_NAME,
- 		.owner  = THIS_MODULE,
--- 
-1.5.6.5
++	{ "m45pe10", 0x204011,  0, 64 * 1024, 2, },
+ 	{ "m45pe80", 0x204014,  0, 64 * 1024, 16, },
+ 	{ "m45pe16", 0x204015,  0, 64 * 1024, 32, },
+ 
 
 
---------------060606050107020605040104--
+--------------060309060106010506040904--
