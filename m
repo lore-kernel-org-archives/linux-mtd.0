@@ -1,24 +1,16 @@
-Received: from mail-qy0-f176.google.com ([209.85.221.176])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LyxZ9-00087d-R4
-	for linux-mtd@lists.infradead.org; Wed, 29 Apr 2009 00:22:29 +0000
-Received: by qyk6 with SMTP id 6so2505703qyk.28
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 28 Apr 2009 17:22:21 -0700 (PDT)
+Received: from arroyo.ext.ti.com ([192.94.94.40])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Lz2oK-00019K-Rs
+	for linux-mtd@lists.infradead.org; Wed, 29 Apr 2009 05:58:31 +0000
+Message-ID: <61255.192.168.10.89.1240984645.squirrel@dbdmail.itg.ti.com>
+Date: Wed, 29 Apr 2009 11:27:25 +0530 (IST)
+Subject: Re: [resending] [PATCH] [MTD] [NAND] Add OMAP2 / OMAP3 NAND driver
+From: "vimal singh" <vimalsingh@ti.com>
+To: "Andrew Morton" <akpm@linux-foundation.org>
 MIME-Version: 1.0
-In-Reply-To: <Pine.LNX.4.64.0904281652020.25523@lnxricardw.se.axis.com>
-References: <587a08410904271402h6e9cf4fl8d4bb843cd03990f@mail.gmail.com>
-	<Pine.LNX.4.64.0904280922270.25523@lnxricardw.se.axis.com>
-	<587a08410904280721k30a5045bifb03423ae3aed3ec@mail.gmail.com>
-	<Pine.LNX.4.64.0904281652020.25523@lnxricardw.se.axis.com>
-Date: Tue, 28 Apr 2009 19:22:20 -0500
-Message-ID: <587a08410904281722r3ceb08afraa80701a44f618fa@mail.gmail.com>
-Subject: Re: Mounting NAND flash as the root file system
-From: Jatin Sharma <sharmaj@gmail.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: multipart/mixed; boundary=0015175ca952a328c80468a692e6
-Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
-	"gausinghnsit@gmail.com" <gausinghnsit@gmail.com>
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,181 +20,286 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---0015175ca952a328c80468a692e6
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Andrew,
+Thanks for your valuable comments.
 
-After turning on JFFS2 debug, I found that kernel is trying to mount
-/dev/root even though I gave "root=3D/dev/mtdblock0" in my command line.
-Is the command line correct:
-
-Command line=3D"root=3D/dev/mtdblock0 rootfstype=3Djffs2 rw"
-
-Here is the error:
-IP-Config: Complete:
-      device=3DWP-SED, addr=3D10.100.54.179, mask=3D255.255.255.0, gw=3D10.=
-100.54.33,
-     host=3D10.100.54.179, domain=3D, nis-domain=3D(none),
-     bootserver=3D255.255.255.255, rootserver=3D255.255.255.255, rootpath=
-=3D
-<7>jffs2_get_sb(): dev_name "/dev/root"
-<7>jffs2_get_sb(): path_lookup() returned 0, inode 81731c94
-<0>Kernel panic - not syncing: VFS: Unable to mount root fs on
-unknown-block(0,255)
-
-I have attached complete kernel log with this email. Thanks for helping.
-
-Regards,
-Jatin
-
-2009/4/28 Ricard Wanderlof <ricard.wanderlof@axis.com>:
+On Wed, Apr 29, 2009 at 10:19 AM, Andrew Morton <akpm@linux-foundation.org> wrote:
+> On Mon, 27 Apr 2009 12:40:26 +0530 (IST) "vimal singh" <vimalsingh@ti.com>
+wrote:
 >
-> On Tue, 28 Apr 2009, Jatin Sharma wrote:
->
->> Actually, I was mounting the block device but wrote it wrong in the emai=
-l.
+>> I am sending this patch again, after Fixing Artem's comments. Also CC'ed to
+lkml.
 >>
->> WDS# mount -t jffs2 /dev/mtdblock0 /mnt
->> mount: mounting /dev/mtdblock0 on /mnt failed
+>> --
+>> Best regards,
+>> vimal
+>>
+>>
+>> This driver is present in the OMAP tree, now pushing it to MTD.
+>>
+>> Original author(s):
+>>       Jian Zhang <jzhang@ti.com>
 >
-> Ok. Well I don't really have any other ideas, it's just a typical mistake
-> that people make (I do it all the time...).
+> That's not a particularly illuminating changelog.
 >
->> Since the flash_eraseall and nandwrite tools are working on the NAND
->> device, NAND driver is working fine. Would you agree? I don't have the
->> nanddump tools on my file system but will include it to make sure NAND
->> is getting updating after being written by nandwrite.
+>> +config MTD_NAND_OMAP2
+>> +     tristate "NAND Flash device on OMAP2 and OMAP3"
+>> +     depends on ARM && MTD_NAND && (ARCH_OMAP2 || ARCH_OMAP3)
+>> +     help
+>> +          Support for NAND flash on Texas Instruments OMAP2 and OMAP3
+platforms.
 >
-> What happens if you erase the flash and the mount it directly (without
-> writing an image to it). An empty flash is a valid jffs2 file system, so =
-if
-> this works, but mounting the partition with an image in it doesn't, there
-> could be something wrong with your image.
+> OK, that tells us more.
 >
-> /Ricard
-> --
-> Ricard Wolf Wanderl=F6f =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 ricardw(at)axis.com
-> Axis Communications AB, Lund, Sweden =A0 =A0 =A0 =A0 =A0 =A0www.axis.com
-> Phone +46 46 272 2016 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- Fax +46 46 13 61 30
 >
+> Please pass this (and all other) patches through scripts/checkpatch.pl.
+> checkpatch finds problem in this patch which you would have fixed, had
+> you known about them.
+I took this code from Linux-omap tree, so ignored to run checkpatch.pl.
+I'll do the same this time.
 
---0015175ca952a328c80468a692e6
-Content-Type: text/plain; charset=US-ASCII; name="minicom_042809_1.txt"
-Content-Disposition: attachment; filename="minicom_042809_1.txt"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fu3a6z0r0
+>
+>> +#define TF(value)    (value ? 1 : 0)
+>> +
+>> +#define P2048e(a)    (TF(a & NAND_Ecc_P2048e)        << 0)
+>> +#define P2048o(a)    (TF(a & NAND_Ecc_P2048o)        << 1)
+>> +#define P1e(a)               (TF(a & NAND_Ecc_P1e)           << 2)
+>> +#define P1o(a)               (TF(a & NAND_Ecc_P1o)           << 3)
+>> +#define P2e(a)               (TF(a & NAND_Ecc_P2e)           << 4)
+>> +#define P2o(a)               (TF(a & NAND_Ecc_P2o)           << 5)
+>> +#define P4e(a)               (TF(a & NAND_Ecc_P4e)           << 6)
+>> +#define P4o(a)               (TF(a & NAND_Ecc_P4o)           << 7)
+>> +
+>> +#define P8e(a)               (TF(a & NAND_Ecc_P8e)           << 0)
+>> +#define P8o(a)               (TF(a & NAND_Ecc_P8o)           << 1)
+>> +#define P16e(a)              (TF(a & NAND_Ecc_P16e)          << 2)
+>> +#define P16o(a)              (TF(a & NAND_Ecc_P16o)          << 3)
+>> +#define P32e(a)              (TF(a & NAND_Ecc_P32e)          << 4)
+>> +#define P32o(a)              (TF(a & NAND_Ecc_P32o)          << 5)
+>> +#define P64e(a)              (TF(a & NAND_Ecc_P64e)          << 6)
+>> +#define P64o(a)              (TF(a & NAND_Ecc_P64o)          << 7)
+>> +
+>> +#define P128e(a)     (TF(a & NAND_Ecc_P128e)         << 0)
+>> +#define P128o(a)     (TF(a & NAND_Ecc_P128o)         << 1)
+>> +#define P256e(a)     (TF(a & NAND_Ecc_P256e)         << 2)
+>> +#define P256o(a)     (TF(a & NAND_Ecc_P256o)         << 3)
+>> +#define P512e(a)     (TF(a & NAND_Ecc_P512e)         << 4)
+>> +#define P512o(a)     (TF(a & NAND_Ecc_P512o)         << 5)
+>> +#define P1024e(a)    (TF(a & NAND_Ecc_P1024e)        << 6)
+>> +#define P1024o(a)    (TF(a & NAND_Ecc_P1024o)        << 7)
+>> +
+>> +#define P8e_s(a)     (TF(a & NAND_Ecc_P8e)           << 0)
+>> +#define P8o_s(a)     (TF(a & NAND_Ecc_P8o)           << 1)
+>> +#define P16e_s(a)    (TF(a & NAND_Ecc_P16e)          << 2)
+>> +#define P16o_s(a)    (TF(a & NAND_Ecc_P16o)          << 3)
+>> +#define P1e_s(a)     (TF(a & NAND_Ecc_P1e)           << 4)
+>> +#define P1o_s(a)     (TF(a & NAND_Ecc_P1o)           << 5)
+>> +#define P2e_s(a)     (TF(a & NAND_Ecc_P2e)           << 6)
+>> +#define P2o_s(a)     (TF(a & NAND_Ecc_P2o)           << 7)
+>> +
+>> +#define P4e_s(a)     (TF(a & NAND_Ecc_P4e)           << 0)
+>> +#define P4o_s(a)     (TF(a & NAND_Ecc_P4o)           << 1)
+>
+> (ick)
+>
+> I suspect that the above will expand into quite large amounts of poor
+> code at the sites where they are invoked.
+>
+> eg:
+>
+>        ecc_buf[2] = ~(P4o(tmp) | P4e(tmp) | P2o(tmp) | P2e(tmp) | P1o(tmp) |
+>                        P1e(tmp) | P2048o(tmp) | P2048e(tmp));
+>
+> this might cause the generation of eight test-n-branch operations,
+> whereas it could have been done with one.
+Actually I have plan to change HW ECC correction method, in a separate patch,
+where all these macros will get removed. So, I did not bother much at this.
 
-Cgp1V2luTW9uIHZlciAzLjYgcmMgNQpNSUNSTyBXSU5NT04gLSBOb3JtYWwKSnVtcGluZyB0byAw
-eGJmYzAwMDAwCioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiogUE9TVCAgKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgowMDEgLSBUZXN0IEJvb3QgRmlybXdhcmUg
-Y29tcGF0aWJpbGl0eSAuLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLiBPSwoqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqIFBPU1QgT0sgKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
-aVNQQU4zNldCUyBCb290IEZpcm13YXJlIFZlcnNpb24gMC4wMy4xMgpDb3B5cmlnaHQgKGMpIDIw
-MDkgSW50ZXJwaGFzZSBDb3JwLgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tCkNvbW1hbmRzJyBjYXRlZ29yaWVzOgogIEkgOiBJbmZvcm1hdGlvbgogIEMgOiBDb25maWd1
-cmF0aW9uCiAgVCA6IFRlc3RzCiAgVSA6IFV0aWxpdGllcwpUbyBzaG93IGFsbCBjb21tYW5kcyBv
-biBhIGNhdGVnb3J5LCB0eXBlIGNvcnJlc3BvbmRpbmcgbGV0dGVyCgo+Z28gMHg4MTJmZDAwMExp
-bnV4IHZlcnNpb24gMi42LjEwX2Rldi1tYWx0YS1taXBzMl9mcF9iZSAoanNoYXJtYUBsYWItMTcx
-KSAoZ2NjIHZlcnNpb24gMy40LjMgKE1vbnRhVmlzdGEgMy40LjMtMjUuMC4zMC4wNTAxMTMxIDIw
-MDUtMDctMjMpKSAjNzYgVHVlIEFwciAyOCAxODoxNzozNyBDRFQgMjAwOQoKTElOVVggc3RhcnRl
-ZC4uLgooYSlyZWFkIGNtZCBsaW5lIGZyb20gRkZGRkZGRkYKTm8gY21kIGxpbmUgcHJvdmlkZWQg
-aW4gdGhlIGZsYXNoCkNvbW1hbmQgbGluZT0icm9vdD0vZGV2L210ZGJsb2NrMCByb290ZnN0eXBl
-PWpmZnMyIHJ3IgooYiltZW1zaXplID0gMjYyMTQ0IEtieXRlcwozNldCUyBNRU1PUlkgREVTQ1JJ
-UFRPUiBkdW1wOgpbMCw4MTMxYjg2MF06IGJhc2U8MDAwMDAwMDA+IHNpemU8MDEzNDYwMDA+IHR5
-cGU8MDAwMDAwMDA+ClswLDgxMzFiODZjXTogYmFzZTwwMTM0NjAwMD4gc2l6ZTwwYzFiYTAwMD4g
-dHlwZTwwMDAwMDAwMj4KWzAsODEzMWI4NzhdOiBiYXNlPDBkNTAwMDAwPiBzaXplPDAyYjAwMDAw
-PiB0eXBlPDAwMDAwMDAwPgooYylDUFUgcmV2aXNpb24gaXM6IDAwMDE5MzY1CkNvbXBpbGVkIHdp
-dGggTU9OVEFfVklTVEEgNC4wIGVudmlyb25tZW50CkdpZ2FiaXQgRXRoZXJuZXQgUG9ydCAwIDog
-TWFjIEFkZHJlc3MgOiAwLjAuNzcuYjMuNjEuYjggCkdpZ2FiaXQgRXRoZXJuZXQgUG9ydCAxIDog
-TWFjIEFkZHJlc3MgOiAwLjAuNzcuYjMuNjEuYjkgCkdpZ2FiaXQgRXRoZXJuZXQgUG9ydCAyIDog
-TWFjIEFkZHJlc3MgOiAwLjAuNzcuYjMuNjEuYmEgCkdpZ2FiaXQgRXRoZXJuZXQgUG9ydCAzIDog
-TWFjIEFkZHJlc3MgOiAwLjAuNzcuYjMuNjEuYmIgCk5vIEV0aGVybmV0IFBvcnQgMCBpcyB1c2Vk
-IGZvciBtYW5hZ2VtZW50CkxvY2FsIElwIEFkZHJlc3MgPSAxMC4xMDAuNTQuMTc5Ck1hc2sgID0g
-MjU1LjI1NS4yNTUuMApHYXRld2F5ICA9IDEwLjEwMC41NC4zMwpEZXRlcm1pbmVkIHBoeXNpY2Fs
-IFJBTSBtYXA6CiBtZW1vcnk6IDAxMzQ2MDAwIEAgMDAwMDAwMDAgKHJlc2VydmVkKQogbWVtb3J5
-OiAwYzFiYTAwMCBAIDAxMzQ2MDAwICh1c2FibGUpCiBtZW1vcnk6IDAyYjAwMDAwIEAgMGQ1MDAw
-MDAgKHJlc2VydmVkKQo8Nz5PbiBub2RlIDAgdG90YWxwYWdlczogNTQ1MjgKPDc+ICBETUEgem9u
-ZTogNTQ1MjggcGFnZXMsIExJRk8gYmF0Y2g6MTMKPDc+ICBOb3JtYWwgem9uZTogMCBwYWdlcywg
-TElGTyBiYXRjaDoxCjw3PiAgSGlnaE1lbSB6b25lOiAwIHBhZ2VzLCBMSUZPIGJhdGNoOjEKQnVp
-bHQgMSB6b25lbGlzdHMKS2VybmVsIGNvbW1hbmQgbGluZTogcm9vdD0vZGV2L210ZGJsb2NrMCBy
-b290ZnN0eXBlPWpmZnMyIHJ3IGlwPTEwLjEwMC41NC4xNzk6OjEwLjEwMC41NC4zMzoyNTUuMjU1
-LjI1NS4wCmluaXQvZG9fbW91bnRzLmM6OnJvb3RfZGV2X3NldHVwKCkgLSBFbnRlcmluZyB3aXRo
-IGxpbmUgPSAvZGV2L210ZGJsb2NrMApQcmltYXJ5IGluc3RydWN0aW9uIGNhY2hlIDE2a0IsIHBo
-eXNpY2FsbHkgdGFnZ2VkLCA0LXdheSwgbGluZXNpemUgMzIgYnl0ZXMuClByaW1hcnkgZGF0YSBj
-YWNoZSAxNmtCLCA0LXdheSwgbGluZXNpemUgMzIgYnl0ZXMuClN5bnRoZXNpemVkIFRMQiByZWZp
-bGwgaGFuZGxlciAoMjAgaW5zdHJ1Y3Rpb25zKS4KU3ludGhlc2l6ZWQgVExCIGxvYWQgaGFuZGxl
-ciBmYXN0cGF0aCAoMzIgaW5zdHJ1Y3Rpb25zKS4KU3ludGhlc2l6ZWQgVExCIHN0b3JlIGhhbmRs
-ZXIgZmFzdHBhdGggKDMyIGluc3RydWN0aW9ucykuClN5bnRoZXNpemVkIFRMQiBtb2RpZnkgaGFu
-ZGxlciBmYXN0cGF0aCAoMzEgaW5zdHJ1Y3Rpb25zKS4KPDY+RGlzYWJsZSBjYWNoZSBwYXJpdHkg
-cHJvdGVjdGlvbiBmb3IgTUlQUyAyNEsgQ1BVLgpJbml0aWFsaXppbmcgaW50ZXJydXB0IGNvbnRy
-b2xsZXIKUElEIGhhc2ggdGFibGUgZW50cmllczogMTAyNCAob3JkZXI6IDEwLCAxNjM4NCBieXRl
-cykKQ1BVIGZyZXF1ZW5jeSA2MDAuMDYgTUh6ClVzaW5nIDMwMC4wMzIgTUh6IGhpZ2ggcHJlY2lz
-aW9uIHRpbWVyLgpDb25zb2xlOiBjb2xvdXIgZHVtbXkgZGV2aWNlIDgweDI1CioqKioqKioqKioq
-KiBjb25zb2xlIHNldHVwdSoqKioqKioqKioqKiAvZHJpdmVycy9zZXJpYWwvc2VyaWFsX2NvcmUu
-Yzp1YXJ0X3NldF9vcHRpb25zIC0gcmV0dXJuaW5nIGZyb20gdWFydF9zZXRfb3B0aW9ucygpIHdp
-dGggMApEZW50cnkgY2FjaGUgaGFzaCB0YWJsZSBlbnRyaWVzOiAzMjc2OCAob3JkZXI6IDUsIDEz
-MTA3MiBieXRlcykKSW5vZGUtY2FjaGUgaGFzaCB0YWJsZSBlbnRyaWVzOiAxNjM4NCAob3JkZXI6
-IDQsIDY1NTM2IGJ5dGVzKQo8Nj5NZW1vcnk6IDE5NjMwMGsvMTk4Mzc2ayBhdmFpbGFibGUgKDI2
-MTJrIGtlcm5lbCBjb2RlLCAxOTMyayByZXNlcnZlZCwgNDQzayBkYXRhLCAxMjBrIGluaXQsIDBr
-IGhpZ2htZW0pCjw3PkNhbGlicmF0aW5nIGRlbGF5IGxvb3AuLi4gMzk4LjMzIEJvZ29NSVBTIChs
-cGo9MTk5MTY4KQpNb3VudC1jYWNoZSBoYXNoIHRhYmxlIGVudHJpZXM6IDUxMiAob3JkZXI6IDAs
-IDQwOTYgYnl0ZXMpCkNoZWNraW5nIGZvciAnd2FpdCcgaW5zdHJ1Y3Rpb24uLi4gIHVuYXZhaWxh
-YmxlLgpzcGF3bl9kZXNjaGVkX3Rhc2soMDAwMDAwMDApCmRlc2NoZWQgY3B1X2NhbGxiYWNrIDMv
-MDAwMDAwMDAKa3NvZnRpcnFkIHN0YXJ0ZWQgdXAuCmRlc2NoZWQgY3B1X2NhbGxiYWNrIDIvMDAw
-MDAwMDAKZGVzY2hlZCB0aHJlYWQgMCBzdGFydGVkIHVwLgo8Nj5ORVQ6IFJlZ2lzdGVyZWQgcHJv
-dG9jb2wgZmFtaWx5IDE2CkNhbid0IGFuYWx5emUgcHJvbG9ndWUgY29kZSBhdCA4MTI4YjIyNApJ
-UEhTWVM6IFJlZ2lzdGVyaW5nIElQSFNZUyBkcml2ZXIgd2l0aCBtYWpvciAyNDIKPDY+SW5zdGFs
-bGluZyBrbmZzZCAoY29weXJpZ2h0IChDKSAxOTk2IG9raXJAbW9uYWQuc3diLmRlKS4KRUZTOiAx
-LjBhIC0gaHR0cDovL2Flc2NoaS5jaC5ldS5vcmcvZWZzLwo8Nj5KRkZTMiB2ZXJzaW9uIDIuMi4g
-KE5BTkQpIChDKSAyMDAxLTIwMDMgUmVkIEhhdCwgSW5jLgo8Nz5BbGxvY2F0ZWQgMjY3OTY0IGJ5
-dGVzIGZvciBkZWZsYXRlIHdvcmtzcGFjZQo8Nz5BbGxvY2F0ZWQgNDY5MTIgYnl0ZXMgZm9yIGlu
-ZmxhdGUgd29ya3NwYWNlCjw3PlJlZ2lzdGVyaW5nIEpGRlMyIGNvbXByZXNzb3IgInpsaWIiCjw3
-PkNvbXByZXNzb3IgInpsaWIiLCBwcmlvIDYwCjw3PlJlZ2lzdGVyaW5nIEpGRlMyIGNvbXByZXNz
-b3IgInJ0aW1lIgo8Nz5Db21wcmVzc29yICJ6bGliIiwgcHJpbyA2MAo8Nz5Db21wcmVzc29yICJy
-dGltZSIsIHByaW8gNTAKPDY+SkZGUzI6IGRlZmF1bHQgY29tcHJlc3Npb24gbW9kZTogcHJpb3Jp
-dHkKPDY+SW5pdGlhbGl6aW5nIENyeXB0b2dyYXBoaWMgQVBJCjw2PlNlcmlhbDogODI1MC8xNjU1
-MCBkcml2ZXIgJFJldmlzaW9uOiAxLjQgJCA1IHBvcnRzLCBJUlEgc2hhcmluZyBkaXNhYmxlZAp0
-dHlTMCBhdCBNTUlPIDB4MCAoaXJxID0gMTYpIGlzIGEgMTY1NTAKPDY+aW8gc2NoZWR1bGVyIG5v
-b3AgcmVnaXN0ZXJlZAo8Nj5pbyBzY2hlZHVsZXIgYW50aWNpcGF0b3J5IHJlZ2lzdGVyZWQKPDY+
-aW8gc2NoZWR1bGVyIGRlYWRsaW5lIHJlZ2lzdGVyZWQKPDY+aW8gc2NoZWR1bGVyIGNmcSByZWdp
-c3RlcmVkCjw2Pmxvb3A6IGxvYWRlZCAobWF4IDggZGV2aWNlcykKV1AtU0VEOiBJbml0aWFsaXpp
-bmcgRXRoZXJuZXQgY2FyZC4uLgpnZXRfZXRoZXJuZXRfYWRkcjogMDA6MDA6Nzc6YjM6NjE6YjgK
-V1AtU0VEOiBFdGhlcm5ldCBjYXJkIGluaXRpYWxpemVkLgpCQ00+IFJlZ2lzdGVyaW5nIEJDTSBk
-cml2ZXIgd2l0aCBtYWpvciAyNDQKPDY+ZWxldmF0b3I6IHVzaW5nIGFudGljaXBhdG9yeSBhcyBk
-ZWZhdWx0IGlvIHNjaGVkdWxlcgo8NT5JbnRlcnBoYXNlIE5BTkQgRmxhc2ggY2hpcCBAIGJkNDAw
-MDAwIENFICA8NT4odXNpbmcgSW50ZXJwaGFzZSBOQU5EIGNvbW1hbmQgaGFuZGxlcikKTmFuZCBC
-YXNlIGFkZHJlc3MgPSBiZDQwMDAwMApEZXZpY2UgcmVhZHkgPSAxClJlYWQgTkFORCBTdGF0dXMg
-UmVnaXN0ZXIgPSAweGUwClNldCBOQU5EIHByb3RlY3Rpb24gYW5kIHJlYWQgc3RhdHVzICA9IDB4
-NjAKQ2xlYXIgTkFORCBwcm90ZWN0aW9uIGFuZCByZWFkIHN0YXR1cyAgPSAweGUwCjw1Pk5BTkQg
-Q2xlYXIgV3JpdGUgcHJvdGVjdAo8Nj5OQU5EIGRldmljZTogTWFudWZhY3R1cmVyIElEOiAweDIw
-LCBDaGlwIElEOiAweGQzIChTVCBNaWNybyBOQU5EIDFHaUIgMywzViA4LWJpdCkKPDY+U2Nhbm5p
-bmcgZGV2aWNlIGZvciBiYWQgYmxvY2tzCjw0PkJhZCBlcmFzZWJsb2NrIDI5MCBhdCAweDAyNDQw
-MDAwCjw0PkJhZCBlcmFzZWJsb2NrIDEwNTggYXQgMHgwODQ0MDAwMAo8ND5CYWQgZXJhc2VibG9j
-ayAyMzI4IGF0IDB4MTIzMDAwMDAKPDQ+QmFkIGVyYXNlYmxvY2sgMzA0OSBhdCAweDE3ZDIwMDAw
-Cjw0PkJhZCBlcmFzZWJsb2NrIDM3ODAgYXQgMHgxZDg4MDAwMAo8ND5CYWQgZXJhc2VibG9jayA1
-MjQ5IGF0IDB4MjkwMjAwMDAKPDQ+QmFkIGVyYXNlYmxvY2sgNzA1MSBhdCAweDM3MTYwMDAwCjw1
-PlVzaW5nIHN0YXRpYyBwYXJ0aXRpb24gZGVmaW5pdGlvbgo8NT5DcmVhdGluZyAxIE1URCBwYXJ0
-aXRpb25zIG9uICJOQU5EIDFHaUIgMywzViA4LWJpdCI6Cjw1PjB4MDAwMDAwMDAtMHgyMDAwMDAw
-MCA6ICJOQU5EIEZsYXNoMCIKW2FkZF9tdGRfcGFydGl0aW9uc106IEVyYXNlIHNpemUgaXMgc2lu
-Z2xlClthZGRfbXRkX3BhcnRpdGlvbnNdOiBDYWxsaW5nIGFkZF9tdGRfZGV2aWNlIHRvIHJlZ2lz
-dGVyIHRoZSBwYXJ0aXRpb24KW2FkZF9tdGRfZGV2aWNlXW10ZDogR2l2aW5nIG91dCBkZXZpY2Ug
-MCB0byBOQU5EIEZsYXNoMAo8NT5TaXplczogcGFnZT0yMDQ4QiBPT0I9NjRCIENoaXA9MTAyNE1C
-ICg4YiB3aWRlKQpTRlA+IFJlZ2lzdGVyaW5nIFNGUCBkcml2ZXIgd2l0aCBtYWpvciAyNDMKc2Zw
-X2Rldi5kZXYgPSAwRjMwMDAwMAo8Nj5ORVQ6IFJlZ2lzdGVyZWQgcHJvdG9jb2wgZmFtaWx5IDIK
-PDY+SVA6IHJvdXRpbmcgY2FjaGUgaGFzaCB0YWJsZSBvZiAyMDQ4IGJ1Y2tldHMsIDE2S2J5dGVz
-Cjw2PlRDUDogSGFzaCB0YWJsZXMgY29uZmlndXJlZCAoZXN0YWJsaXNoZWQgMTYzODQgYmluZCAz
-Mjc2OCkKPDY+TkVUOiBSZWdpc3RlcmVkIHByb3RvY29sIGZhbWlseSAxCjw2Pk5FVDogUmVnaXN0
-ZXJlZCBwcm90b2NvbCBmYW1pbHkgMTcKZHJpdmVycy9uZXQvd2ludGVncmEvd2lucGF0aDIvc2Vk
-L2VuZXQuYzo6ZW5ldF9pbml0X21hYygpIC0gcG9ydCA9IDIsIG1vZGUgPSA1CldQLVNFRDogZm91
-bmQsIHVzaW5nIElSUSA1MS4KSVAtQ29uZmlnOiBDb21wbGV0ZToKICAgICAgZGV2aWNlPVdQLVNF
-RCwgYWRkcj0xMC4xMDAuNTQuMTc5LCBtYXNrPTI1NS4yNTUuMjU1LjAsIGd3PTEwLjEwMC41NC4z
-MywKICAgICBob3N0PTEwLjEwMC41NC4xNzksIGRvbWFpbj0sIG5pcy1kb21haW49KG5vbmUpLAog
-ICAgIGJvb3RzZXJ2ZXI9MjU1LjI1NS4yNTUuMjU1LCByb290c2VydmVyPTI1NS4yNTUuMjU1LjI1
-NSwgcm9vdHBhdGg9Cjw3PmpmZnMyX2dldF9zYigpOiBkZXZfbmFtZSAiL2Rldi9yb290Igo8Nz5q
-ZmZzMl9nZXRfc2IoKTogcGF0aF9sb29rdXAoKSByZXR1cm5lZCAwLCBpbm9kZSA4MTczMWM5NAo8
-MD5LZXJuZWwgcGFuaWMgLSBub3Qgc3luY2luZzogVkZTOiBVbmFibGUgdG8gbW91bnQgcm9vdCBm
-cyBvbiB1bmtub3duLWJsb2NrKDAsMjU1KQog
---0015175ca952a328c80468a692e6--
+I can try to simplify these, if you still insist.
+
+>
+>> +/**
+>> + * omap_nand_wp - This function enable or disable the Write Protect feature on
+>> + * NAND device
+>
+> Alas, kerneldoc doesn't support that.  The description ("This function
+> enable or disable the Write Protect feature on NAND device") must all
+> be on a single line.
+I'll fix this.
+
+>
+>> + * @mtd: MTD device structure
+>> + * @mode: WP ON/OFF
+>> + */
+>> +static void omap_nand_wp(struct mtd_info *mtd, int mode)
+>> +{
+>> +     struct omap_nand_info *info = container_of(mtd,
+>> +                                             struct omap_nand_info, mtd);
+>> +
+>> +     unsigned long config = __raw_readl(info->gpmc_baseaddr + GPMC_CONFIG);
+>> +
+>> +     if (mode)
+>> +             config &= ~(NAND_WP_BIT);       /* WP is ON */
+>> +     else
+>> +             config |= (NAND_WP_BIT);        /* WP is OFF */
+>> +
+>> +     __raw_writel(config, (info->gpmc_baseaddr + GPMC_CONFIG));
+>> +}
+>> +
+>> +/**
+>> + * hardware specific access to control-lines
+>> + * NOTE: boards may use different bits for these!!
+>> + *
+>> + * @ctrl:
+>> + * NAND_NCE: bit 0 - don't care
+>> + * NAND_CLE: bit 1 -> Command Latch
+>> + * NAND_ALE: bit 2 -> Address Latch
+>> + */
+>
+> This comment purports to be a kerneldoc comment (it starts with /**) ,
+> but in fact it is not a kerneldoc comment.
+>
+> Please review the comments in this patch.
+OK.
+>
+>> +                                             GPMC_CS_NAND_DATA;
+>> +             break;
+>> +
+>> +     case NAND_CTRL_CHANGE | NAND_CTRL_ALE:
+>> +             info->nand.IO_ADDR_W = info->gpmc_cs_baseaddr +
+>> +                                             GPMC_CS_NAND_ADDRESS;
+>> +             info->nand.IO_ADDR_R = info->gpmc_cs_baseaddr +
+>> +                                             GPMC_CS_NAND_DATA;
+>> +             break;
+>> +
+>> +     case NAND_CTRL_CHANGE | NAND_NCE:
+>> +             info->nand.IO_ADDR_W = info->gpmc_cs_baseaddr +
+>> +                                             GPMC_CS_NAND_DATA;
+>> +             info->nand.IO_ADDR_R = info->gpmc_cs_baseaddr +
+>> +                                             GPMC_CS_NAND_DATA;
+>> +             break;
+>> +     }
+>> +
+>> +     if (cmd != NAND_CMD_NONE)
+>> +             __raw_writeb(cmd, info->nand.IO_ADDR_W);
+>> +}
+>> +
+>>
+>> ...
+>>
+>> +/**
+>> + * omap_calcuate_ecc - Generate non-inverted ECC bytes.
+>> + * Using noninverted ECC can be considered ugly since writing a blank
+>> + * page ie. padding will clear the ECC bytes. This is no problem as long
+>> + * nobody is trying to write data on the seemingly unused page. Reading
+>> + * an erased page will produce an ECC mismatch between generated and read
+>> + * ECC bytes that has to be dealt with separately.
+>> + * @mtd: MTD device structure
+>> + * @dat: The pointer to data on which ecc is computed
+>> + * @ecc_code: The ecc_code buffer
+>> + */
+>
+> I believe the description of the function arguments must precede the
+> general discussion.
+Yes, I'll fix this.
+
+>
+>> +static int omap_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
+>> +                             u_char *ecc_code)
+>> +{
+>> +     struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
+>> +                                                     mtd);
+>> +     unsigned long val = 0x0;
+>> +     unsigned long reg;
+>> +
+>> +     /* Start Reading from HW ECC1_Result = 0x200 */
+>> +     reg = (unsigned long)(info->gpmc_baseaddr + GPMC_ECC1_RESULT);
+>> +     val = __raw_readl(reg);
+>> +     *ecc_code++ = val;          /* P128e, ..., P1e */
+>> +     *ecc_code++ = val >> 16;    /* P128o, ..., P1o */
+>> +     /* P2048o, P1024o, P512o, P256o, P2048e, P1024e, P512e, P256e */
+>> +     *ecc_code++ = ((val >> 8) & 0x0f) | ((val >> 20) & 0xf0);
+>> +     reg += 4;
+>> +
+>> +     return 0;
+>> +}
+>> +
+>> +/**
+>> + * omap_enable_hwecc - This function enables the hardware ecc functionality
+>> + * @mtd: MTD device structure
+>> + * @mode: Read/Write mode
+>> + */
+>> +static void omap_enable_hwecc(struct mtd_info *mtd, int mode)
+>> +{
+>> +     struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
+>> +                                                     mtd);
+>> +     register struct nand_chip *chip = mtd->priv;
+>
+> gcc has ignored keyword `register' for a decade at least (unless
+> invoked with -O0).  Please zap.
+sure, I'll remove this.
+>
+>> +     unsigned int dev_width = (chip->options & NAND_BUSWIDTH_16) ? 1 : 0;
+>> +     unsigned long val = __raw_readl(info->gpmc_baseaddr + GPMC_ECC_CONFIG);
+>> +
+>> +     switch (mode) {
+>> +     case NAND_ECC_READ    :
+>> +             __raw_writel(0x101, info->gpmc_baseaddr + GPMC_ECC_CONTROL);
+>> +             /* (ECC 16 or 8 bit col) | ( CS  )  | ECC Enable */
+>> +             val = (dev_width << 7) | (info->gpmc_cs << 1) | (0x1);
+>> +             break;
+>> +     case NAND_ECC_READSYN :
+>> +              __raw_writel(0x100, info->gpmc_baseaddr + GPMC_ECC_CONTROL);
+>> +             /* (ECC 16 or 8 bit col) | ( CS  )  | ECC Enable */
+>> +             val = (dev_width << 7) | (info->gpmc_cs << 1) | (0x1);
+>> +             break;
+>> +     case NAND_ECC_WRITE   :
+>> +             __raw_writel(0x101, info->gpmc_baseaddr + GPMC_ECC_CONTROL);
+>> +             /* (ECC 16 or 8 bit col) | ( CS  )  | ECC Enable */
+>> +             val = (dev_width << 7) | (info->gpmc_cs << 1) | (0x1);
+>> +             break;
+>> +     default:
+>> +             DEBUG(MTD_DEBUG_LEVEL0, "Error: Unrecognized Mode[%d]!\n",
+>> +                                     mode);
+>> +             break;
+>> +     }
+>> +
+>> +     __raw_writel(val, info->gpmc_baseaddr + GPMC_ECC_CONFIG);
+>> +}
+>> +#endif
+>> +
+>> +/**
+>> + * omap_wait - Wait function is called during Program and erase
+>> + * operations and the way it is called from MTD layer, we should wait
+>> + * till the NAND chip is ready after the programming/erase operation
+>> + * has completed.
+>> + * @mtd: MTD device structure
+>> + * @chip: NAND Chip structure
+>> + */
+>> +static int omap_wait(struct mtd_info *mtd, struct nand_chip *chip)
+>> +{
+>> +     register struct nand_chip *this = mtd->priv;
+>> +     struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
+>> +                                                     mtd);
+>> +     int status = 0;
+>> +
+>> +     this->IO_ADDR_W = (void *) info->gpmc_cs_baseaddr +
+>> +                                             GPMC_CS_NAND_COMMAND;
+>> +     this->IO_ADDR_R = (void *) info->gpmc_cs_baseaddr + GPMC_CS_NAND_DATA;
+>> +
+>> +     while (!(status & 0x40)) {
+>> +              __raw_writeb(NAND_CMD_STATUS & 0xFF, this->IO_ADDR_W);
+>> +             status = __raw_readb(this->IO_ADDR_R);
+>> +     }
+>
+> This loop looks like it could consume rather a lot of energy.  Can it
+> be optimised?
+Well... here improvement could be to introduce a timeout. I'll do this.
+
+
+
+I'll fix all your comments and resend the patch.
+
+---
+Best Regards,
+\/ | |\/| /-\ |_
