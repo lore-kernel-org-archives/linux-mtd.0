@@ -1,11 +1,11 @@
 Received: from mx51.mymxserver.com ([85.199.173.110])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Lz7PN-0004qy-Sv
-	for linux-mtd@lists.infradead.org; Wed, 29 Apr 2009 10:53:04 +0000
-From: Holger Schurig <h.schurig@mn-solutions.de>
+	id 1Lz7j7-0007SI-4n
+	for linux-mtd@lists.infradead.org; Wed, 29 Apr 2009 11:13:27 +0000
+From: Holger Schurig <hs4233@mail.mn-solutions.de>
 To: linux-arm-kernel@lists.arm.linux.org.uk
 Subject: Re: [PATCH] [MTD] MXC NAND driver fixes (v3)
-Date: Wed, 29 Apr 2009 12:52:15 +0200
+Date: Wed, 29 Apr 2009 13:12:40 +0200
 References: <1238709260-17439-1-git-send-email-vbarinov@embeddedalley.com>
 	<1239210502-822-1-git-send-email-vbarinov@embeddedalley.com>
 	<20090408172818.GR14383@pengutronix.de>
@@ -15,7 +15,7 @@ Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200904291252.15650.h.schurig@mn-solutions.de>
+Message-Id: <200904291312.40339.hs4233@mail.mn-solutions.de>
 Cc: Vladimir Barinov <vbarinov@embeddedalley.com>,
 	Sascha Hauer <s.hauer@pengutronix.de>, dwmw2@infradead.org,
 	linux-mtd@lists.infradead.org, Lothar Wassmann <LW@karo-electronics.de>
@@ -41,6 +41,7 @@ BTW, in my version of MC9328MX21CE.pdf it's number 18.
 
 
 Do you know if all I need on i.MX21 is then
+
 
 static struct mxc_nand_platform_data nand_board_info = {
        .width = 1,
