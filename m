@@ -1,37 +1,24 @@
-Received: from smtp.flash.net.br ([201.46.240.48] helo=smtp.gru.flash.tv.br)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LyqQe-0000Dc-U2
-	for linux-mtd@lists.infradead.org; Tue, 28 Apr 2009 16:45:15 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by smtp.gru.flash.tv.br (Postfix) with ESMTP id 9ED331E6CDD
+Received: from mail-qy0-f176.google.com ([209.85.221.176])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LyxZ9-00087d-R4
+	for linux-mtd@lists.infradead.org; Wed, 29 Apr 2009 00:22:29 +0000
+Received: by qyk6 with SMTP id 6so2505703qyk.28
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 28 Apr 2009 13:44:49 -0300 (BRT)
-Received: from smtp.gru.flash.tv.br ([127.0.0.1])
-	by localhost (smtp.gru.flash.tv.br [127.0.0.1]) (amavisd-new,
-	port 10024)
-	with ESMTP id fTqVnqAZ-xro for <linux-mtd@lists.infradead.org>;
-	Tue, 28 Apr 2009 13:44:36 -0300 (BRT)
-Received: from chagas.nectar.ath.cx (unknown [187.22.248.170])
-	by smtp.gru.flash.tv.br (Postfix) with ESMTPA id 54AEC1E6B59
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 28 Apr 2009 13:44:30 -0300 (BRT)
-Date: Tue, 28 Apr 2009 13:44:16 -0300
-From: =?utf-8?Q?Rog=C3=A9rio?= Brito <rbrito@ime.usp.br>
-To: Kumar Gala <galak@kernel.crashing.org>
-Subject: [PATCH 2/2] powerpc: minimizing the configuration of
-	linkstation_defconfig
-Message-ID: <20090428164416.GA25750@ime.usp.br>
-References: <20090424065816.GA15525@ime.usp.br>
-	<Pine.LNX.4.64.0904242158210.8309@axis700.grange>
-	<20090424223355.GB7858@ime.usp.br>
-	<2CE2BC61-1C6B-4D01-870B-BC460730AD79@kernel.crashing.org>
+	Tue, 28 Apr 2009 17:22:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2CE2BC61-1C6B-4D01-870B-BC460730AD79@kernel.crashing.org>
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Guennadi Liakhovetski <g.liakhovetski@gmx.de>, linux-kernel@vger.kernel.org
+In-Reply-To: <Pine.LNX.4.64.0904281652020.25523@lnxricardw.se.axis.com>
+References: <587a08410904271402h6e9cf4fl8d4bb843cd03990f@mail.gmail.com>
+	<Pine.LNX.4.64.0904280922270.25523@lnxricardw.se.axis.com>
+	<587a08410904280721k30a5045bifb03423ae3aed3ec@mail.gmail.com>
+	<Pine.LNX.4.64.0904281652020.25523@lnxricardw.se.axis.com>
+Date: Tue, 28 Apr 2009 19:22:20 -0500
+Message-ID: <587a08410904281722r3ceb08afraa80701a44f618fa@mail.gmail.com>
+Subject: Re: Mounting NAND flash as the root file system
+From: Jatin Sharma <sharmaj@gmail.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: multipart/mixed; boundary=0015175ca952a328c80468a692e6
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+	"gausinghnsit@gmail.com" <gausinghnsit@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,320 +28,181 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+--0015175ca952a328c80468a692e6
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-This patch addresses the following issues:
+After turning on JFFS2 debug, I found that kernel is trying to mount
+/dev/root even though I gave "root=3D/dev/mtdblock0" in my command line.
+Is the command line correct:
 
-01. makes CFQ the default scheduler, to be in line with the rest of  
-the kernel.
+Command line=3D"root=3D/dev/mtdblock0 rootfstype=3Djffs2 rw"
 
-02. since linkstations are meant to store files, enable large blk  
-devices.
+Here is the error:
+IP-Config: Complete:
+      device=3DWP-SED, addr=3D10.100.54.179, mask=3D255.255.255.0, gw=3D10.=
+100.54.33,
+     host=3D10.100.54.179, domain=3D, nis-domain=3D(none),
+     bootserver=3D255.255.255.255, rootserver=3D255.255.255.255, rootpath=
+=3D
+<7>jffs2_get_sb(): dev_name "/dev/root"
+<7>jffs2_get_sb(): path_lookup() returned 0, inode 81731c94
+<0>Kernel panic - not syncing: VFS: Unable to mount root fs on
+unknown-block(0,255)
 
-03. disable CONFIG_MIGRATION in in such low memory devices.
+I have attached complete kernel log with this email. Thanks for helping.
 
-04. disable CONFIG_SCSI_LOWLEVEL, as no device under that tree is  
-used.
+Regards,
+Jatin
 
-05. idem for CONFIG_NETDEV_10000.
+2009/4/28 Ricard Wanderlof <ricard.wanderlof@axis.com>:
+>
+> On Tue, 28 Apr 2009, Jatin Sharma wrote:
+>
+>> Actually, I was mounting the block device but wrote it wrong in the emai=
+l.
+>>
+>> WDS# mount -t jffs2 /dev/mtdblock0 /mnt
+>> mount: mounting /dev/mtdblock0 on /mnt failed
+>
+> Ok. Well I don't really have any other ideas, it's just a typical mistake
+> that people make (I do it all the time...).
+>
+>> Since the flash_eraseall and nandwrite tools are working on the NAND
+>> device, NAND driver is working fine. Would you agree? I don't have the
+>> nanddump tools on my file system but will include it to make sure NAND
+>> is getting updating after being written by nandwrite.
+>
+> What happens if you erase the flash and the mount it directly (without
+> writing an image to it). An empty flash is a valid jffs2 file system, so =
+if
+> this works, but mounting the partition with an image in it doesn't, there
+> could be something wrong with your image.
+>
+> /Ricard
+> --
+> Ricard Wolf Wanderl=F6f =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 ricardw(at)axis.com
+> Axis Communications AB, Lund, Sweden =A0 =A0 =A0 =A0 =A0 =A0www.axis.com
+> Phone +46 46 272 2016 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ Fax +46 46 13 61 30
+>
 
-06. idem for CONFIG_WIRELESS.
+--0015175ca952a328c80468a692e6
+Content-Type: text/plain; charset=US-ASCII; name="minicom_042809_1.txt"
+Content-Disposition: attachment; filename="minicom_042809_1.txt"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fu3a6z0r0
 
-07. idem for CONFIG_HWMON.
-
-08. idem for CONFIG_CRYPTO_HW.
-
-09. disable CONFIG_VIDEO_OUTPUT_CONTROL.
-
-10. keep consistency and disable extended attributes in CIFS, ext3,  
-and NFS.
-
-11. enable CONFIG_PRINTK_TIME.
-
-Signed-off-by: Rogério Brito <rbrito@ime.usp.br>
-
----
-
-Here is the fixed patch. Thank you very much, Kumar.
-
---- a/arch/powerpc/configs/linkstation_defconfig	2009-04-28 09:53:38.000000000 -0300
-+++ b/arch/powerpc/configs/linkstation_defconfig	2009-04-28 10:14:11.000000000 -0300
-@@ -1,7 +1,7 @@
- #
- # Automatically generated make config: don't edit
- # Linux kernel version: 2.6.30-rc3
--# Tue Apr 28 09:53:38 2009
-+# Tue Apr 28 10:14:11 2009
- #
- # CONFIG_PPC64 is not set
- 
-@@ -155,7 +155,7 @@
- # CONFIG_MODVERSIONS is not set
- # CONFIG_MODULE_SRCVERSION_ALL is not set
- CONFIG_BLOCK=y
--# CONFIG_LBD is not set
-+CONFIG_LBD=y
- # CONFIG_BLK_DEV_BSG is not set
- # CONFIG_BLK_DEV_INTEGRITY is not set
- 
-@@ -166,11 +166,11 @@
- CONFIG_IOSCHED_AS=y
- CONFIG_IOSCHED_DEADLINE=y
- CONFIG_IOSCHED_CFQ=y
--CONFIG_DEFAULT_AS=y
-+# CONFIG_DEFAULT_AS is not set
- # CONFIG_DEFAULT_DEADLINE is not set
--# CONFIG_DEFAULT_CFQ is not set
-+CONFIG_DEFAULT_CFQ=y
- # CONFIG_DEFAULT_NOOP is not set
--CONFIG_DEFAULT_IOSCHED="anticipatory"
-+CONFIG_DEFAULT_IOSCHED="cfq"
- # CONFIG_FREEZER is not set
- 
- #
-@@ -252,7 +252,7 @@
- CONFIG_FLAT_NODE_MEM_MAP=y
- CONFIG_PAGEFLAGS_EXTENDED=y
- CONFIG_SPLIT_PTLOCK_CPUS=4
--CONFIG_MIGRATION=y
-+# CONFIG_MIGRATION is not set
- # CONFIG_PHYS_ADDR_T_64BIT is not set
- CONFIG_ZONE_DMA_FLAG=1
- CONFIG_BOUNCE=y
-@@ -492,13 +492,7 @@
- # CONFIG_IRDA is not set
- # CONFIG_BT is not set
- # CONFIG_AF_RXRPC is not set
--CONFIG_WIRELESS=y
--# CONFIG_CFG80211 is not set
--CONFIG_WIRELESS_OLD_REGULATORY=y
--CONFIG_WIRELESS_EXT=y
--CONFIG_WIRELESS_EXT_SYSFS=y
--# CONFIG_LIB80211 is not set
--# CONFIG_MAC80211 is not set
-+# CONFIG_WIRELESS is not set
- # CONFIG_WIMAX is not set
- # CONFIG_RFKILL is not set
- # CONFIG_NET_9P is not set
-@@ -688,49 +679,7 @@
- # CONFIG_SCSI_ISCSI_ATTRS is not set
- # CONFIG_SCSI_SAS_LIBSAS is not set
- # CONFIG_SCSI_SRP_ATTRS is not set
--CONFIG_SCSI_LOWLEVEL=y
--# CONFIG_ISCSI_TCP is not set
--# CONFIG_SCSI_CXGB3_ISCSI is not set
--# CONFIG_BLK_DEV_3W_XXXX_RAID is not set
--# CONFIG_SCSI_3W_9XXX is not set
--# CONFIG_SCSI_ACARD is not set
--# CONFIG_SCSI_AACRAID is not set
--# CONFIG_SCSI_AIC7XXX is not set
--# CONFIG_SCSI_AIC7XXX_OLD is not set
--# CONFIG_SCSI_AIC79XX is not set
--# CONFIG_SCSI_AIC94XX is not set
--# CONFIG_SCSI_DPT_I2O is not set
--# CONFIG_SCSI_ADVANSYS is not set
--# CONFIG_SCSI_ARCMSR is not set
--# CONFIG_MEGARAID_NEWGEN is not set
--# CONFIG_MEGARAID_LEGACY is not set
--# CONFIG_MEGARAID_SAS is not set
--# CONFIG_SCSI_MPT2SAS is not set
--# CONFIG_SCSI_HPTIOP is not set
--# CONFIG_SCSI_BUSLOGIC is not set
--# CONFIG_LIBFC is not set
--# CONFIG_LIBFCOE is not set
--# CONFIG_FCOE is not set
--# CONFIG_SCSI_DMX3191D is not set
--# CONFIG_SCSI_EATA is not set
--# CONFIG_SCSI_FUTURE_DOMAIN is not set
--# CONFIG_SCSI_GDTH is not set
--# CONFIG_SCSI_IPS is not set
--# CONFIG_SCSI_INITIO is not set
--# CONFIG_SCSI_INIA100 is not set
--# CONFIG_SCSI_MVSAS is not set
--# CONFIG_SCSI_STEX is not set
--# CONFIG_SCSI_SYM53C8XX_2 is not set
--# CONFIG_SCSI_IPR is not set
--# CONFIG_SCSI_QLOGIC_1280 is not set
--# CONFIG_SCSI_QLA_FC is not set
--# CONFIG_SCSI_QLA_ISCSI is not set
--# CONFIG_SCSI_LPFC is not set
--# CONFIG_SCSI_DC395x is not set
--# CONFIG_SCSI_DC390T is not set
--# CONFIG_SCSI_NSP32 is not set
--# CONFIG_SCSI_DEBUG is not set
--# CONFIG_SCSI_SRP is not set
-+# CONFIG_SCSI_LOWLEVEL is not set
- # CONFIG_SCSI_DH is not set
- # CONFIG_SCSI_OSD_INITIATOR is not set
- CONFIG_ATA=y
-@@ -872,25 +821,7 @@
- # CONFIG_ATL1E is not set
- # CONFIG_ATL1C is not set
- # CONFIG_JME is not set
--CONFIG_NETDEV_10000=y
--# CONFIG_CHELSIO_T1 is not set
--CONFIG_CHELSIO_T3_DEPENDS=y
--# CONFIG_CHELSIO_T3 is not set
--# CONFIG_ENIC is not set
--# CONFIG_IXGBE is not set
--# CONFIG_IXGB is not set
--# CONFIG_S2IO is not set
--# CONFIG_VXGE is not set
--# CONFIG_MYRI10GE is not set
--# CONFIG_NETXEN_NIC is not set
--# CONFIG_NIU is not set
--# CONFIG_MLX4_EN is not set
--# CONFIG_MLX4_CORE is not set
--# CONFIG_TEHUTI is not set
--# CONFIG_BNX2X is not set
--# CONFIG_QLGE is not set
--# CONFIG_SFC is not set
--# CONFIG_BE2NET is not set
-+# CONFIG_NETDEV_10000 is not set
- # CONFIG_TR is not set
- 
- #
-@@ -1085,68 +1016,7 @@
- # CONFIG_GPIOLIB is not set
- # CONFIG_W1 is not set
- # CONFIG_POWER_SUPPLY is not set
--CONFIG_HWMON=y
--# CONFIG_HWMON_VID is not set
--# CONFIG_SENSORS_AD7414 is not set
--# CONFIG_SENSORS_AD7418 is not set
--# CONFIG_SENSORS_ADM1021 is not set
--# CONFIG_SENSORS_ADM1025 is not set
--# CONFIG_SENSORS_ADM1026 is not set
--# CONFIG_SENSORS_ADM1029 is not set
--# CONFIG_SENSORS_ADM1031 is not set
--# CONFIG_SENSORS_ADM9240 is not set
--# CONFIG_SENSORS_ADT7462 is not set
--# CONFIG_SENSORS_ADT7470 is not set
--# CONFIG_SENSORS_ADT7473 is not set
--# CONFIG_SENSORS_ADT7475 is not set
--# CONFIG_SENSORS_ATXP1 is not set
--# CONFIG_SENSORS_DS1621 is not set
--# CONFIG_SENSORS_I5K_AMB is not set
--# CONFIG_SENSORS_F71805F is not set
--# CONFIG_SENSORS_F71882FG is not set
--# CONFIG_SENSORS_F75375S is not set
--# CONFIG_SENSORS_G760A is not set
--# CONFIG_SENSORS_GL518SM is not set
--# CONFIG_SENSORS_GL520SM is not set
--# CONFIG_SENSORS_IT87 is not set
--# CONFIG_SENSORS_LM63 is not set
--# CONFIG_SENSORS_LM75 is not set
--# CONFIG_SENSORS_LM77 is not set
--# CONFIG_SENSORS_LM78 is not set
--# CONFIG_SENSORS_LM80 is not set
--# CONFIG_SENSORS_LM83 is not set
--# CONFIG_SENSORS_LM85 is not set
--# CONFIG_SENSORS_LM87 is not set
--# CONFIG_SENSORS_LM90 is not set
--# CONFIG_SENSORS_LM92 is not set
--# CONFIG_SENSORS_LM93 is not set
--# CONFIG_SENSORS_LTC4215 is not set
--# CONFIG_SENSORS_LTC4245 is not set
--# CONFIG_SENSORS_LM95241 is not set
--# CONFIG_SENSORS_MAX1619 is not set
--# CONFIG_SENSORS_MAX6650 is not set
--# CONFIG_SENSORS_PC87360 is not set
--# CONFIG_SENSORS_PC87427 is not set
--# CONFIG_SENSORS_PCF8591 is not set
--# CONFIG_SENSORS_SIS5595 is not set
--# CONFIG_SENSORS_DME1737 is not set
--# CONFIG_SENSORS_SMSC47M1 is not set
--# CONFIG_SENSORS_SMSC47M192 is not set
--# CONFIG_SENSORS_SMSC47B397 is not set
--# CONFIG_SENSORS_ADS7828 is not set
--# CONFIG_SENSORS_THMC50 is not set
--# CONFIG_SENSORS_VIA686A is not set
--# CONFIG_SENSORS_VT1211 is not set
--# CONFIG_SENSORS_VT8231 is not set
--# CONFIG_SENSORS_W83781D is not set
--# CONFIG_SENSORS_W83791D is not set
--# CONFIG_SENSORS_W83792D is not set
--# CONFIG_SENSORS_W83793 is not set
--# CONFIG_SENSORS_W83L785TS is not set
--# CONFIG_SENSORS_W83L786NG is not set
--# CONFIG_SENSORS_W83627HF is not set
--# CONFIG_SENSORS_W83627EHF is not set
--# CONFIG_HWMON_DEBUG_CHIP is not set
-+# CONFIG_HWMON is not set
- # CONFIG_THERMAL is not set
- # CONFIG_THERMAL_HWMON is not set
- # CONFIG_WATCHDOG is not set
-@@ -1193,7 +1063,7 @@
- # CONFIG_AGP is not set
- # CONFIG_DRM is not set
- # CONFIG_VGASTATE is not set
--CONFIG_VIDEO_OUTPUT_CONTROL=m
-+# CONFIG_VIDEO_OUTPUT_CONTROL is not set
- # CONFIG_FB is not set
- # CONFIG_BACKLIGHT_LCD_SUPPORT is not set
- 
-@@ -1460,21 +1330,19 @@
- # CONFIG_EXT2_FS_XIP is not set
- CONFIG_EXT3_FS=y
- CONFIG_EXT3_DEFAULTS_TO_ORDERED=y
--CONFIG_EXT3_FS_XATTR=y
--# CONFIG_EXT3_FS_POSIX_ACL is not set
--# CONFIG_EXT3_FS_SECURITY is not set
-+# CONFIG_EXT3_FS_XATTR is not set
- # CONFIG_EXT4_FS is not set
- CONFIG_JBD=y
--CONFIG_FS_MBCACHE=y
- # CONFIG_REISERFS_FS is not set
- # CONFIG_JFS_FS is not set
--CONFIG_FS_POSIX_ACL=y
-+# CONFIG_FS_POSIX_ACL is not set
- CONFIG_FILE_LOCKING=y
- CONFIG_XFS_FS=m
- # CONFIG_XFS_QUOTA is not set
- # CONFIG_XFS_POSIX_ACL is not set
- # CONFIG_XFS_RT is not set
- # CONFIG_XFS_DEBUG is not set
-+# CONFIG_GFS2_FS is not set
- # CONFIG_OCFS2_FS is not set
- # CONFIG_BTRFS_FS is not set
- CONFIG_DNOTIFY=y
-@@ -1546,7 +1414,7 @@
- CONFIG_NETWORK_FILESYSTEMS=y
- CONFIG_NFS_FS=y
- CONFIG_NFS_V3=y
--CONFIG_NFS_V3_ACL=y
-+# CONFIG_NFS_V3_ACL is not set
- CONFIG_NFS_V4=y
- CONFIG_ROOT_NFS=y
- CONFIG_NFSD=m
-@@ -1556,7 +1424,6 @@
- CONFIG_LOCKD=y
- CONFIG_LOCKD_V4=y
- CONFIG_EXPORTFS=m
--CONFIG_NFS_ACL_SUPPORT=y
- CONFIG_NFS_COMMON=y
- CONFIG_SUNRPC=y
- CONFIG_SUNRPC_GSS=y
-@@ -1649,7 +1516,7 @@
- #
- # Kernel hacking
- #
--# CONFIG_PRINTK_TIME is not set
-+CONFIG_PRINTK_TIME=y
- CONFIG_ENABLE_WARN_DEPRECATED=y
- CONFIG_ENABLE_MUST_CHECK=y
- CONFIG_FRAME_WARN=1024
-@@ -1832,8 +1699,6 @@
- # Random Number Generation
- #
- # CONFIG_CRYPTO_ANSI_CPRNG is not set
--CONFIG_CRYPTO_HW=y
--# CONFIG_CRYPTO_DEV_HIFN_795X is not set
--# CONFIG_CRYPTO_DEV_TALITOS is not set
-+# CONFIG_CRYPTO_HW is not set
- # CONFIG_PPC_CLOCK is not set
- # CONFIG_VIRTUALIZATION is not set
-
--- 
-Rogério Brito : rbrito@{mackenzie,ime.usp}.br : GPG key 1024D/7C2CAEB8
-http://www.ime.usp.br/~rbrito : http://meusite.mackenzie.com.br/rbrito
-Projects: algorithms.berlios.de : lame.sf.net : vrms.alioth.debian.org
+Cgp1V2luTW9uIHZlciAzLjYgcmMgNQpNSUNSTyBXSU5NT04gLSBOb3JtYWwKSnVtcGluZyB0byAw
+eGJmYzAwMDAwCioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiogUE9TVCAgKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgowMDEgLSBUZXN0IEJvb3QgRmlybXdhcmUg
+Y29tcGF0aWJpbGl0eSAuLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLiBPSwoqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqIFBPU1QgT0sgKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
+aVNQQU4zNldCUyBCb290IEZpcm13YXJlIFZlcnNpb24gMC4wMy4xMgpDb3B5cmlnaHQgKGMpIDIw
+MDkgSW50ZXJwaGFzZSBDb3JwLgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tCkNvbW1hbmRzJyBjYXRlZ29yaWVzOgogIEkgOiBJbmZvcm1hdGlvbgogIEMgOiBDb25maWd1
+cmF0aW9uCiAgVCA6IFRlc3RzCiAgVSA6IFV0aWxpdGllcwpUbyBzaG93IGFsbCBjb21tYW5kcyBv
+biBhIGNhdGVnb3J5LCB0eXBlIGNvcnJlc3BvbmRpbmcgbGV0dGVyCgo+Z28gMHg4MTJmZDAwMExp
+bnV4IHZlcnNpb24gMi42LjEwX2Rldi1tYWx0YS1taXBzMl9mcF9iZSAoanNoYXJtYUBsYWItMTcx
+KSAoZ2NjIHZlcnNpb24gMy40LjMgKE1vbnRhVmlzdGEgMy40LjMtMjUuMC4zMC4wNTAxMTMxIDIw
+MDUtMDctMjMpKSAjNzYgVHVlIEFwciAyOCAxODoxNzozNyBDRFQgMjAwOQoKTElOVVggc3RhcnRl
+ZC4uLgooYSlyZWFkIGNtZCBsaW5lIGZyb20gRkZGRkZGRkYKTm8gY21kIGxpbmUgcHJvdmlkZWQg
+aW4gdGhlIGZsYXNoCkNvbW1hbmQgbGluZT0icm9vdD0vZGV2L210ZGJsb2NrMCByb290ZnN0eXBl
+PWpmZnMyIHJ3IgooYiltZW1zaXplID0gMjYyMTQ0IEtieXRlcwozNldCUyBNRU1PUlkgREVTQ1JJ
+UFRPUiBkdW1wOgpbMCw4MTMxYjg2MF06IGJhc2U8MDAwMDAwMDA+IHNpemU8MDEzNDYwMDA+IHR5
+cGU8MDAwMDAwMDA+ClswLDgxMzFiODZjXTogYmFzZTwwMTM0NjAwMD4gc2l6ZTwwYzFiYTAwMD4g
+dHlwZTwwMDAwMDAwMj4KWzAsODEzMWI4NzhdOiBiYXNlPDBkNTAwMDAwPiBzaXplPDAyYjAwMDAw
+PiB0eXBlPDAwMDAwMDAwPgooYylDUFUgcmV2aXNpb24gaXM6IDAwMDE5MzY1CkNvbXBpbGVkIHdp
+dGggTU9OVEFfVklTVEEgNC4wIGVudmlyb25tZW50CkdpZ2FiaXQgRXRoZXJuZXQgUG9ydCAwIDog
+TWFjIEFkZHJlc3MgOiAwLjAuNzcuYjMuNjEuYjggCkdpZ2FiaXQgRXRoZXJuZXQgUG9ydCAxIDog
+TWFjIEFkZHJlc3MgOiAwLjAuNzcuYjMuNjEuYjkgCkdpZ2FiaXQgRXRoZXJuZXQgUG9ydCAyIDog
+TWFjIEFkZHJlc3MgOiAwLjAuNzcuYjMuNjEuYmEgCkdpZ2FiaXQgRXRoZXJuZXQgUG9ydCAzIDog
+TWFjIEFkZHJlc3MgOiAwLjAuNzcuYjMuNjEuYmIgCk5vIEV0aGVybmV0IFBvcnQgMCBpcyB1c2Vk
+IGZvciBtYW5hZ2VtZW50CkxvY2FsIElwIEFkZHJlc3MgPSAxMC4xMDAuNTQuMTc5Ck1hc2sgID0g
+MjU1LjI1NS4yNTUuMApHYXRld2F5ICA9IDEwLjEwMC41NC4zMwpEZXRlcm1pbmVkIHBoeXNpY2Fs
+IFJBTSBtYXA6CiBtZW1vcnk6IDAxMzQ2MDAwIEAgMDAwMDAwMDAgKHJlc2VydmVkKQogbWVtb3J5
+OiAwYzFiYTAwMCBAIDAxMzQ2MDAwICh1c2FibGUpCiBtZW1vcnk6IDAyYjAwMDAwIEAgMGQ1MDAw
+MDAgKHJlc2VydmVkKQo8Nz5PbiBub2RlIDAgdG90YWxwYWdlczogNTQ1MjgKPDc+ICBETUEgem9u
+ZTogNTQ1MjggcGFnZXMsIExJRk8gYmF0Y2g6MTMKPDc+ICBOb3JtYWwgem9uZTogMCBwYWdlcywg
+TElGTyBiYXRjaDoxCjw3PiAgSGlnaE1lbSB6b25lOiAwIHBhZ2VzLCBMSUZPIGJhdGNoOjEKQnVp
+bHQgMSB6b25lbGlzdHMKS2VybmVsIGNvbW1hbmQgbGluZTogcm9vdD0vZGV2L210ZGJsb2NrMCBy
+b290ZnN0eXBlPWpmZnMyIHJ3IGlwPTEwLjEwMC41NC4xNzk6OjEwLjEwMC41NC4zMzoyNTUuMjU1
+LjI1NS4wCmluaXQvZG9fbW91bnRzLmM6OnJvb3RfZGV2X3NldHVwKCkgLSBFbnRlcmluZyB3aXRo
+IGxpbmUgPSAvZGV2L210ZGJsb2NrMApQcmltYXJ5IGluc3RydWN0aW9uIGNhY2hlIDE2a0IsIHBo
+eXNpY2FsbHkgdGFnZ2VkLCA0LXdheSwgbGluZXNpemUgMzIgYnl0ZXMuClByaW1hcnkgZGF0YSBj
+YWNoZSAxNmtCLCA0LXdheSwgbGluZXNpemUgMzIgYnl0ZXMuClN5bnRoZXNpemVkIFRMQiByZWZp
+bGwgaGFuZGxlciAoMjAgaW5zdHJ1Y3Rpb25zKS4KU3ludGhlc2l6ZWQgVExCIGxvYWQgaGFuZGxl
+ciBmYXN0cGF0aCAoMzIgaW5zdHJ1Y3Rpb25zKS4KU3ludGhlc2l6ZWQgVExCIHN0b3JlIGhhbmRs
+ZXIgZmFzdHBhdGggKDMyIGluc3RydWN0aW9ucykuClN5bnRoZXNpemVkIFRMQiBtb2RpZnkgaGFu
+ZGxlciBmYXN0cGF0aCAoMzEgaW5zdHJ1Y3Rpb25zKS4KPDY+RGlzYWJsZSBjYWNoZSBwYXJpdHkg
+cHJvdGVjdGlvbiBmb3IgTUlQUyAyNEsgQ1BVLgpJbml0aWFsaXppbmcgaW50ZXJydXB0IGNvbnRy
+b2xsZXIKUElEIGhhc2ggdGFibGUgZW50cmllczogMTAyNCAob3JkZXI6IDEwLCAxNjM4NCBieXRl
+cykKQ1BVIGZyZXF1ZW5jeSA2MDAuMDYgTUh6ClVzaW5nIDMwMC4wMzIgTUh6IGhpZ2ggcHJlY2lz
+aW9uIHRpbWVyLgpDb25zb2xlOiBjb2xvdXIgZHVtbXkgZGV2aWNlIDgweDI1CioqKioqKioqKioq
+KiBjb25zb2xlIHNldHVwdSoqKioqKioqKioqKiAvZHJpdmVycy9zZXJpYWwvc2VyaWFsX2NvcmUu
+Yzp1YXJ0X3NldF9vcHRpb25zIC0gcmV0dXJuaW5nIGZyb20gdWFydF9zZXRfb3B0aW9ucygpIHdp
+dGggMApEZW50cnkgY2FjaGUgaGFzaCB0YWJsZSBlbnRyaWVzOiAzMjc2OCAob3JkZXI6IDUsIDEz
+MTA3MiBieXRlcykKSW5vZGUtY2FjaGUgaGFzaCB0YWJsZSBlbnRyaWVzOiAxNjM4NCAob3JkZXI6
+IDQsIDY1NTM2IGJ5dGVzKQo8Nj5NZW1vcnk6IDE5NjMwMGsvMTk4Mzc2ayBhdmFpbGFibGUgKDI2
+MTJrIGtlcm5lbCBjb2RlLCAxOTMyayByZXNlcnZlZCwgNDQzayBkYXRhLCAxMjBrIGluaXQsIDBr
+IGhpZ2htZW0pCjw3PkNhbGlicmF0aW5nIGRlbGF5IGxvb3AuLi4gMzk4LjMzIEJvZ29NSVBTIChs
+cGo9MTk5MTY4KQpNb3VudC1jYWNoZSBoYXNoIHRhYmxlIGVudHJpZXM6IDUxMiAob3JkZXI6IDAs
+IDQwOTYgYnl0ZXMpCkNoZWNraW5nIGZvciAnd2FpdCcgaW5zdHJ1Y3Rpb24uLi4gIHVuYXZhaWxh
+YmxlLgpzcGF3bl9kZXNjaGVkX3Rhc2soMDAwMDAwMDApCmRlc2NoZWQgY3B1X2NhbGxiYWNrIDMv
+MDAwMDAwMDAKa3NvZnRpcnFkIHN0YXJ0ZWQgdXAuCmRlc2NoZWQgY3B1X2NhbGxiYWNrIDIvMDAw
+MDAwMDAKZGVzY2hlZCB0aHJlYWQgMCBzdGFydGVkIHVwLgo8Nj5ORVQ6IFJlZ2lzdGVyZWQgcHJv
+dG9jb2wgZmFtaWx5IDE2CkNhbid0IGFuYWx5emUgcHJvbG9ndWUgY29kZSBhdCA4MTI4YjIyNApJ
+UEhTWVM6IFJlZ2lzdGVyaW5nIElQSFNZUyBkcml2ZXIgd2l0aCBtYWpvciAyNDIKPDY+SW5zdGFs
+bGluZyBrbmZzZCAoY29weXJpZ2h0IChDKSAxOTk2IG9raXJAbW9uYWQuc3diLmRlKS4KRUZTOiAx
+LjBhIC0gaHR0cDovL2Flc2NoaS5jaC5ldS5vcmcvZWZzLwo8Nj5KRkZTMiB2ZXJzaW9uIDIuMi4g
+KE5BTkQpIChDKSAyMDAxLTIwMDMgUmVkIEhhdCwgSW5jLgo8Nz5BbGxvY2F0ZWQgMjY3OTY0IGJ5
+dGVzIGZvciBkZWZsYXRlIHdvcmtzcGFjZQo8Nz5BbGxvY2F0ZWQgNDY5MTIgYnl0ZXMgZm9yIGlu
+ZmxhdGUgd29ya3NwYWNlCjw3PlJlZ2lzdGVyaW5nIEpGRlMyIGNvbXByZXNzb3IgInpsaWIiCjw3
+PkNvbXByZXNzb3IgInpsaWIiLCBwcmlvIDYwCjw3PlJlZ2lzdGVyaW5nIEpGRlMyIGNvbXByZXNz
+b3IgInJ0aW1lIgo8Nz5Db21wcmVzc29yICJ6bGliIiwgcHJpbyA2MAo8Nz5Db21wcmVzc29yICJy
+dGltZSIsIHByaW8gNTAKPDY+SkZGUzI6IGRlZmF1bHQgY29tcHJlc3Npb24gbW9kZTogcHJpb3Jp
+dHkKPDY+SW5pdGlhbGl6aW5nIENyeXB0b2dyYXBoaWMgQVBJCjw2PlNlcmlhbDogODI1MC8xNjU1
+MCBkcml2ZXIgJFJldmlzaW9uOiAxLjQgJCA1IHBvcnRzLCBJUlEgc2hhcmluZyBkaXNhYmxlZAp0
+dHlTMCBhdCBNTUlPIDB4MCAoaXJxID0gMTYpIGlzIGEgMTY1NTAKPDY+aW8gc2NoZWR1bGVyIG5v
+b3AgcmVnaXN0ZXJlZAo8Nj5pbyBzY2hlZHVsZXIgYW50aWNpcGF0b3J5IHJlZ2lzdGVyZWQKPDY+
+aW8gc2NoZWR1bGVyIGRlYWRsaW5lIHJlZ2lzdGVyZWQKPDY+aW8gc2NoZWR1bGVyIGNmcSByZWdp
+c3RlcmVkCjw2Pmxvb3A6IGxvYWRlZCAobWF4IDggZGV2aWNlcykKV1AtU0VEOiBJbml0aWFsaXpp
+bmcgRXRoZXJuZXQgY2FyZC4uLgpnZXRfZXRoZXJuZXRfYWRkcjogMDA6MDA6Nzc6YjM6NjE6YjgK
+V1AtU0VEOiBFdGhlcm5ldCBjYXJkIGluaXRpYWxpemVkLgpCQ00+IFJlZ2lzdGVyaW5nIEJDTSBk
+cml2ZXIgd2l0aCBtYWpvciAyNDQKPDY+ZWxldmF0b3I6IHVzaW5nIGFudGljaXBhdG9yeSBhcyBk
+ZWZhdWx0IGlvIHNjaGVkdWxlcgo8NT5JbnRlcnBoYXNlIE5BTkQgRmxhc2ggY2hpcCBAIGJkNDAw
+MDAwIENFICA8NT4odXNpbmcgSW50ZXJwaGFzZSBOQU5EIGNvbW1hbmQgaGFuZGxlcikKTmFuZCBC
+YXNlIGFkZHJlc3MgPSBiZDQwMDAwMApEZXZpY2UgcmVhZHkgPSAxClJlYWQgTkFORCBTdGF0dXMg
+UmVnaXN0ZXIgPSAweGUwClNldCBOQU5EIHByb3RlY3Rpb24gYW5kIHJlYWQgc3RhdHVzICA9IDB4
+NjAKQ2xlYXIgTkFORCBwcm90ZWN0aW9uIGFuZCByZWFkIHN0YXR1cyAgPSAweGUwCjw1Pk5BTkQg
+Q2xlYXIgV3JpdGUgcHJvdGVjdAo8Nj5OQU5EIGRldmljZTogTWFudWZhY3R1cmVyIElEOiAweDIw
+LCBDaGlwIElEOiAweGQzIChTVCBNaWNybyBOQU5EIDFHaUIgMywzViA4LWJpdCkKPDY+U2Nhbm5p
+bmcgZGV2aWNlIGZvciBiYWQgYmxvY2tzCjw0PkJhZCBlcmFzZWJsb2NrIDI5MCBhdCAweDAyNDQw
+MDAwCjw0PkJhZCBlcmFzZWJsb2NrIDEwNTggYXQgMHgwODQ0MDAwMAo8ND5CYWQgZXJhc2VibG9j
+ayAyMzI4IGF0IDB4MTIzMDAwMDAKPDQ+QmFkIGVyYXNlYmxvY2sgMzA0OSBhdCAweDE3ZDIwMDAw
+Cjw0PkJhZCBlcmFzZWJsb2NrIDM3ODAgYXQgMHgxZDg4MDAwMAo8ND5CYWQgZXJhc2VibG9jayA1
+MjQ5IGF0IDB4MjkwMjAwMDAKPDQ+QmFkIGVyYXNlYmxvY2sgNzA1MSBhdCAweDM3MTYwMDAwCjw1
+PlVzaW5nIHN0YXRpYyBwYXJ0aXRpb24gZGVmaW5pdGlvbgo8NT5DcmVhdGluZyAxIE1URCBwYXJ0
+aXRpb25zIG9uICJOQU5EIDFHaUIgMywzViA4LWJpdCI6Cjw1PjB4MDAwMDAwMDAtMHgyMDAwMDAw
+MCA6ICJOQU5EIEZsYXNoMCIKW2FkZF9tdGRfcGFydGl0aW9uc106IEVyYXNlIHNpemUgaXMgc2lu
+Z2xlClthZGRfbXRkX3BhcnRpdGlvbnNdOiBDYWxsaW5nIGFkZF9tdGRfZGV2aWNlIHRvIHJlZ2lz
+dGVyIHRoZSBwYXJ0aXRpb24KW2FkZF9tdGRfZGV2aWNlXW10ZDogR2l2aW5nIG91dCBkZXZpY2Ug
+MCB0byBOQU5EIEZsYXNoMAo8NT5TaXplczogcGFnZT0yMDQ4QiBPT0I9NjRCIENoaXA9MTAyNE1C
+ICg4YiB3aWRlKQpTRlA+IFJlZ2lzdGVyaW5nIFNGUCBkcml2ZXIgd2l0aCBtYWpvciAyNDMKc2Zw
+X2Rldi5kZXYgPSAwRjMwMDAwMAo8Nj5ORVQ6IFJlZ2lzdGVyZWQgcHJvdG9jb2wgZmFtaWx5IDIK
+PDY+SVA6IHJvdXRpbmcgY2FjaGUgaGFzaCB0YWJsZSBvZiAyMDQ4IGJ1Y2tldHMsIDE2S2J5dGVz
+Cjw2PlRDUDogSGFzaCB0YWJsZXMgY29uZmlndXJlZCAoZXN0YWJsaXNoZWQgMTYzODQgYmluZCAz
+Mjc2OCkKPDY+TkVUOiBSZWdpc3RlcmVkIHByb3RvY29sIGZhbWlseSAxCjw2Pk5FVDogUmVnaXN0
+ZXJlZCBwcm90b2NvbCBmYW1pbHkgMTcKZHJpdmVycy9uZXQvd2ludGVncmEvd2lucGF0aDIvc2Vk
+L2VuZXQuYzo6ZW5ldF9pbml0X21hYygpIC0gcG9ydCA9IDIsIG1vZGUgPSA1CldQLVNFRDogZm91
+bmQsIHVzaW5nIElSUSA1MS4KSVAtQ29uZmlnOiBDb21wbGV0ZToKICAgICAgZGV2aWNlPVdQLVNF
+RCwgYWRkcj0xMC4xMDAuNTQuMTc5LCBtYXNrPTI1NS4yNTUuMjU1LjAsIGd3PTEwLjEwMC41NC4z
+MywKICAgICBob3N0PTEwLjEwMC41NC4xNzksIGRvbWFpbj0sIG5pcy1kb21haW49KG5vbmUpLAog
+ICAgIGJvb3RzZXJ2ZXI9MjU1LjI1NS4yNTUuMjU1LCByb290c2VydmVyPTI1NS4yNTUuMjU1LjI1
+NSwgcm9vdHBhdGg9Cjw3PmpmZnMyX2dldF9zYigpOiBkZXZfbmFtZSAiL2Rldi9yb290Igo8Nz5q
+ZmZzMl9nZXRfc2IoKTogcGF0aF9sb29rdXAoKSByZXR1cm5lZCAwLCBpbm9kZSA4MTczMWM5NAo8
+MD5LZXJuZWwgcGFuaWMgLSBub3Qgc3luY2luZzogVkZTOiBVbmFibGUgdG8gbW91bnQgcm9vdCBm
+cyBvbiB1bmtub3duLWJsb2NrKDAsMjU1KQog
+--0015175ca952a328c80468a692e6--
