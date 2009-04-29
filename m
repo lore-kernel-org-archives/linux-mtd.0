@@ -1,12 +1,15 @@
-From: "Mrs. Holt, Dillon S" <frank.daniels@8u8.hk>,
-	" <shkcpc@biznetvigator.com>"@obav02.netvigator.com
-To: info@biznetvigator.com
-Subject: You have won 1.000.000.00. Euro 
-Date: Fri, 1 May 2009 1:29:16 +0800
+Message-ID: <49F852EB.1080701@nokia.com>
+Date: Wed, 29 Apr 2009 16:15:23 +0300
+From: Adrian Hunter <adrian.hunter@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=Big5
-Content-Transfer-Encoding: 7bit
-Message-Id: <20090430172917.37C621B114F@obav02.netvigator.com>
+To: Mika Korhonen <mika.j.korhonen@gmail.com>
+Subject: Re: [PATCH] OMAP OneNAND: add missing __devexit_p wrappers
+References: <7948530904290459q36d9c3fcq2db0dedcf88549d2@mail.gmail.com>
+In-Reply-To: <7948530904290459q36d9c3fcq2db0dedcf88549d2@mail.gmail.com>
+Content-Type: multipart/mixed; boundary="------------060606050107020605040104"
+Cc: linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
+	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,51 +19,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Euro Mega Millions
-Brookmount House,
-62-65 Chandos Place,
-Covent Garden,
-WC2N 4LP,
-London,
-United Kingdom.
+This is a multi-part message in MIME format.
+--------------060606050107020605040104
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Mika Korhonen wrote:
+> The patch follows as attachment as gmail damages whitespaces and
+> git-send-mail is right now out of question.
+
+This goes via MTD mailing list.
 
 
-Confirmation Reference Number: 78-45-2-12-47-66-4
+--------------060606050107020605040104
+Content-Type: text/x-diff;
+ name="0001-OMAP-OneNAND-add-missing-__devexit_p-wrappers.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename*0="0001-OMAP-OneNAND-add-missing-__devexit_p-wrappers.patch"
 
-reply to E-mail to:frank.daniels@8u8.hk
+>From b72b537ff229a8d62540569bc543c419702ecb05 Mon Sep 17 00:00:00 2001
+From: Mika Korhonen <mika.j.korhonen@gmail.com>
+Date: Wed, 29 Apr 2009 14:10:34 +0300
+Subject: [PATCH] OMAP OneNAND: add missing __devexit_p wrappers
 
-You have won 1.000.000.00. Euro (One million Euro) in the Euro Millions Email Sweepstakes Program Corporation, held on the 28th of April 2009. In London, United Kingdom. Please contact the agency for the claim.
+Fixes build in configurations where devexit functions get discarded
 
-contact person:Mr.Frank Daniels
-TEL: +44-703-1907908 Fax: +44-703-195-2966
-reply to E-mail to:frank.daniels@8u8.hk
+Signed-off-by: Mika Korhonen <mika.j.korhonen@gmail.com>
+---
+ drivers/mtd/onenand/omap2.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-Below are your Winning Information's:
-Email Ticket Number 15-21-4-19-27-44
-Reference Number: 78-45-2-12-47-66-4
-Draw Lucky Number:8-17-10-13-37/*5*7
-Batch Number :JKPN44521412
-Serial Number: HMML235524453
-
-1. Full Name:
-2. Full Address:
-3. Occupation:
-4. Age/Sex: 
-5. Phone Number/ Fax:
-6. Country :
-Phone Number:
-
-Note: You are to pick one of the options below on how you want your Prize money to be remitted to you.
-
-Option 1.
-Bank Transfer
-
-Options 2.
-Cheque
+diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+index f2e9de1..4882935 100644
+--- a/drivers/mtd/onenand/omap2.c
++++ b/drivers/mtd/onenand/omap2.c
+@@ -778,8 +778,8 @@ static int __devexit omap2_onenand_remove(struct platform_device *pdev)
+ 
+ static struct platform_driver omap2_onenand_driver = {
+ 	.probe		= omap2_onenand_probe,
+-	.remove		= omap2_onenand_remove,
+-	.shutdown	= omap2_onenand_shutdown,
++	.remove		= __devexit_p(omap2_onenand_remove),
++	.shutdown	= __devexit_p(omap2_onenand_shutdown),
+ 	.driver		= {
+ 		.name	= DRIVER_NAME,
+ 		.owner  = THIS_MODULE,
+-- 
+1.5.6.5
 
 
-Note, All winning must be claim not later than 28th of June 2009.
-
-Sincerely,
-Mrs. Holt, Dillon S.
-E-mail:frank.daniels@8u8.hk
+--------------060606050107020605040104--
