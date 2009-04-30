@@ -1,24 +1,19 @@
-Received: from mail-qy0-f108.google.com ([209.85.221.108])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1LzI0a-0008Ui-HA
-	for linux-mtd@lists.infradead.org; Wed, 29 Apr 2009 22:12:07 +0000
-Received: by qyk6 with SMTP id 6so4168691qyk.28
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 29 Apr 2009 15:12:03 -0700 (PDT)
+Received: from sigma.superhosting.bg ([91.196.124.10])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1LzQpY-0008L7-5J
+	for linux-mtd@lists.infradead.org; Thu, 30 Apr 2009 07:37:19 +0000
+Message-ID: <49F95526.4050806@rsc.bg>
+Date: Thu, 30 Apr 2009 10:37:10 +0300
+From: Stanislav Popov <s.popov@rsc.bg>
 MIME-Version: 1.0
-In-Reply-To: <587a08410904281722r3ceb08afraa80701a44f618fa@mail.gmail.com>
-References: <587a08410904271402h6e9cf4fl8d4bb843cd03990f@mail.gmail.com>
-	<Pine.LNX.4.64.0904280922270.25523@lnxricardw.se.axis.com>
-	<587a08410904280721k30a5045bifb03423ae3aed3ec@mail.gmail.com>
-	<Pine.LNX.4.64.0904281652020.25523@lnxricardw.se.axis.com>
-	<587a08410904281722r3ceb08afraa80701a44f618fa@mail.gmail.com>
-Date: Wed, 29 Apr 2009 17:12:03 -0500
-Message-ID: <587a08410904291512g626b35b3s2f968670ec4be60f@mail.gmail.com>
-Subject: Re: Mounting NAND flash as the root file system
-From: Jatin Sharma <sharmaj@gmail.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+To: subbu@fortisys.com
+Subject: Re: NAND + YAFFS2 - bad blocks
+References: <20090428145901.ED9188BC@resin13.mta.everyone.net>
+	<49F7FBB6.8080301@rsc.bg>
+In-Reply-To: <49F7FBB6.8080301@rsc.bg>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,71 +23,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I thought I post how I fixed this problem. It actually turned out to
-be some debug code in do_mount.c that we added which led to this
-issue. After updating this file from the original BSP from Montavista,
-I was able to mount rootfs on NAND. Thanks for the help from this
-forum.
+Hi,
 
-Regards,
-Jatin
+Maybe I found the source of the issue.
+I put some delays after evry chunk write in yaffs (my fs in yaffs) and 
+it's working fine.
+So the issue comes from timing configuration...
+Where do you think could be the real source of the issue? - driver 
+configuration? EMIF configuration? Hardware Issue?
 
-2009/4/28 Jatin Sharma <sharmaj@gmail.com>:
-> After turning on JFFS2 debug, I found that kernel is trying to mount
-> /dev/root even though I gave "root=3D/dev/mtdblock0" in my command line.
-> Is the command line correct:
+Thanks and Regards,
+Stanislav
 >
-> Command line=3D"root=3D/dev/mtdblock0 rootfstype=3Djffs2 rw"
 >
-> Here is the error:
-> IP-Config: Complete:
-> =A0 =A0 =A0device=3DWP-SED, addr=3D10.100.54.179, mask=3D255.255.255.0, g=
-w=3D10.100.54.33,
-> =A0 =A0 host=3D10.100.54.179, domain=3D, nis-domain=3D(none),
-> =A0 =A0 bootserver=3D255.255.255.255, rootserver=3D255.255.255.255, rootp=
-ath=3D
-> <7>jffs2_get_sb(): dev_name "/dev/root"
-> <7>jffs2_get_sb(): path_lookup() returned 0, inode 81731c94
-> <0>Kernel panic - not syncing: VFS: Unable to mount root fs on
-> unknown-block(0,255)
+> subbu@fortisys.com wrote:
+>> Hi,
+>> Yaffs2 is combination 2048+64 Bytes, when you write filesystem to 
+>> NAND, you have to make sure that oob data is written to oob block 
+>> from offset 0x2 to 0x34, if you write at oob data at offset 0x0 0x1, 
+>> NAND will identify it as bad block, therefore you have to make sure 
+>> to avoid writing oob from 0x0.
+>>
+>> Try using nandwrite utility with the above mention changes.
+>>
+>>
+>> Regards,
+>> Subramani V
+>> Massuchussets
+>> USA
+>>
+>>
+>> --- s.popov@rsc.bg wrote:
+>>
+>> From: Stanislav Popov <s.popov@rsc.bg>
+>> To: linux-mtd@lists.infradead.org
+>> Subject: NAND + YAFFS2 - bad blocks
+>> Date: Tue, 28 Apr 2009 19:03:26 +0300
+>>
+>> Hi,
+>>
+>> I have 64 MB NAND flash on Jacinto (ARM) board.
+>> I am using the device formatted as one YAFFS2 partition.
+>> My SW ECC from NAND is enabled in the kernel and "useNANDECC" in 
+>> YAFFS is set to 0
+>> (If this is non-zero, then YAFFS will not perform ECC and it is 
+>> assumed that the hardware ECC or specified NAND access functions will 
+>> perform EC checks.)
+>>
+>> I found that I have 1000-2000 eraseblocks that were reported as "bad 
+>> block".
+>> I can see them in u-boot with "nand bad" command and when laoding my 
+>> nand_jacinto driver.
+>> When using the NAND they are getting much more.
+>> Actually they are NOT bad blocks!
+>>
+>> I edited the kernel and remove is_bad checking when erasing.
+>> Also I edited the mtd-utils (flash_eraseall) and removed is_bad 
+>> checking when erasing.
+>> So I was able to make low-level format of my NAND flash which also 
+>> erase the bad blocks.
+>> (like 'nand erase scrub' command in u-boot, but I currently I do not 
+>> have such command)
+>> After that I had NO bad blocks.
+>>
+>> I made some tests:
+>> I formatted Nand with YAFFS2 FS
+>> -  YAFFS2 ECC + NO NAND ECC - when using fs appeared bad blocks and 
+>> getting more.
+>> -  YAFFS2 NO ECC + NAND SW ECC - when using fs appeared bad blocks 
+>> and getting more.
+>>
+>> I formatted Nand with EXT2 FS (ext2 fs is not writing into oob)
+>> -  NAND SW ECC ENABLE - NO bad blocks appeared in the time!!!
+>>
+>> So the result is that the issue is in using YAFFS2 + NAND.
+>>
+>> Maybe the source of the issue is some YAFFS2 configurations?
+>> Do you have any idea?
+>> It's very critical issue for me.
+>>
+>> Thanks and Regards,
+>> Stanislav
+>>
+>>
+>>
+>> ______________________________________________________
+>> Linux MTD discussion mailing list
+>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>
+>>
+>>   
 >
-> I have attached complete kernel log with this email. Thanks for helping.
 >
-> Regards,
-> Jatin
->
-> 2009/4/28 Ricard Wanderlof <ricard.wanderlof@axis.com>:
->>
->> On Tue, 28 Apr 2009, Jatin Sharma wrote:
->>
->>> Actually, I was mounting the block device but wrote it wrong in the ema=
-il.
->>>
->>> WDS# mount -t jffs2 /dev/mtdblock0 /mnt
->>> mount: mounting /dev/mtdblock0 on /mnt failed
->>
->> Ok. Well I don't really have any other ideas, it's just a typical mistak=
-e
->> that people make (I do it all the time...).
->>
->>> Since the flash_eraseall and nandwrite tools are working on the NAND
->>> device, NAND driver is working fine. Would you agree? I don't have the
->>> nanddump tools on my file system but will include it to make sure NAND
->>> is getting updating after being written by nandwrite.
->>
->> What happens if you erase the flash and the mount it directly (without
->> writing an image to it). An empty flash is a valid jffs2 file system, so=
- if
->> this works, but mounting the partition with an image in it doesn't, ther=
-e
->> could be something wrong with your image.
->>
->> /Ricard
->> --
->> Ricard Wolf Wanderl=F6f =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 ricardw(at)axis.com
->> Axis Communications AB, Lund, Sweden =A0 =A0 =A0 =A0 =A0 =A0www.axis.com
->> Phone +46 46 272 2016 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 Fax +46 46 13 61 30
->>
->
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
