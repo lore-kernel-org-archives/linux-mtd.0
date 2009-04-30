@@ -1,19 +1,21 @@
-Received: from sigma.superhosting.bg ([91.196.124.10])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1LzQpY-0008L7-5J
-	for linux-mtd@lists.infradead.org; Thu, 30 Apr 2009 07:37:19 +0000
-Message-ID: <49F95526.4050806@rsc.bg>
-Date: Thu, 30 Apr 2009 10:37:10 +0300
-From: Stanislav Popov <s.popov@rsc.bg>
+Received: from easi.embeddedalley.com ([71.6.201.124])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1LzTWB-0004H7-Rb
+	for linux-mtd@lists.infradead.org; Thu, 30 Apr 2009 10:29:34 +0000
+Message-ID: <49F97D72.8030109@embeddedalley.com>
+Date: Thu, 30 Apr 2009 14:29:06 +0400
+From: Vladimir Barinov <vbarinov@embeddedalley.com>
 MIME-Version: 1.0
-To: subbu@fortisys.com
-Subject: Re: NAND + YAFFS2 - bad blocks
-References: <20090428145901.ED9188BC@resin13.mta.everyone.net>
-	<49F7FBB6.8080301@rsc.bg>
-In-Reply-To: <49F7FBB6.8080301@rsc.bg>
+To: Holger Schurig <h.schurig@mn-solutions.de>
+Subject: Re: [PATCH] [MTD] MXC NAND driver fixes (v3)
+References: <1238709260-17439-1-git-send-email-vbarinov@embeddedalley.com>	<1239210502-822-1-git-send-email-vbarinov@embeddedalley.com>	<20090408172818.GR14383@pengutronix.de>
+	<200904291252.15650.h.schurig@mn-solutions.de>
+In-Reply-To: <200904291252.15650.h.schurig@mn-solutions.de>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, Sascha Hauer <s.hauer@pengutronix.de>,
+	dwmw2@infradead.org, linux-arm-kernel@lists.arm.linux.org.uk,
+	Lothar Wassmann <LW@karo-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,98 +25,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hello Holger,
 
-Maybe I found the source of the issue.
-I put some delays after evry chunk write in yaffs (my fs in yaffs) and 
-it's working fine.
-So the issue comes from timing configuration...
-Where do you think could be the real source of the issue? - driver 
-configuration? EMIF configuration? Hardware Issue?
+Could you explain how this message is related to this thread?
+This patch as well as linux-mtd mail list doesn't care about platform 
+specific code that you can do in your custom mx21 based board.
 
-Thanks and Regards,
-Stanislav
+Holger Schurig wrote:
+> Hmm, in u-boot v2, drivers/nand/nand_imx.c, I read:
 >
 >
-> subbu@fortisys.com wrote:
->> Hi,
->> Yaffs2 is combination 2048+64 Bytes, when you write filesystem to 
->> NAND, you have to make sure that oob data is written to oob block 
->> from offset 0x2 to 0x34, if you write at oob data at offset 0x0 0x1, 
->> NAND will identify it as bad block, therefore you have to make sure 
->> to avoid writing oob from 0x0.
->>
->> Try using nandwrite utility with the above mention changes.
->>
->>
->> Regards,
->> Subramani V
->> Massuchussets
->> USA
->>
->>
->> --- s.popov@rsc.bg wrote:
->>
->> From: Stanislav Popov <s.popov@rsc.bg>
->> To: linux-mtd@lists.infradead.org
->> Subject: NAND + YAFFS2 - bad blocks
->> Date: Tue, 28 Apr 2009 19:03:26 +0300
->>
->> Hi,
->>
->> I have 64 MB NAND flash on Jacinto (ARM) board.
->> I am using the device formatted as one YAFFS2 partition.
->> My SW ECC from NAND is enabled in the kernel and "useNANDECC" in 
->> YAFFS is set to 0
->> (If this is non-zero, then YAFFS will not perform ECC and it is 
->> assumed that the hardware ECC or specified NAND access functions will 
->> perform EC checks.)
->>
->> I found that I have 1000-2000 eraseblocks that were reported as "bad 
->> block".
->> I can see them in u-boot with "nand bad" command and when laoding my 
->> nand_jacinto driver.
->> When using the NAND they are getting much more.
->> Actually they are NOT bad blocks!
->>
->> I edited the kernel and remove is_bad checking when erasing.
->> Also I edited the mtd-utils (flash_eraseall) and removed is_bad 
->> checking when erasing.
->> So I was able to make low-level format of my NAND flash which also 
->> erase the bad blocks.
->> (like 'nand erase scrub' command in u-boot, but I currently I do not 
->> have such command)
->> After that I had NO bad blocks.
->>
->> I made some tests:
->> I formatted Nand with YAFFS2 FS
->> -  YAFFS2 ECC + NO NAND ECC - when using fs appeared bad blocks and 
->> getting more.
->> -  YAFFS2 NO ECC + NAND SW ECC - when using fs appeared bad blocks 
->> and getting more.
->>
->> I formatted Nand with EXT2 FS (ext2 fs is not writing into oob)
->> -  NAND SW ECC ENABLE - NO bad blocks appeared in the time!!!
->>
->> So the result is that the issue is in using YAFFS2 + NAND.
->>
->> Maybe the source of the issue is some YAFFS2 configurations?
->> Do you have any idea?
->> It's very critical issue for me.
->>
->> Thanks and Regards,
->> Stanislav
->>
->>
->>
->> ______________________________________________________
->> Linux MTD discussion mailing list
->> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->>
->>
->>   
+> /*
+>  * MX21 Hardware contains a bug which causes HW ECC to fail for two
+>  * consecutive read pages containing 1bit Errors (See MX21 Chip Erata,
+>  * Erratum 16). Use software ECC for this chip.
+>  */
+>
+> BTW, in my version of MC9328MX21CE.pdf it's number 18.
 >
 >
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> Do you know if all I need on i.MX21 is then
+>
+> static struct mxc_nand_platform_data nand_board_info = {
+>        .width = 1,
+>        .hw_ecc = 0,  /* Broken hardware */
+> };
+>   
+Great, so the current mxc_nand driver can support your imx21 cpu through 
+platform data.
+
+Regarding to me then I use mx27 cpu and it's errata taken from FSL site 
+says nothing about HW ECC:
+http://www.freescale.com/files/32bit/doc/errata/MCIMX27CE.pdf?fsrch=1
+nor in addendum:
+http://www.freescale.com/files/dsp/doc/ref_manual/MCIMX27RMAD.pdf?fsrch=1
+
+I can successfully flash jffs2 image to NAND flash, mount and read the 
+context.
+Ditto I can do with ubifs. All this with hw_ecc = 1.
+
+Regards,
+Vladimir
