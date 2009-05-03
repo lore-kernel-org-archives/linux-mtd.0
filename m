@@ -1,12 +1,17 @@
-From: Mitchell Bousquet <bousquet_m@4j.lane.edu>
-Message-ID: <f5c6b4aa341ba.49fd683d@4j.lane.edu>
-Date: Sun, 03 May 2009 09:47:41 -0700
+Received: from tomts44.bellnexxia.net ([209.226.175.111]
+	helo=tomts44-srv.bellnexxia.net)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M0igo-0007dd-F0
+	for linux-mtd@lists.infradead.org; Sun, 03 May 2009 20:53:41 +0000
+From: ... <scovilb@nbnet.nb.ca>
+To: .@nbnet.nb.ca
+Subject: Urgent Attention
+Date: Sun, 3 May 2009 16:53:19 -0400
 MIME-Version: 1.0
-Content-Language: en
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Reply-To: laura1c1atmcard@live.com
+Message-Id: <20090503205319.CBNU1576.tomts44-srv.bellnexxia.net@toip38-bus.srvr.bell.ca>
+Reply-To: sjdavison01@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,32 +21,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+I am Sgt.John Davidson of the Engineering Unit of the US Army in Ba'qubah,Iraq.
 
+We have the sum of $25,000,000 USD we made from some Oil deal that we want you to help us to receive. Since we are working here on Official capacity we cannot keep this funds hence my contacting you.
 
-OFFICE OF THE SENATE HOUSE
-FEDERAL REPUBLIC OF NIGERIA
-COMMITTEE ON FOREIGN PAYMENT
-(RESOLUTION PANEL ON CONTRACT PAYMENT)
-IKOYI-LAGOS NIGERIA
-OurRef: FGN /SNT/STB
+If you are interested, do get back to me so that i can give you further details.
 
-This is to officially inform you that (ATM Cash Card Number
-62805120033800XXXXX) has been accredited with your favor.Your Cash Card Personal Identification Number is 8009XXX.The ATM 
-Card Value is $1,000,000,00 Thousand USD. You are advised to contact my Secetary  for delivery as soon as possible:  
-Mrs. Laura C. Carlson 
-
-Email: laura1c1atmcard@live.com
-with the following informations
-
-FULL NAME:
-DELIVERY ADDRESS:
-PHONE NUMBER:
-COUNTRY:
-OCCUPATION:
-SEX:
-AGE:
-EMAIL:  
-
-KINDEST REGARDS,
-(SEN).LAWRENCE NWAEZE,
-CHAIRMAN SENATE COMMITTEE ON FOREIGN PAYMENT.
+Sgt. John Davidson 
