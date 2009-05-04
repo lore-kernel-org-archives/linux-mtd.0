@@ -1,17 +1,18 @@
-Received: from tomts44.bellnexxia.net ([209.226.175.111]
-	helo=tomts44-srv.bellnexxia.net)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M0igo-0007dd-F0
-	for linux-mtd@lists.infradead.org; Sun, 03 May 2009 20:53:41 +0000
-From: ... <scovilb@nbnet.nb.ca>
-To: .@nbnet.nb.ca
-Subject: Urgent Attention
-Date: Sun, 3 May 2009 16:53:19 -0400
+Message-ID: <49FEA340.7070506@nokia.com>
+Date: Mon, 04 May 2009 11:11:44 +0300
+From: Adrian Hunter <adrian.hunter@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Message-Id: <20090503205319.CBNU1576.tomts44-srv.bellnexxia.net@toip38-bus.srvr.bell.ca>
-Reply-To: sjdavison01@gmail.com
+To: =?EUC-KR?B?yKu9xSBzaGluIGhvbmc=?= <hongshin@gmail.com>
+Subject: Re: report a suspected bug in ubifs
+References: <2014bcab0904300810qc66605bk9121b1ab66c53ece@mail.gmail.com>	
+	<49F9C340.3090304@nokia.com>	
+	<2014bcab0904301752x3662f91em3932c7b9730d8558@mail.gmail.com>	
+	<49FE9D59.30003@nokia.com>
+	<2014bcab0905040059r5ca9b8e1o5bf572ee354f7162@mail.gmail.com>
+In-Reply-To: <2014bcab0905040059r5ca9b8e1o5bf572ee354f7162@mail.gmail.com>
+Content-Type: text/plain; charset=EUC-KR
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd Mailing List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,10 +22,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am Sgt.John Davidson of the Engineering Unit of the US Army in Ba'qubah,Iraq.
+È«½Å shin hong wrote:
+> Thank you for the reply.
+> 
+> all accesses to 'wbuf->used' is synchronized by 'io_mutex'
+> and its updates(writing accesses) are synchronized by 'wbuf_lock'
+> like readers/writer lock ?
 
-We have the sum of $25,000,000 USD we made from some Oil deal that we want you to help us to receive. Since we are working here on Official capacity we cannot keep this funds hence my contacting you.
+Yes, it is like a readers/writers lock.
 
-If you are interested, do get back to me so that i can give you further details.
+To read from the wbuf, all that is needed is the spin lock.
 
-Sgt. John Davidson 
+To append to the wbuf, without otherwise changing it, all that is needed
+is the mutex (and then the spin lock to record that the append happened).
+
+To change the wbuf, the mutex *and* the spin lock are needed.
