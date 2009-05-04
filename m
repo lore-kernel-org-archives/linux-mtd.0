@@ -2,11 +2,11 @@ From: "Mrs. Holt, Dillon S" <frank.daniels@8u8.hk>,
 	" <cheung167@netvigator.com>"@obav02.netvigator.com
 To: info@netvigator.com
 Subject: You have won 1.000.000.00. Euro 
-Date: Tue, 5 May 2009 1:01:20 +0800
+Date: Tue, 5 May 2009 1:04:28 +0800
 MIME-Version: 1.0
 Content-Type: text/plain; charset=Big5
 Content-Transfer-Encoding: 7bit
-Message-Id: <20090504170120.BDDAC1B0FDC@obav02.netvigator.com>
+Message-Id: <20090504170428.84F041B1048@obav02.netvigator.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
