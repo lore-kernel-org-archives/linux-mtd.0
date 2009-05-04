@@ -1,17 +1,17 @@
 Received: from imta-38.everyone.net ([216.200.145.38]
-	helo=omta0111.mta.everyone.net)
+	helo=omta0107.mta.everyone.net)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M14Iu-0001PE-0O
-	for linux-mtd@lists.infradead.org; Mon, 04 May 2009 19:58:26 +0000
+	id 1M14KY-0004Al-WB
+	for linux-mtd@lists.infradead.org; Mon, 04 May 2009 20:00:09 +0000
 Subject: Re: NAND + YAFFS2 - bad blocks
 From: Subramani <subbu@fortisys.com>
 To: Stanislav Popov <s.popov@rsc.bg>
-In-Reply-To: <49F86353.7030806@rsc.bg>
+In-Reply-To: <49F7FBB6.8080301@rsc.bg>
 References: <20090428145901.ED9188BC@resin13.mta.everyone.net>
-	<49F86353.7030806@rsc.bg>
+	<49F7FBB6.8080301@rsc.bg>
 Content-Type: text/plain
-Date: Mon, 04 May 2009 15:58:16 -0400
-Message-Id: <1241467096.7488.4.camel@subbuv30-laptop>
+Date: Mon, 04 May 2009 16:00:00 -0400
+Message-Id: <1241467200.7488.5.camel@subbuv30-laptop>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -24,16 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since it is 512+16, also you are enabling ECC, I ask you to verify
-whether ECC bytes are written at proper oob offset, this is one of the
-issues we were facing on 2048+64 bytes.
+Flash_eraseall does not any problem, I belive it should be an issue with
+nand_write or your NAND ECC module. These are the things you need to
+verify at your end.
 
--Subbu
-On Wed, 2009-04-29 at 17:25 +0300, Stanislav Popov wrote:
-> The parameters of my chip are :512Mbit, 64Mx8, Page (512 + 16 OOB), 
-> block (16K + 512), Block erase time: 2ms, 
+Regards,
+Subbu
+On Wed, 2009-04-29 at 10:03 +0300, Stanislav Popov wrote:
+> Hi,
 > 
-> Actually I see that my FS is mounted as yaffs1 (not yaffs2).
+> thanks for your reply!
+> 
+> If I use flash_eraseall then the bug could be in it ?
+> So there should be no issue in YAFFS2 FS or Kernel Driver?
+> 
+> How do you suggest to write the FS?
+> 
+> Thank you very much!
+> Stanislav
 > 
 > subbu@fortisys.com wrote:
 > > Hi,
@@ -108,7 +116,3 @@ On Wed, 2009-04-29 at 17:25 +0300, Stanislav Popov wrote:
 > >
 > >   
 > 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
