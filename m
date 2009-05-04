@@ -1,17 +1,12 @@
-Received: from [139.138.16.117] (helo=email2.dataio.com)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M10Gk-0006i4-TG
-	for linux-mtd@lists.infradead.org; Mon, 04 May 2009 15:39:57 +0000
-Content-class: urn:content-classes:message
+From: "Mrs. Holt, Dillon S" <frank.daniels@8u8.hk>,
+	" <cheung167@netvigator.com>"@obav02.netvigator.com
+To: info@netvigator.com
+Subject: You have won 1.000.000.00. Euro 
+Date: Tue, 5 May 2009 1:01:20 +0800
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Subject: UBI - NAND Flash Programming
-Date: Mon, 4 May 2009 08:39:49 -0700
-Message-ID: <B538B21A486F9E4CBBE577217764F37701662A53@email2.dataio.internal>
-From: "Musch, Edwin" <musche@dataio.com>
-To: <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=Big5
+Content-Transfer-Encoding: 7bit
+Message-Id: <20090504170120.BDDAC1B0FDC@obav02.netvigator.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,36 +16,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Euro Mega Millions
+Brookmount House,
+62-65 Chandos Place,
+Covent Garden,
+WC2N 4LP,
+London,
+United Kingdom.
 
 
-Hello
+Confirmation Reference Number: 78-45-2-12-47-66-4
 
-I am from Data I/O. We produce mass production Flash programming =
-equipment.
-We received a request from Keymile/Germany to support the UBI.
+reply to E-mail to:frank.daniels@8u8.hk
 
-As you will know we need to program the raw NAND Flash the same way than =
-the application is handling the NAND Flash ( bad blocks )
+You have won 1.000.000.00. Euro (One million Euro) in the Euro Millions Email Sweepstakes Program Corporation, held on the 30th of April 2009. In London, United Kingdom. Please contact the agency for the claim.
 
-Could you please give me further information regarding the Bad Block =
-Handling? Since we are programming the NAND Flash only once we are not =
-worried about wear levelling.
+contact person:Mr.Frank Daniels
+TEL: +44-703-1907908 Fax: +44-703-195-2966
+reply to E-mail to:frank.daniels@8u8.hk
 
-1) If we detect a bad block where should we move the Data
-   a. SKIP: go on with the next good block - or
-   b. Put the Data into a reserved area
-      c. Please let me know where this area is defined
-2) Do I need to update the Main area if I move a block? - Is there a =
-header?
-3) Could you explain the info within the spare area?=20
-   a. Do I need to update anything if I move a block to different =
-location?
-   b. ECC - In case I need to update the main area - How is it done?
-4) Are there any dynamic table somewhere that needs to be updated - Bad =
-block table?
+Below are your Winning Information's:
+Email Ticket Number 15-21-4-19-27-44
+Reference Number: 78-45-2-12-47-66-4
+Draw Lucky Number:8-17-10-13-37/*5*7
+Batch Number :JKPN44521412
+Serial Number: HMML235524453
 
-Thank you for your help - Let me know if you need further information to =
-answer any of my questions.
+1. Full Name:
+2. Full Address:
+3. Occupation:
+4. Age/Sex: 
+5. Phone Number/ Fax:
+6. Country :
+Phone Number:
 
-Mit freundlichen Gr=FC=DFen / Best Regards
-Edwin Musch
+Note: You are to pick one of the options below on how you want your Prize money to be remitted to you.
+
+Option 1.
+Bank Transfer
+
+Options 2.
+Cheque
+
+
+Note, All winning must be claim not later than 30th of June 2009.
+
+Sincerely,
+Mrs. Holt, Dillon S.
+E-mail:frank.daniels@8u8.hk
