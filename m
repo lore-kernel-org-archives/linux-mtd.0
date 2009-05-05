@@ -1,21 +1,19 @@
-Received: from smtp117.sbc.mail.sp1.yahoo.com ([69.147.64.90])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M15Wb-00083E-8z
-	for linux-mtd@lists.infradead.org; Mon, 04 May 2009 21:16:39 +0000
-From: David Brownell <david-b@pacbell.net>
-To: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: Re: [PATCH] RFC: nand: move layout structure into nand_ecc_ctrl
-Date: Mon, 4 May 2009 14:16:29 -0700
-References: <>
-	<1241469762-7255-1-git-send-email-troy.kisky@boundarydevices.com>
-In-Reply-To: <1241469762-7255-1-git-send-email-troy.kisky@boundarydevices.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200905041416.29292.david-b@pacbell.net>
-Cc: Snehaprabha Narnakaje <nsnehaprabha@ti.com>, linux-mtd@lists.infradead.org
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1M1CnW-0004go-Ao
+	for linux-mtd@lists.infradead.org; Tue, 05 May 2009 05:02:46 +0000
+Subject: Re: ubifs corrupt
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: jerry <jerrydreaming@gmail.com>
+In-Reply-To: <71103bce0904271851v4004cfadp465f8fee2519f836@mail.gmail.com>
+References: <71103bce0904271851v4004cfadp465f8fee2519f836@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 05 May 2009 08:02:17 +0300
+Message-Id: <1241499737.3760.21.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,71 +23,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 04 May 2009, Troy Kisky wrote:
-> This saves lines of code by having nand_base
-> calculate oob_free entries.
+On Tue, 2009-04-28 at 09:51 +0800, jerry wrote:
+> > Do you have this patch?
+> >
+> >        http://git.infradead.org/ubifs-2.6.git?a=commitdiff;h=de0975781a1a8bc92e07eb7681d10ef9bb5e6df9
+> >
+> 1.I have  this patch:
+>      http://git.infradead.org/ubifs-2.6.git?a=commitdiff;h=de0975781a1a8bc92e07eb7681d10ef9bb5e6df9
+> 2.The ubifs is updated to 2.6.28.
+> 3. kernel version is 2.6.24.
+> 4.The information:
+> UBIFS error (pid 434): ubifs_read_node: bad node type (255 but expected 2)
+> UBIFS error (pid 434): ubifs_read_node: bad node at LEB 16:512360
+> Call Trace:
+> [<8002057c>] dump_stack+0x8/0x34
+> [<80187028>] ubifs_read_node+0x3ac/0x404
+> [<801b2aa0>] ubifs_tnc_read_node+0x1c0/0x240
+> [<8018b5b4>] tnc_read_node_nm+0x88/0x28c
+> [<8018cf44>] ubifs_tnc_next_ent+0x1cc/0x300
+> [<8017ef58>] ubifs_readdir+0x210/0x674
+> [<800bf38c>] vfs_readdir+0xd0/0xfc
+> [<800bf424>] sys_getdents64+0x6c/0x100
+> [<800227b0>] stack_done+0x20/0x3c
+> UBIFS error (pid 434): ubifs_readdir: cannot find next direntry, error -22
+> UBIFS error (pid 434): ubifs_read_node: bad node type (255 but expected 2)
+> UBIFS error (pid 434): ubifs_read_node: bad node at LEB 16:512360
+> Call Trace:
+> [<8002057c>] dump_stack+0x8/0x34
+> [<80187028>] ubifs_read_node+0x3ac/0x404
+> [<801b2aa0>] ubifs_tnc_read_node+0x1c0/0x240
+> [<8018b5b4>] tnc_read_node_nm+0x88/0x28c
+> [<8018cf44>] ubifs_tnc_next_ent+0x1cc/0x300
+> [<8017ef58>] ubifs_readdir+0x210/0x674
+> [<800bf38c>] vfs_readdir+0xd0/0xfc
+> [<800bf520>] sys_getdents+0x68/0xfc
+> [<800227b0>] stack_done+0x20/0x3c
+> UBIFS error (pid 434): ubifs_readdir: cannot find next direntry, error -22
+> # dmesg
+> ff ff ff                          ........................
+> Call Trace:
+> [<8002057c>] dump_stack+0x8/0x34
+> [<80187028>] ubifs_read_node+0x3ac/0x404
+> [<801b2aa0>] ubifs_tnc_read_node+0x1c0/0x240
+> [<8018b5b4>] tnc_read_node_nm+0x88/0x28c
+> [<8018e298>] ubifs_tnc_locate+0x1e0/0x22c
+> [<8018e32c>] ubifs_tnc_lookup_nm+0x48/0x2a0
+> [<8017fe90>] ubifs_lookup+0xf0/0x358
+> [<800b71fc>] do_lookup+0x1b0/0x1fc
+> [<800b95ec>] __link_path_walk+0x850/0x19a0
+> [<800ba914>] link_path_walk+0x1d8/0x3ac
+> [<800bb0c8>] do_path_lookup+0x188/0x6dc
+> [<800bc0f4>] __user_walk_fd+0x54/0x88
+> [<800a9fec>] sys_faccessat+0xe0/0x198
+> [<800227b0>] stack_done+0x20/0x3c
+> UBIFS error (pid 368): ubifs_read_node: bad node type (255 but expected 2)
+> UBIFS error (pid 368): ubifs_read_node: bad node at LEB 16:512360
+> Not a node, first 24 bytes:<7>00000000: ff ff ff ff ff ff ff ff ff ff
+> ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+> ........................
+> 5.when I select the UBIFS_FS_DEBUG_CHKS = y,the file system is ok.But
+> it is very slow.
 
-I *like* the model of letting drivers not do that.
-IMO it should at least be an easy option ... so the
-NAND drivers don't need to do it, in the not-rare
-case that the defaults don't suffice.
+Well, the error is that ubifs tries to read a directory entry,
+but finds empty space there. It might be related to the way you
+join you NAND chips.
 
-I'll see if your patch does things I like later;
-gotta read it first!
+Could you try to reproduce this error on a simpler setup? E.g., 
+if you do not have multiple chips joined into one, or on nandsim?
 
-
-> It also changes 
-> some of the boards oob_free entries, such
-> as bf5xx_nand which seems to include the
-> bad block marker in the free list.
-
-Compatibility there will be an issue; likely that
-part won't fly for existing systems.
-
- 
-> Also boards that use 512 byte eccsize groups like
-> (I hope only) davinci will have the ecc moved
-> to the end of the oob and have a longer free list.
-
-What I'd like to see is that the *default* be as you
-suggest:  all the ECC bytes at the end of the OOB.
-Let boards override it if they need to, though.
-
-A related issue is that "struct nand_ecclayout" has
-some severe weaknesses ... one way to cope with it
-would be to just not need that struct at all.
-See below.
-
-(And then there's the issue that with ECC_HW_SYNDROME
-nothing ensures the nand_ecclayout struct matches
-the prepad/postpad/... values which actually get used
-during page read/write.)
-
- 
-> This davinci changes is the reason I want this patch.
-> But, as it is a dangerous patch, it will need lots
-> of Acks.
-> 
-> This patch also makes a future 4 bit software ecc
-> easier.
-
-For folk on the MTD list who aren't thinking about it,
-let me highlight a few points with respect to DaVinci
-4-bit ECC hardware.  Two numbers to remember:  10 bytes
-of ECC data, every 512 bytes of data.
-
- - 2K pages ... current stack can cope, painfully,
-   although ECC_HW_SYNDROME will clobber bad block
-   markers and ECC_HW isn't appropriate.  Ergo the
-   work to come up with a new ECC_HW_something.
-
- - 4K pages ... current stack CAN NOT COPE since
-   nand_ecclayout.eccpos[] is 64 bytes but there
-   will be 80 bytes ECC to store. (!!)
-
-If nand_ecclayout were not used, it would be easy
-to write code that knows those 80 bytes go at the
-end of the 128 bytes of OOB.  (Or 40 at the end
-of 64 bytes OOB, for 2K pages.)
-
-- Dave
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
