@@ -1,19 +1,24 @@
-Received: from [139.138.16.117] (helo=email2.dataio.com)
+Received: from mail-qy0-f108.google.com ([209.85.221.108])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M1SOT-0006HE-VT
-	for linux-mtd@lists.infradead.org; Tue, 05 May 2009 21:41:48 +0000
-Content-class: urn:content-classes:message
+	id 1M1UYL-0004MV-6U
+	for linux-mtd@lists.infradead.org; Wed, 06 May 2009 00:00:08 +0000
+Received: by qyk6 with SMTP id 6so12967937qyk.28
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 05 May 2009 16:59:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Subject: AW: UBI - NAND Flash Programming
-Date: Tue, 5 May 2009 14:41:37 -0700
-Message-ID: <B538B21A486F9E4CBBE577217764F37701662A61@email2.dataio.internal>
-In-Reply-To: <1241500695.3760.32.camel@localhost.localdomain>
-From: "Musch, Edwin" <musche@dataio.com>
-To: <dedekind@infradead.org>
-Cc: linux-mtd@lists.infradead.org
+Sender: kyungmin78@gmail.com
+In-Reply-To: <49FFF86F.2070402@nokia.com>
+References: <49FFF86F.2070402@nokia.com>
+Date: Wed, 6 May 2009 08:59:59 +0900
+Message-ID: <9c9fda240905051659k55c169e0y5372f09bad33cb71@mail.gmail.com>
+Subject: Re: [PATCH] MTD: OneNAND: Add support for OneNAND manufactured by
+	Numonyx
+From: Kyungmin Park <kmpark@infradead.org>
+To: Adrian Hunter <adrian.hunter@nokia.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,54 +28,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8gQXJ0ZW0gQml0eXV0c2tpeQ0KDQpUaGFuayB5b3Ugc28gZmFyIGZvciB5b3VyIGluZm8u
-DQoNCkknbSB3b3JraW5nIG9uIHRoZSBkZXZpY2UgbGV2ZWwgb2YgdGhlIGNoaXAsIGJ1dCBJJ20g
-bm90IHVzaW5nIHRoZSBMaW51eCBrZXJuZWwuIE9ubHkgb3VyIGN1c3RvbWVyIGRvZXMgYnV0IHdl
-IGhhdmUgdG8gZm9sbG93IHRoZSBVQkkgY29udmVudGlvbi4NCg0KV2UgYXJlIHByb2dyYW1taW5n
-IGJsYW5rIGNoaXBzIGluIHByb2R1Y3Rpb24gc28gdGhlcmUgaXMgbm90aGluZyBpbiB0aGUgTkFO
-RCBmbGFzaC4gVGhpcyBtZWFucyBJIGRvIG5vdCBoYXZlIHRvIGNoYW5nZSBhbnl0aGluZyBmcm9t
-IHRoZSBJbWFnZSwgcmlnaHQ/DQpTbyBJIGRvbid0IGhhdmUgdG8gbWFrZSBhbnkgdXBkYXRlcyB3
-aXRoaW4gdGhlIG1haW4gYW5kIHRoZSBzcGFyZSBhcmVhLCByaWdodD8NCg0KV2l0aCBxdWVzdGlv
-biAyICYgMyBJIHRyeSB0byBzYXkuIERvIEkgbmVlZCB0byB1cGRhdGUgYSBkZXBlbmRlbmN5IGlm
-IGEgYmxvY2sgd2lsbCBiZSBtb3ZlZD8gSXMgdGhlcmUgc29tZXRoaW5nIGluIHRoZSBtYWluIC8g
-c3BhcmUgYXJlYSBvZiB0aGUgTkFORCBmbGFzaCB0aGF0IG5lZWRzIHRvIGJlIHVwZGF0ZWQgaWYg
-YSBibG9jayB3aWxsIGJlIG1vdmVkIGludG8gdGhlIG5leHQgZ29vZCBibG9jay4NCg0KQ291bGQg
-eW91IHByb3ZpZGUgbWUgdGhlIHN0cnVjdHVyZSBvZiB0aGUgdGFibGUgaWYgIk5BTkRfVVNFX0ZM
-QVNIX0JCVCIgaXMgZW5hYmxlZD8NCg0KTWl0IGZyZXVuZGxpY2hlbiBHcsO8w59lbiAvIEJlc3Qg
-UmVnYXJkcw0KRWR3aW4gTXVzY2gNCkRpcGwuIC0gSW5nLg0KRkFFIC0gU3VwcG9ydCBUZWFtDQo2
-NDY0IDE4NXRoIEF2ZW51ZSBORSAtIFN1aXRlIDEwMQ0KUmVkbW9uZCwgV0EsIFVTQSwgOTgwNTIN
-CkZvbjogICAgICAgICAgKzEgNDI1IDg2NyA2MjY4DQpAOiAgICAgICAgICAgICBtdXNjaGVAZGF0
-YS5pby5jb20NCndlYjogICAgICAgICAgd3d3LmRhdGEtaW8uY29tDQoNCi0tLS0tVXJzcHLDvG5n
-bGljaGUgTmFjaHJpY2h0LS0tLS0NClZvbjogQXJ0ZW0gQml0eXV0c2tpeSBbbWFpbHRvOmRlZGVr
-aW5kQGluZnJhZGVhZC5vcmddIA0KR2VzZW5kZXQ6IERpZW5zdGFnLCA1LiBNYWkgMjAwOSAwNzox
-OA0KQW46IE11c2NoLCBFZHdpbg0KQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnDQpC
-ZXRyZWZmOiBSZTogVUJJIC0gTkFORCBGbGFzaCBQcm9ncmFtbWluZw0KDQpPbiBNb24sIDIwMDkt
-MDUtMDQgYXQgMDg6MzkgLTA3MDAsIE11c2NoLCBFZHdpbiB3cm90ZToNCj4gDQo+IEhlbGxvDQo+
-IA0KPiBJIGFtIGZyb20gRGF0YSBJL08uIFdlIHByb2R1Y2UgbWFzcyBwcm9kdWN0aW9uIEZsYXNo
-IHByb2dyYW1taW5nIGVxdWlwbWVudC4NCj4gV2UgcmVjZWl2ZWQgYSByZXF1ZXN0IGZyb20gS2V5
-bWlsZS9HZXJtYW55IHRvIHN1cHBvcnQgdGhlIFVCSS4NCj4gDQo+IEFzIHlvdSB3aWxsIGtub3cg
-d2UgbmVlZCB0byBwcm9ncmFtIHRoZSByYXcgTkFORCBGbGFzaCB0aGUgc2FtZSB3YXkgdGhhbiB0
-aGUgYXBwbGljYXRpb24gaXMgaGFuZGxpbmcgdGhlIE5BTkQgRmxhc2ggKCBiYWQgYmxvY2tzICkN
-Cj4gDQo+IENvdWxkIHlvdSBwbGVhc2UgZ2l2ZSBtZSBmdXJ0aGVyIGluZm9ybWF0aW9uIHJlZ2Fy
-ZGluZyB0aGUgQmFkIEJsb2NrIEhhbmRsaW5nPyBTaW5jZSB3ZSBhcmUgcHJvZ3JhbW1pbmcgdGhl
-IE5BTkQgRmxhc2ggb25seSBvbmNlIHdlIGFyZSBub3Qgd29ycmllZCBhYm91dCB3ZWFyIGxldmVs
-bGluZy4NCj4gDQoNCllvdSBoYXZlIGFuIFVCSSBpbWFnZSwgYW5kIHlvdSBuZWVkIHRvIGZsYXNo
-IGl0IHRvIHlvdXIgZGV2aWNlLA0KcmlnaHQ/DQoNCj4gMSkgSWYgd2UgZGV0ZWN0IGEgYmFkIGJs
-b2NrIHdoZXJlIHNob3VsZCB3ZSBtb3ZlIHRoZSBEYXRhDQo+ICAgIGEuIFNLSVA6IGdvIG9uIHdp
-dGggdGhlIG5leHQgZ29vZCBibG9jayAtIG9yDQo+ICAgIGIuIFB1dCB0aGUgRGF0YSBpbnRvIGEg
-cmVzZXJ2ZWQgYXJlYQ0KPiAgICAgICBjLiBQbGVhc2UgbGV0IG1lIGtub3cgd2hlcmUgdGhpcyBh
-cmVhIGlzIGRlZmluZWQNCg0KYSkuDQoNCj4gMikgRG8gSSBuZWVkIHRvIHVwZGF0ZSB0aGUgTWFp
-biBhcmVhIGlmIEkgbW92ZSBhIGJsb2NrPyAtIElzIHRoZXJlIGEgaGVhZGVyPw0KPiAzKSBDb3Vs
-ZCB5b3UgZXhwbGFpbiB0aGUgaW5mbyB3aXRoaW4gdGhlIHNwYXJlIGFyZWE/IA0KPiAgICBhLiBE
-byBJIG5lZWQgdG8gdXBkYXRlIGFueXRoaW5nIGlmIEkgbW92ZSBhIGJsb2NrIHRvIGRpZmZlcmVu
-dCBsb2NhdGlvbj8NCj4gICAgYi4gRUNDIC0gSW4gY2FzZSBJIG5lZWQgdG8gdXBkYXRlIHRoZSBt
-YWluIGFyZWEgLSBIb3cgaXMgaXQgZG9uZT8NCg0KSSBkbyBub3QgcmVhbGx5IHVuZGVyc3RhbmQg
-dGhlc2UgcXVlc3Rpb25zLCBzb3JyeS4NCg0KPiA0KSBBcmUgdGhlcmUgYW55IGR5bmFtaWMgdGFi
-bGUgc29tZXdoZXJlIHRoYXQgbmVlZHMgdG8gYmUgdXBkYXRlZCAtIEJhZCBibG9jayB0YWJsZT8N
-Cg0KVGhlcmUgbWlnaHQgYmUuIEl0IGRlcGVuZHMgd2hhdCB5b3UgTVREIGRyaXZlciBjaG9vc2Vz
-LiBTZWUgdGhlDQpOQU5EX1VTRV9GTEFTSF9CQlQgb3B0aW9uIGluIHRoZSBsaW51eCBrZXJuZWwu
-IEkgcGVyc29uYWxseSBuZXZlcg0KdXNlZCBvbi1mbGFzaCBCQlQuDQoNClBsZWFzZSwgdGFrZSBh
-IGxvb2sgaGVyZToNCmh0dHA6Ly93d3cubGludXgtbXRkLmluZnJhZGVhZC5vcmcvZG9jL3ViaS5o
-dG1sI0xfZm9ybWF0DQoNClRoZSBmbGFzaGluZyBhbGdvcml0aG0gaXMgZGVzY3JpYmVkIHRoZXJl
-Lg0KDQotLSANCkJlc3QgcmVnYXJkcywNCkFydGVtIEJpdHl1dHNraXkgKNCR0LjRgtGO0YbQutC4
-0Lkg0JDRgNGC0ZHQvCkNCg0K
+Hi,
+
+Good I heard the Numonyx also make a OneNAND chips.
+
+Acked-by: Kyungmin Park <kyungmin.park@samsung.com>
+
+On Tue, May 5, 2009 at 5:27 PM, Adrian Hunter <adrian.hunter@nokia.com> wro=
+te:
+> From e400da3456896505edbf7c39a14668c2c718ace4 Mon Sep 17 00:00:00 2001
+> From: Adrian Hunter <adrian.hunter@nokia.com>
+> Date: Tue, 5 May 2009 11:04:19 +0300
+> Subject: [PATCH] MTD: OneNAND: Add support for OneNAND manufactured by
+> Numonyx
+>
+> In addition to adding the Numonyx manufacturer code, this patch
+> also ensures 'sync. write' is disabled when reading identification
+> data - something that the Numonyx chip objects to, but the
+> Samsung chip seems to ignore.
+>
+> Signed-off-by: Adrian Hunter <adrian.hunter@nokia.com>
+> ---
+> drivers/mtd/onenand/onenand_base.c | =A0 =A03 ++-
+> include/linux/mtd/onenand.h =A0 =A0 =A0 =A0| =A0 =A01 +
+> 2 files changed, 3 insertions(+), 1 deletions(-)
+>
+> diff --git a/drivers/mtd/onenand/onenand_base.c
+> b/drivers/mtd/onenand/onenand_base.c
+> index 524af9a..f6cfadb 100644
+> --- a/drivers/mtd/onenand/onenand_base.c
+> +++ b/drivers/mtd/onenand/onenand_base.c
+> @@ -2576,6 +2576,7 @@ static void onenand_print_device_info(int device, i=
+nt
+> version)
+>
+> static const struct onenand_manufacturers onenand_manuf_ids[] =3D {
+> =A0 =A0 =A0 =A0{ONENAND_MFR_SAMSUNG, "Samsung"},
+> + =A0 =A0 =A0 {ONENAND_MFR_NUMONYX, "Numonyx"},
+> };
+>
+> /**
+> @@ -2621,7 +2622,7 @@ static int onenand_probe(struct mtd_info *mtd)
+> =A0 =A0 =A0 =A0/* Save system configuration 1 */
+> =A0 =A0 =A0 =A0syscfg =3D this->read_word(this->base + ONENAND_REG_SYS_CF=
+G1);
+> =A0 =A0 =A0 =A0/* Clear Sync. Burst Read mode to read BootRAM */
+> - =A0 =A0 =A0 this->write_word((syscfg & ~ONENAND_SYS_CFG1_SYNC_READ), th=
+is->base
+> + ONENAND_REG_SYS_CFG1);
+> + =A0 =A0 =A0 this->write_word((syscfg & ~ONENAND_SYS_CFG1_SYNC_READ &
+> ~ONENAND_SYS_CFG1_SYNC_WRITE), this->base + ONENAND_REG_SYS_CFG1);
+>
+> =A0 =A0 =A0 =A0/* Send the command for reading device ID from BootRAM */
+> =A0 =A0 =A0 =A0this->write_word(ONENAND_CMD_READID, this->base + ONENAND_=
+BOOTRAM);
+> diff --git a/include/linux/mtd/onenand.h b/include/linux/mtd/onenand.h
+> index 9aa2a91..0fa3ac4 100644
+> --- a/include/linux/mtd/onenand.h
+> +++ b/include/linux/mtd/onenand.h
+> @@ -176,6 +176,7 @@ struct onenand_chip {
+> =A0* OneNAND Flash Manufacturer ID Codes
+> =A0*/
+> #define ONENAND_MFR_SAMSUNG =A0 =A0 0xec
+> +#define ONENAND_MFR_NUMONYX =A0 =A00x20
+>
+> /**
+> =A0* struct onenand_manufacturers - NAND Flash Manufacturer ID Structure
+> --
+> 1.5.6.3
+>
