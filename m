@@ -1,13 +1,19 @@
-Date: Tue, 05 May 2009 16:33:53 +0100
-From: westernunionpayt@turbonett.com
-Subject: Via Westernunion
-Message-id: <f6a7de5e13d9e1.4a006a71@intelnet.net.gt>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-language: es
-Content-transfer-encoding: 7BIT
-Content-disposition: inline
-To: undisclosed-recipients:;
+Received: from [139.138.16.117] (helo=email2.dataio.com)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M1SOT-0006HE-VT
+	for linux-mtd@lists.infradead.org; Tue, 05 May 2009 21:41:48 +0000
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Subject: AW: UBI - NAND Flash Programming
+Date: Tue, 5 May 2009 14:41:37 -0700
+Message-ID: <B538B21A486F9E4CBBE577217764F37701662A61@email2.dataio.internal>
+In-Reply-To: <1241500695.3760.32.camel@localhost.localdomain>
+From: "Musch, Edwin" <musche@dataio.com>
+To: <dedekind@infradead.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,11 +23,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Via Westernunion 
-
-Be informed that your payment sum of $2.millionUSD,has been arrange with the Paying bank to send your payment via western union money transfer. They will be sending $10.000.00 every day to you.Contact Mr Johnson Akaette western union Agent for immediate Transfer,send your receiver's information to him,also you are to send them the sum of $259,00 for the stamp duty fee before the remittation will be made,remember the sum of $2.millionUSD will be program in your name via western union database in order for you to receive the fund in any westernunion in your country. 
-
-Now Contact Mr Johnson Akaette on (johnsonakaette@yahoo.fr)
-
-Thanks,
-Elizabeth
+SGVsbG8gQXJ0ZW0gQml0eXV0c2tpeQ0KDQpUaGFuayB5b3Ugc28gZmFyIGZvciB5b3VyIGluZm8u
+DQoNCkknbSB3b3JraW5nIG9uIHRoZSBkZXZpY2UgbGV2ZWwgb2YgdGhlIGNoaXAsIGJ1dCBJJ20g
+bm90IHVzaW5nIHRoZSBMaW51eCBrZXJuZWwuIE9ubHkgb3VyIGN1c3RvbWVyIGRvZXMgYnV0IHdl
+IGhhdmUgdG8gZm9sbG93IHRoZSBVQkkgY29udmVudGlvbi4NCg0KV2UgYXJlIHByb2dyYW1taW5n
+IGJsYW5rIGNoaXBzIGluIHByb2R1Y3Rpb24gc28gdGhlcmUgaXMgbm90aGluZyBpbiB0aGUgTkFO
+RCBmbGFzaC4gVGhpcyBtZWFucyBJIGRvIG5vdCBoYXZlIHRvIGNoYW5nZSBhbnl0aGluZyBmcm9t
+IHRoZSBJbWFnZSwgcmlnaHQ/DQpTbyBJIGRvbid0IGhhdmUgdG8gbWFrZSBhbnkgdXBkYXRlcyB3
+aXRoaW4gdGhlIG1haW4gYW5kIHRoZSBzcGFyZSBhcmVhLCByaWdodD8NCg0KV2l0aCBxdWVzdGlv
+biAyICYgMyBJIHRyeSB0byBzYXkuIERvIEkgbmVlZCB0byB1cGRhdGUgYSBkZXBlbmRlbmN5IGlm
+IGEgYmxvY2sgd2lsbCBiZSBtb3ZlZD8gSXMgdGhlcmUgc29tZXRoaW5nIGluIHRoZSBtYWluIC8g
+c3BhcmUgYXJlYSBvZiB0aGUgTkFORCBmbGFzaCB0aGF0IG5lZWRzIHRvIGJlIHVwZGF0ZWQgaWYg
+YSBibG9jayB3aWxsIGJlIG1vdmVkIGludG8gdGhlIG5leHQgZ29vZCBibG9jay4NCg0KQ291bGQg
+eW91IHByb3ZpZGUgbWUgdGhlIHN0cnVjdHVyZSBvZiB0aGUgdGFibGUgaWYgIk5BTkRfVVNFX0ZM
+QVNIX0JCVCIgaXMgZW5hYmxlZD8NCg0KTWl0IGZyZXVuZGxpY2hlbiBHcsO8w59lbiAvIEJlc3Qg
+UmVnYXJkcw0KRWR3aW4gTXVzY2gNCkRpcGwuIC0gSW5nLg0KRkFFIC0gU3VwcG9ydCBUZWFtDQo2
+NDY0IDE4NXRoIEF2ZW51ZSBORSAtIFN1aXRlIDEwMQ0KUmVkbW9uZCwgV0EsIFVTQSwgOTgwNTIN
+CkZvbjogICAgICAgICAgKzEgNDI1IDg2NyA2MjY4DQpAOiAgICAgICAgICAgICBtdXNjaGVAZGF0
+YS5pby5jb20NCndlYjogICAgICAgICAgd3d3LmRhdGEtaW8uY29tDQoNCi0tLS0tVXJzcHLDvG5n
+bGljaGUgTmFjaHJpY2h0LS0tLS0NClZvbjogQXJ0ZW0gQml0eXV0c2tpeSBbbWFpbHRvOmRlZGVr
+aW5kQGluZnJhZGVhZC5vcmddIA0KR2VzZW5kZXQ6IERpZW5zdGFnLCA1LiBNYWkgMjAwOSAwNzox
+OA0KQW46IE11c2NoLCBFZHdpbg0KQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnDQpC
+ZXRyZWZmOiBSZTogVUJJIC0gTkFORCBGbGFzaCBQcm9ncmFtbWluZw0KDQpPbiBNb24sIDIwMDkt
+MDUtMDQgYXQgMDg6MzkgLTA3MDAsIE11c2NoLCBFZHdpbiB3cm90ZToNCj4gDQo+IEhlbGxvDQo+
+IA0KPiBJIGFtIGZyb20gRGF0YSBJL08uIFdlIHByb2R1Y2UgbWFzcyBwcm9kdWN0aW9uIEZsYXNo
+IHByb2dyYW1taW5nIGVxdWlwbWVudC4NCj4gV2UgcmVjZWl2ZWQgYSByZXF1ZXN0IGZyb20gS2V5
+bWlsZS9HZXJtYW55IHRvIHN1cHBvcnQgdGhlIFVCSS4NCj4gDQo+IEFzIHlvdSB3aWxsIGtub3cg
+d2UgbmVlZCB0byBwcm9ncmFtIHRoZSByYXcgTkFORCBGbGFzaCB0aGUgc2FtZSB3YXkgdGhhbiB0
+aGUgYXBwbGljYXRpb24gaXMgaGFuZGxpbmcgdGhlIE5BTkQgRmxhc2ggKCBiYWQgYmxvY2tzICkN
+Cj4gDQo+IENvdWxkIHlvdSBwbGVhc2UgZ2l2ZSBtZSBmdXJ0aGVyIGluZm9ybWF0aW9uIHJlZ2Fy
+ZGluZyB0aGUgQmFkIEJsb2NrIEhhbmRsaW5nPyBTaW5jZSB3ZSBhcmUgcHJvZ3JhbW1pbmcgdGhl
+IE5BTkQgRmxhc2ggb25seSBvbmNlIHdlIGFyZSBub3Qgd29ycmllZCBhYm91dCB3ZWFyIGxldmVs
+bGluZy4NCj4gDQoNCllvdSBoYXZlIGFuIFVCSSBpbWFnZSwgYW5kIHlvdSBuZWVkIHRvIGZsYXNo
+IGl0IHRvIHlvdXIgZGV2aWNlLA0KcmlnaHQ/DQoNCj4gMSkgSWYgd2UgZGV0ZWN0IGEgYmFkIGJs
+b2NrIHdoZXJlIHNob3VsZCB3ZSBtb3ZlIHRoZSBEYXRhDQo+ICAgIGEuIFNLSVA6IGdvIG9uIHdp
+dGggdGhlIG5leHQgZ29vZCBibG9jayAtIG9yDQo+ICAgIGIuIFB1dCB0aGUgRGF0YSBpbnRvIGEg
+cmVzZXJ2ZWQgYXJlYQ0KPiAgICAgICBjLiBQbGVhc2UgbGV0IG1lIGtub3cgd2hlcmUgdGhpcyBh
+cmVhIGlzIGRlZmluZWQNCg0KYSkuDQoNCj4gMikgRG8gSSBuZWVkIHRvIHVwZGF0ZSB0aGUgTWFp
+biBhcmVhIGlmIEkgbW92ZSBhIGJsb2NrPyAtIElzIHRoZXJlIGEgaGVhZGVyPw0KPiAzKSBDb3Vs
+ZCB5b3UgZXhwbGFpbiB0aGUgaW5mbyB3aXRoaW4gdGhlIHNwYXJlIGFyZWE/IA0KPiAgICBhLiBE
+byBJIG5lZWQgdG8gdXBkYXRlIGFueXRoaW5nIGlmIEkgbW92ZSBhIGJsb2NrIHRvIGRpZmZlcmVu
+dCBsb2NhdGlvbj8NCj4gICAgYi4gRUNDIC0gSW4gY2FzZSBJIG5lZWQgdG8gdXBkYXRlIHRoZSBt
+YWluIGFyZWEgLSBIb3cgaXMgaXQgZG9uZT8NCg0KSSBkbyBub3QgcmVhbGx5IHVuZGVyc3RhbmQg
+dGhlc2UgcXVlc3Rpb25zLCBzb3JyeS4NCg0KPiA0KSBBcmUgdGhlcmUgYW55IGR5bmFtaWMgdGFi
+bGUgc29tZXdoZXJlIHRoYXQgbmVlZHMgdG8gYmUgdXBkYXRlZCAtIEJhZCBibG9jayB0YWJsZT8N
+Cg0KVGhlcmUgbWlnaHQgYmUuIEl0IGRlcGVuZHMgd2hhdCB5b3UgTVREIGRyaXZlciBjaG9vc2Vz
+LiBTZWUgdGhlDQpOQU5EX1VTRV9GTEFTSF9CQlQgb3B0aW9uIGluIHRoZSBsaW51eCBrZXJuZWwu
+IEkgcGVyc29uYWxseSBuZXZlcg0KdXNlZCBvbi1mbGFzaCBCQlQuDQoNClBsZWFzZSwgdGFrZSBh
+IGxvb2sgaGVyZToNCmh0dHA6Ly93d3cubGludXgtbXRkLmluZnJhZGVhZC5vcmcvZG9jL3ViaS5o
+dG1sI0xfZm9ybWF0DQoNClRoZSBmbGFzaGluZyBhbGdvcml0aG0gaXMgZGVzY3JpYmVkIHRoZXJl
+Lg0KDQotLSANCkJlc3QgcmVnYXJkcywNCkFydGVtIEJpdHl1dHNraXkgKNCR0LjRgtGO0YbQutC4
+0Lkg0JDRgNGC0ZHQvCkNCg0K
