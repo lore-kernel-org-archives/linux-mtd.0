@@ -1,24 +1,23 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M1zIz-0000fN-AE
-	for linux-mtd@lists.infradead.org; Thu, 07 May 2009 08:50:32 +0000
-Subject: Re: mtdutils and libubiio
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Corentin Chary <corentin.chary@gmail.com>
-In-Reply-To: <71cd59b00905070141l489ef4b2g55cb17e3370e895d@mail.gmail.com>
-References: <71cd59b00905050249y7ea998c7mb5bb95c968d28b72@mail.gmail.com>
-	<1241526066.3760.37.camel@localhost.localdomain>
-	<71cd59b00905060522w191f5f19n6c67a1f33a55b061@mail.gmail.com>
-	<1241675856.27996.8.camel@localhost.localdomain>
-	<71cd59b00905070141l489ef4b2g55cb17e3370e895d@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 07 May 2009 11:49:59 +0300
-Message-Id: <1241686199.27996.14.camel@localhost.localdomain>
-Mime-Version: 1.0
+Received: from n19.bullet.mail.mud.yahoo.com ([68.142.206.146])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M1zdF-000450-O6
+	for linux-mtd@lists.infradead.org; Thu, 07 May 2009 09:11:19 +0000
+From: David Brownell <david-b@pacbell.net>
+To: "vimal singh" <vimalsingh@ti.com>
+Subject: Re: [PATCH 2/2] NAND on DM355: Add 4-bit ECC support for large page
+	NAND chips
+Date: Thu, 7 May 2009 02:11:05 -0700
+References: <46149.192.168.10.89.1241686785.squirrel@dbdmail.itg.ti.com>
+In-Reply-To: <46149.192.168.10.89.1241686785.squirrel@dbdmail.itg.ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Mike Frysinger <vapier.adi@gmail.com>
-Reply-To: dedekind@infradead.org
+Content-Disposition: inline
+Message-Id: <200905070211.05491.david-b@pacbell.net>
+Cc: davinci-linux-open-source@linux.davincidsp.com, nsnehaprabha@ti.com,
+	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
+	dwmw2@infradead.org, tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,23 +27,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-05-07 at 10:41 +0200, Corentin Chary wrote:
-> >> What you'll find here:
-> >> - CMake "experiment" with dependencies check on zlib and libacl
-> >> - libubiio, provinding the same API the kernel does
-> >> - mkfs.ubifs using libubiio, can write the image directly on an ubi volume
-> >
-> > Would you please send patches. It is so much more convenient to
-> > people? Teaching mkfs.ubifs write directly into the volume sounds
-> > nice, BTW.
-> >
-> 
-> Well as I said it's just an experiment right now.
-> Now that it works, I'll be able to send a series of patch with small
-> and smooth changes.
+On Thursday 07 May 2009, vimal singh wrote:
+> > Comments would be good, highlighting (a) byte 5 is reserved,
+> > it's the manufacturer bad block marker, (b) 8 bytes @16 are
+> > expected by JFFS2. �Not everyone will "just know" those.
+>
+> How about leaving bytes '4' and '5' for bad block marker, to support 16-bit
+> NAND parts too.
 
-Just go ahead with this :-)
-
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+This 4-bit ECC engine only works for 8-bit wide parts ...
+or are you suggesting that in case TI re-engineers that
+engine in the future?
