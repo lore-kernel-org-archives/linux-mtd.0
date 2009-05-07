@@ -1,21 +1,13 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M20HC-0002Un-EW
-	for linux-mtd@lists.infradead.org; Thu, 07 May 2009 09:52:33 +0000
-Message-ID: <41906.192.168.10.89.1241689856.squirrel@dbdmail.itg.ti.com>
-In-Reply-To: <46149.192.168.10.89.1241686786.squirrel@dbdmail.itg.ti.com>
-References: <46149.192.168.10.89.1241686786.squirrel@dbdmail.itg.ti.com>
-Date: Thu, 7 May 2009 15:20:56 +0530 (IST)
-Subject: Re: [PATCH 2/2] NAND on DM355: Add 4-bit ECC support for large     
-	page NAND chips
-From: "vimal singh" <vimalsingh@ti.com>
-To: "David Brownell" <david-b@pacbell.net>
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Cc: davinci-linux-open-source@linux.davincidsp.com, nsnehaprabha@ti.com,
-	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
-	dwmw2@infradead.org, tglx@linutronix.de
+Received: from iksaif.net ([88.191.73.63])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M20ro-0004IY-Is
+	for linux-mtd@lists.infradead.org; Thu, 07 May 2009 10:30:25 +0000
+From: Corentin Chary <corentincj@iksaif.net>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 0/2] mkfs.ubifs and libubiio
+Date: Thu,  7 May 2009 12:21:47 +0200
+Message-Id: <1241691709-17624-1-git-send-email-corentincj@iksaif.net>
+Cc: Corentin Chary <corentincj@iksaif.net>, vapier.adi@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,20 +17,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 7, 2009 at 2:41 PM, David Brownell <david-b@pacbell.net> wrote:
-> On Thursday 07 May 2009, vimal singh wrote:
->> > Comments would be good, highlighting (a) byte 5 is reserved,
->> > it's the manufacturer bad block marker, (b) 8 bytes @16 are
->> > expected by JFFS2.  Not everyone will "just know" those.
->>
->> How about leaving bytes '4' and '5' for bad block marker, to support 16-bit
->> NAND parts too.
->
-> This 4-bit ECC engine only works for 8-bit wide parts ...
-> or are you suggesting that in case TI re-engineers that
-> engine in the future?
-I am omap guy and was not aware of that. In omap HW BCH ECC (4- or 8- bit
-correction)can work both kind of memories.
+These patchs will allow mkfs.ubifs to write the image directly
+on an UBI volume.
+libubiio adds a lot of code, but as it provide the same API the kernel
+does we may export it latter as a shared library.
+Some code from libubiio_int.h comes from common.h in ubi-utils and we
+may refactor that.
 
-Regards,
-vimal
+Corentin Chary (2):
+  mkfs.ubifs: UBI I/O Library
+  mkfs.ubifs: format directly ubi volume using libubiio
+
+ include/mtd/ubi-user.h    |   72 ++--
+ include/ubi.h             |  192 +++++++++
+ mkfs.ubifs/Makefile       |    6 +-
+ mkfs.ubifs/libubiio.c     |  936 +++++++++++++++++++++++++++++++++++++++++++++
+ mkfs.ubifs/libubiio.h     |   47 +++
+ mkfs.ubifs/libubiio_int.h |  187 +++++++++
+ mkfs.ubifs/lpt.c          |   10 +-
+ mkfs.ubifs/mkfs.ubifs.c   |  223 +++++++++--
+ mkfs.ubifs/mkfs.ubifs.h   |    3 +-
+ mkfs.ubifs/ubifs.h        |    4 +
+ 10 files changed, 1602 insertions(+), 78 deletions(-)
+ create mode 100644 include/ubi.h
+ create mode 100644 mkfs.ubifs/libubiio.c
+ create mode 100644 mkfs.ubifs/libubiio.h
+ create mode 100644 mkfs.ubifs/libubiio_int.h
