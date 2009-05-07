@@ -1,20 +1,21 @@
-Received: from yx-out-1718.google.com ([74.125.44.152])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M1tYZ-0001hv-Hg
-	for linux-mtd@lists.infradead.org; Thu, 07 May 2009 02:42:02 +0000
-Received: by yx-out-1718.google.com with SMTP id 6so322097yxn.72
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 06 May 2009 19:41:53 -0700 (PDT)
-MIME-Version: 1.0
-Date: Wed, 6 May 2009 22:41:53 -0400
-Message-ID: <8bd0f97a0905061941s6055c6dfrf467a6b2b837c8f8@mail.gmail.com>
-Subject: physmap and pointless shutdown() function ?
-From: Mike Frysinger <vapier.adi@gmail.com>
-To: Lennert Buytenhek <buytenh@wantstofly.org>,
-	David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1M1vxQ-0001L5-Iw
+	for linux-mtd@lists.infradead.org; Thu, 07 May 2009 05:15:52 +0000
+Subject: Re: ubifs corrupt
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: jerry <jerrydreaming@gmail.com>
+In-Reply-To: <71103bce0905060329y21a701d4m7be9f566d786f485@mail.gmail.com>
+References: <71103bce0904271851v4004cfadp465f8fee2519f836@mail.gmail.com>
+	<1241499737.3760.21.camel@localhost.localdomain>
+	<71103bce0905060329y21a701d4m7be9f566d786f485@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 07 May 2009 08:15:35 +0300
+Message-Id: <1241673335.27549.7.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,23 +25,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-waaaay back when power management support was added to the physmap.c
-driver, it added the standard suspend/resume functions.  no problem
-there.  but it also added a shutdown function which causes the flash
-to suspend/resume when rebooting:
-static void physmap_flash_shutdown(struct platform_device *dev)
-{
-    struct physmap_flash_info *info = platform_get_drvdata(dev);
-    int i;
-    for (i = 0; i < MAX_RESOURCES && info->mtd[i]; i++)
-        if (info->mtd[i]->suspend && info->mtd[i]->resume)
-            if (info->mtd[i]->suspend(info->mtd[i]) == 0)
-                info->mtd[i]->resume(info->mtd[i]);
-}
+On Wed, 2009-05-06 at 18:29 +0800, jerry wrote:
+> > Well, the error is that ubifs tries to read a directory entry,
+> > but finds empty space there. It might be related to the way you
+> > join you NAND chips.
+> >
+> > Could you try to reproduce this error on a simpler setup? E.g.,
+> > if you do not have multiple chips joined into one, or on nandsim?
+> >
+> > --
+> > Best regards,
+> > Artem Bityutskiy (Битюцкий Артём)
+> >
+> >
+> Ok, I will test  one nandflash(K9GAG08U0M).Thank you for your help,I
+> will report the result as soon as I can.
+> If the error has happened,ubifs oughts to recover from it.
+> when I select the UBIFS_FS_DEBUG_CHKS = y,the ubifs file system is
+> recovered.I think it is recovered only in memory. Why it is not saved
+> on the nandflash？
 
-i cant see any point in doing this.  it isnt like the flash has
-buffers that need flushing, and if they did, using suspend/resume as a
-hack for flushing sounds pretty broken to me.
+Hmm, this sounds like it is more likely UBIFS bug...
 
-seems to me the function should just be dropped completely.
--mike
+UBIFS_FS_DEBUG_CHKS just enables additional self-checks. It
+is not designed for recovery. What you see is some side effect.
+UBIFS should recover without UBIFS_FS_DEBUG_CHKS.
+
+We do not have setup with that large eraseblocks. And we are
+very busy now.
+
+But if you want this problem to be fixed, the best you could do
+is to find an easy way to reproduce the problem. Could you try
+to simulate a similar flash with nandsim somehow? And if
+you can reproduce this on your host with nandsim, this means
+we can reproduce this here, which means we can try to fix
+this.
+
+E.g., you could join several nandsim partitions similar way
+you joined your real chips.
+
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
