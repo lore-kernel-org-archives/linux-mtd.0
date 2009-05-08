@@ -1,25 +1,20 @@
-Received: from yx-out-1718.google.com ([74.125.44.158])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M2GRf-0005zK-Pw
-	for linux-mtd@lists.infradead.org; Fri, 08 May 2009 03:08:26 +0000
-Received: by yx-out-1718.google.com with SMTP id 6so743189yxn.72
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 07 May 2009 20:08:18 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <4b73d43f0905071922x7b5ed328q86b14a35c0040270@mail.gmail.com>
-References: <1241640919-4650-1-git-send-email-wd@denx.de>
-	<1241640919-4650-7-git-send-email-wd@denx.de>
-	<fa686aa40905061359p3ba2115fj57f4d9a79f01efda@mail.gmail.com>
-	<4b73d43f0905071922x7b5ed328q86b14a35c0040270@mail.gmail.com>
-From: Grant Likely <grant.likely@secretlab.ca>
-Date: Thu, 7 May 2009 21:07:58 -0600
-Message-ID: <fa686aa40905072007w5454591bh7b338d8a3b22a0c3@mail.gmail.com>
-Subject: Re: [PATCH 06/12] mpc5121: Added NAND Flash Controller driver.
-To: John Rigby <jcrigby@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Piotr Ziecik <kosmo@semihalf.com>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1M2Lm7-0002qv-GA
+	for linux-mtd@lists.infradead.org; Fri, 08 May 2009 08:49:59 +0000
+Subject: Re: [PATCH 1/2] mkfs.ubifs: UBI I/O Library
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Corentin Chary <corentincj@iksaif.net>
+In-Reply-To: <1241691709-17624-2-git-send-email-corentincj@iksaif.net>
+References: <1241691709-17624-1-git-send-email-corentincj@iksaif.net>
+	<1241691709-17624-2-git-send-email-corentincj@iksaif.net>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 08 May 2009 11:49:23 +0300
+Message-Id: <1241772563.27996.81.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, vapier.adi@gmail.com
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,36 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 7, 2009 at 8:22 PM, John Rigby <jcrigby@gmail.com> wrote:
->
->
-> On Wed, May 6, 2009 at 2:59 PM, Grant Likely <grant.likely@secretlab.ca>
-> wrote:
->>
->>
->> > diff --git a/arch/powerpc/platforms/512x/mpc512x_shared.c
->> > b/arch/powerpc/platforms/512x/mpc512x_shared.c
->> > index d8cd579..7135d89 100644
->> > --- a/arch/powerpc/platforms/512x/mpc512x_shared.c
->> > +++ b/arch/powerpc/platforms/512x/mpc512x_shared.c
->> > @@ -71,6 +71,7 @@ void __init mpc512x_init_IRQ(void)
->> > =A0static struct of_device_id __initdata of_bus_ids[] =3D {
->> > =A0 =A0 =A0 =A0{ .compatible =3D "fsl,mpc5121-immr", },
->> > =A0 =A0 =A0 =A0{ .compatible =3D "fsl,mpc5121-localbus", },
->> > + =A0 =A0 =A0 { .compatible =3D "fsl,mpc5121-nfc", },
->>
->> This doesn't look right. =A0Shouldn't the NAND controller be hanging of
->> the IMMR node?
->
-> I just wanted to confirm that NFC is in its own memory space. =A0 It has =
-its
-> own mapping and is not part of the IMMR space.
+Hi,
 
-Hmmm... I wonder then if it might be better to have an IPB node, and
-hang all the IPB connected nodes off of it.
+thanks for patches. Could you please avoid synchronizing 
+include/mtd/ubi-user.h for now? There is nothing new there
+except of this insane s/int32_t/__s32/ type change, right?
 
-g.
+On Thu, 2009-05-07 at 12:21 +0200, Corentin Chary wrote:
+>  include/mtd/ubi-user.h    |   72 ++--
+>  include/ubi.h             |  192 +++++++++
+>  mkfs.ubifs/libubiio.c     |  936 +++++++++++++++++++++++++++++++++++++++++++++
+>  mkfs.ubifs/libubiio.h     |   47 +++
+>  mkfs.ubifs/libubiio_int.h |  187 +++++++++
+>  5 files changed, 1399 insertions(+), 35 deletions(-)
+>  create mode 100644 include/ubi.h
+>  create mode 100644 mkfs.ubifs/libubiio.c
+>  create mode 100644 mkfs.ubifs/libubiio.h
+>  create mode 100644 mkfs.ubifs/libubiio_int.h
 
---=20
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
+What is the point of making a second copy of libubi?
+AFAICS, libubio is libubi + other stuff, right?
+Why not to just improve libubi instead of having yet
+another copy? How much sense does it make?
+
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
