@@ -1,30 +1,25 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M2DZ9-0001T9-B8
-	for linux-mtd@lists.infradead.org; Fri, 08 May 2009 00:03:57 +0000
-From: "Narnakaje, Snehaprabha" <nsnehaprabha@ti.com>
-To: Troy Kisky <troy.kisky@boundarydevices.com>, David Brownell
-	<david-b@pacbell.net>
-Date: Thu, 7 May 2009 19:03:11 -0500
-Subject: RE: [PATCH 2/2] NAND on DM355: Add 4-bit ECC support for large page
-	NAND chips
-Message-ID: <7A436F7769CA33409C6B44B358BFFF0C0112FC7477@dlee02.ent.ti.com>
-References: <1241663371-20448-1-git-send-email-nsnehaprabha@ti.com>
-	<200905070016.52356.david-b@pacbell.net>
-	<7A436F7769CA33409C6B44B358BFFF0C0112FC6CF5@dlee02.ent.ti.com>
-	<200905071011.06812.david-b@pacbell.net>
-	<4A0362A5.3010101@boundarydevices.com>
-In-Reply-To: <4A0362A5.3010101@boundarydevices.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Received: from yx-out-1718.google.com ([74.125.44.158])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M2GRf-0005zK-Pw
+	for linux-mtd@lists.infradead.org; Fri, 08 May 2009 03:08:26 +0000
+Received: by yx-out-1718.google.com with SMTP id 6so743189yxn.72
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 07 May 2009 20:08:18 -0700 (PDT)
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"davinci-linux-open-source@linux.davincidsp.com"
-	<davinci-linux-open-source@linux.davincidsp.com>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>
+In-Reply-To: <4b73d43f0905071922x7b5ed328q86b14a35c0040270@mail.gmail.com>
+References: <1241640919-4650-1-git-send-email-wd@denx.de>
+	<1241640919-4650-7-git-send-email-wd@denx.de>
+	<fa686aa40905061359p3ba2115fj57f4d9a79f01efda@mail.gmail.com>
+	<4b73d43f0905071922x7b5ed328q86b14a35c0040270@mail.gmail.com>
+From: Grant Likely <grant.likely@secretlab.ca>
+Date: Thu, 7 May 2009 21:07:58 -0600
+Message-ID: <fa686aa40905072007w5454591bh7b338d8a3b22a0c3@mail.gmail.com>
+Subject: Re: [PATCH 06/12] mpc5121: Added NAND Flash Controller driver.
+To: John Rigby <jcrigby@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	Piotr Ziecik <kosmo@semihalf.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,57 +29,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, May 7, 2009 at 8:22 PM, John Rigby <jcrigby@gmail.com> wrote:
+>
+>
+> On Wed, May 6, 2009 at 2:59 PM, Grant Likely <grant.likely@secretlab.ca>
+> wrote:
+>>
+>>
+>> > diff --git a/arch/powerpc/platforms/512x/mpc512x_shared.c
+>> > b/arch/powerpc/platforms/512x/mpc512x_shared.c
+>> > index d8cd579..7135d89 100644
+>> > --- a/arch/powerpc/platforms/512x/mpc512x_shared.c
+>> > +++ b/arch/powerpc/platforms/512x/mpc512x_shared.c
+>> > @@ -71,6 +71,7 @@ void __init mpc512x_init_IRQ(void)
+>> > =A0static struct of_device_id __initdata of_bus_ids[] =3D {
+>> > =A0 =A0 =A0 =A0{ .compatible =3D "fsl,mpc5121-immr", },
+>> > =A0 =A0 =A0 =A0{ .compatible =3D "fsl,mpc5121-localbus", },
+>> > + =A0 =A0 =A0 { .compatible =3D "fsl,mpc5121-nfc", },
+>>
+>> This doesn't look right. =A0Shouldn't the NAND controller be hanging of
+>> the IMMR node?
+>
+> I just wanted to confirm that NFC is in its own memory space. =A0 It has =
+its
+> own mapping and is not part of the IMMR space.
 
+Hmmm... I wonder then if it might be better to have an IPB node, and
+hang all the IPB connected nodes off of it.
 
-> -----Original Message-----
-> From: Troy Kisky [mailto:troy.kisky@boundarydevices.com]
-> Sent: Thursday, May 07, 2009 6:37 PM
-> To: David Brownell
-> Cc: Narnakaje, Snehaprabha; dwmw2@infradead.org; davinci-linux-open-
-> source@linux.davincidsp.com; linux-mtd@lists.infradead.org;
-> tglx@linutronix.de; akpm@linux-foundation.org
-> Subject: Re: [PATCH 2/2] NAND on DM355: Add 4-bit ECC support for large
-> page NAND chips
->=20
-> >>>> +static struct nand_ecclayout hwecc4_2048 __initconst =3D {
-> >>>> +       .eccbytes =3D 10,
-> >>> Not ".eccbytes =3D 40"?  This is 4 chunks, 10 ecc bytes each...
-> >> No, .eccbytes is for each chips->ecc.steps.
-> >
-> > So it's the same as ecc.bytes, which is not exported to userspace.
-> >
-> >
-> >> And all nand read/write
-> >> APIs, we handle ecc.steps (for loop). There is chips->ecc.total that
-> >> is initialized as (chips->ecc.steps * chips->ecc.bytes).
-> >>
-> >> It is strange that .eccbytes is for each chunk, while eccpos[] and
-> >> .oobfree[] have to handle/cover all chunks.
->=20
-> No, eccbytes should equal ecc.total
+g.
 
-Thanks Troy and Dave.
-
-Yes, it should indeed be 40 --> total size. eccbytes in the nand_ecclayout =
-is different from chip->ecc.bytes. We do set the chip->ecc.bytes to 10 whic=
-h is for each trunk.
-
-I will change this and test it.=20
-
->=20
->=20
-> i.e. from nand_base.c
->=20
-> static struct nand_ecclayout nand_oob_64 =3D {
->         .eccbytes =3D 24,
->         .eccpos =3D {
->                    40, 41, 42, 43, 44, 45, 46, 47,
->                    48, 49, 50, 51, 52, 53, 54, 55,
->                    56, 57, 58, 59, 60, 61, 62, 63},
->         .oobfree =3D {
->                 {.offset =3D 2,
->                  .length =3D 38}}
-> };
-> Troy
->=20
->=20
+--=20
+Grant Likely, B.Sc., P.Eng.
+Secret Lab Technologies Ltd.
