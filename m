@@ -1,13 +1,29 @@
-Received: from mail.lysator.liu.se ([130.236.254.3])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M2WCe-0003hW-0A
-	for linux-mtd@lists.infradead.org; Fri, 08 May 2009 19:57:58 +0000
-From: Magnus Lilja <lilja.magnus@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] MXC_NAND: Add correct dev_id parameter to free_irq() calls.
-Date: Fri,  8 May 2009 21:57:47 +0200
-Message-Id: <17fbadcd7f353348afa4c56f92e0423c5b9708df.1241812369.git.lilja.magnus@gmail.com>
-Cc: s.hauer@pengutronix.de
+Received: from mail-gx0-f176.google.com ([209.85.217.176])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M2Wcz-0002nr-Bm
+	for linux-mtd@lists.infradead.org; Fri, 08 May 2009 20:25:12 +0000
+Received: by gxk24 with SMTP id 24so3290175gxk.18
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 08 May 2009 13:25:03 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <71cd59b00905081241n10abd7e7x5e04faaa1fa93355@mail.gmail.com>
+References: <1241691709-17624-1-git-send-email-corentincj@iksaif.net>
+	<1241691709-17624-2-git-send-email-corentincj@iksaif.net>
+	<1241772563.27996.81.camel@localhost.localdomain>
+	<71cd59b00905080507j17bceecu3c5f2728e084bde7@mail.gmail.com>
+	<1241785222.27996.85.camel@localhost.localdomain>
+	<1241792079.27996.107.camel@localhost.localdomain>
+	<71cd59b00905080759o66e8da5awaa0afd76e2064ef8@mail.gmail.com>
+	<8bd0f97a0905081158q6e8c446ekeda267198b29facc@mail.gmail.com>
+	<71cd59b00905081241n10abd7e7x5e04faaa1fa93355@mail.gmail.com>
+Date: Fri, 8 May 2009 16:25:03 -0400
+Message-ID: <8bd0f97a0905081325m1d70f040ubb3b2a6ac8f63c05@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mkfs.ubifs: UBI I/O Library
+From: Mike Frysinger <vapier.adi@gmail.com>
+To: Corentin Chary <corentin.chary@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,52 +33,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Make sure to pass the same dev_id data to free_irq() that was
-used when calling request_irq(), otherwise we get a warning about
-freeing an already free IRQ.
+On Fri, May 8, 2009 at 15:41, Corentin Chary wrote:
+> On Fri, May 8, 2009 at 8:58 PM, Mike Frysinger wrote:
+>> On Fri, May 8, 2009 at 10:59, Corentin Chary wrote:
+>>> I'll see what I can do to use libubi the way I want.
+>>> The problem of using libubi in mkfs is not the includes (we can copy
+>>> the headers in /include or add -I../ubi-utils/include).
+>>
+>> why do you need to copy any files ?
+>>
+>>> The main problem is that ubi-utils/Makefile make a libubi.a but
+>>> mkfs.ubifs/Makefile have no way to use it
+>>
+>> what's wrong with adding -lubi and a -L path ?
+>
+> It'll work only if libubi is already built. You can fix that in the
+> root Makefile, but
+> - parallel builds may not work (make -j)
 
-Signed-off-by: Magnus Lilja <lilja.magnus@gmail.com>
----
+a simple dependency is easy
 
-For -rc perhaps?
+> - "cd mkfs.ubifs && make" won't work (using only the mkfs.ubifs Makefile)
 
-Got the following warning prior to fixing this:
-WARNING: at /opt/git/linux-2.6/kernel/irq/manage.c:736 __free_irq+0x88/
-0x1ac()
-Trying to free already-free IRQ 33
-Modules linked in: mxc_nand(-)
-[<c0025660>] (unwind_backtrace+0x0/0xd4) from [<c0036860>] (warn_slowpath+0x68/0
-x8c)
-[<c0036860>] (warn_slowpath+0x68/0x8c) from [<c0060324>] (__free_irq+0x88/0x1ac)
-[<c0060324>] (__free_irq+0x88/0x1ac) from [<c0060454>] (free_irq+0xc/0x18)
-[<c0060454>] (free_irq+0xc/0x18) from [<bf000c24>] (mxcnd_remove+0x30/0x48 [mxc_
-nand])
-unwind: Index not found bf000c24
-
- drivers/mtd/nand/mxc_nand.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index f3548d0..8a93913 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -981,7 +981,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 	return 0;
- 
- escan:
--	free_irq(host->irq, NULL);
-+	free_irq(host->irq, host);
- eirq:
- 	iounmap(host->regs);
- eres:
-@@ -1001,7 +1001,7 @@ static int __devexit mxcnd_remove(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, NULL);
- 
- 	nand_release(&host->mtd);
--	free_irq(host->irq, NULL);
-+	free_irq(host->irq, host);
- 	iounmap(host->regs);
- 	kfree(host);
- 
--- 
-1.5.6
+if the .a file is added to the dependency list, then it's easy to have
+a normal recursive target:
+........./libubi.a:
+    $(MAKE) -C $(dir $@)
+-mike
