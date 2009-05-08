@@ -1,12 +1,12 @@
-Received: from mail-gx0-f176.google.com ([209.85.217.176])
+Received: from wf-out-1314.google.com ([209.85.200.168])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M2Wcz-0002nr-Bm
-	for linux-mtd@lists.infradead.org; Fri, 08 May 2009 20:25:12 +0000
-Received: by gxk24 with SMTP id 24so3290175gxk.18
+	id 1M2Wk4-0000P3-6W
+	for linux-mtd@lists.infradead.org; Fri, 08 May 2009 20:32:31 +0000
+Received: by wf-out-1314.google.com with SMTP id 23so1330830wfg.24
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 08 May 2009 13:25:03 -0700 (PDT)
+	Fri, 08 May 2009 13:32:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <71cd59b00905081241n10abd7e7x5e04faaa1fa93355@mail.gmail.com>
+In-Reply-To: <8bd0f97a0905081325m1d70f040ubb3b2a6ac8f63c05@mail.gmail.com>
 References: <1241691709-17624-1-git-send-email-corentincj@iksaif.net>
 	<1241691709-17624-2-git-send-email-corentincj@iksaif.net>
 	<1241772563.27996.81.camel@localhost.localdomain>
@@ -16,12 +16,13 @@ References: <1241691709-17624-1-git-send-email-corentincj@iksaif.net>
 	<71cd59b00905080759o66e8da5awaa0afd76e2064ef8@mail.gmail.com>
 	<8bd0f97a0905081158q6e8c446ekeda267198b29facc@mail.gmail.com>
 	<71cd59b00905081241n10abd7e7x5e04faaa1fa93355@mail.gmail.com>
-Date: Fri, 8 May 2009 16:25:03 -0400
-Message-ID: <8bd0f97a0905081325m1d70f040ubb3b2a6ac8f63c05@mail.gmail.com>
+	<8bd0f97a0905081325m1d70f040ubb3b2a6ac8f63c05@mail.gmail.com>
+Date: Fri, 8 May 2009 22:32:18 +0200
+Message-ID: <71cd59b00905081332j69ca911fndb112fe31eeec37e@mail.gmail.com>
 Subject: Re: [PATCH 1/2] mkfs.ubifs: UBI I/O Library
-From: Mike Frysinger <vapier.adi@gmail.com>
-To: Corentin Chary <corentin.chary@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+From: Corentin Chary <corentin.chary@gmail.com>
+To: Mike Frysinger <vapier.adi@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,30 +34,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, May 8, 2009 at 15:41, Corentin Chary wrote:
-> On Fri, May 8, 2009 at 8:58 PM, Mike Frysinger wrote:
->> On Fri, May 8, 2009 at 10:59, Corentin Chary wrote:
->>> I'll see what I can do to use libubi the way I want.
->>> The problem of using libubi in mkfs is not the includes (we can copy
->>> the headers in /include or add -I../ubi-utils/include).
+I didn't think of calling make here.
+Thanks
+
+On 5/8/09, Mike Frysinger <vapier.adi@gmail.com> wrote:
+> On Fri, May 8, 2009 at 15:41, Corentin Chary wrote:
+>> On Fri, May 8, 2009 at 8:58 PM, Mike Frysinger wrote:
+>>> On Fri, May 8, 2009 at 10:59, Corentin Chary wrote:
+>>>> I'll see what I can do to use libubi the way I want.
+>>>> The problem of using libubi in mkfs is not the includes (we can copy
+>>>> the headers in /include or add -I../ubi-utils/include).
+>>>
+>>> why do you need to copy any files ?
+>>>
+>>>> The main problem is that ubi-utils/Makefile make a libubi.a but
+>>>> mkfs.ubifs/Makefile have no way to use it
+>>>
+>>> what's wrong with adding -lubi and a -L path ?
 >>
->> why do you need to copy any files ?
->>
->>> The main problem is that ubi-utils/Makefile make a libubi.a but
->>> mkfs.ubifs/Makefile have no way to use it
->>
->> what's wrong with adding -lubi and a -L path ?
+>> It'll work only if libubi is already built. You can fix that in the
+>> root Makefile, but
+>> - parallel builds may not work (make -j)
 >
-> It'll work only if libubi is already built. You can fix that in the
-> root Makefile, but
-> - parallel builds may not work (make -j)
+> a simple dependency is easy
+>
+>> - "cd mkfs.ubifs && make" won't work (using only the mkfs.ubifs Makefile)
+>
+> if the .a file is added to the dependency list, then it's easy to have
+> a normal recursive target:
+> ........./libubi.a:
+>     $(MAKE) -C $(dir $@)
+> -mike
+>
 
-a simple dependency is easy
 
-> - "cd mkfs.ubifs && make" won't work (using only the mkfs.ubifs Makefile)
-
-if the .a file is added to the dependency list, then it's easy to have
-a normal recursive target:
-........./libubi.a:
-    $(MAKE) -C $(dir $@)
--mike
+-- 
+Corentin Chary
+http://xf.iksaif.net
