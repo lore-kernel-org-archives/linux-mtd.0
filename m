@@ -1,17 +1,12 @@
-Received: from smtp23.services.sfr.fr ([93.17.128.19])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M2jCJ-0006ih-5j
-	for linux-mtd@lists.infradead.org; Sat, 09 May 2009 09:50:35 +0000
-Received: from smtp23.services.sfr.fr (msfrf2324 [10.18.27.38])
-	by msfrf2305.sfr.fr (SMTP Server) with ESMTP id 24372700038A
-	for <linux-mtd@lists.infradead.org>;
-	Sat,  9 May 2009 11:43:04 +0200 (CEST)
-From: Corentin Chary <corentincj@iksaif.net>
+Received: from [65.98.92.6] (helo=b32.net)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1M32yV-0003OO-7H
+	for linux-mtd@lists.infradead.org; Sun, 10 May 2009 06:57:34 +0000
+From: Kevin Cernekee <kpc.mtd@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 0/3] libubi / mkfs.ubifs #2
-Date: Sat,  9 May 2009 11:41:05 +0200
-Message-Id: <1241862068-10596-1-git-send-email-corentincj@iksaif.net>
-Cc: Corentin Chary <corentincj@iksaif.net>, vapier.adi@gmail.com
+Date: Sat, 9 May 2009 23:41:33 -0700
+Subject: [PATCH] mkfs.ubifs: -U option does not take an argument
+Message-Id: <372ea0a5bdff3415ed84e5f6666cd42c@localhost>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,24 +16,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-These patchs will allow mkfs.ubifs to write the image directly
-on an UBI volume. This time libubi is used. I couldn't manage to
-make the Makefile works correctly, even with Mike trick for dependencies.
-Mike, could you help me on that ?
-You can still make it compile with "cd ubi-utils; make; cd ../mkfs.ubifs; make"
+The long form (--squash-uids) is correct, but the short form (-U) is not.
 
-Thanks
+Signed-off-by: Kevin Cernekee <kpc.mtd@gmail.com>
 
-Corentin Chary (3):
-  libubi: add ubi_is_mapped() function
-  libubi: fix multiple memory corruptions
-  mkfs.ubifs: use libubi to format UBI volume
-
- mkfs.ubifs/Makefile        |    5 +-
- mkfs.ubifs/lpt.c           |   10 +-
- mkfs.ubifs/mkfs.ubifs.c    |  187 ++++++++++++++++++++++++++++++++++++--------
- mkfs.ubifs/mkfs.ubifs.h    |    4 +-
- mkfs.ubifs/ubifs.h         |    3 +
- ubi-utils/include/libubi.h |   17 ++++
- ubi-utils/src/libubi.c     |   13 +++-
- 7 files changed, 196 insertions(+), 43 deletions(-)
+diff -ru mtd-utils.orig/mkfs.ubifs/mkfs.ubifs.c mtd-utils/mkfs.ubifs/mkfs.ubifs.c
+--- mtd-utils.orig/mkfs.ubifs/mkfs.ubifs.c	2009-03-17 12:12:09.000000000 -0700
++++ mtd-utils/mkfs.ubifs/mkfs.ubifs.c	2009-05-09 23:37:19.000000000 -0700
+@@ -128,7 +128,7 @@
+ /* Inode creation sequence number */
+ static unsigned long long creat_sqnum;
+ 
+-static const char *optstring = "d:r:m:o:D:h?vVe:c:g:f:P:k:x:X:j:R:l:j:U:";
++static const char *optstring = "d:r:m:o:D:h?vVe:c:g:f:P:k:x:X:j:R:l:j:U";
+ 
+ static const struct option longopts[] = {
+ 	{"root",          1, NULL, 'r'},
