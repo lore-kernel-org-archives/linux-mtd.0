@@ -1,18 +1,20 @@
-Received: from smtp23.services.sfr.fr ([93.17.128.19])
+Received: from wf-out-1314.google.com ([209.85.200.173])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M2jCJ-0006ik-5q
-	for linux-mtd@lists.infradead.org; Sat, 09 May 2009 09:50:47 +0000
-Received: from smtp23.services.sfr.fr (msfrf2324 [10.18.27.38])
-	by msfrf2320.sfr.fr (SMTP Server) with ESMTP id 9FB26700005F
+	id 1M3PWW-0001H9-FL
+	for linux-mtd@lists.infradead.org; Mon, 11 May 2009 07:02:10 +0000
+Received: by wf-out-1314.google.com with SMTP id 23so2033839wfg.24
 	for <linux-mtd@lists.infradead.org>;
-	Sat,  9 May 2009 11:43:06 +0200 (CEST)
-From: Corentin Chary <corentincj@iksaif.net>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/3] libubi: add ubi_is_mapped() function
-Date: Sat,  9 May 2009 11:41:06 +0200
-Message-Id: <1241862068-10596-2-git-send-email-corentincj@iksaif.net>
+	Mon, 11 May 2009 00:02:01 -0700 (PDT)
+MIME-Version: 1.0
 In-Reply-To: <1241862068-10596-1-git-send-email-corentincj@iksaif.net>
 References: <1241862068-10596-1-git-send-email-corentincj@iksaif.net>
+Date: Mon, 11 May 2009 09:02:01 +0200
+Message-ID: <71cd59b00905110002j57b57767s2f25132b381876d4@mail.gmail.com>
+Subject: Re: [PATCH 0/3] libubi / mkfs.ubifs #2
+From: Corentin Chary <corentin.chary@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Cc: Corentin Chary <corentincj@iksaif.net>, vapier.adi@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,52 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Corentin Chary <corentincj@iksaif.net>
----
- ubi-utils/include/libubi.h |   17 +++++++++++++++++
- ubi-utils/src/libubi.c     |    5 +++++
- 2 files changed, 22 insertions(+), 0 deletions(-)
+On Sat, May 9, 2009 at 11:41 AM, Corentin Chary <corentincj@iksaif.net> wrote:
+> These patchs will allow mkfs.ubifs to write the image directly
 
-diff --git a/ubi-utils/include/libubi.h b/ubi-utils/include/libubi.h
-index 4ffe1e8..f52904d 100644
---- a/ubi-utils/include/libubi.h
-+++ b/ubi-utils/include/libubi.h
-@@ -414,6 +414,23 @@ int ubi_set_property(int fd, uint8_t property, uint64_t value);
-  */
- int ubi_leb_unmap(int fd, int lnum);
- 
-+/**
-+ * ubi_is_mapped - check if logical eraseblock is mapped.
-+ * @fd: volume character device file descriptor
-+ * @lnum: logical eraseblock number
-+ *
-+ * This function checks if logical eraseblock @lnum is mapped to a physical
-+ * eraseblock. If a logical eraseblock is un-mapped, this does not necessarily
-+ * mean it will still be un-mapped after the UBI device is re-attached. The
-+ * logical eraseblock may become mapped to the physical eraseblock it was last
-+ * mapped to.
-+ *
-+ * This function returns %1 if the LEB is mapped, %0 if not, and %-1 in case of
-+ * failure. If the volume is damaged because of an interrupted update errno
-+ * set with %EBADF error code.
-+ */
-+int ubi_is_mapped(int fd, int lnum);
-+
- #ifdef __cplusplus
- }
- #endif
-diff --git a/ubi-utils/src/libubi.c b/ubi-utils/src/libubi.c
-index 5c8ce9e..a81173d 100644
---- a/ubi-utils/src/libubi.c
-+++ b/ubi-utils/src/libubi.c
-@@ -1255,3 +1255,8 @@ int ubi_leb_unmap(int fd, int lnum)
- {
- 	return ioctl(fd, UBI_IOCEBUNMAP, &lnum);
- }
-+
-+int ubi_is_mapped(int fd, int lnum)
-+{
-+	return ioctl(fd, UBI_IOCEBISMAP, &lnum);
-+}
+Again, there are waiting for moderator approval because they have a
+suspicious header :/
+Can be caused by
+X-Bad-Reply: References and In-Reply-To but no 'Re:' in Subject.
+but I'm not sure.
+I send them with git, maybe next time I won't send them as a thread ?
+thanks
+
 -- 
-1.6.3
+Corentin Chary
+http://xf.iksaif.net
