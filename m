@@ -1,20 +1,18 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M3Pnu-0002tZ-GI
-	for linux-mtd@lists.infradead.org; Mon, 11 May 2009 07:20:09 +0000
+	id 1M3PpY-00019u-RC
+	for linux-mtd@lists.infradead.org; Mon, 11 May 2009 07:21:51 +0000
 Subject: Re: [PATCH 0/3] libubi / mkfs.ubifs #2
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Corentin Chary <corentin.chary@gmail.com>
-In-Reply-To: <71cd59b00905110002j57b57767s2f25132b381876d4@mail.gmail.com>
+To: Corentin Chary <corentincj@iksaif.net>
+In-Reply-To: <1241862068-10596-1-git-send-email-corentincj@iksaif.net>
 References: <1241862068-10596-1-git-send-email-corentincj@iksaif.net>
-	<71cd59b00905110002j57b57767s2f25132b381876d4@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 11 May 2009 10:19:50 +0300
-Message-Id: <1242026390.27996.132.camel@localhost.localdomain>
+Date: Mon, 11 May 2009 10:21:27 +0300
+Message-Id: <1242026487.27996.133.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Corentin Chary <corentincj@iksaif.net>, linux-mtd@lists.infradead.org,
-	vapier.adi@gmail.com
+Cc: linux-mtd@lists.infradead.org, vapier.adi@gmail.com
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,20 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-05-11 at 09:02 +0200, Corentin Chary wrote:
-> On Sat, May 9, 2009 at 11:41 AM, Corentin Chary <corentincj@iksaif.net> wrote:
-> > These patchs will allow mkfs.ubifs to write the image directly
-> 
-> Again, there are waiting for moderator approval because they have a
-> suspicious header :/
-> Can be caused by
-> X-Bad-Reply: References and In-Reply-To but no 'Re:' in Subject.
-> but I'm not sure.
-> I send them with git, maybe next time I won't send them as a thread ?
-> thanks
+On Sat, 2009-05-09 at 11:41 +0200, Corentin Chary wrote:
+> These patchs will allow mkfs.ubifs to write the image directly
+> on an UBI volume. This time libubi is used. I couldn't manage to
+> make the Makefile works correctly, even with Mike trick for dependencies.
+> Mike, could you help me on that ?
+> You can still make it compile with "cd ubi-utils; make; cd ../mkfs.ubifs; make"
 
-This is broken MTD ML filter. Patch series are incorrectly caught.
-Few years ago dwmw2 was going to fix this :-)
+Due to time constraints, I'll look at this a bit later this
+week. But at the first glance looks good, thanks.
 
 -- 
 Best regards,
