@@ -1,9 +1,9 @@
 Received: from mail.iucnsl.org ([203.189.68.58])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M3Zas-0005ff-HD
-	for linux-mtd@lists.infradead.org; Mon, 11 May 2009 17:47:21 +0000
-Message-ID: <41912.212.116.219.91.1242061614.squirrel@mail.iucnsl.org>
-Date: Mon, 11 May 2009 22:36:54 +0530 (IST)
+	id 1M3ZhS-0006db-Bc
+	for linux-mtd@lists.infradead.org; Mon, 11 May 2009 17:54:10 +0000
+Message-ID: <44650.212.116.219.91.1242061868.squirrel@mail.iucnsl.org>
+Date: Mon, 11 May 2009 22:41:08 +0530 (IST)
 Subject: File For Claim
 From: "Motorola Company" <vwe@iucnsl.org>
 MIME-Version: 1.0
