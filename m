@@ -1,19 +1,16 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M3WVn-0006vV-Lv
-	for linux-mtd@lists.infradead.org; Mon, 11 May 2009 14:30:04 +0000
-Subject: Re: [PATCH 0/3] libubi / mkfs.ubifs #2
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Corentin Chary <corentincj@iksaif.net>
-In-Reply-To: <1241862068-10596-1-git-send-email-corentincj@iksaif.net>
-References: <1241862068-10596-1-git-send-email-corentincj@iksaif.net>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 11 May 2009 17:29:37 +0300
-Message-Id: <1242052177.27996.139.camel@localhost.localdomain>
-Mime-Version: 1.0
+Received: from mail.iucnsl.org ([203.189.68.58])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M3ZYX-00055z-IO
+	for linux-mtd@lists.infradead.org; Mon, 11 May 2009 17:44:58 +0000
+Message-ID: <13125.212.116.219.91.1242061932.squirrel@mail.iucnsl.org>
+Date: Mon, 11 May 2009 22:42:12 +0530 (IST)
+Subject: File For Claim
+From: "Motorola Company" <vwe@iucnsl.org>
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, vapier.adi@gmail.com
-Reply-To: dedekind@infradead.org
+To: undisclosed-recipients:;
+Reply-To: moto_pr09@yahoo.com.hk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +20,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2009-05-09 at 11:41 +0200, Corentin Chary wrote:
-> These patchs will allow mkfs.ubifs to write the image directly
-> on an UBI volume. This time libubi is used. I couldn't manage to
-> make the Makefile works correctly, even with Mike trick for dependencies.
-> Mike, could you help me on that ?
-> You can still make it compile with "cd ubi-utils; make; cd ../mkfs.ubifs; make"
 
-Just pushed the first 2 of your patches. Also, there is
-a similar problem in libmtd - I've fixed that too. And
-I walked through all memset calls and amended/fixed them
-as well.
 
-Thanks. Will look at the third patch later.
 
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+>From the online email ballot promotions held by Motorola Company,
+your email have been approved to claim the sum of �400,000 (Four hundred
+thousand pounds) .
+ To file for claim, you are required to provide us with the information
+below for verification:
+
+Full Name:
+Mailing address:
+Permanent house address:
+Country of resident:
+Phone Number:
+Age:
+Sex:
+Occupation:
+
+Reply this email with the information for claim(moto_pr09@yahoo.com.hk)
