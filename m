@@ -1,9 +1,11 @@
-Message-Id: <200905122106.n4CL6Geq009485@imap1.linux-foundation.org>
-Subject: [patch 08/14] mtd: add OOB ioctls for >4GiB devices
+Message-Id: <200905122106.n4CL6DBg009453@imap1.linux-foundation.org>
+Subject: [patch 02/14] mtd: onenand: add bbt_wait & unlock_all as replaceable
+	for some platform
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Tue, 12 May 2009 13:47:00 -0700
-Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org
+Date: Tue, 12 May 2009 13:46:57 -0700
+Cc: kmpark@infradead.org, akpm@linux-foundation.org,
+	linux-mtd@lists.infradead.org, kyungmin.park@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -13,92 +15,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Kevin Cernekee <kpc.mtd@gmail.com>
+From: Kyungmin Park <kmpark@infradead.org>
 
-Signed-off-by: Kevin Cernekee <kpc.mtd@gmail.com>
+Add bbt_wait & unlock_all as replaceable for some platform such as
+  s3c64xx s3c64xx has its own OneNAND controller and another interface
+
+Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- drivers/mtd/mtdchar.c |   28 ++++++++++++++++++++++++++++
- fs/compat_ioctl.c     |    2 ++
- include/mtd/mtd-abi.h |    9 +++++++++
- 3 files changed, 39 insertions(+)
+ drivers/mtd/onenand/onenand_base.c |   12 ++++++++++--
+ include/linux/mtd/onenand.h        |    5 +++++
+ 2 files changed, 15 insertions(+), 2 deletions(-)
 
-diff -puN drivers/mtd/mtdchar.c~mtd-add-oob-ioctls-for-4gib-devices drivers/mtd/mtdchar.c
---- a/drivers/mtd/mtdchar.c~mtd-add-oob-ioctls-for-4gib-devices
-+++ a/drivers/mtd/mtdchar.c
-@@ -607,6 +607,34 @@ static int mtd_ioctl(struct inode *inode
- 		break;
- 	}
+diff -puN drivers/mtd/onenand/onenand_base.c~mtd-onenand-add-bbt_wait-unlock_all-as-replaceable-for-some-platform drivers/mtd/onenand/onenand_base.c
+--- a/drivers/mtd/onenand/onenand_base.c~mtd-onenand-add-bbt_wait-unlock_all-as-replaceable-for-some-platform
++++ a/drivers/mtd/onenand/onenand_base.c
+@@ -1506,7 +1506,7 @@ int onenand_bbt_read_oob(struct mtd_info
  
-+	case MEMWRITEOOB64:
-+	{
-+		struct mtd_oob_buf64 buf;
-+		struct mtd_oob_buf64 __user *buf_user = argp;
-+
-+		if (copy_from_user(&buf, argp, sizeof(buf)))
-+			ret = -EFAULT;
-+		else
-+			ret = mtd_do_writeoob(file, mtd, buf.start, buf.length,
-+				(void __user *)(uintptr_t)buf.usr_ptr,
-+				&buf_user->length);
-+		break;
-+	}
-+
-+	case MEMREADOOB64:
-+	{
-+		struct mtd_oob_buf64 buf;
-+		struct mtd_oob_buf64 __user *buf_user = argp;
-+
-+		if (copy_from_user(&buf, argp, sizeof(buf)))
-+			ret = -EFAULT;
-+		else
-+			ret = mtd_do_readoob(mtd, buf.start, buf.length,
-+				(void __user *)(uintptr_t)buf.usr_ptr,
-+				&buf_user->length);
-+		break;
-+	}
-+
- 	case MEMLOCK:
- 	{
- 		struct erase_info_user einfo;
-diff -puN fs/compat_ioctl.c~mtd-add-oob-ioctls-for-4gib-devices fs/compat_ioctl.c
---- a/fs/compat_ioctl.c~mtd-add-oob-ioctls-for-4gib-devices
-+++ a/fs/compat_ioctl.c
-@@ -2411,6 +2411,8 @@ COMPATIBLE_IOCTL(ECCGETLAYOUT)
- COMPATIBLE_IOCTL(ECCGETSTATS)
- COMPATIBLE_IOCTL(MTDFILEMODE)
- COMPATIBLE_IOCTL(MEMERASE64)
-+COMPATIBLE_IOCTL(MEMREADOOB64)
-+COMPATIBLE_IOCTL(MEMWRITEOOB64)
- /* NBD */
- ULONG_IOCTL(NBD_SET_SOCK)
- ULONG_IOCTL(NBD_SET_BLKSIZE)
-diff -puN include/mtd/mtd-abi.h~mtd-add-oob-ioctls-for-4gib-devices include/mtd/mtd-abi.h
---- a/include/mtd/mtd-abi.h~mtd-add-oob-ioctls-for-4gib-devices
-+++ a/include/mtd/mtd-abi.h
-@@ -23,6 +23,13 @@ struct mtd_oob_buf {
- 	unsigned char __user *ptr;
- };
+ 		onenand_update_bufferram(mtd, from, 0);
  
-+struct mtd_oob_buf64 {
-+	__u64 start;
-+	__u32 pad;
-+	__u32 length;
-+	__u64 usr_ptr;
-+};
-+
- #define MTD_ABSENT		0
- #define MTD_RAM			1
- #define MTD_ROM			2
-@@ -101,6 +108,8 @@ struct otp_info {
- #define ECCGETSTATS		_IOR('M', 18, struct mtd_ecc_stats)
- #define MTDFILEMODE		_IO('M', 19)
- #define MEMERASE64		_IOW('M', 20, struct erase_info_user64)
-+#define MEMWRITEOOB64		_IOWR('M', 21, struct mtd_oob_buf64)
-+#define MEMREADOOB64		_IOWR('M', 22, struct mtd_oob_buf64)
+-		ret = onenand_bbt_wait(mtd, FL_READING);
++		ret = this->bbt_wait(mtd, FL_READING);
+ 		if (unlikely(ret))
+ 			ret = onenand_recover_lsb(mtd, from, ret);
  
- /*
-  * Obsolete legacy interface. Keep it in order not to break userspace
+@@ -2527,6 +2527,10 @@ static void onenand_unlock_all(struct mt
+ 		    & ONENAND_CTRL_ONGO)
+ 			continue;
+ 
++		/* Don't check lock status */
++		if (this->options & ONENAND_SKIP_UNLOCK_CHECK)
++			return;
++
+ 		/* Check lock status */
+ 		if (onenand_check_lock_status(this))
+ 			return;
+@@ -3441,6 +3445,10 @@ int onenand_scan(struct mtd_info *mtd, i
+ 		this->command = onenand_command;
+ 	if (!this->wait)
+ 		onenand_setup_wait(mtd);
++	if (!this->bbt_wait)
++		this->bbt_wait = onenand_bbt_wait;
++	if (!this->unlock_all)
++		this->unlock_all = onenand_unlock_all;
+ 
+ 	if (!this->read_bufferram)
+ 		this->read_bufferram = onenand_read_bufferram;
+@@ -3558,7 +3566,7 @@ int onenand_scan(struct mtd_info *mtd, i
+ 	mtd->owner = THIS_MODULE;
+ 
+ 	/* Unlock whole block */
+-	onenand_unlock_all(mtd);
++	this->unlock_all(mtd);
+ 
+ 	ret = this->scan_bbt(mtd);
+ 	if ((!FLEXONENAND(this)) || ret)
+diff -puN include/linux/mtd/onenand.h~mtd-onenand-add-bbt_wait-unlock_all-as-replaceable-for-some-platform include/linux/mtd/onenand.h
+--- a/include/linux/mtd/onenand.h~mtd-onenand-add-bbt_wait-unlock_all-as-replaceable-for-some-platform
++++ a/include/linux/mtd/onenand.h
+@@ -74,6 +74,8 @@ struct onenand_bufferram {
+  * @command:		[REPLACEABLE] hardware specific function for writing
+  *			commands to the chip
+  * @wait:		[REPLACEABLE] hardware specific function for wait on ready
++ * @bbt_wait:		[REPLACEABLE] hardware specific function for bbt wait on ready
++ * @unlock_all:		[REPLACEABLE] hardware specific function for unlock all
+  * @read_bufferram:	[REPLACEABLE] hardware specific function for BufferRAM Area
+  * @write_bufferram:	[REPLACEABLE] hardware specific function for BufferRAM Area
+  * @read_word:		[REPLACEABLE] hardware specific function for read
+@@ -118,6 +120,8 @@ struct onenand_chip {
+ 
+ 	int (*command)(struct mtd_info *mtd, int cmd, loff_t address, size_t len);
+ 	int (*wait)(struct mtd_info *mtd, int state);
++	int (*bbt_wait)(struct mtd_info *mtd, int state);
++	void (*unlock_all)(struct mtd_info *mtd);
+ 	int (*read_bufferram)(struct mtd_info *mtd, int area,
+ 			unsigned char *buffer, int offset, size_t count);
+ 	int (*write_bufferram)(struct mtd_info *mtd, int area,
+@@ -184,6 +188,7 @@ struct onenand_chip {
+ #define ONENAND_HAS_CONT_LOCK		(0x0001)
+ #define ONENAND_HAS_UNLOCK_ALL		(0x0002)
+ #define ONENAND_HAS_2PLANE		(0x0004)
++#define ONENAND_SKIP_UNLOCK_CHECK	(0x0100)
+ #define ONENAND_PAGEBUF_ALLOC		(0x1000)
+ #define ONENAND_OOBBUF_ALLOC		(0x2000)
+ 
 _
