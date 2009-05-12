@@ -1,20 +1,19 @@
-Received: from mail.mtekvision.com ([218.49.29.145]
-	helo=mtv-mail.INFRA.MTEKVISION.COM)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M4qp9-0007aJ-2V
-	for linux-mtd@lists.infradead.org; Fri, 15 May 2009 06:23:21 +0000
-Content-class: urn:content-classes:message
+Received: from rere.qmqm.pl ([89.167.52.164])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1M40hR-0002Yt-2P
+	for linux-mtd@lists.infradead.org; Tue, 12 May 2009 22:43:56 +0000
+Date: Wed, 13 May 2009 00:37:18 +0200
+From: =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Subject: [PATCH/RESEND 2.6.29.3] MTD: Add SST39SF040 chip to jedec_probe
+Message-ID: <20090512223718.GB26588@rere.qmqm.pl>
+References: <20081118010902.GA4130@rere.qmqm.pl>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: oobavail size calculation error in nand_base.c
-Date: Fri, 15 May 2009 15:23:09 +0900
-Message-ID: <FD296E38A61CDB45A5F0E6CCD4B459432EAC4D@mtv-mail>
-References: <37597.192.168.10.89.1242365806.squirrel@dbdmail.itg.ti.com>
-From: "Park Jinyoung" <parkjy@mtekvision.com>
-To: "vimal singh" <vimalsingh@ti.com>
-Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20081118010902.GA4130@rere.qmqm.pl>
+Cc: linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,73 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I didn't realize that problem was patched, sorry.
-And thanks for your reply.
+Add SST39SF040 chip (like SST39SF020A but bigger - 4Mbit).
 
-Jinyoung Park
+Signed-off-by: Micha³ Miros³aw <mirq-linux@rere.qmqm.pl>
 
------Original Message-----
-From: vimal singh [mailto:vimalsingh@ti.com]=20
-Sent: Friday, May 15, 2009 2:37 PM
-To: Park Jinyoung
-Cc: tglx@linutronix.de; linux-mtd@lists.infradead.org
-Subject: Re: oobavail size calculation error in nand_base.c
-
-This issue is already noticed by Snehaprabha Narnakaje. And a patch is
-already
-sent to fix this by David Brownell.
-
-http://lists.infradead.org/pipermail/linux-mtd/2009-April/025205.html
-
-
-Sorry, last time I replied on wrong subject line... :)
-
----
-Vimal
-
-On Thu, May 14, 2009 at 1:58 PM, Jinyoung Park <parkjy@mtekvision.com>
-wrote:
-> Hello.
->
-> I found error in nand_base.c.
-> In nand_scan_tail() function, oobavail size calculation result is
-> wrong as follow circumstances.
->    - Define nand_ecclayout using full oobfree array like below.
->        .oobfree =3D { {2, 6}, {11, 2}, {16, 8}, {27, 2}, {32, 8}, {43,
-2},{48,
-> 8}, {59, 2} }
->    - Using ARM EABI cross compiler when kernel compile also enable
-> "Use the ARM EABI to compile the kernl" feature in kernel menuconfig.
->      I using ARM EABI compiler that codesourcery release
-arm-2008q3-51.
->
-> In this case, right oobavail size is 38 but result is too much
-> value(e.g. 2703572308...). It's random.
-> I think sometimes happen that after beyond oobfree array(oobfree[8])
-> is not 0 when ARM EABI compilation.
-> Below codes are my modified code. Please check...
->
-> Thanks.
->
-> diff --git a/drivers/mtd/nand/nand_base.c
-b/drivers/mtd/nand/nand_base.c
-> index 3d7ed43..abb5998 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -2756,9 +2756,12 @@ int nand_scan_tail(struct mtd_info *mtd)
->        * the out of band area
->        */
->        chip->ecc.layout->oobavail =3D 0;
-> -       for (i =3D 0; chip->ecc.layout->oobfree[i].length; i++)
-> +       for (i =3D 0; i < MTD_MAX_OOBFREE_ENTRIES; i++) {
-> +       if (chip->ecc.layout->oobfree[i].length =3D=3D 0)
-> +               break;
->        chip->ecc.layout->oobavail +=3D
->                chip->ecc.layout->oobfree[i].length;
-> +       }
->        mtd->oobavail =3D chip->ecc.layout->oobavail;
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+--- linux-2.6.27.6-brfix1/drivers/mtd/chips/jedec_probe.c	2008-11-16 14:24:30.000000000 +0100
++++ rechot/drivers/mtd/chips/jedec_probe.c	2008-11-18 01:28:10.000000000 +0100
+@@ -165,6 +165,7 @@
+ #define SST39LF040	0x00D7
+ #define SST39SF010A	0x00B5
+ #define SST39SF020A	0x00B6
++#define SST39SF040	0x00B7
+ #define SST49LF004B	0x0060
+ #define SST49LF040B	0x0050
+ #define SST49LF008A	0x005a
+@@ -1392,6 +1393,18 @@
+ 		}
+ 	}, {
+ 		.mfr_id		= MANUFACTURER_SST,
++		.dev_id		= SST39SF040,
++		.name		= "SST 39SF040",
++		.devtypes	= CFI_DEVICETYPE_X8,
++		.uaddr		= MTD_UADDR_0x5555_0x2AAA,
++		.dev_size	= SIZE_512KiB,
++		.cmd_set	= P_ID_AMD_STD,
++		.nr_regions	= 1,
++		.regions	= {
++			ERASEINFO(0x01000,128),
++		}
++	}, {
++		.mfr_id		= MANUFACTURER_SST,
+ 		.dev_id		= SST49LF040B,
+ 		.name		= "SST 49LF040B",
+ 		.devtypes	= CFI_DEVICETYPE_X8,
