@@ -1,9 +1,8 @@
-Message-Id: <200905122106.n4CL6G8x009488@imap1.linux-foundation.org>
-Subject: [patch 09/14] mtd: delete final remnants of MTD ioctls from
-	fs/compat_ioctl.c
+Message-Id: <200905122106.n4CL6FU5009462@imap1.linux-foundation.org>
+Subject: [patch 05/14] mtd: update sysfs documentation
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Tue, 12 May 2009 13:47:01 -0700
+Date: Tue, 12 May 2009 13:46:59 -0700
 Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -16,81 +15,141 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Kevin Cernekee <kpc.mtd@gmail.com>
 
-Move all MTD compat_ioctl logic into drivers/mtd/mtdchar.c
-
-Depends on this patch set:
-
-http://lkml.org/lkml/2009/4/9/52
-http://lkml.org/lkml/2009/4/9/53
-http://lkml.org/lkml/2009/4/9/54
-http://lkml.org/lkml/2009/4/9/55
-
 Signed-off-by: Kevin Cernekee <kpc.mtd@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- drivers/mtd/mtdchar.c |    3 ++-
- fs/compat_ioctl.c     |   22 ----------------------
- 2 files changed, 2 insertions(+), 23 deletions(-)
+ Documentation/ABI/testing/sysfs-class-mtd |  125 ++++++++++++++++++++
+ 1 file changed, 125 insertions(+)
 
-diff -puN drivers/mtd/mtdchar.c~mtd-delete-final-remnants-of-mtd-ioctls-from-fs-compat_ioctlc drivers/mtd/mtdchar.c
---- a/drivers/mtd/mtdchar.c~mtd-delete-final-remnants-of-mtd-ioctls-from-fs-compat_ioctlc
-+++ a/drivers/mtd/mtdchar.c
-@@ -836,6 +836,7 @@ struct mtd_oob_buf32 {
- static long mtd_compat_ioctl(struct file *file, unsigned int cmd,
- 	unsigned long arg)
- {
-+	struct inode *inode = file->f_path.dentry->d_inode;
- 	struct mtd_file_info *mfi = file->private_data;
- 	struct mtd_info *mtd = mfi->mtd;
- 	void __user *argp = (void __user *)arg;
-@@ -873,7 +874,7 @@ static long mtd_compat_ioctl(struct file
- 		break;
- 	}
- 	default:
--		ret = -ENOIOCTLCMD;
-+		ret = mtd_ioctl(inode, file, cmd, arg);
- 	}
- 
- 	unlock_kernel();
-diff -puN fs/compat_ioctl.c~mtd-delete-final-remnants-of-mtd-ioctls-from-fs-compat_ioctlc fs/compat_ioctl.c
---- a/fs/compat_ioctl.c~mtd-delete-final-remnants-of-mtd-ioctls-from-fs-compat_ioctlc
-+++ a/fs/compat_ioctl.c
-@@ -94,7 +94,6 @@
- #include <linux/atm_tcp.h>
- #include <linux/sonet.h>
- #include <linux/atm_suni.h>
--#include <linux/mtd/mtd.h>
- 
- #include <linux/usb.h>
- #include <linux/usbdevice_fs.h>
-@@ -2392,27 +2391,6 @@ COMPATIBLE_IOCTL(USBDEVFS_SUBMITURB32)
- COMPATIBLE_IOCTL(USBDEVFS_REAPURB32)
- COMPATIBLE_IOCTL(USBDEVFS_REAPURBNDELAY32)
- COMPATIBLE_IOCTL(USBDEVFS_CLEAR_HALT)
--/* MTD */
--COMPATIBLE_IOCTL(MEMGETINFO)
--COMPATIBLE_IOCTL(MEMERASE)
--COMPATIBLE_IOCTL(MEMLOCK)
--COMPATIBLE_IOCTL(MEMUNLOCK)
--COMPATIBLE_IOCTL(MEMGETREGIONCOUNT)
--COMPATIBLE_IOCTL(MEMGETREGIONINFO)
--COMPATIBLE_IOCTL(MEMSETOOBSEL)
--COMPATIBLE_IOCTL(MEMGETOOBSEL)
--COMPATIBLE_IOCTL(MEMGETBADBLOCK)
--COMPATIBLE_IOCTL(MEMSETBADBLOCK)
--COMPATIBLE_IOCTL(OTPSELECT)
--COMPATIBLE_IOCTL(OTPGETREGIONCOUNT)
--COMPATIBLE_IOCTL(OTPGETREGIONINFO)
--COMPATIBLE_IOCTL(OTPLOCK)
--COMPATIBLE_IOCTL(ECCGETLAYOUT)
--COMPATIBLE_IOCTL(ECCGETSTATS)
--COMPATIBLE_IOCTL(MTDFILEMODE)
--COMPATIBLE_IOCTL(MEMERASE64)
--COMPATIBLE_IOCTL(MEMREADOOB64)
--COMPATIBLE_IOCTL(MEMWRITEOOB64)
- /* NBD */
- ULONG_IOCTL(NBD_SET_SOCK)
- ULONG_IOCTL(NBD_SET_BLKSIZE)
+diff -puN /dev/null Documentation/ABI/testing/sysfs-class-mtd
+--- /dev/null
++++ a/Documentation/ABI/testing/sysfs-class-mtd
+@@ -0,0 +1,125 @@
++What:		/sys/class/mtd/
++Date:		April 2009
++KernelVersion:	2.6.29
++Contact:	linux-mtd@lists.infradead.org
++Description:
++		The mtd/ class subdirectory belongs to the MTD subsystem
++		(MTD core).
++
++What:		/sys/class/mtd/mtdX/
++Date:		April 2009
++KernelVersion:	2.6.29
++Contact:	linux-mtd@lists.infradead.org
++Description:
++		The /sys/class/mtd/mtd{0,1,2,3,...} directories correspond
++		to each /dev/mtdX character device.  These may represent
++		physical/simulated flash devices, partitions on a flash
++		device, or concatenated flash devices.  They exist regardless
++		of whether CONFIG_MTD_CHAR is actually enabled.
++
++What:		/sys/class/mtd/mtdXro/
++Date:		April 2009
++KernelVersion:	2.6.29
++Contact:	linux-mtd@lists.infradead.org
++Description:
++		These directories provide the corresponding read-only device
++		nodes for /sys/class/mtd/mtdX/ .  They are only created
++		(for the benefit of udev) if CONFIG_MTD_CHAR is enabled.
++
++What:		/sys/class/mtd/mtdX/dev
++Date:		April 2009
++KernelVersion:	2.6.29
++Contact:	linux-mtd@lists.infradead.org
++Description:
++		Major and minor numbers of the character device corresponding
++		to this MTD device (in <major>:<minor> format).  This is the
++		read-write device so <minor> will be even.
++
++What:		/sys/class/mtd/mtdXro/dev
++Date:		April 2009
++KernelVersion:	2.6.29
++Contact:	linux-mtd@lists.infradead.org
++Description:
++		Major and minor numbers of the character device corresponding
++		to the read-only variant of thie MTD device (in
++		<major>:<minor> format).  In this case <minor> will be odd.
++
++What:		/sys/class/mtd/mtdX/erasesize
++Date:		April 2009
++KernelVersion:	2.6.29
++Contact:	linux-mtd@lists.infradead.org
++Description:
++		"Major" erase size for the device.  If numeraseregions is
++		zero, this is the eraseblock size for the entire device.
++		Otherwise, the MEMGETREGIONCOUNT/MEMGETREGIONINFO ioctls
++		can be used to determine the actual eraseblock layout.
++
++What:		/sys/class/mtd/mtdX/flags
++Date:		April 2009
++KernelVersion:	2.6.29
++Contact:	linux-mtd@lists.infradead.org
++Description:
++		A hexadecimal value representing the device flags, ORed
++		together:
++
++		0x0400: MTD_WRITEABLE - device is writable
++		0x0800: MTD_BIT_WRITEABLE - single bits can be flipped
++		0x1000: MTD_NO_ERASE - no erase necessary
++		0x2000: MTD_POWERUP_LOCK - always locked after reset
++
++What:		/sys/class/mtd/mtdX/name
++Date:		April 2009
++KernelVersion:	2.6.29
++Contact:	linux-mtd@lists.infradead.org
++Description:
++		A human-readable ASCII name for the device or partition.
++		This will match the name in /proc/mtd .
++
++What:		/sys/class/mtd/mtdX/numeraseregions
++Date:		April 2009
++KernelVersion:	2.6.29
++Contact:	linux-mtd@lists.infradead.org
++Description:
++		For devices that have variable eraseblock sizes, this
++		provides the total number of erase regions.  Otherwise,
++		it will read back as zero.
++
++What:		/sys/class/mtd/mtdX/oobsize
++Date:		April 2009
++KernelVersion:	2.6.29
++Contact:	linux-mtd@lists.infradead.org
++Description:
++		Number of OOB bytes per page.
++
++What:		/sys/class/mtd/mtdX/size
++Date:		April 2009
++KernelVersion:	2.6.29
++Contact:	linux-mtd@lists.infradead.org
++Description:
++		Total size of the device/partition, in bytes.
++
++What:		/sys/class/mtd/mtdX/type
++Date:		April 2009
++KernelVersion:	2.6.29
++Contact:	linux-mtd@lists.infradead.org
++Description:
++		One of the following ASCII strings, representing the device
++		type:
++
++		absent, ram, rom, nor, nand, dataflash, ubi, unknown
++
++What:		/sys/class/mtd/mtdX/writesize
++Date:		April 2009
++KernelVersion:	2.6.29
++Contact:	linux-mtd@lists.infradead.org
++Description:
++		Minimal writable flash unit size.  This will always be
++		a positive integer.
++
++		In the case of NOR flash it is 1 (even though individual
++		bits can be cleared).
++
++		In the case of NAND flash it is one NAND page (or a
++		half page, or a quarter page).
++
++		In the case of ECC NOR, it is the ECC block size.
 _
