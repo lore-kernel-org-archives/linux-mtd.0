@@ -1,10 +1,19 @@
-Message-Id: <200905122106.n4CL6Evs009456@imap1.linux-foundation.org>
-Subject: [patch 03/14] mtd: plat_nand: add platform probe/remove callbacks
-To: dwmw2@infradead.org
-From: akpm@linux-foundation.org
-Date: Tue, 12 May 2009 13:46:58 -0700
-Cc: hsweeten@visionengravers.com, akpm@linux-foundation.org,
-	linux-mtd@lists.infradead.org, alex@digriz.org.uk
+Received: from n22a.bullet.mail.mud.yahoo.com ([68.142.207.188])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M41Jy-0004Ck-L8
+	for linux-mtd@lists.infradead.org; Tue, 12 May 2009 23:23:44 +0000
+From: David Brownell <david-b@pacbell.net>
+To: Linux MTD <linux-mtd@lists.infradead.org>
+Subject: [patch 2.6.30-rc5+] davinci_nand: cmdlinepart uses MTD IDs
+Date: Tue, 12 May 2009 16:23:32 -0700
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200905121623.32809.david-b@pacbell.net>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Snehaprabha Narnakaje <nsnehaprabha@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -14,93 +23,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: H Hartley Sweeten <hsweeten@visionengravers.com>
+From: David Brownell <dbrownell@users.sourceforge.net>
 
-Add optional probe and remove callbacks to the plat_nand driver.
+Remove some legacy code from the davinci_nand driver, which made
+cmdlinepart ignore the the MTD ID passed to it.  Boards can have
+multiple NAND chips, and some do (like the DM357 EVM), so this
+dated hack is undesirable.
 
-Some platforms may require additional setup, such as configuring the
-memory controller, before the nand device can be accessed.  This patch
-provides an optional callback to handle this setup as well as a callback
-to teardown the setup.
+Correct labels a"re like davinci_nand.0" (for chipselect 0).
 
-Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
-Tested-by: Alexander Clouter <alex@digriz.org.uk>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
 ---
+ drivers/mtd/nand/davinci_nand.c |   11 -----------
+ 1 file changed, 11 deletions(-)
 
- drivers/mtd/nand/plat_nand.c |   13 +++++++++++--
- include/linux/mtd/nand.h     |    7 +++++++
- 2 files changed, 18 insertions(+), 2 deletions(-)
-
-diff -puN drivers/mtd/nand/plat_nand.c~mtd-plat_nand-add-platform-probe-remove-callbacks drivers/mtd/nand/plat_nand.c
---- a/drivers/mtd/nand/plat_nand.c~mtd-plat_nand-add-platform-probe-remove-callbacks
-+++ a/drivers/mtd/nand/plat_nand.c
-@@ -70,6 +70,13 @@ static int __devinit plat_nand_probe(str
+--- a/drivers/mtd/nand/davinci_nand.c
++++ b/drivers/mtd/nand/davinci_nand.c
+@@ -718,19 +718,8 @@ syndrome_done:
+ 			static const char *probes[] __initconst =
+ 				{ "cmdlinepart", NULL };
  
- 	platform_set_drvdata(pdev, data);
+-			const char		*master_name;
+-
+-			/* Set info->mtd.name = 0 temporarily */
+-			master_name		= info->mtd.name;
+-			info->mtd.name		= (char *)0;
+-
+-			/* info->mtd.name == 0, means: don't bother checking
+-			   <mtd-id> */
+ 			mtd_parts_nb = parse_mtd_partitions(&info->mtd, probes,
+ 							    &mtd_parts, 0);
+-
+-			/* Restore info->mtd.name */
+-			info->mtd.name = master_name;
+ 		}
  
-+	/* Handle any platform specific setup */
-+	if (pdata->ctrl.probe) {
-+		res = pdata->ctrl.probe(pdev);
-+		if (res)
-+			goto out;
-+	}
-+
- 	/* Scan to find existance of the device */
- 	if (nand_scan(&data->mtd, 1)) {
- 		res = -ENXIO;
-@@ -99,6 +106,8 @@ static int __devinit plat_nand_probe(str
- 
- 	nand_release(&data->mtd);
- out:
-+	if (pdata->ctrl.remove)
-+		pdata->ctrl.remove(pdev);
- 	platform_set_drvdata(pdev, NULL);
- 	iounmap(data->io_base);
- 	kfree(data);
-@@ -111,15 +120,15 @@ out:
- static int __devexit plat_nand_remove(struct platform_device *pdev)
- {
- 	struct plat_nand_data *data = platform_get_drvdata(pdev);
--#ifdef CONFIG_MTD_PARTITIONS
- 	struct platform_nand_data *pdata = pdev->dev.platform_data;
--#endif
- 
- 	nand_release(&data->mtd);
- #ifdef CONFIG_MTD_PARTITIONS
- 	if (data->parts && data->parts != pdata->chip.partitions)
- 		kfree(data->parts);
- #endif
-+	if (pdata->ctrl.remove)
-+		pdata->ctrl.remove(pdev);
- 	iounmap(data->io_base);
- 	kfree(data);
- 
-diff -puN include/linux/mtd/nand.h~mtd-plat_nand-add-platform-probe-remove-callbacks include/linux/mtd/nand.h
---- a/include/linux/mtd/nand.h~mtd-plat_nand-add-platform-probe-remove-callbacks
-+++ a/include/linux/mtd/nand.h
-@@ -577,8 +577,13 @@ struct platform_nand_chip {
- 	void			*priv;
- };
- 
-+/* Keep gcc happy */
-+struct platform_device;
-+
- /**
-  * struct platform_nand_ctrl - controller level device structure
-+ * @probe:		platform specific function to probe/setup hardware
-+ * @remove:		platform specific function to remove/teardown hardware
-  * @hwcontrol:		platform specific hardware control structure
-  * @dev_ready:		platform specific function to read ready/busy pin
-  * @select_chip:	platform specific chip select function
-@@ -589,6 +594,8 @@ struct platform_nand_chip {
-  * All fields are optional and depend on the hardware driver requirements
-  */
- struct platform_nand_ctrl {
-+	int		(*probe)(struct platform_device *pdev);
-+	void		(*remove)(struct platform_device *pdev);
- 	void		(*hwcontrol)(struct mtd_info *mtd, int cmd);
- 	int		(*dev_ready)(struct mtd_info *mtd);
- 	void		(*select_chip)(struct mtd_info *mtd, int chip);
-_
+ 		if (mtd_parts_nb <= 0) {
