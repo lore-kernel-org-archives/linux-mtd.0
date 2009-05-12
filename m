@@ -1,10 +1,9 @@
-Message-Id: <200905122106.n4CL6H9p009494@imap1.linux-foundation.org>
-Subject: [patch 11/14] mtd: nand: minor davinci_nand cleanup
+Message-Id: <200905122106.n4CL6GKC009482@imap1.linux-foundation.org>
+Subject: [patch 07/14] mtd: compat_ioctl cleanup
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Tue, 12 May 2009 13:47:02 -0700
-Cc: akpm@linux-foundation.org, dbrownell@users.sourceforge.net,
-	linux-mtd@lists.infradead.org
+Date: Tue, 12 May 2009 13:47:00 -0700
+Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -14,96 +13,403 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: David Brownell <dbrownell@users.sourceforge.net>
+From: Kevin Cernekee <kpc.mtd@gmail.com>
 
-Make the DaVinci NAND driver require platform_data with board-specific
-configuration.  We can't actually do any kind of sane job of configuring
-it otherwise.
+1) Move the MEMREADOOB/MEMWRITEOOB compat_ioctl wrappers from
+fs/compat_ioctl.c into mtdchar.c .  Original request was here:
 
-Also fix the comment about picking the "best" ECC mode.
+http://lkml.org/lkml/2009/4/1/295
 
-We can't do those any more; that relied on knowing what kind of CPU we're
-using (they don't all support 4-bit ECC), and current policy is that
-drivers not have cpu_is_*() checks.
+2) Add missing COMPATIBLE_IOCTL lines, so that mtd-utils does not error
+out when running in 64/32 compatibility mode.
 
-Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
+Signed-off-by: Kevin Cernekee <kpc.mtd@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- drivers/mtd/nand/davinci_nand.c |   27 +++++++++++----------------
- 1 file changed, 11 insertions(+), 16 deletions(-)
+ drivers/mtd/mtdchar.c |  255 ++++++++++++++++++++++++++--------------
+ fs/compat_ioctl.c     |   51 +-------
+ 2 files changed, 180 insertions(+), 126 deletions(-)
 
-diff -puN drivers/mtd/nand/davinci_nand.c~mtd-nand-minor-davinci_nand-cleanup drivers/mtd/nand/davinci_nand.c
---- a/drivers/mtd/nand/davinci_nand.c~mtd-nand-minor-davinci_nand-cleanup
-+++ a/drivers/mtd/nand/davinci_nand.c
-@@ -306,6 +306,10 @@ static int __init nand_davinci_probe(str
- 	uint32_t			val;
- 	nand_ecc_modes_t		ecc_mode;
+diff -puN drivers/mtd/mtdchar.c~mtd-compat_ioctl-cleanup drivers/mtd/mtdchar.c
+--- a/drivers/mtd/mtdchar.c~mtd-compat_ioctl-cleanup
++++ a/drivers/mtd/mtdchar.c
+@@ -14,6 +14,7 @@
+ #include <linux/sched.h>
+ #include <linux/smp_lock.h>
+ #include <linux/backing-dev.h>
++#include <linux/compat.h>
  
-+	/* insist on board-specific configuration */
-+	if (!pdata)
-+		return -ENODEV;
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/compatmac.h>
+@@ -355,6 +356,100 @@ static int otp_select_filemode(struct mt
+ # define otp_select_filemode(f,m)	-EOPNOTSUPP
+ #endif
+ 
++static int mtd_do_writeoob(struct file *file, struct mtd_info *mtd,
++	uint64_t start, uint32_t length, void __user *ptr,
++	uint32_t __user *retp)
++{
++	struct mtd_oob_ops ops;
++	uint32_t retlen;
++	int ret = 0;
 +
- 	/* which external chipselect will we be managing? */
- 	if (pdev->id < 0 || pdev->id > 3)
- 		return -ENODEV;
-@@ -351,7 +355,7 @@ static int __init nand_davinci_probe(str
- 	info->chip.select_chip	= nand_davinci_select_chip;
++	if (!(file->f_mode & FMODE_WRITE))
++		return -EPERM;
++
++	if (length > 4096)
++		return -EINVAL;
++
++	if (!mtd->write_oob)
++		ret = -EOPNOTSUPP;
++	else
++		ret = access_ok(VERIFY_READ, ptr, length) ? 0 : EFAULT;
++
++	if (ret)
++		return ret;
++
++	ops.ooblen = length;
++	ops.ooboffs = start & (mtd->oobsize - 1);
++	ops.datbuf = NULL;
++	ops.mode = MTD_OOB_PLACE;
++
++	if (ops.ooboffs && ops.ooblen > (mtd->oobsize - ops.ooboffs))
++		return -EINVAL;
++
++	ops.oobbuf = kmalloc(length, GFP_KERNEL);
++	if (!ops.oobbuf)
++		return -ENOMEM;
++
++	if (copy_from_user(ops.oobbuf, ptr, length)) {
++		kfree(ops.oobbuf);
++		return -EFAULT;
++	}
++
++	start &= ~((uint64_t)mtd->oobsize - 1);
++	ret = mtd->write_oob(mtd, start, &ops);
++
++	if (ops.oobretlen > 0xFFFFFFFFU)
++		ret = -EOVERFLOW;
++	retlen = ops.oobretlen;
++	if (copy_to_user(retp, &retlen, sizeof(length)))
++		ret = -EFAULT;
++
++	kfree(ops.oobbuf);
++	return ret;
++}
++
++static int mtd_do_readoob(struct mtd_info *mtd, uint64_t start,
++	uint32_t length, void __user *ptr, uint32_t __user *retp)
++{
++	struct mtd_oob_ops ops;
++	int ret = 0;
++
++	if (length > 4096)
++		return -EINVAL;
++
++	if (!mtd->read_oob)
++		ret = -EOPNOTSUPP;
++	else
++		ret = access_ok(VERIFY_WRITE, ptr,
++				length) ? 0 : -EFAULT;
++	if (ret)
++		return ret;
++
++	ops.ooblen = length;
++	ops.ooboffs = start & (mtd->oobsize - 1);
++	ops.datbuf = NULL;
++	ops.mode = MTD_OOB_PLACE;
++
++	if (ops.ooboffs && ops.ooblen > (mtd->oobsize - ops.ooboffs))
++		return -EINVAL;
++
++	ops.oobbuf = kmalloc(length, GFP_KERNEL);
++	if (!ops.oobbuf)
++		return -ENOMEM;
++
++	start &= ~((uint64_t)mtd->oobsize - 1);
++	ret = mtd->read_oob(mtd, start, &ops);
++
++	if (put_user(ops.oobretlen, retp))
++		ret = -EFAULT;
++	else if (ops.oobretlen && copy_to_user(ptr, ops.oobbuf,
++					    ops.oobretlen))
++		ret = -EFAULT;
++
++	kfree(ops.oobbuf);
++	return ret;
++}
++
+ static int mtd_ioctl(struct inode *inode, struct file *file,
+ 		     u_int cmd, u_long arg)
+ {
+@@ -487,100 +582,28 @@ static int mtd_ioctl(struct inode *inode
+ 	case MEMWRITEOOB:
+ 	{
+ 		struct mtd_oob_buf buf;
+-		struct mtd_oob_ops ops;
+-		struct mtd_oob_buf __user *user_buf = argp;
+-	        uint32_t retlen;
+-
+-		if(!(file->f_mode & FMODE_WRITE))
+-			return -EPERM;
+-
+-		if (copy_from_user(&buf, argp, sizeof(struct mtd_oob_buf)))
+-			return -EFAULT;
+-
+-		if (buf.length > 4096)
+-			return -EINVAL;
+-
+-		if (!mtd->write_oob)
+-			ret = -EOPNOTSUPP;
+-		else
+-			ret = access_ok(VERIFY_READ, buf.ptr,
+-					buf.length) ? 0 : EFAULT;
+-
+-		if (ret)
+-			return ret;
+-
+-		ops.ooblen = buf.length;
+-		ops.ooboffs = buf.start & (mtd->oobsize - 1);
+-		ops.datbuf = NULL;
+-		ops.mode = MTD_OOB_PLACE;
+-
+-		if (ops.ooboffs && ops.ooblen > (mtd->oobsize - ops.ooboffs))
+-			return -EINVAL;
+-
+-		ops.oobbuf = kmalloc(buf.length, GFP_KERNEL);
+-		if (!ops.oobbuf)
+-			return -ENOMEM;
+-
+-		if (copy_from_user(ops.oobbuf, buf.ptr, buf.length)) {
+-			kfree(ops.oobbuf);
+-			return -EFAULT;
+-		}
++		struct mtd_oob_buf __user *buf_user = argp;
  
- 	/* options such as NAND_USE_FLASH_BBT or 16-bit widths */
--	info->chip.options	= pdata ? pdata->options : 0;
-+	info->chip.options	= pdata->options;
- 
- 	info->ioaddr		= (uint32_t __force) vaddr;
- 
-@@ -360,14 +364,8 @@ static int __init nand_davinci_probe(str
- 	info->mask_chipsel	= pdata->mask_chipsel;
- 
- 	/* use nandboot-capable ALE/CLE masks by default */
--	if (pdata && pdata->mask_ale)
--		info->mask_ale	= pdata->mask_cle;
--	else
--		info->mask_ale	= MASK_ALE;
--	if (pdata && pdata->mask_cle)
--		info->mask_cle	= pdata->mask_cle;
--	else
--		info->mask_cle	= MASK_CLE;
-+	info->mask_ale		= pdata->mask_cle ? : MASK_ALE;
-+	info->mask_cle		= pdata->mask_cle ? : MASK_CLE;
- 
- 	/* Set address of hardware control function */
- 	info->chip.cmd_ctrl	= nand_davinci_hwcontrol;
-@@ -377,11 +375,8 @@ static int __init nand_davinci_probe(str
- 	info->chip.read_buf     = nand_davinci_read_buf;
- 	info->chip.write_buf    = nand_davinci_write_buf;
- 
--	/* use board-specific ECC config; else, the best available */
--	if (pdata)
--		ecc_mode = pdata->ecc_mode;
--	else
--		ecc_mode = NAND_ECC_HW;
-+	/* Use board-specific ECC config */
-+	ecc_mode		= pdata->ecc_mode;
- 
- 	switch (ecc_mode) {
- 	case NAND_ECC_NONE:
-@@ -469,7 +464,7 @@ static int __init nand_davinci_probe(str
- 			info->mtd.name = master_name;
- 		}
- 
--		if (mtd_parts_nb <= 0 && pdata) {
-+		if (mtd_parts_nb <= 0) {
- 			mtd_parts = pdata->parts;
- 			mtd_parts_nb = pdata->nr_parts;
- 		}
-@@ -482,7 +477,7 @@ static int __init nand_davinci_probe(str
- 				info->partitioned = true;
- 		}
- 
--	} else if (pdata && pdata->nr_parts) {
-+	} else if (pdata->nr_parts) {
- 		dev_warn(&pdev->dev, "ignoring %d default partitions on %s\n",
- 				pdata->nr_parts, info->mtd.name);
+-		buf.start &= ~(mtd->oobsize - 1);
+-		ret = mtd->write_oob(mtd, buf.start, &ops);
+-
+-		if (ops.oobretlen > 0xFFFFFFFFU)
+-			ret = -EOVERFLOW;
+-		retlen = ops.oobretlen;
+-		if (copy_to_user(&user_buf->length, &retlen, sizeof(buf.length)))
++		/* NOTE: writes return length to buf_user->length */
++		if (copy_from_user(&buf, argp, sizeof(buf)))
+ 			ret = -EFAULT;
+-
+-		kfree(ops.oobbuf);
++		else
++			ret = mtd_do_writeoob(file, mtd, buf.start, buf.length,
++				buf.ptr, &buf_user->length);
+ 		break;
+-
  	}
+ 
+ 	case MEMREADOOB:
+ 	{
+ 		struct mtd_oob_buf buf;
+-		struct mtd_oob_ops ops;
+-
+-		if (copy_from_user(&buf, argp, sizeof(struct mtd_oob_buf)))
+-			return -EFAULT;
+-
+-		if (buf.length > 4096)
+-			return -EINVAL;
+-
+-		if (!mtd->read_oob)
+-			ret = -EOPNOTSUPP;
+-		else
+-			ret = access_ok(VERIFY_WRITE, buf.ptr,
+-					buf.length) ? 0 : -EFAULT;
+-		if (ret)
+-			return ret;
+-
+-		ops.ooblen = buf.length;
+-		ops.ooboffs = buf.start & (mtd->oobsize - 1);
+-		ops.datbuf = NULL;
+-		ops.mode = MTD_OOB_PLACE;
+-
+-		if (ops.ooboffs && ops.ooblen > (mtd->oobsize - ops.ooboffs))
+-			return -EINVAL;
+-
+-		ops.oobbuf = kmalloc(buf.length, GFP_KERNEL);
+-		if (!ops.oobbuf)
+-			return -ENOMEM;
+-
+-		buf.start &= ~(mtd->oobsize - 1);
+-		ret = mtd->read_oob(mtd, buf.start, &ops);
++		struct mtd_oob_buf __user *buf_user = argp;
+ 
+-		if (put_user(ops.oobretlen, (uint32_t __user *)argp))
++		/* NOTE: writes return length to buf_user->start */
++		if (copy_from_user(&buf, argp, sizeof(buf)))
+ 			ret = -EFAULT;
+-		else if (ops.oobretlen && copy_to_user(buf.ptr, ops.oobbuf,
+-						    ops.oobretlen))
+-			ret = -EFAULT;
+-
+-		kfree(ops.oobbuf);
++		else
++			ret = mtd_do_readoob(mtd, buf.start, buf.length,
++				buf.ptr, &buf_user->start);
+ 		break;
+ 	}
+ 
+@@ -771,6 +794,67 @@ static int mtd_ioctl(struct inode *inode
+ 	return ret;
+ } /* memory_ioctl */
+ 
++#ifdef CONFIG_COMPAT
++
++struct mtd_oob_buf32 {
++	u_int32_t start;
++	u_int32_t length;
++	compat_caddr_t ptr;	/* unsigned char* */
++};
++
++#define MEMWRITEOOB32		_IOWR('M', 3, struct mtd_oob_buf32)
++#define MEMREADOOB32		_IOWR('M', 4, struct mtd_oob_buf32)
++
++static long mtd_compat_ioctl(struct file *file, unsigned int cmd,
++	unsigned long arg)
++{
++	struct mtd_file_info *mfi = file->private_data;
++	struct mtd_info *mtd = mfi->mtd;
++	void __user *argp = (void __user *)arg;
++	int ret = 0;
++
++	lock_kernel();
++
++	switch (cmd) {
++	case MEMWRITEOOB32:
++	{
++		struct mtd_oob_buf32 buf;
++		struct mtd_oob_buf32 __user *buf_user = argp;
++
++		if (copy_from_user(&buf, argp, sizeof(buf)))
++			ret = -EFAULT;
++		else
++			ret = mtd_do_writeoob(file, mtd, buf.start,
++				buf.length, compat_ptr(buf.ptr),
++				&buf_user->length);
++		break;
++	}
++
++	case MEMREADOOB32:
++	{
++		struct mtd_oob_buf32 buf;
++		struct mtd_oob_buf32 __user *buf_user = argp;
++
++		/* NOTE: writes return length to buf->start */
++		if (copy_from_user(&buf, argp, sizeof(buf)))
++			ret = -EFAULT;
++		else
++			ret = mtd_do_readoob(mtd, buf.start,
++				buf.length, compat_ptr(buf.ptr),
++				&buf_user->start);
++		break;
++	}
++	default:
++		ret = -ENOIOCTLCMD;
++	}
++
++	unlock_kernel();
++
++	return ret;
++}
++
++#endif /* CONFIG_COMPAT */
++
+ /*
+  * try to determine where a shared mapping can be made
+  * - only supported for NOMMU at the moment (MMU can't doesn't copy private
+@@ -830,6 +914,9 @@ static const struct file_operations mtd_
+ 	.read		= mtd_read,
+ 	.write		= mtd_write,
+ 	.ioctl		= mtd_ioctl,
++#ifdef CONFIG_COMPAT
++	.compat_ioctl	= mtd_compat_ioctl,
++#endif
+ 	.open		= mtd_open,
+ 	.release	= mtd_close,
+ 	.mmap		= mtd_mmap,
+diff -puN fs/compat_ioctl.c~mtd-compat_ioctl-cleanup fs/compat_ioctl.c
+--- a/fs/compat_ioctl.c~mtd-compat_ioctl-cleanup
++++ a/fs/compat_ioctl.c
+@@ -1411,46 +1411,6 @@ static int ioc_settimeout(unsigned int f
+ #define HIDPGETCONNLIST	_IOR('H', 210, int)
+ #define HIDPGETCONNINFO	_IOR('H', 211, int)
+ 
+-struct mtd_oob_buf32 {
+-	u_int32_t start;
+-	u_int32_t length;
+-	compat_caddr_t ptr;	/* unsigned char* */
+-};
+-
+-#define MEMWRITEOOB32 	_IOWR('M',3,struct mtd_oob_buf32)
+-#define MEMREADOOB32 	_IOWR('M',4,struct mtd_oob_buf32)
+-
+-static int mtd_rw_oob(unsigned int fd, unsigned int cmd, unsigned long arg)
+-{
+-	struct mtd_oob_buf __user *buf = compat_alloc_user_space(sizeof(*buf));
+-	struct mtd_oob_buf32 __user *buf32 = compat_ptr(arg);
+-	u32 data;
+-	char __user *datap;
+-	unsigned int real_cmd;
+-	int err;
+-
+-	real_cmd = (cmd == MEMREADOOB32) ?
+-		MEMREADOOB : MEMWRITEOOB;
+-
+-	if (copy_in_user(&buf->start, &buf32->start,
+-			 2 * sizeof(u32)) ||
+-	    get_user(data, &buf32->ptr))
+-		return -EFAULT;
+-	datap = compat_ptr(data);
+-	if (put_user(datap, &buf->ptr))
+-		return -EFAULT;
+-
+-	err = sys_ioctl(fd, real_cmd, (unsigned long) buf);
+-
+-	if (!err) {
+-		if (copy_in_user(&buf32->start, &buf->start,
+-				 2 * sizeof(u32)))
+-			err = -EFAULT;
+-	}
+-
+-	return err;
+-}	
+-
+ #ifdef CONFIG_BLOCK
+ struct raw32_config_request
+ {
+@@ -2439,8 +2399,17 @@ COMPATIBLE_IOCTL(MEMLOCK)
+ COMPATIBLE_IOCTL(MEMUNLOCK)
+ COMPATIBLE_IOCTL(MEMGETREGIONCOUNT)
+ COMPATIBLE_IOCTL(MEMGETREGIONINFO)
++COMPATIBLE_IOCTL(MEMSETOOBSEL)
++COMPATIBLE_IOCTL(MEMGETOOBSEL)
+ COMPATIBLE_IOCTL(MEMGETBADBLOCK)
+ COMPATIBLE_IOCTL(MEMSETBADBLOCK)
++COMPATIBLE_IOCTL(OTPSELECT)
++COMPATIBLE_IOCTL(OTPGETREGIONCOUNT)
++COMPATIBLE_IOCTL(OTPGETREGIONINFO)
++COMPATIBLE_IOCTL(OTPLOCK)
++COMPATIBLE_IOCTL(ECCGETLAYOUT)
++COMPATIBLE_IOCTL(ECCGETSTATS)
++COMPATIBLE_IOCTL(MTDFILEMODE)
+ COMPATIBLE_IOCTL(MEMERASE64)
+ /* NBD */
+ ULONG_IOCTL(NBD_SET_SOCK)
+@@ -2551,8 +2520,6 @@ COMPATIBLE_IOCTL(JSIOCGBUTTONS)
+ COMPATIBLE_IOCTL(JSIOCGNAME(0))
+ 
+ /* now things that need handlers */
+-HANDLE_IOCTL(MEMREADOOB32, mtd_rw_oob)
+-HANDLE_IOCTL(MEMWRITEOOB32, mtd_rw_oob)
+ #ifdef CONFIG_NET
+ HANDLE_IOCTL(SIOCGIFNAME, dev_ifname32)
+ HANDLE_IOCTL(SIOCGIFCONF, dev_ifconf)
 _
