@@ -1,9 +1,10 @@
-Message-Id: <200905122106.n4CL6FAU009465@imap1.linux-foundation.org>
-Subject: [patch 06/14] mtd: add MEMERASE64 ioctl for >4GiB devices
+Message-Id: <200905122106.n4CL6H9p009494@imap1.linux-foundation.org>
+Subject: [patch 11/14] mtd: nand: minor davinci_nand cleanup
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Tue, 12 May 2009 13:46:59 -0700
-Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org
+Date: Tue, 12 May 2009 13:47:02 -0700
+Cc: akpm@linux-foundation.org, dbrownell@users.sourceforge.net,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -13,105 +14,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Kevin Cernekee <kpc.mtd@gmail.com>
+From: David Brownell <dbrownell@users.sourceforge.net>
 
-New MEMERASE/MEMREADOOB/MEMWRITEOOB ioctls are needed in order to support
-64-bit offsets into large NAND flash devices.
+Make the DaVinci NAND driver require platform_data with board-specific
+configuration.  We can't actually do any kind of sane job of configuring
+it otherwise.
 
-Signed-off-by: Kevin Cernekee <kpc.mtd@gmail.com>
+Also fix the comment about picking the "best" ECC mode.
+
+We can't do those any more; that relied on knowing what kind of CPU we're
+using (they don't all support 4-bit ECC), and current policy is that
+drivers not have cpu_is_*() checks.
+
+Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- drivers/mtd/mtdchar.c |   29 +++++++++++++++++++++--------
- fs/compat_ioctl.c     |    1 +
- include/mtd/mtd-abi.h |    6 ++++++
- 3 files changed, 28 insertions(+), 8 deletions(-)
+ drivers/mtd/nand/davinci_nand.c |   27 +++++++++++----------------
+ 1 file changed, 11 insertions(+), 16 deletions(-)
 
-diff -puN drivers/mtd/mtdchar.c~mtd-add-memerase64-ioctl-for-4gib-devices drivers/mtd/mtdchar.c
---- a/drivers/mtd/mtdchar.c~mtd-add-memerase64-ioctl-for-4gib-devices
-+++ a/drivers/mtd/mtdchar.c
-@@ -417,6 +417,7 @@ static int mtd_ioctl(struct inode *inode
- 		break;
+diff -puN drivers/mtd/nand/davinci_nand.c~mtd-nand-minor-davinci_nand-cleanup drivers/mtd/nand/davinci_nand.c
+--- a/drivers/mtd/nand/davinci_nand.c~mtd-nand-minor-davinci_nand-cleanup
++++ a/drivers/mtd/nand/davinci_nand.c
+@@ -306,6 +306,10 @@ static int __init nand_davinci_probe(str
+ 	uint32_t			val;
+ 	nand_ecc_modes_t		ecc_mode;
  
- 	case MEMERASE:
-+	case MEMERASE64:
- 	{
- 		struct erase_info *erase;
- 
-@@ -427,20 +428,32 @@ static int mtd_ioctl(struct inode *inode
- 		if (!erase)
- 			ret = -ENOMEM;
- 		else {
--			struct erase_info_user einfo;
--
- 			wait_queue_head_t waitq;
- 			DECLARE_WAITQUEUE(wait, current);
- 
- 			init_waitqueue_head(&waitq);
- 
--			if (copy_from_user(&einfo, argp,
--				    sizeof(struct erase_info_user))) {
--				kfree(erase);
--				return -EFAULT;
-+			if (cmd == MEMERASE64) {
-+				struct erase_info_user64 einfo64;
++	/* insist on board-specific configuration */
++	if (!pdata)
++		return -ENODEV;
 +
-+				if (copy_from_user(&einfo64, argp,
-+					    sizeof(struct erase_info_user64))) {
-+					kfree(erase);
-+					return -EFAULT;
-+				}
-+				erase->addr = einfo64.start;
-+				erase->len = einfo64.length;
-+			} else {
-+				struct erase_info_user einfo32;
-+
-+				if (copy_from_user(&einfo32, argp,
-+					    sizeof(struct erase_info_user))) {
-+					kfree(erase);
-+					return -EFAULT;
-+				}
-+				erase->addr = einfo32.start;
-+				erase->len = einfo32.length;
- 			}
--			erase->addr = einfo.start;
--			erase->len = einfo.length;
- 			erase->mtd = mtd;
- 			erase->callback = mtdchar_erase_callback;
- 			erase->priv = (unsigned long)&waitq;
-diff -puN fs/compat_ioctl.c~mtd-add-memerase64-ioctl-for-4gib-devices fs/compat_ioctl.c
---- a/fs/compat_ioctl.c~mtd-add-memerase64-ioctl-for-4gib-devices
-+++ a/fs/compat_ioctl.c
-@@ -2441,6 +2441,7 @@ COMPATIBLE_IOCTL(MEMGETREGIONCOUNT)
- COMPATIBLE_IOCTL(MEMGETREGIONINFO)
- COMPATIBLE_IOCTL(MEMGETBADBLOCK)
- COMPATIBLE_IOCTL(MEMSETBADBLOCK)
-+COMPATIBLE_IOCTL(MEMERASE64)
- /* NBD */
- ULONG_IOCTL(NBD_SET_SOCK)
- ULONG_IOCTL(NBD_SET_BLKSIZE)
-diff -puN include/mtd/mtd-abi.h~mtd-add-memerase64-ioctl-for-4gib-devices include/mtd/mtd-abi.h
---- a/include/mtd/mtd-abi.h~mtd-add-memerase64-ioctl-for-4gib-devices
-+++ a/include/mtd/mtd-abi.h
-@@ -12,6 +12,11 @@ struct erase_info_user {
- 	__u32 length;
- };
+ 	/* which external chipselect will we be managing? */
+ 	if (pdev->id < 0 || pdev->id > 3)
+ 		return -ENODEV;
+@@ -351,7 +355,7 @@ static int __init nand_davinci_probe(str
+ 	info->chip.select_chip	= nand_davinci_select_chip;
  
-+struct erase_info_user64 {
-+	__u64 start;
-+	__u64 length;
-+};
-+
- struct mtd_oob_buf {
- 	__u32 start;
- 	__u32 length;
-@@ -95,6 +100,7 @@ struct otp_info {
- #define ECCGETLAYOUT		_IOR('M', 17, struct nand_ecclayout)
- #define ECCGETSTATS		_IOR('M', 18, struct mtd_ecc_stats)
- #define MTDFILEMODE		_IO('M', 19)
-+#define MEMERASE64		_IOW('M', 20, struct erase_info_user64)
+ 	/* options such as NAND_USE_FLASH_BBT or 16-bit widths */
+-	info->chip.options	= pdata ? pdata->options : 0;
++	info->chip.options	= pdata->options;
  
- /*
-  * Obsolete legacy interface. Keep it in order not to break userspace
+ 	info->ioaddr		= (uint32_t __force) vaddr;
+ 
+@@ -360,14 +364,8 @@ static int __init nand_davinci_probe(str
+ 	info->mask_chipsel	= pdata->mask_chipsel;
+ 
+ 	/* use nandboot-capable ALE/CLE masks by default */
+-	if (pdata && pdata->mask_ale)
+-		info->mask_ale	= pdata->mask_cle;
+-	else
+-		info->mask_ale	= MASK_ALE;
+-	if (pdata && pdata->mask_cle)
+-		info->mask_cle	= pdata->mask_cle;
+-	else
+-		info->mask_cle	= MASK_CLE;
++	info->mask_ale		= pdata->mask_cle ? : MASK_ALE;
++	info->mask_cle		= pdata->mask_cle ? : MASK_CLE;
+ 
+ 	/* Set address of hardware control function */
+ 	info->chip.cmd_ctrl	= nand_davinci_hwcontrol;
+@@ -377,11 +375,8 @@ static int __init nand_davinci_probe(str
+ 	info->chip.read_buf     = nand_davinci_read_buf;
+ 	info->chip.write_buf    = nand_davinci_write_buf;
+ 
+-	/* use board-specific ECC config; else, the best available */
+-	if (pdata)
+-		ecc_mode = pdata->ecc_mode;
+-	else
+-		ecc_mode = NAND_ECC_HW;
++	/* Use board-specific ECC config */
++	ecc_mode		= pdata->ecc_mode;
+ 
+ 	switch (ecc_mode) {
+ 	case NAND_ECC_NONE:
+@@ -469,7 +464,7 @@ static int __init nand_davinci_probe(str
+ 			info->mtd.name = master_name;
+ 		}
+ 
+-		if (mtd_parts_nb <= 0 && pdata) {
++		if (mtd_parts_nb <= 0) {
+ 			mtd_parts = pdata->parts;
+ 			mtd_parts_nb = pdata->nr_parts;
+ 		}
+@@ -482,7 +477,7 @@ static int __init nand_davinci_probe(str
+ 				info->partitioned = true;
+ 		}
+ 
+-	} else if (pdata && pdata->nr_parts) {
++	} else if (pdata->nr_parts) {
+ 		dev_warn(&pdev->dev, "ignoring %d default partitions on %s\n",
+ 				pdata->nr_parts, info->mtd.name);
+ 	}
 _
