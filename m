@@ -1,23 +1,15 @@
-Received: from fk-out-0910.google.com ([209.85.128.186])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M4Fzy-0000FW-9s
-	for linux-mtd@lists.infradead.org; Wed, 13 May 2009 15:04:05 +0000
-Received: by fk-out-0910.google.com with SMTP id z22so324025fkz.2
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 13 May 2009 08:03:55 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1241674092.27549.16.camel@localhost.localdomain>
-References: <72795ccb0905060026q7dcb45c0u15c35943374fcc78@mail.gmail.com>
-	<1241673722.27549.14.camel@localhost.localdomain>
-	<1241674092.27549.16.camel@localhost.localdomain>
-Date: Wed, 13 May 2009 17:03:55 +0200
-Message-ID: <72795ccb0905130803y25acae9bwde94ed86d0dbb4f2@mail.gmail.com>
-Subject: Re: Load UBI faster
-From: simon polette <spolette@gmail.com>
-To: dedekind@infradead.org
-Content-Type: text/plain; charset=KOI8-R
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, spolette@adetelgroup.com
+Received: from buzzloop.caiaq.de ([212.112.241.133])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1M4GcZ-0008Js-2X
+	for linux-mtd@lists.infradead.org; Wed, 13 May 2009 15:43:57 +0000
+From: Daniel Mack <daniel@caiaq.de>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: mxc_nand: fix built breakage
+Date: Wed, 13 May 2009 17:43:30 +0200
+Message-Id: <1242229410-11853-1-git-send-email-daniel@caiaq.de>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>,
+	Linux MTD list <linux-mtd@lists.infradead.org>,
+	Daniel Mack <daniel@caiaq.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,45 +19,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-My NAND is 256MB but I use only a 130MB partition for UBI/UBIFS.
-So I implemented the on-flash BBT, that made me save 120ms which is a
-sizeable improvement.
-On the other hand, skipping crc calculation for header doesn't seem to
-save much time (perhaps ~10ms so it's difficult to measure the
-difference).
+The MXC NAND driver does not currently build with CONFIG_PM set.
 
-Best regards,
+  drivers/mtd/nand/mxc_nand.c: In function 'mxcnd_suspend':
+  drivers/mtd/nand/mxc_nand.c:1021: error: 'nfc_clk' undeclared (first use in this function)
+  drivers/mtd/nand/mxc_nand.c:1021: error: (Each undeclared identifier is reported only once
+  drivers/mtd/nand/mxc_nand.c:1021: error: for each function it appears in.)
+  drivers/mtd/nand/mxc_nand.c: In function 'mxcnd_resume':
+  drivers/mtd/nand/mxc_nand.c:1033: error: 'nfc_clk' undeclared (first use in this function)
+  make[3]: *** [drivers/mtd/nand/mxc_nand.o] Error 1
+  make[2]: *** [drivers/mtd/nand] Error 2
+  make[1]: *** [drivers/mtd] Error 2
+  make: *** [drivers] Error 2
 
-Simon Polette
-ADENEO
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Linux MTD list <linux-mtd@lists.infradead.org>
+---
+ drivers/mtd/nand/mxc_nand.c |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
 
-2009/5/7 Artem Bityutskiy <dedekind@infradead.org>:
-> On Thu, 2009-05-07 at 08:22 +0300, Artem Bityutskiy wrote:
->> On Wed, 2009-05-06 at 09:26 +0200, simon polette wrote:
->> > I'm trying to improve boot time on a at91sam9261ek board. I boot on
->> > nand flash with ubifs. It take about 400ms to load ubi and ubifs.
->> > Do you know if fastboot technology, which consist in loading drivers
->> > asynchronously, is conceivable with UBI ?
->> > Thanks for your help.
->>
->> Fastbood is applicable in the situation when initialization
->> is mostly about sleeping and waiting for hw. In case of UBI,
->> it reads from flash and calculates CRC. The reading from NAND
->> is usuall synchronous, so this process takes 100% of your CPU.
->>
->> One way to optimize this a little would be to use on-flash
->> BBT. Usually the nand core scans full NAND to find bad blocks.
->> With on-flash BBT this could be avoided. But probably this
->> would not give you much.
->
-> You could also play with CRC. ATM we use CRC32 for UBI headers.
-> This is rather expensive if you CPU is slow. I'd try to hack
-> UBI and see what changes if it does not calculate it. If it
-> helps, you could try to consider CRC16 or adler32 instead of
-> CRC32.
->
-> --
-> Best regards,
-> Artem Bityutskiy (=E2=C9=D4=C0=C3=CB=C9=CA =E1=D2=D4=A3=CD)
->
->
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 21fd4f1..d352d2a 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -1011,6 +1011,8 @@ static int __devexit mxcnd_remove(struct platform_device *pdev)
+ static int mxcnd_suspend(struct platform_device *pdev, pm_message_t state)
+ {
+ 	struct mtd_info *info = platform_get_drvdata(pdev);
++        struct nand_chip *nand_chip = info->priv;
++	struct mxc_nand_host *host = nand_chip->priv;
+ 	int ret = 0;
+ 
+ 	DEBUG(MTD_DEBUG_LEVEL0, "MXC_ND : NAND suspend\n");
+@@ -1018,7 +1020,7 @@ static int mxcnd_suspend(struct platform_device *pdev, pm_message_t state)
+ 		ret = info->suspend(info);
+ 
+ 	/* Disable the NFC clock */
+-	clk_disable(nfc_clk);	/* FIXME */
++	clk_disable(host->clk);	/* FIXME */
+ 
+ 	return ret;
+ }
+@@ -1026,11 +1028,13 @@ static int mxcnd_suspend(struct platform_device *pdev, pm_message_t state)
+ static int mxcnd_resume(struct platform_device *pdev)
+ {
+ 	struct mtd_info *info = platform_get_drvdata(pdev);
++        struct nand_chip *nand_chip = info->priv;
++	struct mxc_nand_host *host = nand_chip->priv;
+ 	int ret = 0;
+ 
+ 	DEBUG(MTD_DEBUG_LEVEL0, "MXC_ND : NAND resume\n");
+ 	/* Enable the NFC clock */
+-	clk_enable(nfc_clk);	/* FIXME */
++	clk_enable(host->clk);	/* FIXME */
+ 
+ 	if (info)
+ 		info->resume(info);
+-- 
+1.6.2.1
