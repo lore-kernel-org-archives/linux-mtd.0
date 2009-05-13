@@ -1,21 +1,24 @@
-Received: from buzzloop.caiaq.de ([212.112.241.133])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M4H3n-0004yl-9d
-	for linux-mtd@lists.infradead.org; Wed, 13 May 2009 16:12:05 +0000
-Date: Wed, 13 May 2009 18:11:54 +0200
-From: Daniel Mack <daniel@caiaq.de>
-To: Vladimir Barinov <vbarinov@embeddedalley.com>
-Subject: Re: [PATCH] mtd: mxc_nand: fix built breakage
-Message-ID: <20090513161154.GK32424@buzzloop.caiaq.de>
-References: <1242229410-11853-1-git-send-email-daniel@caiaq.de>
-	<4A0AF0C7.5090104@embeddedalley.com>
+Received: from wf-out-1314.google.com ([209.85.200.169])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M4Kmi-0006hz-Tt
+	for linux-mtd@lists.infradead.org; Wed, 13 May 2009 20:10:43 +0000
+Received: by wf-out-1314.google.com with SMTP id 23so515251wfg.24
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 13 May 2009 13:10:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4A0AF0C7.5090104@embeddedalley.com>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>,
-	Linux MTD list <linux-mtd@lists.infradead.org>,
-	linux-kernel@vger.kernel.org
+In-Reply-To: <72795ccb0905130803y25acae9bwde94ed86d0dbb4f2@mail.gmail.com>
+References: <72795ccb0905060026q7dcb45c0u15c35943374fcc78@mail.gmail.com>
+	<1241673722.27549.14.camel@localhost.localdomain>
+	<1241674092.27549.16.camel@localhost.localdomain>
+	<72795ccb0905130803y25acae9bwde94ed86d0dbb4f2@mail.gmail.com>
+Date: Wed, 13 May 2009 22:10:30 +0200
+Message-ID: <71cd59b00905131310u7d374ddds82da975781f2d00b@mail.gmail.com>
+Subject: Re: Load UBI faster
+From: Corentin Chary <corentin.chary@gmail.com>
+To: simon polette <spolette@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, spolette@adetelgroup.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,72 +28,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 13, 2009 at 08:09:43PM +0400, Vladimir Barinov wrote:
-> Please find the patch that I've sent some time ago. This patch should  
-> fix the issue you described.
-> http://lists.infradead.org/pipermail/linux-mtd/2009-April/025363.html
+2009/5/13 simon polette <spolette@gmail.com>:
+> My NAND is 256MB but I use only a 130MB partition for UBI/UBIFS.
+> So I implemented the on-flash BBT, that made me save 120ms which is a
+> sizeable improvement.
+> On the other hand, skipping crc calculation for header doesn't seem to
+> save much time (perhaps ~10ms so it's difficult to measure the
+> difference).
 
+You can try playing with bootchart http://www.bootchart.org/ to be
+sure that there is nothing else to change
+during the boot process.
+You can also try to get separate results to see what's taking time
+(mtd, ubi, ubifs). CONFIG_FUNCTION_TRACER and CONFIG_BOOT_TRACER may
+help you with  that.
+I'll do some test on the same hardware soon, maybe I'll be able to
+help you more.
 
-Ah, ok, thanks.
-
-Did anyone pick it up for mainline already?
-Sascha, I didn't see that one in your tree either.
-
-Daniel
-
-
-> Daniel Mack wrote:
->> The MXC NAND driver does not currently build with CONFIG_PM set.
->>
->>   drivers/mtd/nand/mxc_nand.c: In function 'mxcnd_suspend':
->>   drivers/mtd/nand/mxc_nand.c:1021: error: 'nfc_clk' undeclared (first use in this function)
->>   drivers/mtd/nand/mxc_nand.c:1021: error: (Each undeclared identifier is reported only once
->>   drivers/mtd/nand/mxc_nand.c:1021: error: for each function it appears in.)
->>   drivers/mtd/nand/mxc_nand.c: In function 'mxcnd_resume':
->>   drivers/mtd/nand/mxc_nand.c:1033: error: 'nfc_clk' undeclared (first use in this function)
->>   make[3]: *** [drivers/mtd/nand/mxc_nand.o] Error 1
->>   make[2]: *** [drivers/mtd/nand] Error 2
->>   make[1]: *** [drivers/mtd] Error 2
->>   make: *** [drivers] Error 2
->>
->> Signed-off-by: Daniel Mack <daniel@caiaq.de>
->> Cc: Sascha Hauer <s.hauer@pengutronix.de>
->> Cc: Linux MTD list <linux-mtd@lists.infradead.org>
->> ---
->>  drivers/mtd/nand/mxc_nand.c |    8 ++++++--
->>  1 files changed, 6 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
->> index 21fd4f1..d352d2a 100644
->> --- a/drivers/mtd/nand/mxc_nand.c
->> +++ b/drivers/mtd/nand/mxc_nand.c
->> @@ -1011,6 +1011,8 @@ static int __devexit mxcnd_remove(struct platform_device *pdev)
->>  static int mxcnd_suspend(struct platform_device *pdev, pm_message_t state)
->>  {
->>  	struct mtd_info *info = platform_get_drvdata(pdev);
->> +        struct nand_chip *nand_chip = info->priv;
->>   +	struct mxc_nand_host *host = nand_chip->priv;
->>  	int ret = 0;
->>   	DEBUG(MTD_DEBUG_LEVEL0, "MXC_ND : NAND suspend\n");
->> @@ -1018,7 +1020,7 @@ static int mxcnd_suspend(struct platform_device *pdev, pm_message_t state)
->>  		ret = info->suspend(info);
->>   	/* Disable the NFC clock */
->> -	clk_disable(nfc_clk);	/* FIXME */
->> +	clk_disable(host->clk);	/* FIXME */
->>   	return ret;
->>  }
->> @@ -1026,11 +1028,13 @@ static int mxcnd_suspend(struct platform_device *pdev, pm_message_t state)
->>  static int mxcnd_resume(struct platform_device *pdev)
->>  {
->>  	struct mtd_info *info = platform_get_drvdata(pdev);
->> +        struct nand_chip *nand_chip = info->priv;
->> +	struct mxc_nand_host *host = nand_chip->priv;
->>  	int ret = 0;
->>   	DEBUG(MTD_DEBUG_LEVEL0, "MXC_ND : NAND resume\n");
->>  	/* Enable the NFC clock */
->> -	clk_enable(nfc_clk);	/* FIXME */
->> +	clk_enable(host->clk);	/* FIXME */
->>   	if (info)
->>  		info->resume(info);
->>   
->
+-- 
+Corentin Chary
+http://xf.iksaif.net - http://uffs.org
