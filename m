@@ -1,21 +1,23 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M4DPQ-0007Id-FA
-	for linux-mtd@lists.infradead.org; Wed, 13 May 2009 12:18:11 +0000
-Message-ID: <4A0ABA24.7080801@nokia.com>
-Date: Wed, 13 May 2009 15:16:36 +0300
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Received: from fk-out-0910.google.com ([209.85.128.186])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M4Fzy-0000FW-9s
+	for linux-mtd@lists.infradead.org; Wed, 13 May 2009 15:04:05 +0000
+Received: by fk-out-0910.google.com with SMTP id z22so324025fkz.2
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 13 May 2009 08:03:55 -0700 (PDT)
 MIME-Version: 1.0
-To: Peter Korsgaard <jacmet@sunsite.dk>
-Subject: Re: [PATCH] mtd_dataflash: unbreak erase support
-References: <1242216722-7262-1-git-send-email-jacmet@sunsite.dk>
-In-Reply-To: <1242216722-7262-1-git-send-email-jacmet@sunsite.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"David.Woodhouse@intel.com" <David.Woodhouse@intel.com>,
-	"stable@kernel.org" <stable@kernel.org>
-Reply-To: Artem.Bityutskiy@nokia.com
+In-Reply-To: <1241674092.27549.16.camel@localhost.localdomain>
+References: <72795ccb0905060026q7dcb45c0u15c35943374fcc78@mail.gmail.com>
+	<1241673722.27549.14.camel@localhost.localdomain>
+	<1241674092.27549.16.camel@localhost.localdomain>
+Date: Wed, 13 May 2009 17:03:55 +0200
+Message-ID: <72795ccb0905130803y25acae9bwde94ed86d0dbb4f2@mail.gmail.com>
+Subject: Re: Load UBI faster
+From: simon polette <spolette@gmail.com>
+To: dedekind@infradead.org
+Content-Type: text/plain; charset=KOI8-R
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, spolette@adetelgroup.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,35 +27,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ext Peter Korsgaard wrote:
-> Commit 5b7f3a50 (fix dataflash 64-bit divisions) unfortunately
-> introduced a typo. Erase addr and len were swapped in the pageaddr
-> calculation, causing the wrong sectors to get erased.
-> 
-> Please consider for 2.6.29-stable as well.
-> 
-> Signed-off-by: Peter Korsgaard <jacmet@sunsite.dk>
-> ---
->  drivers/mtd/devices/mtd_dataflash.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-> index 62dee54..43976aa 100644
-> --- a/drivers/mtd/devices/mtd_dataflash.c
-> +++ b/drivers/mtd/devices/mtd_dataflash.c
-> @@ -178,7 +178,7 @@ static int dataflash_erase(struct mtd_info *mtd, struct erase_info *instr)
->  		/* Calculate flash page address; use block erase (for speed) if
->  		 * we're at a block boundary and need to erase the whole block.
->  		 */
-> -		pageaddr = div_u64(instr->len, priv->page_size);
-> +		pageaddr = div_u64(instr->addr, priv->page_size);
->  		do_block = (pageaddr & 0x7) == 0 && instr->len >= blocksize;
->  		pageaddr = pageaddr << priv->page_offset;
+My NAND is 256MB but I use only a 130MB partition for UBI/UBIFS.
+So I implemented the on-flash BBT, that made me save 120ms which is a
+sizeable improvement.
+On the other hand, skipping crc calculation for header doesn't seem to
+save much time (perhaps ~10ms so it's difficult to measure the
+difference).
 
-Oh, sorry for that.
+Best regards,
 
-Acked-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Simon Polette
+ADENEO
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+2009/5/7 Artem Bityutskiy <dedekind@infradead.org>:
+> On Thu, 2009-05-07 at 08:22 +0300, Artem Bityutskiy wrote:
+>> On Wed, 2009-05-06 at 09:26 +0200, simon polette wrote:
+>> > I'm trying to improve boot time on a at91sam9261ek board. I boot on
+>> > nand flash with ubifs. It take about 400ms to load ubi and ubifs.
+>> > Do you know if fastboot technology, which consist in loading drivers
+>> > asynchronously, is conceivable with UBI ?
+>> > Thanks for your help.
+>>
+>> Fastbood is applicable in the situation when initialization
+>> is mostly about sleeping and waiting for hw. In case of UBI,
+>> it reads from flash and calculates CRC. The reading from NAND
+>> is usuall synchronous, so this process takes 100% of your CPU.
+>>
+>> One way to optimize this a little would be to use on-flash
+>> BBT. Usually the nand core scans full NAND to find bad blocks.
+>> With on-flash BBT this could be avoided. But probably this
+>> would not give you much.
+>
+> You could also play with CRC. ATM we use CRC32 for UBI headers.
+> This is rather expensive if you CPU is slow. I'd try to hack
+> UBI and see what changes if it does not calculate it. If it
+> helps, you could try to consider CRC16 or adler32 instead of
+> CRC32.
+>
+> --
+> Best regards,
+> Artem Bityutskiy (=E2=C9=D4=C0=C3=CB=C9=CA =E1=D2=D4=A3=CD)
+>
+>
