@@ -1,24 +1,24 @@
-Received: from wf-out-1314.google.com ([209.85.200.169])
+Received: from smtp4-g21.free.fr ([212.27.42.4])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M4Kmi-0006hz-Tt
-	for linux-mtd@lists.infradead.org; Wed, 13 May 2009 20:10:43 +0000
-Received: by wf-out-1314.google.com with SMTP id 23so515251wfg.24
+	id 1M4M2B-0002vW-Ea
+	for linux-mtd@lists.infradead.org; Wed, 13 May 2009 21:30:49 +0000
+Received: from smtp4-g21.free.fr (localhost [127.0.0.1])
+	by smtp4-g21.free.fr (Postfix) with ESMTP id 60A8B4C80DC
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 13 May 2009 13:10:30 -0700 (PDT)
+	Wed, 13 May 2009 23:30:33 +0200 (CEST)
+Received: from [192.168.0.10] (bdy93-1-82-67-223-79.fbx.proxad.net
+	[82.67.223.79])
+	by smtp4-g21.free.fr (Postfix) with ESMTP id 2BF314C80D7
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 13 May 2009 23:30:31 +0200 (CEST)
+Message-ID: <4A0B3BF6.90602@gcasse.net>
+Date: Wed, 13 May 2009 23:30:30 +0200
+From: Gilles Casse <list@gcasse.net>
 MIME-Version: 1.0
-In-Reply-To: <72795ccb0905130803y25acae9bwde94ed86d0dbb4f2@mail.gmail.com>
-References: <72795ccb0905060026q7dcb45c0u15c35943374fcc78@mail.gmail.com>
-	<1241673722.27549.14.camel@localhost.localdomain>
-	<1241674092.27549.16.camel@localhost.localdomain>
-	<72795ccb0905130803y25acae9bwde94ed86d0dbb4f2@mail.gmail.com>
-Date: Wed, 13 May 2009 22:10:30 +0200
-Message-ID: <71cd59b00905131310u7d374ddds82da975781f2d00b@mail.gmail.com>
-Subject: Re: Load UBI faster
-From: Corentin Chary <corentin.chary@gmail.com>
-To: simon polette <spolette@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
+To: linux-mtd@lists.infradead.org
+Subject: Erroneous read from flash
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, spolette@adetelgroup.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,23 +28,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2009/5/13 simon polette <spolette@gmail.com>:
-> My NAND is 256MB but I use only a 130MB partition for UBI/UBIFS.
-> So I implemented the on-flash BBT, that made me save 120ms which is a
-> sizeable improvement.
-> On the other hand, skipping crc calculation for header doesn't seem to
-> save much time (perhaps ~10ms so it's difficult to measure the
-> difference).
+Hello,
 
-You can try playing with bootchart http://www.bootchart.org/ to be
-sure that there is nothing else to change
-during the boot process.
-You can also try to get separate results to see what's taking time
-(mtd, ubi, ubifs). CONFIG_FUNCTION_TRACER and CONFIG_BOOT_TRACER may
-help you with  that.
-I'll do some test on the same hardware soon, maybe I'll be able to
-help you more.
+A reproductible oops appears, here, in jffs2 (file.c, line 251),  with 
+such a message :
+Node CRC 2e362e33 != calculated CRC 36bb7f4c for node at 000342dc
 
--- 
-Corentin Chary
-http://xf.iksaif.net - http://uffs.org
+The traces show that the CRC error is due to an erroneous read of a page 
+in an Atmel dataflash.
+
+Have you advices please for helping to better track such an issue?
+
+More details:
+- linux 2.6.28-9
+- ARM 920T
+- Atmel AT45DB642D dataflash
+
+The issue happens relatively rarely if the gc thread has been stopped, and
+the SPI bus is at 10Mhz (occurs e.g. after 4000 writes).
+
+The issue happens more frequently if gcd is present, and using a SPI
+bus at 6Mhz (occurs at the very first tries).
+
+Best regards,
+Gilles
