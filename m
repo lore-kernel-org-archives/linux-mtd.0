@@ -1,17 +1,14 @@
-Received: from rv-out-0708.google.com ([209.85.198.241])
+Received: from wp110.webpack.hosteurope.de ([80.237.132.117])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M4Be9-00074O-V1
-	for linux-mtd@lists.infradead.org; Wed, 13 May 2009 10:25:16 +0000
-Received: by rv-out-0708.google.com with SMTP id c5so408295rvf.42
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 13 May 2009 03:25:07 -0700 (PDT)
+	id 1M4DCg-0000K8-NY
+	for linux-mtd@lists.infradead.org; Wed, 13 May 2009 12:05:01 +0000
+Message-ID: <4A0A1F38.6000500@sp-ss.de>
+Date: Wed, 13 May 2009 03:15:36 +0200
+From: Tobias Simon <tobias.simon@sp-ss.de>
 MIME-Version: 1.0
-Date: Wed, 13 May 2009 18:25:07 +0800
-Message-ID: <50a974c70905130325n76826b89o5054d5c7473d63e1@mail.gmail.com>
-Subject: map mtd partitions address for TWO NOR flash
-From: "H. Johnny" <johnny.hung543@gmail.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Subject: mtd_dataflash bug
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,46 +19,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi guys!
-    I have a mpc8313erbd (powerpc arch) demo board. There are one NOR
-flash and one NAND flash on board.
-The drivers/mtd/map/mpc8313erbd.c do address map for NOR flash. I want
-to add another NOR flash and take off the NAND flash.
-So there are two NOR flash on board.
-    I am trying to do address map for two NOR flash but I don't know
-how to. Some part of drivers/mtd/map/mpc8313erbd.c code is as
-following:
-    Do I need to add another mtd_partition structure ? How to assign
-the partition_info to specific NOR flash (coz the two NOR flash are
-the same)
-BTW, I know u-boot can pass the mtdparts parameters to linux kernel.
-Which mtd partition info linux kernel will use, u-boot mtdparts info
-or static address map code ?
-    thanks, regards.
+Hello List,
 
-static struct mtd_partition partition_info[]={
-    {
-        .name        = "U-Boot",
-        .offset     = 0,
-        .size        = 0x100000,
-        .mask_flags = MTD_WRITEABLE
-    },
-    {
-        .name        = "Kernel",
-        .offset        = MTDPART_OFS_APPEND,
-        .size        = 0x200000
-    },
-    {
-        .name        = "JFFS2",
-        .offset        = MTDPART_OFS_APPEND,
-        .size        = 0x400000,
-        },
-    {
-        .name        = "dtb",
-        .offset        = MTDPART_OFS_APPEND,
-        .size        = 0x100000,
-    },
-};
+i have figured out a bug in mtd_datflash.c of kernel 2.6.29, which 
+causes my ARM bootloader to be killed with every "erase" operation on 
+arbitrary adresses. The fix is:
 
--- 
-H. Johnny
+--- linux-2.6.29.2-a/drivers/mtd/devices/mtd_dataflash.c  2009-05-13 
+03:11:16.000000000 +0200
++++ linux-2.6.29.2-b/drivers/mtd/devices/mtd_dataflash.c     2009-05-13 
+03:13:30.000000000 +0200
+@@ -184,7 +184,7 @@
+                /* Calculate flash page address; use block erase (for 
+speed) if
+                 * we're at a block boundary and need to erase the whole 
+block.
+                 */
+-               pageaddr = div_u64(instr->len, priv->page_size);
++               pageaddr = div_u64(instr->addr, priv->page_size);
+                do_block = (pageaddr & 0x7) == 0 && instr->len >= blocksize;
+                pageaddr = pageaddr << priv->page_offset;
+
+Regards,
+Tobias
