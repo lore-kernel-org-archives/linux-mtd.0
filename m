@@ -1,24 +1,21 @@
-Received: from smtp4-g21.free.fr ([212.27.42.4])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M4M2B-0002vW-Ea
-	for linux-mtd@lists.infradead.org; Wed, 13 May 2009 21:30:49 +0000
-Received: from smtp4-g21.free.fr (localhost [127.0.0.1])
-	by smtp4-g21.free.fr (Postfix) with ESMTP id 60A8B4C80DC
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 13 May 2009 23:30:33 +0200 (CEST)
-Received: from [192.168.0.10] (bdy93-1-82-67-223-79.fbx.proxad.net
-	[82.67.223.79])
-	by smtp4-g21.free.fr (Postfix) with ESMTP id 2BF314C80D7
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 13 May 2009 23:30:31 +0200 (CEST)
-Message-ID: <4A0B3BF6.90602@gcasse.net>
-Date: Wed, 13 May 2009 23:30:30 +0200
-From: Gilles Casse <list@gcasse.net>
+Received: from n20.bullet.mail.mud.yahoo.com ([68.142.206.147])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M4SmS-0008Lw-EX
+	for linux-mtd@lists.infradead.org; Thu, 14 May 2009 04:42:58 +0000
+From: David Brownell <david-b@pacbell.net>
+To: Troy Kisky <troy.kisky@boundarydevices.com>
+Subject: Re: [PATCH 1/5] mtd: nand: move layout structure into nand_ecc_ctrl
+Date: Wed, 13 May 2009 21:42:29 -0700
+References: <>
+	<1242270008-1552-1-git-send-email-troy.kisky@boundarydevices.com>
+In-Reply-To: <1242270008-1552-1-git-send-email-troy.kisky@boundarydevices.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Erroneous read from flash
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200905132142.29697.david-b@pacbell.net>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,27 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Wednesday 13 May 2009, Troy Kisky wrote:
+> +static const struct nand_ecclayout atmel_oobinfo_large __initdata = {
 
-A reproductible oops appears, here, in jffs2 (file.c, line 251),  with 
-such a message :
-Node CRC 2e362e33 != calculated CRC 36bb7f4c for node at 000342dc
+Doesn't this give you section warnings?  __initconst is what
+I usually end up needing in such cases...
 
-The traces show that the CRC error is due to an erroneous read of a page 
-in an Atmel dataflash.
+Also, for the davinci_nand driver this is going to need to
+switch away from the ecclayout struct in the driver-private
+area ... that's in a patch that (still) hasn't merged into
+the MTD tree, but was stored there for the same reason that
+you're submitting this patch:  the original code, using the
+annoying ECC_HW_SYNDROME support, computed the layout.
 
-Have you advices please for helping to better track such an issue?
-
-More details:
-- linux 2.6.28-9
-- ARM 920T
-- Atmel AT45DB642D dataflash
-
-The issue happens relatively rarely if the gc thread has been stopped, and
-the SPI bus is at 10Mhz (occurs e.g. after 4000 writes).
-
-The issue happens more frequently if gcd is present, and using a SPI
-bus at 6Mhz (occurs at the very first tries).
-
-Best regards,
-Gilles
+- Dave
