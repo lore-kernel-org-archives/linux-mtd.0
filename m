@@ -1,24 +1,19 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M4VdG-0002E2-WE
-	for linux-mtd@lists.infradead.org; Thu, 14 May 2009 07:45:47 +0000
-Date: Thu, 14 May 2009 09:45:29 +0200
+	id 1M4Vkd-0007Fv-1Y
+	for linux-mtd@lists.infradead.org; Thu, 14 May 2009 07:53:13 +0000
+Date: Thu, 14 May 2009 09:53:09 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Artem Bityutskiy <dedekind@infradead.org>
-Subject: Re: [PATCH] mtd: mxc_nand: fix built breakage
-Message-ID: <20090514074529.GX29278@pengutronix.de>
-References: <1242229410-11853-1-git-send-email-daniel@caiaq.de>
-	<4A0AF0C7.5090104@embeddedalley.com>
-	<20090513161154.GK32424@buzzloop.caiaq.de>
-	<20090514065611.GU29278@pengutronix.de>
-	<1242284479.27996.196.camel@localhost.localdomain>
+To: Magnus Lilja <lilja.magnus@gmail.com>
+Subject: Re: [PATCH] MXC_NAND: Add correct dev_id parameter to free_irq()
+	calls.
+Message-ID: <20090514075309.GZ29278@pengutronix.de>
+References: <17fbadcd7f353348afa4c56f92e0423c5b9708df.1241812369.git.lilja.magnus@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1242284479.27996.196.camel@localhost.localdomain>
-Cc: Vladimir Barinov <vbarinov@embeddedalley.com>,
-	Linux MTD list <linux-mtd@lists.infradead.org>,
-	linux-kernel@vger.kernel.org, Daniel Mack <daniel@caiaq.de>
+In-Reply-To: <17fbadcd7f353348afa4c56f92e0423c5b9708df.1241812369.git.lilja.magnus@gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,35 +23,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 14, 2009 at 10:01:19AM +0300, Artem Bityutskiy wrote:
-> On Thu, 2009-05-14 at 08:56 +0200, Sascha Hauer wrote:
-> > On Wed, May 13, 2009 at 06:11:54PM +0200, Daniel Mack wrote:
-> > > On Wed, May 13, 2009 at 08:09:43PM +0400, Vladimir Barinov wrote:
-> > > > Please find the patch that I've sent some time ago. This patch should  
-> > > > fix the issue you described.
-> > > > http://lists.infradead.org/pipermail/linux-mtd/2009-April/025363.html
-> > > 
-> > > 
-> > > Ah, ok, thanks.
-> > > 
-> > > Did anyone pick it up for mainline already?
-> > > Sascha, I didn't see that one in your tree either.
-> > 
-> > It seems to be pure luck when the patches on the mtd list get picked up.
-> > Most of the time I do not even a reaction from the list or David. I
-> > wonder if someone will beat me up when I take the i.MX nand patches via
-> > my arm tree.
-> 
-> I've put Vladimir's patch to my l2-mtd-2.6.git tree:
-> http://git.infradead.org/users/dedekind/l2-mtd-2.6.git
-> 
-> which means I'll be pinging David about pulling it. This is all
-> I can do for you, unfortunately.
+Artem,
 
-Thanks a lot. I really prefer driver patches going over the according
-subsystem tree rather then leaking them in from the architecture tree.
+Can you pickup this one aswell?
 
 Sascha
+
+On Fri, May 08, 2009 at 09:57:47PM +0200, Magnus Lilja wrote:
+> Make sure to pass the same dev_id data to free_irq() that was
+> used when calling request_irq(), otherwise we get a warning about
+> freeing an already free IRQ.
+> 
+> Signed-off-by: Magnus Lilja <lilja.magnus@gmail.com>
+> ---
+> 
+> For -rc perhaps?
+> 
+> Got the following warning prior to fixing this:
+> WARNING: at /opt/git/linux-2.6/kernel/irq/manage.c:736 __free_irq+0x88/
+> 0x1ac()
+> Trying to free already-free IRQ 33
+> Modules linked in: mxc_nand(-)
+> [<c0025660>] (unwind_backtrace+0x0/0xd4) from [<c0036860>] (warn_slowpath+0x68/0
+> x8c)
+> [<c0036860>] (warn_slowpath+0x68/0x8c) from [<c0060324>] (__free_irq+0x88/0x1ac)
+> [<c0060324>] (__free_irq+0x88/0x1ac) from [<c0060454>] (free_irq+0xc/0x18)
+> [<c0060454>] (free_irq+0xc/0x18) from [<bf000c24>] (mxcnd_remove+0x30/0x48 [mxc_
+> nand])
+> unwind: Index not found bf000c24
+> 
+>  drivers/mtd/nand/mxc_nand.c |    4 ++--
+>  1 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+> index f3548d0..8a93913 100644
+> --- a/drivers/mtd/nand/mxc_nand.c
+> +++ b/drivers/mtd/nand/mxc_nand.c
+> @@ -981,7 +981,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+>  	return 0;
+>  
+>  escan:
+> -	free_irq(host->irq, NULL);
+> +	free_irq(host->irq, host);
+>  eirq:
+>  	iounmap(host->regs);
+>  eres:
+> @@ -1001,7 +1001,7 @@ static int __devexit mxcnd_remove(struct platform_device *pdev)
+>  	platform_set_drvdata(pdev, NULL);
+>  
+>  	nand_release(&host->mtd);
+> -	free_irq(host->irq, NULL);
+> +	free_irq(host->irq, host);
+>  	iounmap(host->regs);
+>  	kfree(host);
+>  
+> -- 
+> 1.5.6
+> 
+> 
 
 -- 
 Pengutronix e.K.                           |                             |
