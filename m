@@ -1,21 +1,20 @@
-Received: from relay.atmel.no ([80.232.32.139])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M4WDq-00077f-Bq
-	for linux-mtd@lists.infradead.org; Thu, 14 May 2009 08:23:29 +0000
-Date: Thu, 14 May 2009 10:23:11 +0200
-From: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
-To: David Brownell <david-b@pacbell.net>
-Subject: Re: [PATCH 3/5] mtd: nand: atmel: use default ecc layout
-Message-ID: <20090514102311.56495bb0@hskinnemoen-d830>
-In-Reply-To: <200905132212.11923.david-b@pacbell.net>
-References: <1242270008-1552-2-git-send-email-troy.kisky@boundarydevices.com>
-	<1242270008-1552-3-git-send-email-troy.kisky@boundarydevices.com>
-	<200905132212.11923.david-b@pacbell.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from mail-gx0-f158.google.com ([209.85.217.158])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M4WJ2-0004sQ-Li
+	for linux-mtd@lists.infradead.org; Thu, 14 May 2009 08:28:51 +0000
+Received: by gxk2 with SMTP id 2so2224091gxk.3
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 14 May 2009 01:28:43 -0700 (PDT)
+MIME-Version: 1.0
+Sender: mcjin02@gmail.com
+Date: Thu, 14 May 2009 17:28:42 +0900
+Message-ID: <280b69ac0905140128u135f8b2aua50114faebb593e0@mail.gmail.com>
+Subject: oobavail size calculation error in nand_base.c
+From: Jinyoung Park <parkjy@mtekvision.com>
+To: tglx@linutronix.de
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: Nicolas Ferre <nicolas.ferre@rfo.atmel.com>, linux-mtd@lists.infradead.org,
-	Troy Kisky <troy.kisky@boundarydevices.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,16 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Brownell wrote:
-> On Wednesday 13 May 2009, Troy Kisky wrote:
-> > atmel should not need to override default  
-> 
-> Doesn't this break compatibility with every system now
-> in the field?  As in, "install a new kernel, trash all
-> the data now in your NAND flash"??
+Hello.
 
-I also suspect it will break hardware ECC. The ECC controller is a bit
-picky about the OOB layout, which is why the defaults were overriden in
-the first place.
+I found error in nand_base.c.
+In nand_scan_tail() function, oobavail size calculation result is
+wrong as follow circumstances.
+    - Define nand_ecclayout using full oobfree array like below.
+	.oobfree = { {2, 6}, {11, 2}, {16, 8}, {27, 2}, {32, 8}, {43, 2},{48,
+8}, {59, 2} }
+    - Using ARM EABI cross compiler when kernel compile also enable
+"Use the ARM EABI to compile the kernl" feature in kernel menuconfig.
+      I using ARM EABI compiler that codesourcery release arm-2008q3-51.
 
-Haavard
+In this case, right oobavail size is 38 but result is too much
+value(e.g. 2703572308...). It's random.
+I think sometimes happen that after beyond oobfree array(oobfree[8])
+is not 0 when ARM EABI compilation.
+Below codes are my modified code. Please check...
+
+Thanks.
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 3d7ed43..abb5998 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2756,9 +2756,12 @@ int nand_scan_tail(struct mtd_info *mtd)
+	* the out of band area
+	*/
+	chip->ecc.layout->oobavail = 0;
+-	for (i = 0; chip->ecc.layout->oobfree[i].length; i++)
++	for (i = 0; i < MTD_MAX_OOBFREE_ENTRIES; i++) {
++	if (chip->ecc.layout->oobfree[i].length == 0)
++		break;
+	chip->ecc.layout->oobavail +=
+		chip->ecc.layout->oobfree[i].length;
++	}
+	mtd->oobavail = chip->ecc.layout->oobavail;
