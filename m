@@ -1,21 +1,20 @@
-Received: from smtp128.sbc.mail.sp1.yahoo.com ([69.147.65.187])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M4fLm-0000JK-Vy
-	for linux-mtd@lists.infradead.org; Thu, 14 May 2009 18:08:23 +0000
-From: David Brownell <david-b@pacbell.net>
-To: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: Re: [PATCH 1/5] mtd: nand: move layout structure into nand_ecc_ctrl
-Date: Thu, 14 May 2009 11:08:07 -0700
-References: <> <200905132142.29697.david-b@pacbell.net>
-	<4A0C5A8F.10908@boundarydevices.com>
-In-Reply-To: <4A0C5A8F.10908@boundarydevices.com>
+Received: from smtpauth03.csee.onr.siteprotect.com ([64.26.60.137])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M4fMb-0000Qm-8i
+	for linux-mtd@lists.infradead.org; Thu, 14 May 2009 18:09:07 +0000
+Message-ID: <4A0C5E34.8080100@boundarydevices.com>
+Date: Thu, 14 May 2009 11:08:52 -0700
+From: Troy Kisky <troy.kisky@boundarydevices.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+To: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
+Subject: Re: [PATCH 3/5] mtd: nand: atmel: use default ecc layout
+References: <1242270008-1552-2-git-send-email-troy.kisky@boundarydevices.com>	<1242270008-1552-3-git-send-email-troy.kisky@boundarydevices.com>	<200905132212.11923.david-b@pacbell.net>
+	<20090514102311.56495bb0@hskinnemoen-d830>
+In-Reply-To: <20090514102311.56495bb0@hskinnemoen-d830>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200905141108.08113.david-b@pacbell.net>
-Cc: linux-mtd@lists.infradead.org
+Cc: David Brownell <david-b@pacbell.net>,
+	Nicolas Ferre <nicolas.ferre@rfo.atmel.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,45 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 14 May 2009, Troy Kisky wrote:
+Haavard Skinnemoen wrote:
 > David Brownell wrote:
-> > On Wednesday 13 May 2009, Troy Kisky wrote:
-> >> +static const struct nand_ecclayout atmel_oobinfo_large __initdata = {
-> > 
-> > Doesn't this give you section warnings?  __initconst is what
-> > I usually end up needing in such cases...
+>> On Wednesday 13 May 2009, Troy Kisky wrote:
+>>> atmel should not need to override default  
+>> Doesn't this break compatibility with every system now
+>> in the field?  As in, "install a new kernel, trash all
+>> the data now in your NAND flash"??
 > 
-> Only if the same file has a non const __initdata variable.
-> Is __initconst the preferred method ?
-
-Yes; it will always work, but __initdata won't always work.
-
-
-> > Also, for the davinci_nand driver this is going to need to
-> > switch away from the ecclayout struct in the driver-private
-> > area ... that's in a patch that (still) hasn't merged into
-> > the MTD tree, but was stored there for the same reason that
-> > you're submitting this patch:  the original code, using the
-> > annoying ECC_HW_SYNDROME support, computed the layout.
-> > 
-> > - Dave
+> I also suspect it will break hardware ECC. The ECC controller is a bit
+> picky about the OOB layout, which is why the defaults were overriden in
+> the first place.
 > 
-> Is ECC_HW_SYNDROME only needed because the eccpos array is too small??
-
-No; it uses different algorithms to read/write, which
-completely ignore ecclayout.  AFAICT ECC_HW_SYNDROME is
-largely unused/untested except for single-chunk mode.
-
-The size issue is that a 4-bit ECC code producing 10 bytes
-of ECC per 512 bytes of data needs 80 bytes with 4K pages,
-which obviously can't fit into the 64 bytes in ecclayout.
-
-- Dave
-
-
-> I'll have to review that prepad  and ECC_HW_SYNDROME
-> Thanks
+> Haavard
 > 
-> Troy
-> 
-> 
+Thanks for responding.
+
+
+This patch by itself would break ECCs. But with the 1st two patches
+it shouldn't. I would love to have that assertion tested however.
+
+Troy
