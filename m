@@ -1,20 +1,21 @@
-Received: from smtpauth03.csee.onr.siteprotect.com ([64.26.60.137])
+Received: from smtpauth00.csee.onr.siteprotect.com ([64.26.60.144])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M4fMb-0000Qm-8i
-	for linux-mtd@lists.infradead.org; Thu, 14 May 2009 18:09:07 +0000
-Message-ID: <4A0C5E34.8080100@boundarydevices.com>
-Date: Thu, 14 May 2009 11:08:52 -0700
+	id 1M4iKH-0004li-6h
+	for linux-mtd@lists.infradead.org; Thu, 14 May 2009 21:18:56 +0000
+Message-ID: <4A0C8AAE.1040601@boundarydevices.com>
+Date: Thu, 14 May 2009 14:18:38 -0700
 From: Troy Kisky <troy.kisky@boundarydevices.com>
 MIME-Version: 1.0
-To: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
-Subject: Re: [PATCH 3/5] mtd: nand: atmel: use default ecc layout
-References: <1242270008-1552-2-git-send-email-troy.kisky@boundarydevices.com>	<1242270008-1552-3-git-send-email-troy.kisky@boundarydevices.com>	<200905132212.11923.david-b@pacbell.net>
-	<20090514102311.56495bb0@hskinnemoen-d830>
-In-Reply-To: <20090514102311.56495bb0@hskinnemoen-d830>
+To: David Brownell <david-b@pacbell.net>
+Subject: Re: [PATCH 4/5] mtd: nand: cafe_nand: use default ecc layout
+References: <>
+	<1242270008-1552-3-git-send-email-troy.kisky@boundarydevices.com>
+	<1242270008-1552-4-git-send-email-troy.kisky@boundarydevices.com>
+	<200905132218.28687.david-b@pacbell.net>
+In-Reply-To: <200905132218.28687.david-b@pacbell.net>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: David Brownell <david-b@pacbell.net>,
-	Nicolas Ferre <nicolas.ferre@rfo.atmel.com>, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Haavard Skinnemoen wrote:
-> David Brownell wrote:
->> On Wednesday 13 May 2009, Troy Kisky wrote:
->>> atmel should not need to override default  
->> Doesn't this break compatibility with every system now
->> in the field?  As in, "install a new kernel, trash all
->> the data now in your NAND flash"??
+David Brownell wrote:
+> On Wednesday 13 May 2009, Troy Kisky wrote:
+>> The bad block marker is at 14, but oobfree also
+>> starts at 14. This doesn't make sense to me,
 > 
-> I also suspect it will break hardware ECC. The ECC controller is a bit
-> picky about the OOB layout, which is why the defaults were overriden in
-> the first place.
+> On-chip bad-block tables stick the "Bbt0" (etc)
+> tags into the OOB data area, and don't need to
+> share that area with anything else.  It's OK.
 > 
-> Haavard
 > 
-Thanks for responding.
+>> so I don't know if this patch is good or not.
+> 
+> Isn't this one of the drivers using NAND_ECC_HW_SYNDROME?
+> So that the ecclayout is fully defined by prepad==0?
+> 
+> This is a case where you *could* safely generate the
+> current ecclayout structs using simple rules.
+> 
+> 
 
-
-This patch by itself would break ECCs. But with the 1st two patches
-it shouldn't. I would love to have that assertion tested however.
+Actually, cafe_nand overrides most everything and doesn't use
+prepad or postpad or ecc.layout. But I think it still relies
+on ecc.layout.oobfree to setup chip->oob_poi. So, I'm no closer
+to understanding why oobfree and bad block marker start at 14.
 
 Troy
