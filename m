@@ -1,22 +1,22 @@
-Received: from n26.bullet.mail.mud.yahoo.com ([68.142.206.221])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M4TKx-0006zX-U3
-	for linux-mtd@lists.infradead.org; Thu, 14 May 2009 05:18:50 +0000
-From: David Brownell <david-b@pacbell.net>
-To: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: Re: [PATCH 4/5] mtd: nand: cafe_nand: use default ecc layout
-Date: Wed, 13 May 2009 22:18:28 -0700
-References: <>
-	<1242270008-1552-3-git-send-email-troy.kisky@boundarydevices.com>
-	<1242270008-1552-4-git-send-email-troy.kisky@boundarydevices.com>
-In-Reply-To: <1242270008-1552-4-git-send-email-troy.kisky@boundarydevices.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1M4Uri-0000fl-LW
+	for linux-mtd@lists.infradead.org; Thu, 14 May 2009 06:56:41 +0000
+Date: Thu, 14 May 2009 08:56:11 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Daniel Mack <daniel@caiaq.de>
+Subject: Re: [PATCH] mtd: mxc_nand: fix built breakage
+Message-ID: <20090514065611.GU29278@pengutronix.de>
+References: <1242229410-11853-1-git-send-email-daniel@caiaq.de>
+	<4A0AF0C7.5090104@embeddedalley.com>
+	<20090513161154.GK32424@buzzloop.caiaq.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200905132218.28687.david-b@pacbell.net>
-Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <20090513161154.GK32424@buzzloop.caiaq.de>
+Cc: Vladimir Barinov <vbarinov@embeddedalley.com>,
+	Linux MTD list <linux-mtd@lists.infradead.org>,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,74 +26,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 13 May 2009, Troy Kisky wrote:
-> The bad block marker is at 14, but oobfree also
-> starts at 14. This doesn't make sense to me,
-
-On-chip bad-block tables stick the "Bbt0" (etc)
-tags into the OOB data area, and don't need to
-share that area with anything else.  It's OK.
-
-
-> so I don't know if this patch is good or not.
-
-Isn't this one of the drivers using NAND_ECC_HW_SYNDROME?
-So that the ecclayout is fully defined by prepad==0?
-
-This is a case where you *could* safely generate the
-current ecclayout structs using simple rules.
-
-
-> Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
-> ---
->  drivers/mtd/nand/cafe_nand.c |   16 ----------------
->  1 files changed, 0 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
-> index c6c7f51..6048bd9 100644
-> --- a/drivers/mtd/nand/cafe_nand.c
-> +++ b/drivers/mtd/nand/cafe_nand.c
-> @@ -456,12 +456,6 @@ static int cafe_nand_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->  	return 0;
->  }
->  
-> -static const struct nand_ecclayout cafe_oobinfo_2048 __devinitdata = {
-> -	.eccbytes = 14,
-> -	.eccpos = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13},
-> -	.oobfree = {{14, 50}}
-> -};
-> -
->  /* Ick. The BBT code really ought to be able to work this bit out
->     for itself from the above, at least for the 2KiB case */
->  static uint8_t cafe_bbt_pattern_2048[] = { 'B', 'b', 't', '0' };
-> @@ -491,12 +485,6 @@ static struct nand_bbt_descr cafe_bbt_mirror_descr_2048 = {
->  	.pattern = cafe_mirror_pattern_2048
->  };
->  
-> -static const struct nand_ecclayout cafe_oobinfo_512 __devinitdata = {
-> -	.eccbytes = 14,
-> -	.eccpos = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13},
-> -	.oobfree = {{14, 2}}
-> -};
-> -
->  static struct nand_bbt_descr cafe_bbt_main_descr_512 = {
->  	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
->  		| NAND_BBT_2BIT | NAND_BBT_VERSION,
-> @@ -772,13 +760,9 @@ static int __devinit cafe_nand_probe(struct pci_dev *pdev,
->  
->  	/* Set up ECC according to the type of chip we found */
->  	if (mtd->writesize == 2048) {
-> -		memcpy(&cafe->nand.ecc.layout, &cafe_oobinfo_2048,
-> -				sizeof(cafe->nand.ecc.layout));
->  		cafe->nand.bbt_td = &cafe_bbt_main_descr_2048;
->  		cafe->nand.bbt_md = &cafe_bbt_mirror_descr_2048;
->  	} else if (mtd->writesize == 512) {
-> -		memcpy(&cafe->nand.ecc.layout, &cafe_oobinfo_512,
-> -				sizeof(cafe->nand.ecc.layout));
->  		cafe->nand.bbt_td = &cafe_bbt_main_descr_512;
->  		cafe->nand.bbt_md = &cafe_bbt_mirror_descr_512;
->  	} else {
-> -- 
-> 1.5.4.3
+On Wed, May 13, 2009 at 06:11:54PM +0200, Daniel Mack wrote:
+> On Wed, May 13, 2009 at 08:09:43PM +0400, Vladimir Barinov wrote:
+> > Please find the patch that I've sent some time ago. This patch should  
+> > fix the issue you described.
+> > http://lists.infradead.org/pipermail/linux-mtd/2009-April/025363.html
 > 
 > 
+> Ah, ok, thanks.
+> 
+> Did anyone pick it up for mainline already?
+> Sascha, I didn't see that one in your tree either.
+
+It seems to be pure luck when the patches on the mtd list get picked up.
+Most of the time I do not even a reaction from the list or David. I
+wonder if someone will beat me up when I take the i.MX nand patches via
+my arm tree.
+
+Sascha
+
+> 
+> Daniel
+> 
+> 
+> > Daniel Mack wrote:
+> >> The MXC NAND driver does not currently build with CONFIG_PM set.
+> >>
+> >>   drivers/mtd/nand/mxc_nand.c: In function 'mxcnd_suspend':
+> >>   drivers/mtd/nand/mxc_nand.c:1021: error: 'nfc_clk' undeclared (first use in this function)
+> >>   drivers/mtd/nand/mxc_nand.c:1021: error: (Each undeclared identifier is reported only once
+> >>   drivers/mtd/nand/mxc_nand.c:1021: error: for each function it appears in.)
+> >>   drivers/mtd/nand/mxc_nand.c: In function 'mxcnd_resume':
+> >>   drivers/mtd/nand/mxc_nand.c:1033: error: 'nfc_clk' undeclared (first use in this function)
+> >>   make[3]: *** [drivers/mtd/nand/mxc_nand.o] Error 1
+> >>   make[2]: *** [drivers/mtd/nand] Error 2
+> >>   make[1]: *** [drivers/mtd] Error 2
+> >>   make: *** [drivers] Error 2
+> >>
+> >> Signed-off-by: Daniel Mack <daniel@caiaq.de>
+> >> Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> >> Cc: Linux MTD list <linux-mtd@lists.infradead.org>
+> >> ---
+> >>  drivers/mtd/nand/mxc_nand.c |    8 ++++++--
+> >>  1 files changed, 6 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+> >> index 21fd4f1..d352d2a 100644
+> >> --- a/drivers/mtd/nand/mxc_nand.c
+> >> +++ b/drivers/mtd/nand/mxc_nand.c
+> >> @@ -1011,6 +1011,8 @@ static int __devexit mxcnd_remove(struct platform_device *pdev)
+> >>  static int mxcnd_suspend(struct platform_device *pdev, pm_message_t state)
+> >>  {
+> >>  	struct mtd_info *info = platform_get_drvdata(pdev);
+> >> +        struct nand_chip *nand_chip = info->priv;
+> >>   +	struct mxc_nand_host *host = nand_chip->priv;
+> >>  	int ret = 0;
+> >>   	DEBUG(MTD_DEBUG_LEVEL0, "MXC_ND : NAND suspend\n");
+> >> @@ -1018,7 +1020,7 @@ static int mxcnd_suspend(struct platform_device *pdev, pm_message_t state)
+> >>  		ret = info->suspend(info);
+> >>   	/* Disable the NFC clock */
+> >> -	clk_disable(nfc_clk);	/* FIXME */
+> >> +	clk_disable(host->clk);	/* FIXME */
+> >>   	return ret;
+> >>  }
+> >> @@ -1026,11 +1028,13 @@ static int mxcnd_suspend(struct platform_device *pdev, pm_message_t state)
+> >>  static int mxcnd_resume(struct platform_device *pdev)
+> >>  {
+> >>  	struct mtd_info *info = platform_get_drvdata(pdev);
+> >> +        struct nand_chip *nand_chip = info->priv;
+> >> +	struct mxc_nand_host *host = nand_chip->priv;
+> >>  	int ret = 0;
+> >>   	DEBUG(MTD_DEBUG_LEVEL0, "MXC_ND : NAND resume\n");
+> >>  	/* Enable the NFC clock */
+> >> -	clk_enable(nfc_clk);	/* FIXME */
+> >> +	clk_enable(host->clk);	/* FIXME */
+> >>   	if (info)
+> >>  		info->resume(info);
+> >>   
+> >
+> 
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
