@@ -1,18 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M4y9g-0006rk-Bh
-	for linux-mtd@lists.infradead.org; Fri, 15 May 2009 14:13:03 +0000
-Subject: Re: oobavail size calculation error in nand_base.c
+	id 1M4yAE-0007Rd-LT
+	for linux-mtd@lists.infradead.org; Fri, 15 May 2009 14:13:37 +0000
+Subject: Re: [patch 2.6.30-rc5+] davinci_nand: cmdlinepart uses MTD IDs
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Jinyoung Park <parkjy@mtekvision.com>
-In-Reply-To: <280b69ac0905140128u135f8b2aua50114faebb593e0@mail.gmail.com>
-References: <280b69ac0905140128u135f8b2aua50114faebb593e0@mail.gmail.com>
+To: David Brownell <david-b@pacbell.net>
+In-Reply-To: <200905121623.32809.david-b@pacbell.net>
+References: <200905121623.32809.david-b@pacbell.net>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 15 May 2009 17:11:43 +0300
-Message-Id: <1242396703.27996.251.camel@localhost.localdomain>
+Date: Fri, 15 May 2009 17:13:07 +0300
+Message-Id: <1242396787.27996.252.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
+Cc: Snehaprabha Narnakaje <nsnehaprabha@ti.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linux MTD <linux-mtd@lists.infradead.org>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,41 +25,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-05-14 at 17:28 +0900, Jinyoung Park wrote:
-> Hello.
+On Tue, 2009-05-12 at 16:23 -0700, David Brownell wrote:
+> From: David Brownell <dbrownell@users.sourceforge.net>
 > 
-> I found error in nand_base.c.
-> In nand_scan_tail() function, oobavail size calculation result is
-> wrong as follow circumstances.
->     - Define nand_ecclayout using full oobfree array like below.
-> 	.oobfree = { {2, 6}, {11, 2}, {16, 8}, {27, 2}, {32, 8}, {43, 2},{48,
-> 8}, {59, 2} }
->     - Using ARM EABI cross compiler when kernel compile also enable
-> "Use the ARM EABI to compile the kernl" feature in kernel menuconfig.
->       I using ARM EABI compiler that codesourcery release arm-2008q3-51.
+> Remove some legacy code from the davinci_nand driver, which made
+> cmdlinepart ignore the the MTD ID passed to it.  Boards can have
+> multiple NAND chips, and some do (like the DM357 EVM), so this
+> dated hack is undesirable.
 > 
-> In this case, right oobavail size is 38 but result is too much
-> value(e.g. 2703572308...). It's random.
-> I think sometimes happen that after beyond oobfree array(oobfree[8])
-> is not 0 when ARM EABI compilation.
-> Below codes are my modified code. Please check...
+> Correct labels a"re like davinci_nand.0" (for chipselect 0).
+> 
+> Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
 
-It seems the following patch which sits in my l2-mtd-2.6.git fixes
-this as well: http://git.infradead.org/users/dedekind/l2-mtd-2.6.git
-
-Author: David Brownell <dbrownell@users.sourceforge.net>
-Date:   Tue Apr 21 19:51:20 2009 -0700
-
-    MTD: NAND: don't walk past end of oobfree[]
-
-    Resolve issue noted by Sneha:  when computing oobavail from
-    the list of free areas in the OOB, don't assume there will
-    always be an unused slot at the end.  With ECC_HW_SYNDROME
-    and 4KB page chips, it's fairly likely there *won't* be one.
-
-    Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
-    Cc: "Narnakaje, Snehaprabha" <nsnehaprabha@ti.com>"
-    Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Taken to l2-mtd-2.6.git.
 
 -- 
 Best regards,
