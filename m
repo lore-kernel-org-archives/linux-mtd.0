@@ -1,21 +1,20 @@
-Received: from smtpauth00.csee.onr.siteprotect.com ([64.26.60.144])
+Received: from mail.mtekvision.com ([218.49.29.145]
+	helo=mtv-mail.INFRA.MTEKVISION.COM)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M4iKH-0004li-6h
-	for linux-mtd@lists.infradead.org; Thu, 14 May 2009 21:18:56 +0000
-Message-ID: <4A0C8AAE.1040601@boundarydevices.com>
-Date: Thu, 14 May 2009 14:18:38 -0700
-From: Troy Kisky <troy.kisky@boundarydevices.com>
+	id 1M4qp9-0007aJ-2V
+	for linux-mtd@lists.infradead.org; Fri, 15 May 2009 06:23:21 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-To: David Brownell <david-b@pacbell.net>
-Subject: Re: [PATCH 4/5] mtd: nand: cafe_nand: use default ecc layout
-References: <>
-	<1242270008-1552-3-git-send-email-troy.kisky@boundarydevices.com>
-	<1242270008-1552-4-git-send-email-troy.kisky@boundarydevices.com>
-	<200905132218.28687.david-b@pacbell.net>
-In-Reply-To: <200905132218.28687.david-b@pacbell.net>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: oobavail size calculation error in nand_base.c
+Date: Fri, 15 May 2009 15:23:09 +0900
+Message-ID: <FD296E38A61CDB45A5F0E6CCD4B459432EAC4D@mtv-mail>
+References: <37597.192.168.10.89.1242365806.squirrel@dbdmail.itg.ti.com>
+From: "Park Jinyoung" <parkjy@mtekvision.com>
+To: "vimal singh" <vimalsingh@ti.com>
+Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +24,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Brownell wrote:
-> On Wednesday 13 May 2009, Troy Kisky wrote:
->> The bad block marker is at 14, but oobfree also
->> starts at 14. This doesn't make sense to me,
-> 
-> On-chip bad-block tables stick the "Bbt0" (etc)
-> tags into the OOB data area, and don't need to
-> share that area with anything else.  It's OK.
-> 
-> 
->> so I don't know if this patch is good or not.
-> 
-> Isn't this one of the drivers using NAND_ECC_HW_SYNDROME?
-> So that the ecclayout is fully defined by prepad==0?
-> 
-> This is a case where you *could* safely generate the
-> current ecclayout structs using simple rules.
-> 
-> 
+I didn't realize that problem was patched, sorry.
+And thanks for your reply.
 
-Actually, cafe_nand overrides most everything and doesn't use
-prepad or postpad or ecc.layout. But I think it still relies
-on ecc.layout.oobfree to setup chip->oob_poi. So, I'm no closer
-to understanding why oobfree and bad block marker start at 14.
+Jinyoung Park
 
-Troy
+-----Original Message-----
+From: vimal singh [mailto:vimalsingh@ti.com]=20
+Sent: Friday, May 15, 2009 2:37 PM
+To: Park Jinyoung
+Cc: tglx@linutronix.de; linux-mtd@lists.infradead.org
+Subject: Re: oobavail size calculation error in nand_base.c
+
+This issue is already noticed by Snehaprabha Narnakaje. And a patch is
+already
+sent to fix this by David Brownell.
+
+http://lists.infradead.org/pipermail/linux-mtd/2009-April/025205.html
+
+
+Sorry, last time I replied on wrong subject line... :)
+
+---
+Vimal
+
+On Thu, May 14, 2009 at 1:58 PM, Jinyoung Park <parkjy@mtekvision.com>
+wrote:
+> Hello.
+>
+> I found error in nand_base.c.
+> In nand_scan_tail() function, oobavail size calculation result is
+> wrong as follow circumstances.
+>    - Define nand_ecclayout using full oobfree array like below.
+>        .oobfree =3D { {2, 6}, {11, 2}, {16, 8}, {27, 2}, {32, 8}, {43,
+2},{48,
+> 8}, {59, 2} }
+>    - Using ARM EABI cross compiler when kernel compile also enable
+> "Use the ARM EABI to compile the kernl" feature in kernel menuconfig.
+>      I using ARM EABI compiler that codesourcery release
+arm-2008q3-51.
+>
+> In this case, right oobavail size is 38 but result is too much
+> value(e.g. 2703572308...). It's random.
+> I think sometimes happen that after beyond oobfree array(oobfree[8])
+> is not 0 when ARM EABI compilation.
+> Below codes are my modified code. Please check...
+>
+> Thanks.
+>
+> diff --git a/drivers/mtd/nand/nand_base.c
+b/drivers/mtd/nand/nand_base.c
+> index 3d7ed43..abb5998 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -2756,9 +2756,12 @@ int nand_scan_tail(struct mtd_info *mtd)
+>        * the out of band area
+>        */
+>        chip->ecc.layout->oobavail =3D 0;
+> -       for (i =3D 0; chip->ecc.layout->oobfree[i].length; i++)
+> +       for (i =3D 0; i < MTD_MAX_OOBFREE_ENTRIES; i++) {
+> +       if (chip->ecc.layout->oobfree[i].length =3D=3D 0)
+> +               break;
+>        chip->ecc.layout->oobavail +=3D
+>                chip->ecc.layout->oobfree[i].length;
+> +       }
+>        mtd->oobavail =3D chip->ecc.layout->oobavail;
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
