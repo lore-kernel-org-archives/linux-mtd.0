@@ -1,28 +1,22 @@
-Received: from mail-bw0-f208.google.com ([209.85.218.208])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M4roN-0006Xz-62
-	for linux-mtd@lists.infradead.org; Fri, 15 May 2009 07:26:38 +0000
-Received: by bwz4 with SMTP id 4so2079958bwz.18
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 15 May 2009 00:26:28 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <4A0C5E34.8080100@boundarydevices.com>
-References: <1242270008-1552-2-git-send-email-troy.kisky@boundarydevices.com>
-	<1242270008-1552-3-git-send-email-troy.kisky@boundarydevices.com>
-	<200905132212.11923.david-b@pacbell.net>
-	<20090514102311.56495bb0@hskinnemoen-d830>
-	<4A0C5E34.8080100@boundarydevices.com>
-Date: Fri, 15 May 2009 09:26:28 +0200
-Message-ID: <80b317760905150026jcfaa421i6139e7f4d4b9385d@mail.gmail.com>
-Subject: Re: [PATCH 3/5] mtd: nand: atmel: use default ecc layout
-From: Richard Genoud <richard.genoud@gmail.com>
-To: Troy Kisky <troy.kisky@boundarydevices.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: David Brownell <david-b@pacbell.net>,
-	Nicolas Ferre <nicolas.ferre@rfo.atmel.com>,
-	Haavard Skinnemoen <haavard.skinnemoen@atmel.com>,
-	linux-mtd@lists.infradead.org
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1M4w5s-0003H8-R5
+	for linux-mtd@lists.infradead.org; Fri, 15 May 2009 12:00:59 +0000
+Subject: Re: Load UBI faster
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: simon polette <spolette@gmail.com>
+In-Reply-To: <72795ccb0905130803y25acae9bwde94ed86d0dbb4f2@mail.gmail.com>
+References: <72795ccb0905060026q7dcb45c0u15c35943374fcc78@mail.gmail.com>
+	<1241673722.27549.14.camel@localhost.localdomain>
+	<1241674092.27549.16.camel@localhost.localdomain>
+	<72795ccb0905130803y25acae9bwde94ed86d0dbb4f2@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 15 May 2009 15:00:13 +0300
+Message-Id: <1242388813.27996.234.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, spolette@adetelgroup.com
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,20 +26,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2009/5/14 Troy Kisky <troy.kisky@boundarydevices.com>:
-> Haavard Skinnemoen wrote:
->> I also suspect it will break hardware ECC. The ECC controller is a bit
->> picky about the OOB layout, which is why the defaults were overriden in
->> the first place.
->>
->> Haavard
-definitely.
+On Wed, 2009-05-13 at 17:03 +0200, simon polette wrote:
+> My NAND is 256MB but I use only a 130MB partition for UBI/UBIFS.
+> So I implemented the on-flash BBT, that made me save 120ms which is a
+> sizeable improvement.
+> On the other hand, skipping crc calculation for header doesn't seem to
+> save much time (perhaps ~10ms so it's difficult to measure the
+> difference).
 
->
-> This patch by itself would break ECCs. But with the 1st two patches
-> it shouldn't. I would love to have that assertion tested however.
->
-> Troy
-but where are those pathces ? I couldn't find them...
+Well, you could try profiling your system and see where you can
+try to optimize things.
 
-richard.
+But I think the bottleneck is the flash reading. If you may
+improve it - cool.
+
+UBI has to scan the media, this is in it's design. You would
+need to develop UBI2 to fix that:
+http://www.linux-mtd.infradead.org/doc/ubi.html#L_scalability
+
+On thing you may do is to lessen the amount of eraseblocks by
+joining your physical erasblocks on driver level, and report
+eraseblock size 256KiB, instead of 128KiB. Then UBI would have
+to read twice as less. But the drawback is that if one PEB is
+bad, you waste its pair, which is not bad.
+
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
