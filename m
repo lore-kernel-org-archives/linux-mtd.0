@@ -1,18 +1,18 @@
 Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M4xoe-00010g-2J
-	for linux-mtd@lists.infradead.org; Fri, 15 May 2009 13:51:27 +0000
-Subject: Re: [PATCH] [REPOST] mtd: extend plat_nand for (read|write)_buf
+	id 1M4y9g-0006rk-Bh
+	for linux-mtd@lists.infradead.org; Fri, 15 May 2009 14:13:03 +0000
+Subject: Re: oobavail size calculation error in nand_base.c
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Alexander Clouter <alex@digriz.org.uk>
-In-Reply-To: <20090511182801.GK32684@woodchuck>
-References: <20090511182801.GK32684@woodchuck>
+To: Jinyoung Park <parkjy@mtekvision.com>
+In-Reply-To: <280b69ac0905140128u135f8b2aua50114faebb593e0@mail.gmail.com>
+References: <280b69ac0905140128u135f8b2aua50114faebb593e0@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 15 May 2009 16:51:00 +0300
-Message-Id: <1242395460.27996.249.camel@localhost.localdomain>
+Date: Fri, 15 May 2009 17:11:43 +0300
+Message-Id: <1242396703.27996.251.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: hsweeten@visionengravers.com, linux-mtd@lists.infradead.org
+Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,32 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-05-11 at 19:28 +0100, Alexander Clouter wrote:
-> This patch adds (write|read)_buf callbacks to plat_nand.
+On Thu, 2009-05-14 at 17:28 +0900, Jinyoung Park wrote:
+> Hello.
 > 
-> The NAND on the TS-7800 provisioned by the FPGA allows readw() and 
-> readl() to be used which gives a 2.5x speed up.  To be able to use this 
-> from the plat_nand driver a hook for read_buf (and also write_buf whilst 
-> we are in there) need to be made available.  This patch adds the hook.
+> I found error in nand_base.c.
+> In nand_scan_tail() function, oobavail size calculation result is
+> wrong as follow circumstances.
+>     - Define nand_ecclayout using full oobfree array like below.
+> 	.oobfree = { {2, 6}, {11, 2}, {16, 8}, {27, 2}, {32, 8}, {43, 2},{48,
+> 8}, {59, 2} }
+>     - Using ARM EABI cross compiler when kernel compile also enable
+> "Use the ARM EABI to compile the kernl" feature in kernel menuconfig.
+>       I using ARM EABI compiler that codesourcery release arm-2008q3-51.
 > 
-> This is a repost[1] of a feature asked for before[2], plus other helpful 
-> patches to plat_nand[3] would be welcomed if at all possible too.
-> 
-> [1] http://lists.infradead.org/pipermail/linux-mtd/2009-March/024747.html
-> [2] http://lists.infradead.org/pipermail/linux-mtd/2007-October/019659.html
-> [3] http://lists.infradead.org/pipermail/linux-mtd/2009-March/024780.html
-> 
-> Signed-off-by: Alexander Clouter <alex@digriz.org.uk>
+> In this case, right oobavail size is 38 but result is too much
+> value(e.g. 2703572308...). It's random.
+> I think sometimes happen that after beyond oobfree array(oobfree[8])
+> is not 0 when ARM EABI compilation.
+> Below codes are my modified code. Please check...
 
-I think this should be submitted with the user at the same
-time. Adding hooks without having a user is not very good.
-E.g., you may find out later that this does not help, or
-cancel your project, or end up with different call-backs,
-etc.
+It seems the following patch which sits in my l2-mtd-2.6.git fixes
+this as well: http://git.infradead.org/users/dedekind/l2-mtd-2.6.git
 
-You may keep this patch privately, work on your NAND driver,
-and when you have it ready, you submit it with this at the
-same time.
+Author: David Brownell <dbrownell@users.sourceforge.net>
+Date:   Tue Apr 21 19:51:20 2009 -0700
+
+    MTD: NAND: don't walk past end of oobfree[]
+
+    Resolve issue noted by Sneha:  when computing oobavail from
+    the list of free areas in the OOB, don't assume there will
+    always be an unused slot at the end.  With ECC_HW_SYNDROME
+    and 4KB page chips, it's fairly likely there *won't* be one.
+
+    Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
+    Cc: "Narnakaje, Snehaprabha" <nsnehaprabha@ti.com>"
+    Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
 -- 
 Best regards,
