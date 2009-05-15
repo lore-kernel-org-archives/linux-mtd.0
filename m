@@ -1,20 +1,18 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M4xAU-0003jM-Ou
-	for linux-mtd@lists.infradead.org; Fri, 15 May 2009 13:09:49 +0000
-Subject: Re: [resending-2] [PATCH] [MTD] [NAND] Add OMAP2 / OMAP3 NAND driver
+	id 1M4xQ4-0000ZE-CL
+	for linux-mtd@lists.infradead.org; Fri, 15 May 2009 13:25:59 +0000
+Subject: Re: [PATCH - resend] m25p80 : add m45pe10 ids
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Thomas Gleixner <tglx@linutronix.de>
-In-Reply-To: <46851.192.168.10.89.1241083986.squirrel@dbdmail.itg.ti.com>
-References: <61255.192.168.10.89.1240984646.squirrel@dbdmail.itg.ti.com>
-	<46851.192.168.10.89.1241083986.squirrel@dbdmail.itg.ti.com>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+In-Reply-To: <49F72BA3.3030506@parrot.com>
+References: <49F72BA3.3030506@parrot.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 15 May 2009 16:08:39 +0300
-Message-Id: <1242392919.27996.238.camel@localhost.localdomain>
+Date: Fri, 15 May 2009 16:25:24 +0300
+Message-Id: <1242393924.27996.244.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Andrew Morton <akpm@linux-foundation.org>, vimal singh <vimalsingh@ti.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,23 +23,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-04-30 at 15:03 +0530, vimal singh wrote:
-> This driver is present in the OMAP tree, now pushing it to MTD.
+On Tue, 2009-04-28 at 18:15 +0200, Matthieu CASTET wrote:
+> Hi,
 > 
-> Original author(s):
->        Jian Zhang <jzhang@ti.com>
+> this patch add m45pe10 [1] chip support to m25p80 driver.
 > 
-> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
-> ---
->  drivers/mtd/nand/Kconfig  |    6
->  drivers/mtd/nand/Makefile |    1
->  drivers/mtd/nand/omap2.c  |  776 ++++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 783 insertions(+)
+> [1] http://www.numonyx.com/Documents/Datasheets/M45PE10.pdf
+> 
+> Signed-off-by: Matthieu CASTET <matthieu.castet@parrot.com>
 
-Hi Thomas,
-
-would you please find a little time and Ack/Nack this
-please?
+Taken to l2-mtd-2.6.git.
 
 -- 
 Best regards,
