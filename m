@@ -1,20 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M4wKu-0006Xb-Al
-	for linux-mtd@lists.infradead.org; Fri, 15 May 2009 12:16:34 +0000
-Subject: Re: [PATCH] MXC_NAND: Add correct dev_id parameter to free_irq()
-	calls.
+	id 1M4xAU-0003jM-Ou
+	for linux-mtd@lists.infradead.org; Fri, 15 May 2009 13:09:49 +0000
+Subject: Re: [resending-2] [PATCH] [MTD] [NAND] Add OMAP2 / OMAP3 NAND driver
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-In-Reply-To: <20090514075309.GZ29278@pengutronix.de>
-References: <17fbadcd7f353348afa4c56f92e0423c5b9708df.1241812369.git.lilja.magnus@gmail.com>
-	<20090514075309.GZ29278@pengutronix.de>
+To: Thomas Gleixner <tglx@linutronix.de>
+In-Reply-To: <46851.192.168.10.89.1241083986.squirrel@dbdmail.itg.ti.com>
+References: <61255.192.168.10.89.1240984646.squirrel@dbdmail.itg.ti.com>
+	<46851.192.168.10.89.1241083986.squirrel@dbdmail.itg.ti.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 15 May 2009 15:16:15 +0300
-Message-Id: <1242389775.27996.236.camel@localhost.localdomain>
+Date: Fri, 15 May 2009 16:08:39 +0300
+Message-Id: <1242392919.27996.238.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Magnus Lilja <lilja.magnus@gmail.com>, linux-mtd@lists.infradead.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, vimal singh <vimalsingh@ti.com>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,12 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-05-14 at 09:53 +0200, Sascha Hauer wrote:
-> Artem,
+On Thu, 2009-04-30 at 15:03 +0530, vimal singh wrote:
+> This driver is present in the OMAP tree, now pushing it to MTD.
 > 
-> Can you pickup this one aswell?
+> Original author(s):
+>        Jian Zhang <jzhang@ti.com>
+> 
+> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+> ---
+>  drivers/mtd/nand/Kconfig  |    6
+>  drivers/mtd/nand/Makefile |    1
+>  drivers/mtd/nand/omap2.c  |  776 ++++++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 783 insertions(+)
 
-Done.
+Hi Thomas,
+
+would you please find a little time and Ack/Nack this
+please?
 
 -- 
 Best regards,
