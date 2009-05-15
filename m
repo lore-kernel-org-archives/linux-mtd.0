@@ -1,19 +1,28 @@
-From: Stefan Roese <sr@denx.de>
-To: "Eric Holmberg" <Eric_Holmberg@trimble.com>
-Subject: Re: UBIFS Corrupt during power failure
-Date: Fri, 15 May 2009 09:16:53 +0200
-References: <C77C279BA71FD14985DC8E75FB265AB702FE53F4@usw-am-xch-02.am.trimblecorp.net>
-	<1239979018.3390.298.camel@localhost.localdomain>
-	<C77C279BA71FD14985DC8E75FB265AB7030C4C86@usw-am-xch-02.am.trimblecorp.net>
-In-Reply-To: <C77C279BA71FD14985DC8E75FB265AB7030C4C86@usw-am-xch-02.am.trimblecorp.net>
+Received: from mail-bw0-f208.google.com ([209.85.218.208])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M4roN-0006Xz-62
+	for linux-mtd@lists.infradead.org; Fri, 15 May 2009 07:26:38 +0000
+Received: by bwz4 with SMTP id 4so2079958bwz.18
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 15 May 2009 00:26:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
+In-Reply-To: <4A0C5E34.8080100@boundarydevices.com>
+References: <1242270008-1552-2-git-send-email-troy.kisky@boundarydevices.com>
+	<1242270008-1552-3-git-send-email-troy.kisky@boundarydevices.com>
+	<200905132212.11923.david-b@pacbell.net>
+	<20090514102311.56495bb0@hskinnemoen-d830>
+	<4A0C5E34.8080100@boundarydevices.com>
+Date: Fri, 15 May 2009 09:26:28 +0200
+Message-ID: <80b317760905150026jcfaa421i6139e7f4d4b9385d@mail.gmail.com>
+Subject: Re: [PATCH 3/5] mtd: nand: atmel: use default ecc layout
+From: Richard Genoud <richard.genoud@gmail.com>
+To: Troy Kisky <troy.kisky@boundarydevices.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200905150916.54091.sr@denx.de>
-Cc: Jamie Lokier <jamie@shareable.org>, Adrian Hunter <adrian.hunter@nokia.com>,
-	linux-mtd@lists.infradead.org, Urs Muff <urs_muff@trimble.com>
+Cc: David Brownell <david-b@pacbell.net>,
+	Nicolas Ferre <nicolas.ferre@rfo.atmel.com>,
+	Haavard Skinnemoen <haavard.skinnemoen@atmel.com>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,74 +32,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Eric,
+2009/5/14 Troy Kisky <troy.kisky@boundarydevices.com>:
+> Haavard Skinnemoen wrote:
+>> I also suspect it will break hardware ECC. The ECC controller is a bit
+>> picky about the OOB layout, which is why the defaults were overriden in
+>> the first place.
+>>
+>> Haavard
+definitely.
 
-On Saturday 18 April 2009 01:49:52 Eric Holmberg wrote:
-> > Yeah, let's wait for Eric's results and then will work on
-> > extending MTD device model with this parameter.
 >
-> As suggested, I patched my 2.6.27 kernel with the latest from
-> http://git.infradead.org/users/dedekind/ubifs-v2.6.27.git (includes all
-> updates up to and including fhe fix-recovery bug,
-> http://git.infradead.org/users/dedekind/ubifs-v2.6.27.git?a=commit;h=e14
-> 4c1c037f1c6f7c687de5a2cd375cb40dfe71e).
+> This patch by itself would break ECCs. But with the 1st two patches
+> it shouldn't. I would love to have that assertion tested however.
 >
-> I have the unit running with a maximum write buffer of 8 bytes (the NOR
-> flash chip is capable of 64 bytes).
+> Troy
+but where are those pathces ? I couldn't find them...
 
-How exactly did you do this? In cfi_cmdset_0002.c?
-
-> I was seeing 4 different failure scenarios with the base 2.6.27 code,
-> but now I am only seeing one remaining failure after 30+ hours of power
-> cycling.  I added a stack dump this afternoon that will let me pinpoint
-> exactly what is happening, but haven't seen the failure, yet.
->
-> The failure happens when I get two corrupt empty LEB's.  I believe the
-> scenario is that an erase is interrupted and on the next boot, while the
-> file system is being recovered, another power failure occurs.
->
-> I can erase one of the LEB's manually in U-Boot and the file system
-> recovers properly.
->
-> I'm going to leave the units running over the weekend and see what is
-> waiting for me Monday morning.
-
-Do you have an update for this? What's the current status on your system now? 
-Which patches did you apply to work reliably with the Spansion FLASH?
-
-I'm asking since we are seeing a similar issue on one of our boards equipped 
-with the S29GL512P. This simple script triggers problems upon the next mount:
-
----
-mount -t ubifs ubi0:testvolume /mnt
-sync
-reboot -n -f
----
-
-The next mount will result most of the time in this:
-
-UBIFS: recovery needed
-UBIFS error (pid 406): ubifs_scan: corrupt empty space at LEB 3:130320
-UBIFS error (pid 406): ubifs_scanned_corruption: corrupted data at LEB 
-3:130320
-UBIFS error (pid 406): ubifs_scan: LEB 3 scanning failed
-UBIFS error (pid 406): ubifs_recover_leb: corrupt empty space at LEB 3:32
-UBIFS error (pid 406): ubifs_scanned_corruption: corrupted data at LEB 3:32
-UBIFS error (pid 406): ubifs_recover_leb: LEB 3 scanning failed
-mount: Structure needs cleaning
-
-This is without the patch from this thread included (in recovery.c). With this 
-patch included the recovery is successful all the time, as far as we can see 
-right now. But I'm wondering if we really need to disable the write buffer in 
-the CFI driver or reduce the write buffer to 8.
-
-Thanks.
-
-Best regards,
-Stefan
-
-=====================================================================
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-0 Fax: +49-8142-66989-80  Email: office@denx.de
-=====================================================================
+richard.
