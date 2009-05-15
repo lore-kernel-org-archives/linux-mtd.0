@@ -1,17 +1,18 @@
-Received: from gateway-1237.mvista.com ([63.81.120.158])
+Received: from woodchuck.wormnet.eu ([2a01:348:0:6:4d4b:69df:0:1])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M4ylY-0000Lx-4N
-	for linux-mtd@lists.infradead.org; Fri, 15 May 2009 14:52:11 +0000
-Date: Fri, 15 May 2009 10:52:02 -0400
-From: "George G. Davis" <gdavis@mvista.com>
-To: Hemagiri C <hemagiric@gmail.com>
-Subject: Re: jffs2 on MTD-Onenand driver - LTP test fails for ftest
-Message-ID: <20090515145202.GF10977@mvista.com>
-References: <627b7eea0808180452i35bc99ecyc99fca8b997cd346@mail.gmail.com>
+	id 1M4yyv-0003VN-4R
+	for linux-mtd@lists.infradead.org; Fri, 15 May 2009 15:05:56 +0000
+Date: Fri, 15 May 2009 16:05:49 +0100
+From: Alexander Clouter <alex@digriz.org.uk>
+To: Artem Bityutskiy <dedekind@infradead.org>
+Subject: Re: [PATCH] [REPOST] mtd: extend plat_nand for (read|write)_buf
+Message-ID: <20090515150549.GE32684@woodchuck>
+References: <20090511182801.GK32684@woodchuck>
+	<1242395460.27996.249.camel@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <627b7eea0808180452i35bc99ecyc99fca8b997cd346@mail.gmail.com>
+In-Reply-To: <1242395460.27996.249.camel@localhost.localdomain>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,52 +25,57 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-On Mon, Aug 18, 2008 at 05:22:11PM +0530, Hemagiri C wrote:
-> Hi,
+* Artem Bityutskiy <dedekind@infradead.org> [2009-05-15 16:51:00+0300]:
 > 
-> I am new to JFFS2 and now I am running the LTP FS Tests for
-> MTD-Onenand driver on JFFS2.
+> On Mon, 2009-05-11 at 19:28 +0100, Alexander Clouter wrote:
+> > This patch adds (write|read)_buf callbacks to plat_nand.
+> > 
+> > The NAND on the TS-7800 provisioned by the FPGA allows readw() and 
+> > readl() to be used which gives a 2.5x speed up.  To be able to use this 
+> > from the plat_nand driver a hook for read_buf (and also write_buf whilst 
+> > we are in there) need to be made available.  This patch adds the hook.
+> > 
+> > This is a repost[1] of a feature asked for before[2], plus other helpful 
+> > patches to plat_nand[3] would be welcomed if at all possible too.
+> > 
+> > [1] http://lists.infradead.org/pipermail/linux-mtd/2009-March/024747.html
+> > [2] http://lists.infradead.org/pipermail/linux-mtd/2007-October/019659.html
+> > [3] http://lists.infradead.org/pipermail/linux-mtd/2009-March/024780.html
+> > 
+> > Signed-off-by: Alexander Clouter <alex@digriz.org.uk>
 > 
-> Kernel version is linux-2.6.25.
-> The following tests are failing while running the  LTP FS test for
-> MTD-Onenand driver on JFFS2.
+> I think this should be submitted with the user at the same
+> time. Adding hooks without having a user is not very good.
+> E.g., you may find out later that this does not help, or
+> cancel your project, or end up with different call-backs,
+> etc.
 > 
-> ftest01                        FAIL       1
-> ftest02                        PASS       0
-> ftest03                        FAIL       1
-> ftest04                        FAIL       1
-> ftest05                        FAIL       1
-> ftest06                        PASS       0
-> ftest07                        FAIL       1
-> ftest08                        FAIL       1
+In the case of read/write_buf...there is no other way, I'm all ears if 
+you know how I can do (read|write)(w|l) with plat_nand *now*?
 
-I've run into the exact same problem.  This problem persists in
-GIT HEAD to this very day.
+I just pulled off this type of manoeuvre for a HW RNG driver:
 
-> But with linux-2.6.22 version, except ftest03 all other test cases are passing.
+http://lkml.indiana.edu/hypermail/linux/kernel/0902.2/02727.html
+http://git.marvell.com/?p=orion.git;a=commit;h=8be7b57dea0467324ad4545334c5e35c18f0814b
+
+I doubt the ARM people would be happy if I push ARM patches through the 
+MTD sub-system :)
+
+> You may keep this patch privately, work on your NAND driver,
+> and when you have it ready, you submit it with this at the
+> same time.
 > 
-> Does any one know the reason for failure/possible cause.
+Erm, it's been ready for a *long* time, about a year[1], and is being 
+used.  Recently the bits of my plat_nand impementation[2] is on it's way 
+to going mainline (Orion -> ARM -> Linus):
 
-I've git bisected this regression down to this change:
+http://git.marvell.com/?p=orion.git;a=commit;h=75bb6b9aab3255f440ef4e72a31978d1681105d6
 
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff_plain;h=a32ea1e1f925399e0d81ca3f7394a44a6dafa12c
+Cheers
 
+[1] http://tech.groups.yahoo.com/group/ts-7000/message/11616
+[2] http://lists.infradead.org/pipermail/linux-mtd/2009-February/024555.html
 
-Reverting the above resolves LTP ftest regressions for JFFS2
-on NAND flash devices.  Oddly, these LTP regressions do _not_
-occur on NOR flash devices.  They only occur on NAND flash
-devices, e.g. nandsim.  FWIW, I've confirmed that there are
-no LTP ftest regersions for the EXT2 on NAND (nandsim : )
-test case.
-
-I'm trying to get a handle on why MTD NAND exhibits these LTP
-regressions while MTD NOR does not.
-
-If any one can hit me with a clue bat, I'ld greatly appreciate
-it.
-
-TIA!
-
---
-Regards,
-George
+-- 
+Alexander Clouter
+.sigmonster says: Your fly might be open (but don't check it just now).
