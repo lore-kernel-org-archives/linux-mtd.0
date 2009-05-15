@@ -1,19 +1,19 @@
-Received: from rere.qmqm.pl ([89.167.52.164])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M40hR-0002Yt-2P
-	for linux-mtd@lists.infradead.org; Tue, 12 May 2009 22:43:56 +0000
-Date: Wed, 13 May 2009 00:37:18 +0200
-From: =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To: linux-mtd@lists.infradead.org, dwmw2@infradead.org
-Subject: [PATCH/RESEND 2.6.29.3] MTD: Add SST39SF040 chip to jedec_probe
-Message-ID: <20090512223718.GB26588@rere.qmqm.pl>
-References: <20081118010902.GA4130@rere.qmqm.pl>
+From: Stefan Roese <sr@denx.de>
+To: "Eric Holmberg" <Eric_Holmberg@trimble.com>
+Subject: Re: UBIFS Corrupt during power failure
+Date: Fri, 15 May 2009 09:16:53 +0200
+References: <C77C279BA71FD14985DC8E75FB265AB702FE53F4@usw-am-xch-02.am.trimblecorp.net>
+	<1239979018.3390.298.camel@localhost.localdomain>
+	<C77C279BA71FD14985DC8E75FB265AB7030C4C86@usw-am-xch-02.am.trimblecorp.net>
+In-Reply-To: <C77C279BA71FD14985DC8E75FB265AB7030C4C86@usw-am-xch-02.am.trimblecorp.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20081118010902.GA4130@rere.qmqm.pl>
-Cc: linux-kernel@vger.kernel.org
+Message-Id: <200905150916.54091.sr@denx.de>
+Cc: Jamie Lokier <jamie@shareable.org>, Adrian Hunter <adrian.hunter@nokia.com>,
+	linux-mtd@lists.infradead.org, Urs Muff <urs_muff@trimble.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,36 +23,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add SST39SF040 chip (like SST39SF020A but bigger - 4Mbit).
+Hi Eric,
 
-Signed-off-by: Micha³ Miros³aw <mirq-linux@rere.qmqm.pl>
+On Saturday 18 April 2009 01:49:52 Eric Holmberg wrote:
+> > Yeah, let's wait for Eric's results and then will work on
+> > extending MTD device model with this parameter.
+>
+> As suggested, I patched my 2.6.27 kernel with the latest from
+> http://git.infradead.org/users/dedekind/ubifs-v2.6.27.git (includes all
+> updates up to and including fhe fix-recovery bug,
+> http://git.infradead.org/users/dedekind/ubifs-v2.6.27.git?a=commit;h=e14
+> 4c1c037f1c6f7c687de5a2cd375cb40dfe71e).
+>
+> I have the unit running with a maximum write buffer of 8 bytes (the NOR
+> flash chip is capable of 64 bytes).
 
---- linux-2.6.27.6-brfix1/drivers/mtd/chips/jedec_probe.c	2008-11-16 14:24:30.000000000 +0100
-+++ rechot/drivers/mtd/chips/jedec_probe.c	2008-11-18 01:28:10.000000000 +0100
-@@ -165,6 +165,7 @@
- #define SST39LF040	0x00D7
- #define SST39SF010A	0x00B5
- #define SST39SF020A	0x00B6
-+#define SST39SF040	0x00B7
- #define SST49LF004B	0x0060
- #define SST49LF040B	0x0050
- #define SST49LF008A	0x005a
-@@ -1392,6 +1393,18 @@
- 		}
- 	}, {
- 		.mfr_id		= MANUFACTURER_SST,
-+		.dev_id		= SST39SF040,
-+		.name		= "SST 39SF040",
-+		.devtypes	= CFI_DEVICETYPE_X8,
-+		.uaddr		= MTD_UADDR_0x5555_0x2AAA,
-+		.dev_size	= SIZE_512KiB,
-+		.cmd_set	= P_ID_AMD_STD,
-+		.nr_regions	= 1,
-+		.regions	= {
-+			ERASEINFO(0x01000,128),
-+		}
-+	}, {
-+		.mfr_id		= MANUFACTURER_SST,
- 		.dev_id		= SST49LF040B,
- 		.name		= "SST 49LF040B",
- 		.devtypes	= CFI_DEVICETYPE_X8,
+How exactly did you do this? In cfi_cmdset_0002.c?
+
+> I was seeing 4 different failure scenarios with the base 2.6.27 code,
+> but now I am only seeing one remaining failure after 30+ hours of power
+> cycling.  I added a stack dump this afternoon that will let me pinpoint
+> exactly what is happening, but haven't seen the failure, yet.
+>
+> The failure happens when I get two corrupt empty LEB's.  I believe the
+> scenario is that an erase is interrupted and on the next boot, while the
+> file system is being recovered, another power failure occurs.
+>
+> I can erase one of the LEB's manually in U-Boot and the file system
+> recovers properly.
+>
+> I'm going to leave the units running over the weekend and see what is
+> waiting for me Monday morning.
+
+Do you have an update for this? What's the current status on your system now? 
+Which patches did you apply to work reliably with the Spansion FLASH?
+
+I'm asking since we are seeing a similar issue on one of our boards equipped 
+with the S29GL512P. This simple script triggers problems upon the next mount:
+
+---
+mount -t ubifs ubi0:testvolume /mnt
+sync
+reboot -n -f
+---
+
+The next mount will result most of the time in this:
+
+UBIFS: recovery needed
+UBIFS error (pid 406): ubifs_scan: corrupt empty space at LEB 3:130320
+UBIFS error (pid 406): ubifs_scanned_corruption: corrupted data at LEB 
+3:130320
+UBIFS error (pid 406): ubifs_scan: LEB 3 scanning failed
+UBIFS error (pid 406): ubifs_recover_leb: corrupt empty space at LEB 3:32
+UBIFS error (pid 406): ubifs_scanned_corruption: corrupted data at LEB 3:32
+UBIFS error (pid 406): ubifs_recover_leb: LEB 3 scanning failed
+mount: Structure needs cleaning
+
+This is without the patch from this thread included (in recovery.c). With this 
+patch included the recovery is successful all the time, as far as we can see 
+right now. But I'm wondering if we really need to disable the write buffer in 
+the CFI driver or reduce the write buffer to 8.
+
+Thanks.
+
+Best regards,
+Stefan
+
+=====================================================================
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: +49-8142-66989-0 Fax: +49-8142-66989-80  Email: office@denx.de
+=====================================================================
