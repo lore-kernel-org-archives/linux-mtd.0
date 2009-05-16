@@ -1,17 +1,20 @@
-Date: Fri, 15 May 2009 21:51:16 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Kevin Cernekee <kpc.mtd@gmail.com>
-Subject: Re: [patch 01/14] mtd: Flex-OneNAND support
-Message-Id: <20090515215116.273bd219.akpm@linux-foundation.org>
-In-Reply-To: <a95a62fe0905151507n42ac74o95553109d1cb957b@mail.gmail.com>
-References: <200905122106.n4CL6DYn009450@imap1.linux-foundation.org>
-	<1242401991.27996.263.camel@localhost.localdomain>
-	<a95a62fe0905151507n42ac74o95553109d1cb957b@mail.gmail.com>
+Received: from mail-qy0-f184.google.com ([209.85.221.184])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M5I9g-0001t5-DX
+	for linux-mtd@lists.infradead.org; Sat, 16 May 2009 11:34:34 +0000
+Received: by qyk14 with SMTP id 14so5870369qyk.28
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 16 May 2009 04:34:15 -0700 (PDT)
+Subject: [PATCH] cfi_cmdset_0001.c: CFI 1.0 and CFI 1.1
+From: Daniel Ribeiro <drwyrm@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain
+Date: Sat, 16 May 2009 08:34:01 -0300
+Message-Id: <1242473641.30413.24.camel@brutus>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: h.rohit@samsung.com, vishak.g@samsung.com, kyungmin.park@samsung.com,
-	linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Cc: openezx-devel <openezx-devel@lists.openezx.org>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,24 +24,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 15 May 2009 15:07:26 -0700 Kevin Cernekee <kpc.mtd@gmail.com> wrote:
+This patch allows otpinfo for CFI >= 1.0 and burst read for CFI >= 1.1.
 
-> On Fri, May 15, 2009 at 8:39 AM, Artem Bityutskiy
-> <dedekind@infradead.org> wrote:
-> > Hi Andrew,
-> >
-> > you sent this bunch of patches to MTD ML. What does it mean?
-> > Does it mean you are going to send them to Linus some time
-> > later? Or you want review, or acks?
-> 
-> The patches are in the -mm tree, so he would like David Woodhouse to
-> decide what to do with each one.  It is also an opportunity for
-> anybody on the cc: list to review them and send feedback.
-> 
-> Here is a document that explains the process:
-> http://userweb.kernel.org/~akpm/stuff/added-to-mm.txt
+references:
+1.0:	http://www.datasheetcatalog.org/datasheets2/81/816884_1.pdf
 
-Yup.  The headers tell it all:
+1.1:	http://milkymist.org/doc/MT28F640J3.pdf
+	http://www.delorie.com/agenda/specs/29066709.pdf
 
-	To:dwmw2
-	Cc:people-and-mailing-lists
+Signed-off-by: Daniel Ribeiro <drwyrm@gmail.com>
+---
+ drivers/mtd/chips/cfi_cmdset_0001.c |   14 ++++++++++----
+ 1 files changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index c240454..bf07d14 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -319,6 +319,7 @@ static inline struct cfi_pri_intelext *
+ read_pri_intelext(struct map_info *map, __u16 adr)
+ {
+ 	struct cfi_pri_intelext *extp;
++	unsigned int extra_size = 0;
+ 	unsigned int extp_size = sizeof(*extp);
+ 
+  again:
+@@ -340,19 +341,24 @@ read_pri_intelext(struct map_info *map, __u16 adr)
+ 	extp->BlkStatusRegMask = le16_to_cpu(extp->BlkStatusRegMask);
+ 	extp->ProtRegAddr = le16_to_cpu(extp->ProtRegAddr);
+ 
+-	if (extp->MajorVersion == '1' && extp->MinorVersion >= '3') {
+-		unsigned int extra_size = 0;
+-		int nb_parts, i;
++	if (extp->MinorVersion >= '0') {
++		extra_size = 0;
+ 
+ 		/* Protection Register info */
+ 		extra_size += (extp->NumProtectionFields - 1) *
+ 			      sizeof(struct cfi_intelext_otpinfo);
++	}
+ 
++	if (extp->MinorVersion >= '1') {
+ 		/* Burst Read info */
+ 		extra_size += 2;
+ 		if (extp_size < sizeof(*extp) + extra_size)
+ 			goto need_more;
+-		extra_size += extp->extra[extra_size-1];
++		extra_size += extp->extra[extra_size - 1];
++	}
++
++	if (extp->MinorVersion >= '3') {
++		int nb_parts, i;
+ 
+ 		/* Number of hardware-partitions */
+ 		extra_size += 1;
+-- 
+tg: (1406de8..) mtd/cfi1.1-has-extra-too (depends on: master)
+
+-- 
+Daniel Ribeiro
