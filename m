@@ -1,20 +1,16 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M5aqh-0002yQ-Vp
-	for linux-mtd@lists.infradead.org; Sun, 17 May 2009 07:32:14 +0000
-Subject: Re: repost [Fwd: [PATCH 1/5] mtd: nand: move layout structure into
-	nand_ecc_ctrl]
+Subject: Re: [PATCH] cfi_cmdset_0001.c: quirk for PF38F4476.
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Troy Kisky <troy.kisky@boundarydevices.com>
-In-Reply-To: <4A0DA8B1.2060109@boundarydevices.com>
-References: <4A0DA8B1.2060109@boundarydevices.com>
+To: Daniel Ribeiro <drwyrm@gmail.com>
+In-Reply-To: <1242474072.30413.32.camel@brutus>
+References: <1242474072.30413.32.camel@brutus>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 17 May 2009 10:31:36 +0300
-Message-Id: <1242545496.27996.265.camel@localhost.localdomain>
+Date: Sun, 17 May 2009 10:32:58 +0300
+Message-Id: <1242545578.27996.267.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: richard.genoud@gmail.com,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org,
+	openezx-devel <openezx-devel@lists.openezx.org>,
+	David Woodhouse <dwmw2@infradead.org>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,20 +21,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-05-15 at 10:38 -0700, Troy Kisky wrote:
-> email message attachment ([PATCH 1/5] mtd: nand: move layout structure
-> into nand_ecc_ctrl.eml)
-> > -------- Forwarded Message --------
-> > From: Troy Kisky <troy.kisky@boundarydevices.com>
-> > To: linux-mtd@lists.infradead.org
-> > Cc: david-b@pacbell.net, Troy Kisky <troy.kisky@boundarydevices.com>
-> > Subject: [PATCH 1/5] mtd: nand: move layout structure into
-> > nand_ecc_ctrl
-> > Date: Wed, 13 May 2009 20:00:04 -0700
+On Sat, 2009-05-16 at 08:41 -0300, Daniel Ribeiro wrote:
+> This chip reports CFI 1.3, but the CFI PRI is like CFI 1.1. Add a quirk
+> to pass probe on this chip.
+> (This patch depends on "cfi_cmdset_0001.c: CFI 1.0 and CFI 1.1")
+> 
+> Signed-off-by: Daniel Ribeiro <drwyrm@gmail.com>
 
-Is it possible to re-post this as an in-line series instead?
-I'l also recommend to add Thomas Gleixner <tglx@linutronix.de>
-to CC.
+Would be good to CC Nicolas Pitre <nico@cam.org> when sending these
+patches.
 
 -- 
 Best regards,
