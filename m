@@ -1,18 +1,21 @@
-Received: from ti-out-0910.google.com ([209.85.142.187])
+Received: from mail-qy0-f184.google.com ([209.85.221.184])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M5czT-0003aN-VA
-	for linux-mtd@lists.infradead.org; Sun, 17 May 2009 09:49:15 +0000
-Received: by ti-out-0910.google.com with SMTP id b8so324389tic.2
+	id 1M5e8e-0007aB-Mm
+	for linux-mtd@lists.infradead.org; Sun, 17 May 2009 11:02:46 +0000
+Received: by qyk14 with SMTP id 14so6487207qyk.28
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 17 May 2009 02:49:03 -0700 (PDT)
-MIME-Version: 1.0
-Date: Sun, 17 May 2009 15:19:03 +0530
-Message-ID: <a29be8140905170249v18e4f13eg5430f3e44280fe30@mail.gmail.com>
-Subject: linux kernel can not find m25p80 mtdparts
-From: Bharat Bhushan <bharat.76@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+	Sun, 17 May 2009 04:02:39 -0700 (PDT)
+Subject: [PATCH] cfi_cmdset_0001.c: CFI 1.0 and CFI 1.1
+From: Daniel Ribeiro <drwyrm@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain
+Date: Sun, 17 May 2009 08:02:08 -0300
+Message-Id: <1242558128.26769.6.camel@brutus>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Cc: Nicolas Pitre <nico@cam.org>,
+	openezx-devel <openezx-devel@lists.openezx.org>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,34 +25,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Everyone,
+This patch allows otpinfo for CFI >= 1.0 and burst read for CFI >= 1.1.
+(sent again with CC to Nicolas Pitre)
 
-I am naive as far as linux kernel interface with MTD devices. I face
-difficulty on MIPS based board having M25P80. Bootloader is u-boot.
-When linux boots, I pass the command-line argument as:
+references:
+1.0:	http://www.datasheetcatalog.org/datasheets2/81/816884_1.pdf
 
-Kernel command line:
-mtdpart=m25p80:256k(boot),64k(boot_config),64k(board_config),2048k(kernel),4096k(filesystem)
-root=/dev/mtdpart rootfstype=squashfs,yaffg
-And Error I get is :
+1.1:	http://milkymist.org/doc/MT28F640J3.pdf
+	http://www.delorie.com/agenda/specs/29066709.pdf
 
-    VFS: Cannot open root device "mtdpart" or unknown-block(0,0)
-    Please append a correct "root=" boot option; here are the
-available partitions:
-    Kernel panic - not syncing: VFS: Unable to mount root fs on
-unknown-block(0,0)
+Signed-off-by: Daniel Ribeiro <drwyrm@gmail.com>
+---
+ drivers/mtd/chips/cfi_cmdset_0001.c |   14 ++++++++++----
+ 1 files changed, 10 insertions(+), 4 deletions(-)
 
-Some questions in above command-line I have:
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index c240454..bf07d14 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -319,6 +319,7 @@ static inline struct cfi_pri_intelext *
+ read_pri_intelext(struct map_info *map, __u16 adr)
+ {
+ 	struct cfi_pri_intelext *extp;
++	unsigned int extra_size = 0;
+ 	unsigned int extp_size = sizeof(*extp);
+ 
+  again:
+@@ -340,19 +341,24 @@ read_pri_intelext(struct map_info *map, __u16 adr)
+ 	extp->BlkStatusRegMask = le16_to_cpu(extp->BlkStatusRegMask);
+ 	extp->ProtRegAddr = le16_to_cpu(extp->ProtRegAddr);
+ 
+-	if (extp->MajorVersion == '1' && extp->MinorVersion >= '3') {
+-		unsigned int extra_size = 0;
+-		int nb_parts, i;
++	if (extp->MinorVersion >= '0') {
++		extra_size = 0;
+ 
+ 		/* Protection Register info */
+ 		extra_size += (extp->NumProtectionFields - 1) *
+ 			      sizeof(struct cfi_intelext_otpinfo);
++	}
+ 
++	if (extp->MinorVersion >= '1') {
+ 		/* Burst Read info */
+ 		extra_size += 2;
+ 		if (extp_size < sizeof(*extp) + extra_size)
+ 			goto need_more;
+-		extra_size += extp->extra[extra_size-1];
++		extra_size += extp->extra[extra_size - 1];
++	}
++
++	if (extp->MinorVersion >= '3') {
++		int nb_parts, i;
+ 
+ 		/* Number of hardware-partitions */
+ 		extra_size += 1;
+-- 
+tg: (1406de8..) mtd/cfi1.1-has-extra-too (depends on: master)
 
-1. Does kernel recognize m25p80 by same name. How can I check where it
-is mapped in kernel. Then only mtdpart makes sense: I think so? I
-expected it to be at 0xbf040000. I do not know in kernel where to find
-this mapping. I tried drivers/mtd/ for chips specifics, but could not
-make out much.
-2. When cmdline say root=/dev/mtdpart, do `mtdpart' should be defined
-in kernel somewhere?
-
-Can someone please explain, which all part of kernel I need to look into.
-
-Regards,
-Bharat
+-- 
+Daniel Ribeiro
