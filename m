@@ -1,13 +1,19 @@
-Received: from mail.ultratronik.de ([82.100.224.114] helo=build.ultratronik.de)
+Received: from vega.surpasshosting.com ([72.29.83.9])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M63XK-0008Su-Om
-	for linux-mtd@lists.infradead.org; Mon, 18 May 2009 14:10:00 +0000
-From: Matthias Ludwig <mludwig@ultratronik.de>
+	id 1M64Ul-0002mz-33
+	for linux-mtd@lists.infradead.org; Mon, 18 May 2009 15:11:21 +0000
+Received: from bzq-79-182-80-231.red.bezeqint.net ([79.182.80.231]:50435
+	helo=felix.lan) by vega.surpasshosting.com with esmtpa (Exim 4.69)
+	(envelope-from <felix@embedded-sol.com>) id 1M63Mi-0006os-6E
+	for linux-mtd@lists.infradead.org; Mon, 18 May 2009 09:58:52 -0400
+Message-ID: <4A116996.70403@embedded-sol.com>
+Date: Mon, 18 May 2009 16:58:46 +0300
+From: Felix Radensky <felix@embedded-sol.com>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: [RFC] [PATCH] physmap: support top-aligned flash chips
-Date: Mon, 18 May 2009 16:09:44 +0200
-Message-Id: <1242655784-21131-1-git-send-email-mludwig@ultratronik.de>
-Cc: Matthias Ludwig <mludwig@ultratronik.de>
+Subject: JFFS2 BUG()
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,64 +23,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some machines (e.g. mips au1x00) map flash chips
-on the "upper end" of a memory area. Such a machine
-cannot be equiped with different sized flash chips
-because only the "lower end" of the memory area is
-probed for the device.
-This patch allows automatically probing of memory
-sub-areas where smaller chips can are found.
----
- drivers/mtd/maps/physmap.c |   21 ++++++++++++++++++---
- 1 files changed, 18 insertions(+), 3 deletions(-)
+Hi,
 
-diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
-index 29a9011..9c892dd 100644
---- a/drivers/mtd/maps/physmap.c
-+++ b/drivers/mtd/maps/physmap.c
-@@ -88,6 +88,7 @@ static int physmap_flash_probe(struct platform_device *dev)
- 	struct physmap_flash_data *physmap_data;
- 	struct physmap_flash_info *info;
- 	const char **probe_type;
-+	void __iomem *virt;
- 	int err = 0;
- 	int i;
- 	int devices_found = 0;
-@@ -126,9 +127,9 @@ static int physmap_flash_probe(struct platform_device *dev)
- 		info->map[i].set_vpp = physmap_data->set_vpp;
- 		info->map[i].pfow_base = physmap_data->pfow_base;
- 
--		info->map[i].virt = devm_ioremap(&dev->dev, info->map[i].phys,
-+		virt = devm_ioremap(&dev->dev, info->map[i].phys,
- 						 info->map[i].size);
--		if (info->map[i].virt == NULL) {
-+		if (!virt) {
- 			dev_err(&dev->dev, "Failed to ioremap flash region\n");
- 			err = EIO;
- 			goto err_out;
-@@ -137,8 +138,22 @@ static int physmap_flash_probe(struct platform_device *dev)
- 		simple_map_init(&info->map[i]);
- 
- 		probe_type = rom_probe_types;
--		for (; info->mtd[i] == NULL && *probe_type != NULL; probe_type++)
-+		for (; info->mtd[i] == NULL && *probe_type != NULL; probe_type++) {
-+			info->map[i].phys = dev->resource[i].start;
-+			info->map[i].size = dev->resource[i].end -
-+					dev->resource[i].start + 1;
-+			info->map[i].virt = virt;
-+
-+			info->mtd[i] = do_map_probe(*probe_type, &info->map[i]);
-+
-+			while (!info->mtd[i] && physmap_data->top_aligned &&
-+					info->map[i].size > 0x40000) {
-+				info->map[i].size >>= 1;
-+				info->map[i].phys += info->map[i].size;
-+				info->map[i].virt += info->map[i].size;
- 			info->mtd[i] = do_map_probe(*probe_type, &info->map[i]);
-+			}
-+		}
- 		if (info->mtd[i] == NULL) {
- 			dev_err(&dev->dev, "map_probe failed\n");
- 			err = -ENXIO;
--- 
-1.6.3.9.g6345
+I've hit a BUG() in JFFS2 as described below. The JFSS2 partition
+is 250MB on 1GB Samsung NAND flash.  My kernel is 2.6.27,
+running on AMCC 405EXr CPU (powerpc). The problem is not
+easily reproducible. It is possible that partition was rather full when
+BUG() was hit. Very similar problem  was reported to the list a year
+ago, but was not resolved, see
+
+http://lists.infradead.org/pipermail/linux-mtd/2008-April/021454.html
+
+Can the fix proposed by previous reporter solve the problem ?
+
+I'm getting the following error message:
+
+Data CRC 97eaebe7 != calculated CRC b76accbf for node at 07633a58
+------------[ cut here ]------------
+kernel BUG at fs/jffs2/file.c:251!
+Oops: Exception in kernel mode, sig: 5 [#1]
+Modules linked in: usbcore
+NIP: c01086fc LR: c004ed24 CTR: c01086b0
+REGS: df029c10 TRAP: 0700   Not tainted  (2.6.27)
+MSR: 00029030 <EE,ME,IR,DR>  CR: 24442022  XER: 00000000
+TASK = daafe490[5808] 'cp' THREAD: df028000
+GPR00: 00000001 df029cc0 daafe490 dfb8cd00 c45ee4c8 00000000 00326000 
+00001000
+GPR08: 00001000 cd822a00 00000004 00000004 27bba2e8 100586a0 00000000 
+00326000
+GPR16: df029d0c df029d08 00000000 00000000 00001000 df029d10 dfb8cd00 
+cd822000
+GPR24: 00000000 00326000 00001000 00000000 00000000 c45ee430 c0412160 
+00001000
+NIP [c01086fc] jffs2_write_end+0x4c/0x2f4
+LR [c004ed24] generic_file_buffered_write+0x190/0x650
+Call Trace:
+[df029cc0] [c01088d0] jffs2_write_end+0x220/0x2f4 (unreliable)
+[df029d00] [c004ed24] generic_file_buffered_write+0x190/0x650
+[df029d90] [c004f6e4] __generic_file_aio_write_nolock+0x23c/0x4a4
+[df029e00] [c004f9b4] generic_file_aio_write+0x68/0xf8
+[df029e30] [c00726cc] do_sync_write+0xc4/0x138
+[df029ef0] [c0073134] vfs_write+0xb4/0x16c
+[df029f10] [c0073664] sys_write+0x4c/0x90
+[df029f40] [c000e11c] ret_from_syscall+0x0/0x3c
+Instruction dump:
+70090008 813d008c 54dc053e 38000000 82e9019c 7cd93378 7cb82b78 90010008
+7f5c4214 41820004 7c000026 54001ffe <0f000000> 2f9a1000 3b600000 419e0008
+---[ end trace 0b6b9614848c5573 ]---
+
+
+Thanks a lot.
+
+Felix.
