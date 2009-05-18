@@ -1,21 +1,24 @@
-Received: from mail-qy0-f184.google.com ([209.85.221.184])
+Received: from spam1.hanyang.ac.kr ([166.104.177.29])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M5e8n-0007aB-N6
-	for linux-mtd@lists.infradead.org; Sun, 17 May 2009 11:02:56 +0000
-Received: by mail-qy0-f184.google.com with SMTP id 14so6487207qyk.28
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 17 May 2009 04:02:49 -0700 (PDT)
-Subject: [PATCH] cfi_cmdset_0001.c: quirk for PF38F4476.
-From: Daniel Ribeiro <drwyrm@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain
-Date: Sun, 17 May 2009 08:02:17 -0300
-Message-Id: <1242558137.26769.7.camel@brutus>
-Mime-Version: 1.0
+	id 1M5s6R-0003hB-AL
+	for linux-mtd@lists.infradead.org; Mon, 18 May 2009 01:57:26 +0000
+Received: from 166.104.177.101 (166.104.177.101 [166.104.177.101])
+	by spam1.hanyang.ac.kr (WBlock.pss 3.6.24)
+	with ESMTP id <4A10BF48.3080602@hanyang.ac.kr>
+	for <linux-mtd@lists.infradead.org>; Mon, 18 May 2009 10:51:50 +0900
+Received: from 166.104.12.75 (166.104.12.75 [166.104.12.75])
+	by hymel1 (DeepMTA 3.6.21)
+	with ESMTP id <4A10BF48.3080602@hanyang.ac.kr>
+	for <linux-mtd@lists.infradead.org>; Mon, 18 May 2009 10:50:58 +0900
+Message-ID: <4A10BF48.3080602@hanyang.ac.kr>
+Date: Mon, 18 May 2009 10:52:08 +0900
+From: HyoGi Sim <dahlia@hanyang.ac.kr>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Question about mtd_blktrans_ops interface
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Nicolas Pitre <nico@cam.org>,
-	openezx-devel <openezx-devel@lists.openezx.org>,
-	linux-mtd@lists.infradead.org
+Reply-To: dahlia@hanyang.ac.kr
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,58 +28,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This chip reports CFI 1.3, but the CFI PRI is like CFI 1.1. Add a quirk
-to pass probe on this chip.
-(This patch depends on "cfi_cmdset_0001.c: CFI 1.0 and CFI 1.1")
-(sent again with CC to Nicolas Pitre)
+Hi,
 
-Signed-off-by: Daniel Ribeiro <drwyrm@gmail.com>
----
- drivers/mtd/chips/cfi_cmdset_0001.c |   12 ++++++++++++
- 1 files changed, 12 insertions(+), 0 deletions(-)
+I about to write a FTL for a large (2KB or 4KB page size) NAND flash 
+devices.
+MTD has a interface, mtd_blktrans_ops, for FTL. mtd_blktrans_ops has two 
+access interface; readsect and writesect.
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index bf07d14..0e01ab9 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -46,6 +46,7 @@
- #define MANUFACTURER_INTEL	0x0089
- #define I82802AB	0x00ad
- #define I82802AC	0x00ac
-+#define PF38F4476	0x881c
- #define MANUFACTURER_ST         0x0020
- #define M50LPW080       0x002F
- #define M50FLW080A	0x0080
-@@ -315,9 +316,18 @@ static struct cfi_fixup fixup_table[] = {
- 	{ 0, 0, NULL, NULL }
- };
- 
-+static void cfi_fixup_major_minor(struct cfi_private *cfi,
-+						struct cfi_pri_intelext *extp)
-+{
-+	if (cfi->mfr == MANUFACTURER_INTEL &&
-+			cfi->id == PF38F4476 && extp->MinorVersion == '3')
-+		extp->MinorVersion = '1';
-+}
-+
- static inline struct cfi_pri_intelext *
- read_pri_intelext(struct map_info *map, __u16 adr)
- {
-+	struct cfi_private *cfi = map->fldrv_priv;
- 	struct cfi_pri_intelext *extp;
- 	unsigned int extra_size = 0;
- 	unsigned int extp_size = sizeof(*extp);
-@@ -327,6 +337,8 @@ read_pri_intelext(struct map_info *map, __u16 adr)
- 	if (!extp)
- 		return NULL;
- 
-+	cfi_fixup_major_minor(cfi, extp);
-+
- 	if (extp->MajorVersion != '1' ||
- 	    (extp->MinorVersion < '0' || extp->MinorVersion > '5')) {
- 		printk(KERN_ERR "  Unknown Intel/Sharp Extended Query "
--- 
-tg: (385157b..) mtd/pf38f4476-fix (depends on: mtd/cfi1.1-has-extra-too)
+Since readsect and writesect in mtd_blktrans_ops takes single sector # 
+for its argument, underlying FTL cannot handle multiple sectors at once 
+even if above block IO layer requested multiple, logically consecutive, 
+sectors in a request.
 
--- 
-Daniel Ribeiro
+Here is a situation:
+
+Let's say that flash device consists of 2 KB pages, and FTL registers 
+itself with 512B sector size.
+If a filesystem lying on the FTL device uses 2KB blocks, mtd_blkdevs 
+always takes request whose size is multiple of 2 KB.
+Let's assume that 2 KB request comes. Since current mtd_blktrans_ops 
+splits the request into four 512B pieces, the request incurrs four 512B 
+IOs in the FTL. Especillay for write requests, the splitted requests may 
+degrade performance since the FTL should write four times for 
+programming one 2KB page. Of course, although there can be a solution to 
+avoid the problem such as internal page buffering, it may be complicated 
+due to synchronization issues.
+
+Here is my questions:
+
+1. I think if the FTL device uses 2KB sector size, we can avoid the 
+splitted I/O problem. Am I correct?
+
+2. I think it will be more general if mtd_blktrans_ops offers access 
+interfaces that take (starting sector#, # of sectors) like block IO 
+layer do. Any problems with that?
+
+
+Thanks.
