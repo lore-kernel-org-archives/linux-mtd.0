@@ -1,18 +1,19 @@
 Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M64jU-0006vG-KD
-	for linux-mtd@lists.infradead.org; Mon, 18 May 2009 15:26:35 +0000
-Subject: [PATCH] UBI: add notification API
+	id 1M64lJ-0007Lm-4M
+	for linux-mtd@lists.infradead.org; Mon, 18 May 2009 15:28:27 +0000
+Subject: [PATCH] UBI: remove built-in gluebi
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: dpervushin@embeddedalley.com
-In-Reply-To: <1242660138.3238.5.camel@localhost.localdomain>
+In-Reply-To: <1242660375.3238.7.camel@localhost.localdomain>
 References: <1241018978.20184.33.camel@hp.diimka.lan>
 	<1242660138.3238.5.camel@localhost.localdomain>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 18 May 2009 18:26:15 +0300
-Message-Id: <1242660375.3238.7.camel@localhost.localdomain>
+	<1242660375.3238.7.camel@localhost.localdomain>
+Content-Type: text/plain
+Date: Mon, 18 May 2009 18:28:14 +0300
+Message-Id: <1242660494.3238.8.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,468 +26,175 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 From: Dmitry Pervushin <dpervushin@embeddedalley.com>
-Date: Wed, 29 Apr 2009 19:29:38 +0400
-Subject: [PATCH] UBI: add notification API
+Date: Wed, 29 Apr 2009 19:29:44 +0400
+Subject: [PATCH] UBI: remove built-in gluebi
 
-UBI volume notifications are intended to create the API to get clients
-notified about volume creation/deletion, renaming and re-sizing. A
-client can subscribe to these notifications using 'ubi_volume_register()'
-and cancel the subscription using 'ubi_volume_unregister()'. When UBI
-volumes change, a blocking notifier is called. Clients also can request
-"added" events on all volumes that existed before client subscribed
-to the notifications.
-
-If we use notifications instead of calling functions like 'ubi_gluebi_xxx()',
-we can make the MTD emulation layer to be more flexible: build it as a
-separate module and load/unload it on demand.
-
-[Artem: many cleanups, rework locking, add "updated" event, provide
- device/volume info in notifiers]
+Remove built-in gluebi support. This is a preparation for a
+standalone glubi module support
 
 Signed-off-by: Dmitry Pervushin <dpervushin@embeddedalley.com>
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- drivers/mtd/ubi/build.c |  100 +++++++++++++++++++++++++++++++++++++++++--
- drivers/mtd/ubi/cdev.c  |    1 +
- drivers/mtd/ubi/kapi.c  |  108 ++++++++++++++++++++++++++++++++++++++++-------
- drivers/mtd/ubi/ubi.h   |   12 +++++
- drivers/mtd/ubi/vmt.c   |    4 ++
- include/linux/mtd/ubi.h |   37 ++++++++++++++++
- 6 files changed, 241 insertions(+), 21 deletions(-)
+ drivers/mtd/ubi/cdev.c |    1 -
+ drivers/mtd/ubi/ubi.h  |   26 --------------------------
+ drivers/mtd/ubi/vmt.c  |   26 ++------------------------
+ 3 files changed, 2 insertions(+), 51 deletions(-)
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 2c3269e..2dd203d 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -122,6 +122,94 @@ static struct device_attribute dev_mtd_num =
- 	__ATTR(mtd_num, S_IRUGO, dev_attribute_show, NULL);
- 
- /**
-+ * ubi_volume_notify - send a volume change notification.
-+ * @ubi: UBI device description object
-+ * @vol: volume description object of the changed volume
-+ * @ntype: notification type to send (%UBI_VOLUME_ADDED, etc)
-+ *
-+ * This is a helper function which notifies all subscribers about a volume
-+ * change event (creation, removal, re-sizing, re-naming, updating). Returns
-+ * zero in case of success and a negative error code in case of failure.
-+ */
-+int ubi_volume_notify(struct ubi_device *ubi, struct ubi_volume *vol, int ntype)
-+{
-+	struct ubi_notification nt;
-+
-+	ubi_do_get_device_info(ubi, &nt.di);
-+	ubi_do_get_volume_info(ubi, vol, &nt.vi);
-+	return blocking_notifier_call_chain(&ubi_notifiers, ntype, &nt);
-+}
-+
-+/**
-+ * ubi_notify_all - send a notification to all volumes.
-+ * @ubi: UBI device description object
-+ * @ntype: notification type to send (%UBI_VOLUME_ADDED, etc)
-+ * @nb: the notifier to call
-+ *
-+ * This function walks all volumes of UBI device @ubi and sends the @ntype
-+ * notification for each volume. If @nb is %NULL, then all registered notifiers
-+ * are called, otherwise only the @nb notifier is called. Returns the number of
-+ * sent notifications.
-+ */
-+int ubi_notify_all(struct ubi_device *ubi, int ntype, struct notifier_block *nb)
-+{
-+	struct ubi_notification nt;
-+	int i, count = 0;
-+
-+	ubi_do_get_device_info(ubi, &nt.di);
-+
-+	mutex_lock(&ubi->device_mutex);
-+	for (i = 0; i < ubi->vtbl_slots; i++) {
-+		/*
-+		 * Since the @ubi->device is locked, and we are not going to
-+		 * change @ubi->volumes, we do not have to lock
-+		 * @ubi->volumes_lock.
-+		 */
-+		if (!ubi->volumes[i])
-+			continue;
-+
-+		ubi_do_get_volume_info(ubi, ubi->volumes[i], &nt.vi);
-+		if (nb)
-+			nb->notifier_call(nb, ntype, &nt);
-+		else
-+			blocking_notifier_call_chain(&ubi_notifiers, ntype,
-+						     &nt);
-+		count += 1;
-+	}
-+	mutex_unlock(&ubi->device_mutex);
-+
-+	return count;
-+}
-+
-+/**
-+ * ubi_enumerate_volumes - send "add" notification for all existing volumes.
-+ * @nb: the notifier to call
-+ *
-+ * This function walks all UBI devices and volumes and sends the
-+ * %UBI_VOLUME_ADDED notification for each volume. If @nb is %NULL, then all
-+ * registered notifiers are called, otherwise only the @nb notifier is called.
-+ * Returns the number of sent notifications.
-+ */
-+int ubi_enumerate_volumes(struct notifier_block *nb)
-+{
-+	int i, count = 0;
-+
-+	/*
-+	 * Since the @ubi_devices_mutex is locked, and we are not going to
-+	 * change @ubi_devices, we do not have to lock @ubi_devices_lock.
-+	 */
-+	for (i = 0; i < UBI_MAX_DEVICES; i++) {
-+		struct ubi_device *ubi = ubi_devices[i];
-+
-+		if (!ubi)
-+			continue;
-+		count += ubi_notify_all(ubi, UBI_VOLUME_ADDED, nb);
-+	}
-+
-+	return count;
-+}
-+
-+/**
-  * ubi_get_device - get UBI device.
-  * @ubi_num: UBI device number
-  *
-@@ -876,6 +964,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
- 	wake_up_process(ubi->bgt_thread);
- 
- 	ubi_devices[ubi_num] = ubi;
-+	ubi_notify_all(ubi, UBI_VOLUME_ADDED, NULL);
- 	return ubi_num;
- 
- out_uif:
-@@ -918,13 +1007,13 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
- 	if (ubi_num < 0 || ubi_num >= UBI_MAX_DEVICES)
- 		return -EINVAL;
- 
--	spin_lock(&ubi_devices_lock);
--	ubi = ubi_devices[ubi_num];
--	if (!ubi) {
--		spin_unlock(&ubi_devices_lock);
-+	ubi = ubi_get_device(ubi_num);
-+	if (!ubi)
- 		return -EINVAL;
--	}
- 
-+	spin_lock(&ubi_devices_lock);
-+	put_device(&ubi->dev);
-+	ubi->ref_count -= 1;
- 	if (ubi->ref_count) {
- 		if (!anyway) {
- 			spin_unlock(&ubi_devices_lock);
-@@ -938,6 +1027,7 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
- 	spin_unlock(&ubi_devices_lock);
- 
- 	ubi_assert(ubi_num == ubi->ubi_num);
-+	ubi_notify_all(ubi, UBI_VOLUME_REMOVED, NULL);
- 	dbg_msg("detaching mtd%d from ubi%d", ubi->mtd->index, ubi_num);
- 
- 	/*
 diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index 9a2b217..6319836 100644
+index 6319836..f237ddb 100644
 --- a/drivers/mtd/ubi/cdev.c
 +++ b/drivers/mtd/ubi/cdev.c
-@@ -396,6 +396,7 @@ static ssize_t vol_cdev_write(struct file *file, const char __user *buf,
+@@ -395,7 +395,6 @@ static ssize_t vol_cdev_write(struct file *file, const char __user *buf,
+ 			vol->corrupted = 1;
  		}
  		vol->checked = 1;
- 		ubi_gluebi_updated(vol);
-+		ubi_volume_notify(ubi, vol, UBI_VOLUME_UPDATED);
+-		ubi_gluebi_updated(vol);
+ 		ubi_volume_notify(ubi, vol, UBI_VOLUME_UPDATED);
  		revoke_exclusive(desc, UBI_READWRITE);
  	}
- 
-diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
-index 2675207..88a72e9 100644
---- a/drivers/mtd/ubi/kapi.c
-+++ b/drivers/mtd/ubi/kapi.c
-@@ -26,6 +26,24 @@
- #include "ubi.h"
- 
- /**
-+ * ubi_do_get_device_info - get information about UBI device.
-+ * @ubi: UBI device description object
-+ * @di: the information is stored here
-+ *
-+ * This function is the same as 'ubi_get_device_info()', but it assumes the UBI
-+ * device is locked and cannot disappear.
-+ */
-+void ubi_do_get_device_info(struct ubi_device *ubi, struct ubi_device_info *di)
-+{
-+	di->ubi_num = ubi->ubi_num;
-+	di->leb_size = ubi->leb_size;
-+	di->min_io_size = ubi->min_io_size;
-+	di->ro_mode = ubi->ro_mode;
-+	di->cdev = ubi->cdev.dev;
-+}
-+EXPORT_SYMBOL_GPL(ubi_do_get_device_info);
-+
-+/**
-  * ubi_get_device_info - get information about UBI device.
-  * @ubi_num: UBI device number
-  * @di: the information is stored here
-@@ -39,33 +57,24 @@ int ubi_get_device_info(int ubi_num, struct ubi_device_info *di)
- 
- 	if (ubi_num < 0 || ubi_num >= UBI_MAX_DEVICES)
- 		return -EINVAL;
--
- 	ubi = ubi_get_device(ubi_num);
- 	if (!ubi)
- 		return -ENODEV;
--
--	di->ubi_num = ubi->ubi_num;
--	di->leb_size = ubi->leb_size;
--	di->min_io_size = ubi->min_io_size;
--	di->ro_mode = ubi->ro_mode;
--	di->cdev = ubi->cdev.dev;
--
-+	ubi_do_get_device_info(ubi, di);
- 	ubi_put_device(ubi);
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(ubi_get_device_info);
- 
- /**
-- * ubi_get_volume_info - get information about UBI volume.
-- * @desc: volume descriptor
-+ * ubi_do_get_volume_info - get information about UBI volume.
-+ * @ubi: UBI device description object
-+ * @vol: volume description object
-  * @vi: the information is stored here
-  */
--void ubi_get_volume_info(struct ubi_volume_desc *desc,
--			 struct ubi_volume_info *vi)
-+void ubi_do_get_volume_info(struct ubi_device *ubi, struct ubi_volume *vol,
-+			    struct ubi_volume_info *vi)
- {
--	const struct ubi_volume *vol = desc->vol;
--	const struct ubi_device *ubi = vol->ubi;
--
- 	vi->vol_id = vol->vol_id;
- 	vi->ubi_num = ubi->ubi_num;
- 	vi->size = vol->reserved_pebs;
-@@ -79,6 +88,17 @@ void ubi_get_volume_info(struct ubi_volume_desc *desc,
- 	vi->name = vol->name;
- 	vi->cdev = vol->cdev.dev;
- }
-+
-+/**
-+ * ubi_get_volume_info - get information about UBI volume.
-+ * @desc: volume descriptor
-+ * @vi: the information is stored here
-+ */
-+void ubi_get_volume_info(struct ubi_volume_desc *desc,
-+			 struct ubi_volume_info *vi)
-+{
-+	ubi_do_get_volume_info(desc->vol->ubi, desc->vol, vi);
-+}
- EXPORT_SYMBOL_GPL(ubi_get_volume_info);
- 
- /**
-@@ -561,7 +581,7 @@ int ubi_leb_unmap(struct ubi_volume_desc *desc, int lnum)
- EXPORT_SYMBOL_GPL(ubi_leb_unmap);
- 
- /**
-- * ubi_leb_map - map logical erasblock to a physical eraseblock.
-+ * ubi_leb_map - map logical eraseblock to a physical eraseblock.
-  * @desc: volume descriptor
-  * @lnum: logical eraseblock number
-  * @dtype: expected data type
-@@ -659,3 +679,59 @@ int ubi_sync(int ubi_num)
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(ubi_sync);
-+
-+BLOCKING_NOTIFIER_HEAD(ubi_notifiers);
-+
-+/**
-+ * ubi_register_volume_notifier - register a volume notifier.
-+ * @nb: the notifier description object
-+ * @ignore_existing: if non-zero, do not send "added" notification for all
-+ *                   already existing volumes
-+ *
-+ * This function registers a volume notifier, which means that
-+ * 'nb->notifier_call()' will be invoked when an UBI  volume is created,
-+ * removed, re-sized, re-named, or updated. The first argument of the function
-+ * is the notification type. The second argument is pointer to a
-+ * &struct ubi_notification object which describes the notification event.
-+ * Using UBI API from the volume notifier is prohibited.
-+ *
-+ * This function returns zero in case of success and a negative error code
-+ * in case of failure.
-+ */
-+int ubi_register_volume_notifier(struct notifier_block *nb,
-+				 int ignore_existing)
-+{
-+	int err;
-+
-+	err = blocking_notifier_chain_register(&ubi_notifiers, nb);
-+	if (err != 0)
-+		return err;
-+	if (ignore_existing)
-+		return 0;
-+
-+	/*
-+	 * We are going to walk all UBI devices and all volumes, and
-+	 * notify the user about existing volumes by the %UBI_VOLUME_ADDED
-+	 * event. We have to lock the @ubi_devices_mutex to make sure UBI
-+	 * devices do not disappear.
-+	 */
-+	mutex_lock(&ubi_devices_mutex);
-+	ubi_enumerate_volumes(nb);
-+	mutex_unlock(&ubi_devices_mutex);
-+
-+	return err;
-+}
-+EXPORT_SYMBOL_GPL(ubi_register_volume_notifier);
-+
-+/**
-+ * ubi_unregister_volume_notifier - unregister the volume notifier.
-+ * @nb: the notifier description object
-+ *
-+ * This function unregisters volume notifier @nm and returns zero in case of
-+ * success and a negative error code in case of failure.
-+ */
-+int ubi_unregister_volume_notifier(struct notifier_block *nb)
-+{
-+	return blocking_notifier_chain_unregister(&ubi_notifiers, nb);
-+}
-+EXPORT_SYMBOL_GPL(ubi_unregister_volume_notifier);
 diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 749007e..b5441db 100644
+index b5441db..7847369 100644
 --- a/drivers/mtd/ubi/ubi.h
 +++ b/drivers/mtd/ubi/ubi.h
-@@ -38,6 +38,7 @@
- #include <linux/vmalloc.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/ubi.h>
-+#include <linux/notifier.h>
- 
- #include "ubi-media.h"
- #include "scan.h"
-@@ -455,6 +456,7 @@ extern const struct file_operations ubi_cdev_operations;
- extern const struct file_operations ubi_vol_cdev_operations;
- extern struct class *ubi_class;
- extern struct mutex ubi_devices_mutex;
-+extern struct blocking_notifier_head ubi_notifiers;
- 
- /* vtbl.c */
- int ubi_change_vtbl_record(struct ubi_device *ubi, int idx,
-@@ -547,6 +549,16 @@ struct ubi_device *ubi_get_device(int ubi_num);
- void ubi_put_device(struct ubi_device *ubi);
- struct ubi_device *ubi_get_by_major(int major);
- int ubi_major2num(int major);
-+int ubi_volume_notify(struct ubi_device *ubi, struct ubi_volume *vol,
-+		      int ntype);
-+int ubi_notify_all(struct ubi_device *ubi, int ntype,
-+		   struct notifier_block *nb);
-+int ubi_enumerate_volumes(struct notifier_block *nb);
-+
-+/* kapi.c */
-+void ubi_do_get_device_info(struct ubi_device *ubi, struct ubi_device_info *di);
-+void ubi_do_get_volume_info(struct ubi_device *ubi, struct ubi_volume *vol,
-+			    struct ubi_volume_info *vi);
- 
- /*
-  * ubi_rb_for_each_entry - walk an RB-tree.
-diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index 8e8d6fa..e151862 100644
---- a/drivers/mtd/ubi/vmt.c
-+++ b/drivers/mtd/ubi/vmt.c
-@@ -358,6 +358,7 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
- 	ubi->vol_count += 1;
- 	spin_unlock(&ubi->volumes_lock);
- 
-+	ubi_volume_notify(ubi, vol, UBI_VOLUME_ADDED);
- 	if (paranoid_check_volumes(ubi))
- 		dbg_err("check failed while creating volume %d", vol_id);
- 	return err;
-@@ -466,6 +467,7 @@ int ubi_remove_volume(struct ubi_volume_desc *desc, int no_vtbl)
- 	ubi->vol_count -= 1;
- 	spin_unlock(&ubi->volumes_lock);
- 
-+	ubi_volume_notify(ubi, vol, UBI_VOLUME_REMOVED);
- 	if (!no_vtbl && paranoid_check_volumes(ubi))
- 		dbg_err("check failed while removing volume %d", vol_id);
- 
-@@ -589,6 +591,7 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, int reserved_pebs)
- 			(long long)vol->used_ebs * vol->usable_leb_size;
- 	}
- 
-+	ubi_volume_notify(ubi, vol, UBI_VOLUME_RESIZED);
- 	if (paranoid_check_volumes(ubi))
- 		dbg_err("check failed while re-sizing volume %d", vol_id);
- 	return err;
-@@ -635,6 +638,7 @@ int ubi_rename_volumes(struct ubi_device *ubi, struct list_head *rename_list)
- 			vol->name_len = re->new_name_len;
- 			memcpy(vol->name, re->new_name, re->new_name_len + 1);
- 			spin_unlock(&ubi->volumes_lock);
-+			ubi_volume_notify(ubi, vol, UBI_VOLUME_RENAMED);
- 		}
- 	}
- 
-diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
-index 6316faf..6913b71 100644
---- a/include/linux/mtd/ubi.h
-+++ b/include/linux/mtd/ubi.h
-@@ -132,6 +132,39 @@ struct ubi_device_info {
- 	dev_t cdev;
+@@ -209,10 +209,6 @@ struct ubi_volume_desc;
+  * @changing_leb: %1 if the atomic LEB change ioctl command is in progress
+  * @direct_writes: %1 if direct writes are enabled for this volume
+  *
+- * @gluebi_desc: gluebi UBI volume descriptor
+- * @gluebi_refcount: reference count of the gluebi MTD device
+- * @gluebi_mtd: MTD device description object of the gluebi MTD device
+- *
+  * The @corrupted field indicates that the volume's contents is corrupted.
+  * Since UBI protects only static volumes, this field is not relevant to
+  * dynamic volumes - it is user's responsibility to assure their data
+@@ -256,17 +252,6 @@ struct ubi_volume {
+ 	unsigned int updating:1;
+ 	unsigned int changing_leb:1;
+ 	unsigned int direct_writes:1;
+-
+-#ifdef CONFIG_MTD_UBI_GLUEBI
+-	/*
+-	 * Gluebi-related stuff may be compiled out.
+-	 * Note: this should not be built into UBI but should be a separate
+-	 * ubimtd driver which works on top of UBI and emulates MTD devices.
+-	 */
+-	struct ubi_volume_desc *gluebi_desc;
+-	int gluebi_refcount;
+-	struct mtd_info gluebi_mtd;
+-#endif
  };
  
-+/*
-+ * enum - volume notification types.
-+ * @UBI_VOLUME_ADDED: volume has been added
-+ * @UBI_VOLUME_REMOVED: start volume volume
-+ * @UBI_VOLUME_RESIZED: volume size has been re-sized
-+ * @UBI_VOLUME_RENAMED: volume name has been re-named
-+ * @UBI_VOLUME_UPDATED: volume name has been updated
-+ *
-+ * These constants define which type of event has happened when a volume
-+ * notification function is invoked.
-+ */
-+enum {
-+	UBI_VOLUME_ADDED,
-+	UBI_VOLUME_REMOVED,
-+	UBI_VOLUME_RESIZED,
-+	UBI_VOLUME_RENAMED,
-+	UBI_VOLUME_UPDATED,
-+};
-+
-+/*
-+ * struct ubi_notification - UBI notification description structure.
-+ * @di: UBI device description object
-+ * @vi: UBI volume description object
-+ *
-+ * UBI notifiers are called with a pointer to an object of this type. The
-+ * object describes the notification. Namely, it provides a description of the
-+ * UBI device and UBI volume the notification informs about.
-+ */
-+struct ubi_notification {
-+	struct ubi_device_info di;
-+	struct ubi_volume_info vi;
-+};
-+
- /* UBI descriptor given to users when they open UBI volumes */
- struct ubi_volume_desc;
+ /**
+@@ -489,17 +474,6 @@ int ubi_calc_data_len(const struct ubi_device *ubi, const void *buf,
+ int ubi_check_volume(struct ubi_device *ubi, int vol_id);
+ void ubi_calculate_reserved(struct ubi_device *ubi);
  
-@@ -141,6 +174,10 @@ void ubi_get_volume_info(struct ubi_volume_desc *desc,
- struct ubi_volume_desc *ubi_open_volume(int ubi_num, int vol_id, int mode);
- struct ubi_volume_desc *ubi_open_volume_nm(int ubi_num, const char *name,
- 					   int mode);
-+int ubi_register_volume_notifier(struct notifier_block *nb,
-+				 int ignore_existing);
-+int ubi_unregister_volume_notifier(struct notifier_block *nb);
-+
- void ubi_close_volume(struct ubi_volume_desc *desc);
- int ubi_leb_read(struct ubi_volume_desc *desc, int lnum, char *buf, int offset,
- 		 int len, int check);
+-/* gluebi.c */
+-#ifdef CONFIG_MTD_UBI_GLUEBI
+-int ubi_create_gluebi(struct ubi_device *ubi, struct ubi_volume *vol);
+-int ubi_destroy_gluebi(struct ubi_volume *vol);
+-void ubi_gluebi_updated(struct ubi_volume *vol);
+-#else
+-#define ubi_create_gluebi(ubi, vol) 0
+-#define ubi_destroy_gluebi(vol) 0
+-#define ubi_gluebi_updated(vol)
+-#endif
+-
+ /* eba.c */
+ int ubi_eba_unmap_leb(struct ubi_device *ubi, struct ubi_volume *vol,
+ 		      int lnum);
+diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
+index e151862..ab64cb5 100644
+--- a/drivers/mtd/ubi/vmt.c
++++ b/drivers/mtd/ubi/vmt.c
+@@ -317,10 +317,6 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
+ 		goto out_mapping;
+ 	}
+ 
+-	err = ubi_create_gluebi(ubi, vol);
+-	if (err)
+-		goto out_cdev;
+-
+ 	vol->dev.release = vol_release;
+ 	vol->dev.parent = &ubi->dev;
+ 	vol->dev.devt = dev;
+@@ -330,7 +326,7 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
+ 	err = device_register(&vol->dev);
+ 	if (err) {
+ 		ubi_err("cannot register device");
+-		goto out_gluebi;
++		goto out_cdev;
+ 	}
+ 
+ 	err = volume_sysfs_init(ubi, vol);
+@@ -375,10 +371,6 @@ out_sysfs:
+ 	do_free = 0;
+ 	get_device(&vol->dev);
+ 	volume_sysfs_close(vol);
+-out_gluebi:
+-	if (ubi_destroy_gluebi(vol))
+-		dbg_err("cannot destroy gluebi for volume %d:%d",
+-			ubi->ubi_num, vol_id);
+ out_cdev:
+ 	cdev_del(&vol->cdev);
+ out_mapping:
+@@ -433,10 +425,6 @@ int ubi_remove_volume(struct ubi_volume_desc *desc, int no_vtbl)
+ 	ubi->volumes[vol_id] = NULL;
+ 	spin_unlock(&ubi->volumes_lock);
+ 
+-	err = ubi_destroy_gluebi(vol);
+-	if (err)
+-		goto out_err;
+-
+ 	if (!no_vtbl) {
+ 		err = ubi_change_vtbl_record(ubi, vol_id, NULL);
+ 		if (err)
+@@ -674,10 +662,6 @@ int ubi_add_volume(struct ubi_device *ubi, struct ubi_volume *vol)
+ 		return err;
+ 	}
+ 
+-	err = ubi_create_gluebi(ubi, vol);
+-	if (err)
+-		goto out_cdev;
+-
+ 	vol->dev.release = vol_release;
+ 	vol->dev.parent = &ubi->dev;
+ 	vol->dev.devt = dev;
+@@ -685,12 +669,11 @@ int ubi_add_volume(struct ubi_device *ubi, struct ubi_volume *vol)
+ 	dev_set_name(&vol->dev, "%s_%d", ubi->ubi_name, vol->vol_id);
+ 	err = device_register(&vol->dev);
+ 	if (err)
+-		goto out_gluebi;
++		goto out_cdev;
+ 
+ 	err = volume_sysfs_init(ubi, vol);
+ 	if (err) {
+ 		cdev_del(&vol->cdev);
+-		err = ubi_destroy_gluebi(vol);
+ 		volume_sysfs_close(vol);
+ 		return err;
+ 	}
+@@ -699,8 +682,6 @@ int ubi_add_volume(struct ubi_device *ubi, struct ubi_volume *vol)
+ 		dbg_err("check failed while adding volume %d", vol_id);
+ 	return err;
+ 
+-out_gluebi:
+-	err = ubi_destroy_gluebi(vol);
+ out_cdev:
+ 	cdev_del(&vol->cdev);
+ 	return err;
+@@ -716,12 +697,9 @@ out_cdev:
+  */
+ void ubi_free_volume(struct ubi_device *ubi, struct ubi_volume *vol)
+ {
+-	int err;
+-
+ 	dbg_gen("free volume %d", vol->vol_id);
+ 
+ 	ubi->volumes[vol->vol_id] = NULL;
+-	err = ubi_destroy_gluebi(vol);
+ 	cdev_del(&vol->cdev);
+ 	volume_sysfs_close(vol);
+ }
 -- 
 1.6.0.6
-
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
