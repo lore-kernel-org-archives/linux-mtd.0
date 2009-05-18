@@ -1,14 +1,15 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M6AXm-00019L-FD
-	for linux-mtd@lists.infradead.org; Mon, 18 May 2009 21:38:53 +0000
+	id 1M6AXu-0001AS-BB
+	for linux-mtd@lists.infradead.org; Mon, 18 May 2009 21:39:00 +0000
 From: nsnehaprabha@ti.com
 To: linux-mtd@lists.infradead.org,
 	davinci-linux-open-source@linux.davincidsp.com, dwmw2@infradead.org,
 	tglx@linutronix.de, akpm@linux-foundation.org
-Subject: [PATCH 2.6.30-rc6 2/3] NAND: Add new ECC mode - ECC_HW_OOB_FIRST
-Date: Mon, 18 May 2009 17:38:17 -0400
-Message-Id: <1242682697-19815-1-git-send-email-nsnehaprabha@ti.com>
+Subject: [PATCH 2.6.30-rc6 3/3] NAND: Add 4-bit ECC support for large page
+	NAND chips
+Date: Mon, 18 May 2009 17:38:25 -0400
+Message-Id: <1242682705-19845-1-git-send-email-nsnehaprabha@ti.com>
 Cc: Sneha Narnakaje <nsnehaprabha@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,109 +22,77 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Sneha Narnakaje <nsnehaprabha@ti.com>
 
-This patch adds the new mode NAND_ECC_HW_OOB_FIRST in the nand code to
-support 4-bit ECC on TI DaVinci devices with large page (up to 2K) NAND
-chips. This ECC mode is similar to NAND_ECC_HW, with the exception of
-read_page API that first reads the OOB area, reads the data in chunks, feeds
-the ECC from OOB area to the ECC hw engine and perform any correction on the
-data as per the ECC status reported by the engine.
+This patch adds 4-bit ECC support for large page NAND chips using the new ECC
+mode NAND_ECC_HW_OOB_FIRST. The platform data from board-dm355-evm has been
+adjusted to use this mode.
 
-"ECC_HW_OOB_FIRST" name suggested by Thomas Gleixner
+The patches have been verified on DM355 device with 2K Micron devices using
+mtd-tests and JFFS2. Error correction upto 4-bits has also been verified using
+nandwrite/nanddump utilities.
+
 Reviewed-by: David Brownell <dbrownell@users.sourceforge.net>
 Signed-off-by: Sneha Narnakaje <nsnehaprabha@ti.com>
 ---
- drivers/mtd/nand/nand_base.c |   59 ++++++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/nand.h     |    1 +
- 2 files changed, 60 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/davinci_nand.c |   37 +++++++++++++++++++++++++++++++------
+ 1 files changed, 31 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 979988a..5140ca2 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -980,6 +980,54 @@ static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
- }
+diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+index ba6940d..4557b8d 100644
+--- a/drivers/mtd/nand/davinci_nand.c
++++ b/drivers/mtd/nand/davinci_nand.c
+@@ -500,6 +500,24 @@ static struct nand_ecclayout hwecc4_small __initconst = {
+ 	},
+ };
  
- /**
-+ * nand_read_page_hwecc_oob_first - [REPLACABLE] hw ecc, read oob first
-+ * @mtd:	mtd info structure
-+ * @chip:	nand chip info structure
-+ * @buf:	buffer to store read data
-+ *
-+ * Hardware ECC for large page chips, require OOB to be read first.
-+ * For this ECC mode, the write_page method is re-used from ECC_HW.
-+ * These methods read/write ECC from the OOB area, unlike the
-+ * ECC_HW_SYNDROME support with multiple ECC steps, follows the
-+ * "infix ECC" scheme and reads/writes ECC from the data area, by
-+ * overwriting the NAND manufacturer bad block markings.
++/* An ECC layout for using 4-bit ECC with large-page (2048bytes) flash,
++ * storing ten ECC bytes plus the manufacturer's bad block marker byte,
++ * and not overlapping the default BBT markers.
 + */
-+static int nand_read_page_hwecc_oob_first(struct mtd_info *mtd,
-+	struct nand_chip *chip, uint8_t *buf, int page)
-+{
-+	int i, eccsize = chip->ecc.size;
-+	int eccbytes = chip->ecc.bytes;
-+	int eccsteps = chip->ecc.steps;
-+	uint8_t *p = buf;
-+	uint8_t *ecc_code = chip->buffers->ecccode;
-+	uint32_t *eccpos = chip->ecc.layout->eccpos;
-+	uint8_t *ecc_calc = chip->buffers->ecccalc;
-+
-+	/* Read the OOB area first */
-+	chip->cmdfunc(mtd, NAND_CMD_READOOB, 0, page);
-+	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
-+	chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
-+
-+	for (i = 0; i < chip->ecc.total; i++)
-+		ecc_code[i] = chip->oob_poi[eccpos[i]];
-+
-+	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize) {
-+		int stat;
-+
-+		chip->ecc.hwctl(mtd, NAND_ECC_READ);
-+		chip->read_buf(mtd, p, eccsize);
-+		chip->ecc.calculate(mtd, p, &ecc_calc[i]);
-+
-+		stat = chip->ecc.correct(mtd, p, &ecc_code[i], NULL);
-+		if (stat < 0)
-+			mtd->ecc_stats.failed++;
-+		else
-+			mtd->ecc_stats.corrected += stat;
-+	}
-+	return 0;
-+}
-+
-+/**
-  * nand_read_page_syndrome - [REPLACABLE] hardware ecc syndrom based page read
-  * @mtd:	mtd info structure
-  * @chip:	nand chip info structure
-@@ -2673,6 +2721,17 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	 */
++static struct nand_ecclayout hwecc4_2048 __initconst = {
++	.eccbytes = 40,
++	.eccpos = { 0, 1, 2, 3, 4,
++		/* offset 5 holds the badblock marker */
++		6, 7, 8, 9, 10,	11, 12, 13, 14, 15,
++		/* 8 bytes at offset 16 hold JFFS2 clean markers */
++		24, 25, 26, 27, 28,
++		29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
++		39, 40, 41, 42, 43, 44, 45, 46, 47, 48, },
++	.oobfree = {
++		{.offset = 16, .length = 8, },
++		{.offset = 49, },
++	},
++};
  
- 	switch (chip->ecc.mode) {
-+	case NAND_ECC_HW_OOB_FIRST:
-+		/* Similar to NAND_ECC_HW, but a separate read_page handle */
-+		if (!chip->ecc.calculate || !chip->ecc.correct ||
-+		     !chip->ecc.hwctl) {
-+			printk(KERN_WARNING "No ECC functions supplied, "
-+			       "Hardware ECC not possible\n");
-+			BUG();
+ static int __init nand_davinci_probe(struct platform_device *pdev)
+ {
+@@ -689,15 +707,22 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
+ 				info->mtd.oobsize - 16;
+ 			goto syndrome_done;
+ 		}
++		if (chunks == 4) {
++			info->ecclayout = hwecc4_2048;
++			info->ecclayout.oobfree[1].length =
++				info->mtd.oobsize - 49;
++			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
++			goto syndrome_done;
 +		}
-+		if (!chip->ecc.read_page)
-+			chip->ecc.read_page = nand_read_page_hwecc_oob_first;
-+
- 	case NAND_ECC_HW:
- 		/* Use standard hwecc read page function ? */
- 		if (!chip->ecc.read_page)
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index f6c4dbe..d7ca6d3 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -121,6 +121,7 @@ typedef enum {
- 	NAND_ECC_SOFT,
- 	NAND_ECC_HW,
- 	NAND_ECC_HW_SYNDROME,
-+	NAND_ECC_HW_OOB_FIRST,
- } nand_ecc_modes_t;
  
- /*
+-		/* For large page chips we'll be wanting to use a
+-		 * not-yet-implemented mode that reads OOB data
+-		 * before reading the body of the page, to avoid
+-		 * the "infix OOB" model of NAND_ECC_HW_SYNDROME
+-		 * (and preserve manufacturer badblock markings).
++		/* 4K page chips are not yet supported. The eccpos from
++		 * nand_ecclayout cannot hold 80bytes and change to eccpos[]
++		 * breaks userspace ioctl interface with mtd-utils. Once we
++		 * resolve this issue, NAND_ECC_HW_OOB_FIRST mode can be used
++		 * for the 4K page chips.
+ 		 */
+ 		dev_warn(&pdev->dev, "no 4-bit ECC support yet "
+-				"for large page NAND\n");
++				"for 4K page NAND\n");
+ 		ret = -EIO;
+ 		goto err_scan;
+ 
 -- 
 1.6.0.4
