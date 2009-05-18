@@ -1,13 +1,18 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M5xtG-0006Y8-9a
-	for linux-mtd@lists.infradead.org; Mon, 18 May 2009 08:08:13 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH] plat_nand: add missing __devexit_p()
-Date: Mon, 18 May 2009 04:08:01 -0400
-Message-Id: <1242634081-16593-1-git-send-email-vapier@gentoo.org>
-Cc: linux-mtd@lists.infradead.org
+Received: from ey-out-1920.google.com ([74.125.78.146])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M5zlC-00014c-Go
+	for linux-mtd@lists.infradead.org; Mon, 18 May 2009 10:08:13 +0000
+Received: by ey-out-1920.google.com with SMTP id 13so726106eye.24
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 18 May 2009 03:07:52 -0700 (PDT)
+Sender: Peter Korsgaard <jacmet@gmail.com>
+From: Peter Korsgaard <jacmet@sunsite.dk>
+To: David.Woodhouse@intel.com, Artem.Bityutskiy@nokia.com,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd_dataflash: unbreak erase support
+Date: Mon, 18 May 2009 12:07:49 +0200
+Message-Id: <1242641269-19113-1-git-send-email-jacmet@sunsite.dk>
+Cc: stable@kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,27 +22,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The remove function uses __devexit, so the .remove assignment needs
-__devexit_p() to fix a build error with hotplug disabled.
+Commit 5b7f3a50 (fix dataflash 64-bit divisions) unfortunately
+introduced a typo. Erase addr and len were swapped in the pageaddr
+calculation, causing the wrong sectors to get erased.
 
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
-CC: linux-mtd@lists.infradead.org
+Signed-off-by: Peter Korsgaard <jacmet@sunsite.dk>
+Acked-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- drivers/mtd/nand/plat_nand.c |    2 +-
+ Resend with Artem's acked-by
+ David, clear regression from 2.6.28, please send to Linus for 2.6.30
+ Please consider for 2.6.29-stable as well.
+
+ drivers/mtd/devices/mtd_dataflash.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
-index 86e1d08..28ffd4e 100644
---- a/drivers/mtd/nand/plat_nand.c
-+++ b/drivers/mtd/nand/plat_nand.c
-@@ -128,7 +128,7 @@ static int __devexit plat_nand_remove(struct platform_device *pdev)
+diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
+index 62dee54..43976aa 100644
+--- a/drivers/mtd/devices/mtd_dataflash.c
++++ b/drivers/mtd/devices/mtd_dataflash.c
+@@ -178,7 +178,7 @@ static int dataflash_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 		/* Calculate flash page address; use block erase (for speed) if
+ 		 * we're at a block boundary and need to erase the whole block.
+ 		 */
+-		pageaddr = div_u64(instr->len, priv->page_size);
++		pageaddr = div_u64(instr->addr, priv->page_size);
+ 		do_block = (pageaddr & 0x7) == 0 && instr->len >= blocksize;
+ 		pageaddr = pageaddr << priv->page_offset;
  
- static struct platform_driver plat_nand_driver = {
- 	.probe		= plat_nand_probe,
--	.remove		= plat_nand_remove,
-+	.remove		= __devexit_p(plat_nand_remove),
- 	.driver		= {
- 		.name	= "gen_nand",
- 		.owner	= THIS_MODULE,
 -- 
-1.6.3
+1.6.2
