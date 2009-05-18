@@ -1,25 +1,21 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from smtpauth02.csee.onr.siteprotect.com ([64.26.60.136])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M6CGf-0008GS-RW
-	for linux-mtd@lists.infradead.org; Mon, 18 May 2009 23:29:20 +0000
-MIME-version: 1.0
-Content-transfer-encoding: 7BIT
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Received: from xanadu.home ([66.131.194.97]) by VL-MO-MR003.ip.videotron.ca
-	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
-	32bit))
-	with ESMTP id <0KJV00AUB58PCW00@VL-MO-MR003.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Mon, 18 May 2009 19:29:13 -0400 (EDT)
-Date: Mon, 18 May 2009 19:29:13 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-To: Daniel Ribeiro <drwyrm@gmail.com>
-Subject: Re: [PATCH] cfi_cmdset_0001.c: quirk for PF38F4476.
-In-reply-to: <1242558137.26769.7.camel@brutus>
-Message-id: <alpine.LFD.2.00.0905181929000.6741@xanadu.home>
-References: <1242558137.26769.7.camel@brutus>
-Cc: linux-mtd@lists.infradead.org,
-	openezx-devel <openezx-devel@lists.openezx.org>,
-	David Woodhouse <dwmw2@infradead.org>
+	id 1M6CiP-0004Ki-Kw
+	for linux-mtd@lists.infradead.org; Mon, 18 May 2009 23:58:00 +0000
+Message-ID: <4A11F5FC.40709@boundarydevices.com>
+Date: Mon, 18 May 2009 16:57:48 -0700
+From: Troy Kisky <troy.kisky@boundarydevices.com>
+MIME-Version: 1.0
+To: nsnehaprabha@ti.com
+Subject: Re: [PATCH 2.6.30-rc6 3/3] NAND: Add 4-bit ECC support for large
+	page	NAND chips
+References: <1242682705-19845-1-git-send-email-nsnehaprabha@ti.com>
+In-Reply-To: <1242682705-19845-1-git-send-email-nsnehaprabha@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: dwmw2@infradead.org, davinci-linux-open-source@linux.davincidsp.com,
+	linux-mtd@lists.infradead.org, tglx@linutronix.de,
+	akpm@linux-foundation.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,64 +25,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 17 May 2009, Daniel Ribeiro wrote:
-
-> This chip reports CFI 1.3, but the CFI PRI is like CFI 1.1. Add a quirk
-> to pass probe on this chip.
-> (This patch depends on "cfi_cmdset_0001.c: CFI 1.0 and CFI 1.1")
-> (sent again with CC to Nicolas Pitre)
+nsnehaprabha@ti.com wrote:
+> From: Sneha Narnakaje <nsnehaprabha@ti.com>
 > 
-> Signed-off-by: Daniel Ribeiro <drwyrm@gmail.com>
-
-Acked-by: Nicolas Pitre <nico@cam.org>
-
+> This patch adds 4-bit ECC support for large page NAND chips using the new ECC
+> mode NAND_ECC_HW_OOB_FIRST. The platform data from board-dm355-evm has been
+> adjusted to use this mode.
+> 
+> The patches have been verified on DM355 device with 2K Micron devices using
+> mtd-tests and JFFS2. Error correction upto 4-bits has also been verified using
+> nandwrite/nanddump utilities.
+> 
+> Reviewed-by: David Brownell <dbrownell@users.sourceforge.net>
+> Signed-off-by: Sneha Narnakaje <nsnehaprabha@ti.com>
 > ---
->  drivers/mtd/chips/cfi_cmdset_0001.c |   12 ++++++++++++
->  1 files changed, 12 insertions(+), 0 deletions(-)
+>  drivers/mtd/nand/davinci_nand.c |   37 +++++++++++++++++++++++++++++++------
+>  1 files changed, 31 insertions(+), 6 deletions(-)
 > 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-> index bf07d14..0e01ab9 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-> @@ -46,6 +46,7 @@
->  #define MANUFACTURER_INTEL	0x0089
->  #define I82802AB	0x00ad
->  #define I82802AC	0x00ac
-> +#define PF38F4476	0x881c
->  #define MANUFACTURER_ST         0x0020
->  #define M50LPW080       0x002F
->  #define M50FLW080A	0x0080
-> @@ -315,9 +316,18 @@ static struct cfi_fixup fixup_table[] = {
->  	{ 0, 0, NULL, NULL }
+> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+> index ba6940d..4557b8d 100644
+> --- a/drivers/mtd/nand/davinci_nand.c
+> +++ b/drivers/mtd/nand/davinci_nand.c
+> @@ -500,6 +500,24 @@ static struct nand_ecclayout hwecc4_small __initconst = {
+>  	},
 >  };
 >  
-> +static void cfi_fixup_major_minor(struct cfi_private *cfi,
-> +						struct cfi_pri_intelext *extp)
-> +{
-> +	if (cfi->mfr == MANUFACTURER_INTEL &&
-> +			cfi->id == PF38F4476 && extp->MinorVersion == '3')
-> +		extp->MinorVersion = '1';
-> +}
-> +
->  static inline struct cfi_pri_intelext *
->  read_pri_intelext(struct map_info *map, __u16 adr)
->  {
-> +	struct cfi_private *cfi = map->fldrv_priv;
->  	struct cfi_pri_intelext *extp;
->  	unsigned int extra_size = 0;
->  	unsigned int extp_size = sizeof(*extp);
-> @@ -327,6 +337,8 @@ read_pri_intelext(struct map_info *map, __u16 adr)
->  	if (!extp)
->  		return NULL;
+> +/* An ECC layout for using 4-bit ECC with large-page (2048bytes) flash,
+> + * storing ten ECC bytes plus the manufacturer's bad block marker byte,
+> + * and not overlapping the default BBT markers.
+> + */
+> +static struct nand_ecclayout hwecc4_2048 __initconst = {
+> +	.eccbytes = 40,
+> +	.eccpos = { 0, 1, 2, 3, 4,
+> +		/* offset 5 holds the badblock marker */
+
+I don't see any bad block overrides to move it from bytes 0,1
+to byte 5 in this patch. What am I missing?
+
+
+> +		6, 7, 8, 9, 10,	11, 12, 13, 14, 15,
+> +		/* 8 bytes at offset 16 hold JFFS2 clean markers */
+> +		24, 25, 26, 27, 28,
+> +		29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
+> +		39, 40, 41, 42, 43, 44, 45, 46, 47, 48, },
+> +	.oobfree = {
+> +		{.offset = 16, .length = 8, },
+> +		{.offset = 49, },
+> +	},
+> +};
 >  
-> +	cfi_fixup_major_minor(cfi, extp);
-> +
->  	if (extp->MajorVersion != '1' ||
->  	    (extp->MinorVersion < '0' || extp->MinorVersion > '5')) {
->  		printk(KERN_ERR "  Unknown Intel/Sharp Extended Query "
-> -- 
-> tg: (385157b..) mtd/pf38f4476-fix (depends on: mtd/cfi1.1-has-extra-too)
-> 
-> -- 
-> Daniel Ribeiro
-> 
+>  static int __init nand_davinci_probe(struct platform_device *pdev)
+>  {
+> @@ -689,15 +707,22 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
+>  				info->mtd.oobsize - 16;
+>  			goto syndrome_done;
+>  		}
+> +		if (chunks == 4) {
+> +			info->ecclayout = hwecc4_2048;
+> +			info->ecclayout.oobfree[1].length =
+> +				info->mtd.oobsize - 49;
+
+- info->ecclayout.oobfree[1].offset instead of 49 would look better.
+or move the .offset = 49 here too.
+
+> +			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
+> +			goto syndrome_done;
+> +		}
+>  
+> -		/* For large page chips we'll be wanting to use a
+> -		 * not-yet-implemented mode that reads OOB data
+> -		 * before reading the body of the page, to avoid
+> -		 * the "infix OOB" model of NAND_ECC_HW_SYNDROME
+> -		 * (and preserve manufacturer badblock markings).
+> +		/* 4K page chips are not yet supported. The eccpos from
+> +		 * nand_ecclayout cannot hold 80bytes and change to eccpos[]
+> +		 * breaks userspace ioctl interface with mtd-utils. Once we
+> +		 * resolve this issue, NAND_ECC_HW_OOB_FIRST mode can be used
+> +		 * for the 4K page chips.
+>  		 */
+>  		dev_warn(&pdev->dev, "no 4-bit ECC support yet "
+> -				"for large page NAND\n");
+> +				"for 4K page NAND\n");
+>  		ret = -EIO;
+>  		goto err_scan;
+>  
