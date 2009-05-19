@@ -1,22 +1,19 @@
-Received: from yw-out-1718.google.com ([74.125.46.158])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M6Ql6-0004Pk-UV
-	for linux-mtd@lists.infradead.org; Tue, 19 May 2009 14:57:43 +0000
-Received: by yw-out-1718.google.com with SMTP id 9so2456556ywk.72
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 19 May 2009 07:57:35 -0700 (PDT)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1M6OPf-0004fW-EX
+	for linux-mtd@lists.infradead.org; Tue, 19 May 2009 12:27:22 +0000
+Date: Tue, 19 May 2009 14:27:14 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Albrecht =?iso-8859-1?Q?Dre=DF?= <albrecht.dress@arcor.de>
+Subject: Re: Q: MTD RAM in OF Device Tree
+Message-ID: <20090519122714.GH30753@pengutronix.de>
+References: <5023288.1242734340173.JavaMail.ngmail@webmail15.arcor-online.net>
 MIME-Version: 1.0
-In-Reply-To: <1232559685-2268-3-git-send-email-w.sang@pengutronix.de>
-References: <1232559685-2268-1-git-send-email-w.sang@pengutronix.de>
-	<1232559685-2268-3-git-send-email-w.sang@pengutronix.de>
-From: Grant Likely <grant.likely@secretlab.ca>
-Date: Tue, 19 May 2009 08:57:15 -0600
-Message-ID: <fa686aa40905190757w68b35333j6f0fa84ea253a486@mail.gmail.com>
-Subject: Re: [PATCH 2/2] maps/mtd-ram: add an of-platform driver
-To: Wolfram Sang <w.sang@pengutronix.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org, ben-linux@fluff.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="TBNym+cBXeFsS4Vs"
+Content-Disposition: inline
+In-Reply-To: <5023288.1242734340173.JavaMail.ngmail@webmail15.arcor-online.net>
+Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,205 +23,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 21, 2009 at 11:41 AM, Wolfram Sang <w.sang@pengutronix.de> wrot=
-e:
-> Create an of-aware driver using the now exported generic functions from
-> plat-ram.c. A typical oftree snipplet for it looks like this:
->
-> sram@04e00000 {
-> =A0 =A0 =A0 =A0compatible =3D "mtd-ram";
-> =A0 =A0 =A0 =A0reg =3D <0x04e00000 0x00200000>;
-> =A0 =A0 =A0 =A0bank-width =3D <2>;
-> };
->
-> Partitions on this device are not yet supported.
 
-This is a new device tree binding.  It must be documented in
-Documentation/powerpc/dts-bindings and posted to
-devicetree-discuss@ozlabs.org for review.
+--TBNym+cBXeFsS4Vs
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-> index 6d9ba35..f8e3908 100644
-> --- a/drivers/mtd/maps/Makefile
-> +++ b/drivers/mtd/maps/Makefile
-> @@ -58,6 +58,7 @@ obj-$(CONFIG_MTD_WRSBC8260) =A0 +=3D wr_sbc82xx_flash.o
-> =A0obj-$(CONFIG_MTD_DMV182) =A0 =A0 =A0 +=3D dmv182.o
-> =A0obj-$(CONFIG_MTD_SHARP_SL) =A0 =A0 +=3D sharpsl-flash.o
-> =A0obj-$(CONFIG_MTD_PLATRAM) =A0 =A0 =A0+=3D plat-ram.o
-> +obj-$(CONFIG_MTD_OFRAM) =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0+=3D of-ram.o
-> =A0obj-$(CONFIG_MTD_OMAP_NOR) =A0 =A0 +=3D omap_nor.o
-> =A0obj-$(CONFIG_MTD_INTEL_VR_NOR) +=3D intel_vr_nor.o
-> =A0obj-$(CONFIG_MTD_BFIN_ASYNC) =A0 +=3D bfin-async-flash.o
-> diff --git a/drivers/mtd/maps/of-ram.c b/drivers/mtd/maps/of-ram.c
-> new file mode 100644
-> index 0000000..4d334a9
-> --- /dev/null
-> +++ b/drivers/mtd/maps/of-ram.c
-> @@ -0,0 +1,120 @@
-> +/*
-> + * drivers/mtd/maps/of-ram.c
-> + *
-> + * Generic of device based RAM map
-> + *
-> + * Copyright (C) 2009 Wolfram Sang, Pengutronix
-> + *
-> + * Using plat-ram.c by Ben Dooks
-> + *
-> + * This program is free software; you can redistribute it and/or modify =
-it
-> + * under the terms of the GNU General Public License version 2 as publis=
-hed by
-> + * the Free Software Foundation.
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/types.h>
-> +#include <linux/init.h>
-> +#include <linux/kernel.h>
-> +#include <linux/device.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/of_device.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/mtd/plat-ram.h>
-> +
-> +static int of_ram_probe(struct of_device *op, const struct of_device_id =
-*match)
+Hello Albrecht,
 
-__devinit
+(adding linux-mtd)
 
-> +{
-> + =A0 =A0 =A0 struct platdata_mtd_ram *pdata;
-> + =A0 =A0 =A0 struct resource *resource;
-> + =A0 =A0 =A0 const char *name;
-> + =A0 =A0 =A0 const u32 *bankwidth;
-> + =A0 =A0 =A0 int ret =3D -ENOMEM;
-> +
-> + =A0 =A0 =A0 pdata =3D kzalloc(sizeof(*pdata), GFP_KERNEL);
-> + =A0 =A0 =A0 if (!pdata)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto bad0;
-> + =A0 =A0 =A0 op->dev.platform_data =3D pdata;
-> +
-> + =A0 =A0 =A0 name =3D of_get_property(op->node, "name", NULL);
-> + =A0 =A0 =A0 if (!name) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D -ENOENT;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_dbg(&op->dev, "could not get node name\=
-n");
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto bad1;
-> + =A0 =A0 =A0 }
-> +
-> + =A0 =A0 =A0 resource =3D kzalloc(sizeof(struct resource), GFP_KERNEL);
-> + =A0 =A0 =A0 if (!resource)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto bad1;
+On Tue, May 19, 2009 at 01:59:00PM +0200, Albrecht Dre=DF wrote:
+>=20
+> is there a standard way to define a ram chip (in my case a battery-buffer=
+ed
+> nv ram, attached to the 5200's Local Bus) in the OF tree, and are there a=
+ny
+> drivers (on 2.6.29.1) which pick up the chip/partition specification for =
+mtd?
+> Does such a driver exist, or do I have to write one (probably based on
+> plat-ram.c?)?  I think of something like
 
-Why isn't resource on the stack?
+I wrote such a driver (yet without partitioning support) and I am trying to=
+ get
+it mainline, just didn't get any comments so far:
 
-> +
-> + =A0 =A0 =A0 if (of_address_to_resource(op->node, 0, resource)) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D -ENXIO;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_dbg(&op->dev, "could not create resourc=
-e\n");
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto bad2;
-> + =A0 =A0 =A0 }
-> +
-> + =A0 =A0 =A0 bankwidth =3D of_get_property(op->node, "bank-width", NULL)=
-;
-> + =A0 =A0 =A0 if (*bankwidth =3D=3D 0) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D -ENOENT;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_dbg(&op->dev, "bank width not set\n");
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto bad2;
-> + =A0 =A0 =A0 }
-> + =A0 =A0 =A0 pdata->bankwidth =3D *bankwidth;
-> +
-> + =A0 =A0 =A0 ret =3D __platram_probe(&op->dev, name, resource, pdata);
-> + =A0 =A0 =A0 kfree(resource);
-> +
-> + =A0 =A0 =A0 if (ret)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto bad1;
-> +
-> + =A0 =A0 =A0 return 0;
-> +
-> + bad2:
-> + =A0 =A0 =A0 kfree(resource);
-> + bad1:
-> + =A0 =A0 =A0 op->dev.platform_data =3D NULL;
-> + =A0 =A0 =A0 kfree(pdata);
-> + bad0:
-> + =A0 =A0 =A0 return ret;
+http://patchwork.ozlabs.org/patch/23557/
+http://patchwork.ozlabs.org/patch/23556/
 
-I'd rather see more meaningful labels.  ie "err_kalloc:" and
-"err_platram_probe:".
+I'd be happy if you could give it a try and donate some
+{Acked|Tested|Reviewed}-by tags. Maybe this will help for my next try to get
+it mainline.
 
-> +}
-> +
-> +static int of_ram_remove(struct of_device *op)
+Regards,
 
-__devexit
-
-> +{
-> + =A0 =A0 =A0 int ret;
-> + =A0 =A0 =A0 struct platdata_mtd_ram *pdata =3D op->dev.platform_data;
-> +
-> + =A0 =A0 =A0 ret =3D __platram_remove(&op->dev);
-> + =A0 =A0 =A0 op->dev.platform_data =3D NULL;
-> + =A0 =A0 =A0 kfree(pdata);
-> + =A0 =A0 =A0 return ret;
-> +}
-> +
-> +static struct of_device_id of_ram_match[] =3D {
-> + =A0 =A0 =A0 { .compatible =3D "mtd-ram", },
-> + =A0 =A0 =A0 {},
-> +};
-> +MODULE_DEVICE_TABLE(of, of_ram_match);
-> +
-> +static struct of_platform_driver of_ram_driver =3D {
-
-__devinitdata
-
-> + =A0 =A0 =A0 .owner =3D THIS_MODULE,
-> + =A0 =A0 =A0 .name =3D "of-ram",
-
-This name is too generic for an of_platform device.  'mtd' needs to be
-in there somewhere.
-
-> + =A0 =A0 =A0 .match_table =3D of_ram_match,
-> + =A0 =A0 =A0 .probe =3D of_ram_probe,
-> + =A0 =A0 =A0 .remove =3D of_ram_remove,
-
-__devexit_p()
-
-> +};
-> +
-> +static int __init of_ram_init(void)
-> +{
-> + =A0 =A0 =A0 return of_register_platform_driver(&of_ram_driver);
-> +}
-> +
-> +static void __exit of_ram_exit(void)
-> +{
-> + =A0 =A0 =A0 of_unregister_platform_driver(&of_ram_driver);
-> +}
-> +
-> +module_init(of_ram_init);
-
-Put the module_init() statement directly after the of_ram_init() definition=
-.
-
-> +module_exit(of_ram_exit);
-> +
-> +MODULE_AUTHOR("Wolfram Sang");
-> +MODULE_DESCRIPTION("MTD OF RAM map driver");
-> +MODULE_LICENSE("GPL v2");
-> --
-> 1.5.6.5
->
-> _______________________________________________
-> Linuxppc-dev mailing list
-> Linuxppc-dev@ozlabs.org
-> https://ozlabs.org/mailman/listinfo/linuxppc-dev
->
-
-
+   Wolfram
 
 --=20
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--TBNym+cBXeFsS4Vs
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkoSpaIACgkQD27XaX1/VRtheACgtR/d4gJ8/exbMEJ0NLDrgxFs
+vmQAn36txBFqTh6Ws+IJsc6lIerssUpj
+=Myq9
+-----END PGP SIGNATURE-----
+
+--TBNym+cBXeFsS4Vs--
