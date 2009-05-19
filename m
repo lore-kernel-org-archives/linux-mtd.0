@@ -1,22 +1,17 @@
-Received: from smtpauth03.csee.onr.siteprotect.com ([64.26.60.137])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M6D1H-0007uM-Ho
-	for linux-mtd@lists.infradead.org; Tue, 19 May 2009 00:17:30 +0000
-Message-ID: <4A11FA90.3060403@boundarydevices.com>
-Date: Mon, 18 May 2009 17:17:20 -0700
-From: Troy Kisky <troy.kisky@boundarydevices.com>
-MIME-Version: 1.0
-To: nsnehaprabha@ti.com
-Subject: Re: [PATCH 2.6.30-rc6 3/3] NAND: Add 4-bit ECC support for large
-	page	NAND chips
-References: <1242682705-19845-1-git-send-email-nsnehaprabha@ti.com>
-	<4A11F5FC.40709@boundarydevices.com>
-In-Reply-To: <4A11F5FC.40709@boundarydevices.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org,
-	davinci-linux-open-source@linux.davincidsp.com,
-	dwmw2@infradead.org, tglx@linutronix.de, akpm@linux-foundation.org
+Subject: Re: [PATCH] cfi_cmdset_0001.c: quirk for PF38F4476.
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Daniel Ribeiro <drwyrm@gmail.com>
+In-Reply-To: <1242558137.26769.7.camel@brutus>
+References: <1242558137.26769.7.camel@brutus>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 19 May 2009 09:03:55 +0300
+Message-Id: <1242713035.15206.2.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Nicolas Pitre <nico@cam.org>,
+	openezx-devel <openezx-devel@lists.openezx.org>,
+	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +21,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Troy Kisky wrote:
-> nsnehaprabha@ti.com wrote:
->> From: Sneha Narnakaje <nsnehaprabha@ti.com>
->>
->> This patch adds 4-bit ECC support for large page NAND chips using the new ECC
->> mode NAND_ECC_HW_OOB_FIRST. The platform data from board-dm355-evm has been
->> adjusted to use this mode.
->>
->> The patches have been verified on DM355 device with 2K Micron devices using
->> mtd-tests and JFFS2. Error correction upto 4-bits has also been verified using
->> nandwrite/nanddump utilities.
->>
->> Reviewed-by: David Brownell <dbrownell@users.sourceforge.net>
->> Signed-off-by: Sneha Narnakaje <nsnehaprabha@ti.com>
->> ---
->>  drivers/mtd/nand/davinci_nand.c |   37 +++++++++++++++++++++++++++++++------
->>  1 files changed, 31 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
->> index ba6940d..4557b8d 100644
->> --- a/drivers/mtd/nand/davinci_nand.c
->> +++ b/drivers/mtd/nand/davinci_nand.c
->> @@ -689,15 +707,22 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
->>  				info->mtd.oobsize - 16;
->>  			goto syndrome_done;
->>  		}
->> +		if (chunks == 4) {
->> +			info->ecclayout = hwecc4_2048;
->> +			info->ecclayout.oobfree[1].length =
->> +				info->mtd.oobsize - 49;
+On Sun, 2009-05-17 at 08:02 -0300, Daniel Ribeiro wrote:
+> This chip reports CFI 1.3, but the CFI PRI is like CFI 1.1. Add a quirk
+> to pass probe on this chip.
+> (This patch depends on "cfi_cmdset_0001.c: CFI 1.0 and CFI 1.1")
+> (sent again with CC to Nicolas Pitre)
 > 
-Most drivers set chip->ecc.layout = ... Is it ok to use ecclayout instead?????
+> Signed-off-by: Daniel Ribeiro <drwyrm@gmail.com>
+
+I've pushed both to l2-mtd-2.6.git. The patches did not cleanly apply,
+probably because they were against an older linux code-base. Please,
+verify:
+
+http://git.infradead.org/users/dedekind/l2-mtd-2.6.git
+
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
