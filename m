@@ -1,27 +1,21 @@
-Received: from west-smtp1.trimble.com ([155.63.128.51])
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M6Xbp-0005Ra-6y
-	for linux-mtd@lists.infradead.org; Tue, 19 May 2009 22:16:36 +0000
-Content-class: urn:content-classes:message
+	id 1M6Vx5-0003Hh-Ha
+	for linux-mtd@lists.infradead.org; Tue, 19 May 2009 20:30:24 +0000
+Date: Tue, 19 May 2009 22:30:14 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Grant Likely <grant.likely@secretlab.ca>
+Subject: Re: [PATCH 2/2] maps/mtd-ram: add an of-platform driver
+Message-ID: <20090519203014.GC27476@pengutronix.de>
+References: <1232559685-2268-1-git-send-email-w.sang@pengutronix.de>
+	<1232559685-2268-3-git-send-email-w.sang@pengutronix.de>
+	<fa686aa40905190757w68b35333j6f0fa84ea253a486@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Subject: RE: UBIFS Corrupt during power failure
-Date: Tue, 19 May 2009 16:16:17 -0600
-Message-ID: <C77C279BA71FD14985DC8E75FB265AB7034DBD10@usw-am-xch-02.am.trimblecorp.net>
-In-Reply-To: <1242721105.3623.0.camel@localhost.localdomain>
-References: <C77C279BA71FD14985DC8E75FB265AB702FE53F4@usw-am-xch-02.am.trimblecorp.net>
-	<1239979018.3390.298.camel@localhost.localdomain>
-	<C77C279BA71FD14985DC8E75FB265AB7030C4C86@usw-am-xch-02.am.trimblecorp.net>
-	<200905150916.54091.sr@denx.de>
-	<C77C279BA71FD14985DC8E75FB265AB70344D104@usw-am-xch-02.am.trimblecorp.net>
-	<1242721105.3623.0.camel@localhost.localdomain>
-From: "Eric Holmberg" <Eric_Holmberg@Trimble.com>
-To: <dedekind@infradead.org>
-Cc: Jamie Lokier <jamie@shareable.org>, Stefan Roese <sr@denx.de>,
-	linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>,
-	Urs Muff <urs_muff@trimble.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="KN5l+BnMqAQyZLvT"
+Content-Disposition: inline
+In-Reply-To: <fa686aa40905190757w68b35333j6f0fa84ea253a486@mail.gmail.com>
+Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org, ben-linux@fluff.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,120 +25,260 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBPbiBNb24sIDIwMDktMDUtMTggYXQgMTE6MzAgLTA2MDAsIEVyaWMgSG9sbWJlcmcgd3JvdGU6
-DQo+ID4gSGkgU3RlZmFuLA0KPiA+IA0KPiA+IEkgYW0gc3RpbGwgc2VlaW5nIGNvcnJ1cHRpb24g
-ZXZlbiB3aXRoIHRoZSB3cml0ZSBidWZmZXIgDQo+IHNpemUgbGltaXRlZCB0bw0KPiA+IDggYnl0
-ZXMsIGJ1dCBpdCdzIGdyZWF0bHkgbGltaXRlZC4NCj4gDQo+IERvIHlvdSBtZWFuLCBVQklGUyBz
-dGlsbCBkaWVzIHdoZW4gYnVmLiBzaXplIGlzIDg/DQo+IA0KPiAtLSANCj4gQmVzdCByZWdhcmRz
-LA0KPiBBcnRlbSBCaXR5dXRza2l5ICjQkdC40YLRjtGG0LrQuNC5INCQ0YDRgtGR0LwpDQoNCg0K
-WWVzLCBJJ20gc3RpbGwgc2VlaW5nIHR3byBmYWlsdXJlcy4gIE9uZSBpcyB3aGVyZSBJIGdldCAy
-IGNvcnJ1cHQgZW1wdHkgYmxvY2tzIHdoZW4gYW4gTEVCIGVyYXNlIG9wZXJhdGlvbiBpcyBpbnRl
-cnJ1cHRlZCBieSBhIHBvd2VyIGZhaWx1cmUuICBFcmFzaW5nIG9uZSBvZiB0aGVtIG1hbnVhbGx5
-IGluIFUtQm9vdCBhbGxvd3MgdGhlIHN5c3RlbSB0byBib290LiAgSSBiZWxpZXZlIHRoaXMgaGFw
-cGVucyB3aGVuIGFuIExFQiBlcmFzZSBvcGVyYXRpb24gaXMgaW50ZXJydXB0ZWQgYW5kIHRoZW4g
-ZHVyaW5nIHRoZSBkZWZlcnJlZCByZWNvdmVyeSwgYW5vdGhlciBlcmFzZSBvcGVyYXRpb24gaXMg
-aW50ZXJydXB0ZWQuICBUaGUgc3lzdGVtIG5ldmVyIGV4cGVjdHMgdG8gaGF2ZSBtb3JlIHRoYW4g
-b25lIGVyYXNlIG9wZXJhdGlvbiBpbnRlcnJ1cHRlZCBhbmQgcGFuaWNzLg0KDQpUaGUgb3RoZXIg
-ZmFpbHVyZSBpcyBhIGNvcnJ1cHRpb24gaXNzdWUsIGV2ZW4gd2l0aCB0aGUgd3JpdGUgYnVmZmVy
-IHNpemUgbGltaXRlZCB0byA4IGJ5dGVzLiAgU2Nyb2xsIGRvd24gdG8gdGhlIGVuZCBvZiB0aGUg
-a2VybmVsIG1lc3NhZ2VzIGZvciB0aGUgZmFpbHVyZS4NCg0KSSB1bmZvcnR1bmF0ZWx5IGRpZG4n
-dCBnZXQgYSBjaGFuY2UgdG8gZ2V0IGFuIGltYWdlIG9mIHRoZSBmbGFzaCB0byBzZWUgd2hhdCBo
-YXBwZW5lZCB0byB0aGUgZGF0YSBibG9jayBiZWZvcmUgdGhlIGJvYXJkIHdhcyByZXByb2dyYW1t
-ZWQuICBJJ20gdHJ5aW5nIHRvIHJlcHJvZHVjZSBpdCBzbyBJIGNhbiBnZXQgbW9yZSBkZXRhaWxz
-IG9uIHdoYXQgaXMgaGFwcGVuaW5nLg0KDQpbNDI5NDkzNzQuMTEwMDAwXSBwaHlzbWFwIHBsYXRm
-b3JtIGZsYXNoIGRldmljZTogMDIwMDAwMDAgYXQgMzAwMDAwMDANCls0Mjk0OTM3NC4xMTAwMDBd
-IE51bWJlciBvZiBlcmFzZSByZWdpb25zOiAxDQpbNDI5NDkzNzQuMTIwMDAwXSBXYXJuaW5nOiAg
-T3ZlcnJpZGluZyBNYXhCdWZXcml0ZVNpemUgZnJvbSAyXjYgdG8gMl4zDQpbNDI5NDkzNzQuMTIw
-MDAwXSBQcmltYXJ5IFZlbmRvciBDb21tYW5kIFNldDogMDAwMiAoQU1EL0Z1aml0c3UgU3RhbmRh
-cmQpDQpbNDI5NDkzNzQuMTMwMDAwXSBQcmltYXJ5IEFsZ29yaXRobSBUYWJsZSBhdCAwMDQwDQpb
-NDI5NDkzNzQuMTQwMDAwXSBBbHRlcm5hdGl2ZSBWZW5kb3IgQ29tbWFuZCBTZXQ6IDAwMDAgKE5v
-bmUpDQpbNDI5NDkzNzQuMTQwMDAwXSBObyBBbHRlcm5hdGUgQWxnb3JpdGhtIFRhYmxlDQpbNDI5
-NDkzNzQuMTQwMDAwXSBWY2MgTWluaW11bTogIDIuNyBWDQpbNDI5NDkzNzQuMTUwMDAwXSBWY2Mg
-TWF4aW11bTogIDMuNiBWDQpbNDI5NDkzNzQuMTUwMDAwXSBObyBWcHAgbGluZQ0KWzQyOTQ5Mzc0
-LjE1MDAwMF0gVHlwaWNhbCBieXRlL3dvcmQgd3JpdGUgdGltZW91dDogNjQgw4LCtXMNCls0Mjk0
-OTM3NC4xNjAwMDBdIE1heGltdW0gYnl0ZS93b3JkIHdyaXRlIHRpbWVvdXQ6IDUxMiDDgsK1cw0K
-WzQyOTQ5Mzc0LjE2MDAwMF0gVHlwaWNhbCBmdWxsIGJ1ZmZlciB3cml0ZSB0aW1lb3V0OiA2NCDD
-gsK1cw0KWzQyOTQ5Mzc0LjE3MDAwMF0gTWF4aW11bSBmdWxsIGJ1ZmZlciB3cml0ZSB0aW1lb3V0
-OiAyMDQ4IMOCwrVzDQpbNDI5NDkzNzQuMTgwMDAwXSBUeXBpY2FsIGJsb2NrIGVyYXNlIHRpbWVv
-dXQ6IDUxMiBtcw0KWzQyOTQ5Mzc0LjE4MDAwMF0gTWF4aW11bSBibG9jayBlcmFzZSB0aW1lb3V0
-OiA0MDk2IG1zDQpbNDI5NDkzNzQuMTgwMDAwXSBUeXBpY2FsIGNoaXAgZXJhc2UgdGltZW91dDog
-NTI0Mjg4IG1zDQpbNDI5NDkzNzQuMTkwMDAwXSBNYXhpbXVtIGNoaXAgZXJhc2UgdGltZW91dDog
-MjA5NzE1MiBtcw0KWzQyOTQ5Mzc0LjE5MDAwMF0gRGV2aWNlIHNpemU6IDB4MjAwMDAwMCBieXRl
-cyAoMzIgTWlCKQ0KWzQyOTQ5Mzc0LjIwMDAwMF0gRmxhc2ggRGV2aWNlIEludGVyZmFjZSBkZXNj
-cmlwdGlvbjogMHgwMDAyDQpbNDI5NDkzNzQuMjEwMDAwXSAgIC0gc3VwcG9ydHMgeDggYW5kIHgx
-NiB2aWEgQllURSMgd2l0aCBhc3luY2hyb25vdXMgaW50ZXJmYWNlDQpbNDI5NDkzNzQuMjEwMDAw
-XSBNYXguIGJ5dGVzIGluIGJ1ZmZlciB3cml0ZTogMHg4DQpbNDI5NDkzNzQuMjIwMDAwXSBOdW1i
-ZXIgb2YgRXJhc2UgQmxvY2sgUmVnaW9uczogMQ0KWzQyOTQ5Mzc0LjIyMDAwMF0gICBFcmFzZSBS
-ZWdpb24gIzA6IEJsb2NrU2l6ZSAweDIwMDAwIGJ5dGVzLCAyNTYgYmxvY2tzDQpbNDI5NDkzNzQu
-MjMwMDAwXSBwaHlzbWFwLWZsYXNoLjE6IEZvdW5kIDEgeDE2IGRldmljZXMgYXQgMHgwIGluIDE2
-LWJpdCBiYW5rDQpbNDI5NDkzNzQuMjMwMDAwXSAgQW1kL0Z1aml0c3UgRXh0ZW5kZWQgUXVlcnkg
-VGFibGUgYXQgMHgwMDQwDQpbNDI5NDkzNzQuMjQwMDAwXSAgIFNpbGljb24gcmV2aXNpb246IDEw
-DQpbNDI5NDkzNzQuMjQwMDAwXSAgIEFkZHJlc3Mgc2Vuc2l0aXZlIHVubG9jazogUmVxdWlyZWQN
-Cls0Mjk0OTM3NC4yNTAwMDBdICAgRXJhc2UgU3VzcGVuZDogUmVhZC93cml0ZQ0KWzQyOTQ5Mzc0
-LjI1MDAwMF0gICBCbG9jayBwcm90ZWN0aW9uOiAxIHNlY3RvcnMgcGVyIGdyb3VwDQpbNDI5NDkz
-NzQuMjYwMDAwXSAgIFRlbXBvcmFyeSBibG9jayB1bnByb3RlY3Q6IE5vdCBzdXBwb3J0ZWQNCls0
-Mjk0OTM3NC4yNjAwMDBdICAgQmxvY2sgcHJvdGVjdC91bnByb3RlY3Qgc2NoZW1lOiA4DQpbNDI5
-NDkzNzQuMjcwMDAwXSAgIE51bWJlciBvZiBzaW11bHRhbmVvdXMgb3BlcmF0aW9uczogMA0KWzQy
-OTQ5Mzc0LjI3MDAwMF0gICBCdXJzdCBtb2RlOiBOb3Qgc3VwcG9ydGVkDQpbNDI5NDkzNzQuMjgw
-MDAwXSAgIFBhZ2UgbW9kZTogOCB3b3JkIHBhZ2UNCls0Mjk0OTM3NC4yODAwMDBdICAgVnBwIFN1
-cHBseSBNaW5pbXVtIFByb2dyYW0vRXJhc2UgVm9sdGFnZTogMTEuNSBWDQpbNDI5NDkzNzQuMjkw
-MDAwXSAgIFZwcCBTdXBwbHkgTWF4aW11bSBQcm9ncmFtL0VyYXNlIFZvbHRhZ2U6IDEyLjUgVg0K
-WzQyOTQ5Mzc0LjI5MDAwMF0gICBUb3AvQm90dG9tIEJvb3QgQmxvY2s6IFVuaWZvcm0sIEJvdHRv
-bSBXUA0KWzQyOTQ5Mzc0LjMwMDAwMF0gICBXcml0ZSBidWZmZXJzIGVuYWJsZWQNCls0Mjk0OTM3
-NC4zMDAwMDBdIHBoeXNtYXAtZmxhc2guMTogQ0ZJIGRvZXMgbm90IGNvbnRhaW4gYm9vdCBiYW5r
-IGxvY2F0aW9uLiBBc3N1bWluZyB0b3AuDQpbNDI5NDkzNzQuMzEwMDAwXSBudW1iZXIgb2YgQ0ZJ
-IGNoaXBzOiAxDQpbNDI5NDkzNzQuMzEwMDAwXSBjZmlfY21kc2V0XzAwMDI6IERpc2FibGluZyBl
-cmFzZS1zdXNwZW5kLXByb2dyYW0gZHVlIHRvIGNvZGUgYnJva2VubmVzcy4NCls0Mjk0OTM3NC4z
-MjAwMDBdIFJlZEJvb3QgcGFydGl0aW9uIHBhcnNpbmcgbm90IGF2YWlsYWJsZQ0KWzQyOTQ5Mzc0
-LjMzMDAwMF0gVXNpbmcgcGh5c21hcCBwYXJ0aXRpb24gaW5mb3JtYXRpb24NCls0Mjk0OTM3NC4z
-MzAwMDBdIENyZWF0aW5nIDMgTVREIHBhcnRpdGlvbnMgb24gInBoeXNtYXAtZmxhc2guMSI6DQpb
-NDI5NDkzNzQuMzQwMDAwXSAweDAwMDAwMDAwLTB4MDAyMDAwMDAgOiAia2VybmVsIg0KWzQyOTQ5
-Mzc0LjM1MDAwMF0gMHgwMDIwMDAwMC0weDAwNDAwMDAwIDogImtlcm5lbC1mYWlsc2FmZSINCls0
-Mjk0OTM3NC4zNjAwMDBdIDB4MDA0MDAwMDAtMHgwMjAwMDAwMCA6ICJyb290Ig0KWzQyOTQ5Mzc0
-LjM3MDAwMF0gVUJJOiBhdHRhY2hpbmcgbXRkNyB0byB1YmkwDQpbNDI5NDkzNzQuMzcwMDAwXSBV
-Qkk6IHBoeXNpY2FsIGVyYXNlYmxvY2sgc2l6ZTogICAxMzEwNzIgYnl0ZXMgKDEyOCBLaUIpDQpb
-NDI5NDkzNzQuMzgwMDAwXSBVQkk6IGxvZ2ljYWwgZXJhc2VibG9jayBzaXplOiAgICAxMzA5NDQg
-Ynl0ZXMNCls0Mjk0OTM3NC4zODAwMDBdIFVCSTogc21hbGxlc3QgZmxhc2ggSS9PIHVuaXQ6ICAg
-IDENCls0Mjk0OTM3NC4zOTAwMDBdIFVCSTogVklEIGhlYWRlciBvZmZzZXQ6ICAgICAgICAgIDY0
-IChhbGlnbmVkIDY0KQ0KWzQyOTQ5Mzc0LjM5MDAwMF0gVUJJOiBkYXRhIG9mZnNldDogICAgICAg
-ICAgICAgICAgMTI4DQpbNDI5NDkzNzUuMDkwMDAwXSBVQkk6IGF0dGFjaGVkIG10ZDcgdG8gdWJp
-MA0KWzQyOTQ5Mzc1LjA5MDAwMF0gVUJJOiBNVEQgZGV2aWNlIG5hbWU6ICAgICAgICAgICAgInJv
-b3QiDQpbNDI5NDkzNzUuMTAwMDAwXSBVQkk6IE1URCBkZXZpY2Ugc2l6ZTogICAgICAgICAgICAy
-OCBNaUINCls0Mjk0OTM3NS4xMTAwMDBdIFVCSTogbnVtYmVyIG9mIGdvb2QgUEVCczogICAgICAg
-IDIyNA0KWzQyOTQ5Mzc1LjExMDAwMF0gVUJJOiBudW1iZXIgb2YgYmFkIFBFQnM6ICAgICAgICAg
-MA0KWzQyOTQ5Mzc1LjExMDAwMF0gVUJJOiBtYXguIGFsbG93ZWQgdm9sdW1lczogICAgICAgMTI4
-DQpbNDI5NDkzNzUuMTIwMDAwXSBVQkk6IHdlYXItbGV2ZWxpbmcgdGhyZXNob2xkOiAgICA0MDk2
-DQpbNDI5NDkzNzUuMTIwMDAwXSBVQkk6IG51bWJlciBvZiBpbnRlcm5hbCB2b2x1bWVzOiAxDQpb
-NDI5NDkzNzUuMTMwMDAwXSBVQkk6IG51bWJlciBvZiB1c2VyIHZvbHVtZXM6ICAgICAxDQpbNDI5
-NDkzNzUuMTMwMDAwXSBVQkk6IGF2YWlsYWJsZSBQRUJzOiAgICAgICAgICAgICAwDQpbNDI5NDkz
-NzUuMTQwMDAwXSBVQkk6IHRvdGFsIG51bWJlciBvZiByZXNlcnZlZCBQRUJzOiAyMjQNCls0Mjk0
-OTM3NS4xNDAwMDBdIFVCSTogbnVtYmVyIG9mIFBFQnMgcmVzZXJ2ZWQgZm9yIGJhZCBQRUIgaGFu
-ZGxpbmc6IDANCls0Mjk0OTM3NS4xNTAwMDBdIFVCSTogbWF4L21lYW4gZXJhc2UgY291bnRlcjog
-ODUvMjENCi4uLg0KWzQyOTQ5Mzc1LjYyMDAwMF0gVUJJRlM6IHJlY292ZXJ5IG5lZWRlZA0KWzQy
-OTQ5Mzc1LjYzMDAwMF0gVUJJRlM6IHJlY292ZXJ5IG5lZWRlZCAtIGJ1dCBtb3VudGVkIGluIHJl
-YWQtb25seSBtb2RlDQpbNDI5NDkzNzUuNzcwMDAwXSBVQklGUyBlcnJvciAocGlkIDEpOiB1Ymlm
-c19jaGVja19ub2RlOiBiYWQgQ1JDOiBjYWxjdWxhdGVkIDB4YTJlZjE4YjksIHJlYWQgMHg1ZWJm
-MDNjMQ0KWzQyOTQ5Mzc1Ljc4MDAwMF0gVUJJRlMgZXJyb3IgKHBpZCAxKTogdWJpZnNfY2hlY2tf
-bm9kZTogYmFkIG5vZGUgYXQgTEVCIDEyMDowDQpbNDI5NDkzNzUuNzkwMDAwXSBVQklGUyBlcnJv
-ciAocGlkIDEpOiB1Ymlmc19zY2FubmVkX2NvcnJ1cHRpb246IGNvcnJ1cHRlZCBkYXRhIGF0IExF
-QiAxMjA6MA0KWzQyOTQ5Mzc1LjgxMDAwMF0gVUJJRlMgZXJyb3IgKHBpZCAxKTogdWJpZnNfcmVj
-b3Zlcl9sZWI6IExFQiAxMjAgc2Nhbm5pbmcgZmFpbGVkDQpbNDI5NDkzNzUuODIwMDAwXSBWRlM6
-IENhbm5vdCBvcGVuIHJvb3QgZGV2aWNlICJ1YmkwOnJvb3RmcyIgb3IgdW5rbm93bi1ibG9jaygw
-LDApDQpbNDI5NDkzNzUuODMwMDAwXSBQbGVhc2UgYXBwZW5kIGEgY29ycmVjdCAicm9vdD0iIGJv
-b3Qgb3B0aW9uOyBoZXJlIGFyZSB0aGUgYXZhaWxhYmxlIHBhcnRpdGlvbnM6DQpbNDI5NDkzNzUu
-ODQwMDAwXSAxZjAwICAgICAgICAgMTYgbXRkYmxvY2swIChkcml2ZXI/KQ0KWzQyOTQ5Mzc1Ljg0
-MDAwMF0gMWYwMSAgICAgICAgICA4IG10ZGJsb2NrMSAoZHJpdmVyPykNCls0Mjk0OTM3NS44NTAw
-MDBdIDFmMDIgICAgICAgICAgOCBtdGRibG9jazIgKGRyaXZlcj8pDQpbNDI5NDkzNzUuODUwMDAw
-XSAxZjAzICAgICAgICAgMzIgbXRkYmxvY2szIChkcml2ZXI/KQ0KWzQyOTQ5Mzc1Ljg2MDAwMF0g
-MWYwNCAgICAgICAgOTYwIG10ZGJsb2NrNCAoZHJpdmVyPykNCls0Mjk0OTM3NS44NjAwMDBdIDFm
-MDUgICAgICAgMjA0OCBtdGRibG9jazUgKGRyaXZlcj8pDQpbNDI5NDkzNzUuODcwMDAwXSAxZjA2
-ICAgICAgIDIwNDggbXRkYmxvY2s2IChkcml2ZXI/KQ0KWzQyOTQ5Mzc1Ljg3MDAwMF0gMWYwNyAg
-ICAgIDI4NjcyIG10ZGJsb2NrNyAoZHJpdmVyPykNCls0Mjk0OTM3NS44ODAwMDBdIEtlcm5lbCBw
-YW5pYyAtIG5vdCBzeW5jaW5nOiBWRlM6IFVuYWJsZSB0byBtb3VudCByb290IGZzIG9uIHVua25v
-d24tYmxvY2soMCwwKQ0KDQoNCkdldHRpbmcgdGhlIGZhaWx1cmVzIHRvIG9jY3VyIHVzaW5nIHBo
-eXNpY2FsIGhhcmR3YXJlIHRha2VzIDcgb3IgOCBob3VycyB3aGljaCBpcyB3aHkgSSB3b3VsZCBs
-aWtlIHRvIG1vZGlmeSBlaXRoZXIgdGhlIGRyaXZlcnMvbXRkL2RldmljZXMvYmxvY2sybXRkLmMg
-Tk9SIHNpbXVsYXRvciBvciB0aGUgUkFNIHNpbXVsYXRvciBhbmQgcHV0IGluIHRoZSBpbnRlcnJ1
-cHRlZCBmbGFzaCBwYXR0ZXJucyB0aGF0IEkndmUgYWxyZWFkeSBjaGFyYWN0ZXJpemVkLiAgQW55
-IGlkZWFzIG9uIGhvdyB0byBzaW11bGF0ZSBhIHBvd2VyIGZhaWx1cmUgaW4gZWl0aGVyIG1vZHVs
-ZSBhbmQgdGhlbiBkbyBhIFVCSUZTIHJlbW91bnQ/DQoNCi1FcmljDQo=
+
+--KN5l+BnMqAQyZLvT
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi Grant,
+
+thanks a lot for the review!
+
+On Tue, May 19, 2009 at 08:57:15AM -0600, Grant Likely wrote:
+> On Wed, Jan 21, 2009 at 11:41 AM, Wolfram Sang <w.sang@pengutronix.de> wr=
+ote:
+> > Create an of-aware driver using the now exported generic functions from
+> > plat-ram.c. A typical oftree snipplet for it looks like this:
+> >
+> > sram@04e00000 {
+> > =A0 =A0 =A0 =A0compatible =3D "mtd-ram";
+> > =A0 =A0 =A0 =A0reg =3D <0x04e00000 0x00200000>;
+> > =A0 =A0 =A0 =A0bank-width =3D <2>;
+> > };
+> >
+> > Partitions on this device are not yet supported.
+>=20
+> This is a new device tree binding.  It must be documented in
+> Documentation/powerpc/dts-bindings and posted to
+> devicetree-discuss@ozlabs.org for review.
+
+Yeah, noticed that myself. I wanted to start another try to mainline this
+driver next week, then also asking devicetree-discuss; will do it happily t=
+his
+week, too :)
+
+>=20
+> > diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+> > index 6d9ba35..f8e3908 100644
+> > --- a/drivers/mtd/maps/Makefile
+> > +++ b/drivers/mtd/maps/Makefile
+> > @@ -58,6 +58,7 @@ obj-$(CONFIG_MTD_WRSBC8260) =A0 +=3D wr_sbc82xx_flash=
+=2Eo
+> > =A0obj-$(CONFIG_MTD_DMV182) =A0 =A0 =A0 +=3D dmv182.o
+> > =A0obj-$(CONFIG_MTD_SHARP_SL) =A0 =A0 +=3D sharpsl-flash.o
+> > =A0obj-$(CONFIG_MTD_PLATRAM) =A0 =A0 =A0+=3D plat-ram.o
+> > +obj-$(CONFIG_MTD_OFRAM) =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0+=3D of-ram.o
+> > =A0obj-$(CONFIG_MTD_OMAP_NOR) =A0 =A0 +=3D omap_nor.o
+> > =A0obj-$(CONFIG_MTD_INTEL_VR_NOR) +=3D intel_vr_nor.o
+> > =A0obj-$(CONFIG_MTD_BFIN_ASYNC) =A0 +=3D bfin-async-flash.o
+> > diff --git a/drivers/mtd/maps/of-ram.c b/drivers/mtd/maps/of-ram.c
+> > new file mode 100644
+> > index 0000000..4d334a9
+> > --- /dev/null
+> > +++ b/drivers/mtd/maps/of-ram.c
+> > @@ -0,0 +1,120 @@
+> > +/*
+> > + * drivers/mtd/maps/of-ram.c
+> > + *
+> > + * Generic of device based RAM map
+> > + *
+> > + * Copyright (C) 2009 Wolfram Sang, Pengutronix
+> > + *
+> > + * Using plat-ram.c by Ben Dooks
+> > + *
+> > + * This program is free software; you can redistribute it and/or modif=
+y it
+> > + * under the terms of the GNU General Public License version 2 as publ=
+ished by
+> > + * the Free Software Foundation.
+> > + */
+> > +
+> > +#include <linux/module.h>
+> > +#include <linux/types.h>
+> > +#include <linux/init.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/device.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/of_device.h>
+> > +#include <linux/of_platform.h>
+> > +#include <linux/mtd/plat-ram.h>
+> > +
+> > +static int of_ram_probe(struct of_device *op, const struct of_device_i=
+d *match)
+>=20
+> __devinit
+
+Oops, missed all of those.
+
+>=20
+> > +{
+> > + =A0 =A0 =A0 struct platdata_mtd_ram *pdata;
+> > + =A0 =A0 =A0 struct resource *resource;
+> > + =A0 =A0 =A0 const char *name;
+> > + =A0 =A0 =A0 const u32 *bankwidth;
+> > + =A0 =A0 =A0 int ret =3D -ENOMEM;
+> > +
+> > + =A0 =A0 =A0 pdata =3D kzalloc(sizeof(*pdata), GFP_KERNEL);
+> > + =A0 =A0 =A0 if (!pdata)
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto bad0;
+> > + =A0 =A0 =A0 op->dev.platform_data =3D pdata;
+> > +
+> > + =A0 =A0 =A0 name =3D of_get_property(op->node, "name", NULL);
+> > + =A0 =A0 =A0 if (!name) {
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D -ENOENT;
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_dbg(&op->dev, "could not get node nam=
+e\n");
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto bad1;
+> > + =A0 =A0 =A0 }
+> > +
+> > + =A0 =A0 =A0 resource =3D kzalloc(sizeof(struct resource), GFP_KERNEL);
+> > + =A0 =A0 =A0 if (!resource)
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto bad1;
+>=20
+> Why isn't resource on the stack?
+
+Point taken.
+
+>=20
+> > +
+> > + =A0 =A0 =A0 if (of_address_to_resource(op->node, 0, resource)) {
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D -ENXIO;
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_dbg(&op->dev, "could not create resou=
+rce\n");
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto bad2;
+> > + =A0 =A0 =A0 }
+> > +
+> > + =A0 =A0 =A0 bankwidth =3D of_get_property(op->node, "bank-width", NUL=
+L);
+> > + =A0 =A0 =A0 if (*bankwidth =3D=3D 0) {
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D -ENOENT;
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_dbg(&op->dev, "bank width not set\n");
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto bad2;
+> > + =A0 =A0 =A0 }
+> > + =A0 =A0 =A0 pdata->bankwidth =3D *bankwidth;
+> > +
+> > + =A0 =A0 =A0 ret =3D __platram_probe(&op->dev, name, resource, pdata);
+> > + =A0 =A0 =A0 kfree(resource);
+> > +
+> > + =A0 =A0 =A0 if (ret)
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto bad1;
+> > +
+> > + =A0 =A0 =A0 return 0;
+> > +
+> > + bad2:
+> > + =A0 =A0 =A0 kfree(resource);
+> > + bad1:
+> > + =A0 =A0 =A0 op->dev.platform_data =3D NULL;
+> > + =A0 =A0 =A0 kfree(pdata);
+> > + bad0:
+> > + =A0 =A0 =A0 return ret;
+>=20
+> I'd rather see more meaningful labels.  ie "err_kalloc:" and
+> "err_platram_probe:".
+
+Okay.
+
+>=20
+> > +}
+> > +
+> > +static int of_ram_remove(struct of_device *op)
+>=20
+> __devexit
+>=20
+> > +{
+> > + =A0 =A0 =A0 int ret;
+> > + =A0 =A0 =A0 struct platdata_mtd_ram *pdata =3D op->dev.platform_data;
+> > +
+> > + =A0 =A0 =A0 ret =3D __platram_remove(&op->dev);
+> > + =A0 =A0 =A0 op->dev.platform_data =3D NULL;
+> > + =A0 =A0 =A0 kfree(pdata);
+> > + =A0 =A0 =A0 return ret;
+> > +}
+> > +
+> > +static struct of_device_id of_ram_match[] =3D {
+> > + =A0 =A0 =A0 { .compatible =3D "mtd-ram", },
+> > + =A0 =A0 =A0 {},
+> > +};
+> > +MODULE_DEVICE_TABLE(of, of_ram_match);
+> > +
+> > +static struct of_platform_driver of_ram_driver =3D {
+>=20
+> __devinitdata
+>=20
+> > + =A0 =A0 =A0 .owner =3D THIS_MODULE,
+> > + =A0 =A0 =A0 .name =3D "of-ram",
+>=20
+> This name is too generic for an of_platform device.  'mtd' needs to be
+> in there somewhere.
+
+Will "of-mtd-ram" do? (I'd think so)
+
+>=20
+> > + =A0 =A0 =A0 .match_table =3D of_ram_match,
+> > + =A0 =A0 =A0 .probe =3D of_ram_probe,
+> > + =A0 =A0 =A0 .remove =3D of_ram_remove,
+>=20
+> __devexit_p()
+>=20
+> > +};
+> > +
+> > +static int __init of_ram_init(void)
+> > +{
+> > + =A0 =A0 =A0 return of_register_platform_driver(&of_ram_driver);
+> > +}
+> > +
+> > +static void __exit of_ram_exit(void)
+> > +{
+> > + =A0 =A0 =A0 of_unregister_platform_driver(&of_ram_driver);
+> > +}
+> > +
+> > +module_init(of_ram_init);
+>=20
+> Put the module_init() statement directly after the of_ram_init() definiti=
+on.
+>=20
+> > +module_exit(of_ram_exit);
+> > +
+> > +MODULE_AUTHOR("Wolfram Sang");
+> > +MODULE_DESCRIPTION("MTD OF RAM map driver");
+> > +MODULE_LICENSE("GPL v2");
+> > --
+> > 1.5.6.5
+> >
+> > _______________________________________________
+> > Linuxppc-dev mailing list
+> > Linuxppc-dev@ozlabs.org
+> > https://ozlabs.org/mailman/listinfo/linuxppc-dev
+> >
+>=20
+>=20
+>=20
+> --=20
+> Grant Likely, B.Sc., P.Eng.
+> Secret Lab Technologies Ltd.
+
+Will send V2 after some tests tomorrow...
+
+Thanks,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--KN5l+BnMqAQyZLvT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkoTFtYACgkQD27XaX1/VRs+BQCfaadl6LU1XCuiFMBvgnCpFSVX
+h0UAnil1Dj619nR+qUxsseETdXuWocWb
+=CAy8
+-----END PGP SIGNATURE-----
+
+--KN5l+BnMqAQyZLvT--
