@@ -1,25 +1,24 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M6KXW-0005Y4-13
-	for linux-mtd@lists.infradead.org; Tue, 19 May 2009 08:19:46 +0000
-Subject: RE: UBIFS Corrupt during power failure
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Eric Holmberg <Eric_Holmberg@Trimble.com>
-In-Reply-To: <C77C279BA71FD14985DC8E75FB265AB70344D104@usw-am-xch-02.am.trimblecorp.net>
-References: <C77C279BA71FD14985DC8E75FB265AB702FE53F4@usw-am-xch-02.am.trimblecorp.net>
-	<1239979018.3390.298.camel@localhost.localdomain>
-	<C77C279BA71FD14985DC8E75FB265AB7030C4C86@usw-am-xch-02.am.trimblecorp.net>
-	<200905150916.54091.sr@denx.de>
-	<C77C279BA71FD14985DC8E75FB265AB70344D104@usw-am-xch-02.am.trimblecorp.net>
+Received: from qw-out-1920.google.com ([74.125.92.146])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M6MJQ-0001Gn-Jq
+	for linux-mtd@lists.infradead.org; Tue, 19 May 2009 10:13:10 +0000
+Received: by qw-out-1920.google.com with SMTP id 4so2417357qwk.24
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 19 May 2009 03:12:23 -0700 (PDT)
+Subject: Re: [PATCH] cfi_cmdset_0001.c: quirk for PF38F4476.
+From: Daniel Ribeiro <drwyrm@gmail.com>
+To: dedekind@infradead.org
+In-Reply-To: <1242713035.15206.2.camel@localhost.localdomain>
+References: <1242558137.26769.7.camel@brutus>
+	<1242713035.15206.2.camel@localhost.localdomain>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 19 May 2009 11:18:25 +0300
-Message-Id: <1242721105.3623.0.camel@localhost.localdomain>
+Date: Tue, 19 May 2009 07:12:08 -0300
+Message-Id: <1242727928.6142.30.camel@brutus>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Jamie Lokier <jamie@shareable.org>, Stefan Roese <sr@denx.de>,
-	linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>,
-	Urs Muff <urs_muff@Trimble.com>
-Reply-To: dedekind@infradead.org
+Cc: Nicolas Pitre <nico@cam.org>,
+	openezx-devel <openezx-devel@lists.openezx.org>,
+	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,14 +28,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-05-18 at 11:30 -0600, Eric Holmberg wrote:
-> Hi Stefan,
+Em Ter, 2009-05-19 às 09:03 +0300, Artem Bityutskiy escreveu:
+> On Sun, 2009-05-17 at 08:02 -0300, Daniel Ribeiro wrote:
+> > This chip reports CFI 1.3, but the CFI PRI is like CFI 1.1. Add a quirk
+> > to pass probe on this chip.
+> > (This patch depends on "cfi_cmdset_0001.c: CFI 1.0 and CFI 1.1")
+> > (sent again with CC to Nicolas Pitre)
+> > 
+> > Signed-off-by: Daniel Ribeiro <drwyrm@gmail.com>
 > 
-> I am still seeing corruption even with the write buffer size limited to
-> 8 bytes, but it's greatly limited.
+> I've pushed both to l2-mtd-2.6.git. The patches did not cleanly apply,
+> probably because they were against an older linux code-base. Please,
+> verify:
+> 
+> http://git.infradead.org/users/dedekind/l2-mtd-2.6.git
+> 
 
-Do you mean, UBIFS still dies when buf. size is 8?
+Thanks Artem.
+
+Patches were based on 2.6.30-rc4, last commit was "cfi_cmdset_0001.c:
+Fix a bug in inval_cache_and_wait_for_operation()." (6ac15e), my guess
+is that you had problems applying because you applied the "CFI: quirk
+for PF38F4476." first. Next time I will send the patches as a series.
+
+I verified the patches on your gitweb and they look ok.
 
 -- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+Daniel Ribeiro
