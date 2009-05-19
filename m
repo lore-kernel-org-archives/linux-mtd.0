@@ -1,18 +1,18 @@
-Received: from co203.xi-lite.net ([149.6.83.203])
+Received: from yw-out-1718.google.com ([74.125.46.154])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M6MWh-0007wA-Pf
-	for linux-mtd@lists.infradead.org; Tue, 19 May 2009 10:26:34 +0000
-Message-ID: <4A128947.9090708@parrot.com>
-Date: Tue, 19 May 2009 12:26:15 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+	id 1M6NaM-0004xa-Q2
+	for linux-mtd@lists.infradead.org; Tue, 19 May 2009 11:34:25 +0000
+Received: by yw-out-1718.google.com with SMTP id 9so2394684ywk.72
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 19 May 2009 04:34:17 -0700 (PDT)
 MIME-Version: 1.0
-To: Bharat Bhushan <bharat.76@gmail.com>
-Subject: Re: linux kernel can not find m25p80 mtdparts
-References: <a29be8140905170249v18e4f13eg5430f3e44280fe30@mail.gmail.com>
-In-Reply-To: <a29be8140905170249v18e4f13eg5430f3e44280fe30@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Tue, 19 May 2009 20:34:17 +0900
+Message-ID: <2014bcab0905190434r687de23ued2af901636cd16c@mail.gmail.com>
+Subject: a suspected data race in /driver/mtd/ubi/build.c
+From: =?EUC-KR?B?yKu9xSBzaGluIGhvbmc=?= <hongshin@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,35 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Bharat Bhushan a écrit :
-> Hi Everyone,
-> 
-> I am naive as far as linux kernel interface with MTD devices. I face
-> difficulty on MIPS based board having M25P80. Bootloader is u-boot.
-> When linux boots, I pass the command-line argument as:
-> 
-> Kernel command line:
-> mtdpart=m25p80:256k(boot),64k(boot_config),64k(board_config),2048k(kernel),4096k(filesystem)
-> root=/dev/mtdpart rootfstype=squashfs,yaffg
-> And Error I get is :
-> 
->     VFS: Cannot open root device "mtdpart" or unknown-block(0,0)
->     Please append a correct "root=" boot option; here are the
-> available partitions:
->     Kernel panic - not syncing: VFS: Unable to mount root fs on
-> unknown-block(0,0)
-> 
-> Some questions in above command-line I have:
-> 
-> 1. Does kernel recognize m25p80 by same name. How can I check where it
-> is mapped in kernel. Then only mtdpart makes sense: I think so? I
-> expected it to be at 0xbf040000. I do not know in kernel where to find
-> this mapping. I tried drivers/mtd/ for chips specifics, but could not
-> make out much.
-> 2. When cmdline say root=/dev/mtdpart, do `mtdpart' should be defined
-> in kernel somewhere?
-> 
-> Can someone please explain, which all part of kernel I need to look into.
-> 
+Hi. I am reporting a susptected data race bug at
+ubi_attach_mtd_dev() in /driver/mtd/ubi/build.c .
 
-What's your spi driver ?
+This function creates a kernel thread by calling
+kthread_create(ubi_thread, ubi .. ). and then
+it assigns ubi->thread_enabled = 1.
+
+However, ubi_thread() also reads ubi->thread_enabled.
+This may cause data race since the execution results
+would be differ depending on the scheduling.
+
+I think, ubi_attach_mtd_dev() should be modified to protect
+the writing aceess to ubi->thread_enabled
+by spin_lock(&ubi->wl_lock).
+
+But I do not have much background on the code.
+So please check this code and let me know your opinions.
+Thanks.
+
+Sincerely
+Shin Hong
