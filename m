@@ -1,24 +1,18 @@
-Received: from qw-out-1920.google.com ([74.125.92.146])
+Received: from co203.xi-lite.net ([149.6.83.203])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M6MJQ-0001Gn-Jq
-	for linux-mtd@lists.infradead.org; Tue, 19 May 2009 10:13:10 +0000
-Received: by qw-out-1920.google.com with SMTP id 4so2417357qwk.24
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 19 May 2009 03:12:23 -0700 (PDT)
-Subject: Re: [PATCH] cfi_cmdset_0001.c: quirk for PF38F4476.
-From: Daniel Ribeiro <drwyrm@gmail.com>
-To: dedekind@infradead.org
-In-Reply-To: <1242713035.15206.2.camel@localhost.localdomain>
-References: <1242558137.26769.7.camel@brutus>
-	<1242713035.15206.2.camel@localhost.localdomain>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 19 May 2009 07:12:08 -0300
-Message-Id: <1242727928.6142.30.camel@brutus>
-Mime-Version: 1.0
+	id 1M6MWh-0007wA-Pf
+	for linux-mtd@lists.infradead.org; Tue, 19 May 2009 10:26:34 +0000
+Message-ID: <4A128947.9090708@parrot.com>
+Date: Tue, 19 May 2009 12:26:15 +0200
+From: Matthieu CASTET <matthieu.castet@parrot.com>
+MIME-Version: 1.0
+To: Bharat Bhushan <bharat.76@gmail.com>
+Subject: Re: linux kernel can not find m25p80 mtdparts
+References: <a29be8140905170249v18e4f13eg5430f3e44280fe30@mail.gmail.com>
+In-Reply-To: <a29be8140905170249v18e4f13eg5430f3e44280fe30@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 8bit
-Cc: Nicolas Pitre <nico@cam.org>,
-	openezx-devel <openezx-devel@lists.openezx.org>,
-	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,30 +22,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Em Ter, 2009-05-19 Ã s 09:03 +0300, Artem Bityutskiy escreveu:
-> On Sun, 2009-05-17 at 08:02 -0300, Daniel Ribeiro wrote:
-> > This chip reports CFI 1.3, but the CFI PRI is like CFI 1.1. Add a quirk
-> > to pass probe on this chip.
-> > (This patch depends on "cfi_cmdset_0001.c: CFI 1.0 and CFI 1.1")
-> > (sent again with CC to Nicolas Pitre)
-> > 
-> > Signed-off-by: Daniel Ribeiro <drwyrm@gmail.com>
+Bharat Bhushan a écrit :
+> Hi Everyone,
 > 
-> I've pushed both to l2-mtd-2.6.git. The patches did not cleanly apply,
-> probably because they were against an older linux code-base. Please,
-> verify:
+> I am naive as far as linux kernel interface with MTD devices. I face
+> difficulty on MIPS based board having M25P80. Bootloader is u-boot.
+> When linux boots, I pass the command-line argument as:
 > 
-> http://git.infradead.org/users/dedekind/l2-mtd-2.6.git
+> Kernel command line:
+> mtdpart=m25p80:256k(boot),64k(boot_config),64k(board_config),2048k(kernel),4096k(filesystem)
+> root=/dev/mtdpart rootfstype=squashfs,yaffg
+> And Error I get is :
+> 
+>     VFS: Cannot open root device "mtdpart" or unknown-block(0,0)
+>     Please append a correct "root=" boot option; here are the
+> available partitions:
+>     Kernel panic - not syncing: VFS: Unable to mount root fs on
+> unknown-block(0,0)
+> 
+> Some questions in above command-line I have:
+> 
+> 1. Does kernel recognize m25p80 by same name. How can I check where it
+> is mapped in kernel. Then only mtdpart makes sense: I think so? I
+> expected it to be at 0xbf040000. I do not know in kernel where to find
+> this mapping. I tried drivers/mtd/ for chips specifics, but could not
+> make out much.
+> 2. When cmdline say root=/dev/mtdpart, do `mtdpart' should be defined
+> in kernel somewhere?
+> 
+> Can someone please explain, which all part of kernel I need to look into.
 > 
 
-Thanks Artem.
-
-Patches were based on 2.6.30-rc4, last commit was "cfi_cmdset_0001.c:
-Fix a bug in inval_cache_and_wait_for_operation()." (6ac15e), my guess
-is that you had problems applying because you applied the "CFI: quirk
-for PF38F4476." first. Next time I will send the patches as a series.
-
-I verified the patches on your gitweb and they look ok.
-
--- 
-Daniel Ribeiro
+What's your spi driver ?
