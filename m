@@ -1,18 +1,15 @@
-Received: from krynn.se.axis.com ([193.13.178.10])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M6fmq-0004YO-Iw
-	for linux-mtd@lists.infradead.org; Wed, 20 May 2009 07:00:31 +0000
-Date: Wed, 20 May 2009 09:00:15 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: John Tobias <jtobias@viaas.com>
-Subject: Re: Nand driver acts different in two different settings
-In-Reply-To: <66b2b2310905191355h1b99caaasd4636e4e9efc9aec@mail.gmail.com>
-Message-ID: <Pine.LNX.4.64.0905200859090.26634@lnxricardw.se.axis.com>
-References: <66b2b2310905191355h1b99caaasd4636e4e9efc9aec@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from mail.wantstofly.org ([2001:888:11ff:97::11])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M6jb2-0005C7-KW
+	for linux-mtd@lists.infradead.org; Wed, 20 May 2009 11:04:31 +0000
+Date: Wed, 20 May 2009 13:07:11 +0200
+From: Lennert Buytenhek <buytenh@wantstofly.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd m25p80: add support for Macronix MX25L12805D
+Message-ID: <20090520110711.GA5712@mail.wantstofly.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +19,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
 
-On Tue, 19 May 2009, John Tobias wrote:
-
-> I have tested two scenarios for writing/reading a data on my nand flash=
-=20
-> and it act's differently the nand driver on DM6446. ...
-
-> I erased the said partition using flash_eraseall -j /dev/mtdblock11,=20
-> write the .jffs2 image on flash using nandwrite. Then, I reboot my board=
-=20
-> to boot on nand. The first boot, I didn't get any errors/warnings. But,=
-=20
-> after the 2nd reboot, I got the following errors:
-
-Odd that you don't get errors the first time you boot.
-
-I really don't know, but I would try omitting -j to flash_eraseall and see=
-=20
-if it makes a difference.
-
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 8185b1f..ce116e1 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -498,6 +498,9 @@ static struct flash_info __devinitdata m25p_data [] = {
+ 	{ "at26df161a", 0x1f4601, 0, 64 * 1024, 32, SECT_4K, },
+ 	{ "at26df321",  0x1f4701, 0, 64 * 1024, 64, SECT_4K, },
+ 
++	/* Macronix */
++	{ "mx25l12805d", 0xc22018, 0, 64 * 1024, 256, },
++
+ 	/* Spansion -- single (large) sector size only, at least
+ 	 * for the chips listed here (without boot sectors).
+ 	 */
