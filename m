@@ -1,31 +1,22 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M6sjI-00006A-QW
-	for linux-mtd@lists.infradead.org; Wed, 20 May 2009 20:49:43 +0000
-From: "Narnakaje, Snehaprabha" <nsnehaprabha@ti.com>
-To: Troy Kisky <troy.kisky@boundarydevices.com>, David Brownell
-	<david-b@pacbell.net>
-Date: Wed, 20 May 2009 15:49:06 -0500
-Subject: RE: [PATCH 2.6.30-rc6 3/3] NAND: Add 4-bit ECC support for large
-	page	NAND chips
-Message-ID: <7A436F7769CA33409C6B44B358BFFF0C0113818603@dlee02.ent.ti.com>
-References: <1242682705-19845-1-git-send-email-nsnehaprabha@ti.com>
-	<4A11F5FC.40709@boundarydevices.com>	<4A11FA90.3060403@boundarydevices.com>
-	<7A436F7769CA33409C6B44B358BFFF0C01138180E0@dlee02.ent.ti.com>
-	<4A1454B8.3010605@boundarydevices.com>
-	<7A436F7769CA33409C6B44B358BFFF0C01138184F0@dlee02.ent.ti.com>
-	<4A1465AE.7090706@boundarydevices.com>
-In-Reply-To: <4A1465AE.7090706@boundarydevices.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Received: from yx-out-1718.google.com ([74.125.44.153])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M6uoH-0002vB-Ij
+	for linux-mtd@lists.infradead.org; Wed, 20 May 2009 23:02:59 +0000
+Received: by yx-out-1718.google.com with SMTP id 6so439576yxn.72
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 20 May 2009 16:02:51 -0700 (PDT)
 MIME-Version: 1.0
-Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"davinci-linux-open-source@linux.davincidsp.com"
-	<davinci-linux-open-source@linux.davincidsp.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>
+In-Reply-To: <Pine.LNX.4.64.0905200859090.26634@lnxricardw.se.axis.com>
+References: <66b2b2310905191355h1b99caaasd4636e4e9efc9aec@mail.gmail.com>
+	<Pine.LNX.4.64.0905200859090.26634@lnxricardw.se.axis.com>
+Date: Wed, 20 May 2009 16:02:51 -0700
+Message-ID: <66b2b2310905201602x35509fbend714446cd6e08dbb@mail.gmail.com>
+Subject: Re: Nand driver acts different in two different settings
+From: John Tobias <jtobias@viaas.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,157 +26,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Removing -j doesn't make any difference.
 
+-john
 
-> -----Original Message-----
-> From: Troy Kisky [mailto:troy.kisky@boundarydevices.com]
-> Sent: Wednesday, May 20, 2009 4:19 PM
-> To: Narnakaje, Snehaprabha
-> Cc: linux-mtd@lists.infradead.org; davinci-linux-open-
-> source@linux.davincidsp.com; dwmw2@infradead.org; tglx@linutronix.de;
-> akpm@linux-foundation.org
-> Subject: Re: [PATCH 2.6.30-rc6 3/3] NAND: Add 4-bit ECC support for large
-> page NAND chips
->=20
-> Narnakaje, Snehaprabha wrote:
-> >
-> >> -----Original Message-----
-> >> From: Troy Kisky [mailto:troy.kisky@boundarydevices.com]
-> >> Sent: Wednesday, May 20, 2009 3:07 PM
-> >> To: Narnakaje, Snehaprabha
-> >> Cc: linux-mtd@lists.infradead.org; davinci-linux-open-
-> >> source@linux.davincidsp.com; dwmw2@infradead.org; tglx@linutronix.de;
-> >> akpm@linux-foundation.org
-> >> Subject: Re: [PATCH 2.6.30-rc6 3/3] NAND: Add 4-bit ECC support for
-> large
-> >> page NAND chips
-> >>
-> >> Narnakaje, Snehaprabha wrote:
-> >>> Troy,
-> >>>
-> >>>> -----Original Message-----
-> >>>> From: Troy Kisky [mailto:troy.kisky@boundarydevices.com]
-> >>>> Sent: Monday, May 18, 2009 8:17 PM
-> >>>> To: Narnakaje, Snehaprabha
-> >>>> Cc: dwmw2@infradead.org; davinci-linux-open-
-> >> source@linux.davincidsp.com;
-> >>>> linux-mtd@lists.infradead.org; tglx@linutronix.de; akpm@linux-
-> >>>> foundation.org
-> >>>> Subject: Re: [PATCH 2.6.30-rc6 3/3] NAND: Add 4-bit ECC support for
-> >> large
-> >>>> page NAND chips
-> >>>>
-> >>>> Troy Kisky wrote:
-> >>>>> nsnehaprabha@ti.com wrote:
-> >>>>>> From: Sneha Narnakaje <nsnehaprabha@ti.com>
-> >>>>>>
-> >>>>>> This patch adds 4-bit ECC support for large page NAND chips using
-> the
-> >>>> new ECC
-> >>>>>> mode NAND_ECC_HW_OOB_FIRST. The platform data from board-dm355-evm
-> >> has
-> >>>> been
-> >>>>>> adjusted to use this mode.
-> >>>>>>
-> >>>>>> The patches have been verified on DM355 device with 2K Micron
-> devices
-> >>>> using
-> >>>>>> mtd-tests and JFFS2. Error correction upto 4-bits has also been
-> >>>> verified using
-> >>>>>> nandwrite/nanddump utilities.
-> >>>>>>
-> >>>>>> Reviewed-by: David Brownell <dbrownell@users.sourceforge.net>
-> >>>>>> Signed-off-by: Sneha Narnakaje <nsnehaprabha@ti.com>
-> >>>>>> ---
-> >>>>>>  drivers/mtd/nand/davinci_nand.c |   37
-> >>>> +++++++++++++++++++++++++++++++------
-> >>>>>>  1 files changed, 31 insertions(+), 6 deletions(-)
-> >>>>>>
-> >>>>>> diff --git a/drivers/mtd/nand/davinci_nand.c
-> >>>> b/drivers/mtd/nand/davinci_nand.c
-> >>>>>> index ba6940d..4557b8d 100644
-> >>>>>> --- a/drivers/mtd/nand/davinci_nand.c
-> >>>>>> +++ b/drivers/mtd/nand/davinci_nand.c
-> >>>>>> @@ -500,6 +500,24 @@ static struct nand_ecclayout hwecc4_small
-> >>> __initconst =3D {
-> >>>>>>  	},
-> >>>>>>  };
-> >>>>>>
-> >>>>>> +/* An ECC layout for using 4-bit ECC with large-page (2048bytes)
-> >> flash,
-> >>>>>> + * storing ten ECC bytes plus the manufacturer's bad block marker
-> >> byte,
-> >>>>>> + * and not overlapping the default BBT markers.
-> >>>>>> + */
-> >>>>>> +static struct nand_ecclayout hwecc4_2048 __initconst =3D {
-> >>>>>> +	.eccbytes =3D 40,
-> >>>>>> +	.eccpos =3D { 0, 1, 2, 3, 4,
-> >>>>>> +		/* offset 5 holds the badblock marker */
-> >>>> I don't see any bad block overrides to move it from bytes 0,1
-> >>>> to byte 5 in this patch. What am I missing?
-> >>> We are making sure we are not overwriting offset 5, that holds the
-> >> badblock marker from nand manufacturer. Thus offset 5 is skipped in th=
+On Wed, May 20, 2009 at 12:00 AM, Ricard Wanderlof
+<ricard.wanderlof@axis.com> wrote:
+>
+> On Tue, 19 May 2009, John Tobias wrote:
+>
+>> I have tested two scenarios for writing/reading a data on my nand flash
+>> and it act's differently the nand driver on DM6446. ...
+>
+>> I erased the said partition using flash_eraseall -j /dev/mtdblock11, wri=
+te
+>> the .jffs2 image on flash using nandwrite. Then, I reboot my board to bo=
+ot
+>> on nand. The first boot, I didn't get any errors/warnings. But, after th=
 e
-> >> eccpos.
-> >>
-> >> Yes, I agree, you are. But how does Linux know where to look for the
-> bad
-> >> block marker?
-> >
-> > I believe, it is defined in the nand_bbt.c.
-> >
-> > BTW, looking closely at the nand_bbt.c, looks like I made a mistake :-)
-> >
-> > static struct nand_bbt_descr smallpage_flashbased =3D {
-> >         .options =3D NAND_BBT_SCAN2NDPAGE,
-> >         .offs =3D 5,
-> >         .len =3D 1,
-> >         .pattern =3D scan_ff_pattern
-> > };
-> >
-> > static struct nand_bbt_descr largepage_flashbased =3D {
-> >         .options =3D NAND_BBT_SCAN2NDPAGE,
-> >         .offs =3D 0,
-> >         .len =3D 2,
-> >         .pattern =3D scan_ff_pattern
-> > };
-> >
-> > Since my patches are to support large page, Shouldn't I be skipping 2
-> bytes (offset 0 and 1)?
-> >
-> > The 1 byte at offset 5 was for smallpage.
-> >
-> > Thanks
-> > Sneha
-> >
-> >
->=20
-> Yes, that is what I thought. If you can place the ecc anywhere, please pu=
-t
-> it at the end of the oob data
-> for large page devices.
-
-Troy,
-
-I explored nand_bbt, jffs2 using the OOB area.
-
-This is what I found -
-2 bytes at offset 0: BB markers
-4 bytes at offset 8: BBT magic number/data
-1 byte at offset 12: BBT version
-8 bytes at offset 16: JFFS2 clear markers
-
-So, it is better to start with offset 24 (there are few bytes in between, b=
-ut it is better to leave them as-is).
-
-Dave,=20
-
-Did you have any comments?
-
-Thanks
-Sneha
-
-
->=20
->=20
-> Troy
+>> 2nd reboot, I got the following errors:
+>
+> Odd that you don't get errors the first time you boot.
+>
+> I really don't know, but I would try omitting -j to flash_eraseall and se=
+e
+> if it makes a difference.
+>
+> /Ricard
+> --
+> Ricard Wolf Wanderl=C3=B6f =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ricardw(at)axis.com
+> Axis Communications AB, Lund, Sweden =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0www.axis.com
+> Phone +46 46 272 2016 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Fax +46 46 13 61 30
+>
