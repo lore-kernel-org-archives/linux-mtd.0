@@ -1,24 +1,25 @@
 Received: from fed1rmmtao101.cox.net ([68.230.241.45])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M6qWV-0003xt-Hq
-	for linux-mtd@lists.infradead.org; Wed, 20 May 2009 18:28:22 +0000
-Message-ID: <4A144BB9.5020805@boundarydevices.com>
-Date: Wed, 20 May 2009 11:28:09 -0700
+	id 1M6r7c-0006FM-2c
+	for linux-mtd@lists.infradead.org; Wed, 20 May 2009 19:06:42 +0000
+Message-ID: <4A1454B8.3010605@boundarydevices.com>
+Date: Wed, 20 May 2009 12:06:32 -0700
 From: Troy Kisky <troy.kisky@boundarydevices.com>
 MIME-Version: 1.0
-To: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: Re: [PATCH 3/5] mtd: nand: atmel: use default ecc layout
-References: <>
-	<1242270008-1552-2-git-send-email-troy.kisky@boundarydevices.com>
-	<1242270008-1552-3-git-send-email-troy.kisky@boundarydevices.com>
-	<200905132212.11923.david-b@pacbell.net>
-	<4A141F81.8070104@atmel.com>
-In-Reply-To: <4A141F81.8070104@atmel.com>
+To: "Narnakaje, Snehaprabha" <nsnehaprabha@ti.com>
+Subject: Re: [PATCH 2.6.30-rc6 3/3] NAND: Add 4-bit ECC support for large
+	page	NAND chips
+References: <1242682705-19845-1-git-send-email-nsnehaprabha@ti.com>	<4A11F5FC.40709@boundarydevices.com>	<4A11FA90.3060403@boundarydevices.com>
+	<7A436F7769CA33409C6B44B358BFFF0C01138180E0@dlee02.ent.ti.com>
+In-Reply-To: <7A436F7769CA33409C6B44B358BFFF0C01138180E0@dlee02.ent.ti.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: David Brownell <david-b@pacbell.net>,
-	Richard Genoud <richard.genoud@gmail.com>, linux-mtd@lists.infradead.org,
-	Haavard Skinnemoen <hskinnemoen@atmel.com>
+Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"davinci-linux-open-source@linux.davincidsp.com"
+	<davinci-linux-open-source@linux.davincidsp.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,70 +29,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Nicolas Ferre wrote:
-> Hi,
+Narnakaje, Snehaprabha wrote:
+> Troy,
 > 
-> I would like to bring my 2cents to the discussion so, let me comment simultaneously on:
-> [PATCH 1/5] mtd: nand: move layout structure into nand_ecc_ctrl
-> [PATCH 3/5] mtd: nand: atmel: use default ecc layout
-> 
-> First of all I did not manage to compile without this additional line in atmel_nand.c (which is not in original patch):
-> 
-> --- a/drivers/mtd/nand/atmel_nand.c
-> +++ b/drivers/mtd/nand/atmel_nand.c
-> @@ -329,7 +303,7 @@ static int atmel_nand_calculate(struct m
->  {
->  	struct nand_chip *nand_chip = mtd->priv;
->  	struct atmel_nand_host *host = nand_chip->priv;
-> -	uint32_t *eccpos = nand_chip->ecc.layout->eccpos;
-> +	uint32_t *eccpos = nand_chip->ecc.layout.eccpos;
->  	unsigned int ecc_value;
->  
->  	/* get the first 2 ECC bytes */
-> 
+>> -----Original Message-----
+>> From: Troy Kisky [mailto:troy.kisky@boundarydevices.com]
+>> Sent: Monday, May 18, 2009 8:17 PM
+>> To: Narnakaje, Snehaprabha
+>> Cc: dwmw2@infradead.org; davinci-linux-open-source@linux.davincidsp.com;
+>> linux-mtd@lists.infradead.org; tglx@linutronix.de; akpm@linux-
+>> foundation.org
+>> Subject: Re: [PATCH 2.6.30-rc6 3/3] NAND: Add 4-bit ECC support for large
+>> page NAND chips
+>>
+>> Troy Kisky wrote:
+>>> nsnehaprabha@ti.com wrote:
+>>>> From: Sneha Narnakaje <nsnehaprabha@ti.com>
+>>>>
+>>>> This patch adds 4-bit ECC support for large page NAND chips using the
+>> new ECC
+>>>> mode NAND_ECC_HW_OOB_FIRST. The platform data from board-dm355-evm has
+>> been
+>>>> adjusted to use this mode.
+>>>>
+>>>> The patches have been verified on DM355 device with 2K Micron devices
+>> using
+>>>> mtd-tests and JFFS2. Error correction upto 4-bits has also been
+>> verified using
+>>>> nandwrite/nanddump utilities.
+>>>>
+>>>> Reviewed-by: David Brownell <dbrownell@users.sourceforge.net>
+>>>> Signed-off-by: Sneha Narnakaje <nsnehaprabha@ti.com>
+>>>> ---
+>>>>  drivers/mtd/nand/davinci_nand.c |   37
+>> +++++++++++++++++++++++++++++++------
+>>>>  1 files changed, 31 insertions(+), 6 deletions(-)
+>>>>
 
-My patch set is on top of Linux 2.6.30-rc5.
+>>>> diff --git a/drivers/mtd/nand/davinci_nand.c
+>> b/drivers/mtd/nand/davinci_nand.c
+>>>> index ba6940d..4557b8d 100644
+>>>> --- a/drivers/mtd/nand/davinci_nand.c
+>>>> +++ b/drivers/mtd/nand/davinci_nand.c
+>>>> @@ -500,6 +500,24 @@ static struct nand_ecclayout hwecc4_small
+> __initconst = {
+>>>>  	},
+>>>>  };
+>>>>
+>>>> +/* An ECC layout for using 4-bit ECC with large-page (2048bytes) flash,
+>>>> + * storing ten ECC bytes plus the manufacturer's bad block marker byte,
+>>>> + * and not overlapping the default BBT markers.
+>>>> + */
+>>>> +static struct nand_ecclayout hwecc4_2048 __initconst = {
+>>>> +	.eccbytes = 40,
+>>>> +	.eccpos = { 0, 1, 2, 3, 4,
+>>>> +		/* offset 5 holds the badblock marker */
+>> 
+>> I don't see any bad block overrides to move it from bytes 0,1
+>> to byte 5 in this patch. What am I missing?
 
->From 1/3
-@@ -188,7 +188,6 @@ static int atmel_nand_calculate(struct mtd_info *mtd,
- {
- 	struct nand_chip *nand_chip = mtd->priv;
- 	struct atmel_nand_host *host = nand_chip->priv;
--	uint32_t *eccpos = nand_chip->ecc.layout->eccpos;
- 	unsigned int ecc_value;
+> We are making sure we are not overwriting offset 5, that holds the badblock marker from nand manufacturer. Thus offset 5 is skipped in the eccpos.
 
- 	/* get the first 2 ECC bytes */
-
-Which is the same subroutine as your change, but a strange difference in line
-numbers. Which makes me think you have changes in this file as well.
+Yes, I agree, you are. But how does Linux know where to look for the bad block marker?
 
 
+>>>> @@ -689,15 +707,22 @@ static int __init nand_davinci_probe(struct
+>> platform_device *pdev)
+>>>>  				info->mtd.oobsize - 16;
+>>>>  			goto syndrome_done;
+>>>>  		}
+>>>> +		if (chunks == 4) {
+>>>> +			info->ecclayout = hwecc4_2048;
+>>>> +			info->ecclayout.oobfree[1].length =
+>>>> +				info->mtd.oobsize - 49;
+>> Most drivers set chip->ecc.layout = ... Is it ok to use ecclayout
+>> instead?????
 > 
-> Here is the log that I have running with this patch:
-> "
-> NAND device: Manufacturer ID: 0xec, Chip ID: 0xda (Samsung NAND 256MiB 3,3V 8-bit)
-> AT91 NAND: 8-bit, Software ECC
-> nand_scan_tail ecc.total = 24, ecc.steps = 8, ecc.bytes = 3, ecc.size = 256, writesize = 2048
-> nand_scan_tail oobfree[0].offset=2, .length=38
-> Scanning device for bad blocks
-> Bad eraseblock 881 at 0x06e20000
-> Creating 3 MTD partitions on "atmel_nand":
-> 0x00000000-0x00400000 : "Bootstrap"
-> 0x00400000-0x04000000 : "Partition 1"
-> 0x04000000-0x10000000 : "Partition 2"
-> "
+> info->ecclayout is internal to davinci nand driver, since info is of type 'struct davinci_nand_info'.
 > 
-> All seems ok.
+> In the davinci_nand.c source, there is already code to assign info->ecclayout to chip->ecc.layout.
 > 
-> So, with the above line replaced, I would like to add to both patches:
+> syndrome_done:
+>                 info->chip.ecc.layout = &info->ecclayout;
 > 
-> [nicolas.ferre@atmel.com: tested on large page nand sw ECC]
-> Tested-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+> We have this internal structure to handle different ecc modes (ecc bits vs. page sizes).
 > 
-> Regards,
+> Thanks
+> Sneha
 
+Ok, this is on top of previous patches not yet accepted. I missed that.
 
-Thanks for testing. I appreciate it.
 
 
 Troy
