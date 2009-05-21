@@ -1,23 +1,20 @@
-Received: from n19.bullet.mail.mud.yahoo.com ([68.142.206.146])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M6wIw-00037m-TM
-	for linux-mtd@lists.infradead.org; Thu, 21 May 2009 00:38:45 +0000
-From: David Brownell <david-b@pacbell.net>
-To: davinci-linux-open-source@linux.davincidsp.com,
- nsnehaprabha@ti.com
-Subject: Re: [PATCH 2.6.30-rc6 3/3] NAND: Add 4-bit ECC support for large page
-	NAND chips
-Date: Wed, 20 May 2009 17:38:24 -0700
-References: <1242682705-19845-1-git-send-email-nsnehaprabha@ti.com>
-In-Reply-To: <1242682705-19845-1-git-send-email-nsnehaprabha@ti.com>
+Received: from skoismta09.skoost.com ([80.248.18.45])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M6yCZ-00075E-1t
+	for linux-mtd@lists.infradead.org; Thu, 21 May 2009 02:40:19 +0000
+Received: from skoissql01 (unknown [80.248.18.51])
+	by skoismta09.skoost.com (Postfix) with ESMTP id 20E7EF91F9
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 21 May 2009 02:11:57 +0000 (GMT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: inline
-Message-Id: <200905201738.24479.david-b@pacbell.net>
-Cc: dwmw2@infradead.org, tglx@linutronix.de, linux-mtd@lists.infradead.org,
-	akpm@linux-foundation.org
+From: "Robin Singh" <skoost@skoost.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: 21 May 2009 02:13:05 +0000
+Subject: A little gift - Robin
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <20090521021157.20E7EF91F9@skoismta09.skoost.com>
+Reply-To: Robin Singh <robin.gujjar@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,40 +24,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Minor comment:  $SUBJECT should say it adds this "for DaVinci".  ;)
-
-To recap other discussion (I hope), this needs to be reissued since:
-
-On Monday 18 May 2009, nsnehaprabha@ti.com wrote:
-> +static struct nand_ecclayout hwecc4_2048 __initconst = {
-> +       .eccbytes = 40,
-> +       .eccpos = { 0, 1, 2, 3, 4,
-
-Byte 0 -- for 8-bit large-page parts which need this patch -- is
-the manufacturer bad block marker, and the idea was to *not* clobber
-it.  Those bytes need to be skipped.
-
-Will the 40 bytes of ECC data now be stored at offsets 24..63,
-matching Troy's patches?
-
-	0..1	manufacturer badblock markers
-	8..11	BBT marker ("free" oob data)
-	16..23	JFFS2 stuff ("free" oob data)
-	24..63	ECC data
-
-And for 4KB pages, it would be the same -- except that
-there would be 80 bytes of ECC data, from 48..127 (too
-much to fit into the eccpos array).
-
-
-> +               /* offset 5 holds the badblock marker */
-> +               6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-> +               /* 8 bytes at offset 16 hold JFFS2 clean markers */
-> +               24, 25, 26, 27, 28,
-> +               29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
-> +               39, 40, 41, 42, 43, 44, 45, 46, 47, 48, },
-> +       .oobfree = {
-> +               {.offset = 16, .length = 8, },
-> +               {.offset = 49, },
-> +       },
-> +};
+Robin Singh belongs to Skoost and sent you a little gift.=0D=0A=0D=0AClick=
+ below to collect your gift:=0D=0Ahttp://www.skoost.com/fun?linux%2Dmtd%40lists%2Einfradead%2Eorg/16521144/10=
+=0D=0A=0D=0AP.S. This is a safe and innocent gift that Robin Singh=0D=0Asent=
+ from Skoost, the free goodies website.=0D=0A=0D=0AThis e-mail was sent=
+ to linux-mtd@lists.infradead.org on 5/18/2009 9:14:21 AM=0D=0Aon behalf=
+ of Robin Singh (robin.gujjar@gmail.com)
