@@ -1,9 +1,9 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M7PAQ-0006r0-GA
-	for linux-mtd@lists.infradead.org; Fri, 22 May 2009 07:27:52 +0000
-Message-ID: <4A165425.3070209@nokia.com>
-Date: Fri, 22 May 2009 10:28:37 +0300
+	id 1M7PRw-00049l-9f
+	for linux-mtd@lists.infradead.org; Fri, 22 May 2009 07:46:01 +0000
+Message-ID: <4A165848.4030108@nokia.com>
+Date: Fri, 22 May 2009 10:46:16 +0300
 From: Adrian Hunter <adrian.hunter@nokia.com>
 MIME-Version: 1.0
 To: Philip Rakity <prakity@yahoo.com>
@@ -23,24 +23,10 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Philip Rakity wrote:
-> 
 > We have UBI/UBIFS working with MLC Flash (4K pages).  Before going into production we would like to stress test the system for all the obvious reasons.
 > 
 > What tools / tests would one recommend to do this.  
 
+And you should take this patch if you don't have it:
 
-There are file system tests in LTP http://ltp.sourceforge.net/
-including one called fsstress which is good for stress testing.
-
-We would typically do power-off-recovery testing with fsstress
-running.
-
-There are also tests in mtd-utils:
-
-	http://git.infradead.org/mtd-utils.git
-
-We tend to run the integrity test as a basic test of whether things work,
-but it is best if it can unmount the partition.
-
-There are a bunch of tests in mtd-utils/tests/fs-tests that are run by
-the run-all.sh script there.
+http://git.infradead.org/ubifs-2.6.git?a=commitdiff;h=8b3884a841f398f6e0a0411d6929d8d9381bb265
