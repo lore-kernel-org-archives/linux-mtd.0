@@ -1,19 +1,17 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M7Ujg-0007uk-5z
-	for linux-mtd@lists.infradead.org; Fri, 22 May 2009 13:24:50 +0000
-Subject: Re: Problem to attach NAND MTD-device to UBI
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Kaius =?ISO-8859-1?Q?H=E4ggblom?= <kaius@oliotalo.fi>
-In-Reply-To: <4A16A46B.8030302@oliotalo.fi>
-References: <4A169E16.6010305@oliotalo.fi>  <4A16A46B.8030302@oliotalo.fi>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 22 May 2009 16:24:23 +0300
-Message-Id: <1242998663.21646.3.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from cuda1-out.uwstout.edu ([144.13.1.203])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M7Vbv-0003Bt-Sk
+	for linux-mtd@lists.infradead.org; Fri, 22 May 2009 14:20:42 +0000
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: Winner Reply this email with the information for claim
+	(motorolaprom128@yahoo.com.hk)
+Date: Fri, 22 May 2009 09:17:53 -0500
+Message-ID: <413BF80F8BF1254094223A8811DBCE35180A22E6@FMS.uwstout.edu>
+From: "Eierman, Melissa" <eiermanm@uwstout.edu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +21,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-05-22 at 16:11 +0300, Kaius Häggblom wrote:
-> Set volume size to 129927168
-> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 
-> 1023:512, written 0 bytes
-> UBI warning: ubi_eba_write_leb: failed to write VID header to LEB 
-> 2147479551:0, PEB 1023
-> UBI: try another PEB
-> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 
-> 1022:512, written 0 bytes
-> UBI warning: ubi_eba_write_leb: failed to write VID header to LEB 
-> 2147479551:0, PEB 1022
-> UBI: try another PEB
-> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 
-> 1021:512, written 0 bytes
-> UBI warning: ubi_eba_write_leb: failed to write VID header to LEB 
-> 2147479551:0, PEB 1021
-> UBI: try another PEB
-> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 
-> 1020:512, written 0 bytes
-
-http://www.linux-mtd.infradead.org/faq/ubi.html#L_subpage_verify_fail
-
-?
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+We are pleased to inform you from the online email ballot promotions =
+held by Motorola Company, your email have been approved to claim the sum =
+of =A3400,000 (Four hundred thousand pounds) .
+To file for claim, you are required to provide us with the information =
+below for verification:
+Full Name:
+Mailing address:
+Permanent house address:
+Country of resident:
+Phone Number:
+Age:
+Sex:
+Occupation:
+Reply this email with the information for claim =
+(motorolaprom128@yahoo.com.hk)
