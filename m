@@ -1,24 +1,20 @@
-Received: from mail-bw0-f160.google.com ([209.85.218.160])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M8VSc-0006dt-4y
-	for linux-mtd@lists.infradead.org; Mon, 25 May 2009 08:23:12 +0000
-Received: by bwz4 with SMTP id 4so3394369bwz.18
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 25 May 2009 01:23:03 -0700 (PDT)
+Received: from easi.embeddedalley.com ([71.6.201.124])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M8VWV-0007He-0T
+	for linux-mtd@lists.infradead.org; Mon, 25 May 2009 08:27:14 +0000
+Message-ID: <4A1A564C.1010005@embeddedalley.com>
+Date: Mon, 25 May 2009 12:26:52 +0400
+From: Vladimir Barinov <vbarinov@embeddedalley.com>
 MIME-Version: 1.0
-In-Reply-To: <1243238323.21646.64.camel@localhost.localdomain>
-References: <1243232787-29108-1-git-send-email-corentincj@iksaif.net>
-	<1243232787-29108-2-git-send-email-corentincj@iksaif.net>
-	<1243232787-29108-3-git-send-email-corentincj@iksaif.net>
-	<1243238323.21646.64.camel@localhost.localdomain>
-Date: Mon, 25 May 2009 10:23:03 +0200
-Message-ID: <71cd59b00905250123o516a293an3c5c541cc417fc94@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mkfs.ubifs: use libubi to format UBI volume
-From: Corentin Chary <corentin.chary@gmail.com>
-To: dedekind@infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+To: Claudio Lanconelli <lanconelli.claudio@eptar.com>
+Subject: Re: ARM: MTD: mxc_nand: Question on NAND Flash support for mxc
+References: <20090521174611.5a18ea3a@Marramao-laptop>
+	<4A165D15.2030404@eptar.com>
+In-Reply-To: <4A165D15.2030404@eptar.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Alberto Panizzo <maramaopercheseimorto@gmail.com>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,67 +24,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, May 25, 2009 at 9:58 AM, Artem Bityutskiy
-<dedekind@infradead.org> wrote:
->
-> I know this is nit-picking, but would be nicer to close libubi
-> in case of errors. Namely, in the second and third checks.
+Hello Claudio,
 
-In case of error, close_target() will close libubi. (if(ubi) libubi_close(u=
-bi)).
-But maybe you want to explicitly close libubi here ?
-
-
->> +static int write_empty_leb(int lnum, int dtype)
->> =A0{
->> - =A0 =A0 return write_leb(lnum, 0, leb_buf);
->> + =A0return write_leb(lnum, 0, leb_buf, dtype);
->> =A0}
->
-> You screwed the indentation here a bit.
-
-Arg... M-x c-set-style gnu :/
-
->> - =A0 =A0 err =3D stat(root, &root_st);
->> - =A0 =A0 if (err)
->> - =A0 =A0 =A0 =A0 =A0 =A0 return sys_err_msg("bad root file-system direc=
-tory '%s'", root);
->> + =A0 =A0 if (root) {
->> + =A0 =A0 =A0 =A0 =A0 =A0 err =3D stat(root, &root_st);
->> + =A0 =A0 =A0 =A0 =A0 =A0 if (err)
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 return sys_err_msg("bad root f=
-ile-system directory '%s'"
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0, root);
->
-> This is a little ugly. Could you please leave the comma at close to the
-> " symbol, and move "root" to the second line. This is just how the rest
-> of the code is written. Let's be consistent.
-
-The comma is just at the 80 column limit.
-Using Lindent, we get:
-                        return
-                            sys_err_msg("bad root file-system directory '%s=
-'",
-                                        root);
-
-Is this ok ?
-
->
->> --- a/mkfs.ubifs/ubifs.h
->> +++ b/mkfs.ubifs/ubifs.h
->> @@ -366,6 +366,9 @@ struct ubifs_info
->> =A0 =A0 =A0 int dead_wm;
->> =A0 =A0 =A0 int dark_wm;
+Claudio Lanconelli wrote:
+> Alberto Panizzo ha scritto:
+>   
+>> Hi all!
 >>
->> + =A0 =A0 struct ubi_dev_info di;
->> + =A0 =A0 struct ubi_vol_info vi;
+>> I am trying to give support for NAND flash device to Atmark Armadillo 500
+>> developing board.
+>> This board has an iMX31 processor and is shipped with an ST Micro NAND 256MiB 3,3V 8-bit Flash.
+>> Atmark support this board with an old 2.6.26 kernel with some modification.
+>> For this NAND Flash Atmark installed the old Freescale mxc_nd driver brought up by
+>> Sascha Hauer in the on tree mxc_nand.
+>>
+>> Now the problem:
+>> With the old driver kernel message is as follow:
+>> --
+>> MXC MTD nand Driver 2.0
+>> NAND device: Manufacturer ID: 0x20, Chip ID: 0xda (ST Micro NAND 256MiB 3,3V 8-bit)
+>> Scanning device for bad blocks
+>> Bad eraseblock 592 at 0x04a00000
+>> Creating 4 MTD partitions on "NAND 256MiB 3,3V 8-bit":
+>> --
+>>
+>> With the new in tree driver i get:
+>> --
+>> NAND device: Manufacturer ID: 0x20, Chip ID: 0xda (ST Micro NAND 256MiB 3,3V 8-bit)
+>> Scanning device for bad blocks
+>> Bad eraseblock 0 at 0x000000000000
+>> Bad eraseblock 1 at 0x000000020000
+>> Bad eraseblock 2 at 0x000000040000
+>> Bad eraseblock 3 at 0x000000060000
+>> Bad eraseblock 4 at 0x000000080000
+>> Bad eraseblock 5 at 0x0000000a0000
+>> Bad eraseblock 6 at 0x0000000c0000
+>> Bad eraseblock 7 at 0x0000000e0000
+>> .... all blocks ...
+>> Bad eraseblock 2045 at 0x00000ffa0000
+>> Bad eraseblock 2046 at 0x00000ffc0000
+>> Bad eraseblock 2047 at 0x00000ffe0000
+>> RedBoot partition parsing not available
+>> Registering mxc_nand as whole device
+>> --
+>>
+>> All blocks are recognized as Bad eraseblocks! 
+>>     
 >
-> For consistency, you should probably comment these new fields.
-Ok
+> Hi Alberto,
+>
+> The problem is that mx nand controller doesn't use standard oob layout for large page nand, instead it uses the same layout of the small page nand, some sort of concatenation of four small pages oob.
+>
+> AFAIK you need at least two changes to use large page nand.
+>
+> The first one is to use a correct oob layout (especially if you plan to use YAFFS):
+>   
+Agree, it's needed to use 64k oob layout for 2k page sizes.
+> +static struct nand_ecclayout nand_hw_eccoob_2k = {
+> +	.eccbytes = 20,
+> +	.eccpos = {6, 7, 8, 9, 10, 22, 23, 24, 25, 26,
+> +		   38, 39, 40, 41, 42, 54, 55, 56, 57, 58},
+> +	.oobfree = {
+> +		    {.offset = 0,
+> +		     .length = 5},
+> +
+> +		    {.offset = 11,
+> +		     .length = 10},
+> +
+> +		    {.offset = 27,
+> +		     .length = 10},
+> +
+> +		    {.offset = 43,
+> +		     .length = 10},
+> +
+> +		    {.offset = 59,
+> +		     .length = 5}
+> +		    }
+> +};
+> +
+>
+> The second one is to look for bad block descriptor on location 5 instead of 0. Location 5 is the standard for small page devices. You also need to check that the nand flash you use is shipped with both 0 and 5 locations marked for bad blocks.
+>
+> +	if (!this->badblock_pattern) {
+> +		if (mtd->writesize == 2048)
+> +			this->badblock_pattern = &smallpage_memorybased;
+> +		else
+> +			this->badblock_pattern = (mtd->writesize > 512) ?
+> +			    &largepage_memorybased : &smallpage_memorybased;
+> +	}
+>   
+Actually I don't see the problem to use default bbt table for 
+largepages, i.e. first 2 byte in oob layer. The nand_hw_eccoob_2k table 
+above has the {0-5} marked as free for jffs2/yaffs oob info, so I think 
+that making first bytes as not free is enough to protect them.
+> Give a look at Freescale patches to find all the changes needed.
+>   
+Also the mx31 SoC will probably need to enable NFMS bit in RCSR 
+register, do this in arch code or bootloader:
++       /* set NAND page size to 2k if not configured via boot mode pins */
++       writel(readl(MXC_CCM_RCSR) | (1 << 30), MXC_CCM_RCSR);
 
-
-
---=20
-Corentin Chary
-http://xf.iksaif.net - http://uffs.org
+Regards,
+Vladimir
