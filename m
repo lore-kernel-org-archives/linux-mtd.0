@@ -1,23 +1,21 @@
-Received: from an-out-0708.google.com ([209.85.132.245])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M8Wr6-0003CY-EF
-	for linux-mtd@lists.infradead.org; Mon, 25 May 2009 09:52:35 +0000
-Received: by an-out-0708.google.com with SMTP id d14so1654981and.27
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 25 May 2009 02:52:24 -0700 (PDT)
-Date: Mon, 25 May 2009 11:52:20 +0200
-From: Alberto Panizzo <maramaopercheseimorto@gmail.com>
-To: Vladimir Barinov <vova.barinov@gmail.com>
-Subject: Re: [PATCH] [MTD] MXC NAND support for 2k page size flashes
-Message-ID: <20090525115220.1ace479d@Marramao-laptop>
-In-Reply-To: <1243242377-4470-1-git-send-email-vbarinov@embeddedalley.com>
-References: <1243242377-4470-1-git-send-email-vbarinov@embeddedalley.com>
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1M8YZZ-0003f6-74
+	for linux-mtd@lists.infradead.org; Mon, 25 May 2009 11:42:36 +0000
+Subject: Re: [patch 01/14] mtd: Flex-OneNAND support
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: apgmoorthy <moorthy.apg@samsung.com>
+In-Reply-To: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
+References: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 25 May 2009 14:41:58 +0300
+Message-Id: <1243251718.21646.107.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: lilja.magnus@gmail.com, s.hauer@pengutronix.de,
-	lanconelli.claudio@eptar.com, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.arm.linux.org.uk
+Content-Transfer-Encoding: 8bit
+Cc: vishak.g@samsung.com, amul.saha@samsung.com, kyungmin.park@samsung.com,
+	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
+	dwmw2@infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,113 +25,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 25 May 2009 13:06:17 +0400
-Vladimir Barinov <vova.barinov@gmail.com> wrote:
+Hi,
 
-> - Add support for 2k page size flashes
-> - Fix page address access for large pages
-> - Detect oob layout at runtime
-> - handle pagesize_2k variable
-> - Fix oob16 layout: reserve location 5 of oob area since it's used for bbt
-> ---
->  drivers/mtd/nand/mxc_nand.c |   60 ++++++++++++++++++++++++++++++++++++------
->  1 files changed, 51 insertions(+), 9 deletions(-)
+On Mon, 2009-05-25 at 16:22 +0530, apgmoorthy wrote:
+> On Sat May 23 05:35:19 EDT 2009 dedekind@infradead.org wrote :
 > 
-> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-> index f3548d0..5ab8985 100644
-> --- a/drivers/mtd/nand/mxc_nand.c
-> +++ b/drivers/mtd/nand/mxc_nand.c
-> @@ -138,7 +138,14 @@ static struct nand_ecclayout nand_hw_eccoob_8 = {
->  static struct nand_ecclayout nand_hw_eccoob_16 = {
->  	.eccbytes = 5,
->  	.eccpos = {6, 7, 8, 9, 10},
-> -	.oobfree = {{0, 6}, {12, 4}, }
-> +	.oobfree = {{0, 5}, {11, 5}, }
-> +};
-> +
-> +static struct nand_ecclayout nand_hw_eccoob_64 = {
-> +	.eccbytes = 20,
-> +	.eccpos = {6, 7, 8, 9, 10, 22, 23, 24, 25, 26,
-> +		   38, 39, 40, 41, 42, 54, 55, 56, 57, 58},
-> +	.oobfree = {{2, 4}, {11, 10}, {27, 10}, {43, 10}, {59, 5}, }
->  };
->  
->  #ifdef CONFIG_MTD_PARTITIONS
-> @@ -795,9 +802,13 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
->  		send_addr(host, (page_addr & 0xff), false);
->  
->  		if (host->pagesize_2k) {
-> -			send_addr(host, (page_addr >> 8) & 0xFF, false);
-> -			if (mtd->size >= 0x40000000)
-> +			if (mtd->size >= 0x10000000) {
-> +				/* paddr_8 - paddr_15 */
-> +				send_addr(host, (page_addr >> 8) & 0xff, false);
->  				send_addr(host, (page_addr >> 16) & 0xff, true);
-> +			} else
-> +				/* paddr_8 - paddr_15 */
-> +				send_addr(host, (page_addr >> 8) & 0xff, true);
->  		} else {
->  			/* One more address cycle for higher density devices */
->  			if (mtd->size >= 0x4000000) {
-> @@ -919,7 +930,6 @@ static int __init mxcnd_probe(struct platform_device *pdev)
->  		this->ecc.mode = NAND_ECC_HW;
->  		this->ecc.size = 512;
->  		this->ecc.bytes = 3;
-> -		this->ecc.layout = &nand_hw_eccoob_8;
->  		tmp = readw(host->regs + NFC_CONFIG1);
->  		tmp |= NFC_ECC_EN;
->  		writew(tmp, host->regs + NFC_CONFIG1);
-> @@ -953,12 +963,44 @@ static int __init mxcnd_probe(struct platform_device *pdev)
->  		this->ecc.layout = &nand_hw_eccoob_16;
->  	}
->  
-> -	host->pagesize_2k = 0;
-> +	/* first scan to find the device and get the page size */
-> +	if (nand_scan_ident(mtd, 1)) {
-> +		err = -ENXIO;
-> +		goto escan;
-> +	}
->  
-> -	/* Scan to find existence of the device */
-> -	if (nand_scan(mtd, 1)) {
-> -		DEBUG(MTD_DEBUG_LEVEL0,
-> -		      "MXC_ND: Unable to find any NAND device.\n");
-> +	host->pagesize_2k = (mtd->writesize == 2048) ? 1 : 0;
-> +
-> +	if (this->ecc.mode == NAND_ECC_HW) {
-> +		switch (mtd->oobsize) {
-> +		case 8:
-> +			this->ecc.layout = &nand_hw_eccoob_8;
-> +			break;
-> +		case 16:
-> +			this->ecc.layout = &nand_hw_eccoob_16;
-> +			break;
-> +		case 64:
-> +			this->ecc.layout = &nand_hw_eccoob_64;
-> +			break;
-> +		default:
-> +			/* page size not handled by HW ECC */
-> +			/* switching back to soft ECC */
-> +			this->ecc.size = 512;
-> +			this->ecc.bytes = 3;
-> +			this->ecc.layout = &nand_hw_eccoob_8;
-> +			this->ecc.mode = NAND_ECC_SOFT;
-> +			this->ecc.calculate = NULL;
-> +			this->ecc.correct = NULL;
-> +			this->ecc.hwctl = NULL;
-> +			tmp = readw(host->regs + NFC_CONFIG1);
-> +			tmp &= ~NFC_ECC_EN;
-> +			writew(tmp, host->regs + NFC_CONFIG1);
-> +			break;
-> +		}
-> +	}
-> +
-> +	/* second phase scan */
-> +	if (nand_scan_tail(mtd)) {
->  		err = -ENXIO;
->  		goto escan;
->  	}
+> >I get the following warning when compile this:
+> 
+> >drivers/mtd/onenand/onenand_base.c:3263: warning: 'flexonenand_setup'
+> >defined but not used 
+> 
+> I tried on the MTD Git  and have seen the warning as you mentioned.
+> '#ifndef MODULE' around the function 'flexonenand_setup' should help to get away with that warning.
+> We will post a patch.
+> 
+> Against which Fork , the patch should be ? 
 
-Hi Vladimir! Very thanks for your patch! This and setting correct value of NFMS bit, solve the problem!
+Dunno. Probably 2.6.30-rc7? Also, I think the loooong printk's
+lines in the patch are ugly. If you could make them nicer,
+it'd be cool. But whole MTD is full of printk's like this, so
+I did not complain about that.
 
-Alberto!
+I wanted to take your patch to my l2-mtd-2.6.git tree, and then
+ping dwmw2 to pull from it. But because of the warning and
+these ugly printk's I decided that I will rather not do this
+so far.
+
+Also, I'm not sure about #ifndef MODULE. AFAIK, the whole
+'__setup()' thing is not supposed to be used in drivers.
+But I'm not sure. I'll leave this for Andrew to comment on :-)
+
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
