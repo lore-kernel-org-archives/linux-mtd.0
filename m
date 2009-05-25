@@ -1,17 +1,24 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M8bM9-0004iT-Ap
-	for linux-mtd@lists.infradead.org; Mon, 25 May 2009 14:40:56 +0000
-Subject: [PATCH] UBIFS: use anonymous device
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 25 May 2009 17:39:32 +0300
-Message-Id: <1243262372.21646.128.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, viro@ZenIV.linux.org.uk
-Reply-To: dedekind@infradead.org
+Received: from mail-fx0-f212.google.com ([209.85.220.212])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M8bh9-0007ap-1O
+	for linux-mtd@lists.infradead.org; Mon, 25 May 2009 15:02:37 +0000
+Received: by fxm8 with SMTP id 8so3764180fxm.18
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 25 May 2009 08:02:29 -0700 (PDT)
+Message-ID: <4A1AB2FA.5030906@gmail.com>
+Date: Mon, 25 May 2009 19:02:18 +0400
+From: Vladimir Barinov <vova.barinov@gmail.com>
+MIME-Version: 1.0
+To: dedekind@infradead.org
+Subject: Re: [PATCH] [MTD] MXC NAND support for 2k page size flashes
+References: <1243242377-4470-1-git-send-email-vbarinov@embeddedalley.com>
+	<1243258164.21646.123.camel@localhost.localdomain>
+In-Reply-To: <1243258164.21646.123.camel@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: maramaopercheseimorto@gmail.com, s.hauer@pengutronix.de,
+	lilja.magnus@gmail.com, lanconelli.claudio@eptar.com,
+	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,91 +28,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-here is a patch which fixes a minor UBIFS issues spotted
-by Al Viro. I'm going to push it to ubifs-2.6.git.
-
-
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Subject: [PATCH] UBIFS: use anonymous device
-
-UBIFS has erroneuosly set 'sb->s_dev' to the UBI volume
-character device major/minor. This may lead to clashes
-if there is another FS mounted to a block device with
-the same major/minor numbers. User-space programs which
-use 'stat->st_dev' may get confused because of this.
-
-This problem was spotted by Al Viro. He also pointed the
-way to fix the problem - use 'set_anon_super()' and
-'kill_anon_super()' VFS helpers.
-
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- fs/ubifs/super.c |   21 ++++-----------------
- 1 files changed, 4 insertions(+), 17 deletions(-)
-
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 9a589d8..d8d9523 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -1945,7 +1945,6 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
- 	sb->s_magic = UBIFS_SUPER_MAGIC;
- 	sb->s_blocksize = UBIFS_BLOCK_SIZE;
- 	sb->s_blocksize_bits = UBIFS_BLOCK_SHIFT;
--	sb->s_dev = c->vi.cdev;
- 	sb->s_maxbytes = c->max_inode_sz = key_max_inode_size(c);
- 	if (c->max_inode_sz > MAX_LFS_FILESIZE)
- 		sb->s_maxbytes = c->max_inode_sz = MAX_LFS_FILESIZE;
-@@ -1990,16 +1989,9 @@ out_free:
- static int sb_test(struct super_block *sb, void *data)
- {
- 	dev_t *dev = data;
-+	struct ubifs_info *c = sb->s_fs_info;
- 
--	return sb->s_dev == *dev;
--}
--
--static int sb_set(struct super_block *sb, void *data)
--{
--	dev_t *dev = data;
--
--	sb->s_dev = *dev;
--	return 0;
-+	return c->vi.cdev == *dev;
- }
- 
- static int ubifs_get_sb(struct file_system_type *fs_type, int flags,
-@@ -2027,7 +2019,7 @@ static int ubifs_get_sb(struct file_system_type *fs_type, int flags,
- 
- 	dbg_gen("opened ubi%d_%d", vi.ubi_num, vi.vol_id);
- 
--	sb = sget(fs_type, &sb_test, &sb_set, &vi.cdev);
-+	sb = sget(fs_type, &sb_test, &set_anon_super, &vi.cdev);
- 	if (IS_ERR(sb)) {
- 		err = PTR_ERR(sb);
- 		goto out_close;
-@@ -2067,16 +2059,11 @@ out_close:
- 	return err;
- }
- 
--static void ubifs_kill_sb(struct super_block *sb)
--{
--	generic_shutdown_super(sb);
--}
--
- static struct file_system_type ubifs_fs_type = {
- 	.name    = "ubifs",
- 	.owner   = THIS_MODULE,
- 	.get_sb  = ubifs_get_sb,
--	.kill_sb = ubifs_kill_sb
-+	.kill_sb = kill_anon_super,
- };
- 
- /*
--- 
-1.6.0.6
-
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+Artem Bityutskiy wrote:
+> On Mon, 2009-05-25 at 13:06 +0400, Vladimir Barinov wrote:
+>   
+>> - Add support for 2k page size flashes
+>> - Fix page address access for large pages
+>> - Detect oob layout at runtime
+>> - handle pagesize_2k variable
+>> - Fix oob16 layout: reserve location 5 of oob area since it's used for bbt
+>> ---
+>>  drivers/mtd/nand/mxc_nand.c |   60 ++++++++++++++++++++++++++++++++++++------
+>>  1 files changed, 51 insertions(+), 9 deletions(-)
+>>     
+>
+> I've added this to my git tree. You did not provide your signature,
+> but I assume you have just forgotten about this and have added it for
+> you:
+>
+> Signed-off-by: Vladimir Barinov <vova.barinov@gmail.com>
+>   
+Oops, sorry for that
