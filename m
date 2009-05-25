@@ -1,22 +1,24 @@
-Received: from easi.embeddedalley.com ([71.6.201.124])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M8VYg-0007Ub-Qz
-	for linux-mtd@lists.infradead.org; Mon, 25 May 2009 08:29:30 +0000
-Message-ID: <4A1A56D7.4070603@embeddedalley.com>
-Date: Mon, 25 May 2009 12:29:11 +0400
-From: Vladimir Barinov <vbarinov@embeddedalley.com>
+Received: from mail-bw0-f160.google.com ([209.85.218.160])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M8Vcz-0008VO-Tp
+	for linux-mtd@lists.infradead.org; Mon, 25 May 2009 08:33:56 +0000
+Received: by bwz4 with SMTP id 4so3401358bwz.18
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 25 May 2009 01:33:48 -0700 (PDT)
 MIME-Version: 1.0
-To: Magnus Lilja <lilja.magnus@gmail.com>
-Subject: Re: ARM: MTD: mxc_nand: Question on NAND Flash support for mxc
-References: <20090521174611.5a18ea3a@Marramao-laptop>
-	<59b21cf20905210911h219d4aebi9177d271fabe6d5a@mail.gmail.com>
-In-Reply-To: <59b21cf20905210911h219d4aebi9177d271fabe6d5a@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+In-Reply-To: <1243238444.21646.65.camel@localhost.localdomain>
+References: <1243234150-29786-1-git-send-email-corentincj@iksaif.net>
+	<1243236757.21646.54.camel@localhost.localdomain>
+	<71cd59b00905250052i6e04efd3j27eeaf35f0495f7f@mail.gmail.com>
+	<1243238444.21646.65.camel@localhost.localdomain>
+Date: Mon, 25 May 2009 10:33:48 +0200
+Message-ID: <71cd59b00905250133l20f39817jdc514568b5f82460@mail.gmail.com>
+Subject: Re: [PATCH] UBIFS: Add an error code if the compr is not present
+From: Corentin Chary <corentin.chary@gmail.com>
+To: dedekind@infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: Alberto Panizzo <maramaopercheseimorto@gmail.com>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,30 +28,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Manus,
-
-Magnus Lilja wrote:
-> Hi
+On Mon, May 25, 2009 at 10:00 AM, Artem Bityutskiy
+<dedekind@infradead.org> wrote:
+> On Mon, 2009-05-25 at 09:52 +0200, Corentin Chary wrote:
+>> For information, this bug was triggered when running an userspace
+>> version of ubifs (code available soon).
+>> We used the original ubifs to format the partition, but our version
+>> didn't support the lzo compressor (now, it do).
+>> Then, valgrind/gdb to get a backtrace and "voila".
 >
-> 2009/5/21 Alberto Panizzo <maramaopercheseimorto@gmail.com>:
->   
->> Hi all!
->>
->> I am trying to give support for NAND flash device to Atmark Armadillo 500
->> developing board.
->> This board has an iMX31 processor and is shipped with an ST Micro NAND 256MiB 3,3V 8-bit Flash.
->> Atmark support this board with an old 2.6.26 kernel with some modification.
->> For this NAND Flash Atmark installed the old Freescale mxc_nd driver brought up by
->> Sascha Hauer in the on tree mxc_nand.
->>     
->
-> Is the ST Micro NAND device a small page or large page NAND? I ran
-> into problems when trying to use the MXC-driver from the mainline
-> Linux kernel on the i.MX31 PDK board which has a large page device
-> mounted. I haven't had time to dig into the details yet though.
->   
-I have the patch to support 2k pagesizes tested on mx31pdk. Will post in 
-separate thread.
+> Userspace ubifs version. Wow! I wonder how it performs comparing
+> to the kernel space one.
 
-Regards,
-Vladimir
+Well, there is now big change in the code. For performance, it'll
+depends of the fuse overhead. We'll see.
+The big question is "how writeback will performs".
+
+For the moment it's read-only (except for creating the default
+filsystem), in fact our mkfs is just: erase all, mount, unmount.
+
+-- 
+Corentin Chary
+http://xf.iksaif.net - http://uffs.org
