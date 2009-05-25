@@ -1,20 +1,18 @@
-Received: from ns0.datapatterns.co.in ([121.242.18.2])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M8VmX-0001sD-BA
-	for linux-mtd@lists.infradead.org; Mon, 25 May 2009 08:43:48 +0000
-Received: from email3.datapatterns.co.in (logserver.datapatterns.co.in
-	[10.5.0.13]) (authenticated bits=0)
-	by ns0.datapatterns.co.in (8.14.2/8.14.2) with ESMTP id n4P8h9Uj031747
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>; Mon, 25 May 2009 14:13:09 +0530
-MIME-Version: 1.0
-Date: Mon, 25 May 2009 14:13:28 +0530
-From: "thirumalai.p" <thirumalai.p@datapatterns.co.in>
-To: <linux-mtd@lists.infradead.org>
-Subject: Regarding 64bit access
-Message-ID: <5251d462710978482b255046772d6c72@datapatterns.co.in>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="UTF-8"
+Received: from mail-bw0-f160.google.com ([209.85.218.160])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M8W8W-0005bF-S6
+	for linux-mtd@lists.infradead.org; Mon, 25 May 2009 09:06:31 +0000
+Received: by bwz4 with SMTP id 4so3422539bwz.18
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 25 May 2009 02:06:22 -0700 (PDT)
+From: Vladimir Barinov <vova.barinov@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] [MTD] MXC NAND support for 2k page size flashes
+Date: Mon, 25 May 2009 13:06:17 +0400
+Message-Id: <1243242377-4470-1-git-send-email-vbarinov@embeddedalley.com>
+Cc: lilja.magnus@gmail.com, maramaopercheseimorto@gmail.com,
+	s.hauer@pengutronix.de, lanconelli.claudio@eptar.com,
+	linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,12 +22,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-   I am using linux-2.6.19 kernel. Is there any patch available for
-accessing 64bit bus width flash memory. 
-Regards,
-Thirumalai
+- Add support for 2k page size flashes
+- Fix page address access for large pages
+- Detect oob layout at runtime
+- handle pagesize_2k variable
+- Fix oob16 layout: reserve location 5 of oob area since it's used for bbt
+---
+ drivers/mtd/nand/mxc_nand.c |   60 ++++++++++++++++++++++++++++++++++++------
+ 1 files changed, 51 insertions(+), 9 deletions(-)
 
-**************** CAUTION - Disclaimer *****************This email may contain confidential and privileged material for the
-sole use of the intended recipient(s). Any review, use, retention, distribution or disclosure by others is strictly prohibited. If you are not the intended recipient (or authorized to receive for the recipient), please contact the sender by reply email and delete all copies of this message. Also, email is susceptible to data corruption, interception, tampering, unauthorized amendment and viruses. We only send and receive emails on the basis that we are not liable for any such corruption, interception, tampering, amendment or viruses or any consequence thereof. 
-*********** End of Disclaimer ***********DataPatterns ITS Group**********
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index f3548d0..5ab8985 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -138,7 +138,14 @@ static struct nand_ecclayout nand_hw_eccoob_8 = {
+ static struct nand_ecclayout nand_hw_eccoob_16 = {
+ 	.eccbytes = 5,
+ 	.eccpos = {6, 7, 8, 9, 10},
+-	.oobfree = {{0, 6}, {12, 4}, }
++	.oobfree = {{0, 5}, {11, 5}, }
++};
++
++static struct nand_ecclayout nand_hw_eccoob_64 = {
++	.eccbytes = 20,
++	.eccpos = {6, 7, 8, 9, 10, 22, 23, 24, 25, 26,
++		   38, 39, 40, 41, 42, 54, 55, 56, 57, 58},
++	.oobfree = {{2, 4}, {11, 10}, {27, 10}, {43, 10}, {59, 5}, }
+ };
+ 
+ #ifdef CONFIG_MTD_PARTITIONS
+@@ -795,9 +802,13 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 		send_addr(host, (page_addr & 0xff), false);
+ 
+ 		if (host->pagesize_2k) {
+-			send_addr(host, (page_addr >> 8) & 0xFF, false);
+-			if (mtd->size >= 0x40000000)
++			if (mtd->size >= 0x10000000) {
++				/* paddr_8 - paddr_15 */
++				send_addr(host, (page_addr >> 8) & 0xff, false);
+ 				send_addr(host, (page_addr >> 16) & 0xff, true);
++			} else
++				/* paddr_8 - paddr_15 */
++				send_addr(host, (page_addr >> 8) & 0xff, true);
+ 		} else {
+ 			/* One more address cycle for higher density devices */
+ 			if (mtd->size >= 0x4000000) {
+@@ -919,7 +930,6 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 		this->ecc.mode = NAND_ECC_HW;
+ 		this->ecc.size = 512;
+ 		this->ecc.bytes = 3;
+-		this->ecc.layout = &nand_hw_eccoob_8;
+ 		tmp = readw(host->regs + NFC_CONFIG1);
+ 		tmp |= NFC_ECC_EN;
+ 		writew(tmp, host->regs + NFC_CONFIG1);
+@@ -953,12 +963,44 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 		this->ecc.layout = &nand_hw_eccoob_16;
+ 	}
+ 
+-	host->pagesize_2k = 0;
++	/* first scan to find the device and get the page size */
++	if (nand_scan_ident(mtd, 1)) {
++		err = -ENXIO;
++		goto escan;
++	}
+ 
+-	/* Scan to find existence of the device */
+-	if (nand_scan(mtd, 1)) {
+-		DEBUG(MTD_DEBUG_LEVEL0,
+-		      "MXC_ND: Unable to find any NAND device.\n");
++	host->pagesize_2k = (mtd->writesize == 2048) ? 1 : 0;
++
++	if (this->ecc.mode == NAND_ECC_HW) {
++		switch (mtd->oobsize) {
++		case 8:
++			this->ecc.layout = &nand_hw_eccoob_8;
++			break;
++		case 16:
++			this->ecc.layout = &nand_hw_eccoob_16;
++			break;
++		case 64:
++			this->ecc.layout = &nand_hw_eccoob_64;
++			break;
++		default:
++			/* page size not handled by HW ECC */
++			/* switching back to soft ECC */
++			this->ecc.size = 512;
++			this->ecc.bytes = 3;
++			this->ecc.layout = &nand_hw_eccoob_8;
++			this->ecc.mode = NAND_ECC_SOFT;
++			this->ecc.calculate = NULL;
++			this->ecc.correct = NULL;
++			this->ecc.hwctl = NULL;
++			tmp = readw(host->regs + NFC_CONFIG1);
++			tmp &= ~NFC_ECC_EN;
++			writew(tmp, host->regs + NFC_CONFIG1);
++			break;
++		}
++	}
++
++	/* second phase scan */
++	if (nand_scan_tail(mtd)) {
+ 		err = -ENXIO;
+ 		goto escan;
+ 	}
+-- 
+1.5.6
