@@ -1,29 +1,23 @@
-Received: from rex.securecomputing.com ([203.24.151.4] helo=cyberguard.com.au)
+Received: from 124x34x33x190.ap124.ftth.ucom.ne.jp ([124.34.33.190]
+	helo=master.linux-sh.org)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M9637-0002Px-QN
-	for linux-mtd@lists.infradead.org; Tue, 26 May 2009 23:27:20 +0000
-Date: Wed, 27 May 2009 09:27:01 +1000
-From: David McCullough <David_Mccullough@securecomputing.com>
-To: Paul Mundt <lethal@linux-sh.org>, Mike Frysinger <vapier.adi@gmail.com>,
-	linux-kernel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org,
-	Greg Ungerer <gerg@uclinux.org>, uclinux-dev@uclinux.org,
-	linux-mtd@lists.infradead.org
-Subject: Re: [uClinux-dev] Re: [PATCH 2/2] mtd/maps: uclinux: support
-	Blackfin systems
-Message-ID: <20090526232701.GC24644@securecomputing.com>
-References: <1243331191-11445-1-git-send-email-vapier@gentoo.org>
-	<1243331191-11445-2-git-send-email-vapier@gentoo.org>
-	<20090526113122.GB16835@linux-sh.org>
-	<8bd0f97a0905260942m4b574d75oc4f38ee3d8849395@mail.gmail.com>
-	<20090526164735.GA24261@linux-sh.org>
-	<8bd0f97a0905260950i6da64210n7da256627d3e38ff@mail.gmail.com>
-	<20090526170653.GB24261@linux-sh.org>
-	<8bd0f97a0905261024q178fbc80n4a997daca5a3b405@mail.gmail.com>
-	<20090526231902.GA6295@linux-sh.org>
+	id 1M96G2-00039U-Pj
+	for linux-mtd@lists.infradead.org; Tue, 26 May 2009 23:40:42 +0000
+Date: Wed, 27 May 2009 08:40:13 +0900
+From: Paul Mundt <lethal@linux-sh.org>
+To: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [PATCH 1/3] mtd/maps: uclinux: allow systems to override map
+	addr/size
+Message-ID: <20090526234013.GA8379@linux-sh.org>
+References: <20090526231902.GA6295@linux-sh.org>
+	<1243380798-10089-1-git-send-email-vapier@gentoo.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20090526231902.GA6295@linux-sh.org>
+In-Reply-To: <1243380798-10089-1-git-send-email-vapier@gentoo.org>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, uclinux-dev@uclinux.org,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Greg Ungerer <gerg@uclinux.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,32 +27,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-Jivin Paul Mundt lays it down ...
-> On Tue, May 26, 2009 at 01:24:46PM -0400, Mike Frysinger wrote:
-> > On Tue, May 26, 2009 at 13:06, Paul Mundt wrote:
-> > > Use the attached, and then just set uclinux_ram_map.phys = your_address_here
-> > > in your setup_arch(). Having weak symbols in drivers that are supposed to
-> > > be overriden by the architecture code is just way too backwards for
-> > > words. Globals suffice fine for this sort of thing, if you are not going
-> > > to go to the effort to pass this information to the driver directly that
-> > > is.
-> > 
-> > i was thinking something else, but obviously this is nicer than what i
-> > was thinking
+On Tue, May 26, 2009 at 07:33:16PM -0400, Mike Frysinger wrote:
+> Due to a processor anomaly (05000263 to be exact), most Blackfin parts
+> cannot keep the embedded filesystem image directly after the kernel in
+> RAM.  Instead, the filesystem needs to be relocated to the end of memory.
+> As such, we need to tweak the map addr/size during boot for Blackfin
+> systems.  This can be done in any early arch/board init code.
 > 
-> Unfortunately there is the problem that the map driver itself is a
-> tristate, so if this is built as a module, the symbol will not be
-> available to you. On the other hand, if it doesn't need to ever really be
-> a module, converting it to a bool ought to be workable. There are no
-> in-tree users that enable this as a module anyways.
+> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+> CC: Paul Mundt <lethal@linux-sh.org>
+> CC: Greg Ungerer <gerg@uclinux.org>
+> CC: uclinux-dev@uclinux.org
+> CC: linux-mtd@lists.infradead.org
 
-Based on how it relocates the rootfs,  I don't believe a module can ever
-be work,  so a boolean would be a better choice IMO,
-
-Cheers,
-Davidm
-
--- 
-David McCullough,  david_mccullough@securecomputing.com,  Ph:+61 734352815
-McAfee - SnapGear  http://www.snapgear.com                http://www.uCdot.org
+Signed-off-by: Paul Mundt <lethal@linux-sh.org>
