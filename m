@@ -1,12 +1,20 @@
-Date: Mon, 25 May 2009 19:21:36 +0200
-From: 81der049 <81der049@kpn-officedsl.nl>
-Subject: =?iso-8859-1?Q?Western_Union=AE_?=
-Message-id: <4b9da74b86d0.4b86d04b9da7@planet.nl>
-MIME-version: 1.0
-Content-type: text/plain; charset=windows-1252
-Content-language: nl
-Content-transfer-encoding: quoted-printable
-Content-disposition: inline
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1M8r9m-0001N4-UT
+	for linux-mtd@lists.infradead.org; Tue, 26 May 2009 07:33:13 +0000
+Subject: Re: [PATCH] mtd: Nand Atmel: add On Flash BBT support
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: simon polette <spolette@gmail.com>
+In-Reply-To: <72795ccb0905250844w13ed9798me95d70614050f676@mail.gmail.com>
+References: <72795ccb0905250844w13ed9798me95d70614050f676@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 26 May 2009 10:32:22 +0300
+Message-Id: <1243323142.21646.129.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	linux-arm-kernel@lists.arm.linux.org.uk, spolette@adetelgroup.com
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,106 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Western Union=AE =
+On Mon, 2009-05-25 at 17:44 +0200, simon polette wrote:
+> +config	MTD_NAND_ATMEL_FLASH_BBT
+> +	bool "Use On-Flash Bad Block Table"
+> +	depends on MTD_NAND_ATMEL
+> +	help
+> +	  This enables the On-Flash BBT, which mean that the bad blocks
+> +	  will be scanned one time then the BBT will be stored
+> +	  in flash, so scanning Nand flash for bad blocks will be no more
+> +	  necessary for the next boots.
+> +
 
-Welcome to Western Union
-Send Money Worldwide
-FROM OFFICE OF THE WESTERN UNION MONEY TRANSFER=2E =
+I do not think you need a config option for this. It should be
+a module parameter instead.
 
-COTONOU BENIN REPUBLIC/ADDRESS 455 AGBOKOU=2CANKPA =
-
-ROAD OPPOSITE TUNDE MOTORS COTONOU=2E =
-
-WEB=3Ahttp=3A//site=2Ewww=2Ewesternunion=2Ecom/ =
-
-
-E-mail =3A wuionbenin=40gmail=2Ecom
- =
-
-Attn =3BBeneficiary=2C
- =
-
-This is to notify all our customers about the latest development concerni=
-ng all the payment that are left in our custody=2Cwhich yours are inclusi=
-ve Besides=2C yours where given a bill of =24235=2Cin order to receive yo=
-ur payment of which we didn=92t hear from you for sometime now=2E=2E=2E=2E=
-
- =
-
-Hence=2C our Western Union  is now offering a Special BONUS to help all o=
-ur customers that are having their payment  in our custody due to of pric=
-es=2E In order words we are now requesting that those involve should pay =
-only the sum of =2475=2E 00 to receive all their payment abandoned in our=
- custody=2E
- =
-
-Besides=2C my dear=2C this is the opportunity for you and have to comply =
-and your funds  shall be transfer to your desginated address=2E
- =
-
-But remember that after (3 DAYS) you did not make the payment then we wil=
-l divert your funds to Goverment Fund=2C to aviod problem or we will canc=
-el the payment for this year untill next year  because this year is not l=
-ike last year=2E
- =
-
-Again after (THREE DAYS ) We will enter A new project  for the year and t=
-hat is the reason why we decided to help to all our customers before we e=
-nter into the new project=2E
- =
-
-So be  advise to send the =2475=2E00 immediately so that we will register=
- your payment and for to start receive =245000=2E=2E00 as from tomorrow=2E=
- =
-
-Be advise that there is no time again for we to call any person on phone =
-unless you will call +22998286674
-After the payment of =2475=2E00 you will start receiveing your money ever=
-y  day =245000=2E00 through Western Union A Money Gram =245000 by money g=
-ram untill the full payment of =242=2E5m is completed=2E So what you will=
- be receiveing per day is =2410=2E000=2E00
- =
-
-Now Contact us here
-Mr Kufe Jokoh
-E-mail =3A wuionbenin=40gmail=2Ecom
-Tel=3A +22998286674
-
-And please make sure you re-confirm this following information stated bel=
-ow=3A
-
-Your Name=2E=2E=2E=2E=2E=2E=2E
-Your Address=2E=2E=2E=2E=2E=2E
-Your Phone Numbers=2E=2E=2E
-
-Send the money through Western Union Money Transfer with the information =
-below=3A
-
- =
-
-RECEIVER NAME=3D=3D=3D MR=2E ONYIBOR E=2E CHUKWUMA=2E
-COUNTRY=3D=3D=3D=3D Cotonou=2C Benin Republic=2E
-Text Question=3D=3D=3D In God
-Answer=3D=3D=3D=3D We Trust=2E
-Amount=3D=3D=3D=3D=3D=2475=2E00USD
- =
-
-The moment i receive the payment of =2475=2E00 i will release the first p=
-ayment informations of =245000 to you and you will pick up the money and =
-i will send you another money=2E Hoping to hear from you=2E
- =
-
-Mr Kufe Jokoh=2E
- =
-
-FOREIGN OPERATION MANAGER =
-
-WESTERN UNION OFFICE BENIN REPUBLIC
-THIS IS OUR CONDUCT CODE ( 303)
-  =
-
-
-Western Union=AE =
-
-Welcome to Western Union
-Send Money =
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
