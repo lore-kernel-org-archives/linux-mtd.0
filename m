@@ -1,17 +1,22 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
+Received: from 124x34x33x190.ap124.ftth.ucom.ne.jp ([124.34.33.190]
+	helo=master.linux-sh.org)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M8tpS-00019B-AJ
-	for linux-mtd@lists.infradead.org; Tue, 26 May 2009 10:24:29 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] Blackfin NFC Driver: fix hang when using NAND on
-	BF527-EZKITs
-Date: Tue, 26 May 2009 06:24:14 -0400
-Message-Id: <1243333454-673-2-git-send-email-vapier@gentoo.org>
-In-Reply-To: <1243333454-673-1-git-send-email-vapier@gentoo.org>
-References: <1243333454-673-1-git-send-email-vapier@gentoo.org>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, Cliff Cai <cliff.cai@analog.com>,
-	Bryan Wu <cooloney@kernel.org>
+	id 1M8usd-0001w0-CP
+	for linux-mtd@lists.infradead.org; Tue, 26 May 2009 11:32:00 +0000
+Date: Tue, 26 May 2009 20:31:22 +0900
+From: Paul Mundt <lethal@linux-sh.org>
+To: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [PATCH 2/2] mtd/maps: uclinux: support Blackfin systems
+Message-ID: <20090526113122.GB16835@linux-sh.org>
+References: <1243331191-11445-1-git-send-email-vapier@gentoo.org>
+	<1243331191-11445-2-git-send-email-vapier@gentoo.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1243331191-11445-2-git-send-email-vapier@gentoo.org>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, uclinux-dev@uclinux.org,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Greg Ungerer <gerg@uclinux.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,49 +26,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Cliff Cai <cliff.cai@analog.com>
+On Tue, May 26, 2009 at 05:46:31AM -0400, Mike Frysinger wrote:
+> diff --git a/drivers/mtd/maps/uclinux.c b/drivers/mtd/maps/uclinux.c
+> index 57699c2..dcb552f 100644
+> --- a/drivers/mtd/maps/uclinux.c
+> +++ b/drivers/mtd/maps/uclinux.c
+> @@ -55,8 +55,13 @@ static int __init uclinux_mtd_init(void)
+>  {
+>  	struct mtd_info *mtd;
+>  	struct map_info *mapp;
+> +#ifdef CONFIG_BLACKFIN
+> +	extern unsigned long memory_mtd_start;
+> +	unsigned long addr = (unsigned long) memory_mtd_start;
+> +#else
+>  	extern char _ebss;
+>  	unsigned long addr = (unsigned long) &_ebss;
+> +#endif
+>  
+>  	mapp = &uclinux_ram_map;
+>  	mapp->phys = addr;
 
-The DMAs have different bit sizes on BF52x and BF54x.  From the PHRM:
+NAK.
 
-"The 16-bit DMA Access Bus (DAB) connects the DMA controller to the
-on-chip peripherals, PPI, SPI, Ethernet MAC, the SPORTs, NFC,
-HOSTDP and the UARTs."
+I know there's no accounting for taste, but it would be nice to at least
+see some minimal amount of effort going in to fixing these things
+sanely rather than just lazily shoving ifdefs in wherever possible.
 
-32-bit DMA won't work for BF52x.
-
-Signed-off-by: Cliff Cai <cliff.cai@analog.com>
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
-Signed-off-by: Bryan Wu <cooloney@kernel.org>
----
- drivers/mtd/nand/bf5xx_nand.c |   13 +++++++++++--
- 1 files changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
-index 2ab42d2..8506e7e 100644
---- a/drivers/mtd/nand/bf5xx_nand.c
-+++ b/drivers/mtd/nand/bf5xx_nand.c
-@@ -496,11 +496,20 @@ static void bf5xx_nand_dma_rw(struct mtd_info *mtd,
- 	/* setup DMA register with Blackfin DMA API */
- 	set_dma_config(CH_NFC, 0x0);
- 	set_dma_start_addr(CH_NFC, (unsigned long) buf);
-+
-+/* The DMAs have different size on BF52x and BF54x */
-+#ifdef CONFIG_BF52x
-+	set_dma_x_count(CH_NFC, (page_size >> 1));
-+	set_dma_x_modify(CH_NFC, 2);
-+	val = DI_EN | WDSIZE_16;
-+#endif
-+
-+#ifdef CONFIG_BF54x
- 	set_dma_x_count(CH_NFC, (page_size >> 2));
- 	set_dma_x_modify(CH_NFC, 4);
--
--	/* setup write or read operation */
- 	val = DI_EN | WDSIZE_32;
-+#endif
-+	/* setup write or read operation */
- 	if (is_read)
- 		val |= WNR;
- 	set_dma_config(CH_NFC, val);
--- 
-1.6.3.1
+In this case you should just kill all of that crap off, and have the
+platforms that use this set uclinux_ram_map up themselves, it's already
+a global. Of course you can use _ebss as a default value for
+uclinux_ram_map.phys and just override it in your platform.
