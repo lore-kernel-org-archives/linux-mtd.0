@@ -1,27 +1,16 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M8Xku-0002Xl-JM
-	for linux-mtd@lists.infradead.org; Mon, 25 May 2009 10:50:15 +0000
-Received: from epmmp2 (mailout1.samsung.com [203.254.224.24])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KK70076Y4R4IM@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 25 May 2009 19:49:52 +0900 (KST)
-Received: from apgmoorthy ([107.108.214.61])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0KK7009JO4R292@mmp2.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 25 May 2009 19:49:52 +0900 (KST)
-Date: Mon, 25 May 2009 16:22:24 +0530
-From: apgmoorthy <moorthy.apg@samsung.com>
-Subject: Re: [patch 01/14] mtd: Flex-OneNAND support
-To: dedekind@infradead.org
-Message-id: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=koi8-r
-Content-transfer-encoding: 7BIT
-Cc: vishak.g@samsung.com, amul.saha@samsung.com, kyungmin.park@samsung.com,
-	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
-	dwmw2@infradead.org
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1M8tF0-0004fw-Ec
+	for linux-mtd@lists.infradead.org; Tue, 26 May 2009 09:46:45 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] mtd/maps: uclinux: support Blackfin systems
+Date: Tue, 26 May 2009 05:46:31 -0400
+Message-Id: <1243331191-11445-2-git-send-email-vapier@gentoo.org>
+In-Reply-To: <1243331191-11445-1-git-send-email-vapier@gentoo.org>
+References: <1243331191-11445-1-git-send-email-vapier@gentoo.org>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, linux-mtd@lists.infradead.org,
+	uclinux-dev@uclinux.org, Greg Ungerer <gerg@uclinux.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,20 +20,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem , 
+Due to a processor anomaly (05000263 to be exact), most Blackfin parts
+cannot keep the embedded filesystem image directly after the kernel in
+RAM.  Instead, the filesystem needs to be relocated to the end of memory.
+As such, we need to tweak the initial filesystem address for Blackfin
+systems.
 
-On Sat May 23 05:35:19 EDT 2009 dedekind@infradead.org wrote :
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+CC: Greg Ungerer <gerg@uclinux.org>
+CC: uclinux-dev@uclinux.org
+CC: linux-mtd@lists.infradead.org
+---
+ drivers/mtd/maps/uclinux.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
->I get the following warning when compile this:
-
->drivers/mtd/onenand/onenand_base.c:3263: warning: 'flexonenand_setup'
->defined but not used 
-
-I tried on the MTD Git  and have seen the warning as you mentioned.
-'#ifndef MODULE' around the function 'flexonenand_setup' should help to get away with that warning.
-We will post a patch.
-
-Against which Fork , the patch should be ? 
-
-With Regards
-  Moorthy
+diff --git a/drivers/mtd/maps/uclinux.c b/drivers/mtd/maps/uclinux.c
+index 57699c2..dcb552f 100644
+--- a/drivers/mtd/maps/uclinux.c
++++ b/drivers/mtd/maps/uclinux.c
+@@ -55,8 +55,13 @@ static int __init uclinux_mtd_init(void)
+ {
+ 	struct mtd_info *mtd;
+ 	struct map_info *mapp;
++#ifdef CONFIG_BLACKFIN
++	extern unsigned long memory_mtd_start;
++	unsigned long addr = (unsigned long) memory_mtd_start;
++#else
+ 	extern char _ebss;
+ 	unsigned long addr = (unsigned long) &_ebss;
++#endif
+ 
+ 	mapp = &uclinux_ram_map;
+ 	mapp->phys = addr;
+-- 
+1.6.3.1
