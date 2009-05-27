@@ -1,28 +1,18 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M9JL8-0002Qp-GN
-	for linux-mtd@lists.infradead.org; Wed, 27 May 2009 13:38:49 +0000
-Subject: Re: [PATCH] mtd: Nand Atmel: add On Flash BBT support
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: simon polette <spolette@gmail.com>
-In-Reply-To: <72795ccb0905270300p7ac111fduba8d656a8031a96c@mail.gmail.com>
-References: <72795ccb0905250844w13ed9798me95d70614050f676@mail.gmail.com>
-	<1243323142.21646.129.camel@localhost.localdomain>
-	<72795ccb0905260240q6389dd35j681dbe50a6d4990f@mail.gmail.com>
-	<1243331031.21646.134.camel@localhost.localdomain>
-	<72795ccb0905260247p6c204cc4w78eaafd28ffc3cf8@mail.gmail.com>
-	<72795ccb0905260321n3b4646brb9adc90425b5304b@mail.gmail.com>
-	<72795ccb0905260455x701ea6e9u5bafc7c394609a4b@mail.gmail.com>
-	<1243405314.11172.5.camel@localhost.localdomain>
-	<72795ccb0905270300p7ac111fduba8d656a8031a96c@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 27 May 2009 16:37:27 +0300
-Message-Id: <1243431447.11172.27.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	linux-arm-kernel@lists.arm.linux.org.uk, spolette@adetelgroup.com
-Reply-To: dedekind@infradead.org
+Received: from mlbe2k1.cs.myharris.net ([137.237.90.88])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1M9JZq-0006nC-72
+	for linux-mtd@lists.infradead.org; Wed, 27 May 2009 13:54:00 +0000
+Message-ID: <4A1D45E3.2090104@harris.com>
+Date: Wed, 27 May 2009 09:53:39 -0400
+From: "Steven A. Falco" <sfalco@harris.com>
+MIME-Version: 1.0
+To: "Steven A. Falco" <sfalco@harris.com>
+Subject: Re: [PATCH-V2] Bug in m25p80.c during whole-chip erase
+References: <49F71052.4060505@harris.com>
+In-Reply-To: <49F71052.4060505@harris.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,15 +22,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-05-27 at 12:00 +0200, simon polette wrote:
-> Hoping the patch is correct now :
+I sent the following patch about a month ago.  There seemed to
+be some interest, but I never saw anyone say they would/could
+merge it.
 
-Did you that test this driver with on-flash BBT? Does it
-work? Did you try marking/un-marking blocks bad? I'm just
-curious.
+So, is there any interest in merging this?
 
-I added your patch to my l2-mtd-2.6.git.
+	Steve
 
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+> There is a logic error in "whole chip erase" for the m25p80 family.  If
+> the whole device is successfully erased, erase_chip() will return 0, and
+> the code will fall through to the "else" clause, and do sector-by-sector
+> erase in addition to the whole-chip erase.  This patch corrects that.
+> 
+> Signed-off-by: Steven A. Falco <sfalco@harris.com>
+> ---
+> 
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index 6659b22..3a2fed8 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -251,10 +251,12 @@ static int m25p80_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  	mutex_lock(&flash->lock);
+>  
+>  	/* whole-chip erase? */
+> -	if (len == flash->mtd.size && erase_chip(flash)) {
+> -		instr->state = MTD_ERASE_FAILED;
+> -		mutex_unlock(&flash->lock);
+> -		return -EIO;
+> +	if (len == flash->mtd.size) {
+> +		if (erase_chip(flash)) {
+> +			instr->state = MTD_ERASE_FAILED;
+> +			mutex_unlock(&flash->lock);
+> +			return -EIO;
+> +		}
+>  
+>  	/* REVISIT in some cases we could speed up erasing large regions
+>  	 * by using OPCODE_SE instead of OPCODE_BE_4K.  We may have set up
+> 
