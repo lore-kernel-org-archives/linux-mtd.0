@@ -1,21 +1,16 @@
 Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M9HOH-0005z4-Pc
-	for linux-mtd@lists.infradead.org; Wed, 27 May 2009 11:33:56 +0000
-Subject: Re: [PATCH 2/2] mkfs.ubifs: use libubi to format UBI volume
+	id 1M9I8y-0001jO-Bu
+	for linux-mtd@lists.infradead.org; Wed, 27 May 2009 12:22:10 +0000
+Subject: Re: [PATCH] mkfs.ubifs: use libubi to format UBI volume
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Corentin Chary <corentin.chary@gmail.com>
-In-Reply-To: <71cd59b00905270429q6b027f6cxbe32aba7e8c44b02@mail.gmail.com>
-References: <1243232787-29108-1-git-send-email-corentincj@iksaif.net>
-	<1243232787-29108-2-git-send-email-corentincj@iksaif.net>
-	<1243232787-29108-3-git-send-email-corentincj@iksaif.net>
-	<1243238323.21646.64.camel@localhost.localdomain>
-	<71cd59b00905250123o516a293an3c5c541cc417fc94@mail.gmail.com>
-	<1243240816.21646.102.camel@localhost.localdomain>
-	<71cd59b00905270429q6b027f6cxbe32aba7e8c44b02@mail.gmail.com>
+To: Corentin Chary <corentincj@iksaif.net>
+In-Reply-To: <1243343316-6201-1-git-send-email-corentincj@iksaif.net>
+References: <1243240816.21646.102.camel@localhost.localdomain>
+	<1243343316-6201-1-git-send-email-corentincj@iksaif.net>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 27 May 2009 14:33:35 +0300
-Message-Id: <1243424015.11172.6.camel@localhost.localdomain>
+Date: Wed, 27 May 2009 15:21:52 +0300
+Message-Id: <1243426912.11172.9.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -29,11 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-05-27 at 13:29 +0200, Corentin Chary wrote:
-> I resended the patch, but it's moderated again (I used the
-> --in-reply-to feature), sorry.
+On Tue, 2009-05-26 at 15:08 +0200, Corentin Chary wrote:
+> libubi is now used to format directly UBI volume.
+> Typing mkfs.ubifs /dev/ubi0_0 is now possible.
+> dtypes should be ok as they are taken from UBIFS code.
+> 
+> Signed-off-by: Corentin Chary <corentincj@iksaif.net>
+> ---
+>  Makefile                |    2 +-
+>  mkfs.ubifs/Makefile     |    5 +-
+>  mkfs.ubifs/lpt.c        |   10 ++--
+>  mkfs.ubifs/mkfs.ubifs.c |  179 +++++++++++++++++++++++++++++++++++++---------
+>  mkfs.ubifs/mkfs.ubifs.h |    4 +-
+>  mkfs.ubifs/ubifs.h      |    6 ++
+>  6 files changed, 163 insertions(+), 43 deletions(-)
 
-Yeah, I have it. Just need some time to test this.
+Works fine. Good job, thanks!
+
+It would be 200% cool if you also provided a patch for
+mtd-www and just added a note that the UBIFS image may
+be written directly to the UBI volum, not jut to a file.
+
+I mean here:
+http://www.linux-mtd.infradead.org/faq/ubifs.html#L_mkfubifs
+
+:-)
+
+Pushed your patch, thanks!
 
 -- 
 Best regards,
