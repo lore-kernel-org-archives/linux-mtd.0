@@ -1,20 +1,14 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M9Jbi-0002Ze-Fo
-	for linux-mtd@lists.infradead.org; Wed, 27 May 2009 13:55:57 +0000
-Subject: Re: [patch 01/14] mtd: Flex-OneNAND support
+Subject: Re: [PATCH-V2] Bug in m25p80.c during whole-chip erase
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: apgmoorthy <moorthy.apg@samsung.com>
-In-Reply-To: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
-References: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
+To: "Steven A. Falco" <sfalco@harris.com>
+In-Reply-To: <4A1D45E3.2090104@harris.com>
+References: <49F71052.4060505@harris.com>  <4A1D45E3.2090104@harris.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 27 May 2009 16:55:17 +0300
-Message-Id: <1243432517.11172.32.camel@localhost.localdomain>
+Date: Wed, 27 May 2009 17:01:27 +0300
+Message-Id: <1243432887.11172.34.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: vishak.g@samsung.com, amul.saha@samsung.com, kyungmin.park@samsung.com,
-	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
-	dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,25 +19,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-05-25 at 16:22 +0530, apgmoorthy wrote:
-> Hi Artem , 
+On Wed, 2009-05-27 at 09:53 -0400, Steven A. Falco wrote:
+> I sent the following patch about a month ago.  There seemed to
+> be some interest, but I never saw anyone say they would/could
+> merge it.
 > 
-> On Sat May 23 05:35:19 EDT 2009 dedekind@infradead.org wrote :
-> 
-> >I get the following warning when compile this:
-> 
-> >drivers/mtd/onenand/onenand_base.c:3263: warning: 'flexonenand_setup'
-> >defined but not used 
-> 
-> I tried on the MTD Git  and have seen the warning as you mentioned.
-> '#ifndef MODULE' around the function 'flexonenand_setup' should help to get away with that warning.
-> We will post a patch.
+> So, is there any interest in merging this?
 
-Does this mean that if I build OneNAND as a module I have no
-possibility to define FlexOneNAND boundary?
+It is already in linus's tree:
+http://git.infradead.org/linux-2.6.git?a=commit;h=3f33b0aaac4e208579fe5aa2964857d4e9ba10c5
 
-Sorry if I missed the discussion, but why you cannot use something
-like 'module_param_array()' ?
 -- 
 Best regards,
 Artem Bityutskiy (Битюцкий Артём)
