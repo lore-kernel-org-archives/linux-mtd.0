@@ -1,21 +1,18 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from gw1.transmode.se ([213.115.205.20])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M9KRO-0004sT-Vp
-	for linux-mtd@lists.infradead.org; Wed, 27 May 2009 14:49:22 +0000
-Subject: Re: [PATCH 1/2] Blackfin NFC Driver: remove pointless return value
-	in bf5xx_nand_dma_rw
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <1243333454-673-1-git-send-email-vapier@gentoo.org>
-References: <1243333454-673-1-git-send-email-vapier@gentoo.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 27 May 2009 17:46:32 +0300
-Message-Id: <1243435592.11172.37.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: uclinux-dist-devel@blackfin.uclinux.org, Bryan Wu <cooloney@kernel.org>,
-	linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+	id 1M9dgV-0005yc-RC
+	for linux-mtd@lists.infradead.org; Thu, 28 May 2009 11:22:17 +0000
+Received: from sesr04.transmode.se (sesr04.transmode.se [192.168.201.15])
+	by gw1.transmode.se (Postfix) with ESMTP id A44F8650003
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 28 May 2009 13:22:01 +0200 (CEST)
+Subject: Bug in erase failed?
+To: linux-mtd@lists.infradead.org
+Message-ID: <OF19B0B97E.84069DDC-ONC12575C4.003C9262-C12575C4.003E7135@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Thu, 28 May 2009 13:22:02 +0200
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,15 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-05-26 at 06:24 -0400, Mike Frysinger wrote:
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
-> Signed-off-by: Bryan Wu <cooloney@kernel.org>
-> ---
->  drivers/mtd/nand/bf5xx_nand.c |    4 +---
->  1 files changed, 1 insertions(+), 3 deletions(-)
 
-I've taken these 2 patches to my l2-mtd-2.6.git.
+When an erase has failed:
+ Newly-erased block contained word 0x0 at offset 0x0224df6
+You end up in erase.c:490
+filebad:
+	mutex_lock(&c->erase_free_sem);
+	spin_lock(&c->erase_completion_lock);
+	/* Stick it on a list (any list) so erase_failed can take it
+	   right off again.  Silly, but shouldn't happen often. */
+	list_move(&jeb->list, &c->erasing_list);
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Here is the sector moved to the erasing list.
 
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+	spin_unlock(&c->erase_completion_lock);
+	mutex_unlock(&c->erase_free_sem);
+	jffs2_erase_failed(c, jeb, bad_offset);
+      ^^^^^^^^^^^^^^
+jffs2_erase_flailed also moves a sector:
+	list_move(&jeb->list, &c->bad_list);
+but it is already moved so you end up moving a good sector to the bad
+list. Very bad.
+
+ Jocke
