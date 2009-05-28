@@ -1,23 +1,17 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from gw1.transmode.se ([213.115.205.20])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M9hWd-00038g-BZ
-	for linux-mtd@lists.infradead.org; Thu, 28 May 2009 15:28:18 +0000
-Subject: Re: [PATCH 1/3] mtd/maps: uclinux: allow systems to override map
-	addr/size
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <1243380798-10089-1-git-send-email-vapier@gentoo.org>
-References: <20090526231902.GA6295@linux-sh.org>
-	<1243380798-10089-1-git-send-email-vapier@gentoo.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 28 May 2009 18:26:27 +0300
-Message-Id: <1243524387.11172.64.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: uclinux-dev@uclinux.org, linux-kernel@vger.kernel.org,
-	Paul Mundt <lethal@linux-sh.org>, linux-mtd@lists.infradead.org,
-	Greg Ungerer <gerg@uclinux.org>, uclinux-dist-devel@blackfin.uclinux.org
-Reply-To: dedekind@infradead.org
+	id 1M9hlz-0005i5-FV
+	for linux-mtd@lists.infradead.org; Thu, 28 May 2009 15:44:10 +0000
+Received: from tmnt04.transmode.se (tmnt04.transmode.se [192.168.46.15])
+	by gw1.transmode.se (Postfix) with ESMTP id 4C86A65000B
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 28 May 2009 17:43:59 +0200 (CEST)
+From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] [JFFS2] Fix corruption when flash erase/write failure
+Date: Thu, 28 May 2009 17:43:59 +0200
+Message-Id: <1243525439-32485-1-git-send-email-Joakim.Tjernlund@transmode.se>
+Cc: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,24 +21,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-05-26 at 19:33 -0400, Mike Frysinger wrote:
-> Due to a processor anomaly (05000263 to be exact), most Blackfin parts
-> cannot keep the embedded filesystem image directly after the kernel in
-> RAM.  Instead, the filesystem needs to be relocated to the end of memory.
-> As such, we need to tweak the map addr/size during boot for Blackfin
-> systems.  This can be done in any early arch/board init code.
-> 
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
-> CC: Paul Mundt <lethal@linux-sh.org>
-> CC: Greg Ungerer <gerg@uclinux.org>
-> CC: uclinux-dev@uclinux.org
-> CC: linux-mtd@lists.infradead.org
-> ---
->  drivers/mtd/maps/uclinux.c |   10 ++++++----
->  1 files changed, 6 insertions(+), 4 deletions(-)
+Erase errors such as:
+"Newly-erased block contained word 0xa4ef223e at offset 0x0296a014"
+and failure to write the clean marker,
+moves the offending erase block to erasing list before calling
+jffs2_erase_failed(). This is bad as jffs2_erase_failed() will
+also move the block to the bad_list, but is now moving the
+wrong block, causing FS corruption.
 
-I've added your patches to my tree.
+Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+---
+ fs/jffs2/erase.c |    7 -------
+ 1 files changed, 0 insertions(+), 7 deletions(-)
 
+diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
+index 51024ac..b082655 100644
+--- a/fs/jffs2/erase.c
++++ b/fs/jffs2/erase.c
+@@ -488,13 +488,6 @@ static void jffs2_mark_erased_block(struct jffs2_sb_info *c, struct jffs2_eraseb
+ 	return;
+ 
+ filebad:
+-	mutex_lock(&c->erase_free_sem);
+-	spin_lock(&c->erase_completion_lock);
+-	/* Stick it on a list (any list) so erase_failed can take it
+-	   right off again.  Silly, but shouldn't happen often. */
+-	list_move(&jeb->list, &c->erasing_list);
+-	spin_unlock(&c->erase_completion_lock);
+-	mutex_unlock(&c->erase_free_sem);
+ 	jffs2_erase_failed(c, jeb, bad_offset);
+ 	return;
+ 
 -- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+1.6.2.3
