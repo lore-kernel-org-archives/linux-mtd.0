@@ -1,18 +1,20 @@
-Received: from mail-ew0-f173.google.com ([209.85.219.173])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1M9xJb-00017L-BB
-	for linux-mtd@lists.infradead.org; Fri, 29 May 2009 08:19:54 +0000
-Received: by ewy21 with SMTP id 21so8234767ewy.18
+Received: from gw1.transmode.se ([213.115.205.20])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1M9yWe-0005nm-D2
+	for linux-mtd@lists.infradead.org; Fri, 29 May 2009 09:37:28 +0000
+Received: from sesr04.transmode.se (sesr04.transmode.se [192.168.201.15])
+	by gw1.transmode.se (Postfix) with ESMTP id 42D8865000F
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 29 May 2009 01:19:44 -0700 (PDT)
-Sender: =?UTF-8?Q?Gerard_Lled=C3=B3?= <raharu@gmail.com>
-From: Gerard Lledo <gerard.lledo@gmail.com>
-To: kernel-janitors@vger.kernel.org
-Subject: [PATCH] [JFFS2] Move jffs2_gcd_mtd threads to the new kthread API
-Date: Fri, 29 May 2009 11:19:41 +0300
-Message-Id: <1243585181-2997-1-git-send-email-gerard.lledo@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Gerard Lledo <gerard.lledo@gmail.com>,
-	dwmw2@infradead.org, linux-kernel@vger.kernel.org
+	Fri, 29 May 2009 11:37:16 +0200 (CEST)
+In-Reply-To: <1243525439-32485-1-git-send-email-Joakim.Tjernlund@transmode.se>
+References: <1243525439-32485-1-git-send-email-Joakim.Tjernlund@transmode.se>
+Subject: Re: [PATCH] [JFFS2] Fix corruption when flash erase/write failure
+Cc: linux-mtd@lists.infradead.org
+Message-ID: <OF210B0D1A.6794A260-ONC12575C5.0034AB5F-C12575C5.0034DA54@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Fri, 29 May 2009 11:37:18 +0200
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,77 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-kernel_thread() is being depracated.  This patch moves the jffs2 garbage
-collecting thread to the new kthread API with the minimal impact.
+I think this is 2.6.30 material, please comment soon(or send upstream)
 
-Signed-off-by: Gerard Lledo <gerard.lledo@gmail.com>
----
- fs/jffs2/background.c |   22 ++++++++++++++--------
- 1 files changed, 14 insertions(+), 8 deletions(-)
+ Jocke
 
-diff --git a/fs/jffs2/background.c b/fs/jffs2/background.c
-index e958010..077fa65 100644
---- a/fs/jffs2/background.c
-+++ b/fs/jffs2/background.c
-@@ -15,6 +15,7 @@
- #include <linux/completion.h>
- #include <linux/sched.h>
- #include <linux/freezer.h>
-+#include <linux/kthread.h>
- #include "nodelist.h"
- 
- 
-@@ -31,7 +32,7 @@ void jffs2_garbage_collect_trigger(struct jffs2_sb_info *c)
- /* This must only ever be called when no GC thread is currently running */
- int jffs2_start_garbage_collect_thread(struct jffs2_sb_info *c)
- {
--	pid_t pid;
-+	struct task_struct *tsk;
- 	int ret = 0;
- 
- 	BUG_ON(c->gc_task);
-@@ -39,15 +40,16 @@ int jffs2_start_garbage_collect_thread(struct jffs2_sb_info *c)
- 	init_completion(&c->gc_thread_start);
- 	init_completion(&c->gc_thread_exit);
- 
--	pid = kernel_thread(jffs2_garbage_collect_thread, c, CLONE_FS|CLONE_FILES);
--	if (pid < 0) {
--		printk(KERN_WARNING "fork failed for JFFS2 garbage collect thread: %d\n", -pid);
-+	tsk = kthread_create(jffs2_garbage_collect_thread, c, "jffs2_gcd_mtd%d", c->mtd->index);
-+	if (IS_ERR(tsk)) {
-+		printk(KERN_WARNING "fork failed for JFFS2 garbage collect thread: %ld\n", -PTR_ERR(tsk));
- 		complete(&c->gc_thread_exit);
--		ret = pid;
-+		ret = PTR_ERR(tsk);
- 	} else {
--		/* Wait for it... */
--		D1(printk(KERN_DEBUG "JFFS2: Garbage collect thread is pid %d\n", pid));
-+		D1(printk(KERN_DEBUG "JFFS2: Garbage collect thread is pid %d\n", tsk->pid));
-+		wake_up_process(tsk);
- 		wait_for_completion(&c->gc_thread_start);
-+		ret = tsk->pid;
- 	}
- 
- 	return ret;
-@@ -71,7 +73,6 @@ static int jffs2_garbage_collect_thread(void *_c)
- {
- 	struct jffs2_sb_info *c = _c;
- 
--	daemonize("jffs2_gcd_mtd%d", c->mtd->index);
- 	allow_signal(SIGKILL);
- 	allow_signal(SIGSTOP);
- 	allow_signal(SIGCONT);
-@@ -107,6 +108,11 @@ static int jffs2_garbage_collect_thread(void *_c)
- 		 * the GC thread get there first. */
- 		schedule_timeout_interruptible(msecs_to_jiffies(50));
- 
-+		if (kthread_should_stop()) {
-+			D1(printk(KERN_DEBUG "jffs2_garbage_collect_thread():  kthread_stop() called.\n"));
-+			goto die;
-+		}
-+
- 		/* Put_super will send a SIGKILL and then wait on the sem.
- 		 */
- 		while (signal_pending(current) || freezing(current)) {
--- 
-1.5.6.5
+Joakim Tjernlund <Joakim.Tjernlund@transmode.se> wrote on 28/05/2009 17:43:59:
+>
+> Erase errors such as:
+> "Newly-erased block contained word 0xa4ef223e at offset 0x0296a014"
+> and failure to write the clean marker,
+> moves the offending erase block to erasing list before calling
+> jffs2_erase_failed(). This is bad as jffs2_erase_failed() will
+> also move the block to the bad_list, but is now moving the
+> wrong block, causing FS corruption.
+>
+> Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+> ---
+>  fs/jffs2/erase.c |    7 -------
+>  1 files changed, 0 insertions(+), 7 deletions(-)
+>
+> diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
+> index 51024ac..b082655 100644
+> --- a/fs/jffs2/erase.c
+> +++ b/fs/jffs2/erase.c
+> @@ -488,13 +488,6 @@ static void jffs2_mark_erased_block(struct jffs2_sb_info *c, struct jffs2_eraseb
+>     return;
+>
+>  filebad:
+> -   mutex_lock(&c->erase_free_sem);
+> -   spin_lock(&c->erase_completion_lock);
+> -   /* Stick it on a list (any list) so erase_failed can take it
+> -      right off again.  Silly, but shouldn't happen often. */
+> -   list_move(&jeb->list, &c->erasing_list);
+> -   spin_unlock(&c->erase_completion_lock);
+> -   mutex_unlock(&c->erase_free_sem);
+>     jffs2_erase_failed(c, jeb, bad_offset);
+>     return;
+>
+> --
+> 1.6.2.3
+>
