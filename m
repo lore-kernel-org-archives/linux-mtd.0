@@ -1,21 +1,15 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1M9ywl-0000ZN-2V
-	for linux-mtd@lists.infradead.org; Fri, 29 May 2009 10:04:25 +0000
-Subject: Re: UBIFS: "sync" mount option does not work
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: =?ISO-8859-1?Q?Aur=E9lien_G=C9R=D4ME?= <ag@debian.org>
-In-Reply-To: <1243591249.11172.106.camel@localhost.localdomain>
-References: <20090528170621.GJ18372@roxor.cx>
-	<1243591249.11172.106.camel@localhost.localdomain>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 29 May 2009 13:03:47 +0300
-Message-Id: <1243591427.11172.108.camel@localhost.localdomain>
+Subject: Re: mtd: remove driver-core BUS_ID_SIZE
+From: David Woodhouse <dwmw2@infradead.org>
+To: Kay Sievers <kay.sievers@vrfy.org>
+In-Reply-To: <1239899196.17211.11.camel@poy>
+References: <1239899196.17211.11.camel@poy>
+Content-Type: text/plain
+Date: Fri, 29 May 2009 14:11:35 +0100
+Message-Id: <1243602695.19886.146.camel@macbook.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-	linux-mtd@lists.infradead.org, Adrian.Hunter@nokia.com
-Reply-To: dedekind@infradead.org
+Content-Transfer-Encoding: 7bit
+Cc: Greg Kroah-Hartman <gregkh@suse.de>,
+	linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +19,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-05-29 at 13:00 +0300, Artem Bityutskiy wrote:
-> From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-> Subject: [PATCH] UBIFS: allow sync option in rootflags
-> MIME-Version: 1.0
-> Content-Type: text/plain; charset=utf-8
-> Content-Transfer-Encoding: 8bit
+On Thu, 2009-04-16 at 18:26 +0200, Kay Sievers wrote:
+> From: Kay Sievers <kay.sievers@vrfy.org>
+> Subject: mtd: remove driver-core BUS_ID_SIZE
 > 
-> When passing UBIFS parameters via kernel command line, the
-> sync option will be passed to UBIFS as a string, not as an
-> MS_SYNCHRONOUS flag. Teach UBIFS interpreting this flag.
+> The name size limit is gone from the driver-core, the BUS_ID_SIZE
+> value will be removed.
 > 
-> Reported-by: Aurélien GÉRÔME <ag@debian.org>
-> Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> Cc: dwmw2@infradead.org
+> Cc: linux-mtd@lists.infradead.org
+> Acked-by: Greg Kroah-Hartman <gregkh@suse.de>
+> Signed-off-by: Kay Sievers <kay.sievers@vrfy.org>
 > ---
->  fs/ubifs/super.c |   40 +++++++++++++++++++++++++++++++++++-----
->  1 files changed, 35 insertions(+), 5 deletions(-)
+>  drivers/mtd/nand/txx9ndfmc.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> --- a/drivers/mtd/nand/txx9ndfmc.c
+> +++ b/drivers/mtd/nand/txx9ndfmc.c
+> @@ -64,7 +64,7 @@ struct txx9ndfmc_priv {
+>  	struct nand_chip chip;
+>  	struct mtd_info mtd;
+>  	int cs;
+> -	char mtdname[BUS_ID_SIZE + 2];
+> +	char mtdname[20 + 2];
+>  };
+>  
+>  #define MAX_TXX9NDFMC_DEV	4
 
-Please, use this patch as a band-aid so far. Not sure it'll
-land upstream in this form.
+Not so cunning. You're explicitly noting that the limit on the input
+string size is gone, and yet you do nothing about the code which uses
+it...
+
+		if (plat->ch_mask != 1) {
+			txx9_priv->cs = i;
+			sprintf(txx9_priv->mtdname, "%s.%u",
+				dev_name(&dev->dev), i);
+		} else {
+			txx9_priv->cs = -1;
+			strcpy(txx9_priv->mtdname, dev_name(&dev->dev));
+		}
 
 -- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
