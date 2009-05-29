@@ -1,19 +1,17 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MA4Zg-00078W-G5
-	for linux-mtd@lists.infradead.org; Fri, 29 May 2009 16:05:08 +0000
-Subject: Re: ubiformat error
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Manoj <manoj23@gmail.com>
-In-Reply-To: <1c3f4270905281908g75069b39sbc2167b5a3d32d1b@mail.gmail.com>
-References: <1c3f4270905281908g75069b39sbc2167b5a3d32d1b@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 29 May 2009 19:04:37 +0300
-Message-Id: <1243613077.11172.120.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from tomts47.bellnexxia.net ([209.226.175.191]
+	helo=tomts47-srv.bellnexxia.net)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MABgA-0000Yo-Nk
+	for linux-mtd@lists.infradead.org; Fri, 29 May 2009 23:40:27 +0000
+From: Anson <ganonqueautoservice@bellnet.ca>
+To: info@bellnet.ca
+Subject: Bonaza
+Date: Fri, 29 May 2009 19:39:54 -0400
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <20090529234002.UUID1649.tomts47-srv.bellnexxia.net@toip36-bus.srvr.bell.ca>
+Reply-To: anson.fay22@btinternet.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +21,5 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-05-28 at 19:08 -0700, Manoj wrote:
-> I am trying to flash an UBI image to NAND flash. But I get an error
-> about "No such file or directory".
-> 
-> # cat /proc/mtd
-> dev:    size   erasesize  name
-> mtd0: 01000000 00020000 "NAND-block1"
-> mtd1: 01e00000 00020000 "jffs2"
-> mtd2: 0d200000 00020000 "NAND-block2"
-> # ubiformat /dev/mtd1
-> ubiformat: error!: cannot get information about "/dev/mtd1"
->            error 2 (No such file or directory)
-> # ls -l /dev/mtd1
-> crw-rw-r--    1 root     root      90,   2 Dec 31 16:00 /dev/mtd1
-> 
-> I am able to do ubiattach with mtd1, create an empty volume and mount
-> the volume as ubifs.
-
-Yeah, I'll look at this. For now just try to go several
-git commits down. I think this was working and I recently
-broke it.
-
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+Your E-mail ID has been awarded,the sum of  =A3250.000.00 in the LG Award=
+ 2009, Anniversary Bonanza Name,Country,Address and Age
