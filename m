@@ -1,19 +1,21 @@
-Subject: Re: [patch 13/96] JFFS2: fix mount crash caused by removed nodes
-From: David Woodhouse <dwmw2@infradead.org>
-To: anees a m <aneesgnu@gmail.com>
-In-Reply-To: <17cc26190905290629g44fcd60ehfb4d6ddbafc1667e@mail.gmail.com>
-References: <20090314000508.803142980@mini.kroah.org>
-	<20090314001449.GA4485@kroah.com>
-	<20090314000740.633616698@mini.kroah.org>
-	<17cc26190905290126l8158b10t44ff0649feb5d7a9@mail.gmail.com>
-	<1243594926.19886.25.camel@macbook.infradead.org>
-	<17cc26190905290629g44fcd60ehfb4d6ddbafc1667e@mail.gmail.com>
-Content-Type: text/plain
-Date: Fri, 29 May 2009 14:38:52 +0100
-Message-Id: <1243604332.19886.155.camel@macbook.infradead.org>
-Mime-Version: 1.0
+Received: from moutng.kundenserver.de ([212.227.126.171])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MA3VQ-0004KC-8b
+	for linux-mtd@lists.infradead.org; Fri, 29 May 2009 14:56:31 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] mtd: Delete final remnants of MTD ioctls from
+	fs/compat_ioctl.c
+Date: Fri, 29 May 2009 15:56:11 +0100
+References: <1243607412.19886.169.camel@macbook.infradead.org>
+In-Reply-To: <1243607412.19886.169.camel@macbook.infradead.org>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Message-Id: <200905291556.13482.arnd@arndb.de>
+Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,13 +25,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-05-29 at 18:59 +0530, anees a m wrote:
-> 2.6.10 Montavista ported kernel on powerpc
+On Friday 29 May 2009, David Woodhouse wrote:
+> Er, that doesn't move stuff into mtdchar.c. It just deletes it...
 
-OK, that's completely uninteresting then.
+The changeset comment could be a little more verbose, but it looks
+correct to me. The key is calling mtd_ioctl() in the 'default:'
+case of mtd_compat_ioctl(), which just treats all unhandled
+ioctl numbers as compatible.
 
-We deal with Linux here. Not archaeology. 
-
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+	Arnd <><
