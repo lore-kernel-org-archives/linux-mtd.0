@@ -1,21 +1,16 @@
-Received: from moutng.kundenserver.de ([212.227.126.171])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MA3VQ-0004KC-8b
-	for linux-mtd@lists.infradead.org; Fri, 29 May 2009 14:56:31 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: Delete final remnants of MTD ioctls from
-	fs/compat_ioctl.c
-Date: Fri, 29 May 2009 15:56:11 +0100
-References: <1243607412.19886.169.camel@macbook.infradead.org>
-In-Reply-To: <1243607412.19886.169.camel@macbook.infradead.org>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
+Subject: Re: [PATCH 3/4] [MTD] compat_ioctl cleanup
+From: David Woodhouse <dwmw2@infradead.org>
+To: Kevin Cernekee <kpc.mtd@gmail.com>
+In-Reply-To: <a95a62fe0904082253i119f8660y6a73835a163394f5@mail.gmail.com>
+References: <a95a62fe0904082253i119f8660y6a73835a163394f5@mail.gmail.com>
+Content-Type: text/plain
+Date: Fri, 29 May 2009 15:58:06 +0100
+Message-Id: <1243609086.19886.179.camel@macbook.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Message-Id: <200905291556.13482.arnd@arndb.de>
-Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+Cc: Linux MTD <linux-mtd@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,12 +20,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 29 May 2009, David Woodhouse wrote:
-> Er, that doesn't move stuff into mtdchar.c. It just deletes it...
+On Wed, 2009-04-08 at 22:53 -0700, Kevin Cernekee wrote:
+> 
+> +static long mtd_compat_ioctl(struct file *file, unsigned int cmd,
+> +       unsigned long arg)
+> +{
+> +       struct mtd_file_info *mfi = file->private_data;
+> +       struct mtd_info *mtd = mfi->mtd;
+> +       void __user *argp = (void __user *)arg;
 
-The changeset comment could be a little more verbose, but it looks
-correct to me. The key is calling mtd_ioctl() in the 'default:'
-case of mtd_compat_ioctl(), which just treats all unhandled
-ioctl numbers as compatible.
-
-	Arnd <><
+Shouldn't that be 'argp = compat_ptr(arg)' ?
+ 
+-- 
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
