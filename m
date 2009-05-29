@@ -1,14 +1,22 @@
-Subject: Re: mtd: remove driver-core BUS_ID_SIZE
-From: David Woodhouse <dwmw2@infradead.org>
-To: Kay Sievers <kay.sievers@vrfy.org>
-In-Reply-To: <1243602695.19886.146.camel@macbook.infradead.org>
+Received: from mail-fx0-f212.google.com ([209.85.220.212])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MA26D-00054N-6v
+	for linux-mtd@lists.infradead.org; Fri, 29 May 2009 13:26:24 +0000
+Received: by fxm8 with SMTP id 8so7277204fxm.18
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 29 May 2009 06:26:14 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1243603308.19886.149.camel@macbook.infradead.org>
 References: <1239899196.17211.11.camel@poy>
 	<1243602695.19886.146.camel@macbook.infradead.org>
-Content-Type: text/plain
-Date: Fri, 29 May 2009 14:21:48 +0100
-Message-Id: <1243603308.19886.149.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+	<1243603308.19886.149.camel@macbook.infradead.org>
+From: Kay Sievers <kay.sievers@vrfy.org>
+Date: Fri, 29 May 2009 15:25:59 +0200
+Message-ID: <ac3eb2510905290625g4f89ef7cj597892affb94a9e6@mail.gmail.com>
+Subject: Re: mtd: remove driver-core BUS_ID_SIZE
+To: David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Cc: Atsushi Nemoto <anemo@mba.ocn.ne.jp>, Greg Kroah-Hartman <gregkh@suse.de>,
 	linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,95 +28,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-05-29 at 14:11 +0100, David Woodhouse wrote:
-> On Thu, 2009-04-16 at 18:26 +0200, Kay Sievers wrote:
-> > From: Kay Sievers <kay.sievers@vrfy.org>
-> > Subject: mtd: remove driver-core BUS_ID_SIZE
-> > 
-> > The name size limit is gone from the driver-core, the BUS_ID_SIZE
-> > value will be removed.
-> > 
-> > Cc: dwmw2@infradead.org
-> > Cc: linux-mtd@lists.infradead.org
-> > Acked-by: Greg Kroah-Hartman <gregkh@suse.de>
-> > Signed-off-by: Kay Sievers <kay.sievers@vrfy.org>
-> > ---
-> >  drivers/mtd/nand/txx9ndfmc.c |    2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > --- a/drivers/mtd/nand/txx9ndfmc.c
-> > +++ b/drivers/mtd/nand/txx9ndfmc.c
-> > @@ -64,7 +64,7 @@ struct txx9ndfmc_priv {
-> >  	struct nand_chip chip;
-> >  	struct mtd_info mtd;
-> >  	int cs;
-> > -	char mtdname[BUS_ID_SIZE + 2];
-> > +	char mtdname[20 + 2];
-> >  };
-> >  
-> >  #define MAX_TXX9NDFMC_DEV	4
-> 
-> Not so cunning. You're explicitly noting that the limit on the input
-> string size is gone, and yet you do nothing about the code which uses
-> it...
-> 
-> 		if (plat->ch_mask != 1) {
-> 			txx9_priv->cs = i;
-> 			sprintf(txx9_priv->mtdname, "%s.%u",
-> 				dev_name(&dev->dev), i);
-> 		} else {
-> 			txx9_priv->cs = -1;
-> 			strcpy(txx9_priv->mtdname, dev_name(&dev->dev));
-> 		}
-
-This might work better. Nemoto-san, can you test and confirm?
-
-diff --git a/drivers/mtd/nand/txx9ndfmc.c b/drivers/mtd/nand/txx9ndfmc.c
-index 8124792..6329382 100644
---- a/drivers/mtd/nand/txx9ndfmc.c
-+++ b/drivers/mtd/nand/txx9ndfmc.c
-@@ -64,7 +64,7 @@ struct txx9ndfmc_priv {
- 	struct nand_chip chip;
- 	struct mtd_info mtd;
- 	int cs;
--	char mtdname[BUS_ID_SIZE + 2];
-+	char *mtdname;
- };
- 
- #define MAX_TXX9NDFMC_DEV	4
-@@ -333,12 +333,21 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
- 		txx9_priv->dev = dev;
- 
- 		if (plat->ch_mask != 1) {
-+			char *devname = dev_name(&dev->dev);
- 			txx9_priv->cs = i;
-+			txx9_priv->mtdname = kmalloc(strlen(devname) + 3,
-+						     GFP_KERNEL);
-+			if (!txx9_mtdname) {
-+				kfree(txx9_priv);
-+				dev_err(&dev->dev,
-+					"Unable to allocate TXx9 NDFMC MTD device name.\n");
-+				continue;
-+			}
- 			sprintf(txx9_priv->mtdname, "%s.%u",
--				dev_name(&dev->dev), i);
-+				devname, i);
- 		} else {
- 			txx9_priv->cs = -1;
--			strcpy(txx9_priv->mtdname, dev_name(&dev->dev));
-+			txx9_priv->mtdname = dev_name(&dev->dev);
- 		}
- 		if (plat->wide_mask & (1 << i))
- 			chip->options |= NAND_BUSWIDTH_16;
-@@ -385,6 +394,8 @@ static int __exit txx9ndfmc_remove(struct platform_device *dev)
- 		kfree(drvdata->parts[i]);
- #endif
- 		del_mtd_device(mtd);
-+		if (txx9_priv->mtdname != dev_name(&dev->dev))
-+			kfree(txx9_priv->mtdname);
- 		kfree(txx9_priv);
- 	}
- 	return 0;
-
--- 
-dwmw2
+T24gRnJpLCBNYXkgMjksIDIwMDkgYXQgMTU6MjEsIERhdmlkIFdvb2Rob3VzZSA8ZHdtdzJAaW5m
+cmFkZWFkLm9yZz4gd3JvdGU6Cj4gVGhpcyBtaWdodCB3b3JrIGJldHRlci4gTmVtb3RvLXNhbiwg
+Y2FuIHlvdSB0ZXN0IGFuZCBjb25maXJtPwoKTG9va3MgZ29vZCB0byBtZS4KCj4gZGlmZiAtLWdp
+dCBhL2RyaXZlcnMvbXRkL25hbmQvdHh4OW5kZm1jLmMgYi9kcml2ZXJzL210ZC9uYW5kL3R4eDlu
+ZGZtYy5jCgo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgaWYgKHBsYXQtPmNoX21hc2sgIT0gMSkg
+ewo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgY2hhciAqZGV2bmFtZSA9IGRl
+dl9uYW1lKCZkZXYtPmRldik7Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB0
+eHg5X3ByaXYtPmNzID0gaTsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHR4
+eDlfcHJpdi0+bXRkbmFtZSA9IGttYWxsb2Moc3RybGVuKGRldm5hbWUpICsgMywKPiArIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgR0ZQX0tFUk5FTCk7CgprYXNwcmludGYoKSBtaWdodCBiZSBuaWNlciBo
+ZXJlPwoKVGhhbmtzLApLYXkK
