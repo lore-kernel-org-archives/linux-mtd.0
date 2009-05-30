@@ -1,22 +1,25 @@
-Received: from yx-out-1718.google.com ([74.125.44.158])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MAg03-00043S-AS
-	for linux-mtd@lists.infradead.org; Sun, 31 May 2009 08:02:41 +0000
-Received: by yx-out-1718.google.com with SMTP id 6so3907393yxn.72
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 31 May 2009 01:02:33 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1243613077.11172.120.camel@localhost.localdomain>
-References: <1c3f4270905281908g75069b39sbc2167b5a3d32d1b@mail.gmail.com>
-	<1243613077.11172.120.camel@localhost.localdomain>
-Date: Sun, 31 May 2009 01:02:32 -0700
-Message-ID: <1c3f4270905310102x4fe2aabaof187432e8f1136c@mail.gmail.com>
-Subject: Re: ubiformat error
-From: Manoj <manoj23@gmail.com>
-To: dedekind@infradead.org
-Content-Type: text/plain; charset=KOI8-R
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Received: from aeryn.fluff.org.uk ([87.194.8.8] helo=teyla.home.fluff.org)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MASe2-0003bK-LI
+	for linux-mtd@lists.infradead.org; Sat, 30 May 2009 17:47:36 +0000
+From: Ben Dooks <ben-linux@fluff.org>
+To: linux-mtd@lists.infradead.org
+Subject: [MTD] [NAND] S3C2410: Use DIV_ROUND_UP
+Date: Sat, 30 May 2009 18:41:38 +0100
+Message-Id: <1243705298-21814-12-git-send-email-ben-linux@fluff.org>
+In-Reply-To: <1243705298-21814-11-git-send-email-ben-linux@fluff.org>
+References: <1243705298-21814-1-git-send-email-ben-linux@fluff.org>
+	<1243705298-21814-2-git-send-email-ben-linux@fluff.org>
+	<1243705298-21814-3-git-send-email-ben-linux@fluff.org>
+	<1243705298-21814-4-git-send-email-ben-linux@fluff.org>
+	<1243705298-21814-5-git-send-email-ben-linux@fluff.org>
+	<1243705298-21814-6-git-send-email-ben-linux@fluff.org>
+	<1243705298-21814-7-git-send-email-ben-linux@fluff.org>
+	<1243705298-21814-8-git-send-email-ben-linux@fluff.org>
+	<1243705298-21814-9-git-send-email-ben-linux@fluff.org>
+	<1243705298-21814-10-git-send-email-ben-linux@fluff.org>
+	<1243705298-21814-11-git-send-email-ben-linux@fluff.org>
+Cc: Ben Dooks <ben-linux@fluff.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,43 +29,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+Change to using DIV_ROUND_UP() in the timing calculation
+instead of blindly doing result++
 
-I picked up a snapshot up to this commit -
-http://git.infradead.org/mtd-utils.git?a=3Dcommit;h=3De7454c3c3928ee7af7e76=
-c0521f477881c9bf60f
+Signed-off-by: Ben Dooks <ben-linux@fluff.org>
+---
+ drivers/mtd/nand/s3c2410.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
 
-and it worked for me.
-
-Thanks.
-
-On Fri, May 29, 2009 at 9:04 AM, Artem Bityutskiy
-<dedekind@infradead.org> wrote:
-> On Thu, 2009-05-28 at 19:08 -0700, Manoj wrote:
->> I am trying to flash an UBI image to NAND flash. But I get an error
->> about "No such file or directory".
->>
->> # cat /proc/mtd
->> dev: =9A =9Asize =9A erasesize =9Aname
->> mtd0: 01000000 00020000 "NAND-block1"
->> mtd1: 01e00000 00020000 "jffs2"
->> mtd2: 0d200000 00020000 "NAND-block2"
->> # ubiformat /dev/mtd1
->> ubiformat: error!: cannot get information about "/dev/mtd1"
->> =9A =9A =9A =9A =9A =9Aerror 2 (No such file or directory)
->> # ls -l /dev/mtd1
->> crw-rw-r-- =9A =9A1 root =9A =9A root =9A =9A =9A90, =9A 2 Dec 31 16:00 =
-/dev/mtd1
->>
->> I am able to do ubiattach with mtd1, create an empty volume and mount
->> the volume as ubifs.
->
-> Yeah, I'll look at this. For now just try to go several
-> git commits down. I think this was working and I recently
-> broke it.
->
-> --
-> Best regards,
-> Artem Bityutskiy (=E2=C9=D4=C0=C3=CB=C9=CA =E1=D2=D4=A3=CD)
->
->
+diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+index 8a7f960..89b7905 100644
+--- a/drivers/mtd/nand/s3c2410.c
++++ b/drivers/mtd/nand/s3c2410.c
+@@ -180,8 +180,7 @@ static int s3c_nand_calc_rate(int wanted, unsigned long clk, int max)
+ {
+ 	int result;
+ 
+-	result = (wanted * clk) / NS_IN_KHZ;
+-	result++;
++	result = DIV_ROUND_UP((wanted * clk), NS_IN_KHZ);
+ 
+ 	pr_debug("result %d from %ld, %d\n", result, clk, wanted);
+ 
+-- 
+1.5.6.5
