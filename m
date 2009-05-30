@@ -1,18 +1,22 @@
 Received: from aeryn.fluff.org.uk ([87.194.8.8] helo=teyla.home.fluff.org)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MATG4-00023z-Lg
-	for linux-mtd@lists.infradead.org; Sat, 30 May 2009 18:26:23 +0000
+	id 1MATGC-0002Fy-Nb
+	for linux-mtd@lists.infradead.org; Sat, 30 May 2009 18:26:35 +0000
 From: Ben Dooks <ben-linux@fluff.org>
 To: linux-mtd@lists.infradead.org
-Subject: [MTD] [NAND] S3C2410: NAND ECC by chip rather than global
-Date: Sat, 30 May 2009 18:41:30 +0100
-Message-Id: <1243705298-21814-4-git-send-email-ben-linux@fluff.org>
-In-Reply-To: <1243705298-21814-3-git-send-email-ben-linux@fluff.org>
+Subject: [MTD] [NAND] S3C2410: Added a kerneldoc for s3c2410_nand_set
+Date: Sat, 30 May 2009 18:41:35 +0100
+Message-Id: <1243705298-21814-9-git-send-email-ben-linux@fluff.org>
+In-Reply-To: <1243705298-21814-8-git-send-email-ben-linux@fluff.org>
 References: <1243705298-21814-1-git-send-email-ben-linux@fluff.org>
 	<1243705298-21814-2-git-send-email-ben-linux@fluff.org>
 	<1243705298-21814-3-git-send-email-ben-linux@fluff.org>
-Cc: Andy Green <andy@warmcat.com>, Nelson Castillo <arhuaco@freaks-unidos.net>,
-	Ben Dooks <ben-linux@fluff.org>
+	<1243705298-21814-4-git-send-email-ben-linux@fluff.org>
+	<1243705298-21814-5-git-send-email-ben-linux@fluff.org>
+	<1243705298-21814-6-git-send-email-ben-linux@fluff.org>
+	<1243705298-21814-7-git-send-email-ben-linux@fluff.org>
+	<1243705298-21814-8-git-send-email-ben-linux@fluff.org>
+Cc: Michel Pollet <buserror@gmail.com>, Ben Dooks <ben-linux@fluff.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,73 +26,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Andy Green <andy@warmcat.com>
+From: Michel Pollet <buserror@gmail.com>
 
-This makes us take note about the chosen ECC mode per-chip and
-not the one set globally.
+Converted the old comnent to kerneldoc.
 
-Signed-off-by: Andy Green <andy@warmcat.com>
-Signed-off-by: Nelson Castillo <arhuaco@freaks-unidos.net>
-[ben-linux@fluff.org: andy@openmoko.com => andy@warmcat.com, rewrite subject]
+Signed-off-by: Michel Pollet <buserror@gmail.com>
+[ben-linux@fluff.org: updated subject]
 Signed-off-by: Ben Dooks <ben-linux@fluff.org>
 ---
- drivers/mtd/nand/s3c2410.c |   34 +++++++++++++++++++++++++---------
- 1 files changed, 25 insertions(+), 9 deletions(-)
+ arch/arm/plat-s3c/include/plat/nand.h |   22 ++++++++++++----------
+ 1 files changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-index a2d1c70..daa4af9 100644
---- a/drivers/mtd/nand/s3c2410.c
-+++ b/drivers/mtd/nand/s3c2410.c
-@@ -819,6 +819,21 @@ static void s3c2410_nand_init_chip(struct s3c2410_nand_info *info,
+diff --git a/arch/arm/plat-s3c/include/plat/nand.h b/arch/arm/plat-s3c/include/plat/nand.h
+index 9855467..350ec95 100644
+--- a/arch/arm/plat-s3c/include/plat/nand.h
++++ b/arch/arm/plat-s3c/include/plat/nand.h
+@@ -10,17 +10,19 @@
+  * published by the Free Software Foundation.
+ */
  
- 	if (set->disable_ecc)
- 		chip->ecc.mode	= NAND_ECC_NONE;
-+
-+	switch (chip->ecc.mode) {
-+	case NAND_ECC_NONE:
-+		dev_info(info->device, "NAND ECC disabled\n");
-+		break;
-+	case NAND_ECC_SOFT:
-+		dev_info(info->device, "NAND soft ECC\n");
-+		break;
-+	case NAND_ECC_HW:
-+		dev_info(info->device, "NAND hardware ECC\n");
-+		break;
-+	default:
-+		dev_info(info->device, "NAND ECC UNKNOWN\n");
-+		break;
-+	}
- }
- 
- /**
-@@ -840,18 +855,19 @@ static void s3c2410_nand_update_chip(struct s3c2410_nand_info *info,
- 	dev_dbg(info->device, "chip %p => page shift %d\n",
- 		chip, chip->page_shift);
- 
--	if (hardware_ecc) {
-+	if (chip->ecc.mode != NAND_ECC_HW)
-+		return;
-+
- 		/* change the behaviour depending on wether we are using
- 		 * the large or small page nand device */
- 
--		if (chip->page_shift > 10) {
--			chip->ecc.size	    = 256;
--			chip->ecc.bytes	    = 3;
--		} else {
--			chip->ecc.size	    = 512;
--			chip->ecc.bytes	    = 3;
--			chip->ecc.layout    = &nand_hw_eccoob;
--		}
-+	if (chip->page_shift > 10) {
-+		chip->ecc.size	    = 256;
-+		chip->ecc.bytes	    = 3;
-+	} else {
-+		chip->ecc.size	    = 512;
-+		chip->ecc.bytes	    = 3;
-+		chip->ecc.layout    = &nand_hw_eccoob;
- 	}
- }
+-/* struct s3c2410_nand_set
++/**
++ * struct s3c2410_nand_set - define a set of one or more nand chips
++ * @disable_ecc:	Entirely disable ECC - Dangerous
++ * @nr_chips:		Number of chips in this set
++ * @nr_partitions:	Number of partitions pointed to be partitoons (or zero)
++ * @name:		Name of set (optional)
++ * @nr_map:		Map for low-layer logical to physical chip numbers (option)
++ * @partitions:		The mtd partition list
+  *
+- * define an set of one or more nand chips registered with an unique mtd
+- *
+- * nr_chips	 = number of chips in this set
+- * nr_partitions = number of partitions pointed to be partitoons (or zero)
+- * name		 = name of set (optional)
+- * nr_map	 = map for low-layer logical to physical chip numbers (option)
+- * partitions	 = mtd partition list
+-*/
+-
++ * define a set of one or more nand chips registered with an unique mtd. Also
++ * allows to pass flag to the underlying NAND layer. 'disable_ecc' will trigger
++ * a warning at boot time.
++ */
+ struct s3c2410_nand_set {
+ 	unsigned int		disable_ecc:1;
  
 -- 
 1.5.6.5
