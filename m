@@ -1,22 +1,19 @@
-Received: from mail-qy0-f118.google.com ([209.85.221.118])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MB0MU-0000CO-GE
-	for linux-mtd@lists.infradead.org; Mon, 01 Jun 2009 05:47:13 +0000
-Received: by qyk16 with SMTP id 16so504598qyk.28
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 31 May 2009 22:47:05 -0700 (PDT)
+Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MB4LV-0007qh-4p
+	for linux-mtd@lists.infradead.org; Mon, 01 Jun 2009 10:02:28 +0000
+Date: Mon, 1 Jun 2009 12:02:11 +0200
+From: Jan Kara <jack@suse.cz>
+To: anees a m <aneesgnu@gmail.com>
+Subject: Re: JFFS2 filesystem problem
+Message-ID: <20090601100211.GD14373@duck.suse.cz>
+References: <17cc26190905290122u52e2f9a1q15103557e214883e@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1243705298-21814-2-git-send-email-ben-linux@fluff.org>
-References: <1243705298-21814-1-git-send-email-ben-linux@fluff.org>
-	<1243705298-21814-2-git-send-email-ben-linux@fluff.org>
-Date: Mon, 1 Jun 2009 13:47:04 +0800
-Message-ID: <f17812d70905312247g3159bb6chdfb90b00222195e9@mail.gmail.com>
-Subject: Re: [MTD] [NAND] S3C2410: Move to using platform device table
-From: Eric Miao <eric.y.miao@gmail.com>
-To: Ben Dooks <ben-linux@fluff.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: Eric Miao <eric.miao@marvell.com>, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <17cc26190905290122u52e2f9a1q15103557e214883e@mail.gmail.com>
+Cc: npiggin@suse.de, linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,14 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, May 31, 2009 at 1:41 AM, Ben Dooks <ben-linux@fluff.org> wrote:
-> Commit 57fee4a58fe802272742caae248872c392a60670 added an
-> method to specify the platform device compatibility by using
-> an id-table instead of registering multiple drivers.
->
-> Move the S3C24XX NAND driver to using this ID table.
->
-> Signed-off-by: Ben Dooks <ben-linux@fluff.org>
-> CC: Eric Miao <eric.miao@marvell.com>
+  Hello,
 
-Yeah, looks much cleaner.
+On Fri 29-05-09 13:52:05, anees a m wrote:
+> Iam uses JFFS2 filesystem for an embedded flash device. But when the power
+> is removed i between, the JFFS2 filesystem is corrupted.Resulting in fails.
+> Iam able to find that the JFFS2 garbage collector is causing the problem. If
+> mounted as READ only, I dont have an issue, but mounting write only is
+> resulting in corrupted filesystem some times.
+> 
+> Unfortunately I need to mount it with read write support.
+  I'm not sure why you decided to write to linux-ext4 mailing list, to me
+and to Nick. Anyway, the right person for this report seems to be David
+Woodhouse who's listed as a maintainer of JFFS2 filesystem.
+  Adding him to CC.
+
+									Honza
+-- 
+Jan Kara <jack@suse.cz>
+SUSE Labs, CR
