@@ -1,19 +1,16 @@
-Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MB4LV-0007qh-4p
-	for linux-mtd@lists.infradead.org; Mon, 01 Jun 2009 10:02:28 +0000
-Date: Mon, 1 Jun 2009 12:02:11 +0200
-From: Jan Kara <jack@suse.cz>
-To: anees a m <aneesgnu@gmail.com>
-Subject: Re: JFFS2 filesystem problem
-Message-ID: <20090601100211.GD14373@duck.suse.cz>
-References: <17cc26190905290122u52e2f9a1q15103557e214883e@mail.gmail.com>
+Received: from mailfilter4.ihug.co.nz ([203.109.136.4])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MB5b2-0000Js-EE
+	for linux-mtd@lists.infradead.org; Mon, 01 Jun 2009 11:22:35 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <17cc26190905290122u52e2f9a1q15103557e214883e@mail.gmail.com>
-Cc: npiggin@suse.de, linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	LKML <linux-kernel@vger.kernel.org>
+Date: Mon, 01 Jun 2009 23:20:39 +1200
+From: Mnl <Mnl@yahoo.co.uk>
+To: undisclosed-recipients:;
+Subject: (no subject)
+Message-ID: <d1133b400f5ae938996b7ccda67fd5c2@ihug.co.nz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Reply-To: mnldepartment@9.cn
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +20,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-  Hello,
 
-On Fri 29-05-09 13:52:05, anees a m wrote:
-> Iam uses JFFS2 filesystem for an embedded flash device. But when the power
-> is removed i between, the JFFS2 filesystem is corrupted.Resulting in fails.
-> Iam able to find that the JFFS2 garbage collector is causing the problem. If
-> mounted as READ only, I dont have an issue, but mounting write only is
-> resulting in corrupted filesystem some times.
-> 
-> Unfortunately I need to mount it with read write support.
-  I'm not sure why you decided to write to linux-ext4 mailing list, to me
-and to Nick. Anyway, the right person for this report seems to be David
-Woodhouse who's listed as a maintainer of JFFS2 filesystem.
-  Adding him to CC.
-
-									Honza
 -- 
-Jan Kara <jack@suse.cz>
-SUSE Labs, CR
+You are among the winners of the National Lottery.(£1,000,000.00GBP) Mr.
+Michael Smith(mnldepartment@9.cn ) 1. Full Names: ………2.
+Gender:…….3. Age:……..4.Contact Address:……5. Country of
+Residence:…………6. Nationality:…………7.
+Occupation:…….8.Telephone Mobile :…………….9.Choose your claims
+option.(1)Courier Delivery (2)Bank Transfer
