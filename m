@@ -1,24 +1,25 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MBA4f-0003BI-DE
-	for linux-mtd@lists.infradead.org; Mon, 01 Jun 2009 16:09:27 +0000
-From: "Paulraj, Sandeep" <s-paulraj@ti.com>
-To: "Narnakaje, Snehaprabha" <nsnehaprabha@ti.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"davinci-linux-open-source@linux.davincidsp.com"
-	<davinci-linux-open-source@linux.davincidsp.com>, "dwmw2@infradead.org"
-	<dwmw2@infradead.org>, "tglx@linutronix.de" <tglx@linutronix.de>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Date: Mon, 1 Jun 2009 11:08:47 -0500
-Subject: RE: [PATCH 2.6.30-rc6 1/3] NAND: Add "page" parameter to all
-	read_page/read_page_raw APIs
-Message-ID: <C9D59C82B94F474B872F2092A87F261481797EB6@dlee07.ent.ti.com>
-References: <1242682683-19772-1-git-send-email-nsnehaprabha@ti.com>
-In-Reply-To: <1242682683-19772-1-git-send-email-nsnehaprabha@ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+	id 1MBAiK-0004Gd-AW
+	for linux-mtd@lists.infradead.org; Mon, 01 Jun 2009 16:50:27 +0000
+Subject: Re: [PATCH] 3/3 ubi notification API (was Re: [PATCH] [UBI] [1/3]
+	ubi notifications API)
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: dpervushin@embeddedalley.com
+In-Reply-To: <1243780379.4067.35.camel@hp.diimka.lan>
+References: <1241018978.20184.33.camel@hp.diimka.lan>
+	<1242660138.3238.5.camel@localhost.localdomain>
+	<1242661167.3238.10.camel@localhost.localdomain>
+	<1243625251.4067.29.camel@hp.diimka.lan>
+	<1243777941.11172.126.camel@localhost.localdomain>
+	<1243780379.4067.35.camel@hp.diimka.lan>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 01 Jun 2009 19:48:45 +0300
+Message-Id: <1243874925.5847.3.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,216 +29,641 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Anything comments on this patch?
+On Sun, 2009-05-31 at 18:32 +0400, dmitry pervushin wrote:
+> On Sun, 2009-05-31 at 16:52 +0300, Artem Bityutskiy wrote: 
+> > On Fri, 2009-05-29 at 23:27 +0400, dmitry pervushin wrote:
+> > > > I've also created an "experimental" branch in the ubi-2.6.git
+> > > > tree for your convenience:
+> > > > 
+> > > > http://git.infradead.org/ubi-2.6.git?a=shortlog;h=refs/heads/experimental
+> > > > git://git.infradead.org/ubi-2.6.git experimental
+> > > Sorry for late response; I reviewed your changes, and although
+> > > prohibiting of using ubi api from within notifiers does not look very
+> > > amazing to me... but it seems that it is the only robust way. The 3rd
+> > > patch from the serie is inlined below (tested on the stmp378x board as
+> > > well as on nandsim)
+> > > 
+> > > The standalone gluebi support that uses UBI notifications.
+> > > 
+> > > Signed-off-by: Dmitry Pervushin <dpervushin@embeddedalley.com>
+> > 
+> > Just applied this to
+> > git://git.infradead.org/ubi-2.6.git experimental
+> > 
+> > and got:
+> > 
+> Oh, shame on me. I attached the patch with the same name from the wrong
+> directory; below is the correct one.
+> 
+> Signed-off-by: dmitry pervushin <dpervushin@embeddedalley.com>
+> 
 
-Thanks,
-Sandeep
+I've re-worked your patch. I make it release resources when the module
+is unloaded, made it do proper module referencing, made it really
+independent on UBI, tested it with the UBI test-suite which can be
+found in ubi-2.6.git/tests/ubi-tests, re-named most of the 
+funcs/variables to get rid of the "ubi" word and make names consistent.
 
+Patch is below as well as at the same "experimental" branch. If you
+are OK with this, I'll push it forward.
 
-> -----Original Message-----
-> From: davinci-linux-open-source-bounces@linux.davincidsp.com
-> [mailto:davinci-linux-open-source-bounces@linux.davincidsp.com] On Behalf
-> Of Narnakaje, Snehaprabha
-> Sent: Monday, May 18, 2009 5:38 PM
-> To: linux-mtd@lists.infradead.org; davinci-linux-open-
-> source@linux.davincidsp.com; dwmw2@infradead.org; tglx@linutronix.de;
-> akpm@linux-foundation.org
-> Subject: [PATCH 2.6.30-rc6 1/3] NAND: Add "page" parameter to all
-> read_page/read_page_raw APIs
->=20
-> From: Sneha Narnakaje <nsnehaprabha@ti.com>
->=20
-> This patch new "page" parameter to all NAND read_page/read_page_raw APIs.
-> The read_page API for the new mode ECC_HW_OOB_FIRST requires the page
-> information to send the READOOB command and read the OOB area before the
-> data area.
->=20
-> Reviewed-by: David Brownell <dbrownell@users.sourceforge.net>
-> Signed-off-by: Sneha Narnakaje <nsnehaprabha@ti.com>
-> ---
->  drivers/mtd/nand/atmel_nand.c    |    2 +-
->  drivers/mtd/nand/cafe_nand.c     |    2 +-
->  drivers/mtd/nand/fsl_elbc_nand.c |    3 ++-
->  drivers/mtd/nand/nand_base.c     |   18 ++++++++++--------
->  drivers/mtd/nand/sh_flctl.c      |    2 +-
->  include/linux/mtd/nand.h         |    4 ++--
->  6 files changed, 17 insertions(+), 14 deletions(-)
->=20
-> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.=
-c
-> index 47a33ce..b63eddb 100644
-> --- a/drivers/mtd/nand/atmel_nand.c
-> +++ b/drivers/mtd/nand/atmel_nand.c
-> @@ -214,7 +214,7 @@ static int atmel_nand_calculate(struct mtd_info *mtd,
->   * buf:        buffer to store read data
->   */
->  static int atmel_nand_read_page(struct mtd_info *mtd,
-> -		struct nand_chip *chip, uint8_t *buf)
-> +		struct nand_chip *chip, uint8_t *buf, int page)
->  {
->  	int eccsize =3D chip->ecc.size;
->  	int eccbytes =3D chip->ecc.bytes;
-> diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
-> index 29acd06..a70f40e 100644
-> --- a/drivers/mtd/nand/cafe_nand.c
-> +++ b/drivers/mtd/nand/cafe_nand.c
-> @@ -381,7 +381,7 @@ static int cafe_nand_read_oob(struct mtd_info *mtd,
-> struct nand_chip *chip,
->   * we need a special oob layout and handling.
->   */
->  static int cafe_nand_read_page(struct mtd_info *mtd, struct nand_chip
-> *chip,
-> -			       uint8_t *buf)
-> +			       uint8_t *buf, int page)
->  {
->  	struct cafe_priv *cafe =3D mtd->priv;
->=20
-> diff --git a/drivers/mtd/nand/fsl_elbc_nand.c
-> b/drivers/mtd/nand/fsl_elbc_nand.c
-> index 1f6eb25..ddd37d2 100644
-> --- a/drivers/mtd/nand/fsl_elbc_nand.c
-> +++ b/drivers/mtd/nand/fsl_elbc_nand.c
-> @@ -739,7 +739,8 @@ static int fsl_elbc_chip_init_tail(struct mtd_info
-> *mtd)
->=20
->  static int fsl_elbc_read_page(struct mtd_info *mtd,
->                                struct nand_chip *chip,
-> -                              uint8_t *buf)
-> +			      uint8_t *buf,
-> +			      int page)
->  {
->  	fsl_elbc_read_buf(mtd, buf, mtd->writesize);
->  	fsl_elbc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 8c21b89..979988a 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -766,7 +766,7 @@ static int nand_wait(struct mtd_info *mtd, struct
-> nand_chip *chip)
->   * Not for syndrome calculating ecc controllers, which use a special oob
-> layout
->   */
->  static int nand_read_page_raw(struct mtd_info *mtd, struct nand_chip
-> *chip,
-> -			      uint8_t *buf)
-> +			      uint8_t *buf, int page)
->  {
->  	chip->read_buf(mtd, buf, mtd->writesize);
->  	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
-> @@ -782,7 +782,7 @@ static int nand_read_page_raw(struct mtd_info *mtd,
-> struct nand_chip *chip,
->   * We need a special oob layout and handling even when OOB isn't used.
->   */
->  static int nand_read_page_raw_syndrome(struct mtd_info *mtd, struct
-> nand_chip *chip,
-> -			      uint8_t *buf)
-> +			      uint8_t *buf, int page)
->  {
->  	int eccsize =3D chip->ecc.size;
->  	int eccbytes =3D chip->ecc.bytes;
-> @@ -821,7 +821,7 @@ static int nand_read_page_raw_syndrome(struct mtd_inf=
-o
-> *mtd, struct nand_chip *c
->   * @buf:	buffer to store read data
->   */
->  static int nand_read_page_swecc(struct mtd_info *mtd, struct nand_chip
-> *chip,
-> -				uint8_t *buf)
-> +				uint8_t *buf, int page)
->  {
->  	int i, eccsize =3D chip->ecc.size;
->  	int eccbytes =3D chip->ecc.bytes;
-> @@ -831,7 +831,7 @@ static int nand_read_page_swecc(struct mtd_info *mtd,
-> struct nand_chip *chip,
->  	uint8_t *ecc_code =3D chip->buffers->ecccode;
->  	uint32_t *eccpos =3D chip->ecc.layout->eccpos;
->=20
-> -	chip->ecc.read_page_raw(mtd, chip, buf);
-> +	chip->ecc.read_page_raw(mtd, chip, buf, page);
->=20
->  	for (i =3D 0; eccsteps; eccsteps--, i +=3D eccbytes, p +=3D eccsize)
->  		chip->ecc.calculate(mtd, p, &ecc_calc[i]);
-> @@ -944,7 +944,7 @@ static int nand_read_subpage(struct mtd_info *mtd,
-> struct nand_chip *chip, uint3
->   * Not for syndrome calculating ecc controllers which need a special oob
-> layout
->   */
->  static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip
-> *chip,
-> -				uint8_t *buf)
-> +				uint8_t *buf, int page)
->  {
->  	int i, eccsize =3D chip->ecc.size;
->  	int eccbytes =3D chip->ecc.bytes;
-> @@ -989,7 +989,7 @@ static int nand_read_page_hwecc(struct mtd_info *mtd,
-> struct nand_chip *chip,
->   * we need a special oob layout and handling.
->   */
->  static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chi=
-p
-> *chip,
-> -				   uint8_t *buf)
-> +				   uint8_t *buf, int page)
->  {
->  	int i, eccsize =3D chip->ecc.size;
->  	int eccbytes =3D chip->ecc.bytes;
-> @@ -1131,11 +1131,13 @@ static int nand_do_read_ops(struct mtd_info *mtd,
-> loff_t from,
->=20
->  			/* Now read the page into the buffer */
->  			if (unlikely(ops->mode =3D=3D MTD_OOB_RAW))
-> -				ret =3D chip->ecc.read_page_raw(mtd, chip, bufpoi);
-> +				ret =3D chip->ecc.read_page_raw(mtd, chip,
-> +							      bufpoi, page);
->  			else if (!aligned && NAND_SUBPAGE_READ(chip) && !oob)
->  				ret =3D chip->ecc.read_subpage(mtd, chip, col,
-> bytes, bufpoi);
->  			else
-> -				ret =3D chip->ecc.read_page(mtd, chip, bufpoi);
-> +				ret =3D chip->ecc.read_page(mtd, chip, bufpoi,
-> +							  page);
->  			if (ret < 0)
->  				break;
->=20
-> diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-> index 2bc8966..c5df285 100644
-> --- a/drivers/mtd/nand/sh_flctl.c
-> +++ b/drivers/mtd/nand/sh_flctl.c
-> @@ -329,7 +329,7 @@ static void set_cmd_regs(struct mtd_info *mtd,
-> uint32_t cmd, uint32_t flcmcdr_va
->  }
->=20
->  static int flctl_read_page_hwecc(struct mtd_info *mtd, struct nand_chip
-> *chip,
-> -				uint8_t *buf)
-> +				uint8_t *buf, int page)
->  {
->  	int i, eccsize =3D chip->ecc.size;
->  	int eccbytes =3D chip->ecc.bytes;
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index fd07e4a..f6c4dbe 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -271,13 +271,13 @@ struct nand_ecc_ctrl {
->  					   uint8_t *calc_ecc);
->  	int			(*read_page_raw)(struct mtd_info *mtd,
->  						 struct nand_chip *chip,
-> -						 uint8_t *buf);
-> +						 uint8_t *buf, int page);
->  	void			(*write_page_raw)(struct mtd_info *mtd,
->  						  struct nand_chip *chip,
->  						  const uint8_t *buf);
->  	int			(*read_page)(struct mtd_info *mtd,
->  					     struct nand_chip *chip,
-> -					     uint8_t *buf);
-> +					     uint8_t *buf, int page);
->  	int			(*read_subpage)(struct mtd_info *mtd,
->  					     struct nand_chip *chip,
->  					     uint32_t offs, uint32_t len,
-> --
-> 1.6.0.4
->=20
-> _______________________________________________
-> Davinci-linux-open-source mailing list
-> Davinci-linux-open-source@linux.davincidsp.com
-> http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source
+>From 855ef5c35df22a056fd6f76f0785726a64a664fa Mon Sep 17 00:00:00 2001
+From: Dmitry Pervushin <dpervushin@embeddedalley.com>
+Date: Sun, 31 May 2009 18:32:59 +0400
+Subject: [PATCH] UBI: make gluebi a separate module
+
+Signed-off-by: Dmitry Pervushin <dpervushin@embeddedalley.com>
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ drivers/mtd/ubi/Kconfig  |   13 +-
+ drivers/mtd/ubi/Makefile |    2 +-
+ drivers/mtd/ubi/gluebi.c |  375 +++++++++++++++++++++++++++++++++++-----------
+ 3 files changed, 292 insertions(+), 98 deletions(-)
+
+diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
+index 3f06310..b1cd7a1 100644
+--- a/drivers/mtd/ubi/Kconfig
++++ b/drivers/mtd/ubi/Kconfig
+@@ -49,15 +49,16 @@ config MTD_UBI_BEB_RESERVE
+ 	  reserved. Leave the default value if unsure.
+ 
+ config MTD_UBI_GLUEBI
+-	bool "Emulate MTD devices"
++	tristate "MTD devices emulation driver (gluebi)"
+ 	default n
+ 	depends on MTD_UBI
+ 	help
+-	   This option enables MTD devices emulation on top of UBI volumes: for
+-	   each UBI volumes an MTD device is created, and all I/O to this MTD
+-	   device is redirected to the UBI volume. This is handy to make
+-	   MTD-oriented software (like JFFS2) work on top of UBI. Do not enable
+-	   this if no legacy software will be used.
++	   This option enables gluebi - an additional driver which emulates MTD
++	   devices on top of UBI volumes: for each UBI volumes an MTD device is
++	   created, and all I/O to this MTD device is redirected to the UBI
++	   volume. This is handy to make MTD-oriented software (like JFFS2)
++	   work on top of UBI. Do not enable this unless you use legacy
++	   software.
+ 
+ source "drivers/mtd/ubi/Kconfig.debug"
+ endmenu
+diff --git a/drivers/mtd/ubi/Makefile b/drivers/mtd/ubi/Makefile
+index dd834e0..c9302a5 100644
+--- a/drivers/mtd/ubi/Makefile
++++ b/drivers/mtd/ubi/Makefile
+@@ -4,4 +4,4 @@ ubi-y += vtbl.o vmt.o upd.o build.o cdev.o kapi.o eba.o io.o wl.o scan.o
+ ubi-y += misc.o
+ 
+ ubi-$(CONFIG_MTD_UBI_DEBUG) += debug.o
+-ubi-$(CONFIG_MTD_UBI_GLUEBI) += gluebi.o
++obj-$(CONFIG_MTD_UBI_GLUEBI) += gluebi.o
+diff --git a/drivers/mtd/ubi/gluebi.c b/drivers/mtd/ubi/gluebi.c
+index 49cd55a..fa61a3a 100644
+--- a/drivers/mtd/ubi/gluebi.c
++++ b/drivers/mtd/ubi/gluebi.c
+@@ -19,17 +19,68 @@
+  */
+ 
+ /*
+- * This file includes implementation of fake MTD devices for each UBI volume.
+- * This sounds strange, but it is in fact quite useful to make MTD-oriented
+- * software (including all the legacy software) to work on top of UBI.
++ * This is a small driver which implements fake MTD devices on top of UBI
++ * volumes. This sounds strange, but it is in fact quite useful to make
++ * MTD-oriented software (including all the legacy software) work on top of
++ * UBI.
+  *
+  * Gluebi emulates MTD devices of "MTD_UBIVOLUME" type. Their minimal I/O unit
+- * size (mtd->writesize) is equivalent to the UBI minimal I/O unit. The
++ * size (@mtd->writesize) is equivalent to the UBI minimal I/O unit. The
+  * eraseblock size is equivalent to the logical eraseblock size of the volume.
+  */
+ 
++#include <linux/sched.h>
+ #include <linux/math64.h>
+-#include "ubi.h"
++#include <linux/module.h>
++#include <linux/mtd/ubi.h>
++#include <linux/mtd/mtd.h>
++#include "ubi-media.h"
++
++#define err_msg(fmt, ...)                                   \
++	printk(KERN_DEBUG "gluebi (pid %d): %s: " fmt "\n", \
++	       current->pid, __func__, ##__VA_ARGS__)
++
++/**
++ * struct gluebi_device - a gluebi device description data structure.
++ * @mtd: emulated MTD device description object
++ * @refcnt: gluebi device reference count
++ * @desc: UBI volume descriptor
++ * @ubi_num: UBI device number this gluebi device works on
++ * @vol_id: ID of UBI volume this gluebi device works on
++ * @list: link in a list of gluebi devices
++ */
++struct gluebi_device {
++	struct mtd_info mtd;
++	int refcnt;
++	struct ubi_volume_desc *desc;
++	int ubi_num;
++	int vol_id;
++	struct list_head list;
++};
++
++/* List of all gluebi devices */
++static LIST_HEAD(gluebi_devices);
++static DEFINE_MUTEX(devices_mutex);
++
++/**
++ * find_gluebi_nolock - find a gluebi device.
++ * @ubi_num: UBI device number
++ * @vol_id: volume ID
++ *
++ * This function seraches for gluebi device corresponding to UBI device
++ * @ubi_num and UBI volume @vol_id. Returns the gluebi device description
++ * object in case of success and %NULL in case of failure. The caller has to
++ * have the &devices_mutex locked.
++ */
++static struct gluebi_device *find_gluebi_nolock(int ubi_num, int vol_id)
++{
++	struct gluebi_device *gluebi;
++
++	list_for_each_entry(gluebi, &gluebi_devices, list)
++		if (gluebi->ubi_num == ubi_num && gluebi->vol_id == vol_id)
++			return gluebi;
++	return NULL;
++}
+ 
+ /**
+  * gluebi_get_device - get MTD device reference.
+@@ -41,15 +92,18 @@
+  */
+ static int gluebi_get_device(struct mtd_info *mtd)
+ {
+-	struct ubi_volume *vol;
++	struct gluebi_device *gluebi;
++	int ubi_mode = UBI_READONLY;
+ 
+-	vol = container_of(mtd, struct ubi_volume, gluebi_mtd);
++	if (!try_module_get(THIS_MODULE))
++		return -ENODEV;
+ 
+-	/*
+-	 * We do not introduce locks for gluebi reference count because the
+-	 * get_device()/put_device() calls are already serialized at MTD.
+-	 */
+-	if (vol->gluebi_refcount > 0) {
++	if (mtd->flags & MTD_WRITEABLE)
++		ubi_mode = UBI_READWRITE;
++
++	gluebi = container_of(mtd, struct gluebi_device, mtd);
++	mutex_lock(&devices_mutex);
++	if (gluebi->refcnt > 0) {
+ 		/*
+ 		 * The MTD device is already referenced and this is just one
+ 		 * more reference. MTD allows many users to open the same
+@@ -58,7 +112,8 @@ static int gluebi_get_device(struct mtd_info *mtd)
+ 		 * open the UBI volume again - just increase the reference
+ 		 * counter and return.
+ 		 */
+-		vol->gluebi_refcount += 1;
++		gluebi->refcnt += 1;
++		mutex_unlock(&devices_mutex);
+ 		return 0;
+ 	}
+ 
+@@ -66,11 +121,15 @@ static int gluebi_get_device(struct mtd_info *mtd)
+ 	 * This is the first reference to this UBI volume via the MTD device
+ 	 * interface. Open the corresponding volume in read-write mode.
+ 	 */
+-	vol->gluebi_desc = ubi_open_volume(vol->ubi->ubi_num, vol->vol_id,
+-					   UBI_READWRITE);
+-	if (IS_ERR(vol->gluebi_desc))
+-		return PTR_ERR(vol->gluebi_desc);
+-	vol->gluebi_refcount += 1;
++	gluebi->desc = ubi_open_volume(gluebi->ubi_num, gluebi->vol_id,
++				       ubi_mode);
++	if (IS_ERR(gluebi->desc)) {
++		mutex_unlock(&devices_mutex);
++		module_put(THIS_MODULE);
++		return PTR_ERR(gluebi->desc);
++	}
++	gluebi->refcnt += 1;
++	mutex_unlock(&devices_mutex);
+ 	return 0;
+ }
+ 
+@@ -83,13 +142,15 @@ static int gluebi_get_device(struct mtd_info *mtd)
+  */
+ static void gluebi_put_device(struct mtd_info *mtd)
+ {
+-	struct ubi_volume *vol;
+-
+-	vol = container_of(mtd, struct ubi_volume, gluebi_mtd);
+-	vol->gluebi_refcount -= 1;
+-	ubi_assert(vol->gluebi_refcount >= 0);
+-	if (vol->gluebi_refcount == 0)
+-		ubi_close_volume(vol->gluebi_desc);
++	struct gluebi_device *gluebi;
++
++	gluebi = container_of(mtd, struct gluebi_device, mtd);
++	mutex_lock(&devices_mutex);
++	gluebi->refcnt -= 1;
++	if (gluebi->refcnt == 0)
++		ubi_close_volume(gluebi->desc);
++	module_put(THIS_MODULE);
++	mutex_unlock(&devices_mutex);
+ }
+ 
+ /**
+@@ -107,16 +168,12 @@ static int gluebi_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 		       size_t *retlen, unsigned char *buf)
+ {
+ 	int err = 0, lnum, offs, total_read;
+-	struct ubi_volume *vol;
+-	struct ubi_device *ubi;
+-
+-	dbg_gen("read %zd bytes from offset %lld", len, from);
++	struct gluebi_device *gluebi;
+ 
+ 	if (len < 0 || from < 0 || from + len > mtd->size)
+ 		return -EINVAL;
+ 
+-	vol = container_of(mtd, struct ubi_volume, gluebi_mtd);
+-	ubi = vol->ubi;
++	gluebi = container_of(mtd, struct gluebi_device, mtd);
+ 
+ 	lnum = div_u64_rem(from, mtd->erasesize, &offs);
+ 	total_read = len;
+@@ -126,7 +183,7 @@ static int gluebi_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 		if (to_read > total_read)
+ 			to_read = total_read;
+ 
+-		err = ubi_eba_read_leb(ubi, vol, lnum, buf, offs, to_read, 0);
++		err = ubi_read(gluebi->desc, lnum, buf, offs, to_read);
+ 		if (err)
+ 			break;
+ 
+@@ -152,21 +209,17 @@ static int gluebi_read(struct mtd_info *mtd, loff_t from, size_t len,
+  * case of failure.
+  */
+ static int gluebi_write(struct mtd_info *mtd, loff_t to, size_t len,
+-		       size_t *retlen, const u_char *buf)
++			size_t *retlen, const u_char *buf)
+ {
+ 	int err = 0, lnum, offs, total_written;
+-	struct ubi_volume *vol;
+-	struct ubi_device *ubi;
+-
+-	dbg_gen("write %zd bytes to offset %lld", len, to);
++	struct gluebi_device *gluebi;
+ 
+ 	if (len < 0 || to < 0 || len + to > mtd->size)
+ 		return -EINVAL;
+ 
+-	vol = container_of(mtd, struct ubi_volume, gluebi_mtd);
+-	ubi = vol->ubi;
++	gluebi = container_of(mtd, struct gluebi_device, mtd);
+ 
+-	if (ubi->ro_mode)
++	if (!(mtd->flags & MTD_WRITEABLE))
+ 		return -EROFS;
+ 
+ 	lnum = div_u64_rem(to, mtd->erasesize, &offs);
+@@ -181,8 +234,7 @@ static int gluebi_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		if (to_write > total_written)
+ 			to_write = total_written;
+ 
+-		err = ubi_eba_write_leb(ubi, vol, lnum, buf, offs, to_write,
+-					UBI_UNKNOWN);
++		err = ubi_write(gluebi->desc, lnum, buf, offs, to_write);
+ 		if (err)
+ 			break;
+ 
+@@ -207,41 +259,36 @@ static int gluebi_write(struct mtd_info *mtd, loff_t to, size_t len,
+ static int gluebi_erase(struct mtd_info *mtd, struct erase_info *instr)
+ {
+ 	int err, i, lnum, count;
+-	struct ubi_volume *vol;
+-	struct ubi_device *ubi;
+-
+-	dbg_gen("erase %llu bytes at offset %llu", (unsigned long long)instr->len,
+-		 (unsigned long long)instr->addr);
++	struct gluebi_device *gluebi;
+ 
+ 	if (instr->addr < 0 || instr->addr > mtd->size - mtd->erasesize)
+ 		return -EINVAL;
+-
+ 	if (instr->len < 0 || instr->addr + instr->len > mtd->size)
+ 		return -EINVAL;
+-
+ 	if (mtd_mod_by_ws(instr->addr, mtd) || mtd_mod_by_ws(instr->len, mtd))
+ 		return -EINVAL;
+ 
+ 	lnum = mtd_div_by_eb(instr->addr, mtd);
+ 	count = mtd_div_by_eb(instr->len, mtd);
+ 
+-	vol = container_of(mtd, struct ubi_volume, gluebi_mtd);
+-	ubi = vol->ubi;
++	gluebi = container_of(mtd, struct gluebi_device, mtd);
+ 
+-	if (ubi->ro_mode)
++	if (!(mtd->flags & MTD_WRITEABLE))
+ 		return -EROFS;
+ 
+-	for (i = 0; i < count; i++) {
+-		err = ubi_eba_unmap_leb(ubi, vol, lnum + i);
++	for (i = 0; i < count - 1; i++) {
++		err = ubi_leb_unmap(gluebi->desc, lnum + i);
+ 		if (err)
+ 			goto out_err;
+ 	}
+-
+ 	/*
+ 	 * MTD erase operations are synchronous, so we have to make sure the
+ 	 * physical eraseblock is wiped out.
++	 *
++	 * Thus, perform leb_erase instead of leb_unmap operation - leb_erase
++	 * will wait for the end of operations
+ 	 */
+-	err = ubi_wl_flush(ubi);
++	err = ubi_leb_erase(gluebi->desc, lnum + i);
+ 	if (err)
+ 		goto out_err;
+ 
+@@ -256,28 +303,38 @@ out_err:
+ }
+ 
+ /**
+- * ubi_create_gluebi - initialize gluebi for an UBI volume.
+- * @ubi: UBI device description object
+- * @vol: volume description object
++ * gluebi_create - create a gluebi device for an UBI volume.
++ * @di: UBI device description object
++ * @vi: UBI volume description object
+  *
+- * This function is called when an UBI volume is created in order to create
++ * This function is called when a new UBI volume is created in order to create
+  * corresponding fake MTD device. Returns zero in case of success and a
+  * negative error code in case of failure.
+  */
+-int ubi_create_gluebi(struct ubi_device *ubi, struct ubi_volume *vol)
++static int gluebi_create(struct ubi_device_info *di,
++			 struct ubi_volume_info *vi)
+ {
+-	struct mtd_info *mtd = &vol->gluebi_mtd;
++	struct gluebi_device *gluebi, *g;
++	struct mtd_info *mtd;
+ 
+-	mtd->name = kmemdup(vol->name, vol->name_len + 1, GFP_KERNEL);
+-	if (!mtd->name)
++	gluebi = kzalloc(sizeof(struct gluebi_device), GFP_KERNEL);
++	if (!gluebi)
+ 		return -ENOMEM;
+ 
++	mtd = &gluebi->mtd;
++	mtd->name = kmemdup(vi->name, vi->name_len + 1, GFP_KERNEL);
++	if (!mtd->name) {
++		kfree(gluebi);
++		return -ENOMEM;
++	}
++
++	gluebi->vol_id = vi->vol_id;
+ 	mtd->type = MTD_UBIVOLUME;
+-	if (!ubi->ro_mode)
++	if (!di->ro_mode)
+ 		mtd->flags = MTD_WRITEABLE;
+-	mtd->writesize  = ubi->min_io_size;
+ 	mtd->owner      = THIS_MODULE;
+-	mtd->erasesize  = vol->usable_leb_size;
++	mtd->writesize  = di->min_io_size;
++	mtd->erasesize  = vi->usable_leb_size;
+ 	mtd->read       = gluebi_read;
+ 	mtd->write      = gluebi_write;
+ 	mtd->erase      = gluebi_erase;
+@@ -285,60 +342,196 @@ int ubi_create_gluebi(struct ubi_device *ubi, struct ubi_volume *vol)
+ 	mtd->put_device = gluebi_put_device;
+ 
+ 	/*
+-	 * In case of dynamic volume, MTD device size is just volume size. In
++	 * In case of dynamic a volume, MTD device size is just volume size. In
+ 	 * case of a static volume the size is equivalent to the amount of data
+ 	 * bytes.
+ 	 */
+-	if (vol->vol_type == UBI_DYNAMIC_VOLUME)
+-		mtd->size = (long long)vol->usable_leb_size * vol->reserved_pebs;
++	if (vi->vol_type == UBI_DYNAMIC_VOLUME)
++		mtd->size = (unsigned long long)vi->usable_leb_size * vi->size;
+ 	else
+-		mtd->size = vol->used_bytes;
++		mtd->size = vi->used_bytes;
++
++	/* Just a sanity check - make sure this gluebi device does not exist */
++	mutex_lock(&devices_mutex);
++	g = find_gluebi_nolock(vi->ubi_num, vi->vol_id);
++	if (g)
++		err_msg("gluebi MTD device %d form UBI device %d volume %d "
++			"already exists", g->mtd.index, vi->ubi_num,
++			vi->vol_id);
++	mutex_unlock(&devices_mutex);
+ 
+ 	if (add_mtd_device(mtd)) {
+-		ubi_err("cannot not add MTD device");
++		err_msg("cannot add MTD device");
+ 		kfree(mtd->name);
++		kfree(gluebi);
+ 		return -ENFILE;
+ 	}
+ 
+-	dbg_gen("added mtd%d (\"%s\"), size %llu, EB size %u",
+-		mtd->index, mtd->name, (unsigned long long)mtd->size, mtd->erasesize);
++	mutex_lock(&devices_mutex);
++	list_add_tail(&gluebi->list, &gluebi_devices);
++	mutex_unlock(&devices_mutex);
+ 	return 0;
+ }
+ 
+ /**
+- * ubi_destroy_gluebi - close gluebi for an UBI volume.
+- * @vol: volume description object
++ * gluebi_remove - remove a gluebi device.
++ * @vi: UBI volume description object
+  *
+- * This function is called when an UBI volume is removed in order to remove
++ * This function is called when an UBI volume is removed and it removes
+  * corresponding fake MTD device. Returns zero in case of success and a
+  * negative error code in case of failure.
+  */
+-int ubi_destroy_gluebi(struct ubi_volume *vol)
++static int gluebi_remove(struct ubi_volume_info *vi)
+ {
+-	int err;
+-	struct mtd_info *mtd = &vol->gluebi_mtd;
++	int err = 0;
++	struct mtd_info *mtd;
++	struct gluebi_device *gluebi;
++
++	mutex_lock(&devices_mutex);
++	gluebi = find_gluebi_nolock(vi->ubi_num, vi->vol_id);
++	if (!gluebi) {
++		err_msg("got remove notification for unknown UBI device %d "
++			"volume %d", vi->ubi_num, vi->vol_id);
++		err = -ENOENT;
++	} else if (gluebi->refcnt)
++		err = -EBUSY;
++	else
++		list_del(&gluebi->list);
++	mutex_unlock(&devices_mutex);
++	if (err)
++		return err;
+ 
+-	dbg_gen("remove mtd%d", mtd->index);
++	mtd = &gluebi->mtd;
+ 	err = del_mtd_device(mtd);
+-	if (err)
++	if (err) {
++		err_msg("cannot remove fake MTD device %d, UBI device %d, "
++			"volume %d, error %d", mtd->index, gluebi->ubi_num,
++			gluebi->vol_id, err);
++		mutex_lock(&devices_mutex);
++		list_add_tail(&gluebi->list, &gluebi_devices);
++		mutex_unlock(&devices_mutex);
+ 		return err;
++	}
++
+ 	kfree(mtd->name);
++	kfree(gluebi);
+ 	return 0;
+ }
+ 
+ /**
+- * ubi_gluebi_updated - UBI volume was updated notifier.
+- * @vol: volume description object
++ * gluebi_updated - UBI volume was updated notifier.
++ * @vi: volume info structure
+  *
+- * This function is called every time an UBI volume is updated. This function
+- * does nothing if volume @vol is dynamic, and changes MTD device size if the
++ * This function is called every time an UBI volume is updated. It does nothing
++ * if te volume @vol is dynamic, and changes MTD device size if the
+  * volume is static. This is needed because static volumes cannot be read past
+- * data they contain.
++ * data they contain. This function returns zero in case of success and a
++ * negative error code in case of error.
++ */
++static int gluebi_updated(struct ubi_volume_info *vi)
++{
++	struct gluebi_device *gluebi;
++
++	mutex_lock(&devices_mutex);
++	gluebi = find_gluebi_nolock(vi->ubi_num, vi->vol_id);
++	if (!gluebi) {
++		mutex_unlock(&devices_mutex);
++		err_msg("got update notification for unknown UBI device %d "
++			"volume %d", vi->ubi_num, vi->vol_id);
++		return -ENOENT;
++	}
++
++	if (vi->vol_type == UBI_STATIC_VOLUME)
++		gluebi->mtd.size = vi->used_bytes;
++	mutex_unlock(&devices_mutex);
++	return 0;
++}
++
++/**
++ * gluebi_resized - UBI volume was re-sized notifier.
++ * @vi: volume info structure
++ *
++ * This function is called every time an UBI volume is re-size. It changes the
++ * corresponding fake MTD device size. This function returns zero in case of
++ * success and a negative error code in case of error.
++ */
++static int gluebi_resized(struct ubi_volume_info *vi)
++{
++	struct gluebi_device *gluebi;
++
++	mutex_lock(&devices_mutex);
++	gluebi = find_gluebi_nolock(vi->ubi_num, vi->vol_id);
++	if (!gluebi) {
++		mutex_unlock(&devices_mutex);
++		err_msg("got update notification for unknown UBI device %d "
++			"volume %d", vi->ubi_num, vi->vol_id);
++		return -ENOENT;
++	}
++	gluebi->mtd.size = vi->used_bytes;
++	mutex_unlock(&devices_mutex);
++	return 0;
++}
++
++/**
++ * gluebi_notify - UBI notification handler.
++ * @nb: registered notifier block
++ * @l: notification type
++ * @ptr: pointer to the &struct ubi_notification object
+  */
+-void ubi_gluebi_updated(struct ubi_volume *vol)
++static int gluebi_notify(struct notifier_block *nb, unsigned long l,
++			 void *ns_ptr)
+ {
+-	struct mtd_info *mtd = &vol->gluebi_mtd;
++	struct ubi_notification *nt = ns_ptr;
++
++	switch (l) {
++	case UBI_VOLUME_ADDED:
++		gluebi_create(&nt->di, &nt->vi);
++		break;
++	case UBI_VOLUME_REMOVED:
++		gluebi_remove(&nt->vi);
++		break;
++	case UBI_VOLUME_RESIZED:
++		gluebi_resized(&nt->vi);
++		break;
++	case UBI_VOLUME_UPDATED:
++		gluebi_updated(&nt->vi);
++		break;
++	default:
++		break;
++	}
++	return NOTIFY_OK;
++}
+ 
+-	if (vol->vol_type == UBI_STATIC_VOLUME)
+-		mtd->size = vol->used_bytes;
++static struct notifier_block gluebi_notifier = {
++	.notifier_call	= gluebi_notify,
++};
++
++static int __init ubi_gluebi_init(void)
++{
++	return ubi_register_volume_notifier(&gluebi_notifier, 0);
+ }
++
++static void __exit ubi_gluebi_exit(void)
++{
++	struct gluebi_device *gluebi, *g;
++
++	list_for_each_entry_safe(gluebi, g, &gluebi_devices, list) {
++		int err;
++		struct mtd_info *mtd = &gluebi->mtd;
++
++		err = del_mtd_device(mtd);
++		if (err)
++			err_msg("error %d while removing gluebi MTD device %d, "
++				"UBI device %d, volume %d - ignoring", err,
++				mtd->index, gluebi->ubi_num, gluebi->vol_id);
++		kfree(mtd->name);
++		kfree(gluebi);
++	}
++	ubi_unregister_volume_notifier(&gluebi_notifier);
++}
++
++module_init(ubi_gluebi_init);
++module_exit(ubi_gluebi_exit);
++MODULE_DESCRIPTION("MTD emulation layer over UBI volumes");
++MODULE_AUTHOR("Artem Bityutskiy, Joern Engel");
++MODULE_LICENSE("GPL");
+-- 
+1.6.0.6
+
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
