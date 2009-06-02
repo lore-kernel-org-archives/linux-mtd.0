@@ -1,20 +1,19 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MBUEB-0005Ex-JN
-	for linux-mtd@lists.infradead.org; Tue, 02 Jun 2009 13:40:37 +0000
-Subject: Re: UBIFS ubimkvol issue and some others...
+	id 1MBUMi-00041p-JA
+	for linux-mtd@lists.infradead.org; Tue, 02 Jun 2009 13:49:27 +0000
+Subject: Re: [resending-2] [PATCH] [MTD] [NAND] Add OMAP2 / OMAP3 NAND driver
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Stanislav Popov <s.popov@rsc.bg>
-In-Reply-To: <4A252AAF.5060105@rsc.bg>
-References: <4A1E8740.9050208@rsc.bg>
-	<1243946645.5847.29.camel@localhost.localdomain>
-	<4A252AAF.5060105@rsc.bg>
+To: vimal singh <vimalsingh@ti.com>
+In-Reply-To: <52785.192.168.10.89.1243833774.squirrel@dbdmail.itg.ti.com>
+References: <52785.192.168.10.89.1243833774.squirrel@dbdmail.itg.ti.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 02 Jun 2009 16:40:22 +0300
-Message-Id: <1243950022.5847.33.camel@localhost.localdomain>
+Date: Tue, 02 Jun 2009 16:48:00 +0300
+Message-Id: <1243950480.5847.35.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: Thomas Gleixner <tglx@linutronix.de>, linux-mtd@lists.infradead.org,
+	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,15 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-06-02 at 16:35 +0300, Stanislav Popov wrote:
-> Hi!
-> thanks for the patch!
+On Mon, 2009-06-01 at 10:52 +0530, vimal singh wrote:
+> On Fri, May 15, 2009 at 6:38 PM, Artem Bityutskiy <dedekind@infradead.org> wrote:
+> > On Thu, 2009-04-30 at 15:03 +0530, vimal singh wrote:
+> >> This driver is present in the OMAP tree, now pushing it to MTD.
+> >>
+> >> Original author(s):
+> >>        Jian Zhang <jzhang@ti.com>
+> >>
+> >> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+> >> ---
+> >>  drivers/mtd/nand/Kconfig  |    6
+> >>  drivers/mtd/nand/Makefile |    1
+> >>  drivers/mtd/nand/omap2.c  |  776
+> ++++++++++++++++++++++++++++++++++++++++++++++
+> >>  3 files changed, 783 insertions(+)
+> >
+> > Hi Thomas,
+> >
+> > would you please find a little time and Ack/Nack this
+> > please?
 > 
-> Is this the patch that solves these issues:
-> http://git.infradead.org/mtd-utils.git?a=commit;h=e783e75e09b4a0a519665afd7bdeaf2985e7a09c
-> ?
+> Artem,
+> This patch is still pending. This patch has already been reviewed by you and
+> Andrew Morton. Seems like Thomas is not finding time to review this. What
+> should be the next step about this?
 
-Right, _supposedly_ solves.
+Unfortunately, I do not think I'm able to really review your driver.
+So all I can do for you is to put your driver to my l2-mtd-2.6.git
+tree into the "dunno" branch, and let dwmw2 review it. Which I did.
 
 -- 
 Best regards,
