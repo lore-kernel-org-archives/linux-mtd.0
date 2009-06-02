@@ -1,23 +1,19 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from sigma.superhosting.bg ([91.196.124.10])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MBTwO-0002Kl-Ce
-	for linux-mtd@lists.infradead.org; Tue, 02 Jun 2009 13:22:14 +0000
-Subject: Re: [PATCH 1/2] Blackfin NFC Driver: remove pointless return value
-	in  bf5xx_nand_dma_rw
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Mike Frysinger <vapier.adi@gmail.com>
-In-Reply-To: <8bd0f97a0906012057q66472e48ode918ea4ca92224b@mail.gmail.com>
-References: <1243333454-673-1-git-send-email-vapier@gentoo.org>
-	<1243435592.11172.37.camel@localhost.localdomain>
-	<8bd0f97a0906012057q66472e48ode918ea4ca92224b@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 02 Jun 2009 16:19:14 +0300
-Message-Id: <1243948754.5847.32.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: uclinux-dist-devel@blackfin.uclinux.org, Bryan Wu <cooloney@kernel.org>,
-	Mike Frysinger <vapier@gentoo.org>, linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+	id 1MBUBy-0003er-07
+	for linux-mtd@lists.infradead.org; Tue, 02 Jun 2009 13:38:21 +0000
+Message-ID: <4A252AAF.5060105@rsc.bg>
+Date: Tue, 02 Jun 2009 16:35:43 +0300
+From: Stanislav Popov <s.popov@rsc.bg>
+MIME-Version: 1.0
+To: dedekind@infradead.org
+Subject: Re: UBIFS ubimkvol issue and some others...
+References: <4A1E8740.9050208@rsc.bg>
+	<1243946645.5847.29.camel@localhost.localdomain>
+In-Reply-To: <1243946645.5847.29.camel@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +23,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-06-01 at 23:57 -0400, Mike Frysinger wrote:
-> On Wed, May 27, 2009 at 10:46, Artem Bityutskiy wrote:
-> > On Tue, 2009-05-26 at 06:24 -0400, Mike Frysinger wrote:
-> >> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
-> >> Signed-off-by: Bryan Wu <cooloney@kernel.org>
-> >> ---
-> >>  drivers/mtd/nand/bf5xx_nand.c |    4 +---
-> >>  1 files changed, 1 insertions(+), 3 deletions(-)
-> >
-> > I've taken these 2 patches to my l2-mtd-2.6.git.
-> 
-> looks like a typo was made when you rewrote the subject line ?
-> http://git.infradead.org/users/dedekind/l2-mtd-2.6.git?a=commit;h=f6f3799ed7d93bbfef8fc96013a22121580ee233
-> "NFCr" rather than "NFC" ...
+Hi!
+thanks for the patch!
 
-Let me re-phrase it as "when you amended the subject line for
-unification purposes". I'll fix that. This tree is anyway
-throw-away. I'm just being an intelligent patchwork for dwmw2
-in this case. :-)
-
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+Is this the patch that solves these issues:
+http://git.infradead.org/mtd-utils.git?a=commit;h=e783e75e09b4a0a519665afd7bdeaf2985e7a09c
+?
+Artem Bityutskiy wrote:
+> On Thu, 2009-05-28 at 15:44 +0300, Stanislav Popov wrote:
+>   
+>> I have problems with some of the coomands:
+>> ------------------------------------------------------
+>> # /mtdinfo
+>> Count of MTD devices:           6
+>> Present MTD devices:
+>> mtdinfo: error!: libmtd failed get MTD device 0 information
+>>          error 2 (No such file or directory)
+>> ------------------------------------------------------
+>> The following is one of the main issues:
+>> # /ubiformat /dev//mtd5
+>> ubiformat: error!: cannot get information about "/dev//mtd5"
+>>            error 2 (No such file or directory)
+>> ------------------------------------------------------
+>>     
+>
+> This issue has to be solved in the current mtd-utils, I've just
+> pushed a fix. Please, verify it.
+>
+>   
