@@ -1,22 +1,24 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MBQGJ-0008NN-Uo
-	for linux-mtd@lists.infradead.org; Tue, 02 Jun 2009 09:26:34 +0000
-Subject: Re: [PATCH] mkfs.ubifs: use libubi to format UBI volume
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Corentin Chary <corentin.chary@gmail.com>
-In-Reply-To: <71cd59b00905270619s642868f5od0c30f913e61fa0f@mail.gmail.com>
-References: <1243240816.21646.102.camel@localhost.localdomain>
-	<1243343316-6201-1-git-send-email-corentincj@iksaif.net>
-	<1243426912.11172.9.camel@localhost.localdomain>
-	<71cd59b00905270619s642868f5od0c30f913e61fa0f@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 02 Jun 2009 12:26:16 +0300
-Message-Id: <1243934776.5847.26.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from mail-ew0-f173.google.com ([209.85.219.173])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MBSEG-0003UT-Nh
+	for linux-mtd@lists.infradead.org; Tue, 02 Jun 2009 11:32:35 +0000
+Received: by ewy21 with SMTP id 21so13828788ewy.18
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 02 Jun 2009 04:32:24 -0700 (PDT)
+Sender: =?UTF-8?Q?Gerard_Lled=C3=B3?= <raharu@gmail.com>
+From: Gerard Lledo <gerard.lledo@gmail.com>
+Date: Tue, 2 Jun 2009 14:32:16 +0300
+To: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] [JFFS2] Move jffs2_gcd_mtd threads to the new kthread API
+Message-ID: <20090602113216.GA3513@tank>
+References: <1243585181-2997-1-git-send-email-gerard.lledo@gmail.com>
+	<20090601162010.ed69436f.akpm@linux-foundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20090601162010.ed69436f.akpm@linux-foundation.org>
+Cc: dwmw2@infradead.org, kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,43 +28,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-05-27 at 15:19 +0200, Corentin Chary wrote:
-> On Wed, May 27, 2009 at 2:21 PM, Artem Bityutskiy
-> <dedekind@infradead.org> wrote:
-> > On Tue, 2009-05-26 at 15:08 +0200, Corentin Chary wrote:
-> >> libubi is now used to format directly UBI volume.
-> >> Typing mkfs.ubifs /dev/ubi0_0 is now possible.
-> >> dtypes should be ok as they are taken from UBIFS code.
-> >>
-> >> Signed-off-by: Corentin Chary <corentincj@iksaif.net>
-> >> ---
-> >>  Makefile                |    2 +-
-> >>  mkfs.ubifs/Makefile     |    5 +-
-> >>  mkfs.ubifs/lpt.c        |   10 ++--
-> >>  mkfs.ubifs/mkfs.ubifs.c |  179 +++++++++++++++++++++++++++++++++++++---------
-> >>  mkfs.ubifs/mkfs.ubifs.h |    4 +-
-> >>  mkfs.ubifs/ubifs.h      |    6 ++
-> >>  6 files changed, 163 insertions(+), 43 deletions(-)
-> >
-> > Works fine. Good job, thanks!
-> >
-> > It would be 200% cool if you also provided a patch for
-> > mtd-www and just added a note that the UBIFS image may
-> > be written directly to the UBI volum, not jut to a file.
-> >
-> > I mean here:
-> > http://www.linux-mtd.infradead.org/faq/ubifs.html#L_mkfubifs
-> >
-> > :-)
-> >
-> > Pushed your patch, thanks!
+On Mon, Jun 01, 2009 at 04:20:10PM -0700, Andrew Morton wrote:
+> On Fri, 29 May 2009 11:19:41 +0300
+> Gerard Lledo <gerard.lledo@gmail.com> wrote:
 > 
-> Ok, I'll do that ASAP, but I believe I won't find the time before next week.
-> Thanks
+> > kernel_thread() is being depracated.  This patch moves the jffs2 garbage
+> > collecting thread to the new kthread API with the minimal impact.
+> > 
+> > Signed-off-by: Gerard Lledo <gerard.lledo@gmail.com>
+> > ---
+> >  fs/jffs2/background.c |   22 ++++++++++++++--------
+> >  1 files changed, 14 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/fs/jffs2/background.c b/fs/jffs2/background.c
+> > index e958010..077fa65 100644
+> > --- a/fs/jffs2/background.c
+> > +++ b/fs/jffs2/background.c
+> > @@ -15,6 +15,7 @@
+> >  #include <linux/completion.h>
+> >  #include <linux/sched.h>
+> >  #include <linux/freezer.h>
+> > +#include <linux/kthread.h>
+> >  #include "nodelist.h"
+> >  
+> >  
+> > @@ -31,7 +32,7 @@ void jffs2_garbage_collect_trigger(struct jffs2_sb_info *c)
+> >  /* This must only ever be called when no GC thread is currently running */
+> >  int jffs2_start_garbage_collect_thread(struct jffs2_sb_info *c)
+> >  {
+> > -	pid_t pid;
+> > +	struct task_struct *tsk;
+> >  	int ret = 0;
+> >  
+> >  	BUG_ON(c->gc_task);
+> > @@ -39,15 +40,16 @@ int jffs2_start_garbage_collect_thread(struct jffs2_sb_info *c)
+> >  	init_completion(&c->gc_thread_start);
+> >  	init_completion(&c->gc_thread_exit);
+> >  
+> > -	pid = kernel_thread(jffs2_garbage_collect_thread, c, CLONE_FS|CLONE_FILES);
+> > -	if (pid < 0) {
+> > -		printk(KERN_WARNING "fork failed for JFFS2 garbage collect thread: %d\n", -pid);
+> > +	tsk = kthread_create(jffs2_garbage_collect_thread, c, "jffs2_gcd_mtd%d", c->mtd->index);
+> > +	if (IS_ERR(tsk)) {
+> > +		printk(KERN_WARNING "fork failed for JFFS2 garbage collect thread: %ld\n", -PTR_ERR(tsk));
+> >  		complete(&c->gc_thread_exit);
+> > -		ret = pid;
+> > +		ret = PTR_ERR(tsk);
+> >  	} else {
+> > -		/* Wait for it... */
+> > -		D1(printk(KERN_DEBUG "JFFS2: Garbage collect thread is pid %d\n", pid));
+> > +		D1(printk(KERN_DEBUG "JFFS2: Garbage collect thread is pid %d\n", tsk->pid));
+> > +		wake_up_process(tsk);
+> >  		wait_for_completion(&c->gc_thread_start);
+> > +		ret = tsk->pid;
+> >  	}
+> 
+> A simple kthread_run() would be preferable here.  The code presently
+> sort-of open-codes it.
+> 
+> >  	return ret;
+> 
+> Also, manipulating kernel threads via their pids is atypical and
+> inefficient.  In-kernel it is better to refer to threads via their
+> task_struct*.
+> 
+> Fortunately all callers of this function ignore its return value so I
+> expect we can simply change it to be void-returning.  But that's a
+> cleanup which would best be done in a spearate patch.
+>
 
-I just updated the web site and added a note that mkfs.ubifs can write
-straight to UBI volumes.
-
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+OK, I'll redo the previous patch with kthread_run() instead.  I will also post
+a different patch to cleanup the return value and use void.
