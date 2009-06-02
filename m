@@ -1,14 +1,13 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MBLHl-0007sx-Ax
-	for linux-mtd@lists.infradead.org; Tue, 02 Jun 2009 04:07:43 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd/maps: gpio-addr-flash: new driver for GPIO assisted flash
-	addressing
-Date: Tue,  2 Jun 2009 00:07:30 -0400
-Message-Id: <1243915650-29628-1-git-send-email-vapier@gentoo.org>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, Bryan Wu <cooloney@kernel.org>
+Date: Mon, 01 Jun 2009 21:43:31 -0700
+From: sanjeev.kumar@hathway.com
+Subject: Your E-mail Has Won !!!
+Message-id: <2bbf9222bbf9e9.2bbf9e92bbf922@hathway.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-language: en
+Content-transfer-encoding: 7BIT
+Content-disposition: inline
+Reply-To: departmentalagentmaxwellwilliam@yahoo.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,273 +17,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This driver lets people use GPIO's for additional address lines in case
-their processor does not have enough address lines already.
 
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
-Signed-off-by: Bryan Wu <cooloney@kernel.org>
----
- drivers/mtd/maps/Kconfig           |   10 ++
- drivers/mtd/maps/Makefile          |    1 +
- drivers/mtd/maps/gpio-addr-flash.c |  220 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 231 insertions(+), 0 deletions(-)
- create mode 100644 drivers/mtd/maps/gpio-addr-flash.c
 
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index 82923bd..05f6c08 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -500,6 +500,16 @@ config MTD_BFIN_ASYNC
- 
- 	  If compiled as a module, it will be called bfin-async-flash.
- 
-+config MTD_GPIO_ADDR
-+	tristate "GPIO-assisted Flash Chip Support"
-+	depends on MTD_COMPLEX_MAPPINGS
-+	select MTD_PARTITIONS
-+	help
-+	  Map driver which allows flashes to be partially physically addressed
-+	  and assisted by GPIOs.
-+
-+	  If compiled as a module, it will be called gpio-addr-flash.
-+
- config MTD_UCLINUX
- 	tristate "Generic uClinux RAM/ROM filesystem support"
- 	depends on MTD_PARTITIONS && MTD_RAM && !MMU
-diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index 2dbc1be..d9cbd8a 100644
---- a/drivers/mtd/maps/Makefile
-+++ b/drivers/mtd/maps/Makefile
-@@ -62,3 +62,4 @@ obj-$(CONFIG_MTD_INTEL_VR_NOR)	+= intel_vr_nor.o
- obj-$(CONFIG_MTD_BFIN_ASYNC)	+= bfin-async-flash.o
- obj-$(CONFIG_MTD_RBTX4939)	+= rbtx4939-flash.o
- obj-$(CONFIG_MTD_VMU)		+= vmu-flash.o
-+obj-$(CONFIG_MTD_GPIO_ADDR)	+= gpio-addr-flash.o
-diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
-new file mode 100644
-index 0000000..524131d
---- /dev/null
-+++ b/drivers/mtd/maps/gpio-addr-flash.c
-@@ -0,0 +1,220 @@
-+/*
-+ * drivers/mtd/maps/gpio-addr-flash.c
-+ *
-+ * Handle the case where a flash device is mostly addressed using physical
-+ * line and supplemented by GPIOs.  This way you can hook up say a 8meg flash
-+ * to a 2meg memory range and use the GPIOs to select a particular range.
-+ *
-+ * Copyright 2000 Nicolas Pitre <nico@cam.org>
-+ * Copyright 2005-2008 Analog Devices Inc.
-+ *
-+ * Enter bugs at http://blackfin.uclinux.org/
-+ *
-+ * Licensed under the GPL-2 or later.
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/map.h>
-+#include <linux/mtd/partitions.h>
-+#include <linux/mtd/physmap.h>
-+#include <linux/platform_device.h>
-+#include <linux/types.h>
-+
-+#include <asm/gpio.h>
-+#include <asm/io.h>
-+
-+#define pr_devinit(fmt, args...) ({ static const __devinitconst char __fmt[] = fmt; printk(__fmt, ## args); })
-+
-+#define DRIVER_NAME "gpio-addr-flash"
-+
-+struct async_state {
-+	struct mtd_info *mtd;
-+	struct map_info map;
-+	size_t gpio_count;
-+	unsigned *gpio_addrs;
-+	int *gpio_values;
-+	unsigned long win_size;
-+};
-+
-+static void gf_set_gpios(struct async_state *state, unsigned long ofs)
-+{
-+	size_t i;
-+	int value;
-+	for (i = 0; i < state->gpio_count; ++i) {
-+		value = !!((ofs / state->win_size) & (1 << i));
-+		if (state->gpio_values[i] != value) {
-+			gpio_set_value(state->gpio_addrs[i], value);
-+			state->gpio_values[i] = value;
-+		}
-+	}
-+}
-+
-+static map_word gf_read(struct map_info *map, unsigned long ofs)
-+{
-+	struct async_state *state = (struct async_state *)map->map_priv_1;
-+	u16 word;
-+	map_word test;
-+
-+	gf_set_gpios(state, ofs);
-+
-+	word = readw(map->virt + (ofs % state->win_size));
-+	test.x[0] = word;
-+	return test;
-+}
-+
-+static void gf_copy_from(struct map_info *map, void *to, unsigned long from, ssize_t len)
-+{
-+	struct async_state *state = (struct async_state *)map->map_priv_1;
-+
-+	gf_set_gpios(state, from);
-+
-+	/* BUG if operation crosss the win_size */
-+	BUG_ON(!((from + len) % state->win_size <= (from + len)));
-+
-+	/* operation does not cross the win_size, so one shot it */
-+	memcpy_fromio(to, map->virt + (from % state->win_size), len);
-+}
-+
-+static void gf_write(struct map_info *map, map_word d1, unsigned long ofs)
-+{
-+	struct async_state *state = (struct async_state *)map->map_priv_1;
-+	u16 d;
-+
-+	gf_set_gpios(state, ofs);
-+
-+	d = d1.x[0];
-+	writew(d, map->virt + (ofs % state->win_size));
-+}
-+
-+static void gf_copy_to(struct map_info *map, unsigned long to, const void *from, ssize_t len)
-+{
-+	struct async_state *state = (struct async_state *)map->map_priv_1;
-+
-+	gf_set_gpios(state, to);
-+
-+	/* BUG if operation crosss the win_size */
-+	BUG_ON(!((to + len) % state->win_size <= (to + len)));
-+
-+	/* operation does not cross the win_size, so one shot it */
-+	memcpy_toio(map->virt + (to % state->win_size), from, len);
-+}
-+
-+#ifdef CONFIG_MTD_PARTITIONS
-+static const char *part_probe_types[] = { "cmdlinepart", "RedBoot", NULL };
-+#endif
-+
-+static int __devinit gpio_flash_probe(struct platform_device *pdev)
-+{
-+	int ret;
-+	size_t i;
-+	struct physmap_flash_data *pdata = pdev->dev.platform_data;
-+	struct resource *memory = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	struct resource *gpios = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-+	struct async_state *state;
-+
-+	state = kzalloc(sizeof(*state) + (sizeof(int) * gpios->end * 2), GFP_KERNEL);
-+	if (!state)
-+		return -ENOMEM;
-+
-+	state->gpio_count     = gpios->end;
-+	state->gpio_addrs     = (void *)(state + 1);
-+	state->gpio_values    = state->gpio_addrs + state->gpio_count;
-+	state->win_size       = memory->end - memory->start + 1;
-+	memcpy(state->gpio_addrs, (void *)gpios->start, sizeof(unsigned) * state->gpio_count);
-+	for (i = 0; i < state->gpio_count; ++i)
-+		state->gpio_values[i] = -1;
-+
-+	state->map.name       = DRIVER_NAME;
-+	state->map.read       = gf_read;
-+	state->map.copy_from  = gf_copy_from;
-+	state->map.write      = gf_write;
-+	state->map.copy_to    = gf_copy_to;
-+	state->map.bankwidth  = pdata->width;
-+	state->map.size       = state->win_size * (1 << state->gpio_count);
-+	state->map.virt       = (void __iomem *)memory->start;
-+	state->map.phys       = NO_XIP;
-+	state->map.map_priv_1 = (unsigned long)state;
-+
-+	platform_set_drvdata(pdev, state);
-+
-+	for (i = 0; i < state->gpio_count; ++i) {
-+		if (gpio_request(state->gpio_addrs[i], DRIVER_NAME)) {
-+			pr_devinit(KERN_ERR DRIVER_NAME ": Failed to request gpio %d\n", state->gpio_addrs[i]);
-+			while (i--)
-+				gpio_free(state->gpio_addrs[i]);
-+			kfree(state);
-+			return -EBUSY;
-+		}
-+		gpio_direction_output(state->gpio_addrs[i], 0);
-+	}
-+
-+	pr_devinit(KERN_NOTICE DRIVER_NAME ": probing %d-bit flash bus\n", state->map.bankwidth * 8);
-+	state->mtd = do_map_probe(memory->name, &state->map);
-+	if (!state->mtd) {
-+		for (i = 0; i < state->gpio_count; ++i)
-+			gpio_free(state->gpio_addrs[i]);
-+		kfree(state);
-+		return -ENXIO;
-+	}
-+
-+#ifdef CONFIG_MTD_PARTITIONS
-+	ret = parse_mtd_partitions(state->mtd, part_probe_types, &pdata->parts, 0);
-+	if (ret > 0) {
-+		pr_devinit(KERN_NOTICE DRIVER_NAME ": Using commandline partition definition\n");
-+		add_mtd_partitions(state->mtd, pdata->parts, ret);
-+		kfree(pdata->parts);
-+
-+	} else if (pdata->nr_parts) {
-+		pr_devinit(KERN_NOTICE DRIVER_NAME ": Using board partition definition\n");
-+		add_mtd_partitions(state->mtd, pdata->parts, pdata->nr_parts);
-+
-+	} else
-+#endif
-+	{
-+		pr_devinit(KERN_NOTICE DRIVER_NAME ": no partition info available, registering whole flash at once\n");
-+		add_mtd_device(state->mtd);
-+	}
-+
-+	return 0;
-+}
-+
-+static int __devexit gpio_flash_remove(struct platform_device *pdev)
-+{
-+	struct async_state *state = platform_get_drvdata(pdev);
-+	size_t i;
-+	for (i = 0; i < state->gpio_count; ++i)
-+		gpio_free(state->gpio_addrs[i]);
-+#ifdef CONFIG_MTD_PARTITIONS
-+	del_mtd_partitions(state->mtd);
-+#endif
-+	map_destroy(state->mtd);
-+	kfree(state);
-+	return 0;
-+}
-+
-+static struct platform_driver gpio_flash_driver = {
-+	.probe		= gpio_flash_probe,
-+	.remove		= __devexit_p(gpio_flash_remove),
-+	.driver		= {
-+		.name	= DRIVER_NAME,
-+	},
-+};
-+
-+static int __init gpio_flash_init(void)
-+{
-+	return platform_driver_register(&gpio_flash_driver);
-+}
-+module_init(gpio_flash_init);
-+
-+static void __exit gpio_flash_exit(void)
-+{
-+	platform_driver_unregister(&gpio_flash_driver);
-+}
-+module_exit(gpio_flash_exit);
-+
-+MODULE_AUTHOR("Mike Frysinger <vapier@gentoo.org>");
-+MODULE_DESCRIPTION("MTD map driver for flashes addressed physically and with gpios");
-+MODULE_LICENSE("GPL");
--- 
-1.6.3.1
+Yahoo/MsnLottery
+Incoperation
+Baley House, Har Road
+Sutton, Greater London
+SM1 4te
+United Kingdom
+
+Yahoo/Msn and Windows Live Emerged you as one of the 10 lucky
+winners in the ongoing Yahoo/Msn and Windows Live Lottery Draw for the
+year,2009. All 10 winning email addresses were randomly selected from
+a batch of  50,000,000 international emails each from Canada ,
+Australia,United States , Asia, Europe, Middle East, Africa and Oceania
+as part of our international promotions program which is conducted
+annually,consequently, you have been approved for a total pay out of
+500,000.00 GBP (FIVE HUNDRED THOUSAND GREAT BRITISH
+POUNDS STERLING ).
+
+
+YAHOO&MSN MICROSOFT WINDOWS, collects all the email addresses
+of the
+people that are active online, among the millions that subscribed to
+Yahoo and Hotmail we only select Ten people every Month as our winners
+through electronic balloting System without the winner applying,we
+congratulate you for being one of the lucky winners. Further more your
+details(e-mail address) falls within our British representative office
+in United Kingdom , as indicated in your play coupon and your prize of
+500,000.00 GBP will be released to you from this regional branch
+office in UK.
+
+HOW TO CLAIM YOUR PRIZE
+These are your identification numbers
+Batch number..........YM 09102XN
+Reff number............YM35447XN
+Winning number..........YM09788
+
+Yahoo!'s Agent for Notice of claims of copyright or other intellectual
+property infringement can be reached as follows:
+Fiduciary Agent:Mr.maxwell william
+Tel: +44-7031-828-925
+Email:departmentalagentmaxwellwilliam@yahoo.com
+
+You are therefore advised to send the following information to the
+EVENTS AGENT to facilitate them and process the COURIER of your
+money.
+
+1. Full name
+2. Sex
+3. Country
+4. State
+5. Contact Address
+6. Telephone Number
+7. Marital Status
+8. Occupation
+9. Age
+10.Next Of Kin
+11.Zip Code
+
+Congratulations once again from the entire staff of the Yahoo Msn Lottery Board.
