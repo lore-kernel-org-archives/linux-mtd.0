@@ -1,20 +1,27 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from mail-ew0-f221.google.com ([209.85.219.221])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MBg3y-0007zH-DX
-	for linux-mtd@lists.infradead.org; Wed, 03 Jun 2009 02:18:52 +0000
-MIME-version: 1.0
-Content-transfer-encoding: 7BIT
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Received: from xanadu.home ([66.131.194.97]) by VL-MH-MR001.ip.videotron.ca
-	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
-	32bit))
-	with ESMTP id <0KKN0073O52X4FC0@VL-MH-MR001.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Tue, 02 Jun 2009 22:18:33 -0400 (EDT)
-Date: Tue, 02 Jun 2009 22:18:33 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] let include/linux/mtd/partitions.h stand on its own
-Message-id: <alpine.LFD.2.00.0906022208560.3906@xanadu.home>
+	id 1MBjla-0000oH-Es
+	for linux-mtd@lists.infradead.org; Wed, 03 Jun 2009 06:16:10 +0000
+Received: by ewy21 with SMTP id 21so15341401ewy.18
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 02 Jun 2009 23:15:32 -0700 (PDT)
+Sender: =?UTF-8?Q?Gerard_Lled=C3=B3?= <raharu@gmail.com>
+From: Gerard Lledo <gerard.lledo@gmail.com>
+Date: Wed, 3 Jun 2009 09:09:37 +0300
+To: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] [JFFS2] jffs2_start_garbage_collect_thread() return
+	value cleanup
+Message-ID: <20090603060937.GA2554@tank>
+References: <20090602113216.GA3513@tank>
+	<1243944686-7039-1-git-send-email-gerard.lledo@gmail.com>
+	<1243944686-7039-2-git-send-email-gerard.lledo@gmail.com>
+	<20090602151112.376ca436.akpm@linux-foundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20090602151112.376ca436.akpm@linux-foundation.org>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +31,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When declaring static MTD partitions in board specific code, only 
-including include/linux/mtd/partitions.h should suffice without
-gcc nagging us.
+On Tue, Jun 02, 2009 at 03:11:12PM -0700, Andrew Morton wrote:
+> On Tue,  2 Jun 2009 15:11:26 +0300
+> Gerard Lledo <gerard.lledo@gmail.com> wrote:
+> 
+> > There is no user of this return value in the kernel.  Change it to return void
+> > instead.
+> 
+> Both these patches were missing your signed-off-by:.  As your first
+> version of the first patch wasn't missing it, I added it to both these
+> patches, OK?
+>
 
-Signed-off-by: Nicolas Pitre <nico@marvell.com>
----
-
-This is also queued on top of
-
-	git://git.marvell.com/orion mtd
-
-for which a pull request was sent already.
-
-diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
-index af6dcb9..b70313d 100644
---- a/include/linux/mtd/partitions.h
-+++ b/include/linux/mtd/partitions.h
-@@ -47,6 +47,8 @@ struct mtd_partition {
- #define MTDPART_SIZ_FULL	(0)
- 
- 
-+struct mtd_info;
-+
- int add_mtd_partitions(struct mtd_info *, const struct mtd_partition *, int);
- int del_mtd_partitions(struct mtd_info *);
- 
+Thats fine.  I just forgot to add it.  Thanks, and sorry for the trouble/noise.
