@@ -1,22 +1,27 @@
-Received: from yw-out-1718.google.com ([74.125.46.152])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MBtiW-0006l9-Hi
-	for linux-mtd@lists.infradead.org; Wed, 03 Jun 2009 16:53:41 +0000
-Received: by yw-out-1718.google.com with SMTP id 9so47953ywk.72
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 03 Jun 2009 09:53:29 -0700 (PDT)
+Received: from smtp127.sbc.mail.sp1.yahoo.com ([69.147.65.186])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MC05z-0002Az-ET
+	for linux-mtd@lists.infradead.org; Wed, 03 Jun 2009 23:42:18 +0000
+From: David Brownell <david-b@pacbell.net>
+To: davinci-linux-open-source@linux.davincidsp.com
+Subject: Re: [PATCH 2.6.30-rc6 1/3] NAND: Add "page" parameter to all
+	read_page/read_page_raw APIs
+Date: Wed, 3 Jun 2009 16:42:03 -0700
+References: <1242682683-19772-1-git-send-email-nsnehaprabha@ti.com>
+	<C9D59C82B94F474B872F2092A87F261481797EB6@dlee07.ent.ti.com>
+In-Reply-To: <C9D59C82B94F474B872F2092A87F261481797EB6@dlee07.ent.ti.com>
 MIME-Version: 1.0
-In-Reply-To: <1243945279.5847.27.camel@localhost.localdomain>
-References: <1c3f4270905281908g75069b39sbc2167b5a3d32d1b@mail.gmail.com>
-	<1243945279.5847.27.camel@localhost.localdomain>
-Date: Wed, 3 Jun 2009 09:53:29 -0700
-Message-ID: <1c3f4270906030953i1ec7259br6b89c1699cc6e4f4@mail.gmail.com>
-Subject: Re: ubiformat error
-From: Manoj <manoj23@gmail.com>
-To: dedekind@infradead.org
-Content-Type: text/plain; charset=KOI8-R
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200906031642.03620.david-b@pacbell.net>
+Cc: "Paulraj, Sandeep" <s-paulraj@ti.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"Narnakaje, Snehaprabha" <nsnehaprabha@ti.com>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,34 +31,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Yes, it seems to work fine now.
+On Monday 01 June 2009, Paulraj, Sandeep wrote:
+> Anything comments on this patch?
 
-On Tue, Jun 2, 2009 at 5:21 AM, Artem Bityutskiy <dedekind@infradead.org> w=
-rote:
-> On Thu, 2009-05-28 at 19:08 -0700, Manoj wrote:
->> I am trying to flash an UBI image to NAND flash. But I get an error
->> about "No such file or directory".
->>
->> # cat /proc/mtd
->> dev: =9A =9Asize =9A erasesize =9Aname
->> mtd0: 01000000 00020000 "NAND-block1"
->> mtd1: 01e00000 00020000 "jffs2"
->> mtd2: 0d200000 00020000 "NAND-block2"
->> # ubiformat /dev/mtd1
->> ubiformat: error!: cannot get information about "/dev/mtd1"
->> =9A =9A =9A =9A =9A =9Aerror 2 (No such file or directory)
->> # ls -l /dev/mtd1
->> crw-rw-r-- =9A =9A1 root =9A =9A root =9A =9A =9A90, =9A 2 Dec 31 16:00 =
-/dev/mtd1
->>
->> I am able to do ubiattach with mtd1, create an empty volume and mount
->> the volume as ubifs.
->
-> Hi, I've just push a fix for this to mtd-utils git. Please,
-> verify it. Thanks.
->
-> --
-> Best regards,
-> Artem Bityutskiy (=E2=C9=D4=C0=C3=CB=C9=CA =E1=D2=D4=A3=CD)
->
->
+I think Sneha was going to reissue the third patch, to address
+some minor goofage with the OOB layout used.
+
+Once that's done, it looked to me like it was time to just
+queue these three patches for 2.6.31 ... nobody had any
+objections to the $SUBJECT patch, or the second patch which
+added the NAND_ECC_HW_OOB_FIRST mode.
