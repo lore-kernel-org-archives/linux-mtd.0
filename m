@@ -1,26 +1,14 @@
-Received: from west-smtp1.trimble.com ([155.63.128.51])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MBqrb-00050m-30
-	for linux-mtd@lists.infradead.org; Wed, 03 Jun 2009 13:50:50 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
+Received: from mail.navionicsindia.com ([220.227.252.100])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MBsaJ-0006ES-Ga
+	for linux-mtd@lists.infradead.org; Wed, 03 Jun 2009 15:41:07 +0000
+From: "Rod W Sykes" <dogfish@yahoo.com>
+To: linux-mtd@lists.infradead.org
+Subject: De'ntists List in America
 Content-Type: text/plain;
-	charset="koi8-r"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: UBIFS Corrupt during power failure
-Date: Wed, 3 Jun 2009 07:50:34 -0600
-Message-ID: <C77C279BA71FD14985DC8E75FB265AB703659A64@usw-am-xch-02.am.trimblecorp.net>
-In-Reply-To: <1244016510.5847.38.camel@localhost.localdomain>
-References: <C77C279BA71FD14985DC8E75FB265AB702FE53F4@usw-am-xch-02.am.trimblecorp.net>
-	<1239979018.3390.298.camel@localhost.localdomain>
-	<C77C279BA71FD14985DC8E75FB265AB7030C4C86@usw-am-xch-02.am.trimblecorp.net>
-	<200905150916.54091.sr@denx.de>
-	<1244016510.5847.38.camel@localhost.localdomain>
-From: "Eric Holmberg" <Eric_Holmberg@Trimble.com>
-To: <dedekind@infradead.org>,
-	"Stefan Roese" <sr@denx.de>
-Cc: Jamie Lokier <jamie@shareable.org>, linux-mtd@lists.infradead.org,
-	Adrian Hunter <adrian.hunter@nokia.com>
+Content-Transfer-Encoding: 7Bit
+Message-ID: <MAILWFswl3tTUqp2T0a00009745@mail.navionicsindia.com>
+Date: 3 Jun 2009 21:01:39 +0530
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,69 +18,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> On Fri, 2009-05-15 at 09:16 +0200, Stefan Roese wrote:
-> > Do you have an update for this? What's the current status=20
-> on your system now?=20
-> > Which patches did you apply to work reliably with the=20
-> Spansion FLASH?
-> >=20
-> > I'm asking since we are seeing a similar issue on one of=20
-> our boards equipped=20
-> > with the S29GL512P. This simple script triggers problems=20
-> upon the next mount:
->=20
-> FYI. Since this issue has not been resolved due to lack of=20
-> information,
-> I've updated UBIFS FAQ and put a note about this issue there:
-> http://www.linux-mtd.infradead.org/faq/ubifs.html#L_powercut
->=20
-> --=20
-> Best regards,
-> Artem Bityutskiy (=E2=C9=D4=C0=C3=CB=C9=CA =E1=D2=D4=A3=CD)
 
-Thanks Artem - I appreciate the honesty in the FAQ.
 
-Sorry for the delays on getting you real information - I am working on =
-it as much as I can.  Due to our project schedule here, I can only work =
-on this a few minutes a day.
+New for this Year: Contact List of Dentists  in America
 
-I have reproduced the CRC error, but looking at the data (shown below), =
-I am not sure what data is expected in LEB 1 at the failed position.  I =
-don't see anything that indicates that the write-buffer behavior that I =
-have avoided by limiting the write-buffer size to 8 bytes is causing the =
-problem.
+++ 164,401 Dentist.s with City, State, Zip
+++ 158,704 Mailing Addresses
+++ 163,111 Phone Numbers
+++ 77,135 Fax #'s
+++ 45,313 E-Mail Addresses
 
-[42949375.500000] UBIFS error (pid 1): ubifs_check_node: bad CRC: =
-calculated 0x714960f4, read 0x3dae4f0a
-[42949375.510000] UBIFS error (pid 1): ubifs_check_node: bad node at LEB =
-1:89600
-[42949375.520000] UBIFS error (pid 1): ubifs_scanned_corruption: =
-corrupted data at LEB 1:89600
-[42949375.540000] UBIFS error (pid 1): ubifs_scan: LEB 1 scanning failed
-[42949375.580000] UBIFS error (pid 1): ubifs_recover_master_node: failed =
-to recover master node
+Only until June 5th the special introductory price is $295 (reduced from $392)
 
-LEB 1:89600 refers to address 0x31c75e00 for the NOR flash and looks =
-like it contains nothing but zeros.
+To inquire please write to Gill@rexdata.net
 
-31c75e00: 00000000 00000000 00000000 00000000    ................
-31c75e10: 00000000 00000000 00000000 00000000    ................
-31c75e20: 00000000 00000000 00000000 00000000    ................
-31c75e30: 00000000 00000000 00000000 00000000    ................
-31c75e40: 00000000 00000000 00000000 00000000    ................
-31c75e50: 00000000 00000000 00000000 00000000    ................
-31c75e60: 00000000 00000000 00000000 00000000    ................
-31c75e70: 00000000 00000000 00000000 00000000    ................
-31c75e80: 06101831 3dae4f0a 000ecc9b 00000000    1....O.=3D........
 
-Since this is the root file system and is 28MB in size, I am working on =
-creating a smaller file system and writing a fixed test pattern to it.  =
-I will provide the dd images of these files along with log files as soon =
-as possible which will hopefully be next Monday (June 8).
 
-If you have any addition suggestions or requests, please let me know.
 
-Regards,
 
-Eric Holmberg
-Trimble Navigation
+
+
+
+send and email to delrem@rexdata.net for rapid expulsion from our records
