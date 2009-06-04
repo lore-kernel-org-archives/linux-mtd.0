@@ -1,27 +1,26 @@
-Received: from smtp127.sbc.mail.sp1.yahoo.com ([69.147.65.186])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MC05z-0002Az-ET
-	for linux-mtd@lists.infradead.org; Wed, 03 Jun 2009 23:42:18 +0000
-From: David Brownell <david-b@pacbell.net>
-To: davinci-linux-open-source@linux.davincidsp.com
-Subject: Re: [PATCH 2.6.30-rc6 1/3] NAND: Add "page" parameter to all
-	read_page/read_page_raw APIs
-Date: Wed, 3 Jun 2009 16:42:03 -0700
-References: <1242682683-19772-1-git-send-email-nsnehaprabha@ti.com>
-	<C9D59C82B94F474B872F2092A87F261481797EB6@dlee07.ent.ti.com>
-In-Reply-To: <C9D59C82B94F474B872F2092A87F261481797EB6@dlee07.ent.ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MC20y-0003jh-PC
+	for linux-mtd@lists.infradead.org; Thu, 04 Jun 2009 01:45:17 +0000
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1MC20s-0003uN-P8
+	for linux-mtd@lists.infradead.org; Thu, 04 Jun 2009 01:45:02 +0000
+Received: from adsl-99-185-243-218.dsl.pltn13.sbcglobal.net ([99.185.243.218])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 04 Jun 2009 01:45:02 +0000
+Received: from nahor.j+gmane by adsl-99-185-243-218.dsl.pltn13.sbcglobal.net
+	with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 04 Jun 2009 01:45:02 +0000
+To: linux-mtd@lists.infradead.org
+From: Nahor <nahor.j+gmane@gmail.com>
+Subject: [PATCH] [MTD-UTILS] Incorrect loop condition
+Date: Wed, 03 Jun 2009 18:18:25 -0700
+Message-ID: <h077d2$ra9$1@ger.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200906031642.03620.david-b@pacbell.net>
-Cc: "Paulraj, Sandeep" <s-paulraj@ti.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"Narnakaje, Snehaprabha" <nsnehaprabha@ti.com>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>
+Sender: news <news@ger.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,13 +30,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 01 June 2009, Paulraj, Sandeep wrote:
-> Anything comments on this patch?
+Hi all,
 
-I think Sneha was going to reissue the third patch, to address
-some minor goofage with the OOB layout used.
+Here is a small patch to fix an obvious typo.
 
-Once that's done, it looked to me like it was time to just
-queue these three patches for 2.6.31 ... nobody had any
-objections to the $SUBJECT patch, or the second patch which
-added the NAND_ECC_HW_OOB_FIRST mode.
+If the file contains only a few bytes in the last page and the padding 
+option is selected, the loop may exit early (readlen < meminfo.oobsize).
+Most of the time it will still work though because the code tries to 
+read the whole OOB in one chunk.
+
+
+On a similar issue, shouldn't the loop reading the input file exit with 
+error if cnt == 0? The loop should alread exit when all the expected 
+data is read. So if cnt == 0, it means that nandwrite didn't get all the 
+data it wanted. The code then goes on as if everything was correctly 
+read so it will write the data from the previous page. This is a 
+security risk (even though the necessary conditions make it nearly 
+impossible in practice).
+
+
+Regards,
+    Nahor
+
+
+
+--- a/nandwrite.c        2009-06-01 18:03:55.000000000 -0700
++++ b/nandwrite.c 2009-06-03 15:29:24.000000000 -0700
+@@ -531,7 +531,7 @@
+                if (writeoob) {
+                        int tinycnt = 0;
+
+-                       while(tinycnt < readlen) {
++                       while(tinycnt < meminfo.oobsize) {
+                                cnt = read(ifd, oobreadbuf + tinycnt,
+meminfo.oobsize - tinycnt);
+                                if (cnt == 0) { // EOF
+                                        break;
