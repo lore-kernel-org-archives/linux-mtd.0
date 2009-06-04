@@ -1,20 +1,19 @@
-Received: from yw-out-1718.google.com ([74.125.46.158])
+Received: from mail-ew0-f221.google.com ([209.85.219.221])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MCBfu-0003BV-7U
-	for linux-mtd@lists.infradead.org; Thu, 04 Jun 2009 12:04:09 +0000
-Received: by yw-out-1718.google.com with SMTP id 9so402726ywk.72
+	id 1MCC03-00087I-OY
+	for linux-mtd@lists.infradead.org; Thu, 04 Jun 2009 12:24:58 +0000
+Received: by ewy21 with SMTP id 21so242465ewy.18
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 04 Jun 2009 05:04:00 -0700 (PDT)
+	Thu, 04 Jun 2009 05:24:50 -0700 (PDT)
+Message-ID: <4A27D93B.9020906@gmail.com>
+Date: Thu, 04 Jun 2009 16:24:59 +0200
+From: Roel Kluin <roel.kluin@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <9bde694e0906020308r60e7627akcc01ed54bf63914c@mail.gmail.com>
-References: <9bde694e0906020308r60e7627akcc01ed54bf63914c@mail.gmail.com>
-Date: Thu, 4 Jun 2009 17:34:00 +0530
-Message-ID: <9bde694e0906040504l4742b818p8fd3223dda719f31@mail.gmail.com>
-Subject: UBIFS porting on onenand and on kernel 2.6.18
-From: naveen yadav <yad.naveen@gmail.com>
-To: linux-mtd@lists.infradead.org
+To: dwmw2@infradead.org
+Subject: [PATCH]  mtd/nand: max_retries off by one
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,16 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
- Hi all,
+with `while (max_retries-- > 0)' max_retries reaches -1 after the loop.
 
-i want to port UBIFS to my target board which is running on Linux
-
-2.6.18. and having samsung onenand.I want to check the performance of
-UBIFS. I need some idea.
-
-shall i take UBI and UBIFS code from latest kernel source tree i.e
-2.6.29. or shall i use GIT backward patch 2.6.24
-so which way is easy and best.
-
-Regards
-Naveen
+Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+---
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 40c2608..b9706ad 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -192,7 +192,7 @@ static void wait_op_done(struct mxc_nand_host *host, int max_retries,
+ 			}
+ 			udelay(1);
+ 		}
+-		if (max_retries <= 0)
++		if (max_retries < 0)
+ 			DEBUG(MTD_DEBUG_LEVEL0, "%s(%d): INT not set\n",
+ 			      __func__, param);
+ 	}
