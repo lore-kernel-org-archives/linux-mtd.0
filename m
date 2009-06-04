@@ -1,18 +1,17 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MC6n5-0003JI-6M
-	for linux-mtd@lists.infradead.org; Thu, 04 Jun 2009 06:51:13 +0000
-Date: Thu, 4 Jun 2009 08:50:57 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: joy c <cjjoy1980@gmail.com>
-Subject: Re: jffs2 debug messages
-In-Reply-To: <442a305e0906030924n72d99b9ao97b64d80e2667763@mail.gmail.com>
-Message-ID: <Pine.LNX.4.64.0906040850170.12786@lnxricardw.se.axis.com>
-References: <442a305e0906030924n72d99b9ao97b64d80e2667763@mail.gmail.com>
+Message-ID: <47286.192.168.10.89.1244108023.squirrel@dbdmail.itg.ti.com>
+In-Reply-To: <54851.192.168.10.89.1243946277.squirrel@dbdmail.itg.ti.com>
+References: <54851.192.168.10.89.1243946277.squirrel@dbdmail.itg.ti.com>
+Date: Thu, 4 Jun 2009 15:03:43 +0530 (IST)
+Subject: Re: [PATCH] [MTD] [NAND] Add prefetch and dma support for omap2/3
+	NAND      driver
+From: "vimal singh" <vimalsingh@ti.com>
+To: "Tony Lindgren" <tony@atomide.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Cc: linux-kernel@vger.kernel.org, david-b@pacbell.net,
+	linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+	dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,52 +21,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-On Wed, 3 Jun 2009, joy c wrote:
-
-> HI all,
+On Wed, Jun 3, 2009 at 10:03 PM, Tony Lindgren <tony@atomide.com> wrote:
+> * Singh, Vimal
+<IMCEAEX-_O=TI_OU=BD_CN=RECIPIENTS_CN=X0094262@dlee86.itg.ti.com> [090602
+23:46]:
+>>
+>> On Wed, Jun 3, 2009 at 2:06 AM, Tony Lindgren <tony@atomide.com> wrote:
+>> > * vimal singh <vimalsingh@ti.com> [090602 05:40]:
+>> >> This patch adds prefetch support to access nand flash in both mpu and dma
+mode.
+>> >> This patch also adds 8-bit nand support (omap_read/write_buf8).
+>> >> Prefetch can be used for both 8- and 16-bit devices.
+>> >
+>> > This should be reviewed on the linux-omap@vger.kernel.org list for sure.
+>> > One other comment below.
+>> >
+>> >> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+>> >> ---
+>> >> I prepared this patch on top of "OMAP2 / OMAP3 NAND driver" patch:
+>> >> http://lists.infradead.org/pipermail/linux-mtd/2009-May/025562.html
+>> >>
+>> >> ---
+>> >>  arch/arm/mach-omap2/gpmc.c             |  102 ++++++++++
+>> >>  arch/arm/plat-omap/include/mach/gpmc.h |    4
+>> >>  drivers/mtd/nand/Kconfig               |   17 +
+>> >>  drivers/mtd/nand/omap2.c               |  308
+++++++++++++++++++++++++++++++++-
+>> >>  4 files changed, 422 insertions(+), 9 deletions(-)
+>> >>
+>> >> Index: mtd-2.6/arch/arm/mach-omap2/gpmc.c
+>> >> ===================================================================
+>> >> --- mtd-2.6.orig/arch/arm/mach-omap2/gpmc.c
+>> >> +++ mtd-2.6/arch/arm/mach-omap2/gpmc.c
+>> >> @@ -54,6 +54,12 @@
+>> >>  #define GPMC_CHUNK_SHIFT     24              /* 16 MB */
+>> >>  #define GPMC_SECTION_SHIFT   28              /* 128 MB */
+>> >>
+>> >> +#ifdef CONFIG_MTD_NAND_OMAP_PREFETCH
+>> >> +#define CS_NUM_SHIFT         24
+>> >> +#define ENABLE_PREFETCH              7
+>> >> +#define DMA_MPU_MODE         2
+>> >> +#endif
+>> >> +
+>> >>  static struct resource       gpmc_mem_root;
+>> >>  static struct resource       gpmc_cs_mem[GPMC_CS_NUM];
+>> >>  static DEFINE_SPINLOCK(gpmc_mem_lock);
+>> >> @@ -383,6 +389,99 @@ void gpmc_cs_free(int cs)
+>> >>  }
+>> >>  EXPORT_SYMBOL(gpmc_cs_free);
+>> >>
+>> >> +#ifdef CONFIG_MTD_NAND_OMAP_PREFETCH
+>> >> +/**
+>> >> + * gpmc_prefetch_init - configures default configuration for prefetch
+engine
+>> >> + */
+>> >> +static void gpmc_prefetch_init(void)
+>> >> +{
+>> >> +     /* Setting the default threshold to 64 */
+>> >> +     gpmc_write_reg(GPMC_PREFETCH_CONTROL, 0x0);
+>> >> +     gpmc_write_reg(GPMC_PREFETCH_CONFIG1, 0x40  << 8);
+>> >> +     gpmc_write_reg(GPMC_PREFETCH_CONFIG2, 0x0);
+>> >> +}
+>> >
+>> > Why would you want to have NAND specific init code int gpmc.c?
+>> >
+>> > The purpose if gpmc.c is to provide access to configuring the
+>> > General Purpose Memory Controller (GPMC). You should just provide
+>> > functions in gpmc.c for the platform init code to use, and then
+>> > the drivers can stay platform independent.
+>>
+>> In my understanding, this 'prefetch' engine is part of GPMC itself, it is a
+>> kind of feature provided by GPMC which can be utilized by NAND driver.
+>> So, to me, it makes sens to get initialized prefetch by GPMC itself so that
+>> NAND driver can use it.
 >
-> While trying to mount my mtd partition I am getting the below messages.
-> Once mounted everything seems to be working fine but not sure what these
-> messages mean.  Are these just the debug messages which I can
-> ignore,or something
-> which I need to look into.
->
-> I am using kernel 2.6.14 and Nand Flash.
->
-> mount -t jffs2 /dev/mtdblock10 /mnt/flash
->
-> jffs2: Erase block size too small (128KiB). Using virtual blocks size
-> (256KiB) instead
-> cpu0: jiffies: 4294953713, hrtime: 16378092427, 503 ms without calling
-> schedule() since scheduler requested
-> Call trace:
-> [c001fbfc] scheduler_tick+0x15c/0x4cc
-> [c0032108] update_process_times+0x88/0x15c
-> [c0005180] timer_interrupt+0x180/0x2b8
-> [c0002ef0] ret_from_except+0x0/0x18
-> [c0198904] nand_read_buf+0x1c/0x34
+> But it should not have a dependency to NAND.
 
-To me it looks like something is taking an inordinate amount of time to=20
-execute in nand_read_buf. Looks fishy I would say.
+This engine, in GPMC, is dedicated for NAND devices only.
 
-> [c018a1fc] part_read_oob+0xbc/0xe0
-> [c0129b50] jffs2_check_nand_cleanmarker+0xa8/0x1a0
-> [c0120d6c] jffs2_scan_medium+0x37c/0x1970
-> [c01249d0] jffs2_do_mount_fs+0x1c8/0x76c
-> [c012740c] jffs2_do_fill_super+0x168/0x2e0
-> [c0127938] jffs2_get_sb_mtd+0xfc/0x1cc
-> [c0127bc0] jffs2_get_sb+0x148/0x1e8
-> [c0081e5c] do_kern_mount+0x5c/0x128
-> [c009b3e4] do_mount+0x458/0x6b8
-> [c009bae0] sys_mount+0xd4/0x124
-> cpu0: jiffies: 4294953714, hrtime: 16429105507, 765 ms between
-> scheduler_tick() calls
-> cpu0: jiffies: 4294954050, hrtime: 16467914765, 1851 ms since
-> scheduler requested
+>
+>> Another reason was that all read / write to GPMC register are done by
+>> functions 'gpmc_read_reg' / 'gpmc_write_reg', which have been made
+>> 'static' in nature.
+>
+> That's why you need to provide a generic function in gpmc.c to enable
+> prefetch that the platform code for any driver can use.
 
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Exactly, and whenever a platform code uses gpmc init call, gpmc initializes
+this engine too. Since prefetch engine is the part of GPMC, IMHOP, it should
+get initialized as part of GPMC initialization.
+
+And then there are prefetch start, stop and status functions calls have been
+provided to be used by NAND driver.
+
+-vimal
+>
+> Tony
