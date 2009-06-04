@@ -1,14 +1,20 @@
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Al Viro <viro@ZenIV.linux.org.uk>
-Subject: [PATCH v2 10/17] JFFS2: do not manipulate s_dirt directly
-Date: Thu,  4 Jun 2009 13:41:47 +0300
-Message-Id: <1244112114-23144-11-git-send-email-dedekind@infradead.org>
-In-Reply-To: <1244112114-23144-1-git-send-email-dedekind@infradead.org>
-References: <1244112114-23144-1-git-send-email-dedekind@infradead.org>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, linux-kernel@vger.kernel.org,
-	Christoph Hellwig <hch@infradead.org>,
-	linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-	David Woodhouse <dwmw2@infradead.org>
+Received: from yw-out-1718.google.com ([74.125.46.158])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MCBfu-0003BV-7U
+	for linux-mtd@lists.infradead.org; Thu, 04 Jun 2009 12:04:09 +0000
+Received: by yw-out-1718.google.com with SMTP id 9so402726ywk.72
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 04 Jun 2009 05:04:00 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <9bde694e0906020308r60e7627akcc01ed54bf63914c@mail.gmail.com>
+References: <9bde694e0906020308r60e7627akcc01ed54bf63914c@mail.gmail.com>
+Date: Thu, 4 Jun 2009 17:34:00 +0530
+Message-ID: <9bde694e0906040504l4742b818p8fd3223dda719f31@mail.gmail.com>
+Subject: UBIFS porting on onenand and on kernel 2.6.18
+From: naveen yadav <yad.naveen@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,52 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+ Hi all,
 
-... use new VFS helpers instead.
+i want to port UBIFS to my target board which is running on Linux
 
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
----
- fs/jffs2/os-linux.h |    2 +-
- fs/jffs2/super.c    |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+2.6.18. and having samsung onenand.I want to check the performance of
+UBIFS. I need some idea.
 
-diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
-index 2228380..ad12212 100644
---- a/fs/jffs2/os-linux.h
-+++ b/fs/jffs2/os-linux.h
-@@ -147,7 +147,7 @@ void jffs2_nor_wbuf_flash_cleanup(struct jffs2_sb_info *c);
- /* erase.c */
- static inline void jffs2_erase_pending_trigger(struct jffs2_sb_info *c)
- {
--	OFNI_BS_2SFFJ(c)->s_dirt = 1;
-+	mark_sb_dirty(OFNI_BS_2SFFJ(c));
- }
- 
- /* background.c */
-diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index f7bfd3a..5b321fa 100644
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -58,7 +58,7 @@ static void jffs2_write_super(struct super_block *sb)
- 	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
- 
- 	lock_super(sb);
--	sb->s_dirt = 0;
-+	mark_sb_clean(sb);
- 
- 	if (!(sb->s_flags & MS_RDONLY)) {
- 		D1(printk(KERN_DEBUG "jffs2_write_super()\n"));
-@@ -193,7 +193,7 @@ static void jffs2_put_super (struct super_block *sb)
- 
- 	lock_kernel();
- 
--	if (sb->s_dirt)
-+	if (sb_is_dirty(sb))
- 		jffs2_write_super(sb);
- 
- 	mutex_lock(&c->alloc_sem);
--- 
-1.6.0.6
+shall i take UBI and UBIFS code from latest kernel source tree i.e
+2.6.29. or shall i use GIT backward patch 2.6.24
+so which way is easy and best.
+
+Regards
+Naveen
