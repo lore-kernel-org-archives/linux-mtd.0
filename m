@@ -1,28 +1,18 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from miranda.se.axis.com ([193.13.178.8])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MC4PD-0005i3-9q
-	for linux-mtd@lists.infradead.org; Thu, 04 Jun 2009 04:18:27 +0000
-From: "Paulraj, Sandeep" <s-paulraj@ti.com>
-To: David Brownell <david-b@pacbell.net>,
-	"davinci-linux-open-source@linux.davincidsp.com"
-	<davinci-linux-open-source@linux.davincidsp.com>
-Date: Wed, 3 Jun 2009 23:16:57 -0500
-Subject: RE: [PATCH 2.6.30-rc6 1/3] NAND: Add "page" parameter to all
-	read_page/read_page_raw APIs
-Message-ID: <C9D59C82B94F474B872F2092A87F261480EDEF1A@dlee07.ent.ti.com>
-References: <1242682683-19772-1-git-send-email-nsnehaprabha@ti.com>
-	<C9D59C82B94F474B872F2092A87F261481797EB6@dlee07.ent.ti.com>,
-	<200906031642.03620.david-b@pacbell.net>
-In-Reply-To: <200906031642.03620.david-b@pacbell.net>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	id 1MC6n5-0003JI-6M
+	for linux-mtd@lists.infradead.org; Thu, 04 Jun 2009 06:51:13 +0000
+Date: Thu, 4 Jun 2009 08:50:57 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: joy c <cjjoy1980@gmail.com>
+Subject: Re: jffs2 debug messages
+In-Reply-To: <442a305e0906030924n72d99b9ao97b64d80e2667763@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.0906040850170.12786@lnxricardw.se.axis.com>
+References: <442a305e0906030924n72d99b9ao97b64d80e2667763@mail.gmail.com>
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>, "Narnakaje,
-	Snehaprabha" <nsnehaprabha@ti.com>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,25 +22,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ok.
 
-I'll be submitting that patch as Sneha is unavailable for the next 5 weeks
-________________________________________
-From: David Brownell [david-b@pacbell.net]
-Sent: Wednesday, June 03, 2009 7:42 PM
-To: davinci-linux-open-source@linux.davincidsp.com
-Cc: Paulraj, Sandeep; Narnakaje, Snehaprabha; linux-mtd@lists.infradead.org=
-; dwmw2@infradead.org; tglx@linutronix.de; akpm@linux-foundation.org
-Subject: Re: [PATCH 2.6.30-rc6 1/3] NAND: Add "page" parameter to all read_=
-page/read_page_raw APIs
+On Wed, 3 Jun 2009, joy c wrote:
 
-On Monday 01 June 2009, Paulraj, Sandeep wrote:
-> Anything comments on this patch?
+> HI all,
+>
+> While trying to mount my mtd partition I am getting the below messages.
+> Once mounted everything seems to be working fine but not sure what these
+> messages mean.  Are these just the debug messages which I can
+> ignore,or something
+> which I need to look into.
+>
+> I am using kernel 2.6.14 and Nand Flash.
+>
+> mount -t jffs2 /dev/mtdblock10 /mnt/flash
+>
+> jffs2: Erase block size too small (128KiB). Using virtual blocks size
+> (256KiB) instead
+> cpu0: jiffies: 4294953713, hrtime: 16378092427, 503 ms without calling
+> schedule() since scheduler requested
+> Call trace:
+> [c001fbfc] scheduler_tick+0x15c/0x4cc
+> [c0032108] update_process_times+0x88/0x15c
+> [c0005180] timer_interrupt+0x180/0x2b8
+> [c0002ef0] ret_from_except+0x0/0x18
+> [c0198904] nand_read_buf+0x1c/0x34
 
-I think Sneha was going to reissue the third patch, to address
-some minor goofage with the OOB layout used.
+To me it looks like something is taking an inordinate amount of time to=20
+execute in nand_read_buf. Looks fishy I would say.
 
-Once that's done, it looked to me like it was time to just
-queue these three patches for 2.6.31 ... nobody had any
-objections to the $SUBJECT patch, or the second patch which
-added the NAND_ECC_HW_OOB_FIRST mode.
+> [c018a1fc] part_read_oob+0xbc/0xe0
+> [c0129b50] jffs2_check_nand_cleanmarker+0xa8/0x1a0
+> [c0120d6c] jffs2_scan_medium+0x37c/0x1970
+> [c01249d0] jffs2_do_mount_fs+0x1c8/0x76c
+> [c012740c] jffs2_do_fill_super+0x168/0x2e0
+> [c0127938] jffs2_get_sb_mtd+0xfc/0x1cc
+> [c0127bc0] jffs2_get_sb+0x148/0x1e8
+> [c0081e5c] do_kern_mount+0x5c/0x128
+> [c009b3e4] do_mount+0x458/0x6b8
+> [c009bae0] sys_mount+0xd4/0x124
+> cpu0: jiffies: 4294953714, hrtime: 16429105507, 765 ms between
+> scheduler_tick() calls
+> cpu0: jiffies: 4294954050, hrtime: 16467914765, 1851 ms since
+> scheduler requested
+
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
