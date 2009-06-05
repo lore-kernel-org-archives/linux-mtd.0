@@ -1,21 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MDED1-00056T-Rp
-	for linux-mtd@lists.infradead.org; Sun, 07 Jun 2009 08:58:39 +0000
-Subject: Re: Nandwrite's behavior in case of write failure
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Nahor <nahor.j+gmane@gmail.com>
-In-Reply-To: <4A29D723.1010109@gmail.com>
-References: <h09s2s$ar6$1@ger.gmane.org>
-	<1244205087.5847.66.camel@localhost.localdomain>
-	<4A29D723.1010109@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 07 Jun 2009 11:57:56 +0300
-Message-Id: <1244365076.5847.317.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+Received: from smtp3.netcologne.de ([194.8.194.66])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MCchM-0005Be-FX
+	for linux-mtd@lists.infradead.org; Fri, 05 Jun 2009 16:55:27 +0000
+Date: Fri, 05 Jun 2009 18:22:17 +0200
+From: Albrecht =?iso-8859-1?b?RHJl3w==?= <albrecht.dress@arcor.de>
+Subject: Re: [PATCH V2 2/2] mtd/maps/mtd-ram: add an of-platform driver
+To: Wolfram Sang <w.sang@pengutronix.de>
+In-Reply-To: <1244203514-12516-3-git-send-email-w.sang@pengutronix.de> (from
+	w.sang@pengutronix.de on Fri Jun  5 14:05:14 2009)
+Message-Id: <1244218950.3395.0@antares>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=PGP-SHA1;
+	protocol="application/pgp-signature"; boundary="=-5WRY8loPNa49glkSUlh4"
+Cc: linuxppc-dev@ozlabs.org, devicetree-discuss@ozlabs.org,
+	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	Ben Dooks <ben-linux@fluff.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,76 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-06-05 at 19:40 -0700, Nahor wrote:
-> Artem Bityutskiy wrote:
-> > This is what we do in ubiformat, I think. Also, ubiformat asks the user
-> > if he wants to mark the block as bad, unless the -y option was used.
-> > nandwrite could do something similar.
-> 
-> nandwrite has the -m/--markbad option instead of -y.
+--=-5WRY8loPNa49glkSUlh4
+Content-Type: text/plain; charset=ISO-8859-1; DelSp=Yes; Format=Flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-OK.
+Am 05.06.09 14:05 schrieb(en) Wolfram Sang:
+> Create an of-aware driver using the now exported generic functions =20
+> from plat-ram.c. Also add the documentation for the binding. =20
+> Partitions are not yet supported. Tested on a phyCORE-MPC5200B-IO.
+>=20
+> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+> Cc: Albrecht Dre=DF <albrecht.dress@arcor.de>
+> Cc: Grant Likely <grant.likely@secretlab.ca>
+> Cc: Ben Dooks <ben-linux@fluff.org>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: linuxppc-dev@ozlabs.org
+> Cc: devicetree-discuss@ozlabs.org
+> Cc: linux-mtd@lists.infradead.org
 
-> However, if the option is not set, the blocks are skipped without being
-> marked. I guess nandwrite should either ask the user or fail immediately.
-> Continuing seems useless.
+These patches work great for me on a self-designed, roughly Icecube =20
+based, 5200B board, with a 512kB NV Ram.  As I use 16-bit accesses via =20
+the Local Plus bus to the chip, I had to add some more tweaks to other =20
+files, which I promise to post next week...
 
-Yes. It might as well suggest using -m/
+Thanks, Albrecht.
 
-> >> My questions are:
-> >> - Why erase the block?
-> > Just in case. We should be very careful with marking blocks as bad,
-> > because if you do this by mistake, you may loose your device. Indeed,
-> > imagine you marked 100 blocks as bad my mistake, and you do not remember
-> > the block numbers. How will you know which blocks you should then
-> > unmark?
-> 
-> Well, one could unmark all of them and run nandtest, then flog oneself and
-> swear to pay more attention next time :)
+Acked-by: Albrecht Dre=DF <albrecht.dress@arcor.de>
 
-The problem is that factory-marked bad blocks do not have to manifest
-themselves easily. They may appear to work fine, and file later, e.g.
-when the temperature is higher.
 
-> More seriously, in my case, I want to use nandwrite for automatic updates
-> so I prefer that it marks too many blocks bad than have the update abort
-> because nandwrite wants to be conservative and exits instead of flagging
-> the offending block and continuing.
+--=-5WRY8loPNa49glkSUlh4
+Content-Type: application/pgp-signature
 
-Then you probably need to fix the tool. I wonder, it it would make sense
-to use libmtd.c from UBI utils and re-write nandwrite? Of course
-libmtd.c would need to be improved as well. But the benefit would be
-shared code between ubiformat and nandwrite.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.9 (GNU/Linux)
 
-> > So the idea of erase is to check whether the block is really bad
-> > or this is just a driver bug or something.
-> 
-> Do you mean that if the erase succeeds, nandwrite shouldn't mark the block
-> bad and just exit?
+iD8DBQBKKUZGn/9unNAn/9ERArMwAKCrO9AxACiFXeYR1h7zh+ym1u83wQCbBpRX
+ESXY3pLZW5k0tL6drvnMTJ8=
+=4JMT
+-----END PGP SIGNATURE-----
 
-I think it should do something like UBI is doing - erase the eraseblock,
-then torture it by writing several patterns and reading them back. If
-the eraseblock survived torturing, nandwrite may re-try writing,
-otherwise it marks the eraseblock as bad.
-
-> I'm not too familiar with the NAND technology but it is not possible that
-> a block can be erasable but not written to? At least nandtest thinks so, it
-> mark blocks as bad on either erase or write failures.
-
-Yes, write and erase failure mean that the erasblock is bad. But I think
-marking a block as bad straight away is just dangerous. Who knows may be
-this is a small glitch in a bus, or a software bug, or some-one
-corrupted driver's memory, or whatever. This is why UBI is doing
-eraseblock torturing before marking it as bad. And it is very careful
-about error codes - only EIO code is considered as a reason to mark an
-eraseblock as bad.
-
-> And so does ubiformat. flash_image() either exits or marks the block
-> bad if mtd_write fails. It doesn't try to erase it first.
-
-Yes, this is not very good, I've added TODO there. It should torture the
-eraseblock - I'll implement this later in libmtd.c.
-
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+--=-5WRY8loPNa49glkSUlh4--
