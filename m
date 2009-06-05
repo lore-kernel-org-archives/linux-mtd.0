@@ -1,22 +1,19 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MCYCO-0007NF-Db
-	for linux-mtd@lists.infradead.org; Fri, 05 Jun 2009 12:07:09 +0000
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: linuxppc-dev@ozlabs.org
-Subject: [PATCH V2 2/2] mtd/maps/mtd-ram: add an of-platform driver
-Date: Fri,  5 Jun 2009 14:05:14 +0200
-Message-Id: <1244203514-12516-3-git-send-email-w.sang@pengutronix.de>
-In-Reply-To: <1244203514-12516-1-git-send-email-w.sang@pengutronix.de>
-References: <1244203514-12516-1-git-send-email-w.sang@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+	id 1MCYLJ-0001Vy-IA
+	for linux-mtd@lists.infradead.org; Fri, 05 Jun 2009 12:16:24 +0000
+Subject: Re: [PATCH] [MTD-UTILS] Incorrect loop condition
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Nahor <nahor.j+gmane@gmail.com>
+In-Reply-To: <h077d2$ra9$1@ger.gmane.org>
+References: <h077d2$ra9$1@ger.gmane.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 05 Jun 2009 15:15:48 +0300
+Message-Id: <1244204148.5847.54.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: devicetree-discuss@ozlabs.org, albrecht.dress@arcor.de,
-	Wolfram Sang <w.sang@pengutronix.de>,
-	Grant Likely <grant.likely@secretlab.ca>,
-	linux-mtd@lists.infradead.org, Ben Dooks <ben-linux@fluff.org>,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,197 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Create an of-aware driver using the now exported generic functions from
-plat-ram.c. Also add the documentation for the binding. Partitions are
-not yet supported. Tested on a phyCORE-MPC5200B-IO.
+On Wed, 2009-06-03 at 18:18 -0700, Nahor wrote:
+> --- a/nandwrite.c        2009-06-01 18:03:55.000000000 -0700
+> +++ b/nandwrite.c 2009-06-03 15:29:24.000000000 -0700
+> @@ -531,7 +531,7 @@
+>                 if (writeoob) {
+>                         int tinycnt = 0;
+> 
+> -                       while(tinycnt < readlen) {
+> +                       while(tinycnt < meminfo.oobsize) {
+>                                 cnt = read(ifd, oobreadbuf + tinycnt,
+> meminfo.oobsize - tinycnt);
+>                                 if (cnt == 0) { // EOF
+>                                         break;
+> 
 
-Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-Cc: Albrecht Dreß <albrecht.dress@arcor.de>
-Cc: Grant Likely <grant.likely@secretlab.ca>
-Cc: Ben Dooks <ben-linux@fluff.org>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: linuxppc-dev@ozlabs.org
-Cc: devicetree-discuss@ozlabs.org
-Cc: linux-mtd@lists.infradead.org
----
-Changes in V2:
+This looks valid for me. Would you please, send a patch which I can
+apply, which would include your name and Signed-off-by signature?
 
-- added binding documentation
-- added __devinit & friends
-- put struct resource on stack during probe
-- simplified getting the name of the of-device
-- made error path more readable & add check for valid bank-width-pointer
-- rename driver to "of-mtd-ram"
-
- Documentation/powerpc/dts-bindings/mtd-ram.txt |   18 ++++
- drivers/mtd/maps/Kconfig                       |    7 ++
- drivers/mtd/maps/Makefile                      |    1 +
- drivers/mtd/maps/of-ram.c                      |  102 ++++++++++++++++++++++++
- 4 files changed, 128 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/powerpc/dts-bindings/mtd-ram.txt
- create mode 100644 drivers/mtd/maps/of-ram.c
-
-diff --git a/Documentation/powerpc/dts-bindings/mtd-ram.txt b/Documentation/powerpc/dts-bindings/mtd-ram.txt
-new file mode 100644
-index 0000000..a2e9932
---- /dev/null
-+++ b/Documentation/powerpc/dts-bindings/mtd-ram.txt
-@@ -0,0 +1,18 @@
-+RAM emulating an MTD
-+
-+An external RAM like SRAM or FRAM can also be treated as an MTD.
-+
-+ - compatible : should contain the specific model of the RAM chip
-+   used, if known, followed by "mtd-ram".
-+ - reg : Address range of the RAM chip
-+ - bank-width : Width (in bytes) of the RAM bank.
-+
-+Partitions are not yet supported.
-+
-+Example:
-+
-+	sram@2,0 {
-+		compatible = "samsung,k6f1616u6a", "mtd-ram";
-+		reg = <2 0 0x00200000>;
-+		bank-width = <2>;
-+	};
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index 82923bd..bdd9ebc 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -551,6 +551,13 @@ config MTD_PLATRAM
- 
- 	  This selection automatically selects the map_ram driver.
- 
-+config MTD_OFRAM
-+	tristate "Map driver for of-device RAM (of-mtd-ram)"
-+	depends on MTD_PLATRAM && OF
-+	help
-+	  Map driver for RAM areas described via the of-device
-+	  system.
-+
- config MTD_VMU
- 	tristate "Map driver for Dreamcast VMU"
- 	depends on MAPLE
-diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index 2dbc1be..a7a2db3 100644
---- a/drivers/mtd/maps/Makefile
-+++ b/drivers/mtd/maps/Makefile
-@@ -57,6 +57,7 @@ obj-$(CONFIG_MTD_IXP2000)	+= ixp2000.o
- obj-$(CONFIG_MTD_WRSBC8260)	+= wr_sbc82xx_flash.o
- obj-$(CONFIG_MTD_DMV182)	+= dmv182.o
- obj-$(CONFIG_MTD_PLATRAM)	+= plat-ram.o
-+obj-$(CONFIG_MTD_OFRAM)		+= of-ram.o
- obj-$(CONFIG_MTD_OMAP_NOR)	+= omap_nor.o
- obj-$(CONFIG_MTD_INTEL_VR_NOR)	+= intel_vr_nor.o
- obj-$(CONFIG_MTD_BFIN_ASYNC)	+= bfin-async-flash.o
-diff --git a/drivers/mtd/maps/of-ram.c b/drivers/mtd/maps/of-ram.c
-new file mode 100644
-index 0000000..e2f4476
---- /dev/null
-+++ b/drivers/mtd/maps/of-ram.c
-@@ -0,0 +1,102 @@
-+/*
-+ * Generic of device based RAM map
-+ *
-+ * Copyright (C) 2009 Wolfram Sang, Pengutronix
-+ *
-+ * Using plat-ram.c by Ben Dooks
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of the GNU General Public License version 2 as published by
-+ * the Free Software Foundation.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/types.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/device.h>
-+#include <linux/platform_device.h>
-+#include <linux/of_device.h>
-+#include <linux/of_platform.h>
-+#include <linux/mtd/plat-ram.h>
-+
-+static __devinit int of_ram_probe(struct of_device *op,
-+			const struct of_device_id *match)
-+{
-+	struct platdata_mtd_ram *pdata;
-+	struct resource res;
-+	const u32 *bankwidth;
-+	int ret = -ENOENT;
-+
-+	pdata = kzalloc(sizeof(*pdata), GFP_KERNEL);
-+	if (!pdata)
-+		return -ENOMEM;
-+	op->dev.platform_data = pdata;
-+
-+	ret = of_address_to_resource(op->node, 0, &res);
-+	if (ret) {
-+		dev_dbg(&op->dev, "could not create resource (%d)\n", ret);
-+		goto out_free;
-+	}
-+
-+	bankwidth = of_get_property(op->node, "bank-width", NULL);
-+	if (!bankwidth || *bankwidth == 0) {
-+		dev_dbg(&op->dev, "bank width not set\n");
-+		goto out_free;
-+	}
-+	pdata->bankwidth = *bankwidth;
-+
-+	ret = __platram_probe(&op->dev, op->node->name, &res, pdata);
-+	if (ret) {
-+		dev_dbg(&op->dev, "error probing device (%d)\n", ret);
-+		goto out_free;
-+	}
-+
-+	return 0;
-+
-+out_free:
-+	op->dev.platform_data = NULL;
-+	kfree(pdata);
-+	return ret;
-+}
-+
-+static __devexit int of_ram_remove(struct of_device *op)
-+{
-+	int ret;
-+	struct platdata_mtd_ram *pdata = op->dev.platform_data;
-+
-+	ret = __platram_remove(&op->dev);
-+	op->dev.platform_data = NULL;
-+	kfree(pdata);
-+	return ret;
-+}
-+
-+static const struct of_device_id __devinitconst of_ram_match[] = {
-+	{ .compatible = "mtd-ram", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, of_ram_match);
-+
-+static struct of_platform_driver of_ram_driver = {
-+	.owner = THIS_MODULE,
-+	.name = "of-mtd-ram",
-+	.match_table = of_ram_match,
-+	.probe = of_ram_probe,
-+	.remove = __devexit_p(of_ram_remove),
-+};
-+
-+static int __init of_ram_init(void)
-+{
-+	return of_register_platform_driver(&of_ram_driver);
-+}
-+module_init(of_ram_init);
-+
-+static void __exit of_ram_exit(void)
-+{
-+	of_unregister_platform_driver(&of_ram_driver);
-+}
-+module_exit(of_ram_exit);
-+
-+MODULE_AUTHOR("Wolfram Sang");
-+MODULE_DESCRIPTION("OF-MTD-RAM map driver");
-+MODULE_LICENSE("GPL v2");
 -- 
-1.6.2
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
