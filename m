@@ -1,19 +1,21 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MCYb3-0005ij-Vp
-	for linux-mtd@lists.infradead.org; Fri, 05 Jun 2009 12:32:40 +0000
-Subject: Re: Nandwrite's behavior in case of write failure
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Nahor <nahor.j+gmane@gmail.com>
-In-Reply-To: <h09s2s$ar6$1@ger.gmane.org>
-References: <h09s2s$ar6$1@ger.gmane.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 05 Jun 2009 15:31:27 +0300
-Message-Id: <1244205087.5847.66.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from mail-bw0-f208.google.com ([209.85.218.208])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MCYkR-0007vQ-CP
+	for linux-mtd@lists.infradead.org; Fri, 05 Jun 2009 12:42:21 +0000
+Received: by bwz4 with SMTP id 4so1561702bwz.18
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 05 Jun 2009 05:42:12 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1244204035.18630.0.camel@tommy-desktop>
+References: <1244204035.18630.0.camel@tommy-desktop>
+Date: Fri, 5 Jun 2009 14:42:12 +0200
+Message-ID: <71cd59b00906050542v72c228a0r883cef7795189fe9@mail.gmail.com>
+Subject: Re: about ubifs
+From: Corentin Chary <corentin.chary@gmail.com>
+To: tommy <jiujin.hong@mid-fun.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,45 +25,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-06-04 at 18:23 -0700, Nahor wrote:
-> Hi,
-> 
-> If the call to pwrite fails, nanwrite tries first to erase the block 
-> then to mark it as bad. If erase fails, nandwrite aborts. If setting the 
-> bad block flag fails, nandwrite just ignores it and go to the next block.
+On Fri, Jun 5, 2009 at 2:13 PM, tommy<jiujin.hong@mid-fun.com> wrote:
+> Dear all,i have found a question about ubifs and sync !
+>
+> Question is following;
+>
+> Artem,
+> What i do is just open an existing file in a UBIFS formated UBI volume
+> on a Nand Flash,
+>
+> add a few lines to it ,close the file ,then without unmounting the
+> filesystem and reboot the filesystem.
+>
+> When my board reboots and i looked at that file ,it's zero length and
+> has no contents.I suspect it's because
+>
+> UBIFS does less frequent syncs .it just lost content of the file because
+> there's no sync before the reboot!
+>
+> How can i solve this ?
+>
 
-I think this is a bug. It should not aborts in erase fails, but mark
-the block as bad instead. But it should check the error code as well,
-and mark it as bad only if the error was EIO. I.e., it should not
-mark the block as bad on ENOMEM.
+Hi,
+Do you use fsync() before closing the file ?
+You can read http://thunk.org/tytso/blog/2009/03/15/dont-fear-the-fsync/
+for more information. It's for ext4, but I think the problem is the
+same.
 
-And yes, if mark_bad() fails, nandwrite should not ignore this.
 
-This is what we do in ubiformat, I think. Also, ubiformat asks the user
-if he wants to mark the block as bad, unless the -y option was used.
-nandwrite could do something similar.
-
-> My questions are:
-> - Why erase the block?
-Just in case. We should be very careful with marking blocks as bad,
-because if you do this by mistake, you may loose your device. Indeed,
-imagine you marked 100 blocks as bad my mistake, and you do not remember
-the block numbers. How will you know which blocks you should then
-unmark?
-
-So the idea of erase is to check whether the block is really bad
-or this is just a driver bug or something.
-
-> - Probably linked to the first question, why abort if erase fails? Why 
-> not just ignore it and rely on the bad block flag?
-I guess this is a bug in nandwrite
-
-> - Why ignore the bad block flag error? If nandwrite can't set it and 
-> just goes on, the caller (app ou user) will think that everything is 
-> good. But when reading the partition later, the user will garbage when 
-> reaching that page.
-And this must be a bug, IMO.
 
 -- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+Corentin Chary
+http://xf.iksaif.net - http://uffs.org
