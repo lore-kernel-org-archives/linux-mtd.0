@@ -1,14 +1,23 @@
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Al Viro <viro@ZenIV.linux.org.uk>
-Subject: [PATCH v2.1 10/17] JFFS2: do not manipulate s_dirt directly
-Date: Fri,  5 Jun 2009 16:05:48 +0300
-Message-Id: <1244207155-2092-11-git-send-email-dedekind@infradead.org>
-In-Reply-To: <1244207155-2092-1-git-send-email-dedekind@infradead.org>
-References: <1244207155-2092-1-git-send-email-dedekind@infradead.org>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, linux-kernel@vger.kernel.org,
-	Christoph Hellwig <hch@infradead.org>,
-	linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-	David Woodhouse <dwmw2@infradead.org>
+From: "Singh, Vimal"
+	<IMCEAEX-_O=TI_OU=BD_CN=RECIPIENTS_CN=X0094262@dlee86.itg.ti.com>
+To: Tony Lindgren <tony@atomide.com>
+Date: Fri, 5 Jun 2009 17:30:43 +0530
+Subject: RE: [PATCH] [MTD] [NAND] Add prefetch and dma support for omap2/3
+	NAND      driver
+Message-ID: <19F8576C6E063C45BE387C64729E739404321C60A1@dbde02.ent.ti.com>
+References: <54851.192.168.10.89.1243946277.squirrel@dbdmail.itg.ti.com>
+	<47286.192.168.10.89.1244108023.squirrel@dbdmail.itg.ti.com>,
+	<20090604152823.GB7428@atomide.com>
+In-Reply-To: <20090604152823.GB7428@atomide.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"david-b@pacbell.net" <david-b@pacbell.net>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,52 +27,134 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-... use new VFS helpers instead.
 
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
----
- fs/jffs2/os-linux.h |    2 +-
- fs/jffs2/super.c    |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+On Thu, Jun 4, 2009 at 8:58 PM, Tony Lindgren<tony@atomide.com> wrote:
+> * vimal singh <vimalsingh@ti.com> [090604 02:34]:
+>> On Wed, Jun 3, 2009 at 10:03 PM, Tony Lindgren <tony@atomide.com> wrote:
+>> > * Singh, Vimal
+>> <IMCEAEX-_O=3DTI_OU=3DBD_CN=3DRECIPIENTS_CN=3DX0094262@dlee86.itg.ti.com=
+> [090602
+>> 23:46]:
+>> >>
+>> >> On Wed, Jun 3, 2009 at 2:06 AM, Tony Lindgren <tony@atomide.com> wrot=
+e:
+>> >> > * vimal singh <vimalsingh@ti.com> [090602 05:40]:
+>> >> >> This patch adds prefetch support to access nand flash in both mpu =
+and dma
+>> mode.
+>> >> >> This patch also adds 8-bit nand support (omap_read/write_buf8).
+>> >> >> Prefetch can be used for both 8- and 16-bit devices.
+>> >> >
+>> >> > This should be reviewed on the linux-omap@vger.kernel.org list for =
+sure.
+>> >> > One other comment below.
+>> >> >
+>> >> >> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+>> >> >> ---
+>> >> >> I prepared this patch on top of "OMAP2 / OMAP3 NAND driver" patch:
+>> >> >> http://lists.infradead.org/pipermail/linux-mtd/2009-May/025562.htm=
+l
+>> >> >>
+>> >> >> ---
+>> >> >>  arch/arm/mach-omap2/gpmc.c             |  102 ++++++++++
+>> >> >>  arch/arm/plat-omap/include/mach/gpmc.h |    4
+>> >> >>  drivers/mtd/nand/Kconfig               |   17 +
+>> >> >>  drivers/mtd/nand/omap2.c               |  308
+>> ++++++++++++++++++++++++++++++++-
+>> >> >>  4 files changed, 422 insertions(+), 9 deletions(-)
+>> >> >>
+>> >> >> Index: mtd-2.6/arch/arm/mach-omap2/gpmc.c
+>> >> >> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> >> >> --- mtd-2.6.orig/arch/arm/mach-omap2/gpmc.c
+>> >> >> +++ mtd-2.6/arch/arm/mach-omap2/gpmc.c
+>> >> >> @@ -54,6 +54,12 @@
+>> >> >>  #define GPMC_CHUNK_SHIFT     24              /* 16 MB */
+>> >> >>  #define GPMC_SECTION_SHIFT   28              /* 128 MB */
+>> >> >>
+>> >> >> +#ifdef CONFIG_MTD_NAND_OMAP_PREFETCH
+>> >> >> +#define CS_NUM_SHIFT         24
+>> >> >> +#define ENABLE_PREFETCH              7
+>> >> >> +#define DMA_MPU_MODE         2
+>> >> >> +#endif
+>> >> >> +
+>> >> >>  static struct resource       gpmc_mem_root;
+>> >> >>  static struct resource       gpmc_cs_mem[GPMC_CS_NUM];
+>> >> >>  static DEFINE_SPINLOCK(gpmc_mem_lock);
+>> >> >> @@ -383,6 +389,99 @@ void gpmc_cs_free(int cs)
+>> >> >>  }
+>> >> >>  EXPORT_SYMBOL(gpmc_cs_free);
+>> >> >>
+>> >> >> +#ifdef CONFIG_MTD_NAND_OMAP_PREFETCH
+>> >> >> +/**
+>> >> >> + * gpmc_prefetch_init - configures default configuration for pref=
+etch
+>> engine
+>> >> >> + */
+>> >> >> +static void gpmc_prefetch_init(void)
+>> >> >> +{
+>> >> >> +     /* Setting the default threshold to 64 */
+>> >> >> +     gpmc_write_reg(GPMC_PREFETCH_CONTROL, 0x0);
+>> >> >> +     gpmc_write_reg(GPMC_PREFETCH_CONFIG1, 0x40  << 8);
+>> >> >> +     gpmc_write_reg(GPMC_PREFETCH_CONFIG2, 0x0);
+>> >> >> +}
+>> >> >
+>> >> > Why would you want to have NAND specific init code int gpmc.c?
+>> >> >
+>> >> > The purpose if gpmc.c is to provide access to configuring the
+>> >> > General Purpose Memory Controller (GPMC). You should just provide
+>> >> > functions in gpmc.c for the platform init code to use, and then
+>> >> > the drivers can stay platform independent.
+>> >>
+>> >> In my understanding, this 'prefetch' engine is part of GPMC itself, i=
+t is a
+>> >> kind of feature provided by GPMC which can be utilized by NAND driver=
+.
+>> >> So, to me, it makes sens to get initialized prefetch by GPMC itself s=
+o that
+>> >> NAND driver can use it.
+>> >
+>> > But it should not have a dependency to NAND.
+>>
+>> This engine, in GPMC, is dedicated for NAND devices only.
+>>
+>> >
+>> >> Another reason was that all read / write to GPMC register are done by
+>> >> functions 'gpmc_read_reg' / 'gpmc_write_reg', which have been made
+>> >> 'static' in nature.
+>> >
+>> > That's why you need to provide a generic function in gpmc.c to enable
+>> > prefetch that the platform code for any driver can use.
+>>
+>> Exactly, and whenever a platform code uses gpmc init call, gpmc initiali=
+zes
+>> this engine too. Since prefetch engine is the part of GPMC, IMHOP, it sh=
+ould
+>> get initialized as part of GPMC initialization.
+>
+> No, the driver needing it should initialize it. There should not be any
+> ifdefs needed in the gpmc.c for that.
 
-diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
-index 2228380..ad12212 100644
---- a/fs/jffs2/os-linux.h
-+++ b/fs/jffs2/os-linux.h
-@@ -147,7 +147,7 @@ void jffs2_nor_wbuf_flash_cleanup(struct jffs2_sb_info *c);
- /* erase.c */
- static inline void jffs2_erase_pending_trigger(struct jffs2_sb_info *c)
- {
--	OFNI_BS_2SFFJ(c)->s_dirt = 1;
-+	mark_sb_dirty(OFNI_BS_2SFFJ(c));
- }
- 
- /* background.c */
-diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index f7bfd3a..5b321fa 100644
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -58,7 +58,7 @@ static void jffs2_write_super(struct super_block *sb)
- 	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
- 
- 	lock_super(sb);
--	sb->s_dirt = 0;
-+	mark_sb_clean(sb);
- 
- 	if (!(sb->s_flags & MS_RDONLY)) {
- 		D1(printk(KERN_DEBUG "jffs2_write_super()\n"));
-@@ -193,7 +193,7 @@ static void jffs2_put_super (struct super_block *sb)
- 
- 	lock_kernel();
- 
--	if (sb->s_dirt)
-+	if (is_sb_dirty(sb))
- 		jffs2_write_super(sb);
- 
- 	mutex_lock(&c->alloc_sem);
--- 
-1.6.0.6
+Are you suggesting to move gpmc prefetch specific code to 'drivers/mtd/nand=
+/omap2.c'?
+This can be done but then, we will be accessing gpmc registers outside gpmc=
+.c. Is that ok?
+
+>
+>> And then there are prefetch start, stop and status functions calls have =
+been
+>> provided to be used by NAND driver.
+>
+> These should really be done in the platform init code for the NAND driver=
+.
+> The NAND driver really should be generic, not omap specific.
+
+Are you talking about different omap versions or omap itself, I am bit conf=
+used. This NAND driver is=20
+omap specific only.
+
+-Vimal
+
+> Tony
