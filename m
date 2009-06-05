@@ -1,26 +1,14 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MCOA2-0008EQ-SU
-	for linux-mtd@lists.infradead.org; Fri, 05 Jun 2009 01:24:05 +0000
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1MCO9v-0004Gz-DD
-	for linux-mtd@lists.infradead.org; Fri, 05 Jun 2009 01:23:51 +0000
-Received: from adsl-99-185-243-218.dsl.pltn13.sbcglobal.net ([99.185.243.218])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 05 Jun 2009 01:23:51 +0000
-Received: from nahor.j+gmane by adsl-99-185-243-218.dsl.pltn13.sbcglobal.net
-	with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 05 Jun 2009 01:23:51 +0000
-To: linux-mtd@lists.infradead.org
-From: Nahor <nahor.j+gmane@gmail.com>
-Subject: Nandwrite's behavior in case of write failure
-Date: Thu, 04 Jun 2009 18:23:39 -0700
-Message-ID: <h09s2s$ar6$1@ger.gmane.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Sender: news <news@ger.gmane.org>
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Al Viro <viro@ZenIV.linux.org.uk>
+Subject: [PATCH v2.1 10/17] JFFS2: do not manipulate s_dirt directly
+Date: Fri,  5 Jun 2009 16:05:48 +0300
+Message-Id: <1244207155-2092-11-git-send-email-dedekind@infradead.org>
+In-Reply-To: <1244207155-2092-1-git-send-email-dedekind@infradead.org>
+References: <1244207155-2092-1-git-send-email-dedekind@infradead.org>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, linux-kernel@vger.kernel.org,
+	Christoph Hellwig <hch@infradead.org>,
+	linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,21 +18,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-If the call to pwrite fails, nanwrite tries first to erase the block 
-then to mark it as bad. If erase fails, nandwrite aborts. If setting the 
-bad block flag fails, nandwrite just ignores it and go to the next block.
+... use new VFS helpers instead.
 
-My questions are:
-- Why erase the block?
-- Probably linked to the first question, why abort if erase fails? Why 
-not just ignore it and rely on the bad block flag?
-- Why ignore the bad block flag error? If nandwrite can't set it and 
-just goes on, the caller (app ou user) will think that everything is 
-good. But when reading the partition later, the user will garbage when 
-reaching that page.
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+---
+ fs/jffs2/os-linux.h |    2 +-
+ fs/jffs2/super.c    |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-
-Thanks,
-	Nahor
+diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
+index 2228380..ad12212 100644
+--- a/fs/jffs2/os-linux.h
++++ b/fs/jffs2/os-linux.h
+@@ -147,7 +147,7 @@ void jffs2_nor_wbuf_flash_cleanup(struct jffs2_sb_info *c);
+ /* erase.c */
+ static inline void jffs2_erase_pending_trigger(struct jffs2_sb_info *c)
+ {
+-	OFNI_BS_2SFFJ(c)->s_dirt = 1;
++	mark_sb_dirty(OFNI_BS_2SFFJ(c));
+ }
+ 
+ /* background.c */
+diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+index f7bfd3a..5b321fa 100644
+--- a/fs/jffs2/super.c
++++ b/fs/jffs2/super.c
+@@ -58,7 +58,7 @@ static void jffs2_write_super(struct super_block *sb)
+ 	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
+ 
+ 	lock_super(sb);
+-	sb->s_dirt = 0;
++	mark_sb_clean(sb);
+ 
+ 	if (!(sb->s_flags & MS_RDONLY)) {
+ 		D1(printk(KERN_DEBUG "jffs2_write_super()\n"));
+@@ -193,7 +193,7 @@ static void jffs2_put_super (struct super_block *sb)
+ 
+ 	lock_kernel();
+ 
+-	if (sb->s_dirt)
++	if (is_sb_dirty(sb))
+ 		jffs2_write_super(sb);
+ 
+ 	mutex_lock(&c->alloc_sem);
+-- 
+1.6.0.6
