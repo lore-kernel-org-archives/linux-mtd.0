@@ -1,14 +1,25 @@
-Received: from mba.ocn.ne.jp ([122.1.235.107] helo=smtp.mba.ocn.ne.jp)
+Received: from yw-out-1718.google.com ([74.125.46.152])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MCz0L-0006Mn-EI
-	for linux-mtd@lists.infradead.org; Sat, 06 Jun 2009 16:44:32 +0000
-From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-To: dwmw2@infradead.org
-Subject: [PATCH revised] mtd: remove driver-core BUS_ID_SIZE
-Date: Sun,  7 Jun 2009 01:44:24 +0900
-Message-Id: <1244306664-23741-1-git-send-email-anemo@mba.ocn.ne.jp>
-Cc: Kay Sievers <kay.sievers@vrfy.org>, linux-mtd@lists.infradead.org,
-	Greg Kroah-Hartman <gregkh@suse.de>
+	id 1MD1Tt-00021B-1I
+	for linux-mtd@lists.infradead.org; Sat, 06 Jun 2009 19:23:12 +0000
+Received: by yw-out-1718.google.com with SMTP id 9so1316133ywk.72
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 06 Jun 2009 12:22:58 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1244291275.3751.1749.camel@macbook.infradead.org>
+References: <8bd0f97a0905061941s6055c6dfrf467a6b2b837c8f8@mail.gmail.com>
+	<1244224312.3751.187.camel@macbook.infradead.org>
+	<8bd0f97a0906051642i6a270831peddba0f49e22b75@mail.gmail.com>
+	<1244291275.3751.1749.camel@macbook.infradead.org>
+Date: Sat, 6 Jun 2009 15:22:58 -0400
+Message-ID: <8bd0f97a0906061222odbd6935x392cd4f72153f013@mail.gmail.com>
+Subject: Re: physmap and pointless shutdown() function ?
+From: Mike Frysinger <vapier.adi@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Lennert Buytenhek <buytenh@wantstofly.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,69 +29,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Kay Sievers <kay.sievers@vrfy.org>
+On Sat, Jun 6, 2009 at 08:27, David Woodhouse wrote:
+> On Fri, 2009-06-05 at 19:42 -0400, Mike Frysinger wrote:
+>> On Fri, Jun 5, 2009 at 13:51, David Woodhouse wrote:
+>> > On Wed, 2009-05-06 at 22:41 -0400, Mike Frysinger wrote:
+>> >> waaaay back when power management support was added to the physmap.c
+>> >> driver, it added the standard suspend/resume functions. =C2=A0no prob=
+lem
+>> >> there. =C2=A0but it also added a shutdown function which causes the f=
+lash
+>> >> to suspend/resume when rebooting:
+>> >> static void physmap_flash_shutdown(struct platform_device *dev)
+>> >> {
+>> >> =C2=A0 =C2=A0 struct physmap_flash_info *info =3D platform_get_drvdat=
+a(dev);
+>> >> =C2=A0 =C2=A0 int i;
+>> >> =C2=A0 =C2=A0 for (i =3D 0; i < MAX_RESOURCES && info->mtd[i]; i++)
+>> >> =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (info->mtd[i]->suspend && info->mtd[i]=
+->resume)
+>> >> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (info->mtd[i]->suspend(i=
+nfo->mtd[i]) =3D=3D 0)
+>> >> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 info->mtd[i]-=
+>resume(info->mtd[i]);
+>> >> }
+>> >>
+>> >> i cant see any point in doing this. =C2=A0it isnt like the flash has
+>> >> buffers that need flushing, and if they did, using suspend/resume as =
+a
+>> >> hack for flushing sounds pretty broken to me.
+>> >>
+>> >> seems to me the function should just be dropped completely.
+>> >
+>> > Wasn't that just to put it into read mode in case the bootloader is
+>> > running from the same chip?
+>>
+>> the flash isnt put into read mode though. =C2=A0if i add printk's to the
+>> shutdown function like so:
+>> then during reboot i see:
+>> physmap_flash_shutdown: 0: before: aded5006
+>> physmap_flash_shutdown: 0: after: 800080
+>> the first value is the correct value
+>
+> That's odd, and would seem to indicate that the attempt to ensure the
+> flash is in read mode isn't _working_. But I still think that was the
+> _intent_ of this code. It was just coincidence that it was in read mode
+> before the call; we needed to make 100% sure.
 
-The name size limit is gone from the driver-core, the BUS_ID_SIZE
-value will be removed.
+looking through the nest of function pointers, this seems to be a bug
+in the intel cfi command set then ?  that is what implements the
+suspend/resume functions ...
 
-[initial version by kay.sievers, reimplemented by dwmw2, adjusted by anemo]
-Cc: dwmw2@infradead.org
-Cc: linux-mtd@lists.infradead.org
-Cc: Greg Kroah-Hartman <gregkh@suse.de>
-Signed-off-by: Kay Sievers <kay.sievers@vrfy.org>
-Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
----
- drivers/mtd/nand/txx9ndfmc.c |   17 +++++++++++++----
- 1 files changed, 13 insertions(+), 4 deletions(-)
+i know this flash is using a command set version that was only added
+somewhat recently (1.5 iirc) ...
 
-diff --git a/drivers/mtd/nand/txx9ndfmc.c b/drivers/mtd/nand/txx9ndfmc.c
-index 8124792..114ac76 100644
---- a/drivers/mtd/nand/txx9ndfmc.c
-+++ b/drivers/mtd/nand/txx9ndfmc.c
-@@ -64,7 +64,7 @@ struct txx9ndfmc_priv {
- 	struct nand_chip chip;
- 	struct mtd_info mtd;
- 	int cs;
--	char mtdname[BUS_ID_SIZE + 2];
-+	const char *mtdname;
- };
- 
- #define MAX_TXX9NDFMC_DEV	4
-@@ -334,16 +334,24 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
- 
- 		if (plat->ch_mask != 1) {
- 			txx9_priv->cs = i;
--			sprintf(txx9_priv->mtdname, "%s.%u",
--				dev_name(&dev->dev), i);
-+			txx9_priv->mtdname = kasprintf(GFP_KERNEL, "%s.%u",
-+						       dev_name(&dev->dev), i);
-+			if (!txx9_priv->mtdname) {
-+				kfree(txx9_priv);
-+				dev_err(&dev->dev,
-+					"Unable to allocate MTD name.\n");
-+				continue;
-+			}
- 		} else {
- 			txx9_priv->cs = -1;
--			strcpy(txx9_priv->mtdname, dev_name(&dev->dev));
-+			txx9_priv->mtdname = kstrdup(dev_name(&dev->dev),
-+						     GFP_KERNEL);
- 		}
- 		if (plat->wide_mask & (1 << i))
- 			chip->options |= NAND_BUSWIDTH_16;
- 
- 		if (nand_scan(mtd, 1)) {
-+			kfree(txx9_priv->mtdname);
- 			kfree(txx9_priv);
- 			continue;
- 		}
-@@ -385,6 +393,7 @@ static int __exit txx9ndfmc_remove(struct platform_device *dev)
- 		kfree(drvdata->parts[i]);
- #endif
- 		del_mtd_device(mtd);
-+		kfree(txx9_priv->mtdname);
- 		kfree(txx9_priv);
- 	}
- 	return 0;
--- 
-1.5.6.5
+>> > Reboot doesn't work very well if all you
+>> > have is flash status bits at your reset vector,
+>>
+>> your assumption is faulty in that the reset vector is the base of the
+>> flash. =C2=A0i.e. the physmap base is 0x20000000 as is the reset vector.
+>
+> The reset vector may or may not be in the physmap flash. If it's not, of
+> course, then the shutdown state doesn't matter. If it _is_, then the
+> shutdown state _might_ matter (depending on the hardware reset
+> arrangements).
+>
+> It doesn't matter whether it's at the base of the flash, at the end of
+> the flash, or in the middle -- does it?
+
+i didnt think it did, but your comment about flash status bits at
+reset vector seemed to imply that it did
+
+> The point remains -- I don't think we can remove the shutdown() function
+> -- I think it needs to be fixed to leave the flash in read mode.
+
+i'm fine with that intent if it worked ;)
+-mike
