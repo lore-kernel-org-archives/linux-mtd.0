@@ -1,24 +1,14 @@
-Received: from mail-gx0-f216.google.com ([209.85.217.216])
+Received: from mba.ocn.ne.jp ([122.1.235.107] helo=smtp.mba.ocn.ne.jp)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MCybY-0001T2-EI
-	for linux-mtd@lists.infradead.org; Sat, 06 Jun 2009 16:18:57 +0000
-Received: by gxk12 with SMTP id 12so3869gxk.18
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 06 Jun 2009 09:18:23 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1244203514-12516-3-git-send-email-w.sang@pengutronix.de>
-References: <1244203514-12516-1-git-send-email-w.sang@pengutronix.de>
-	<1244203514-12516-3-git-send-email-w.sang@pengutronix.de>
-From: Grant Likely <grant.likely@secretlab.ca>
-Date: Sat, 6 Jun 2009 10:05:41 -0600
-Message-ID: <fa686aa40906060905y1d39dce1j87d993ceb94273be@mail.gmail.com>
-Subject: Re: [PATCH V2 2/2] mtd/maps/mtd-ram: add an of-platform driver
-To: Wolfram Sang <w.sang@pengutronix.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: devicetree-discuss@ozlabs.org, albrecht.dress@arcor.de,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Ben Dooks <ben-linux@fluff.org>, David Woodhouse <dwmw2@infradead.org>
+	id 1MCyhe-00020P-Fd
+	for linux-mtd@lists.infradead.org; Sat, 06 Jun 2009 16:25:13 +0000
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+To: dwmw2@infradead.org
+Subject: [PATCH] mtd: remove driver-core BUS_ID_SIZE
+Date: Sun,  7 Jun 2009 01:25:02 +0900
+Message-Id: <1244305502-20902-1-git-send-email-anemo@mba.ocn.ne.jp>
+Cc: Kay Sievers <kay.sievers@vrfy.org>, linux-mtd@lists.infradead.org,
+	Greg Kroah-Hartman <gregkh@suse.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,27 +18,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 5, 2009 at 6:05 AM, Wolfram Sang<w.sang@pengutronix.de> wrote:
-> diff --git a/Documentation/powerpc/dts-bindings/mtd-ram.txt b/Documentati=
-on/powerpc/dts-bindings/mtd-ram.txt
-> new file mode 100644
-> index 0000000..a2e9932
-> --- /dev/null
-> +++ b/Documentation/powerpc/dts-bindings/mtd-ram.txt
-> @@ -0,0 +1,18 @@
-> +RAM emulating an MTD
-> +
-> +An external RAM like SRAM or FRAM can also be treated as an MTD.
-> +
-> + - compatible : should contain the specific model of the RAM chip
-> + =A0 used, if known, followed by "mtd-ram".
-> + - reg : Address range of the RAM chip
-> + - bank-width : Width (in bytes) of the RAM bank.
+From: Kay Sievers <kay.sievers@vrfy.org>
 
-Question: why is bank-width even relevant for a RAM device?
+The name size limit is gone from the driver-core, the BUS_ID_SIZE
+value will be removed.
 
-g.
+[initial version by kay.sievers, reimplemented by dwmw2, adjusted by anemo]
+Cc: dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org
+Cc: Greg Kroah-Hartman <gregkh@suse.de>
+Signed-off-by: Kay Sievers <kay.sievers@vrfy.org>
+Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+---
+ drivers/mtd/nand/txx9ndfmc.c |   16 ++++++++++++----
+ 1 files changed, 12 insertions(+), 4 deletions(-)
 
---=20
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
+diff --git a/drivers/mtd/nand/txx9ndfmc.c b/drivers/mtd/nand/txx9ndfmc.c
+index 8124792..23f4d1f 100644
+--- a/drivers/mtd/nand/txx9ndfmc.c
++++ b/drivers/mtd/nand/txx9ndfmc.c
+@@ -64,7 +64,7 @@ struct txx9ndfmc_priv {
+ 	struct nand_chip chip;
+ 	struct mtd_info mtd;
+ 	int cs;
+-	char mtdname[BUS_ID_SIZE + 2];
++	const char *mtdname;
+ };
+ 
+ #define MAX_TXX9NDFMC_DEV	4
+@@ -334,16 +334,23 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
+ 
+ 		if (plat->ch_mask != 1) {
+ 			txx9_priv->cs = i;
+-			sprintf(txx9_priv->mtdname, "%s.%u",
+-				dev_name(&dev->dev), i);
++			txx9_priv->mtdname = kasprintf(GFP_KERNEL, "%s.%u",
++						       dev_name(&dev->dev), i);
++			if (!txx9_priv->mtdname) {
++				kfree(txx9_priv);
++				dev_err(&dev->dev,
++					"Unable to allocate MTD name.\n");
++				continue;
++			}
+ 		} else {
+ 			txx9_priv->cs = -1;
+-			strcpy(txx9_priv->mtdname, dev_name(&dev->dev));
++			txx9_priv->mtdname = kstrdup(dev_name(&dev->dev));
+ 		}
+ 		if (plat->wide_mask & (1 << i))
+ 			chip->options |= NAND_BUSWIDTH_16;
+ 
+ 		if (nand_scan(mtd, 1)) {
++			kfree(txx9_priv->mtdname)
+ 			kfree(txx9_priv);
+ 			continue;
+ 		}
+@@ -385,6 +392,7 @@ static int __exit txx9ndfmc_remove(struct platform_device *dev)
+ 		kfree(drvdata->parts[i]);
+ #endif
+ 		del_mtd_device(mtd);
++		kfree(txx9_priv->mtdname);
+ 		kfree(txx9_priv);
+ 	}
+ 	return 0;
+-- 
+1.5.6.5
