@@ -1,23 +1,20 @@
-Received: from smtp4.netcologne.de ([194.8.194.137])
+Received: from qw-out-1920.google.com ([74.125.92.150])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MCyZ0-0006Fr-6J
-	for linux-mtd@lists.infradead.org; Sat, 06 Jun 2009 16:16:17 +0000
-Date: Sat, 06 Jun 2009 18:16:06 +0200
-From: Albrecht =?iso-8859-1?b?RHJl3w==?= <albrecht.dress@arcor.de>
-Subject: Re: [PATCH V2 2/2] mtd/maps/mtd-ram: add an of-platform driver
-To: Grant Likely <grant.likely@secretlab.ca>
-References: <1244203514-12516-1-git-send-email-w.sang@pengutronix.de>
-	<1244203514-12516-3-git-send-email-w.sang@pengutronix.de>
-	<fa686aa40906060905y1d39dce1j87d993ceb94273be@mail.gmail.com>
-In-Reply-To: <fa686aa40906060905y1d39dce1j87d993ceb94273be@mail.gmail.com>
-	(from grant.likely@secretlab.ca on Sat Jun  6 18:05:41 2009)
-Message-Id: <1244304966.6356.1@antares>
+	id 1MCjTN-0008TA-TK
+	for linux-mtd@lists.infradead.org; Sat, 06 Jun 2009 00:09:28 +0000
+Received: by qw-out-1920.google.com with SMTP id 4so1089100qwk.24
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 05 Jun 2009 17:09:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=PGP-SHA1;
-	protocol="application/pgp-signature"; boundary="=-QxzQ4Qam/pys6+fWyUaj"
-Cc: devicetree-discuss@ozlabs.org, Wolfram Sang <w.sang@pengutronix.de>,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Ben Dooks <ben-linux@fluff.org>, David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <a1fb7300906022244g5cd882acw7de4b9b0ecc35547@mail.gmail.com>
+References: <a1fb7300906022244g5cd882acw7de4b9b0ecc35547@mail.gmail.com>
+Date: Sat, 6 Jun 2009 07:03:05 +0700
+Message-ID: <a1fb7300906051703p148c5d1k7fd46257c8031ac6@mail.gmail.com>
+Subject: Confuse with WL_THRESHOLD
+From: Thang Dao Duy <hanbaoquansexy@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,34 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---=-QxzQ4Qam/pys6+fWyUaj
-Content-Type: text/plain; charset=us-ascii; DelSp=Yes; Format=Flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Am 06.06.09 18:05 schrieb(en) Grant Likely:
-> > + - bank-width : Width (in bytes) of the RAM bank.
->=20
-> Question: why is bank-width even relevant for a RAM device?
-
-At least if the RAM is attached to the 5200's Local Plus Bus in 16-bit =20
-mode, no byte write accesses are allowed (byte /reads/ work, though).  =20
-I have a tweak (which I will post next week) to address this case, =20
-which depends upon this setting.  No idea if the same happens on other =20
-chips and/or on 5200 in 32-bit (muxed) mode, but I guess similar =20
-effects will pop up there, too.
-
-Cheers, Albrecht.
-
---=-QxzQ4Qam/pys6+fWyUaj
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
-
-iD8DBQBKKpZGn/9unNAn/9ERAqQuAJ9kKc52W8PvIqI0f/yQu/7uioICEgCeKTA9
-L8skza7amytWvqUF8YmMMGY=
-=5UdO
------END PGP SIGNATURE-----
-
---=-QxzQ4Qam/pys6+fWyUaj--
+Hi everyone.
+I used NANDsim and ubifs not for along time. Now, I have confused with
+wear-leveling threshold. If i give parameter WL_THRESHOLD in Kernel is
+small (example, the value is=A0 3), then when i write a file size 2 MiB
+to NAND about 200 times, it makes me cannot read EC and VID headers of
+one PEB (example PEB 10). May be that PEB is bad ? And when i set the
+WL_THRESHOLD is higher (the value is 20), i write a file 2MiB about
+1000 times, nothing 's happen, i can read headers of any PEB. So can
+you tell me what make this happen, and show me where in ubi source in
+kernel.
+Thanks.
