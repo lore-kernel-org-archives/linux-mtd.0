@@ -1,20 +1,23 @@
-Received: from smtp3.netcologne.de ([194.8.194.66])
+Received: from smtp4.netcologne.de ([194.8.194.137])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MCchM-0005Be-FX
-	for linux-mtd@lists.infradead.org; Fri, 05 Jun 2009 16:55:27 +0000
-Date: Fri, 05 Jun 2009 18:22:17 +0200
+	id 1MCyZ0-0006Fr-6J
+	for linux-mtd@lists.infradead.org; Sat, 06 Jun 2009 16:16:17 +0000
+Date: Sat, 06 Jun 2009 18:16:06 +0200
 From: Albrecht =?iso-8859-1?b?RHJl3w==?= <albrecht.dress@arcor.de>
 Subject: Re: [PATCH V2 2/2] mtd/maps/mtd-ram: add an of-platform driver
-To: Wolfram Sang <w.sang@pengutronix.de>
-In-Reply-To: <1244203514-12516-3-git-send-email-w.sang@pengutronix.de> (from
-	w.sang@pengutronix.de on Fri Jun  5 14:05:14 2009)
-Message-Id: <1244218950.3395.0@antares>
+To: Grant Likely <grant.likely@secretlab.ca>
+References: <1244203514-12516-1-git-send-email-w.sang@pengutronix.de>
+	<1244203514-12516-3-git-send-email-w.sang@pengutronix.de>
+	<fa686aa40906060905y1d39dce1j87d993ceb94273be@mail.gmail.com>
+In-Reply-To: <fa686aa40906060905y1d39dce1j87d993ceb94273be@mail.gmail.com>
+	(from grant.likely@secretlab.ca on Sat Jun  6 18:05:41 2009)
+Message-Id: <1244304966.6356.1@antares>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=PGP-SHA1;
-	protocol="application/pgp-signature"; boundary="=-5WRY8loPNa49glkSUlh4"
-Cc: linuxppc-dev@ozlabs.org, devicetree-discuss@ozlabs.org,
-	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	Ben Dooks <ben-linux@fluff.org>
+	protocol="application/pgp-signature"; boundary="=-QxzQ4Qam/pys6+fWyUaj"
+Cc: devicetree-discuss@ozlabs.org, Wolfram Sang <w.sang@pengutronix.de>,
+	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	Ben Dooks <ben-linux@fluff.org>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +27,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---=-5WRY8loPNa49glkSUlh4
-Content-Type: text/plain; charset=ISO-8859-1; DelSp=Yes; Format=Flowed
+--=-QxzQ4Qam/pys6+fWyUaj
+Content-Type: text/plain; charset=us-ascii; DelSp=Yes; Format=Flowed
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Am 05.06.09 14:05 schrieb(en) Wolfram Sang:
-> Create an of-aware driver using the now exported generic functions =20
-> from plat-ram.c. Also add the documentation for the binding. =20
-> Partitions are not yet supported. Tested on a phyCORE-MPC5200B-IO.
+Am 06.06.09 18:05 schrieb(en) Grant Likely:
+> > + - bank-width : Width (in bytes) of the RAM bank.
 >=20
-> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-> Cc: Albrecht Dre=DF <albrecht.dress@arcor.de>
-> Cc: Grant Likely <grant.likely@secretlab.ca>
-> Cc: Ben Dooks <ben-linux@fluff.org>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: linuxppc-dev@ozlabs.org
-> Cc: devicetree-discuss@ozlabs.org
-> Cc: linux-mtd@lists.infradead.org
+> Question: why is bank-width even relevant for a RAM device?
 
-These patches work great for me on a self-designed, roughly Icecube =20
-based, 5200B board, with a 512kB NV Ram.  As I use 16-bit accesses via =20
-the Local Plus bus to the chip, I had to add some more tweaks to other =20
-files, which I promise to post next week...
+At least if the RAM is attached to the 5200's Local Plus Bus in 16-bit =20
+mode, no byte write accesses are allowed (byte /reads/ work, though).  =20
+I have a tweak (which I will post next week) to address this case, =20
+which depends upon this setting.  No idea if the same happens on other =20
+chips and/or on 5200 in 32-bit (muxed) mode, but I guess similar =20
+effects will pop up there, too.
 
-Thanks, Albrecht.
+Cheers, Albrecht.
 
-Acked-by: Albrecht Dre=DF <albrecht.dress@arcor.de>
-
-
---=-5WRY8loPNa49glkSUlh4
+--=-QxzQ4Qam/pys6+fWyUaj
 Content-Type: application/pgp-signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.9 (GNU/Linux)
 
-iD8DBQBKKUZGn/9unNAn/9ERArMwAKCrO9AxACiFXeYR1h7zh+ym1u83wQCbBpRX
-ESXY3pLZW5k0tL6drvnMTJ8=
-=4JMT
+iD8DBQBKKpZGn/9unNAn/9ERAqQuAJ9kKc52W8PvIqI0f/yQu/7uioICEgCeKTA9
+L8skza7amytWvqUF8YmMMGY=
+=5UdO
 -----END PGP SIGNATURE-----
 
---=-5WRY8loPNa49glkSUlh4--
+--=-QxzQ4Qam/pys6+fWyUaj--
