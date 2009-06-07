@@ -1,25 +1,21 @@
-Received: from yw-out-1718.google.com ([74.125.46.152])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MD1Tt-00021B-1I
-	for linux-mtd@lists.infradead.org; Sat, 06 Jun 2009 19:23:12 +0000
-Received: by yw-out-1718.google.com with SMTP id 9so1316133ywk.72
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 06 Jun 2009 12:22:58 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1244291275.3751.1749.camel@macbook.infradead.org>
-References: <8bd0f97a0905061941s6055c6dfrf467a6b2b837c8f8@mail.gmail.com>
-	<1244224312.3751.187.camel@macbook.infradead.org>
-	<8bd0f97a0906051642i6a270831peddba0f49e22b75@mail.gmail.com>
-	<1244291275.3751.1749.camel@macbook.infradead.org>
-Date: Sat, 6 Jun 2009 15:22:58 -0400
-Message-ID: <8bd0f97a0906061222odbd6935x392cd4f72153f013@mail.gmail.com>
-Subject: Re: physmap and pointless shutdown() function ?
-From: Mike Frysinger <vapier.adi@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Lennert Buytenhek <buytenh@wantstofly.org>
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MDED1-00056T-Rp
+	for linux-mtd@lists.infradead.org; Sun, 07 Jun 2009 08:58:39 +0000
+Subject: Re: Nandwrite's behavior in case of write failure
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Nahor <nahor.j+gmane@gmail.com>
+In-Reply-To: <4A29D723.1010109@gmail.com>
+References: <h09s2s$ar6$1@ger.gmane.org>
+	<1244205087.5847.66.camel@localhost.localdomain>
+	<4A29D723.1010109@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sun, 07 Jun 2009 11:57:56 +0300
+Message-Id: <1244365076.5847.317.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,78 +25,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Jun 6, 2009 at 08:27, David Woodhouse wrote:
-> On Fri, 2009-06-05 at 19:42 -0400, Mike Frysinger wrote:
->> On Fri, Jun 5, 2009 at 13:51, David Woodhouse wrote:
->> > On Wed, 2009-05-06 at 22:41 -0400, Mike Frysinger wrote:
->> >> waaaay back when power management support was added to the physmap.c
->> >> driver, it added the standard suspend/resume functions. =C2=A0no prob=
-lem
->> >> there. =C2=A0but it also added a shutdown function which causes the f=
-lash
->> >> to suspend/resume when rebooting:
->> >> static void physmap_flash_shutdown(struct platform_device *dev)
->> >> {
->> >> =C2=A0 =C2=A0 struct physmap_flash_info *info =3D platform_get_drvdat=
-a(dev);
->> >> =C2=A0 =C2=A0 int i;
->> >> =C2=A0 =C2=A0 for (i =3D 0; i < MAX_RESOURCES && info->mtd[i]; i++)
->> >> =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (info->mtd[i]->suspend && info->mtd[i]=
-->resume)
->> >> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (info->mtd[i]->suspend(i=
-nfo->mtd[i]) =3D=3D 0)
->> >> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 info->mtd[i]-=
->resume(info->mtd[i]);
->> >> }
->> >>
->> >> i cant see any point in doing this. =C2=A0it isnt like the flash has
->> >> buffers that need flushing, and if they did, using suspend/resume as =
-a
->> >> hack for flushing sounds pretty broken to me.
->> >>
->> >> seems to me the function should just be dropped completely.
->> >
->> > Wasn't that just to put it into read mode in case the bootloader is
->> > running from the same chip?
->>
->> the flash isnt put into read mode though. =C2=A0if i add printk's to the
->> shutdown function like so:
->> then during reboot i see:
->> physmap_flash_shutdown: 0: before: aded5006
->> physmap_flash_shutdown: 0: after: 800080
->> the first value is the correct value
->
-> That's odd, and would seem to indicate that the attempt to ensure the
-> flash is in read mode isn't _working_. But I still think that was the
-> _intent_ of this code. It was just coincidence that it was in read mode
-> before the call; we needed to make 100% sure.
+On Fri, 2009-06-05 at 19:40 -0700, Nahor wrote:
+> Artem Bityutskiy wrote:
+> > This is what we do in ubiformat, I think. Also, ubiformat asks the user
+> > if he wants to mark the block as bad, unless the -y option was used.
+> > nandwrite could do something similar.
+> 
+> nandwrite has the -m/--markbad option instead of -y.
 
-looking through the nest of function pointers, this seems to be a bug
-in the intel cfi command set then ?  that is what implements the
-suspend/resume functions ...
+OK.
 
-i know this flash is using a command set version that was only added
-somewhat recently (1.5 iirc) ...
+> However, if the option is not set, the blocks are skipped without being
+> marked. I guess nandwrite should either ask the user or fail immediately.
+> Continuing seems useless.
 
->> > Reboot doesn't work very well if all you
->> > have is flash status bits at your reset vector,
->>
->> your assumption is faulty in that the reset vector is the base of the
->> flash. =C2=A0i.e. the physmap base is 0x20000000 as is the reset vector.
->
-> The reset vector may or may not be in the physmap flash. If it's not, of
-> course, then the shutdown state doesn't matter. If it _is_, then the
-> shutdown state _might_ matter (depending on the hardware reset
-> arrangements).
->
-> It doesn't matter whether it's at the base of the flash, at the end of
-> the flash, or in the middle -- does it?
+Yes. It might as well suggest using -m/
 
-i didnt think it did, but your comment about flash status bits at
-reset vector seemed to imply that it did
+> >> My questions are:
+> >> - Why erase the block?
+> > Just in case. We should be very careful with marking blocks as bad,
+> > because if you do this by mistake, you may loose your device. Indeed,
+> > imagine you marked 100 blocks as bad my mistake, and you do not remember
+> > the block numbers. How will you know which blocks you should then
+> > unmark?
+> 
+> Well, one could unmark all of them and run nandtest, then flog oneself and
+> swear to pay more attention next time :)
 
-> The point remains -- I don't think we can remove the shutdown() function
-> -- I think it needs to be fixed to leave the flash in read mode.
+The problem is that factory-marked bad blocks do not have to manifest
+themselves easily. They may appear to work fine, and file later, e.g.
+when the temperature is higher.
 
-i'm fine with that intent if it worked ;)
--mike
+> More seriously, in my case, I want to use nandwrite for automatic updates
+> so I prefer that it marks too many blocks bad than have the update abort
+> because nandwrite wants to be conservative and exits instead of flagging
+> the offending block and continuing.
+
+Then you probably need to fix the tool. I wonder, it it would make sense
+to use libmtd.c from UBI utils and re-write nandwrite? Of course
+libmtd.c would need to be improved as well. But the benefit would be
+shared code between ubiformat and nandwrite.
+
+> > So the idea of erase is to check whether the block is really bad
+> > or this is just a driver bug or something.
+> 
+> Do you mean that if the erase succeeds, nandwrite shouldn't mark the block
+> bad and just exit?
+
+I think it should do something like UBI is doing - erase the eraseblock,
+then torture it by writing several patterns and reading them back. If
+the eraseblock survived torturing, nandwrite may re-try writing,
+otherwise it marks the eraseblock as bad.
+
+> I'm not too familiar with the NAND technology but it is not possible that
+> a block can be erasable but not written to? At least nandtest thinks so, it
+> mark blocks as bad on either erase or write failures.
+
+Yes, write and erase failure mean that the erasblock is bad. But I think
+marking a block as bad straight away is just dangerous. Who knows may be
+this is a small glitch in a bus, or a software bug, or some-one
+corrupted driver's memory, or whatever. This is why UBI is doing
+eraseblock torturing before marking it as bad. And it is very careful
+about error codes - only EIO code is considered as a reason to mark an
+eraseblock as bad.
+
+> And so does ubiformat. flash_image() either exits or marks the block
+> bad if mtd_write fails. It doesn't try to erase it first.
+
+Yes, this is not very good, I've added TODO there. It should torture the
+eraseblock - I'll implement this later in libmtd.c.
+
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
