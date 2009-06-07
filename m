@@ -1,24 +1,19 @@
 Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MDFRo-0005HP-M5
-	for linux-mtd@lists.infradead.org; Sun, 07 Jun 2009 10:18:10 +0000
-Subject: RE: UBIFS Corrupt during power failure
+	id 1MDFWv-0008JJ-Lp
+	for linux-mtd@lists.infradead.org; Sun, 07 Jun 2009 10:23:16 +0000
+Subject: Re: Confuse with WL_THRESHOLD
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Eric Holmberg <Eric_Holmberg@Trimble.com>
-In-Reply-To: <C77C279BA71FD14985DC8E75FB265AB703659A64@usw-am-xch-02.am.trimblecorp.net>
-References: <C77C279BA71FD14985DC8E75FB265AB702FE53F4@usw-am-xch-02.am.trimblecorp.net>
-	<1239979018.3390.298.camel@localhost.localdomain>
-	<C77C279BA71FD14985DC8E75FB265AB7030C4C86@usw-am-xch-02.am.trimblecorp.net>
-	<200905150916.54091.sr@denx.de>
-	<1244016510.5847.38.camel@localhost.localdomain>
-	<C77C279BA71FD14985DC8E75FB265AB703659A64@usw-am-xch-02.am.trimblecorp.net>
+To: Thang Dao Duy <hanbaoquansexy@gmail.com>
+In-Reply-To: <a1fb7300906051703p148c5d1k7fd46257c8031ac6@mail.gmail.com>
+References: <a1fb7300906022244g5cd882acw7de4b9b0ecc35547@mail.gmail.com>
+	<a1fb7300906051703p148c5d1k7fd46257c8031ac6@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 07 Jun 2009 13:16:59 +0300
-Message-Id: <1244369819.5847.321.camel@localhost.localdomain>
+Date: Sun, 07 Jun 2009 13:23:00 +0300
+Message-Id: <1244370180.5847.322.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Jamie Lokier <jamie@shareable.org>, Stefan Roese <sr@denx.de>,
-	linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,35 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-06-03 at 07:50 -0600, Eric Holmberg wrote:
-> Sorry for the delays on getting you real information - I am working on it as much as I can.  Due to our project schedule here, I can only work on this a few minutes a day.
-> 
-> I have reproduced the CRC error, but looking at the data (shown below), I am not sure what data is expected in LEB 1 at the failed position.  I don't see anything that indicates that the write-buffer behavior that I have avoided by limiting the write-buffer size to 8 bytes is causing the problem.
-> 
-> [42949375.500000] UBIFS error (pid 1): ubifs_check_node: bad CRC: calculated 0x714960f4, read 0x3dae4f0a
-> [42949375.510000] UBIFS error (pid 1): ubifs_check_node: bad node at LEB 1:89600
-> [42949375.520000] UBIFS error (pid 1): ubifs_scanned_corruption: corrupted data at LEB 1:89600
-> [42949375.540000] UBIFS error (pid 1): ubifs_scan: LEB 1 scanning failed
-> [42949375.580000] UBIFS error (pid 1): ubifs_recover_master_node: failed to recover master node
-> 
-> LEB 1:89600 refers to address 0x31c75e00 for the NOR flash and looks like it contains nothing but zeros.
-> 
-> 31c75e00: 00000000 00000000 00000000 00000000    ................
-> 31c75e10: 00000000 00000000 00000000 00000000    ................
-> 31c75e20: 00000000 00000000 00000000 00000000    ................
-> 31c75e30: 00000000 00000000 00000000 00000000    ................
-> 31c75e40: 00000000 00000000 00000000 00000000    ................
-> 31c75e50: 00000000 00000000 00000000 00000000    ................
-> 31c75e60: 00000000 00000000 00000000 00000000    ................
-> 31c75e70: 00000000 00000000 00000000 00000000    ................
-> 31c75e80: 06101831 3dae4f0a 000ecc9b 00000000    1....O.=........
-> 
-> Since this is the root file system and is 28MB in size, I am working on creating a smaller file system and writing a fixed test pattern to it.  I will provide the dd images of these files along with log files as soon as possible which will hopefully be next Monday (June 8).
-> 
-> If you have any addition suggestions or requests, please let me know.
+On Sat, 2009-06-06 at 07:03 +0700, Thang Dao Duy wrote:
+> Hi everyone.
+> I used NANDsim and ubifs not for along time. Now, I have confused with
+> wear-leveling threshold. If i give parameter WL_THRESHOLD in Kernel is
+> small (example, the value is  3), then when i write a file size 2 MiB
+> to NAND about 200 times, it makes me cannot read EC and VID headers of
+> one PEB (example PEB 10). May be that PEB is bad ? And when i set the
+> WL_THRESHOLD is higher (the value is 20), i write a file 2MiB about
+> 1000 times, nothing 's happen, i can read headers of any PEB. So can
+> you tell me what make this happen, and show me where in ubi source in
+> kernel.
 
-Well, I would be cool to have full UBIFS debugging output, or better
-the image of the partition.
+Looks like a bug. Please, describe precisely how to reproduce it,
+and I'll take a look at this.
 
 -- 
 Best regards,
