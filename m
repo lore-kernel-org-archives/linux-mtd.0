@@ -1,20 +1,19 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MDFWv-0008JJ-Lp
-	for linux-mtd@lists.infradead.org; Sun, 07 Jun 2009 10:23:16 +0000
-Subject: Re: Confuse with WL_THRESHOLD
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Thang Dao Duy <hanbaoquansexy@gmail.com>
-In-Reply-To: <a1fb7300906051703p148c5d1k7fd46257c8031ac6@mail.gmail.com>
-References: <a1fb7300906022244g5cd882acw7de4b9b0ecc35547@mail.gmail.com>
-	<a1fb7300906051703p148c5d1k7fd46257c8031ac6@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 07 Jun 2009 13:23:00 +0300
-Message-Id: <1244370180.5847.322.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from mail-fx0-f212.google.com ([209.85.220.212])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MDI31-0004Bx-10
+	for linux-mtd@lists.infradead.org; Sun, 07 Jun 2009 13:04:33 +0000
+Received: by fxm8 with SMTP id 8so2684782fxm.18
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 07 Jun 2009 06:04:24 -0700 (PDT)
+Sender: Peter Korsgaard <jacmet@gmail.com>
+From: Peter Korsgaard <jacmet@sunsite.dk>
+To: ben-linux@fluff.org, David.Woodhouse@intel.com,
+	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.arm.linux.org.uk
+Subject: [PATCH] nand/s3c2410: s3c2410_nand_setrate(): use correct macros for
+	2412/2440
+Date: Sun,  7 Jun 2009 15:04:22 +0200
+Message-Id: <1244379863-23581-1-git-send-email-jacmet@sunsite.dk>
+Cc: wookey@wookware.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,21 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2009-06-06 at 07:03 +0700, Thang Dao Duy wrote:
-> Hi everyone.
-> I used NANDsim and ubifs not for along time. Now, I have confused with
-> wear-leveling threshold. If i give parameter WL_THRESHOLD in Kernel is
-> small (example, the value is  3), then when i write a file size 2 MiB
-> to NAND about 200 times, it makes me cannot read EC and VID headers of
-> one PEB (example PEB 10). May be that PEB is bad ? And when i set the
-> WL_THRESHOLD is higher (the value is 20), i write a file 2MiB about
-> 1000 times, nothing 's happen, i can read headers of any PEB. So can
-> you tell me what make this happen, and show me where in ubi source in
-> kernel.
+Use the correct S3C2440_NFCONF_* macros for the mask for the 2412/2440
+variants instead of the 2410 ones which use wrong bit positions.
 
-Looks like a bug. Please, describe precisely how to reproduce it,
-and I'll take a look at this.
+Signed-off-by: Peter Korsgaard <jacmet@sunsite.dk>
+---
+ drivers/mtd/nand/s3c2410.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+index 89b7905..01a105e 100644
+--- a/drivers/mtd/nand/s3c2410.c
++++ b/drivers/mtd/nand/s3c2410.c
+@@ -253,9 +253,9 @@ static int s3c2410_nand_setrate(struct s3c2410_nand_info *info)
+ 
+ 	case TYPE_S3C2440:
+ 	case TYPE_S3C2412:
+-		mask = (S3C2410_NFCONF_TACLS(tacls_max - 1) |
+-			S3C2410_NFCONF_TWRPH0(7) |
+-			S3C2410_NFCONF_TWRPH1(7));
++		mask = (S3C2440_NFCONF_TACLS(tacls_max - 1) |
++			S3C2440_NFCONF_TWRPH0(7) |
++			S3C2440_NFCONF_TWRPH1(7));
+ 
+ 		set = S3C2440_NFCONF_TACLS(tacls - 1);
+ 		set |= S3C2440_NFCONF_TWRPH0(twrph0 - 1);
 -- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+1.6.2
