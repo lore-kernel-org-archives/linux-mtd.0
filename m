@@ -1,30 +1,23 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MDhmQ-00020S-6p
-	for linux-mtd@lists.infradead.org; Mon, 08 Jun 2009 16:33:08 +0000
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1MDhmJ-0006O2-0Q
-	for linux-mtd@lists.infradead.org; Mon, 08 Jun 2009 16:32:55 +0000
-Received: from adsl-99-185-243-218.dsl.pltn13.sbcglobal.net ([99.185.243.218])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Mon, 08 Jun 2009 16:32:55 +0000
-Received: from jehan by adsl-99-185-243-218.dsl.pltn13.sbcglobal.net with
-	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Mon, 08 Jun 2009 16:32:55 +0000
-To: linux-mtd@lists.infradead.org
-From: Jehan Bing <jehan@orb.com>
-Subject: Re: [PATH] [MTD-UTILS] Return error if failure when reading from
-	standard input
-Date: Mon, 08 Jun 2009 09:32:38 -0700
-Message-ID: <4A2D3D26.4090703@orb.com>
-References: <h08vuc$uut$1@ger.gmane.org>
-	<1244441802.5847.337.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <1244441802.5847.337.camel@localhost.localdomain>
-Sender: news <news@ger.gmane.org>
+	id 1MDhpJ-00032A-D7
+	for linux-mtd@lists.infradead.org; Mon, 08 Jun 2009 16:36:04 +0000
+Date: Mon, 8 Jun 2009 18:35:40 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Grant Likely <grant.likely@secretlab.ca>
+Subject: Re: [PATCH V2 2/2] mtd/maps/mtd-ram: add an of-platform driver
+Message-ID: <20090608163540.GA16384@pengutronix.de>
+References: <1244203514-12516-1-git-send-email-w.sang@pengutronix.de>
+	<1244203514-12516-3-git-send-email-w.sang@pengutronix.de>
+	<fa686aa40906060905y1d39dce1j87d993ceb94273be@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="XsQoSWH+UP9D9v3l"
+Content-Disposition: inline
+In-Reply-To: <fa686aa40906060905y1d39dce1j87d993ceb94273be@mail.gmail.com>
+Cc: devicetree-discuss@ozlabs.org, albrecht.dress@arcor.de,
+	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	Ben Dooks <ben-linux@fluff.org>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,38 +27,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix nandwrite to return EXIT_FAILURE in case of error when using the
-standard input instead of a file for input.
 
+--XsQoSWH+UP9D9v3l
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Jehan Bing <jehan@orb.com>
+> Question: why is bank-width even relevant for a RAM device?
 
-diff -up mtd-utils.loop/nandwrite.c mtd-utils.failed_patch/nandwrite.c
---- mtd-utils.loop/nandwrite.c	2009-06-05 18:32:56.000000000 -0700
-+++ mtd-utils.failed_patch/nandwrite.c	2009-06-03 17:25:19.000000000 -0700
-@@ -261,6 +261,7 @@ int main(int argc, char * const argv[])
- 	int oobinfochanged = 0;
- 	struct nand_oobinfo old_oobinfo;
- 	int readcnt = 0;
-+	bool failed = true;
- 
- 	process_options(argc, argv);
- 
-@@ -623,6 +624,8 @@ int main(int argc, char * const argv[])
- 		mtdoffset += meminfo.writesize;
- 	}
- 
-+	failed = false;
-+
- closeall:
- 	close(ifd);
- 
-@@ -637,7 +640,7 @@ restoreoob:
- 
- 	close(fd);
- 
--	if ((ifd != STDIN_FILENO) && (imglen > 0)) {
-+	if (failed || ((ifd != STDIN_FILENO) && (imglen > 0))) {
- 		perror ("Data was only partially written due to error\n");
- 		exit (EXIT_FAILURE);
- 	}
+The underlying map_ram-driver uses it once while erasing. The question rema=
+ins
+if this is really needed? And: Does this need to get solved before merging =
+my
+patches because changing the binding afterwards is hard? Or can they go
+mainline nevertheless?
+
+Thanks,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--XsQoSWH+UP9D9v3l
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkotPdwACgkQD27XaX1/VRtCFgCdG3OTwgCSa2f7XfeouY/s4UWO
+glkAn1KU3AwcC2lVVuy9oFvNdXpPU8wD
+=pEkx
+-----END PGP SIGNATURE-----
+
+--XsQoSWH+UP9D9v3l--
