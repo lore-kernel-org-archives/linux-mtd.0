@@ -1,28 +1,19 @@
-Received: from mail-fx0-f212.google.com ([209.85.220.212])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MDZgk-0004RS-OH
-	for linux-mtd@lists.infradead.org; Mon, 08 Jun 2009 07:54:57 +0000
-Received: by fxm8 with SMTP id 8so3096906fxm.18
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 08 Jun 2009 00:54:29 -0700 (PDT)
-Sender: Peter Korsgaard <jacmet@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] nand/s3c2410: s3c2410_nand_setrate(): use correct macros
-	for 2412/2440
+Subject: Re: [PATCH] nand/s3c2410: s3c2410_nand_setrate(): use correct
+	macros for 2412/2440
+From: David Woodhouse <dwmw2@infradead.org>
+To: "dedekind@infradead.org" <dedekind@infradead.org>
+In-Reply-To: <1244443300.5847.340.camel@localhost.localdomain>
 References: <1244379863-23581-1-git-send-email-jacmet@sunsite.dk>
 	<1244438907.5847.323.camel@localhost.localdomain>
 	<87ocszuvxj.fsf@macbook.be.48ers.dk>
 	<1244440027.5847.324.camel@localhost.localdomain>
 	<87k53nutfb.fsf@macbook.be.48ers.dk>
 	<1244443300.5847.340.camel@localhost.localdomain>
-	<1244447460.30939.33.camel@macbook.infradead.org>
-From: Peter Korsgaard <jacmet@sunsite.dk>
-Date: Mon, 08 Jun 2009 09:54:14 +0200
-In-Reply-To: <1244447460.30939.33.camel@macbook.infradead.org> (David
-	Woodhouse's message of "Mon\, 08 Jun 2009 08\:51\:00 +0100")
-Message-ID: <87y6s3tb2x.fsf@macbook.be.48ers.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Date: Mon, 08 Jun 2009 08:51:00 +0100
+Message-Id: <1244447460.30939.33.camel@macbook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Cc: "wookey@wookware.org" <wookey@wookware.org>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
 	"linux-arm-kernel@lists.arm.linux.org.uk"
@@ -37,20 +28,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>>>> "David" == David Woodhouse <dwmw2@infradead.org> writes:
+On Sun, 2009-06-07 at 23:41 -0700, Artem Bityutskiy wrote:
+> 
+> "Re in subject but no in-reply-to". dwmw2 was going to fix this
+> few years ago :-)
 
-Hi,
+Other way round, surely. It's the thread-hijack check, which checks for
+messages with In-Reply-To: or References: headers indicating that
+they're a reply to an existing thread, but without 'Re:' or 'Aw:' in the
+Subject: header.
 
- David> In the years since I implemented that basic netiquette check,
- David> it's become acceptable to do exactly that for patch
- David> sequences. I thought I'd fixed it to accept 'PATCH' as well as
- David> 'Re:' and 'Aw:', but on looking closer I see I screwed it up
- David> -- it was trying to do a case-insensitive compare by turning
- David> the subject header into lower case before the
- David> comparison.... and then comparing against 'PATCH' in upper
- David> case... :)
+In the years since I implemented that basic netiquette check, it's
+become acceptable to do exactly that for patch sequences. I thought I'd
+fixed it to accept 'PATCH' as well as 'Re:' and 'Aw:', but on looking
+closer I see I screwed it up -- it was trying to do a case-insensitive
+compare by turning the subject header into lower case before the 
+comparison.... and then comparing against 'PATCH' in upper case... :)
 
-Thanks!
+Fixed now:
+http://git.infradead.org/users/dwmw2/eximconf.git?a=commitdiff;h=47505756
 
 -- 
-Bye, Peter Korsgaard
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
