@@ -1,19 +1,21 @@
-Received: from mail-fx0-f212.google.com ([209.85.220.212])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MDI31-0004Bx-10
-	for linux-mtd@lists.infradead.org; Sun, 07 Jun 2009 13:04:33 +0000
-Received: by fxm8 with SMTP id 8so2684782fxm.18
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 07 Jun 2009 06:04:24 -0700 (PDT)
-Sender: Peter Korsgaard <jacmet@gmail.com>
-From: Peter Korsgaard <jacmet@sunsite.dk>
-To: ben-linux@fluff.org, David.Woodhouse@intel.com,
-	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.arm.linux.org.uk
-Subject: [PATCH] nand/s3c2410: s3c2410_nand_setrate(): use correct macros for
-	2412/2440
-Date: Sun,  7 Jun 2009 15:04:22 +0200
-Message-Id: <1244379863-23581-1-git-send-email-jacmet@sunsite.dk>
-Cc: wookey@wookware.org
+Received: from mail2.shareable.org ([80.68.89.115])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MDTm1-0006tl-2g
+	for linux-mtd@lists.infradead.org; Mon, 08 Jun 2009 01:35:48 +0000
+Date: Mon, 8 Jun 2009 02:35:28 +0100
+From: Jamie Lokier <jamie@shareable.org>
+To: Corentin Chary <corentin.chary@gmail.com>
+Subject: Re: about ubifs
+Message-ID: <20090608013528.GI15426@shareable.org>
+References: <1244204035.18630.0.camel@tommy-desktop>
+	<71cd59b00906050542v72c228a0r883cef7795189fe9@mail.gmail.com>
+	<1244206994.20718.7.camel@tommy-desktop>
+	<71cd59b00906050704m650d9701q1012dc8b649d8d7f@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <71cd59b00906050704m650d9701q1012dc8b649d8d7f@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org, tommy <jiujin.hong@mid-fun.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use the correct S3C2440_NFCONF_* macros for the mask for the 2412/2440
-variants instead of the 2410 ones which use wrong bit positions.
+Corentin Chary wrote:
+> On Fri, Jun 5, 2009 at 3:03 PM, tommy<jiujin.hong@mid-fun.com> wrote:
+> > no,i didn't fsync when i close file !
+> >
+> > did ubifs driver can achieve "fsync" when user modify some file and
+> > close with save ?
+> 
+> For critical data, you need to call fsync to be sure the data is
+> stored on the flash.
+> There is also a "sync" option for ubifs, but this will hurt performance a lot.
 
-Signed-off-by: Peter Korsgaard <jacmet@sunsite.dk>
----
- drivers/mtd/nand/s3c2410.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+That reminds me.
 
-diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-index 89b7905..01a105e 100644
---- a/drivers/mtd/nand/s3c2410.c
-+++ b/drivers/mtd/nand/s3c2410.c
-@@ -253,9 +253,9 @@ static int s3c2410_nand_setrate(struct s3c2410_nand_info *info)
- 
- 	case TYPE_S3C2440:
- 	case TYPE_S3C2412:
--		mask = (S3C2410_NFCONF_TACLS(tacls_max - 1) |
--			S3C2410_NFCONF_TWRPH0(7) |
--			S3C2410_NFCONF_TWRPH1(7));
-+		mask = (S3C2440_NFCONF_TACLS(tacls_max - 1) |
-+			S3C2440_NFCONF_TWRPH0(7) |
-+			S3C2440_NFCONF_TWRPH1(7));
- 
- 		set = S3C2440_NFCONF_TACLS(tacls - 1);
- 		set |= S3C2440_NFCONF_TWRPH0(twrph0 - 1);
--- 
-1.6.2
+A filesystem-generic "sync-on-close" mount option would be handy for
+things like that.
+
+Expecting users to call fsync from a shell script is probably a bit much
+in a lot of applications.
+
+-- Jamie
