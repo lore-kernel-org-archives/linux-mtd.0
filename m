@@ -1,21 +1,12 @@
 Received: from aeryn.fluff.org.uk ([87.194.8.8] helo=kira.home.fluff.org)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MDclP-0004D7-S9
-	for linux-mtd@lists.infradead.org; Mon, 08 Jun 2009 11:11:46 +0000
-Date: Mon, 8 Jun 2009 12:11:21 +0100
-From: Ben Dooks <ben-linux@fluff.org>
-To: Peter Korsgaard <jacmet@sunsite.dk>
-Subject: Re: [PATCH] mtd/nand: s3c6400 support for s3c2410 driver
-Message-ID: <20090608111120.GA31034@fluff.org.uk>
-References: <1244379863-23581-1-git-send-email-jacmet@sunsite.dk>
-	<1244379863-23581-2-git-send-email-jacmet@sunsite.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1244379863-23581-2-git-send-email-jacmet@sunsite.dk>
-Cc: wookey@wookware.org, linux-mtd@lists.infradead.org,
-	David.Woodhouse@intel.com, ben-linux@fluff.org,
-	linux-arm-kernel@lists.arm.linux.org.uk
+	id 1MDcsO-0005D9-DB
+	for linux-mtd@lists.infradead.org; Mon, 08 Jun 2009 11:18:58 +0000
+To: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Subject: Please pull bjdooks' next-mtd tree
+Message-Id: <E1MDcsM-0008PP-W7@kira.home.fluff.org>
+From: Ben Dooks <ben@fluff.org.uk>
+Date: Mon, 08 Jun 2009 12:18:50 +0100
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,90 +16,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Jun 07, 2009 at 03:04:23PM +0200, Peter Korsgaard wrote:
-> Add s3c6400 support to the s3c2410 driver. The nand controller in
-> the s3c64xx devices is compatible with the one in the s3c2412, so
-> simply reuse that code.
-> 
-> Signed-off-by: Peter Korsgaard <jacmet@sunsite.dk>
-Acked-by: Ben Dooks <ben-linux@fluff.org>
-> ---
->  drivers/mtd/nand/Kconfig   |   18 +++++++++---------
->  drivers/mtd/nand/s3c2410.c |    3 +++
->  2 files changed, 12 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index 890936d..4d63d7b 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -139,27 +139,27 @@ config MTD_NAND_PPCHAMELEONEVB
->  	  This enables the NAND flash driver on the PPChameleon EVB Board.
->  
->  config MTD_NAND_S3C2410
-> -	tristate "NAND Flash support for S3C2410/S3C2440 SoC"
-> -	depends on ARCH_S3C2410
-> +	tristate "NAND Flash support for Samsung S3C SoCs"
-> +	depends on ARCH_S3C2410 || ARCH_S3C64XX
->  	help
-> -	  This enables the NAND flash controller on the S3C2410 and S3C2440
-> +	  This enables the NAND flash controller on the S3C24xx and S3C64xx
->  	  SoCs
->  
->  	  No board specific support is done by this driver, each board
->  	  must advertise a platform_device for the driver to attach.
->  
->  config MTD_NAND_S3C2410_DEBUG
-> -	bool "S3C2410 NAND driver debug"
-> +	bool "Samsung S3C NAND driver debug"
->  	depends on MTD_NAND_S3C2410
->  	help
-> -	  Enable debugging of the S3C2410 NAND driver
-> +	  Enable debugging of the S3C NAND driver
->  
->  config MTD_NAND_S3C2410_HWECC
-> -	bool "S3C2410 NAND Hardware ECC"
-> +	bool "Samsung S3C NAND Hardware ECC"
->  	depends on MTD_NAND_S3C2410
->  	help
-> -	  Enable the use of the S3C2410's internal ECC generator when
-> -	  using NAND. Early versions of the chip have had problems with
-> +	  Enable the use of the controller's internal ECC generator when
-> +	  using NAND. Early versions of the chips have had problems with
->  	  incorrect ECC generation, and if using these, the default of
->  	  software ECC is preferable.
->  
-> @@ -171,7 +171,7 @@ config MTD_NAND_NDFC
->  	 NDFC Nand Flash Controllers are integrated in IBM/AMCC's 4xx SoCs
->  
->  config MTD_NAND_S3C2410_CLKSTOP
-> -	bool "S3C2410 NAND IDLE clock stop"
-> +	bool "Samsung S3C NAND IDLE clock stop"
->  	depends on MTD_NAND_S3C2410
->  	default n
->  	help
-> diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-> index 01a105e..11dc7e6 100644
-> --- a/drivers/mtd/nand/s3c2410.c
-> +++ b/drivers/mtd/nand/s3c2410.c
-> @@ -1111,6 +1111,9 @@ static struct platform_device_id s3c24xx_driver_ids[] = {
->  	}, {
->  		.name		= "s3c2412-nand",
->  		.driver_data	= TYPE_S3C2412,
-> +	}, {
-> +		.name		= "s3c6400-nand",
-> +		.driver_data	= TYPE_S3C2412, /* compatible with 2412 */
->  	},
->  	{ }
->  };
-> -- 
-> 1.6.2
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+The following changes since commit 9fa7eb283c5cdc2b0f4a8cfe6387ed82e5e9a3d3:
+  Linus Torvalds (1):
+        Linux 2.6.30-rc8
 
--- 
-Ben (ben@fluff.org, http://www.fluff.org/)
+are available in the git repository at:
 
-  'a smiley only costs 4 bytes'
+  git://aeryn.fluff.org.uk/bjdooks/linux.git next-mtd
+
+Andy Green (3):
+      [MTD] [NAND] S3C2410: NAND ECC by chip rather than global
+      [MTD] [NAND] S3C2410: Fix CFG debug order
+      [MTD] [NAND] S3C2410: Allow commandline partition processing
+
+Ben Dooks (4):
+      [MTD] [NAND] S3C2410: Move to using platform device table
+      [MTD] [NAND] S3C2410: Basic kerneldoc comment updates
+      [MTD] [NAND] S3C2410: Deal with unaligned lengths in S3C2440 buffer read/write
+      [MTD] [NAND] S3C2410: Use DIV_ROUND_UP
+
+Michel Pollet (2):
+      [MTD] [NAND] S3C2410: Added a kerneldoc for s3c2410_nand_set
+      [MTD] [NAND] S3C2410: Allow the machine code to get the BBT table from NAND
+
+Nelson Castillo (2):
+      [MTD] [NAND] S3C2410: Small colon cleanup
+      [MTD] [NAND] S3C2410: Uninitialised variable cleanup
+
+ arch/arm/plat-s3c/include/plat/nand.h |   31 +++--
+ drivers/mtd/nand/s3c2410.c            |  259 ++++++++++++++++++++++-----------
+ 2 files changed, 194 insertions(+), 96 deletions(-)
