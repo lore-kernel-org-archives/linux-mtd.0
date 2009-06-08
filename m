@@ -1,17 +1,16 @@
 Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MDY30-00025D-8m
-	for linux-mtd@lists.infradead.org; Mon, 08 Jun 2009 06:09:37 +0000
-Subject: Re: [PATCH] [MTD-UTILS] Incorrect loop condition
+	id 1MDYA3-0003aZ-Qt
+	for linux-mtd@lists.infradead.org; Mon, 08 Jun 2009 06:16:54 +0000
+Subject: Re: [PATH] [MTD-UTILS] Return error if failure when reading from
+	standard input
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Jehan Bing <jehan@orb.com>
-In-Reply-To: <4A29CA51.1070906@orb.com>
-References: <h077d2$ra9$1@ger.gmane.org>
-	<1244204148.5847.54.camel@localhost.localdomain>
-	<4A29CA51.1070906@orb.com>
+To: Nahor <nahor.j+gmane@gmail.com>
+In-Reply-To: <h08vuc$uut$1@ger.gmane.org>
+References: <h08vuc$uut$1@ger.gmane.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 08 Jun 2009 09:09:18 +0300
-Message-Id: <1244441358.5847.335.camel@localhost.localdomain>
+Date: Mon, 08 Jun 2009 09:16:42 +0300
+Message-Id: <1244441802.5847.337.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -25,15 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-06-05 at 18:45 -0700, Jehan Bing wrote:
-> Small patch to fix an obvious typo.
+On Thu, 2009-06-04 at 10:23 -0700, Nahor wrote:
+> The test to return SUCCESS or FAILURE at the end of nandwrite is done 
+> only when reading from a file. When reading from the standard input, 
+> nandwrite always returns success except for some cases at the begining.
 > 
-> If the file contains only a few bytes in the last page and the --oob option is selected, the loop may exit early (readlen < meminfo.oobsize).
-> Most of the time it will still work though because the code tries to read the whole OOB in one chunk.
-> 
-> Signed-off-by: Jehan Bing <jehan@orb.com>
+> This patches aims at fixing that by returning an error when jumping to 
+> the closeall label.
 
-Pushed, thanks.
+Looks ok to me. Please, send an applicable patch.
 
 -- 
 Best regards,
