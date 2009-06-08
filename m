@@ -1,13 +1,20 @@
-Received: from [65.98.92.6] (helo=b32.net)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MDuB6-00064k-UL
-	for linux-mtd@lists.infradead.org; Tue, 09 Jun 2009 05:47:27 +0000
-From: Kevin Cernekee <kpc.mtd@gmail.com>
-To: <dedekind@infradead.org>, <dwmw2@infradead.org>
-Date: Mon, 8 Jun 2009 22:14:12 -0700
-Subject: [PATCH] MTD: Add UBI reboot notifier
-Message-Id: <018abcd2d98090bda0f75d3c95c9ec85@localhost>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from smtp3.netcologne.de ([194.8.194.66])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MDigX-0000TP-2T
+	for linux-mtd@lists.infradead.org; Mon, 08 Jun 2009 17:31:19 +0000
+Date: Mon, 08 Jun 2009 19:30:45 +0200
+From: Albrecht =?iso-8859-1?b?RHJl3w==?= <albrecht.dress@arcor.de>
+Subject: Re: [PATCH V2 2/2] mtd/maps/mtd-ram: add an of-platform driver
+To: Wolfram Sang <w.sang@pengutronix.de>
+In-Reply-To: <20090608163540.GA16384@pengutronix.de> (from
+	w.sang@pengutronix.de on Mon Jun  8 18:35:40 2009)
+Message-Id: <1244482256.3278.0@antares>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=PGP-SHA1;
+	protocol="application/pgp-signature"; boundary="=-97gFfBnOr0Mpi+yYBi41"
+Cc: devicetree-discuss@ozlabs.org, Grant Likely <grant.likely@secretlab.ca>,
+	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	Ben Dooks <ben-linux@fluff.org>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,140 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ubifs_sync_fs() may queue up a new UBI erase transaction, which is
-processed in the background:
+--=-97gFfBnOr0Mpi+yYBi41
+Content-Type: text/plain; charset=ISO-8859-1; DelSp=Yes; Format=Flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-bash# sync
-ubifs_sync_fs: enter
-schedule_erase: enter
-schedule_erase: exit
-ubi_sync: enter
-ubi_sync: exit
-ubifs_sync_fs: exit
-cfi_amdstd_erase_varsize: enter
-bash# cfi_amdstd_erase_varsize: exit
+Am 08.06.09 18:35 schrieb(en) Wolfram Sang:
+>> Question: why is bank-width even relevant for a RAM device?
+>=20
+> The underlying map_ram-driver uses it once while erasing. The =20
+> question remains if this is really needed?
 
-Normally this is not a big deal.  However, during the final sync before
-rebooting, it initiates an erase operation that is potentially still
-active when Linux restarts the machine:
+Am 06.06.09 18:16 schrieb(en) Albrecht Dre=DF:
+> At least if the RAM is attached to the 5200's Local Plus Bus in =20
+> 16-bit mode, no byte write accesses are allowed (byte /reads/ work, =20
+> though).  I have a tweak (which I will post next week) to address =20
+> this case, which depends upon this setting.
 
-bash# reboot -f
-ubifs_sync_fs: enter
-schedule_erase: enter
-schedule_erase: exit
-ubi_sync: enter
-ubi_sync: exit
-ubifs_sync_fs: exit
-cfi_amdstd_erase_varsize: enter
-Restarting system.
-<Flash is stuck in FL_ERASE mode - system hangs>
+To put this clearer: on '5200 based systems, the driver (more specific: =20
+the function inline_map_copy_to()) *must* know whether the hardware is =20
+connected in 8-bit or 16-bit mode to the Local Plus Bus, as byte writes =20
+(issued by memcpy_toio()) will fail for the latter setup (probably the =20
+same applies for byte and word writes in 32-bit mode).
 
-This is easiest to observe on a NOR flash.  One factor is the long erase
-time.  The other reason is because getting a NOR flash stuck in FL_ERASE
-mode will prevent the bootloader from running, unless the board provides
-a way for the processor to automatically reset the flash.  In my
-experience, many boards do not.
+IMHO, this information should be passed using the device tree.  The =20
+"bank-width" seems to be an obvious choice for that.
 
-My proposal is to add a reboot notifier to let the UBI background thread
-terminate gracefully.  The new ordering looks like this:
+Best, Albrecht.
 
-bash# reboot -f
-ubifs_sync_fs: enter
-schedule_erase: enter
-schedule_erase: exit
-ubifs_sync_fs: exit
-cfi_amdstd_erase_varsize: enter
-ubi_reboot_notifier: enter
-cfi_amdstd_erase_varsize: exit
-ubi_reboot_notifier: exit
-cfi_amdstd_reboot: enter
-cfi_amdstd_reboot: exit
+--=-97gFfBnOr0Mpi+yYBi41
+Content-Type: application/pgp-signature
 
-cfi_amdstd_reboot doesn't really exist, but I added a dummy notifier to
-make sure that the ordering would be correct when using drivers that do
-have this feature.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.9 (GNU/Linux)
 
-Signed-off-by: Kevin Cernekee <kpc.mtd@gmail.com>
----
- drivers/mtd/ubi/build.c |   24 ++++++++++++++++++++++++
- drivers/mtd/ubi/ubi.h   |    2 ++
- 2 files changed, 26 insertions(+), 0 deletions(-)
+iD8DBQBKLUrQn/9unNAn/9ERAlojAKCQcNeACQ0s+hriPt5oMQphSBrv2QCgquGu
+2U7wswApUdESMZiYG64xdfk=
+=ODlX
+-----END PGP SIGNATURE-----
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 4048db8..ca88059 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -41,6 +41,7 @@
- #include <linux/miscdevice.h>
- #include <linux/log2.h>
- #include <linux/kthread.h>
-+#include <linux/reboot.h>
- #include "ubi.h"
- 
- /* Maximum length of the 'mtd=' parameter */
-@@ -726,6 +727,23 @@ static int autoresize(struct ubi_device *ubi, int vol_id)
- }
- 
- /**
-+ * ubi_reboot_notifier - halt UBI transactions immediately prior to a reboot
-+ * @n: notifier_block struct (inside our struct ubi_device)
-+ * @val: unused
-+ * @v: unused
-+ */
-+static int ubi_reboot_notifier(struct notifier_block *n, unsigned long val,
-+	void *v)
-+{
-+	struct ubi_device *ubi = container_of(n, struct ubi_device,
-+		reboot_notifier);
-+
-+	if (ubi->bgt_thread)
-+		kthread_stop(ubi->bgt_thread);
-+	return NOTIFY_DONE;
-+}
-+
-+/**
-  * ubi_attach_mtd_dev - attach an MTD device.
-  * @mtd: MTD device description object
-  * @ubi_num: number to assign to the new UBI device
-@@ -876,6 +894,11 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
- 		ubi->thread_enabled = 1;
- 	wake_up_process(ubi->bgt_thread);
- 
-+	/* Flash device priority is 0.  UBI needs to shut down first. */
-+	ubi->reboot_notifier.priority = 1;
-+	ubi->reboot_notifier.notifier_call = ubi_reboot_notifier;
-+	register_reboot_notifier(&ubi->reboot_notifier);
-+
- 	ubi_devices[ubi_num] = ubi;
- 	return ubi_num;
- 
-@@ -945,6 +968,7 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
- 	 * Before freeing anything, we have to stop the background thread to
- 	 * prevent it from doing anything on this device while we are freeing.
- 	 */
-+	unregister_reboot_notifier(&ubi->reboot_notifier);
- 	if (ubi->bgt_thread)
- 		kthread_stop(ubi->bgt_thread);
- 
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index c055511..44a45b9 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -36,6 +36,7 @@
- #include <linux/device.h>
- #include <linux/string.h>
- #include <linux/vmalloc.h>
-+#include <linux/notifier.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/ubi.h>
- 
-@@ -420,6 +421,7 @@ struct ubi_device {
- 	struct task_struct *bgt_thread;
- 	int thread_enabled;
- 	char bgt_name[sizeof(UBI_BGT_NAME_PATTERN)+2];
-+	struct notifier_block reboot_notifier;
- 
- 	/* I/O sub-system's stuff */
- 	long long flash_size;
--- 
-1.6.3.1
+--=-97gFfBnOr0Mpi+yYBi41--
