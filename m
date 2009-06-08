@@ -1,15 +1,21 @@
-Subject: Re: [PATCH revised] mtd: remove driver-core BUS_ID_SIZE
-From: David Woodhouse <dwmw2@infradead.org>
-To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-In-Reply-To: <1244306664-23741-1-git-send-email-anemo@mba.ocn.ne.jp>
-References: <1244306664-23741-1-git-send-email-anemo@mba.ocn.ne.jp>
-Content-Type: text/plain
-Date: Mon, 08 Jun 2009 09:14:22 +0100
-Message-Id: <1244448862.30939.76.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Kay Sievers <kay.sievers@vrfy.org>, linux-mtd@lists.infradead.org,
-	Greg Kroah-Hartman <gregkh@suse.de>
+Received: from aeryn.fluff.org.uk ([87.194.8.8] helo=kira.home.fluff.org)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MDclP-0004D7-S9
+	for linux-mtd@lists.infradead.org; Mon, 08 Jun 2009 11:11:46 +0000
+Date: Mon, 8 Jun 2009 12:11:21 +0100
+From: Ben Dooks <ben-linux@fluff.org>
+To: Peter Korsgaard <jacmet@sunsite.dk>
+Subject: Re: [PATCH] mtd/nand: s3c6400 support for s3c2410 driver
+Message-ID: <20090608111120.GA31034@fluff.org.uk>
+References: <1244379863-23581-1-git-send-email-jacmet@sunsite.dk>
+	<1244379863-23581-2-git-send-email-jacmet@sunsite.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1244379863-23581-2-git-send-email-jacmet@sunsite.dk>
+Cc: wookey@wookware.org, linux-mtd@lists.infradead.org,
+	David.Woodhouse@intel.com, ben-linux@fluff.org,
+	linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,85 +25,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2009-06-07 at 01:44 +0900, Atsushi Nemoto wrote:
-> From: Kay Sievers <kay.sievers@vrfy.org>
+On Sun, Jun 07, 2009 at 03:04:23PM +0200, Peter Korsgaard wrote:
+> Add s3c6400 support to the s3c2410 driver. The nand controller in
+> the s3c64xx devices is compatible with the one in the s3c2412, so
+> simply reuse that code.
 > 
-> The name size limit is gone from the driver-core, the BUS_ID_SIZE
-> value will be removed.
-
-Thanks. I've already applied the original patch, so I was after an
-incremental one.
-
->  			txx9_priv->cs = -1;
-> -			strcpy(txx9_priv->mtdname, dev_name(&dev->dev));
-> +			txx9_priv->mtdname = kstrdup(dev_name(&dev->dev),
-> +						     GFP_KERNEL);
-
-You don't check for failure here.
-
-With that fixed, this is your changes as an incremental patch with an
-appropriate commit log... I think it's exceeded the limit of how much
-I'd want to massage your patch while retaining your Signed-off-by:, so
-I'll give you a chance to append your S-o-b for yourself....
-
------
-From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-Subject: [PATCH] Fix memory leak on probe failure.
-
-Commit 81933046ef2a615031c46171013bde2c5225ee69 ('mtd: Fix handling of
-mtdname in txx9ndfmc.c') introduced a potential memory leak. The
-'mtdname' member of the private data structure is now allocated
-separately, but was not freed on certain error paths.
-
-Fix that, and make things simpler by _always_ allocating it separately
-so that we don't need 'if (mtdname != dev_name()) kfree(mtdname)'...
-which gets ugly now that we're doing it more than once, and more likely
-that we'll get it wrong some time.
-
-diff --git a/drivers/mtd/nand/txx9ndfmc.c b/drivers/mtd/nand/txx9ndfmc.c
-index 5f919e6..488088e 100644
---- a/drivers/mtd/nand/txx9ndfmc.c
-+++ b/drivers/mtd/nand/txx9ndfmc.c
-@@ -336,20 +336,21 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
- 			txx9_priv->cs = i;
- 			txx9_priv->mtdname = kasprintf(GFP_KERNEL, "%s.%u",
- 						       dev_name(&dev->dev), i);
--			if (!txx9_priv->mtdname) {
--				kfree(txx9_priv);
--				dev_err(&dev->dev,
--					"Unable to allocate TXx9 NDFMC MTD device name.\n");
--				continue;
--			}
- 		} else {
- 			txx9_priv->cs = -1;
--			txx9_priv->mtdname = dev_name(&dev->dev);
-+			txx9_priv->mtdname = kstrdup(dev_name(&dev->dev),
-+						     GFP_KERNEL);
-+		}
-+		if (!txx9_priv->mtdname) {
-+			kfree(txx9_priv);
-+			dev_err(&dev->dev, "Unable to allocate MTD name.\n");
-+			continue;
- 		}
- 		if (plat->wide_mask & (1 << i))
- 			chip->options |= NAND_BUSWIDTH_16;
- 
- 		if (nand_scan(mtd, 1)) {
-+			kfree(txx9_priv->mtdname);
- 			kfree(txx9_priv);
- 			continue;
- 		}
-@@ -391,8 +392,7 @@ static int __exit txx9ndfmc_remove(struct platform_device *dev)
- 		kfree(drvdata->parts[i]);
- #endif
- 		del_mtd_device(mtd);
--		if (txx9_priv->mtdname != dev_name(&dev->dev))
--			kfree(txx9_priv->mtdname);
-+		kfree(txx9_priv->mtdname);
- 		kfree(txx9_priv);
- 	}
- 	return 0;
+> Signed-off-by: Peter Korsgaard <jacmet@sunsite.dk>
+Acked-by: Ben Dooks <ben-linux@fluff.org>
+> ---
+>  drivers/mtd/nand/Kconfig   |   18 +++++++++---------
+>  drivers/mtd/nand/s3c2410.c |    3 +++
+>  2 files changed, 12 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index 890936d..4d63d7b 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -139,27 +139,27 @@ config MTD_NAND_PPCHAMELEONEVB
+>  	  This enables the NAND flash driver on the PPChameleon EVB Board.
+>  
+>  config MTD_NAND_S3C2410
+> -	tristate "NAND Flash support for S3C2410/S3C2440 SoC"
+> -	depends on ARCH_S3C2410
+> +	tristate "NAND Flash support for Samsung S3C SoCs"
+> +	depends on ARCH_S3C2410 || ARCH_S3C64XX
+>  	help
+> -	  This enables the NAND flash controller on the S3C2410 and S3C2440
+> +	  This enables the NAND flash controller on the S3C24xx and S3C64xx
+>  	  SoCs
+>  
+>  	  No board specific support is done by this driver, each board
+>  	  must advertise a platform_device for the driver to attach.
+>  
+>  config MTD_NAND_S3C2410_DEBUG
+> -	bool "S3C2410 NAND driver debug"
+> +	bool "Samsung S3C NAND driver debug"
+>  	depends on MTD_NAND_S3C2410
+>  	help
+> -	  Enable debugging of the S3C2410 NAND driver
+> +	  Enable debugging of the S3C NAND driver
+>  
+>  config MTD_NAND_S3C2410_HWECC
+> -	bool "S3C2410 NAND Hardware ECC"
+> +	bool "Samsung S3C NAND Hardware ECC"
+>  	depends on MTD_NAND_S3C2410
+>  	help
+> -	  Enable the use of the S3C2410's internal ECC generator when
+> -	  using NAND. Early versions of the chip have had problems with
+> +	  Enable the use of the controller's internal ECC generator when
+> +	  using NAND. Early versions of the chips have had problems with
+>  	  incorrect ECC generation, and if using these, the default of
+>  	  software ECC is preferable.
+>  
+> @@ -171,7 +171,7 @@ config MTD_NAND_NDFC
+>  	 NDFC Nand Flash Controllers are integrated in IBM/AMCC's 4xx SoCs
+>  
+>  config MTD_NAND_S3C2410_CLKSTOP
+> -	bool "S3C2410 NAND IDLE clock stop"
+> +	bool "Samsung S3C NAND IDLE clock stop"
+>  	depends on MTD_NAND_S3C2410
+>  	default n
+>  	help
+> diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+> index 01a105e..11dc7e6 100644
+> --- a/drivers/mtd/nand/s3c2410.c
+> +++ b/drivers/mtd/nand/s3c2410.c
+> @@ -1111,6 +1111,9 @@ static struct platform_device_id s3c24xx_driver_ids[] = {
+>  	}, {
+>  		.name		= "s3c2412-nand",
+>  		.driver_data	= TYPE_S3C2412,
+> +	}, {
+> +		.name		= "s3c6400-nand",
+> +		.driver_data	= TYPE_S3C2412, /* compatible with 2412 */
+>  	},
+>  	{ }
+>  };
+> -- 
+> 1.6.2
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 -- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+Ben (ben@fluff.org, http://www.fluff.org/)
+
+  'a smiley only costs 4 bytes'
