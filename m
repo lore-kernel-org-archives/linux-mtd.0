@@ -1,12 +1,21 @@
 Received: from aeryn.fluff.org.uk ([87.194.8.8] helo=kira.home.fluff.org)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MDcsO-0005D9-DB
-	for linux-mtd@lists.infradead.org; Mon, 08 Jun 2009 11:18:58 +0000
-To: dwmw2@infradead.org, linux-mtd@lists.infradead.org
-Subject: Please pull bjdooks' next-mtd tree
-Message-Id: <E1MDcsM-0008PP-W7@kira.home.fluff.org>
-From: Ben Dooks <ben@fluff.org.uk>
-Date: Mon, 08 Jun 2009 12:18:50 +0100
+	id 1MDctf-0007AF-CL
+	for linux-mtd@lists.infradead.org; Mon, 08 Jun 2009 11:20:29 +0000
+Date: Mon, 8 Jun 2009 12:20:02 +0100
+From: Ben Dooks <ben-linux@fluff.org>
+To: Peter Korsgaard <jacmet@sunsite.dk>
+Subject: Re: [PATCH] nand/s3c2410: s3c2410_nand_setrate(): use correct
+	macros for 2412/2440
+Message-ID: <20090608112002.GB31034@fluff.org.uk>
+References: <1244379863-23581-1-git-send-email-jacmet@sunsite.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1244379863-23581-1-git-send-email-jacmet@sunsite.dk>
+Cc: wookey@wookware.org, linux-mtd@lists.infradead.org,
+	David.Woodhouse@intel.com, ben-linux@fluff.org,
+	linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,33 +25,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The following changes since commit 9fa7eb283c5cdc2b0f4a8cfe6387ed82e5e9a3d3:
-  Linus Torvalds (1):
-        Linux 2.6.30-rc8
+On Sun, Jun 07, 2009 at 03:04:22PM +0200, Peter Korsgaard wrote:
+> Use the correct S3C2440_NFCONF_* macros for the mask for the 2412/2440
+> variants instead of the 2410 ones which use wrong bit positions.
+> 
+> Signed-off-by: Peter Korsgaard <jacmet@sunsite.dk>
+Acked-by: Ben Dooks <ben-linux@fluff.org>
+> ---
+>  drivers/mtd/nand/s3c2410.c |    6 +++---
+>  1 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+> index 89b7905..01a105e 100644
+> --- a/drivers/mtd/nand/s3c2410.c
+> +++ b/drivers/mtd/nand/s3c2410.c
+> @@ -253,9 +253,9 @@ static int s3c2410_nand_setrate(struct s3c2410_nand_info *info)
+>  
+>  	case TYPE_S3C2440:
+>  	case TYPE_S3C2412:
+> -		mask = (S3C2410_NFCONF_TACLS(tacls_max - 1) |
+> -			S3C2410_NFCONF_TWRPH0(7) |
+> -			S3C2410_NFCONF_TWRPH1(7));
+> +		mask = (S3C2440_NFCONF_TACLS(tacls_max - 1) |
+> +			S3C2440_NFCONF_TWRPH0(7) |
+> +			S3C2440_NFCONF_TWRPH1(7));
+>  
+>  		set = S3C2440_NFCONF_TACLS(tacls - 1);
+>  		set |= S3C2440_NFCONF_TWRPH0(twrph0 - 1);
+> -- 
+> 1.6.2
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
-are available in the git repository at:
+-- 
+Ben (ben@fluff.org, http://www.fluff.org/)
 
-  git://aeryn.fluff.org.uk/bjdooks/linux.git next-mtd
-
-Andy Green (3):
-      [MTD] [NAND] S3C2410: NAND ECC by chip rather than global
-      [MTD] [NAND] S3C2410: Fix CFG debug order
-      [MTD] [NAND] S3C2410: Allow commandline partition processing
-
-Ben Dooks (4):
-      [MTD] [NAND] S3C2410: Move to using platform device table
-      [MTD] [NAND] S3C2410: Basic kerneldoc comment updates
-      [MTD] [NAND] S3C2410: Deal with unaligned lengths in S3C2440 buffer read/write
-      [MTD] [NAND] S3C2410: Use DIV_ROUND_UP
-
-Michel Pollet (2):
-      [MTD] [NAND] S3C2410: Added a kerneldoc for s3c2410_nand_set
-      [MTD] [NAND] S3C2410: Allow the machine code to get the BBT table from NAND
-
-Nelson Castillo (2):
-      [MTD] [NAND] S3C2410: Small colon cleanup
-      [MTD] [NAND] S3C2410: Uninitialised variable cleanup
-
- arch/arm/plat-s3c/include/plat/nand.h |   31 +++--
- drivers/mtd/nand/s3c2410.c            |  259 ++++++++++++++++++++++-----------
- 2 files changed, 194 insertions(+), 96 deletions(-)
+  'a smiley only costs 4 bytes'
