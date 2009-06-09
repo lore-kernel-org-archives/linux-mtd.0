@@ -1,23 +1,23 @@
 Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MEAMz-0006vz-Jl
-	for linux-mtd@lists.infradead.org; Tue, 09 Jun 2009 23:04:48 +0000
+	id 1MEAQ8-00036x-AP
+	for linux-mtd@lists.infradead.org; Tue, 09 Jun 2009 23:08:03 +0000
 Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1MEAMv-00053S-Bd
-	for linux-mtd@lists.infradead.org; Tue, 09 Jun 2009 23:04:37 +0000
+	id 1MEAQ2-0005AJ-TU
+	for linux-mtd@lists.infradead.org; Tue, 09 Jun 2009 23:07:50 +0000
 Received: from adsl-99-185-243-218.dsl.pltn13.sbcglobal.net ([99.185.243.218])
 	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
 	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 09 Jun 2009 23:04:37 +0000
-Received: from jehan by adsl-99-185-243-218.dsl.pltn13.sbcglobal.net with
-	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 09 Jun 2009 23:04:37 +0000
+	for <linux-mtd@lists.infradead.org>; Tue, 09 Jun 2009 23:07:50 +0000
+Received: from nahor.j+gmane by adsl-99-185-243-218.dsl.pltn13.sbcglobal.net
+	with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 09 Jun 2009 23:07:50 +0000
 To: linux-mtd@lists.infradead.org
-From: Jehan Bing <jehan@orb.com>
-Subject: Re: [PATCH 1/3] [MTD-UTILS] Unified reading from standard input and
-	from file
-Date: Tue, 09 Jun 2009 16:04:25 -0700
-Message-ID: <h0mppp$7v2$1@ger.gmane.org>
+From: Nahor <nahor.j+gmane@gmail.com>
+Subject: Re: [PATCH 2/3] [MTD-UTILS] Use same kind of code for reading OOB
+	than for regular data
+Date: Tue, 09 Jun 2009 16:07:39 -0700
+Message-ID: <h0mpvs$8nk$1@ger.gmane.org>
 References: <h0k3il$ij6$1@ger.gmane.org>	<1244551983.5847.388.camel@localhost.localdomain>
 	<4A2E98BD.30704@orb.com>
 Mime-Version: 1.0
@@ -34,98 +34,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use same code path for reading data (not the OOB) from either the 
-standard input or a regular file.
+Use the same code structure when reading the OOB than when reading the 
+regular data.
 
 Signed-off-by: Jehan Bing <jehan@orb.com>
 
---- a/nandwrite.c	2009-06-08 13:33:32.000000000 -0700
-+++ b/nandwrite.c	2009-06-09 13:15:17.000000000 -0700
-@@ -260,7 +260,6 @@ int main(int argc, char * const argv[])
- 	int ret, readlen;
- 	int oobinfochanged = 0;
- 	struct nand_oobinfo old_oobinfo;
--	int readcnt = 0;
- 	bool failed = true;
- 
- 	process_options(argc, argv);
-@@ -476,37 +475,18 @@ int main(int argc, char * const argv[])
- 
+--- a/nandwrite.c	2009-06-09 13:20:56.000000000 -0700
++++ b/nandwrite.c	2009-06-09 13:20:44.000000000 -0700
+@@ -520,17 +520,32 @@ int main(int argc, char * const argv[])
  		}
  
--		readlen = meminfo.writesize;
- 
--		if (ifd != STDIN_FILENO) {
+ 		if (writeoob) {
 -			int tinycnt = 0;
--
--			if (pad && (imglen < readlen))
--			{
--				readlen = imglen;
--				erase_buffer(writebuf + readlen, meminfo.writesize - readlen);
--			}
-+		{
-+			readlen = meminfo.writesize;
++			{
++				int readlen = meminfo.oobsize;
  
--			/* Read Page Data from input file */
--			while(tinycnt < readlen) {
--				cnt = read(ifd, writebuf + tinycnt, readlen - tinycnt);
+-			while(tinycnt < meminfo.oobsize) {
+-				cnt = read(ifd, oobreadbuf + tinycnt, meminfo.oobsize - tinycnt);
 -				if (cnt == 0) { // EOF
 -					break;
 -				} else if (cnt < 0) {
 -					perror ("File I/O error on input file");
--					goto closeall;
--				}
--				tinycnt += cnt;
--			}
--		} else {
- 			int tinycnt = 0;
- 
--			while(tinycnt < readlen) {
-+			while (tinycnt < readlen) {
- 				cnt = read(ifd, writebuf + tinycnt, readlen - tinycnt);
- 				if (cnt == 0) { // EOF
- 					break;
- 				} else if (cnt < 0) {
--					perror ("File I/O error on stdin");
-+					perror ("File I/O error on input");
++				int tinycnt = 0;
++
++				while (tinycnt < readlen) {
++					cnt = read(ifd, oobreadbuf + tinycnt, readlen - tinycnt);
++					if (cnt == 0) { // EOF
++						break;
++					} else if (cnt < 0) {
++						perror ("File I/O error on input");
++						goto closeall;
++					}
++					tinycnt += cnt;
++				}
++
++				if (tinycnt < readlen) {
++					fprintf(stderr, "Unexpected EOF. Expecting at least "
++							"%d more bytes for OOB\n", readlen - tinycnt);
  					goto closeall;
  				}
- 				tinycnt += cnt;
-@@ -514,18 +494,30 @@ int main(int argc, char * const argv[])
- 
- 			/* No padding needed - we are done */
- 			if (tinycnt == 0) {
--				imglen = 0;
-+				// For standard input, set the imglen to 0 to signal
-+				// the end of the "file". For non standard input, leave
-+				// it as-is to detect an early EOF
-+				if (ifd == STDIN_FILENO) {
+-				tinycnt += cnt;
++
++				if ((ifd == STDIN_FILENO) && (cnt == 0)) {
++					/* No more bytes - we are done after writing the remaining bytes */
 +					imglen = 0;
 +				}
- 				break;
  			}
  
--			/* No more bytes - we are done after writing the remaining bytes */
--			if (cnt == 0) {
--				imglen = 0;
--			}
- 
- 			/* Padding */
--			if (pad && (tinycnt < readlen)) {
--				erase_buffer(writebuf + tinycnt, meminfo.writesize - tinycnt);
-+			if (tinycnt < readlen) {
-+				if (!pad) {
-+					fprintf(stderr, "Unexpected EOF. Expecting at least "
-+							"%d more bytes. Use the padding option.\n",
-+							readlen - tinycnt);
-+					goto closeall;
-+				}
-+				erase_buffer(writebuf + tinycnt, readlen - tinycnt);
-+			}
-+
-+			/* No more bytes - we are done after writing the remaining bytes */
-+			if ((ifd == STDIN_FILENO) && (cnt == 0)) {
-+				imglen = 0;
- 			}
- 		}
- 
+ 			if (!noecc) {
