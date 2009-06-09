@@ -1,23 +1,17 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1ME0w1-0000cX-Uk
-	for linux-mtd@lists.infradead.org; Tue, 09 Jun 2009 13:00:33 +0000
-Subject: Re: Nandwrite's behavior in case of write failure
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Jehan Bing <jehan@orb.com>
-In-Reply-To: <4A2D77EE.2090400@orb.com>
-References: <h09s2s$ar6$1@ger.gmane.org>
-	<1244205087.5847.66.camel@localhost.localdomain>
-	<4A29D723.1010109@gmail.com>
-	<1244365076.5847.317.camel@localhost.localdomain>
-	<4A2D77EE.2090400@orb.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 09 Jun 2009 15:59:02 +0300
-Message-Id: <1244552342.5847.389.camel@localhost.localdomain>
+Subject: Re: [patch 01/14] mtd: Flex-OneNAND support
+From: David Woodhouse <dwmw2@infradead.org>
+To: dedekind@infradead.org
+In-Reply-To: <1243432517.11172.32.camel@localhost.localdomain>
+References: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
+	<1243432517.11172.32.camel@localhost.localdomain>
+Content-Type: text/plain
+Date: Tue, 09 Jun 2009 14:38:07 +0100
+Message-Id: <1244554687.4538.16.camel@macbook.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Content-Transfer-Encoding: 7bit
+Cc: vishak.g@samsung.com, apgmoorthy <moorthy.apg@samsung.com>,
+	amul.saha@samsung.com, kyungmin.park@samsung.com,
+	linux-mtd@lists.infradead.org, akpm@linux-foundation.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +21,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-06-08 at 13:43 -0700, Jehan Bing wrote:
-> Artem Bityutskiy wrote:
-> > Yes, write and erase failure mean that the erasblock is bad. But I think
-> > marking a block as bad straight away is just dangerous. Who knows may be
-> > this is a small glitch in a bus, or a software bug, or some-one
-> > corrupted driver's memory, or whatever. This is why UBI is doing
-> > eraseblock torturing before marking it as bad. And it is very careful
-> > about error codes - only EIO code is considered as a reason to mark an
-> > eraseblock as bad.
+On Wed, 2009-05-27 at 16:55 +0300, Artem Bityutskiy wrote:
+> On Mon, 2009-05-25 at 16:22 +0530, apgmoorthy wrote:
+> > I tried on the MTD Git  and have seen the warning as you mentioned.
+> > '#ifndef MODULE' around the function 'flexonenand_setup' should help
+> > to get away with that warning.
+> > We will post a patch.
 > 
+> Does this mean that if I build OneNAND as a module I have no
+> possibility to define FlexOneNAND boundary?
 > 
-> Fixed broken behavior in case of write failure. More specifically:
-> - Only try to mark a block bad if the errors are EIO. Other errors
-> will abort the tool.
-> - Also abort the tool if the marking fails instead of ignoring it.
-> 
-> Signed-off-by: Jehan Bing <jehan@orb.com>
+> Sorry if I missed the discussion, but why you cannot use something
+> like 'module_param_array()' ?
 
-Looks good to me, pushed, thanks.
+That certainly seems like it would be the best answer.
+Can we have a patch to do that please?
 
 -- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
