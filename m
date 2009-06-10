@@ -1,18 +1,16 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MEJHl-0008BO-3K
-	for linux-mtd@lists.infradead.org; Wed, 10 Jun 2009 08:35:59 +0000
-Subject: Re: Problem in erasing a nand flash with ubiformat
+Subject: Re: [PATCHv2] MTD: Add UBI reboot notifier
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Canella Matteo <Matteo.Canella@mta.it>
-In-Reply-To: <BD9F3F3F5A6CCF4BA032B9FED4DD312E893B13@mta-digimail.MTA.INT>
-References: <BD9F3F3F5A6CCF4BA032B9FED4DD312E893B13@mta-digimail.MTA.INT>
+To: Kevin Cernekee <kpc.mtd@gmail.com>
+In-Reply-To: <f5be75d5abc1acd236bedf36c55a860e@localhost>
+References: <1244550775.5847.385.camel@localhost.localdomain>
+	<f5be75d5abc1acd236bedf36c55a860e@localhost>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 10 Jun 2009 11:35:37 +0300
-Message-Id: <1244622937.5847.396.camel@localhost.localdomain>
+Date: Wed, 10 Jun 2009 12:35:09 +0300
+Message-Id: <1244626509.5847.399.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	linux-kernel@vger.kernel.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,36 +21,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-06-10 at 10:27 +0200, Canella Matteo wrote:
-> Hi all,
-> I have a question for Artem,
-> I'm running a problem with ubiformat and I saw this email from you:
+On Tue, 2009-06-09 at 10:59 -0700, Kevin Cernekee wrote:
+> Terminate the UBI background thread prior to restarting the system.
 > 
-> http://lists.infradead.org/pipermail/linux-mtd/2009-January/024285.htm
+> Changes from v1:
 > 
-> I'm having the same problem, ubiformat fails to format a nand flash because it is not able to erase a block.
-> flash_eraseall just ignore this erase problem.
+> Add ubi_sync() at the end, to make sure the underlying MTD device has
+> synchronized its buffers.
+> 
+> Clean up comments and formatting.
+> 
+> Signed-off-by: Kevin Cernekee <kpc.mtd@gmail.com>
 
-Sorry, I am not sure what you mean. You say that ubiformat gets an
-erase error and instead of marking the eraseblock as bad it exits?
+I've pushed this patch to ubi-2.6.git/master. I've tested it
+even. And I amended comments a little. Please, check it:
 
-Are you using the newest ubiformat version from the mtd-utils git
-tree?
+http://git.infradead.org/ubi-2.6.git?a=commit;h=79c293b2629882a1db3a850ed6b84bd1d8a464a7
 
-The latest ubiformat does have code which makrs a block as bad on
-write and erase errors. See the 'mark_bad()' function. If this
-does not work for you, could you please try to use gdb and figure
-out why? The code currently tries to mark the eraseblock as bad
-only in case of an EIO errors, may be this is the problem?
-
-> Do you think ubiformat should physically mark this block as bad eraseblock? Or should it just ignore it?
-Yes it should. And there is already code in ubiformat which implements
-this.
-
-> Why currently ubiformat or flash_eraseall does not mark these as bad blocks?
-
-It does. Make sure you use the latest ubiformat. Not sure about
-flash_eraseall, I do not use it nowadays.
+If you are fine with this, I'll put it to ubi-2.6.git/linux-next
+and merge it this merge window.
 
 -- 
 Best regards,
