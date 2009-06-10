@@ -1,17 +1,23 @@
-Subject: Re: [PATCHv2] MTD: Add UBI reboot notifier
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Kevin Cernekee <kpc.mtd@gmail.com>
-In-Reply-To: <f5be75d5abc1acd236bedf36c55a860e@localhost>
-References: <1244550775.5847.385.camel@localhost.localdomain>
-	<f5be75d5abc1acd236bedf36c55a860e@localhost>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 10 Jun 2009 12:35:09 +0300
-Message-Id: <1244626509.5847.399.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-kernel@vger.kernel.org
-Reply-To: dedekind@infradead.org
+Received: from cluster-a.mailcontrol.com ([85.115.52.190])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MEKd1-0003e5-I1
+	for linux-mtd@lists.infradead.org; Wed, 10 Jun 2009 10:02:04 +0000
+Received: from mailserver.mta.int (mail.mta.it [89.96.171.250])
+	by rly19a.srv.mailcontrol.com (MailControl) with ESMTP id
+	n5AA1n16031615
+	for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2009 11:01:53 +0100
+From: Canella Matteo <Matteo.Canella@mta.it>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Wed, 10 Jun 2009 12:01:47 +0200
+Subject: RE: Problem in erasing a nand flash with ubiformat
+Message-ID: <BD9F3F3F5A6CCF4BA032B9FED4DD312E893B2D@mta-digimail.MTA.INT>
+References: <BD9F3F3F5A6CCF4BA032B9FED4DD312E893B13@mta-digimail.MTA.INT>
+	<1244622937.5847.396.camel@localhost.localdomain>
+In-Reply-To: <1244622937.5847.396.camel@localhost.localdomain>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,26 +27,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-06-09 at 10:59 -0700, Kevin Cernekee wrote:
-> Terminate the UBI background thread prior to restarting the system.
-> 
-> Changes from v1:
-> 
-> Add ubi_sync() at the end, to make sure the underlying MTD device has
-> synchronized its buffers.
-> 
-> Clean up comments and formatting.
-> 
-> Signed-off-by: Kevin Cernekee <kpc.mtd@gmail.com>
-
-I've pushed this patch to ubi-2.6.git/master. I've tested it
-even. And I amended comments a little. Please, check it:
-
-http://git.infradead.org/ubi-2.6.git?a=commit;h=79c293b2629882a1db3a850ed6b84bd1d8a464a7
-
-If you are fine with this, I'll put it to ubi-2.6.git/linux-next
-and merge it this merge window.
-
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEFydGVtIEJpdHl1dHNraXkgW21haWx0
+bzpkZWRla2luZEBpbmZyYWRlYWQub3JnXSANClNlbnQ6IG1lcmNvbGVkw6wgMTAgZ2l1Z25vIDIw
+MDkgMTAuMzYNClRvOiBDYW5lbGxhIE1hdHRlbw0KQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRl
+YWQub3JnDQpTdWJqZWN0OiBSZTogUHJvYmxlbSBpbiBlcmFzaW5nIGEgbmFuZCBmbGFzaCB3aXRo
+IHViaWZvcm1hdA0KDQo+IEFyZSB5b3UgdXNpbmcgdGhlIG5ld2VzdCB1Ymlmb3JtYXQgdmVyc2lv
+biBmcm9tIHRoZSBtdGQtdXRpbHMgZ2l0DQo+IHRyZWU/DQogDQpPaywgdGhpcyBpcyB0aGUgcHJv
+YmxlbS4NCkknbSBhbGlnbmVkIHRvIGVhNDI5NjM1Mzg4ZjdiYjUzZjYyYzQxZWMzZDVjY2Y1ZmEy
+MDczNzAgKE1vbiBKYW4gMTIgMTE6MDg6MDMgMjAwOSkgY29tbWl0Lg0KSSBtdXN0IGdldCB0aGUg
+bGF0ZXN0IHZlcnNpb24uDQoNClRoYW5rcy4NCg0KUmVnYXJkcywNCk1hdHRlbyAgQ2FuZWxsYSAN
+CiAgDQoNCg0K
