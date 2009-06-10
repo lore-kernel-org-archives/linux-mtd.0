@@ -1,23 +1,21 @@
-Received: from cluster-a.mailcontrol.com ([85.115.52.190])
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MEKd1-0003e5-I1
-	for linux-mtd@lists.infradead.org; Wed, 10 Jun 2009 10:02:04 +0000
-Received: from mailserver.mta.int (mail.mta.it [89.96.171.250])
-	by rly19a.srv.mailcontrol.com (MailControl) with ESMTP id
-	n5AA1n16031615
-	for <linux-mtd@lists.infradead.org>; Wed, 10 Jun 2009 11:01:53 +0100
-From: Canella Matteo <Matteo.Canella@mta.it>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Wed, 10 Jun 2009 12:01:47 +0200
+	id 1MELFm-0003zd-Sg
+	for linux-mtd@lists.infradead.org; Wed, 10 Jun 2009 10:42:08 +0000
 Subject: RE: Problem in erasing a nand flash with ubiformat
-Message-ID: <BD9F3F3F5A6CCF4BA032B9FED4DD312E893B2D@mta-digimail.MTA.INT>
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Canella Matteo <Matteo.Canella@mta.it>
+In-Reply-To: <BD9F3F3F5A6CCF4BA032B9FED4DD312E893B2D@mta-digimail.MTA.INT>
 References: <BD9F3F3F5A6CCF4BA032B9FED4DD312E893B13@mta-digimail.MTA.INT>
 	<1244622937.5847.396.camel@localhost.localdomain>
-In-Reply-To: <1244622937.5847.396.camel@localhost.localdomain>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+	<BD9F3F3F5A6CCF4BA032B9FED4DD312E893B2D@mta-digimail.MTA.INT>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 10 Jun 2009 13:40:46 +0300
+Message-Id: <1244630446.5847.401.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,13 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEFydGVtIEJpdHl1dHNraXkgW21haWx0
-bzpkZWRla2luZEBpbmZyYWRlYWQub3JnXSANClNlbnQ6IG1lcmNvbGVkw6wgMTAgZ2l1Z25vIDIw
-MDkgMTAuMzYNClRvOiBDYW5lbGxhIE1hdHRlbw0KQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRl
-YWQub3JnDQpTdWJqZWN0OiBSZTogUHJvYmxlbSBpbiBlcmFzaW5nIGEgbmFuZCBmbGFzaCB3aXRo
-IHViaWZvcm1hdA0KDQo+IEFyZSB5b3UgdXNpbmcgdGhlIG5ld2VzdCB1Ymlmb3JtYXQgdmVyc2lv
-biBmcm9tIHRoZSBtdGQtdXRpbHMgZ2l0DQo+IHRyZWU/DQogDQpPaywgdGhpcyBpcyB0aGUgcHJv
-YmxlbS4NCkknbSBhbGlnbmVkIHRvIGVhNDI5NjM1Mzg4ZjdiYjUzZjYyYzQxZWMzZDVjY2Y1ZmEy
-MDczNzAgKE1vbiBKYW4gMTIgMTE6MDg6MDMgMjAwOSkgY29tbWl0Lg0KSSBtdXN0IGdldCB0aGUg
-bGF0ZXN0IHZlcnNpb24uDQoNClRoYW5rcy4NCg0KUmVnYXJkcywNCk1hdHRlbyAgQ2FuZWxsYSAN
-CiAgDQoNCg0K
+On Wed, 2009-06-10 at 12:01 +0200, Canella Matteo wrote:
+> -----Original Message-----
+> From: Artem Bityutskiy [mailto:dedekind@infradead.org] 
+> Sent: mercoledì 10 giugno 2009 10.36
+> To: Canella Matteo
+> Cc: linux-mtd@lists.infradead.org
+> Subject: Re: Problem in erasing a nand flash with ubiformat
+> 
+> > Are you using the newest ubiformat version from the mtd-utils git
+> > tree?
+>  
+> Ok, this is the problem.
+> I'm aligned to ea429635388f7bb53f62c41ec3d5ccf5fa207370 (Mon Jan 12 11:08:03 2009) commit.
+> I must get the latest version.
+
+Yes, this is ancient code base. Update please. Also, make sure
+you use the latest UBIFS. UBIFS is young, and we still fix bugs,
+so always update it. We maintain back-port trees for peoples'
+convenience:
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_source
+
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
