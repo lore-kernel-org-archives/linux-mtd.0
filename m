@@ -1,21 +1,24 @@
-Received: from rex.securecomputing.com ([203.24.151.4] helo=cyberguard.com.au)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MEDdv-0001Mx-57
-	for linux-mtd@lists.infradead.org; Wed, 10 Jun 2009 02:34:29 +0000
-Message-ID: <4A2F1BAA.4070102@snapgear.com>
-Date: Wed, 10 Jun 2009 12:34:18 +1000
-From: Greg Ungerer <gerg@snapgear.com>
+Received: from mail-px0-f176.google.com ([209.85.216.176])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MEEXd-0005bJ-QW
+	for linux-mtd@lists.infradead.org; Wed, 10 Jun 2009 03:32:04 +0000
+Received: by pxi6 with SMTP id 6so490421pxi.28
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 09 Jun 2009 20:31:55 -0700 (PDT)
 MIME-Version: 1.0
-To: uClinux development list <uclinux-dev@uclinux.org>
-Subject: Re: [uClinux-dev] [PATCH 3/3] mtd/maps: uclinux: do not allow to
-	be	built as a module
-References: <20090526231902.GA6295@linux-sh.org>
-	<1243380798-10089-3-git-send-email-vapier@gentoo.org>
-In-Reply-To: <1243380798-10089-3-git-send-email-vapier@gentoo.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: uclinux-dist-devel@blackfin.uclinux.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+In-Reply-To: <1244445964.5847.349.camel@localhost.localdomain>
+References: <a1fb7300906022244g5cd882acw7de4b9b0ecc35547@mail.gmail.com>
+	<a1fb7300906051703p148c5d1k7fd46257c8031ac6@mail.gmail.com>
+	<1244370180.5847.322.camel@localhost.localdomain>
+	<1244445964.5847.349.camel@localhost.localdomain>
+Date: Wed, 10 Jun 2009 10:31:54 +0700
+Message-ID: <a1fb7300906092031m2945b2d4i7534afac880945fb@mail.gmail.com>
+Subject: Re: Confuse with WL_THRESHOLD
+From: Thang Dao Duy <hanbaoquansexy@gmail.com>
+To: dedekind@infradead.org
+Content-Type: text/plain; charset=KOI8-R
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,43 +28,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, Jun 8, 2009 at 2:26 PM, Artem Bityutskiy<dedekind@infradead.org> wr=
+ote:
+> On Sun, 2009-06-07 at 13:23 +0300, Artem Bityutskiy wrote:
+>> On Sat, 2009-06-06 at 07:03 +0700, Thang Dao Duy wrote:
+>> > Hi everyone.
+>> > I used NANDsim and ubifs not for along time. Now, I have confused with
+>> > wear-leveling threshold. If i give parameter WL_THRESHOLD in Kernel is
+>> > small (example, the value is =9A3), then when i write a file size 2 Mi=
+B
+>> > to NAND about 200 times, it makes me cannot read EC and VID headers of
+>> > one PEB (example PEB 10). May be that PEB is bad ? And when i set the
+>> > WL_THRESHOLD is higher (the value is 20), i write a file 2MiB about
+>> > 1000 times, nothing 's happen, i can read headers of any PEB. So can
+>> > you tell me what make this happen, and show me where in ubi source in
+>> > kernel.
+>>
+>> Looks like a bug. Please, describe precisely how to reproduce it,
+>> and I'll take a look at this.
+>
+> Please, also make sure you are using the latest UBI/UBIFS. Please, take
+> a look here:
+> http://www.linux-mtd.infradead.org/doc/ubifs.html#L_how_send_bugreport
+>
+> I've configured my UBI and made the threshold to be 3 now. I've also
+> enabled additional UBI and UBIFS debugging checks. I'm running the
+> following test:
+>
+> $ sudo modprobe nandsim
+> $ sudo modprobe ubi mtd=3D0
+> $ sudo ubimkvol /dev/ubi0 -m -N test_fs
+> Set volume size to 128674304
+> Volume ID 0, size 8107 LEBs (128674304 bytes, 122.7 MiB), LEB size 15872 =
+bytes (15.5 KiB), dynamic, name "test_fs", alignment 1
+> $ sudo modprobe ubifs
+> $ sudo mount -t ubifs ubi0:test_fs /mnt/ubifs/
+> $ while true; do sudo dd if=3D/dev/urandom of=3Dubifs/file count=3D2048; =
+sync; done
+> 2097152 bytes (2.1 MB) copied, 0.316768 s, 6.6 MB/s
+> 4096+0 records in
+> 4096+0 records out
+> ....
+>
+> It's being run for some time now, so far so good - no issues.
+>
+> --
+> Best regards,
+> Artem Bityutskiy (=E2=C9=D4=C0=C3=CB=C9=CA =E1=D2=D4=A3=CD)
+>
+>
 
-Mike Frysinger wrote:
-> There isn't any benefit to building the uClinux MTD map as a module as the
-> rootfs it requires in order to actually be usable is appended to the
-> kernel image, not the module.  No known system builds it this way either,
-> so change the option to "bool".
-> 
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
-> CC: Paul Mundt <lethal@linux-sh.org>
-> CC: Greg Ungerer <gerg@uclinux.org>
-
-Acked-by: Greg Ungerer <gerg@uclinux.org>
-
-
-> CC: uclinux-dev@uclinux.org
-> CC: linux-mtd@lists.infradead.org
-> ---
->  drivers/mtd/maps/Kconfig |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-> index 82923bd..907873b 100644
-> --- a/drivers/mtd/maps/Kconfig
-> +++ b/drivers/mtd/maps/Kconfig
-> @@ -501,7 +501,7 @@ config MTD_BFIN_ASYNC
->  	  If compiled as a module, it will be called bfin-async-flash.
->  
->  config MTD_UCLINUX
-> -	tristate "Generic uClinux RAM/ROM filesystem support"
-> +	bool "Generic uClinux RAM/ROM filesystem support"
->  	depends on MTD_PARTITIONS && MTD_RAM && !MMU
->  	help
->  	  Map driver to support image based filesystems for uClinux.
-
--- 
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-825 Stanley St,                             FAX:         +61 7 3891 3630
-Woolloongabba, QLD, 4102, Australia         WEB: http://www.SnapGear.com
+Thanks to Atem Bityutskiy.
+I have modified some code in kernel drivers/mtd/nand/, so may be it
+makes that happen. I tested =9Athe useful nand (512 and 2048 byte page
+size), it have the same with small or big WL_THRESHOLD. So that is my
+fault.
