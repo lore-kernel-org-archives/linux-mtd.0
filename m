@@ -1,15 +1,18 @@
-Received: from mail171.messagelabs.com ([216.82.253.243])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MELS6-0006ZU-8J
-	for linux-mtd@lists.infradead.org; Wed, 10 Jun 2009 10:54:49 +0000
-To: linux-mtd@lists.infradead.org
-Subject: Problem with jffs2 on linux 2.6.23 
-MIME-Version: 1.0
-Message-ID: <OFF8EC77B8.713027F5-ON652575D1.003C5F9B-652575D1.003BDAD6@lntemsys.com>
-From: Rupesh Kumar <Rupesh.Kumar@Lntemsys.com>
-Date: Wed, 10 Jun 2009 16:33:31 +0530
-Content-Type: text/plain; charset="US-ASCII"
-Cc: Virupax SS <Virupax.SS@Lntemsys.com>
+Subject: Re: [PATCHv2] MTD: Add UBI reboot notifier
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Kevin Cernekee <kpc.mtd@gmail.com>
+In-Reply-To: <1244626509.5847.399.camel@localhost.localdomain>
+References: <1244550775.5847.385.camel@localhost.localdomain>
+	<f5be75d5abc1acd236bedf36c55a860e@localhost>
+	<1244626509.5847.399.camel@localhost.localdomain>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 10 Jun 2009 14:59:42 +0300
+Message-Id: <1244635182.5847.402.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,43 +22,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
-We are using jffs2 RFS for our board with linux 2.6.23 . we are suing nand 
-write.jffs2 utility in the u-boot to burn the image on to the 
-nand flash, 
+On Wed, 2009-06-10 at 12:35 +0300, Artem Bityutskiy wrote:
+> On Tue, 2009-06-09 at 10:59 -0700, Kevin Cernekee wrote:
+> > Terminate the UBI background thread prior to restarting the system.
+> > 
+> > Changes from v1:
+> > 
+> > Add ubi_sync() at the end, to make sure the underlying MTD device has
+> > synchronized its buffers.
+> > 
+> > Clean up comments and formatting.
+> > 
+> > Signed-off-by: Kevin Cernekee <kpc.mtd@gmail.com>
+> 
+> I've pushed this patch to ubi-2.6.git/master. I've tested it
+> even. And I amended comments a little. Please, check it:
+> 
+> http://git.infradead.org/ubi-2.6.git?a=commit;h=79c293b2629882a1db3a850ed6b84bd1d8a464a7
+> 
+> If you are fine with this, I'll put it to ubi-2.6.git/linux-next
+> and merge it this merge window.
 
-Our problem is
-Booting First time with the RFS seems to be fine. As system run and we do 
-reboot system it prints following messages and boots up.
-///////////////////////////
-mtd->read(0x400 bytes from 0x1b00000) returned ECC error
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x01b001d0: 
-0xfffe instead
-mtd->read(0x400 bytes from 0x2500000) returned ECC error
-mtd->read(0x400 bytes from 0x27c0000) returned ECC error
-mtd->read(0x400 bytes from 0x2c20000) returned ECC error
-mtd->read(0x400 bytes from 0x2cc0000) returned ECC error
-mtd->read(0x400 bytes from 0x2d00000) returned ECC error
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x02d00074: 
-0xfffe instead
-Empty flash at 0x02d00078 ends at 0x02d003e4
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x02d003e4: 
-0xffef instead
-Empty flash at 0x02d003e8 ends at 0x02d00780
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x02d00780: 
-0xfffb instead
-mtd->read(0x400 bytes from 0x3320000) returned ECC error
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x03320190: 
-0xffff instead
-Empty flash at 0x03320194 ends at 0x0332047c
-////////////////////////////
-During run time also it prints these messages.
+Ok, I've actually pushed this to ubi-2.6.git/linux-next, I just
+assume you should not have issues with my tweaks.
 
-The same file system is working fine with the linux 2.6.20 kernel.
-
-I am not able to understand the cause of this error. Please help me in 
-fixing this error.
-
-Thanks
-Rupesh
- 
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
