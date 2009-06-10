@@ -1,24 +1,28 @@
-Received: from mail-px0-f176.google.com ([209.85.216.176])
+Received: from mailout1.samsung.com ([203.254.224.24])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MEEXd-0005bJ-QW
-	for linux-mtd@lists.infradead.org; Wed, 10 Jun 2009 03:32:04 +0000
-Received: by pxi6 with SMTP id 6so490421pxi.28
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 09 Jun 2009 20:31:55 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1244445964.5847.349.camel@localhost.localdomain>
-References: <a1fb7300906022244g5cd882acw7de4b9b0ecc35547@mail.gmail.com>
-	<a1fb7300906051703p148c5d1k7fd46257c8031ac6@mail.gmail.com>
-	<1244370180.5847.322.camel@localhost.localdomain>
-	<1244445964.5847.349.camel@localhost.localdomain>
-Date: Wed, 10 Jun 2009 10:31:54 +0700
-Message-ID: <a1fb7300906092031m2945b2d4i7534afac880945fb@mail.gmail.com>
-Subject: Re: Confuse with WL_THRESHOLD
-From: Thang Dao Duy <hanbaoquansexy@gmail.com>
-To: dedekind@infradead.org
-Content-Type: text/plain; charset=KOI8-R
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+	id 1MEIWQ-00026W-Lg
+	for linux-mtd@lists.infradead.org; Wed, 10 Jun 2009 07:47:05 +0000
+Received: from epmmp1 (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KL000KP7IY0DL@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Wed, 10 Jun 2009 16:46:49 +0900 (KST)
+Received: from amitksharma ([107.108.214.35])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KL000AOJIXY84@mmp1.samsung.com> for
+	linux-mtd@lists.infradead.org; Wed, 10 Jun 2009 16:46:48 +0900 (KST)
+Date: Wed, 10 Jun 2009 13:16:55 +0530
+From: Amit Kumar Sharma <amitsharma.9@samsung.com>
+Subject: Re: [patch 01/14] mtd: Flex-OneNAND support
+To: David Woodhouse <dwmw2@infradead.org>, dedekind@infradead.org
+Message-id: <CDB766040F7D4E5A91CE4E2E2036CFF4@sisodomain.com>
+Content-transfer-encoding: 7BIT
+References: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
+	<1243432517.11172.32.camel@localhost.localdomain>
+	<1244554687.4538.16.camel@macbook.infradead.org>
+Cc: vishak.g@samsung.com, apgmoorthy <moorthy.apg@samsung.com>,
+	amul.saha@samsung.com, kyungmin.park@samsung.com,
+	linux-mtd@lists.infradead.org, akpm@linux-foundation.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,58 +32,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jun 8, 2009 at 2:26 PM, Artem Bityutskiy<dedekind@infradead.org> wr=
-ote:
-> On Sun, 2009-06-07 at 13:23 +0300, Artem Bityutskiy wrote:
->> On Sat, 2009-06-06 at 07:03 +0700, Thang Dao Duy wrote:
->> > Hi everyone.
->> > I used NANDsim and ubifs not for along time. Now, I have confused with
->> > wear-leveling threshold. If i give parameter WL_THRESHOLD in Kernel is
->> > small (example, the value is =9A3), then when i write a file size 2 Mi=
-B
->> > to NAND about 200 times, it makes me cannot read EC and VID headers of
->> > one PEB (example PEB 10). May be that PEB is bad ? And when i set the
->> > WL_THRESHOLD is higher (the value is 20), i write a file 2MiB about
->> > 1000 times, nothing 's happen, i can read headers of any PEB. So can
->> > you tell me what make this happen, and show me where in ubi source in
->> > kernel.
->>
->> Looks like a bug. Please, describe precisely how to reproduce it,
->> and I'll take a look at this.
->
-> Please, also make sure you are using the latest UBI/UBIFS. Please, take
-> a look here:
-> http://www.linux-mtd.infradead.org/doc/ubifs.html#L_how_send_bugreport
->
-> I've configured my UBI and made the threshold to be 3 now. I've also
-> enabled additional UBI and UBIFS debugging checks. I'm running the
-> following test:
->
-> $ sudo modprobe nandsim
-> $ sudo modprobe ubi mtd=3D0
-> $ sudo ubimkvol /dev/ubi0 -m -N test_fs
-> Set volume size to 128674304
-> Volume ID 0, size 8107 LEBs (128674304 bytes, 122.7 MiB), LEB size 15872 =
-bytes (15.5 KiB), dynamic, name "test_fs", alignment 1
-> $ sudo modprobe ubifs
-> $ sudo mount -t ubifs ubi0:test_fs /mnt/ubifs/
-> $ while true; do sudo dd if=3D/dev/urandom of=3Dubifs/file count=3D2048; =
-sync; done
-> 2097152 bytes (2.1 MB) copied, 0.316768 s, 6.6 MB/s
-> 4096+0 records in
-> 4096+0 records out
-> ....
->
-> It's being run for some time now, so far so good - no issues.
->
-> --
-> Best regards,
-> Artem Bityutskiy (=E2=C9=D4=C0=C3=CB=C9=CA =E1=D2=D4=A3=CD)
->
->
+Hi David & Artem,
 
-Thanks to Atem Bityutskiy.
-I have modified some code in kernel drivers/mtd/nand/, so may be it
-makes that happen. I tested =9Athe useful nand (512 and 2048 byte page
-size), it have the same with small or big WL_THRESHOLD. So that is my
-fault.
+We will take care comments.
+
+Thanks
+Amit
+
+
+----- Original Message ----- 
+From: "David Woodhouse" <dwmw2@infradead.org>
+To: <dedekind@infradead.org>
+Cc: <vishak.g@samsung.com>; "apgmoorthy" 
+<moorthy.apg@samsung.com>; <amul.saha@samsung.com>; 
+<kyungmin.park@samsung.com>; 
+<linux-mtd@lists.infradead.org>; <akpm@linux-foundation.org>
+Sent: Tuesday, June 09, 2009 7:08 PM
+Subject: Re: [patch 01/14] mtd: Flex-OneNAND support
+
+
+> On Wed, 2009-05-27 at 16:55 +0300, Artem Bityutskiy wrote:
+>> On Mon, 2009-05-25 at 16:22 +0530, apgmoorthy wrote:
+>> > I tried on the MTD Git  and have seen the warning as 
+>> > you mentioned.
+>> > '#ifndef MODULE' around the function 
+>> > 'flexonenand_setup' should help
+>> > to get away with that warning.
+>> > We will post a patch.
+>>
+>> Does this mean that if I build OneNAND as a module I have 
+>> no
+>> possibility to define FlexOneNAND boundary?
+>>
+>> Sorry if I missed the discussion, but why you cannot use 
+>> something
+>> like 'module_param_array()' ?
+>
+> That certainly seems like it would be the best answer.
+> Can we have a patch to do that please?
+>
+> -- 
+> David Woodhouse                            Open Source 
+> Technology Centre
+> David.Woodhouse@intel.com 
+> Intel Corporation
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/ 
