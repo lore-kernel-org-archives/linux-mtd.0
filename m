@@ -1,20 +1,21 @@
 Received: from rex.securecomputing.com ([203.24.151.4] helo=cyberguard.com.au)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MEDQ9-0000Xw-6d
-	for linux-mtd@lists.infradead.org; Wed, 10 Jun 2009 02:20:18 +0000
-Message-ID: <4A2F10B2.7000003@snapgear.com>
-Date: Wed, 10 Jun 2009 11:47:30 +1000
+	id 1MEDdv-0001Mx-57
+	for linux-mtd@lists.infradead.org; Wed, 10 Jun 2009 02:34:29 +0000
+Message-ID: <4A2F1BAA.4070102@snapgear.com>
+Date: Wed, 10 Jun 2009 12:34:18 +1000
 From: Greg Ungerer <gerg@snapgear.com>
 MIME-Version: 1.0
-To: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: [PATCH 2/3] mtd/maps: uclinux: mark local stuff static
+To: uClinux development list <uclinux-dev@uclinux.org>
+Subject: Re: [uClinux-dev] [PATCH 3/3] mtd/maps: uclinux: do not allow to
+	be	built as a module
 References: <20090526231902.GA6295@linux-sh.org>
-	<1243380798-10089-2-git-send-email-vapier@gentoo.org>
-In-Reply-To: <1243380798-10089-2-git-send-email-vapier@gentoo.org>
+	<1243380798-10089-3-git-send-email-vapier@gentoo.org>
+In-Reply-To: <1243380798-10089-3-git-send-email-vapier@gentoo.org>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: uclinux-dist-devel@blackfin.uclinux.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, uclinux-dev@uclinux.org
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,10 +27,13 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 
 Mike Frysinger wrote:
-> The uclinux_ram_mtdinfo, uclinux_romfs, and uclinux_point symbols do not
-> need to be visible outside of this module, so mark them static.
+> There isn't any benefit to building the uClinux MTD map as a module as the
+> rootfs it requires in order to actually be usable is appended to the
+> kernel image, not the module.  No known system builds it this way either,
+> so change the option to "bool".
 > 
 > Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+> CC: Paul Mundt <lethal@linux-sh.org>
 > CC: Greg Ungerer <gerg@uclinux.org>
 
 Acked-by: Greg Ungerer <gerg@uclinux.org>
@@ -38,36 +42,22 @@ Acked-by: Greg Ungerer <gerg@uclinux.org>
 > CC: uclinux-dev@uclinux.org
 > CC: linux-mtd@lists.infradead.org
 > ---
->  drivers/mtd/maps/uclinux.c |    6 +++---
->  1 files changed, 3 insertions(+), 3 deletions(-)
+>  drivers/mtd/maps/Kconfig |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
 > 
-> diff --git a/drivers/mtd/maps/uclinux.c b/drivers/mtd/maps/uclinux.c
-> index 61d4087..d4314fb 100644
-> --- a/drivers/mtd/maps/uclinux.c
-> +++ b/drivers/mtd/maps/uclinux.c
-> @@ -30,11 +30,11 @@ struct map_info uclinux_ram_map = {
->  	.size = 0,
->  };
+> diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+> index 82923bd..907873b 100644
+> --- a/drivers/mtd/maps/Kconfig
+> +++ b/drivers/mtd/maps/Kconfig
+> @@ -501,7 +501,7 @@ config MTD_BFIN_ASYNC
+>  	  If compiled as a module, it will be called bfin-async-flash.
 >  
-> -struct mtd_info *uclinux_ram_mtdinfo;
-> +static struct mtd_info *uclinux_ram_mtdinfo;
->  
->  /****************************************************************************/
->  
-> -struct mtd_partition uclinux_romfs[] = {
-> +static struct mtd_partition uclinux_romfs[] = {
->  	{ .name = "ROMfs" }
->  };
->  
-> @@ -42,7 +42,7 @@ struct mtd_partition uclinux_romfs[] = {
->  
->  /****************************************************************************/
->  
-> -int uclinux_point(struct mtd_info *mtd, loff_t from, size_t len,
-> +static int uclinux_point(struct mtd_info *mtd, loff_t from, size_t len,
->  	size_t *retlen, void **virt, resource_size_t *phys)
->  {
->  	struct map_info *map = mtd->priv;
+>  config MTD_UCLINUX
+> -	tristate "Generic uClinux RAM/ROM filesystem support"
+> +	bool "Generic uClinux RAM/ROM filesystem support"
+>  	depends on MTD_PARTITIONS && MTD_RAM && !MMU
+>  	help
+>  	  Map driver to support image based filesystems for uClinux.
 
 -- 
 ------------------------------------------------------------------------
