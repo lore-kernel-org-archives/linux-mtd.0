@@ -1,21 +1,15 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MELFm-0003zd-Sg
-	for linux-mtd@lists.infradead.org; Wed, 10 Jun 2009 10:42:08 +0000
-Subject: RE: Problem in erasing a nand flash with ubiformat
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Canella Matteo <Matteo.Canella@mta.it>
-In-Reply-To: <BD9F3F3F5A6CCF4BA032B9FED4DD312E893B2D@mta-digimail.MTA.INT>
-References: <BD9F3F3F5A6CCF4BA032B9FED4DD312E893B13@mta-digimail.MTA.INT>
-	<1244622937.5847.396.camel@localhost.localdomain>
-	<BD9F3F3F5A6CCF4BA032B9FED4DD312E893B2D@mta-digimail.MTA.INT>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 10 Jun 2009 13:40:46 +0300
-Message-Id: <1244630446.5847.401.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+Received: from mail171.messagelabs.com ([216.82.253.243])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MELS6-0006ZU-8J
+	for linux-mtd@lists.infradead.org; Wed, 10 Jun 2009 10:54:49 +0000
+To: linux-mtd@lists.infradead.org
+Subject: Problem with jffs2 on linux 2.6.23 
+MIME-Version: 1.0
+Message-ID: <OFF8EC77B8.713027F5-ON652575D1.003C5F9B-652575D1.003BDAD6@lntemsys.com>
+From: Rupesh Kumar <Rupesh.Kumar@Lntemsys.com>
+Date: Wed, 10 Jun 2009 16:33:31 +0530
+Content-Type: text/plain; charset="US-ASCII"
+Cc: Virupax SS <Virupax.SS@Lntemsys.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +19,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-06-10 at 12:01 +0200, Canella Matteo wrote:
-> -----Original Message-----
-> From: Artem Bityutskiy [mailto:dedekind@infradead.org] 
-> Sent: mercoledì 10 giugno 2009 10.36
-> To: Canella Matteo
-> Cc: linux-mtd@lists.infradead.org
-> Subject: Re: Problem in erasing a nand flash with ubiformat
-> 
-> > Are you using the newest ubiformat version from the mtd-utils git
-> > tree?
->  
-> Ok, this is the problem.
-> I'm aligned to ea429635388f7bb53f62c41ec3d5ccf5fa207370 (Mon Jan 12 11:08:03 2009) commit.
-> I must get the latest version.
+Hi
+We are using jffs2 RFS for our board with linux 2.6.23 . we are suing nand 
+write.jffs2 utility in the u-boot to burn the image on to the 
+nand flash, 
 
-Yes, this is ancient code base. Update please. Also, make sure
-you use the latest UBIFS. UBIFS is young, and we still fix bugs,
-so always update it. We maintain back-port trees for peoples'
-convenience:
-http://www.linux-mtd.infradead.org/doc/ubifs.html#L_source
+Our problem is
+Booting First time with the RFS seems to be fine. As system run and we do 
+reboot system it prints following messages and boots up.
+///////////////////////////
+mtd->read(0x400 bytes from 0x1b00000) returned ECC error
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x01b001d0: 
+0xfffe instead
+mtd->read(0x400 bytes from 0x2500000) returned ECC error
+mtd->read(0x400 bytes from 0x27c0000) returned ECC error
+mtd->read(0x400 bytes from 0x2c20000) returned ECC error
+mtd->read(0x400 bytes from 0x2cc0000) returned ECC error
+mtd->read(0x400 bytes from 0x2d00000) returned ECC error
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x02d00074: 
+0xfffe instead
+Empty flash at 0x02d00078 ends at 0x02d003e4
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x02d003e4: 
+0xffef instead
+Empty flash at 0x02d003e8 ends at 0x02d00780
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x02d00780: 
+0xfffb instead
+mtd->read(0x400 bytes from 0x3320000) returned ECC error
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x03320190: 
+0xffff instead
+Empty flash at 0x03320194 ends at 0x0332047c
+////////////////////////////
+During run time also it prints these messages.
 
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+The same file system is working fine with the linux 2.6.20 kernel.
+
+I am not able to understand the cause of this error. Please help me in 
+fixing this error.
+
+Thanks
+Rupesh
+ 
