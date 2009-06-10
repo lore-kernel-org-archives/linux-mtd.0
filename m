@@ -1,20 +1,20 @@
 Received: from rex.securecomputing.com ([203.24.151.4] helo=cyberguard.com.au)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MEDQ9-0000Xx-6l
+	id 1MEDQ9-0000Xw-6d
 	for linux-mtd@lists.infradead.org; Wed, 10 Jun 2009 02:20:18 +0000
-Message-ID: <4A2F105C.2040206@snapgear.com>
-Date: Wed, 10 Jun 2009 11:46:04 +1000
+Message-ID: <4A2F10B2.7000003@snapgear.com>
+Date: Wed, 10 Jun 2009 11:47:30 +1000
 From: Greg Ungerer <gerg@snapgear.com>
 MIME-Version: 1.0
-To: uClinux development list <uclinux-dev@uclinux.org>
-Subject: Re: [uClinux-dev] [PATCH 1/2] mtd/maps: uclinux: fix building when
-	partition support is disabled
-References: <1243331191-11445-1-git-send-email-vapier@gentoo.org>
-In-Reply-To: <1243331191-11445-1-git-send-email-vapier@gentoo.org>
+To: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [PATCH 2/3] mtd/maps: uclinux: mark local stuff static
+References: <20090526231902.GA6295@linux-sh.org>
+	<1243380798-10089-2-git-send-email-vapier@gentoo.org>
+In-Reply-To: <1243380798-10089-2-git-send-email-vapier@gentoo.org>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Timofei Bondarenko <tim@ipi.ac.ru>, uclinux-dist-devel@blackfin.uclinux.org,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: uclinux-dist-devel@blackfin.uclinux.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, uclinux-dev@uclinux.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,14 +26,10 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 
 Mike Frysinger wrote:
-> From: Timofei Bondarenko <tim@ipi.ac.ru>
+> The uclinux_ram_mtdinfo, uclinux_romfs, and uclinux_point symbols do not
+> need to be visible outside of this module, so mark them static.
 > 
-> The uClinux map driver doesn't even use partitions, so we shouldn't require
-> it in order to work properly.
-> 
-> Signed-off-by: Timofei Bondarenko <tim@ipi.ac.ru>
 > Signed-off-by: Mike Frysinger <vapier@gentoo.org>
-> Signed-off-by: Sonic Zhang <sonic.zhang@analog.com>
 > CC: Greg Ungerer <gerg@uclinux.org>
 
 Acked-by: Greg Ungerer <gerg@uclinux.org>
@@ -42,37 +38,36 @@ Acked-by: Greg Ungerer <gerg@uclinux.org>
 > CC: uclinux-dev@uclinux.org
 > CC: linux-mtd@lists.infradead.org
 > ---
->  drivers/mtd/maps/uclinux.c |    8 ++++++++
->  1 files changed, 8 insertions(+), 0 deletions(-)
+>  drivers/mtd/maps/uclinux.c |    6 +++---
+>  1 files changed, 3 insertions(+), 3 deletions(-)
 > 
 > diff --git a/drivers/mtd/maps/uclinux.c b/drivers/mtd/maps/uclinux.c
-> index 81756e3..57699c2 100644
+> index 61d4087..d4314fb 100644
 > --- a/drivers/mtd/maps/uclinux.c
 > +++ b/drivers/mtd/maps/uclinux.c
-> @@ -87,7 +87,11 @@ static int __init uclinux_mtd_init(void)
->  	mtd->priv = mapp;
+> @@ -30,11 +30,11 @@ struct map_info uclinux_ram_map = {
+>  	.size = 0,
+>  };
 >  
->  	uclinux_ram_mtdinfo = mtd;
-> +#ifdef CONFIG_MTD_PARTITIONS
->  	add_mtd_partitions(mtd, uclinux_romfs, NUM_PARTITIONS);
-> +#else
-> +	add_mtd_device(mtd);
-> +#endif
+> -struct mtd_info *uclinux_ram_mtdinfo;
+> +static struct mtd_info *uclinux_ram_mtdinfo;
 >  
->  	return(0);
->  }
-> @@ -97,7 +101,11 @@ static int __init uclinux_mtd_init(void)
->  static void __exit uclinux_mtd_cleanup(void)
+>  /****************************************************************************/
+>  
+> -struct mtd_partition uclinux_romfs[] = {
+> +static struct mtd_partition uclinux_romfs[] = {
+>  	{ .name = "ROMfs" }
+>  };
+>  
+> @@ -42,7 +42,7 @@ struct mtd_partition uclinux_romfs[] = {
+>  
+>  /****************************************************************************/
+>  
+> -int uclinux_point(struct mtd_info *mtd, loff_t from, size_t len,
+> +static int uclinux_point(struct mtd_info *mtd, loff_t from, size_t len,
+>  	size_t *retlen, void **virt, resource_size_t *phys)
 >  {
->  	if (uclinux_ram_mtdinfo) {
-> +#ifdef CONFIG_MTD_PARTITIONS
->  		del_mtd_partitions(uclinux_ram_mtdinfo);
-> +#else
-> +		del_mtd_device(uclinux_ram_mtdinfo);
-> +#endif
->  		map_destroy(uclinux_ram_mtdinfo);
->  		uclinux_ram_mtdinfo = NULL;
->  	}
+>  	struct map_info *map = mtd->priv;
 
 -- 
 ------------------------------------------------------------------------
