@@ -1,22 +1,28 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MEemV-0001PR-AP
-	for linux-mtd@lists.infradead.org; Thu, 11 Jun 2009 07:33:10 +0000
-Subject: Re: [PATCH 1/3] [MTD-UTILS] Unified reading from standard input
-	and from file
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Jehan Bing <jehan@orb.com>
-In-Reply-To: <h0mppp$7v2$1@ger.gmane.org>
-References: <h0k3il$ij6$1@ger.gmane.org>
-	<1244551983.5847.388.camel@localhost.localdomain>
-	<4A2E98BD.30704@orb.com> <h0mppp$7v2$1@ger.gmane.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 11 Jun 2009 10:32:21 +0300
-Message-Id: <1244705541.5847.412.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from mailout2.samsung.com ([203.254.224.25])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MEgVK-0006Pk-D4
+	for linux-mtd@lists.infradead.org; Thu, 11 Jun 2009 09:23:34 +0000
+Received: from epmmp2 (mailout2.samsung.com [203.254.224.25])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KL200HX1I1U8C@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 11 Jun 2009 18:22:42 +0900 (KST)
+Received: from amulsaha ([107.108.214.27])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KL200MURI1RBP@mmp2.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 11 Jun 2009 18:22:41 +0900 (KST)
+Date: Thu, 11 Jun 2009 14:52:49 +0530
+From: Amul Saha <amul.saha@samsung.com>
+Subject: Re: [patch 01/14] mtd: Flex-OneNAND support
+To: David Woodhouse <dwmw2@infradead.org>, dedekind@infradead.org
+Message-id: <2D1A54AFA40441938BF021BAAEFAD13A@sisodomain.com>
+Content-transfer-encoding: 7BIT
+References: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
+	<1243432517.11172.32.camel@localhost.localdomain>
+	<1244554687.4538.16.camel@macbook.infradead.org>
+Cc: kyungmin.park@samsung.com, vishak.g@samsung.com,
+	linux-mtd@lists.infradead.org,
+	apgmoorthy <moorthy.apg@samsung.com>, akpm@linux-foundation.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,19 +32,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-06-09 at 16:04 -0700, Jehan Bing wrote:
-> Use same code path for reading data (not the OOB) from either the 
-> standard input or a regular file.
-> 
-> Signed-off-by: Jehan Bing <jehan@orb.com>
+>2009/6/9 David Woodhouse <dwmw2@infradead.org>:
+>> On Wed, 2009-05-27 at 16:55 +0300, Artem Bityutskiy wrote:
+>>
+>> Does this mean that if I build OneNAND as a module I have no
+>> possibility to define FlexOneNAND boundary?
+>>
+>> Sorry if I missed the discussion, but why you cannot use something
+>> like 'module_param_array()' ?
 
-The patches look OK to me, but I do not have time to review them very
-really well. So would it please be possible to describe how you tested
-them to convince me they are ok? Then I'd push them to mtd-utils.git
-tree. Did you test writing with/without oob, from file/stdin, etc?
+We have made use of module_param for getting the parameters for Boundary
+Setting.
 
-Thanks!
+>
+> That certainly seems like it would be the best answer.
 
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+Yes, we too see that.
+
+> Can we have a patch to do that please?
+
+Sending the Patch, for supporting Flex-OneNAND as a module, taking Boundary setting parameters.
+
+Regards,
+Amul Kumar Saha
