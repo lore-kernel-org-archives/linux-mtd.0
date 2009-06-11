@@ -1,21 +1,21 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
+Received: from mailout3.samsung.com ([203.254.224.33])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MEgVK-0006Pk-D4
-	for linux-mtd@lists.infradead.org; Thu, 11 Jun 2009 09:23:34 +0000
-Received: from epmmp2 (mailout2.samsung.com [203.254.224.25])
+	id 1MEgVa-0006Vb-UE
+	for linux-mtd@lists.infradead.org; Thu, 11 Jun 2009 09:23:50 +0000
+Received: from epmmp1 (mailout3.samsung.com [203.254.224.33])
 	by mailout1.samsung.com
 	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KL200HX1I1U8C@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Thu, 11 Jun 2009 18:22:42 +0900 (KST)
+	with ESMTP id <0KL200F3EI3G05@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 11 Jun 2009 18:23:40 +0900 (KST)
 Received: from amulsaha ([107.108.214.27])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0KL200MURI1RBP@mmp2.samsung.com> for
-	linux-mtd@lists.infradead.org; Thu, 11 Jun 2009 18:22:41 +0900 (KST)
-Date: Thu, 11 Jun 2009 14:52:49 +0530
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KL20019VI3EKY@mmp1.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 11 Jun 2009 18:23:40 +0900 (KST)
+Date: Thu, 11 Jun 2009 14:53:48 +0530
 From: Amul Saha <amul.saha@samsung.com>
 Subject: Re: [patch 01/14] mtd: Flex-OneNAND support
 To: David Woodhouse <dwmw2@infradead.org>, dedekind@infradead.org
-Message-id: <2D1A54AFA40441938BF021BAAEFAD13A@sisodomain.com>
+Message-id: <9061742E1E7840C6B7016A210EF848AB@sisodomain.com>
 Content-transfer-encoding: 7BIT
 References: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
 	<1243432517.11172.32.camel@localhost.localdomain>
@@ -32,26 +32,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->2009/6/9 David Woodhouse <dwmw2@infradead.org>:
->> On Wed, 2009-05-27 at 16:55 +0300, Artem Bityutskiy wrote:
->>
->> Does this mean that if I build OneNAND as a module I have no
->> possibility to define FlexOneNAND boundary?
->>
->> Sorry if I missed the discussion, but why you cannot use something
->> like 'module_param_array()' ?
+This patch now adds support for Flex-OneNAND to be used as a module,
+it also supports Boundary setting at module insertion time
 
-We have made use of module_param for getting the parameters for Boundary
-Setting.
+Signed-off-by: Amul Kumar Saha <amul.saha at samsung.com>
+Signed-off-by: Vishak G <vishak.g at samsung.com>
+---
+ onenand_base.c |   19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
->
-> That certainly seems like it would be the best answer.
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index 8d4c9c2..a91133b 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -20,6 +20,7 @@
 
-Yes, we too see that.
+ #include <linux/kernel.h>
+ #include <linux/module.h>
++#include <linux/moduleparam.h>
+ #include <linux/init.h>
+ #include <linux/sched.h>
+ #include <linux/delay.h>
+@@ -31,6 +32,18 @@
 
-> Can we have a patch to do that please?
+ #include <asm/io.h>
 
-Sending the Patch, for supporting Flex-OneNAND as a module, taking Boundary setting parameters.
++#ifdef MODULE
++static char *flex_bdry_info;
++
++module_param(flex_bdry_info, charp, 0400);
++MODULE_PARM_DESC(flex_bdry_info, "SLC Boundary information for Flex-OneNAND"
++				 "Syntax:flex_bdry_info=DIE_BDRY,LOCK,..."
++				 "DIE_BDRY: SLC boundary of the die"
++				 "LOCK: Locking information for SLC boundary"
++				 "    : 0->Set boundary in unlocked status"
++				 "    : 1->Set boundary in locked status");
++#endif
++
+ /* Default Flex-OneNAND boundary and lock respectively */
+ static int flex_bdry[MAX_DIES * 2] = { -1, 0, -1, 0 };
 
-Regards,
-Amul Kumar Saha
+@@ -3271,7 +3284,9 @@ static int flexonenand_setup(char *s)
+ 	return 1;
+ }
+
++#ifndef MODULE
+ __setup("onenand.bdry=", flexonenand_setup);
++#endif
+
+ /**
+  * onenand_probe - [OneNAND Interface] Probe the OneNAND device
+@@ -3456,6 +3471,10 @@ int onenand_scan(struct mtd_info *mtd, int maxchips)
+ 	if (onenand_probe(mtd))
+ 		return -ENXIO;
+
++#ifdef MODULE
++	flexonenand_setup(flex_bdry_info);
++#endif
++
+ 	/* Set Sync. Burst Read after probing */
+ 	if (this->mmcontrol) {
+ 		printk(KERN_INFO "OneNAND Sync. Burst Read support\n");
