@@ -1,24 +1,24 @@
-Received: from mail-qy0-f179.google.com ([209.85.221.179])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MEz1p-0008IK-Nw
-	for linux-mtd@lists.infradead.org; Fri, 12 Jun 2009 05:10:19 +0000
-Received: by qyk9 with SMTP id 9so322864qyk.28
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 11 Jun 2009 22:10:12 -0700 (PDT)
-MIME-Version: 1.0
-Sender: kyungmin78@gmail.com
-In-Reply-To: <1244782878.5847.416.camel@localhost.localdomain>
-References: <7948530906110415u3cc3cd62je650881b6385c8f5@mail.gmail.com>
-	<1244782878.5847.416.camel@localhost.localdomain>
-Date: Fri, 12 Jun 2009 14:10:12 +0900
-Message-ID: <9c9fda240906112210s20d935d2r876e741d407a8045@mail.gmail.com>
-Subject: Re: [PATCH] MTD: OneNAND OMAP2/3: Fix incorrect bufferram offset
-From: Kyungmin Park <kyungmin.park@samsung.com>
-To: dedekind@infradead.org
-Content-Type: text/plain; charset=KOI8-R
-Content-Transfer-Encoding: quoted-printable
-Cc: Mika Korhonen <mika.j.korhonen@gmail.com>,
-	linux-mtd Mailing List <linux-mtd@lists.infradead.org>
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MEzMY-0002eU-NK
+	for linux-mtd@lists.infradead.org; Fri, 12 Jun 2009 05:31:45 +0000
+Subject: Re: [PATCH 1/3 v2] [MTD-UTILS] Unified reading from standard input
+	and from file
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Jehan Bing <jehan@orb.com>
+In-Reply-To: <4A31424D.802@orb.com>
+References: <h0k3il$ij6$1@ger.gmane.org>
+	<1244551983.5847.388.camel@localhost.localdomain>	<4A2E98BD.30704@orb.com>
+	<h0mppp$7v2$1@ger.gmane.org>
+	<1244705541.5847.412.camel@localhost.localdomain>
+	<4A31424D.802@orb.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 12 Jun 2009 08:30:48 +0300
+Message-Id: <1244784648.5847.444.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,57 +28,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Acked-by: Kyungmin Park <kyungmin.park@samsung.com>
+On Thu, 2009-06-11 at 10:43 -0700, Jehan Bing wrote:
+> > The patches look OK to me, but I do not have time to review them very
+> > really well. So would it please be possible to describe how you tested
+> > them to convince me they are ok? Then I'd push them to mtd-utils.git
+> > tree. Did you test writing with/without oob, from file/stdin, etc?
+> >
+> > Thanks
+> 
+> For the tests, I used the nandsim driver and 
+> "eraseall-nandwrite-nanddump-md5sum". I did  a first one with the 
+> official nandwrite from Ubuntu as a reference, then tried different 
+> options with my changes.
+> 
+> And here the same patch with a couple of blank lines removed and a 
+> comment moved. I forgot the regenerate it with the others after cleaning 
+> up the code. The third patch won't apply without it.
 
-On Fri, Jun 12, 2009 at 2:01 PM, Artem Bityutskiy<dedekind@infradead.org> w=
-rote:
-> On Thu, 2009-06-11 at 14:15 +0300, Mika Korhonen wrote:
->> Hi, I was testing 2-plane programming and noticed that when writing
->> and doing a verify read straight after I kept getting 00 00 00 00 ...
->> instead of the written data. I found out that OMAP2/3 version of
->> onenand_bufferram_offset() uses the faked page size instead of the
->> real one. The generic version in onenand_base.c is ok.
->>
->> The patch to fix this is attached.
->
-> Looks good to me, Kyungmin?
->
-> >From 4ad479f5238560286999c07c30fec3a6a5551dd5 Mon Sep 17 00:00:00 2001
-> From: Mika Korhonen <mika.j.korhonen@gmail.com>
-> Date: Thu, 11 Jun 2009 14:05:07 +0300
-> Subject: [PATCH] MTD: OneNAND OMAP2/3: Fix incorrect bufferram offset
->
-> Fixes the case where CONFIG_MTD_ONENAND_2X_PROGRAM is set and
-> the real page size differs from mtd_info.writesize.
->
-> Signed-off-by: Mika Korhonen <mika.j.korhonen@gmail.com>
-> ---
-> =9Adrivers/mtd/onenand/omap2.c | =9A =9A2 +-
-> =9A1 files changed, 1 insertions(+), 1 deletions(-)
->
-> diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-> index df26db8..32de634 100644
-> --- a/drivers/mtd/onenand/omap2.c
-> +++ b/drivers/mtd/onenand/omap2.c
-> @@ -267,7 +267,7 @@ static inline int omap2_onenand_bufferram_offset(stru=
-ct mtd_info *mtd, int area)
->
-> =9A =9A =9A =9Aif (ONENAND_CURRENT_BUFFERRAM(this)) {
-> =9A =9A =9A =9A =9A =9A =9A =9Aif (area =3D=3D ONENAND_DATARAM)
-> - =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A return mtd->writesize;
-> + =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A return this->writesize;
-> =9A =9A =9A =9A =9A =9A =9A =9Aif (area =3D=3D ONENAND_SPARERAM)
-> =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9Areturn mtd->oobsize;
-> =9A =9A =9A =9A}
-> --
-> 1.5.6.5
->
-> --
-> Best regards,
-> Artem Bityutskiy (=E2=C9=D4=C0=C3=CB=C9=CA =E1=D2=D4=A3=CD)
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+Sorry, I still feel a little bit unsure. Could you please test it
+like this:
+
+1. Compile nandwrite1 which excludes these 4 changes;
+2. Compile nandwrite2 which includes these 4 changes;
+3. Make sure things which work with nandwrite1 also work with
+   nandwrite2. Namely:
+   a. writing an image
+   b. writing an image from stdin
+   c. writing an image with oob
+   d. writing an image with oob with stdin
+4. Then test how nandwrite2 reacts on badblocks - use the 'weakblocks'
+   parameter of nandsim for this (see modinfo nandsim).
+5. Test now nandwrite2 reacts on write failures - use 'weakpages'
+   nandsim argument
+
+Could this please be done to make sure nandwrite does not have
+regressions but only has improvement? Sorry for being PITA.
+
+Thanks!
+
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
