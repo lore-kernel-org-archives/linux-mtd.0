@@ -1,11 +1,7 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MF5U9-0004Nl-Nk
-	for linux-mtd@lists.infradead.org; Fri, 12 Jun 2009 12:04:05 +0000
 Subject: Re: [patch 01/14] mtd: Flex-OneNAND support
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Amul Saha <amul.saha@samsung.com>
-In-Reply-To: <3E83C7DF574149B78FFE8D12094FAF6D@sisodomain.com>
+From: David Woodhouse <dwmw2@infradead.org>
+To: dedekind@infradead.org
+In-Reply-To: <1244808209.5847.447.camel@localhost.localdomain>
 References: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
 	<1243432517.11172.32.camel@localhost.localdomain>
 	<1244554687.4538.16.camel@macbook.infradead.org>
@@ -14,15 +10,15 @@ References: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
 	<2AF67696C6634054B7CFDF7A9C19865D@sisodomain.com>
 	<1244803363.5847.446.camel@localhost.localdomain>
 	<3E83C7DF574149B78FFE8D12094FAF6D@sisodomain.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 12 Jun 2009 15:03:29 +0300
-Message-Id: <1244808209.5847.447.camel@localhost.localdomain>
+	<1244808209.5847.447.camel@localhost.localdomain>
+Content-Type: text/plain
+Date: Fri, 12 Jun 2009 13:52:36 +0100
+Message-Id: <1244811156.3511.1219.camel@macbook.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Cc: vishak.g@samsung.com, apgmoorthy <moorthy.apg@samsung.com>,
-	kyungmin.park@samsung.com, linux-mtd@lists.infradead.org,
-	akpm@linux-foundation.org, David Woodhouse <dwmw2@infradead.org>
-Reply-To: dedekind@infradead.org
+	Amul Saha <amul.saha@samsung.com>, kyungmin.park@samsung.com,
+	linux-mtd@lists.infradead.org, akpm@linux-foundation.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,24 +28,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-06-12 at 17:27 +0530, Amul Saha wrote:
-> Hi Artem,
+On Fri, 2009-06-12 at 15:03 +0300, Artem Bityutskiy wrote:
 > 
-> >> +#ifdef MODULE
-> >> + flexonenand_setup(flex_bdry_info);
-> >> +#endif
-> >
-> > Why do you need this ifdef? What is the fundamental difference between
-> > onenand.ko as a module and onenand compiled-in?
-> >
+> > flexonenand_setup( ) call is needed only when it has been built as a
+> module.
 > 
-> flexonenand_setup( ) need not be called, when OneNAND is built-in.
-> This function-call will cause overhead unwantedly on every boot, during OneNAND scan.
-> 
-> flexonenand_setup( ) call is needed only when it has been built as a module.
+> Why?
 
-Why?
+Because they're adding a 'flex_bdry_info' module parameter which is a
+string, that they then process just the same way as the original command
+line option.
+
+I think that's the wrong approach -- please use module_param_array()
+instead, so it sets the contents of the flex_bdry[] array directly and
+you can remove the flexonenand_setup() function completely.
+
+Please ensure that your email addresses in the Signed-off-by: line are
+correct, too. None of this 'user at domain' nonsense.
 
 -- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
