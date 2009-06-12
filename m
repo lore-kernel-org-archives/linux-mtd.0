@@ -1,22 +1,7 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MF6cV-0006eQ-1T
-	for linux-mtd@lists.infradead.org; Fri, 12 Jun 2009 13:16:43 +0000
-Received: from epmmp2 (mailout1.samsung.com [203.254.224.24])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KL4006SYNJKWB@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 12 Jun 2009 22:16:32 +0900 (KST)
-Received: from amulsaha ([107.108.214.27])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0KL4004J7NJIAD@mmp2.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 12 Jun 2009 22:16:32 +0900 (KST)
-Date: Fri, 12 Jun 2009 18:46:41 +0530
-From: Amul Saha <amul.saha@samsung.com>
 Subject: Re: [patch 01/14] mtd: Flex-OneNAND support
-To: dedekind@infradead.org
-Message-id: <5156D5DBD34A4A5984AE3F3840C0452F@sisodomain.com>
-Content-transfer-encoding: 7BIT
+From: David Woodhouse <dwmw2@infradead.org>
+To: Amul Saha <amul.saha@samsung.com>
+In-Reply-To: <5156D5DBD34A4A5984AE3F3840C0452F@sisodomain.com>
 References: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
 	<1243432517.11172.32.camel@localhost.localdomain>
 	<1244554687.4538.16.camel@macbook.infradead.org>
@@ -26,9 +11,15 @@ References: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
 	<1244803363.5847.446.camel@localhost.localdomain>
 	<3E83C7DF574149B78FFE8D12094FAF6D@sisodomain.com>
 	<1244808209.5847.447.camel@localhost.localdomain>
+	<5156D5DBD34A4A5984AE3F3840C0452F@sisodomain.com>
+Content-Type: text/plain
+Date: Fri, 12 Jun 2009 14:32:37 +0100
+Message-Id: <1244813557.3511.1272.camel@macbook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Cc: vishak.g@samsung.com, apgmoorthy <moorthy.apg@samsung.com>,
 	kyungmin.park@samsung.com, linux-mtd@lists.infradead.org,
-	akpm@linux-foundation.org, David Woodhouse <dwmw2@infradead.org>
+	akpm@linux-foundation.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,34 +29,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> >> +#ifdef MODULE
->> >> + flexonenand_setup(flex_bdry_info);
->> >> +#endif
->> >
->> > Why do you need this ifdef? What is the fundamental difference between
->> > onenand.ko as a module and onenand compiled-in?
->> >
->>
->> flexonenand_setup( ) need not be called, when OneNAND is built-in.
->> This function-call will cause overhead unwantedly on every boot, during OneNAND scan.
->>
->> flexonenand_setup( ) call is needed only when it has been built as a module.
->
-> Why?
->
+On Fri, 2009-06-12 at 18:46 +0530, Amul Saha wrote:
+> >> >> +#ifdef MODULE
+> >> >> + flexonenand_setup(flex_bdry_info);
+> >> >> +#endif
+> >> >
+> >> > Why do you need this ifdef? What is the fundamental difference between
+> >> > onenand.ko as a module and onenand compiled-in?
+> >> >
+> >>
+> >> flexonenand_setup( ) need not be called, when OneNAND is built-in.
+> >> This function-call will cause overhead unwantedly on every boot, during OneNAND scan.
+> >>
+> >> flexonenand_setup( ) call is needed only when it has been built as a module.
+> >
+> > Why?
+> >
+> 
+> When Flex-OneNAND is built-in, the SLC boundary can be set by kernel command line.
+> During the boot up time, flexonenand_setup() gets invoked by kernel, on parsing the kernel
+> command line.
+> 
+> But when Flex-OneNAND is built as a module, SLC boundary information is passed as module
+> parameter.
+> So in this case flexonenand_setup() has to be called explicitly during insomd time
+> (module_init),  to set the desired boundary.
+> So without a compilation macro (#ifdef MODULE) flexonenand_setup() is invoked in onenand_scan,
+> even when it is built-in which is not needed.
+> 
+> I am not getting your point, could you please clarify?
 
-When Flex-OneNAND is built-in, the SLC boundary can be set by kernel command line.
-During the boot up time, flexonenand_setup() gets invoked by kernel, on parsing the kernel
-command line.
+You can remove flexonenand_setup() and the __setup("onenand_brdy=")
+completely, and use _only_ "module_param_array()". That will work both
+for modules and for the built-in case.
 
-But when Flex-OneNAND is built as a module, SLC boundary information is passed as module
-parameter.
-So in this case flexonenand_setup() has to be called explicitly during insomd time
-(module_init),  to set the desired boundary.
-So without a compilation macro (#ifdef MODULE) flexonenand_setup() is invoked in onenand_scan,
-even when it is built-in which is not needed.
-
-I am not getting your point, could you please clarify?
-
-Regards,
-Amul Kumar Saha 
+-- 
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
