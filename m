@@ -1,19 +1,23 @@
-Received: from mta-blr1.sasken.com ([203.200.200.72])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MG9PC-0001o0-44
-	for linux-mtd@lists.infradead.org; Mon, 15 Jun 2009 10:27:16 +0000
-From: Ravi Vasarla <ravi.vasarla@sasken.com>
-To: Rupesh Kumar <Rupesh.Kumar@Lntemsys.com>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>
-Date: Mon, 15 Jun 2009 15:56:49 +0530
-Subject: RE: Problem with jffs2 on linux 2.6.23 
-Message-ID: <022F54DCE6CCCD45A5F9DF0B0B7BFEEB314CD226DF@EXGMBX01.sasken.com>
-References: <OFA28454EB.D09A6F01-ON652575D6.002DC4B1-652575D6.0031F5DB@lntemsys.com>
-In-Reply-To: <OFA28454EB.D09A6F01-ON652575D6.002DC4B1-652575D6.0031F5DB@lntemsys.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
+Received: from mail-fx0-f212.google.com ([209.85.220.212])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MG9xc-0001m6-Ts
+	for linux-mtd@lists.infradead.org; Mon, 15 Jun 2009 11:02:51 +0000
+Received: by fxm8 with SMTP id 8so3736085fxm.18
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 15 Jun 2009 04:02:42 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <4A361E6C.3000208@nokia.com>
+References: <7948530906150003g365c8af3g9a9aaf8c8b985aa7@mail.gmail.com>
+	<4A361E6C.3000208@nokia.com>
+Date: Mon, 15 Jun 2009 14:02:42 +0300
+Message-ID: <7948530906150402l4896399dv80962495f89da1fb@mail.gmail.com>
+Subject: Re: RFC: [PATCH] MTD OneNAND: multiblock erase support
+From: Mika Korhonen <mika.j.korhonen@gmail.com>
+To: Adrian Hunter <adrian.hunter@nokia.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
+Cc: kyungmin.park@samsung.com,
+	linux-mtd Mailing List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,82 +27,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Rupesh,
+2009/6/15 Adrian Hunter <adrian.hunter@nokia.com>:
+> Mika Korhonen wrote:
+>>
+>> I wrote an initial support for OneNAND multiblock erase feature. =A0When
+>> done in maximum 64 eraseblock batches multiblock erase is up to 30x
+>> faster than block-by-block erase (not including erase verify, though).
+>>
+>> However, I only had possibility to test this with an OMAP board, so I
+>> don't know if e.g. the default onenand_wait needs adjustment. Also for
+>> Flex-OneNAND the support goes off. Does Flex even have mb erase?
+>>
+>> What do you think?
+>
+> I expect all OneNAND support multiblock erase, so the config should
+> go away. =A0Kyungmin can probably comment on that.
 
-It usually comes when jffs2 image is not build correctly, i mean with corre=
-ct block size and erase size. Kindly check once again, please enable the MT=
-D debug and file system debug flags to see more debug info.
+Yes, I was thinking about that as well. Is it included in all chips?
 
-Regards,
-Ravi Kumar
-+91 97415 00768
+> Waiting for multiblock-erase, you should probably spin, not use the
+> interrupt line. =A0You should change the wait function in
+> onenand_base and omap2.c.
+>
+> You should handle multiple multiblock erases.
+>
+> You should check for bad blocks *before* doing command 0x95
 
-________________________________________
-From: linux-mtd-bounces@lists.infradead.org [linux-mtd-bounces@lists.infrad=
-ead.org] On Behalf Of Rupesh Kumar [Rupesh.Kumar@Lntemsys.com]
-Sent: Monday, June 15, 2009 14:46
-To: linux-mtd@lists.infradead.org
-Subject: Problem with jffs2 on linux 2.6.23
+Ok
 
-Hi
-We are using jffs2 RFS for our board with linux 2.6.23 . we are suing nand
-write.jffs2 utility in the u-boot to burn the image on to the
-nand flash,
+> Waiting for erase-verify, you should probably spin too.
+>
+I just tried that and it looks like spinning in verify read makes a
+difference as I got 30% faster total time for 1600 block erase.
 
-Our problem is
-Booting First time with the RFS seems to be fine. As system run and we do
-reboot system it prints following messages and boots up.
-///////////////////////////
-mtd->read(0x400 bytes from 0x1b00000) returned ECC error
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x01b001d0:
-0xfffe instead
-mtd->read(0x400 bytes from 0x2500000) returned ECC error
-mtd->read(0x400 bytes from 0x27c0000) returned ECC error
-mtd->read(0x400 bytes from 0x2c20000) returned ECC error
-mtd->read(0x400 bytes from 0x2cc0000) returned ECC error
-mtd->read(0x400 bytes from 0x2d00000) returned ECC error
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x02d00074:
-0xfffe instead
-Empty flash at 0x02d00078 ends at 0x02d003e4
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x02d003e4:
-0xffef instead
-Empty flash at 0x02d003e8 ends at 0x02d00780
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x02d00780:
-0xfffb instead
-mtd->read(0x400 bytes from 0x3320000) returned ECC error
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x03320190:
-0xffff instead
-Empty flash at 0x03320194 ends at 0x0332047c
-////////////////////////////
-During run time also it prints these messages.
-
-I am not able to understand the cause of this error. Please help me in
-fixing this error.
-
-The same file system is working fine with the linux 2.6.20 kernel.
-Thanks
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-SASKEN BUSINESS DISCLAIMER
--------------------------
-This message may contain confidential, proprietary or legally privileged in=
-formation. In=20
-case you are not the original intended Recipient of the message, you must n=
-ot, directly or=20
-indirectly, use, Disclose, distribute, print, or copy any part of this mess=
-age and you are=20
-requested to delete it and inform the sender. Any views expressed in this m=
-essage are=20
-those of the individual sender unless otherwise stated. Nothing contained i=
-n this message=20
-shall be construed as an offer or acceptance of any offer by Sasken Communi=
-cation=20
-Technologies Limited ("Sasken") unless sent with that express intent and wi=
-th due=20
-authority of Sasken. Sasken has taken enough precautions to prevent the spr=
-ead of=20
-viruses. However the company accepts no liability for any damage caused by =
-any virus=20
-transmitted by this email
+Thanks for good advice!
+Mika
