@@ -1,13 +1,13 @@
 Received: from mta-blr1.sasken.com ([203.200.200.72])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MG9OT-0000pD-D0
-	for linux-mtd@lists.infradead.org; Mon, 15 Jun 2009 10:26:32 +0000
+	id 1MG9PC-0001o0-44
+	for linux-mtd@lists.infradead.org; Mon, 15 Jun 2009 10:27:16 +0000
 From: Ravi Vasarla <ravi.vasarla@sasken.com>
 To: Rupesh Kumar <Rupesh.Kumar@Lntemsys.com>, "linux-mtd@lists.infradead.org"
 	<linux-mtd@lists.infradead.org>
-Date: Mon, 15 Jun 2009 15:56:16 +0530
+Date: Mon, 15 Jun 2009 15:56:49 +0530
 Subject: RE: Problem with jffs2 on linux 2.6.23 
-Message-ID: <022F54DCE6CCCD45A5F9DF0B0B7BFEEB314CD226DE@EXGMBX01.sasken.com>
+Message-ID: <022F54DCE6CCCD45A5F9DF0B0B7BFEEB314CD226DF@EXGMBX01.sasken.com>
 References: <OFA28454EB.D09A6F01-ON652575D6.002DC4B1-652575D6.0031F5DB@lntemsys.com>
 In-Reply-To: <OFA28454EB.D09A6F01-ON652575D6.002DC4B1-652575D6.0031F5DB@lntemsys.com>
 Content-Language: en-US
@@ -23,6 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Rupesh,
+
+It usually comes when jffs2 image is not build correctly, i mean with corre=
+ct block size and erase size. Kindly check once again, please enable the MT=
+D debug and file system debug flags to see more debug info.
+
+Regards,
+Ravi Kumar
++91 97415 00768
 
 ________________________________________
 From: linux-mtd-bounces@lists.infradead.org [linux-mtd-bounces@lists.infrad=
