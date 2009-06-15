@@ -1,23 +1,11 @@
-Received: from mail-fx0-f212.google.com ([209.85.220.212])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MG9xc-0001m6-Ts
-	for linux-mtd@lists.infradead.org; Mon, 15 Jun 2009 11:02:51 +0000
-Received: by fxm8 with SMTP id 8so3736085fxm.18
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 15 Jun 2009 04:02:42 -0700 (PDT)
+From: "MR. JERRY NTAI" <ntaiinfo_mevasbnk@yahoo.com.hk>
+Subject: Please Read Carefully!
+Date: Tue, 16 Jun 2009 02:15:16 +1000
+Message-Id: <20090615160433.M21082@yahoo.com.hk>
 MIME-Version: 1.0
-In-Reply-To: <4A361E6C.3000208@nokia.com>
-References: <7948530906150003g365c8af3g9a9aaf8c8b985aa7@mail.gmail.com>
-	<4A361E6C.3000208@nokia.com>
-Date: Mon, 15 Jun 2009 14:02:42 +0300
-Message-ID: <7948530906150402l4896399dv80962495f89da1fb@mail.gmail.com>
-Subject: Re: RFC: [PATCH] MTD OneNAND: multiblock erase support
-From: Mika Korhonen <mika.j.korhonen@gmail.com>
-To: Adrian Hunter <adrian.hunter@nokia.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: kyungmin.park@samsung.com,
-	linux-mtd Mailing List <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;
+	charset=iso-8859-1
+Reply-To: mevasbnk_jerryntai@yahoo.com.hk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,38 +15,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2009/6/15 Adrian Hunter <adrian.hunter@nokia.com>:
-> Mika Korhonen wrote:
->>
->> I wrote an initial support for OneNAND multiblock erase feature. =A0When
->> done in maximum 64 eraseblock batches multiblock erase is up to 30x
->> faster than block-by-block erase (not including erase verify, though).
->>
->> However, I only had possibility to test this with an OMAP board, so I
->> don't know if e.g. the default onenand_wait needs adjustment. Also for
->> Flex-OneNAND the support goes off. Does Flex even have mb erase?
->>
->> What do you think?
->
-> I expect all OneNAND support multiblock erase, so the config should
-> go away. =A0Kyungmin can probably comment on that.
 
-Yes, I was thinking about that as well. Is it included in all chips?
-
-> Waiting for multiblock-erase, you should probably spin, not use the
-> interrupt line. =A0You should change the wait function in
-> onenand_base and omap2.c.
->
-> You should handle multiple multiblock erases.
->
-> You should check for bad blocks *before* doing command 0x95
-
-Ok
-
-> Waiting for erase-verify, you should probably spin too.
->
-I just tried that and it looks like spinning in verify read makes a
-difference as I got 30% faster total time for 1600 block erase.
-
-Thanks for good advice!
-Mika
+Good Day,
+ 
+Please kindly accept my apology for sending you this email without your 
+consent. I believe you are a highly respected personality, considering the
+fact that I sourced your email from the peoples search database on the web 
+during my descret search for a foreign partner whom can assist me in taking
+this business to it success. Though, I do not know to what extent you are 
+familiar with events. I have a proposal for you.This however is not mandatory 
+nor will I in any manner compel you to honor against your will, but I hope 
+you will read on and consider the value I offer.My name is Mr. Jerry Ntai, I 
+am the Head of Operationsin Mevas Bank, Hong Kong. I have a business proposal 
+in the tune of  US$25.2m  to be transferred to an offshore account with your 
+assistace if willing.After the successful transfer, we shall share in ratio 
+of 30% for you and 70% for me. Should you be interested, please respond to my 
+letter immediately,so we can commence all arrangements and I will give you 
+more information on the project and how we would handle it.
+ 
+You can contact me on my private email:( mevasbnk_jerryntai@yahoo.com.hk ) 
+and send me the following information
+for documentation purpose:
+(1)Full name:
+(2)private phone number:
+(3)current residential address:
+(4)Occupation:
+(5)Age and Sex:
+I look forward to hearing from you.
+ 
+Kind Regards,
+Mr. Jerry Ntai.
