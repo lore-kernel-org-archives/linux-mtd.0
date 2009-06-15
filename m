@@ -1,16 +1,20 @@
-Received: from mail.frequentis.com ([212.186.194.131])
+Received: from relais.videotron.ca ([24.201.245.36])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MFaQs-0001Tq-MK
-	for linux-mtd@lists.infradead.org; Sat, 13 Jun 2009 21:06:41 +0000
-Date: Sat, 13 Jun 2009 23:06:29 +0200
-From: Christian Engelmayer <christian.engelmayer@frequentis.com>
-To: dwmw2@infradead.org
-Subject: [PATCH 1/1] jffs2: leaking jffs2_summary in function jffs2_scan_medium
-Message-ID: <20090613230629.2a0bc935@frequentis.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, christian.engelmayer@frequentis.com
+	id 1MG4Su-0001fc-Rl
+	for linux-mtd@lists.infradead.org; Mon, 15 Jun 2009 05:10:47 +0000
+MIME-version: 1.0
+Content-transfer-encoding: 7BIT
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Received: from xanadu.home ([66.131.194.97]) by VL-MO-MR005.ip.videotron.ca
+	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
+	32bit))
+	with ESMTP id <0KL900L5NKJ37620@VL-MO-MR005.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Mon, 15 Jun 2009 00:59:27 -0400 (EDT)
+Date: Mon, 15 Jun 2009 01:10:18 -0400 (EDT)
+From: Nicolas Pitre <nico@cam.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: let include/linux/mtd/partitions.h stand on its own
+Message-id: <alpine.LFD.2.00.0906150107480.16467@xanadu.home>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,32 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Christian Engelmayer <christian.engelmayer@frequentis.com>
+    
+When declaring static MTD partitions in board specific code, only
+including <include/linux/mtd/partitions.h> should suffice without
+gcc nagging us with:
+    
+In file included from arch/arm/mach-kirkwood/sheevaplug-setup.c:14:
+include/linux/mtd/partitions.h:50: warning: 'struct mtd_info' declared inside parameter list
+include/linux/mtd/partitions.h:50: warning: its scope is only this definition or declaration, which is probably not what you want
+include/linux/mtd/partitions.h:51: warning: 'struct mtd_info' declared inside parameter list
+include/linux/mtd/partitions.h:61: warning: 'struct mtd_info' declared inside parameter list
+include/linux/mtd/partitions.h:67: warning: 'struct mtd_info' declared inside parameter list
+    
+Signed-off-by: Nicolas Pitre <nico@marvell.com>
 
-In case of an error returned by file_dirty() 's' is not freed as the cleanup
-path is skipped.
-
-Signed-off-by: Christian Engelmayer <christian.engelmayer@frequentis.com>
---
-Reported by Coverity.
-
---- linux-2.6.29.4/fs/jffs2/scan.c.orig	2009-06-13 22:49:07.000000000 +0200
-+++ linux-2.6.29.4/fs/jffs2/scan.c	2009-06-13 22:29:06.000000000 +0200
-@@ -196,7 +196,7 @@ int jffs2_scan_medium(struct jffs2_sb_in
- 				if (c->nextblock) {
- 					ret = file_dirty(c, c->nextblock);
- 					if (ret)
--						return ret;
-+						goto out;
- 					/* deleting summary information of the old nextblock */
- 					jffs2_sum_reset_collected(c->summary);
- 				}
-@@ -207,7 +207,7 @@ int jffs2_scan_medium(struct jffs2_sb_in
- 			} else {
- 				ret = file_dirty(c, jeb);
- 				if (ret)
--					return ret;
-+					goto out;
- 			}
- 			break;
+diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
+index af6dcb9..b70313d 100644
+--- a/include/linux/mtd/partitions.h
++++ b/include/linux/mtd/partitions.h
+@@ -47,6 +47,8 @@ struct mtd_partition {
+ #define MTDPART_SIZ_FULL	(0)
+ 
+ 
++struct mtd_info;
++
+ int add_mtd_partitions(struct mtd_info *, const struct mtd_partition *, int);
+ int del_mtd_partitions(struct mtd_info *);
  
