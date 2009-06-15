@@ -1,26 +1,20 @@
-Received: from mail-yx0-f176.google.com ([209.85.210.176])
+Received: from smtp3.netcologne.de ([194.8.194.66])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MGo68-0001YP-Dc
-	for linux-mtd@lists.infradead.org; Wed, 17 Jun 2009 05:54:32 +0000
-Received: by yxe6 with SMTP id 6so77409yxe.28
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 16 Jun 2009 22:54:11 -0700 (PDT)
+	id 1MGGlb-0000Fs-Ve
+	for linux-mtd@lists.infradead.org; Mon, 15 Jun 2009 18:18:54 +0000
+Date: Mon, 15 Jun 2009 19:43:20 +0200
+From: Albrecht =?iso-8859-1?b?RHJl3w==?= <albrecht.dress@arcor.de>
+Subject: Re: [PATCH V2 2/2] mtd/maps/mtd-ram: add an of-platform driver
+To: Wolfram Sang <w.sang@pengutronix.de>
+In-Reply-To: <1244203514-12516-3-git-send-email-w.sang@pengutronix.de> (from
+	w.sang@pengutronix.de on Fri Jun  5 14:05:14 2009)
+Message-Id: <1245087807.3185.0@antares>
 MIME-Version: 1.0
-In-Reply-To: <fa686aa40904160646v75a98e02s446fd89c08cfebae@mail.gmail.com>
-References: <1239883845-17804-1-git-send-email-sr@denx.de>
-	<fa686aa40904160626k118cea3cvc0db38a2277e45b8@mail.gmail.com>
-	<200904161537.59048.sr@denx.de>
-	<fa686aa40904160646v75a98e02s446fd89c08cfebae@mail.gmail.com>
-From: Grant Likely <grant.likely@secretlab.ca>
-Date: Tue, 16 Jun 2009 23:53:51 -0600
-Message-ID: <fa686aa40906162253j76776e88y9d7c818f4d0f1508@mail.gmail.com>
-Subject: Re: [PATCH 1/3 v3] mtd: physmap_of: Add multiple regions and
-	concatenation support
-To: Stefan Roese <sr@denx.de>, David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=PGP-SHA1;
+	protocol="application/pgp-signature"; boundary="=-HGg7XGzhpDPjZ7JQ1k94"
 Cc: linuxppc-dev@ozlabs.org, devicetree-discuss@ozlabs.org,
-	linux-mtd@lists.infradead.org
+	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	Ben Dooks <ben-linux@fluff.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,34 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 16, 2009 at 7:46 AM, Grant Likely<grant.likely@secretlab.ca> wr=
-ote:
-> On Thu, Apr 16, 2009 at 7:37 AM, Stefan Roese <sr@denx.de> wrote:
->> On Thursday 16 April 2009, Grant Likely wrote:
->>> > Signed-off-by: Stefan Roese <sr@denx.de>
->>> > Reviewd-by: Grant Likely <grant.likely@secretlab.ca>
->>>
->>> Yup, still looks good to me. =A0What boards has this been tested on?
->>
->> I tested this version on PPC405EX Kilauea equipped only one "standard"
->> Spansion S29GL512 NOR chip. And a slightly modified version on an MPC836=
-0
->> board (kmeter1) which is equipped with the Intel P30 part mentioned in t=
-he
->> bindings description. Slightly modified since this board support is not =
-yet
->> pushed upstream and currently using v2.6.28 (physmap_of.c has received m=
-inor
->> modifications after 2.6.28 release).
->
-> Okay. =A0It will be good to get this one into -next for some testing
-> exposure. =A0Unless he asks me to do otherwise, I'll leave this one to
-> David to pick up.
+--=-HGg7XGzhpDPjZ7JQ1k94
+Content-Type: text/plain; charset=us-ascii; DelSp=Yes; Format=Flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-David, what's the status of this patch?  Will it be merged for 2.6.31?
+Am 05.06.09 14:05 schrieb(en) Wolfram Sang:
+> Create an of-aware driver using the now exported generic functions =20
+> from plat-ram.c. Also add the documentation for the binding. =20
+> Partitions are not yet supported. Tested on a phyCORE-MPC5200B-IO.
 
-g.
+Dumb question: what is the current status of this patch?  I ask because =20
+I re-wrote my '5200 16-bit Local Plus Bus patch' according to Grant's =20
+suggestions, and I believe of_ram_probe() of your patch is the right =20
+place to check if it's attached to "fsl,mpc5200-lpb", and to change the =20
+write cb if the bankwidth equals 2.
 
---=20
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
+Thanks, Albrecht.
+
+--=-HGg7XGzhpDPjZ7JQ1k94
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.9 (GNU/Linux)
+
+iD8DBQBKNog/n/9unNAn/9ERAmCHAJ9Mgz/9s1GXCFbyRDPOpAWBuCLvTgCgmJX2
+y4964cya7xLRQUCs5otf3CQ=
+=mXMd
+-----END PGP SIGNATURE-----
+
+--=-HGg7XGzhpDPjZ7JQ1k94--
