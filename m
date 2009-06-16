@@ -1,14 +1,14 @@
 Received: from devils.ext.ti.com ([198.47.26.153])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MGfC0-0001cf-HT
-	for linux-mtd@lists.infradead.org; Tue, 16 Jun 2009 20:23:47 +0000
+	id 1MGfC3-0001dU-FT
+	for linux-mtd@lists.infradead.org; Tue, 16 Jun 2009 20:23:53 +0000
 From: s-paulraj@ti.com
 To: davinci-linux-open-source@linux.davincidsp.com,
 	linux-mtd@lists.infradead.org, dwmw2@infradead.org, tglx@linutronix.de,
 	akpm@linux-foundation.org
-Subject: [PATCH v2 1/3] NAND: Add "page" parameter to all read APIs
-Date: Tue, 16 Jun 2009 16:23:01 -0400
-Message-Id: <1245183781-11429-1-git-send-email-s-paulraj@ti.com>
+Subject: [PATCH v2 2/3] NAND: Add new ECC mode - ECC_HW_OOB_FIRST
+Date: Tue, 16 Jun 2009 16:23:17 -0400
+Message-Id: <1245183797-11469-1-git-send-email-s-paulraj@ti.com>
 Cc: Sneha Narnakaje <nsnehaprabha@ti.com>, Sandeep Paulraj <s-paulraj@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,154 +23,98 @@ From: Sandeep Paulraj <s-paulraj@ti.com>
 
 The patch applies to linux-mtd GIT tree
 
-This patch new "page" parameter to all NAND read_page/read_page_raw APIs.
-The read_page API for the new mode ECC_HW_OOB_FIRST requires the page
-information to send the READOOB command and read the OOB area before the
-data area.
+This patch adds the new mode NAND_ECC_HW_OOB_FIRST in the nand code to
+support 4-bit ECC on TI DaVinci devices with large page (up to 4K) NAND
+chips. This ECC mode is similar to NAND_ECC_HW, with the exception of
+read_page API that first reads the OOB area, reads the data in chunks, feeds
+the ECC from OOB area to the ECC hw engine and perform any correction on the
+data as per the ECC status reported by the engine.
+
+"ECC_HW_OOB_FIRST" name suggested by Thomas Gleixner
 
 Reviewed-by: David Brownell <dbrownell@users.sourceforge.net>
 Signed-off-by: Sneha Narnakaje <nsnehaprabha@ti.com>
-Signed-off-by: Sandeep Paulraj <s-paulraj@ti.com>
+Signed-off-by: Sandeep Paulraj <s-paulraj@ti.com
 ---
- drivers/mtd/nand/atmel_nand.c |    2 +-
- drivers/mtd/nand/cafe_nand.c  |    2 +-
- drivers/mtd/nand/nand_base.c  |   18 ++++++++++--------
- drivers/mtd/nand/sh_flctl.c   |    2 +-
- include/linux/mtd/nand.h      |    4 ++--
- 5 files changed, 15 insertions(+), 13 deletions(-)
+ drivers/mtd/nand/nand_base.c |   59 ++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 59 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 2802992..ab809ec 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -218,7 +218,7 @@ static int atmel_nand_calculate(struct mtd_info *mtd,
-  * buf:        buffer to store read data
-  */
- static int atmel_nand_read_page(struct mtd_info *mtd,
--		struct nand_chip *chip, uint8_t *buf)
-+		struct nand_chip *chip, uint8_t *buf, int page)
- {
- 	int eccsize = chip->ecc.size;
- 	int eccbytes = chip->ecc.bytes;
-diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
-index 29acd06..a70f40e 100644
---- a/drivers/mtd/nand/cafe_nand.c
-+++ b/drivers/mtd/nand/cafe_nand.c
-@@ -381,7 +381,7 @@ static int cafe_nand_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
-  * we need a special oob layout and handling.
-  */
- static int cafe_nand_read_page(struct mtd_info *mtd, struct nand_chip *chip,
--			       uint8_t *buf)
-+			       uint8_t *buf, int page)
- {
- 	struct cafe_priv *cafe = mtd->priv;
- 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 8c21b89..a738333 100644
+index a738333..93bb8f3 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -766,7 +766,7 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
-  * Not for syndrome calculating ecc controllers, which use a special oob layout
-  */
- static int nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
--			      uint8_t *buf)
-+			      uint8_t *buf, int page)
- {
- 	chip->read_buf(mtd, buf, mtd->writesize);
- 	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
-@@ -782,7 +782,7 @@ static int nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
-  * We need a special oob layout and handling even when OOB isn't used.
-  */
- static int nand_read_page_raw_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
--			      uint8_t *buf)
-+			      uint8_t *buf, int page)
- {
- 	int eccsize = chip->ecc.size;
- 	int eccbytes = chip->ecc.bytes;
-@@ -821,7 +821,7 @@ static int nand_read_page_raw_syndrome(struct mtd_info *mtd, struct nand_chip *c
-  * @buf:	buffer to store read data
-  */
- static int nand_read_page_swecc(struct mtd_info *mtd, struct nand_chip *chip,
--				uint8_t *buf)
-+				uint8_t *buf, int page)
- {
- 	int i, eccsize = chip->ecc.size;
- 	int eccbytes = chip->ecc.bytes;
-@@ -831,7 +831,7 @@ static int nand_read_page_swecc(struct mtd_info *mtd, struct nand_chip *chip,
- 	uint8_t *ecc_code = chip->buffers->ecccode;
- 	uint32_t *eccpos = chip->ecc.layout->eccpos;
- 
--	chip->ecc.read_page_raw(mtd, chip, buf);
-+	chip->ecc.read_page_raw(mtd, chip, buf, page);
- 
- 	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize)
- 		chip->ecc.calculate(mtd, p, &ecc_calc[i]);
-@@ -944,7 +944,7 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip, uint3
-  * Not for syndrome calculating ecc controllers which need a special oob layout
-  */
- static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
--				uint8_t *buf)
-+				uint8_t *buf, int page)
- {
- 	int i, eccsize = chip->ecc.size;
- 	int eccbytes = chip->ecc.bytes;
-@@ -989,7 +989,7 @@ static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
-  * we need a special oob layout and handling.
-  */
- static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
--				   uint8_t *buf)
-+				   uint8_t *buf, int page)
- {
- 	int i, eccsize = chip->ecc.size;
- 	int eccbytes = chip->ecc.bytes;
-@@ -1131,11 +1131,13 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- 
- 			/* Now read the page into the buffer */
- 			if (unlikely(ops->mode == MTD_OOB_RAW))
--				ret = chip->ecc.read_page_raw(mtd, chip, bufpoi);
-+				ret = chip->ecc.read_page_raw(mtd, chip,
-+								bufpoi, page);
- 			else if (!aligned && NAND_SUBPAGE_READ(chip) && !oob)
- 				ret = chip->ecc.read_subpage(mtd, chip, col, bytes, bufpoi);
- 			else
--				ret = chip->ecc.read_page(mtd, chip, bufpoi);
-+				ret = chip->ecc.read_page(mtd, chip, bufpoi,
-+								page);
- 			if (ret < 0)
- 				break;
- 
-diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-index 2bc8966..c5df285 100644
---- a/drivers/mtd/nand/sh_flctl.c
-+++ b/drivers/mtd/nand/sh_flctl.c
-@@ -329,7 +329,7 @@ static void set_cmd_regs(struct mtd_info *mtd, uint32_t cmd, uint32_t flcmcdr_va
+@@ -980,6 +980,54 @@ static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
  }
  
- static int flctl_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
--				uint8_t *buf)
-+				uint8_t *buf, int page)
- {
- 	int i, eccsize = chip->ecc.size;
- 	int eccbytes = chip->ecc.bytes;
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 4030eba..686f370 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -271,13 +271,13 @@ struct nand_ecc_ctrl {
- 					   uint8_t *calc_ecc);
- 	int			(*read_page_raw)(struct mtd_info *mtd,
- 						 struct nand_chip *chip,
--						 uint8_t *buf);
-+						 uint8_t *buf, int page);
- 	void			(*write_page_raw)(struct mtd_info *mtd,
- 						  struct nand_chip *chip,
- 						  const uint8_t *buf);
- 	int			(*read_page)(struct mtd_info *mtd,
- 					     struct nand_chip *chip,
--					     uint8_t *buf);
-+					     uint8_t *buf, int page);
- 	int			(*read_subpage)(struct mtd_info *mtd,
- 					     struct nand_chip *chip,
- 					     uint32_t offs, uint32_t len,
+ /**
++ * nand_read_page_hwecc_oob_first - [REPLACABLE] hw ecc, read oob first
++ * @mtd:	mtd info structure
++ * @chip:	nand chip info structure
++ * @buf:	buffer to store read data
++ *
++ * Hardware ECC for large page chips, require OOB to be read first.
++ * For this ECC mode, the write_page method is re-used from ECC_HW.
++ * These methods read/write ECC from the OOB area, unlike the
++ * ECC_HW_SYNDROME support with multiple ECC steps, follows the
++ * "infix ECC" scheme and reads/writes ECC from the data area, by
++ * overwriting the NAND manufacturer bad block markings.
++ */
++static int nand_read_page_hwecc_oob_first(struct mtd_info *mtd,
++	struct nand_chip *chip, uint8_t *buf, int page)
++{
++	int i, eccsize = chip->ecc.size;
++	int eccbytes = chip->ecc.bytes;
++	int eccsteps = chip->ecc.steps;
++	uint8_t *p = buf;
++	uint8_t *ecc_code = chip->buffers->ecccode;
++	uint32_t *eccpos = chip->ecc.layout->eccpos;
++	uint8_t *ecc_calc = chip->buffers->ecccalc;
++
++	/* Read the OOB area first */
++	chip->cmdfunc(mtd, NAND_CMD_READOOB, 0, page);
++	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
++	chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
++
++	for (i = 0; i < chip->ecc.total; i++)
++		ecc_code[i] = chip->oob_poi[eccpos[i]];
++
++	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize) {
++		int stat;
++
++		chip->ecc.hwctl(mtd, NAND_ECC_READ);
++		chip->read_buf(mtd, p, eccsize);
++		chip->ecc.calculate(mtd, p, &ecc_calc[i]);
++
++		stat = chip->ecc.correct(mtd, p, &ecc_code[i], NULL);
++		if (stat < 0)
++			mtd->ecc_stats.failed++;
++		else
++			mtd->ecc_stats.corrected += stat;
++	}
++	return 0;
++}
++
++/**
+  * nand_read_page_syndrome - [REPLACABLE] hardware ecc syndrom based page read
+  * @mtd:	mtd info structure
+  * @chip:	nand chip info structure
+@@ -2673,6 +2721,17 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	 */
+ 
+ 	switch (chip->ecc.mode) {
++	case NAND_ECC_HW_OOB_FIRST:
++		/* Similar to NAND_ECC_HW, but a separate read_page handle */
++		if (!chip->ecc.calculate || !chip->ecc.correct ||
++		     !chip->ecc.hwctl) {
++			printk(KERN_WARNING "No ECC functions supplied, "
++			       "Hardware ECC not possible\n");
++			BUG();
++		}
++		if (!chip->ecc.read_page)
++			chip->ecc.read_page = nand_read_page_hwecc_oob_first;
++
+ 	case NAND_ECC_HW:
+ 		/* Use standard hwecc read page function ? */
+ 		if (!chip->ecc.read_page)
 -- 
 1.6.0.4
