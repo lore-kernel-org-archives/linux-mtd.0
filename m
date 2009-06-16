@@ -1,28 +1,24 @@
-Received: from mail-gx0-f211.google.com ([209.85.217.211])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MGagJ-0002KH-Td
-	for linux-mtd@lists.infradead.org; Tue, 16 Jun 2009 15:34:57 +0000
-Received: by gxk7 with SMTP id 7so1185459gxk.18
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 16 Jun 2009 08:34:39 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <fa686aa40906160833g1d77466ekf8b8d4350ab32a24@mail.gmail.com>
-References: <1244203514-12516-3-git-send-email-w.sang@pengutronix.de>
-	<1245087807.3185.0@antares> <20090616091801.GC21321@pengutronix.de>
-	<fa686aa40906160553m2f0e7cc4n644c3893573845f@mail.gmail.com>
-	<20090616132005.GD21321@pengutronix.de>
-	<fa686aa40906160833g1d77466ekf8b8d4350ab32a24@mail.gmail.com>
-Date: Tue, 16 Jun 2009 09:34:38 -0600
-Message-ID: <fa686aa40906160834xb2cde48lfa00c0c9767e3ddc@mail.gmail.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MGUgA-0006pP-SL
+	for linux-mtd@lists.infradead.org; Tue, 16 Jun 2009 09:10:09 +0000
+Date: Tue, 16 Jun 2009 11:09:53 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: David Woodhouse <dwmw2@infradead.org>
 Subject: Re: [PATCH V2 2/2] mtd/maps/mtd-ram: add an of-platform driver
-From: Grant Likely <grant.likely@secretlab.ca>
-To: Wolfram Sang <w.sang@pengutronix.de>
-Content-Type: multipart/alternative; boundary=001e68378987aaf931046c78e926
-Cc: devicetree-discuss@ozlabs.org,
-	=?ISO-8859-1?Q?Albrecht_Dre=DF?= <albrecht.dress@arcor.de>,
+Message-ID: <20090616090953.GB21321@pengutronix.de>
+References: <1244203514-12516-1-git-send-email-w.sang@pengutronix.de>
+	<1244203514-12516-3-git-send-email-w.sang@pengutronix.de>
+	<1244276049.3751.1176.camel@macbook.infradead.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="jho1yZJdad60DJr+"
+Content-Disposition: inline
+In-Reply-To: <1244276049.3751.1176.camel@macbook.infradead.org>
+Cc: devicetree-discuss@ozlabs.org, albrecht.dress@arcor.de,
 	Grant Likely <grant.likely@secretlab.ca>,
 	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Ben Dooks <ben-linux@fluff.org>, David Woodhouse <dwmw2@infradead.org>
+	Ben Dooks <ben-linux@fluff.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,78 +28,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---001e68378987aaf931046c78e926
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
 
-Okay, fair enough.  I wasn't paying very close attention when I replied.  It
-still seems awkward to me, but not enough to object (ie. It's not
-dangerous).
-
-g.
-
-On Jun 16, 2009 7:20 AM, "Wolfram Sang" <w.sang@pengutronix.de> wrote:
-
-> > Grant wondered if we need a bankwidth. IMHO it is needed for now, but I
-don't > > know if this i...
-Maybe there is a misunderstanding here. I am not talking about Albrecht's
-case.
-What I replied to your concern is that bankwidth is used(!) in the
-underlying
-map-ram-driver in mapram_erase() at the moment. Whether this is really
-needed
-could be discussed perhaps, but is beyond the scope of this patch series
-IMHO.
-I'd think this can be addressed in a later series, if needed, although this
-could mean that the binding will change (bank-width becoming optional).
-
-Regards, Wolfram -- Pengutronix e.K. | Wolfram Sang ...
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAko3nAUACgkQD27XaX1/VRtTkACfW0aUMJHrU3m4DCel0pm5fA6J
-WaQAnjGo5fn6JvMHt3Ke/xFTGB1uYT6p
-=V9t5
------END PGP SIGNATURE-----
-
---001e68378987aaf931046c78e926
-Content-Type: text/html; charset=ISO-8859-1
+--jho1yZJdad60DJr+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-<p>Okay, fair enough.=A0 I wasn&#39;t paying very close attention when I re=
-plied.=A0 It still seems awkward to me, but not enough to object (ie. It&#3=
-9;s not dangerous).</p>
-<p>g.</p>
-<p><blockquote type=3D"cite">On Jun 16, 2009 7:20 AM, &quot;Wolfram Sang&qu=
-ot; &lt;<a href=3D"mailto:w.sang@pengutronix.de">w.sang@pengutronix.de</a>&=
-gt; wrote:<br><br><p><font color=3D"#500050">&gt; &gt; Grant wondered if we=
- need a bankwidth. IMHO it is needed for now, but I don&#39;t
-&gt; &gt; know if this i...</font></p>Maybe there is a misunderstanding her=
-e. I am not talking about Albrecht&#39;s case.<br>
-What I replied to your concern is that bankwidth is used(!) in the underlyi=
-ng<br>
-map-ram-driver in mapram_erase() at the moment. Whether this is really need=
-ed<br>
-could be discussed perhaps, but is beyond the scope of this patch series IM=
-HO.<br>
-I&#39;d think this can be addressed in a later series, if needed, although =
-this<br>
-could mean that the binding will change (bank-width becoming optional).<br>
-<p><font color=3D"#500050">
+On Sat, Jun 06, 2009 at 09:14:08AM +0100, David Woodhouse wrote:
+> On Fri, 2009-06-05 at 14:05 +0200, Wolfram Sang wrote:
+> > Create an of-aware driver using the now exported generic functions from
+> > plat-ram.c. Also add the documentation for the binding. Partitions are
+> > not yet supported. Tested on a phyCORE-MPC5200B-IO.
+>=20
+> Do we have an ack for the device-tree bindings?=20
+
+Well, Grant acked so far and he surely has a voice in the device-tree-world=
+ :)
+Or do you want a specific ack for that?
+
 Regards,
 
    Wolfram
 
 --=20
-Pengutronix e.K.                           | Wolfram Sang                ..=
-.</font></p><br>-----BEGIN PGP SIGNATURE-----<br>
-Version: GnuPG v1.4.9 (GNU/Linux)<br>
-<br>
-iEYEARECAAYFAko3nAUACgkQD27XaX1/VRtTkACfW0aUMJHrU3m4DCel0pm5fA6J<br>
-WaQAnjGo5fn6JvMHt3Ke/xFTGB1uYT6p<br>
-=3DV9t5<br>
------END PGP SIGNATURE-----<br>
-<br></blockquote></p>
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
 
---001e68378987aaf931046c78e926--
+--jho1yZJdad60DJr+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAko3YWEACgkQD27XaX1/VRvcdgCbBFBKLNAU2tQnGXIv4X4qajkg
+t6sAmwclmDXrcP7Q/ui22VqPhv76cwih
+=Ni7H
+-----END PGP SIGNATURE-----
+
+--jho1yZJdad60DJr+--
