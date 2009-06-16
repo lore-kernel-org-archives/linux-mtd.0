@@ -1,20 +1,22 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MGUny-0008Tf-Q5
-	for linux-mtd@lists.infradead.org; Tue, 16 Jun 2009 09:18:14 +0000
-Date: Tue, 16 Jun 2009 11:18:01 +0200
+	id 1MGYaI-000870-Rp
+	for linux-mtd@lists.infradead.org; Tue, 16 Jun 2009 13:20:22 +0000
+Date: Tue, 16 Jun 2009 15:20:05 +0200
 From: Wolfram Sang <w.sang@pengutronix.de>
-To: Albrecht =?iso-8859-1?Q?Dre=DF?= <albrecht.dress@arcor.de>
+To: Grant Likely <grant.likely@secretlab.ca>
 Subject: Re: [PATCH V2 2/2] mtd/maps/mtd-ram: add an of-platform driver
-Message-ID: <20090616091801.GC21321@pengutronix.de>
+Message-ID: <20090616132005.GD21321@pengutronix.de>
 References: <1244203514-12516-3-git-send-email-w.sang@pengutronix.de>
-	<1245087807.3185.0@antares>
+	<1245087807.3185.0@antares> <20090616091801.GC21321@pengutronix.de>
+	<fa686aa40906160553m2f0e7cc4n644c3893573845f@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="bAmEntskrkuBymla"
+	protocol="application/pgp-signature"; boundary="7DO5AaGCk89r4vaK"
 Content-Disposition: inline
-In-Reply-To: <1245087807.3185.0@antares>
-Cc: devicetree-discuss@ozlabs.org, grant.likely@secretlab.ca,
+In-Reply-To: <fa686aa40906160553m2f0e7cc4n644c3893573845f@mail.gmail.com>
+Cc: devicetree-discuss@ozlabs.org,
+	Albrecht =?iso-8859-1?Q?Dre=DF?= <albrecht.dress@arcor.de>,
 	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
 	Ben Dooks <ben-linux@fluff.org>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,28 +29,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---bAmEntskrkuBymla
-Content-Type: text/plain; charset=iso-8859-1
+--7DO5AaGCk89r4vaK
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 15, 2009 at 07:43:20PM +0200, Albrecht Dre=DF wrote:
-> Am 05.06.09 14:05 schrieb(en) Wolfram Sang:
->> Create an of-aware driver using the now exported generic functions =20
->> from plat-ram.c. Also add the documentation for the binding. =20
->> Partitions are not yet supported. Tested on a phyCORE-MPC5200B-IO.
->
-> Dumb question: what is the current status of this patch?  I ask because =
-=20
+> > Grant wondered if we need a bankwidth. IMHO it is needed for now, but I=
+ don't
+> > know if this is a common agreement.
+>=20
+> I'm not happy about the use case though.  It probably shouldn't appear
+> in this binding, or if it does it should be tagged as an optional
+> property.  It is only in the 5200 localplus case that bank-width is
+> needed to figure out how to apply the workaround.
 
-I don't know.
-
-David wondered if 'of_physmap' could be used, so I wrote what I experienced
-during development. I can't tell if this helped the case.
-
-Grant wondered if we need a bankwidth. IMHO it is needed for now, but I don=
-'t
-know if this is a common agreement.
+Maybe there is a misunderstanding here. I am not talking about Albrecht's c=
+ase.
+What I replied to your concern is that bankwidth is used(!) in the underlyi=
+ng
+map-ram-driver in mapram_erase() at the moment. Whether this is really need=
+ed
+could be discussed perhaps, but is beyond the scope of this patch series IM=
+HO.
+I'd think this can be addressed in a later series, if needed, although this
+could mean that the binding will change (bank-width becoming optional).
 
 Regards,
 
@@ -58,7 +62,7 @@ Regards,
 Pengutronix e.K.                           | Wolfram Sang                |
 Industrial Linux Solutions                 | http://www.pengutronix.de/  |
 
---bAmEntskrkuBymla
+--7DO5AaGCk89r4vaK
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
@@ -66,9 +70,9 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.9 (GNU/Linux)
 
-iEYEARECAAYFAko3Y0kACgkQD27XaX1/VRsjegCfRhzQq3HNnvxjh6NTeRdmyJvp
-Lr4Anj/ApO0NW6IoNRvXHHWrbCjvrFf9
-=Sigq
+iEYEARECAAYFAko3nAUACgkQD27XaX1/VRtTkACfW0aUMJHrU3m4DCel0pm5fA6J
+WaQAnjGo5fn6JvMHt3Ke/xFTGB1uYT6p
+=V9t5
 -----END PGP SIGNATURE-----
 
---bAmEntskrkuBymla--
+--7DO5AaGCk89r4vaK--
