@@ -1,18 +1,19 @@
-Received: from an-out-0708.google.com ([209.85.132.243])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MGpxp-00020V-FG
-	for linux-mtd@lists.infradead.org; Wed, 17 Jun 2009 07:53:52 +0000
-Received: by an-out-0708.google.com with SMTP id d14so72348and.27
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 17 Jun 2009 00:53:44 -0700 (PDT)
-MIME-Version: 1.0
-Date: Wed, 17 Jun 2009 15:53:43 +0800
-Message-ID: <d16af8a00906170053p11a4f0e3vd0bbef99d65b9aac@mail.gmail.com>
-Subject: how to implement prepare_write, commit_write for ubifs
-From: Ivan Chan <ivanming@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MGqWo-0007ON-6y
+	for linux-mtd@lists.infradead.org; Wed, 17 Jun 2009 08:30:02 +0000
+Subject: Re: how to implement prepare_write, commit_write for ubifs
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Ivan Chan <ivanming@gmail.com>
+In-Reply-To: <d16af8a00906170053p11a4f0e3vd0bbef99d65b9aac@mail.gmail.com>
+References: <d16af8a00906170053p11a4f0e3vd0bbef99d65b9aac@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 17 Jun 2009 11:29:24 +0300
+Message-Id: <1245227364.9487.7.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,104 +23,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+On Wed, 2009-06-17 at 15:53 +0800, Ivan Chan wrote:
+> Hi all,
+> 
+> I am porting UBIFS/UBI to 2.6.4 kernel, however, 2.6.4 kernel requires
+> prepare_write, commit_write in address_space_operations (defined in
+> include/linux/fs.h),
+> but it is no longer exists in 2.6.2x kernel.
+> 
+> How can I rewrite these function for 2.6.4 kernel?
+> 
+> In 2.6.2x, there is similar function write_begin, and write_end, but
+> the API requires
+> struct address_space *mapping,  struct page **pagep, void **fsdata,
+> 
+> Is that possible and how to provide this argument in 2.6.4 kernel?
 
-I am porting UBIFS/UBI to 2.6.4 kernel, however, 2.6.4 kernel requires
-prepare_write, commit_write in address_space_operations (defined in
-include/linux/fs.h),
-but it is no longer exists in 2.6.2x kernel.
+ATM we support UBIFS back-ports from v2.6.24 to v2.6.30.
 
-How can I rewrite these function for 2.6.4 kernel?
+The change of the address space operation happened between 2.6.23 and
+2.6.24.
 
-In 2.6.2x, there is similar function write_begin, and write_end, but
-the API requires
-struct address_space *mapping,=A0 struct page **pagep, void **fsdata,
+In the paste, we also supported UBIFS back-ports for kerneld
+2.6.21-2.6.23. But then we dropped them because it became increasingly
+difficult to back-port stuff there.
 
-Is that possible and how to provide this argument in 2.6.4 kernel?
+So what would suggest you do is:
 
-Regards,
-Ivan
+a). Start with the old and unsupported 2.6.23 UBIFS back-port which you
+may find here: git://git.infradead.org/users/dedekind/ubifs-v2.6.23.git
 
-2.6.x
-struct address_space_operations {
-=A0=A0=A0 int (*writepage)(struct page *page, struct writeback_control *wbc=
-);
-=A0=A0=A0 int (*readpage)(struct file *, struct page *);
-=A0=A0=A0 int (*sync_page)(struct page *);
+b). Back-port this UBIFS 2.6.23 stuff to your ancient 2.6.4, it should
+be easier to do comparing to back-porting the newest stuff.
 
-=A0=A0=A0 /* Write back some dirty pages from this mapping. */
-=A0=A0=A0 int (*writepages)(struct address_space *, struct writeback_contro=
-l *);
+c). Back port the rest of the UBIFS changes/fixes from the latest
+kernels, e.g., from the UBIFS 2.6.30 back-port.
 
-=A0=A0=A0 /* Set a page dirty */
-=A0=A0=A0 int (*set_page_dirty)(struct page *page);
+The back-ports URLS may be found here:
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_source
 
-=A0=A0=A0 int (*readpages)(struct file *filp, struct address_space *mapping=
-,
-=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 struct list_head *pages, unsigned nr_pages);
+Or just see here:
+http://git.infradead.org/
 
-=A0=A0=A0 /*
-=A0=A0=A0 =A0* ext3 requires that a successful prepare_write() call be foll=
-owed
-=A0=A0=A0 =A0* by a commit_write() call - they must be balanced
-=A0=A0=A0 =A0*/
-=A0=A0=A0 int (*prepare_write)(struct file *, struct page *, unsigned, unsi=
-gned);
-=A0=A0=A0 int (*commit_write)(struct file *, struct page *, unsigned, unsig=
-ned);
-=A0=A0=A0 /* Unfortunately this kludge is needed for FIBMAP. Don't use it *=
-/
-=A0=A0=A0 sector_t (*bmap)(struct address_space *, sector_t);
-=A0=A0=A0 int (*invalidatepage) (struct page *, unsigned long);
-=A0=A0=A0 int (*releasepage) (struct page *, int);
-=A0=A0=A0 int (*direct_IO)(int, struct kiocb *, const struct iovec *iov,
-=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 loff_t offset, unsigned long nr_segs);
-};
-
-2.6.2x
-
-struct address_space_operations {
-=A0=A0=A0 int (*writepage)(struct page *page, struct writeback_control *wbc=
-);
-=A0=A0=A0 int (*readpage)(struct file *, struct page *);
-=A0=A0=A0 void (*sync_page)(struct page *);
-
-=A0=A0=A0 /* Write back some dirty pages from this mapping. */
-=A0=A0=A0 int (*writepages)(struct address_space *, struct writeback_contro=
-l *);
-
-=A0=A0=A0 /* Set a page dirty.=A0 Return true if this dirtied it */
-=A0=A0=A0 int (*set_page_dirty)(struct page *page);
-
-=A0=A0=A0 int (*readpages)(struct file *filp, struct address_space *mapping=
-,
-=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 struct list_head *pages, unsigned nr_pages);
-
-=A0=A0=A0 int (*write_begin)(struct file *, struct address_space *mapping,
-=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 loff_t pos, unsigned len, unsigned =
-flags,
-=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 struct page **pagep, void **fsdata)=
-;
-=A0=A0=A0 int (*write_end)(struct file *, struct address_space *mapping,
-=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 loff_t pos, unsigned len, unsigned =
-copied,
-=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 struct page *page, void *fsdata);
-
-=A0=A0=A0 /* Unfortunately this kludge is needed for FIBMAP. Don't use it *=
-/
-=A0=A0=A0 sector_t (*bmap)(struct address_space *, sector_t);
-=A0=A0=A0 void (*invalidatepage) (struct page *, unsigned long);
-=A0=A0=A0 int (*releasepage) (struct page *, gfp_t);
-=A0=A0=A0 ssize_t (*direct_IO)(int, struct kiocb *, const struct iovec *iov=
-,
-=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 loff_t offset, unsigned long nr_segs);
-=A0=A0=A0 int (*get_xip_mem)(struct address_space *, pgoff_t, int,
-=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 void **, unsign=
-ed long *);
-=A0=A0=A0 /* migrate the contents of a page to the specified target */
-=A0=A0=A0 int (*migratepage) (struct address_space *,
-=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 struct page *, struct page *);
-=A0=A0=A0 int (*launder_page) (struct page *);
-=A0=A0=A0 int (*is_partially_uptodate) (struct page *, read_descriptor_t *,
-=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 unsigned long);
-};
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
