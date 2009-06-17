@@ -1,28 +1,19 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MGrW6-0004Z2-Ar
-	for linux-mtd@lists.infradead.org; Wed, 17 Jun 2009 09:33:21 +0000
-Received: from ep_ms13_bk (mailout2.samsung.com [203.254.224.25])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KLD00FLFMJ4EE@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Wed, 17 Jun 2009 18:33:04 +0900 (KST)
-Received: from ep_spt04 (ms13.samsung.com [203.254.225.109])
-	by ms13.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTP id <0KLD00FSQMJ4GJ@ms13.samsung.com> for
-	linux-mtd@lists.infradead.org; Wed, 17 Jun 2009 18:33:04 +0900 (KST)
-Content-return: prohibited
-Date: Wed, 17 Jun 2009 09:33:04 +0000 (GMT)
-From: BRIJESH SINGH <brij.singh@samsung.com>
-Subject: UBI Create or Update Volume
-To: dedekind@infradead.org
-Message-id: <27450855.94721245231184009.JavaMail.weblogic@epml07>
-MIME-version: 1.0
-MIME-version: 1.0
-Content-type: text/plain; charset=windows-1252
-Content-transfer-encoding: base64
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MGrsn-00039w-Qh
+	for linux-mtd@lists.infradead.org; Wed, 17 Jun 2009 09:56:49 +0000
+Subject: Re: UBI Create or Update Volume
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: brij.singh@samsung.com
+In-Reply-To: <27450855.94721245231184009.JavaMail.weblogic@epml07>
+References: <27450855.94721245231184009.JavaMail.weblogic@epml07>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 17 Jun 2009 12:56:30 +0300
+Message-Id: <1245232590.9487.9.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
-Reply-To: brij.singh@samsung.com
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,23 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQXJ0ZW0sIA0KICAgICBKdXN0IGNhbWUgYWNyb3NzIHRoZSB1YmlfY2hhbmdlX3Z0YmxfcmVj
-b3JkIGZ1bmN0aW9uLiBJZiBmaXJzdCBjb3B5IGlzIHdyaXR0ZW4gc3VjY2Vzc2Z1bGx5IGFuZCBl
-cnJvciBvY2N1cnMgd2hpbGUgd3JpdGluZyBzZWNvbmQgY29weSwgdGhpcyBmdW5jdGlvbiBzdGls
-bCByZXR1cm5zIGVycm9yLiBBbmQgaGVuY2UgdGhlIGNyZWF0aW9uIG9yIGNoYW5nZSBpbiBWb2x1
-bWUgYmVjb21lcyB1bnN1Y2Nlc3NmdWwuIFNvIGFwcGxpY2F0aW9ucyBjb25zaWRlciBpdCBmYWls
-dXJlLg0KDQogICBCdXQgaWYgSSB1bm1vdW50IG5vdywgKGNsZWFuIG9yIHVuY2xlYW4pIHRoZSBm
-aXJzdCBjb3B5IHdpbGwgYmVjb21lIHZhbGlkIGFuZCBzZWNvbmQgd2lsbCBiZSBjYWxsZWQgY29y
-cnVwdGVkIChkdXJpbmcgbW91bnQgdGltZSkuIEl0J3Mgbm90IGNvcnJlY3QuDQogICBTbyBzaG91
-bGQgdWJpX2NoYW5nZV92dGJsX3JlY29yZCAgY2FsbCBmbHVzaCB3bCBhbmQgIHJldHVybiBzdWNj
-ZXNzPyBCZWNhdXNlIDJuZCBjb3B5KG9sZCkgaXMgdW5tYXBwZWQgdGlsbCBub3cuQW5kIHNob3Vs
-ZCBVQkkgZ28gdG8gcmVhZC1vbmx5IG1vZGU/DQoNCg0KQ29kZSBTbmlwOg0KRnVuY3QgdWJpX2No
-YW5nZV92dGJsX3JlY29yZCgpew0KLi4uDQpmb3IgKGkgPSAwOyBpIDwgVUJJX0xBWU9VVF9WT0xV
-TUVfRUJTOyBpKyspIHsNCiAgICAgICAgICAgICAgICAgZXJyID0gdWJpX2ViYV91bm1hcF9sZWIo
-dWJpLCBsYXlvdXRfdm9sLCBpKTsNCiAgICAgICAgICAgICAgICAgaWYgKGVycikNCiAgICAgICAg
-ICAgICAgICAgICAgICAgIHJldHVybiBlcnI7DQogICAgICAgICAgICAgICAgICAgICAgZXJyID0g
-dWJpX2ViYV93cml0ZV9sZWIodWJpLCBsYXlvdXRfdm9sLCBpLCB1YmktPnZ0YmwsIDAsDQogICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHViaS0+dnRibF9zaXplLCBVQklfTE9OR1RFUk0pOw0KICAgICAgICAgICAgICAgICAgICAg
-ICAgaWYgKGVycikNCiAgICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIGVycjsNCiB9DQou
-Li4NCn0NCg0KVGhhbmtzDQpCcmlqZXNo
+[Very difficult to read your email due to
+looooooooooooonnnnnnnnnnnnnnnnnnngggggggggggggggggg
+lines]
+
+Hi,
+
+On Wed, 2009-06-17 at 09:33 +0000, BRIJESH SINGH wrote:
+> Hi Artem, 
+>      Just came across the ubi_change_vtbl_record function. If first copy is written successfully and error occurs while writing second copy, this function still returns error. And hence the creation or change in Volume becomes unsuccessful. So applications consider it failure.
+> 
+>    But if I unmount now, (clean or unclean) the first copy will become valid and second will be called corrupted (during mount time). It's not correct.
+>    So should ubi_change_vtbl_record  call flush wl and  return success? Because 2nd copy(old) is unmapped till now.And should UBI go to read-only mode?
+
+Yes, sounds right. Would you send a patch?
+
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
