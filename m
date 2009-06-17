@@ -1,16 +1,26 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MGfCP-0001yq-Hy
-	for linux-mtd@lists.infradead.org; Tue, 16 Jun 2009 20:24:12 +0000
-From: s-paulraj@ti.com
-To: davinci-linux-open-source@linux.davincidsp.com,
-	linux-mtd@lists.infradead.org, dwmw2@infradead.org, tglx@linutronix.de,
-	akpm@linux-foundation.org
-Subject: [PATCH v2 3/3] Add 4-bit ECC support for large page NAND chips on
-	Davinci
-Date: Tue, 16 Jun 2009 16:23:32 -0400
-Message-Id: <1245183812-11500-1-git-send-email-s-paulraj@ti.com>
-Cc: Sneha Narnakaje <nsnehaprabha@ti.com>, Sandeep Paulraj <s-paulraj@ti.com>
+Received: from mail-yx0-f176.google.com ([209.85.210.176])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MGo68-0001YP-Dc
+	for linux-mtd@lists.infradead.org; Wed, 17 Jun 2009 05:54:32 +0000
+Received: by yxe6 with SMTP id 6so77409yxe.28
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 16 Jun 2009 22:54:11 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <fa686aa40904160646v75a98e02s446fd89c08cfebae@mail.gmail.com>
+References: <1239883845-17804-1-git-send-email-sr@denx.de>
+	<fa686aa40904160626k118cea3cvc0db38a2277e45b8@mail.gmail.com>
+	<200904161537.59048.sr@denx.de>
+	<fa686aa40904160646v75a98e02s446fd89c08cfebae@mail.gmail.com>
+From: Grant Likely <grant.likely@secretlab.ca>
+Date: Tue, 16 Jun 2009 23:53:51 -0600
+Message-ID: <fa686aa40906162253j76776e88y9d7c818f4d0f1508@mail.gmail.com>
+Subject: Re: [PATCH 1/3 v3] mtd: physmap_of: Add multiple regions and
+	concatenation support
+To: Stefan Roese <sr@denx.de>, David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linuxppc-dev@ozlabs.org, devicetree-discuss@ozlabs.org,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,110 +30,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Sandeep Paulraj <s-paulraj@ti.com>
+On Thu, Apr 16, 2009 at 7:46 AM, Grant Likely<grant.likely@secretlab.ca> wr=
+ote:
+> On Thu, Apr 16, 2009 at 7:37 AM, Stefan Roese <sr@denx.de> wrote:
+>> On Thursday 16 April 2009, Grant Likely wrote:
+>>> > Signed-off-by: Stefan Roese <sr@denx.de>
+>>> > Reviewd-by: Grant Likely <grant.likely@secretlab.ca>
+>>>
+>>> Yup, still looks good to me. =A0What boards has this been tested on?
+>>
+>> I tested this version on PPC405EX Kilauea equipped only one "standard"
+>> Spansion S29GL512 NOR chip. And a slightly modified version on an MPC836=
+0
+>> board (kmeter1) which is equipped with the Intel P30 part mentioned in t=
+he
+>> bindings description. Slightly modified since this board support is not =
+yet
+>> pushed upstream and currently using v2.6.28 (physmap_of.c has received m=
+inor
+>> modifications after 2.6.28 release).
+>
+> Okay. =A0It will be good to get this one into -next for some testing
+> exposure. =A0Unless he asks me to do otherwise, I'll leave this one to
+> David to pick up.
 
-The patch applies to linux-mtd GIT tree
+David, what's the status of this patch?  Will it be merged for 2.6.31?
 
-This patch adds 4-bit ECC support for large page NAND chips using the new ECC
-mode NAND_ECC_HW_OOB_FIRST. The platform data from board-dm355-evm has been
-adjusted to use this mode.
+g.
 
-The patches have been verified on DM355 device with 2K and 4K page size 
-Micron devices using mtd-tests.
-Error correction upto 4-bits has also been verified using
-nandwrite/nanddump utilities.
-
-Reviewed-by: David Brownell <dbrownell@users.sourceforge.net>
-Signed-off-by: Sandeep Paulraj <s-paulraj@ti.com>
-Signed-off-by: Sneha Narnakaje <nsnehaprabha@ti.com>
----
- drivers/mtd/nand/davinci_nand.c |   65 ++++++++++++++++++++++++++++++++++----
- 1 files changed, 58 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index ba6940d..2ff0712 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -500,6 +500,49 @@ static struct nand_ecclayout hwecc4_small __initconst = {
- 	},
- };
- 
-+/* An ECC layout for using 4-bit ECC with large-page (2048bytes) flash,
-+ * storing ten ECC bytes plus the manufacturer's bad block marker byte,
-+ * and not overlapping the default BBT markers.
-+ */
-+static struct nand_ecclayout hwecc4_2048 __initconst = {
-+	.eccbytes = 40,
-+	.eccpos = { /* 2 bytes at offset 0 hold the badblock markers */
-+		/* 4 bytes at offset 8 hold BBT header */
-+		/* 1 byte at offset 12 holds BBT version */
-+		/* 8 bytes at offset 16 hold JFFS2 clean markers */
-+		24, 25, 26, 27, 28, 29,	30, 31, 32, 33,
-+		34, 35, 36, 37, 38, 39,	40, 41, 42, 43,
-+		44, 45, 46, 47, 48, 49, 50, 51, 52, 53,
-+		54, 55, 56, 57, 58, 59, 60, 61, 62, 63, },
-+	.oobfree = {
-+		{.offset = 16, .length = 8, },
-+		{.offset = 64, },
-+	},
-+};
-+
-+/* An ECC layout for using 4-bit ECC with large-page (4096bytes) flash,
-+ * storing ten ECC bytes plus the manufacturer's bad block marker byte,
-+ * and not overlapping the default BBT markers.
-+ */
-+static struct nand_ecclayout hwecc4_4096 __initconst = {
-+	.eccbytes = 80,
-+	.eccpos = { /* 2 bytes at offset 0 hold the badblock markers */
-+		/* 4 bytes at offset 8 hold BBT header */
-+		/* 1 byte at offset 12 holds BBT version */
-+		/* 8 bytes at offset 16 hold JFFS2 clean markers */
-+		24, 25, 26, 27, 28, 29,	30, 31, 32, 33,
-+		34, 35, 36, 37, 38, 39,	40, 41, 42, 43,
-+		44, 45, 46, 47, 48, 49, 50, 51, 52, 53,
-+		54, 55, 56, 57, 58, 59, 60, 61, 62, 63,
-+		64, 65, 66, 67, 68, 69, 70, 71, 72, 73,
-+		74, 75, 76, 77, 78, 69,	80, 81, 82, 83,
-+		84, 85, 86, 87, 88, 89, 90, 91, 92, 93,
-+		94, 95, 96, 97, 98, 99, 100, 101, 102, 103, },
-+	.oobfree = {
-+		{.offset = 16, .length = 8, },
-+		{.offset = 104, },
-+	},
-+};
- 
- static int __init nand_davinci_probe(struct platform_device *pdev)
- {
-@@ -689,15 +732,23 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
- 				info->mtd.oobsize - 16;
- 			goto syndrome_done;
- 		}
-+		if (chunks == 4) {
-+			info->ecclayout = hwecc4_2048;
-+			info->ecclayout.oobfree[1].length = info->mtd.oobsize -
-+				info->ecclayout.oobfree[1].offset;
-+			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
-+			goto syndrome_done;
-+		}
-+		if (chunks == 8) {
-+			info->ecclayout = hwecc4_4096;
-+			info->ecclayout.oobfree[1].length = info->mtd.oobsize -
-+				info->ecclayout.oobfree[1].offset;
-+			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
-+			goto syndrome_done;
-+		}
- 
--		/* For large page chips we'll be wanting to use a
--		 * not-yet-implemented mode that reads OOB data
--		 * before reading the body of the page, to avoid
--		 * the "infix OOB" model of NAND_ECC_HW_SYNDROME
--		 * (and preserve manufacturer badblock markings).
--		 */
- 		dev_warn(&pdev->dev, "no 4-bit ECC support yet "
--				"for large page NAND\n");
-+				"for >4K page NAND\n");
- 		ret = -EIO;
- 		goto err_scan;
- 
--- 
-1.6.0.4
+--=20
+Grant Likely, B.Sc., P.Eng.
+Secret Lab Technologies Ltd.
