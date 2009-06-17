@@ -1,19 +1,28 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MGqWo-0007ON-6y
-	for linux-mtd@lists.infradead.org; Wed, 17 Jun 2009 08:30:02 +0000
-Subject: Re: how to implement prepare_write, commit_write for ubifs
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Ivan Chan <ivanming@gmail.com>
-In-Reply-To: <d16af8a00906170053p11a4f0e3vd0bbef99d65b9aac@mail.gmail.com>
-References: <d16af8a00906170053p11a4f0e3vd0bbef99d65b9aac@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 17 Jun 2009 11:29:24 +0300
-Message-Id: <1245227364.9487.7.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from mailout2.samsung.com ([203.254.224.25])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MGrW6-0004Z2-Ar
+	for linux-mtd@lists.infradead.org; Wed, 17 Jun 2009 09:33:21 +0000
+Received: from ep_ms13_bk (mailout2.samsung.com [203.254.224.25])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KLD00FLFMJ4EE@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Wed, 17 Jun 2009 18:33:04 +0900 (KST)
+Received: from ep_spt04 (ms13.samsung.com [203.254.225.109])
+	by ms13.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTP id <0KLD00FSQMJ4GJ@ms13.samsung.com> for
+	linux-mtd@lists.infradead.org; Wed, 17 Jun 2009 18:33:04 +0900 (KST)
+Content-return: prohibited
+Date: Wed, 17 Jun 2009 09:33:04 +0000 (GMT)
+From: BRIJESH SINGH <brij.singh@samsung.com>
+Subject: UBI Create or Update Volume
+To: dedekind@infradead.org
+Message-id: <27450855.94721245231184009.JavaMail.weblogic@epml07>
+MIME-version: 1.0
+MIME-version: 1.0
+Content-type: text/plain; charset=windows-1252
+Content-transfer-encoding: base64
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Reply-To: brij.singh@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,48 +32,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-06-17 at 15:53 +0800, Ivan Chan wrote:
-> Hi all,
-> 
-> I am porting UBIFS/UBI to 2.6.4 kernel, however, 2.6.4 kernel requires
-> prepare_write, commit_write in address_space_operations (defined in
-> include/linux/fs.h),
-> but it is no longer exists in 2.6.2x kernel.
-> 
-> How can I rewrite these function for 2.6.4 kernel?
-> 
-> In 2.6.2x, there is similar function write_begin, and write_end, but
-> the API requires
-> struct address_space *mapping,  struct page **pagep, void **fsdata,
-> 
-> Is that possible and how to provide this argument in 2.6.4 kernel?
-
-ATM we support UBIFS back-ports from v2.6.24 to v2.6.30.
-
-The change of the address space operation happened between 2.6.23 and
-2.6.24.
-
-In the paste, we also supported UBIFS back-ports for kerneld
-2.6.21-2.6.23. But then we dropped them because it became increasingly
-difficult to back-port stuff there.
-
-So what would suggest you do is:
-
-a). Start with the old and unsupported 2.6.23 UBIFS back-port which you
-may find here: git://git.infradead.org/users/dedekind/ubifs-v2.6.23.git
-
-b). Back-port this UBIFS 2.6.23 stuff to your ancient 2.6.4, it should
-be easier to do comparing to back-porting the newest stuff.
-
-c). Back port the rest of the UBIFS changes/fixes from the latest
-kernels, e.g., from the UBIFS 2.6.30 back-port.
-
-The back-ports URLS may be found here:
-http://www.linux-mtd.infradead.org/doc/ubifs.html#L_source
-
-Or just see here:
-http://git.infradead.org/
-
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+SGkgQXJ0ZW0sIA0KICAgICBKdXN0IGNhbWUgYWNyb3NzIHRoZSB1YmlfY2hhbmdlX3Z0YmxfcmVj
+b3JkIGZ1bmN0aW9uLiBJZiBmaXJzdCBjb3B5IGlzIHdyaXR0ZW4gc3VjY2Vzc2Z1bGx5IGFuZCBl
+cnJvciBvY2N1cnMgd2hpbGUgd3JpdGluZyBzZWNvbmQgY29weSwgdGhpcyBmdW5jdGlvbiBzdGls
+bCByZXR1cm5zIGVycm9yLiBBbmQgaGVuY2UgdGhlIGNyZWF0aW9uIG9yIGNoYW5nZSBpbiBWb2x1
+bWUgYmVjb21lcyB1bnN1Y2Nlc3NmdWwuIFNvIGFwcGxpY2F0aW9ucyBjb25zaWRlciBpdCBmYWls
+dXJlLg0KDQogICBCdXQgaWYgSSB1bm1vdW50IG5vdywgKGNsZWFuIG9yIHVuY2xlYW4pIHRoZSBm
+aXJzdCBjb3B5IHdpbGwgYmVjb21lIHZhbGlkIGFuZCBzZWNvbmQgd2lsbCBiZSBjYWxsZWQgY29y
+cnVwdGVkIChkdXJpbmcgbW91bnQgdGltZSkuIEl0J3Mgbm90IGNvcnJlY3QuDQogICBTbyBzaG91
+bGQgdWJpX2NoYW5nZV92dGJsX3JlY29yZCAgY2FsbCBmbHVzaCB3bCBhbmQgIHJldHVybiBzdWNj
+ZXNzPyBCZWNhdXNlIDJuZCBjb3B5KG9sZCkgaXMgdW5tYXBwZWQgdGlsbCBub3cuQW5kIHNob3Vs
+ZCBVQkkgZ28gdG8gcmVhZC1vbmx5IG1vZGU/DQoNCg0KQ29kZSBTbmlwOg0KRnVuY3QgdWJpX2No
+YW5nZV92dGJsX3JlY29yZCgpew0KLi4uDQpmb3IgKGkgPSAwOyBpIDwgVUJJX0xBWU9VVF9WT0xV
+TUVfRUJTOyBpKyspIHsNCiAgICAgICAgICAgICAgICAgZXJyID0gdWJpX2ViYV91bm1hcF9sZWIo
+dWJpLCBsYXlvdXRfdm9sLCBpKTsNCiAgICAgICAgICAgICAgICAgaWYgKGVycikNCiAgICAgICAg
+ICAgICAgICAgICAgICAgIHJldHVybiBlcnI7DQogICAgICAgICAgICAgICAgICAgICAgZXJyID0g
+dWJpX2ViYV93cml0ZV9sZWIodWJpLCBsYXlvdXRfdm9sLCBpLCB1YmktPnZ0YmwsIDAsDQogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIHViaS0+dnRibF9zaXplLCBVQklfTE9OR1RFUk0pOw0KICAgICAgICAgICAgICAgICAgICAg
+ICAgaWYgKGVycikNCiAgICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIGVycjsNCiB9DQou
+Li4NCn0NCg0KVGhhbmtzDQpCcmlqZXNo
