@@ -1,24 +1,18 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MGYaI-000870-Rp
-	for linux-mtd@lists.infradead.org; Tue, 16 Jun 2009 13:20:22 +0000
-Date: Tue, 16 Jun 2009 15:20:05 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH V2 2/2] mtd/maps/mtd-ram: add an of-platform driver
-Message-ID: <20090616132005.GD21321@pengutronix.de>
-References: <1244203514-12516-3-git-send-email-w.sang@pengutronix.de>
-	<1245087807.3185.0@antares> <20090616091801.GC21321@pengutronix.de>
-	<fa686aa40906160553m2f0e7cc4n644c3893573845f@mail.gmail.com>
+Received: from an-out-0708.google.com ([209.85.132.243])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MGpxp-00020V-FG
+	for linux-mtd@lists.infradead.org; Wed, 17 Jun 2009 07:53:52 +0000
+Received: by an-out-0708.google.com with SMTP id d14so72348and.27
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 17 Jun 2009 00:53:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="7DO5AaGCk89r4vaK"
-Content-Disposition: inline
-In-Reply-To: <fa686aa40906160553m2f0e7cc4n644c3893573845f@mail.gmail.com>
-Cc: devicetree-discuss@ozlabs.org,
-	Albrecht =?iso-8859-1?Q?Dre=DF?= <albrecht.dress@arcor.de>,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Ben Dooks <ben-linux@fluff.org>, David Woodhouse <dwmw2@infradead.org>
+Date: Wed, 17 Jun 2009 15:53:43 +0800
+Message-ID: <d16af8a00906170053p11a4f0e3vd0bbef99d65b9aac@mail.gmail.com>
+Subject: how to implement prepare_write, commit_write for ubifs
+From: Ivan Chan <ivanming@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,51 +22,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi all,
 
---7DO5AaGCk89r4vaK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I am porting UBIFS/UBI to 2.6.4 kernel, however, 2.6.4 kernel requires
+prepare_write, commit_write in address_space_operations (defined in
+include/linux/fs.h),
+but it is no longer exists in 2.6.2x kernel.
 
-> > Grant wondered if we need a bankwidth. IMHO it is needed for now, but I=
- don't
-> > know if this is a common agreement.
->=20
-> I'm not happy about the use case though.  It probably shouldn't appear
-> in this binding, or if it does it should be tagged as an optional
-> property.  It is only in the 5200 localplus case that bank-width is
-> needed to figure out how to apply the workaround.
+How can I rewrite these function for 2.6.4 kernel?
 
-Maybe there is a misunderstanding here. I am not talking about Albrecht's c=
-ase.
-What I replied to your concern is that bankwidth is used(!) in the underlyi=
-ng
-map-ram-driver in mapram_erase() at the moment. Whether this is really need=
-ed
-could be discussed perhaps, but is beyond the scope of this patch series IM=
-HO.
-I'd think this can be addressed in a later series, if needed, although this
-could mean that the binding will change (bank-width becoming optional).
+In 2.6.2x, there is similar function write_begin, and write_end, but
+the API requires
+struct address_space *mapping,=A0 struct page **pagep, void **fsdata,
+
+Is that possible and how to provide this argument in 2.6.4 kernel?
 
 Regards,
+Ivan
 
-   Wolfram
+2.6.x
+struct address_space_operations {
+=A0=A0=A0 int (*writepage)(struct page *page, struct writeback_control *wbc=
+);
+=A0=A0=A0 int (*readpage)(struct file *, struct page *);
+=A0=A0=A0 int (*sync_page)(struct page *);
 
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+=A0=A0=A0 /* Write back some dirty pages from this mapping. */
+=A0=A0=A0 int (*writepages)(struct address_space *, struct writeback_contro=
+l *);
 
---7DO5AaGCk89r4vaK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+=A0=A0=A0 /* Set a page dirty */
+=A0=A0=A0 int (*set_page_dirty)(struct page *page);
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
+=A0=A0=A0 int (*readpages)(struct file *filp, struct address_space *mapping=
+,
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 struct list_head *pages, unsigned nr_pages);
 
-iEYEARECAAYFAko3nAUACgkQD27XaX1/VRtTkACfW0aUMJHrU3m4DCel0pm5fA6J
-WaQAnjGo5fn6JvMHt3Ke/xFTGB1uYT6p
-=V9t5
------END PGP SIGNATURE-----
+=A0=A0=A0 /*
+=A0=A0=A0 =A0* ext3 requires that a successful prepare_write() call be foll=
+owed
+=A0=A0=A0 =A0* by a commit_write() call - they must be balanced
+=A0=A0=A0 =A0*/
+=A0=A0=A0 int (*prepare_write)(struct file *, struct page *, unsigned, unsi=
+gned);
+=A0=A0=A0 int (*commit_write)(struct file *, struct page *, unsigned, unsig=
+ned);
+=A0=A0=A0 /* Unfortunately this kludge is needed for FIBMAP. Don't use it *=
+/
+=A0=A0=A0 sector_t (*bmap)(struct address_space *, sector_t);
+=A0=A0=A0 int (*invalidatepage) (struct page *, unsigned long);
+=A0=A0=A0 int (*releasepage) (struct page *, int);
+=A0=A0=A0 int (*direct_IO)(int, struct kiocb *, const struct iovec *iov,
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 loff_t offset, unsigned long nr_segs);
+};
 
---7DO5AaGCk89r4vaK--
+2.6.2x
+
+struct address_space_operations {
+=A0=A0=A0 int (*writepage)(struct page *page, struct writeback_control *wbc=
+);
+=A0=A0=A0 int (*readpage)(struct file *, struct page *);
+=A0=A0=A0 void (*sync_page)(struct page *);
+
+=A0=A0=A0 /* Write back some dirty pages from this mapping. */
+=A0=A0=A0 int (*writepages)(struct address_space *, struct writeback_contro=
+l *);
+
+=A0=A0=A0 /* Set a page dirty.=A0 Return true if this dirtied it */
+=A0=A0=A0 int (*set_page_dirty)(struct page *page);
+
+=A0=A0=A0 int (*readpages)(struct file *filp, struct address_space *mapping=
+,
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 struct list_head *pages, unsigned nr_pages);
+
+=A0=A0=A0 int (*write_begin)(struct file *, struct address_space *mapping,
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 loff_t pos, unsigned len, unsigned =
+flags,
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 struct page **pagep, void **fsdata)=
+;
+=A0=A0=A0 int (*write_end)(struct file *, struct address_space *mapping,
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 loff_t pos, unsigned len, unsigned =
+copied,
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 struct page *page, void *fsdata);
+
+=A0=A0=A0 /* Unfortunately this kludge is needed for FIBMAP. Don't use it *=
+/
+=A0=A0=A0 sector_t (*bmap)(struct address_space *, sector_t);
+=A0=A0=A0 void (*invalidatepage) (struct page *, unsigned long);
+=A0=A0=A0 int (*releasepage) (struct page *, gfp_t);
+=A0=A0=A0 ssize_t (*direct_IO)(int, struct kiocb *, const struct iovec *iov=
+,
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 loff_t offset, unsigned long nr_segs);
+=A0=A0=A0 int (*get_xip_mem)(struct address_space *, pgoff_t, int,
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 void **, unsign=
+ed long *);
+=A0=A0=A0 /* migrate the contents of a page to the specified target */
+=A0=A0=A0 int (*migratepage) (struct address_space *,
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 struct page *, struct page *);
+=A0=A0=A0 int (*launder_page) (struct page *);
+=A0=A0=A0 int (*is_partially_uptodate) (struct page *, read_descriptor_t *,
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 unsigned long);
+};
