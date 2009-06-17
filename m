@@ -1,25 +1,28 @@
-Received: from wa-out-1112.google.com ([209.85.146.180])
+Received: from mailout3.samsung.com ([203.254.224.33])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MGuJN-0000gB-OO
-	for linux-mtd@lists.infradead.org; Wed, 17 Jun 2009 12:32:23 +0000
-Received: by wa-out-1112.google.com with SMTP id j5so74217wah.2
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 17 Jun 2009 05:32:16 -0700 (PDT)
-References: <d16af8a00906170053p11a4f0e3vd0bbef99d65b9aac@mail.gmail.com>
-	<1245227364.9487.7.camel@localhost.localdomain>
-Message-Id: <53BEC22A-BFC7-42FD-A66E-81D52CF1F5BA@gmail.com>
-From: Ivan <ivanming@gmail.com>
-To: "dedekind@infradead.org" <dedekind@infradead.org>
-In-Reply-To: <1245227364.9487.7.camel@localhost.localdomain>
-Content-Type: text/plain;
-	charset=big5-hkscs;
-	format=flowed;
-	delsp=yes
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (iPhone Mail 5H11)
-Subject: Re: how to implement prepare_write, commit_write for ubifs
-Date: Wed, 17 Jun 2009 20:24:42 +0800
+	id 1MGvGX-0001G2-71
+	for linux-mtd@lists.infradead.org; Wed, 17 Jun 2009 13:33:35 +0000
+Received: from ep_ms13_bk (mailout3.samsung.com [203.254.224.33])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KLD00A5JXNFAW@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Wed, 17 Jun 2009 22:33:15 +0900 (KST)
+Received: from ep_spt02 (ms13.samsung.com [203.254.225.109])
+	by ms13.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTP id <0KLD00I2GXNF69@ms13.samsung.com> for
+	linux-mtd@lists.infradead.org; Wed, 17 Jun 2009 22:33:16 +0900 (KST)
+Content-return: prohibited
+Date: Wed, 17 Jun 2009 13:33:15 +0000 (GMT)
+From: BRIJESH SINGH <brij.singh@samsung.com>
+Subject: Re: UBI Create or Update Volume
+To: Artem Bityutskiy <dedekind@infradead.org>
+Message-id: <19210322.95771245245595875.JavaMail.weblogic@epml16>
+MIME-version: 1.0
+MIME-version: 1.0
+Content-type: text/plain; charset=utf-8
+Content-transfer-encoding: base64
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: brij.singh@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,63 +32,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thankyou very much for the information!
-
-
-Sent from my iPhone
-
-On 2009=A6~6=A4=EB17=A4=E9, at 16:29, Artem Bityutskiy =
-<dedekind@infradead.org> =20
-wrote:
-
-> On Wed, 2009-06-17 at 15:53 +0800, Ivan Chan wrote:
->> Hi all,
->>
->> I am porting UBIFS/UBI to 2.6.4 kernel, however, 2.6.4 kernel =20
->> requires
->> prepare_write, commit_write in address_space_operations (defined in
->> include/linux/fs.h),
->> but it is no longer exists in 2.6.2x kernel.
->>
->> How can I rewrite these function for 2.6.4 kernel?
->>
->> In 2.6.2x, there is similar function write_begin, and write_end, but
->> the API requires
->> struct address_space *mapping,  struct page **pagep, void **fsdata,
->>
->> Is that possible and how to provide this argument in 2.6.4 kernel?
->
-> ATM we support UBIFS back-ports from v2.6.24 to v2.6.30.
->
-> The change of the address space operation happened between 2.6.23 and
-> 2.6.24.
->
-> In the paste, we also supported UBIFS back-ports for kerneld
-> 2.6.21-2.6.23. But then we dropped them because it became increasingly
-> difficult to back-port stuff there.
->
-> So what would suggest you do is:
->
-> a). Start with the old and unsupported 2.6.23 UBIFS back-port which =20=
-
-> you
-> may find here: git://git.infradead.org/users/dedekind/ubifs-=20
-> v2.6.23.git
->
-> b). Back-port this UBIFS 2.6.23 stuff to your ancient 2.6.4, it should
-> be easier to do comparing to back-porting the newest stuff.
->
-> c). Back port the rest of the UBIFS changes/fixes from the latest
-> kernels, e.g., from the UBIFS 2.6.30 back-port.
->
-> The back-ports URLS may be found here:
-> http://www.linux-mtd.infradead.org/doc/ubifs.html#L_source
->
-> Or just see here:
-> http://git.infradead.org/
->
-> --=20
-> Best regards,
-> Artem Bityutskiy (=C7=F4=C8^=C8h=C8t=C8l=C8`=C8^=C8_ =C7=F3=C8f=C8h=C8[=C8=
-b)
->
+IFtTb3JyeS4gSSB3aWxsIHRyeSB0byB0YWtlIGNhcmUgb2YgaXQgaW4gZnV0dXJlIGVtYWlscy5d
+DQpIaSwNCk9uIFdlZCwgSnVuIDE3LCAyMDA5IGF0IDM6MjYgUE0sIEFydGVtIEJpdHl1dHNraXkg
+PGRlZGVraW5kQGluZnJhZGVhZC5vcmc+IHdyb3RlOg0KICAgICBPbiBXZWQsIDIwMDktMDYtMTcg
+YXQgMDk6MzMgKzAwMDAsIEJSSUpFU0ggU0lOR0ggd3JvdGU6DQogICAgICA+PiBIaSBBcnRlbSwN
+CiAgICAgID4+ICAgICAgSnVzdCBjYW1lIGFjcm9zcyB0aGUgdWJpX2NoYW5nZV92dGJsX3JlY29y
+ZCBmdW5jdGlvbi4gSWYgZmlyc3QgY29weSBpcyB3cml0dGVuIHN1Y2Nlc3NmdWxseSBhbmQgZXJy
+b3Igb2NjdXJzIHdoaWxlIHdyaXRpbmcgc2Vjb25kIGNvcHksIHRoaXMgZnVuY3Rpb24gc3RpbGwg
+cmV0dXJucyBlcnJvci4gQW5kIGhlbmNlIHRoZSBjcmVhdGlvbiBvciBjaGFuZ2UgaW4gVm9sdW1l
+IGJlY29tZXMgdW5zdWNjZXNzZnVsLiBTbyBhcHBsaWNhdGlvbnMgY29uc2lkZXIgaXQgZmFpbHVy
+ZS4NCiAgICAgID4+DQogICAgICA+PiAgIEJ1dCBpZiBJIHVubW91bnQgbm93LCAoY2xlYW4gb3Ig
+dW5jbGVhbikgdGhlIGZpcnN0IGNvcHkgd2lsbCBiZWNvbWUgdmFsaWQgYW5kIHNlY29uZCB3aWxs
+IGJlIGNhbGxlZCBjb3JydXB0ZWQgKGR1cmluZyBtb3VudCB0aW1lKS4gSXQncyBub3QgY29ycmVj
+dC4NCiAgICAgID4+ICAgIFNvIHNob3VsZCB1YmlfY2hhbmdlX3Z0YmxfcmVjb3JkICBjYWxsIGZs
+dXNoIHdsIGFuZCAgcmV0dXJuIHN1Y2Nlc3M/IEJlY2F1c2UgMm5kIGNvcHkob2xkKSBpcyB1bm1h
+cHBlZCB0aWxsIG5vdy5BbmQgc2hvdWxkIFVCSSBnbyB0byByZWFkLW9ubHkgbW9kZT8NCj4gWWVz
+LCBzb3VuZHMgcmlnaHQuIFdvdWxkIHlvdSBzZW5kIGEgcGF0Y2g/DQpZZXMsIEkgd2lsbCBzZW5k
+IGEgcGF0Y2ggb25jZSBJIHRlc3QgaXQgcHJvcGVybHkuDQoNCi0tLQ0KQnJpamVzaA==
