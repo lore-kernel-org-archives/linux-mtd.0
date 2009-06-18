@@ -1,28 +1,24 @@
-Received: from mailout3.samsung.com ([203.254.224.33])
+Received: from mail-yx0-f173.google.com ([209.85.210.173])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MGvGX-0001G2-71
-	for linux-mtd@lists.infradead.org; Wed, 17 Jun 2009 13:33:35 +0000
-Received: from ep_ms13_bk (mailout3.samsung.com [203.254.224.33])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KLD00A5JXNFAW@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Wed, 17 Jun 2009 22:33:15 +0900 (KST)
-Received: from ep_spt02 (ms13.samsung.com [203.254.225.109])
-	by ms13.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTP id <0KLD00I2GXNF69@ms13.samsung.com> for
-	linux-mtd@lists.infradead.org; Wed, 17 Jun 2009 22:33:16 +0900 (KST)
-Content-return: prohibited
-Date: Wed, 17 Jun 2009 13:33:15 +0000 (GMT)
-From: BRIJESH SINGH <brij.singh@samsung.com>
-Subject: Re: UBI Create or Update Volume
-To: Artem Bityutskiy <dedekind@infradead.org>
-Message-id: <19210322.95771245245595875.JavaMail.weblogic@epml16>
-MIME-version: 1.0
-MIME-version: 1.0
-Content-type: text/plain; charset=utf-8
-Content-transfer-encoding: base64
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: brij.singh@samsung.com
+	id 1MH7wP-0000Po-Jm
+	for linux-mtd@lists.infradead.org; Thu, 18 Jun 2009 03:05:36 +0000
+Received: by yxe3 with SMTP id 3so33210yxe.28
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 17 Jun 2009 20:05:27 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20090601100211.GD14373@duck.suse.cz>
+References: <17cc26190905290122u52e2f9a1q15103557e214883e@mail.gmail.com>
+	<20090601100211.GD14373@duck.suse.cz>
+Date: Thu, 18 Jun 2009 11:05:27 +0800
+Message-ID: <e8775dd00906172005m140df95bnb3a0006318b3edac@mail.gmail.com>
+Subject: Re: JFFS2 filesystem problem
+From: Jason Liu <liu.h.jason@gmail.com>
+To: Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: npiggin@suse.de, linux-mtd@lists.infradead.org,
+	anees a m <aneesgnu@gmail.com>, dwmw2@infradead.org,
+	LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,20 +28,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-IFtTb3JyeS4gSSB3aWxsIHRyeSB0byB0YWtlIGNhcmUgb2YgaXQgaW4gZnV0dXJlIGVtYWlscy5d
-DQpIaSwNCk9uIFdlZCwgSnVuIDE3LCAyMDA5IGF0IDM6MjYgUE0sIEFydGVtIEJpdHl1dHNraXkg
-PGRlZGVraW5kQGluZnJhZGVhZC5vcmc+IHdyb3RlOg0KICAgICBPbiBXZWQsIDIwMDktMDYtMTcg
-YXQgMDk6MzMgKzAwMDAsIEJSSUpFU0ggU0lOR0ggd3JvdGU6DQogICAgICA+PiBIaSBBcnRlbSwN
-CiAgICAgID4+ICAgICAgSnVzdCBjYW1lIGFjcm9zcyB0aGUgdWJpX2NoYW5nZV92dGJsX3JlY29y
-ZCBmdW5jdGlvbi4gSWYgZmlyc3QgY29weSBpcyB3cml0dGVuIHN1Y2Nlc3NmdWxseSBhbmQgZXJy
-b3Igb2NjdXJzIHdoaWxlIHdyaXRpbmcgc2Vjb25kIGNvcHksIHRoaXMgZnVuY3Rpb24gc3RpbGwg
-cmV0dXJucyBlcnJvci4gQW5kIGhlbmNlIHRoZSBjcmVhdGlvbiBvciBjaGFuZ2UgaW4gVm9sdW1l
-IGJlY29tZXMgdW5zdWNjZXNzZnVsLiBTbyBhcHBsaWNhdGlvbnMgY29uc2lkZXIgaXQgZmFpbHVy
-ZS4NCiAgICAgID4+DQogICAgICA+PiAgIEJ1dCBpZiBJIHVubW91bnQgbm93LCAoY2xlYW4gb3Ig
-dW5jbGVhbikgdGhlIGZpcnN0IGNvcHkgd2lsbCBiZWNvbWUgdmFsaWQgYW5kIHNlY29uZCB3aWxs
-IGJlIGNhbGxlZCBjb3JydXB0ZWQgKGR1cmluZyBtb3VudCB0aW1lKS4gSXQncyBub3QgY29ycmVj
-dC4NCiAgICAgID4+ICAgIFNvIHNob3VsZCB1YmlfY2hhbmdlX3Z0YmxfcmVjb3JkICBjYWxsIGZs
-dXNoIHdsIGFuZCAgcmV0dXJuIHN1Y2Nlc3M/IEJlY2F1c2UgMm5kIGNvcHkob2xkKSBpcyB1bm1h
-cHBlZCB0aWxsIG5vdy5BbmQgc2hvdWxkIFVCSSBnbyB0byByZWFkLW9ubHkgbW9kZT8NCj4gWWVz
-LCBzb3VuZHMgcmlnaHQuIFdvdWxkIHlvdSBzZW5kIGEgcGF0Y2g/DQpZZXMsIEkgd2lsbCBzZW5k
-IGEgcGF0Y2ggb25jZSBJIHRlc3QgaXQgcHJvcGVybHkuDQoNCi0tLQ0KQnJpamVzaA==
+2009/6/1 Jan Kara <jack@suse.cz>:
+> =A0Hello,
+>
+> On Fri 29-05-09 13:52:05, anees a m wrote:
+>> Iam uses JFFS2 filesystem for an embedded flash device. But when the pow=
+er
+>> is removed i between, the JFFS2 filesystem is corrupted.Resulting in fai=
+ls.
+>> Iam able to find that the JFFS2 garbage collector is causing the problem=
+. If
+>> mounted as READ only, I dont have an issue, but mounting write only is
+>> resulting in corrupted filesystem some times.
+>>
+>> Unfortunately I need to mount it with read write support.
+> =A0I'm not sure why you decided to write to linux-ext4 mailing list, to m=
+e
+> and to Nick. Anyway, the right person for this report seems to be David
+> Woodhouse who's listed as a maintainer of JFFS2 filesystem.
+> =A0Adding him to CC.
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0Honz=
+a
+Yes, I have the same problems. Have you resolved the issues?What's the
+kernel version you are using. We are using, .2.6.28 kernel.
+> --
+> Jan Kara <jack@suse.cz>
+> SUSE Labs, CR
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" i=
+n
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at =A0http://www.tux.org/lkml/
+>
