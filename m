@@ -1,24 +1,25 @@
-Received: from mail-yx0-f173.google.com ([209.85.210.173])
+Received: from qw-out-1920.google.com ([74.125.92.149])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MH7wP-0000Po-Jm
-	for linux-mtd@lists.infradead.org; Thu, 18 Jun 2009 03:05:36 +0000
-Received: by yxe3 with SMTP id 3so33210yxe.28
+	id 1MHBcP-0001kV-Do
+	for linux-mtd@lists.infradead.org; Thu, 18 Jun 2009 07:01:20 +0000
+Received: by qw-out-1920.google.com with SMTP id 9so509806qwj.24
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 17 Jun 2009 20:05:27 -0700 (PDT)
+	Thu, 18 Jun 2009 00:01:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20090601100211.GD14373@duck.suse.cz>
-References: <17cc26190905290122u52e2f9a1q15103557e214883e@mail.gmail.com>
-	<20090601100211.GD14373@duck.suse.cz>
-Date: Thu, 18 Jun 2009 11:05:27 +0800
-Message-ID: <e8775dd00906172005m140df95bnb3a0006318b3edac@mail.gmail.com>
-Subject: Re: JFFS2 filesystem problem
-From: Jason Liu <liu.h.jason@gmail.com>
-To: Jan Kara <jack@suse.cz>
+Sender: kyungmin78@gmail.com
+In-Reply-To: <7948530906150402l4896399dv80962495f89da1fb@mail.gmail.com>
+References: <7948530906150003g365c8af3g9a9aaf8c8b985aa7@mail.gmail.com>
+	<4A361E6C.3000208@nokia.com>
+	<7948530906150402l4896399dv80962495f89da1fb@mail.gmail.com>
+Date: Thu, 18 Jun 2009 16:01:00 +0900
+Message-ID: <9c9fda240906180001q6ed66482s9e313e51901b238f@mail.gmail.com>
+Subject: Re: RFC: [PATCH] MTD OneNAND: multiblock erase support
+From: Kyungmin Park <kyungmin.park@samsung.com>
+To: Mika Korhonen <mika.j.korhonen@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Cc: npiggin@suse.de, linux-mtd@lists.infradead.org,
-	anees a m <aneesgnu@gmail.com>, dwmw2@infradead.org,
-	LKML <linux-kernel@vger.kernel.org>
+Cc: linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,38 +29,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2009/6/1 Jan Kara <jack@suse.cz>:
-> =A0Hello,
->
-> On Fri 29-05-09 13:52:05, anees a m wrote:
->> Iam uses JFFS2 filesystem for an embedded flash device. But when the pow=
-er
->> is removed i between, the JFFS2 filesystem is corrupted.Resulting in fai=
-ls.
->> Iam able to find that the JFFS2 garbage collector is causing the problem=
-. If
->> mounted as READ only, I dont have an issue, but mounting write only is
->> resulting in corrupted filesystem some times.
->>
->> Unfortunately I need to mount it with read write support.
-> =A0I'm not sure why you decided to write to linux-ext4 mailing list, to m=
-e
-> and to Nick. Anyway, the right person for this report seems to be David
-> Woodhouse who's listed as a maintainer of JFFS2 filesystem.
-> =A0Adding him to CC.
->
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0Honz=
-a
-Yes, I have the same problems. Have you resolved the issues?What's the
-kernel version you are using. We are using, .2.6.28 kernel.
-> --
-> Jan Kara <jack@suse.cz>
-> SUSE Labs, CR
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" i=
+On Mon, Jun 15, 2009 at 8:02 PM, Mika Korhonen<mika.j.korhonen@gmail.com> w=
+rote:
+> 2009/6/15 Adrian Hunter <adrian.hunter@nokia.com>:
+>> Mika Korhonen wrote:
+>>>
+>>> I wrote an initial support for OneNAND multiblock erase feature. =A0Whe=
 n
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at =A0http://www.tux.org/lkml/
+>>> done in maximum 64 eraseblock batches multiblock erase is up to 30x
+>>> faster than block-by-block erase (not including erase verify, though).
+>>>
+>>> However, I only had possibility to test this with an OMAP board, so I
+>>> don't know if e.g. the default onenand_wait needs adjustment. Also for
+>>> Flex-OneNAND the support goes off. Does Flex even have mb erase?
+>>>
+>>> What do you think?
+>>
+>> I expect all OneNAND support multiblock erase, so the config should
+>> go away. =A0Kyungmin can probably comment on that.
 >
+> Yes, I was thinking about that as well. Is it included in all chips?
+
+So I got mistake, the Flex-OneNAND don't support the multi-block
+erase. Instead it support the erase suspend & resume
+
+Thank you,
+Kyungmin Park
