@@ -1,18 +1,23 @@
-Received: from mail-bw0-f208.google.com ([209.85.218.208])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MHTxo-0005HW-TG
-	for linux-mtd@lists.infradead.org; Fri, 19 Jun 2009 02:36:44 +0000
-Received: by bwz4 with SMTP id 4so1635004bwz.18
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 18 Jun 2009 19:36:20 -0700 (PDT)
+Received: from n11.bullet.mail.mud.yahoo.com ([209.191.125.210])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MHYTk-0007gc-J8
+	for linux-mtd@lists.infradead.org; Fri, 19 Jun 2009 07:25:47 +0000
+From: David Brownell <david-b@pacbell.net>
+To: linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org,
+ tglx@linutronix.de
+Subject: Re: [PATCH v2 2/3] NAND: Add new ECC mode - ECC_HW_OOB_FIRST
+Date: Fri, 19 Jun 2009 00:25:37 -0700
+References: <1245183797-11469-1-git-send-email-s-paulraj@ti.com>
+In-Reply-To: <1245183797-11469-1-git-send-email-s-paulraj@ti.com>
 MIME-Version: 1.0
-Date: Fri, 19 Jun 2009 10:36:20 +0800
-Message-ID: <71103bce0906181936k49ee800ejfa1830b6c6193ce5@mail.gmail.com>
-Subject: the memory consumption about ubifs
-From: jerry <jerrydreaming@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=GB2312
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200906190025.38056.david-b@pacbell.net>
+Cc: davinci-linux-open-source@linux.davincidsp.com, akpm@linux-foundation.org,
+	s-paulraj@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,10 +27,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,all
-     Now,I have a problem.The filesysterm is ubifs.When the page size
-of nandflash  changes from 2k to 4k=A3=ACthe memory consumes more than
-4M.What can I do to reduce the memory consumption=A3=BF
+On Tuesday 16 June 2009, s-paulraj@ti.com wrote:
+> From: Sandeep Paulraj <s-paulraj@ti.com>
+> 
+> The patch applies to linux-mtd GIT tree
+> 
+> This patch adds the new mode NAND_ECC_HW_OOB_FIRST in the nand code to
+> support 4-bit ECC on TI DaVinci devices with large page (up to 4K) NAND
+> chips. This ECC mode is similar to NAND_ECC_HW, with the exception of
+> read_page API that first reads the OOB area, reads the data in chunks, feeds
+> the ECC from OOB area to the ECC hw engine and perform any correction on the
+> data as per the ECC status reported by the engine.
+> 
+> "ECC_HW_OOB_FIRST" name suggested by Thomas Gleixner
+> 
+> Reviewed-by: David Brownell <dbrownell@users.sourceforge.net>
+> Signed-off-by: Sneha Narnakaje <nsnehaprabha@ti.com>
+> Signed-off-by: Sandeep Paulraj <s-paulraj@ti.com
 
-  Best regards,
-  jerry
+MTD folk ... any responses?
+
+I don't think patches #1 and #2 changed much since the previous post.
+
+The only issue was with patch #3, where details of the OOB layout had
+needed tweaking.
+
+
+
+> ---
+>  drivers/mtd/nand/nand_base.c |   59 ++++++++++++++++++++++++++++++++++++++++++
+>  1 files changed, 59 insertions(+), 0 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index a738333..93bb8f3 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -980,6 +980,54 @@ static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+>  }
+>  
+>  /**
+> + * nand_read_page_hwecc_oob_first - [REPLACABLE] hw ecc, read oob first
+> + * @mtd:	mtd info structure
+> + * @chip:	nand chip info structure
+> + * @buf:	buffer to store read data
+> + *
+> + * Hardware ECC for large page chips, require OOB to be read first.
+> + * For this ECC mode, the write_page method is re-used from ECC_HW.
+> + * These methods read/write ECC from the OOB area, unlike the
+> + * ECC_HW_SYNDROME support with multiple ECC steps, follows the
+> + * "infix ECC" scheme and reads/writes ECC from the data area, by
+> + * overwriting the NAND manufacturer bad block markings.
+> + */
+> +static int nand_read_page_hwecc_oob_first(struct mtd_info *mtd,
+> +	struct nand_chip *chip, uint8_t *buf, int page)
+> +{
+> +	int i, eccsize = chip->ecc.size;
+> +	int eccbytes = chip->ecc.bytes;
+> +	int eccsteps = chip->ecc.steps;
+> +	uint8_t *p = buf;
+> +	uint8_t *ecc_code = chip->buffers->ecccode;
+> +	uint32_t *eccpos = chip->ecc.layout->eccpos;
+> +	uint8_t *ecc_calc = chip->buffers->ecccalc;
+> +
+> +	/* Read the OOB area first */
+> +	chip->cmdfunc(mtd, NAND_CMD_READOOB, 0, page);
+> +	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+> +	chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
+> +
+> +	for (i = 0; i < chip->ecc.total; i++)
+> +		ecc_code[i] = chip->oob_poi[eccpos[i]];
+> +
+> +	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize) {
+> +		int stat;
+> +
+> +		chip->ecc.hwctl(mtd, NAND_ECC_READ);
+> +		chip->read_buf(mtd, p, eccsize);
+> +		chip->ecc.calculate(mtd, p, &ecc_calc[i]);
+> +
+> +		stat = chip->ecc.correct(mtd, p, &ecc_code[i], NULL);
+> +		if (stat < 0)
+> +			mtd->ecc_stats.failed++;
+> +		else
+> +			mtd->ecc_stats.corrected += stat;
+> +	}
+> +	return 0;
+> +}
+> +
+> +/**
+>   * nand_read_page_syndrome - [REPLACABLE] hardware ecc syndrom based page read
+>   * @mtd:	mtd info structure
+>   * @chip:	nand chip info structure
+> @@ -2673,6 +2721,17 @@ int nand_scan_tail(struct mtd_info *mtd)
+>  	 */
+>  
+>  	switch (chip->ecc.mode) {
+> +	case NAND_ECC_HW_OOB_FIRST:
+> +		/* Similar to NAND_ECC_HW, but a separate read_page handle */
+> +		if (!chip->ecc.calculate || !chip->ecc.correct ||
+> +		     !chip->ecc.hwctl) {
+> +			printk(KERN_WARNING "No ECC functions supplied, "
+> +			       "Hardware ECC not possible\n");
+> +			BUG();
+> +		}
+> +		if (!chip->ecc.read_page)
+> +			chip->ecc.read_page = nand_read_page_hwecc_oob_first;
+> +
+>  	case NAND_ECC_HW:
+>  		/* Use standard hwecc read page function ? */
+>  		if (!chip->ecc.read_page)
+> 
