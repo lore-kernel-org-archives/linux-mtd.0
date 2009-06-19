@@ -1,20 +1,11 @@
-Received: from mail-qy0-f179.google.com ([209.85.221.179])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MHbql-0002PP-8F
-	for linux-mtd@lists.infradead.org; Fri, 19 Jun 2009 11:01:46 +0000
-Received: by qyk9 with SMTP id 9so2481481qyk.28
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 19 Jun 2009 04:01:38 -0700 (PDT)
+From: "From vivian toure"<viviantoure1@moviles.com>
+Subject: J'AI BESOIN DE TON ASSISTANCE 
+Date: Fri, 19 Jun 2009 14:09:30 +0200
+Message-ID: <web-17820657@mail.stade.fr>
 MIME-Version: 1.0
-Sender: brijesh.s.singh@gmail.com
-Date: Fri, 19 Jun 2009 16:31:38 +0530
-Message-ID: <6b5362aa0906190401l51bcf28bg44b9a7a9f49aa773@mail.gmail.com>
-Subject: [PATCH] [UBI] Volume table update fix
-From: Brijesh Singh <brij.singh@samsung.com>
-To: dedekind@infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="ISO-8859-1"; format="flowed"
+Content-Transfer-Encoding: 8bit
+To: undisclosed-recipients:;
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,73 +15,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-  This patch fixes the consistency problem during volume update.
-  UBI writes two copies of vtbl during volume update. If
-the first copy was successfully written, and second copy fails,
-UBI returns failure.
-  But UBI recovers updated vtbl during next mount. So it should have
-returned success. It should go to read only mode to avoid further failures.
+J'AI BESOIN DE TON ASSISTANCE
+De: Charles Ado
+Abidjan Côte d'Ivoire
 
-Signed-off-by: Brijesh Singh <brij.singh@samsung.com>
----
-diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
-index 1afc61e..c776037 100644
---- a/drivers/mtd/ubi/vtbl.c
-+++ b/drivers/mtd/ubi/vtbl.c
-@@ -84,7 +84,7 @@ static struct ubi_vtbl_record empty_vtbl_record;
- int ubi_change_vtbl_record(struct ubi_device *ubi, int idx,
- 			   struct ubi_vtbl_record *vtbl_rec)
- {
--	int i, err;
-+	int copy, err, err1;
- 	uint32_t crc;
- 	struct ubi_volume *layout_vol;
 
-@@ -99,19 +99,41 @@ int ubi_change_vtbl_record(struct ubi_device *ubi, int idx,
- 	}
+Je suis Charles Ado de Côte d'Ivoire. Je suis le fils de M.Yannick Ado car que
+j'ai perdu mon pcre il y a quelques mois. Je suis r Bouaké avec ma pétite
+Soeur. Mon pcre était un directeur du conseil d'administration du cacao
+exportant jusqu'r sa mort. Il a été assassiné janvier dernier par les rebelles
+suite au soulcvement politique.
 
- 	memcpy(&ubi->vtbl[idx], vtbl_rec, sizeof(struct ubi_vtbl_record));
--	for (i = 0; i < UBI_LAYOUT_VOLUME_EBS; i++) {
--		err = ubi_eba_unmap_leb(ubi, layout_vol, i);
-+	for (copy = 0; copy < UBI_LAYOUT_VOLUME_EBS; copy++) {
-+		err = ubi_eba_unmap_leb(ubi, layout_vol, copy);
- 		if (err)
--			return err;
-+			goto out_error;
 
--		err = ubi_eba_write_leb(ubi, layout_vol, i, ubi->vtbl, 0,
-+		err = ubi_eba_write_leb(ubi, layout_vol, copy, ubi->vtbl, 0,
- 					ubi->vtbl_size, UBI_LONGTERM);
- 		if (err)
--			return err;
-+			goto out_error;
- 	}
+Avant sa mort il a ouvert un compte étranger ici en côte d'Ivoire d'un montant
+de $12.5M (douze million, cinq cent mille dollars d'Amérique) qu'il m'a dit
+etre destiné r l'importation de machines de développement de cacao. Je veux
+que vous me fassiez une faveur en recevant ces fonds sur un compte en sécurité
+dans votre pays ou n'importe quel lieu plus sur en tant que bénéficiaire.
 
- 	paranoid_vtbl_check(ubi);
- 	return 0;
-+
-+out_error:
-+	/* If first copy was written,volume creation is successful.
-+	* But switch to read only mode as we have only one copy.
-+	* If first copy itself was not written, older version is in copy 2.
-+	* Unmap first copy and call wl_flush.
-+	* Volume creating is unsuccessful.
-+	*/
-+	ubi_err("Error writing volume table copy #%d", copy+1);
-+	err1 = ubi_eba_unmap_leb(ubi, layout_vol, copy);
-+	if (!err1) {
-+		ubi_wl_flush(ubi);
-+		/* Don't bother about error in flush
-+		 * We are going read only any ways
-+		 */
-+	}
-+	ubi_ro_mode(ubi);
-+	ubi_msg("Try detaching and attaching UBI again");
-+	if (copy > 0)
-+		return 0;
-+	else
-+		return err;
- }
 
- /**
+J'ai des plans pour faire n'importe quel d'investissement comme les
+immobiliers et la production industrielle. C'est la raison de mon inscription
+auprcs de vous. Svp si vous etes disposé r nous aider moi et ma pétite Soeur
+indiquez votre intéret en répondant le plus vite possible car nous avons
+décidé de t'offrir 10% de la somme totale pour ta bonne geste.
+Merci et veuillez recevoir nos meilleurs souvenirs.
+
+Charles Ado et sa Soeur
+
+___________________________________________________
+http://www.stade.fr le mail gratuit à vie !
+___________________________________________________ 
