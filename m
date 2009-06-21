@@ -1,16 +1,18 @@
-Received: from 201.171.183.69.dsl.dyn.telnor.net ([201.171.183.69]
-	helo=omwgjfq.telnor.net)
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MIKly-0002Mq-BG
-	for linux-mtd@lists.infradead.org; Sun, 21 Jun 2009 11:00:09 +0000
-Subject: The Aamzing Electrifying sex Chair Advenutre
-Message-ID: <77df20090621104645@lrn.va.gov>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MITNi-0007RB-Kf
+	for linux-mtd@lists.infradead.org; Sun, 21 Jun 2009 20:11:21 +0000
+Message-ID: <4A3E940A.8090603@nokia.com>
+Date: Sun, 21 Jun 2009 23:11:54 +0300
+From: Adrian Hunter <adrian.hunter@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset="iso-8859-3"
-From: Garside <museumises@lrn.va.gov>
-To: linux-mtd@lists.infradead.org
-Date: Sun, 21 Jun 2009 10:52:57 -0100
+To: jerry <jerrydreaming@gmail.com>
+Subject: Re: the memory consumption about ubifs
+References: <71103bce0906181936k49ee800ejfa1830b6c6193ce5@mail.gmail.com>
+In-Reply-To: <71103bce0906181936k49ee800ejfa1830b6c6193ce5@mail.gmail.com>
+Content-Type: text/plain; charset=GB2312
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,5 +22,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Amaziing Electrifying sex Chanir Adventure (www 	shop95 	net)
-Presidents' hair on display att Philadelphia sciencce museum
+jerry wrote:
+>      Now,I have a problem.The filesysterm is ubifs.When the page size
+> of nandflash  changes from 2k to 4k£¬the memory consumes more than
+> 4M.What can I do to reduce the memory consumption£¿
+
+What is the LEB size?
