@@ -1,16 +1,21 @@
-Subject: Re: [PATCH] SST25L (non JEDEC) SPI Flash driver
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MIenO-0008U8-GQ
+	for linux-mtd@lists.infradead.org; Mon, 22 Jun 2009 08:22:37 +0000
+Subject: Re: [PATCH v2 2/3] NAND: Add new ECC mode - ECC_HW_OOB_FIRST
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Ryan Mallon <ryan@bluewatersys.com>
-In-Reply-To: <4A3F017B.2010409@bluewatersys.com>
-References: <4A3F017B.2010409@bluewatersys.com>
+To: s-paulraj@ti.com
+In-Reply-To: <1245183797-11469-1-git-send-email-s-paulraj@ti.com>
+References: <1245183797-11469-1-git-send-email-s-paulraj@ti.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 22 Jun 2009 11:15:10 +0300
-Message-Id: <1245658510.9487.32.camel@localhost.localdomain>
+Date: Mon, 22 Jun 2009 11:21:41 +0300
+Message-Id: <1245658901.9487.36.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	linux kernel <linux-kernel@vger.kernel.org>,
-	mike@steroidmicros.com, spi-devel-general@lists.sourceforge.net
+Cc: davinci-linux-open-source@linux.davincidsp.com,
+	Sneha Narnakaje <nsnehaprabha@ti.com>,
+	linux-mtd@lists.infradead.org, tglx@linutronix.de,
+	dwmw2@infradead.org, akpm@linux-foundation.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,28 +26,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-06-22 at 15:58 +1200, Ryan Mallon wrote:
-> Add support for the non JEDEC SST25L SPI Flash devices.
+On Tue, 2009-06-16 at 16:23 -0400, s-paulraj@ti.com wrote:
+> From: Sandeep Paulraj <s-paulraj@ti.com>
 > 
-> Signed-off-by: Andre Renaud <andre@bluewatersys.com>
-> Signed-off-by: Ryan Mallon <ryan@bluewatersys.com>
-> ---
+> The patch applies to linux-mtd GIT tree
 > 
-> diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-> index 325fab9..c222514 100644
-> --- a/drivers/mtd/devices/Kconfig
-> +++ b/drivers/mtd/devices/Kconfig
-> @@ -104,6 +104,16 @@ config M25PXX_USE_FAST_READ
->  	help
->  	  This option enables FAST_READ access supported by ST M25Pxx.
+> This patch adds the new mode NAND_ECC_HW_OOB_FIRST in the nand code to
+> support 4-bit ECC on TI DaVinci devices with large page (up to 4K) NAND
+> chips. This ECC mode is similar to NAND_ECC_HW, with the exception of
+> read_page API that first reads the OOB area, reads the data in chunks, feeds
+> the ECC from OOB area to the ECC hw engine and perform any correction on the
+> data as per the ECC status reported by the engine.
+> 
+> "ECC_HW_OOB_FIRST" name suggested by Thomas Gleixner
+> 
+> Reviewed-by: David Brownell <dbrownell@users.sourceforge.net>
+> Signed-off-by: Sneha Narnakaje <nsnehaprabha@ti.com>
+> Signed-off-by: Sandeep Paulraj <s-paulraj@ti.com
 
-Would it please be possible to get rid of this warning:
+I've applied your 3 patches and they do not compile:
 
-  CC [M]  drivers/mtd/devices/sst25l.o
-drivers/mtd/devices/sst25l.c: In function ‘sst25l_write’:
-drivers/mtd/devices/sst25l.c:306: warning: comparison of distinct pointer types lacks a cast
-
-I see it on my x86_64.
+  CC [M]  drivers/mtd/nand/nand_ecc.o          
+drivers/mtd/nand/nand_base.c: In function ‘nand_scan_tail’:
+drivers/mtd/nand/nand_base.c:2724: error: ‘NAND_ECC_HW_OOB_FIRST’ undeclared (first use in this function)
+drivers/mtd/nand/nand_base.c:2724: error: (Each undeclared identifier is reported only once              
+drivers/mtd/nand/nand_base.c:2724: error: for each function it appears in.)                              
+make[3]: *** [drivers/mtd/nand/nand_base.o] Error 1                                                      
+make[3]: *** Waiting for unfinished jobs....                                                             
+  CC [M]  drivers/mtd/devices/docprobe.o                                                                 
 
 -- 
 Best regards,
