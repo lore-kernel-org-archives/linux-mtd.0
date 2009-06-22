@@ -1,16 +1,19 @@
-Received: from mail164.messagelabs.com ([216.82.253.131])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MId1m-0002fi-QQ
-	for linux-mtd@lists.infradead.org; Mon, 22 Jun 2009 06:29:33 +0000
-In-Reply-To: <022F54DCE6CCCD45A5F9DF0B0B7BFEEB314CD226DF@EXGMBX01.sasken.com>
-To: Ravi Vasarla <ravi.vasarla@sasken.com>
-Subject: RE: Problem with jffs2 on linux 2.6.23
-MIME-Version: 1.0
-Message-ID: <OFF85877ED.A4F56E8D-ON652575DD.00173AC5-652575DD.00235628@lntemsys.com>
-From: Rupesh Kumar <Rupesh.Kumar@Lntemsys.com>
-Date: Mon, 22 Jun 2009 12:07:24 +0530
-Content-Type: text/plain; charset="US-ASCII"
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MIdyk-0002pE-Te
+	for linux-mtd@lists.infradead.org; Mon, 22 Jun 2009 07:30:17 +0000
+Subject: Re: [PATCH] [UBI] Volume table update fix
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Brijesh Singh <brij.singh@samsung.com>
+In-Reply-To: <6b5362aa0906190401l51bcf28bg44b9a7a9f49aa773@mail.gmail.com>
+References: <6b5362aa0906190401l51bcf28bg44b9a7a9f49aa773@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 22 Jun 2009 10:29:56 +0300
+Message-Id: <1245655796.9487.29.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,118 +23,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
-The erase size/Block size of nand device is 128KB, also the JFFS2 image is 
-created with erase size of 128KB. 
-I verified this by enabling debug statements. I am not able to undersatnd 
-the reason for ECC / Magic Bitmask error.
+Hi,
 
-I tried using linux-2.6.20 kernel with the same file system and observed 
-that ECC / Magic Bitmask error is not coming then.
+thanks for the patch. Below are my minor/stylistic notes.
 
-Is jffs2 code in linux 2.6.23 kernel is buggy ?
+> diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
+> index 1afc61e..c776037 100644
+> --- a/drivers/mtd/ubi/vtbl.c
+> +++ b/drivers/mtd/ubi/vtbl.c
+> @@ -84,7 +84,7 @@ static struct ubi_vtbl_record empty_vtbl_record;
+>  int ubi_change_vtbl_record(struct ubi_device *ubi, int idx,
+>  			   struct ubi_vtbl_record *vtbl_rec)
+>  {
+> -	int i, err;
+> +	int copy, err, err1;
+>  	uint32_t crc;
+>  	struct ubi_volume *layout_vol;
+> 
+> @@ -99,19 +99,41 @@ int ubi_change_vtbl_record(struct ubi_device *ubi, int idx,
+>  	}
+> 
+>  	memcpy(&ubi->vtbl[idx], vtbl_rec, sizeof(struct ubi_vtbl_record));
+> -	for (i = 0; i < UBI_LAYOUT_VOLUME_EBS; i++) {
+> -		err = ubi_eba_unmap_leb(ubi, layout_vol, i);
+> +	for (copy = 0; copy < UBI_LAYOUT_VOLUME_EBS; copy++) {
+> +		err = ubi_eba_unmap_leb(ubi, layout_vol, copy);
+>  		if (err)
+> -			return err;
+> +			goto out_error;
+> 
+> -		err = ubi_eba_write_leb(ubi, layout_vol, i, ubi->vtbl, 0,
+> +		err = ubi_eba_write_leb(ubi, layout_vol, copy, ubi->vtbl, 0,
+>  					ubi->vtbl_size, UBI_LONGTERM);
+>  		if (err)
+> -			return err;
+> +			goto out_error;
+>  	}
+> 
+>  	paranoid_vtbl_check(ubi);
+>  	return 0;
+> +
+> +out_error:
+> +	/* If first copy was written,volume creation is successful.
+> +	* But switch to read only mode as we have only one copy.
+> +	* If first copy itself was not written, older version is in copy 2.
+> +	* Unmap first copy and call wl_flush.
+> +	* Volume creating is unsuccessful.
+> +	*/
 
-Thanks
-Rupesh
+Please, clean-up the comment. Split lines nicer - you have 79 characters
+per line, use the same starting '/*' as other UBI comments do. Just
+glance at the other UBI comments. BTW, the commit message has somewhat
+unclean line splitting as well.
 
+> +	ubi_err("Error writing volume table copy #%d", copy+1);
 
-   
+UBI prints should not start with capital letters, because the printing
+macros add prefixes. Take a look at other UBI prints.
 
+> +	err1 = ubi_eba_unmap_leb(ubi, layout_vol, copy);
+> +	if (!err1) {
+> +		ubi_wl_flush(ubi);
+> +		/* Don't bother about error in flush
+> +		 * We are going read only any ways
+> +		 */
+Please. clean up this comment a little. You might as well just kill it. 
 
+> +	}
+> +	ubi_ro_mode(ubi);
+> +	ubi_msg("Try detaching and attaching UBI again");
 
-Ravi Vasarla <ravi.vasarla@sasken.com> 
-06/15/2009 03:56 PM
+Please, remove this message. The kernel messages should not be used for
+suggestions like this. They are not FAQ.
 
-To
-Rupesh Kumar <Rupesh.Kumar@Lntemsys.com>, "linux-mtd@lists.infradead.org" 
-<linux-mtd@lists.infradead.org>
-cc
+> +	if (copy > 0)
+> +		return 0;
+> +	else
+> +		return err;
+This is a tricky place, IMO, and deserves a comment. Could we have
+something like:
 
-Subject
-RE: Problem with jffs2 on linux 2.6.23
+/*
+ * If the first volume table copy has been changed then overall the
+ * operation has succeeded, because the change would be there if we now
+ * re-attached the UBI device. Thus, return success in this case.
+ */
 
-
-
-
-
-
-Hi Rupesh,
-
-It usually comes when jffs2 image is not build correctly, i mean with 
-correct block size and erase size. Kindly check once again, please enable 
-the MTD debug and file system debug flags to see more debug info.
-
-Regards,
-Ravi Kumar
-+91 97415 00768
-
-________________________________________
-From: linux-mtd-bounces@lists.infradead.org 
-[linux-mtd-bounces@lists.infradead.org] On Behalf Of Rupesh Kumar 
-[Rupesh.Kumar@Lntemsys.com]
-Sent: Monday, June 15, 2009 14:46
-To: linux-mtd@lists.infradead.org
-Subject: Problem with jffs2 on linux 2.6.23
-
-Hi
-We are using jffs2 RFS for our board with linux 2.6.23 . we are suing nand
-write.jffs2 utility in the u-boot to burn the image on to the
-nand flash,
-
-Our problem is
-Booting First time with the RFS seems to be fine. As system run and we do
-reboot system it prints following messages and boots up.
-///////////////////////////
-mtd->read(0x400 bytes from 0x1b00000) returned ECC error
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x01b001d0:
-0xfffe instead
-mtd->read(0x400 bytes from 0x2500000) returned ECC error
-mtd->read(0x400 bytes from 0x27c0000) returned ECC error
-mtd->read(0x400 bytes from 0x2c20000) returned ECC error
-mtd->read(0x400 bytes from 0x2cc0000) returned ECC error
-mtd->read(0x400 bytes from 0x2d00000) returned ECC error
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x02d00074:
-0xfffe instead
-Empty flash at 0x02d00078 ends at 0x02d003e4
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x02d003e4:
-0xffef instead
-Empty flash at 0x02d003e8 ends at 0x02d00780
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x02d00780:
-0xfffb instead
-mtd->read(0x400 bytes from 0x3320000) returned ECC error
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x03320190:
-0xffff instead
-Empty flash at 0x03320194 ends at 0x0332047c
-////////////////////////////
-During run time also it prints these messages.
-
-I am not able to understand the cause of this error. Please help me in
-fixing this error.
-
-The same file system is working fine with the linux 2.6.20 kernel.
-Thanks
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-SASKEN BUSINESS DISCLAIMER
--------------------------
-This message may contain confidential, proprietary or legally privileged 
-information. In 
-case you are not the original intended Recipient of the message, you must 
-not, directly or 
-indirectly, use, Disclose, distribute, print, or copy any part of this 
-message and you are 
-requested to delete it and inform the sender. Any views expressed in this 
-message are 
-those of the individual sender unless otherwise stated. Nothing contained 
-in this message 
-shall be construed as an offer or acceptance of any offer by Sasken 
-Communication 
-Technologies Limited ("Sasken") unless sent with that express intent and 
-with due 
-authority of Sasken. Sasken has taken enough precautions to prevent the 
-spread of 
-viruses. However the company accepts no liability for any damage caused by 
-any virus 
-transmitted by this email
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
