@@ -1,27 +1,15 @@
-Subject: Re: MLC Support in JFFS2
-From: David Woodhouse <dwmw2@infradead.org>
-To: apgmoorthy <moorthy.apg@samsung.com>
-In-Reply-To: <42F6638D897B4BA7B729CBC244D9F6E4@sisodomain.com>
-References: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
-	<1243432517.11172.32.camel@localhost.localdomain>
-	<1244554687.4538.16.camel@macbook.infradead.org>
-	<9061742E1E7840C6B7016A210EF848AB@sisodomain.com>
-	<1244712906.5847.414.camel@localhost.localdomain>
-	<2AF67696C6634054B7CFDF7A9C19865D@sisodomain.com>
-	<1244803363.5847.446.camel@localhost.localdomain>
-	<3E83C7DF574149B78FFE8D12094FAF6D@sisodomain.com>
-	<1244808209.5847.447.camel@localhost.localdomain>
-	<5156D5DBD34A4A5984AE3F3840C0452F@sisodomain.com>
-	<1244813557.3511.1272.camel@macbook.infradead.org>
-	<42F6638D897B4BA7B729CBC244D9F6E4@sisodomain.com>
-Content-Type: text/plain
-Date: Mon, 22 Jun 2009 20:15:13 +0100
-Message-Id: <1245698113.25547.229.camel@macbook.infradead.org>
-Mime-Version: 1.0
+Received: from mlbe2k1.cs.myharris.net ([137.237.90.88])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MIqTc-0006rm-6r
+	for linux-mtd@lists.infradead.org; Mon, 22 Jun 2009 20:51:05 +0000
+Message-ID: <4A3FEE98.60700@harris.com>
+Date: Mon, 22 Jun 2009 16:50:32 -0400
+From: "Steven A. Falco" <sfalco@harris.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: [Question] m25p80 driver versus spi clock rate
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: 'Amit Kumar Sharma' <amitsharma.9@samsung.com>, vishak.g@samsung.com,
-	'Amul Saha' <amul.saha@samsung.com>, kyungmin.park@samsung.com,
-	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,26 +19,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-06-19 at 12:20 +0530, apgmoorthy wrote:
-> Hi David,
-> 
-> Currenlty , Is there a way to use JFFS2 with MLC Memories ( NOP == 1 )?
-> 
-> If not , Felt that any one of the following patch can be of use
-> 
-> 1. http://lists.infradead.org/pipermail/linux-mtd/2007-December/020047.html
->           - Which removes the Clean Marker.
+I am trying to figure out how the mtd/devices/m25p80.c driver is supposed
+to set the spi clock speed.  (Perhaps I'm making a bad assuption even to
+think that it _should_ set the clock speed.  If so, please say so.)
 
-There was a reason for the cleanmarker -- it saved us from using
-partly-erased blocks for data. Do you have some other way to guarantee
-that this won't happen?
+I have three spi devices on a ppc400epx: two m25p16 chips and one Atmel
+AVR uP.  The Atmel is handled from user-space, via spidev.  I am setting
+the spi_ioc_transfer "speed_hz" parameter, and I see spidev change the
+clock rate as I would expect.
 
-(Sorry, I think we may have had this discussion before, but I've
-forgotten the conclusion, if there was one. It was academic at the time,
-since we didn't have any solution for the paired-page insanity anyway. I
-was mostly just burying my head in the sand and hoping this stupid 'MLC'
-crap would go away.)
+However, m25p80.c doesn't seem to touch the clock rate.  Perhaps this is
+because the PPC440epx uses "open firmware" device trees to specify the
+speed and the m25p80 driver is not an OF driver.  Or as I said above,
+perhaps the m25p80 driver isn't even supposed to set the clock rate.
 
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+The Atmel we are using cannot have its spi bus run faster than 250 KHz,
+while the m25p16 devices can run up to 75 MHz (although the PPC440epx
+tops out at 16.6 MHz).  So it is essential that I flip the clock rate
+back and forth to maximize performance of the m25p16's while allowing
+the Atmel to work.
+
+So, if someone could comment on how the clock speed should be set, I
+would appreciate it.  Clearly, I can put in a hack, but I'd rather
+follow the existing intent.
+
+	Thanks,
+	Steve
