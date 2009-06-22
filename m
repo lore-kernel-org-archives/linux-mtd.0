@@ -1,16 +1,17 @@
-Message-ID: <4A3F3718.1070102@gmail.com>
-Date: Mon, 22 Jun 2009 10:47:36 +0300
-From: Artem Bityutskiy <dedekind1@gmail.com>
-MIME-Version: 1.0
-To: apgmoorthy <moorthy.apg@samsung.com>
-Subject: Re: MLC Support in JFFS2
-References: <1C48A8694DD447A0A922790E587F7D5F@sisodomain.com>
-In-Reply-To: <1C48A8694DD447A0A922790E587F7D5F@sisodomain.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH] SST25L (non JEDEC) SPI Flash driver
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Ryan Mallon <ryan@bluewatersys.com>
+In-Reply-To: <4A3F017B.2010409@bluewatersys.com>
+References: <4A3F017B.2010409@bluewatersys.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 22 Jun 2009 11:15:10 +0300
+Message-Id: <1245658510.9487.32.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: 'Amit Kumar Sharma' <amitsharma.9@samsung.com>, vishak.g@samsung.com,
-	'Amul Saha' <amul.saha@samsung.com>, kyungmin.park@samsung.com,
-	linux-mtd@lists.infradead.org, 'David Woodhouse' <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	linux kernel <linux-kernel@vger.kernel.org>,
+	mike@steroidmicros.com, spi-devel-general@lists.sourceforge.net
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,28 +21,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-apgmoorthy wrote:
-> Hi David,
+On Mon, 2009-06-22 at 15:58 +1200, Ryan Mallon wrote:
+> Add support for the non JEDEC SST25L SPI Flash devices.
 > 
-> Currenlty , Is there a way to use JFFS2 with MLC Memories ?
+> Signed-off-by: Andre Renaud <andre@bluewatersys.com>
+> Signed-off-by: Ryan Mallon <ryan@bluewatersys.com>
+> ---
 > 
-> If not , Felt that any one of the following patch can be of use
-> 
-> 1. http://lists.infradead.org/pipermail/linux-mtd/2007-December/020047.html
->           - Which removes the Clean Marker.
-> 
-> 2. http://lists.infradead.org/pipermail/linux-mtd/2008-September/023101.html
->    http://lists.infradead.org/pipermail/linux-mtd/2008-September/023044.html 
->           - Leaving 1page/Block , for Clean Marker.
-> 
-> or some other solution, which solves the standoff.   
-> 
-> Without MLC Support , Flex-OneNAND is unsuable with JFFS2.
+> diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+> index 325fab9..c222514 100644
+> --- a/drivers/mtd/devices/Kconfig
+> +++ b/drivers/mtd/devices/Kconfig
+> @@ -104,6 +104,16 @@ config M25PXX_USE_FAST_READ
+>  	help
+>  	  This option enables FAST_READ access supported by ST M25Pxx.
 
-Is JFFS2 usable with Flex-OneNAND by design? I thought it would have
-to be able to handle paired pages to become MLC-compatible. Does it
-do that?
+Would it please be possible to get rid of this warning:
+
+  CC [M]  drivers/mtd/devices/sst25l.o
+drivers/mtd/devices/sst25l.c: In function ‘sst25l_write’:
+drivers/mtd/devices/sst25l.c:306: warning: comparison of distinct pointer types lacks a cast
+
+I see it on my x86_64.
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
