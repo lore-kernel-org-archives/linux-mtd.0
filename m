@@ -1,22 +1,27 @@
-Received: from 130.120.124.202.static.snap.net.nz ([202.124.120.130]
-	helo=hayes.bluewaternz.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MIb4A-0002at-Ki
-	for linux-mtd@lists.infradead.org; Mon, 22 Jun 2009 04:23:41 +0000
-Message-ID: <4A3F07C0.9030001@bluewatersys.com>
-Date: Mon, 22 Jun 2009 16:25:36 +1200
-From: Ryan Mallon <ryan@bluewatersys.com>
-MIME-Version: 1.0
-To: Baruch Siach <baruch@tkos.co.il>
-Subject: Re: [spi-devel-general] [PATCH] SST25L (non JEDEC) SPI Flash driver
-References: <4A3F017B.2010409@bluewatersys.com>
-	<20090622041457.GC6027@tarshish>
-In-Reply-To: <20090622041457.GC6027@tarshish>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	linux kernel <linux-kernel@vger.kernel.org>,
-	mike@steroidmicros.com, spi-devel-general@lists.sourceforge.net
+Received: from mailout3.samsung.com ([203.254.224.33])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MIcWB-0004fj-My
+	for linux-mtd@lists.infradead.org; Mon, 22 Jun 2009 05:56:41 +0000
+Received: from epmmp1 (mailout3.samsung.com [203.254.224.33])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KLM008RWLU9NX@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Mon, 22 Jun 2009 14:56:33 +0900 (KST)
+Received: from apgmoorthy ([107.108.214.61])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KLM00FOGLU6WE@mmp1.samsung.com> for
+	linux-mtd@lists.infradead.org; Mon, 22 Jun 2009 14:56:33 +0900 (KST)
+Date: Mon, 22 Jun 2009 11:26:54 +0530
+From: apgmoorthy <moorthy.apg@samsung.com>
+Subject: MLC Support in JFFS2
+To: 'David Woodhouse' <dwmw2@infradead.org>
+Message-id: <1C48A8694DD447A0A922790E587F7D5F@sisodomain.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=utf-8
+Content-transfer-encoding: 7BIT
+Cc: 'Amit Kumar Sharma' <amitsharma.9@samsung.com>, vishak.g@samsung.com,
+	'Amul Saha' <amul.saha@samsung.com>, kyungmin.park@samsung.com,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +31,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Baruch Siach wrote:
-> Hi Ryan,
-> 
-> On Mon, Jun 22, 2009 at 03:58:51PM +1200, Ryan Mallon wrote:
->> +static int sst25l_erase_block(struct sst25l_flash *flash, u32 offset)
->> +{
->> +	u8 command[4];
->> +	int err;
->> +
->> +	err = sst25l_write_enable(flash, 1);
-> 
-> Is this enable/disable strictly required for each write/erase? Can't we just 
-> enable write once?
+Hi David,
 
-The datasheet says that prior to any write/erase instruction the write
-enable instruction must be sent.
+Currenlty , Is there a way to use JFFS2 with MLC Memories ?
 
-~Ryan
+If not , Felt that any one of the following patch can be of use
 
--- 
-Bluewater Systems Ltd - ARM Technology Solution Centre
+1. http://lists.infradead.org/pipermail/linux-mtd/2007-December/020047.html
+          - Which removes the Clean Marker.
 
-       Ryan Mallon                              Unit 5, Amuri Park
-       Phone: +64 3 3779127                     404 Barbadoes St
-       Fax:   +64 3 3779135                     PO Box 13 889
-       Email: ryan@bluewatersys.com             Christchurch, 8013
-       Web:   http://www.bluewatersys.com       New Zealand
-       Freecall Australia  1800 148 751         USA 1800 261 2934
+2. http://lists.infradead.org/pipermail/linux-mtd/2008-September/023101.html
+   http://lists.infradead.org/pipermail/linux-mtd/2008-September/023044.html 
+          - Leaving 1page/Block , for Clean Marker.
+
+or some other solution, which solves the standoff.   
+
+Without MLC Support , Flex-OneNAND is unsuable with JFFS2.
+
+With Regards
+  Moorthy
