@@ -1,20 +1,16 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MIe3b-0004SF-9z
-	for linux-mtd@lists.infradead.org; Mon, 22 Jun 2009 07:35:18 +0000
-Subject: Re: [PATCH] [UBI] Volume table update fix
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Brijesh Singh <brij.singh@samsung.com>
-In-Reply-To: <1245655796.9487.29.camel@localhost.localdomain>
-References: <6b5362aa0906190401l51bcf28bg44b9a7a9f49aa773@mail.gmail.com>
-	<1245655796.9487.29.camel@localhost.localdomain>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 22 Jun 2009 10:34:28 +0300
-Message-Id: <1245656068.9487.31.camel@localhost.localdomain>
-Mime-Version: 1.0
+Message-ID: <4A3F3718.1070102@gmail.com>
+Date: Mon, 22 Jun 2009 10:47:36 +0300
+From: Artem Bityutskiy <dedekind1@gmail.com>
+MIME-Version: 1.0
+To: apgmoorthy <moorthy.apg@samsung.com>
+Subject: Re: MLC Support in JFFS2
+References: <1C48A8694DD447A0A922790E587F7D5F@sisodomain.com>
+In-Reply-To: <1C48A8694DD447A0A922790E587F7D5F@sisodomain.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Cc: 'Amit Kumar Sharma' <amitsharma.9@samsung.com>, vishak.g@samsung.com,
+	'Amul Saha' <amul.saha@samsung.com>, kyungmin.park@samsung.com,
+	linux-mtd@lists.infradead.org, 'David Woodhouse' <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +20,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-06-22 at 10:29 +0300, Artem Bityutskiy wrote:
-> > +	if (copy > 0)
-> > +		return 0;
-> > +	else
-> > +		return err;
-> This is a tricky place, IMO, and deserves a comment. Could we have
-> something like:
+apgmoorthy wrote:
+> Hi David,
 > 
-> /*
->  * If the first volume table copy has been changed then overall the
->  * operation has succeeded, because the change would be there if we now
->  * re-attached the UBI device. Thus, return success in this case.
->  */
+> Currenlty , Is there a way to use JFFS2 with MLC Memories ?
 > 
-This looks a bit more elegant:
+> If not , Felt that any one of the following patch can be of use
+> 
+> 1. http://lists.infradead.org/pipermail/linux-mtd/2007-December/020047.html
+>           - Which removes the Clean Marker.
+> 
+> 2. http://lists.infradead.org/pipermail/linux-mtd/2008-September/023101.html
+>    http://lists.infradead.org/pipermail/linux-mtd/2008-September/023044.html 
+>           - Leaving 1page/Block , for Clean Marker.
+> 
+> or some other solution, which solves the standoff.   
+> 
+> Without MLC Support , Flex-OneNAND is unsuable with JFFS2.
 
-/*
- * If the first volume table copy has been changed then overall the
- * operation has succeeded, because the change would be there if we now
- * re-attached the UBI device. Thus, return success in this case.
- */
-return copy ? 0 : err;
+Is JFFS2 usable with Flex-OneNAND by design? I thought it would have
+to be able to handle paired pages to become MLC-compatible. Does it
+do that?
 
 -- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
