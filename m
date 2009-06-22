@@ -1,20 +1,27 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MImD7-00071i-LW
-	for linux-mtd@lists.infradead.org; Mon, 22 Jun 2009 16:17:40 +0000
-Subject: Re: [PATCH] ubi: gluebi_{read,write} len + {from,to} can exceed
-	mtd->size
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Roel Kluin <roel.kluin@gmail.com>
-In-Reply-To: <4A3FBDA2.3070403@gmail.com>
-References: <4A3FBDA2.3070403@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 22 Jun 2009 19:17:09 +0300
-Message-Id: <1245687429.9487.52.camel@localhost.localdomain>
+Subject: Re: MLC Support in JFFS2
+From: David Woodhouse <dwmw2@infradead.org>
+To: apgmoorthy <moorthy.apg@samsung.com>
+In-Reply-To: <42F6638D897B4BA7B729CBC244D9F6E4@sisodomain.com>
+References: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
+	<1243432517.11172.32.camel@localhost.localdomain>
+	<1244554687.4538.16.camel@macbook.infradead.org>
+	<9061742E1E7840C6B7016A210EF848AB@sisodomain.com>
+	<1244712906.5847.414.camel@localhost.localdomain>
+	<2AF67696C6634054B7CFDF7A9C19865D@sisodomain.com>
+	<1244803363.5847.446.camel@localhost.localdomain>
+	<3E83C7DF574149B78FFE8D12094FAF6D@sisodomain.com>
+	<1244808209.5847.447.camel@localhost.localdomain>
+	<5156D5DBD34A4A5984AE3F3840C0452F@sisodomain.com>
+	<1244813557.3511.1272.camel@macbook.infradead.org>
+	<42F6638D897B4BA7B729CBC244D9F6E4@sisodomain.com>
+Content-Type: text/plain
+Date: Mon, 22 Jun 2009 20:15:13 +0100
+Message-Id: <1245698113.25547.229.camel@macbook.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Content-Transfer-Encoding: 7bit
+Cc: 'Amit Kumar Sharma' <amitsharma.9@samsung.com>, vishak.g@samsung.com,
+	'Amul Saha' <amul.saha@samsung.com>, kyungmin.park@samsung.com,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +31,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-06-22 at 19:21 +0200, Roel Kluin wrote:
-> when size_t `len' is negative it is wrapped so the test `len < 0' fails.
-> `from' and `to' have type loff_t (signed). During the addition `len' is
-> converted to signed. So when `len' is negative `from + len` can be
-> less than `mtd->size' while `from' is larger than `mtd->size'. This
-> patch fixes this.
+On Fri, 2009-06-19 at 12:20 +0530, apgmoorthy wrote:
+> Hi David,
 > 
-> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+> Currenlty , Is there a way to use JFFS2 with MLC Memories ( NOP == 1 )?
+> 
+> If not , Felt that any one of the following patch can be of use
+> 
+> 1. http://lists.infradead.org/pipermail/linux-mtd/2007-December/020047.html
+>           - Which removes the Clean Marker.
 
-Thanks, pushed to ubi-2.6.git tree with slightly amended commit message:
+There was a reason for the cleanmarker -- it saved us from using
+partly-erased blocks for data. Do you have some other way to guarantee
+that this won't happen?
 
-commit cf9e1e425172035575bee070df031c8a58015cb8
-Author: Roel Kluin <roel.kluin@gmail.com>
-Date:   Mon Jun 22 19:21:38 2009 +0200
-
-    UBI: fix input parameters check in gluebi
-
-    size_t `len' is unsigned `len < 0' always fails.
-    `from' and `to' have type loff_t (signed). During the addition `len' is
-    converted to signed. So when `len' is negative `from + len` can be
-    less than `mtd->size' while `from' is larger than `mtd->size'. This
-    patch fixes this.
-
-    Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
-    Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+(Sorry, I think we may have had this discussion before, but I've
+forgotten the conclusion, if there was one. It was academic at the time,
+since we didn't have any solution for the paired-page insanity anyway. I
+was mostly just burying my head in the sand and hoping this stupid 'MLC'
+crap would go away.)
 
 -- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
