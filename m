@@ -1,22 +1,24 @@
-Received: from mail-ew0-f211.google.com ([209.85.219.211])
+Received: from mail-fx0-f212.google.com ([209.85.220.212])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MIftk-00020f-FW
-	for linux-mtd@lists.infradead.org; Mon, 22 Jun 2009 09:33:15 +0000
-Received: by ewy7 with SMTP id 7so7974519ewy.18
+	id 1MIgbp-0000Ls-Pg
+	for linux-mtd@lists.infradead.org; Mon, 22 Jun 2009 10:18:48 +0000
+Received: by fxm8 with SMTP id 8so3399565fxm.18
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 22 Jun 2009 02:33:07 -0700 (PDT)
-Sender: Florian Fainelli <f.fainelli@gmail.com>
-From: Florian Fainelli <florian@openwrt.org>
-Date: Mon, 22 Jun 2009 11:27:06 +0200
-Subject: [PATCH] MTD: enable partition parser in the default list when selected
+	Mon, 22 Jun 2009 03:18:37 -0700 (PDT)
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain;
-  charset="utf-8"
+In-Reply-To: <1245183797-11469-1-git-send-email-s-paulraj@ti.com>
+References: <1245183797-11469-1-git-send-email-s-paulraj@ti.com>
+Date: Mon, 22 Jun 2009 14:18:37 +0400
+Message-ID: <acd2a5930906220318j56ff6ef5s2a145b7ca9eb6091@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] NAND: Add new ECC mode - ECC_HW_OOB_FIRST
+From: Vitaly Wool <vitalywool@gmail.com>
+To: s-paulraj@ti.com
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200906221127.06461.florian@openwrt.org>
-Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: davinci-linux-open-source@linux.davincidsp.com,
+	Sneha Narnakaje <nsnehaprabha@ti.com>,
+	linux-mtd@lists.infradead.org, tglx@linutronix.de,
+	dwmw2@infradead.org, akpm@linux-foundation.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +28,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch makes the physmap driver use the partition parsers that
-we enable in the kernel configuration as the list of partition parsers
-to use when probing the flash chip.
+On Wed, Jun 17, 2009 at 12:23 AM, <s-paulraj@ti.com> wrote:
+> From: Sandeep Paulraj <s-paulraj@ti.com>
+>
+> The patch applies to linux-mtd GIT tree
+>
+> This patch adds the new mode NAND_ECC_HW_OOB_FIRST in the nand code to
+> support 4-bit ECC on TI DaVinci devices with large page (up to 4K) NAND
+> chips. This ECC mode is similar to NAND_ECC_HW, with the exception of
+> read_page API that first reads the OOB area, reads the data in chunks, feeds
+> the ECC from OOB area to the ECC hw engine and perform any correction on the
+> data as per the ECC status reported by the engine.
+>
+> "ECC_HW_OOB_FIRST" name suggested by Thomas Gleixner
 
-Signed-off-by: Florian Fainelli <florian@openwrt.org>
----
-diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
-index 29a9011..2095b60 100644
---- a/drivers/mtd/maps/physmap.c
-+++ b/drivers/mtd/maps/physmap.c
-@@ -80,7 +80,16 @@ static const char *rom_probe_types[] = {
- 					"map_rom",
- 					NULL };
- #ifdef CONFIG_MTD_PARTITIONS
--static const char *part_probe_types[] = { "cmdlinepart", "RedBoot", NULL };
-+static const char *part_probe_types[] = {
-+#ifdef CONFIG_MTD_CMDLINE_PARTS
-+	"cmdlinepart",
-+#elif defined CONFIG_MTD_REDBOOT_PARTS
-+	"RedBoot",
-+#elif defined CONFIG_MTD_AR7_PARTS
-+	"ar7part",
-+#endif
-+	NULL
-+};
- #endif
- 
- static int physmap_flash_probe(struct platform_device *dev)
+What I'd like to state is that we're starting to have so many
+HW_OOB_XXX variants that it gets ridiculous. I'm sure we've come to a
+point where we need to reconsider the base method for handing data and
+ECC. Especially given the DMA capabilities of the most modern NAND
+controllers.
+
+Thanks,
+   Vitaly
