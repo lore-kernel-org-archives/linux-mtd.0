@@ -1,20 +1,22 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MJ3q3-0004CH-Tw
-	for linux-mtd@lists.infradead.org; Tue, 23 Jun 2009 11:07:02 +0000
-Subject: Re: [PATCH] MTD: OneNAND: multiblock erase support
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Mika Korhonen <ext-mika.2.korhonen@nokia.com>
+Received: from mail-bw0-f208.google.com ([209.85.218.208])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MJ4A2-0008Pd-KY
+	for linux-mtd@lists.infradead.org; Tue, 23 Jun 2009 11:27:41 +0000
+Received: by bwz4 with SMTP id 4so4079295bwz.18
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 23 Jun 2009 04:27:32 -0700 (PDT)
+MIME-Version: 1.0
 In-Reply-To: <1245754975-12063-1-git-send-email-ext-mika.2.korhonen@nokia.com>
 References: <1245754975-12063-1-git-send-email-ext-mika.2.korhonen@nokia.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 23 Jun 2009 14:06:33 +0300
-Message-Id: <1245755193.9487.53.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Date: Tue, 23 Jun 2009 14:27:32 +0300
+Message-ID: <7948530906230427l5a7be4a4j80572fe4df774371@mail.gmail.com>
+Subject: Re: [PATCH] MTD: OneNAND: multiblock erase support
+From: Mika Korhonen <mika.j.korhonen@gmail.com>
+To: Mika Korhonen <ext-mika.2.korhonen@nokia.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Cc: amul.saha@samsung.com, kyungmin.park@samsung.com,
 	linux-mtd@lists.infradead.org, adrian.hunter@nokia.com
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,22 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-06-23 at 14:02 +0300, Mika Korhonen wrote:
-> Add support for multiblock erase command. OneNANDs (excluding Flex-OneNAND)
-> are capable of simultaneous erase of up to 64 eraseblocks.
-> This changes the erase requests for regions covering multiple eraseblocks
-> to be performed using multiblock erase.
-> 
-> Signed-off-by: Mika Korhonen <ext-mika.2.korhonen@nokia.com>
-> ---
->  drivers/mtd/onenand/omap2.c        |   22 +++-
->  drivers/mtd/onenand/onenand_base.c |  268 ++++++++++++++++++++++++++++-------
->  include/linux/mtd/onenand.h        |    2 +
->  include/linux/mtd/onenand_regs.h   |    2 +
->  4 files changed, 236 insertions(+), 58 deletions(-)
+As you probably noticed, this is the revised version of the initial patch in
+http://lists.infradead.org/pipermail/linux-mtd/2009-June/026050.html
 
-Just out of curiosity, what is your use-case for this?
+I made some changes based on the comments from Adrian Hunter and Kyungmin Park:
+* removed the configuration option from Kconfig as it is supported by
+all OneNAND chips and Flex-case is handled easily in code, bringing
+the option back can be done easily if needed
+* spin on multiblock erase and erase verify commands instead using
+interrupt line: mb erase usually delays just 1 us, verify usually 30
+us (is this still acceptable?)
+* handle regions bigger than 64 eraseblocks instead of falling back to
+block-by-block erase
+* check bad blocks prior to sending mb erase commands
+* Flex does not support mb erase, so single block version is always used
 
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+I extracted the single block erase to separate function, as well as
+the multiblock one.
+
+The erase speed in optimal full 64-eraseblock case seems to be about 1400 MB/s.
+
+br
+Mika
