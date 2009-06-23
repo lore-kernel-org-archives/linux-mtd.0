@@ -1,18 +1,41 @@
-Received: from qw-out-1920.google.com ([74.125.92.145])
+Received: from mailout4.samsung.com ([203.254.224.34])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MJ4Td-0005Zf-Nk
-	for linux-mtd@lists.infradead.org; Tue, 23 Jun 2009 11:47:56 +0000
-Received: by qw-out-1920.google.com with SMTP id 9so135qwj.24
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 23 Jun 2009 04:47:47 -0700 (PDT)
-MIME-Version: 1.0
-Date: Tue, 23 Jun 2009 17:17:47 +0530
-Message-ID: <ce9ab5790906230447h324174a1na884a6308555914f@mail.gmail.com>
-Subject: query: nand read/write method for 2048 + 64 byte page
-From: vimal singh <vimal.newwork@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+	id 1MJ5UK-0001wI-H4
+	for linux-mtd@lists.infradead.org; Tue, 23 Jun 2009 12:52:45 +0000
+Received: from epmmp2 (mailout4.samsung.com [203.254.224.34])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KLO0012GZQ5N0@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Tue, 23 Jun 2009 21:51:41 +0900 (KST)
+Received: from apgmoorthy ([107.108.214.61])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KLO00A5ZZQ2AJ@mmp2.samsung.com> for
+	linux-mtd@lists.infradead.org; Tue, 23 Jun 2009 21:51:41 +0900 (KST)
+Date: Tue, 23 Jun 2009 18:22:03 +0530
+From: apgmoorthy <moorthy.apg@samsung.com>
+Subject: RE: MLC Support in JFFS2
+In-reply-to: <1245698113.25547.229.camel@macbook.infradead.org>
+To: 'David Woodhouse' <dwmw2@infradead.org>
+Message-id: <AECB2B7C3BFE41EF9C53455593C2372C@sisodomain.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
+References: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
+	<1243432517.11172.32.camel@localhost.localdomain>
+	<1244554687.4538.16.camel@macbook.infradead.org>
+	<9061742E1E7840C6B7016A210EF848AB@sisodomain.com>
+	<1244712906.5847.414.camel@localhost.localdomain>
+	<2AF67696C6634054B7CFDF7A9C19865D@sisodomain.com>
+	<1244803363.5847.446.camel@localhost.localdomain>
+	<3E83C7DF574149B78FFE8D12094FAF6D@sisodomain.com>
+	<1244808209.5847.447.camel@localhost.localdomain>
+	<5156D5DBD34A4A5984AE3F3840C0452F@sisodomain.com>
+	<1244813557.3511.1272.camel@macbook.infradead.org>
+	<42F6638D897B4BA7B729CBC244D9F6E4@sisodomain.com>
+	<1245698113.25547.229.camel@macbook.infradead.org>
+Cc: 'Amit Kumar Sharma' <amitsharma.9@samsung.com>, vishak.g@samsung.com,
+	'Amul Saha' <amul.saha@samsung.com>, kyungmin.park@samsung.com,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +45,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am implementing BCH HW ECC method (present in omap2/3), which can
-provide ECC protection
-for spare area bytes too, along with main area bytes.
-Below are few details:
-1. It is a large page NAND device
-2. We are looking for upto 4-bit error correction (for each 512 + 9 bytes)
+Hi David,  
 
-Nand has 2048 + 64 bytes page size. (main area + spare area). The
-layout I am creating is:
-(all other possible layouts are similar to this only for this HW ECC scheme)
+On Tuesday, June 23, 2009 12:45 AM David Woodhouse wrote :
+ 
+>> If not , Felt that any one of the following patch can be of use
+>> 
+>> 1. http://lists.infradead.org/pipermail/linux-mtd/2007-December/020047.html
+>>           - Which removes the Clean Marker.
 
-|<------main area, divided into 4-sectors----->|<-----Protected spare
-area------>|<----------ECC bytes-------->|
-|   512      +    512    +    512    +    512      |    9    +    9
-+    9    +    9    |   7   +   7   +   7   +   7    |
-|<-- 1st --> <-- 2nd --> <-- 3rd --> <-- 4th -->|<-1st-> <-2nd->
-<-3rd-> <-4th->|<1st> <2nd> <3rd> <4th>|
+>There was a reason for the cleanmarker -- it saved us from using partly-erased blocks for data. Do you have some other way to
+guarantee that this won't 
+>happen?
+- How about the second One (Refer Below Links), which leaves 1page/block for Cleanmarker.
+   http://lists.infradead.org/pipermail/linux-mtd/2008-September/023101.html
+   http://lists.infradead.org/pipermail/linux-mtd/2008-September/023044.html 
+  
+>(Sorry, I think we may have had this discussion before, but I've forgotten the conclusion, if there was one. It was academic at the
+time, since we didn't >have any solution for the paired-page insanity anyway. 
+- Right , I dont see any detailed discussion on this regard in the list.
+  
 
-i.e. 7 ECC bytes (52 bits in actual) for each 512 + 9 bytes (main +
-spare), to correct up to 4- errors.
-
-
-My concern is that, none of the present ECC scheme (in nand_base.c)
-seems suitable for this.
-Do I need to implement new ECC scheme, and hence new read / write API's?
-
-In that case too, main question is: how to handle oob read/write for
-such layout? (where spare
-area bytes are protected along with main are ECC)
-
-Any suggestion / help is appreciated.
-Thanks in advance.
-
----
-Regards,
-Vimal
+With Regards
+ Moorthy
