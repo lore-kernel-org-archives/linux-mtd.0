@@ -1,22 +1,18 @@
-Received: from mail-bw0-f208.google.com ([209.85.218.208])
+Received: from qw-out-1920.google.com ([74.125.92.145])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MJ4A2-0008Pd-KY
-	for linux-mtd@lists.infradead.org; Tue, 23 Jun 2009 11:27:41 +0000
-Received: by bwz4 with SMTP id 4so4079295bwz.18
+	id 1MJ4Td-0005Zf-Nk
+	for linux-mtd@lists.infradead.org; Tue, 23 Jun 2009 11:47:56 +0000
+Received: by qw-out-1920.google.com with SMTP id 9so135qwj.24
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 23 Jun 2009 04:27:32 -0700 (PDT)
+	Tue, 23 Jun 2009 04:47:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1245754975-12063-1-git-send-email-ext-mika.2.korhonen@nokia.com>
-References: <1245754975-12063-1-git-send-email-ext-mika.2.korhonen@nokia.com>
-Date: Tue, 23 Jun 2009 14:27:32 +0300
-Message-ID: <7948530906230427l5a7be4a4j80572fe4df774371@mail.gmail.com>
-Subject: Re: [PATCH] MTD: OneNAND: multiblock erase support
-From: Mika Korhonen <mika.j.korhonen@gmail.com>
-To: Mika Korhonen <ext-mika.2.korhonen@nokia.com>
+Date: Tue, 23 Jun 2009 17:17:47 +0530
+Message-ID: <ce9ab5790906230447h324174a1na884a6308555914f@mail.gmail.com>
+Subject: query: nand read/write method for 2048 + 64 byte page
+From: vimal singh <vimal.newwork@gmail.com>
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: amul.saha@samsung.com, kyungmin.park@samsung.com,
-	linux-mtd@lists.infradead.org, adrian.hunter@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +22,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As you probably noticed, this is the revised version of the initial patch in
-http://lists.infradead.org/pipermail/linux-mtd/2009-June/026050.html
+I am implementing BCH HW ECC method (present in omap2/3), which can
+provide ECC protection
+for spare area bytes too, along with main area bytes.
+Below are few details:
+1. It is a large page NAND device
+2. We are looking for upto 4-bit error correction (for each 512 + 9 bytes)
 
-I made some changes based on the comments from Adrian Hunter and Kyungmin Park:
-* removed the configuration option from Kconfig as it is supported by
-all OneNAND chips and Flex-case is handled easily in code, bringing
-the option back can be done easily if needed
-* spin on multiblock erase and erase verify commands instead using
-interrupt line: mb erase usually delays just 1 us, verify usually 30
-us (is this still acceptable?)
-* handle regions bigger than 64 eraseblocks instead of falling back to
-block-by-block erase
-* check bad blocks prior to sending mb erase commands
-* Flex does not support mb erase, so single block version is always used
+Nand has 2048 + 64 bytes page size. (main area + spare area). The
+layout I am creating is:
+(all other possible layouts are similar to this only for this HW ECC scheme)
 
-I extracted the single block erase to separate function, as well as
-the multiblock one.
+|<------main area, divided into 4-sectors----->|<-----Protected spare
+area------>|<----------ECC bytes-------->|
+|   512      +    512    +    512    +    512      |    9    +    9
++    9    +    9    |   7   +   7   +   7   +   7    |
+|<-- 1st --> <-- 2nd --> <-- 3rd --> <-- 4th -->|<-1st-> <-2nd->
+<-3rd-> <-4th->|<1st> <2nd> <3rd> <4th>|
 
-The erase speed in optimal full 64-eraseblock case seems to be about 1400 MB/s.
+i.e. 7 ECC bytes (52 bits in actual) for each 512 + 9 bytes (main +
+spare), to correct up to 4- errors.
 
-br
-Mika
+
+My concern is that, none of the present ECC scheme (in nand_base.c)
+seems suitable for this.
+Do I need to implement new ECC scheme, and hence new read / write API's?
+
+In that case too, main question is: how to handle oob read/write for
+such layout? (where spare
+area bytes are protected along with main are ECC)
+
+Any suggestion / help is appreciated.
+Thanks in advance.
+
+---
+Regards,
+Vimal
