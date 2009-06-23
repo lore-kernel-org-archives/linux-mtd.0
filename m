@@ -1,25 +1,7 @@
-Received: from mailout4.samsung.com ([203.254.224.34])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MJ5UK-0001wI-H4
-	for linux-mtd@lists.infradead.org; Tue, 23 Jun 2009 12:52:45 +0000
-Received: from epmmp2 (mailout4.samsung.com [203.254.224.34])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KLO0012GZQ5N0@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Tue, 23 Jun 2009 21:51:41 +0900 (KST)
-Received: from apgmoorthy ([107.108.214.61])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0KLO00A5ZZQ2AJ@mmp2.samsung.com> for
-	linux-mtd@lists.infradead.org; Tue, 23 Jun 2009 21:51:41 +0900 (KST)
-Date: Tue, 23 Jun 2009 18:22:03 +0530
-From: apgmoorthy <moorthy.apg@samsung.com>
 Subject: RE: MLC Support in JFFS2
-In-reply-to: <1245698113.25547.229.camel@macbook.infradead.org>
-To: 'David Woodhouse' <dwmw2@infradead.org>
-Message-id: <AECB2B7C3BFE41EF9C53455593C2372C@sisodomain.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
+From: David Woodhouse <dwmw2@infradead.org>
+To: apgmoorthy <moorthy.apg@samsung.com>
+In-Reply-To: <AECB2B7C3BFE41EF9C53455593C2372C@sisodomain.com>
 References: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
 	<1243432517.11172.32.camel@localhost.localdomain>
 	<1244554687.4538.16.camel@macbook.infradead.org>
@@ -33,6 +15,12 @@ References: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
 	<1244813557.3511.1272.camel@macbook.infradead.org>
 	<42F6638D897B4BA7B729CBC244D9F6E4@sisodomain.com>
 	<1245698113.25547.229.camel@macbook.infradead.org>
+	<AECB2B7C3BFE41EF9C53455593C2372C@sisodomain.com>
+Content-Type: text/plain
+Date: Tue, 23 Jun 2009 14:19:37 +0100
+Message-Id: <1245763177.25547.2350.camel@macbook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Cc: 'Amit Kumar Sharma' <amitsharma.9@samsung.com>, vishak.g@samsung.com,
 	'Amul Saha' <amul.saha@samsung.com>, kyungmin.park@samsung.com,
 	linux-mtd@lists.infradead.org
@@ -45,26 +33,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David,  
 
-On Tuesday, June 23, 2009 12:45 AM David Woodhouse wrote :
- 
->> If not , Felt that any one of the following patch can be of use
->> 
->> 1. http://lists.infradead.org/pipermail/linux-mtd/2007-December/020047.html
->>           - Which removes the Clean Marker.
+Your mail program is behaving very strangely -- your quotes are quite
+hard to read. Is there any chance you could use a better one? I've tried
+to clean it up, but it tends to make your replies hard to read. Some of
+your replies are lacking correct References: headers too, so the
+threading is broken.
 
->There was a reason for the cleanmarker -- it saved us from using partly-erased blocks for data. Do you have some other way to
-guarantee that this won't 
->happen?
-- How about the second One (Refer Below Links), which leaves 1page/block for Cleanmarker.
-   http://lists.infradead.org/pipermail/linux-mtd/2008-September/023101.html
-   http://lists.infradead.org/pipermail/linux-mtd/2008-September/023044.html 
-  
->(Sorry, I think we may have had this discussion before, but I've forgotten the conclusion, if there was one. It was academic at the
-time, since we didn't >have any solution for the paired-page insanity anyway. 
-- Right , I dont see any detailed discussion on this regard in the list.
-  
+On Tue, 2009-06-23 at 18:22 +0530, apgmoorthy wrote:
+> >There was a reason for the cleanmarker -- it saved us from using 
+> > partly-erased blocks for data. Do you have some other way to
+> > guarantee that this won't happen?
+>
+> - How about the second One (Refer Below Links), which leaves
+> 1page/block for Cleanmarker.
+> 
+> http://lists.infradead.org/pipermail/linux-mtd/2008-September/023101.html   http://lists.infradead.org/pipermail/linux-mtd/2008-September/023044.html 
 
-With Regards
- Moorthy
+Using one page per block for the cleanmarker would work, but seems
+wasteful. I can think of one more approach which we might take -- erase
+blocks only as we need them.
+
+So instead of erasing blocks without cleanmarker _immediately_ on
+startup, we just put them on a 'to be erased' list. Whenever the
+empty_list is getting short of blocks, we erase another block from the
+'to be erased' list and move it to the empty list.
+
+It does mean that if you keep rebooting over and over again, you're
+probably going to increase your erase count. But with a long-lived
+system, it's likely to be more efficient than the large cleanmarker?
+
+What do you think?
+
+-- 
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
