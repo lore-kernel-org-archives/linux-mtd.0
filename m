@@ -1,29 +1,22 @@
-Subject: RE: MLC Support in JFFS2
-From: David Woodhouse <dwmw2@infradead.org>
-To: apgmoorthy <moorthy.apg@samsung.com>
-In-Reply-To: <AECB2B7C3BFE41EF9C53455593C2372C@sisodomain.com>
-References: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
-	<1243432517.11172.32.camel@localhost.localdomain>
-	<1244554687.4538.16.camel@macbook.infradead.org>
-	<9061742E1E7840C6B7016A210EF848AB@sisodomain.com>
-	<1244712906.5847.414.camel@localhost.localdomain>
-	<2AF67696C6634054B7CFDF7A9C19865D@sisodomain.com>
-	<1244803363.5847.446.camel@localhost.localdomain>
-	<3E83C7DF574149B78FFE8D12094FAF6D@sisodomain.com>
-	<1244808209.5847.447.camel@localhost.localdomain>
-	<5156D5DBD34A4A5984AE3F3840C0452F@sisodomain.com>
-	<1244813557.3511.1272.camel@macbook.infradead.org>
-	<42F6638D897B4BA7B729CBC244D9F6E4@sisodomain.com>
-	<1245698113.25547.229.camel@macbook.infradead.org>
-	<AECB2B7C3BFE41EF9C53455593C2372C@sisodomain.com>
-Content-Type: text/plain
-Date: Tue, 23 Jun 2009 14:19:37 +0100
-Message-Id: <1245763177.25547.2350.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: 'Amit Kumar Sharma' <amitsharma.9@samsung.com>, vishak.g@samsung.com,
-	'Amul Saha' <amul.saha@samsung.com>, kyungmin.park@samsung.com,
-	linux-mtd@lists.infradead.org
+Received: from mail-bw0-f208.google.com ([209.85.218.208])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MJ5uF-0004Rc-IQ
+	for linux-mtd@lists.infradead.org; Tue, 23 Jun 2009 13:19:48 +0000
+Received: by bwz4 with SMTP id 4so61841bwz.18
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 23 Jun 2009 06:19:22 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1245755193.9487.53.camel@localhost.localdomain>
+References: <1245754975-12063-1-git-send-email-ext-mika.2.korhonen@nokia.com>
+	<1245755193.9487.53.camel@localhost.localdomain>
+Date: Tue, 23 Jun 2009 16:19:21 +0300
+Message-ID: <7948530906230619q6b0d91d8id28a1dbc8131d59f@mail.gmail.com>
+Subject: Re: [PATCH] MTD: OneNAND: multiblock erase support
+From: Mika Korhonen <mika.j.korhonen@gmail.com>
+To: dedekind@infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,38 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-Your mail program is behaving very strangely -- your quotes are quite
-hard to read. Is there any chance you could use a better one? I've tried
-to clean it up, but it tends to make your replies hard to read. Some of
-your replies are lacking correct References: headers too, so the
-threading is broken.
-
-On Tue, 2009-06-23 at 18:22 +0530, apgmoorthy wrote:
-> >There was a reason for the cleanmarker -- it saved us from using 
-> > partly-erased blocks for data. Do you have some other way to
-> > guarantee that this won't happen?
+2009/6/23 Artem Bityutskiy <dedekind@infradead.org>:
+> On Tue, 2009-06-23 at 14:02 +0300, Mika Korhonen wrote:
+>> Add support for multiblock erase command. OneNANDs (excluding Flex-OneNA=
+ND)
+>> are capable of simultaneous erase of up to 64 eraseblocks.
+>> This changes the erase requests for regions covering multiple eraseblock=
+s
+>> to be performed using multiblock erase.
+>>
+>> Signed-off-by: Mika Korhonen <ext-mika.2.korhonen@nokia.com>
+>> ---
+>> =A0drivers/mtd/onenand/omap2.c =A0 =A0 =A0 =A0| =A0 22 +++-
+>> =A0drivers/mtd/onenand/onenand_base.c | =A0268 +++++++++++++++++++++++++=
++++-------
+>> =A0include/linux/mtd/onenand.h =A0 =A0 =A0 =A0| =A0 =A02 +
+>> =A0include/linux/mtd/onenand_regs.h =A0 | =A0 =A02 +
+>> =A04 files changed, 236 insertions(+), 58 deletions(-)
 >
-> - How about the second One (Refer Below Links), which leaves
-> 1page/block for Cleanmarker.
-> 
-> http://lists.infradead.org/pipermail/linux-mtd/2008-September/023101.html   http://lists.infradead.org/pipermail/linux-mtd/2008-September/023044.html 
+> Just out of curiosity, what is your use-case for this?
+>
 
-Using one page per block for the cleanmarker would work, but seems
-wasteful. I can think of one more approach which we might take -- erase
-blocks only as we need them.
+When erasing and programming large amounts, e.g. filesystem images on
+OneNAND the erase part takes about 10-15% of the time. Using
+multiblock erase it takes almost no time (up to 30x faster) :)
+Obviously, it is especially useful if the data to be programmed covers
+only part of the erased region.
 
-So instead of erasing blocks without cleanmarker _immediately_ on
-startup, we just put them on a 'to be erased' list. Whenever the
-empty_list is getting short of blocks, we erase another block from the
-'to be erased' list and move it to the empty list.
-
-It does mean that if you keep rebooting over and over again, you're
-probably going to increase your erase count. But with a long-lived
-system, it's likely to be more efficient than the large cleanmarker?
-
-What do you think?
-
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+Mika
