@@ -1,24 +1,23 @@
-Received: from smtp20.orange.fr ([80.12.242.27])
+Received: from mo-p05-ob.rzone.de ([81.169.146.180])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MIyAj-0003IU-8L
-	for linux-mtd@lists.infradead.org; Tue, 23 Jun 2009 05:04:00 +0000
-Received: from me-wanadoo.net (localhost [127.0.0.1])
-	by mwinf2008.orange.fr (SMTP Server) with ESMTP id CA7261C00170
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 23 Jun 2009 07:02:16 +0200 (CEST)
-Received: from sxyravs.wanadoo.fr
-	(AMarseille-152-1-22-79.w81-251.abo.wanadoo.fr [81.251.106.79])
-	by mwinf2008.orange.fr (SMTP Server) with SMTP id 111801C00057
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 23 Jun 2009 07:02:16 +0200 (CEST)
-Date: Tue, 23 Jun 2009 05:02:19 -0000
+	id 1MIzcu-0008Uy-4r
+	for linux-mtd@lists.infradead.org; Tue, 23 Jun 2009 06:37:10 +0000
+From: Stefan Roese <sr@denx.de>
+To: devicetree-discuss@ozlabs.org
+Subject: Re: [PATCH 1/3 v3] mtd: physmap_of: Add multiple regions and
+	concatenation support
+Date: Tue, 23 Jun 2009 08:36:57 +0200
+References: <1239883845-17804-1-git-send-email-sr@denx.de>
+	<fa686aa40904160646v75a98e02s446fd89c08cfebae@mail.gmail.com>
+	<fa686aa40906162253j76776e88y9d7c818f4d0f1508@mail.gmail.com>
+In-Reply-To: <fa686aa40906162253j76776e88y9d7c818f4d0f1508@mail.gmail.com>
 MIME-Version: 1.0
-Subject: How to Stjoop Quick Ejaculation
-From: "invokes"<invokes@banjack98.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain;
- charset="windows-1252"
-Message-ID: <1245733215excitation@banjack98.com>
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200906230836.57275.sr@denx.de>
+Cc: Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org,
+	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,4 +27,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-How oto Stop Quick Ejaculation www . shop75 . net
+On Wednesday 17 June 2009 07:53:51 Grant Likely wrote:
+> David, what's the status of this patch?  Will it be merged for 2.6.31?
+
+It's merged now.
+
+Thanks,
+Stefan
