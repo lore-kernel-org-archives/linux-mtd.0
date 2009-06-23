@@ -1,18 +1,24 @@
-Received: from mail-px0-f196.google.com ([209.85.216.196])
+Received: from smtp20.orange.fr ([80.12.242.27])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MIvax-0006xZ-U4
-	for linux-mtd@lists.infradead.org; Tue, 23 Jun 2009 02:18:54 +0000
-Received: by pxi34 with SMTP id 34so160215pxi.28
+	id 1MIyAj-0003IU-8L
+	for linux-mtd@lists.infradead.org; Tue, 23 Jun 2009 05:04:00 +0000
+Received: from me-wanadoo.net (localhost [127.0.0.1])
+	by mwinf2008.orange.fr (SMTP Server) with ESMTP id CA7261C00170
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 22 Jun 2009 19:18:43 -0700 (PDT)
+	Tue, 23 Jun 2009 07:02:16 +0200 (CEST)
+Received: from sxyravs.wanadoo.fr
+	(AMarseille-152-1-22-79.w81-251.abo.wanadoo.fr [81.251.106.79])
+	by mwinf2008.orange.fr (SMTP Server) with SMTP id 111801C00057
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 23 Jun 2009 07:02:16 +0200 (CEST)
+Date: Tue, 23 Jun 2009 05:02:19 -0000
 MIME-Version: 1.0
-Date: Mon, 22 Jun 2009 19:18:43 -0700
-Message-ID: <1c3f4270906221918x70ca8fb6q4d50afd552255981@mail.gmail.com>
-Subject: jffs2 on ubi volume
-From: Manoj <manoj23@gmail.com>
+Subject: How to Stjoop Quick Ejaculation
+From: "invokes"<invokes@banjack98.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+ charset="windows-1252"
+Message-ID: <1245733215excitation@banjack98.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,21 +28,4 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-I would like to use JFFS2 on top of UBI. I have enabled
-CONFIG_MTD_UBI_GLUEBI in kernel config.
-
-I have been able to create an empty FS by doing:
-> modprobe ubi mtd=3D1
-> ubimkvol /dev/ubi0 -s 25MiB -N ubivol1
-> mount -t jffs2=A0 /dev/mtdb-nvdata /tmp/flash
-
-I can read and write files to /tmp/flash.
-
-How do I write a jffs2 filesystem image to a ubi volume? I tried
-ubiupdatevol but I think I am not passing the right parameters.
-Do I need to use ubinize to create the UBI image that can be then
-programmed to the UBI volume?
-
-Thanks for any help.
+How oto Stop Quick Ejaculation www . shop75 . net
