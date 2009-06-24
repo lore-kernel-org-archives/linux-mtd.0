@@ -1,52 +1,37 @@
-Received: from exprod6ob111.obsmtp.com ([64.18.1.26] helo=psmtp.com)
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MLj9Z-0008RA-18
-	for linux-mtd@lists.infradead.org; Tue, 30 Jun 2009 19:38:11 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Subject: [PATCH] ep93xx: cleanup includes in ts7250 nand driver
-Date: Tue, 30 Jun 2009 15:38:00 -0400
-Message-ID: <BD79186B4FD85F4B8E60E381CAEE190901A1356B@mi8nycmail19.Mi8.com>
-From: "H Hartley Sweeten" <hartleys@visionengravers.com>
-To: "linux-arm-kernel" <linux-arm-kernel@lists.arm.linux.org.uk>,
-	<linux-mtd@lists.infradead.org>
-Cc: Lennert Buytenhek <buytenh@wantstofly.org>
-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
-	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
-	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+From: jmileypartners@eircom.net (Mrs.Rose Wood)
+Date: Wed, 24 Jun 2009 23:21:04 +0100
+Subject: REF No: UKNL-L/200-26937
+Message-ID: <mailman.18.1245882074.18153.linux-mtd@lists.infradead.org>
+To: linux-mtd@lists.infradead.org
+List-Id: linux-mtd.lists.infradead.org
 
-ep93xx: cleanup includes in ts7250 nand driver
 
-1. <linux/io.h> should be included not <asm/io.h>
-2. add platform specific header <mach/ts72xx.h>
+ATT: 
+This is to inform you that you have been selected for a cash prize of ?800,000 (Eight Hundred Thousand (British Pounds) held on the 23rd of June, 2009 in London UK.The Selection was carried out through a Computer Random Selection System and your email address emerge as one of the Three Lucky Winners.
 
-Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
-Cc: Lennert Buytenhek <buytenh@wantstofly.org>
+Contact our fiduciary agent for claims with:
 
----
+Agents Name: Mr.James Brown
+Email:fiduciary.mrjamesbrown1 at hotmail.co.uk
+Tell: +44 702 403 2734
+       +44 702 403 2679
 
-diff --git a/drivers/mtd/nand/ts7250.c b/drivers/mtd/nand/ts7250.c
-index 2c410a0..0f5562a 100644
---- a/drivers/mtd/nand/ts7250.c
-+++ b/drivers/mtd/nand/ts7250.c
-@@ -24,8 +24,11 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/nand.h>
- #include <linux/mtd/partitions.h>
--#include <asm/io.h>
-+#include <linux/io.h>
-+
- #include <mach/hardware.h>
-+#include <mach/ts72xx.h>
-+
- #include <asm/sizes.h>
- #include <asm/mach-types.h>
- =20
+REF No: UKNL-L/200-26937 
+BATCH No: 2009MJL-01 
+TICKET No: 20511465463-7644 
+
+Fill the below:
+
+1. Full Names: 
+2. Address:
+3. Marital Status: 
+4. Occupation: 
+5. Age:
+6. Sex: 
+7. Nationality:
+8. Country of Residence: 
+9. Telephone Number
+
+-----------------------------------------------------------------
+Find the home of your dreams with eircom net property
+Sign up for email alerts now http://www.eircom.net/propertyalerts
