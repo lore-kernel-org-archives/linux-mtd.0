@@ -1,15 +1,27 @@
-Received: from liberdade.minaslivre.org ([72.232.18.203])
+Received: from mail-fx0-f212.google.com ([209.85.220.212])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MJaMZ-0004Kc-4N
-	for linux-mtd@lists.infradead.org; Wed, 24 Jun 2009 21:50:48 +0000
-From: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] Fix typo s/parititions/partitions/
-Date: Wed, 24 Jun 2009 18:40:46 -0300
-Message-Id: <1245879646-10338-1-git-send-email-cascardo@holoscopio.com>
-Cc: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>,
-	linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux@maxim.org.za, linux-arm-kernel@lists.arm.linux.org.uk
+	id 1MJbC2-0007IB-Bn
+	for linux-mtd@lists.infradead.org; Wed, 24 Jun 2009 22:43:57 +0000
+Received: by fxm8 with SMTP id 8so1223597fxm.18
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 24 Jun 2009 15:43:47 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <4A413F8F.6030500@bluewatersys.com>
+References: <4A3F017B.2010409@bluewatersys.com>
+	<63386a3d0906220122x31d0b23fk7bd86145b719d9b5@mail.gmail.com>
+	<4A3FFE02.8020001@bluewatersys.com>
+	<63386a3d0906230004m66360f4fhbdc80c8e552a01d0@mail.gmail.com>
+	<4A413F8F.6030500@bluewatersys.com>
+Date: Thu, 25 Jun 2009 00:43:47 +0200
+Message-ID: <63386a3d0906241543n16da1f0gc988738f9efd8782@mail.gmail.com>
+Subject: Re: [PATCH] SST25L (non JEDEC) SPI Flash driver
+From: Linus Walleij <linus.ml.walleij@gmail.com>
+To: Ryan Mallon <ryan@bluewatersys.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux kernel <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
+	mike@steroidmicros.com, spi-devel-general@lists.sourceforge.net,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,23 +31,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
----
- drivers/mtd/nand/atmel_nand.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+2009/6/23 Ryan Mallon <ryan@bluewatersys.com>:
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 2802992..20c828b 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -534,7 +534,7 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
- 							 &num_partitions);
- 
- 	if ((!partitions) || (num_partitions == 0)) {
--		printk(KERN_ERR "atmel_nand: No parititions defined, or unsupported device.\n");
-+		printk(KERN_ERR "atmel_nand: No partitions defined, or unsupported device.\n");
- 		res = ENXIO;
- 		goto err_no_partitions;
- 	}
--- 
-1.6.3
+> BTW, most of my other patches go via the ARM list, which uses the patch
+> system. Whats the procedure for most other lists, do patches just get
+> collected by the subsection maintainer when they are okay?
+
+That's the most typical procedure, however I think the SPI maintainer
+(David) has been busy with other things so I merged the PL022
+driver through the ARM tree instead. Another possibility is to send
+it off to Andrew Mortons tree I guess.
+
+Yours,
+Linus Walleij
