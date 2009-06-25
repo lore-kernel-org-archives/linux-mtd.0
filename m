@@ -1,26 +1,20 @@
-Received: from mail-fx0-f212.google.com ([209.85.220.212])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MJjiK-00085J-Ru
-	for linux-mtd@lists.infradead.org; Thu, 25 Jun 2009 07:49:51 +0000
-Received: by fxm8 with SMTP id 8so1403788fxm.18
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 25 Jun 2009 00:49:43 -0700 (PDT)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MJjxw-00067S-78
+	for linux-mtd@lists.infradead.org; Thu, 25 Jun 2009 08:06:05 +0000
+Date: Thu, 25 Jun 2009 10:05:42 +0200
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
+Subject: Re: [PATCH 2/2] Fix typo s/parititions/partitions/
+Message-ID: <20090625080542.GB2995@pengutronix.de>
+References: <1245879646-10338-1-git-send-email-cascardo@holoscopio.com>
 MIME-Version: 1.0
-In-Reply-To: <4A42DB93.8020503@bluewatersys.com>
-References: <4A3F017B.2010409@bluewatersys.com>
-	<BD79186B4FD85F4B8E60E381CAEE1909019BE1CE@mi8nycmail19.Mi8.com>
-	<4A42DB93.8020503@bluewatersys.com>
-Date: Thu, 25 Jun 2009 09:49:43 +0200
-Message-ID: <63386a3d0906250049j2a2ebf08ka7e4d10b0c4f4a0d@mail.gmail.com>
-Subject: Re: [spi-devel-general] [PATCH] SST25L (non JEDEC) SPI Flash driver
-From: Linus Walleij <linus.ml.walleij@gmail.com>
-To: Ryan Mallon <ryan@bluewatersys.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux kernel <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
-	mike@steroidmicros.com, spi-devel-general@lists.sourceforge.net,
-	H Hartley Sweeten <hartleys@visionengravers.com>,
-	David Woodhouse <dwmw2@infradead.org>, akpm@linux-foundation.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1245879646-10338-1-git-send-email-cascardo@holoscopio.com>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.arm.linux.org.uk,
+	dwmw2@infradead.org, linux-kernel@vger.kernel.org, linux@maxim.org.za
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,10 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2009/6/25 Ryan Mallon <ryan@bluewatersys.com>:
+Hello,
 
-> Linus, is this still okay by you?
+On Wed, Jun 24, 2009 at 06:40:46PM -0300, Thadeu Lima de Souza Cascardo wrote:
+> -		printk(KERN_ERR "atmel_nand: No parititions defined, or unsupported device.\n");
+> +		printk(KERN_ERR "atmel_nand: No partitions defined, or unsupported device.\n");
+It's a nice idea to Cc: trivial@kernel.org for such patches.
 
-I'm a novice in MTD, sorry. But AFAICT yes.
+Best regards
+Uwe
 
-Linus Walleij
+-- 
+Pengutronix e.K.                              | Uwe Kleine-König            |
+Industrial Linux Solutions                    | http://www.pengutronix.de/  |
