@@ -1,26 +1,19 @@
-Received: from 130.120.124.202.static.snap.net.nz ([202.124.120.130]
-	helo=hayes.bluewaternz.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MJf2t-0007rb-Lv
-	for linux-mtd@lists.infradead.org; Thu, 25 Jun 2009 02:50:46 +0000
-Message-ID: <4A42E68A.3020702@bluewatersys.com>
-Date: Thu, 25 Jun 2009 14:52:58 +1200
-From: Ryan Mallon <ryan@bluewatersys.com>
-MIME-Version: 1.0
-To: H Hartley Sweeten <hartleys@visionengravers.com>
-Subject: Re: [spi-devel-general] [PATCH] SST25L (non JEDEC) SPI Flash driver
-References: <4A3F017B.2010409@bluewatersys.com>
-	<BD79186B4FD85F4B8E60E381CAEE1909019BE1CE@mi8nycmail19.Mi8.com>
-	<4A42DB93.8020503@bluewatersys.com>
-	<BD79186B4FD85F4B8E60E381CAEE1909019BE1D5@mi8nycmail19.Mi8.com>
-In-Reply-To: <BD79186B4FD85F4B8E60E381CAEE1909019BE1D5@mi8nycmail19.Mi8.com>
-Content-Type: text/plain; charset=ISO-8859-1
+Date: Wed, 24 Jun 2009 20:00:29 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] [JFFS2] jffs2_start_garbage_collect_thread() return
+	value cleanup
+Message-Id: <20090624200029.d875c48e.akpm@linux-foundation.org>
+In-Reply-To: <1245838141.25547.5207.camel@macbook.infradead.org>
+References: <20090602113216.GA3513@tank>
+	<1243944686-7039-1-git-send-email-gerard.lledo@gmail.com>
+	<1243944686-7039-2-git-send-email-gerard.lledo@gmail.com>
+	<1245838141.25547.5207.camel@macbook.infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: Linus Walleij <linus.ml.walleij@gmail.com>,
-	linux kernel <linux-kernel@vger.kernel.org>,
-	linux-mtd@lists.infradead.org, mike@steroidmicros.com,
-	spi-devel-general@lists.sourceforge.net,
-	akpm@linux-foundation.org, David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org, Gerard Lledo <gerard.lledo@gmail.com>,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,72 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-H Hartley Sweeten wrote:
-> On Wednesday, June 24, 2009 7:06 PM, Ryan Mallon wrote:
->> H Hartley Sweeten wrote:
->>> On Sunday, June 21, 2009 8:59 PM, Ryan Mallon wrote:
+On Wed, 24 Jun 2009 11:09:01 +0100 David Woodhouse <dwmw2@infradead.org> wrote:
 
-> I think you could still support the block erase and chip erase internal
-> to the driver for performance.  Maybe something like the following?
+> On Tue, 2009-06-02 at 15:11 +0300, Gerard Lledo wrote:
+> > There is no user of this return value in the kernel.  Change it to return void
+> > instead.
 > 
-> static int sst25l_erase(struct mtd_info *mtd, struct erase_info *instr)
-> {
-...
-> 	if (instr->len == mtd->size) {
-> 		err = __sst25l_erase(flash, addr, SST25L_CMD_CHIP_ERASE);
-> 		if (err) {
-> 			mutex_unlock(&flash->lock);
-> 			instr->state = MTD_ERASE_FAILED;
-> 			dev_err(&flash->spi->dev, "Erase failed\n");
-> 			return err;
-> 		}
-> 	} else {
-> 		while (addr < end) {
-> 			u32 erasesize;
+> NAK. I hate this type of patch.
 > 
-> 			if (addr % block || addr + block > end) {
-> 				erasesize = sector;
-> 				err = __sst25l_erase(flash, addr,
-> 						SST25L_CMD_SECTOR_ERASE);
-> 			} else {
-> 				erasesize = block;
-> 				err = __sst25l_erase(flash, addr,
-> 						SST25L_CMD_BLOCK_ERASE);
-> 			}
-> 			if (err) {
-> 				mutex_unlock(&flash->lock);
-> 				instr->state = MTD_ERASE_FAILED;
-> 				dev_err(&flash->spi->dev, "Erase failed\n");
-> 				return err;
-> 			}
+> A function _should_ return an error value indicating success or failure,
+> if there's _any_ chance that it (or a future rewrite of it) may fail.
 > 
-> 			addr += erasesize;
-> 		}
-> 	}
+> It's up to the _callers_ to act on that result, or not, as they see fit.
 
-> 
-> You would need to add sector_size and block_size to the ss25l_flash
-> and flash_info structs and modify flash_info as appropriate.  Then copy
-> those over during the probe and use sector_size for mtd.erasesize.
-> 
-> That way we get the 4K erase size but still get the performance increase
-> for block and chip erase.
+True.
 
-We discussed this, but it adds additional complexity to what is
-otherwise quite a simple driver. The 4K sector erase will work in all
-cases, and the speed difference shouldn't be a massive problem. I would
-venture a guess that most people using the chips have reasonably
-non-volatile storage on them, and don't get erased very often. We use
-ours for the Bootloader and boot environment.
+> Andrew, may I suggest that you look for such justification in future
+> patches of this type?
 
-~Ryan
+eh, I sometimes don't even look at them.  I just save them up in case of
+maintainer fumblage.
 
--- 
-Bluewater Systems Ltd - ARM Technology Solution Centre
-
-       Ryan Mallon                              Unit 5, Amuri Park
-       Phone: +64 3 3779127                     404 Barbadoes St
-       Fax:   +64 3 3779135                     PO Box 13 889
-       Email: ryan@bluewatersys.com             Christchurch, 8013
-       Web:   http://www.bluewatersys.com       New Zealand
-       Freecall Australia  1800 148 751         USA 1800 261 2934
+I might retain this one as a "jffs2 fails to check
+jffs2_start_garbage_collect_thread() return value" bug report :)
