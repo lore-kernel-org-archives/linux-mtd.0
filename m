@@ -1,15 +1,26 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from comal.ext.ti.com ([198.47.26.152])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MJpuh-0008Sh-IO
-	for linux-mtd@lists.infradead.org; Thu, 25 Jun 2009 14:27:02 +0000
-From: s-paulraj@ti.com
-To: davinci-linux-open-source@linux.davincidsp.com,
-	linux-mtd@lists.infradead.org, dwmw2@infradead.org, tglx@linutronix.de,
-	akpm@linux-foundation.org
-Subject: [PATCH v2 2/3][Resubmit] NAND: Add new ECC mode - ECC_HW_OOB_FIRST
-Date: Thu, 25 Jun 2009 10:26:12 -0400
-Message-Id: <1245939972-12225-1-git-send-email-s-paulraj@ti.com>
-Cc: Sneha Narnakaje <nsnehaprabha@ti.com>, Sandeep Paulraj <s-paulraj@ti.com>
+	id 1MJpvO-0000mu-Oc
+	for linux-mtd@lists.infradead.org; Thu, 25 Jun 2009 14:27:45 +0000
+From: "Paulraj, Sandeep" <s-paulraj@ti.com>
+To: "dedekind@infradead.org" <dedekind@infradead.org>
+Date: Thu, 25 Jun 2009 09:27:05 -0500
+Subject: RE: [PATCH v2 2/3] NAND: Add new ECC mode - ECC_HW_OOB_FIRST
+Message-ID: <0554BEF07D437848AF01B9C9B5F0BC5D580E2BAA@dlee01.ent.ti.com>
+References: <1245183797-11469-1-git-send-email-s-paulraj@ti.com>
+	<1245658901.9487.36.camel@localhost.localdomain>
+In-Reply-To: <1245658901.9487.36.camel@localhost.localdomain>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: "davinci-linux-open-source@linux.davincidsp.com"
+	<davinci-linux-open-source@linux.davincidsp.com>, "Narnakaje,
+	Snehaprabha" <nsnehaprabha@ti.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,115 +30,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Sandeep Paulraj <s-paulraj@ti.com>
-
-The patch applies to linux-mtd GIT tree
-
-This patch adds the new mode NAND_ECC_HW_OOB_FIRST in the nand code to
-support 4-bit ECC on TI DaVinci devices with large page (up to 4K) NAND
-chips. This ECC mode is similar to NAND_ECC_HW, with the exception of
-read_page API that first reads the OOB area, reads the data in chunks, feeds
-the ECC from OOB area to the ECC hw engine and perform any correction on the
-data as per the ECC status reported by the engine.
-
-"ECC_HW_OOB_FIRST" name suggested by Thomas Gleixner
-
-Reviewed-by: David Brownell <dbrownell@users.sourceforge.net>
-Signed-off-by: Sneha Narnakaje <nsnehaprabha@ti.com>
-Signed-off-by: Sandeep Paulraj <s-paulraj@ti.com
----
- drivers/mtd/nand/nand_base.c |   59 ++++++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/nand.h     |    1 +
- 2 files changed, 60 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index a738333..93bb8f3 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -980,6 +980,54 @@ static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
- }
- 
- /**
-+ * nand_read_page_hwecc_oob_first - [REPLACABLE] hw ecc, read oob first
-+ * @mtd:	mtd info structure
-+ * @chip:	nand chip info structure
-+ * @buf:	buffer to store read data
-+ *
-+ * Hardware ECC for large page chips, require OOB to be read first.
-+ * For this ECC mode, the write_page method is re-used from ECC_HW.
-+ * These methods read/write ECC from the OOB area, unlike the
-+ * ECC_HW_SYNDROME support with multiple ECC steps, follows the
-+ * "infix ECC" scheme and reads/writes ECC from the data area, by
-+ * overwriting the NAND manufacturer bad block markings.
-+ */
-+static int nand_read_page_hwecc_oob_first(struct mtd_info *mtd,
-+	struct nand_chip *chip, uint8_t *buf, int page)
-+{
-+	int i, eccsize = chip->ecc.size;
-+	int eccbytes = chip->ecc.bytes;
-+	int eccsteps = chip->ecc.steps;
-+	uint8_t *p = buf;
-+	uint8_t *ecc_code = chip->buffers->ecccode;
-+	uint32_t *eccpos = chip->ecc.layout->eccpos;
-+	uint8_t *ecc_calc = chip->buffers->ecccalc;
-+
-+	/* Read the OOB area first */
-+	chip->cmdfunc(mtd, NAND_CMD_READOOB, 0, page);
-+	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
-+	chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
-+
-+	for (i = 0; i < chip->ecc.total; i++)
-+		ecc_code[i] = chip->oob_poi[eccpos[i]];
-+
-+	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize) {
-+		int stat;
-+
-+		chip->ecc.hwctl(mtd, NAND_ECC_READ);
-+		chip->read_buf(mtd, p, eccsize);
-+		chip->ecc.calculate(mtd, p, &ecc_calc[i]);
-+
-+		stat = chip->ecc.correct(mtd, p, &ecc_code[i], NULL);
-+		if (stat < 0)
-+			mtd->ecc_stats.failed++;
-+		else
-+			mtd->ecc_stats.corrected += stat;
-+	}
-+	return 0;
-+}
-+
-+/**
-  * nand_read_page_syndrome - [REPLACABLE] hardware ecc syndrom based page read
-  * @mtd:	mtd info structure
-  * @chip:	nand chip info structure
-@@ -2673,6 +2721,17 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	 */
- 
- 	switch (chip->ecc.mode) {
-+	case NAND_ECC_HW_OOB_FIRST:
-+		/* Similar to NAND_ECC_HW, but a separate read_page handle */
-+		if (!chip->ecc.calculate || !chip->ecc.correct ||
-+		     !chip->ecc.hwctl) {
-+			printk(KERN_WARNING "No ECC functions supplied, "
-+			       "Hardware ECC not possible\n");
-+			BUG();
-+		}
-+		if (!chip->ecc.read_page)
-+			chip->ecc.read_page = nand_read_page_hwecc_oob_first;
-+
- 	case NAND_ECC_HW:
- 		/* Use standard hwecc read page function ? */
- 		if (!chip->ecc.read_page)
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 686f370..7a232a9 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -121,6 +121,7 @@ typedef enum {
- 	NAND_ECC_SOFT,
- 	NAND_ECC_HW,
- 	NAND_ECC_HW_SYNDROME,
-+	NAND_ECC_HW_OOB_FIRST,
- } nand_ecc_modes_t;
- 
- /*
--- 
-1.6.0.4
+SSByZXN1Ym1pdHRlZCB0aGlzIHBhdGNoIGFmdGVyIGZpeGluZyB0aGUgY29tcGlsYXRpb24gaXNz
+dWUNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBBcnRlbSBCaXR5dXRz
+a2l5IFttYWlsdG86ZGVkZWtpbmRAaW5mcmFkZWFkLm9yZ10NCj4gU2VudDogTW9uZGF5LCBKdW5l
+IDIyLCAyMDA5IDQ6MjIgQU0NCj4gVG86IFBhdWxyYWosIFNhbmRlZXANCj4gQ2M6IGRhdmluY2kt
+bGludXgtb3Blbi1zb3VyY2VAbGludXguZGF2aW5jaWRzcC5jb207IGxpbnV4LQ0KPiBtdGRAbGlz
+dHMuaW5mcmFkZWFkLm9yZzsgZHdtdzJAaW5mcmFkZWFkLm9yZzsgdGdseEBsaW51dHJvbml4LmRl
+Ow0KPiBha3BtQGxpbnV4LWZvdW5kYXRpb24ub3JnOyBOYXJuYWthamUsIFNuZWhhcHJhYmhhDQo+
+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjIgMi8zXSBOQU5EOiBBZGQgbmV3IEVDQyBtb2RlIC0gRUND
+X0hXX09PQl9GSVJTVA0KPiANCj4gT24gVHVlLCAyMDA5LTA2LTE2IGF0IDE2OjIzIC0wNDAwLCBz
+LXBhdWxyYWpAdGkuY29tIHdyb3RlOg0KPiA+IEZyb206IFNhbmRlZXAgUGF1bHJhaiA8cy1wYXVs
+cmFqQHRpLmNvbT4NCj4gPg0KPiA+IFRoZSBwYXRjaCBhcHBsaWVzIHRvIGxpbnV4LW10ZCBHSVQg
+dHJlZQ0KPiA+DQo+ID4gVGhpcyBwYXRjaCBhZGRzIHRoZSBuZXcgbW9kZSBOQU5EX0VDQ19IV19P
+T0JfRklSU1QgaW4gdGhlIG5hbmQgY29kZSB0bw0KPiA+IHN1cHBvcnQgNC1iaXQgRUNDIG9uIFRJ
+IERhVmluY2kgZGV2aWNlcyB3aXRoIGxhcmdlIHBhZ2UgKHVwIHRvIDRLKSBOQU5EDQo+ID4gY2hp
+cHMuIFRoaXMgRUNDIG1vZGUgaXMgc2ltaWxhciB0byBOQU5EX0VDQ19IVywgd2l0aCB0aGUgZXhj
+ZXB0aW9uIG9mDQo+ID4gcmVhZF9wYWdlIEFQSSB0aGF0IGZpcnN0IHJlYWRzIHRoZSBPT0IgYXJl
+YSwgcmVhZHMgdGhlIGRhdGEgaW4gY2h1bmtzLA0KPiBmZWVkcw0KPiA+IHRoZSBFQ0MgZnJvbSBP
+T0IgYXJlYSB0byB0aGUgRUNDIGh3IGVuZ2luZSBhbmQgcGVyZm9ybSBhbnkgY29ycmVjdGlvbiBv
+bg0KPiB0aGUNCj4gPiBkYXRhIGFzIHBlciB0aGUgRUNDIHN0YXR1cyByZXBvcnRlZCBieSB0aGUg
+ZW5naW5lLg0KPiA+DQo+ID4gIkVDQ19IV19PT0JfRklSU1QiIG5hbWUgc3VnZ2VzdGVkIGJ5IFRo
+b21hcyBHbGVpeG5lcg0KPiA+DQo+ID4gUmV2aWV3ZWQtYnk6IERhdmlkIEJyb3duZWxsIDxkYnJv
+d25lbGxAdXNlcnMuc291cmNlZm9yZ2UubmV0Pg0KPiA+IFNpZ25lZC1vZmYtYnk6IFNuZWhhIE5h
+cm5ha2FqZSA8bnNuZWhhcHJhYmhhQHRpLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBTYW5kZWVw
+IFBhdWxyYWogPHMtcGF1bHJhakB0aS5jb20NCj4gDQo+IEkndmUgYXBwbGllZCB5b3VyIDMgcGF0
+Y2hlcyBhbmQgdGhleSBkbyBub3QgY29tcGlsZToNCj4gDQo+ICAgQ0MgW01dICBkcml2ZXJzL210
+ZC9uYW5kL25hbmRfZWNjLm8NCj4gZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jhc2UuYzogSW4gZnVu
+Y3Rpb24g4oCYbmFuZF9zY2FuX3RhaWzigJk6DQo+IGRyaXZlcnMvbXRkL25hbmQvbmFuZF9iYXNl
+LmM6MjcyNDogZXJyb3I6IOKAmE5BTkRfRUNDX0hXX09PQl9GSVJTVOKAmQ0KPiB1bmRlY2xhcmVk
+IChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbikNCj4gZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jh
+c2UuYzoyNzI0OiBlcnJvcjogKEVhY2ggdW5kZWNsYXJlZCBpZGVudGlmaWVyIGlzDQo+IHJlcG9y
+dGVkIG9ubHkgb25jZQ0KPiBkcml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5jOjI3MjQ6IGVycm9y
+OiBmb3IgZWFjaCBmdW5jdGlvbiBpdCBhcHBlYXJzDQo+IGluLikNCj4gbWFrZVszXTogKioqIFtk
+cml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5vXSBFcnJvciAxDQo+IG1ha2VbM106ICoqKiBXYWl0
+aW5nIGZvciB1bmZpbmlzaGVkIGpvYnMuLi4uDQo+ICAgQ0MgW01dICBkcml2ZXJzL210ZC9kZXZp
+Y2VzL2RvY3Byb2JlLm8NCj4gDQo+IC0tDQo+IEJlc3QgcmVnYXJkcywNCj4gQXJ0ZW0gQml0eXV0
+c2tpeSAo0JHQuNGC0Y7RhtC60LjQuSDQkNGA0YLRkdC8KQ0KPiANCg0K
