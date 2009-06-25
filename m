@@ -1,26 +1,21 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MJpvO-0000mu-Oc
-	for linux-mtd@lists.infradead.org; Thu, 25 Jun 2009 14:27:45 +0000
-From: "Paulraj, Sandeep" <s-paulraj@ti.com>
-To: "dedekind@infradead.org" <dedekind@infradead.org>
-Date: Thu, 25 Jun 2009 09:27:05 -0500
-Subject: RE: [PATCH v2 2/3] NAND: Add new ECC mode - ECC_HW_OOB_FIRST
-Message-ID: <0554BEF07D437848AF01B9C9B5F0BC5D580E2BAA@dlee01.ent.ti.com>
-References: <1245183797-11469-1-git-send-email-s-paulraj@ti.com>
-	<1245658901.9487.36.camel@localhost.localdomain>
-In-Reply-To: <1245658901.9487.36.camel@localhost.localdomain>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from 82-71-36-240.dsl.in-addr.zen.co.uk ([82.71.36.240]
+	helo=aardvark.hiddenengine.co.uk)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MJxjF-0003wd-ND
+	for linux-mtd@lists.infradead.org; Thu, 25 Jun 2009 22:47:45 +0000
+Received: from wolverine (unknown [192.168.0.104])
+	by aardvark.hiddenengine.co.uk (Postfix) with ESMTPS id 85B083C056
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 25 Jun 2009 23:42:51 +0100 (BST)
+From: "Roger Lucas" <roger@hiddenengine.co.uk>
+To: <linux-mtd@lists.infradead.org>
+Subject: Longs spinlock on NOR reads
+Date: Thu, 25 Jun 2009 23:41:19 +0100
+Message-ID: <1F23C41C60CC4CA08789AE8461EF6044@wolverine>
 MIME-Version: 1.0
-Cc: "davinci-linux-open-source@linux.davincidsp.com"
-	<davinci-linux-open-source@linux.davincidsp.com>, "Narnakaje,
-	Snehaprabha" <nsnehaprabha@ti.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,39 +25,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SSByZXN1Ym1pdHRlZCB0aGlzIHBhdGNoIGFmdGVyIGZpeGluZyB0aGUgY29tcGlsYXRpb24gaXNz
-dWUNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBBcnRlbSBCaXR5dXRz
-a2l5IFttYWlsdG86ZGVkZWtpbmRAaW5mcmFkZWFkLm9yZ10NCj4gU2VudDogTW9uZGF5LCBKdW5l
-IDIyLCAyMDA5IDQ6MjIgQU0NCj4gVG86IFBhdWxyYWosIFNhbmRlZXANCj4gQ2M6IGRhdmluY2kt
-bGludXgtb3Blbi1zb3VyY2VAbGludXguZGF2aW5jaWRzcC5jb207IGxpbnV4LQ0KPiBtdGRAbGlz
-dHMuaW5mcmFkZWFkLm9yZzsgZHdtdzJAaW5mcmFkZWFkLm9yZzsgdGdseEBsaW51dHJvbml4LmRl
-Ow0KPiBha3BtQGxpbnV4LWZvdW5kYXRpb24ub3JnOyBOYXJuYWthamUsIFNuZWhhcHJhYmhhDQo+
-IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjIgMi8zXSBOQU5EOiBBZGQgbmV3IEVDQyBtb2RlIC0gRUND
-X0hXX09PQl9GSVJTVA0KPiANCj4gT24gVHVlLCAyMDA5LTA2LTE2IGF0IDE2OjIzIC0wNDAwLCBz
-LXBhdWxyYWpAdGkuY29tIHdyb3RlOg0KPiA+IEZyb206IFNhbmRlZXAgUGF1bHJhaiA8cy1wYXVs
-cmFqQHRpLmNvbT4NCj4gPg0KPiA+IFRoZSBwYXRjaCBhcHBsaWVzIHRvIGxpbnV4LW10ZCBHSVQg
-dHJlZQ0KPiA+DQo+ID4gVGhpcyBwYXRjaCBhZGRzIHRoZSBuZXcgbW9kZSBOQU5EX0VDQ19IV19P
-T0JfRklSU1QgaW4gdGhlIG5hbmQgY29kZSB0bw0KPiA+IHN1cHBvcnQgNC1iaXQgRUNDIG9uIFRJ
-IERhVmluY2kgZGV2aWNlcyB3aXRoIGxhcmdlIHBhZ2UgKHVwIHRvIDRLKSBOQU5EDQo+ID4gY2hp
-cHMuIFRoaXMgRUNDIG1vZGUgaXMgc2ltaWxhciB0byBOQU5EX0VDQ19IVywgd2l0aCB0aGUgZXhj
-ZXB0aW9uIG9mDQo+ID4gcmVhZF9wYWdlIEFQSSB0aGF0IGZpcnN0IHJlYWRzIHRoZSBPT0IgYXJl
-YSwgcmVhZHMgdGhlIGRhdGEgaW4gY2h1bmtzLA0KPiBmZWVkcw0KPiA+IHRoZSBFQ0MgZnJvbSBP
-T0IgYXJlYSB0byB0aGUgRUNDIGh3IGVuZ2luZSBhbmQgcGVyZm9ybSBhbnkgY29ycmVjdGlvbiBv
-bg0KPiB0aGUNCj4gPiBkYXRhIGFzIHBlciB0aGUgRUNDIHN0YXR1cyByZXBvcnRlZCBieSB0aGUg
-ZW5naW5lLg0KPiA+DQo+ID4gIkVDQ19IV19PT0JfRklSU1QiIG5hbWUgc3VnZ2VzdGVkIGJ5IFRo
-b21hcyBHbGVpeG5lcg0KPiA+DQo+ID4gUmV2aWV3ZWQtYnk6IERhdmlkIEJyb3duZWxsIDxkYnJv
-d25lbGxAdXNlcnMuc291cmNlZm9yZ2UubmV0Pg0KPiA+IFNpZ25lZC1vZmYtYnk6IFNuZWhhIE5h
-cm5ha2FqZSA8bnNuZWhhcHJhYmhhQHRpLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBTYW5kZWVw
-IFBhdWxyYWogPHMtcGF1bHJhakB0aS5jb20NCj4gDQo+IEkndmUgYXBwbGllZCB5b3VyIDMgcGF0
-Y2hlcyBhbmQgdGhleSBkbyBub3QgY29tcGlsZToNCj4gDQo+ICAgQ0MgW01dICBkcml2ZXJzL210
-ZC9uYW5kL25hbmRfZWNjLm8NCj4gZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jhc2UuYzogSW4gZnVu
-Y3Rpb24g4oCYbmFuZF9zY2FuX3RhaWzigJk6DQo+IGRyaXZlcnMvbXRkL25hbmQvbmFuZF9iYXNl
-LmM6MjcyNDogZXJyb3I6IOKAmE5BTkRfRUNDX0hXX09PQl9GSVJTVOKAmQ0KPiB1bmRlY2xhcmVk
-IChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbikNCj4gZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jh
-c2UuYzoyNzI0OiBlcnJvcjogKEVhY2ggdW5kZWNsYXJlZCBpZGVudGlmaWVyIGlzDQo+IHJlcG9y
-dGVkIG9ubHkgb25jZQ0KPiBkcml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5jOjI3MjQ6IGVycm9y
-OiBmb3IgZWFjaCBmdW5jdGlvbiBpdCBhcHBlYXJzDQo+IGluLikNCj4gbWFrZVszXTogKioqIFtk
-cml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5vXSBFcnJvciAxDQo+IG1ha2VbM106ICoqKiBXYWl0
-aW5nIGZvciB1bmZpbmlzaGVkIGpvYnMuLi4uDQo+ICAgQ0MgW01dICBkcml2ZXJzL210ZC9kZXZp
-Y2VzL2RvY3Byb2JlLm8NCj4gDQo+IC0tDQo+IEJlc3QgcmVnYXJkcywNCj4gQXJ0ZW0gQml0eXV0
-c2tpeSAo0JHQuNGC0Y7RhtC60LjQuSDQkNGA0YLRkdC8KQ0KPiANCg0K
+0123456789012345678901234567890123456789012345678901234567890123456789012345
+6789
+
+Dear MTD,
+
+I am working with a customer with an embedded ARM-9 processor in a real time
+
+system.  The system is running a stock 2.6.18 kernel and uses a NOR device
+for 
+its main storage.
+
+We have noticed that when we perform large reads (> 32KB) from the FLASH
+using
+the /dev/mtdN device, the real-time performance of the system is impacted
+and
+interrupts get held off.  We did some digging and found that the kernel will
+
+permit reads up to 128KB in size to be made via the mtd driver in a single
+read
+call.  This in turn passes through the mtd driver and ends up at the chip
+code.
+In our case, we are using the 'cfi_cmdset_0002.c' driver.  When the call
+arrives
+at cfi_amstsd_read(), since it is within the single NOR chip that we are
+using,
+a single call is made to do_read_onechip().  This function takes a spinlock,
+
+performs the FULL memory copy and releases the spinlock.  It is the long 
+duration of the spinlock over the full memory copy that is impacting our 
+real-time performance.
+
+If a NOR chip has ~70ns access time then an efficient memory subsystem
+should 
+be able to make ~10M accesses per second.  If the chip is 16-bits wide then 
+a 128KB copy will ~7ms.  This is a long time to hold a spinlock in a 
+real-time system.  We inspected the mtd driver code and it will only
+fragment 
+transfers over 128KB in length.
+
+This problem does not occur with accesses to /dev/mtdblockN devices because 
+they are automatically broken into 512 byte sectors.  It is a problem with
+/dev/mtdN devices and also with JFFS2 operations.
+
+We have a simple fix that splits up read accesses into 512 byte chunks
+within
+cfi_amdstd_read() and performs multiple calls to do_read_onechip() until the
+full data length has been copied.  There is no change to the external API
+and 
+the overall performance does not seem to be noticeably degraded even though
+a lot more calls to do_read_onechip() are required.
+
+Before going through the process of submitting patches etc., is this a 
+problem that has been identified or experienced before?  I have searched the
+mailing list but not seen any obvious references...
+
+If it seems a reasonable observation and fix, would you like me to post a 
+patch?  I can only patch and test the 'cfi_cmdset_0002.c' driver but it 
+would be a simple process for it to be applied to the other chips.
+
+Best regards,
+
+Roger 
