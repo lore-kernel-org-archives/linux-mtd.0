@@ -1,19 +1,26 @@
-Date: Wed, 24 Jun 2009 20:00:29 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] [JFFS2] jffs2_start_garbage_collect_thread() return
-	value cleanup
-Message-Id: <20090624200029.d875c48e.akpm@linux-foundation.org>
-In-Reply-To: <1245838141.25547.5207.camel@macbook.infradead.org>
-References: <20090602113216.GA3513@tank>
-	<1243944686-7039-1-git-send-email-gerard.lledo@gmail.com>
-	<1243944686-7039-2-git-send-email-gerard.lledo@gmail.com>
-	<1245838141.25547.5207.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from mail-fx0-f212.google.com ([209.85.220.212])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MJjiK-00085J-Ru
+	for linux-mtd@lists.infradead.org; Thu, 25 Jun 2009 07:49:51 +0000
+Received: by fxm8 with SMTP id 8so1403788fxm.18
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 25 Jun 2009 00:49:43 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <4A42DB93.8020503@bluewatersys.com>
+References: <4A3F017B.2010409@bluewatersys.com>
+	<BD79186B4FD85F4B8E60E381CAEE1909019BE1CE@mi8nycmail19.Mi8.com>
+	<4A42DB93.8020503@bluewatersys.com>
+Date: Thu, 25 Jun 2009 09:49:43 +0200
+Message-ID: <63386a3d0906250049j2a2ebf08ka7e4d10b0c4f4a0d@mail.gmail.com>
+Subject: Re: [spi-devel-general] [PATCH] SST25L (non JEDEC) SPI Flash driver
+From: Linus Walleij <linus.ml.walleij@gmail.com>
+To: Ryan Mallon <ryan@bluewatersys.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Gerard Lledo <gerard.lledo@gmail.com>,
-	linux-kernel@vger.kernel.org
+Cc: linux kernel <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
+	mike@steroidmicros.com, spi-devel-general@lists.sourceforge.net,
+	H Hartley Sweeten <hartleys@visionengravers.com>,
+	David Woodhouse <dwmw2@infradead.org>, akpm@linux-foundation.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +30,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 24 Jun 2009 11:09:01 +0100 David Woodhouse <dwmw2@infradead.org> wrote:
+2009/6/25 Ryan Mallon <ryan@bluewatersys.com>:
 
-> On Tue, 2009-06-02 at 15:11 +0300, Gerard Lledo wrote:
-> > There is no user of this return value in the kernel.  Change it to return void
-> > instead.
-> 
-> NAK. I hate this type of patch.
-> 
-> A function _should_ return an error value indicating success or failure,
-> if there's _any_ chance that it (or a future rewrite of it) may fail.
-> 
-> It's up to the _callers_ to act on that result, or not, as they see fit.
+> Linus, is this still okay by you?
 
-True.
+I'm a novice in MTD, sorry. But AFAICT yes.
 
-> Andrew, may I suggest that you look for such justification in future
-> patches of this type?
-
-eh, I sometimes don't even look at them.  I just save them up in case of
-maintainer fumblage.
-
-I might retain this one as a "jffs2 fails to check
-jffs2_start_garbage_collect_thread() return value" bug report :)
+Linus Walleij
