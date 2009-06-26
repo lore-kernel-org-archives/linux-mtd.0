@@ -1,20 +1,19 @@
-Received: from hrndva-commlb.mail.rr.com ([71.74.57.9])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MK8wB-0007vd-SF
-	for linux-mtd@lists.infradead.org; Fri, 26 Jun 2009 10:45:50 +0000
-Received: from rrcs-agw-01.hrndva.rr.com ([24.28.200.151])
-	by hrndva-comm-mta01.mail.rr.com with ESMTP id
-	<20090626104543.UMVZ7509.hrndva-comm-mta01.mail.rr.com@rrcs-agw-01.hrndva.rr.com>
-	for <linux-mtd@lists.infradead.org>; Fri, 26 Jun 2009 10:45:43 +0000
-Message-Id: <7h9gbp$dkc9jl@rrcs-agw-01b.hrndva.rr.com>
-From: Organization <kevin_jones@rrohio.com>
-To: <info@bt.co.uk>
-Subject: 2009 Online Tobacco Winner,
-Date: Fri, 26 Jun 2009 5:45:43 -0500
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
-Reply-To: ukagentdept000@googlemail.com
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MK8wy-0000PN-DQ
+	for linux-mtd@lists.infradead.org; Fri, 26 Jun 2009 10:46:38 +0000
+Subject: Re: about ubiformat mtdblock
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: tommy <jiujin.hong@mid-fun.com>
+In-Reply-To: <1246010592.12367.0.camel@tommy-desktop>
+References: <1246010592.12367.0.camel@tommy-desktop>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 26 Jun 2009 13:46:12 +0300
+Message-Id: <1246013172.9487.66.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,12 +23,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Your email ID was awarded (1,000,000,00  GBP), in the 2009 Online Tobacco Promo,send us your full details:
+On Fri, 2009-06-26 at 18:03 +0800, tommy wrote:
+> hi,dear all!
+> 
+> My kernel version is 2.6.24 ,patch ubifs !
+> 
+> I met error on ubiformat .
+> Following is my step!
+> 
+> 
+> # ./ubiformat /dev/mtd2 -f /ubi.img
+> ubiformat: mtd2 (NAND), size 654311424 bytes (624.0 MiB), 262144
+> eraseblocks of 262144 bytes (256.0 KiB), min. I/O size 2048 bytes
+> libscan: scanning eraseblock 2495 -- 100 % complete
+> ubiformat: 2496 eraseblocks have valid erase counter, mean value is 0
+> ubiformat: flashing eraseblock 383 -- 100 % complete
+> ubiformat: formatting eraseblock 2495 -- 100 % complete
+> # ./ubiattach /dev/ubi_ctrl -m 2
+> vmalloc is used.
+> UBI: physical eraseblock size:   262144 bytes (256 KiB)
+> UBI: logical eraseblock size:    258048 bytes
+> UBI: smallest flash I/O unit:    2048
+> UBI: VID header offset:          2048 (aligned 2048)
+> UBI: data offset:                4096
+> UBI: volume 0 ("ubifs0") re-sized from 407 to 2468 LEBs
+> UBI: attached mtd2 to ubi0
+> UBI: MTD device name:            "File System"
+> UBI: MTD device size:            624 MiB
+> UBI: number of good PEBs:        2496
+> UBI: number of bad PEBs:         0
+> UBI: max. allowed volumes:       128
+> UBI: wear-leveling threshold:    4096
+> UBI: number of internal volumes: 1
+> UBI: number of user volumes:     1
+> UBI: available PEBs:             0
+> UBI: total number of reserved PEBs: 2496
+> UBI: number of PEBs reserved for bad PEB handling: 24
+> UBI: max/mean erase counter: 2/1
+> UBI: background thread "ubi_bgt0d" started, PID 306
+> UBI device number 0, total 2496 LEBs (644087808 bytes, 614.2 MiB),
+> available 0 LEBs (0 bytes), LEB size 258048 bytes (252.0 KiB)
+> # mount -t ubifs ubi0_0 /tmp/
+> UBIFS error (pid 307): ubifs_read_superblock: on-flash format version
+> is 4, but software only supports up to version 3
+> mount: mounting ubi0_0 on /tmp/ failed: Invalid argument
+> 
+> 
+> can anyone help me ?thanks!
 
-Full Name:
-Full Address:
-Status:
-Occupation:
-Country:
+Could you please update your UBI/UBIFS:
+git://git.infradead.org/~dedekind/ubifs-v2.6.24.git
 
-Send Us Email  ukagentdept000@googlemail.com
+See here:
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_source
+
+There were many serious bug-fixes, sou it is a good idea to update
+ubifs.
+
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
