@@ -1,18 +1,22 @@
-Message-ID: <57946.192.168.10.89.1246035773.squirrel@dbdmail.itg.ti.com>
-In-Reply-To: <53729.192.168.10.89.1246035472.squirrel@dbdmail.itg.ti.com>
-References: <53729.192.168.10.89.1246035472.squirrel@dbdmail.itg.ti.com>
-Date: Fri, 26 Jun 2009 22:32:53 +0530 (IST)
-Subject: Re: [PATCH][MTD][NAND]: fix omap2.c compile failure and warning
-From: "vimal singh" <vimalsingh@ti.com>
-To: "vimal singh" <vimalsingh@ti.com>
+Received: from smtp104.sbc.mail.gq1.yahoo.com ([67.195.15.63])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MKEwn-00020Q-7H
+	for linux-mtd@lists.infradead.org; Fri, 26 Jun 2009 17:10:52 +0000
+From: David Brownell <david-b@pacbell.net>
+To: vimal singh <vimal.newwork@gmail.com>
+Subject: Re: query: nand read/write method for 2048 + 64 byte page
+Date: Fri, 26 Jun 2009 10:10:41 -0700
+References: <200906252128.08460.david-b@pacbell.net>
+	<200906252256.16902.david-b@pacbell.net>
+	<ce9ab5790906260422q136ed6e1p41593ece4b5fe319@mail.gmail.com>
+In-Reply-To: <ce9ab5790906260422q136ed6e1p41593ece4b5fe319@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Cc: "david-b@pacbell.net" <david-b@pacbell.net>,
-	"tom.leiming@gmail.com" <tom.leiming@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200906261010.42073.david-b@pacbell.net>
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,56 +26,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Somehow I do not see below errors on compilation:
-drivers/mtd/nand/omap2.c: In function 'omap_wait':
-drivers/mtd/nand/omap2.c:543: error: 'jiffies' undeclared (first use in this
-function)
-drivers/mtd/nand/omap2.c:543: error: (Each undeclared identifier is reported
-only once
-drivers/mtd/nand/omap2.c:543: error: for each function it appears in.)
-drivers/mtd/nand/omap2.c:557: error: implicit declaration of function
-'time_before'
+On Friday 26 June 2009, vimal singh wrote:
+> The problem is that HW ECC engine in BCH mode dose not provide any
+> possible configuration where we can keep ECC bytes in main area
+> itself. OOB + ECC data has to be in only spare area.
 
-But still including 'linux/jiffies.h'.
+Healthy.  I disike that "infix OOB" myself.  It is however
+a standard ECC mode in the NAND framework.  :(
 
-Below is the patch.
+So you're asking about how to map hardware-specific details
+to the NAND framework?  That wasn't clear.
 
-Signed-off-by: Vimal Singh <vimalsingh@ti.com>
-Signed-off-by: Ming Lei <tom.leiming@gmail.com>
----
 
-drivers/mtd/nand/omap2.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletion(-)
+> Would it not be the good idea to perform read/write for full (2112 bytes) page?
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 0cd76f8..3b6e6ad 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -11,6 +11,8 @@
- #include <linux/platform_device.h>
- #include <linux/dma-mapping.h>
- #include <linux/delay.h>
-+#include <linux/jiffies.h>
-+#include <linux/sched.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/nand.h>
- #include <linux/mtd/partitions.h>
-@@ -541,7 +543,7 @@ static int omap_wait(struct mtd_info *mtd, struct nand_chip
-*chip)
- 	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
- 							mtd);
- 	unsigned long timeo = jiffies;
--	int status, state = this->state;
-+	int status = NAND_STATUS_FAIL, state = this->state;
+I'm not sure I can answer that without reading up on that
+particular NAND ECC engine.
 
- 	if (state == FL_ERASING)
- 		timeo += (HZ * 400) / 1000;
-@@ -558,6 +560,7 @@ static int omap_wait(struct mtd_info *mtd, struct nand_chip
-*chip)
- 		status = __raw_readb(this->IO_ADDR_R);
- 		if (!(status & 0x40))
- 			break;
-+		cond_resched();
- 	}
- 	return status;
- }
+Recall however that the NAND framework will think in terms
+of 2KB reads, with OOB data on the side.  There will be
+separate reads for 2K and then 64 bytes.
+
+
+> And enable HW_ECC before read/write and then call for ecc.calculate or
+> ecc.correct accordingly. Rest all things can be taken care by
+> underlying controller driver.
+
+Those sentences seem to elide critical parts of the process.
+Like the details of OOB and ECC handling, which seem to be
+what you're not sure of...
