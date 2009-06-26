@@ -1,19 +1,23 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MK8wy-0000PN-DQ
-	for linux-mtd@lists.infradead.org; Fri, 26 Jun 2009 10:46:38 +0000
-Subject: Re: about ubiformat mtdblock
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: tommy <jiujin.hong@mid-fun.com>
-In-Reply-To: <1246010592.12367.0.camel@tommy-desktop>
-References: <1246010592.12367.0.camel@tommy-desktop>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 26 Jun 2009 13:46:12 +0300
-Message-Id: <1246013172.9487.66.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from qw-out-1920.google.com ([74.125.92.146])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MK9Vx-0001lv-Jy
+	for linux-mtd@lists.infradead.org; Fri, 26 Jun 2009 11:22:48 +0000
+Received: by qw-out-1920.google.com with SMTP id 5so1155265qwf.24
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 26 Jun 2009 04:22:40 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <200906252256.16902.david-b@pacbell.net>
+References: <200906252128.08460.david-b@pacbell.net>
+	<ce9ab5790906252217s1a5a8279l58a2111b3ac79786@mail.gmail.com>
+	<200906252256.16902.david-b@pacbell.net>
+Date: Fri, 26 Jun 2009 16:52:40 +0530
+Message-ID: <ce9ab5790906260422q136ed6e1p41593ece4b5fe319@mail.gmail.com>
+Subject: Re: query: nand read/write method for 2048 + 64 byte page
+From: vimal singh <vimal.newwork@gmail.com>
+To: David Brownell <david-b@pacbell.net>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,63 +27,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-06-26 at 18:03 +0800, tommy wrote:
-> hi,dear all!
-> 
-> My kernel version is 2.6.24 ,patch ubifs !
-> 
-> I met error on ubiformat .
-> Following is my step!
-> 
-> 
-> # ./ubiformat /dev/mtd2 -f /ubi.img
-> ubiformat: mtd2 (NAND), size 654311424 bytes (624.0 MiB), 262144
-> eraseblocks of 262144 bytes (256.0 KiB), min. I/O size 2048 bytes
-> libscan: scanning eraseblock 2495 -- 100 % complete
-> ubiformat: 2496 eraseblocks have valid erase counter, mean value is 0
-> ubiformat: flashing eraseblock 383 -- 100 % complete
-> ubiformat: formatting eraseblock 2495 -- 100 % complete
-> # ./ubiattach /dev/ubi_ctrl -m 2
-> vmalloc is used.
-> UBI: physical eraseblock size:   262144 bytes (256 KiB)
-> UBI: logical eraseblock size:    258048 bytes
-> UBI: smallest flash I/O unit:    2048
-> UBI: VID header offset:          2048 (aligned 2048)
-> UBI: data offset:                4096
-> UBI: volume 0 ("ubifs0") re-sized from 407 to 2468 LEBs
-> UBI: attached mtd2 to ubi0
-> UBI: MTD device name:            "File System"
-> UBI: MTD device size:            624 MiB
-> UBI: number of good PEBs:        2496
-> UBI: number of bad PEBs:         0
-> UBI: max. allowed volumes:       128
-> UBI: wear-leveling threshold:    4096
-> UBI: number of internal volumes: 1
-> UBI: number of user volumes:     1
-> UBI: available PEBs:             0
-> UBI: total number of reserved PEBs: 2496
-> UBI: number of PEBs reserved for bad PEB handling: 24
-> UBI: max/mean erase counter: 2/1
-> UBI: background thread "ubi_bgt0d" started, PID 306
-> UBI device number 0, total 2496 LEBs (644087808 bytes, 614.2 MiB),
-> available 0 LEBs (0 bytes), LEB size 258048 bytes (252.0 KiB)
-> # mount -t ubifs ubi0_0 /tmp/
-> UBIFS error (pid 307): ubifs_read_superblock: on-flash format version
-> is 4, but software only supports up to version 3
-> mount: mounting ubi0_0 on /tmp/ failed: Invalid argument
-> 
-> 
-> can anyone help me ?thanks!
+On Fri, Jun 26, 2009 at 11:26 AM, David Brownell<david-b@pacbell.net> wrote=
+:
+> On Thursday 25 June 2009, vimal singh wrote:
+>> > =A0- Second, I believe that you will see some issues if you
+>> > =A0 try to have ECC cover the OOB too. =A0Problem being that
+>> > =A0 the raw_write primitives are used to write OOB data and
+>> > =A0 they don't believe it will be ECC protected.
+>>
+>> My point is to protect OOB too (other than ECC bytes).
+>> So, should we implement new OOB area read/write primitives to support th=
+is?
+>
+> It's not so much a case of "can it be done"; you may have
+> noticed that ECC_HW_SYNDROME can do that. =A0While that layout
+> is problematic, it certainly allows for "prepad" data to be
+> included in the ECC. =A0For a 2K page, with 7 ECC bytes for
+> each 512+9 bytes of data, the page layout is
+>
+> =A0 =A0 =A0 =A04 * (512 bytes data + 9 bytes OOB + 7 bytes ECC)
 
-Could you please update your UBI/UBIFS:
-git://git.infradead.org/~dedekind/ubifs-v2.6.24.git
+The problem is that HW ECC engine in BCH mode dose not provide any
+possible configuration where we can keep ECC bytes in main area
+itself. OOB + ECC data has to be in only spare area.
 
-See here:
-http://www.linux-mtd.infradead.org/doc/ubifs.html#L_source
+Would it not be the good idea to perform read/write for full (2112 bytes) p=
+age?
+And enable HW_ECC before read/write and then call for ecc.calculate or
+ecc.correct accordingly. Rest all things can be taken care by
+underlying controller driver.
 
-There were many serious bug-fixes, sou it is a good idea to update
-ubifs.
+>
+> where prepad =3D=3D 9 ... but such layouts have obvious nasty
+> characteristics, since you can't DMA the whole 2K of data
+> in one chunk, and since it clobbers manufacturer bad block
+> markers.
+>
+> (FWIW I call such layouts "Infix OOB", where the Out-of-Band
+> data is actually not out-of-band in the spare area.)
+>
+>
+> Or if the hardware allows you could just use 521 byte ECC
+> chunks (8-bit NAND only!) and when you run out of 2K page
+> buffer, roll directly into the OOB data. =A0You'd have to
+> provide i/o methods that manage OOB and ECC data that way,
+> but that seems like it'd suffice as a driver-specific kind
+> of override, using ECC_HW and your matching ecclayout.
+>
+>
+>> And in that case how will we be handling those cases where spare bytes
+>> are protected by clubbing them with main area bytes to generate ECC?
+>> (as example in my previous mail)
+>
+> You haven't addressed my observation that there's software
+> out there which is going to be writing the OOB data and yet
+> not expecting it to invalidate the ECC... as in, maybe you
+> want to change a version byte from 0x0f to 0x10. =A0That has
+> the look of a five bit ECC error! =A0Or from 0x10 to 0x11,
+> well that's an easily corrected single bit error.
+>
+> - Dave
+>
+>
+>
 
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+
+
+--=20
+---
+Regards,
+\/ | |\/| /-\ |_
+
+____      __o
+------   -\<,
+-----  ( )/ ( )
