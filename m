@@ -1,22 +1,18 @@
-Received: from smtp104.sbc.mail.gq1.yahoo.com ([67.195.15.63])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MKEwn-00020Q-7H
-	for linux-mtd@lists.infradead.org; Fri, 26 Jun 2009 17:10:52 +0000
-From: David Brownell <david-b@pacbell.net>
-To: vimal singh <vimal.newwork@gmail.com>
-Subject: Re: query: nand read/write method for 2048 + 64 byte page
-Date: Fri, 26 Jun 2009 10:10:41 -0700
-References: <200906252128.08460.david-b@pacbell.net>
-	<200906252256.16902.david-b@pacbell.net>
-	<ce9ab5790906260422q136ed6e1p41593ece4b5fe319@mail.gmail.com>
-In-Reply-To: <ce9ab5790906260422q136ed6e1p41593ece4b5fe319@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Subject: Re: [PATCH][MTD][NAND]: fix omap2.c compile failure and warning
+From: David Woodhouse <dwmw2@infradead.org>
+To: vimal singh <vimalsingh@ti.com>
+In-Reply-To: <57946.192.168.10.89.1246035773.squirrel@dbdmail.itg.ti.com>
+References: <53729.192.168.10.89.1246035472.squirrel@dbdmail.itg.ti.com>
+	<57946.192.168.10.89.1246035773.squirrel@dbdmail.itg.ti.com>
+Content-Type: text/plain
+Date: Fri, 26 Jun 2009 18:14:02 +0100
+Message-Id: <1246036442.663.47.camel@macbook.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200906261010.42073.david-b@pacbell.net>
-Cc: Linux MTD <linux-mtd@lists.infradead.org>
+Cc: "david-b@pacbell.net" <david-b@pacbell.net>,
+	"tom.leiming@gmail.com" <tom.leiming@gmail.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,32 +22,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 26 June 2009, vimal singh wrote:
-> The problem is that HW ECC engine in BCH mode dose not provide any
-> possible configuration where we can keep ECC bytes in main area
-> itself. OOB + ECC data has to be in only spare area.
+On Fri, 2009-06-26 at 22:32 +0530, vimal singh wrote:
+> Somehow I do not see below errors on compilation:
+> drivers/mtd/nand/omap2.c: In function 'omap_wait':
+> drivers/mtd/nand/omap2.c:543: error: 'jiffies' undeclared (first use in this
+> function)
+> drivers/mtd/nand/omap2.c:543: error: (Each undeclared identifier is reported
+> only once
+> drivers/mtd/nand/omap2.c:543: error: for each function it appears in.)
+> drivers/mtd/nand/omap2.c:557: error: implicit declaration of function
+> 'time_before'
+> 
+> But still including 'linux/jiffies.h'.
+> 
+> Below is the patch.
 
-Healthy.  I disike that "infix OOB" myself.  It is however
-a standard ECC mode in the NAND framework.  :(
+The 'status' you return in the case that you _have_ gone through the
+loop is still wrong though, isn't it?
 
-So you're asking about how to map hardware-specific details
-to the NAND framework?  That wasn't clear.
-
-
-> Would it not be the good idea to perform read/write for full (2112 bytes) page?
-
-I'm not sure I can answer that without reading up on that
-particular NAND ECC engine.
-
-Recall however that the NAND framework will think in terms
-of 2KB reads, with OOB data on the side.  There will be
-separate reads for 2K and then 64 bytes.
-
-
-> And enable HW_ECC before read/write and then call for ecc.calculate or
-> ecc.correct accordingly. Rest all things can be taken care by
-> underlying controller driver.
-
-Those sentences seem to elide critical parts of the process.
-Like the details of OOB and ECC handling, which seem to be
-what you're not sure of...
+-- 
+dwmw2
