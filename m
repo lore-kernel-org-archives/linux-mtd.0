@@ -1,21 +1,16 @@
-Subject: RE: [PATCH][MTD][NAND]: fix omap2.c compile failure and warning
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Singh,
-	Vimal" <IMCEAEX-_O=TI_OU=BD_CN=RECIPIENTS_CN=X0094262@dlee86.itg.ti.com>
-In-Reply-To: <19F8576C6E063C45BE387C64729E739404321C60D1@dbde02.ent.ti.com>
-References: <1246022509-16194-1-git-send-email-tom.leiming@gmail.com>
-	,<1246028984.663.9.camel@macbook.infradead.org>
-	<19F8576C6E063C45BE387C64729E739404321C60D1@dbde02.ent.ti.com>
-Content-Type: text/plain
-Date: Fri, 26 Jun 2009 17:18:59 +0100
-Message-Id: <1246033139.663.35.camel@macbook.infradead.org>
-Mime-Version: 1.0
+Received: from mlbe2k2.cs.myharris.net ([137.237.90.89])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MKEVo-0006b3-An
+	for linux-mtd@lists.infradead.org; Fri, 26 Jun 2009 16:42:59 +0000
+Message-ID: <4A44FA87.8030807@harris.com>
+Date: Fri, 26 Jun 2009 12:42:47 -0400
+From: "Steven A. Falco" <sfalco@harris.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] m25p80 timeout too short for worst-case m25p16 devices
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: "david-b@pacbell.net" <david-b@pacbell.net>,
-	"tom.leiming@gmail.com" <tom.leiming@gmail.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"jzhang@ti.com" <jzhang@ti.com>
+Cc: dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,13 +20,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-06-26 at 21:15 +0530, Singh, Vimal wrote:
-> 
-> That's correct David. I think 'cond_resched()' would be fine here.
+The m25p16 data sheet from numonyx lists the worst-case bulk erase time
+(tBE) as 40 seconds.
 
-Got a patch? I have you down as the person responsible for this driver,
-given that jzhang@ti.com is bouncing... 
-
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+Signed-off-by: Steven A. Falco <sfalco@harris.com>
+---
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index cc6369e..e106700 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -54,7 +54,7 @@
+ #define	SR_SRWD			0x80	/* SR write protect */
+ 
+ /* Define max times to check status register before we give up. */
+-#define	MAX_READY_WAIT_JIFFIES	(10 * HZ)	/* eg. M25P128 specs 6s max sector erase */
++#define	MAX_READY_WAIT_JIFFIES	(40 * HZ)	/* M25P16 specs 40s max chip erase */
+ #define	CMD_SIZE		4
+ 
+ #ifdef CONFIG_M25PXX_USE_FAST_READ
