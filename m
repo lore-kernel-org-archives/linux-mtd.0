@@ -1,18 +1,13 @@
-Subject: Re: [PATCH][MTD][NAND]: fix omap2.c compile failure and warning
-From: David Woodhouse <dwmw2@infradead.org>
-To: vimal singh <vimalsingh@ti.com>
-In-Reply-To: <57946.192.168.10.89.1246035773.squirrel@dbdmail.itg.ti.com>
-References: <53729.192.168.10.89.1246035472.squirrel@dbdmail.itg.ti.com>
-	<57946.192.168.10.89.1246035773.squirrel@dbdmail.itg.ti.com>
-Content-Type: text/plain
-Date: Fri, 26 Jun 2009 18:14:02 +0100
-Message-Id: <1246036442.663.47.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "david-b@pacbell.net" <david-b@pacbell.net>,
-	"tom.leiming@gmail.com" <tom.leiming@gmail.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Received: from [65.98.92.6] (helo=b32.net)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MKLsw-0006kd-07
+	for linux-mtd@lists.infradead.org; Sat, 27 Jun 2009 00:35:21 +0000
+From: Kevin Cernekee <cernekee@gmail.com>
+To: <dwmw2@infradead.org>, <dedekind@infradead.org>
+Date: Fri, 26 Jun 2009 17:10:50 -0700
+Subject: [PATCH] UBIFS: Fix integer overflow warnings
+Message-Id: <3f15c0091535d0ab4a1d45cbc9eb3667@localhost>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,23 +17,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-06-26 at 22:32 +0530, vimal singh wrote:
-> Somehow I do not see below errors on compilation:
-> drivers/mtd/nand/omap2.c: In function 'omap_wait':
-> drivers/mtd/nand/omap2.c:543: error: 'jiffies' undeclared (first use in this
-> function)
-> drivers/mtd/nand/omap2.c:543: error: (Each undeclared identifier is reported
-> only once
-> drivers/mtd/nand/omap2.c:543: error: for each function it appears in.)
-> drivers/mtd/nand/omap2.c:557: error: implicit declaration of function
-> 'time_before'
-> 
-> But still including 'linux/jiffies.h'.
-> 
-> Below is the patch.
+This warning was observed on MIPS32 using 2.6.31-rc1 and gcc-4.2.0:
 
-The 'status' you return in the case that you _have_ gone through the
-loop is still wrong though, isn't it?
+fs/ubifs/io.c: In function 'ubifs_wbuf_init':
+fs/ubifs/io.c:860: warning: integer overflow in expression
+fs/ubifs/io.c:860: warning: integer overflow in expression
+fs/ubifs/io.c:860: warning: integer overflow in expression
 
--- 
-dwmw2
+Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+---
+index bc58571..184157e 100644
+--- a/fs/ubifs/io.c
++++ b/fs/ubifs/io.c
+@@ -857,7 +857,8 @@ int ubifs_wbuf_init(struct ubifs_info *c, struct ubifs_wbuf *wbuf)
+ 	 * and hard limits.
+ 	 */
+ 	hardlimit = ktime_set(DEFAULT_WBUF_TIMEOUT_SECS, 0);
+-	wbuf->delta = (DEFAULT_WBUF_TIMEOUT_SECS * NSEC_PER_SEC) * 2 / 10;
++	wbuf->delta = ((unsigned long long)DEFAULT_WBUF_TIMEOUT_SECS *
++		       NSEC_PER_SEC) * 2 / 10;
+ 	wbuf->softlimit = ktime_sub_ns(hardlimit, wbuf->delta);
+ 	hrtimer_set_expires_range_ns(&wbuf->timer,  wbuf->softlimit,
+ 				     wbuf->delta);
+--
