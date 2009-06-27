@@ -1,15 +1,21 @@
-Received: from mgw1.diku.dk ([130.225.96.91])
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MKT1x-0002Wy-BH
-	for linux-mtd@lists.infradead.org; Sat, 27 Jun 2009 08:13:16 +0000
-Date: Sat, 27 Jun 2009 09:55:32 +0200 (CEST)
-From: Julia Lawall <julia@diku.dk>
-To: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] drivers/mtd: use BLOCK_NIL
-Message-ID: <Pine.LNX.4.64.0906270954290.2729@ask.diku.dk>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 1MKW9U-0007XL-SC
+	for linux-mtd@lists.infradead.org; Sat, 27 Jun 2009 11:33:07 +0000
+Subject: Re: about ubiformat mtdblock
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: tommy <jiujin.hong@mid-fun.com>
+In-Reply-To: <1246074583.4250.4.camel@tommy-desktop>
+References: <1246010592.12367.0.camel@tommy-desktop>
+	<1246013172.9487.66.camel@localhost.localdomain>
+	<1246074583.4250.4.camel@tommy-desktop>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sat, 27 Jun 2009 14:32:52 +0300
+Message-Id: <1246102372.9487.80.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,176 +25,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Julia Lawall <julia@diku.dk>
+On Sat, 2009-06-27 at 11:49 +0800, tommy wrote:
+> HI,dear sir !
+> 
+> i have pathed my 2.6.24 BSP with ubifs-2.6.24-git!
+> 
+> It work ok ,but when kernel booting  ,it also say error:
+> 0x00000000-0x00040000 : "Bootloader"
+> 0x00040000-0x00840000 : "Kernel"
+> 0x00840000-0x13440000 : "Rootfs"
+> 0x13440000-0x40000000 : "data"
+> UBI: attaching mtd2 to ubi0
+> UBI: physical eraseblock size:   262144 bytes (256 KiB)
+> UBI: logical eraseblock size:    258048 bytes
+> UBI: smallest flash I/O unit:    2048
+> UBI: VID header offset:          2048 (aligned 2048)
+> UBI: data offset:                4096
+> UBI: attached mtd2 to ubi0
+> UBI: MTD device name:            "Rootfs"
+> UBI: MTD device size:            300 MiB
+> UBI: number of good PEBs:        1200
+> UBI: number of bad PEBs:         0
+> UBI: max. allowed volumes:       128
+> UBI: wear-leveling threshold:    4096
+> UBI: number of internal volumes: 1
+> UBI: number of user volumes:     1
+> UBI: available PEBs:             5
+> UBI: total number of reserved PEBs: 1195
+> UBI: number of PEBs reserved for bad PEB handling: 12
+> 
+> UBIFS: mounted UBI device 0, volume 0, name "rootfs"
+> UBIFS: file system size:   301916160 bytes (294840 KiB, 287 MiB, 1170
+> LEBs)
+> UBIFS: journal size:       14966784 bytes (14616 KiB, 14 MiB, 58 LEBs)
+> UBIFS: media format:       w4/r0 (latest is w4/r0)
+> UBIFS: default compressor: lzo
+> UBIFS: reserved for root:  4952683 bytes (4836 KiB)
+> VFS: Mounted root (ubifs filesystem).
+> 
+> UBIFS error (pid 628): ubifs_get_sb: cannot open "rootfs", error -22
+> 
+> when it mount ok,also say error "cannot open 'rootfs' ",sir ?
 
-Use BLOCK_NIL consistently rather than sometimes 0xffff and sometimes
-BLOCK_NIL.
+-22 is -EINVAL, not sure what happened. Try to send a better bug report,
+see here:
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_how_send_bugreport
 
-The semantic patch that finds this issue is below
-(http://www.emn.fr/x-info/coccinelle/).  On the other hand, the changes
-were made by hand, in part because drivers/mtd/inftlcore.c contains dead
-code that causes spatch to ignore a relevant function.  Specifically, the
-function INFTL_findwriteunit contains a do-while loop, but always takes a
-return that leaves the loop on the first iteration.
-
-// <smpl>
-@r exists@
-identifier f,C;
-@@
-
-f(...) { ... return C; }
-
-@s@
-identifier r.C;
-expression E;
-@@
-
-#define C E
-
-@@
-identifier r.f,r.C,I;
-expression s.E;
-@@
-
-f(...) {
- <...
-(
-  I
-|
-- E
-+ C
-)
- ...>
-}
-
-// </smpl>
-
-Signed-off-by: Julia Lawall <julia@diku.dk>
-
----
- drivers/mtd/inftlcore.c |   11 ++++++-----
- drivers/mtd/nftlcore.c  |   16 ++++++++--------
- 2 files changed, 14 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/mtd/inftlcore.c b/drivers/mtd/inftlcore.c
-index 73f0522..d8cf29c 100644
---- a/drivers/mtd/inftlcore.c
-+++ b/drivers/mtd/inftlcore.c
-@@ -226,7 +226,7 @@ static u16 INFTL_findfreeblock(struct INFTLrecord *inftl, int desperate)
- 	if (!desperate && inftl->numfreeEUNs < 2) {
- 		DEBUG(MTD_DEBUG_LEVEL1, "INFTL: there are too few free "
- 			"EUNs (%d)\n", inftl->numfreeEUNs);
--		return 0xffff;
-+		return BLOCK_NIL;
- 	}
- 
- 	/* Scan for a free block */
-@@ -281,7 +281,8 @@ static u16 INFTL_foldchain(struct INFTLrecord *inftl, unsigned thisVUC, unsigned
- 	silly = MAX_LOOPS;
- 	while (thisEUN < inftl->nb_blocks) {
- 		for (block = 0; block < inftl->EraseSize/SECTORSIZE; block ++) {
--			if ((BlockMap[block] != 0xffff) || BlockDeleted[block])
-+			if ((BlockMap[block] != BLOCK_NIL) ||
-+			    BlockDeleted[block])
- 				continue;
- 
- 			if (inftl_read_oob(mtd, (thisEUN * inftl->EraseSize)
-@@ -525,7 +526,7 @@ static inline u16 INFTL_findwriteunit(struct INFTLrecord *inftl, unsigned block)
- 			if (!silly--) {
- 				printk(KERN_WARNING "INFTL: infinite loop in "
- 					"Virtual Unit Chain 0x%x\n", thisVUC);
--				return 0xffff;
-+				return BLOCK_NIL;
- 			}
- 
- 			/* Skip to next block in chain */
-@@ -549,7 +550,7 @@ hitused:
- 			 * waiting to be picked up. We're going to have to fold
- 			 * a chain to make room.
- 			 */
--			thisEUN = INFTL_makefreeblock(inftl, 0xffff);
-+			thisEUN = INFTL_makefreeblock(inftl, BLOCK_NIL);
- 
- 			/*
- 			 * Hopefully we free something, lets try again.
-@@ -631,7 +632,7 @@ hitused:
- 
- 	printk(KERN_WARNING "INFTL: error folding to make room for Virtual "
- 		"Unit Chain 0x%x\n", thisVUC);
--	return 0xffff;
-+	return BLOCK_NIL;
- }
- 
- /*
-diff --git a/drivers/mtd/nftlcore.c b/drivers/mtd/nftlcore.c
-index e3f8495..fb86cac 100644
---- a/drivers/mtd/nftlcore.c
-+++ b/drivers/mtd/nftlcore.c
-@@ -208,7 +208,7 @@ static u16 NFTL_findfreeblock(struct NFTLrecord *nftl, int desperate )
- 	/* Normally, we force a fold to happen before we run out of free blocks completely */
- 	if (!desperate && nftl->numfreeEUNs < 2) {
- 		DEBUG(MTD_DEBUG_LEVEL1, "NFTL_findfreeblock: there are too few free EUNs\n");
--		return 0xffff;
-+		return BLOCK_NIL;
- 	}
- 
- 	/* Scan for a free block */
-@@ -230,11 +230,11 @@ static u16 NFTL_findfreeblock(struct NFTLrecord *nftl, int desperate )
- 			printk("Argh! No free blocks found! LastFreeEUN = %d, "
- 			       "FirstEUN = %d\n", nftl->LastFreeEUN,
- 			       le16_to_cpu(nftl->MediaHdr.FirstPhysicalEUN));
--			return 0xffff;
-+			return BLOCK_NIL;
- 		}
- 	} while (pot != nftl->LastFreeEUN);
- 
--	return 0xffff;
-+	return BLOCK_NIL;
- }
- 
- static u16 NFTL_foldchain (struct NFTLrecord *nftl, unsigned thisVUC, unsigned pendingblock )
-@@ -431,7 +431,7 @@ static u16 NFTL_foldchain (struct NFTLrecord *nftl, unsigned thisVUC, unsigned p
- 
- 	/* add the header so that it is now a valid chain */
- 	oob.u.a.VirtUnitNum = oob.u.a.SpareVirtUnitNum = cpu_to_le16(thisVUC);
--	oob.u.a.ReplUnitNum = oob.u.a.SpareReplUnitNum = 0xffff;
-+	oob.u.a.ReplUnitNum = oob.u.a.SpareReplUnitNum = BLOCK_NIL;
- 
- 	nftl_write_oob(mtd, (nftl->EraseSize * targetEUN) + 8,
- 		       8, &retlen, (char *)&oob.u);
-@@ -515,7 +515,7 @@ static u16 NFTL_makefreeblock( struct NFTLrecord *nftl , unsigned pendingblock)
- 	if (ChainLength < 2) {
- 		printk(KERN_WARNING "No Virtual Unit Chains available for folding. "
- 		       "Failing request\n");
--		return 0xffff;
-+		return BLOCK_NIL;
- 	}
- 
- 	return NFTL_foldchain (nftl, LongestChain, pendingblock);
-@@ -578,7 +578,7 @@ static inline u16 NFTL_findwriteunit(struct NFTLrecord *nftl, unsigned block)
- 				printk(KERN_WARNING
- 				       "Infinite loop in Virtual Unit Chain 0x%x\n",
- 				       thisVUC);
--				return 0xffff;
-+				return BLOCK_NIL;
- 			}
- 
- 			/* Skip to next block in chain */
-@@ -601,7 +601,7 @@ static inline u16 NFTL_findwriteunit(struct NFTLrecord *nftl, unsigned block)
- 			//u16 startEUN = nftl->EUNtable[thisVUC];
- 
- 			//printk("Write to VirtualUnitChain %d, calling makefreeblock()\n", thisVUC);
--			writeEUN = NFTL_makefreeblock(nftl, 0xffff);
-+			writeEUN = NFTL_makefreeblock(nftl, BLOCK_NIL);
- 
- 			if (writeEUN == BLOCK_NIL) {
- 				/* OK, we accept that the above comment is
-@@ -673,7 +673,7 @@ static inline u16 NFTL_findwriteunit(struct NFTLrecord *nftl, unsigned block)
- 
- 	printk(KERN_WARNING "Error folding to make room for Virtual Unit Chain 0x%x\n",
- 	       thisVUC);
--	return 0xffff;
-+	return BLOCK_NIL;
- }
- 
- static int nftl_writeblock(struct mtd_blktrans_dev *mbd, unsigned long block,
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
