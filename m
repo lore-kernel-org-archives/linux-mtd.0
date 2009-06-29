@@ -1,21 +1,29 @@
-Received: from [61.155.106.76] (helo=www.mid-fun.com)
+Received: from demumfd001.nsn-inter.net ([217.115.75.233])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1ML6OK-0006HN-N2
-	for linux-mtd@lists.infradead.org; Mon, 29 Jun 2009 02:14:51 +0000
-Subject: Re: about ubiformat mtdblock
-From: tommy <jiujin.hong@mid-fun.com>
-To: dedekind@infradead.org
-In-Reply-To: <1246102372.9487.80.camel@localhost.localdomain>
-References: <1246010592.12367.0.camel@tommy-desktop>
-	<1246013172.9487.66.camel@localhost.localdomain>
-	<1246074583.4250.4.camel@tommy-desktop>
-	<1246102372.9487.80.camel@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 29 Jun 2009 10:14:37 +0800
-Message-Id: <1246241677.7834.5.camel@tommy-desktop>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+	id 1MLBJ1-0004uT-NT
+	for linux-mtd@lists.infradead.org; Mon, 29 Jun 2009 07:29:42 +0000
+Received: from demuprx016.emea.nsn-intra.net ([10.150.129.55])
+	by demumfd001.nsn-inter.net (8.12.11.20060308/8.12.11) with ESMTP id
+	n5T7TVmq027876
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <linux-mtd@lists.infradead.org>; Mon, 29 Jun 2009 09:29:31 +0200
+Received: from demuexc024.nsn-intra.net (demuexc024.nsn-intra.net
+	[10.159.32.11])
+	by demuprx016.emea.nsn-intra.net (8.12.11.20060308/8.12.11) with ESMTP
+	id n5T7TTTr023108
+	for <linux-mtd@lists.infradead.org>; Mon, 29 Jun 2009 09:29:31 +0200
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: Compile Error: structure has no member named lowest_vol_num
+Date: Mon, 29 Jun 2009 09:29:30 +0200
+Message-ID: <077E41CFFD002C4CAB7DFA4386A53264F5D7EC@DEMUEXC014.nsn-intra.net>
+In-Reply-To: <077E41CFFD002C4CAB7DFA4386A53264F5D7E7@DEMUEXC014.nsn-intra.net>
+References: <077E41CFFD002C4CAB7DFA4386A53264F5D7E7@DEMUEXC014.nsn-intra.net>
+From: "Biefel, Reiner (NSN - DE/Munich)" <reiner.biefel@nsn.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,89 +33,158 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello,
 
-HI,Dear sir !
+does really nobody have an idea, why I always get this error?
 
-i have a question!
+...
+gcc -I /utran/fdd/nodeb/opt/i686-pc-linux-gnu/zlib/include -I
+/utran/fdd/nodeb/opt/i686-pc-linux-gnu//lzo/include -I
+/utran/fdd/nodeb/opt/i686-pc-linux-gnu/e2fsprogs/include -I./include
+-DWITHOUT_XATTR -D_FILE_OFFSET_BITS=3D64 -Iinclude -Isrc -I../include
+-D_FILE_OFFSET_BITS=3D64 -I./inc -I./src -I../../include -std=3Dgnu99
+-DPACKAGE_VERSION=3D\"1.0\" -D_FILE_OFFSET_BITS=3D64 -O2 -Wall -Wextra
+-Wwrite-strings -Wno-sign-compare -Wall -Wextra -Wwrite-strings
+-Wno-sign-compare -Wall -Wextra -Wwrite-strings -Wno-sign-compare -c -o
+/utran/fdd/nodeb/opt/src/build/i686-pc-linux-gnu/mtd-utils/ubi-utils/old
+-utils/libubi.o ./src/libubi.c -g
+-Wp,-MD,/utran/fdd/nodeb/opt/src/build/i686-pc-linux-gnu/mtd-utils/ubi-u
+tils/old-utils/.libubi.c.dep
+./src/libubi.c: In function `ubi_get_dev_info1':
+./src/libubi.c:347: error: structure has no member named
+`lowest_vol_num'
+./src/libubi.c:355: error: structure has no member named
+`highest_vol_num'
+./src/libubi.c:356: error: structure has no member named
+`highest_vol_num'
+./src/libubi.c:357: error: structure has no member named
+`lowest_vol_num'
+./src/libubi.c:358: error: structure has no member named
+`lowest_vol_num'
+./src/libubi.c:364: error: structure has no member named
+`lowest_vol_num'
+./src/libubi.c:365: error: structure has no member named
+`lowest_vol_num'
+./src/libubi.c:367: error: structure has no member named `avail_ebs'
+./src/libubi.c:369: error: structure has no member named `total_ebs'
+./src/libubi.c:373: error: structure has no member named `eb_size'
+./src/libubi.c:384: error: structure has no member named `avail_ebs'
+./src/libubi.c:384: error: structure has no member named `eb_size'
+./src/libubi.c:385: error: structure has no member named `total_ebs'
+./src/libubi.c:385: error: structure has no member named `eb_size'
+./src/libubi.c: In function `ubi_get_vol_info1':
+./src/libubi.c:439: error: structure has no member named `rsvd_ebs'
+./src/libubi.c:442: error: structure has no member named `eb_size'
+./src/libubi.c:449: error: structure has no member named `eb_size'
+./src/libubi.c:449: error: structure has no member named `rsvd_ebs'
+./src/libubi.c: In function `find_vol_num':
+./src/libubi.c:894: error: structure has no member named
+`lowest_vol_num'
+./src/libubi.c:894: error: structure has no member named
+`highest_vol_num'
+make[2]: ***
+[/utran/fdd/nodeb/opt/src/build/i686-pc-linux-gnu/mtd-utils/ubi-utils/ol
+d-utils/libubi.o] Error 1
+make[2]: Leaving directory
+`/utran/fdd/nodeb/opt/src/build/i686-pc-linux-gnu/mtd-utils/ubi-utils/ol
+d-utils'
+make[1]: *** [subdirs_old-utils_all] Error 2
 
-I have patched your 2.6.24-ubifs-git on my ARM11 platform !
+BR
+Reiner
 
-it have succeed run and stable !
+-----Original Message-----
+From: linux-mtd-bounces@lists.infradead.org
+[mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of ext Biefel,
+Reiner (NSN - DE/Munich)
+Sent: Thursday, June 25, 2009 2:13 PM
+To: linux-mtd@lists.infradead.org
+Subject: Compile Error: structure has no member named lowest_vol_num
 
-My rootfs have a /etc/fstab file !
+Hello,
 
-# stock fstab - you probably want to override this with a machine
-specific one
+till snapshot a2d010f8fca904fffa3c6e5a5d148cc96a37a08a from 27.02.2009 I
+can compile the sources. Also cross-compile worked fine.
+All releases after that release I couldn't compile anymore.
 
-rootfs               /                    auto       defaults
-1  1
-proc                 /proc                proc       defaults
-0  0
-devpts               /dev/pts             devpts     mode=0620,gid=5
-0  0
-#usbdevfs             /proc/bus/usb        usbdevfs   noauto
-0  0
-tmpfs                /var                 tmpfs      defaults
-0  0
-tmpfs                /mnt/ram           tmpfs      defaults
-0  0
+I allways get the error
+./src/libubi.c:347: error: structure has no member named
+`lowest_vol_num'
 
-if  i enable "rootfs   /  auto  defaults 1 1 ",when kernel
-booting ,ubifs driver will say "UBIFS error (pid 628): ubifs_get_sb:
-cannot open "rootfs", error -22"!
+>From my try to compile git snapshot version
+mtd-utils-e4d5eea6414093fb074b19585cb8bebadc2d3e0e.tar.gz from
+2009-06-08
+.....
+gcc -I /utran/fdd/nodeb/opt/i686-pc-linux-gnu/zlib/include -I
+/utran/fdd/nodeb/opt/i686-pc-linux-gnu//lzo/include -I
+/utran/fdd/nodeb/opt/i686-pc-linux-gnu/e2fsprogs/include -I./include
+-DWITHOUT_XATTR -D_FILE_OFFSET_BITS=3D64 -Iinclude -Isrc -I../include
+-D_FILE_OFFSET_BITS=3D64 -I./inc -I./src -I../../include -std=3Dgnu99
+-DPACKAGE_VERSION=3D\"1.0\" -D_FILE_OFFSET_BITS=3D64 -O2 -Wall -Wextra
+-Wwrite-strings -Wno-sign-compare -Wall -Wextra -Wwrite-strings
+-Wno-sign-compare -Wall -Wextra -Wwrite-strings -Wno-sign-compare -c -o
+/utran/fdd/nodeb/opt/src/build/i686-pc-linux-gnu/mtd-utils/ubi-utils/old
+-utils/pfi.o ./src/pfi.c -g
+-Wp,-MD,/utran/fdd/nodeb/opt/src/build/i686-pc-linux-gnu/mtd-utils/ubi-u
+tils/old-utils/.pfi.c.dep
+gcc -I /utran/fdd/nodeb/opt/i686-pc-linux-gnu/zlib/include -I
+/utran/fdd/nodeb/opt/i686-pc-linux-gnu//lzo/include -I
+/utran/fdd/nodeb/opt/i686-pc-linux-gnu/e2fsprogs/include -I./include
+-DWITHOUT_XATTR -D_FILE_OFFSET_BITS=3D64 -Iinclude -Isrc -I../include
+-D_FILE_OFFSET_BITS=3D64 -I./inc -I./src -I../../include -std=3Dgnu99
+-DPACKAGE_VERSION=3D\"1.0\" -D_FILE_OFFSET_BITS=3D64 -O2 -Wall -Wextra
+-Wwrite-strings -Wno-sign-compare -Wall -Wextra -Wwrite-strings
+-Wno-sign-compare -Wall -Wextra -Wwrite-strings -Wno-sign-compare -c -o
+/utran/fdd/nodeb/opt/src/build/i686-pc-linux-gnu/mtd-utils/ubi-utils/old
+-utils/libubi.o ./src/libubi.c -g
+-Wp,-MD,/utran/fdd/nodeb/opt/src/build/i686-pc-linux-gnu/mtd-utils/ubi-u
+tils/old-utils/.libubi.c.dep
+./src/libubi.c: In function `ubi_get_dev_info1':
+./src/libubi.c:347: error: structure has no member named
+`lowest_vol_num'
+./src/libubi.c:355: error: structure has no member named
+`highest_vol_num'
+./src/libubi.c:356: error: structure has no member named
+`highest_vol_num'
+./src/libubi.c:357: error: structure has no member named
+`lowest_vol_num'
+./src/libubi.c:358: error: structure has no member named
+`lowest_vol_num'
+./src/libubi.c:364: error: structure has no member named
+`lowest_vol_num'
+./src/libubi.c:365: error: structure has no member named
+`lowest_vol_num'
+./src/libubi.c:367: error: structure has no member named `avail_ebs'
+./src/libubi.c:369: error: structure has no member named `total_ebs'
+./src/libubi.c:373: error: structure has no member named `eb_size'
+./src/libubi.c:384: error: structure has no member named `avail_ebs'
+./src/libubi.c:384: error: structure has no member named `eb_size'
+./src/libubi.c:385: error: structure has no member named `total_ebs'
+./src/libubi.c:385: error: structure has no member named `eb_size'
+./src/libubi.c: In function `ubi_get_vol_info1':
+./src/libubi.c:439: error: structure has no member named `rsvd_ebs'
+./src/libubi.c:442: error: structure has no member named `eb_size'
+./src/libubi.c:449: error: structure has no member named `eb_size'
+./src/libubi.c:449: error: structure has no member named `rsvd_ebs'
+./src/libubi.c: In function `find_vol_num':
+./src/libubi.c:894: error: structure has no member named
+`lowest_vol_num'
+./src/libubi.c:894: error: structure has no member named
+`highest_vol_num'
+make[2]: ***
+[/utran/fdd/nodeb/opt/src/build/i686-pc-linux-gnu/mtd-utils/ubi-utils/ol
+d-utils/libubi.o] Error 1
+make[2]: Leaving directory
+`/utran/fdd/nodeb/opt/src/build/i686-pc-linux-gnu/mtd-utils/ubi-utils/ol
+d-utils'
+make[1]: *** [subdirs_old-utils_all] Error 2
 
-if i disable "#rootfs / auto deafults 1 1 ",when kernel booting ,ubifs
-driver never say error ,
-can you explain it ?
 
-because my old ubifs patched driver never say any error even if  it is
-enable  !
- 
+What I'm doing wrong?
 
-On 六, 2009-06-27 at 14:32 +0300, Artem Bityutskiy wrote:
-> On Sat, 2009-06-27 at 11:49 +0800, tommy wrote:
-> > HI,dear sir !
-> > 
-> > i have pathed my 2.6.24 BSP with ubifs-2.6.24-git!
-> > 
-> > It work ok ,but when kernel booting  ,it also say error:
-> > 0x00000000-0x00040000 : "Bootloader"
-> > 0x00040000-0x00840000 : "Kernel"
-> > 0x00840000-0x13440000 : "Rootfs"
-> > 0x13440000-0x40000000 : "data"
-> > UBI: attaching mtd2 to ubi0
-> > UBI: physical eraseblock size:   262144 bytes (256 KiB)
-> > UBI: logical eraseblock size:    258048 bytes
-> > UBI: smallest flash I/O unit:    2048
-> > UBI: VID header offset:          2048 (aligned 2048)
-> > UBI: data offset:                4096
-> > UBI: attached mtd2 to ubi0
-> > UBI: MTD device name:            "Rootfs"
-> > UBI: MTD device size:            300 MiB
-> > UBI: number of good PEBs:        1200
-> > UBI: number of bad PEBs:         0
-> > UBI: max. allowed volumes:       128
-> > UBI: wear-leveling threshold:    4096
-> > UBI: number of internal volumes: 1
-> > UBI: number of user volumes:     1
-> > UBI: available PEBs:             5
-> > UBI: total number of reserved PEBs: 1195
-> > UBI: number of PEBs reserved for bad PEB handling: 12
-> > 
-> > UBIFS: mounted UBI device 0, volume 0, name "rootfs"
-> > UBIFS: file system size:   301916160 bytes (294840 KiB, 287 MiB, 1170
-> > LEBs)
-> > UBIFS: journal size:       14966784 bytes (14616 KiB, 14 MiB, 58 LEBs)
-> > UBIFS: media format:       w4/r0 (latest is w4/r0)
-> > UBIFS: default compressor: lzo
-> > UBIFS: reserved for root:  4952683 bytes (4836 KiB)
-> > VFS: Mounted root (ubifs filesystem).
-> > 
-> > UBIFS error (pid 628): ubifs_get_sb: cannot open "rootfs", error -22
-> > 
-> > when it mount ok,also say error "cannot open 'rootfs' ",sir ?
-> 
-> -22 is -EINVAL, not sure what happened. Try to send a better bug report,
-> see here:
-> http://www.linux-mtd.infradead.org/doc/ubifs.html#L_how_send_bugreport
-> 
+BR
+Reiner=20
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
