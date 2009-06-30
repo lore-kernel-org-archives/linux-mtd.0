@@ -1,24 +1,18 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MLbmM-0006cc-95
-	for linux-mtd@lists.infradead.org; Tue, 30 Jun 2009 11:45:47 +0000
-Received: from esebh106.NOE.Nokia.com (esebh106.ntc.nokia.com [172.21.138.213])
-	by mgw-mx09.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
-	n5UBiuJg013930
-	for <linux-mtd@lists.infradead.org>; Tue, 30 Jun 2009 06:45:36 -0500
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
 Subject: RE: Compile Error: structure has no member named lowest_vol_num
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: "Biefel, Reiner (NSN - DE/Munich)" <reiner.biefel@nsn.com>
-In-Reply-To: <077E41CFFD002C4CAB7DFA4386A53264F5D7EC@DEMUEXC014.nsn-intra.net>
+Date: Tue, 30 Jun 2009 16:27:06 +0200
+Message-ID: <077E41CFFD002C4CAB7DFA4386A53264F5D7F9@DEMUEXC014.nsn-intra.net>
+In-Reply-To: <1246362304.20721.2.camel@localhost.localdomain>
 References: <077E41CFFD002C4CAB7DFA4386A53264F5D7E7@DEMUEXC014.nsn-intra.net>
 	<077E41CFFD002C4CAB7DFA4386A53264F5D7EC@DEMUEXC014.nsn-intra.net>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 30 Jun 2009 14:45:04 +0300
-Message-Id: <1246362304.20721.2.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+	<1246362304.20721.2.camel@localhost.localdomain>
+From: "Biefel, Reiner (NSN - DE/Munich)" <reiner.biefel@nsn.com>
+To: <dedekind@infradead.org>
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,14 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-06-29 at 09:29 +0200, Biefel, Reiner (NSN - DE/Munich)
-wrote:
-> Hello,
-> 
-> does really nobody have an idea, why I always get this error?
+I've downloaded the snapshot from http://git.infradead.org/mtd-utils.git
+with enty
+2009-06-08
+	Detlef Bardtholdt
+	libubi: fix wrong size calculation with sizes > 4GiB
+	commit | commitdiff | tree | snapshot
 
-I do not see this. How would I reproduce this?
+- tar xzvf mtd-utils-e4d5eea6414093fb074b19585cb8bebadc2d3e0e.tar.gz
+- cd mtd-utils
+- CFLAGS=3D'-O2' CPPFLAGS=3D'-I
+/utran/fdd/nodeb/opt/i686-pc-linux-gnu/zlib/include -I
+/utran/fdd/nodeb/opt/i686-pc-linux-gnu//lzo/include -I
+/utran/fdd/nodeb/opt/i686-pc-linux-gnu/e2fsprogs/include' LDFLAGS=3D'-L
+/utran/fdd/nodeb/opt/i686-pc-linux-gnu/zlib/lib -L
+/utran/fdd/nodeb/opt/i686-pc-linux-gnu//lzo/lib -L
+/utran/fdd/nodeb/opt/i686-pc-linux-gnu/e2fsprogs/lib' make CC=3Dgcc
+WITHOUT_XATTR=3D1
+BUILDDIR=3D/utran/fdd/nodeb/opt/src/build/i686-pc-linux-gnu/mtd-utils
 
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+BR,
+Reiner=20
