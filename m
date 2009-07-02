@@ -1,16 +1,15 @@
-Received: from host5-169-dynamic.53-82-r.retail.telecomitalia.it
-	([82.53.169.5] helo=elodzdm.telecomitalia.it)
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MMRJz-0004IH-FT
-	for linux-mtd@lists.infradead.org; Thu, 02 Jul 2009 18:47:54 +0000
+Received: from gmmr1.centrum.cz ([90.183.38.157])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MMUll-0008Dy-Qm
+	for linux-mtd@lists.infradead.org; Thu, 02 Jul 2009 22:28:49 +0000
+Subject: congratulation
+Date: Fri, 03 Jul 2009 00:28:25 +0200
+From: <julylotto1018@centrum.cz>
 MIME-Version: 1.0
-From: "dayak" <dayak@asia-trade.biz>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain;
- charset="windows-1255"
-Message-ID: <511ed4890aa2b2066570664722e181$seram@asia-trade.biz>
-Date: Thu, 02 Jul 2009 18:42:42 +0100
-Subject: Dating Advice - Love Him? tSaay Away From His Cell Phone
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-Id: <1246573705.338527.9238.nullmailer@mail1009.cent>
+Cc: recipient list not shown: ;
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,4 +19,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dating Agdvice - Love Him? Stay Away From Hiis Cell Phone www. med19. com. Bogus Calls Prompt Fake Pprize, Real Jaiil
+
+Настоящим уведомляем Вас о том, что у вас есть сумму $ 500,000,00 долларов США в Австралии лотерею награду 2009 году, во время нашей электронной системы голосования. (verificationdept.lottoinc1@yahoo.com)
+связаться с нашим агентом претензий со следующей информацией в
+Ваше имя :.....
+Адрес :.............
+Телефонный номер :.........
+Чтобы ваши претензии приза свяжитесь фидуциарная агента по электронной почте: Контактная информация (verificationdept.lottoinc1@yahoo.com)
