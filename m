@@ -1,16 +1,11 @@
-Received: from west-smtp1.trimble.com ([155.63.128.51])
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MMk3G-0002Cx-6X
-	for linux-mtd@lists.infradead.org; Fri, 03 Jul 2009 14:47:53 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
+	id 1MMkEH-0004Wl-4r
+	for linux-mtd@lists.infradead.org; Fri, 03 Jul 2009 14:59:16 +0000
 Subject: RE: UBIFS Corrupt during power failure
-Date: Fri, 3 Jul 2009 08:47:40 -0600
-Message-ID: <7207AAC68CE347458026863515A07DA102901F9C@usw-am-xch-02.am.trimblecorp.net>
-In-Reply-To: <1246629940.20721.219.camel@localhost.localdomain>
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Urs Muff <urs_muff@trimble.com>
+In-Reply-To: <7207AAC68CE347458026863515A07DA102901F9C@usw-am-xch-02.am.trimblecorp.net>
 References: <C77C279BA71FD14985DC8E75FB265AB702FE53F4@usw-am-xch-02.am.trimblecorp.net>
 	<1239979018.3390.298.camel@localhost.localdomain>
 	<C77C279BA71FD14985DC8E75FB265AB7030C4C86@usw-am-xch-02.am.trimblecorp.net>
@@ -22,10 +17,15 @@ References: <C77C279BA71FD14985DC8E75FB265AB702FE53F4@usw-am-xch-02.am.trimbleco
 	<1246627771.20721.191.camel@localhost.localdomain>
 	<7207AAC68CE347458026863515A07DA102901F3C@usw-am-xch-02.am.trimblecorp.net>
 	<1246629940.20721.219.camel@localhost.localdomain>
-From: "Urs Muff" <urs_muff@trimble.com>
-To: <dedekind@infradead.org>
-Cc: Stefan Roese <sr@denx.de>, Eric Holmberg <Eric_Holmberg@Trimble.com>,
+	<7207AAC68CE347458026863515A07DA102901F9C@usw-am-xch-02.am.trimblecorp.net>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 03 Jul 2009 17:58:51 +0300
+Message-Id: <1246633131.20721.224.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Stefan Roese <sr@denx.de>, Eric Holmberg <Eric_Holmberg@trimble.com>,
 	linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,36 +35,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SSBjYW4ndCBmaW5kIHRoZSBkYXRhLXNoZWV0IHJlZmVyZW5jZSB0byB0aGF0LCBidXQgSSB3b3Vs
-ZCBub3QgY2hhcmFjdGVyaXplIGl0IGFzICdlcmFzaW5nIGZyb20gdGhlIGVuZCcuDQoNCkFzIGZh
-ciBhcyBJIHVuZGVyc3RhbmQgaXQgaXMgYSAyIHBoYXNlIHByb2Nlc3MsIGFuZCB5b3UgY2FuIGxv
-c2UgcG93ZXIgYXQgYW55IHBvaW50IHNvIHlvdSBjYW4gc2VlIGEgcGFydGlhbCBwaGFzZSBJIG9y
-IGEgcGFydGlhbCBwaGFzZSBJSSBzdGF0ZS4NCi0gcGhhc2UgSTogc2V0IGFsbCBkYXRhIHRvIDAw
-OiBhIHBhcnRpYWwgcGljdHVyZSB3b3VsZCBiZSB0byBzZWUgMDAgYXQgdGhlIGJlZ2lubmluZyBh
-bmQgcmFuZG9tIGF0IHRoZSBlbmQgb2YgdGhlIGJsb2NrDQotIHBoYXNlIElJOiBzZXQgYWxsIGRh
-dGEgdG8gRkY6IGEgcGFydGlhbCBwaWN0dXJlIHdvdWxkIGJlIHRvIHNlZSBGRiBhdCB0aGUgYmVn
-aW5uaW5nIGFuZCAwMCBhdCB0aGUgZW5kIG9mIHRoZSBibG9jaw0KDQpGcm9tIGxvb2tpbmcgYXQg
-eW91ciBkdW1wcywgaXQgYXBwZWFycyB0aGF0IHlvdSBnb3QgaW50ZXJydXB0ZWQgZHVyaW5nIHBo
-YXNlIElJLiAgSSdtIG5vdCBzdXJlIHdoeSB5b3Ugc3RpbGwgaGF2ZSB0aGUgaGVhZGVyLCBidXQg
-dGhhdCBtaWdodCBiZSBiL2MgdGhlIGJsb2NrIGhhcyBiZWVuIHJlY2xhaW1lZCAvIHJlaW5pdGlh
-bGl6ZWQgKEknbSBub3QgZmFtaWxpYXIgd2l0aCB0aGUgYWN0dWFsIGNvZGUsIGJ1dCBpdCBhcHBl
-YXJzIHRoYXQgd2F5IGZyb20gdGhlIGR1bXApLg0KDQpVUlMgQy4gTVVGRg0KRklSTVdBUkUgRU5H
-SU5FRVINCkNPTlNUUlVDVElPTiBTRVJWSUNFUywgVFJJTUJMRSwgV0VTVE1JTlNURVIsIENPDQpP
-RkZJQ0U6IDcyMC01ODctNDY4Mw0KDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4g
-RnJvbTogQXJ0ZW0gQml0eXV0c2tpeSBbbWFpbHRvOmRlZGVraW5kQGluZnJhZGVhZC5vcmddDQo+
-IFNlbnQ6IEZyaWRheSwgSnVseSAwMywgMjAwOSA4OjA2IEFNDQo+IFRvOiBVcnMgTXVmZg0KPiBD
-YzogRXJpYyBIb2xtYmVyZzsgU3RlZmFuIFJvZXNlOyBBZHJpYW4gSHVudGVyOyBsaW51eC0NCj4g
-bXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gU3ViamVjdDogUkU6IFVCSUZTIENvcnJ1cHQgZHVy
-aW5nIHBvd2VyIGZhaWx1cmUNCj4gDQo+IE9uIEZyaSwgMjAwOS0wNy0wMyBhdCAwNzozMyAtMDYw
-MCwgVXJzIE11ZmYgd3JvdGU6DQo+ID4gVHJpbWJsZSBpcyBjbG9zZWQgdW50aWwgNy8xMyBhbmQg
-RXJpYyBpcyBhbHJlYWR5IGdvbmUuDQo+ID4gSSdtIG5vdCBhIGZsYXNoIGV4cGVydCBhdCBhbGws
-IGFuZCBvbmx5IGtub3cgdGhpbmdzIGZyb20gcGFzc2luZywNCj4gPiBidXQgZnJvbSB3aGF0IEkg
-aGF2ZSBoZWFyZCwgTk9SIGZsYXNoIGRvZXMgcGh5c2ljYWwgZXJhc2luZyBxdWl0ZQ0KPiA+IGRp
-ZmZlcmVudCBmcm9tIE5BTkQgZmxhc2gsIGJ5IHRvZ2dpbmcgZXZlcnl0aGluZyB0byAwMCwgYW5k
-IHRoZW4NCj4gPiB0byBGRi4gIFNvIHdoYXQgeW91IGFyZSBzZWVpbmcgaXMgYWJzb2x1dGVseSBl
-eHBsYWluYWJsZSB3aXRoIHdoYXQNCj4gPiBJIHVuZGVyc3RhbmQuDQo+IA0KPiBIbW0sIEknbGwg
-dHJ5IHRvIGdvb2dsZS4gQnV0IGlmIHRoaXMgaXMgdHJ1ZSwgSSBkbyBub3QgdW5kZXJzdGFuZA0K
-PiBob3cgSkZGUzIgbWF5IHdvcmsgb24gTk9SLi4uDQo+IA0KPiBJIHdvbmRlciBpZiBpdCBpcyBw
-b3NzaWJsZSB0byBhc2sgTk9SIHRvIGVyYXNlIGZyb20gdGhlIGJlZ2lubmluZywNCj4gbm90IGZy
-b20gdGhlIGVuZCwgd2hpY2ggc2hvdWxkIGhlbHAuDQo+IA0KPiAtLQ0KPiBCZXN0IHJlZ2FyZHMs
-DQo+IEFydGVtIEJpdHl1dHNraXkgKNCR0LjRgtGO0YbQutC40Lkg0JDRgNGC0ZHQvCkNCg0K
+On Fri, 2009-07-03 at 08:47 -0600, Urs Muff wrote:
+> I can't find the data-sheet reference to that, but I would not characterize it as 'erasing from the end'.
+> 
+> As far as I understand it is a 2 phase process, and you can lose power at any point so you can see a partial phase I or a partial phase II state.
+> - phase I: set all data to 00: a partial picture would be to see 00 at the beginning and random at the end of the block
+> - phase II: set all data to FF: a partial picture would be to see FF at the beginning and 00 at the end of the block
+
+That would be nice, because then UBI would work fine, since it would
+notice corrupted EC header at the beginning, and would drop the PEB.
+
+> From looking at your dumps, it appears that you got interrupted during
+> phase II.  I'm not sure why you still have the header, but that might
+> be b/c the block has been reclaimed / reinitialized (I'm not familiar
+> with the actual code, but it appears that way from the dump).
+
+No, I believe it was not reinitialized.
+
+But I should write a small test program which writes a known pattern to
+PEBs, then erases them, and sees what happened to them after an unclean
+reboot.
+
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
