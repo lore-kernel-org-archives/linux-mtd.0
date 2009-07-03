@@ -1,15 +1,20 @@
-Received: from gmmr1.centrum.cz ([90.183.38.157])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MMUll-0008Dy-Qm
-	for linux-mtd@lists.infradead.org; Thu, 02 Jul 2009 22:28:49 +0000
-Subject: congratulation
-Date: Fri, 03 Jul 2009 00:28:25 +0200
-From: <julylotto1018@centrum.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MMca2-0001Z4-G4
+	for linux-mtd@lists.infradead.org; Fri, 03 Jul 2009 06:49:12 +0000
+Subject: Re: [PATCH] ubifs: allow more than one volume to be mounted
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Daniel Mack <daniel@caiaq.de>
+In-Reply-To: <1246547747-13366-1-git-send-email-daniel@caiaq.de>
+References: <1246547747-13366-1-git-send-email-daniel@caiaq.de>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 03 Jul 2009 09:48:44 +0300
+Message-Id: <1246603724.20721.27.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-Id: <1246573705.338527.9238.nullmailer@mail1009.cent>
-Cc: recipient list not shown: ;
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Adrian Hunter <ext-adrian.hunter@nokia.com>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,10 +24,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, 2009-07-02 at 17:15 +0200, Daniel Mack wrote:
+> UBIFS uses a bdi device per volume, but does not care to hand out unique
+> names to each of them. This causes an error when trying to mount more
+> than one volumes.
 
-Настоящим уведомляем Вас о том, что у вас есть сумму $ 500,000,00 долларов США в Австралии лотерею награду 2009 году, во время нашей электронной системы голосования. (verificationdept.lottoinc1@yahoo.com)
-связаться с нашим агентом претензий со следующей информацией в
-Ваше имя :.....
-Адрес :.............
-Телефонный номер :.........
-Чтобы ваши претензии приза свяжитесь фидуциарная агента по электронной почте: Контактная информация (verificationdept.lottoinc1@yahoo.com)
+I've simplified your patch a little and pushed to ubifs-2.6.git. Also
+amended the MAINTAINERS file:
+
+http://git.infradead.org/ubifs-2.6.git?a=commit;h=72093a661c0bd06d4843ac0ef8b909645483031b
+http://git.infradead.org/ubifs-2.6.git?a=commit;h=42feebfc9af4ab505cacb0ea20bef35957ef2676
+
+I'll send this fix to Linus in few days.
+
+-- 
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
