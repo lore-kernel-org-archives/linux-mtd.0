@@ -1,19 +1,21 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MMca2-0001Z4-G4
-	for linux-mtd@lists.infradead.org; Fri, 03 Jul 2009 06:49:12 +0000
-Subject: Re: [PATCH] ubifs: allow more than one volume to be mounted
+	id 1MMcdU-0002SX-Vq
+	for linux-mtd@lists.infradead.org; Fri, 03 Jul 2009 06:52:47 +0000
+Subject: Re: Compile Error: structure has no member named lowest_vol_num
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Daniel Mack <daniel@caiaq.de>
-In-Reply-To: <1246547747-13366-1-git-send-email-daniel@caiaq.de>
-References: <1246547747-13366-1-git-send-email-daniel@caiaq.de>
+To: Mike Frysinger <vapier.adi@gmail.com>
+In-Reply-To: <8bd0f97a0907011815r644dd021mc394406ba913767a@mail.gmail.com>
+References: <077E41CFFD002C4CAB7DFA4386A53264F5D7E7@DEMUEXC014.nsn-intra.net>
+	<1246373088.20721.11.camel@localhost.localdomain>
+	<8bd0f97a0907011815r644dd021mc394406ba913767a@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 03 Jul 2009 09:48:44 +0300
-Message-Id: <1246603724.20721.27.camel@localhost.localdomain>
+Date: Fri, 03 Jul 2009 09:52:22 +0300
+Message-Id: <1246603942.20721.29.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Adrian Hunter <ext-adrian.hunter@nokia.com>
+Cc: "Biefel, Reiner \(NSN - DE/Munich\)" <reiner.biefel@nsn.com>,
+	linux-mtd@lists.infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,18 +26,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-07-02 at 17:15 +0200, Daniel Mack wrote:
-> UBIFS uses a bdi device per volume, but does not care to hand out unique
-> names to each of them. This causes an error when trying to mount more
-> than one volumes.
+On Wed, 2009-07-01 at 21:15 -0400, Mike Frysinger wrote:
+> the CPPFLAGS in the env changes how make initializes/appends CPPFLAGS
+> in sub-makes.  this causes the old ubi utils to find the newer headers
+> at ubi-utils/include/ before the ubi-utils/old-utils/inc/.  i'd pose
+> the question of whether keeping old-utils makes sense anymore ?  "old"
+> sounds to me like "punt" ...
 
-I've simplified your patch a little and pushed to ubifs-2.6.git. Also
-amended the MAINTAINERS file:
+Well, some people use them so far, AFAIK...
 
-http://git.infradead.org/ubifs-2.6.git?a=commit;h=72093a661c0bd06d4843ac0ef8b909645483031b
-http://git.infradead.org/ubifs-2.6.git?a=commit;h=42feebfc9af4ab505cacb0ea20bef35957ef2676
+> barring that, here is the simple fix:
+> --- a/ubi-utils/old-utils/Makefile
+> +++ b/ubi-utils/old-utils/Makefile
+> @@ -5,8 +5,8 @@
+>  KERNELHDR := ../../include
+> 
+>  CFLAGS ?= -O2 -g -Werror
+> -CPPFLAGS += -I./inc -I./src -I$(KERNELHDR) \
+> -   -std=gnu99 -DPACKAGE_VERSION=\"1.0\"
+> +CPPFLAGS := -I./inc -I./src -I$(KERNELHDR) \
+> +   -std=gnu99 -DPACKAGE_VERSION=\"1.0\" $(CPPFLAGS)
+> 
+>  PERLPROGS = mkpfi ubicrc32.pl
 
-I'll send this fix to Linus in few days.
+Thanks!
+
+Reiner, please, check this.
 
 -- 
 Best regards,
