@@ -1,16 +1,18 @@
-Received: from dslb-084-061-150-129.pools.arcor-ip.net ([84.61.150.129]
-	helo=tdflmp.arcor-ip.net)
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MNCbp-0005KF-J6
-	for linux-mtd@lists.infradead.org; Sat, 04 Jul 2009 21:17:28 +0000
-Message-ID: <4734298244@rouge.co.nz>
-Date: Sat, 04 Jul 2009 21:12:11 -0100
+Received: from farizej.centrum.cz ([90.183.38.130])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MNGnE-0002dl-HJ
+	for linux-mtd@lists.infradead.org; Sun, 05 Jul 2009 01:45:31 +0000
+Received: by mail255.centrum.cz id S50367074AbZGEBo6 (ORCPT
+	<rfc822;linux-mtd@lists.infradead.org>);
+	Sun, 5 Jul 2009 03:44:58 +0200
+Date: Sun, 05 Jul 2009 03:44:58 +0200
+From: "AUSTRALIA LOTTERY" <lotojuly2009inc@centrum.sk>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain;
- charset="iso-8859-7"
-From: Deacetis<telomeric@chaswill.co.za>
-Subject: Seex in the iCty Tips!
+Message-ID: <200907050344.10048@centrum.cz>
+Subject: won
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To: unlisted-recipients:; (no To-header on input)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,4 +22,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sex in tghe Cmity Tips! www. via11. net. Japaense Bomb Squad Finds Suspicious Beeer
+Настоящим уведомляем Вас о том, что у вас есть сумму $ 500,000,00 долларов США в Австралии лотерею награду 2009 году, во время нашей электронной системы голосования. (verificationdept.lottoinc2@yahoo.com)
+связаться с нашим агентом претензий со следующей информацией в
+Ваше имя :.....
+Адрес :.............
+Телефонный номер :.........
+Чтобы ваши претензии приза свяжитесь фидуциарная агента по электронной
++234-80-33030448 
