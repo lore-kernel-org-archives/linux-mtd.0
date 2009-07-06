@@ -1,19 +1,22 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MNopx-0002MW-JB
-	for linux-mtd@lists.infradead.org; Mon, 06 Jul 2009 14:06:36 +0000
-Subject: Re: ubiattach problem
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Oren <oren_s3@VERIFONE.com>
-In-Reply-To: <1246888221.17871.5.camel@tlvorens3lnx>
-References: <1246888221.17871.5.camel@tlvorens3lnx>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 06 Jul 2009 17:05:42 +0300
-Message-Id: <1246889142.20721.293.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from rv-out-0708.google.com ([209.85.198.251])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MNpBm-0006Ap-RB
+	for linux-mtd@lists.infradead.org; Mon, 06 Jul 2009 14:29:09 +0000
+Received: by rv-out-0708.google.com with SMTP id c5so5749rvf.42
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 06 Jul 2009 07:29:00 -0700 (PDT)
+Message-ID: <4A520A24.7030306@gmail.com>
+Date: Mon, 06 Jul 2009 22:28:52 +0800
+From: Wan ZongShun <mcuos.com@gmail.com>
+MIME-Version: 1.0
+To: Wan ZongShun <mcuos.com@gmail.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>
+Subject: [PATCH] Add NAND driver for w90p910
+References: <4A5040E8.4020201@gmail.com> <4A50430B.2030804@gmail.com>
+In-Reply-To: <4A50430B.2030804@gmail.com>
+Content-Type: text/plain; charset=GB2312
+Content-Transfer-Encoding: 7bit
+Cc: linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,44 +26,435 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-07-06 at 16:50 +0300, Oren wrote:
-> HI,
-> 
-> I am trying to attached a ubi image to an MTD nand device.
-> I am using kerenl version 2.6.27.18.
-> using latest MTD-UTILS + ubi_utils.
-> 
-> For some reosone i get UBI error while trying to attache..
-> DO i miss someting?
-> 
-> 
-> dev:    size   erasesize  name
-> mtd0: 01000000 00020000 "NAND-block1"
-> mtd1: 01e00000 00020000 "jffs2"
-> mtd2: 05200000 00020000 "NAND-block2"
-> ./ubinfo
-> UBI version:                    1
-> Count of UBI devices:           0
-> UBI control device major/minor: 10:63
-> ubiformat /dev/mtd0 -s 2048 -f ubi_ncomp.img
-> ubiformat: mtd0 (nand), size 16777216 bytes (16.0 MiB), 128 eraseblocks
-> of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
-> libscan: scanning eraseblock 127 -- 100 % complete  
-> ubiformat: 128 eraseblocks are supposedly empty
-> ubiformat: flashing eraseblock 16 -- 100 % complete  
-> ubiformat: formatting eraseblock 127 -- 100 % complete
-> ubiattach /dev/ubi_ctrl -m 0  
-> [42949485.550000] UBI error: ubi_read_volume_table: the layout volume
-> was not found
-> [42949485.560000] UBI error: ubi_attach_mtd_dev: failed to attach by
-> scanning, error -22
-> ubiattach: error!: cannot attach mtd0
->            error 22 (Invalid argument)
+Dear sirs,
 
-Looks strange. Does dmesg has anything interesting when you enable
-UBI debugging?
-(http://www.linux-mtd.infradead.org/doc/ubi.html#L_how_send_bugreport)
+Add NAND driver for w90p910 evb, and CC "linux-arm-kernel".
 
+
+Signed-off-by: Wan ZongShun <mcuos.com@gmail.com>
+
+---
+ drivers/mtd/nand/Kconfig        |    6 +
+ drivers/mtd/nand/Makefile       |    1 +
+ drivers/mtd/nand/w90p910_nand.c |  384 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 391 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/nand/w90p910_nand.c
+
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index ce96c09..34b6c13 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -452,4 +452,10 @@ config MTD_NAND_SOCRATES
+ 	help
+ 	  Enables support for NAND Flash chips wired onto Socrates board.
+ 
++config MTD_NAND_W90P910
++	tristate "Support for NAND on w90p910 EVB"
++	depends on ARCH_W90X900
++	help
++	  This enables the driver for the NAND Flash on w90p910 EVB.
++
+ endif # MTD_NAND
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index f3a786b..4f7b189 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -40,5 +40,6 @@ obj-$(CONFIG_MTD_NAND_SH_FLCTL)		+= sh_flctl.o
+ obj-$(CONFIG_MTD_NAND_MXC)		+= mxc_nand.o
+ obj-$(CONFIG_MTD_NAND_SOCRATES)		+= socrates_nand.o
+ obj-$(CONFIG_MTD_NAND_TXX9NDFMC)	+= txx9ndfmc.o
++obj-$(CONFIG_MTD_NAND_W90P910)		+= w90p910_nand.o
+ 
+ nand-objs := nand_base.o nand_bbt.o
+diff --git a/drivers/mtd/nand/w90p910_nand.c b/drivers/mtd/nand/w90p910_nand.c
+new file mode 100644
+index 0000000..35f6678
+--- /dev/null
++++ b/drivers/mtd/nand/w90p910_nand.c
+@@ -0,0 +1,384 @@
++/*
++ * Copyright (c) 2009 Nuvoton technology corporation.
++ *
++ * Wan ZongShun <mcuos.com@gmail.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation;version 2 of the License.
++ *
++ */
++
++#include <linux/slab.h>
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/interrupt.h>
++#include <linux/io.h>
++#include <linux/platform_device.h>
++#include <linux/delay.h>
++#include <linux/clk.h>
++#include <linux/err.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/nand.h>
++#include <linux/mtd/partitions.h>
++
++#define REG_FMICSR   	0x00
++#define REG_SMCSR    	0xa0
++#define REG_SMISR    	0xac
++#define REG_SMCMD    	0xb0
++#define REG_SMADDR   	0xb4
++#define REG_SMDATA   	0xb8
++
++#define RESET_FMI	0x01
++#define NAND_EN		0x08
++#define READYBUSY	(0x01 << 18)
++
++#define SWRST		0x01
++#define PSIZE		(0x01 << 3)
++#define DMARWEN		(0x03 << 1)
++#define BUSWID		(0x01 << 4)
++#define ECC4EN		(0x01 << 5)
++#define WP		(0x01 << 24)
++#define NANDCS		(0x01 << 25)
++#define ENDADDR		(0x01 << 31)
++
++#define read_data_reg(dev)		\
++	__raw_readl((dev)->reg + REG_SMDATA)
++
++#define write_data_reg(dev, val)	\
++	__raw_writel((val), (dev)->reg + REG_SMDATA)
++
++#define write_cmd_reg(dev, val)		\
++	__raw_writel((val), (dev)->reg + REG_SMCMD)
++
++#define write_addr_reg(dev, val)	\
++	__raw_writel((val), (dev)->reg + REG_SMADDR)
++
++struct w90p910_nand {
++	struct mtd_info mtd;
++	struct nand_chip chip;
++	void __iomem *reg;
++	struct clk *clk;
++	spinlock_t lock;
++};
++
++static const struct mtd_partition partitions[] = {
++	{
++	 .name = "NAND FS 0",
++	 .offset = 0,
++	 .size = 8 * 1024 * 1024
++	},
++	{
++	 .name = "NAND FS 1",
++	 .offset = MTDPART_OFS_APPEND,
++	 .size = MTDPART_SIZ_FULL
++	}
++};
++
++static unsigned char w90p910_nand_read_byte(struct mtd_info *mtd)
++{
++	unsigned char ret;
++	struct w90p910_nand *nand;
++
++	nand = container_of(mtd, struct w90p910_nand, mtd);
++
++	ret = (unsigned char)read_data_reg(nand);
++
++	return ret;
++}
++
++static void w90p910_nand_read_buf(struct mtd_info *mtd,
++						unsigned char *buf, int len)
++{
++	int i;
++	struct w90p910_nand *nand;
++
++	nand = container_of(mtd, struct w90p910_nand, mtd);
++
++	for (i = 0; i < len; i++)
++		buf[i] = (unsigned char)read_data_reg(nand);
++}
++
++static void w90p910_nand_write_buf(struct mtd_info *mtd,
++					const unsigned char *buf, int len)
++{
++	int i;
++	struct w90p910_nand *nand;
++
++	nand = container_of(mtd, struct w90p910_nand, mtd);
++
++	for (i = 0; i < len; i++)
++		write_data_reg(nand, buf[i]);
++}
++
++static int w90p910_verify_buf(struct mtd_info *mtd,
++					const unsigned char *buf, int len)
++{
++	int i;
++	struct w90p910_nand *nand;
++
++	nand = container_of(mtd, struct w90p910_nand, mtd);
++
++	for (i = 0; i < len; i++) {
++		if (buf[i] != (unsigned char)read_data_reg(nand))
++			return -EFAULT;
++	}
++
++	return 0;
++}
++
++static int w90p910_check_rb(struct w90p910_nand *nand)
++{
++	unsigned int val;
++	spin_lock(&nand->lock);
++	val = __raw_readl(REG_SMISR);
++	val &= READYBUSY;
++	spin_unlock(&nand->lock);
++
++	return val;
++}
++
++static int w90p910_nand_devready(struct mtd_info *mtd)
++{
++	struct w90p910_nand *nand;
++	int ready;
++
++	nand = container_of(mtd, struct w90p910_nand, mtd);
++
++	ready = (w90p910_check_rb(nand)) ? 1 : 0;
++	return ready;
++}
++
++static void w90p910_nand_select_chip(struct mtd_info *mtd, int chip)
++{
++}
++
++static void w90p910_nand_command_lp(struct mtd_info *mtd,
++			unsigned int command, int column, int page_addr)
++{
++	register struct nand_chip *chip = mtd->priv;
++	struct w90p910_nand *nand;
++
++	nand = container_of(mtd, struct w90p910_nand, mtd);
++
++	if (command == NAND_CMD_READOOB) {
++		column += mtd->writesize;
++		command = NAND_CMD_READ0;
++	}
++
++	write_cmd_reg(nand, command & 0xff);
++
++	if (column != -1 || page_addr != -1) {
++
++		if (column != -1) {
++			if (chip->options & NAND_BUSWIDTH_16)
++				column >>= 1;
++			write_addr_reg(nand, column);
++			write_addr_reg(nand, column >> 8 | ENDADDR);
++		}
++		if (page_addr != -1) {
++			write_addr_reg(nand, page_addr);
++
++			if (chip->chipsize > (128 << 20)) {
++				write_addr_reg(nand, page_addr >> 8);
++				write_addr_reg(nand, page_addr >> 16 | ENDADDR);
++			} else {
++				write_addr_reg(nand, page_addr >> 8 | ENDADDR);
++			}
++		}
++	}
++
++	switch (command) {
++	case NAND_CMD_CACHEDPROG:
++	case NAND_CMD_PAGEPROG:
++	case NAND_CMD_ERASE1:
++	case NAND_CMD_ERASE2:
++	case NAND_CMD_SEQIN:
++	case NAND_CMD_RNDIN:
++	case NAND_CMD_STATUS:
++	case NAND_CMD_DEPLETE1:
++		return;
++
++	case NAND_CMD_STATUS_ERROR:
++	case NAND_CMD_STATUS_ERROR0:
++	case NAND_CMD_STATUS_ERROR1:
++	case NAND_CMD_STATUS_ERROR2:
++	case NAND_CMD_STATUS_ERROR3:
++		udelay(chip->chip_delay);
++		return;
++
++	case NAND_CMD_RESET:
++		if (chip->dev_ready)
++			break;
++		udelay(chip->chip_delay);
++
++		write_cmd_reg(nand, NAND_CMD_STATUS);
++		write_cmd_reg(nand, command);
++
++		while (!w90p910_check_rb(nand))
++			;
++
++		return;
++
++	case NAND_CMD_RNDOUT:
++		write_cmd_reg(nand, NAND_CMD_RNDOUTSTART);
++		return;
++
++	case NAND_CMD_READ0:
++
++		write_cmd_reg(nand, NAND_CMD_READSTART);
++	default:
++
++		if (!chip->dev_ready) {
++			udelay(chip->chip_delay);
++			return;
++		}
++	}
++
++	/* Apply this short delay always to ensure that we do wait tWB in
++	 * any case on any machine. */
++	ndelay(100);
++
++	while (!chip->dev_ready(mtd))
++		;
++}
++
++
++static void w90p910_nand_enable(struct w90p910_nand *nand)
++{
++	unsigned int val;
++	spin_lock(&nand->lock);
++	__raw_writel(RESET_FMI, (nand->reg + REG_FMICSR));
++
++	val = __raw_readl(nand->reg + REG_FMICSR);
++
++	if (!(val & NAND_EN))
++		__raw_writel(val | NAND_EN, REG_FMICSR);
++
++	val = __raw_readl(nand->reg + REG_SMCSR);
++
++	val &= ~(SWRST|PSIZE|DMARWEN|BUSWID|ECC4EN|NANDCS);
++	val |= WP;
++
++	__raw_writel(val, nand->reg + REG_SMCSR);
++
++	spin_unlock(&nand->lock);
++}
++
++static int __devinit w90p910_nand_probe(struct platform_device *pdev)
++{
++	struct w90p910_nand *w90p910_nand;
++	struct nand_chip *chip;
++	int retval;
++	struct resource *res;
++
++	retval = 0;
++
++	w90p910_nand = kzalloc(sizeof(struct w90p910_nand), GFP_KERNEL);
++	if (!w90p910_nand)
++		return -ENOMEM;
++	chip = &(w90p910_nand->chip);
++
++	w90p910_nand->mtd.priv	= chip;
++	w90p910_nand->mtd.owner	= THIS_MODULE;
++	spin_lock_init(&w90p910_nand->lock);
++
++	w90p910_nand->clk = clk_get(&pdev->dev, pdev->name);
++	if (IS_ERR(w90p910_nand->clk)) {
++		retval = -ENOENT;
++		goto fail1;
++	}
++	clk_enable(w90p910_nand->clk);
++
++	chip->cmdfunc		= w90p910_nand_command_lp;
++	chip->dev_ready		= w90p910_nand_devready;
++	chip->read_byte		= w90p910_nand_read_byte;
++	chip->write_buf		= w90p910_nand_write_buf;
++	chip->read_buf		= w90p910_nand_read_buf;
++	chip->select_chip	= w90p910_nand_select_chip;
++	chip->verify_buf	= w90p910_verify_buf;
++	chip->chip_delay	= 50;
++	chip->options		= 0;
++	chip->ecc.mode		= NAND_ECC_SOFT;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res) {
++		retval = -ENXIO;
++		goto fail1;
++	}
++
++	if (!request_mem_region(res->start, res->end - res->start + 1,
++				pdev->name)) {
++		retval = -EBUSY;
++		goto fail1;
++	}
++
++	w90p910_nand->reg = ioremap(res->start, res->end - res->start + 1);
++	if (!w90p910_nand->reg) {
++		retval = -ENOMEM;
++		goto fail2;
++	}
++
++	w90p910_nand_enable(w90p910_nand);
++
++	if (nand_scan(&(w90p910_nand->mtd), 1)) {
++		retval = -ENXIO;
++		goto fail3;
++	}
++
++	add_mtd_partitions(&(w90p910_nand->mtd), partitions,
++						ARRAY_SIZE(partitions));
++
++	platform_set_drvdata(pdev, w90p910_nand);
++
++	return retval;
++
++fail3:	iounmap(w90p910_nand->reg);
++fail2:	release_mem_region(res->start, res->end - res->start + 1);
++fail1:	kfree(w90p910_nand);
++	return retval;
++}
++
++static int __devexit w90p910_nand_remove(struct platform_device *pdev)
++{
++	struct w90p910_nand *w90p910_nand = platform_get_drvdata(pdev);
++	struct resource *res;
++
++	iounmap(w90p910_nand->reg);
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	release_mem_region(res->start, res->end - res->start + 1);
++
++	kfree(w90p910_nand);
++
++	platform_set_drvdata(pdev, NULL);
++
++	return 0;
++}
++
++static struct platform_driver w90p910_nand_driver = {
++	.probe		= w90p910_nand_probe,
++	.remove		= __devexit_p(w90p910_nand_remove),
++	.driver		= {
++		.name	= "w90p910-fmi",
++		.owner	= THIS_MODULE,
++	},
++};
++
++static int __init w90p910_nand_init(void)
++{
++	return platform_driver_register(&w90p910_nand_driver);
++}
++
++static void __exit w90p910_nand_exit(void)
++{
++	platform_driver_unregister(&w90p910_nand_driver);
++}
++
++module_init(w90p910_nand_init);
++module_exit(w90p910_nand_exit);
++
++MODULE_AUTHOR("Wan ZongShun <mcuos.com@gmail.com>");
++MODULE_DESCRIPTION("w90p910 nand driver!");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:w90p910-fmi");
 -- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+1.5.6.3
