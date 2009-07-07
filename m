@@ -1,23 +1,18 @@
-Received: from sorrow.cyrius.com ([65.19.161.204])
+Received: from ipmail04.adl2.internode.on.net ([203.16.214.57])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MNqHF-0004YV-1c
-	for linux-mtd@lists.infradead.org; Mon, 06 Jul 2009 15:38:51 +0000
-Resent-Message-ID: <20090706153831.GC2467@deprecation.cyrius.com>
-Sender: Florian Fainelli <f.fainelli@gmail.com>
-From: Florian Fainelli <florian@openwrt.org>
-To: Martin Michlmayr <tbm@cyrius.com>
-Subject: Re: mtd related Cobalt build failure with current git
-Date: Sun, 5 Jul 2009 13:10:01 +0200
-References: <20090704213741.GA6438@deprecation.cyrius.com>
-In-Reply-To: <20090704213741.GA6438@deprecation.cyrius.com>
+	id 1MO1fr-0004jP-Sg
+	for linux-mtd@lists.infradead.org; Tue, 07 Jul 2009 03:49:02 +0000
+Message-ID: <4A52C62F.2060408@call-direct.com.au>
+Date: Tue, 07 Jul 2009 13:51:11 +1000
+From: Iwo Mergler <iwo@call-direct.com.au>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200907051310.02673.florian@openwrt.org>
-Cc: linux-mips@linux-mips.org, dwmw2@infradead.org,
-	Yoichi Yuasa <yuasa@linux-mips.org>
+To: venki kaps <venkiece2005@gmail.com>
+Subject: Re: kernel crashing with jffs2 (32MB NAND Flash and 32MB SDRAM )
+References: <6d53329e0907060413h4a2a1d64nddc8e066f2e3c2d@mail.gmail.com>
+In-Reply-To: <6d53329e0907060413h4a2a1d64nddc8e066f2e3c2d@mail.gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,71 +22,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Martin,
+venki kaps wrote:
+> Hi,
+> 
+>  We are facing some memory issues with ATMEL AT91SAM9G20 Board.
+>  By changing the uboot environment variable –bootargs
+> setenv bootargs console=ttyS0,115200 root=/dev/mtdblock2 rootfstype=jffs2 mem=8M
+> mem=8M
+> mem=16M
+> mem=24M
+> mem=32M
+> On changing the value of mem variable the boards behaves in different way.
+> 
+> At 8M,16M the Linux is coming up but after the kernel prompt it is
+> crashing in between.
+> At 32M-the Linux is not coming up over board. Before kernel prompt
+> it’s crashing.
+> The size of SDRAM is 32MB.but we are not able to utilize it fully.
+> 
+> Is it u-boot or Kernel or jffs2 or SDRAM problem?
+> 
 
-Le Saturday 04 July 2009 23:37:41 Martin Michlmayr, vous avez =C3=A9crit=C2=
-=A0:
-> I get the following Cobalt build failure with current git:
->
->   CC      arch/mips/cobalt/mtd.o
-> cc1: warnings being treated as errors
-> In file included from arch/mips/cobalt/mtd.c:22:
-> include/linux/mtd/partitions.h:50: warning: =E2=80=98struct mtd_info=E2=
-=80=99 declared
-> inside parameter list include/linux/mtd/partitions.h:50: warning: its sco=
-pe
-> is only this definition or declaration, which is probably not what you wa=
-nt
-> include/linux/mtd/partitions.h:51: warning: =E2=80=98struct mtd_info=E2=
-=80=99 declared
-> inside parameter list include/linux/mtd/partitions.h:61: warning: =E2=80=
-=98struct
-> mtd_info=E2=80=99 declared inside parameter list include/linux/mtd/partit=
-ions.h:67:
-> warning: =E2=80=98struct mtd_info=E2=80=99 declared inside parameter list=
- make[1]: ***
-> [arch/mips/cobalt/mtd.o] Error 1
-> make: *** [arch/mips/cobalt] Error 2
->
-> Does anyone know if there's a fix for this already?
+There could be many possible explanations, including electrical board faults
+(shorted address lines), bad SDRAM, unsupported SDRAM chips, etc. Is it a new
+board design? Did *this* board ever work correctly? You didn't give enough
+detail to comment on these things.
 
-I also had that problem and did the following fix, which still applies to
-the mtd-2.6 tree, master branch.
-=2D-
-=46rom: Florian Fainelli <florian@openwrt.org>
-Subject: [PATCH] Fix arch/mips/cobalt/mtd.c build failure
+As for the software side, incorrectly programming the SDRAM controller can
+cause the symptoms you described.
 
-This patch fixes a warning in include/linux/mtd/partitions which
-results in the following build failure on MIPS:
- CC arch/mips/cobalt/mtd.o
-cc1: warnings being treated as errors
-In file included from arch/mips/cobalt/mtd.c:22:
-include/linux/mtd/partitions.h:50: warning: 'struct mtd_info' declared insi=
-de parameter list
-include/linux/mtd/partitions.h:50: warning: its scope is only this definiti=
-on or declaration, which is probably not what you want
-include/linux/mtd/partitions.h:51: warning: 'struct mtd_info' declared insi=
-de parameter list
-include/linux/mtd/partitions.h:61: warning: 'struct mtd_info' declared insi=
-de parameter list
-include/linux/mtd/partitions.h:67: warning: 'struct mtd_info' declared insi=
-de parameter list
-make[1]: *** [arch/mips/cobalt/mtd.o] Error 1
-make: *** [arch/mips/cobalt] Error 2
+The SDRAM controller is programmed by the bootstrap code, as U-Boot needs
+the SDRAM already operational to run.
 
-Reported-by: Martin Michlmayr <tbm@cyrius.com>
-Signed-off-by: Florian Fainelli <florian@openwrt.org>
-=2D--
-diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
-index af6dcb9..c8eaf44 100644
-=2D-- a/include/linux/mtd/partitions.h
-+++ b/include/linux/mtd/partitions.h
-@@ -10,7 +10,7 @@
- #define MTD_PARTITIONS_H
-=20
- #include <linux/types.h>
-=2D
-+#include <linux/mtd/mtd.h>
-=20
- /*
-  * Partition definition structure:
+Add some code to U-Boot to print out the contents of the SDRAMC Configuration
+Register (see the data sheet). Make sure the number of column & row address
+bits and the number of banks is set correctly to match the installed SDRAM.
+
+Best regards,
+
+Iwo
