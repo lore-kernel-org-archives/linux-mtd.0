@@ -1,7 +1,7 @@
 Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MOBWk-0000uL-RB
-	for linux-mtd@lists.infradead.org; Tue, 07 Jul 2009 14:20:17 +0000
+	id 1MOBoT-0007Kc-8G
+	for linux-mtd@lists.infradead.org; Tue, 07 Jul 2009 14:38:36 +0000
 Subject: Re: ubiattach problem
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: Oren <oren_s3@VERIFONE.com>
@@ -16,8 +16,8 @@ References: <baa101c9fe67$d7b31f0a$b65b1ec0@verifone.com>
 	<1246973292.20721.313.camel@localhost.localdomain>
 	<1246975692.2208.7.camel@tlvorens3lnx>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 07 Jul 2009 17:19:59 +0300
-Message-Id: <1246976399.20721.314.camel@localhost.localdomain>
+Date: Tue, 07 Jul 2009 17:38:06 +0300
+Message-Id: <1246977486.20721.315.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -33,8 +33,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On Tue, 2009-07-07 at 17:08 +0300, Oren wrote:
 > I already have these option on.
+> 
+> #
+> # UBI - Unsorted block images
+> #
+> CONFIG_MTD_UBI=y
+> CONFIG_MTD_UBI_WL_THRESHOLD=4096
+> CONFIG_MTD_UBI_BEB_RESERVE=1
+> # CONFIG_MTD_UBI_GLUEBI is not set
+> 
+> #
+> # UBI debugging options
+> #
+> CONFIG_MTD_UBI_DEBUG=y
+> CONFIG_MTD_UBI_DEBUG_MSG=y
+> CONFIG_MTD_UBI_DEBUG_PARANOID=y
+> CONFIG_MTD_UBI_DEBUG_DISABLE_BGT=y
+> CONFIG_MTD_UBI_DEBUG_USERSPACE_IO=y
+> # CONFIG_MTD_UBI_DEBUG_EMULATE_BITFLIPS is not set
+> # CONFIG_MTD_UBI_DEBUG_EMULATE_WRITE_FAILURES is not set
+> # CONFIG_MTD_UBI_DEBUG_EMULATE_ERASE_FAILURES is not set
+> 
+> #
+> # Additional UBI debugging messages
+> #
+> CONFIG_MTD_UBI_DEBUG_MSG_BLD=y
+> CONFIG_MTD_UBI_DEBUG_MSG_EBA=y
+> CONFIG_MTD_UBI_DEBUG_MSG_WL=y
+> CONFIG_MTD_UBI_DEBUG_MSG_IO=y
+> 
 
-Cool, why wouldn't you show the UBI output to me?
+Note, I need only CONFIG_MTD_UBI_DEBUG_MSG_BLD messages at this
 
 -- 
 Best regards,
