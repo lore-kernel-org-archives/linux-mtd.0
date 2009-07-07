@@ -1,22 +1,23 @@
-Received: from west-smtp1.trimble.com ([155.63.128.51])
+Received: from devils.ext.ti.com ([198.47.26.153])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MO4kM-0007a5-Ik
-	for linux-mtd@lists.infradead.org; Tue, 07 Jul 2009 07:06:11 +0000
-Content-class: urn:content-classes:message
+	id 1MO7mM-0007z9-1Q
+	for linux-mtd@lists.infradead.org; Tue, 07 Jul 2009 10:20:08 +0000
+Received: from dlep33.itg.ti.com ([157.170.170.112])
+	by devils.ext.ti.com (8.13.7/8.13.7) with ESMTP id n67AJo3u015753
+	for <linux-mtd@lists.infradead.org>; Tue, 7 Jul 2009 05:19:57 -0500
+Received: from webmail.ti.com (localhost [127.0.0.1])
+	by dlep33.itg.ti.com (8.13.7/8.13.7) with ESMTP id n67AJlhu018519
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 7 Jul 2009 05:19:48 -0500 (CDT)
+Message-ID: <61362.192.168.10.89.1246961989.squirrel@dbdmail.itg.ti.com>
+Date: Tue, 7 Jul 2009 15:49:49 +0530 (IST)
+Subject: [PATCH] nand_base.c: removing function names from debug prints and
+	using macro '__func__'
+From: "vimal singh" <vimalsingh@ti.com>
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: UBIFS Corrupt during power failure
-Date: Tue, 7 Jul 2009 01:05:24 -0600
-Message-ID: <7207AAC68CE347458026863515A07DA113D8BE@usw-am-xch-02.am.trimblecorp.net>
-References: <C77C279BA71FD14985DC8E75FB265AB702FE53F4@usw-am-xch-02.am.trimblecorp.net><1239979018.3390.298.camel@localhost.localdomain><C77C279BA71FD14985DC8E75FB265AB7030C4C86@usw-am-xch-02.am.trimblecorp.net><200905150916.54091.sr@denx.de><C77C279BA71FD14985DC8E75FB265AB70344D104@usw-am-xch-02.am.trimblecorp.net><1242721105.3623.0.camel@localhost.localdomain><C77C279BA71FD14985DC8E75FB265AB7034DBD10@usw-am-xch-02.am.trimblecorp.net><1246627562.20721.190.camel@localhost.localdomain><1246627771.20721.191.camel@localhost.localdomain><7207AAC68CE347458026863515A07DA102901F3C@usw-am-xch-02.am.trimblecorp.net><1246629940.20721.219.camel@localhost.localdomain><7207AAC68CE347458026863515A07DA102901F9C@usw-am-xch-02.am.trimblecorp.net><1246633131.20721.224.camel@localhost.localdomain><1246854654.20721.271.camel@localhost.localdomain><1246855913.20721.287.camel@localhost.localdomain><1246862635.20721.291.camel@localhost.localdomain>
-	<1246949184.20721.302.camel@localhost.localdomain>
-From: "Urs Muff" <urs_muff@trimble.com>
-To: <dedekind@infradead.org>
-Cc: linux-mtd@lists.infradead.org, Stefan Roese <sr@denx.de>,
-	Nicolas Pitre <nico@cam.org>, Adrian Hunter <adrian.hunter@nokia.com>,
-	Eric Holmberg <Eric_Holmberg@Trimble.com>
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,76 +27,244 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Correcting debug prints by removing function names from print messages
+and using '__func__' macro instead.
 
-He will be very glad to hear this!
+Function names were wrong in few places.
 
-- Urs
+Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+---
 
------Original Message-----
-From: Artem Bityutskiy [mailto:dedekind@infradead.org]
-Sent: Tue 7/7/2009 12:46 AM
-To: Urs Muff
-Cc: Nicolas Pitre; Stefan Roese; linux-mtd@lists.infradead.org; Eric =
-Holmberg; Adrian Hunter
-Subject: RE: UBIFS Corrupt during power failure
-=20
-On Mon, 2009-07-06 at 09:43 +0300, Artem Bityutskiy wrote:
-> On Mon, 2009-07-06 at 07:51 +0300, Artem Bityutskiy wrote:
-> > > [CCed Nicolas Pitre]
-> > >=20
-> > > OK, I've written a small user-space program which first fills the =
-NOR
-> > > flash with an '0x89ABCDEF' pattern, then starts erasing it, and =
-then
-> > > I cut the power at random point.
-> > >=20
-> > > And unfortunately the power cut results in eraseblocks which have
-> > > 0x89ABCDEF at the beginning, and all zeroes at the end. I've =
-attached
-> > > one example.
-> > >=20
-> > > So it indeed looks like NOR erasure includes writing zeroes from =
-the
-> > > end. Unfortunately UBI/UBIFS cannot handle this correctly ATM.
-> >=20
-> > Although I can easily fix this by writing few zeroes at the =
-beginning of
-> > the eraseblock _before) erasing it, so that UBI will be happy. But =
-it is
-> > still interesting whether I may just ask NOR to amend it's embedded
-> > erase algorithm.
->=20
-> This patch seems to fix the UBI issues Eric and me observed (issue =
-N2).
-> I'll test the patch for few days, but I couldn't see any problem so =
-far.
->=20
-> From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-> Subject: [PATCH] UBI: fix NOR flash recovery
->=20
-> This commit fixes NOR flash recovery issues observed with Spansion
-> S29GL512N NOR.
->=20
-> When NOR erases, it first fills PEBs with zeroes, then sets all bytes
-> to 0xFF. Filling with zeroes starts from the end of the PEB. And when
-> power is cut, this results in PEBs containing correct EC and VID =
-headers
-> but corrupted with zeros at the end. This confuses UBI and it =
-mistakinly
-> accepts these PEBs and associate them with LEBs.
->=20
-> Fis this issue by zeroing EC and VID magics before erasing PEBs, to
-> make UBI later refuse zem.
->=20
-> Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 8c21b89..4557fe8 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1413,8 +1413,8 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t
+from,
+ 	int len;
+ 	uint8_t *buf = ops->oobbuf;
 
-Yes, it fixes the issue. The device has already survived ~1500 power
-cuts and no problems. It used to die after about 50 power cuts. I'm
-pushing this to ubi-2.6.git.
+-	DEBUG(MTD_DEBUG_LEVEL3, "nand_read_oob: from = 0x%08Lx, len = %i\n",
+-	      (unsigned long long)from, readlen);
++	DEBUG(MTD_DEBUG_LEVEL3, "%s: from = 0x%08Lx, len = %i\n",
++			__func__, (unsigned long long)from, readlen);
 
-So if Eric is still interested, he can try it when he is back from the
-holidays.
+ 	if (ops->mode == MTD_OOB_AUTO)
+ 		len = chip->ecc.layout->oobavail;
+@@ -1422,8 +1422,8 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t
+from,
+ 		len = mtd->oobsize;
 
---=20
-Best regards,
-Artem Bityutskiy (???????? ?????)
+ 	if (unlikely(ops->ooboffs >= len)) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "nand_read_oob: "
+-			"Attempt to start read outside oob\n");
++		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt to start read "
++					"outside oob\n", __func__);
+ 		return -EINVAL;
+ 	}
+
+@@ -1431,8 +1431,8 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t
+from,
+ 	if (unlikely(from >= mtd->size ||
+ 		     ops->ooboffs + readlen > ((mtd->size >> chip->page_shift) -
+ 					(from >> chip->page_shift)) * len)) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "nand_read_oob: "
+-			"Attempt read beyond end of device\n");
++		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt read beyond end "
++					"of device\n", __func__);
+ 		return -EINVAL;
+ 	}
+
+@@ -1506,8 +1506,8 @@ static int nand_read_oob(struct mtd_info *mtd, loff_t from,
+
+ 	/* Do not allow reads past end of device */
+ 	if (ops->datbuf && (from + ops->len) > mtd->size) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "nand_read_oob: "
+-		      "Attempt read beyond end of device\n");
++		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt read "
++				"beyond end of device\n", __func__);
+ 		return -EINVAL;
+ 	}
+
+@@ -1816,8 +1816,8 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t
+to,
+
+ 	/* reject writes, which are not page aligned */
+ 	if (NOTALIGNED(to) || NOTALIGNED(ops->len)) {
+-		printk(KERN_NOTICE "nand_write: "
+-		       "Attempt to write not page aligned data\n");
++		printk(KERN_NOTICE "%s: Attempt to write not "
++				"page aligned data\n", __func__);
+ 		return -EINVAL;
+ 	}
+
+@@ -1944,8 +1944,8 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t
+to,
+ 	int chipnr, page, status, len;
+ 	struct nand_chip *chip = mtd->priv;
+
+-	DEBUG(MTD_DEBUG_LEVEL3, "nand_write_oob: to = 0x%08x, len = %i\n",
+-	      (unsigned int)to, (int)ops->ooblen);
++	DEBUG(MTD_DEBUG_LEVEL3, "%s: to = 0x%08x, len = %i\n",
++			 __func__, (unsigned int)to, (int)ops->ooblen);
+
+ 	if (ops->mode == MTD_OOB_AUTO)
+ 		len = chip->ecc.layout->oobavail;
+@@ -1954,14 +1954,14 @@ static int nand_do_write_oob(struct mtd_info *mtd,
+loff_t to,
+
+ 	/* Do not allow write past end of page */
+ 	if ((ops->ooboffs + ops->ooblen) > len) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "nand_write_oob: "
+-		      "Attempt to write past end of page\n");
++		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt to write "
++				"past end of page\n", __func__);
+ 		return -EINVAL;
+ 	}
+
+ 	if (unlikely(ops->ooboffs >= len)) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "nand_do_write_oob: "
+-			"Attempt to start write outside oob\n");
++		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt to start "
++				"write outside oob\n", __func__);
+ 		return -EINVAL;
+ 	}
+
+@@ -1970,8 +1970,8 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t
+to,
+ 		     ops->ooboffs + ops->ooblen >
+ 			((mtd->size >> chip->page_shift) -
+ 			 (to >> chip->page_shift)) * len)) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "nand_do_write_oob: "
+-			"Attempt write beyond end of device\n");
++		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt write beyond "
++				"end of device\n", __func__);
+ 		return -EINVAL;
+ 	}
+
+@@ -2026,8 +2026,8 @@ static int nand_write_oob(struct mtd_info *mtd, loff_t to,
+
+ 	/* Do not allow writes past end of device */
+ 	if (ops->datbuf && (to + ops->len) > mtd->size) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "nand_write_oob: "
+-		      "Attempt write beyond end of device\n");
++		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt write beyond "
++				"end of device\n", __func__);
+ 		return -EINVAL;
+ 	}
+
+@@ -2117,26 +2117,27 @@ int nand_erase_nand(struct mtd_info *mtd, struct
+erase_info *instr,
+ 	unsigned int bbt_masked_page = 0xffffffff;
+ 	loff_t len;
+
+-	DEBUG(MTD_DEBUG_LEVEL3, "nand_erase: start = 0x%012llx, len = %llu\n",
+-	      (unsigned long long)instr->addr, (unsigned long long)instr->len);
++	DEBUG(MTD_DEBUG_LEVEL3, "%s: start = 0x%012llx, len = %llu\n",
++				__func__, (unsigned long long)instr->addr,
++				(unsigned long long)instr->len);
+
+ 	/* Start address must align on block boundary */
+ 	if (instr->addr & ((1 << chip->phys_erase_shift) - 1)) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "nand_erase: Unaligned address\n");
++		DEBUG(MTD_DEBUG_LEVEL0, "%s: Unaligned address\n", __func__);
+ 		return -EINVAL;
+ 	}
+
+ 	/* Length must align on block boundary */
+ 	if (instr->len & ((1 << chip->phys_erase_shift) - 1)) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "nand_erase: "
+-		      "Length not block aligned\n");
++		DEBUG(MTD_DEBUG_LEVEL0, "%s: Length not block aligned\n",
++					__func__);
+ 		return -EINVAL;
+ 	}
+
+ 	/* Do not allow erase past end of device */
+ 	if ((instr->len + instr->addr) > mtd->size) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "nand_erase: "
+-		      "Erase past end of device\n");
++		DEBUG(MTD_DEBUG_LEVEL0, "%s: Erase past end of device\n",
++					__func__);
+ 		return -EINVAL;
+ 	}
+
+@@ -2157,8 +2158,8 @@ int nand_erase_nand(struct mtd_info *mtd, struct
+erase_info *instr,
+
+ 	/* Check, if it is write protected */
+ 	if (nand_check_wp(mtd)) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "nand_erase: "
+-		      "Device is write protected!!!\n");
++		DEBUG(MTD_DEBUG_LEVEL0, "%s: Device is write protected!!!\n",
++					__func__);
+ 		instr->state = MTD_ERASE_FAILED;
+ 		goto erase_exit;
+ 	}
+@@ -2183,8 +2184,8 @@ int nand_erase_nand(struct mtd_info *mtd, struct
+erase_info *instr,
+ 		 */
+ 		if (nand_block_checkbad(mtd, ((loff_t) page) <<
+ 					chip->page_shift, 0, allowbbt)) {
+-			printk(KERN_WARNING "nand_erase: attempt to erase a "
+-			       "bad block at page 0x%08x\n", page);
++			printk(KERN_WARNING "%s: attempt to erase a bad block "
++					"at page 0x%08x\n", __func__, page);
+ 			instr->state = MTD_ERASE_FAILED;
+ 			goto erase_exit;
+ 		}
+@@ -2211,8 +2212,8 @@ int nand_erase_nand(struct mtd_info *mtd, struct
+erase_info *instr,
+
+ 		/* See if block erase succeeded */
+ 		if (status & NAND_STATUS_FAIL) {
+-			DEBUG(MTD_DEBUG_LEVEL0, "nand_erase: "
+-			      "Failed erase, page 0x%08x\n", page);
++			DEBUG(MTD_DEBUG_LEVEL0, "%s: Failed erase, "
++					"page 0x%08x\n", __func__, page);
+ 			instr->state = MTD_ERASE_FAILED;
+ 			instr->fail_addr =
+ 				((loff_t)page << chip->page_shift);
+@@ -2272,9 +2273,9 @@ int nand_erase_nand(struct mtd_info *mtd, struct
+erase_info *instr,
+ 		if (!rewrite_bbt[chipnr])
+ 			continue;
+ 		/* update the BBT for chip */
+-		DEBUG(MTD_DEBUG_LEVEL0, "nand_erase_nand: nand_update_bbt "
+-		      "(%d:0x%0llx 0x%0x)\n", chipnr, rewrite_bbt[chipnr],
+-		      chip->bbt_td->pages[chipnr]);
++		DEBUG(MTD_DEBUG_LEVEL0, "%s: nand_update_bbt "
++			"(%d:0x%0llx 0x%0x)\n", __func__, chipnr,
++			rewrite_bbt[chipnr], chip->bbt_td->pages[chipnr]);
+ 		nand_update_bbt(mtd, rewrite_bbt[chipnr]);
+ 	}
+
+@@ -2292,7 +2293,7 @@ static void nand_sync(struct mtd_info *mtd)
+ {
+ 	struct nand_chip *chip = mtd->priv;
+
+-	DEBUG(MTD_DEBUG_LEVEL3, "nand_sync: called\n");
++	DEBUG(MTD_DEBUG_LEVEL3, "%s: called\n", __func__);
+
+ 	/* Grab the lock and see if the device is available */
+ 	nand_get_device(chip, mtd, FL_SYNCING);
+@@ -2356,8 +2357,8 @@ static void nand_resume(struct mtd_info *mtd)
+ 	if (chip->state == FL_PM_SUSPENDED)
+ 		nand_release_device(mtd);
+ 	else
+-		printk(KERN_ERR "nand_resume() called for a chip which is not "
+-		       "in suspended state\n");
++		printk(KERN_ERR "%s called for a chip which is not "
++		       "in suspended state\n", __func__);
+ }
+
+ /*
+@@ -2858,7 +2859,8 @@ int nand_scan(struct mtd_info *mtd, int maxchips)
+
+ 	/* Many callers got this wrong, so check for it for a while... */
+ 	if (!mtd->owner && caller_is_module()) {
+-		printk(KERN_CRIT "nand_scan() called with NULL mtd->owner!\n");
++		printk(KERN_CRIT "%s called with NULL mtd->owner!\n",
++				__func__);
+ 		BUG();
+ 	}
