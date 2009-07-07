@@ -1,18 +1,19 @@
-Received: from ipmail04.adl2.internode.on.net ([203.16.214.57])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MO1fr-0004jP-Sg
-	for linux-mtd@lists.infradead.org; Tue, 07 Jul 2009 03:49:02 +0000
-Message-ID: <4A52C62F.2060408@call-direct.com.au>
-Date: Tue, 07 Jul 2009 13:51:11 +1000
-From: Iwo Mergler <iwo@call-direct.com.au>
-MIME-Version: 1.0
-To: venki kaps <venkiece2005@gmail.com>
-Subject: Re: kernel crashing with jffs2 (32MB NAND Flash and 32MB SDRAM )
-References: <6d53329e0907060413h4a2a1d64nddc8e066f2e3c2d@mail.gmail.com>
-In-Reply-To: <6d53329e0907060413h4a2a1d64nddc8e066f2e3c2d@mail.gmail.com>
-Content-Type: text/plain; charset=windows-1252
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MO47n-0000QL-LU
+	for linux-mtd@lists.infradead.org; Tue, 07 Jul 2009 06:26:18 +0000
+Subject: Re: ubiattach problem
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Oren Sokolowsky <Oren_S3@VERIFONE.com>
+In-Reply-To: <baa101c9fe67$d7b31f0a$b65b1ec0@verifone.com>
+References: <baa101c9fe67$d7b31f0a$b65b1ec0@verifone.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 07 Jul 2009 09:25:26 +0300
+Message-Id: <1246947926.20721.299.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,42 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-venki kaps wrote:
-> Hi,
-> 
->  We are facing some memory issues with ATMEL AT91SAM9G20 Board.
->  By changing the uboot environment variable �bootargs
-> setenv bootargs console=ttyS0,115200 root=/dev/mtdblock2 rootfstype=jffs2 mem=8M
-> mem=8M
-> mem=16M
-> mem=24M
-> mem=32M
-> On changing the value of mem variable the boards behaves in different way.
-> 
-> At 8M,16M the Linux is coming up but after the kernel prompt it is
-> crashing in between.
-> At 32M-the Linux is not coming up over board. Before kernel prompt
-> it�s crashing.
-> The size of SDRAM is 32MB.but we are not able to utilize it fully.
-> 
-> Is it u-boot or Kernel or jffs2 or SDRAM problem?
-> 
+On Mon, 2009-07-06 at 21:30 +0300, Oren Sokolowsky wrote:
+> the ubi debug is enable aswell. I do not see anything special.
+> Do i need to do anything else before  ubiattach except ubiformat ? 
 
-There could be many possible explanations, including electrical board faults
-(shorted address lines), bad SDRAM, unsupported SDRAM chips, etc. Is it a new
-board design? Did *this* board ever work correctly? You didn't give enough
-detail to comment on these things.
+Could you please send it to me anyway?
 
-As for the software side, incorrectly programming the SDRAM controller can
-cause the symptoms you described.
+Could you please double check you have the latest mtd-utils?
+Could you please provide the output of ubiformat --version ?
 
-The SDRAM controller is programmed by the bootstrap code, as U-Boot needs
-the SDRAM already operational to run.
+Also, could you please format your flash with the -v ubiformat
+option. Do you see message like:
+"ubiformat: write volume table to eraseblocks 0 and 1"?
 
-Add some code to U-Boot to print out the contents of the SDRAMC Configuration
-Register (see the data sheet). Make sure the number of column & row address
-bits and the number of banks is set correctly to match the installed SDRAM.
-
+-- 
 Best regards,
-
-Iwo
+Artem Bityutskiy (Битюцкий Артём)
