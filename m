@@ -1,18 +1,12 @@
-Received: from mail-fx0-f225.google.com ([209.85.220.225])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MOaXC-0003DG-Ml
-	for linux-mtd@lists.infradead.org; Wed, 08 Jul 2009 17:02:25 +0000
-Received: by fxm25 with SMTP id 25so2091950fxm.18
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Jul 2009 10:02:16 -0700 (PDT)
+From: "MR. JERRY NTAI" <ntaiinfo_mevasbnk@yahoo.com.hk>
+Subject: Please Read And Get Back To Me
+Date: Wed, 8 Jul 2009 21:23:55 -0200
+Message-Id: <20090708225610.M13967@yahoo.com.hk>
 MIME-Version: 1.0
-Date: Wed, 8 Jul 2009 12:02:16 -0500
-Message-ID: <528f13590907081002i7d00e0f7ka714124d873f48ed@mail.gmail.com>
-Subject: NAND write from a initial RAm disk boot.
-From: alfred steele <alfred.jaquez@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=iso-8859-1
+To: undisclosed-recipients:;
+Reply-To: mevasbnk_jerryntai@yahoo.com.hk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +16,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
-I am trying to run  the NAND write utility on a board booted up on an
-initial RAM disk (16 M is the ramdisk size)from a MMC card. What i
-intend to do is replace the jffs2 image already residing on a mtd
-partition with a new one. From the shell, invoke nand write for
-replacing the  kernel image and it goes fine. But the rootfs NAND
-write gets stuck forever after doing a few block writes. See below for
-details.
+MR. JERRY NTAI. 
+MEVAS BANK
+QUEEN`S  ROAD 
+CENTRAL BRANCH, 
+HONG  KONG.
 
-I use  the following commands to  try replae the respective paritions
-for the kernel and the rootfs.
+Good Day,
 
-flash_eraseall -j /dev/mtd2
-nandwrite -a -p /dev/mtd2 /mnt/mmc/rootfs.jffs2
-Writing data to block 580000
-Writing data to block 5a0000
-....Gets stuck there FOREVER.
+Please kindly accept my apology for sending you this email without your 
+consent. I believe you are a highly respected personality, considering the 
+fact that I sourced your email from the peoples search database on the web 
+during my descret search for a foreign partner whom can assist me in taking 
+this business to it success. Though, I do not know to what extent you are 
+familiar with events. I have a proposal for you.This however is not mandatory 
+nor will I in any manner compel you to honor against your will, but I hope  
+you will read on and consider the value I offer.My name is Mr. Jerry Ntai, I 
+am the Head of Operationsin Mevas Bank, Hong Kong. I have a business proposal 
+in the tune of  US$25.2m to be transferred to an offshore account with your 
+assistace if willing.After the successful transfer, we shall share in ratio 
+of 30% for you and 70% for me. Should you be interested, please respond to my 
+letter immediately,so we can commence all arrangements and I will give you 
+more information on the project and how we would handle it.You can contact me 
+on my private email:( jerryntai_mevasbnk@live.com ) and send me the following 
+information for documentation purpose:
 
-I am not sure why it hangs on that particular BLOCK insite of it being
-not a BAD block. Could it be that its not finding enough memory to
-buffer the block. I havent dug up nandwrite code yet so i do not know
-how it actually works.
+(1)Full name:
+(2)private phone number:
+(3)current residential address:
+(4)Occupation:
+(5)Age and Sex:
 
-Can anybody help explain what could be the cause?
+I look forward to hearing from you.
 
--Alfred.
+Kind Regards,
+Mr. Jerry Ntai.
