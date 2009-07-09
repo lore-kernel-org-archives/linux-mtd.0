@@ -1,16 +1,18 @@
-Received: from buzzloop.caiaq.de ([212.112.241.133])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MOysH-0002EC-W6
-	for linux-mtd@lists.infradead.org; Thu, 09 Jul 2009 19:01:51 +0000
-Date: Thu, 9 Jul 2009 21:01:37 +0200
-From: Daniel Mack <daniel@caiaq.de>
-To: linux-arm-kernel@lists.arm.linux.org.uk
-Subject: PXA3xx NAND driver trouble with 'conservative' CPU govenor
-Message-ID: <20090709190137.GW19257@buzzloop.caiaq.de>
+Received: from fructidor.freesurf.fr ([212.43.206.30]
+	helo=smtp-out.freesurf.fr)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MOzV1-0002Gt-Dn
+	for linux-mtd@lists.infradead.org; Thu, 09 Jul 2009 19:41:50 +0000
+Message-ID: <f84f1861c48b080bc991ca44027c1991.squirrel@imp-html.freesurf.fr>
+Date: Thu, 9 Jul 2009 19:08:16 +0200 (CEST)
+Subject: LOST MONEY BELONG TO YOU CONFIRM .
+From: "United Nations Monitoring UNMOVIC (Mr . Phillip Conrad )"
+	<maurital@sify.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org, Eric Miao <eric.y.miao@gmail.com>
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+To: undisclosed-recipients:;
+Reply-To: abdoulmauritel@yahoo.com.hk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,26 +22,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With the cpu govenor set to 'conservative', the PXA3xx NAND driver fails
-the tests from drivers/mtd/tests:
 
-sh-3.2# modprobe mtd_torturetest dev=3
-[  386.367730]
-[  386.369296] =================================================
-[  386.375258] mtd_torturetest: Warning: this program is trying to wear out your flash, stop it if this is not wanted.
-[  386.385811] mtd_torturetest: MTD device: 3
-[  386.390021] mtd_torturetest: torture 32 eraseblocks (8-39) of mtd3
-[  386.396238] mtd_torturetest: write verify enabled
-[  388.675993] double bit error @ page 00000b79
-[  388.680406] timed out writing command
-[  388.687925] mtd_torturetest: error -74 while reading EB 36, read 131072
-[  388.694536] mtd_torturetest: verify failed for 0xFF... pattern
-[  388.700364] mtd_torturetest: finished after 0 erase cycles
-[  388.705885] mtd_torturetest: error -74 occurred during torturing
-[  388.711908] =================================================
-modprobe: Failed to load module mtd_torturetest: Bad message.
 
-When setting the govenor to 'performance', the test passes. Has anyone
-seen similar issues? Any idea, anyone?
 
-Daniel
+Attn: Beneficiary,
+ I am Mr.  Phillip Conrad, Compliance Officer, United Nations
+Monitoring,Verification and Inspection Commission (UNMOVIC) BENIN. This
+office is responsible for resolving pending Contract/Inheritance and
+Lotto transfer owed to companies and individuals which have been delayed
+due to many abnormalitiesthat had happened in the apex institutions.
+
+As you must understand, a huge amount of money has been intercepted in the
+international banking system registered with your name irrespectively and
+we have coordinated in total $1,2Million and dispatch it via Bank Cash
+Bonding Courier to your country but it is difficult to initiate the
+transfer procedure because of too many fraudulent or worthless emails
+received and considerable costs involved in your funds.
+
+However, in order to ensure high quality payment execution, you are advice
+to reconfirm your full name and contact address to this email:
+powellmauritel@yahoo.com.hk OR refinancedesk1@sify.com for scrutiny and
+possible consideration to enable us procure your approval which will cost
+you only $150 and simultaneously carrying out the international payment to
+your position according to our normal payment schedule.
+Thanks as we believe this is in order.
+Yours sincerely,
+Mr. Phillips Conrad .
