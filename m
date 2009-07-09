@@ -1,21 +1,12 @@
-Received: from mail-pz0-f178.google.com ([209.85.222.178])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MP4K2-0002Yx-1r
-	for linux-mtd@lists.infradead.org; Fri, 10 Jul 2009 00:50:48 +0000
-Received: by pzk8 with SMTP id 8so377926pzk.28
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 09 Jul 2009 17:50:40 -0700 (PDT)
-Message-ID: <4A569059.4020200@gmail.com>
-Date: Fri, 10 Jul 2009 08:50:33 +0800
-From: Eric Miao <eric.y.miao@gmail.com>
+Date: Fri, 10 Jul 2009 01:28:52 +0800 (PHT)
+From: ATM CARD WINNER <admin-r10@denr.gov.ph>
+Message-ID: <93507252.45011247160532484.JavaMail.root@mail.denr.gov.ph>
+Subject: APPROVED ATM (664)
 MIME-Version: 1.0
-To: Daniel Mack <daniel@caiaq.de>
-Subject: Re: PXA3xx NAND driver trouble with 'conservative' CPU govenor
-References: <20090709190137.GW19257@buzzloop.caiaq.de>
-In-Reply-To: <20090709190137.GW19257@buzzloop.caiaq.de>
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.arm.linux.org.uk
+To: undisclosed-recipients: ;
+Reply-To: ATM CARD WINNER <lindarichards68@yahoo.com.hk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,31 +16,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Daniel Mack wrote:
-> With the cpu govenor set to 'conservative', the PXA3xx NAND driver fails
-> the tests from drivers/mtd/tests:
-> 
-> sh-3.2# modprobe mtd_torturetest dev=3
-> [  386.367730]
-> [  386.369296] =================================================
-> [  386.375258] mtd_torturetest: Warning: this program is trying to wear out your flash, stop it if this is not wanted.
-> [  386.385811] mtd_torturetest: MTD device: 3
-> [  386.390021] mtd_torturetest: torture 32 eraseblocks (8-39) of mtd3
-> [  386.396238] mtd_torturetest: write verify enabled
-> [  388.675993] double bit error @ page 00000b79
-> [  388.680406] timed out writing command
-> [  388.687925] mtd_torturetest: error -74 while reading EB 36, read 131072
-> [  388.694536] mtd_torturetest: verify failed for 0xFF... pattern
-> [  388.700364] mtd_torturetest: finished after 0 erase cycles
-> [  388.705885] mtd_torturetest: error -74 occurred during torturing
-> [  388.711908] =================================================
-> modprobe: Failed to load module mtd_torturetest: Bad message.
-> 
-> When setting the govenor to 'performance', the test passes. Has anyone
-> seen similar issues? Any idea, anyone?
 
-What's the current CPU freq when in conservative? cat /proc/cpuinfo?
 
-> 
-> Daniel
-> 
+Our Ref: FGN /SNT/STB
+ 
+Your Ref:
+ 
+This is to officially inform you that(ATM Card Number; 4278763100030014) has been accredited in your favour.
+Your Personal Identification Number is 2900. The ATM Card Value is $250,000,00 USD.
+ 
+Please Contact Mrs.Linda Richards (lindarichards68@yahoo.com) With this information for processing:
+* Full Name:
+* Delivery Address:
+* Sex:
+* Age:
+* Occupation:
+* Phone Number:
+* Country:
+* Means Of Identification scan,attach and send your driver's license or passport:
+ 
+Regards,
+ 
+Senator David Mark.
+Chairman,Committee On ATM Card Payment.
