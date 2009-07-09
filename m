@@ -1,13 +1,18 @@
-Message-ID: <4A56304A.2050507@nokia.com>
-Date: Thu, 09 Jul 2009 21:00:42 +0300
-From: Adrian Hunter <adrian.hunter@nokia.com>
-MIME-Version: 1.0
-To: ext Daniel Mack <daniel@caiaq.de>
+Received: from buzzloop.caiaq.de ([212.112.241.133])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MOy5X-0006D8-A9
+	for linux-mtd@lists.infradead.org; Thu, 09 Jul 2009 18:11:26 +0000
+Date: Thu, 9 Jul 2009 20:11:14 +0200
+From: Daniel Mack <daniel@caiaq.de>
+To: Adrian Hunter <adrian.hunter@nokia.com>
 Subject: Re: UBIFS trouble
+Message-ID: <20090709181114.GB15518@buzzloop.caiaq.de>
 References: <20090709175559.GZ26160@buzzloop.caiaq.de>
-In-Reply-To: <20090709175559.GZ26160@buzzloop.caiaq.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+	<4A56304A.2050507@nokia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4A56304A.2050507@nokia.com>
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -18,45 +23,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Daniel Mack wrote:
-> (re-posting with the correct linux-mtd ML address. Sorry)
-> I'm running the latest git snapshot of the Linux kernel on a PXA3xx
-> based board. Connected to the PXA3xx is a 128MiB Nymonix NAND chip
-> which I've set to enourmously relaxed timings for now (factor 2 on all
-> values).
-> 
-> 'nandtest -p 100 /dev/mtd3' runs for hours without any trouble and
-> succeeds every test. However, when I create an UBIFS on that mtd and
-> start bonnie to stress-test the filesystem layer, I keep on seeing
-> messages like this:
-> 
-> [  382.374993] UBIFS error (pid 1133): ubifs_read_node: bad node at LEB 58:106008
-> [  382.382178] UBIFS error (pid 1133): do_readpage: cannot read page 38693 of inode 66, error -22
-> [  382.390968] timed out writing command
-> [  382.394830] UBI error: ubi_io_read: error -74 while reading 76 bytes from PEB 245:105736, read 76 bytes
-> [  382.404186] UBIFS error (pid 1135): try_read_node: cannot read node type 1 from LEB 68:101640, error -74
-> [  382.413698] UBIFS error (pid 1135): ubifs_read_node: bad node type (255 but expected 1)
-> [  382.421718] UBIFS error (pid 1135): ubifs_read_node: bad node at LEB 68:101640
-> [  382.428941] UBIFS error (pid 1135): do_readpage: cannot read page 53753 of inode 66, error -22
-> [  648.164435] UBIFS error (pid 1138): ubifs_read_node: bad node type (70 but expected 9)
-> [  648.172317] UBIFS error (pid 1138): ubifs_read_node: bad node at LEB 110:112896
-> [  648.179677] UBIFS error (pid 1138): do_readpage: cannot read page 19432 of inode 32838, error -22
-> [  648.188650] timed out writing command
-> [  648.192379] UBI error: ubi_io_read: error -74 while reading 81 bytes from PEB 738:80616, read 81 bytes
-> [  648.201732] UBIFS error (pid 1136): try_read_node: cannot read node type 1 from LEB 72:76520, error -74
-> [  648.211137] UBIFS error (pid 1136): ubifs_read_node: bad node type (255 but expected 1)
-> [  648.219115] UBIFS error (pid 1136): ubifs_read_node: bad node at LEB 72:76520
-> [  648.226231] UBIFS error (pid 1136): do_readpage: cannot read page 26131 of inode 32838, error -22
-> 
-> Once in awhile only and not frequently, but it still scares me. Is there
-> anything I should consider? Any more information I can provide for
-> further debugging?
-> 
-> (btw - it happens with the timings found in the datasheet as well, I
-> just extended them to exclude timing issues as culprit.)
-> 
-> I'd like to use that filesystem in a device, but I need to get it to a
-> more stable point for that.
+On Thu, Jul 09, 2009 at 09:00:42PM +0300, Adrian Hunter wrote:
+>> [  648.188650] timed out writing command
+>> [  648.192379] UBI error: ubi_io_read: error -74 while reading 81 bytes from PEB 738:80616, read 81 bytes
+>> [  648.201732] UBIFS error (pid 1136): try_read_node: cannot read node type 1 from LEB 72:76520, error -74
+>> [  648.211137] UBIFS error (pid 1136): ubifs_read_node: bad node type (255 but expected 1)
+>> [  648.219115] UBIFS error (pid 1136): ubifs_read_node: bad node at LEB 72:76520
+>> [  648.226231] UBIFS error (pid 1136): do_readpage: cannot read page 26131 of inode 32838, error -22
+>>
 
+[...]
 
-Try the NAND tests in drivers/mtd/tests.
+> Try the NAND tests in drivers/mtd/tests.
+
+Hmm. The torture test indees shows a problem now:
+
+sh-3.2# modprobe mtd_torturetest dev=3
+[  386.367730] 
+[  386.369296] =================================================
+[  386.375258] mtd_torturetest: Warning: this program is trying to wear out your flash, stop it if this is not wanted.
+[  386.385811] mtd_torturetest: MTD device: 3
+[  386.390021] mtd_torturetest: torture 32 eraseblocks (8-39) of mtd3
+[  386.396238] mtd_torturetest: write verify enabled
+[  388.675993] double bit error @ page 00000b79
+[  388.680406] timed out writing command
+[  388.687925] mtd_torturetest: error -74 while reading EB 36, read 131072
+[  388.694536] mtd_torturetest: verify failed for 0xFF... pattern
+[  388.700364] mtd_torturetest: finished after 0 erase cycles
+[  388.705885] mtd_torturetest: error -74 occurred during torturing
+[  388.711908] =================================================
+modprobe: Failed to load module mtd_torturetest: Bad message.
+
+Any hint what to debug?
+
+Thanks,
+Daniel
