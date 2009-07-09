@@ -1,19 +1,17 @@
-Received: from mail.de.keymile.com ([195.8.104.1])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MOvPB-0000kH-D1
-	for linux-mtd@lists.infradead.org; Thu, 09 Jul 2009 15:19:31 +0000
-Received: from srvdehan1003.de.keymile.net (srvdehan1003.de.keymile.net
-	[10.9.1.108]) by mailrelay.de.keymile.net (8.12.2/8.12.2)
-	with ESMTP id n69FG7jp029498 for <linux-mtd@lists.infradead.org>;
-	Thu, 9 Jul 2009 17:16:07 +0200 (MEST)
-Subject: gluebi problems on 2.6.28 backport
-From: Holger Brunck <holger.brunck@keymile.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: Thu, 09 Jul 2009 17:19:22 +0200
-Message-Id: <1247152762.10521.71.camel@pc005093.de.keymile.net>
-Mime-Version: 1.0
+Received: from buzzloop.caiaq.de ([212.112.241.133])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MOxqm-0002Ni-0p
+	for linux-mtd@lists.infradead.org; Thu, 09 Jul 2009 17:56:11 +0000
+Date: Thu, 9 Jul 2009 19:55:59 +0200
+From: Daniel Mack <daniel@caiaq.de>
+To: Adrian Hunter <adrian.hunter@nokia.com>,
+	Artem Bityutskiy <dedekind@infradead.org>
+Subject: UBIFS trouble
+Message-ID: <20090709175559.GZ26160@buzzloop.caiaq.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,68 +21,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all, 
-we are working on a powerpc (ppc 8xx) based system and we use ubi/ubifs
-on a NOR flash device. Our kernel version is 2.6.28.
+(re-posting with the correct linux-mtd ML address. Sorry)
 
-I have tried to integrate the newest UBI patches from the backport for
-2.6.28 from:  
-http://git.infradead.org/users/dedekind/ubifs-v2.6.28.git
+Hey,
 
-Now ubi crashes if I try to write into a mtdblock device. Via "git
-bisect" I have seen that the rework of the gluebi patch causes the
-problem: 
-	UBI: make gluebi a separate module
-or
-        UBI: remove built-in gluebi
+I'm running the latest git snapshot of the Linux kernel on a PXA3xx
+based board. Connected to the PXA3xx is a 128MiB Nymonix NAND chip
+which I've set to enourmously relaxed timings for now (factor 2 on all
+values).
 
-Unfortunately the second patch did not compile standalone for that, both
-patches can cause the problem. 
+'nandtest -p 100 /dev/mtd3' runs for hours without any trouble and
+succeeds every test. However, when I create an UBIFS on that mtd and
+start bonnie to stress-test the filesystem layer, I keep on seeing
+messages like this:
 
-I have formated a ubi device, attached and then created three ubi
-volumes. ubinfo seems to be ok afterwards. 
+[  382.374993] UBIFS error (pid 1133): ubifs_read_node: bad node at LEB 58:106008
+[  382.382178] UBIFS error (pid 1133): do_readpage: cannot read page 38693 of inode 66, error -22
+[  382.390968] timed out writing command
+[  382.394830] UBI error: ubi_io_read: error -74 while reading 76 bytes from PEB 245:105736, read 76 bytes
+[  382.404186] UBIFS error (pid 1135): try_read_node: cannot read node type 1 from LEB 68:101640, error -74
+[  382.413698] UBIFS error (pid 1135): ubifs_read_node: bad node type (255 but expected 1)
+[  382.421718] UBIFS error (pid 1135): ubifs_read_node: bad node at LEB 68:101640
+[  382.428941] UBIFS error (pid 1135): do_readpage: cannot read page 53753 of inode 66, error -22
+[  648.164435] UBIFS error (pid 1138): ubifs_read_node: bad node type (70 but expected 9)
+[  648.172317] UBIFS error (pid 1138): ubifs_read_node: bad node at LEB 110:112896
+[  648.179677] UBIFS error (pid 1138): do_readpage: cannot read page 19432 of inode 32838, error -22
+[  648.188650] timed out writing command
+[  648.192379] UBI error: ubi_io_read: error -74 while reading 81 bytes from PEB 738:80616, read 81 bytes
+[  648.201732] UBIFS error (pid 1136): try_read_node: cannot read node type 1 from LEB 72:76520, error -74
+[  648.211137] UBIFS error (pid 1136): ubifs_read_node: bad node type (255 but expected 1)
+[  648.219115] UBIFS error (pid 1136): ubifs_read_node: bad node at LEB 72:76520
+[  648.226231] UBIFS error (pid 1136): do_readpage: cannot read page 26131 of inode 32838, error -22
 
-If I try to copy something in a volume: 
-cp /usr/local/bin/testfile /dev/mtdblock5
-the kernel crashes. 
+Once in awhile only and not frequently, but it still scares me. Is there
+anything I should consider? Any more information I can provide for
+further debugging?
 
-The error message is: 
--bash-3.2# cp /usr/local/bin/testfile /dev/mtdblock5
-Unable to handle kernel paging request for data at address 0x00000000
-Faulting instruction address: 0xc0197cec
-Oops: Kernel access of bad area, sig: 11 [#1]
-PREEMPT MGSUVD
-Modules linked in:
-NIP: c0197cec LR: c019e154 CTR: c019e084
-REGS: c38f3e60 TRAP: 0300   Not tainted  (2.6.28-b001-dev-3.1.3)
-MSR: 00009032 <EE,ME,IR,DR>  CR: 33555899  XER: c0000000
-DAR: 00000000, DSISR: c0000000
-TASK = c3846800[126] 'mtdblockd' THREAD: c38f2000
-GPR00: c019e154 c38f3f10 c3846800 00000000 00000001 c3a83800 0000a880
-00000200 
-GPR08: 00000000 00015700 00000000 0001ff80 0000a880 04110900 03e7ab00
-00000000 
-GPR16: 03e6fa28 03e747f0 00000000 00000000 00000000 c00409b8 c02c5ff0
-c38f3f78 
-GPR24: 00000200 c3a83800 c3954d90 00000001 c3a83800 c3954d90 00000200
-00000200 
-NIP [c0197cec] ubi_leb_read+0x18/0x138
-LR [c019e154] gluebi_read+0xd0/0x120
-Call Trace:
-[c38f3f10] [00001032] 0x1032 (unreliable)
-[c38f3f30] [c019e154] gluebi_read+0xd0/0x120
-[c38f3f70] [c01869cc] mtdblock_readsect+0xdc/0x120
-[c38f3fb0] [c0185d2c] mtd_blktrans_thread+0x198/0x2a4
-[c38f3fe0] [c0040a04] kthread+0x4c/0x88
-[c38f3ff0] [c000d530] kernel_thread+0x4c/0x68
-Instruction dump:
-3860ffe2 80010014 83e1000c 7c0803a6 38210010 4e800020 7c0802a6 9421ffe0 
-7ccc3378 bf810010 90010024 7cbc2b78 <83e30000> 7cea3b78 83bf0170
-7d094378 
----[ end trace 5690d91bc0c9bd48 ]---
+(btw - it happens with the timings found in the datasheet as well, I
+just extended them to exclude timing issues as culprit.)
 
-Do I miss something or is there anybody who has a idea whats going
-wrong? 
+I'd like to use that filesystem in a device, but I need to get it to a
+more stable point for that.
 
-Regards 
-Holger Brunck
+Many thanks,
+Daniel
