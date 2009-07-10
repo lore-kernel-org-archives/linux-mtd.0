@@ -1,23 +1,7 @@
-Received: from e37.co.us.ibm.com ([32.97.110.158])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MPBlC-0007AV-7A
-	for linux-mtd@lists.infradead.org; Fri, 10 Jul 2009 08:47:20 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e37.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n6A8kQEI006277
-	for <linux-mtd@lists.infradead.org>; Fri, 10 Jul 2009 02:46:26 -0600
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n6A8lCh3221690
-	for <linux-mtd@lists.infradead.org>; Fri, 10 Jul 2009 02:47:12 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n6A8lBU1008379
-	for <linux-mtd@lists.infradead.org>; Fri, 10 Jul 2009 02:47:12 -0600
 Subject: Re: [PATCH Resend2] Remove 'SBC8240 Wind River' Device Driver Code
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-To: dedekind@infradead.org, dwmw2@infradead.org
-In-Reply-To: <1247210095.20721.362.camel@localhost.localdomain>
+From: David Woodhouse <dwmw2@infradead.org>
+To: subrata@linux.vnet.ibm.com
+In-Reply-To: <1247215625.6630.6.camel@subratamodak.linux.ibm.com>
 References: <20090701135247.27488.10776.sendpatchset@subratamodak.linux.ibm.com>
 	<1246846628.5743.2.camel@subratamodak.linux.ibm.com>
 	<1247205588.20721.353.camel@localhost.localdomain>
@@ -25,20 +9,21 @@ References: <20090701135247.27488.10776.sendpatchset@subratamodak.linux.ibm.com>
 	<4A56DD51.5040703@gmail.com>
 	<1247209961.6630.3.camel@subratamodak.linux.ibm.com>
 	<1247210095.20721.362.camel@localhost.localdomain>
+	<1247215625.6630.6.camel@subratamodak.linux.ibm.com>
 Content-Type: text/plain
-Date: Fri, 10 Jul 2009 14:17:05 +0530
-Message-Id: <1247215625.6630.6.camel@subratamodak.linux.ibm.com>
+Date: Fri, 10 Jul 2009 09:53:27 +0100
+Message-Id: <1247216007.29541.2.camel@macbook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: carolyn.j.smith@exgate.tek.com, Stephen Rothwell <sfr@canb.auug.org.au>,
-	Artem Bityutskiy <dedekind1@gmail.com>, Jim Cromie <jim.cromie@gmail.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>,
 	linux-kernel <linux-kernel@vger.kernel.org>,
-	Linuxppc-dev <Linuxppc-dev@ozlabs.org>,
+	Jim Cromie <jim.cromie@gmail.com>,
 	Sachin P Sant <sachinp@linux.vnet.ibm.com>,
 	linux-next <linux-next@vger.kernel.org>, linux-mtd@lists.infradead.org,
+	Linuxppc-dev <Linuxppc-dev@ozlabs.org>,
 	Scott Wood <scottwood@freescale.com>,
 	Balbir Singh <balbir@linux.vnet.ibm.com>
-Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -48,40 +33,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-07-10 at 10:14 +0300, Artem Bityutskiy wrote:
-> On Fri, 2009-07-10 at 12:42 +0530, Subrata Modak wrote:
-> > On Fri, 2009-07-10 at 09:18 +0300, Artem Bityutskiy wrote:
-> > > Subrata Modak wrote:
-> > > > On Fri, 2009-07-10 at 08:59 +0300, Artem Bityutskiy wrote:
-> > > >> On Mon, 2009-07-06 at 07:47 +0530, Subrata Modak wrote:
-> > > >>> Hi,
-> > > >>>
-> > > >>> Is there somebody else whom i should also address to get an attention
-> > > >>> for this patch ? I apolozise if i have not included someone. Kindly
-> > > >>> connect to the concerned.
-> > > >> I'm putting your patch to l2-mtd-2.6.git.
-> > > > 
-> > > > Thanks very much. Would i receive some automatic confirmation once it
-> > > > make to Linus tree ?
-> > > 
-> > > I do not think so. I'm not MTD maintainer and in l2-mtd-2.6.git
-> > > I just collect random patches, which the maintainer then usually
-> > > takes from my tree.
-> > 
-> > Thanks. I just want this through before 2.6.31 stable is released, so
-> > that the build fails does not occur on next trees based on that stable
-> > one.
-> 
-> Then you should bug dwmw2.
+On Fri, 2009-07-10 at 14:17 +0530, Subrata Modak wrote:
+> Is it possible to get this patch through and before 2.6.31 stable is
+> released ?
 
-Hmmm. I see.
+Hm, I was ignoring this until I was sure all the last-minute fixes for
+2.6.31 were out of the way; I was planning to submit it for 2.6.32.
 
-Hi dwmw2,
+Do we really need to submit it for 2.6.31? It's not a regression, is it?
+It's been like this for _ages_.
 
-Is it possible to get this patch through and before 2.6.31 stable is
-released ?
-
-Regards--
-Subrata
-
-> 
+-- 
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
