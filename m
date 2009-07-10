@@ -1,19 +1,19 @@
-Message-ID: <4A5737AA.7050208@gmail.com>
-Date: Fri, 10 Jul 2009 15:44:26 +0300
-From: Artem Bityutskiy <dedekind1@gmail.com>
-MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 2:2][MTD][NAND]omap : Adding DMA mode support in nand
-	prefetch/post-write
-References: <63362.192.168.10.89.1247226916.squirrel@dbdmail.itg.ti.com>	
-	<1247227344.20721.363.camel@localhost.localdomain>
-	<1247229621.29541.4.camel@macbook.infradead.org>
-In-Reply-To: <1247229621.29541.4.camel@macbook.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-	david-b@pacbell.net, Tony Lindgren <tony@atomide.com>,
-	linux-mtd@lists.infradead.org, vimal singh <vimalsingh@ti.com>
+Received: from mail.de.keymile.com ([195.8.104.1])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MPFYq-0005yG-FT
+	for linux-mtd@lists.infradead.org; Fri, 10 Jul 2009 12:50:51 +0000
+Subject: Re: gluebi problems on 2.6.28 backport
+From: Holger Brunck <holger.brunck@keymile.com>
+To: dedekind@infradead.org
+In-Reply-To: <1247228821.20721.368.camel@localhost.localdomain>
+References: <1247152762.10521.71.camel@pc005093.de.keymile.net>
+	<1247228821.20721.368.camel@localhost.localdomain>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: Fri, 10 Jul 2009 14:50:29 +0200
+Message-Id: <1247230229.28076.1.camel@pc005093.de.keymile.net>
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +23,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse wrote:
-> On Fri, 2009-07-10 at 15:02 +0300, Artem Bityutskiy wrote:
->> On Fri, 2009-07-10 at 17:25 +0530, vimal singh wrote:
->>> +	/* The fifo depth is 64 bytes. We have a sync at each frame and frame
->>> +	 * length is 64 bytes.
->>> +	 */
->>> +	int buf_len = len/64;
->> To optimize performance it is better not to rely on gcc and use <<
+Hi, 
+
+> The problem is that the mtd_blkdevs module does not open MTD devices
+> before working with them. Gluebi changes revealed this problem. Below
+> is the patch which should fix the issue. Please, try and let me know
+> if it helps.
 > 
-> If you ever see gcc screwing up division of an 'int' by a constant 64,
-> file a GCC bug.
+> ======================================================================
+> 
+> From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> Subject: [PATCH] mtd: blkdevs: do not for get to get MTD devices
+> 
+> Nowadays MTD devices have to be "get" before they can be
+> used. This has to be done with 'put_mtd_device()'. The
+> 'blktrans_open()' function did not do this and instead
+> used 'try_module_get()'. Fixe this.
+> 
+> Since 'put_mtd_device()' already gets the module, extra
+> 'try_module_get()' is not needed.
+> 
+> This fixes oops when one tries to use mtdbloc on tope of
+> gluebi.
+> 
+> Reported-by: Holger Brunck <holger.brunck@keymile.com>
+> Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> ---
+>  drivers/mtd/mtd_blkdevs.c |    6 +++---
+>  1 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+> index 1409f01..2f55242 100644
+> --- a/drivers/mtd/mtd_blkdevs.c
+> +++ b/drivers/mtd/mtd_blkdevs.c
+> @@ -139,7 +139,7 @@ static int blktrans_open(struct block_device *bdev, fmode_t mode)
+>  	struct mtd_blktrans_ops *tr = dev->tr;
+>  	int ret = -ENODEV;
+>  
+> -	if (!try_module_get(dev->mtd->owner))
+> +	if (!get_mtd_device(NULL, dev->mtd->index))
+>  		goto out;
+>  
+>  	if (!try_module_get(tr->owner))
+> @@ -153,7 +153,7 @@ static int blktrans_open(struct block_device *bdev, fmode_t mode)
+>  	ret = 0;
+>  	if (tr->open && (ret = tr->open(dev))) {
+>  		dev->mtd->usecount--;
+> -		module_put(dev->mtd->owner);
+> +		put_mtd_device(dev->mtd);
+>  	out_tr:
+>  		module_put(tr->owner);
+>  	}
+> @@ -172,7 +172,7 @@ static int blktrans_release(struct gendisk *disk, fmode_t mode)
+>  
+>  	if (!ret) {
+>  		dev->mtd->usecount--;
+> -		module_put(dev->mtd->owner);
+> +		put_mtd_device(dev->mtd);
+>  		module_put(tr->owner);
+>  	}
+>  
+> -- 
+> 1.6.0.6
+> 
+yes this patch solves my problem. 
 
-I did see gcc generated division instruction instead of shift
-instruction on x86 when the kernel is compiles with size optimization.
-I think this is because it division instruction is shorter.
+Thanks a lot.
 
-The exact place I we saw was the UBIFS binary search function, and
-division by 2 was not compiled into a shift instruction.
-
-So what I suggested is to use shift explicitly if this is wanted.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Regards 
+Holger Brunck
