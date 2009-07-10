@@ -1,26 +1,25 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MP9Fx-00034Y-60
-	for linux-mtd@lists.infradead.org; Fri, 10 Jul 2009 06:06:55 +0000
-Subject: Re: [PATCH Resend2] Remove 'SBC8240 Wind River' Device Driver Code
+	id 1MP9He-0003Px-Qb
+	for linux-mtd@lists.infradead.org; Fri, 10 Jul 2009 06:08:41 +0000
+Subject: Re: [PATCH v2 17/18] new ARM SoC support: BCMRing
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: subrata@linux.vnet.ibm.com
-In-Reply-To: <1246846628.5743.2.camel@subratamodak.linux.ibm.com>
-References: <20090701135247.27488.10776.sendpatchset@subratamodak.linux.ibm.com>
-	<1246846628.5743.2.camel@subratamodak.linux.ibm.com>
+To: "Leo (Hao) Chen" <leochen@broadcom.com>
+In-Reply-To: <8628FE4E7912BF47A96AE7DD7BAC0AADCB25BA6C1F@SJEXCHCCR02.corp.ad.broadcom.com>
+References: <8628FE4E7912BF47A96AE7DD7BAC0AADCB25BA6C1F@SJEXCHCCR02.corp.ad.broadcom.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 10 Jul 2009 08:59:48 +0300
-Message-Id: <1247205588.20721.353.camel@localhost.localdomain>
+Date: Fri, 10 Jul 2009 09:08:01 +0300
+Message-Id: <1247206081.20721.361.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: carolyn.j.smith@exgate.tek.com, Stephen Rothwell <sfr@canb.auug.org.au>,
-	Jim Cromie <jim.cromie@gmail.com>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	Linuxppc-dev <Linuxppc-dev@ozlabs.org>,
-	Sachin P Sant <sachinp@linux.vnet.ibm.com>,
-	linux-next <linux-next@vger.kernel.org>, linux-mtd@lists.infradead.org,
-	Scott Wood <scottwood@freescale.com>, dwmw2@infradead.org,
-	Balbir Singh <balbir@linux.vnet.ibm.com>
+Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>,
+	Scott Branden <sbranden@broadcom.com>,
+	Linux Kernel <linux-kernel@vger.kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
+	"linux-arm-kernel@lists.arm.linux.org.uk"
+	<linux-arm-kernel@lists.arm.linux.org.uk>,
+	Alan Cox <alan@lxorguk.ukuu.org.uk>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,14 +30,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-07-06 at 07:47 +0530, Subrata Modak wrote:
+On Fri, 2009-07-03 at 18:45 -0700, Leo (Hao) Chen wrote:
 > Hi,
 > 
-> Is there somebody else whom i should also address to get an attention
-> for this patch ? I apolozise if i have not included someone. Kindly
-> connect to the concerned.
+> This is the nand driver for the new bcmring architecture.
+> 
+> >From d3f98479bf28324a3472f3f637014a28ffef29ab Mon Sep 17 00:00:00 2001
+> From: Leo Chen <leochen@broadcom.com>
+> Date: Fri, 3 Jul 2009 17:27:16 -0700
+> Subject: [PATCH 17/18] bcmring nand driver
 
-I'm putting your patch to l2-mtd-2.6.git.
+Could you please make scripts/checkpatch.pl happy?
 
 -- 
 Best regards,
