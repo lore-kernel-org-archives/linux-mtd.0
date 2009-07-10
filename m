@@ -1,31 +1,19 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from buzzloop.caiaq.de ([212.112.241.133])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MPAQY-0005gk-Lq
-	for linux-mtd@lists.infradead.org; Fri, 10 Jul 2009 07:22:02 +0000
-Subject: Re: [PATCH Resend2] Remove 'SBC8240 Wind River' Device Driver Code
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: subrata@linux.vnet.ibm.com
-In-Reply-To: <1247209961.6630.3.camel@subratamodak.linux.ibm.com>
-References: <20090701135247.27488.10776.sendpatchset@subratamodak.linux.ibm.com>
-	<1246846628.5743.2.camel@subratamodak.linux.ibm.com>
-	<1247205588.20721.353.camel@localhost.localdomain>
-	<1247206539.6630.0.camel@subratamodak.linux.ibm.com>
-	<4A56DD51.5040703@gmail.com>
-	<1247209961.6630.3.camel@subratamodak.linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 10 Jul 2009 10:14:55 +0300
-Message-Id: <1247210095.20721.362.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: carolyn.j.smith@exgate.tek.com, Stephen Rothwell <sfr@canb.auug.org.au>,
-	Artem Bityutskiy <dedekind1@gmail.com>, Jim Cromie <jim.cromie@gmail.com>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	Linuxppc-dev <Linuxppc-dev@ozlabs.org>,
-	Sachin P Sant <sachinp@linux.vnet.ibm.com>,
-	linux-next <linux-next@vger.kernel.org>, linux-mtd@lists.infradead.org,
-	Scott Wood <scottwood@freescale.com>, dwmw2@infradead.org,
-	Balbir Singh <balbir@linux.vnet.ibm.com>
-Reply-To: dedekind@infradead.org
+	id 1MPBfQ-0005so-ET
+	for linux-mtd@lists.infradead.org; Fri, 10 Jul 2009 08:41:23 +0000
+Date: Fri, 10 Jul 2009 10:41:03 +0200
+From: Daniel Mack <daniel@caiaq.de>
+To: Eric Miao <eric.y.miao@gmail.com>
+Subject: Re: PXA3xx NAND driver trouble with 'conservative' CPU govenor
+Message-ID: <20090710084103.GY9464@buzzloop.caiaq.de>
+References: <20090709190137.GW19257@buzzloop.caiaq.de>
+	<4A569059.4020200@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4A569059.4020200@gmail.com>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,31 +23,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-07-10 at 12:42 +0530, Subrata Modak wrote:
-> On Fri, 2009-07-10 at 09:18 +0300, Artem Bityutskiy wrote:
-> > Subrata Modak wrote:
-> > > On Fri, 2009-07-10 at 08:59 +0300, Artem Bityutskiy wrote:
-> > >> On Mon, 2009-07-06 at 07:47 +0530, Subrata Modak wrote:
-> > >>> Hi,
-> > >>>
-> > >>> Is there somebody else whom i should also address to get an attention
-> > >>> for this patch ? I apolozise if i have not included someone. Kindly
-> > >>> connect to the concerned.
-> > >> I'm putting your patch to l2-mtd-2.6.git.
-> > > 
-> > > Thanks very much. Would i receive some automatic confirmation once it
-> > > make to Linus tree ?
+On Fri, Jul 10, 2009 at 08:50:33AM +0800, Eric Miao wrote:
+> Daniel Mack wrote:
+> > With the cpu govenor set to 'conservative', the PXA3xx NAND driver fails
+> > the tests from drivers/mtd/tests:
 > > 
-> > I do not think so. I'm not MTD maintainer and in l2-mtd-2.6.git
-> > I just collect random patches, which the maintainer then usually
-> > takes from my tree.
+> > sh-3.2# modprobe mtd_torturetest dev=3
+> > [  386.367730]
+> > [  386.369296] =================================================
+> > [  386.375258] mtd_torturetest: Warning: this program is trying to wear out your flash, stop it if this is not wanted.
+> > [  386.385811] mtd_torturetest: MTD device: 3
+> > [  386.390021] mtd_torturetest: torture 32 eraseblocks (8-39) of mtd3
+> > [  386.396238] mtd_torturetest: write verify enabled
+> > [  388.675993] double bit error @ page 00000b79
+> > [  388.680406] timed out writing command
+> > [  388.687925] mtd_torturetest: error -74 while reading EB 36, read 131072
+> > [  388.694536] mtd_torturetest: verify failed for 0xFF... pattern
+> > [  388.700364] mtd_torturetest: finished after 0 erase cycles
+> > [  388.705885] mtd_torturetest: error -74 occurred during torturing
+> > [  388.711908] =================================================
+> > modprobe: Failed to load module mtd_torturetest: Bad message.
+> > 
+> > When setting the govenor to 'performance', the test passes. Has anyone
+> > seen similar issues? Any idea, anyone?
 > 
-> Thanks. I just want this through before 2.6.31 stable is released, so
-> that the build fails does not occur on next trees based on that stable
-> one.
+> What's the current CPU freq when in conservative? cat /proc/cpuinfo?
 
-Then you should bug dwmw2.
+/proc/cpuinfo shows 34.61 BogoMIPS, and
+/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq tells me 104MHz.
 
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+Judging from the clock diagram, there is either 156MHz or 30MHz (for
+ring-oscillator mode) applied to the NAND controller.
+
+I've prepared two patches (which will follow to this mail) that
+
+ a) make the nand driver aware of frequency changes and
+ b) report the correct clk rate for RO mode
+
+But unfortunately, they won't solve the problem.
+
+Any other idea?
+
+Daniel
