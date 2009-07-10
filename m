@@ -1,25 +1,21 @@
-Received: from mail-ew0-f221.google.com ([209.85.219.221])
+Received: from mail-px0-f183.google.com ([209.85.216.183])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MPLrv-0003LH-UA
-	for linux-mtd@lists.infradead.org; Fri, 10 Jul 2009 19:35:07 +0000
-Received: by ewy21 with SMTP id 21so1058535ewy.18
+	id 1MPMHc-0003fB-Ep
+	for linux-mtd@lists.infradead.org; Fri, 10 Jul 2009 20:01:31 +0000
+Received: by pxi13 with SMTP id 13so839185pxi.28
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 10 Jul 2009 12:34:49 -0700 (PDT)
-Sender: Florian Fainelli <f.fainelli@gmail.com>
-From: Florian Fainelli <florian@openwrt.org>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH / RESENT #3] mtd: let include/linux/mtd/partitions.h stand
-	on its own
-Date: Fri, 10 Jul 2009 21:34:45 +0200
-References: <alpine.LFD.2.00.0907101448360.3138@xanadu.home>
-In-Reply-To: <alpine.LFD.2.00.0907101448360.3138@xanadu.home>
+	Fri, 10 Jul 2009 13:01:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+In-Reply-To: <SNT121-W16B0221E87C4D7934D7910B2270@phx.gbl>
+References: <SNT121-W16B0221E87C4D7934D7910B2270@phx.gbl>
+Date: Fri, 10 Jul 2009 22:01:22 +0200
+Message-ID: <71cd59b00907101301k7ae5a2b2j8b05d31eef1ae1fe@mail.gmail.com>
+Subject: Re: UBIFS Question
+From: Corentin Chary <corentin.chary@gmail.com>
+To: "Laurent ." <sid6582@msn.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200907102134.46212.florian@openwrt.org>
-Cc: Nicolas Pitre <nico@cam.org>, Martin Michlmayr <tbm@cyrius.com>
+Cc: linux-mtd@lists.infradead.org, artem.bityutski@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,56 +25,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Nicolas,
+On Fri, Jul 10, 2009 at 8:43 PM, Laurent .<sid6582@msn.com> wrote:
+>
+> In /mnt/alphaflight I generate a small new.txt file with vi, which contai=
+ns a few lines of characters.
+> After saving, I immediately power-off brutally.
+> I power-on again, mount, and the new.txt file is not there...
+>
+> I recreate the file, I wait 20 seconds or so and power-off brutally.
+>
+> I power-on again, mount and now I have:
+>
+> -rw-r--r-- =A0 =A01 1000 =A0 =A0 1000 =A0 =A0 =A0 =A0 =A0397 Dec 31 =A020=
+02 indexOnline.html
+> -rw-r--r-- =A0 =A01 root =A0 =A0 root =A0 =A0 =A0 =A0 =A0 =A00 Jan =A01 0=
+0:00 new.txt
+> -rw-r--r-- =A0 =A01 1000 =A0 =A0 1000 =A0 =A0 =A0 =A0 =A0104 Dec 31 =A020=
+02 obfuscAFL.bat
+>
+> Size 0 ... I can understand that since I did not have time to sync.
+>
+> It=92s funny though that the file is present in the directory but the con=
+tents are not there ?
+>
+> If I do this programmatically, I presume I can force a sync after I close=
+ the file ?
+> Is it safe to do so ? Would you know the C API to use to do a sync progra=
+mmatically ?
+>
 
-Le Friday 10 July 2009 20:51:33 Nicolas Pitre, vous avez =E9crit=A0:
-> When declaring static MTD partitions in board specific code, only
-> including include/linux/mtd/partitions.h should suffice without
-> gcc nagging us with:
->
-> In file included from arch/arm/mach-kirkwood/sheevaplug-setup.c:14:
-> include/linux/mtd/partitions.h:50: warning: 'struct mtd_info' declared
-> inside parameter list include/linux/mtd/partitions.h:50: warning: its sco=
-pe
-> is only this definition or declaration, which is probably not what you wa=
-nt
-> include/linux/mtd/partitions.h:51: warning: 'struct mtd_info' declared
-> inside parameter list include/linux/mtd/partitions.h:61: warning: 'struct
-> mtd_info' declared inside parameter list include/linux/mtd/partitions.h:6=
-7:
-> warning: 'struct mtd_info' declared inside parameter list
->
-> Signed-off-by: Nicolas Pitre <nico@marvell.com>
+Hi,
+I think you should read
+http://www.linux-mtd.infradead.org/faq/ubifs.html#L_empty_file
+An use fsync() on your file.
+Quotting "close(2) manual"
 
-Thanks for doing this, Martin and I had the same problem on Cobalt Microser=
-vers (MIPS).
+       A  successful close does not guarantee that the data has been
+successfully
+       saved to disk, as the kernel defers writes.  It is not common
+for a file system to flush the buffers
+       when the stream is closed.  If you need to be sure that the
+data is physically stored use fsync(2).
+       (It will depend on the disk hardware at this point.)
 
-> ---
->
-> Hello?  Anybody home?
->
-> diff --git a/include/linux/mtd/partitions.h
-> b/include/linux/mtd/partitions.h index af6dcb9..b70313d 100644
-> --- a/include/linux/mtd/partitions.h
-> +++ b/include/linux/mtd/partitions.h
-> @@ -47,6 +47,8 @@ struct mtd_partition {
->  #define MTDPART_SIZ_FULL	(0)
->
->
-> +struct mtd_info;
-> +
->  int add_mtd_partitions(struct mtd_info *, const struct mtd_partition *,
-> int); int del_mtd_partitions(struct mtd_info *);
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
-
-
-=2D-=20
-Best regards, Florian Fainelli
-Email : florian@openwrt.org
-http://openwrt.org
-=2D------------------------------
+--=20
+Corentin Chary
+http://xf.iksaif.net - http://uffs.org
