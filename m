@@ -1,14 +1,21 @@
-Received: from server1.wserver.cz ([82.113.45.157])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MQT49-0008GX-Q6
-	for linux-mtd@lists.infradead.org; Mon, 13 Jul 2009 21:28:12 +0000
-From: Jiri Slaby <jirislaby@gmail.com>
-To: dwmw2@infradead.org
-Subject: [PATCH] MTD: sst25l, fix lock imbalance
-Date: Mon, 13 Jul 2009 23:22:04 +0200
-Message-Id: <1247520124-31875-1-git-send-email-jirislaby@gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Jiri Slaby <jirislaby@gmail.com>
+Received: from smtp106.sbc.mail.gq1.yahoo.com ([67.195.14.109])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MQTsY-0002qq-7n
+	for linux-mtd@lists.infradead.org; Mon, 13 Jul 2009 22:20:20 +0000
+From: David Brownell <david-b@pacbell.net>
+To: Troy Kisky <troy.kisky@boundarydevices.com>
+Subject: Re: [PATCH V4 2/3] mtd: nand: Calculate better default ecc layout
+Date: Mon, 13 Jul 2009 14:56:19 -0700
+References: <1246055086-7357-1-git-send-email-troy.kisky@boundarydevices.com>
+	<1246055086-7357-2-git-send-email-troy.kisky@boundarydevices.com>
+In-Reply-To: <1246055086-7357-2-git-send-email-troy.kisky@boundarydevices.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200907131456.19881.david-b@pacbell.net>
+Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,28 +25,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add an omitted unlock to one sst25l_erase fail path.
+On Friday 26 June 2009, Troy Kisky wrote:
+> Looking through the code, I can only see that
+> Davinci is effected this way when using 512 bytes
+> x 4 steps with hardware ecc.
 
-Signed-off-by: Jiri Slaby <jirislaby@gmail.com>
----
- drivers/mtd/devices/sst25l.c |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
+You mean, with *single-bit* hardware ECC.
 
-diff --git a/drivers/mtd/devices/sst25l.c b/drivers/mtd/devices/sst25l.c
-index 1648685..5022ab2 100644
---- a/drivers/mtd/devices/sst25l.c
-+++ b/drivers/mtd/devices/sst25l.c
-@@ -180,8 +180,10 @@ static int sst25l_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	mutex_lock(&flash->lock);
- 
- 	err = sst25l_wait_till_ready(flash);
--	if (err)
-+	if (err) {
-+		mutex_unlock(&flash->lock);
- 		return err;
-+	}
- 
- 	while (addr < end) {
- 		err = sst25l_erase_sector(flash, addr);
--- 
-1.6.3.2
+Currently each step needs just three bytes,
+but it's using the default ECC layout which
+allocates six bytes per step.
+
+
+> It has its ecc 
+> bytes moved from oob 40-63 to oob 52-63.
+
+More correctly:  40-42, 46-48, 52-54, 58-60
+to 52-63.
+
+
+> So a Davinci authority will need to ack this,
+> or request a change.
+
+Actually I'd just stick with the standard policy
+and not make such an incompatible change in the
+first place.  You can't guarantee that the change
+won't cause regressions...
+
+It would have been nice if the MTD layer were
+doing this ECC layout before, but in this specific
+case I can't say I think an extra 12 bytes of OOB
+data will matter to anyone.
+
+- Dave
