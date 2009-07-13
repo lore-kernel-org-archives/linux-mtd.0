@@ -1,15 +1,38 @@
-Received: from lime.solrad.nl ([213.193.238.107])
+Received: from west-smtp1.trimble.com ([155.63.128.51])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MQNHL-0008He-Fg
-	for linux-mtd@lists.infradead.org; Mon, 13 Jul 2009 15:17:25 +0000
-Message-ID: <4A5B4EC7.9010605@youcom.nl>
-Date: Mon, 13 Jul 2009 17:12:07 +0200
-From: Jelle Martijn Kok <jmkok@youcom.nl>
+	id 1MQQBU-0003gw-N1
+	for linux-mtd@lists.infradead.org; Mon, 13 Jul 2009 18:23:35 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: UBI resizing
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: UBIFS Corrupt during power failure
+Date: Mon, 13 Jul 2009 12:22:05 -0600
+Message-ID: <C77C279BA71FD14985DC8E75FB265AB703AA85C0@usw-am-xch-02.am.trimblecorp.net>
+In-Reply-To: <1246949184.20721.302.camel@localhost.localdomain>
+References: <C77C279BA71FD14985DC8E75FB265AB702FE53F4@usw-am-xch-02.am.trimblecorp.net>
+	<1239979018.3390.298.camel@localhost.localdomain>
+	<C77C279BA71FD14985DC8E75FB265AB7030C4C86@usw-am-xch-02.am.trimblecorp.net>
+	<200905150916.54091.sr@denx.de>
+	<C77C279BA71FD14985DC8E75FB265AB70344D104@usw-am-xch-02.am.trimblecorp.net>
+	<1242721105.3623.0.camel@localhost.localdomain>
+	<C77C279BA71FD14985DC8E75FB265AB7034DBD10@usw-am-xch-02.am.trimblecorp.net>
+	<1246627562.20721.190.camel@localhost.localdomain>
+	<1246627771.20721.191.camel@localhost.localdomain>
+	<7207AAC68CE347458026863515A07DA102901F3C@usw-am-xch-02.am.trimblecorp.net>
+	<1246629940.20721.219.camel@localhost.localdomain>
+	<7207AAC68CE347458026863515A07DA102901F9C@usw-am-xch-02.am.trimblecorp.net>
+	<1246633131.20721.224.camel@localhost.localdomain>
+	<1246854654.20721.271.camel@localhost.localdomain>
+	<1246855913.20721.287.camel@localhost.localdomain>
+	<1246862635.20721.291.camel@localhost.localdomain>
+	<1246949184.20721.302.camel@localhost.loca ldomain>
+From: "Eric Holmberg" <Eric_Holmberg@Trimble.com>
+To: <dedekind@infradead.org>,
+	"Urs Muff" <urs_muff@trimble.com>
+Cc: linux-mtd@lists.infradead.org, Stefan Roese <sr@denx.de>,
+	Nicolas Pitre <nico@cam.org>, Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,89 +42,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Artem and others,
+>=20
+> On Mon, 2009-07-06 at 09:43 +0300, Artem Bityutskiy wrote:
+> > On Mon, 2009-07-06 at 07:51 +0300, Artem Bityutskiy wrote:
+> > > > [CCed Nicolas Pitre]
+> > > >=20
+> > > > OK, I've written a small user-space program which first=20
+> fills the NOR
+> > > > flash with an '0x89ABCDEF' pattern, then starts erasing=20
+> it, and then
+> > > > I cut the power at random point.
+> > > >=20
+> > > > And unfortunately the power cut results in eraseblocks=20
+> which have
+> > > > 0x89ABCDEF at the beginning, and all zeroes at the end.=20
+> I've attached
+> > > > one example.
+> > > >=20
+> > > > So it indeed looks like NOR erasure includes writing=20
+> zeroes from the
+> > > > end. Unfortunately UBI/UBIFS cannot handle this correctly ATM.
+> > >=20
+> > > Although I can easily fix this by writing few zeroes at=20
+> the beginning of
+> > > the eraseblock _before) erasing it, so that UBI will be=20
+> happy. But it is
+> > > still interesting whether I may just ask NOR to amend=20
+> it's embedded
+> > > erase algorithm.
 
-I have made an "ubirsvol" application (actually it are just some very 
-simple changes to your ubimkvol/ubirmvol). If you would like to have it, 
-I could sent it.
+This is exactly what I was seeing as well.  Here's a snippet from the
+flash test code that I wrote that was very similar to your code:
 
-I have 2 questions regarding resizing.
+Sector start:  0x3002 0000
+Sector end:    0x3003 ffff
+Data in block: aa55aa00
 
-Question 1: Why do UBI volumes have fixed sizes ?
-As far as I can see, all unused PEBs only have their EC headers are 
-written in the MTD. The volume headers are left unwritten.
-Only PEBs which are attached to a specific volume have their volume 
-header set.
-Is it correct that all unused PEBS are in a pool for the whole ubi 
-device, and not in a pool per ubi volume ?
-I do understand that this might make it much harder for UBIFS to 
-determine its available space as it could actually mean that two UBIFS 
-filesystems which are mounted on the same ubi (eg. ubi0_0 and ubi0_1) 
-might see the same amount of available LEBs, and thus UBIFS shows twice 
-as much space. However this might be very similar as mounting the same 
-harddrive on your system twice.
+Interrupted during an erase cycle as 1's were being changed to 0's.
 
-Question 2: Can UBIFS handle UBI resizes easier ?
-I have not looked at all at the inner working of UBIFS, so I do not dare 
-to say anything sensible.
-However making the UBI volume smaller, makes UBIFS complain that the 
-amount of LEBs is incorrect.
-I encountered (in ubidesign.pdf) "Note, that by default UBI will not 
-reduce the size of dynamic volumes unless the number range of logical 
-erase blocks which will be removed from the volume contains only unused 
-blocks. A specical parameter allows to override this default.".
-What is this "special parameter" ?
+30204f60  aa55aa00 aa55aa00 aa55aa00 aa55aa00  <-- correct test pattern
+30204f70  aa55aa00 aa55aa00 aa55aa00 aa55aa00
+30204f80  aa55aa00 aa55aa00 aa55aa00 aa55aa00
+30204f90  8254aa00 8841a000 a0408800 a8458000  <-- inbetween data
+30204fa0  00000000 00000000 00000000 00000000  <-- zero's
+30204fb0  00000000 00000000 00000000 00000000
 
-If UBI (and UBIFS) sizes would become non-fixed, it would prevent the 
-need for resizing at all. It might ease the usage of ubi, for example:
-- When creating ubi images (for production) the ubi size does not 
-matter. (UBI_VTBL_AUTORESIZE_FLG could ultimately be removed)
-- ubimkvol, can be called without specifying any size.
-- no more wasted space in static volumes.
-- bad blocks may be handled easier, as it can simply access the complete 
-pool. No block have to be reserved on front (UBI might however best not 
-hand out those last 10 PEBs)
+I verified with Spansion that the embedded erase algorithm first clears
+all 1's to 0's before erasing the bits to charge them back up to 1.
 
-More info on our specific application is below.
+Essentially, the contents of the PEB are indeterminate between the start
+and completion of an erase cycle.  The erase algorithm isn't
+configurable, so we are stuck with this behavior.
 
-Best Regards,
+> >=20
+> > This patch seems to fix the UBI issues Eric and me observed=20
+> (issue N2).
+> > I'll test the patch for few days, but I couldn't see any=20
+> problem so far.
 
-Jelle Martijn Kok
+The patch to write to the header is a great solution and I think it's
+the only possible solution.  Performance should be fine, since the
+4-byte write should only take about 0.5ms which is insignificant
+compared to a typical PEB erase time of 700ms.
 
-We currently have the following (working) setup (similar like 
-ubidesign.pdf - chapter 8):
-- We are using a 1024 blocks 128MB nand flash.
-- MTD in 2 partitions
-    - MTD0 contains the bootloader (1 block)
-    - MTD1 contains 1023 blocks in ubi0 (actually 1022 blocks as we are 
-blessed with a bad erase block)
-- ubi0 contains 2 volumes.
-    - ubi0_0 which is the root file system (UBIFS on a dynamic volume)
-    - ubi0_1 is the kernel (static volume)
-- The bootloader loads the kernel from the mtd (ubi0). Note: it 
-explicitly uses the volume name ("kernel") and not the volume_id to find 
-the static volume containg
+I will run 4 boards through torture tests starting tonight and let you
+know later this week!  Based upon the errors that I've seen and looking
+at the patch, I think that should solve the problem.
 
-However the limitations currently are:
-- I cannot place the kernel in the rootfs as I do under no circumstance 
-want to implement UBIFS in the bootloader.
-- I do not simply want to run ubiupdatevol on the kernel volume (ubi0_1) 
-as this might leave the kernel unusable
-- For this to be safely possible I want to write the new kernel into 
-ubi0_2 (named: "new").
-- I could then do an (atomic) "ubirename /dev/ubi0 new kernel kernel 
-old" and the new kernel is active
-- I do not wish to have that volume always present (and waste space)
-- I do at this moment not yet know the size of future kernels.
+Great work guys!
 
--- 
-------------------------------------------------------------------------
-You/Com Audiocommunicatie b.v.
-Motorenweg 5k 
-2623CR Delft
-The Netherlands
-tel. : (+31)15 262 59 55
-fax. : (+31)15 257 15 95
-mail : jmkok@youcom.nl
-http : http://www.youcom.nl
-------------------------------------------------------------------------
+-Eric
+
+> >=20
+> > From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> > Subject: [PATCH] UBI: fix NOR flash recovery
+> >=20
+> > This commit fixes NOR flash recovery issues observed with Spansion
+> > S29GL512N NOR.
+> >=20
+> > When NOR erases, it first fills PEBs with zeroes, then sets=20
+> all bytes
+> > to 0xFF. Filling with zeroes starts from the end of the=20
+> PEB. And when
+> > power is cut, this results in PEBs containing correct EC=20
+> and VID headers
+> > but corrupted with zeros at the end. This confuses UBI and=20
+> it mistakinly
+> > accepts these PEBs and associate them with LEBs.
+> >=20
+> > Fis this issue by zeroing EC and VID magics before erasing PEBs, to
+> > make UBI later refuse zem.
+> >=20
+> > Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+>=20
+> Yes, it fixes the issue. The device has already survived ~1500 power
+> cuts and no problems. It used to die after about 50 power cuts. I'm
+> pushing this to ubi-2.6.git.
+>=20
+> So if Eric is still interested, he can try it when he is back from the
+> holidays.
+>=20
