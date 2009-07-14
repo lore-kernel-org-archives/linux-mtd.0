@@ -1,14 +1,13 @@
 Received: from smtp.gentoo.org ([140.211.166.183])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MQiAe-0003Q1-Df
-	for linux-mtd@lists.infradead.org; Tue, 14 Jul 2009 13:35:54 +0000
+	id 1MQiMn-00039l-29
+	for linux-mtd@lists.infradead.org; Tue, 14 Jul 2009 13:48:28 +0000
 From: Mike Frysinger <vapier@gentoo.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] [MTD] [CHIPS] cfi_cmdset_0001.c: put chip into read-array
-	mode after unlocking
-Date: Tue, 14 Jul 2009 09:35:44 -0400
-Message-Id: <1247578544-6950-1-git-send-email-vapier@gentoo.org>
-Cc: Graf Yang <graf.yang@analog.com>
+To: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Subject: Pull request blackfin.git (for-mtd branch)
+Date: Tue, 14 Jul 2009 09:48:16 -0400
+Message-Id: <1247579296-9866-1-git-send-email-vapier@gentoo.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,36 +17,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Graf Yang <graf.yang@analog.com>
+The following changes since commit 4a390e07fc53ce9dd615d7b788e9ecc73f87ad94:
+  Linus Torvalds (1):
+        Merge git://git.kernel.org/.../gregkh/staging-2.6
 
-We should try and keep the flash in the default read-array mode when
-possible so that we are much more likely to properly recover from
-unexpected reboot events (such as watchdog expiring).  If we only unlock
-the flash, it can stay in that state for a while, so put it into
-read-array mode after successful unlocking.
+are available in the git repository at:
 
-URL: http://blackfin.uclinux.org/gf/tracker/4887
-Signed-off-by: Graf Yang <graf.yang@analog.com>
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
----
- drivers/mtd/chips/cfi_cmdset_0001.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+  git://git.kernel.org/pub/scm/linux/kernel/git/vapier/blackfin.git for-mtd
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index c240454..d96cc99 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -2056,6 +2056,11 @@ static int __xipram do_xxlock_oneblock(struct map_info *map, struct flchip *chip
- 		goto out;
- 	}
- 
-+	if (chip->state == FL_STATUS) {
-+		/* it goes ok, put chip into array mode */
-+		map_write(map, CMD(0xff), adr);
-+		chip->state = FL_READY;
-+	}
- 	xip_enable(map, chip, adr);
- out:	put_chip(map, chip, adr);
- 	spin_unlock(chip->mutex);
--- 
-1.6.3.3
+Graf Yang (2):
+      mtd: m25p80: add support for AAI programming with SST SPI flashes
+      mtd: m25p80: add SST WF SPI flash device information
+
+Mike Frysinger (5):
+      mtd/maps: uclinux: depend on MTD_RAM being built into the kernel
+      mtd/maps: gpio-addr-flash: new driver for GPIO assisted flash addressing
+      mtd: fix order of TEST/PARTITIONS kconfig options
+      [MTD] [CHIPS] stm_flash: new ST PSD4256G compatible flash chip driver
+      [MTD] phram: cleanup error handling and associated messages
+
+Timofei Bondarenko (1):
+      mtd/maps: uclinux: fix building when partition support is disabled
+
+ drivers/mtd/Kconfig                |   16 +-
+ drivers/mtd/chips/Kconfig          |    8 +
+ drivers/mtd/chips/Makefile         |    1 +
+ drivers/mtd/chips/stm_flash.c      |  747 ++++++++++++++++++++++++++++++++++++
+ drivers/mtd/devices/m25p80.c       |  130 +++++++-
+ drivers/mtd/devices/phram.c        |   25 +-
+ drivers/mtd/maps/Kconfig           |   12 +-
+ drivers/mtd/maps/Makefile          |    3 +-
+ drivers/mtd/maps/gpio-addr-flash.c |  311 +++++++++++++++
+ drivers/mtd/maps/uclinux.c         |    8 +
+ 10 files changed, 1236 insertions(+), 25 deletions(-)
+ create mode 100644 drivers/mtd/chips/stm_flash.c
+ create mode 100644 drivers/mtd/maps/gpio-addr-flash.c
