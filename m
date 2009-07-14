@@ -1,23 +1,15 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from mailbox-us-s-12.mailhostingserver.com ([75.125.101.9])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MQl3x-0007oz-5a
-	for linux-mtd@lists.infradead.org; Tue, 14 Jul 2009 16:41:11 +0000
-MIME-version: 1.0
-Content-transfer-encoding: 7BIT
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Received: from xanadu.home ([66.130.28.92]) by VL-MH-MR001.ip.videotron.ca
-	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
-	32bit))
-	with ESMTP id <0KMS00G836BLHQV0@VL-MH-MR001.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Tue, 14 Jul 2009 12:40:34 -0400 (EDT)
-Date: Tue, 14 Jul 2009 12:40:33 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-To: Simon Kagstrom <simon.kagstrom@netinsight.net>
-Subject: Re: [PATCH] Orion NAND: Make dword load asm volatile to avoid GCC
-	optimizing it away
-In-reply-to: <20090714164135.65e91b91@marrow.netinsight.se>
-Message-id: <alpine.LFD.2.00.0907141236160.3138@xanadu.home>
-References: <20090714164135.65e91b91@marrow.netinsight.se>
+	id 1MQoEv-0006tr-EO
+	for linux-mtd@lists.infradead.org; Tue, 14 Jul 2009 20:04:44 +0000
+Date: Tue, 14 Jul 2009 22:04:29 +0200
+From: Matthias Kaehlcke <matthias@kaehlcke.net>
+To: dwmw2@infradead.org
+Subject: [PATCH] mtdblock: introduce mtdblks_lock
+Message-ID: <20090714200429.GD18774@darwin>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,42 +20,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 14 Jul 2009, Simon Kagstrom wrote:
+The mtdblks array and its content are prone to race conditions. Introduce
+the mutex mtdblks_lock in order to solve this.
 
-> GCC 4.3.3 happily removes the dword load instruction in
-> orion_nand_read_buf. This patch makes the inline assembly volatile to
-> avoid this situation.
+Signed-off-by: Matthias Kaehlcke <matthias@kaehlcke.net>
+---
+ drivers/mtd/mtdblock.c |   17 ++++++++++++++++-
+ 1 files changed, 16 insertions(+), 1 deletions(-)
 
-If GCC does optimize away this inline asm then this is a serious GCC 
-bug.  The inline asm uses an output operand for which a dependency 
-exists on the very next line.
-
-If I were you I'd try to find a non broken GCC version instead.
-
-
-> Signed-off-by: Simon Kagstrom <simon.kagstrom@netinsight.net>
-> ---
->  drivers/mtd/nand/orion_nand.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
-> index 7ad9722..3f9b113 100644
-> --- a/drivers/mtd/nand/orion_nand.c
-> +++ b/drivers/mtd/nand/orion_nand.c
-> @@ -61,7 +61,7 @@ static void orion_nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
->  	buf64 = (uint64_t *)buf;
->  	while (i < len/8) {
->  		uint64_t x;
-> -		asm ("ldrd\t%0, [%1]" : "=r" (x) : "r" (io_base));
-> +		asm volatile ("ldrd\t%0, [%1]" : "=r" (x) : "r" (io_base));
->  		buf64[i++] = x;
->  	}
->  	i *= 8;
-> -- 
-> 1.6.0.4
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
+index 208c6fa..ca0c6b8 100644
+--- a/drivers/mtd/mtdblock.c
++++ b/drivers/mtd/mtdblock.c
+@@ -29,6 +29,8 @@ static struct mtdblk_dev {
+ 	enum { STATE_EMPTY, STATE_CLEAN, STATE_DIRTY } cache_state;
+ } *mtdblks[MAX_MTD_DEVICES];
+ 
++static struct mutex mtdblks_lock;
++
+ /*
+  * Cache stuff...
+  *
+@@ -270,6 +272,8 @@ static int mtdblock_open(struct mtd_blktrans_dev *mbd)
+ 
+ 	DEBUG(MTD_DEBUG_LEVEL1,"mtdblock_open\n");
+ 
++	mutex_lock(&mtdblks_lock);
++
+ 	if (mtdblks[dev]) {
+ 		mtdblks[dev]->count++;
+ 		return 0;
+@@ -277,8 +281,10 @@ static int mtdblock_open(struct mtd_blktrans_dev *mbd)
+ 
+ 	/* OK, it's not open. Create cache info for it */
+ 	mtdblk = kzalloc(sizeof(struct mtdblk_dev), GFP_KERNEL);
+-	if (!mtdblk)
++	if (!mtdblk) {
++		mutex_unlock(&mtdblks_lock);
+ 		return -ENOMEM;
++	}
+ 
+ 	mtdblk->count = 1;
+ 	mtdblk->mtd = mtd;
+@@ -292,6 +298,8 @@ static int mtdblock_open(struct mtd_blktrans_dev *mbd)
+ 
+ 	mtdblks[dev] = mtdblk;
+ 
++	mutex_unlock(&mtdblks_lock);
++
+ 	DEBUG(MTD_DEBUG_LEVEL1, "ok\n");
+ 
+ 	return 0;
+@@ -304,6 +312,8 @@ static int mtdblock_release(struct mtd_blktrans_dev *mbd)
+ 
+    	DEBUG(MTD_DEBUG_LEVEL1, "mtdblock_release\n");
+ 
++	mutex_lock(&mtdblks_lock);
++
+ 	mutex_lock(&mtdblk->cache_mutex);
+ 	write_cached_data(mtdblk);
+ 	mutex_unlock(&mtdblk->cache_mutex);
+@@ -316,6 +326,9 @@ static int mtdblock_release(struct mtd_blktrans_dev *mbd)
+ 		vfree(mtdblk->cache_data);
+ 		kfree(mtdblk);
+ 	}
++
++	mutex_unlock(&mtdblks_lock);
++
+ 	DEBUG(MTD_DEBUG_LEVEL1, "ok\n");
+ 
+ 	return 0;
+@@ -376,6 +389,8 @@ static struct mtd_blktrans_ops mtdblock_tr = {
+ 
+ static int __init init_mtdblock(void)
+ {
++	mutex_init(&mtdblks_lock);
++
+ 	return register_mtd_blktrans(&mtdblock_tr);
+ }
+ 
+-- 
+1.6.3.1
