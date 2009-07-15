@@ -1,19 +1,22 @@
-Message-ID: <4A5E1D1A.3090705@s5r6.in-berlin.de>
-Date: Wed, 15 Jul 2009 20:16:58 +0200
-From: Stefan Richter <stefanr@s5r6.in-berlin.de>
+Received: from mx.tdiedrich.de ([2001:6f8:1132::2])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MR9xT-00036n-Ba
+	for linux-mtd@lists.infradead.org; Wed, 15 Jul 2009 19:16:03 +0000
+Date: Wed, 15 Jul 2009 21:15:59 +0200
+From: Tobias Diedrich <ranma+kernel@tdiedrich.de>
+To: David Brownell <david-b@pacbell.net>
+Subject: Re: Kernel Oops when trying to suspend with ubifs mounted on
+	block2mtd mtd device on 2.3.31-rc2
+Message-ID: <20090715191558.GA18203@yamamaya.is-a-geek.org>
+References: <20090715122051.GA1439@yamamaya.is-a-geek.org>
+	<4A5DD233.7090702@nokia.com>
+	<200907151055.17959.david-b@pacbell.net>
 MIME-Version: 1.0
-To: dedekind@infradead.org
-Subject: Re: [PATCH 02/06] Fix compilation warning for fs/ubifs/commit.c
-References: <20090715021901.4112.45973.sendpatchset@subratamodak.linux.ibm.com>
-	<1247640750.11353.6.camel@localhost.localdomain>
-In-Reply-To: <1247640750.11353.6.camel@localhost.localdomain>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Sachin P Sant <sachinp@linux.vnet.ibm.com>,
-	LKML <linux-kernel@vger.kernel.org>, David Howells <dhowells@redhat.com>,
-	linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>,
-	Subrata Modak <subrata@linux.vnet.ibm.com>,
-	Balbir Singh <balbir@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200907151055.17959.david-b@pacbell.net>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	David.Woodhouse@intel.com, Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,33 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy wrote:
-> On Wed, 2009-07-15 at 07:49 +0530, Subrata Modak wrote:
->> Following fix is inspired by David Howells fix few days back:
->> http://lkml.org/lkml/2009/7/9/109,
->>
->> Signed-off-by: Subrata Modak<subrata@linux.vnet.ibm.com>,
->> ---
+David Brownell wrote:
+> On Wednesday 15 July 2009, Adrian Hunter wrote:
+> > Looks like it might be related to MTD driver model updates.
 > 
-> Removed junk comma at the end of "signed-off-by" and pushed to
-> the ubifs-2.6.git tree:
-> 
-> http://git.infradead.org/ubifs-2.6.git?a=commit;h=5c1507e6097c4abc13bbad69de137366c9043f22
-> 
-> Thanks.
-> 
+> Not the sysfs support ... more likely the patch adding cls_suspend()
+> support, 15bce40cb3133bcc07d548013df97e4653d363c1, is goofed.  Maybe
+> it's invoking suspend on the wrong device node...
 
-The changelog of the patch is bad.  "Fix compilation warning" is not 
-correct.  It should be "suppress compilation warning" or "annotate 
-unitialized variable" or whatever --- i.e. it should say what it does. 
-Furthermore, since the 3 lines context around the change in the diff do 
-not reveal why the chosen "fix" is correct and desirable, the changelog 
-should also leave a note why it's done this way.
+Yes, that is the culprit.
+AFAICS it uses the 'dev_to_mtd()' macro to get the mtd, but calls it
+on itself instead of the child classes, so the resulting mtd device
+pointer is bogus.
 
-The patch form David Howells which is quoted here has an equally bad 
-subject, but at least its changelog goes on to explain what the patch 
-really does and why it does it in the proposed way.
+With some debug printks I get:
+
+[...]
+PM: Freed 0 kbytes in 0.06 seconds[...]
+mtd_cls_suspend(f68e3180, 1)
+dev->class->name = 'mtd'
+callig mtd->suspend() [f68e3148]
+BUG: unable to handle kernel paging request[...]
+[...]
+
 -- 
-Stefan Richter
--=====-==--= -=== -====
-http://arcgraph.de/sr/
+Tobias						PGP: http://9ac7e0bc.uguu.de
