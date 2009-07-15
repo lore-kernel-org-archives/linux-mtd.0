@@ -1,22 +1,15 @@
-Received: from ey-out-1920.google.com ([74.125.78.144])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MR1Sa-0007Ty-3Z
-	for linux-mtd@lists.infradead.org; Wed, 15 Jul 2009 10:11:42 +0000
-Received: by ey-out-1920.google.com with SMTP id 5so828808eyb.24
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 15 Jul 2009 03:11:34 -0700 (PDT)
-Sender: Florian Fainelli <f.fainelli@gmail.com>
-From: Florian Fainelli <florian@openwrt.org>
-Date: Wed, 15 Jul 2009 12:11:30 +0200
-Subject: [PATCH] physmap: probe for partitions parsers that we enable
+Received: from lime.solrad.nl ([213.193.238.107])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MR2Y8-00075J-Lz
+	for linux-mtd@lists.infradead.org; Wed, 15 Jul 2009 11:21:30 +0000
+Message-ID: <4A5DBBB0.9050203@youcom.nl>
+Date: Wed, 15 Jul 2009 13:21:20 +0200
+From: Jelle Martijn Kok <jmkok@youcom.nl>
 MIME-Version: 1.0
-To: dwmw2@infradead.org
-Content-Type: text/plain;
-  charset="utf-8"
+To: linux-mtd@lists.infradead.org
+Subject: ubiupdatevol
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200907151211.31062.florian@openwrt.org>
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +19,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch makes the physmap driver probe for partitions
-parsers that we configured in the kernel configuration
-instead of a hard-coded partition parser list (cmdlinepart,
-RedBoot).
+Why is it not possible to write directly to a static volume ?
+eg. perform "wget http://server.com/kernel.bin -O /dev/ubi0_2"
 
-Signed-off-by: Florian Fainelli <florian@openwrt.org>
----
-diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
-index 29a9011..e314f0d 100644
---- a/drivers/mtd/maps/physmap.c
-+++ b/drivers/mtd/maps/physmap.c
-@@ -80,7 +80,17 @@ static const char *rom_probe_types[] = {
- 					"map_rom",
- 					NULL };
- #ifdef CONFIG_MTD_PARTITIONS
--static const char *part_probe_types[] = { "cmdlinepart", "RedBoot", NULL };
-+static const char *part_probe_types[] = {
-+#ifdef CONFIG_MTD_CMDLINE_PARTS
-+	"cmdlinepart",
-+#endif
-+#ifdef CONFIG_MTD_REDBOOT_PARTS
-+	"RedBoot",
-+#endif
-+#ifdef CONFIG_MTD_AR7_PARTS
-+	"ar7part",
-+#endif
-+	NULL };
- #endif
- 
- static int physmap_flash_probe(struct platform_device *dev)
+ubiupdatevol first performs a ioctl + UBI_IOCVOLUP (with the size) and 
+then starts writing normally. Why not allow for open, write, close 
+without this ioctl ?
+
+This gives 2 related issues:
+1) ubi_start_update must be called - which is normally called by 
+ioctl(fd, UBI_IOCVOLUP, &bytes). I could imagine that "ubi_start_update" 
+(upd.c) is called at the time the (static) volume is opened for writing. 
+(inside the "vol_cdev_open" in cdev.c)
+2) the amount of bytes is not available/known on front. The amount of 
+bytes is store "vol->upd_bytes" which is used to limit and to know when 
+the amount of data to be written to an ubi volume has been reached. At 
+that time, the LEB is written and the update marker is removed.
+However why not write the final LEB and remove the update marker inside 
+"vol_cdev_release". As a "vol_cdev_release" is (and should) always 
+follow the last write.
+
+If you think this would be a correct change to UBI and also viable (am I 
+overlooking something ?) I would be willing to make the changes and sent 
+them to you (for inspection).
+
+Jelle Martijn Kok
+
+-- 
+------------------------------------------------------------------------
+You/Com Audiocommunicatie b.v.
+Motorenweg 5k 
+2623CR Delft
+The Netherlands
+tel. : (+31)15 262 59 55
+fax. : (+31)15 257 15 95
+mail : jmkok@youcom.nl
+http : http://www.youcom.nl
+------------------------------------------------------------------------
