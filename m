@@ -1,23 +1,21 @@
 Received: from mail-gx0-f219.google.com ([209.85.217.219])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MR2cH-0003qH-SK
-	for linux-mtd@lists.infradead.org; Wed, 15 Jul 2009 11:25:48 +0000
-Received: by gxk19 with SMTP id 19so6141279gxk.18
+	id 1MR2gw-0001IC-0c
+	for linux-mtd@lists.infradead.org; Wed, 15 Jul 2009 11:30:36 +0000
+Received: by gxk19 with SMTP id 19so6144854gxk.18
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 15 Jul 2009 04:25:40 -0700 (PDT)
+	Wed, 15 Jul 2009 04:30:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1247638066.11353.2.camel@localhost.localdomain>
-References: <1247579296-9866-1-git-send-email-vapier@gentoo.org>
-	<1247638066.11353.2.camel@localhost.localdomain>
+In-Reply-To: <200907151211.31062.florian@openwrt.org>
+References: <200907151211.31062.florian@openwrt.org>
 From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Wed, 15 Jul 2009 07:25:20 -0400
-Message-ID: <8bd0f97a0907150425l5cc94fdcg168706ddbaa34d8c@mail.gmail.com>
-Subject: Re: Pull request blackfin.git (for-mtd branch)
-To: dedekind@infradead.org
+Date: Wed, 15 Jul 2009 07:23:28 -0400
+Message-ID: <8bd0f97a0907150423y3dabf661qbb94d0e2efb31946@mail.gmail.com>
+Subject: Re: [PATCH] physmap: probe for partitions parsers that we enable
+To: Florian Fainelli <florian@openwrt.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,23 +25,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 15, 2009 at 02:07, Artem Bityutskiy wrote:
-> On Tue, 2009-07-14 at 09:48 -0400, Mike Frysinger wrote:
->> The following changes since commit 4a390e07fc53ce9dd615d7b788e9ecc73f87a=
-d94:
->> =C2=A0 Linus Torvalds (1):
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 Merge git://git.kernel.org/.../gregkh/stagin=
-g-2.6
->>
->> are available in the git repository at:
->>
->> =C2=A0 git://git.kernel.org/pub/scm/linux/kernel/git/vapier/blackfin.git=
- for-mtd
->
-> since I'm not an MTD maintainer, I cannot pull this for you. But
-> what I can do for you is to bug David. I asked him and he said
-> he is planning to take stuff to the mtd-2.6.git this week.
+On Wed, Jul 15, 2009 at 06:11, Florian Fainelli wrote:
+> This patch makes the physmap driver probe for partitions
+> parsers that we configured in the kernel configuration
+> instead of a hard-coded partition parser list (cmdlinepart,
+> RedBoot).
 
-you can pull it and push to David since you seem to have much better
-luck getting things merged ;)
+i believe there was a thread on this list some time ago about how
+forcing all maps to declare support partition types sucks.  be nice if
+there was a mtd function to probe all available maps so we wouldnt
+have to copy & paste this #ifdef mess everywhere.
+
+> --- a/drivers/mtd/maps/physmap.c
+> +++ b/drivers/mtd/maps/physmap.c
+> @@ -80,7 +80,17 @@ static const char *rom_probe_types[] =3D {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0"map_rom"=
+,
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0NULL };
+> =C2=A0#ifdef CONFIG_MTD_PARTITIONS
+> -static const char *part_probe_types[] =3D { "cmdlinepart", "RedBoot", NU=
+LL };
+> +static const char *part_probe_types[] =3D {
+> +#ifdef CONFIG_MTD_CMDLINE_PARTS
+> + =C2=A0 =C2=A0 =C2=A0 "cmdlinepart",
+> +#endif
+> +#ifdef CONFIG_MTD_REDBOOT_PARTS
+> + =C2=A0 =C2=A0 =C2=A0 "RedBoot",
+> +#endif
+> +#ifdef CONFIG_MTD_AR7_PARTS
+> + =C2=A0 =C2=A0 =C2=A0 "ar7part",
+> +#endif
+> + =C2=A0 =C2=A0 =C2=A0 NULL };
+> =C2=A0#endif
+
+me thinks you just broke support when redboot is a module.
+cmdlinepart isnt allowed to be a module via Kconfig, but ar7 can be.
 -mike
