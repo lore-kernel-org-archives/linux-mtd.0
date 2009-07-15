@@ -1,18 +1,19 @@
 Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MQyyn-0005s9-N4
-	for linux-mtd@lists.infradead.org; Wed, 15 Jul 2009 07:32:48 +0000
-Message-ID: <4A5D85FB.5090900@gmail.com>
-Date: Wed, 15 Jul 2009 10:32:11 +0300
-From: Artem Bityutskiy <dedekind1@gmail.com>
-MIME-Version: 1.0
-To: Eric Benard <eric@eukrea.com>
-Subject: Re: [PATCH 1/1] Fix 2k pagesize NAND on i.MX27
-References: <1247580005-25011-1-git-send-email-eric@eukrea.com>
-In-Reply-To: <1247580005-25011-1-git-send-email-eric@eukrea.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+	id 1MQz8c-00041x-2J
+	for linux-mtd@lists.infradead.org; Wed, 15 Jul 2009 07:42:57 +0000
+Subject: Re: [PATCH] mtdblock: introduce mtdblks_lock
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Matthias Kaehlcke <matthias@kaehlcke.net>
+In-Reply-To: <20090714200429.GD18774@darwin>
+References: <20090714200429.GD18774@darwin>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 15 Jul 2009 10:41:54 +0300
+Message-Id: <1247643714.11353.11.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.arm.linux.org.uk
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,17 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Eric Benard wrote:
-> This patch allows i.MX27 to support 2k pagesize NAND flash.
-> We are using a Micron 1.8V NAND flash : MT29F4G08ABDWP-ET
-> Without this patch, all sectors are marked as bad eraseblock.
-> 
-> Signed-off-by: Eric Benard <eric@eukrea.com>
-> Acked-by : Sascha Hauer <s.hauer@pengutronix.de>
+On Tue, 2009-07-14 at 22:04 +0200, Matthias Kaehlcke wrote:
+> +static struct mutex mtdblks_lock;
+> +
+>  /*
+>   * Cache stuff...
+>   *
+> @@ -270,6 +272,8 @@ static int mtdblock_open(struct mtd_blktrans_dev *mbd)
+>  
+>  	DEBUG(MTD_DEBUG_LEVEL1,"mtdblock_open\n");
+>  
+> +	mutex_lock(&mtdblks_lock);
+> +
+>  	if (mtdblks[dev]) {
+>  		mtdblks[dev]->count++;
+>  		return 0;
 
-The previous version of your patch is sitting in l2-mtd-2.6.git
-and waiting for dwmw2 already.
+Now about unlocking the mutex here?
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
