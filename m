@@ -1,31 +1,24 @@
 Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MRLTJ-0002sl-2d
-	for linux-mtd@lists.infradead.org; Thu, 16 Jul 2009 07:33:44 +0000
-Subject: RE: UBIFS Corrupt during power failure
+	id 1MRNia-0007fG-3d
+	for linux-mtd@lists.infradead.org; Thu, 16 Jul 2009 09:57:39 +0000
+Subject: Re: [PATCH 02/06] Fix compilation warning for fs/ubifs/commit.c
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Eric Holmberg <Eric_Holmberg@Trimble.com>
-In-Reply-To: <C77C279BA71FD14985DC8E75FB265AB703B47FC9@usw-am-xch-02.am.trimblecorp.net>
-References: <1246627771.20721.191.camel@localhost.localdomain>
-	<7207AAC68CE347458026863515A07DA102901F3C@usw-am-xch-02.am.trimblecorp.net>
-	<1246629940.20721.219.camel@localhost.localdomain>
-	<7207AAC68CE347458026863515A07DA102901F9C@usw-am-xch-02.am.trimblecorp.net>
-	<1246633131.20721.224.camel@localhost.localdomain>
-	<1246854654.20721.271.camel@localhost.localdomain>
-	<1246855913.20721.287.camel@localhost.localdomain>
-	<1246862635.20721.291.camel@localhost.localdomain>
-	<1246949184.20721.302.camel@localhost.localdomain>
-	<C77C279BA71FD14985DC8E75FB265AB703AA85C0@usw-am-xch-02.am.trimblecorp.net>
-	<20090715205217.GH3056@shareable.org>
-	<C77C279BA71FD14985DC8E75FB265AB703B47FC9@usw-am-xch-02.am.trimblecorp.net>
+To: Stefan Richter <stefanr@s5r6.in-berlin.de>
+In-Reply-To: <4A5E1D1A.3090705@s5r6.in-berlin.de>
+References: <20090715021901.4112.45973.sendpatchset@subratamodak.linux.ibm.com>
+	<1247640750.11353.6.camel@localhost.localdomain>
+	<4A5E1D1A.3090705@s5r6.in-berlin.de>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 16 Jul 2009 10:33:07 +0300
-Message-Id: <1247729587.11353.80.camel@localhost.localdomain>
+Date: Thu, 16 Jul 2009 12:57:12 +0300
+Message-Id: <1247738232.11353.90.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Jamie Lokier <jamie@shareable.org>, linux-mtd@lists.infradead.org,
-	Urs Muff <urs_muff@Trimble.com>, Stefan Roese <sr@denx.de>,
-	Nicolas Pitre <nico@cam.org>, Adrian Hunter <adrian.hunter@nokia.com>
+Cc: Sachin P Sant <sachinp@linux.vnet.ibm.com>,
+	LKML <linux-kernel@vger.kernel.org>, David Howells <dhowells@redhat.com>,
+	linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>,
+	Subrata Modak <subrata@linux.vnet.ibm.com>,
+	Balbir Singh <balbir@linux.vnet.ibm.com>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -36,56 +29,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-07-15 at 15:35 -0600, Eric Holmberg wrote:
-> Test Results - PASS
-> -------------------
-> I just finished a test run of 3 boards with a total of 8104 power cycles
-> during read/modify/write operations on UBIFS.  The system cuts power
-> randomly after mounting the UBIFS image while performing read/write file
-> operations on the UBIFS root file system.
+On Wed, 2009-07-15 at 20:16 +0200, Stefan Richter wrote:
+> Artem Bityutskiy wrote:
+> > On Wed, 2009-07-15 at 07:49 +0530, Subrata Modak wrote:
+> >> Following fix is inspired by David Howells fix few days back:
+> >> http://lkml.org/lkml/2009/7/9/109,
+> >>
+> >> Signed-off-by: Subrata Modak<subrata@linux.vnet.ibm.com>,
+> >> ---
+> > 
+> > Removed junk comma at the end of "signed-off-by" and pushed to
+> > the ubifs-2.6.git tree:
+> > 
+> > http://git.infradead.org/ubifs-2.6.git?a=commit;h=5c1507e6097c4abc13bbad69de137366c9043f22
+> > 
+> > Thanks.
+> > 
 > 
-> I experienced 0 failures.  Typically, I was getting less than 100 cycles
-> before failures.
-> 
-> Software:
->  * 2.6.27-rc9 kernel
->  * UBIFS patches up to July 10
->  * CFI Write buffer size limited to 8 bytes (NOR chip supports 32 bytes)
->  * No power cycling during mount
-> 
-> Patch:
-> http://git.infradead.org/users/dedekind/ubifs-v2.6.27.git?a=commit;h=201
-> fce21a67d74e9703127af0d6c6084003796bb
+> The changelog of the patch is bad.  "Fix compilation warning" is not 
+> correct.  It should be "suppress compilation warning" or "annotate 
+> unitialized variable" or whatever --- i.e. it should say what it does.
 
-I'm also running a power cut tests. But I do not have any buffer size
-limiting patch. I'm running the 'fsstress' program from the LTP test
-suite with the following parameters:
+For me this sounds the same. But probably your version is better
+English. I'll change this.
 
-fsstress -d /mnt/ubifs -l0 -r -n1000 -p2
+> Furthermore, since the 3 lines context around the change in the diff do 
+> not reveal why the chosen "fix" is correct and desirable, the changelog 
+> should also leave a note why it's done this way.
 
-And I cut power randomly after 0-300 seconds after the start.
+The changelog says which kind of warning is fixed, I though it is
+obvious what is the warning. At lease for me it would.
 
-So far so good.
+But if Subrata sends me the warning he sees, I'll change that.
+Thankfully I did not push the patch to ubifs-2.6.git/linux-next
+which I never re-base, but pushed it to master which I do rebase
+and it is documented here:
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_source
 
-> Remaining tasks:
->  * Anybody:  Add support to UBI/UBIFS to allow for block-write sizes
-> greater than 8 bytes
+So I may just amend the commit's message.
 
-Yeah, this is in my TODO. I just wanted to first reproduce this issue,
-then trying to fix it. Cannot reproduce it so far.
+> The patch form David Howells which is quoted here has an equally bad 
+> subject, but at least its changelog goes on to explain what the patch 
+> really does and why it does it in the proposed way.
 
->  * Test with power failures during deferred recovery
+Well, I just thought this type of warnings and way of fixing is very
+standard because I saw many similar fixes all over the place.
 
-Good thing to test. I did not test this.
-
-Just in case: I assume by "deferred" recovery you mean the situation
-when you mount the FS which needs recovery first R/O, so the recovery
-is deferred, and it happens when you re-mount it R/W, right?
-
-> Thanks for everybody's help so far!  I will hopefully get a chance to
-> setup the power-failures during deferred recovery this weekend.
-
-Thanks for cooperation. We are interested to make UBIFS robust.
+Anyway, amended the patch like this so far:
+http://git.infradead.org/ubifs-2.6.git?a=commit;h=5c1507e6097c4abc13bbad69de137366c9043f22
 
 -- 
 Best regards,
