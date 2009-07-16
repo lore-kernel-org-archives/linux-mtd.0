@@ -1,11 +1,11 @@
 Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MRLBL-00076p-DG
-	for linux-mtd@lists.infradead.org; Thu, 16 Jul 2009 07:15:11 +0000
-Subject: Re: UBIFS Corrupt during power failure
+	id 1MRLDj-0007X5-5u
+	for linux-mtd@lists.infradead.org; Thu, 16 Jul 2009 07:17:39 +0000
+Subject: RE: UBIFS Corrupt during power failure
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Jamie Lokier <jamie@shareable.org>
-In-Reply-To: <20090715205528.GI3056@shareable.org>
+To: Eric Holmberg <Eric_Holmberg@Trimble.com>
+In-Reply-To: <C77C279BA71FD14985DC8E75FB265AB703B47FCE@usw-am-xch-02.am.trimblecorp.net>
 References: <C77C279BA71FD14985DC8E75FB265AB70344D104@usw-am-xch-02.am.trimblecorp.net>
 	<1242721105.3623.0.camel@localhost.localdomain>
 	<C77C279BA71FD14985DC8E75FB265AB7034DBD10@usw-am-xch-02.am.trimblecorp.net>
@@ -17,13 +17,14 @@ References: <C77C279BA71FD14985DC8E75FB265AB70344D104@usw-am-xch-02.am.trimbleco
 	<1246633131.20721.224.camel@localhost.localdomain>
 	<1246854654.20721.271.camel@localhost.localdomain>
 	<20090715205528.GI3056@shareable.org>
+	<C77C279BA71FD14985DC8E75FB265AB703B47FCE@usw-am-xch-02.am.trimblecorp.net>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 16 Jul 2009 10:14:12 +0300
-Message-Id: <1247728452.11353.66.camel@localhost.localdomain>
+Date: Thu, 16 Jul 2009 10:16:59 +0300
+Message-Id: <1247728619.11353.68.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Eric Holmberg <Eric_Holmberg@trimble.com>, linux-mtd@lists.infradead.org,
-	Urs Muff <urs_muff@trimble.com>, Stefan Roese <sr@denx.de>,
+Cc: Jamie Lokier <jamie@shareable.org>, linux-mtd@lists.infradead.org,
+	Urs Muff <urs_muff@Trimble.com>, Stefan Roese <sr@denx.de>,
 	Nicolas Pitre <nico@cam.org>, Adrian Hunter <adrian.hunter@nokia.com>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -35,20 +36,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-07-15 at 21:55 +0100, Jamie Lokier wrote:
-> So I guess the right thing is to assume nothing, just that the whole
-> block may have bits flipped from 1 to 0 in an indeterminate order, and
-> then all bits flipped from 0 to 1 in an indeterminate order.
+On Wed, 2009-07-15 at 15:36 -0600, Eric Holmberg wrote:
+> indeterminate state for the entire PEB.  Writing all zero's to the
+> header as in Artem's fix should work in all cases excluding the
+> extremely rare cases where a write of 0's is interrupted and the header
+> has been changed to a valid value and in the case where an erase
+> (0-to-1) transition is interrupted which results in a valid header.  The
+> odds against that are huge, so I would expect the flash to wear out
+> before it ever happens in real life.
 
-Yes, agree. This should be fine if we have invalidated the magic
-numbers in the headers.
-
-> Or maybe the weaker assumption, that the whole block is indeterminate
-> during erase.
-
-If we assume this, then we have to introduce a kind of "journal", where
-we write "erase start"/"erase end" markers. This is doable, but I
-wouldn't go for this unless there is a real case.
+Hmm, we can zero out both headers completely by writing 128 bytes,
+even.
 
 -- 
 Best regards,
