@@ -1,25 +1,23 @@
-Received: from mail-yx0-f195.google.com ([209.85.210.195])
+Received: from smtp4-g21.free.fr ([212.27.42.4])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MRVFM-0003FS-Ju
-	for linux-mtd@lists.infradead.org; Thu, 16 Jul 2009 18:00:01 +0000
-Received: by yxe33 with SMTP id 33so466462yxe.28
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 16 Jul 2009 10:59:55 -0700 (PDT)
+	id 1MRXyf-0005da-3V
+	for linux-mtd@lists.infradead.org; Thu, 16 Jul 2009 20:54:57 +0000
+Message-ID: <4A5F938E.5070400@gcasse.net>
+Date: Thu, 16 Jul 2009 22:54:38 +0200
+From: Gilles Casse <list@gcasse.net>
 MIME-Version: 1.0
-In-Reply-To: <1247738371.11353.91.camel@localhost.localdomain>
-References: <1247579296-9866-1-git-send-email-vapier@gentoo.org>
-	<1247638066.11353.2.camel@localhost.localdomain>
-	<8bd0f97a0907150425l5cc94fdcg168706ddbaa34d8c@mail.gmail.com>
-	<1247738371.11353.91.camel@localhost.localdomain>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Thu, 16 Jul 2009 13:59:35 -0400
-Message-ID: <8bd0f97a0907161059u1bc01164qbd21d85f1fae6615@mail.gmail.com>
-Subject: Re: Pull request blackfin.git (for-mtd branch)
 To: dedekind@infradead.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	linux-mtd@lists.infradead.org
+Subject: Re: UBIFS Corrupt during power failure
+References: <C77C279BA71FD14985DC8E75FB265AB70344D104@usw-am-xch-02.am.trimblecorp.net>	<1242721105.3623.0.camel@localhost.localdomain>	<C77C279BA71FD14985DC8E75FB265AB7034DBD10@usw-am-xch-02.am.trimblecorp.net>	<1246627562.20721.190.camel@localhost.localdomain>	<1246627771.20721.191.camel@localhost.localdomain>	<7207AAC68CE347458026863515A07DA102901F3C@usw-am-xch-02.am.trimblecorp.net>	<1246629940.20721.219.camel@localhost.localdomain>	<7207AAC68CE347458026863515A07DA102901F9C@usw-am-xch-02.am.trimblecorp.net>	<1246633131.20721.224.camel@localhost.localdomain>	<1246854654.20721.271.camel@localhost.localdomain>	<20090715205528.GI3056@shareable.org>	<C77C279BA71FD14985DC8E75FB265AB703B47FCE@usw-am-xch-02.am.trimblecorp.net>
+	<1247728619.11353.68.camel@localhost.localdomain>
+In-Reply-To: <1247728619.11353.68.camel@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Cc: Eric Holmberg <Eric_Holmberg@Trimble.com>,
+	Jamie Lokier <jamie@shareable.org>,
+	linux-mtd@lists.infradead.org, Urs Muff <urs_muff@Trimble.com>,
+	Stefan Roese <sr@denx.de>, Nicolas Pitre <nico@cam.org>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,30 +27,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 16, 2009 at 05:59, Artem Bityutskiy wrote:
-> On Wed, 2009-07-15 at 07:25 -0400, Mike Frysinger wrote:
->> On Wed, Jul 15, 2009 at 02:07, Artem Bityutskiy wrote:
->> > On Tue, 2009-07-14 at 09:48 -0400, Mike Frysinger wrote:
->> >> The following changes since commit 4a390e07fc53ce9dd615d7b788e9ecc73f=
-87ad94:
->> >> =C2=A0 Linus Torvalds (1):
->> >> =C2=A0 =C2=A0 =C2=A0 =C2=A0 Merge git://git.kernel.org/.../gregkh/sta=
-ging-2.6
->> >>
->> >> are available in the git repository at:
->> >>
->> >> =C2=A0 git://git.kernel.org/pub/scm/linux/kernel/git/vapier/blackfin.=
-git for-mtd
->> >
->> > since I'm not an MTD maintainer, I cannot pull this for you. But
->> > what I can do for you is to bug David. I asked him and he said
->> > he is planning to take stuff to the mtd-2.6.git this week.
->>
->> you can pull it and push to David since you seem to have much better
->> luck getting things merged ;)
+Artem Bityutskiy a écrit :
+> On Wed, 2009-07-15 at 15:36 -0600, Eric Holmberg wrote:
+>   
+>> indeterminate state for the entire PEB.  Writing all zero's to the
+>> header as in Artem's fix should work in all cases excluding the
+>> extremely rare cases where a write of 0's is interrupted and the header
+>> has been changed to a valid value and in the case where an erase
+>> (0-to-1) transition is interrupted which results in a valid header.  The
+>> odds against that are huge, so I would expect the flash to wear out
+>> before it ever happens in real life.
+>>     
 >
-> If you do not mind, I'll better keep your pull request in my "bug dwmw2"
-> folder :-)
+> Hmm, we can zero out both headers completely by writing 128 bytes,
+> even.
+>
+>   
+According to a fellow electronician, Marc, offlist, it would not be safe
+to force at 0 a bit already at 0 in flash.
+For zeroing a byte, he recommends to write its complementary value (e.g.
+if 0x85 is read then write 0x7A).
 
-np, whatever works for you
--mike
+Best regards,
+Gilles
