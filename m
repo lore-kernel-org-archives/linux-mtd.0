@@ -1,28 +1,22 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MRPoQ-0002B2-0g
-	for linux-mtd@lists.infradead.org; Thu, 16 Jul 2009 12:11:50 +0000
-Subject: Re: [PATCH 02/06] Fix compilation warning for fs/ubifs/commit.c
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Stefan Richter <stefanr@s5r6.in-berlin.de>
-In-Reply-To: <4A5F15B0.9030100@s5r6.in-berlin.de>
-References: <20090715021901.4112.45973.sendpatchset@subratamodak.linux.ibm.com>
-	<1247640750.11353.6.camel@localhost.localdomain>
-	<4A5E1D1A.3090705@s5r6.in-berlin.de>
-	<1247738232.11353.90.camel@localhost.localdomain>
-	<4A5F0F03.5080507@s5r6.in-berlin.de>
-	<4A5F15B0.9030100@s5r6.in-berlin.de>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 16 Jul 2009 15:11:30 +0300
-Message-Id: <1247746290.11353.146.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Sachin P Sant <sachinp@linux.vnet.ibm.com>,
-	LKML <linux-kernel@vger.kernel.org>, David Howells <dhowells@redhat.com>,
-	linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>,
-	Subrata Modak <subrata@linux.vnet.ibm.com>,
-	Balbir Singh <balbir@linux.vnet.ibm.com>
-Reply-To: dedekind@infradead.org
+Received: from mail-bw0-f219.google.com ([209.85.218.219])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MRPs3-0003BY-CR
+	for linux-mtd@lists.infradead.org; Thu, 16 Jul 2009 12:15:35 +0000
+Received: by bwz19 with SMTP id 19so69033bwz.18
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 16 Jul 2009 05:15:28 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1247745430.11353.133.camel@localhost.localdomain>
+References: <1247650724-16288-1-git-send-email-corentincj@iksaif.net>
+	<1247745430.11353.133.camel@localhost.localdomain>
+Date: Thu, 16 Jul 2009 14:15:28 +0200
+Message-ID: <71cd59b00907160515j4e0e2429he21ae36a553f31bd@mail.gmail.com>
+Subject: Re: [PATCH 0/2] RFC: Add support for UBI and UBIFS
+From: Corentin Chary <corentin.chary@gmail.com>
+To: dedekind@infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: tytso@mit.edu, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,28 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-07-16 at 13:57 +0200, Stefan Richter wrote:
-> Stefan Richter wrote:
-> > So, is uninitialized_var() a good fix here?  I'd say it's not a 
-> > particular good one.  Count the lines of code of dbg_check_old_index() 
-> > and the maximum indentation level of it.  Then remember the teachings of 
-> > CodingStyle. :-)  See?  dbg_check_old_index() clearly isn't a prime 
-> > example of best kernel coding practice.  /Perhaps/ a little bit of 
-> > refactoring would make it easier to read, and as a bonus side effect, 
-> > make it unnecessary to use the slightly dangerous and 
-> > uninitialized_var() macro here.
-> 
-> PS:
-> On the other hand, it is debug code.  Is it bound to stay in there 
-> forever?  If not, then it's surely not worth the developer time to 
-> beautify it.
+On Thu, Jul 16, 2009 at 1:57 PM, Artem Bityutskiy<dedekind@infradead.org> wrote:
+> On Wed, 2009-07-15 at 11:38 +0200, Corentin Chary wrote:
+>> Hi,
+>> Here is two patch to add support for UBI and UBIFS in libblkid
+>> With that, if you type "blkid" it will show you UBIFS filesystem.
+>>
+>> The thing is that I'm not sure this patch is really usefull as UBIFS
+>> is a "nodev" filesystem, and it doesn't deal with block devices.
+>>
+>> I first started theses patch to be able to do stuff like:
+>> mount /dev/ubi0_0 /mnt/test but we need to patch UBIFS for that.
+>
+> Should not be difficult to implement in UBIFS.
+>
+>> So, do you think we should be able to do that ? If it's ok, these
+>> two patch are a first step.
+>
+> No comments from my side, I do not use the library so I cannot
+> really comment on this.
+>
 
-Yes, it is debugging code. It is doing additional consistency/sanity
-checks of the internal data structures when you compile it in and enable
-it. And yes, I'd like it to stay there forever, because it is a very
-nice tool to catch bugs. In fact, I am really keen of this type of
-debugging when you have internal checking functions. They help a lot.
+AFAIK mount(8) use this library to find the associated filesystem, so
+it's needed
+to remove the "-t ubifs".
 
 -- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+Corentin Chary
+http://xf.iksaif.net - http://uffs.org
