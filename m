@@ -1,26 +1,19 @@
-Received: from einhorn.in-berlin.de ([192.109.42.8])
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MRPaz-0007Ls-3X
-	for linux-mtd@lists.infradead.org; Thu, 16 Jul 2009 11:57:57 +0000
-Message-ID: <4A5F15B0.9030100@s5r6.in-berlin.de>
-Date: Thu, 16 Jul 2009 13:57:36 +0200
-From: Stefan Richter <stefanr@s5r6.in-berlin.de>
-MIME-Version: 1.0
-To: dedekind@infradead.org
-Subject: Re: [PATCH 02/06] Fix compilation warning for fs/ubifs/commit.c
-References: <20090715021901.4112.45973.sendpatchset@subratamodak.linux.ibm.com>	
-	<1247640750.11353.6.camel@localhost.localdomain>	
-	<4A5E1D1A.3090705@s5r6.in-berlin.de>
-	<1247738232.11353.90.camel@localhost.localdomain>
-	<4A5F0F03.5080507@s5r6.in-berlin.de>
-In-Reply-To: <4A5F0F03.5080507@s5r6.in-berlin.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Sachin P Sant <sachinp@linux.vnet.ibm.com>,
-	LKML <linux-kernel@vger.kernel.org>, David Howells <dhowells@redhat.com>,
-	linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>,
-	Subrata Modak <subrata@linux.vnet.ibm.com>,
-	Balbir Singh <balbir@linux.vnet.ibm.com>
+	id 1MRPb7-0007ND-1x
+	for linux-mtd@lists.infradead.org; Thu, 16 Jul 2009 11:58:05 +0000
+Subject: Re: [PATCH 0/2] RFC: Add support for UBI and UBIFS
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Corentin Chary <corentincj@iksaif.net>
+In-Reply-To: <1247650724-16288-1-git-send-email-corentincj@iksaif.net>
+References: <1247650724-16288-1-git-send-email-corentincj@iksaif.net>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 16 Jul 2009 14:57:10 +0300
+Message-Id: <1247745430.11353.133.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, tytso@mit.edu
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,21 +23,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Stefan Richter wrote:
-> So, is uninitialized_var() a good fix here?  I'd say it's not a 
-> particular good one.  Count the lines of code of dbg_check_old_index() 
-> and the maximum indentation level of it.  Then remember the teachings of 
-> CodingStyle. :-)  See?  dbg_check_old_index() clearly isn't a prime 
-> example of best kernel coding practice.  /Perhaps/ a little bit of 
-> refactoring would make it easier to read, and as a bonus side effect, 
-> make it unnecessary to use the slightly dangerous and 
-> uninitialized_var() macro here.
+On Wed, 2009-07-15 at 11:38 +0200, Corentin Chary wrote:
+> Hi,
+> Here is two patch to add support for UBI and UBIFS in libblkid
+> With that, if you type "blkid" it will show you UBIFS filesystem.
+> 
+> The thing is that I'm not sure this patch is really usefull as UBIFS
+> is a "nodev" filesystem, and it doesn't deal with block devices.
+> 
+> I first started theses patch to be able to do stuff like:
+> mount /dev/ubi0_0 /mnt/test but we need to patch UBIFS for that.
 
-PS:
-On the other hand, it is debug code.  Is it bound to stay in there 
-forever?  If not, then it's surely not worth the developer time to 
-beautify it.
+Should not be difficult to implement in UBIFS.
+
+> So, do you think we should be able to do that ? If it's ok, these
+> two patch are a first step.
+
+No comments from my side, I do not use the library so I cannot
+really comment on this.
+
 -- 
-Stefan Richter
--=====-==--= -=== =----
-http://arcgraph.de/sr/
+Best regards,
+Artem Bityutskiy (Битюцкий Артём)
