@@ -1,29 +1,19 @@
-Received: from mail2.shareable.org ([80.68.89.115])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MRCfi-0003m3-7n
-	for linux-mtd@lists.infradead.org; Wed, 15 Jul 2009 22:09:59 +0000
-Date: Wed, 15 Jul 2009 23:09:42 +0100
-From: Jamie Lokier <jamie@shareable.org>
-To: Eric Holmberg <Eric_Holmberg@Trimble.com>
-Subject: Re: UBIFS Corrupt during power failure
-Message-ID: <20090715220942.GQ3056@shareable.org>
-References: <C77C279BA71FD14985DC8E75FB265AB7034DBD10@usw-am-xch-02.am.trimblecorp.net>
-	<1246627562.20721.190.camel@localhost.localdomain>
-	<1246627771.20721.191.camel@localhost.localdomain>
-	<7207AAC68CE347458026863515A07DA102901F3C@usw-am-xch-02.am.trimblecorp.net>
-	<1246629940.20721.219.camel@localhost.localdomain>
-	<7207AAC68CE347458026863515A07DA102901F9C@usw-am-xch-02.am.trimblecorp.net>
-	<1246633131.20721.224.camel@localhost.localdomain>
-	<1246854654.20721.271.camel@localhost.localdomain>
-	<20090715205528.GI3056@shareable.org>
-	<C77C279BA71FD14985DC8E75FB265AB703B47FCE@usw-am-xch-02.am.trimblecorp.net>
+Received: from out1.zte.com.cn ([202.103.147.172])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MREzR-0000WS-GD
+	for linux-mtd@lists.infradead.org; Thu, 16 Jul 2009 00:38:31 +0000
+Received: from notes_smtp.zte.com.cn ([10.30.1.239])
+	by mse1.zte.com.cn with ESMTP id n6G0cJB4012174
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 16 Jul 2009 08:38:19 +0800 (CST)
+	(envelope-from liu.yaojin@zte.com.cn)
+To: linux-mtd@lists.infradead.org
+Subject: mount jffs2 as rootfs and detect error:Magic bitmask 0x1985 not found
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <C77C279BA71FD14985DC8E75FB265AB703B47FCE@usw-am-xch-02.am.trimblecorp.net>
-Cc: linux-mtd@lists.infradead.org, Urs Muff <urs_muff@trimble.com>,
-	Stefan Roese <sr@denx.de>, Nicolas Pitre <nico@cam.org>,
-	Adrian Hunter <adrian.hunter@nokia.com>
+Message-ID: <OF649E7316.575898CE-ON482575F5.000357EA-482575F5.0003849B@zte.com.cn>
+From: liu.yaojin@zte.com.cn
+Date: Thu, 16 Jul 2009 08:36:43 +0800
+Content-Type: text/plain; charset="US-ASCII"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,37 +23,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Eric Holmberg wrote:
-> > So I guess the right thing is to assume nothing, just that the whole
-> > block may have bits flipped from 1 to 0 in an indeterminate order, and
-> > then all bits flipped from 0 to 1 in an indeterminate order.
-> > 
-> > Or maybe the weaker assumption, that the whole block is indeterminate
-> > during erase.
-> 
-> >From the beginning of the erase to the end is definitely an
-> indeterminate state for the entire PEB.  Writing all zero's to the
-> header as in Artem's fix should work in all cases excluding the
-> extremely rare cases where a write of 0's is interrupted and the header
-> has been changed to a valid value and in the case where an erase
-> (0-to-1) transition is interrupted which results in a valid header.  The
-> odds against that are huge, so I would expect the flash to wear out
-> before it ever happens in real life.
+hi, everyone:
 
-I agree, with a nice strong checksum that should be rare.  With 100
-millions of devices and full lifetime of each device, I don't know if
-they are so rare with the checksum actually used that they'll never
-happen though, or if it matters.
+now i port uboot(1.1.6) and kernel(2.6.24.7) to my arm926 board.
+here is my procedure to make a jffs2 fs and mount:
+1,make jffs2 using mkfs.jffs2: "mkfs.jffs2 -r ./rootfs -o fs.jffs2 -e 
+0x4000 -s 0x200 -n --pad=0x200000 -l"
+2,use uboot to write the fs image,because i don't have enthernet!
+nand erase 250000 20000
+nand write.jffs2 21000000 250000 200000
+3,boot the kernel with args: setenv bootargs 'mem=56M 
+console=ttyS0,115200n8 noinitrd  root=/dev/mtdblock3 rootfstype=jffs2 rw'
 
-Anyway, the checksums have to be strong for other reasons.
+now the errors happen:
 
-It could be made virtually impossible by writing to a record on a
-different PEB which says which PEB is undergoing erase and therefore
-indeterminate.  Is that required for NAND in principle, since you
-can't overwrite the header to zero it?
+//========================================
+Creating 4 MTD partitions on "NAND 128MiB 1,8V 8-bit":
+0x00000000-0x00040000 : "uboot"
+0x00040000-0x00044000 : "params"
+0x00050000-0x00250000 : "kernel"
+0x00250000-0x00550000 : "filesystem"
+mice: PS/2 mouse device common for all mice
+mtd->read(0x3c0c bytes from 0x14c3f4) returned ECC error
+mtd->read(0xdec bytes from 0x14f214) returned ECC error
+Empty flash at 0x0014f210 ends at 0x0014f400
+mtd->read(0x400 bytes from 0x150000) returned ECC error
+jffs2_scan_eraseblock(): Node at 0x00150008 {0x1985, 0x2003, 0x00000008) 
+has invalid CRC 0xffffffff (calculated 0x6b7c27e6)
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0015000c: 
+0x0008 instead
+mtd->read(0x3f80 bytes from 0x150080) returned ECC error
+mtd->read(0x400 bytes from 0x154000) returned ECC error
+jffs2_scan_eraseblock(): Node at 0x00154008 {0x1985, 0x2003, 0x00000008) 
+has invalid CRC 0xffffffff (calculated 0x6b7c27e6)
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0015400c: 
+0x0008 instead
+mtd->read(0x3f80 bytes from 0x154080) returned ECC error
+mtd->read(0x400 bytes from 0x158000) returned ECC error
+jffs2_scan_eraseblock(): Node at 0x00158008 {0x1985, 0x2003, 0x00000008) 
+has invalid CRC 0xffffffff (calculated 0x6b7c27e6)
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0015800c: 
+0x0008 instead
+mtd->read(0x3f80 bytes from 0x158080) returned ECC error
+mtd->read(0x400 bytes from 0x15c000) returned ECC error
+jffs2_scan_eraseblock(): Node at 0x0015c008 {0x1985, 0x2003, 0x00000008) 
+has invalid CRC 0xffffffff (calculated 0x6b7c27e6)
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0015c00c: 
+0x0008 instead
+...........................
+JFFS2 notice: (1) jffs2_build_xattr_subsystem: complete building xattr 
+subsystem, 0 of xdatum (0 unchecked, 0 orphan) and 0 of xref (0 dead, 0 
+orphan) found.
+mtd->read(0x70 bytes from 0x14f590) returned ECC error
+mtd->read(0x8f7 bytes from 0x14f600) returned ECC error
+JFFS2 notice: (698) check_node_data: wrong data CRC in data node at 
+0x0014f590: read 0x6c371760, calculated 0x5f5283ad.
+VFS: Mounted root (jffs2 filesystem).
+Freeing init memory: 76K
+Read of newly-erased block at 0x0015c000 failed: -74. Putting on bad_list
+Read of newly-erased block at 0x00158000 failed: -74. Putting on bad_list
+mtd->read(0x70 bytes from 0x146190) returned ECC error
+JFFS2 notice: (1) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in 
+node header at 0x146190.
+JFFS2 notice: (1) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in 
+node header at 0x146118.
+JFFS2 notice: (1) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in 
+node header at 0x1460a0.
+Read of newly-erased block at 0x00150000 failed: -74. Putting on bad_list
+............................................
+finally dead at:
+mtd->read(0xf0 bytes from 0xdbb10) returned ECC error
+JFFS2 notice: (1) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in 
+node header at 0x0dbb10.
+Read of newly-erased block at 0x00170000 failed: -74. Putting on bad_list
+mtd->read(0xec bytes from 0xda114) returned ECC error
+JFFS2 notice: (1) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in 
+node header at 0x0da114.
+Read of newly-erased block at 0x00168000 failed: -74. Putting on bad_list
+mtd->read(0x21c bytes from 0xd87e4) returned ECC error
+JFFS2 notice: (1) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in 
+node header at 0x0d87e4.
+Read of newly-erased block at 0x00160000 failed: -74. Putting on bad_list
+mtd->read(0xd4 bytes from 0x14f52c) returned ECC error
+mtd->read(0x44 bytes from 0x14f52c) returned ECC error
+(no more)
 
-If there are NANDs which would require that, it could be a generic
-part of UBI/UBIFS and strengthen the behaviour on NOR slightly,
-otherwise I'm sure the header-zeroing is enough for NOR.
+can anyone tell me what's the really matter causing this?
+thanks.
 
--- Jamie
+
+--------------------------------------------------------
+ZTE Information Security Notice: The information contained in this mail is solely property of the sender's organization. This mail communication is confidential. Recipients named above are obligated to maintain secrecy and are not permitted to disclose the contents of this communication to others.
+This email and any files transmitted with it are confidential and intended solely for the use of the individual or entity to whom they are addressed. If you have received this email in error please notify the originator of the message. Any views expressed in this message are those of the individual sender.
+This message has been scanned for viruses and Spam by ZTE Anti-Spam system.
