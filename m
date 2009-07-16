@@ -1,19 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MRPxb-0004UC-Ih
-	for linux-mtd@lists.infradead.org; Thu, 16 Jul 2009 12:21:20 +0000
-Subject: Re: block2mtd and ubi are initialized too early when compiled in
-	on 2.6.31-rc2
+	id 1MRPxm-0004WS-Kl
+	for linux-mtd@lists.infradead.org; Thu, 16 Jul 2009 12:21:31 +0000
+Subject: Re: [PATCH 0/2] RFC: Add support for UBI and UBIFS
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Tobias Diedrich <ranma@tdiedrich.de>
-In-Reply-To: <20090715115235.GA21888@yamamaya.is-a-geek.org>
-References: <20090715115235.GA21888@yamamaya.is-a-geek.org>
+To: Corentin Chary <corentin.chary@gmail.com>
+In-Reply-To: <71cd59b00907160515j4e0e2429he21ae36a553f31bd@mail.gmail.com>
+References: <1247650724-16288-1-git-send-email-corentincj@iksaif.net>
+	<1247745430.11353.133.camel@localhost.localdomain>
+	<71cd59b00907160515j4e0e2429he21ae36a553f31bd@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 16 Jul 2009 15:20:44 +0300
-Message-Id: <1247746844.11353.152.camel@localhost.localdomain>
+Date: Thu, 16 Jul 2009 15:21:17 +0300
+Message-Id: <1247746877.11353.153.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: tytso@mit.edu, linux-mtd@lists.infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,38 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Wed, 2009-07-15 at 13:52 +0200, Tobias Diedrich wrote:
-> On 2.6.31-rc2 the block2mtd drivers module_init is called before any
-> block devices have been registered.
-
-Hmm, ok. Is this because block devices are registered asynchronously?
-Could you please point to the code where it is done, just for reference.
-
-> Also ubi is initialized pretty early and fails completely if an mtd
-> specified on the command line could not be found.
-
-Hmm...
-
-> IMO ubi should at least complete initialization so that attaching
-> the mtd later with ubiattach would still work.
-> I'm working around this two hacky patches that create a kernel
-> thread and retry every second for 20 seconds when the first try
-> doesn't work.
-> (Obviously this means rootdelay=$somenumber is needed)
-> I tried using the async infrastructure, but apparently
-> async_synchronize_full is called somewhere between registering the
-> async probe thread and the target USB device being registered by the
-> USB subsystem, which halts boot until my 20 second timeout, and the
-> USB stick is only detected afterwards.
+On Thu, 2009-07-16 at 14:15 +0200, Corentin Chary wrote:
+> On Thu, Jul 16, 2009 at 1:57 PM, Artem Bityutskiy<dedekind@infradead.org> wrote:
+> > On Wed, 2009-07-15 at 11:38 +0200, Corentin Chary wrote:
+> >> Hi,
+> >> Here is two patch to add support for UBI and UBIFS in libblkid
+> >> With that, if you type "blkid" it will show you UBIFS filesystem.
+> >>
+> >> The thing is that I'm not sure this patch is really usefull as UBIFS
+> >> is a "nodev" filesystem, and it doesn't deal with block devices.
+> >>
+> >> I first started theses patch to be able to do stuff like:
+> >> mount /dev/ubi0_0 /mnt/test but we need to patch UBIFS for that.
+> >
+> > Should not be difficult to implement in UBIFS.
+> >
+> >> So, do you think we should be able to do that ? If it's ok, these
+> >> two patch are a first step.
+> >
+> > No comments from my side, I do not use the library so I cannot
+> > really comment on this.
+> >
 > 
-> FWIW I want to use a erasesize aware FS on my USB stick (whose
-> builtin FTL has abysmal write performance if writes are less than
-> the erasesize) and also be able to use this as my root fs.
-> So my setup is usb_storage->block2mtd->ubi->ubifs
+> AFAIK mount(8) use this library to find the associated filesystem, so
+> it's needed
+> to remove the "-t ubifs".
 
-Hmm, how other subsystems solve this problem? Any pointer to the code?
+Ah, this would be really cool to have then!
 
 -- 
 Best regards,
