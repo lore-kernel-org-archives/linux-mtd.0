@@ -1,21 +1,38 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from e32.co.us.ibm.com ([32.97.110.150])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MRO7y-0004qx-BC
-	for linux-mtd@lists.infradead.org; Thu, 16 Jul 2009 10:23:54 +0000
-Subject: Re: UBI resizing
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Jelle Martijn Kok <jmkok@youcom.nl>
-In-Reply-To: <4A5DAA5A.3010101@youcom.nl>
-References: <4A5B4EC7.9010605@youcom.nl>
-	<1247565935.3828.136.camel@localhost.localdomain>
-	<4A5DAA5A.3010101@youcom.nl>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 16 Jul 2009 13:23:01 +0300
-Message-Id: <1247739781.11353.111.camel@localhost.localdomain>
+	id 1MROlm-0004pd-Um
+	for linux-mtd@lists.infradead.org; Thu, 16 Jul 2009 11:05:02 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e32.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n6GB0lf9023533
+	for <linux-mtd@lists.infradead.org>; Thu, 16 Jul 2009 05:00:47 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n6GB4pua225678
+	for <linux-mtd@lists.infradead.org>; Thu, 16 Jul 2009 05:04:53 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n6GB4oKg003058
+	for <linux-mtd@lists.infradead.org>; Thu, 16 Jul 2009 05:04:51 -0600
+Subject: Re: [PATCH 02/06] Fix compilation warning for fs/ubifs/commit.c
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+To: Artem Bityutskiy <dedekind@infradead.org>,
+	Stefan Richter <stefanr@s5r6.in-berlin.de>
+In-Reply-To: <1247738232.11353.90.camel@localhost.localdomain>
+References: <20090715021901.4112.45973.sendpatchset@subratamodak.linux.ibm.com>
+	<1247640750.11353.6.camel@localhost.localdomain>
+	<4A5E1D1A.3090705@s5r6.in-berlin.de>
+	<1247738232.11353.90.camel@localhost.localdomain>
+Content-Type: text/plain
+Date: Thu, 16 Jul 2009 16:34:31 +0530
+Message-Id: <1247742274.5572.8.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Content-Transfer-Encoding: 7bit
+Cc: Sachin P Sant <sachinp@linux.vnet.ibm.com>,
+	LKML <linux-kernel@vger.kernel.org>, David Howells <dhowells@redhat.com>,
+	linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>,
+	Balbir Singh <balbir@linux.vnet.ibm.com>
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,85 +42,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-07-15 at 12:07 +0200, Jelle Martijn Kok wrote:
-> I just pull a piece of your reply to the front as this best describes my 
-> need for the (automatic) resizing.
->  > create a special temporary throw-away volume, write stuff there, then 
-> re-name it to an existing one.
+Hi,
 
-I actually meant you could create a new ioctl which would do this
-internally:
+On Thu, 2009-07-16 at 12:57 +0300, Artem Bityutskiy wrote:
+> On Wed, 2009-07-15 at 20:16 +0200, Stefan Richter wrote:
+> > Artem Bityutskiy wrote:
+> > > On Wed, 2009-07-15 at 07:49 +0530, Subrata Modak wrote:
+> > >> Following fix is inspired by David Howells fix few days back:
+> > >> http://lkml.org/lkml/2009/7/9/109,
+> > >>
+> > >> Signed-off-by: Subrata Modak<subrata@linux.vnet.ibm.com>,
+> > >> ---
+> > > 
+> > > Removed junk comma at the end of "signed-off-by" and pushed to
+> > > the ubifs-2.6.git tree:
+> > > 
+> > > http://git.infradead.org/ubifs-2.6.git?a=commit;h=5c1507e6097c4abc13bbad69de137366c9043f22
+> > > 
+> > > Thanks.
+> > > 
+> > 
+> > The changelog of the patch is bad.  "Fix compilation warning" is not 
+> > correct.  It should be "suppress compilation warning" or "annotate 
+> > unitialized variable" or whatever --- i.e. it should say what it does.
 
-1. check if there are enough PEBs for a temporary volume
-2. create a throw-away volume which is invisible for users
-3. write your data there
-4. when all data are there, re-name the old volume to the
-   new one and kill the old volume
+Ok, i would change accordingly.
 
-You would need to implement some locking to make writers to other
-UBI volumes wait for atomic upgrade to finish. Indeed, because it
-takes PEBs, other writers may find no PEBs, and they should be
-blocked for some time.
-
-The drawback would be that with this you do not have guarantee your
-atomic upgrade succeeds, because you cannot be sure you have enough
-empty PEBs, because you did not reserve them.
-
-> I create a "temporary throw-away volume" with the following command: 
-> 'ubimkvol /dev/ubi0 -n 2 -N "temp" -t static -s 2MiB'
-> However for this to succeed I would need to have 17 available PEBs. I 
-> would only ever need those during the upgrade, so during the rest of the 
-> time I could not (easily) use these PEBs.
-
-Right. But on the other hand, consider a situation when you need to make
-an upgrade, but there are no PEBs because you did not reserve them. Is
-it better :-) ?
-
->  > But what exactly would you like to have? Would you like to have UBI
->  > volumes with no size at all - unbounded / unlimited? Or you would like
->  > to have UBI volumes with size, but larger than the amount of available
->  > PEBs?
 > 
-> Ultimately all volumes would be able to access all available PEBs. So 
-> all UBI volumes mention the same amount of available PEBs (and not more 
-> than the total amount).
-> However an application might thus not assume that all data is truly 
-> available. (see below)
-> I do realize that UBI itself is not a filesystem, and UBIFS might have 
-> other requirements and expectations of UBI. (as you mention "UBI 
-> guarantees that all LEBs may be written to at the same time").
-
-...
-
-> This is the same as your own machine does, assuming you are using a 
-> "correct" operating system ;-). In my case I have several mounted NFS 
-> partitions, which actually also "lie" about their available space. But I 
-> also do not trust the  of total amount of available space in the ram 
-> drives (tempfs / udev etc...) as this is much more than the amount of 
-> RAM in my machine.
-
-Probably... Not sure this is possible with the existing code base, but
-you could try to come up with some patches :-)
-
-But in the world with no guarantees, you never have any guarantee that
-you can write something or can upgrade something. Not sure I realize the
-beauty of this approach.
-
->  > So your boot-loader understands UBI?
+> For me this sounds the same. But probably your version is better
+> English. I'll change this.
 > 
-> Yes, I could sent it to you (in due time) as a code snippet. The code 
-> itself always needs to be tailored a bit for nice integration into a 
-> bootloader.
-> The UBI loader uses currently around 800 bytes (ARM9) excluding the 
-> crc32 code (which contains a large table) and the nand code (which is 
-> boorloader specific). This code could still made somewhat smaller if 
-> your remove some things, or much smaller if you do not use "ubi volume 
-> names" but "ubi volume ids" directly. But it might grow if I'll add a 
-> cached scan table (I currently scan the whole MTD twice).
+> > Furthermore, since the 3 lines context around the change in the diff do 
+> > not reveal why the chosen "fix" is correct and desirable, the changelog 
+> > should also leave a note why it's done this way.
+> 
+> The changelog says which kind of warning is fixed, I though it is
+> obvious what is the warning. At lease for me it would.
+> 
+> But if Subrata sends me the warning he sees, I'll change that.
+> Thankfully I did not push the patch to ubifs-2.6.git/linux-next
+> which I never re-base, but pushed it to master which I do rebase
+> and it is documented here:
+> http://www.linux-mtd.infradead.org/doc/ubifs.html#L_source
 
-BTW, it would be nice if the boot-loader passed scanning info to
-the kernel UBI somehow, so that we avoided double-scanning.
+I would resend with exact warning generated, etc.
 
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+> 
+> So I may just amend the commit's message.
+> 
+> > The patch form David Howells which is quoted here has an equally bad 
+> > subject, but at least its changelog goes on to explain what the patch 
+> > really does and why it does it in the proposed way.
+
+Well, untill gcc becomes a little more intelligent, i believe people
+would continue to fix them like this way. I would add proper description
+in my resend patch.
+
+> 
+> Well, I just thought this type of warnings and way of fixing is very
+> standard because I saw many similar fixes all over the place.
+> 
+
+Correct. There has been other warning fixes i have sent to LKML, where i
+have tweaked the code to fix the compilation, but, code tweaking may not
+be possible in this case. However , i would  still investigate.
+
+Regards--
+Subrata
+
+> Anyway, amended the patch like this so far:
+> http://git.infradead.org/ubifs-2.6.git?a=commit;h=5c1507e6097c4abc13bbad69de137366c9043f22
+> 
