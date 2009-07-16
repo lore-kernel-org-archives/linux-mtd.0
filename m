@@ -1,19 +1,25 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from einhorn.in-berlin.de ([192.109.42.8])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MRPO8-0004zS-Ij
-	for linux-mtd@lists.infradead.org; Thu, 16 Jul 2009 11:44:40 +0000
-Subject: Re: ubiupdatevol
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Jelle Martijn Kok <jmkok@youcom.nl>
-In-Reply-To: <4A5DBBB0.9050203@youcom.nl>
-References: <4A5DBBB0.9050203@youcom.nl>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 16 Jul 2009 14:44:19 +0300
-Message-Id: <1247744659.11353.131.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+	id 1MRPPh-0005XH-Uw
+	for linux-mtd@lists.infradead.org; Thu, 16 Jul 2009 11:46:18 +0000
+Message-ID: <4A5F12FB.2050302@s5r6.in-berlin.de>
+Date: Thu, 16 Jul 2009 13:46:03 +0200
+From: Stefan Richter <stefanr@s5r6.in-berlin.de>
+MIME-Version: 1.0
+To: subrata@linux.vnet.ibm.com
+Subject: Re: [PATCH 02/06] Fix compilation warning for fs/ubifs/commit.c
+References: <20090715021901.4112.45973.sendpatchset@subratamodak.linux.ibm.com>	
+	<1247640750.11353.6.camel@localhost.localdomain>	
+	<4A5E1D1A.3090705@s5r6.in-berlin.de>	
+	<1247738232.11353.90.camel@localhost.localdomain>
+	<1247742274.5572.8.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1247742274.5572.8.camel@subratamodak.linux.ibm.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Sachin P Sant <sachinp@linux.vnet.ibm.com>,
+	LKML <linux-kernel@vger.kernel.org>, David Howells <dhowells@redhat.com>,
+	linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>,
+	Balbir Singh <balbir@linux.vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,69 +29,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-07-15 at 13:21 +0200, Jelle Martijn Kok wrote:
-> Why is it not possible to write directly to a static volume ?
-> eg. perform "wget http://server.com/kernel.bin -O /dev/ubi0_2"
-
-Because the update operation needs to know the size of the data
-you are going to write. But if you know the size, you can do
-something like:
-
-wget -o - http://server.com/kernel.bin | ubiupdatevol -s X /dev/ubi0_2
-
-> ubiupdatevol first performs a ioctl + UBI_IOCVOLUP (with the size) and 
-> then starts writing normally. Why not allow for open, write, close 
-> without this ioctl ?
-
-I think because we want to know the data size in advance. This is
-because we store total data size in the VID header for static volume,
-so we should know it early. I do not remember where this comes from,
-though. We could avoid doing this though, and store it in the volume
-table only, though.
-
-I mean, glance at 'struct ubi_vid_hdr'. There is the 'data_size'
-field. And this is the fundamental reason why we want to know 
-the volume size beforehand.
-
-I think this is because IBM guys (haver at all) did not want to read
-the volume table in their boot loader. The wanted to read only VID
-headers, ignore those PEBs which do not belong to the static volume
-where they store the kernel. And I think this all comes from the
-4 KiB limitation for the boot loader they had.
-
-And I think I had a small fight with the guys where I said this
-should be stored in the volume table, not in the headers. But they
-won the battle.
-
-But you can implement a more flexible update. This would require
-on flash format changes, but this is doable. We have UBI version
-field in 'struct ubi_ec_hdr', so you can increment it, and make
-new UBI behave like the old one for v1 images and like the new
-one for v2 images. But old UBI systems would be unable to attach
-v2 images.
-
-> This gives 2 related issues:
-> 1) ubi_start_update must be called - which is normally called by 
-> ioctl(fd, UBI_IOCVOLUP, &bytes). I could imagine that "ubi_start_update" 
-> (upd.c) is called at the time the (static) volume is opened for writing. 
-> (inside the "vol_cdev_open" in cdev.c)
-> 2) the amount of bytes is not available/known on front. The amount of 
-> bytes is store "vol->upd_bytes" which is used to limit and to know when 
-> the amount of data to be written to an ubi volume has been reached. At 
-> that time, the LEB is written and the update marker is removed.
-> However why not write the final LEB and remove the update marker inside 
-> "vol_cdev_release". As a "vol_cdev_release" is (and should) always 
-> follow the last write.
+Subrata Modak wrote:
+>> Well, I just thought this type of warnings and way of fixing is very
+>> standard because I saw many similar fixes all over the place.
 > 
-> If you think this would be a correct change to UBI and also viable (am I 
-> overlooking something ?) I would be willing to make the changes and sent 
-> them to you (for inspection).
+> Correct. There has been other warning fixes i have sent to LKML, where i
+> have tweaked the code to fix the compilation, but, code tweaking may not
+> be possible in this case.
 
-Sure, but the amount of work/changes is larger than you described.
-But you may do this. You should be just very careful about
-backward-compatibility. But this is doable. Just question of how badly
-you need this.
+Wrong goal.  The goal of a patch should be to improve the code.
 
+To remove false-positive warnings from compilation can only be a 
+secondary goal.
+
+(See my other post.)
+
+BTW, which compiler do you use?  I quickly enabled ubifs here, first 
+without and then with its various sub-uptions, but didn't get a warning 
+here with "gcc (Gentoo 4.3.2-r3 p1.6, pie-10.1.5) 4.3.2".
 -- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+Stefan Richter
+-=====-==--= -=== =----
+http://arcgraph.de/sr/
