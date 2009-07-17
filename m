@@ -1,31 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from comal.ext.ti.com ([198.47.26.152])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MRhYH-0001zd-JQ
-	for linux-mtd@lists.infradead.org; Fri, 17 Jul 2009 07:08:22 +0000
-Subject: Re: UBIFS Corrupt during power failure
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Jamie Lokier <jamie@shareable.org>
-In-Reply-To: <20090716164908.GI16461@shareable.org>
-References: <1246629940.20721.219.camel@localhost.localdomain>
-	<7207AAC68CE347458026863515A07DA102901F9C@usw-am-xch-02.am.trimblecorp.net>
-	<1246633131.20721.224.camel@localhost.localdomain>
-	<1246854654.20721.271.camel@localhost.localdomain>
-	<1246855913.20721.287.camel@localhost.localdomain>
-	<1246862635.20721.291.camel@localhost.localdomain>
-	<1246949184.20721.302.camel@localhost.localdomain>
-	<C77C279BA71FD14985DC8E75FB265AB703AA85C0@usw-am-xch-02.am.trimblecorp.net>
-	<20090715205217.GH3056@shareable.org>
-	<1247728199.11353.63.camel@localhost.localdomain>
-	<20090716164908.GI16461@shareable.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 17 Jul 2009 10:07:20 +0300
-Message-Id: <1247814440.11353.158.camel@localhost.localdomain>
-Mime-Version: 1.0
+	id 1MRhbP-0001yo-LF
+	for linux-mtd@lists.infradead.org; Fri, 17 Jul 2009 07:11:36 +0000
+Message-ID: <65072.192.168.10.89.1247814666.squirrel@dbdmail.itg.ti.com>
+Date: Fri, 17 Jul 2009 12:41:06 +0530 (IST)
+Subject: [PATCH v3 1/3] mtd-nand: Add "page" parameter to all
+	read_page/read_page_raw APIs
+From: "vimal singh" <vimalsingh@ti.com>
+To: nsnehaprabha@ti.com
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
-Cc: Eric Holmberg <Eric_Holmberg@Trimble.com>, linux-mtd@lists.infradead.org,
-	Urs Muff <urs_muff@Trimble.com>, Stefan Roese <sr@denx.de>,
-	Nicolas Pitre <nico@cam.org>, Adrian Hunter <adrian.hunter@nokia.com>
-Reply-To: dedekind@infradead.org
+Cc: davinci-linux-open-source@linux.davincidsp.com,
+	Sandeep Paulraj <s-paulraj@ti.com>,
+	linux-mtd@lists.infradead.org, tglx@linutronix.de,
+	dwmw2@infradead.org, akpm@linux-foundation.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,15 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-07-16 at 17:49 +0100, Jamie Lokier wrote:
-> Even if they all look like 1 bits after power failure, it's possible
-> that some bits are "half-erased" if the erase didn't finish, and
-> aren't reliable.  Does UBI notice this, and force the block to be
-> erased again even though it looks like all 1 bits?
+On Fri, Jul 17, 2009 at 3:29 AM, <nsnehaprabha@ti.com> wrote:
+> From: Sneha Narnakaje <nsnehaprabha@ti.com>
+>
+> This patch new "page" parameter to all NAND read_page/read_page_raw APIs.
+> The read_page API for the new mode ECC_HW_OOB_FIRST requires the page
+> information to send the READOOB command and read the OOB area before the
+> data area.
+>
+> This patch series applies to linux-mtd next (mmotm) GIT tree.
+> This patch is the same as v2 version of this patch.
+>
+> Reviewed-by: David Brownell <dbrownell@users.sourceforge.net>
+> Signed-off-by: Sneha Narnakaje <nsnehaprabha@ti.com>
+> Signed-off-by: Sandeep Paulraj <s-paulraj@ti.com>
+> ---
+>  drivers/mtd/nand/atmel_nand.c    |    2 +-
+>  drivers/mtd/nand/cafe_nand.c     |    2 +-
+>  drivers/mtd/nand/fsl_elbc_nand.c |    3 ++-
+>  drivers/mtd/nand/nand_base.c     |   18 ++++++++++--------
+>  drivers/mtd/nand/sh_flctl.c      |    2 +-
+>  include/linux/mtd/nand.h         |    4 ++--
+>  6 files changed, 17 insertions(+), 14 deletions(-)
+>
 
-It checks the headers. If the headers are OK, it goes forward. Otherwise
-it erases the PEB.
+Why not just adding 'page' or 'cur_page' parameter to 'mtd_info' structure and
+populate the same in 'nand_do_read_ops' and 'nand_do_write_ops' as soon as you
+calculate 'page' for every read and write access respectivily. And then this
+info can be used by any one who has knowledge of 'mtd_info'.
 
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+-vimal
