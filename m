@@ -1,22 +1,23 @@
-Received: from smtpauth00.csee.onr.siteprotect.com ([64.26.60.144])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MRaoi-0002xs-PM
-	for linux-mtd@lists.infradead.org; Thu, 16 Jul 2009 23:56:53 +0000
-Message-ID: <4A5FBE35.1030908@boundarydevices.com>
-Date: Thu, 16 Jul 2009 16:56:37 -0700
-From: Troy Kisky <troy.kisky@boundarydevices.com>
+Received: from mail.gmx.net ([213.165.64.20])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MRbK6-0002Ua-Ly
+	for linux-mtd@lists.infradead.org; Fri, 17 Jul 2009 00:29:19 +0000
+Message-ID: <4A5FC5D5.9000302@gmx.net>
+Date: Fri, 17 Jul 2009 02:29:09 +0200
+From: Carl-Daniel Hailfinger <c-d.hailfinger.devel.2006@gmx.net>
 MIME-Version: 1.0
-To: nsnehaprabha@ti.com
-Subject: Re: [PATCH v3 3/3] mtd-nand: DaVinci: Add 4-bit ECC support for large
-	page NAND chips
-References: <1247781590-11323-1-git-send-email-nsnehaprabha@ti.com>
-In-Reply-To: <1247781590-11323-1-git-send-email-nsnehaprabha@ti.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: davinci-linux-open-source@linux.davincidsp.com,
-	Sandeep Paulraj <s-paulraj@ti.com>,
-	linux-mtd@lists.infradead.org, tglx@linutronix.de,
-	dwmw2@infradead.org, akpm@linux-foundation.org
+To: Gilles Casse <list@gcasse.net>
+Subject: Re: UBIFS Corrupt during power failure
+References: <C77C279BA71FD14985DC8E75FB265AB70344D104@usw-am-xch-02.am.trimblecorp.net>	<1242721105.3623.0.camel@localhost.localdomain>	<C77C279BA71FD14985DC8E75FB265AB7034DBD10@usw-am-xch-02.am.trimblecorp.net>	<1246627562.20721.190.camel@localhost.localdomain>	<1246627771.20721.191.camel@localhost.localdomain>	<7207AAC68CE347458026863515A07DA102901F3C@usw-am-xch-02.am.trimblecorp.net>	<1246629940.20721.219.camel@localhost.localdomain>	<7207AAC68CE347458026863515A07DA102901F9C@usw-am-xch-02.am.trimblecorp.net>	<1246633131.20721.224.camel@localhost.localdomain>	<1246854654.20721.271.camel@localhost.localdomain>	<20090715205528.GI3056@shareable.org>	<C77C279BA71FD14985DC8E75FB265AB703B47FCE@usw-am-xch-02.am.trimblecorp.net>	<1247728619.11353.68.camel@localhost.localdomain>
+	<4A5F938E.5070400@gcasse.net>
+In-Reply-To: <4A5F938E.5070400@gcasse.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Eric Holmberg <Eric_Holmberg@Trimble.com>,
+	Jamie Lokier <jamie@shareable.org>,
+	linux-mtd@lists.infradead.org, Urs Muff <urs_muff@Trimble.com>,
+	Stefan Roese <sr@denx.de>, Nicolas Pitre <nico@cam.org>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,38 +27,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-nsnehaprabha@ti.com wrote:
-> +/* An ECC layout for using 4-bit ECC with large-page (2048bytes) flash,
-> + * storing ten ECC bytes plus the manufacturer's bad block marker byte,
-> + * and not overlapping the default BBT markers.
-> + */
-> +static struct nand_ecclayout hwecc4_2048 __initconst = {
-> +	.eccbytes = 40,
-> +	.eccpos = {
-> +		/* at the end of spare sector */
-> +		24, 25, 26, 27, 28, 29,	30, 31, 32, 33,
-> +		34, 35, 36, 37, 38, 39,	40, 41, 42, 43,
-> +		44, 45, 46, 47, 48, 49, 50, 51, 52, 53,
-> +		54, 55, 56, 57, 58, 59, 60, 61, 62, 63,
-> +		},
-> +	.oobfree = {
-> +		/* 1 byte at offset 0 holds manufacturer badblock marker */
-> +		{.offset = 1, .length = 23, },
-> +		/* 5 bytes at offset 8 hold BBT markers */
-> +		/* 8 bytes at offset 16 hold JFFS2 clean markers */
-> +	},
-> +};
+On 16.07.2009 22:54, Gilles Casse wrote:
+> Artem Bityutskiy a écrit :
+>   
+>> On Wed, 2009-07-15 at 15:36 -0600, Eric Holmberg wrote:
+>>   
+>>     
+>>> Writing all zero's to the
+>>> header as in Artem's fix should work in all cases excluding the
+>>> extremely rare cases where a write of 0's is interrupted and the header
+>>> has been changed to a valid value and in the case where an erase
+>>> (0-to-1) transition is interrupted which results in a valid header.  The
+>>> odds against that are huge, so I would expect the flash to wear out
+>>> before it ever happens in real life.
+>>>     
+>>>       
+>> Hmm, we can zero out both headers completely by writing 128 bytes,
+>> even.
+>>   
+>>     
+> According to a fellow electronician, Marc, offlist, it would not be safe
+> to force at 0 a bit already at 0 in flash.
+> For zeroing a byte, he recommends to write its complementary value (e.g.
+> if 0x85 is read then write 0x7A).
+>   
 
-I hate to sound like a broken record, but
+I've seen flash where the data sheet mentions implicit erase for each
+byte write, so writing a complementary value there might not set all
+bits to 0. That might have been NOR flash, though.
 
-If the bad block marker is only 1 byte. Don't you need to override
+If you have a data sheet or similar publication where writing the
+complementary value is recommended or mentioned, I'd appreciate a
+pointer to it. It does sound logical, but sometimes hardware is a bit odd.
 
-static struct nand_bbt_descr largepage_flashbased = {
-	.options = NAND_BBT_SCAN2NDPAGE,
-	.offs = 0,
-	.len = 2,
-	.pattern = scan_ff_pattern
-};
 
-I think it is easier just to leave it as 2 bytes. That may
-allow substituting a different manufacturers chip too.
+Regards,
+Carl-Daniel
