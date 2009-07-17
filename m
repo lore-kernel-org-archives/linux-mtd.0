@@ -1,19 +1,28 @@
-Received: from smtpauth01.csee.onr.siteprotect.com ([64.26.60.145])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MRtvE-0002Zp-Qp
-	for linux-mtd@lists.infradead.org; Fri, 17 Jul 2009 20:20:52 +0000
-Message-ID: <4A60DD16.5070804@boundarydevices.com>
-Date: Fri, 17 Jul 2009 13:20:38 -0700
-From: Troy Kisky <troy.kisky@boundarydevices.com>
+Received: from smtp107.sbc.mail.gq1.yahoo.com ([67.195.14.110])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MRupJ-0005RQ-Ea
+	for linux-mtd@lists.infradead.org; Fri, 17 Jul 2009 21:18:50 +0000
+From: David Brownell <david-b@pacbell.net>
+To: "Narnakaje, Snehaprabha" <nsnehaprabha@ti.com>
+Subject: Re: [PATCH v3 3/3] mtd-nand: DaVinci: Add 4-bit ECC support for large
+	page NAND chips
+Date: Fri, 17 Jul 2009 14:18:41 -0700
+References: <1247781590-11323-1-git-send-email-nsnehaprabha@ti.com>
+	<200907171232.53725.david-b@pacbell.net>
+	<7A436F7769CA33409C6B44B358BFFF0C011E717E14@dlee02.ent.ti.com>
+In-Reply-To: <7A436F7769CA33409C6B44B358BFFF0C011E717E14@dlee02.ent.ti.com>
 MIME-Version: 1.0
-To: David Brownell <david-b@pacbell.net>
-Subject: Re: [PATCH V5 1/2] mtd: nand: move layout structure into nand_ecc_ctrl
-References: <1247789948-5764-1-git-send-email-troy.kisky@boundarydevices.com>
-	<200907171246.49342.david-b@pacbell.net>
-In-Reply-To: <200907171246.49342.david-b@pacbell.net>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+Message-Id: <200907171418.42113.david-b@pacbell.net>
+Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"davinci-linux-open-source@linux.davincidsp.com"
+	<davinci-linux-open-source@linux.davincidsp.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +32,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Brownell wrote:
-> On Thursday 16 July 2009, Troy Kisky wrote:
->>                 case 2048:
->> -                       nand_chip->ecc.layout = &atmel_oobinfo_large;
->> +                       memcpy(&nand_chip->ecc.layout, &atmel_oobinfo_large,
->> +                                       sizeof(nand_chip->ecc.layout));
->>                         ecc_writel(host->ecc, MR, ATMEL_ECC_PAGESIZE_2112);
->>                         break;
+On Friday 17 July 2009, Narnakaje, Snehaprabha wrote:
 > 
-> Surely using structure assignment
+> > Agreed that needs to be fixed, but there should be a comment
+> > about this being an *undocumented* behavior in the hardware.
+> > 
+> > The reason that the bug exists at all is because this step
+> > has never been documented.  So, please roll in this update.
 > 
-> 			nand_chip->ecc.layout = atmel_oobinfo_large;
-> 
-> would be better, everywhere?
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-Certainly would be easier to understand, but I thought it would generate
-larger code, no?
+> How about, we get the documents updated for this missing step.
 
+I had hoped this was in the works, but I was told
+that for some reason being able to do that was a
+problem.  And in the few months since this issue
+was identified, the docs haven't been updated.  :(
 
-No problem to change, I will next round, unless someone objects.
-
-Thanks for the review.
-Troy
+- Dve
