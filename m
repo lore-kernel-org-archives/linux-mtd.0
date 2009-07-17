@@ -1,18 +1,19 @@
-Received: from out1.zte.com.cn ([202.103.147.172])
+Received: from smtpauth01.csee.onr.siteprotect.com ([64.26.60.145])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MRbsM-0007Xv-N4
-	for linux-mtd@lists.infradead.org; Fri, 17 Jul 2009 01:04:43 +0000
-In-Reply-To: <OFCCF65728.700286E7-ON652575F5.00531F58-652575F5.00522500@lntemsys.com>
-To: Rupesh Kumar <Rupesh.Kumar@Lntemsys.com>
-Subject: =?GB2312?B?tPC4tDogRUNDICYgTWFnaWMgYml0bWFzayBlcnJvcnMgd2l0aCBKRkZTMg==?=
-	=?GB2312?B?IGZpbGUgc3lzdGVtIG9uIDYuMjMga2VybmVsIGZvcglwb3dlcnBj?=
+	id 1MRc6V-00025W-Md
+	for linux-mtd@lists.infradead.org; Fri, 17 Jul 2009 01:19:20 +0000
+Message-ID: <4A5FD18C.1090300@boundarydevices.com>
+Date: Thu, 16 Jul 2009 18:19:08 -0700
+From: Troy Kisky <troy.kisky@boundarydevices.com>
 MIME-Version: 1.0
-Message-ID: <OF394900CB.7ACCAD87-ON482575F6.00056EF5-482575F6.0005A998@zte.com.cn>
-From: liu.yaojin@zte.com.cn
-Date: Fri, 17 Jul 2009 09:00:07 +0800
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: base64
-Cc: linux-mtd@lists.infradead.org
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH V5 2/2] mtd: nand: Calculate better default ecc layout
+References: <1247789948-5764-1-git-send-email-troy.kisky@boundarydevices.com>
+	<1247789948-5764-2-git-send-email-troy.kisky@boundarydevices.com>
+In-Reply-To: <1247789948-5764-2-git-send-email-troy.kisky@boundarydevices.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: david-b@pacbell.net, tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,58 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Zm9yZ2V0IGl0ICxiZWNhdXNlIGkgaGF2ZSB0aGUgc2FtZSBwcm9ibGVtLGFuZCBub2JvZHkgYW5z
-d2VyLg0KDQoNCg0KDQpSdXBlc2ggS3VtYXIgPFJ1cGVzaC5LdW1hckBMbnRlbXN5cy5jb20+IA0K
-t6K8/sjLOiAgbGludXgtbXRkLWJvdW5jZXNAbGlzdHMuaW5mcmFkZWFkLm9yZw0KMjAwOS0wNy0x
-NiAyMzowOQ0KDQrK1bz+yMsNCmxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnDQqzrcvNDQoN
-Ctb3zOINCkVDQyAmIE1hZ2ljIGJpdG1hc2sgZXJyb3JzIHdpdGggSkZGUzIgZmlsZSBzeXN0ZW0g
-b24gNi4yMyBrZXJuZWwgZm9yIA0KcG93ZXJwYw0KDQoNCg0KDQoNCg0KSGkNCg0KV2UgYXJlIHVz
-aW5nIExpbnV4IGtlcm5lbCAyLjYuMjMgZnJvbSBmcmVlc2NhbGUgTFRJQiANCihNUEM4MzEzRV9S
-REJfSzI2XzIwMDgxMjI2LUxUSUIuaXNvKSBvbiBvdXIgY3VzdG9tIGJvYXJkLiANCkpGRlMyIGlz
-IHVzZWQgYXMgUkZTIGFuZCAgbmFuZCB3cml0ZS5qZmZzMiB1dGlsaXR5IGluIHRoZSB1LWJvb3Qg
-aXMgdXNlZCANCnRvIGJ1cm4gdGhlIGltYWdlIG9uIHRvIHRoZSBuYW5kIGZsYXNoLiANCg0KV2hl
-biB3ZSBib290IGZvciB0aGUgZmlyc3QgdGltZSBldmVyeXRoaW5nIHNlZW1zIHRvIGJlIE9LLiBP
-biBzdWJzZXF1ZW50IA0KcmVib290cyB3ZSBhcmUgc2VlaW5nIGZvbGxvd2luZyBlcnJvciBtZXNz
-YWdlcyByZXBvcnRlZCBieSBrZXJuZWwgb24gDQpib290dXAuIA0KSW4gYWRkaXRpb24gd2UgYWxz
-byBzZWUgTWFnaWMgYml0bWFzayBlcnJvcnMgYmVpbmcgcmVwb3J0ZWQuIA0KDQovLy8vLy8vLy8v
-Ly8vLy8vLy8vLy8vLy8vLy8NCm10ZC0+cmVhZCgweDQwMCBieXRlcyBmcm9tIDB4MWIwMDAwMCkg
-cmV0dXJuZWQgRUNDIGVycm9yDQpqZmZzMl9zY2FuX2VyYXNlYmxvY2soKTogTWFnaWMgYml0bWFz
-ayAweDE5ODUgbm90IGZvdW5kIGF0IDB4MDFiMDAxZDA6IA0KMHhmZmZlIGluc3RlYWQNCm10ZC0+
-cmVhZCgweDQwMCBieXRlcyBmcm9tIDB4MjUwMDAwMCkgcmV0dXJuZWQgRUNDIGVycm9yDQptdGQt
-PnJlYWQoMHg0MDAgYnl0ZXMgZnJvbSAweDI3YzAwMDApIHJldHVybmVkIEVDQyBlcnJvcg0KbXRk
-LT5yZWFkKDB4NDAwIGJ5dGVzIGZyb20gMHgyYzIwMDAwKSByZXR1cm5lZCBFQ0MgZXJyb3INCm10
-ZC0+cmVhZCgweDQwMCBieXRlcyBmcm9tIDB4MmNjMDAwMCkgcmV0dXJuZWQgRUNDIGVycm9yDQpt
-dGQtPnJlYWQoMHg0MDAgYnl0ZXMgZnJvbSAweDJkMDAwMDApIHJldHVybmVkIEVDQyBlcnJvcg0K
-amZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2ljIGJpdG1hc2sgMHgxOTg1IG5vdCBmb3VuZCBh
-dCAweDAyZDAwMDc0OiANCjB4ZmZmZSBpbnN0ZWFkDQpFbXB0eSBmbGFzaCBhdCAweDAyZDAwMDc4
-IGVuZHMgYXQgMHgwMmQwMDNlNA0KamZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2ljIGJpdG1h
-c2sgMHgxOTg1IG5vdCBmb3VuZCBhdCAweDAyZDAwM2U0OiANCjB4ZmZlZiBpbnN0ZWFkDQpFbXB0
-eSBmbGFzaCBhdCAweDAyZDAwM2U4IGVuZHMgYXQgMHgwMmQwMDc4MA0KamZmczJfc2Nhbl9lcmFz
-ZWJsb2NrKCk6IE1hZ2ljIGJpdG1hc2sgMHgxOTg1IG5vdCBmb3VuZCBhdCAweDAyZDAwNzgwOiAN
-CjB4ZmZmYiBpbnN0ZWFkDQptdGQtPnJlYWQoMHg0MDAgYnl0ZXMgZnJvbSAweDMzMjAwMDApIHJl
-dHVybmVkIEVDQyBlcnJvcg0KamZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2ljIGJpdG1hc2sg
-MHgxOTg1IG5vdCBmb3VuZCBhdCAweDAzMzIwMTkwOiANCjB4ZmZmZiBpbnN0ZWFkDQpFbXB0eSBm
-bGFzaCBhdCAweDAzMzIwMTk0IGVuZHMgYXQgMHgwMzMyMDQ3Yw0KLy8vLy8vLy8vLy8vLy8vLy8v
-Ly8vLy8vLy8vLw0KDQpXZSB2ZXJpZmllZCBlcmFzZSBzaXplIHBhc3NlZCBhcyBhbiBhcmd1bWVu
-dCBmb3IgY3JlYXRpbmcgamZmczIgZmlsZSANCnN5c3RlbSAoaW5pdGlhbCBnb29nbGluZyBvbiB0
-aGUgaXNzdWUpLg0KQWZ0ZXIgY29udGFjdGluZyBmcmVlc2NhbGUgd2UgY2FtZSB0byBrbm93IHRo
-YXQsIGl0IGlzIGEga25vd24gaXNzdWUgYW5kIA0KdGhleSBkb250IGhhdmUgcGxhbm5lZCB0byB3
-b3JrIG9uIHRoaXMgaW4gbmVhciBmdXR1cmUuIDooDQpQbGVhc2UgZ2l2ZSB5b3VyIHZhbHVhYmxl
-IHN1Z2dlc3Rpb25zIHNvIHRoYXQgd2UgY2FuIGZpeCB0aGlzIHByb2JsZW0gYW5kIA0KbWFrZSBv
-dXIgYm9hcmQgcnVubmluZyBwcm9wZXJseS4NCg0KVGhhbmtzDQpSdXBlc2gNCiANCg0KX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQpMaW51eCBN
-VEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QNCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vbGludXgtbXRkLw0KDQoNCg0KDQoNCi0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQpaVEUgSW5mb3JtYXRpb24gU2Vj
-dXJpdHkgTm90aWNlOiBUaGUgaW5mb3JtYXRpb24gY29udGFpbmVkIGluIHRoaXMgbWFpbCBpcyBz
-b2xlbHkgcHJvcGVydHkgb2YgdGhlIHNlbmRlcidzIG9yZ2FuaXphdGlvbi4gVGhpcyBtYWlsIGNv
-bW11bmljYXRpb24gaXMgY29uZmlkZW50aWFsLiBSZWNpcGllbnRzIG5hbWVkIGFib3ZlIGFyZSBv
-YmxpZ2F0ZWQgdG8gbWFpbnRhaW4gc2VjcmVjeSBhbmQgYXJlIG5vdCBwZXJtaXR0ZWQgdG8gZGlz
-Y2xvc2UgdGhlIGNvbnRlbnRzIG9mIHRoaXMgY29tbXVuaWNhdGlvbiB0byBvdGhlcnMuDQpUaGlz
-IGVtYWlsIGFuZCBhbnkgZmlsZXMgdHJhbnNtaXR0ZWQgd2l0aCBpdCBhcmUgY29uZmlkZW50aWFs
-IGFuZCBpbnRlbmRlZCBzb2xlbHkgZm9yIHRoZSB1c2Ugb2YgdGhlIGluZGl2aWR1YWwgb3IgZW50
-aXR5IHRvIHdob20gdGhleSBhcmUgYWRkcmVzc2VkLiBJZiB5b3UgaGF2ZSByZWNlaXZlZCB0aGlz
-IGVtYWlsIGluIGVycm9yIHBsZWFzZSBub3RpZnkgdGhlIG9yaWdpbmF0b3Igb2YgdGhlIG1lc3Nh
-Z2UuIEFueSB2aWV3cyBleHByZXNzZWQgaW4gdGhpcyBtZXNzYWdlIGFyZSB0aG9zZSBvZiB0aGUg
-aW5kaXZpZHVhbCBzZW5kZXIuDQpUaGlzIG1lc3NhZ2UgaGFzIGJlZW4gc2Nhbm5lZCBmb3Igdmly
-dXNlcyBhbmQgU3BhbSBieSBaVEUgQW50aS1TcGFtIHN5c3RlbS4NCg==
+Troy Kisky wrote:
+> Have nand_base calculate a good ecc layout
+> default. A benefit of this is allowing
+> a software ecc other than 3 bytes long. For example,
+> 4 bit software ecc correction.
+> 
+> This patch should be safe because it adds new
+> routines to be used. As board maintainers verify
+> that the new routines work for them, they should
+> send in a patch changing
+> 
+>    nand_scan -> nand_scan_finish
+>    nand_scan_tail -> nand_scan_finish_tail
+> 
+> This patch will also add all oob bytes that
+> are not reserved for ecc or bad block markers
+> to the end of the free list. I don't think this
+> can cause problems, but I would like an authority
+> to say, "Yes, it's safe."
+> 
+I have a few checkpatch issues to deal with if this
+approach is approved.
+
+Sorry, it slipped my mind.
+
+Troy
