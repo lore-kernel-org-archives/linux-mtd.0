@@ -1,19 +1,17 @@
-Received: from [124.30.7.148] (helo=mail.freesystems.biz)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MS6gV-00014j-MF
-	for linux-mtd@lists.infradead.org; Sat, 18 Jul 2009 09:58:33 +0000
-Received: from [192.168.1.2] (localhost [127.0.0.1])
-	by mail.freesystems.biz (Postfix) with ESMTP id C9FE22162EA
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 18 Jul 2009 15:17:45 +0530 (IST)
-Message-ID: <4A619A8A.1020100@freesystems.biz>
-Date: Sat, 18 Jul 2009 15:18:58 +0530
-From: Devendra <devendra.sharma@freesystems.biz>
+Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MS9gr-0008DF-Ra
+	for linux-mtd@lists.infradead.org; Sat, 18 Jul 2009 13:11:02 +0000
+Date: Sat, 18 Jul 2009 14:10:44 +0100
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Subject: [PATCH] MTD: afs: fix build warning
+Message-ID: <20090718131044.GA4120@n2100.arm.linux.org.uk>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: raw flash hardware
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,15 +21,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
-We want to add flash support to our PC in form of PCIe card. Usage could 
-be as SSD or cache.
+drivers/mtd/afs.c:244: warning: format ‘%5d’ expects type ‘int’, but argument 4 has type ‘uint64_t’
 
-Most cards have flash controllers that incorporate useful functionality 
-  like bus conversion & DMA engine. But their  firmware implements WL, 
-GC, EDC, etc.
+Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
 
-What PCIe boards with raw flash MTD are people here using?
+---
+ drivers/mtd/afs.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks & regards,
-Devendra
+diff --git a/drivers/mtd/afs.c b/drivers/mtd/afs.c
+index d072ca5..e29e81d 100644
+--- a/drivers/mtd/afs.c
++++ b/drivers/mtd/afs.c
+@@ -239,7 +239,7 @@ static int parse_afs_partitions(struct mtd_info *mtd,
+ 		parts[idx].offset	= img_ptr;
+ 		parts[idx].mask_flags	= 0;
+ 
+-		printk("  mtd%d: at 0x%08x, %5dKB, %8u, %s\n",
++		printk("  mtd%d: at 0x%08x, %5lluKB, %8u, %s\n",
+ 			idx, img_ptr, parts[idx].size / 1024,
+ 			iis.imageNumber, str);
+ 
