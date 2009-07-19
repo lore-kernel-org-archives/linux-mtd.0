@@ -1,16 +1,17 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MSTPK-0004Jd-CB
-	for linux-mtd@lists.infradead.org; Sun, 19 Jul 2009 10:14:18 +0000
-Received: from esebh106.NOE.Nokia.com (esebh106.ntc.nokia.com [172.21.138.213])
-	by mgw-mx09.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
-	n6JAE4U7012426
-	for <linux-mtd@lists.infradead.org>; Sun, 19 Jul 2009 05:14:07 -0500
+	id 1MSTPM-0004LN-SC
+	for linux-mtd@lists.infradead.org; Sun, 19 Jul 2009 10:14:23 +0000
+Received: from vaebh105.NOE.Nokia.com (vaebh105.europe.nokia.com
+	[10.160.244.31])
+	by mgw-mx03.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
+	n6JAE6nH014434
+	for <linux-mtd@lists.infradead.org>; Sun, 19 Jul 2009 13:14:07 +0300
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] UBI: amend NOR flash pre-erase quirk
-Date: Sun, 19 Jul 2009 15:05:55 +0300
-Message-Id: <1248005156-18662-2-git-send-email-dedekind@infradead.org>
+Subject: [PATCH] UBI: print a warning if too many PEBs are corrupted
+Date: Sun, 19 Jul 2009 15:05:56 +0300
+Message-Id: <1248005156-18662-3-git-send-email-dedekind@infradead.org>
 In-Reply-To: <1248005156-18662-1-git-send-email-dedekind@infradead.org>
 References: <1248005156-18662-1-git-send-email-dedekind@infradead.org>
 Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
@@ -25,48 +26,79 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-In case of NOR flash, UBI zeroes EC and VID headers' magic,
-in order to detect interrupted erasures. It first zeroes out
-the EC magic, then VID magic. However, if a power cut happens
-in between, we'll end up with a corrupted EC header and a valid
-VID header, in which case UBI accepts the PEB, but prints a
-warning. This patch makes sure we first zero out the VID
-magic, then the EC magic, not vice versa. This is just a
-small amendment to prevent warning messages.
+There was a bug report recently where UBI prints:
+
+UBI error: ubi_attach_mtd_dev: failed to attach by scanning, error -22
+
+error messages and refuses to attach a PEB. It turned out to be a
+buggy flash driver which returned garbage to almost every UBI read.
+This patch makes UBI print a better message in such cases. Namely,
+if UBI finds 8 or more corrupted PEBs, it prints a warning and
+lists the corrupted PEBs.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- drivers/mtd/ubi/io.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/mtd/ubi/scan.c |   19 +++++++++++++++++--
+ drivers/mtd/ubi/scan.h |    2 ++
+ 2 files changed, 19 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
-index 4cb6992..4e7bcb2 100644
---- a/drivers/mtd/ubi/io.c
-+++ b/drivers/mtd/ubi/io.c
-@@ -480,20 +480,20 @@ static int nor_erase_prepare(struct ubi_device *ubi, int pnum)
- 	loff_t addr;
- 	uint32_t data = 0;
+diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
+index 44c8273..0042f7b 100644
+--- a/drivers/mtd/ubi/scan.c
++++ b/drivers/mtd/ubi/scan.c
+@@ -75,9 +75,10 @@ static int add_to_list(struct ubi_scan_info *si, int pnum, int ec,
+ 		dbg_bld("add to free: PEB %d, EC %d", pnum, ec);
+ 	else if (list == &si->erase)
+ 		dbg_bld("add to erase: PEB %d, EC %d", pnum, ec);
+-	else if (list == &si->corr)
++	else if (list == &si->corr) {
+ 		dbg_bld("add to corrupted: PEB %d, EC %d", pnum, ec);
+-	else if (list == &si->alien)
++		si->corr_count += 1;
++	} else if (list == &si->alien)
+ 		dbg_bld("add to alien: PEB %d, EC %d", pnum, ec);
+ 	else
+ 		BUG();
+@@ -927,6 +928,20 @@ struct ubi_scan_info *ubi_scan(struct ubi_device *ubi)
+ 		ubi_msg("empty MTD device detected");
  
--	addr = (loff_t)pnum * ubi->peb_size;
-+	addr = (loff_t)pnum * ubi->peb_size + ubi->vid_hdr_aloffset;
- 	err = ubi->mtd->write(ubi->mtd, addr, 4, &written, (void *)&data);
- 	if (err) {
- 		ubi_err("error %d while writing 4 bytes to PEB %d:%d, written "
--			"%zd bytes", err, pnum, 0, written);
-+			"%zd bytes", err, pnum, ubi->vid_hdr_aloffset, written);
- 		ubi_dbg_dump_stack();
- 		return err;
- 	}
+ 	/*
++	 * Few corrupted PEBs are not a problem and may be just a result of
++	 * unclean reboots. However, many of them may indicate some problems
++	 * with the flash HW or driver. Print a warning in this case.
++	 */
++	if (si->corr_count >= 8 || si->corr_count >= ubi->peb_count / 4) {
++		ubi_warn("%d PEBs are corrupted", si->corr_count);
++		printk(KERN_WARNING "corrupted PEBs are: ");
++		list_for_each_entry(seb, &si->corr, u.list) {
++			printk(KERN_CONT "%d", seb->pnum);
++		}
++		printk(KERN_CONT "\n");
++	}
++
++	/*
+ 	 * In case of unknown erase counter we use the mean erase counter
+ 	 * value.
+ 	 */
+diff --git a/drivers/mtd/ubi/scan.h b/drivers/mtd/ubi/scan.h
+index 1017cf1..bab3169 100644
+--- a/drivers/mtd/ubi/scan.h
++++ b/drivers/mtd/ubi/scan.h
+@@ -102,6 +102,7 @@ struct ubi_scan_volume {
+  * @mean_ec: mean erase counter value
+  * @ec_sum: a temporary variable used when calculating @mean_ec
+  * @ec_count: a temporary variable used when calculating @mean_ec
++ * @corr_count: count of corrupted PEBs
+  * @image_seq_set: indicates @ubi->image_seq is known
+  *
+  * This data structure contains the result of scanning and may be used by other
+@@ -125,6 +126,7 @@ struct ubi_scan_info {
+ 	int mean_ec;
+ 	uint64_t ec_sum;
+ 	int ec_count;
++	int corr_count;
+ 	int image_seq_set;
+ };
  
--	addr += ubi->vid_hdr_aloffset;
-+	addr -= ubi->vid_hdr_aloffset;
- 	err = ubi->mtd->write(ubi->mtd, addr, 4, &written, (void *)&data);
- 	if (err) {
- 		ubi_err("error %d while writing 4 bytes to PEB %d:%d, written "
--			"%zd bytes", err, pnum, ubi->vid_hdr_aloffset, written);
-+			"%zd bytes", err, pnum, 0, written);
- 		ubi_dbg_dump_stack();
- 		return err;
- 	}
 -- 
 1.6.0.6
