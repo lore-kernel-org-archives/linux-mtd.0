@@ -1,17 +1,21 @@
-Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MS9gr-0008DF-Ra
-	for linux-mtd@lists.infradead.org; Sat, 18 Jul 2009 13:11:02 +0000
-Date: Sat, 18 Jul 2009 14:10:44 +0100
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-To: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Subject: [PATCH] MTD: afs: fix build warning
-Message-ID: <20090718131044.GA4120@n2100.arm.linux.org.uk>
+Received: from fg-out-1718.google.com ([72.14.220.158])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MSK0B-0007wx-59
+	for linux-mtd@lists.infradead.org; Sun, 19 Jul 2009 00:11:43 +0000
+Received: by fg-out-1718.google.com with SMTP id l27so345429fgb.3
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 18 Jul 2009 17:11:36 -0700 (PDT)
+Date: Sun, 19 Jul 2009 04:11:27 +0400
+From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Subject: Re: abuse of nand_correct_data in tmio_nand driver
+Message-ID: <20090719001127.GA6449@doriath.ww600.siemens.net>
+References: <20090714.230503.162167450.anemo@mba.ocn.ne.jp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+In-Reply-To: <20090714.230503.162167450.anemo@mba.ocn.ne.jp>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,24 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-drivers/mtd/afs.c:244: warning: format ‘%5d’ expects type ‘int’, but argument 4 has type ‘uint64_t’
+Hi,
 
-Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+On Tue, Jul 14, 2009 at 11:05:03PM +0900, Atsushi Nemoto wrote:
+> Hi.  I found tmio_nand driver abuses nand_correct_data.
+> 
+> The current nand_correct_data() can be used for ecc.bytes = 3 case
+> only.  The tmio_nand driver uses ecc.bytes = 6.
 
----
- drivers/mtd/afs.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+IIRC, tmio_nand driver accesses two ecc "sectors" at once, so this is
+most probably ok. I'll look into it though, when I have some time.
 
-diff --git a/drivers/mtd/afs.c b/drivers/mtd/afs.c
-index d072ca5..e29e81d 100644
---- a/drivers/mtd/afs.c
-+++ b/drivers/mtd/afs.c
-@@ -239,7 +239,7 @@ static int parse_afs_partitions(struct mtd_info *mtd,
- 		parts[idx].offset	= img_ptr;
- 		parts[idx].mask_flags	= 0;
- 
--		printk("  mtd%d: at 0x%08x, %5dKB, %8u, %s\n",
-+		printk("  mtd%d: at 0x%08x, %5lluKB, %8u, %s\n",
- 			idx, img_ptr, parts[idx].size / 1024,
- 			iis.imageNumber, str);
- 
+-- 
+With best wishes
+Dmitry
