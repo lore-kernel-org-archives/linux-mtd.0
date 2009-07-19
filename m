@@ -1,22 +1,17 @@
 Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MSPSP-0007Cb-Vt
-	for linux-mtd@lists.infradead.org; Sun, 19 Jul 2009 06:01:14 +0000
-Subject: Re: block2mtd and ubi are initialized too early when compiled in
-	on 2.6.31-rc2
+	id 1MSTPJ-0004Dy-PB
+	for linux-mtd@lists.infradead.org; Sun, 19 Jul 2009 10:14:18 +0000
+Received: from esebh106.NOE.Nokia.com (esebh106.ntc.nokia.com [172.21.138.213])
+	by mgw-mx09.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
+	n6JAE4U5012426
+	for <linux-mtd@lists.infradead.org>; Sun, 19 Jul 2009 05:14:05 -0500
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Tobias Diedrich <ranma@tdiedrich.de>
-In-Reply-To: <20090716142816.GA19523@yamamaya.is-a-geek.org>
-References: <20090715115235.GA21888@yamamaya.is-a-geek.org>
-	<1247746844.11353.152.camel@localhost.localdomain>
-	<20090716142816.GA19523@yamamaya.is-a-geek.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 19 Jul 2009 09:00:59 +0300
-Message-Id: <1247983259.11353.214.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Reply-To: dedekind@infradead.org
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] UBI: print a message if ECH is corrupted and VIDH is ok
+Date: Sun, 19 Jul 2009 15:05:54 +0300
+Message-Id: <1248005156-18662-1-git-send-email-dedekind@infradead.org>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +21,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-07-16 at 16:28 +0200, Tobias Diedrich wrote:
-> Artem Bityutskiy wrote:
-> > Hi,
-> > 
-> > On Wed, 2009-07-15 at 13:52 +0200, Tobias Diedrich wrote:
-> > > On 2.6.31-rc2 the block2mtd drivers module_init is called before any
-> > > block devices have been registered.
-> > 
-> > Hmm, ok. Is this because block devices are registered asynchronously?
-> > Could you please point to the code where it is done, just for reference.
-> 
-> AFAICS yes.
-> All module_init()s are called asynchronously from init/main.c:do_initcalls()
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-They are done in a kernel thread, but sequentially, one after the other.
-So there is no real synchronicity there.
+If the EC header is corrupted, but the VID header is OK, UBI accepts the
+PEB and treats it as "used". However, generally this should not happen.
+Print a warning if this happens.
 
-I think the real problem is that block-devices are probed/initialized
-asynchronously. E.g., see 'ata_host_register()'. They call
-'async_schedule()' which is doing the slow initialization in a separate
-thread.
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ drivers/mtd/ubi/scan.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
-Thus, you probably should to try to add something like
-'async_synchronize_full()' to the blk2mtd driver and wait for block
-devices to initialize. Or indeed 'wait_for_device_probe()' may be what
-you need.
-
+diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
+index a423131..44c8273 100644
+--- a/drivers/mtd/ubi/scan.c
++++ b/drivers/mtd/ubi/scan.c
+@@ -853,7 +853,9 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
+ 		}
+ 	}
+ 
+-	/* Both UBI headers seem to be fine */
++	if (ec_corr)
++		ubi_warn("valid VID header but corrupted EC header at PEB %d",
++			 pnum);
+ 	err = ubi_scan_add_used(ubi, si, pnum, ec, vidh, bitflips);
+ 	if (err)
+ 		return err;
 -- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+1.6.0.6
