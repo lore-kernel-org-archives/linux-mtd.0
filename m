@@ -1,23 +1,20 @@
-Received: from mail-fx0-f215.google.com ([209.85.220.215])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MSYwf-0003FJ-Kn
-	for linux-mtd@lists.infradead.org; Sun, 19 Jul 2009 16:09:06 +0000
-Received: by fxm11 with SMTP id 11so1572357fxm.18
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 19 Jul 2009 09:09:00 -0700 (PDT)
+Received: from astoria.ccjclearline.com ([64.235.106.9])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MShTN-0002N8-6h
+	for linux-mtd@lists.infradead.org; Mon, 20 Jul 2009 01:15:24 +0000
+Received: from cpe00142a336e11-cm001ac318e826.cpe.net.cable.rogers.com
+	([174.113.191.234] helo=crashcourse.ca)
+	by astoria.ccjclearline.com with esmtpsa (TLSv1:AES256-SHA:256)
+	(Exim 4.69) (envelope-from <rpjday@crashcourse.ca>)
+	id 1MShTI-0000cH-Fv
+	for linux-mtd@lists.infradead.org; Sun, 19 Jul 2009 21:15:16 -0400
+Date: Sun, 19 Jul 2009 21:12:46 -0400 (EDT)
+From: "Robert P. J. Day" <rpjday@crashcourse.ca>
+To: MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: MTD_DATAFLASH_VERIFY_WRITE typo
+Message-ID: <alpine.LFD.2.00.0907192111220.17927@localhost>
 MIME-Version: 1.0
-In-Reply-To: <20090720.001426.102579925.anemo@mba.ocn.ne.jp>
-References: <20090714.230503.162167450.anemo@mba.ocn.ne.jp>
-	<20090719001127.GA6449@doriath.ww600.siemens.net>
-	<20090720.001426.102579925.anemo@mba.ocn.ne.jp>
-Date: Sun, 19 Jul 2009 20:08:59 +0400
-Message-ID: <bc64b4640907190908m209572e8od16ac648f19503e@mail.gmail.com>
-Subject: Re: abuse of nand_correct_data in tmio_nand driver
-From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2009/7/19, Atsushi Nemoto <anemo@mba.ocn.ne.jp>:
-> On Sun, 19 Jul 2009 04:11:27 +0400, Dmitry Eremin-Solenikov
-> <dbaryshkov@gmail.com> wrote:
->> > The current nand_correct_data() can be used for ecc.bytes = 3 case
->> > only.  The tmio_nand driver uses ecc.bytes = 6.
->>
->> IIRC, tmio_nand driver accesses two ecc "sectors" at once, so this is
->> most probably ok. I'll look into it though, when I have some time.
->
-> Yes, tmio_nand driver read 512 byte data and calculate 6 byte ecc at
-> once, but nand_correct_data only references first 3 byte of ecc.
->
-> I doubt the driver cannot detect errors in the second 256 byte sector
-> of the 512 byte block.
 
-Hmm. That's strange: nand_correct_data() seems to support 512-byte sectors,
-however it assumes that ECC is still 3 bytes. I'll have to check specs to see
-who is wrong...
+  there appears to be an inconsistency here:
 
--- 
-With best wishes
-Dmitry
+drivers/mtd/devices/mtd_dataflash.c:#ifdef CONFIG_MTD_DATAFLASH_VERIFY_WRITE
+drivers/mtd/devices/mtd_dataflash.c:#endif	/* CONFIG_MTD_DATAFLASH_VERIFY_WRITE */
+drivers/mtd/devices/Kconfig:config MTD_DATAFLASH_WRITE_VERIFY
+
+rday
+--
+
+========================================================================
+Robert P. J. Day                               Waterloo, Ontario, CANADA
+
+        Linux Consulting, Training and Annoying Kernel Pedantry.
+
+Web page:                                          http://crashcourse.ca
+Twitter:                                       http://twitter.com/rpjday
+"Kernel Newbie Corner" column @ linux.com:          http://cli.gs/WG6WYX
+========================================================================
