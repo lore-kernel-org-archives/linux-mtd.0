@@ -1,19 +1,12 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MTEF1-0002Mt-6M
-	for linux-mtd@lists.infradead.org; Tue, 21 Jul 2009 12:14:47 +0000
-Subject: Re: [PATCH] UBI: Decrease I/O count in ubi_scan
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Corentin Chary <corentincj@iksaif.net>
-In-Reply-To: <1248175591-4592-1-git-send-email-corentincj@iksaif.net>
-References: <1248175591-4592-1-git-send-email-corentincj@iksaif.net>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 21 Jul 2009 15:14:11 +0300
-Message-Id: <1248178451.24676.9.camel@localhost>
-Mime-Version: 1.0
+Message-ID: <63897.81.91.228.131.1248124026.squirrel@mail.obsa.com.ec>
+Date: Mon, 20 Jul 2009 23:07:06 +0200 (CEST)
+Subject: I seek your permission before
+From: "MISS GLORIA NEVIS" <glonevis@sify.com>
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+To: undisclosed-recipients:;
+Reply-To: glorian@xpmail.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +16,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-07-21 at 13:26 +0200, Corentin Chary wrote:
-> Merge ec_hdr and vid_hdr read in one ubi_io_read()
-> This result in a 25% speedup with nandsim, and 6%
-> speedup on an AT91SAM9263 board with a 200Mo UBI volume.
-> 
-> Signed-off-by: Corentin Chary <corentincj@iksaif.net>
-> ---
->  drivers/mtd/ubi/io.c   |   67 ++++++++++++++++++++++++++++++++++++++++++++++-
->  drivers/mtd/ubi/scan.c |   35 +++++++++++++------------
->  drivers/mtd/ubi/ubi.h  |    4 +++
->  3 files changed, 87 insertions(+), 19 deletions(-)
+X-OBSA S.A-MailScanner-Information: Please contact the ISP for more information
+X-OBSA S.A-MailScanner: Found to be clean
+X-OBSA S.A-MailScanner-From: glonevis@sify.com
+X-Spam-Status: No
 
-Yeah, I did the same optimization some time ago:
+Dearest,
 
-http://lists.infradead.org/pipermail/linux-mtd/2008-April/021311.html
+My name is Miss Gloria Nevis. I have a very urgent personal message for you,
+I seek your permission before I send you the message.
+Thanks as I await your response.
 
-Could you please take a look at those patches as well, and if they
-are any better, use them or improve yours. I do not remember the
-details, to be frank.
-
-No one reported a significant improvement, so I dropped it.
-nandsim improvement is not very interesting, but the AT91SAM9263 is.
-Which flash is there? And why do you presume is the improvement -
-just less calls to MTD or really less I/O? Note MTD usually caches
-the last read NAND page, so usually this is not about less I/O.
+Yours Sincerely,
+Gloria.
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Este mensaje ha sido analizado por MailScanner
+en busca de virus y otros contenidos peligrosos,
+y se considera que est� limpio.
+For all your IT requirements visit: http://www.transtec.co.uk
