@@ -1,24 +1,24 @@
-Received: from mail-qy0-f176.google.com ([209.85.221.176])
+Received: from mail-fx0-f215.google.com ([209.85.220.215])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MTXQC-00088C-Jn
-	for linux-mtd@lists.infradead.org; Wed, 22 Jul 2009 08:43:38 +0000
-Received: by qyk6 with SMTP id 6so31178qyk.28
+	id 1MTXXk-0002ca-2v
+	for linux-mtd@lists.infradead.org; Wed, 22 Jul 2009 08:51:24 +0000
+Received: by fxm11 with SMTP id 11so40303fxm.18
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 22 Jul 2009 01:43:30 -0700 (PDT)
+	Wed, 22 Jul 2009 01:51:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20090722.002013.165864270.anemo@mba.ocn.ne.jp>
-References: <20090720.001426.102579925.anemo@mba.ocn.ne.jp>
-	<bc64b4640907190908m209572e8od16ac648f19503e@mail.gmail.com>
-	<ce9ab5790907192215q148e194ale4a509112b1b40aa@mail.gmail.com>
-	<20090722.002013.165864270.anemo@mba.ocn.ne.jp>
-Date: Wed, 22 Jul 2009 14:13:30 +0530
-Message-ID: <ce9ab5790907220143t49d4afecr84a5c5e91833bc4a@mail.gmail.com>
-Subject: Re: abuse of nand_correct_data in tmio_nand driver
-From: vimal singh <vimal.newwork@gmail.com>
-To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+In-Reply-To: <4A65CD65.3080408@gmail.com>
+References: <1248175591-4592-1-git-send-email-corentincj@iksaif.net>
+	<1248178451.24676.9.camel@localhost>
+	<71cd59b00907210642u7d041dddk350254bf969c28ae@mail.gmail.com>
+	<4A65CD65.3080408@gmail.com>
+Date: Wed, 22 Jul 2009 10:51:18 +0200
+Message-ID: <71cd59b00907220151r490cbc37r92c511b7247e6047@mail.gmail.com>
+Subject: Re: [PATCH] UBI: Decrease I/O count in ubi_scan
+From: Corentin Chary <corentin.chary@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Cc: dbaryshkov@gmail.com, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,104 +28,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 21, 2009 at 8:50 PM, Atsushi Nemoto<anemo@mba.ocn.ne.jp> wrote:
-> On Mon, 20 Jul 2009 10:45:20 +0530, vimal singh <vimal.newwork@gmail.com>=
- wrote:
->> Seems like this driver may be reading 512 bytes at a times, but still
->> calculates 256-byte sector ECC. (1-bit error correction for each 256
->> bytes of data).
->> In that case, nand_correct_data() should be called twice, once for
->> each 256 byte data.
+On Tue, Jul 21, 2009 at 4:15 PM, Artem Bityutskiy<dedekind1@gmail.com> wrot=
+e:
+> On 07/21/2009 04:42 PM, Corentin Chary wrote:
+>>
+>> [ =A0 12.544598] NAND device: Manufacturer ID: 0xec, Chip ID: 0x36
+>> (Samsung NAND 64MiB 1,8V 8-bit)
+>> [ =A0 12.683697] Scanni
+>> [ =A0 12.691395] 0x000000000000-0x000000800000 : "Linux Kernel"
+>> [ =A0 12.699687] 0x000000800000-0x000002800000 : "Filesystem"
+>> [ =A0 12.707648] 0x000002800000-0x000004000000 : "Free"
+>> [ =A0 12.719948] UBI: attaching mtd2 to ubi0
+>> [ =A0 12.728005] UBI: physical eraseblock size: =A0 16384 bytes (16 KiB)
+>> [ =A0 12.741397] UBI: logical eraseblock size: =A0 =A015360 bytes
+>> [ =A0 12.751721] UBI: smallest flash I/O unit: =A0 =A0512
+>> [ =A0 12.760202] UBI: VID header offset: =A0 =A0 =A0 =A0 =A0512 (aligned=
+ 512)
+>> [ =A0 12.767589] UBI: data offset: =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A01024
+>> [ =A0 13.047943] UBI: attached mtd2 to ubi0
+>> [ =A0 13.055450] UBI: MTD device name: =A0 =A0 =A0 =A0 =A0 =A0"Free"
+>> [ =A0 13.063343] UBI: MTD device size: =A0 =A0 =A0 =A0 =A0 =A024 MiB
+>> [ =A0 13.071539] UBI: number of good PEBs: =A0 =A0 =A0 =A01536
+>> [ =A0 13.084148] UBI: number of bad PEBs: =A0 =A0 =A0 =A0 0
+>> [ =A0 13.095572] UBI: max. allowed volumes: =A0 =A0 =A0 89
+>> [ =A0 13.105468] UBI: wear-leveling threshold: =A0 =A04096
+>> [ =A0 13.113178] UBI: number of internal volumes: 1
+>> [ =A0 13.129826] UBI: number of user volumes: =A0 =A0 1
+>> [ =A0 13.140834] UBI: available PEBs: =A0 =A0 =A0 =A0 =A0 =A0 0
+>> [ =A0 13.153634] UBI: total number of reserved PEBs: 1536
+>> [ =A0 13.160852] UBI: number of PEBs reserved for bad PEB handling: 15
+>> [ =A0 13.167731] UBI: max/mean erase counter: 2/1
+>> [ =A0 13.177809] UBI: image sequence number: 0
 >
-> But unfortunately nand_correct_data() cannot be used as is because it
-> depends on chip->ecc.size (which is 512 for tmio_nand driver).
+> This flash does not look like something which could fit a 200MiB
+> volume.
 >
->> This can be handled by overriding 'chip->ecc.correct' in driver. You
->> may reuse 'nand_correct_data()' code in the driver of 256 byte sector
->> ECC.
+>>> And why do you presume is the improvement -
+>>> just less calls to MTD or really less I/O? Note MTD usually caches
+>>> the last read NAND page, so usually this is not about less I/O.
+>>
+>> In this case it seems vid and ec headers are not on the same page.
 >
-> Yes, the driver can reuse nand_ecc code to implement its own
-> nand_correct rountine.
->
-> Or how about adding support for 6byte-ecc/512byte-data to nand_ecc.c
-> to avoid code duplication?
->
-> I mean something like this. =A0If it looks acceptable, I will prepare a
-> patch including similer change to nand_calculate_ecc.
+> Strange. May be this is related to how they calculate ECC...
+> Or just a problem in the driver. Normally flashes like this would
+> have 256 byte sub-pages and have both headers in the same page.
 
-I personally do not like any HW specific implementation going into the
-generic part
-of the code. This particular issue is specific to your HW, so better
-handle it in the
-driver only.
-
-
->
-> diff --git a/drivers/mtd/nand/nand_ecc.c b/drivers/mtd/nand/nand_ecc.c
-> index c0cb87d..77e13c8 100644
-> --- a/drivers/mtd/nand/nand_ecc.c
-> +++ b/drivers/mtd/nand/nand_ecc.c
-> @@ -425,14 +425,12 @@ EXPORT_SYMBOL(nand_calculate_ecc);
-> =A0*
-> =A0* Detect and correct a 1 bit error for 256/512 byte block
-> =A0*/
-> -int nand_correct_data(struct mtd_info *mtd, unsigned char *buf,
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 unsigned char *read_ecc, unsign=
-ed char *calc_ecc)
-> +static int nand_correct_data_sub(unsigned char *buf,
-> + =A0 =A0 =A0 unsigned char *read_ecc, unsigned char *calc_ecc,
-> + =A0 =A0 =A0 const uint32_t eccsize_mult)
-> =A0{
-> =A0 =A0 =A0 =A0unsigned char b0, b1, b2, bit_addr;
-> =A0 =A0 =A0 =A0unsigned int byte_addr;
-> - =A0 =A0 =A0 /* 256 or 512 bytes/ecc =A0*/
-> - =A0 =A0 =A0 const uint32_t eccsize_mult =3D
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (((struct nand_chip *)mtd->=
-priv)->ecc.size) >> 8;
->
-> =A0 =A0 =A0 =A0/*
-> =A0 =A0 =A0 =A0 * b0 to b2 indicate which bit is faulty (if any)
-> @@ -495,6 +493,26 @@ int nand_correct_data(struct mtd_info *mtd, unsigned=
- char *buf,
-> =A0 =A0 =A0 =A0printk(KERN_ERR "uncorrectable error : ");
-> =A0 =A0 =A0 =A0return -1;
-> =A0}
-> +int nand_correct_data(struct mtd_info *mtd, unsigned char *buf,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 unsigned char *read_ecc, unsign=
-ed char *calc_ecc)
-> +{
-> + =A0 =A0 =A0 struct nand_chip *chip =3D mtd->priv;
-> + =A0 =A0 =A0 /* 256 or 512 bytes/ecc =A0*/
-> + =A0 =A0 =A0 const uint32_t eccsize_mult =3D (chip->ecc.size) >> 8;
-> + =A0 =A0 =A0 int r0, r1;
-> +
-> + =A0 =A0 =A0 if (eccsize_mult =3D=3D 2 && chip->ecc.bytes =3D=3D 6) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 r0 =3D nand_correct_data_sub(buf, read_ecc,=
- calc_ecc, 1);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (r0 < 0)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 return r0;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 r1 =3D nand_correct_data_sub(buf + 256,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0read_ecc + 3, calc_ecc + 3, 1);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (r1 < 0)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 return r1;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return r0 | r1;
-> + =A0 =A0 =A0 }
-> + =A0 =A0 =A0 return nand_correct_data_sub(buf, read_ecc, calc_ecc, eccsi=
-ze_mult);
-> +}
-> =A0EXPORT_SYMBOL(nand_correct_data);
->
-> =A0MODULE_LICENSE("GPL");
->
+After reading more code, when HW ECC is enabled, atmel_nand only
+handle full page write.
 
 
+A last question, to be sure,
+If we use something like (Samsung K9F2G08UQM) we have writesize =3D 2048
+and subpage =3D 512.
+VID header offset will be 512.
+ec_hdr is in the first subpage
+vid_hdr is in the second subpage
+
+So, there will two I/O (two subpage read) ?
+Reading nand_base.c I believe that the cache is only used when subpage
+read is not possible.
+
+Thanks for your time,
 
 --=20
----
-Regards,
-\/ | |\/| /-\ |_
-
-____      __o
-------   -\<,
------  ( )/ ( )
+Corentin Chary
+http://xf.iksaif.net - http://uffs.org
