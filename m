@@ -1,22 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MTXcd-00069d-Ed
-	for linux-mtd@lists.infradead.org; Wed, 22 Jul 2009 08:56:28 +0000
-Message-ID: <4A66D403.8000308@gmail.com>
-Date: Wed, 22 Jul 2009 11:55:31 +0300
-From: Artem Bityutskiy <dedekind1@gmail.com>
+	id 1MTXyE-0003RQ-J5
+	for linux-mtd@lists.infradead.org; Wed, 22 Jul 2009 09:18:47 +0000
+Message-ID: <4A66D988.4050503@nokia.com>
+Date: Wed, 22 Jul 2009 12:19:04 +0300
+From: Adrian Hunter <adrian.hunter@nokia.com>
 MIME-Version: 1.0
-To: Corentin Chary <corentin.chary@gmail.com>
-Subject: Re: [PATCH] UBI: Decrease I/O count in ubi_scan
-References: <1248175591-4592-1-git-send-email-corentincj@iksaif.net>	
-	<1248178451.24676.9.camel@localhost>	
-	<71cd59b00907210642u7d041dddk350254bf969c28ae@mail.gmail.com>	
-	<4A65CD65.3080408@gmail.com>
-	<71cd59b00907220151r490cbc37r92c511b7247e6047@mail.gmail.com>
-In-Reply-To: <71cd59b00907220151r490cbc37r92c511b7247e6047@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+To: Canella Matteo <Matteo.Canella@mta.it>
+Subject: Re: UBI FS mounting time
+References: <531B6536C9F737458807DF75064873C8303DD7D768@mta-digimail.MTA.INT>	<4A66B547.6020207@nokia.com>
+	<BD9F3F3F5A6CCF4BA032B9FED4DD312E5D09531F0B@mta-digimail.MTA.INT>
+In-Reply-To: <BD9F3F3F5A6CCF4BA032B9FED4DD312E5D09531F0B@mta-digimail.MTA.INT>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "Bityutskiy Artem \(Nokia-M/Helsinki\)" <Artem.Bityutskiy@nokia.com>,
+	"'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,67 +24,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/22/2009 11:51 AM, Corentin Chary wrote:
-> On Tue, Jul 21, 2009 at 4:15 PM, Artem Bityutskiy<dedekind1@gmail.com>  wrote:
->> On 07/21/2009 04:42 PM, Corentin Chary wrote:
->>> [   12.544598] NAND device: Manufacturer ID: 0xec, Chip ID: 0x36
->>> (Samsung NAND 64MiB 1,8V 8-bit)
->>> [   12.683697] Scanni
->>> [   12.691395] 0x000000000000-0x000000800000 : "Linux Kernel"
->>> [   12.699687] 0x000000800000-0x000002800000 : "Filesystem"
->>> [   12.707648] 0x000002800000-0x000004000000 : "Free"
->>> [   12.719948] UBI: attaching mtd2 to ubi0
->>> [   12.728005] UBI: physical eraseblock size:   16384 bytes (16 KiB)
->>> [   12.741397] UBI: logical eraseblock size:    15360 bytes
->>> [   12.751721] UBI: smallest flash I/O unit:    512
->>> [   12.760202] UBI: VID header offset:          512 (aligned 512)
->>> [   12.767589] UBI: data offset:                1024
->>> [   13.047943] UBI: attached mtd2 to ubi0
->>> [   13.055450] UBI: MTD device name:            "Free"
->>> [   13.063343] UBI: MTD device size:            24 MiB
->>> [   13.071539] UBI: number of good PEBs:        1536
->>> [   13.084148] UBI: number of bad PEBs:         0
->>> [   13.095572] UBI: max. allowed volumes:       89
->>> [   13.105468] UBI: wear-leveling threshold:    4096
->>> [   13.113178] UBI: number of internal volumes: 1
->>> [   13.129826] UBI: number of user volumes:     1
->>> [   13.140834] UBI: available PEBs:             0
->>> [   13.153634] UBI: total number of reserved PEBs: 1536
->>> [   13.160852] UBI: number of PEBs reserved for bad PEB handling: 15
->>> [   13.167731] UBI: max/mean erase counter: 2/1
->>> [   13.177809] UBI: image sequence number: 0
->> This flash does not look like something which could fit a 200MiB
->> volume.
->>
->>>> And why do you presume is the improvement -
->>>> just less calls to MTD or really less I/O? Note MTD usually caches
->>>> the last read NAND page, so usually this is not about less I/O.
->>> In this case it seems vid and ec headers are not on the same page.
->> Strange. May be this is related to how they calculate ECC...
->> Or just a problem in the driver. Normally flashes like this would
->> have 256 byte sub-pages and have both headers in the same page.
->
-> After reading more code, when HW ECC is enabled, atmel_nand only
-> handle full page write.
+Canella Matteo wrote:
+> Just to understand if we're doing things in the right way...
+> we need more than 6 secs to mount 1 GB Nand Flash. 
+> Does this sound a normal timing?
 
-OK, but I do not see why we have more I/O with your patch. It should
-only be about doing less calls.
+Yes
 
-> A last question, to be sure,
-> If we use something like (Samsung K9F2G08UQM) we have writesize = 2048
-> and subpage = 512.
-> VID header offset will be 512.
-> ec_hdr is in the first subpage
-> vid_hdr is in the second subpage
->
-> So, there will two I/O (two subpage read) ?
-> Reading nand_base.c I believe that the cache is only used when subpage
-> read is not possible.
+> This is the dmesg of the flash mounting:
+> 
+> [    6.694626] UBI: attaching mtd10 to ubi2
+> [    6.698594] UBI: physical eraseblock size:   131072 bytes (128 KiB)
+> [    6.705712] UBI: logical eraseblock size:    126976 bytes
+> [    6.711154] UBI: smallest flash I/O unit:    2048
+> [    6.715894] UBI: sub-page size:              512
+> [    6.720533] UBI: VID header offset:          2048 (aligned 2048)
+> [    6.726564] UBI: data offset:                4096
+> [   12.802282] UBI: attached mtd10 to ubi2
+> [   12.806179] UBI: MTD device name:            "nand"
+> [   12.814531] UBI: MTD device size:            1024 MiB
+> [   12.820304] UBI: number of good PEBs:        8185
+> [   12.825069] UBI: number of bad PEBs:         7
+> [   12.829495] UBI: max. allowed volumes:       128
+> [   12.834144] UBI: wear-leveling threshold:    4096
+> [   12.838891] UBI: number of internal volumes: 1
+> [   12.843425] UBI: number of user volumes:     1
+> [   12.847860] UBI: available PEBs:             0
+> [   12.852325] UBI: total number of reserved PEBs: 8185
+> [   12.857340] UBI: number of PEBs reserved for bad PEB handling: 81
+> [   12.863479] UBI: max/mean erase counter: 6/3
+> [   12.867807] UBI: background thread "ubi_bgt2d" started, PID 911
 
-Yes, I think so. There was a patch from Alexey some time ago which
-will make nand_base check ECCs only for the subpages you read, and
-ignore the other ones.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+The possibility exists to double the eraseblock size by treating 2 eraseblocks as
+though it was 1.  That should halve the UBI load time to 3 seconds but it would
+use a bit more memory in UBIFS.  Of course you could double again, with yet
+more memory required by UBIFS.
