@@ -1,18 +1,21 @@
-Message-ID: <4A66BF8D.9010902@gmail.com>
-Date: Wed, 22 Jul 2009 10:28:13 +0300
-From: Artem Bityutskiy <dedekind1@gmail.com>
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MTWPG-0007KR-Go
+	for linux-mtd@lists.infradead.org; Wed, 22 Jul 2009 07:38:35 +0000
+Message-ID: <4A66C209.7060305@nokia.com>
+Date: Wed, 22 Jul 2009 10:38:49 +0300
+From: Adrian Hunter <adrian.hunter@nokia.com>
 MIME-Version: 1.0
-To: Kyungmin Park <kmpark@infradead.org>
-Subject: Re: [PATCH] OneNAND: Runtime badblock check support
-References: <20090721025303.GA3693@july> <4A659ED4.9040702@gmail.com>	
-	<9c9fda240907210405p7d6982a5yc6db5eca42bfc1e@mail.gmail.com>	
-	<9c9fda240907211939ud11b9adiae68c076bfbbe36f@mail.gmail.com>	
-	<1248243590.24676.17.camel@localhost>
-	<9c9fda240907220011r10d76dfya3366c170a496e19@mail.gmail.com>
-In-Reply-To: <9c9fda240907220011r10d76dfya3366c170a496e19@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+To: Corentin Chary <corentin.chary@gmail.com>
+Subject: Re: UBI FS mounting time
+References: <531B6536C9F737458807DF75064873C8303DD7D768@mta-digimail.MTA.INT>	
+	<4A66B547.6020207@nokia.com>
+	<71cd59b00907220012pe8200e6od143f2561501bd0f@mail.gmail.com>
+In-Reply-To: <71cd59b00907220012pe8200e6od143f2561501bd0f@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Bosi Daniele <Daniele.Bosi@mta.it>, Brijesh Singh <brij.singh@samsung.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +25,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/22/2009 10:11 AM, Kyungmin Park wrote:
-> It don't avoid the double-scanning issue. only partial scan at
-> bootloader. In my environemt kernel has 2MiB partition and we only
-> scan this partition at load kernel command.
-> Exactly that it skip the bad block scanning except the kernel
-> partition at bootloader
-> As bootcmd load kernel, it first check that read block is bad, if not
-> read this block, next check again next block, and read next block and
-> so on.
+Corentin Chary wrote:
+> On Wed, Jul 22, 2009 at 8:44 AM, Adrian Hunter<adrian.hunter@nokia.com> wrote:
+>> Bosi Daniele wrote:
+>>> We have a UBI+UBIFS 1GB partition on a NAND chip, which takes around 6s to
+>>> mount.
+>>>
+>>> We'd like to have the data available at least read-only earlier than that.
+>>>
+>>> We know UBI on principle needs to read the map of all blocks in order to
+>>> rebuild the logical view of the memory, but maybe there's another way around
+>>> it to make it available earlier...
+>>>
+>>> Someone know how?
+>> Some options are:
+>>
+>>
+>> a) Use another smaller partition that can mount first and provide some
+>> functionality while the larger partition mounts.
+>> b) Reduce the number of eraseblocks by combining them into larger logical
+>> blocks.
+>> c) Change UBI to write its mapping table when it is unloaded, so it can be
+>> read quickly when loading (still have to scan if UBI was not unloaded
+>> cleanly).
+> 
+> Do you know if someone is trying to implement that ?
 
-So you have a small kernel partition, you store the kernel there.
-Your boot-loader reads the kernel partition and loads the kernel
-from there. And of course the boot-loader scans the kernel partition
-for bad block. And your boot-loader does not need to scan anything
-else. I understand this part.
+Not that particular approach.  Some Samsung people have looked at
+creating a scalable version of UBI.
 
-But what is next? Do you want to tell the kernel to avoid scanning the
-kernel partition because boot-loader has already scanned it? Sorry, I
-still cannot get the idea...
+> I did some test, and using lzo/zlib it should be possible to store
+> such a mapping
+> store in only one PEB.
+> Then we can choose this PEB to be near the beginning of the
+> flash to speed up scanning (using ec and pnum to calculate a "score").
+> This is also possible to use an "anchor".
 
-> I don't have any idea about on-flash BBT.
-
-It is standard mechanism which exists in MTD from early tglx1 times.
-MTD can keep BBT on flash, AFAIR, in the last eraseblock. Look for the
-NAND_USE_FLASH_BBT constant. And this is the way to go if you want to
-optimize BBT scanning, IMO.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Yes, it is better to use anchor blocks.  Probably just one is enough if
+it is only updated twice per mount.
