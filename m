@@ -1,17 +1,18 @@
-Subject: Re: [PATCH] OneNAND: Runtime badblock check support
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Kyungmin Park <kmpark@infradead.org>
-In-Reply-To: <9c9fda240907211939ud11b9adiae68c076bfbbe36f@mail.gmail.com>
-References: <20090721025303.GA3693@july> <4A659ED4.9040702@gmail.com>
-	<9c9fda240907210405p7d6982a5yc6db5eca42bfc1e@mail.gmail.com>
-	<9c9fda240907211939ud11b9adiae68c076bfbbe36f@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 22 Jul 2009 09:19:50 +0300
-Message-Id: <1248243590.24676.17.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MTVYW-0003Ge-WF
+	for linux-mtd@lists.infradead.org; Wed, 22 Jul 2009 06:44:06 +0000
+Message-ID: <4A66B547.6020207@nokia.com>
+Date: Wed, 22 Jul 2009 09:44:23 +0300
+From: Adrian Hunter <adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: Bosi Daniele <Daniele.Bosi@mta.it>
+Subject: Re: UBI FS mounting time
+References: <531B6536C9F737458807DF75064873C8303DD7D768@mta-digimail.MTA.INT>
+In-Reply-To: <531B6536C9F737458807DF75064873C8303DD7D768@mta-digimail.MTA.INT>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,62 +22,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-07-22 at 11:39 +0900, Kyungmin Park wrote:
-> Hi,
+Bosi Daniele wrote:
+> We have a UBI+UBIFS 1GB partition on a NAND chip, which takes around 6s to mount.
 > 
-> On Tue, Jul 21, 2009 at 8:05 PM, Kyungmin Park<kmpark@infradead.org> wrote:
-> > Hi
-> >
-> > On Tue, Jul 21, 2009 at 7:56 PM, Artem Bityutskiy<dedekind1@gmail.com> wrote:
-> >> Hi,
-> >>
-> >> On 07/21/2009 05:53 AM, Kyungmin Park wrote:
-> >>>
-> >>> At bootloader, we don't need to read full page. It takes too long time.
-> >>> Instead it only read pages required for boot.
-> >>>
-> >>> Signed-off-by: Kyungmin Park<kyungmin.park@samsung.com>
-> >>> ---
-> >>
-> >> I do not understand the commit message. Could you please provide a better
-> >> one which explains what the patch is really doing and why.
-> >
-> > Right, the page means all blocks. It doesn't scan all blocks at boot
-> > time. only some block contains kernel part are read and boot.
-> >
-> > The goal is simple, Avoid double scanning at boot time. One time for
-> > bootloader, Another is kernel.
-> > As you know at bootloader, only load kernel in normal case. it means
-> > we only read the kernel bad blocks and handle it.
-> > and jump to the kernel. that's all
-> >
-
-I understand the double-scanning issue. But I still do not understand
-how your patch is avoiding it? If the boot-loader has scanned the
-flash, it should pass the bad-block bitmap to the kernel. If you have
-on-flash BBT, then probably this is not a problem.
-
-> Experimental idea.
-> How about to integrate the bbt scan and ubi scan?
-
-It is possible, but isn't it better to just have on-flash BBT and
-forget about any scanning for bad blocks at all?
-
-We could go even further: If the boot-loader supports ubi, it could do
-the scanning and pass all UBI data to the kernel, in which case UBI
-would not need to do any scanning.
-
-> At ubi scan time. it scans all ubi blocks. In different from NAND,
-> OneNAND read main page and spare page both.
-> So if runtime badblock check enabled, read the page and check oob
-> first and if it's valid. use main page. If not, set it's badblock.
-> I'm not sure how much codes are modified. :)
+> We'd like to have the data available at least read-only earlier than that.
 > 
-> How to you think?
+> We know UBI on principle needs to read the map of all blocks in order to rebuild the logical view of the memory, but maybe there's another way around it to make it available earlier...
+> 
+> Someone know how?
 
-It is possible, but I think the implementation will add more ugliness...
-Why not to just use on-flash BBT instead?
+Some options are:
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+
+a) Use another smaller partition that can mount first and provide some functionality while the larger partition mounts.
+b) Reduce the number of eraseblocks by combining them into larger logical blocks.
+c) Change UBI to write its mapping table when it is unloaded, so it can be read quickly when loading (still have to scan if UBI was not unloaded cleanly).
