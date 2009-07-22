@@ -1,30 +1,25 @@
 Received: from cluster-a.mailcontrol.com ([85.115.52.190])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MTcsp-0005WM-IU
-	for linux-mtd@lists.infradead.org; Wed, 22 Jul 2009 14:33:33 +0000
-Received: from rly11a.srv.mailcontrol.com (localhost.localdomain [127.0.0.1])
-	by rly11a.srv.mailcontrol.com (MailControl) with ESMTP id
-	n6MEWcKw012599
-	for <linux-mtd@lists.infradead.org>; Wed, 22 Jul 2009 15:33:24 +0100
+	id 1MTd0G-0003ms-El
+	for linux-mtd@lists.infradead.org; Wed, 22 Jul 2009 14:41:23 +0000
+Received: from rly02a.srv.mailcontrol.com (localhost.localdomain [127.0.0.1])
+	by rly02a.srv.mailcontrol.com (MailControl) with ESMTP id
+	n6MEdjZn029077
+	for <linux-mtd@lists.infradead.org>; Wed, 22 Jul 2009 15:41:00 +0100
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by rly11a.srv.mailcontrol.com (MailControl) id n6MEWTbD011057
-	for <linux-mtd@lists.infradead.org>; Wed, 22 Jul 2009 15:32:29 +0100
+	by rly02a.srv.mailcontrol.com (MailControl) id n6MEcfcU018935
+	for <linux-mtd@lists.infradead.org>; Wed, 22 Jul 2009 15:38:48 +0100
 From: Canella Matteo <Matteo.Canella@mta.it>
-To: Adrian Hunter <adrian.hunter@nokia.com>
-Date: Wed, 22 Jul 2009 16:32:20 +0200
-Subject: LEB size configuration (was: UBI FS mounting time)
-Message-ID: <BD9F3F3F5A6CCF4BA032B9FED4DD312E5D09531F36@mta-digimail.MTA.INT>
-References: <531B6536C9F737458807DF75064873C8303DD7D768@mta-digimail.MTA.INT>
-	<4A66B547.6020207@nokia.com>
-	<BD9F3F3F5A6CCF4BA032B9FED4DD312E5D09531F0B@mta-digimail.MTA.INT>
-	<4A66D988.4050503@nokia.com>
-In-Reply-To: <4A66D988.4050503@nokia.com>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Date: Wed, 22 Jul 2009 16:38:19 +0200
+Subject: FW: LEB size configuration (was: UBI FS mounting time)
+Message-ID: <BD9F3F3F5A6CCF4BA032B9FED4DD312E5D09531F37@mta-digimail.MTA.INT>
 Content-Language: en-US
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 Cc: "Bityutskiy Artem \(Nokia-M/Helsinki\)" <Artem.Bityutskiy@nokia.com>,
-	"'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
