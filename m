@@ -1,28 +1,25 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MTUDH-0002wi-JM
-	for linux-mtd@lists.infradead.org; Wed, 22 Jul 2009 05:18:00 +0000
-Date: Wed, 22 Jul 2009 07:17:39 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Nicolas Pitre <nico@marvell.com>
-Subject: Re: [PATCH] register orion_nand using platform_driver_probe
-Message-ID: <20090722051739.GA614@pengutronix.de>
-References: <alpine.LFD.2.00.0907141211260.3138@xanadu.home>
-	<1248209196-15705-1-git-send-email-u.kleine-koenig@pengutronix.de>
-	<alpine.LFD.2.00.0907211822330.30629@xanadu.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <alpine.LFD.2.00.0907211822330.30629@xanadu.home>
-Cc: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
-	Greg Kroah-Hartman <gregkh@suse.de>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Saeed Bishara <saeed@marvell.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Lennert Buijtenhek <buytenh@marvell.com>
+	id 1MTV5G-0005mn-Vu
+	for linux-mtd@lists.infradead.org; Wed, 22 Jul 2009 06:13:51 +0000
+Subject: RE: [PATCH v3 26/27] [ARM] [NAND] [bcmring] add bcmring umi nand
+	driver support
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: "Leo (Hao) Chen" <leochen@broadcom.com>
+In-Reply-To: <8628FE4E7912BF47A96AE7DD7BAC0AADCB25C539AB@SJEXCHCCR02.corp.ad.broadcom.com>
+References: <8628FE4E7912BF47A96AE7DD7BAC0AADCB25C53608@SJEXCHCCR02.corp.ad.broadcom.com>
+	<1247980139.11353.194.camel@localhost.localdomain>
+	<1248000984.3079.130.camel@linux-1lbu>
+	<8628FE4E7912BF47A96AE7DD7BAC0AADCB25C539AB@SJEXCHCCR02.corp.ad.broadcom.com>
+Content-Type: text/plain
+Date: Wed, 22 Jul 2009 09:12:55 +0300
+Message-Id: <1248243175.24676.11.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Steve Chen <schen@mvista.com>, "linux-arm-kernel@lists.arm.linux.org.uk"
+	<linux-arm-kernel@lists.arm.linux.org.uk>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,41 +29,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Nicolas,
-
-On Tue, Jul 21, 2009 at 06:26:50PM -0400, Nicolas Pitre wrote:
-> On Tue, 21 Jul 2009, Uwe Kleine-König wrote:
+On Tue, 2009-07-21 at 15:46 -0700, Leo (Hao) Chen wrote:
+> I had accidentally included an older version of the mtd driver patch, which has all the coding style problems.  I'm attaching a new patch with most of the coding style fixed except for the line length > 80 warnings.  Please check the attached patch in text/plain format.
 > 
-> > orion_nand_probe lives in .init.text, so using platform_driver_register
-> > to register it is wrong because binding a device after the init memory
-> > is discarded (e.g. via sysfs) results in an oops.
-> > 
-> > As requested by Nicolas Pitre platform_driver_probe is used instead of
-> > moving the probe function to .devinit.text as proposed initially.
-> > This saves some memory, but devices registered after the driver is
-> > probed are not bound (probably there are none) and binding via sysfs
-> > isn't possible.
-> > 
-> > Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> > Cc: Lennert Buytenhek <buytenh@marvell.com>
-> > Cc: Saeed Bishara <saeed@marvell.com>
-> > Cc: Jörn Engel <joern@logfs.org>
-> > Cc: Nicolas Pitre <nico@marvell.com>
-> > Cc: Tzachi Perelstein <tzachi@marvell.com>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Greg Kroah-Hartman <gregkh@suse.de>
-> > Cc: David Woodhouse <dwmw2@infradead.org>
-> > Cc: linux-mtd@lists.infradead.org
-> 
-> Acked-by: Nicolas Pitre <nico@marvell.com>
-Did you test if all devices bind as expected?
- 
-> Thanks.  BTW Tzachi's email address is no longer valid.
-Yes, I got a mail from Marvell's mailer daemon stating the same.  :-)
+> Thanks for your advices.
 
-Best regards
-Uwe
+Why not to fix the 80 line issue in both the driver and your e-mail
+client (your lines are toooooooooooooooooooooooo
+loooooooooooooooooooooooooooooooooooooooooooooooooooooooong)?
 
--- 
-Pengutronix e.K.                              | Uwe Kleine-König            |
-Industrial Linux Solutions                    | http://www.pengutronix.de/  |
+Artem.
