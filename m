@@ -1,23 +1,18 @@
-Received: from cluster-a.mailcontrol.com ([85.115.52.190])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MTWAF-00062G-8T
-	for linux-mtd@lists.infradead.org; Wed, 22 Jul 2009 07:23:03 +0000
-Received: from mailserver.mta.int (mail.mta.it [89.96.171.250])
-	by rly09a.srv.mailcontrol.com (MailControl) with ESMTP id
-	n6M7Mu3C030047
-	for <linux-mtd@lists.infradead.org>; Wed, 22 Jul 2009 08:22:56 +0100
-From: Canella Matteo <Matteo.Canella@mta.it>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Date: Wed, 22 Jul 2009 09:22:52 +0200
-Subject: RE: UBI FS mounting time
-Message-ID: <BD9F3F3F5A6CCF4BA032B9FED4DD312E5D09531F02@mta-digimail.MTA.INT>
-References: <531B6536C9F737458807DF75064873C8303DD7D768@mta-digimail.MTA.INT>
-	<4A66B547.6020207@nokia.com>
-In-Reply-To: <4A66B547.6020207@nokia.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <4A66BF8D.9010902@gmail.com>
+Date: Wed, 22 Jul 2009 10:28:13 +0300
+From: Artem Bityutskiy <dedekind1@gmail.com>
 MIME-Version: 1.0
+To: Kyungmin Park <kmpark@infradead.org>
+Subject: Re: [PATCH] OneNAND: Runtime badblock check support
+References: <20090721025303.GA3693@july> <4A659ED4.9040702@gmail.com>	
+	<9c9fda240907210405p7d6982a5yc6db5eca42bfc1e@mail.gmail.com>	
+	<9c9fda240907211939ud11b9adiae68c076bfbbe36f@mail.gmail.com>	
+	<1248243590.24676.17.camel@localhost>
+	<9c9fda240907220011r10d76dfya3366c170a496e19@mail.gmail.com>
+In-Reply-To: <9c9fda240907220011r10d76dfya3366c170a496e19@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,16 +22,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 07/22/2009 10:11 AM, Kyungmin Park wrote:
+> It don't avoid the double-scanning issue. only partial scan at
+> bootloader. In my environemt kernel has 2MiB partition and we only
+> scan this partition at load kernel command.
+> Exactly that it skip the bad block scanning except the kernel
+> partition at bootloader
+> As bootcmd load kernel, it first check that read block is bad, if not
+> read this block, next check again next block, and read next block and
+> so on.
 
+So you have a small kernel partition, you store the kernel there.
+Your boot-loader reads the kernel partition and loads the kernel
+from there. And of course the boot-loader scans the kernel partition
+for bad block. And your boot-loader does not need to scan anything
+else. I understand this part.
 
-Adrian Hunter wrote:
-> c) Change UBI to write its mapping table when it is unloaded, so it can b=
-e read quickly then loading (still have to scan if UBI was not unloaded cle=
-anly).
+But what is next? Do you want to tell the kernel to avoid scanning the
+kernel partition because boot-loader has already scanned it? Sorry, I
+still cannot get the idea...
 
-This is quite interesting. Do you know if someone have already done this th=
-ing? I can't find anything about that.
+> I don't have any idea about on-flash BBT.
 
-Thank you
-Regards
-Matteo Canella
+It is standard mechanism which exists in MTD from early tglx1 times.
+MTD can keep BBT on flash, AFAIR, in the last eraseblock. Look for the
+NAND_USE_FLASH_BBT constant. And this is the way to go if you want to
+optimize BBT scanning, IMO.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
