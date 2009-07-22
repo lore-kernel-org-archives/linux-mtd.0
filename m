@@ -1,14 +1,18 @@
-Received: from web32607.mail.mud.yahoo.com ([68.142.207.234])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MTecY-0002zz-63
-	for linux-mtd@lists.infradead.org; Wed, 22 Jul 2009 16:24:50 +0000
-Message-ID: <82809.77923.qm@web32607.mail.mud.yahoo.com>
-Date: Wed, 22 Jul 2009 09:24:43 -0700 (PDT)
-From: Gertjan Hofman <gertjan_hofman@yahoo.com>
-Subject: nandwrite & jffs2 summary question
+Received: from mail2.gnudd.com ([213.203.150.91] helo=mail.gnudd.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MTkGN-0008Ii-GE
+	for linux-mtd@lists.infradead.org; Wed, 22 Jul 2009 22:26:20 +0000
+Date: Thu, 23 Jul 2009 00:25:47 +0200
+From: Alessandro Rubini <rubini-list@gnudd.com>
 To: linux-mtd@lists.infradead.org
+Subject: [PATCH V4 0/2] Nand and OneNand for ARM Nomadik
+Message-ID: <cover.1248300341.git.rubini@unipv.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Sender: rubini-list@gnudd.com
+Cc: STEricsson_nomadik_linux@list.st.com, linux@arm.linux.org.uk,
+	andrea.gallo@stericsson.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,31 +22,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+These two patches are the ones I last posted on Jun 22nd 2009 (thus
+with all comments accepted), rebased to current master.
 
+At this time, the arch/arm/mach-nomadik files have been accepted in
+Russell's tree ("nomadik branch", I'm told), but I can't find a public
+repository for that tree.
 
-Dear MTD experts,
+So these are from the tip of my rebased tree, and I think only
+Rusell can apply them cleanly. So I Cc: him while posting to linux-mtd.
 
-I need a little advice on a problem I am seeing after switching on the CONFIG_JFFS2_SUMMARY option in a ARM 2.6.29-5 kernel.
-I write the kernel uImage file to nand flash using nandwrite -p, after a flash_eraseall /dev/mtd1.  Then I reboot and U-boot uncompresses my kernel and starts it.
+Thanks for your patience
+/alessandro
 
-Since switching on the kernel flag, I get occasional CRC failure from U-boot. I have also had a message from nandwrite saying something like 'no room to write summary file'. (MTD partition is 3MB, kernel about 1.6MB) Re-writing usually solves the problem. I tried this on 2 boards, its not 100% repeatable but does happen.
+Alessandro Rubini (2):
+  Nand driver for Nomadik 8815 SoC (on NHK8815 board)
+  OneNand support for Nomadik 8815 SoC (on NHK8815 board)
 
-I dont think I understand the interaction between the summary option on JFFS2 and nandwrite. I run sumtool on my jffs2 root filesystem image and burning that to /dev/mtd2 gives me no problem. 
-
-Should I be doing anything to my kernel uImage before nandwriting ? Why does nandwrite even know about the summary file option ? Does it need a change to mkimage (from uboot) ?
-
-Much appreciated,
-
-Gertjan
-
-
-
-
-
-
-
-
-
-
-
-      
+ arch/arm/mach-nomadik/board-nhk8815.c     |  155 ++++++++++++++
+ arch/arm/mach-nomadik/include/mach/fsmc.h |   29 +++
+ arch/arm/mach-nomadik/include/mach/nand.h |   16 ++
+ drivers/mtd/nand/Kconfig                  |    6 +
+ drivers/mtd/nand/Makefile                 |    1 +
+ drivers/mtd/nand/nomadik_nand.c           |  329 +++++++++++++++++++++++++++++
+ 6 files changed, 536 insertions(+), 0 deletions(-)
+ create mode 100644 arch/arm/mach-nomadik/include/mach/fsmc.h
+ create mode 100644 arch/arm/mach-nomadik/include/mach/nand.h
+ create mode 100644 drivers/mtd/nand/nomadik_nand.c
