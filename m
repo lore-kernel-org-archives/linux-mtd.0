@@ -1,20 +1,16 @@
-Received: from mba.ocn.ne.jp ([122.28.14.163] helo=smtp.mba.ocn.ne.jp)
+Received: from oul111-200.netplaza.fi ([80.75.107.200] helo=gulp.u--3.com)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MTzwq-0000Px-Rf
-	for linux-mtd@lists.infradead.org; Thu, 23 Jul 2009 15:11:13 +0000
-Date: Fri, 24 Jul 2009 00:11:04 +0900 (JST)
-Message-Id: <20090724.001104.229278926.anemo@mba.ocn.ne.jp>
-To: vimal.newwork@gmail.com
-Subject: Re: abuse of nand_correct_data in tmio_nand driver
-From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-In-Reply-To: <ce9ab5790907230004g103af356s1b44cda2d64bbc55@mail.gmail.com>
-References: <ce9ab5790907220143t49d4afecr84a5c5e91833bc4a@mail.gmail.com>
-	<20090723.001338.27942898.anemo@mba.ocn.ne.jp>
-	<ce9ab5790907230004g103af356s1b44cda2d64bbc55@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: dbaryshkov@gmail.com, linux-mtd@lists.infradead.org
+	id 1MU3Vw-0005Z8-54
+	for linux-mtd@lists.infradead.org; Thu, 23 Jul 2009 18:59:40 +0000
+Date: Thu, 23 Jul 2009 20:59:28 +0200
+From: erno@gulp.u--3.com
+To: debian-arm@lists.debian.org
+Subject: UBIFS fails & crashes on SheevaPlug
+Message-ID: <20090723185928.GA1612@gulp.u--3.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,45 +20,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 23 Jul 2009 12:34:43 +0530, vimal singh <vimal.newwork@gmail.co=
-m> wrote:
-> > OK, but I still feel duplicating nand_ecc code is not so good. =A0H=
-ow
-> > about splitting nand_correct_data into two parts? =A0A pure calcula=
-tion
-> > function and a wrapper for mtd interface. =A0Like this:
-> =
+Hello,
 
-> But I do not see any thing extra, which you achieve from this
-> wrapper...  Is this a prototype, and you want to handle above scenari=
-o
-> in this wrapper (calling 'nand_correct_data' multiple times based on
-> something, probably 'ecc.bytes')?
+I installed Debian on my SheevaPlug following instructions at 
+<http://www.cyrius.com/debian/kirkwood/sheevaplug/> and everything 
+seemed to work fine until...
 
-Yes, if we have __nand_correct_data(buf, read_ecc, calc_ecc, eccsize)
-which do job based on its eccsize argument, the ecc.correct function
-of the tmio_nand driver can be implemented like this:
+I wanted to try UBIFS on the built-in flash and followed
+the instructions for formatting the internal flash
+at http://www.plugcomputer.org/plugwiki/index.php/Enabling_UBIFS
+except I made an empty image (no -r parameter for mkfs.ubifs).
+After the ubiattach command it complained about a read-only fs
+and some error messages from the kernel had appeared in the log:
 
-int tmio_nand_correct_data(struct mtd_info *mtd, unsigned char *buf,
-		unsigned char *read_ecc, unsigned char *calc_ecc)
-{
-	int r0, r1;
+[  190.500000] UBI: physical eraseblock size:   131072 bytes (128 KiB)
+[  190.510000] UBI: logical eraseblock size:    129024 bytes
+[  190.520000] UBI: smallest flash I/O unit:    2048
+[  190.520000] UBI: sub-page size:              512
+[  190.530000] UBI: VID header offset:          512 (aligned 512)
+[  190.530000] UBI: data offset:                2048
+[  191.630000] UBI error: ubi_io_write: error -5 while writing 512 bytes 
+to PEB 4054:512, written 0 bytes
+[  191.630000] UBI warning: ubi_eba_write_leb: failed to write VID 
+header to LEB 2147479551:0, PEB 4054
+[  191.640000] UBI: try another PEB
+[  191.650000] UBI error: ubi_io_write: error -5 while writing 512 bytes 
+to PEB 4053:512, written 0 bytes
+[  191.660000] UBI warning: ubi_eba_write_leb: failed to write VID 
+header to LEB 2147479551:0, PEB 4053
+[  191.670000] UBI: try another PEB
+[  191.670000] UBI error: ubi_io_write: error -5 while writing 512 bytes 
+to PEB 4052:512, written 0 bytes
+[  191.680000] UBI warning: ubi_eba_write_leb: failed to write VID 
+header to LEB 2147479551:0, PEB 4052
+[  191.690000] UBI: try another PEB
+[  191.690000] UBI error: ubi_io_write: error -5 while writing 512 bytes 
+to PEB 4051:512, written 0 bytes
+[  191.700000] UBI warning: ubi_eba_write_leb: failed to write VID 
+header to LEB 2147479551:0, PEB 4051
+[  191.710000] UBI warning: ubi_ro_mode: switch to read-only mode
+[  191.720000] UBI error: autoresize: cannot auto-resize volume 0
 
-	/* assume ecc.size =3D 512 and ecc.bytes =3D 6 */
-	r0 =3D __nand_correct_data(buf, read_ecc, calc_ecc, 256);
-	if (r0 < 0)
-		return r0;
-	r1 =3D __nand_correct_data(buf + 256, read_ecc + 3, calc_ecc + 3, 256)=
-;
-	if (r1 < 0)
-		return r1;
-	return r0 | r1;
-}
+Shortly after this the machine stopped answering ssh/ping and rebooted 
+(I had panic on oops and reboot on panic turned on). I didn't have the 
+serial console hooked up now so I didn't see messages, but the last time 
+I tried it there was some slab corruption oops after the ubiattach 
+attempt.
 
-Note that this is not tested at all since I do not have tmio device.
+The previous time it was using the stock lenny kernel, this time
+it was linux-image-2.6.30-1-kirkwood_2.6.30-3_armel.deb from
+http://people.debian.org/~tbm/orion/.
 
-Of course if Dmitry had another idea, I will not intrude this
-approach.
+I also get messages like this on boot:
 
----
-Atsushi Nemoto
+[    4.420000] uncorrectable error : <3>uncorrectable error : 
+<3>end_request: I/O error, dev mtdblock0, sector 0
+[    4.430000] Buffer I/O error on device mtdblock0, logical block 0
+[    4.440000] uncorrectable error : <3>uncorrectable error : 
+<3>end_request: I/O error, dev mtdblock0, sector 0
+[    4.440000] Buffer I/O error on device mtdblock0, logical block 0
+[    4.480000] uncorrectable error : <3>uncorrectable error : 
+<3>end_request: I/O error, dev mtdblock0, sector 0
+
+but I'm hopeful it's because something is trying to automatically
+access the builtin flash which is in limbo state?
+
+Any ideas welcome,
+Erno
