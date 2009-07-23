@@ -1,21 +1,23 @@
-Received: from mail-pz0-f201.google.com ([209.85.222.201])
+Received: from mail-qy0-f176.google.com ([209.85.221.176])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MTmPy-0006Nt-3j
-	for linux-mtd@lists.infradead.org; Thu, 23 Jul 2009 00:44:23 +0000
-Received: by pzk39 with SMTP id 39so399636pzk.28
+	id 1MTpx0-0004EB-Fi
+	for linux-mtd@lists.infradead.org; Thu, 23 Jul 2009 04:30:42 +0000
+Received: by qyk6 with SMTP id 6so958424qyk.28
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 22 Jul 2009 17:44:15 -0700 (PDT)
+	Wed, 22 Jul 2009 21:30:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4A56EB07.20606@gmail.com>
-References: <4A56EB07.20606@gmail.com>
-Date: Thu, 23 Jul 2009 08:44:15 +0800
-Message-ID: <e68bb3470907221744v4edb76f5s50082a70e88c4be2@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd: Add nand support for w90p910
-From: Wan ZongShun <mcuos.com@gmail.com>
-To: linux-arm-kernel <linux-arm-kernel@lists.arm.linux.org.uk>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <cae21cf16cad72ef35ce7e8cc3effe25b497924e.1248300341.git.rubini@unipv.it>
+References: <cover.1248300341.git.rubini@unipv.it>
+	<cae21cf16cad72ef35ce7e8cc3effe25b497924e.1248300341.git.rubini@unipv.it>
+Date: Thu, 23 Jul 2009 10:00:37 +0530
+Message-ID: <ce9ab5790907222130o2f1d704u199fbf7f1435e74f@mail.gmail.com>
+Subject: Re: [PATCH V4 1/2] Nand driver for Nomadik 8815 SoC (on NHK8815
+	board)
+From: vimal singh <vimal.newwork@gmail.com>
+To: Alessandro Rubini <rubini-list@gnudd.com>, linux-mtd@lists.infradead.org,
+	andrea.gallo@stericsson.com, STEricsson_nomadik_linux@list.st.com,
+	linux@arm.linux.org.uk
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,536 +28,445 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear David,
-
-What about this patch?
-
-
-2009/7/10 Wan ZongShun <mcuos.com@gmail.com>:
-> Dear David,
+On Thu, Jul 23, 2009 at 3:55 AM, Alessandro Rubini<rubini-list@gnudd.com> w=
+rote:
 >
-> I have modified some clock api issue,and resubmitted
-> it, marking it as V2.Thanks!
->
-> Add w90p910 NAND driver for w90p910 evaluation board
-> based on w90p910,there is a K8F1G08 NAND on my board.
->
-> Signed-off-by: Wan ZongShun <mcuos.com@gmail.com>
->
+> Signed-off-by: Alessandro Rubini <rubini@unipv.it>
+> Acked-by: Andrea Gallo <andrea.gallo@stericsson.com>
 > ---
-> =C2=A0drivers/mtd/nand/Kconfig =C2=A0 =C2=A0 =C2=A0 =C2=A0| =C2=A0 =C2=A0=
-7 +
-> =C2=A0drivers/mtd/nand/Makefile =C2=A0 =C2=A0 =C2=A0 | =C2=A0 =C2=A01 +
-> =C2=A0drivers/mtd/nand/w90p910_nand.c | =C2=A0382 +++++++++++++++++++++++=
-++++++++++++++++
-> =C2=A03 files changed, 390 insertions(+), 0 deletions(-)
-> =C2=A0create mode 100644 drivers/mtd/nand/w90p910_nand.c
->
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index ce96c09..14201c8 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -452,4 +452,11 @@ config MTD_NAND_SOCRATES
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0help
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Enables support for NAND Flash chips wi=
-red onto Socrates board.
->
-> +config MTD_NAND_W90P910
-> + =C2=A0 =C2=A0 =C2=A0 tristate "Support for NAND on w90p910 evaluation b=
-oard."
-> + =C2=A0 =C2=A0 =C2=A0 depends on ARCH_W90X900
-> + =C2=A0 =C2=A0 =C2=A0 help
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 This enables the driver for the NAND Flash =
-on evaluation board based
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 on w90p910.
-> +
-> =C2=A0endif # MTD_NAND
-> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-> index f3a786b..4f7b189 100644
-> --- a/drivers/mtd/nand/Makefile
-> +++ b/drivers/mtd/nand/Makefile
-> @@ -40,5 +40,6 @@ obj-$(CONFIG_MTD_NAND_SH_FLCTL) =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 +=3D sh_flctl.o
-> =C2=A0obj-$(CONFIG_MTD_NAND_MXC) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 +=3D mxc_nand.o
-> =C2=A0obj-$(CONFIG_MTD_NAND_SOCRATES) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0+=3D socrates_nand.o
-> =C2=A0obj-$(CONFIG_MTD_NAND_TXX9NDFMC) =C2=A0 =C2=A0 =C2=A0 +=3D txx9ndfm=
-c.o
-> +obj-$(CONFIG_MTD_NAND_W90P910) =C2=A0 =C2=A0 =C2=A0 =C2=A0 +=3D w90p910_=
-nand.o
->
-> =C2=A0nand-objs :=3D nand_base.o nand_bbt.o
-> diff --git a/drivers/mtd/nand/w90p910_nand.c b/drivers/mtd/nand/w90p910_n=
+> =A0arch/arm/mach-nomadik/board-nhk8815.c =A0 =A0 | =A0 92 ++++++++
+> =A0arch/arm/mach-nomadik/include/mach/fsmc.h | =A0 29 +++
+> =A0arch/arm/mach-nomadik/include/mach/nand.h | =A0 16 ++
+> =A0drivers/mtd/nand/Kconfig =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0 =A06=
+ +
+> =A0drivers/mtd/nand/Makefile =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0 =A01 +
+> =A0drivers/mtd/nand/nomadik_nand.c =A0 =A0 =A0 =A0 =A0 | =A0329 +++++++++=
+++++++++++++++++++++
+> =A06 files changed, 473 insertions(+), 0 deletions(-)
+> =A0create mode 100644 arch/arm/mach-nomadik/include/mach/fsmc.h
+> =A0create mode 100644 arch/arm/mach-nomadik/include/mach/nand.h
+> =A0create mode 100644 drivers/mtd/nand/nomadik_nand.c
+
+--snip--
+
+> diff --git a/drivers/mtd/nand/nomadik_nand.c b/drivers/mtd/nand/nomadik_n=
 and.c
 > new file mode 100644
-> index 0000000..7680e73
+> index 0000000..bbd1925
 > --- /dev/null
-> +++ b/drivers/mtd/nand/w90p910_nand.c
-> @@ -0,0 +1,382 @@
+> +++ b/drivers/mtd/nand/nomadik_nand.c
+> @@ -0,0 +1,329 @@
 > +/*
-> + * Copyright (c) 2009 Nuvoton technology corporation.
+> + * =A0drivers/mtd/nand/nomadik_nand.c
 > + *
-> + * Wan ZongShun <mcuos.com@gmail.com>
+> + * =A0Overview:
+> + * =A0 =A0 Driver for on-board NAND flash on Nomadik Platforms
+> + *
+> + * Copyright (C) 2007 STMicroelectronics Pvt. Ltd.
+> + * Author: Sachin Verma <sachin.verma@st.com>
+> + *
+> + * Copyright (C) 2009 Alessandro Rubini
 > + *
 > + * This program is free software; you can redistribute it and/or modify
 > + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation;version 2 of the License.
+> + * the Free Software Foundation; either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. =A0See the
+> + * GNU General Public License for more details.
 > + *
 > + */
 > +
-> +#include <linux/slab.h>
 > +#include <linux/init.h>
 > +#include <linux/module.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/io.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/delay.h>
-> +#include <linux/clk.h>
-> +#include <linux/err.h>
-> +
+> +#include <linux/types.h>
 > +#include <linux/mtd/mtd.h>
 > +#include <linux/mtd/nand.h>
+> +#include <linux/platform_device.h>
 > +#include <linux/mtd/partitions.h>
+> +#include <linux/io.h>
+
+I think one black line will be good here.
+
+> +#include <mach/nand.h>
+> +#include <mach/fsmc.h>
 > +
-> +#define REG_FMICSR =C2=A0 =C2=A0 0x00
-> +#define REG_SMCSR =C2=A0 =C2=A0 =C2=A00xa0
-> +#define REG_SMISR =C2=A0 =C2=A0 =C2=A00xac
-> +#define REG_SMCMD =C2=A0 =C2=A0 =C2=A00xb0
-> +#define REG_SMADDR =C2=A0 =C2=A0 0xb4
-> +#define REG_SMDATA =C2=A0 =C2=A0 0xb8
+> +#include <mtd/mtd-abi.h>
 > +
-> +#define RESET_FMI =C2=A0 =C2=A0 =C2=A00x01
-> +#define NAND_EN =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00=
-x08
-> +#define READYBUSY =C2=A0 =C2=A0 =C2=A0(0x01 << 18)
-> +
-> +#define SWRST =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00x01
-> +#define PSIZE =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(0x01 << 3)
-> +#define DMARWEN =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(=
-0x03 << 1)
-> +#define BUSWID =C2=A0 =C2=A0 =C2=A0 =C2=A0 (0x01 << 4)
-> +#define ECC4EN =C2=A0 =C2=A0 =C2=A0 =C2=A0 (0x01 << 5)
-> +#define WP =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 (0x01 << 24)
-> +#define NANDCS =C2=A0 =C2=A0 =C2=A0 =C2=A0 (0x01 << 25)
-> +#define ENDADDR =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(=
-0x01 << 31)
-> +
-> +#define read_data_reg(dev) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 \
-> + =C2=A0 =C2=A0 =C2=A0 __raw_readl((dev)->reg + REG_SMDATA)
-> +
-> +#define write_data_reg(dev, val) =C2=A0 =C2=A0 =C2=A0 \
-> + =C2=A0 =C2=A0 =C2=A0 __raw_writel((val), (dev)->reg + REG_SMDATA)
-> +
-> +#define write_cmd_reg(dev, val) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0\
-> + =C2=A0 =C2=A0 =C2=A0 __raw_writel((val), (dev)->reg + REG_SMCMD)
-> +
-> +#define write_addr_reg(dev, val) =C2=A0 =C2=A0 =C2=A0 \
-> + =C2=A0 =C2=A0 =C2=A0 __raw_writel((val), (dev)->reg + REG_SMADDR)
-> +
-> +struct w90p910_nand {
-> + =C2=A0 =C2=A0 =C2=A0 struct mtd_info mtd;
-> + =C2=A0 =C2=A0 =C2=A0 struct nand_chip chip;
-> + =C2=A0 =C2=A0 =C2=A0 void __iomem *reg;
-> + =C2=A0 =C2=A0 =C2=A0 struct clk *clk;
-> + =C2=A0 =C2=A0 =C2=A0 spinlock_t lock;
+> +struct nomadik_nand_host {
+> + =A0 =A0 =A0 struct mtd_info =A0 =A0 =A0 =A0 mtd;
+> + =A0 =A0 =A0 struct nand_chip =A0 =A0 =A0 =A0nand;
+> + =A0 =A0 =A0 void __iomem *data_va;
+> + =A0 =A0 =A0 void __iomem *cmd_va;
+> + =A0 =A0 =A0 void __iomem *addr_va;
+> + =A0 =A0 =A0 struct nand_bbt_descr *bbt_desc;
 > +};
 > +
-> +static const struct mtd_partition partitions[] =3D {
-> + =C2=A0 =C2=A0 =C2=A0 {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0.name =3D "NAND FS 0",
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0.offset =3D 0,
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0.size =3D 8 * 1024 * 1024
-> + =C2=A0 =C2=A0 =C2=A0 },
-> + =C2=A0 =C2=A0 =C2=A0 {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0.name =3D "NAND FS 1",
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0.offset =3D MTDPART_OFS_APPEND,
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0.size =3D MTDPART_SIZ_FULL
-> + =C2=A0 =C2=A0 =C2=A0 }
+> +static inline int parity(int b) /* uses low 8 bits: returns 0 or all-1 *=
+/
+> +{
+> + =A0 =A0 =A0 b =3D b ^ (b >> 4);
+> + =A0 =A0 =A0 b =3D b ^ (b >> 2);
+> + =A0 =A0 =A0 return (b ^ (b >> 1)) & 1
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ? ~0 : 0;
+> +}
+> +
+> +/*
+> + * This is the ECC routine used in hardware, according to the manual.
+> + * HW claims to make the calculation but not the correction. However,
+> + * I haven't managed to get the desired data out of it; so do it in sw.
+> + * There is problably some errata involved, but currently miss the info.
+> + */
+
+'nand_calculate_ecc' and 'nand_correct_data' (nand_ecc.c) do it in SW.
+This need not to be re-do.
+
+> +static int nomadik_ecc512_calc(struct mtd_info *mtd, const u_char *data,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 u_char *ecc)
+> +{
+> + =A0 =A0 =A0 int gpar =3D 0;
+> + =A0 =A0 =A0 int i, val, par;
+> + =A0 =A0 =A0 int pbits =3D 0; =A0 =A0 =A0 =A0 =A0/* P8, P16, ... P2048 *=
+/
+> + =A0 =A0 =A0 int pprime =3D 0; =A0 =A0 =A0 =A0 /* P8', P16', ... P2048' =
+*/
+> + =A0 =A0 =A0 int lowbits; =A0 =A0 =A0 =A0 =A0 =A0/* P1, P2, P4 and prime=
+s */
+> +
+> + =A0 =A0 =A0 for (i =3D 0; i < 512; i++) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 par =3D parity((val =3D data[i]));
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 gpar ^=3D val;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 pbits ^=3D (i & par);
+> + =A0 =A0 =A0 }
+> + =A0 =A0 =A0 /*
+> + =A0 =A0 =A0 =A0* Ok, now gpar is global parity (xor of all bytes)
+> + =A0 =A0 =A0 =A0* pbits are all the parity bits (non-prime ones)
+> + =A0 =A0 =A0 =A0*/
+> + =A0 =A0 =A0 par =3D parity(gpar);
+> + =A0 =A0 =A0 pprime =3D pbits ^ par;
+> + =A0 =A0 =A0 /* Put low bits in the right position for ecc[2] (bits 7..2=
+) */
+> + =A0 =A0 =A0 lowbits =3D 0
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 | (parity(gpar & 0xf0) & 0x80) =A0/* P4 =A0=
+*/
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 | (parity(gpar & 0x0f) & 0x40) =A0/* P4' */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 | (parity(gpar & 0xcc) & 0x20) =A0/* P2 =A0=
+*/
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 | (parity(gpar & 0x33) & 0x10) =A0/* P2' */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 | (parity(gpar & 0xaa) & 0x08) =A0/* P1 =A0=
+*/
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 | (parity(gpar & 0x55) & 0x04); /* P1' */
+> +
+> + =A0 =A0 =A0 ecc[2] =3D ~(lowbits | ((pbits & 0x100) >> 7) | ((pprime & =
+0x100) >> 8));
+> + =A0 =A0 =A0 /* now intermix bits for ecc[1] (P1024..P128') and ecc[0] (=
+P64..P8') */
+> + =A0 =A0 =A0 ecc[1] =3D ~( =A0 =A0(pbits & 0x80) >> 0 =A0| ((pprime & 0x=
+80) >> 1)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | ((pbits & 0x40) >> 1) | ((pprime =
+& 0x40) >> 2)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | ((pbits & 0x20) >> 2) | ((pprime =
+& 0x20) >> 3)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | ((pbits & 0x10) >> 3) | ((pprime =
+& 0x10) >> 4));
+> +
+> + =A0 =A0 =A0 ecc[0] =3D ~( =A0 =A0(pbits & 0x8) << 4 =A0| ((pprime & 0x8=
+) << 3)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | ((pbits & 0x4) << 3) | ((pprime &=
+ 0x4) << 2)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | ((pbits & 0x2) << 2) | ((pprime &=
+ 0x2) << 1)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | ((pbits & 0x1) << 1) | ((pprime &=
+ 0x1) << 0));
+> + =A0 =A0 =A0 return 0;
+> +}
+> +
+> +static int nomadik_ecc512_correct(struct mtd_info *mtd, uint8_t *dat,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 uint8_t *r_=
+ecc, uint8_t *c_ecc)
+> +{
+> + =A0 =A0 =A0 struct nand_chip *chip =3D mtd->priv;
+> + =A0 =A0 =A0 uint32_t r, c, d, diff; /*read, calculated, xor of them */
+> +
+> + =A0 =A0 =A0 if (!memcmp(r_ecc, c_ecc, chip->ecc.bytes))
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 0;
+> +
+> + =A0 =A0 =A0 /* Reorder the bytes into ascending-order 24 bits -- see ma=
+nual */
+> + =A0 =A0 =A0 r =3D r_ecc[2] << 22 | r_ecc[1] << 14 | r_ecc[0] << 6 | r_e=
+cc[2] >> 2;
+> + =A0 =A0 =A0 c =3D c_ecc[2] << 22 | c_ecc[1] << 14 | c_ecc[0] << 6 | c_e=
+cc[2] >> 2;
+> + =A0 =A0 =A0 diff =3D (r ^ c) & ((1 << 24) - 1); /* use 24 bits only */
+> +
+> + =A0 =A0 =A0 /* If 12 bits are different, one per pair, it's correctable=
+ */
+> + =A0 =A0 =A0 if (((diff | (diff>>1)) & 0x555555) =3D=3D 0x555555) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 int bit =3D ((diff & 2) >> 1)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | ((diff & 0x8) >> 2) | ((d=
+iff & 0x20) >> 3);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 int byte;
+> +
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 d =3D diff >> 6; /* remove bit-order info *=
+/
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 byte =3D =A0((d & 2) >> 1)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | ((d & 0x8) >> 2) | ((d & =
+0x20) >> 3)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | ((d & 0x80) >> 4) | ((d &=
+ 0x200) >> 5)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | ((d & 0x800) >> 6) | ((d =
+& 0x2000) >> 7)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | ((d & 0x8000) >> 8) | ((d=
+ & 0x20000) >> 9);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* correct the single bit */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dat[byte] ^=3D 1 << bit;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 0;
+> + =A0 =A0 =A0 }
+> + =A0 =A0 =A0 /* If 1 bit only differs, it's one bit error in ECC, ignore=
+ */
+> + =A0 =A0 =A0 if ((diff ^ (1 << (ffs(diff) - 1))) =3D=3D 0)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 0;
+> + =A0 =A0 =A0 /* Otherwise, uncorrectable */
+> + =A0 =A0 =A0 return -1;
+> +}
+> +
+> +static struct nand_ecclayout nomadik_ecc_layout =3D {
+> + =A0 =A0 =A0 .eccbytes =3D 3 * 4,
+> + =A0 =A0 =A0 .eccpos =3D { /* each subpage has 16 bytes: pos 2,3,4 hosts=
+ ECC */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 0x02, 0x03, 0x04,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 0x12, 0x13, 0x14,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 0x22, 0x23, 0x24,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 0x32, 0x33, 0x34},
+> + =A0 =A0 =A0 /* let's keep bytes 5,6,7 for us, just in case we change EC=
+C algo */
+> + =A0 =A0 =A0 .oobfree =3D { {0x08, 0x08}, {0x18, 0x08}, {0x28, 0x08}, {0=
+x38, 0x08} },
 > +};
 > +
-> +static unsigned char w90p910_nand_read_byte(struct mtd_info *mtd)
+> +static void nomadik_ecc_control(struct mtd_info *mtd, int mode)
 > +{
-> + =C2=A0 =C2=A0 =C2=A0 unsigned char ret;
-> + =C2=A0 =C2=A0 =C2=A0 struct w90p910_nand *nand;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 nand =3D container_of(mtd, struct w90p910_nand, mt=
-d);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 ret =3D (unsigned char)read_data_reg(nand);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 return ret;
+> + =A0 =A0 =A0 /* No need to enable hw ecc, it's on by default */
 > +}
 > +
-> +static void w90p910_nand_read_buf(struct mtd_info *mtd,
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 unsigned char *buf, int len)
+> +static void nomadik_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int=
+ ctrl)
 > +{
-> + =C2=A0 =C2=A0 =C2=A0 int i;
-> + =C2=A0 =C2=A0 =C2=A0 struct w90p910_nand *nand;
+> + =A0 =A0 =A0 struct nand_chip *nand =3D mtd->priv;
+> + =A0 =A0 =A0 struct nomadik_nand_host *host =3D nand->priv;
 > +
-> + =C2=A0 =C2=A0 =C2=A0 nand =3D container_of(mtd, struct w90p910_nand, mt=
-d);
+> + =A0 =A0 =A0 if (cmd =3D=3D NAND_CMD_NONE)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return;
 > +
-> + =C2=A0 =C2=A0 =C2=A0 for (i =3D 0; i < len; i++)
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 buf[i] =3D (unsigned c=
-har)read_data_reg(nand);
+> + =A0 =A0 =A0 if (ctrl & NAND_CLE)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 writeb(cmd, host->cmd_va);
+> + =A0 =A0 =A0 else
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 writeb(cmd, host->addr_va);
 > +}
 > +
-> +static void w90p910_nand_write_buf(struct mtd_info *mtd,
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 const unsign=
-ed char *buf, int len)
+> +static int nomadik_nand_probe(struct platform_device *pdev)
 > +{
-> + =C2=A0 =C2=A0 =C2=A0 int i;
-> + =C2=A0 =C2=A0 =C2=A0 struct w90p910_nand *nand;
+> + =A0 =A0 =A0 struct nomadik_nand_platform_data *pdata =3D pdev->dev.plat=
+form_data;
+> + =A0 =A0 =A0 struct nomadik_nand_host *host;
+> + =A0 =A0 =A0 struct mtd_info *mtd;
+> + =A0 =A0 =A0 struct nand_chip *nand;
+> + =A0 =A0 =A0 struct resource *res;
+> + =A0 =A0 =A0 int ret =3D 0;
 > +
-> + =C2=A0 =C2=A0 =C2=A0 nand =3D container_of(mtd, struct w90p910_nand, mt=
-d);
+> + =A0 =A0 =A0 /* Allocate memory for the device structure (and zero it) *=
+/
+> + =A0 =A0 =A0 host =3D kzalloc(sizeof(struct nomadik_nand_host), GFP_KERN=
+EL);
+> + =A0 =A0 =A0 if (!host) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_err(&pdev->dev, "Failed to allocate dev=
+ice structure.\n");
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -ENOMEM;
+> + =A0 =A0 =A0 }
 > +
-> + =C2=A0 =C2=A0 =C2=A0 for (i =3D 0; i < len; i++)
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 write_data_reg(nand, b=
-uf[i]);
-> +}
+> + =A0 =A0 =A0 /* Call the client's init function, if any */
+> + =A0 =A0 =A0 if (pdata->init && (ret =3D pdata->init()) < 0) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_err(&pdev->dev, "Init function failed\n=
+");
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto err;
+> + =A0 =A0 =A0 }
 > +
-> +static int w90p910_verify_buf(struct mtd_info *mtd,
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 const unsign=
-ed char *buf, int len)
-> +{
-> + =C2=A0 =C2=A0 =C2=A0 int i;
-> + =C2=A0 =C2=A0 =C2=A0 struct w90p910_nand *nand;
+> + =A0 =A0 =A0 /* ioremap three regions */
+> + =A0 =A0 =A0 res =3D platform_get_resource_byname(pdev, IORESOURCE_MEM, =
+"nand_addr");
+> + =A0 =A0 =A0 if (!res) {ret =3D -EIO; goto err_unmap; }
+
+We should not write multiple statements in single line needlessly.
+
+> + =A0 =A0 =A0 host->addr_va =3D ioremap(res->start, res->end - res->start=
+ + 1);
 > +
-> + =C2=A0 =C2=A0 =C2=A0 nand =3D container_of(mtd, struct w90p910_nand, mt=
-d);
+> + =A0 =A0 =A0 res =3D platform_get_resource_byname(pdev, IORESOURCE_MEM, =
+"nand_data");
+> + =A0 =A0 =A0 if (!res) {ret =3D -EIO; goto err_unmap; }
+
+ditto
+
+> + =A0 =A0 =A0 host->data_va =3D ioremap(res->start, res->end - res->start=
+ + 1);
 > +
-> + =C2=A0 =C2=A0 =C2=A0 for (i =3D 0; i < len; i++) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (buf[i] !=3D (unsig=
-ned char)read_data_reg(nand))
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 return -EFAULT;
-> + =C2=A0 =C2=A0 =C2=A0 }
+> + =A0 =A0 =A0 res =3D platform_get_resource_byname(pdev, IORESOURCE_MEM, =
+"nand_cmd");
+> + =A0 =A0 =A0 if (!res) {ret =3D -EIO; goto err_unmap; }
+
+ditto...
+
+> + =A0 =A0 =A0 host->cmd_va =3D ioremap(res->start, res->end - res->start =
++ 1);
 > +
-> + =C2=A0 =C2=A0 =C2=A0 return 0;
-> +}
+> + =A0 =A0 =A0 if (!host->addr_va || !host->data_va || !host->cmd_va) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D -ENOMEM;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto err_unmap;
+> + =A0 =A0 =A0 }
 > +
-> +static int w90p910_check_rb(struct w90p910_nand *nand)
-> +{
-> + =C2=A0 =C2=A0 =C2=A0 unsigned int val;
-> + =C2=A0 =C2=A0 =C2=A0 spin_lock(&nand->lock);
-> + =C2=A0 =C2=A0 =C2=A0 val =3D __raw_readl(REG_SMISR);
-> + =C2=A0 =C2=A0 =C2=A0 val &=3D READYBUSY;
-> + =C2=A0 =C2=A0 =C2=A0 spin_unlock(&nand->lock);
+> + =A0 =A0 =A0 /* Link all private pointers */
+> + =A0 =A0 =A0 mtd =3D &host->mtd;
+> + =A0 =A0 =A0 nand =3D &host->nand;
+> + =A0 =A0 =A0 mtd->priv =3D nand;
+> + =A0 =A0 =A0 nand->priv =3D host;
 > +
-> + =C2=A0 =C2=A0 =C2=A0 return val;
-> +}
+> + =A0 =A0 =A0 host->mtd.owner =3D THIS_MODULE;
+> + =A0 =A0 =A0 nand->IO_ADDR_R =3D host->data_va;
+> + =A0 =A0 =A0 nand->IO_ADDR_W =3D host->data_va;
+> + =A0 =A0 =A0 nand->cmd_ctrl =3D nomadik_cmd_ctrl;
 > +
-> +static int w90p910_nand_devready(struct mtd_info *mtd)
-> +{
-> + =C2=A0 =C2=A0 =C2=A0 struct w90p910_nand *nand;
-> + =C2=A0 =C2=A0 =C2=A0 int ready;
+> + =A0 =A0 =A0 nand->ecc.mode =3D NAND_ECC_HW;
+> + =A0 =A0 =A0 nand->ecc.layout =3D &nomadik_ecc_layout;
+> + =A0 =A0 =A0 nand->ecc.calculate =3D nomadik_ecc512_calc;
+> + =A0 =A0 =A0 nand->ecc.correct =3D nomadik_ecc512_correct;
+> + =A0 =A0 =A0 nand->ecc.hwctl =3D nomadik_ecc_control;
+> + =A0 =A0 =A0 nand->ecc.size =3D 512;
+> + =A0 =A0 =A0 nand->ecc.bytes =3D 3;
 > +
-> + =C2=A0 =C2=A0 =C2=A0 nand =3D container_of(mtd, struct w90p910_nand, mt=
-d);
+> + =A0 =A0 =A0 nand->options =3D pdata->options;
 > +
-> + =C2=A0 =C2=A0 =C2=A0 ready =3D (w90p910_check_rb(nand)) ? 1 : 0;
-> + =C2=A0 =C2=A0 =C2=A0 return ready;
-> +}
+> + =A0 =A0 =A0 /*
+> + =A0 =A0 =A0 =A0* Scan to find existance of the device
+> + =A0 =A0 =A0 =A0*/
+> + =A0 =A0 =A0 if (nand_scan(&host->mtd, 1)) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D -ENXIO;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto err_unmap;
+> + =A0 =A0 =A0 }
 > +
-> +static void w90p910_nand_command_lp(struct mtd_info *mtd,
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 unsigned int command, int column, int page_addr)
-> +{
-> + =C2=A0 =C2=A0 =C2=A0 register struct nand_chip *chip =3D mtd->priv;
-> + =C2=A0 =C2=A0 =C2=A0 struct w90p910_nand *nand;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 nand =3D container_of(mtd, struct w90p910_nand, mt=
-d);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 if (command =3D=3D NAND_CMD_READOOB) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 column +=3D mtd->write=
-size;
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 command =3D NAND_CMD_R=
-EAD0;
-> + =C2=A0 =C2=A0 =C2=A0 }
-> +
-> + =C2=A0 =C2=A0 =C2=A0 write_cmd_reg(nand, command & 0xff);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 if (column !=3D -1 || page_addr !=3D -1) {
-> +
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (column !=3D -1) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 if (chip->options & NAND_BUSWIDTH_16)
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 column >>=3D 1;
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 write_addr_reg(nand, column);
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 write_addr_reg(nand, column >> 8 | ENDADDR);
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 }
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (page_addr !=3D -1)=
- {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 write_addr_reg(nand, page_addr);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 if (chip->chipsize > (128 << 20)) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 write_addr_reg(nand, page_addr >> 8);
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 write_addr_reg(nand, page_addr >> 16 | E=
-NDADDR);
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 } else {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 write_addr_reg(nand, page_addr >> 8 | EN=
-DADDR);
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 }
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 }
-> + =C2=A0 =C2=A0 =C2=A0 }
-> +
-> + =C2=A0 =C2=A0 =C2=A0 switch (command) {
-> + =C2=A0 =C2=A0 =C2=A0 case NAND_CMD_CACHEDPROG:
-> + =C2=A0 =C2=A0 =C2=A0 case NAND_CMD_PAGEPROG:
-> + =C2=A0 =C2=A0 =C2=A0 case NAND_CMD_ERASE1:
-> + =C2=A0 =C2=A0 =C2=A0 case NAND_CMD_ERASE2:
-> + =C2=A0 =C2=A0 =C2=A0 case NAND_CMD_SEQIN:
-> + =C2=A0 =C2=A0 =C2=A0 case NAND_CMD_RNDIN:
-> + =C2=A0 =C2=A0 =C2=A0 case NAND_CMD_STATUS:
-> + =C2=A0 =C2=A0 =C2=A0 case NAND_CMD_DEPLETE1:
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 case NAND_CMD_STATUS_ERROR:
-> + =C2=A0 =C2=A0 =C2=A0 case NAND_CMD_STATUS_ERROR0:
-> + =C2=A0 =C2=A0 =C2=A0 case NAND_CMD_STATUS_ERROR1:
-> + =C2=A0 =C2=A0 =C2=A0 case NAND_CMD_STATUS_ERROR2:
-> + =C2=A0 =C2=A0 =C2=A0 case NAND_CMD_STATUS_ERROR3:
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 udelay(chip->chip_dela=
-y);
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 case NAND_CMD_RESET:
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (chip->dev_ready)
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 break;
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 udelay(chip->chip_dela=
-y);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 write_cmd_reg(nand, NA=
-ND_CMD_STATUS);
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 write_cmd_reg(nand, co=
-mmand);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 while (!w90p910_check_=
-rb(nand))
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 ;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 case NAND_CMD_RNDOUT:
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 write_cmd_reg(nand, NA=
-ND_CMD_RNDOUTSTART);
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 case NAND_CMD_READ0:
-> +
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 write_cmd_reg(nand, NA=
-ND_CMD_READSTART);
-> + =C2=A0 =C2=A0 =C2=A0 default:
-> +
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (!chip->dev_ready) =
-{
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 udelay(chip->chip_delay);
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 return;
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 }
-> + =C2=A0 =C2=A0 =C2=A0 }
-> +
-> + =C2=A0 =C2=A0 =C2=A0 /* Apply this short delay always to ensure that we=
- do wait tWB in
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0* any case on any machine. */
-> + =C2=A0 =C2=A0 =C2=A0 ndelay(100);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 while (!chip->dev_ready(mtd))
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ;
-> +}
-> +
-> +
-> +static void w90p910_nand_enable(struct w90p910_nand *nand)
-> +{
-> + =C2=A0 =C2=A0 =C2=A0 unsigned int val;
-> + =C2=A0 =C2=A0 =C2=A0 spin_lock(&nand->lock);
-> + =C2=A0 =C2=A0 =C2=A0 __raw_writel(RESET_FMI, (nand->reg + REG_FMICSR));
-> +
-> + =C2=A0 =C2=A0 =C2=A0 val =3D __raw_readl(nand->reg + REG_FMICSR);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 if (!(val & NAND_EN))
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 __raw_writel(val | NAN=
-D_EN, REG_FMICSR);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 val =3D __raw_readl(nand->reg + REG_SMCSR);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 val &=3D ~(SWRST|PSIZE|DMARWEN|BUSWID|ECC4EN|NANDC=
-S);
-> + =C2=A0 =C2=A0 =C2=A0 val |=3D WP;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 __raw_writel(val, nand->reg + REG_SMCSR);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 spin_unlock(&nand->lock);
-> +}
-> +
-> +static int __devinit w90p910_nand_probe(struct platform_device *pdev)
-> +{
-> + =C2=A0 =C2=A0 =C2=A0 struct w90p910_nand *w90p910_nand;
-> + =C2=A0 =C2=A0 =C2=A0 struct nand_chip *chip;
-> + =C2=A0 =C2=A0 =C2=A0 int retval;
-> + =C2=A0 =C2=A0 =C2=A0 struct resource *res;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 retval =3D 0;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 w90p910_nand =3D kzalloc(sizeof(struct w90p910_nan=
-d), GFP_KERNEL);
-> + =C2=A0 =C2=A0 =C2=A0 if (!w90p910_nand)
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return -ENOMEM;
-> + =C2=A0 =C2=A0 =C2=A0 chip =3D &(w90p910_nand->chip);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 w90p910_nand->mtd.priv =C2=A0=3D chip;
-> + =C2=A0 =C2=A0 =C2=A0 w90p910_nand->mtd.owner =3D THIS_MODULE;
-> + =C2=A0 =C2=A0 =C2=A0 spin_lock_init(&w90p910_nand->lock);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 w90p910_nand->clk =3D clk_get(&pdev->dev, NULL);
-> + =C2=A0 =C2=A0 =C2=A0 if (IS_ERR(w90p910_nand->clk)) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 retval =3D -ENOENT;
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 goto fail1;
-> + =C2=A0 =C2=A0 =C2=A0 }
-> + =C2=A0 =C2=A0 =C2=A0 clk_enable(w90p910_nand->clk);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 chip->cmdfunc =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=3D w90p910_nand_command_lp;
-> + =C2=A0 =C2=A0 =C2=A0 chip->dev_ready =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D w9=
-0p910_nand_devready;
-> + =C2=A0 =C2=A0 =C2=A0 chip->read_byte =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D w9=
-0p910_nand_read_byte;
-> + =C2=A0 =C2=A0 =C2=A0 chip->write_buf =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D w9=
-0p910_nand_write_buf;
-> + =C2=A0 =C2=A0 =C2=A0 chip->read_buf =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
-=3D w90p910_nand_read_buf;
-> + =C2=A0 =C2=A0 =C2=A0 chip->verify_buf =C2=A0 =C2=A0 =C2=A0 =C2=A0=3D w9=
-0p910_verify_buf;
-> + =C2=A0 =C2=A0 =C2=A0 chip->chip_delay =C2=A0 =C2=A0 =C2=A0 =C2=A0=3D 50=
+> +#ifdef CONFIG_MTD_PARTITIONS
+> + =A0 =A0 =A0 add_mtd_partitions(&host->mtd, pdata->parts, pdata->nparts)=
 ;
-> + =C2=A0 =C2=A0 =C2=A0 chip->options =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=3D 0;
-> + =C2=A0 =C2=A0 =C2=A0 chip->ecc.mode =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
-=3D NAND_ECC_SOFT;
+> +#else
+> + =A0 =A0 =A0 pr_info("Registering %s as whole device\n", mtd->name);
+> + =A0 =A0 =A0 add_mtd_device(mtd);
+> +#endif
 > +
-> + =C2=A0 =C2=A0 =C2=A0 res =3D platform_get_resource(pdev, IORESOURCE_MEM=
-, 0);
-> + =C2=A0 =C2=A0 =C2=A0 if (!res) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 retval =3D -ENXIO;
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 goto fail1;
-> + =C2=A0 =C2=A0 =C2=A0 }
+> + =A0 =A0 =A0 platform_set_drvdata(pdev, host);
+> + =A0 =A0 =A0 return 0;
 > +
-> + =C2=A0 =C2=A0 =C2=A0 if (!request_mem_region(res->start, resource_size(=
-res), pdev->name)) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 retval =3D -EBUSY;
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 goto fail1;
-> + =C2=A0 =C2=A0 =C2=A0 }
-> +
-> + =C2=A0 =C2=A0 =C2=A0 w90p910_nand->reg =3D ioremap(res->start, resource=
-_size(res));
-> + =C2=A0 =C2=A0 =C2=A0 if (!w90p910_nand->reg) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 retval =3D -ENOMEM;
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 goto fail2;
-> + =C2=A0 =C2=A0 =C2=A0 }
-> +
-> + =C2=A0 =C2=A0 =C2=A0 w90p910_nand_enable(w90p910_nand);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 if (nand_scan(&(w90p910_nand->mtd), 1)) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 retval =3D -ENXIO;
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 goto fail3;
-> + =C2=A0 =C2=A0 =C2=A0 }
-> +
-> + =C2=A0 =C2=A0 =C2=A0 add_mtd_partitions(&(w90p910_nand->mtd), partition=
-s,
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 ARRAY_SIZE(partitions));
-> +
-> + =C2=A0 =C2=A0 =C2=A0 platform_set_drvdata(pdev, w90p910_nand);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 return retval;
-> +
-> +fail3: iounmap(w90p910_nand->reg);
-> +fail2: release_mem_region(res->start, resource_size(res));
-> +fail1: kfree(w90p910_nand);
-> + =C2=A0 =C2=A0 =C2=A0 return retval;
+> + err_unmap:
+> + =A0 =A0 =A0 if (host->cmd_va) iounmap(host->cmd_va);
+> + =A0 =A0 =A0 if (host->data_va) iounmap(host->data_va);
+> + =A0 =A0 =A0 if (host->addr_va) iounmap(host->addr_va);
+> + err:
+> + =A0 =A0 =A0 kfree(host);
+> + =A0 =A0 =A0 return ret;
 > +}
 > +
-> +static int __devexit w90p910_nand_remove(struct platform_device *pdev)
+> +/*
+> + * Clean up routine
+> + */
+> +static int nomadik_nand_remove(struct platform_device *pdev)
 > +{
-> + =C2=A0 =C2=A0 =C2=A0 struct w90p910_nand *w90p910_nand =3D platform_get=
-_drvdata(pdev);
-> + =C2=A0 =C2=A0 =C2=A0 struct resource *res;
+> + =A0 =A0 =A0 struct nomadik_nand_host *host =3D platform_get_drvdata(pde=
+v);
+> + =A0 =A0 =A0 struct nomadik_nand_platform_data *pdata =3D pdev->dev.plat=
+form_data;
 > +
-> + =C2=A0 =C2=A0 =C2=A0 iounmap(w90p910_nand->reg);
+> + =A0 =A0 =A0 if (pdata->exit)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 pdata->exit();
 > +
-> + =C2=A0 =C2=A0 =C2=A0 res =3D platform_get_resource(pdev, IORESOURCE_MEM=
-, 0);
-> + =C2=A0 =C2=A0 =C2=A0 release_mem_region(res->start, resource_size(res))=
-;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 clk_disable(w90p910_nand->clk);
-> + =C2=A0 =C2=A0 =C2=A0 clk_put(w90p910_nand->clk);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 kfree(w90p910_nand);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 platform_set_drvdata(pdev, NULL);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 return 0;
+> + =A0 =A0 =A0 if (host) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 iounmap(host->cmd_va);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 iounmap(host->data_va);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 iounmap(host->addr_va);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 kfree(host);
+> + =A0 =A0 =A0 }
+> + =A0 =A0 =A0 return 0;
 > +}
 > +
-> +static struct platform_driver w90p910_nand_driver =3D {
-> + =C2=A0 =C2=A0 =C2=A0 .probe =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=3D w90p9=
-10_nand_probe,
-> + =C2=A0 =C2=A0 =C2=A0 .remove =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D __devexit_=
-p(w90p910_nand_remove),
-> + =C2=A0 =C2=A0 =C2=A0 .driver =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .name =C2=A0 =3D "w90p=
-910-fmi",
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .owner =C2=A0=3D THIS_=
-MODULE,
-> + =C2=A0 =C2=A0 =C2=A0 },
+> +#ifdef CONFIG_PM
+> +static int nomadik_nand_suspend(struct platform_device *pdev,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 pm_message_=
+t state)
+> +{
+> + =A0 =A0 =A0 struct nomadik_nand_host *host =3D platform_get_drvdata(pde=
+v);
+> + =A0 =A0 =A0 int ret =3D 0;
+> + =A0 =A0 =A0 if (host)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D host->mtd.suspend(&host->mtd);
+> + =A0 =A0 =A0 return ret;
+> +}
+> +
+> +static int nomadik_nand_resume(struct platform_device *pdev)
+> +{
+> + =A0 =A0 =A0 struct nomadik_nand_host *host =3D platform_get_drvdata(pde=
+v);
+> + =A0 =A0 =A0 if (host)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 host->mtd.resume(&host->mtd);
+> + =A0 =A0 =A0 return 0;
+> +}
+> +
+> +#else
+> +#define nomadik_nand_suspend NULL
+> +#define nomadik_nand_resume NULL
+> +#endif /* CONFIG_PM */
+> +
+> +static struct platform_driver nomadik_nand_driver =3D {
+> + =A0 =A0 =A0 .probe =3D nomadik_nand_probe,
+> + =A0 =A0 =A0 .remove =3D nomadik_nand_remove,
+> + =A0 =A0 =A0 .driver =3D {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.owner =3D THIS_MODULE,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.name =3D "nomadik_nand",
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0},
+> + =A0 =A0 =A0 .suspend =3D nomadik_nand_suspend,
+> + =A0 =A0 =A0 .resume =3D nomadik_nand_resume,
 > +};
 > +
-> +static int __init w90p910_nand_init(void)
+> +static int __init nand_nomadik_init(void)
 > +{
-> + =C2=A0 =C2=A0 =C2=A0 return platform_driver_register(&w90p910_nand_driv=
-er);
+> + =A0 =A0 =A0 pr_info("Nomadik NAND driver\n");
+> + =A0 =A0 =A0 return platform_driver_register(&nomadik_nand_driver);
 > +}
 > +
-> +static void __exit w90p910_nand_exit(void)
+> +static void __exit nand_nomadik_exit(void)
 > +{
-> + =C2=A0 =C2=A0 =C2=A0 platform_driver_unregister(&w90p910_nand_driver);
+> + =A0 =A0 =A0 platform_driver_unregister(&nomadik_nand_driver);
 > +}
 > +
-> +module_init(w90p910_nand_init);
-> +module_exit(w90p910_nand_exit);
+> +module_init(nand_nomadik_init);
+> +module_exit(nand_nomadik_exit);
 > +
-> +MODULE_AUTHOR("Wan ZongShun <mcuos.com@gmail.com>");
-> +MODULE_DESCRIPTION("w90p910 nand driver!");
 > +MODULE_LICENSE("GPL");
-> +MODULE_ALIAS("platform:w90p910-fmi");
+> +MODULE_AUTHOR("ST Microelectronics (sachin.verma@st.com)");
+> +MODULE_DESCRIPTION("NAND driver for Nomadik Platform");
 > --
-> 1.5.6.3
+> 1.6.0.2
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 >
 
 
 
 --=20
-Wan z.s
+---
+Regards,
+\/ | |\/| /-\ |_
+
+____      __o
+------   -\<,
+-----  ( )/ ( )
