@@ -1,23 +1,21 @@
-Received: from mail-fx0-f215.google.com ([209.85.220.215])
+Received: from oul111-200.netplaza.fi ([80.75.107.200] helo=gulp.u--3.com)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MU5pc-0002io-E5
-	for linux-mtd@lists.infradead.org; Thu, 23 Jul 2009 21:28:08 +0000
-Received: by fxm11 with SMTP id 11so1136327fxm.18
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Jul 2009 14:28:02 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <4A68C329.5040808@nokia.com>
-References: <20090723185928.GA1612@gulp.u--3.com> <4A68C329.5040808@nokia.com>
-Date: Thu, 23 Jul 2009 23:28:01 +0200
-Message-ID: <71cd59b00907231428w5b8b6190p2234d24bc59f0dbc@mail.gmail.com>
+	id 1MU6D9-0002Ea-1p
+	for linux-mtd@lists.infradead.org; Thu, 23 Jul 2009 21:52:27 +0000
+Date: Thu, 23 Jul 2009 23:52:20 +0200
+From: erno@gulp.u--3.com
+To: Corentin Chary <corentin.chary@gmail.com>
 Subject: Re: UBIFS fails & crashes on SheevaPlug
-From: Corentin Chary <corentin.chary@gmail.com>
-To: Adrian Hunter <adrian.hunter@nokia.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <20090723215220.GA1792@gulp.u--3.com>
+References: <20090723185928.GA1612@gulp.u--3.com> <4A68C329.5040808@nokia.com>
+	<71cd59b00907231428w5b8b6190p2234d24bc59f0dbc@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <71cd59b00907231428w5b8b6190p2234d24bc59f0dbc@mail.gmail.com>
 Cc: "debian-arm@lists.debian.org" <debian-arm@lists.debian.org>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"erno@gulp.u--3.com" <erno@gulp.u--3.com>
+	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,31 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 23, 2009 at 10:08 PM, Adrian Hunter<adrian.hunter@nokia.com> wr=
-ote:
-> erno@gulp.u--3.com wrote:
->>
->> Hello,
->>
->> I installed Debian on my SheevaPlug following instructions at
->> <http://www.cyrius.com/debian/kirkwood/sheevaplug/> and everything seeme=
-d to
->> work fine until...
->>
->> I wanted to try UBIFS on the built-in flash and followed
->> the instructions for formatting the internal flash
->> at http://www.plugcomputer.org/plugwiki/index.php/Enabling_UBIFS
->> except I made an empty image (no -r parameter for mkfs.ubifs).
->
-> Isn't the -r parameter mandatory. =A0For an empty image, use an empty
-> directory for the -r parameter.
+On Thu, Jul 23, 2009 at 11:28:01PM +0200, Corentin Chary wrote:
+> Can you give us the exact commands you used ?
 
-With recent version of mkfs.ubifs you can format directly an ubi volume wit=
-hout
--r parameter (mkfs.ubifs /dev/ubi0_0).
+Straight copy-paste (except for the -r removal) from 
+http://www.plugcomputer.org/plugwiki/index.php/Enabling_UBIFS - so:
 
-Can you give us the exact commands you used ?
+   94  cd /var/tmp/
+   95  mkfs.ubifs -m 2048 -e 129024 -c 4096 -o ubifs.img -x zlib
+   96  /usr/local/usr/sbin/mkfs.ubifs -m 2048 -e 129024 -c 4096 -o 
+ubifs.img -x zlib
+   99  ubinize -o ubi.img -m 2048 -p 128KiB -s 512 ubi.cfg
+  101  cat > ubi.cfg
 
---=20
-Corentin Chary
-http://xf.iksaif.net - http://uffs.org
+  102  /usr/local/usr/sbin/ubinize -o ubi.img -m 2048 -p 128KiB -s 512 
+ubi.cfg
+  105  ubiformat /dev/mtd2 -s 512 -f ubi.img
+  106  /usr/local/usr/sbin/ubiformat /dev/mtd2 -s 512 -f ubi.img
+  107  /usr/local/usr/sbin/ubiattach /dev/ubi_ctrl -m 2
+
+(funny paths courtesy of mtd-utils "make install")
+
+ubi.cfg is
+
+[ubifs]
+mode=ubi
+image=ubifs.img
+vol_id=0
+vol_size=256MiB
+vol_type=dynamic
+vol_name=rootfs
+vol_flags=autoresize
