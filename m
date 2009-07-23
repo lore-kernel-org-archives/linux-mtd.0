@@ -1,19 +1,19 @@
-Received: from smtpauth01.csee.onr.siteprotect.com ([64.26.60.145])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MU47c-0006r3-4e
-	for linux-mtd@lists.infradead.org; Thu, 23 Jul 2009 19:38:36 +0000
-Message-ID: <4A68BC2B.2030800@boundarydevices.com>
-Date: Thu, 23 Jul 2009 12:38:19 -0700
-From: Troy Kisky <troy.kisky@boundarydevices.com>
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MU4bQ-0002vH-Px
+	for linux-mtd@lists.infradead.org; Thu, 23 Jul 2009 20:09:24 +0000
+Message-ID: <4A68C329.5040808@nokia.com>
+Date: Thu, 23 Jul 2009 23:08:09 +0300
+From: Adrian Hunter <adrian.hunter@nokia.com>
 MIME-Version: 1.0
-To: David Brownell <david-b@pacbell.net>
-Subject: Re: [PATCH V5 2/2] mtd: nand: Calculate better default ecc layout
-References: <1247789948-5764-1-git-send-email-troy.kisky@boundarydevices.com>	<1247789948-5764-2-git-send-email-troy.kisky@boundarydevices.com>	<4A68B683.5030503@boundarydevices.com>
-	<200907231226.24436.david-b@pacbell.net>
-In-Reply-To: <200907231226.24436.david-b@pacbell.net>
-Content-Type: text/plain; charset=ISO-8859-1
+To: "erno@gulp.u--3.com" <erno@gulp.u--3.com>
+Subject: Re: UBIFS fails & crashes on SheevaPlug
+References: <20090723185928.GA1612@gulp.u--3.com>
+In-Reply-To: <20090723185928.GA1612@gulp.u--3.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: dedekind@infradead.org, tglx@linutronix.de, linux-mtd@lists.infradead.org
+Cc: "debian-arm@lists.debian.org" <debian-arm@lists.debian.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +23,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Brownell wrote:
-> On Thursday 23 July 2009, Troy Kisky wrote:
->> What do you think of leaving nand_base totally alone
->> and add a file nand_probe.h which contain the new
->> routines marked as inline, or mark it __devinit or
->> __init ? I don't think anyone but probe calls these
->> functions.
+erno@gulp.u--3.com wrote:
+> Hello,
 > 
-> You don't want those nand-core functions to be removed.
-> Drivers can be modular, and they need to call them.
+> I installed Debian on my SheevaPlug following instructions at 
+> <http://www.cyrius.com/debian/kirkwood/sheevaplug/> and everything 
+> seemed to work fine until...
 > 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+> I wanted to try UBIFS on the built-in flash and followed
+> the instructions for formatting the internal flash
+> at http://www.plugcomputer.org/plugwiki/index.php/Enabling_UBIFS
+> except I made an empty image (no -r parameter for mkfs.ubifs).
 
-You misunderstand. I'm suggesting that each driver
-includes nand_probe.h
-
-That way, the routines can be freed when initialization
-is complete.
+Isn't the -r parameter mandatory.  For an empty image, use an empty
+directory for the -r parameter.
