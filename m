@@ -1,24 +1,25 @@
-Received: from mail-qy0-f176.google.com ([209.85.221.176])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MTsM8-0000ya-Li
-	for linux-mtd@lists.infradead.org; Thu, 23 Jul 2009 07:04:49 +0000
-Received: by qyk6 with SMTP id 6so1024179qyk.28
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Jul 2009 00:04:43 -0700 (PDT)
+Received: from mail2.gnudd.com ([213.203.150.91] helo=mail.gnudd.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MTuHF-0003Pk-NS
+	for linux-mtd@lists.infradead.org; Thu, 23 Jul 2009 09:07:54 +0000
+Date: Thu, 23 Jul 2009 11:07:30 +0200
+From: Alessandro Rubini <rubini-list@gnudd.com>
+To: rubini-list@gnudd.com
+Subject: Re: [PATCH V4 1/2] Nand driver for Nomadik 8815 SoC (on NHK8815 board)
+Message-ID: <20090723090730.GA24918@mail.gnudd.com>
 MIME-Version: 1.0
-In-Reply-To: <20090723.001338.27942898.anemo@mba.ocn.ne.jp>
-References: <ce9ab5790907192215q148e194ale4a509112b1b40aa@mail.gmail.com>
-	<20090722.002013.165864270.anemo@mba.ocn.ne.jp>
-	<ce9ab5790907220143t49d4afecr84a5c5e91833bc4a@mail.gmail.com>
-	<20090723.001338.27942898.anemo@mba.ocn.ne.jp>
-Date: Thu, 23 Jul 2009 12:34:43 +0530
-Message-ID: <ce9ab5790907230004g103af356s1b44cda2d64bbc55@mail.gmail.com>
-Subject: Re: abuse of nand_correct_data in tmio_nand driver
-From: vimal singh <vimal.newwork@gmail.com>
-To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: dbaryshkov@gmail.com, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Sender: rubini-list@gnudd.com
+In-Reply-To: <20090723065922.GA22450@mail.gnudd.com>
+References: <20090723065922.GA22450@mail.gnudd.com>
+	<ce9ab5790907222130o2f1d704u199fbf7f1435e74f@mail.gmail.com>
+	<cover.1248300341.git.rubini@unipv.it>
+	<cae21cf16cad72ef35ce7e8cc3effe25b497924e.1248300341.git.rubini@unip
+	v.it>
+Cc: STEricsson_nomadik_linux@list.st.com, linux@arm.linux.org.uk,
+	vimal.newwork@gmail.com, linux-mtd@lists.infradead.org,
+	andrea.gallo@stericsson.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,102 +29,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 22, 2009 at 8:43 PM, Atsushi Nemoto<anemo@mba.ocn.ne.jp> wrote:
-> On Wed, 22 Jul 2009 14:13:30 +0530, vimal singh <vimal.newwork@gmail.com>=
- wrote:
->> >> This can be handled by overriding 'chip->ecc.correct' in driver. You
->> >> may reuse 'nand_correct_data()' code in the driver of 256 byte sector
->> >> ECC.
->> >
->> > Yes, the driver can reuse nand_ecc code to implement its own
->> > nand_correct rountine.
->> >
->> > Or how about adding support for 6byte-ecc/512byte-data to nand_ecc.c
->> > to avoid code duplication?
->> >
->> > I mean something like this. =A0If it looks acceptable, I will prepare =
-a
->> > patch including similer change to nand_calculate_ecc.
->>
->> I personally do not like any HW specific implementation going into the
->> generic part
->> of the code. This particular issue is specific to your HW, so better
->> handle it in the
->> driver only.
->
-> OK, but I still feel duplicating nand_ecc code is not so good. =A0How
-> about splitting nand_correct_data into two parts? =A0A pure calculation
-> function and a wrapper for mtd interface. =A0Like this:
+>> 'nand_calculate_ecc' and 'nand_correct_data' (nand_ecc.c) do it in SW.
+>> This need not to be re-do.
+> 
+> When I initially tried soft ecc it didn't work, so I thought ours was
+> a different algorithm. Most likely I was wrong, I'll recheck ASAP.
 
-But I do not see any thing extra, which you achieve from this
-wrapper...  Is this a prototype, and you want to handle above scenario
-in this wrapper (calling 'nand_correct_data' multiple times based on
-something, probably 'ecc.bytes')?
+It's slightly different. This is what I get (old is nand_calculate_ecc(), new is mine).
 
->
-> diff --git a/drivers/mtd/nand/nand_ecc.c b/drivers/mtd/nand/nand_ecc.c
-> index c0cb87d..3920896 100644
-> --- a/drivers/mtd/nand/nand_ecc.c
-> +++ b/drivers/mtd/nand/nand_ecc.c
-> @@ -425,14 +425,14 @@ EXPORT_SYMBOL(nand_calculate_ecc);
-> =A0*
-> =A0* Detect and correct a 1 bit error for 256/512 byte block
-> =A0*/
-> -int nand_correct_data(struct mtd_info *mtd, unsigned char *buf,
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 unsigned char *read_ecc, unsign=
-ed char *calc_ecc)
-> +int __nand_correct_data(unsigned char *buf,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 unsigned char *read_ecc, un=
-signed char *calc_ecc,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 unsigned int eccsize)
-> =A0{
-> =A0 =A0 =A0 =A0unsigned char b0, b1, b2, bit_addr;
-> =A0 =A0 =A0 =A0unsigned int byte_addr;
-> =A0 =A0 =A0 =A0/* 256 or 512 bytes/ecc =A0*/
-> - =A0 =A0 =A0 const uint32_t eccsize_mult =3D
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (((struct nand_chip *)mtd->=
-priv)->ecc.size) >> 8;
-> + =A0 =A0 =A0 const uint32_t eccsize_mult =3D eccsize >> 8;
->
-> =A0 =A0 =A0 =A0/*
-> =A0 =A0 =A0 =A0 * b0 to b2 indicate which bit is faulty (if any)
-> @@ -495,6 +495,16 @@ int nand_correct_data(struct mtd_info *mtd, unsigned=
- char *buf,
-> =A0 =A0 =A0 =A0printk(KERN_ERR "uncorrectable error : ");
-> =A0 =A0 =A0 =A0return -1;
-> =A0}
-> +EXPORT_SYMBOL(__nand_correct_data);
-> +
-> +int nand_correct_data(struct mtd_info *mtd, unsigned char *buf,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 unsigned char *read_ecc, unsign=
-ed char *calc_ecc)
-> +{
-> + =A0 =A0 =A0 const uint32_t eccsize_mult =3D
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (((struct nand_chip *)mtd->=
-priv)->ecc.size) >> 8;
-> + =A0 =A0 =A0 return __nand_correct_data(buf, read_ecc, calc_ecc,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0((st=
-ruct nand_chip *)mtd->priv)->ecc.size);
-> +}
-> =A0EXPORT_SYMBOL(nand_correct_data);
->
-> =A0MODULE_LICENSE("GPL");
->
->
-> There is a little bonus: the STANDALONE macro in nand_ecc.c can be
-> more useful with this change ;)
->
-> ---
-> Atsushi Nemoto
->
+   old: 65 56 55
+   new: 56 65 55
 
+   old: 33 fc 0c
+   new: fc 33 0c
 
+   old: c0 c0 3c
+   new: c0 c0 3c
 
---=20
----
-Regards,
-\/ | |\/| /-\ |_
+   old: c3 3f cf
+   new: 3f c3 cf
 
-____      __o
-------   -\<,
------  ( )/ ( )
+   old: c0 0f 30
+   new: 0f c0 30
+
+   old: 03 f3 3f
+   new: f3 03 3f
+
+So, the standard procedure is not compatible with data already in
+flash (written with the older u-boot and kernel provided by the vendor
+with the kit).
+
+The code in nomadik_ecc512_calc() is derived from vendor data sheet,
+looking at vendor code I got; since both routines gives the same results,
+mine _should_ be compatible with hw ecc, for the day I'll be
+able to make it work. However vendor code never used hw ecc, either,
+so I'm not sure this routine is really compatible with it.
+
+Actually, I got a hint about why hw ecc isn't working for me, but
+can't try it these days.
+
+In view of this, can my code stay? 
+
+/alessandro
