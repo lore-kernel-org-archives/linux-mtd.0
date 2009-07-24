@@ -1,29 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MULU4-0000Hu-8N
-	for linux-mtd@lists.infradead.org; Fri, 24 Jul 2009 14:10:56 +0000
-Message-ID: <4A69C0A2.80005@gmail.com>
-Date: Fri, 24 Jul 2009 17:09:38 +0300
-From: Artem Bityutskiy <dedekind1@gmail.com>
-MIME-Version: 1.0
-To: Jamie Lokier <jamie@shareable.org>
-Subject: Re: UBIFS Corrupt during power failure
-References: <7207AAC68CE347458026863515A07DA102901F9C@usw-am-xch-02.am.trimblecorp.net>
-	<1246633131.20721.224.camel@localhost.localdomain>
-	<1246854654.20721.271.camel@localhost.localdomain>
-	<1246855913.20721.287.camel@localhost.localdomain>
-	<1246862635.20721.291.camel@localhost.localdomain>
-	<1246949184.20721.302.camel@localhost.localdomain>
-	<C77C279BA71FD14985DC8E75FB265AB703AA85C0@usw-am-xch-02.am.trimblecorp.net>
-	<20090715205217.GH3056@shareable.org>
-	<C77C279BA71FD14985DC8E75FB265AB703B47FC9@usw-am-xch-02.am.trimblecorp.net>
-	<4A69596F.8070300@gmail.com> <20090724140547.GA27755@shareable.org>
-In-Reply-To: <20090724140547.GA27755@shareable.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: Eric Holmberg <Eric_Holmberg@Trimble.com>, linux-mtd@lists.infradead.org,
-	Urs Muff <urs_muff@Trimble.com>, Stefan Roese <sr@denx.de>,
-	Nicolas Pitre <nico@cam.org>, Adrian Hunter <adrian.hunter@nokia.com>
+	id 1MULkf-0003Z2-BZ
+	for linux-mtd@lists.infradead.org; Fri, 24 Jul 2009 14:28:05 +0000
+Received: from esebh105.NOE.Nokia.com (esebh105.ntc.nokia.com [172.21.138.211])
+	by mgw-mx09.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
+	n6OERDE2021295
+	for <linux-mtd@lists.infradead.org>; Fri, 24 Jul 2009 09:27:46 -0500
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] UBI: compatible fallback in absense of sequence numbers
+Date: Fri, 24 Jul 2009 19:18:51 +0300
+Message-Id: <1248452331-18969-1-git-send-email-dedekind@infradead.org>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	Phil Carmody <ext-phil.2.carmody@nokia.com>,
+	Adrian Hunter <ext-adrian.hunter@nokia.com>,
+	Adrian Hunter <Adrian.Hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,18 +24,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/24/2009 05:05 PM, Jamie Lokier wrote:
-> Artem Bityutskiy wrote:
->> So apparently it is possible to put NOR to the state when you cannot write
->> to it. I wonder if this is SW bug or a HW feature.
->
-> Could it simply be that the block is worn out, and the chip's write
-> program does not complete when a block is worn out?
+From: Adrian Hunter <Adrian.Hunter@nokia.com>
 
-Does not look like this, because after I've applied my patches it works,
-and I'm running my tests for several hours already. If what you say
-was true, it would break somewhere, I guess.
+Fall back onto thinking everything's OK if either of the sequence
+numbers we are asked to compare is zero, which is what was used
+before sequence numbers were introduced.
 
+[ Artem: modified the patch to be applicable to upstream UBI, added
+        big comment ]
+
+Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Signed-off-by: Phil Carmody <ext-phil.2.carmody@nokia.com>
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ drivers/mtd/ubi/scan.c |   13 ++++++++++++-
+ 1 files changed, 12 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
+index be4994b..e7161ad 100644
+--- a/drivers/mtd/ubi/scan.c
++++ b/drivers/mtd/ubi/scan.c
+@@ -782,11 +782,22 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
+ 			return -EINVAL;
+ 		}
+ 
++		/*
++		 * Make sure that all PEBs have the same image sequence number.
++		 * This allows us to detect situations when users flash UBI
++		 * images incorrectly, so that the flash has the new UBI image
++		 * and leftovers from the old one. This feature was added
++		 * relatively recently, and the sequence number was always
++		 * zero, because old UBI implementations always set it to zero.
++		 * For this reasons, we do not panic if some PEBs have zero
++		 * sequence number, while other PEBs have non-zero sequence
++		 * number.
++		 */
+ 		image_seq = be32_to_cpu(ech->image_seq);
+ 		if (!si->image_seq_set) {
+ 			ubi->image_seq = image_seq;
+ 			si->image_seq_set = 1;
+-		} else if (ubi->image_seq != image_seq) {
++		} else if (ubi->image_seq && ubi->image_seq != image_seq) {
+ 			ubi_err("bad image sequence number %d in PEB %d, "
+ 				"expected %d", image_seq, pnum, ubi->image_seq);
+ 			ubi_dbg_dump_ec_hdr(ech);
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.6.0.6
