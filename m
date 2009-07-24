@@ -1,33 +1,24 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MUJSt-0007Re-RO
-	for linux-mtd@lists.infradead.org; Fri, 24 Jul 2009 12:01:37 +0000
-Subject: Re: UBIFS Corrupt during power failure
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Eric Holmberg <Eric_Holmberg@Trimble.com>
-In-Reply-To: <4A69596F.8070300@gmail.com>
-References: <1246627771.20721.191.camel@localhost.localdomain>
-	<7207AAC68CE347458026863515A07DA102901F3C@usw-am-xch-02.am.trimblecorp.net>
-	<1246629940.20721.219.camel@localhost.localdomain>
-	<7207AAC68CE347458026863515A07DA102901F9C@usw-am-xch-02.am.trimblecorp.net>
-	<1246633131.20721.224.camel@localhost.localdomain>
-	<1246854654.20721.271.camel@localhost.localdomain>
-	<1246855913.20721.287.camel@localhost.localdomain>
-	<1246862635.20721.291.camel@localhost.localdomain>
-	<1246949184.20721.302.camel@localhost.localdomain>
-	<C77C279BA71FD14985DC8E75FB265AB703AA85C0@usw-am-xch-02.am.trimblecorp.net>
-	<20090715205217.GH3056@shareable.org>
-	<C77C279BA71FD14985DC8E75FB265AB703B47FC9@usw-am-xch-02.am.trimblecorp.net>
-	<4A69596F.8070300@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 24 Jul 2009 15:00:25 +0300
-Message-Id: <1248436825.24676.70.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Jamie Lokier <jamie@shareable.org>, linux-mtd@lists.infradead.org,
-	Urs Muff <urs_muff@Trimble.com>, Stefan Roese <sr@denx.de>,
-	Nicolas Pitre <nico@cam.org>, Adrian Hunter <adrian.hunter@nokia.com>
-Reply-To: dedekind1@gmail.com
+Received: from qw-out-1920.google.com ([74.125.92.149])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MUJbJ-0000Mt-4g
+	for linux-mtd@lists.infradead.org; Fri, 24 Jul 2009 12:10:17 +0000
+Received: by qw-out-1920.google.com with SMTP id 5so1032132qwf.24
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 24 Jul 2009 05:10:11 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <50ed4996479c95b93714ac814608d5f0db85238d.1248434636.git.rubini@unipv.it>
+References: <cover.1248434635.git.rubini@unipv.it>
+	<50ed4996479c95b93714ac814608d5f0db85238d.1248434636.git.rubini@unipv.it>
+Date: Fri, 24 Jul 2009 17:40:11 +0530
+Message-ID: <ce9ab5790907240510y752885b9m2debac82bbdd7401@mail.gmail.com>
+Subject: Re: [PATCH V5 1/2] Nand driver for Nomadik 8815 SoC (on NHK8815
+	board)
+From: vimal singh <vimal.newwork@gmail.com>
+To: Alessandro Rubini <rubini-list@gnudd.com>, linux-mtd@lists.infradead.org,
+	andrea.gallo@stericsson.com, STEricsson_nomadik_linux@list.st.com,
+	linux@arm.linux.org.uk
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,215 +28,182 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-07-24 at 09:49 +0300, Artem Bityutskiy wrote:
-> Further tests revealed that the fix needs some tweaks.
-> 
-> I get the following error with the latest UBI containing that "write before
-> erase" change:
-> 
-> UBI: background thread "ubi_bgt0d" started, PID 736
-> MTD do_write_buffer(): software timeout
-> UBI error: nor_erase_prepare: error -5 while writing 4 bytes to PEB 365:64, written 0 bytes
-> Call Trace:
-> [cfa07ec0] [c0006cf8] show_stack+0x44/0x16c (unreliable)
-> [cfa07f00] [c01b8004] ubi_io_sync_erase+0x234/0x39c
-> [cfa07f40] [c01b92d4] erase_worker+0x8c/0x4b8
-> [cfa07f70] [c01b894c] do_work+0xac/0x124
-> [cfa07f90] [c01b9b90] ubi_thread+0xc0/0x138
-> [cfa07fd0] [c0038ab0] kthread+0x4c/0x88
-> [cfa07ff0] [c000eb38] kernel_thread+0x4c/0x68
-> 
-> So apparently it is possible to put NOR to the state when you cannot write
-> to it. I wonder if this is SW bug or a HW feature.
+Hi,
 
-OK, I've fixed this by:
-1. Not panicking when the UBI headers cannot be invalidated because of
-   write failures.
-2. Reading the flash and making sure the VID header is anyway corrupted.
-3. If it is corrupted, everything is fine and we proceed.
-4. If it is not, we panic. Presumably this should not happen, but I'm
-   not sure. Anyway, these changes let me proceed further. The patches
-   I used are inlined. I've also pushed them to ubi-2.6.git/master.
+Please run ''checkpatch.pl' for this patch and try to fix the errors.
 
->From 5088eafafc6c948a29b8371731efe373d034d989 Mon Sep 17 00:00:00 2001
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Date: Fri, 24 Jul 2009 15:31:33 +0300
-Subject: [PATCH] UBI: introduce flash dump helper
+Few more comments below:
 
-Useful for debugging problems, compiled in only if UBI debugging
-is enabled. This patch also makes the UBI writing function dump
-the flash if it fails to write.
+On Fri, Jul 24, 2009 at 5:02 PM, Alessandro Rubini<rubini-list@gnudd.com> w=
+rote:
+> From: Alessandro Rubini <rubini@unipv.it>
+>
+>
+> Signed-off-by: Alessandro Rubini <rubini@unipv.it>
+> Acked-by: Andrea Gallo <andrea.gallo@stericsson.com>
+> ---
+---sinp---
 
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- drivers/mtd/ubi/debug.c |   32 ++++++++++++++++++++++++++++++++
- drivers/mtd/ubi/debug.h |    2 ++
- drivers/mtd/ubi/io.c    |    1 +
- 3 files changed, 35 insertions(+), 0 deletions(-)
+> +static inline int parity(int b) /* uses low 8 bits: returns 0 or all-1 *=
+/
+> +{
+> + =A0 =A0 =A0 b =3D b ^ (b >> 4);
+> + =A0 =A0 =A0 b =3D b ^ (b >> 2);
+> + =A0 =A0 =A0 return (b ^ (b >> 1)) & 1
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ? ~0 : 0;
+> +}
 
-diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
-index 54b0186..4876977 100644
---- a/drivers/mtd/ubi/debug.c
-+++ b/drivers/mtd/ubi/debug.c
-@@ -196,4 +196,36 @@ void ubi_dbg_dump_mkvol_req(const struct ubi_mkvol_req *req)
- 	printk(KERN_DEBUG "\t1st 16 characters of name: %s\n", nm);
- }
- 
-+/**
-+ * ubi_dbg_dump_flash - dump a region of flash.
-+ * @ubi: UBI device description object
-+ * @pnum: the physical eraseblock number to dump
-+ * @offset: the starting offset within the physical eraseblock to dump
-+ * @len: the length of the region to dump
-+ */
-+void ubi_dbg_dump_flash(struct ubi_device *ubi, int pnum, int offset, int len)
-+{
-+	int err;
-+	size_t read;
-+	void *buf;
-+	loff_t addr = (loff_t)pnum * ubi->peb_size + offset;
-+
-+	buf = vmalloc(len);
-+	if (!buf)
-+		return;
-+	err = ubi->mtd->read(ubi->mtd, addr, len, &read, buf);
-+	if (err && err != -EUCLEAN) {
-+		ubi_err("error %d while reading %d bytes from PEB %d:%d, "
-+			"read %zd bytes", err, len, pnum, offset, read);
-+		goto out;
-+	}
-+
-+	dbg_msg("dumping %d bytes of data from PEB %d, offset %d",
-+		len, pnum, offset);
-+	print_hex_dump(KERN_DEBUG, "", DUMP_PREFIX_OFFSET, 32, 1, buf, len, 1);
-+out:
-+	vfree(buf);
-+	return;
-+}
-+
- #endif /* CONFIG_MTD_UBI_DEBUG */
-diff --git a/drivers/mtd/ubi/debug.h b/drivers/mtd/ubi/debug.h
-index a4da7a0..f30bcb3 100644
---- a/drivers/mtd/ubi/debug.h
-+++ b/drivers/mtd/ubi/debug.h
-@@ -55,6 +55,7 @@ void ubi_dbg_dump_vtbl_record(const struct ubi_vtbl_record *r, int idx);
- void ubi_dbg_dump_sv(const struct ubi_scan_volume *sv);
- void ubi_dbg_dump_seb(const struct ubi_scan_leb *seb, int type);
- void ubi_dbg_dump_mkvol_req(const struct ubi_mkvol_req *req);
-+void ubi_dbg_dump_flash(struct ubi_device *ubi, int pnum, int offset, int len);
- 
- #ifdef CONFIG_MTD_UBI_DEBUG_MSG
- /* General debugging messages */
-@@ -167,6 +168,7 @@ static inline int ubi_dbg_is_erase_failure(void)
- #define ubi_dbg_dump_sv(sv)              ({})
- #define ubi_dbg_dump_seb(seb, type)      ({})
- #define ubi_dbg_dump_mkvol_req(req)      ({})
-+#define ubi_dbg_dump_flash(ubi, pnum, offset, len) ({})
- 
- #define UBI_IO_DEBUG               0
- #define DBG_DISABLE_BGT            0
-diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
-index 4e7bcb2..b693138 100644
---- a/drivers/mtd/ubi/io.c
-+++ b/drivers/mtd/ubi/io.c
-@@ -269,6 +269,7 @@ int ubi_io_write(struct ubi_device *ubi, const void *buf, int pnum, int offset,
- 		ubi_err("error %d while writing %d bytes to PEB %d:%d, written "
- 			"%zd bytes", err, len, pnum, offset, written);
- 		ubi_dbg_dump_stack();
-+		ubi_dbg_dump_flash(ubi, pnum, offset, len);
- 	} else
- 		ubi_assert(written == len);
- 
--- 
-1.6.0.6
+This function is not required anymore, can be removed.
 
+> +
+> +static struct nand_ecclayout nomadik_ecc_layout =3D {
+> + =A0 =A0 =A0 .eccbytes =3D 3 * 4,
+> + =A0 =A0 =A0 .eccpos =3D { /* each subpage has 16 bytes: pos 2,3,4 hosts=
+ ECC */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 0x02, 0x03, 0x04,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 0x12, 0x13, 0x14,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 0x22, 0x23, 0x24,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 0x32, 0x33, 0x34},
+> + =A0 =A0 =A0 /* let's keep bytes 5,6,7 for us, just in case we change EC=
+C algo */
+> + =A0 =A0 =A0 .oobfree =3D { {0x08, 0x08}, {0x18, 0x08}, {0x28, 0x08}, {0=
+x38, 0x08} },
+> +};
+> +
+> +static void nomadik_ecc_control(struct mtd_info *mtd, int mode)
+> +{
+> + =A0 =A0 =A0 /* No need to enable hw ecc, it's on by default */
+> +}
+> +
+> +static void nomadik_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int=
+ ctrl)
+> +{
+> + =A0 =A0 =A0 struct nand_chip *nand =3D mtd->priv;
+> + =A0 =A0 =A0 struct nomadik_nand_host *host =3D nand->priv;
+> +
+> + =A0 =A0 =A0 if (cmd =3D=3D NAND_CMD_NONE)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return;
+> +
+> + =A0 =A0 =A0 if (ctrl & NAND_CLE)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 writeb(cmd, host->cmd_va);
+> + =A0 =A0 =A0 else
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 writeb(cmd, host->addr_va);
+> +}
+> +
+> +static int nomadik_nand_probe(struct platform_device *pdev)
+> +{
+> + =A0 =A0 =A0 struct nomadik_nand_platform_data *pdata =3D pdev->dev.plat=
+form_data;
+> + =A0 =A0 =A0 struct nomadik_nand_host *host;
+> + =A0 =A0 =A0 struct mtd_info *mtd;
+> + =A0 =A0 =A0 struct nand_chip *nand;
+> + =A0 =A0 =A0 struct resource *res;
+> + =A0 =A0 =A0 int ret =3D 0;
+> +
+> + =A0 =A0 =A0 /* Allocate memory for the device structure (and zero it) *=
+/
+> + =A0 =A0 =A0 host =3D kzalloc(sizeof(struct nomadik_nand_host), GFP_KERN=
+EL);
+> + =A0 =A0 =A0 if (!host) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_err(&pdev->dev, "Failed to allocate dev=
+ice structure.\n");
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -ENOMEM;
+> + =A0 =A0 =A0 }
+> +
+> + =A0 =A0 =A0 /* Call the client's init function, if any */
+> + =A0 =A0 =A0 if (pdata->init && (ret =3D pdata->init()) < 0) {
 
->From d89852b4f75eec9d270d446b164ce12e77b50e50 Mon Sep 17 00:00:00 2001
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Date: Fri, 24 Jul 2009 16:18:04 +0300
-Subject: [PATCH] UBI: improve NOR flash erasure quirk
+'checkpatch.pl' here... (do not use assignment in if condition)
 
-More testing of NOR flash against power cuts showed that sometimes
-eraseblocks may be unwritable, and we cannot really invalidate
-them before erasure. But in this case the eraseblock probably
-contains garbage anyway, and we do not have to invalidate the
-headers. This assumption might be not true, but this is at least
-what I have observed. So if we cannot invalidate the headers,
-we make sure that the PEB does not contain valid VID header.
-If this is true, everything is fine, otherwise we panic.
----
- drivers/mtd/ubi/io.c |   48 ++++++++++++++++++++++++++++++++----------------
- 1 files changed, 32 insertions(+), 16 deletions(-)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_err(&pdev->dev, "Init function failed\n=
+");
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto err;
+> + =A0 =A0 =A0 }
+> +
+> + =A0 =A0 =A0 /* ioremap three regions */
+> + =A0 =A0 =A0 res =3D platform_get_resource_byname(pdev, IORESOURCE_MEM, =
+"nand_addr");
+> + =A0 =A0 =A0 if (!res) {ret =3D -EIO; goto err_unmap; }
+> + =A0 =A0 =A0 host->addr_va =3D ioremap(res->start, res->end - res->start=
+ + 1);
+> +
+> + =A0 =A0 =A0 res =3D platform_get_resource_byname(pdev, IORESOURCE_MEM, =
+"nand_data");
+> + =A0 =A0 =A0 if (!res) {ret =3D -EIO; goto err_unmap; }
+> + =A0 =A0 =A0 host->data_va =3D ioremap(res->start, res->end - res->start=
+ + 1);
+> +
+> + =A0 =A0 =A0 res =3D platform_get_resource_byname(pdev, IORESOURCE_MEM, =
+"nand_cmd");
+> + =A0 =A0 =A0 if (!res) {ret =3D -EIO; goto err_unmap; }
+> + =A0 =A0 =A0 host->cmd_va =3D ioremap(res->start, res->end - res->start =
++ 1);
 
-diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
-index b693138..8aa51e7 100644
---- a/drivers/mtd/ubi/io.c
-+++ b/drivers/mtd/ubi/io.c
-@@ -476,30 +476,46 @@ out:
-  */
- static int nor_erase_prepare(struct ubi_device *ubi, int pnum)
- {
--	int err;
-+	int err, err1;
- 	size_t written;
- 	loff_t addr;
- 	uint32_t data = 0;
-+	struct ubi_vid_hdr vid_hdr;
- 
- 	addr = (loff_t)pnum * ubi->peb_size + ubi->vid_hdr_aloffset;
- 	err = ubi->mtd->write(ubi->mtd, addr, 4, &written, (void *)&data);
--	if (err) {
--		ubi_err("error %d while writing 4 bytes to PEB %d:%d, written "
--			"%zd bytes", err, pnum, ubi->vid_hdr_aloffset, written);
--		ubi_dbg_dump_stack();
--		return err;
-+	if (!err) {
-+		addr -= ubi->vid_hdr_aloffset;
-+		err = ubi->mtd->write(ubi->mtd, addr, 4, &written,
-+				      (void *)&data);
-+		if (!err)
-+			return 0;
- 	}
- 
--	addr -= ubi->vid_hdr_aloffset;
--	err = ubi->mtd->write(ubi->mtd, addr, 4, &written, (void *)&data);
--	if (err) {
--		ubi_err("error %d while writing 4 bytes to PEB %d:%d, written "
--			"%zd bytes", err, pnum, 0, written);
--		ubi_dbg_dump_stack();
--		return err;
--	}
-+	/*
-+	 * We failed to write to the media. This was observed with Spansion
-+	 * S29GL512N NOR flash. Most probably the eraseblock erasure was
-+	 * interrupted at a very inappropriate moment, so it became unwritable.
-+	 * In this case we probably anyway have garbage in this PEB.
-+	 */
-+	err1 = ubi_io_read_vid_hdr(ubi, pnum, &vid_hdr, 0);
-+	if (err1 == UBI_IO_BAD_VID_HDR)
-+		/*
-+		 * The VID header is corrupted, so we can safely erase this
-+		 * PEB and not afraid that it will be treated as a valid PEB in
-+		 * case of an unclean reboot.
-+		 */
-+		return 0;
- 
--	return 0;
-+	/*
-+	 * The PEB contains a valid VID header, but we cannot invalidate it.
-+	 * Supposedly the flash media or the driver is screwed up, so return an
-+	 * error.
-+	 */
-+	ubi_err("cannot invalidate PEB %d, write returned %d read returned %d",
-+		pnum, err, err1);
-+	ubi_dbg_dump_flash(ubi, pnum, 0, ubi->peb_size);
-+	return -EIO;
- }
- 
- /**
--- 
-1.6.0.6
+'checkpatch.pl' here... (trailing statements should be on next line)
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+> +
+> + =A0 =A0 =A0 if (!host->addr_va || !host->data_va || !host->cmd_va) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D -ENOMEM;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto err_unmap;
+> + =A0 =A0 =A0 }
+> +
+> + =A0 =A0 =A0 /* Link all private pointers */
+> + =A0 =A0 =A0 mtd =3D &host->mtd;
+> + =A0 =A0 =A0 nand =3D &host->nand;
+> + =A0 =A0 =A0 mtd->priv =3D nand;
+> + =A0 =A0 =A0 nand->priv =3D host;
+> +
+> + =A0 =A0 =A0 host->mtd.owner =3D THIS_MODULE;
+> + =A0 =A0 =A0 nand->IO_ADDR_R =3D host->data_va;
+> + =A0 =A0 =A0 nand->IO_ADDR_W =3D host->data_va;
+> + =A0 =A0 =A0 nand->cmd_ctrl =3D nomadik_cmd_ctrl;
+> +
+> + =A0 =A0 =A0 /*
+> + =A0 =A0 =A0 =A0* This stanza declares ECC_HW but uses soft routines. It=
+'s because
+> + =A0 =A0 =A0 =A0* HW claims to make the calculation but not the correcti=
+on. However,
+> + =A0 =A0 =A0 =A0* I haven't managed to get the desired data out of it un=
+til now.
+> + =A0 =A0 =A0 =A0*/
+> + =A0 =A0 =A0 nand->ecc.mode =3D NAND_ECC_HW;
+
+this can be 'NAND_ECC_SOFT' here... then
+
+> + =A0 =A0 =A0 nand->ecc.calculate =3D nand_calculate_ecc;
+> + =A0 =A0 =A0 nand->ecc.correct =3D nand_correct_data;
+you need not to do these here.
+
+> + =A0 =A0 =A0 nand->ecc.hwctl =3D nomadik_ecc_control;
+> + =A0 =A0 =A0 nand->ecc.size =3D 512;
+> + =A0 =A0 =A0 nand->ecc.bytes =3D 3;
+> +
+> + =A0 =A0 =A0 nand->options =3D pdata->options;
+> +
+> + =A0 =A0 =A0 /*
+> + =A0 =A0 =A0 =A0* Scan to find existance of the device
+> + =A0 =A0 =A0 =A0*/
+> + =A0 =A0 =A0 if (nand_scan(&host->mtd, 1)) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D -ENXIO;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto err_unmap;
+> + =A0 =A0 =A0 }
+> +
+> +#ifdef CONFIG_MTD_PARTITIONS
+> + =A0 =A0 =A0 add_mtd_partitions(&host->mtd, pdata->parts, pdata->nparts)=
+;
+> +#else
+> + =A0 =A0 =A0 pr_info("Registering %s as whole device\n", mtd->name);
+> + =A0 =A0 =A0 add_mtd_device(mtd);
+> +#endif
+> +
+> + =A0 =A0 =A0 platform_set_drvdata(pdev, host);
+> + =A0 =A0 =A0 return 0;
+> +
+> + err_unmap:
+> + =A0 =A0 =A0 if (host->cmd_va) iounmap(host->cmd_va);
+> + =A0 =A0 =A0 if (host->data_va) iounmap(host->data_va);
+> + =A0 =A0 =A0 if (host->addr_va) iounmap(host->addr_va);
+
+'checkpatch.pl' here... (trailing statements should be on next line)
+
+-vimal
