@@ -1,22 +1,21 @@
-Received: from mail-qy0-f176.google.com ([209.85.221.176])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MUU0u-0004Nt-7o
-	for linux-mtd@lists.infradead.org; Fri, 24 Jul 2009 23:17:24 +0000
-Received: by qyk6 with SMTP id 6so2645163qyk.28
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 24 Jul 2009 16:17:17 -0700 (PDT)
+Received: from mail2.shareable.org ([80.68.89.115])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MUUMV-0002oR-OF
+	for linux-mtd@lists.infradead.org; Fri, 24 Jul 2009 23:39:44 +0000
+Date: Sat, 25 Jul 2009 00:39:36 +0100
+From: Jamie Lokier <jamie@shareable.org>
+To: Adrian Hunter <adrian.hunter@nokia.com>
+Subject: Re: UBIFS robustness questions
+Message-ID: <20090724233936.GP27755@shareable.org>
+References: <200907241600.54640.manningc2@actrix.gen.nz>
+	<4A695819.7000705@nokia.com> <4A697DCC.2010302@nokia.com>
+	<4A6986FC.6070006@nokia.com>
 MIME-Version: 1.0
-Sender: kyungmin78@gmail.com
-In-Reply-To: <4A69D3BE.7070900@gmail.com>
-References: <20090721025303.GA3693@july> <4A69D3BE.7070900@gmail.com>
-Date: Sat, 25 Jul 2009 08:17:17 +0900
-Message-ID: <9c9fda240907241617v64be8d38gc70a86c210ab0a7f@mail.gmail.com>
-Subject: Re: [PATCH] OneNAND: Runtime badblock check support
-From: Kyungmin Park <kmpark@infradead.org>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4A6986FC.6070006@nokia.com>
+Cc: Charles Manning <manningc2@actrix.gen.nz>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +25,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Jul 25, 2009 at 12:31 AM, Artem Bityutskiy<dedekind1@gmail.com> wrote:
-> On 07/21/2009 05:53 AM, Kyungmin Park wrote:
->>
->> At bootloader, we don't need to read full page. It takes too long time.
->> Instead it only read pages required for boot.
->>
->> Signed-off-by: Kyungmin Park<kyungmin.park@samsung.com>
->
-> I still did not get it, why you change boot-loader behavior by patching
-> the kernel. Or you use the kernel as a bootloader?
+Adrian Hunter wrote:
+> Sorry to drag this out but it seems like it can be done with symlinks
 
-Since code consistency. I also send a same patch to u-boot.
-actually u-boot OneNAND code are almost same as kernel one.
+That's right.  It should be powerfail safe.
+Don't forget to "rm -fr version1" at the end :-)
 
->
-> Also, the mtd-2.6.git tree does not havemtd/onenand/samsung.c
+However, if you are looking to use this for atomic update of a
+directory while there are programs still running which use the
+directory, it won't work.
 
-Right, samsung.c is for s3c64xx and s5pc100 SoCs. I will send it after
-more tests.
+You can't delete the old directory, because programs might still be
+inside it...
 
->
-> Anyway, could you please re-send the patch with a nice description, for
-> silly people like me :-)
+It's not even always safe to kill and restart the programs after
+renaming the symlink, because they might read some files from the new
+directory before they've finished reading other files from the old
+directory.
 
-Sure.
+Regarding powerfail safety, it means you might have to defer deleting
+the old directory until some major system action, like the next reboot.
 
-Thank you,
-Kyungmin Park
+-- Jamie
