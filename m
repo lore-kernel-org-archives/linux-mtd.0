@@ -1,18 +1,18 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MUDkM-0007jw-1U
-	for linux-mtd@lists.infradead.org; Fri, 24 Jul 2009 05:55:13 +0000
-Message-ID: <4A694C3C.4010108@gmail.com>
-Date: Fri, 24 Jul 2009 08:53:00 +0300
+	id 1MUDtB-0000v4-Go
+	for linux-mtd@lists.infradead.org; Fri, 24 Jul 2009 06:04:21 +0000
+Message-ID: <4A694EB0.9040105@gmail.com>
+Date: Fri, 24 Jul 2009 09:03:28 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 MIME-Version: 1.0
-To: erno@gulp.u--3.com
-Subject: Re: UBIFS fails & crashes on SheevaPlug
-References: <20090723185928.GA1612@gulp.u--3.com>
-In-Reply-To: <20090723185928.GA1612@gulp.u--3.com>
+To: Charles Manning <manningc2@actrix.gen.nz>
+Subject: Re: UBIFS robustness questions
+References: <200907241600.54640.manningc2@actrix.gen.nz>
+In-Reply-To: <200907241600.54640.manningc2@actrix.gen.nz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Cc: debian-arm@lists.debian.org, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,49 +22,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/23/2009 09:59 PM, erno@gulp.u--3.com wrote:
-> Hello,
+On 07/24/2009 07:00 AM, Charles Manning wrote:
+> This is probably documented somewhere but I could not find it...
 >
-> I installed Debian on my SheevaPlug following instructions at
-> <http://www.cyrius.com/debian/kirkwood/sheevaplug/>  and everything
-> seemed to work fine until...
->
-> I wanted to try UBIFS on the built-in flash and followed
-> the instructions for formatting the internal flash
-> at http://www.plugcomputer.org/plugwiki/index.php/Enabling_UBIFS
-> except I made an empty image (no -r parameter for mkfs.ubifs).
-> After the ubiattach command it complained about a read-only fs
-> and some error messages from the kernel had appeared in the log:
->
-> [  190.500000] UBI: physical eraseblock size:   131072 bytes (128 KiB)
-> [  190.510000] UBI: logical eraseblock size:    129024 bytes
-> [  190.520000] UBI: smallest flash I/O unit:    2048
-> [  190.520000] UBI: sub-page size:              512
-> [  190.530000] UBI: VID header offset:          512 (aligned 512)
-> [  190.530000] UBI: data offset:                2048
-> [  191.630000] UBI error: ubi_io_write: error -5 while writing 512 bytes
-> to PEB 4054:512, written 0 bytes
-> [  191.630000] UBI warning: ubi_eba_write_leb: failed to write VID
-> header to LEB 2147479551:0, PEB 4054
-> [  191.640000] UBI: try another PEB
-> [  191.650000] UBI error: ubi_io_write: error -5 while writing 512 bytes
-> to PEB 4053:512, written 0 bytes
-> [  191.660000] UBI warning: ubi_eba_write_leb: failed to write VID
-> header to LEB 2147479551:0, PEB 4053
-> [  191.670000] UBI: try another PEB
-> [  191.670000] UBI error: ubi_io_write: error -5 while writing 512 bytes
-> to PEB 4052:512, written 0 bytes
-> [  191.680000] UBI warning: ubi_eba_write_leb: failed to write VID
-> header to LEB 2147479551:0, PEB 4052
-> [  191.690000] UBI: try another PEB
-> [  191.690000] UBI error: ubi_io_write: error -5 while writing 512 bytes
-> to PEB 4051:512, written 0 bytes
-> [  191.700000] UBI warning: ubi_eba_write_leb: failed to write VID
-> header to LEB 2147479551:0, PEB 4051
-> [  191.710000] UBI warning: ubi_ro_mode: switch to read-only mode
-> [  191.720000] UBI error: autoresize: cannot auto-resize volume 0
+> What operations in UBIFS are robust to power failure and which are not?
 
-http://www.linux-mtd.infradead.org/faq/ubi.html#L_subpage_verify_fail
+Hi, did you look through these:
+
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_writeback
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_writebuffer
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_sync_exceptions
+http://www.linux-mtd.infradead.org/faq/ubifs.html#L_empty_file
+
+>
+> I know for example that writing a file into flash does not mean it has been
+> completely written to flash until after a sync, but what about other
+> operations such as mv?
+>
+> The reasonn I'm asking this is that I want to be able to "hot-swap" a
+> directory of files without losing any file state.
+
+Err, if you do sync() and the like properly, you should not loose anything.
+
+> What I'm considerings doing is something like:
+>
+> Start with ~/runtime having a sane set of files
+>
+> untar etc into ~/updated
+> sync
+> mv ~/updated ~/run-time
+> sync
+>
+> What is unacceptable is that, at any time, a power failure/reboot results in
+> ~/runtime having a non-sane set of files.
+
+Err, this will just move "updated" to the "runtime" directory. Is this what
+you mean? But the above must be safe.
+
+> * Does the above sequence look safe?
+> * Is the second sync required?
+
+It is required if you want to make sure that the directory has really been renamed,
+otherwise the renaming data will sit in the write-buffer for some time, and in case
+of a power you end up with "updated" at the old place, but nothing should be
+corrupted. IOW, you do not have to, but may want to.
 
 -- 
 Best Regards,
