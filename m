@@ -1,20 +1,19 @@
 Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MULkf-0003Z2-BZ
-	for linux-mtd@lists.infradead.org; Fri, 24 Jul 2009 14:28:05 +0000
-Received: from esebh105.NOE.Nokia.com (esebh105.ntc.nokia.com [172.21.138.211])
-	by mgw-mx09.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
-	n6OERDE2021295
-	for <linux-mtd@lists.infradead.org>; Fri, 24 Jul 2009 09:27:46 -0500
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] UBI: compatible fallback in absense of sequence numbers
-Date: Fri, 24 Jul 2009 19:18:51 +0300
-Message-Id: <1248452331-18969-1-git-send-email-dedekind@infradead.org>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	Phil Carmody <ext-phil.2.carmody@nokia.com>,
-	Adrian Hunter <ext-adrian.hunter@nokia.com>,
-	Adrian Hunter <Adrian.Hunter@nokia.com>
+	id 1MULva-0001EG-Vz
+	for linux-mtd@lists.infradead.org; Fri, 24 Jul 2009 14:39:22 +0000
+Message-ID: <4A69C763.1070008@gmail.com>
+Date: Fri, 24 Jul 2009 17:38:27 +0300
+From: Artem Bityutskiy <dedekind1@gmail.com>
+MIME-Version: 1.0
+To: Erno Kuusela <erno@gulp.u--3.com>
+Subject: Re: UBIFS fails & crashes on SheevaPlug
+References: <20090723185928.GA1612@gulp.u--3.com> <4A694C3C.4010108@gmail.com>
+	<20090724131241.GC1792@gulp.u--3.com>
+In-Reply-To: <20090724131241.GC1792@gulp.u--3.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: debian-arm@lists.debian.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,49 +23,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Adrian Hunter <Adrian.Hunter@nokia.com>
+On 07/24/2009 04:12 PM, Erno Kuusela wrote:
+> Ah, ok. I did google for that error message but searching for
+> "ubi_io_write: error -5" doesn't yield anything useful for the first
+> screenful of results..
+>
+> So workaround would be to disable CONFIG_MTD_NAND_VERIFY_WRITE or to
+> follow the "ignore sub pages" entry from the faq...
+>
+> Indeed the latter seems to work, if I give --vid-hdr-offset 2048 option
+> to the ubinize, ubiformat&  ubiattach commands. Thanks!
 
-Fall back onto thinking everything's OK if either of the sequence
-numbers we are asked to compare is zero, which is what was used
-before sequence numbers were introduced.
+It should work without this. Your flash driver reports that your flash
+supports 512-byte sub-pages. This means you may save your flash space
+and put both UBI headers to the first NAND page. See this explanation:
 
-[ Artem: modified the patch to be applicable to upstream UBI, added
-        big comment ]
+http://www.linux-mtd.infradead.org/doc/ubi.html#L_overhead
 
-Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
-Signed-off-by: Phil Carmody <ext-phil.2.carmody@nokia.com>
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- drivers/mtd/ubi/scan.c |   13 ++++++++++++-
- 1 files changed, 12 insertions(+), 1 deletions(-)
+If you follow links from this little section, you should grasp the picture.
 
-diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
-index be4994b..e7161ad 100644
---- a/drivers/mtd/ubi/scan.c
-+++ b/drivers/mtd/ubi/scan.c
-@@ -782,11 +782,22 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
- 			return -EINVAL;
- 		}
- 
-+		/*
-+		 * Make sure that all PEBs have the same image sequence number.
-+		 * This allows us to detect situations when users flash UBI
-+		 * images incorrectly, so that the flash has the new UBI image
-+		 * and leftovers from the old one. This feature was added
-+		 * relatively recently, and the sequence number was always
-+		 * zero, because old UBI implementations always set it to zero.
-+		 * For this reasons, we do not panic if some PEBs have zero
-+		 * sequence number, while other PEBs have non-zero sequence
-+		 * number.
-+		 */
- 		image_seq = be32_to_cpu(ech->image_seq);
- 		if (!si->image_seq_set) {
- 			ubi->image_seq = image_seq;
- 			si->image_seq_set = 1;
--		} else if (ubi->image_seq != image_seq) {
-+		} else if (ubi->image_seq && ubi->image_seq != image_seq) {
- 			ubi_err("bad image sequence number %d in PEB %d, "
- 				"expected %d", image_seq, pnum, ubi->image_seq);
- 			ubi_dbg_dump_ec_hdr(ech);
+So, disabling this option should help without the --vid-hdr-offset 2048
+stuff. If it does not, then you should fix your driver.
+
+> Maybe it would be better to disable the verify&  subpages combo
+> until the bug is fixed? Especially since it crashes the kernel...
+
+May be, but it is better to just fix this.
+
+> Also, ubiformat mentioned 1400+ "bad" eraseblocks, what should I make of
+> that? Is it really failed flash cells, just some blocks reserved for
+> u-boot and stuff, or blocks traumatized from my earlier misadventures
+> with ubiformat parameters?
+
+Hmm, this is not normal. What is the version of ubiformat you use? Could
+you try the latest one from the git tree:
+
+http://www.linux-mtd.infradead.org/doc/ubi.html#L_usptools
+
+Just in case, here are mtd-utils compile issues FAQ:
+http://www.linux-mtd.infradead.org/faq/ubifs.html#L_mkfs_ubifs_comp
+or you may always cd to ubi-utils and compile only UBI utils.
+
+And what UBI is printing? See "UBI: number of bad PEBs:" message.
+
+And please, send the exact ubiformat pritns.
+
 -- 
-1.6.0.6
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
