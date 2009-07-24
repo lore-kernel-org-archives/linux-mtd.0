@@ -1,21 +1,33 @@
-Received: from mail2.gnudd.com ([213.203.150.91] helo=mail.gnudd.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MUJ10-00004u-1w
-	for linux-mtd@lists.infradead.org; Fri, 24 Jul 2009 11:32:47 +0000
-Date: Fri, 24 Jul 2009 13:32:31 +0200
-From: Alessandro Rubini <rubini-list@gnudd.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH V5 1/2] Nand driver for Nomadik 8815 SoC (on NHK8815 board)
-Message-ID: <50ed4996479c95b93714ac814608d5f0db85238d.1248434636.git.rubini@
-	unipv.it>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Sender: rubini-list@gnudd.com
-References: <cover.1248434635.git.rubini@unipv.it>
-In-Reply-To: <cover.1248434635.git.rubini@unipv.it>
-Cc: STEricsson_nomadik_linux@list.st.com, linux@arm.linux.org.uk,
-	andrea.gallo@stericsson.com
+	id 1MUJSt-0007Re-RO
+	for linux-mtd@lists.infradead.org; Fri, 24 Jul 2009 12:01:37 +0000
+Subject: Re: UBIFS Corrupt during power failure
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Eric Holmberg <Eric_Holmberg@Trimble.com>
+In-Reply-To: <4A69596F.8070300@gmail.com>
+References: <1246627771.20721.191.camel@localhost.localdomain>
+	<7207AAC68CE347458026863515A07DA102901F3C@usw-am-xch-02.am.trimblecorp.net>
+	<1246629940.20721.219.camel@localhost.localdomain>
+	<7207AAC68CE347458026863515A07DA102901F9C@usw-am-xch-02.am.trimblecorp.net>
+	<1246633131.20721.224.camel@localhost.localdomain>
+	<1246854654.20721.271.camel@localhost.localdomain>
+	<1246855913.20721.287.camel@localhost.localdomain>
+	<1246862635.20721.291.camel@localhost.localdomain>
+	<1246949184.20721.302.camel@localhost.localdomain>
+	<C77C279BA71FD14985DC8E75FB265AB703AA85C0@usw-am-xch-02.am.trimblecorp.net>
+	<20090715205217.GH3056@shareable.org>
+	<C77C279BA71FD14985DC8E75FB265AB703B47FC9@usw-am-xch-02.am.trimblecorp.net>
+	<4A69596F.8070300@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 24 Jul 2009 15:00:25 +0300
+Message-Id: <1248436825.24676.70.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Jamie Lokier <jamie@shareable.org>, linux-mtd@lists.infradead.org,
+	Urs Muff <urs_muff@Trimble.com>, Stefan Roese <sr@denx.de>,
+	Nicolas Pitre <nico@cam.org>, Adrian Hunter <adrian.hunter@nokia.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,495 +37,215 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Alessandro Rubini <rubini@unipv.it>
+On Fri, 2009-07-24 at 09:49 +0300, Artem Bityutskiy wrote:
+> Further tests revealed that the fix needs some tweaks.
+> 
+> I get the following error with the latest UBI containing that "write before
+> erase" change:
+> 
+> UBI: background thread "ubi_bgt0d" started, PID 736
+> MTD do_write_buffer(): software timeout
+> UBI error: nor_erase_prepare: error -5 while writing 4 bytes to PEB 365:64, written 0 bytes
+> Call Trace:
+> [cfa07ec0] [c0006cf8] show_stack+0x44/0x16c (unreliable)
+> [cfa07f00] [c01b8004] ubi_io_sync_erase+0x234/0x39c
+> [cfa07f40] [c01b92d4] erase_worker+0x8c/0x4b8
+> [cfa07f70] [c01b894c] do_work+0xac/0x124
+> [cfa07f90] [c01b9b90] ubi_thread+0xc0/0x138
+> [cfa07fd0] [c0038ab0] kthread+0x4c/0x88
+> [cfa07ff0] [c000eb38] kernel_thread+0x4c/0x68
+> 
+> So apparently it is possible to put NOR to the state when you cannot write
+> to it. I wonder if this is SW bug or a HW feature.
 
+OK, I've fixed this by:
+1. Not panicking when the UBI headers cannot be invalidated because of
+   write failures.
+2. Reading the flash and making sure the VID header is anyway corrupted.
+3. If it is corrupted, everything is fine and we proceed.
+4. If it is not, we panic. Presumably this should not happen, but I'm
+   not sure. Anyway, these changes let me proceed further. The patches
+   I used are inlined. I've also pushed them to ubi-2.6.git/master.
 
-Signed-off-by: Alessandro Rubini <rubini@unipv.it>
-Acked-by: Andrea Gallo <andrea.gallo@stericsson.com>
+>From 5088eafafc6c948a29b8371731efe373d034d989 Mon Sep 17 00:00:00 2001
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Date: Fri, 24 Jul 2009 15:31:33 +0300
+Subject: [PATCH] UBI: introduce flash dump helper
+
+Useful for debugging problems, compiled in only if UBI debugging
+is enabled. This patch also makes the UBI writing function dump
+the flash if it fails to write.
+
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
+ drivers/mtd/ubi/debug.c |   32 ++++++++++++++++++++++++++++++++
+ drivers/mtd/ubi/debug.h |    2 ++
+ drivers/mtd/ubi/io.c    |    1 +
+ 3 files changed, 35 insertions(+), 0 deletions(-)
 
-[sorry for reposting to the Cc: people, I mistyped mtd address]
-
- arch/arm/configs/nhk8815_defconfig        |    2 +-
- arch/arm/mach-nomadik/board-nhk8815.c     |   92 +++++++++++
- arch/arm/mach-nomadik/include/mach/fsmc.h |   29 ++++
- arch/arm/mach-nomadik/include/mach/nand.h |   16 ++
- drivers/mtd/nand/Kconfig                  |    6 +
- drivers/mtd/nand/Makefile                 |    1 +
- drivers/mtd/nand/nomadik_nand.c           |  249 +++++++++++++++++++++++++++++
- 7 files changed, 394 insertions(+), 1 deletions(-)
- create mode 100644 arch/arm/mach-nomadik/include/mach/fsmc.h
- create mode 100644 arch/arm/mach-nomadik/include/mach/nand.h
- create mode 100644 drivers/mtd/nand/nomadik_nand.c
-
-diff --git a/arch/arm/configs/nhk8815_defconfig b/arch/arm/configs/nhk8815_defconfig
-index 9bb45b9..600cb27 100644
---- a/arch/arm/configs/nhk8815_defconfig
-+++ b/arch/arm/configs/nhk8815_defconfig
-@@ -498,7 +498,7 @@ CONFIG_MTD_CFI_I2=y
- # CONFIG_MTD_DOC2001PLUS is not set
- CONFIG_MTD_NAND=y
- CONFIG_MTD_NAND_VERIFY_WRITE=y
--# CONFIG_MTD_NAND_ECC_SMC is not set
-+CONFIG_MTD_NAND_ECC_SMC=y
- # CONFIG_MTD_NAND_MUSEUM_IDS is not set
- # CONFIG_MTD_NAND_GPIO is not set
- CONFIG_MTD_NAND_IDS=y
-diff --git a/arch/arm/mach-nomadik/board-nhk8815.c b/arch/arm/mach-nomadik/board-nhk8815.c
-index 79bdea9..3fde972 100644
---- a/arch/arm/mach-nomadik/board-nhk8815.c
-+++ b/arch/arm/mach-nomadik/board-nhk8815.c
-@@ -16,12 +16,103 @@
- #include <linux/amba/bus.h>
- #include <linux/interrupt.h>
- #include <linux/gpio.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/nand.h>
-+#include <linux/mtd/partitions.h>
-+#include <asm/sizes.h>
-+#include <asm/io.h>
- #include <asm/mach-types.h>
- #include <asm/mach/arch.h>
- #include <asm/mach/irq.h>
- #include <mach/setup.h>
-+#include <mach/nand.h>
-+#include <mach/fsmc.h>
- #include "clock.h"
+diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+index 54b0186..4876977 100644
+--- a/drivers/mtd/ubi/debug.c
++++ b/drivers/mtd/ubi/debug.c
+@@ -196,4 +196,36 @@ void ubi_dbg_dump_mkvol_req(const struct ubi_mkvol_req *req)
+ 	printk(KERN_DEBUG "\t1st 16 characters of name: %s\n", nm);
+ }
  
-+/* These adresses span 16MB, so use three individual pages */
-+static struct resource nhk8815_nand_resources[] = {
-+	{
-+		.name = "nand_addr",
-+		.start = NAND_IO_ADDR,
-+		.end = NAND_IO_ADDR + 0xfff,
-+		.flags = IORESOURCE_MEM,
-+	}, {
-+		.name = "nand_cmd",
-+		.start = NAND_IO_CMD,
-+		.end = NAND_IO_CMD + 0xfff,
-+		.flags = IORESOURCE_MEM,
-+	}, {
-+		.name = "nand_data",
-+		.start = NAND_IO_DATA,
-+		.end = NAND_IO_DATA + 0xfff,
-+		.flags = IORESOURCE_MEM,
-+	}
-+};
-+
-+static int nhk8815_nand_init(void)
-+{
-+	/* FSMC setup for nand chip select (8-bit nand in 8815NHK) */
-+	writel(0x0000000E, FSMC_PCR(0));
-+	writel(0x000D0A00, FSMC_PMEM(0));
-+	writel(0x00100A00, FSMC_PATT(0));
-+
-+	/* enable access to the chip select area */
-+	writel(readl(FSMC_PCR(0)) | 0x04, FSMC_PCR(0));
-+
-+	return 0;
-+}
-+
-+/*
-+ * These partitions are the same as those used in the 2.6.20 release
-+ * shipped by the vendor; the first two partitions are mandated
-+ * by the boot ROM, and the bootloader area is somehow oversized...
++/**
++ * ubi_dbg_dump_flash - dump a region of flash.
++ * @ubi: UBI device description object
++ * @pnum: the physical eraseblock number to dump
++ * @offset: the starting offset within the physical eraseblock to dump
++ * @len: the length of the region to dump
 + */
-+static struct mtd_partition nhk8815_partitions[] = {
-+	{
-+		.name	= "X-Loader(NAND)",
-+		.offset = 0,
-+		.size	= SZ_256K,
-+	}, {
-+		.name	= "MemInit(NAND)",
-+		.offset	= MTDPART_OFS_APPEND,
-+		.size	= SZ_256K,
-+	}, {
-+		.name	= "BootLoader(NAND)",
-+		.offset	= MTDPART_OFS_APPEND,
-+		.size	= SZ_2M,
-+	}, {
-+		.name	= "Kernel zImage(NAND)",
-+		.offset	= MTDPART_OFS_APPEND,
-+		.size	= 3 * SZ_1M,
-+	}, {
-+		.name	= "Root Filesystem(NAND)",
-+		.offset	= MTDPART_OFS_APPEND,
-+		.size	= 22 * SZ_1M,
-+	}, {
-+		.name	= "User Filesystem(NAND)",
-+		.offset	= MTDPART_OFS_APPEND,
-+		.size	= MTDPART_SIZ_FULL,
-+	}
-+};
-+
-+static struct nomadik_nand_platform_data nhk8815_nand_data = {
-+	.parts		= nhk8815_partitions,
-+	.nparts		= ARRAY_SIZE(nhk8815_partitions),
-+	.options	= NAND_COPYBACK | NAND_CACHEPRG | NAND_NO_PADDING \
-+			| NAND_NO_READRDY | NAND_NO_AUTOINCR,
-+	.init		= nhk8815_nand_init,
-+};
-+
-+static struct platform_device nhk8815_nand_device = {
-+	.name		= "nomadik_nand",
-+	.dev		= {
-+				.platform_data = &nhk8815_nand_data,
-+	},
-+	.resource	= nhk8815_nand_resources,
-+	.num_resources	= ARRAY_SIZE(nhk8815_nand_resources),
-+};
-+
-+
- #define __MEM_4K_RESOURCE(x) \
- 	.res = {.start = (x), .end = (x) + SZ_4K - 1, .flags = IORESOURCE_MEM}
- 
-@@ -81,6 +172,7 @@ static int __init nhk8815_eth_init(void)
- device_initcall(nhk8815_eth_init);
- 
- static struct platform_device *nhk8815_platform_devices[] __initdata = {
-+	&nhk8815_nand_device,
- 	&nhk8815_eth_device,
- 	/* will add more devices */
- };
-diff --git a/arch/arm/mach-nomadik/include/mach/fsmc.h b/arch/arm/mach-nomadik/include/mach/fsmc.h
-new file mode 100644
-index 0000000..8c2c051
---- /dev/null
-+++ b/arch/arm/mach-nomadik/include/mach/fsmc.h
-@@ -0,0 +1,29 @@
-+
-+/* Definitions for the Nomadik FSMC "Flexible Static Memory controller" */
-+
-+#ifndef __ASM_ARCH_FSMC_H
-+#define __ASM_ARCH_FSMC_H
-+
-+#include <mach/hardware.h>
-+/*
-+ * Register list
-+ */
-+
-+/* bus control reg. and bus timing reg. for CS0..CS3 */
-+#define FSMC_BCR(x)     (NOMADIK_FSMC_VA + (x << 3))
-+#define FSMC_BTR(x)     (NOMADIK_FSMC_VA + (x << 3) + 0x04)
-+
-+/* PC-card and NAND:
-+ * PCR = control register
-+ * PMEM = memory timing
-+ * PATT = attribute timing
-+ * PIO = I/O timing
-+ * PECCR = ECC result
-+ */
-+#define FSMC_PCR(x)     (NOMADIK_FSMC_VA + ((2 + x) << 5) + 0x00)
-+#define FSMC_PMEM(x)    (NOMADIK_FSMC_VA + ((2 + x) << 5) + 0x08)
-+#define FSMC_PATT(x)    (NOMADIK_FSMC_VA + ((2 + x) << 5) + 0x0c)
-+#define FSMC_PIO(x)     (NOMADIK_FSMC_VA + ((2 + x) << 5) + 0x10)
-+#define FSMC_PECCR(x)   (NOMADIK_FSMC_VA + ((2 + x) << 5) + 0x14)
-+
-+#endif /* __ASM_ARCH_FSMC_H */
-diff --git a/arch/arm/mach-nomadik/include/mach/nand.h b/arch/arm/mach-nomadik/include/mach/nand.h
-new file mode 100644
-index 0000000..c3c8254
---- /dev/null
-+++ b/arch/arm/mach-nomadik/include/mach/nand.h
-@@ -0,0 +1,16 @@
-+#ifndef __ASM_ARCH_NAND_H
-+#define __ASM_ARCH_NAND_H
-+
-+struct nomadik_nand_platform_data {
-+	struct mtd_partition *parts;
-+	int nparts;
-+	int options;
-+	int (*init) (void);
-+	int (*exit) (void);
-+};
-+
-+#define NAND_IO_DATA	0x40000000
-+#define NAND_IO_CMD	0x40800000
-+#define NAND_IO_ADDR	0x41000000
-+
-+#endif				/* __ASM_ARCH_NAND_H */
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index ce96c09..b9fa465 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -426,6 +426,12 @@ config MTD_NAND_MXC
- 	  This enables the driver for the NAND flash controller on the
- 	  MXC processors.
- 
-+config MTD_NAND_NOMADIK
-+	tristate "ST Nomadik 8815 NAND support"
-+	depends on ARCH_NOMADIK
-+	help
-+	  Driver for the NAND flash controller on the Nomadik, with ECC.
-+
- config MTD_NAND_SH_FLCTL
- 	tristate "Support for NAND on Renesas SuperH FLCTL"
- 	depends on MTD_NAND && SUPERH && CPU_SUBTYPE_SH7723
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index f3a786b..0fe9a0c 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -40,5 +40,6 @@ obj-$(CONFIG_MTD_NAND_SH_FLCTL)		+= sh_flctl.o
- obj-$(CONFIG_MTD_NAND_MXC)		+= mxc_nand.o
- obj-$(CONFIG_MTD_NAND_SOCRATES)		+= socrates_nand.o
- obj-$(CONFIG_MTD_NAND_TXX9NDFMC)	+= txx9ndfmc.o
-+obj-$(CONFIG_MTD_NAND_NOMADIK)		+= nomadik_nand.o
- 
- nand-objs := nand_base.o nand_bbt.o
-diff --git a/drivers/mtd/nand/nomadik_nand.c b/drivers/mtd/nand/nomadik_nand.c
-new file mode 100644
-index 0000000..dc7fb11
---- /dev/null
-+++ b/drivers/mtd/nand/nomadik_nand.c
-@@ -0,0 +1,249 @@
-+/*
-+ *  drivers/mtd/nand/nomadik_nand.c
-+ *
-+ *  Overview:
-+ *  	Driver for on-board NAND flash on Nomadik Platforms
-+ *
-+ * Copyright (C) 2007 STMicroelectronics Pvt. Ltd.
-+ * Author: Sachin Verma <sachin.verma@st.com>
-+ *
-+ * Copyright (C) 2009 Alessandro Rubini
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/types.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/nand.h>
-+#include <linux/mtd/nand_ecc.h>
-+#include <linux/platform_device.h>
-+#include <linux/mtd/partitions.h>
-+#include <linux/io.h>
-+#include <mach/nand.h>
-+#include <mach/fsmc.h>
-+
-+#include <mtd/mtd-abi.h>
-+
-+struct nomadik_nand_host {
-+	struct mtd_info		mtd;
-+	struct nand_chip	nand;
-+	void __iomem *data_va;
-+	void __iomem *cmd_va;
-+	void __iomem *addr_va;
-+	struct nand_bbt_descr *bbt_desc;
-+};
-+
-+static inline int parity(int b) /* uses low 8 bits: returns 0 or all-1 */
++void ubi_dbg_dump_flash(struct ubi_device *ubi, int pnum, int offset, int len)
 +{
-+	b = b ^ (b >> 4);
-+	b = b ^ (b >> 2);
-+	return (b ^ (b >> 1)) & 1
-+		? ~0 : 0;
-+}
++	int err;
++	size_t read;
++	void *buf;
++	loff_t addr = (loff_t)pnum * ubi->peb_size + offset;
 +
-+static struct nand_ecclayout nomadik_ecc_layout = {
-+	.eccbytes = 3 * 4,
-+	.eccpos = { /* each subpage has 16 bytes: pos 2,3,4 hosts ECC */
-+		0x02, 0x03, 0x04,
-+		0x12, 0x13, 0x14,
-+		0x22, 0x23, 0x24,
-+		0x32, 0x33, 0x34},
-+	/* let's keep bytes 5,6,7 for us, just in case we change ECC algo */
-+	.oobfree = { {0x08, 0x08}, {0x18, 0x08}, {0x28, 0x08}, {0x38, 0x08} },
-+};
-+
-+static void nomadik_ecc_control(struct mtd_info *mtd, int mode)
-+{
-+	/* No need to enable hw ecc, it's on by default */
-+}
-+
-+static void nomadik_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
-+{
-+	struct nand_chip *nand = mtd->priv;
-+	struct nomadik_nand_host *host = nand->priv;
-+
-+	if (cmd == NAND_CMD_NONE)
++	buf = vmalloc(len);
++	if (!buf)
 +		return;
-+
-+	if (ctrl & NAND_CLE)
-+		writeb(cmd, host->cmd_va);
-+	else
-+		writeb(cmd, host->addr_va);
-+}
-+
-+static int nomadik_nand_probe(struct platform_device *pdev)
-+{
-+	struct nomadik_nand_platform_data *pdata = pdev->dev.platform_data;
-+	struct nomadik_nand_host *host;
-+	struct mtd_info *mtd;
-+	struct nand_chip *nand;
-+	struct resource *res;
-+	int ret = 0;
-+
-+	/* Allocate memory for the device structure (and zero it) */
-+	host = kzalloc(sizeof(struct nomadik_nand_host), GFP_KERNEL);
-+	if (!host) {
-+		dev_err(&pdev->dev, "Failed to allocate device structure.\n");
-+		return -ENOMEM;
++	err = ubi->mtd->read(ubi->mtd, addr, len, &read, buf);
++	if (err && err != -EUCLEAN) {
++		ubi_err("error %d while reading %d bytes from PEB %d:%d, "
++			"read %zd bytes", err, len, pnum, offset, read);
++		goto out;
 +	}
 +
-+	/* Call the client's init function, if any */
-+	if (pdata->init && (ret = pdata->init()) < 0) {
-+		dev_err(&pdev->dev, "Init function failed\n");
-+		goto err;
-+	}
-+
-+	/* ioremap three regions */
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand_addr");
-+	if (!res) {ret = -EIO; goto err_unmap; }
-+	host->addr_va = ioremap(res->start, res->end - res->start + 1);
-+
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand_data");
-+	if (!res) {ret = -EIO; goto err_unmap; }
-+	host->data_va = ioremap(res->start, res->end - res->start + 1);
-+
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand_cmd");
-+	if (!res) {ret = -EIO; goto err_unmap; }
-+	host->cmd_va = ioremap(res->start, res->end - res->start + 1);
-+
-+	if (!host->addr_va || !host->data_va || !host->cmd_va) {
-+		ret = -ENOMEM;
-+		goto err_unmap;
-+	}
-+
-+	/* Link all private pointers */
-+	mtd = &host->mtd;
-+	nand = &host->nand;
-+	mtd->priv = nand;
-+	nand->priv = host;
-+
-+	host->mtd.owner = THIS_MODULE;
-+	nand->IO_ADDR_R = host->data_va;
-+	nand->IO_ADDR_W = host->data_va;
-+	nand->cmd_ctrl = nomadik_cmd_ctrl;
-+
-+	/*
-+	 * This stanza declares ECC_HW but uses soft routines. It's because
-+	 * HW claims to make the calculation but not the correction. However,
-+	 * I haven't managed to get the desired data out of it until now.
-+	 */
-+	nand->ecc.mode = NAND_ECC_HW;
-+	nand->ecc.layout = &nomadik_ecc_layout;
-+	nand->ecc.calculate = nand_calculate_ecc;
-+	nand->ecc.correct = nand_correct_data;
-+	nand->ecc.hwctl = nomadik_ecc_control;
-+	nand->ecc.size = 512;
-+	nand->ecc.bytes = 3;
-+
-+	nand->options = pdata->options;
-+
-+	/*
-+	 * Scan to find existance of the device
-+	 */
-+	if (nand_scan(&host->mtd, 1)) {
-+		ret = -ENXIO;
-+		goto err_unmap;
-+	}
-+
-+#ifdef CONFIG_MTD_PARTITIONS
-+	add_mtd_partitions(&host->mtd, pdata->parts, pdata->nparts);
-+#else
-+	pr_info("Registering %s as whole device\n", mtd->name);
-+	add_mtd_device(mtd);
-+#endif
-+
-+	platform_set_drvdata(pdev, host);
-+	return 0;
-+
-+ err_unmap:
-+	if (host->cmd_va) iounmap(host->cmd_va);
-+	if (host->data_va) iounmap(host->data_va);
-+	if (host->addr_va) iounmap(host->addr_va);
-+ err:
-+	kfree(host);
-+	return ret;
++	dbg_msg("dumping %d bytes of data from PEB %d, offset %d",
++		len, pnum, offset);
++	print_hex_dump(KERN_DEBUG, "", DUMP_PREFIX_OFFSET, 32, 1, buf, len, 1);
++out:
++	vfree(buf);
++	return;
 +}
 +
-+/*
-+ * Clean up routine
-+ */
-+static int nomadik_nand_remove(struct platform_device *pdev)
-+{
-+	struct nomadik_nand_host *host = platform_get_drvdata(pdev);
-+	struct nomadik_nand_platform_data *pdata = pdev->dev.platform_data;
-+
-+	if (pdata->exit)
-+		pdata->exit();
-+
-+	if (host) {
-+		iounmap(host->cmd_va);
-+		iounmap(host->data_va);
-+		iounmap(host->addr_va);
-+		kfree(host);
-+	}
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM
-+static int nomadik_nand_suspend(struct platform_device *pdev,
-+				pm_message_t state)
-+{
-+	struct nomadik_nand_host *host = platform_get_drvdata(pdev);
-+	int ret = 0;
-+	if (host)
-+		ret = host->mtd.suspend(&host->mtd);
-+	return ret;
-+}
-+
-+static int nomadik_nand_resume(struct platform_device *pdev)
-+{
-+	struct nomadik_nand_host *host = platform_get_drvdata(pdev);
-+	if (host)
-+		host->mtd.resume(&host->mtd);
-+	return 0;
-+}
-+
-+#else
-+#define nomadik_nand_suspend NULL
-+#define nomadik_nand_resume NULL
-+#endif /* CONFIG_PM */
-+
-+static struct platform_driver nomadik_nand_driver = {
-+	.probe = nomadik_nand_probe,
-+	.remove = nomadik_nand_remove,
-+	.driver = {
-+		   .owner = THIS_MODULE,
-+		   .name = "nomadik_nand",
-+		   },
-+	.suspend = nomadik_nand_suspend,
-+	.resume = nomadik_nand_resume,
-+};
-+
-+static int __init nand_nomadik_init(void)
-+{
-+	pr_info("Nomadik NAND driver\n");
-+	return platform_driver_register(&nomadik_nand_driver);
-+}
-+
-+static void __exit nand_nomadik_exit(void)
-+{
-+	platform_driver_unregister(&nomadik_nand_driver);
-+}
-+
-+module_init(nand_nomadik_init);
-+module_exit(nand_nomadik_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("ST Microelectronics (sachin.verma@st.com)");
-+MODULE_DESCRIPTION("NAND driver for Nomadik Platform");
+ #endif /* CONFIG_MTD_UBI_DEBUG */
+diff --git a/drivers/mtd/ubi/debug.h b/drivers/mtd/ubi/debug.h
+index a4da7a0..f30bcb3 100644
+--- a/drivers/mtd/ubi/debug.h
++++ b/drivers/mtd/ubi/debug.h
+@@ -55,6 +55,7 @@ void ubi_dbg_dump_vtbl_record(const struct ubi_vtbl_record *r, int idx);
+ void ubi_dbg_dump_sv(const struct ubi_scan_volume *sv);
+ void ubi_dbg_dump_seb(const struct ubi_scan_leb *seb, int type);
+ void ubi_dbg_dump_mkvol_req(const struct ubi_mkvol_req *req);
++void ubi_dbg_dump_flash(struct ubi_device *ubi, int pnum, int offset, int len);
+ 
+ #ifdef CONFIG_MTD_UBI_DEBUG_MSG
+ /* General debugging messages */
+@@ -167,6 +168,7 @@ static inline int ubi_dbg_is_erase_failure(void)
+ #define ubi_dbg_dump_sv(sv)              ({})
+ #define ubi_dbg_dump_seb(seb, type)      ({})
+ #define ubi_dbg_dump_mkvol_req(req)      ({})
++#define ubi_dbg_dump_flash(ubi, pnum, offset, len) ({})
+ 
+ #define UBI_IO_DEBUG               0
+ #define DBG_DISABLE_BGT            0
+diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+index 4e7bcb2..b693138 100644
+--- a/drivers/mtd/ubi/io.c
++++ b/drivers/mtd/ubi/io.c
+@@ -269,6 +269,7 @@ int ubi_io_write(struct ubi_device *ubi, const void *buf, int pnum, int offset,
+ 		ubi_err("error %d while writing %d bytes to PEB %d:%d, written "
+ 			"%zd bytes", err, len, pnum, offset, written);
+ 		ubi_dbg_dump_stack();
++		ubi_dbg_dump_flash(ubi, pnum, offset, len);
+ 	} else
+ 		ubi_assert(written == len);
+ 
 -- 
-1.5.6.5
+1.6.0.6
+
+
+>From d89852b4f75eec9d270d446b164ce12e77b50e50 Mon Sep 17 00:00:00 2001
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Date: Fri, 24 Jul 2009 16:18:04 +0300
+Subject: [PATCH] UBI: improve NOR flash erasure quirk
+
+More testing of NOR flash against power cuts showed that sometimes
+eraseblocks may be unwritable, and we cannot really invalidate
+them before erasure. But in this case the eraseblock probably
+contains garbage anyway, and we do not have to invalidate the
+headers. This assumption might be not true, but this is at least
+what I have observed. So if we cannot invalidate the headers,
+we make sure that the PEB does not contain valid VID header.
+If this is true, everything is fine, otherwise we panic.
+---
+ drivers/mtd/ubi/io.c |   48 ++++++++++++++++++++++++++++++++----------------
+ 1 files changed, 32 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+index b693138..8aa51e7 100644
+--- a/drivers/mtd/ubi/io.c
++++ b/drivers/mtd/ubi/io.c
+@@ -476,30 +476,46 @@ out:
+  */
+ static int nor_erase_prepare(struct ubi_device *ubi, int pnum)
+ {
+-	int err;
++	int err, err1;
+ 	size_t written;
+ 	loff_t addr;
+ 	uint32_t data = 0;
++	struct ubi_vid_hdr vid_hdr;
+ 
+ 	addr = (loff_t)pnum * ubi->peb_size + ubi->vid_hdr_aloffset;
+ 	err = ubi->mtd->write(ubi->mtd, addr, 4, &written, (void *)&data);
+-	if (err) {
+-		ubi_err("error %d while writing 4 bytes to PEB %d:%d, written "
+-			"%zd bytes", err, pnum, ubi->vid_hdr_aloffset, written);
+-		ubi_dbg_dump_stack();
+-		return err;
++	if (!err) {
++		addr -= ubi->vid_hdr_aloffset;
++		err = ubi->mtd->write(ubi->mtd, addr, 4, &written,
++				      (void *)&data);
++		if (!err)
++			return 0;
+ 	}
+ 
+-	addr -= ubi->vid_hdr_aloffset;
+-	err = ubi->mtd->write(ubi->mtd, addr, 4, &written, (void *)&data);
+-	if (err) {
+-		ubi_err("error %d while writing 4 bytes to PEB %d:%d, written "
+-			"%zd bytes", err, pnum, 0, written);
+-		ubi_dbg_dump_stack();
+-		return err;
+-	}
++	/*
++	 * We failed to write to the media. This was observed with Spansion
++	 * S29GL512N NOR flash. Most probably the eraseblock erasure was
++	 * interrupted at a very inappropriate moment, so it became unwritable.
++	 * In this case we probably anyway have garbage in this PEB.
++	 */
++	err1 = ubi_io_read_vid_hdr(ubi, pnum, &vid_hdr, 0);
++	if (err1 == UBI_IO_BAD_VID_HDR)
++		/*
++		 * The VID header is corrupted, so we can safely erase this
++		 * PEB and not afraid that it will be treated as a valid PEB in
++		 * case of an unclean reboot.
++		 */
++		return 0;
+ 
+-	return 0;
++	/*
++	 * The PEB contains a valid VID header, but we cannot invalidate it.
++	 * Supposedly the flash media or the driver is screwed up, so return an
++	 * error.
++	 */
++	ubi_err("cannot invalidate PEB %d, write returned %d read returned %d",
++		pnum, err, err1);
++	ubi_dbg_dump_flash(ubi, pnum, 0, ubi->peb_size);
++	return -EIO;
+ }
+ 
+ /**
+-- 
+1.6.0.6
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
