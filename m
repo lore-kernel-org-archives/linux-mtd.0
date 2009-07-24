@@ -1,21 +1,18 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from mail2.gnudd.com ([213.203.150.91] helo=mail.gnudd.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MUIKX-0002ZW-RB
-	for linux-mtd@lists.infradead.org; Fri, 24 Jul 2009 10:48:54 +0000
-Message-ID: <4A6991A5.4020105@nokia.com>
-Date: Fri, 24 Jul 2009 13:49:09 +0300
-From: Adrian Hunter <adrian.hunter@nokia.com>
+	id 1MUIyP-0003Vz-F5
+	for linux-mtd@lists.infradead.org; Fri, 24 Jul 2009 11:30:06 +0000
+Date: Fri, 24 Jul 2009 13:29:42 +0200
+From: Alessandro Rubini <rubini-list@gnudd.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH V5 0/2] Nand and OneNand for ARM Nomadik
+Message-ID: <cover.1248434635.git.rubini@unipv.it>
 MIME-Version: 1.0
-To: Daniel Mack <daniel@caiaq.de>
-Subject: Re: ubifs: error unwinding trouble
-References: <20090724103038.GN19257@buzzloop.caiaq.de>
-In-Reply-To: <20090724103038.GN19257@buzzloop.caiaq.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "Bityutskiy Artem \(Nokia-M/Helsinki\)" <Artem.Bityutskiy@nokia.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Adrian Hunter <ext-adrian.hunter@nokia.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Sender: rubini-list@gnudd.com
+Cc: STEricsson_nomadik_linux@list.st.com, linux@arm.linux.org.uk,
+	andrea.gallo@stericsson.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,35 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Daniel Mack wrote:
-> On a recent git kernel, the error unwinding for UBIFS seems to have some
-> problem, most probably a double-free or something similar.
-> 
-> When UBI is pointed to the right mtd partition (using command line
-> arguments) , everything is fine. But when it's (accidentionally) set to
-> some very small mtd, the attach process fails. Which wouldn't be a bad
-> thing by itself, but it somehow messes up the slub/slab allocators then
-> which causes very strange memory corruption effects - see the backtrace
-> below.
-> 
-> The Ooops itself is unreleated to UBI, but it does not occur when UBI
-> succeeds in attaching the volume.
-> 
-> Any idea? I searched for awhile but couldn't see anything obvious.
+Version 5. Use soft ecc routines for NAND, as they give the
+same result as the ones I wrote. Additionally, this fixes the
+defconfig for the machine, since the one I posted already
+included configuration for NAND and OneNand.
 
-Looks like a double free of the eba_tbl
+Rebased on today's rmk's devel tree, where nomadik base support is
+already included (even though rmk tells not to base on that branch,
+which is volatile, I think rebasing before posting is correct).
 
-This might help:
+Alessandro Rubini (2):
+  Nand driver for Nomadik 8815 SoC (on NHK8815 board)
+  OneNand support for Nomadik 8815 SoC (on NHK8815 board)
 
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index 0f2034c..e4d9ef0 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -1254,6 +1254,7 @@ out_free:
-                if (!ubi->volumes[i])
-                        continue;
-                kfree(ubi->volumes[i]->eba_tbl);
-+               ubi->volumes[i]->eba_tbl = NULL;
-        }
-        return err;
- }
+ arch/arm/configs/nhk8815_defconfig        |    2 +-
+ arch/arm/mach-nomadik/board-nhk8815.c     |  155 ++++++++++++++++++
+ arch/arm/mach-nomadik/include/mach/fsmc.h |   29 ++++
+ arch/arm/mach-nomadik/include/mach/nand.h |   16 ++
+ drivers/mtd/nand/Kconfig                  |    6 +
+ drivers/mtd/nand/Makefile                 |    1 +
+ drivers/mtd/nand/nomadik_nand.c           |  249 +++++++++++++++++++++++++++++
+ 7 files changed, 457 insertions(+), 1 deletions(-)
+ create mode 100644 arch/arm/mach-nomadik/include/mach/fsmc.h
+ create mode 100644 arch/arm/mach-nomadik/include/mach/nand.h
+ create mode 100644 drivers/mtd/nand/nomadik_nand.c
