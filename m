@@ -1,24 +1,23 @@
-Received: from mail-fx0-f215.google.com ([209.85.220.215])
+Received: from relais.videotron.ca ([24.201.245.36])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MUOV6-0002hE-4L
-	for linux-mtd@lists.infradead.org; Fri, 24 Jul 2009 17:24:17 +0000
-Received: by fxm11 with SMTP id 11so1618436fxm.18
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 24 Jul 2009 10:24:01 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20090724.001104.229278926.anemo@mba.ocn.ne.jp>
-References: <ce9ab5790907220143t49d4afecr84a5c5e91833bc4a@mail.gmail.com>
-	<20090723.001338.27942898.anemo@mba.ocn.ne.jp>
-	<ce9ab5790907230004g103af356s1b44cda2d64bbc55@mail.gmail.com>
-	<20090724.001104.229278926.anemo@mba.ocn.ne.jp>
-Date: Fri, 24 Jul 2009 21:24:01 +0400
-Message-ID: <bc64b4640907241024j7a5c88d9ic5eb2cdbd74f8ead@mail.gmail.com>
-Subject: Re: abuse of nand_correct_data in tmio_nand driver
-From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>, Ian Molton <spyro@f2s.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, vimal.newwork@gmail.com
+	id 1MURsM-0007FX-CZ
+	for linux-mtd@lists.infradead.org; Fri, 24 Jul 2009 21:00:26 +0000
+MIME-version: 1.0
+Content-transfer-encoding: 7BIT
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Received: from xanadu.home ([66.130.28.92]) by VL-MH-MR001.ip.videotron.ca
+	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
+	32bit))
+	with ESMTP id <0KNB000B9109TR30@VL-MH-MR001.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Fri, 24 Jul 2009 17:00:09 -0400 (EDT)
+Date: Fri, 24 Jul 2009 17:00:09 -0400 (EDT)
+From: Nicolas Pitre <nico@cam.org>
+To: erno@gulp.u--3.com
+Subject: Re: UBIFS fails & crashes on SheevaPlug
+In-reply-to: <20090723185928.GA1612@gulp.u--3.com>
+Message-id: <alpine.LFD.2.00.0907241648450.15794@xanadu.home>
+References: <20090723185928.GA1612@gulp.u--3.com>
+Cc: debian-arm@lists.debian.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,47 +27,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2009/7/23 Atsushi Nemoto <anemo@mba.ocn.ne.jp>:
-> On Thu, 23 Jul 2009 12:34:43 +0530, vimal singh <vimal.newwork@gmail.com>=
- wrote:
->> > OK, but I still feel duplicating nand_ecc code is not so good. =A0How
->> > about splitting nand_correct_data into two parts? =A0A pure calculatio=
-n
->> > function and a wrapper for mtd interface. =A0Like this:
->>
->> But I do not see any thing extra, which you achieve from this
->> wrapper... =A0Is this a prototype, and you want to handle above scenario
->> in this wrapper (calling 'nand_correct_data' multiple times based on
->> something, probably 'ecc.bytes')?
->
-> Yes, if we have __nand_correct_data(buf, read_ecc, calc_ecc, eccsize)
-> which do job based on its eccsize argument, the ecc.correct function
-> of the tmio_nand driver can be implemented like this:
->
-> int tmio_nand_correct_data(struct mtd_info *mtd, unsigned char *buf,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0unsigned char *read_ecc, unsigned char *ca=
-lc_ecc)
-> {
-> =A0 =A0 =A0 =A0int r0, r1;
->
-> =A0 =A0 =A0 =A0/* assume ecc.size =3D 512 and ecc.bytes =3D 6 */
-> =A0 =A0 =A0 =A0r0 =3D __nand_correct_data(buf, read_ecc, calc_ecc, 256);
-> =A0 =A0 =A0 =A0if (r0 < 0)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return r0;
-> =A0 =A0 =A0 =A0r1 =3D __nand_correct_data(buf + 256, read_ecc + 3, calc_e=
-cc + 3, 256);
-> =A0 =A0 =A0 =A0if (r1 < 0)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return r1;
-> =A0 =A0 =A0 =A0return r0 | r1;
-> }
->
-> Note that this is not tested at all since I do not have tmio device.
+On Thu, 23 Jul 2009, erno@gulp.u--3.com wrote:
 
-This seems to be the thing that was initially ment by Zaurus kernels, so
-this if Ian doesn't object,
+> I also get messages like this on boot:
+> 
+> [    4.420000] uncorrectable error : <3>uncorrectable error : 
+> <3>end_request: I/O error, dev mtdblock0, sector 0
+> [    4.430000] Buffer I/O error on device mtdblock0, logical block 0
+> [    4.440000] uncorrectable error : <3>uncorrectable error : 
+> <3>end_request: I/O error, dev mtdblock0, sector 0
+> [    4.440000] Buffer I/O error on device mtdblock0, logical block 0
+> [    4.480000] uncorrectable error : <3>uncorrectable error : 
+> <3>end_request: I/O error, dev mtdblock0, sector 0
+> 
+> but I'm hopeful it's because something is trying to automatically
+> access the builtin flash which is in limbo state?
 
-Acked-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+This is because something (udev I think) is trying to automatically 
+access every block devices including /dev/mtdblock0. In this case, this 
+corresponds to the bootloader.  The problem is that the bootrom 
+responsible for fetching u-boot from the flash and copy it to ram does 
+understand only one type of ECC, and that ECC format is not (yet) 
+supported by Linux.  So this is a known issue which you don't have to 
+worry about and this have no relation with your UBIFS issues.
 
---=20
-With best wishes
-Dmitry
+Nicolas
