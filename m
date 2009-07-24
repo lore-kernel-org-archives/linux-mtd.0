@@ -1,23 +1,22 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from mail-qy0-f176.google.com ([209.85.221.176])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MURsM-0007FX-CZ
-	for linux-mtd@lists.infradead.org; Fri, 24 Jul 2009 21:00:26 +0000
-MIME-version: 1.0
-Content-transfer-encoding: 7BIT
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Received: from xanadu.home ([66.130.28.92]) by VL-MH-MR001.ip.videotron.ca
-	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
-	32bit))
-	with ESMTP id <0KNB000B9109TR30@VL-MH-MR001.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Fri, 24 Jul 2009 17:00:09 -0400 (EDT)
-Date: Fri, 24 Jul 2009 17:00:09 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-To: erno@gulp.u--3.com
-Subject: Re: UBIFS fails & crashes on SheevaPlug
-In-reply-to: <20090723185928.GA1612@gulp.u--3.com>
-Message-id: <alpine.LFD.2.00.0907241648450.15794@xanadu.home>
-References: <20090723185928.GA1612@gulp.u--3.com>
-Cc: debian-arm@lists.debian.org, linux-mtd@lists.infradead.org
+	id 1MUU0u-0004Nt-7o
+	for linux-mtd@lists.infradead.org; Fri, 24 Jul 2009 23:17:24 +0000
+Received: by qyk6 with SMTP id 6so2645163qyk.28
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 24 Jul 2009 16:17:17 -0700 (PDT)
+MIME-Version: 1.0
+Sender: kyungmin78@gmail.com
+In-Reply-To: <4A69D3BE.7070900@gmail.com>
+References: <20090721025303.GA3693@july> <4A69D3BE.7070900@gmail.com>
+Date: Sat, 25 Jul 2009 08:17:17 +0900
+Message-ID: <9c9fda240907241617v64be8d38gc70a86c210ab0a7f@mail.gmail.com>
+Subject: Re: [PATCH] OneNAND: Runtime badblock check support
+From: Kyungmin Park <kmpark@infradead.org>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,28 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 23 Jul 2009, erno@gulp.u--3.com wrote:
+On Sat, Jul 25, 2009 at 12:31 AM, Artem Bityutskiy<dedekind1@gmail.com> wrote:
+> On 07/21/2009 05:53 AM, Kyungmin Park wrote:
+>>
+>> At bootloader, we don't need to read full page. It takes too long time.
+>> Instead it only read pages required for boot.
+>>
+>> Signed-off-by: Kyungmin Park<kyungmin.park@samsung.com>
+>
+> I still did not get it, why you change boot-loader behavior by patching
+> the kernel. Or you use the kernel as a bootloader?
 
-> I also get messages like this on boot:
-> 
-> [    4.420000] uncorrectable error : <3>uncorrectable error : 
-> <3>end_request: I/O error, dev mtdblock0, sector 0
-> [    4.430000] Buffer I/O error on device mtdblock0, logical block 0
-> [    4.440000] uncorrectable error : <3>uncorrectable error : 
-> <3>end_request: I/O error, dev mtdblock0, sector 0
-> [    4.440000] Buffer I/O error on device mtdblock0, logical block 0
-> [    4.480000] uncorrectable error : <3>uncorrectable error : 
-> <3>end_request: I/O error, dev mtdblock0, sector 0
-> 
-> but I'm hopeful it's because something is trying to automatically
-> access the builtin flash which is in limbo state?
+Since code consistency. I also send a same patch to u-boot.
+actually u-boot OneNAND code are almost same as kernel one.
 
-This is because something (udev I think) is trying to automatically 
-access every block devices including /dev/mtdblock0. In this case, this 
-corresponds to the bootloader.  The problem is that the bootrom 
-responsible for fetching u-boot from the flash and copy it to ram does 
-understand only one type of ECC, and that ECC format is not (yet) 
-supported by Linux.  So this is a known issue which you don't have to 
-worry about and this have no relation with your UBIFS issues.
+>
+> Also, the mtd-2.6.git tree does not havemtd/onenand/samsung.c
 
-Nicolas
+Right, samsung.c is for s3c64xx and s5pc100 SoCs. I will send it after
+more tests.
+
+>
+> Anyway, could you please re-send the patch with a nice description, for
+> silly people like me :-)
+
+Sure.
+
+Thank you,
+Kyungmin Park
