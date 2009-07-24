@@ -1,13 +1,15 @@
 From: rubini-list@gnudd.com (Alessandro Rubini)
-Date: Thu, 23 Jul 2009 00:26:09 +0200
-Subject: [PATCH V4 2/2] OneNand support for Nomadik 8815 SoC (on NHK8815 board)
-In-Reply-To: <cover.1248300341.git.rubini@unipv.it>
-References: <cover.1248300341.git.rubini@unipv.it>
-Message-ID: <0d06867e7a9e2a9421d2ec97f80071a3b218a3e3.1248300341.git.rubini@
+Date: Fri, 24 Jul 2009 13:30:04 +0200
+Subject: [PATCH V5 2/2] OneNand support for Nomadik 8815 SoC (on NHK8815 board)
+In-Reply-To: <cover.1248434635.git.rubini@unipv.it>
+References: <cover.1248434635.git.rubini@unipv.it>
+Message-ID: <1b28a6018f74eb9f5d14beaa1aac9c0fd4cb101d.1248434636.git.rubini@
  unipv.it>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
-Message-ID: <20090722222609.egv2SF93AyP0kWxyZ2X-8-VI4yP2L14Es_pTa7AH-ps@z>
+Message-ID: <20090724113004.EI6hciWhUhFa7wC2ehtV4fZaK-KxXMV1WXvYLKrndLg@z>
+
+From: Alessandro Rubini <rubini@unipv.it>
 
 
 Signed-off-by: Alessandro Rubini <rubini@unipv.it>
@@ -112,4 +114,4 @@ index 3fde972..0ad6bba 100644
  			     ARRAY_SIZE(nhk8815_platform_devices));
  
 -- 
-1.6.0.2
+1.5.6.5
