@@ -1,19 +1,18 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from thunk.org ([69.25.196.29] helo=thunker.thunk.org)
 	by casper.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MV1fU-0000eN-0U
-	for linux-mtd@lists.infradead.org; Sun, 26 Jul 2009 11:13:32 +0000
-Message-ID: <4A6C38F2.1040607@gmail.com>
-Date: Sun, 26 Jul 2009 14:07:30 +0300
-From: Artem Bityutskiy <dedekind1@gmail.com>
+	id 1MVCtG-0000yt-EM
+	for linux-mtd@lists.infradead.org; Sun, 26 Jul 2009 23:12:31 +0000
+Date: Sun, 26 Jul 2009 19:07:15 -0400
+From: Theodore Tso <tytso@mit.edu>
+To: Corentin Chary <corentincj@iksaif.net>
+Subject: Re: [PATCH 0/2] RFC: Add support for UBI and UBIFS
+Message-ID: <20090726230715.GD17272@mit.edu>
+References: <1247650724-16288-1-git-send-email-corentincj@iksaif.net>
 MIME-Version: 1.0
-To: Erno Kuusela <erno@gulp.u--3.com>
-Subject: Re: UBIFS fails & crashes on SheevaPlug
-References: <20090723185928.GA1612@gulp.u--3.com> <4A694C3C.4010108@gmail.com>
-	<20090724131241.GC1792@gulp.u--3.com>
-In-Reply-To: <20090724131241.GC1792@gulp.u--3.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: debian-arm@lists.debian.org, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1247650724-16288-1-git-send-email-corentincj@iksaif.net>
+Cc: dedekind@infradead.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,21 +22,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/24/2009 04:12 PM, Erno Kuusela wrote:
-> Also, ubiformat mentioned 1400+ "bad" eraseblocks, what should I make of
-> that? Is it really failed flash cells, just some blocks reserved for
-> u-boot and stuff, or blocks traumatized from my earlier misadventures
-> with ubiformat parameters?
+On Wed, Jul 15, 2009 at 11:38:42AM +0200, Corentin Chary wrote:
+> Hi,
+> Here is two patch to add support for UBI and UBIFS in libblkid
+> With that, if you type "blkid" it will show you UBIFS filesystem.
+> 
+> The thing is that I'm not sure this patch is really usefull as UBIFS
+> is a "nodev" filesystem, and it doesn't deal with block devices.
+> 
+> I first started theses patch to be able to do stuff like:
+> mount /dev/ubi0_0 /mnt/test but we need to patch UBIFS for that.
+> 
+> So, do you think we should be able to do that ? If it's ok, these
+> two patch are a first step.
 
-Oh, I've just got it. When ubiformat prints:
+Sorry for the delay in getting back to you; things have been pretty
+busy this past week or two.  Can you get me small (preferably under
+200k) sample filesystem images for the purposes of regression testing?
 
-ubiformat: bad eraseblocks: 1400
+Also, the blkid library is in the process of being transferred to
+util-linux-ng.  So I'm willing to apply the patches, but they also
+need to be ported to the version of the blkid library in util-linux-ng
+to make sure this feature doesn't get lost when distributions start
+transitioning to util-linux-ng.
 
-this means that you have 1 eraseblock, and it is eraseblock number 1400.
-Nothing to worry about. But it is confusing, so I'll change this to
+Regards,
 
-ubiformat: bad eraseblock numbers: A, B, C
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+					- Ted
