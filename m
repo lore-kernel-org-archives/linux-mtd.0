@@ -1,25 +1,21 @@
-Received: from mail-qy0-f176.google.com ([209.85.221.176])
+Received: from mail-bw0-f211.google.com ([209.85.218.211])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MVJhK-0001i1-0U
-	for linux-mtd@lists.infradead.org; Mon, 27 Jul 2009 06:28:38 +0000
-Received: by qyk6 with SMTP id 6so3724137qyk.28
+	id 1MVKjF-0003Eq-Hd
+	for linux-mtd@lists.infradead.org; Mon, 27 Jul 2009 07:34:41 +0000
+Received: by bwz7 with SMTP id 7so2404383bwz.18
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 26 Jul 2009 23:28:32 -0700 (PDT)
+	Mon, 27 Jul 2009 00:34:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20090724123750.GA25563@mail.gnudd.com>
-References: <cover.1248434635.git.rubini@unipv.it>
-	<ce9ab5790907240510y752885b9m2debac82bbdd7401@mail.gmail.com>
-	<20090724123750.GA25563@mail.gnudd.com>
-Date: Mon, 27 Jul 2009 11:58:32 +0530
-Message-ID: <ce9ab5790907262328w24946e69wbb2c7977a93aa982@mail.gmail.com>
-Subject: Re: [PATCH V5 1/2] Nand driver for Nomadik 8815 SoC (on NHK8815
-	board)
-From: vimal singh <vimal.newwork@gmail.com>
-To: Alessandro Rubini <rubini-list@gnudd.com>, vimal.newwork@gmail.com,
-	linux-mtd@lists.infradead.org, andrea.gallo@stericsson.com,
-	STEricsson_nomadik_linux@list.st.com, linux@arm.linux.org.uk
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20090726230715.GD17272@mit.edu>
+References: <1247650724-16288-1-git-send-email-corentincj@iksaif.net>
+	<20090726230715.GD17272@mit.edu>
+Date: Mon, 27 Jul 2009 09:34:35 +0200
+Message-ID: <71cd59b00907270034r6886bd6cxab080e29e3ec3674@mail.gmail.com>
+Subject: Re: [PATCH 0/2] RFC: Add support for UBI and UBIFS
+From: Corentin Chary <corentin.chary@gmail.com>
+To: Theodore Tso <tytso@mit.edu>
+Content-Type: multipart/mixed; boundary=0016e659fbf051986b046faafcd7
+Cc: dedekind@infradead.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,33 +25,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jul 24, 2009 at 6:07 PM, Alessandro Rubini<rubini-list@gnudd.com> w=
-rote:
->> Please run ''checkpatch.pl' for this patch and try to fix the errors.
->
-> Ok, will do. Although I don't agree with everything checkpatch is
-> saying (I've heard checkpatch is meant as suggestions, to be
-> considered but not applied blindly, so I behaved accordingly).
->
->> this can be 'NAND_ECC_SOFT' here... then
->
-> As explained in the comments above, there is the hardware in there,
-> only I've not been able to use it yet. So I prefer to stay HW and then
-> change as little as possible. =A0But, unless you confirm I can do that,
-> I'll write SOFT in there as requested.
+--0016e659fbf051986b046faafcd7
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-As of now, I think you can make it 'NAND_ECC_SOFT'. And then once you
-are able to use HW ECC, you can change it back.
-Currently making it HW confuses with wrong API being used in
-'nand_base.c' (uses nand_'read/write'_page_hwecc rather than
-nand_read/write_page_swecc routines), although it does not make much
-difference in functionality.
+On Mon, Jul 27, 2009 at 1:07 AM, Theodore Tso<tytso@mit.edu> wrote:
+> On Wed, Jul 15, 2009 at 11:38:42AM +0200, Corentin Chary wrote:
+>> Hi,
+>> Here is two patch to add support for UBI and UBIFS in libblkid
+>> With that, if you type "blkid" it will show you UBIFS filesystem.
+>>
+>> The thing is that I'm not sure this patch is really usefull as UBIFS
+>> is a "nodev" filesystem, and it doesn't deal with block devices.
+>>
+>> I first started theses patch to be able to do stuff like:
+>> mount /dev/ubi0_0 /mnt/test but we need to patch UBIFS for that.
+>>
+>> So, do you think we should be able to do that ? If it's ok, these
+>> two patch are a first step.
+>
+> Sorry for the delay in getting back to you; things have been pretty
+> busy this past week or two. =A0Can you get me small (preferably under
+> 200k) sample filesystem images for the purposes of regression testing?
 
-Regards,
-vimal
+No problem. Here is a sample image with the default filesystem.
+Maybe Artem can provide more interesting image for regression testing.
 
->
-> Will repost on monday, I'm off for the weekend.
->
-> /alessandro
->
+> Also, the blkid library is in the process of being transferred to
+> util-linux-ng. =A0So I'm willing to apply the patches, but they also
+> need to be ported to the version of the blkid library in util-linux-ng
+> to make sure this feature doesn't get lost when distributions start
+> transitioning to util-linux-ng.
+
+Ok, I'll port the patch and send them to util-linux-ng ASAP.
+
+Thanks,
+
+--=20
+Corentin Chary
+http://xf.iksaif.net - http://uffs.org
+
+--0016e659fbf051986b046faafcd7
+Content-Type: application/x-gzip; name="ubifs.img.gz"
+Content-Disposition: attachment; filename="ubifs.img.gz"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fxmvqng60
+
+H4sICDRTbUoAA3ViaWZzLmltZwDt2ztrFGEUBuCzu9ndGBGXgBAwhhBQQVCyRSw0iEEtktbLD7D2
+0lhoZ6OtphGxWi9YWEqsRRCL+AtCbK00oP6BOJ8zo2sS0YDJmvg8cDhz5sbAN0w1b3uo1Xh4/sqF
+ShRaEY3oUs1qMmIw8oq5H7tTVYrqj3yjr5i/Gyn6/IPjt+bffri4cOr98/ansROHD9wLAAAAYFMs
+AwAAAAAAAAAAAABbRnuo1Vhsfp6ulj8EZxvNrJ1c41/hWhQ538x4VgPlXM3nb87ldxqv5WNn5U0e
+5a2e1aGip+tTn+g6rb+olCUeXN8vzaxDWv87iwcXa+WOX6x/Wgfrv/30+vsDAAAAAAAAAAAAAAAA
+AKyW8p9vvrw687v8ZyL/uf2k9X/XerHcV+6Q//2v9Pr7AwAAAAAAAAAAAAAAAACslvKfc7NH7jaL
+POBo5LnOUjq+a2FiupyHI89qvq5sXkaRjdPr9w8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+4F+1VI9r+/qO7YyRiN0x04rrEZOx1nR7fyVu1qI5GrHncbXTbKYjvX58AAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC2ufZQqzGw9+loX+TGs9qRVaXoSaeYk3T+7I2B
+sWKM4azqWc2VJ7Cl9Pr9AwAAAAAAAAAAAAAAAADgZynP+/Lj/alGkQftFH1lnLe+4vizs5dn1urd
+ql3bS1Or7/kn0vMdvXrpSTmXeePT8sZ/Ra/fPwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA2xleFJG8KADgE
+AA==
+--0016e659fbf051986b046faafcd7--
