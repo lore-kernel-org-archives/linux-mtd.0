@@ -1,18 +1,25 @@
-Received: from thunk.org ([69.25.196.29] helo=thunker.thunk.org)
-	by casper.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MVCtG-0000yt-EM
-	for linux-mtd@lists.infradead.org; Sun, 26 Jul 2009 23:12:31 +0000
-Date: Sun, 26 Jul 2009 19:07:15 -0400
-From: Theodore Tso <tytso@mit.edu>
-To: Corentin Chary <corentincj@iksaif.net>
-Subject: Re: [PATCH 0/2] RFC: Add support for UBI and UBIFS
-Message-ID: <20090726230715.GD17272@mit.edu>
-References: <1247650724-16288-1-git-send-email-corentincj@iksaif.net>
+Received: from mail-qy0-f176.google.com ([209.85.221.176])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MVJhK-0001i1-0U
+	for linux-mtd@lists.infradead.org; Mon, 27 Jul 2009 06:28:38 +0000
+Received: by qyk6 with SMTP id 6so3724137qyk.28
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 26 Jul 2009 23:28:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1247650724-16288-1-git-send-email-corentincj@iksaif.net>
-Cc: dedekind@infradead.org, linux-mtd@lists.infradead.org
+In-Reply-To: <20090724123750.GA25563@mail.gnudd.com>
+References: <cover.1248434635.git.rubini@unipv.it>
+	<ce9ab5790907240510y752885b9m2debac82bbdd7401@mail.gmail.com>
+	<20090724123750.GA25563@mail.gnudd.com>
+Date: Mon, 27 Jul 2009 11:58:32 +0530
+Message-ID: <ce9ab5790907262328w24946e69wbb2c7977a93aa982@mail.gmail.com>
+Subject: Re: [PATCH V5 1/2] Nand driver for Nomadik 8815 SoC (on NHK8815
+	board)
+From: vimal singh <vimal.newwork@gmail.com>
+To: Alessandro Rubini <rubini-list@gnudd.com>, vimal.newwork@gmail.com,
+	linux-mtd@lists.infradead.org, andrea.gallo@stericsson.com,
+	STEricsson_nomadik_linux@list.st.com, linux@arm.linux.org.uk
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +29,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 15, 2009 at 11:38:42AM +0200, Corentin Chary wrote:
-> Hi,
-> Here is two patch to add support for UBI and UBIFS in libblkid
-> With that, if you type "blkid" it will show you UBIFS filesystem.
-> 
-> The thing is that I'm not sure this patch is really usefull as UBIFS
-> is a "nodev" filesystem, and it doesn't deal with block devices.
-> 
-> I first started theses patch to be able to do stuff like:
-> mount /dev/ubi0_0 /mnt/test but we need to patch UBIFS for that.
-> 
-> So, do you think we should be able to do that ? If it's ok, these
-> two patch are a first step.
+On Fri, Jul 24, 2009 at 6:07 PM, Alessandro Rubini<rubini-list@gnudd.com> w=
+rote:
+>> Please run ''checkpatch.pl' for this patch and try to fix the errors.
+>
+> Ok, will do. Although I don't agree with everything checkpatch is
+> saying (I've heard checkpatch is meant as suggestions, to be
+> considered but not applied blindly, so I behaved accordingly).
+>
+>> this can be 'NAND_ECC_SOFT' here... then
+>
+> As explained in the comments above, there is the hardware in there,
+> only I've not been able to use it yet. So I prefer to stay HW and then
+> change as little as possible. =A0But, unless you confirm I can do that,
+> I'll write SOFT in there as requested.
 
-Sorry for the delay in getting back to you; things have been pretty
-busy this past week or two.  Can you get me small (preferably under
-200k) sample filesystem images for the purposes of regression testing?
-
-Also, the blkid library is in the process of being transferred to
-util-linux-ng.  So I'm willing to apply the patches, but they also
-need to be ported to the version of the blkid library in util-linux-ng
-to make sure this feature doesn't get lost when distributions start
-transitioning to util-linux-ng.
+As of now, I think you can make it 'NAND_ECC_SOFT'. And then once you
+are able to use HW ECC, you can change it back.
+Currently making it HW confuses with wrong API being used in
+'nand_base.c' (uses nand_'read/write'_page_hwecc rather than
+nand_read/write_page_swecc routines), although it does not make much
+difference in functionality.
 
 Regards,
+vimal
 
-					- Ted
+>
+> Will repost on monday, I'm off for the weekend.
+>
+> /alessandro
+>
