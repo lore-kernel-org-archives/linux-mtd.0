@@ -1,14 +1,14 @@
-Received: from hm1540.locaweb.com.br ([200.234.200.173])
+Received: from mba.ocn.ne.jp ([122.28.14.163] helo=smtp.mba.ocn.ne.jp)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MVo79-00049G-KN
-	for linux-mtd@lists.infradead.org; Tue, 28 Jul 2009 14:57:16 +0000
+	id 1MVo87-0004CD-0s
+	for linux-mtd@lists.infradead.org; Tue, 28 Jul 2009 14:58:16 +0000
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
 To: linux-mtd@lists.infradead.org
-Subject: Vencedor do Concurso Um Dia de Princesa
-MIME-version: 1.0
-From: Vivano Grill <atendimento@vivano.com.br>
-Content-type: MULTIPART/MIXED; BOUNDARY="------------MSG-BOUNDARY-VM2"
-Message-Id: <20090728145714.858EB12E6E1@hm1540.locaweb.com.br>
-Date: Tue, 28 Jul 2009 11:57:14 -0300 (BRT)
+Subject: [PATCH 2/2] mtd/nand: Fix tmio_nand ecc correction
+Date: Tue, 28 Jul 2009 23:53:12 +0900
+Message-Id: <1248792792-20197-2-git-send-email-anemo@mba.ocn.ne.jp>
+Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, dwmw2@infradead.org,
+	vimal singh <vimal.newwork@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,99 +18,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This driver may be reading 512 bytes at a times, but still calculates
+256-byte sector ECC.  So the nand_correct_data() is not appropriate
+for this driver.  Implement its ecc.correct function calling
+__nand_correct_data() twice.
 
-Return-Path: acao@cadastroweb.com.br
+Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Acked-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Acked-by: Vimal Singh <vimalsingh@ti.com>
+---
+ drivers/mtd/nand/tmio_nand.c |   17 ++++++++++++++++-
+ 1 files changed, 16 insertions(+), 1 deletions(-)
 
-
-
-
---------------MSG-BOUNDARY-VM2
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-
-<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type" /><style type="text/css">
-
-
-
-
-
-<!--
-
-body {
-
-	background-color: #6e0001;
-
-}
-
---></style>
-
-<table id="Table_01" border="0" cellspacing="0" cellpadding="0" width="700" align="center" height="845">
-
-    <tbody>
-
-        <tr>
-
-            <td align="center"><br /><font color="#ffffff" size="1" face="Arial">Caso n&atilde;o esteja visualizando, <a target="_blank" href="http://www.vivano.com.br/news/ganhador-namorados/"><font color="#ffffff" size="1" face="Arial"><strong>clique aqui.</strong></font></a></font><br /><br /></td>
-
-        </tr>
-
-        <tr>
-
-            <td><img alt="" width="700" height="65" src="http://www.vivano.com.br/news/ganhador-namorados/images/img_vivano_01.jpg" /></td>
-
-        </tr>
-
-        <tr>
-
-            <td><img border="0" alt="" width="700" height="176" usemap="#Map" src="http://www.vivano.com.br/news/ganhador-namorados/images/img_vivano_02.jpg" /></td>
-
-        </tr>
-
-        <tr>
-
-            <td><img alt="" width="700" height="144" src="http://www.vivano.com.br/news/ganhador-namorados/images/img_vivano_03.jpg" /></td>
-
-        </tr>
-
-        <tr>
-
-            <td><img alt="" width="700" height="153" src="http://www.vivano.com.br/news/ganhador-namorados/images/img_vivano_04.jpg" /></td>
-
-        </tr>
-
-        <tr>
-
-            <td><img border="0" alt="" width="700" height="172" usemap="#Map2" src="http://www.vivano.com.br/news/ganhador-namorados/images/img_vivano_05.jpg" /></td>
-
-        </tr>
-
-        <tr>
-
-            <td><img alt="" width="700" height="135" src="http://www.vivano.com.br/news/ganhador-namorados/images/img_vivano_06.jpg" /></td>
-
-        </tr>
-
-        <tr>
-
-            <td><center><font color="#ffffff" size="1" face="Arial, Helvetica, sans-serif">Caso n&atilde;o queira mais receber as promo&ccedil;&otilde;es da Vivano Grill, <a target="_blank" href="http://www.vivano.com.br/optout.asp?acao=optout&amp;id=linux-mtd@lists.infradead.org"><font color="#ffffff" size="1" face="Arial, Helvetica, sans-serif">clique aqui</font></a>.</font></center></td>
-
-        </tr>
-
-        <tr>
-
-            <td>&nbsp;</td>
-
-        </tr>
-
-    </tbody>
-
-</table>
-
-<map name="Map">
-
-<area href="http://www.vivano.com.br/" shape="rect" target="_blank" coords="33,-27,203,65" /></map><map name="Map2">
-
-<area href="http://www.vm2.com.br/" shape="rect" target="_blank" coords="566,97,627,116" /></map><img src='http://webmarketing.cadastroweb.com.br/leitura.php?idNews=502&idEmail=3673574' border='0' width='0' height='0'>
-
---------------MSG-BOUNDARY-VM2--
+diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
+index daa6a4c..92c7334 100644
+--- a/drivers/mtd/nand/tmio_nand.c
++++ b/drivers/mtd/nand/tmio_nand.c
+@@ -301,6 +301,21 @@ static int tmio_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
+ 	return 0;
+ }
+ 
++static int tmio_nand_correct_data(struct mtd_info *mtd, unsigned char *buf,
++		unsigned char *read_ecc, unsigned char *calc_ecc)
++{
++	int r0, r1;
++
++	/* assume ecc.size = 512 and ecc.bytes = 6 */
++	r0 = __nand_correct_data(buf, read_ecc, calc_ecc, 256);
++	if (r0 < 0)
++		return r0;
++	r1 = __nand_correct_data(buf + 256, read_ecc + 3, calc_ecc + 3, 256);
++	if (r1 < 0)
++		return r1;
++	return r0 + r1;
++}
++
+ static int tmio_hw_init(struct platform_device *dev, struct tmio_nand *tmio)
+ {
+ 	struct mfd_cell *cell = (struct mfd_cell *)dev->dev.platform_data;
+@@ -424,7 +439,7 @@ static int tmio_probe(struct platform_device *dev)
+ 	nand_chip->ecc.bytes = 6;
+ 	nand_chip->ecc.hwctl = tmio_nand_enable_hwecc;
+ 	nand_chip->ecc.calculate = tmio_nand_calculate_ecc;
+-	nand_chip->ecc.correct = nand_correct_data;
++	nand_chip->ecc.correct = tmio_nand_correct_data;
+ 
+ 	if (data)
+ 		nand_chip->badblock_pattern = data->badblock_pattern;
+-- 
+1.5.6.5
