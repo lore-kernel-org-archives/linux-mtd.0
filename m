@@ -1,20 +1,23 @@
 Received: from mms2.broadcom.com ([216.31.210.18])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MVur0-0000JF-O4
-	for linux-mtd@lists.infradead.org; Tue, 28 Jul 2009 22:09:08 +0000
+	id 1MVvK4-0000dT-Tm
+	for linux-mtd@lists.infradead.org; Tue, 28 Jul 2009 22:39:08 +0000
 From: "Leo (Hao) Chen" <leochen@broadcom.com>
-To: "dedekind@infradead.org" <dedekind@infradead.org>
-Date: Tue, 28 Jul 2009 15:08:48 -0700
+To: "Leo (Hao) Chen" <leochen@broadcom.com>,
+	"dedekind@infradead.org" <dedekind@infradead.org>
+Date: Tue, 28 Jul 2009 15:38:46 -0700
 Subject: RE: [PATCH v3 26/27] [ARM] [NAND] [bcmring] add bcmring umi
 	nand driver support
-Message-ID: <8628FE4E7912BF47A96AE7DD7BAC0AADCB25D06CCA@SJEXCHCCR02.corp.ad.broadcom.com>
+Message-ID: <8628FE4E7912BF47A96AE7DD7BAC0AADCB25D06CDD@SJEXCHCCR02.corp.ad.broadcom.com>
 References: <8628FE4E7912BF47A96AE7DD7BAC0AADCB25C53608@SJEXCHCCR02.corp.ad.broadcom.com>
 	<1247980139.11353.194.camel@localhost.localdomain>
-In-Reply-To: <1247980139.11353.194.camel@localhost.localdomain>
+	<8628FE4E7912BF47A96AE7DD7BAC0AADCB25D06CCA@SJEXCHCCR02.corp.ad.broadcom.com>
+In-Reply-To: <8628FE4E7912BF47A96AE7DD7BAC0AADCB25D06CCA@SJEXCHCCR02.corp.ad.broadcom.com>
 Content-Language: en-US
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary=_002_8628FE4E7912BF47A96AE7DD7BAC0AADCB25D06CCASJEXCHCCR02co_
+Content-Type: text/plain;
+ charset=koi8-r
+Content-Transfer-Encoding: quoted-printable
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
 	"linux-arm-kernel@lists.arm.linux.org.uk"
 	<linux-arm-kernel@lists.arm.linux.org.uk>,
@@ -28,1126 +31,2115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Include the patch in the mail.
+--------------------------
 
---_002_8628FE4E7912BF47A96AE7DD7BAC0AADCB25D06CCASJEXCHCCR02co_
-Content-Type: text/plain;
- charset=koi8-r
-Content-Transfer-Encoding: quoted-printable
+>From 3cf586a29891aedc375e359e93155b500a24a95f Mon Sep 17 00:00:00 2001
+From: Leo Chen <leochen@broadcom.com>
+Date: Wed, 15 Jul 2009 17:26:57 -0700
+Subject: [PATCH 25/27] add bcmring umi nand driver support
 
-Hi,
+add umi nand driver for bcmring
+add header files, register file
 
-I have fixed the coding style problem incl. the line length for this patch.
+add Kconfig option and Makefile entry
 
-The latest version is attached as text/plain.
+fixed coding style errors
+fixed line length
 
-Thanks,
+fix bcm_umi_nand_verify_buf for MLC support
 
-=20
+Signed-off-by: Leo Chen <leochen@broadcom.com>
+---
+ arch/arm/mach-bcmring/include/mach/reg_nand.h |   66 ++
+ arch/arm/mach-bcmring/include/mach/reg_umi.h  |  237 ++++++++
+ drivers/mtd/nand/Kconfig                      |   16 +
+ drivers/mtd/nand/Makefile                     |    1 +
+ drivers/mtd/nand/bcm_umi_bch.c                |  310 ++++++++++
+ drivers/mtd/nand/bcm_umi_hamming.c            |  135 +++++
+ drivers/mtd/nand/bcm_umi_nand.c               |  790 +++++++++++++++++++++=
+++++
+ include/linux/mtd/nand_bcm_umi.h              |  241 ++++++++
+ 8 files changed, 1796 insertions(+), 0 deletions(-)
+ create mode 100644 arch/arm/mach-bcmring/include/mach/reg_nand.h
+ create mode 100644 arch/arm/mach-bcmring/include/mach/reg_umi.h
+ create mode 100644 drivers/mtd/nand/bcm_umi_bch.c
+ create mode 100644 drivers/mtd/nand/bcm_umi_hamming.c
+ create mode 100644 drivers/mtd/nand/bcm_umi_nand.c
+ create mode 100644 include/linux/mtd/nand_bcm_umi.h
+
+diff --git a/arch/arm/mach-bcmring/include/mach/reg_nand.h b/arch/arm/mach-=
+bcmring/include/mach/reg_nand.h
+new file mode 100644
+index 0000000..387376f
+--- /dev/null
++++ b/arch/arm/mach-bcmring/include/mach/reg_nand.h
+@@ -0,0 +1,66 @@
++/*************************************************************************=
+****
++* Copyright 2001 - 2008 Broadcom Corporation.  All rights reserved.
++*
++* Unless you and Broadcom execute a separate written software license
++* agreement governing use of this software, this software is licensed to y=
+ou
++* under the terms of the GNU General Public License version 2, available a=
+t
++* http://www.broadcom.com/licenses/GPLv2.php (the "GPL").
++*
++* Notwithstanding the above, under no circumstances may you combine this
++* software in any way with any other Broadcom software provided under a
++* license other than the GPL, without Broadcom's express prior written
++* consent.
++**************************************************************************=
+***/
++
++/*
++*
++**************************************************************************=
+***
++*
++*  REG_NAND.h
++*
++*  PURPOSE:
++*
++*     This file contains definitions for the nand registers:
++*
++*  NOTES:
++*
++**************************************************************************=
+***/
++
++#if !defined(__ASM_ARCH_REG_NAND_H)
++#define __ASM_ARCH_REG_NAND_H
++
++/* ---- Include Files ----------------------------------------------------=
+ */
++#include <csp/reg.h>
++#include <mach/reg_umi.h>
++
++/* ---- Constants and Types ----------------------------------------------=
+ */
++
++#define HW_NAND_BASE       MM_IO_BASE_NAND     /* NAND Flash */
++
++/* DMA accesses by the bootstrap need hard nonvirtual addresses */
++#define REG_NAND_CMD            __REG16(HW_NAND_BASE + 0)
++#define REG_NAND_ADDR           __REG16(HW_NAND_BASE + 4)
++
++#define REG_NAND_PHYS_DATA16   (HW_NAND_BASE + 8)
++#define REG_NAND_PHYS_DATA8    (HW_NAND_BASE + 8)
++#define REG_NAND_DATA16         __REG16(REG_NAND_PHYS_DATA16)
++#define REG_NAND_DATA8          __REG8(REG_NAND_PHYS_DATA8)
++
++/* use appropriate offset to make sure it start at the 1K boundary */
++#define REG_NAND_PHYS_DATA_DMA   (HW_NAND_BASE + 0x400)
++#define REG_NAND_DATA_DMA         __REG32(REG_NAND_PHYS_DATA_DMA)
++
++/* Linux DMA requires physical address of the data register */
++#define REG_NAND_DATA16_PADDR    HW_IO_VIRT_TO_PHYS(REG_NAND_PHYS_DATA16)
++#define REG_NAND_DATA8_PADDR     HW_IO_VIRT_TO_PHYS(REG_NAND_PHYS_DATA8)
++#define REG_NAND_DATA_PADDR      HW_IO_VIRT_TO_PHYS(REG_NAND_PHYS_DATA_DMA=
+)
++
++#define NAND_BUS_16BIT()        (0)
++#define NAND_BUS_8BIT()         (!NAND_BUS_16BIT())
++
++/* Register offsets */
++#define REG_NAND_CMD_OFFSET     (0)
++#define REG_NAND_ADDR_OFFSET    (4)
++#define REG_NAND_DATA8_OFFSET   (8)
++
++#endif
+diff --git a/arch/arm/mach-bcmring/include/mach/reg_umi.h b/arch/arm/mach-b=
+cmring/include/mach/reg_umi.h
+new file mode 100644
+index 0000000..06a3554
+--- /dev/null
++++ b/arch/arm/mach-bcmring/include/mach/reg_umi.h
+@@ -0,0 +1,237 @@
++/*************************************************************************=
+****
++* Copyright 2005 - 2008 Broadcom Corporation.  All rights reserved.
++*
++* Unless you and Broadcom execute a separate written software license
++* agreement governing use of this software, this software is licensed to y=
+ou
++* under the terms of the GNU General Public License version 2, available a=
+t
++* http://www.broadcom.com/licenses/GPLv2.php (the "GPL").
++*
++* Notwithstanding the above, under no circumstances may you combine this
++* software in any way with any other Broadcom software provided under a
++* license other than the GPL, without Broadcom's express prior written
++* consent.
++**************************************************************************=
+***/
++
++/*
++*
++**************************************************************************=
+***
++*
++*  REG_UMI.h
++*
++*  PURPOSE:
++*
++*     This file contains definitions for the nand registers:
++*
++*  NOTES:
++*
++**************************************************************************=
+***/
++
++#if !defined(__ASM_ARCH_REG_UMI_H)
++#define __ASM_ARCH_REG_UMI_H
++
++/* ---- Include Files ----------------------------------------------------=
+ */
++#include <csp/reg.h>
++#include <mach/csp/mm_io.h>
++
++/* ---- Constants and Types ----------------------------------------------=
+ */
++
++/* Unified Memory Interface Ctrl Register */
++#define HW_UMI_BASE       MM_IO_BASE_UMI
++
++/* Flash bank 0 timing and control register */
++#define REG_UMI_FLASH0_TCR         __REG32(HW_UMI_BASE  + 0x00)
++/* Flash bank 1 timing and control register */
++#define REG_UMI_FLASH1_TCR         __REG32(HW_UMI_BASE  + 0x04)
++/* Flash bank 2 timing and control register */
++#define REG_UMI_FLASH2_TCR         __REG32(HW_UMI_BASE  + 0x08)
++/* MMD interface and control register */
++#define REG_UMI_MMD_ICR            __REG32(HW_UMI_BASE  + 0x0c)
++/* NAND timing and control register */
++#define REG_UMI_NAND_TCR           __REG32(HW_UMI_BASE  + 0x18)
++/* NAND ready/chip select register */
++#define REG_UMI_NAND_RCSR          __REG32(HW_UMI_BASE  + 0x1c)
++/* NAND ECC control & status register */
++#define REG_UMI_NAND_ECC_CSR       __REG32(HW_UMI_BASE  + 0x20)
++/* NAND ECC data register XXB2B1B0 */
++#define REG_UMI_NAND_ECC_DATA      __REG32(HW_UMI_BASE  + 0x24)
++/* BCH ECC Parameter N */
++#define REG_UMI_BCH_N              __REG32(HW_UMI_BASE  + 0x40)
++/* BCH ECC Parameter T */
++#define REG_UMI_BCH_K              __REG32(HW_UMI_BASE  + 0x44)
++/* BCH ECC Parameter K */
++#define REG_UMI_BCH_T              __REG32(HW_UMI_BASE  + 0x48)
++/* BCH ECC Contro Status */
++#define REG_UMI_BCH_CTRL_STATUS    __REG32(HW_UMI_BASE  + 0x4C)
++/* BCH WR ECC 31:0 */
++#define REG_UMI_BCH_WR_ECC_0       __REG32(HW_UMI_BASE  + 0x50)
++/* BCH WR ECC 63:32 */
++#define REG_UMI_BCH_WR_ECC_1       __REG32(HW_UMI_BASE  + 0x54)
++/* BCH WR ECC 95:64 */
++#define REG_UMI_BCH_WR_ECC_2       __REG32(HW_UMI_BASE  + 0x58)
++/* BCH WR ECC 127:96 */
++#define REG_UMI_BCH_WR_ECC_3       __REG32(HW_UMI_BASE  + 0x5c)
++/* BCH WR ECC 155:128 */
++#define REG_UMI_BCH_WR_ECC_4       __REG32(HW_UMI_BASE  + 0x60)
++/* BCH Read Error Location 1,0 */
++#define REG_UMI_BCH_RD_ERR_LOC_1_0 __REG32(HW_UMI_BASE  + 0x64)
++/* BCH Read Error Location 3,2 */
++#define REG_UMI_BCH_RD_ERR_LOC_3_2 __REG32(HW_UMI_BASE  + 0x68)
++/* BCH Read Error Location 5,4 */
++#define REG_UMI_BCH_RD_ERR_LOC_5_4 __REG32(HW_UMI_BASE  + 0x6c)
++/* BCH Read Error Location 7,6 */
++#define REG_UMI_BCH_RD_ERR_LOC_7_6 __REG32(HW_UMI_BASE  + 0x70)
++/* BCH Read Error Location 9,8 */
++#define REG_UMI_BCH_RD_ERR_LOC_9_8 __REG32(HW_UMI_BASE  + 0x74)
++/* BCH Read Error Location 11,10 */
++#define REG_UMI_BCH_RD_ERR_LOC_B_A __REG32(HW_UMI_BASE  + 0x78)
++
++/* REG_UMI_FLASH0/1/2_TCR, REG_UMI_SRAM0/1_TCR bits */
++/* Enable wait pin during burst write or read */
++#define REG_UMI_TCR_WAITEN              0x80000000
++/* Enable mem ctrlr to work iwth ext mem of lower freq than AHB clk */
++#define REG_UMI_TCR_LOWFREQ             0x40000000
++/* 1=3Dsynch write, 0=3Dasync write */
++#define REG_UMI_TCR_MEMTYPE_SYNCWRITE   0x20000000
++/* 1=3Dsynch read, 0=3Dasync read */
++#define REG_UMI_TCR_MEMTYPE_SYNCREAD    0x10000000
++/* 1=3Dpage mode read, 0=3Dnormal mode read */
++#define REG_UMI_TCR_MEMTYPE_PAGEREAD    0x08000000
++/* page size/burst size (wrap only) */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_MASK   0x07000000
++/* 4 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_4      0x00000000
++/* 8 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_8      0x01000000
++/* 16 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_16     0x02000000
++/* 32 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_32     0x03000000
++/* 64 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_64     0x04000000
++/* 128 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_128    0x05000000
++/* 256 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_256    0x06000000
++/* 512 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_512    0x07000000
++/* Page read access cycle / Burst write latency (n+2 / n+1) */
++#define REG_UMI_TCR_TPRC_TWLC_MASK      0x00f80000
++/* Bus turnaround cycle (n) */
++#define REG_UMI_TCR_TBTA_MASK           0x00070000
++/* Write pulse width cycle (n+1) */
++#define REG_UMI_TCR_TWP_MASK            0x0000f800
++/* Write recovery cycle (n+1) */
++#define REG_UMI_TCR_TWR_MASK            0x00000600
++/* Write address setup cycle (n+1) */
++#define REG_UMI_TCR_TAS_MASK            0x00000180
++/* Output enable delay cycle (n) */
++#define REG_UMI_TCR_TOE_MASK            0x00000060
++/* Read access cycle / Burst read latency (n+2 / n+1) */
++#define REG_UMI_TCR_TRC_TLC_MASK        0x0000001f
++
++/* REG_UMI_MMD_ICR bits */
++/* Flash write protection pin control */
++#define REG_UMI_MMD_ICR_FLASH_WP            0x8000
++/* Extend hold time for sram0, sram1 csn (39 MHz operation) */
++#define REG_UMI_MMD_ICR_XHCS                0x4000
++/* Enable SDRAM 2 interface control */
++#define REG_UMI_MMD_ICR_SDRAM2EN            0x2000
++/* Enable merge of flash banks 0/1 to 512 MBit bank */
++#define REG_UMI_MMD_ICR_INST512             0x1000
++/* Enable merge of flash banks 1/2 to 512 MBit bank */
++#define REG_UMI_MMD_ICR_DATA512             0x0800
++/* Enable SDRAM interface control */
++#define REG_UMI_MMD_ICR_SDRAMEN             0x0400
++/* Polarity of busy state of Burst Wait Signal */
++#define REG_UMI_MMD_ICR_WAITPOL             0x0200
++/* Enable burst clock stopped when not accessing external burst flash/sram=
+ */
++#define REG_UMI_MMD_ICR_BCLKSTOP            0x0100
++/* Enable the peri1_csn to replace flash1_csn in 512 Mb flash mode */
++#define REG_UMI_MMD_ICR_PERI1EN             0x0080
++/* Enable the peri2_csn to replace sdram_csn */
++#define REG_UMI_MMD_ICR_PERI2EN             0x0040
++/* Enable the peri3_csn to replace sdram2_csn */
++#define REG_UMI_MMD_ICR_PERI3EN             0x0020
++/* Enable sram bank1 for H/W controlled MRS */
++#define REG_UMI_MMD_ICR_MRSB1               0x0010
++/* Enable sram bank0 for H/W controlled MRS */
++#define REG_UMI_MMD_ICR_MRSB0               0x0008
++/* Polarity for assert3ed state of H/W controlled MRS */
++#define REG_UMI_MMD_ICR_MRSPOL              0x0004
++/* 0: S/W controllable ZZ/MRS/CRE/P-Mode pin */
++/* 1: H/W controlled ZZ/MRS/CRE/P-Mode, same timing as CS */
++#define REG_UMI_MMD_ICR_MRSMODE             0x0002
++/* MRS state for S/W controlled mode */
++#define REG_UMI_MMD_ICR_MRSSTATE            0x0001
++
++/* REG_UMI_NAND_TCR bits */
++/* Enable software to control CS */
++#define REG_UMI_NAND_TCR_CS_SWCTRL          0x80000000
++/* 16-bit nand wordsize if set */
++#define REG_UMI_NAND_TCR_WORD16             0x40000000
++/* Bus turnaround cycle (n) */
++#define REG_UMI_NAND_TCR_TBTA_MASK          0x00070000
++/* Write pulse width cycle (n+1) */
++#define REG_UMI_NAND_TCR_TWP_MASK           0x0000f800
++/* Write recovery cycle (n+1) */
++#define REG_UMI_NAND_TCR_TWR_MASK           0x00000600
++/* Write address setup cycle (n+1) */
++#define REG_UMI_NAND_TCR_TAS_MASK           0x00000180
++/* Output enable delay cycle (n) */
++#define REG_UMI_NAND_TCR_TOE_MASK           0x00000060
++/* Read access cycle (n+2) */
++#define REG_UMI_NAND_TCR_TRC_TLC_MASK       0x0000001f
++
++/* REG_UMI_NAND_RCSR bits */
++/* Status: Ready=3D1, Busy=3D0 */
++#define REG_UMI_NAND_RCSR_RDY               0x02
++/* Keep CS asserted during operation */
++#define REG_UMI_NAND_RCSR_CS_ASSERTED       0x01
++
++/* REG_UMI_NAND_ECC_CSR bits */
++/* Interrupt status - read-only */
++#define REG_UMI_NAND_ECC_CSR_NANDINT        0x80000000
++/* Read: Status of ECC done, Write: clear ECC interrupt */
++#define REG_UMI_NAND_ECC_CSR_ECCINT_RAW     0x00800000
++/* Read: Status of R/B, Write: clear R/B interrupt */
++#define REG_UMI_NAND_ECC_CSR_RBINT_RAW      0x00400000
++/* 1 =3D Enable ECC Interrupt */
++#define REG_UMI_NAND_ECC_CSR_ECCINT_ENABLE  0x00008000
++/* 1 =3D Assert interrupt at rising edge of R/B_ */
++#define REG_UMI_NAND_ECC_CSR_RBINT_ENABLE   0x00004000
++/* Calculate ECC by 0=3D512 bytes, 1=3D256 bytes */
++#define REG_UMI_NAND_ECC_CSR_256BYTE        0x00000080
++/* Enable ECC in hardware */
++#define REG_UMI_NAND_ECC_CSR_ECC_ENABLE     0x00000001
++
++/* REG_UMI_BCH_CTRL_STATUS bits */
++/* Shift to Indicate Number of correctable errors detected */
++#define REG_UMI_BCH_CTRL_STATUS_NB_CORR_ERROR_SHIFT 20
++/* Indicate Number of correctable errors detected */
++#define REG_UMI_BCH_CTRL_STATUS_NB_CORR_ERROR 0x00F00000
++/* Indicate Errors detected during read but uncorrectable */
++#define REG_UMI_BCH_CTRL_STATUS_UNCORR_ERR    0x00080000
++/* Indicate Errors detected during read and are correctable */
++#define REG_UMI_BCH_CTRL_STATUS_CORR_ERR      0x00040000
++/* Flag indicates BCH's ECC status of read process are valid */
++#define REG_UMI_BCH_CTRL_STATUS_RD_ECC_VALID  0x00020000
++/* Flag indicates BCH's ECC status of write process are valid */
++#define REG_UMI_BCH_CTRL_STATUS_WR_ECC_VALID  0x00010000
++/* Pause ECC calculation */
++#define REG_UMI_BCH_CTRL_STATUS_PAUSE_ECC_DEC 0x00000010
++/* Enable Interrupt */
++#define REG_UMI_BCH_CTRL_STATUS_INT_EN        0x00000004
++/* Enable ECC during read */
++#define REG_UMI_BCH_CTRL_STATUS_ECC_RD_EN     0x00000002
++/* Enable ECC during write */
++#define REG_UMI_BCH_CTRL_STATUS_ECC_WR_EN     0x00000001
++/* Mask for location */
++#define REG_UMI_BCH_ERR_LOC_MASK              0x00001FFF
++/* location within a byte */
++#define REG_UMI_BCH_ERR_LOC_BYTE              0x00000007
++/* location within a word */
++#define REG_UMI_BCH_ERR_LOC_WORD              0x00000018
++/* location within a page (512 byte) */
++#define REG_UMI_BCH_ERR_LOC_PAGE              0x00001FE0
++#define REG_UMI_BCH_ERR_LOC_ADDR(index)     (__REG32(HW_UMI_BASE + 0x64 + =
+(index / 2)*4) >> ((index % 2) * 16))
++#endif
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index ce96c09..35a3f91 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -186,6 +186,22 @@ config MTD_NAND_S3C2410_CLKSTOP
+          when the is NAND chip selected or released, but will save
+          approximately 5mA of power when there is nothing happening.
+
++config MTD_NAND_BCM_UMI
++       tristate "NAND Flash support for BCM Reference Boards"
++       depends on ARCH_BCMRING && MTD_NAND
++       help
++         This enables the NAND flash controller on the BCM UMI block.
++
++         No board specfic support is done by this driver, each board
++         must advertise a platform_device for the driver to attach.
++
++config MTD_NAND_BCM_UMI_HWECC
++       bool "BCM UMI NAND Hardware ECC"
++       depends on MTD_NAND_BCM_UMI
++       help
++         Enable the use of the BCM UMI block's internal ECC generator when
++         using NAND.
++
+ config MTD_NAND_DISKONCHIP
+        tristate "DiskOnChip 2000, Millennium and Millennium Plus (NAND rei=
+mplementation) (EXPERIMENTAL)"
+        depends on EXPERIMENTAL
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index f3a786b..b014b8f 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -40,5 +40,6 @@ obj-$(CONFIG_MTD_NAND_SH_FLCTL)               +=3D sh_flc=
+tl.o
+ obj-$(CONFIG_MTD_NAND_MXC)             +=3D mxc_nand.o
+ obj-$(CONFIG_MTD_NAND_SOCRATES)                +=3D socrates_nand.o
+ obj-$(CONFIG_MTD_NAND_TXX9NDFMC)       +=3D txx9ndfmc.o
++obj-$(CONFIG_MTD_NAND_BCM_UMI) +=3D bcm_umi_nand.o
+
+ nand-objs :=3D nand_base.o nand_bbt.o
+diff --git a/drivers/mtd/nand/bcm_umi_bch.c b/drivers/mtd/nand/bcm_umi_bch.=
+c
+new file mode 100644
+index 0000000..b6d0dad
+--- /dev/null
++++ b/drivers/mtd/nand/bcm_umi_bch.c
+@@ -0,0 +1,310 @@
++/*************************************************************************=
+****
++* Copyright 2004 - 2009 Broadcom Corporation.  All rights reserved.
++*
++* Unless you and Broadcom execute a separate written software license
++* agreement governing use of this software, this software is licensed to y=
+ou
++* under the terms of the GNU General Public License version 2, available a=
+t
++* http://www.broadcom.com/licenses/GPLv2.php (the "GPL").
++*
++* Notwithstanding the above, under no circumstances may you combine this
++* software in any way with any other Broadcom software provided under a
++* license other than the GPL, without Broadcom's express prior written
++* consent.
++**************************************************************************=
+***/
++
++/* ---- Include Files ----------------------------------------------------=
+ */
++#include <linux/mtd/nand_bcm_umi.h>
++
++/* ---- External Variable Declarations -----------------------------------=
+ */
++/* ---- External Function Prototypes -------------------------------------=
+ */
++/* ---- Public Variables -------------------------------------------------=
+ */
++/* ---- Private Constants and Types --------------------------------------=
+ */
++#define NAND_ECC_NUM_BYTES 13
++
++/* ---- Private Function Prototypes --------------------------------------=
+ */
++static void bcm_umi_bch_write_oobEcc(struct mtd_info *mtd, u_char * oobp);
++static int bcm_umi_bch_correct(u_char *dat, u_char *read_ecc);
++static int bcm_umi_bch_read_page_hwecc(struct mtd_info *mtd,
++                                      struct nand_chip *chip, uint8_t *buf=
+);
++static void bcm_umi_bch_write_page_hwecc(struct mtd_info *mtd,
++                                        struct nand_chip *chip,
++                                        const uint8_t *buf);
++
++/* ---- Private Variables ------------------------------------------------=
+ */
++
++/*
++** nand_hw_eccoob
++** New oob placement block for use with hardware ecc generation.
++*/
++static struct nand_ecclayout nand_hw_eccoob_512 =3D {
++       /* Reserve 5 for BI indicator */
++       .oobfree =3D {
++                   {.offset =3D 0,
++                    .length =3D 2}
++                   }
++};
++
++/*
++** We treat the OOB for a 2K page as if it were 4 512 byte oobs,
++** except the BI is at byte 0.
++*/
++static struct nand_ecclayout nand_hw_eccoob_2048 =3D {
++       /* Reserve 0 as BI indicator */
++       .oobfree =3D {
++                   {.offset =3D 1,
++                    .length =3D 2}
++                   }
++};
++
++/* We treat the OOB for a 4K page as if it were 8 512 byte oobs,
++ * except the BI is at byte 0. */
++static struct nand_ecclayout nand_hw_eccoob_4096 =3D {
++       /* Reserve 0 as BI indicator */
++       .oobfree =3D {
++                   {.offset =3D 1,
++                    .length =3D 2}
++                   }
++};
++
++/* ---- Private Functions ------------------------------------------------=
+ */
++
++static void bcm_umi_bch_write_oobEcc(struct mtd_info *mtd, u_char * oobp)
++{
++       uint32_t eccVal;
++
++       /* wait for ECC to be valid */
++       nand_bcm_umi_bch_poll_write_ecc_calc();
++
++       /*
++        ** Get the hardware ecc from the 32-bit result registers.
++        ** Read after 512 byte accesses. Format B3B2B1B0
++        ** where B3 =3D ecc3, etc.
++        */
++       /* writesize is the pagesize */
++       if (mtd->writesize =3D=3D 512) {
++               /* Skip CM in oob[0,1] */
++
++               /* Write ECC in oob[2,3,4] */
++               eccVal =3D REG_UMI_BCH_WR_ECC_3;
++               oobp[2] =3D eccVal & 0xff;        /* ECC12 */
++               eccVal =3D REG_UMI_BCH_WR_ECC_2;
++               oobp[3] =3D (eccVal >> 24) & 0xff;        /* ECC11 */
++               oobp[4] =3D (eccVal >> 16) & 0xff;        /* ECC10 */
++
++               /* Skip BI in oob[5] */
++
++               /* Write ECC in oob[6-15] */
++               oobp[6] =3D (eccVal >> 8) & 0xff; /* ECC9 */
++               oobp[7] =3D eccVal & 0xff;        /* ECC8 */
++               eccVal =3D REG_UMI_BCH_WR_ECC_1;
++               oobp[8] =3D (eccVal >> 24) & 0xff;        /* ECC7 */
++               oobp[9] =3D (eccVal >> 16) & 0xff;        /* ECC6 */
++               oobp[10] =3D (eccVal >> 8) & 0xff;        /* ECC5 */
++               oobp[11] =3D eccVal & 0xff;       /* ECC4 */
++               eccVal =3D REG_UMI_BCH_WR_ECC_0;
++               oobp[12] =3D (eccVal >> 24) & 0xff;       /* ECC3 */
++               oobp[13] =3D (eccVal >> 16) & 0xff;       /* ECC2 */
++               oobp[14] =3D (eccVal >> 8) & 0xff;        /* ECC1 */
++               oobp[15] =3D eccVal & 0xff;       /* ECC0 */
++       } else {
++               /* Skip BI in oob[0] */
++               /* Skip CM in oob[1,2] */
++
++               /* Write ECC in oob[3-15] */
++               eccVal =3D REG_UMI_BCH_WR_ECC_3;
++               oobp[3] =3D eccVal & 0xff;        /* ECC12 */
++               eccVal =3D REG_UMI_BCH_WR_ECC_2;
++               oobp[4] =3D (eccVal >> 24) & 0xff;        /* ECC11 */
++               oobp[5] =3D (eccVal >> 16) & 0xff;        /* ECC10 */
++               oobp[6] =3D (eccVal >> 8) & 0xff; /* ECC9 */
++               oobp[7] =3D eccVal & 0xff;        /* ECC8 */
++               eccVal =3D REG_UMI_BCH_WR_ECC_1;
++               oobp[8] =3D (eccVal >> 24) & 0xff;        /* ECC7 */
++               oobp[9] =3D (eccVal >> 16) & 0xff;        /* ECC6 */
++               oobp[10] =3D (eccVal >> 8) & 0xff;        /* ECC5 */
++               oobp[11] =3D eccVal & 0xff;       /* ECC4 */
++               eccVal =3D REG_UMI_BCH_WR_ECC_0;
++               oobp[12] =3D (eccVal >> 24) & 0xff;       /* ECC3 */
++               oobp[13] =3D (eccVal >> 16) & 0xff;       /* ECC2 */
++               oobp[14] =3D (eccVal >> 8) & 0xff;        /* ECC1 */
++               oobp[15] =3D eccVal & 0xff;       /* ECC0 */
++       }
++}
++
++static void bcm_umi_bch_read_oobEcc(struct mtd_info *mtd, u_char * eccCalc=
+)
++{
++       /* We are reading the OOB */
++       int eccPos =3D 0;
++
++       /* ECC is already paused when this function is called */
++
++       if (mtd->writesize =3D=3D 512) {    /* writesize is the pagesize */
++               /* skip CM */
++               REG_NAND_DATA8;
++               REG_NAND_DATA8;
++
++               /* read from 2 to 4 */
++               nand_bcm_umi_bch_resume_read_ecc_calc();
++
++               eccCalc[eccPos++] =3D REG_NAND_DATA8;
++               eccCalc[eccPos++] =3D REG_NAND_DATA8;
++               eccCalc[eccPos++] =3D REG_NAND_DATA8;
++               nand_bcm_umi_bch_pause_read_ecc_calc();
++
++               /* read BI */
++               REG_NAND_DATA8;
++
++               /* read from 6 to nand_ecc_bch_total */
++               nand_bcm_umi_bch_resume_read_ecc_calc();
++
++               /* Deduct 3 from total since 3 ECC bytes have
++                * been read already */
++               for (; eccPos < NAND_ECC_NUM_BYTES; eccPos++)
++                       eccCalc[eccPos] =3D REG_NAND_DATA8;
++       } else {
++               /* skip BI */
++               REG_NAND_DATA8;
++
++               /* skip CM */
++               REG_NAND_DATA8;
++               REG_NAND_DATA8;
++
++               /* read ECC bytes */
++               nand_bcm_umi_bch_resume_read_ecc_calc();
++
++               for (; eccPos < NAND_ECC_NUM_BYTES; eccPos++)
++                       eccCalc[eccPos] =3D REG_NAND_DATA8;
++       }
++}
++
++static int bcm_umi_bch_correct(u_char *dat, u_char *read_ecc)
++{
++       int result;
++
++       result =3D nand_bcm_umi_bch_correct_page(dat);
++
++       /* If the ECC is unprogrammed then we can't correct */
++       if (result !=3D 0) {
++               int i;
++
++               for (i =3D 0; i < NAND_ECC_NUM_BYTES; i++)
++                       if (read_ecc[i] !=3D 0xff)
++                               return result;
++               result =3D 0;
++       }
++       return result;
++}
++
++/* =3D=3D=3D=3D Public Functions =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D */
++
++/*************************************************************************=
+***
++*
++*  bcm_umi_bch_read_page_hwecc - hardware ecc based page read function
++*  @mtd:       mtd info structure
++*  @chip:      nand chip info structure
++*  @buf:       buffer to store read data
++*
++**************************************************************************=
+*/
++static int bcm_umi_bch_read_page_hwecc(struct mtd_info *mtd,
++                                      struct nand_chip *chip, uint8_t *buf=
+)
++{
++       int sectorIdx =3D 0;
++       int eccsize =3D chip->ecc.size;
++       int eccsteps =3D chip->ecc.steps;
++       uint8_t *datap =3D buf;
++       uint8_t *oobp =3D chip->oob_poi;
++       uint8_t eccCalc[NAND_ECC_NUM_BYTES];
++       int sectorOobSize =3D mtd->oobsize / eccsteps;
++       int stat;
++
++       for (sectorIdx =3D 0; sectorIdx < eccsteps;
++            sectorIdx++, datap +=3D eccsize, oobp +=3D sectorOobSize) {
++               if (sectorIdx > 0) {
++                       /* Seek to page location within sector */
++                       chip->cmdfunc(mtd, NAND_CMD_RNDOUT, sectorIdx * ecc=
+size,
++                                     -1);
++               }
++
++               /* Enable hardware ECC before reading the buf */
++               nand_bcm_umi_bch_enable_read_hwecc();
++
++               /* Read in data */
++               bcm_umi_nand_read_buf(mtd, datap, eccsize);
++
++               /* Pause hardware ECC after reading the buf */
++               nand_bcm_umi_bch_pause_read_ecc_calc();
++
++               /* Read the OOB ECC */
++               chip->cmdfunc(mtd, NAND_CMD_RNDOUT,
++                             mtd->writesize + sectorIdx * sectorOobSize, -=
+1);
++               bcm_umi_bch_read_oobEcc(mtd, eccCalc);
++
++               /* Correct any ECC detected errors */
++               stat =3D bcm_umi_bch_correct(datap, eccCalc);
++
++               /* Update Stats */
++               if (stat < 0) {
++#if defined(NAND_BCM_UMI_DEBUG)
++                       printk(KERN_WARNING
++                              "%s uncorrectable_error_detected sectorIdx=
+=3D%d\n",
++                              __func__, sectorIdx);
++                       printk(KERN_WARNING
++                              "%s data %02x %02x %02x %02x %02x
++                                        %02x %02x %02x\n",
++                              __func__, datap[0], datap[1], datap[2], data=
+p[3],
++                              datap[4], datap[5], datap[6], datap[7]);
++                       printk(KERN_WARNING
++                              "%s oob  %02x %02x %02x %02x %02x
++                                        %02x %02x %02x\n",
++                              __func__, oobp[0], oobp[1], oobp[2], oobp[3]=
+,
++                              oobp[4], oobp[5], oobp[6], oobp[7]);
++                       printk(KERN_WARNING
++                              "%s oob  %02x %02x %02x %02x %02x
++                                        %02x %02x %02x\n",
++                              __func__, oobp[8], oobp[9], oobp[10], oobp[1=
+1],
++                              oobp[12], oobp[13], oobp[14], oobp[15]);
++#endif
++                       mtd->ecc_stats.failed++;
++               } else {
++#if defined(NAND_BCM_UMI_DEBUG)
++                       if (stat > 0) {
++                               printk(KERN_INFO
++                                      "%s %d correctable_errors detected\n=
+",
++                                      __func__, stat);
++                       }
++#endif
++                       mtd->ecc_stats.corrected +=3D stat;
++               }
++       }
++       return 0;
++}
++
++/*************************************************************************=
+***
++*
++*  bcm_umi_bch_write_page_hwecc - hardware ecc based page write function
++*  @mtd:       mtd info structure
++*  @chip:      nand chip info structure
++*  @buf:       data buffer
++*
++**************************************************************************=
+*/
++static void bcm_umi_bch_write_page_hwecc(struct mtd_info *mtd,
++                                        struct nand_chip *chip,
++                                        const uint8_t *buf)
++{
++       int sectorIdx =3D 0;
++       int eccsize =3D chip->ecc.size;
++       int eccsteps =3D chip->ecc.steps;
++       const uint8_t *datap =3D buf;
++       uint8_t *oobp =3D chip->oob_poi;
++       int sectorOobSize =3D mtd->oobsize / eccsteps;
++
++       for (sectorIdx =3D 0; sectorIdx < eccsteps;
++            sectorIdx++, datap +=3D eccsize, oobp +=3D sectorOobSize) {
++               /* Enable hardware ECC before writing the buf */
++               nand_bcm_umi_bch_enable_write_hwecc();
++               bcm_umi_nand_write_buf(mtd, datap, eccsize);
++               bcm_umi_bch_write_oobEcc(mtd, oobp);
++       }
++
++       bcm_umi_nand_write_buf(mtd, chip->oob_poi, mtd->oobsize);
++}
+diff --git a/drivers/mtd/nand/bcm_umi_hamming.c b/drivers/mtd/nand/bcm_umi_=
+hamming.c
+new file mode 100644
+index 0000000..eb14b71
+--- /dev/null
++++ b/drivers/mtd/nand/bcm_umi_hamming.c
+@@ -0,0 +1,135 @@
++/*************************************************************************=
+****
++* Copyright 2004 - 2009 Broadcom Corporation.  All rights reserved.
++*
++* Unless you and Broadcom execute a separate written software license
++* agreement governing use of this software, this software is licensed to y=
+ou
++* under the terms of the GNU General Public License version 2, available a=
+t
++* http://www.broadcom.com/licenses/GPLv2.php (the "GPL").
++*
++* Notwithstanding the above, under no circumstances may you combine this
++* software in any way with any other Broadcom software provided under a
++* license other than the GPL, without Broadcom's express prior written
++* consent.
++**************************************************************************=
+***/
++
++/* ---- Include Files ----------------------------------------------------=
+ */
++#include <linux/mtd/nand_ecc512.h>
++/* ---- External Variable Declarations -----------------------------------=
+ */
++/* ---- External Function Prototypes -------------------------------------=
+ */
++/* ---- Public Variables -------------------------------------------------=
+ */
++/* ---- Private Constants and Types --------------------------------------=
+ */
++#define NAND_ECC_NUM_BYTES 3
++
++/* ---- Private Function Prototypes --------------------------------------=
+ */
++static int bcm_umi_hamming_get_hw_ecc(struct mtd_info *mtd, const u_char *=
+dat,
++                                     u_char *ecc_code);
++static void bcm_umi_hamming_enable_hwecc(struct mtd_info *mtd, int mode);
++
++/* ---- Private Variables ------------------------------------------------=
+ */
++
++/*
++** nand_hw_eccoob
++** New oob placement block for use with hardware ecc generation.
++*/
++static struct nand_ecclayout nand_hw_eccoob_512 =3D {
++       .eccbytes =3D 3,
++       .eccpos =3D {6, 7, 8},
++       /*
++        ** Reserve 0/1 and 10/11 as BI indicators for 16-bit flash
++        ** Reserve 5 for 8-bit BI
++        ** 6/7/8 are for ecc so this is all that's left
++        */
++       .oobfree =3D {
++                   {.offset =3D 2, .length =3D 3},
++                   {.offset =3D 9, .length =3D 1},
++                   {.offset =3D 12, .length =3D 4}
++                        }
++};
++
++/*
++ * We treat the OOB for a 2K page as if it were 4 512 byte oobs,
++ * except that the ECC offset if 8 rather than 6.
++ */
++static struct nand_ecclayout nand_hw_eccoob_2048 =3D {
++       .eccbytes =3D 12,
++       .eccpos =3D {8, 9, 10, 24, 25, 26, 40, 41, 42, 56, 57, 58},
++       /*
++        ** Reserve 0/1 as BI indicators for 8/16-bit flash
++        ** 8/9/10 are for ecc so this is all that's left
++        */
++       .oobfree =3D {
++                   {.offset =3D 2, .length =3D 6},
++                   {.offset =3D 11, .length =3D 13},
++                   {.offset =3D 27, .length =3D 13},
++                   {.offset =3D 43, .length =3D 13},
++                   {.offset =3D 59, .length =3D 5}
++                        }
++};
++
++/*
++ * We treat the OOB for a 4K page as if it were 8 512 byte oobs,
++ * except that the ECC offset if 8 rather than 6.
++ */
++static struct nand_ecclayout nand_hw_eccoob_4096 =3D {
++       .eccbytes =3D 24,
++       .eccpos =3D
++           {8, 9, 10, 24, 25, 26, 40, 41, 42, 56, 57, 58, 72, 73, 74, 88, =
+89,
++            90, 104, 105, 106, 120, 121, 122},
++       /*
++        ** Reserve 0/1 as BI indicators for 8/16-bit flash
++        ** 8/9/10 are for ecc so this is all that's left
++        */
++       .oobfree =3D {
++                   {.offset =3D 2, .length =3D 6},
++                   {.offset =3D 11, .length =3D 13},
++                   {.offset =3D 27, .length =3D 13},
++                   {.offset =3D 43, .length =3D 13},
++                   {.offset =3D 59, .length =3D 13},
++                   {.offset =3D 75, .length =3D 13},
++                   {.offset =3D 91, .length =3D 13},
++                   {.offset =3D 107, .length =3D 13}
++                        }
++       /* { .offset =3D 123,    .length =3D 5 }}
++        * It turns out nand_ecclayout only has space for 8 entries */
++};
++
++/* ---- Private Functions ------------------------------------------------=
+ */
++
++/*************************************************************************=
+***
++*
++*  bcm_umi_hamming_get_hw_ecc
++*
++*   Used to get the hardware ECC.
++*
++**************************************************************************=
+*/
++
++static int bcm_umi_hamming_get_hw_ecc(struct mtd_info *mtd, const u_char *=
+dat,
++                                     u_char *ecc_code)
++{
++       unsigned long ecc =3D REG_UMI_NAND_ECC_DATA;
++       ecc_code[2] =3D (ecc >> 16) & 0xff;
++       ecc_code[1] =3D (ecc >> 8) & 0xff;
++       ecc_code[0] =3D (ecc >> 0) & 0xff;
++
++       (void)mtd;
++       (void)dat;
++
++       return 0;
++}
++
++/*************************************************************************=
+***
++*
++*  bcm_umi_hamming_enable_hwecc
++*
++*   Used to turn on hardware ECC.
++*
++**************************************************************************=
+*/
++
++static void bcm_umi_hamming_enable_hwecc(struct mtd_info *mtd, int mode)
++{
++       (void)mtd;
++       (void)mode;
++       nand_bcm_umi_hamming_enable_hwecc();
++}
++
++/* =3D=3D=3D=3D Public Functions =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D */
+diff --git a/drivers/mtd/nand/bcm_umi_nand.c b/drivers/mtd/nand/bcm_umi_nan=
+d.c
+new file mode 100644
+index 0000000..38fdef2
+--- /dev/null
++++ b/drivers/mtd/nand/bcm_umi_nand.c
+@@ -0,0 +1,790 @@
++/*************************************************************************=
+****
++* Copyright 2004 - 2009 Broadcom Corporation.  All rights reserved.
++*
++* Unless you and Broadcom execute a separate written software license
++* agreement governing use of this software, this software is licensed to y=
+ou
++* under the terms of the GNU General Public License version 2, available a=
+t
++* http://www.broadcom.com/licenses/GPLv2.php (the "GPL").
++*
++* Notwithstanding the above, under no circumstances may you combine this
++* software in any way with any other Broadcom software provided under a
++* license other than the GPL, without Broadcom's express prior written
++* consent.
++**************************************************************************=
+***/
++
++/* ---- Include Files ----------------------------------------------------=
+ */
++#include <linux/version.h>
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/string.h>
++#include <linux/ioport.h>
++#include <linux/device.h>
++#include <linux/delay.h>
++#include <linux/err.h>
++#include <linux/io.h>
++
++#include <linux/platform_device.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/nand.h>
++#include <linux/mtd/nand_ecc.h>
++#include <linux/mtd/partitions.h>
++
++#include <asm/mach-types.h>
++#include <asm/system.h>
++
++#include <mach/reg_nand.h>
++#include <mach/reg_umi.h>
++
++#include <linux/mtd/nand_bcm_umi.h>
++
++#if !defined(CONFIG_ARCH_BCM116X)
++#include <mach/memory_settings.h>
++#endif
++
++#define USE_DMA 1
++#include <mach/dma.h>
++#include <linux/dma-mapping.h>
++#include <linux/completion.h>
++
++#define USE_HWECC 1
++
++/* ---- External Variable Declarations -----------------------------------=
+ */
++/* ---- External Function Prototypes -------------------------------------=
+ */
++/* ---- Public Variables -------------------------------------------------=
+ */
++/* ---- Private Constants and Types --------------------------------------=
+ */
++static char gBanner[] __initdata =3D KERN_INFO "BCM UMI MTD NAND Driver: 1=
+.00\n";
++
++#ifdef CONFIG_MTD_PARTITIONS
++static char *part_probes[] =3D { "cmdlinepart", NULL };
++#endif
++
++#if NAND_ECC_BCH
++static uint8_t scan_ff_pattern[] =3D { 0xff };
++
++static struct nand_bbt_descr largepage_bbt =3D {
++       .options =3D 0,
++       .offs =3D 0,
++       .len =3D 1,
++       .pattern =3D scan_ff_pattern
++};
++#endif
++
++/*
++** Preallocate a buffer to avoid having to do this every dma operation.
++** This is the size of the preallocated coherent DMA buffer.
++*/
++#if USE_DMA
++#define DMA_MIN_BUFLEN         512
++#define DMA_MAX_BUFLEN         PAGE_SIZE
++#define USE_DIRECT_IO(len)     (((len) < DMA_MIN_BUFLEN) || \
++       ((len) > DMA_MAX_BUFLEN))
++
++#if defined(CONFIG_ARCH_BCMRING)
++/*
++ * The current NAND data space goes from 0x80001900 to 0x80001FFF,
++ * which is only 0x700 =3D 1792 bytes long. This is too small for 2K, 4K p=
+age
++ * size NAND flash. Need to break the DMA down to multiple 1Ks.
++ *
++ * Need to make sure REG_NAND_DATA_PADDR + DMA_MAX_LEN < 0x80002000
++ */
++#define DMA_MAX_LEN             1024
++#endif
++
++#if defined(CONFIG_ARCH_BCM116X)
++
++#define NAND_DMA_CHAN   3
++
++/* Global config is common for both directions. */
++#define DMA_CFG                                 \
++    (REG_DMA_CHAN_CFG_TC_INT_ENABLE            \
++    | REG_DMA_CHAN_CFG_ERROR_INT_ENABLE         \
++    | REG_DMA_CHAN_CFG_FLOW_CTL_MEM_TO_MEM_DMA  \
++    | REG_DMA_CHAN_CFG_ENABLE)
++
++/* Common transfer widths in bits (typically 8, 16, or 32) */
++#define DMA_WIDTH(dstwidth, srcwidth)                        \
++    (REG_DMA_CHAN_CTL_DEST_WIDTH_##dstwidth       \
++    | REG_DMA_CHAN_CTL_SRC_WIDTH_##srcwidth)
++
++/* Common burst sizes - typically 4 */
++#define DMA_BURST(width)                        \
++    (REG_DMA_CHAN_CTL_DEST_BURST_SIZE_##width  \
++    | REG_DMA_CHAN_CTL_SRC_BURST_SIZE_##width)
++
++/* DMA settings for copying from NAND to SDRAM */
++#define DMA_CTRL_NAND_TO_SDRAM(dstwidth, srcwidth, bytes)    \
++    (REG_DMA_CHAN_CTL_TC_INT_ENABLE            \
++    | REG_DMA_CHAN_CTL_DEST_INCR                \
++    | DMA_BURST(4)                              \
++    | DMA_WIDTH(dstwidth, srcwidth)             \
++    | (bytes * 8 / srcwidth))
++
++/* DMA settings for copying from SDRAM to NAND */
++#define DMA_CTRL_SDRAM_TO_NAND(dstwidth, srcwidth, bytes)    \
++    (REG_DMA_CHAN_CTL_TC_INT_ENABLE            \
++    | REG_DMA_CHAN_CTL_SRC_INCR                 \
++    | DMA_BURST(4)                              \
++    | DMA_WIDTH(dstwidth, srcwidth)             \
++    | (bytes * 8 / srcwidth))
++
++#endif /* CONFIG_ARCH_BCM116X */
++
++#else /* !USE_DMA */
++#define DMA_MIN_BUFLEN          0
++#define DMA_MAX_BUFLEN          0
++#define USE_DIRECT_IO(len)      1
++#endif
++/* ---- Private Function Prototypes --------------------------------------=
+ */
++static void bcm_umi_nand_read_buf(struct mtd_info *mtd, u_char * buf, int =
+len);
++static void bcm_umi_nand_write_buf(struct mtd_info *mtd, const u_char * bu=
+f,
++                                  int len);
++
++/* ---- Private Variables ------------------------------------------------=
+ */
++static struct mtd_info *board_mtd;
++static void __iomem *bcm_umi_io_base;
++static void *virtPtr;
++static dma_addr_t physPtr;
++static struct completion nand_comp;
++
++/* ---- Private Functions ------------------------------------------------=
+ */
++#if NAND_ECC_BCH
++#include "bcm_umi_bch.c"
++#else
++#include "bcm_umi_hamming.c"
++#endif
++
++#if USE_DMA
++
++#if defined(CONFIG_ARCH_BCM116X)
++static irqreturn_t nand_dma_isr(void *dev_id)
++{
++       complete(&nand_comp);
++       return IRQ_HANDLED;
++}
++
++#elif defined(CONFIG_ARCH_BCMRING)
++
++/*************************************************************************=
+***
++*
++*   Handler called when the DMA finishes.
++*
++**************************************************************************=
+*/
++
++static void nand_dma_handler(DMA_Device_t dev, int reason, void *userData)
++{
++       complete(&nand_comp);
++}
++
++#endif
++
++/*************************************************************************=
+***
++*
++*   Function to perform DMA initialization
++*
++**************************************************************************=
+*/
++
++static int nand_dma_init(void)
++{
++#if defined(CONFIG_ARCH_BCM116X)
++
++       dma_request_irq(NAND_DMA_CHAN, nand_dma_isr, NULL);
++       dma_enable_irq(NAND_DMA_CHAN);
++       dma_request_chan(NAND_DMA_CHAN, "nand");
++
++#elif defined(CONFIG_ARCH_BCMRING)
++
++       int rc;
++
++       rc =3D dma_set_device_handler(DMA_DEVICE_NAND_MEM_TO_MEM,
++               nand_dma_handler, NULL);
++       if (rc !=3D 0) {
++               printk(KERN_ERR "dma_set_device_handler failed: %d\n", rc);
++               return rc;
++       }
++#else
++#error "Unrecognized DMA platform"
++#endif
++
++       virtPtr =3D
++           dma_alloc_coherent(NULL, DMA_MAX_BUFLEN, &physPtr, GFP_KERNEL);
++       if (virtPtr =3D=3D NULL) {
++               printk(KERN_ERR "NAND - Failed to allocate memory for DMA b=
+uffer\n");
++               return -ENOMEM;
++       }
++
++       return 0;
++}
++
++/*************************************************************************=
+***
++*
++*   Function to perform DMA termination
++*
++**************************************************************************=
+*/
++
++static void nand_dma_term(void)
++{
++#if defined(CONFIG_ARCH_BCM116X)
++       dma_free_chan(NAND_DMA_CHAN);
++       dma_free_irq(NAND_DMA_CHAN);
++#elif defined(CONFIG_ARCH_BCMRING)
++       /* Nothing to do */
++#else
++#error "Unrecognized DMA platform"
++#endif
++
++       if (virtPtr !=3D NULL)
++               dma_free_coherent(NULL, DMA_MAX_BUFLEN, virtPtr, physPtr);
++}
++
++/*************************************************************************=
+***
++*
++*   Performs a read via DMA
++*
++**************************************************************************=
+*/
++
++static void nand_dma_read(void *buf, int len)
++{
++#if defined(CONFIG_ARCH_BCM116X)
++       int dmactrl;
++
++       init_completion(&nand_comp);
++       dmactrl =3D DMA_CTRL_NAND_TO_SDRAM(32, 8, len);
++       dma_init_chan(NAND_DMA_CHAN);
++       dma_setup_chan(NAND_DMA_CHAN,
++                      REG_NAND_DATA8_PADDR, (int)physPtr, 0, dmactrl, DMA_=
+CFG);
++       wait_for_completion(&nand_comp);
++       if (buf !=3D NULL)
++               memcpy(buf, virtPtr, len);
++
++#elif defined(CONFIG_ARCH_BCMRING)
++       int offset =3D 0;
++       int tmp_len =3D 0;
++       int len_left =3D len;
++       DMA_Handle_t hndl;
++
++       if (virtPtr =3D=3D NULL)
++               panic("nand_dma_read: virtPtr =3D=3D NULL\n");
++
++       if ((void *)physPtr =3D=3D NULL)
++               panic("nand_dma_read: physPtr =3D=3D NULL\n");
++
++       hndl =3D dma_request_channel(DMA_DEVICE_NAND_MEM_TO_MEM);
++       if (hndl < 0) {
++               printk(KERN_ERR
++                      "nand_dma_read: unable to allocate dma channel: %d\n=
+",
++                      (int)hndl);
++               panic("\n");
++       }
++
++       while (len_left > 0) {
++               if (len_left > DMA_MAX_LEN) {
++                       tmp_len =3D DMA_MAX_LEN;
++                       len_left -=3D DMA_MAX_LEN;
++               } else {
++                       tmp_len =3D len_left;
++                       len_left =3D 0;
++               }
++
++               init_completion(&nand_comp);
++               dma_transfer_mem_to_mem(hndl, REG_NAND_DATA_PADDR,
++                                       physPtr + offset, tmp_len);
++               wait_for_completion(&nand_comp);
++
++               offset +=3D tmp_len;
++       }
++
++       dma_free_channel(hndl);
++
++       if (buf !=3D NULL)
++               memcpy(buf, virtPtr, len);
++
++#else
++#error "Unrecognized DMA platform"
++#endif
++}
++
++/*************************************************************************=
+***
++*
++*   Performs a write via DMA
++*
++**************************************************************************=
+*/
++
++static void nand_dma_write(const void *buf, int len)
++{
++#if defined(CONFIG_ARCH_BCM116X)
++       int dmactrl;
++
++       memcpy(virtPtr, buf, len);
++       init_completion(&nand_comp);
++
++       dmactrl =3D DMA_CTRL_SDRAM_TO_NAND(8, 32, len);
++       dma_init_chan(NAND_DMA_CHAN);
++       dma_setup_chan(NAND_DMA_CHAN,
++                      (int)physPtr, REG_NAND_DATA8_PADDR, 0, dmactrl, DMA_=
+CFG);
++       wait_for_completion(&nand_comp);
++
++#elif defined(CONFIG_ARCH_BCMRING)
++       int offset =3D 0;
++       int tmp_len =3D 0;
++       int len_left =3D len;
++       DMA_Handle_t hndl;
++
++       if (buf =3D=3D NULL)
++               panic("nand_dma_write: buf =3D=3D NULL\n");
++
++       if (virtPtr =3D=3D NULL)
++               panic("nand_dma_write: virtPtr =3D=3D NULL\n");
++
++       if ((void *)physPtr =3D=3D NULL)
++               panic("nand_dma_write: physPtr =3D=3D NULL\n");
++
++       memcpy(virtPtr, buf, len);
++
++       hndl =3D dma_request_channel(DMA_DEVICE_NAND_MEM_TO_MEM);
++       if (hndl < 0) {
++               printk(KERN_ERR
++                      "nand_dma_write: unable to allocate dma channel: %d\=
+n",
++                      (int)hndl);
++               panic("\n");
++       }
++
++       while (len_left > 0) {
++               if (len_left > DMA_MAX_LEN) {
++                       tmp_len =3D DMA_MAX_LEN;
++                       len_left -=3D DMA_MAX_LEN;
++               } else {
++                       tmp_len =3D len_left;
++                       len_left =3D 0;
++               }
++
++               init_completion(&nand_comp);
++               dma_transfer_mem_to_mem(hndl, physPtr + offset,
++                                       REG_NAND_DATA_PADDR, tmp_len);
++               wait_for_completion(&nand_comp);
++
++               offset +=3D tmp_len;
++       }
++
++       dma_free_channel(hndl);
++#else
++#error "Unrecognized DMA platform"
++#endif
++}
++
++#endif
++
++/*************************************************************************=
+***
++*
++*  nand_dev_ready
++*
++*   Routine to check if nand is ready.
++*
++**************************************************************************=
+*/
++static int nand_dev_ready(struct mtd_info *mtd)
++{
++       return nand_bcm_umi_dev_ready();
++}
++
++/*************************************************************************=
+***
++*
++*  bcm_umi_nand_inithw
++*
++*   This routine does the necessary hardware (board-specific)
++*   initializations.  This includes setting up the timings, etc.
++*
++**************************************************************************=
+*/
++
++int bcm_umi_nand_inithw(void)
++{
++       /* Configure nand timing parameters */
++#if defined(CONFIG_ARCH_BCM116X)
++/*
++ * waiten =3D 0
++ * lowfreq =3D 0
++ * memtype async r/w, no page mode =3D 000
++ * pgsz =3D 000
++ * tprc_twlc =3D 00000   Page read access cycle/Burst write latency (n+2/n=
++1)
++ * tbta =3D 001                  Bus turnaround cycle (n)
++ * twp =3D 00100                 Write pulse width cycle (n+1)
++ * twr =3D 00                            Write recovery cycle (n+1)
++ * tas =3D 00                            Write address setup cycle (n+1)
++ * toe =3D 00                            Output enable delay cycle (n)
++ * trc_tlc =3D 00011     Read access cycle / Burst read latency (n+2 / n+1=
+)
++ */
++       REG_UMI_FLASH0_TCR =3D 0x00012003;
++#endif
++
++       REG_UMI_NAND_TCR &=3D ~0x7ffff;
++#if defined(CONFIG_ARCH_BCM116X)
++/*
++ * tbta =3D 001            Bus turnaround cycle (n)
++ * twp =3D 00100           Write pulse width cycle (n+1)
++ * twr =3D 00              Write recovery cycle (n+1)
++ * tas =3D 00              Write address setup cycle (n+1)
++ * toe =3D 00              Output enable delay cycle (n)
++ * trc_tlc =3D 00011       Read access cycle / Burst read latency (n+2 / n=
++1)
++ */
++       REG_UMI_NAND_TCR |=3D 0x72003;
++#else
++       REG_UMI_NAND_TCR |=3D HW_CFG_NAND_TCR;
++#endif
++
++#if !defined(CONFIG_MTD_NAND_BCM_UMI_HWCS)
++       /* enable software control of CS */
++       REG_UMI_NAND_TCR |=3D REG_UMI_NAND_TCR_CS_SWCTRL;
++#endif
++       /* keep NAND chip select asserted */
++       REG_UMI_NAND_RCSR |=3D REG_UMI_NAND_RCSR_CS_ASSERTED;
++
++       REG_UMI_NAND_TCR &=3D ~REG_UMI_NAND_TCR_WORD16;
++       /* enable writes to flash */
++       REG_UMI_MMD_ICR |=3D REG_UMI_MMD_ICR_FLASH_WP;
++
++       writel(NAND_CMD_RESET, bcm_umi_io_base + REG_NAND_CMD_OFFSET);
++       nand_bcm_umi_wait_till_ready();
++
++#if NAND_ECC_BCH
++       nand_bcm_umi_bch_config_ecc(NAND_ECC_NUM_BYTES);
++#endif
++
++       return 0;
++}
++
++/*************************************************************************=
+***
++*
++*  bcm_umi_nand_hwcontrol
++*
++*   Used to turn latch the proper register for access.
++*
++**************************************************************************=
+*/
++
++static void bcm_umi_nand_hwcontrol(struct mtd_info *mtd, int cmd,
++                                  unsigned int ctrl)
++{
++       /* send command to hardware */
++       struct nand_chip *chip =3D mtd->priv;
++       if (ctrl & NAND_CTRL_CHANGE) {
++               if (ctrl & NAND_CLE) {
++                       chip->IO_ADDR_W =3D bcm_umi_io_base + REG_NAND_CMD_=
+OFFSET;
++                       goto CMD;
++               }
++               if (ctrl & NAND_ALE) {
++                       chip->IO_ADDR_W =3D
++                           bcm_umi_io_base + REG_NAND_ADDR_OFFSET;
++                       goto CMD;
++               }
++               chip->IO_ADDR_W =3D bcm_umi_io_base + REG_NAND_DATA8_OFFSET=
+;
++       }
++
++CMD:
++       /* Send command to chip directly */
++       if (cmd !=3D NAND_CMD_NONE)
++               writeb(cmd, chip->IO_ADDR_W);
++}
++
++/*************************************************************************=
+***
++*
++*  bcm_umi_nand_write_buf - write buffer to chip
++*  @mtd:       MTD device structure
++*  @buf:       data buffer
++*  @len:       number of bytes to write
++*
++**************************************************************************=
+*/
++static void bcm_umi_nand_write_buf(struct mtd_info *mtd, const u_char * bu=
+f,
++                                  int len)
++{
++       if (USE_DIRECT_IO(len)) {
++               /* Do it the old way if the buffer is small or too large.
++                * Probably quicker than starting and checking dma. */
++               int i;
++               struct nand_chip *this =3D mtd->priv;
++
++               for (i =3D 0; i < len; i++)
++                       writeb(buf[i], this->IO_ADDR_W);
++       }
++#if USE_DMA
++       else
++               nand_dma_write(buf, len);
++#endif
++}
++
++/*************************************************************************=
+***
++*
++*  nand_read_buf - read chip data into buffer
++*  @mtd:       MTD device structure
++*  @buf:       buffer to store data
++*  @len:       number of bytes to read
++*
++**************************************************************************=
+*/
++
++static void bcm_umi_nand_read_buf(struct mtd_info *mtd, u_char * buf, int =
+len)
++{
++       if (USE_DIRECT_IO(len)) {
++               int i;
++               struct nand_chip *this =3D mtd->priv;
++
++               for (i =3D 0; i < len; i++)
++                       buf[i] =3D readb(this->IO_ADDR_R);
++       }
++#if USE_DMA
++       else
++               nand_dma_read(buf, len);
++#endif
++}
++
++/*************************************************************************=
+***
++*
++*  bcm_umi_nand_verify_buf - Verify chip data against buffer
++*  @mtd:       MTD device structure
++*  @buf:       buffer containing the data to compare
++*  @len:       number of bytes to compare
++*
++**************************************************************************=
+*/
++static uint8_t readbackbuf[NAND_MAX_PAGESIZE];
++static int bcm_umi_nand_verify_buf(struct mtd_info *mtd, const u_char * bu=
+f,
++                                  int len)
++{
++       /*
++        * Try to readback page with ECC correction. This is necessary
++        * for MLC parts which may have permanently stuck bits.
++        */
++       struct nand_chip *chip =3D mtd->priv;
++       int ret =3D chip->ecc.read_page(mtd, chip, readbackbuf);
++       if (ret < 0)
++               return -EFAULT;
++       else {
++               if (memcmp(readbackbuf, buf, len) =3D=3D 0)
++                       return 0;
++               return -EFAULT;
++       }
++
++       return 0;
++}
++
++static int bcm_umi_nand_probe(struct platform_device *pdev)
++{
++       struct nand_chip *this;
++       int err =3D 0;
++
++       printk(gBanner);
++
++       /* Allocate memory for MTD device structure and private data */
++       board_mtd =3D
++           kmalloc(sizeof(struct mtd_info) + sizeof(struct nand_chip),
++                   GFP_KERNEL);
++       if (!board_mtd) {
++               printk(KERN_WARNING
++                      "Unable to allocate NAND MTD device structure.\n");
++               return -ENOMEM;
++       }
++
++       /* map physical adress */
++#ifdef CONFIG_ARCH_BCMRING
++       bcm_umi_io_base =3D ioremap(MM_ADDR_IO_NAND, 0x1000);
++#else
++       bcm_umi_io_base =3D ioremap(0x08000000, 0x1000);
++#endif
++
++       if (!bcm_umi_io_base) {
++               printk("ioremap to access BCM UMI NAND chip failed\n");
++               kfree(board_mtd);
++               return -EIO;
++       }
++
++       /* Get pointer to private data */
++       this =3D (struct nand_chip *)(&board_mtd[1]);
++
++       /* Initialize structures */
++       memset((char *)board_mtd, 0, sizeof(struct mtd_info));
++       memset((char *)this, 0, sizeof(struct nand_chip));
++
++       /* Link the private data with the MTD structure */
++       board_mtd->priv =3D this;
++
++       /* Initialize the NAND hardware.  */
++       if (bcm_umi_nand_inithw() < 0) {
++               printk(KERN_ERR "BCM UMI NAND chip could not be initialized=
+\n");
++               iounmap(bcm_umi_io_base);
++               kfree(board_mtd);
++               return -EIO;
++       }
++
++       /* Set address of NAND IO lines */
++       this->IO_ADDR_W =3D bcm_umi_io_base + REG_NAND_DATA8_OFFSET;
++       this->IO_ADDR_R =3D bcm_umi_io_base + REG_NAND_DATA8_OFFSET;
++
++       /* Set command delay time, see datasheet for correct value */
++       this->chip_delay =3D 0;
++       /* Assign the device ready function, if available */
++       this->dev_ready =3D nand_dev_ready;
++       this->options =3D 0;
++
++       this->write_buf =3D bcm_umi_nand_write_buf;
++       this->read_buf =3D bcm_umi_nand_read_buf;
++       this->verify_buf =3D bcm_umi_nand_verify_buf;
++
++       this->cmd_ctrl =3D bcm_umi_nand_hwcontrol;
++#if USE_HWECC
++       this->ecc.mode =3D NAND_ECC_HW;
++       this->ecc.size =3D 512;
++       this->ecc.bytes =3D NAND_ECC_NUM_BYTES;
++
++#if NAND_ECC_BCH
++       this->ecc.read_page =3D bcm_umi_bch_read_page_hwecc;
++       this->ecc.write_page =3D bcm_umi_bch_write_page_hwecc;
++#else
++       this->ecc.correct =3D nand_correct_data512;
++       this->ecc.calculate =3D bcm_umi_hamming_get_hw_ecc;
++       this->ecc.hwctl =3D bcm_umi_hamming_enable_hwecc;
++#endif
++#else
++       this->ecc.mode =3D NAND_ECC_SOFT;
++#endif
++
++#if USE_DMA
++       err =3D nand_dma_init();
++       if (err !=3D 0)
++               return err;
++#endif
++
++       /* Figure out the size of the device that we have. We need to do th=
+is to
++        * figure out which ECC layout we'll be using. */
++
++       err =3D nand_scan_ident(board_mtd, 1);
++       if (err) {
++               printk(KERN_ERR "nand_scan failed: %d\n", err);
++               iounmap(bcm_umi_io_base);
++               kfree(board_mtd);
++               return err;
++       }
++
++       /* Now that we know the nand size, we can setup the ECC layout */
++
++#if USE_HWECC
++       switch (board_mtd->writesize) { /* writesize is the pagesize */
++       case 4096:
++               this->ecc.layout =3D &nand_hw_eccoob_4096;
++               break;
++       case 2048:
++               this->ecc.layout =3D &nand_hw_eccoob_2048;
++               break;
++       case 512:
++               this->ecc.layout =3D &nand_hw_eccoob_512;
++               break;
++       default:
++               {
++                       printk(KERN_ERR "NAND - Unrecognized pagesize: %d\n=
+",
++                              board_mtd->writesize);
++                       return -EINVAL;
++               }
++       }
++#endif
++
++#if NAND_ECC_BCH
++       if (board_mtd->writesize > 512) {
++               if (this->options & NAND_USE_FLASH_BBT)
++                       largepage_bbt.options =3D NAND_BBT_SCAN2NDPAGE;
++
++               this->badblock_pattern =3D &largepage_bbt;
++       }
++#endif
++
++       /* Now finish off the scan, now that ecc.layout has been initialize=
+d. */
++
++       err =3D nand_scan_tail(board_mtd);
++       if (err) {
++               printk(KERN_ERR "nand_scan failed: %d\n", err);
++               iounmap(bcm_umi_io_base);
++               kfree(board_mtd);
++               return err;
++       }
++
++       /* Register the partitions */
++       {
++               int nr_partitions;
++               struct mtd_partition *partition_info;
++
++               board_mtd->name =3D "bcm_umi-nand";
++               nr_partitions =3D
++                   parse_mtd_partitions(board_mtd, part_probes,
++                                        &partition_info, 0);
++
++               if (nr_partitions <=3D 0) {
++                       printk(KERN_ERR "BCM UMI NAND: Too few partitions -=
+ %d\n",
++                              nr_partitions);
++                       iounmap(bcm_umi_io_base);
++                       kfree(board_mtd);
++                       return -EIO;
++               }
++               add_mtd_partitions(board_mtd, partition_info, nr_partitions=
+);
++       }
++
++       /* Return happy */
++       return 0;
++}
++
++static int bcm_umi_nand_remove(struct platform_device *pdev)
++{
++#if USE_DMA
++       nand_dma_term();
++#endif
++
++       /* Release resources, unregister device */
++       nand_release(board_mtd);
++
++       /* unmap physical adress */
++       iounmap(bcm_umi_io_base);
++
++       /* Free the MTD device structure */
++       kfree(board_mtd);
++
++       return 0;
++}
++
++#ifdef CONFIG_PM
++static int bcm_umi_nand_suspend(struct platform_device *pdev,
++                               pm_message_t state)
++{
++       printk(KERN_ERR "MTD NAND suspend is being called\n");
++       return 0;
++}
++
++static int bcm_umi_nand_resume(struct platform_device *pdev)
++{
++       printk(KERN_ERR "MTD NAND resume is being called\n");
++       return 0;
++}
++#else
++#define bcm_umi_nand_suspend   NULL
++#define bcm_umi_nand_resume    NULL
++#endif
++
++static struct platform_driver nand_driver =3D {
++       .driver =3D {
++                  .name =3D "bcm-nand",
++                  .owner =3D THIS_MODULE,
++                  },
++       .probe =3D bcm_umi_nand_probe,
++       .remove =3D bcm_umi_nand_remove,
++       .suspend =3D bcm_umi_nand_suspend,
++       .resume =3D bcm_umi_nand_resume,
++};
++
++static int __init nand_init(void)
++{
++       return platform_driver_register(&nand_driver);
++}
++
++static void __exit nand_exit(void)
++{
++       platform_driver_unregister(&nand_driver);
++}
++
++module_init(nand_init);
++module_exit(nand_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Broadcom");
++MODULE_DESCRIPTION("BCM UMI MTD NAND driver");
+diff --git a/include/linux/mtd/nand_bcm_umi.h b/include/linux/mtd/nand_bcm_=
+umi.h
+new file mode 100644
+index 0000000..0912297
+--- /dev/null
++++ b/include/linux/mtd/nand_bcm_umi.h
+@@ -0,0 +1,241 @@
++/*************************************************************************=
+****
++* Copyright 2003 - 2009 Broadcom Corporation.  All rights reserved.
++*
++* Unless you and Broadcom execute a separate written software license
++* agreement governing use of this software, this software is licensed to y=
+ou
++* under the terms of the GNU General Public License version 2, available a=
+t
++* http://www.broadcom.com/licenses/GPLv2.php (the "GPL").
++*
++* Notwithstanding the above, under no circumstances may you combine this
++* software in any way with any other Broadcom software provided under a
++* license other than the GPL, without Broadcom's express prior written
++* consent.
++**************************************************************************=
+***/
++#ifndef NAND_BCM_UMI_H
++#define NAND_BCM_UMI_H
++
++/* ---- Include Files ----------------------------------------------------=
+ */
++#include <mach/reg_umi.h>
++#include <cfg_global.h>
++#ifdef BOOT0_BUILD
++#include <uart.h>
++#endif
++
++/* ---- Constants and Types ----------------------------------------------=
+ */
++#if (CFG_GLOBAL_CHIP_FAMILY =3D=3D CFG_GLOBAL_CHIP_FAMILY_BCMRING)
++#define NAND_ECC_BCH (CFG_GLOBAL_CHIP_REV > 0xA0)
++#else
++#define NAND_ECC_BCH 0
++#endif
++
++/* ---- Variable Externs ------------------------------------------ */
++/* ---- Function Prototypes --------------------------------------- */
++
++static inline int nand_bcm_umi_dev_ready(void)
++{
++       return REG_UMI_NAND_RCSR & REG_UMI_NAND_RCSR_RDY;
++}
++
++static inline void nand_bcm_umi_wait_till_ready(void)
++{
++       while (nand_bcm_umi_dev_ready() =3D=3D 0)
++               ;
++}
++
++static inline void nand_bcm_umi_hamming_enable_hwecc(void)
++{
++       /* disable and reset ECC, 512 byte page */
++       REG_UMI_NAND_ECC_CSR &=3D ~(REG_UMI_NAND_ECC_CSR_ECC_ENABLE |
++               REG_UMI_NAND_ECC_CSR_256BYTE);
++       /* enable ECC */
++       REG_UMI_NAND_ECC_CSR |=3D REG_UMI_NAND_ECC_CSR_ECC_ENABLE;
++}
++
++#if NAND_ECC_BCH
++static inline void nand_bcm_umi_bch_enable_read_hwecc(void)
++{
++       /* disable and reset ECC */
++       REG_UMI_BCH_CTRL_STATUS =3D REG_UMI_BCH_CTRL_STATUS_RD_ECC_VALID;
++       /* Turn on ECC */
++       REG_UMI_BCH_CTRL_STATUS =3D REG_UMI_BCH_CTRL_STATUS_ECC_RD_EN;
++}
++
++static inline void nand_bcm_umi_bch_enable_write_hwecc(void)
++{
++       /* disable and reset ECC */
++       REG_UMI_BCH_CTRL_STATUS =3D REG_UMI_BCH_CTRL_STATUS_WR_ECC_VALID;
++       /* Turn on ECC */
++       REG_UMI_BCH_CTRL_STATUS =3D REG_UMI_BCH_CTRL_STATUS_ECC_WR_EN;
++}
++
++static inline void nand_bcm_umi_bch_config_ecc(uint8_t numEccBytes)
++{
++       int nValue;
++       int tValue;
++       int kValue;
++       int numBits =3D numEccBytes * 8;
++#define ECC_BITS_PER_CORRECTABLE_BIT 13
++#define NAND_DATA_ACCESS_SIZE 512
++
++       /* Every correctible bit requires 13 ECC bits */
++       tValue =3D (int)(numBits / ECC_BITS_PER_CORRECTABLE_BIT);
++
++       /* Total data in number of bits for generating and computing BCH EC=
+C */
++       nValue =3D (NAND_DATA_ACCESS_SIZE + numEccBytes) * 8;
++
++       /* K parameter is used internally.  K =3D N - (T * 13) */
++       kValue =3D nValue - (tValue * 13);
++
++       /* Write the settings */
++       REG_UMI_BCH_N =3D nValue;
++       REG_UMI_BCH_T =3D tValue;
++       REG_UMI_BCH_K =3D kValue;
++
++       /* disable and reset ECC */
++       REG_UMI_BCH_CTRL_STATUS =3D
++           REG_UMI_BCH_CTRL_STATUS_WR_ECC_VALID |
++           REG_UMI_BCH_CTRL_STATUS_RD_ECC_VALID;
++}
++
++static inline void nand_bcm_umi_bch_pause_read_ecc_calc(void)
++{
++       REG_UMI_BCH_CTRL_STATUS =3D
++           REG_UMI_BCH_CTRL_STATUS_ECC_RD_EN |
++           REG_UMI_BCH_CTRL_STATUS_PAUSE_ECC_DEC;
++}
++
++static inline void nand_bcm_umi_bch_resume_read_ecc_calc(void)
++{
++       REG_UMI_BCH_CTRL_STATUS =3D REG_UMI_BCH_CTRL_STATUS_ECC_RD_EN;
++}
++
++static inline uint32_t nand_bcm_umi_bch_poll_read_ecc_calc(void)
++{
++       uint32_t regVal;
++
++       do {
++               /* wait for ECC to be valid */
++               regVal =3D REG_UMI_BCH_CTRL_STATUS;
++       } while ((regVal & REG_UMI_BCH_CTRL_STATUS_RD_ECC_VALID) =3D=3D 0);
++
++       return regVal;
++}
++
++static inline void nand_bcm_umi_bch_poll_write_ecc_calc(void)
++{
++       /* wait for ECC to be valid */
++       while ((REG_UMI_BCH_CTRL_STATUS &
++               REG_UMI_BCH_CTRL_STATUS_WR_ECC_VALID) =3D=3D 0)
++               ;
++}
++
++/*************************************************************************=
+***
++*  nand_bch_ecc_flip_bit - Routine to flip an errored bit
++*
++*  PURPOSE:
++*     This is a helper routine that flips the bit (0 -> 1 or 1 -> 0) of th=
+e
++*     errored bit specified
++*
++*  PARAMETERS:
++*     datap - Container that holds the 512 byte data
++*     errorLocation - Location of the bit that needs to be flipped
++*
++*  RETURNS:
++*     None
++**************************************************************************=
+**/
++static inline void nand_bcm_umi_bch_ecc_flip_bit(uint8_t *datap,
++                                                int errorLocation)
++{
++       int locWithinAByte =3D (errorLocation & REG_UMI_BCH_ERR_LOC_BYTE) >=
+> 0;
++       int locWithinAWord =3D (errorLocation & REG_UMI_BCH_ERR_LOC_WORD) >=
+> 3;
++       int locWithinAPage =3D (errorLocation & REG_UMI_BCH_ERR_LOC_PAGE) >=
+> 5;
++
++       uint8_t errorByte =3D 0;
++       uint8_t byteMask =3D 1 << locWithinAByte;
++
++       /* BCH uses big endian, need to change the location bits
++        * to little endian */
++       locWithinAWord =3D 3 - locWithinAWord;
++
++       errorByte =3D datap[locWithinAPage * sizeof(uint32_t) + locWithinAW=
+ord];
++
++#ifdef BOOT0_BUILD
++       puthexs("\nECC Correct Offset: ",
++               locWithinAPage * sizeof(uint32_t) + locWithinAWord);
++       puthexs(" errorByte:", errorByte);
++       puthex8(" Bit: ", locWithinAByte);
++#endif
++
++       if (errorByte & byteMask) {
++               /* bit needs to be cleared */
++               errorByte &=3D ~byteMask;
++       } else {
++               /* bit needs to be set */
++               errorByte |=3D byteMask;
++       }
++
++       /* write back the value with the fixed bit */
++       datap[locWithinAPage * sizeof(uint32_t) + locWithinAWord] =3D error=
+Byte;
++}
++
++/*************************************************************************=
+***
++*  nand_correct_page_bch - Routine to correct bit errors when reading NAND
++*
++*  PURPOSE:
++*     This routine reads the BCH registers to determine if there are any b=
+it
++*     errors during the read of the last 512 bytes of data + ECC bytes.  I=
+f
++*     errors exists, the routine fixes it.
++*
++*  PARAMETERS:
++*     datap - Container that holds the 512 byte data
++*
++*  RETURNS:
++*     0 or greater =3D Number of errors corrected
++*     (No errors are found or errors have been fixed)
++*    -1 =3D Error(s) cannot be fixed
++**************************************************************************=
+**/
++static inline int nand_bcm_umi_bch_correct_page(uint8_t *datap)
++{
++       int numErrors;
++       int errorLocation;
++       int idx;
++       uint32_t regValue;
++
++       /* wait for read ECC to be valid */
++       regValue =3D nand_bcm_umi_bch_poll_read_ecc_calc();
++
++       /* read the control status register to determine
++        * if there are error'ed bits */
++       /* see if errors are correctible */
++       if ((regValue & REG_UMI_BCH_CTRL_STATUS_UNCORR_ERR) > 0) {
++               /* errors cannot be fixed, return -1 */
++               return -1;
++       }
++
++       if ((regValue & REG_UMI_BCH_CTRL_STATUS_CORR_ERR) =3D=3D 0) {
++               /* no errors */
++               return 0;
++       }
++
++       /*
++        * Fix errored bits by doing the following:
++        * 1. Read the number of errors in the control and status register
++        * 2. Read the error location registers that corresponds to the num=
+ber
++        *    of errors reported
++        * 3. Invert the bit in the data
++        */
++       numErrors =3D (regValue & REG_UMI_BCH_CTRL_STATUS_NB_CORR_ERROR) >>=
+ 20;
++
++       for (idx =3D 0; idx < numErrors; idx++) {
++               errorLocation =3D
++                   REG_UMI_BCH_ERR_LOC_ADDR(idx) & REG_UMI_BCH_ERR_LOC_MAS=
+K;
++
++               /* Flip bit */
++               nand_bcm_umi_bch_ecc_flip_bit(datap, errorLocation);
++       }
++       /* Errors corrected */
++       return numErrors;
++}
++#endif
++
++#endif /* NAND_BCM_UMI_H */
+--
+1.6.0.6
+
+
+
 Leo Hao Chen
 Software Engineer
 Broadcom Canada Inc.
 
-=20
+
 
 > -----Original Message-----
-> From: Artem Bityutskiy [mailto:dedekind@infradead.org]=20
-> Sent: Saturday, July 18, 2009 10:09 PM
-> To: Leo (Hao) Chen
-> Cc: linux-arm-kernel@lists.arm.linux.org.uk;=20
-> linux-mtd@lists.infradead.org
-> Subject: Re: [PATCH v3 26/27] [ARM] [NAND] [bcmring] add=20
+> From: Leo (Hao) Chen
+> Sent: Tuesday, July 28, 2009 3:09 PM
+> To: dedekind@infradead.org
+> Cc: linux-arm-kernel@lists.arm.linux.org.uk;
+> linux-mtd@lists.infradead.org; Leo (Hao) Chen
+> Subject: RE: [PATCH v3 26/27] [ARM] [NAND] [bcmring] add
 > bcmring umi nand driver support
->=20
-> On Fri, 2009-07-17 at 12:13 -0700, Leo (Hao) Chen wrote:
-> > This patch addes bcmring umi nand driver support, with bch=20
-> ecc algorithm support.
-> >=20
-> > It addes header files, register files, Kconfig option and Makefile
-> > entry.
-> >=20
-> > Signed-off-by: Leo Chen <leochen@broadcom.com>
->=20
-> Hi, the code neat in general, but would it be possible to amend it and
-> make more compatible with the Linux coding style?
->=20
-> See Documentation/CodingStyle
-> See scripts/checkpatch.pl
->=20
-> --=20
-> Best regards,
-> Artem Bityutskiy (=E2=C9=D4=C0=C3=CB=C9=CA =E1=D2=D4=A3=CD)
->=20
->=20
-> =
-
---_002_8628FE4E7912BF47A96AE7DD7BAC0AADCB25D06CCASJEXCHCCR02co_
-Content-Type: application/octet-stream;
- name=0025-add-bcmring-umi-nand-driver-support.patch
-Content-Description: 0025-add-bcmring-umi-nand-driver-support.patch
-Content-Disposition: attachment;
- filename=0025-add-bcmring-umi-nand-driver-support.patch;
- size=60288;
- creation-date="Tue, 28 Jul 2009 14:32:52 GMT";
- modification-date="Tue, 28 Jul 2009 14:31:37 GMT"
-Content-Transfer-Encoding: base64
-
-RnJvbSAzY2Y1ODZhMjk4OTFhZWRjMzc1ZTM1OWU5MzE1NWI1MDBhMjRhOTVmIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBMZW8gQ2hlbiA8bGVvY2hlbkBicm9hZGNvbS5jb20+CkRhdGU6
-IFdlZCwgMTUgSnVsIDIwMDkgMTc6MjY6NTcgLTA3MDAKU3ViamVjdDogW1BBVENIIDI1LzI3XSBh
-ZGQgYmNtcmluZyB1bWkgbmFuZCBkcml2ZXIgc3VwcG9ydAoKYWRkIHVtaSBuYW5kIGRyaXZlciBm
-b3IgYmNtcmluZwphZGQgaGVhZGVyIGZpbGVzLCByZWdpc3RlciBmaWxlCgphZGQgS2NvbmZpZyBv
-cHRpb24gYW5kIE1ha2VmaWxlIGVudHJ5CgpmaXhlZCBjb2Rpbmcgc3R5bGUgZXJyb3JzCmZpeGVk
-IGxpbmUgbGVuZ3RoCgpmaXggYmNtX3VtaV9uYW5kX3ZlcmlmeV9idWYgZm9yIE1MQyBzdXBwb3J0
-CgpTaWduZWQtb2ZmLWJ5OiBMZW8gQ2hlbiA8bGVvY2hlbkBicm9hZGNvbS5jb20+Ci0tLQogYXJj
-aC9hcm0vbWFjaC1iY21yaW5nL2luY2x1ZGUvbWFjaC9yZWdfbmFuZC5oIHwgICA2NiArKwogYXJj
-aC9hcm0vbWFjaC1iY21yaW5nL2luY2x1ZGUvbWFjaC9yZWdfdW1pLmggIHwgIDIzNyArKysrKysr
-KwogZHJpdmVycy9tdGQvbmFuZC9LY29uZmlnICAgICAgICAgICAgICAgICAgICAgIHwgICAxNiAr
-CiBkcml2ZXJzL210ZC9uYW5kL01ha2VmaWxlICAgICAgICAgICAgICAgICAgICAgfCAgICAxICsK
-IGRyaXZlcnMvbXRkL25hbmQvYmNtX3VtaV9iY2guYyAgICAgICAgICAgICAgICB8ICAzMTAgKysr
-KysrKysrKwogZHJpdmVycy9tdGQvbmFuZC9iY21fdW1pX2hhbW1pbmcuYyAgICAgICAgICAgIHwg
-IDEzNSArKysrKwogZHJpdmVycy9tdGQvbmFuZC9iY21fdW1pX25hbmQuYyAgICAgICAgICAgICAg
-IHwgIDc5MCArKysrKysrKysrKysrKysrKysrKysrKysrCiBpbmNsdWRlL2xpbnV4L210ZC9uYW5k
-X2JjbV91bWkuaCAgICAgICAgICAgICAgfCAgMjQxICsrKysrKysrCiA4IGZpbGVzIGNoYW5nZWQs
-IDE3OTYgaW5zZXJ0aW9ucygrKSwgMCBkZWxldGlvbnMoLSkKIGNyZWF0ZSBtb2RlIDEwMDY0NCBh
-cmNoL2FybS9tYWNoLWJjbXJpbmcvaW5jbHVkZS9tYWNoL3JlZ19uYW5kLmgKIGNyZWF0ZSBtb2Rl
-IDEwMDY0NCBhcmNoL2FybS9tYWNoLWJjbXJpbmcvaW5jbHVkZS9tYWNoL3JlZ191bWkuaAogY3Jl
-YXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvbXRkL25hbmQvYmNtX3VtaV9iY2guYwogY3JlYXRlIG1v
-ZGUgMTAwNjQ0IGRyaXZlcnMvbXRkL25hbmQvYmNtX3VtaV9oYW1taW5nLmMKIGNyZWF0ZSBtb2Rl
-IDEwMDY0NCBkcml2ZXJzL210ZC9uYW5kL2JjbV91bWlfbmFuZC5jCiBjcmVhdGUgbW9kZSAxMDA2
-NDQgaW5jbHVkZS9saW51eC9tdGQvbmFuZF9iY21fdW1pLmgKCmRpZmYgLS1naXQgYS9hcmNoL2Fy
-bS9tYWNoLWJjbXJpbmcvaW5jbHVkZS9tYWNoL3JlZ19uYW5kLmggYi9hcmNoL2FybS9tYWNoLWJj
-bXJpbmcvaW5jbHVkZS9tYWNoL3JlZ19uYW5kLmgKbmV3IGZpbGUgbW9kZSAxMDA2NDQKaW5kZXgg
-MDAwMDAwMC4uMzg3Mzc2ZgotLS0gL2Rldi9udWxsCisrKyBiL2FyY2gvYXJtL21hY2gtYmNtcmlu
-Zy9pbmNsdWRlL21hY2gvcmVnX25hbmQuaApAQCAtMCwwICsxLDY2IEBACisvKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioKKyogQ29weXJpZ2h0IDIwMDEgLSAyMDA4IEJyb2FkY29tIENvcnBvcmF0aW9uLiAg
-QWxsIHJpZ2h0cyByZXNlcnZlZC4KKyoKKyogVW5sZXNzIHlvdSBhbmQgQnJvYWRjb20gZXhlY3V0
-ZSBhIHNlcGFyYXRlIHdyaXR0ZW4gc29mdHdhcmUgbGljZW5zZQorKiBhZ3JlZW1lbnQgZ292ZXJu
-aW5nIHVzZSBvZiB0aGlzIHNvZnR3YXJlLCB0aGlzIHNvZnR3YXJlIGlzIGxpY2Vuc2VkIHRvIHlv
-dQorKiB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIHZl
-cnNpb24gMiwgYXZhaWxhYmxlIGF0CisqIGh0dHA6Ly93d3cuYnJvYWRjb20uY29tL2xpY2Vuc2Vz
-L0dQTHYyLnBocCAodGhlICJHUEwiKS4KKyoKKyogTm90d2l0aHN0YW5kaW5nIHRoZSBhYm92ZSwg
-dW5kZXIgbm8gY2lyY3Vtc3RhbmNlcyBtYXkgeW91IGNvbWJpbmUgdGhpcworKiBzb2Z0d2FyZSBp
-biBhbnkgd2F5IHdpdGggYW55IG90aGVyIEJyb2FkY29tIHNvZnR3YXJlIHByb3ZpZGVkIHVuZGVy
-IGEKKyogbGljZW5zZSBvdGhlciB0aGFuIHRoZSBHUEwsIHdpdGhvdXQgQnJvYWRjb20ncyBleHBy
-ZXNzIHByaW9yIHdyaXR0ZW4KKyogY29uc2VudC4KKyoqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqLworCisv
-KgorKgorKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioKKyoKKyogIFJFR19OQU5ELmgKKyoKKyogIFBVUlBP
-U0U6CisqCisqICAgICBUaGlzIGZpbGUgY29udGFpbnMgZGVmaW5pdGlvbnMgZm9yIHRoZSBuYW5k
-IHJlZ2lzdGVyczoKKyoKKyogIE5PVEVTOgorKgorKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCisKKyNp
-ZiAhZGVmaW5lZChfX0FTTV9BUkNIX1JFR19OQU5EX0gpCisjZGVmaW5lIF9fQVNNX0FSQ0hfUkVH
-X05BTkRfSAorCisvKiAtLS0tIEluY2x1ZGUgRmlsZXMgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSAqLworI2luY2x1ZGUgPGNzcC9yZWcuaD4KKyNp
-bmNsdWRlIDxtYWNoL3JlZ191bWkuaD4KKworLyogLS0tLSBDb25zdGFudHMgYW5kIFR5cGVzIC0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0gKi8KKworI2RlZmlu
-ZSBIV19OQU5EX0JBU0UgICAgICAgTU1fSU9fQkFTRV9OQU5ECS8qIE5BTkQgRmxhc2ggKi8KKwor
-LyogRE1BIGFjY2Vzc2VzIGJ5IHRoZSBib290c3RyYXAgbmVlZCBoYXJkIG5vbnZpcnR1YWwgYWRk
-cmVzc2VzICovCisjZGVmaW5lIFJFR19OQU5EX0NNRCAgICAgICAgICAgIF9fUkVHMTYoSFdfTkFO
-RF9CQVNFICsgMCkKKyNkZWZpbmUgUkVHX05BTkRfQUREUiAgICAgICAgICAgX19SRUcxNihIV19O
-QU5EX0JBU0UgKyA0KQorCisjZGVmaW5lIFJFR19OQU5EX1BIWVNfREFUQTE2ICAgKEhXX05BTkRf
-QkFTRSArIDgpCisjZGVmaW5lIFJFR19OQU5EX1BIWVNfREFUQTggICAgKEhXX05BTkRfQkFTRSAr
-IDgpCisjZGVmaW5lIFJFR19OQU5EX0RBVEExNiAgICAgICAgIF9fUkVHMTYoUkVHX05BTkRfUEhZ
-U19EQVRBMTYpCisjZGVmaW5lIFJFR19OQU5EX0RBVEE4ICAgICAgICAgIF9fUkVHOChSRUdfTkFO
-RF9QSFlTX0RBVEE4KQorCisvKiB1c2UgYXBwcm9wcmlhdGUgb2Zmc2V0IHRvIG1ha2Ugc3VyZSBp
-dCBzdGFydCBhdCB0aGUgMUsgYm91bmRhcnkgKi8KKyNkZWZpbmUgUkVHX05BTkRfUEhZU19EQVRB
-X0RNQSAgIChIV19OQU5EX0JBU0UgKyAweDQwMCkKKyNkZWZpbmUgUkVHX05BTkRfREFUQV9ETUEg
-ICAgICAgICBfX1JFRzMyKFJFR19OQU5EX1BIWVNfREFUQV9ETUEpCisKKy8qIExpbnV4IERNQSBy
-ZXF1aXJlcyBwaHlzaWNhbCBhZGRyZXNzIG9mIHRoZSBkYXRhIHJlZ2lzdGVyICovCisjZGVmaW5l
-IFJFR19OQU5EX0RBVEExNl9QQUREUiAgICBIV19JT19WSVJUX1RPX1BIWVMoUkVHX05BTkRfUEhZ
-U19EQVRBMTYpCisjZGVmaW5lIFJFR19OQU5EX0RBVEE4X1BBRERSICAgICBIV19JT19WSVJUX1RP
-X1BIWVMoUkVHX05BTkRfUEhZU19EQVRBOCkKKyNkZWZpbmUgUkVHX05BTkRfREFUQV9QQUREUiAg
-ICAgIEhXX0lPX1ZJUlRfVE9fUEhZUyhSRUdfTkFORF9QSFlTX0RBVEFfRE1BKQorCisjZGVmaW5l
-IE5BTkRfQlVTXzE2QklUKCkgICAgICAgICgwKQorI2RlZmluZSBOQU5EX0JVU184QklUKCkgICAg
-ICAgICAoIU5BTkRfQlVTXzE2QklUKCkpCisKKy8qIFJlZ2lzdGVyIG9mZnNldHMgKi8KKyNkZWZp
-bmUgUkVHX05BTkRfQ01EX09GRlNFVCAgICAgKDApCisjZGVmaW5lIFJFR19OQU5EX0FERFJfT0ZG
-U0VUICAgICg0KQorI2RlZmluZSBSRUdfTkFORF9EQVRBOF9PRkZTRVQgICAoOCkKKworI2VuZGlm
-CmRpZmYgLS1naXQgYS9hcmNoL2FybS9tYWNoLWJjbXJpbmcvaW5jbHVkZS9tYWNoL3JlZ191bWku
-aCBiL2FyY2gvYXJtL21hY2gtYmNtcmluZy9pbmNsdWRlL21hY2gvcmVnX3VtaS5oCm5ldyBmaWxl
-IG1vZGUgMTAwNjQ0CmluZGV4IDAwMDAwMDAuLjA2YTM1NTQKLS0tIC9kZXYvbnVsbAorKysgYi9h
-cmNoL2FybS9tYWNoLWJjbXJpbmcvaW5jbHVkZS9tYWNoL3JlZ191bWkuaApAQCAtMCwwICsxLDIz
-NyBAQAorLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqCisqIENvcHlyaWdodCAyMDA1IC0gMjAwOCBCcm9h
-ZGNvbSBDb3Jwb3JhdGlvbi4gIEFsbCByaWdodHMgcmVzZXJ2ZWQuCisqCisqIFVubGVzcyB5b3Ug
-YW5kIEJyb2FkY29tIGV4ZWN1dGUgYSBzZXBhcmF0ZSB3cml0dGVuIHNvZnR3YXJlIGxpY2Vuc2UK
-KyogYWdyZWVtZW50IGdvdmVybmluZyB1c2Ugb2YgdGhpcyBzb2Z0d2FyZSwgdGhpcyBzb2Z0d2Fy
-ZSBpcyBsaWNlbnNlZCB0byB5b3UKKyogdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJh
-bCBQdWJsaWMgTGljZW5zZSB2ZXJzaW9uIDIsIGF2YWlsYWJsZSBhdAorKiBodHRwOi8vd3d3LmJy
-b2FkY29tLmNvbS9saWNlbnNlcy9HUEx2Mi5waHAgKHRoZSAiR1BMIikuCisqCisqIE5vdHdpdGhz
-dGFuZGluZyB0aGUgYWJvdmUsIHVuZGVyIG5vIGNpcmN1bXN0YW5jZXMgbWF5IHlvdSBjb21iaW5l
-IHRoaXMKKyogc29mdHdhcmUgaW4gYW55IHdheSB3aXRoIGFueSBvdGhlciBCcm9hZGNvbSBzb2Z0
-d2FyZSBwcm92aWRlZCB1bmRlciBhCisqIGxpY2Vuc2Ugb3RoZXIgdGhhbiB0aGUgR1BMLCB3aXRo
-b3V0IEJyb2FkY29tJ3MgZXhwcmVzcyBwcmlvciB3cml0dGVuCisqIGNvbnNlbnQuCisqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKi8KKworLyoKKyoKKyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCisqCisqICBSRUdf
-VU1JLmgKKyoKKyogIFBVUlBPU0U6CisqCisqICAgICBUaGlzIGZpbGUgY29udGFpbnMgZGVmaW5p
-dGlvbnMgZm9yIHRoZSBuYW5kIHJlZ2lzdGVyczoKKyoKKyogIE5PVEVTOgorKgorKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKiovCisKKyNpZiAhZGVmaW5lZChfX0FTTV9BUkNIX1JFR19VTUlfSCkKKyNkZWZp
-bmUgX19BU01fQVJDSF9SRUdfVU1JX0gKKworLyogLS0tLSBJbmNsdWRlIEZpbGVzIC0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0gKi8KKyNpbmNsdWRl
-IDxjc3AvcmVnLmg+CisjaW5jbHVkZSA8bWFjaC9jc3AvbW1faW8uaD4KKworLyogLS0tLSBDb25z
-dGFudHMgYW5kIFR5cGVzIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0gKi8KKworLyogVW5pZmllZCBNZW1vcnkgSW50ZXJmYWNlIEN0cmwgUmVnaXN0ZXIgKi8K
-KyNkZWZpbmUgSFdfVU1JX0JBU0UgICAgICAgTU1fSU9fQkFTRV9VTUkKKworLyogRmxhc2ggYmFu
-ayAwIHRpbWluZyBhbmQgY29udHJvbCByZWdpc3RlciAqLworI2RlZmluZSBSRUdfVU1JX0ZMQVNI
-MF9UQ1IgICAgICAgICBfX1JFRzMyKEhXX1VNSV9CQVNFICArIDB4MDApCisvKiBGbGFzaCBiYW5r
-IDEgdGltaW5nIGFuZCBjb250cm9sIHJlZ2lzdGVyICovCisjZGVmaW5lIFJFR19VTUlfRkxBU0gx
-X1RDUiAgICAgICAgIF9fUkVHMzIoSFdfVU1JX0JBU0UgICsgMHgwNCkKKy8qIEZsYXNoIGJhbmsg
-MiB0aW1pbmcgYW5kIGNvbnRyb2wgcmVnaXN0ZXIgKi8KKyNkZWZpbmUgUkVHX1VNSV9GTEFTSDJf
-VENSICAgICAgICAgX19SRUczMihIV19VTUlfQkFTRSAgKyAweDA4KQorLyogTU1EIGludGVyZmFj
-ZSBhbmQgY29udHJvbCByZWdpc3RlciAqLworI2RlZmluZSBSRUdfVU1JX01NRF9JQ1IgICAgICAg
-ICAgICBfX1JFRzMyKEhXX1VNSV9CQVNFICArIDB4MGMpCisvKiBOQU5EIHRpbWluZyBhbmQgY29u
-dHJvbCByZWdpc3RlciAqLworI2RlZmluZSBSRUdfVU1JX05BTkRfVENSICAgICAgICAgICBfX1JF
-RzMyKEhXX1VNSV9CQVNFICArIDB4MTgpCisvKiBOQU5EIHJlYWR5L2NoaXAgc2VsZWN0IHJlZ2lz
-dGVyICovCisjZGVmaW5lIFJFR19VTUlfTkFORF9SQ1NSICAgICAgICAgIF9fUkVHMzIoSFdfVU1J
-X0JBU0UgICsgMHgxYykKKy8qIE5BTkQgRUNDIGNvbnRyb2wgJiBzdGF0dXMgcmVnaXN0ZXIgKi8K
-KyNkZWZpbmUgUkVHX1VNSV9OQU5EX0VDQ19DU1IgICAgICAgX19SRUczMihIV19VTUlfQkFTRSAg
-KyAweDIwKQorLyogTkFORCBFQ0MgZGF0YSByZWdpc3RlciBYWEIyQjFCMCAqLworI2RlZmluZSBS
-RUdfVU1JX05BTkRfRUNDX0RBVEEgICAgICBfX1JFRzMyKEhXX1VNSV9CQVNFICArIDB4MjQpCisv
-KiBCQ0ggRUNDIFBhcmFtZXRlciBOICovCisjZGVmaW5lIFJFR19VTUlfQkNIX04gICAgICAgICAg
-ICAgIF9fUkVHMzIoSFdfVU1JX0JBU0UgICsgMHg0MCkKKy8qIEJDSCBFQ0MgUGFyYW1ldGVyIFQg
-Ki8KKyNkZWZpbmUgUkVHX1VNSV9CQ0hfSyAgICAgICAgICAgICAgX19SRUczMihIV19VTUlfQkFT
-RSAgKyAweDQ0KQorLyogQkNIIEVDQyBQYXJhbWV0ZXIgSyAqLworI2RlZmluZSBSRUdfVU1JX0JD
-SF9UICAgICAgICAgICAgICBfX1JFRzMyKEhXX1VNSV9CQVNFICArIDB4NDgpCisvKiBCQ0ggRUND
-IENvbnRybyBTdGF0dXMgKi8KKyNkZWZpbmUgUkVHX1VNSV9CQ0hfQ1RSTF9TVEFUVVMgICAgX19S
-RUczMihIV19VTUlfQkFTRSAgKyAweDRDKQorLyogQkNIIFdSIEVDQyAzMTowICovCisjZGVmaW5l
-IFJFR19VTUlfQkNIX1dSX0VDQ18wICAgICAgIF9fUkVHMzIoSFdfVU1JX0JBU0UgICsgMHg1MCkK
-Ky8qIEJDSCBXUiBFQ0MgNjM6MzIgKi8KKyNkZWZpbmUgUkVHX1VNSV9CQ0hfV1JfRUNDXzEgICAg
-ICAgX19SRUczMihIV19VTUlfQkFTRSAgKyAweDU0KQorLyogQkNIIFdSIEVDQyA5NTo2NCAqLwor
-I2RlZmluZSBSRUdfVU1JX0JDSF9XUl9FQ0NfMiAgICAgICBfX1JFRzMyKEhXX1VNSV9CQVNFICAr
-IDB4NTgpCisvKiBCQ0ggV1IgRUNDIDEyNzo5NiAqLworI2RlZmluZSBSRUdfVU1JX0JDSF9XUl9F
-Q0NfMyAgICAgICBfX1JFRzMyKEhXX1VNSV9CQVNFICArIDB4NWMpCisvKiBCQ0ggV1IgRUNDIDE1
-NToxMjggKi8KKyNkZWZpbmUgUkVHX1VNSV9CQ0hfV1JfRUNDXzQgICAgICAgX19SRUczMihIV19V
-TUlfQkFTRSAgKyAweDYwKQorLyogQkNIIFJlYWQgRXJyb3IgTG9jYXRpb24gMSwwICovCisjZGVm
-aW5lIFJFR19VTUlfQkNIX1JEX0VSUl9MT0NfMV8wIF9fUkVHMzIoSFdfVU1JX0JBU0UgICsgMHg2
-NCkKKy8qIEJDSCBSZWFkIEVycm9yIExvY2F0aW9uIDMsMiAqLworI2RlZmluZSBSRUdfVU1JX0JD
-SF9SRF9FUlJfTE9DXzNfMiBfX1JFRzMyKEhXX1VNSV9CQVNFICArIDB4NjgpCisvKiBCQ0ggUmVh
-ZCBFcnJvciBMb2NhdGlvbiA1LDQgKi8KKyNkZWZpbmUgUkVHX1VNSV9CQ0hfUkRfRVJSX0xPQ181
-XzQgX19SRUczMihIV19VTUlfQkFTRSAgKyAweDZjKQorLyogQkNIIFJlYWQgRXJyb3IgTG9jYXRp
-b24gNyw2ICovCisjZGVmaW5lIFJFR19VTUlfQkNIX1JEX0VSUl9MT0NfN182IF9fUkVHMzIoSFdf
-VU1JX0JBU0UgICsgMHg3MCkKKy8qIEJDSCBSZWFkIEVycm9yIExvY2F0aW9uIDksOCAqLworI2Rl
-ZmluZSBSRUdfVU1JX0JDSF9SRF9FUlJfTE9DXzlfOCBfX1JFRzMyKEhXX1VNSV9CQVNFICArIDB4
-NzQpCisvKiBCQ0ggUmVhZCBFcnJvciBMb2NhdGlvbiAxMSwxMCAqLworI2RlZmluZSBSRUdfVU1J
-X0JDSF9SRF9FUlJfTE9DX0JfQSBfX1JFRzMyKEhXX1VNSV9CQVNFICArIDB4NzgpCisKKy8qIFJF
-R19VTUlfRkxBU0gwLzEvMl9UQ1IsIFJFR19VTUlfU1JBTTAvMV9UQ1IgYml0cyAqLworLyogRW5h
-YmxlIHdhaXQgcGluIGR1cmluZyBidXJzdCB3cml0ZSBvciByZWFkICovCisjZGVmaW5lIFJFR19V
-TUlfVENSX1dBSVRFTiAgICAgICAgICAgICAgMHg4MDAwMDAwMAorLyogRW5hYmxlIG1lbSBjdHJs
-ciB0byB3b3JrIGl3dGggZXh0IG1lbSBvZiBsb3dlciBmcmVxIHRoYW4gQUhCIGNsayAqLworI2Rl
-ZmluZSBSRUdfVU1JX1RDUl9MT1dGUkVRICAgICAgICAgICAgIDB4NDAwMDAwMDAKKy8qIDE9c3lu
-Y2ggd3JpdGUsIDA9YXN5bmMgd3JpdGUgKi8KKyNkZWZpbmUgUkVHX1VNSV9UQ1JfTUVNVFlQRV9T
-WU5DV1JJVEUgICAweDIwMDAwMDAwCisvKiAxPXN5bmNoIHJlYWQsIDA9YXN5bmMgcmVhZCAqLwor
-I2RlZmluZSBSRUdfVU1JX1RDUl9NRU1UWVBFX1NZTkNSRUFEICAgIDB4MTAwMDAwMDAKKy8qIDE9
-cGFnZSBtb2RlIHJlYWQsIDA9bm9ybWFsIG1vZGUgcmVhZCAqLworI2RlZmluZSBSRUdfVU1JX1RD
-Ul9NRU1UWVBFX1BBR0VSRUFEICAgIDB4MDgwMDAwMDAKKy8qIHBhZ2Ugc2l6ZS9idXJzdCBzaXpl
-ICh3cmFwIG9ubHkpICovCisjZGVmaW5lIFJFR19VTUlfVENSX01FTVRZUEVfUEdTWl9NQVNLICAg
-MHgwNzAwMDAwMAorLyogNCB3b3JkICovCisjZGVmaW5lIFJFR19VTUlfVENSX01FTVRZUEVfUEdT
-Wl80ICAgICAgMHgwMDAwMDAwMAorLyogOCB3b3JkICovCisjZGVmaW5lIFJFR19VTUlfVENSX01F
-TVRZUEVfUEdTWl84ICAgICAgMHgwMTAwMDAwMAorLyogMTYgd29yZCAqLworI2RlZmluZSBSRUdf
-VU1JX1RDUl9NRU1UWVBFX1BHU1pfMTYgICAgIDB4MDIwMDAwMDAKKy8qIDMyIHdvcmQgKi8KKyNk
-ZWZpbmUgUkVHX1VNSV9UQ1JfTUVNVFlQRV9QR1NaXzMyICAgICAweDAzMDAwMDAwCisvKiA2NCB3
-b3JkICovCisjZGVmaW5lIFJFR19VTUlfVENSX01FTVRZUEVfUEdTWl82NCAgICAgMHgwNDAwMDAw
-MAorLyogMTI4IHdvcmQgKi8KKyNkZWZpbmUgUkVHX1VNSV9UQ1JfTUVNVFlQRV9QR1NaXzEyOCAg
-ICAweDA1MDAwMDAwCisvKiAyNTYgd29yZCAqLworI2RlZmluZSBSRUdfVU1JX1RDUl9NRU1UWVBF
-X1BHU1pfMjU2ICAgIDB4MDYwMDAwMDAKKy8qIDUxMiB3b3JkICovCisjZGVmaW5lIFJFR19VTUlf
-VENSX01FTVRZUEVfUEdTWl81MTIgICAgMHgwNzAwMDAwMAorLyogUGFnZSByZWFkIGFjY2VzcyBj
-eWNsZSAvIEJ1cnN0IHdyaXRlIGxhdGVuY3kgKG4rMiAvIG4rMSkgKi8KKyNkZWZpbmUgUkVHX1VN
-SV9UQ1JfVFBSQ19UV0xDX01BU0sgICAgICAweDAwZjgwMDAwCisvKiBCdXMgdHVybmFyb3VuZCBj
-eWNsZSAobikgKi8KKyNkZWZpbmUgUkVHX1VNSV9UQ1JfVEJUQV9NQVNLICAgICAgICAgICAweDAw
-MDcwMDAwCisvKiBXcml0ZSBwdWxzZSB3aWR0aCBjeWNsZSAobisxKSAqLworI2RlZmluZSBSRUdf
-VU1JX1RDUl9UV1BfTUFTSyAgICAgICAgICAgIDB4MDAwMGY4MDAKKy8qIFdyaXRlIHJlY292ZXJ5
-IGN5Y2xlIChuKzEpICovCisjZGVmaW5lIFJFR19VTUlfVENSX1RXUl9NQVNLICAgICAgICAgICAg
-MHgwMDAwMDYwMAorLyogV3JpdGUgYWRkcmVzcyBzZXR1cCBjeWNsZSAobisxKSAqLworI2RlZmlu
-ZSBSRUdfVU1JX1RDUl9UQVNfTUFTSyAgICAgICAgICAgIDB4MDAwMDAxODAKKy8qIE91dHB1dCBl
-bmFibGUgZGVsYXkgY3ljbGUgKG4pICovCisjZGVmaW5lIFJFR19VTUlfVENSX1RPRV9NQVNLICAg
-ICAgICAgICAgMHgwMDAwMDA2MAorLyogUmVhZCBhY2Nlc3MgY3ljbGUgLyBCdXJzdCByZWFkIGxh
-dGVuY3kgKG4rMiAvIG4rMSkgKi8KKyNkZWZpbmUgUkVHX1VNSV9UQ1JfVFJDX1RMQ19NQVNLICAg
-ICAgICAweDAwMDAwMDFmCisKKy8qIFJFR19VTUlfTU1EX0lDUiBiaXRzICovCisvKiBGbGFzaCB3
-cml0ZSBwcm90ZWN0aW9uIHBpbiBjb250cm9sICovCisjZGVmaW5lIFJFR19VTUlfTU1EX0lDUl9G
-TEFTSF9XUCAgICAgICAgICAgIDB4ODAwMAorLyogRXh0ZW5kIGhvbGQgdGltZSBmb3Igc3JhbTAs
-IHNyYW0xIGNzbiAoMzkgTUh6IG9wZXJhdGlvbikgKi8KKyNkZWZpbmUgUkVHX1VNSV9NTURfSUNS
-X1hIQ1MgICAgICAgICAgICAgICAgMHg0MDAwCisvKiBFbmFibGUgU0RSQU0gMiBpbnRlcmZhY2Ug
-Y29udHJvbCAqLworI2RlZmluZSBSRUdfVU1JX01NRF9JQ1JfU0RSQU0yRU4gICAgICAgICAgICAw
-eDIwMDAKKy8qIEVuYWJsZSBtZXJnZSBvZiBmbGFzaCBiYW5rcyAwLzEgdG8gNTEyIE1CaXQgYmFu
-ayAqLworI2RlZmluZSBSRUdfVU1JX01NRF9JQ1JfSU5TVDUxMiAgICAgICAgICAgICAweDEwMDAK
-Ky8qIEVuYWJsZSBtZXJnZSBvZiBmbGFzaCBiYW5rcyAxLzIgdG8gNTEyIE1CaXQgYmFuayAqLwor
-I2RlZmluZSBSRUdfVU1JX01NRF9JQ1JfREFUQTUxMiAgICAgICAgICAgICAweDA4MDAKKy8qIEVu
-YWJsZSBTRFJBTSBpbnRlcmZhY2UgY29udHJvbCAqLworI2RlZmluZSBSRUdfVU1JX01NRF9JQ1Jf
-U0RSQU1FTiAgICAgICAgICAgICAweDA0MDAKKy8qIFBvbGFyaXR5IG9mIGJ1c3kgc3RhdGUgb2Yg
-QnVyc3QgV2FpdCBTaWduYWwgKi8KKyNkZWZpbmUgUkVHX1VNSV9NTURfSUNSX1dBSVRQT0wgICAg
-ICAgICAgICAgMHgwMjAwCisvKiBFbmFibGUgYnVyc3QgY2xvY2sgc3RvcHBlZCB3aGVuIG5vdCBh
-Y2Nlc3NpbmcgZXh0ZXJuYWwgYnVyc3QgZmxhc2gvc3JhbSAqLworI2RlZmluZSBSRUdfVU1JX01N
-RF9JQ1JfQkNMS1NUT1AgICAgICAgICAgICAweDAxMDAKKy8qIEVuYWJsZSB0aGUgcGVyaTFfY3Nu
-IHRvIHJlcGxhY2UgZmxhc2gxX2NzbiBpbiA1MTIgTWIgZmxhc2ggbW9kZSAqLworI2RlZmluZSBS
-RUdfVU1JX01NRF9JQ1JfUEVSSTFFTiAgICAgICAgICAgICAweDAwODAKKy8qIEVuYWJsZSB0aGUg
-cGVyaTJfY3NuIHRvIHJlcGxhY2Ugc2RyYW1fY3NuICovCisjZGVmaW5lIFJFR19VTUlfTU1EX0lD
-Ul9QRVJJMkVOICAgICAgICAgICAgIDB4MDA0MAorLyogRW5hYmxlIHRoZSBwZXJpM19jc24gdG8g
-cmVwbGFjZSBzZHJhbTJfY3NuICovCisjZGVmaW5lIFJFR19VTUlfTU1EX0lDUl9QRVJJM0VOICAg
-ICAgICAgICAgIDB4MDAyMAorLyogRW5hYmxlIHNyYW0gYmFuazEgZm9yIEgvVyBjb250cm9sbGVk
-IE1SUyAqLworI2RlZmluZSBSRUdfVU1JX01NRF9JQ1JfTVJTQjEgICAgICAgICAgICAgICAweDAw
-MTAKKy8qIEVuYWJsZSBzcmFtIGJhbmswIGZvciBIL1cgY29udHJvbGxlZCBNUlMgKi8KKyNkZWZp
-bmUgUkVHX1VNSV9NTURfSUNSX01SU0IwICAgICAgICAgICAgICAgMHgwMDA4CisvKiBQb2xhcml0
-eSBmb3IgYXNzZXJ0M2VkIHN0YXRlIG9mIEgvVyBjb250cm9sbGVkIE1SUyAqLworI2RlZmluZSBS
-RUdfVU1JX01NRF9JQ1JfTVJTUE9MICAgICAgICAgICAgICAweDAwMDQKKy8qIDA6IFMvVyBjb250
-cm9sbGFibGUgWlovTVJTL0NSRS9QLU1vZGUgcGluICovCisvKiAxOiBIL1cgY29udHJvbGxlZCBa
-Wi9NUlMvQ1JFL1AtTW9kZSwgc2FtZSB0aW1pbmcgYXMgQ1MgKi8KKyNkZWZpbmUgUkVHX1VNSV9N
-TURfSUNSX01SU01PREUgICAgICAgICAgICAgMHgwMDAyCisvKiBNUlMgc3RhdGUgZm9yIFMvVyBj
-b250cm9sbGVkIG1vZGUgKi8KKyNkZWZpbmUgUkVHX1VNSV9NTURfSUNSX01SU1NUQVRFICAgICAg
-ICAgICAgMHgwMDAxCisKKy8qIFJFR19VTUlfTkFORF9UQ1IgYml0cyAqLworLyogRW5hYmxlIHNv
-ZnR3YXJlIHRvIGNvbnRyb2wgQ1MgKi8KKyNkZWZpbmUgUkVHX1VNSV9OQU5EX1RDUl9DU19TV0NU
-UkwgICAgICAgICAgMHg4MDAwMDAwMAorLyogMTYtYml0IG5hbmQgd29yZHNpemUgaWYgc2V0ICov
-CisjZGVmaW5lIFJFR19VTUlfTkFORF9UQ1JfV09SRDE2ICAgICAgICAgICAgIDB4NDAwMDAwMDAK
-Ky8qIEJ1cyB0dXJuYXJvdW5kIGN5Y2xlIChuKSAqLworI2RlZmluZSBSRUdfVU1JX05BTkRfVENS
-X1RCVEFfTUFTSyAgICAgICAgICAweDAwMDcwMDAwCisvKiBXcml0ZSBwdWxzZSB3aWR0aCBjeWNs
-ZSAobisxKSAqLworI2RlZmluZSBSRUdfVU1JX05BTkRfVENSX1RXUF9NQVNLICAgICAgICAgICAw
-eDAwMDBmODAwCisvKiBXcml0ZSByZWNvdmVyeSBjeWNsZSAobisxKSAqLworI2RlZmluZSBSRUdf
-VU1JX05BTkRfVENSX1RXUl9NQVNLICAgICAgICAgICAweDAwMDAwNjAwCisvKiBXcml0ZSBhZGRy
-ZXNzIHNldHVwIGN5Y2xlIChuKzEpICovCisjZGVmaW5lIFJFR19VTUlfTkFORF9UQ1JfVEFTX01B
-U0sgICAgICAgICAgIDB4MDAwMDAxODAKKy8qIE91dHB1dCBlbmFibGUgZGVsYXkgY3ljbGUgKG4p
-ICovCisjZGVmaW5lIFJFR19VTUlfTkFORF9UQ1JfVE9FX01BU0sgICAgICAgICAgIDB4MDAwMDAw
-NjAKKy8qIFJlYWQgYWNjZXNzIGN5Y2xlIChuKzIpICovCisjZGVmaW5lIFJFR19VTUlfTkFORF9U
-Q1JfVFJDX1RMQ19NQVNLICAgICAgIDB4MDAwMDAwMWYKKworLyogUkVHX1VNSV9OQU5EX1JDU1Ig
-Yml0cyAqLworLyogU3RhdHVzOiBSZWFkeT0xLCBCdXN5PTAgKi8KKyNkZWZpbmUgUkVHX1VNSV9O
-QU5EX1JDU1JfUkRZICAgICAgICAgICAgICAgMHgwMgorLyogS2VlcCBDUyBhc3NlcnRlZCBkdXJp
-bmcgb3BlcmF0aW9uICovCisjZGVmaW5lIFJFR19VTUlfTkFORF9SQ1NSX0NTX0FTU0VSVEVEICAg
-ICAgIDB4MDEKKworLyogUkVHX1VNSV9OQU5EX0VDQ19DU1IgYml0cyAqLworLyogSW50ZXJydXB0
-IHN0YXR1cyAtIHJlYWQtb25seSAqLworI2RlZmluZSBSRUdfVU1JX05BTkRfRUNDX0NTUl9OQU5E
-SU5UICAgICAgICAweDgwMDAwMDAwCisvKiBSZWFkOiBTdGF0dXMgb2YgRUNDIGRvbmUsIFdyaXRl
-OiBjbGVhciBFQ0MgaW50ZXJydXB0ICovCisjZGVmaW5lIFJFR19VTUlfTkFORF9FQ0NfQ1NSX0VD
-Q0lOVF9SQVcgICAgIDB4MDA4MDAwMDAKKy8qIFJlYWQ6IFN0YXR1cyBvZiBSL0IsIFdyaXRlOiBj
-bGVhciBSL0IgaW50ZXJydXB0ICovCisjZGVmaW5lIFJFR19VTUlfTkFORF9FQ0NfQ1NSX1JCSU5U
-X1JBVyAgICAgIDB4MDA0MDAwMDAKKy8qIDEgPSBFbmFibGUgRUNDIEludGVycnVwdCAqLworI2Rl
-ZmluZSBSRUdfVU1JX05BTkRfRUNDX0NTUl9FQ0NJTlRfRU5BQkxFICAweDAwMDA4MDAwCisvKiAx
-ID0gQXNzZXJ0IGludGVycnVwdCBhdCByaXNpbmcgZWRnZSBvZiBSL0JfICovCisjZGVmaW5lIFJF
-R19VTUlfTkFORF9FQ0NfQ1NSX1JCSU5UX0VOQUJMRSAgIDB4MDAwMDQwMDAKKy8qIENhbGN1bGF0
-ZSBFQ0MgYnkgMD01MTIgYnl0ZXMsIDE9MjU2IGJ5dGVzICovCisjZGVmaW5lIFJFR19VTUlfTkFO
-RF9FQ0NfQ1NSXzI1NkJZVEUgICAgICAgIDB4MDAwMDAwODAKKy8qIEVuYWJsZSBFQ0MgaW4gaGFy
-ZHdhcmUgKi8KKyNkZWZpbmUgUkVHX1VNSV9OQU5EX0VDQ19DU1JfRUNDX0VOQUJMRSAgICAgMHgw
-MDAwMDAwMQorCisvKiBSRUdfVU1JX0JDSF9DVFJMX1NUQVRVUyBiaXRzICovCisvKiBTaGlmdCB0
-byBJbmRpY2F0ZSBOdW1iZXIgb2YgY29ycmVjdGFibGUgZXJyb3JzIGRldGVjdGVkICovCisjZGVm
-aW5lIFJFR19VTUlfQkNIX0NUUkxfU1RBVFVTX05CX0NPUlJfRVJST1JfU0hJRlQgMjAKKy8qIElu
-ZGljYXRlIE51bWJlciBvZiBjb3JyZWN0YWJsZSBlcnJvcnMgZGV0ZWN0ZWQgKi8KKyNkZWZpbmUg
-UkVHX1VNSV9CQ0hfQ1RSTF9TVEFUVVNfTkJfQ09SUl9FUlJPUiAweDAwRjAwMDAwCisvKiBJbmRp
-Y2F0ZSBFcnJvcnMgZGV0ZWN0ZWQgZHVyaW5nIHJlYWQgYnV0IHVuY29ycmVjdGFibGUgKi8KKyNk
-ZWZpbmUgUkVHX1VNSV9CQ0hfQ1RSTF9TVEFUVVNfVU5DT1JSX0VSUiAgICAweDAwMDgwMDAwCisv
-KiBJbmRpY2F0ZSBFcnJvcnMgZGV0ZWN0ZWQgZHVyaW5nIHJlYWQgYW5kIGFyZSBjb3JyZWN0YWJs
-ZSAqLworI2RlZmluZSBSRUdfVU1JX0JDSF9DVFJMX1NUQVRVU19DT1JSX0VSUiAgICAgIDB4MDAw
-NDAwMDAKKy8qIEZsYWcgaW5kaWNhdGVzIEJDSCdzIEVDQyBzdGF0dXMgb2YgcmVhZCBwcm9jZXNz
-IGFyZSB2YWxpZCAqLworI2RlZmluZSBSRUdfVU1JX0JDSF9DVFJMX1NUQVRVU19SRF9FQ0NfVkFM
-SUQgIDB4MDAwMjAwMDAKKy8qIEZsYWcgaW5kaWNhdGVzIEJDSCdzIEVDQyBzdGF0dXMgb2Ygd3Jp
-dGUgcHJvY2VzcyBhcmUgdmFsaWQgKi8KKyNkZWZpbmUgUkVHX1VNSV9CQ0hfQ1RSTF9TVEFUVVNf
-V1JfRUNDX1ZBTElEICAweDAwMDEwMDAwCisvKiBQYXVzZSBFQ0MgY2FsY3VsYXRpb24gKi8KKyNk
-ZWZpbmUgUkVHX1VNSV9CQ0hfQ1RSTF9TVEFUVVNfUEFVU0VfRUNDX0RFQyAweDAwMDAwMDEwCisv
-KiBFbmFibGUgSW50ZXJydXB0ICovCisjZGVmaW5lIFJFR19VTUlfQkNIX0NUUkxfU1RBVFVTX0lO
-VF9FTiAgICAgICAgMHgwMDAwMDAwNAorLyogRW5hYmxlIEVDQyBkdXJpbmcgcmVhZCAqLworI2Rl
-ZmluZSBSRUdfVU1JX0JDSF9DVFJMX1NUQVRVU19FQ0NfUkRfRU4gICAgIDB4MDAwMDAwMDIKKy8q
-IEVuYWJsZSBFQ0MgZHVyaW5nIHdyaXRlICovCisjZGVmaW5lIFJFR19VTUlfQkNIX0NUUkxfU1RB
-VFVTX0VDQ19XUl9FTiAgICAgMHgwMDAwMDAwMQorLyogTWFzayBmb3IgbG9jYXRpb24gKi8KKyNk
-ZWZpbmUgUkVHX1VNSV9CQ0hfRVJSX0xPQ19NQVNLICAgICAgICAgICAgICAweDAwMDAxRkZGCisv
-KiBsb2NhdGlvbiB3aXRoaW4gYSBieXRlICovCisjZGVmaW5lIFJFR19VTUlfQkNIX0VSUl9MT0Nf
-QllURSAgICAgICAgICAgICAgMHgwMDAwMDAwNworLyogbG9jYXRpb24gd2l0aGluIGEgd29yZCAq
-LworI2RlZmluZSBSRUdfVU1JX0JDSF9FUlJfTE9DX1dPUkQgICAgICAgICAgICAgIDB4MDAwMDAw
-MTgKKy8qIGxvY2F0aW9uIHdpdGhpbiBhIHBhZ2UgKDUxMiBieXRlKSAqLworI2RlZmluZSBSRUdf
-VU1JX0JDSF9FUlJfTE9DX1BBR0UgICAgICAgICAgICAgIDB4MDAwMDFGRTAKKyNkZWZpbmUgUkVH
-X1VNSV9CQ0hfRVJSX0xPQ19BRERSKGluZGV4KSAgICAgKF9fUkVHMzIoSFdfVU1JX0JBU0UgKyAw
-eDY0ICsgKGluZGV4IC8gMikqNCkgPj4gKChpbmRleCAlIDIpICogMTYpKQorI2VuZGlmCmRpZmYg
-LS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL0tjb25maWcgYi9kcml2ZXJzL210ZC9uYW5kL0tjb25m
-aWcKaW5kZXggY2U5NmMwOS4uMzVhM2Y5MSAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9L
-Y29uZmlnCisrKyBiL2RyaXZlcnMvbXRkL25hbmQvS2NvbmZpZwpAQCAtMTg2LDYgKzE4NiwyMiBA
-QCBjb25maWcgTVREX05BTkRfUzNDMjQxMF9DTEtTVE9QCiAJICB3aGVuIHRoZSBpcyBOQU5EIGNo
-aXAgc2VsZWN0ZWQgb3IgcmVsZWFzZWQsIGJ1dCB3aWxsIHNhdmUKIAkgIGFwcHJveGltYXRlbHkg
-NW1BIG9mIHBvd2VyIHdoZW4gdGhlcmUgaXMgbm90aGluZyBoYXBwZW5pbmcuCiAKK2NvbmZpZyBN
-VERfTkFORF9CQ01fVU1JCisJdHJpc3RhdGUgIk5BTkQgRmxhc2ggc3VwcG9ydCBmb3IgQkNNIFJl
-ZmVyZW5jZSBCb2FyZHMiCisJZGVwZW5kcyBvbiBBUkNIX0JDTVJJTkcgJiYgTVREX05BTkQKKwlo
-ZWxwCisJICBUaGlzIGVuYWJsZXMgdGhlIE5BTkQgZmxhc2ggY29udHJvbGxlciBvbiB0aGUgQkNN
-IFVNSSBibG9jay4KKworCSAgTm8gYm9hcmQgc3BlY2ZpYyBzdXBwb3J0IGlzIGRvbmUgYnkgdGhp
-cyBkcml2ZXIsIGVhY2ggYm9hcmQKKwkgIG11c3QgYWR2ZXJ0aXNlIGEgcGxhdGZvcm1fZGV2aWNl
-IGZvciB0aGUgZHJpdmVyIHRvIGF0dGFjaC4KKworY29uZmlnIE1URF9OQU5EX0JDTV9VTUlfSFdF
-Q0MKKwlib29sICJCQ00gVU1JIE5BTkQgSGFyZHdhcmUgRUNDIgorCWRlcGVuZHMgb24gTVREX05B
-TkRfQkNNX1VNSQorCWhlbHAKKwkgIEVuYWJsZSB0aGUgdXNlIG9mIHRoZSBCQ00gVU1JIGJsb2Nr
-J3MgaW50ZXJuYWwgRUNDIGdlbmVyYXRvciB3aGVuCisJICB1c2luZyBOQU5ELgorCiBjb25maWcg
-TVREX05BTkRfRElTS09OQ0hJUAogCXRyaXN0YXRlICJEaXNrT25DaGlwIDIwMDAsIE1pbGxlbm5p
-dW0gYW5kIE1pbGxlbm5pdW0gUGx1cyAoTkFORCByZWltcGxlbWVudGF0aW9uKSAoRVhQRVJJTUVO
-VEFMKSIKIAlkZXBlbmRzIG9uIEVYUEVSSU1FTlRBTApkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQv
-bmFuZC9NYWtlZmlsZSBiL2RyaXZlcnMvbXRkL25hbmQvTWFrZWZpbGUKaW5kZXggZjNhNzg2Yi4u
-YjAxNGI4ZiAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9NYWtlZmlsZQorKysgYi9kcml2
-ZXJzL210ZC9uYW5kL01ha2VmaWxlCkBAIC00MCw1ICs0MCw2IEBAIG9iai0kKENPTkZJR19NVERf
-TkFORF9TSF9GTENUTCkJCSs9IHNoX2ZsY3RsLm8KIG9iai0kKENPTkZJR19NVERfTkFORF9NWEMp
-CQkrPSBteGNfbmFuZC5vCiBvYmotJChDT05GSUdfTVREX05BTkRfU09DUkFURVMpCQkrPSBzb2Ny
-YXRlc19uYW5kLm8KIG9iai0kKENPTkZJR19NVERfTkFORF9UWFg5TkRGTUMpCSs9IHR4eDluZGZt
-Yy5vCitvYmotJChDT05GSUdfTVREX05BTkRfQkNNX1VNSSkJKz0gYmNtX3VtaV9uYW5kLm8KIAog
-bmFuZC1vYmpzIDo9IG5hbmRfYmFzZS5vIG5hbmRfYmJ0Lm8KZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-bXRkL25hbmQvYmNtX3VtaV9iY2guYyBiL2RyaXZlcnMvbXRkL25hbmQvYmNtX3VtaV9iY2guYwpu
-ZXcgZmlsZSBtb2RlIDEwMDY0NAppbmRleCAwMDAwMDAwLi5iNmQwZGFkCi0tLSAvZGV2L251bGwK
-KysrIGIvZHJpdmVycy9tdGQvbmFuZC9iY21fdW1pX2JjaC5jCkBAIC0wLDAgKzEsMzEwIEBACisv
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioKKyogQ29weXJpZ2h0IDIwMDQgLSAyMDA5IEJyb2FkY29tIENv
-cnBvcmF0aW9uLiAgQWxsIHJpZ2h0cyByZXNlcnZlZC4KKyoKKyogVW5sZXNzIHlvdSBhbmQgQnJv
-YWRjb20gZXhlY3V0ZSBhIHNlcGFyYXRlIHdyaXR0ZW4gc29mdHdhcmUgbGljZW5zZQorKiBhZ3Jl
-ZW1lbnQgZ292ZXJuaW5nIHVzZSBvZiB0aGlzIHNvZnR3YXJlLCB0aGlzIHNvZnR3YXJlIGlzIGxp
-Y2Vuc2VkIHRvIHlvdQorKiB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1Ymxp
-YyBMaWNlbnNlIHZlcnNpb24gMiwgYXZhaWxhYmxlIGF0CisqIGh0dHA6Ly93d3cuYnJvYWRjb20u
-Y29tL2xpY2Vuc2VzL0dQTHYyLnBocCAodGhlICJHUEwiKS4KKyoKKyogTm90d2l0aHN0YW5kaW5n
-IHRoZSBhYm92ZSwgdW5kZXIgbm8gY2lyY3Vtc3RhbmNlcyBtYXkgeW91IGNvbWJpbmUgdGhpcwor
-KiBzb2Z0d2FyZSBpbiBhbnkgd2F5IHdpdGggYW55IG90aGVyIEJyb2FkY29tIHNvZnR3YXJlIHBy
-b3ZpZGVkIHVuZGVyIGEKKyogbGljZW5zZSBvdGhlciB0aGFuIHRoZSBHUEwsIHdpdGhvdXQgQnJv
-YWRjb20ncyBleHByZXNzIHByaW9yIHdyaXR0ZW4KKyogY29uc2VudC4KKyoqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqLworCisvKiAtLS0tIEluY2x1ZGUgRmlsZXMgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSAqLworI2luY2x1ZGUgPGxpbnV4L210ZC9uYW5k
-X2JjbV91bWkuaD4KKworLyogLS0tLSBFeHRlcm5hbCBWYXJpYWJsZSBEZWNsYXJhdGlvbnMgLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0gKi8KKy8qIC0tLS0gRXh0ZXJuYWwgRnVu
-Y3Rpb24gUHJvdG90eXBlcyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tICov
-CisvKiAtLS0tIFB1YmxpYyBWYXJpYWJsZXMgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLSAqLworLyogLS0tLSBQcml2YXRlIENvbnN0YW50cyBhbmQgVHlw
-ZXMgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0gKi8KKyNkZWZpbmUgTkFO
-RF9FQ0NfTlVNX0JZVEVTIDEzCisKKy8qIC0tLS0gUHJpdmF0ZSBGdW5jdGlvbiBQcm90b3R5cGVz
-IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tICovCitzdGF0aWMgdm9pZCBi
-Y21fdW1pX2JjaF93cml0ZV9vb2JFY2Moc3RydWN0IG10ZF9pbmZvICptdGQsIHVfY2hhciAqIG9v
-YnApOworc3RhdGljIGludCBiY21fdW1pX2JjaF9jb3JyZWN0KHVfY2hhciAqZGF0LCB1X2NoYXIg
-KnJlYWRfZWNjKTsKK3N0YXRpYyBpbnQgYmNtX3VtaV9iY2hfcmVhZF9wYWdlX2h3ZWNjKHN0cnVj
-dCBtdGRfaW5mbyAqbXRkLAorCQkJCSAgICAgICBzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLCB1aW50
-OF90ICpidWYpOworc3RhdGljIHZvaWQgYmNtX3VtaV9iY2hfd3JpdGVfcGFnZV9od2VjYyhzdHJ1
-Y3QgbXRkX2luZm8gKm10ZCwKKwkJCQkJIHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsCisJCQkJCSBj
-b25zdCB1aW50OF90ICpidWYpOworCisvKiAtLS0tIFByaXZhdGUgVmFyaWFibGVzIC0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSAqLworCisvKgorKiogbmFu
-ZF9od19lY2Nvb2IKKyoqIE5ldyBvb2IgcGxhY2VtZW50IGJsb2NrIGZvciB1c2Ugd2l0aCBoYXJk
-d2FyZSBlY2MgZ2VuZXJhdGlvbi4KKyovCitzdGF0aWMgc3RydWN0IG5hbmRfZWNjbGF5b3V0IG5h
-bmRfaHdfZWNjb29iXzUxMiA9IHsKKwkvKiBSZXNlcnZlIDUgZm9yIEJJIGluZGljYXRvciAqLwor
-CS5vb2JmcmVlID0geworCQkgICAgey5vZmZzZXQgPSAwLAorCQkgICAgIC5sZW5ndGggPSAyfQor
-CQkgICAgfQorfTsKKworLyoKKyoqIFdlIHRyZWF0IHRoZSBPT0IgZm9yIGEgMksgcGFnZSBhcyBp
-ZiBpdCB3ZXJlIDQgNTEyIGJ5dGUgb29icywKKyoqIGV4Y2VwdCB0aGUgQkkgaXMgYXQgYnl0ZSAw
-LgorKi8KK3N0YXRpYyBzdHJ1Y3QgbmFuZF9lY2NsYXlvdXQgbmFuZF9od19lY2Nvb2JfMjA0OCA9
-IHsKKwkvKiBSZXNlcnZlIDAgYXMgQkkgaW5kaWNhdG9yICovCisJLm9vYmZyZWUgPSB7CisJCSAg
-ICB7Lm9mZnNldCA9IDEsCisJCSAgICAgLmxlbmd0aCA9IDJ9CisJCSAgICB9Cit9OworCisvKiBX
-ZSB0cmVhdCB0aGUgT09CIGZvciBhIDRLIHBhZ2UgYXMgaWYgaXQgd2VyZSA4IDUxMiBieXRlIG9v
-YnMsCisgKiBleGNlcHQgdGhlIEJJIGlzIGF0IGJ5dGUgMC4gKi8KK3N0YXRpYyBzdHJ1Y3QgbmFu
-ZF9lY2NsYXlvdXQgbmFuZF9od19lY2Nvb2JfNDA5NiA9IHsKKwkvKiBSZXNlcnZlIDAgYXMgQkkg
-aW5kaWNhdG9yICovCisJLm9vYmZyZWUgPSB7CisJCSAgICB7Lm9mZnNldCA9IDEsCisJCSAgICAg
-Lmxlbmd0aCA9IDJ9CisJCSAgICB9Cit9OworCisvKiAtLS0tIFByaXZhdGUgRnVuY3Rpb25zIC0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSAqLworCitzdGF0
-aWMgdm9pZCBiY21fdW1pX2JjaF93cml0ZV9vb2JFY2Moc3RydWN0IG10ZF9pbmZvICptdGQsIHVf
-Y2hhciAqIG9vYnApCit7CisJdWludDMyX3QgZWNjVmFsOworCisJLyogd2FpdCBmb3IgRUNDIHRv
-IGJlIHZhbGlkICovCisJbmFuZF9iY21fdW1pX2JjaF9wb2xsX3dyaXRlX2VjY19jYWxjKCk7CisK
-KwkvKgorCSAqKiBHZXQgdGhlIGhhcmR3YXJlIGVjYyBmcm9tIHRoZSAzMi1iaXQgcmVzdWx0IHJl
-Z2lzdGVycy4KKwkgKiogUmVhZCBhZnRlciA1MTIgYnl0ZSBhY2Nlc3Nlcy4gRm9ybWF0IEIzQjJC
-MUIwCisJICoqIHdoZXJlIEIzID0gZWNjMywgZXRjLgorCSAqLworCS8qIHdyaXRlc2l6ZSBpcyB0
-aGUgcGFnZXNpemUgKi8KKwlpZiAobXRkLT53cml0ZXNpemUgPT0gNTEyKSB7CisJCS8qIFNraXAg
-Q00gaW4gb29iWzAsMV0gKi8KKworCQkvKiBXcml0ZSBFQ0MgaW4gb29iWzIsMyw0XSAqLworCQll
-Y2NWYWwgPSBSRUdfVU1JX0JDSF9XUl9FQ0NfMzsKKwkJb29icFsyXSA9IGVjY1ZhbCAmIDB4ZmY7
-CS8qIEVDQzEyICovCisJCWVjY1ZhbCA9IFJFR19VTUlfQkNIX1dSX0VDQ18yOworCQlvb2JwWzNd
-ID0gKGVjY1ZhbCA+PiAyNCkgJiAweGZmOwkvKiBFQ0MxMSAqLworCQlvb2JwWzRdID0gKGVjY1Zh
-bCA+PiAxNikgJiAweGZmOwkvKiBFQ0MxMCAqLworCisJCS8qIFNraXAgQkkgaW4gb29iWzVdICov
-CisKKwkJLyogV3JpdGUgRUNDIGluIG9vYls2LTE1XSAqLworCQlvb2JwWzZdID0gKGVjY1ZhbCA+
-PiA4KSAmIDB4ZmY7CS8qIEVDQzkgKi8KKwkJb29icFs3XSA9IGVjY1ZhbCAmIDB4ZmY7CS8qIEVD
-QzggKi8KKwkJZWNjVmFsID0gUkVHX1VNSV9CQ0hfV1JfRUNDXzE7CisJCW9vYnBbOF0gPSAoZWNj
-VmFsID4+IDI0KSAmIDB4ZmY7CS8qIEVDQzcgKi8KKwkJb29icFs5XSA9IChlY2NWYWwgPj4gMTYp
-ICYgMHhmZjsJLyogRUNDNiAqLworCQlvb2JwWzEwXSA9IChlY2NWYWwgPj4gOCkgJiAweGZmOwkv
-KiBFQ0M1ICovCisJCW9vYnBbMTFdID0gZWNjVmFsICYgMHhmZjsJLyogRUNDNCAqLworCQllY2NW
-YWwgPSBSRUdfVU1JX0JDSF9XUl9FQ0NfMDsKKwkJb29icFsxMl0gPSAoZWNjVmFsID4+IDI0KSAm
-IDB4ZmY7CS8qIEVDQzMgKi8KKwkJb29icFsxM10gPSAoZWNjVmFsID4+IDE2KSAmIDB4ZmY7CS8q
-IEVDQzIgKi8KKwkJb29icFsxNF0gPSAoZWNjVmFsID4+IDgpICYgMHhmZjsJLyogRUNDMSAqLwor
-CQlvb2JwWzE1XSA9IGVjY1ZhbCAmIDB4ZmY7CS8qIEVDQzAgKi8KKwl9IGVsc2UgeworCQkvKiBT
-a2lwIEJJIGluIG9vYlswXSAqLworCQkvKiBTa2lwIENNIGluIG9vYlsxLDJdICovCisKKwkJLyog
-V3JpdGUgRUNDIGluIG9vYlszLTE1XSAqLworCQllY2NWYWwgPSBSRUdfVU1JX0JDSF9XUl9FQ0Nf
-MzsKKwkJb29icFszXSA9IGVjY1ZhbCAmIDB4ZmY7CS8qIEVDQzEyICovCisJCWVjY1ZhbCA9IFJF
-R19VTUlfQkNIX1dSX0VDQ18yOworCQlvb2JwWzRdID0gKGVjY1ZhbCA+PiAyNCkgJiAweGZmOwkv
-KiBFQ0MxMSAqLworCQlvb2JwWzVdID0gKGVjY1ZhbCA+PiAxNikgJiAweGZmOwkvKiBFQ0MxMCAq
-LworCQlvb2JwWzZdID0gKGVjY1ZhbCA+PiA4KSAmIDB4ZmY7CS8qIEVDQzkgKi8KKwkJb29icFs3
-XSA9IGVjY1ZhbCAmIDB4ZmY7CS8qIEVDQzggKi8KKwkJZWNjVmFsID0gUkVHX1VNSV9CQ0hfV1Jf
-RUNDXzE7CisJCW9vYnBbOF0gPSAoZWNjVmFsID4+IDI0KSAmIDB4ZmY7CS8qIEVDQzcgKi8KKwkJ
-b29icFs5XSA9IChlY2NWYWwgPj4gMTYpICYgMHhmZjsJLyogRUNDNiAqLworCQlvb2JwWzEwXSA9
-IChlY2NWYWwgPj4gOCkgJiAweGZmOwkvKiBFQ0M1ICovCisJCW9vYnBbMTFdID0gZWNjVmFsICYg
-MHhmZjsJLyogRUNDNCAqLworCQllY2NWYWwgPSBSRUdfVU1JX0JDSF9XUl9FQ0NfMDsKKwkJb29i
-cFsxMl0gPSAoZWNjVmFsID4+IDI0KSAmIDB4ZmY7CS8qIEVDQzMgKi8KKwkJb29icFsxM10gPSAo
-ZWNjVmFsID4+IDE2KSAmIDB4ZmY7CS8qIEVDQzIgKi8KKwkJb29icFsxNF0gPSAoZWNjVmFsID4+
-IDgpICYgMHhmZjsJLyogRUNDMSAqLworCQlvb2JwWzE1XSA9IGVjY1ZhbCAmIDB4ZmY7CS8qIEVD
-QzAgKi8KKwl9Cit9CisKK3N0YXRpYyB2b2lkIGJjbV91bWlfYmNoX3JlYWRfb29iRWNjKHN0cnVj
-dCBtdGRfaW5mbyAqbXRkLCB1X2NoYXIgKiBlY2NDYWxjKQoreworCS8qIFdlIGFyZSByZWFkaW5n
-IHRoZSBPT0IgKi8KKwlpbnQgZWNjUG9zID0gMDsKKworCS8qIEVDQyBpcyBhbHJlYWR5IHBhdXNl
-ZCB3aGVuIHRoaXMgZnVuY3Rpb24gaXMgY2FsbGVkICovCisKKwlpZiAobXRkLT53cml0ZXNpemUg
-PT0gNTEyKSB7CS8qIHdyaXRlc2l6ZSBpcyB0aGUgcGFnZXNpemUgKi8KKwkJLyogc2tpcCBDTSAq
-LworCQlSRUdfTkFORF9EQVRBODsKKwkJUkVHX05BTkRfREFUQTg7CisKKwkJLyogcmVhZCBmcm9t
-IDIgdG8gNCAqLworCQluYW5kX2JjbV91bWlfYmNoX3Jlc3VtZV9yZWFkX2VjY19jYWxjKCk7CisK
-KwkJZWNjQ2FsY1tlY2NQb3MrK10gPSBSRUdfTkFORF9EQVRBODsKKwkJZWNjQ2FsY1tlY2NQb3Mr
-K10gPSBSRUdfTkFORF9EQVRBODsKKwkJZWNjQ2FsY1tlY2NQb3MrK10gPSBSRUdfTkFORF9EQVRB
-ODsKKwkJbmFuZF9iY21fdW1pX2JjaF9wYXVzZV9yZWFkX2VjY19jYWxjKCk7CisKKwkJLyogcmVh
-ZCBCSSAqLworCQlSRUdfTkFORF9EQVRBODsKKworCQkvKiByZWFkIGZyb20gNiB0byBuYW5kX2Vj
-Y19iY2hfdG90YWwgKi8KKwkJbmFuZF9iY21fdW1pX2JjaF9yZXN1bWVfcmVhZF9lY2NfY2FsYygp
-OworCisJCS8qIERlZHVjdCAzIGZyb20gdG90YWwgc2luY2UgMyBFQ0MgYnl0ZXMgaGF2ZQorCQkg
-KiBiZWVuIHJlYWQgYWxyZWFkeSAqLworCQlmb3IgKDsgZWNjUG9zIDwgTkFORF9FQ0NfTlVNX0JZ
-VEVTOyBlY2NQb3MrKykKKwkJCWVjY0NhbGNbZWNjUG9zXSA9IFJFR19OQU5EX0RBVEE4OworCX0g
-ZWxzZSB7CisJCS8qIHNraXAgQkkgKi8KKwkJUkVHX05BTkRfREFUQTg7CisKKwkJLyogc2tpcCBD
-TSAqLworCQlSRUdfTkFORF9EQVRBODsKKwkJUkVHX05BTkRfREFUQTg7CisKKwkJLyogcmVhZCBF
-Q0MgYnl0ZXMgKi8KKwkJbmFuZF9iY21fdW1pX2JjaF9yZXN1bWVfcmVhZF9lY2NfY2FsYygpOwor
-CisJCWZvciAoOyBlY2NQb3MgPCBOQU5EX0VDQ19OVU1fQllURVM7IGVjY1BvcysrKQorCQkJZWNj
-Q2FsY1tlY2NQb3NdID0gUkVHX05BTkRfREFUQTg7CisJfQorfQorCitzdGF0aWMgaW50IGJjbV91
-bWlfYmNoX2NvcnJlY3QodV9jaGFyICpkYXQsIHVfY2hhciAqcmVhZF9lY2MpCit7CisJaW50IHJl
-c3VsdDsKKworCXJlc3VsdCA9IG5hbmRfYmNtX3VtaV9iY2hfY29ycmVjdF9wYWdlKGRhdCk7CisK
-KwkvKiBJZiB0aGUgRUNDIGlzIHVucHJvZ3JhbW1lZCB0aGVuIHdlIGNhbid0IGNvcnJlY3QgKi8K
-KwlpZiAocmVzdWx0ICE9IDApIHsKKwkJaW50IGk7CisKKwkJZm9yIChpID0gMDsgaSA8IE5BTkRf
-RUNDX05VTV9CWVRFUzsgaSsrKQorCQkJaWYgKHJlYWRfZWNjW2ldICE9IDB4ZmYpCisJCQkJcmV0
-dXJuIHJlc3VsdDsKKwkJcmVzdWx0ID0gMDsKKwl9CisJcmV0dXJuIHJlc3VsdDsKK30KKworLyog
-PT09PSBQdWJsaWMgRnVuY3Rpb25zID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT0gKi8KKworLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioKKyoKKyogIGJjbV91bWlf
-YmNoX3JlYWRfcGFnZV9od2VjYyAtIGhhcmR3YXJlIGVjYyBiYXNlZCBwYWdlIHJlYWQgZnVuY3Rp
-b24KKyogIEBtdGQ6CW10ZCBpbmZvIHN0cnVjdHVyZQorKiAgQGNoaXA6CW5hbmQgY2hpcCBpbmZv
-IHN0cnVjdHVyZQorKiAgQGJ1ZjoJYnVmZmVyIHRvIHN0b3JlIHJlYWQgZGF0YQorKgorKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqLworc3RhdGljIGludCBiY21fdW1pX2JjaF9yZWFkX3BhZ2VfaHdlY2Moc3Ry
-dWN0IG10ZF9pbmZvICptdGQsCisJCQkJICAgICAgIHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsIHVp
-bnQ4X3QgKmJ1ZikKK3sKKwlpbnQgc2VjdG9ySWR4ID0gMDsKKwlpbnQgZWNjc2l6ZSA9IGNoaXAt
-PmVjYy5zaXplOworCWludCBlY2NzdGVwcyA9IGNoaXAtPmVjYy5zdGVwczsKKwl1aW50OF90ICpk
-YXRhcCA9IGJ1ZjsKKwl1aW50OF90ICpvb2JwID0gY2hpcC0+b29iX3BvaTsKKwl1aW50OF90IGVj
-Y0NhbGNbTkFORF9FQ0NfTlVNX0JZVEVTXTsKKwlpbnQgc2VjdG9yT29iU2l6ZSA9IG10ZC0+b29i
-c2l6ZSAvIGVjY3N0ZXBzOworCWludCBzdGF0OworCisJZm9yIChzZWN0b3JJZHggPSAwOyBzZWN0
-b3JJZHggPCBlY2NzdGVwczsKKwkgICAgIHNlY3RvcklkeCsrLCBkYXRhcCArPSBlY2NzaXplLCBv
-b2JwICs9IHNlY3Rvck9vYlNpemUpIHsKKwkJaWYgKHNlY3RvcklkeCA+IDApIHsKKwkJCS8qIFNl
-ZWsgdG8gcGFnZSBsb2NhdGlvbiB3aXRoaW4gc2VjdG9yICovCisJCQljaGlwLT5jbWRmdW5jKG10
-ZCwgTkFORF9DTURfUk5ET1VULCBzZWN0b3JJZHggKiBlY2NzaXplLAorCQkJCSAgICAgIC0xKTsK
-KwkJfQorCisJCS8qIEVuYWJsZSBoYXJkd2FyZSBFQ0MgYmVmb3JlIHJlYWRpbmcgdGhlIGJ1ZiAq
-LworCQluYW5kX2JjbV91bWlfYmNoX2VuYWJsZV9yZWFkX2h3ZWNjKCk7CisKKwkJLyogUmVhZCBp
-biBkYXRhICovCisJCWJjbV91bWlfbmFuZF9yZWFkX2J1ZihtdGQsIGRhdGFwLCBlY2NzaXplKTsK
-KworCQkvKiBQYXVzZSBoYXJkd2FyZSBFQ0MgYWZ0ZXIgcmVhZGluZyB0aGUgYnVmICovCisJCW5h
-bmRfYmNtX3VtaV9iY2hfcGF1c2VfcmVhZF9lY2NfY2FsYygpOworCisJCS8qIFJlYWQgdGhlIE9P
-QiBFQ0MgKi8KKwkJY2hpcC0+Y21kZnVuYyhtdGQsIE5BTkRfQ01EX1JORE9VVCwKKwkJCSAgICAg
-IG10ZC0+d3JpdGVzaXplICsgc2VjdG9ySWR4ICogc2VjdG9yT29iU2l6ZSwgLTEpOworCQliY21f
-dW1pX2JjaF9yZWFkX29vYkVjYyhtdGQsIGVjY0NhbGMpOworCisJCS8qIENvcnJlY3QgYW55IEVD
-QyBkZXRlY3RlZCBlcnJvcnMgKi8KKwkJc3RhdCA9IGJjbV91bWlfYmNoX2NvcnJlY3QoZGF0YXAs
-IGVjY0NhbGMpOworCisJCS8qIFVwZGF0ZSBTdGF0cyAqLworCQlpZiAoc3RhdCA8IDApIHsKKyNp
-ZiBkZWZpbmVkKE5BTkRfQkNNX1VNSV9ERUJVRykKKwkJCXByaW50ayhLRVJOX1dBUk5JTkcKKwkJ
-CSAgICAgICAiJXMgdW5jb3JyZWN0YWJsZV9lcnJvcl9kZXRlY3RlZCBzZWN0b3JJZHg9JWRcbiIs
-CisJCQkgICAgICAgX19mdW5jX18sIHNlY3RvcklkeCk7CisJCQlwcmludGsoS0VSTl9XQVJOSU5H
-CisJCQkgICAgICAgIiVzIGRhdGEgJTAyeCAlMDJ4ICUwMnggJTAyeCAlMDJ4CisJCQkJCSAlMDJ4
-ICUwMnggJTAyeFxuIiwKKwkJCSAgICAgICBfX2Z1bmNfXywgZGF0YXBbMF0sIGRhdGFwWzFdLCBk
-YXRhcFsyXSwgZGF0YXBbM10sCisJCQkgICAgICAgZGF0YXBbNF0sIGRhdGFwWzVdLCBkYXRhcFs2
-XSwgZGF0YXBbN10pOworCQkJcHJpbnRrKEtFUk5fV0FSTklORworCQkJICAgICAgICIlcyBvb2Ig
-ICUwMnggJTAyeCAlMDJ4ICUwMnggJTAyeAorCQkJCQkgJTAyeCAlMDJ4ICUwMnhcbiIsCisJCQkg
-ICAgICAgX19mdW5jX18sIG9vYnBbMF0sIG9vYnBbMV0sIG9vYnBbMl0sIG9vYnBbM10sCisJCQkg
-ICAgICAgb29icFs0XSwgb29icFs1XSwgb29icFs2XSwgb29icFs3XSk7CisJCQlwcmludGsoS0VS
-Tl9XQVJOSU5HCisJCQkgICAgICAgIiVzIG9vYiAgJTAyeCAlMDJ4ICUwMnggJTAyeCAlMDJ4CisJ
-CQkJCSAlMDJ4ICUwMnggJTAyeFxuIiwKKwkJCSAgICAgICBfX2Z1bmNfXywgb29icFs4XSwgb29i
-cFs5XSwgb29icFsxMF0sIG9vYnBbMTFdLAorCQkJICAgICAgIG9vYnBbMTJdLCBvb2JwWzEzXSwg
-b29icFsxNF0sIG9vYnBbMTVdKTsKKyNlbmRpZgorCQkJbXRkLT5lY2Nfc3RhdHMuZmFpbGVkKys7
-CisJCX0gZWxzZSB7CisjaWYgZGVmaW5lZChOQU5EX0JDTV9VTUlfREVCVUcpCisJCQlpZiAoc3Rh
-dCA+IDApIHsKKwkJCQlwcmludGsoS0VSTl9JTkZPCisJCQkJICAgICAgICIlcyAlZCBjb3JyZWN0
-YWJsZV9lcnJvcnMgZGV0ZWN0ZWRcbiIsCisJCQkJICAgICAgIF9fZnVuY19fLCBzdGF0KTsKKwkJ
-CX0KKyNlbmRpZgorCQkJbXRkLT5lY2Nfc3RhdHMuY29ycmVjdGVkICs9IHN0YXQ7CisJCX0KKwl9
-CisJcmV0dXJuIDA7Cit9CisKKy8qKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCisqCisqICBiY21fdW1pX2Jj
-aF93cml0ZV9wYWdlX2h3ZWNjIC0gaGFyZHdhcmUgZWNjIGJhc2VkIHBhZ2Ugd3JpdGUgZnVuY3Rp
-b24KKyogIEBtdGQ6CW10ZCBpbmZvIHN0cnVjdHVyZQorKiAgQGNoaXA6CW5hbmQgY2hpcCBpbmZv
-IHN0cnVjdHVyZQorKiAgQGJ1ZjoJZGF0YSBidWZmZXIKKyoKKyoqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKi8K
-K3N0YXRpYyB2b2lkIGJjbV91bWlfYmNoX3dyaXRlX3BhZ2VfaHdlY2Moc3RydWN0IG10ZF9pbmZv
-ICptdGQsCisJCQkJCSBzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLAorCQkJCQkgY29uc3QgdWludDhf
-dCAqYnVmKQoreworCWludCBzZWN0b3JJZHggPSAwOworCWludCBlY2NzaXplID0gY2hpcC0+ZWNj
-LnNpemU7CisJaW50IGVjY3N0ZXBzID0gY2hpcC0+ZWNjLnN0ZXBzOworCWNvbnN0IHVpbnQ4X3Qg
-KmRhdGFwID0gYnVmOworCXVpbnQ4X3QgKm9vYnAgPSBjaGlwLT5vb2JfcG9pOworCWludCBzZWN0
-b3JPb2JTaXplID0gbXRkLT5vb2JzaXplIC8gZWNjc3RlcHM7CisKKwlmb3IgKHNlY3RvcklkeCA9
-IDA7IHNlY3RvcklkeCA8IGVjY3N0ZXBzOworCSAgICAgc2VjdG9ySWR4KyssIGRhdGFwICs9IGVj
-Y3NpemUsIG9vYnAgKz0gc2VjdG9yT29iU2l6ZSkgeworCQkvKiBFbmFibGUgaGFyZHdhcmUgRUND
-IGJlZm9yZSB3cml0aW5nIHRoZSBidWYgKi8KKwkJbmFuZF9iY21fdW1pX2JjaF9lbmFibGVfd3Jp
-dGVfaHdlY2MoKTsKKwkJYmNtX3VtaV9uYW5kX3dyaXRlX2J1ZihtdGQsIGRhdGFwLCBlY2NzaXpl
-KTsKKwkJYmNtX3VtaV9iY2hfd3JpdGVfb29iRWNjKG10ZCwgb29icCk7CisJfQorCisJYmNtX3Vt
-aV9uYW5kX3dyaXRlX2J1ZihtdGQsIGNoaXAtPm9vYl9wb2ksIG10ZC0+b29ic2l6ZSk7Cit9CmRp
-ZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL2JjbV91bWlfaGFtbWluZy5jIGIvZHJpdmVycy9t
-dGQvbmFuZC9iY21fdW1pX2hhbW1pbmcuYwpuZXcgZmlsZSBtb2RlIDEwMDY0NAppbmRleCAwMDAw
-MDAwLi5lYjE0YjcxCi0tLSAvZGV2L251bGwKKysrIGIvZHJpdmVycy9tdGQvbmFuZC9iY21fdW1p
-X2hhbW1pbmcuYwpAQCAtMCwwICsxLDEzNSBAQAorLyoqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCisqIENv
-cHlyaWdodCAyMDA0IC0gMjAwOSBCcm9hZGNvbSBDb3Jwb3JhdGlvbi4gIEFsbCByaWdodHMgcmVz
-ZXJ2ZWQuCisqCisqIFVubGVzcyB5b3UgYW5kIEJyb2FkY29tIGV4ZWN1dGUgYSBzZXBhcmF0ZSB3
-cml0dGVuIHNvZnR3YXJlIGxpY2Vuc2UKKyogYWdyZWVtZW50IGdvdmVybmluZyB1c2Ugb2YgdGhp
-cyBzb2Z0d2FyZSwgdGhpcyBzb2Z0d2FyZSBpcyBsaWNlbnNlZCB0byB5b3UKKyogdW5kZXIgdGhl
-IHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSB2ZXJzaW9uIDIsIGF2YWls
-YWJsZSBhdAorKiBodHRwOi8vd3d3LmJyb2FkY29tLmNvbS9saWNlbnNlcy9HUEx2Mi5waHAgKHRo
-ZSAiR1BMIikuCisqCisqIE5vdHdpdGhzdGFuZGluZyB0aGUgYWJvdmUsIHVuZGVyIG5vIGNpcmN1
-bXN0YW5jZXMgbWF5IHlvdSBjb21iaW5lIHRoaXMKKyogc29mdHdhcmUgaW4gYW55IHdheSB3aXRo
-IGFueSBvdGhlciBCcm9hZGNvbSBzb2Z0d2FyZSBwcm92aWRlZCB1bmRlciBhCisqIGxpY2Vuc2Ug
-b3RoZXIgdGhhbiB0aGUgR1BMLCB3aXRob3V0IEJyb2FkY29tJ3MgZXhwcmVzcyBwcmlvciB3cml0
-dGVuCisqIGNvbnNlbnQuCisqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKi8KKworLyogLS0tLSBJbmNsdWRl
-IEZpbGVzIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0gKi8KKyNpbmNsdWRlIDxsaW51eC9tdGQvbmFuZF9lY2M1MTIuaD4KKy8qIC0tLS0gRXh0ZXJu
-YWwgVmFyaWFibGUgRGVjbGFyYXRpb25zIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tICovCisvKiAtLS0tIEV4dGVybmFsIEZ1bmN0aW9uIFByb3RvdHlwZXMgLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSAqLworLyogLS0tLSBQdWJsaWMgVmFyaWFibGVzIC0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0gKi8KKy8qIC0t
-LS0gUHJpdmF0ZSBDb25zdGFudHMgYW5kIFR5cGVzIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tICovCisjZGVmaW5lIE5BTkRfRUNDX05VTV9CWVRFUyAzCisKKy8qIC0tLS0g
-UHJpdmF0ZSBGdW5jdGlvbiBQcm90b3R5cGVzIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tICovCitzdGF0aWMgaW50IGJjbV91bWlfaGFtbWluZ19nZXRfaHdfZWNjKHN0cnVj
-dCBtdGRfaW5mbyAqbXRkLCBjb25zdCB1X2NoYXIgKmRhdCwKKwkJCQkgICAgICB1X2NoYXIgKmVj
-Y19jb2RlKTsKK3N0YXRpYyB2b2lkIGJjbV91bWlfaGFtbWluZ19lbmFibGVfaHdlY2Moc3RydWN0
-IG10ZF9pbmZvICptdGQsIGludCBtb2RlKTsKKworLyogLS0tLSBQcml2YXRlIFZhcmlhYmxlcyAt
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0gKi8KKworLyoK
-KyoqIG5hbmRfaHdfZWNjb29iCisqKiBOZXcgb29iIHBsYWNlbWVudCBibG9jayBmb3IgdXNlIHdp
-dGggaGFyZHdhcmUgZWNjIGdlbmVyYXRpb24uCisqLworc3RhdGljIHN0cnVjdCBuYW5kX2VjY2xh
-eW91dCBuYW5kX2h3X2VjY29vYl81MTIgPSB7CisJLmVjY2J5dGVzID0gMywKKwkuZWNjcG9zID0g
-ezYsIDcsIDh9LAorCS8qCisJICoqIFJlc2VydmUgMC8xIGFuZCAxMC8xMSBhcyBCSSBpbmRpY2F0
-b3JzIGZvciAxNi1iaXQgZmxhc2gKKwkgKiogUmVzZXJ2ZSA1IGZvciA4LWJpdCBCSQorCSAqKiA2
-LzcvOCBhcmUgZm9yIGVjYyBzbyB0aGlzIGlzIGFsbCB0aGF0J3MgbGVmdAorCSAqLworCS5vb2Jm
-cmVlID0geworCQkgICAgey5vZmZzZXQgPSAyLCAubGVuZ3RoID0gM30sCisJCSAgICB7Lm9mZnNl
-dCA9IDksIC5sZW5ndGggPSAxfSwKKwkJICAgIHsub2Zmc2V0ID0gMTIsIC5sZW5ndGggPSA0fQor
-CQkJIH0KK307CisKKy8qCisgKiBXZSB0cmVhdCB0aGUgT09CIGZvciBhIDJLIHBhZ2UgYXMgaWYg
-aXQgd2VyZSA0IDUxMiBieXRlIG9vYnMsCisgKiBleGNlcHQgdGhhdCB0aGUgRUNDIG9mZnNldCBp
-ZiA4IHJhdGhlciB0aGFuIDYuCisgKi8KK3N0YXRpYyBzdHJ1Y3QgbmFuZF9lY2NsYXlvdXQgbmFu
-ZF9od19lY2Nvb2JfMjA0OCA9IHsKKwkuZWNjYnl0ZXMgPSAxMiwKKwkuZWNjcG9zID0gezgsIDks
-IDEwLCAyNCwgMjUsIDI2LCA0MCwgNDEsIDQyLCA1NiwgNTcsIDU4fSwKKwkvKgorCSAqKiBSZXNl
-cnZlIDAvMSBhcyBCSSBpbmRpY2F0b3JzIGZvciA4LzE2LWJpdCBmbGFzaAorCSAqKiA4LzkvMTAg
-YXJlIGZvciBlY2Mgc28gdGhpcyBpcyBhbGwgdGhhdCdzIGxlZnQKKwkgKi8KKwkub29iZnJlZSA9
-IHsKKwkJICAgIHsub2Zmc2V0ID0gMiwgLmxlbmd0aCA9IDZ9LAorCQkgICAgey5vZmZzZXQgPSAx
-MSwgLmxlbmd0aCA9IDEzfSwKKwkJICAgIHsub2Zmc2V0ID0gMjcsIC5sZW5ndGggPSAxM30sCisJ
-CSAgICB7Lm9mZnNldCA9IDQzLCAubGVuZ3RoID0gMTN9LAorCQkgICAgey5vZmZzZXQgPSA1OSwg
-Lmxlbmd0aCA9IDV9CisJCQkgfQorfTsKKworLyoKKyAqIFdlIHRyZWF0IHRoZSBPT0IgZm9yIGEg
-NEsgcGFnZSBhcyBpZiBpdCB3ZXJlIDggNTEyIGJ5dGUgb29icywKKyAqIGV4Y2VwdCB0aGF0IHRo
-ZSBFQ0Mgb2Zmc2V0IGlmIDggcmF0aGVyIHRoYW4gNi4KKyAqLworc3RhdGljIHN0cnVjdCBuYW5k
-X2VjY2xheW91dCBuYW5kX2h3X2VjY29vYl80MDk2ID0geworCS5lY2NieXRlcyA9IDI0LAorCS5l
-Y2Nwb3MgPQorCSAgICB7OCwgOSwgMTAsIDI0LCAyNSwgMjYsIDQwLCA0MSwgNDIsIDU2LCA1Nywg
-NTgsIDcyLCA3MywgNzQsIDg4LCA4OSwKKwkgICAgIDkwLCAxMDQsIDEwNSwgMTA2LCAxMjAsIDEy
-MSwgMTIyfSwKKwkvKgorCSAqKiBSZXNlcnZlIDAvMSBhcyBCSSBpbmRpY2F0b3JzIGZvciA4LzE2
-LWJpdCBmbGFzaAorCSAqKiA4LzkvMTAgYXJlIGZvciBlY2Mgc28gdGhpcyBpcyBhbGwgdGhhdCdz
-IGxlZnQKKwkgKi8KKwkub29iZnJlZSA9IHsKKwkJICAgIHsub2Zmc2V0ID0gMiwgLmxlbmd0aCA9
-IDZ9LAorCQkgICAgey5vZmZzZXQgPSAxMSwgLmxlbmd0aCA9IDEzfSwKKwkJICAgIHsub2Zmc2V0
-ID0gMjcsIC5sZW5ndGggPSAxM30sCisJCSAgICB7Lm9mZnNldCA9IDQzLCAubGVuZ3RoID0gMTN9
-LAorCQkgICAgey5vZmZzZXQgPSA1OSwgLmxlbmd0aCA9IDEzfSwKKwkJICAgIHsub2Zmc2V0ID0g
-NzUsIC5sZW5ndGggPSAxM30sCisJCSAgICB7Lm9mZnNldCA9IDkxLCAubGVuZ3RoID0gMTN9LAor
-CQkgICAgey5vZmZzZXQgPSAxMDcsIC5sZW5ndGggPSAxM30KKwkJCSB9CisJLyogeyAub2Zmc2V0
-ID0gMTIzLCAgICAubGVuZ3RoID0gNSB9fQorCSAqIEl0IHR1cm5zIG91dCBuYW5kX2VjY2xheW91
-dCBvbmx5IGhhcyBzcGFjZSBmb3IgOCBlbnRyaWVzICovCit9OworCisvKiAtLS0tIFByaXZhdGUg
-RnVuY3Rpb25zIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LSAqLworCisvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKgorKgorKiAgYmNtX3VtaV9oYW1taW5nX2dldF9o
-d19lY2MKKyoKKyogICBVc2VkIHRvIGdldCB0aGUgaGFyZHdhcmUgRUNDLgorKgorKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqLworCitzdGF0aWMgaW50IGJjbV91bWlfaGFtbWluZ19nZXRfaHdfZWNjKHN0cnVj
-dCBtdGRfaW5mbyAqbXRkLCBjb25zdCB1X2NoYXIgKmRhdCwKKwkJCQkgICAgICB1X2NoYXIgKmVj
-Y19jb2RlKQoreworCXVuc2lnbmVkIGxvbmcgZWNjID0gUkVHX1VNSV9OQU5EX0VDQ19EQVRBOwor
-CWVjY19jb2RlWzJdID0gKGVjYyA+PiAxNikgJiAweGZmOworCWVjY19jb2RlWzFdID0gKGVjYyA+
-PiA4KSAmIDB4ZmY7CisJZWNjX2NvZGVbMF0gPSAoZWNjID4+IDApICYgMHhmZjsKKworCSh2b2lk
-KW10ZDsKKwkodm9pZClkYXQ7CisKKwlyZXR1cm4gMDsKK30KKworLyoqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioKKyoKKyogIGJjbV91bWlfaGFtbWluZ19lbmFibGVfaHdlY2MKKyoKKyogICBVc2VkIHRvIHR1
-cm4gb24gaGFyZHdhcmUgRUNDLgorKgorKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqLworCitzdGF0aWMgdm9p
-ZCBiY21fdW1pX2hhbW1pbmdfZW5hYmxlX2h3ZWNjKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQg
-bW9kZSkKK3sKKwkodm9pZCltdGQ7CisJKHZvaWQpbW9kZTsKKwluYW5kX2JjbV91bWlfaGFtbWlu
-Z19lbmFibGVfaHdlY2MoKTsKK30KKworLyogPT09PSBQdWJsaWMgRnVuY3Rpb25zID09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gKi8KZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvbXRkL25hbmQvYmNtX3VtaV9uYW5kLmMgYi9kcml2ZXJzL210ZC9uYW5kL2JjbV91
-bWlfbmFuZC5jCm5ldyBmaWxlIG1vZGUgMTAwNjQ0CmluZGV4IDAwMDAwMDAuLjM4ZmRlZjIKLS0t
-IC9kZXYvbnVsbAorKysgYi9kcml2ZXJzL210ZC9uYW5kL2JjbV91bWlfbmFuZC5jCkBAIC0wLDAg
-KzEsNzkwIEBACisvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioKKyogQ29weXJpZ2h0IDIwMDQgLSAyMDA5
-IEJyb2FkY29tIENvcnBvcmF0aW9uLiAgQWxsIHJpZ2h0cyByZXNlcnZlZC4KKyoKKyogVW5sZXNz
-IHlvdSBhbmQgQnJvYWRjb20gZXhlY3V0ZSBhIHNlcGFyYXRlIHdyaXR0ZW4gc29mdHdhcmUgbGlj
-ZW5zZQorKiBhZ3JlZW1lbnQgZ292ZXJuaW5nIHVzZSBvZiB0aGlzIHNvZnR3YXJlLCB0aGlzIHNv
-ZnR3YXJlIGlzIGxpY2Vuc2VkIHRvIHlvdQorKiB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBH
-ZW5lcmFsIFB1YmxpYyBMaWNlbnNlIHZlcnNpb24gMiwgYXZhaWxhYmxlIGF0CisqIGh0dHA6Ly93
-d3cuYnJvYWRjb20uY29tL2xpY2Vuc2VzL0dQTHYyLnBocCAodGhlICJHUEwiKS4KKyoKKyogTm90
-d2l0aHN0YW5kaW5nIHRoZSBhYm92ZSwgdW5kZXIgbm8gY2lyY3Vtc3RhbmNlcyBtYXkgeW91IGNv
-bWJpbmUgdGhpcworKiBzb2Z0d2FyZSBpbiBhbnkgd2F5IHdpdGggYW55IG90aGVyIEJyb2FkY29t
-IHNvZnR3YXJlIHByb3ZpZGVkIHVuZGVyIGEKKyogbGljZW5zZSBvdGhlciB0aGFuIHRoZSBHUEws
-IHdpdGhvdXQgQnJvYWRjb20ncyBleHByZXNzIHByaW9yIHdyaXR0ZW4KKyogY29uc2VudC4KKyoq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqLworCisvKiAtLS0tIEluY2x1ZGUgRmlsZXMgLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSAqLworI2luY2x1ZGUgPGxp
-bnV4L3ZlcnNpb24uaD4KKyNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4KKyNpbmNsdWRlIDxsaW51
-eC90eXBlcy5oPgorI2luY2x1ZGUgPGxpbnV4L2luaXQuaD4KKyNpbmNsdWRlIDxsaW51eC9rZXJu
-ZWwuaD4KKyNpbmNsdWRlIDxsaW51eC9zdHJpbmcuaD4KKyNpbmNsdWRlIDxsaW51eC9pb3BvcnQu
-aD4KKyNpbmNsdWRlIDxsaW51eC9kZXZpY2UuaD4KKyNpbmNsdWRlIDxsaW51eC9kZWxheS5oPgor
-I2luY2x1ZGUgPGxpbnV4L2Vyci5oPgorI2luY2x1ZGUgPGxpbnV4L2lvLmg+CisKKyNpbmNsdWRl
-IDxsaW51eC9wbGF0Zm9ybV9kZXZpY2UuaD4KKyNpbmNsdWRlIDxsaW51eC9tdGQvbXRkLmg+Cisj
-aW5jbHVkZSA8bGludXgvbXRkL25hbmQuaD4KKyNpbmNsdWRlIDxsaW51eC9tdGQvbmFuZF9lY2Mu
-aD4KKyNpbmNsdWRlIDxsaW51eC9tdGQvcGFydGl0aW9ucy5oPgorCisjaW5jbHVkZSA8YXNtL21h
-Y2gtdHlwZXMuaD4KKyNpbmNsdWRlIDxhc20vc3lzdGVtLmg+CisKKyNpbmNsdWRlIDxtYWNoL3Jl
-Z19uYW5kLmg+CisjaW5jbHVkZSA8bWFjaC9yZWdfdW1pLmg+CisKKyNpbmNsdWRlIDxsaW51eC9t
-dGQvbmFuZF9iY21fdW1pLmg+CisKKyNpZiAhZGVmaW5lZChDT05GSUdfQVJDSF9CQ00xMTZYKQor
-I2luY2x1ZGUgPG1hY2gvbWVtb3J5X3NldHRpbmdzLmg+CisjZW5kaWYKKworI2RlZmluZSBVU0Vf
-RE1BIDEKKyNpbmNsdWRlIDxtYWNoL2RtYS5oPgorI2luY2x1ZGUgPGxpbnV4L2RtYS1tYXBwaW5n
-Lmg+CisjaW5jbHVkZSA8bGludXgvY29tcGxldGlvbi5oPgorCisjZGVmaW5lIFVTRV9IV0VDQyAx
-CisKKy8qIC0tLS0gRXh0ZXJuYWwgVmFyaWFibGUgRGVjbGFyYXRpb25zIC0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tICovCisvKiAtLS0tIEV4dGVybmFsIEZ1bmN0aW9uIFByb3Rv
-dHlwZXMgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSAqLworLyogLS0tLSBQ
-dWJsaWMgVmFyaWFibGVzIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0gKi8KKy8qIC0tLS0gUHJpdmF0ZSBDb25zdGFudHMgYW5kIFR5cGVzIC0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tICovCitzdGF0aWMgY2hhciBnQmFubmVyW10g
-X19pbml0ZGF0YSA9IEtFUk5fSU5GTyAiQkNNIFVNSSBNVEQgTkFORCBEcml2ZXI6IDEuMDBcbiI7
-CisKKyNpZmRlZiBDT05GSUdfTVREX1BBUlRJVElPTlMKK3N0YXRpYyBjaGFyICpwYXJ0X3Byb2Jl
-c1tdID0geyAiY21kbGluZXBhcnQiLCBOVUxMIH07CisjZW5kaWYKKworI2lmIE5BTkRfRUNDX0JD
-SAorc3RhdGljIHVpbnQ4X3Qgc2Nhbl9mZl9wYXR0ZXJuW10gPSB7IDB4ZmYgfTsKKworc3RhdGlj
-IHN0cnVjdCBuYW5kX2JidF9kZXNjciBsYXJnZXBhZ2VfYmJ0ID0geworCS5vcHRpb25zID0gMCwK
-Kwkub2ZmcyA9IDAsCisJLmxlbiA9IDEsCisJLnBhdHRlcm4gPSBzY2FuX2ZmX3BhdHRlcm4KK307
-CisjZW5kaWYKKworLyoKKyoqIFByZWFsbG9jYXRlIGEgYnVmZmVyIHRvIGF2b2lkIGhhdmluZyB0
-byBkbyB0aGlzIGV2ZXJ5IGRtYSBvcGVyYXRpb24uCisqKiBUaGlzIGlzIHRoZSBzaXplIG9mIHRo
-ZSBwcmVhbGxvY2F0ZWQgY29oZXJlbnQgRE1BIGJ1ZmZlci4KKyovCisjaWYgVVNFX0RNQQorI2Rl
-ZmluZSBETUFfTUlOX0JVRkxFTgkJNTEyCisjZGVmaW5lIERNQV9NQVhfQlVGTEVOCQlQQUdFX1NJ
-WkUKKyNkZWZpbmUgVVNFX0RJUkVDVF9JTyhsZW4pCSgoKGxlbikgPCBETUFfTUlOX0JVRkxFTikg
-fHwgXAorCSgobGVuKSA+IERNQV9NQVhfQlVGTEVOKSkKKworI2lmIGRlZmluZWQoQ09ORklHX0FS
-Q0hfQkNNUklORykKKy8qCisgKiBUaGUgY3VycmVudCBOQU5EIGRhdGEgc3BhY2UgZ29lcyBmcm9t
-IDB4ODAwMDE5MDAgdG8gMHg4MDAwMUZGRiwKKyAqIHdoaWNoIGlzIG9ubHkgMHg3MDAgPSAxNzky
-IGJ5dGVzIGxvbmcuIFRoaXMgaXMgdG9vIHNtYWxsIGZvciAySywgNEsgcGFnZQorICogc2l6ZSBO
-QU5EIGZsYXNoLiBOZWVkIHRvIGJyZWFrIHRoZSBETUEgZG93biB0byBtdWx0aXBsZSAxS3MuCisg
-KgorICogTmVlZCB0byBtYWtlIHN1cmUgUkVHX05BTkRfREFUQV9QQUREUiArIERNQV9NQVhfTEVO
-IDwgMHg4MDAwMjAwMAorICovCisjZGVmaW5lIERNQV9NQVhfTEVOICAgICAgICAgICAgIDEwMjQK
-KyNlbmRpZgorCisjaWYgZGVmaW5lZChDT05GSUdfQVJDSF9CQ00xMTZYKQorCisjZGVmaW5lIE5B
-TkRfRE1BX0NIQU4gICAzCisKKy8qIEdsb2JhbCBjb25maWcgaXMgY29tbW9uIGZvciBib3RoIGRp
-cmVjdGlvbnMuICovCisjZGVmaW5lIERNQV9DRkcgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICBcCisgICAgKFJFR19ETUFfQ0hBTl9DRkdfVENfSU5UX0VOQUJMRSAgICAgICAgICAgIFwK
-KyAgICB8IFJFR19ETUFfQ0hBTl9DRkdfRVJST1JfSU5UX0VOQUJMRSAgICAgICAgIFwKKyAgICB8
-IFJFR19ETUFfQ0hBTl9DRkdfRkxPV19DVExfTUVNX1RPX01FTV9ETUEgIFwKKyAgICB8IFJFR19E
-TUFfQ0hBTl9DRkdfRU5BQkxFKQorCisvKiBDb21tb24gdHJhbnNmZXIgd2lkdGhzIGluIGJpdHMg
-KHR5cGljYWxseSA4LCAxNiwgb3IgMzIpICovCisjZGVmaW5lIERNQV9XSURUSChkc3R3aWR0aCwg
-c3Jjd2lkdGgpICAgICAgICAgICAgICAgICAgICAgICAgXAorICAgIChSRUdfRE1BX0NIQU5fQ1RM
-X0RFU1RfV0lEVEhfIyNkc3R3aWR0aCAgICAgICBcCisgICAgfCBSRUdfRE1BX0NIQU5fQ1RMX1NS
-Q19XSURUSF8jI3NyY3dpZHRoKQorCisvKiBDb21tb24gYnVyc3Qgc2l6ZXMgLSB0eXBpY2FsbHkg
-NCAqLworI2RlZmluZSBETUFfQlVSU1Qod2lkdGgpICAgICAgICAgICAgICAgICAgICAgICAgXAor
-ICAgIChSRUdfRE1BX0NIQU5fQ1RMX0RFU1RfQlVSU1RfU0laRV8jI3dpZHRoICBcCisgICAgfCBS
-RUdfRE1BX0NIQU5fQ1RMX1NSQ19CVVJTVF9TSVpFXyMjd2lkdGgpCisKKy8qIERNQSBzZXR0aW5n
-cyBmb3IgY29weWluZyBmcm9tIE5BTkQgdG8gU0RSQU0gKi8KKyNkZWZpbmUgRE1BX0NUUkxfTkFO
-RF9UT19TRFJBTShkc3R3aWR0aCwgc3Jjd2lkdGgsIGJ5dGVzKSAgICBcCisgICAgKFJFR19ETUFf
-Q0hBTl9DVExfVENfSU5UX0VOQUJMRSAgICAgICAgICAgIFwKKyAgICB8IFJFR19ETUFfQ0hBTl9D
-VExfREVTVF9JTkNSICAgICAgICAgICAgICAgIFwKKyAgICB8IERNQV9CVVJTVCg0KSAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIFwKKyAgICB8IERNQV9XSURUSChkc3R3aWR0aCwgc3Jjd2lk
-dGgpICAgICAgICAgICAgIFwKKyAgICB8IChieXRlcyAqIDggLyBzcmN3aWR0aCkpCisKKy8qIERN
-QSBzZXR0aW5ncyBmb3IgY29weWluZyBmcm9tIFNEUkFNIHRvIE5BTkQgKi8KKyNkZWZpbmUgRE1B
-X0NUUkxfU0RSQU1fVE9fTkFORChkc3R3aWR0aCwgc3Jjd2lkdGgsIGJ5dGVzKSAgICBcCisgICAg
-KFJFR19ETUFfQ0hBTl9DVExfVENfSU5UX0VOQUJMRSAgICAgICAgICAgIFwKKyAgICB8IFJFR19E
-TUFfQ0hBTl9DVExfU1JDX0lOQ1IgICAgICAgICAgICAgICAgIFwKKyAgICB8IERNQV9CVVJTVCg0
-KSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwKKyAgICB8IERNQV9XSURUSChkc3R3aWR0
-aCwgc3Jjd2lkdGgpICAgICAgICAgICAgIFwKKyAgICB8IChieXRlcyAqIDggLyBzcmN3aWR0aCkp
-CisKKyNlbmRpZiAvKiBDT05GSUdfQVJDSF9CQ00xMTZYICovCisKKyNlbHNlIC8qICFVU0VfRE1B
-ICovCisjZGVmaW5lIERNQV9NSU5fQlVGTEVOICAgICAgICAgIDAKKyNkZWZpbmUgRE1BX01BWF9C
-VUZMRU4gICAgICAgICAgMAorI2RlZmluZSBVU0VfRElSRUNUX0lPKGxlbikgICAgICAxCisjZW5k
-aWYKKy8qIC0tLS0gUHJpdmF0ZSBGdW5jdGlvbiBQcm90b3R5cGVzIC0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tICovCitzdGF0aWMgdm9pZCBiY21fdW1pX25hbmRfcmVhZF9i
-dWYoc3RydWN0IG10ZF9pbmZvICptdGQsIHVfY2hhciAqIGJ1ZiwgaW50IGxlbik7CitzdGF0aWMg
-dm9pZCBiY21fdW1pX25hbmRfd3JpdGVfYnVmKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBjb25zdCB1
-X2NoYXIgKiBidWYsCisJCQkJICAgaW50IGxlbik7CisKKy8qIC0tLS0gUHJpdmF0ZSBWYXJpYWJs
-ZXMgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tICovCitz
-dGF0aWMgc3RydWN0IG10ZF9pbmZvICpib2FyZF9tdGQ7CitzdGF0aWMgdm9pZCBfX2lvbWVtICpi
-Y21fdW1pX2lvX2Jhc2U7CitzdGF0aWMgdm9pZCAqdmlydFB0cjsKK3N0YXRpYyBkbWFfYWRkcl90
-IHBoeXNQdHI7CitzdGF0aWMgc3RydWN0IGNvbXBsZXRpb24gbmFuZF9jb21wOworCisvKiAtLS0t
-IFByaXZhdGUgRnVuY3Rpb25zIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLSAqLworI2lmIE5BTkRfRUNDX0JDSAorI2luY2x1ZGUgImJjbV91bWlfYmNoLmMi
-CisjZWxzZQorI2luY2x1ZGUgImJjbV91bWlfaGFtbWluZy5jIgorI2VuZGlmCisKKyNpZiBVU0Vf
-RE1BCisKKyNpZiBkZWZpbmVkKENPTkZJR19BUkNIX0JDTTExNlgpCitzdGF0aWMgaXJxcmV0dXJu
-X3QgbmFuZF9kbWFfaXNyKHZvaWQgKmRldl9pZCkKK3sKKwljb21wbGV0ZSgmbmFuZF9jb21wKTsK
-KwlyZXR1cm4gSVJRX0hBTkRMRUQ7Cit9CisKKyNlbGlmIGRlZmluZWQoQ09ORklHX0FSQ0hfQkNN
-UklORykKKworLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioKKyoKKyogICBIYW5kbGVyIGNhbGxlZCB3aGVu
-IHRoZSBETUEgZmluaXNoZXMuCisqCisqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCisKK3N0YXRpYyB2b2lk
-IG5hbmRfZG1hX2hhbmRsZXIoRE1BX0RldmljZV90IGRldiwgaW50IHJlYXNvbiwgdm9pZCAqdXNl
-ckRhdGEpCit7CisJY29tcGxldGUoJm5hbmRfY29tcCk7Cit9CisKKyNlbmRpZgorCisvKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKgorKgorKiAgIEZ1bmN0aW9uIHRvIHBlcmZvcm0gRE1BIGluaXRpYWxpemF0
-aW9uCisqCisqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKiovCisKK3N0YXRpYyBpbnQgbmFuZF9kbWFfaW5pdCh2
-b2lkKQoreworI2lmIGRlZmluZWQoQ09ORklHX0FSQ0hfQkNNMTE2WCkKKworCWRtYV9yZXF1ZXN0
-X2lycShOQU5EX0RNQV9DSEFOLCBuYW5kX2RtYV9pc3IsIE5VTEwpOworCWRtYV9lbmFibGVfaXJx
-KE5BTkRfRE1BX0NIQU4pOworCWRtYV9yZXF1ZXN0X2NoYW4oTkFORF9ETUFfQ0hBTiwgIm5hbmQi
-KTsKKworI2VsaWYgZGVmaW5lZChDT05GSUdfQVJDSF9CQ01SSU5HKQorCisJaW50IHJjOworCisJ
-cmMgPSBkbWFfc2V0X2RldmljZV9oYW5kbGVyKERNQV9ERVZJQ0VfTkFORF9NRU1fVE9fTUVNLAor
-CQluYW5kX2RtYV9oYW5kbGVyLCBOVUxMKTsKKwlpZiAocmMgIT0gMCkgeworCQlwcmludGsoS0VS
-Tl9FUlIgImRtYV9zZXRfZGV2aWNlX2hhbmRsZXIgZmFpbGVkOiAlZFxuIiwgcmMpOworCQlyZXR1
-cm4gcmM7CisJfQorI2Vsc2UKKyNlcnJvciAiVW5yZWNvZ25pemVkIERNQSBwbGF0Zm9ybSIKKyNl
-bmRpZgorCisJdmlydFB0ciA9CisJICAgIGRtYV9hbGxvY19jb2hlcmVudChOVUxMLCBETUFfTUFY
-X0JVRkxFTiwgJnBoeXNQdHIsIEdGUF9LRVJORUwpOworCWlmICh2aXJ0UHRyID09IE5VTEwpIHsK
-KwkJcHJpbnRrKEtFUk5fRVJSICJOQU5EIC0gRmFpbGVkIHRvIGFsbG9jYXRlIG1lbW9yeSBmb3Ig
-RE1BIGJ1ZmZlclxuIik7CisJCXJldHVybiAtRU5PTUVNOworCX0KKworCXJldHVybiAwOworfQor
-CisvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKgorKgorKiAgIEZ1bmN0aW9uIHRvIHBlcmZvcm0gRE1BIHRl
-cm1pbmF0aW9uCisqCisqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCisKK3N0YXRpYyB2b2lkIG5hbmRfZG1h
-X3Rlcm0odm9pZCkKK3sKKyNpZiBkZWZpbmVkKENPTkZJR19BUkNIX0JDTTExNlgpCisJZG1hX2Zy
-ZWVfY2hhbihOQU5EX0RNQV9DSEFOKTsKKwlkbWFfZnJlZV9pcnEoTkFORF9ETUFfQ0hBTik7Cisj
-ZWxpZiBkZWZpbmVkKENPTkZJR19BUkNIX0JDTVJJTkcpCisJLyogTm90aGluZyB0byBkbyAqLwor
-I2Vsc2UKKyNlcnJvciAiVW5yZWNvZ25pemVkIERNQSBwbGF0Zm9ybSIKKyNlbmRpZgorCisJaWYg
-KHZpcnRQdHIgIT0gTlVMTCkKKwkJZG1hX2ZyZWVfY29oZXJlbnQoTlVMTCwgRE1BX01BWF9CVUZM
-RU4sIHZpcnRQdHIsIHBoeXNQdHIpOworfQorCisvKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgorKgorKiAg
-IFBlcmZvcm1zIGEgcmVhZCB2aWEgRE1BCisqCisqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCisKK3N0YXRp
-YyB2b2lkIG5hbmRfZG1hX3JlYWQodm9pZCAqYnVmLCBpbnQgbGVuKQoreworI2lmIGRlZmluZWQo
-Q09ORklHX0FSQ0hfQkNNMTE2WCkKKwlpbnQgZG1hY3RybDsKKworCWluaXRfY29tcGxldGlvbigm
-bmFuZF9jb21wKTsKKwlkbWFjdHJsID0gRE1BX0NUUkxfTkFORF9UT19TRFJBTSgzMiwgOCwgbGVu
-KTsKKwlkbWFfaW5pdF9jaGFuKE5BTkRfRE1BX0NIQU4pOworCWRtYV9zZXR1cF9jaGFuKE5BTkRf
-RE1BX0NIQU4sCisJCSAgICAgICBSRUdfTkFORF9EQVRBOF9QQUREUiwgKGludClwaHlzUHRyLCAw
-LCBkbWFjdHJsLCBETUFfQ0ZHKTsKKwl3YWl0X2Zvcl9jb21wbGV0aW9uKCZuYW5kX2NvbXApOwor
-CWlmIChidWYgIT0gTlVMTCkKKwkJbWVtY3B5KGJ1ZiwgdmlydFB0ciwgbGVuKTsKKworI2VsaWYg
-ZGVmaW5lZChDT05GSUdfQVJDSF9CQ01SSU5HKQorCWludCBvZmZzZXQgPSAwOworCWludCB0bXBf
-bGVuID0gMDsKKwlpbnQgbGVuX2xlZnQgPSBsZW47CisJRE1BX0hhbmRsZV90IGhuZGw7CisKKwlp
-ZiAodmlydFB0ciA9PSBOVUxMKQorCQlwYW5pYygibmFuZF9kbWFfcmVhZDogdmlydFB0ciA9PSBO
-VUxMXG4iKTsKKworCWlmICgodm9pZCAqKXBoeXNQdHIgPT0gTlVMTCkKKwkJcGFuaWMoIm5hbmRf
-ZG1hX3JlYWQ6IHBoeXNQdHIgPT0gTlVMTFxuIik7CisKKwlobmRsID0gZG1hX3JlcXVlc3RfY2hh
-bm5lbChETUFfREVWSUNFX05BTkRfTUVNX1RPX01FTSk7CisJaWYgKGhuZGwgPCAwKSB7CisJCXBy
-aW50ayhLRVJOX0VSUgorCQkgICAgICAgIm5hbmRfZG1hX3JlYWQ6IHVuYWJsZSB0byBhbGxvY2F0
-ZSBkbWEgY2hhbm5lbDogJWRcbiIsCisJCSAgICAgICAoaW50KWhuZGwpOworCQlwYW5pYygiXG4i
-KTsKKwl9CisKKwl3aGlsZSAobGVuX2xlZnQgPiAwKSB7CisJCWlmIChsZW5fbGVmdCA+IERNQV9N
-QVhfTEVOKSB7CisJCQl0bXBfbGVuID0gRE1BX01BWF9MRU47CisJCQlsZW5fbGVmdCAtPSBETUFf
-TUFYX0xFTjsKKwkJfSBlbHNlIHsKKwkJCXRtcF9sZW4gPSBsZW5fbGVmdDsKKwkJCWxlbl9sZWZ0
-ID0gMDsKKwkJfQorCisJCWluaXRfY29tcGxldGlvbigmbmFuZF9jb21wKTsKKwkJZG1hX3RyYW5z
-ZmVyX21lbV90b19tZW0oaG5kbCwgUkVHX05BTkRfREFUQV9QQUREUiwKKwkJCQkJcGh5c1B0ciAr
-IG9mZnNldCwgdG1wX2xlbik7CisJCXdhaXRfZm9yX2NvbXBsZXRpb24oJm5hbmRfY29tcCk7CisK
-KwkJb2Zmc2V0ICs9IHRtcF9sZW47CisJfQorCisJZG1hX2ZyZWVfY2hhbm5lbChobmRsKTsKKwor
-CWlmIChidWYgIT0gTlVMTCkKKwkJbWVtY3B5KGJ1ZiwgdmlydFB0ciwgbGVuKTsKKworI2Vsc2UK
-KyNlcnJvciAiVW5yZWNvZ25pemVkIERNQSBwbGF0Zm9ybSIKKyNlbmRpZgorfQorCisvKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKgorKgorKiAgIFBlcmZvcm1zIGEgd3JpdGUgdmlhIERNQQorKgorKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqLworCitzdGF0aWMgdm9pZCBuYW5kX2RtYV93cml0ZShjb25zdCB2b2lkICpi
-dWYsIGludCBsZW4pCit7CisjaWYgZGVmaW5lZChDT05GSUdfQVJDSF9CQ00xMTZYKQorCWludCBk
-bWFjdHJsOworCisJbWVtY3B5KHZpcnRQdHIsIGJ1ZiwgbGVuKTsKKwlpbml0X2NvbXBsZXRpb24o
-Jm5hbmRfY29tcCk7CisKKwlkbWFjdHJsID0gRE1BX0NUUkxfU0RSQU1fVE9fTkFORCg4LCAzMiwg
-bGVuKTsKKwlkbWFfaW5pdF9jaGFuKE5BTkRfRE1BX0NIQU4pOworCWRtYV9zZXR1cF9jaGFuKE5B
-TkRfRE1BX0NIQU4sCisJCSAgICAgICAoaW50KXBoeXNQdHIsIFJFR19OQU5EX0RBVEE4X1BBRERS
-LCAwLCBkbWFjdHJsLCBETUFfQ0ZHKTsKKwl3YWl0X2Zvcl9jb21wbGV0aW9uKCZuYW5kX2NvbXAp
-OworCisjZWxpZiBkZWZpbmVkKENPTkZJR19BUkNIX0JDTVJJTkcpCisJaW50IG9mZnNldCA9IDA7
-CisJaW50IHRtcF9sZW4gPSAwOworCWludCBsZW5fbGVmdCA9IGxlbjsKKwlETUFfSGFuZGxlX3Qg
-aG5kbDsKKworCWlmIChidWYgPT0gTlVMTCkKKwkJcGFuaWMoIm5hbmRfZG1hX3dyaXRlOiBidWYg
-PT0gTlVMTFxuIik7CisKKwlpZiAodmlydFB0ciA9PSBOVUxMKQorCQlwYW5pYygibmFuZF9kbWFf
-d3JpdGU6IHZpcnRQdHIgPT0gTlVMTFxuIik7CisKKwlpZiAoKHZvaWQgKilwaHlzUHRyID09IE5V
-TEwpCisJCXBhbmljKCJuYW5kX2RtYV93cml0ZTogcGh5c1B0ciA9PSBOVUxMXG4iKTsKKworCW1l
-bWNweSh2aXJ0UHRyLCBidWYsIGxlbik7CisKKwlobmRsID0gZG1hX3JlcXVlc3RfY2hhbm5lbChE
-TUFfREVWSUNFX05BTkRfTUVNX1RPX01FTSk7CisJaWYgKGhuZGwgPCAwKSB7CisJCXByaW50ayhL
-RVJOX0VSUgorCQkgICAgICAgIm5hbmRfZG1hX3dyaXRlOiB1bmFibGUgdG8gYWxsb2NhdGUgZG1h
-IGNoYW5uZWw6ICVkXG4iLAorCQkgICAgICAgKGludClobmRsKTsKKwkJcGFuaWMoIlxuIik7CisJ
-fQorCisJd2hpbGUgKGxlbl9sZWZ0ID4gMCkgeworCQlpZiAobGVuX2xlZnQgPiBETUFfTUFYX0xF
-TikgeworCQkJdG1wX2xlbiA9IERNQV9NQVhfTEVOOworCQkJbGVuX2xlZnQgLT0gRE1BX01BWF9M
-RU47CisJCX0gZWxzZSB7CisJCQl0bXBfbGVuID0gbGVuX2xlZnQ7CisJCQlsZW5fbGVmdCA9IDA7
-CisJCX0KKworCQlpbml0X2NvbXBsZXRpb24oJm5hbmRfY29tcCk7CisJCWRtYV90cmFuc2Zlcl9t
-ZW1fdG9fbWVtKGhuZGwsIHBoeXNQdHIgKyBvZmZzZXQsCisJCQkJCVJFR19OQU5EX0RBVEFfUEFE
-RFIsIHRtcF9sZW4pOworCQl3YWl0X2Zvcl9jb21wbGV0aW9uKCZuYW5kX2NvbXApOworCisJCW9m
-ZnNldCArPSB0bXBfbGVuOworCX0KKworCWRtYV9mcmVlX2NoYW5uZWwoaG5kbCk7CisjZWxzZQor
-I2Vycm9yICJVbnJlY29nbml6ZWQgRE1BIHBsYXRmb3JtIgorI2VuZGlmCit9CisKKyNlbmRpZgor
-CisvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKgorKgorKiAgbmFuZF9kZXZfcmVhZHkKKyoKKyogICBSb3V0
-aW5lIHRvIGNoZWNrIGlmIG5hbmQgaXMgcmVhZHkuCisqCisqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCitz
-dGF0aWMgaW50IG5hbmRfZGV2X3JlYWR5KHN0cnVjdCBtdGRfaW5mbyAqbXRkKQoreworCXJldHVy
-biBuYW5kX2JjbV91bWlfZGV2X3JlYWR5KCk7Cit9CisKKy8qKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCisq
-CisqICBiY21fdW1pX25hbmRfaW5pdGh3CisqCisqICAgVGhpcyByb3V0aW5lIGRvZXMgdGhlIG5l
-Y2Vzc2FyeSBoYXJkd2FyZSAoYm9hcmQtc3BlY2lmaWMpCisqICAgaW5pdGlhbGl6YXRpb25zLiAg
-VGhpcyBpbmNsdWRlcyBzZXR0aW5nIHVwIHRoZSB0aW1pbmdzLCBldGMuCisqCisqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKiovCisKK2ludCBiY21fdW1pX25hbmRfaW5pdGh3KHZvaWQpCit7CisJLyogQ29uZmln
-dXJlIG5hbmQgdGltaW5nIHBhcmFtZXRlcnMgKi8KKyNpZiBkZWZpbmVkKENPTkZJR19BUkNIX0JD
-TTExNlgpCisvKgorICogd2FpdGVuID0gMAorICogbG93ZnJlcSA9IDAKKyAqIG1lbXR5cGUgYXN5
-bmMgci93LCBubyBwYWdlIG1vZGUgPSAwMDAKKyAqIHBnc3ogPSAwMDAKKyAqIHRwcmNfdHdsYyA9
-IDAwMDAwCVBhZ2UgcmVhZCBhY2Nlc3MgY3ljbGUvQnVyc3Qgd3JpdGUgbGF0ZW5jeSAobisyL24r
-MSkKKyAqIHRidGEgPSAwMDEJCQlCdXMgdHVybmFyb3VuZCBjeWNsZSAobikKKyAqIHR3cCA9IDAw
-MTAwCQkJV3JpdGUgcHVsc2Ugd2lkdGggY3ljbGUgKG4rMSkKKyAqIHR3ciA9IDAwCQkJCVdyaXRl
-IHJlY292ZXJ5IGN5Y2xlIChuKzEpCisgKiB0YXMgPSAwMAkJCQlXcml0ZSBhZGRyZXNzIHNldHVw
-IGN5Y2xlIChuKzEpCisgKiB0b2UgPSAwMAkJCQlPdXRwdXQgZW5hYmxlIGRlbGF5IGN5Y2xlIChu
-KQorICogdHJjX3RsYyA9IDAwMDExCVJlYWQgYWNjZXNzIGN5Y2xlIC8gQnVyc3QgcmVhZCBsYXRl
-bmN5IChuKzIgLyBuKzEpCisgKi8KKwlSRUdfVU1JX0ZMQVNIMF9UQ1IgPSAweDAwMDEyMDAzOwor
-I2VuZGlmCisKKwlSRUdfVU1JX05BTkRfVENSICY9IH4weDdmZmZmOworI2lmIGRlZmluZWQoQ09O
-RklHX0FSQ0hfQkNNMTE2WCkKKy8qCisgKiB0YnRhID0gMDAxICAgICAgICAgICAgQnVzIHR1cm5h
-cm91bmQgY3ljbGUgKG4pCisgKiB0d3AgPSAwMDEwMCAgICAgICAgICAgV3JpdGUgcHVsc2Ugd2lk
-dGggY3ljbGUgKG4rMSkKKyAqIHR3ciA9IDAwICAgICAgICAgICAgICBXcml0ZSByZWNvdmVyeSBj
-eWNsZSAobisxKQorICogdGFzID0gMDAgICAgICAgICAgICAgIFdyaXRlIGFkZHJlc3Mgc2V0dXAg
-Y3ljbGUgKG4rMSkKKyAqIHRvZSA9IDAwICAgICAgICAgICAgICBPdXRwdXQgZW5hYmxlIGRlbGF5
-IGN5Y2xlIChuKQorICogdHJjX3RsYyA9IDAwMDExICAgICAgIFJlYWQgYWNjZXNzIGN5Y2xlIC8g
-QnVyc3QgcmVhZCBsYXRlbmN5IChuKzIgLyBuKzEpCisgKi8KKwlSRUdfVU1JX05BTkRfVENSIHw9
-IDB4NzIwMDM7CisjZWxzZQorCVJFR19VTUlfTkFORF9UQ1IgfD0gSFdfQ0ZHX05BTkRfVENSOwor
-I2VuZGlmCisKKyNpZiAhZGVmaW5lZChDT05GSUdfTVREX05BTkRfQkNNX1VNSV9IV0NTKQorCS8q
-IGVuYWJsZSBzb2Z0d2FyZSBjb250cm9sIG9mIENTICovCisJUkVHX1VNSV9OQU5EX1RDUiB8PSBS
-RUdfVU1JX05BTkRfVENSX0NTX1NXQ1RSTDsKKyNlbmRpZgorCS8qIGtlZXAgTkFORCBjaGlwIHNl
-bGVjdCBhc3NlcnRlZCAqLworCVJFR19VTUlfTkFORF9SQ1NSIHw9IFJFR19VTUlfTkFORF9SQ1NS
-X0NTX0FTU0VSVEVEOworCisJUkVHX1VNSV9OQU5EX1RDUiAmPSB+UkVHX1VNSV9OQU5EX1RDUl9X
-T1JEMTY7CisJLyogZW5hYmxlIHdyaXRlcyB0byBmbGFzaCAqLworCVJFR19VTUlfTU1EX0lDUiB8
-PSBSRUdfVU1JX01NRF9JQ1JfRkxBU0hfV1A7CisKKwl3cml0ZWwoTkFORF9DTURfUkVTRVQsIGJj
-bV91bWlfaW9fYmFzZSArIFJFR19OQU5EX0NNRF9PRkZTRVQpOworCW5hbmRfYmNtX3VtaV93YWl0
-X3RpbGxfcmVhZHkoKTsKKworI2lmIE5BTkRfRUNDX0JDSAorCW5hbmRfYmNtX3VtaV9iY2hfY29u
-ZmlnX2VjYyhOQU5EX0VDQ19OVU1fQllURVMpOworI2VuZGlmCisKKwlyZXR1cm4gMDsKK30KKwor
-LyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioKKyoKKyogIGJjbV91bWlfbmFuZF9od2NvbnRyb2wKKyoKKyog
-ICBVc2VkIHRvIHR1cm4gbGF0Y2ggdGhlIHByb3BlciByZWdpc3RlciBmb3IgYWNjZXNzLgorKgor
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqLworCitzdGF0aWMgdm9pZCBiY21fdW1pX25hbmRfaHdjb250cm9s
-KHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgY21kLAorCQkJCSAgIHVuc2lnbmVkIGludCBjdHJs
-KQoreworCS8qIHNlbmQgY29tbWFuZCB0byBoYXJkd2FyZSAqLworCXN0cnVjdCBuYW5kX2NoaXAg
-KmNoaXAgPSBtdGQtPnByaXY7CisJaWYgKGN0cmwgJiBOQU5EX0NUUkxfQ0hBTkdFKSB7CisJCWlm
-IChjdHJsICYgTkFORF9DTEUpIHsKKwkJCWNoaXAtPklPX0FERFJfVyA9IGJjbV91bWlfaW9fYmFz
-ZSArIFJFR19OQU5EX0NNRF9PRkZTRVQ7CisJCQlnb3RvIENNRDsKKwkJfQorCQlpZiAoY3RybCAm
-IE5BTkRfQUxFKSB7CisJCQljaGlwLT5JT19BRERSX1cgPQorCQkJICAgIGJjbV91bWlfaW9fYmFz
-ZSArIFJFR19OQU5EX0FERFJfT0ZGU0VUOworCQkJZ290byBDTUQ7CisJCX0KKwkJY2hpcC0+SU9f
-QUREUl9XID0gYmNtX3VtaV9pb19iYXNlICsgUkVHX05BTkRfREFUQThfT0ZGU0VUOworCX0KKwor
-Q01EOgorCS8qIFNlbmQgY29tbWFuZCB0byBjaGlwIGRpcmVjdGx5ICovCisJaWYgKGNtZCAhPSBO
-QU5EX0NNRF9OT05FKQorCQl3cml0ZWIoY21kLCBjaGlwLT5JT19BRERSX1cpOworfQorCisvKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKgorKgorKiAgYmNtX3VtaV9uYW5kX3dyaXRlX2J1ZiAtIHdyaXRlIGJ1
-ZmZlciB0byBjaGlwCisqICBAbXRkOglNVEQgZGV2aWNlIHN0cnVjdHVyZQorKiAgQGJ1ZjoJZGF0
-YSBidWZmZXIKKyogIEBsZW46CW51bWJlciBvZiBieXRlcyB0byB3cml0ZQorKgorKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqLworc3RhdGljIHZvaWQgYmNtX3VtaV9uYW5kX3dyaXRlX2J1ZihzdHJ1Y3QgbXRk
-X2luZm8gKm10ZCwgY29uc3QgdV9jaGFyICogYnVmLAorCQkJCSAgIGludCBsZW4pCit7CisJaWYg
-KFVTRV9ESVJFQ1RfSU8obGVuKSkgeworCQkvKiBEbyBpdCB0aGUgb2xkIHdheSBpZiB0aGUgYnVm
-ZmVyIGlzIHNtYWxsIG9yIHRvbyBsYXJnZS4KKwkJICogUHJvYmFibHkgcXVpY2tlciB0aGFuIHN0
-YXJ0aW5nIGFuZCBjaGVja2luZyBkbWEuICovCisJCWludCBpOworCQlzdHJ1Y3QgbmFuZF9jaGlw
-ICp0aGlzID0gbXRkLT5wcml2OworCisJCWZvciAoaSA9IDA7IGkgPCBsZW47IGkrKykKKwkJCXdy
-aXRlYihidWZbaV0sIHRoaXMtPklPX0FERFJfVyk7CisJfQorI2lmIFVTRV9ETUEKKwllbHNlCisJ
-CW5hbmRfZG1hX3dyaXRlKGJ1ZiwgbGVuKTsKKyNlbmRpZgorfQorCisvKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKgorKgorKiAgbmFuZF9yZWFkX2J1ZiAtIHJlYWQgY2hpcCBkYXRhIGludG8gYnVmZmVyCisq
-ICBAbXRkOglNVEQgZGV2aWNlIHN0cnVjdHVyZQorKiAgQGJ1ZjoJYnVmZmVyIHRvIHN0b3JlIGRh
-dGEKKyogIEBsZW46CW51bWJlciBvZiBieXRlcyB0byByZWFkCisqCisqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KiovCisKK3N0YXRpYyB2b2lkIGJjbV91bWlfbmFuZF9yZWFkX2J1ZihzdHJ1Y3QgbXRkX2luZm8g
-Km10ZCwgdV9jaGFyICogYnVmLCBpbnQgbGVuKQoreworCWlmIChVU0VfRElSRUNUX0lPKGxlbikp
-IHsKKwkJaW50IGk7CisJCXN0cnVjdCBuYW5kX2NoaXAgKnRoaXMgPSBtdGQtPnByaXY7CisKKwkJ
-Zm9yIChpID0gMDsgaSA8IGxlbjsgaSsrKQorCQkJYnVmW2ldID0gcmVhZGIodGhpcy0+SU9fQURE
-Ul9SKTsKKwl9CisjaWYgVVNFX0RNQQorCWVsc2UKKwkJbmFuZF9kbWFfcmVhZChidWYsIGxlbik7
-CisjZW5kaWYKK30KKworLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioKKyoKKyogIGJjbV91bWlfbmFuZF92
-ZXJpZnlfYnVmIC0gVmVyaWZ5IGNoaXAgZGF0YSBhZ2FpbnN0IGJ1ZmZlcgorKiAgQG10ZDoJTVRE
-IGRldmljZSBzdHJ1Y3R1cmUKKyogIEBidWY6CWJ1ZmZlciBjb250YWluaW5nIHRoZSBkYXRhIHRv
-IGNvbXBhcmUKKyogIEBsZW46CW51bWJlciBvZiBieXRlcyB0byBjb21wYXJlCisqCisqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKiovCitzdGF0aWMgdWludDhfdCByZWFkYmFja2J1ZltOQU5EX01BWF9QQUdFU0la
-RV07CitzdGF0aWMgaW50IGJjbV91bWlfbmFuZF92ZXJpZnlfYnVmKHN0cnVjdCBtdGRfaW5mbyAq
-bXRkLCBjb25zdCB1X2NoYXIgKiBidWYsCisJCQkJICAgaW50IGxlbikKK3sKKwkvKgorCSAqIFRy
-eSB0byByZWFkYmFjayBwYWdlIHdpdGggRUNDIGNvcnJlY3Rpb24uIFRoaXMgaXMgbmVjZXNzYXJ5
-CisJICogZm9yIE1MQyBwYXJ0cyB3aGljaCBtYXkgaGF2ZSBwZXJtYW5lbnRseSBzdHVjayBiaXRz
-LgorCSAqLworCXN0cnVjdCBuYW5kX2NoaXAgKmNoaXAgPSBtdGQtPnByaXY7CisJaW50IHJldCA9
-IGNoaXAtPmVjYy5yZWFkX3BhZ2UobXRkLCBjaGlwLCByZWFkYmFja2J1Zik7CisJaWYgKHJldCA8
-IDApCisJCXJldHVybiAtRUZBVUxUOworCWVsc2UgeworCQlpZiAobWVtY21wKHJlYWRiYWNrYnVm
-LCBidWYsIGxlbikgPT0gMCkKKwkJCXJldHVybiAwOworCQlyZXR1cm4gLUVGQVVMVDsKKwl9CisK
-KwlyZXR1cm4gMDsKK30KKworc3RhdGljIGludCBiY21fdW1pX25hbmRfcHJvYmUoc3RydWN0IHBs
-YXRmb3JtX2RldmljZSAqcGRldikKK3sKKwlzdHJ1Y3QgbmFuZF9jaGlwICp0aGlzOworCWludCBl
-cnIgPSAwOworCisJcHJpbnRrKGdCYW5uZXIpOworCisJLyogQWxsb2NhdGUgbWVtb3J5IGZvciBN
-VEQgZGV2aWNlIHN0cnVjdHVyZSBhbmQgcHJpdmF0ZSBkYXRhICovCisJYm9hcmRfbXRkID0KKwkg
-ICAga21hbGxvYyhzaXplb2Yoc3RydWN0IG10ZF9pbmZvKSArIHNpemVvZihzdHJ1Y3QgbmFuZF9j
-aGlwKSwKKwkJICAgIEdGUF9LRVJORUwpOworCWlmICghYm9hcmRfbXRkKSB7CisJCXByaW50ayhL
-RVJOX1dBUk5JTkcKKwkJICAgICAgICJVbmFibGUgdG8gYWxsb2NhdGUgTkFORCBNVEQgZGV2aWNl
-IHN0cnVjdHVyZS5cbiIpOworCQlyZXR1cm4gLUVOT01FTTsKKwl9CisKKwkvKiBtYXAgcGh5c2lj
-YWwgYWRyZXNzICovCisjaWZkZWYgQ09ORklHX0FSQ0hfQkNNUklORworCWJjbV91bWlfaW9fYmFz
-ZSA9IGlvcmVtYXAoTU1fQUREUl9JT19OQU5ELCAweDEwMDApOworI2Vsc2UKKwliY21fdW1pX2lv
-X2Jhc2UgPSBpb3JlbWFwKDB4MDgwMDAwMDAsIDB4MTAwMCk7CisjZW5kaWYKKworCWlmICghYmNt
-X3VtaV9pb19iYXNlKSB7CisJCXByaW50aygiaW9yZW1hcCB0byBhY2Nlc3MgQkNNIFVNSSBOQU5E
-IGNoaXAgZmFpbGVkXG4iKTsKKwkJa2ZyZWUoYm9hcmRfbXRkKTsKKwkJcmV0dXJuIC1FSU87CisJ
-fQorCisJLyogR2V0IHBvaW50ZXIgdG8gcHJpdmF0ZSBkYXRhICovCisJdGhpcyA9IChzdHJ1Y3Qg
-bmFuZF9jaGlwICopKCZib2FyZF9tdGRbMV0pOworCisJLyogSW5pdGlhbGl6ZSBzdHJ1Y3R1cmVz
-ICovCisJbWVtc2V0KChjaGFyICopYm9hcmRfbXRkLCAwLCBzaXplb2Yoc3RydWN0IG10ZF9pbmZv
-KSk7CisJbWVtc2V0KChjaGFyICopdGhpcywgMCwgc2l6ZW9mKHN0cnVjdCBuYW5kX2NoaXApKTsK
-KworCS8qIExpbmsgdGhlIHByaXZhdGUgZGF0YSB3aXRoIHRoZSBNVEQgc3RydWN0dXJlICovCisJ
-Ym9hcmRfbXRkLT5wcml2ID0gdGhpczsKKworCS8qIEluaXRpYWxpemUgdGhlIE5BTkQgaGFyZHdh
-cmUuICAqLworCWlmIChiY21fdW1pX25hbmRfaW5pdGh3KCkgPCAwKSB7CisJCXByaW50ayhLRVJO
-X0VSUiAiQkNNIFVNSSBOQU5EIGNoaXAgY291bGQgbm90IGJlIGluaXRpYWxpemVkXG4iKTsKKwkJ
-aW91bm1hcChiY21fdW1pX2lvX2Jhc2UpOworCQlrZnJlZShib2FyZF9tdGQpOworCQlyZXR1cm4g
-LUVJTzsKKwl9CisKKwkvKiBTZXQgYWRkcmVzcyBvZiBOQU5EIElPIGxpbmVzICovCisJdGhpcy0+
-SU9fQUREUl9XID0gYmNtX3VtaV9pb19iYXNlICsgUkVHX05BTkRfREFUQThfT0ZGU0VUOworCXRo
-aXMtPklPX0FERFJfUiA9IGJjbV91bWlfaW9fYmFzZSArIFJFR19OQU5EX0RBVEE4X09GRlNFVDsK
-KworCS8qIFNldCBjb21tYW5kIGRlbGF5IHRpbWUsIHNlZSBkYXRhc2hlZXQgZm9yIGNvcnJlY3Qg
-dmFsdWUgKi8KKwl0aGlzLT5jaGlwX2RlbGF5ID0gMDsKKwkvKiBBc3NpZ24gdGhlIGRldmljZSBy
-ZWFkeSBmdW5jdGlvbiwgaWYgYXZhaWxhYmxlICovCisJdGhpcy0+ZGV2X3JlYWR5ID0gbmFuZF9k
-ZXZfcmVhZHk7CisJdGhpcy0+b3B0aW9ucyA9IDA7CisKKwl0aGlzLT53cml0ZV9idWYgPSBiY21f
-dW1pX25hbmRfd3JpdGVfYnVmOworCXRoaXMtPnJlYWRfYnVmID0gYmNtX3VtaV9uYW5kX3JlYWRf
-YnVmOworCXRoaXMtPnZlcmlmeV9idWYgPSBiY21fdW1pX25hbmRfdmVyaWZ5X2J1ZjsKKworCXRo
-aXMtPmNtZF9jdHJsID0gYmNtX3VtaV9uYW5kX2h3Y29udHJvbDsKKyNpZiBVU0VfSFdFQ0MKKwl0
-aGlzLT5lY2MubW9kZSA9IE5BTkRfRUNDX0hXOworCXRoaXMtPmVjYy5zaXplID0gNTEyOworCXRo
-aXMtPmVjYy5ieXRlcyA9IE5BTkRfRUNDX05VTV9CWVRFUzsKKworI2lmIE5BTkRfRUNDX0JDSAor
-CXRoaXMtPmVjYy5yZWFkX3BhZ2UgPSBiY21fdW1pX2JjaF9yZWFkX3BhZ2VfaHdlY2M7CisJdGhp
-cy0+ZWNjLndyaXRlX3BhZ2UgPSBiY21fdW1pX2JjaF93cml0ZV9wYWdlX2h3ZWNjOworI2Vsc2UK
-Kwl0aGlzLT5lY2MuY29ycmVjdCA9IG5hbmRfY29ycmVjdF9kYXRhNTEyOworCXRoaXMtPmVjYy5j
-YWxjdWxhdGUgPSBiY21fdW1pX2hhbW1pbmdfZ2V0X2h3X2VjYzsKKwl0aGlzLT5lY2MuaHdjdGwg
-PSBiY21fdW1pX2hhbW1pbmdfZW5hYmxlX2h3ZWNjOworI2VuZGlmCisjZWxzZQorCXRoaXMtPmVj
-Yy5tb2RlID0gTkFORF9FQ0NfU09GVDsKKyNlbmRpZgorCisjaWYgVVNFX0RNQQorCWVyciA9IG5h
-bmRfZG1hX2luaXQoKTsKKwlpZiAoZXJyICE9IDApCisJCXJldHVybiBlcnI7CisjZW5kaWYKKwor
-CS8qIEZpZ3VyZSBvdXQgdGhlIHNpemUgb2YgdGhlIGRldmljZSB0aGF0IHdlIGhhdmUuIFdlIG5l
-ZWQgdG8gZG8gdGhpcyB0bworCSAqIGZpZ3VyZSBvdXQgd2hpY2ggRUNDIGxheW91dCB3ZSdsbCBi
-ZSB1c2luZy4gKi8KKworCWVyciA9IG5hbmRfc2Nhbl9pZGVudChib2FyZF9tdGQsIDEpOworCWlm
-IChlcnIpIHsKKwkJcHJpbnRrKEtFUk5fRVJSICJuYW5kX3NjYW4gZmFpbGVkOiAlZFxuIiwgZXJy
-KTsKKwkJaW91bm1hcChiY21fdW1pX2lvX2Jhc2UpOworCQlrZnJlZShib2FyZF9tdGQpOworCQly
-ZXR1cm4gZXJyOworCX0KKworCS8qIE5vdyB0aGF0IHdlIGtub3cgdGhlIG5hbmQgc2l6ZSwgd2Ug
-Y2FuIHNldHVwIHRoZSBFQ0MgbGF5b3V0ICovCisKKyNpZiBVU0VfSFdFQ0MKKwlzd2l0Y2ggKGJv
-YXJkX210ZC0+d3JpdGVzaXplKSB7CS8qIHdyaXRlc2l6ZSBpcyB0aGUgcGFnZXNpemUgKi8KKwlj
-YXNlIDQwOTY6CisJCXRoaXMtPmVjYy5sYXlvdXQgPSAmbmFuZF9od19lY2Nvb2JfNDA5NjsKKwkJ
-YnJlYWs7CisJY2FzZSAyMDQ4OgorCQl0aGlzLT5lY2MubGF5b3V0ID0gJm5hbmRfaHdfZWNjb29i
-XzIwNDg7CisJCWJyZWFrOworCWNhc2UgNTEyOgorCQl0aGlzLT5lY2MubGF5b3V0ID0gJm5hbmRf
-aHdfZWNjb29iXzUxMjsKKwkJYnJlYWs7CisJZGVmYXVsdDoKKwkJeworCQkJcHJpbnRrKEtFUk5f
-RVJSICJOQU5EIC0gVW5yZWNvZ25pemVkIHBhZ2VzaXplOiAlZFxuIiwKKwkJCSAgICAgICBib2Fy
-ZF9tdGQtPndyaXRlc2l6ZSk7CisJCQlyZXR1cm4gLUVJTlZBTDsKKwkJfQorCX0KKyNlbmRpZgor
-CisjaWYgTkFORF9FQ0NfQkNICisJaWYgKGJvYXJkX210ZC0+d3JpdGVzaXplID4gNTEyKSB7CisJ
-CWlmICh0aGlzLT5vcHRpb25zICYgTkFORF9VU0VfRkxBU0hfQkJUKQorCQkJbGFyZ2VwYWdlX2Ji
-dC5vcHRpb25zID0gTkFORF9CQlRfU0NBTjJORFBBR0U7CisKKwkJdGhpcy0+YmFkYmxvY2tfcGF0
-dGVybiA9ICZsYXJnZXBhZ2VfYmJ0OworCX0KKyNlbmRpZgorCisJLyogTm93IGZpbmlzaCBvZmYg
-dGhlIHNjYW4sIG5vdyB0aGF0IGVjYy5sYXlvdXQgaGFzIGJlZW4gaW5pdGlhbGl6ZWQuICovCisK
-KwllcnIgPSBuYW5kX3NjYW5fdGFpbChib2FyZF9tdGQpOworCWlmIChlcnIpIHsKKwkJcHJpbnRr
-KEtFUk5fRVJSICJuYW5kX3NjYW4gZmFpbGVkOiAlZFxuIiwgZXJyKTsKKwkJaW91bm1hcChiY21f
-dW1pX2lvX2Jhc2UpOworCQlrZnJlZShib2FyZF9tdGQpOworCQlyZXR1cm4gZXJyOworCX0KKwor
-CS8qIFJlZ2lzdGVyIHRoZSBwYXJ0aXRpb25zICovCisJeworCQlpbnQgbnJfcGFydGl0aW9uczsK
-KwkJc3RydWN0IG10ZF9wYXJ0aXRpb24gKnBhcnRpdGlvbl9pbmZvOworCisJCWJvYXJkX210ZC0+
-bmFtZSA9ICJiY21fdW1pLW5hbmQiOworCQlucl9wYXJ0aXRpb25zID0KKwkJICAgIHBhcnNlX210
-ZF9wYXJ0aXRpb25zKGJvYXJkX210ZCwgcGFydF9wcm9iZXMsCisJCQkJCSAmcGFydGl0aW9uX2lu
-Zm8sIDApOworCisJCWlmIChucl9wYXJ0aXRpb25zIDw9IDApIHsKKwkJCXByaW50ayhLRVJOX0VS
-UiAiQkNNIFVNSSBOQU5EOiBUb28gZmV3IHBhcnRpdGlvbnMgLSAlZFxuIiwKKwkJCSAgICAgICBu
-cl9wYXJ0aXRpb25zKTsKKwkJCWlvdW5tYXAoYmNtX3VtaV9pb19iYXNlKTsKKwkJCWtmcmVlKGJv
-YXJkX210ZCk7CisJCQlyZXR1cm4gLUVJTzsKKwkJfQorCQlhZGRfbXRkX3BhcnRpdGlvbnMoYm9h
-cmRfbXRkLCBwYXJ0aXRpb25faW5mbywgbnJfcGFydGl0aW9ucyk7CisJfQorCisJLyogUmV0dXJu
-IGhhcHB5ICovCisJcmV0dXJuIDA7Cit9CisKK3N0YXRpYyBpbnQgYmNtX3VtaV9uYW5kX3JlbW92
-ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQoreworI2lmIFVTRV9ETUEKKwluYW5kX2Rt
-YV90ZXJtKCk7CisjZW5kaWYKKworCS8qIFJlbGVhc2UgcmVzb3VyY2VzLCB1bnJlZ2lzdGVyIGRl
-dmljZSAqLworCW5hbmRfcmVsZWFzZShib2FyZF9tdGQpOworCisJLyogdW5tYXAgcGh5c2ljYWwg
-YWRyZXNzICovCisJaW91bm1hcChiY21fdW1pX2lvX2Jhc2UpOworCisJLyogRnJlZSB0aGUgTVRE
-IGRldmljZSBzdHJ1Y3R1cmUgKi8KKwlrZnJlZShib2FyZF9tdGQpOworCisJcmV0dXJuIDA7Cit9
-CisKKyNpZmRlZiBDT05GSUdfUE0KK3N0YXRpYyBpbnQgYmNtX3VtaV9uYW5kX3N1c3BlbmQoc3Ry
-dWN0IHBsYXRmb3JtX2RldmljZSAqcGRldiwKKwkJCQlwbV9tZXNzYWdlX3Qgc3RhdGUpCit7CisJ
-cHJpbnRrKEtFUk5fRVJSICJNVEQgTkFORCBzdXNwZW5kIGlzIGJlaW5nIGNhbGxlZFxuIik7CisJ
-cmV0dXJuIDA7Cit9CisKK3N0YXRpYyBpbnQgYmNtX3VtaV9uYW5kX3Jlc3VtZShzdHJ1Y3QgcGxh
-dGZvcm1fZGV2aWNlICpwZGV2KQoreworCXByaW50ayhLRVJOX0VSUiAiTVREIE5BTkQgcmVzdW1l
-IGlzIGJlaW5nIGNhbGxlZFxuIik7CisJcmV0dXJuIDA7Cit9CisjZWxzZQorI2RlZmluZSBiY21f
-dW1pX25hbmRfc3VzcGVuZCAgIE5VTEwKKyNkZWZpbmUgYmNtX3VtaV9uYW5kX3Jlc3VtZSAgICBO
-VUxMCisjZW5kaWYKKworc3RhdGljIHN0cnVjdCBwbGF0Zm9ybV9kcml2ZXIgbmFuZF9kcml2ZXIg
-PSB7CisJLmRyaXZlciA9IHsKKwkJICAgLm5hbWUgPSAiYmNtLW5hbmQiLAorCQkgICAub3duZXIg
-PSBUSElTX01PRFVMRSwKKwkJICAgfSwKKwkucHJvYmUgPSBiY21fdW1pX25hbmRfcHJvYmUsCisJ
-LnJlbW92ZSA9IGJjbV91bWlfbmFuZF9yZW1vdmUsCisJLnN1c3BlbmQgPSBiY21fdW1pX25hbmRf
-c3VzcGVuZCwKKwkucmVzdW1lID0gYmNtX3VtaV9uYW5kX3Jlc3VtZSwKK307CisKK3N0YXRpYyBp
-bnQgX19pbml0IG5hbmRfaW5pdCh2b2lkKQoreworCXJldHVybiBwbGF0Zm9ybV9kcml2ZXJfcmVn
-aXN0ZXIoJm5hbmRfZHJpdmVyKTsKK30KKworc3RhdGljIHZvaWQgX19leGl0IG5hbmRfZXhpdCh2
-b2lkKQoreworCXBsYXRmb3JtX2RyaXZlcl91bnJlZ2lzdGVyKCZuYW5kX2RyaXZlcik7Cit9CisK
-K21vZHVsZV9pbml0KG5hbmRfaW5pdCk7Cittb2R1bGVfZXhpdChuYW5kX2V4aXQpOworCitNT0RV
-TEVfTElDRU5TRSgiR1BMIik7CitNT0RVTEVfQVVUSE9SKCJCcm9hZGNvbSIpOworTU9EVUxFX0RF
-U0NSSVBUSU9OKCJCQ00gVU1JIE1URCBOQU5EIGRyaXZlciIpOwpkaWZmIC0tZ2l0IGEvaW5jbHVk
-ZS9saW51eC9tdGQvbmFuZF9iY21fdW1pLmggYi9pbmNsdWRlL2xpbnV4L210ZC9uYW5kX2JjbV91
-bWkuaApuZXcgZmlsZSBtb2RlIDEwMDY0NAppbmRleCAwMDAwMDAwLi4wOTEyMjk3Ci0tLSAvZGV2
-L251bGwKKysrIGIvaW5jbHVkZS9saW51eC9tdGQvbmFuZF9iY21fdW1pLmgKQEAgLTAsMCArMSwy
-NDEgQEAKKy8qKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKgorKiBDb3B5cmlnaHQgMjAwMyAtIDIwMDkgQnJv
-YWRjb20gQ29ycG9yYXRpb24uICBBbGwgcmlnaHRzIHJlc2VydmVkLgorKgorKiBVbmxlc3MgeW91
-IGFuZCBCcm9hZGNvbSBleGVjdXRlIGEgc2VwYXJhdGUgd3JpdHRlbiBzb2Z0d2FyZSBsaWNlbnNl
-CisqIGFncmVlbWVudCBnb3Zlcm5pbmcgdXNlIG9mIHRoaXMgc29mdHdhcmUsIHRoaXMgc29mdHdh
-cmUgaXMgbGljZW5zZWQgdG8geW91CisqIHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgR05VIEdlbmVy
-YWwgUHVibGljIExpY2Vuc2UgdmVyc2lvbiAyLCBhdmFpbGFibGUgYXQKKyogaHR0cDovL3d3dy5i
-cm9hZGNvbS5jb20vbGljZW5zZXMvR1BMdjIucGhwICh0aGUgIkdQTCIpLgorKgorKiBOb3R3aXRo
-c3RhbmRpbmcgdGhlIGFib3ZlLCB1bmRlciBubyBjaXJjdW1zdGFuY2VzIG1heSB5b3UgY29tYmlu
-ZSB0aGlzCisqIHNvZnR3YXJlIGluIGFueSB3YXkgd2l0aCBhbnkgb3RoZXIgQnJvYWRjb20gc29m
-dHdhcmUgcHJvdmlkZWQgdW5kZXIgYQorKiBsaWNlbnNlIG90aGVyIHRoYW4gdGhlIEdQTCwgd2l0
-aG91dCBCcm9hZGNvbSdzIGV4cHJlc3MgcHJpb3Igd3JpdHRlbgorKiBjb25zZW50LgorKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKiovCisjaWZuZGVmIE5BTkRfQkNNX1VNSV9ICisjZGVmaW5lIE5BTkRfQkNN
-X1VNSV9ICisKKy8qIC0tLS0gSW5jbHVkZSBGaWxlcyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tICovCisjaW5jbHVkZSA8bWFjaC9yZWdfdW1pLmg+
-CisjaW5jbHVkZSA8Y2ZnX2dsb2JhbC5oPgorI2lmZGVmIEJPT1QwX0JVSUxECisjaW5jbHVkZSA8
-dWFydC5oPgorI2VuZGlmCisKKy8qIC0tLS0gQ29uc3RhbnRzIGFuZCBUeXBlcyAtLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tICovCisjaWYgKENGR19HTE9CQUxf
-Q0hJUF9GQU1JTFkgPT0gQ0ZHX0dMT0JBTF9DSElQX0ZBTUlMWV9CQ01SSU5HKQorI2RlZmluZSBO
-QU5EX0VDQ19CQ0ggKENGR19HTE9CQUxfQ0hJUF9SRVYgPiAweEEwKQorI2Vsc2UKKyNkZWZpbmUg
-TkFORF9FQ0NfQkNIIDAKKyNlbmRpZgorCisvKiAtLS0tIFZhcmlhYmxlIEV4dGVybnMgLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tICovCisvKiAtLS0tIEZ1bmN0aW9u
-IFByb3RvdHlwZXMgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tICovCisK
-K3N0YXRpYyBpbmxpbmUgaW50IG5hbmRfYmNtX3VtaV9kZXZfcmVhZHkodm9pZCkKK3sKKwlyZXR1
-cm4gUkVHX1VNSV9OQU5EX1JDU1IgJiBSRUdfVU1JX05BTkRfUkNTUl9SRFk7Cit9CisKK3N0YXRp
-YyBpbmxpbmUgdm9pZCBuYW5kX2JjbV91bWlfd2FpdF90aWxsX3JlYWR5KHZvaWQpCit7CisJd2hp
-bGUgKG5hbmRfYmNtX3VtaV9kZXZfcmVhZHkoKSA9PSAwKQorCQk7Cit9CisKK3N0YXRpYyBpbmxp
-bmUgdm9pZCBuYW5kX2JjbV91bWlfaGFtbWluZ19lbmFibGVfaHdlY2Modm9pZCkKK3sKKwkvKiBk
-aXNhYmxlIGFuZCByZXNldCBFQ0MsIDUxMiBieXRlIHBhZ2UgKi8KKwlSRUdfVU1JX05BTkRfRUND
-X0NTUiAmPSB+KFJFR19VTUlfTkFORF9FQ0NfQ1NSX0VDQ19FTkFCTEUgfAorCQlSRUdfVU1JX05B
-TkRfRUNDX0NTUl8yNTZCWVRFKTsKKwkvKiBlbmFibGUgRUNDICovCisJUkVHX1VNSV9OQU5EX0VD
-Q19DU1IgfD0gUkVHX1VNSV9OQU5EX0VDQ19DU1JfRUNDX0VOQUJMRTsKK30KKworI2lmIE5BTkRf
-RUNDX0JDSAorc3RhdGljIGlubGluZSB2b2lkIG5hbmRfYmNtX3VtaV9iY2hfZW5hYmxlX3JlYWRf
-aHdlY2Modm9pZCkKK3sKKwkvKiBkaXNhYmxlIGFuZCByZXNldCBFQ0MgKi8KKwlSRUdfVU1JX0JD
-SF9DVFJMX1NUQVRVUyA9IFJFR19VTUlfQkNIX0NUUkxfU1RBVFVTX1JEX0VDQ19WQUxJRDsKKwkv
-KiBUdXJuIG9uIEVDQyAqLworCVJFR19VTUlfQkNIX0NUUkxfU1RBVFVTID0gUkVHX1VNSV9CQ0hf
-Q1RSTF9TVEFUVVNfRUNDX1JEX0VOOworfQorCitzdGF0aWMgaW5saW5lIHZvaWQgbmFuZF9iY21f
-dW1pX2JjaF9lbmFibGVfd3JpdGVfaHdlY2Modm9pZCkKK3sKKwkvKiBkaXNhYmxlIGFuZCByZXNl
-dCBFQ0MgKi8KKwlSRUdfVU1JX0JDSF9DVFJMX1NUQVRVUyA9IFJFR19VTUlfQkNIX0NUUkxfU1RB
-VFVTX1dSX0VDQ19WQUxJRDsKKwkvKiBUdXJuIG9uIEVDQyAqLworCVJFR19VTUlfQkNIX0NUUkxf
-U1RBVFVTID0gUkVHX1VNSV9CQ0hfQ1RSTF9TVEFUVVNfRUNDX1dSX0VOOworfQorCitzdGF0aWMg
-aW5saW5lIHZvaWQgbmFuZF9iY21fdW1pX2JjaF9jb25maWdfZWNjKHVpbnQ4X3QgbnVtRWNjQnl0
-ZXMpCit7CisJaW50IG5WYWx1ZTsKKwlpbnQgdFZhbHVlOworCWludCBrVmFsdWU7CisJaW50IG51
-bUJpdHMgPSBudW1FY2NCeXRlcyAqIDg7CisjZGVmaW5lIEVDQ19CSVRTX1BFUl9DT1JSRUNUQUJM
-RV9CSVQgMTMKKyNkZWZpbmUgTkFORF9EQVRBX0FDQ0VTU19TSVpFIDUxMgorCisJLyogRXZlcnkg
-Y29ycmVjdGlibGUgYml0IHJlcXVpcmVzIDEzIEVDQyBiaXRzICovCisJdFZhbHVlID0gKGludCko
-bnVtQml0cyAvIEVDQ19CSVRTX1BFUl9DT1JSRUNUQUJMRV9CSVQpOworCisJLyogVG90YWwgZGF0
-YSBpbiBudW1iZXIgb2YgYml0cyBmb3IgZ2VuZXJhdGluZyBhbmQgY29tcHV0aW5nIEJDSCBFQ0Mg
-Ki8KKwluVmFsdWUgPSAoTkFORF9EQVRBX0FDQ0VTU19TSVpFICsgbnVtRWNjQnl0ZXMpICogODsK
-KworCS8qIEsgcGFyYW1ldGVyIGlzIHVzZWQgaW50ZXJuYWxseS4gIEsgPSBOIC0gKFQgKiAxMykg
-Ki8KKwlrVmFsdWUgPSBuVmFsdWUgLSAodFZhbHVlICogMTMpOworCisJLyogV3JpdGUgdGhlIHNl
-dHRpbmdzICovCisJUkVHX1VNSV9CQ0hfTiA9IG5WYWx1ZTsKKwlSRUdfVU1JX0JDSF9UID0gdFZh
-bHVlOworCVJFR19VTUlfQkNIX0sgPSBrVmFsdWU7CisKKwkvKiBkaXNhYmxlIGFuZCByZXNldCBF
-Q0MgKi8KKwlSRUdfVU1JX0JDSF9DVFJMX1NUQVRVUyA9CisJICAgIFJFR19VTUlfQkNIX0NUUkxf
-U1RBVFVTX1dSX0VDQ19WQUxJRCB8CisJICAgIFJFR19VTUlfQkNIX0NUUkxfU1RBVFVTX1JEX0VD
-Q19WQUxJRDsKK30KKworc3RhdGljIGlubGluZSB2b2lkIG5hbmRfYmNtX3VtaV9iY2hfcGF1c2Vf
-cmVhZF9lY2NfY2FsYyh2b2lkKQoreworCVJFR19VTUlfQkNIX0NUUkxfU1RBVFVTID0KKwkgICAg
-UkVHX1VNSV9CQ0hfQ1RSTF9TVEFUVVNfRUNDX1JEX0VOIHwKKwkgICAgUkVHX1VNSV9CQ0hfQ1RS
-TF9TVEFUVVNfUEFVU0VfRUNDX0RFQzsKK30KKworc3RhdGljIGlubGluZSB2b2lkIG5hbmRfYmNt
-X3VtaV9iY2hfcmVzdW1lX3JlYWRfZWNjX2NhbGModm9pZCkKK3sKKwlSRUdfVU1JX0JDSF9DVFJM
-X1NUQVRVUyA9IFJFR19VTUlfQkNIX0NUUkxfU1RBVFVTX0VDQ19SRF9FTjsKK30KKworc3RhdGlj
-IGlubGluZSB1aW50MzJfdCBuYW5kX2JjbV91bWlfYmNoX3BvbGxfcmVhZF9lY2NfY2FsYyh2b2lk
-KQoreworCXVpbnQzMl90IHJlZ1ZhbDsKKworCWRvIHsKKwkJLyogd2FpdCBmb3IgRUNDIHRvIGJl
-IHZhbGlkICovCisJCXJlZ1ZhbCA9IFJFR19VTUlfQkNIX0NUUkxfU1RBVFVTOworCX0gd2hpbGUg
-KChyZWdWYWwgJiBSRUdfVU1JX0JDSF9DVFJMX1NUQVRVU19SRF9FQ0NfVkFMSUQpID09IDApOwor
-CisJcmV0dXJuIHJlZ1ZhbDsKK30KKworc3RhdGljIGlubGluZSB2b2lkIG5hbmRfYmNtX3VtaV9i
-Y2hfcG9sbF93cml0ZV9lY2NfY2FsYyh2b2lkKQoreworCS8qIHdhaXQgZm9yIEVDQyB0byBiZSB2
-YWxpZCAqLworCXdoaWxlICgoUkVHX1VNSV9CQ0hfQ1RSTF9TVEFUVVMgJgorCQlSRUdfVU1JX0JD
-SF9DVFJMX1NUQVRVU19XUl9FQ0NfVkFMSUQpID09IDApCisJCTsKK30KKworLyoqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioKKyogIG5hbmRfYmNoX2VjY19mbGlwX2JpdCAtIFJvdXRpbmUgdG8gZmxpcCBhbiBl
-cnJvcmVkIGJpdAorKgorKiAgUFVSUE9TRToKKyogICAgIFRoaXMgaXMgYSBoZWxwZXIgcm91dGlu
-ZSB0aGF0IGZsaXBzIHRoZSBiaXQgKDAgLT4gMSBvciAxIC0+IDApIG9mIHRoZQorKiAgICAgZXJy
-b3JlZCBiaXQgc3BlY2lmaWVkCisqCisqICBQQVJBTUVURVJTOgorKiAgICAgZGF0YXAgLSBDb250
-YWluZXIgdGhhdCBob2xkcyB0aGUgNTEyIGJ5dGUgZGF0YQorKiAgICAgZXJyb3JMb2NhdGlvbiAt
-IExvY2F0aW9uIG9mIHRoZSBiaXQgdGhhdCBuZWVkcyB0byBiZSBmbGlwcGVkCisqCisqICBSRVRV
-Uk5TOgorKiAgICAgTm9uZQorKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKi8KK3N0YXRpYyBpbmxpbmUgdm9p
-ZCBuYW5kX2JjbV91bWlfYmNoX2VjY19mbGlwX2JpdCh1aW50OF90ICpkYXRhcCwKKwkJCQkJCSBp
-bnQgZXJyb3JMb2NhdGlvbikKK3sKKwlpbnQgbG9jV2l0aGluQUJ5dGUgPSAoZXJyb3JMb2NhdGlv
-biAmIFJFR19VTUlfQkNIX0VSUl9MT0NfQllURSkgPj4gMDsKKwlpbnQgbG9jV2l0aGluQVdvcmQg
-PSAoZXJyb3JMb2NhdGlvbiAmIFJFR19VTUlfQkNIX0VSUl9MT0NfV09SRCkgPj4gMzsKKwlpbnQg
-bG9jV2l0aGluQVBhZ2UgPSAoZXJyb3JMb2NhdGlvbiAmIFJFR19VTUlfQkNIX0VSUl9MT0NfUEFH
-RSkgPj4gNTsKKworCXVpbnQ4X3QgZXJyb3JCeXRlID0gMDsKKwl1aW50OF90IGJ5dGVNYXNrID0g
-MSA8PCBsb2NXaXRoaW5BQnl0ZTsKKworCS8qIEJDSCB1c2VzIGJpZyBlbmRpYW4sIG5lZWQgdG8g
-Y2hhbmdlIHRoZSBsb2NhdGlvbiBiaXRzCisJICogdG8gbGl0dGxlIGVuZGlhbiAqLworCWxvY1dp
-dGhpbkFXb3JkID0gMyAtIGxvY1dpdGhpbkFXb3JkOworCisJZXJyb3JCeXRlID0gZGF0YXBbbG9j
-V2l0aGluQVBhZ2UgKiBzaXplb2YodWludDMyX3QpICsgbG9jV2l0aGluQVdvcmRdOworCisjaWZk
-ZWYgQk9PVDBfQlVJTEQKKwlwdXRoZXhzKCJcbkVDQyBDb3JyZWN0IE9mZnNldDogIiwKKwkJbG9j
-V2l0aGluQVBhZ2UgKiBzaXplb2YodWludDMyX3QpICsgbG9jV2l0aGluQVdvcmQpOworCXB1dGhl
-eHMoIiBlcnJvckJ5dGU6IiwgZXJyb3JCeXRlKTsKKwlwdXRoZXg4KCIgQml0OiAiLCBsb2NXaXRo
-aW5BQnl0ZSk7CisjZW5kaWYKKworCWlmIChlcnJvckJ5dGUgJiBieXRlTWFzaykgeworCQkvKiBi
-aXQgbmVlZHMgdG8gYmUgY2xlYXJlZCAqLworCQllcnJvckJ5dGUgJj0gfmJ5dGVNYXNrOworCX0g
-ZWxzZSB7CisJCS8qIGJpdCBuZWVkcyB0byBiZSBzZXQgKi8KKwkJZXJyb3JCeXRlIHw9IGJ5dGVN
-YXNrOworCX0KKworCS8qIHdyaXRlIGJhY2sgdGhlIHZhbHVlIHdpdGggdGhlIGZpeGVkIGJpdCAq
-LworCWRhdGFwW2xvY1dpdGhpbkFQYWdlICogc2l6ZW9mKHVpbnQzMl90KSArIGxvY1dpdGhpbkFX
-b3JkXSA9IGVycm9yQnl0ZTsKK30KKworLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioKKyogIG5hbmRfY29y
-cmVjdF9wYWdlX2JjaCAtIFJvdXRpbmUgdG8gY29ycmVjdCBiaXQgZXJyb3JzIHdoZW4gcmVhZGlu
-ZyBOQU5ECisqCisqICBQVVJQT1NFOgorKiAgICAgVGhpcyByb3V0aW5lIHJlYWRzIHRoZSBCQ0gg
-cmVnaXN0ZXJzIHRvIGRldGVybWluZSBpZiB0aGVyZSBhcmUgYW55IGJpdAorKiAgICAgZXJyb3Jz
-IGR1cmluZyB0aGUgcmVhZCBvZiB0aGUgbGFzdCA1MTIgYnl0ZXMgb2YgZGF0YSArIEVDQyBieXRl
-cy4gIElmCisqICAgICBlcnJvcnMgZXhpc3RzLCB0aGUgcm91dGluZSBmaXhlcyBpdC4KKyoKKyog
-IFBBUkFNRVRFUlM6CisqICAgICBkYXRhcCAtIENvbnRhaW5lciB0aGF0IGhvbGRzIHRoZSA1MTIg
-Ynl0ZSBkYXRhCisqCisqICBSRVRVUk5TOgorKiAgICAgMCBvciBncmVhdGVyID0gTnVtYmVyIG9m
-IGVycm9ycyBjb3JyZWN0ZWQKKyogICAgIChObyBlcnJvcnMgYXJlIGZvdW5kIG9yIGVycm9ycyBo
-YXZlIGJlZW4gZml4ZWQpCisqICAgIC0xID0gRXJyb3IocykgY2Fubm90IGJlIGZpeGVkCisqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqLworc3RhdGljIGlubGluZSBpbnQgbmFuZF9iY21fdW1pX2JjaF9jb3Jy
-ZWN0X3BhZ2UodWludDhfdCAqZGF0YXApCit7CisJaW50IG51bUVycm9yczsKKwlpbnQgZXJyb3JM
-b2NhdGlvbjsKKwlpbnQgaWR4OworCXVpbnQzMl90IHJlZ1ZhbHVlOworCisJLyogd2FpdCBmb3Ig
-cmVhZCBFQ0MgdG8gYmUgdmFsaWQgKi8KKwlyZWdWYWx1ZSA9IG5hbmRfYmNtX3VtaV9iY2hfcG9s
-bF9yZWFkX2VjY19jYWxjKCk7CisKKwkvKiByZWFkIHRoZSBjb250cm9sIHN0YXR1cyByZWdpc3Rl
-ciB0byBkZXRlcm1pbmUKKwkgKiBpZiB0aGVyZSBhcmUgZXJyb3InZWQgYml0cyAqLworCS8qIHNl
-ZSBpZiBlcnJvcnMgYXJlIGNvcnJlY3RpYmxlICovCisJaWYgKChyZWdWYWx1ZSAmIFJFR19VTUlf
-QkNIX0NUUkxfU1RBVFVTX1VOQ09SUl9FUlIpID4gMCkgeworCQkvKiBlcnJvcnMgY2Fubm90IGJl
-IGZpeGVkLCByZXR1cm4gLTEgKi8KKwkJcmV0dXJuIC0xOworCX0KKworCWlmICgocmVnVmFsdWUg
-JiBSRUdfVU1JX0JDSF9DVFJMX1NUQVRVU19DT1JSX0VSUikgPT0gMCkgeworCQkvKiBubyBlcnJv
-cnMgKi8KKwkJcmV0dXJuIDA7CisJfQorCisJLyoKKwkgKiBGaXggZXJyb3JlZCBiaXRzIGJ5IGRv
-aW5nIHRoZSBmb2xsb3dpbmc6CisJICogMS4gUmVhZCB0aGUgbnVtYmVyIG9mIGVycm9ycyBpbiB0
-aGUgY29udHJvbCBhbmQgc3RhdHVzIHJlZ2lzdGVyCisJICogMi4gUmVhZCB0aGUgZXJyb3IgbG9j
-YXRpb24gcmVnaXN0ZXJzIHRoYXQgY29ycmVzcG9uZHMgdG8gdGhlIG51bWJlcgorCSAqICAgIG9m
-IGVycm9ycyByZXBvcnRlZAorCSAqIDMuIEludmVydCB0aGUgYml0IGluIHRoZSBkYXRhCisJICov
-CisJbnVtRXJyb3JzID0gKHJlZ1ZhbHVlICYgUkVHX1VNSV9CQ0hfQ1RSTF9TVEFUVVNfTkJfQ09S
-Ul9FUlJPUikgPj4gMjA7CisKKwlmb3IgKGlkeCA9IDA7IGlkeCA8IG51bUVycm9yczsgaWR4Kysp
-IHsKKwkJZXJyb3JMb2NhdGlvbiA9CisJCSAgICBSRUdfVU1JX0JDSF9FUlJfTE9DX0FERFIoaWR4
-KSAmIFJFR19VTUlfQkNIX0VSUl9MT0NfTUFTSzsKKworCQkvKiBGbGlwIGJpdCAqLworCQluYW5k
-X2JjbV91bWlfYmNoX2VjY19mbGlwX2JpdChkYXRhcCwgZXJyb3JMb2NhdGlvbik7CisJfQorCS8q
-IEVycm9ycyBjb3JyZWN0ZWQgKi8KKwlyZXR1cm4gbnVtRXJyb3JzOworfQorI2VuZGlmCisKKyNl
-bmRpZiAvKiBOQU5EX0JDTV9VTUlfSCAqLwotLSAKMS42LjAuNgoK
-
---_002_8628FE4E7912BF47A96AE7DD7BAC0AADCB25D06CCASJEXCHCCR02co_--
+>
+> Hi,
+>
+> I have fixed the coding style problem incl. the line length
+> for this patch.
+>
+> The latest version is attached as text/plain.
+>
+> Thanks,
+>
+>
+> Leo Hao Chen
+> Software Engineer
+> Broadcom Canada Inc.
+>
+>
+>
+> > -----Original Message-----
+> > From: Artem Bityutskiy [mailto:dedekind@infradead.org]
+> > Sent: Saturday, July 18, 2009 10:09 PM
+> > To: Leo (Hao) Chen
+> > Cc: linux-arm-kernel@lists.arm.linux.org.uk;
+> > linux-mtd@lists.infradead.org
+> > Subject: Re: [PATCH v3 26/27] [ARM] [NAND] [bcmring] add
+> > bcmring umi nand driver support
+> >
+> > On Fri, 2009-07-17 at 12:13 -0700, Leo (Hao) Chen wrote:
+> > > This patch addes bcmring umi nand driver support, with bch
+> > ecc algorithm support.
+> > >
+> > > It addes header files, register files, Kconfig option and Makefile
+> > > entry.
+> > >
+> > > Signed-off-by: Leo Chen <leochen@broadcom.com>
+> >
+> > Hi, the code neat in general, but would it be possible to
+> amend it and
+> > make more compatible with the Linux coding style?
+> >
+> > See Documentation/CodingStyle
+> > See scripts/checkpatch.pl
+> >
+> > --
+> > Best regards,
+> > Artem Bityutskiy (=E2=C9=D4=C0=C3=CB=C9=CA =E1=D2=D4=A3=CD)
+> >
+> >
+> >
