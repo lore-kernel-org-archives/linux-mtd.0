@@ -1,22 +1,17 @@
-Received: from mail-qy0-f176.google.com ([209.85.221.176])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MVkfs-0000X5-0o
-	for linux-mtd@lists.infradead.org; Tue, 28 Jul 2009 11:16:56 +0000
-Received: by qyk6 with SMTP id 6so4809570qyk.28
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 28 Jul 2009 04:16:51 -0700 (PDT)
+Message-ID: <4A6EE895.9050008@gmx.de>
+Date: Tue, 28 Jul 2009 14:01:25 +0200
+From: news <rw_nospam@gmx.de>
 MIME-Version: 1.0
-In-Reply-To: <ce9ab5790907280413g32c8ac21o74697609e0b805b@mail.gmail.com>
-References: <20090728095928.GA26063@mail.gnudd.com>
-	<ce9ab5790907280413g32c8ac21o74697609e0b805b@mail.gmail.com>
-From: vimal singh <vimal.newwork@gmail.com>
-Date: Tue, 28 Jul 2009 16:46:31 +0530
-Message-ID: <ce9ab5790907280416m6626cc00see65ad0be27b6f68@mail.gmail.com>
-Subject: Re: [PATCH V6] Nand driver for Nomadik 8815 SoC (on NHK8815 board)
-To: Alessandro Rubini <ru@gnudd.com>, linux@arm.linux.org.uk,
-	linux-mtd@lists.infradead.org, STEricsson_nomadik_linux@list.st.com
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+To: dedekind@infradead.org
+Subject: Re: UBIFS Corrupt during power failure
+References: <C77C279BA71FD14985DC8E75FB265AB702FE53F4@usw-am-xch-02.am.trimblecorp.net>	<1239979018.3390.298.camel@localhost.localdomain>	<C77C279BA71FD14985DC8E75FB265AB7030C4C86@usw-am-xch-02.am.trimblecorp.net>	<200905150916.54091.sr@denx.de>	<1244016510.5847.38.camel@localhost.localdomain>	<C77C279BA71FD14985DC8E75FB265AB703659A64@usw-am-xch-02.am.trimblecorp.net>
+	<1244369819.5847.321.camel@localhost.localdomain>
+In-Reply-To: <1244369819.5847.321.camel@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: Stefan Roese <sr@denx.de>, linux-mtd@lists.infradead.org,
+	Eric Holmberg <Eric_Holmberg@Trimble.com>,
+	Jamie Lokier <jamie@shareable.org>, Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,66 +21,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 28, 2009 at 4:43 PM, vimal singh<vimal.newwork@gmail.com> wrote=
-:
-> Sorry to say, but you missed one comment I gave last time:
+Artem Bityutskiy schrieb:
+> On Wed, 2009-06-03 at 07:50 -0600, Eric Holmberg wrote:
+>   
+>> Sorry for the delays on getting you real information - I am working on it as much as I can.  Due to our project schedule here, I can only work on this a few minutes a day.
+>>
+>> I have reproduced the CRC error, but looking at the data (shown below), I am not sure what data is expected in LEB 1 at the failed position.  I don't see anything that indicates that the write-buffer behavior that I have avoided by limiting the write-buffer size to 8 bytes is causing the problem.
+>>
+>> [42949375.500000] UBIFS error (pid 1): ubifs_check_node: bad CRC: calculated 0x714960f4, read 0x3dae4f0a
+>> [42949375.510000] UBIFS error (pid 1): ubifs_check_node: bad node at LEB 1:89600
+>> [42949375.520000] UBIFS error (pid 1): ubifs_scanned_corruption: corrupted data at LEB 1:89600
+>> [42949375.540000] UBIFS error (pid 1): ubifs_scan: LEB 1 scanning failed
+>> [42949375.580000] UBIFS error (pid 1): ubifs_recover_master_node: failed to recover master node
+>>
+>> LEB 1:89600 refers to address 0x31c75e00 for the NOR flash and looks like it contains nothing but zeros.
+>>
+>> 31c75e00: 00000000 00000000 00000000 00000000    ................
+>> 31c75e10: 00000000 00000000 00000000 00000000    ................
+>> 31c75e20: 00000000 00000000 00000000 00000000    ................
+>> 31c75e30: 00000000 00000000 00000000 00000000    ................
+>> 31c75e40: 00000000 00000000 00000000 00000000    ................
+>> 31c75e50: 00000000 00000000 00000000 00000000    ................
+>> 31c75e60: 00000000 00000000 00000000 00000000    ................
+>> 31c75e70: 00000000 00000000 00000000 00000000    ................
+>> 31c75e80: 06101831 3dae4f0a 000ecc9b 00000000    1....O.=........
+>>
+>> Since this is the root file system and is 28MB in size, I am working on creating a smaller file system and writing a fixed test pattern to it.  I will provide the dd images of these files along with log files as soon as possible which will hopefully be next Monday (June 8).
+>>
+>> If you have any addition suggestions or requests, please let me know.
+>>     
 >
-> On Tue, Jul 28, 2009 at 3:29 PM, Alessandro Rubini<ru@gnudd.com> wrote:
+> Well, I would be cool to have full UBIFS debugging output, or better
+> the image of the partition.
 >
-> ---snip---
->
->> +static inline int parity(int b) /* uses low 8 bits: returns 0 or all-1 =
-*/
->> +{
->> + =A0 =A0 =A0 b =3D b ^ (b >> 4);
->> + =A0 =A0 =A0 b =3D b ^ (b >> 2);
->> + =A0 =A0 =A0 return (b ^ (b >> 1)) & 1
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ? ~0 : 0;
->> +}
->
-> This function is not in use... please remove it.
->
-> ---snip---
->
->> + =A0 =A0 =A0 /*
->> + =A0 =A0 =A0 =A0* This stanza declares ECC_HW but uses soft routines. I=
-t's because
->> + =A0 =A0 =A0 =A0* HW claims to make the calculation but not the correct=
-ion. However,
->> + =A0 =A0 =A0 =A0* I haven't managed to get the desired data out of it u=
-ntil now.
->> + =A0 =A0 =A0 =A0*/
->> + =A0 =A0 =A0 nand->ecc.mode =3D NAND_ECC_SOFT;
->> + =A0 =A0 =A0 nand->ecc.layout =3D &nomadik_ecc_layout;
->> + =A0 =A0 =A0 nand->ecc.hwctl =3D nomadik_ecc_control;
->> + =A0 =A0 =A0 nand->ecc.size =3D 512;
->> + =A0 =A0 =A0 nand->ecc.bytes =3D 3;
->
-> As I wrote earlier too, are you aware of that currently 512 byte
-> sector ECC will not work without below patch: (since in nand_base.c,
-> SW ECC configurations over write the 'ecc.size' by 256)
->
-> http://patchwork.ozlabs.org/patch/13697/
->
-> As an alternative, if you use 'NAND_SKIP_BBTSCAN' option, moving assignme=
-nt:
-> =A0 =A0 =A0nand->ecc.size =3D 512;
-> after 'nand_scan' is done, will work.
->
+>   
+We have similar problems with a SPANSION falsh (S29GL01GP).
+I think the reason of the problem is a feature of the chip.
 
-Sorry, you already mentioned it... I missed those lines in your mail.
+I reduced the problem to the MTD access (without ubi/ubifs).
+We noticed toggle flash-bit(s) after power off during a write cycle.
+The toggle flash-bit(s) may occure after power of during an sector-erase
+too.
 
--vimal
+Simple testsequence:
+* flash_erase ...
+* cp testfile /dev/mtd0
+- automatic or manuel power off during the cp
+Check the flash after reboot (e.g md5sum /dev/mtd0 helps).
 
->> +
->> + =A0 =A0 =A0 nand->options =3D pdata->options;
->> +
->> + =A0 =A0 =A0 /*
->> + =A0 =A0 =A0 =A0* Scan to find existance of the device
->> + =A0 =A0 =A0 =A0*/
->> + =A0 =A0 =A0 if (nand_scan(&host->mtd, 1)) {
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D -ENXIO;
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto err_unmap;
->> + =A0 =A0 =A0 }
->> +
->
+We used the default settings from the CFI (MaxBufWriteSize=6 == 64 byte
+buffer).
