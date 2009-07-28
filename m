@@ -1,14 +1,20 @@
-Received: from mba.ocn.ne.jp ([122.28.14.163] helo=smtp.mba.ocn.ne.jp)
+Received: from mail.mnementh.co.uk ([173.45.232.4] helo=mnementh.co.uk)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MVo87-0004CE-0y
-	for linux-mtd@lists.infradead.org; Tue, 28 Jul 2009 14:58:16 +0000
-From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/2] mtd/nand: Add __nand_correct_data helper function
-Date: Tue, 28 Jul 2009 23:53:11 +0900
-Message-Id: <1248792792-20197-1-git-send-email-anemo@mba.ocn.ne.jp>
+	id 1MVqEP-0003GP-EU
+	for linux-mtd@lists.infradead.org; Tue, 28 Jul 2009 17:12:57 +0000
+Message-ID: <4A6F3188.7070000@f2s.com>
+Date: Tue, 28 Jul 2009 18:12:40 +0100
+From: Ian molton <spyro@f2s.com>
+MIME-Version: 1.0
+To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Subject: Re: [PATCH 2/2] mtd/nand: Fix tmio_nand ecc correction
+References: <1248792792-20197-2-git-send-email-anemo@mba.ocn.ne.jp>
+In-Reply-To: <1248792792-20197-2-git-send-email-anemo@mba.ocn.ne.jp>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, dwmw2@infradead.org,
-	vimal singh <vimal.newwork@gmail.com>
+	linux-mtd@lists.infradead.org, vimal singh <vimal.newwork@gmail.com>
+Reply-To: ian@mnementh.co.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,94 +24,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Split nand_correct_data() into two part, a pure calculation function
-and a wrapper for mtd interface.
+Atsushi Nemoto wrote:
 
-The tmio_nand driver can implement its ecc.correct function easily
-using this __nand_correct_data helper.
+This looks fine to me, but as I said, wouldnt it be better to implement 
+the 6-byte ecc in the core if theres more than one chip that can use it?
 
-Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-Acked-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-Acked-by: Vimal Singh <vimalsingh@ti.com>
----
- drivers/mtd/nand/nand_ecc.c  |   31 ++++++++++++++++++++++++-------
- include/linux/mtd/nand_ecc.h |    6 ++++++
- 2 files changed, 30 insertions(+), 7 deletions(-)
+no point in duplicating code...
 
-diff --git a/drivers/mtd/nand/nand_ecc.c b/drivers/mtd/nand/nand_ecc.c
-index c0cb87d..db7ae9d 100644
---- a/drivers/mtd/nand/nand_ecc.c
-+++ b/drivers/mtd/nand/nand_ecc.c
-@@ -417,22 +417,22 @@ int nand_calculate_ecc(struct mtd_info *mtd, const unsigned char *buf,
- EXPORT_SYMBOL(nand_calculate_ecc);
- 
- /**
-- * nand_correct_data - [NAND Interface] Detect and correct bit error(s)
-- * @mtd:	MTD block structure
-+ * __nand_correct_data - [NAND Interface] Detect and correct bit error(s)
-  * @buf:	raw data read from the chip
-  * @read_ecc:	ECC from the chip
-  * @calc_ecc:	the ECC calculated from raw data
-+ * @eccsize:	data bytes per ecc step (256 or 512)
-  *
-- * Detect and correct a 1 bit error for 256/512 byte block
-+ * Detect and correct a 1 bit error for eccsize byte block
-  */
--int nand_correct_data(struct mtd_info *mtd, unsigned char *buf,
--		      unsigned char *read_ecc, unsigned char *calc_ecc)
-+int __nand_correct_data(unsigned char *buf,
-+			unsigned char *read_ecc, unsigned char *calc_ecc,
-+			unsigned int eccsize)
- {
- 	unsigned char b0, b1, b2, bit_addr;
- 	unsigned int byte_addr;
- 	/* 256 or 512 bytes/ecc  */
--	const uint32_t eccsize_mult =
--			(((struct nand_chip *)mtd->priv)->ecc.size) >> 8;
-+	const uint32_t eccsize_mult = eccsize >> 8;
- 
- 	/*
- 	 * b0 to b2 indicate which bit is faulty (if any)
-@@ -495,6 +495,23 @@ int nand_correct_data(struct mtd_info *mtd, unsigned char *buf,
- 	printk(KERN_ERR "uncorrectable error : ");
- 	return -1;
- }
-+EXPORT_SYMBOL(__nand_correct_data);
-+
-+/**
-+ * nand_correct_data - [NAND Interface] Detect and correct bit error(s)
-+ * @mtd:	MTD block structure
-+ * @buf:	raw data read from the chip
-+ * @read_ecc:	ECC from the chip
-+ * @calc_ecc:	the ECC calculated from raw data
-+ *
-+ * Detect and correct a 1 bit error for 256/512 byte block
-+ */
-+int nand_correct_data(struct mtd_info *mtd, unsigned char *buf,
-+		      unsigned char *read_ecc, unsigned char *calc_ecc)
-+{
-+	return __nand_correct_data(buf, read_ecc, calc_ecc,
-+				   ((struct nand_chip *)mtd->priv)->ecc.size);
-+}
- EXPORT_SYMBOL(nand_correct_data);
- 
- MODULE_LICENSE("GPL");
-diff --git a/include/linux/mtd/nand_ecc.h b/include/linux/mtd/nand_ecc.h
-index 090da50..052ea8c 100644
---- a/include/linux/mtd/nand_ecc.h
-+++ b/include/linux/mtd/nand_ecc.h
-@@ -21,6 +21,12 @@ struct mtd_info;
- int nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat, u_char *ecc_code);
- 
- /*
-+ * Detect and correct a 1 bit error for eccsize byte block
-+ */
-+int __nand_correct_data(u_char *dat, u_char *read_ecc, u_char *calc_ecc,
-+			unsigned int eccsize);
-+
-+/*
-  * Detect and correct a 1 bit error for 256 byte block
-  */
- int nand_correct_data(struct mtd_info *mtd, u_char *dat, u_char *read_ecc, u_char *calc_ecc);
--- 
-1.5.6.5
+-Ian
+
+> This driver may be reading 512 bytes at a times, but still calculates
+> 256-byte sector ECC.  So the nand_correct_data() is not appropriate
+> for this driver.  Implement its ecc.correct function calling
+> __nand_correct_data() twice.
+> 
+> Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+> Acked-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+> Acked-by: Vimal Singh <vimalsingh@ti.com>
+> ---
+>  drivers/mtd/nand/tmio_nand.c |   17 ++++++++++++++++-
+>  1 files changed, 16 insertions(+), 1 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
+> index daa6a4c..92c7334 100644
+> --- a/drivers/mtd/nand/tmio_nand.c
+> +++ b/drivers/mtd/nand/tmio_nand.c
+> @@ -301,6 +301,21 @@ static int tmio_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
+>  	return 0;
+>  }
+>  
+> +static int tmio_nand_correct_data(struct mtd_info *mtd, unsigned char *buf,
+> +		unsigned char *read_ecc, unsigned char *calc_ecc)
+> +{
+> +	int r0, r1;
+> +
+> +	/* assume ecc.size = 512 and ecc.bytes = 6 */
+> +	r0 = __nand_correct_data(buf, read_ecc, calc_ecc, 256);
+> +	if (r0 < 0)
+> +		return r0;
+> +	r1 = __nand_correct_data(buf + 256, read_ecc + 3, calc_ecc + 3, 256);
+> +	if (r1 < 0)
+> +		return r1;
+> +	return r0 + r1;
+> +}
+> +
+>  static int tmio_hw_init(struct platform_device *dev, struct tmio_nand *tmio)
+>  {
+>  	struct mfd_cell *cell = (struct mfd_cell *)dev->dev.platform_data;
+> @@ -424,7 +439,7 @@ static int tmio_probe(struct platform_device *dev)
+>  	nand_chip->ecc.bytes = 6;
+>  	nand_chip->ecc.hwctl = tmio_nand_enable_hwecc;
+>  	nand_chip->ecc.calculate = tmio_nand_calculate_ecc;
+> -	nand_chip->ecc.correct = nand_correct_data;
+> +	nand_chip->ecc.correct = tmio_nand_correct_data;
+>  
+>  	if (data)
+>  		nand_chip->badblock_pattern = data->badblock_pattern;
