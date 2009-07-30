@@ -1,19 +1,17 @@
-Received: from www.tglx.de ([62.245.132.106])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MWTnC-00050v-VT
-	for linux-mtd@lists.infradead.org; Thu, 30 Jul 2009 11:27:31 +0000
-Message-ID: <4A718390.4080103@linutronix.de>
-Date: Thu, 30 Jul 2009 13:27:12 +0200
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Received: from mx7.zte.com.cn ([202.103.147.169])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MWUdo-0007cm-BD
+	for linux-mtd@lists.infradead.org; Thu, 30 Jul 2009 12:21:52 +0000
+In-Reply-To: <200907301030.43323.manningc2@actrix.gen.nz>
+To: Charles Manning <manningc2@actrix.gen.nz>
+Subject: re: Re: what cause :**>> yaffs chunk 38598 was not erased
 MIME-Version: 1.0
-To: Stoyan Gaydarov <sgayda2@uiuc.edu>
-Subject: Re: [PATCH 2/4] [mtd] fixed faulty check
-References: <1248949506-20827-1-git-send-email-sgayda2@uiuc.edu>
-In-Reply-To: <1248949506-20827-1-git-send-email-sgayda2@uiuc.edu>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: kay.sievers@vrfy.org, David.Woodhouse@intel.com, gregkh@suse.de,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, sr@denx.de
+Message-ID: <OF678BA31F.AF859305-ON48257603.00428205-48257603.0043EAC4@zte.com.cn>
+From: liu.yaojin@zte.com.cn
+Date: Thu, 30 Jul 2009 20:19:45 +0800
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: base64
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +21,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Stoyan Gaydarov wrote:
-> This patche fixes a spelling error that has resulted from copy and pasting. The location of the error was found using a semantic patch but the semantic patch was not trying to find these errors. After looking things over it seemed logical that this change was needed. Please review it and then include the patch if it is in fact the correct change.
-> 
-> Signed-off-by: Stoyan Gaydarov <sgayda2@uiuc.edu>
-> ---
->  drivers/mtd/maps/physmap_of.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-> index 39d357b..2cc0b0d 100644
-> --- a/drivers/mtd/maps/physmap_of.c
-> +++ b/drivers/mtd/maps/physmap_of.c
-> @@ -215,7 +215,7 @@ static int __devinit of_flash_probe(struct of_device *dev,
->  		goto err_out;
->  
->  	mtd_list = kzalloc(sizeof(struct mtd_info) * count, GFP_KERNEL);
-> -	if (!info)
-> +	if (!mtd_list)
->  		goto err_out;
->  
->  	dev_set_drvdata(&dev->dev, info);
-Yes, !mtd_list should be checked instead of !info. This is correct. 
-However in error case you have to free info as well.
-Can please make another patch?
-
-Sebastian
+aSB0aGluayBpIGZvdW5kIHRoZSByZWFzb24uDQppbiBuYW5kX2Jhc2UuYyAoMi42LjI0KToNCihh
+Ym91dCBsaW5lIDI1MDYpDQpjYXNlIE5BTkRfRUNDX1NPRlQ6ICAgICAvLw0KICAgICAgICAgICAg
+ICAgIERCR09PQigid2UgdXNlIGVjY19zb2Z0IG1vZGVcbiIpOw0KICAgICAgICAgICAgICAgIGNo
+aXAtPmVjYy5jYWxjdWxhdGUgPSBuYW5kX2NhbGN1bGF0ZV9lY2M7DQogICAgICAgICAgICAgICAg
+Y2hpcC0+ZWNjLmNvcnJlY3QgPSBuYW5kX2NvcnJlY3RfZGF0YTsNCiAgICAgICAgICAgICAgICBj
+aGlwLT5lY2MucmVhZF9wYWdlID0gbmFuZF9yZWFkX3BhZ2Vfc3dlY2M7DQogICAgICAgICAgICAg
+ICAgY2hpcC0+ZWNjLndyaXRlX3BhZ2UgPSBuYW5kX3dyaXRlX3BhZ2Vfc3dlY2M7DQogICAgICAg
+ICAgICAgICAgY2hpcC0+ZWNjLnJlYWRfb29iID0gbmFuZF9yZWFkX29vYl9zdGQ7DQogICAgICAg
+ICAgICAgICAgLy9mb2N1cyB0aGlzOg0KICAgICAgICAgICAgICAgIGNoaXAtPmVjYy53cml0ZV9v
+b2IgPSBuYW5kX3dyaXRlX29vYl9zdGQ7IA0KICAgICAgICAgICAgICAgIGNoaXAtPmVjYy5zaXpl
+ID0gMjU2OyANCiAgICAgICAgICAgICAgICBjaGlwLT5lY2MuYnl0ZXMgPSAzOw0KICAgICAgICAg
+ICAgICAgIGJyZWFrOw0KDQpkbyB5b3UgdGhpbmsgImNoaXAtPi4uLiIgaXMgYSBidWc/DQppIG11
+c3QgcmVwbGFjZSAibmFuZF93cml0ZV9vb2Jfc3RkIixidXQgaXQgbWlzczoNCmlmKCFjaGlwLT5l
+Y2Mud3JpdGVfb29iKS4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLg0KU28gaSBjaGFuZ2UgdG86
+DQppZighY2hpcC0+ZWNjLndyaXRlX29vYikNCiAgICBjaGlwLT5lY2Mud3JpdGVfb29iID0gbmFu
+ZF93cml0ZV9vb2Jfc3RkOyANCg0KTm93IGl0IHNlZW1zIHRvIHdvcmsgb2suDQo9PT09PT09PT09
+PT09PT09PT09PT1lbmQgPT09PT09PT09PT09PT09PT09PT09PT09PT0NCg0KDQoNCg0KQ2hhcmxl
+cyBNYW5uaW5nIDxtYW5uaW5nYzJAYWN0cml4Lmdlbi5uej4gDQq3orz+yMs6ICBsaW51eC1tdGQt
+Ym91bmNlc0BsaXN0cy5pbmZyYWRlYWQub3JnDQoyMDA5LTA3LTMwIDA2OjMwDQoNCsrVvP7Iyw0K
+bGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNCrOty80NCmxpdS55YW9qaW5AenRlLmNvbS5j
+bg0K1vfM4g0KUmU6IHdoYXQgY2F1c2UgOioqPj4geWFmZnMgY2h1bmsgMzg1OTggd2FzIG5vdCBl
+cmFzZWQNCg0KDQoNCg0KDQoNCk9uIFdlZG5lc2RheSAyOSBKdWx5IDIwMDkgMjE6MzA6NTAgbGl1
+Lnlhb2ppbkB6dGUuY29tLmNuIHdyb3RlOg0KPiBoaSBndXlzOg0KPg0KPiBpIHVzZSBsYXN0ZXN0
+IHlhZmZzIGZpbGVzeXN0ZW0sa2VybmVsIGlzIDIuNi4yNC4NCj4gbXkgbmFuZCBmbGFzaCBjb250
+cm9sbGVyIGlzIGEgbGl0dGxlIHNsb3cuYW5kIHdoZW4gaSBjb3B5KG9yIGxzKQ0KPiBmaWxlcyht
+b3JlIHRoYW4gMU1CPyksdGhlIGNvbnNvbGUgYXBwZWFyczoNCj4NCj4gKio+PiB5YWZmcyBjaHVu
+ayAzODU5OCB3YXMgbm90IGVyYXNlZA0KPiAqKj4+IHlhZmZzIHdyaXRlIHJlcXVpcmVkIDIgYXR0
+ZW1wdHMNCj4gcGFnZSAzODU5OCBpbiBnYyBoYXMgbm8gb2JqZWN0OiAwIDAgMA0KPg0KPiBhbmQg
+ZXRjLi4uDQo+IHNvIHdoeSB0aGlzIGhhcHBlbnMgY29udGludWFsbHkgPw0KPg0KDQpZb3UncmUg
+cHJvYmFibHkgYmV0dGVyIG9mZiBhc2tpbmcgeWFmZnMgcXVlc3Rpb25zIG9uIHRoZSB5YWZmcyBs
+aXN0OiANCmh0dHA6Ly9zdG9uZWJvYXQuYWxlcGgxLmNvLnVrL2NnaS1iaW4vbWFpbG1hbi9saXN0
+aW5mby95YWZmcw0KDQpUaGlzIGlzIGhhcHBlbmluZyBiZWNhdXNlIHlvdXIgc3BhcmUgYXJlYSBt
+YW5hZ2VtZW50IGlzIG5vdCBjb3JyZWN0IGFuZCANCnRoZSANCnRhZ3MgYXJlIGJlaW5nIG1lc3Nl
+ZCB1cC4gVGhpaXMgY2F1c2VzIHlhZmZzIHRvIHRoaW5rIHRoYXQgYSBwYWdlIG9mIGZsYXNoIA0K
+aXMgDQplbXB0eSwgYnV0IGl0IGlzIG5vdC4NCg0KLS0gQ2hhcmxlcw0KDQoNCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KTGludXggTVREIGRp
+c2N1c3Npb24gbWFpbGluZyBsaXN0DQpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2xpbnV4LW10ZC8NCg0KDQoNCg0KDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KWlRFIEluZm9ybWF0aW9uIFNlY3VyaXR5
+IE5vdGljZTogVGhlIGluZm9ybWF0aW9uIGNvbnRhaW5lZCBpbiB0aGlzIG1haWwgaXMgc29sZWx5
+IHByb3BlcnR5IG9mIHRoZSBzZW5kZXIncyBvcmdhbml6YXRpb24uIFRoaXMgbWFpbCBjb21tdW5p
+Y2F0aW9uIGlzIGNvbmZpZGVudGlhbC4gUmVjaXBpZW50cyBuYW1lZCBhYm92ZSBhcmUgb2JsaWdh
+dGVkIHRvIG1haW50YWluIHNlY3JlY3kgYW5kIGFyZSBub3QgcGVybWl0dGVkIHRvIGRpc2Nsb3Nl
+IHRoZSBjb250ZW50cyBvZiB0aGlzIGNvbW11bmljYXRpb24gdG8gb3RoZXJzLg0KVGhpcyBlbWFp
+bCBhbmQgYW55IGZpbGVzIHRyYW5zbWl0dGVkIHdpdGggaXQgYXJlIGNvbmZpZGVudGlhbCBhbmQg
+aW50ZW5kZWQgc29sZWx5IGZvciB0aGUgdXNlIG9mIHRoZSBpbmRpdmlkdWFsIG9yIGVudGl0eSB0
+byB3aG9tIHRoZXkgYXJlIGFkZHJlc3NlZC4gSWYgeW91IGhhdmUgcmVjZWl2ZWQgdGhpcyBlbWFp
+bCBpbiBlcnJvciBwbGVhc2Ugbm90aWZ5IHRoZSBvcmlnaW5hdG9yIG9mIHRoZSBtZXNzYWdlLiBB
+bnkgdmlld3MgZXhwcmVzc2VkIGluIHRoaXMgbWVzc2FnZSBhcmUgdGhvc2Ugb2YgdGhlIGluZGl2
+aWR1YWwgc2VuZGVyLg0KVGhpcyBtZXNzYWdlIGhhcyBiZWVuIHNjYW5uZWQgZm9yIHZpcnVzZXMg
+YW5kIFNwYW0gYnkgWlRFIEFudGktU3BhbSBzeXN0ZW0uDQo=
