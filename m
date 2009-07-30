@@ -1,29 +1,17 @@
-Received: from [213.79.90.228] (helo=buildserver.ru.mvista.com)
+Received: from out1.zte.com.cn ([202.103.147.172])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MWL8X-0007fM-Ix
-	for linux-mtd@lists.infradead.org; Thu, 30 Jul 2009 02:12:57 +0000
-Date: Thu, 30 Jul 2009 06:12:50 +0400
-From: Anton Vorontsov <avorontsov@ru.mvista.com>
-To: Ben Dooks <ben-linux@fluff.org>
-Subject: Re: [PATCH 1/7] spi: Add support for device table matching
-Message-ID: <20090730021250.GA12001@oksana.dev.rtsoft.ru>
-References: <20090729170345.GA26787@oksana.dev.rtsoft.ru>
-	<20090729170457.GA4803@oksana.dev.rtsoft.ru>
-	<20090729214446.GB1728@fluff.org.uk>
-	<20090729223223.GA15280@oksana.dev.rtsoft.ru>
-	<20090729224050.GA17902@oksana.dev.rtsoft.ru>
+	id 1MWLQq-0002nr-Ew
+	for linux-mtd@lists.infradead.org; Thu, 30 Jul 2009 02:31:53 +0000
+In-Reply-To: <200907301030.43323.manningc2@actrix.gen.nz>
+To: Charles Manning <manningc2@actrix.gen.nz>
+Subject: re: Re: what cause :**>> yaffs chunk 38598 was not erased
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20090729224050.GA17902@oksana.dev.rtsoft.ru>
-Cc: David Brownell <dbrownell@users.sourceforge.net>,
-	linux-kernel@vger.kernel.org, lm-sensors@lm-sensors.org,
-	Grant Likely <grant.likely@secretlab.ca>,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Jean Delvare <khali@linux-fr.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>
-Reply-To: avorontsov@ru.mvista.com
+Message-ID: <OF287D7D45.10A5A545-ON48257603.00049824-48257603.000C1BFD@zte.com.cn>
+From: liu.yaojin@zte.com.cn
+Date: Thu, 30 Jul 2009 10:10:11 +0800
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: base64
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,23 +21,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 30, 2009 at 02:40:50AM +0400, Anton Vorontsov wrote:
-[...]
-> - If you don't store "id" in the device struct, you'll have
->   to look up the device table twice (at first during bus->match(),
->   and second time in drivers' probe() hook, i.e.
->   probe(struct bus_dev *dev) {
->   	id = bus_get_devid(dev); /* here */
->   }
-
-Hm... actually, we're doing this anyway, but in spi core.
-
-So, doing something like spi_get_device_id() might be a good
-idea.
-
-Thanks,
-
--- 
-Anton Vorontsov
-email: cbouatmailru@gmail.com
-irc://irc.freenode.net/bd2
+aGkgY2hhcmxlczoNCg0KaSB1c2UgZWNjIHNvZnQgb24gbXRkICxhbmQgbm90IHNlbGVjdCB5YWZm
+cydzIG93biBlY2M6DQoNCiogeWFmZnMyIGZpbGUgc3lzdGVtIHN1cHBvcnQNCi0qLSA1MTIgYnl0
+ZS8gcGFnZSBkZXZpY2UNCltdIHVzZSBvbGRlci1zdHlsZS4uLg0KW10gbGV0IHlhZmZzIGRvIGl0
+cyBlY2MNCi0qLSAyMDQ4IGJ5dGUuLi4NClsqXSBhdXRvc2VsZWN0IHlhZmZzMiBmb3JtYXQNCltd
+IGRpc2FibGUgbGF6eS4uDQpbXSB0dXJuIG9mZiB3aWRlIHRub2Rlcw0KW10gZm9yY2UgY2h1bmsg
+ZXJhc2UgY2hlY2sNClsqXSBjYWNoZSBzaG9ydCBuYW1lIGluIFJBTQ0KDQp0aGlzIG1vcm5pbmcg
+aSB1bmNoZWNrICJbXSB0dXJuIG9mZiB3aWRlIHRub2RlcyAiYW5kIltdIGZvcmNlIGNodW5rIGVy
+YXNlIA0KY2hlY2sio6xidXQgaXQgYXBwZWFycyBhZ2Fpbi4NCkJUVywgaSB3cml0ZSB0aGUgaW1h
+Z2UgdGhyb3VnaCB1Ym9vdChCRUNBVVNFIEhBVkUgTk9UIE5FVFdPUksuLi4pLmFuZCBtYWtlIA0K
+c29tZSBjaGFuZ2Ugb24gbWt5YWZmc2ltYWdlOg0KDQpzdGF0aWMgaW50IHdyaXRlX2NodW5rKF9f
+dTggKmRhdGEsIF9fdTMyIG9iaklkLCBfX3UzMiBjaHVua0lkLCBfX3UzMiANCm5CeXRlcykNCnsN
+CiNpZmRlZiBPTERfV1JJVEVfTUVUSE9EDQogICAgICAgIHlhZmZzX1RhZ3MgdDsNCiAgICAgICAg
+eWFmZnNfU3BhcmUgczsNCg0KICAgICAgICBlcnJvciA9IHdyaXRlKG91dEZpbGUsZGF0YSw1MTIp
+Ow0KICAgICAgICBpZihlcnJvciA8IDApIHJldHVybiBlcnJvcjsNCg0KICAgICAgICBtZW1zZXQo
+JnQsMHhmZixzaXplb2YgKHlhZmZzX1RhZ3MpKTsNCiAgICAgICAgbWVtc2V0KCZzLDB4ZmYsc2l6
+ZW9mICh5YWZmc19TcGFyZSkpOw0KIA0KICAgICAgICB0LmNodW5rSWQgPSBjaHVua0lkOw0KICAg
+ICAgICB0LnNlcmlhbE51bWJlciA9IDA7DQogICAgICAgIHQuYnl0ZUNvdW50TFNCID0gbkJ5dGVz
+Ow0KICAgICAgICB0Lm9iamVjdElkID0gb2JqSWQ7DQoNCiAgICBpZiAoY29udmVydF9lbmRpYW4p
+DQogICAgew0KICAgICAgICBsaXR0bGVfdG9fYmlnX2VuZGlhbigmdCk7DQogICAgfQ0KIA0KICAg
+ICAgICB5YWZmc19DYWxjVGFnc0VDQygmdCk7DQogICAgICAgIHlhZmZzX0xvYWRUYWdzSW50b1Nw
+YXJlKCZzLCZ0KTsNCiAgICAgICAgeWFmZnNfQ2FsY0VDQyhkYXRhLCZzKTsNCiANCiAgICAgICAg
+blBhZ2VzKys7DQogDQogICAgICAgIHJldHVybiB3cml0ZShvdXRGaWxlLCZzLHNpemVvZih5YWZm
+c19TcGFyZSkpOw0KI2Vsc2UNCiAgICAgICAgeWFmZnNfUGFja2VkVGFnczEgcHQxOyAgLy9uZXcg
+eWFmZnMncyB0YWejrG5vdCB5YWZmc19TcGFyZQ0KICAgICAgICB5YWZmc19FeHRlbmRlZFRhZ3Mg
+ZXRhZ3M7DQogICAgICAgIF9fdTggb29iZGF0YVsxNl07DQogICAgICAgIC8vDQogICAgICAgIGVy
+cm9yID0gd3JpdGUob3V0RmlsZSxkYXRhLDUxMik7DQogICAgICAgIGlmKGVycm9yIDwgMCkgcmV0
+dXJuIGVycm9yOw0KDQogICAgICAgIC8vbWVtc2V0KCZ0LDB4ZmYsc2l6ZW9mICh5YWZmc19UYWdz
+KSk7DQogICAgICAgIC8vbWVtc2V0KCZzLDB4ZmYsc2l6ZW9mICh5YWZmc19TcGFyZSkpOw0KICAg
+ICAgICAvL3NldCB0YWcNCiAgICAgICAgZXRhZ3MuY2h1bmtJZCA9IGNodW5rSWQ7DQogICAgICAg
+IGV0YWdzLnNlcmlhbE51bWJlciA9IDA7DQogICAgICAgIGV0YWdzLmJ5dGVDb3VudCA9IG5CeXRl
+czsNCiAgICAgICAgZXRhZ3Mub2JqZWN0SWQgPSBvYmpJZDsNCiAgICAgICAgZXRhZ3MuY2h1bmtE
+ZWxldGVkID0gMDsgLy8gbGV0IHB0MS0+Y2h1bmtEZXRlY3RlZD0wDQogDQogICAgICAgIC8veWFm
+ZnNfRXh0ZW5kZWRUYWdzIGNoYW5nZXRvIHlhZmZzX1BhY2tlZFRhZ3MxDQogICAgICAgIHlhZmZz
+X1BhY2tUYWdzMSgmcHQxLCZldGFncyk7DQogICAgICAgIC8vY2FsYyBlY2MNCiAgICAgICAgeWFm
+ZnNfQ2FsY1RhZ3NFQ0MoKHlhZmZzX1RhZ3MqKSZwdDEpOw0KICAgICAgICAoKF9fdTgqKSZwdDEp
+WzhdICA9IDB4ZmY7DQogICAgICAgIG1lbXNldChvb2JkYXRhLDB4ZmYsMTYpOw0KICAgICAgICAv
+L3BsYWNlIDggYnl0ZSBlY2MgdG8gb29iWzhdLVsxNV0NCiAgICAgICAgbWVtY3B5KG9vYmRhdGEr
+OCwmcHQxLDgpOyANCiANCiAgICAgICAgblBhZ2VzKys7DQogDQogICAgICAgIHJldHVybiB3cml0
+ZShvdXRGaWxlLG9vYmRhdGEsMTYpOw0KI2VuZGlmDQogDQp9DQotLS0tLS0tLS0tDQppbiB1Ym9v
+dCBpIHdyaXRlIGZ1bGwgcGFnZSBkYXRhKDUxMiBkYXRhKzE2IG9vYikgd2l0aCB0aGUgaW1hZ2Ug
+dG8gdGhlIA0KZmxhc2guDQoNCklzIHRoZXJlIHNvbWUgcHJvYmxlbT8NCnRoYW5rcy4NCg0KPT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ZW5kIA0KPT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09DQoNCg0KDQoNCkNoYXJsZXMgTWFubmluZyA8bWFubmlu
+Z2MyQGFjdHJpeC5nZW4ubno+IA0Kt6K8/sjLOiAgbGludXgtbXRkLWJvdW5jZXNAbGlzdHMuaW5m
+cmFkZWFkLm9yZw0KMjAwOS0wNy0zMCAwNjozMA0KDQrK1bz+yMsNCmxpbnV4LW10ZEBsaXN0cy5p
+bmZyYWRlYWQub3JnDQqzrcvNDQpsaXUueWFvamluQHp0ZS5jb20uY24NCtb3zOINClJlOiB3aGF0
+IGNhdXNlIDoqKj4+IHlhZmZzIGNodW5rIDM4NTk4IHdhcyBub3QgZXJhc2VkDQoNCg0KDQoNCg0K
+DQpPbiBXZWRuZXNkYXkgMjkgSnVseSAyMDA5IDIxOjMwOjUwIGxpdS55YW9qaW5AenRlLmNvbS5j
+biB3cm90ZToNCj4gaGkgZ3V5czoNCj4NCj4gaSB1c2UgbGFzdGVzdCB5YWZmcyBmaWxlc3lzdGVt
+LGtlcm5lbCBpcyAyLjYuMjQuDQo+IG15IG5hbmQgZmxhc2ggY29udHJvbGxlciBpcyBhIGxpdHRs
+ZSBzbG93LmFuZCB3aGVuIGkgY29weShvciBscykNCj4gZmlsZXMobW9yZSB0aGFuIDFNQj8pLHRo
+ZSBjb25zb2xlIGFwcGVhcnM6DQo+DQo+ICoqPj4geWFmZnMgY2h1bmsgMzg1OTggd2FzIG5vdCBl
+cmFzZWQNCj4gKio+PiB5YWZmcyB3cml0ZSByZXF1aXJlZCAyIGF0dGVtcHRzDQo+IHBhZ2UgMzg1
+OTggaW4gZ2MgaGFzIG5vIG9iamVjdDogMCAwIDANCj4NCj4gYW5kIGV0Yy4uLg0KPiBzbyB3aHkg
+dGhpcyBoYXBwZW5zIGNvbnRpbnVhbGx5ID8NCj4NCg0KWW91J3JlIHByb2JhYmx5IGJldHRlciBv
+ZmYgYXNraW5nIHlhZmZzIHF1ZXN0aW9ucyBvbiB0aGUgeWFmZnMgbGlzdDogDQpodHRwOi8vc3Rv
+bmVib2F0LmFsZXBoMS5jby51ay9jZ2ktYmluL21haWxtYW4vbGlzdGluZm8veWFmZnMNCg0KVGhp
+cyBpcyBoYXBwZW5pbmcgYmVjYXVzZSB5b3VyIHNwYXJlIGFyZWEgbWFuYWdlbWVudCBpcyBub3Qg
+Y29ycmVjdCBhbmQgDQp0aGUgDQp0YWdzIGFyZSBiZWluZyBtZXNzZWQgdXAuIFRoaWlzIGNhdXNl
+cyB5YWZmcyB0byB0aGluayB0aGF0IGEgcGFnZSBvZiBmbGFzaCANCmlzIA0KZW1wdHksIGJ1dCBp
+dCBpcyBub3QuDQoNCi0tIENoYXJsZXMNCg0KDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18NCkxpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcg
+bGlzdA0KaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
+dGQvDQoNCg0KDQoNCg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0NClpURSBJbmZvcm1hdGlvbiBTZWN1cml0eSBOb3RpY2U6IFRoZSBpbmZv
+cm1hdGlvbiBjb250YWluZWQgaW4gdGhpcyBtYWlsIGlzIHNvbGVseSBwcm9wZXJ0eSBvZiB0aGUg
+c2VuZGVyJ3Mgb3JnYW5pemF0aW9uLiBUaGlzIG1haWwgY29tbXVuaWNhdGlvbiBpcyBjb25maWRl
+bnRpYWwuIFJlY2lwaWVudHMgbmFtZWQgYWJvdmUgYXJlIG9ibGlnYXRlZCB0byBtYWludGFpbiBz
+ZWNyZWN5IGFuZCBhcmUgbm90IHBlcm1pdHRlZCB0byBkaXNjbG9zZSB0aGUgY29udGVudHMgb2Yg
+dGhpcyBjb21tdW5pY2F0aW9uIHRvIG90aGVycy4NClRoaXMgZW1haWwgYW5kIGFueSBmaWxlcyB0
+cmFuc21pdHRlZCB3aXRoIGl0IGFyZSBjb25maWRlbnRpYWwgYW5kIGludGVuZGVkIHNvbGVseSBm
+b3IgdGhlIHVzZSBvZiB0aGUgaW5kaXZpZHVhbCBvciBlbnRpdHkgdG8gd2hvbSB0aGV5IGFyZSBh
+ZGRyZXNzZWQuIElmIHlvdSBoYXZlIHJlY2VpdmVkIHRoaXMgZW1haWwgaW4gZXJyb3IgcGxlYXNl
+IG5vdGlmeSB0aGUgb3JpZ2luYXRvciBvZiB0aGUgbWVzc2FnZS4gQW55IHZpZXdzIGV4cHJlc3Nl
+ZCBpbiB0aGlzIG1lc3NhZ2UgYXJlIHRob3NlIG9mIHRoZSBpbmRpdmlkdWFsIHNlbmRlci4NClRo
+aXMgbWVzc2FnZSBoYXMgYmVlbiBzY2FubmVkIGZvciB2aXJ1c2VzIGFuZCBTcGFtIGJ5IFpURSBB
+bnRpLVNwYW0gc3lzdGVtLg0K
