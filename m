@@ -1,18 +1,17 @@
-Received: from rv-out-0708.google.com ([209.85.198.250])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MWzfW-0007Pr-Qe
-	for linux-mtd@lists.infradead.org; Fri, 31 Jul 2009 21:29:45 +0000
-Received: by rv-out-0708.google.com with SMTP id c5so172212rvf.2
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 31 Jul 2009 14:29:37 -0700 (PDT)
+Received: from dscas1.ad.uiuc.edu ([128.174.68.119])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MWV4x-0003Ui-Gq
+	for linux-mtd@lists.infradead.org; Thu, 30 Jul 2009 12:49:56 +0000
+From: Stoyan Gaydarov <sgayda2@uiuc.edu>
+To: linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [mtd] fixed faulty check
+Date: Thu, 30 Jul 2009 07:49:38 -0500
+Message-ID: <1248958178-22599-1-git-send-email-sgayda2@uiuc.edu>
 MIME-Version: 1.0
-Date: Fri, 31 Jul 2009 14:29:37 -0700
-Message-ID: <110c8b2e0907311429k26d23f10jb220a4afdf89e949@mail.gmail.com>
-Subject: Trouble getting MTD to run -- permission denied messages
-From: Subodh Nijsure <nijsure.subodh@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+Cc: Stoyan Gaydarov <sgayda2@uiuc.edu>, David.Woodhouse@intel.com,
+	bigeasy@linutronix.de, kay.sievers@vrfy.org,
+	linux-mtd@lists.infradead.org, sr@denx.de, gregkh@suse.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,82 +21,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have defined my NOR flash layout as follows I am able to see the
-contents of the flash when I do
+Resubmit of a patch with some additions, see http://lkml.org/lkml/2009/7/30/97
 
-dd=/dev/mtdblock1 of=/tmp/myflash
+Signed-off-by: Stoyan Gaydarov <sgayda2@uiuc.edu>
+---
+ drivers/mtd/maps/physmap_of.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-However I created a jffs2 image on my workstation and tried to "burn"
-it to flash by executing following command  and I see messages "This
-doesn't seem to be valid MTD flash device.
-
-# ./flashcp /initrd.jffs2 /dev/mtdblock1
-mtdblock_open
-ok
-This doesn't seem to be a valid MTD flash device!
-mtdblock_release
-ok
-
-Also mtdinfo -a display following message
-
-# /mtd/mtdinfo -a
-Count of MTD devices:           3
-MTD_open
-libmtd: error!: cannot open "/dev/mtd0"
-        error 13 (Permission denied)
-mtdinfo: error!: libmtd failed get MTD device 0 information
-         error 13 (Permission denied)
-
-I must have missed some basic step in getting things setup for NOR
-flash, would appreciate a nudge in right direction...
-
-
-
-static struct mtd_partition my_flash_partitions[] = {
-        {
-                .name = "Linux",
-                .offset = RW_PART2_OF,
-                .size = RW_PART2_SZ,
-                .mask_flags = MTD_WRITEABLE
-        },
-        {
-                .name = "ramdisk",
-                .offset = RW_PART3_OF,
-                .size = RW_PART3_SZ,
-                .mask_flags = MTD_WRITEABLE
-        },
-};
-
-
-struct map_info my_flash_map = {
-        .name = "My device",
-        .size = WINDOW_SIZE,
-        .bankwidth = 2,
-        .phys = WINDOW_ADDR,
-};
-
-
-When I boot my board I see following messages :
-
-flash mapping: size 0600000 at 0xc1400000
-Found 1 x16 devices at 0x0 in 16-bit bank
-NOR chip too large to fit in mapping. Attempting to cope...
- Intel/Sharp Extended Query Table at 0x010A
- Intel/Sharp Extended Query Table at 0x010A
- Intel/Sharp Extended Query Table at 0x010A
- Intel/Sharp Extended Query Table at 0x010A
- Intel/Sharp Extended Query Table at 0x010A
-Using buffer write method
-Using auto-unlock on power-up/resume
-cfi_cmdset_0001: Erase suspend on write enabled
-erase region 0: offset=0x0,size=0x8000,blocks=4
-erase region 1: offset=0x20000,size=0x20000,blocks=255
-Reducing visibility of 32768KiB chip to 6144KiB
-Creating 2 MTD partitions on "My Device":
-0x00000000-0x00300000 : "Linux"
-mtd: Giving out device 0 to Linux
-0x00300000-0x00600000 : "ramdisk"
-mtd: Giving out device 1 to ramdisk
-
-
-/Subodh
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index 39d357b..e7ab5f0 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -215,7 +215,8 @@ static int __devinit of_flash_probe(struct of_device *dev,
+ 		goto err_out;
+ 
+ 	mtd_list = kzalloc(sizeof(struct mtd_info) * count, GFP_KERNEL);
+-	if (!info)
++	if (!mtd_list)
++		kfree(info);
+ 		goto err_out;
+ 
+ 	dev_set_drvdata(&dev->dev, info);
+-- 
+1.6.3.3
