@@ -1,29 +1,16 @@
-Received: from qw-out-1920.google.com ([74.125.92.145])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MWWiR-0005lh-Bi
-	for linux-mtd@lists.infradead.org; Thu, 30 Jul 2009 14:34:48 +0000
-Received: by qw-out-1920.google.com with SMTP id 5so985085qwf.24
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 30 Jul 2009 07:34:42 -0700 (PDT)
+Received: from dscas1.ad.uiuc.edu ([128.174.68.119])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MWWvQ-0008J2-4a
+	for linux-mtd@lists.infradead.org; Thu, 30 Jul 2009 14:48:12 +0000
+From: Stoyan Gaydarov <sgayda2@uiuc.edu>
+To: bigeasy@linutronix.de
+Subject: [PATCH] [mtd] fixed faulty check
+Date: Thu, 30 Jul 2009 09:47:23 -0500
+Message-ID: <1248965243-861-1-git-send-email-sgayda2@uiuc.edu>
 MIME-Version: 1.0
-In-Reply-To: <4A71AD5E.4080704@uiuc.edu>
-References: <1248958178-22599-1-git-send-email-sgayda2@uiuc.edu>
-	<4A719A27.8050509@linutronix.de>
-	<ce9ab5790907300639k3173446csbd07198055bfe122@mail.gmail.com>
-	<4A71A483.30507@linutronix.de>
-	<ce9ab5790907300714u5c88f1cdk8c0387de5ba9f413@mail.gmail.com>
-	<4A71AD5E.4080704@uiuc.edu>
-From: vimal singh <vimal.newwork@gmail.com>
-Date: Thu, 30 Jul 2009 20:04:22 +0530
-Message-ID: <ce9ab5790907300734l134c8d4agcf8b22b40129b8d9@mail.gmail.com>
-Subject: Re: [PATCH] [mtd] fixed faulty check
-To: Stoyan Gaydarov <sgayda2@uiuc.edu>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: kay.sievers@vrfy.org, David.Woodhouse@intel.com,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	gregkh@suse.de, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org, sr@denx.de
+Content-Type: text/plain
+Cc: linux-mtd@lists.infradead.org, Stoyan Gaydarov <sgayda2@uiuc.edu>,
+	vimal.newwork@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,49 +20,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 30, 2009 at 7:55 PM, Stoyan Gaydarov<sgayda2@uiuc.edu> wrote:
-> vimal singh wrote:
->
-> On Thu, Jul 30, 2009 at 7:17 PM, Sebastian Andrzej
-> Siewior<bigeasy@linutronix.de> wrote:
->
->
-> vimal singh wrote:
->
->
-> What if you go to 'err_out' due to some other error?? Do not you need
-> to free 'info'?
->
->
-> We have to and of_flash_remove() takes care of it.
->
->
->
->
-> Does this mean that the original patch is fine or does it still need the
-> kfree? From what i understand when going to err_out it will take care of
-> info using of_flash_remove() so then it is not needed in the if check.
+This patch fixes a spelling error that has resulted from copy and pasting. The location of the error was found using a semantic patch but the semantic patch was not trying to find these errors. After looking things over it seemed logical that this change was needed.
 
-Yes.
-But I think, you should still correct freeing 'mtd_list' in the label,
-when you jump there even before memory gets allocated for that.
+The patch also makes sure mtd_list is not being freed if it has not been allocated
 
--vimal
+Signed-off-by: Stoyan Gaydarov <sgayda2@uiuc.edu>
+---
+ drivers/mtd/maps/physmap_of.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
->
-> -Stoyan
->
-> that's correct...
->
->
->
-> The initial patch would be shorter if
-> =A0dev_set_drvdata(&dev->dev, info);
-> would be moved prior the kzalloc()
->
-> Sebastian
->
->
->
->
->
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index 39d357b..96a1c50 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -215,8 +215,8 @@ static int __devinit of_flash_probe(struct of_device *dev,
+ 		goto err_out;
+ 
+ 	mtd_list = kzalloc(sizeof(struct mtd_info) * count, GFP_KERNEL);
+-	if (!info)
+-		goto err_out;
++	if (!mtd_list)
++		goto err_out_no_free;
+ 
+ 	dev_set_drvdata(&dev->dev, info);
+ 
+@@ -338,6 +338,7 @@ static int __devinit of_flash_probe(struct of_device *dev,
+ 
+ err_out:
+ 	kfree(mtd_list);
++err_out_no_free:
+ 	of_flash_remove(dev);
+ 
+ 	return err;
+-- 
+1.6.3.3
