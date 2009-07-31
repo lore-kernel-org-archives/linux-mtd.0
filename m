@@ -1,21 +1,18 @@
-Received: from smtp3.netcologne.de ([194.8.194.66])
+Received: from rv-out-0708.google.com ([209.85.198.250])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MWyWW-0003xJ-8e
-	for linux-mtd@lists.infradead.org; Fri, 31 Jul 2009 20:16:20 +0000
-Date: Fri, 31 Jul 2009 21:47:10 +0200
-From: Albrecht =?iso-8859-1?b?RHJl3w==?= <albrecht.dress@arcor.de>
-Subject: Re: [PATCH] mtd/maps: add mtd-ram support to physmap_of
-To: Wolfram Sang <w.sang@pengutronix.de>
-In-Reply-To: <1247834363-28198-1-git-send-email-w.sang@pengutronix.de> (from
-	w.sang@pengutronix.de on Fri Jul 17 14:39:23 2009)
-Message-Id: <1249069643.3687.0@antares>
+	id 1MWzfW-0007Pr-Qe
+	for linux-mtd@lists.infradead.org; Fri, 31 Jul 2009 21:29:45 +0000
+Received: by rv-out-0708.google.com with SMTP id c5so172212rvf.2
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 31 Jul 2009 14:29:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
-	micalg=PGP-SHA1; boundary="=-6wC/KUIJ0WEPnkpS4mA1"
-Cc: devicetree-discuss@ozlabs.org, Vitaly Wool <vwool@ru.mvista.com>,
-	Artem Bityutskiy <dedekind@infradead.org>,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Ken MacLeod <ken@bitsko.slc.ut.us>, David Woodhouse <dwmw2@infradead.org>
+Date: Fri, 31 Jul 2009 14:29:37 -0700
+Message-ID: <110c8b2e0907311429k26d23f10jb220a4afdf89e949@mail.gmail.com>
+Subject: Trouble getting MTD to run -- permission denied messages
+From: Subodh Nijsure <nijsure.subodh@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,36 +22,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---=-6wC/KUIJ0WEPnkpS4mA1
-Content-Type: text/plain; charset=ISO-8859-1; DelSp=Yes; Format=Flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I have defined my NOR flash layout as follows I am able to see the
+contents of the flash when I do
 
-Am 17.07.09 14:39 schrieb(en) Wolfram Sang:
-> Use physmap_of to access RAMs as mtd and add documenation for it. =20
-> This approach is a lot less intrusive as adding an of-wrapper around =20
-> plat-ram.c. As most extensions of plat-ram.c (e.g. custom =20
-> map-functions) can't be mapped to the device tree anyhow, extending =20
-> physmap_of seems to be the cleanest approach.
+dd=/dev/mtdblock1 of=/tmp/myflash
 
-The patch works nicely on a custom (roughly Icecube) based 5200B board, =20
-with a Renesas static ram, no partitions and a jffs2 file system on =20
-it.  I had to add some more tweaks to physmap_of.c as to work around =20
-the 5200's limitations accessing chips in 16-bit mode through the local =20
-bus, which is a lot easier and cleaner with this patch than with the =20
-old one (of 05 June 09).
+However I created a jffs2 image on my workstation and tried to "burn"
+it to flash by executing following command  and I see messages "This
+doesn't seem to be valid MTD flash device.
 
-Acked-by: Albrecht Dre=DF <albrecht.dress@arcor.de>
+# ./flashcp /initrd.jffs2 /dev/mtdblock1
+mtdblock_open
+ok
+This doesn't seem to be a valid MTD flash device!
+mtdblock_release
+ok
 
---=-6wC/KUIJ0WEPnkpS4mA1
-Content-Type: application/pgp-signature
+Also mtdinfo -a display following message
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
+# /mtd/mtdinfo -a
+Count of MTD devices:           3
+MTD_open
+libmtd: error!: cannot open "/dev/mtd0"
+        error 13 (Permission denied)
+mtdinfo: error!: libmtd failed get MTD device 0 information
+         error 13 (Permission denied)
 
-iD8DBQBKc0pLn/9unNAn/9ERAndaAJ46tL+3fxURYv2K1m+v4Z9UJ00B2QCcCv19
-sk5JUodhOC7jIvauB43/ImU=
-=kGsX
------END PGP SIGNATURE-----
+I must have missed some basic step in getting things setup for NOR
+flash, would appreciate a nudge in right direction...
 
---=-6wC/KUIJ0WEPnkpS4mA1--
+
+
+static struct mtd_partition my_flash_partitions[] = {
+        {
+                .name = "Linux",
+                .offset = RW_PART2_OF,
+                .size = RW_PART2_SZ,
+                .mask_flags = MTD_WRITEABLE
+        },
+        {
+                .name = "ramdisk",
+                .offset = RW_PART3_OF,
+                .size = RW_PART3_SZ,
+                .mask_flags = MTD_WRITEABLE
+        },
+};
+
+
+struct map_info my_flash_map = {
+        .name = "My device",
+        .size = WINDOW_SIZE,
+        .bankwidth = 2,
+        .phys = WINDOW_ADDR,
+};
+
+
+When I boot my board I see following messages :
+
+flash mapping: size 0600000 at 0xc1400000
+Found 1 x16 devices at 0x0 in 16-bit bank
+NOR chip too large to fit in mapping. Attempting to cope...
+ Intel/Sharp Extended Query Table at 0x010A
+ Intel/Sharp Extended Query Table at 0x010A
+ Intel/Sharp Extended Query Table at 0x010A
+ Intel/Sharp Extended Query Table at 0x010A
+ Intel/Sharp Extended Query Table at 0x010A
+Using buffer write method
+Using auto-unlock on power-up/resume
+cfi_cmdset_0001: Erase suspend on write enabled
+erase region 0: offset=0x0,size=0x8000,blocks=4
+erase region 1: offset=0x20000,size=0x20000,blocks=255
+Reducing visibility of 32768KiB chip to 6144KiB
+Creating 2 MTD partitions on "My Device":
+0x00000000-0x00300000 : "Linux"
+mtd: Giving out device 0 to Linux
+0x00300000-0x00600000 : "ramdisk"
+mtd: Giving out device 1 to ramdisk
+
+
+/Subodh
