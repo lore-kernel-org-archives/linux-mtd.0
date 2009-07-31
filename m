@@ -1,19 +1,21 @@
-Received: from mail-ew0-f211.google.com ([209.85.219.211])
+Received: from smtp3.netcologne.de ([194.8.194.66])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MWsvp-0001hw-FL
-	for linux-mtd@lists.infradead.org; Fri, 31 Jul 2009 14:18:08 +0000
-Received: by ewy7 with SMTP id 7so1119666ewy.18
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 31 Jul 2009 07:17:59 -0700 (PDT)
-Message-ID: <4A72FDCD.1070109@gmail.com>
-Date: Fri, 31 Jul 2009 16:21:01 +0200
-From: Roel Kluin <roel.kluin@gmail.com>
+	id 1MWyWW-0003xJ-8e
+	for linux-mtd@lists.infradead.org; Fri, 31 Jul 2009 20:16:20 +0000
+Date: Fri, 31 Jul 2009 21:47:10 +0200
+From: Albrecht =?iso-8859-1?b?RHJl3w==?= <albrecht.dress@arcor.de>
+Subject: Re: [PATCH] mtd/maps: add mtd-ram support to physmap_of
+To: Wolfram Sang <w.sang@pengutronix.de>
+In-Reply-To: <1247834363-28198-1-git-send-email-w.sang@pengutronix.de> (from
+	w.sang@pengutronix.de on Fri Jul 17 14:39:23 2009)
+Message-Id: <1249069643.3687.0@antares>
 MIME-Version: 1.0
-To: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH] MTD: Read buffer overflow
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+	micalg=PGP-SHA1; boundary="=-6wC/KUIJ0WEPnkpS4mA1"
+Cc: devicetree-discuss@ozlabs.org, Vitaly Wool <vwool@ru.mvista.com>,
+	Artem Bityutskiy <dedekind@infradead.org>,
+	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	Ken MacLeod <ken@bitsko.slc.ut.us>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,76 +25,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Check whether index is within bounds before testing the element.
+--=-6wC/KUIJ0WEPnkpS4mA1
+Content-Type: text/plain; charset=ISO-8859-1; DelSp=Yes; Format=Flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
----
-with `for (i = 0; bbt[i] && i < ebcnt; ++i)'
-we test bbt[ebcnt] in the last iteration
+Am 17.07.09 14:39 schrieb(en) Wolfram Sang:
+> Use physmap_of to access RAMs as mtd and add documenation for it. =20
+> This approach is a lot less intrusive as adding an of-wrapper around =20
+> plat-ram.c. As most extensions of plat-ram.c (e.g. custom =20
+> map-functions) can't be mapped to the device tree anyhow, extending =20
+> physmap_of seems to be the cleanest approach.
 
-with `for (i = 0; bbt[ebcnt - i - 1] && i < ebcnt; ++i)'
-we test bbt[-1] in the last iteration
+The patch works nicely on a custom (roughly Icecube) based 5200B board, =20
+with a Renesas static ram, no partitions and a jffs2 file system on =20
+it.  I had to add some more tweaks to physmap_of.c as to work around =20
+the 5200's limitations accessing chips in 16-bit mode through the local =20
+bus, which is a lot easier and cleaner with this patch than with the =20
+old one (of 05 June 09).
 
-diff --git a/drivers/mtd/tests/mtd_oobtest.c b/drivers/mtd/tests/mtd_oobtest.c
-index a18e8d2..5553cd4 100644
---- a/drivers/mtd/tests/mtd_oobtest.c
-+++ b/drivers/mtd/tests/mtd_oobtest.c
-@@ -512,7 +512,7 @@ static int __init mtd_oobtest_init(void)
- 		goto out;
- 
- 	addr0 = 0;
--	for (i = 0; bbt[i] && i < ebcnt; ++i)
-+	for (i = 0; i < ebcnt && bbt[i]; ++i)
- 		addr0 += mtd->erasesize;
- 
- 	/* Attempt to write off end of OOB */
-diff --git a/drivers/mtd/tests/mtd_pagetest.c b/drivers/mtd/tests/mtd_pagetest.c
-index 9648818..103cac4 100644
---- a/drivers/mtd/tests/mtd_pagetest.c
-+++ b/drivers/mtd/tests/mtd_pagetest.c
-@@ -116,11 +116,11 @@ static int verify_eraseblock(int ebnum)
- 	loff_t addr = ebnum * mtd->erasesize;
- 
- 	addr0 = 0;
--	for (i = 0; bbt[i] && i < ebcnt; ++i)
-+	for (i = 0; i < ebcnt && bbt[i]; ++i)
- 		addr0 += mtd->erasesize;
- 
- 	addrn = mtd->size;
--	for (i = 0; bbt[ebcnt - i - 1] && i < ebcnt; ++i)
-+	for (i = 0; i < ebcnt && bbt[ebcnt - i - 1]; ++i)
- 		addrn -= mtd->erasesize;
- 
- 	set_random_data(writebuf, mtd->erasesize);
-@@ -219,11 +219,11 @@ static int crosstest(void)
- 	memset(pp1, 0, pgsize * 4);
- 
- 	addr0 = 0;
--	for (i = 0; bbt[i] && i < ebcnt; ++i)
-+	for (i = 0; i < ebcnt && bbt[i]; ++i)
- 		addr0 += mtd->erasesize;
- 
- 	addrn = mtd->size;
--	for (i = 0; bbt[ebcnt - i - 1] && i < ebcnt; ++i)
-+	for (i = 0; i < ebcnt && bbt[ebcnt - i - 1]; ++i)
- 		addrn -= mtd->erasesize;
- 
- 	/* Read 2nd-to-last page to pp1 */
-@@ -317,7 +317,7 @@ static int erasecrosstest(void)
- 
- 	ebnum = 0;
- 	addr0 = 0;
--	for (i = 0; bbt[i] && i < ebcnt; ++i) {
-+	for (i = 0; i < ebcnt && bbt[i]; ++i) {
- 		addr0 += mtd->erasesize;
- 		ebnum += 1;
- 	}
-@@ -413,7 +413,7 @@ static int erasetest(void)
- 
- 	ebnum = 0;
- 	addr0 = 0;
--	for (i = 0; bbt[i] && i < ebcnt; ++i) {
-+	for (i = 0; i < ebcnt && bbt[i]; ++i) {
- 		addr0 += mtd->erasesize;
- 		ebnum += 1;
- 	}
+Acked-by: Albrecht Dre=DF <albrecht.dress@arcor.de>
+
+--=-6wC/KUIJ0WEPnkpS4mA1
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.9 (GNU/Linux)
+
+iD8DBQBKc0pLn/9unNAn/9ERAndaAJ46tL+3fxURYv2K1m+v4Z9UJ00B2QCcCv19
+sk5JUodhOC7jIvauB43/ImU=
+=kGsX
+-----END PGP SIGNATURE-----
+
+--=-6wC/KUIJ0WEPnkpS4mA1--
