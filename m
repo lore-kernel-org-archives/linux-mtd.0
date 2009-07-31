@@ -1,12 +1,12 @@
 Received: from [213.79.90.228] (helo=buildserver.ru.mvista.com)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MWgB8-00087W-Qv
-	for linux-mtd@lists.infradead.org; Fri, 31 Jul 2009 00:41:03 +0000
-Date: Fri, 31 Jul 2009 04:40:58 +0400
+	id 1MWgBA-00087c-Lg
+	for linux-mtd@lists.infradead.org; Fri, 31 Jul 2009 00:41:06 +0000
+Date: Fri, 31 Jul 2009 04:41:00 +0400
 From: Anton Vorontsov <avorontsov@ru.mvista.com>
 To: Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH 1/6] spi: Add support for device table matching
-Message-ID: <20090731004058.GA8371@oksana.dev.rtsoft.ru>
+Subject: [PATCH 2/6] mtd: m25p80: Convert to device table matching
+Message-ID: <20090731004100.GB8371@oksana.dev.rtsoft.ru>
 References: <20090731003957.GA23982@oksana.dev.rtsoft.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
@@ -27,168 +27,267 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With this patch spi drivers can use standard spi_driver.id_table and
-MODULE_DEVICE_TABLE() mechanisms to bind against the devices. Just
-like we do with I2C drivers.
+This patch converts the m25p80 driver so that now it uses .id_table
+for device matching, making it properly detect devices on OpenFirmware
+platforms (prior to this patch the driver misdetected non-JEDEC chips,
+seeing all chips as "m25p80").
 
-This is useful when a single driver supports several variants of
-devices but it is not possible to detect them in run-time (like
-non-JEDEC chips probing in drivers/mtd/devices/m25p80.c), and
-when platform_data usage is overkill.
-
-This patch also makes life a lot easier on OpenFirmware platforms,
-since with OF we extensively use proper device IDs in modaliases.
+Also, now jedec_probe() only does jedec probing, nothing else. If it
+is not able to detect a chip, NULL is returned and the driver fall
+backs to the information specified by the platform (platform_data, or
+exact ID).
 
 Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
 ---
- drivers/spi/spi.c               |   23 +++++++++++++++++++++++
- include/linux/mod_devicetable.h |   10 ++++++++++
- include/linux/spi/spi.h         |   10 ++++++++--
- scripts/mod/file2alias.c        |   13 +++++++++++++
- 4 files changed, 54 insertions(+), 2 deletions(-)
+ drivers/mtd/devices/m25p80.c |  146 +++++++++++++++++++++++-------------------
+ 1 files changed, 80 insertions(+), 66 deletions(-)
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 70845cc..8518a6e 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -59,9 +59,32 @@ static struct device_attribute spi_dev_attrs[] = {
-  * and the sysfs version makes coldplug work too.
-  */
- 
-+static const struct spi_device_id *spi_match_id(const struct spi_device_id *id,
-+						const struct spi_device *sdev)
-+{
-+	while (id->name[0]) {
-+		if (!strcmp(sdev->modalias, id->name))
-+			return id;
-+		id++;
-+	}
-+	return NULL;
-+}
-+
-+const struct spi_device_id *spi_get_device_id(const struct spi_device *sdev)
-+{
-+	const struct spi_driver *sdrv = to_spi_driver(sdev->dev.driver);
-+
-+	return spi_match_id(sdrv->id_table, sdev);
-+}
-+EXPORT_SYMBOL_GPL(spi_get_device_id);
-+
- static int spi_match_device(struct device *dev, struct device_driver *drv)
- {
- 	const struct spi_device	*spi = to_spi_device(dev);
-+	const struct spi_driver	*sdrv = to_spi_driver(drv);
-+
-+	if (sdrv->id_table)
-+		return !!spi_match_id(sdrv->id_table, spi);
- 
- 	return strcmp(spi->modalias, drv->name) == 0;
- }
-diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
-index 1bf5900..b34f1ef 100644
---- a/include/linux/mod_devicetable.h
-+++ b/include/linux/mod_devicetable.h
-@@ -399,6 +399,16 @@ struct i2c_device_id {
- 			__attribute__((aligned(sizeof(kernel_ulong_t))));
- };
- 
-+/* spi */
-+
-+#define SPI_NAME_SIZE	32
-+
-+struct spi_device_id {
-+	char name[SPI_NAME_SIZE];
-+	kernel_ulong_t driver_data	/* Data private to the driver */
-+			__attribute__((aligned(sizeof(kernel_ulong_t))));
-+};
-+
- /* dmi */
- enum dmi_field {
- 	DMI_NONE,
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index c47c4b4..2b444df 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -20,6 +20,7 @@
- #define __LINUX_SPI_H
- 
- #include <linux/device.h>
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 10ed195..0d74b38 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -21,6 +21,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/mutex.h>
+ #include <linux/math64.h>
 +#include <linux/mod_devicetable.h>
  
- /*
-  * INTERFACES between SPI master-side drivers and SPI infrastructure.
-@@ -86,7 +87,7 @@ struct spi_device {
- 	int			irq;
- 	void			*controller_state;
- 	void			*controller_data;
--	char			modalias[32];
-+	char			modalias[SPI_NAME_SIZE];
- 
- 	/*
- 	 * likely need more hooks for more protocol options affecting how
-@@ -145,6 +146,7 @@ struct spi_message;
- 
- /**
-  * struct spi_driver - Host side "protocol" driver
-+ * @id_table: List of SPI devices supported by this driver
-  * @probe: Binds this driver to the spi device.  Drivers can verify
-  *	that the device is actually present, and may need to configure
-  *	characteristics (such as bits_per_word) which weren't needed for
-@@ -170,6 +172,7 @@ struct spi_message;
-  * MMC, RTC, filesystem character device nodes, and hardware monitoring.
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+@@ -462,8 +463,6 @@ static int m25p80_write(struct mtd_info *mtd, loff_t to, size_t len,
   */
- struct spi_driver {
-+	const struct spi_device_id *id_table;
- 	int			(*probe)(struct spi_device *spi);
- 	int			(*remove)(struct spi_device *spi);
- 	void			(*shutdown)(struct spi_device *spi);
-@@ -732,7 +735,7 @@ struct spi_board_info {
- 	 * controller_data goes to spi_device.controller_data,
- 	 * irq is copied too
+ 
+ struct flash_info {
+-	char		*name;
+-
+ 	/* JEDEC id zero means "no ID" (most older chips); otherwise it has
+ 	 * a high byte of zero plus three data bytes: the manufacturer id,
+ 	 * then a two byte device id.
+@@ -481,74 +480,83 @@ struct flash_info {
+ #define	SECT_4K		0x01		/* OPCODE_BE_4K works uniformly */
+ };
+ 
++#define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
++	((kernel_ulong_t)&(struct flash_info) {				\
++		.jedec_id = (_jedec_id),				\
++		.ext_id = (_ext_id),					\
++		.sector_size = (_sector_size),				\
++		.n_sectors = (_n_sectors),				\
++		.flags = (_flags),					\
++	})
+ 
+ /* NOTE: double check command sets and memory organization when you add
+  * more flash chips.  This current list focusses on newer chips, which
+  * have been converging on command sets which including JEDEC ID.
+  */
+-static struct flash_info __devinitdata m25p_data [] = {
+-
++static const struct spi_device_id m25p_ids[] = {
+ 	/* Atmel -- some are (confusingly) marketed as "DataFlash" */
+-	{ "at25fs010",  0x1f6601, 0, 32 * 1024, 4, SECT_4K, },
+-	{ "at25fs040",  0x1f6604, 0, 64 * 1024, 8, SECT_4K, },
++	{ "at25fs010",  INFO(0x1f6601, 0, 32 * 1024, 4, SECT_4K) },
++	{ "at25fs040",  INFO(0x1f6604, 0, 64 * 1024, 8, SECT_4K) },
+ 
+-	{ "at25df041a", 0x1f4401, 0, 64 * 1024, 8, SECT_4K, },
+-	{ "at25df641",  0x1f4800, 0, 64 * 1024, 128, SECT_4K, },
++	{ "at25df041a", INFO(0x1f4401, 0, 64 * 1024, 8, SECT_4K) },
++	{ "at25df641",  INFO(0x1f4800, 0, 64 * 1024, 128, SECT_4K) },
+ 
+-	{ "at26f004",   0x1f0400, 0, 64 * 1024, 8, SECT_4K, },
+-	{ "at26df081a", 0x1f4501, 0, 64 * 1024, 16, SECT_4K, },
+-	{ "at26df161a", 0x1f4601, 0, 64 * 1024, 32, SECT_4K, },
+-	{ "at26df321",  0x1f4701, 0, 64 * 1024, 64, SECT_4K, },
++	{ "at26f004",   INFO(0x1f0400, 0, 64 * 1024, 8, SECT_4K) },
++	{ "at26df081a", INFO(0x1f4501, 0, 64 * 1024, 16, SECT_4K) },
++	{ "at26df161a", INFO(0x1f4601, 0, 64 * 1024, 32, SECT_4K) },
++	{ "at26df321",  INFO(0x1f4701, 0, 64 * 1024, 64, SECT_4K) },
+ 
+ 	/* Macronix */
+-	{ "mx25l12805d", 0xc22018, 0, 64 * 1024, 256, },
++	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
+ 
+ 	/* Spansion -- single (large) sector size only, at least
+ 	 * for the chips listed here (without boot sectors).
  	 */
--	char		modalias[32];
-+	char		modalias[SPI_NAME_SIZE];
- 	const void	*platform_data;
- 	void		*controller_data;
- 	int		irq;
-@@ -800,4 +803,7 @@ spi_unregister_device(struct spi_device *spi)
- 		device_unregister(&spi->dev);
+-	{ "s25sl004a", 0x010212, 0, 64 * 1024, 8, },
+-	{ "s25sl008a", 0x010213, 0, 64 * 1024, 16, },
+-	{ "s25sl016a", 0x010214, 0, 64 * 1024, 32, },
+-	{ "s25sl032a", 0x010215, 0, 64 * 1024, 64, },
+-	{ "s25sl064a", 0x010216, 0, 64 * 1024, 128, },
+-        { "s25sl12800", 0x012018, 0x0300, 256 * 1024, 64, },
+-	{ "s25sl12801", 0x012018, 0x0301, 64 * 1024, 256, },
++	{ "s25sl004a",  INFO(0x010212, 0, 64 * 1024, 8, 0) },
++	{ "s25sl008a",  INFO(0x010213, 0, 64 * 1024, 16, 0) },
++	{ "s25sl016a",  INFO(0x010214, 0, 64 * 1024, 32, 0) },
++	{ "s25sl032a",  INFO(0x010215, 0, 64 * 1024, 64, 0) },
++	{ "s25sl064a",  INFO(0x010216, 0, 64 * 1024, 128, 0) },
++	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024, 64, 0) },
++	{ "s25sl12801", INFO(0x012018, 0x0301, 64 * 1024, 256, 0) },
+ 
+ 	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
+-	{ "sst25vf040b", 0xbf258d, 0, 64 * 1024, 8, SECT_4K, },
+-	{ "sst25vf080b", 0xbf258e, 0, 64 * 1024, 16, SECT_4K, },
+-	{ "sst25vf016b", 0xbf2541, 0, 64 * 1024, 32, SECT_4K, },
+-	{ "sst25vf032b", 0xbf254a, 0, 64 * 1024, 64, SECT_4K, },
++	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024, 8, SECT_4K) },
++	{ "sst25vf080b", INFO(0xbf258e, 0, 64 * 1024, 16, SECT_4K) },
++	{ "sst25vf016b", INFO(0xbf2541, 0, 64 * 1024, 32, SECT_4K) },
++	{ "sst25vf032b", INFO(0xbf254a, 0, 64 * 1024, 64, SECT_4K) },
+ 
+ 	/* ST Microelectronics -- newer production may have feature updates */
+-	{ "m25p05",  0x202010,  0, 32 * 1024, 2, },
+-	{ "m25p10",  0x202011,  0, 32 * 1024, 4, },
+-	{ "m25p20",  0x202012,  0, 64 * 1024, 4, },
+-	{ "m25p40",  0x202013,  0, 64 * 1024, 8, },
+-	{ "m25p80",         0,  0, 64 * 1024, 16, },
+-	{ "m25p16",  0x202015,  0, 64 * 1024, 32, },
+-	{ "m25p32",  0x202016,  0, 64 * 1024, 64, },
+-	{ "m25p64",  0x202017,  0, 64 * 1024, 128, },
+-	{ "m25p128", 0x202018, 0, 256 * 1024, 64, },
+-
+-	{ "m45pe10", 0x204011,  0, 64 * 1024, 2, },
+-	{ "m45pe80", 0x204014,  0, 64 * 1024, 16, },
+-	{ "m45pe16", 0x204015,  0, 64 * 1024, 32, },
+-
+-	{ "m25pe80", 0x208014,  0, 64 * 1024, 16, },
+-	{ "m25pe16", 0x208015,  0, 64 * 1024, 32, SECT_4K, },
++	{ "m25p05",  INFO(0x202010,  0, 32 * 1024, 2, 0) },
++	{ "m25p10",  INFO(0x202011,  0, 32 * 1024, 4, 0) },
++	{ "m25p20",  INFO(0x202012,  0, 64 * 1024, 4, 0) },
++	{ "m25p40",  INFO(0x202013,  0, 64 * 1024, 8, 0) },
++	{ "m25p80",  INFO(0x202014,  0, 64 * 1024, 16, 0) },
++	{ "m25p16",  INFO(0x202015,  0, 64 * 1024, 32, 0) },
++	{ "m25p32",  INFO(0x202016,  0, 64 * 1024, 64, 0) },
++	{ "m25p64",  INFO(0x202017,  0, 64 * 1024, 128, 0) },
++	{ "m25p128", INFO(0x202018, 0, 256 * 1024, 64, 0) },
++
++	{ "m45pe10", INFO(0x204011,  0, 64 * 1024, 2, 0) },
++	{ "m45pe80", INFO(0x204014,  0, 64 * 1024, 16, 0) },
++	{ "m45pe16", INFO(0x204015,  0, 64 * 1024, 32, 0) },
++
++	{ "m25pe80", INFO(0x208014,  0, 64 * 1024, 16, 0) },
++	{ "m25pe16", INFO(0x208015,  0, 64 * 1024, 32, SECT_4K) },
+ 
+ 	/* Winbond -- w25x "blocks" are 64K, "sectors" are 4KiB */
+-	{ "w25x10", 0xef3011, 0, 64 * 1024, 2, SECT_4K, },
+-	{ "w25x20", 0xef3012, 0, 64 * 1024, 4, SECT_4K, },
+-	{ "w25x40", 0xef3013, 0, 64 * 1024, 8, SECT_4K, },
+-	{ "w25x80", 0xef3014, 0, 64 * 1024, 16, SECT_4K, },
+-	{ "w25x16", 0xef3015, 0, 64 * 1024, 32, SECT_4K, },
+-	{ "w25x32", 0xef3016, 0, 64 * 1024, 64, SECT_4K, },
+-	{ "w25x64", 0xef3017, 0, 64 * 1024, 128, SECT_4K, },
++	{ "w25x10", INFO(0xef3011, 0, 64 * 1024, 2, SECT_4K) },
++	{ "w25x20", INFO(0xef3012, 0, 64 * 1024, 4, SECT_4K) },
++	{ "w25x40", INFO(0xef3013, 0, 64 * 1024, 8, SECT_4K) },
++	{ "w25x80", INFO(0xef3014, 0, 64 * 1024, 16, SECT_4K) },
++	{ "w25x16", INFO(0xef3015, 0, 64 * 1024, 32, SECT_4K) },
++	{ "w25x32", INFO(0xef3016, 0, 64 * 1024, 64, SECT_4K) },
++	{ "w25x64", INFO(0xef3017, 0, 64 * 1024, 128, SECT_4K) },
++	{ },
+ };
++MODULE_DEVICE_TABLE(spi, m25p_ids);
+ 
+-static struct flash_info *__devinit jedec_probe(struct spi_device *spi)
++static const struct spi_device_id *__devinit jedec_probe(struct spi_device *spi)
+ {
+ 	int			tmp;
+ 	u8			code = OPCODE_RDID;
+@@ -575,16 +583,14 @@ static struct flash_info *__devinit jedec_probe(struct spi_device *spi)
+ 
+ 	ext_jedec = id[3] << 8 | id[4];
+ 
+-	for (tmp = 0, info = m25p_data;
+-			tmp < ARRAY_SIZE(m25p_data);
+-			tmp++, info++) {
++	for (tmp = 0; tmp < ARRAY_SIZE(m25p_ids) - 1; tmp++) {
++		info = (void *)m25p_ids[tmp].driver_data;
+ 		if (info->jedec_id == jedec) {
+ 			if (info->ext_id != 0 && info->ext_id != ext_jedec)
+ 				continue;
+-			return info;
++			return &m25p_ids[tmp];
+ 		}
+ 	}
+-	dev_err(&spi->dev, "unrecognized JEDEC id %06x\n", jedec);
+ 	return NULL;
  }
  
-+extern const struct spi_device_id *
-+spi_get_device_id(const struct spi_device *sdev);
-+
- #endif /* __LINUX_SPI_H */
-diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c
-index 40e0045..9d446e3 100644
---- a/scripts/mod/file2alias.c
-+++ b/scripts/mod/file2alias.c
-@@ -657,6 +657,15 @@ static int do_i2c_entry(const char *filename, struct i2c_device_id *id,
- 	return 1;
- }
+@@ -596,6 +602,7 @@ static struct flash_info *__devinit jedec_probe(struct spi_device *spi)
+  */
+ static int __devinit m25p_probe(struct spi_device *spi)
+ {
++	const struct spi_device_id	*id;
+ 	struct flash_platform_data	*data;
+ 	struct m25p			*flash;
+ 	struct flash_info		*info;
+@@ -608,32 +615,38 @@ static int __devinit m25p_probe(struct spi_device *spi)
+ 	 */
+ 	data = spi->dev.platform_data;
+ 	if (data && data->type) {
+-		for (i = 0, info = m25p_data;
+-				i < ARRAY_SIZE(m25p_data);
+-				i++, info++) {
+-			if (strcmp(data->type, info->name) == 0)
+-				break;
++		for (i = 0; i < ARRAY_SIZE(m25p_ids) - 1; i++) {
++			id = &m25p_ids[i];
++			info = (void *)m25p_ids[i].driver_data;
++			if (strcmp(data->type, id->name))
++				continue;
++			break;
+ 		}
  
-+/* Looks like: S */
-+static int do_spi_entry(const char *filename, struct spi_device_id *id,
-+			char *alias)
-+{
-+	sprintf(alias, "%s", id->name);
+ 		/* unrecognized chip? */
+-		if (i == ARRAY_SIZE(m25p_data)) {
++		if (i == ARRAY_SIZE(m25p_ids) - 1) {
+ 			DEBUG(MTD_DEBUG_LEVEL0, "%s: unrecognized id %s\n",
+ 					dev_name(&spi->dev), data->type);
+ 			info = NULL;
+ 
+ 		/* recognized; is that chip really what's there? */
+ 		} else if (info->jedec_id) {
+-			struct flash_info	*chip = jedec_probe(spi);
++			id = jedec_probe(spi);
+ 
+-			if (!chip || chip != info) {
++			if (id != &m25p_ids[i]) {
+ 				dev_warn(&spi->dev, "found %s, expected %s\n",
+-						chip ? chip->name : "UNKNOWN",
+-						info->name);
++						id ? id->name : "UNKNOWN",
++						m25p_ids[i].name);
+ 				info = NULL;
+ 			}
+ 		}
+-	} else
+-		info = jedec_probe(spi);
++	} else {
++		id = jedec_probe(spi);
++		if (!id)
++			id = spi_get_device_id(spi);
 +
-+	return 1;
-+}
-+
- static const struct dmifield {
- 	const char *prefix;
- 	int field;
-@@ -853,6 +862,10 @@ void handle_moddevtable(struct module *mod, struct elf_info *info,
- 		do_table(symval, sym->st_size,
- 			 sizeof(struct i2c_device_id), "i2c",
- 			 do_i2c_entry, mod);
-+	else if (sym_is(symname, "__mod_spi_device_table"))
-+		do_table(symval, sym->st_size,
-+			 sizeof(struct spi_device_id), "spi",
-+			 do_spi_entry, mod);
- 	else if (sym_is(symname, "__mod_dmi_device_table"))
- 		do_table(symval, sym->st_size,
- 			 sizeof(struct dmi_system_id), "dmi",
++		info = (void *)id->driver_data;
++	}
+ 
+ 	if (!info)
+ 		return -ENODEV;
+@@ -680,7 +693,7 @@ static int __devinit m25p_probe(struct spi_device *spi)
+ 
+ 	flash->mtd.dev.parent = &spi->dev;
+ 
+-	dev_info(&spi->dev, "%s (%lld Kbytes)\n", info->name,
++	dev_info(&spi->dev, "%s (%lld Kbytes)\n", id->name,
+ 			(long long)flash->mtd.size >> 10);
+ 
+ 	DEBUG(MTD_DEBUG_LEVEL2,
+@@ -766,6 +779,7 @@ static struct spi_driver m25p80_driver = {
+ 		.bus	= &spi_bus_type,
+ 		.owner	= THIS_MODULE,
+ 	},
++	.id_table	= m25p_ids,
+ 	.probe	= m25p_probe,
+ 	.remove	= __devexit_p(m25p_remove),
+ 
 -- 
 1.6.3.3
