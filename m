@@ -1,22 +1,19 @@
-Received: from qw-out-1920.google.com ([74.125.92.150])
+Received: from ey-out-1920.google.com ([74.125.78.144])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MWl2j-0001oq-2s
-	for linux-mtd@lists.infradead.org; Fri, 31 Jul 2009 05:52:41 +0000
-Received: by qw-out-1920.google.com with SMTP id 5so1302741qwf.24
+	id 1MWrTm-0003CK-Ld
+	for linux-mtd@lists.infradead.org; Fri, 31 Jul 2009 12:45:03 +0000
+Received: by ey-out-1920.google.com with SMTP id 5so520550eyb.24
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 30 Jul 2009 22:52:29 -0700 (PDT)
+	Fri, 31 Jul 2009 05:44:55 -0700 (PDT)
+Message-ID: <4A72E7FE.6000207@gmail.com>
+Date: Fri, 31 Jul 2009 14:47:58 +0200
+From: Roel Kluin <roel.kluin@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20090730172310.719ad329@ariane.spranger.biz>
-References: <20090730172310.719ad329@ariane.spranger.biz>
-From: vimal singh <vimal.newwork@gmail.com>
-Date: Fri, 31 Jul 2009 11:22:07 +0530
-Message-ID: <ce9ab5790907302252w640ce9dh5f99736555d83cd6@mail.gmail.com>
-Subject: Re: PATCH] MTD/maps: correct cleanup in error case
-To: Benedikt Spranger <b.spranger@linutronix.de>
+To: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] slram: Read buffer overflow
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: dwmw2@infradead.org, Stoyan Gaydarov <sgayda2@uiuc.edu>,
-	linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,58 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Below patch submitted to fix this along with making sure 'mtd_list' is
-not being freed if it has not been allocated:
+map[count] is checked before count < SLRAM_MAX_DEVICES_PARAMS
 
-http://lists.infradead.org/pipermail/linux-mtd/2009-July/026696.html
+Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+---
+declared on drivers/mtd/devices/slram.c:66:
 
--vimal
+static char *map[SLRAM_MAX_DEVICES_PARAMS];
 
-
-On Thu, Jul 30, 2009 at 8:53 PM, Benedikt
-Spranger<b.spranger@linutronix.de> wrote:
-> From: Benedikt Spranger <b.spranger@linutronix.de>
-> Date: Thu, 30 Jul 2009 17:03:51 +0200
-> Subject: [PATCH] MTD/maps: correct cleanup in error case
->
-> fix a copy and paste error introduced by commit 143070e
-> (mtd: physmap_of: Add multiple regions and concatenation support).
->
-> info is needed (via drvdata) and freed in of_flash_remove(), therefore
-> drvdata should be set right after allocation.
->
-> Signed-off-by: Benedikt Spranger <b.spranger@linutronix.de>
-> ---
-> =A0drivers/mtd/maps/physmap_of.c | =A0 =A06 +++---
-> =A01 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.=
-c
-> index 39d357b..32b4a5a 100644
-> --- a/drivers/mtd/maps/physmap_of.c
-> +++ b/drivers/mtd/maps/physmap_of.c
-> @@ -214,12 +214,12 @@ static int __devinit of_flash_probe(struct of_devic=
-e *dev,
-> =A0 =A0 =A0 =A0if (!info)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0goto err_out;
->
-> + =A0 =A0 =A0 dev_set_drvdata(&dev->dev, info);
-> +
-> =A0 =A0 =A0 =A0mtd_list =3D kzalloc(sizeof(struct mtd_info) * count, GFP_=
-KERNEL);
-> - =A0 =A0 =A0 if (!info)
-> + =A0 =A0 =A0 if (!mtd_list)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0goto err_out;
->
-> - =A0 =A0 =A0 dev_set_drvdata(&dev->dev, info);
-> -
-> =A0 =A0 =A0 =A0for (i =3D 0; i < count; i++) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0err =3D -ENXIO;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (of_address_to_resource(dp, i, &res)) {
-> --
-> 1.6.3.3
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+diff --git a/drivers/mtd/devices/slram.c b/drivers/mtd/devices/slram.c
+index 00248e8..239500b 100644
+--- a/drivers/mtd/devices/slram.c
++++ b/drivers/mtd/devices/slram.c
+@@ -341,7 +341,7 @@ static int init_slram(void)
+ #else
+ 	int count;
+ 
+-	for (count = 0; (map[count]) && (count < SLRAM_MAX_DEVICES_PARAMS);
++	for (count = 0; count < SLRAM_MAX_DEVICES_PARAMS && map[count];
+ 			count++) {
+ 	}
+ 
