@@ -1,21 +1,21 @@
-Received: from ey-out-1920.google.com ([74.125.78.146])
+Received: from smtp-01.datacomm.ch ([212.40.2.26])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MXWIb-0004AO-6u
-	for linux-mtd@lists.infradead.org; Sun, 02 Aug 2009 08:20:13 +0000
-Received: by ey-out-1920.google.com with SMTP id 5so755107eyb.24
+	id 1MXbfy-00027D-2k
+	for linux-mtd@lists.infradead.org; Sun, 02 Aug 2009 14:04:42 +0000
+Received: from [192.168.1.40] (121-140.76-83.cust.bluewin.ch [83.76.140.121])
+	(Authenticated sender: Neukomm@vtxmail.ch)
+	by smtp-01.datacomm.ch (VTX Datacomm AG) with ESMTPA id 9509F1DC15B
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 02 Aug 2009 01:20:05 -0700 (PDT)
-Message-ID: <4A754CF2.6070409@gmail.com>
-Date: Sun, 02 Aug 2009 10:23:14 +0200
-From: Roel Kluin <roel.kluin@gmail.com>
+	Sun,  2 Aug 2009 16:04:34 +0200 (CEST)
+Message-ID: <4A759CF3.2010908@vtxmail.ch>
+Date: Sun, 02 Aug 2009 16:04:35 +0200
+From: Daniel Neukomm <Neukomm@vtxmail.ch>
 MIME-Version: 1.0
-To: Roel Kluin <roel.kluin@gmail.com>
-Subject: Re: pmcmsp-flash.c: correct clean up?
-References: <4A709A88.30103@gmail.com>
-In-Reply-To: <4A709A88.30103@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
+To: linux-mtd@lists.infradead.org
+Subject: patch for mkfs.ubifs devtable.c increment in dev_table is wrongly
+	interpreted
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,152 +25,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Op 29-07-09 20:52, Roel Kluin schreef:
-> Hi,
-> 
-> I noted that cleanup_msp_flash() attempted to determine the size of
-> msp_flash with `sizeof(msp_flash) / sizeof(struct mtd_info **)'
-> this will not work since msp_flash is not an array.
-> 
-> Also I made some changes to since init_msp_flash() to clean up
-> after errors. Do you have problems with this?
+patch for mkfs.ubifs devtable.c increment in dev_table is wrongly 
+interpreted
 
-My former patch had whitespace issues.
+with the device table one can add /dev entries to the root file system 
+image.
+The device table file contains among others the fields minor, start, 
+increment and count.
+If there is an entry with minor=0 start=0 increment =32 and count=4 the 
+mkfs.ubifs makes
+128 device entries, with minor numbers from 0 to 127
+The correct version makes 4 entries with minor number 0,32,64,96.
 
-Roel
+/dev/mtd c 640 0 0 90 0 0  2 7
+This gives 14 devices /dev/mtdXX instead of  7 devices.
+Due to this error mtd_debug info /dev/mtd3 delivers the information of 
+/dev/mtd1 instead of. 
 
-diff --git a/drivers/mtd/maps/pmcmsp-flash.c b/drivers/mtd/maps/pmcmsp-flash.c
-index 4768bd5..52812a9 100644
---- a/drivers/mtd/maps/pmcmsp-flash.c
-+++ b/drivers/mtd/maps/pmcmsp-flash.c
-@@ -50,7 +50,7 @@ static int fcnt;
- 
- static int __init init_msp_flash(void)
- {
--	int i, j;
-+	int i, j, ret = -ENOMEM;
- 	int offset, coff;
- 	char *env;
- 	int pcnt;
-@@ -75,14 +75,16 @@ static int __init init_msp_flash(void)
- 	printk(KERN_NOTICE "Found %d PMC flash devices\n", fcnt);
- 
- 	msp_flash = kmalloc(fcnt * sizeof(struct map_info *), GFP_KERNEL);
-+	if (!msp_flash)
-+		return -ENOMEM;
-+
- 	msp_parts = kmalloc(fcnt * sizeof(struct mtd_partition *), GFP_KERNEL);
-+	if (!msp_parts)
-+		goto free_msp_flash;
-+
- 	msp_maps = kcalloc(fcnt, sizeof(struct mtd_info), GFP_KERNEL);
--	if (!msp_flash || !msp_parts || !msp_maps) {
--		kfree(msp_maps);
--		kfree(msp_parts);
--		kfree(msp_flash);
--		return -ENOMEM;
--	}
-+	if (!msp_maps)
-+		goto free_msp_parts;
- 
- 	/* loop over the flash devices, initializing each */
- 	for (i = 0; i < fcnt; i++) {
-@@ -100,13 +102,17 @@ static int __init init_msp_flash(void)
- 
- 		msp_parts[i] = kcalloc(pcnt, sizeof(struct mtd_partition),
- 				       GFP_KERNEL);
-+		if (!msp_parts[i])
-+			goto free_in_loop;
- 
- 		/* now initialize the devices proper */
- 		flash_name[5] = '0' + i;
- 		env = prom_getenv(flash_name);
- 
--		if (sscanf(env, "%x:%x", &addr, &size) < 2)
--			return -ENXIO;
-+		if (sscanf(env, "%x:%x", &addr, &size) < 2) {
-+			ret = -ENXIO;
-+			goto free_msp_parts_arr;
-+		}
- 		addr = CPHYSADDR(addr);
- 
- 		printk(KERN_NOTICE
-@@ -123,12 +129,19 @@ static int __init init_msp_flash(void)
- 		if (size > CONFIG_MSP_FLASH_MAP_LIMIT)
- 			size = CONFIG_MSP_FLASH_MAP_LIMIT;
- 		msp_maps[i].virt = ioremap(addr, size);
-+
-+		if (msp_maps[i].virt == NULL) {
-+			ret = -ENXIO;
-+			goto free_msp_parts_arr;
-+		}
-+
- 		msp_maps[i].bankwidth = 1;
--		msp_maps[i].name = strncpy(kmalloc(7, GFP_KERNEL),
--					flash_name, 7);
-+		msp_maps[i].name = kmalloc(7, GFP_KERNEL);
-+		if (!msp_maps[i].name)
-+			goto iounmap_virt;
-+
-+		msp_maps[i].name = strncpy(msp_maps[i].name, flash_name, 7);
- 
--		if (msp_maps[i].virt == NULL)
--			return -ENXIO;
- 
- 		for (j = 0; j < pcnt; j++) {
- 			part_name[5] = '0' + i;
-@@ -136,8 +149,11 @@ static int __init init_msp_flash(void)
- 
- 			env = prom_getenv(part_name);
- 
--			if (sscanf(env, "%x:%x:%n", &offset, &size, &coff) < 2)
--				return -ENXIO;
-+			if (sscanf(env, "%x:%x:%n", &offset, &size,
-+						&coff) < 2) {
-+				ret = -ENXIO;
-+				goto free_msp_maps_name;
-+			}
- 
- 			msp_parts[i][j].size = size;
- 			msp_parts[i][j].offset = offset;
-@@ -152,18 +168,38 @@ static int __init init_msp_flash(void)
- 			add_mtd_partitions(msp_flash[i], msp_parts[i], pcnt);
- 		} else {
- 			printk(KERN_ERR "map probe failed for flash\n");
--			return -ENXIO;
-+			ret = -ENXIO;
-+			goto free_msp_maps_name;
- 		}
- 	}
- 
- 	return 0;
-+
-+	while (i--) {
-+		del_mtd_partitions(msp_flash[i]);
-+		map_destroy(msp_flash[i]);
-+free_msp_maps_name:
-+		kfree(msp_maps[i].name);
-+iounmap_virt:
-+		iounmap((void *)msp_maps[i].virt);
-+free_msp_parts_arr:
-+		kfree(msp_parts[i]);
-+free_in_loop:
-+	}
-+
-+	kfree(msp_maps);
-+free_msp_parts:
-+	kfree(msp_parts);
-+free_msp_flash:
-+	kfree(msp_flash);
-+	return ret;
- }
- 
- static void __exit cleanup_msp_flash(void)
- {
- 	int i;
- 
--	for (i = 0; i < sizeof(msp_flash) / sizeof(struct mtd_info **); i++) {
-+	for (i = 0; i < fcnt; i++) {
- 		del_mtd_partitions(msp_flash[i]);
- 		map_destroy(msp_flash[i]);
- 		iounmap((void *)msp_maps[i].virt);
+diff --git a/mkfs.ubifs/devtable.c b/mkfs.ubifs/devtable.c
+index 236a6e7..e2d96dc 100644
+--- a/mkfs.ubifs/devtable.c
++++ b/mkfs.ubifs/devtable.c
+@@ -248,7 +248,7 @@ static int interpret_table_entry(const char *line)
+                        goto out_free;
+                }
+        } else {
+-               int i, num = start + increment * count, len = 
+strlen(name) + 20;
++               int i, num = start + count, len = strlen(name) + 20;
+                char *nm;
+
+                for (i = start; i < num; i++) {
+@@ -262,7 +262,7 @@ static int interpret_table_entry(const char *line)
+                        nh_elt->mode = mode;
+                        nh_elt->uid = uid;
+                        nh_elt->gid = gid;
+-                       nh_elt->dev = makedev(major, minor + i - start);
++                       nh_elt->dev = makedev(major, minor + (i - 
+start)*increment);
+
+                        nm = malloc(len);
+                        if (!nm) {
