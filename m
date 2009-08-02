@@ -1,20 +1,21 @@
-Received: from mail-px0-f190.google.com ([209.85.216.190])
+Received: from ey-out-1920.google.com ([74.125.78.146])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MXGq2-0002zX-0N
-	for linux-mtd@lists.infradead.org; Sat, 01 Aug 2009 15:49:42 +0000
-Received: by pxi28 with SMTP id 28so1502879pxi.28
+	id 1MXWIb-0004AO-6u
+	for linux-mtd@lists.infradead.org; Sun, 02 Aug 2009 08:20:13 +0000
+Received: by ey-out-1920.google.com with SMTP id 5so755107eyb.24
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 01 Aug 2009 08:49:36 -0700 (PDT)
+	Sun, 02 Aug 2009 01:20:05 -0700 (PDT)
+Message-ID: <4A754CF2.6070409@gmail.com>
+Date: Sun, 02 Aug 2009 10:23:14 +0200
+From: Roel Kluin <roel.kluin@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <110c8b2e0907311429k26d23f10jb220a4afdf89e949@mail.gmail.com>
-References: <110c8b2e0907311429k26d23f10jb220a4afdf89e949@mail.gmail.com>
-Date: Sat, 1 Aug 2009 08:49:36 -0700
-Message-ID: <110c8b2e0908010849x7d6b524akc7cf94a86e24f6c9@mail.gmail.com>
-Subject: Re: Trouble getting MTD to run -- permission denied messages
-From: Subodh Nijsure <nijsure.subodh@gmail.com>
-To: linux-mtd@lists.infradead.org
+To: Roel Kluin <roel.kluin@gmail.com>
+Subject: Re: pmcmsp-flash.c: correct clean up?
+References: <4A709A88.30103@gmail.com>
+In-Reply-To: <4A709A88.30103@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,146 +25,152 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I enabled some of the debug macros and attached output below,
-concerned about "Chip erase not supported" debug output. Is that
-reason I am not able to write to NOR flash? But I also see " Program
-after Erase Suspend: supported"
+Op 29-07-09 20:52, Roel Kluin schreef:
+> Hi,
+> 
+> I noted that cleanup_msp_flash() attempted to determine the size of
+> msp_flash with `sizeof(msp_flash) / sizeof(struct mtd_info **)'
+> this will not work since msp_flash is not an array.
+> 
+> Also I made some changes to since init_msp_flash() to clean up
+> after errors. Do you have problems with this?
 
+My former patch had whitespace issues.
 
-Primary Vendor Command Set: 0001 (Intel/Sharp Extended)
-Primary Algorithm Table at 010A
-Alternative Vendor Command Set: 0000 (None)
-No Alternate Algorithm Table
-Vcc Minimum:  1.7 V
-Vcc Maximum:  2.0 V
-Vpp Minimum:  8.5 V
-Vpp Maximum:  9.5 V
-Typical byte/word write timeout: 256 .s
-Maximum byte/word write timeout: 512 .s
-Typical full buffer write timeout: 512 .s
-Maximum full buffer write timeout: 1024 .s
-Typical block erase timeout: 1024 ms
-Maximum block erase timeout: 4096 ms
-Chip erase not supported
-Device size: 0x2000000 bytes (32 MiB)
-Flash Device Interface description: 0x0001
-  - x16-only asynchronous interface
-Max. bytes in buffer write: 0x40
-Number of Erase Block Regions: 2
-  Erase Region #0: BlockSize 0x8000 bytes, 4 blocks
-  Erase Region #1: BlockSize 0x20000 bytes, 255 blocks
+Roel
 
- Intel/Sharp Extended Query Table at 0x010A
- Intel/Sharp Extended Query Table at 0x010A
- Intel/Sharp Extended Query Table at 0x010A
- Intel/Sharp Extended Query Table at 0x010A
- Intel/Sharp Extended Query Table at 0x010A
-Using buffer write method
-Using auto-unlock on power-up/resume
-  Extended Query version 1.4
-  Feature/Command Support:      00E6
-     - Chip Erase:              unsupported
-     - Suspend Erase:           supported
-     - Suspend Program:         supported
-     - Legacy Lock/Unlock:      unsupported
-     - Queued Erase:            unsupported
-     - Instant block lock:      supported
-     - Protection Bits:         supported
-     - Page-mode read:          supported
-     - Synchronous read:        unsupported
-     - Simultaneous operations: unsupported
-     - Extended Flash Array:    unsupported
-  Supported functions after Suspend: 01
-     - Program after Erase Suspend: supported
-  Block Status Register Mask: 0003
-     - Lock Bit Active:      yes
-     - Lock-Down Bit Active: yes
-     - EFA Lock Bit:         no
-     - EFA Lock-Down Bit:    no
-  Vcc Logic Supply Optimum Program/Erase Voltage: 1.8 V
-  Vpp Programming Supply Optimum Program/Erase Voltage: 9.0 V
-cfi_cmdset_0001: Erase suspend on write enabled
-
-
-On Fri, Jul 31, 2009 at 2:29 PM, Subodh Nijsure<nijsure.subodh@gmail.com> w=
-rote:
-> I have defined my NOR flash layout as follows I am able to see the
-> contents of the flash when I do
->
-> dd=3D/dev/mtdblock1 of=3D/tmp/myflash
->
-> However I created a jffs2 image on my workstation and tried to "burn"
-> it to flash by executing following command =A0and I see messages "This
-> doesn't seem to be valid MTD flash device.
->
-> # ./flashcp /initrd.jffs2 /dev/mtdblock1
-> mtdblock_open
-> ok
-> This doesn't seem to be a valid MTD flash device!
-> mtdblock_release
-> ok
->
-> Also mtdinfo -a display following message
->
-> # /mtd/mtdinfo -a
-> Count of MTD devices: =A0 =A0 =A0 =A0 =A0 3
-> MTD_open
-> libmtd: error!: cannot open "/dev/mtd0"
-> =A0 =A0 =A0 =A0error 13 (Permission denied)
-> mtdinfo: error!: libmtd failed get MTD device 0 information
-> =A0 =A0 =A0 =A0 error 13 (Permission denied)
->
-> I must have missed some basic step in getting things setup for NOR
-> flash, would appreciate a nudge in right direction...
->
->
->
-> static struct mtd_partition my_flash_partitions[] =3D {
-> =A0 =A0 =A0 =A0{
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.name =3D "Linux",
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.offset =3D RW_PART2_OF,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.size =3D RW_PART2_SZ,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.mask_flags =3D MTD_WRITEABLE
-> =A0 =A0 =A0 =A0},
-> =A0 =A0 =A0 =A0{
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.name =3D "ramdisk",
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.offset =3D RW_PART3_OF,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.size =3D RW_PART3_SZ,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.mask_flags =3D MTD_WRITEABLE
-> =A0 =A0 =A0 =A0},
-> };
->
->
-> struct map_info my_flash_map =3D {
-> =A0 =A0 =A0 =A0.name =3D "My device",
-> =A0 =A0 =A0 =A0.size =3D WINDOW_SIZE,
-> =A0 =A0 =A0 =A0.bankwidth =3D 2,
-> =A0 =A0 =A0 =A0.phys =3D WINDOW_ADDR,
-> };
->
->
-> When I boot my board I see following messages :
->
-> flash mapping: size 0600000 at 0xc1400000
-> Found 1 x16 devices at 0x0 in 16-bit bank
-> NOR chip too large to fit in mapping. Attempting to cope...
-> =A0Intel/Sharp Extended Query Table at 0x010A
-> =A0Intel/Sharp Extended Query Table at 0x010A
-> =A0Intel/Sharp Extended Query Table at 0x010A
-> =A0Intel/Sharp Extended Query Table at 0x010A
-> =A0Intel/Sharp Extended Query Table at 0x010A
-> Using buffer write method
-> Using auto-unlock on power-up/resume
-> cfi_cmdset_0001: Erase suspend on write enabled
-> erase region 0: offset=3D0x0,size=3D0x8000,blocks=3D4
-> erase region 1: offset=3D0x20000,size=3D0x20000,blocks=3D255
-> Reducing visibility of 32768KiB chip to 6144KiB
-> Creating 2 MTD partitions on "My Device":
-> 0x00000000-0x00300000 : "Linux"
-> mtd: Giving out device 0 to Linux
-> 0x00300000-0x00600000 : "ramdisk"
-> mtd: Giving out device 1 to ramdisk
->
->
-> /Subodh
->
+diff --git a/drivers/mtd/maps/pmcmsp-flash.c b/drivers/mtd/maps/pmcmsp-flash.c
+index 4768bd5..52812a9 100644
+--- a/drivers/mtd/maps/pmcmsp-flash.c
++++ b/drivers/mtd/maps/pmcmsp-flash.c
+@@ -50,7 +50,7 @@ static int fcnt;
+ 
+ static int __init init_msp_flash(void)
+ {
+-	int i, j;
++	int i, j, ret = -ENOMEM;
+ 	int offset, coff;
+ 	char *env;
+ 	int pcnt;
+@@ -75,14 +75,16 @@ static int __init init_msp_flash(void)
+ 	printk(KERN_NOTICE "Found %d PMC flash devices\n", fcnt);
+ 
+ 	msp_flash = kmalloc(fcnt * sizeof(struct map_info *), GFP_KERNEL);
++	if (!msp_flash)
++		return -ENOMEM;
++
+ 	msp_parts = kmalloc(fcnt * sizeof(struct mtd_partition *), GFP_KERNEL);
++	if (!msp_parts)
++		goto free_msp_flash;
++
+ 	msp_maps = kcalloc(fcnt, sizeof(struct mtd_info), GFP_KERNEL);
+-	if (!msp_flash || !msp_parts || !msp_maps) {
+-		kfree(msp_maps);
+-		kfree(msp_parts);
+-		kfree(msp_flash);
+-		return -ENOMEM;
+-	}
++	if (!msp_maps)
++		goto free_msp_parts;
+ 
+ 	/* loop over the flash devices, initializing each */
+ 	for (i = 0; i < fcnt; i++) {
+@@ -100,13 +102,17 @@ static int __init init_msp_flash(void)
+ 
+ 		msp_parts[i] = kcalloc(pcnt, sizeof(struct mtd_partition),
+ 				       GFP_KERNEL);
++		if (!msp_parts[i])
++			goto free_in_loop;
+ 
+ 		/* now initialize the devices proper */
+ 		flash_name[5] = '0' + i;
+ 		env = prom_getenv(flash_name);
+ 
+-		if (sscanf(env, "%x:%x", &addr, &size) < 2)
+-			return -ENXIO;
++		if (sscanf(env, "%x:%x", &addr, &size) < 2) {
++			ret = -ENXIO;
++			goto free_msp_parts_arr;
++		}
+ 		addr = CPHYSADDR(addr);
+ 
+ 		printk(KERN_NOTICE
+@@ -123,12 +129,19 @@ static int __init init_msp_flash(void)
+ 		if (size > CONFIG_MSP_FLASH_MAP_LIMIT)
+ 			size = CONFIG_MSP_FLASH_MAP_LIMIT;
+ 		msp_maps[i].virt = ioremap(addr, size);
++
++		if (msp_maps[i].virt == NULL) {
++			ret = -ENXIO;
++			goto free_msp_parts_arr;
++		}
++
+ 		msp_maps[i].bankwidth = 1;
+-		msp_maps[i].name = strncpy(kmalloc(7, GFP_KERNEL),
+-					flash_name, 7);
++		msp_maps[i].name = kmalloc(7, GFP_KERNEL);
++		if (!msp_maps[i].name)
++			goto iounmap_virt;
++
++		msp_maps[i].name = strncpy(msp_maps[i].name, flash_name, 7);
+ 
+-		if (msp_maps[i].virt == NULL)
+-			return -ENXIO;
+ 
+ 		for (j = 0; j < pcnt; j++) {
+ 			part_name[5] = '0' + i;
+@@ -136,8 +149,11 @@ static int __init init_msp_flash(void)
+ 
+ 			env = prom_getenv(part_name);
+ 
+-			if (sscanf(env, "%x:%x:%n", &offset, &size, &coff) < 2)
+-				return -ENXIO;
++			if (sscanf(env, "%x:%x:%n", &offset, &size,
++						&coff) < 2) {
++				ret = -ENXIO;
++				goto free_msp_maps_name;
++			}
+ 
+ 			msp_parts[i][j].size = size;
+ 			msp_parts[i][j].offset = offset;
+@@ -152,18 +168,38 @@ static int __init init_msp_flash(void)
+ 			add_mtd_partitions(msp_flash[i], msp_parts[i], pcnt);
+ 		} else {
+ 			printk(KERN_ERR "map probe failed for flash\n");
+-			return -ENXIO;
++			ret = -ENXIO;
++			goto free_msp_maps_name;
+ 		}
+ 	}
+ 
+ 	return 0;
++
++	while (i--) {
++		del_mtd_partitions(msp_flash[i]);
++		map_destroy(msp_flash[i]);
++free_msp_maps_name:
++		kfree(msp_maps[i].name);
++iounmap_virt:
++		iounmap((void *)msp_maps[i].virt);
++free_msp_parts_arr:
++		kfree(msp_parts[i]);
++free_in_loop:
++	}
++
++	kfree(msp_maps);
++free_msp_parts:
++	kfree(msp_parts);
++free_msp_flash:
++	kfree(msp_flash);
++	return ret;
+ }
+ 
+ static void __exit cleanup_msp_flash(void)
+ {
+ 	int i;
+ 
+-	for (i = 0; i < sizeof(msp_flash) / sizeof(struct mtd_info **); i++) {
++	for (i = 0; i < fcnt; i++) {
+ 		del_mtd_partitions(msp_flash[i]);
+ 		map_destroy(msp_flash[i]);
+ 		iounmap((void *)msp_maps[i].virt);
