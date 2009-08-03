@@ -1,10 +1,17 @@
-From: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] [MTD] m25p80: memory accessor interface for SPI MTD driver
-Date: Mon,  3 Aug 2009 17:02:05 -0400
-Message-Id: <1249333325-16750-1-git-send-email-sudhakar.raj@ti.com>
-Cc: david-b@pacbell.net, davinci-linux-open-source@linux.davincidsp.com,
-	Sudhakar Rajashekhara <sudhakar.raj@ti.com>, dwmw2@infradead.org
+Received: from gw1.transmode.se ([213.115.205.20])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MXwCH-0000tA-IP
+	for linux-mtd@lists.infradead.org; Mon, 03 Aug 2009 11:59:26 +0000
+In-Reply-To: <Pine.LNX.4.63.0908031237170.17084@redbean.intranet.gw-instruments.de>
+References: <Pine.LNX.4.63.0908031237170.17084@redbean.intranet.gw-instruments.de>
+Subject: Re: [Patch 1/1] don't suspend erase for erase in cfi_cmdset_0002
+To: Peter Wippich <pewi@gw-instruments.de>
+Message-ID: <OFB6C7C37A.2F2E4229-ONC1257607.00415F5E-C1257607.0041DA2F@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Mon, 3 Aug 2009 13:59:16 +0200
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -14,135 +21,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On TI's da850/omap-l138 EVM, MAC address is stored in SPI flash.
-This patch implements memory accessor interface for SPI MTD
-driver which enables the kernel to access flash data.
+linux-mtd-bounces@lists.infradead.org wrote on 03/08/2009 12:50:44:
 
-This patch also changes the initialization sequence of the
-drivers by moving mtd and spi ahead of net in drivers/Makefile
-thereby enabling da850/omap-l138 ethernet driver to read the
-MAC address while booting.
+>
+>
+> Hi,
+>
+> came around this problem while stress testing jffs2. From time to time the
+> block erase failed and the file system overflows. I don't know if there
+> are any Nor chips out there which allow a new erase to start when in erase
+> suspend. However, the chips on my board dont't. And even when it doesn't
+> make much sense to suspend an erase operation for another erase.
+>
+> Patch below fixes the problem for me.
+>
+> Have fun and take care,
+>
+> Peter
+>
+> Signed-off-by: Peter Wippich <pewi@gw-instruments.de>
+> ---
+> diff -Naur a/drivers/mtd/chips/cfi_cmdset_0002.c
+> b/drivers/mtd/chips/cfi_cmdset_0002.c
+> --- a/drivers/mtd/chips/cfi_cmdset_0002.c   2007-07-10 20:56:30.000000000 +0200
+> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c   2009-08-02 19:55:34.000000000 +0200
+> @@ -521,6 +521,10 @@
+>     case FL_ERASING:
+>        if (mode == FL_WRITING) /* FIXME: Erase-suspend-program appears broken. */
+>           goto sleep;
+> +      if (mode == FL_ERASING) {
+> +         printk(KERN_INFO "attempt erase suspend with mode FL_ERASING\n") ;
+> +         goto sleep;
+> +      }
+>
+>        if (!(   mode == FL_READY
+>              || mode == FL_POINT
+>
 
-Signed-off-by: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
----
- drivers/Makefile             |    4 ++--
- drivers/mtd/devices/m25p80.c |   40 ++++++++++++++++++++++++++++++++++++++++
- include/linux/spi/flash.h    |    2 ++
- 3 files changed, 44 insertions(+), 2 deletions(-)
+This change looks bogus. You are not supposed to need the extra test.
+I do think this test is faulty though:
 
-diff --git a/drivers/Makefile b/drivers/Makefile
-index bc4205d..2a1d41f 100644
---- a/drivers/Makefile
-+++ b/drivers/Makefile
-@@ -42,6 +42,8 @@ obj-y				+= macintosh/
- obj-$(CONFIG_IDE)		+= ide/
- obj-$(CONFIG_SCSI)		+= scsi/
- obj-$(CONFIG_ATA)		+= ata/
-+obj-$(CONFIG_MTD)		+= mtd/
-+obj-$(CONFIG_SPI)		+= spi/
- obj-y				+= net/
- obj-$(CONFIG_ATM)		+= atm/
- obj-$(CONFIG_FUSION)		+= message/
-@@ -50,8 +52,6 @@ obj-y				+= ieee1394/
- obj-$(CONFIG_UIO)		+= uio/
- obj-y				+= cdrom/
- obj-y				+= auxdisplay/
--obj-$(CONFIG_MTD)		+= mtd/
--obj-$(CONFIG_SPI)		+= spi/
- obj-$(CONFIG_PCCARD)		+= pcmcia/
- obj-$(CONFIG_DIO)		+= dio/
- obj-$(CONFIG_SBUS)		+= sbus/
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index ae5fe91..9b0f409 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -19,6 +19,7 @@
- #include <linux/module.h>
- #include <linux/device.h>
- #include <linux/interrupt.h>
-+#include <linux/memory.h>
- #include <linux/mutex.h>
- #include <linux/math64.h>
- 
-@@ -69,6 +70,7 @@
- 
- struct m25p {
- 	struct spi_device	*spi;
-+	struct memory_accessor	macc;
- 	struct mutex		lock;
- 	struct mtd_info		mtd;
- 	unsigned		partitioned:1;
-@@ -548,6 +550,38 @@ static struct flash_info __devinitdata m25p_data [] = {
- 	{ "w25x64", 0xef3017, 0, 64 * 1024, 128, SECT_4K, },
- };
- 
-+/*
-+ * This lets other kernel code access the flash data. For example, it
-+ * might hold a board's Ethernet address, or board-specific calibration
-+ * data generated on the manufacturing floor.
-+ */
-+
-+static ssize_t m25p_macc_read(struct memory_accessor *macc, char *buf,
-+			off_t offset, size_t count)
-+{
-+	struct m25p *info = container_of(macc, struct m25p, macc);
-+	ssize_t ret = -EIO;
-+	size_t retlen;
-+
-+	if (m25p80_read(&info->mtd, offset, count, &retlen, buf) == 0)
-+		ret = retlen;
-+
-+	return ret;
-+}
-+
-+static ssize_t m25p_macc_write(struct memory_accessor *macc, const char *buf,
-+			off_t offset, size_t count)
-+{
-+	struct m25p *info = container_of(macc, struct m25p, macc);
-+	ssize_t ret = -EIO;
-+	size_t retlen;
-+
-+	if (m25p80_write(&info->mtd, offset, count, &retlen, buf) == 0)
-+		ret = retlen;
-+
-+	return ret;
-+}
-+
- static struct flash_info *__devinit jedec_probe(struct spi_device *spi)
- {
- 	int			tmp;
-@@ -669,6 +703,9 @@ static int __devinit m25p_probe(struct spi_device *spi)
- 	flash->mtd.read = m25p80_read;
- 	flash->mtd.write = m25p80_write;
- 
-+	flash->macc.read = m25p_macc_read;
-+	flash->macc.write = m25p_macc_write;
-+
- 	/* prefer "small sector" erase if possible */
- 	if (info->flags & SECT_4K) {
- 		flash->erase_opcode = OPCODE_BE_4K;
-@@ -691,6 +728,9 @@ static int __devinit m25p_probe(struct spi_device *spi)
- 		flash->mtd.erasesize, flash->mtd.erasesize / 1024,
- 		flash->mtd.numeraseregions);
- 
-+	if (data->setup)
-+		data->setup(&flash->macc, data->context);
-+
- 	if (flash->mtd.numeraseregions)
- 		for (i = 0; i < flash->mtd.numeraseregions; i++)
- 			DEBUG(MTD_DEBUG_LEVEL2,
-diff --git a/include/linux/spi/flash.h b/include/linux/spi/flash.h
-index 3f22932..5e3cbea 100644
---- a/include/linux/spi/flash.h
-+++ b/include/linux/spi/flash.h
-@@ -24,6 +24,8 @@ struct flash_platform_data {
- 	unsigned int	nr_parts;
- 
- 	char		*type;
-+	void		(*setup)(struct memory_accessor *, void *context);
-+	void		*context;
- 
- 	/* we'll likely add more ... use JEDEC IDs, etc */
- };
--- 
-1.5.6
+	if (!(   mode == FL_READY
+		      || mode == FL_POINT
+		      || !cfip
+		      || (mode == FL_WRITING && (cfip->EraseSuspend & 0x2))
+		      || (mode == FL_WRITING && (cfip->EraseSuspend & 0x1)
+		    )))
+
+What happens if cfip is NULL?
+
+ Jocke
