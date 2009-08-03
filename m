@@ -1,21 +1,14 @@
-Received: from smtp-01.datacomm.ch ([212.40.2.26])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MXbfy-00027D-2k
-	for linux-mtd@lists.infradead.org; Sun, 02 Aug 2009 14:04:42 +0000
-Received: from [192.168.1.40] (121-140.76-83.cust.bluewin.ch [83.76.140.121])
-	(Authenticated sender: Neukomm@vtxmail.ch)
-	by smtp-01.datacomm.ch (VTX Datacomm AG) with ESMTPA id 9509F1DC15B
-	for <linux-mtd@lists.infradead.org>;
-	Sun,  2 Aug 2009 16:04:34 +0200 (CEST)
-Message-ID: <4A759CF3.2010908@vtxmail.ch>
-Date: Sun, 02 Aug 2009 16:04:35 +0200
-From: Daniel Neukomm <Neukomm@vtxmail.ch>
-MIME-Version: 1.0
+Received: from mail64.messagelabs.com ([216.82.249.227])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MXnzG-0001rU-L3
+	for linux-mtd@lists.infradead.org; Mon, 03 Aug 2009 03:13:27 +0000
 To: linux-mtd@lists.infradead.org
-Subject: patch for mkfs.ubifs devtable.c increment in dev_table is wrongly
-	interpreted
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: OOB data difference
+MIME-Version: 1.0
+Message-ID: <OFE6E75894.8CE7F818-ON65257607.0010CA03-65257607.00115485@lntemsys.com>
+From: Rupesh Kumar <Rupesh.Kumar@Lntemsys.com>
+Date: Mon, 3 Aug 2009 08:51:17 +0530
+Content-Type: text/plain; charset="US-ASCII"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,44 +18,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-patch for mkfs.ubifs devtable.c increment in dev_table is wrongly 
-interpreted
+Hi all,
 
-with the device table one can add /dev entries to the root file system 
-image.
-The device table file contains among others the fields minor, start, 
-increment and count.
-If there is an entry with minor=0 start=0 increment =32 and count=4 the 
-mkfs.ubifs makes
-128 device entries, with minor numbers from 0 to 127
-The correct version makes 4 entries with minor number 0,32,64,96.
+I booted with ramdisk rfs image and erased one of the flash partition with 
+flash_eraseall (with -j option) utility. The OOB data written in the 
+partition was as shown as below.
 
-/dev/mtd c 640 0 0 90 0 0  2 7
-This gives 14 devices /dev/mtdXX instead of  7 devices.
-Due to this error mtd_debug info /dev/mtd3 delivers the information of 
-/dev/mtd1 instead of. 
+OOB:
+        ff ff ff ff ff ff 9a a5
+        a6 ff ff ff ff ff ff ff
+        ff ff ff ff ff ff 03 33
+        0c ff ff ff ff ff ff ff
+        ff ff ff ff ff ff 03 c0
+        3f ff ff ff ff ff ff ff
+        ff ff ff ff ff ff a5 65
+        a6 ff ff ff ff ff ff ff
 
-diff --git a/mkfs.ubifs/devtable.c b/mkfs.ubifs/devtable.c
-index 236a6e7..e2d96dc 100644
---- a/mkfs.ubifs/devtable.c
-+++ b/mkfs.ubifs/devtable.c
-@@ -248,7 +248,7 @@ static int interpret_table_entry(const char *line)
-                        goto out_free;
-                }
-        } else {
--               int i, num = start + increment * count, len = 
-strlen(name) + 20;
-+               int i, num = start + count, len = strlen(name) + 20;
-                char *nm;
+Then, booted with jffs2 rfs image and repeated same operation, the OOB 
+data written was
 
-                for (i = start; i < num; i++) {
-@@ -262,7 +262,7 @@ static int interpret_table_entry(const char *line)
-                        nh_elt->mode = mode;
-                        nh_elt->uid = uid;
-                        nh_elt->gid = gid;
--                       nh_elt->dev = makedev(major, minor + i - start);
-+                       nh_elt->dev = makedev(major, minor + (i - 
-start)*increment);
+OOB:
+        ff ff ff ff ff ff 0c 33
+        0c ff ff ff ff ff ff ff
+        ff ff ff ff ff ff 30 ff
+        0c ff ff ff ff ff ff ff
+        ff ff ff ff ff ff f3 cf
+        3c ff ff ff ff ff ff ff
+        ff ff ff ff ff ff ff c0
+        0c ff ff ff ff ff ff ff
 
-                        nm = malloc(len);
-                        if (!nm) {
+command used for erasing flash partition in both cases was 
+# flash_eraseall -j /dev/mtd11
+
+I want to know :-
+1) why there is difference between written OOB data when erasing while 
+booted with ramdisk image and that of when booted with jffs2 image , even 
+though i am using same utility (with same option) to erase flash 
+partition.
+2) is flash_eraseall utility functionality depends on the type of RFS 
+system booted with ?
+ 
+
+Thanks
+Rupesh 
