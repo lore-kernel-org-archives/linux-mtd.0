@@ -1,19 +1,11 @@
-Received: from mail.gw-instruments.de ([82.144.60.34]
-	helo=redbean.intranet.gw-instruments.de)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MXvVV-0001QI-3F
-	for linux-mtd@lists.infradead.org; Mon, 03 Aug 2009 11:15:13 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by redbean.intranet.gw-instruments.de (Postfix) with ESMTP id D8C2A891
-	for <linux-mtd@lists.infradead.org>;
-	Mon,  3 Aug 2009 12:50:44 +0200 (CEST)
-Date: Mon, 3 Aug 2009 12:50:44 +0200 (CEST)
-From: Peter Wippich <pewi@gw-instruments.de>
-To: linux-mtd@lists.infradead.org
-Subject: [Patch 1/1] don't suspend erase for erase in cfi_cmdset_0002 
-Message-ID: <Pine.LNX.4.63.0908031237170.17084@redbean.intranet.gw-instruments.de>
+Message-ID: <20090803071554.MDVJI.25868.imail@eastrmwml42>
+Date: Mon, 3 Aug 2009 7:15:54 -0400
+From: ELECTRONIC DELL 2009 <othersheila@cox.net>
+Subject: WINNING DATE 2nd August 2009
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Reply-To: webaccessunitconfiguration5@googlemail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +15,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Your Email has just won the sum of =C3=82=C2=A3 1,628,360.00 in cash credit=
+ed to a file in the just concluded Dell Lotto International Award Programme=
+=20
+   held 2nd August 2009.Your e-mail address attached to:Ticket Number: 8603=
+775966738 Batch: 013/05/8394369Reference Number: UK/776090X2/23.
+   WINNING NUMBERS: 9, 18, 21, 24, 37, 48(BONUS.22) WINNING DATE 2nd August=
+ 2009
+       For Claims,Contact:
+=20
+    Name: Bar.David Mark=20
+    SEND DETAILS TO: webaccessunitconfiguration2@gmail.com
+    Foreign Services Validation Officer
+    Tel Phone::+447035955285
+    SEND DETAILS TO: webaccessunitconfiguration2@gmail.com
 
-Hi, 
+       FILL THE PAYMENT FORM"NAME:--ADDRESS:--AGE:--SEX:--TEL:--COUNTRY:-OC=
+CUPATION:--YOUR CHOSSEN PAYMENT PASSWORD:---
+        Prof.Morine Dave
+            Cordinator
 
-came around this problem while stress testing jffs2. From time to time the 
-block erase failed and the file system overflows. I don't know if there 
-are any Nor chips out there which allow a new erase to start when in erase 
-suspend. However, the chips on my board dont't. And even when it doesn't 
-make much sense to suspend an erase operation for another erase. 
 
-Patch below fixes the problem for me. 
 
-Have fun and take care, 
+Your Email has just won the sum of =C3=82=C2=A3 1,628,360.00 in cash credit=
+ed to a file in the just concluded Dell Lotto International Award Programme=
+=20
+   held 2nd August 2009.Your e-mail address attached to:Ticket Number: 8603=
+775966738 Batch: 013/05/8394369Reference Number: UK/776090X2/23.
+   WINNING NUMBERS: 9, 18, 21, 24, 37, 48(BONUS.22) WINNING DATE 2nd August=
+ 2009
+       For Claims,Contact:
+=20
+    Name: Bar.David Mark=20
+    SEND DETAILS TO: webaccessunitconfiguration2@gmail.com
+    Foreign Services Validation Officer
+    Tel Phone::+447035955285
+    SEND DETAILS TO: webaccessunitconfiguration2@gmail.com
 
-Peter 
-
-Signed-off-by: Peter Wippich <pewi@gw-instruments.de>
----
-diff -Naur a/drivers/mtd/chips/cfi_cmdset_0002.c 
-b/drivers/mtd/chips/cfi_cmdset_0002.c
---- a/drivers/mtd/chips/cfi_cmdset_0002.c	2007-07-10 20:56:30.000000000 +0200
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c	2009-08-02 19:55:34.000000000 +0200
-@@ -521,6 +521,10 @@
- 	case FL_ERASING:
- 		if (mode == FL_WRITING) /* FIXME: Erase-suspend-program appears broken. */
- 			goto sleep;
-+		if (mode == FL_ERASING) {
-+			printk(KERN_INFO "attempt erase suspend with mode FL_ERASING\n") ;
-+			goto sleep;
-+		}
- 
- 		if (!(   mode == FL_READY
- 		      || mode == FL_POINT
+       FILL THE PAYMENT FORM"NAME:--ADDRESS:--AGE:--SEX:--TEL:--COUNTRY:-OC=
+CUPATION:--YOUR CHOSSEN PAYMENT PASSWORD:---
+        Prof.Morine Dave
+            Cordinator
