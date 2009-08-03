@@ -1,16 +1,22 @@
 Received: from ernst.netinsight.se ([194.16.221.21])
 	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MXyzR-00084d-A3
-	for linux-mtd@lists.infradead.org; Mon, 03 Aug 2009 14:58:22 +0000
-Message-ID: <4A76FAFE.6050906@users.sourceforge.net>
-Date: Mon, 03 Aug 2009 16:58:06 +0200
-From: =?ISO-8859-1?Q?Anders_Grafstr=F6m?= <grfstrm@users.sourceforge.net>
+	id 1MXzhP-00070u-39
+	for linux-mtd@lists.infradead.org; Mon, 03 Aug 2009 15:43:47 +0000
+Message-ID: <4A7705A9.3040402@users.sourceforge.net>
+Date: Mon, 03 Aug 2009 17:43:37 +0200
+From: =?UTF-8?B?QW5kZXJzIEdyYWZzdHLDtm0=?=
+ <grfstrm@users.sourceforge.net>
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>,
-	Linux-MTD Mailing List <linux-mtd@lists.infradead.org>
-Subject: [PATCH] [JFFS2] Fix return value from jffs2_do_readpage_nolock()
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+To: E Robertson <e.robertson.svg@gmail.com>
+Subject: Re: Internal error: Oops: 817 [#1]
+References: <3972542e0907301124n104c9eafnc99e989d1a9f8d51@mail.gmail.com>	<200907302036.24243.marek.vasut@gmail.com>	<3972542e0907301314p4a8c9539uc7b5fdd80abec443@mail.gmail.com>	<20090730202637.GH16220@n2100.arm.linux.org.uk>	<3972542e0907301408r7ae0c06bkf4417724dcec9459@mail.gmail.com>	<20090730212155.GI16220@n2100.arm.linux.org.uk>
+	<3972542e0907301429n45c4597ar36907386bf00637e@mail.gmail.com>
+In-Reply-To: <3972542e0907301429n45c4597ar36907386bf00637e@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: Marek Vasut <marek.vasut@gmail.com>,
+	Russell King - ARM Linux <linux@arm.linux.org.uk>,
+	linux-arm-kernel@lists.arm.linux.org.uk, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,47 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[JFFS2] Fix return value from jffs2_do_readpage_nolock()
+E Robertson wrote:
+> On Thu, Jul 30, 2009 at 4:21 PM, Russell King - ARM
+> Linux<linux@arm.linux.org.uk> wrote:
+>> It's worth pointing out that media errors should not cause a kernel
+>> oops or BUG() - especially in the case of a synchronous write.
+>>
+>> So one way to look at this is you have the perfect setup at the moment
+>> for jffs2 developers to fix this problem in addition to locating what
+>> ever is causing the CRC errors.
+>>
+> 
+> agree. I'll test on this with 2.6.28.4/ .31-rc4.
 
-This fixes "kernel BUG at fs/jffs2/file.c:251!".
-This pseudocode hopefully illustrates the scenario that triggers it:
+Could you try this patch?
 
-jffs2_write_begin {
-     jffs2_do_readpage_nolock {
-         jffs2_read_inode_range {
-             jffs2_read_dnode {
-                 Data CRC 33c102e9 != calculated CRC 0ef77e7b for node at 005d42e4
-                 return -EIO;
-             }
-         }
-         ClearPageUptodate(pg);
-         return 0;
-     }
-}
-
-jffs2_write_end {
-     BUG_ON(!PageUptodate(pg));
-}
-
-Signed-off-by: Anders Grafström <grfstrm@users.sourceforge.net>
----
-
-This issue has resurfaced on linux-mtd a couple of times now.
-So here's the patch for it once more. This time with a proper commit message.
-
- fs/jffs2/file.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
-index 5edc2bf..23c9475 100644
---- a/fs/jffs2/file.c
-+++ b/fs/jffs2/file.c
-@@ -99,7 +99,7 @@ static int jffs2_do_readpage_nolock (struct inode *inode, struct page *pg)
- 	kunmap(pg);
-
- 	D2(printk(KERN_DEBUG "readpage finished\n"));
--	return 0;
-+	return ret;
- }
-
- int jffs2_do_readpage_unlock(struct inode *inode, struct page *pg)
+http://lists.infradead.org/pipermail/linux-mtd/2009-August/026754.html
