@@ -1,22 +1,24 @@
-Received: from ernst.netinsight.se ([194.16.221.21])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MXzhP-00070u-39
-	for linux-mtd@lists.infradead.org; Mon, 03 Aug 2009 15:43:47 +0000
-Message-ID: <4A7705A9.3040402@users.sourceforge.net>
-Date: Mon, 03 Aug 2009 17:43:37 +0200
-From: =?UTF-8?B?QW5kZXJzIEdyYWZzdHLDtm0=?=
- <grfstrm@users.sourceforge.net>
+Received: from mail.gw-instruments.de ([82.144.60.34]
+	helo=redbean.intranet.gw-instruments.de)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MY554-0007AH-4P
+	for linux-mtd@lists.infradead.org; Mon, 03 Aug 2009 21:28:35 +0000
+Date: Mon, 3 Aug 2009 23:24:01 +0200 (CEST)
+From: Peter Wippich <pewi@gw-instruments.de>
+To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Subject: Re: [Patch 1/1] don't suspend erase for erase in cfi_cmdset_0002
+In-Reply-To: <OF72036C94.805A993F-ONC1257607.004E3748-C1257607.004EB8F2@transmode.se>
+Message-ID: <Pine.LNX.4.63.0908032256130.28700@redbean.intranet.gw-instruments.de>
+References: <Pine.LNX.4.63.0908031237170.17084@redbean.intranet.gw-instruments.de>
+	<OFB6C7C37A.2F2E4229-ONC1257607.00415F5E-C1257607.0041DA2F@transmode.se>
+	<Pine.LNX.4.63.0908031457390.17084@redbean.intranet.gw-instruments.de>
+	<OFBAEDF1C6.8F5FCB39-ONC1257607.00490427-C1257607.0049B758@LocalDomain>
+	<OFFB406BDC.E5A2549B-ONC1257607.0049E3EA-C1257607.004A0DC0@transmode.se>
+	<Pine.LNX.4.63.0908031541080.17084@redbean.intranet.gw-instruments.de>
+	<OF72036C94.805A993F-ONC1257607.004E3748-C1257607.004EB8F2@transmode.se>
 MIME-Version: 1.0
-To: E Robertson <e.robertson.svg@gmail.com>
-Subject: Re: Internal error: Oops: 817 [#1]
-References: <3972542e0907301124n104c9eafnc99e989d1a9f8d51@mail.gmail.com>	<200907302036.24243.marek.vasut@gmail.com>	<3972542e0907301314p4a8c9539uc7b5fdd80abec443@mail.gmail.com>	<20090730202637.GH16220@n2100.arm.linux.org.uk>	<3972542e0907301408r7ae0c06bkf4417724dcec9459@mail.gmail.com>	<20090730212155.GI16220@n2100.arm.linux.org.uk>
-	<3972542e0907301429n45c4597ar36907386bf00637e@mail.gmail.com>
-In-Reply-To: <3972542e0907301429n45c4597ar36907386bf00637e@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: Marek Vasut <marek.vasut@gmail.com>,
-	Russell King - ARM Linux <linux@arm.linux.org.uk>,
-	linux-arm-kernel@lists.arm.linux.org.uk, linux-mtd@lists.infradead.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,19 +28,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-E Robertson wrote:
-> On Thu, Jul 30, 2009 at 4:21 PM, Russell King - ARM
-> Linux<linux@arm.linux.org.uk> wrote:
->> It's worth pointing out that media errors should not cause a kernel
->> oops or BUG() - especially in the case of a synchronous write.
->>
->> So one way to look at this is you have the perfect setup at the moment
->> for jffs2 developers to fix this problem in addition to locating what
->> ever is causing the CRC errors.
->>
+
+Hi Jocke,
+
+On Mon, 3 Aug 2009, Joakim Tjernlund wrote:
+
+> Hi again :)
 > 
-> agree. I'll test on this with 2.6.28.4/ .31-rc4.
+> I think mine is better because:
+> 1) It matches cmdset_0001 and the code in general better.
+> 2) It can handle FL_WRITING too.
+> 
+> But I am not the maintainer and I don't use 0002 myself, just trying to
+> help out.
+> 
+> I hope you will constuct a cfip too for your JEDEC chips. It is no
+> fun to be without erase suspend :(
+> 
 
-Could you try this patch?
+It's fine to have some discussion about that. From that at least we agree 
+that something is wrong here. The main difference between the suggested 
+patches is the change in behaviour from the current implementation. 
+Currently the default behaviour is that erase suspend will work with jedec 
+and cfi probed chips. I can not tell if this is by intention or by chance, 
+but I think if we change something it should not break existing 
+implementations.
+So at least a final fix shall:
+- use erase suspend for jedec chips for "read only" suspends were 
+  cfip == NULL
+- use erase suspend for all cfi probed chips for "read only" suspends
+  if supported (as indicated by cfip->EraseSuspend)
 
-http://lists.infradead.org/pipermail/linux-mtd/2009-August/026754.html
+And for the write case, I can not tell why the erase suspend is viewed to 
+be broken here. If we change this,  as in your patch, severe testing is 
+needed to make sure it is realy working. Currently I don't have the free 
+resources to do this testing. Maybe we'll find some volunteer ?!.......
+
+I'll try to find a fix which will not break current implementations and 
+allows updates to implement erase suspend for writes easily. Appriciate 
+your comments. 
+
+BTW: who's the maintainer and what are her/his  thoughts. 
+
+Ciao, 
+
+Peter 
+
+
+|       Peter Wippich                   Voice: +49 30 46776411          |
+|       G&W Instruments GmbH            fax:   +49 30 46776419          |
+|       Gustav-Meyer-Allee 25, Geb. 12  Email: pewi@gw-instruments.de   |
+|       D-13355 Berlin  / Germany                                       |
