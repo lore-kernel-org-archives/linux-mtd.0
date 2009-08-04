@@ -1,26 +1,30 @@
-Received: from gw1.transmode.se ([213.115.205.20])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MYJiL-00051A-TT
-	for linux-mtd@lists.infradead.org; Tue, 04 Aug 2009 13:06:07 +0000
-In-Reply-To: <Pine.LNX.4.63.0908041353290.30362@redbean.intranet.gw-instruments.de>
-References: <Pine.LNX.4.63.0908031237170.17084@redbean.intranet.gw-instruments.de>
-	<OFB6C7C37A.2F2E4229-ONC1257607.00415F5E-C1257607.0041DA2F@transmode.se>
-	<Pine.LNX.4.63.0908031457390.17084@redbean.intranet.gw-instruments.de>
-	<OFBAEDF1C6.8F5FCB39-ONC1257607.00490427-C1257607.0049B758@LocalDomain>
-	<OFFB406BDC.E5A2549B-ONC1257607.0049E3EA-C1257607.004A0DC0@transmode.se>
-	<Pine.LNX.4.63.0908031541080.17084@redbean.intranet.gw-instruments.de>
-	<OF72036C94.805A993F-ONC1257607.004E3748-C1257607.004EB8F2@transmode.se>
-	<Pine.LNX.4.63.0908032256130.28700@redbean.intranet.gw-instruments.de>
-	<OF1C80C3B2.7311AECA-ONC1257607.007CE8A8-C1257607.007DD956@transmode.se>
-	<Pine.LNX.4.63.0908041353290.30362@redbean.intranet.gw-instruments.de>
-Subject: Re: [Patch 1/1] don't suspend erase for erase in cfi_cmdset_0002
-To: Peter Wippich <pewi@gw-instruments.de>
-Message-ID: <OF9C75E064.995739FA-ONC1257608.0046A689-C1257608.0047F46A@transmode.se>
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Tue, 4 Aug 2009 15:05:56 +0200
+Received: from mail-yw0-f172.google.com ([209.85.211.172])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MYJxV-0000eN-7T
+	for linux-mtd@lists.infradead.org; Tue, 04 Aug 2009 13:21:45 +0000
+Received: by ywh2 with SMTP id 2so10777219ywh.2
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 04 Aug 2009 06:21:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <4A7705A9.3040402@users.sourceforge.net>
+References: <3972542e0907301124n104c9eafnc99e989d1a9f8d51@mail.gmail.com>
+	<200907302036.24243.marek.vasut@gmail.com>
+	<3972542e0907301314p4a8c9539uc7b5fdd80abec443@mail.gmail.com>
+	<20090730202637.GH16220@n2100.arm.linux.org.uk>
+	<3972542e0907301408r7ae0c06bkf4417724dcec9459@mail.gmail.com>
+	<20090730212155.GI16220@n2100.arm.linux.org.uk>
+	<3972542e0907301429n45c4597ar36907386bf00637e@mail.gmail.com>
+	<4A7705A9.3040402@users.sourceforge.net>
+Date: Tue, 4 Aug 2009 08:21:36 -0500
+Message-ID: <3972542e0908040621y551af6edna10c8e8d089ff544@mail.gmail.com>
+Subject: Re: Internal error: Oops: 817 [#1]
+From: E Robertson <e.robertson.svg@gmail.com>
+To: =?ISO-8859-1?Q?Anders_Grafstr=F6m?= <grfstrm@users.sourceforge.net>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Marek Vasut <marek.vasut@gmail.com>,
+	Russell King - ARM Linux <linux@arm.linux.org.uk>,
+	linux-arm-kernel@lists.arm.linux.org.uk, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,101 +34,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Peter Wippich <pewi@gw-instruments.de> wrote on 04/08/2009 14:21:25:
+On Mon, Aug 3, 2009 at 10:43 AM, Anders
+Grafstr=F6m<grfstrm@users.sourceforge.net> wrote:
+> E Robertson wrote:
+>> On Thu, Jul 30, 2009 at 4:21 PM, Russell King - ARM
+>> Linux<linux@arm.linux.org.uk> wrote:
+>>> It's worth pointing out that media errors should not cause a kernel
+>>> oops or BUG() - especially in the case of a synchronous write.
+>>>
+>>> So one way to look at this is you have the perfect setup at the moment
+>>> for jffs2 developers to fix this problem in addition to locating what
+>>> ever is causing the CRC errors.
+>>>
+>>
+>> agree. I'll test on this with 2.6.28.4/ .31-rc4.
+>
+> Could you try this patch?
+>
+> http://lists.infradead.org/pipermail/linux-mtd/2009-August/026754.html
 >
 >
-> And Hi again,
->
-> On Tue, 4 Aug 2009, Joakim Tjernlund wrote:
->
-> > Peter Wippich <pewi@gw-instruments.de> wrote on 03/08/2009 23:24:01:
-> > >
-> > >
-> > > Hi Jocke,
-> > >
-> > > On Mon, 3 Aug 2009, Joakim Tjernlund wrote:
-> > >
-> > > > Hi again :)
-> > > >
-> > > > I think mine is better because:
-> > > > 1) It matches cmdset_0001 and the code in general better.
-> > > > 2) It can handle FL_WRITING too.
-> > > >
-> > > > But I am not the maintainer and I don't use 0002 myself, just trying to
-> > > > help out.
-> > > >
-> > > > I hope you will constuct a cfip too for your JEDEC chips. It is no
-> > > > fun to be without erase suspend :(
-> > > >
-> > >
-> > > It's fine to have some discussion about that. From that at least we agree
-> > > that something is wrong here. The main difference between the suggested
-> > > patches is the change in behaviour from the current implementation.
-> > > Currently the default behaviour is that erase suspend will work with jedec
-> > > and cfi probed chips. I can not tell if this is by intention or by chance,
-> > > but I think if we change something it should not break existing
-> > > implementations.
-> > > So at least a final fix shall:
-> > > - use erase suspend for jedec chips for "read only" suspends were
-> > >   cfip == NULL
-> >
-> > Are you sure all JEDEC chips support RO suspends? If not,
-> > I think this is a 3 step/pathes procedure:
-> > 1) Just fix the if stmt as I outlined. Then JEDEC chips wont bug, but won't have erase
-> >    suspend either unless:
-> >
-> > 2) Add a fixup for your JEDEC flash that fills in the erase suspend bits you
-> need. If all
-> >    JEDEC chips support RO suspends you can do a JEDEC generic fixup that
-> adds this capability
-> >    to cfip.
-> >
-> > 3) remove the FIXME and test if it works for you. Send it to the
-> >    list too and ask for some testing.
-> >
-> > > - use erase suspend for all cfi probed chips for "read only" suspends
-> > >   if supported (as indicated by cfip->EraseSuspend)
-> > >
-> > > And for the write case, I can not tell why the erase suspend is viewed to
-> > > be broken here. If we change this,  as in your patch, severe testing is
-> > > needed to make sure it is realy working. Currently I don't have the free
-> > > resources to do this testing. Maybe we'll find some volunteer ?!.......
-> > >
-> > > I'll try to find a fix which will not break current implementations and
-> > > allows updates to implement erase suspend for writes easily. Appriciate
-> > > your comments.
-> > >
-> > > BTW: who's the maintainer and what are her/his  thoughts.
-> >
-> > Don't konw.
->
-> Partly disagree. For Step 1 we shall leave erase suspend active for Jedec
-> Chips because this is the current behaviour. If this behaviour is wrong
-> we would have seen a lot of complains on the list (which aren't there).
-> If we change the default behaviour then we have to add fxups for each and
-> every Jedec chip which is used out there and supports erase suspend. And
-> from cherry picking in the long list most chips which use
-> cfi_cmdset_0002 support erase suspend.
 
-Well, I figured the fixups was already there, in jedec_probe.c, but your chip isn't
-listed I guess. Try adding your chip there and se what happens. I suspect
-that only chips that are in this list works or they are all broken if the
-do not set cfip.
-
->
-> And BTW: I realy hate this "cfip->EraseSuspend & 0x1" stuff. Nobody knows
-> what this is unless going through the CFI specification. It would make
-> the code much better readable if we introduce some symbolic constants
-> here.
-
-Possibly, but that is another issue that will have to be addressed with a
-separate cleanup patch. The style in both 0001 and 0002 is the "cfip->EraseSuspend & 0x1"
-style so you better follow it with your fixes, you got a much better chance getting
-you stuff in the tree with as little changes as possible while keeping the current style.
-
-Anyhow, style should be discussed with David Woodhouse, the maintainer of MTD.
-
-I am done with this now and you need to find someone else that actually
-cares/uses this driver with JEDEC chips.
-
-      Jocke
+I have tried this patch before. I think I found a post in april for
+it. With it, on occasions it worked but other times
+it did not. I will retry it a few more times to refresh myself to be
+sure it was not an unrelated issue.
