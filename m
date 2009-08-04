@@ -1,24 +1,21 @@
-Received: from gw1.transmode.se ([213.115.205.20])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MY6QS-0008UI-QZ
-	for linux-mtd@lists.infradead.org; Mon, 03 Aug 2009 22:54:45 +0000
-In-Reply-To: <Pine.LNX.4.63.0908032256130.28700@redbean.intranet.gw-instruments.de>
-References: <Pine.LNX.4.63.0908031237170.17084@redbean.intranet.gw-instruments.de>
-	<OFB6C7C37A.2F2E4229-ONC1257607.00415F5E-C1257607.0041DA2F@transmode.se>
-	<Pine.LNX.4.63.0908031457390.17084@redbean.intranet.gw-instruments.de>
-	<OFBAEDF1C6.8F5FCB39-ONC1257607.00490427-C1257607.0049B758@LocalDomain>
-	<OFFB406BDC.E5A2549B-ONC1257607.0049E3EA-C1257607.004A0DC0@transmode.se>
-	<Pine.LNX.4.63.0908031541080.17084@redbean.intranet.gw-instruments.de>
-	<OF72036C94.805A993F-ONC1257607.004E3748-C1257607.004EB8F2@transmode.se>
-	<Pine.LNX.4.63.0908032256130.28700@redbean.intranet.gw-instruments.de>
-Subject: Re: [Patch 1/1] don't suspend erase for erase in cfi_cmdset_0002
-To: Peter Wippich <pewi@gw-instruments.de>
-Message-ID: <OF1C80C3B2.7311AECA-ONC1257607.007CE8A8-C1257607.007DD956@transmode.se>
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Tue, 4 Aug 2009 00:54:36 +0200
+Received: from mail-qy0-f181.google.com ([209.85.221.181])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MYDVZ-0003OP-Tv
+	for linux-mtd@lists.infradead.org; Tue, 04 Aug 2009 06:28:30 +0000
+Received: by qyk11 with SMTP id 11so3826472qyk.28
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 03 Aug 2009 23:28:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org
+Sender: kyungmin78@gmail.com
+Date: Tue, 4 Aug 2009 15:28:23 +0900
+Message-ID: <9c9fda240908032328qcd68805haa94fb5f6b209d6f@mail.gmail.com>
+Subject: 4KiB pagesize and UBIFS
+From: Kyungmin Park <kmpark@infradead.org>
+To: linux-mtd Mailing List <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,61 +25,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Peter Wippich <pewi@gw-instruments.de> wrote on 03/08/2009 23:24:01:
->
->
-> Hi Jocke,
->
-> On Mon, 3 Aug 2009, Joakim Tjernlund wrote:
->
-> > Hi again :)
-> >
-> > I think mine is better because:
-> > 1) It matches cmdset_0001 and the code in general better.
-> > 2) It can handle FL_WRITING too.
-> >
-> > But I am not the maintainer and I don't use 0002 myself, just trying to
-> > help out.
-> >
-> > I hope you will constuct a cfip too for your JEDEC chips. It is no
-> > fun to be without erase suspend :(
-> >
->
-> It's fine to have some discussion about that. From that at least we agree
-> that something is wrong here. The main difference between the suggested
-> patches is the change in behaviour from the current implementation.
-> Currently the default behaviour is that erase suspend will work with jedec
-> and cfi probed chips. I can not tell if this is by intention or by chance,
-> but I think if we change something it should not break existing
-> implementations.
-> So at least a final fix shall:
-> - use erase suspend for jedec chips for "read only" suspends were
->   cfip == NULL
+Hi,
 
-Are you sure all JEDEC chips support RO suspends? If not,
-I think this is a 3 step/pathes procedure:
-1) Just fix the if stmt as I outlined. Then JEDEC chips wont bug, but won't have erase
-   suspend either unless:
+I create the empty ubifs as datafs and then try to mount it
+Of course I turn on all debug message at ubifs.
 
-2) Add a fixup for your JEDEC flash that fills in the erase suspend bits you need. If all
-   JEDEC chips support RO suspends you can do a JEDEC generic fixup that adds this capability
-   to cfip.
+As below it try to read unaligned read (not seen at here, driver
+handle it) and linefetch error finally.
 
-3) remove the FIXME and test if it works for you. Send it to the
-   list too and ask for some testing.
+I guest 4KiB pagesize don't support on ubifs.
 
-> - use erase suspend for all cfi probed chips for "read only" suspends
->   if supported (as indicated by cfip->EraseSuspend)
->
-> And for the write case, I can not tell why the erase suspend is viewed to
-> be broken here. If we change this,  as in your patch, severe testing is
-> needed to make sure it is realy working. Currently I don't have the free
-> resources to do this testing. Maybe we'll find some volunteer ?!.......
->
-> I'll try to find a fix which will not break current implementations and
-> allows updates to implement erase suspend for writes easily. Appriciate
-> your comments.
->
-> BTW: who's the maintainer and what are her/his  thoughts.
+How can I handle it?
 
-Don't konw.
+Thank you,
+Kyungmin Park
+
+# mount -t ubifs ubi0!datafs /mnt
+[   12.400000] UBIFS DBG (pid 1039): ubifs_get_sb: name ubi0!datafs, flags 0x800
+0
+[   12.410000] UBIFS DBG (pid 1039): ubifs_get_sb: opened ubi0_20
+[   12.410000] UBIFS DBG (pid 1039): ubifs_read_node: LEB 0:0, superblock node,
+length 4096
+[   12.420000] UBIFS DBG (pid 1039): ubifs_start_scan: scan LEB 1:0
+[   12.430000] UBIFS DBG (pid 1040): ubifs_bg_thread: background thread "ubifs_b
+gt0_20" started, PID 1040
+[   12.470000] UBIFS DBG (pid 1039): ubifs_scan: look at LEB 1:0 (253952 bytes l
+eft)
+[   12.470000] UBIFS DBG (pid 1039): ubifs_scan_a_node: scanning master node
+[   12.480000] UBIFS DBG (pid 1039): ubifs_scan: look at LEB 1:512 (253440 bytes
+ left)
+[   12.490000] UBIFS DBG (pid 1039): ubifs_scan_a_node: scanning padding node
+[   12.490000] UBIFS DBG (pid 1039): ubifs_scan_a_node: 3556 bytes padded, offse
+t now 4096
+[   12.500000] UBIFS DBG (pid 1039): ubifs_scan: look at LEB 1:4096 (249856 byte
+s left)
+[   12.510000] UBIFS DBG (pid 1039): ubifs_scan_a_node: scanning master node
+[   12.520000] UBIFS DBG (pid 1039): ubifs_scan: look at LEB 1:4608 (249344 byte
+s left)
+[   12.520000] UBIFS DBG (pid 1039): ubifs_scan_a_node: scanning padding node
+[   12.530000] UBIFS DBG (pid 1039): ubifs_scan_a_node: 3556 bytes padded, offse
+t now 8192
+[   12.540000] UBIFS DBG (pid 1039): ubifs_scan: look at LEB 1:8192 (245760 byte
+s left)
+[   12.550000] UBIFS DBG (pid 1039): ubifs_scan_a_node: hit empty space
+[   12.550000] UBIFS DBG (pid 1039): ubifs_end_scan: stop scanning LEB 1 at offs
+et 8192
+[   12.560000] UBIFS DBG (pid 1039): ubifs_start_scan: scan LEB 2:0
+[   12.600000] UBIFS DBG (pid 1039): ubifs_scan: look at LEB 2:0 (253952 bytes l
+eft)
+[   12.600000] UBIFS DBG (pid 1039): ubifs_scan_a_node: scanning master node
+[   12.610000] UBIFS DBG (pid 1039): ubifs_scan: look at LEB 2:512 (253440 bytes
+ left)
+[   12.620000] UBIFS DBG (pid 1039): ubifs_scan_a_node: scanning padding node
+[   12.620000] UBIFS DBG (pid 1039): ubifs_scan_a_node: 3556 bytes padded, offse
+t now 4096
+[   12.630000] UBIFS DBG (pid 1039): ubifs_scan: look at LEB 2:4096 (249856 byte
+s left)
+[   12.640000] UBIFS DBG (pid 1039): ubifs_scan_a_node: scanning master node
+[   12.650000] UBIFS DBG (pid 1039): ubifs_scan: look at LEB 2:4608 (249344 byte
+s left)
+[   12.650000] UBIFS DBG (pid 1039): ubifs_scan_a_node: scanning padding node
+[   12.660000] UBIFS DBG (pid 1039): ubifs_scan_a_node: 3556 bytes padded, offse
+t now 8192
+[   12.670000] UBIFS DBG (pid 1039): ubifs_scan: look at LEB 2:8192 (245760 byte
+s left)
+[   12.680000] UBIFS DBG (pid 1039): ubifs_scan_a_node: hit empty space
+[   12.680000] UBIFS DBG (pid 1039): ubifs_end_scan: stop scanning LEB 2 at offs
+et 8192
+[   12.690000] UBIFS DBG (pid 1039): ubifs_read_node: LEB 12:0, indexing node, l
+ength 48
+[   12.700000] UBIFS: recovery needed
+[   12.700000] UBIFS DBG (pid 1039): ubifs_recover_inl_heads: checking index hea
+d at 12:4096
+[   12.710000] UBIFS DBG (pid 1039): ubifs_recover_inl_heads: checking LPT head
+at 7:4096
+[   12.720000] UBIFS DBG (pid 1039): lpt_init_rd: space_bits 15
+[   12.730000] UBIFS DBG (pid 1039): lpt_init_rd: lpt_lnum_bits 2
+[   12.730000] UBIFS DBG (pid 1039): lpt_init_rd: lpt_offs_bits 18
+[   12.740000] UBIFS DBG (pid 1039): lpt_init_rd: lpt_spc_bits 18
+[   12.750000] UBIFS DBG (pid 1039): lpt_init_rd: pcnt_bits 10
+[   12.750000] UBIFS DBG (pid 1039): lpt_init_rd: lnum_bits 12
+[   12.760000] UBIFS DBG (pid 1039): lpt_init_rd: pnode_sz 18
+[   12.760000] UBIFS DBG (pid 1039): lpt_init_rd: nnode_sz 13
+[   12.770000] UBIFS DBG (pid 1039): lpt_init_rd: ltab_sz 12
+[   12.770000] UBIFS DBG (pid 1039): lpt_init_rd: lsave_sz 387
+[   12.780000] UBIFS DBG (pid 1039): lpt_init_rd: lsave_cnt 256
+[   12.790000] UBIFS DBG (pid 1039): lpt_init_rd: lpt_hght 5
+[   12.790000] UBIFS DBG (pid 1039): lpt_init_rd: big_lpt 0
+[   12.800000] UBIFS DBG (pid 1039): lpt_init_rd: LPT root is at 7:70
+[   12.800000] UBIFS DBG (pid 1039): lpt_init_rd: LPT head is at 7:4096
+[   12.810000] UBIFS DBG (pid 1039): lpt_init_rd: LPT ltab is at 7:83
+[   12.810000] UBIFS DBG (pid 1039): ubifs_read_node: LEB 12:0, indexing node, l
+ength 48
+[   12.820000] UBIFS DBG (pid 1039): read_znode: LEB 12:0, level 0, 1 branch
+[   12.830000] UBIFS DBG (pid 1039): ubifs_add_lpt_dirt: LEB 7 add 13 to 4001
+[   12.840000] UBIFS DBG (pid 1039): ubifs_add_lpt_dirt: LEB 7 add 12 to 4014
+[   12.850000] UBIFS DBG (pid 1039): ubifs_add_lpt_dirt: LEB 7 add 13 to 4026
+[   12.860000] UBIFS DBG (pid 1039): ubifs_add_lpt_dirt: LEB 7 add 13 to 4039
+[   12.870000] UBIFS DBG (pid 1039): ubifs_add_lpt_dirt: LEB 7 add 13 to 4052
+[   12.870000] UBIFS DBG (pid 1039): ubifs_add_lpt_dirt: LEB 7 add 13 to 4065
+[   12.880000] Unhandled fault: external abort on non-linefetch (0x1008) at 0xc5
+880410
+[   12.890000] Internal error: : 1008 [#1]
+[   12.890000] Modules linked in:
+[   12.890000] CPU: 0    Not tainted  (2.6.31-rc4-g6a8aab3-dirty #768)
+[   12.890000] PC is at memcpy+0xc4/0x330
+[   12.890000] LR is at 0xf80103f5
+[   12.890000] pc : [<c01610e4>]    lr : [<f80103f5>]    psr: 60000013
+[   12.890000] sp : c43e9acc  ip : 00000010  fp : 00000000
+[   12.890000] r10: c5880400  r9 : c4058da8  r8 : c41736a0
+[   12.890000] r7 : c41736a0  r6 : 00000012  r5 : 00000000  r4 : 00000000
+[   12.890000] r3 : c5880400  r2 : 00000000  r1 : c5880410  r0 : c41736b0
+[   12.890000] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
+[   12.890000] Control: 10c5387d  Table: 244a4019  DAC: 00000015
+[   12.890000] Process mount (pid: 1039, stack limit = 0xc43e82e8)
