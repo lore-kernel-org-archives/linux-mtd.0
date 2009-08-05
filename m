@@ -1,28 +1,24 @@
-Received: from mail.dev.rtsoft.ru ([213.79.90.226])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MYUxT-000113-5C
-	for linux-mtd@lists.infradead.org; Wed, 05 Aug 2009 01:06:27 +0000
-Date: Wed, 5 Aug 2009 05:06:20 +0400
-From: Anton Vorontsov <avorontsov@ru.mvista.com>
-To: David Brownell <david-b@pacbell.net>
-Subject: Re: [PATCH 1/7] spi: Add support for device table matching
-Message-ID: <20090805010620.GB14451@oksana.dev.rtsoft.ru>
-References: <20090729170345.GA26787@oksana.dev.rtsoft.ru>
-	<20090729170457.GA4803@oksana.dev.rtsoft.ru>
-	<20090729214446.GB1728@fluff.org.uk>
-	<200908031921.23126.david-b@pacbell.net>
+Received: from mail-vw0-f182.google.com ([209.85.212.182])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MYY3C-0006Uv-2b
+	for linux-mtd@lists.infradead.org; Wed, 05 Aug 2009 04:24:35 +0000
+Received: by vws12 with SMTP id 12so1991076vws.24
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 04 Aug 2009 21:24:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <200908031921.23126.david-b@pacbell.net>
-Cc: linux-kernel@vger.kernel.org, lm-sensors@lm-sensors.org,
-	Grant Likely <grant.likely@secretlab.ca>,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Ben Dooks <ben-linux@fluff.org>, Jean Delvare <khali@linux-fr.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>
-Reply-To: avorontsov@ru.mvista.com
+Sender: kyungmin78@gmail.com
+In-Reply-To: <20090804092046.16025.83910.sendpatchset@rx1.opensource.se>
+References: <20090804092046.16025.83910.sendpatchset@rx1.opensource.se>
+Date: Wed, 5 Aug 2009 13:24:28 +0900
+Message-ID: <9c9fda240908042124y4f783dfehd575601c0a09550e@mail.gmail.com>
+Subject: Re: [PATCH] mtd: make onenand/generic.c more generic
+From: Kyungmin Park <kmpark@infradead.org>
+To: Magnus Damm <magnus.damm@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-sh@vger.kernel.org, tony@atomide.com, lethal@linux-sh.org,
+	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
+	linux-omap@vger.kernel.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,29 +28,176 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 03, 2009 at 07:21:22PM -0700, David Brownell wrote:
-> On Wednesday 29 July 2009, Ben Dooks wrote:
-> > >  struct spi_driver {
-> > > +     const struct spi_device_id *id_table;
-> > > +     int                     (*probe_id)(struct spi_device *spi,
-> > > +                                         const struct spi_device_id *id);
-> > 
-> > how about leaving it at just probe and have either a call or a field
-> > in the device that you can look at to see if this was a new style of
-> > call?
-> > 
-> > >       int                     (*probe)(struct spi_device *spi);
-> 
-> For the record, if this is going to happen I think the
-> appropriate long-term solution is to have probe() take
-> the device_id just as it does with other busses.
+Hi
 
-Just curious. Why you prefer another argument in the probe()
-instead of calling some helper function? Most drivers don't
-need the "id" argument, so why spend memory and cpu cycles
-for it?
+Good idea add the onenand_platform_data, but dont' agree the renaming
+the onenand-flash.
+Other boards are use it even though it's not released it
 
--- 
-Anton Vorontsov
-email: cbouatmailru@gmail.com
-irc://irc.freenode.net/bd2
+Others are good.
+
+Thank you,
+Kyungmin Park
+
+On Tue, Aug 4, 2009 at 6:20 PM, Magnus Damm<magnus.damm@gmail.com> wrote:
+> From: Magnus Damm <damm@igel.co.jp>
+>
+> This patch removes the ARM dependency from the generic "onenand"
+> platform device driver. This change makes the driver useful for
+> other architectures as well. Needed for the SuperH kfr2r09 board.
+>
+> Apart from the obvious Kconfig bits, the most important change
+> is the move away from ARM specific includes and platform data.
+> Together with this change the only in-tree board code gets an
+> update, and the driver name is also changed gracefully break
+> potential out of tree drivers.
+>
+> The driver is also updated to allow NULL as platform data together
+> with a few changes to make use of resource_size() and dev_name().
+>
+> Signed-off-by: Magnus Damm <damm@igel.co.jp>
+> ---
+>
+> =A0Tested on the sh7724 kfr2r09 board with a separate platform data patch=
+.
+>
+> =A0arch/arm/mach-omap2/board-apollon.c | =A0 =A04 ++--
+> =A0drivers/mtd/onenand/Kconfig =A0 =A0 =A0 =A0 | =A0 =A01 -
+> =A0drivers/mtd/onenand/generic.c =A0 =A0 =A0 | =A0 24 ++++++++++++++-----=
+-----
+> =A0include/linux/mtd/onenand.h =A0 =A0 =A0 =A0 | =A0 =A08 ++++++++
+> =A04 files changed, 24 insertions(+), 13 deletions(-)
+>
+> --- 0001/arch/arm/mach-omap2/board-apollon.c
+> +++ work/arch/arm/mach-omap2/board-apollon.c =A0 =A02009-08-04 17:01:18.0=
+00000000 +0900
+> @@ -87,7 +87,7 @@ static struct mtd_partition apollon_part
+> =A0 =A0 =A0 =A0},
+> =A0};
+>
+> -static struct flash_platform_data apollon_flash_data =3D {
+> +static struct onenand_platform_data apollon_flash_data =3D {
+> =A0 =A0 =A0 =A0.parts =A0 =A0 =A0 =A0 =A0=3D apollon_partitions,
+> =A0 =A0 =A0 =A0.nr_parts =A0 =A0 =A0 =3D ARRAY_SIZE(apollon_partitions),
+> =A0};
+> @@ -99,7 +99,7 @@ static struct resource apollon_flash_res
+> =A0};
+>
+> =A0static struct platform_device apollon_onenand_device =3D {
+> - =A0 =A0 =A0 .name =A0 =A0 =A0 =A0 =A0 =3D "onenand",
+> + =A0 =A0 =A0 .name =A0 =A0 =A0 =A0 =A0 =3D "onenand-flash",
+> =A0 =A0 =A0 =A0.id =A0 =A0 =A0 =A0 =A0 =A0 =3D -1,
+> =A0 =A0 =A0 =A0.dev =A0 =A0 =A0 =A0 =A0 =A0=3D {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.platform_data =A0=3D &apollon_flash_data,
+> --- 0001/drivers/mtd/onenand/Kconfig
+> +++ work/drivers/mtd/onenand/Kconfig =A0 =A02009-08-04 17:01:18.000000000=
+ +0900
+> @@ -23,7 +23,6 @@ config MTD_ONENAND_VERIFY_WRITE
+>
+> =A0config MTD_ONENAND_GENERIC
+> =A0 =A0 =A0 =A0tristate "OneNAND Flash device via platform device driver"
+> - =A0 =A0 =A0 depends on ARM
+> =A0 =A0 =A0 =A0help
+> =A0 =A0 =A0 =A0 =A0Support for OneNAND flash via platform device driver.
+>
+> --- 0001/drivers/mtd/onenand/generic.c
+> +++ work/drivers/mtd/onenand/generic.c =A02009-08-04 17:12:00.000000000 +=
+0900
+> @@ -19,12 +19,16 @@
+> =A0#include <linux/mtd/mtd.h>
+> =A0#include <linux/mtd/onenand.h>
+> =A0#include <linux/mtd/partitions.h>
+> -
+> =A0#include <asm/io.h>
+> -#include <asm/mach/flash.h>
+> -
+> -#define DRIVER_NAME =A0 =A0"onenand"
+>
+> +/*
+> + * Note: Driver name and platform data format have been updated!
+> + *
+> + * This version of the driver is named "onenand-flash" and takes struct
+> + * onenand_platform_data as platform data. The old ARM-specific version
+> + * with the name "onenand" used to take struct flash_platform_data.
+> + */
+> +#define DRIVER_NAME =A0 =A0"onenand-flash"
+>
+> =A0#ifdef CONFIG_MTD_PARTITIONS
+> =A0static const char *part_probes[] =3D { "cmdlinepart", NULL, =A0};
+> @@ -39,16 +43,16 @@ struct onenand_info {
+> =A0static int __devinit generic_onenand_probe(struct platform_device *pde=
+v)
+> =A0{
+> =A0 =A0 =A0 =A0struct onenand_info *info;
+> - =A0 =A0 =A0 struct flash_platform_data *pdata =3D pdev->dev.platform_da=
+ta;
+> + =A0 =A0 =A0 struct onenand_platform_data *pdata =3D pdev->dev.platform_=
+data;
+> =A0 =A0 =A0 =A0struct resource *res =3D pdev->resource;
+> - =A0 =A0 =A0 unsigned long size =3D res->end - res->start + 1;
+> + =A0 =A0 =A0 unsigned long size =3D resource_size(res);
+> =A0 =A0 =A0 =A0int err;
+>
+> =A0 =A0 =A0 =A0info =3D kzalloc(sizeof(struct onenand_info), GFP_KERNEL);
+> =A0 =A0 =A0 =A0if (!info)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return -ENOMEM;
+>
+> - =A0 =A0 =A0 if (!request_mem_region(res->start, size, pdev->dev.driver-=
+>name)) {
+> + =A0 =A0 =A0 if (!request_mem_region(res->start, size, dev_name(&pdev->d=
+ev))) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0err =3D -EBUSY;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0goto out_free_info;
+> =A0 =A0 =A0 =A0}
+> @@ -59,7 +63,7 @@ static int __devinit generic_onenand_pro
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0goto out_release_mem_region;
+> =A0 =A0 =A0 =A0}
+>
+> - =A0 =A0 =A0 info->onenand.mmcontrol =3D pdata->mmcontrol;
+> + =A0 =A0 =A0 info->onenand.mmcontrol =3D pdata ? pdata->mmcontrol : 0;
+> =A0 =A0 =A0 =A0info->onenand.irq =3D platform_get_irq(pdev, 0);
+>
+> =A0 =A0 =A0 =A0info->mtd.name =3D dev_name(&pdev->dev);
+> @@ -75,7 +79,7 @@ static int __devinit generic_onenand_pro
+> =A0 =A0 =A0 =A0err =3D parse_mtd_partitions(&info->mtd, part_probes, &inf=
+o->parts, 0);
+> =A0 =A0 =A0 =A0if (err > 0)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0add_mtd_partitions(&info->mtd, info->parts=
+, err);
+> - =A0 =A0 =A0 else if (err <=3D 0 && pdata->parts)
+> + =A0 =A0 =A0 else if (err <=3D 0 && pdata && pdata->parts)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0add_mtd_partitions(&info->mtd, pdata->part=
+s, pdata->nr_parts);
+> =A0 =A0 =A0 =A0else
+> =A0#endif
+> @@ -99,7 +103,7 @@ static int __devexit generic_onenand_rem
+> =A0{
+> =A0 =A0 =A0 =A0struct onenand_info *info =3D platform_get_drvdata(pdev);
+> =A0 =A0 =A0 =A0struct resource *res =3D pdev->resource;
+> - =A0 =A0 =A0 unsigned long size =3D res->end - res->start + 1;
+> + =A0 =A0 =A0 unsigned long size =3D resource_size(res);
+>
+> =A0 =A0 =A0 =A0platform_set_drvdata(pdev, NULL);
+>
+> --- 0001/include/linux/mtd/onenand.h
+> +++ work/include/linux/mtd/onenand.h =A0 =A02009-08-04 17:01:18.000000000=
+ +0900
+> @@ -214,4 +214,12 @@ unsigned onenand_block(struct onenand_ch
+> =A0loff_t onenand_addr(struct onenand_chip *this, int block);
+> =A0int flexonenand_region(struct mtd_info *mtd, loff_t addr);
+>
+> +struct mtd_partition;
+> +
+> +struct onenand_platform_data {
+> + =A0 =A0 =A0 void =A0 =A0 =A0 =A0 =A0 =A0(*mmcontrol)(struct mtd_info *m=
+td, int sync_read);
+> + =A0 =A0 =A0 struct mtd_partition *parts;
+> + =A0 =A0 =A0 unsigned int =A0 =A0nr_parts;
+> +};
+> +
+> =A0#endif /* __LINUX_MTD_ONENAND_H */
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>
