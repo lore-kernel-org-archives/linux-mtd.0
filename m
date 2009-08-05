@@ -1,19 +1,18 @@
-Received: from n11.bullet.mail.mud.yahoo.com ([209.191.125.210])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MYURr-0000q9-LB
-	for linux-mtd@lists.infradead.org; Wed, 05 Aug 2009 00:33:47 +0000
-From: David Brownell <david-b@pacbell.net>
-To: avorontsov@ru.mvista.com
+Received: from [213.79.90.228] (helo=buildserver.ru.mvista.com)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MYUla-00056v-Mm
+	for linux-mtd@lists.infradead.org; Wed, 05 Aug 2009 00:54:10 +0000
+Date: Wed, 5 Aug 2009 04:54:04 +0400
+From: Anton Vorontsov <avorontsov@ru.mvista.com>
+To: David Brownell <david-b@pacbell.net>
 Subject: Re: [PATCH 0/7] Device table matching for SPI subsystem
-Date: Mon, 3 Aug 2009 19:16:02 -0700
+Message-ID: <20090805005404.GA14451@oksana.dev.rtsoft.ru>
 References: <20090729170345.GA26787@oksana.dev.rtsoft.ru>
-In-Reply-To: <20090729170345.GA26787@oksana.dev.rtsoft.ru>
+	<200908031916.02880.david-b@pacbell.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Message-Id: <200908031916.02880.david-b@pacbell.net>
+In-Reply-To: <200908031916.02880.david-b@pacbell.net>
 Cc: David Brownell <dbrownell@users.sourceforge.net>,
 	linux-kernel@vger.kernel.org, lm-sensors@lm-sensors.org,
 	Grant Likely <grant.likely@secretlab.ca>,
@@ -21,6 +20,7 @@ Cc: David Brownell <dbrownell@users.sourceforge.net>,
 	Jean Delvare <khali@linux-fr.org>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	David Woodhouse <dwmw2@infradead.org>
+Reply-To: avorontsov@ru.mvista.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,12 +30,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 29 July 2009, Anton Vorontsov wrote:
-> 	platform_data is overkill for m25p80 chips, the
-> driver only needs to know exact chip model, and that's what device
-> tables are for.
+On Mon, Aug 03, 2009 at 07:16:02PM -0700, David Brownell wrote:
+> On Wednesday 29 July 2009, Anton Vorontsov wrote:
+> > 	platform_data is overkill for m25p80 chips, the
+> > driver only needs to know exact chip model, and that's what device
+> > tables are for.
+> 
+> To be fair, the platform_data also supports partitioning
+> and labeling e.g. for cmdlinepart ...
 
-To be fair, the platform_data also supports partitioning
-and labeling e.g. for cmdlinepart ... though I'd tend to
-agree that most SPI flash chips are kind of small (so
-they're mostly just one smallish partition).
+With OF we do partitioning and labling via drivers/mtd/ofpart.c.
+
+Though, so far there is no support for OF partitions in the m25p80
+driver. I think we'd better put the OF partitions probing into
+parse_mtd_partitions(), and avoid calling of_mtd_parse_partitons()
+directly...
+
+Thanks,
+
+-- 
+Anton Vorontsov
+email: cbouatmailru@gmail.com
+irc://irc.freenode.net/bd2
