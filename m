@@ -1,10 +1,10 @@
-Message-Id: <200908062218.n76MIc40023062@imap1.linux-foundation.org>
-Subject: [patch for 2.6.31? 1/1] mtd: m25p80: fix null pointer dereference bug
+Message-Id: <200908062305.n76N5XFO004949@imap1.linux-foundation.org>
+Subject: [patch 3/8] drivers/mtd/mtdcore.c: make symbols static
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Thu, 06 Aug 2009 15:18:37 -0700
-Cc: david-b@pacbell.net, akpm@linux-foundation.org, avorontsov@ru.mvista.com,
-	linux-mtd@lists.infradead.org
+Date: Thu, 06 Aug 2009 16:05:32 -0700
+Cc: hsweeten@visionengravers.com, akpm@linux-foundation.org,
+	linux-mtd@lists.infradead.org, hartleys@visionengravers.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -14,53 +14,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Anton Vorontsov <avorontsov@ru.mvista.com>
+From: H Hartley Sweeten <hartleys@visionengravers.com>
 
-This patch fixes the following oops, observed with MTD_PARTITIONS=n:
+Make mtd_group and mtd_groups static since they are only used in this
+file.
 
-m25p80 spi32766.0: m25p80 (1024 Kbytes)
-Unable to handle kernel paging request for data at address 0x00000008
-Faulting instruction address: 0xc03a54b0
-Oops: Kernel access of bad area, sig: 11 [#1]
-Modules linked in:
-NIP: c03a54b0 LR: c03a5494 CTR: c01e98b8
-REGS: ef82bb60 TRAP: 0300   Not tainted  (2.6.31-rc4-00167-g4733fd3)
-MSR: 00029000 <EE,ME,CE>  CR: 24022022  XER: 20000000
-DEAR: 00000008, ESR: 00000000
-TASK = ef82c000[1] 'swapper' THREAD: ef82a000
-GPR00: 00000000 ef82bc10 ef82c000 0000002e 00001eb8 ffffffff c01e9824 00000036
-GPR08: c054ed40 c0542a08 00001eb8 00004000 22022022 1001a1a0 3ff8fd00 00000000
-GPR16: 00000000 00000001 00000000 00000000 ef82bddc c0530000 efbef500 ef8356d0
-GPR24: 00000000 ef8356d0 00000000 efbf7a00 c0530ec4 ffffffed efbf5300 c0541f98
-NIP [c03a54b0] m25p_probe+0x22c/0x354
-LR [c03a5494] m25p_probe+0x210/0x354
-Call Trace:
-[ef82bc10] [c03a5494] m25p_probe+0x210/0x354 (unreliable)
-[ef82bca0] [c024e37c] spi_drv_probe+0x2c/0x3c
-[ef82bcb0] [c01f1afc] driver_probe_device+0xa4/0x178
-[ef82bcd0] [c01f06e8] bus_for_each_drv+0x6c/0xa8
-[ef82bd00] [c01f1a34] device_attach+0x84/0xa8
-...
-
-Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
+Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: David Brownell <david-b@pacbell.net>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- drivers/mtd/devices/m25p80.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/mtdcore.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff -puN drivers/mtd/devices/m25p80.c~mtd-m25p80-fix-null-pointer-dereference-bug drivers/mtd/devices/m25p80.c
---- a/drivers/mtd/devices/m25p80.c~mtd-m25p80-fix-null-pointer-dereference-bug
-+++ a/drivers/mtd/devices/m25p80.c
-@@ -736,7 +736,7 @@ static int __devinit m25p_probe(struct s
- 			flash->partitioned = 1;
- 			return add_mtd_partitions(&flash->mtd, parts, nr_parts);
- 		}
--	} else if (data->nr_parts)
-+	} else if (data && data->nr_parts)
- 		dev_warn(&spi->dev, "ignoring %d default partitions on %s\n",
- 				data->nr_parts, data->name);
+diff -puN drivers/mtd/mtdcore.c~drivers-mtd-mtdcorec-make-symbols-static drivers/mtd/mtdcore.c
+--- a/drivers/mtd/mtdcore.c~drivers-mtd-mtdcorec-make-symbols-static
++++ a/drivers/mtd/mtdcore.c
+@@ -213,11 +213,11 @@ static struct attribute *mtd_attrs[] = {
+ 	NULL,
+ };
  
+-struct attribute_group mtd_group = {
++static struct attribute_group mtd_group = {
+ 	.attrs		= mtd_attrs,
+ };
+ 
+-const struct attribute_group *mtd_groups[] = {
++static const struct attribute_group *mtd_groups[] = {
+ 	&mtd_group,
+ 	NULL,
+ };
 _
