@@ -1,18 +1,24 @@
-Message-ID: <4A7BF1C3.4050602@nokia.com>
-Date: Fri, 07 Aug 2009 12:20:03 +0300
-From: Adrian Hunter <adrian.hunter@nokia.com>
-MIME-Version: 1.0
-To: JiSheng Zhang <jszhang3@gmail.com>
+Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MZLzs-0006CP-6w
+	for linux-mtd@lists.infradead.org; Fri, 07 Aug 2009 09:44:26 +0000
+Date: Fri, 7 Aug 2009 10:44:04 +0100
+From: Russell King <rmk+lkml@arm.linux.org.uk>
+To: Adrian Hunter <adrian.hunter@nokia.com>
 Subject: Re: [UBI UBIFS] replace vmalloc with kmalloc
+Message-ID: <20090807094404.GA10603@flint.arm.linux.org.uk>
 References: <2df346410908070202i6c16008ckc145559a474129c6@mail.gmail.com>
-In-Reply-To: <2df346410908070202i6c16008ckc145559a474129c6@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+	<4A7BF1C3.4050602@nokia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4A7BF1C3.4050602@nokia.com>
+Sender: Russell King <rmk@arm.linux.org.uk>
 Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"Bityutskiy Artem \(Nokia-D/Helsinki\)" <Artem.Bityutskiy@nokia.com>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"rmk@arm.linux.org.uk" <rmk@arm.linux.org.uk>,
-	"Bityutskiy Artem \(Nokia-D/Helsinki\)" <Artem.Bityutskiy@nokia.com>
+	JiSheng Zhang <jszhang3@gmail.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +28,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-JiSheng Zhang wrote:
-> If nandflash driver use DMA to support UBI and UBIFS i/o, there will
-> be panic like
-> the following. This is because UBI and UBIFS use vmalloced buffer
-> somewhere while
-> nandflash driver put the buffer under DMA and DMA support doesn't like vmalloced
-> memory.
-> [  412.369280] UBIFS: default file-system created
-> [  412.374879] Unable to handle kernel NULL pointer dereference at
-> virtual address 00000000
-> [  412.383177] UBIFS: background thread "ubifs_bgt0_0" started, PID 887
-> [  412.389656] pgd = c0004000
-> [  412.392419] [00000000] *pgd=00000000
-> [  412.396117] Internal error: Oops: 817 [#1] PREEMPT
-> 
-> Yes, I know kmalloc may fail when memory get fragmented, but I grep the UBI and
-> UBIFS's source, there are six .c files and seven .c files using
-> vmalloc, the function
-> which call vmalloc are all called during the ubi being attached and
-> the volume being
-> mounted. In embedded system, this mainly happen during kernel boot, it
-> should succeed.
-> 
-> After replacing vmalloc with kmalloc, ubi and ubifs runs fine on my
-> board. I can alos upload
-> a patch.
-> 
-> Comments are welcomed!
+On Fri, Aug 07, 2009 at 12:20:03PM +0300, Adrian Hunter wrote:
+> vmalloc allows large (> 128KiB) buffers, but kmalloc doesn't.
+> So we presently have no choice but to use vmalloc.
+>
+> I do not know what hardware you have or exactly what driver you
+> are using, but we have UBIFS on OneNAND using DMA.
+> See drivers/mtd/onenand/omap2.c
 
-vmalloc allows large (> 128KiB) buffers, but kmalloc doesn't.
-So we presently have no choice but to use vmalloc.
+Hmm.  Looking at that code, it's unsafe:
 
-I do not know what hardware you have or exactly what driver you
-are using, but we have UBIFS on OneNAND using DMA.
-See drivers/mtd/onenand/omap2.c
+        if (buf >= high_memory) {
+                struct page *p1;
+
+                if (((size_t)buf & PAGE_MASK) !=
+                    ((size_t)(buf + count - 1) & PAGE_MASK))
+                        goto out_copy;
+                p1 = vmalloc_to_page(buf);
+                if (!p1)
+                        goto out_copy;
+                buf = page_address(p1) + ((size_t)buf & ~PAGE_MASK);
+        }
+...
+        dma_dst = dma_map_single(&c->pdev->dev, buf, count, DMA_FROM_DEVICE);
+
+If you consider a VIVT cache, and with vmalloc'd pages you're passing
+a *different* virtual address to the DMA functions, it's not going to
+touch the cachelines associated with the vmalloc mapping.
+
+The above *may* work for VIPT caches provided both the vmalloc and
+kernel direct mappings are of the same colour.  If not, this really
+isn't going to be reliable for the same reason.
+
+Basically, what's going in there is *totally* unsafe.  I hope you
+don't place important data on this NAND device.
+
+-- 
+Russell King
+ Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
+ maintainer of:
