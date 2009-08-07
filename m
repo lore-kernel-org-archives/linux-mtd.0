@@ -1,18 +1,23 @@
-Received: from mail-yw0-f172.google.com ([209.85.211.172])
+Received: from mail-vw0-f202.google.com ([209.85.212.202])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MZCny-0006rv-7a
-	for linux-mtd@lists.infradead.org; Thu, 06 Aug 2009 23:55:34 +0000
-Received: by ywh2 with SMTP id 2so2713297ywh.2
+	id 1MZDhk-00058Z-J8
+	for linux-mtd@lists.infradead.org; Fri, 07 Aug 2009 00:53:13 +0000
+Received: by vws40 with SMTP id 40so1298440vws.2
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 06 Aug 2009 16:55:28 -0700 (PDT)
+	Thu, 06 Aug 2009 17:53:06 -0700 (PDT)
 MIME-Version: 1.0
-Date: Thu, 6 Aug 2009 16:55:27 -0700
-Message-ID: <8c6c6f450908061655t5cbaf5a6x6bfceef1976a502e@mail.gmail.com>
-Subject: random jffs2 errors
-From: Ganesh Ragavan <ganeshragavan@gmail.com>
-To: linux-mtd@lists.infradead.org
+Sender: kyungmin78@gmail.com
+In-Reply-To: <200908062305.n76N5but004994@imap1.linux-foundation.org>
+References: <200908062305.n76N5but004994@imap1.linux-foundation.org>
+Date: Fri, 7 Aug 2009 09:53:06 +0900
+Message-ID: <9c9fda240908061753l58776235j44f733b6dab354b1@mail.gmail.com>
+Subject: Re: [patch 8/8] mtd: make onenand/generic.c more generic
+From: Kyungmin Park <kmpark@infradead.org>
+To: akpm@linux-foundation.org
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Cc: tony@atomide.com, damm@igel.co.jp, lethal@linux-sh.org, dwmw2@infradead.org,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,17 +27,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am using a Macronix flash MX29LV128DT.  When I boot embedded linux
-2.6.18 on it, I see random jffs2 errors (crc and magic bitmask 1985
-not found) with this flash while booting up and also while doing
-firmware upgrades and mounts.
+Hi,
 
-I tried probing the flash, it says "Page mode: Not supported".  Just
-wondering if the random errors could be due to the page mode not
-supported.  These errors are not exactly reproducible, ie, they occur
-at different places.
+> +/*
+> + * Note: Driver name and platform data format have been updated!
+> + *
+> + * This version of the driver is named "onenand-flash" and takes struct
+> + * onenand_platform_data as platform data. The old ARM-specific version
+> + * with the name "onenand" used to take struct flash_platform_data.
+> + */
+> +#define DRIVER_NAME =A0 =A0"onenand-flash"
+>
 
-It would be great if someone could clarify.
+At least only apollon board use this driver name, "onenand" at kernel.
+so there's no reason to change it.
+Of course internally we use it "onenand" at other board. but at this
+time no need to rename it.
 
-Thanks,
-G
+we not fully discuss it so I hope to discuss it more. I hope to keep
+the name as before.
+
+Thank you,
+Kyungmin Park
