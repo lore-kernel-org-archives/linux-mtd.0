@@ -1,24 +1,25 @@
-Received: from rcsinet11.oracle.com ([148.87.113.123]
-	helo=rgminet11.oracle.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MZGdu-0002Q2-0U
-	for linux-mtd@lists.infradead.org; Fri, 07 Aug 2009 04:01:26 +0000
-Date: Thu, 6 Aug 2009 21:00:37 -0700
-From: Randy Dunlap <randy.dunlap@oracle.com>
-To: Paul Mundt <lethal@linux-sh.org>
-Subject: Re: mmotm 2009-08-06-00-30 uploaded (mtd)
-Message-Id: <20090806210037.a063114a.randy.dunlap@oracle.com>
-In-Reply-To: <20090807033448.GA32592@linux-sh.org>
-References: <200908060733.n767X6mN023120@imap1.linux-foundation.org>
-	<20090806190233.6d4b4e28.randy.dunlap@oracle.com>
-	<20090806192513.53f6488b.akpm@linux-foundation.org>
-	<20090807033448.GA32592@linux-sh.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from qw-out-1920.google.com ([74.125.92.148])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MZHzm-0007c2-L5
+	for linux-mtd@lists.infradead.org; Fri, 07 Aug 2009 05:28:07 +0000
+Received: by qw-out-1920.google.com with SMTP id 5so805433qwf.24
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 06 Aug 2009 22:28:01 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <aec7e5c30908042141l18b25ba4l66b3cb309f080b21@mail.gmail.com>
+References: <20090804092046.16025.83910.sendpatchset@rx1.opensource.se>
+	<9c9fda240908042124y4f783dfehd575601c0a09550e@mail.gmail.com>
+	<aec7e5c30908042141l18b25ba4l66b3cb309f080b21@mail.gmail.com>
+Date: Fri, 7 Aug 2009 14:28:01 +0900
+Message-ID: <aec7e5c30908062228g737c1f6cr25f6c67c07d80bd9@mail.gmail.com>
+Subject: Re: [PATCH] mtd: make onenand/generic.c more generic
+From: Magnus Damm <magnus.damm@gmail.com>
+To: Kyungmin Park <kmpark@infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: Magnus Damm <damm@igel.co.jp>, Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Cc: linux-sh@vger.kernel.org, tony@atomide.com, lethal@linux-sh.org,
+	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
+	linux-omap@vger.kernel.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,82 +29,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 7 Aug 2009 12:34:48 +0900 Paul Mundt wrote:
+On Wed, Aug 5, 2009 at 1:41 PM, Magnus Damm<magnus.damm@gmail.com> wrote:
+>> On Tue, Aug 4, 2009 at 6:20 PM, Magnus Damm<magnus.damm@gmail.com> wrote:
+>>> From: Magnus Damm <damm@igel.co.jp>
+>>>
+>>> This patch removes the ARM dependency from the generic "onenand"
+>>> platform device driver. This change makes the driver useful for
+>>> other architectures as well. Needed for the SuperH kfr2r09 board.
+>
+> On Wed, Aug 5, 2009 at 1:24 PM, Kyungmin Park<kmpark@infradead.org> wrote:
+>> Good idea add the onenand_platform_data, but dont' agree the renaming
+>> the onenand-flash.
+>> Other boards are use it even though it's not released it
+>
+> I suspected so. But this is the only reason why changed the name. =)
+>
+> If we don't change the name then the platform device will be attached
+> to the platform driver as usual, but the old platform data structure
+> will use a different binary format compated to what the driver
+> expects.
+>
+> Changing the driver name makes sure that the old device disappears and
+> that people can move over to the new name and at the same time update
+> the platform data to the new format.
+>
+>> Others are good.
+>
+> Thanks.
+>
+> I can post an updated version where I keep the driver name unchanged
+> if you prefer that. But I'm pretty sure out-of-tree drivers will break
+> with NULL pointer accesses or similar if we update the platform data
+> format without changing the name. I don't think you want that. =)
 
-> On Thu, Aug 06, 2009 at 07:25:13PM -0700, Andrew Morton wrote:
-> > On Thu, 6 Aug 2009 19:02:33 -0700 Randy Dunlap <randy.dunlap@oracle.com> wrote:
-> > 
-> > > On Thu, 06 Aug 2009 00:33:06 -0700 akpm@linux-foundation.org wrote:
-> > > 
-> > > > The mm-of-the-moment snapshot 2009-08-06-00-30 has been uploaded to
-> > > > 
-> > > >    http://userweb.kernel.org/~akpm/mmotm/
-> > > > 
-> > > > and will soon be available at
-> > > > 
-> > > >    git://git.zen-sources.org/zen/mmotm.git
-> > > > 
-> > > > It contains the following patches against 2.6.31-rc5:
-> > > 
-> > > 
-> > > 
-> > > drivers/built-in.o: In function `generic_onenand_remove':
-> > > generic.c:(.devexit.text+0x1b8e): undefined reference to `del_mtd_partitions'
-> > > 
-> > > config attached.
-> > 
-> > Thanks.  It's mtd-make-onenand-genericc-more-generic.patch.
-> > 
-> Wow, I guess ARM people don't do randconfigs.
-> 
-> ---
-> 
-> [PATCH] mtd: onenand: select MTD_PARTITIONS.
-> 
-> All of the onenand drivers depend on mtd partition support being compiled
-> in, so just select it. Fixes up build breakage:
-> 
-> drivers/built-in.o: In function `generic_onenand_remove':
-> generic.c:(.devexit.text+0x80): undefined reference to `del_mtd_partitions'
-> 
-> Reported-by: Randy Dunlap <randy.dunlap@oracle.com>
-> Signed-off-by: Paul Mundt <lethal@linux-sh.org>
+Any update on this?
 
-Ack.  Thanks.
+I posted a platform device patch for the kfr2r09 board to the linux-sh
+list yesterday, so with that platform device patch and this driver
+patch all in-tree users are converted.
 
-> ---
-> 
->  drivers/mtd/onenand/Kconfig |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/onenand/Kconfig b/drivers/mtd/onenand/Kconfig
-> index 2d6b7c1..a38f580 100644
-> --- a/drivers/mtd/onenand/Kconfig
-> +++ b/drivers/mtd/onenand/Kconfig
-> @@ -5,6 +5,7 @@
->  menuconfig MTD_ONENAND
->  	tristate "OneNAND Device Support"
->  	depends on MTD
-> +	select MTD_PARTITIONS
->  	help
->  	  This enables support for accessing all type of OneNAND flash
->  	  devices. For further information see
-> @@ -65,7 +66,6 @@ config MTD_ONENAND_2X_PROGRAM
->  
->  config MTD_ONENAND_SIM
->  	tristate "OneNAND simulator support"
-> -	depends on MTD_PARTITIONS
->  	help
->  	  The simulator may simulate various OneNAND flash chips for the
->  	  OneNAND MTD layer.
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
+Thanks in advance,
 
-
----
-~Randy
-LPC 2009, Sept. 23-25, Portland, Oregon
-http://linuxplumbersconf.org/2009/
+/ magnus
