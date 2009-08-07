@@ -1,27 +1,20 @@
-Received: from qw-out-1920.google.com ([74.125.92.146])
+Received: from wf-out-1314.google.com ([209.85.200.172])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MZIHj-0001wi-K2
-	for linux-mtd@lists.infradead.org; Fri, 07 Aug 2009 05:46:39 +0000
-Received: by qw-out-1920.google.com with SMTP id 5so808266qwf.24
+	id 1MZLLa-0006Xi-AS
+	for linux-mtd@lists.infradead.org; Fri, 07 Aug 2009 09:02:51 +0000
+Received: by wf-out-1314.google.com with SMTP id 23so597505wfg.24
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 06 Aug 2009 22:46:34 -0700 (PDT)
+	Fri, 07 Aug 2009 02:02:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20090807053020.GA902@linux-sh.org>
-References: <20090804092046.16025.83910.sendpatchset@rx1.opensource.se>
-	<9c9fda240908042124y4f783dfehd575601c0a09550e@mail.gmail.com>
-	<aec7e5c30908042141l18b25ba4l66b3cb309f080b21@mail.gmail.com>
-	<aec7e5c30908062228g737c1f6cr25f6c67c07d80bd9@mail.gmail.com>
-	<20090807053020.GA902@linux-sh.org>
-Date: Fri, 7 Aug 2009 14:46:34 +0900
-Message-ID: <aec7e5c30908062246m2ef5b13dv57dd05bd07d23d67@mail.gmail.com>
-Subject: Re: [PATCH] mtd: make onenand/generic.c more generic
-From: Magnus Damm <magnus.damm@gmail.com>
-To: Paul Mundt <lethal@linux-sh.org>, Magnus Damm <magnus.damm@gmail.com>,
-	Kyungmin Park <kmpark@infradead.org>, linux-mtd@lists.infradead.org,
-	linux-sh@vger.kernel.org, tony@atomide.com, linux-omap@vger.kernel.org,
-	dwmw2@infradead.org, akpm@linux-foundation.org
+Date: Fri, 7 Aug 2009 17:02:43 +0800
+Message-ID: <2df346410908070202i6c16008ckc145559a474129c6@mail.gmail.com>
+Subject: [UBI UBIFS] replace vmalloc with kmalloc
+From: JiSheng Zhang <jszhang3@gmail.com>
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
+Cc: Artem.Bityutskiy@nokia.com, dwmw2@infradead.org,
+	linux-kernel@vger.kernel.org, rmk@arm.linux.org.uk, adrian.hunter@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,24 +24,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 7, 2009 at 2:30 PM, Paul Mundt<lethal@linux-sh.org> wrote:
-> On Fri, Aug 07, 2009 at 02:28:01PM +0900, Magnus Damm wrote:
->> On Wed, Aug 5, 2009 at 1:41 PM, Magnus Damm<magnus.damm@gmail.com> wrote:
->> >> On Tue, Aug 4, 2009 at 6:20 PM, Magnus Damm<magnus.damm@gmail.com> wrote:
->> >>> From: Magnus Damm <damm@igel.co.jp>
->> >>>
->> >>> This patch removes the ARM dependency from the generic "onenand"
->> >>> platform device driver. This change makes the driver useful for
->> >>> other architectures as well. Needed for the SuperH kfr2r09 board.
->> >
->> Any update on this?
->>
-> You have failed at reading your email:
->
-> http://lists.infradead.org/pipermail/linux-mtd/2009-August/026805.html
-> http://lists.infradead.org/pipermail/linux-mtd/2009-August/026809.html
+If nandflash driver use DMA to support UBI and UBIFS i/o, there will
+be panic like
+the following. This is because UBI and UBIFS use vmalloced buffer
+somewhere while
+nandflash driver put the buffer under DMA and DMA support doesn't like vmalloced
+memory.
+[  412.369280] UBIFS: default file-system created
+[  412.374879] Unable to handle kernel NULL pointer dereference at
+virtual address 00000000
+[  412.383177] UBIFS: background thread "ubifs_bgt0_0" started, PID 887
+[  412.389656] pgd = c0004000
+[  412.392419] [00000000] *pgd=00000000
+[  412.396117] Internal error: Oops: 817 [#1] PREEMPT
 
-As usual, sorry about that. I'll solve that soon enough by signing off
-with a different address.
+Yes, I know kmalloc may fail when memory get fragmented, but I grep the UBI and
+UBIFS's source, there are six .c files and seven .c files using
+vmalloc, the function
+which call vmalloc are all called during the ubi being attached and
+the volume being
+mounted. In embedded system, this mainly happen during kernel boot, it
+should succeed.
 
-/ magnus
+After replacing vmalloc with kmalloc, ubi and ubifs runs fine on my
+board. I can alos upload
+a patch.
+
+Comments are welcomed!
+
+Jisheng
