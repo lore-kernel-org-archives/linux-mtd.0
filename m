@@ -1,23 +1,18 @@
-Received: from co203.xi-lite.net ([149.6.83.203])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MZLXa-0008FP-N4
-	for linux-mtd@lists.infradead.org; Fri, 07 Aug 2009 09:15:26 +0000
-Message-ID: <4A7BF091.5040605@parrot.com>
-Date: Fri, 7 Aug 2009 11:14:57 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+Message-ID: <4A7BF1C3.4050602@nokia.com>
+Date: Fri, 07 Aug 2009 12:20:03 +0300
+From: Adrian Hunter <adrian.hunter@nokia.com>
 MIME-Version: 1.0
 To: JiSheng Zhang <jszhang3@gmail.com>
 Subject: Re: [UBI UBIFS] replace vmalloc with kmalloc
 References: <2df346410908070202i6c16008ckc145559a474129c6@mail.gmail.com>
 In-Reply-To: <2df346410908070202i6c16008ckc145559a474129c6@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8bit
-Cc: "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
 	"rmk@arm.linux.org.uk" <rmk@arm.linux.org.uk>,
-	"adrian.hunter@nokia.com" <adrian.hunter@nokia.com>
+	"Bityutskiy Artem \(Nokia-D/Helsinki\)" <Artem.Bityutskiy@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,7 +22,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-JiSheng Zhang a écrit :
+JiSheng Zhang wrote:
 > If nandflash driver use DMA to support UBI and UBIFS i/o, there will
 > be panic like
 > the following. This is because UBI and UBIFS use vmalloced buffer
@@ -55,8 +50,10 @@ JiSheng Zhang a écrit :
 > a patch.
 > 
 > Comments are welcomed!
-> 
-mtd is not DMA safe. So patching UBI and UBIFS is not enought.
 
+vmalloc allows large (> 128KiB) buffers, but kmalloc doesn't.
+So we presently have no choice but to use vmalloc.
 
-Matthieu
+I do not know what hardware you have or exactly what driver you
+are using, but we have UBIFS on OneNAND using DMA.
+See drivers/mtd/onenand/omap2.c
