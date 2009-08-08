@@ -1,26 +1,16 @@
-Received: from mail-yw0-f186.google.com ([209.85.211.186])
+Received: from comsmtp2.singnet.com.sg ([165.21.101.75])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MZeih-0007sM-Q3
-	for linux-mtd@lists.infradead.org; Sat, 08 Aug 2009 05:44:00 +0000
-Received: by ywh16 with SMTP id 16so3061645ywh.24
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 07 Aug 2009 22:43:52 -0700 (PDT)
+	id 1MZj4E-0007R0-GR
+	for linux-mtd@lists.infradead.org; Sat, 08 Aug 2009 10:22:31 +0000
+To: info@bnl.org
+Subject: WinningCode***AQ11WWRZZA1***
+Message-ID: <1249726528.4a7d504046c74@arrowana.singnet.com.sg>
+Date: Sat, 08 Aug 2009 18:15:28 +0800 (SGT)
+From: British Online Promo <info667@singnet.com.sg>
 MIME-Version: 1.0
-Sender: glikely@secretlab.ca
-In-Reply-To: <1247834363-28198-1-git-send-email-w.sang@pengutronix.de>
-References: <1247834363-28198-1-git-send-email-w.sang@pengutronix.de>
-From: Grant Likely <grant.likely@secretlab.ca>
-Date: Fri, 7 Aug 2009 23:43:32 -0600
-Message-ID: <fa686aa40908072243x56d2160fk688149f4b7b912ae@mail.gmail.com>
-Subject: Re: [PATCH] mtd/maps: add mtd-ram support to physmap_of
-To: Wolfram Sang <w.sang@pengutronix.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: devicetree-discuss@ozlabs.org, Vitaly Wool <vwool@ru.mvista.com>,
-	Artem Bityutskiy <dedekind@infradead.org>,
-	=?ISO-8859-1?Q?Albrecht_Dre=DF?= <albrecht.dress@arcor.de>,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Ken MacLeod <ken@bitsko.slc.ut.us>, David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Reply-To: franck.smith009@msn.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,144 +20,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jul 17, 2009 at 6:39 AM, Wolfram Sang<w.sang@pengutronix.de> wrote:
-> Use physmap_of to access RAMs as mtd and add documenation for it. This ap=
-proach
-> is a lot less intrusive as adding an of-wrapper around plat-ram.c. As mos=
-t
-> extensions of plat-ram.c (e.g. custom map-functions) can't be mapped to t=
-he
-> device tree anyhow, extending physmap_of seems to be the cleanest approac=
-h.
->
-> Tested with a phyCORE-MPC5121e.
->
-> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-
-Looks good to me.
-
-Acked-by: Grant Likely <grant.likely@secretlab.ca>
-
-> Cc: Vitaly Wool <vwool@ru.mvista.com>
-> Cc: Artem Bityutskiy <dedekind@infradead.org>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Ken MacLeod <ken@bitsko.slc.ut.us>
-> Cc: Albrecht Dre=DF <albrecht.dress@arcor.de>
-> ---
-> =A0Documentation/powerpc/dts-bindings/mtd-physmap.txt | =A0 42 ++++++++++=
-++-------
-> =A0drivers/mtd/maps/physmap_of.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0| =A0 =A04 ++
-> =A02 files changed, 30 insertions(+), 16 deletions(-)
->
-> diff --git a/Documentation/powerpc/dts-bindings/mtd-physmap.txt b/Documen=
-tation/powerpc/dts-bindings/mtd-physmap.txt
-> index 667c9bd..80152cb 100644
-> --- a/Documentation/powerpc/dts-bindings/mtd-physmap.txt
-> +++ b/Documentation/powerpc/dts-bindings/mtd-physmap.txt
-> @@ -1,18 +1,19 @@
-> -CFI or JEDEC memory-mapped NOR flash
-> +CFI or JEDEC memory-mapped NOR flash, MTD-RAM (NVRAM...)
->
-> =A0Flash chips (Memory Technology Devices) are often used for solid state
-> =A0file systems on embedded devices.
->
-> - - compatible : should contain the specific model of flash chip(s)
-> - =A0 used, if known, followed by either "cfi-flash" or "jedec-flash"
-> - - reg : Address range(s) of the flash chip(s)
-> + - compatible : should contain the specific model of mtd chip(s)
-> + =A0 used, if known, followed by either "cfi-flash", "jedec-flash"
-> + =A0 or "mtd-ram".
-> + - reg : Address range(s) of the mtd chip(s)
-> =A0 =A0It's possible to (optionally) define multiple "reg" tuples so that
-> - =A0 non-identical NOR chips can be described in one flash node.
-> - - bank-width : Width (in bytes) of the flash bank. =A0Equal to the
-> + =A0 non-identical chips can be described in one node.
-> + - bank-width : Width (in bytes) of the bank. =A0Equal to the
-> =A0 =A0device width times the number of interleaved chips.
-> - - device-width : (optional) Width of a single flash chip. =A0If
-> + - device-width : (optional) Width of a single mtd chip. =A0If
-> =A0 =A0omitted, assumed to be equal to 'bank-width'.
-> - - #address-cells, #size-cells : Must be present if the flash has
-> + - #address-cells, #size-cells : Must be present if the device has
-> =A0 =A0sub-nodes representing partitions (see below). =A0In this case
-> =A0 =A0both #address-cells and #size-cells must be equal to 1.
->
-> @@ -22,24 +23,24 @@ are defined:
-> =A0- vendor-id : Contains the flash chip's vendor id (1 byte).
-> =A0- device-id : Contains the flash chip's device id (1 byte).
->
-> -In addition to the information on the flash bank itself, the
-> +In addition to the information on the mtd bank itself, the
-> =A0device tree may optionally contain additional information
-> -describing partitions of the flash address space. =A0This can be
-> +describing partitions of the address space. =A0This can be
-> =A0used on platforms which have strong conventions about which
-> -portions of the flash are used for what purposes, but which don't
-> +portions of a flash are used for what purposes, but which don't
-> =A0use an on-flash partition table such as RedBoot.
->
-> -Each partition is represented as a sub-node of the flash device.
-> +Each partition is represented as a sub-node of the mtd device.
-> =A0Each node's name represents the name of the corresponding
-> -partition of the flash device.
-> +partition of the mtd device.
->
-> =A0Flash partitions
-> - - reg : The partition's offset and size within the flash bank.
-> - - label : (optional) The label / name for this flash partition.
-> + - reg : The partition's offset and size within the mtd bank.
-> + - label : (optional) The label / name for this partition.
-> =A0 =A0If omitted, the label is taken from the node name (excluding
-> =A0 =A0the unit address).
-> =A0- read-only : (optional) This parameter, if present, is a hint to
-> - =A0 Linux that this flash partition should only be mounted
-> + =A0 Linux that this partition should only be mounted
-> =A0 =A0read-only. =A0This is usually used for flash partitions
-> =A0 =A0containing early-boot firmware images or data which should not
-> =A0 =A0be clobbered.
-> @@ -78,3 +79,12 @@ Here an example with multiple "reg" tuples:
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0reg =3D <0 0x04000000>;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0};
-> =A0 =A0 =A0 =A0};
-> +
-> +An example using SRAM:
-> +
-> + =A0 =A0 =A0 sram@2,0 {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 compatible =3D "samsung,k6f1616u6a", "mtd-r=
-am";
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 reg =3D <2 0 0x00200000>;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 bank-width =3D <2>;
-> + =A0 =A0 =A0 };
-> +
-> diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.=
-c
-> index 39d357b..45eee20 100644
-> --- a/drivers/mtd/maps/physmap_of.c
-> +++ b/drivers/mtd/maps/physmap_of.c
-> @@ -360,6 +360,10 @@ static struct of_device_id of_flash_match[] =3D {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.data =A0 =A0 =A0 =A0 =A0 =3D (void *)"jed=
-ec_probe",
-> =A0 =A0 =A0 =A0},
-> =A0 =A0 =A0 =A0{
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 .compatible =A0 =A0 =3D "mtd-ram",
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 .data =A0 =A0 =A0 =A0 =A0 =3D (void *)"map_=
-ram",
-> + =A0 =A0 =A0 },
-> + =A0 =A0 =A0 {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.type =A0 =A0 =A0 =A0 =A0 =3D "rom",
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.compatible =A0 =A0 =3D "direct-mapped"
-> =A0 =A0 =A0 =A0},
-> --
-> 1.6.3.1
->
-> _______________________________________________
-> Linuxppc-dev mailing list
-> Linuxppc-dev@lists.ozlabs.org
-> https://lists.ozlabs.org/listinfo/linuxppc-dev
 
 
+The British National Lottery
+P O Box 10103b  Liverpool,
+L30 1RD United Kingdom
+Ref: UK/9420X2/68
+Batch: 074/05/ZY369
 
---=20
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
+This is to inform you that you have been  
+selected for a cash prize of 1,000,000  
+(British Pounds) held on the 29th of July 
+2009 in London (United Kingdom).The 
+selection 
+process was carried
+out through random selection in Our  
+computerized email selection system (ESS)  
+London Uk. Fill the below:
+
+ 1. Full Name:
+ 2. Address:
+ 3. Country:
+ 4. Telephone Number:
+ 5. Age:
+ 6. Sex:
+
+Agent Name: Mr. Franck Smith
+Tel: +44 704-571-0536
+Email:  (franck.smith009@msn.com)
