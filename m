@@ -1,16 +1,19 @@
-Received: from comsmtp2.singnet.com.sg ([165.21.101.75])
+Received: from ey-out-1920.google.com ([74.125.78.145])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MZj4E-0007R0-GR
-	for linux-mtd@lists.infradead.org; Sat, 08 Aug 2009 10:22:31 +0000
-To: info@bnl.org
-Subject: WinningCode***AQ11WWRZZA1***
-Message-ID: <1249726528.4a7d504046c74@arrowana.singnet.com.sg>
-Date: Sat, 08 Aug 2009 18:15:28 +0800 (SGT)
-From: British Online Promo <info667@singnet.com.sg>
+	id 1MZnno-0006L0-PB
+	for linux-mtd@lists.infradead.org; Sat, 08 Aug 2009 15:25:54 +0000
+Received: by ey-out-1920.google.com with SMTP id 5so730383eyb.24
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 08 Aug 2009 08:25:47 -0700 (PDT)
+Message-ID: <4A7D99D7.5050101@gmail.com>
+Date: Sat, 08 Aug 2009 17:29:27 +0200
+From: Roel Kluin <roel.kluin@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Reply-To: franck.smith009@msn.com
+To: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] MTD/JFFS2: Read buffer overflow
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,31 +23,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Prevent a read from mtd->eraseregions[-1]
 
-
-The British National Lottery
-P O Box 10103b  Liverpool,
-L30 1RD United Kingdom
-Ref: UK/9420X2/68
-Batch: 074/05/ZY369
-
-This is to inform you that you have been  
-selected for a cash prize of 1,000,000  
-(British Pounds) held on the 29th of July 
-2009 in London (United Kingdom).The 
-selection 
-process was carried
-out through random selection in Our  
-computerized email selection system (ESS)  
-London Uk. Fill the below:
-
- 1. Full Name:
- 2. Address:
- 3. Country:
- 4. Telephone Number:
- 5. Age:
- 6. Sex:
-
-Agent Name: Mr. Franck Smith
-Tel: +44 704-571-0536
-Email:  (franck.smith009@msn.com)
+Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+---
+diff --git a/drivers/mtd/devices/lart.c b/drivers/mtd/devices/lart.c
+index 578de1c..f4359fe 100644
+--- a/drivers/mtd/devices/lart.c
++++ b/drivers/mtd/devices/lart.c
+@@ -393,7 +393,8 @@ static int flash_erase (struct mtd_info *mtd,struct erase_info *instr)
+ 	* erase range is aligned with the erase size which is in
+ 	* effect here.
+ 	*/
+-   if (instr->addr & (mtd->eraseregions[i].erasesize - 1)) return (-EINVAL);
++   if (i < 0 || (instr->addr & (mtd->eraseregions[i].erasesize - 1)))
++      return -EINVAL;
+ 
+    /* Remember the erase region we start on */
+    first = i;
+@@ -409,7 +410,8 @@ static int flash_erase (struct mtd_info *mtd,struct erase_info *instr)
+    i--;
+ 
+    /* is the end aligned on a block boundary? */
+-   if ((instr->addr + instr->len) & (mtd->eraseregions[i].erasesize - 1)) return (-EINVAL);
++   if (i < 0 || ((instr->addr + instr->len) & (mtd->eraseregions[i].erasesize - 1)))
++      return -EINVAL;
+ 
+    addr = instr->addr;
+    len = instr->len;
