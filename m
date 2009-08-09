@@ -1,25 +1,19 @@
-Received: from mail2.gnudd.com ([213.203.150.91] helo=mail.gnudd.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Ma2Rl-0000mq-Ok
-	for linux-mtd@lists.infradead.org; Sun, 09 Aug 2009 07:04:06 +0000
-Date: Sun, 9 Aug 2009 09:03:31 +0200
-From: Alessandro Rubini <rubini-list@gnudd.com>
-To: dedekind1@gmail.com
-Subject: Re: [PATCH V5 1/2] Nand driver for Nomadik 8815 SoC (on NHK8815 board)
-Message-ID: <20090809070331.GA26631@mail.gnudd.com>
+	id 1Ma2X8-0008Me-3E
+	for linux-mtd@lists.infradead.org; Sun, 09 Aug 2009 07:09:38 +0000
+Message-ID: <4A7E7453.6010103@gmail.com>
+Date: Sun, 09 Aug 2009 10:01:39 +0300
+From: Artem Bityutskiy <dedekind1@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Sender: rubini-list@gnudd.com
-In-Reply-To: <4A7E7026.3020806@gmail.com>
-References: <4A7E7026.3020806@gmail.com> <cover.1248434635.git.rubini@unipv.it>
-	<ce9ab5790907240510y752885b9m2debac82bbdd7401@mail.gmail.com>
-	<20090724123750.GA25563@mail.gnudd.com>
-	<ce9ab5790907262328w24946e69wbb2c7977a93aa982@mail.gmail.com>
-	<ce9ab5790907270146q6c113aa0qdfee50dea2cf9f2b@mail.gmail.com>
-Cc: linux@arm.linux.org.uk, vimal.newwork@gmail.com,
-	andrea.gallo@stericsson.com, STEricsson_nomadik_linux@list.st.com,
-	linux-mtd@lists.infradead.org, dwmw2@infradead.org
+To: Timo Lindfors <lindi@kurp.hut.fi>
+Subject: Re: [PATCH] jffs2dump: rewrite --help output to be more suitable
+	for help2man
+References: <kr8wi9et0l.fsf@lindi1.lan>
+In-Reply-To: <kr8wi9et0l.fsf@lindi1.lan>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,17 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> http://patchwork.ozlabs.org/patch/13697/
-> 
-> It is in l2-mtd-2.6.git now.
+On 07/28/2009 12:05 AM, Timo Lindfors wrote:
+> From: Timo Juhani Lindfors<timo.lindfors@iki.fi>
+>
+> $ help2man /usr/sbin/jffs2dump | man /dev/stdin
+>
+> currently creates badly formatted output like
+>
+> -b          --bigendian                 image is big endian
+> -l          --littleendian              image   is   little
+> endian  -c          --content                   dump  image
+> contents  -e  fname    --endianconvert=fname        convert
+> image endianness, output to file fname -r         --recalc-
+>
+> This patch modifies the --help output for jffs2dump to be more
+> suitable for help2man and thus makes it possible to easily create
+> manual pages that stay up-to-date.
+>
+> Signed-off-by: Timo Juhani Lindfors<timo.lindfors@iki.fi>
 
-Great!
+Looks good to me. Pushed to the mtd-utils git tree, thanks.
 
-Now, what are the steps to have Nomadik Nand and OneNand merged?
-
-Are they going to appear in a tree (which one? I think rmk, since it's
-the only one with Nomadik files in), or should I resubmit to mtd after
-base arch is merged from rmk?
-
-Thanks
-/alessandro
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
