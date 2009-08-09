@@ -1,21 +1,21 @@
-Subject: Re: [UBI UBIFS] replace vmalloc with kmalloc
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Ma2AF-0002C9-7P
+	for linux-mtd@lists.infradead.org; Sun, 09 Aug 2009 06:45:59 +0000
+Message-ID: <4A7E7026.3020806@gmail.com>
+Date: Sun, 09 Aug 2009 09:43:50 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: JiSheng Zhang <jszhang3@gmail.com>
-In-Reply-To: <20090807232846.34bffdeb@ustc>
-References: <2df346410908070202i6c16008ckc145559a474129c6@mail.gmail.com>
-	<4A7BF1C3.4050602@nokia.com>  <20090807232846.34bffdeb@ustc>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 09 Aug 2009 08:35:32 +0300
-Message-Id: <1249796132.9157.52.camel@localhost>
-Mime-Version: 1.0
+MIME-Version: 1.0
+To: vimal singh <vimal.newwork@gmail.com>
+Subject: Re: [PATCH V5 1/2] Nand driver for Nomadik 8815 SoC (on NHK8815 board)
+References: <cover.1248434635.git.rubini@unipv.it>	<ce9ab5790907240510y752885b9m2debac82bbdd7401@mail.gmail.com>	<20090724123750.GA25563@mail.gnudd.com>	<ce9ab5790907262328w24946e69wbb2c7977a93aa982@mail.gmail.com>
+	<ce9ab5790907270146q6c113aa0qdfee50dea2cf9f2b@mail.gmail.com>
+In-Reply-To: <ce9ab5790907270146q6c113aa0qdfee50dea2cf9f2b@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Cc: "Bityutskiy Artem \(Nokia-D/Helsinki\)" <Artem.Bityutskiy@nokia.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"rmk@arm.linux.org.uk" <rmk@arm.linux.org.uk>,
-	Adrian Hunter <adrian.hunter@nokia.com>
-Reply-To: dedekind1@gmail.com
+Cc: linux@arm.linux.org.uk, Alessandro Rubini <rubini-list@gnudd.com>,
+	linux-mtd@lists.infradead.org, andrea.gallo@stericsson.com,
+	STEricsson_nomadik_linux@list.st.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +25,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-08-07 at 23:28 +0800, JiSheng Zhang wrote:
-> Adrian Hunter <adrian.hunter@nokia.com> wrote:
-> > 
-> > vmalloc allows large (> 128KiB) buffers, but kmalloc doesn't.
-> > So we presently have no choice but to use vmalloc.
-> 
-> But vmalloced buffer can't be easily passed to DMA, is there better choice?
+On 07/27/2009 11:46 AM, vimal singh wrote:
+> To make it work for 512 bytes sector ECC in SW, below patch is required:
+>
+> http://patchwork.ozlabs.org/patch/13697/
+>
+> Which was posted sometime back, but unfortunately did not get merged.
 
-We use vmalloc-ed buffers is when we need to do something with whole
-eraseblocks, which may be 128KiB, or even 256KiB. So in general, we
-cannot just s/kmalloc/vmalloc/. We should invent something trickier.
-
-You should probably think about some generic way to solve problems like
-this. May be some MTD-specific library could be created. You could
-implement something like the flexible arrays, but with DMA stuff in mind
-(e.g., adding a parameter which specifies allocation order, because for
-DMA you may want to allocate more than one physically contiguous page).
-Or you may even improve the existing flexible arrays to suit your needs.
-Take a look here:
-http://lwn.net/Articles/345273/
+It is in l2-mtd-2.6.git now.
 
 -- 
 Best Regards,
