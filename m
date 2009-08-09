@@ -1,19 +1,33 @@
-Received: from koko.iders.ca ([206.45.72.61])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MZswY-000117-OD
-	for linux-mtd@lists.infradead.org; Sat, 08 Aug 2009 20:55:15 +0000
-Received: from [200.123.101.231] (zen.iders.ca [200.123.101.231])
-	by koko.iders.ca (Postfix) with ESMTP id 064BA3E400A
-	for <linux-mtd@lists.infradead.org>;
-	Sat,  8 Aug 2009 15:54:56 -0500 (CDT)
-Message-ID: <4A7DE61F.6010605@iders.ca>
-Date: Sat, 08 Aug 2009 15:54:55 -0500
-From: Andrew McKay <amckay@iders.ca>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Block erasure on MT29F16G08DAA issue
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Ma0As-0001oZ-36
+	for linux-mtd@lists.infradead.org; Sun, 09 Aug 2009 04:38:30 +0000
+Subject: Re: ubiattach problem
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Oren <oren_s3@VERIFONE.com>
+In-Reply-To: <1247055811.2208.25.camel@tlvorens3lnx>
+References: <baa101c9fe67$d7b31f0a$b65b1ec0@verifone.com>
+	<1246947926.20721.299.camel@localhost.localdomain>
+	<1246962761.1775.7.camel@tlvorens3lnx>
+	<1246963327.20721.306.camel@localhost.localdomain>
+	<1246968515.2208.4.camel@tlvorens3lnx>
+	<1246971115.20721.308.camel@localhost.localdomain>
+	<1246972892.2208.5.camel@tlvorens3lnx>
+	<1246973292.20721.313.camel@localhost.localdomain>
+	<1246975692.2208.7.camel@tlvorens3lnx>
+	<1246977486.20721.315.camel@localhost.localdomain>
+	<1246978172.2208.13.camel@tlvorens3lnx>
+	<1246978420.20721.317.camel@localhost.localdomain>
+	<1246981097.2208.19.camel@tlvorens3lnx>
+	<1246981542.20721.327.camel@localhost.localdomain>
+	<1247055811.2208.25.camel@tlvorens3lnx>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sun, 09 Aug 2009 07:36:41 +0300
+Message-Id: <1249792601.9157.24.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,166 +37,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hey guys,
+On Wed, 2009-07-08 at 15:23 +0300, Oren wrote:
+> Well...thanks...seems like my device was not work properly.
+> After fixing it...i have progress in ubiattach:
+> 
+> 
+> [ 1387.120000] UBI: volume 0 ("NAND-block1") re-sized from 133 to 1655
+> LEBs
+> [ 1387.130000] UBI: attached mtd2 to ubi0
+> [ 1387.130000] UBI: MTD device name:            "NAND-block2"
+> [ 1387.140000] UBI: MTD device size:            210 MiB
+> [ 1387.140000] UBI: number of good PEBs:        1675
+> [ 1387.150000] UBI: number of bad PEBs:         5
+> [ 1387.150000] UBI: max. allowed volumes:       128
+> [ 1387.160000] UBI: wear-leveling threshold:    4096
+> [ 1387.160000] UBI: number of internal volumes: 1
+> [ 1387.170000] UBI: number of user volumes:     1
+> [ 1387.170000] UBI: available PEBs:             0
+> [ 1387.170000] UBI: total number of reserved PEBs: 1675
+> [ 1387.180000] UBI: number of PEBs reserved for bad PEB handling: 16
+> [ 1387.190000] UBI: max/mean erase counter: 0/0
+> [ 1387.190000] UBI: background thread "ubi_bgt0d" started, PID 141
+> 
+> but when trying to mount i get the following:
+> 
+>  mount -t ubifs ubi0:NAND-block1 /mnt/ubi 
+> [ 1654.740000] UBIFS error (pid 149): validate_sb: LEB size mismatch:
+> 129024 in superblock, 126976 real
+> [ 1654.750000] UBIFS error (pid 149): validate_sb: bad superblock, error
+> 1
+> mount: mounting ubi0:NAND-block1 on /mnt/ubi failed: Invalid argument
 
-I'm having issues with MT29F16G08DAA parts with MTD on Linux.  I have found a 
-strange issue with block erasure failures.  The part seems to get in a state 
-where if a block fails erasure, all pages with-in that block (including the OOB 
-area) will read all 0x00.  I realize that internally the part may write all bits 
-to 0 to prevent over erasure of already erased bits, however if the device is 
-powercycled, the data that was in that block before the erase is still there.
+I've just created this FAQ entry for you:
+http://www.linux-mtd.infradead.org/faq/ubifs.html#L_lebsz_mismatch
 
-Here is a dump of what I'm seeing.
+Enjoy :-)
 
-/mnt/zen/mtd-utils # ./nanddump -s 0x29a00000 -l 0x1000 -p /dev/mtd12
-ECC failed: 0
-ECC corrected: 0
-Number of bad blocks: 204
-Number of bbt blocks: 0
-Block size 262144, page size 4096, OOB size 128
-Dumping data starting at 0x29a00000 and ending at 0x29a01000...
-0x29a00000: 03 00 00 00 09 75 00 00 ff ff 2e 73 76 6e 00 00
-0x29a00010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00040: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00050: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00060: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00070: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00090: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a000a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a000b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a000c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a000d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a000e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a000f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00100: 00 00 00 00 00 00 00 00 00 00 ff ff ed 41 00 00
-0x29a00110: 00 00 00 00 00 00 00 00 0a d6 7c 4a 0b d6 7c 4a
-0x29a00120: 0b d6 7c 4a ff ff ff ff ff ff ff ff ff ff ff ff
-0x29a00130: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x29a00140: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x29a00150: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[SNIP]
-0x29a00f40: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x29a00f50: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x29a00f60: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x29a00f70: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x29a00f80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x29a00f90: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x29a00fa0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x29a00fb0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x29a00fc0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x29a00fd0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x29a00fe0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x29a00ff0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-   OOB Data: ff ff cb 19 00 00 1d 75 00 30 09 75 00 80 00 00
-   OOB Data: 00 00 25 7c 05 c4 06 00 00 00 f9 ff ff ff ff ff
-   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-   OOB Data: ff 00 c3 a9 6a 67 ff ff ff ff ff ff ff ff ff ff
-   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-   OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-
-
-/mnt/zen/mtd-utils # ./flash_erase /dev/mtd12 0x29a00000
-Erase Total 1 Unnand_erase: start = 0x29a00000, len = 262144
-its
-Performing Flash Erase of length 262144 at offset 0x29a00000single_erase_cmd
-nand_erase: Failed erase, page 0x00029a00
-
-MTD Erase failure: Input/output error
-
-
-/mnt/zen/mtd-utils # ./nanddump -s 0x29a00000 -l 0x1000 -p /dev/mtd12
-ECC failed: 0
-ECC corrected:ECC: BAD
-  0
-Number of baECC: BAD
-d blocks: 204
-NECC: BAD
-umber of bbt bloECC: BAD
-cks: 0
-Block siECC: BAD
-ze 262144, page ECC: BAD
-size 4096, OOB sECC: BAD
-ize 128
-DumpingECC: BAD
-  data starting aECC: BAD
-t 0x29a00000 andECC: BAD
-  ending at 0x29aECC: BAD
-01000...
-ECC: BAD
-ECC: BAD
-ECC: BAD
-ECC: BAD
-ECC: BAD
-ECC: 16 uncorrectable bitflip(s) at offset 0x29a00000
-0x29a00000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00040: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00050: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00060: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00070: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00090: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a000a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a000b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a000c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a000d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a000e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a000f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00110: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00120: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00130: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00140: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00150: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[SNIP]
-0x29a00f40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00f50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00f60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00f70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00f90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00fa0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00fb0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00fc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00fd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00fe0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x29a00ff0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-   OOB Data: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-   OOB Data: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-   OOB Data: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-   OOB Data: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-   OOB Data: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-   OOB Data: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-   OOB Data: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-   OOB Data: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-/mnt/zen/mtd-utils #
-
-The big issue here is that I've also testing writing to this block after a 
-failed erasure, and I can't seem to write to it either.  I tried forcing the 
-block to all zeros after the failed erase, and on reboot the previous data is 
-still in the block.  This means that when MTD is told to mark this block as bad, 
-the write of the first two bytes in the first two pages of the block also fails. 
-  Therefore the page never gets marked bad.  Eventually an erase will work and 
-the block goes back to a "working" state.  However it'll end up in this strange 
-state again at some point.
-
-Has anyone seen this happen before with NAND parts?  Is there a way to avoid 
-this?  I have tried issuing a RESET command to the part after a failed erase, 
-but all the pages in the block stay in this strange state.  The only thing that 
-seems to recover the device is to power cycle it.
-
-I suppose I could change to using a BBT that is written to the NAND device, 
-hopefully then the bad blocks would be kept track of.  Though I've never had an 
-issue with marking blocks bad by writing the first two bytes of the first two 
-pages to 0x00 and have Linux build a BBT on the fly during boot-up.
-
-Thanks,
-Andrew McKay
-Iders Inc.
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
