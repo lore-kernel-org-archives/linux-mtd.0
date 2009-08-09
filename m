@@ -1,26 +1,25 @@
 Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Ma2gr-0002e1-6c
-	for linux-mtd@lists.infradead.org; Sun, 09 Aug 2009 07:19:41 +0000
-Subject: Re: [PATCH V5 1/2] Nand driver for Nomadik 8815 SoC (on NHK8815 board)
+	id 1Ma2qC-0004KG-6V
+	for linux-mtd@lists.infradead.org; Sun, 09 Aug 2009 07:29:20 +0000
+Message-ID: <4A7E7A59.3080501@gmail.com>
+Date: Sun, 09 Aug 2009 10:27:21 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Alessandro Rubini <rubini-list@gnudd.com>
-In-Reply-To: <20090809070331.GA26631@mail.gnudd.com>
-References: <4A7E7026.3020806@gmail.com> <cover.1248434635.git.rubini@unipv.it>
-	<ce9ab5790907240510y752885b9m2debac82bbdd7401@mail.gmail.com>
-	<20090724123750.GA25563@mail.gnudd.com>
-	<ce9ab5790907262328w24946e69wbb2c7977a93aa982@mail.gmail.com>
-	<ce9ab5790907270146q6c113aa0qdfee50dea2cf9f2b@mail.gmail.com>
-	<20090809070331.GA26631@mail.gnudd.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 09 Aug 2009 10:17:46 +0300
-Message-Id: <1249802266.9157.61.camel@localhost>
-Mime-Version: 1.0
+MIME-Version: 1.0
+To: Scott Branden <sbranden@broadcom.com>
+Subject: Re: [PATCH v3 26/27] [ARM] [NAND] [bcmring] add bcmring umi nand
+	driver support
+References: <8628FE4E7912BF47A96AE7DD7BAC0AADCB25C53608@SJEXCHCCR02.corp.ad.broadcom.com>	<1247980139.11353.194.camel@localhost.localdomain>	<8628FE4E7912BF47A96AE7DD7BAC0AADCB25D06CCA@SJEXCHCCR02.corp.ad.broadcom.com>	<8628FE4E7912BF47A96AE7DD7BAC0AADCB25D06CDD@SJEXCHCCR02.corp.ad.broadcom.com>,
+	<1249794985.9157.36.camel@localhost>
+	<9383297B60843144AC17878B479520F1109ECFC740@SJEXCHCCR01.corp.ad.broadcom.com>
+In-Reply-To: <9383297B60843144AC17878B479520F1109ECFC740@SJEXCHCCR01.corp.ad.broadcom.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Cc: linux@arm.linux.org.uk, vimal.newwork@gmail.com,
-	andrea.gallo@stericsson.com, STEricsson_nomadik_linux@list.st.com,
-	linux-mtd@lists.infradead.org, dwmw2@infradead.org
-Reply-To: dedekind1@gmail.com
+Cc: Artem Bityutskiy <dedekind@infradead.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-arm-kernel@lists.arm.linux.org.uk"
+	<linux-arm-kernel@lists.arm.linux.org.uk>,
+	"Leo \(Hao\) Chen" <leochen@broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,27 +29,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2009-08-09 at 09:03 +0200, Alessandro Rubini wrote:
-> >> http://patchwork.ozlabs.org/patch/13697/
-> > 
-> > It is in l2-mtd-2.6.git now.
-> 
-> Great!
+On 08/09/2009 10:12 AM, Scott Branden wrote:
+> Hi Artem,
+>
+> Thanks for the comments.
+>
+> This particular code (nand_bcm_umi.h) is shared between multiple
+> OS's, simulation environments, and non-OS's.  As you are aware, this
+> alone presents maintenance challenges.  The simplest approach was to
+> make an include file and wrap that for each particular environment.
+> We will look at splitting this into a C and H file.
 
-Well, this only means that the MTD maintainer will take it later
-into the mtd-2.6.git, and merge upstream during the next merge
-window.
+Well, the idea is that include/linux/mtd the external MTD interface,
+so you should put only the stuff which is about MTD<->other subsystems.
+There are also headers that are about MTD core <-> MTD drivers interface.
 
-> Now, what are the steps to have Nomadik Nand and OneNand merged?
+So if you need to share something between different parts of your driver,
+this should be rather in drivers/mtd/nand/, not in include/linux/mtd.
 
-I guess you could send stand-alone patches, and I can put them to
-my tree as well, and let dwmw2 pick them later.
+> The file passes Linux's checkpatch scripts.  I don't see a need for
+> any further requirement?  It would be sad if a particular linux
+> maintainer was stuck on other stylistic concerns because other
+> maintainers are not.  Especially when this code is not specifically
+> written for linux and is supported, tested, and maintained by us.
 
-> Are they going to appear in a tree (which one? I think rmk, since it's
-> the only one with Nomadik files in), or should I resubmit to mtd after
-> base arch is merged from rmk?
-
-It is up to dwmw2 and rmk, they are the corresponding maintainers.
+I do not have a strong opinion here, and I'm personally fine with this.
+I mean, I do not mind if you ignore my /**...**/ and 'WindowsStyleVars'
+comment.
 
 -- 
 Best Regards,
