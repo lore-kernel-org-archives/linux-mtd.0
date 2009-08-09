@@ -1,19 +1,22 @@
-Subject: Re: [PATCH] mtd/maps: add mtd-ram support to physmap_of
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Ma0qm-00007A-F9
+	for linux-mtd@lists.infradead.org; Sun, 09 Aug 2009 05:21:48 +0000
+Subject: Re: [RFC/PATCH] flash_eraseall: extra care if NOR flash is not
+	BIT_WRITEABLE
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Grant Likely <grant.likely@secretlab.ca>
-In-Reply-To: <fa686aa40908072243x56d2160fk688149f4b7b912ae@mail.gmail.com>
-References: <1247834363-28198-1-git-send-email-w.sang@pengutronix.de>
-	<fa686aa40908072243x56d2160fk688149f4b7b912ae@mail.gmail.com>
+To: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+In-Reply-To: <20090806145842.GA14994@Chamillionaire.breakpoint.cc>
+References: <1237848138-18157-1-git-send-email-sebastian@breakpoint.cc>
+	<1237848138-18157-4-git-send-email-sebastian@breakpoint.cc>
+	<1239366655.3390.14.camel@localhost.localdomain>
+	<20090806145842.GA14994@Chamillionaire.breakpoint.cc>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 09 Aug 2009 08:17:23 +0300
-Message-Id: <1249795043.9157.37.camel@localhost>
+Date: Sun, 09 Aug 2009 08:20:07 +0300
+Message-Id: <1249795207.9157.38.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: devicetree-discuss@ozlabs.org, Vitaly Wool <vwool@ru.mvista.com>,
-	Albrecht =?ISO-8859-1?Q?Dre=DF?= <albrecht.dress@arcor.de>,
-	Wolfram Sang <w.sang@pengutronix.de>, linuxppc-dev@ozlabs.org,
-	linux-mtd@lists.infradead.org, Ken MacLeod <ken@bitsko.slc.ut.us>,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,22 +27,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-08-07 at 23:43 -0600, Grant Likely wrote:
-> On Fri, Jul 17, 2009 at 6:39 AM, Wolfram Sang<w.sang@pengutronix.de> wrote:
-> > Use physmap_of to access RAMs as mtd and add documenation for it. This approach
-> > is a lot less intrusive as adding an of-wrapper around plat-ram.c. As most
-> > extensions of plat-ram.c (e.g. custom map-functions) can't be mapped to the
-> > device tree anyhow, extending physmap_of seems to be the cleanest approach.
-> >
-> > Tested with a phyCORE-MPC5121e.
-> >
-> > Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-> 
-> Looks good to me.
-> 
-> Acked-by: Grant Likely <grant.likely@secretlab.ca>
+On Thu, 2009-08-06 at 16:58 +0200, Sebastian Andrzej Siewior wrote:
+> >then we may just take them.
+> I don't use JFFS2 anymore so I would leave as it. If someone needs/wants
+> to fix it, he can take the patches probably as it since the jffs2
+> doesn't change much these days. Unless you really want me get it fixed
+> some way but I doubt it :)
 
-This patch is sitting in my l2-mtd-2.6.git tree.
+Right, let's not touch this then.
 
 -- 
 Best Regards,
