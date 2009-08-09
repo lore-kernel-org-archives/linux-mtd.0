@@ -1,20 +1,25 @@
 Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Ma2cX-0007Yh-V9
-	for linux-mtd@lists.infradead.org; Sun, 09 Aug 2009 07:15:14 +0000
-Subject: Re: [PATCH V7] Nand driver for Nomadik 8815 SoC (on NHK8815 board)
+	id 1Ma2gr-0002e1-6c
+	for linux-mtd@lists.infradead.org; Sun, 09 Aug 2009 07:19:41 +0000
+Subject: Re: [PATCH V5 1/2] Nand driver for Nomadik 8815 SoC (on NHK8815 board)
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Alessandro Rubini <rubini-list@gnudd.com>
-In-Reply-To: <20090729165156.GA1471@mail.gnudd.com>
-References: <20090729165156.GA1471@mail.gnudd.com>
+In-Reply-To: <20090809070331.GA26631@mail.gnudd.com>
+References: <4A7E7026.3020806@gmail.com> <cover.1248434635.git.rubini@unipv.it>
+	<ce9ab5790907240510y752885b9m2debac82bbdd7401@mail.gmail.com>
+	<20090724123750.GA25563@mail.gnudd.com>
+	<ce9ab5790907262328w24946e69wbb2c7977a93aa982@mail.gmail.com>
+	<ce9ab5790907270146q6c113aa0qdfee50dea2cf9f2b@mail.gmail.com>
+	<20090809070331.GA26631@mail.gnudd.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 09 Aug 2009 10:13:22 +0300
-Message-Id: <1249802002.9157.57.camel@localhost>
+Date: Sun, 09 Aug 2009 10:17:46 +0300
+Message-Id: <1249802266.9157.61.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: STEricsson_nomadik_linux@list.st.com, vimal.newwork@gmail.com,
-	andrea.gallo@stericsson.com, linux-mtd@lists.infradead.org,
-	linux@arm.linux.org.uk
+Cc: linux@arm.linux.org.uk, vimal.newwork@gmail.com,
+	andrea.gallo@stericsson.com, STEricsson_nomadik_linux@list.st.com,
+	linux-mtd@lists.infradead.org, dwmw2@infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,50 +30,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-07-29 at 18:51 +0200, Alessandro Rubini wrote:
-> From: Alessandro Rubini <rubini@unipv.it>
+On Sun, 2009-08-09 at 09:03 +0200, Alessandro Rubini wrote:
+> >> http://patchwork.ozlabs.org/patch/13697/
+> > 
+> > It is in l2-mtd-2.6.git now.
 > 
-> 
-> Signed-off-by: Alessandro Rubini <rubini@unipv.it>
-> Acked-by: Andrea Gallo <andrea.gallo@stericsson.com>
-> Acked-by: Russell King <rmk+kernel@arm.linux.org.uk>
-> ---
-> 
-> The patch applies to rmk's devel tree.
-> 
-> Changes in V7:
-> 	- removed unused static function
-> 	- use linux/io.h not asm/io.h
-> 	- untabbed a too-tabbed lined
-> 	- remove wrong headers in commit message (I made a mess)
-> 
-> changes in V6:
->         - blindly applied checkpatch suggestions (even if I disagree)
->         - switched to pm_ops
->         - declare soft ecc instead of hard
-> 
-> The last point makes the driver non-working unless the patch by Vimal Singh
-> at http://patchwork.ozlabs.org/patch/13697/ is applied.
-> 
-> 
->  arch/arm/configs/nhk8815_defconfig        |    2 +-
->  arch/arm/mach-nomadik/board-nhk8815.c     |   92 +++++++++++
->  arch/arm/mach-nomadik/include/mach/fsmc.h |   29 ++++
->  arch/arm/mach-nomadik/include/mach/nand.h |   16 ++
->  drivers/mtd/nand/Kconfig                  |    6 +
->  drivers/mtd/nand/Makefile                 |    1 +
->  drivers/mtd/nand/nomadik_nand.c           |  250 +++++++++++++++++++++++++++++
->  7 files changed, 395 insertions(+), 1 deletions(-)
->  create mode 100644 arch/arm/mach-nomadik/include/mach/fsmc.h
->  create mode 100644 arch/arm/mach-nomadik/include/mach/nand.h
->  create mode 100644 drivers/mtd/nand/nomadik_nand.c
+> Great!
 
-I wanted to put this to my l2-mtd-2.6.git tree, but the patch cannot be
-applied because it does not seem to be a standalone patch, e.g.,
-arch/arm/configs/nhk8815_defconfig does not exist in my tree.
+Well, this only means that the MTD maintainer will take it later
+into the mtd-2.6.git, and merge upstream during the next merge
+window.
 
-So you should either split this better or have this merged via some ARM
-tree with the rest of the patches.
+> Now, what are the steps to have Nomadik Nand and OneNand merged?
+
+I guess you could send stand-alone patches, and I can put them to
+my tree as well, and let dwmw2 pick them later.
+
+> Are they going to appear in a tree (which one? I think rmk, since it's
+> the only one with Nomadik files in), or should I resubmit to mtd after
+> base arch is merged from rmk?
+
+It is up to dwmw2 and rmk, they are the corresponding maintainers.
 
 -- 
 Best Regards,
