@@ -1,15 +1,15 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MaP1Q-0002eH-2F
-	for linux-mtd@lists.infradead.org; Mon, 10 Aug 2009 07:10:24 +0000
+	id 1MaP6V-0001Dv-9S
+	for linux-mtd@lists.infradead.org; Mon, 10 Aug 2009 07:15:39 +0000
 Subject: Re: [patch 7/8] mtd: fix read buffer overflow
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: akpm@linux-foundation.org
 In-Reply-To: <200908062305.n76N5bPB004977@imap1.linux-foundation.org>
 References: <200908062305.n76N5bPB004977@imap1.linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 10 Aug 2009 10:07:56 +0300
-Message-Id: <1249888076.19638.3.camel@localhost>
+Date: Mon, 10 Aug 2009 10:13:02 +0300
+Message-Id: <1249888382.19638.4.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: roel.kluin@gmail.com, dwmw2@infradead.org, linux-mtd@lists.infradead.org
