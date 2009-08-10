@@ -1,20 +1,19 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MaOyA-0006IZ-Ii
-	for linux-mtd@lists.infradead.org; Mon, 10 Aug 2009 07:07:03 +0000
-Message-ID: <4A7FC68B.7070404@gmail.com>
-Date: Mon, 10 Aug 2009 10:04:43 +0300
+	id 1MaP1Q-0002eH-2F
+	for linux-mtd@lists.infradead.org; Mon, 10 Aug 2009 07:10:24 +0000
+Subject: Re: [patch 7/8] mtd: fix read buffer overflow
 From: Artem Bityutskiy <dedekind1@gmail.com>
-MIME-Version: 1.0
-To: Josh Boyer <jwboyer@gmail.com>
-Subject: Re: [patch 6/8] slram: fix read buffer overflow
-References: <200908062305.n76N5aeS004967@imap1.linux-foundation.org>
-	<20090807025847.GM3095@hansolo.jdub.homelinux.org>
-In-Reply-To: <20090807025847.GM3095@hansolo.jdub.homelinux.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: akpm@linux-foundation.org
+In-Reply-To: <200908062305.n76N5bPB004977@imap1.linux-foundation.org>
+References: <200908062305.n76N5bPB004977@imap1.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 10 Aug 2009 10:07:56 +0300
+Message-Id: <1249888076.19638.3.camel@localhost>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: dwmw2@infradead.org, akpm@linux-foundation.org, roel.kluin@gmail.com,
-	linux-mtd@lists.infradead.org
+Cc: roel.kluin@gmail.com, dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,18 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/07/2009 05:58 AM, Josh Boyer wrote:
-> On Thu, Aug 06, 2009 at 04:05:36PM -0700, akpm@linux-foundation.org wrote:
->> From: Roel Kluin<roel.kluin@gmail.com>
->>
->> map[count] is checked before count<  SLRAM_MAX_DEVICES_PARAMS
->>
->> declared on drivers/mtd/devices/slram.c:66:
->
-> Didn't we obsolete this driver with phram?  I don't mean to derail the patch,
-> but I'm wondering why slram still exists at all.
+On Thu, 2009-08-06 at 16:05 -0700, akpm@linux-foundation.org wrote:
+> From: Roel Kluin <roel.kluin@gmail.com>
+> 
+> Check whether index is within bounds before testing the element.
+> 
+> with `for (i = 0; bbt[i] && i < ebcnt; ++i)'
+> we test bbt[ebcnt] in the last iteration
+> 
+> with `for (i = 0; bbt[ebcnt - i - 1] && i < ebcnt; ++i)'
+> we test bbt[-1] in the last iteration
+> 
+> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
-Feel free to send a patch. Meanwhile, I've put this fix to my l2-mtd-2.6.git.
+This one is in my l2-mtd-2.6.git as well now.
 
 -- 
 Best Regards,
