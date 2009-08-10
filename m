@@ -1,27 +1,18 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MaVON-0005XV-PZ
-	for linux-mtd@lists.infradead.org; Mon, 10 Aug 2009 13:58:31 +0000
-From: "Narnakaje, Snehaprabha" <nsnehaprabha@ti.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Date: Mon, 10 Aug 2009 08:57:52 -0500
-Subject: RE: [PATCH v4 3/3] mtd-nand: DaVinci: Add 4-bit ECC support for
-	large page NAND chips
-Message-ID: <7A436F7769CA33409C6B44B358BFFF0C011ED29795@dlee02.ent.ti.com>
-References: <1249678139-23795-1-git-send-email-nsnehaprabha@ti.com>
-	<4A7FC319.30209@gmail.com>
-In-Reply-To: <4A7FC319.30209@gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mail-pz0-f197.google.com ([209.85.222.197])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MaVhe-0000QL-2s
+	for linux-mtd@lists.infradead.org; Mon, 10 Aug 2009 14:18:26 +0000
+Received: by pzk35 with SMTP id 35so2994372pzk.24
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 10 Aug 2009 07:18:20 -0700 (PDT)
 MIME-Version: 1.0
-Cc: "davinci-linux-open-source@linux.davincidsp.com"
-	<davinci-linux-open-source@linux.davincidsp.com>, "Paulraj,
-	Sandeep" <s-paulraj@ti.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>
+Date: Mon, 10 Aug 2009 19:48:20 +0530
+Message-ID: <630851df0908100718k261615c4sddc6025765a9b5d8@mail.gmail.com>
+Subject: onenand DDP device read issue
+From: Murali N <nalajala.murali@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,49 +22,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-QXJ0ZW0sDQoNClRoZSBwYXRjaGVzIG9uIHRoZSBsaW5rIGJlbG93IGFyZSBxdWl0ZSBvbGQgLSB2
-MiB2ZXJzaW9uIG9mIHRoZSBwYXRjaGVzLg0KDQpJIGhhZCBzZW50IHYzIHZlcnNpb24gb2YgdGhl
-IHBhdGNoZXMgbWlkIEp1bHksIHdoaWNoIEFuZHJldyBoYWQgcHVsbGVkIGludG8gdGhlIG1tb3Rt
-IHRyZWUuIE9uZSBvZiB0aGUgcGF0Y2hlcyB2NCwgMy8zIHdhcyByZS1zdWJtaXR0ZWQgbGFzdCB3
-ZWVrLg0KDQpQYXRjaCB2MyAxLzM6IGh0dHA6Ly91c2Vyd2ViLmtlcm5lbC5vcmcvfmFrcG0vbW1v
-dG0vYnJva2VuLW91dC9tdGQtbmFuZC1hZGQtcGFnZS1wYXJhbWV0ZXItdG8tYWxsLXJlYWRfcGFn
-ZS1yZWFkX3BhZ2VfcmF3LWFwaXMucGF0Y2gNClBhdGNoIHYzIDIvMzogaHR0cDovL3VzZXJ3ZWIu
-a2VybmVsLm9yZy9+YWtwbS9tbW90bS9icm9rZW4tb3V0L210ZC1uYW5kLWFkZC1uZXctZWNjLW1v
-ZGUtZWNjX2h3X29vYl9maXJzdC5wYXRjaA0KUGF0Y2ggdjQgMy8zOiBodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9waXBlcm1haWwvbGludXgtbXRkLzIwMDktQXVndXN0LzAyNjgzMi5odG1sDQoN
-ClRoZSBsMi1tdGQtMi42LmdpdCB0cmVlIGNhbiBiZSB1cGRhdGVkIGZvciB0aGUgMyBwYXRjaGVz
-IGFib3ZlLg0KDQpUaGFua3MNClNuZWhhDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0N
-Cj4gRnJvbTogQXJ0ZW0gQml0eXV0c2tpeSBbbWFpbHRvOmRlZGVraW5kMUBnbWFpbC5jb21dDQo+
-IFNlbnQ6IE1vbmRheSwgQXVndXN0IDEwLCAyMDA5IDI6NTAgQU0NCj4gVG86IE5hcm5ha2FqZSwg
-U25laGFwcmFiaGENCj4gQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBkYXZpbmNp
-LWxpbnV4LW9wZW4tDQo+IHNvdXJjZUBsaW51eC5kYXZpbmNpZHNwLmNvbTsgZHdtdzJAaW5mcmFk
-ZWFkLm9yZzsgdGdseEBsaW51dHJvbml4LmRlOw0KPiBha3BtQGxpbnV4LWZvdW5kYXRpb24ub3Jn
-OyBQYXVscmFqLCBTYW5kZWVwDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjQgMy8zXSBtdGQtbmFu
-ZDogRGFWaW5jaTogQWRkIDQtYml0IEVDQyBzdXBwb3J0IGZvcg0KPiBsYXJnZSBwYWdlIE5BTkQg
-Y2hpcHMNCj4gDQo+IE9uIDA4LzA3LzIwMDkgMTE6NDggUE0sIG5zbmVoYXByYWJoYUB0aS5jb20g
-d3JvdGU6DQo+ID4gRnJvbTogU25laGEgTmFybmFrYWplPG5zbmVoYXByYWJoYUB0aS5jb20+DQo+
-ID4NCj4gPiBUaGlzIHBhdGNoIGFkZHMgNC1iaXQgRUNDIHN1cHBvcnQgZm9yIGxhcmdlIHBhZ2Ug
-TkFORCBjaGlwcyB1c2luZyB0aGUNCj4gbmV3IEVDQw0KPiA+IG1vZGUgTkFORF9FQ0NfSFdfT09C
-X0ZJUlNULiBUaGUgcGxhdGZvcm0gZGF0YSBmcm9tIGJvYXJkLWRtMzU1LWV2bSBoYXMNCj4gYmVl
-bg0KPiA+IGFkanVzdGVkIHRvIHVzZSB0aGlzIG1vZGUuDQo+ID4NCj4gPiBUaGUgcGF0Y2hlcyBo
-YXZlIGJlZW4gdmVyaWZpZWQgb24gRE0zNTUgZGV2aWNlIHdpdGggMksgTWljcm9uIGRldmljZXMN
-Cj4gdXNpbmcNCj4gPiBtdGQtdGVzdHMgYW5kIEpGRlMyLiBFcnJvciBjb3JyZWN0aW9uIHVwdG8g
-NC1iaXRzIGhhcyBhbHNvIGJlZW4gdmVyaWZpZWQNCj4gdXNpbmcNCj4gPiBuYW5kd3JpdGUvbmFu
-ZGR1bXAgdXRpbGl0aWVzLg0KPiA+DQo+ID4gVGhpcyBwYXRjaCBzZXJpZXMgYXBwbGllcyB0byBs
-aW51eC1tdGQgbmV4dCAobW1vdG0pIEdJVCB0cmVlLg0KPiA+DQo+ID4gVGhpcyB2ZXJzaW9uICh2
-NCkgYWRkcmVzc2VzIHRoZSByZXZpZXcgY29tbWVudCB0byBsZWF2ZSAyIGJ5dGVzIGF0DQo+IG9m
-ZnNldCAwDQo+ID4gZm9yIE5BTkQgbWFudWZhY3R1cmVyIGJhZGJsb2NrIG1hcmtlcnMuDQo+ID4N
-Cj4gPiBSZXZpZXdlZC1ieTogRGF2aWQgQnJvd25lbGw8ZGJyb3duZWxsQHVzZXJzLnNvdXJjZWZv
-cmdlLm5ldD4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBTbmVoYSBOYXJuYWthamU8bnNuZWhhcHJhYmhh
-QHRpLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBTYW5kZWVwIFBhdWxyYWo8cy1wYXVscmFqQHRp
-LmNvbT4NCj4gDQo+IFRoZXJlIGFyZSBhbHJlYWR5IDMgcGF0Y2hlcyBpbiBteSBsMi1tdGQtMi42
-LmdpdCB0cmVlOg0KPiANCj4gaHR0cDovL2dpdC5pbmZyYWRlYWQub3JnL3VzZXJzL2RlZGVraW5k
-L2wyLW10ZC0NCj4gMi42LmdpdC9jb21taXQvZDM5MWQ4NjYwNjBkMzE4ODRjNmZjMGZlNDU5YjNk
-OWVlMGE4ZmQ0Yw0KPiBodHRwOi8vZ2l0LmluZnJhZGVhZC5vcmcvdXNlcnMvZGVkZWtpbmQvbDIt
-bXRkLQ0KPiAyLjYuZ2l0L2NvbW1pdC81Mjg0YTYyZmM3YTUyNmRiOWRiMWM5MjIyMDhlMDdiN2Zj
-NDQyZTcyDQo+IGh0dHA6Ly9naXQuaW5mcmFkZWFkLm9yZy91c2Vycy9kZWRla2luZC9sMi1tdGQt
-DQo+IDIuNi5naXQvY29tbWl0LzhjZWZiY2RiYjdkNjBiYWRkYjJkYjNkOGQ3NDNiMDNlYjNkZjYx
-OWUNCj4gDQo+IFBsZWFzZSwgdmVyaWZ5IHRoZW0gYW5kIGxldCBtZSBrbm93IGlmIHRoZXkgYXJl
-IE9LIG9yIEkgc2hvdWxkIGRyb3ANCj4gdGhlbSBhbmQgdGFrZSBvdGhlciBwYXRjaGVzLg0KPiAN
-Cj4gLS0NCj4gQmVzdCBSZWdhcmRzLA0KPiBBcnRlbSBCaXR5dXRza2l5ICjQkNGA0YLRkdC8INCR
-0LjRgtGO0YbQutC40LkpDQoNCg==
+Hi All, i need a help on onenand driver.
+
+I have written basic onenand driver to test the read/write operations
+to the device.
+I am using 4Gb DDP device.Before enabling the DDP all read/writes are
+happening fine.
+After enabling the DDP feature i am not able to read the files which
+falls on the chip boundary.
+I did my level best to understand the spec but somewhere i am missing
+something.Can any one please know me what causing this issue.
+
+Assumptions:
+
+1) Using yaffs2 filesystem over mtd
+2) Device 'KFN4G16Q2A DEB8
+3) Read/write happends only one page at a time.Means MTD calls my
+driver reads/write functions when it want to read/program at page
+level.
+4) Not using read-while-loading etc
+
+
+ex:
+    suppose if i start writing a file X at the location 0x0fff_f800 (
+last page in chip0 ) to 0x1006_1800 ( in chip1 ).
+    after i call the read function i am not able to retrieve back the
+file, it is showing as lost+found.
+
+while crossing the boundary i am taking care below settings
+
+1) DFS/FBA based on 'from' address whether it is chip0 or chip1 address
+2) DBS
+3) FPA/FSA
+4) BSA/BSC
+
+Is there anything else do i need to takecare?
