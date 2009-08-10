@@ -1,14 +1,22 @@
-Message-ID: <4A7EED48.6050103@gmail.com>
-Date: Sun, 09 Aug 2009 18:37:44 +0300
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MaOkJ-00047p-Gl
+	for linux-mtd@lists.infradead.org; Mon, 10 Aug 2009 06:52:43 +0000
+Message-ID: <4A7FC319.30209@gmail.com>
+Date: Mon, 10 Aug 2009 09:50:01 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 MIME-Version: 1.0
-To: Roel Kluin <roel.kluin@gmail.com>
-Subject: Re: pmcmsp-flash.c: correct clean up?
-References: <4A709A88.30103@gmail.com>
-In-Reply-To: <4A709A88.30103@gmail.com>
+To: nsnehaprabha@ti.com
+Subject: Re: [PATCH v4 3/3] mtd-nand: DaVinci: Add 4-bit ECC support for large
+	page NAND chips
+References: <1249678139-23795-1-git-send-email-nsnehaprabha@ti.com>
+In-Reply-To: <1249678139-23795-1-git-send-email-nsnehaprabha@ti.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Cc: davinci-linux-open-source@linux.davincidsp.com,
+	Sandeep Paulraj <s-paulraj@ti.com>,
+	linux-mtd@lists.infradead.org, tglx@linutronix.de,
+	dwmw2@infradead.org, akpm@linux-foundation.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,141 +26,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/29/2009 09:52 PM, Roel Kluin wrote:
-> Hi,
+On 08/07/2009 11:48 PM, nsnehaprabha@ti.com wrote:
+> From: Sneha Narnakaje<nsnehaprabha@ti.com>
 >
-> I noted that cleanup_msp_flash() attempted to determine the size of
-> msp_flash with `sizeof(msp_flash) / sizeof(struct mtd_info **)'
-> this will not work since msp_flash is not an array.
+> This patch adds 4-bit ECC support for large page NAND chips using the new ECC
+> mode NAND_ECC_HW_OOB_FIRST. The platform data from board-dm355-evm has been
+> adjusted to use this mode.
 >
-> Also I made some changes to since init_msp_flash() to clean up
-> after errors. Do you have problems with this?
+> The patches have been verified on DM355 device with 2K Micron devices using
+> mtd-tests and JFFS2. Error correction upto 4-bits has also been verified using
+> nandwrite/nanddump utilities.
 >
-> Thanks,
+> This patch series applies to linux-mtd next (mmotm) GIT tree.
 >
-> Roel
+> This version (v4) addresses the review comment to leave 2 bytes at offset 0
+> for NAND manufacturer badblock markers.
 >
-> diff --git a/drivers/mtd/maps/pmcmsp-flash.c b/drivers/mtd/maps/pmcmsp-flash.c
-> index 4768bd5..6133147 100644
-> --- a/drivers/mtd/maps/pmcmsp-flash.c
-> +++ b/drivers/mtd/maps/pmcmsp-flash.c
-> @@ -50,7 +50,7 @@ static int fcnt;
->
->   static int __init init_msp_flash(void)
->   {
-> -	int i, j;
-> +	int i, j, ret = -ENOMEM;
->   	int offset, coff;
->   	char *env;
->   	int pcnt;
-> @@ -75,14 +75,16 @@ static int __init init_msp_flash(void)
->   	printk(KERN_NOTICE "Found %d PMC flash devices\n", fcnt);
->
->   	msp_flash = kmalloc(fcnt * sizeof(struct map_info *), GFP_KERNEL);
-> +	if (!msp_flash)
-> +		return -ENOMEM;
-> +
->   	msp_parts = kmalloc(fcnt * sizeof(struct mtd_partition *), GFP_KERNEL);
-> +	if (!msp_parts)
-> +		goto free_msp_flash;
-> +
->   	msp_maps = kcalloc(fcnt, sizeof(struct mtd_info), GFP_KERNEL);
-> -	if (!msp_flash || !msp_parts || !msp_maps) {
-> -		kfree(msp_maps);
-> -		kfree(msp_parts);
-> -		kfree(msp_flash);
-> -		return -ENOMEM;
-> -	}
-> +	if (!msp_maps)
-> +		goto free_msp_parts;
->
->   	/* loop over the flash devices, initializing each */
->   	for (i = 0; i<  fcnt; i++) {
-> @@ -100,13 +102,17 @@ static int __init init_msp_flash(void)
->
->   		msp_parts[i] = kcalloc(pcnt, sizeof(struct mtd_partition),
->   				       GFP_KERNEL);
-> +		if (!msp_parts[i])
-> +			goto free_in_loop;
->
->   		/* now initialize the devices proper */
->   		flash_name[5] = '0' + i;
->   		env = prom_getenv(flash_name);
->
-> -		if (sscanf(env, "%x:%x",&addr,&size)<  2)
-> -			return -ENXIO;
-> +		if (sscanf(env, "%x:%x",&addr,&size)<  2) {
-> +			ret = -ENXIO;
-> +			goto free_msp_parts_arr;
-> +		}
->   		addr = CPHYSADDR(addr);
->
->   		printk(KERN_NOTICE
-> @@ -123,12 +129,19 @@ static int __init init_msp_flash(void)
->   		if (size>  CONFIG_MSP_FLASH_MAP_LIMIT)
->   			size = CONFIG_MSP_FLASH_MAP_LIMIT;
->   		msp_maps[i].virt = ioremap(addr, size);
-> +
-> +		if (msp_maps[i].virt == NULL) {
-> +			ret = -ENXIO;
-> +			goto free_msp_parts_arr;
-> +		}
-> +
->   		msp_maps[i].bankwidth = 1;
-> -		msp_maps[i].name = strncpy(kmalloc(7, GFP_KERNEL),
-> -					flash_name, 7);
-> +		msp_maps[i].name = kmalloc(7, GFP_KERNEL);
-> +		if (!msp_maps[i].name)
-> +			goto iounmap_virt;
-> +
-> +		msp_maps[i].name = strncpy(msp_maps[i].name, flash_name, 7);
->
-> -		if (msp_maps[i].virt == NULL)
-> -			return -ENXIO;
->
->   		for (j = 0; j<  pcnt; j++) {
->   			part_name[5] = '0' + i;
-> @@ -136,8 +149,10 @@ static int __init init_msp_flash(void)
->
->   			env = prom_getenv(part_name);
->
-> -			if (sscanf(env, "%x:%x:%n",&offset,&size,&coff)<  2)
-> -				return -ENXIO;
-> +			if (sscanf(env, "%x:%x:%n",&offset,&size,&coff)<  2) {
-> +				ret = -ENXIO;
-> +				goto free_msp_maps_name;
-> +			}
->
->   			msp_parts[i][j].size = size;
->   			msp_parts[i][j].offset = offset;
-> @@ -152,18 +167,38 @@ static int __init init_msp_flash(void)
->   			add_mtd_partitions(msp_flash[i], msp_parts[i], pcnt);
->   		} else {
->   			printk(KERN_ERR "map probe failed for flash\n");
-> -			return -ENXIO;
-> +			ret = -ENXIO;
-> +			goto free_msp_maps_name;
->   		}
->   	}
->
->   	return 0;
-> +
-> +	while (i--) {
-> +                del_mtd_partitions(msp_flash[i]);
-> +                map_destroy(msp_flash[i]);
-> +free_msp_maps_name:
-> +                kfree(msp_maps[i].name);
-> +iounmap_virt:
-> +                iounmap((void *)msp_maps[i].virt);
-> +free_msp_parts_arr:
-> +                kfree(msp_parts[i]);
-> +free_in_loop:
-> +	}
+> Reviewed-by: David Brownell<dbrownell@users.sourceforge.net>
+> Signed-off-by: Sneha Narnakaje<nsnehaprabha@ti.com>
+> Signed-off-by: Sandeep Paulraj<s-paulraj@ti.com>
 
-I think jumping into the middle of a loop is not nice. Would it
-be better to free the recources belonging to the current interation
-inside the allocation loop, and then jump to the beginning of
-the freeing loop instead?
+There are already 3 patches in my l2-mtd-2.6.git tree:
+
+http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/d391d866060d31884c6fc0fe459b3d9ee0a8fd4c
+http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/5284a62fc7a526db9db1c922208e07b7fc442e72
+http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/8cefbcdbb7d60baddb2db3d8d743b03eb3df619e
+
+Please, verify them and let me know if they are OK or I should drop
+them and take other patches.
 
 -- 
 Best Regards,
