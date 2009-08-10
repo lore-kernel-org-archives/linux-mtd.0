@@ -1,22 +1,25 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MaOkJ-00047p-Gl
-	for linux-mtd@lists.infradead.org; Mon, 10 Aug 2009 06:52:43 +0000
-Message-ID: <4A7FC319.30209@gmail.com>
-Date: Mon, 10 Aug 2009 09:50:01 +0300
+	id 1MaOvC-0002yK-N9
+	for linux-mtd@lists.infradead.org; Mon, 10 Aug 2009 07:03:59 +0000
+Subject: Re: mmotm 2009-08-06-00-30 uploaded (mtd)
 From: Artem Bityutskiy <dedekind1@gmail.com>
-MIME-Version: 1.0
-To: nsnehaprabha@ti.com
-Subject: Re: [PATCH v4 3/3] mtd-nand: DaVinci: Add 4-bit ECC support for large
-	page NAND chips
-References: <1249678139-23795-1-git-send-email-nsnehaprabha@ti.com>
-In-Reply-To: <1249678139-23795-1-git-send-email-nsnehaprabha@ti.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: davinci-linux-open-source@linux.davincidsp.com,
-	Sandeep Paulraj <s-paulraj@ti.com>,
-	linux-mtd@lists.infradead.org, tglx@linutronix.de,
-	dwmw2@infradead.org, akpm@linux-foundation.org
+To: Paul Mundt <lethal@linux-sh.org>
+In-Reply-To: <20090807033448.GA32592@linux-sh.org>
+References: <200908060733.n767X6mN023120@imap1.linux-foundation.org>
+	<20090806190233.6d4b4e28.randy.dunlap@oracle.com>
+	<20090806192513.53f6488b.akpm@linux-foundation.org>
+	<20090807033448.GA32592@linux-sh.org>
+Content-Type: text/plain
+Date: Mon, 10 Aug 2009 10:01:35 +0300
+Message-Id: <1249887695.19638.2.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Randy Dunlap <randy.dunlap@oracle.com>, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, Magnus Damm <damm@igel.co.jp>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Woodhouse <dwmw2@infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +29,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/07/2009 11:48 PM, nsnehaprabha@ti.com wrote:
-> From: Sneha Narnakaje<nsnehaprabha@ti.com>
->
-> This patch adds 4-bit ECC support for large page NAND chips using the new ECC
-> mode NAND_ECC_HW_OOB_FIRST. The platform data from board-dm355-evm has been
-> adjusted to use this mode.
->
-> The patches have been verified on DM355 device with 2K Micron devices using
-> mtd-tests and JFFS2. Error correction upto 4-bits has also been verified using
-> nandwrite/nanddump utilities.
->
-> This patch series applies to linux-mtd next (mmotm) GIT tree.
->
-> This version (v4) addresses the review comment to leave 2 bytes at offset 0
-> for NAND manufacturer badblock markers.
->
-> Reviewed-by: David Brownell<dbrownell@users.sourceforge.net>
-> Signed-off-by: Sneha Narnakaje<nsnehaprabha@ti.com>
-> Signed-off-by: Sandeep Paulraj<s-paulraj@ti.com>
+On Fri, 2009-08-07 at 12:34 +0900, Paul Mundt wrote:
+> [PATCH] mtd: onenand: select MTD_PARTITIONS.
+> 
+> All of the onenand drivers depend on mtd partition support being compiled
+> in, so just select it. Fixes up build breakage:
+> 
+> drivers/built-in.o: In function `generic_onenand_remove':
+> generic.c:(.devexit.text+0x80): undefined reference to `del_mtd_partitions'
+> 
+> Reported-by: Randy Dunlap <randy.dunlap@oracle.com>
+> Signed-off-by: Paul Mundt <lethal@linux-sh.org>
 
-There are already 3 patches in my l2-mtd-2.6.git tree:
+Hopefully someday we are going to remove this config options, remove
+the mtdpart module, and make partitions mandatory. Currently it is
+a mess, IMO.
 
-http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/d391d866060d31884c6fc0fe459b3d9ee0a8fd4c
-http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/5284a62fc7a526db9db1c922208e07b7fc442e72
-http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/8cefbcdbb7d60baddb2db3d8d743b03eb3df619e
+I've just put this patch to my l2-mtd-2.6.git tree.
 
-Please, verify them and let me know if they are OK or I should drop
-them and take other patches.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Artem.
