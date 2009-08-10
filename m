@@ -1,18 +1,27 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from comal.ext.ti.com ([198.47.26.152])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MaTMY-0006b3-Cc
-	for linux-mtd@lists.infradead.org; Mon, 10 Aug 2009 11:48:30 +0000
-Message-ID: <61775.192.168.10.89.1249904898.squirrel@dbdmail.itg.ti.com>
-In-Reply-To: <56431.192.168.10.89.1249904549.squirrel@dbdmail.itg.ti.com>
-References: <56431.192.168.10.89.1249904549.squirrel@dbdmail.itg.ti.com>
-Date: Mon, 10 Aug 2009 17:18:18 +0530 (IST)
-Subject: Re: [PATCH][OMAP]: Adding flash devices support back for OMAP3430
-	SDP      boards
-From: "vimal singh" <vimalsingh@ti.com>
-To: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
+	id 1MaVON-0005XV-PZ
+	for linux-mtd@lists.infradead.org; Mon, 10 Aug 2009 13:58:31 +0000
+From: "Narnakaje, Snehaprabha" <nsnehaprabha@ti.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Date: Mon, 10 Aug 2009 08:57:52 -0500
+Subject: RE: [PATCH v4 3/3] mtd-nand: DaVinci: Add 4-bit ECC support for
+	large page NAND chips
+Message-ID: <7A436F7769CA33409C6B44B358BFFF0C011ED29795@dlee02.ent.ti.com>
+References: <1249678139-23795-1-git-send-email-nsnehaprabha@ti.com>
+	<4A7FC319.30209@gmail.com>
+In-Reply-To: <4A7FC319.30209@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Cc: "davinci-linux-open-source@linux.davincidsp.com"
+	<davinci-linux-open-source@linux.davincidsp.com>, "Paulraj,
+	Sandeep" <s-paulraj@ti.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,333 +31,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Adding Linux-Omap mailing list too...
-
--vimal
-
-> Adding flash devices support back for OMAP3430 SDP boards.
->
-> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
-> ---
->
->  mach-omap2/Makefile              |    1
->  mach-omap2/board-3430sdp-flash.c |  267 +++++++++++++++++++++++++++++++++++++++
->  mach-omap2/board-3430sdp.c       |    3
->  plat-omap/include/mach/gpmc.h    |    2
->  4 files changed, 273 insertions(+)
-> ================================================================================
-> --- a/arch/arm/mach-omap2/Makefile
-> +++ b/arch/arm/mach-omap2/Makefile
-> @@ -61,6 +61,7 @@ obj-$(CONFIG_MACH_OMAP3EVM)		+= board-om
->  obj-$(CONFIG_MACH_OMAP3_PANDORA)	+= board-omap3pandora.o \
->  					   mmc-twl4030.o
->  obj-$(CONFIG_MACH_OMAP_3430SDP)		+= board-3430sdp.o \
-> +					   board-3430sdp-flash.o \
->  					   mmc-twl4030.o
->  obj-$(CONFIG_MACH_NOKIA_N800)		+= board-n800.o \
->  					   board-n800-mmc.o \
-> ================================================================================
-> --- a/arch/arm/plat-omap/include/mach/gpmc.h
-> +++ b/arch/arm/plat-omap/include/mach/gpmc.h
-> @@ -27,6 +27,8 @@
->
->  #define GPMC_CONFIG		0x50
->  #define GPMC_STATUS		0x54
-> +#define GPMC_CS0_BASE		0x60
-> +#define GPMC_CS_SIZE		0x30
->
->  #define GPMC_CONFIG1_WRAPBURST_SUPP     (1 << 31)
->  #define GPMC_CONFIG1_READMULTIPLE_SUPP  (1 << 30)
-> ================================================================================
-> --- a/arch/arm/mach-omap2/board-3430sdp.c
-> +++ b/arch/arm/mach-omap2/board-3430sdp.c
-> @@ -54,6 +54,8 @@
->
->  #define TWL4030_MSECURE_GPIO 22
->
-> +extern void sdp3430_flash_init(void);
-> +
->  static int sdp3430_keymap[] = {
->  	KEY(0, 0, KEY_LEFT),
->  	KEY(0, 1, KEY_RIGHT),
-> @@ -492,6 +494,7 @@ static void __init omap_3430sdp_init(voi
->  	spi_register_board_info(sdp3430_spi_board_info,
->  				ARRAY_SIZE(sdp3430_spi_board_info));
->  	ads7846_dev_init();
-> +	sdp3430_flash_init();
->  	omap_serial_init();
->  	usb_musb_init();
->  	board_smc91x_init();
-> ================================================================================
-> --- /dev/null
-> +++ b/arch/arm/mach-omap2/board-3430sdp-flash.c
-> @@ -0,0 +1,267 @@
-> +/*
-> + * linux/arch/arm/mach-omap2/board-3430sdp-flash.c
-> + *
-> + * Copyright (c) 2007 Texas Instruments
-> + *
-> + * Modified from mach-omap2/board-2430sdp-flash.c
-> + * Author: Rohit Choraria <rohitkc@ti.com>
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/mtd/partitions.h>
-> +#include <linux/mtd/nand.h>
-> +#include <linux/mtd/onenand_regs.h>
-> +#include <linux/types.h>
-> +#include <linux/io.h>
-> +
-> +#include <asm/mach/flash.h>
-> +#include <mach/onenand.h>
-> +#include <mach/board.h>
-> +#include <mach/gpmc.h>
-> +#include <mach/nand.h>
-> +
-> +#define NAND_BLOCK_SIZE                SZ_128K
-> +
-> +/* NAND */
-> +/* IMPORTANT NOTE ON MAPPING
-> + * 3430SDP - 34XX
-> + * ----------
-> + * NOR always on 0x04000000 for SDPV1
-> + * NOR always on 0x10000000 for SDPV2
-> + * MPDB always on 0x08000000
-> + * NAND always on 0x0C000000
-> + * OneNand Mapped to 0x20000000
-> + * Boot Mode(NAND/NOR). The other on CS1
-> + */
-> +#define FLASH_BASE_SDPV1       0x04000000 /* NOR flash (64 Meg aligned) */
-> +#define FLASH_BASE_SDPV2       0x10000000 /* NOR flash (256 Meg aligned) */
-> +#define DEBUG_BASE             0x08000000 /* debug board */
-> +#define NAND_BASE              0x0C000000 /* NAND flash */
-> +#define ONENAND_MAP            0x20000000 /* OneNand flash */
-> +
-> +/* various memory sizes */
-> +#define FLASH_SIZE_SDPV1       SZ_64M
-> +#define FLASH_SIZE_SDPV2       SZ_128M
-> +
-> +static struct mtd_partition sdp_nor_partitions[] = {
-> +       /* bootloader (U-Boot, etc) in first sector */
-> +       {
-> +               .name           = "Bootloader-NOR",
-> +               .offset         = 0,
-> +               .size           = SZ_256K,
-> +               .mask_flags     = MTD_WRITEABLE, /* force read-only */
-> +       },
-> +       /* bootloader params in the next sector */
-> +       {
-> +               .name           = "Params-NOR",
-> +               .offset         = MTDPART_OFS_APPEND,
-> +               .size           = SZ_256K,
-> +               .mask_flags     = 0,
-> +       },
-> +       /* kernel */
-> +       {
-> +               .name           = "Kernel-NOR",
-> +               .offset         = MTDPART_OFS_APPEND,
-> +               .size           = SZ_2M,
-> +               .mask_flags     = 0
-> +       },
-> +       /* file system */
-> +       {
-> +               .name           = "Filesystem-NOR",
-> +               .offset         = MTDPART_OFS_APPEND,
-> +               .size           = MTDPART_SIZ_FULL,
-> +               .mask_flags     = 0
-> +       }
-> +};
-> +
-> +static struct flash_platform_data sdp_nor_data = {
-> +       .map_name       = "cfi_probe",
-> +       .width          = 2,
-> +       .parts          = sdp_nor_partitions,
-> +       .nr_parts       = ARRAY_SIZE(sdp_nor_partitions),
-> +};
-> +
-> +static struct resource sdp_nor_resource = {
-> +       .start          = 0,
-> +       .end            = 0,
-> +       .flags          = IORESOURCE_MEM,
-> +};
-> +
-> +static struct platform_device sdp_nor_device = {
-> +       .name           = "omapflash",
-> +       .id             = 0,
-> +       .dev            = {
-> +                       .platform_data = &sdp_nor_data,
-> +       },
-> +       .num_resources  = 1,
-> +       .resource       = &sdp_nor_resource,
-> +};
-> +
-> +static struct mtd_partition sdp_onenand_partitions[] = {
-> +       {
-> +               .name           = "X-Loader-OneNAND",
-> +               .offset         = 0,
-> +               .size           = 4 * (64 * 2048),
-> +               .mask_flags     = MTD_WRITEABLE  /* force read-only */
-> +       },
-> +       {
-> +               .name           = "U-Boot-OneNAND",
-> +               .offset         = MTDPART_OFS_APPEND,
-> +               .size           = 2 * (64 * 2048),
-> +               .mask_flags     = MTD_WRITEABLE  /* force read-only */
-> +       },
-> +       {
-> +               .name           = "U-Boot Environment-OneNAND",
-> +               .offset         = MTDPART_OFS_APPEND,
-> +               .size           = 1 * (64 * 2048),
-> +       },
-> +       {
-> +               .name           = "Kernel-OneNAND",
-> +               .offset         = MTDPART_OFS_APPEND,
-> +               .size           = 16 * (64 * 2048),
-> +       },
-> +       {
-> +               .name           = "File System-OneNAND",
-> +               .offset         = MTDPART_OFS_APPEND,
-> +               .size           = MTDPART_SIZ_FULL,
-> +       },
-> +};
-> +
-> +static struct omap_onenand_platform_data sdp_onenand_data = {
-> +       .parts          = sdp_onenand_partitions,
-> +       .nr_parts       = ARRAY_SIZE(sdp_onenand_partitions),
-> +       .dma_channel    = -1,   /* disable DMA in OMAP OneNAND driver */
-> +};
-> +
-> +static struct mtd_partition sdp_nand_partitions[] = {
-> +       /* All the partition sizes are listed in terms of NAND block size */
-> +       {
-> +               .name           = "X-Loader-NAND",
-> +               .offset         = 0,
-> +               .size           = 4 * NAND_BLOCK_SIZE,
-> +               .mask_flags     = MTD_WRITEABLE,        /* force read-only */
-> +       },
-> +       {
-> +               .name           = "U-Boot-NAND",
-> +               .offset         = MTDPART_OFS_APPEND,   /* Offset = 0x80000 */
-> +               .size           = 4 * NAND_BLOCK_SIZE,
-> +               .mask_flags     = MTD_WRITEABLE,        /* force read-only */
-> +       },
-> +       {
-> +               .name           = "Boot Env-NAND",
-> +               .offset         = MTDPART_OFS_APPEND,   /* Offset = 0x100000 */
-> +               .size           = 2 * NAND_BLOCK_SIZE,
-> +       },
-> +       {
-> +               .name           = "Kernel-NAND",
-> +               .offset         = MTDPART_OFS_APPEND,   /* Offset = 0x140000 */
-> +               .size           = 32 * NAND_BLOCK_SIZE,
-> +       },
-> +       {
-> +               .name           = "File System - NAND",
-> +               .size           = MTDPART_SIZ_FULL,
-> +               .offset         = MTDPART_OFS_APPEND,   /* Offset = 0x540000 */
-> +       },
-> +};
-> +
-> +static struct omap_nand_platform_data sdp_nand_data = {
-> +       .parts          = sdp_nand_partitions,
-> +       .nr_parts       = ARRAY_SIZE(sdp_nand_partitions),
-> +       .nand_setup     = NULL,
-> +       .dma_channel    = -1,           /* disable DMA in OMAP NAND driver */
-> +       .dev_ready      = NULL,
-> +};
-> +
-> +static struct resource sdp_nand_resource = {
-> +       .flags          = IORESOURCE_MEM,
-> +};
-> +
-> +static struct platform_device sdp_nand_device = {
-> +       .name           = "omap2-nand",
-> +       .id             = 0,
-> +       .dev            = {
-> +       .platform_data  = &sdp_nand_data,
-> +       },
-> +       .num_resources  = 1,
-> +       .resource       = &sdp_nand_resource,
-> +};
-> +
-> +
-> +/**
-> + * sdp3430_flash_init - Identify devices connected to GPMC and register.
-> + *
-> + * @return - void.
-> + */
-> +void __init sdp3430_flash_init(void)
-> +{
-> +       u8              cs = 0;
-> +       u8              nandcs = GPMC_CS_NUM + 1;
-> +       u8              onenandcs = GPMC_CS_NUM + 1;
-> +       unsigned long   gpmc_base_add;
-> +
-> +       gpmc_base_add   = OMAP34XX_GPMC_VIRT;
-> +
-> +       /* Configure start address and size of NOR device */
-> +       if (omap_rev() > OMAP3430_REV_ES1_0) {
-> +               sdp_nor_resource.start  = FLASH_BASE_SDPV2;
-> +               sdp_nor_resource.end    = FLASH_BASE_SDPV2
-> +                                               + FLASH_SIZE_SDPV2 - 1;
-> +       } else {
-> +               sdp_nor_resource.start  = FLASH_BASE_SDPV1;
-> +               sdp_nor_resource.end    = FLASH_BASE_SDPV1
-> +                                               + FLASH_SIZE_SDPV1 - 1;
-> +       }
-> +
-> +       if (platform_device_register(&sdp_nor_device) < 0)
-> +               printk(KERN_ERR "Unable to register NOR device\n");
-> +
-> +       while (cs < GPMC_CS_NUM) {
-> +               u32 ret = 0;
-> +               ret = gpmc_cs_read_reg(cs, GPMC_CS_CONFIG1);
-> +
-> +               /*
-> +               * xloader/Uboot would have programmed the NAND/oneNAND
-> +               * base address for us This is a ugly hack. The proper
-> +               * way of doing this is to pass the setup of u-boot up
-> +               * to kernel using kernel params - something on the
-> +               * lines of machineID. Check if oneNAND is configured
-> +               */
-> +               if ((ret & 0xC00) == 0x800) {
-> +                       /* Found it!! */
-> +                       if (nandcs > GPMC_CS_NUM)
-> +                               nandcs = cs;
-> +               } else {
-> +                       ret = gpmc_cs_read_reg(cs, GPMC_CS_CONFIG7);
-> +                       if ((ret & 0x3F) == (ONENAND_MAP >> 24))
-> +                               onenandcs = cs;
-> +               }
-> +               cs++;
-> +       }
-> +       if ((nandcs > GPMC_CS_NUM) && (onenandcs > GPMC_CS_NUM)) {
-> +               printk(KERN_INFO "NAND/OneNAND: Unable to find configuration "
-> +                               " in GPMC\n ");
-> +               return;
-> +       }
-> +
-> +       if (nandcs < GPMC_CS_NUM) {
-> +               sdp_nand_data.cs        = nandcs;
-> +               sdp_nand_data.gpmc_cs_baseaddr   = (void *)(gpmc_base_add +
-> +                                       GPMC_CS0_BASE + nandcs*GPMC_CS_SIZE);
-> +               sdp_nand_data.gpmc_baseaddr     = (void *) (gpmc_base_add);
-> +
-> +               if (platform_device_register(&sdp_nand_device) < 0)
-> +                       printk(KERN_ERR "Unable to register NAND device\n");
-> +       }
-> +
-> +       if (onenandcs < GPMC_CS_NUM) {
-> +               sdp_onenand_data.cs = onenandcs;
-> +               gpmc_onenand_init(&sdp_onenand_data);
-> +       }
-> +}
-> +
->
->
+QXJ0ZW0sDQoNClRoZSBwYXRjaGVzIG9uIHRoZSBsaW5rIGJlbG93IGFyZSBxdWl0ZSBvbGQgLSB2
+MiB2ZXJzaW9uIG9mIHRoZSBwYXRjaGVzLg0KDQpJIGhhZCBzZW50IHYzIHZlcnNpb24gb2YgdGhl
+IHBhdGNoZXMgbWlkIEp1bHksIHdoaWNoIEFuZHJldyBoYWQgcHVsbGVkIGludG8gdGhlIG1tb3Rt
+IHRyZWUuIE9uZSBvZiB0aGUgcGF0Y2hlcyB2NCwgMy8zIHdhcyByZS1zdWJtaXR0ZWQgbGFzdCB3
+ZWVrLg0KDQpQYXRjaCB2MyAxLzM6IGh0dHA6Ly91c2Vyd2ViLmtlcm5lbC5vcmcvfmFrcG0vbW1v
+dG0vYnJva2VuLW91dC9tdGQtbmFuZC1hZGQtcGFnZS1wYXJhbWV0ZXItdG8tYWxsLXJlYWRfcGFn
+ZS1yZWFkX3BhZ2VfcmF3LWFwaXMucGF0Y2gNClBhdGNoIHYzIDIvMzogaHR0cDovL3VzZXJ3ZWIu
+a2VybmVsLm9yZy9+YWtwbS9tbW90bS9icm9rZW4tb3V0L210ZC1uYW5kLWFkZC1uZXctZWNjLW1v
+ZGUtZWNjX2h3X29vYl9maXJzdC5wYXRjaA0KUGF0Y2ggdjQgMy8zOiBodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9waXBlcm1haWwvbGludXgtbXRkLzIwMDktQXVndXN0LzAyNjgzMi5odG1sDQoN
+ClRoZSBsMi1tdGQtMi42LmdpdCB0cmVlIGNhbiBiZSB1cGRhdGVkIGZvciB0aGUgMyBwYXRjaGVz
+IGFib3ZlLg0KDQpUaGFua3MNClNuZWhhDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0N
+Cj4gRnJvbTogQXJ0ZW0gQml0eXV0c2tpeSBbbWFpbHRvOmRlZGVraW5kMUBnbWFpbC5jb21dDQo+
+IFNlbnQ6IE1vbmRheSwgQXVndXN0IDEwLCAyMDA5IDI6NTAgQU0NCj4gVG86IE5hcm5ha2FqZSwg
+U25laGFwcmFiaGENCj4gQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBkYXZpbmNp
+LWxpbnV4LW9wZW4tDQo+IHNvdXJjZUBsaW51eC5kYXZpbmNpZHNwLmNvbTsgZHdtdzJAaW5mcmFk
+ZWFkLm9yZzsgdGdseEBsaW51dHJvbml4LmRlOw0KPiBha3BtQGxpbnV4LWZvdW5kYXRpb24ub3Jn
+OyBQYXVscmFqLCBTYW5kZWVwDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjQgMy8zXSBtdGQtbmFu
+ZDogRGFWaW5jaTogQWRkIDQtYml0IEVDQyBzdXBwb3J0IGZvcg0KPiBsYXJnZSBwYWdlIE5BTkQg
+Y2hpcHMNCj4gDQo+IE9uIDA4LzA3LzIwMDkgMTE6NDggUE0sIG5zbmVoYXByYWJoYUB0aS5jb20g
+d3JvdGU6DQo+ID4gRnJvbTogU25laGEgTmFybmFrYWplPG5zbmVoYXByYWJoYUB0aS5jb20+DQo+
+ID4NCj4gPiBUaGlzIHBhdGNoIGFkZHMgNC1iaXQgRUNDIHN1cHBvcnQgZm9yIGxhcmdlIHBhZ2Ug
+TkFORCBjaGlwcyB1c2luZyB0aGUNCj4gbmV3IEVDQw0KPiA+IG1vZGUgTkFORF9FQ0NfSFdfT09C
+X0ZJUlNULiBUaGUgcGxhdGZvcm0gZGF0YSBmcm9tIGJvYXJkLWRtMzU1LWV2bSBoYXMNCj4gYmVl
+bg0KPiA+IGFkanVzdGVkIHRvIHVzZSB0aGlzIG1vZGUuDQo+ID4NCj4gPiBUaGUgcGF0Y2hlcyBo
+YXZlIGJlZW4gdmVyaWZpZWQgb24gRE0zNTUgZGV2aWNlIHdpdGggMksgTWljcm9uIGRldmljZXMN
+Cj4gdXNpbmcNCj4gPiBtdGQtdGVzdHMgYW5kIEpGRlMyLiBFcnJvciBjb3JyZWN0aW9uIHVwdG8g
+NC1iaXRzIGhhcyBhbHNvIGJlZW4gdmVyaWZpZWQNCj4gdXNpbmcNCj4gPiBuYW5kd3JpdGUvbmFu
+ZGR1bXAgdXRpbGl0aWVzLg0KPiA+DQo+ID4gVGhpcyBwYXRjaCBzZXJpZXMgYXBwbGllcyB0byBs
+aW51eC1tdGQgbmV4dCAobW1vdG0pIEdJVCB0cmVlLg0KPiA+DQo+ID4gVGhpcyB2ZXJzaW9uICh2
+NCkgYWRkcmVzc2VzIHRoZSByZXZpZXcgY29tbWVudCB0byBsZWF2ZSAyIGJ5dGVzIGF0DQo+IG9m
+ZnNldCAwDQo+ID4gZm9yIE5BTkQgbWFudWZhY3R1cmVyIGJhZGJsb2NrIG1hcmtlcnMuDQo+ID4N
+Cj4gPiBSZXZpZXdlZC1ieTogRGF2aWQgQnJvd25lbGw8ZGJyb3duZWxsQHVzZXJzLnNvdXJjZWZv
+cmdlLm5ldD4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBTbmVoYSBOYXJuYWthamU8bnNuZWhhcHJhYmhh
+QHRpLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBTYW5kZWVwIFBhdWxyYWo8cy1wYXVscmFqQHRp
+LmNvbT4NCj4gDQo+IFRoZXJlIGFyZSBhbHJlYWR5IDMgcGF0Y2hlcyBpbiBteSBsMi1tdGQtMi42
+LmdpdCB0cmVlOg0KPiANCj4gaHR0cDovL2dpdC5pbmZyYWRlYWQub3JnL3VzZXJzL2RlZGVraW5k
+L2wyLW10ZC0NCj4gMi42LmdpdC9jb21taXQvZDM5MWQ4NjYwNjBkMzE4ODRjNmZjMGZlNDU5YjNk
+OWVlMGE4ZmQ0Yw0KPiBodHRwOi8vZ2l0LmluZnJhZGVhZC5vcmcvdXNlcnMvZGVkZWtpbmQvbDIt
+bXRkLQ0KPiAyLjYuZ2l0L2NvbW1pdC81Mjg0YTYyZmM3YTUyNmRiOWRiMWM5MjIyMDhlMDdiN2Zj
+NDQyZTcyDQo+IGh0dHA6Ly9naXQuaW5mcmFkZWFkLm9yZy91c2Vycy9kZWRla2luZC9sMi1tdGQt
+DQo+IDIuNi5naXQvY29tbWl0LzhjZWZiY2RiYjdkNjBiYWRkYjJkYjNkOGQ3NDNiMDNlYjNkZjYx
+OWUNCj4gDQo+IFBsZWFzZSwgdmVyaWZ5IHRoZW0gYW5kIGxldCBtZSBrbm93IGlmIHRoZXkgYXJl
+IE9LIG9yIEkgc2hvdWxkIGRyb3ANCj4gdGhlbSBhbmQgdGFrZSBvdGhlciBwYXRjaGVzLg0KPiAN
+Cj4gLS0NCj4gQmVzdCBSZWdhcmRzLA0KPiBBcnRlbSBCaXR5dXRza2l5ICjQkNGA0YLRkdC8INCR
+0LjRgtGO0YbQutC40LkpDQoNCg==
