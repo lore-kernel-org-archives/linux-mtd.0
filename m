@@ -1,18 +1,25 @@
-Received: from mail-pz0-f197.google.com ([209.85.222.197])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MaVhe-0000QL-2s
-	for linux-mtd@lists.infradead.org; Mon, 10 Aug 2009 14:18:26 +0000
-Received: by pzk35 with SMTP id 35so2994372pzk.24
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 10 Aug 2009 07:18:20 -0700 (PDT)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MaXbI-0000oV-TP
+	for linux-mtd@lists.infradead.org; Mon, 10 Aug 2009 16:19:57 +0000
+Date: Mon, 10 Aug 2009 18:19:42 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Artem Bityutskiy <dedekind@infradead.org>
+Subject: Re: [PATCH] mtd/maps: add mtd-ram support to physmap_of
+Message-ID: <20090810161942.GA27833@pengutronix.de>
+References: <1247834363-28198-1-git-send-email-w.sang@pengutronix.de>
+	<fa686aa40908072243x56d2160fk688149f4b7b912ae@mail.gmail.com>
+	<1249795043.9157.37.camel@localhost>
 MIME-Version: 1.0
-Date: Mon, 10 Aug 2009 19:48:20 +0530
-Message-ID: <630851df0908100718k261615c4sddc6025765a9b5d8@mail.gmail.com>
-Subject: onenand DDP device read issue
-From: Murali N <nalajala.murali@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Nq2Wo0NMKNjxTN9z"
+Content-Disposition: inline
+In-Reply-To: <1249795043.9157.37.camel@localhost>
+Cc: devicetree-discuss@ozlabs.org, Vitaly Wool <vwool@ru.mvista.com>,
+	Albrecht =?iso-8859-15?Q?Dre=DF?= <albrecht.dress@arcor.de>,
+	Grant Likely <grant.likely@secretlab.ca>,
+	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	Ken MacLeod <ken@bitsko.slc.ut.us>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +29,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All, i need a help on onenand driver.
 
-I have written basic onenand driver to test the read/write operations
-to the device.
-I am using 4Gb DDP device.Before enabling the DDP all read/writes are
-happening fine.
-After enabling the DDP feature i am not able to read the files which
-falls on the chip boundary.
-I did my level best to understand the spec but somewhere i am missing
-something.Can any one please know me what causing this issue.
+--Nq2Wo0NMKNjxTN9z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Assumptions:
+On Sun, Aug 09, 2009 at 08:17:23AM +0300, Artem Bityutskiy wrote:
+> On Fri, 2009-08-07 at 23:43 -0600, Grant Likely wrote:
+> > On Fri, Jul 17, 2009 at 6:39 AM, Wolfram Sang<w.sang@pengutronix.de> wr=
+ote:
+> > > Use physmap_of to access RAMs as mtd and add documenation for it. Thi=
+s approach
+> > > is a lot less intrusive as adding an of-wrapper around plat-ram.c. As=
+ most
+> > > extensions of plat-ram.c (e.g. custom map-functions) can't be mapped =
+to the
+> > > device tree anyhow, extending physmap_of seems to be the cleanest app=
+roach.
+> > >
+> > > Tested with a phyCORE-MPC5121e.
+> > >
+> > > Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+> >=20
+> > Looks good to me.
+> >=20
+> > Acked-by: Grant Likely <grant.likely@secretlab.ca>
+>=20
+> This patch is sitting in my l2-mtd-2.6.git tree.
 
-1) Using yaffs2 filesystem over mtd
-2) Device 'KFN4G16Q2A DEB8
-3) Read/write happends only one page at a time.Means MTD calls my
-driver reads/write functions when it want to read/program at page
-level.
-4) Not using read-while-loading etc
+Great, thanks a lot (and for your l2-tree in general!). One question: Are t=
+he
+additional Acked-bys added later? I could think they might be useful for
+David's review...
 
+Kind regards,
 
-ex:
-    suppose if i start writing a file X at the location 0x0fff_f800 (
-last page in chip0 ) to 0x1006_1800 ( in chip1 ).
-    after i call the read function i am not able to retrieve back the
-file, it is showing as lost+found.
+   Wolfram
 
-while crossing the boundary i am taking care below settings
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
 
-1) DFS/FBA based on 'from' address whether it is chip0 or chip1 address
-2) DBS
-3) FPA/FSA
-4) BSA/BSC
+--Nq2Wo0NMKNjxTN9z
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-Is there anything else do i need to takecare?
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkqASJ4ACgkQD27XaX1/VRtxLwCeKVSaOJ+BJhVWeZMsFQ17Mpqt
+uWEAn3VzrFmKQpaJo8EcQPP1/DAgMgLr
+=k6lN
+-----END PGP SIGNATURE-----
+
+--Nq2Wo0NMKNjxTN9z--
