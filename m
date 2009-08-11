@@ -1,20 +1,27 @@
-Message-ID: <4A8107D3.4000406@gmail.com>
-Date: Tue, 11 Aug 2009 08:55:31 +0300
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MakXB-0008DG-La
+	for linux-mtd@lists.infradead.org; Tue, 11 Aug 2009 06:08:37 +0000
+Message-ID: <4A810A60.5080901@gmail.com>
+Date: Tue, 11 Aug 2009 09:06:24 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 MIME-Version: 1.0
-To: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH] mtd/maps: add mtd-ram support to physmap_of
-References: <1247834363-28198-1-git-send-email-w.sang@pengutronix.de>	<fa686aa40908072243x56d2160fk688149f4b7b912ae@mail.gmail.com>	<1249795043.9157.37.camel@localhost>
-	<20090810161942.GA27833@pengutronix.de>
-In-Reply-To: <20090810161942.GA27833@pengutronix.de>
+To: "Narnakaje, Snehaprabha" <nsnehaprabha@ti.com>
+Subject: Re: [PATCH v4 3/3] mtd-nand: DaVinci: Add 4-bit ECC support for large
+	page NAND chips
+References: <1249678139-23795-1-git-send-email-nsnehaprabha@ti.com>
+	<4A7FC319.30209@gmail.com>
+	<7A436F7769CA33409C6B44B358BFFF0C011ED29795@dlee02.ent.ti.com>
+In-Reply-To: <7A436F7769CA33409C6B44B358BFFF0C011ED29795@dlee02.ent.ti.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Cc: devicetree-discuss@ozlabs.org, Vitaly Wool <vwool@ru.mvista.com>,
-	Artem Bityutskiy <dedekind@infradead.org>,
-	=?UTF-8?B?QWxicmVjaHQgRHJlw58=?= <albrecht.dress@arcor.de>,
-	Grant Likely <grant.likely@secretlab.ca>,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Ken MacLeod <ken@bitsko.slc.ut.us>, David Woodhouse <dwmw2@infradead.org>
+Cc: "davinci-linux-open-source@linux.davincidsp.com"
+	<davinci-linux-open-source@linux.davincidsp.com>, "Paulraj,
+	Sandeep" <s-paulraj@ti.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +31,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/10/2009 07:19 PM, Wolfram Sang wrote:
-> On Sun, Aug 09, 2009 at 08:17:23AM +0300, Artem Bityutskiy wrote:
->> On Fri, 2009-08-07 at 23:43 -0600, Grant Likely wrote:
->>> On Fri, Jul 17, 2009 at 6:39 AM, Wolfram Sang<w.sang@pengutronix.de>  wrote:
->>>> Use physmap_of to access RAMs as mtd and add documenation for it. This approach
->>>> is a lot less intrusive as adding an of-wrapper around plat-ram.c. As most
->>>> extensions of plat-ram.c (e.g. custom map-functions) can't be mapped to the
->>>> device tree anyhow, extending physmap_of seems to be the cleanest approach.
->>>>
->>>> Tested with a phyCORE-MPC5121e.
->>>>
->>>> Signed-off-by: Wolfram Sang<w.sang@pengutronix.de>
->>> Looks good to me.
->>>
->>> Acked-by: Grant Likely<grant.likely@secretlab.ca>
->> This patch is sitting in my l2-mtd-2.6.git tree.
+On 08/10/2009 04:57 PM, Narnakaje, Snehaprabha wrote:
+> Patch v3 1/3: http://userweb.kernel.org/~akpm/mmotm/broken-out/mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis.patch
+> Patch v3 2/3: http://userweb.kernel.org/~akpm/mmotm/broken-out/mtd-nand-add-new-ecc-mode-ecc_hw_oob_first.patch
+> Patch v4 3/3: http://lists.infradead.org/pipermail/linux-mtd/2009-August/026832.html
 >
-> Great, thanks a lot (and for your l2-tree in general!). One question: Are the
-> additional Acked-bys added later? I could think they might be useful for
-> David's review...
+> The l2-mtd-2.6.git tree can be updated for the 3 patches above.
 
-Added Acked-by: Grant Likely<grant.likely@secretlab.ca>
+(Could you please avoid top-posting?)
+
+I've picked up these new versions.
 
 -- 
 Best Regards,
