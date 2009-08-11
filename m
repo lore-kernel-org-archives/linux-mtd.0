@@ -1,37 +1,71 @@
-Received: from smtp-vbr6.xs4all.nl ([194.109.24.26])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MarG2-0006f0-Vh
-	for linux-mtd@lists.infradead.org; Tue, 11 Aug 2009 13:19:25 +0000
-Message-ID: <4A816FD2.4090407@aimvalley.nl>
-Date: Tue, 11 Aug 2009 15:19:14 +0200
-From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
-MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: error cross compiling ubi-utils
-References: <4A6FFFEE.9070108@aimvalley.nl> <4A7E7B6E.2050808@gmail.com>
-In-Reply-To: <4A7E7B6E.2050808@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MatTi-0005JG-6d
+	for linux-mtd@lists.infradead.org; Tue, 11 Aug 2009 15:41:38 +0000
+Subject: Re: nand_update_bbt fix
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Andrew McKay <amckay@iders.ca>
+In-Reply-To: <4A80A760.20901@iders.ca>
+References: <4A80A760.20901@iders.ca>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 11 Aug 2009 18:39:19 +0300
+Message-Id: <1250005159.25202.11.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, JiSheng Zhang <jszhang3@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy wrote:
->> I guess mtd-utils/include/mtd/ubi-media.h should use __u64/__u32/__u16 ?
+On Mon, 2009-08-10 at 18:04 -0500, Andrew McKay wrote:
+> Hello,
 > 
-> I believe new kernels export these types via their headers, and you just
-> have an old kernel. You could try to make mtd-utils be independent of
-> these types.
+> For NAND parts with 2K pages or larger, kmalloc of one erase block will exceed 
+> 128K and fail.  A vmalloc is used in nand_scan_bbt to allocate enough memory for 
+> one erase block.  This should likely be the case for nand_update_bbt as well.
+
+I think this is not about parts with 2K pages, but about parts with
+256KiB eraseblocks.
+
+> diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+> index 55c23e5..43b8d08 100644
+> --- a/drivers/mtd/nand/nand_bbt.c
+> +++ b/drivers/mtd/nand/nand_bbt.c
+> @@ -1030,7 +1030,7 @@ int nand_update_bbt(struct mtd_info *mtd, loff_t offs)
+>    /* Allocate a temporary buffer for one eraseblock incl. oob */
+>    len = (1 << this->bbt_erase_shift);
+>    len += (len >> this->page_shift) * mtd->oobsize;
+> - buf = kmalloc(len, GFP_KERNEL);
+> + buf = vmalloc(len);
+>    if (!buf) {
+>      printk(KERN_ERR "nand_update_bbt: Out of memory\n");
+>      return -ENOMEM;
+> @@ -1063,7 +1063,7 @@ int nand_update_bbt(struct mtd_info *mtd, loff_t offs)
+>    }
 > 
+>    out:
+> - kfree(buf);
+> + vfree(buf);
+>    return res;
+>   }
 
+I would disagree with this patch. Other people are fighting against
+vmalloc, because they want to do DMA in their drivers, but they cannot.
+I've CCed Zhang who is doing the opposite to what you do.
 
-You're right.
-I didn't realize my "../sys-include/asm/types.h" comes from
-linux-libc-headers-2.6.12.0(/include/asm-ppc/types.h).
-I guess I should've used more recent kernel headers when building my CDE.
+I think you should instead split the array on several smaller parts
+and work with those parts. And since this is a very common task in
+MTD, it is better to create a helper library.
+
+You may also take a look at what I suggested to Zhang:
+http://lists.infradead.org/pipermail/linux-mtd/2009-August/026845.html
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
