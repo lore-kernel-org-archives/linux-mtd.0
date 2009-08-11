@@ -1,19 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MapRR-0002O9-0I
-	for linux-mtd@lists.infradead.org; Tue, 11 Aug 2009 11:23:01 +0000
-Subject: Re: [PATCH 1/5 v3] [MTD-UTILS] Unified reading from standard input
-	and from file
+	id 1MapX0-0004Zc-9N
+	for linux-mtd@lists.infradead.org; Tue, 11 Aug 2009 11:28:46 +0000
+Subject: Re: pmcmsp-flash.c: correct clean up?
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jehan Bing <jehan@orb.com>
-In-Reply-To: <4A7A2678.6030303@orb.com>
-References: <4A7A2678.6030303@orb.com>
+To: Roel Kluin <roel.kluin@gmail.com>
+In-Reply-To: <4A7FD765.3020200@gmail.com>
+References: <4A709A88.30103@gmail.com> <4A7EED48.6050103@gmail.com>
+	<4A7FD765.3020200@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 11 Aug 2009 14:21:14 +0300
-Message-Id: <1249989674.25202.3.camel@localhost>
+Date: Tue, 11 Aug 2009 14:26:40 +0300
+Message-Id: <1249990000.25202.4.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
+	dwmw2@infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,13 +25,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-08-05 at 17:40 -0700, Jehan Bing wrote:
-> Use same code path for reading data (not the OOB) from either the 
-> standard input or a regular file.
+On Mon, 2009-08-10 at 10:16 +0200, Roel Kluin wrote:
+> This also adds cleaning up after errors in init_msp_flash().
 > 
-> Signed-off-by: Jehan Bing <jehan@orb.com>
+> Also cleanup_msp_flash() attempts to determine the size of
+> msp_flash with `sizeof(msp_flash) / sizeof(struct mtd_info **)'
+> This will not work since msp_flash is not an array.
+> 
+> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
 
-I've pushed patches 1-5 to mtd-utils.git, thanks.
+Taken to l2-mtd-2.6.git, thanks.
 
 -- 
 Best Regards,
