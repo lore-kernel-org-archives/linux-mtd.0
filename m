@@ -1,18 +1,15 @@
-Received: from mail-pz0-f197.google.com ([209.85.222.197])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mb8OG-0007Bt-IN
-	for linux-mtd@lists.infradead.org; Wed, 12 Aug 2009 07:37:01 +0000
-Received: by pzk35 with SMTP id 35so4280168pzk.24
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 12 Aug 2009 00:36:54 -0700 (PDT)
-MIME-Version: 1.0
-Date: Wed, 12 Aug 2009 13:06:53 +0530
-Message-ID: <967093cd0908120036q51283790se400dc08219daed@mail.gmail.com>
-Subject: Problem with nand flash while booting 2.6.30
-From: Saurabh Kadekodi <saurabhkadekodi@gmail.com>
+Received: from n6-vm1.bullet.mail.in.yahoo.com ([202.86.4.133])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MbBIj-0008WK-Tz
+	for linux-mtd@lists.infradead.org; Wed, 12 Aug 2009 10:43:36 +0000
+Message-ID: <753251.13822.qm@web95108.mail.in2.yahoo.com>
+Date: Wed, 12 Aug 2009 16:06:26 +0530 (IST)
+From: rohit cr <rohi_mot@yahoo.co.in>
+Subject: Adding EBS support to 2.6.10 kernel
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,52 +19,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+Hi,
+ I'm a naive user for mtd utils.
 
-I am working on a board with pxa320 processor. It has a micron 128 mb
-flash. It boots well with kernel 2.6.25, but when booting with 2.6.30,
-it somehow cannot detect the nand chip properly.
+ 1.I was trying to look whether EBS patch can be back ported
+   for 2.6.10 kernel.
 
-It shows following messages:
+ 2.In this direction first i started building mtd utils.
+   I built mtd utils from git tree after applying xattr related
+   patches and compiling by "make WITHOUT_XATTR=3D1" to get    mkfs.jffs2 a=
+nd sumtool with summary support.
 
-NAND device: Manufacturer ID: 0x00, Chip ID: 0xa1 (Unknown NAND 128MiB
-1,8V 8-bit)
+ I built my jffs2 FS image(43MB) with this.=20
+ But when i ran sumtool, the new jffs2 image size is reducing=20
+ to 13MB like
 
-While with 2.6.25 it properly detects as a micron flash.
+"sumtool -e 256KiB -i my.jffs2 -o new.jffs2"
 
-Then later it gives a lot of ECC errors and prints the following messages:
+ Please throw some light on whether am on a feasible task
+ and why sumtool is reducing my jffs2 image size
 
+With lots of hope,
 
-Cowardly refusing to erase blocks on filesystem with no valid JFFS2 nodes
-> empty_blocks 0, bad_blocks 208, c->nr_blocks 438
-> VFS: Cannot open root device "mtdblock2" or unknown-block(31,2)
-> Please append a correct "root=" boot option; here are the available partitions:
-> 1f00             256 mtdblock0 (driver?)
-> 1f01            2048 mtdblock1 (driver?)
-> 1f02          112128 mtdblock2 (driver?)
-> 1f03             512 mtdblock3 (driver?)
-> b300         2008064 mmcblk0 driver: mmcblk
->   b301           31288 mmcblk0p1
-> Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(31,2)
-> Backtrace:
-> [<c0028a34>] (dump_backtrace+0x0/0x110) from [<c0028b78>] (dump_stack+0x18/0x1c)
->  r6:c03af144 r5:c001d884 r4:cf81df54
-> [<c0028b60>] (dump_stack+0x0/0x1c) from [<c003ca9c>] (panic+0x60/0x13c)
-> [<c003ca3c>] (panic+0x0/0x13c) from [<c0008dac>] (mount_block_root+0x104/0x234)
->  r3:00000000 r2:20000013 r1:cf81df54 r0:c0330e50
-> [<c0008ca8>] (mount_block_root+0x0/0x234) from [<c0008fb8>] (mount_root+0xdc/0x100)
-> [<c0008edc>] (mount_root+0x0/0x100) from [<c0009024>] (prepare_namespace+0x48/0x190)
->  r7:00000000 r6:c001d840 r5:c001d83c r4:c03ae0c4
-> [<c0008fdc>] (prepare_namespace+0x0/0x190) from [<c00087dc>] (kernel_init+0xc8/0xf4)
->  r6:c001cdec r5:c001cb58 r4:c03ae0b8
-> [<c0008714>] (kernel_init+0x0/0xf4) from [<c003fc90>] (do_exit+0x0/0x6c8)
->  r6:00000000 r5:00000000 r4:00000000
->
->
-Please can someone guide me as to what maybe wrong. The flash cannot
-be corrupt as
-2.6.25 boots correctly. Then where am I going wrong?
-
-Thanks in advance,
-
-Saurabh
+Thanks,
+Rohit.C.R=0A=0A=0A      Yahoo! recommends that you upgrade to the new and s=
+afer Internet Explorer 8. http://downloads.yahoo.com/in/internetexplorer/
