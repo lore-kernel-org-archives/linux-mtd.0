@@ -1,24 +1,20 @@
-Received: from mail-ew0-f207.google.com ([209.85.219.207])
+Received: from mms2.broadcom.com ([216.31.210.18])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MbGlF-0005UX-1l
-	for linux-mtd@lists.infradead.org; Wed, 12 Aug 2009 16:33:17 +0000
-Received: by ewy3 with SMTP id 3so159758ewy.18
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 12 Aug 2009 09:33:10 -0700 (PDT)
-From: Corentin Chary <corentin.chary@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 0/2] RFC: Add support for UBI and UBIFS
-Date: Wed, 12 Aug 2009 18:32:04 +0200
-References: <1247650724-16288-1-git-send-email-corentincj@iksaif.net>
-	<71cd59b00907270034r6886bd6cxab080e29e3ec3674@mail.gmail.com>
-	<4A7E5730.9020300@gmail.com>
-In-Reply-To: <4A7E5730.9020300@gmail.com>
+	id 1MbHS6-0004OS-Id
+	for linux-mtd@lists.infradead.org; Wed, 12 Aug 2009 17:17:50 +0000
+Date: Wed, 12 Aug 2009 10:17:13 -0700
+From: "Leo (Hao) Chen" <leochen@broadcom.com>
+To: "Saurabh Kadekodi" <saurabhkadekodi@gmail.com>
+Subject: Re: Problem with nand flash while booting 2.6.30
+Message-ID: <20090812171713.GA5076@broadcom.com>
+References: <967093cd0908120036q51283790se400dc08219daed@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
+In-Reply-To: <967093cd0908120036q51283790se400dc08219daed@mail.gmail.com>
+Content-Type: text/plain;
+ charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: 7bit
-Message-Id: <200908121832.04311.corentin.chary@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,17 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sunday 09 August 2009 06:57:20 Artem Bityutskiy wrote:
-> On 07/27/2009 10:34 AM, Corentin Chary wrote:
-> > No problem. Here is a sample image with the default filesystem.
-> > Maybe Artem can provide more interesting image for regression testing.
->
-> Just few files and dirs there and it should be fine.
+On Wed, Aug 12, 2009 at 12:36:53AM -0700, Saurabh Kadekodi wrote:
+> 
+> Then later it gives a lot of ECC errors and prints the following messages:
+> 
+> 
+> Cowardly refusing to erase blocks on filesystem with no valid JFFS2 nodes
+> > empty_blocks 0, bad_blocks 208, c->nr_blocks 438
+> > VFS: Cannot open root device "mtdblock2" or unknown-block(31,2)
+> > Please append a correct "root=" boot option; here are the available partitions:
+> > 1f00             256 mtdblock0 (driver?)
+> > 1f01            2048 mtdblock1 (driver?)
+> > 1f02          112128 mtdblock2 (driver?)
+> > 1f03             512 mtdblock3 (driver?)
+> > b300         2008064 mmcblk0 driver: mmcblk
+> >   b301           31288 mmcblk0p1
 
-Hi,
-Patchs are done for both e2fs-utils and util-linux-ng but I don't have the 
-time to send them right now. Except them in two weeks when I'm back ;).
-Thanks,
+You may try to re-burn the rootfs to your flash.  I had experienced
+similar problem when I switched my kernel from 2.6.27 to 2.6.30.  I
+don't know the exact reason, but the ECC algorithm or something may have been changed.
+
+
 -- 
-Corentin Chary
-http://xf.iksaif.net - http://uffs.org
+Leo Hao Chen
+Software Engineer
+Broadcom Canada Inc.
