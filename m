@@ -1,28 +1,22 @@
-Received: from mail.ruggedcom.com ([204.50.190.93])
-	by casper.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MbKuc-0002qP-4H
-	for linux-mtd@lists.infradead.org; Wed, 12 Aug 2009 20:59:15 +0000
-Message-ID: <4A832D11.3020802@ruggedcom.com>
-Date: Wed, 12 Aug 2009 16:58:57 -0400
-From: Michael Barkowski <michaelbarkowski@ruggedcom.com>
+Received: from smtp110.sbc.mail.gq1.yahoo.com ([67.195.14.95])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MbNQe-0007iX-E1
+	for linux-mtd@lists.infradead.org; Wed, 12 Aug 2009 23:40:29 +0000
+From: David Brownell <david-b@pacbell.net>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: nand_update_bbt fix
+Date: Wed, 12 Aug 2009 10:37:55 -0700
+References: <4A80A760.20901@iders.ca> <4A819637.7080501@iders.ca>
+	<4A825873.4010202@gmail.com>
+In-Reply-To: <4A825873.4010202@gmail.com>
 MIME-Version: 1.0
-To: avorontsov@ru.mvista.com
-Subject: Re: [PATCH 2/6] mtd: m25p80: Convert to device table matching
-References: <20090731003957.GA23982@oksana.dev.rtsoft.ru>
-	<20090731004100.GB8371@oksana.dev.rtsoft.ru>
-	<4A832A03.6020507@ruggedcom.com>
-	<20090812205800.GA27074@oksana.dev.rtsoft.ru>
-In-Reply-To: <20090812205800.GA27074@oksana.dev.rtsoft.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Cc: Ben Dooks <ben@fluff.org>, David Brownell <dbrownell@users.sourceforge.net>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	linux-kernel@vger.kernel.org, lm-sensors@lm-sensors.org,
-	Grant Likely <grant.likely@secretlab.ca>,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Jean Delvare <khali@linux-fr.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+Message-Id: <200908121037.55941.david-b@pacbell.net>
+Cc: Andrew McKay <amckay@iders.ca>, linux-mtd@lists.infradead.org,
+	JiSheng Zhang <jszhang3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,31 +26,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Anton Vorontsov wrote:
-> On Wed, Aug 12, 2009 at 04:45:55PM -0400, Michael Barkowski wrote:
->> Hello Anton,
->>
->> Is m25p_probe now valid with dev.platform_data == NULL, for of platforms?
->>
->> Then shouldn't you have the following change as well, near the end of
->> the function?
->>
->> -  	} else if (data->nr_parts)
->> +  	} else if (data && data->nr_parts)
->> 		dev_warn(&spi->dev, "ignoring %d default partitions on %s\n",
->> 				data->nr_parts, data->name);
->>
->> Or am I misunderstanding something?
+On Tuesday 11 August 2009, Artem Bityutskiy wrote:
+> My position is:
+>    * vmalloc is a problem because it prevents DMA
+>    * kmalloc is a problem because large allocations of contiguous memory
+>      are impossible
 > 
-> Yeah, you missed this patch:
-> http://patchwork.kernel.org/patch/38179/
-> 
-> 
-> Thanks,
-> 
+> Thus, I think people should invent some nice solution for the whole issue
+> instead of turning vmalloc's into kmallocks and back and forth.
 
-Beautiful - thanks - sorry to interrupt
+BBT is a constrained sub-problem, but not the only one.
 
--- 
-Michael Barkowski
-905-482-4577
+(Another BBT issue:  I've thought that with MLC chips and their
+small limits on number-of-erases, the current waste of BBT pages
+deserves more attention.  On a 2 GByte chip with 4KB pages and
+blocks at 256KB, each block could hold 64 BBT versions, with
+newer ones after older ones, even at one-per-page.  But today's
+BBT code is dumb:  one-per-block.  That's a lot of needless and
+extra erasures for BBT blocks...)
+
+
+> I'm CCing 
+> David Brownell because AFAIR he was discussing similar things on lkml some
+> time ago.
+
+The MTD stack is DMA-unfriendly today.
+
+The issue I saw was with SPI flash chips, where the underlying
+SPI master controller often uses DMA ... causing trouble for
+certain code paths through MTD (or was it just JFFS2?).
+
+I'm not sure it's well understood which things are DMA-unsafe.
+Using vmalloc is one problem.  There's also code making more
+subtle assumptions, which dma-incoherent caches will break...
+
+There are two issues I see.  One is "does it work at all";
+that was the SPI issue.  Another is performance ... it's
+easy for DMA overheads to be excessive:  DMA setup/teardown
+can cost more than the PIO code would, even ignoring cache
+operation costs.  Fixing performance will likely require
+interface changes. 
+
+Either issue will need care to fix.  Given that NOR is now
+becoming less prevalent, I'd suggest that "people" doing
+such work focus on large-page NAND.
+
+- Dave
