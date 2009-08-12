@@ -1,20 +1,24 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MbHS6-0004OS-Id
-	for linux-mtd@lists.infradead.org; Wed, 12 Aug 2009 17:17:50 +0000
-Date: Wed, 12 Aug 2009 10:17:13 -0700
-From: "Leo (Hao) Chen" <leochen@broadcom.com>
-To: "Saurabh Kadekodi" <saurabhkadekodi@gmail.com>
-Subject: Re: Problem with nand flash while booting 2.6.30
-Message-ID: <20090812171713.GA5076@broadcom.com>
-References: <967093cd0908120036q51283790se400dc08219daed@mail.gmail.com>
+Received: from smtp-01.datacomm.ch ([212.40.2.26])
+	by casper.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MbIXx-0006UK-6d
+	for linux-mtd@lists.infradead.org; Wed, 12 Aug 2009 18:27:41 +0000
+Received: from [192.168.1.41] (142-186.77-83.cust.bluewin.ch [83.77.186.142])
+	(Authenticated sender: Neukomm@vtxmail.ch)
+	by smtp-01.datacomm.ch (VTX Datacomm AG) with ESMTPA id 45EAF1DC217
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 12 Aug 2009 20:27:04 +0200 (CEST)
+Message-ID: <4A83097B.3060509@vtxmail.ch>
+Date: Wed, 12 Aug 2009 20:27:07 +0200
+From: Daniel Neukomm <Neukomm@vtxmail.ch>
 MIME-Version: 1.0
-In-Reply-To: <967093cd0908120036q51283790se400dc08219daed@mail.gmail.com>
-Content-Type: text/plain;
- charset=us-ascii
-Content-Disposition: inline
+To: linux-mtd@lists.infradead.org
+Subject: Re: patch for mkfs.ubifs devtable.c increment in dev_table is wrongly
+	interpreted
+References: <4A759CF3.2010908@vtxmail.ch> <1249973154.19638.30.camel@localhost>
+	<4A815420.1060802@gmail.com>
+In-Reply-To: <4A815420.1060802@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +28,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 12, 2009 at 12:36:53AM -0700, Saurabh Kadekodi wrote:
-> 
-> Then later it gives a lot of ECC errors and prints the following messages:
-> 
-> 
-> Cowardly refusing to erase blocks on filesystem with no valid JFFS2 nodes
-> > empty_blocks 0, bad_blocks 208, c->nr_blocks 438
-> > VFS: Cannot open root device "mtdblock2" or unknown-block(31,2)
-> > Please append a correct "root=" boot option; here are the available partitions:
-> > 1f00             256 mtdblock0 (driver?)
-> > 1f01            2048 mtdblock1 (driver?)
-> > 1f02          112128 mtdblock2 (driver?)
-> > 1f03             512 mtdblock3 (driver?)
-> > b300         2008064 mmcblk0 driver: mmcblk
-> >   b301           31288 mmcblk0p1
-
-You may try to re-burn the rootfs to your flash.  I had experienced
-similar problem when I switched my kernel from 2.6.27 to 2.6.30.  I
-don't know the exact reason, but the ECC algorithm or something may have been changed.
-
-
--- 
-Leo Hao Chen
-Software Engineer
-Broadcom Canada Inc.
+Artem Bityutskiy schrieb:
+> On 08/11/2009 09:45 AM, Artem Bityutskiy wrote:
+>> On Sun, 2009-08-02 at 16:04 +0200, Daniel Neukomm wrote:
+>>> patch for mkfs.ubifs devtable.c increment in dev_table is wrongly
+>>> interpreted
+>>>
+>>> with the device table one can add /dev entries to the root file system
+>>> image.
+>>> The device table file contains among others the fields minor, start,
+>>> increment and count.
+>>> If there is an entry with minor=0 start=0 increment =32 and count=4 the
+>>> mkfs.ubifs makes
+>>> 128 device entries, with minor numbers from 0 to 127
+>>> The correct version makes 4 entries with minor number 0,32,64,96.
+>>>
+>>> /dev/mtd c 640 0 0 90 0 0  2 7
+>>> This gives 14 devices /dev/mtdXX instead of  7 devices.
+>>> Due to this error mtd_debug info /dev/mtd3 delivers the information of
+>>> /dev/mtd1 instead of.
+>>
+>> Ok, below is how you was supposed to send the patch (without my
+>> Signed-off-by, of course). I just applied your patch manually (usually
+>> we use git am for this) and tweaked it.
+>>
+>> Please, check that I did not do any mistake. After you have confirmed
+>> this, I'll push this to the mtd-utils repository.
+>
+> I've pushed it actually to mtd-utils.git. But please, check it anyway.
+>
+The new patch (without line-wrapping) works.
+The actual trunk version from mtd-utils repository contains the intented 
+corrections.
