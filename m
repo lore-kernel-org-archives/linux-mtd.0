@@ -1,22 +1,12 @@
-Received: from smtp110.sbc.mail.gq1.yahoo.com ([67.195.14.95])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MbNQe-0007iX-E1
-	for linux-mtd@lists.infradead.org; Wed, 12 Aug 2009 23:40:29 +0000
-From: David Brownell <david-b@pacbell.net>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: nand_update_bbt fix
-Date: Wed, 12 Aug 2009 10:37:55 -0700
-References: <4A80A760.20901@iders.ca> <4A819637.7080501@iders.ca>
-	<4A825873.4010202@gmail.com>
-In-Reply-To: <4A825873.4010202@gmail.com>
+Date: Wed, 12 Aug 2009 21:50:12 -0500 (CDT)
+From: "ROTHSCHILD FOUNDATION (EUROPE)" <mroberts@springhill.org>
+Message-ID: <2131398.38681250131812049.JavaMail.root@mail>
+Subject: DEAR DONATION BENEFICIARY: CONGRATULATION!!!
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: inline
-Message-Id: <200908121037.55941.david-b@pacbell.net>
-Cc: Andrew McKay <amckay@iders.ca>, linux-mtd@lists.infradead.org,
-	JiSheng Zhang <jszhang3@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+To: undisclosed-recipients:;
+Reply-To: "ssvv101@sify.com" <ssvv101@sify.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,49 +16,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 11 August 2009, Artem Bityutskiy wrote:
-> My position is:
->    * vmalloc is a problem because it prevents DMA
->    * kmalloc is a problem because large allocations of contiguous memory
->      are impossible
-> 
-> Thus, I think people should invent some nice solution for the whole issue
-> instead of turning vmalloc's into kmallocks and back and forth.
+ROTHSCHILD FOUNDATION (EUROPE)
+32-33 St Jame's Place
+London
+SW1A 1NR
+United Kingdom
+Registered company no. 3948898
+Registered charity no. 1083262
 
-BBT is a constrained sub-problem, but not the only one.
+Dear Beneficiary,
+Foundation Rothschild as established by the Multi-Million groups was
+conceived with the objective of Human Growth, Educational and Community
+development. The Rothschild Foundation in conjunction with the ECOWAS,
+UNO and the EUROPEAN UNION, These funds are freely given to you to use
+for your business educational and personal development.
 
-(Another BBT issue:  I've thought that with MLC chips and their
-small limits on number-of-erases, the current waste of BBT pages
-deserves more attention.  On a 2 GByte chip with 4KB pages and
-blocks at 256KB, each block could hold 64 BBT versions, with
-newer ones after older ones, even at one-per-page.  But today's
-BBT code is dumb:  one-per-block.  That's a lot of needless and
-extra erasures for BBT blocks...)
+You were selected among the lucky recipients to have won the award sum
+of GBP10, 000,000.00 (Ten Million Great British Pounds Sterling) as
+charity donations/aid from the France Foundation, ECOWAS and the
+UNO in accordance with the enabling act of Parliament.
 
+You are required to expeditiously contact the Executive Secretary with
+your Qualification numbers (P-333-7858, B-011-67) for processing of
+your claims, you will be given your donation pin number.
+Contact Claudio Giovanni (DPU) Information Officer.
 
-> I'm CCing 
-> David Brownell because AFAIR he was discussing similar things on lkml some
-> time ago.
+Enter Personal Details:
 
-The MTD stack is DMA-unfriendly today.
+First Name:
+Last Name
+Address Line 1:
+Address Line 2 (optional):
+City: 
+State:
+Zip/Postal Code:
+Country:
+Valid Phone Number: 
+Fax (optional):
+E-mail: 
+---------------------------------------------------------
+DUE PROCESS UNIT:
+Executive Secretary - Claudio Giovanni
+Tel: +44(0)70 1114 7931  Tel: +44 (0)70 3196 1842
+Email: ssvv101@sify.com
+--------------------------------------------------------
+On behalf of the Board kindly accept our warmest congratulations.
 
-The issue I saw was with SPI flash chips, where the underlying
-SPI master controller often uses DMA ... causing trouble for
-certain code paths through MTD (or was it just JFFS2?).
-
-I'm not sure it's well understood which things are DMA-unsafe.
-Using vmalloc is one problem.  There's also code making more
-subtle assumptions, which dma-incoherent caches will break...
-
-There are two issues I see.  One is "does it work at all";
-that was the SPI issue.  Another is performance ... it's
-easy for DMA overheads to be excessive:  DMA setup/teardown
-can cost more than the PIO code would, even ignoring cache
-operation costs.  Fixing performance will likely require
-interface changes. 
-
-Either issue will need care to fix.  Given that NOR is now
-becoming less prevalent, I'd suggest that "people" doing
-such work focus on large-page NAND.
-
-- Dave
+Yours faithfully,Mrs.
+Marian Bern.
+(Foundation officer)
