@@ -1,16 +1,21 @@
-Message-ID: <4A858B4A.9000705@gmail.com>
-Date: Fri, 14 Aug 2009 19:05:30 +0300
-From: Artem Bityutskiy <dedekind1@gmail.com>
+Received: from ip-70-38-54-207.static.privatedns.com ([70.38.54.207]
+	helo=sitios.sitiosdinamicos.net)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1McHXl-00010i-Tb
+	for linux-mtd@lists.infradead.org; Sat, 15 Aug 2009 11:35:34 +0000
+Received: from nobody by sitios.sitiosdinamicos.net with local (Exim 4.69)
+	(envelope-from <nobody@sitios.sitiosdinamicos.net>)
+	id 1McHXY-0003KY-8O
+	for linux-mtd@lists.infradead.org; Sat, 15 Aug 2009 07:35:16 -0400
+To: linux-mtd@lists.infradead.org
+Subject: Loand
+From: FINANCIAL LOAN <financialloans009@gmail.com>
 MIME-Version: 1.0
-To: JiSheng Zhang <jszhang3@gmail.com>
-Subject: Re: [PATCH] UBI: Fix allocation of volume table
-References: <20090811094455.6f9cbbfe@ustc>
-In-Reply-To: <20090811094455.6f9cbbfe@ustc>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
-Cc: Artem.Bityutskiy@nokia.com, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	rmk@arm.linux.org.uk, adrian.hunter@nokia.com
+Message-Id: <E1McHXY-0003KY-8O@sitios.sitiosdinamicos.net>
+Date: Sat, 15 Aug 2009 07:35:16 -0400
+Reply-To: financial.loans03@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,20 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/11/2009 04:44 AM, JiSheng Zhang wrote:
-> We can't use vmalloc for the buffer used for volume table for some NAND
-> or NOR drivers may pass the buffer to DMA. And the volume table size
-> a.k.a vtbl_size is small so we can use kmalloc or kzalloc for it instead
->
-> Signed-off-by: JiSheng Zhang<jszhang3@gmail.com>
+Dear Sir/Madam 
 
-I do not have objections if this patch becomes a member of a series of
-patches which kick vmalloc from whole UBI. Applying just this patch does
-not make much sense.
-
-You may go through UBI code and try to split large vmalloc-ed buffers on
-smaller kmalloc-ed ones.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Are you a business man or woman ?
+Do you need a loan or funding for any reason
+such as :
+a) Personal Loan,Business Expansion ,
+b) Business Start-up ,Education,
+c) Debt Consolidation ,
+d) Hard Money Loans
+We offer loan at low interest rate of 5%
+and with no credit check
+CONTACT EMAIL: financial.loans03@gmail.com
+Thanks
+Mr. Alonso Fernando
