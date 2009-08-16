@@ -1,21 +1,23 @@
-Received: from ip-70-38-54-207.static.privatedns.com ([70.38.54.207]
-	helo=sitios.sitiosdinamicos.net)
+Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1McHXl-00010i-Tb
-	for linux-mtd@lists.infradead.org; Sat, 15 Aug 2009 11:35:34 +0000
-Received: from nobody by sitios.sitiosdinamicos.net with local (Exim 4.69)
-	(envelope-from <nobody@sitios.sitiosdinamicos.net>)
-	id 1McHXY-0003KY-8O
-	for linux-mtd@lists.infradead.org; Sat, 15 Aug 2009 07:35:16 -0400
-To: linux-mtd@lists.infradead.org
-Subject: Loand
-From: FINANCIAL LOAN <financialloans009@gmail.com>
+	id 1McaSL-0007Xv-Hh
+	for linux-mtd@lists.infradead.org; Sun, 16 Aug 2009 07:47:11 +0000
+Date: Sun, 16 Aug 2009 08:46:04 +0100
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: "Leo (Hao) Chen" <leochen@broadcom.com>
+Subject: Re: [PATCH v4 22/24] bcmring: add mtd nand driver
+Message-ID: <20090816074604.GA9451@n2100.arm.linux.org.uk>
+References: <8628FE4E7912BF47A96AE7DD7BAC0AADCB25D07582@SJEXCHCCR02.corp.ad.broadcom.com>
+	<20090805220448.GA6091@broadcom.com>
+	<20090812205856.GB15411@broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-Message-Id: <E1McHXY-0003KY-8O@sitios.sitiosdinamicos.net>
-Date: Sat, 15 Aug 2009 07:35:16 -0400
-Reply-To: financial.loans03@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20090812205856.GB15411@broadcom.com>
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-arm-kernel@lists.arm.linux.org.uk"
+	<linux-arm-kernel@lists.arm.linux.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +27,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Sir/Madam 
+On Wed, Aug 12, 2009 at 01:58:56PM -0700, Leo (Hao) Chen wrote:
+> Submit a newer version of this patch, moved nand_bcm_umi.h file as Artem
+> commented.
 
-Are you a business man or woman ?
-Do you need a loan or funding for any reason
-such as :
-a) Personal Loan,Business Expansion ,
-b) Business Start-up ,Education,
-c) Debt Consolidation ,
-d) Hard Money Loans
-We offer loan at low interest rate of 5%
-and with no credit check
-CONTACT EMAIL: financial.loans03@gmail.com
-Thanks
-Mr. Alonso Fernando
+You sent this to the patch system; this needs to be applied via the MTD
+tree rather than mine, so I'm going to discard your patch.
