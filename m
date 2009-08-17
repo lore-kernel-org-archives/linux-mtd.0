@@ -1,23 +1,16 @@
-Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1McaSL-0007Xv-Hh
-	for linux-mtd@lists.infradead.org; Sun, 16 Aug 2009 07:47:11 +0000
-Date: Sun, 16 Aug 2009 08:46:04 +0100
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-To: "Leo (Hao) Chen" <leochen@broadcom.com>
-Subject: Re: [PATCH v4 22/24] bcmring: add mtd nand driver
-Message-ID: <20090816074604.GA9451@n2100.arm.linux.org.uk>
-References: <8628FE4E7912BF47A96AE7DD7BAC0AADCB25D07582@SJEXCHCCR02.corp.ad.broadcom.com>
-	<20090805220448.GA6091@broadcom.com>
-	<20090812205856.GB15411@broadcom.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20090812205856.GB15411@broadcom.com>
-Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-arm-kernel@lists.arm.linux.org.uk"
-	<linux-arm-kernel@lists.arm.linux.org.uk>
+Received: from dns.mlb.co.jp ([210.251.64.148] helo=mail.mlb.co.jp)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Mcr61-0005Ku-21
+	for linux-mtd@lists.infradead.org; Mon, 17 Aug 2009 01:33:16 +0000
+Date: Mon, 17 Aug 2009 10:24:08 +0900 (JST)
+Message-Id: <20090817.102408.159676517.ito@mlb.co.jp>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] MTD: jedec_probe: Fix NEC uPD29F064115 detection.
+From: Hiroshi Ito <ito@mlb.co.jp>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Cc: linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,9 +20,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 12, 2009 at 01:58:56PM -0700, Leo (Hao) Chen wrote:
-> Submit a newer version of this patch, moved nand_bcm_umi.h file as Artem
-> commented.
+linux v2.6.31-rc6 can not detect NEC uPD29F064115.
 
-You sent this to the patch system; this needs to be applied via the MTD
-tree rather than mine, so I'm going to discard your patch.
+uPD29F064115 is a 16 bit device.
+datasheet:
+  http://www.cn.necel.com/memory/cn/download/M16062EJ2V0DS00.pdf
+
+A problem and fix is described as following commit, which in the main
+kernel tree, uPD29F064115 needs same fix.
+
+commit ca6f12c67ed19718cf37d0f531af9438de85b70c
+Author: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Date:   Wed Jul 16 00:09:15 2008 +0900
+
+    [MTD] jedec_probe: Fix SST 16-bit chip detection
+
+    The unlock_addr rework in kernel 2.6.25 breaks 16-bit SST chips.  SST
+    39LF160 and SST 39VF1601 are both 16-bit only chip (do not have BYTE#
+    pin) and new uaddr value is not correct for them.  Add
+    MTD_UADDR_0xAAAA_0x5555 for those chips.  Tested with SST 39VF1601
+    chip.
+    
+    Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+    Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
+
+
+Signed-off-by: Hiroshi Ito <ito@mlb.co.jp>
+---
+ drivers/mtd/chips/jedec_probe.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
+index ccc4cfc..0f7065d 100644
+--- a/drivers/mtd/chips/jedec_probe.c
++++ b/drivers/mtd/chips/jedec_probe.c
+@@ -1156,8 +1156,8 @@ static const struct amd_flash_info jedec_table[] = {
+ 		.mfr_id		= MANUFACTURER_NEC,
+ 		.dev_id		= UPD29F064115,
+ 		.name		= "NEC uPD29F064115",
+-		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
+-		.uaddr		= MTD_UADDR_0x0555_0x02AA,	/* ???? */
++		.devtypes	= CFI_DEVICETYPE_X16,
++		.uaddr		= MTD_UADDR_0xAAAA_0x5555,
+ 		.dev_size	= SIZE_8MiB,
+ 		.cmd_set	= P_ID_AMD_STD,
+ 		.nr_regions	= 3,
+-- 
+1.5.6.5
+
+--------
+Hiroshi Ito
+Media Lab. Inc.,
+URL http://www.mlb.co.jp ( Sorry, Japanese only. )
+TEL +81-3-5294-7255  FAX +81-3-5294-7256
