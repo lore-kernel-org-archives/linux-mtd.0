@@ -1,16 +1,22 @@
-Received: from dns.mlb.co.jp ([210.251.64.148] helo=mail.mlb.co.jp)
+Received: from mailout1.samsung.com ([203.254.224.24])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mcr61-0005Ku-21
-	for linux-mtd@lists.infradead.org; Mon, 17 Aug 2009 01:33:16 +0000
-Date: Mon, 17 Aug 2009 10:24:08 +0900 (JST)
-Message-Id: <20090817.102408.159676517.ito@mlb.co.jp>
+	id 1Md02m-0005rQ-51
+	for linux-mtd@lists.infradead.org; Mon, 17 Aug 2009 11:06:32 +0000
+Received: from epmmp1 (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KOI00LMTPILSG@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Mon, 17 Aug 2009 20:06:21 +0900 (KST)
+Received: from amulsaha ([107.108.214.27])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KOI000UTPIK5Z@mmp1.samsung.com> for
+	linux-mtd@lists.infradead.org; Mon, 17 Aug 2009 20:06:21 +0900 (KST)
+Date: Mon, 17 Aug 2009 16:13:43 +0530
+From: Amul Kumar Saha <amul.saha@samsung.com>
+Subject: [PATCH] [OneNAND] OTP support re-implementation 0/1
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] MTD: jedec_probe: Fix NEC uPD29F064115 detection.
-From: Hiroshi Ito <ito@mlb.co.jp>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Cc: linux-kernel@vger.kernel.org
+Message-id: <8446686E3F0D47DBADA638B6B346FA6A@sisodomain.com>
+Content-transfer-encoding: 7BIT
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,56 +26,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-linux v2.6.31-rc6 can not detect NEC uPD29F064115.
+Hi,
 
-uPD29F064115 is a 16 bit device.
-datasheet:
-  http://www.cn.necel.com/memory/cn/download/M16062EJ2V0DS00.pdf
+OneNAND supports OTP (One Time Programmable) feature.
 
-A problem and fix is described as following commit, which in the main
-kernel tree, uPD29F064115 needs same fix.
+OTP is an extra block provided on the OneNAND memory chip,
+which can not be erased after issue of OTP command.
 
-commit ca6f12c67ed19718cf37d0f531af9438de85b70c
-Author: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-Date:   Wed Jul 16 00:09:15 2008 +0900
+OTP support Implementation in the Current OneNAND Driver is not serving the purpose of  locking
+the OTP Block.
+This patch provides a Re-Implementation of OTP support in OneNAND driver.
 
-    [MTD] jedec_probe: Fix SST 16-bit chip detection
+It also provides the following additional features:-
+1. 1st Block in OneNAND can be permanently locked using OTP.
+2. Both OTP Block and the 1st Block can together be locked using OTP.
 
-    The unlock_addr rework in kernel 2.6.25 breaks 16-bit SST chips.  SST
-    39LF160 and SST 39VF1601 are both 16-bit only chip (do not have BYTE#
-    pin) and new uaddr value is not correct for them.  Add
-    MTD_UADDR_0xAAAA_0x5555 for those chips.  Tested with SST 39VF1601
-    chip.
-    
-    Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-    Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
+The patch is attached in the mail that follows.
 
-
-Signed-off-by: Hiroshi Ito <ito@mlb.co.jp>
----
- drivers/mtd/chips/jedec_probe.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
-index ccc4cfc..0f7065d 100644
---- a/drivers/mtd/chips/jedec_probe.c
-+++ b/drivers/mtd/chips/jedec_probe.c
-@@ -1156,8 +1156,8 @@ static const struct amd_flash_info jedec_table[] = {
- 		.mfr_id		= MANUFACTURER_NEC,
- 		.dev_id		= UPD29F064115,
- 		.name		= "NEC uPD29F064115",
--		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
--		.uaddr		= MTD_UADDR_0x0555_0x02AA,	/* ???? */
-+		.devtypes	= CFI_DEVICETYPE_X16,
-+		.uaddr		= MTD_UADDR_0xAAAA_0x5555,
- 		.dev_size	= SIZE_8MiB,
- 		.cmd_set	= P_ID_AMD_STD,
- 		.nr_regions	= 3,
--- 
-1.5.6.5
-
---------
-Hiroshi Ito
-Media Lab. Inc.,
-URL http://www.mlb.co.jp ( Sorry, Japanese only. )
-TEL +81-3-5294-7255  FAX +81-3-5294-7256
+Regards,
+Amul Kumar Saha 
