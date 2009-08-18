@@ -1,18 +1,15 @@
-Received: from mail-px0-f193.google.com ([209.85.216.193])
+Received: from mail.gsl.com.hk ([203.198.205.214] helo=hkgdominogw.gsl.com.hk)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MdEQP-0007Qc-Ot
-	for linux-mtd@lists.infradead.org; Tue, 18 Aug 2009 02:27:54 +0000
-Received: by pxi31 with SMTP id 31so1730217pxi.24
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 17 Aug 2009 19:27:47 -0700 (PDT)
-MIME-Version: 1.0
-Date: Tue, 18 Aug 2009 10:27:46 +0800
-Message-ID: <39811fe10908171927g6ef3ec83x4ae3442b32380dc0@mail.gmail.com>
+	id 1MdF3l-0004kH-FK
+	for linux-mtd@lists.infradead.org; Tue, 18 Aug 2009 03:08:34 +0000
+Message-ID: <4A8A1B4A.4010408@gsl.com.hk>
+Date: Tue, 18 Aug 2009 11:08:58 +0800
+From: Jacky Lam <jackylam@gsl.com.hk>
+To: linux-mtd Mailing List <linux-mtd@lists.infradead.org>
 Subject: UBINIZE and UBIFS
-From: Jacky Lam <jackylam.gsl@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=Big5
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -95,3 +92,6 @@ no such problem.
 
 BR,
 Jacky
+
+
+Disclaimer: This email and attachments are confidential. If you are not the intended recipient, you must not pursue, use, disseminate, distribute or copy this message, whether in whole or in part. If you have received this message in error, please notify us immediately by email or telephone us at (852) 2832 8228 and delete this message from your system. We do not represent that this email may not be interfered with, may not contain computer viruses or other defects and may not be successfully replicated on other system. 
