@@ -1,21 +1,18 @@
-Received: from mail-yw0-f172.google.com ([209.85.211.172])
+Received: from mail-ew0-f222.google.com ([209.85.219.222])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MdFF4-0006IS-EW
-	for linux-mtd@lists.infradead.org; Tue, 18 Aug 2009 03:20:14 +0000
-Received: by ywh2 with SMTP id 2so10000815ywh.2
+	id 1MdGFO-00037j-IM
+	for linux-mtd@lists.infradead.org; Tue, 18 Aug 2009 04:24:39 +0000
+Received: by ewy22 with SMTP id 22so3365730ewy.28
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 17 Aug 2009 20:19:53 -0700 (PDT)
+	Mon, 17 Aug 2009 21:24:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <39811fe10908171927g6ef3ec83x4ae3442b32380dc0@mail.gmail.com>
-References: <39811fe10908171927g6ef3ec83x4ae3442b32380dc0@mail.gmail.com>
-Date: Tue, 18 Aug 2009 11:19:53 +0800
-Message-ID: <e8775dd00908172019s453df526o48b0ea450344a4c2@mail.gmail.com>
-Subject: Re: UBINIZE and UBIFS
-From: Jason Liu <liu.h.jason@gmail.com>
-To: Jacky Lam <jackylam.gsl@gmail.com>
+Date: Tue, 18 Aug 2009 01:24:31 -0300
+Message-ID: <600adaf50908172124w1196be37u3a409cbcad0fad65@mail.gmail.com>
+Subject: mtdram max size
+From: Tiago Maluta <tiago.maluta@gmail.com>
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,99 +22,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Your image burning tool has issues. You can try the ubi flasher tool
-from the mtd-utility.
-Anyway, you should drop program the page with all 0xff if you are
-using MLC nand flash.
+Hi,
 
-2009/8/18 Jacky Lam <jackylam.gsl@gmail.com>:
-> Dear all,
->
-> =A0 =A0 =A0 =A0I have a problem of embedding a UBIFS image by ubinize. He=
-re is the
-> config file I am using:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> [rootfs]
-> mode=3Dubi
-> image=3Drfs.bin
-> vol_id=3D0
-> vol_size=3D10485760
-> vol_type=3Ddynamic
-> vol_name=3Drootfs
->
-> [areatest]
-> mode=3Dubi
-> image=3Dtest.bin
-> vol_id=3D1
-> vol_size=3D15728640
-> vol_type=3Ddynamic
-> vol_name=3Dareatest
->
-> [areauser]
-> mode=3Dubi
-> image=3Dareauser.bin
-> vol_id=3D2
-> vol_size=3D47185920
-> vol_type=3Ddynamic
-> vol_name=3Dareauser
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
->
-> =A0 =A0 =A0 =A0areauser.bin is created by:
->
-> =A0 =A0 =A0 =A0mkubifs -v -g 1 -r areauser -o areauser.bin -m 4096 -e 516=
-096 -c 92 -x none
->
-> =A0 =A0 =A0 =A0The final image is created by:
->
-> =A0 =A0 =A0 =A0ubinize -o final.raw.2 -m 4096 -p 512KiB ubinize_all.cfg
->
->
-> =A0 =A0 =A0 =A0After burning the raw image to nand flash, everything work=
-s fine and
-> ubifs can be mount successfully. All the files are readable. But after I
-> unmount the ubifs and want to mount again. The following error is happene=
-d:
-> ------------------------------------------------------------------------
-> ...
-> <Many ECC errors reported>
-> ...
-> UBI error: ubi_io_read: error -74 while reading 516096 bytes from PEB
-> 55:8192, read 516096 bytes
-> UBIFS error (pid 42): ubifs_scan: corrupt empty space at LEB 1:4691
-> UBIFS error (pid 42): ubifs_scanned_corruption: corrupted data at LEB 1:4=
-691
-> UBIFS error (pid 42): ubifs_scanned_corruption: first 4096 bytes from
-> LEB 1:4691
-> UBIFS error (pid 42): ubifs_scan: LEB 1 scanning failed
-> ...
-> <Many ECC errors reported>
-> ...
-> UBI error: ubi_io_read: error -74 while reading 516096 bytes from PEB
-> 55:8192, read 516096 bytes
-> UBIFS error (pid 42): ubifs_recover_master_node: failed to recover
-> master node
-> mount: mounting ubi0:areauser on /mnt/areauser failed: Invalid argument
->
-> -------------------------------------------------------------------------
->
-> =A0 =A0 =A0 =A0However, if I runtime update the areauser.bin by ubiupdate=
-vol, there is
-> no such problem.
->
-> =A0 =A0 =A0 =A0I have no cue on this, could anyone give me some suggestio=
-n?
->
-> =A0 =A0 =A0 =A0Thanks.
->
-> BR,
-> Jacky
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+I'm searching a way to create a mtdram block device with large sizes
+(> 150MB). Ranging some values to 'total_size' parameter I found a
+boundary of approx. 110MB. I tried to fix looking at __vmalloc_node()
+putting some "poor" debug  printk() in order to see something:
+
+
+# modprobe mtdram total_size=120000
+
+[  161.664200] -- tm -- __vmalloc_node() num_physpages: 784080 size:
+8192 PAGE_SHIFT: 12
+[  161.664733] -- tm -- mtdram.c init_mtdram(void)
+[  161.664737] -- tm -- __vmalloc_node() num_physpages: 784080 size:
+122880000 PAGE_SHIFT: 12
+[  161.664751] vmap allocation for size 122884096 failed: use
+vmalloc=<size> to increase size.
+
+If I pass vmalloc size on
+
+# modprobe mtdram total_size=110000
+
+[  166.026400] -- tm -- __vmalloc_node() num_physpages: 784080 size:
+8192 PAGE_SHIFT: 12
+[  166.026748] -- tm -- mtdram.c init_mtdram(void)
+[  166.026752] -- tm -- __vmalloc_node() num_physpages: 784080 size:
+112640000 PAGE_SHIFT: 12
+[  166.026764] -- tm -- __vmalloc_node() num_physpages: 784080 size:
+110592 PAGE_SHIFT: 12
+
+# rmmod mtdram
+
+[  172.218498] -- tm -- mtdram.c cleanup_mtdram(void)
+
+Other information:
+
+$ uname -r
+2.6.31-rc6-maluta-00043-g894ef82-dirty
+
+# cat /proc/meminfo | grep Vmalloc
+MemTotal:        3104428 kB
+(...)
+VmallocTotal:        122880 kB
+VmallocUsed:       11692 kB
+VmallocChunk:      77884 kB
+
+>From meminfo I think I need to expand vmalloc size, but I didn't
+figure how to do or if it's the correct way. So I decided ask here.
+
+
+Kind regards,
+
+--tm
