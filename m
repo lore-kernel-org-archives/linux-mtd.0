@@ -1,21 +1,15 @@
-Received: from wmproxy1-g27.free.fr ([212.27.42.91])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MdWp2-0004mc-Uk
-	for linux-mtd@lists.infradead.org; Tue, 18 Aug 2009 22:06:37 +0000
-Date: Wed, 19 Aug 2009 00:06:28 +0200 (CEST)
-From: dimitri.gorokhovik@free.fr
-To: David Woodhouse <dwmw2@infradead.org>,
-	David Woodhouse <David.Woodhouse@intel.com>,
-	Tim Gardner <tim.gardner@canonical.com>,
-	Scott James Remnant <scott@canonical.com>, Julia Lawall <julia@diku.dk>,
-	David Brownell <dbrownell@users.sourceforge.net>
-Message-ID: <785022442.3397251250633188592.JavaMail.root@zimbra3-e1.priv.proxad.net>
-In-Reply-To: <605152405.3397101250633087167.JavaMail.root@zimbra3-e1.priv.proxad.net>
-Subject: [PATCH] nftl: fix offset alignments
+Received: from web39802.mail.mud.yahoo.com ([209.191.106.63])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MdZea-0007iS-G7
+	for linux-mtd@lists.infradead.org; Wed, 19 Aug 2009 01:07:56 +0000
+Message-ID: <705516.85389.qm@web39802.mail.mud.yahoo.com>
+Date: Tue, 18 Aug 2009 18:07:50 -0700 (PDT)
+From: Victor Gallardo <victorgallardo@yahoo.com>
+Subject: jffs2 overflow issue in read_dnone
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,79 +19,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Arithmetic conversion in the mask computation makes the upper word 
-of the second argument passed down to mtd->read_oob(), be always 0
-(assuming 'offs' being a 64-bit signed long long type, and 
-'mtd->writesize' being a 32-bit unsigned int type). 
-
-This patch applies over the other one adding masking in nftl_write,
-"nftl: write support is broken".
-
-Signed-off-by: <dimitri.gorokhovik@free.fr>
----
- 
-diff --git a/drivers/mtd/nftlcore.c b/drivers/mtd/nftlcore.c
-index 665d3eb..d2fd066 100644
---- a/drivers/mtd/nftlcore.c
-+++ b/drivers/mtd/nftlcore.c
-@@ -135,16 +135,17 @@ static void nftl_remove_dev(struct mtd_blktrans_dev *dev)
- int nftl_read_oob(struct mtd_info *mtd, loff_t offs, size_t len,
- 		  size_t *retlen, uint8_t *buf)
- {
-+	typeof(offs) mask = mtd->writesize - 1;
- 	struct mtd_oob_ops ops;
- 	int res;
- 
- 	ops.mode = MTD_OOB_PLACE;
--	ops.ooboffs = offs & (mtd->writesize - 1);
-+	ops.ooboffs = offs & mask;
- 	ops.ooblen = len;
- 	ops.oobbuf = buf;
- 	ops.datbuf = NULL;
- 
--	res = mtd->read_oob(mtd, offs & ~(mtd->writesize - 1), &ops);
-+	res = mtd->read_oob(mtd, offs & ~mask, &ops);
- 	*retlen = ops.oobretlen;
- 	return res;
- }
-@@ -155,16 +156,17 @@ int nftl_read_oob(struct mtd_info *mtd, loff_t offs, size_t len,
- int nftl_write_oob(struct mtd_info *mtd, loff_t offs, size_t len,
- 		   size_t *retlen, uint8_t *buf)
- {
-+	typeof(offs) mask = mtd->writesize - 1;
- 	struct mtd_oob_ops ops;
- 	int res;
- 
- 	ops.mode = MTD_OOB_PLACE;
--	ops.ooboffs = offs & (mtd->writesize - 1);
-+	ops.ooboffs = offs & mask;
- 	ops.ooblen = len;
- 	ops.oobbuf = buf;
- 	ops.datbuf = NULL;
- 
--	res = mtd->write_oob(mtd, offs & ~(mtd->writesize - 1), &ops);
-+	res = mtd->write_oob(mtd, offs & ~mask, &ops);
- 	*retlen = ops.oobretlen;
- 	return res;
- }
-@@ -177,17 +179,18 @@ int nftl_write_oob(struct mtd_info *mtd, loff_t offs, size_t len,
- static int nftl_write(struct mtd_info *mtd, loff_t offs, size_t len,
- 		      size_t *retlen, uint8_t *buf, uint8_t *oob)
- {
-+	typeof(offs) mask = mtd->writesize - 1;
- 	struct mtd_oob_ops ops;
- 	int res;
- 
- 	ops.mode = MTD_OOB_PLACE;
--	ops.ooboffs = offs & (mtd->writesize - 1);
-+	ops.ooboffs = offs & mask;
- 	ops.ooblen = mtd->oobsize;
- 	ops.oobbuf = oob;
- 	ops.datbuf = buf;
- 	ops.len = len;
- 
--	res = mtd->write_oob(mtd, offs & ~(mtd->writesize - 1), &ops);
-+	res = mtd->write_oob(mtd, offs & ~mask, &ops);
- 	*retlen = ops.retlen;
- 	return res;
- }
+Hi,=0A=A0=0AI noticed if I compile with CONFIG_PPC_64K_PAGES, I run into th=
+e following issue.=0A=A0=0A******** read_dnode: tn->csize =3D=3D 0, csize =
+=3D=3D 65536=0A******** check_node: tn->csize =3D=3D 0 <=3D=3D=3D=3D=3D=3D=
+=3D=3D BUG_ON assert=0A=A0=0ALook like an OVERFLOW bug. Is this correct?=0A=
+=A0=0AHere is the problem=0A=A0=0Afs/jffs2/nodelist.h=0A=A0=A0=A0 struct jf=
+fs2_tmp_dnode_info=0A=A0=A0=A0 {=0A=A0=A0=A0=A0=A0=A0=A0 ...=0A=A0=A0=A0=A0=
+=A0=A0=A0 uint16_t csize;=0A=A0=A0=A0=A0=A0=A0=A0 ...=0A=A0=A0=A0 };=0A=A0=
+=0Afs/jffs2/readinode.c=0A=A0=A0=A0 static inline int read_dnode(...)=0A=A0=
+=A0=A0 {=0A=A0=A0=A0=A0=A0=A0=A0 struct jffs2_tmp_dnode_info *tn;=0A=A0=A0=
+=A0=A0=A0=A0=A0 uint32_t csize;=0A=A0=A0=A0=A0=A0=A0=A0 ...=0A=A0=A0=A0=A0=
+=A0=A0=A0 csize =3D je32_to_cpu(rd->csize);=0A=A0=A0=A0=A0=A0=A0=A0 ...=0A=
+=A0=A0=A0=A0=A0=A0=A0 tn->csize =3D csize;=0A=A0 #ifdef DBG_BUG_ON_ASSERT=
+=0A=A0=A0=A0=A0=A0=A0=A0 if ( tn->csize =3D=3D 0 && csize !=3D 0) {=0A=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 printk("******* %s: tn->csize =
+=3D=3D 0, csize =3D=3D %d\n",__func__,csize);=0A=A0=A0=A0=A0=A0=A0=A0 }=0A=
+=A0 #endif=0A=A0=A0=A0=A0=A0=A0=A0 ....=0A=A0=A0 }=0ABest Regards,=0A=A0=0A=
+Victor Gallardo
