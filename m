@@ -1,18 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MddVn-0005w4-R4
-	for linux-mtd@lists.infradead.org; Wed, 19 Aug 2009 05:15:08 +0000
+	id 1Mde57-0007L0-GC
+	for linux-mtd@lists.infradead.org; Wed, 19 Aug 2009 05:51:37 +0000
 Subject: Re: about ubifs question
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: tommy <jiujin.hong@mid-fun.com>
-In-Reply-To: <1250656786.11476.2.camel@tommy-desktop>
+In-Reply-To: <1250660141.11476.4.camel@tommy-desktop>
 References: <1250656786.11476.2.camel@tommy-desktop>
+	<1250658794.3885.1.camel@localhost>
+	<1250660141.11476.4.camel@tommy-desktop>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 19 Aug 2009 08:13:14 +0300
-Message-Id: <1250658794.3885.1.camel@localhost>
+Date: Wed, 19 Aug 2009 08:51:06 +0300
+Message-Id: <1250661066.3885.6.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,20 +25,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-08-19 at 12:39 +0800, tommy wrote:
-> about ubifs work under Kernel suspend and resume
-> 
-> When Kernel resume from suspend by apm -s ,
-> 
-> i touch file in nand flash and sync,but when Kernel restart ,my touched
-> file didn't occur!
+On Wed, 2009-08-19 at 13:35 +0800, tommy wrote:
+> Halt --->Power on 
 
-How do you restart your kernel? Do you unmount cleanly?
+Then please, find the answers here:
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_writeback
 
-> After Kernel resume ,i guess my touched file isn't in nand flash but
-> memory !
-
-Try typing sync before restarting.
+and also take a look here, please:
+http://www.infradead.org/~dwmw2/email.html
 
 -- 
 Best Regards,
