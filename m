@@ -1,15 +1,19 @@
-Received: from h167.73.117.75.dynamic.ip.windstream.net ([75.117.73.167]
-	helo=fmcfzf.windstream.net)
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MefvH-0004kW-5H
-	for linux-mtd@lists.infradead.org; Sat, 22 Aug 2009 02:01:46 +0000
-Message-ID: <094D8F4A.7030908@secortaktik.ca>
-Date: Fri, 21 Aug 2009 21:56:14 -0400
-From: Teddy Rossin <parenteral@secortaktik.ca>
+Received: from sdcmail01.amcc.com ([198.137.200.72])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MduPG-0005XN-UW
+	for linux-mtd@lists.infradead.org; Wed, 19 Aug 2009 23:17:37 +0000
+Message-ID: <4A8C87E6.6070702@amcc.com>
+Date: Wed, 19 Aug 2009 16:16:54 -0700
+From: Feng Kan <fkan@amcc.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: ming had bored
-Content-Type: multipart/mixed; boundary="------------060104030407020803090903"
+To: linuxppc-dev@ozlabs.org
+Subject: NAND  ECC Error with wrong SMC ording bug
+References: <19081.57584.173693.798535@cargo.ozlabs.ibm.com>
+	<1250569482.19007.23.camel@pasglop>
+In-Reply-To: <1250569482.19007.23.camel@pasglop>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: u-boot@lists.denx.de, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,215 +23,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------060104030407020803090903
-Content-Type: text/plain; charset=ISO-8859-9; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi All:
 
-Ved from the blue room to the chamber which was full of spring colors,
-of childhood's playthings, of mother-of-pearl rainbow gleams. One more
-mountain of gold and of intellect set up as a bulwark of defence near
-the bed of the sick girl. When the cloud of black garments and serious
-faces had vanished, the mother drew near: "These gentlemen have wearied
-you. That is nothing. Because they have come you will be well. Those are
-very wise men. The two who have just come are Germans; throughout the
-whole world they are famous. They will cure you to a certainty. But now
-you may swallow a little of those excellent sweets which those gentlemen
-let us give you. Or a drop of wine. Perhaps a spoonful, one little
-spoonful of bouillon?" Cara's only answer was to turn on her yellowish
-bed to the wall sprinkled with spring flowers, her face in scarlet
-flushes. Malvina, bending low, kissed the little hand, the heat of which
-burnt her lips, and which trembled under those lips, like a leaf in a
-blast of wind. "Why not answer me, Cara? One word! only one short,
-little word! Shall I give a drop of wine? Those gentlemen ordered
-it--will you have it now? Whisper!" But in vain did she put her ear
-almost down to Cara's lips, not a sound, not a whisper, she only turned
-her face away farther, while her breath grew in hoarseness. Maryan came
-in with a great bouquet of flowers in his hand. "What, are we sick,
-little one!" began he. "Well, that is nothing wonderful! King Solomon
-said that for everyone there must be a time for sickness and a time for
-dancing. You will be sick a little while, and then you will dance. But
-now I have brought flowers to cheer you. Flowers without odor, for sick
-girls might get headache from fragrant ones. These have no fragrance,
-but they are very beautiful. You will look most poetic when I scatter
-them on the bed before you. They will gladden your sight after looking
-at those dreary pedants who are like a flock of wise ravens. Father has
-brought in the wisest ravens from all the world for you; I have gathered
-throughout this whole city the most beautiful flowers. Mein Lieichen,
-was willst du mehr?" While laughing he scattered on the blue coverlet,
-and on the slender form of the maiden indicated under it, the most
-beautiful flowers which the best conservatories could yield to him; she
-o
+It seems that the ECC correction is broken on the Linux with the 4xx 
+NDFC driver.
+It uses the SMC order when reading the ECC code. 2-1-3
 
---------------060104030407020803090903
-Content-Type: image/jpeg;
- name="alphosis.jpg"
-Content-Transfer-Encoding: base64
-Content-Disposition: inline;
- filename="alphosis.jpg"
+static int ndfc_calculate_ecc(struct mtd_info *mtd,
+                               const u_char *dat, u_char *ecc_code)
+{
+         struct ndfc_controller *ndfc = &ndfc_ctrl;
+         uint32_t ecc;
+         uint8_t *p = (uint8_t *)&ecc;
 
-/9j/4AAQSkZJRgABAQEBLAEsAAD/2wBDADIiJSwlHzIsKSw4NTI7S31RS0VFS5ltc1p9tZ++u7Kf
-r6zI4f/zyNT/16yv+v/9////////wfD/////////////2wBDATU4OEtCS5NRUZP/zq/O////////
-////////////////////////////////////////////////////////////wAARCAEaAVEDASIA
-AhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQA
-AAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3
-ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWm
-p6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEA
-AwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSEx
-BhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElK
-U1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3
-uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDS9KKK
-CQKAE7j60HpSc5Hbmgjjk0ALkA80Zz0BoA54oJoAWjr/APrppNJup2JuPpOc+tM3Ub6LBcfn2NKC
-D0pocHrTiKRQUUmPQ4o5oAWkPUfWlzSHqKAFoo+tFABSHqPrSikP3hQAtFFFABRRRQAg70tJ3paA
-CkHU/WlpB3+tAC0i/dH0pTwDRQAUUUUAIOn40vekHT8aUdKACik3enNBzQAN0P0pcimkfKfpTqAE
-z7Gjn0/WlooATn0H50c+g/OlooA5miiigDpee9LR6UUAIeooPT8aD2pScDNACE4/rTC2KRmxUTPV
-JENjy9NLVGWwaQkknnH0q7EXJN1JvxUZ5PTr60daLCuS76mik3fKfwqpkjrTo2PmLj1pNFJlzPrS
-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
-BRRRQAUUUUAf/9k=
---------------060104030407020803090903--
+         wmb();
+         ecc = in_be32(ndfc->ndfcbase + NDFC_ECC);
+         /* The NDFC uses Smart Media (SMC) bytes order */
+         ecc_code[0] = p[2];
+         ecc_code[1] = p[1];
+         ecc_code[2] = p[3];
+
+         return 0;
+}
+
+However, when in the correction function, the byte address order is 
+again reverses
+causing incorrect byte location.
+
+                  * performace it does not make any difference
+                  */
+                 if (eccsize_mult == 1)
+                         byte_addr = (addressbits[b0] << 4) + 
+addressbits[b1];
+ >>>> The above really should be byte_addr = (addressbits[b1] << 4) + 
+addressbits[b0];
+
+                 else
+                         byte_addr = (addressbits[b2 & 0x3] << 8) +
+                                     (addressbits[b1] << 4) + 
+addressbits[b0];
+                 bit_addr = addressbits[b2 >> 2];
+                 /* flip the bit */
+                 buf[byte_addr] ^= (1 << bit_addr);
+                 printk(KERN_INFO "Corrected b[0] 0x%x b[1]0x%x\n", b0, b1);
+                 printk(KERN_INFO "cal ecc b[0] 0x%x b[1]0x%x\n", 
+calc_ecc[0] , calc_ecc[1]);
+                 printk(KERN_INFO "read ecc b[0] 0x%x b[1]0x%x\n", 
+read_ecc[0] , read_ecc[1]);
+                 return 1;
+
+I see other boards using SMC as well, can someone comment on the change 
+I am proposing.
+Should I change the correction algorithm or the calculate function? If 
+the later is preferred
+it would mean the change must be pushed in both U-Boot and Linux.
+
+Feng Kan
+AMCC Software
