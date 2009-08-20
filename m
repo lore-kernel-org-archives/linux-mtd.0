@@ -1,22 +1,20 @@
-Received: from ernst.netinsight.se ([194.16.221.21])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Me1wE-0001g1-7B
-	for linux-mtd@lists.infradead.org; Thu, 20 Aug 2009 07:20:02 +0000
-Date: Thu, 20 Aug 2009 09:19:53 +0200
-From: Simon Kagstrom <simon.kagstrom@netinsight.net>
-To: Nicolas Pitre <nico@cam.org>
-Subject: Re: [PATCH] Orion NAND: Make dword load asm volatile to avoid GCC
-	optimizing it away
-Message-ID: <20090820091953.2b149fbb@marrow.netinsight.se>
-In-Reply-To: <alpine.LFD.2.00.0908191037310.6044@xanadu.home>
-References: <20090714164135.65e91b91@marrow.netinsight.se>
-	<alpine.LFD.2.00.0907141236160.3138@xanadu.home>
-	<20090819094535.558dc0df@marrow.netinsight.se>
-	<alpine.LFD.2.00.0908191037310.6044@xanadu.home>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Me5Wk-0000Nq-Pa
+	for linux-mtd@lists.infradead.org; Thu, 20 Aug 2009 11:09:59 +0000
+Message-ID: <4A8D2F10.1050902@nokia.com>
+Date: Thu, 20 Aug 2009 14:10:08 +0300
+From: Adrian Hunter <adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: Aras Vaichas <arasv@magellan-technology.com>
+Subject: Re: ubifs mount problem: UBIFS error (pid 1152): validate_sb: bad
+	superblock, error 8
+References: <ed62800908192059g57e85893ga352793e52c43a65@mail.gmail.com>
+In-Reply-To: <ed62800908192059g57e85893ga352793e52c43a65@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: "Bityutskiy Artem \(Nokia-M/Helsinki\)" <Artem.Bityutskiy@nokia.com>,
+	MTD-LIST <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,71 +24,137 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 19 Aug 2009 10:47:14 -0400 (EDT)
-Nicolas Pitre <nico@cam.org> wrote:
-
-> > Anyway, I spoke to the GCC people at gcc-help, and they insist that the
-> > inlined assembly is wrong. The problem is that GCC doesn't infer from
-> > the instruction that it accesses memory, and it can thereby move it out
-> > of the loop.
+Aras Vaichas wrote:
+> I've got UBI + UBIFS running as my root partition with 2.6.30, and I'm
+> using mtd-utils from git downloaded just last week.
 > 
-> Oh!  OK.  That's different though.  In your initial report you said that 
-> the inline asm was _removed_.  I can understand why it might be factored 
-> out of the loop though, but it cannot be removed entirely.
-
-Sorry, I'll be careful about wording in the future :-)
-
-> > -		asm ("ldrd\t%0, [%1]" : "=r" (x) : "r" (io_base));
-> > +		asm volatile ("ldrd\t%0, [%1]" : "=&r" (x) : "r" (io_base) : "memory");
+> I'm building my UBI image as per the instructions at:
+> http://www.linux-mtd.infradead.org/faq/ubifs.html#L_mkfubifs
 > 
-> I think that the early clobber buys you nothing, and the memory clobber 
-> is way overkill here.  The volatile ought to be all that is needed.  Can 
-> you confirm that only the addition of volatile makes the code OK?  My 
-> gcc version is 4.3.2 and that makes no difference what so ever as the 
-> code as is produces the correct result already in my case.
+> I have successfully created UBI images, formatted, attached and
+> mounted them. I'm not an expert, but I'm familiar with the procedure
+> now.
+> 
+> For some reason, I am now having problems mounting a known working
+> image. The image contains 1 file with a "hello world" text string in
+> it. I used to be able to mount it to my 8MB spare partition, but now
+> it fails with:
+> 
+> /root # mount -t ubifs ubi1:spareubi /mnt
+> UBIFS error (pid 791): validate_sb: bad superblock, error 8
+> mount: mounting ubi1:spareubi on /mnt failed: Invalid argument
+> 
+> The strange thing is that I can format, attach and mount this *same*
+> image to my other spare partition. It's like the NAND in this
+> partition has some problem.
+> 
+> Here are the details:
+> 
+> # cat /proc/mtd
+> dev:    size   erasesize  name
+> mtd0: 00a00000 00020000 "Bootloader Area"
+> mtd1: 03600000 00020000 "Main root filing system partition"
+> mtd2: 00800000 00020000 "Spare Partition 1"
+> mtd3: 1b800000 00020000 "Spare Partition 2"
+> mtd4: 03310800 0001f800 "rootubi"
+> 
+> (*) Attempt to write to the first partition (this fails)
+> 
+> /root # ubiformat /dev/mtd2 -f ubi.img
+> ubiformat: mtd2 (nand), size 8388608 bytes (8.0 MiB), 64 eraseblocks
+> of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
+> libscan: scanning eraseblock 63 -- 100 % complete
+> ubiformat: 64 eraseblocks have valid erase counter, mean value is 1
+> ubiformat: flashing eraseblock 15 -- 100 % complete
+> ubiformat: formatting eraseblock 63 -- 100 % complete
+> 
+> /root # ubiattach /dev/ubi_ctrl -m 2
+> UBI: attaching mtd2 to ubi1
+> UBI: physical eraseblock size:   131072 bytes (128 KiB)
+> UBI: logical eraseblock size:    129024 bytes
+> UBI: smallest flash I/O unit:    2048
+> UBI: sub-page size:              512
+> UBI: VID header offset:          512 (aligned 512)
+> UBI: data offset:                2048
+> UBI: volume 0 ("spareubi") re-sized from 17 to 58 LEBs
+> UBI: attached mtd2 to ubi1
+> UBI: MTD device name:            "Spare Partition 1"
+> UBI: MTD device size:            8 MiB
+> UBI: number of good PEBs:        64
+> UBI: number of bad PEBs:         0
+> UBI: max. allowed volumes:       128
+> UBI: wear-leveling threshold:    4096
+> UBI: number of internal volumes: 1
+> UBI: number of user volumes:     1
+> UBI: available PEBs:             0
+> UBI: total number of reserved PEBs: 64
+> UBI: number of PEBs reserved for bad PEB handling: 2
+> UBI: max/mean erase counter: 4/2
+> UBI: background thread "ubi_bgt1d" started, PID 807
+> UBI device number 1, total 64 LEBs (8257536 bytes, 7.9 MiB), available
+> 0 LEBs (0 bytes), LEB size 129024 bytes (126.0 KiB)
+> 
+> /root # mount -t ubifs ubi1:spareubi /mnt
+> UBIFS error (pid 823): validate_sb: bad superblock, error 8
+> mount: mounting ubi1:spareubi on /mnt failed: Invalid argument
 
-Yes, it works fine with 4.3.3 and 4.4.1 with this change. So the
-updated patch can be found below. I belive the early clobber should be
-there though, since (from the ARM architecture reference manual):
+The journal is too big for the partition - see below where it
+says:
 
-  If <addressing_mode> performs base register write-back and the base
-  register <Rn> is one of the two destination registers of the
-  instruction, the results are UNPREDICTABLE.
+UBIFS: journal size:       9033728 bytes (8822 KiB, 8 MiB, 71 LEBs)
 
-it works fine without the early clobber as well, but I'd feel more safe
-having it in.
+You will need to force the journal smaller using mkfs.ubifs -j
+option.
 
-// Simon
---
-Orion NAND: Make asm volatile avoid GCC pushing ldrd out of the loop
-
-GCC 4.3.3 and 4.4.1 happily moves the dword load instruction out of the
-loop in orion_nand_read_buf. This patch makes the instruction volatile
-to avoid the issue. I've discussed this at gcc-help, refer to the thread
-at
-
-  http://gcc.gnu.org/ml/gcc-help/2009-08/msg00187.html
-
-The early clobber is added to avoid the destination registers and the
-source register overlapping.
-
-Signed-off-by: Simon Kagstrom <simon.kagstrom@netinsight.net>
----
- drivers/mtd/nand/orion_nand.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
-index 7ad9722..0d9d4bc 100644
---- a/drivers/mtd/nand/orion_nand.c
-+++ b/drivers/mtd/nand/orion_nand.c
-@@ -61,7 +61,7 @@ static void orion_nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
- 	buf64 = (uint64_t *)buf;
- 	while (i < len/8) {
- 		uint64_t x;
--		asm ("ldrd\t%0, [%1]" : "=r" (x) : "r" (io_base));
-+		asm volatile ("ldrd\t%0, [%1]" : "=&r" (x) : "r" (io_base));
- 		buf64[i++] = x;
- 	}
- 	i *= 8;
--- 
-1.6.0.4
+> 
+> /root # ubidetach /dev/ubi_ctrl -m 2
+> UBI: mtd2 is detached from ubi1
+> 
+> (*) Attempt to write to the second partition (this works)
+> 
+> /root # ubiformat /dev/mtd3 -f ubi.img
+> ubiformat: mtd3 (nand), size 461373440 bytes (440.0 MiB), 3520
+> eraseblocks of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
+> libscan: scanning eraseblock 3519 -- 100 % complete  ock 2048 -- 58 % complete
+> ubiformat: 3519 eraseblocks have valid erase counter, mean value is 1
+> ubiformat: 1 bad eraseblocks found, numbers: 989
+> ubiformat: flashing eraseblock 15 -- 100 % complete
+> ubiformat: formatting eraseblock 3519 -- 100 % complete  aseblock 3422
+> -- 97 % complete
+> 
+> /root # ubiattach /dev/ubi_ctrl -m 3
+> UBI: attaching mtd3 to ubi1
+> UBI: physical eraseblock size:   131072 bytes (128 KiB)
+> UBI: logical eraseblock size:    129024 bytes
+> UBI: smallest flash I/O unit:    2048
+> UBI: sub-page size:              512
+> UBI: VID header offset:          512 (aligned 512)
+> UBI: data offset:                2048
+> UBI: volume 0 ("spareubi") re-sized from 17 to 3410 LEBs
+> UBI: attached mtd3 to ubi1
+> UBI: MTD device name:            "Spare Partition 2"
+> UBI: MTD device size:            440 MiB
+> UBI: number of good PEBs:        3519
+> UBI: number of bad PEBs:         1
+> UBI: max. allowed volumes:       128
+> UBI: wear-leveling threshold:    4096
+> UBI: number of internal volumes: 1
+> UBI: number of user volumes:     1
+> UBI: available PEBs:             0
+> UBI: total number of reserved PEBs: 3519
+> UBI: number of PEBs reserved for bad PEB handling: 105
+> UBI: max/mean erase counter: 3/2
+> UBI: background thread "ubi_bgt1d" started, PID 835
+> UBI device number 1, total 3519 LEBs (454035456 bytes, 433.0 MiB),
+> available 0 LEBs (0 bytes), LEB size 129024 bytes (126.0 KiB)
+> 
+> /root # mount -t ubifs ubi1:spareubi /mnt
+> UBIFS: mounted UBI device 1, volume 0, name "spareubi"
+> UBIFS: file system size:   262692864 bytes (256536 KiB, 250 MiB, 2036 LEBs)
+> UBIFS: journal size:       9033728 bytes (8822 KiB, 8 MiB, 71 LEBs)
+> UBIFS: media format:       w4/r0 (latest is w4/r0)
+> UBIFS: default compressor: lzo
+> UBIFS: reserved for root:  0 bytes (0 KiB)
+> 
+> # cat /mnt/README.txt
+> Hello World!
