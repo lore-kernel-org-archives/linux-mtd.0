@@ -1,24 +1,15 @@
-Received: from sdcmail02.amcc.com ([198.137.200.90])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MeGYi-0006JG-CM
-	for linux-mtd@lists.infradead.org; Thu, 20 Aug 2009 22:56:44 +0000
-Content-class: urn:content-classes:message
+Received: from p5b0a3475.dip0.t-ipconnect.de ([91.10.52.117]
+	helo=zfekz.t-ipconnect.de)
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MeGkx-0008WR-3o
+	for linux-mtd@lists.infradead.org; Thu, 20 Aug 2009 23:09:32 +0000
+Message-ID: <0AD28D4A.1050809@neschen.co.uk>
+Date: Fri, 21 Aug 2009 01:03:57 +0200
+From: Beckom <timbered@neschen.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: [U-Boot] NAND  ECC Error with wrong SMC ording bug
-Date: Thu, 20 Aug 2009 15:56:37 -0700
-Message-ID: <0CA0A16855646F4FA96D25A158E299D606E24FE8@SDCEXCHANGE01.ad.amcc.com>
-In-Reply-To: <20090820153644.631dbd7b@lappy.seanm.ca>
-References: <19081.57584.173693.798535@cargo.ozlabs.ibm.com><4A8C87E6.6070702@amcc.com><20090820003851.1a532444@lappy.seanm.ca><200908200701.21076.sr@denx.de>
-	<20090820153644.631dbd7b@lappy.seanm.ca>
-From: "Victor Gallardo" <vgallard@amcc.com>
-To: "Sean MacLennan" <smaclennan@pikatech.com>,
-	"Stefan Roese" <sr@denx.de>
-Cc: Prodyut Hazarika <phazarika@amcc.com>, u-boot@lists.denx.de,
-	Feng Kan <fkan@amcc.com>, linux-mtd@lists.infradead.org,
-	linuxppc-dev@ozlabs.org
+To: linux-mtd@lists.infradead.org
+Subject: day by day 
+Content-Type: multipart/mixed; boundary="------------090905090208070104060506"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,151 +19,219 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sean,
+This is a multi-part message in MIME format.
+--------------090905090208070104060506
+Content-Type: text/plain; charset=ISO-8859-6; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The change is necessary in both Linux and u-boot. Without this change =
-customer are seeing the problem.
+Pressed. _Metastasio._ 163. Laughing is peculiar to man, but all men do
+not laugh for the same reason. There is the attic salt which springs
+from the charm in the words, from the flash of wit, from the spirited
+and brilliant sally. There is the low joke which arises from scurrility
+and idle conceit. _Goldoni._ 164. The woman who is resolved to be
+respected can make herself be so even amidst an army of soldiers.
+_Cervantes._ 165. Petty ambition would seem to be a mean craving after
+distinction. _Theophrastus._ 166. It is an old observation that wise men
+grow usually wiser as they grow older, and fools more foolish.
+_Wieland._ 167. Use law and physic only for necessity. They that use
+them otherwise abuse themselves into weak bodies and light purses. They
+are good remedies, bad businesses, and worse recreations. _Quarles._
+168. In some dispositions there is such an envious kind of pride that
+they cannot endure that any but themselves should be set forth as
+excellent; so that when they hear one justly praised they will either
+openly detract from his virtues; or, if those virtues be, like a clear
+and shining light, eminent and distinguished, so that he cannot be
+safely tr
 
-Best Regards,
+--------------090905090208070104060506
+Content-Type: image/jpeg;
+ name="dendrology.jpg"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename="dendrology.jpg"
 
-Victor Gallardo
-
-> -----Original Message-----
-> From: linuxppc-dev-bounces+vgallardo=3Damcc.com@lists.ozlabs.org =
-[mailto:linuxppc-dev-
-> bounces+vgallardo=3Damcc.com@lists.ozlabs.org] On Behalf Of Sean =
-MacLennan
-> Sent: Thursday, August 20, 2009 12:37 PM
-> To: Stefan Roese
-> Cc: u-boot@lists.denx.de; Feng Kan; linux-mtd@lists.infradead.org; =
-linuxppc-dev@ozlabs.org
-> Subject: Re: [U-Boot] NAND ECC Error with wrong SMC ording bug
->=20
-> On Thu, 20 Aug 2009 07:01:21 +0200
-> Stefan Roese <sr@denx.de> wrote:
->=20
-> > On Thursday 20 August 2009 06:38:51 Sean MacLennan wrote:
-> > > > I see other boards using SMC as well, can someone comment on the
-> > > > change I am proposing.
-> > > > Should I change the correction algorithm or the calculate
-> > > > function? If the later is preferred
-> > > > it would mean the change must be pushed in both U-Boot and =
-Linux.
-> > >
-> > > Odds are the calculate function is wrong. The correction algo is
-> > > used by many nand drivers, I *assume* it is correct. The calculate
-> > > function was set to agree with u-boot (1.3.0).
-> >
-> > Yes, it seems that you changed the order in the calculation function
-> > while reworking the NDFC driver for arch/powerpc. So we should
-> > probably change this order back to the original version. And change
-> > it in U-Boot as well.
-> >
-> > BTW: I didn't see any problems with ECC so far with the current =
-code.
-> > Feng, how did you spot this problem?
->=20
-> Ok, I think I have reproduced the problem programmatically. Basically,
-> I force a one bit error with the following patch:
->=20
-> diff --git a/drivers/mtd/nand/nand_base.c =
-b/drivers/mtd/nand/nand_base.c
-> index 8c21b89..91dd5b4 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -1628,11 +1628,22 @@ static void nand_write_page_hwecc(struct =
-mtd_info *mtd, struct nand_chip
-> *chip,
->  	uint8_t *ecc_calc =3D chip->buffers->ecccalc;
->  	const uint8_t *p =3D buf;
->  	uint32_t *eccpos =3D chip->ecc.layout->eccpos;
-> +	static int count;
->=20
->  	for (i =3D 0; eccsteps; eccsteps--, i +=3D eccbytes, p +=3D eccsize) =
-{
->  		chip->ecc.hwctl(mtd, NAND_ECC_WRITE);
-> -		chip->write_buf(mtd, p, eccsize);
-> -		chip->ecc.calculate(mtd, p, &ecc_calc[i]);
-> +		if (count =3D=3D 0) {
-> +			count =3D 1;
-> +			printk("Corrupt one bit: %08x =3D> %08x\n",
-> +			       *p, *p ^ 8);
-> +			*(uint8_t *)p ^=3D 8;
-> +			chip->write_buf(mtd, p, eccsize);
-> +			*(uint8_t *)p ^=3D 8;
-> +			nand_calculate_ecc(mtd, p, &ecc_calc[i]);
-> +		} else {
-> +			chip->write_buf(mtd, p, eccsize);
-> +			chip->ecc.calculate(mtd, p, &ecc_calc[i]);
-> +		}
->  	}
->=20
->  	for (i =3D 0; i < chip->ecc.total; i++)
->=20
-> Basically I write a one bit error to the NAND, but calculate with the
-> correct bit. This assumes nand_calculate_ecc is correct.
->=20
-> I then added debugs to the correction to make sure it corrected
-> properly:
->=20
-> diff --git a/drivers/mtd/nand/nand_ecc.c b/drivers/mtd/nand/nand_ecc.c
-> index c0cb87d..57dcaa1 100644
-> --- a/drivers/mtd/nand/nand_ecc.c
-> +++ b/drivers/mtd/nand/nand_ecc.c
-> @@ -483,14 +483,20 @@ int nand_correct_data(struct mtd_info *mtd, =
-unsigned char *buf,
->  			byte_addr =3D (addressbits[b2 & 0x3] << 8) +
->  				    (addressbits[b1] << 4) + addressbits[b0];
->  		bit_addr =3D addressbits[b2 >> 2];
-> +
-> +		printk("Single bit error: correct %08x =3D> %08x\n",
-> +		       buf[byte_addr], buf[byte_addr] ^ (1 << bit_addr));
-> +
->  		/* flip the bit */
->  		buf[byte_addr] ^=3D (1 << bit_addr);
->  		return 1;
->=20
->  	}
->  	/* count nr of bits; use table lookup, faster than calculating it */
-> -	if ((bitsperbyte[b0] + bitsperbyte[b1] + bitsperbyte[b2]) =3D=3D 1)
-> +	if ((bitsperbyte[b0] + bitsperbyte[b1] + bitsperbyte[b2]) =3D=3D 1) =
-{
-> +		printk("ECC DATA BAD\n"); // SAM DBG
->  		return 1;	/* error in ecc data; no action needed */
-> +	}
->=20
->  	printk(KERN_ERR "uncorrectable error : ");
->  	return -1;
->=20
-> With the current ndfc code, the error correction gets the bits wrong.
-> Switching it back to the original way and the correction is correct.
->=20
-> diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
-> index 89bf85a..497e175 100644
-> --- a/drivers/mtd/nand/ndfc.c
-> +++ b/drivers/mtd/nand/ndfc.c
-> @@ -101,9 +101,8 @@ static int ndfc_calculate_ecc(struct mtd_info =
-*mtd,
->=20
->  	wmb();
->  	ecc =3D in_be32(ndfc->ndfcbase + NDFC_ECC);
-> -	/* The NDFC uses Smart Media (SMC) bytes order */
-> -	ecc_code[0] =3D p[2];
-> -	ecc_code[1] =3D p[1];
-> +	ecc_code[0] =3D p[1];
-> +	ecc_code[1] =3D p[2];
->  	ecc_code[2] =3D p[3];
->=20
->  	return 0;
->=20
-> Does anybody see a problem with my method of reproducing the bug? This
-> bug is deadly for our customers. I don't want to make the change =
-unless
-> it is absolutely necessary.
->=20
-> Cheers,
->    Sean
-> _______________________________________________
-> Linuxppc-dev mailing list
-> Linuxppc-dev@lists.ozlabs.org
-> https://lists.ozlabs.org/listinfo/linuxppc-dev
+/9j/4AAQSkZJRgABAQEBLAEsAAD/2wBDADIiJSwlHzIsKSw4NTI7S31RS0VFS5ltc1p9tZ++u7Kf
+r6zI4f/zyNT/16yv+v/9////////wfD/////////////2wBDATU4OEtCS5NRUZP/zq/O////////
+////////////////////////////////////////////////////////////wAARCAEtAWIDASIA
+AhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQA
+AAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3
+ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWm
+p6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEA
+AwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSEx
+BhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElK
+U1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3
+uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDSoooo
+AKKKKYBRSbgO9G70B/KgBaRvun6UZP8AdpGztPA6etADqKT5vQfnR83oPzoAG6fiKWmsTjp3FLn2
+NIBaKTcPXH1paAE/iH0NH8Q+ho/iH0o/iH0oAWgDFFFACfxfQUtJ/EfoKWmAUUUUAFFFFABSHpS0
+hpMEH8R+lC9PxNA+8fyoXp9eaAFxSN90/SlpG6UAKaQ9R9aXvSfxD6GgAPAzigDihvun6UtACL0p
+aRen4mloAD0pG+6fpSnpSN90/SmAtNj+4KdTIyAg5oAfRSbvY/lRk/3aAFopPm9B+dHzeg/OgDnr
+r/j6m/32/nRRdf8AH1N/vn+dFIDocgd6MnsPzpcY6UUwEwfXH0o2jvz9aWigAxjpRRSE9qAFz6Um
+aaTTS1Fibkm6jdURek307CuTHkcetLUG+pFkHQ0rDTH0m0elLRQUNx8wwe3ejncOM8dqX+IfQ0H7
+w+lIA3Dvx9aXNFG0dcCgBP4j9KWm4O44PbvS89xQAtFJkd+KWgAooopgFIeopaQ9RSBAOrfWhfuj
+6UDq31oX7o+lMBaRun4ilPSkPIoAXvSH7w+lFISNw+hoAVvun6UtNY/KeD0pcH1x9KABen4mjI9a
+RVGOeeT1pwHpQAmT6UjA7Tk9u1OPSkb7p+lIA2jvz9aSP7gp1Nj+4KYDqKKKACiiigDnbr/j6m/3
+2/nRRdf8fU3++386KQHRUUmQO9Bb2x9TTAWim5J/+sKMevT3OaAFY4HvTGams9RM/WqSM3IeXpha
+mbjzSdRjOaqxFx+8Um4+mKb1/wD1UYx3xQAoY96XfTeKaTQFy7C+6MEnpxUlQ242w85GTngU/A7E
+fyrN7my2HH7w+ho/iH0pvIYden1pc/MO9IY/3PSoy4zwM+9JI2W29h/Om5rNz7FJD95znAo8w9wK
+ZmlpczHYfv8AUGgbT0xmmUZpqbCxJt44JFHPqPypgfHfFODA+1UpJk2F+YelGT6D86Xn2pu72qhA
+C2TwPzoBYqOn50AjmgHgetMLinPqKRsADcx+lBPHSmTBiVwM8UgFMg9M/WlWTnoOtR+U57hakEYB
+BJJxQA5zwRRknoKGxtJHpS0ANAJHWnDpSL0/E0ZAoAU9KRvun6UE+3501iSp69OwoAfTIyAg5pSP
+XH4nNNT7o5P4CgB+72P5Ubvb8zSY/wBn8zRg+iimAbv9386N3+7+dL83qPyo+b1H5UgOeuf+PqX/
+AHz/ADoouv8Aj6m/3z/OigDoPoSfoKAD2AFOopgJj1JpsuFjJFPpHXehX16UCexSZsmk69KawKtg
+jBpM1qYj+KM03NGaBDs0mabmkJoAUmnwxmV8dh1NNiiaVsDgdzWgiLGu1R+PrSbsXGNxRgDA6DpQ
+QD1oorM1GkfMMccUYO8d6U/eH0o/jH0pAQE/MfrRmiX5ZCPxph5rme5qPDUoORTM5pM8DP40XCw8
+tilzz0qPt+NL3PXFFwsOzRnFNHFNLUXCxPFJ8209+lP4zxVaDLTDHbrVnG01tB3RElqKOrfWhfuj
+6U0Nyfu9fWhW+UdOnrVkj+nNM3k0uSQfp6VXMuAcDkAk+2KASJ8mkLbQSegqq8kwtxPvUcA7McY/
+xp7E+dxkoCC3saBpXJomLW25upzT8k//AFhTIgRbkEdzUmPUmgQ0DjnHU9aUfifpSqAB07mlFADc
+ewFDD5TknpTj0pG+6fpQAoAHQU2P7gp1Nj+4KYDqKKKACiiigDnbr/j6m/32/nRRdf8AH1N/vt/O
+ikB0VFFFMAooooAR0WQYYZqBrQfwt+dWKKE2hNJlNrWQeh+hpht5B/A1X6Rvun6VXMyeRFDyJP7j
+flU0dpzmQ8egq1RS5mNRQmAq4AAHpS0jdPxFLU2KCiiigBP4h9KP4h9DR/EPpRnnFADJ03LuHUVV
+3VeqCaDPzJ19KynG+qLjLoyLdS7qiOVOCKN1ZWLJd1JuqPdSbqLASFqZy5woyadHC8p6YHrVuKJY
+hx97uaqMGxOSQRR+UmB949aFp/emL1re1kZbsUZyeR19KFztHI6elKOrfWhfuj6UwAg4PPaq7IAk
+jDqy/wBKsMcIxPQA1WE8WP8AWr+dAEcEIEcZO4kAEAnIBxU65AwMVC1zEP48/QZpn2qRvlij59Sf
+6UirNl0f6o0+oLdXW3bzGyxJJ/Kp6ZIi9PxNKKRen4mlFMAPSkb7p+lKelB6UAFNj4QU7FNj5QE0
+AOzSZ9qWg9KACiiigDnbr/j6m/32/nRRdf8AH1N/vt/OikB0VFJkDvSb/QUwHUU35j7Ubc9TQAu4
+DvUAutpuA4XdFyMcZGMj8an2ioZrVJpEckjAwR1DDOcGkBHbTNiXzjh0VSzNx1GenbHSmS3rR+YC
+qviPcDtK98d+vXrVlraNzKWBPm43c+nSka2iIckFmZdpLEtx+f8AhQBG88scsiNsbbCZAQpHIP1p
+Unk8mNpHjV5OVVY2btnpn6fSiOzVZJHdtxdNhHPI/Ek1KYIyqLtxs+6QSCOMdaAI4JzLGxYcq5U8
+Yzg+h6VNvFNSJIlIQEBm3HJzzxUmAeooATcPWlpNo/8A1Umz0NMBf4h9DSfx/hSYYMO/FG4hskdq
+AHYo5zRuH0o7jvQAjBWJ3LnimG3iPY0scscjnZIjfQ5qQEMMjBFTZMd2Q/ZY/enrDGvRR+NPxSc0
+cqC7FPT0pNtB+lH50xBj3pq078aatACgcnk9aFGVH0pRnmgdB6UABUEEHuMVTNpGv3gRj8qtld6k
+NnBGOKoo7TRw2rnLh8SjHG1f8eOaLDTa2HbLZD8zLwcHJ6H39KeZUCuEGWV9mwcEn/Dr+VRxQtOl
+zGSBG07ZPfqDT5IZZLgzrhZEO2MN0I7k/maAbb3JkkLTzQ4AWPbj3yKmqDyWFxLIsmBJjgLyMDH+
+eKmX7o5zjvQIF6fiaUUg6fjRkCgBaD0pu70FHP4UwHUyMgIOaXbnqaSMAoKQDtw96Td6U4ADoBQe
+lMBu4+n8/wDCjcfT+f8AhTqKAOduf+PqX/fP86KLr/j6m/32/nRSA6HaKWiimAUUUUAFV7qZo3iV
+flBYEselWKinjeQx7WwFYE/40nsVC19RtyzrbF1cZHdR15qdhlTiozAhhEXzbB2z1pWRSgyCdp3D
+J70gbVhgLC8K72KmPOD0HNMcPEHkkyy7s8SMCAT6VN5SeZ5mDu9dxoMMZJJXqckZOCfpRYpSQ5v6
+ilpG6fiKWqMwooooAT+IfQ0f8tPwo/iH0NH/AC0/CgA2j0pksW+J1U8spAz7ipKCQBkkADuaQFWB
+owkKOVDphcbsEN0/X9aSCfNnFIxjVmyOW2jqasRusoEijjHGR0ppt0wgQFDHnaV7Z69aAehEl0Xn
+hRejM6uPcD1qaOVWRTuU7s4wevPaoY7Py50kD5CuzEYx1AFQrbtBboTEWlVCOAGU8k4xQBeJ69qd
+ketMAOxflCcD5R29qMH0pgOb7ppq0mPalBx2oAcOppF+6PpSZOTx3oDHaOKQDmbapY9AMmot0IVp
+htBIBLY5x2/lTbsbrdgzbe49z6UxQ8tkyKo4C4I/i6Gk2aRimrlhZd0pQqynbuGe4plxL5anYRv2
+kgeg9aNjNM0m3HybQG7nOac0YcBXAJK4JAo1FomRKrTbH3Ky7ACGzjd64qSBmeFGChcjoOBRshLL
+HlGZVxgnnFNe5RLMzxjcg6Dp3xQkEpJqxIFyOT3pwUY9apz3LLLPGHKFMeWFXJZiM471cQsY1LgB
+sDcB2PemQLQelFI33TTAWmx/cFOpsfKAmgB2aKKKACiiigDnbr/j6m/32/nRRdf8fU3++386KQHR
+UUm4duaPm9hTAWgkDqaTHqTSgAdBQAm4duaMn0/OlooAT5vakbO08jp6U6kb7p+lAB83qPyo+b1H
+5UtFADWzjt1FLk+n60N0/GloATd7GgEHvS0EA9aAE/iH0NH/AC0/CkwNwxxxRzv9eKAHU2RQ8bK4
+JUjsOaXPqDQGHrSBaFWxKlNm0btvJB5696lticSgknEjAZNSKqjKADbjp270JGsZJUYz1GeKSRpK
+SdxrSN53lIoJ27sk474pFmjZEbBy+cDGTx1oMbGNcEMwB+ZiQefpTRCIoosElo84IGevXijULRsS
+qVZcqeOnpTvrUNurLG5cYLMWx9alpohqzsiL7QjFwA52sVJCE8j6UqTRHzcPnyvv8Hj/ADiq8SNG
+024zJulYjau4Efkahe3lVLmWNG8xpHUgg/Mh9KBF+KZJSwRskAE8HoRkUjzxxeWHbaX4UY/z61Ws
+8wySeYkg3JHj5Cei89BR5L3DzMUAVlEamQFSAOc4xzzQBakkG8xBGkYj5gMYA9zUbz7PIQJsMgP3
+zjbiooI5gWeSJm81VDANggjjn2P+RQtrKEtslGaLdu3ZOc0AWAXkhfZKhfkBl6A+h61TlmmeCWXd
+tMQ8vaP72Rub9eKvAlVAkZAScADj8KjDxQecUyShLyAdcnmgCOVY2a3SAoSjhvlPRR15/L602O3l
+NoLWRcKDy4YHIznini4XKJGFiDJ5mW4AHQdKsREtEpYoSRyUPH4UARi3RpJ2f5lmwCpHTHFSouxA
+u5mx3Y5JoBAHJxyaN3pzQAtI33T9KOT6CkYfKck9KYDiQOppqkAY56+lOAA7UiHK5pAGT6UfN7Ut
+FMBPm9R+VHzeo/KlooA526/4+pv98/zoouv+Pqb/AH2/nRSA6KiiimAU3cx6L+ZxTqKAG4c9wPoM
+0bPVmP6U6igBuxfQn6kmkZECk7F6elJNOIsDBZj0ApVkWWHenQj8qQ7O1xfLT+4v5Cjy0/uL+Qqp
+OzHU4Y97hCmSFYj19Kia6kt3uYixcIuUJ6rkj8/vfpQIvlFHRQPpxS7B2LD8apO00VilwJSz8Mwb
+oc9sfjVi4uClkZ4x2VgG9yKAJdrDo/5ijLjqoP0NVhe4tZJGT95EcOgPfOKma5iEpiBZnXkhVJxQ
+A4vgjIK/UUoILggg8Uiyo+xldSGHHPXpSlQX5A6fjTAdRjPWm7SOjH8eaMuP4QfoaADHzHHHFL83
+sabvAY7srx3p4OelACA44ING4HvSmjg0AIe/0paQgc0EY7mgBD0NOHQU0ghetKM4HI/KgAHVvrQv
+3R9KQZyeR19KFztHI6elICvLKReiNpvLj8vdxjk596h3zOLMSBiXD7lzjdjpmrnkjz/Nyd+zZ7Yz
+miWFJCpddxU8HPrQBTuYN81tHgQ5LkFD0OAc/Xj/AOvRCJpFvDJGQ7qFGBwTgjiryxon3UUd+BSn
+7w+hoAgjSURwgrGCqYO4ZIPtUkEIhhSMEkKPzp56ik3qOM5PoOaAFUADp3NLTFLY4Xv3OKcM45x+
+FMBaRvun6UtI33T9KAFpsf3BTqbH9wUgHUUUUwCiiigDnbr/AI+pv99v50UXX/H1N/vt/OikB0VF
+GaTmmAtGaTHvS4FACZoLAAk8Ack0tV7pi7LCv8XL/SkxpXY2ImRmnYdeFHoKajCCcr/yzk4PsaW4
+uVtUUshbPAApkhWWIMAdjjIzUmqs3YnktlknWbe6uowCMe/qPeljto41kABPmZ3knluv+NJaTeZH
+tY/OnB9/ep6oyas7FVrJWjEW9hEDkKP8fxqS6h861aFMLkAD0GDUZdxbhVY+YGK5+nNSiQs8YXoy
+7jRcbiytqFpJIxeDkuArrwM46GliX7LeztIMJKdyuf1H6/pU3nlbfzGXLZwQPXNSlwGUd26UCcWj
+Otsta3h2YiO5kBA44P8A9ap9NA+zRtzkg55Pr6VZJSVRnlHUj6g0kcawqqRjCgHA/GgRG9yftX2e
+JAzAZYk4A/T6fnSfbolDeZuQo+xgRnH+cUjRMl2LhBnK7XXufcZP0qvqEks1q26FkCycE9xg8/yo
+A0R98/Sgovpg+3FJhJc5CujAe4NZdvcvBYNLku3mbAGJIHGen50Aam0jo5/EZo+b+6D9DzUQeeNo
+g6iQNwxVfumkhvIpLczNlFU4OaAJdx5yGH4Z/lSh0/vDPvQjiRAynKsOCRinc+lADSQQcEGnDoKa
+yrj7o/EUgRMfcX/vmmA4dW+tCnCDPpTQiZPyL/3zQqpgHYuf92kApdB1YfnSFwRwCeewp2cDpgVG
+9xEv3pEHfG7mgB+WPRPzNJhiwywHHYU0TxtC0qOGVQSdvXioLm7eKBJljUq+MZY55GemP60AWSgz
+zlvqaUssaZYqi+5wKpTSTJfRwl2ZGXJCDaT1/wAPWo9STbaA+WEy45zljwev/wCs0AXFuofMWPfh
+26ZBANT1RcSreRvNF5ka52mME7T6kf5/Or1ABSNwp+lGfTmkYHaTntTAdTY/uCl2imoMoDQA+ikw
+R0NKDQAUUUUAc7df8fU3++386KLr/j6m/wB9v50UgOi7mijuaKYBRRRQAjuI0Lt0AzVWBSxLt9+Q
+5PsKS+lORGOg5b3PYf1p9mG2bnOc9PpUN3djVLljcg1lQIYsdiRU8MW/Tol77QRSalF51uBuVSGz
+k1PCAkCKCCAoGR3qjNOzuZySGCUP3HDD1FagIYAg5B5BrOvotr+avfrT9Pn/AOWJPun9RUrTQ1n7
+y5kWBEwuC/8AB1H14pLeNkZiw4Hyr9KnoqrGXO7WK4Um5KEfICX/ADGP8aS3y0nP/LNdn45/+tUs
+1xHBgykqp74yPpSo8ZPylctzjuf84pWK59Csylh5H+035dalRzJLFg/wbmp/lqJ/M5yRimJEYndh
+8xIO0f0osPmTJJJCjKqruZugzihH3EgoVYU2YrhfMyv+0D90/WmpKQ7KXDqF3bvT607itoOMUTSN
+gAN1JU4P5jmohYxiFoQW8tjnGRweORx7UyJgJVdshnPzAj16f0qeaVtriLqoJLEdPalcHB3sNH2o
+NEv7sqPvsScms+G1eKMTSoWWNjuiI7Y5P+fStbeFjDMccUkTiVdwBGCRzTJs9xkd3DNN5cbFjjOQ
+OKlZFkGHUMM55FRCKGF3fhTIeST3pzxLIMFm6Y4cj+RoEZGnSObxAXYgg5GfY1bMk5vrhIXJIjBV
+SeAflqx9kjAjCZQxnKsvWj7FEVlD7naX7zMefwoArRMS8CPJcxOfveZnEh9Bzx7f406IF9RkiZnM
+YQEKXJGePf3qdLVBIjMzv5Q2oGIwP0p0duizmcFt7KARnjt/hQAzUv8Ajxl/D+YqErINMzuRV8sc
+BeTx65/pV2REkQo4BU9RTPIhXG2NcjoSM0AUHgkigSW3Ut5sQV1Az1A5Aqe4tpJrCGJcBl25yenF
+XRwMAUn8Q+lAEMtt5l0s4kKlV24A+v8AjT/IRlw4MnOfnOefp0p7cKT7UtACDp+Jo6/SheR+NLTA
+KRvun6UtI33T9KAFpsf3BTqbHjYKAHUUm4etG72P5UALntRSEn+6aMn+6aAOeuv+Pqb/AH2/nRRd
+f8fU3++f50UgOhzgnNG70BNAAzSkgdTTAT5vYU2RhFGXYk47etO3egJqvdrK7IqISuMnB70mOKuy
+nnfKPMbqcsat/aYkGAc49BUS2Uh67V+p5p62A/ik/JahJm0nB9SG8mjuYwnzDBzmljvBFEsaxkhR
+jOasCxi7lz+NKbOAKfkJwP7x/wAaqzIvDsVZL0OjKYuo9aqozKwK8EHIPvWr9jt/7h/76P8AjR9i
+t/7h/wC+j/jSsylOK2RJFKJolccZ7elPpiRJGmxFwvpTto9KoxKOsMPs6rnneDj8DRdRtNfZib51
+h3IQe4ar2PQkU0RhWDBVyBjOMcUAVba5NxdKQ3Hk5ZewbNSee0d20c20IV3I54+opyQRx3LTBSGc
+HODxUeoRNcQBI8Fg2cE47GgB8V7FJEZTmNAcZbuetSL5UqsqlSP4gKrajFhYXVMxRNlkUdvp+FQa
+kwEyGE5cowbHPy/5zQBoyRiQMnTIGD6U2WENG5C/OQeRxk1TileLSPMRsMBwev8AFT4byaSby9iH
+Eat3HUD6+vpQNSaLHktiMhuVHRhkUWxbEm4AfOeQfelt51nQkcMpwynqDS74XLRh0JOQVB59KLD5
+rqzG3KhxGp5BfH6GmKxMkKt95WIP5VO0YO3qNpyKa0OZ1lBxjqPWlYakrWITt8+Xfv6jBXPp7U+R
+FMDOrOMKcfMRTtkiyOybSGxwTjtTnDPCynAYqR14oG3sNhQAbssTjuxNSL90fSkQEDHp/hSr90fS
+mQ3di0jdPxFLSN0/GmIWk/iH0peM479cUh4NIAb7p+lL14prMNppRux2FMAXp+JpSQOppqjjknqa
+cABQAm70BNI2dp6DinE4601jlTgHpQAuPUmmxgbBxTvm9hTYxlByaQD6Mj1pNoowB2FMA3L6j86Q
+EAdRTqT+P8KAOeuv+PqX/fP86KLr/j6m/wB9v50UgOhxnqfypQAOgo7mimAUUVDcTrAu5skE44oA
+mo4qgL55WxFFn3Jps1zOq8kD6DiiwrmjmkJBBFZHm3Td24Xd0xx60jm4UbmkYZAYfP1B9qfKFzYy
+P8kUZH+SKxPOl/56P/30aexmSJJDK2Hzj5j2o5QubOQaM1ii4mHSRvx5p63sy/xA/hRysLmvRWau
+oP8AxIDUyahGfvBlpWYXLf8AEPoaCMsOO1RpcRORtcE1JkEg0hhj0JFNWMISVVAT1IXFPooApzW6
+eWYjK0cTNkrxj1wPSkSzH2p3DYjKBVKsQwwAP6U3UX+dU9Bk1chTbCikZwOc0k9S3G0UyvYx+SHh
+ePDg5L44f3qrFG8st8qBSSx4P41qbfQkVG9vG+S0aEt1OME/jTIM3zj5NkFkf7xVsE56jjipjetF
+LLtzNEq5JP8ACastaxnysIV8o5UKf5/lTZrUSSMysUDjDrtyG9/rQAxrmeO2W4ZQynkqOMA9Ofyp
+WvhHckSbRCY96Hu3+eaR7aR7cW/nKEB+8RzjsP5UXdkk7w7GVVQbW552+360ARjUWW3kLqizAqVX
+sQfx9P6VJJdukqQsFiwgLs3r6D/P8qS5sknnjddiquA4zjIHpj8qkkSV5t+6Jk2/KGHKH8v60AVl
+ubg3EUcj4V1z+7AOevtS37OlrkGVcuBlj14NPhsPJkjkSU7lGDlcjPP+NTzQCaPbMzONwI6D/PWg
+CqFX+0YhtMGBnJ43n09/8ir5XFDxrKBvRGA5G4ZpW9zmmAP0x7Uu70BNNIHzewp9ADVzjsOTS49T
+QvT8TS0AAAHQUjD5T9KWkb7p+lAC02P7gp1Nj+4KAHUUUUAFJ/F+FLSDuaAOeuv+Pqb/AH2/nRRd
+f8fU3++386KQHRdzRR3NFMAqjqn+pX/e/wAavVT1FS0aBVLHd0A+tC3EVmJhgWMD5mGWI7VE7P5G
+0g7T03Hmp/KmZy6Kef73GKQ2c0hzJIo+lVFpK73Jadx0VxF5Ee/l/wDVNnj5fWlW5iEkuWwu5Ag5
+PCmkGnr3kJ+gp32CLHLP+YouitQW6iLhpG3YmJGRnC44/pSC4jCIGl3OEcb+eCeh9aDaW46yN+Yp
+RYwkcOx/EUXQags0BYhzu+RSWx94j6+tBFu0iBVDZVicDpk8ZA9KDYJ2dh9aYbBv4XB+oxRdBqM2
+BL8JhCN4GByP1pz24dnYMFHmmMDH5U37LPG2U6jurYoMk6Eb1PDh+R3FP0EJLbmOJXJ5OQw9MHFN
+DyxHGWX2NP8AtO4oXXLI5YYPHJzip1njknXcU2FifmHIyD+FADEvpAMMA1TpfoeoYVBHHFJErFNp
+aQJ8p6cU17bZGWZx1IA+hxSdhq7dg3efeA9if0FagINYmDjPap/38ShtxwQCOc8H2qIxurm1Z68v
+Y1KKzlvpB94BqmW+Q9Qwp2Zjct0VCt1E38Y/GpA6noQaQx1Hek3CjI/zigAHU/Whfuj6UAgZ9/pQ
+CAAPSgBaRun4igsB6Uxpox1YUASY96TGDUDXcY6En6VE14f4VA96dmK5bI+970NIq9SB9aoNPI38
+WPpUZJJyTk0+ULl1rpF6ZP0qdDuUMO4BrLrSh/1S/wC6P5UNWBMfSN90/SlpG+6fpSGLTY/uCnU2
+P7gpAO+tFFHT6UwA9KAMCjvmigDnbr/j6m/32/nRRdf8fU3++386KQHRdzRSZ9BRz3OPpTAWmSHB
+5/zzTsD6/WmSDLAHp/8AXpAMCtJznav6ml8lP7zZ+tSqNx/2RSMpySSoFAEJjKnBY0qxBjlugpQ2
+8qMUm8glT680ASBU6LGv5U1olPzRjaw7DvTkKbuGbPuKSRwrDb170ARSFtqbTtJYDNKY5gSA6tj1
+XFI/SI+rr/Oh52811QnI54GaAF/fD/lmG/3Tj+dIZQv31dfqKmjLNGrtkNnBB+tO81O7YO7bz60A
+VisMvZW/nUb2UZ+6Sv61caKKTOVUnoSOtMNsB/q5GX2PIp3YGdLC0BHzcE8EU13kKgPkgncMj1q5
+dQy+Ud21gvORwfyqizFgoP8ACMVm3a5004qST7B8u3od3rnirLyK4i2mM7VUEOOh/wAKheUOABGo
+7Z71LHaiSMNkq3fIrSMlsZVIST5mS/Z4XcBckM7AkcY46UyOBdjP1Vo2Iz1BFCQTQSB02tjtTC86
+g7gcbSvI4waoxEa2kU4wCcgEA9M0zy5A2NjZHPSpRdNkkqCWKlj64pVuBulzn5zkHGcc09QIdzrz
+lh260vmyf32/OpnuMxMAQWZsk7e2MVWpiH+ZJ/fb86PMc9Xb86bRQAuSepzRRRQAUtAUt0BP0FSL
+BIe2PqaLgR0VZW1/vN+VSCGNewP1qeZDsVFUt0BP0rRi4jUH0H8qZ24HH0qUZ7CpbuNKwtI33T9K
+MHufypGAwc80hikimxk7BwTT+gpiZ2AY5pgO59hRgnqf0pcetFACYP8AeNGD/eNLketFAHO3X/H1
+N/vn+dFF1/x9Tf77fzopAdFiiiimAVHKMj6c/rUlMY4b/PrSAagYDKng0bByzYHek3KDwxU+gP8A
+SlySc4Zj2yKdxWHRJyW/AZodMNuxkd8Un7w/w/maMOOfl/P/AOtSGGFYZVx+FIQrcIc+relKUcnJ
+CE+5/wDrUFZD/d/M/wCFArDHUsUCjhWB/AUjQASMwzg+hxTyrjqo/A0fMP4WFA9xQQEVFVhgj371
+HNbuZWkXBAG5V/2hj/CnmTHU4/3hTg/+RQBVeKWNQiZy67iw/vDJ/U4pwuZMeYvKy58tT2OQB+dW
+hJQdj43KDtOR7GgCNbhZImZ1+UIC34jkVFFb22GY546huMVOsKqrrGxXdkn6movJlWKQAjnGFHIH
+r1pWGpNbEgggdQVRSD0K/wCIpv2fjMcrD68iolEweXaj/Nt6gA9847Z6UkUojtAinZlnG5uNoyf8
+/WmIlKTr/Cr/AEODTTLt++jr7kcVLHNtskmclsRhjjqeKesyMG5xt654xQBX3Qyd0P1pDbxN/CPw
+NTsYHUOdjqSADjPPSkNrCf4SPoSKAK5tYz/eH40fZI/Vvzqf7KvZ5B9DR9lH/PaX8x/hTuwsQfZI
+/VvzoFrH6t+dTG2wCfNl/Mf4U0wDODLIfbNF2Fhot4h/Dn6mnCONeij8qjkjRNhG4ncBkn3qwnf6
+0rgIM9gaCCBkgfnQsqsGJYYH6CkEiyRkqe3I9KQrjlG7OaUbQMjGPWkQ9cetQkNIxaIDaOmejGmU
+lcnY5jJxjIpwz2P+cVHktHuZSpIOQe1SL0oEHze1I2dp57U6kb7p+lMA2+pzTY+U60+mxfcoAdgU
+YFFFABQOgooHQUAc7df8fU3++386KLr/AI+pv99v50UgOiooopgFIVDdQD9aWigAAAGAMD2ooooA
+KRvun6UtI33T9KAFooooARun4ilpG6fiKWgAppjQ/wAI/DinUUARmPnAYj680hVgex+nFSfxD6Gg
+/eH0NICPeV+9kfUU4P8A5Bp9NKKedo/DigBRJSgrjGOPao/L5wrEfXmkKuOwP0NACtCrW5hRtq7N
+vT9abPAzmQg/eC4H0JNKXx97I+opwf8AyDQBXeJmRmkR2G9DhgCeDzwPartR+ZS+Z9KAH0U3eP8A
+Jo3j/JFACt90/Sqd3HM7fuZdvOCMfrVtm+U4649arkTk8+UPxoAZIpWOMFixDjk9+amHIYHkE8io
+zE7Eb5FwCDgCpASM8CgBvlKsRVU3d8HuacE2Q7R0Ao3N64+gpu4E43ZPpnNAWHKQM5OOaUMAMKvA
+/AUnzYztOPU8UojJ6tj6CgBCSeD09qkHSmrGvcZ+vNPAx0oAKRvun6UtI33T9KYC02L7lOpkX3KQ
+D6KMijNMAoHQUZ9qB0oA526/4+pv99v50UXX/H1N/vt/OikB0VFFFMAooooAKKKKACkb7p+lLSN9
+0/SgBaKKKAEbp+IpaRun4iloAKKKKAE/iH0NLjkGk/iH0NH8Q+hpALRRRQAnRjj0oz7UvGT60UXA
+BTTGh/hH1FOooAZ5YzwWH4/40nlt2YfiKk70UAR7H/2TSbH9F/M/4VLRQBFtf/Z/M/4UbX/2fzP+
+FSDqfrSfwLQA3y27sB+FBjwOWJ/SpKRun4igBPLT0z9eaXowA6YpaT+IfQ0ADfdP0paRvun6UtMB
+F6fjS0i9PxNLQAUjfdP0paRvun6UALTYwNgp1Nj+4KAHUUUUAFFFFAHO3X/H1N/vt/Oii6/4+pv9
+9v50UgOiorPu9RaGQxrGCR3JqjJf3MnWUgf7PFAG47pGMuyqPc4qtJqVsnRi5/2RWISSckkn3ooA
+031cf8s4j9WNQvqlw33Qi/QVSooAsNfXLHJlP4ACmG5nOczSc/7RqKigCT7TP/z2k/77NH2mf/nt
+J/32ajooAmF5cDH75uPU5qVdTuV6srfVaqUUAaKau4+/Ep+hxVhNVgb7wZD7jNY1FAHQR3EMrDZI
+p46Z57VL/EPoa5qpI7iaLGyRhjtnigDoqKyItWlUASIr+/Q1qxP5kYbGM9qYC/xH6ClpP4j9BS0A
+FFFFKwASB1oyPWijA9KLAFGRSYHpRtFGoACMn60n8AoAGT9aVQCoPtQIWkbp+IpaRun4imMWk/iH
+0NLSEcigAb7p+lLSN90/SloARen4mlpF6fiaoXeovDIUSNcjuTQBoUyWWONDvdV47msSW+uJQQZC
+B6LxVcnJyetIDbk1K2Toxc/7Iqt/a21cJF+Jas2igC42qXDdNi/QVG19cscmU/gAKr0UASfaZ/8A
+ntJ/32aPtM//AD2k/wC+zUdFAASWJJJJPJJooooA/9k=
+--------------090905090208070104060506--
