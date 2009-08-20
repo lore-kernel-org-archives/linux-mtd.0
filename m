@@ -1,24 +1,25 @@
-Received: from ey-out-1920.google.com ([74.125.78.149])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MeDxu-0005Cg-F7
-	for linux-mtd@lists.infradead.org; Thu, 20 Aug 2009 20:10:35 +0000
-Received: by ey-out-1920.google.com with SMTP id 5so83892eyb.24
+Received: from ihemail3.lucent.com ([135.245.0.37])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MeET9-00039A-Ug
+	for linux-mtd@lists.infradead.org; Thu, 20 Aug 2009 20:42:55 +0000
+Received: from ihrh1.emsr.lucent.com (h135-1-218-53.lucent.com [135.1.218.53])
+	by ihemail3.lucent.com (8.13.8/IER-o) with ESMTP id n7KKgPtQ014920
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 20 Aug 2009 13:10:28 -0700 (PDT)
+	Thu, 20 Aug 2009 15:42:28 -0500 (CDT)
+Received: from USNAVSXCHHUB03.ndc.alcatel-lucent.com
+	(usnavsxchhub03.ndc.alcatel-lucent.com [135.3.39.112])
+	by ihrh1.emsr.lucent.com (8.13.8/emsr) with ESMTP id n7KKgQY3026873
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 20 Aug 2009 15:42:26 -0500 (CDT)
+From: "Spinelli, Claudio (Claudio)" <claudio@alcatel-lucent.com>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Date: Thu, 20 Aug 2009 15:42:24 -0500
+Subject: Driver support new NOR flash JS28F256P30BF
+Message-ID: <2A01FDEB56E1DF45B111D0FF5949526F2F1A7938@USNAVSXCHMBSA2.ndc.alcatel-lucent.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <20090820125734.GI23444@pengutronix.de>
-References: <20090820125734.GI23444@pengutronix.de>
-Date: Thu, 20 Aug 2009 22:10:27 +0200
-Message-ID: <59b21cf20908201310s2c67dda2t294380e6e6ca5336@mail.gmail.com>
-Subject: Re: MXC nand controller performance
-From: Magnus Lilja <lilja.magnus@gmail.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: Vladimir Barinov <vbarinov@embeddedalley.com>,
-	Linux MTD list <linux-mtd@lists.infradead.org>,
-	Eric Benard <ebenard@eukrea.com>, Daniel Mack <daniel@caiaq.de>,
-	Alberto Panizzo <maramaopercheseimorto@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,24 +29,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sascha,
+Hi,
 
-2009/8/20 Sascha Hauer <s.hauer@pengutronix.de>:
-> Hi,
->
-> Hi recently found out that on my i.MX27 board the mxc nand controller
-> performance nearly doubles when I disable interrupts. Can anybody
-> confirm this behaviour, possibly on other i.MXs?
-> I'm trying to figure out what to do. We could disable interrupts
-> completely in which case the driver would become simpler. Maybe using
-> polling mode has other impacts on other workloads, so maybe we want to
-> add a flag to platform_data instead of disabling interrupts completely.
+I am wondering if anybody has kernel driver support for the following NOR f=
+lash part number JS28F256P30BF, this component is replacing JS28F256P30B85 =
+which is going obselete.
 
-A flag sounds like a good idea.
-
-> You can use the following patch to disable interrupts. It is not meant
-> for inclusion in this form of course.
-
-I can give it a try on i.MX31, how do you measure the performance?
-
-/Magnus
+Thankc
+Claudio
