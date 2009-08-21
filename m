@@ -1,25 +1,23 @@
-Received: from toronto-hs-216-138-233-67.s-ip.magma.ca ([216.138.233.67]
-	helo=yow.seanm.ca)
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MeNZw-00063g-Qv
-	for linux-mtd@lists.infradead.org; Fri, 21 Aug 2009 06:26:30 +0000
-Date: Fri, 21 Aug 2009 02:26:19 -0400
-From: Sean MacLennan <smaclennan@pikatech.com>
-To: vimal singh <vimal.newwork@gmail.com>
+Received: from mo-p05-ob.rzone.de ([81.169.146.181])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MeNbD-0006Dp-KB
+	for linux-mtd@lists.infradead.org; Fri, 21 Aug 2009 06:27:48 +0000
+From: Stefan Roese <sr@denx.de>
+To: u-boot@lists.denx.de
 Subject: Re: [U-Boot] NAND ECC Error with wrong SMC ording bug
-Message-ID: <20090821022619.482158bb@lappy.seanm.ca>
-In-Reply-To: <ce9ab5790908202217t2430646co5059f308a23d7397@mail.gmail.com>
+Date: Fri, 21 Aug 2009 08:27:13 +0200
 References: <19081.57584.173693.798535@cargo.ozlabs.ibm.com>
-	<4A8C87E6.6070702@amcc.com>
-	<20090820003851.1a532444@lappy.seanm.ca>
-	<200908200701.21076.sr@denx.de>
 	<20090820153644.631dbd7b@lappy.seanm.ca>
 	<ce9ab5790908202217t2430646co5059f308a23d7397@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <ce9ab5790908202217t2430646co5059f308a23d7397@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: u-boot@lists.denx.de, Stefan Roese <sr@denx.de>, Feng Kan <fkan@amcc.com>,
-	linux-mtd@lists.infradead.org, linuxppc-dev@ozlabs.org
+Message-Id: <200908210827.13700.sr@denx.de>
+Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	vimal singh <vimal.newwork@gmail.com>,
+	Sean MacLennan <smaclennan@pikatech.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,12 +27,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 21 Aug 2009 10:47:09 +0530
-vimal singh <vimal.newwork@gmail.com> wrote:
-
+On Friday 21 August 2009 07:17:09 vimal singh wrote:
+> > diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
+> > index 89bf85a..497e175 100644
+> > --- a/drivers/mtd/nand/ndfc.c
+> > +++ b/drivers/mtd/nand/ndfc.c
+> > @@ -101,9 +101,8 @@ static int ndfc_calculate_ecc(struct mtd_info *mtd,
+> >
+> >        wmb();
+> >        ecc = in_be32(ndfc->ndfcbase + NDFC_ECC);
+> > -       /* The NDFC uses Smart Media (SMC) bytes order */
+> > -       ecc_code[0] = p[2];
+> > -       ecc_code[1] = p[1];
+> > +       ecc_code[0] = p[1];
+> > +       ecc_code[1] = p[2];
+> >        ecc_code[2] = p[3];
+> >
+> >        return 0;
+> >
+> > Does anybody see a problem with my method of reproducing the bug? This
+> > bug is deadly for our customers. I don't want to make the change unless
+> > it is absolutely necessary..
+>
 > Just one question: did you enabled MTD_NAND_ECC_SMC in configs?
 
-It is automagically selected when you select the NDFC driver.
+Yes, MTD_NAND_ECC_SMC is selected via Kconfig for this driver.
 
 Cheers,
-   Sean
+Stefan
+
+--
+DENX Software Engineering GmbH,      MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich,  Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-0 Fax: (+49)-8142-66989-80 Email: office@denx.de
