@@ -1,18 +1,21 @@
-Received: from mail-pz0-f172.google.com ([209.85.222.172])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MeNg9-0007Vv-2B
-	for linux-mtd@lists.infradead.org; Fri, 21 Aug 2009 06:32:54 +0000
-Received: by pzk2 with SMTP id 2so49636pzk.28
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 20 Aug 2009 23:32:46 -0700 (PDT)
+Received: from mo-p05-ob.rzone.de ([81.169.146.182])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MeP21-0001Xg-7p
+	for linux-mtd@lists.infradead.org; Fri, 21 Aug 2009 07:59:33 +0000
+From: Stefan Roese <sr@denx.de>
+To: u-boot@lists.denx.de
+Subject: Re: [U-Boot] NAND  ECC Error with wrong SMC ording bug
+Date: Fri, 21 Aug 2009 09:59:21 +0200
+References: <19081.57584.173693.798535@cargo.ozlabs.ibm.com>
+	<200908200701.21076.sr@denx.de> <4A8DDF72.2080808@amcc.com>
+In-Reply-To: <4A8DDF72.2080808@amcc.com>
 MIME-Version: 1.0
-Date: Fri, 21 Aug 2009 12:02:46 +0530
-Message-ID: <630851df0908202332ma1b7e15s9c3dda3cadeb0180@mail.gmail.com>
-Subject: significance of 'oobofs' field in MTD_OOB_AUTO mode!!!
-From: Murali N <nalajala.murali@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+Content-Type: Text/Plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Message-Id: <200908210959.21740.sr@denx.de>
+Cc: linuxppc-dev@ozlabs.org, Feng Kan <fkan@amcc.com>,
+	linux-mtd@lists.infradead.org, Sean MacLennan <smaclennan@pikatech.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,16 +25,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All, can anyone explain me what is the significance of sending the
-'oobofs' filed otherthan '0' in 'MTD_OOB_AUTO' mode.
-Because in mtd tests, one of the test case (mtd_oobtest.c) is trying
-to send different 'oobofs' filed set other than '0' in AUTO mode.
+Hi Feng,
 
-I feel 'oobofs' is significant in only 'MTD_OOB_PLACE' mode.
+On Friday 21 August 2009 01:42:42 Feng Kan wrote:
+> We had a board with high number of correctable ECC errors. Which crashed
+> the jffs when it
+> was miss correcting the wrong byte location.
 
-I appreciate for your help.
+OK, thanks.
 
+> Do you want me to submit a patch for this, or do you prefer to do it.
 
--- 
-Thanks & Regards,
-Murali N
+Sure, please go ahead and send a patch to fix this in U-Boot as well.
+
+Thanks.
+
+Cheers,
+Stefan
+
+--
+DENX Software Engineering GmbH,      MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich,  Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-0 Fax: (+49)-8142-66989-80 Email: office@denx.de
