@@ -1,20 +1,20 @@
-Received: from toronto-hs-216-138-233-67.s-ip.magma.ca ([216.138.233.67]
-	helo=yow.seanm.ca)
+Received: from web39807.mail.mud.yahoo.com ([209.191.106.68])
 	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MeZGZ-0000KC-AK
-	for linux-mtd@lists.infradead.org; Fri, 21 Aug 2009 18:55:20 +0000
-Date: Fri, 21 Aug 2009 14:55:06 -0400
-From: Sean MacLennan <smaclennan@pikatech.com>
-To: Feng Kan <fkan@amcc.com>
+	id 1Meapy-0005zG-Cz
+	for linux-mtd@lists.infradead.org; Fri, 21 Aug 2009 20:35:58 +0000
+Message-ID: <605613.1808.qm@web39807.mail.mud.yahoo.com>
+References: <1250813957-1786-1-git-send-email-fkan@amcc.com>
+	<20090821145506.53275701@lappy.seanm.ca>
+Date: Fri, 21 Aug 2009 13:35:48 -0700 (PDT)
+From: Victor Gallardo <victorgallardo@yahoo.com>
 Subject: Re: [PATCH 1/1] Fix ECC Correction bug for SMC ordering for NDFC
 	driver.
-Message-ID: <20090821145506.53275701@lappy.seanm.ca>
-In-Reply-To: <1250813957-1786-1-git-send-email-fkan@amcc.com>
-References: <1250813957-1786-1-git-send-email-fkan@amcc.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Feng Kan <fkan@amcc.com>, linuxppc-dev@ozlabs.org,
+To: Sean MacLennan <smaclennan@pikatech.com>, Feng Kan <fkan@amcc.com>
+In-Reply-To: <20090821145506.53275701@lappy.seanm.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linuxppc-dev@ozlabs.org, Feng Kan <fkan@amcc.com>,
 	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,19 +25,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 20 Aug 2009 17:19:17 -0700
-Feng Kan <fkan@amcc.com> wrote:
-
-> Fix ECC Correction bug where the byte offset location were double
-> fliped causing correction routine to toggle the wrong byte location
-> in the ECC segment. The ndfc_calculate_ecc routine change the order
-> of getting the ECC code.
-
-It looks like another fix for this bug is to leave the current code
-alone and turn off CONFIG_MTD_NAND_ECC_SMC.
-
-This could be a better fix if this is the way u-boot currently works.
-Has anybody verified if the current u-boot has the ECC problem?
-
-Cheers,
-   Sean
+Hi Sean=0A=0A> =0A> It looks like another fix for this bug is to leave the =
+current code=0A> alone and turn off CONFIG_MTD_NAND_ECC_SMC.=0A=0AThis=A0wo=
+uld fix the problem by hiding the issue. Fengs patch is=A0the correct way t=
+o go.=0A=0ABest Regards,=0A=0AVictor Gallardo
