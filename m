@@ -1,22 +1,13 @@
 Received: from sdcmail02.amcc.com ([198.137.200.90])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MeHHJ-0001vr-HM
-	for linux-mtd@lists.infradead.org; Thu, 20 Aug 2009 23:42:50 +0000
-Message-ID: <4A8DDF72.2080808@amcc.com>
-Date: Thu, 20 Aug 2009 16:42:42 -0700
+	id 1MeHqh-00017Z-Jh
+	for linux-mtd@lists.infradead.org; Fri, 21 Aug 2009 00:19:24 +0000
 From: Feng Kan <fkan@amcc.com>
-MIME-Version: 1.0
-To: Stefan Roese <sr@denx.de>
-Subject: Re: [U-Boot] NAND  ECC Error with wrong SMC ording bug
-References: <19081.57584.173693.798535@cargo.ozlabs.ibm.com>
-	<4A8C87E6.6070702@amcc.com>
-	<20090820003851.1a532444@lappy.seanm.ca>
-	<200908200701.21076.sr@denx.de>
-In-Reply-To: <200908200701.21076.sr@denx.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linuxppc-dev@ozlabs.org, u-boot@lists.denx.de,
-	linux-mtd@lists.infradead.org, Sean MacLennan <smaclennan@pikatech.com>
+To: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
+Subject: [PATCH 1/1] Fix ECC Correction bug for SMC ordering for NDFC driver.
+Date: Thu, 20 Aug 2009 17:19:17 -0700
+Message-Id: <1250813957-1786-1-git-send-email-fkan@amcc.com>
+Cc: Feng Kan <fkan@amcc.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +17,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Stefan:
+Fix ECC Correction bug where the byte offset location were double
+fliped causing correction routine to toggle the wrong byte location
+in the ECC segment. The ndfc_calculate_ecc routine change the order
+of getting the ECC code.
+        /* The NDFC uses Smart Media (SMC) bytes order */
+        ecc_code[0] = p[2];
+        ecc_code[1] = p[1];
+        ecc_code[2] = p[3];
+But in the Correction algorithm when calculating the byte offset
+location, the b1 is used as the upper part of the address. Which
+again reverse the order making the final byte offset address 
+location incorrect.
+	byte_addr = (addressbits[b1] << 4) + addressbits[b0];
+The order is change to read it in straight and let the correction
+function to revert it to SMC order.
 
-We had a board with high number of correctable ECC errors. Which crashed 
-the jffs when it
-was miss correcting the wrong byte location.
+Signed-off-by: Feng Kan <fkan@amcc.com>
+Acked-by: Victor Gallardo <vgallardo@amcc.com>
+Acked-by: Prodyut Hazarika <phazarika@amcc.com>
+---
+ drivers/mtd/nand/ndfc.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-Do you want me to submit a patch for this, or do you prefer to do it. I 
-am submitting a patch
-for linux right now.
-
-Feng Kan
-AMCC Software
-
-On 08/19/2009 10:01 PM, Stefan Roese wrote:
-> On Thursday 20 August 2009 06:38:51 Sean MacLennan wrote:
->    
->>> I see other boards using SMC as well, can someone comment on the
->>> change I am proposing.
->>> Should I change the correction algorithm or the calculate function?
->>> If the later is preferred
->>> it would mean the change must be pushed in both U-Boot and Linux.
->>>        
->> Odds are the calculate function is wrong. The correction algo is used
->> by many nand drivers, I *assume* it is correct. The calculate function
->> was set to agree with u-boot (1.3.0).
->>      
-> Yes, it seems that you changed the order in the calculation function while
-> reworking the NDFC driver for arch/powerpc. So we should probably change this
-> order back to the original version. And change it in U-Boot as well.
->
-> BTW: I didn't see any problems with ECC so far with the current code. Feng,
-> how did you spot this problem?
->
-> Cheers,
-> Stefan
->
-> --
-> DENX Software Engineering GmbH,      MD: Wolfgang Denk&  Detlev Zundel
-> HRB 165235 Munich,  Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-> Phone: (+49)-8142-66989-0 Fax: (+49)-8142-66989-80 Email: office@denx.de
->    
+diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
+index 5906c40..d9d3e6e 100644
+--- a/drivers/mtd/nand/ndfc.c
++++ b/drivers/mtd/nand/ndfc.c
+@@ -101,8 +101,8 @@ static int ndfc_calculate_ecc(struct mtd_info *mtd,
+ 	wmb();
+ 	ecc = in_be32(ndfc->ndfcbase + NDFC_ECC);
+ 	/* The NDFC uses Smart Media (SMC) bytes order */
+-	ecc_code[0] = p[2];
+-	ecc_code[1] = p[1];
++	ecc_code[0] = p[1];
++	ecc_code[1] = p[2];
+ 	ecc_code[2] = p[3];
+ 
+ 	return 0;
+-- 
+1.5.5
