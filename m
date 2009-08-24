@@ -1,12 +1,14 @@
 Received: from smtp2e.orange.fr ([80.12.242.111])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MfXTd-0007rR-De
-	for linux-mtd@lists.infradead.org; Mon, 24 Aug 2009 11:12:45 +0000
+	id 1MfXTd-0007rU-EW
+	for linux-mtd@lists.infradead.org; Mon, 24 Aug 2009 11:12:47 +0000
 From: Corentin Chary <corentincj@iksaif.net>
 To: util-linux-ng@vger.kernel.org
-Subject: [PATCH 0/3] Add support for UBI and UBIFS
-Date: Mon, 24 Aug 2009 13:11:53 +0200
-Message-Id: <1251112316-18971-1-git-send-email-corentincj@iksaif.net>
+Subject: [PATCH 1/3] blkid: add UBI volume support
+Date: Mon, 24 Aug 2009 13:11:54 +0200
+Message-Id: <1251112316-18971-2-git-send-email-corentincj@iksaif.net>
+In-Reply-To: <1251112316-18971-1-git-send-email-corentincj@iksaif.net>
+References: <1251112316-18971-1-git-send-email-corentincj@iksaif.net>
 Cc: Corentin Chary <corentincj@iksaif.net>, linux-mtd@lists.infradead.org,
 	dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -18,35 +20,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-Here is some patchs to add support for UBI and UBIFS in libblkid.
+Probe UBI volume under /dev (or /devfs, /devices).
+ubi_ctrl skip is hardcoded, maybe we should find a
+cleaner way to do that. Also change probe.c to handle
+char devices.
 
-UBIFS works on top of UBI volumes, there are 3 subsystems involved:
-  * MTD subsystem, which provides uniform interface to access flash chips.
-    MTD provides an notion of MTD devices (e.g., /dev/mtd0) which basically represents raw flash;
-  * UBI subsystem, which is a wear-leveling and volume management system for flash devices;
-    UBI works on top of MTD devices and provides a notion of UBI volumes (e.g.m /dev/ubi0_0);
-  * UBIFS file system, which works on top of UBI volumes.
+Signed-off-by: Corentin Chary <corentincj@iksaif.net>
+---
+ shlibs/blkid/src/blkidP.h  |    1 +
+ shlibs/blkid/src/devname.c |   56 +++++++++++++++++++++++++++++++++++++++++++-
+ shlibs/blkid/src/probe.c   |    2 +
+ 3 files changed, 58 insertions(+), 1 deletions(-)
 
-The first patch add support for UBI volumes, which are represented as char devices in /dev/.
-This allow to probe for UBIFS filesystem on UBI volumes.
-
-Thanks,
-
-Corentin Chary (3):
-  blkid: add UBI volume support
-  blkid: add ubifs support
-  blkid: add UBIFS test image to blkid test suite
-
- shlibs/blkid/src/blkidP.h            |    1 +
- shlibs/blkid/src/devname.c           |   56 +++++++++++++++-
- shlibs/blkid/src/probe.c             |    5 +-
- shlibs/blkid/src/probers/Makefile.am |    3 +-
- shlibs/blkid/src/probers/probers.h   |    1 +
- shlibs/blkid/src/probers/ubifs.c     |  122 ++++++++++++++++++++++++++++++++++
- tests/expected/blkid/low-probe-ubifs |    5 ++
- tests/ts/blkid/images/ubifs.img.bz2  |  Bin 0 -> 937 bytes
- 8 files changed, 190 insertions(+), 3 deletions(-)
- create mode 100644 shlibs/blkid/src/probers/ubifs.c
- create mode 100644 tests/expected/blkid/low-probe-ubifs
- create mode 100644 tests/ts/blkid/images/ubifs.img.bz2
+diff --git a/shlibs/blkid/src/blkidP.h b/shlibs/blkid/src/blkidP.h
+index e0e5cb8..8db6599 100644
+--- a/shlibs/blkid/src/blkidP.h
++++ b/shlibs/blkid/src/blkidP.h
+@@ -237,6 +237,7 @@ extern char *blkid_strndup(const char *s, const int length);
+ /*
+  * Priority settings for different types of devices
+  */
++#define BLKID_PRI_UBI	50
+ #define BLKID_PRI_DM	40
+ #define BLKID_PRI_EVMS	30
+ #define BLKID_PRI_LVM	20
+diff --git a/shlibs/blkid/src/devname.c b/shlibs/blkid/src/devname.c
+index ef686f4..cac13c5 100644
+--- a/shlibs/blkid/src/devname.c
++++ b/shlibs/blkid/src/devname.c
+@@ -229,7 +229,9 @@ static void probe_one(blkid_cache cache, const char *ptname,
+ 		    dev->bid_devno == devno)
+ 			goto set_pri;
+ 
+-		if (stat(device, &st) == 0 && S_ISBLK(st.st_mode) &&
++		if (stat(device, &st) == 0 &&
++		    (S_ISBLK(st.st_mode) ||
++		     (S_ISCHR(st.st_mode) && !strncmp(ptname, "ubi", 3))) &&
+ 		    st.st_rdev == devno) {
+ 			devname = blkid_strdup(device);
+ 			goto get_dev;
+@@ -388,6 +390,57 @@ evms_probe_all(blkid_cache cache, int only_if_new)
+ 	return num;
+ }
+ 
++static void
++ubi_probe_all(blkid_cache cache, int only_if_new)
++{
++	const char **dirname;
++
++	for (dirname = dirlist; *dirname; dirname++) {
++		DBG(DEBUG_DEVNAME, printf("probing UBI volumes under %s\n",
++					  *dirname));
++
++		DIR		*dir;
++		struct dirent	*iter;
++
++		dir = opendir(*dirname);
++		if (dir == NULL)
++			continue ;
++
++		while ((iter = readdir(dir)) != NULL) {
++			char		*name, *device;
++			struct stat	st;
++			dev_t		dev;
++
++			name = iter->d_name;
++
++			if (!strcmp(name, ".") || !strcmp(name, "..") ||
++			    !strstr(name, "ubi"))
++				continue;
++			if (!strcmp(name, "ubi_ctrl"))
++				continue;
++			device = malloc(strlen(*dirname) + strlen(name) + 2);
++			if (!device)
++				break ;
++			sprintf(device, "%s/%s", *dirname, name);
++			if (stat(device, &st))
++				break ;
++
++			if (!(st.st_rdev & 0xFF)) { // It's an UBI Device
++				free(device);
++				continue ;
++			}
++			dev = st.st_rdev;
++			DBG(DEBUG_DEVNAME, printf("UBI vol %s: devno 0x%04X\n",
++						  device,
++						  (int) dev));
++			probe_one(cache, name, dev, BLKID_PRI_UBI,
++				  only_if_new);
++			free(device);
++		}
++		closedir(dir);
++	}
++}
++
+ /*
+  * Read the device data for all available block devices in the system.
+  */
+@@ -419,6 +472,7 @@ static int probe_all(blkid_cache cache, int only_if_new)
+ #ifdef VG_DIR
+ 	lvm_probe_all(cache, only_if_new);
+ #endif
++	ubi_probe_all(cache, only_if_new);
+ 
+ 	proc = fopen(PROC_PARTITIONS, "r");
+ 	if (!proc)
+diff --git a/shlibs/blkid/src/probe.c b/shlibs/blkid/src/probe.c
+index 10fcb00..fc293fc 100644
+--- a/shlibs/blkid/src/probe.c
++++ b/shlibs/blkid/src/probe.c
+@@ -284,6 +284,8 @@ int blkid_probe_set_device(blkid_probe pr, int fd,
+ 
+ 		if (S_ISBLK(sb.st_mode))
+ 			blkdev_get_size(fd, (unsigned long long *) &pr->size);
++		else if (S_ISCHR(sb.st_mode))
++			pr->size = 1;
+ 		else
+ 			pr->size = sb.st_size;
+ 	}
+-- 
+1.6.4
