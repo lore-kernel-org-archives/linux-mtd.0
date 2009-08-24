@@ -1,22 +1,18 @@
-Received: from mail-ew0-f208.google.com ([209.85.219.208])
+Received: from mail-yw0-f183.google.com ([209.85.211.183])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MfedR-0007nc-Is
-	for linux-mtd@lists.infradead.org; Mon, 24 Aug 2009 18:51:22 +0000
-Received: by ewy4 with SMTP id 4so2764667ewy.27
+	id 1MfekQ-0005ka-4F
+	for linux-mtd@lists.infradead.org; Mon, 24 Aug 2009 18:58:34 +0000
+Received: by ywh13 with SMTP id 13so3056619ywh.15
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 24 Aug 2009 11:51:15 -0700 (PDT)
-Message-ID: <4A92E0EA.1050406@billgatliff.com>
-Date: Mon, 24 Aug 2009 13:50:18 -0500
-From: Bill Gatliff <bgat@billgatliff.com>
+	Mon, 24 Aug 2009 11:58:28 -0700 (PDT)
 MIME-Version: 1.0
-To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Subject: Re: Ideal NAND flashes for JFFS2 or YAFFS
-References: <OF10187A22.DA46F228-ONC125761A.002E1EB3-C125761A.002EB9BA@transmode.se>	<4A8FAEFA.6070304@gmail.com>
-	<OF11C243C2.270CA549-ONC125761C.00667367-C125761C.0066E7FE@transmode.se>
-In-Reply-To: <OF11C243C2.270CA549-ONC125761C.00667367-C125761C.0066E7FE@transmode.se>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Date: Mon, 24 Aug 2009 11:58:28 -0700
+Message-ID: <c260b4940908241158m5565f682ped4a908c6998cef8@mail.gmail.com>
+Subject: Write to NOR flash garbled
+From: N Cheung <brjerome.1@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,19 +22,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Joakim Tjernlund wrote:
-> hmm, maybe I should look at UBIFS too :)
->   
+This device, a Micrel KS8695 based system with Linux 2.6.18 with AMD
+Am29LV641DH.  Device running find for 2 years until switch to a
+compatible Spansion NOR flash S29GL064N.
 
-I'm currently a big fan of UBIFS for NAND.  I'd take a look at it.
+flashcp failed with error: File does not seem to match flash data.
+First mismatch at 0x00000000-0x00002800
 
-I haven't compared it to YAFFS2, but UBIFS is in mainline kernels, where 
-YAFFS2 isn't.  That gives UBIFS bonus points for convenience.  And so 
-far for me, UBIFS has been really, really solid.
+Use dd to copy a one line text file, we can read it back OK.  But with
+a bigger (200 lines) text file, the data get garbled.
 
+However, if MTD debug is set to verbosity=3, flashcp copied big files
+without problem.
 
-b.g.
+Any pointers will be greatly appreciated.
 
--- 
-Bill Gatliff
-bgat@billgatliff.com
+Thanks in advance,
+Norman
