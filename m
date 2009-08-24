@@ -1,18 +1,19 @@
-Received: from smtpin1.mailsecure.in ([121.241.224.1])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MfTav-0000Um-Ef
-	for linux-mtd@lists.infradead.org; Mon, 24 Aug 2009 07:04:01 +0000
-Message-ID: <4A923BC6.3000806@tataelxsi.co.in>
-Date: Mon, 24 Aug 2009 12:35:42 +0530
-From: Rahanesh <rahanesh@tataelxsi.co.in>
-MIME-Version: 1.0
-To: Radha Mohan <radhamohan_ch@yahoo.com>
-Subject: Re: Unale to  get MTD device info
+Received: from n14-vm0.bullet.mail.in.yahoo.com ([202.86.5.219])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MfTpD-0003t4-Sa
+	for linux-mtd@lists.infradead.org; Mon, 24 Aug 2009 07:18:48 +0000
+Message-ID: <323485.33669.qm@web94802.mail.in2.yahoo.com>
 References: <4A9223BA.4020201@tataelxsi.co.in>
 	<136203.4177.qm@web94808.mail.in2.yahoo.com>
-In-Reply-To: <136203.4177.qm@web94808.mail.in2.yahoo.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; format="flowed"
+	<4A923BC6.3000806@tataelxsi.co.in>
+Date: Mon, 24 Aug 2009 12:48:41 +0530 (IST)
+From: Radha Mohan <radhamohan_ch@yahoo.com>
+Subject: Re: Unale to  get MTD device info
+To: Rahanesh <rahanesh@tataelxsi.co.in>
+In-Reply-To: <4A923BC6.3000806@tataelxsi.co.in>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,37 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgUmFkaGEgTW9oYW4gLAoKVGhhbmtzIGEgbG90IGZvciByZXNwb25kaW5nLgoKSSBoYXZlIGZl
-dyBkb3VidHMgcmVnYXJkaW5nIHlvdXIgcmVwbHkuCgpJbiB0aGUgL2Rldi8gcGFydGl0aW9uIG9m
-IExpbnV4IGkgY2Fubm90IHNlZSBhbnkgbXRkIGNoYXIgZGV2aWNlLiBPbmx5IAptdGRibG9jayBp
-cyB0aGVyZS4KCkNhbiBpIGNvbnZlcnQgdGhlIGJsb2NrIGRldmljZXMgdG8gY2hhcmFjdGVyIGRl
-dmljZXM/IGlmIHNvIGhvdz8KCklzIGl0IHBvc3NpYmxlIGZvciBtZSB0byBlcmFzZSBtdGRibG9j
-azAgYW5kIGNvcHkgdG8gbXRkYmxvY2swIHVzaW5nIGFueSAKb3RoZXIgdXRpbGl0aWVzPwoKSSBh
-bSBhIG5ld2JpZSB0byBhbGwgdGhpcy4gUGxlYXNlIGdpdmUgeW91ciB2YWx1YWJsZSBzdWdnZXN0
-aW9ucwoKVGhhbmtzClJhaGFuZXNoCgoKUmFkaGEgTW9oYW4gd3JvdGU6Cj4gaGkgcmFoYW5lc2gs
-Cj4KPiBUaGUgbXRkLXV0aWxzIGRvIG5vdCB3b3JrIG9uIGJsb2NrIGRldmljZXMgbGlrZSBtdGRi
-bG9jazAuIFVzZSBtdGQwIAo+IGluc3RlYWQuIFRoZSBtdGQwIGlzIGNoYXIgZGV2aWNlIG9mIG10
-ZGJsb2NrMC4KPgo+IC0tIE1vaGFuCj4KPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiAqRnJvbToqIFJhaGFu
-ZXNoIDxyYWhhbmVzaEB0YXRhZWx4c2kuY28uaW4+Cj4gKlRvOiogbGludXgtbXRkQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcKPiAqU2VudDoqIE1vbmRheSwgMjQgQXVndXN0LCAyMDA5IDEwOjUzOjA2IEFN
-Cj4gKlN1YmplY3Q6KiBVbmFsZSB0byBnZXQgTVREIGRldmljZSBpbmZvCj4KPiBIaSBhbGwsCj4K
-PiBJIGhhdmUgZm91ciBtdGRibG9ja3MgaW4gbXkgZmxhc2ggLgo+IG10ZGJsb2NrMCAtPiBQcmlt
-YXJ5IGJvb3Rsb2FkZXIKPiBtdGRibG9jazEgLT4gdWJvb3QKPiBtdGRibG9jazIgLT4gSkZGUwo+
-IG10ZGJsb2FjazMtPiBjb25maWcKPgo+IER1cmluZyBMaW51eCBib290aW5nICwgaXQgbW91bnRz
-IG10ZGJsb2NrMiB0byBhIHRlbXAgZm9sZGVyIHdoaWNoIGNhbiAKPiBiZSBzZWVuIGFzIGEgcGFy
-dCBvZiByYW1kaXNrKHJvb3QgZmlsZSBzeXN0ZW0gb2YgbGludXgpCj4KPiBOb3cgZnJvbSBMaW51
-eCBpIG5lZWQgdG8gZmxhc2ggYSBuZXcgamZmcyBpbWFnZSB0byBtdGRibG9jazIgaXRzZWxmLgo+
-Cj4gV2l0aCB0aGUgc3VwcG9ydCBmcm9tIHRoaXMgbWFpbGluZyBsaXN0IGkgaGF2ZSBjb3BpZWQg
-bXRkLXV0aWxpdGllcyAKPiBwYWNrYWdlIGludG8gTGludXguIE5vdyBpIGhhdmUgZmxhc2hfZXJh
-c2VhbGwgYW5kIGZsYXNoX2NwIGNvbW1hbmRzLgo+Cj4gQnV0IHdoZW4gaSBydW4gZmxhc2hfZXJh
-c2VhbGwgIGkgZ2V0dCB0aGUgZm9sbG93aW5nIGVycm9yCj4KPgo+IGZsYXNoX2VyYXNlYWxsOiAv
-ZGV2L210ZGJsb2NrMTogKnVuYWJsZSB0byBnZXQgTVREIGRldmljZSBpbmZvCj4KPiAqUGxlYXNl
-IGhlbHAgb24gdGhpcyEhISEhISEKPgo+IFRoYW5rcwo+IFJhaGFuZXNoCj4KPgo+Cj4KPiBfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBMaW51
-eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8KPgo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+IExvb2tp
-bmcgZm9yIGxvY2FsIGluZm9ybWF0aW9uPyBGaW5kIGl0IG9uIFlhaG9vISBMb2NhbCAKPiA8aHR0
-cDovL2luLnJkLnlhaG9vLmNvbS90YWdsaW5lX2xvY2FsXzEvKmh0dHA6Ly9pbi5sb2NhbC55YWhv
-by5jb20vPgoKCg==
+=0AHi,=0A=0ACreate char mtd devices=0A=0Amknod /dev/mtd0 c 90 0=0Amknod /de=
+v/mtd1 c 90 2=0A..=0A..=0ANote that the minor number increments by 2.=0ABef=
+ore that you will need to confirm whether CONFIG_MTD_CHAR is set in your ke=
+rnel or not. This will enable char device access=0Ato your mtdblock device.=
+ Or else you will not be able to write to mtd0 char device.=0A=0AYou can er=
+ase and copy anything to the mtd devices. You can use "flashcp" from the mt=
+d-utils. Else you can write your own code to write to=0Athe flash. You can =
+take help of the flashcp code in mtd-utils. =0A=0A-- Mohan=0A=0A___________=
+_____________________=0AFrom: Rahanesh <rahanesh@tataelxsi.co.in>=0ATo: Rad=
+ha Mohan <radhamohan_ch@yahoo.com>=0ACc: linux-mtd@lists.infradead.org=0ASe=
+nt: Monday, 24 August, 2009 12:35:42 PM=0ASubject: Re: Unale to  get MTD de=
+vice info=0A=0AHi Radha Mohan ,=0A=0AThanks a lot for responding.=0A=0AI ha=
+ve few doubts regarding your reply.=0A=0AIn the /dev/ partition of Linux i =
+cannot see any mtd char device. Only =0Amtdblock is there.=0A=0ACan i conve=
+rt the block devices to character devices? if so how?=0A=0AIs it possible f=
+or me to erase mtdblock0 and copy to mtdblock0 using any =0Aother utilities=
+?=0A=0AI am a newbie to all this. Please give your valuable suggestions=0A=
+=0AThanks=0ARahanesh=0A=0A=0ARadha Mohan wrote:=0A> hi rahanesh,=0A>=0A> Th=
+e mtd-utils do not work on block devices like mtdblock0. Use mtd0 =0A> inst=
+ead. The mtd0 is char device of mtdblock0.=0A>=0A> -- Mohan=0A>=0A> -------=
+-----------------------------------------------------------------=0A> *From=
+:* Rahanesh <rahanesh@tataelxsi.co.in>=0A> *To:* linux-mtd@lists.infradead.=
+org=0A> *Sent:* Monday, 24 August, 2009 10:53:06 AM=0A> *Subject:* Unale to=
+ get MTD device info=0A>=0A> Hi all,=0A>=0A> I have four mtdblocks in my fl=
+ash .=0A> mtdblock0 -> Primary bootloader=0A> mtdblock1 -> uboot=0A> mtdblo=
+ck2 -> JFFS=0A> mtdbloack3-> config=0A>=0A> During Linux booting , it mount=
+s mtdblock2 to a temp folder which can =0A> be seen as a part of ramdisk(ro=
+ot file system of linux)=0A>=0A> Now from Linux i need to flash a new jffs =
+image to mtdblock2 itself.=0A>=0A> With the support from this mailing list =
+i have copied mtd-utilities =0A> package into Linux. Now i have flash_erase=
+all and flash_cp commands.=0A>=0A> But when i run flash_eraseall  i gett th=
+e following error=0A>=0A>=0A> flash_eraseall: /dev/mtdblock1: *unable to ge=
+t MTD device info=0A>=0A> *Please help on this!!!!!!!=0A>=0A> Thanks=0A> Ra=
+hanesh=0A>=0A>=0A>=0A>=0A> ________________________________________________=
+______=0A> Linux MTD discussion mailing list=0A> http://lists.infradead.org=
+/mailman/listinfo/linux-mtd/=0A>=0A> --------------------------------------=
+----------------------------------=0A> Looking for local information? Find =
+it on Yahoo! Local =0A> <http://in.rd.yahoo.com/tagline_local_1/*http://in.=
+local.yahoo.com/>=0A=0A=0A      See the Web&#39;s breaking stories, chosen =
+by people like you. Check out Yahoo! Buzz. http://in.buzz.yahoo.com/
