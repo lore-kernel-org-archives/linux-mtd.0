@@ -1,25 +1,22 @@
-Received: from mail-ew0-f208.google.com ([209.85.219.208])
+Received: from mail-vw0-f182.google.com ([209.85.212.182])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MfIuQ-0004pg-R9
-	for linux-mtd@lists.infradead.org; Sun, 23 Aug 2009 19:39:44 +0000
-Received: by ewy4 with SMTP id 4so1932881ewy.27
+	id 1MfN6H-0005wz-Ty
+	for linux-mtd@lists.infradead.org; Mon, 24 Aug 2009 00:07:58 +0000
+Received: by vws12 with SMTP id 12so1895079vws.24
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 23 Aug 2009 12:39:17 -0700 (PDT)
+	Sun, 23 Aug 2009 17:07:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20090821122225.GL23444@pengutronix.de>
-References: <20090820125734.GI23444@pengutronix.de>
-	<59b21cf20908201310s2c67dda2t294380e6e6ca5336@mail.gmail.com>
-	<20090821122225.GL23444@pengutronix.de>
-Date: Sun, 23 Aug 2009 21:39:17 +0200
-Message-ID: <59b21cf20908231239g4d8954d1x2f6d8638dd0ff31b@mail.gmail.com>
-Subject: Re: MXC nand controller performance
-From: Magnus Lilja <lilja.magnus@gmail.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Cc: Vladimir Barinov <vbarinov@embeddedalley.com>,
-	Linux MTD list <linux-mtd@lists.infradead.org>,
-	Eric Benard <ebenard@eukrea.com>, Daniel Mack <daniel@caiaq.de>,
-	Alberto Panizzo <maramaopercheseimorto@gmail.com>
+In-Reply-To: <1c3f4270908211108w416019deh9aa4b2575d6a1b82@mail.gmail.com>
+References: <a64f67eb0908202331q73230351pe27f1434470707ae@mail.gmail.com>
+	<1c3f4270908211108w416019deh9aa4b2575d6a1b82@mail.gmail.com>
+Date: Mon, 24 Aug 2009 10:07:50 +1000
+Message-ID: <a64f67eb0908231707k80cf8c9m11e9074c11c48abe@mail.gmail.com>
+Subject: Re: JFFS2 crash in linux-2.6.30
+From: linux newbie <linux.newbie79@gmail.com>
+To: Manoj <manoj23@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,38 +26,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
+Hi Manoj,
 
-2009/8/21 Sascha Hauer <s.hauer@pengutronix.de>:
-> On Thu, Aug 20, 2009 at 10:10:27PM +0200, Magnus Lilja wrote:
->> Hi Sascha,
->>
->> 2009/8/20 Sascha Hauer <s.hauer@pengutronix.de>:
->> > Hi,
->> >
->> > Hi recently found out that on my i.MX27 board the mxc nand controller
->> > performance nearly doubles when I disable interrupts. Can anybody
->> > confirm this behaviour, possibly on other i.MXs?
->> > I'm trying to figure out what to do. We could disable interrupts
->> > completely in which case the driver would become simpler. Maybe using
->> > polling mode has other impacts on other workloads, so maybe we want to
->> > add a flag to platform_data instead of disabling interrupts completely.
->>
->> A flag sounds like a good idea.
->>
->> > You can use the following patch to disable interrupts. It is not meant
->> > for inclusion in this form of course.
->>
->> I can give it a try on i.MX31, how do you measure the performance?
+I tried this patch, after which I am not getting crash, but instead it shows
+cp: input/output error. and this is not consistent. somtimes, file
+copying is perfect and some times its not.
+
+Also I observed that if I enable jpeg debug message (in make
+menuconfig), things are working fine.
+
+Seems some timing issue is there.
+
+Thanks
+
+On Sat, Aug 22, 2009 at 4:08 AM, Manoj<manoj23@gmail.com> wrote:
+> You may want to try this patch if you don't have it in yet:
+> http://git.infradead.org/mtd-2.6.git/commit/57ca7deb062abf56168d15f000c16e25f88a9cf3
 >
-> I did a 'time cat /dev/mtdblockx > /dev/null' and looked at the time
-> needed to mount an ubifs. I haven't done any write tests though.
-
-I did some tests on a i.MX31 Litekit board using a kernel from Linus'
-tree a couple of days ago ('time cat /dev/mtdblockx > /dev/null'):
-with interrupts: 18s
-without interrupts: 13s
-
-No write tests or mounting filesystems were done.
-
-/Magnus
+> On Thu, Aug 20, 2009 at 11:31 PM, linux newbie<linux.newbie79@gmail.com> wrote:
+>> Hi,
+>>
+>> I compiled 2.6.30 kernel with arm-xscale-linux-gcc version 4.0.2.
+>> Everything is working fine as before (previous version is in linux
+>> 2.6.26.3). But on copying files of large size (tested with 2MBytes and
+>> more) from USB to NAND, causes crash.
+>>
+>> If I enable JFFS2 debug messages, I am not observing the crash.
+>>
+>> Below is the crash message. Can anyone let me know, what might be the problem?
+>>
+>> Internal error: Oops: 817 [#1]
+>> Modules linked in:
+>> CPU: 0 Not tainted (2.6.30 #61)
+>> PC is at __bug+0x20/0x2c
+>> LR is at release_console_sem+0x1b8/0x1ec
+>> pc : [<c002927c>] lr : [<c0040a10>] psr: 60000013
+>> sp : c7bcfd0c ip : c7bcfc48 fp : c7bcfd18
+>> r10: 00000000 r9 : 00001000 r8 : c04ca6e0
+>> r7 : 00000000 r6 : c741fbf8 r5 : 001b5000 r4 : c02b7c48
+>> r3 : 00000000 r2 : 60000013 r1 : 00002a4e r0 : 00000026
+>> Flags: nZCv IRQs on FIQs on Mode SVC_32 ISA ARM Segment user
+>> Control: 0000397f Table: a7004000 DAC: 00000015
+>> Process cp (pid: 596, stack limit = 0xc7bce260)
+>> Stack: (0xc7bcfd0c to 0xc7bd0000)
+>> fd00: c7bcfd70 c7bcfd1c c00e73f4 c0029268 001b5000
+>> fd20: 00000000 c7bcfd44 001b5000 00000000 001b5000 00000000 c741fbd0 c78f4c00
+>> fd40: 00001000 00000000 c02b7c48 001b5000 00000000 c7bce000 00001000 00000000
+>> fd60: 00000000 c7bcfdec c7bcfd74 c006a514 c00e7390 00001000 00001000 c04ca6e0
+>> fd80: c7bcfdf0 c7bcfeb4 c7bebe80 c741fc90 c02b7c48 c741fbf8 00001000 c02b7c48
+>> fda0: 00000000 00001000 c741fc90 c7bcff38 00000001 00001000 00001000 c7bcfdf0
+>> fdc0: c04ca6e0 c7bcfefc 00002000 001b4000 00000000 c741fbf8 00000000 00000000
+>> fde0: c7bcfe6c c7bcfdf4 c006bd64 c006a3a0 001b4000 00000000 c7bcfefc 00002000
+>> fe00: 00000000 c7bcfefc c7bcff38 c7bcfeb4 c00a697c 0000006d c7bebe80 c741fc90
+>> fe20: 001b6000 00000000 00000001 c7bcfe38 c006b38c c00a1dd8 0000019c 00000002
+>> fe40: 00002000 c741fc64 c7bcfeb4 c7bcff38 c741fbf8 001b4000 00000000 00000001
+>> fe60: c7bcfea8 c7bcfe70 c006be3c c006b938 00000000 bea6ac70 c7bebe80 c741fc90
+>> fe80: c7bcfeb4 c7bebe80 c7bcff80 00002000 c0025fc4 c7bce000 00000003 c7bcff58
+>> fea0: c7bcfeb0 c008fedc c006bdcc 001b4000 00000000 c0044ea0 c0044c5c 00000000
+>> fec0: 00000001 ffffffff c7bebe80 00000000 00000000 00000000 00000000 c783a900
+>> fee0: 00000000 00000000 c0044dcc c783a900 c0053c08 c7bcfef4 c7bcfef4 001b4000
+>> ff00: 00000000 c7bcff7c c7bcff14 c00259c4 c002500c 00002000 00000000 00002000
+>> ff20: 00168000 00000000 00000000 c74336f0 00000001 c742b380 bea68c70 00002000
+>> ff40: c7bebe80 bea68c70 c7bcff80 c7bcff7c c7bcff5c c00908c0 c008fe28 00000000
+>> ff60: c7bebe80 001b4000 00000000 00000004 c7bcffa4 c7bcff80 c0090fac c0090814
+>> ff80: 001b4000 00000000 00000000 00002000 00002000 bea68c70 00000000 c7bcffa8
+>> ffa0: c0025e20 c0090f6c 00002000 00002000 00000004 bea68c70 00002000 ffe4c000
+>> ffc0: 00002000 00002000 bea68c70 00000004 00000004 0000c9c8 00000003 00000000
+>> ffe0: 0007797c bea68c48 00059e40 401927b4 20000010 00000004 a04ee021 a04ee421
+>> Backtrace:
+>> [<c002925c>] (__bug+0x0/0x2c) from [<c00e73f4>] (jffs2_write_end+0x70/0x274)
+>> [<c00e7384>] (jffs2_write_end+0x0/0x274) from [<c006a514>]
+>> (generic_file_buffered_write+0x184/0x2f8)
+>> [<c006a394>] (generic_file_buffered_write+0x4/0x2f8) from [<c006bd64>]
+>> (__generic_file_aio_write_nolock+0x438/0x490)
+>> [<c006b92c>] (__generic_file_aio_write_nolock+0x0/0x490) from
+>> [<c006be3c>] (generic_file_aio_write+0x80/0xfc)
+>> [<c006bdc0>] (generic_file_aio_write+0x4/0xfc) from [<c008fedc>]
+>> (do_sync_write+0xc0/0x114)
+>> [<c008fe1c>] (do_sync_write+0x0/0x114) from [<c00908c0>] (vfs_write+0xb8/0x144)
+>> r6:c7bcff80 r5:bea68c70 r4:c7bebe80
+>> [<c0090808>] (vfs_write+0x0/0x144) from [<c0090fac>] (sys_write+0x4c/0x80)
+>> r7:00000004 r6:00000000 r5:001b4000 r4:c7bebe80
+>> [<c0090f60>] (sys_write+0x0/0x80) from [<c0025e20>] (ret_fast_syscall+0x0/0x2c)
+>> r6:bea68c70 r5:00002000 r4:00002000
+>> Code: e1a01000 e59f000c eb005ecc e3a03000 (e5833000)
+>> ---[ end trace a38925e81ca40a22 ]---
+>> Segmentation fault
+>>
+>> ______________________________________________________
+>> Linux MTD discussion mailing list
+>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>
+>
