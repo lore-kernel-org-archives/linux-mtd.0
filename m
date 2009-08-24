@@ -1,14 +1,15 @@
 Received: from smtp2e.orange.fr ([80.12.242.111])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MfXTd-0007rU-EW
+	id 1MfXTd-0007ra-EL
 	for linux-mtd@lists.infradead.org; Mon, 24 Aug 2009 11:12:47 +0000
 From: Corentin Chary <corentincj@iksaif.net>
 To: util-linux-ng@vger.kernel.org
-Subject: [PATCH 1/3] blkid: add UBI volume support
-Date: Mon, 24 Aug 2009 13:11:54 +0200
-Message-Id: <1251112316-18971-2-git-send-email-corentincj@iksaif.net>
-In-Reply-To: <1251112316-18971-1-git-send-email-corentincj@iksaif.net>
+Subject: [PATCH 2/3] blkid: add ubifs support
+Date: Mon, 24 Aug 2009 13:11:55 +0200
+Message-Id: <1251112316-18971-3-git-send-email-corentincj@iksaif.net>
+In-Reply-To: <1251112316-18971-2-git-send-email-corentincj@iksaif.net>
 References: <1251112316-18971-1-git-send-email-corentincj@iksaif.net>
+	<1251112316-18971-2-git-send-email-corentincj@iksaif.net>
 Cc: Corentin Chary <corentincj@iksaif.net>, linux-mtd@lists.infradead.org,
 	dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,123 +21,179 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Probe UBI volume under /dev (or /devfs, /devices).
-ubi_ctrl skip is hardcoded, maybe we should find a
-cleaner way to do that. Also change probe.c to handle
-char devices.
-
 Signed-off-by: Corentin Chary <corentincj@iksaif.net>
 ---
- shlibs/blkid/src/blkidP.h  |    1 +
- shlibs/blkid/src/devname.c |   56 +++++++++++++++++++++++++++++++++++++++++++-
- shlibs/blkid/src/probe.c   |    2 +
- 3 files changed, 58 insertions(+), 1 deletions(-)
+ shlibs/blkid/src/probe.c             |    3 +-
+ shlibs/blkid/src/probers/Makefile.am |    3 +-
+ shlibs/blkid/src/probers/probers.h   |    1 +
+ shlibs/blkid/src/probers/ubifs.c     |  122 ++++++++++++++++++++++++++++++++++
+ 4 files changed, 127 insertions(+), 2 deletions(-)
+ create mode 100644 shlibs/blkid/src/probers/ubifs.c
 
-diff --git a/shlibs/blkid/src/blkidP.h b/shlibs/blkid/src/blkidP.h
-index e0e5cb8..8db6599 100644
---- a/shlibs/blkid/src/blkidP.h
-+++ b/shlibs/blkid/src/blkidP.h
-@@ -237,6 +237,7 @@ extern char *blkid_strndup(const char *s, const int length);
- /*
-  * Priority settings for different types of devices
-  */
-+#define BLKID_PRI_UBI	50
- #define BLKID_PRI_DM	40
- #define BLKID_PRI_EVMS	30
- #define BLKID_PRI_LVM	20
-diff --git a/shlibs/blkid/src/devname.c b/shlibs/blkid/src/devname.c
-index ef686f4..cac13c5 100644
---- a/shlibs/blkid/src/devname.c
-+++ b/shlibs/blkid/src/devname.c
-@@ -229,7 +229,9 @@ static void probe_one(blkid_cache cache, const char *ptname,
- 		    dev->bid_devno == devno)
- 			goto set_pri;
- 
--		if (stat(device, &st) == 0 && S_ISBLK(st.st_mode) &&
-+		if (stat(device, &st) == 0 &&
-+		    (S_ISBLK(st.st_mode) ||
-+		     (S_ISCHR(st.st_mode) && !strncmp(ptname, "ubi", 3))) &&
- 		    st.st_rdev == devno) {
- 			devname = blkid_strdup(device);
- 			goto get_dev;
-@@ -388,6 +390,57 @@ evms_probe_all(blkid_cache cache, int only_if_new)
- 	return num;
- }
- 
-+static void
-+ubi_probe_all(blkid_cache cache, int only_if_new)
-+{
-+	const char **dirname;
-+
-+	for (dirname = dirlist; *dirname; dirname++) {
-+		DBG(DEBUG_DEVNAME, printf("probing UBI volumes under %s\n",
-+					  *dirname));
-+
-+		DIR		*dir;
-+		struct dirent	*iter;
-+
-+		dir = opendir(*dirname);
-+		if (dir == NULL)
-+			continue ;
-+
-+		while ((iter = readdir(dir)) != NULL) {
-+			char		*name, *device;
-+			struct stat	st;
-+			dev_t		dev;
-+
-+			name = iter->d_name;
-+
-+			if (!strcmp(name, ".") || !strcmp(name, "..") ||
-+			    !strstr(name, "ubi"))
-+				continue;
-+			if (!strcmp(name, "ubi_ctrl"))
-+				continue;
-+			device = malloc(strlen(*dirname) + strlen(name) + 2);
-+			if (!device)
-+				break ;
-+			sprintf(device, "%s/%s", *dirname, name);
-+			if (stat(device, &st))
-+				break ;
-+
-+			if (!(st.st_rdev & 0xFF)) { // It's an UBI Device
-+				free(device);
-+				continue ;
-+			}
-+			dev = st.st_rdev;
-+			DBG(DEBUG_DEVNAME, printf("UBI vol %s: devno 0x%04X\n",
-+						  device,
-+						  (int) dev));
-+			probe_one(cache, name, dev, BLKID_PRI_UBI,
-+				  only_if_new);
-+			free(device);
-+		}
-+		closedir(dir);
-+	}
-+}
-+
- /*
-  * Read the device data for all available block devices in the system.
-  */
-@@ -419,6 +472,7 @@ static int probe_all(blkid_cache cache, int only_if_new)
- #ifdef VG_DIR
- 	lvm_probe_all(cache, only_if_new);
- #endif
-+	ubi_probe_all(cache, only_if_new);
- 
- 	proc = fopen(PROC_PARTITIONS, "r");
- 	if (!proc)
 diff --git a/shlibs/blkid/src/probe.c b/shlibs/blkid/src/probe.c
-index 10fcb00..fc293fc 100644
+index fc293fc..51793e8 100644
 --- a/shlibs/blkid/src/probe.c
 +++ b/shlibs/blkid/src/probe.c
-@@ -284,6 +284,8 @@ int blkid_probe_set_device(blkid_probe pr, int fd,
+@@ -92,7 +92,8 @@ static const struct blkid_idinfo *idinfos[] =
+ 	&vxfs_idinfo,
+ 	&squashfs_idinfo,
+ 	&netware_idinfo,
+-	&btrfs_idinfo
++	&btrfs_idinfo,
++	&ubifs_idinfo
+ };
  
- 		if (S_ISBLK(sb.st_mode))
- 			blkdev_get_size(fd, (unsigned long long *) &pr->size);
-+		else if (S_ISCHR(sb.st_mode))
-+			pr->size = 1;
- 		else
- 			pr->size = sb.st_size;
- 	}
+ #ifndef ARRAY_SIZE
+diff --git a/shlibs/blkid/src/probers/Makefile.am b/shlibs/blkid/src/probers/Makefile.am
+index 4591db6..5a5d8b6 100644
+--- a/shlibs/blkid/src/probers/Makefile.am
++++ b/shlibs/blkid/src/probers/Makefile.am
+@@ -40,4 +40,5 @@ libblkid_probers_la_SOURCES = \
+ 			sysv.c \
+ 			btrfs.c \
+ 			lvm.c \
+-			zfs.c
++			zfs.c \
++			ubifs.c
+diff --git a/shlibs/blkid/src/probers/probers.h b/shlibs/blkid/src/probers/probers.h
+index 78dbd40..93be79f 100644
+--- a/shlibs/blkid/src/probers/probers.h
++++ b/shlibs/blkid/src/probers/probers.h
+@@ -56,6 +56,7 @@ extern const struct blkid_idinfo netware_idinfo;
+ extern const struct blkid_idinfo sysv_idinfo;
+ extern const struct blkid_idinfo xenix_idinfo;
+ extern const struct blkid_idinfo btrfs_idinfo;
++extern const struct blkid_idinfo ubifs_idinfo;
+ extern const struct blkid_idinfo zfs_idinfo;
+ 
+ #endif /* _BLKID_PROBE_H */
+diff --git a/shlibs/blkid/src/probers/ubifs.c b/shlibs/blkid/src/probers/ubifs.c
+new file mode 100644
+index 0000000..45157ae
+--- /dev/null
++++ b/shlibs/blkid/src/probers/ubifs.c
+@@ -0,0 +1,122 @@
++/*
++ * Copyright (C) 2009 Corentin Chary <corentincj@iksaif.net>
++ *
++ * This file may be redistributed under the terms of the
++ * GNU Lesser General Public License.
++ */
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <string.h>
++#include <stdint.h>
++
++#include "blkidP.h"
++
++/**
++ * struct ubifs_ch - common header node.
++ * @magic: UBIFS node magic number (%UBIFS_NODE_MAGIC)
++ * @crc: CRC-32 checksum of the node header
++ * @sqnum: sequence number
++ * @len: full node length
++ * @node_type: node type
++ * @group_type: node group type
++ * @padding: reserved for future, zeroes
++ *
++ * Every UBIFS node starts with this common part. If the node has a key, the
++ * key always goes next.
++ */
++struct ubifs_ch {
++	uint32_t magic;
++	uint32_t crc;
++	uint64_t sqnum;
++	uint32_t len;
++	uint8_t node_type;
++	uint8_t group_type;
++	uint8_t padding[2];
++} __attribute__ ((packed));
++
++/**
++ * struct ubifs_sb_node - superblock node.
++ * @ch: common header
++ * @padding: reserved for future, zeroes
++ * @key_hash: type of hash function used in keys
++ * @key_fmt: format of the key
++ * @flags: file-system flags (%UBIFS_FLG_BIGLPT, etc)
++ * @min_io_size: minimal input/output unit size
++ * @leb_size: logical eraseblock size in bytes
++ * @leb_cnt: count of LEBs used by file-system
++ * @max_leb_cnt: maximum count of LEBs used by file-system
++ * @max_bud_bytes: maximum amount of data stored in buds
++ * @log_lebs: log size in logical eraseblocks
++ * @lpt_lebs: number of LEBs used for lprops table
++ * @orph_lebs: number of LEBs used for recording orphans
++ * @jhead_cnt: count of journal heads
++ * @fanout: tree fanout (max. number of links per indexing node)
++ * @lsave_cnt: number of LEB numbers in LPT's save table
++ * @fmt_version: UBIFS on-flash format version
++ * @default_compr: default compression algorithm (%UBIFS_COMPR_LZO, etc)
++ * @padding1: reserved for future, zeroes
++ * @rp_uid: reserve pool UID
++ * @rp_gid: reserve pool GID
++ * @rp_size: size of the reserved pool in bytes
++ * @padding2: reserved for future, zeroes
++ * @time_gran: time granularity in nanoseconds
++ * @uuid: UUID generated when the file system image was created
++ * @ro_compat_version: UBIFS R/O compatibility version
++ */
++struct ubifs_sb_node {
++	struct ubifs_ch ch;
++	uint8_t padding[2];
++	uint8_t key_hash;
++	uint8_t key_fmt;
++	uint32_t flags;
++	uint32_t min_io_size;
++	uint32_t leb_size;
++	uint32_t leb_cnt;
++	uint32_t max_leb_cnt;
++	uint64_t max_bud_bytes;
++	uint32_t log_lebs;
++	uint32_t lpt_lebs;
++	uint32_t orph_lebs;
++	uint32_t jhead_cnt;
++	uint32_t fanout;
++	uint32_t lsave_cnt;
++	uint32_t fmt_version;
++	uint16_t default_compr;
++	uint8_t padding1[2];
++	uint32_t rp_uid;
++	uint32_t rp_gid;
++	uint64_t rp_size;
++	uint32_t time_gran;
++	uint8_t uuid[16];
++	uint32_t ro_compat_version;
++	uint8_t padding2[3968];
++} __attribute__ ((packed));
++
++
++static int probe_ubifs(blkid_probe pr, const struct blkid_idmag *mag)
++{
++	struct ubifs_sb_node *sb;
++
++	sb = blkid_probe_get_sb(pr, mag, struct ubifs_sb_node);
++	if (!sb)
++		return -1;
++
++	blkid_probe_set_uuid(pr, sb->uuid);
++	blkid_probe_sprintf_version(pr, "w%dr%d",
++				    sb->fmt_version, sb->ro_compat_version);
++
++	return 0;
++}
++
++const struct blkid_idinfo ubifs_idinfo =
++{
++	.name		= "ubifs",
++	.usage		= BLKID_USAGE_FILESYSTEM,
++	.probefunc	= probe_ubifs,
++	.magics		=
++	{
++		{ .magic = "\x31\x18\x10\x06", .len = 4 },
++		{ NULL }
++	}
++};
 -- 
 1.6.4
