@@ -1,14 +1,19 @@
-Received: from p4fc690dc.dip0.t-ipconnect.de ([79.198.144.220])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MfUxM-00030A-VJ
-	for linux-mtd@lists.infradead.org; Mon, 24 Aug 2009 08:31:18 +0000
-Message-ID: <C34C924A.2040209@ghfc.org.uk>
-Date: Mon, 24 Aug 2009 10:26:25 +0200
-From: Pfau Turvey <scents@ghfc.org.uk>
+Received: from smtpin1.mailsecure.in ([121.241.224.1])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MfWA7-0004q8-CY
+	for linux-mtd@lists.infradead.org; Mon, 24 Aug 2009 09:48:31 +0000
+Message-ID: <4A92624A.9030801@tataelxsi.co.in>
+Date: Mon, 24 Aug 2009 15:20:02 +0530
+From: Rahanesh <rahanesh@tataelxsi.co.in>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: llection."
-Content-Type: multipart/mixed; boundary="------------030606030506080306060506"
+To: Radha Mohan <radhamohan_ch@yahoo.com>
+Subject: Re: Unale to  get MTD device info
+References: <4A9223BA.4020201@tataelxsi.co.in>	<136203.4177.qm@web94808.mail.in2.yahoo.com>	<4A923BC6.3000806@tataelxsi.co.in>
+	<323485.33669.qm@web94802.mail.in2.yahoo.com>
+In-Reply-To: <323485.33669.qm@web94802.mail.in2.yahoo.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,194 +23,136 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------030606030506080306060506
-Content-Type: text/plain; charset=ISO-8859-9; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi Mohan,
 
-T coffee was ready. The doctor took my all too light burden from me, and
-then for the first time I broke down and for a week knew nothing, waking
-one afternoon to find the ever faithful Catalina sitting at my bedside.
-Soon I learned from Pedirpozza that Ysidria was bett
+That was really very helpful..
 
---------------030606030506080306060506
-Content-Type: image/jpeg;
- name="biro.jpg"
-Content-Transfer-Encoding: base64
-Content-Disposition: inline;
- filename="biro.jpg"
+After doing this i am nw able to erase flash.
 
-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
---------------030606030506080306060506--
+Few doubts:
+
+I thought Flashes are block devices. How come we treat this as char=20
+devices? Why should we treat as char device?
+
+why minor mumber should be incremented by  2?
+
+What happens when we do a mknod /dev/mtd0 c 90 0?
+
+Do we need to do anything with the /dev/mtdblock0 while erasing and=20
+reflashing ?
+
+Thanks
+Rahanesh
+
+
+Radha Mohan wrote:
+> Hi,
+>
+> Create char mtd devices
+>
+> mknod /dev/mtd0 c 90 0
+> mknod /dev/mtd1 c 90 2
+> ..
+> ..
+> Note that the minor number increments by 2.
+> Before that you will need to confirm whether CONFIG_MTD_CHAR is set in yo=
+ur kernel or not. This will enable char device access
+> to your mtdblock device. Or else you will not be able to write to mtd0 ch=
+ar device.
+>
+> You can erase and copy anything to the mtd devices. You can use "flashcp"=
+ from the mtd-utils. Else you can write your own code to write to
+> the flash. You can take help of the flashcp code in mtd-utils.=20
+>
+> -- Mohan
+>
+> ________________________________
+> From: Rahanesh <rahanesh@tataelxsi.co.in>
+> To: Radha Mohan <radhamohan_ch@yahoo.com>
+> Cc: linux-mtd@lists.infradead.org
+> Sent: Monday, 24 August, 2009 12:35:42 PM
+> Subject: Re: Unale to  get MTD device info
+>
+> Hi Radha Mohan ,
+>
+> Thanks a lot for responding.
+>
+> I have few doubts regarding your reply.
+>
+> In the /dev/ partition of Linux i cannot see any mtd char device. Only=20
+> mtdblock is there.
+>
+> Can i convert the block devices to character devices? if so how?
+>
+> Is it possible for me to erase mtdblock0 and copy to mtdblock0 using any=20
+> other utilities?
+>
+> I am a newbie to all this. Please give your valuable suggestions
+>
+> Thanks
+> Rahanesh
+>
+>
+> Radha Mohan wrote:
+>  =20
+>> hi rahanesh,
+>>
+>> The mtd-utils do not work on block devices like mtdblock0. Use mtd0=20
+>> instead. The mtd0 is char device of mtdblock0.
+>>
+>> -- Mohan
+>>
+>> ------------------------------------------------------------------------
+>> *From:* Rahanesh <rahanesh@tataelxsi.co.in>
+>> *To:* linux-mtd@lists.infradead.org
+>> *Sent:* Monday, 24 August, 2009 10:53:06 AM
+>> *Subject:* Unale to get MTD device info
+>>
+>> Hi all,
+>>
+>> I have four mtdblocks in my flash .
+>> mtdblock0 -> Primary bootloader
+>> mtdblock1 -> uboot
+>> mtdblock2 -> JFFS
+>> mtdbloack3-> config
+>>
+>> During Linux booting , it mounts mtdblock2 to a temp folder which can=20
+>> be seen as a part of ramdisk(root file system of linux)
+>>
+>> Now from Linux i need to flash a new jffs image to mtdblock2 itself.
+>>
+>> With the support from this mailing list i have copied mtd-utilities=20
+>> package into Linux. Now i have flash_eraseall and flash_cp commands.
+>>
+>> But when i run flash_eraseall  i gett the following error
+>>
+>>
+>> flash_eraseall: /dev/mtdblock1: *unable to get MTD device info
+>>
+>> *Please help on this!!!!!!!
+>>
+>> Thanks
+>> Rahanesh
+>>
+>>
+>>
+>>
+>> ______________________________________________________
+>> Linux MTD discussion mailing list
+>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>
+>> ------------------------------------------------------------------------
+>> Looking for local information? Find it on Yahoo! Local=20
+>> <http://in.rd.yahoo.com/tagline_local_1/*http://in.local.yahoo.com/>
+>>    =20
+>
+>
+>       See the Web&#39;s breaking stories, chosen by people like you. Chec=
+k out Yahoo! Buzz. http://in.buzz.yahoo.com/
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
+>  =20
