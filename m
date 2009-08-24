@@ -1,16 +1,18 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from gw1.transmode.se ([213.115.205.20])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MfdCA-0006vf-2Q
-	for linux-mtd@lists.infradead.org; Mon, 24 Aug 2009 17:19:06 +0000
-Received: from dbdp31.itg.ti.com ([172.24.170.98])
-	by arroyo.ext.ti.com (8.13.7/8.13.7) with ESMTP id n7OHIsH6002728
-	for <linux-mtd@lists.infradead.org>; Mon, 24 Aug 2009 12:19:00 -0500
-From: Hemant Pedanekar <hemantp@ti.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] [MTD] [NAND] davinci: fix to use mask_ale from pdata
-Date: Mon, 24 Aug 2009 22:48:49 +0530
-Message-Id: <1251134329-21780-1-git-send-email-hemantp@ti.com>
-Cc: davinci-linux-open-source@linux.davincidsp.com, hemantp@ti.com
+	id 1MfeXv-0001Jj-O6
+	for linux-mtd@lists.infradead.org; Mon, 24 Aug 2009 18:45:40 +0000
+In-Reply-To: <4A8FAEFA.6070304@gmail.com>
+References: <OF10187A22.DA46F228-ONC125761A.002E1EB3-C125761A.002EB9BA@transmode.se>
+	<4A8FAEFA.6070304@gmail.com>
+Subject: Re: Ideal NAND flashes for JFFS2 or YAFFS
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Message-ID: <OF11C243C2.270CA549-ONC125761C.00667367-C125761C.0066E7FE@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Mon, 24 Aug 2009 20:44:00 +0200
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,25 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Corrected typo to use mask_ale from platform data when set to non-zero.
+Artem Bityutskiy <dedekind1@gmail.com> wrote on 22/08/2009 10:40:26:
+>
+> On 08/22/2009 11:30 AM, Joakim Tjernlund wrote:
+> >
+> > We are looking into using NAND flash instead of NOR flashes in our design and I am
+> > trying to find out how the ideal NAND flash should look like to be used as a
+> JFFS2 or YAFFS
+> > file system. We are mainly looking for speed and reliability. Power cuts are common
+> > for our boards.
+>
+> Not sure about the FSes, but we are happy with speed and reliability
+> of OneNAND from Samsung.
 
-Signed-off-by: Hemant Pedanekar <hemantp@ti.com>
----
- drivers/mtd/nand/davinci_nand.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Looking briefly at OneNAND is seems to be a somewhat complicated device with
+builtin SRAM and a emulated NOR interface.
 
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index 0fad648..20b04a2 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -571,7 +571,7 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
- 	info->mask_chipsel	= pdata->mask_chipsel;
- 
- 	/* use nandboot-capable ALE/CLE masks by default */
--	info->mask_ale		= pdata->mask_cle ? : MASK_ALE;
-+	info->mask_ale		= pdata->mask_ale ? : MASK_ALE;
- 	info->mask_cle		= pdata->mask_cle ? : MASK_CLE;
- 
- 	/* Set address of hardware control function */
--- 
-1.6.2.4
+Is this really a good fit for FS:es like JFFS2 or YAFFS?
+
+hmm, maybe I should look at UBIFS too :)
+
+ Jocke
