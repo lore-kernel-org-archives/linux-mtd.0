@@ -1,28 +1,18 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MfwoD-0004NE-Em
-	for linux-mtd@lists.infradead.org; Tue, 25 Aug 2009 14:15:42 +0000
-Subject: Re: [PATCH v2 0/6] Device table matching for SPI subsystem
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: avorontsov@ru.mvista.com
-In-Reply-To: <20090818214440.GA21391@oksana.dev.rtsoft.ru>
-References: <20090731003957.GA23982@oksana.dev.rtsoft.ru>
-	<1249889723.19638.13.camel@localhost>
-	<20090818214440.GA21391@oksana.dev.rtsoft.ru>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 25 Aug 2009 17:14:04 +0300
-Message-Id: <1251209644.3514.0.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Ben Dooks <ben@fluff.org>, David Brownell <dbrownell@users.sourceforge.net>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	linux-kernel@vger.kernel.org, lm-sensors@lm-sensors.org,
-	Grant Likely <grant.likely@secretlab.ca>,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Jean Delvare <khali@linux-fr.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from m12-15.163.com ([220.181.12.15])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MfwuI-00062z-57
+	for linux-mtd@lists.infradead.org; Tue, 25 Aug 2009 14:21:58 +0000
+Message-ID: <D6830EA55F9F4A9FBCD742B09BE98D9F@ivan>
+From: "Ivan Li" <lijinlei1@163.com>
+To: "Ivan Li" <lijinlei1@163.com>,
+	<linux-mtd@lists.infradead.org>
+References: <6CF41D77BA9F4BC5856D0031BA902A85@ivan>
+Subject: Re: Error creating FAT32 over Nand flash
+Date: Tue, 25 Aug 2009 22:21:41 +0800
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: base64
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,36 +22,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-08-19 at 01:44 +0400, Anton Vorontsov wrote:
-> On Mon, Aug 10, 2009 at 10:35:23AM +0300, Artem Bityutskiy wrote:
-> > On Fri, 2009-07-31 at 04:39 +0400, Anton Vorontsov wrote:
-> > > Andrew,
-> > > 
-> > > This new patch set overwrites following patches:
-> > > 
-> > >   hwmon-lm70-convert-to-device-table-matching.patch
-> > >   hwmon-adxx-convert-to-device-table-matching.patch
-> > >   spi-merge-probe-and-probe_id-callbacks.patch
-> > >   spi-prefix-modalias-with-spi.patch
-> > >   of-remove-stmm25p40-alias.patch
-> > >   mtd-m25p80-convert-to-device-table-matching.patch
-> > >   spi-add-support-for-device-table-matching.patch
-> > 
-> > Are you going to send v3 and address David's comments?
-> 
-> No v3, but I'm going to address David's comments in a follow up
-> patch set where I'll change the probing code anyway.
-> 
-> > Do you want some of these patches to go via the MTD tree or
-> > they better go as a series via some other tree?
-> 
-> Um.. The MTD patches depend on SPI subsystem changes... If
-> David and Andrew are OK with SPI patches going through MTD tree,
-> then I'm fine with it as well.
-
-If you are not sure, then I suggest to make these go through something
-else (not MTD tree).
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+U29tZSBwcm9ncmVzcyBmb3IgaXQ6IEkgZm91bmQgdGhlIHNlY3RvciBudW1iZXIgbWVudGlvbmVk
+IGluIGVycm9yIG1lc3NhZ2UgcmVzaWRlcyBpbiBCQUQgYmxvY2suDQpJcyB0aGVyZSBhbnkgZml4
+IGZvciB0aGF0Pw0KDQotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tIA0KRnJvbTogIkl2YW4g
+TGkiIDxsaWppbmxlaTFAMTYzLmNvbT4NClRvOiA8bGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5v
+cmc+DQpTZW50OiBUdWVzZGF5LCBBdWd1c3QgMjUsIDIwMDkgOTozNSBQTQ0KU3ViamVjdDogRXJy
+b3IgY3JlYXRpbmcgRkFUMzIgb3ZlciBOYW5kIGZsYXNoDQoNCg0KPiBIaSBndXlzLA0KPiANCj4g
+SSBoYXZlIHNvbWUgcHJvYmxlbXMgd2l0aCBjcmVhdGluZyBGQVQzMiBmcyBvdmVyIG5hbmQgZmxh
+c2guDQo+IEkgY3JlYXRlZCBGQVQzMiBmcyBvdmVyIG5hbmQgZmxhc2ggd2l0aCBiZWxvdyBjb21t
+YW5kOg0KPj4gZmxhc2hfZXJhc2VhbGwgL2Rldi9tdGRibG9jazYNCj4+IG1rZG9zZnMgLXYgLUYg
+MzIgL2Rldi9tdGRibG9jazYNCj4gbWtkb3NmcyAzLjAuMiAoMjggRmViIDIwMDkpDQo+IHVuYWJs
+ZSB0byBnZXQgZHJpdmUgZ2VvbWV0cnksIHVzaW5nIGRlZmF1bHQgMjU1LzYzDQo+IC9kZXYvbXRk
+YmxvY2s2IGhhcyAyNTUgaGVhZHMgYW5kIDYzIHNlY3RvcnMgcGVyIHRyYWNrLA0KPiBsb2dpY2Fs
+IHNlY3RvciBzaXplIGlzIDUxMiwNCj4gdXNpbmcgMHhmOCBtZWRpYSBkZXNjcmlwdG9yLCB3aXRo
+IDYzODk3NiBzZWN0b3JzOw0KPiBmaWxlIHN5c3RlbSBoYXMgMiAzMi1iaXQgRkFUcyBhbmQgOCBz
+ZWN0b3JzIHBlciBjbHVzdGVyLg0KPiBGQVQgc2l6ZSBpcyA2MjMgc2VjdG9ycywgYW5kIHByb3Zp
+ZGVzIDc5NzEyIGNsdXN0ZXJzLg0KPiANCj4gd2l0aCBVU0IgbWFzcyBzdG9yYWdlIGdhZGdldCBJ
+IGV4cG9ydGVkIHRoaXMgRkFUIHBhcnRpdGlvbiB0byBXaW5YUC4gV2hlbiBJIHRyaWVkIHRvIGNv
+cHkgc29tZSBmaWxlcyBpbnRvIGl0LCBJIGdvdCBlcnJvcnMgYm90aCBvbiBXaW5YUCBhbmQgTGlu
+dXggY29uc29sZToNCj4gSW4gV2luWFAgSSBnb3QgYW4gZXJyb3IgZGlhbG9nLCBzYXkgIkNhbid0
+IGNvcHkgKioqKiwgZGF0YSBlcnJvciAoQ1JDIGVycm9yKS4NCj4gSW4gc2VyaWFsIGNvbnNvbGUg
+SSBnb3Q6DQo+IGVuZF9yZXF1ZXN0OiBJL08gZXJyb3IsIGRldiBtdGRibG9jazYsIHNlY3RvciA3
+NzU4NA0KPiBlbmRfcmVxdWVzdDogSS9PIGVycm9yLCBkZXYgbXRkYmxvY2s2LCBzZWN0b3IgNzc1
+NjgNCj4gQnVmZmVyIEkvTyBlcnJvciBvbiBkZXZpY2UgbXRkYmxvY2s2LCBsb2dpY2FsIGJsb2Nr
+IDk2OTYNCj4gbG9zdCBwYWdlIHdyaXRlIGR1ZSB0byBJL08gZXJyb3Igb24gbXRkYmxvY2s2DQo+
+IGVuZF9yZXF1ZXN0OiBJL08gZXJyb3IsIGRldiBtdGRibG9jazYsIHNlY3RvciA3NzU3Ng0KPiBC
+dWZmZXIgSS9PIGVycm9yIG9uIGRldmljZSBtdGRibG9jazYsIGxvZ2ljYWwgYmxvY2sgOTY5Nw0K
+PiBsb3N0IHBhZ2Ugd3JpdGUgZHVlIHRvIEkvTyBlcnJvciBvbiBtdGRibG9jazYNCj4gDQo+IEkg
+ZG9uJ3Qga25vdyBpZiBGQVQzMiBjYW4ndCBoYW5kbGUgYmFkIGJsb2NrcyBjb3JyZWN0bHksIG9y
+IHNvbWV0aGluZyBlbHNlLg0KPiBBbnkgaWRlYXM/DQo+IA0KPiBUaGUgTmFuZCBGbGFzaCBJIGFt
+IHVzaW5nIGlzIFNhbXN1bmcgSzlGNEcwOFUwQSwgKDUxMk0gPSA0MDk2IGJsb2NrcywgMSBibG9j
+ayA9IDY0IHBhZ2VzLCAxIHBhZ2UgPSAyMDQ4IGJ5dGVzLCBzcGFyZSBhcmVhID0gNjQgYnl0ZXMu
+KQ0KPiANCj4gS2VybmVsIGNvbmZpZ3VyYXRpb246IA0KPiBDT05GSUdfQkxPQ0ssIENPTkZJR19N
+VEQsIENPTkZJR19NVERfUEFSVElUSU9OUywgQ09ORklHX01URF9DSEFSLCBDT05GSUdfTVREX0JM
+S0RFVlMsIENPTkZJR19NVERfQkxPQ0ssIENPTkZJR19NVERfTkFORC4uLg0KPiANCj4gVGhhbmtz
+IGluIGFkdmFuY2UuDQo+IA0KPiBJdmFuDQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXw0KPiBMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
+IGxpc3QNCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
+eC1tdGQv
