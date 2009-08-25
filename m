@@ -1,12 +1,12 @@
 Received: from sdcmail01.amcc.com ([198.137.200.72])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mg097-0001Y5-KR
-	for linux-mtd@lists.infradead.org; Tue, 25 Aug 2009 17:49:30 +0000
+	id 1Mg0K7-0004KM-5Y
+	for linux-mtd@lists.infradead.org; Tue, 25 Aug 2009 18:00:52 +0000
 From: Feng Kan <fkan@amcc.com>
 To: linux-mtd@lists.infradead.org
 Subject: [PATCH 1/1] Fix ECC Correction bug for SMC ordering for NDFC driver.
-Date: Tue, 25 Aug 2009 10:49:21 -0700
-Message-Id: <1251222561-16793-1-git-send-email-fkan@amcc.com>
+Date: Tue, 25 Aug 2009 11:00:45 -0700
+Message-Id: <1251223245-17059-1-git-send-email-fkan@amcc.com>
 Cc: Feng Kan <fkan@amcc.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
