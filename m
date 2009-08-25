@@ -1,24 +1,20 @@
-Received: from mail-vw0-f182.google.com ([209.85.212.182])
+Received: from qmta12.emeryville.ca.mail.comcast.net ([76.96.27.227])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mfosg-0003e1-3U
-	for linux-mtd@lists.infradead.org; Tue, 25 Aug 2009 05:47:46 +0000
-Received: by vws12 with SMTP id 12so2809657vws.24
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 24 Aug 2009 22:47:40 -0700 (PDT)
+	id 1Mfouz-0004Sn-GH
+	for linux-mtd@lists.infradead.org; Tue, 25 Aug 2009 05:50:09 +0000
+Message-ID: <4A937B7A.4070609@gmail.com>
+Date: Mon, 24 Aug 2009 22:49:46 -0700
+From: Norman Cheung <brjerome.1@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <4A926F79.4030700@users.sourceforge.net>
-References: <a64f67eb0908202331q73230351pe27f1434470707ae@mail.gmail.com>
-	<1c3f4270908211108w416019deh9aa4b2575d6a1b82@mail.gmail.com>
-	<a64f67eb0908231707k80cf8c9m11e9074c11c48abe@mail.gmail.com>
-	<4A926F79.4030700@users.sourceforge.net>
-Date: Tue, 25 Aug 2009 15:47:40 +1000
-Message-ID: <a64f67eb0908242247v7b10551q96c63b95f66bd41c@mail.gmail.com>
-Subject: Re: JFFS2 crash in linux-2.6.30
-From: linux newbie <linux.newbie79@gmail.com>
-To: =?ISO-8859-1?Q?Anders_Grafstr=F6m?= <grfstrm@users.sourceforge.net>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Manoj <manoj23@gmail.com>, linux-mtd@lists.infradead.org
+To: Radha Mohan <radhamohan_ch@yahoo.com>
+Subject: Re: Write to NOR flash garbled
+References: <c260b4940908241158m5565f682ped4a908c6998cef8@mail.gmail.com>
+	<231717.78385.qm@web94806.mail.in2.yahoo.com>
+In-Reply-To: <231717.78385.qm@web94806.mail.in2.yahoo.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: brjerome.1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,29 +24,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+There was no error.  However, reading the content after the write shows 
+that the data was corrupted. Putting a delay after the write seems to 
+solve the problem. 
 
-Thanks for your support.
+It seems that the chip_ready() in do_write_buffer() is returning 
+prematurely.  According to Spansion's spec. chip_ready() should check 
+DQ7.  But chip_ready() read the same location and if they are the same, 
+it assumes that chip is ready.
 
-I havent set CONFIG_JFFS2_FS_WBUF_VERIFY and after enabling it, its
-working fine.
+Norman
 
-Thanking You
-
-On Mon, Aug 24, 2009 at 8:46 PM, Anders
-Grafstr=F6m<grfstrm@users.sourceforge.net> wrote:
-> linux newbie wrote:
->> I tried this patch, after which I am not getting crash, but instead it s=
-hows
->> cp: input/output error. and this is not consistent. somtimes, file
->> copying is perfect and some times its not.
+Radha Mohan wrote:
+> hi,
 >
-> You get this when you write to a dnode whose previous data resides
-> in a NAND block that has gone bad.
+> Can you list out the errors that you are getting? 
+> I also faced some problem with Spansion S29GL064M90TAIR4NOR flash. In my case the
+> sector erase was not happening immediately after giving the command. So with that I saw
+> some Data CRC and Node CRC errors.
+> So I put a retry in the code where erase was failing (cfi_cmdset0002.c). And also I disabled
+> the buffered write.
 >
-> Have you set CONFIG_JFFS2_FS_WBUF_VERIFY?
+> -- Mohan
+>
+>
+>
+> ----- Original Message ----
+> From: N Cheung <brjerome.1@gmail.com>
+> To: linux-mtd@lists.infradead.org
+> Sent: Tuesday, 25 August, 2009 12:28:28 AM
+> Subject: Write to NOR flash garbled
+>
+> This device, a Micrel KS8695 based system with Linux 2.6.18 with AMD
+> Am29LV641DH.  Device running find for 2 years until switch to a
+> compatible Spansion NOR flash S29GL064N.
+>
+> flashcp failed with error: File does not seem to match flash data.
+> First mismatch at 0x00000000-0x00002800
+>
+> Use dd to copy a one line text file, we can read it back OK.  But with
+> a bigger (200 lines) text file, the data get garbled.
+>
+> However, if MTD debug is set to verbosity=3, flashcp copied big files
+> without problem.
+>
+> Any pointers will be greatly appreciated.
+>
+> Thanks in advance,
+> Norman
 >
 > ______________________________________________________
 > Linux MTD discussion mailing list
 > http://lists.infradead.org/mailman/listinfo/linux-mtd/
 >
+>
+>
+>       Looking for local information? Find it on Yahoo! Local http://in.local.yahoo.com/
+>
+>
+>   
