@@ -1,19 +1,15 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MfwHs-0004hQ-2s
-	for linux-mtd@lists.infradead.org; Tue, 25 Aug 2009 13:42:16 +0000
-Received: from esebh106.NOE.Nokia.com (esebh106.ntc.nokia.com [172.21.138.213])
-	by mgw-mx09.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
-	n7PDf5wr029937
-	for <linux-mtd@lists.infradead.org>; Tue, 25 Aug 2009 08:41:40 -0500
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Adrian Hunter <Adrian.Hunter@nokia.com>
-Subject: [PATCH 2/2] UBIFS: check ubifs_scan error codes better
-Date: Tue, 25 Aug 2009 16:41:14 +0300
-Message-Id: <1251207674-14299-2-git-send-email-dedekind@infradead.org>
-In-Reply-To: <1251207674-14299-1-git-send-email-dedekind@infradead.org>
-References: <1251207674-14299-1-git-send-email-dedekind@infradead.org>
-Cc: linux-mtd@lists.infradead.org
+Received: from smtpin1.mailsecure.in ([121.241.224.1])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MfwKU-0005GV-C6
+	for linux-mtd@lists.infradead.org; Tue, 25 Aug 2009 13:44:58 +0000
+Message-ID: <4A93EB3F.6050107@tataelxsi.co.in>
+Date: Tue, 25 Aug 2009 19:16:39 +0530
+From: Rahanesh <rahanesh@tataelxsi.co.in>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Creating jffs2 from a windows machine
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,87 +19,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Hi All,
 
-The 'ubifs_scan()' function returns -EUCLEAN if something is corrupted
-and recovery is needed, otherwise it returns other error codes. However,
-in few places UBIFS does not check the error codes and runs recovery.
-This patch changes this behavior and makes UBIFS start recovery only
-on -EUCLEAN errors.
+Can we create a jffs2 file system from a Windows machine? From Linux we=20
+use mkfs.jffs2 command rght, similarly what is the procedure for=20
+creating a jffs file system from a Windows based PC.?
 
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- fs/ubifs/master.c |   15 +++++++++++----
- fs/ubifs/orphan.c |    3 ++-
- 2 files changed, 13 insertions(+), 5 deletions(-)
+Will cygwin help?
 
-diff --git a/fs/ubifs/master.c b/fs/ubifs/master.c
-index 6f95a16..2434738 100644
---- a/fs/ubifs/master.c
-+++ b/fs/ubifs/master.c
-@@ -29,7 +29,8 @@
-  * @c: UBIFS file-system description object
-  *
-  * This function scans the master node LEBs and search for the latest master
-- * node. Returns zero in case of success and a negative error code in case of
-+ * node. Returns zero in case of success, %-EUCLEAN if there master area is
-+ * corrupted and requires recovery, and a negative error code in case of
-  * failure.
-  */
- static int scan_for_master(struct ubifs_info *c)
-@@ -48,7 +49,7 @@ static int scan_for_master(struct ubifs_info *c)
- 		snod = list_entry(sleb->nodes.prev, struct ubifs_scan_node,
- 				  list);
- 		if (snod->type != UBIFS_MST_NODE)
--			goto out;
-+			goto out_dump;
- 		memcpy(c->mst_node, snod->node, snod->len);
- 		offs = snod->offs;
- 	}
-@@ -65,7 +66,7 @@ static int scan_for_master(struct ubifs_info *c)
- 		goto out;
- 	snod = list_entry(sleb->nodes.prev, struct ubifs_scan_node, list);
- 	if (snod->type != UBIFS_MST_NODE)
--		goto out;
-+		goto out_dump;
- 	if (snod->offs != offs)
- 		goto out;
- 	if (memcmp((void *)c->mst_node + UBIFS_CH_SZ,
-@@ -78,6 +79,11 @@ static int scan_for_master(struct ubifs_info *c)
- 
- out:
- 	ubifs_scan_destroy(sleb);
-+	return -EUCLEAN;
-+
-+out_dump:
-+	ubifs_err("unexpected node type %d master LEB %d:%d",
-+		  snod->type, lnum, snod->offs);
- 	return -EINVAL;
- }
- 
-@@ -256,7 +262,8 @@ int ubifs_read_master(struct ubifs_info *c)
- 
- 	err = scan_for_master(c);
- 	if (err) {
--		err = ubifs_recover_master_node(c);
-+		if (err == -EUCLEAN)
-+			err = ubifs_recover_master_node(c);
- 		if (err)
- 			/*
- 			 * Note, we do not free 'c->mst_node' here because the
-diff --git a/fs/ubifs/orphan.c b/fs/ubifs/orphan.c
-index 3119af3..82009c7 100644
---- a/fs/ubifs/orphan.c
-+++ b/fs/ubifs/orphan.c
-@@ -672,7 +672,8 @@ static int kill_orphans(struct ubifs_info *c)
- 		dbg_rcvry("LEB %d", lnum);
- 		sleb = ubifs_scan(c, lnum, 0, c->sbuf, 1);
- 		if (IS_ERR(sleb)) {
--			sleb = ubifs_recover_leb(c, lnum, 0, c->sbuf, 0);
-+			if (PTR_ERR(sleb) == -EUCLEAN)
-+				sleb = ubifs_recover_leb(c, lnum, 0, c->sbuf, 0);
- 			if (IS_ERR(sleb)) {
- 				err = PTR_ERR(sleb);
- 				break;
--- 
-1.6.2.5
+
+Expecting your help on this
+
+Thanks
+Rahanesh
