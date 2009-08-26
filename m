@@ -1,17 +1,18 @@
-Received: from mail-fx0-f226.google.com ([209.85.220.226])
+Received: from mail-bw0-f222.google.com ([209.85.218.222])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MiFQj-00016R-G2
-	for linux-mtd@lists.infradead.org; Mon, 31 Aug 2009 22:32:58 +0000
-Received: by fxm26 with SMTP id 26so927842fxm.18
+	id 1MgFgy-00048R-Pp
+	for linux-mtd@lists.infradead.org; Wed, 26 Aug 2009 10:25:28 +0000
+Received: by bwz22 with SMTP id 22so13217bwz.18
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 31 Aug 2009 15:32:51 -0700 (PDT)
+	Wed, 26 Aug 2009 03:25:23 -0700 (PDT)
 MIME-Version: 1.0
-Date: Tue, 1 Sep 2009 07:32:50 +0900
-Message-ID: <3da39c4b0908311532h61d2ff6dn1e48396d2bb8de55@mail.gmail.com>
-Subject: inftl and BBT question
-From: Lal <learner.kernel@gmail.com>
+Date: Wed, 26 Aug 2009 12:25:23 +0200
+Message-ID: <b8e9195f0908260325h1e7183dawa9adc2a306a4731d@mail.gmail.com>
+Subject: Re: Fix MTD device probing... (really)
+From: Guillaume LECERF <foxcore@gmail.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,31 +22,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In function write_bbt (in file nand_bbt.c), the 'to' address is
-this->bbt_erase_shift aligned if NAND_BBT_SAVECONTENT is enabled,
-while it is this->page_shift aligned for all other cases.
+Hi all,
 
- to = ((loff_t) page) << this->page_shift;
+I'm experiencing a problem with a 16bit SST 39VF3201 flash chip (id
+0x235b) that is misdetected as a 8bit SST 49LF080A (id 0x005b).
+I found that this commit is the source of my problem :
 
-                /* Must we save the block contents ? */
-                if (td->options & NAND_BBT_SAVECONTENT) {
-                        /* Make it block aligned */
-                        to &= ~((loff_t) ((1 << this->bbt_erase_shift) - 1));
+On Mon Jan 24 18:39:41 EST 2005, Russell King wrote :
+>Fix MTD device probing, trying larger numbers of chips before smaller
+>numbers of chips across the bus width.
+>
+>This means we'll avoid misdetecting a 2 x16 array as 1 x32 if the
+>high 16-bits happen to read as zeros in the QRY area.
+>
+>--- orig/drivers/mtd/chips/gen_probe.c	Sat Oct 23 11:38:17 2004
+>+++ linux/drivers/mtd/chips/gen_probe.c	Mon Jan 24 22:54:38 2005
+>@@ -162,7 +162,7 @@ static int genprobe_new_chip(struct map_
+> 	int max_chips = map_bankwidth(map); /* And minimum 1 */
+> 	int nr_chips, type;
+>
+>-	for (nr_chips = min_chips; nr_chips <= max_chips; nr_chips <<= 1) {
+>+	for (nr_chips = max_chips; nr_chips >= min_chips; nr_chips >>= 1) {
+>
+> 		if (!cfi_interleave_supported(nr_chips))
+> 		    continue;
 
-Later in function nand_erase_nand (in file nand_base.c), erase
-operation is aborted if 'to' address is not block aligned.
 
-        /* Start address must align on block boundary */
-        if (instr->addr & ((1 << chip->phys_erase_shift) - 1)) {
-                DEBUG(MTD_DEBUG_LEVEL0, "nand_erase: Unaligned address\n");
-                return -EINVAL;
-        }
+Before this commit, genprobe_new_chip() started the detection on
+CFI_DEVICETYPE_X32, then CFI_DEVICETYPE_X16, and CFI_DEVICETYPE_X8.
+I understand why this commit is useful, but can't find a way (apart
+from reverting this change locally) to handle both cases.
 
-The NAND_BBT_SAVECONTENT is enabled only in nftl_scan_bbt function,
-while it is not enabled in inftl_scan_bbt function.
+Could you help me with this ?
 
-Can someone explain why this option is not enabled for inftl case?
-Does inftl not support bad block table?
+Thanks in advance.
 
-Thanks
-Lal
+-- 
+Guillaume LECERF
+GeeXboX developer - www.geexbox.org
