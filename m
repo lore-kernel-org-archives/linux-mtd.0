@@ -1,19 +1,15 @@
-Received: from mail-fx0-f226.google.com ([209.85.220.226])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MgKdc-0007sJ-Jx
-	for linux-mtd@lists.infradead.org; Wed, 26 Aug 2009 15:42:22 +0000
-Received: by fxm26 with SMTP id 26so233978fxm.18
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 26 Aug 2009 08:42:14 -0700 (PDT)
+Received: from relay.ptn-ipout02.plus.net ([212.159.7.36])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MgMVH-0001xr-40
+	for linux-mtd@lists.infradead.org; Wed, 26 Aug 2009 17:41:51 +0000
+Message-ID: <4A9573CF.8030105@bubblegen.co.uk>
+Date: Wed, 26 Aug 2009 18:41:35 +0100
+From: Matthew Lear <matt@bubblegen.co.uk>
 MIME-Version: 1.0
-Date: Wed, 26 Aug 2009 17:42:14 +0200
-Message-ID: <62cbdcd90908260842l66275d12na133bdb7cc4ac14@mail.gmail.com>
-Subject: [PATCH] [MTD] CHIPS: 0xFF intolerance for M29W128G
-From: massimo cirillo <maxcir@gmail.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: augulis.darius@gmail.com, RichardRetanubun@ruggedcom.com
+Subject: mtdoops and non pre-emptible kernel
+Content-Type: multipart/mixed; boundary="------------020501090003020801050104"
+Cc: rpurdie@openedhand.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,61 +19,139 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Massimo Cirillo <maxcir@gmail.com>
+This is a multi-part message in MIME format.
+--------------020501090003020801050104
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-The M29W128G Numonyx flash devices are intolerant to any 0xFF command:
-in the Cfi_util.c the function cfi_qry_mode_off() (that resets the device
-after the autoselect mode) must have a 0xF0 command after the 0xFF command.
-Intel-like devices are not influenced by a 0xF0 command.
-This fix solves also the cause of the fixup_M29W128G_write_buffer() fix,
-that can be commented out now.
-The following patch applies to 2.6.30 kernel.
+Hello,
 
-Signed-off-by: Massimo Cirillo <maxcir@gmail.com>
----
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c
-b/drivers/mtd/chips/cfi_cmdset_0002.c
-old mode 100644
-new mode 100755
-index 61ea833..5a65e92
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -308,7 +308,7 @@ static struct cfi_fixup cfi_fixup_table[] = {
- 	{ CFI_MFR_AMD, 0x1301, fixup_s29gl064n_sectors, NULL, },
- 	{ CFI_MFR_AMD, 0x1a00, fixup_s29gl032n_sectors, NULL, },
- 	{ CFI_MFR_AMD, 0x1a01, fixup_s29gl032n_sectors, NULL, },
--	{ CFI_MFR_ST,  0x227E, fixup_M29W128G_write_buffer, NULL, },
-+	/*{ CFI_MFR_ST,  0x227E, fixup_M29W128G_write_buffer, NULL, },*/
- #if !FORCE_WORD_WRITE
- 	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_use_write_buffers, NULL, },
- #endif
-diff --git a/drivers/mtd/chips/cfi_util.c b/drivers/mtd/chips/cfi_util.c
-old mode 100644
-new mode 100755
-index 34d40e2..9c897f9
---- a/drivers/mtd/chips/cfi_util.c
-+++ b/drivers/mtd/chips/cfi_util.c
-@@ -61,8 +61,8 @@ int __xipram cfi_qry_mode_on(uint32_t base,
- 		return 1;
- 	/* QRY not found probably we deal with some odd CFI chips */
- 	/* Some revisions of some old Intel chips? */
--	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0x98, 0x55, base, map, cfi, cfi->device_type, NULL);
- 	if (cfi_qry_present(map, base, cfi))
- 		return 1;
-@@ -79,8 +79,11 @@ EXPORT_SYMBOL_GPL(cfi_qry_mode_on);
- void __xipram cfi_qry_mode_off(uint32_t base, struct map_info *map,
- 			       struct cfi_private *cfi)
- {
--	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL);
-+    /* Numonyx M29W128G requires two 0xF0 to exit succesfully from
-+    autoselect mode. No consequences on Intel-like devices. */
-+	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
+I'm trying to use the mtd oops feature on a non pre-emptible m68k
+coldfire Linux kernel. Problem is, there is nothing being written to
+flash upon a kernel panic. I'm passing the correct syntax on the command
+line and I can see the kernel messages indicating that everything is ok, ie:
+
+/ # dmesg | grep -i mtd
+[    0.000000] Kernel command line: console=ttyS0,115200 ip=dhcp
+root=/dev/nfs nfsroot=192.168.0.2:/home/matt/nfs/evb/rootfs/ rw
+mtdparts=physmap-flash.0:4M@0x80000(kernel)ro,5M@0x480000(r
+amdisk),-@0x980000(writeable) console=ttyMTD2
+[    0.336920] console [ttyMTD2] enabled
+[    0.933655] 3 cmdlinepart partitions found on MTD device physmap-flash.0
+[    0.940745] Creating 3 MTD partitions on "physmap-flash.0":
+[    0.951893] mtd: Giving out device 0 to kernel
+[    0.965760] mtd: Giving out device 1 to ramdisk
+[    0.979124] mtd: Giving out device 2 to writeable
+[    0.993942] mtdoops: Ready 8, 9 (no erase)
+[    0.993979] mtdoops: Attached to MTD device 2
+
+The issue appears to be that the call to schedule_work() in
+mtdoops_console_sync() does not result in mtdoops_workfunc_write() being
+invoked to perform the flash write.
+
+I understand that there is only a very small window in which to actually
+flush the buffer to flash (involving a spinlock and testing
+oops_in_progress). However, from what I can tell, on a non pre-emptible
+kernel, after panic() does it's business of calling bust_spinlocks(),
+which calls console_unblank(), which calls mtdoops_console_sync(), which
+calls schedule_work(), there is no way [certainly that I can see] that
+the system can context switch to the worker thread in order to invoke
+the routine that actually writes to flash.
+
+The only way I have been able to get the flash to be written to upon
+panic is to make the following change:
+
+diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
+index 1a6b3be..2d734e2 100644
+--- a/drivers/mtd/mtdoops.c
++++ b/drivers/mtd/mtdoops.c
+@@ -335,7 +335,7 @@ static void mtdoops_console_sync(void)
+                /* Interrupt context, we're going to panic so try and log */
+                mtdoops_write(cxt, 1);
+        else
+-               schedule_work(&cxt->work_write);
++               mtdoops_write(cxt, 0);
  }
- EXPORT_SYMBOL_GPL(cfi_qry_mode_off);
 
---
+ static void
+
+I can pull out the logs just fine in user space using oopslog, courtesy
+of Mr Purdie.
+
+I can replicate the same situation (worker thread not executing the
+registered scheduled work routine) on my system with a simple kernel
+module (attached). Without the call to schedule, the system does not
+panic. In the case of the attached example, this is not surprising since
+there is nothing to force a context switch. The kernel sits in the loop
+forever and will warn about a soft lock up (if this feature is enabled).
+
+I have tried invoking schedule() immediately after schedule_work() in
+mtdoops_console_sync(). However this still results in flash not being
+written to when there is a panic. I realise that now there are of course
+other factors at play which could explain why the flash never gets
+written to, (specifically related to scheduling, eg thread time slices,
+quantums etc), but I wanted to point out that there certainly appears to
+be a couple of cases in mtdoops.c where there should be calls to
+schedule() after calls to schedule_work() - only there aren't.
+
+I don't mean to criticise the code :-) I'm an avid user of open source,
+but I'd be interested if the mtd oops feature works reliably on other
+non pre-emptive kernels.
+
+Thoughts? Any feedback much appreciated.
+
+Best regards,
+--  Matt
+
+--------------020501090003020801050104
+Content-Type: text/x-csrc;
+ name="work.c"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="work.c"
+
+#include <linux/init.h>
+#include <linux/module.h>
+#include <linux/workqueue.h>
+#include <linux/delay.h>
+#include <linux/sched.h>
+
+MODULE_LICENSE("foo");
+
+static struct work_struct mywork;
+
+static void mywork_func(struct work_struct *work)
+{
+   panic("Adios muchachos");
+}
+
+static int myinit(void)
+{
+   int i;
+   printk(KERN_ALERT "myinit ->\n");
+
+   INIT_WORK(&mywork, mywork_func);
+
+   schedule_work(&mywork);
+   schedule();
+
+   /* This loop will hang non-premptible kernels and the worker func above
+    * will not be executed without the above call to schedule. */
+   for (i = 0;;) {
+      mdelay(1);
+      i++;
+   }
+
+   return 0;
+}
+
+static void myexit(void)
+{
+   printk(KERN_ALERT "<- myinit\n");
+   return;
+}
+
+module_init(myinit);
+module_exit(myexit);
+
+--------------020501090003020801050104--
