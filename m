@@ -1,19 +1,18 @@
-Received: from mail2.shareable.org ([80.68.89.115])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MgMiB-0005bC-Uy
-	for linux-mtd@lists.infradead.org; Wed, 26 Aug 2009 17:55:12 +0000
-Date: Wed, 26 Aug 2009 18:55:03 +0100
-From: Jamie Lokier <jamie@shareable.org>
-To: massimo cirillo <maxcir@gmail.com>
-Subject: Re: [PATCH] [MTD] CHIPS: 0xFF intolerance for M29W128G
-Message-ID: <20090826175503.GC25726@shareable.org>
-References: <62cbdcd90908260842l66275d12na133bdb7cc4ac14@mail.gmail.com>
+Received: from mail-fx0-f226.google.com ([209.85.220.226])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MgOQ5-00025c-Bs
+	for linux-mtd@lists.infradead.org; Wed, 26 Aug 2009 19:44:38 +0000
+Received: by fxm26 with SMTP id 26so416746fxm.18
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 26 Aug 2009 12:44:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <62cbdcd90908260842l66275d12na133bdb7cc4ac14@mail.gmail.com>
-Cc: augulis.darius@gmail.com, linux-mtd@lists.infradead.org,
-	RichardRetanubun@ruggedcom.com
+Date: Wed, 26 Aug 2009 22:44:31 +0300
+Message-ID: <dac45060908261244wbfc744apec0d5195a0f1dbcf@mail.gmail.com>
+Subject: Creating an ext3 partition on an mtd device
+From: Mark Ryden <markryde@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-massimo cirillo wrote:
-> From: Massimo Cirillo <maxcir@gmail.com>
-> 
-> The M29W128G Numonyx flash devices are intolerant to any 0xFF command:
-> in the Cfi_util.c the function cfi_qry_mode_off() (that resets the device
-> after the autoselect mode) must have a 0xF0 command after the 0xFF command.
-> Intel-like devices are not influenced by a 0xF0 command.
-> This fix solves also the cause of the fixup_M29W128G_write_buffer() fix,
-> that can be commented out now.
-> The following patch applies to 2.6.30 kernel.
+Hello,
 
-This change was discussed 1 year ago:
+I want to create an ext2 partition on an mtd device.
 
-   http://lists.infradead.org/pipermail/linux-mtd/2008-August/022497.html
+The is the output of cat /proc/mtd
+dev:    size   erasesize  name
 
-The conclusion was that 0xf0 after 0xff might not be safe for some
-chips ("early revisions of L30"), but nobody could confirm which
-chips, so Alexey Korolov suggested staying safe and using fixup
-functions.
+ mtd0: 00100000 00040000 "UBoot"
+ mtd1: 00400000 00040000 "UImage"
+ mtd2: 7fb00000 00040000 "Root"
+ mtd3: 00800000 00010000 "spi0.0"
 
-I'm inclined to think a per-manufacturer (ignoring chip-id) reset
-function would be better than the attempt to poke several different
-commands at a chip all mixed together in a careful order, knowing that
-some commands break some chips but later commands fix them again.
 
--- Jamie
+ I tried to create a partition with fdisk /dev/mtdblock2
+ The device is /dev/mtdblock2p1
+ but: mkfs.ext3 /dev/mtdblock2p1  fails
+
+ What should I do ? Is it right in this case to use fdisk at all ?
+
+Regards,
+Mark Ryden
