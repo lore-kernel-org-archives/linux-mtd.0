@@ -1,16 +1,18 @@
-Message-ID: <4A94CF0A.6060106@gmail.com>
-Date: Wed, 26 Aug 2009 08:58:34 +0300
-From: Artem Bityutskiy <dedekind1@gmail.com>
+Received: from mail-px0-f190.google.com ([209.85.216.190])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MgETc-0008EY-0y
+	for linux-mtd@lists.infradead.org; Wed, 26 Aug 2009 09:07:37 +0000
+Received: by pxi28 with SMTP id 28so6587834pxi.2
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 26 Aug 2009 02:07:30 -0700 (PDT)
 MIME-Version: 1.0
-To: Amul Kumar Saha <amul.saha@samsung.com>
-Subject: Re: [PATCH] [OneNAND] OTP support re-implementation 1/1
-References: <EF4202CC14044212993EE17E6010D5E7@sisodomain.com>
-	<87D6E94B11734CE1A253D9AE203F4192@sisodomain.com>
-In-Reply-To: <87D6E94B11734CE1A253D9AE203F4192@sisodomain.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: dedekind@infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	kyungmin.park@samsung.com, linux-mtd@lists.infradead.org
+Date: Wed, 26 Aug 2009 17:07:29 +0800
+Message-ID: <2df346410908260207g32a0d368i8953aacb2655f542@mail.gmail.com>
+Subject: About UBI2
+From: JiSheng Zhang <jszhang3@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,23 +22,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/26/2009 08:41 AM, Amul Kumar Saha wrote:
-> Resending the patch, as there was a line-wrap issue in the earlier post.
->
-> With Regards,
-> Amul Kumar Saha
->
->
-> Re-implemented OTP support for OneNAND
-> Added following features to OneNAND
-> 	1. Lock only 1st Block in OneNAND
-> 	2. Lock BOTH 1st Block and OTP Block in OneNAND
+Hi list,
 
--ENOPARSE
+I want to improve ubi attach time, I have read the faq of ubi, it
+seems that once ubi2 is implemented, the attach time will be very
+good. My question is Under ubi2, if ubifs is unmounted unclean, is
+there need to scan all EBs? Is there any news or ideas of UBI2?
 
-Large patches like this normally require good explanations of what is
-done, why it is done, which problem it solves, how it is done, etc.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Thanks in advance,
+Jisheng
