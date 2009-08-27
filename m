@@ -1,18 +1,22 @@
-Received: from mail-fx0-f226.google.com ([209.85.220.226])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mgbyl-0006uH-2s
-	for linux-mtd@lists.infradead.org; Thu, 27 Aug 2009 10:13:19 +0000
-Received: by fxm26 with SMTP id 26so858534fxm.18
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 27 Aug 2009 03:13:13 -0700 (PDT)
+Received: from relay.ptn-ipout02.plus.net ([212.159.7.36])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MgcFV-0002RQ-5D
+	for linux-mtd@lists.infradead.org; Thu, 27 Aug 2009 10:30:37 +0000
+Message-ID: <e5b07cfc262281f1e1c2687c19cb3524.squirrel@webmail.plus.net>
+In-Reply-To: <1251367574.9940.2.camel@dax.rpnet.com>
+References: <4A9573CF.8030105@bubblegen.co.uk>
+	<1251323622.16040.13.camel@dax.rpnet.com>
+	<9f22e03e9efbb90b242869d7652caa97.squirrel@webmail.plus.net>
+	<1251367574.9940.2.camel@dax.rpnet.com>
+Date: Thu, 27 Aug 2009 11:30:31 +0100
+Subject: Re: mtdoops and non pre-emptible kernel
+From: "Matthew Lear" <matt@bubblegen.co.uk>
+To: "Richard Purdie" <rpurdie@openedhand.com>
 MIME-Version: 1.0
-Date: Thu, 27 Aug 2009 12:13:13 +0200
-Message-ID: <62cbdcd90908270313i5a45cb4aw6f34477a798bdbfe@mail.gmail.com>
-Subject: [PATCH] [MTD] CHIPS: buffer size adjustment for M29EW Numonyx devices
-From: massimo cirillo <maxcir@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Cc: matt@bubblegen.co.uk, linux-mtd@lists.infradead.org
+Reply-To: matt@bubblegen.co.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,95 +26,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Massimo Cirillo <maxcir@gmail.com>
+> On Thu, 2009-08-27 at 09:59 +0100, Matthew Lear wrote:
+>> In any case, yes I saw the two paths the code can go, ie if the mtd
+>> device's panic_write() is available and we're in interrupt context then
+>> use the panic_write function to write to flash, else use the work queue.
+>> The path that my scenario takes is always the latter but the write in
+>> context of the work queue never happens.
+>>
+>> If this is because of the small window in which to perform the write and
+>> there are other factors coming into play involving scheduling then
+>> obviously that's not a direct issue for the mtdoops code.
+>>
+>> However, the call to mtdoops_console_sync() (which causes the flash
+>> write
+>> to be initiated from console_unblank() for the ttyMTD console device) is
+>> eventually followed by the panic routine spinning in a tight loop with
+>> an
+>> mdelay(1). There doesn't appear to be anywhere in this path where
+>> schedule() is invoked. Because of running a non pre-emptible kernel,
+>> there
+>> is no way, certainly that I can see, that a context can switch can
+>> happen
+>> to allow the jobs in the work queue to be run without at least calling
+>> schedule() after calling schedule_work() from within
+>> mtdoops_console_sync().
+>>
+>> Maybe I've missed something :-) but calling schedule() after
+>> schedule_work() certainly seems to be the correct approach to at least
+>> allow the code to do what it's trying to do, especially on non
+>> pre-emptible kernels.
+>
+> That isn't the right solution since calling schedule() is not something
+> allowed at that point in the code, particularly in the middle of a
+> kernel panic. We really need to detect that we're about to head into the
+> panic spining loop and then call the write function directly. How we do
+> that I'm not so sure without going into the code in more detail. I
+> suspect something has subtly changed in the kernel meaning that
+> particular circumstances no longer works :/
+>
+That's fair enough. I suppose a possible solution would be to do what I've
+done locally for testing, ie:
 
-The buffer size fot M29EW Numonyx flash devices used in 8bit configuration
-is 256 bytes sized, while the CFI contains a wrong value (1024 bytes).
-The following patch fixes this hardware bug.
-The following patch applies to 2.6.30 kernel.
+diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
+index 1a6b3be..2d734e2 100644
+--- a/drivers/mtd/mtdoops.c
++++ b/drivers/mtd/mtdoops.c
+@@ -335,7 +335,7 @@ static void mtdoops_console_sync(void)
+                /* Interrupt context, we're going to panic so try and log */
+                mtdoops_write(cxt, 1);
+        else
+-               schedule_work(&cxt->work_write);
++               mtdoops_write(cxt, 0);
+ }
 
-Signed-off-by: Massimo Cirillo <maxcir@gmail.com>
----
-diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
-old mode 100644
-new mode 100755
-index e63e674..1281920
---- a/drivers/mtd/chips/cfi_probe.c
-+++ b/drivers/mtd/chips/cfi_probe.c
-@@ -158,6 +158,9 @@ static int __xipram cfi_chip_setup(struct map_info *map,
- 	__u32 base = 0;
- 	int num_erase_regions = cfi_read_query(map, base + (0x10 + 28)*ofs_factor);
- 	int i;
-+	int extendedId1 = 0;
-+	int extendedId2 = 0;
-+	int extendedId3 = 0;
+ static void
 
- 	xip_enable(base, map, cfi);
- #ifdef DEBUG_CFI
-@@ -196,23 +199,39 @@ static int __xipram cfi_chip_setup(struct map_info *map,
- 	cfi->id = cfi_read_query16(map, base + ofs_factor);
+Obviously this performs the flash write in the same context as that of
+panic() and negates the need for the registration and usage of the work
+routine, so it would simplify things. However, this would/could effect
+what happens during a panic. Clearly the thought behind writing to flash
+asynchronously was deemed a requirement.
 
- 	/* Get AMD/Spansion extended JEDEC ID */
--	if (cfi->mfr == CFI_MFR_AMD && (cfi->id & 0xff) == 0x7e)
--		cfi->id = cfi_read_query(map, base + 0xe * ofs_factor) << 8 |
-+	if ((cfi->mfr == CFI_MFR_NMX || cfi->mfr == CFI_MFR_ST ||
-+		cfi->mfr == CFI_MFR_AMD) && ((cfi->id & 0xff) == 0x7e)
-+		&& (le16_to_cpu(cfi->cfiq->P_ID) == 0x0002)) {
-+		extendedId1 = cfi_read_query16(map, base + 0x1 * ofs_factor);
-+		extendedId2 = cfi_read_query16(map, base + 0xe * ofs_factor);
-+		extendedId3 = cfi_read_query16(map, base + 0xf * ofs_factor);
-+		/* compatibility with previous versions */
-+		cfi->id = cfi_read_query(map, base + 0xe * ofs_factor) << 8 |
- 			  cfi_read_query(map, base + 0xf * ofs_factor);
-+	}
+Perhaps it does need another look and some testing on pre-empt and non
+pre-empt kernels just to get a feel for if the mtdoops code is still
+working as intended. I know that our kernel will be running with the above
+patch applied as it's the only way I can reliably log to flash upon panic.
 
- 	/* Put it back into Read Mode */
- 	cfi_qry_mode_off(base, map, cfi);
- 	xip_allowed(base, map);
--
--	/* Do any necessary byteswapping */
-+
-+	/* Do any necessary byteswapping */
- 	cfi->cfiq->P_ID = le16_to_cpu(cfi->cfiq->P_ID);
--
- 	cfi->cfiq->P_ADR = le16_to_cpu(cfi->cfiq->P_ADR);
- 	cfi->cfiq->A_ID = le16_to_cpu(cfi->cfiq->A_ID);
- 	cfi->cfiq->A_ADR = le16_to_cpu(cfi->cfiq->A_ADR);
- 	cfi->cfiq->InterfaceDesc = le16_to_cpu(cfi->cfiq->InterfaceDesc);
- 	cfi->cfiq->MaxBufWriteSize = le16_to_cpu(cfi->cfiq->MaxBufWriteSize);
-
-+	/* If the device is a M29EW used in 8-bit mode, adjust buffer size */
-+	if ((cfi->cfiq->MaxBufWriteSize > 0x8) && (cfi->mfr == CFI_MFR_NMX ||
-+		cfi->mfr == CFI_MFR_ST) && (extendedId1 == 0x7E) &&
-+		(extendedId2 == 0x22 || extendedId2 == 0x23 || extendedId2 == 0x28) &&
-+		(extendedId3 == 0x01)) {
-+		cfi->cfiq->MaxBufWriteSize = 0x8;
-+		pr_warning("Adjusted buffer size on Numonyx flash M29EW family");
-+		pr_warning(" in 8 bit mode\n");
-+	}
-+
- #ifdef DEBUG_CFI
- 	/* Dump the information therein */
- 	print_cfi_ident(cfi->cfiq);
-@@ -228,6 +247,8 @@ static int __xipram cfi_chip_setup(struct map_info *map,
- #endif
- 	}
-
-+
-+
- 	printk(KERN_INFO "%s: Found %d x%d devices at 0x%x in %d-bit bank\n",
- 	       map->name, cfi->interleave, cfi->device_type*8, base,
- 	       map->bankwidth*8);
-diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
-old mode 100644
-new mode 100755
-index 88d3d8f..43d6a77
---- a/include/linux/mtd/cfi.h
-+++ b/include/linux/mtd/cfi.h
-@@ -522,6 +522,7 @@ struct cfi_fixup {
- #define CFI_MFR_ATMEL 0x001F
- #define CFI_MFR_SAMSUNG 0x00EC
- #define CFI_MFR_ST  0x0020 	/* STMicroelectronics */
-+#define CFI_MFR_NMX 0x0089 /* Numonyx */
-
- void cfi_fixup(struct mtd_info *mtd, struct cfi_fixup* fixups);
+Cheers,
+--  Matt
