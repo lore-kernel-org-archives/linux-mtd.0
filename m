@@ -1,17 +1,26 @@
-Received: from mail-ew0-f208.google.com ([209.85.219.208])
+Received: from mail-out.m-online.net ([212.18.0.9])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mgcl0-00018P-0P
-	for linux-mtd@lists.infradead.org; Thu, 27 Aug 2009 11:03:10 +0000
-Received: by ewy4 with SMTP id 4so1065844ewy.27
+	id 1Mgdhx-0006td-8V
+	for linux-mtd@lists.infradead.org; Thu, 27 Aug 2009 12:04:05 +0000
+Received: from mail01.m-online.net (mail.m-online.net [192.168.3.149])
+	by mail-out.m-online.net (Postfix) with ESMTP id C79B31C154B1
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 27 Aug 2009 04:03:03 -0700 (PDT)
-MIME-Version: 1.0
-Date: Thu, 27 Aug 2009 13:03:02 +0200
-Message-ID: <eedb5540908270403q13678066k49199ed43688fee3@mail.gmail.com>
-Subject: Problems with jffs2 partition after reboot
-From: javier Martin <javier.martin@vista-silicon.com>
+	Thu, 27 Aug 2009 14:03:58 +0200 (CEST)
+Received: from vitb-lp.localdomain (unknown [89.169.140.112])
+	by smtp-auth.mnet-online.de (Postfix) with ESMTP id 6B51E901B1
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 27 Aug 2009 14:03:58 +0200 (CEST)
+Received: from vitb-lp (vitb-lp [127.0.0.1])
+	by vitb-lp.localdomain (Postfix) with ESMTP id 0D7C61DD
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 27 Aug 2009 16:04:38 +0400 (MSD)
+Date: Thu, 27 Aug 2009 16:04:33 +0400
+From: Vitaly Bordug <vitb@kernel.crashing.org>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Subject: [PATCH] jedec: Fix compilation problem with I28F640C3B definition
+Message-ID: <20090827160433.45e595f6@vitb-lp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,62 +31,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello, I am using kernel 2.6.30 and have a jffs2 partition in
-/dev/mtdblock3. It is used for storing small configuration files.
-My board is a Visstrim_m10 based in i.MX27 processor and I am using a
-32MB NOR flash (S29WS256P) from Spansion.
+Fix compilation problem with I28F640C3B definition
 
-I have created my jffs2 partition with the following command:
-sudo mkfs.jffs2 -r $TARGET_FS/mnt/jffs2 -s 0x800 -e 0x20000 -o
-$PATH_TO_RELEASES/$ReleaseName/config.jffs2 -v --pad=0x280000
+From: Stefan Roese <sr@denx.de>
+Date:   Tue Feb 12 17:05:25 2008 +0100
 
-Then I use RedBoot to store the jffs2 image in flash.
+    mtd: Fix compilation problem with I28F640C3B definition
 
-When I boot my board the first time I can mount my jffs2 partition and
-access its files without problems:
-mount -t jffs2 /dev/mtdblock3 /mnt/jffs2
+    Signed-off-by: Stefan Roese <sr@denx.de>
+    Signed-off-by: Vitaly Bordug <vitb@kernel.crashing.org>
+---
+This has been sitting in DENX tree for a while, any reason not having
+it upstream?
 
-Then I try to write a file through SSH in /root/.ssh/ which is a
-symlink to my jffs2 partition (/mnt/jffs2/root/.ssh/):
-cat /remotehome/javier/.ssh/id_rsa.pub | ssh root@192.168.0.141 'cat
->> .ssh/authorized_keys'
+drivers/mtd/chips/jedec_probe.c |   18 ++++++++++++++++++
+ 1 files changed, 18 insertions(+), 0 deletions(-)
 
-Operation succeeded and I type reboot. But when my board is up again I
-mount my jffs2 partition again and these messages appear:
-jffs2_scan_eraseblock(): Node at 0x000006b8 {0x1985, 0xe002,
-0x0000019f) has invalid CRC 0x68602fb2 (calculated 0x6860afb2)
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000006bc:
-0x019f instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000006c0:
-0x2fb2 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000006c4:
-0x000a instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000006c8:
-0x0002 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000006cc:
-0x81a4 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000006d4:
-0x018c instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000006d8:
-0x0098 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000006dc:
-0x0098 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000006e0:
-0x0098 instead
-Further such events for this erase block will not be printed
 
-And the file I wrote has disappeared inside the jffs2 partition.
-
-Please, can you give me a tip of what can be happening here? Maybe I
-made a mistake in the previously described process.
-
-Thank you.
--- 
-Javier Martin
-Vista Silicon S.L.
-Universidad de Cantabria
-CDTUC - FASE C - Oficina S-345
-Avda de los Castros s/n
-39005- Santander. Cantabria. Spain
-+34 942 25 32 60
-www.vista-silicon.com
+diff --git a/drivers/mtd/chips/jedec_probe.c
+b/drivers/mtd/chips/jedec_probe.c index ccc4cfc..94a0d8f 100644
+--- a/drivers/mtd/chips/jedec_probe.c
++++ b/drivers/mtd/chips/jedec_probe.c
+@@ -111,6 +111,11 @@
+ #define I28F320B3B	0x8897
+ #define I28F640B3T	0x8898
+ #define I28F640B3B	0x8899
++#define I28F640C3B	0x88CD
++#define I28F160F3T	0x88F3
++#define I28F160F3B	0x88F4
++#define I28F160C3T	0x88C2
++#define I28F160C3B	0x88C3
+ #define I82802AB	0x00ad
+ #define I82802AC	0x00ac
+ 
+@@ -1103,6 +1108,19 @@ static const struct amd_flash_info jedec_table[]
+= { }
+ 	}, {
+ 		.mfr_id		= MANUFACTURER_INTEL,
++		.dev_id		= I28F640C3B,
++		.name		= "Intel 28F640C3B",
++		.devtypes	= CFI_DEVICETYPE_X16,
++		.uaddr		= MTD_UADDR_UNNECESSARY,
++		.dev_size	= SIZE_8MiB,
++		.cmd_set	= P_ID_INTEL_STD,
++		.nr_regions	= 2,
++		.regions	= {
++			ERASEINFO(0x02000, 8),
++			ERASEINFO(0x10000, 127),
++		}
++	}, {
++		.mfr_id		= MANUFACTURER_INTEL,
+ 		.dev_id		= I82802AB,
+ 		.name		= "Intel 82802AB",
+ 		.devtypes	= CFI_DEVICETYPE_X8,
