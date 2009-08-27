@@ -1,22 +1,18 @@
-Received: from relay.ptn-ipout02.plus.net ([212.159.7.36])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MgcFV-0002RQ-5D
-	for linux-mtd@lists.infradead.org; Thu, 27 Aug 2009 10:30:37 +0000
-Message-ID: <e5b07cfc262281f1e1c2687c19cb3524.squirrel@webmail.plus.net>
-In-Reply-To: <1251367574.9940.2.camel@dax.rpnet.com>
-References: <4A9573CF.8030105@bubblegen.co.uk>
-	<1251323622.16040.13.camel@dax.rpnet.com>
-	<9f22e03e9efbb90b242869d7652caa97.squirrel@webmail.plus.net>
-	<1251367574.9940.2.camel@dax.rpnet.com>
-Date: Thu, 27 Aug 2009 11:30:31 +0100
-Subject: Re: mtdoops and non pre-emptible kernel
-From: "Matthew Lear" <matt@bubblegen.co.uk>
-To: "Richard Purdie" <rpurdie@openedhand.com>
+Received: from mail-ew0-f208.google.com ([209.85.219.208])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Mgcl0-00018P-0P
+	for linux-mtd@lists.infradead.org; Thu, 27 Aug 2009 11:03:10 +0000
+Received: by ewy4 with SMTP id 4so1065844ewy.27
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 27 Aug 2009 04:03:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Cc: matt@bubblegen.co.uk, linux-mtd@lists.infradead.org
-Reply-To: matt@bubblegen.co.uk
+Date: Thu, 27 Aug 2009 13:03:02 +0200
+Message-ID: <eedb5540908270403q13678066k49199ed43688fee3@mail.gmail.com>
+Subject: Problems with jffs2 partition after reboot
+From: javier Martin <javier.martin@vista-silicon.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,71 +22,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> On Thu, 2009-08-27 at 09:59 +0100, Matthew Lear wrote:
->> In any case, yes I saw the two paths the code can go, ie if the mtd
->> device's panic_write() is available and we're in interrupt context then
->> use the panic_write function to write to flash, else use the work queue.
->> The path that my scenario takes is always the latter but the write in
->> context of the work queue never happens.
->>
->> If this is because of the small window in which to perform the write and
->> there are other factors coming into play involving scheduling then
->> obviously that's not a direct issue for the mtdoops code.
->>
->> However, the call to mtdoops_console_sync() (which causes the flash
->> write
->> to be initiated from console_unblank() for the ttyMTD console device) is
->> eventually followed by the panic routine spinning in a tight loop with
->> an
->> mdelay(1). There doesn't appear to be anywhere in this path where
->> schedule() is invoked. Because of running a non pre-emptible kernel,
->> there
->> is no way, certainly that I can see, that a context can switch can
->> happen
->> to allow the jobs in the work queue to be run without at least calling
->> schedule() after calling schedule_work() from within
->> mtdoops_console_sync().
->>
->> Maybe I've missed something :-) but calling schedule() after
->> schedule_work() certainly seems to be the correct approach to at least
->> allow the code to do what it's trying to do, especially on non
->> pre-emptible kernels.
->
-> That isn't the right solution since calling schedule() is not something
-> allowed at that point in the code, particularly in the middle of a
-> kernel panic. We really need to detect that we're about to head into the
-> panic spining loop and then call the write function directly. How we do
-> that I'm not so sure without going into the code in more detail. I
-> suspect something has subtly changed in the kernel meaning that
-> particular circumstances no longer works :/
->
-That's fair enough. I suppose a possible solution would be to do what I've
-done locally for testing, ie:
+Hello, I am using kernel 2.6.30 and have a jffs2 partition in
+/dev/mtdblock3. It is used for storing small configuration files.
+My board is a Visstrim_m10 based in i.MX27 processor and I am using a
+32MB NOR flash (S29WS256P) from Spansion.
 
-diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-index 1a6b3be..2d734e2 100644
---- a/drivers/mtd/mtdoops.c
-+++ b/drivers/mtd/mtdoops.c
-@@ -335,7 +335,7 @@ static void mtdoops_console_sync(void)
-                /* Interrupt context, we're going to panic so try and log */
-                mtdoops_write(cxt, 1);
-        else
--               schedule_work(&cxt->work_write);
-+               mtdoops_write(cxt, 0);
- }
+I have created my jffs2 partition with the following command:
+sudo mkfs.jffs2 -r $TARGET_FS/mnt/jffs2 -s 0x800 -e 0x20000 -o
+$PATH_TO_RELEASES/$ReleaseName/config.jffs2 -v --pad=0x280000
 
- static void
+Then I use RedBoot to store the jffs2 image in flash.
 
-Obviously this performs the flash write in the same context as that of
-panic() and negates the need for the registration and usage of the work
-routine, so it would simplify things. However, this would/could effect
-what happens during a panic. Clearly the thought behind writing to flash
-asynchronously was deemed a requirement.
+When I boot my board the first time I can mount my jffs2 partition and
+access its files without problems:
+mount -t jffs2 /dev/mtdblock3 /mnt/jffs2
 
-Perhaps it does need another look and some testing on pre-empt and non
-pre-empt kernels just to get a feel for if the mtdoops code is still
-working as intended. I know that our kernel will be running with the above
-patch applied as it's the only way I can reliably log to flash upon panic.
+Then I try to write a file through SSH in /root/.ssh/ which is a
+symlink to my jffs2 partition (/mnt/jffs2/root/.ssh/):
+cat /remotehome/javier/.ssh/id_rsa.pub | ssh root@192.168.0.141 'cat
+>> .ssh/authorized_keys'
 
-Cheers,
---  Matt
+Operation succeeded and I type reboot. But when my board is up again I
+mount my jffs2 partition again and these messages appear:
+jffs2_scan_eraseblock(): Node at 0x000006b8 {0x1985, 0xe002,
+0x0000019f) has invalid CRC 0x68602fb2 (calculated 0x6860afb2)
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000006bc:
+0x019f instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000006c0:
+0x2fb2 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000006c4:
+0x000a instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000006c8:
+0x0002 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000006cc:
+0x81a4 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000006d4:
+0x018c instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000006d8:
+0x0098 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000006dc:
+0x0098 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000006e0:
+0x0098 instead
+Further such events for this erase block will not be printed
+
+And the file I wrote has disappeared inside the jffs2 partition.
+
+Please, can you give me a tip of what can be happening here? Maybe I
+made a mistake in the previously described process.
+
+Thank you.
+-- 
+Javier Martin
+Vista Silicon S.L.
+Universidad de Cantabria
+CDTUC - FASE C - Oficina S-345
+Avda de los Castros s/n
+39005- Santander. Cantabria. Spain
++34 942 25 32 60
+www.vista-silicon.com
