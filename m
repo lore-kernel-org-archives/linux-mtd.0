@@ -1,22 +1,23 @@
-Received: from smtp-vbr13.xs4all.nl ([194.109.24.33])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MggN6-0006le-Ik
-	for linux-mtd@lists.infradead.org; Thu, 27 Aug 2009 14:54:45 +0000
-Received: from mail3.aimsys.nl (a80-127-156-242.adsl.xs4all.nl
-	[80.127.156.242])
-	by smtp-vbr13.xs4all.nl (8.13.8/8.13.8) with ESMTP id n7REsaeU079514
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 27 Aug 2009 16:54:37 +0200 (CEST)
-	(envelope-from nvbolhuis@aimvalley.nl)
-Message-ID: <4A969E2C.7080302@aimvalley.nl>
-Date: Thu, 27 Aug 2009 16:54:36 +0200
-From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
-MIME-Version: 1.0
-To: Mtd List <linux-mtd@lists.infradead.org>
-Subject: Interest in making jffs2 physically correct NAND bit-flips
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from 3a.49.1343.static.theplanet.com ([67.19.73.58]
+	helo=pug.o-hand.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Mgh92-0003VW-Lo
+	for linux-mtd@lists.infradead.org; Thu, 27 Aug 2009 15:44:16 +0000
+Subject: Re: mtdoops and non pre-emptible kernel
+From: Richard Purdie <rpurdie@openedhand.com>
+To: matt@bubblegen.co.uk
+In-Reply-To: <e5b07cfc262281f1e1c2687c19cb3524.squirrel@webmail.plus.net>
+References: <4A9573CF.8030105@bubblegen.co.uk>
+	<1251323622.16040.13.camel@dax.rpnet.com>
+	<9f22e03e9efbb90b242869d7652caa97.squirrel@webmail.plus.net>
+	<1251367574.9940.2.camel@dax.rpnet.com>
+	<e5b07cfc262281f1e1c2687c19cb3524.squirrel@webmail.plus.net>
+Content-Type: text/plain
+Date: Thu, 27 Aug 2009 16:44:14 +0100
+Message-Id: <1251387854.21836.13.camel@dax.rpnet.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,51 +27,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, 2009-08-27 at 11:30 +0100, Matthew Lear wrote:
+> That's fair enough. I suppose a possible solution would be to do what I've
+> done locally for testing, ie:
+> 
+> diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
+> index 1a6b3be..2d734e2 100644
+> --- a/drivers/mtd/mtdoops.c
+> +++ b/drivers/mtd/mtdoops.c
+> @@ -335,7 +335,7 @@ static void mtdoops_console_sync(void)
+>                 /* Interrupt context, we're going to panic so try and log */
+>                 mtdoops_write(cxt, 1);
+>         else
+> -               schedule_work(&cxt->work_write);
+> +               mtdoops_write(cxt, 0);
+>  }
 
-First some background:
-Unfortunately we have deployed products that have a NAND device
-which suffers from bit-flips.
-Occasionally uncorrectable bit-flips occur (-EBADMSG) causing
-data loss.
-We use JFFS2. As known JFFS2 detects and corrects single bit-flips
-(per 256 byte subpage) but it doesn't physically correct them
-on the NAND device itself.
-To prevent further trouble (2 bit-flips in one subpage) we've
-made JFFS2 correct NAND bit-flips on the NAND device itself
-(and try to upgrade the deployed products a.s.a.p.).
+I just refreshed my memory a bit. I'd guess your mtd driver doesn't have
+a panic_write function which is highly desirable for this kind of use.
 
-Btw. in our case the bit-flips are caused by a single bits charge loss
-causing a programmed 0 to become 1.
+How about some code like this?:
 
-I know UBI(FS) already corrects bit-flips on NAND, but it is not an
-option for us to upgrade deployed products to another flash fs.
-Besides we're using the good old linux-2.4 kernel.
+	if (mtd->panic_write && in_interrupt())
+		/* Interrupt context, we're going to panic so try and log */
+		mtdoops_write(cxt, 1);
+	else if (in_interrupt())
+		/* Interrupt context but with no panic write function */
+                /* We're going to crash anyway so we may as well try and log */
+		mtdoops_write(cxt, 0);
+	else
+		schedule_work(&cxt->work_write);
 
-My question is: is there any interest in an mtd-2.6.git patch to make
-jffs2 correct NAND bit-flips ?
+Cheers,
 
-I'm asking because it is quite some work to forward patch (and test) the
-fix to mtd-2.6.git.
-Also note that most likely reviews/corrections (code style issues, bugs,
-etc..) have to be made (after all I'm not a kernel/mtd developer).
-Of course I'm willing to process all corrections/comments/questions
-that one may have.
-
-We make jffs2 correct the NAND bit-flips in a couple of (simple) steps:
--1- detect bit-flip and post JEB to a worker_list
--2- process worker_list (in a separate thread) by moving the JEB from
-     regular jffs2 list (e.g. dirty_list) to the bad_used list.
--3- trigger JFFS2 GC to process the JEB on the bad_used list
-
-JFFS2 GC does the rest (moving the valid data to another block and
-erase the JEB).
-
-The fix can be turned on/off with a kernel config #define.
-
-Since we have quite some static data on the NAND (cached by the kernel)
-reading NAND blocks and detecting bit-flips also happens regularly
-(by a seperate thread).
-We also have a lot of free space (and not a lot of dirty nodes) so
-originally GC never got triggered.
-
-Any feedback is welcome.
+Richard
