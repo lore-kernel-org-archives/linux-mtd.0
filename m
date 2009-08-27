@@ -1,26 +1,21 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from smtp-vbr13.xs4all.nl ([194.109.24.33])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mgdhx-0006td-8V
-	for linux-mtd@lists.infradead.org; Thu, 27 Aug 2009 12:04:05 +0000
-Received: from mail01.m-online.net (mail.m-online.net [192.168.3.149])
-	by mail-out.m-online.net (Postfix) with ESMTP id C79B31C154B1
+	id 1MggN6-0006le-Ik
+	for linux-mtd@lists.infradead.org; Thu, 27 Aug 2009 14:54:45 +0000
+Received: from mail3.aimsys.nl (a80-127-156-242.adsl.xs4all.nl
+	[80.127.156.242])
+	by smtp-vbr13.xs4all.nl (8.13.8/8.13.8) with ESMTP id n7REsaeU079514
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 27 Aug 2009 14:03:58 +0200 (CEST)
-Received: from vitb-lp.localdomain (unknown [89.169.140.112])
-	by smtp-auth.mnet-online.de (Postfix) with ESMTP id 6B51E901B1
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 27 Aug 2009 14:03:58 +0200 (CEST)
-Received: from vitb-lp (vitb-lp [127.0.0.1])
-	by vitb-lp.localdomain (Postfix) with ESMTP id 0D7C61DD
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 27 Aug 2009 16:04:38 +0400 (MSD)
-Date: Thu, 27 Aug 2009 16:04:33 +0400
-From: Vitaly Bordug <vitb@kernel.crashing.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] jedec: Fix compilation problem with I28F640C3B definition
-Message-ID: <20090827160433.45e595f6@vitb-lp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	Thu, 27 Aug 2009 16:54:37 +0200 (CEST)
+	(envelope-from nvbolhuis@aimvalley.nl)
+Message-ID: <4A969E2C.7080302@aimvalley.nl>
+Date: Thu, 27 Aug 2009 16:54:36 +0200
+From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+MIME-Version: 1.0
+To: Mtd List <linux-mtd@lists.infradead.org>
+Subject: Interest in making jffs2 physically correct NAND bit-flips
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,56 +26,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix compilation problem with I28F640C3B definition
 
-From: Stefan Roese <sr@denx.de>
-Date:   Tue Feb 12 17:05:25 2008 +0100
+First some background:
+Unfortunately we have deployed products that have a NAND device
+which suffers from bit-flips.
+Occasionally uncorrectable bit-flips occur (-EBADMSG) causing
+data loss.
+We use JFFS2. As known JFFS2 detects and corrects single bit-flips
+(per 256 byte subpage) but it doesn't physically correct them
+on the NAND device itself.
+To prevent further trouble (2 bit-flips in one subpage) we've
+made JFFS2 correct NAND bit-flips on the NAND device itself
+(and try to upgrade the deployed products a.s.a.p.).
 
-    mtd: Fix compilation problem with I28F640C3B definition
+Btw. in our case the bit-flips are caused by a single bits charge loss
+causing a programmed 0 to become 1.
 
-    Signed-off-by: Stefan Roese <sr@denx.de>
-    Signed-off-by: Vitaly Bordug <vitb@kernel.crashing.org>
----
-This has been sitting in DENX tree for a while, any reason not having
-it upstream?
+I know UBI(FS) already corrects bit-flips on NAND, but it is not an
+option for us to upgrade deployed products to another flash fs.
+Besides we're using the good old linux-2.4 kernel.
 
-drivers/mtd/chips/jedec_probe.c |   18 ++++++++++++++++++
- 1 files changed, 18 insertions(+), 0 deletions(-)
+My question is: is there any interest in an mtd-2.6.git patch to make
+jffs2 correct NAND bit-flips ?
 
+I'm asking because it is quite some work to forward patch (and test) the
+fix to mtd-2.6.git.
+Also note that most likely reviews/corrections (code style issues, bugs,
+etc..) have to be made (after all I'm not a kernel/mtd developer).
+Of course I'm willing to process all corrections/comments/questions
+that one may have.
 
-diff --git a/drivers/mtd/chips/jedec_probe.c
-b/drivers/mtd/chips/jedec_probe.c index ccc4cfc..94a0d8f 100644
---- a/drivers/mtd/chips/jedec_probe.c
-+++ b/drivers/mtd/chips/jedec_probe.c
-@@ -111,6 +111,11 @@
- #define I28F320B3B	0x8897
- #define I28F640B3T	0x8898
- #define I28F640B3B	0x8899
-+#define I28F640C3B	0x88CD
-+#define I28F160F3T	0x88F3
-+#define I28F160F3B	0x88F4
-+#define I28F160C3T	0x88C2
-+#define I28F160C3B	0x88C3
- #define I82802AB	0x00ad
- #define I82802AC	0x00ac
- 
-@@ -1103,6 +1108,19 @@ static const struct amd_flash_info jedec_table[]
-= { }
- 	}, {
- 		.mfr_id		= MANUFACTURER_INTEL,
-+		.dev_id		= I28F640C3B,
-+		.name		= "Intel 28F640C3B",
-+		.devtypes	= CFI_DEVICETYPE_X16,
-+		.uaddr		= MTD_UADDR_UNNECESSARY,
-+		.dev_size	= SIZE_8MiB,
-+		.cmd_set	= P_ID_INTEL_STD,
-+		.nr_regions	= 2,
-+		.regions	= {
-+			ERASEINFO(0x02000, 8),
-+			ERASEINFO(0x10000, 127),
-+		}
-+	}, {
-+		.mfr_id		= MANUFACTURER_INTEL,
- 		.dev_id		= I82802AB,
- 		.name		= "Intel 82802AB",
- 		.devtypes	= CFI_DEVICETYPE_X8,
+We make jffs2 correct the NAND bit-flips in a couple of (simple) steps:
+-1- detect bit-flip and post JEB to a worker_list
+-2- process worker_list (in a separate thread) by moving the JEB from
+     regular jffs2 list (e.g. dirty_list) to the bad_used list.
+-3- trigger JFFS2 GC to process the JEB on the bad_used list
+
+JFFS2 GC does the rest (moving the valid data to another block and
+erase the JEB).
+
+The fix can be turned on/off with a kernel config #define.
+
+Since we have quite some static data on the NAND (cached by the kernel)
+reading NAND blocks and detecting bit-flips also happens regularly
+(by a seperate thread).
+We also have a lot of free space (and not a lot of dirty nodes) so
+originally GC never got triggered.
+
+Any feedback is welcome.
