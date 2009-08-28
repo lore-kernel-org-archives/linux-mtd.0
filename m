@@ -1,20 +1,25 @@
-Received: from sdcmail01.amcc.com ([198.137.200.72])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MgoYH-0004g1-6F
-	for linux-mtd@lists.infradead.org; Thu, 27 Aug 2009 23:38:50 +0000
-Content-class: urn:content-classes:message
+Received: from mail-vw0-f193.google.com ([209.85.212.193])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Mgq79-00005U-8Y
+	for linux-mtd@lists.infradead.org; Fri, 28 Aug 2009 01:18:55 +0000
+Received: by vws31 with SMTP id 31so520895vws.28
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 27 Aug 2009 18:18:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="Windows-1252"
+In-Reply-To: <a64f67eb0908242247v7b10551q96c63b95f66bd41c@mail.gmail.com>
+References: <a64f67eb0908202331q73230351pe27f1434470707ae@mail.gmail.com>
+	<1c3f4270908211108w416019deh9aa4b2575d6a1b82@mail.gmail.com>
+	<a64f67eb0908231707k80cf8c9m11e9074c11c48abe@mail.gmail.com>
+	<4A926F79.4030700@users.sourceforge.net>
+	<a64f67eb0908242247v7b10551q96c63b95f66bd41c@mail.gmail.com>
+Date: Fri, 28 Aug 2009 11:18:48 +1000
+Message-ID: <a64f67eb0908271818t6971df98y2705c76e04ba4728@mail.gmail.com>
+Subject: Re: JFFS2 crash in linux-2.6.30
+From: linux newbie <linux.newbie79@gmail.com>
+To: =?ISO-8859-1?Q?Anders_Grafstr=F6m?= <grfstrm@users.sourceforge.net>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Subject: RE: [PATCH] [JFFS2] Fix csize integer overflow issue due to truncation
-Date: Thu, 27 Aug 2009 16:37:38 -0700
-Message-ID: <0CA0A16855646F4FA96D25A158E299D606EDB04E@SDCEXCHANGE01.ad.amcc.com>
-References: <25217471.1985431251223831787.JavaMail.nabble@isper.nabble.com> 
-From: "Victor Gallardo" <vgallardo@amcc.com>
-To: "David Woodhouse" <dwmw2@infradead.org>,
-	"Josh Boyer" <jwboyer@linux.vnet.ibm.com>, <linux-mtd@lists.infradead.org>
-Cc: Prodyut Hazarika <phazarika@amcc.com>, Feng Kan <fkan@amcc.com>
+Cc: Manoj <manoj23@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,21 +29,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David and Josh,
-=20
-Sorry if I am bothering you guys. I know you guys are busy or might
-be on vacation (it was August).
-=20
-Usually how long does it take for patches on the linux-mtd mailing
-list for JFFS2 patches to get ACKed or NACKed. Or get an email
-response from the MAINTAINER.
-=20
-I submitted the following patch and need to monitor it until it gets =
-applied.
-=20
-http://lists.infradead.org/pipermail/linux-mtd/2009-August/027005.html
-http://patchwork.ozlabs.org/patch/31854/
+before setting CONFIG_JFFS2_WBUF_VERIFY, if I enable jffs2 debug
+messages, things are working fine.
 
-Best Regards,
-=20
-Victor Gallardo
+I suspect there should be some timing issue.
+
+any thoughts in this regard?
+
+On Tue, Aug 25, 2009 at 3:47 PM, linux newbie<linux.newbie79@gmail.com> wro=
+te:
+> Hi All,
+>
+> Thanks for your support.
+>
+> I havent set CONFIG_JFFS2_FS_WBUF_VERIFY and after enabling it, its
+> working fine.
+>
+> Thanking You
+>
+> On Mon, Aug 24, 2009 at 8:46 PM, Anders
+> Grafstr=F6m<grfstrm@users.sourceforge.net> wrote:
+>> linux newbie wrote:
+>>> I tried this patch, after which I am not getting crash, but instead it =
+shows
+>>> cp: input/output error. and this is not consistent. somtimes, file
+>>> copying is perfect and some times its not.
+>>
+>> You get this when you write to a dnode whose previous data resides
+>> in a NAND block that has gone bad.
+>>
+>> Have you set CONFIG_JFFS2_FS_WBUF_VERIFY?
+>>
+>> ______________________________________________________
+>> Linux MTD discussion mailing list
+>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>
+>
