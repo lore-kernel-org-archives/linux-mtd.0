@@ -1,22 +1,16 @@
-Received: from sdcmail02.amcc.com ([198.137.200.90])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mh2AW-0006lu-Jy
-	for linux-mtd@lists.infradead.org; Fri, 28 Aug 2009 14:11:13 +0000
-Content-class: urn:content-classes:message
+Message-ID: <20090828193500.d8gnhgxp0gk0o8kk@webmail.crc.bg>
+Date: Fri, 28 Aug 2009 19:35:00 +0300
+From: LOAN <financialloan14@yahoo.es>
+To: undisclosed-recipients:;
+Subject: LOANS
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: [PATCH 1/1] Fix ECC Correction bug for SMC ordering for NDFC
-	driver.
-Date: Fri, 28 Aug 2009 07:11:06 -0700
-Message-ID: <0CA0A16855646F4FA96D25A158E299D606EDB128@SDCEXCHANGE01.ad.amcc.com>
-In-Reply-To: <12718.41111.qm@web39803.mail.mud.yahoo.com>
-References: <fkan@amcc.com> <12718.41111.qm@web39803.mail.mud.yahoo.com>
-From: "Victor Gallardo" <vgallardo@amcc.com>
-To: <linux-mtd@lists.infradead.org>, "Artem Bityutskiy" <dedekind1@gmail.com>,
-	"David Woodhouse" <dwmw2@infradead.org>
-Cc: Prodyut Hazarika <phazarika@amcc.com>, Feng Kan <fkan@amcc.com>
+	charset=ISO-8859-1;
+	DelSp="Yes";
+	format="flowed"
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Reply-To: financialloans32@sify.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,15 +20,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem and David,
 
-Can you guys double check this patch. We need to monitor it until it =
-gets accepted.
 
-http://lists.infradead.org/pipermail/linux-mtd/2009-August/027054.html
+Dear Sir/Madam
 
-http://patchwork.ozlabs.org/patch/32080/
+Are you a business man or woman ?
+Do you need a loan or funding for any reason
+such as :
+a) Personal Loan,Business Expansion ,
+b) Business Start-up ,Education,
+c) Debt Consolidation ,
+d) Hard Money Loans
+We offer loan at low interest rate of 5%
+and with no credit check
+CONTACT EMAIL: financialloans32@sify.com OR financial_loans@gmx.com
 
-Best Regards,
 
-Victor Gallardo
+Thanks
+Mr. Alonso Fernando
