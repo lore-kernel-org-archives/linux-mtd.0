@@ -1,23 +1,29 @@
-Received: from n14.bullet.mail.mud.yahoo.com ([68.142.206.41])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MguUc-0003Ch-6N
-	for linux-mtd@lists.infradead.org; Fri, 28 Aug 2009 05:59:26 +0000
-From: David Brownell <david-b@pacbell.net>
-To: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: Re: [patch 3/3] mtd-nand: DaVinci: Add 4-bit ECC support for large
-	page NAND chips
-Date: Thu, 27 Aug 2009 19:08:14 -0700
-References: <200908071824.n77IONlo008375@imap1.linux-foundation.org>
-	<4A7C865C.9050905@boundarydevices.com>
-In-Reply-To: <4A7C865C.9050905@boundarydevices.com>
+Received: from mail-vw0-f193.google.com ([209.85.212.193])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Mgujs-0007FK-8V
+	for linux-mtd@lists.infradead.org; Fri, 28 Aug 2009 06:15:12 +0000
+Received: by vws31 with SMTP id 31so619981vws.28
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 27 Aug 2009 23:15:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: inline
-Message-Id: <200908271908.15309.david-b@pacbell.net>
-Cc: s-paulraj@ti.com, linux-mtd@lists.infradead.org, nsnehaprabha@ti.com,
-	akpm@linux-foundation.org, dwmw2@infradead.org, tglx@linutronix.de
+In-Reply-To: <a64f67eb0908271852r598e1deflbe4e33eada60334@mail.gmail.com>
+References: <a64f67eb0908202331q73230351pe27f1434470707ae@mail.gmail.com>
+	<1c3f4270908211108w416019deh9aa4b2575d6a1b82@mail.gmail.com>
+	<a64f67eb0908231707k80cf8c9m11e9074c11c48abe@mail.gmail.com>
+	<4A926F79.4030700@users.sourceforge.net>
+	<a64f67eb0908242247v7b10551q96c63b95f66bd41c@mail.gmail.com>
+	<a64f67eb0908271818t6971df98y2705c76e04ba4728@mail.gmail.com>
+	<1c3f4270908271849y754323ft462f772623d1f0a7@mail.gmail.com>
+	<a64f67eb0908271852r598e1deflbe4e33eada60334@mail.gmail.com>
+Date: Fri, 28 Aug 2009 16:15:07 +1000
+Message-ID: <a64f67eb0908272315oab86ee6y543d62be4ca68a0b@mail.gmail.com>
+Subject: Re: JFFS2 crash in linux-2.6.30
+From: linux newbie <linux.newbie79@gmail.com>
+To: Manoj <manoj23@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org,
+	=?ISO-8859-1?Q?Anders_Grafstr=F6m?= <grfstrm@users.sourceforge.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +33,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 07 August 2009, Troy Kisky wrote:
-> > +static struct nand_ecclayout hwecc4_2048 __initconst = {
-> > +     ...
-> > +     .oobfree = {
-> > +             /* 1 byte at offset 0 holds manufacturer badblock marker */
-> > +             {.offset = 1, .length = 23, },
-> 
-> I thought Sneha Narnakaje was going to change offset = 2, length = 22 ?
+I am facing this issue still. seems some timing issue, as I didnt face
+this in 2.6.26.3 version of linux version.
 
-Not clear why; this is only for 8-bit NAND, which (right?)
-only uses single byte manufacturer badblock markers ...
-
-Will a TI person be updating U-Boot?   Please?  :)
-During the U-Boot v2009.10 window, which opens up 
-in a couple days...
-
-- Dave
+On Fri, Aug 28, 2009 at 11:52 AM, linux newbie<linux.newbie79@gmail.com> wr=
+ote:
+> Yea, I disabled jffs2 debugging and enabled CONFIG_JFFS2_WBUF_VERIFY
+> and so far I havent faced this isssue. need to do more testing.
+>
+> On Fri, Aug 28, 2009 at 11:49 AM, Manoj<manoj23@gmail.com> wrote:
+>> It might be a timing issue. Make sure the you got the timing cycles
+>> configured right in the NAND driver. Also, as an experiment, disable
+>> JFFS2 debugging and enable CONFIG_JFFS2_WBUF_VERIFY, See if this
+>> throws up an error.
+>> I would also make sure that the driver passes nand tests.
+>>
+>> On Thu, Aug 27, 2009 at 6:18 PM, linux newbie<linux.newbie79@gmail.com> =
+wrote:
+>>> before setting CONFIG_JFFS2_WBUF_VERIFY, if I enable jffs2 debug
+>>> messages, things are working fine.
+>>>
+>>> I suspect there should be some timing issue.
+>>>
+>>> any thoughts in this regard?
+>>>
+>>> On Tue, Aug 25, 2009 at 3:47 PM, linux newbie<linux.newbie79@gmail.com>=
+ wrote:
+>>>> Hi All,
+>>>>
+>>>> Thanks for your support.
+>>>>
+>>>> I havent set CONFIG_JFFS2_FS_WBUF_VERIFY and after enabling it, its
+>>>> working fine.
+>>>>
+>>>> Thanking You
+>>>>
+>>>> On Mon, Aug 24, 2009 at 8:46 PM, Anders
+>>>> Grafstr=F6m<grfstrm@users.sourceforge.net> wrote:
+>>>>> linux newbie wrote:
+>>>>>> I tried this patch, after which I am not getting crash, but instead =
+it shows
+>>>>>> cp: input/output error. and this is not consistent. somtimes, file
+>>>>>> copying is perfect and some times its not.
+>>>>>
+>>>>> You get this when you write to a dnode whose previous data resides
+>>>>> in a NAND block that has gone bad.
+>>>>>
+>>>>> Have you set CONFIG_JFFS2_FS_WBUF_VERIFY?
+>>>>>
+>>>>> ______________________________________________________
+>>>>> Linux MTD discussion mailing list
+>>>>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>>>>
+>>>>
+>>>
+>>
+>
