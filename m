@@ -1,10 +1,10 @@
-Date: Mon, 31 Aug 2009 07:47:30 +0100 (BST)
-From: Alexey Korolev <akorolev@infradead.org>
-To: maxcir@gmail.com, jamie@shareable.com, linux-mtd@lists.infradead.org
-Subject: Re:[PATCH] [MTD] CHIPS: 0xFF intolerance for M29W128G
-Message-ID: <alpine.LFD.2.00.0908310724030.10961@casper.infradead.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: onenand: use KERN_DEBUG for ECC errors
+Date: Mon, 31 Aug 2009 10:03:32 +0300
+Message-Id: <1251702212-17785-1-git-send-email-dedekind@infradead.org>
+Cc: Kyungmin Park <kmpark@infradead.org>,
+	Adrian Hunter <Adrian.Hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -14,39 +14,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Massimo,
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-> Jamie,
-> I've rewritten the patch: now only the function cfi_qry_mode_off()
-> has been patched, and only if the device is a M29W128G (16bit or 8bit)
-> a final 0xF0 is given. The fixup_M29W128G_write_buffer() keeps on being
-> removed, because the buffer write failure derived from the unstable
-> state due to the missing 0xF0 command.
-> Please give comments about this new version.
+ECC errors is a normal phenomena on OneNAND and they happen quite
+often. Flash-aware file-systems like JFFS2 or UBIFS are able to
+handle them gracefully.
 
-> @@ -308,7 +308,7 @@ static struct cfi_fixup cfi_fixup_table[] = {
->  	{ CFI_MFR_AMD, 0x1301, fixup_s29gl064n_sectors, NULL, },
->  	{ CFI_MFR_AMD, 0x1a00, fixup_s29gl032n_sectors, NULL, },
->  	{ CFI_MFR_AMD, 0x1a01, fixup_s29gl032n_sectors, NULL, },
-> -	{ CFI_MFR_ST,  0x227E, fixup_M29W128G_write_buffer, NULL, },
-> +	/* { CFI_MFR_ST,  0x227E, fixup_M29W128G_write_buffer, NULL, },
-It does not need to be commented. Just remove this line :).
+Currently OneNAND driver prints about ECC errors like this:
+onenand_bbt_wait: ecc error = 0x2222, controller error 0x2400
+onenand_bbt_wait: ecc error = 0x2222, controller error 0x2400
+onenand_bbt_wait: ecc error = 0x2222, controller error 0x2400
 
-> @@ -81,6 +81,9 @@ void __xipram cfi_qry_mode_off(uint32_t base, struct
-> map_info *map,
->  {
->  	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
->  	cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL);
-> +	/* send a 0xF0 if the device is M29W128G */
-> +	if ((cfi->mfr == CFI_MFR_ST) && (cfi->id == 0x227E || cfi->id == 0x7E))
-> +		cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
-May be it would be better to add comment like this:
- "M29W128G flashes require an additional reset command when exit qry mode".
+These messages are scary and make users think that something serious
+happened. However, they are handled nicely by UBIFS.
 
-New version is much better. This implementation does not break
-compatibility with other devices. Please add acked-by when update.
+This patch makes this messages to be printed with KERN_DEBUG
+level, so that they would not go to the console, at least, which
+is currently happening in case of standard default setup.
 
-Thanks,
-Alexey
+Indeed, since ECC errors are supposed to be handled by upper
+level SW, we do not really have to print these messages, and we
+may consider them as debugging prints.
 
-p/s Mail thread is interrupted because I weren't subscribed. Sorry for that.
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ drivers/mtd/onenand/onenand_base.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index 6e82909..994939e 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -1450,7 +1450,7 @@ static int onenand_bbt_wait(struct mtd_info *mtd, int state)
+ 	if (interrupt & ONENAND_INT_READ) {
+ 		int ecc = onenand_read_ecc(this);
+ 		if (ecc & ONENAND_ECC_2BIT_ALL) {
+-			printk(KERN_INFO "onenand_bbt_wait: ecc error = 0x%04x"
++			printk(KERN_DEBUG "onenand_bbt_wait: ecc error = 0x%04x"
+ 				", controller error 0x%04x\n", ecc, ctrl);
+ 			return ONENAND_BBT_READ_ECC_ERROR;
+ 		}
+-- 
+1.6.2.5
