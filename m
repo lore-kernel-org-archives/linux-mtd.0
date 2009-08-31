@@ -1,19 +1,10 @@
-Received: from m12-11.163.com ([220.181.12.11])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MhfYi-0004p8-Q1
-	for linux-mtd@lists.infradead.org; Sun, 30 Aug 2009 08:14:49 +0000
-Message-ID: <18BB576E08F0470C9BEC5D9B39442788@ivan>
-From: "Ivan Li" <lijinlei1@163.com>
-To: "Matthieu CASTET" <matthieu.castet@parrot.com>
-References: <6CF41D77BA9F4BC5856D0031BA902A85@ivan><D6830EA55F9F4A9FBCD742B09BE98D9F@ivan>
-	<4A93FBAC.6010701@parrot.com>
-Subject: Re: Error creating FAT32 over Nand flash
-Date: Sun, 30 Aug 2009 16:14:19 +0800
+Date: Mon, 31 Aug 2009 07:47:30 +0100 (BST)
+From: Alexey Korolev <akorolev@infradead.org>
+To: maxcir@gmail.com, jamie@shareable.com, linux-mtd@lists.infradead.org
+Subject: Re:[PATCH] [MTD] CHIPS: 0xFF intolerance for M29W128G
+Message-ID: <alpine.LFD.2.00.0908310724030.10961@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: base64
-Cc: linux-mtd@lists.infradead.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,19 +14,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-VGhhbmtzIGZvciB5b3VyIHJlcGx5Lg0KVXNlIEZBVCBvdmVyIHlhZmZzIGNhbiBmaXggdGhpcyBw
-cm9ibGVtLCBidXQgdGhlIHBlcmZvcm1hbmNlIGlzIG5vdCB2ZXJ5IGdvb2QuDQpJcyB0aGVyZSBh
-bnkgZXhpc3Rpbmcgb3BlbiBzb3VyY2UgRlRMIGZvciBGQVQgb3ZlciBuYW5kIGZsYXNoIHdoaWNo
-IEkgY2FuIHVzZSBpbiBteSBwcm9kdWN0Pw0KVGhhbmtzLg0KDQotLS0tLSBPcmlnaW5hbCBNZXNz
-YWdlIC0tLS0tIA0KRnJvbTogIk1hdHRoaWV1IENBU1RFVCIgPG1hdHRoaWV1LmNhc3RldEBwYXJy
-b3QuY29tPg0KVG86ICJJdmFuIExpIiA8bGlqaW5sZWkxQDE2My5jb20+DQpDYzogPGxpbnV4LW10
-ZEBsaXN0cy5pbmZyYWRlYWQub3JnPg0KU2VudDogVHVlc2RheSwgQXVndXN0IDI1LCAyMDA5IDEw
-OjU2IFBNDQpTdWJqZWN0OiBSZTogRXJyb3IgY3JlYXRpbmcgRkFUMzIgb3ZlciBOYW5kIGZsYXNo
-DQoNCg0KSXZhbiBMaSBhIOljcml0IDoNCj4gU29tZSBwcm9ncmVzcyBmb3IgaXQ6IEkgZm91bmQg
-dGhlIHNlY3RvciBudW1iZXIgbWVudGlvbmVkIGluIGVycm9yIG1lc3NhZ2UgcmVzaWRlcyBpbiBC
-QUQgYmxvY2suDQo+IElzIHRoZXJlIGFueSBmaXggZm9yIHRoYXQ/DQpVc2UgYW4gRlRMIG9yIG1v
-dW50IEZBVCBpbiBsb29wIG1vZGUgb3ZlciBhIGZpbGUgaW4gYSBmcyB1bmRlcnN0YW5kaW5nDQpO
-QU5EICh1YmlmcywgamZmczIsIC4uLikuDQoNCg0KTWF0dGhpZXUNCg0KX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQpMaW51eCBNVEQgZGlzY3Vz
-c2lvbiBtYWlsaW5nIGxpc3QNCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vbGludXgtbXRkLw==
+Hi Massimo,
+
+> Jamie,
+> I've rewritten the patch: now only the function cfi_qry_mode_off()
+> has been patched, and only if the device is a M29W128G (16bit or 8bit)
+> a final 0xF0 is given. The fixup_M29W128G_write_buffer() keeps on being
+> removed, because the buffer write failure derived from the unstable
+> state due to the missing 0xF0 command.
+> Please give comments about this new version.
+
+> @@ -308,7 +308,7 @@ static struct cfi_fixup cfi_fixup_table[] = {
+>  	{ CFI_MFR_AMD, 0x1301, fixup_s29gl064n_sectors, NULL, },
+>  	{ CFI_MFR_AMD, 0x1a00, fixup_s29gl032n_sectors, NULL, },
+>  	{ CFI_MFR_AMD, 0x1a01, fixup_s29gl032n_sectors, NULL, },
+> -	{ CFI_MFR_ST,  0x227E, fixup_M29W128G_write_buffer, NULL, },
+> +	/* { CFI_MFR_ST,  0x227E, fixup_M29W128G_write_buffer, NULL, },
+It does not need to be commented. Just remove this line :).
+
+> @@ -81,6 +81,9 @@ void __xipram cfi_qry_mode_off(uint32_t base, struct
+> map_info *map,
+>  {
+>  	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
+>  	cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type, NULL);
+> +	/* send a 0xF0 if the device is M29W128G */
+> +	if ((cfi->mfr == CFI_MFR_ST) && (cfi->id == 0x227E || cfi->id == 0x7E))
+> +		cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
+May be it would be better to add comment like this:
+ "M29W128G flashes require an additional reset command when exit qry mode".
+
+New version is much better. This implementation does not break
+compatibility with other devices. Please add acked-by when update.
+
+Thanks,
+Alexey
+
+p/s Mail thread is interrupted because I weren't subscribed. Sorry for that.
