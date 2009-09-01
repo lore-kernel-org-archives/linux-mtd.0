@@ -1,24 +1,18 @@
-Received: from relay.ptn-ipout02.plus.net ([212.159.7.36])
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MiQ5t-0004Gi-Gn
-	for linux-mtd@lists.infradead.org; Tue, 01 Sep 2009 09:56:09 +0000
-Message-ID: <4A9CEFAD.3040500@bubblegen.co.uk>
-Date: Tue, 01 Sep 2009 10:55:57 +0100
-From: Matthew Lear <matt@bubblegen.co.uk>
-MIME-Version: 1.0
-To: Richard Purdie <rpurdie@openedhand.com>
-Subject: Re: mtdoops and non pre-emptible kernel
-References: <4A9573CF.8030105@bubblegen.co.uk>
-	<1251323622.16040.13.camel@dax.rpnet.com>
-	<9f22e03e9efbb90b242869d7652caa97.squirrel@webmail.plus.net>
-	<1251367574.9940.2.camel@dax.rpnet.com>
-	<e5b07cfc262281f1e1c2687c19cb3524.squirrel@webmail.plus.net>
-	<1251387854.21836.13.camel@dax.rpnet.com>
-	<2332c4705498dd96b79c6634aa507b32.squirrel@webmail.plus.net>
-In-Reply-To: <2332c4705498dd96b79c6634aa507b32.squirrel@webmail.plus.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: matt@bubblegen.co.uk, linux-mtd@lists.infradead.org
+	id 1MiS4P-0006Hg-RU
+	for linux-mtd@lists.infradead.org; Tue, 01 Sep 2009 12:02:46 +0000
+Received: from vaebh106.NOE.Nokia.com (vaebh106.europe.nokia.com
+	[10.160.244.32])
+	by mgw-mx06.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
+	n81C2Emh011752
+	for <linux-mtd@lists.infradead.org>; Tue, 1 Sep 2009 15:02:25 +0300
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Adrian Hunter <Adrian.Hunter@nokia.com>
+Subject: [PATCH] UBIFS: add inode size debugging check
+Date: Tue,  1 Sep 2009 15:01:33 +0300
+Message-Id: <1251806493-2476-1-git-send-email-dedekind@infradead.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,86 +22,166 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Matthew Lear wrote:
->> On Thu, 2009-08-27 at 11:30 +0100, Matthew Lear wrote:
->>> That's fair enough. I suppose a possible solution would be to do what
->>> I've
->>> done locally for testing, ie:
->>>
->>> diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
->>> index 1a6b3be..2d734e2 100644
->>> --- a/drivers/mtd/mtdoops.c
->>> +++ b/drivers/mtd/mtdoops.c
->>> @@ -335,7 +335,7 @@ static void mtdoops_console_sync(void)
->>>                 /* Interrupt context, we're going to panic so try and
->>> log */
->>>                 mtdoops_write(cxt, 1);
->>>         else
->>> -               schedule_work(&cxt->work_write);
->>> +               mtdoops_write(cxt, 0);
->>>  }
->> I just refreshed my memory a bit. I'd guess your mtd driver doesn't have
->> a panic_write function which is highly desirable for this kind of use.
->>
->> How about some code like this?:
->>
->> 	if (mtd->panic_write && in_interrupt())
->> 		/* Interrupt context, we're going to panic so try and log */
->> 		mtdoops_write(cxt, 1);
->> 	else if (in_interrupt())
->> 		/* Interrupt context but with no panic write function */
->>                 /* We're going to crash anyway so we may as well try and
->> log */
->> 		mtdoops_write(cxt, 0);
->> 	else
->> 		schedule_work(&cxt->work_write);
->>
-> 
-> Hi Richard. Unfortunately, in all the circumstances that I've been using
-> to force a panic (insmod a ko which just panics, provide some obviously
-> wrong boot args on the command line etc), I never seem to be in interrupt
-> context when the mtdoops code syncs and tries to write to flash, ie:
-> 
-> if (mtd->panic_write)
->   printk(KERN_ALERT "we've got panic_write()\n");
-> else if (in_interrupt())
->   printk(KERN_ALERT "we're in interrupt\n");
-> else
-> printk(KERN_ALERT "we'll just schedule work\n");
-> 
-> always prints the last message (although I know that my mtd driver doesn't
-> have a panic_write function so the first was never going to appear). So,
-> even if I have a panic_write function, it would never get called as the
-> initial condition would be false.
-> 
-> I agree that your code snippet above makes sense and should probably be
-> put forward for integration, though :-)
-> 
-> I'm still a bit stuck with the fact that I'm panicking, I'm not in
-> interrupt context but the jobs in the work queue don't get scheduled to
-> run because nothing can force a context switch so my flash never gets
-> written to.
-> 
-> I believe that it is a correct guideline to call schedule() after calling
-> schedule_work(). Is this a true statement? However, as you say, in a panic
-> situation this is undesirable. That said though, I partially do think that
-> the mtd console unblank function should adhere to this behaviour and call
-> schedule(). What I'm trying to say is, just because the mtd console
-> unblank is called from panic() isn't this breaking the guidelines on the
-> usage of schedule_work() (ie not calling schedule()afterwards) and making
-> assumptions about what else is going on in the system?
-> 
-> Cheers,
-> --  Matt
-> 
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Hi Richard - I plan to raise this issue in the kernel bug tracker to
-hopefully open up discussion with people who are much more involved with
-recent kernel changes than I. The idea being that there may have been
-changes may have effected the way that the mtd oops code behaves during
-a panic. As the code stands at the moment it does not seem to work
-correctly for me. Obviously if this is due to other aspects of my system
-being configured incorrectly then that's absolutely fine and I'll ensure
-these are resolved :-) I think this is the right thing to do.
-Cheers,
---  Matt
+This patch adds one more check to UBIFS - a check that makes
+sure that there are no data nodes beyond inode size.
+
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ fs/ubifs/debug.h |    3 ++
+ fs/ubifs/key.h   |   13 ++++++++++
+ fs/ubifs/super.c |    2 +
+ fs/ubifs/tnc.c   |   70 +++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 4 files changed, 87 insertions(+), 1 deletions(-)
+
+diff --git a/fs/ubifs/debug.h b/fs/ubifs/debug.h
+index c1cd73b..fe2c927 100644
+--- a/fs/ubifs/debug.h
++++ b/fs/ubifs/debug.h
+@@ -321,6 +321,8 @@ void dbg_check_heap(struct ubifs_info *c, struct ubifs_lpt_heap *heap, int cat,
+ int dbg_check_lprops(struct ubifs_info *c);
+ int dbg_check_lpt_nodes(struct ubifs_info *c, struct ubifs_cnode *cnode,
+ 			int row, int col);
++int dbg_check_inode_size(struct ubifs_info *c, const struct inode *inode,
++			 loff_t size);
+ 
+ /* Force the use of in-the-gaps method for testing */
+ 
+@@ -460,6 +462,7 @@ void dbg_debugfs_exit_fs(struct ubifs_info *c);
+ #define dbg_check_heap(c, heap, cat, add_pos)      ({})
+ #define dbg_check_lprops(c)                        0
+ #define dbg_check_lpt_nodes(c, cnode, row, col)    0
++#define dbg_check_inode_size(c, inode, size)       0
+ #define dbg_force_in_the_gaps_enabled              0
+ #define dbg_force_in_the_gaps()                    0
+ #define dbg_failure_mode                           0
+diff --git a/fs/ubifs/key.h b/fs/ubifs/key.h
+index 919af84..0f530c6 100644
+--- a/fs/ubifs/key.h
++++ b/fs/ubifs/key.h
+@@ -278,6 +278,18 @@ static inline void data_key_init(const struct ubifs_info *c,
+ }
+ 
+ /**
++ * highest_data_key - get the highest possible data key for an inode.
++ * @c: UBIFS file-system description object
++ * @key: key to initialize
++ * @inum: inode number
++ */
++static inline void highest_data_key(const struct ubifs_info *c,
++				   union ubifs_key *key, ino_t inum)
++{
++	data_key_init(c, key, inum, UBIFS_S_KEY_BLOCK_MASK);
++}
++
++/**
+  * trun_key_init - initialize truncation node key.
+  * @c: UBIFS file-system description object
+  * @key: key to initialize
+@@ -518,4 +530,5 @@ static inline unsigned long long key_max_inode_size(const struct ubifs_info *c)
+ 		return 0;
+ 	}
+ }
++
+ #endif /* !__UBIFS_KEY_H__ */
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index b541bd7..7e2b3d4 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -317,6 +317,8 @@ static int ubifs_write_inode(struct inode *inode, int wait)
+ 		if (err)
+ 			ubifs_err("can't write inode %lu, error %d",
+ 				  inode->i_ino, err);
++		else
++			err = dbg_check_inode_size(c, inode, ui->ui_size);
+ 	}
+ 
+ 	ui->dirty = 0;
+diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
+index f249f7b..a6b6450 100644
+--- a/fs/ubifs/tnc.c
++++ b/fs/ubifs/tnc.c
+@@ -1433,7 +1433,7 @@ static int maybe_leb_gced(struct ubifs_info *c, int lnum, int gc_seq1)
+  * @lnum: LEB number is returned here
+  * @offs: offset is returned here
+  *
+- * This function look up and reads node with key @key. The caller has to make
++ * This function looks up and reads node with key @key. The caller has to make
+  * sure the @node buffer is large enough to fit the node. Returns zero in case
+  * of success, %-ENOENT if the node was not found, and a negative error code in
+  * case of failure. The node location can be returned in @lnum and @offs.
+@@ -3268,3 +3268,71 @@ out_unlock:
+ 	mutex_unlock(&c->tnc_mutex);
+ 	return err;
+ }
++
++#ifdef CONFIG_UBIFS_FS_DEBUG
++
++/**
++ * dbg_check_inode_size - check if inode size is correct.
++ * @c: UBIFS file-system description object
++ * @inum: inode number
++ * @size: inode size
++ *
++ * This function makes sure that the inode size (@size) is correct and it does
++ * not have any pages beyond @size. Returns zero if the inode is OK, %-EINVAL
++ * if it has a data page beyond @size, and other negative error code in case of
++ * other errors.
++ */
++int dbg_check_inode_size(struct ubifs_info *c, const struct inode *inode,
++			 loff_t size)
++{
++	int err, n;
++	union ubifs_key from_key, to_key, *key;
++	struct ubifs_znode *znode;
++	unsigned int block;
++
++	if (!(ubifs_chk_flags & UBIFS_CHK_GEN))
++		return 0;
++
++	block = (size + UBIFS_BLOCK_SIZE - 1) >> UBIFS_BLOCK_SHIFT;
++	data_key_init(c, &from_key, inode->i_ino, block);
++	highest_data_key(c, &to_key, inode->i_ino);
++
++	mutex_lock(&c->tnc_mutex);
++	err = ubifs_lookup_level0(c, &from_key, &znode, &n);
++	if (err < 0)
++		goto out_unlock;
++
++	if (err) {
++		err = -EINVAL;
++		goto out_unlock;
++	}
++
++	while (1) {
++		err = tnc_next(c, &znode, &n);
++		if (err == -ENOENT) {
++			err = 0;
++			goto out_unlock;
++		}
++
++		if (err < 0)
++			goto out_unlock;
++
++		key = &znode->zbranch[n].key;
++		if (key_in_range(c, key, &from_key, &to_key))
++			break;
++	}
++
++	block = key_block(c, key);
++	ubifs_err("inode %lu has size %lld, but there are data at offset %lld "
++		  "(data key %s)", (unsigned long)inode->i_ino, size,
++		  ((loff_t)block) << UBIFS_BLOCK_SHIFT, DBGKEY(key));
++	dbg_dump_inode(c, inode);
++	dbg_dump_stack();
++	err = -EINVAL;
++
++out_unlock:
++	mutex_unlock(&c->tnc_mutex);
++	return err;
++}
++
++#endif /* CONFIG_UBIFS_FS_DEBUG */
+-- 
+1.6.2.5
