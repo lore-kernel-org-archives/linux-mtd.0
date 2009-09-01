@@ -1,19 +1,19 @@
-Received: from [66.199.162.10] (helo=ns34.servepower.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MiH5O-0007xT-Kl
-	for linux-mtd@lists.infradead.org; Tue, 01 Sep 2009 00:19:03 +0000
-Message-ID: <20090831162237.2tx7xiz8ggoksgws@webmail.candcgroup.net>
-Date: Mon, 31 Aug 2009 16:22:37 -0700
-From: BARR JOHN BLAKE <barrjblake02@yahoo.com.hk>
-To: undisclosed-recipients: ;
-Subject: CAN YOU HANDLE THIS?
+	id 1MiP37-0003sd-Oh
+	for linux-mtd@lists.infradead.org; Tue, 01 Sep 2009 08:49:14 +0000
+Message-ID: <4A9CDFE0.4080306@gmail.com>
+Date: Tue, 01 Sep 2009 11:48:32 +0300
+From: Artem Bityutskiy <dedekind1@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset=ISO-8859-1;
-	DelSp="Yes";
-	format="flowed"
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
+To: massimo cirillo <maxcir@gmail.com>
+Subject: Re: [PATCH] [MTD] JFFS2: Missing verify buffer
+	allocation/deallocation.
+References: <62cbdcd90908270144v2e52e3ceg36c31abad3fced61@mail.gmail.com>
+In-Reply-To: <62cbdcd90908270144v2e52e3ceg36c31abad3fced61@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 08/27/2009 11:44 AM, massimo cirillo wrote:
+> From: Massimo Cirillo<maxcir@gmail.com>
+>
+> The function jffs2_nor_wbuf_flash_setup() doesn't allocate the verify buffer
+> if CONFIG_JFFS2_FS_WBUF_VERIFY is defined, so causing a kernel panic when
+> that macro is enabled and the verify function is called. Similarly the
+> jffs2_nor_wbuf_flash_cleanup() must free the buffer if
+> CONFIG_JFFS2_FS_WBUF_VERIFY is enabled.
+> The following patch fixes the problem.
+> The following patch applies to 2.6.30 kernel.
 
+Applied to l2-mtd-2.6.git. But please, do not send line-wrapped
+patches.
 
-Attn: Sir/Madam,
-
-How are you today, I hope fine?
-
-I am Barr. John Blake a consultant, I have a client who want to transfer
-15million GBP outside her country for her family investment oversea, she have
-instructed me to locate a foreign partner who will act as her fund investment
-manager oversea, she is critically ill and cannot handle the  
-transaction herself
-because of her condition.
-
-If you can handle this Investment Procurement, please get back to me for more
-discussion. I will give you more details and how we are going to  
-proceed if you
-will assure us that you are reliable.
-
-Sincerely yours
-
-Barrister John Blake
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
