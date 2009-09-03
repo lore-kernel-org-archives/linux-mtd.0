@@ -1,35 +1,12 @@
-Received: from mailout3.samsung.com ([203.254.224.33])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mj9gv-00056G-S7
-	for linux-mtd@lists.infradead.org; Thu, 03 Sep 2009 10:37:26 +0000
-Received: from epmmp1 (mailout3.samsung.com [203.254.224.33])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KPE00GDS5I6JO@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Thu, 03 Sep 2009 19:37:18 +0900 (KST)
-Received: from amulsaha ([107.108.214.27])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0KPE00HDQ5I45Q@mmp1.samsung.com> for
-	linux-mtd@lists.infradead.org; Thu, 03 Sep 2009 19:37:18 +0900 (KST)
-Date: Thu, 03 Sep 2009 16:07:52 +0530
-From: Amul Kumar Saha <amul.saha@samsung.com>
-Subject: Re: [PATCH] [OneNAND] OTP support re-implementation 1/1
-To: dedekind1@gmail.com
-Message-id: <FC4F021760EA4F649917598723041422@sisodomain.com>
-Content-transfer-encoding: 7BIT
-References: <EF4202CC14044212993EE17E6010D5E7@sisodomain.com>
-	<87D6E94B11734CE1A253D9AE203F4192@sisodomain.com>
-	<4A94CF0A.6060106@gmail.com>
-	<6098B9D32DCD48C387EF96034FFFC55D@sisodomain.com>
-	<1251466736.3514.10.camel@localhost>
-	<A32D4C31541C4D8B9BF6CB4D6EF4B5DC@sisodomain.com>
-	<9c9fda240908310234h6cef3afev6a3f6e315321631b@mail.gmail.com>
-	<C48D93C7DF3C4F9C96E47BE9D6F51F37@sisodomain.com>
-	<4A9E0C47.205@gmail.com>
-	<8A3568961C4E4E7495A397D2267B6E37@sisodomain.com>
-	<1251958245.5060.6.camel@localhost>
-Cc: David Woodhouse <dwmw2@infradead.org>, Kyungmin Park <kmpark@infradead.org>,
-	linux-mtd@lists.infradead.org
+From: Mika Korhonen <ext-mika.2.korhonen@nokia.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/2] MTD: OneNAND: move erase method to a separate function
+Date: Thu,  3 Sep 2009 13:54:32 +0300
+Message-Id: <1251975273-12432-2-git-send-email-ext-mika.2.korhonen@nokia.com>
+In-Reply-To: <1251975273-12432-1-git-send-email-ext-mika.2.korhonen@nokia.com>
+References: <1251975273-12432-1-git-send-email-ext-mika.2.korhonen@nokia.com>
+Cc: amul.saha@samsung.com, dedekind@infradead.org, kyungmin.park@samsung.com,
+	Mika Korhonen <ext-mika.2.korhonen@nokia.com>, adrian.hunter@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,28 +16,214 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> >> +
->> >> +config ONENAND_OTP_AREA_BLOCK0
->> >> + bool "BOTH OTP area AND Block[0]"
->> >> + depends on MTD_ONENAND_OTP&&  !ONENAND_OTP_AREA&&  !ONENAND_OTP_BLOCK0
->> >> + select ON_OTP_AREA_BLOCK0
->> >> +
->> >> +endif #MTD_ONENAND_OTP
->> >
->> > If there were 10 OTP blocks, would you add 10 options?
->> > I mean, are these switches really needed? Can we remove them?
->>
->> There is just one OTP block.
->> Three options are provided for the three known combinations of 1st Block and the OTP Block.
->> The option to choose one should be provided to the user.
->
-> Wouldn't it be better to  make this run-time configurable? E.g., module
-> parameters? Too many config options are frowned upon usually.
->
+Separate the actual execution of erase to a new function:
+onenand_single_block_erase()
 
-I got it. But I guess in this case the numbers are not that big enough to call for Module parameters 
-implementation.
-Is it okay?
+Signed-off-by: Mika Korhonen <ext-mika.2.korhonen@nokia.com>
+---
+ drivers/mtd/onenand/onenand_base.c |  139 +++++++++++++++++++++--------------
+ 1 files changed, 83 insertions(+), 56 deletions(-)
 
-With Regards,
-Amul Kumar Saha 
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index 6e82909..ce9f9a0 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -2141,77 +2141,43 @@ static int onenand_block_isbad_nolock(struct mtd_info *mtd, loff_t ofs, int allo
+ }
+ 
+ /**
+- * onenand_erase - [MTD Interface] erase block(s)
++ * onenand_single_block_erase - [Internal] erase block(s) using regular erase
+  * @param mtd		MTD device structure
+  * @param instr		erase instruction
++ * @param region	erase region
+  *
+- * Erase one ore more blocks
++ * Erase one or more blocks one block at a time
+  */
+-static int onenand_erase(struct mtd_info *mtd, struct erase_info *instr)
++static int onenand_single_block_erase(struct mtd_info *mtd,
++				      struct erase_info *instr,
++				      struct mtd_erase_region_info *region)
+ {
+ 	struct onenand_chip *this = mtd->priv;
+-	unsigned int block_size;
+ 	loff_t addr = instr->addr;
+-	loff_t len = instr->len;
+-	int ret = 0, i;
+-	struct mtd_erase_region_info *region = NULL;
++	int len = instr->len;
++	unsigned int block_size;
+ 	loff_t region_end = 0;
++	int ret = 0;
+ 
+-	DEBUG(MTD_DEBUG_LEVEL3, "onenand_erase: start = 0x%012llx, len = %llu\n", (unsigned long long) instr->addr, (unsigned long long) instr->len);
+-
+-	/* Do not allow erase past end of device */
+-	if (unlikely((len + addr) > mtd->size)) {
+-		printk(KERN_ERR "onenand_erase: Erase past end of device\n");
+-		return -EINVAL;
+-	}
+-
+-	if (FLEXONENAND(this)) {
+-		/* Find the eraseregion of this address */
+-		i = flexonenand_region(mtd, addr);
+-		region = &mtd->eraseregions[i];
+-
++	if (region) {
++		/* region is set for Flex-OneNAND */
+ 		block_size = region->erasesize;
+ 		region_end = region->offset + region->erasesize * region->numblocks;
+-
+-		/* Start address within region must align on block boundary.
+-		 * Erase region's start offset is always block start address.
+-		 */
+-		if (unlikely((addr - region->offset) & (block_size - 1))) {
+-			printk(KERN_ERR "onenand_erase: Unaligned address\n");
+-			return -EINVAL;
+-		}
+ 	} else {
+-		block_size = 1 << this->erase_shift;
+-
+-		/* Start address must align on block boundary */
+-		if (unlikely(addr & (block_size - 1))) {
+-			printk(KERN_ERR "onenand_erase: Unaligned address\n");
+-			return -EINVAL;
+-		}
+-	}
+-
+-	/* Length must align on block boundary */
+-	if (unlikely(len & (block_size - 1))) {
+-		printk(KERN_ERR "onenand_erase: Length not block aligned\n");
+-		return -EINVAL;
++		block_size = (1 << this->erase_shift);
+ 	}
+ 
+-	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+-
+-	/* Grab the lock and see if the device is available */
+-	onenand_get_device(mtd, FL_ERASING);
+-
+-	/* Loop throught the pages */
+ 	instr->state = MTD_ERASING;
+ 
++	/* Loop through the blocks */
+ 	while (len) {
+ 		cond_resched();
+ 
+ 		/* Check if we have a bad block, we do not erase bad blocks */
+ 		if (onenand_block_isbad_nolock(mtd, addr, 0)) {
+-			printk (KERN_WARNING "onenand_erase: attempt to erase a bad block at addr 0x%012llx\n", (unsigned long long) addr);
++			printk(KERN_WARNING "onenand_erase: attempt to erase a bad block at addr 0x%012llx\n", (unsigned long long) addr);
+ 			instr->state = MTD_ERASE_FAILED;
+-			goto erase_exit;
++			return -1;
+ 		}
+ 
+ 		this->command(mtd, ONENAND_CMD_ERASE, addr, block_size);
+@@ -2222,10 +2188,10 @@ static int onenand_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 		/* Check, if it is write protected */
+ 		if (ret) {
+ 			printk(KERN_ERR "onenand_erase: Failed erase, block %d\n",
+-						 onenand_block(this, addr));
++			       onenand_block(this, addr));
+ 			instr->state = MTD_ERASE_FAILED;
+ 			instr->fail_addr = addr;
+-			goto erase_exit;
++			return -1;
+ 		}
+ 
+ 		len -= block_size;
+@@ -2235,24 +2201,85 @@ static int onenand_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 			if (!len)
+ 				break;
+ 			region++;
+-
+ 			block_size = region->erasesize;
+ 			region_end = region->offset + region->erasesize * region->numblocks;
+ 
+ 			if (len & (block_size - 1)) {
+ 				/* FIXME: This should be handled at MTD partitioning level. */
+ 				printk(KERN_ERR "onenand_erase: Unaligned address\n");
+-				goto erase_exit;
++				return -1;
+ 			}
+ 		}
++	}
++
++	return 0;
++}
++
++
++/**
++ * onenand_erase - [MTD Interface] erase block(s)
++ * @param mtd		MTD device structure
++ * @param instr		erase instruction
++ *
++ * Erase one or more blocks
++ */
++static int onenand_erase(struct mtd_info *mtd, struct erase_info *instr)
++{
++	struct onenand_chip *this = mtd->priv;
++	unsigned int block_size;
++	loff_t addr = instr->addr;
++	loff_t len = instr->len;
++	int ret = 0;
++	struct mtd_erase_region_info *region = NULL;
++	loff_t region_offset = 0;
+ 
++	DEBUG(MTD_DEBUG_LEVEL3, "onenand_erase: start = 0x%012llx, len = %llu\n", (unsigned long long) instr->addr, (unsigned long long) instr->len);
++
++	/* Do not allow erase past end of device */
++	if (unlikely((len + addr) > mtd->size)) {
++		printk(KERN_ERR "onenand_erase: Erase past end of device\n");
++		return -EINVAL;
+ 	}
+ 
+-	instr->state = MTD_ERASE_DONE;
++	if (FLEXONENAND(this)) {
++		/* Find the eraseregion of this address */
++		int i = flexonenand_region(mtd, addr);
++		region = &mtd->eraseregions[i];
+ 
+-erase_exit:
++		block_size = region->erasesize;
+ 
+-	ret = instr->state == MTD_ERASE_DONE ? 0 : -EIO;
++		/* Start address within region must align on block boundary.
++		 * Erase region's start offset is always block start address.
++		 */
++		region_offset = region->offset;
++	} else {
++		block_size = 1 << this->erase_shift;
++	}
++
++	/* Start address must align on block boundary */
++	if (unlikely((addr - region_offset) & (block_size - 1))) {
++		printk(KERN_ERR "onenand_erase: Unaligned address\n");
++		return -EINVAL;
++	}
++
++	/* Length must align on block boundary */
++	if (unlikely(len & (block_size - 1))) {
++		printk(KERN_ERR "onenand_erase: Length not block aligned\n");
++		return -EINVAL;
++	}
++
++	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
++
++	/* Grab the lock and see if the device is available */
++	onenand_get_device(mtd, FL_ERASING);
++
++	ret = onenand_single_block_erase(mtd, instr, region);
++
++	if (ret) {
++		ret = -EIO;
++	} else {
++		instr->state = MTD_ERASE_DONE;
++	}
+ 
+ 	/* Deselect and wake up anyone waiting on the device */
+ 	onenand_release_device(mtd);
+-- 
+1.6.0.4
