@@ -1,27 +1,21 @@
-Subject: Re: [PATCH] [OneNAND] OTP support re-implementation 1/1
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Amul Kumar Saha <amul.saha@samsung.com>
-In-Reply-To: <FC4F021760EA4F649917598723041422@sisodomain.com>
-References: <EF4202CC14044212993EE17E6010D5E7@sisodomain.com>
-	<87D6E94B11734CE1A253D9AE203F4192@sisodomain.com>
-	<4A94CF0A.6060106@gmail.com>
-	<6098B9D32DCD48C387EF96034FFFC55D@sisodomain.com>
-	<1251466736.3514.10.camel@localhost>
-	<A32D4C31541C4D8B9BF6CB4D6EF4B5DC@sisodomain.com>
-	<9c9fda240908310234h6cef3afev6a3f6e315321631b@mail.gmail.com>
-	<C48D93C7DF3C4F9C96E47BE9D6F51F37@sisodomain.com>
-	<4A9E0C47.205@gmail.com>
-	<8A3568961C4E4E7495A397D2267B6E37@sisodomain.com>
-	<1251958245.5060.6.camel@localhost>
-	<FC4F021760EA4F649917598723041422@sisodomain.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 03 Sep 2009 14:19:03 +0300
-Message-Id: <1251976743.5060.13.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, Kyungmin Park <kmpark@infradead.org>,
-	linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-pz0-f184.google.com ([209.85.222.184])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MjCnT-0007Ld-Gi
+	for linux-mtd@lists.infradead.org; Thu, 03 Sep 2009 13:56:24 +0000
+Received: by pzk14 with SMTP id 14so736330pzk.3
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 03 Sep 2009 06:56:17 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1251796036.3514.29.camel@localhost>
+References: <58484c0e0908290317m62485b2bu6ca69db7de8111a5@mail.gmail.com>
+	<1251796036.3514.29.camel@localhost>
+Date: Thu, 3 Sep 2009 22:56:17 +0900
+Message-ID: <58484c0e0909030656u7e59d35fs73c043fd772e5725@mail.gmail.com>
+Subject: Re: [PATCH] inappropriate pending block in foldchain
+From: Mohanlal Jangir <mohanlaljangir@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,39 +25,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-09-03 at 16:07 +0530, Amul Kumar Saha wrote:
-> >> >> +
-> >> >> +config ONENAND_OTP_AREA_BLOCK0
-> >> >> + bool "BOTH OTP area AND Block[0]"
-> >> >> + depends on MTD_ONENAND_OTP&&  !ONENAND_OTP_AREA&&  !ONENAND_OTP_BLOCK0
-> >> >> + select ON_OTP_AREA_BLOCK0
-> >> >> +
-> >> >> +endif #MTD_ONENAND_OTP
-> >> >
-> >> > If there were 10 OTP blocks, would you add 10 options?
-> >> > I mean, are these switches really needed? Can we remove them?
-> >>
-> >> There is just one OTP block.
-> >> Three options are provided for the three known combinations of 1st Block and the OTP Block.
-> >> The option to choose one should be provided to the user.
-> >
-> > Wouldn't it be better to  make this run-time configurable? E.g., module
-> > parameters? Too many config options are frowned upon usually.
-> >
-> 
-> I got it. But I guess in this case the numbers are not that big enough to call for Module parameters 
-> implementation.
-> Is it okay?
+> Hint: we use "git format-patch" to create patches.
+>
 
-IMO, the amount of OneNAND config options is already large, and I would
-not introduce more.
+I hope, my struggle with git has yielded something acceptable :)
 
-With module parameters you may always add kernel boot options like:
+>From 736fe41b3a8f42f72f793f6a18fcfa420abc6b7b Mon Sep 17 00:00:00 2001
+From: Mohan Lal Jangir <mohanlaljangir@gmail.com>
+Date: Thu, 3 Sep 2009 22:38:53 +0900
+Subject: [PATCH] inappropriate pending block in foldchain
 
-onenand.otpblk=0
 
-or something like this.
+Signed-off-by: Mohan Lal Jangir <mohanlaljangir@gmail.com>
+---
+ drivers/mtd/inftlcore.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+ mode change 100644 => 100755 drivers/mtd/inftlcore.c
 
+diff --git a/drivers/mtd/inftlcore.c b/drivers/mtd/inftlcore.c
+old mode 100644
+new mode 100755
+index d8cf29c..8aca552
+--- a/drivers/mtd/inftlcore.c
++++ b/drivers/mtd/inftlcore.c
+@@ -550,7 +550,7 @@ hitused:
+ 			 * waiting to be picked up. We're going to have to fold
+ 			 * a chain to make room.
+ 			 */
+-			thisEUN = INFTL_makefreeblock(inftl, BLOCK_NIL);
++			thisEUN = INFTL_makefreeblock(inftl, block);
+
+ 			/*
+ 			 * Hopefully we free something, lets try again.
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.6.1.2
