@@ -1,14 +1,16 @@
-Received: from mba.ocn.ne.jp ([122.28.14.163] helo=smtp.mba.ocn.ne.jp)
+Received: from mail.bittware.com ([208.82.132.157]
+	helo=olympus.corp.bittware.com)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MjbWt-0000UP-VP
-	for linux-mtd@lists.infradead.org; Fri, 04 Sep 2009 16:21:00 +0000
-From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+	id 1MjeJU-0005C0-S2
+	for linux-mtd@lists.infradead.org; Fri, 04 Sep 2009 19:19:17 +0000
+Subject: MTD writes
+From: Dennis McLeod <dmcleod@bittware.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 3/3] txx9ndfmc: Transfer 512 byte at a time if possible
-Date: Sat,  5 Sep 2009 01:20:45 +0900
-Message-Id: <1252081245-11895-3-git-send-email-anemo@mba.ocn.ne.jp>
-Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, dwmw2@infradead.org,
-	linux-kernel@vger.kernel.org, vimal singh <vimal.newwork@gmail.com>
+Date: Fri, 04 Sep 2009 15:19:05 -0400
+Message-Id: <1252091945.9490.22.camel@lusitania>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,109 +20,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Using __nand_correct_data() helper function, this driver can read 512
-byte (with 6 byte ECC) at a time.  This results minor performance
-improvement.
+Hi all,
+        I am having trouble writing to flash through MTD. I am trying to
+open /dev/mtd5 for reading/writing, seek to a given offset, write 4
+bytes and then close. This same exact code worked on an older kernel
+with the same exact flash chip, so I can't understand what I might have
+done wrong. 
 
-Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
----
- drivers/mtd/nand/txx9ndfmc.c |   52 +++++++++++++++++++++++++++++++++++++----
- 1 files changed, 47 insertions(+), 5 deletions(-)
+/> cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 08000000 00020000 "dummy"
+mtd1: 08000000 00020000 "dummy1"
+mtd2: 07700000 00020000 "rwfs"
+mtd3: 08000000 00020000 "dummy2"
+mtd4: 00800000 00020000 "kernel"
+mtd5: 00100000 00020000 "cfg"
+mtd6: 08000000 00020000 "dummy3"
+mtd7: 08000000 00020000 "dummy4"
+mtd8: 08000000 00020000 "dummy5"
 
-diff --git a/drivers/mtd/nand/txx9ndfmc.c b/drivers/mtd/nand/txx9ndfmc.c
-index 488088e..73af832 100644
---- a/drivers/mtd/nand/txx9ndfmc.c
-+++ b/drivers/mtd/nand/txx9ndfmc.c
-@@ -189,18 +189,43 @@ static int txx9ndfmc_calculate_ecc(struct mtd_info *mtd, const uint8_t *dat,
- 				   uint8_t *ecc_code)
- {
- 	struct platform_device *dev = mtd_to_platdev(mtd);
-+	struct nand_chip *chip = mtd->priv;
-+	int eccbytes;
- 	u32 mcr = txx9ndfmc_read(dev, TXX9_NDFMCR);
- 
- 	mcr &= ~TXX9_NDFMCR_ECC_ALL;
- 	txx9ndfmc_write(dev, mcr | TXX9_NDFMCR_ECC_OFF, TXX9_NDFMCR);
- 	txx9ndfmc_write(dev, mcr | TXX9_NDFMCR_ECC_READ, TXX9_NDFMCR);
--	ecc_code[1] = txx9ndfmc_read(dev, TXX9_NDFDTR);
--	ecc_code[0] = txx9ndfmc_read(dev, TXX9_NDFDTR);
--	ecc_code[2] = txx9ndfmc_read(dev, TXX9_NDFDTR);
-+	for (eccbytes = chip->ecc.bytes; eccbytes > 0; eccbytes -= 3) {
-+		ecc_code[1] = txx9ndfmc_read(dev, TXX9_NDFDTR);
-+		ecc_code[0] = txx9ndfmc_read(dev, TXX9_NDFDTR);
-+		ecc_code[2] = txx9ndfmc_read(dev, TXX9_NDFDTR);
-+		ecc_code += 3;
-+	}
- 	txx9ndfmc_write(dev, mcr | TXX9_NDFMCR_ECC_OFF, TXX9_NDFMCR);
- 	return 0;
- }
- 
-+static int txx9ndfmc_correct_data(struct mtd_info *mtd, unsigned char *buf,
-+		unsigned char *read_ecc, unsigned char *calc_ecc)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	int eccsize;
-+	int corrected = 0;
-+	int stat;
-+
-+	for (eccsize = chip->ecc.size; eccsize > 0; eccsize -= 256) {
-+		stat = __nand_correct_data(buf, read_ecc, calc_ecc, 256);
-+		if (stat < 0)
-+			return stat;
-+		corrected += stat;
-+		buf += 256;
-+		read_ecc += 3;
-+		calc_ecc += 3;
-+	}
-+	return corrected;
-+}
-+
- static void txx9ndfmc_enable_hwecc(struct mtd_info *mtd, int mode)
- {
- 	struct platform_device *dev = mtd_to_platdev(mtd);
-@@ -244,6 +269,22 @@ static void txx9ndfmc_initialize(struct platform_device *dev)
- #define TXX9NDFMC_NS_TO_CYC(gbusclk, ns) \
- 	DIV_ROUND_UP((ns) * DIV_ROUND_UP(gbusclk, 1000), 1000000)
- 
-+static int txx9ndfmc_nand_scan(struct mtd_info *mtd)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	int ret;
-+
-+	ret = nand_scan_ident(mtd, 1);
-+	if (!ret) {
-+		if (mtd->writesize >= 512) {
-+			chip->ecc.size = mtd->writesize;
-+			chip->ecc.bytes = 3 * (mtd->writesize / 256);
-+		}
-+		ret = nand_scan_tail(mtd);
-+	}
-+	return ret;
-+}
-+
- static int __init txx9ndfmc_probe(struct platform_device *dev)
- {
- 	struct txx9ndfmc_platform_data *plat = dev->dev.platform_data;
-@@ -321,9 +362,10 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
- 		chip->cmd_ctrl = txx9ndfmc_cmd_ctrl;
- 		chip->dev_ready = txx9ndfmc_dev_ready;
- 		chip->ecc.calculate = txx9ndfmc_calculate_ecc;
--		chip->ecc.correct = nand_correct_data;
-+		chip->ecc.correct = txx9ndfmc_correct_data;
- 		chip->ecc.hwctl = txx9ndfmc_enable_hwecc;
- 		chip->ecc.mode = NAND_ECC_HW;
-+		/* txx9ndfmc_nand_scan will overwrite ecc.size and ecc.bytes */
- 		chip->ecc.size = 256;
- 		chip->ecc.bytes = 3;
- 		chip->chip_delay = 100;
-@@ -349,7 +391,7 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
- 		if (plat->wide_mask & (1 << i))
- 			chip->options |= NAND_BUSWIDTH_16;
- 
--		if (nand_scan(mtd, 1)) {
-+		if (txx9ndfmc_nand_scan(mtd)) {
- 			kfree(txx9_priv->mtdname);
- 			kfree(txx9_priv);
- 			continue;
--- 
-1.5.6.5
+
+/> ls -al /dev/mtd*
+crw-r-----  1 0        0         90,   0  Nov 29 16:00 /dev/mtd0
+crw-r-----  1 0        0         90,   2  Nov 29 16:00 /dev/mtd1
+crw-r-----  1 0        0         90,   4  Nov 29 16:00 /dev/mtd2
+crw-r-----  1 0        0         90,   6  Nov 29 16:00 /dev/mtd3
+crw-r-----  1 0        0         90,   8  Nov 29 16:00 /dev/mtd4
+crw-r-----  1 0        0         90,  10  Nov 29 16:00 /dev/mtd5
+crw-r-----  1 0        0         90,  12  Nov 29 16:00 /dev/mtd6
+crw-r-----  1 0        0         90,  14  Nov 29 16:00 /dev/mtd7
+crw-r-----  1 0        0         90,  16  Nov 29 16:00 /dev/mtd8
+crw-r-----  1 0        0         90,  18  Nov 29 16:00 /dev/mtd9
+brw-r-----  1 0        0         31,   0  Nov 29 16:00 /dev/mtdblock0
+brw-r-----  1 0        0         31,   1  Nov 29 16:00 /dev/mtdblock1
+brw-r-----  1 0        0         31,   2  Nov 29 16:00 /dev/mtdblock2
+brw-r-----  1 0        0         31,   3  Nov 29 16:00 /dev/mtdblock3
+brw-r-----  1 0        0         31,   4  Nov 29 16:00 /dev/mtdblock4
+brw-r-----  1 0        0         31,   5  Nov 29 16:00 /dev/mtdblock5
+brw-r-----  1 0        0         31,   6  Nov 29 16:00 /dev/mtdblock6
+brw-r-----  1 0        0         31,   7  Nov 29 16:00 /dev/mtdblock7
+brw-r-----  1 0        0         31,   8  Nov 29 16:00 /dev/mtdblock8
+brw-r-----  1 0        0         31,   9  Nov 29 16:00 /dev/mtdblock9
+
+
+Here's the code: 
+
+        FILE* f;
+        int cfgdata[2];
+        char* dev = "/dev/mtdblock5"; // "/dev/mtd5";
+        if(f = fopen(dev, "wb")) // open config space
+        {
+                fseek(f,0x94,SEEK_SET);
+                memset((void*)cfgdata, 0, 2 * sizeof(int));
+                count = fread((void*)cfgdata, 2, sizeof(int), f);
+                cfgdata[0] = 0x01234567; 
+                cfgdata[1] = 0x89abcdef;                
+                count = fseek(f,0x94,SEEK_SET);
+                printf("fseek returned %d\n", count);
+                count = fwrite((void*)cfgdata, sizeof(int), 2, f); 
+                printf("fwrite returned %d\n", count);
+                fclose(f);
+        }
+        else
+        {
+                perror( dev );
+        }
+
+
+If i set dev to "/dev/mtdblock5" (as it is above), fopen fails and
+perror says "/dev/mtdblock5 : no such device or address".. 
+
+If i set dev to "/dev/mtd5", fopen succeeds and my two printfs say: 
+"fseek returned 0"
+"fwrite returned 2"
+and everything "appears" to have succeeded, but my changes are not
+written. So peeking at dmesg, I see this line at the bottom: 
+"MTD do_write_buffer(): software timeout"
+
+Any suggestions? 
+
+
+-  
+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=
+= Dennis McLeod                   =
+= Software Engineer               =
+= BittWare, Inc.                  =
+= 603.226.0404 ext 514            =
+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=
+** BittWare Celebrates 20 Years Delivering COTS Signal Processing Solutions 1989 - 2009 **
