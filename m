@@ -1,16 +1,20 @@
-Received: from mail.bittware.com ([208.82.132.157]
-	helo=olympus.corp.bittware.com)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MjeJU-0005C0-S2
-	for linux-mtd@lists.infradead.org; Fri, 04 Sep 2009 19:19:17 +0000
-Subject: MTD writes
-From: Dennis McLeod <dmcleod@bittware.com>
-To: linux-mtd@lists.infradead.org
-Date: Fri, 04 Sep 2009 15:19:05 -0400
-Message-Id: <1252091945.9490.22.camel@lusitania>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain
+Received: from be1ssnxpe1.nxp.com ([57.67.164.69])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Mji38-0000PX-Js
+	for linux-mtd@lists.infradead.org; Fri, 04 Sep 2009 23:18:39 +0000
+Received: from EU1RDCRDC1VW024.exi.nxp.com ([134.27.176.169])
+	by be1ssnxpe1.nxp.com (8.14.3/8.14.3) with ESMTP id n84NIUA7021389
+	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=FAIL)
+	for <linux-mtd@lists.infradead.org>; Sat, 5 Sep 2009 01:18:30 +0200
+From: Kevin Wells <kevin.wells@nxp.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Sat, 5 Sep 2009 01:18:28 +0200
+Subject: 4GiB support and huge block (4K) page support
+Message-ID: <083DF309106F364B939360100EC290F8041AB59EFD@eu1rdcrdc1wx030.exi.nxp.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,91 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
-        I am having trouble writing to flash through MTD. I am trying to
-open /dev/mtd5 for reading/writing, seek to a given offset, write 4
-bytes and then close. This same exact code worked on an older kernel
-with the same exact flash chip, so I can't understand what I might have
-done wrong. 
+Hi,
 
-/> cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 08000000 00020000 "dummy"
-mtd1: 08000000 00020000 "dummy1"
-mtd2: 07700000 00020000 "rwfs"
-mtd3: 08000000 00020000 "dummy2"
-mtd4: 00800000 00020000 "kernel"
-mtd5: 00100000 00020000 "cfg"
-mtd6: 08000000 00020000 "dummy3"
-mtd7: 08000000 00020000 "dummy4"
-mtd8: 08000000 00020000 "dummy5"
+I'm new to the list, but have been looking at the NAND and MTD code for a w=
+hile...
 
+I have a 4G Micron FLASH organized as 8192 blocks * 128 pages * 4096/bytes =
+per page (+218 spare bytes/page).
 
-/> ls -al /dev/mtd*
-crw-r-----  1 0        0         90,   0  Nov 29 16:00 /dev/mtd0
-crw-r-----  1 0        0         90,   2  Nov 29 16:00 /dev/mtd1
-crw-r-----  1 0        0         90,   4  Nov 29 16:00 /dev/mtd2
-crw-r-----  1 0        0         90,   6  Nov 29 16:00 /dev/mtd3
-crw-r-----  1 0        0         90,   8  Nov 29 16:00 /dev/mtd4
-crw-r-----  1 0        0         90,  10  Nov 29 16:00 /dev/mtd5
-crw-r-----  1 0        0         90,  12  Nov 29 16:00 /dev/mtd6
-crw-r-----  1 0        0         90,  14  Nov 29 16:00 /dev/mtd7
-crw-r-----  1 0        0         90,  16  Nov 29 16:00 /dev/mtd8
-crw-r-----  1 0        0         90,  18  Nov 29 16:00 /dev/mtd9
-brw-r-----  1 0        0         31,   0  Nov 29 16:00 /dev/mtdblock0
-brw-r-----  1 0        0         31,   1  Nov 29 16:00 /dev/mtdblock1
-brw-r-----  1 0        0         31,   2  Nov 29 16:00 /dev/mtdblock2
-brw-r-----  1 0        0         31,   3  Nov 29 16:00 /dev/mtdblock3
-brw-r-----  1 0        0         31,   4  Nov 29 16:00 /dev/mtdblock4
-brw-r-----  1 0        0         31,   5  Nov 29 16:00 /dev/mtdblock5
-brw-r-----  1 0        0         31,   6  Nov 29 16:00 /dev/mtdblock6
-brw-r-----  1 0        0         31,   7  Nov 29 16:00 /dev/mtdblock7
-brw-r-----  1 0        0         31,   8  Nov 29 16:00 /dev/mtdblock8
-brw-r-----  1 0        0         31,   9  Nov 29 16:00 /dev/mtdblock9
+I've temporarily added an entry to nand_ids.c to use this device...
+{"NAND 4GiB 3,3v 8-bit", 0xD7, 4096, 4096, (512 * 1024), LP_OPTIONS}
 
+I've heard tell of some people having 4G NAND devices working under MTD 2.6=
+.28, but there are overflows in the
+nand_base, nand_bbt, and some of the MTD code when I used 4G. I looked at t=
+he 2.6.30 code and things
+look better, but still not quite right. I've been chaning the code to suppo=
+rt 4G, but when I fix something in
+one area, something further up in the code still needs some work.
 
-Here's the code: 
+I guess the question is am I fighting an uphill battle trying to get this t=
+o work and has this been done by
+someone else before? Are there currently 4G+ NAND devices to work correctly=
+ under MTD? Would it make sense
+to update the kernel version to 2.6.30 to get this needed support?
 
-        FILE* f;
-        int cfgdata[2];
-        char* dev = "/dev/mtdblock5"; // "/dev/mtd5";
-        if(f = fopen(dev, "wb")) // open config space
-        {
-                fseek(f,0x94,SEEK_SET);
-                memset((void*)cfgdata, 0, 2 * sizeof(int));
-                count = fread((void*)cfgdata, 2, sizeof(int), f);
-                cfgdata[0] = 0x01234567; 
-                cfgdata[1] = 0x89abcdef;                
-                count = fseek(f,0x94,SEEK_SET);
-                printf("fseek returned %d\n", count);
-                count = fwrite((void*)cfgdata, sizeof(int), 2, f); 
-                printf("fwrite returned %d\n", count);
-                fclose(f);
-        }
-        else
-        {
-                perror( dev );
-        }
-
-
-If i set dev to "/dev/mtdblock5" (as it is above), fopen fails and
-perror says "/dev/mtdblock5 : no such device or address".. 
-
-If i set dev to "/dev/mtd5", fopen succeeds and my two printfs say: 
-"fseek returned 0"
-"fwrite returned 2"
-and everything "appears" to have succeeded, but my changes are not
-written. So peeking at dmesg, I see this line at the bottom: 
-"MTD do_write_buffer(): software timeout"
-
-Any suggestions? 
-
-
--  
-=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=
-= Dennis McLeod                   =
-= Software Engineer               =
-= BittWare, Inc.                  =
-= 603.226.0404 ext 514            =
-=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=
-** BittWare Celebrates 20 Years Delivering COTS Signal Processing Solutions 1989 - 2009 **
+thanks much!
+Kevin Wells
+NXP Semiconductors
