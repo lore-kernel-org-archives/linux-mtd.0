@@ -1,28 +1,14 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MjKFx-00008N-7K
-	for linux-mtd@lists.infradead.org; Thu, 03 Sep 2009 21:54:17 +0000
-From: "Paulraj, Sandeep" <s-paulraj@ti.com>
-To: David Brownell <david-b@pacbell.net>
-Date: Thu, 3 Sep 2009 16:53:10 -0500
-Subject: RE: [patch 3/3] mtd-nand: DaVinci: Add 4-bit ECC support for large
-	page NAND chips
-Message-ID: <0554BEF07D437848AF01B9C9B5F0BC5D923DAA36@dlee01.ent.ti.com>
-References: <200908071824.n77IONlo008375@imap1.linux-foundation.org>
-	<200908271908.15309.david-b@pacbell.net>
-	<0554BEF07D437848AF01B9C9B5F0BC5D91E07BD2@dlee01.ent.ti.com>
-	<200909031448.43314.david-b@pacbell.net>
-In-Reply-To: <200909031448.43314.david-b@pacbell.net>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: Troy Kisky <troy.kisky@boundarydevices.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"Narnakaje, Snehaprabha" <nsnehaprabha@ti.com>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>
+Received: from mba.ocn.ne.jp ([122.28.14.163] helo=smtp.mba.ocn.ne.jp)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MjbWt-0000Tr-MV
+	for linux-mtd@lists.infradead.org; Fri, 04 Sep 2009 16:20:56 +0000
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 2/3] mtd/nand: Fix tmio_nand ecc correction
+Date: Sat,  5 Sep 2009 01:20:44 +0900
+Message-Id: <1252081245-11895-2-git-send-email-anemo@mba.ocn.ne.jp>
+Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, dwmw2@infradead.org,
+	linux-kernel@vger.kernel.org, vimal singh <vimal.newwork@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,31 +18,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This driver may be reading 512 bytes at a times, but still calculates
+256-byte sector ECC.  So the nand_correct_data() is not appropriate
+for this driver.  Implement its ecc.correct function calling
+__nand_correct_data() twice.
 
+Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Acked-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Acked-by: Vimal Singh <vimalsingh@ti.com>
+---
+This is resend of:
+http://lists.infradead.org/pipermail/linux-mtd/2009-July/026651.html
 
+ drivers/mtd/nand/tmio_nand.c |   17 ++++++++++++++++-
+ 1 files changed, 16 insertions(+), 1 deletions(-)
 
-> On Friday 28 August 2009, Paulraj, Sandeep wrote:
-> > I've already sent the patch to U-Boot and it has been accepted.
-> > Its in the nand next branch.
->=20
-> Actually at that time it was also in the u-boot-next branch;
-> and since then (after U-Boot 2009.08 got tagged) it's been
-> merged into the current U-Boot GIT tree.  :)
-[Sandeep] that's very correct
->=20
->=20
-> > For things to become fully functional i'll need a syncs
-> > between the various branches of U-Boot. I'll have to enable
-> > stuff in the DM355 and Dm365 configs
->=20
-> I've got a DM355 config patch; why don't I send that along,
-> after I test with the latest u-boot and some Linux version
-> which includes the relevant NAND apatches.  It's been
-> waiting on that merge, which has now happened.
-[Sandeep] No probs. My config update patch(to enable NAND) got accepted but=
- Jean-Christophe forgot to merge it. So I was about to send it again since =
-he insisted that I send again.
->=20
-> - Dave
->=20
->=20
+diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
+index daa6a4c..92c7334 100644
+--- a/drivers/mtd/nand/tmio_nand.c
++++ b/drivers/mtd/nand/tmio_nand.c
+@@ -301,6 +301,21 @@ static int tmio_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
+ 	return 0;
+ }
+ 
++static int tmio_nand_correct_data(struct mtd_info *mtd, unsigned char *buf,
++		unsigned char *read_ecc, unsigned char *calc_ecc)
++{
++	int r0, r1;
++
++	/* assume ecc.size = 512 and ecc.bytes = 6 */
++	r0 = __nand_correct_data(buf, read_ecc, calc_ecc, 256);
++	if (r0 < 0)
++		return r0;
++	r1 = __nand_correct_data(buf + 256, read_ecc + 3, calc_ecc + 3, 256);
++	if (r1 < 0)
++		return r1;
++	return r0 + r1;
++}
++
+ static int tmio_hw_init(struct platform_device *dev, struct tmio_nand *tmio)
+ {
+ 	struct mfd_cell *cell = (struct mfd_cell *)dev->dev.platform_data;
+@@ -424,7 +439,7 @@ static int tmio_probe(struct platform_device *dev)
+ 	nand_chip->ecc.bytes = 6;
+ 	nand_chip->ecc.hwctl = tmio_nand_enable_hwecc;
+ 	nand_chip->ecc.calculate = tmio_nand_calculate_ecc;
+-	nand_chip->ecc.correct = nand_correct_data;
++	nand_chip->ecc.correct = tmio_nand_correct_data;
+ 
+ 	if (data)
+ 		nand_chip->badblock_pattern = data->badblock_pattern;
+-- 
+1.5.6.5
