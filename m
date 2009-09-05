@@ -1,20 +1,31 @@
-Received: from be1ssnxpe1.nxp.com ([57.67.164.69])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mji38-0000PX-Js
-	for linux-mtd@lists.infradead.org; Fri, 04 Sep 2009 23:18:39 +0000
-Received: from EU1RDCRDC1VW024.exi.nxp.com ([134.27.176.169])
-	by be1ssnxpe1.nxp.com (8.14.3/8.14.3) with ESMTP id n84NIUA7021389
-	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=FAIL)
-	for <linux-mtd@lists.infradead.org>; Sat, 5 Sep 2009 01:18:30 +0200
-From: Kevin Wells <kevin.wells@nxp.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Sat, 5 Sep 2009 01:18:28 +0200
-Subject: 4GiB support and huge block (4K) page support
-Message-ID: <083DF309106F364B939360100EC290F8041AB59EFD@eu1rdcrdc1wx030.exi.nxp.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from an-out-0708.google.com ([209.85.132.244])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MjsAO-00026R-A5
+	for linux-mtd@lists.infradead.org; Sat, 05 Sep 2009 10:06:48 +0000
+Received: by an-out-0708.google.com with SMTP id c38so588184ana.27
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 05 Sep 2009 03:06:42 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <ce9ab5790908102329k73f66b5bgcdd8ac52d6631116@mail.gmail.com>
+References: <61339.192.168.10.89.1247226725.squirrel@dbdmail.itg.ti.com>
+	<48097.192.168.10.89.1247232736.squirrel@dbdmail.itg.ti.com>
+	<60361.192.168.10.89.1247482584.squirrel@dbdmail.itg.ti.com>
+	<20090810162734.GH1938@atomide.com>
+	<ce9ab5790908102245r28224bf5nfa2a1b22267767fe@mail.gmail.com>
+	<4A810DE4.7030202@gmail.com>
+	<ce9ab5790908102329k73f66b5bgcdd8ac52d6631116@mail.gmail.com>
+From: vimal singh <vimal.newwork@gmail.com>
+Date: Sat, 5 Sep 2009 15:36:21 +0530
+Message-ID: <ce9ab5790909050306m180e7c22g7bbdea7f7053d159@mail.gmail.com>
+Subject: Re: [PATCH-v3 1:2] [MTD][NAND]omap: Adding support for nand
+	prefetch-read and post-write, in MPU mode.
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: vimal singh <vimalsingh@ti.com>, Tony Lindgren <tony@atomide.com>,
+	linux-kernel@vger.kernel.org, david-b@pacbell.net,
+	dedekind@infradead.org, linux-mtd@lists.infradead.org,
+	linux-omap@vger.kernel.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +35,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi David,
 
-I'm new to the list, but have been looking at the NAND and MTD code for a w=
-hile...
 
-I have a 4G Micron FLASH organized as 8192 blocks * 128 pages * 4096/bytes =
-per page (+218 spare bytes/page).
+On Tue, Aug 11, 2009 at 11:59 AM, vimal singh<vimal.newwork@gmail.com> wrot=
+e:
+> On Tue, Aug 11, 2009 at 11:51 AM, Artem Bityutskiy<dedekind1@gmail.com> w=
+rote:
+>> On 08/11/2009 08:45 AM, vimal singh wrote:
+>>>
+>>> On Mon, Aug 10, 2009 at 9:57 PM, Tony Lindgren<tony@atomide.com> =C2=A0=
+wrote:
+>>>>
+>>>> * vimal singh<vimalsingh@ti.com> =C2=A0[090713 13:56]:
+>>>>>
+>>>>> Patch updated for ' ioreadX / iowriteX and ioreadX_rep / iowriteX_rep=
+'
+>>>>> as per
+>>>>> David Brownell's comment. I updated 'omap_(read/write)_buf16' fucntio=
+ns
+>>>>> also
+>>>>> for this.
+>>>>>
+>>>>> -vimal
+>>>>>
+>>>>> This patch adds prefetch support to access nand flash in mpu mode.
+>>>>> This patch also adds 8-bit nand support (omap_read/write_buf8).
+>>>>> Prefetch can be used for both 8- and 16-bit devices.
+>>>>>
+>>>>> Signed-off-by: Vimal Singh<vimalsingh@ti.com>
+>>>>
+>>>> Sorry for the delay. I've looked at the GPMC part, and that now looks =
+OK
+>>>> to me. So I'm OK for this to get integrated via the MTD list.
+>>>>
+>>>> Acked-by: Tony Lindgren<tony@atomide.com>
+>>>>
+>>>
+>>> Can you give your ack to below patch too?
+>>>
+>>> http://lists.infradead.org/pipermail/linux-mtd/2009-July/026373.html
+>>
+>> I've picked up both of your patches, please, check:
+>> http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/33f48f5973=
+15842f39427ee4261cbf82a9afeaf3
+>> http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/b67d52c91b=
+26e97f981f2c292619d31667d5b272
+>>
+>
+Is there any chance for these patches to get merged in this merge
+window? These have been waiting for long time.
 
-I've temporarily added an entry to nand_ids.c to use this device...
-{"NAND 4GiB 3,3v 8-bit", 0xD7, 4096, 4096, (512 * 1024), LP_OPTIONS}
+-Vimal
 
-I've heard tell of some people having 4G NAND devices working under MTD 2.6=
-.28, but there are overflows in the
-nand_base, nand_bbt, and some of the MTD code when I used 4G. I looked at t=
-he 2.6.30 code and things
-look better, but still not quite right. I've been chaning the code to suppo=
-rt 4G, but when I fix something in
-one area, something further up in the code still needs some work.
-
-I guess the question is am I fighting an uphill battle trying to get this t=
-o work and has this been done by
-someone else before? Are there currently 4G+ NAND devices to work correctly=
- under MTD? Would it make sense
-to update the kernel version to 2.6.30 to get this needed support?
-
-thanks much!
-Kevin Wells
-NXP Semiconductors
+> Thanks Artem.
+>
+>> --
+>> Best Regards,
+>> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =D0=91=D0=B8=D1=82=D1=
+=8E=D1=86=D0=BA=D0=B8=D0=B9)
+>>
+>
