@@ -1,19 +1,20 @@
-Received: from antispam01.maxim-ic.com ([205.153.101.182])
+Received: from mail-bw0-f220.google.com ([209.85.218.220])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MkzcX-0008I3-Q1
-	for linux-mtd@lists.infradead.org; Tue, 08 Sep 2009 12:16:30 +0000
-Message-ID: <4AA64B13.70306@maxim-ic.com>
-Date: Tue, 8 Sep 2009 17:46:19 +0530
-From: JerinJacob <jerin.jacob@maxim-ic.com>
+	id 1Ml0st-0002sl-98
+	for linux-mtd@lists.infradead.org; Tue, 08 Sep 2009 13:37:27 +0000
+Received: by bwz20 with SMTP id 20so629658bwz.18
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 08 Sep 2009 06:37:20 -0700 (PDT)
 MIME-Version: 1.0
-To: Adrian Hunter <adrian.hunter@nokia.com>
-Subject: Re: UBIFS Error
-References: <4AA5F37F.4050307@maxim-ic.com> <4AA60E6C.6060307@nokia.com>
-In-Reply-To: <4AA60E6C.6060307@nokia.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "Bityutskiy Artem \(Nokia-M/Helsinki\)" <Artem.Bityutskiy@nokia.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <CB3FB7F900CE42098BDE5576C33A3522@sisodomain.com>
+References: <CB3FB7F900CE42098BDE5576C33A3522@sisodomain.com>
+Date: Tue, 8 Sep 2009 15:37:20 +0200
+Message-ID: <71cd59b00909080637i70a6cd01yf86bfee4bcff6db@mail.gmail.com>
+Subject: Re: [MTD-Utils] issue while downloading
+From: Corentin Chary <corentin.chary@gmail.com>
+To: Tadimarri Sarath Babu <sarath.babu@samsung.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,94 +24,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Please find below the actual test script:
-
---------------------------start---------------------------------------------------------------
-#!/bin/sh
-
-sizecount=0
-localcount=0
-
-deletelimit=`expr 500 \* 1024 \* 1024` # 500 MB
-FILENAME="1 2 3 4 5 6 7 8 9 10"
-
-rm -rf /ubifs_rootfs/*
-
-while [ 1 ]
-do
-
-        for filename in $FILENAME
-        do
-            size=`expr 4096 \* 10`
-
-            dd if=/dev/urandom of=/ubifs_rootfs/foo1${filename} bs=1024 
-count=4 2> /dev/null ;
-            dd if=/dev/urandom of=/ubifs_rootfs/foo2${filename} bs=1024 
-count=4 2> /dev/null ;
-            dd if=/dev/urandom of=/ubifs_rootfs/foo3${filename} bs=1024 
-count=4 2> /dev/null ;
-            dd if=/dev/urandom of=/ubifs_rootfs/foo4${filename} bs=1024 
-count=4 2> /dev/null ;
-            dd if=/dev/urandom of=/ubifs_rootfs/foo5${filename} bs=1024 
-count=4 2> /dev/null ;
-            dd if=/dev/urandom of=/ubifs_rootfs/foo6${filename} bs=1024 
-count=4 2> /dev/null ;
-            dd if=/dev/urandom of=/ubifs_rootfs/foo7${filename} bs=1024 
-count=4 2> /dev/null ;
-            dd if=/dev/urandom of=/ubifs_rootfs/foo8${filename} bs=1024 
-count=4 2> /dev/null ;
-            dd if=/dev/urandom of=/ubifs_rootfs/foo9${filename} bs=1024 
-count=4 2> /dev/null ;
-            dd if=/dev/urandom of=/ubifs_rootfs/foo10${filename} bs=1024 
-count=4 2> /dev/null ;
-
-            localcount=`expr $localcount + $size`
-            sizecount=`expr $sizecount + $size`
-        done
-
-        if [ $localcount -gt $deletelimit ] ; then
-                echo "Clean up!!!"
-                localcount=0
-                rm -rf /ubifs_rootf/* ; sync
-        fi
-
-        date ; sync
-        echo "Bytes Written to Nand flash:`expr $sizecount / 1048576 ` MB"
-
-done
------------------------------End-----------------------------------------------------------------
-
-
-Adrian Hunter wrote:
-> JerinJacob wrote:
->   
->> Hi All,
->>
->> Got an UBIFS error while performing a regression write test on UBIFS 
->> file system.
->>
->>
->> [Issue]
->> =======
->>
->> While performing a regression write test on UBIFS file system,the UBIFS 
->> file system becomes read-only mode.
->> pseudo code for the regression write test as follows:
->>
->> while(1)
->> {
->> create and write a random image(with different block size using dd 
->> command) to nand flash
->>
->> if "disk space is reached maxim size"
->>     delete all the files
->>
->> }
->>     
+On Tue, Sep 8, 2009 at 11:56 AM, Tadimarri Sarath
+Babu<sarath.babu@samsung.com> wrote:
+> Hi,
 >
-> Can you provide the actual test?
+> I am facing problem while downloading the latest mtd-utils from the following link.
 >
+> http://git.infradead.org/users/haver/mtd-utils.git/tree
 >
-> .
+> When i try to take snapshot of the latest mtd-utils release,
+> i get a window showing mtd-utils-HEAD.tar.gz.tar.gz
+> and the file size to be downloaded is shown as only 20 bytes.
 >
->   
+> Please let me know if any body has downloaded it.
+>
+> Regards,
+>
+> Sarath.
+>
+
+Hi,
+The official mtd-utils tree is here: http://git.infradead.org/mtd-utils.git
+You can download it using:
+git clone git://git.infradead.org/mtd-utils.git
+
+
+
+-- 
+Corentin Chary
+http://xf.iksaif.net
