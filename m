@@ -1,19 +1,19 @@
-Received: from gw1.transmode.se ([213.115.205.20])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Ml50e-0001N7-Tg
-	for linux-mtd@lists.infradead.org; Tue, 08 Sep 2009 18:01:45 +0000
-In-Reply-To: <4AA684A6.1000303@billgatliff.com>
-References: <774508.54364.qm@web110103.mail.gq1.yahoo.com>
-	<4AA684A6.1000303@billgatliff.com>
-Subject: Re: Ideal NAND flashes for JFFS2 or YAFFS
-To: Bill Gatliff <bgat@billgatliff.com>
-Message-ID: <OFBEE608EF.84319E73-ONC125762B.0062C1F1-C125762B.0062FE4E@transmode.se>
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Tue, 8 Sep 2009 20:01:16 +0200
-MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org, Justin Treon <justin_treon@yahoo.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Received: from shared-1.locaweb.com.br ([200.234.214.130]
+	helo=hm995.locaweb.com.br)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Ml5TJ-0000vs-3X
+	for linux-mtd@lists.infradead.org; Tue, 08 Sep 2009 18:31:21 +0000
+Received: from hm1540.locaweb.com.br (hm1540.locaweb.com.br [200.234.200.173])
+	by hm995.locaweb.com.br (Postfix) with ESMTP id 21F422BC3B8EC
+	for <linux-mtd@lists.infradead.org>;
+	Tue,  8 Sep 2009 15:13:33 -0300 (BRT)
+To: linux-mtd@lists.infradead.org
+Subject: Especial Salmão - Aniversário Vivano Grill
+MIME-version: 1.0
+From: Vivano Grill <atendimento@vivano.com.br>
+Content-type: MULTIPART/MIXED; BOUNDARY="------------MSG-BOUNDARY-VM2"
+Message-Id: <20090908181333.0BAD212CC34@hm1540.locaweb.com.br>
+Date: Tue,  8 Sep 2009 15:13:33 -0300 (BRT)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +23,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Bill Gatliff <bgat@billgatliff.com> wrote on 08/09/2009 18:21:58:
->
-> Justin Treon wrote:
-> > For NAND I think there is a simple flow chart to pick your filing system.
-> >
-> > Do you have a partition bigger than 256 MBytes?
 
-Oh yes, probably 512MB-1GB, possibly more
+Return-Path: acao@cadastroweb.com.br
 
-> > If YES: Use UBIFS (@128 MB you can argue the point)
-> > If NO: Do you have a LOT of RAM?
-> >    If YES: Use YAFFS2 (It is fast, but RAM hungry)
 
-This is news to me. I always had the impression that JFFS2 needed
-more RAM.
 
-> >    If NO: Use JFFS2
-> >
->
-> With 128MB and/or 1GB partitions, does YAFFS2 use more memory than
-> UBIFS?  It does seem to me that YAFFS2 mounts a tad faster, though I
-> haven't broken out the stopwatch or anything (yet).
 
-I too want to know.
+--------------MSG-BOUNDARY-VM2
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 
- Jocke
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type" /><style type="text/css">
+
+<!--
+body {
+	background-color: #cbcbcb;
+}
+--></style>
+<table id="Table_01" border="0" cellspacing="0" cellpadding="0" width="580" align="center" height="1068">
+    <tbody>
+        <tr>
+            <td align="center"><font style="FONT-FAMILY: Verdana, Geneva, sans-serif; COLOR: #000000; FONT-SIZE: 9px">Caso n&atilde;o esteja visualizando corretamente este e-mail, clique <a style="FONT-FAMILY: Verdana, Geneva, sans-serif; COLOR: #fd5719; FONT-SIZE: 9px; FONT-WEIGHT: bold; TEXT-DECORATION: none" target="_blank" href="http://www.vivano.com.br/news/aniversario09/">aqui</a>.</font></td>
+        </tr>
+        <tr>
+            <td><a target="_blank" href="http://www.vivano.com.br/"><img border="0" width="580" height="281" alt="" src="http://www.vivano.com.br/news/aniversario09/images/img_01.jpg" /></a></td>
+        </tr>
+        <tr>
+            <td><a target="_blank" href="http://www.vivano.com.br/"><img border="0" width="580" height="253" alt="" src="http://www.vivano.com.br/news/aniversario09/images/img_02.jpg" /></a></td>
+        </tr>
+        <tr>
+            <td><a target="_blank" href="http://www.vivano.com.br/"><img border="0" width="580" height="276" alt="" src="http://www.vivano.com.br/news/aniversario09/images/img_03.jpg" /></a></td>
+        </tr>
+        <tr>
+            <td><a target="_blank" href="http://www.vivano.com.br/"><img border="0" width="580" height="258" alt="" src="http://www.vivano.com.br/news/aniversario09/images/img_04.jpg" /></a></td>
+        </tr>
+        <tr>
+            <td align="center"><font style="FONT-FAMILY: Verdana, Geneva, sans-serif; COLOR: #000000; FONT-SIZE: 9px">Caso n&atilde;o queira mais receber nossas newsletters, clique <a style="FONT-FAMILY: Verdana, Geneva, sans-serif; COLOR: #fd5719; FONT-SIZE: 9px; FONT-WEIGHT: bold; TEXT-DECORATION: none" href="http://webmarketing.cadastroweb.com.br/cancelamento.php?idEmail=85ec6141e32c178c6ac1baf3ec4d775d">aqui</a>.</font></td>
+        </tr>
+    </tbody>
+</table><img src='http://webmarketing.cadastroweb.com.br/leitura.php?idNews=547&idEmail=3901453' border='0' width='0' height='0'>
+
+--------------MSG-BOUNDARY-VM2--
