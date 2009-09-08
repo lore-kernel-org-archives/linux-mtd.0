@@ -1,19 +1,22 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MkvZh-0007RD-QH
-	for linux-mtd@lists.infradead.org; Tue, 08 Sep 2009 07:57:18 +0000
-Message-ID: <4AA60E6C.6060307@nokia.com>
-Date: Tue, 08 Sep 2009 10:57:32 +0300
-From: Adrian Hunter <adrian.hunter@nokia.com>
-MIME-Version: 1.0
-To: JerinJacob <jerin.jacob@maxim-ic.com>
-Subject: Re: UBIFS Error
-References: <4AA5F37F.4050307@maxim-ic.com>
-In-Reply-To: <4AA5F37F.4050307@maxim-ic.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "Bityutskiy Artem \(Nokia-M/Helsinki\)" <Artem.Bityutskiy@nokia.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from mailout4.samsung.com ([203.254.224.34])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MkxSR-0002tH-IW
+	for linux-mtd@lists.infradead.org; Tue, 08 Sep 2009 09:57:56 +0000
+Received: from epmmp2 (mailout4.samsung.com [203.254.224.34])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KPN001P6D0CXC@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Tue, 08 Sep 2009 18:57:48 +0900 (KST)
+Received: from Sarathbabu ([107.108.214.67])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KPN00467D0AC2@mmp2.samsung.com> for
+	linux-mtd@lists.infradead.org; Tue, 08 Sep 2009 18:57:48 +0900 (KST)
+Date: Tue, 08 Sep 2009 15:26:17 +0530
+From: Tadimarri Sarath Babu <sarath.babu@samsung.com>
+Subject: [MTD-Utils]  issue while downloading
+To: linux-mtd@lists.infradead.org
+Message-id: <CB3FB7F900CE42098BDE5576C33A3522@sisodomain.com>
+Content-transfer-encoding: 7BIT
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-JerinJacob wrote:
-> Hi All,
-> 
-> Got an UBIFS error while performing a regression write test on UBIFS 
-> file system.
-> 
-> 
-> [Issue]
-> =======
-> 
-> While performing a regression write test on UBIFS file system,the UBIFS 
-> file system becomes read-only mode.
-> pseudo code for the regression write test as follows:
-> 
-> while(1)
-> {
-> create and write a random image(with different block size using dd 
-> command) to nand flash
-> 
-> if "disk space is reached maxim size"
->     delete all the files
-> 
-> }
+Hi,
 
-Can you provide the actual test?
+I am facing problem while downloading the latest mtd-utils from the following link.
+
+http://git.infradead.org/users/haver/mtd-utils.git/tree
+
+When i try to take snapshot of the latest mtd-utils release,
+i get a window showing mtd-utils-HEAD.tar.gz.tar.gz
+and the file size to be downloaded is shown as only 20 bytes.
+
+Please let me know if any body has downloaded it.
+
+Regards,
+
+Sarath. 
