@@ -1,23 +1,29 @@
-Received: from mail-qy0-f187.google.com ([209.85.221.187])
+Received: from relais.videotron.ca ([24.201.245.36])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Ml3SJ-0005qP-Cd
-	for linux-mtd@lists.infradead.org; Tue, 08 Sep 2009 16:22:11 +0000
-Received: by qyk17 with SMTP id 17so1430522qyk.2
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 08 Sep 2009 09:22:05 -0700 (PDT)
-Message-ID: <4AA684A6.1000303@billgatliff.com>
-Date: Tue, 08 Sep 2009 11:21:58 -0500
-From: Bill Gatliff <bgat@billgatliff.com>
-MIME-Version: 1.0
-To: Justin Treon <justin_treon@yahoo.com>
-Subject: Re: Ideal NAND flashes for JFFS2 or YAFFS
-References: <774508.54364.qm@web110103.mail.gq1.yahoo.com>
-In-Reply-To: <774508.54364.qm@web110103.mail.gq1.yahoo.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org,
-	Joakim Tjernlund <joakim.tjernlund@transmode.se>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+	id 1Ml4Sh-0006hn-9H
+	for linux-mtd@lists.infradead.org; Tue, 08 Sep 2009 17:26:39 +0000
+MIME-version: 1.0
+Content-transfer-encoding: 7BIT
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Received: from xanadu.home ([66.130.28.92]) by VL-MH-MR001.ip.videotron.ca
+	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
+	32bit))
+	with ESMTP id <0KPN0023JXRWYG21@VL-MH-MR001.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Tue, 08 Sep 2009 13:26:21 -0400 (EDT)
+Date: Tue, 08 Sep 2009 13:26:20 -0400 (EDT)
+From: Nicolas Pitre <nico@cam.org>
+To: Jamie Lokier <jamie@shareable.org>
+Subject: Re: [RFC] extending nand_ecclayout.eccpos once again
+In-reply-to: <20090908152813.GC5579@shareable.org>
+Message-id: <alpine.LFD.2.00.0909081321170.6044@xanadu.home>
+References: <20090902093045.GB7377@prithivi.gnumonks.org>
+	<1252390415.5060.38.camel@localhost>
+	<20090908152813.GC5579@shareable.org>
+Cc: Kukjin Kim <kgene.kim@samsung.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+	Jin-Sung Yang <jsgood.yang@samsung.com>,
+	Ilho Lee <ilho215.lee@samsung.com>, Marc Zyngier <marc.zyngier@tomtom.com>,
+	linux-mtd@lists.infradead.org, Harald Welte <laforge@gnumonks.org>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,23 +33,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Justin Treon wrote:
-> For NAND I think there is a simple flow chart to pick your filing system.
->
-> Do you have a partition bigger than 256 MBytes?
-> If YES: Use UBIFS (@128 MB you can argue the point)
-> If NO: Do you have a LOT of RAM?
-> 	If YES: Use YAFFS2 (It is fast, but RAM hungry)
-> 	If NO: Use JFFS2
->   
+On Tue, 8 Sep 2009, Jamie Lokier wrote:
 
-With 128MB and/or 1GB partitions, does YAFFS2 use more memory than 
-UBIFS?  It does seem to me that YAFFS2 mounts a tad faster, though I 
-haven't broken out the stopwatch or anything (yet).
+> Artem Bityutskiy wrote:
+> > Can we instead assume that exposing ECC layout to user-space is jut bad
+> > idea, deprecate current layout ABI, and do not do this anymore.
+> > 
+> > I mean, really, ECC layout is generally not user's concern. Just do not
+> > expose it and problem is solved.
+> > 
+> > Is it absolutely necessary to have expose this stuff to user-space?
+
+I admit having the same question from time to time.
+
+> Let's rephrase that question.
+> What tools use this information?
+
+Right.  And whether or not that tool is useful enough to warrant the 
+cost of maintening an interface to communicate that stuff from/to user 
+space.  I don't remember ever having to rely on that.
 
 
-b.g.
-
--- 
-Bill Gatliff
-bgat@billgatliff.com
+Nicolas
