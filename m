@@ -1,20 +1,18 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from astoria.ccjclearline.com ([64.235.106.9])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MlK4w-0002q7-6r
-	for linux-mtd@lists.infradead.org; Wed, 09 Sep 2009 10:07:10 +0000
-Message-ID: <4AA77E2A.40604@gmail.com>
-Date: Wed, 09 Sep 2009 13:06:34 +0300
-From: Artem Bityutskiy <dedekind1@gmail.com>
+	id 1MlK6y-0007EE-Sw
+	for linux-mtd@lists.infradead.org; Wed, 09 Sep 2009 10:09:16 +0000
+Date: Wed, 9 Sep 2009 06:09:03 -0400 (EDT)
+From: "Robert P. J. Day" <rpjday@crashcourse.ca>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: mismatch in MTD Kconfig variables
+In-Reply-To: <4AA7530F.3080401@gmail.com>
+Message-ID: <alpine.LFD.2.00.0909090608240.17301@localhost>
+References: <alpine.LFD.2.00.0909081448280.11685@localhost>
+	<4AA7530F.3080401@gmail.com>
 MIME-Version: 1.0
-To: JiSheng Zhang <jszhang3@gmail.com>
-Subject: Re: UBIFS power cut issues
-References: <2df346410909020235v5258eba3l30ff731841acc71@mail.gmail.com>	
-	<1252390936.5060.47.camel@localhost>
-	<2df346410909090245v5995842asf3a94ae40da5fa72@mail.gmail.com>
-In-Reply-To: <2df346410909090245v5995842asf3a94ae40da5fa72@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: MTD mailing list <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +22,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/09/2009 12:45 PM, JiSheng Zhang wrote:
->> On Wed, 2009-09-02 at 17:35 +0800, JiSheng Zhang wrote:
->>> If we cut power when copy file into ubifs, then remount ubifs and try
->>> to read the file, we found that the data at some offset of the file
->>> began different from the data of the original file at the same offset.
->>> Is this a bug of ubifs?
->>
->> This is expected behavior on any asynchronous FS. You may switch to
->> synchronous behavior with '-o sync' mount option. I wrote a lot of
+On Wed, 9 Sep 2009, Artem Bityutskiy wrote:
+
+> On 09/08/2009 09:49 PM, Robert P. J. Day wrote:
+> >
+> >    result of latest kernel tree scan:
+> >
+> > $ grep -r MTD_DATAFLASH.*VERIFY  drivers
+> > drivers/mtd/devices/mtd_dataflash.c:#ifdef CONFIG_MTD_DATAFLASH_VERIFY_WRITE
+> > drivers/mtd/devices/mtd_dataflash.c:#endif	/*
+> > CONFIG_MTD_DATAFLASH_VERIFY_WRITE */
+> > drivers/mtd/devices/Kconfig:config MTD_DATAFLASH_WRITE_VERIFY
+> > $
 >
-> I have tested with "mount -o sync", the result is the same. It's not
-> empty file. For example:
-> cp fileA /mnt/ubifs/fileB
-> random cut power before "cp" completed.
-> then remount
->  From head of /mnt/ubifs/fileB to some offset offsetC is the same as
-> fileA. But from offsetC to the end is different from fileA at the same
-> offset offsetC, it's not empty either.
-> Hope I expressed myself clearly.
+> So you have a patch to fix this?
 
-Hmm, ok. What is your kernel version?
+  as long as someone else confirms that, yes, it's just a typo and
+those two variables should match, then yes, i can have a patch in
+short order.
 
-Could you please take a closer look and see if these differences
-are zeroes or not?
+rday
+--
 
-Do you have an automated test for this? Can you share your script?
+========================================================================
+Robert P. J. Day                               Waterloo, Ontario, CANADA
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+        Linux Consulting, Training and Annoying Kernel Pedantry.
+
+Web page:                                          http://crashcourse.ca
+Twitter:                                       http://twitter.com/rpjday
+========================================================================
