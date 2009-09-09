@@ -1,18 +1,25 @@
-Received: from astoria.ccjclearline.com ([64.235.106.9])
+Received: from ganesha.gnumonks.org ([2001:780:45:1d:2e0:81ff:fe28:898a])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MlK6y-0007EE-Sw
-	for linux-mtd@lists.infradead.org; Wed, 09 Sep 2009 10:09:16 +0000
-Date: Wed, 9 Sep 2009 06:09:03 -0400 (EDT)
-From: "Robert P. J. Day" <rpjday@crashcourse.ca>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: mismatch in MTD Kconfig variables
-In-Reply-To: <4AA7530F.3080401@gmail.com>
-Message-ID: <alpine.LFD.2.00.0909090608240.17301@localhost>
-References: <alpine.LFD.2.00.0909081448280.11685@localhost>
-	<4AA7530F.3080401@gmail.com>
+	id 1MlLDh-0001KB-OT
+	for linux-mtd@lists.infradead.org; Wed, 09 Sep 2009 11:20:14 +0000
+Date: Wed, 9 Sep 2009 20:13:18 +0900
+From: Harald Welte <laforge@gnumonks.org>
+To: Nicolas Pitre <nico@cam.org>
+Subject: Re: [RFC] extending nand_ecclayout.eccpos once again
+Message-ID: <20090909111318.GD4771@prithivi.gnumonks.org>
+References: <20090902093045.GB7377@prithivi.gnumonks.org>
+	<1252390415.5060.38.camel@localhost>
+	<20090908152813.GC5579@shareable.org>
+	<alpine.LFD.2.00.0909081321170.6044@xanadu.home>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LFD.2.00.0909081321170.6044@xanadu.home>
+Cc: Kukjin Kim <kgene.kim@samsung.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+	Jin-Sung Yang <jsgood.yang@samsung.com>,
+	Jamie Lokier <jamie@shareable.org>, Ilho Lee <ilho215.lee@samsung.com>,
+	Marc Zyngier <marc.zyngier@tomtom.com>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +29,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 9 Sep 2009, Artem Bityutskiy wrote:
+On Tue, Sep 08, 2009 at 01:26:20PM -0400, Nicolas Pitre wrote:
+> On Tue, 8 Sep 2009, Jamie Lokier wrote:
+> 
+> > Artem Bityutskiy wrote:
+> > > Can we instead assume that exposing ECC layout to user-space is jut bad
+> > > idea, deprecate current layout ABI, and do not do this anymore.
+> > > 
+> > > I mean, really, ECC layout is generally not user's concern. Just do not
+> > > expose it and problem is solved.
+> > > 
+> > > Is it absolutely necessary to have expose this stuff to user-space?
+> 
+> I admit having the same question from time to time.
+> 
+> > Let's rephrase that question.
+> > What tools use this information?
+> 
+> Right.  And whether or not that tool is useful enough to warrant the 
+> cost of maintening an interface to communicate that stuff from/to user 
+> space.  I don't remember ever having to rely on that.
 
-> On 09/08/2009 09:49 PM, Robert P. J. Day wrote:
-> >
-> >    result of latest kernel tree scan:
-> >
-> > $ grep -r MTD_DATAFLASH.*VERIFY  drivers
-> > drivers/mtd/devices/mtd_dataflash.c:#ifdef CONFIG_MTD_DATAFLASH_VERIFY_WRITE
-> > drivers/mtd/devices/mtd_dataflash.c:#endif	/*
-> > CONFIG_MTD_DATAFLASH_VERIFY_WRITE */
-> > drivers/mtd/devices/Kconfig:config MTD_DATAFLASH_WRITE_VERIFY
-> > $
->
-> So you have a patch to fix this?
+I have to agree with Artem, Jamie and you:  I personally don't think I've ever
+used a tool that needs this interface, but I'll check.  The kernel source
+actually contained a hint why it was exposed to userspace.
 
-  as long as someone else confirms that, yes, it's just a typo and
-those two variables should match, then yes, i can have a patch in
-short order.
+"ECC layout control structure. Exported to userspace for diagnosis and to allow
+ creation of raw images"
 
-rday
---
+I think the diagnosis is not really all that important (you can, after all,
+look at the kernel source to determine the oob layout that is used)
 
-========================================================================
-Robert P. J. Day                               Waterloo, Ontario, CANADA
+Creating raw images?  I'm also not sure how often that is being done.  Why
+would you precompute an image with ECC and then write that to NAND rather than
+having the NAND layer generate the ECC while writing the image (like writing
+any other data)?
 
-        Linux Consulting, Training and Annoying Kernel Pedantry.
-
-Web page:                                          http://crashcourse.ca
-Twitter:                                       http://twitter.com/rpjday
-========================================================================
+-- 
+- Harald Welte <laforge@gnumonks.org>           http://laforge.gnumonks.org/
+============================================================================
+"Privacy in residential applications is a desirable marketing option."
+                                                  (ETSI EN 300 175-7 Ch. A6)
