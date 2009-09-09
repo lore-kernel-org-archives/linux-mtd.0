@@ -1,26 +1,17 @@
-Received: from mail2.shareable.org ([80.68.89.115])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MlLn0-0002XQ-Ss
-	for linux-mtd@lists.infradead.org; Wed, 09 Sep 2009 11:56:47 +0000
-Date: Wed, 9 Sep 2009 12:56:33 +0100
-From: Jamie Lokier <jamie@shareable.org>
-To: Harald Welte <laforge@gnumonks.org>
-Subject: Re: [RFC] extending nand_ecclayout.eccpos once again
-Message-ID: <20090909115633.GA1732@shareable.org>
-References: <20090902093045.GB7377@prithivi.gnumonks.org>
-	<1252390415.5060.38.camel@localhost>
-	<20090908152813.GC5579@shareable.org>
-	<alpine.LFD.2.00.0909081321170.6044@xanadu.home>
-	<20090909111318.GD4771@prithivi.gnumonks.org>
+Received: from mail-yw0-f189.google.com ([209.85.211.189])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MlO4R-0004ke-LQ
+	for linux-mtd@lists.infradead.org; Wed, 09 Sep 2009 14:22:56 +0000
+Received: by ywh27 with SMTP id 27so7514250ywh.2
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 09 Sep 2009 07:22:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20090909111318.GD4771@prithivi.gnumonks.org>
-Cc: Kukjin Kim <kgene.kim@samsung.com>, Artem Bityutskiy <dedekind1@gmail.com>,
-	Jin-Sung Yang <jsgood.yang@samsung.com>,
-	Ilho Lee <ilho215.lee@samsung.com>, Marc Zyngier <marc.zyngier@tomtom.com>,
-	linux-mtd@lists.infradead.org, Nicolas Pitre <nico@cam.org>,
-	David Woodhouse <dwmw2@infradead.org>
+Date: Wed, 9 Sep 2009 23:22:50 +0900
+Message-ID: <2014bcab0909090722t101657b1vf698607aae62e53e@mail.gmail.com>
+Subject: UBIFS: possible bug for the absence of memory barrier
+From: =?UTF-8?B?7ZmN7IugIHNoaW4gaG9uZw==?= <hongshin@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,18 +21,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Harald Welte wrote:
-> Creating raw images?  I'm also not sure how often that is being
-> done.  Why would you precompute an image with ECC and then write
-> that to NAND rather than having the NAND layer generate the ECC
-> while writing the image (like writing any other data)?
+Hello. I am reporting the possible bugs caused by absence of memory barriers.
 
-One reason is to be resistant to errors (such as RAM bit-flips) which
-occur in flight from the time the data was read or generated (perhaps
-a long time ago or far away), until it is written.
+Since I do not have much background,
+I can not convince that the codes are buggy.
+But I hope that this report is helpful.
+Please examine the issue and let me know your opinion.
 
-Such errors do happen, but it's a bit premature to start coding it in
-MTD, as it would be far more valuable to have it in ordinary
-filesystems and copying tools, and that looks quite a long way off :-)
+In add_replay_bud() of UBIFS in Linux 2.6.30.5, it newly allocate a bud_entry
+object and initialize and then link it to the replay_buds list.
 
--- Jamie
+The last initialization operation is "b->sqnum = sqnum ;" and
+the linking to the list "list_add_tail(&b->list, &c->replay_buds;".
+
+However, since there is no memory barrier between these two,
+the execution order might be changed
+so that uninitialized data might be accessible to other threads.
+
+Therefore, race condition might occur and it may result error.
+
+Please examine this issue.
+Thank you
+
+Sincerely
+Shin Hong
