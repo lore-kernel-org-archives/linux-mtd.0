@@ -1,19 +1,22 @@
-Received: from astoria.ccjclearline.com ([64.235.106.9])
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mljfu-0006Wo-NO
-	for linux-mtd@lists.infradead.org; Thu, 10 Sep 2009 13:27:02 +0000
-Date: Thu, 10 Sep 2009 09:26:53 -0400 (EDT)
-From: "Robert P. J. Day" <rpjday@crashcourse.ca>
-To: Peter Korsgaard <jacmet@sunsite.dk>
-Subject: Re: [PATCH] Kconfig: MTD_DATAFLASH_WRITE_VERIFY ->
-	MTD_DATAFLASH_VERIFY_WRITE
-In-Reply-To: <877hw7vwps.fsf@macbook.be.48ers.dk>
-Message-ID: <alpine.LFD.2.00.0909100925520.3439@localhost>
-References: <alpine.LFD.2.00.0909100716440.19313@localhost>
-	<877hw7vwps.fsf@macbook.be.48ers.dk>
+	id 1Mljzf-0003Hr-4A
+	for linux-mtd@lists.infradead.org; Thu, 10 Sep 2009 13:47:27 +0000
+Message-ID: <4AA90351.3050000@nokia.com>
+Date: Thu, 10 Sep 2009 16:46:57 +0300
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
+To: JerinJacob <jerin.jacob@maxim-ic.com>
+Subject: Re: UBIFS Error
+References: <4AA5F37F.4050307@maxim-ic.com> <4AA60E6C.6060307@nokia.com>
+	<4AA8EA9C.4070805@maxim-ic.com> <4AA8ED7B.5020509@nokia.com>
+	<4AA8F6E4.1090209@maxim-ic.com>
+In-Reply-To: <4AA8F6E4.1090209@maxim-ic.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"Hunter Adrian \(Nokia-D/Helsinki\)" <adrian.hunter@nokia.com>
+Reply-To: Artem.Bityutskiy@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 10 Sep 2009, Peter Korsgaard wrote:
-
-> >>>>> "Robert" == Robert P J Day <rpjday@crashcourse.ca> writes:
+On 09/10/2009 03:53 PM, ext JerinJacob wrote:
+> Hi Artem,
 >
->  Robert> Fix the misspelled Kconfig variable "MTD_DATAFLASH_WRITE_VERIFY" so
->  Robert> that it matches the spelling here:
->
->  Robert> drivers/mtd/devices/mtd_dataflash.c:#ifdef CONFIG_MTD_DATAFLASH_VERIFY_WRITE
->  Robert> drivers/mtd/devices/mtd_dataflash.c:#endif	/* CONFIG_MTD_DATAFLASH_VERIFY_WRITE */
->
->  Robert> -config MTD_DATAFLASH_WRITE_VERIFY
->  Robert> +config MTD_DATAFLASH_VERIFY_WRITE
->
-> It probably makes more sense to change the .c file instead of Kconfig,
-> to not bother/confuse people and simply make it "just work".
+> Thanks for the support.
+> We are using 2.6.30.
 
-  ok, if that's the consensus, i'll have that patch out later today.
+Well, we still have many UBI/UBIFS patches in the ubifs-v2.6.30
+tree and you are always encouraged to update:
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_source
 
-rday
---
+However, it does not look like we have any thing which would be
+related to your problem.
 
-========================================================================
-Robert P. J. Day                               Waterloo, Ontario, CANADA
+Also, please, describe your flash. It looks like you have a
+large NAND flash, is it SLC?
 
-        Linux Consulting, Training and Annoying Kernel Pedantry.
+And finally, could you please try to reproduce this problem with
+nandsim:
+http://www.linux-mtd.infradead.org/faq/nand.html#L_nand_nandsim
 
-Web page:                                          http://crashcourse.ca
-Twitter:                                       http://twitter.com/rpjday
-========================================================================
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
