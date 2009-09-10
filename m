@@ -1,18 +1,17 @@
-Received: from mail-pz0-f177.google.com ([209.85.222.177])
+Received: from mail-yx0-f202.google.com ([209.85.210.202])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MlVhv-0000g6-F6
-	for linux-mtd@lists.infradead.org; Wed, 09 Sep 2009 22:32:12 +0000
-Received: by pzk7 with SMTP id 7so1568623pzk.2
+	id 1Mle8r-0007y3-9Q
+	for linux-mtd@lists.infradead.org; Thu, 10 Sep 2009 07:32:34 +0000
+Received: by yxe40 with SMTP id 40so1030018yxe.28
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 09 Sep 2009 15:32:05 -0700 (PDT)
+	Thu, 10 Sep 2009 00:32:27 -0700 (PDT)
 MIME-Version: 1.0
-Date: Thu, 10 Sep 2009 07:32:05 +0900
-Message-ID: <58484c0e0909091532r572c5c07o91b1fa3c18acb1de@mail.gmail.com>
-Subject: INFTL_mount query
-From: Mohanlal Jangir <mohanlaljangir@gmail.com>
+Date: Thu, 10 Sep 2009 16:32:27 +0900
+Message-ID: <2014bcab0909100032j236664b4o7e7bff9c4b56623b@mail.gmail.com>
+Subject: BUG? a possible bug at rename_volumes()
+From: =?UTF-8?B?7ZmN7IugIHNoaW4gaG9uZw==?= <hongshin@gmail.com>
 To: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: fabrice.bellard@netgem.com, gerg@snapgear.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +21,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
- 589        for (first_block = s->firstEUN; first_block <= s->lastEUN;
-first_block++) {
- 590                if (s->PUtable[first_block] != BLOCK_NOTEXPLORED)
- 591                        continue;
- 592
- 593                do_format_chain = 0;
- 594                first_logical_block = BLOCK_NIL;
- 595                last_block = BLOCK_NIL;
- 596                block = first_block;
- 597
- 598                for (chain_length = 0; ; chain_length++) {
- 599
- 600                        if ((chain_length == 0) &&
- 601                            (s->PUtable[block] != BLOCK_NOTEXPLORED)) {
- 602                                /* Nothing to do here, onto next block */
- 603                                break;
- 604                        }
+Hello. I am reporting a possible bug at rename_volumes()
+in drivers/mtd/ubi/cdev.c of Linux 2.6.30.5.
 
-Is code from line 600 to 604 not redundant ? Because for chain_length
-== 0 case, block is always equal to first_block (line 596) and
-s->PUtable[first_block] != BLCOK_NOTEXPLORED is already checked at
-line 590.
+I hope that this report would be helpful.
+Please examine this report, and let me know your opinion.
 
-What is difference between ANAC and NACs?
-I somewhere read that ANAC means accumulated number along chain. What
-does this signify?
-Does inftl code handles ANAC overflow (it is unsigned char)?
+rename_volumes() first allocates a ubi_rename_entry variable (at line 801)
+and initializes the variable (line 808~809).
+And then the function links the variable to the rename_list.
 
-During foldchain, INFTL_formatblock does not update inftl_unithead1
-data for the block being formated. Does this not create problem if
-system is rebooted and INFTL_mount reforms chains? (Because some
-blocks still has stale virtualUnitNo stored in unithead).
+However, it seems that the execution order of the initialization and the linking
+to the list might be possibly changed by re-ordering because there is no
+memory barrier between them.
 
-Thanks
--Mohan
+And this undesirable re-ordering might result race condition
+so that other concurrent threads can read uninitialized value.
+
+I think this is a subtle problem and it might be realistic.
+But please examine the report and let me know your opinion.
+Thank you.
+
+Sincerely
+Shin Hong
