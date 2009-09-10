@@ -1,23 +1,19 @@
-Received: from mail-ew0-f210.google.com ([209.85.219.210])
+Received: from antispam02.maxim-ic.com ([205.153.101.183])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MliHD-0004CF-JP
-	for linux-mtd@lists.infradead.org; Thu, 10 Sep 2009 11:57:28 +0000
-Received: by ewy6 with SMTP id 6so29398ewy.27
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 10 Sep 2009 04:57:21 -0700 (PDT)
-Sender: Peter Korsgaard <jacmet@gmail.com>
-To: "Robert P. J. Day" <rpjday@crashcourse.ca>
-Subject: Re: [PATCH] Kconfig: MTD_DATAFLASH_WRITE_VERIFY ->
-	MTD_DATAFLASH_VERIFY_WRITE
-References: <alpine.LFD.2.00.0909100716440.19313@localhost>
-From: Peter Korsgaard <jacmet@sunsite.dk>
-Date: Thu, 10 Sep 2009 13:57:19 +0200
-In-Reply-To: <alpine.LFD.2.00.0909100716440.19313@localhost> (Robert P. J.
-	Day's message of "Thu\, 10 Sep 2009 07\:19\:11 -0400 \(EDT\)")
-Message-ID: <877hw7vwps.fsf@macbook.be.48ers.dk>
+	id 1MliLM-0005ML-06
+	for linux-mtd@lists.infradead.org; Thu, 10 Sep 2009 12:01:44 +0000
+Message-ID: <4AA8EA9C.4070805@maxim-ic.com>
+Date: Thu, 10 Sep 2009 17:31:32 +0530
+From: JerinJacob <jerin.jacob@maxim-ic.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
+To: Adrian Hunter <adrian.hunter@nokia.com>
+Subject: Re: UBIFS Error
+References: <4AA5F37F.4050307@maxim-ic.com> <4AA60E6C.6060307@nokia.com>
+In-Reply-To: <4AA60E6C.6060307@nokia.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "Bityutskiy Artem \(Nokia-M/Helsinki\)" <Artem.Bityutskiy@nokia.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,19 +23,614 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>>>> "Robert" == Robert P J Day <rpjday@crashcourse.ca> writes:
+Hi UBIFS-Dev,
 
- Robert> Fix the misspelled Kconfig variable "MTD_DATAFLASH_WRITE_VERIFY" so
- Robert> that it matches the spelling here:
+I am able to reproduce the problem with a C  program. please find it below.
+Please find pseudo code for the same
+-----------------------------------------------------------------------------
+Step 1: Open 10 files for writing.  
+Step 2: fill the files with random data, which size is less than 
+(100KiB*2*10)
+Step 3: if total files size is greater than 500MiB then
+            lseek file pointers to 0'th location
+Step 4: Goto  2
+---------------------------------------------------------------------------------       
 
- Robert> drivers/mtd/devices/mtd_dataflash.c:#ifdef CONFIG_MTD_DATAFLASH_VERIFY_WRITE
- Robert> drivers/mtd/devices/mtd_dataflash.c:#endif	/* CONFIG_MTD_DATAFLASH_VERIFY_WRITE */
 
- Robert> -config MTD_DATAFLASH_WRITE_VERIFY
- Robert> +config MTD_DATAFLASH_VERIFY_WRITE
+Could you please give me some pointers that may cause  this bug, so that
+i can start on debugging the problem.
+  
 
-It probably makes more sense to change the .c file instead of Kconfig,
-to not bother/confuse people and simply make it "just work".
+[Error Log]
+===========
+UBIFS error (pid 74): ubifs_read_node: bad node type (108 but expected 9)
+UBIFS error (pid 74): ubifs_read_node: bad node at LEB 1108:97040
 
--- 
-Bye, Peter Korsgaard
+Backtrace:
+[<c0122cd8>] (dump_backtrace+0x0/0x110) from [<c01231ac>] 
+(dump_stack+0x18/0x1c)
+ r6:c1f05a60 r5:0000006c r4:c1f9a000
+[<c0123194>] (dump_stack+0x0/0x1c) from [<bf13cc30>] 
+(ubifs_read_node+0x300/0x380 [ubifs])
+[<bf13c930>] (ubifs_read_node+0x0/0x380 [ubifs]) from [<bf1651e8>] 
+(ubifs_load_znode+0xa4/0x874 [ubifs])
+[<bf165144>] (ubifs_load_znode+0x0/0x874 [ubifs]) from [<bf1411b4>] 
+(lookup_level0_dirty+0xf8/0x448 [ubifs])
+[<bf1410bc>] (lookup_level0_dirty+0x0/0x448 [ubifs]) from [<bf144048>] 
+(ubifs_tnc_add+0x50/0x19c [ubifs])
+[<bf143ff8>] (ubifs_tnc_add+0x0/0x19c [ubifs]) from [<bf12d5b0>] 
+(ubifs_jnl_write_inode+0x118/0x260 [ubifs])
+[<bf12d498>] (ubifs_jnl_write_inode+0x0/0x260 [ubifs]) from [<bf13a0ac>] 
+(ubifs_write_inode+0xbc/0x198 [ubifs])
+[<bf139ff0>] (ubifs_write_inode+0x0/0x198 [ubifs]) from [<c01c9ad4>] 
+(__writeback_single_inode+0x2a4/0x378)
+ r8:c084edac r7:00000005 r6:c084ed14 r5:c1f9a000 r4:00000000
+[<c01c9830>] (__writeback_single_inode+0x0/0x378) from [<c01c9fd0>] 
+(generic_sync_sb_inodes+0x33c/0x474)
+[<c01c9c94>] (generic_sync_sb_inodes+0x0/0x474) from [<c01ca118>] 
+(sync_sb_inodes+0x10/0x14)
+[<c01ca108>] (sync_sb_inodes+0x0/0x14) from [<c01ca4d4>] 
+(writeback_inodes+0xdc/0x110)
+[<c01ca3f8>] (writeback_inodes+0x0/0x110) from [<c018a678>] 
+(background_writeout+0xe8/0x120)
+ r8:c0372680 r7:c1f9bf70 r6:c1f9bf6c r5:fffffd52 r4:00000152
+[<c018a590>] (background_writeout+0x0/0x120) from [<c018b0ac>] 
+(pdflush+0x140/0x2bc)
+[<c018af6c>] (pdflush+0x0/0x2bc) from [<c015e364>] (kthread+0x58/0x84)
+[<c015e30c>] (kthread+0x0/0x84) from [<c014a050>] (do_exit+0x0/0x70c)
+ r5:00000000 r4:00000000
+
+UBIFS warning (pid 74): ubifs_ro_mode: switched to read-only mode, error -22
+
+Backtrace:
+[<c0122cd8>] (dump_backtrace+0x0/0x110) from [<c01231ac>] 
+(dump_stack+0x18/0x1c)
+ r6:c1de2000 r5:c084ed14 r4:000000a0
+[<c0123194>] (dump_stack+0x0/0x1c) from [<bf13c520>] 
+(ubifs_ro_mode+0x68/0x78 [ubifs])
+[<bf13c4b8>] (ubifs_ro_mode+0x0/0x78 [ubifs]) from [<bf12d5c8>] 
+(ubifs_jnl_write_inode+0x130/0x260 [ubifs])
+[<bf12d498>] (ubifs_jnl_write_inode+0x0/0x260 [ubifs]) from [<bf13a0ac>] 
+(ubifs_write_inode+0xbc/0x198 [ubifs])
+[<bf139ff0>] (ubifs_write_inode+0x0/0x198 [ubifs]) from [<c01c9ad4>] 
+(__writeback_single_inode+0x2a4/0x378)
+ r8:c084edac r7:00000005 r6:c084ed14 r5:c1f9a000 r4:00000000
+[<c01c9830>] (__writeback_single_inode+0x0/0x378) from [<c01c9fd0>] 
+(generic_sync_sb_inodes+0x33c/0x474)
+[<c01c9c94>] (generic_sync_sb_inodes+0x0/0x474) from [<c01ca118>] 
+(sync_sb_inodes+0x10/0x14)
+[<c01ca108>] (sync_sb_inodes+0x0/0x14) from [<c01ca4d4>] 
+(writeback_inodes+0xdc/0x110)
+[<c01ca3f8>] (writeback_inodes+0x0/0x110) from [<c018a678>] 
+(background_writeout+0xe8/0x120)
+ r8:c0372680 r7:c1f9bf70 r6:c1f9bf6c r5:fffffd52 r4:00000152
+[<c018a590>] (background_writeout+0x0/0x120) from [<c018b0ac>] 
+(pdflush+0x140/0x2bc)
+[<c018af6c>] (pdflush+0x0/0x2bc) from [<c015e364>] (kthread+0x58/0x84)
+[<c015e30c>] (kthread+0x0/0x84) from [<c014a050>] (do_exit+0x0/0x70c)
+ r5:00000000 r4:00000000
+
+UBIFS error (pid 74): ubifs_write_inode: can't write inode 1073, error -22
+UBIFS error (pid 74): make_reservation: cannot reserve 4144 bytes in 
+jhead 2, error -30
+UBIFS error (pid 74): do_writepage: cannot write page 0 of inode 1077, 
+error -30
+UBIFS error (pid 74): make_reservation: cannot reserve 160 bytes in 
+jhead 1, error -30
+UBIFS error (pid 74): ubifs_write_inode: can't write inode 1077, error -30
+UBIFS error (pid 74): make_reservation: cannot reserve 4144 bytes in 
+jhead 2, error -30
+
+--------------------------------------------------------------------------------------------------------------
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+#define NOFD 10
+#define CHUNKMAX 102400 //100Kib
+#define MAXSIZE 500 // Maximum size in MB
+
+
+unsigned long long thecounter=0;
+int fd[NOFD];
+char buffer[CHUNKMAX];
+
+int openfiles(char *mpath)
+{  
+    int i;
+    char filename[128];
+    mode_t fmode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
+    for(i=0; i < NOFD ; i++) {
+        // Generate file name
+        sprintf(filename, "%s%s%d",mpath,"/mytest",i);
+        // Open it
+        fd[i] = open(filename,O_WRONLY|O_CREAT|O_TRUNC, fmode);
+        // Check for errors
+        if (fd[i] < 0) {
+            fprintf(stderr, "ERROR: could not open file %s for 
+writing\n", filename);
+                return -1;
+        }
+    }
+    return 1;
+}
+
+int fillrandomdata(void)
+{
+    int countmax=1,count,ret,i,j,write_size;
+    // This loop would fill a set random datas in all the files
+    for (i=0; i < NOFD ; i++) {
+        write_size = (rand() & (CHUNKMAX-1));
+
+        // fill the buffer some data
+        for (j = 0; j < write_size; j++){
+            buffer[j] = j;
+        }
+
+        for(count=0; count < countmax; count++) {
+            ret = write(fd[i], buffer, write_size);
+            if (ret < 0) {
+                printf("Write errno is %d\n",errno);
+                return -1;
+            }
+            thecounter=thecounter + ret;
+        }
+    }
+    return 1;
+}
+
+int main(void)
+{
+    int loop=1,j;
+    if(openfiles("/ubifs_root") < 0)
+        printf("Error in Opening the file \n");
+    while(1){
+      
+        if(fillrandomdata() < 0){
+            printf("Error while writing the file \n");
+            exit(0);
+        }
+
+              
+        if(thecounter > ((MAXSIZE*1024*1024)*loop)){
+            printf("Looping back\n");
+            for (j = 0; j < NOFD ; j++)
+            lseek(fd[j], 0, SEEK_SET);
+            loop++;
+        }
+
+        printf("Number of bytes written into Nand flash is  %lld MiB 
+\n",(thecounter / (1024 * 1024)));
+    }
+    return 0; // Never returns
+}
+
+
+
+
+JerinJacob wrote:
+ > Please find below the actual test script:
+ >
+ > 
+--------------------------start---------------------------------------------------------------
+ > #!/bin/sh
+ >
+ > sizecount=0
+ > localcount=0
+ >
+ > deletelimit=`expr 500 \* 1024 \* 1024` # 500 MB
+ > FILENAME="1 2 3 4 5 6 7 8 9 10"
+ >
+ > rm -rf /ubifs_rootfs/*
+ >
+ > while [ 1 ]
+ > do
+ >
+ >        for filename in $FILENAME
+ >        do
+ >            size=`expr 4096 \* 10`
+ >
+ >            dd if=/dev/urandom of=/ubifs_rootfs/foo1${filename} 
+bs=1024 count=4 2> /dev/null ;
+ >            dd if=/dev/urandom of=/ubifs_rootfs/foo2${filename} 
+bs=1024 count=4 2> /dev/null ;
+ >            dd if=/dev/urandom of=/ubifs_rootfs/foo3${filename} 
+bs=1024 count=4 2> /dev/null ;
+ >            dd if=/dev/urandom of=/ubifs_rootfs/foo4${filename} 
+bs=1024 count=4 2> /dev/null ;
+ >            dd if=/dev/urandom of=/ubifs_rootfs/foo5${filename} 
+bs=1024 count=4 2> /dev/null ;
+ >            dd if=/dev/urandom of=/ubifs_rootfs/foo6${filename} 
+bs=1024 count=4 2> /dev/null ;
+ >            dd if=/dev/urandom of=/ubifs_rootfs/foo7${filename} 
+bs=1024 count=4 2> /dev/null ;
+ >            dd if=/dev/urandom of=/ubifs_rootfs/foo8${filename} 
+bs=1024 count=4 2> /dev/null ;
+ >            dd if=/dev/urandom of=/ubifs_rootfs/foo9${filename} 
+bs=1024 count=4 2> /dev/null ;
+ >            dd if=/dev/urandom of=/ubifs_rootfs/foo10${filename} 
+bs=1024 count=4 2> /dev/null ;
+ >
+ >            localcount=`expr $localcount + $size`
+ >            sizecount=`expr $sizecount + $size`
+ >        done
+ >
+ >        if [ $localcount -gt $deletelimit ] ; then
+ >                echo "Clean up!!!"
+ >                localcount=0
+ >                rm -rf /ubifs_rootf/* ; sync
+ >        fi
+ >
+ >        date ; sync
+ >        echo "Bytes Written to Nand flash:`expr $sizecount / 1048576 ` MB"
+ >
+ > done
+ > 
+-----------------------------End-----------------------------------------------------------------
+ >
+ >
+ > Adrian Hunter wrote:
+ >> JerinJacob wrote:
+ >> 
+ >>> Hi All,
+ >>>
+ >>> Got an UBIFS error while performing a regression write test on 
+UBIFS file system.
+ >>>
+ >>>
+ >>> [Issue]
+ >>> =======
+ >>>
+ >>> While performing a regression write test on UBIFS file system,the 
+UBIFS file system becomes read-only mode.
+ >>> pseudo code for the regression write test as follows:
+ >>>
+ >>> while(1)
+ >>> {
+ >>> create and write a random image(with different block size using dd 
+command) to nand flash
+ >>>
+ >>> if "disk space is reached maxim size"
+ >>>     delete all the files
+ >>>
+ >>> }
+ >>>    
+ >>
+ >> Can you provide the actual test?
+ >>
+ >>
+ >> .
+ >>
+ >>  
+ >
+
+
+> [Steps followed]
+>
+> ================
+>
+>
+>
+> flash_eraseall /dev/mtd6
+>
+> ubiformat /dev/mtd6 -y
+>
+> modprobe ubi mtd=6 ; modprobe ubifs
+>
+> ubimkvol /dev/ubi0 -m -N rootfs
+>
+> mkfs.ubifs /dev/ubi0_0 -x none
+>
+> mount -t ubifs ubi0:rootfs /ubifs_rootfs
+>
+> "excetued the regression nand write test"
+>
+>
+>
+>
+>
+> [Error Log]
+>
+> ===========
+>
+> UBIFS error (pid 74): ubifs_read_node: bad node type (108 but expected 9)
+>
+> UBIFS error (pid 74): ubifs_read_node: bad node at LEB 1108:97040
+>
+>
+>
+> Backtrace:
+>
+> [<c0122cd8>] (dump_backtrace+0x0/0x110) from [<c01231ac>] 
+> (dump_stack+0x18/0x1c)
+>
+> r6:c1f05a60 r5:0000006c r4:c1f9a000
+>
+> [<c0123194>] (dump_stack+0x0/0x1c) from [<bf13cc30>] 
+> (ubifs_read_node+0x300/0x380 [ubifs])
+>
+> [<bf13c930>] (ubifs_read_node+0x0/0x380 [ubifs]) from [<bf1651e8>] 
+> (ubifs_load_znode+0xa4/0x874 [ubifs])
+>
+> [<bf165144>] (ubifs_load_znode+0x0/0x874 [ubifs]) from [<bf1411b4>] 
+> (lookup_level0_dirty+0xf8/0x448 [ubifs])
+>
+> [<bf1410bc>] (lookup_level0_dirty+0x0/0x448 [ubifs]) from [<bf144048>] 
+> (ubifs_tnc_add+0x50/0x19c [ubifs])
+>
+> [<bf143ff8>] (ubifs_tnc_add+0x0/0x19c [ubifs]) from [<bf12d5b0>] 
+> (ubifs_jnl_write_inode+0x118/0x260 [ubifs])
+>
+> [<bf12d498>] (ubifs_jnl_write_inode+0x0/0x260 [ubifs]) from [<bf13a0ac>] 
+> (ubifs_write_inode+0xbc/0x198 [ubifs])
+>
+> [<bf139ff0>] (ubifs_write_inode+0x0/0x198 [ubifs]) from [<c01c9ad4>] 
+> (__writeback_single_inode+0x2a4/0x378)
+>
+> r8:c084edac r7:00000005 r6:c084ed14 r5:c1f9a000 r4:00000000
+>
+> [<c01c9830>] (__writeback_single_inode+0x0/0x378) from [<c01c9fd0>] 
+> (generic_sync_sb_inodes+0x33c/0x474)
+>
+> [<c01c9c94>] (generic_sync_sb_inodes+0x0/0x474) from [<c01ca118>] 
+> (sync_sb_inodes+0x10/0x14)
+>
+> [<c01ca108>] (sync_sb_inodes+0x0/0x14) from [<c01ca4d4>] 
+> (writeback_inodes+0xdc/0x110)
+>
+> [<c01ca3f8>] (writeback_inodes+0x0/0x110) from [<c018a678>] 
+> (background_writeout+0xe8/0x120)
+>
+> r8:c0372680 r7:c1f9bf70 r6:c1f9bf6c r5:fffffd52 r4:00000152
+>
+> [<c018a590>] (background_writeout+0x0/0x120) from [<c018b0ac>] 
+> (pdflush+0x140/0x2bc)
+>
+> [<c018af6c>] (pdflush+0x0/0x2bc) from [<c015e364>] (kthread+0x58/0x84)
+>
+> [<c015e30c>] (kthread+0x0/0x84) from [<c014a050>] (do_exit+0x0/0x70c)
+>
+> r5:00000000 r4:00000000
+>
+>
+>
+> UBIFS warning (pid 74): ubifs_ro_mode: switched to read-only mode, error -22
+>
+>
+>
+> Backtrace:
+>
+> [<c0122cd8>] (dump_backtrace+0x0/0x110) from [<c01231ac>] 
+> (dump_stack+0x18/0x1c)
+>
+> r6:c1de2000 r5:c084ed14 r4:000000a0
+>
+> [<c0123194>] (dump_stack+0x0/0x1c) from [<bf13c520>] 
+> (ubifs_ro_mode+0x68/0x78 [ubifs])
+>
+> [<bf13c4b8>] (ubifs_ro_mode+0x0/0x78 [ubifs]) from [<bf12d5c8>] 
+> (ubifs_jnl_write_inode+0x130/0x260 [ubifs])
+>
+> [<bf12d498>] (ubifs_jnl_write_inode+0x0/0x260 [ubifs]) from [<bf13a0ac>] 
+> (ubifs_write_inode+0xbc/0x198 [ubifs])
+>
+> [<bf139ff0>] (ubifs_write_inode+0x0/0x198 [ubifs]) from [<c01c9ad4>] 
+> (__writeback_single_inode+0x2a4/0x378)
+>
+> r8:c084edac r7:00000005 r6:c084ed14 r5:c1f9a000 r4:00000000
+>
+> [<c01c9830>] (__writeback_single_inode+0x0/0x378) from [<c01c9fd0>] 
+> (generic_sync_sb_inodes+0x33c/0x474)
+>
+> [<c01c9c94>] (generic_sync_sb_inodes+0x0/0x474) from [<c01ca118>] 
+> (sync_sb_inodes+0x10/0x14)
+>
+> [<c01ca108>] (sync_sb_inodes+0x0/0x14) from [<c01ca4d4>] 
+> (writeback_inodes+0xdc/0x110)
+>
+> [<c01ca3f8>] (writeback_inodes+0x0/0x110) from [<c018a678>] 
+> (background_writeout+0xe8/0x120)
+>
+> r8:c0372680 r7:c1f9bf70 r6:c1f9bf6c r5:fffffd52 r4:00000152
+>
+> [<c018a590>] (background_writeout+0x0/0x120) from [<c018b0ac>] 
+> (pdflush+0x140/0x2bc)
+>
+> [<c018af6c>] (pdflush+0x0/0x2bc) from [<c015e364>] (kthread+0x58/0x84)
+>
+> [<c015e30c>] (kthread+0x0/0x84) from [<c014a050>] (do_exit+0x0/0x70c)
+>
+> r5:00000000 r4:00000000
+>
+>
+>
+> UBIFS error (pid 74): ubifs_write_inode: can't write inode 1073, error -22
+>
+> UBIFS error (pid 74): make_reservation: cannot reserve 4144 bytes in 
+> jhead 2, error -30
+>
+> UBIFS error (pid 74): do_writepage: cannot write page 0 of inode 1077, 
+> error -30
+>
+> UBIFS error (pid 74): make_reservation: cannot reserve 160 bytes in 
+> jhead 1, error -30
+>
+> UBIFS error (pid 74): ubifs_write_inode: can't write inode 1077, error -30
+>
+> UBIFS error (pid 74): make_reservation: cannot reserve 4144 bytes in 
+> jhead 2, error -30
+>
+>
+>
+>
+>
+>
+>
+> [Environment]
+>
+> =============
+>
+>
+>
+> root@mg3500evp323 # uname -a
+>
+> Linux evp323 2.6.30.SDK6r3430 #1 PREEMPT Tue Sep 1 21:18:07 IST 2009 
+> armv5tejl GNU/Linux
+>
+>
+>
+>
+>
+> root@evp323 # cat /proc/mtd
+>
+> dev:    size   erasesize  name
+>
+> mtd0: 000c0000 00020000 "mboot1"
+>
+> mtd1: 00320000 00020000 "kernel1"
+>
+> mtd2: 00320000 00020000 "kernel2"
+>
+> mtd3: 00220000 00020000 "initrd1"
+>
+> mtd4: 00220000 00020000 "initrd2"
+>
+> mtd5: 02880000 00020000 "rootfs"
+>
+> mtd6: 3cc40000 00020000 "data"
+>
+>
+>
+>
+>
+> root@evp323 # mtdinfo /dev/mtd6
+>
+> mtd6
+>
+> Name:                           data
+>
+> Type:                           nand
+>
+> Eraseblock size:                131072 bytes, 128.0 KiB
+>
+> Amount of eraseblocks:          7778 (1019478016 bytes, 972.3 MiB)
+>
+> Minimum input/output unit size: 2048 bytes
+>
+> Sub-page size:                  512 bytes
+>
+> OOB size:                       64 bytes
+>
+> Character device major/minor:   90:12
+>
+> Bad blocks are allowed:         true
+>
+> Device is writable:             true
+>
+>
+>
+>
+>
+> root@evp323 # modprobe ubi mtd=6 ; modprobe ubifs
+>
+> UBI: attaching mtd6 to ubi0
+>
+> UBI: physical eraseblock size:   131072 bytes (128 KiB)
+>
+> UBI: logical eraseblock size:    129024 bytes
+>
+> UBI: smallest flash I/O unit:    2048
+>
+> UBI: sub-page size:              512
+>
+> UBI: VID header offset:          512 (aligned 512)
+>
+> UBI: data offset:                2048
+>
+> UBI: attached mtd6 to ubi0
+>
+> UBI: MTD device name:            "data"
+>
+> UBI: MTD device size:            972 MiB
+>
+> UBI: number of good PEBs:        7763
+>
+> UBI: number of bad PEBs:         15
+>
+> UBI: max. allowed volumes:       128
+>
+> UBI: wear-leveling threshold:    4096
+>
+> UBI: number of internal volumes: 1
+>
+> UBI: number of user volumes:     2
+>
+> UBI: available PEBs:             0
+>
+> UBI: total number of reserved PEBs: 7763
+>
+> UBI: number of PEBs reserved for bad PEB handling: 77
+>
+> UBI: max/mean erase counter: 26/25
+>
+> UBI: background thread "ubi_bgt0d" started, PID 1163
+>
+>
+>
+>
+>
+> root@evp323 # mount -t ubifs ubi0:rootfs /ubifs_rootfs
+>
+> UBIFS: recovery needed
+>
+> UBIFS: recovery completed
+>
+> UBIFS: mounted UBI device 0, volume 1, name "rootfs"
+>
+> UBIFS: file system size:   832333824 bytes (812826 KiB, 793 MiB, 6451 LEBs)
+>
+> UBIFS: journal size:       9033728 bytes (8822 KiB, 8 MiB, 71 LEBs)
+>
+> UBIFS: media format:       w4/r0 (latest is w4/r0)
+>
+> UBIFS: default compressor: none
+>
+> UBIFS: reserved for root:  0 bytes (0 KiB)
+>
+>
+>
+>
+>
+> root@evp323 # ubinfo
+>
+> UBI version:                    1
+>
+> Count of UBI devices:           1
+>
+> UBI control device major/minor: 10:60
+>
+> Present UBI devices:            ubi0
+>
+>
+>
+>
+>
+>
+>
+> It would be great, if someone could throw some light on this.
+>
+> Any help is appreciated.
+>
+>
+>
+> Thanks in Advance,
+>
+> Jerin.
+>
+>
+>
+>
+>   
