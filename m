@@ -1,21 +1,23 @@
-Received: from antispam01.maxim-ic.com ([205.153.101.182])
+Received: from mail-ew0-f223.google.com ([209.85.219.223])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mm551-0001ld-5k
-	for linux-mtd@lists.infradead.org; Fri, 11 Sep 2009 12:18:23 +0000
-Message-ID: <4AAA4005.9080707@maxim-ic.com>
-Date: Fri, 11 Sep 2009 17:48:13 +0530
-From: JerinJacob <jerin.jacob@maxim-ic.com>
+	id 1MmBCS-0003gT-DZ
+	for linux-mtd@lists.infradead.org; Fri, 11 Sep 2009 18:50:28 +0000
+Received: by ewy23 with SMTP id 23so1261031ewy.2
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 11 Sep 2009 11:50:21 -0700 (PDT)
+Sender: Peter Korsgaard <jacmet@gmail.com>
+To: "Robert P. J. Day" <rpjday@crashcourse.ca>
+Subject: Re: [PATCH] MTD: Correct misspelled Kconfig var
+	CONFIG_MTD_DATAFLASH_VERIFY_WRITE
+References: <alpine.LFD.2.00.0909110543410.11692@localhost>
+From: Peter Korsgaard <jacmet@sunsite.dk>
+Date: Fri, 11 Sep 2009 20:50:19 +0200
+In-Reply-To: <alpine.LFD.2.00.0909110543410.11692@localhost> (Robert P. J.
+	Day's message of "Fri\, 11 Sep 2009 05\:44\:50 -0400 \(EDT\)")
+Message-ID: <878wgltixg.fsf@macbook.be.48ers.dk>
 MIME-Version: 1.0
-To: "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>
-Subject: Re: UBIFS Error
-References: <4AA5F37F.4050307@maxim-ic.com> <4AA60E6C.6060307@nokia.com>
-	<4AA8EA9C.4070805@maxim-ic.com> <4AA8ED7B.5020509@nokia.com>
-	<4AA8F6E4.1090209@maxim-ic.com> <4AA90351.3050000@nokia.com>
-In-Reply-To: <4AA90351.3050000@nokia.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"Hunter Adrian \(Nokia-D/Helsinki\)" <adrian.hunter@nokia.com>
+Content-Type: text/plain; charset=us-ascii
+Cc: MTD mailing list <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +27,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy wrote:
-> On 09/10/2009 03:53 PM, ext JerinJacob wrote:
->   
->> Hi Artem,
->>
->> Thanks for the support.
->> We are using 2.6.30.
->>     
->
-> And finally, could you please try to reproduce this problem with
-> nandsim:
-> http://www.linux-mtd.infradead.org/faq/nand.html#L_nand_nandsim
->   
- >>> Unfortunately, I couldn't reproduce the problem with nandsim.It 
-works with nansim.
-However i couldn't test with 1GiB nandsim as it needs 1GiB ram.Tested 
-with 512MiB nandsim.
+>>>>> "Robert" == Robert P J Day <rpjday@crashcourse.ca> writes:
 
-I guess it is a could be data corruption either in platform  specific 
-driver or ubifs.
-Is there any way we can validate the platform specific nand driver ?
-Please let me know your views on this?
+ Robert> Make the source file correction CONFIG_MTD_DATAFLASH_VERIFY_WRITE ->
+ Robert> CONFIG_MTD_DATAFLASH_WRITE_VERIFY to match the Kconfig variable in
+ Robert> drivers/mtd/devices/Kconfig.
 
-Actually we are in the process of migrating from yaffs to ubifs, The 
-same test application works  with
-yaffs as well.
+ Robert> Signed-off-by: Robert P. J. Day <rpjday@crashcourse.ca>
+
+Acked-by: Peter Korsgaard <jacmet@sunsite.dk>
+
+-- 
+Bye, Peter Korsgaard
