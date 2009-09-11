@@ -1,21 +1,22 @@
-Received: from astoria.ccjclearline.com ([64.235.106.9])
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mm2gX-0004iS-92
-	for linux-mtd@lists.infradead.org; Fri, 11 Sep 2009 09:44:57 +0000
-Received: from cpe002129687b04-cm001225dbafb6.cpe.net.cable.rogers.com
-	([99.235.241.187] helo=crashcourse.ca)
-	by astoria.ccjclearline.com with esmtpsa (TLSv1:AES256-SHA:256)
-	(Exim 4.69) (envelope-from <rpjday@crashcourse.ca>)
-	id 1Mm2gW-0007d0-I1
-	for linux-mtd@lists.infradead.org; Fri, 11 Sep 2009 05:44:52 -0400
-Date: Fri, 11 Sep 2009 05:44:50 -0400 (EDT)
-From: "Robert P. J. Day" <rpjday@crashcourse.ca>
-To: MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: [PATCH] MTD: Correct misspelled Kconfig var
-	CONFIG_MTD_DATAFLASH_VERIFY_WRITE
-Message-ID: <alpine.LFD.2.00.0909110543410.11692@localhost>
+	id 1Mm323-0007S7-Nb
+	for linux-mtd@lists.infradead.org; Fri, 11 Sep 2009 10:07:12 +0000
+Message-ID: <4AAA2132.9080000@gmail.com>
+Date: Fri, 11 Sep 2009 13:06:42 +0300
+From: Artem Bityutskiy <dedekind1@gmail.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: JiSheng Zhang <jszhang3@gmail.com>
+Subject: Re: UBIFS power cut issues
+References: <2df346410909020235v5258eba3l30ff731841acc71@mail.gmail.com>	
+	<1252390936.5060.47.camel@localhost>	
+	<2df346410909090245v5995842asf3a94ae40da5fa72@mail.gmail.com>	
+	<1252597344.5060.99.camel@localhost>
+	<2df346410909110233n6b434567qb2bbbb380417adf7@mail.gmail.com>
+In-Reply-To: <2df346410909110233n6b434567qb2bbbb380417adf7@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,49 +26,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 09/11/2009 12:33 PM, JiSheng Zhang wrote:
+>> However, UBIFS is sometimes used as a JFFS2 replacement and people may
+>> want it to behave the same way as JFFS2 if it is mounted synchronously.
+>> This is doable, but needs some non-trivial development, so this was not
+>> implemented so far. On the other hand, there was no strong demand. You
+>> may implement this as an excercise, or you may try to convince UBIFS
+>> authors to do this.
+>
+> Hmmm, this style(there's hole at the end of file) can be accepted.
 
-Make the source file correction CONFIG_MTD_DATAFLASH_VERIFY_WRITE ->
-CONFIG_MTD_DATAFLASH_WRITE_VERIFY to match the Kconfig variable in
-drivers/mtd/devices/Kconfig.
+Also note, due to an MM but the pages are sometimes written not exactly
+in order. Adrian made a patch for this, but the patch was not yet made
+it upstream:
 
-Signed-off-by: Robert P. J. Day <rpjday@crashcourse.ca>
+http://marc.info/?l=linux-kernel&m=125233252015797&w=2
 
----
-
-  whoops, sorry, previous commit msg didn't show the actual
-correction, this one does.
-
-
-
-diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-index 43976aa..70a7369 100644
---- a/drivers/mtd/devices/mtd_dataflash.c
-+++ b/drivers/mtd/devices/mtd_dataflash.c
-@@ -401,7 +401,7 @@ static int dataflash_write(struct mtd_info *mtd, loff_t to, size_t len,
- 		(void) dataflash_waitready(priv->spi);
-
-
--#ifdef CONFIG_MTD_DATAFLASH_VERIFY_WRITE
-+#ifdef CONFIG_MTD_DATAFLASH_WRITE_VERIFY
-
- 		/* (3) Compare to Buffer1 */
- 		addr = pageaddr << priv->page_offset;
-@@ -430,7 +430,7 @@ static int dataflash_write(struct mtd_info *mtd, loff_t to, size_t len,
- 		} else
- 			status = 0;
-
--#endif	/* CONFIG_MTD_DATAFLASH_VERIFY_WRITE */
-+#endif	/* CONFIG_MTD_DATAFLASH_WRITE_VERIFY */
-
- 		remaining = remaining - writelen;
- 		pageaddr++;
-
-
-========================================================================
-Robert P. J. Day                               Waterloo, Ontario, CANADA
-
-        Linux Consulting, Training and Annoying Kernel Pedantry.
-
-Web page:                                          http://crashcourse.ca
-Twitter:                                       http://twitter.com/rpjday
-========================================================================
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
