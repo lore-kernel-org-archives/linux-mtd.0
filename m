@@ -1,20 +1,24 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mm14u-0000vJ-Ov
-	for linux-mtd@lists.infradead.org; Fri, 11 Sep 2009 08:02:02 +0000
-Message-ID: <4AAA03DF.9040205@gmail.com>
-Date: Fri, 11 Sep 2009 11:01:35 +0300
-From: Artem Bityutskiy <dedekind1@gmail.com>
+Received: from mail-iw0-f198.google.com ([209.85.223.198])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Mm2Lc-0007vr-Vd
+	for linux-mtd@lists.infradead.org; Fri, 11 Sep 2009 09:23:22 +0000
+Received: by iwn36 with SMTP id 36so622570iwn.24
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 11 Sep 2009 02:23:15 -0700 (PDT)
 MIME-Version: 1.0
-To: Bill Gatliff <bgat@billgatliff.com>
+In-Reply-To: <4AA77E2A.40604@gmail.com>
+References: <2df346410909020235v5258eba3l30ff731841acc71@mail.gmail.com>
+	<1252390936.5060.47.camel@localhost>
+	<2df346410909090245v5995842asf3a94ae40da5fa72@mail.gmail.com>
+	<4AA77E2A.40604@gmail.com>
+Date: Fri, 11 Sep 2009 17:23:14 +0800
+Message-ID: <2df346410909110223p87aefd2ibfe8fb11e040f56f@mail.gmail.com>
 Subject: Re: UBIFS power cut issues
-References: <2df346410909020235v5258eba3l30ff731841acc71@mail.gmail.com>	<1252390936.5060.47.camel@localhost>	<2df346410909090245v5995842asf3a94ae40da5fa72@mail.gmail.com>
-	<1252597344.5060.99.camel@localhost>
-	<4AA922AF.8070001@billgatliff.com>
-In-Reply-To: <4AA922AF.8070001@billgatliff.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, JiSheng Zhang <jszhang3@gmail.com>
+From: JiSheng Zhang <jszhang3@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=KOI8-R
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,79 +28,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/10/2009 07:00 PM, Bill Gatliff wrote:
-> Artem Bityutskiy wrote:
->> And the text here, just in case someone would review it.
+Hi Artem,
+
+2009/9/9 Artem Bityutskiy <dedekind1@gmail.com>:
+> On 09/09/2009 12:45 PM, JiSheng Zhang wrote:
+>>>
+>>> On Wed, 2009-09-02 at 17:35 +0800, JiSheng Zhang wrote:
+>>>>
+>>>> If we cut power when copy file into ubifs, then remount ubifs and try
+>>>> to read the file, we found that the data at some offset of the file
+>>>> began different from the data of the original file at the same offset.
+>>>> Is this a bug of ubifs?
+>>>
+>>> This is expected behavior on any asynchronous FS. You may switch to
+>>> synchronous behavior with '-o sync' mount option. I wrote a lot of
+>>
+>> I have tested with "mount -o sync", the result is the same. It's not
+>> empty file. For example:
+>> cp fileA /mnt/ubifs/fileB
+>> random cut power before "cp" completed.
+>> then remount
+>> =9AFrom head of /mnt/ubifs/fileB to some offset offsetC is the same as
+>> fileA. But from offsetC to the end is different from fileA at the same
+>> offset offsetC, it's not empty either.
+>> Hope I expressed myself clearly.
 >
-> When you mean "something is lost", the correct spelling is "lose". To
-> "loose" means to "disconnect", or "release" something.
-
-Thanks, fixed:
-
-http://git.infradead.org/mtd-www.git/commit/8b407024f4b8377eae6557644c29a31bc20e1350
-
->> However, UBIFS is sometimes used as a JFFS2 replacement and people may
->> want it to behave the same way as JFFS2 if it is mounted synchronously.
->> This is doable, but needs some non-trivial development, so this was not
->> implemented so far. On the other hand, there was no strong demand. You
->> may implement this as an excercise, or you may try to convince UBIFS
->> authors to do this.
+> Hmm, ok. What is your kernel version?
 >
-> In summary, the differences in results between JFFS2 and UBIFS in the
-> case of interrupted, large synchronous writes are related to differences
-> in how the two store and/or compute file sizes?
+> Could you please take a closer look and see if these differences
+> are zeroes or not?
 
-Yes. JFFS2 stores inode size in data nodes. So every time it writes the
-data node to the flash, it updates the inode size. When JFFS2 mounts the
-flash, it does full scanning, finds the last written data node and thus,
-it has correct inode size.
+My mistake, sorry. I have look from the offset to the end of the file,
+they're really 0, that is file hole.
+>
+> Do you have an automated test for this? Can you share your script?
 
-UBIFS does not store file size in data nodes, but stores it in separate
-inode nodes, pretty much like any FS does. And UBIFS does not do scanning.
-This is where the difficulties come from.
+Hmm, I just run copy manually and diff once mounted again.
+>
+> --
+> Best Regards,
+> Artem Bityutskiy (=E1=D2=D4=A3=CD =E2=C9=D4=C0=C3=CB=C9=CA)
+>
 
-> Based on your documentation, my understanding is that with JFFS2 file
-> sizes are stored along with the file data nodes, and are updated as the
-> file grows in size--- so an interruption truncates the file at the point
-> the interruption occurs.
-
-Right.
-
-> For UBIFS, in contrast, file sizes are stored
-> in separate nodes which might not have been written at the point of
-> interruption--- so the state if the file when power is restored depends
-> highly upon the precise moment that the interruption occurs.
-
-Not exactly. UBIFS never writes data nodes beyond the on-flash inode size.
-If it has to write a data node and the data node is beyond the on-flash inode
-size (the in-memory inode has up-to-data size, but it is dirty and was not
-flushed yet), then UBIFS first writes the inode to the media, and then it
-starts writing the data. And if you have an interrupt, you _lose_ data
-nodes and you have holes (or old data nodes, if you are overwriting).
-
-If you need information why UBIFS never writes beyond inode size, you may
-take a look at file.c, there is a comment explaining this:
-
-/*
-  * When writing-back dirty inodes, VFS first writes-back pages belonging to the
-  * inode, then the inode itself. For UBIFS this may cause a problem. Consider a
-  * situation when a we have an inode with size 0, then a megabyte of data is
-  * appended to the inode, then write-back starts and flushes some amount of the
-  * dirty pages, the journal becomes full, commit happens and finishes, and then
-  * an unclean reboot happens. When the file system is mounted next time, the
-  * inode size would still be 0, but there would be many pages which are beyond
-  * the inode size, they would be indexed and consume flash space. Because the
-  * journal has been committed, the replay would not be able to detect this
-  * situation and correct the inode size. This means UBIFS would have to scan
-  * whole index and correct all inode sizes, which is long an unacceptable.
-  *
-  * To prevent situations like this, UBIFS writes pages back only if they are
-  * within the last synchronized inode size, i.e. the size which has been
-  * written to the flash media last time. Otherwise, UBIFS forces inode
-  * write-back, thus making sure the on-flash inode contains current inode size,
-  * and then keeps writing pages back.
-...
-
--- 
 Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Jisheng
