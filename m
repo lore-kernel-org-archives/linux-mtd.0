@@ -1,23 +1,15 @@
-Received: from mail-ew0-f223.google.com ([209.85.219.223])
+Received: from smtpin1.mailsecure.in ([121.241.224.1])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MmBCS-0003gT-DZ
-	for linux-mtd@lists.infradead.org; Fri, 11 Sep 2009 18:50:28 +0000
-Received: by ewy23 with SMTP id 23so1261031ewy.2
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 11 Sep 2009 11:50:21 -0700 (PDT)
-Sender: Peter Korsgaard <jacmet@gmail.com>
-To: "Robert P. J. Day" <rpjday@crashcourse.ca>
-Subject: Re: [PATCH] MTD: Correct misspelled Kconfig var
-	CONFIG_MTD_DATAFLASH_VERIFY_WRITE
-References: <alpine.LFD.2.00.0909110543410.11692@localhost>
-From: Peter Korsgaard <jacmet@sunsite.dk>
-Date: Fri, 11 Sep 2009 20:50:19 +0200
-In-Reply-To: <alpine.LFD.2.00.0909110543410.11692@localhost> (Robert P. J.
-	Day's message of "Fri\, 11 Sep 2009 05\:44\:50 -0400 \(EDT\)")
-Message-ID: <878wgltixg.fsf@macbook.be.48ers.dk>
+	id 1MnBTu-0008EN-79
+	for linux-mtd@lists.infradead.org; Mon, 14 Sep 2009 13:20:38 +0000
+Message-ID: <4AAE4397.1060200@tataelxsi.co.in>
+Date: Mon, 14 Sep 2009 18:52:31 +0530
+From: Rahanesh <rahanesh@tataelxsi.co.in>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
+To: linux-mtd@lists.infradead.org
+Subject: Boot failure after erasing a file in flash
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,15 +19,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>>>> "Robert" == Robert P J Day <rpjday@crashcourse.ca> writes:
+Hi All,
 
- Robert> Make the source file correction CONFIG_MTD_DATAFLASH_VERIFY_WRITE ->
- Robert> CONFIG_MTD_DATAFLASH_WRITE_VERIFY to match the Kconfig variable in
- Robert> drivers/mtd/devices/Kconfig.
+I have four mtd partitions on the board.
+Size of mtd1 is  7.18MB.
 
- Robert> Signed-off-by: Robert P. J. Day <rpjday@crashcourse.ca>
+So when i create JFFS i give pad as 7.18MB , which will pad zeros to=20
+make the jffs size to  7.18MB if the jffs size is less than 7.18MB. hope=20
+my understanding is correct?
 
-Acked-by: Peter Korsgaard <jacmet@sunsite.dk>
+mkfs --pad=3D0x730000 --root=3D/input_dir --eraseblock=3D0x10000 --output=
+=3Djffs
 
--- 
-Bye, Peter Korsgaard
+U boot uses Linux image (/Linux/uImage) from jffs  and boots up and=20
+mounts the mtd1 partition to the ramdisk. So i have entire mtd1=20
+partition  mounted as flash directory in ramdisk(root file system of Linux).
+
+These are the console messages when u-boot brings up Linux...
+
+*Hit any key to stop autoboot:   =08=08=08 0
+### JFFS2 loading '/Linux/uImage' to 0x80800000
+Scanning JFFS2 FS:............................ done.
+### JFFS2 load complete: 2432748 bytes loaded to 0x80800000
+## Booting image at 80800000 ...
+   Image Name:   Linux Kernel Image with ramdisk.
+   Created:      2009-09-13  17:49:39 UTC
+   Image Type:   MIPS Linux Kernel Image (gzip compressed)
+   Data Size:    2432684 Bytes =3D  2.3 MB
+   Load Address: 80100000
+   Entry Point:  804ba000
+   Verifying Checksum ... OK
+   Uncompressing Kernel Image ... OK*
+
+Once the jffs is mounted as flash directory  and  If  i do a rm -rf to a=20
+file inside flash directory and then reboot
+
+it shows following error while uboot trying to bring Linux
+
+*Hit any key to stop autoboot:  =08=08=08 0
+### JFFS2 loading '/Linux/uImage' to 0x80800000
+Scanning JFFS2 FS:   =08=08. ............................ get_fl_mem: can't=20
+alloc -560169186 bytes
+off =3D 0xad2f7b28 magic 0x1985 type 0x49c6 node.totlen =3D -560169186*
+
+Any idea?
+
+
+If i create the JFFS without pading , then there is no such isssue..
+
+Please help on this!!!!!!!!!!
+
+
+Thanks
+Rahanesh
