@@ -1,21 +1,20 @@
-Received: from 124x34x33x190.ap124.ftth.ucom.ne.jp ([124.34.33.190]
-	helo=master.linux-sh.org)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mni0O-0001MA-Pq
-	for linux-mtd@lists.infradead.org; Wed, 16 Sep 2009 00:04:21 +0000
-Date: Wed, 16 Sep 2009 09:03:57 +0900
-From: Paul Mundt <lethal@linux-sh.org>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Received: from smtp1.linux-foundation.org ([140.211.169.13])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MniEL-0006xy-Cr
+	for linux-mtd@lists.infradead.org; Wed, 16 Sep 2009 00:18:45 +0000
+Date: Tue, 15 Sep 2009 17:18:26 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Paul Mundt <lethal@linux-sh.org>
 Subject: Re: 2.6.32 -mm merge plans
-Message-ID: <20090916000357.GD23923@linux-sh.org>
+Message-Id: <20090915171826.4bd7f1d4.akpm@linux-foundation.org>
+In-Reply-To: <20090916000357.GD23923@linux-sh.org>
 References: <20090915161535.db0a6904.akpm@linux-foundation.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20090915161535.db0a6904.akpm@linux-foundation.org>
+	<20090916000357.GD23923@linux-sh.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Cc: kmpark@infradead.org, dwmw2@infradead.org, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
+	linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,44 +24,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Sep 15, 2009 at 04:15:35PM -0700, Andrew Morton wrote:
-> mtd-make-onenand-genericc-more-generic.patch
-> mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis.patch
-> mtd-nand-add-new-ecc-mode-ecc_hw_oob_first.patch
-> mtd-nand-davinci-add-4-bit-ecc-support-for-large-page-nand-chips.patch
-> mtd-nand-davinci-add-4-bit-ecc-support-for-large-page-nand-chips-update.patch
-> mtd-jffs2-fix-read-buffer-overflow.patch
-> mtd-prevent-a-read-from-eraseregions.patch
-> mtd-prevent-a-read-from-regions.patch
-> mtd-jedec_probe-fix-nec-upd29f064115-detection.patch
-> mtdpart-memory-accessor-interface-for-mtd-layer.patch
+On Wed, 16 Sep 2009 09:03:57 +0900
+Paul Mundt <lethal@linux-sh.org> wrote:
+
+> On Tue, Sep 15, 2009 at 04:15:35PM -0700, Andrew Morton wrote:
+> > mtd-make-onenand-genericc-more-generic.patch
+> > mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis.patch
+> > mtd-nand-add-new-ecc-mode-ecc_hw_oob_first.patch
+> > mtd-nand-davinci-add-4-bit-ecc-support-for-large-page-nand-chips.patch
+> > mtd-nand-davinci-add-4-bit-ecc-support-for-large-page-nand-chips-update.patch
+> > mtd-jffs2-fix-read-buffer-overflow.patch
+> > mtd-prevent-a-read-from-eraseregions.patch
+> > mtd-prevent-a-read-from-regions.patch
+> > mtd-jedec_probe-fix-nec-upd29f064115-detection.patch
+> > mtdpart-memory-accessor-interface-for-mtd-layer.patch
+> > 
+> >   -> dwmw2
+> > 
+> Regarding mtd-make-onenand-genericc-more-generic.patch, I'm not really
+> sure what happened. To recap:
 > 
->   -> dwmw2
+> It was posted to the mtd list here:
 > 
-Regarding mtd-make-onenand-genericc-more-generic.patch, I'm not really
-sure what happened. To recap:
+> http://lists.infradead.org/pipermail/linux-mtd/2009-August/026805.html
+> 
+> Kyungmin objected to the driver name change here:
+> 
+> http://lists.infradead.org/pipermail/linux-mtd/2009-August/026807.html
+> 
+> I pointed out that the rough rationale for the name change here:
+> 
+> http://lists.infradead.org/pipermail/linux-mtd/2009-August/026808.html
+> 
+> and offered to redo the patch keeping the old name if Kyungmin felt the
+> rationale wasn't valid, but received no reply. Subsequently, Artem
+> mentioned that he had merged it in to his l2-mtd-2.6.git tree here:
+> 
+> http://lists.infradead.org/pipermail/linux-mtd/2009-August/026866.html
+> 
+> which subsequently seems to not actually have happened.
+> 
+> This is a pretty trivial patch, and I don't mind respinning it in
+> whatever form folks are content with. I had assumed given the mention
+> that it had been merged in to the l2 tree that the rationale was
+> sufficient for merging.
 
-It was posted to the mtd list here:
+I don't think that Artem's tree is in linux-next, so I have no
+visibility of what's happening with that patch.
 
-http://lists.infradead.org/pipermail/linux-mtd/2009-August/026805.html
+I do think that Artem's tree should be in linux-next.
 
-Kyungmin objected to the driver name change here:
-
-http://lists.infradead.org/pipermail/linux-mtd/2009-August/026807.html
-
-I pointed out that the rough rationale for the name change here:
-
-http://lists.infradead.org/pipermail/linux-mtd/2009-August/026808.html
-
-and offered to redo the patch keeping the old name if Kyungmin felt the
-rationale wasn't valid, but received no reply. Subsequently, Artem
-mentioned that he had merged it in to his l2-mtd-2.6.git tree here:
-
-http://lists.infradead.org/pipermail/linux-mtd/2009-August/026866.html
-
-which subsequently seems to not actually have happened.
-
-This is a pretty trivial patch, and I don't mind respinning it in
-whatever form folks are content with. I had assumed given the mention
-that it had been merged in to the l2 tree that the rationale was
-sufficient for merging.
+I guess I'll just hose the patch at dwmw2 and will see what happens.  I
+sent it on Aug 6, with no effect.
