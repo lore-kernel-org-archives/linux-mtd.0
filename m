@@ -1,26 +1,17 @@
-Message-ID: <4AB08873.9080709@gmail.com>
-Date: Wed, 16 Sep 2009 09:40:51 +0300
-From: Artem Bityutskiy <dedekind1@gmail.com>
+Received: from mail-px0-f190.google.com ([209.85.216.190])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Mnoe0-0006o1-Rd
+	for linux-mtd@lists.infradead.org; Wed, 16 Sep 2009 07:09:41 +0000
+Received: by pxi28 with SMTP id 28so3948504pxi.2
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 16 Sep 2009 00:09:34 -0700 (PDT)
 MIME-Version: 1.0
-To: Amul Kumar Saha <amul.saha@samsung.com>
-Subject: Re: [PATCH] [OneNAND] OTP support re-implementation 1/1
-References: <EF4202CC14044212993EE17E6010D5E7@sisodomain.com>
-	<A32D4C31541C4D8B9BF6CB4D6EF4B5DC@sisodomain.com>
-	<9c9fda240908310234h6cef3afev6a3f6e315321631b@mail.gmail.com>
-	<C48D93C7DF3C4F9C96E47BE9D6F51F37@sisodomain.com>
-	<4A9E0C47.205@gmail.com>
-	<8A3568961C4E4E7495A397D2267B6E37@sisodomain.com>
-	<1251958245.5060.6.camel@localhost>
-	<FC4F021760EA4F649917598723041422@sisodomain.com>
-	<1251976743.5060.13.camel@localhost>
-	<E902C77C74C544A3A554DD9881742C04@sisodomain.com>
-	<9c9fda240909070257w30f123b8h8bbea00482a684c5@mail.gmail.com>
-	<5FF6EA67BC454551BDA43D96DAB9D123@sisodomain.com>
-In-Reply-To: <5FF6EA67BC454551BDA43D96DAB9D123@sisodomain.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Kyungmin Park <kmpark@infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>
+Date: Wed, 16 Sep 2009 12:39:34 +0530
+Message-ID: <630851df0909160009w35efd6b2kb058593b59e1be66@mail.gmail.com>
+Subject: Doubt regarding mtd test ( mtd_oobtest ) interpretation of oob data !
+From: Murali N <nalajala.murali@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,19 +21,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/16/2009 06:33 AM, Amul Kumar Saha wrote:
-> Hi Artem,
->
->> Even though the acutal number at otp are used.  others are looks good to me.
->>
->> Artem/Adrian, how do you think?
->>
->
-> Awaiting your comments.
+Hi All,
+i have a doubt on how the OOB data is being managed in MTD driver.
+Recently i have enabled mtd-tests to test my driver for mtd
+compliance.After i ran "mtd_oobtest" i was messed up with test and
+come up with few questions:
 
-I think Adrian was going to review this, as well as multi-block
-erase patches from Mika. I guess he is just a little busy.
+1) Is these tests are well validated? can i trust these tests 100%
+compliant to MTD API specification?
+2) In "mtd_oobtest" ( drivers/mtd/tests/ ), there was a "test 4 of 5"
+in this there was a few checks for writing/reading end off OOB data.
+            - In these tests what is the significance of using
+"ooboffs" in OOB_AUTO mode?
+3) Is MTD driver ask the below NAND driver to read/write the oob data
+integral of oobavail size in OOB_AUTO mode? How MTD driver behaves if
+it is not!!!
+4) Finally, can anyone please explain bit more about OOB_PLACE mode?
+also the significance of ooboffs field usage?
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+I appreciate your help, thanks
