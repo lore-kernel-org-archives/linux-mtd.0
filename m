@@ -1,23 +1,22 @@
-Received: from mail-pz0-f173.google.com ([209.85.222.173])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mnrcv-0008Cc-Qv
-	for linux-mtd@lists.infradead.org; Wed, 16 Sep 2009 10:20:46 +0000
-Received: by pzk3 with SMTP id 3so4092363pzk.28
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 16 Sep 2009 03:20:40 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1253093770.3778.7.camel@localhost>
-References: <630851df0909160009w35efd6b2kb058593b59e1be66@mail.gmail.com>
-	<1253093770.3778.7.camel@localhost>
-Date: Wed, 16 Sep 2009 15:50:40 +0530
-Message-ID: <630851df0909160320y1721f8d8m23b0675d57558c28@mail.gmail.com>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Mns6F-0000IW-W2
+	for linux-mtd@lists.infradead.org; Wed, 16 Sep 2009 10:51:04 +0000
 Subject: Re: Doubt regarding mtd test ( mtd_oobtest ) interpretation of oob
 	data !
-From: Murali N <nalajala.murali@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Murali N <nalajala.murali@gmail.com>
+In-Reply-To: <630851df0909160320y1721f8d8m23b0675d57558c28@mail.gmail.com>
+References: <630851df0909160009w35efd6b2kb058593b59e1be66@mail.gmail.com>
+	<1253093770.3778.7.camel@localhost>
+	<630851df0909160320y1721f8d8m23b0675d57558c28@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 16 Sep 2009 13:50:23 +0300
+Message-Id: <1253098223.3778.16.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,77 +26,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem, can you please explain me a bit more about OOB_PLACE mode?.
-Also in mtd tests i have seen there is ooboffs field being used in
-OOB_AUTO mode.My doubt here was why AUTO mode cares about ooboffs
-field.ECC layout structure is defined clearly in the AUTO mode? am i
-correct? then what is the significance of ooboffs field?
+On Wed, 2009-09-16 at 15:50 +0530, Murali N wrote:
+> Hi Artem, can you please explain me a bit more about OOB_PLACE mode?.
+> Also in mtd tests i have seen there is ooboffs field being used in
+> OOB_AUTO mode.My doubt here was why AUTO mode cares about ooboffs
+> field.ECC layout structure is defined clearly in the AUTO mode? am i
+> correct? then what is the significance of ooboffs field?
+> 
+> i am not caring the ooboffs when the AUTO mode is selected in my
+> driver? i was bit confused where it is mentioned in the MTD
+> specification? can you please point to me if you have any info!!!
 
-i am not caring the ooboffs when the AUTO mode is selected in my
-driver? i was bit confused where it is mentioned in the MTD
-specification? can you please point to me if you have any info!!!
+I do not remember all the glory details, but in short, OOB_PLACE is
+used when you want to put your date to a specific _physical_ offset
+withing the OOB. Very simple and straightforward. But I consider this
+as legacy and I think no one should ever use this, and this should
+be forbidden. I might be wrong, though.
 
-thanks
+OOB_AUTO is the sanest thing. Your OOB area may contain N small unused
+regions of different length. E.g., see OneNAND's onenand_oob_64.
+Different flashes have different layout. And OOB_AUTO is about
+abstracting this, so all these small regions look like a contiguous
+buffer to the applications. Size of this buffer is
+mtd->ecclayout->oobavail bytes. You may write data do different offsets
+of this buffer, and they will be automatically placed to corresponding
+_physical_ offsets within the OOB. So applications do not care about
+the OOB fragmentation, and always work with this _logical_ OOB_AUTO
+buffer.
 
-On Wed, Sep 16, 2009 at 3:06 PM, Artem Bityutskiy <dedekind1@gmail.com> wro=
-te:
-> On Wed, 2009-09-16 at 12:39 +0530, Murali N wrote:
->> Hi All,
->> i have a doubt on how the OOB data is being managed in MTD driver.
->> Recently i have enabled mtd-tests to test my driver for mtd
->> compliance.After i ran "mtd_oobtest" i was messed up with test and
->> come up with few questions:
->>
->> 1) Is these tests are well validated? can i trust these tests 100%
->> compliant to MTD API specification?
->> 2) In "mtd_oobtest" ( drivers/mtd/tests/ ), there was a "test 4 of 5"
->> in this there was a few checks for writing/reading end off OOB data.
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 - In these tests what is the s=
-ignificance of using
->> "ooboffs" in OOB_AUTO mode?
->> 3) Is MTD driver ask the below NAND driver to read/write the oob data
->> integral of oobavail size in OOB_AUTO mode? How MTD driver behaves if
->> it is not!!!
->> 4) Finally, can anyone please explain bit more about OOB_PLACE mode?
->> also the significance of ooboffs field usage?
->
-> I do not understand your questions, and I do not quite remember these
-> modes already, but the below code probably explains things well:
->
-> /*
-> =C2=A0* oob operation modes
-> =C2=A0*
-> =C2=A0* MTD_OOB_PLACE: =C2=A0 =C2=A0 =C2=A0 oob data are placed at the gi=
-ven offset
-> =C2=A0* MTD_OOB_AUTO: =C2=A0 =C2=A0 =C2=A0 =C2=A0oob data are automatical=
-ly placed at the free
-> areas
-> =C2=A0* =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0which are defined by the ecclayout
-> =C2=A0* MTD_OOB_RAW: =C2=A0 =C2=A0 =C2=A0 =C2=A0 mode to read raw data+oo=
-b in one chunk. The oob
-> data
-> =C2=A0* =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0is inserted into the data. Thats a raw image of
-> the
-> =C2=A0* =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0flash contents.
-> =C2=A0*/
-> typedef enum {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0MTD_OOB_PLACE,
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0MTD_OOB_AUTO,
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0MTD_OOB_RAW,
-> } mtd_oob_mode_t;
->
-> --
-> Best Regards,
-> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =D0=91=D0=B8=D1=82=D1=8E=
-=D1=86=D0=BA=D0=B8=D0=B9)
->
->
+In OOB_AUTO case you cannot access the ECC bytes, because they are
+hidden from you.
 
+In OOB_PLACE you can, and I think it is a bad idea because it is not
+applications' business to deal with ECCs. This should be hidden.
 
+That's all I remember at this point. Nowadays we do not use OOB much.
+E.g., UBI/UBIFS does not use it. Using OOB is bad, because modern
+flashes may utilize _whole_ OOB for ECCs.
 
---=20
-Regards,
-Murali N
+HTH.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
