@@ -1,23 +1,19 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mnopw-00040M-3n
-	for linux-mtd@lists.infradead.org; Wed, 16 Sep 2009 07:22:00 +0000
-Subject: Re: 2.6.32 -mm merge plans
+	id 1MnosP-0007ye-62
+	for linux-mtd@lists.infradead.org; Wed, 16 Sep 2009 07:24:34 +0000
+Subject: Re: Doubt regarding mtd test ( mtd_oobtest ) interpretation of oob
+	data !
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier.adi@gmail.com>
-In-Reply-To: <8bd0f97a0909152051s4a25b9eej581c68a3b10fda3@mail.gmail.com>
-References: <20090915161535.db0a6904.akpm@linux-foundation.org>
-	<20090916000357.GD23923@linux-sh.org>
-	<20090915171826.4bd7f1d4.akpm@linux-foundation.org>
-	<8bd0f97a0909152051s4a25b9eej581c68a3b10fda3@mail.gmail.com>
+To: Murali N <nalajala.murali@gmail.com>
+In-Reply-To: <630851df0909160009w35efd6b2kb058593b59e1be66@mail.gmail.com>
+References: <630851df0909160009w35efd6b2kb058593b59e1be66@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 16 Sep 2009 10:21:09 +0300
-Message-Id: <1253085669.3778.4.camel@localhost>
+Date: Wed, 16 Sep 2009 10:23:39 +0300
+Message-Id: <1253085819.3778.5.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: kmpark@infradead.org, linux-kernel@vger.kernel.org,
-	Paul Mundt <lethal@linux-sh.org>, linux-mtd@lists.infradead.org,
-	Andrew Morton <akpm@linux-foundation.org>, dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,71 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-09-15 at 23:51 -0400, Mike Frysinger wrote:
-> On Tue, Sep 15, 2009 at 20:18, Andrew Morton wrote:
-> > On Wed, 16 Sep 2009 09:03:57 +0900 Paul Mundt wrote:
-> >> On Tue, Sep 15, 2009 at 04:15:35PM -0700, Andrew Morton wrote:
-> >> > mtd-make-onenand-genericc-more-generic.patch
-> >> > mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis.patch
-> >> > mtd-nand-add-new-ecc-mode-ecc_hw_oob_first.patch
-> >> > mtd-nand-davinci-add-4-bit-ecc-support-for-large-page-nand-chips.patch
-> >> > mtd-nand-davinci-add-4-bit-ecc-support-for-large-page-nand-chips-update.patch
-> >> > mtd-jffs2-fix-read-buffer-overflow.patch
-> >> > mtd-prevent-a-read-from-eraseregions.patch
-> >> > mtd-prevent-a-read-from-regions.patch
-> >> > mtd-jedec_probe-fix-nec-upd29f064115-detection.patch
-> >> > mtdpart-memory-accessor-interface-for-mtd-layer.patch
-> >> >
-> >> >   -> dwmw2
-> >>
-> >> Regarding mtd-make-onenand-genericc-more-generic.patch, I'm not really
-> >> sure what happened. To recap:
-> >>
-> >> It was posted to the mtd list here:
-> >>
-> >> http://lists.infradead.org/pipermail/linux-mtd/2009-August/026805.html
-> >>
-> >> Kyungmin objected to the driver name change here:
-> >>
-> >> http://lists.infradead.org/pipermail/linux-mtd/2009-August/026807.html
-> >>
-> >> I pointed out that the rough rationale for the name change here:
-> >>
-> >> http://lists.infradead.org/pipermail/linux-mtd/2009-August/026808.html
-> >>
-> >> and offered to redo the patch keeping the old name if Kyungmin felt the
-> >> rationale wasn't valid, but received no reply. Subsequently, Artem
-> >> mentioned that he had merged it in to his l2-mtd-2.6.git tree here:
-> >>
-> >> http://lists.infradead.org/pipermail/linux-mtd/2009-August/026866.html
-> >>
-> >> which subsequently seems to not actually have happened.
-> >>
-> >> This is a pretty trivial patch, and I don't mind respinning it in
-> >> whatever form folks are content with. I had assumed given the mention
-> >> that it had been merged in to the l2 tree that the rationale was
-> >> sufficient for merging.
-> >
-> > I don't think that Artem's tree is in linux-next, so I have no
-> > visibility of what's happening with that patch.
-> >
-> > I do think that Artem's tree should be in linux-next.
-> >
-> > I guess I'll just hose the patch at dwmw2 and will see what happens.  I
-> > sent it on Aug 6, with no effect.
+On Wed, 2009-09-16 at 12:39 +0530, Murali N wrote:
+> Hi All,
+> i have a doubt on how the OOB data is being managed in MTD driver.
+> Recently i have enabled mtd-tests to test my driver for mtd
+> compliance.After i ran "mtd_oobtest" i was messed up with test and
+> come up with few questions:
 > 
-> i guess i shouldnt try and bounce a few more mtd patches through you huh ...
-> 
-> http://git.kernel.org/?p=linux/kernel/git/vapier/blackfin.git;a=shortlog;h=for-mtd
-> 
-> hopefully they make it in this cycle (they were posted a while ago to
-> the mtd lists w/feedback addressed)
+> 1) Is these tests are well validated? can i trust these tests 100%
+> compliant to MTD API specification?
 
-Well, these patches have been sitting in my tree in dunno for long as
-well. They are still there:
-
-http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/951d5f4097ccf8c41ccbab6d4116509b89b705fd
-and below.
+Not necessarily. We wrote these tests to test our OneNAND, and they
+may contain bugs.
 
 -- 
 Best Regards,
