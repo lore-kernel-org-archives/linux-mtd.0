@@ -1,17 +1,23 @@
-Subject: Re: [PATCH] Samsung SoCs: OneNAND support
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Kyungmin Park <kmpark@infradead.org>
-In-Reply-To: <9c9fda240909170302q47b306edn2d73b03243757ce1@mail.gmail.com>
-References: <20090917081659.GA28591@july> <4AB1F3C5.7000309@gmail.com>
-	<9c9fda240909170245u2b21b898v11c3316726746464@mail.gmail.com>
-	<9c9fda240909170302q47b306edn2d73b03243757ce1@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 17 Sep 2009 13:06:00 +0300
-Message-Id: <1253181960.3778.17.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mailout1.samsung.com ([203.254.224.24])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MoFaf-0004v2-2p
+	for linux-mtd@lists.infradead.org; Thu, 17 Sep 2009 11:56:01 +0000
+Received: from epmmp1 (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KQ400GSW6H57S@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 17 Sep 2009 20:55:54 +0900 (KST)
+Received: from Sarathbabu ([107.108.214.67])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KQ400BUK6H49U@mmp1.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 17 Sep 2009 20:55:53 +0900 (KST)
+Date: Thu, 17 Sep 2009 17:24:04 +0530
+From: Tadimarri Sarath Babu <sarath.babu@samsung.com>
+Subject: Re: [MTD-Tests]- issue while inserting modules
+To: linux-mtd@lists.infradead.org
+Message-id: <EFE8EA804139414AAAFE7C5C7F01F8D8@sisodomain.com>
+Content-transfer-encoding: 7BIT
+References: <1FF44128171E4E6E900BD9EAEB332E73@sisodomain.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,20 +27,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-09-17 at 19:02 +0900, Kyungmin Park wrote:
-> >> Very quick comment. Could you please avoid this style of putting function
-> >> name to the printk? We have lots of this in onenand_base.c, and they are
-> >> often wrong, because function names change.
-> >>
-> >> Could we please use dev_printk(), dev_dbg() and the like instead? You'll
-> 
-> FYI: In case of MTD,
-> dev_printk(), dev_dbg() not working. I used &mtd->dev,
-> 
-> Do you know how to set the dev instead of &mtd->dev?
+Hi,
 
-No, but you could investigate this.
+Now I am able to run MTD Tests on OneNAND.
+MTD Tests by default takes the mtd0 as the device number as per the code.
+I disabled the Writable Mask in the 0th partition in my architecture specific file and it started 
+working.
+I am using the mtd2 partition as the mtd device . So i initialized the "dev" variable in 
+mtd_oobtest.c to the respective number and similarly all other test files.
+I feel user should be prompted with the mtd device number he wants to run these tests.
+Any comments?
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Regards,
+Sarath
+----- Original Message ----- 
+From: "Tadimarri Sarath Babu" <sarath.babu@samsung.com>
+To: <linux-mtd@lists.infradead.org>
+Sent: Tuesday, September 15, 2009 5:04 PM
+Subject: [MTD-Tests]- issue while inserting modules
+
+
+> Hi,
+> I am testing OneNAND on linux 2.6.31 using mtd-tests. I have built the modules for mtd-tests.
+> When i try to insert the mtd-test modules , i am facing the issue. Please find the log below.
+>
+> LOG :
+> # insmod mtd_oobtest.ko
+> Using mtd_oobtest.ko
+>
+> =================================================
+> mtd_oobtest: MTD device: 0
+> mtd_oobtest: MTD device size 131072, eraseblock size 131072, page size 2048, cou
+> nt of eraseblocks 1, pages per eraseblock 64, OOB size 64
+> mtd_oobtest: scanning for bad eraseblocks
+> mtd_oobtest: scanned 1 eraseblocks, 0 are bad
+> mtd_oobtest: test 1 of 5
+> mtd_oobtest: erasing whole device
+> mtd_oobtest: error -30 while erasing EB 0
+> mtd_oobtest: error -30 occurred
+> =================================================
+> insmod: cannot insert `mtd_oobtest.ko': Read-only file system (-1): Read-only fi
+> le system
+>
+> Regards,
+> Sarath.
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/ 
