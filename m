@@ -1,17 +1,17 @@
 Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MoFyR-0008TS-EJ
-	for linux-mtd@lists.infradead.org; Thu, 17 Sep 2009 12:20:36 +0000
+	id 1MoFyY-0008Uj-1z
+	for linux-mtd@lists.infradead.org; Thu, 17 Sep 2009 12:20:42 +0000
 Received: from vaebh106.NOE.Nokia.com (vaebh106.europe.nokia.com
 	[10.160.244.32])
 	by mgw-mx06.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
-	n8HCJvnR027881
-	for <linux-mtd@lists.infradead.org>; Thu, 17 Sep 2009 15:20:13 +0300
+	n8HCJvnd027881
+	for <linux-mtd@lists.infradead.org>; Thu, 17 Sep 2009 15:20:21 +0300
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: Adrian Hunter <Adrian.Hunter@nokia.com>
-Subject: [PATCH 2/5] UBIFS: improve journal head debugging prints
-Date: Thu, 17 Sep 2009 15:19:53 +0300
-Message-Id: <1253189996-14191-3-git-send-email-dedekind@infradead.org>
+Subject: [PATCH 4/5] UBIFS: improve lprops dump
+Date: Thu, 17 Sep 2009 15:19:55 +0300
+Message-Id: <1253189996-14191-5-git-send-email-dedekind@infradead.org>
 In-Reply-To: <1253189996-14191-1-git-send-email-dedekind@infradead.org>
 References: <1253189996-14191-1-git-send-email-dedekind@infradead.org>
 Cc: linux-mtd@lists.infradead.org
@@ -26,261 +26,203 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Convert the journal head integers into the names when printing
-debugging information.
+Improve 'dbg_dump_lprop()' and print dark and dead space there,
+decode flags, and journal heads.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/debug.c   |   19 +++++++++++++++++--
- fs/ubifs/debug.h   |    2 ++
- fs/ubifs/io.c      |   29 +++++++++++++++--------------
- fs/ubifs/journal.c |   13 ++++++++-----
- fs/ubifs/log.c     |   15 ++++++++-------
- 5 files changed, 50 insertions(+), 28 deletions(-)
+ fs/ubifs/debug.c  |   87 +++++++++++++++++++++++++++++++++++++++++++++++++++--
+ fs/ubifs/lprops.c |   27 +++++++---------
+ fs/ubifs/ubifs.h  |    1 +
+ 3 files changed, 97 insertions(+), 18 deletions(-)
 
 diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index 8183ee0..9690004 100644
+index 9690004..fd3f07e 100644
 --- a/fs/ubifs/debug.c
 +++ b/fs/ubifs/debug.c
-@@ -210,6 +210,20 @@ const char *dbg_cstate(int cmt_state)
- 	}
- }
+@@ -663,9 +663,90 @@ void dbg_dump_budg(struct ubifs_info *c)
  
-+const char *dbg_jhead(int jhead)
-+{
-+	switch (jhead) {
-+	case GCHD:
-+		return "0 (GC)";
-+	case BASEHD:
-+		return "1 (base)";
-+	case DATAHD:
-+		return "2 (data)";
-+	default:
-+		return "unknown journal head";
-+	}
-+}
+ void dbg_dump_lprop(const struct ubifs_info *c, const struct ubifs_lprops *lp)
+ {
+-	printk(KERN_DEBUG "LEB %d lprops: free %d, dirty %d (used %d), "
+-	       "flags %#x\n", lp->lnum, lp->free, lp->dirty,
+-	       c->leb_size - lp->free - lp->dirty, lp->flags);
++	int i, spc, dark = 0, dead = 0;
++	struct rb_node *rb;
++	struct ubifs_bud *bud;
 +
- static void dump_ch(const struct ubifs_ch *ch)
- {
- 	printk(KERN_DEBUG "\tmagic          %#x\n", le32_to_cpu(ch->magic));
-@@ -623,8 +637,9 @@ void dbg_dump_budg(struct ubifs_info *c)
- 	/* If we are in R/O mode, journal heads do not exist */
- 	if (c->jheads)
- 		for (i = 0; i < c->jhead_cnt; i++)
--			printk(KERN_DEBUG "\tjhead %d\t LEB %d\n",
--			       c->jheads[i].wbuf.jhead, c->jheads[i].wbuf.lnum);
-+			printk(KERN_DEBUG "\tjhead %s\t LEB %d\n",
-+			       dbg_jhead(c->jheads[i].wbuf.jhead),
-+			       c->jheads[i].wbuf.lnum);
- 	for (rb = rb_first(&c->buds); rb; rb = rb_next(rb)) {
- 		bud = rb_entry(rb, struct ubifs_bud, rb);
- 		printk(KERN_DEBUG "\tbud LEB %d\n", bud->lnum);
-diff --git a/fs/ubifs/debug.h b/fs/ubifs/debug.h
-index fe2c927..29d9601 100644
---- a/fs/ubifs/debug.h
-+++ b/fs/ubifs/debug.h
-@@ -271,6 +271,7 @@ void ubifs_debugging_exit(struct ubifs_info *c);
- /* Dump functions */
- const char *dbg_ntype(int type);
- const char *dbg_cstate(int cmt_state);
-+const char *dbg_jhead(int jhead);
- const char *dbg_get_key_dump(const struct ubifs_info *c,
- 			     const union ubifs_key *key);
- void dbg_dump_inode(const struct ubifs_info *c, const struct inode *inode);
-@@ -427,6 +428,7 @@ void dbg_debugfs_exit_fs(struct ubifs_info *c);
- 
- #define dbg_ntype(type)                        ""
- #define dbg_cstate(cmt_state)                  ""
-+#define dbg_jhead(jhead)                       ""
- #define dbg_get_key_dump(c, key)               ({})
- #define dbg_dump_inode(c, inode)               ({})
- #define dbg_dump_node(c, node)                 ({})
-diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
-index 762a7d6..e589fed 100644
---- a/fs/ubifs/io.c
-+++ b/fs/ubifs/io.c
-@@ -297,7 +297,7 @@ static enum hrtimer_restart wbuf_timer_callback_nolock(struct hrtimer *timer)
- {
- 	struct ubifs_wbuf *wbuf = container_of(timer, struct ubifs_wbuf, timer);
- 
--	dbg_io("jhead %d", wbuf->jhead);
-+	dbg_io("jhead %s", dbg_jhead(wbuf->jhead));
- 	wbuf->need_sync = 1;
- 	wbuf->c->need_wbuf_sync = 1;
- 	ubifs_wake_up_bgt(wbuf->c);
-@@ -314,7 +314,8 @@ static void new_wbuf_timer_nolock(struct ubifs_wbuf *wbuf)
- 
- 	if (wbuf->no_timer)
- 		return;
--	dbg_io("set timer for jhead %d, %llu-%llu millisecs", wbuf->jhead,
-+	dbg_io("set timer for jhead %s, %llu-%llu millisecs",
-+	       dbg_jhead(wbuf->jhead),
- 	       div_u64(ktime_to_ns(wbuf->softlimit), USEC_PER_SEC),
- 	       div_u64(ktime_to_ns(wbuf->softlimit) + wbuf->delta,
- 		       USEC_PER_SEC));
-@@ -351,8 +352,8 @@ int ubifs_wbuf_sync_nolock(struct ubifs_wbuf *wbuf)
- 		/* Write-buffer is empty or not seeked */
- 		return 0;
- 
--	dbg_io("LEB %d:%d, %d bytes, jhead %d",
--	       wbuf->lnum, wbuf->offs, wbuf->used, wbuf->jhead);
-+	dbg_io("LEB %d:%d, %d bytes, jhead %s",
-+	       wbuf->lnum, wbuf->offs, wbuf->used, dbg_jhead(wbuf->jhead));
- 	ubifs_assert(!(c->vfs_sb->s_flags & MS_RDONLY));
- 	ubifs_assert(!(wbuf->avail & 7));
- 	ubifs_assert(wbuf->offs + c->min_io_size <= c->leb_size);
-@@ -401,7 +402,7 @@ int ubifs_wbuf_seek_nolock(struct ubifs_wbuf *wbuf, int lnum, int offs,
- {
- 	const struct ubifs_info *c = wbuf->c;
- 
--	dbg_io("LEB %d:%d, jhead %d", lnum, offs, wbuf->jhead);
-+	dbg_io("LEB %d:%d, jhead %s", lnum, offs, dbg_jhead(wbuf->jhead));
- 	ubifs_assert(lnum >= 0 && lnum < c->leb_cnt);
- 	ubifs_assert(offs >= 0 && offs <= c->leb_size);
- 	ubifs_assert(offs % c->min_io_size == 0 && !(offs & 7));
-@@ -508,9 +509,9 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
- 	struct ubifs_info *c = wbuf->c;
- 	int err, written, n, aligned_len = ALIGN(len, 8), offs;
- 
--	dbg_io("%d bytes (%s) to jhead %d wbuf at LEB %d:%d", len,
--	       dbg_ntype(((struct ubifs_ch *)buf)->node_type), wbuf->jhead,
--	       wbuf->lnum, wbuf->offs + wbuf->used);
-+	dbg_io("%d bytes (%s) to jhead %s wbuf at LEB %d:%d", len,
-+	       dbg_ntype(((struct ubifs_ch *)buf)->node_type),
-+	       dbg_jhead(wbuf->jhead), wbuf->lnum, wbuf->offs + wbuf->used);
- 	ubifs_assert(len > 0 && wbuf->lnum >= 0 && wbuf->lnum < c->leb_cnt);
- 	ubifs_assert(wbuf->offs >= 0 && wbuf->offs % c->min_io_size == 0);
- 	ubifs_assert(!(wbuf->offs & 7) && wbuf->offs <= c->leb_size);
-@@ -535,8 +536,8 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
- 		memcpy(wbuf->buf + wbuf->used, buf, len);
- 
- 		if (aligned_len == wbuf->avail) {
--			dbg_io("flush jhead %d wbuf to LEB %d:%d",
--			       wbuf->jhead, wbuf->lnum, wbuf->offs);
-+			dbg_io("flush jhead %s wbuf to LEB %d:%d",
-+			       dbg_jhead(wbuf->jhead), wbuf->lnum, wbuf->offs);
- 			err = ubi_leb_write(c->ubi, wbuf->lnum, wbuf->buf,
- 					    wbuf->offs, c->min_io_size,
- 					    wbuf->dtype);
-@@ -564,8 +565,8 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
- 	 * minimal I/O unit. We have to fill and flush write-buffer and switch
- 	 * to the next min. I/O unit.
- 	 */
--	dbg_io("flush jhead %d wbuf to LEB %d:%d",
--	       wbuf->jhead, wbuf->lnum, wbuf->offs);
-+	dbg_io("flush jhead %s wbuf to LEB %d:%d",
-+	       dbg_jhead(wbuf->jhead), wbuf->lnum, wbuf->offs);
- 	memcpy(wbuf->buf + wbuf->used, buf, wbuf->avail);
- 	err = ubi_leb_write(c->ubi, wbuf->lnum, wbuf->buf, wbuf->offs,
- 			    c->min_io_size, wbuf->dtype);
-@@ -698,8 +699,8 @@ int ubifs_read_node_wbuf(struct ubifs_wbuf *wbuf, void *buf, int type, int len,
- 	int err, rlen, overlap;
- 	struct ubifs_ch *ch = buf;
- 
--	dbg_io("LEB %d:%d, %s, length %d, jhead %d", lnum, offs,
--	       dbg_ntype(type), len, wbuf->jhead);
-+	dbg_io("LEB %d:%d, %s, length %d, jhead %s", lnum, offs,
-+	       dbg_ntype(type), len, dbg_jhead(wbuf->jhead));
- 	ubifs_assert(wbuf && lnum >= 0 && lnum < c->leb_cnt && offs >= 0);
- 	ubifs_assert(!(offs & 7) && offs < c->leb_size);
- 	ubifs_assert(type >= 0 && type < UBIFS_NODE_TYPES_CNT);
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index 64b5f3a..d321bae 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -158,7 +158,7 @@ again:
- 	 * some. But the write-buffer mutex has to be unlocked because
- 	 * GC also takes it.
- 	 */
--	dbg_jnl("no free space  jhead %d, run GC", jhead);
-+	dbg_jnl("no free space in jhead %s, run GC", dbg_jhead(jhead));
- 	mutex_unlock(&wbuf->io_mutex);
- 
- 	lnum = ubifs_garbage_collect(c, 0);
-@@ -173,7 +173,8 @@ again:
- 		 * because we dropped @wbuf->io_mutex, so try once
- 		 * again.
- 		 */
--		dbg_jnl("GC couldn't make a free LEB for jhead %d", jhead);
-+		dbg_jnl("GC couldn't make a free LEB for jhead %s",
-+			dbg_jhead(jhead));
- 		if (retries++ < 2) {
- 			dbg_jnl("retry (%d)", retries);
- 			goto again;
-@@ -184,7 +185,7 @@ again:
- 	}
- 
- 	mutex_lock_nested(&wbuf->io_mutex, wbuf->jhead);
--	dbg_jnl("got LEB %d for jhead %d", lnum, jhead);
-+	dbg_jnl("got LEB %d for jhead %s", lnum, dbg_jhead(jhead));
- 	avail = c->leb_size - wbuf->offs - wbuf->used;
- 
- 	if (wbuf->lnum != -1 && avail >= len) {
-@@ -255,7 +256,8 @@ static int write_node(struct ubifs_info *c, int jhead, void *node, int len,
- 	*lnum = c->jheads[jhead].wbuf.lnum;
- 	*offs = c->jheads[jhead].wbuf.offs + c->jheads[jhead].wbuf.used;
- 
--	dbg_jnl("jhead %d, LEB %d:%d, len %d", jhead, *lnum, *offs, len);
-+	dbg_jnl("jhead %s, LEB %d:%d, len %d",
-+		dbg_jhead(jhead), *lnum, *offs, len);
- 	ubifs_prepare_node(c, node, len, 0);
- 
- 	return ubifs_wbuf_write_nolock(wbuf, node, len);
-@@ -285,7 +287,8 @@ static int write_head(struct ubifs_info *c, int jhead, void *buf, int len,
- 
- 	*lnum = c->jheads[jhead].wbuf.lnum;
- 	*offs = c->jheads[jhead].wbuf.offs + c->jheads[jhead].wbuf.used;
--	dbg_jnl("jhead %d, LEB %d:%d, len %d", jhead, *lnum, *offs, len);
-+	dbg_jnl("jhead %s, LEB %d:%d, len %d",
-+		dbg_jhead(jhead), *lnum, *offs, len);
- 
- 	err = ubifs_wbuf_write_nolock(wbuf, buf, len);
- 	if (err)
-diff --git a/fs/ubifs/log.c b/fs/ubifs/log.c
-index 60dcf6c..c345e12 100644
---- a/fs/ubifs/log.c
-+++ b/fs/ubifs/log.c
-@@ -169,8 +169,8 @@ void ubifs_add_bud(struct ubifs_info *c, struct ubifs_bud *bud)
- 	 */
- 	c->bud_bytes += c->leb_size - bud->start;
- 
--	dbg_log("LEB %d:%d, jhead %d, bud_bytes %lld", bud->lnum,
--		bud->start, bud->jhead, c->bud_bytes);
-+	dbg_log("LEB %d:%d, jhead %s, bud_bytes %lld", bud->lnum,
-+		bud->start, dbg_jhead(bud->jhead), c->bud_bytes);
- 	spin_unlock(&c->buds_lock);
++	spc = lp->free + lp->dirty;
++	if (spc < c->dead_wm)
++		dead = spc;
++	else
++		dark = ubifs_calc_dark(c, spc);
++
++	if (lp->flags & LPROPS_INDEX)
++		printk(KERN_DEBUG "LEB %-7d free %-8d dirty %-8d used %-8d "
++		       "free + dirty %-8d flags %#x (", lp->lnum, lp->free,
++		       lp->dirty, c->leb_size - spc, spc, lp->flags);
++	else
++		printk(KERN_DEBUG "LEB %-7d free %-8d dirty %-8d used %-8d "
++		       "free + dirty %-8d dark %-4d dead %-4d nodes fit %-3d "
++		       "flags %#-4x (", lp->lnum, lp->free, lp->dirty,
++		       c->leb_size - spc, spc, dark, dead,
++		       (int)(spc / UBIFS_MAX_NODE_SZ), lp->flags);
++
++	if (lp->flags & LPROPS_TAKEN) {
++		if (lp->flags & LPROPS_INDEX)
++			printk(KERN_CONT "index, taken");
++		else
++			printk(KERN_CONT "taken");
++	} else {
++		const char *s;
++
++		if (lp->flags & LPROPS_INDEX) {
++			switch (lp->flags & LPROPS_CAT_MASK) {
++			case LPROPS_DIRTY_IDX:
++				s = "dirty index";
++				break;
++			case LPROPS_FRDI_IDX:
++				s = "freeable index";
++				break;
++			default:
++				s = "index";
++			}
++		} else {
++			switch (lp->flags & LPROPS_CAT_MASK) {
++			case LPROPS_UNCAT:
++				s = "not categorized";
++				break;
++			case LPROPS_DIRTY:
++				s = "dirty";
++				break;
++			case LPROPS_FREE:
++				s = "free";
++				break;
++			case LPROPS_EMPTY:
++				s = "empty";
++				break;
++			case LPROPS_FREEABLE:
++				s = "freeable";
++				break;
++			default:
++				s = NULL;
++				break;
++			}
++		}
++		printk(KERN_CONT "%s", s);
++	}
++
++	for (rb = rb_first((struct rb_root *)&c->buds); rb; rb = rb_next(rb)) {
++		bud = rb_entry(rb, struct ubifs_bud, rb);
++		if (bud->lnum == lp->lnum) {
++			int head = 0;
++			for (i = 0; i < c->jhead_cnt; i++) {
++				if (lp->lnum == c->jheads[i].wbuf.lnum) {
++					printk(KERN_CONT ", jhead %s",
++					       dbg_jhead(i));
++					head = 1;
++				}
++			}
++			if (!head)
++				printk(KERN_CONT ", bud of jhead %s",
++				       dbg_jhead(bud->jhead));
++		}
++	}
++	if (lp->lnum == c->gc_lnum)
++		printk(KERN_CONT ", GC LEB");
++	printk(KERN_CONT ")\n");
  }
  
-@@ -355,16 +355,16 @@ static void remove_buds(struct ubifs_info *c)
- 			 * heads (non-closed buds).
- 			 */
- 			c->cmt_bud_bytes += wbuf->offs - bud->start;
--			dbg_log("preserve %d:%d, jhead %d, bud bytes %d, "
-+			dbg_log("preserve %d:%d, jhead %s, bud bytes %d, "
- 				"cmt_bud_bytes %lld", bud->lnum, bud->start,
--				bud->jhead, wbuf->offs - bud->start,
-+				dbg_jhead(bud->jhead), wbuf->offs - bud->start,
- 				c->cmt_bud_bytes);
- 			bud->start = wbuf->offs;
- 		} else {
- 			c->cmt_bud_bytes += c->leb_size - bud->start;
--			dbg_log("remove %d:%d, jhead %d, bud bytes %d, "
-+			dbg_log("remove %d:%d, jhead %s, bud bytes %d, "
- 				"cmt_bud_bytes %lld", bud->lnum, bud->start,
--				bud->jhead, c->leb_size - bud->start,
-+				dbg_jhead(bud->jhead), c->leb_size - bud->start,
- 				c->cmt_bud_bytes);
- 			rb_erase(p1, &c->buds);
- 			/*
-@@ -429,7 +429,8 @@ int ubifs_log_start_commit(struct ubifs_info *c, int *ltail_lnum)
- 		if (lnum == -1 || offs == c->leb_size)
- 			continue;
+ void dbg_dump_lprops(struct ubifs_info *c)
+diff --git a/fs/ubifs/lprops.c b/fs/ubifs/lprops.c
+index 89b355a..4d4ca38 100644
+--- a/fs/ubifs/lprops.c
++++ b/fs/ubifs/lprops.c
+@@ -461,21 +461,18 @@ static void change_category(struct ubifs_info *c, struct ubifs_lprops *lprops)
+ }
  
--		dbg_log("add ref to LEB %d:%d for jhead %d", lnum, offs, i);
-+		dbg_log("add ref to LEB %d:%d for jhead %s",
-+			lnum, offs, dbg_jhead(i));
- 		ref = buf + len;
- 		ref->ch.node_type = UBIFS_REF_NODE;
- 		ref->lnum = cpu_to_le32(lnum);
+ /**
+- * calc_dark - calculate LEB dark space size.
++ * ubifs_calc_dark - calculate LEB dark space size.
+  * @c: the UBIFS file-system description object
+  * @spc: amount of free and dirty space in the LEB
+  *
+- * This function calculates amount of dark space in an LEB which has @spc bytes
+- * of free and dirty space. Returns the calculations result.
++ * This function calculates and returns amount of dark space in an LEB which
++ * has @spc bytes of free and dirty space.
+  *
+- * Dark space is the space which is not always usable - it depends on which
+- * nodes are written in which order. E.g., if an LEB has only 512 free bytes,
+- * it is dark space, because it cannot fit a large data node. So UBIFS cannot
+- * count on this LEB and treat these 512 bytes as usable because it is not true
+- * if, for example, only big chunks of uncompressible data will be written to
+- * the FS.
++ * UBIFS is trying to account the space which might not be usable, and this
++ * space is called "dark space". For example, if an LEB has only %512 free
++ * bytes, it is dark space, because it cannot fit a large data node.
+  */
+-static int calc_dark(struct ubifs_info *c, int spc)
++int ubifs_calc_dark(const struct ubifs_info *c, int spc)
+ {
+ 	ubifs_assert(!(spc & 7));
+ 
+@@ -575,7 +572,7 @@ const struct ubifs_lprops *ubifs_change_lp(struct ubifs_info *c,
+ 		if (old_spc < c->dead_wm)
+ 			c->lst.total_dead -= old_spc;
+ 		else
+-			c->lst.total_dark -= calc_dark(c, old_spc);
++			c->lst.total_dark -= ubifs_calc_dark(c, old_spc);
+ 
+ 		c->lst.total_used -= c->leb_size - old_spc;
+ 	}
+@@ -616,7 +613,7 @@ const struct ubifs_lprops *ubifs_change_lp(struct ubifs_info *c,
+ 		if (new_spc < c->dead_wm)
+ 			c->lst.total_dead += new_spc;
+ 		else
+-			c->lst.total_dark += calc_dark(c, new_spc);
++			c->lst.total_dark += ubifs_calc_dark(c, new_spc);
+ 
+ 		c->lst.total_used += c->leb_size - new_spc;
+ 	}
+@@ -1107,7 +1104,7 @@ static int scan_check_cb(struct ubifs_info *c,
+ 				  "- continuing checking");
+ 			lst->empty_lebs += 1;
+ 			lst->total_free += c->leb_size;
+-			lst->total_dark += calc_dark(c, c->leb_size);
++			lst->total_dark += ubifs_calc_dark(c, c->leb_size);
+ 			return LPT_SCAN_CONTINUE;
+ 		}
+ 
+@@ -1117,7 +1114,7 @@ static int scan_check_cb(struct ubifs_info *c,
+ 				  "- continuing checking");
+ 			lst->total_free  += lp->free;
+ 			lst->total_dirty += lp->dirty;
+-			lst->total_dark  +=  calc_dark(c, c->leb_size);
++			lst->total_dark  +=  ubifs_calc_dark(c, c->leb_size);
+ 			return LPT_SCAN_CONTINUE;
+ 		}
+ 		data->err = PTR_ERR(sleb);
+@@ -1235,7 +1232,7 @@ static int scan_check_cb(struct ubifs_info *c,
+ 		if (spc < c->dead_wm)
+ 			lst->total_dead += spc;
+ 		else
+-			lst->total_dark += calc_dark(c, spc);
++			lst->total_dark += ubifs_calc_dark(c, spc);
+ 	}
+ 
+ 	ubifs_scan_destroy(sleb);
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 8ca441f..b2d9763 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -1674,6 +1674,7 @@ const struct ubifs_lprops *ubifs_fast_find_free(struct ubifs_info *c);
+ const struct ubifs_lprops *ubifs_fast_find_empty(struct ubifs_info *c);
+ const struct ubifs_lprops *ubifs_fast_find_freeable(struct ubifs_info *c);
+ const struct ubifs_lprops *ubifs_fast_find_frdi_idx(struct ubifs_info *c);
++int ubifs_calc_dark(const struct ubifs_info *c, int spc);
+ 
+ /* file.c */
+ int ubifs_fsync(struct file *file, struct dentry *dentry, int datasync);
 -- 
 1.6.2.5
