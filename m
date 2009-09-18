@@ -1,8 +1,8 @@
-Message-Id: <200909181951.n8IJpoOq023834@imap1.linux-foundation.org>
-Subject: [patch 11/13] mtd: prevent a read from regions[-1]
+Message-Id: <200909181951.n8IJpoN4023827@imap1.linux-foundation.org>
+Subject: [patch 10/13] mtd: prevent a read from eraseregions[-1]
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Fri, 18 Sep 2009 12:51:50 -0700
+Date: Fri, 18 Sep 2009 12:51:49 -0700
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -20,27 +20,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 From: Roel Kluin <roel.kluin@gmail.com>
 
 If the erase region was found in the first iteration we read from
-regions[-1]
+eraseregions[-1]
 
 Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- drivers/mtd/mtdpart.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mtd/mtdconcat.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff -puN drivers/mtd/mtdpart.c~mtd-prevent-a-read-from-regions drivers/mtd/mtdpart.c
---- a/drivers/mtd/mtdpart.c~mtd-prevent-a-read-from-regions
-+++ a/drivers/mtd/mtdpart.c
-@@ -453,7 +453,8 @@ static struct mtd_part *add_one_partitio
- 		for (i = 0; i < max && regions[i].offset <= slave->offset; i++)
- 			;
- 		/* The loop searched for the region _behind_ the first one */
--		i--;
-+		if (i > 0)
-+			i--;
+diff -puN drivers/mtd/mtdconcat.c~mtd-prevent-a-read-from-eraseregions drivers/mtd/mtdconcat.c
+--- a/drivers/mtd/mtdconcat.c~mtd-prevent-a-read-from-eraseregions
++++ a/drivers/mtd/mtdconcat.c
+@@ -427,7 +427,7 @@ static int concat_erase(struct mtd_info 
+ 		 * to-be-erased area begins. Verify that the starting
+ 		 * offset is aligned to this region's erase size:
+ 		 */
+-		if (instr->addr & (erase_regions[i].erasesize - 1))
++		if (i < 0 || instr->addr & (erase_regions[i].erasesize - 1))
+ 			return -EINVAL;
  
- 		/* Pick biggest erasesize */
- 		for (; i < max && regions[i].offset < end; i++) {
+ 		/*
+@@ -440,8 +440,8 @@ static int concat_erase(struct mtd_info 
+ 		/*
+ 		 * check if the ending offset is aligned to this region's erase size
+ 		 */
+-		if ((instr->addr + instr->len) & (erase_regions[i].erasesize -
+-						  1))
++		if (i < 0 || ((instr->addr + instr->len) &
++					(erase_regions[i].erasesize - 1)))
+ 			return -EINVAL;
+ 	}
+ 
 _
