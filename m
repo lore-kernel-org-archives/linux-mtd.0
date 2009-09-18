@@ -1,17 +1,18 @@
 Received: from smtp1.linux-foundation.org ([140.211.169.13])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mojal-0007TI-Ts
-	for linux-mtd@lists.infradead.org; Fri, 18 Sep 2009 19:58:07 +0000
-Message-Id: <200909181951.n8IJppQ1023875@imap1.linux-foundation.org>
-Subject: [patch 12/13] mtd: jedec_probe: fix NEC uPD29F064115 detection
+	id 1MojbV-0007ec-Di
+	for linux-mtd@lists.infradead.org; Fri, 18 Sep 2009 19:58:54 +0000
+Message-Id: <200909181951.n8IJplxI023766@imap1.linux-foundation.org>
+Subject: [patch 07/13] mtd-nand: add new ECC mode - ECC_HW_OOB_FIRST
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Fri, 18 Sep 2009 12:51:51 -0700
+Date: Fri, 18 Sep 2009 12:51:47 -0700
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
-Cc: ito@mlb.co.jp, akpm@linux-foundation.org, linux-mtd@lists.infradead.org,
-	David.Woodhouse@intel.com, anemo@mba.ocn.ne.jp
+Cc: dbrownell@users.sourceforge.net, s-paulraj@ti.com, nsnehaprabha@ti.com,
+	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
+	tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,53 +22,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Hiroshi Ito <ito@mlb.co.jp>
+From: Sneha Narnakaje <nsnehaprabha@ti.com>
 
-linux v2.6.31-rc6 can not detect NEC uPD29F064115.
+This patch adds the new mode NAND_ECC_HW_OOB_FIRST in the nand code to
+support 4-bit ECC on TI DaVinci devices with large page (up to 2K) NAND
+chips.  This ECC mode is similar to NAND_ECC_HW, with the exception of
+read_page API that first reads the OOB area, reads the data in chunks,
+feeds the ECC from OOB area to the ECC hw engine and perform any
+correction on the data as per the ECC status reported by the engine.
 
-uPD29F064115 is a 16 bit device.
-datasheet:
-  http://www.cn.necel.com/memory/cn/download/M16062EJ2V0DS00.pdf
+"ECC_HW_OOB_FIRST" name suggested by Thomas Gleixner
 
-A problem and fix is described in the following commit, which in the main
-kernel tree, uPD29F064115 needs same fix.
-
-commit ca6f12c67ed19718cf37d0f531af9438de85b70c
-Author: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-Date:   Wed Jul 16 00:09:15 2008 +0900
-
-    [MTD] jedec_probe: Fix SST 16-bit chip detection
-
-    The unlock_addr rework in kernel 2.6.25 breaks 16-bit SST chips.  SST
-    39LF160 and SST 39VF1601 are both 16-bit only chip (do not have BYTE#
-    pin) and new uaddr value is not correct for them.  Add
-    MTD_UADDR_0xAAAA_0x5555 for those chips.  Tested with SST 39VF1601
-    chip.
-
-    Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-    Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
-
-Signed-off-by: Hiroshi Ito <ito@mlb.co.jp>
+Reviewed-by: David Brownell <dbrownell@users.sourceforge.net>
+Signed-off-by: Sneha Narnakaje <nsnehaprabha@ti.com>
+Signed-off-by: Sandeep Paulraj <s-paulraj@ti.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Cc: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- drivers/mtd/chips/jedec_probe.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/nand_base.c |   59 +++++++++++++++++++++++++++++++++
+ include/linux/mtd/nand.h     |    1 
+ 2 files changed, 60 insertions(+)
 
-diff -puN drivers/mtd/chips/jedec_probe.c~mtd-jedec_probe-fix-nec-upd29f064115-detection drivers/mtd/chips/jedec_probe.c
---- a/drivers/mtd/chips/jedec_probe.c~mtd-jedec_probe-fix-nec-upd29f064115-detection
-+++ a/drivers/mtd/chips/jedec_probe.c
-@@ -1156,8 +1156,8 @@ static const struct amd_flash_info jedec
- 		.mfr_id		= MANUFACTURER_NEC,
- 		.dev_id		= UPD29F064115,
- 		.name		= "NEC uPD29F064115",
--		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
--		.uaddr		= MTD_UADDR_0x0555_0x02AA,	/* ???? */
-+		.devtypes	= CFI_DEVICETYPE_X16,
-+		.uaddr		= MTD_UADDR_0xAAAA_0x5555,
- 		.dev_size	= SIZE_8MiB,
- 		.cmd_set	= P_ID_AMD_STD,
- 		.nr_regions	= 3,
+diff -puN drivers/mtd/nand/nand_base.c~mtd-nand-add-new-ecc-mode-ecc_hw_oob_first drivers/mtd/nand/nand_base.c
+--- a/drivers/mtd/nand/nand_base.c~mtd-nand-add-new-ecc-mode-ecc_hw_oob_first
++++ a/drivers/mtd/nand/nand_base.c
+@@ -979,6 +979,54 @@ static int nand_read_page_hwecc(struct m
+ }
+ 
+ /**
++ * nand_read_page_hwecc_oob_first - [REPLACABLE] hw ecc, read oob first
++ * @mtd:	mtd info structure
++ * @chip:	nand chip info structure
++ * @buf:	buffer to store read data
++ *
++ * Hardware ECC for large page chips, require OOB to be read first.
++ * For this ECC mode, the write_page method is re-used from ECC_HW.
++ * These methods read/write ECC from the OOB area, unlike the
++ * ECC_HW_SYNDROME support with multiple ECC steps, follows the
++ * "infix ECC" scheme and reads/writes ECC from the data area, by
++ * overwriting the NAND manufacturer bad block markings.
++ */
++static int nand_read_page_hwecc_oob_first(struct mtd_info *mtd,
++	struct nand_chip *chip, uint8_t *buf, int page)
++{
++	int i, eccsize = chip->ecc.size;
++	int eccbytes = chip->ecc.bytes;
++	int eccsteps = chip->ecc.steps;
++	uint8_t *p = buf;
++	uint8_t *ecc_code = chip->buffers->ecccode;
++	uint32_t *eccpos = chip->ecc.layout->eccpos;
++	uint8_t *ecc_calc = chip->buffers->ecccalc;
++
++	/* Read the OOB area first */
++	chip->cmdfunc(mtd, NAND_CMD_READOOB, 0, page);
++	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
++	chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
++
++	for (i = 0; i < chip->ecc.total; i++)
++		ecc_code[i] = chip->oob_poi[eccpos[i]];
++
++	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize) {
++		int stat;
++
++		chip->ecc.hwctl(mtd, NAND_ECC_READ);
++		chip->read_buf(mtd, p, eccsize);
++		chip->ecc.calculate(mtd, p, &ecc_calc[i]);
++
++		stat = chip->ecc.correct(mtd, p, &ecc_code[i], NULL);
++		if (stat < 0)
++			mtd->ecc_stats.failed++;
++		else
++			mtd->ecc_stats.corrected += stat;
++	}
++	return 0;
++}
++
++/**
+  * nand_read_page_syndrome - [REPLACABLE] hardware ecc syndrom based page read
+  * @mtd:	mtd info structure
+  * @chip:	nand chip info structure
+@@ -2673,6 +2721,17 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	 */
+ 
+ 	switch (chip->ecc.mode) {
++	case NAND_ECC_HW_OOB_FIRST:
++		/* Similar to NAND_ECC_HW, but a separate read_page handle */
++		if (!chip->ecc.calculate || !chip->ecc.correct ||
++		     !chip->ecc.hwctl) {
++			printk(KERN_WARNING "No ECC functions supplied, "
++			       "Hardware ECC not possible\n");
++			BUG();
++		}
++		if (!chip->ecc.read_page)
++			chip->ecc.read_page = nand_read_page_hwecc_oob_first;
++
+ 	case NAND_ECC_HW:
+ 		/* Use standard hwecc read page function ? */
+ 		if (!chip->ecc.read_page)
+diff -puN include/linux/mtd/nand.h~mtd-nand-add-new-ecc-mode-ecc_hw_oob_first include/linux/mtd/nand.h
+--- a/include/linux/mtd/nand.h~mtd-nand-add-new-ecc-mode-ecc_hw_oob_first
++++ a/include/linux/mtd/nand.h
+@@ -121,6 +121,7 @@ typedef enum {
+ 	NAND_ECC_SOFT,
+ 	NAND_ECC_HW,
+ 	NAND_ECC_HW_SYNDROME,
++	NAND_ECC_HW_OOB_FIRST,
+ } nand_ecc_modes_t;
+ 
+ /*
 _
