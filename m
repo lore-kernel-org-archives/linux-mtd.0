@@ -1,19 +1,20 @@
-Received: from smtp1.linux-foundation.org ([140.211.169.13])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MojcP-0007q2-B4
-	for linux-mtd@lists.infradead.org; Fri, 18 Sep 2009 19:59:50 +0000
-Message-Id: <200909181951.n8IJpm1D023809@imap1.linux-foundation.org>
-Subject: [patch 08/13] mtd-nand: DaVinci: Add 4-bit ECC support for large page
-	NAND chips
-To: dwmw2@infradead.org
-From: akpm@linux-foundation.org
-Date: Fri, 18 Sep 2009 12:51:48 -0700
+Received: from ucpbx.com ([77.70.97.103] helo=mail.bioidentic.com)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MojiY-0002Kr-6w
+	for linux-mtd@lists.infradead.org; Fri, 18 Sep 2009 20:06:10 +0000
+Message-ID: <00f301ca389b$71227390$2901a8c0@dpn>
+From: "Dimitar Penev" <dpn@ucpbx.com>
+To: "Geert Uytterhoeven" <Geert.Uytterhoeven@sonycom.com>,
+	"Mike Frysinger" <vapier.adi@gmail.com>
+References: <009301ca37ab$9b5d2ab0$2901a8c0@dpn><1253202198.3778.19.camel@localhost><8bd0f97a0909170945u7af8dc81ga64e13d4707ceada@mail.gmail.com>
+	<alpine.LRH.2.00.0909181014410.15599@vixen.sonytel.be>
+Subject: Re: setup ubifs
+Date: Fri, 18 Sep 2009 23:06:00 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ANSI_X3.4-1968
+Content-Type: text/plain; format=flowed; charset="ISO-8859-15";
+	reply-type=original
 Content-Transfer-Encoding: 8bit
-Cc: dbrownell@users.sourceforge.net, s-paulraj@ti.com, nsnehaprabha@ti.com,
-	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
-	troy.kisky@boundarydevices.com, tglx@linutronix.de
+Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,107 +24,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Sneha Narnakaje <nsnehaprabha@ti.com>
+Thanks you guys!
 
-This patch adds 4-bit ECC support for large page NAND chips using the new
-ECC mode NAND_ECC_HW_OOB_FIRST.  The platform data from board-dm355-evm
-has been adjusted to use this mode.
+ubifs is working on my Blackfin platform.
+Dimitar Penev
 
-The patches have been verified on DM355 device with 2K Micron devices
-using mtd-tests and JFFS2.  Error correction upto 4-bits has also been
-verified using nandwrite/nanddump utilities.
+----- Original Message ----- 
+From: "Geert Uytterhoeven" <Geert.Uytterhoeven@sonycom.com>
+To: "Mike Frysinger" <vapier.adi@gmail.com>
+Cc: "Dimitar Penev" <dpn@ucpbx.com>; <linux-mtd@lists.infradead.org>; 
+<dedekind1@gmail.com>
+Sent: Friday, September 18, 2009 11:15 AM
+Subject: Re: setup ubifs
 
-Reviewed-by: David Brownell <dbrownell@users.sourceforge.net>
-Signed-off-by: Sneha Narnakaje <nsnehaprabha@ti.com>
-Signed-off-by: Sandeep Paulraj <s-paulraj@ti.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Troy Kisky <troy.kisky@boundarydevices.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
 
- drivers/mtd/nand/davinci_nand.c |   45 ++++++++++++++++++++++++++----
- 1 file changed, 39 insertions(+), 6 deletions(-)
+On Thu, 17 Sep 2009, Mike Frysinger wrote:
+> On Thu, Sep 17, 2009 at 11:43, Artem Bityutskiy wrote:
+> > On Thu, 2009-09-17 at 18:29 +0300, Dimitar Penev wrote:
+> >> I am tring to setup ubifs on an blackfin based embeded platform 
+> >> containg
+> >> nand flash.
+> >> jffs2 is working ok on it.
+> >>
+> >> So I have compiled the uclinux (kernel 2.6.28.10) with ubifs/mtd_ubi 
+> >> static
+> >> support
+> >> If I pass with the bootargs ubi.mtd=3 , during booting I see
+> >>
+> >> ...
+> >> UBI: attaching mtd3 to ubi0
+> >> UBI: physical eraseblock size: 262144 bytes (256 KiB)
+> >> UBI: logical eraseblock size: 258048 bytes
+> >> UBI: smallest flash I/O unit: 2048
+> >> UBI: VID header offset: 2048 (aligned 2048)
+> >> UBI: data offset: 4096
+> >> UBI: empty MTD device detected
+> >> UBI: create volume table (copy #1)
+> >> UBI: create volume table (copy #2)
+> >> UBI: attached mtd3 to ubi0
+> >> UBI: MTD device name: "persistent file system"
+> >> UBI: MTD device size: 1004 MiB
+> >> UBI: number of good PEBs: 3974
+> >> UBI: number of bad PEBs: 42
+> >> UBI: max. allowed volumes: 128
+> >> UBI: wear-leveling threshold: 4096
+> >> UBI: number of internal volumes: 1
+> >> UBI: number of user volumes: 0
+> >> UBI: available PEBs: 3931
+> >> UBI: total number of reserved PEBs: 43
+> >> UBI: number of PEBs reserved for bad PEB handling: 39
+> >> UBI: max/mean erase counter: 0/0
+> >> UBI: background thread "ubi_bgt0d" started, PID 122
+> >> ...
+> >>
+> >> ubinfo gives me
+> >>
+> >> root@pr1:~> /bin/ubinfo
+> >> UBI version: 1
+> >> Count of UBI devices: 1
+> >> UBI control device major/minor: 10:63
+> >> Present UBI devices: ubi0
+> >>
+> >> I don't have /dev/ubi0 nor /dev/ubi_ctrl, however I do have some ubi 
+> >> stuff
+> >> in my /sys file system
+> >>
+> >> root@pr1:~> ls /sys/class/ubi/ubi0/
+> >> /sys/class/ubi/ubi0/avail_eraseblocks /sys/class/ubi/ubi0/min_io_size
+> >> /sys/class/ubi/ubi0/bad_peb_count /sys/class/ubi/ubi0/mtd_num
+> >> /sys/class/ubi/ubi0/bgt_enabled /sys/class/ubi/ubi0/reserved_for_bad
+> >> /sys/class/ubi/ubi0/dev /sys/class/ubi/ubi0/subsystem/
+> >> /sys/class/ubi/ubi0/eraseblock_size 
+> >> /sys/class/ubi/ubi0/total_eraseblocks
+> >> /sys/class/ubi/ubi0/max_ec /sys/class/ubi/ubi0/uevent
+> >> /sys/class/ubi/ubi0/max_vol_count /sys/class/ubi/ubi0/volumes_count
+> >>
+> >> root@pr1:~> ls /sys/class/misc/ubi_ctrl/
+> >> /sys/class/misc/ubi_ctrl/dev /sys/class/misc/ubi_ctrl/uevent
+> >> /sys/class/misc/ubi_ctrl/subsystem/
+> >>
+> >> I don't have /dev/ubi_ctrl so I can not crete (ubimkvol) ubi volume.
+> >>
+> >> Can you please give me some pointers.
+> >
+> > Either make udev work and create device nodes for you automatically,
+> > or create them manually. All the major/minor numbers are available
+> > in sysfs (sedd "dev" files), so you may create corresponding character
+> > device files.
+>
+> udev isnt going to happen.  if the stuff is available via sysfs, then
+> `mdev -s` should work.
 
-diff -puN drivers/mtd/nand/davinci_nand.c~mtd-nand-davinci-add-4-bit-ecc-support-for-large-page-nand-chips drivers/mtd/nand/davinci_nand.c
---- a/drivers/mtd/nand/davinci_nand.c~mtd-nand-davinci-add-4-bit-ecc-support-for-large-page-nand-chips
-+++ a/drivers/mtd/nand/davinci_nand.c
-@@ -348,6 +348,12 @@ compare:
- 	if (!(syndrome[0] | syndrome[1] | syndrome[2] | syndrome[3]))
- 		return 0;
- 
-+	/*
-+	 * Clear any previous address calculation by doing a dummy read of an
-+	 * error address register.
-+	 */
-+	davinci_nand_readl(info, NAND_ERR_ADD1_OFFSET);
-+
- 	/* Start address calculation, and wait for it to complete.
- 	 * We _could_ start reading more data while this is working,
- 	 * to speed up the overall page read.
-@@ -359,8 +365,10 @@ compare:
- 
- 		switch ((fsr >> 8) & 0x0f) {
- 		case 0:		/* no error, should not happen */
-+			davinci_nand_readl(info, NAND_ERR_ERRVAL1_OFFSET);
- 			return 0;
- 		case 1:		/* five or more errors detected */
-+			davinci_nand_readl(info, NAND_ERR_ERRVAL1_OFFSET);
- 			return -EIO;
- 		case 2:		/* error addresses computed */
- 		case 3:
-@@ -500,6 +508,26 @@ static struct nand_ecclayout hwecc4_smal
- 	},
- };
- 
-+/* An ECC layout for using 4-bit ECC with large-page (2048bytes) flash,
-+ * storing ten ECC bytes plus the manufacturer's bad block marker byte,
-+ * and not overlapping the default BBT markers.
-+ */
-+static struct nand_ecclayout hwecc4_2048 __initconst = {
-+	.eccbytes = 40,
-+	.eccpos = {
-+		/* at the end of spare sector */
-+		24, 25, 26, 27, 28, 29,	30, 31, 32, 33,
-+		34, 35, 36, 37, 38, 39,	40, 41, 42, 43,
-+		44, 45, 46, 47, 48, 49, 50, 51, 52, 53,
-+		54, 55, 56, 57, 58, 59, 60, 61, 62, 63,
-+		},
-+	.oobfree = {
-+		/* 2 bytes at offset 0 hold manufacturer badblock markers */
-+		{.offset = 2, .length = 22, },
-+		/* 5 bytes at offset 8 hold BBT markers */
-+		/* 8 bytes at offset 16 hold JFFS2 clean markers */
-+	},
-+};
- 
- static int __init nand_davinci_probe(struct platform_device *pdev)
- {
-@@ -690,15 +718,20 @@ static int __init nand_davinci_probe(str
- 				info->mtd.oobsize - 16;
- 			goto syndrome_done;
- 		}
-+		if (chunks == 4) {
-+			info->ecclayout = hwecc4_2048;
-+			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
-+			goto syndrome_done;
-+		}
- 
--		/* For large page chips we'll be wanting to use a
--		 * not-yet-implemented mode that reads OOB data
--		 * before reading the body of the page, to avoid
--		 * the "infix OOB" model of NAND_ECC_HW_SYNDROME
--		 * (and preserve manufacturer badblock markings).
-+		/* 4K page chips are not yet supported. The eccpos from
-+		 * nand_ecclayout cannot hold 80 bytes and change to eccpos[]
-+		 * breaks userspace ioctl interface with mtd-utils. Once we
-+		 * resolve this issue, NAND_ECC_HW_OOB_FIRST mode can be used
-+		 * for the 4K page chips.
- 		 */
- 		dev_warn(&pdev->dev, "no 4-bit ECC support yet "
--				"for large page NAND\n");
-+				"for 4K page NAND\n");
- 		ret = -EIO;
- 		goto err_scan;
- 
-_
+Or CONFIG_DEVTMPFS=y and CONFIG_DEVTMPFS_MOUNT=y in current bleeding edge
+2.6.31+.
+
+With kind regards,
+
+Geert Uytterhoeven
+Software Architect
+Techsoft Centre
+
+Technology and Software Centre Europe
+The Corporate Village · Da Vincilaan 7-D1 · B-1935 Zaventem · Belgium
+
+Phone:    +32 (0)2 700 8453
+Fax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 · RPR Brussels
+Fortis · BIC GEBABEBB · IBAN BE41293037680010
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
