@@ -1,19 +1,17 @@
-Received: from smtp1.linux-foundation.org ([140.211.169.13])
-	by casper.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MojcC-0000Gf-Fd
-	for linux-mtd@lists.infradead.org; Fri, 18 Sep 2009 19:59:37 +0000
-Message-Id: <200909181951.n8IJpkjo023706@imap1.linux-foundation.org>
-Subject: [patch 06/13] mtd-nand: add "page" parameter to all
-	read_page/read_page_raw APIs
-To: dwmw2@infradead.org
-From: akpm@linux-foundation.org
-Date: Fri, 18 Sep 2009 12:51:46 -0700
+Received: from mms1.broadcom.com ([216.31.210.17])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Mol2y-0005RP-58
+	for linux-mtd@lists.infradead.org; Fri, 18 Sep 2009 21:31:21 +0000
+From: "Darwin Rambo" <drambo@broadcom.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Fri, 18 Sep 2009 14:31:05 -0700
+Subject: UBIFS and hardware ECC of all FF pages of MLC NAND
+Message-ID: <B125D8217ABC4B43826503DE00A2D44910D7E85DFD@SJEXCHCCR01.corp.ad.broadcom.com>
+Content-Language: en-US
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: 8bit
-Cc: dbrownell@users.sourceforge.net, s-paulraj@ti.com, nsnehaprabha@ti.com,
-	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
-	tglx@linutronix.de
+Content-Type: text/plain;
+ charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,168 +21,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Sneha Narnakaje <nsnehaprabha@ti.com>
+I have a 512 byte-at-a time hardware ECC generator that generates a particu=
+lar non-FF code for 512 bytes of FF data. For a 4K MLC NAND flash, that mea=
+ns in the OOB, I have 8 ECCs/page.
 
-This patch adds a new "page" parameter to all NAND read_page/read_page_raw
-APIs.  The read_page API for the new mode ECC_HW_OOB_FIRST requires the
-page information to send the READOOB command and read the OOB area before
-the data area.
+Ubinize creates large download files which in some cases have 64 byte heade=
+rs, followed by a page of FFs, and in other cases, the entire page is FFs. =
+(I noticed that mkfs.jffs2 doesn't appear to create large blocks of FFs in =
+the image file. In fact, by 6MB jffs2 file became 14MB when I rebuilt for U=
+BIFS, much of the file being large blocks of FFs).
 
-Reviewed-by: David Brownell <dbrownell@users.sourceforge.net>
-Signed-off-by: Sneha Narnakaje <nsnehaprabha@ti.com>
-Signed-off-by: Sandeep Paulraj <s-paulraj@ti.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
+When I download and program the flash I took the decision to program the EC=
+C even for all FF pages.
 
- drivers/mtd/nand/atmel_nand.c    |    2 +-
- drivers/mtd/nand/cafe_nand.c     |    2 +-
- drivers/mtd/nand/fsl_elbc_nand.c |    3 ++-
- drivers/mtd/nand/nand_base.c     |   18 ++++++++++--------
- drivers/mtd/nand/sh_flctl.c      |    2 +-
- include/linux/mtd/nand.h         |    4 ++--
- 6 files changed, 17 insertions(+), 14 deletions(-)
+I was getting ECC corruption on startup, and eventually traced it down to U=
+BIFS writing new data to these all FF pages, but because the FS noticed tha=
+t the page was blank, didn't erase anything, and wrote data, even though th=
+e ECCs were still programmed and were non-FF. The result is that the new EC=
+C collided with the old ECC that was there, and I got corruption of a nearb=
+y page's ECC as well as the ECC in the page that was written.
 
-diff -puN drivers/mtd/nand/atmel_nand.c~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis drivers/mtd/nand/atmel_nand.c
---- a/drivers/mtd/nand/atmel_nand.c~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis
-+++ a/drivers/mtd/nand/atmel_nand.c
-@@ -218,7 +218,7 @@ static int atmel_nand_calculate(struct m
-  * buf:        buffer to store read data
-  */
- static int atmel_nand_read_page(struct mtd_info *mtd,
--		struct nand_chip *chip, uint8_t *buf)
-+		struct nand_chip *chip, uint8_t *buf, int page)
- {
- 	int eccsize = chip->ecc.size;
- 	int eccbytes = chip->ecc.bytes;
-diff -puN drivers/mtd/nand/cafe_nand.c~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis drivers/mtd/nand/cafe_nand.c
---- a/drivers/mtd/nand/cafe_nand.c~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis
-+++ a/drivers/mtd/nand/cafe_nand.c
-@@ -381,7 +381,7 @@ static int cafe_nand_read_oob(struct mtd
-  * we need a special oob layout and handling.
-  */
- static int cafe_nand_read_page(struct mtd_info *mtd, struct nand_chip *chip,
--			       uint8_t *buf)
-+			       uint8_t *buf, int page)
- {
- 	struct cafe_priv *cafe = mtd->priv;
- 
-diff -puN drivers/mtd/nand/fsl_elbc_nand.c~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis drivers/mtd/nand/fsl_elbc_nand.c
---- a/drivers/mtd/nand/fsl_elbc_nand.c~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis
-+++ a/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -739,7 +739,8 @@ static int fsl_elbc_chip_init_tail(struc
- 
- static int fsl_elbc_read_page(struct mtd_info *mtd,
-                               struct nand_chip *chip,
--                              uint8_t *buf)
-+			      uint8_t *buf,
-+			      int page)
- {
- 	fsl_elbc_read_buf(mtd, buf, mtd->writesize);
- 	fsl_elbc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
-diff -puN drivers/mtd/nand/nand_base.c~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis drivers/mtd/nand/nand_base.c
---- a/drivers/mtd/nand/nand_base.c~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis
-+++ a/drivers/mtd/nand/nand_base.c
-@@ -765,7 +765,7 @@ static int nand_wait(struct mtd_info *mt
-  * Not for syndrome calculating ecc controllers, which use a special oob layout
-  */
- static int nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
--			      uint8_t *buf)
-+			      uint8_t *buf, int page)
- {
- 	chip->read_buf(mtd, buf, mtd->writesize);
- 	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
-@@ -781,7 +781,7 @@ static int nand_read_page_raw(struct mtd
-  * We need a special oob layout and handling even when OOB isn't used.
-  */
- static int nand_read_page_raw_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
--			      uint8_t *buf)
-+			      uint8_t *buf, int page)
- {
- 	int eccsize = chip->ecc.size;
- 	int eccbytes = chip->ecc.bytes;
-@@ -820,7 +820,7 @@ static int nand_read_page_raw_syndrome(s
-  * @buf:	buffer to store read data
-  */
- static int nand_read_page_swecc(struct mtd_info *mtd, struct nand_chip *chip,
--				uint8_t *buf)
-+				uint8_t *buf, int page)
- {
- 	int i, eccsize = chip->ecc.size;
- 	int eccbytes = chip->ecc.bytes;
-@@ -830,7 +830,7 @@ static int nand_read_page_swecc(struct m
- 	uint8_t *ecc_code = chip->buffers->ecccode;
- 	uint32_t *eccpos = chip->ecc.layout->eccpos;
- 
--	chip->ecc.read_page_raw(mtd, chip, buf);
-+	chip->ecc.read_page_raw(mtd, chip, buf, page);
- 
- 	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize)
- 		chip->ecc.calculate(mtd, p, &ecc_calc[i]);
-@@ -943,7 +943,7 @@ static int nand_read_subpage(struct mtd_
-  * Not for syndrome calculating ecc controllers which need a special oob layout
-  */
- static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
--				uint8_t *buf)
-+				uint8_t *buf, int page)
- {
- 	int i, eccsize = chip->ecc.size;
- 	int eccbytes = chip->ecc.bytes;
-@@ -988,7 +988,7 @@ static int nand_read_page_hwecc(struct m
-  * we need a special oob layout and handling.
-  */
- static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
--				   uint8_t *buf)
-+				   uint8_t *buf, int page)
- {
- 	int i, eccsize = chip->ecc.size;
- 	int eccbytes = chip->ecc.bytes;
-@@ -1130,11 +1130,13 @@ static int nand_do_read_ops(struct mtd_i
- 
- 			/* Now read the page into the buffer */
- 			if (unlikely(ops->mode == MTD_OOB_RAW))
--				ret = chip->ecc.read_page_raw(mtd, chip, bufpoi);
-+				ret = chip->ecc.read_page_raw(mtd, chip,
-+							      bufpoi, page);
- 			else if (!aligned && NAND_SUBPAGE_READ(chip) && !oob)
- 				ret = chip->ecc.read_subpage(mtd, chip, col, bytes, bufpoi);
- 			else
--				ret = chip->ecc.read_page(mtd, chip, bufpoi);
-+				ret = chip->ecc.read_page(mtd, chip, bufpoi,
-+							  page);
- 			if (ret < 0)
- 				break;
- 
-diff -puN drivers/mtd/nand/sh_flctl.c~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis drivers/mtd/nand/sh_flctl.c
---- a/drivers/mtd/nand/sh_flctl.c~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis
-+++ a/drivers/mtd/nand/sh_flctl.c
-@@ -329,7 +329,7 @@ static void set_cmd_regs(struct mtd_info
- }
- 
- static int flctl_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
--				uint8_t *buf)
-+				uint8_t *buf, int page)
- {
- 	int i, eccsize = chip->ecc.size;
- 	int eccbytes = chip->ecc.bytes;
-diff -puN include/linux/mtd/nand.h~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis include/linux/mtd/nand.h
---- a/include/linux/mtd/nand.h~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis
-+++ a/include/linux/mtd/nand.h
-@@ -271,13 +271,13 @@ struct nand_ecc_ctrl {
- 					   uint8_t *calc_ecc);
- 	int			(*read_page_raw)(struct mtd_info *mtd,
- 						 struct nand_chip *chip,
--						 uint8_t *buf);
-+						 uint8_t *buf, int page);
- 	void			(*write_page_raw)(struct mtd_info *mtd,
- 						  struct nand_chip *chip,
- 						  const uint8_t *buf);
- 	int			(*read_page)(struct mtd_info *mtd,
- 					     struct nand_chip *chip,
--					     uint8_t *buf);
-+					     uint8_t *buf, int page);
- 	int			(*read_subpage)(struct mtd_info *mtd,
- 					     struct nand_chip *chip,
- 					     uint32_t offs, uint32_t len,
-_
+When I changed the downloader to detect all FF pages and to leave the ECC a=
+rea of the OOB at FF, then UBIFS works fine.
+
+I had originally wanted the ECC even on all FF pages since this should help=
+ stuck bit problems, even for erased all FF pages.
+
+So the questions are
+1. should UBIFS use the FF pattern alone as an assumption of a writable pag=
+e, or should it also check the ECC?
+2. for initial downloading, should an ECC be programmed on all FF data page=
+s? Is there any correction advantage?
+3. for runtime page writes, should an all FF page leave the ECC at FF as we=
+ll?
+
+I apologize in advance if this particular issue has already been covered el=
+sewhere. Thanks!
