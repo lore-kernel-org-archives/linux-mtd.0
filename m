@@ -1,20 +1,19 @@
-Received: from ucpbx.com ([77.70.97.103] helo=mail.bioidentic.com)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MojiY-0002Kr-6w
-	for linux-mtd@lists.infradead.org; Fri, 18 Sep 2009 20:06:10 +0000
-Message-ID: <00f301ca389b$71227390$2901a8c0@dpn>
-From: "Dimitar Penev" <dpn@ucpbx.com>
-To: "Geert Uytterhoeven" <Geert.Uytterhoeven@sonycom.com>,
-	"Mike Frysinger" <vapier.adi@gmail.com>
-References: <009301ca37ab$9b5d2ab0$2901a8c0@dpn><1253202198.3778.19.camel@localhost><8bd0f97a0909170945u7af8dc81ga64e13d4707ceada@mail.gmail.com>
-	<alpine.LRH.2.00.0909181014410.15599@vixen.sonytel.be>
-Subject: Re: setup ubifs
-Date: Fri, 18 Sep 2009 23:06:00 +0300
+Received: from smtp1.linux-foundation.org ([140.211.169.13])
+	by casper.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MojcC-0000Gf-Fd
+	for linux-mtd@lists.infradead.org; Fri, 18 Sep 2009 19:59:37 +0000
+Message-Id: <200909181951.n8IJpkjo023706@imap1.linux-foundation.org>
+Subject: [patch 06/13] mtd-nand: add "page" parameter to all
+	read_page/read_page_raw APIs
+To: dwmw2@infradead.org
+From: akpm@linux-foundation.org
+Date: Fri, 18 Sep 2009 12:51:46 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="ISO-8859-15";
-	reply-type=original
+Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Cc: dbrownell@users.sourceforge.net, s-paulraj@ti.com, nsnehaprabha@ti.com,
+	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
+	tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,118 +23,168 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thanks you guys!
+From: Sneha Narnakaje <nsnehaprabha@ti.com>
 
-ubifs is working on my Blackfin platform.
-Dimitar Penev
+This patch adds a new "page" parameter to all NAND read_page/read_page_raw
+APIs.  The read_page API for the new mode ECC_HW_OOB_FIRST requires the
+page information to send the READOOB command and read the OOB area before
+the data area.
 
------ Original Message ----- 
-From: "Geert Uytterhoeven" <Geert.Uytterhoeven@sonycom.com>
-To: "Mike Frysinger" <vapier.adi@gmail.com>
-Cc: "Dimitar Penev" <dpn@ucpbx.com>; <linux-mtd@lists.infradead.org>; 
-<dedekind1@gmail.com>
-Sent: Friday, September 18, 2009 11:15 AM
-Subject: Re: setup ubifs
+Reviewed-by: David Brownell <dbrownell@users.sourceforge.net>
+Signed-off-by: Sneha Narnakaje <nsnehaprabha@ti.com>
+Signed-off-by: Sandeep Paulraj <s-paulraj@ti.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
 
+ drivers/mtd/nand/atmel_nand.c    |    2 +-
+ drivers/mtd/nand/cafe_nand.c     |    2 +-
+ drivers/mtd/nand/fsl_elbc_nand.c |    3 ++-
+ drivers/mtd/nand/nand_base.c     |   18 ++++++++++--------
+ drivers/mtd/nand/sh_flctl.c      |    2 +-
+ include/linux/mtd/nand.h         |    4 ++--
+ 6 files changed, 17 insertions(+), 14 deletions(-)
 
-On Thu, 17 Sep 2009, Mike Frysinger wrote:
-> On Thu, Sep 17, 2009 at 11:43, Artem Bityutskiy wrote:
-> > On Thu, 2009-09-17 at 18:29 +0300, Dimitar Penev wrote:
-> >> I am tring to setup ubifs on an blackfin based embeded platform 
-> >> containg
-> >> nand flash.
-> >> jffs2 is working ok on it.
-> >>
-> >> So I have compiled the uclinux (kernel 2.6.28.10) with ubifs/mtd_ubi 
-> >> static
-> >> support
-> >> If I pass with the bootargs ubi.mtd=3 , during booting I see
-> >>
-> >> ...
-> >> UBI: attaching mtd3 to ubi0
-> >> UBI: physical eraseblock size: 262144 bytes (256 KiB)
-> >> UBI: logical eraseblock size: 258048 bytes
-> >> UBI: smallest flash I/O unit: 2048
-> >> UBI: VID header offset: 2048 (aligned 2048)
-> >> UBI: data offset: 4096
-> >> UBI: empty MTD device detected
-> >> UBI: create volume table (copy #1)
-> >> UBI: create volume table (copy #2)
-> >> UBI: attached mtd3 to ubi0
-> >> UBI: MTD device name: "persistent file system"
-> >> UBI: MTD device size: 1004 MiB
-> >> UBI: number of good PEBs: 3974
-> >> UBI: number of bad PEBs: 42
-> >> UBI: max. allowed volumes: 128
-> >> UBI: wear-leveling threshold: 4096
-> >> UBI: number of internal volumes: 1
-> >> UBI: number of user volumes: 0
-> >> UBI: available PEBs: 3931
-> >> UBI: total number of reserved PEBs: 43
-> >> UBI: number of PEBs reserved for bad PEB handling: 39
-> >> UBI: max/mean erase counter: 0/0
-> >> UBI: background thread "ubi_bgt0d" started, PID 122
-> >> ...
-> >>
-> >> ubinfo gives me
-> >>
-> >> root@pr1:~> /bin/ubinfo
-> >> UBI version: 1
-> >> Count of UBI devices: 1
-> >> UBI control device major/minor: 10:63
-> >> Present UBI devices: ubi0
-> >>
-> >> I don't have /dev/ubi0 nor /dev/ubi_ctrl, however I do have some ubi 
-> >> stuff
-> >> in my /sys file system
-> >>
-> >> root@pr1:~> ls /sys/class/ubi/ubi0/
-> >> /sys/class/ubi/ubi0/avail_eraseblocks /sys/class/ubi/ubi0/min_io_size
-> >> /sys/class/ubi/ubi0/bad_peb_count /sys/class/ubi/ubi0/mtd_num
-> >> /sys/class/ubi/ubi0/bgt_enabled /sys/class/ubi/ubi0/reserved_for_bad
-> >> /sys/class/ubi/ubi0/dev /sys/class/ubi/ubi0/subsystem/
-> >> /sys/class/ubi/ubi0/eraseblock_size 
-> >> /sys/class/ubi/ubi0/total_eraseblocks
-> >> /sys/class/ubi/ubi0/max_ec /sys/class/ubi/ubi0/uevent
-> >> /sys/class/ubi/ubi0/max_vol_count /sys/class/ubi/ubi0/volumes_count
-> >>
-> >> root@pr1:~> ls /sys/class/misc/ubi_ctrl/
-> >> /sys/class/misc/ubi_ctrl/dev /sys/class/misc/ubi_ctrl/uevent
-> >> /sys/class/misc/ubi_ctrl/subsystem/
-> >>
-> >> I don't have /dev/ubi_ctrl so I can not crete (ubimkvol) ubi volume.
-> >>
-> >> Can you please give me some pointers.
-> >
-> > Either make udev work and create device nodes for you automatically,
-> > or create them manually. All the major/minor numbers are available
-> > in sysfs (sedd "dev" files), so you may create corresponding character
-> > device files.
->
-> udev isnt going to happen.  if the stuff is available via sysfs, then
-> `mdev -s` should work.
-
-Or CONFIG_DEVTMPFS=y and CONFIG_DEVTMPFS_MOUNT=y in current bleeding edge
-2.6.31+.
-
-With kind regards,
-
-Geert Uytterhoeven
-Software Architect
-Techsoft Centre
-
-Technology and Software Centre Europe
-The Corporate Village � Da Vincilaan 7-D1 � B-1935 Zaventem � Belgium
-
-Phone:    +32 (0)2 700 8453
-Fax:      +32 (0)2 700 8622
-E-mail:   Geert.Uytterhoeven@sonycom.com
-Internet: http://www.sony-europe.com/
-
-A division of Sony Europe (Belgium) N.V.
-VAT BE 0413.825.160 � RPR Brussels
-Fortis � BIC GEBABEBB � IBAN BE41293037680010
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+diff -puN drivers/mtd/nand/atmel_nand.c~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis drivers/mtd/nand/atmel_nand.c
+--- a/drivers/mtd/nand/atmel_nand.c~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis
++++ a/drivers/mtd/nand/atmel_nand.c
+@@ -218,7 +218,7 @@ static int atmel_nand_calculate(struct m
+  * buf:        buffer to store read data
+  */
+ static int atmel_nand_read_page(struct mtd_info *mtd,
+-		struct nand_chip *chip, uint8_t *buf)
++		struct nand_chip *chip, uint8_t *buf, int page)
+ {
+ 	int eccsize = chip->ecc.size;
+ 	int eccbytes = chip->ecc.bytes;
+diff -puN drivers/mtd/nand/cafe_nand.c~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis drivers/mtd/nand/cafe_nand.c
+--- a/drivers/mtd/nand/cafe_nand.c~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis
++++ a/drivers/mtd/nand/cafe_nand.c
+@@ -381,7 +381,7 @@ static int cafe_nand_read_oob(struct mtd
+  * we need a special oob layout and handling.
+  */
+ static int cafe_nand_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+-			       uint8_t *buf)
++			       uint8_t *buf, int page)
+ {
+ 	struct cafe_priv *cafe = mtd->priv;
+ 
+diff -puN drivers/mtd/nand/fsl_elbc_nand.c~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis drivers/mtd/nand/fsl_elbc_nand.c
+--- a/drivers/mtd/nand/fsl_elbc_nand.c~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis
++++ a/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -739,7 +739,8 @@ static int fsl_elbc_chip_init_tail(struc
+ 
+ static int fsl_elbc_read_page(struct mtd_info *mtd,
+                               struct nand_chip *chip,
+-                              uint8_t *buf)
++			      uint8_t *buf,
++			      int page)
+ {
+ 	fsl_elbc_read_buf(mtd, buf, mtd->writesize);
+ 	fsl_elbc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
+diff -puN drivers/mtd/nand/nand_base.c~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis drivers/mtd/nand/nand_base.c
+--- a/drivers/mtd/nand/nand_base.c~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis
++++ a/drivers/mtd/nand/nand_base.c
+@@ -765,7 +765,7 @@ static int nand_wait(struct mtd_info *mt
+  * Not for syndrome calculating ecc controllers, which use a special oob layout
+  */
+ static int nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+-			      uint8_t *buf)
++			      uint8_t *buf, int page)
+ {
+ 	chip->read_buf(mtd, buf, mtd->writesize);
+ 	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+@@ -781,7 +781,7 @@ static int nand_read_page_raw(struct mtd
+  * We need a special oob layout and handling even when OOB isn't used.
+  */
+ static int nand_read_page_raw_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+-			      uint8_t *buf)
++			      uint8_t *buf, int page)
+ {
+ 	int eccsize = chip->ecc.size;
+ 	int eccbytes = chip->ecc.bytes;
+@@ -820,7 +820,7 @@ static int nand_read_page_raw_syndrome(s
+  * @buf:	buffer to store read data
+  */
+ static int nand_read_page_swecc(struct mtd_info *mtd, struct nand_chip *chip,
+-				uint8_t *buf)
++				uint8_t *buf, int page)
+ {
+ 	int i, eccsize = chip->ecc.size;
+ 	int eccbytes = chip->ecc.bytes;
+@@ -830,7 +830,7 @@ static int nand_read_page_swecc(struct m
+ 	uint8_t *ecc_code = chip->buffers->ecccode;
+ 	uint32_t *eccpos = chip->ecc.layout->eccpos;
+ 
+-	chip->ecc.read_page_raw(mtd, chip, buf);
++	chip->ecc.read_page_raw(mtd, chip, buf, page);
+ 
+ 	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize)
+ 		chip->ecc.calculate(mtd, p, &ecc_calc[i]);
+@@ -943,7 +943,7 @@ static int nand_read_subpage(struct mtd_
+  * Not for syndrome calculating ecc controllers which need a special oob layout
+  */
+ static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+-				uint8_t *buf)
++				uint8_t *buf, int page)
+ {
+ 	int i, eccsize = chip->ecc.size;
+ 	int eccbytes = chip->ecc.bytes;
+@@ -988,7 +988,7 @@ static int nand_read_page_hwecc(struct m
+  * we need a special oob layout and handling.
+  */
+ static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+-				   uint8_t *buf)
++				   uint8_t *buf, int page)
+ {
+ 	int i, eccsize = chip->ecc.size;
+ 	int eccbytes = chip->ecc.bytes;
+@@ -1130,11 +1130,13 @@ static int nand_do_read_ops(struct mtd_i
+ 
+ 			/* Now read the page into the buffer */
+ 			if (unlikely(ops->mode == MTD_OOB_RAW))
+-				ret = chip->ecc.read_page_raw(mtd, chip, bufpoi);
++				ret = chip->ecc.read_page_raw(mtd, chip,
++							      bufpoi, page);
+ 			else if (!aligned && NAND_SUBPAGE_READ(chip) && !oob)
+ 				ret = chip->ecc.read_subpage(mtd, chip, col, bytes, bufpoi);
+ 			else
+-				ret = chip->ecc.read_page(mtd, chip, bufpoi);
++				ret = chip->ecc.read_page(mtd, chip, bufpoi,
++							  page);
+ 			if (ret < 0)
+ 				break;
+ 
+diff -puN drivers/mtd/nand/sh_flctl.c~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis drivers/mtd/nand/sh_flctl.c
+--- a/drivers/mtd/nand/sh_flctl.c~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis
++++ a/drivers/mtd/nand/sh_flctl.c
+@@ -329,7 +329,7 @@ static void set_cmd_regs(struct mtd_info
+ }
+ 
+ static int flctl_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+-				uint8_t *buf)
++				uint8_t *buf, int page)
+ {
+ 	int i, eccsize = chip->ecc.size;
+ 	int eccbytes = chip->ecc.bytes;
+diff -puN include/linux/mtd/nand.h~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis include/linux/mtd/nand.h
+--- a/include/linux/mtd/nand.h~mtd-nand-add-page-parameter-to-all-read_page-read_page_raw-apis
++++ a/include/linux/mtd/nand.h
+@@ -271,13 +271,13 @@ struct nand_ecc_ctrl {
+ 					   uint8_t *calc_ecc);
+ 	int			(*read_page_raw)(struct mtd_info *mtd,
+ 						 struct nand_chip *chip,
+-						 uint8_t *buf);
++						 uint8_t *buf, int page);
+ 	void			(*write_page_raw)(struct mtd_info *mtd,
+ 						  struct nand_chip *chip,
+ 						  const uint8_t *buf);
+ 	int			(*read_page)(struct mtd_info *mtd,
+ 					     struct nand_chip *chip,
+-					     uint8_t *buf);
++					     uint8_t *buf, int page);
+ 	int			(*read_subpage)(struct mtd_info *mtd,
+ 					     struct nand_chip *chip,
+ 					     uint32_t offs, uint32_t len,
+_
