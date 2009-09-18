@@ -1,5 +1,5 @@
-Message-Id: <200909181951.n8IJpoN4023827@imap1.linux-foundation.org>
-Subject: [patch 10/13] mtd: prevent a read from eraseregions[-1]
+Message-Id: <200909181951.n8IJpnZg023824@imap1.linux-foundation.org>
+Subject: [patch 09/13] mtd/jffs2: fix read buffer overflow
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
 Date: Fri, 18 Sep 2009 12:51:49 -0700
@@ -19,38 +19,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Roel Kluin <roel.kluin@gmail.com>
 
-If the erase region was found in the first iteration we read from
-eraseregions[-1]
+Prevent a read from mtd->eraseregions[-1]
 
 Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- drivers/mtd/mtdconcat.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/devices/lart.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff -puN drivers/mtd/mtdconcat.c~mtd-prevent-a-read-from-eraseregions drivers/mtd/mtdconcat.c
---- a/drivers/mtd/mtdconcat.c~mtd-prevent-a-read-from-eraseregions
-+++ a/drivers/mtd/mtdconcat.c
-@@ -427,7 +427,7 @@ static int concat_erase(struct mtd_info 
- 		 * to-be-erased area begins. Verify that the starting
- 		 * offset is aligned to this region's erase size:
- 		 */
--		if (instr->addr & (erase_regions[i].erasesize - 1))
-+		if (i < 0 || instr->addr & (erase_regions[i].erasesize - 1))
- 			return -EINVAL;
+diff -puN drivers/mtd/devices/lart.c~mtd-jffs2-fix-read-buffer-overflow drivers/mtd/devices/lart.c
+--- a/drivers/mtd/devices/lart.c~mtd-jffs2-fix-read-buffer-overflow
++++ a/drivers/mtd/devices/lart.c
+@@ -393,7 +393,8 @@ static int flash_erase (struct mtd_info 
+ 	* erase range is aligned with the erase size which is in
+ 	* effect here.
+ 	*/
+-   if (instr->addr & (mtd->eraseregions[i].erasesize - 1)) return (-EINVAL);
++   if (i < 0 || (instr->addr & (mtd->eraseregions[i].erasesize - 1)))
++      return -EINVAL;
  
- 		/*
-@@ -440,8 +440,8 @@ static int concat_erase(struct mtd_info 
- 		/*
- 		 * check if the ending offset is aligned to this region's erase size
- 		 */
--		if ((instr->addr + instr->len) & (erase_regions[i].erasesize -
--						  1))
-+		if (i < 0 || ((instr->addr + instr->len) &
-+					(erase_regions[i].erasesize - 1)))
- 			return -EINVAL;
- 	}
+    /* Remember the erase region we start on */
+    first = i;
+@@ -409,7 +410,8 @@ static int flash_erase (struct mtd_info 
+    i--;
  
+    /* is the end aligned on a block boundary? */
+-   if ((instr->addr + instr->len) & (mtd->eraseregions[i].erasesize - 1)) return (-EINVAL);
++   if (i < 0 || ((instr->addr + instr->len) & (mtd->eraseregions[i].erasesize - 1)))
++      return -EINVAL;
+ 
+    addr = instr->addr;
+    len = instr->len;
 _
