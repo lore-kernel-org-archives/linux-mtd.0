@@ -1,19 +1,20 @@
-Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MoNAE-0004Tt-FX
-	for linux-mtd@lists.infradead.org; Thu, 17 Sep 2009 20:01:11 +0000
-Date: Thu, 17 Sep 2009 21:00:54 +0100
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-To: Kyungmin Park <kmpark@infradead.org>
-Subject: Re: [PATCH] Samsung SoCs: OneNAND support
-Message-ID: <20090917200054.GB12766@n2100.arm.linux.org.uk>
-References: <20090917081659.GA28591@july>
+	id 1MoUGU-0000Z7-3h
+	for linux-mtd@lists.infradead.org; Fri, 18 Sep 2009 03:36:10 +0000
+Message-ID: <4AB2FFE7.1000204@gmail.com>
+Date: Fri, 18 Sep 2009 06:35:03 +0300
+From: Artem Bityutskiy <dedekind1@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20090917081659.GA28591@july>
-Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+To: Mike Frysinger <vapier.adi@gmail.com>
+Subject: Re: setup ubifs
+References: <009301ca37ab$9b5d2ab0$2901a8c0@dpn>
+	<1253202198.3778.19.camel@localhost>
+	<8bd0f97a0909170945u7af8dc81ga64e13d4707ceada@mail.gmail.com>
+In-Reply-To: <8bd0f97a0909170945u7af8dc81ga64e13d4707ceada@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: Dimitar Penev <dpn@ucpbx.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +24,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 17, 2009 at 05:16:59PM +0900, Kyungmin Park wrote:
-> +#include <asm/io.h>
+On 09/17/2009 07:45 PM, Mike Frysinger wrote:
+>>> I don't have /dev/ubi_ctrl so I can not crete (ubimkvol) ubi volume.
+>>>
+>>> Can you please give me some pointers.
+>>
+>> Either make udev work and create device nodes for you automatically,
+>> or create them manually. All the major/minor numbers are available
+>> in sysfs (sedd "dev" files), so you may create corresponding character
+>> device files.
+>
+> udev isnt going to happen.  if the stuff is available via sysfs, then
+> `mdev -s` should work.
 
-Please make sure that you use linux/io.h
+Ah, ok, thanks.
 
-> +static int s3c_onenand_probe(struct platform_device *pdev)
-> +{
-> +	struct onenand_platform_data *pdata;
-> +	struct onenand_chip *this;
-> +	struct mtd_info *mtd;
-> +	struct resource *r;
-> +	int size, err;
-> +	unsigned long ahb_addr = 0, ahb_addr_size;
-> +
-> +	if (!(cpu_is_s3c64xx() || cpu_is_s5pc1xx()))
-> +		return -ENODEV;
-
-Isn't it normal to leave these kind of decisions to the declaration of
-the devices, rather than encoding it into the driver?
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
