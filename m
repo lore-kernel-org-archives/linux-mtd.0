@@ -1,14 +1,13 @@
-Message-Id: <200909181951.n8IJphqX023592@imap1.linux-foundation.org>
-Subject: [patch 04/13] mtd: register orion_nand using platform_driver_probe()
+Message-Id: <200909181951.n8IJprr3023956@imap1.linux-foundation.org>
+Subject: [patch 13/13] mtdpart: memory accessor interface for MTD layer
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Fri, 18 Sep 2009 12:51:43 -0700
+Date: Fri, 18 Sep 2009 12:51:53 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
-Cc: nico@marvell.com, joern@logfs.org, gregkh@suse.de, saeed@marvell.com,
-	linux-mtd@lists.infradead.org, u.kleine-koenig@pengutronix.de,
-	akpm@linux-foundation.org, buytenh@marvell.com
+Cc: david-b@pacbell.net, akpm@linux-foundation.org, sudhakar.raj@ti.com,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,48 +17,147 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
 
-orion_nand_probe lives in .init.text, so using platform_driver_register to
-register it is wrong because binding a device after the init memory is
-discarded (e.g.  via sysfs) results in an oops.
+Implement memory accessor interface in the MTD layer which enables the
+kernel to access flash data.
 
-As requested by Nicolas Pitre platform_driver_probe is used instead of
-moving the probe function to .devinit.text as proposed initially.  This
-saves some memory, but devices registered after the driver is probed are
-not bound (probably there are none) and binding via sysfs isn't possible.
+This patch adds two new members to the mtd_partition structure, a function
+handler which will be called during setup of the partition and an argument
+to be passed to this setup function.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Cc: Lennert Buytenhek <buytenh@marvell.com>
-Cc: Saeed Bishara <saeed@marvell.com>
-Cc: Joern Engel <joern@logfs.org>
-Acked-by: Nicolas Pitre <nico@marvell.com>
-Cc: Greg Kroah-Hartman <gregkh@suse.de>
+Example:
++static struct mtd_partition spi_flash_partitions[] = {
++       [0] = {
++               .name       = "U-Boot",
++               .offset     = 0,
++               .size       = SZ_256K,
++               .mask_flags = MTD_WRITEABLE,
++       },
++       [1] = {
++               .name       = "U-Boot Environment",
++               .offset     = MTDPART_OFS_NXTBLK,
++               .size       = SZ_64K,
++               .mask_flags = MTD_WRITEABLE,
++       },
++       [2] = {
++               .name       = "Linux",
++               .offset     = MTDPART_OFS_NXTBLK,
++               .size       = SZ_7M,
++               .mask_flags = 0,
++       },
++       [3] = {
++               .name       = "MAC Address",
++               .offset     = MTDPART_OFS_NXTBLK,
++               .size       = SZ_64K,
++               .mask_flags = 0,
++               .setup      = davinci_get_mac_addr,
++               .context    = (void *)0,
++       },
++};
+
+The davinci_get_mac_addr function reads the MAC address from
+offset ZERO of last MTD partition.
+
+Signed-off-by: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
+Cc: David Brownell <david-b@pacbell.net>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- drivers/mtd/nand/orion_nand.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/mtd/mtdpart.c          |   40 +++++++++++++++++++++++++++++++
+ include/linux/mtd/partitions.h |    3 ++
+ 2 files changed, 43 insertions(+)
 
-diff -puN drivers/mtd/nand/orion_nand.c~mtd-register-orion_nand-using-platform_driver_probe drivers/mtd/nand/orion_nand.c
---- a/drivers/mtd/nand/orion_nand.c~mtd-register-orion_nand-using-platform_driver_probe
-+++ a/drivers/mtd/nand/orion_nand.c
-@@ -171,7 +171,6 @@ static int __devexit orion_nand_remove(s
+diff -puN drivers/mtd/mtdpart.c~mtdpart-memory-accessor-interface-for-mtd-layer drivers/mtd/mtdpart.c
+--- a/drivers/mtd/mtdpart.c~mtdpart-memory-accessor-interface-for-mtd-layer
++++ a/drivers/mtd/mtdpart.c
+@@ -26,6 +26,7 @@ static LIST_HEAD(mtd_partitions);
+ struct mtd_part {
+ 	struct mtd_info mtd;
+ 	struct mtd_info *master;
++	struct memory_accessor macc;
+ 	uint64_t offset;
+ 	struct list_head list;
+ };
+@@ -327,6 +328,39 @@ int del_mtd_partitions(struct mtd_info *
  }
+ EXPORT_SYMBOL(del_mtd_partitions);
  
- static struct platform_driver orion_nand_driver = {
--	.probe		= orion_nand_probe,
- 	.remove		= __devexit_p(orion_nand_remove),
- 	.driver		= {
- 		.name	= "orion_nand",
-@@ -181,7 +180,7 @@ static struct platform_driver orion_nand
++/*
++ * This lets other kernel code access the flash data. For example, it
++ * might hold a board's Ethernet address, or board-specific calibration
++ * data generated on the manufacturing floor.
++ */
++static ssize_t mtd_macc_read(struct memory_accessor *macc, char *buf,
++			off_t offset, size_t count)
++{
++	struct mtd_part *part = container_of(macc, struct mtd_part, macc);
++	ssize_t ret = -EIO;
++	size_t retlen;
++
++	if (part_read((struct mtd_info *)part, offset, count,
++			&retlen, buf) == 0)
++		ret = retlen;
++
++	return ret;
++}
++
++static ssize_t mtd_macc_write(struct memory_accessor *macc, const char *buf,
++			off_t offset, size_t count)
++{
++	struct mtd_part *part = container_of(macc, struct mtd_part, macc);
++	ssize_t ret = -EIO;
++	size_t retlen;
++
++	if (part_write((struct mtd_info *)part, offset, count,
++			&retlen, buf) == 0)
++		ret = retlen;
++
++	return ret;
++}
++
+ static struct mtd_part *add_one_partition(struct mtd_info *master,
+ 		const struct mtd_partition *part, int partno,
+ 		uint64_t cur_offset)
+@@ -364,6 +398,9 @@ static struct mtd_part *add_one_partitio
+ 	slave->mtd.read = part_read;
+ 	slave->mtd.write = part_write;
  
- static int __init orion_nand_init(void)
- {
--	return platform_driver_register(&orion_nand_driver);
-+	return platform_driver_probe(&orion_nand_driver, orion_nand_probe);
- }
++	slave->macc.read = mtd_macc_read;
++	slave->macc.write = mtd_macc_write;
++
+ 	if (master->panic_write)
+ 		slave->mtd.panic_write = part_panic_write;
  
- static void __exit orion_nand_exit(void)
+@@ -428,6 +465,9 @@ static struct mtd_part *add_one_partitio
+ 	printk(KERN_NOTICE "0x%012llx-0x%012llx : \"%s\"\n", (unsigned long long)slave->offset,
+ 		(unsigned long long)(slave->offset + slave->mtd.size), slave->mtd.name);
+ 
++	if (part->setup)
++		part->setup(&slave->macc, (void *)part->context);
++
+ 	/* let's do some sanity checks */
+ 	if (slave->offset >= master->size) {
+ 		/* let's register it anyway to preserve ordering */
+diff -puN include/linux/mtd/partitions.h~mtdpart-memory-accessor-interface-for-mtd-layer include/linux/mtd/partitions.h
+--- a/include/linux/mtd/partitions.h~mtdpart-memory-accessor-interface-for-mtd-layer
++++ a/include/linux/mtd/partitions.h
+@@ -10,6 +10,7 @@
+ #define MTD_PARTITIONS_H
+ 
+ #include <linux/types.h>
++#include <linux/memory.h>
+ 
+ 
+ /*
+@@ -40,6 +41,8 @@ struct mtd_partition {
+ 	uint64_t offset;		/* offset within the master MTD space */
+ 	uint32_t mask_flags;		/* master MTD flags to mask out for this partition */
+ 	struct nand_ecclayout *ecclayout;	/* out of band layout for this partition (NAND only)*/
++	void (*setup)(struct memory_accessor *, void *context);
++	void *context;
+ };
+ 
+ #define MTDPART_OFS_NXTBLK	(-2)
 _
