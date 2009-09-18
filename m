@@ -1,20 +1,16 @@
-Received: from mail-vw0-f181.google.com ([209.85.212.181])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MoXr7-0003Zj-9f
-	for linux-mtd@lists.infradead.org; Fri, 18 Sep 2009 07:26:14 +0000
-Received: by vws11 with SMTP id 11so777091vws.28
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 18 Sep 2009 00:26:08 -0700 (PDT)
+Message-ID: <4AB33D32.8070109@nokia.com>
+Date: Fri, 18 Sep 2009 10:56:34 +0300
+From: Adrian Hunter <adrian.hunter@nokia.com>
 MIME-Version: 1.0
-Sender: kyungmin78@gmail.com
-Date: Fri, 18 Sep 2009 16:26:07 +0900
-Message-ID: <9c9fda240909180026x7183ccecw9a1a3430090787a3@mail.gmail.com>
-Subject: UBIFS warning: ubifs_vm_page_mkwrite: out of space for mmapped file
-From: Kyungmin Park <kmpark@infradead.org>
-To: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	Adrian Hunter <adrian.hunter@nokia.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd Mailing List <linux-mtd@lists.infradead.org>
+To: Kyungmin Park <kmpark@infradead.org>
+Subject: Re: UBIFS warning: ubifs_vm_page_mkwrite: out of space for mmapped
+	file
+References: <9c9fda240909180026x7183ccecw9a1a3430090787a3@mail.gmail.com>
+In-Reply-To: <9c9fda240909180026x7183ccecw9a1a3430090787a3@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "Bityutskiy Artem \(Nokia-D/Helsinki\)" <Artem.Bityutskiy@nokia.com>,
+	linux-mtd Mailing List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,20 +20,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Kyungmin Park wrote:
+> Hi,
+> 
+> Do you have any clue of following message?
+> 
+> We used the latest UBIFS.
+> 
+> [21474583.825000] UBIFS warning (pid 1263): ubifs_vm_page_mkwrite: out
+> of space for mmapped file (inode number 2180)
+> [21474583.830000] UBIFS warning (pid 1263): ubifs_vm_page_mkwrite: out
+> of space for mmapped file (inode number 2180)
+> [21474584.190000] UBIFS warning (pid 1362): ubifs_vm_page_mkwrite: out
+> of space for mmapped file (inode number 2180)
+> [21474584.200000] UBIFS warning (pid 1362): ubifs_vm_page_mkwrite: out
+> of space for mmapped file (inode number 2180)
 
-Do you have any clue of following message?
+Unlike a block-based file system, in UBIFS if you mmap a file and write to it, 
+you can run out of space.
 
-We used the latest UBIFS.
-
-[21474583.825000] UBIFS warning (pid 1263): ubifs_vm_page_mkwrite: out
-of space for mmapped file (inode number 2180)
-[21474583.830000] UBIFS warning (pid 1263): ubifs_vm_page_mkwrite: out
-of space for mmapped file (inode number 2180)
-[21474584.190000] UBIFS warning (pid 1362): ubifs_vm_page_mkwrite: out
-of space for mmapped file (inode number 2180)
-[21474584.200000] UBIFS warning (pid 1362): ubifs_vm_page_mkwrite: out
-of space for mmapped file (inode number 2180)
-
-Thank you,
-Kyungmin Park
+(Actually you can also run out of space on a block-based file system that
+implements sparse files and you write into a hole)
