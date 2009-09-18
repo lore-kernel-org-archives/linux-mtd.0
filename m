@@ -1,23 +1,29 @@
-Received: from vervifontaine.sonytel.be ([80.88.33.193]
-	helo=pophost.sonytel.be)
+Received: from mail-vw0-f181.google.com ([209.85.212.181])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MoYd0-0006kQ-P5
-	for linux-mtd@lists.infradead.org; Fri, 18 Sep 2009 08:15:43 +0000
-Date: Fri, 18 Sep 2009 10:15:44 +0200 (CEST)
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Sender: geert@sonytel.be
-To: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: setup ubifs
-In-Reply-To: <8bd0f97a0909170945u7af8dc81ga64e13d4707ceada@mail.gmail.com>
-Message-ID: <alpine.LRH.2.00.0909181014410.15599@vixen.sonytel.be>
-References: <009301ca37ab$9b5d2ab0$2901a8c0@dpn>
-	<1253202198.3778.19.camel@localhost>
-	<8bd0f97a0909170945u7af8dc81ga64e13d4707ceada@mail.gmail.com>
+	id 1MoYu1-0001y1-Cn
+	for linux-mtd@lists.infradead.org; Fri, 18 Sep 2009 08:33:18 +0000
+Received: by vws11 with SMTP id 11so794587vws.28
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 18 Sep 2009 01:33:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-Cc: Dimitar Penev <dpn@ucpbx.com>, linux-mtd@lists.infradead.org,
-	dedekind1@gmail.com
+Sender: kyungmin78@gmail.com
+In-Reply-To: <4AB33F08.1040004@nokia.com>
+References: <1251975273-12432-1-git-send-email-ext-mika.2.korhonen@nokia.com>
+	<1251975273-12432-2-git-send-email-ext-mika.2.korhonen@nokia.com>
+	<1251975273-12432-3-git-send-email-ext-mika.2.korhonen@nokia.com>
+	<4AB1133B.4080905@nokia.com> <4AB314B2.8010003@nokia.com>
+	<4AB33F08.1040004@nokia.com>
+Date: Fri, 18 Sep 2009 17:33:10 +0900
+Message-ID: <9c9fda240909180133x258a0f47j957cadf4b05abd9f@mail.gmail.com>
+Subject: Re: [PATCH 2/2] MTD: OneNAND: multiblock erase support
+From: Kyungmin Park <kmpark@infradead.org>
+To: Adrian Hunter <adrian.hunter@nokia.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: "amul.saha@samsung.com" <amul.saha@samsung.com>,
+	"dedekind@infradead.org" <dedekind@infradead.org>,
+	"Korhonen Mika.2 \(EXT-Ardites/Oulu\)" <ext-mika.2.korhonen@nokia.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,96 +33,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 17 Sep 2009, Mike Frysinger wrote:
-> On Thu, Sep 17, 2009 at 11:43, Artem Bityutskiy wrote:
-> > On Thu, 2009-09-17 at 18:29 +0300, Dimitar Penev wrote:
-> >> I am tring to setup ubifs on an blackfin based embeded platform containg
-> >> nand flash.
-> >> jffs2 is working ok on it.
-> >>
-> >> So I have compiled the uclinux (kernel 2.6.28.10) with ubifs/mtd_ubi static
-> >> support
-> >> If I pass with the bootargs ubi.mtd=3 , during booting I see
-> >>
-> >> ...
-> >> UBI: attaching mtd3 to ubi0
-> >> UBI: physical eraseblock size: 262144 bytes (256 KiB)
-> >> UBI: logical eraseblock size: 258048 bytes
-> >> UBI: smallest flash I/O unit: 2048
-> >> UBI: VID header offset: 2048 (aligned 2048)
-> >> UBI: data offset: 4096
-> >> UBI: empty MTD device detected
-> >> UBI: create volume table (copy #1)
-> >> UBI: create volume table (copy #2)
-> >> UBI: attached mtd3 to ubi0
-> >> UBI: MTD device name: "persistent file system"
-> >> UBI: MTD device size: 1004 MiB
-> >> UBI: number of good PEBs: 3974
-> >> UBI: number of bad PEBs: 42
-> >> UBI: max. allowed volumes: 128
-> >> UBI: wear-leveling threshold: 4096
-> >> UBI: number of internal volumes: 1
-> >> UBI: number of user volumes: 0
-> >> UBI: available PEBs: 3931
-> >> UBI: total number of reserved PEBs: 43
-> >> UBI: number of PEBs reserved for bad PEB handling: 39
-> >> UBI: max/mean erase counter: 0/0
-> >> UBI: background thread "ubi_bgt0d" started, PID 122
-> >> ...
-> >>
-> >> ubinfo gives me
-> >>
-> >> root@pr1:~> /bin/ubinfo
-> >> UBI version: 1
-> >> Count of UBI devices: 1
-> >> UBI control device major/minor: 10:63
-> >> Present UBI devices: ubi0
-> >>
-> >> I don't have /dev/ubi0 nor /dev/ubi_ctrl, however I do have some ubi stuff
-> >> in my /sys file system
-> >>
-> >> root@pr1:~> ls /sys/class/ubi/ubi0/
-> >> /sys/class/ubi/ubi0/avail_eraseblocks /sys/class/ubi/ubi0/min_io_size
-> >> /sys/class/ubi/ubi0/bad_peb_count /sys/class/ubi/ubi0/mtd_num
-> >> /sys/class/ubi/ubi0/bgt_enabled /sys/class/ubi/ubi0/reserved_for_bad
-> >> /sys/class/ubi/ubi0/dev /sys/class/ubi/ubi0/subsystem/
-> >> /sys/class/ubi/ubi0/eraseblock_size /sys/class/ubi/ubi0/total_eraseblocks
-> >> /sys/class/ubi/ubi0/max_ec /sys/class/ubi/ubi0/uevent
-> >> /sys/class/ubi/ubi0/max_vol_count /sys/class/ubi/ubi0/volumes_count
-> >>
-> >> root@pr1:~> ls /sys/class/misc/ubi_ctrl/
-> >> /sys/class/misc/ubi_ctrl/dev /sys/class/misc/ubi_ctrl/uevent
-> >> /sys/class/misc/ubi_ctrl/subsystem/
-> >>
-> >> I don't have /dev/ubi_ctrl so I can not crete (ubimkvol) ubi volume.
-> >>
-> >> Can you please give me some pointers.
-> >
-> > Either make udev work and create device nodes for you automatically,
-> > or create them manually. All the major/minor numbers are available
-> > in sysfs (sedd "dev" files), so you may create corresponding character
-> > device files.
-> 
-> udev isnt going to happen.  if the stuff is available via sysfs, then
-> `mdev -s` should work.
+On Fri, Sep 18, 2009 at 5:04 PM, Adrian Hunter <adrian.hunter@nokia.com> wr=
+ote:
+> Korhonen Mika.2 (EXT-Ardites/Oulu) wrote:
+>>
+>> Hunter Adrian (Nokia-D/Helsinki) wrote:
+>>>
+>>> Korhonen Mika.2 (EXT-Ardites/Oulu) wrote:
+>>>
+>>>>
+>>>> Add support for multiblock erase command. OneNANDs (excluding
+>>>> Flex-OneNAND)
+>>>> are capable of simultaneous erase of up to 64 eraseblocks which is muc=
+h
+>>>> faster.
+>>>> This changes the erase requests for regions covering multiple
+>>>> eraseblocks
+>>>> to be performed using multiblock erase.
+>>>>
+>>>> Signed-off-by: Mika Korhonen <ext-mika.2.korhonen@nokia.com>
+>>>> ---
+>>>>
+>>>
+>>> A few comments below.
+>>>
+>>>
+>>
+>> [...]
+>>>
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 switch (state) {
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 case FL_RESETING:
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 intr_flags |=3D ONENAND_I=
+NT_RESET;
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 case FL_PREPARING_ERASE:
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 intr_flags |=3D ONENAND_I=
+NT_ERASE;
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 case FL_VERIFYING_ERASE:
+>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 i =3D 51;
+>>>
+>>> I see 100us for this in some versions. =A0Perhaps Kyungmin can suggest
+>>> a value.
+>>>
+>>
+>> With the chip I had the actual time for 64-eb verify read was in the ran=
+ge
+>> of 20-30 us but you're right, there are chips for which the maximum time=
+ is
+>> specified to be 100 us. Is ok to just raise this to that value? Kyungmin=
+?
+>>
+>> [...]
+>>>>
+>>>> +
+>>>> + =A0 =A0 =A0 /* loop over 64 eb batches */
+>>>> + =A0 =A0 =A0 while (len) {
+>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 struct erase_info verify_instr =3D *inst=
+r;
+>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 verify_instr.addr =3D addr;
+>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 verify_instr.len =3D 0;
+>>>> +
+>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 eb_count =3D 0;
+>>>> +
+>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 while (len > block_size &&
+>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0eb_count < (MB_ERASE_MAX_=
+BLK_COUNT - 1)) {
+>>>>
+>>>
+>>> According to the manual I have you cannot do a multiblock erase
+>>> across a chip boundary, so you must exit this loop at the boundary too.
+>>>
+>>
+>> Ok, does this apply DDP chips only?
+>
+> Yes, AFAIK. Kyungmin?
 
-Or CONFIG_DEVTMPFS=y and CONFIG_DEVTMPFS_MOUNT=y in current bleeding edge
-2.6.31+.
+Of course, Actually DDP has two chips. can't share the info between chips.
+That's the reason to check DDP. :)
 
-With kind regards,
-
-Geert Uytterhoeven
-Software Architect
-Techsoft Centre
-
-Technology and Software Centre Europe
-The Corporate Village · Da Vincilaan 7-D1 · B-1935 Zaventem · Belgium
-
-Phone:    +32 (0)2 700 8453
-Fax:      +32 (0)2 700 8622
-E-mail:   Geert.Uytterhoeven@sonycom.com
-Internet: http://www.sony-europe.com/
-
-A division of Sony Europe (Belgium) N.V.
-VAT BE 0413.825.160 · RPR Brussels
-Fortis · BIC GEBABEBB · IBAN BE41293037680010
+Thank you,
+Kyungmin Park
