@@ -1,17 +1,22 @@
-Received: from mms1.broadcom.com ([216.31.210.17])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mol2y-0005RP-58
-	for linux-mtd@lists.infradead.org; Fri, 18 Sep 2009 21:31:21 +0000
-From: "Darwin Rambo" <drambo@broadcom.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Fri, 18 Sep 2009 14:31:05 -0700
-Subject: UBIFS and hardware ECC of all FF pages of MLC NAND
-Message-ID: <B125D8217ABC4B43826503DE00A2D44910D7E85DFD@SJEXCHCCR01.corp.ad.broadcom.com>
-Content-Language: en-US
+Received: from thunk.org ([69.25.196.29] helo=thunker.thunk.org)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MoofU-0006rF-BK
+	for linux-mtd@lists.infradead.org; Sat, 19 Sep 2009 01:23:21 +0000
+Date: Fri, 18 Sep 2009 21:23:08 -0400
+From: Theodore Tso <tytso@mit.edu>
+To: Corentin Chary <corentincj@iksaif.net>
+Subject: Re: [PATCH 1/3] blkid: add UBI volume support
+Message-ID: <20090919012308.GG28781@mit.edu>
+References: <1251112316-18971-1-git-send-email-corentincj@iksaif.net>
+	<1251112316-18971-2-git-send-email-corentincj@iksaif.net>
+	<20090902092402.GI1466@nb.net.home>
+	<200909181252.09503.corentincj@iksaif.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200909181252.09503.corentincj@iksaif.net>
+Cc: util-linux-ng@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+	linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,39 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have a 512 byte-at-a time hardware ECC generator that generates a particu=
-lar non-FF code for 512 bytes of FF data. For a 4K MLC NAND flash, that mea=
-ns in the OOB, I have 8 ECCs/page.
+On Fri, Sep 18, 2009 at 12:52:09PM +0200, Corentin Chary wrote:
+> On Wednesday 02 September 2009 11:24:02 Karel Zak wrote:
+> >  Hi Corentin,
+> > 
+> > On Mon, Aug 24, 2009 at 01:11:54PM +0200, Corentin Chary wrote:
+> > > Probe UBI volume under /dev (or /devfs, /devices).
+> > 
+> >  that's not elegant. Does it mean that UBI volumes are not in
+> >  /proc/partitions?
+> > 
+> >  Ted, any comment?
+> 
+> Any news for this patch ?
+> Thanks,
 
-Ubinize creates large download files which in some cases have 64 byte heade=
-rs, followed by a page of FFs, and in other cases, the entire page is FFs. =
-(I noticed that mkfs.jffs2 doesn't appear to create large blocks of FFs in =
-the image file. In fact, by 6MB jffs2 file became 14MB when I rebuilt for U=
-BIFS, much of the file being large blocks of FFs).
+Sorry, I've been travelling and it's the merge window and I have
+slides for a Usenix tutorial due soon, so my userspace-related pages
+have been swapped out.  And next week is LinuxCon/Plumber's...  
 
-When I download and program the flash I took the decision to program the EC=
-C even for all FF pages.
+I'll try to look at this either next week if I can find some airplane
+hacking time or when I get back from Plumber's Conference.
 
-I was getting ECC corruption on startup, and eventually traced it down to U=
-BIFS writing new data to these all FF pages, but because the FS noticed tha=
-t the page was blank, didn't erase anything, and wrote data, even though th=
-e ECCs were still programmed and were non-FF. The result is that the new EC=
-C collided with the old ECC that was there, and I got corruption of a nearb=
-y page's ECC as well as the ECC in the page that was written.
-
-When I changed the downloader to detect all FF pages and to leave the ECC a=
-rea of the OOB at FF, then UBIFS works fine.
-
-I had originally wanted the ECC even on all FF pages since this should help=
- stuck bit problems, even for erased all FF pages.
-
-So the questions are
-1. should UBIFS use the FF pattern alone as an assumption of a writable pag=
-e, or should it also check the ECC?
-2. for initial downloading, should an ECC be programmed on all FF data page=
-s? Is there any correction advantage?
-3. for runtime page writes, should an all FF page leave the ECC at FF as we=
-ll?
-
-I apologize in advance if this particular issue has already been covered el=
-sewhere. Thanks!
+	     	       	   	     	       - Ted
