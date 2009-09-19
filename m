@@ -1,22 +1,24 @@
-Received: from thunk.org ([69.25.196.29] helo=thunker.thunk.org)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MoofU-0006rF-BK
-	for linux-mtd@lists.infradead.org; Sat, 19 Sep 2009 01:23:21 +0000
-Date: Fri, 18 Sep 2009 21:23:08 -0400
-From: Theodore Tso <tytso@mit.edu>
-To: Corentin Chary <corentincj@iksaif.net>
-Subject: Re: [PATCH 1/3] blkid: add UBI volume support
-Message-ID: <20090919012308.GG28781@mit.edu>
-References: <1251112316-18971-1-git-send-email-corentincj@iksaif.net>
-	<1251112316-18971-2-git-send-email-corentincj@iksaif.net>
-	<20090902092402.GI1466@nb.net.home>
-	<200909181252.09503.corentincj@iksaif.net>
+Received: from mail-px0-f190.google.com ([209.85.216.190])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MooqO-0000WT-7d
+	for linux-mtd@lists.infradead.org; Sat, 19 Sep 2009 01:34:37 +0000
+Received: by pxi28 with SMTP id 28so1143708pxi.2
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 18 Sep 2009 18:34:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200909181252.09503.corentincj@iksaif.net>
-Cc: util-linux-ng@vger.kernel.org, Karel Zak <kzak@redhat.com>,
-	linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Sender: kyungmin78@gmail.com
+In-Reply-To: <4AB33D32.8070109@nokia.com>
+References: <9c9fda240909180026x7183ccecw9a1a3430090787a3@mail.gmail.com>
+	<4AB33D32.8070109@nokia.com>
+Date: Sat, 19 Sep 2009 10:34:30 +0900
+Message-ID: <9c9fda240909181834y3b409f2ewb7b07c351ec82670@mail.gmail.com>
+Subject: Re: UBIFS warning: ubifs_vm_page_mkwrite: out of space for mmapped
+	file
+From: Kyungmin Park <kmpark@infradead.org>
+To: Adrian Hunter <adrian.hunter@nokia.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "Bityutskiy Artem \(Nokia-D/Helsinki\)" <Artem.Bityutskiy@nokia.com>,
+	linux-mtd Mailing List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +28,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Sep 18, 2009 at 12:52:09PM +0200, Corentin Chary wrote:
-> On Wednesday 02 September 2009 11:24:02 Karel Zak wrote:
-> >  Hi Corentin,
-> > 
-> > On Mon, Aug 24, 2009 at 01:11:54PM +0200, Corentin Chary wrote:
-> > > Probe UBI volume under /dev (or /devfs, /devices).
-> > 
-> >  that's not elegant. Does it mean that UBI volumes are not in
-> >  /proc/partitions?
-> > 
-> >  Ted, any comment?
-> 
-> Any news for this patch ?
-> Thanks,
+Hi,
 
-Sorry, I've been travelling and it's the merge window and I have
-slides for a Usenix tutorial due soon, so my userspace-related pages
-have been swapped out.  And next week is LinuxCon/Plumber's...  
+On Fri, Sep 18, 2009 at 4:56 PM, Adrian Hunter <adrian.hunter@nokia.com> wrote:
+> Kyungmin Park wrote:
+>>
+>> Hi,
+>>
+>> Do you have any clue of following message?
+>>
+>> We used the latest UBIFS.
+>>
+>> [21474583.825000] UBIFS warning (pid 1263): ubifs_vm_page_mkwrite: out
+>> of space for mmapped file (inode number 2180)
+>> [21474583.830000] UBIFS warning (pid 1263): ubifs_vm_page_mkwrite: out
+>> of space for mmapped file (inode number 2180)
+>> [21474584.190000] UBIFS warning (pid 1362): ubifs_vm_page_mkwrite: out
+>> of space for mmapped file (inode number 2180)
+>> [21474584.200000] UBIFS warning (pid 1362): ubifs_vm_page_mkwrite: out
+>> of space for mmapped file (inode number 2180)
+>
+> Unlike a block-based file system, in UBIFS if you mmap a file and write to
+> it, you can run out of space.
+>
+> (Actually you can also run out of space on a block-based file system that
+> implements sparse files and you write into a hole)
 
-I'll try to look at this either next week if I can find some airplane
-hacking time or when I get back from Plumber's Conference.
+Thank you for your hint.
+I try to find out the reason. As you said it's run out of space.
 
-	     	       	   	     	       - Ted
+Thank you,
+Kyungmin Park
