@@ -1,16 +1,15 @@
-Subject: Re: [PATCH] [MTD] m25p80: memory accessor interface for SPI MTD driver
+Subject: Re: [PATCH] [MTD] [CHIPS] stm_flash: new ST PSD4256G compatible
+	flash chip driver
 From: David Woodhouse <dwmw2@infradead.org>
-To: David Brownell <david-b@pacbell.net>
-In-Reply-To: <200908031824.01795.david-b@pacbell.net>
-References: <1249333325-16750-1-git-send-email-sudhakar.raj@ti.com>
-	<200908031824.01795.david-b@pacbell.net>
+To: Mike Frysinger <vapier@gentoo.org>
+In-Reply-To: <1244890798-10908-1-git-send-email-vapier@gentoo.org>
+References: <1244890798-10908-1-git-send-email-vapier@gentoo.org>
 Content-Type: text/plain
-Date: Sat, 19 Sep 2009 11:36:21 -0700
-Message-Id: <1253385381.6317.29.camel@macbook.infradead.org>
+Date: Sat, 19 Sep 2009 13:08:56 -0700
+Message-Id: <1253390936.6317.33.camel@macbook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: davinci-linux-open-source@linux.davincidsp.com,
-	Sudhakar Rajashekhara <sudhakar.raj@ti.com>, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,23 +19,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-08-03 at 18:24 -0700, David Brownell wrote:
-> 
-> If that's going to be possible, shouldn't it work for any
-> MTD device?  And the lack of protection bothers me a bit
-> more here than with EEPROMs and NVRAM, since it seems kind
-> of easy to clobber UBI (or JFFS2 etc) data.  Maybe there
-> should be a way to make jus a specific partition available
-> this way?
+On Sat, 2009-06-13 at 06:59 -0400, Mike Frysinger wrote:
+> The ST PSD4256G Flash In-System Programming (ISP) part is a multifunction
+> device.  Since all of the different pieces are memory mapped, this is a
+> driver for the NOR flash component.  All the other pieces can use generic
+> memory based drivers.  Unfortunately, this is not a CFI compliant part in
+> any way, so we need a dedicated chip driver for it.
 
-Hrm, I'm unconvinced by the second version of the patch. I don't really
-like adding this to the core MTD code, and I particularly dislike the
-extra ->setup() method in struct mtd_partition.
+Hrm. This looks very similar to cfi_cmdset_0002.c, which we _do_ already
+use with non-CFI-compliant parts. 
 
-Couldn't this be done as a wrapper round MTD devices, set up by the
-board driver? Perhaps we could provide a template mtd_macc_{read,write}
-function which board drivers can use, but I don't really like the
-patches I've seen.
+CFI is just the _probe_ method. We can probe chips using the JEDEC
+method too, and that works just fine -- jedec_probe.c will "invoke" the
+appropriate command set driver.
+
+Can't you do the same?
 
 -- 
-dwmw2
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
