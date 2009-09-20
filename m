@@ -1,18 +1,14 @@
-Subject: RE: [PATCH] [JFFS2] Fix csize integer overflow issue due to truncation
+Subject: Re: Corruption of JFFS2 node read from DMA
 From: David Woodhouse <dwmw2@infradead.org>
-To: Victor Gallardo <vgallardo@amcc.com>
-In-Reply-To: <0CA0A16855646F4FA96D25A158E299D606FFE631@SDCEXCHANGE01.ad.amcc.com>
-References: <25217471.1985431251223831787.JavaMail.nabble@isper.nabble.com>
-	<0CA0A16855646F4FA96D25A158E299D606EDB04E@SDCEXCHANGE01.ad.amcc.com>
-	<1253392841.6317.37.camel@macbook.infradead.org>
-	<0CA0A16855646F4FA96D25A158E299D606FFE631@SDCEXCHANGE01.ad.amcc.com>
+To: Gilles Casse <list@gcasse.net>
+In-Reply-To: <4A5C8844.1000002@gcasse.net>
+References: <4A5C8844.1000002@gcasse.net>
 Content-Type: text/plain
-Date: Sun, 20 Sep 2009 05:33:42 -0700
-Message-Id: <1253450032.6317.89.camel@macbook.infradead.org>
+Date: Sun, 20 Sep 2009 05:43:48 -0700
+Message-Id: <1253450628.6317.98.camel@macbook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Prodyut Hazarika <phazarika@amcc.com>, linux-mtd@lists.infradead.org,
-	Feng Kan <fkan@amcc.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +18,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2009-09-19 at 22:57 -0700, Victor Gallardo wrote:
-> Hi David,
+On Tue, 2009-07-14 at 15:29 +0200, Gilles Casse wrote:
 > 
-> I don't have access to a system till Monday. I'll give it a try then.
+> Another preliminary solution is proposed below, thank you for your
+> comments.
 
-Thanks.
-
-> Overall the patch looks good to me, except this line.
-> 
-> > +#define tn_overlapped(tn)	(!!(((tn)->__csize) & TN_OVERLAP))
-> 
-> Should just be this.
-> 
-> #define tn_overlapped(tn)	((tn)->__csize) & TN_OVERLAP)
-
-You object to the !! ? 
-
-That was intentional. Sometimes we print the value of tn_overlapped(),
-and I wanted it to be 1, not a huge number.
+You only really need SLAB_HWCACHE_ALIGN for the jffs2_raw_inode and
+jffs2_raw_dirent, right?
 
 -- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+dwmw2
