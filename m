@@ -1,25 +1,22 @@
-Received: from sdcmail01.amcc.com ([198.137.200.72])
+Received: from mail2.gnudd.com ([213.203.150.91] helo=mail.gnudd.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MpMew-0004ae-W7
-	for linux-mtd@lists.infradead.org; Sun, 20 Sep 2009 13:41:03 +0000
-Content-class: urn:content-classes:message
+	id 1MpMnB-0006Ae-Gf
+	for linux-mtd@lists.infradead.org; Sun, 20 Sep 2009 13:49:34 +0000
+Date: Sun, 20 Sep 2009 15:47:02 +0200
+From: Alessandro Rubini <rubini-list@gnudd.com>
+To: dwmw2@infradead.org
+Subject: Re: status of nomadik mtd patches
+Message-ID: <20090920134702.GA17518@mail.gnudd.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: [PATCH] [JFFS2] Fix csize integer overflow issue due to truncation
-Date: Sun, 20 Sep 2009 06:40:55 -0700
-Message-ID: <0CA0A16855646F4FA96D25A158E299D606FFE638@SDCEXCHANGE01.ad.amcc.com>
-In-Reply-To: <1253450032.6317.89.camel@macbook.infradead.org>
-References: <25217471.1985431251223831787.JavaMail.nabble@isper.nabble.com>
-	<0CA0A16855646F4FA96D25A158E299D606EDB04E@SDCEXCHANGE01.ad.amcc.com>
-	<1253392841.6317.37.camel@macbook.infradead.org>
-	<0CA0A16855646F4FA96D25A158E299D606FFE631@SDCEXCHANGE01.ad.amcc.com>
-	<1253450032.6317.89.camel@macbook.infradead.org>
-From: "Victor Gallardo" <vgallardo@amcc.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Cc: Prodyut Hazarika <phazarika@amcc.com>, linux-mtd@lists.infradead.org,
-	Feng Kan <fkan@amcc.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Sender: rubini-list@gnudd.com
+In-Reply-To: <1253451908.6317.102.camel@macbook.infradead.org>
+References: <1253451908.6317.102.camel@macbook.infradead.org>
+	<20090920105002.GA15561@mail.gnudd.com>
+Cc: kmpark@infradead.org, rubini-list@gnudd.com, vimal.newwork@gmail.com,
+	linux-mtd@lists.infradead.org,
+	STEricsson_nomadik_linux@list.st.com, damm@igel.co.jp
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,25 +26,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David,
+> I'd try to fix it up myself, but I'd rather it was done by someone who
+> can actually test it. Please?
 
-> > Overall the patch looks good to me, except this line.
-> >
-> > > +#define tn_overlapped(tn)	(!!(((tn)->__csize) & TN_OVERLAP))
-> >
-> > Should just be this.
-> >
-> > #define tn_overlapped(tn)	((tn)->__csize) & TN_OVERLAP)
->=20
-> You object to the !! ?
->=20
-> That was intentional. Sometimes we print the value of tn_overlapped(),
-> and I wanted it to be 1, not a huge number.
-
-Sorry about that. Yes, you are 100% correct.
-
-I'll try to patch on Monday.
-
-Best Regards,
-
-Victor Gallardo
+I'll rebase to your tree later today.
+Thanks
+/alessandro
