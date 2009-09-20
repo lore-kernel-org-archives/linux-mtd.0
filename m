@@ -1,20 +1,17 @@
-Received: from mail2.gnudd.com ([213.203.150.91] helo=mail.gnudd.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MpTzR-0003so-88
-	for linux-mtd@lists.infradead.org; Sun, 20 Sep 2009 21:30:42 +0000
-Date: Sun, 20 Sep 2009 23:28:24 +0200
-From: Alessandro Rubini <rubini-list@gnudd.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 3/3] ARM Nomadik: use new OneNand name and pdata
-Message-ID: <d22509d683d17011ba497a62617fe65bad314b9b.1253481164.git.rubini@
-	unipv.it>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Sender: rubini-list@gnudd.com
-References: <cover.1253481164.git.rubini@unipv.it>
-In-Reply-To: <cover.1253481164.git.rubini@unipv.it>
-Cc: STEricsson_nomadik_linux@list.st.com, andrea.gallo@stericsson.com
+Subject: Re: [PATCH v2] mtd/maps: gpio-addr-flash: new driver for GPIO
+	assisted flash addressing
+From: David Woodhouse <dwmw2@infradead.org>
+To: Mike Frysinger <vapier@gentoo.org>
+In-Reply-To: <1244033509-31586-1-git-send-email-vapier@gentoo.org>
+References: <1243915650-29628-1-git-send-email-vapier@gentoo.org>
+	<1244033509-31586-1-git-send-email-vapier@gentoo.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sun, 20 Sep 2009 15:04:08 -0700
+Message-Id: <1253484248.6317.217.camel@macbook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: uclinux-dist-devel@blackfin.uclinux.org, Bryan Wu <cooloney@kernel.org>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,61 +21,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Alessandro Rubini <rubini@unipv.it>
+On Wed, 2009-06-03 at 08:51 -0400, Mike Frysinger wrote:
+> This driver lets people use GPIO's for additional address lines in case
+> their processor does not have enough address lines already.
+> 
+> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+> Signed-off-by: Bryan Wu <cooloney@kernel.org>
 
-This enables the onenand with the new platform device name.
-Moreover, it fixes a related typo that doesn't deserve a
-separate patch.
+In file included from /home/dwmw2/git/mtd-2.6/arch/x86/include/asm/gpio.h:20,
+                 from drivers/mtd/maps/gpio-addr-flash.c:27:
+include/asm-generic/gpio.h: In function ‘gpio_get_value_cansleep’:
+include/asm-generic/gpio.h:168: error: implicit declaration of function ‘gpio_get_value’
+include/asm-generic/gpio.h: In function ‘gpio_set_value_cansleep’:
+include/asm-generic/gpio.h:174: error: implicit declaration of function ‘gpio_set_value’
+drivers/mtd/maps/gpio-addr-flash.c: In function ‘gpio_flash_probe’:
+drivers/mtd/maps/gpio-addr-flash.c:232: error: implicit declaration of function ‘gpio_request’
+drivers/mtd/maps/gpio-addr-flash.c:236: error: implicit declaration of function ‘gpio_free’
+drivers/mtd/maps/gpio-addr-flash.c:240: error: implicit declaration of function ‘gpio_direction_output’
+make[2]: *** [drivers/mtd/maps/gpio-addr-flash.o] Error 1
+make[1]: *** [drivers/mtd/maps] Error 2
+make: *** [_module_drivers/mtd] Error 2
 
-Signed-off-by: Alessandro Rubini <rubini@unipv.it>
-Acked-by: Andrea Gallo <andrea.gallo@stericsson.com>
----
- arch/arm/mach-nomadik/board-nhk8815.c |   11 ++++++-----
- 1 files changed, 6 insertions(+), 5 deletions(-)
+Setting CONFIG_GPIOLIB seems to fix it -- but we can't make it depend on
+that, can we? Maybe it should be GPIOLIB || !GENERIC_GPIO?
 
-diff --git a/arch/arm/mach-nomadik/board-nhk8815.c b/arch/arm/mach-nomadik/board-nhk8815.c
-index 6bfd537..781b915 100644
---- a/arch/arm/mach-nomadik/board-nhk8815.c
-+++ b/arch/arm/mach-nomadik/board-nhk8815.c
-@@ -18,6 +18,7 @@
- #include <linux/gpio.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/nand.h>
-+#include <linux/mtd/onenand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/io.h>
- #include <asm/sizes.h>
-@@ -142,7 +143,7 @@ static struct mtd_partition nhk8815_onenand_partitions[] = {
- 	}
- };
- 
--static struct flash_platform_data nhk8815_onenand_data = {
-+static struct onenand_platform_data nhk8815_onenand_data = {
- 	.parts		= nhk8815_onenand_partitions,
- 	.nr_parts	= ARRAY_SIZE(nhk8815_onenand_partitions),
- };
-@@ -156,7 +157,7 @@ static struct resource nhk8815_onenand_resource[] = {
- };
- 
- static struct platform_device nhk8815_onenand_device = {
--	.name		= "onenand",
-+	.name		= "onenand-flash",
- 	.id		= -1,
- 	.dev		= {
- 		.platform_data	= &nhk8815_onenand_data,
-@@ -167,10 +168,10 @@ static struct platform_device nhk8815_onenand_device = {
- 
- static void __init nhk8815_onenand_init(void)
- {
--#ifdef CONFIG_ONENAND
-+#ifdef CONFIG_MTD_ONENAND
-        /* Set up SMCS0 for OneNand */
--       writel(0x000030db, FSMC_BCR0);
--       writel(0x02100551, FSMC_BTR0);
-+	writel(0x000030db, FSMC_BCR(0));
-+	writel(0x02100551, FSMC_BTR(0));
- #endif
- }
- 
 -- 
-1.6.0.2
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
