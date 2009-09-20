@@ -1,22 +1,17 @@
 Received: from mail2.gnudd.com ([213.203.150.91] helo=mail.gnudd.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MpMnB-0006Ae-Gf
-	for linux-mtd@lists.infradead.org; Sun, 20 Sep 2009 13:49:34 +0000
-Date: Sun, 20 Sep 2009 15:47:02 +0200
+	id 1MpPpB-0006lG-9l
+	for linux-mtd@lists.infradead.org; Sun, 20 Sep 2009 17:03:50 +0000
+Date: Sun, 20 Sep 2009 19:01:31 +0200
 From: Alessandro Rubini <rubini-list@gnudd.com>
-To: dwmw2@infradead.org
-Subject: Re: status of nomadik mtd patches
-Message-ID: <20090920134702.GA17518@mail.gnudd.com>
+To: linux-mtd@lists.infradead.org
+Subject: RFC: nand and onenand can't coexist
+Message-ID: <20090920170130.GA19668@mail.gnudd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Sender: rubini-list@gnudd.com
-In-Reply-To: <1253451908.6317.102.camel@macbook.infradead.org>
-References: <1253451908.6317.102.camel@macbook.infradead.org>
-	<20090920105002.GA15561@mail.gnudd.com>
-Cc: kmpark@infradead.org, rubini-list@gnudd.com, vimal.newwork@gmail.com,
-	linux-mtd@lists.infradead.org,
-	STEricsson_nomadik_linux@list.st.com, damm@igel.co.jp
+Cc: STEricsson_nomadik_linux@list.st.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,9 +21,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> I'd try to fix it up myself, but I'd rather it was done by someone who
-> can actually test it. Please?
+While testing the nomadik-onenand patch as applied by
+dwmw2 to the mtd-2.6 git tree, I found that I can't declare
+both a nand and onenand platform device in the same file.
 
-I'll rebase to your tree later today.
-Thanks
+The problem arises from the new platform_data for onenand, which
+requires me to include <linux/mtd/onenand.h> in the same
+file where I include <linux/mtd/nand.h>.
+
+There are two errors reported:
+
+* onenand_state_t and nand_state_t define the same enums,
+  but with different values
+
+* struct nand_bbt_descr and other material is defined both
+  in nand.h and bbm.h.
+
+For the latter, including bbm.h from nand.h, removing duplicates,
+should work file (I'm going to try it right now).
+
+The former is more of an issue, moreso because the same values
+(FL_READY and such) are defined in <mtd/flashchip.h> as well.
+Shouldn't they be rather unified?
+
+A quick grep shows that
+
+* nand_state_t is defined by ./include/linux/mtd/nand.h
+  and never used.
+
+* onenand_state_t is defined by ./include/linux/mtd/onenand.h
+  and never used
+
+* flstate_t is defined in ./include/linux/mtd/flashchip.h
+  and used in a few places.
+
+Should I try to unify things in order to allow OneNand and Nand
+coexist in the same board source file and remove duplicates?
+
+I'm going to work on the problem anyways, I just don't know
+if patches in this direction are acceptable or not.
+
+thanks
 /alessandro
