@@ -1,15 +1,21 @@
+Received: from sdcmail01.amcc.com ([198.137.200.72])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MpFQu-0006hO-2p
+	for linux-mtd@lists.infradead.org; Sun, 20 Sep 2009 05:58:05 +0000
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Subject: RE: [PATCH] [JFFS2] Fix csize integer overflow issue due to truncation
-From: David Woodhouse <dwmw2@infradead.org>
-To: Victor Gallardo <vgallardo@amcc.com>
+Date: Sat, 19 Sep 2009 22:57:52 -0700
+Message-ID: <0CA0A16855646F4FA96D25A158E299D606FFE631@SDCEXCHANGE01.ad.amcc.com>
 In-Reply-To: <1253392841.6317.37.camel@macbook.infradead.org>
 References: <25217471.1985431251223831787.JavaMail.nabble@isper.nabble.com>
 	<0CA0A16855646F4FA96D25A158E299D606EDB04E@SDCEXCHANGE01.ad.amcc.com>
 	<1253392841.6317.37.camel@macbook.infradead.org>
-Content-Type: text/plain
-Date: Sat, 19 Sep 2009 14:05:22 -0700
-Message-Id: <1253394323.6317.39.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: "Victor Gallardo" <vgallardo@amcc.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
 Cc: Prodyut Hazarika <phazarika@amcc.com>, linux-mtd@lists.infradead.org,
 	Feng Kan <fkan@amcc.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,12 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2009-09-19 at 13:40 -0700, David Woodhouse wrote:
-> 
-> +#define tn_csize(tn)           ((tn)->__csize & !TN_OVERLAP)
+Hi David,
 
-You'll want to fix that when you test, of course...
+I don't have access to a system till Monday. I'll give it a try then.
 
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+Overall the patch looks good to me, except this line.
+
+> +#define tn_overlapped(tn)	(!!(((tn)->__csize) & TN_OVERLAP))
+
+Should just be this.
+
+#define tn_overlapped(tn)	((tn)->__csize) & TN_OVERLAP)
+
+Best Regards,
+
+Victor Gallardo
