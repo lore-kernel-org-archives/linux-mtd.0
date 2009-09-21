@@ -1,10 +1,10 @@
 Received: from mail.bluewatersys.com ([202.124.120.130]
 	helo=hayes.bluewaternz.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MpZUk-0008LZ-EQ
-	for linux-mtd@lists.infradead.org; Mon, 21 Sep 2009 03:23:22 +0000
-Message-ID: <4AB6F1FC.6070302@bluewatersys.com>
-Date: Mon, 21 Sep 2009 15:24:44 +1200
+	id 1Mpan4-0003NF-4x
+	for linux-mtd@lists.infradead.org; Mon, 21 Sep 2009 04:46:22 +0000
+Message-ID: <4AB70570.5050703@bluewatersys.com>
+Date: Mon, 21 Sep 2009 16:47:44 +1200
 From: Ryan Mallon <ryan@bluewatersys.com>
 MIME-Version: 1.0
 To: David Woodhouse <dwmw2@infradead.org>
@@ -61,13 +61,43 @@ David Woodhouse wrote:
 >  }
 > 
 
-Okay, makes sense. I'm a bit busy at the moment, but I'll try and post a
-fix in the next couple of days. Is the patch still going to be merged as
-is, or are you waiting on a fix for this?
+Just thinking about this a bit more. We don't want to call cond_resched
+if the device is ready immediately, and we want to do the check _after_
+cond_resched each time through the loop. There are probably enough
+places that this sort of thing gets used that it may be worth having a
+generic function like this (untested):
 
-The function above is based on the one of the same name from
-drivers/mtd/devices/m25p80.c, so that should also be changed? There are
-possibly other mtd drivers which also have this construct.
+int cond_resched_wait_timeout(unsigned long timeout_jiffies,
+			      int (*cond_check)(void *cookie),
+			      void *data)
+{
+	unsigned long deadline;
+	int ret;
+
+	ret = cond_check(data);
+	if (ret == 1)
+		return 0;
+	if (ret < 0)
+		return ret;
+	deadline = jiffies + timeout_jiffies;
+	while (1) {
+		cond_resched();
+		ret = cond_check(data);
+		if (ret == 1)
+			return 0;
+		if (ret < 0)
+			return ret;
+
+		if (time_after_eq(jiffies, deadline))
+			return -ETIMEDOUT;
+	}
+
+	/* Not reached */
+	return 0;
+}
+
+Not sure if the name is entirely appropriate, or where it should go as a
+generic function. Thoughts?
 
 ~Ryan
 
