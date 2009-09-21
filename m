@@ -1,29 +1,22 @@
-Received: from mail-yx0-f202.google.com ([209.85.210.202])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MpYSM-0004vF-Rg
-	for linux-mtd@lists.infradead.org; Mon, 21 Sep 2009 02:16:51 +0000
-Received: by yxe40 with SMTP id 40so3126074yxe.28
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 20 Sep 2009 19:16:45 -0700 (PDT)
+Received: from mail.bluewatersys.com ([202.124.120.130]
+	helo=hayes.bluewaternz.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MpZUk-0008LZ-EQ
+	for linux-mtd@lists.infradead.org; Mon, 21 Sep 2009 03:23:22 +0000
+Message-ID: <4AB6F1FC.6070302@bluewatersys.com>
+Date: Mon, 21 Sep 2009 15:24:44 +1200
+From: Ryan Mallon <ryan@bluewatersys.com>
 MIME-Version: 1.0
-In-Reply-To: <1253498180.6317.226.camel@macbook.infradead.org>
-References: <1243915650-29628-1-git-send-email-vapier@gentoo.org>
-	<1244033509-31586-1-git-send-email-vapier@gentoo.org>
-	<1253484248.6317.217.camel@macbook.infradead.org>
-	<8bd0f97a0909201549w2980c02em4c401f3f86b732a4@mail.gmail.com>
-	<1253496321.6317.218.camel@macbook.infradead.org>
-	<8bd0f97a0909201835j7f43330cuc7b1e28b45550651@mail.gmail.com>
-	<1253498180.6317.226.camel@macbook.infradead.org>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Sun, 20 Sep 2009 22:16:25 -0400
-Message-ID: <8bd0f97a0909201916k128d05d5o97331a1887d9c1c3@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd/maps: gpio-addr-flash: new driver for GPIO
-	assisted flash addressing
 To: David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: uclinux-dist-devel@blackfin.uclinux.org, Bryan Wu <cooloney@kernel.org>,
-	linux-mtd@lists.infradead.org
+Subject: Re: [patch 02/13] mtd: SST25L (non JEDEC) SPI Flash driver
+References: <200909181951.n8IJpeq1023467@imap1.linux-foundation.org>
+	<1253380972.6317.22.camel@macbook.infradead.org>
+In-Reply-To: <1253380972.6317.22.camel@macbook.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linus.walleij@stericsson.com, andre@bluewatersys.com,
+	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
+	avorontsov@ru.mvista.com, hartleys@visionengravers.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,34 +26,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Sep 20, 2009 at 21:56, David Woodhouse wrote:
-> On Sun, 2009-09-20 at 21:35 -0400, Mike Frysinger wrote:
->> On Sun, Sep 20, 2009 at 21:25, David Woodhouse wrote:
->> > On Sun, 2009-09-20 at 18:49 -0400, Mike Frysinger wrote:
->> >> i think you mean:
->> >> depend GPIOLIB || GENERIC_GPIO
->> >
->> > No, I think the failing configuration was GENERIC_GPIO && !GPIOLIB
->> >
->> > With GENERIC_GPIO, we include <asm-generic/gpio.h>, and _without_
->> > GPIOLIB that header doesn't actually do anything useful.
->>
->> i dont know what you mean by "we". GENERIC_GPIO means asm/gpio.h is
->> useful and so provides the basic gpio functions (which this driver
->> uses). =C2=A0the driver, nor common gpio.h headers, pull in
->> asm-generic/gpio.h.
->>
->> that is how the Blackfin arch works. =C2=A0GENERIC_GPIO -> basic gpio
->> functions work fine as the on-chip gpio functions are supported.
->
-> On i386, <linux/gpio.h> includes <asm/gpio.h>. And that includes
-> <asm-generic/gpio.h> -- which only does anything useful if
-> CONFIG_GPIOLIB is set.
->
-> The failed compilation I showed you earlier was with CONFIG_GENERIC_GPIO
-> set, but not CONFIG_GPIOLIB.
+David Woodhouse wrote:
+> On Fri, 2009-09-18 at 12:51 -0700, akpm@linux-foundation.org wrote:
+>> +static int sst25l_wait_till_ready(struct sst25l_flash *flash)
+>> +{
+>> +       unsigned long deadline;
+>> +       int status, err;
+>> +
+>> +       deadline = jiffies + MAX_READY_WAIT_JIFFIES;
+>> +       do {
+>> +               err = sst25l_status(flash, &status);
+>> +               if (err)
+>> +                       return err;
+>> +               if (!(status & SST25L_STATUS_BUSY))
+>> +                       return 0;
+>> +
+>> +               cond_resched();
+>> +       } while (!time_after_eq(jiffies, deadline));
+>> +
+>> +       return -ETIMEDOUT;
+>> +}
+> 
+> If your system is busy and you end up relinquishing the CPU for a long
+> period of time during that cond_resched(), you could hit the timeout
+> condition even though the hardware _is_ actually reporting 'ready'
+> status by the time you get back on the CPU.
+> 
+> It's unlikely, admittedly, but it's good practice to make sure it can't
+> happen like that. Something like
+> 
+>  while (busy) {
+>     if (timed_out) return -ETIMEDOUT;
+>     cond_resched();
+>  }
+> 
 
-that isnt a valid GENERIC_GPIO implementation.  x86 cant support it
-w/out GPIOLIB.  so the depend still should be "(GENERIC_GPIO ||
-GPIOLIB)".
--mike
+Okay, makes sense. I'm a bit busy at the moment, but I'll try and post a
+fix in the next couple of days. Is the patch still going to be merged as
+is, or are you waiting on a fix for this?
+
+The function above is based on the one of the same name from
+drivers/mtd/devices/m25p80.c, so that should also be changed? There are
+possibly other mtd drivers which also have this construct.
+
+~Ryan
+
+-- 
+Bluewater Systems Ltd - ARM Technology Solution Centre
+
+       Ryan Mallon                              Unit 5, Amuri Park
+       Phone: +64 3 3779127                     404 Barbadoes St
+       Fax:   +64 3 3779135                     PO Box 13 889
+       Email: ryan@bluewatersys.com             Christchurch, 8013
+       Web:   http://www.bluewatersys.com       New Zealand
+       Freecall Australia  1800 148 751         USA 1800 261 2934
