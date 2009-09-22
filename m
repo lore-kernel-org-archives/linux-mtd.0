@@ -1,17 +1,27 @@
-Date: Tue, 22 Sep 2009 16:25:48 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Anton Vorontsov <avorontsov@ru.mvista.com>
-Subject: Re: [PATCH 2/2] mtd: m25p80: Add support for CAT25xxx serial EEPROMs
-Message-Id: <20090922162548.3e20e67c.akpm@linux-foundation.org>
-In-Reply-To: <20090818214628.GB22651@oksana.dev.rtsoft.ru>
-References: <20090818214449.GA12848@oksana.dev.rtsoft.ru>
-	<20090818214628.GB22651@oksana.dev.rtsoft.ru>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: dbrownell@users.sourceforge.net, dedekind1@gmail.com,
-	linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org,
-	linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Received: from mail-yx0-f202.google.com ([209.85.210.202])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MqEoP-0005NH-VE
+	for linux-mtd@lists.infradead.org; Tue, 22 Sep 2009 23:30:26 +0000
+Received: by yxe40 with SMTP id 40so297085yxe.28
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 22 Sep 2009 16:30:21 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1253661650.27055.494.camel@macbook.infradead.org>
+References: <1244890798-10908-1-git-send-email-vapier@gentoo.org>
+	<1253390936.6317.33.camel@macbook.infradead.org>
+	<8bd0f97a0909191328j6be58c20o9bf4a4c3aadb1634@mail.gmail.com>
+	<1253394106.6317.38.camel@macbook.infradead.org>
+	<8bd0f97a0909221605j1f4a0d62m5707e0ad11c7ece4@mail.gmail.com>
+	<1253661650.27055.494.camel@macbook.infradead.org>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Tue, 22 Sep 2009 19:30:01 -0400
+Message-ID: <8bd0f97a0909221630n62b72c86we8c01ec062acdade@mail.gmail.com>
+Subject: Re: [PATCH] [MTD] [CHIPS] stm_flash: new ST PSD4256G compatible flash
+	chip driver
+To: David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,29 +31,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 19 Aug 2009 01:46:28 +0400
-Anton Vorontsov <avorontsov@ru.mvista.com> wrote:
+On Tue, Sep 22, 2009 at 19:20, David Woodhouse wrote:
+> On Tue, 2009-09-22 at 19:05 -0400, Mike Frysinger wrote:
+>> the only problem i have here is with the need to 0xff pad the mfr/dev
+>> id's. =C2=A0any idea what's up with that ? =C2=A0the device is 16bit and=
+ i set
+>> my .width in my board resources to 2, but the id field is only 8bit,
+>> so in 16bit mode the id is padded with 0xff instead of 0x00.
+>
+> Hm, odd -- but I wouldn't lose sleep over it.
+>
+> However, the datasheet suggests that the high byte is unspecified. Could
+> it be returning the value of the flash data at that location, rather
+> than a constant 0xFF? If so, we'd need to add a flag to the jedec match
+> table to make it match only the low byte?
+>
+> Or maybe I'd make you do your own probe in that case, rather than
+> polluting jedec_probe.c... :)
 
-> CAT25 chips (as manufactured by On Semiconductor, previously Catalyst
-> Semiconductor) are similar to the original M25Px0 chips, except:
-> 
-> - Address width can vary (1-2 bytes, in contrast to 3 bytes in M25P
->   chips). So, implement convenient m25p_addr2cmd() and m25p_cmdsz()
->   calls, and place address width information into flash_info struct;
-> 
-> - Page size can vary, therefore we shouldn't hardcode it, so get rid
->   of FLASH_PAGESIZE definition, and place the page size information
->   into flash_info struct;
-> 
-> - CAT25 EEPROMs don't need to be erased, so add NO_ERASE flag, and
->   propagate it to the mtd subsystem.
+nah, none of the first 0x10 bytes are 0xff:
+00000000  7f 1d bb 58 8f 04 4c 6d  f5 ee 55 d6 79 b4 31 51  |...X..Lm..U.y.=
+1Q|
 
-This patch (still) doesn't know about the mx25l3205d, mx25l12805d and
-mx25l12855e devices.
-
-I randomly did this:
-
-->	{ "mx25l3205d", INFO(0xc22016, 0, 64 * 1024, 64, 256, 3, 0) },
-->	{ "mx25l6405d", INFO(0xc22017, 0, 64 * 1024, 128, 256, 3, 0) },
-	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 256, 3, 0) },
-->	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 256, 3, 0) },
+this is the only board ive seen that has this part, but i can do a
+sampling of different revisions to make sure they're all 0xff.  if
+you're ok with the small changes i mentioned, then i'll post a patch
+for that (to replace the original proposed chip driver) and call it a
+day.
+-mike
