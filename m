@@ -1,19 +1,17 @@
-Subject: Re: [PATCH] [MTD] [CHIPS] stm_flash: new ST PSD4256G compatible
-	flash  chip driver
-From: David Woodhouse <dwmw2@infradead.org>
-To: Mike Frysinger <vapier.adi@gmail.com>
-In-Reply-To: <8bd0f97a0909221605j1f4a0d62m5707e0ad11c7ece4@mail.gmail.com>
-References: <1244890798-10908-1-git-send-email-vapier@gentoo.org>
-	<1253390936.6317.33.camel@macbook.infradead.org>
-	<8bd0f97a0909191328j6be58c20o9bf4a4c3aadb1634@mail.gmail.com>
-	<1253394106.6317.38.camel@macbook.infradead.org>
-	<8bd0f97a0909221605j1f4a0d62m5707e0ad11c7ece4@mail.gmail.com>
-Content-Type: text/plain
-Date: Tue, 22 Sep 2009 16:20:50 -0700
-Message-Id: <1253661650.27055.494.camel@macbook.infradead.org>
+Date: Tue, 22 Sep 2009 16:25:48 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Anton Vorontsov <avorontsov@ru.mvista.com>
+Subject: Re: [PATCH 2/2] mtd: m25p80: Add support for CAT25xxx serial EEPROMs
+Message-Id: <20090922162548.3e20e67c.akpm@linux-foundation.org>
+In-Reply-To: <20090818214628.GB22651@oksana.dev.rtsoft.ru>
+References: <20090818214449.GA12848@oksana.dev.rtsoft.ru>
+	<20090818214628.GB22651@oksana.dev.rtsoft.ru>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: dbrownell@users.sourceforge.net, dedekind1@gmail.com,
+	linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org,
+	linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,23 +21,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-09-22 at 19:05 -0400, Mike Frysinger wrote:
+On Wed, 19 Aug 2009 01:46:28 +0400
+Anton Vorontsov <avorontsov@ru.mvista.com> wrote:
+
+> CAT25 chips (as manufactured by On Semiconductor, previously Catalyst
+> Semiconductor) are similar to the original M25Px0 chips, except:
 > 
-> the only problem i have here is with the need to 0xff pad the mfr/dev
-> id's.  any idea what's up with that ?  the device is 16bit and i set
-> my .width in my board resources to 2, but the id field is only 8bit,
-> so in 16bit mode the id is padded with 0xff instead of 0x00.
+> - Address width can vary (1-2 bytes, in contrast to 3 bytes in M25P
+>   chips). So, implement convenient m25p_addr2cmd() and m25p_cmdsz()
+>   calls, and place address width information into flash_info struct;
+> 
+> - Page size can vary, therefore we shouldn't hardcode it, so get rid
+>   of FLASH_PAGESIZE definition, and place the page size information
+>   into flash_info struct;
+> 
+> - CAT25 EEPROMs don't need to be erased, so add NO_ERASE flag, and
+>   propagate it to the mtd subsystem.
 
-Hm, odd -- but I wouldn't lose sleep over it.
+This patch (still) doesn't know about the mx25l3205d, mx25l12805d and
+mx25l12855e devices.
 
-However, the datasheet suggests that the high byte is unspecified. Could
-it be returning the value of the flash data at that location, rather
-than a constant 0xFF? If so, we'd need to add a flag to the jedec match
-table to make it match only the low byte?
+I randomly did this:
 
-Or maybe I'd make you do your own probe in that case, rather than
-polluting jedec_probe.c... :)
-
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+->	{ "mx25l3205d", INFO(0xc22016, 0, 64 * 1024, 64, 256, 3, 0) },
+->	{ "mx25l6405d", INFO(0xc22017, 0, 64 * 1024, 128, 256, 3, 0) },
+	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 256, 3, 0) },
+->	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 256, 3, 0) },
