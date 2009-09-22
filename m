@@ -1,23 +1,25 @@
-Received: from sdcmail02.amcc.com ([198.137.200.90])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MqEGO-0005Kl-VW
-	for linux-mtd@lists.infradead.org; Tue, 22 Sep 2009 22:55:17 +0000
-Content-class: urn:content-classes:message
+Received: from [213.79.90.228] (helo=buildserver.ru.mvista.com)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MqEMr-0006hu-79
+	for linux-mtd@lists.infradead.org; Tue, 22 Sep 2009 23:01:57 +0000
+Date: Wed, 23 Sep 2009 03:01:50 +0400
+From: Anton Vorontsov <avorontsov@ru.mvista.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 2/6] mtd: m25p80: Convert to device table matching
+Message-ID: <20090922230150.GA27593@oksana.dev.rtsoft.ru>
+References: <20090731003957.GA23982@oksana.dev.rtsoft.ru>
+	<20090731004100.GB8371@oksana.dev.rtsoft.ru>
+	<200908031954.50955.david-b@pacbell.net>
+	<20090922141705.b5d31e24.akpm@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: [PATCH] [JFFS2] Fix csize integer overflow issue due to truncation
-Date: Tue, 22 Sep 2009 15:55:02 -0700
-Message-ID: <0CA0A16855646F4FA96D25A158E299D606FFE9B4@SDCEXCHANGE01.ad.amcc.com>
-In-Reply-To: <1253392841.6317.37.camel@macbook.infradead.org>
-References: <25217471.1985431251223831787.JavaMail.nabble@isper.nabble.com>
-	<0CA0A16855646F4FA96D25A158E299D606EDB04E@SDCEXCHANGE01.ad.amcc.com>
-	<1253392841.6317.37.camel@macbook.infradead.org>
-From: "Victor Gallardo" <vgallardo@amcc.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Cc: Prodyut Hazarika <phazarika@amcc.com>, linux-mtd@lists.infradead.org,
-	Feng Kan <fkan@amcc.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20090922141705.b5d31e24.akpm@linux-foundation.org>
+Cc: ben@fluff.org, benh@kernel.crashing.org, linux-kernel@vger.kernel.org,
+	grant.likely@secretlab.ca, lm-sensors@lm-sensors.org,
+	David Brownell <david-b@pacbell.net>, linuxppc-dev@ozlabs.org,
+	linux-mtd@lists.infradead.org, khali@linux-fr.org, dwmw2@infradead.org
+Reply-To: avorontsov@ru.mvista.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,17 +29,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David,
+On Tue, Sep 22, 2009 at 02:17:05PM -0700, Andrew Morton wrote:
+> On Mon, 3 Aug 2009 19:54:50 -0700
+> David Brownell <david-b@pacbell.net> wrote:
+> 
+> > On Thursday 30 July 2009, Anton Vorontsov wrote:
+> > > This patch converts the m25p80 driver so that now it uses .id_table
+> > > for device matching, making it properly detect devices on OpenFirmware
+> > > platforms (prior to this patch the driver misdetected non-JEDEC chips,
+> > > seeing all chips as "m25p80").
+> > 
+> > I suspect "detect" is a misnomer there.  It only "detects" JEDEC chips.
+> > All others got explicit declarations ... so if there's misbehavior for
+> > other chips, it's because those declarations were poorly handled.  Maybe
+> > they were not properly flagged as non-JDEC
+> > 
+> >  
+> > > Also, now jedec_probe() only does jedec probing, nothing else. If it
+> > > is not able to detect a chip, NULL is returned and the driver fall
+> > > backs to the information specified by the platform (platform_data, or
+> > > exact ID).
+> > 
+> > I'd rather keep the warning, so there's a clue about what's really
+> > going on:  JEDEC chip found, but its ID is not handled.
+> > 
+> 
+> afaik there was no response to David's review comments, so this patch
+> is in the "stuck" state.
 
->=20
-> Apologies for the delay. I'm slightly concerned that your patch
-> increases the size of the 'struct jffs2_tmp_dnode_info', and we've
-> previously taken care to _shrink_ that structure. We have _lots_ of
-> these.
->=20
-> Can you test this alternative approach instead, please?
->=20
+Hm? Response:
 
-Tested it on my system. Your patch works.
+http://lkml.org/lkml/2009/8/18/363
 
--Victor Gallardo
+And the two patches I sent on top:
+
+http://lkml.org/lkml/2009/8/18/364
+http://lkml.org/lkml/2009/8/18/366
+
+-- 
+Anton Vorontsov
+email: cbouatmailru@gmail.com
+irc://irc.freenode.net/bd2
