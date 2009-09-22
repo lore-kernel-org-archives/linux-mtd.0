@@ -1,25 +1,25 @@
-Received: from [213.79.90.228] (helo=buildserver.ru.mvista.com)
+Received: from mail-yx0-f202.google.com ([209.85.210.202])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MqEMr-0006hu-79
-	for linux-mtd@lists.infradead.org; Tue, 22 Sep 2009 23:01:57 +0000
-Date: Wed, 23 Sep 2009 03:01:50 +0400
-From: Anton Vorontsov <avorontsov@ru.mvista.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 2/6] mtd: m25p80: Convert to device table matching
-Message-ID: <20090922230150.GA27593@oksana.dev.rtsoft.ru>
-References: <20090731003957.GA23982@oksana.dev.rtsoft.ru>
-	<20090731004100.GB8371@oksana.dev.rtsoft.ru>
-	<200908031954.50955.david-b@pacbell.net>
-	<20090922141705.b5d31e24.akpm@linux-foundation.org>
+	id 1MqER5-0007hS-C3
+	for linux-mtd@lists.infradead.org; Tue, 22 Sep 2009 23:06:19 +0000
+Received: by yxe40 with SMTP id 40so277799yxe.28
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 22 Sep 2009 16:06:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20090922141705.b5d31e24.akpm@linux-foundation.org>
-Cc: ben@fluff.org, benh@kernel.crashing.org, linux-kernel@vger.kernel.org,
-	grant.likely@secretlab.ca, lm-sensors@lm-sensors.org,
-	David Brownell <david-b@pacbell.net>, linuxppc-dev@ozlabs.org,
-	linux-mtd@lists.infradead.org, khali@linux-fr.org, dwmw2@infradead.org
-Reply-To: avorontsov@ru.mvista.com
+In-Reply-To: <1253394106.6317.38.camel@macbook.infradead.org>
+References: <1244890798-10908-1-git-send-email-vapier@gentoo.org>
+	<1253390936.6317.33.camel@macbook.infradead.org>
+	<8bd0f97a0909191328j6be58c20o9bf4a4c3aadb1634@mail.gmail.com>
+	<1253394106.6317.38.camel@macbook.infradead.org>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Tue, 22 Sep 2009 19:05:53 -0400
+Message-ID: <8bd0f97a0909221605j1f4a0d62m5707e0ad11c7ece4@mail.gmail.com>
+Subject: Re: [PATCH] [MTD] [CHIPS] stm_flash: new ST PSD4256G compatible flash
+	chip driver
+To: David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,44 +29,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Sep 22, 2009 at 02:17:05PM -0700, Andrew Morton wrote:
-> On Mon, 3 Aug 2009 19:54:50 -0700
-> David Brownell <david-b@pacbell.net> wrote:
-> 
-> > On Thursday 30 July 2009, Anton Vorontsov wrote:
-> > > This patch converts the m25p80 driver so that now it uses .id_table
-> > > for device matching, making it properly detect devices on OpenFirmware
-> > > platforms (prior to this patch the driver misdetected non-JEDEC chips,
-> > > seeing all chips as "m25p80").
-> > 
-> > I suspect "detect" is a misnomer there.  It only "detects" JEDEC chips.
-> > All others got explicit declarations ... so if there's misbehavior for
-> > other chips, it's because those declarations were poorly handled.  Maybe
-> > they were not properly flagged as non-JDEC
-> > 
-> >  
-> > > Also, now jedec_probe() only does jedec probing, nothing else. If it
-> > > is not able to detect a chip, NULL is returned and the driver fall
-> > > backs to the information specified by the platform (platform_data, or
-> > > exact ID).
-> > 
-> > I'd rather keep the warning, so there's a clue about what's really
-> > going on:  JEDEC chip found, but its ID is not handled.
-> > 
-> 
-> afaik there was no response to David's review comments, so this patch
-> is in the "stuck" state.
+On Sat, Sep 19, 2009 at 17:01, David Woodhouse wrote:
+> On Sat, 2009-09-19 at 16:28 -0400, Mike Frysinger wrote:
+>>
+>> > Can't you do the same?
+>>
+>> afaik, it isnt JEDEC compliant either. =C2=A0you can find the data sheet
+>> here:
+>> http://www.st.com/stonline/products/literature/ds/8116/psd4256g6v.htm
+>>
+>> so if i created a probe function that created a fake cfi table and
+>> then called cfi_cmdset_0002(), you think the read/write/erase
+>> functions would work ?
+>
+> At first glance, it looks like that would work, yes. It basically seems
+> to be the same command set, at its core.
+>
+>> i dont see any mapping drivers that do this
+>> kind of thing. =C2=A0where can i find an example ?
+>
+> The examples are cfi_probe.c and jedec_probe.c. We have no example of
+> setting it up _directly_ from a map driver, but that doesn't mean it
+> can't be done.
 
-Hm? Response:
+thanks, this got me poking at the jedec chip driver.  i tried adding a
+new MTD_UADDR_0x0AAA_0x0554 and then defining a jedec_table entry like
+so:
++    {
++       .mfr_id =3D 0xff20,
++       .dev_id =3D 0xffe9,
++       .name   =3D "STM PSD4256G6V",
++       .uaddr  =3D MTD_UADDR_0x0AAA_0x0554,
++       .devtypes   =3D CFI_DEVICETYPE_X16,
++       .dev_size =3D SIZE_1MiB,
++       .cmd_set =3D P_ID_AMD_STD,
++       .nr_regions =3D 1,
++       .regions =3D {
++           ERASEINFO(0x10000,16)
++       },
++   },
 
-http://lkml.org/lkml/2009/8/18/363
+then i was able to read/write/erase the flash device just fine from
+userspace /dev/mtd via the physmap mapping driver.
 
-And the two patches I sent on top:
-
-http://lkml.org/lkml/2009/8/18/364
-http://lkml.org/lkml/2009/8/18/366
-
--- 
-Anton Vorontsov
-email: cbouatmailru@gmail.com
-irc://irc.freenode.net/bd2
+the only problem i have here is with the need to 0xff pad the mfr/dev
+id's.  any idea what's up with that ?  the device is 16bit and i set
+my .width in my board resources to 2, but the id field is only 8bit,
+so in 16bit mode the id is padded with 0xff instead of 0x00.
+-mike
