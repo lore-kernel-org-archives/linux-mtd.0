@@ -1,19 +1,16 @@
-Received: from vega.surpasshosting.com ([72.29.83.9])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MqPFo-0000J0-RY
-	for linux-mtd@lists.infradead.org; Wed, 23 Sep 2009 10:39:25 +0000
-Received: from bzq-82-81-138-186.red.bezeqint.net ([82.81.138.186]:50411
-	helo=felix.lan) by vega.surpasshosting.com with esmtpa (Exim 4.69)
-	(envelope-from <felix@embedded-sol.com>) id 1MqPFm-0006Mh-Pq
-	for linux-mtd@lists.infradead.org; Wed, 23 Sep 2009 06:39:19 -0400
-Message-ID: <4AB9FAD3.4020001@embedded-sol.com>
-Date: Wed, 23 Sep 2009 13:39:15 +0300
-From: Felix Radensky <felix@embedded-sol.com>
-MIME-Version: 1.0
+Received: from monster.nessie.de ([84.200.20.120])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MqS7f-0004sY-0K
+	for linux-mtd@lists.infradead.org; Wed, 23 Sep 2009 13:43:12 +0000
+Received: from nautilus.home (localhost.localdomain [127.0.0.1])
+	by monster.nessie.de (Postfix) with ESMTP id 5519C2188B56
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 23 Sep 2009 13:01:33 +0000 (GMT)
+From: Michael Roth <mroth@nessie.de>
 To: linux-mtd@lists.infradead.org
-Subject: Erasing 4GB NAND flash
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: Two small patches for mtd-utils
+Date: Wed, 23 Sep 2009 15:01:25 +0200
+Message-Id: <1253710887-16731-1-git-send-email-mroth@nessie.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,14 +20,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hello,
 
-I think there's a problem with the definition of struct mtd_info_user
-in include/linux/mtd/mtd-abi.h. The "size" field should be defined as
-__u64, to match the corresponding field in struct mtd_info. Otherwise
-MEMGETINFO ioctl returns invalid flash size for >= 4GiB devices.
+two small patches for mtd-utils.
+please CC me as I'm not on this list.
 
-Also, looks like flash_eraseall (and maybe others) should be modified
-to use MEMERASE64 and MEMWRITEOOB64. Is that correct ?
-
-Felix.
+Michael Roth
