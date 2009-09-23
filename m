@@ -1,17 +1,19 @@
-Subject: Re: [PATCH v3] mtd/maps: gpio-addr-flash: new driver for GPIO
-	assisted flash addressing
-From: David Woodhouse <dwmw2@infradead.org>
-To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <1253681321-24600-1-git-send-email-vapier@gentoo.org>
-References: <1244033509-31586-1-git-send-email-vapier@gentoo.org>
-	<1253681321-24600-1-git-send-email-vapier@gentoo.org>
-Content-Type: text/plain
-Date: Wed, 23 Sep 2009 00:16:50 -0700
-Message-Id: <1253690210.4170.618.camel@macbook.infradead.org>
-Mime-Version: 1.0
+Received: from vega.surpasshosting.com ([72.29.83.9])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MqPFo-0000J0-RY
+	for linux-mtd@lists.infradead.org; Wed, 23 Sep 2009 10:39:25 +0000
+Received: from bzq-82-81-138-186.red.bezeqint.net ([82.81.138.186]:50411
+	helo=felix.lan) by vega.surpasshosting.com with esmtpa (Exim 4.69)
+	(envelope-from <felix@embedded-sol.com>) id 1MqPFm-0006Mh-Pq
+	for linux-mtd@lists.infradead.org; Wed, 23 Sep 2009 06:39:19 -0400
+Message-ID: <4AB9FAD3.4020001@embedded-sol.com>
+Date: Wed, 23 Sep 2009 13:39:15 +0300
+From: Felix Radensky <felix@embedded-sol.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Erasing 4GB NAND flash
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: uclinux-dist-devel@blackfin.uclinux.org, Bryan Wu <cooloney@kernel.org>,
-	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,20 +23,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-09-23 at 00:48 -0400, Mike Frysinger wrote:
-> 
-> +       depends on GENERIC_GPIO || GPIOLIB
+Hi,
 
-That still isn't right -- the failing case for me was when GENERIC_GPIO
-was set but _not_ GPIOLIB.
+I think there's a problem with the definition of struct mtd_info_user
+in include/linux/mtd/mtd-abi.h. The "size" field should be defined as
+__u64, to match the corresponding field in struct mtd_info. Otherwise
+MEMGETINFO ioctl returns invalid flash size for >= 4GiB devices.
 
-I'll accept an answer of "that's because x86 gpio support is broken",
-but you do have to handle the whining from the 'make randconfig' folks
-for me :)
+Also, looks like flash_eraseall (and maybe others) should be modified
+to use MEMERASE64 and MEMWRITEOOB64. Is that correct ?
 
-And please can you make it an incremental patch against what's in the
-mtd-2.6.git tree (which I've already asked Linus to pull).
-
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+Felix.
