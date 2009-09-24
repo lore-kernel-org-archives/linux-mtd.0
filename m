@@ -1,21 +1,21 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MqpiL-0001tL-Bx
-	for linux-mtd@lists.infradead.org; Thu, 24 Sep 2009 14:54:37 +0000
-Subject: Re: UBIFS and hardware ECC of all FF pages of MLC NAND
-From: Artem Bityutskiy <dedekind@infradead.org>
+Received: from co203.xi-lite.net ([149.6.83.203])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MqqNW-0003Rf-2z
+	for linux-mtd@lists.infradead.org; Thu, 24 Sep 2009 15:37:10 +0000
+Message-ID: <4ABB921B.8090500@parrot.com>
+Date: Thu, 24 Sep 2009 17:36:59 +0200
+From: Matthieu CASTET <matthieu.castet@parrot.com>
+MIME-Version: 1.0
 To: Adrian Hunter <adrian.hunter@nokia.com>
-In-Reply-To: <4ABB7224.8000804@nokia.com>
+Subject: Re: UBIFS and hardware ECC of all FF pages of MLC NAND
 References: <B125D8217ABC4B43826503DE00A2D44910D7E85DFD@SJEXCHCCR01.corp.ad.broadcom.com>
 	<4ABB7224.8000804@nokia.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 24 Sep 2009 17:51:46 +0300
-Message-Id: <1253803906.3778.21.camel@localhost>
-Mime-Version: 1.0
+In-Reply-To: <4ABB7224.8000804@nokia.com>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 8bit
-Cc: Darwin Rambo <drambo@broadcom.com>,
+Cc: Artem Bityutskiy <dedekind@infradead.org>,
+	Darwin Rambo <drambo@broadcom.com>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,24 +25,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-09-24 at 16:20 +0300, Adrian Hunter wrote:
-> UBIFS assumes FF pages at the end of eraseblocks are empty.  UBI and UBIFS are
-> designed not to require OOB and will not read or write it.
+Adrian Hunter a �crit :
+> Darwin Rambo wrote:
 > 
-> > 2. for initial downloading, should an ECC be programmed on all FF data pages? Is there any correction advantage?
+>> 2. for initial downloading, should an ECC be programmed on all FF data pages? Is there any correction advantage?
 > 
 > In your case, as you have discovered, you must not program ECC for FF pages at
 > the end of eraseblocks.
 > 
-> > 3. for runtime page writes, should an all FF page leave the ECC at FF as well?
-> 
-> No.  The only time UBI or UBIFS will write an all FF page is if that is the
-> data to be stored - in which case, it should be given an ECC.
+The tricky part is when you read FF pages with ecc in mtd. You will get
+an ecc error.
 
-I even wrote a doc about how UBI-aware flashing should be done:
+If the ecc writing is done on software you can always xor the ecc code
+to make it "FF for FF data".
+But if everything is done by hardware...
 
-http://www.linux-mtd.infradead.org/doc/ubi.html#L_format
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Matthieu
