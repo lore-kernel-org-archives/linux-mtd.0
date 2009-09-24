@@ -1,19 +1,15 @@
-Received: from mail.bittware.com ([208.82.132.157]
-	helo=olympus.corp.bittware.com)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mqo0n-0003Yx-Nc
-	for linux-mtd@lists.infradead.org; Thu, 24 Sep 2009 13:05:34 +0000
-Subject: Re: Mounting Entire Flash
-From: Dennis McLeod <dmcleod@bittware.com>
-To: Rahanesh <rahanesh@tataelxsi.co.in>
-In-Reply-To: <4ABB468D.9050009@tataelxsi.co.in>
-References: <4ABB468D.9050009@tataelxsi.co.in>
-Date: Thu, 24 Sep 2009 09:05:15 -0400
-Message-Id: <1253797515.3722.3.camel@lusitania>
-Mime-Version: 1.0
+Message-ID: <4ABB7224.8000804@nokia.com>
+Date: Thu, 24 Sep 2009 16:20:36 +0300
+From: Adrian Hunter <adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: Darwin Rambo <drambo@broadcom.com>
+Subject: Re: UBIFS and hardware ECC of all FF pages of MLC NAND
+References: <B125D8217ABC4B43826503DE00A2D44910D7E85DFD@SJEXCHCCR01.corp.ad.broadcom.com>
+In-Reply-To: <B125D8217ABC4B43826503DE00A2D44910D7E85DFD@SJEXCHCCR01.corp.ad.broadcom.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain
-Cc: linux-mtd@lists.infradead.org
+Cc: Artem Bityutskiy <dedekind@infradead.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,61 +19,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Darwin Rambo wrote:
+> I have a 512 byte-at-a time hardware ECC generator that generates a particular non-FF code for 512 bytes of FF data. For a 4K MLC NAND flash, that means in the OOB, I have 8 ECCs/page.
+> 
+> Ubinize creates large download files which in some cases have 64 byte headers, followed by a page of FFs, and in other cases, the entire page is FFs. (I noticed that mkfs.jffs2 doesn't appear to create large blocks of FFs in the image file. In fact, by 6MB jffs2 file became 14MB when I rebuilt for UBIFS, much of the file being large blocks of FFs).
+> 
+> When I download and program the flash I took the decision to program the ECC even for all FF pages.
+> 
+> I was getting ECC corruption on startup, and eventually traced it down to UBIFS writing new data to these all FF pages, but because the FS noticed that the page was blank, didn't erase anything, and wrote data, even though the ECCs were still programmed and were non-FF. The result is that the new ECC collided with the old ECC that was there, and I got corruption of a nearby page's ECC as well as the ECC in the page that was written.
+> 
+> When I changed the downloader to detect all FF pages and to leave the ECC area of the OOB at FF, then UBIFS works fine.
+> 
+> I had originally wanted the ECC even on all FF pages since this should help stuck bit problems, even for erased all FF pages.
+> 
+> So the questions are
+> 1. should UBIFS use the FF pattern alone as an assumption of a writable page, or should it also check the ECC?
 
+Sorry for the slow reply.
 
-On Thu, 2009-09-24 at 15:44 +0530, Rahanesh wrote:
-> Hi All,
-> 
-> Currently I have 4 mtd partitions in Flash. They are all seen under /dev 
-> directory as mtd0 mtd1 mtd2 and mtd3.
-> 
-> mtd0-> Uboot + Itz Environment
-> mtd1-> JFFS
-> mtd2-> Config files
-> mtd3-> Not used
-> 
-> I am currently trying to implement Image upgradation.
-> 
-> I will need to update JFFS, uboot and Config files from Linux.
-> 
-> I am currently achieving this through  flash_eraseall and dd  command .
-> 
-> To Update U-boot First i will do a
-> 
-> flash_eraseall /dev/mtd0 and then
-> dd if=uboot.bin of=/dev/mtd0 count=size;
-> 
-> and similarly for all individual partitions.
-> 
-> But If i have a combined image as combined.bin  how do i update the 
-> entire flash .
-> 
-> Is it possible to see entire flash as /dev/mtd  . i can very well 
-> extract individual images from combined image and reflash to respective 
-> partitions.
-> 
-> But it would be generic if  we are able write to entire flash not to 
-> individual partitions.
-> 
-> Is it possible to Write to entire flash as such.
-> 
-> Thanks
-> Rahanesh
+UBIFS assumes FF pages at the end of eraseblocks are empty.  UBI and UBIFS are
+designed not to require OOB and will not read or write it.
 
-I always set up a partition that spans the entire flash chip.. 
+> 2. for initial downloading, should an ECC be programmed on all FF data pages? Is there any correction advantage?
 
-mtd0 -> 0:ENTIRE_SIZE
-mtd1 -> 0:+10M
-mtd2 -> 10M:22M
-...
+In your case, as you have discovered, you must not program ECC for FF pages at
+the end of eraseblocks.
 
+> 3. for runtime page writes, should an all FF page leave the ECC at FF as well?
 
+No.  The only time UBI or UBIFS will write an all FF page is if that is the
+data to be stored - in which case, it should be given an ECC.
 
--  
-=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=
-= Dennis McLeod                   =
-= Software Engineer               =
-= BittWare, Inc.                  =
-= 603.226.0404 ext 514            =
-=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=
-** BittWare Celebrates 20 Years Delivering COTS Signal Processing Solutions 1989 - 2009 **
+> 
+> I apologize in advance if this particular issue has already been covered elsewhere. Thanks!
