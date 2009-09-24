@@ -1,20 +1,19 @@
-Received: from hera.kernel.org ([140.211.167.34])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mqn53-0002bL-17
-	for linux-mtd@lists.infradead.org; Thu, 24 Sep 2009 12:05:49 +0000
-Subject: [PATCH] mtd: nand: fix htmldocs warnings
-From: Jaswinder Singh Rajput <jaswinder@kernel.org>
-To: David Woodhouse <David.Woodhouse@intel.com>,
-	Sneha Narnakaje <nsnehaprabha@ti.com>, Sandeep Paulraj <s-paulraj@ti.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Randy Dunlap <randy.dunlap@oracle.com>, linux-mtd@lists.infradead.org,
-	LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain
-Date: Thu, 24 Sep 2009 17:34:53 +0530
-Message-Id: <1253793893.5860.23.camel@ht.satnam>
+Received: from mail.bittware.com ([208.82.132.157]
+	helo=olympus.corp.bittware.com)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Mqo0n-0003Yx-Nc
+	for linux-mtd@lists.infradead.org; Thu, 24 Sep 2009 13:05:34 +0000
+Subject: Re: Mounting Entire Flash
+From: Dennis McLeod <dmcleod@bittware.com>
+To: Rahanesh <rahanesh@tataelxsi.co.in>
+In-Reply-To: <4ABB468D.9050009@tataelxsi.co.in>
+References: <4ABB468D.9050009@tataelxsi.co.in>
+Date: Thu, 24 Sep 2009 09:05:15 -0400
+Message-Id: <1253797515.3722.3.camel@lusitania>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,78 +24,60 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-Fixed following htmldocs warnings:
 
-  DOCPROC Documentation/DocBook/mtdnand.xml
-  Warning(drivers/mtd/nand/nand_base.c:769): No description found for parameter 'page'
-  Warning(drivers/mtd/nand/nand_base.c:785): No description found for parameter 'page'
-  Warning(drivers/mtd/nand/nand_base.c:824): No description found for parameter 'page'
-  Warning(drivers/mtd/nand/nand_base.c:947): No description found for parameter 'page'
-  Warning(drivers/mtd/nand/nand_base.c:996): No description found for parameter 'page'
-  Warning(drivers/mtd/nand/nand_base.c:1040): No description found for parameter 'page'
+On Thu, 2009-09-24 at 15:44 +0530, Rahanesh wrote:
+> Hi All,
+> 
+> Currently I have 4 mtd partitions in Flash. They are all seen under /dev 
+> directory as mtd0 mtd1 mtd2 and mtd3.
+> 
+> mtd0-> Uboot + Itz Environment
+> mtd1-> JFFS
+> mtd2-> Config files
+> mtd3-> Not used
+> 
+> I am currently trying to implement Image upgradation.
+> 
+> I will need to update JFFS, uboot and Config files from Linux.
+> 
+> I am currently achieving this through  flash_eraseall and dd  command .
+> 
+> To Update U-boot First i will do a
+> 
+> flash_eraseall /dev/mtd0 and then
+> dd if=uboot.bin of=/dev/mtd0 count=size;
+> 
+> and similarly for all individual partitions.
+> 
+> But If i have a combined image as combined.bin  how do i update the 
+> entire flash .
+> 
+> Is it possible to see entire flash as /dev/mtd  . i can very well 
+> extract individual images from combined image and reflash to respective 
+> partitions.
+> 
+> But it would be generic if  we are able write to entire flash not to 
+> individual partitions.
+> 
+> Is it possible to Write to entire flash as such.
+> 
+> Thanks
+> Rahanesh
 
-Signed-off-by: Jaswinder Singh Rajput <jaswinderrajput@gmail.com>
-Cc: David Woodhouse <David.Woodhouse@intel.com>
-Cc: Sneha Narnakaje <nsnehaprabha@ti.com>
-Cc: Sandeep Paulraj <s-paulraj@ti.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Randy Dunlap <randy.dunlap@oracle.com>
----
- drivers/mtd/nand/nand_base.c |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
+I always set up a partition that spans the entire flash chip.. 
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 2211386..2957cc7 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -761,6 +761,7 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
-  * @mtd:	mtd info structure
-  * @chip:	nand chip info structure
-  * @buf:	buffer to store read data
-+ * @page:	page number to read
-  *
-  * Not for syndrome calculating ecc controllers, which use a special oob layout
-  */
-@@ -777,6 +778,7 @@ static int nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
-  * @mtd:	mtd info structure
-  * @chip:	nand chip info structure
-  * @buf:	buffer to store read data
-+ * @page:	page number to read
-  *
-  * We need a special oob layout and handling even when OOB isn't used.
-  */
-@@ -818,6 +820,7 @@ static int nand_read_page_raw_syndrome(struct mtd_info *mtd, struct nand_chip *c
-  * @mtd:	mtd info structure
-  * @chip:	nand chip info structure
-  * @buf:	buffer to store read data
-+ * @page:	page number to read
-  */
- static int nand_read_page_swecc(struct mtd_info *mtd, struct nand_chip *chip,
- 				uint8_t *buf, int page)
-@@ -939,6 +942,7 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip, uint3
-  * @mtd:	mtd info structure
-  * @chip:	nand chip info structure
-  * @buf:	buffer to store read data
-+ * @page:	page number to read
-  *
-  * Not for syndrome calculating ecc controllers which need a special oob layout
-  */
-@@ -983,6 +987,7 @@ static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
-  * @mtd:	mtd info structure
-  * @chip:	nand chip info structure
-  * @buf:	buffer to store read data
-+ * @page:	page number to read
-  *
-  * Hardware ECC for large page chips, require OOB to be read first.
-  * For this ECC mode, the write_page method is re-used from ECC_HW.
-@@ -1031,6 +1036,7 @@ static int nand_read_page_hwecc_oob_first(struct mtd_info *mtd,
-  * @mtd:	mtd info structure
-  * @chip:	nand chip info structure
-  * @buf:	buffer to store read data
-+ * @page:	page number to read
-  *
-  * The hw generator calculates the error syndrome automatically. Therefor
-  * we need a special oob layout and handling.
--- 
-1.6.0.6
+mtd0 -> 0:ENTIRE_SIZE
+mtd1 -> 0:+10M
+mtd2 -> 10M:22M
+...
+
+
+
+-  
+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=
+= Dennis McLeod                   =
+= Software Engineer               =
+= BittWare, Inc.                  =
+= 603.226.0404 ext 514            =
+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=
+** BittWare Celebrates 20 Years Delivering COTS Signal Processing Solutions 1989 - 2009 **
