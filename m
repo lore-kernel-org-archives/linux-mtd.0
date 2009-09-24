@@ -1,21 +1,23 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
+Received: from an-out-0708.google.com ([209.85.132.251])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mquzn-0006VT-2W
-	for linux-mtd@lists.infradead.org; Thu, 24 Sep 2009 20:32:59 +0000
-From: "Scott Branden" <sbranden@broadcom.com>
-To: "Joe Perches" <joe@perches.com>,
-	"Leo (Hao) Chen" <leochen@broadcom.com>
-Date: Thu, 24 Sep 2009 13:32:43 -0700
-Subject: RE: linux MAINTAINERS: drivers/mtd/nand/bcm* files not in
- kernel
-Message-ID: <9383297B60843144AC17878B479520F110AEDCAED9@SJEXCHCCR01.corp.ad.broadcom.com>
-In-Reply-To: <1253824122.1806.20.camel@Joe-Laptop.home>
-Content-Language: en-US
+	id 1MqwJS-0006cE-9a
+	for linux-mtd@lists.infradead.org; Thu, 24 Sep 2009 21:57:22 +0000
+Received: by an-out-0708.google.com with SMTP id c38so731158ana.27
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 24 Sep 2009 14:57:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=us-ascii
+In-Reply-To: <20090924141433.GC27905@nb.net.home>
+References: <1251112316-18971-1-git-send-email-corentincj@iksaif.net>
+	<1251112316-18971-2-git-send-email-corentincj@iksaif.net>
+	<20090924141433.GC27905@nb.net.home>
+Date: Thu, 24 Sep 2009 23:57:14 +0200
+Message-ID: <71cd59b00909241457p3b9247a1q661ea63bde584f26@mail.gmail.com>
+Subject: Re: [PATCH 1/3] blkid: add UBI volume support
+From: Corentin Chary <corentin.chary@gmail.com>
+To: dedekind1@gmail.com, Karel Zak <kzak@redhat.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: util-linux-ng@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,58 +27,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Joe,
+On Thu, Sep 24, 2009 at 4:14 PM, Karel Zak <kzak@redhat.com> wrote:
+> On Mon, Aug 24, 2009 at 01:11:54PM +0200, Corentin Chary wrote:
+>> --- a/shlibs/blkid/src/devname.c
+>> +static void
+>> +ubi_probe_all(blkid_cache cache, int only_if_new)
+>> +{
+>> + =A0 =A0 const char **dirname;
+>> +
+>> + =A0 =A0 for (dirname =3D dirlist; *dirname; dirname++) {
+>> + =A0 =A0 =A0 =A0 =A0 =A0 DBG(DEBUG_DEVNAME, printf("probing UBI volumes=
+ under %s\n",
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 *dirname));
+>> +
+>> + =A0 =A0 =A0 =A0 =A0 =A0 DIR =A0 =A0 =A0 =A0 =A0 =A0 *dir;
+>> + =A0 =A0 =A0 =A0 =A0 =A0 struct dirent =A0 *iter;
+>> +
+>> + =A0 =A0 =A0 =A0 =A0 =A0 dir =3D opendir(*dirname);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 if (dir =3D=3D NULL)
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 continue ;
+>> +
+>> + =A0 =A0 =A0 =A0 =A0 =A0 while ((iter =3D readdir(dir)) !=3D NULL) {
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 char =A0 =A0 =A0 =A0 =A0 =A0*n=
+ame, *device;
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 struct stat =A0 =A0 st;
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_t =A0 =A0 =A0 =A0 =A0 dev;
+>> +
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 name =3D iter->d_name;
+>> +
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (!strcmp(name, ".") || !str=
+cmp(name, "..") ||
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 !strstr(name, "ubi"))
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 continue;
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (!strcmp(name, "ubi_ctrl"))
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 continue;
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 device =3D malloc(strlen(*dirn=
+ame) + strlen(name) + 2);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (!device)
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 break ;
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sprintf(device, "%s/%s", *dirn=
+ame, name);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (stat(device, &st))
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 break ;
+>> +
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (!(st.st_rdev & 0xFF)) { //=
+ It's an UBI Device
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 free(device);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 continue ;
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+>
+> Wouldn't be better to
+>
+> =A0#define is_ubi_device(s) =A0 =A0(S_ISCHR(s->st_mode) && (s->st_rdev & =
+0xFF))
+>
+> (or major() instead magic 0xFF constant?) and use it everywhere in
+> code? I guess UBI is always a char device.
 
-I wish they were in the main repository already.
+Maybe something like that:
+#define is_ubi_device(s)    (S_ISCHR(s->st_mode) && !minor(s->st_rdev))
 
-They are sitting in Artem's git tree waiting for David Woodhouse to merge t=
-hem upstream.
-http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/eef42e4b8b0de=
-71f3fdac4577c0eea0537ce0386
+>> +++ b/shlibs/blkid/src/probe.c
+>> @@ -284,6 +284,8 @@ int blkid_probe_set_device(blkid_probe pr, int fd,
+>>
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (S_ISBLK(sb.st_mode))
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 blkdev_get_size(fd, (unsigne=
+d long long *) &pr->size);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 else if (S_ISCHR(sb.st_mode))
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 pr->size =3D 1;
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 else
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 pr->size =3D sb.st_size;
+>> =A0 =A0 =A0 }
+>
+> this is the same situation, this code will for all char devices, but we
+> want to support UBI only.
 
-David,
+I don't know if there is a "good" way to detect an ubi device using
+only struct stat.
 
-Can you please merge this upstream?
+Artem, any idea ?
 
-Thanks,=20
-Scott
-
-
-
-=20
-
-> -----Original Message-----
-> From: Joe Perches [mailto:joe@perches.com]=20
-> Sent: September 24, 2009 1:29 PM
-> To: Leo (Hao) Chen; Scott Branden
-> Cc: linux-mtd@lists.infradead.org
-> Subject: linux MAINTAINERS: drivers/mtd/nand/bcm* files not in kernel
->=20
-> Hi Leo and Scott.
->=20
-> These pattern files are not (yet?) in the linus' repository.
-> Are they expected to be soon or is this just an error?
->=20
-> cheers, Joe
->=20
-> ARM/BCMRING MTD NAND DRIVER
-> ddd559b1 (Russell King                      2009-09-12=20
-> 12:02:26 +0100  540) M:  Leo Chen <leochen@broadcom.com>
-> ddd559b1 (Russell King                      2009-09-12=20
-> 12:02:26 +0100  541) M:  Scott Branden <sbranden@broadcom.com>
-> 57a473f2 (Leo Chen                          2009-08-12=20
-> 22:08:48 +0100  542) L:  linux-mtd@lists.infradead.org
-> 57a473f2 (Leo Chen                          2009-08-12=20
-> 22:08:48 +0100  543) S:  Maintained
-> 57a473f2 (Leo Chen                          2009-08-12=20
-> 22:08:48 +0100  544) F:  drivers/mtd/nand/bcm_umi_nand.c
-> 57a473f2 (Leo Chen                          2009-08-12=20
-> 22:08:48 +0100  545) F:  drivers/mtd/nand/bcm_umi_bch.c
-> 57a473f2 (Leo Chen                          2009-08-12=20
-> 22:08:48 +0100  546) F:  drivers/mtd/nand/bcm_umi_hamming.c
-> 57a473f2 (Leo Chen                          2009-08-12=20
-> 22:08:48 +0100  547) F:  drivers/mtd/nand/nand_bcm_umi.h
->=20
->=20
->=20
-> =
+--=20
+Corentin Chary
+http://xf.iksaif.net
