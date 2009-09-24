@@ -1,15 +1,20 @@
-Received: from smtpin1.mailsecure.in ([121.241.224.1])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MqlJM-0006SO-6h
-	for linux-mtd@lists.infradead.org; Thu, 24 Sep 2009 10:12:32 +0000
-Message-ID: <4ABB468D.9050009@tataelxsi.co.in>
-Date: Thu, 24 Sep 2009 15:44:37 +0530
-From: Rahanesh <rahanesh@tataelxsi.co.in>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Mounting Entire Flash
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Received: from hera.kernel.org ([140.211.167.34])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Mqn53-0002bL-17
+	for linux-mtd@lists.infradead.org; Thu, 24 Sep 2009 12:05:49 +0000
+Subject: [PATCH] mtd: nand: fix htmldocs warnings
+From: Jaswinder Singh Rajput <jaswinder@kernel.org>
+To: David Woodhouse <David.Woodhouse@intel.com>,
+	Sneha Narnakaje <nsnehaprabha@ti.com>, Sandeep Paulraj <s-paulraj@ti.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Randy Dunlap <randy.dunlap@oracle.com>, linux-mtd@lists.infradead.org,
+	LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain
+Date: Thu, 24 Sep 2009 17:34:53 +0530
+Message-Id: <1253793893.5860.23.camel@ht.satnam>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,41 +24,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
 
-Currently I have 4 mtd partitions in Flash. They are all seen under /dev=20
-directory as mtd0 mtd1 mtd2 and mtd3.
+Fixed following htmldocs warnings:
 
-mtd0-> Uboot + Itz Environment
-mtd1-> JFFS
-mtd2-> Config files
-mtd3-> Not used
+  DOCPROC Documentation/DocBook/mtdnand.xml
+  Warning(drivers/mtd/nand/nand_base.c:769): No description found for parameter 'page'
+  Warning(drivers/mtd/nand/nand_base.c:785): No description found for parameter 'page'
+  Warning(drivers/mtd/nand/nand_base.c:824): No description found for parameter 'page'
+  Warning(drivers/mtd/nand/nand_base.c:947): No description found for parameter 'page'
+  Warning(drivers/mtd/nand/nand_base.c:996): No description found for parameter 'page'
+  Warning(drivers/mtd/nand/nand_base.c:1040): No description found for parameter 'page'
 
-I am currently trying to implement Image upgradation.
+Signed-off-by: Jaswinder Singh Rajput <jaswinderrajput@gmail.com>
+Cc: David Woodhouse <David.Woodhouse@intel.com>
+Cc: Sneha Narnakaje <nsnehaprabha@ti.com>
+Cc: Sandeep Paulraj <s-paulraj@ti.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Randy Dunlap <randy.dunlap@oracle.com>
+---
+ drivers/mtd/nand/nand_base.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
 
-I will need to update JFFS, uboot and Config files from Linux.
-
-I am currently achieving this through  flash_eraseall and dd  command .
-
-To Update U-boot First i will do a
-
-flash_eraseall /dev/mtd0 and then
-dd if=3Duboot.bin of=3D/dev/mtd0 count=3Dsize;
-
-and similarly for all individual partitions.
-
-But If i have a combined image as combined.bin  how do i update the=20
-entire flash .
-
-Is it possible to see entire flash as /dev/mtd  . i can very well=20
-extract individual images from combined image and reflash to respective=20
-partitions.
-
-But it would be generic if  we are able write to entire flash not to=20
-individual partitions.
-
-Is it possible to Write to entire flash as such.
-
-Thanks
-Rahanesh
-=20
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 2211386..2957cc7 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -761,6 +761,7 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
+  * @mtd:	mtd info structure
+  * @chip:	nand chip info structure
+  * @buf:	buffer to store read data
++ * @page:	page number to read
+  *
+  * Not for syndrome calculating ecc controllers, which use a special oob layout
+  */
+@@ -777,6 +778,7 @@ static int nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+  * @mtd:	mtd info structure
+  * @chip:	nand chip info structure
+  * @buf:	buffer to store read data
++ * @page:	page number to read
+  *
+  * We need a special oob layout and handling even when OOB isn't used.
+  */
+@@ -818,6 +820,7 @@ static int nand_read_page_raw_syndrome(struct mtd_info *mtd, struct nand_chip *c
+  * @mtd:	mtd info structure
+  * @chip:	nand chip info structure
+  * @buf:	buffer to store read data
++ * @page:	page number to read
+  */
+ static int nand_read_page_swecc(struct mtd_info *mtd, struct nand_chip *chip,
+ 				uint8_t *buf, int page)
+@@ -939,6 +942,7 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip, uint3
+  * @mtd:	mtd info structure
+  * @chip:	nand chip info structure
+  * @buf:	buffer to store read data
++ * @page:	page number to read
+  *
+  * Not for syndrome calculating ecc controllers which need a special oob layout
+  */
+@@ -983,6 +987,7 @@ static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+  * @mtd:	mtd info structure
+  * @chip:	nand chip info structure
+  * @buf:	buffer to store read data
++ * @page:	page number to read
+  *
+  * Hardware ECC for large page chips, require OOB to be read first.
+  * For this ECC mode, the write_page method is re-used from ECC_HW.
+@@ -1031,6 +1036,7 @@ static int nand_read_page_hwecc_oob_first(struct mtd_info *mtd,
+  * @mtd:	mtd info structure
+  * @chip:	nand chip info structure
+  * @buf:	buffer to store read data
++ * @page:	page number to read
+  *
+  * The hw generator calculates the error syndrome automatically. Therefor
+  * we need a special oob layout and handling.
+-- 
+1.6.0.6
