@@ -1,13 +1,13 @@
 MIME-Version: 1.0
-Date: Fri, 25 Sep 2009 07:59:35 -0400
-Message-ID: <771cded00909250459v4ca7b890n796f55c65f023775@mail.gmail.com>
-Subject: [PATCH 2/5] onenand: export onenand_command
+Date: Fri, 25 Sep 2009 08:00:41 -0400
+Message-ID: <771cded00909250500w34667fe3sa86acd82a00d736@mail.gmail.com>
+Subject: [PATCH 3/5] onenand: support custom bad block management
 From: Haojian Zhuang <haojian.zhuang@gmail.com>
 To: Eric Miao <eric.y.miao@gmail.com>,
 	David Woodhouse <david.woodhouse@intel.com>, kyungmin.park@samsung.com,
 	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
 	linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary=0016e645b8ca818e7c047465ae90
+Content-Type: multipart/mixed; boundary=0015175ce06877dbe4047465b2ba
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,155 +17,138 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---0016e645b8ca818e7c047465ae90
-Content-Type: multipart/alternative; boundary=0016e645b8ca818e73047465ae8e
+--0015175ce06877dbe4047465b2ba
+Content-Type: multipart/alternative; boundary=0015175ce06877dbdd047465b2b8
 
---0016e645b8ca818e73047465ae8e
+--0015175ce06877dbdd047465b2b8
 Content-Type: text/plain; charset=ISO-8859-1
 
->From f104c778c4f76ebe1b7d4b4575d7e9b0dffc6d69 Mon Sep 17 00:00:00 2001
+>From 8e32f4942dc839fe76ac33bc70aa7401de496c55 Mon Sep 17 00:00:00 2001
 From: Haojian Zhuang <haojian.zhuang@marvell.com>
-Date: Fri, 25 Sep 2009 15:15:56 -0400
-Subject: [PATCH] [MTD] [ONENAND] export onenand_command
+Date: Fri, 25 Sep 2009 15:21:50 -0400
+Subject: [PATCH] [MTD] [ONENAND] supports custom bbm
 
-Marvell PXA3xx bad block management will replaces the bad block with good
-one.
-The driver have to implement custom command function. Export
-onenand_command()
-in order to reuse the command function in onenand_base.c.
+In onenand driver, the default bad block management is embedded. Custom BBM
+can't be used. Now make it to support custom BBM.
 
 Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
 ---
- drivers/mtd/onenand/onenand_base.c |    3 ++-
- include/linux/mtd/onenand.h        |    2 ++
- 2 files changed, 4 insertions(+), 1 deletions(-)
+ drivers/mtd/onenand/onenand_base.c |   23 +++++++++++++++++++++++
+ 1 files changed, 23 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/mtd/onenand/onenand_base.c
 b/drivers/mtd/onenand/onenand_base.c
-index 6e82909..8f7c73a 100644
+index 8f7c73a..cc6bccb 100644
 --- a/drivers/mtd/onenand/onenand_base.c
 +++ b/drivers/mtd/onenand/onenand_base.c
-@@ -317,7 +317,7 @@ EXPORT_SYMBOL(flexonenand_region);
-  * Send command to OneNAND device. This function is used for middle/large
-page
-  * devices (1KB/2KB Bytes per page)
-  */
--static int onenand_command(struct mtd_info *mtd, int cmd, loff_t addr,
-size_t len)
-+int onenand_command(struct mtd_info *mtd, int cmd, loff_t addr, size_t len)
+@@ -2136,6 +2136,29 @@ static int onenand_block_isbad_nolock(struct mtd_info
+*mtd, loff_t ofs, int allo
  {
      struct onenand_chip *this = mtd->priv;
-     int value, block, page;
-@@ -433,6 +433,7 @@ static int onenand_command(struct mtd_info *mtd, int
-cmd, loff_t addr, size_t le
+     struct bbm_info *bbm = this->bbm;
++    struct mtd_oob_ops ops;
++    unsigned char *buf = this->page_buf;
++    int ret;
++
++    if (!bbm) {
++        ops.mode = MTD_OOB_PLACE;
++        ops.ooblen = 2;
++        ops.oobbuf = buf;
++        ops.len = 0;
++        ops.ooboffs = 0;
++        ops.retlen = 0;
++        ops.oobretlen = 0;
++
++        ofs = (ofs >> this->erase_shift) << this->erase_shift;
++        ret = onenand_read_oob_nolock(mtd, ofs, &ops);
++        if (ret == ONENAND_BBT_READ_FATAL_ERROR)
++            return -EIO;
++
++        if ((buf[ONENAND_BADBLOCK_POS] & 0x01) == 0) {
++            return -EIO;
++        }
++        return 0;
++    }
 
-     return 0;
- }
-+EXPORT_SYMBOL(onenand_command);
-
- /**
-  * onenand_read_ecc - return ecc status
-diff --git a/include/linux/mtd/onenand.h b/include/linux/mtd/onenand.h
-index 8ed8733..c99737f 100644
---- a/include/linux/mtd/onenand.h
-+++ b/include/linux/mtd/onenand.h
-@@ -24,6 +24,8 @@
- extern int onenand_scan(struct mtd_info *mtd, int max_chips);
- /* Free resources held by the OneNAND device */
- extern void onenand_release(struct mtd_info *mtd);
-+extern int onenand_command(struct mtd_info *mtd, int cmd,
-+               loff_t addr, size_t len);
-
- /*
-  * onenand_state_t - chip states
+     /* Return info from the table */
+     return bbm->isbad_bbt(mtd, ofs, allowbbt);
 -- 
 1.5.6.5
 
---0016e645b8ca818e73047465ae8e
+--0015175ce06877dbdd047465b2b8
 Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
->From f104c778c4f76ebe1b7d4b4575d7e9b0dffc6d69 Mon Sep 17 00:00:00 2001<br>F=
+>From 8e32f4942dc839fe76ac33bc70aa7401de496c55 Mon Sep 17 00:00:00 2001<br>F=
 rom: Haojian Zhuang &lt;<a href=3D"mailto:haojian.zhuang@marvell.com">haoji=
-an.zhuang@marvell.com</a>&gt;<br>Date: Fri, 25 Sep 2009 15:15:56 -0400<br>
-Subject: [PATCH] [MTD] [ONENAND] export onenand_command<br><br>Marvell PXA3=
-xx bad block management will replaces the bad block with good one.<br>The d=
-river have to implement custom command function. Export onenand_command()<b=
-r>
-in order to reuse the command function in onenand_base.c.<br><br>Signed-off=
--by: Haojian Zhuang &lt;<a href=3D"mailto:haojian.zhuang@marvell.com">haoji=
-an.zhuang@marvell.com</a>&gt;<br>---<br>=A0drivers/mtd/onenand/onenand_base=
-.c |=A0=A0=A0 3 ++-<br>
-=A0include/linux/mtd/onenand.h=A0=A0=A0=A0=A0=A0=A0 |=A0=A0=A0 2 ++<br>=A02=
- files changed, 4 insertions(+), 1 deletions(-)<br><br>diff --git a/drivers=
-/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c<br>index 6=
-e82909..8f7c73a 100644<br>
---- a/drivers/mtd/onenand/onenand_base.c<br>+++ b/drivers/mtd/onenand/onena=
-nd_base.c<br>@@ -317,7 +317,7 @@ EXPORT_SYMBOL(flexonenand_region);<br>=A0 =
-* Send command to OneNAND device. This function is used for middle/large pa=
-ge<br>
-=A0 * devices (1KB/2KB Bytes per page)<br>=A0 */<br>-static int onenand_com=
-mand(struct mtd_info *mtd, int cmd, loff_t addr, size_t len)<br>+int onenan=
-d_command(struct mtd_info *mtd, int cmd, loff_t addr, size_t len)<br>=A0{<b=
-r>
-=A0=A0=A0=A0 struct onenand_chip *this =3D mtd-&gt;priv;<br>=A0=A0=A0=A0 in=
-t value, block, page;<br>@@ -433,6 +433,7 @@ static int onenand_command(str=
-uct mtd_info *mtd, int cmd, loff_t addr, size_t le<br>=A0<br>=A0=A0=A0=A0 r=
-eturn 0;<br>=A0}<br>+EXPORT_SYMBOL(onenand_command);<br>
-=A0<br>=A0/**<br>=A0 * onenand_read_ecc - return ecc status<br>diff --git a=
-/include/linux/mtd/onenand.h b/include/linux/mtd/onenand.h<br>index 8ed8733=
-..c99737f 100644<br>--- a/include/linux/mtd/onenand.h<br>+++ b/include/linu=
-x/mtd/onenand.h<br>
-@@ -24,6 +24,8 @@<br>=A0extern int onenand_scan(struct mtd_info *mtd, int m=
-ax_chips);<br>=A0/* Free resources held by the OneNAND device */<br>=A0exte=
-rn void onenand_release(struct mtd_info *mtd);<br>+extern int onenand_comma=
-nd(struct mtd_info *mtd, int cmd,<br>
-+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0 loff_t addr, size_t len);<br>=A0<br>=
-=A0/*<br>=A0 * onenand_state_t - chip states<br>-- <br>1.5.6.5<br><br>
+an.zhuang@marvell.com</a>&gt;<br>Date: Fri, 25 Sep 2009 15:21:50 -0400<br>
+Subject: [PATCH] [MTD] [ONENAND] supports custom bbm<br><br>In onenand driv=
+er, the default bad block management is embedded. Custom BBM<br>can&#39;t b=
+e used. Now make it to support custom BBM.<br><br>Signed-off-by: Haojian Zh=
+uang &lt;<a href=3D"mailto:haojian.zhuang@marvell.com">haojian.zhuang@marve=
+ll.com</a>&gt;<br>
+---<br>=A0drivers/mtd/onenand/onenand_base.c |=A0=A0 23 +++++++++++++++++++=
+++++<br>=A01 files changed, 23 insertions(+), 0 deletions(-)<br><br>diff --=
+git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base=
+.c<br>
+index 8f7c73a..cc6bccb 100644<br>--- a/drivers/mtd/onenand/onenand_base.c<b=
+r>+++ b/drivers/mtd/onenand/onenand_base.c<br>@@ -2136,6 +2136,29 @@ static=
+ int onenand_block_isbad_nolock(struct mtd_info *mtd, loff_t ofs, int allo<=
+br>
+=A0{<br>=A0=A0=A0=A0 struct onenand_chip *this =3D mtd-&gt;priv;<br>=A0=A0=
+=A0=A0 struct bbm_info *bbm =3D this-&gt;bbm;<br>+=A0=A0=A0 struct mtd_oob_=
+ops ops;<br>+=A0=A0=A0 unsigned char *buf =3D this-&gt;page_buf;<br>+=A0=A0=
+=A0 int ret;<br>+<br>+=A0=A0=A0 if (!bbm) {<br>
++=A0=A0=A0 =A0=A0=A0 ops.mode =3D MTD_OOB_PLACE;<br>+=A0=A0=A0 =A0=A0=A0 op=
+s.ooblen =3D 2;<br>+=A0=A0=A0 =A0=A0=A0 ops.oobbuf =3D buf;<br>+=A0=A0=A0 =
+=A0=A0=A0 ops.len =3D 0;<br>+=A0=A0=A0 =A0=A0=A0 ops.ooboffs =3D 0;<br>+=A0=
+=A0=A0 =A0=A0=A0 ops.retlen =3D 0;<br>+=A0=A0=A0 =A0=A0=A0 ops.oobretlen =
+=3D 0;<br>+<br>+=A0=A0=A0 =A0=A0=A0 ofs =3D (ofs &gt;&gt; this-&gt;erase_sh=
+ift) &lt;&lt; this-&gt;erase_shift;<br>
++=A0=A0=A0 =A0=A0=A0 ret =3D onenand_read_oob_nolock(mtd, ofs, &amp;ops);<b=
+r>+=A0=A0=A0 =A0=A0=A0 if (ret =3D=3D ONENAND_BBT_READ_FATAL_ERROR)<br>+=A0=
+=A0=A0 =A0=A0=A0 =A0=A0=A0 return -EIO;<br>+<br>+=A0=A0=A0 =A0=A0=A0 if ((b=
+uf[ONENAND_BADBLOCK_POS] &amp; 0x01) =3D=3D 0) {<br>+=A0=A0=A0 =A0=A0=A0 =
+=A0=A0=A0 return -EIO;<br>
++=A0=A0=A0 =A0=A0=A0 }<br>+=A0=A0=A0 =A0=A0=A0 return 0;<br>+=A0=A0=A0 }<br=
+>=A0<br>=A0=A0=A0=A0 /* Return info from the table */<br>=A0=A0=A0=A0 retur=
+n bbm-&gt;isbad_bbt(mtd, ofs, allowbbt);<br>-- <br>1.5.6.5<br><br>
 
---0016e645b8ca818e73047465ae8e--
+--0015175ce06877dbdd047465b2b8--
 
---0016e645b8ca818e7c047465ae90
+--0015175ce06877dbe4047465b2ba
 Content-Type: text/x-patch; charset=US-ASCII;
-	name="0002--MTD-ONENAND-export-onenand_command.patch"
+	name="0003--MTD-ONENAND-supports-custom-bbm.patch"
 Content-Disposition: attachment;
-	filename="0002--MTD-ONENAND-export-onenand_command.patch"
+	filename="0003--MTD-ONENAND-supports-custom-bbm.patch"
 Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g01cnbl30
+X-Attachment-Id: f_g01coo1l0
 
-RnJvbSBmMTA0Yzc3OGM0Zjc2ZWJlMWI3ZDRiNDU3NWQ3ZTliMGRmZmM2ZDY5IE1vbiBTZXAgMTcg
+RnJvbSA4ZTMyZjQ5NDJkYzgzOWZlNzZhYzMzYmM3MGFhNzQwMWRlNDk2YzU1IE1vbiBTZXAgMTcg
 MDA6MDA6MDAgMjAwMQpGcm9tOiBIYW9qaWFuIFpodWFuZyA8aGFvamlhbi56aHVhbmdAbWFydmVs
-bC5jb20+CkRhdGU6IEZyaSwgMjUgU2VwIDIwMDkgMTU6MTU6NTYgLTA0MDAKU3ViamVjdDogW1BB
-VENIXSBbTVREXSBbT05FTkFORF0gZXhwb3J0IG9uZW5hbmRfY29tbWFuZAoKTWFydmVsbCBQWEEz
-eHggYmFkIGJsb2NrIG1hbmFnZW1lbnQgd2lsbCByZXBsYWNlcyB0aGUgYmFkIGJsb2NrIHdpdGgg
-Z29vZCBvbmUuClRoZSBkcml2ZXIgaGF2ZSB0byBpbXBsZW1lbnQgY3VzdG9tIGNvbW1hbmQgZnVu
-Y3Rpb24uIEV4cG9ydCBvbmVuYW5kX2NvbW1hbmQoKQppbiBvcmRlciB0byByZXVzZSB0aGUgY29t
-bWFuZCBmdW5jdGlvbiBpbiBvbmVuYW5kX2Jhc2UuYy4KClNpZ25lZC1vZmYtYnk6IEhhb2ppYW4g
-Wmh1YW5nIDxoYW9qaWFuLnpodWFuZ0BtYXJ2ZWxsLmNvbT4KLS0tCiBkcml2ZXJzL210ZC9vbmVu
-YW5kL29uZW5hbmRfYmFzZS5jIHwgICAgMyArKy0KIGluY2x1ZGUvbGludXgvbXRkL29uZW5hbmQu
-aCAgICAgICAgfCAgICAyICsrCiAyIGZpbGVzIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgMSBk
-ZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9vbmVuYW5kL29uZW5hbmRfYmFz
-ZS5jIGIvZHJpdmVycy9tdGQvb25lbmFuZC9vbmVuYW5kX2Jhc2UuYwppbmRleCA2ZTgyOTA5Li44
-ZjdjNzNhIDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jCisr
-KyBiL2RyaXZlcnMvbXRkL29uZW5hbmQvb25lbmFuZF9iYXNlLmMKQEAgLTMxNyw3ICszMTcsNyBA
-QCBFWFBPUlRfU1lNQk9MKGZsZXhvbmVuYW5kX3JlZ2lvbik7CiAgKiBTZW5kIGNvbW1hbmQgdG8g
-T25lTkFORCBkZXZpY2UuIFRoaXMgZnVuY3Rpb24gaXMgdXNlZCBmb3IgbWlkZGxlL2xhcmdlIHBh
-Z2UKICAqIGRldmljZXMgKDFLQi8yS0IgQnl0ZXMgcGVyIHBhZ2UpCiAgKi8KLXN0YXRpYyBpbnQg
-b25lbmFuZF9jb21tYW5kKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgY21kLCBsb2ZmX3QgYWRk
-ciwgc2l6ZV90IGxlbikKK2ludCBvbmVuYW5kX2NvbW1hbmQoc3RydWN0IG10ZF9pbmZvICptdGQs
-IGludCBjbWQsIGxvZmZfdCBhZGRyLCBzaXplX3QgbGVuKQogewogCXN0cnVjdCBvbmVuYW5kX2No
-aXAgKnRoaXMgPSBtdGQtPnByaXY7CiAJaW50IHZhbHVlLCBibG9jaywgcGFnZTsKQEAgLTQzMyw2
-ICs0MzMsNyBAQCBzdGF0aWMgaW50IG9uZW5hbmRfY29tbWFuZChzdHJ1Y3QgbXRkX2luZm8gKm10
-ZCwgaW50IGNtZCwgbG9mZl90IGFkZHIsIHNpemVfdCBsZQogCiAJcmV0dXJuIDA7CiB9CitFWFBP
-UlRfU1lNQk9MKG9uZW5hbmRfY29tbWFuZCk7CiAKIC8qKgogICogb25lbmFuZF9yZWFkX2VjYyAt
-IHJldHVybiBlY2Mgc3RhdHVzCmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L210ZC9vbmVuYW5k
-LmggYi9pbmNsdWRlL2xpbnV4L210ZC9vbmVuYW5kLmgKaW5kZXggOGVkODczMy4uYzk5NzM3ZiAx
-MDA2NDQKLS0tIGEvaW5jbHVkZS9saW51eC9tdGQvb25lbmFuZC5oCisrKyBiL2luY2x1ZGUvbGlu
-dXgvbXRkL29uZW5hbmQuaApAQCAtMjQsNiArMjQsOCBAQAogZXh0ZXJuIGludCBvbmVuYW5kX3Nj
-YW4oc3RydWN0IG10ZF9pbmZvICptdGQsIGludCBtYXhfY2hpcHMpOwogLyogRnJlZSByZXNvdXJj
-ZXMgaGVsZCBieSB0aGUgT25lTkFORCBkZXZpY2UgKi8KIGV4dGVybiB2b2lkIG9uZW5hbmRfcmVs
-ZWFzZShzdHJ1Y3QgbXRkX2luZm8gKm10ZCk7CitleHRlcm4gaW50IG9uZW5hbmRfY29tbWFuZChz
-dHJ1Y3QgbXRkX2luZm8gKm10ZCwgaW50IGNtZCwKKwkJCSAgIGxvZmZfdCBhZGRyLCBzaXplX3Qg
-bGVuKTsKIAogLyoKICAqIG9uZW5hbmRfc3RhdGVfdCAtIGNoaXAgc3RhdGVzCi0tIAoxLjUuNi41
-Cgo=
---0016e645b8ca818e7c047465ae90--
+bC5jb20+CkRhdGU6IEZyaSwgMjUgU2VwIDIwMDkgMTU6MjE6NTAgLTA0MDAKU3ViamVjdDogW1BB
+VENIXSBbTVREXSBbT05FTkFORF0gc3VwcG9ydHMgY3VzdG9tIGJibQoKSW4gb25lbmFuZCBkcml2
+ZXIsIHRoZSBkZWZhdWx0IGJhZCBibG9jayBtYW5hZ2VtZW50IGlzIGVtYmVkZGVkLiBDdXN0b20g
+QkJNCmNhbid0IGJlIHVzZWQuIE5vdyBtYWtlIGl0IHRvIHN1cHBvcnQgY3VzdG9tIEJCTS4KClNp
+Z25lZC1vZmYtYnk6IEhhb2ppYW4gWmh1YW5nIDxoYW9qaWFuLnpodWFuZ0BtYXJ2ZWxsLmNvbT4K
+LS0tCiBkcml2ZXJzL210ZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jIHwgICAyMyArKysrKysrKysr
+KysrKysrKysrKysrKwogMSBmaWxlcyBjaGFuZ2VkLCAyMyBpbnNlcnRpb25zKCspLCAwIGRlbGV0
+aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL29uZW5hbmQvb25lbmFuZF9iYXNlLmMg
+Yi9kcml2ZXJzL210ZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jCmluZGV4IDhmN2M3M2EuLmNjNmJj
+Y2IgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL29uZW5hbmQvb25lbmFuZF9iYXNlLmMKKysrIGIv
+ZHJpdmVycy9tdGQvb25lbmFuZC9vbmVuYW5kX2Jhc2UuYwpAQCAtMjEzNiw2ICsyMTM2LDI5IEBA
+IHN0YXRpYyBpbnQgb25lbmFuZF9ibG9ja19pc2JhZF9ub2xvY2soc3RydWN0IG10ZF9pbmZvICpt
+dGQsIGxvZmZfdCBvZnMsIGludCBhbGxvCiB7CiAJc3RydWN0IG9uZW5hbmRfY2hpcCAqdGhpcyA9
+IG10ZC0+cHJpdjsKIAlzdHJ1Y3QgYmJtX2luZm8gKmJibSA9IHRoaXMtPmJibTsKKwlzdHJ1Y3Qg
+bXRkX29vYl9vcHMgb3BzOworCXVuc2lnbmVkIGNoYXIgKmJ1ZiA9IHRoaXMtPnBhZ2VfYnVmOwor
+CWludCByZXQ7CisKKwlpZiAoIWJibSkgeworCQlvcHMubW9kZSA9IE1URF9PT0JfUExBQ0U7CisJ
+CW9wcy5vb2JsZW4gPSAyOworCQlvcHMub29iYnVmID0gYnVmOworCQlvcHMubGVuID0gMDsKKwkJ
+b3BzLm9vYm9mZnMgPSAwOworCQlvcHMucmV0bGVuID0gMDsKKwkJb3BzLm9vYnJldGxlbiA9IDA7
+CisKKwkJb2ZzID0gKG9mcyA+PiB0aGlzLT5lcmFzZV9zaGlmdCkgPDwgdGhpcy0+ZXJhc2Vfc2hp
+ZnQ7CisJCXJldCA9IG9uZW5hbmRfcmVhZF9vb2Jfbm9sb2NrKG10ZCwgb2ZzLCAmb3BzKTsKKwkJ
+aWYgKHJldCA9PSBPTkVOQU5EX0JCVF9SRUFEX0ZBVEFMX0VSUk9SKQorCQkJcmV0dXJuIC1FSU87
+CisKKwkJaWYgKChidWZbT05FTkFORF9CQURCTE9DS19QT1NdICYgMHgwMSkgPT0gMCkgeworCQkJ
+cmV0dXJuIC1FSU87CisJCX0KKwkJcmV0dXJuIDA7CisJfQogCiAJLyogUmV0dXJuIGluZm8gZnJv
+bSB0aGUgdGFibGUgKi8KIAlyZXR1cm4gYmJtLT5pc2JhZF9iYnQobXRkLCBvZnMsIGFsbG93YmJ0
+KTsKLS0gCjEuNS42LjUKCg==
+--0015175ce06877dbe4047465b2ba--
