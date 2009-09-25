@@ -1,63 +1,57 @@
 From: haojian.zhuang@marvell.com (Haojian Zhuang)
-Date: Fri, 25 Sep 2009 15:15:56 -0400
-Subject: [PATCH] [MTD] [ONENAND] export onenand_command
-Message-ID: <mailman.23.1253879986.2253.linux-mtd@lists.infradead.org>
+Date: Fri, 25 Sep 2009 15:21:50 -0400
+Subject: [PATCH] [MTD] [ONENAND] supports custom bbm
+Message-ID: <mailman.27.1253880052.2253.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Marvell PXA3xx bad block management will replaces the bad block with good
-one.
-The driver have to implement custom command function. Export
-onenand_command()
-in order to reuse the command function in onenand_base.c.
+In onenand driver, the default bad block management is embedded. Custom BBM
+can't be used. Now make it to support custom BBM.
 
 Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
 ---
- drivers/mtd/onenand/onenand_base.c |    3 ++-
- include/linux/mtd/onenand.h        |    2 ++
- 2 files changed, 4 insertions(+), 1 deletions(-)
+ drivers/mtd/onenand/onenand_base.c |   23 +++++++++++++++++++++++
+ 1 files changed, 23 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/mtd/onenand/onenand_base.c
 b/drivers/mtd/onenand/onenand_base.c
-index 6e82909..8f7c73a 100644
+index 8f7c73a..cc6bccb 100644
 --- a/drivers/mtd/onenand/onenand_base.c
 +++ b/drivers/mtd/onenand/onenand_base.c
-@@ -317,7 +317,7 @@ EXPORT_SYMBOL(flexonenand_region);
-  * Send command to OneNAND device. This function is used for middle/large
-page
-  * devices (1KB/2KB Bytes per page)
-  */
--static int onenand_command(struct mtd_info *mtd, int cmd, loff_t addr,
-size_t len)
-+int onenand_command(struct mtd_info *mtd, int cmd, loff_t addr, size_t len)
+@@ -2136,6 +2136,29 @@ static int onenand_block_isbad_nolock(struct mtd_info
+*mtd, loff_t ofs, int allo
  {
      struct onenand_chip *this = mtd->priv;
-     int value, block, page;
-@@ -433,6 +433,7 @@ static int onenand_command(struct mtd_info *mtd, int
-cmd, loff_t addr, size_t le
+     struct bbm_info *bbm = this->bbm;
++    struct mtd_oob_ops ops;
++    unsigned char *buf = this->page_buf;
++    int ret;
++
++    if (!bbm) {
++        ops.mode = MTD_OOB_PLACE;
++        ops.ooblen = 2;
++        ops.oobbuf = buf;
++        ops.len = 0;
++        ops.ooboffs = 0;
++        ops.retlen = 0;
++        ops.oobretlen = 0;
++
++        ofs = (ofs >> this->erase_shift) << this->erase_shift;
++        ret = onenand_read_oob_nolock(mtd, ofs, &ops);
++        if (ret == ONENAND_BBT_READ_FATAL_ERROR)
++            return -EIO;
++
++        if ((buf[ONENAND_BADBLOCK_POS] & 0x01) == 0) {
++            return -EIO;
++        }
++        return 0;
++    }
 
-     return 0;
- }
-+EXPORT_SYMBOL(onenand_command);
-
- /**
-  * onenand_read_ecc - return ecc status
-diff --git a/include/linux/mtd/onenand.h b/include/linux/mtd/onenand.h
-index 8ed8733..c99737f 100644
---- a/include/linux/mtd/onenand.h
-+++ b/include/linux/mtd/onenand.h
-@@ -24,6 +24,8 @@
- extern int onenand_scan(struct mtd_info *mtd, int max_chips);
- /* Free resources held by the OneNAND device */
- extern void onenand_release(struct mtd_info *mtd);
-+extern int onenand_command(struct mtd_info *mtd, int cmd,
-+               loff_t addr, size_t len);
-
- /*
-  * onenand_state_t - chip states
+     /* Return info from the table */
+     return bbm->isbad_bbt(mtd, ofs, allowbbt);
 -- 
 1.5.6.5
 
---0016e645b8ca818e73047465ae8e
+--0015175ce06877dbdd047465b2b8
 Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
