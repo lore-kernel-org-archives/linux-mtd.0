@@ -1,13 +1,25 @@
+Received: from mail-yx0-f177.google.com ([209.85.210.177])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Mr9ti-0006xg-O7
+	for linux-mtd@lists.infradead.org; Fri, 25 Sep 2009 12:27:42 +0000
+Received: by yxe7 with SMTP id 7so2566810yxe.25
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 25 Sep 2009 05:27:37 -0700 (PDT)
 MIME-Version: 1.0
-Date: Fri, 25 Sep 2009 08:02:59 -0400
-Message-ID: <771cded00909250502md543cb3wa2ef34c9946e7db5@mail.gmail.com>
-Subject: [PATCH 5/5] support pxa3xx onenand in saar and ttc dkb
-From: Haojian Zhuang <haojian.zhuang@gmail.com>
-To: Eric Miao <eric.y.miao@gmail.com>,
-	David Woodhouse <david.woodhouse@intel.com>, kyungmin.park@samsung.com,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-	linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary=001517741a14b6225c047465bad5
+In-Reply-To: <4ABCAB8E.5070604@nokia.com>
+References: <71cd59b00909241541y645c40farac56a7eadb84c02b@mail.gmail.com>
+	<1253832477-29064-1-git-send-email-corentincj@iksaif.net>
+	<4ABCAB8E.5070604@nokia.com>
+Date: Fri, 25 Sep 2009 14:27:37 +0200
+Message-ID: <71cd59b00909250527s462bf898w27890c1d52c06af4@mail.gmail.com>
+Subject: Re: [PATCH] UBIFS: Add /dev/ubiX_Y naming scheme in open_ubi
+From: Corentin Chary <corentin.chary@gmail.com>
+To: Adrian Hunter <adrian.hunter@nokia.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: "util-linux-ng@vger.kernel.org" <util-linux-ng@vger.kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,124 +29,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---001517741a14b6225c047465bad5
-Content-Type: multipart/alternative; boundary=001517741a14b62254047465bad3
+On Fri, Sep 25, 2009 at 1:37 PM, Adrian Hunter <adrian.hunter@nokia.com> wr=
+ote:
+> Corentin Chary wrote:
+>>
+>> This is needed to use $ mount /dev/ubi0_0 /mnt/nand
+>> You'll also need a recent libblkid with UBI and UBIFS
+>> support.
+>>
+>> Signed-off-by: Corentin Chary <corentincj@iksaif.net>
+>> ---
+>> =A0fs/ubifs/super.c | =A0 12 ++++++++----
+>> =A01 files changed, 8 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+>> index 7e2b3d4..38320ad 100644
+>> --- a/fs/ubifs/super.c
+>> +++ b/fs/ubifs/super.c
+>> @@ -1843,10 +1843,11 @@ const struct super_operations
+>> ubifs_super_operations =3D {
+>> =A0* @mode: UBI volume open mode
+>> =A0*
+>> =A0* There are several ways to specify UBI volumes when mounting UBIFS:
+>> - * o ubiX_Y =A0 =A0- UBI device number X, volume Y;
+>> - * o ubiY =A0 =A0 =A0- UBI device number 0, volume Y;
+>> - * o ubiX:NAME - mount UBI device X, volume with name NAME;
+>> - * o ubi:NAME =A0- mount UBI device 0, volume with name NAME.
+>> + * o /dev/ubiX_Y - UBI device number X, volume Y;
+>> + * o ubiX_Y =A0 =A0 =A0- UBI device number X, volume Y;
+>> + * o ubiY =A0 =A0 =A0 =A0- UBI device number 0, volume Y;
+>> + * o ubiX:NAME =A0 - mount UBI device X, volume with name NAME;
+>> + * o ubi:NAME =A0 =A0- mount UBI device 0, volume with name NAME.
+>> =A0*
+>> =A0* Alternative '!' separator may be used instead of ':' (because some
+>> shells
+>> =A0* like busybox may interpret ':' as an NFS host name separator). This
+>> function
+>> @@ -1858,6 +1859,9 @@ static struct ubi_volume_desc *open_ubi(const char
+>> *name, int mode)
+>> =A0 =A0 =A0 =A0int dev, vol;
+>> =A0 =A0 =A0 =A0char *endptr;
+>> =A0+ =A0 =A0 =A0 if (!strncmp("/dev/", name, 5))
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 name =3D name + 5;
+>> +
+>> =A0 =A0 =A0 =A0if (name[0] !=3D 'u' || name[1] !=3D 'b' || name[2] !=3D =
+'i')
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return ERR_PTR(-EINVAL);
+>
+> Is this for the kernel?
+Yes
 
---001517741a14b62254047465bad3
-Content-Type: text/plain; charset=ISO-8859-1
+> I do not think UBIFS should interpret the file name. =A0It should
+> work off the major and minor numbers from the device node
+> irrespective of what its path name or file name is.
 
->From fb826341bffa364cb04802674dda45768e3f86b1 Mon Sep 17 00:00:00 2001
-From: Haojian Zhuang <haojian.zhuang@marvell.com>
-Date: Fri, 25 Sep 2009 15:43:13 -0400
-Subject: [PATCH] pxa: support pxa3xx onenand in saar and ttc dkb
+UBIFS is currently a "nodev" filesystem, it's why I did it that way.
 
-Marvell PXA3xx bad block management is supported in pxa3xx onenand
-device driver. Enable it in saar and ttc dkb platform.
+Using name and kern_path we can find the corresponding inode (and
+major/minor informations).
+But I don't see a way to open the corresponding UBI volume with only
+major/minor.
+ubi_open_volume use ubi_num and vol_id.
+vol_id is minor()-1, but major is not related to ubi_num.
 
-Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
----
- arch/arm/mach-mmp/ttc_dkb.c |    2 +-
- arch/arm/mach-pxa/saar.c    |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+UBI have a "ubi_major2num" internally, is it ok to export this symbol ?
 
-diff --git a/arch/arm/mach-mmp/ttc_dkb.c b/arch/arm/mach-mmp/ttc_dkb.c
-index 57d0535..dbd8cfd 100644
---- a/arch/arm/mach-mmp/ttc_dkb.c
-+++ b/arch/arm/mach-mmp/ttc_dkb.c
-@@ -100,7 +100,7 @@ static struct resource ttc_dkb_resource_onenand[] = {
- };
+Thanks
 
- static struct platform_device ttc_dkb_device_onenand = {
--    .name        = "onenand",
-+    .name        = "pxa3xx-onenand",
-     .id        = -1,
-     .dev        = {
-         .platform_data    = &ttc_dkb_onenand_info,
-diff --git a/arch/arm/mach-pxa/saar.c b/arch/arm/mach-pxa/saar.c
-index 8b7ea09..6892867 100644
---- a/arch/arm/mach-pxa/saar.c
-+++ b/arch/arm/mach-pxa/saar.c
-@@ -556,7 +556,7 @@ static struct resource saar_resource_onenand[] = {
- };
-
- static struct platform_device saar_device_onenand = {
--    .name        = "onenand",
-+    .name        = "pxa3xx-onenand",
-     .id        = -1,
-     .dev        = {
-         .platform_data    = &saar_onenand_info,
--- 
-1.5.6.5
-
---001517741a14b62254047465bad3
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
->From fb826341bffa364cb04802674dda45768e3f86b1 Mon Sep 17 00:00:00 2001<br>F=
-rom: Haojian Zhuang &lt;<a href=3D"mailto:haojian.zhuang@marvell.com">haoji=
-an.zhuang@marvell.com</a>&gt;<br>Date: Fri, 25 Sep 2009 15:43:13 -0400<br>
-Subject: [PATCH] pxa: support pxa3xx onenand in saar and ttc dkb<br><br>Mar=
-vell PXA3xx bad block management is supported in pxa3xx onenand<br>device d=
-river. Enable it in saar and ttc dkb platform.<br><br>Signed-off-by: Haojia=
-n Zhuang &lt;<a href=3D"mailto:haojian.zhuang@marvell.com">haojian.zhuang@m=
-arvell.com</a>&gt;<br>
----<br>=A0arch/arm/mach-mmp/ttc_dkb.c |=A0=A0=A0 2 +-<br>=A0arch/arm/mach-p=
-xa/saar.c=A0=A0=A0 |=A0=A0=A0 2 +-<br>=A02 files changed, 2 insertions(+), =
-2 deletions(-)<br><br>diff --git a/arch/arm/mach-mmp/ttc_dkb.c b/arch/arm/m=
-ach-mmp/ttc_dkb.c<br>
-index 57d0535..dbd8cfd 100644<br>--- a/arch/arm/mach-mmp/ttc_dkb.c<br>+++ b=
-/arch/arm/mach-mmp/ttc_dkb.c<br>@@ -100,7 +100,7 @@ static struct resource =
-ttc_dkb_resource_onenand[] =3D {<br>=A0};<br>=A0<br>=A0static struct platfo=
-rm_device ttc_dkb_device_onenand =3D {<br>
--=A0=A0=A0 .name=A0=A0=A0 =A0=A0=A0 =3D &quot;onenand&quot;,<br>+=A0=A0=A0 =
-.name=A0=A0=A0 =A0=A0=A0 =3D &quot;pxa3xx-onenand&quot;,<br>=A0=A0=A0=A0 .i=
-d=A0=A0=A0 =A0=A0=A0 =3D -1,<br>=A0=A0=A0=A0 .dev=A0=A0=A0 =A0=A0=A0 =3D {<=
-br>=A0=A0=A0=A0 =A0=A0=A0 .platform_data=A0=A0=A0 =3D &amp;ttc_dkb_onenand_=
-info,<br>diff --git a/arch/arm/mach-pxa/saar.c b/arch/arm/mach-pxa/saar.c<b=
-r>
-index 8b7ea09..6892867 100644<br>--- a/arch/arm/mach-pxa/saar.c<br>+++ b/ar=
-ch/arm/mach-pxa/saar.c<br>@@ -556,7 +556,7 @@ static struct resource saar_r=
-esource_onenand[] =3D {<br>=A0};<br>=A0<br>=A0static struct platform_device=
- saar_device_onenand =3D {<br>
--=A0=A0=A0 .name=A0=A0=A0 =A0=A0=A0 =3D &quot;onenand&quot;,<br>+=A0=A0=A0 =
-.name=A0=A0=A0 =A0=A0=A0 =3D &quot;pxa3xx-onenand&quot;,<br>=A0=A0=A0=A0 .i=
-d=A0=A0=A0 =A0=A0=A0 =3D -1,<br>=A0=A0=A0=A0 .dev=A0=A0=A0 =A0=A0=A0 =3D {<=
-br>=A0=A0=A0=A0 =A0=A0=A0 .platform_data=A0=A0=A0 =3D &amp;saar_onenand_inf=
-o,<br>-- <br>1.5.6.5<br><br>
-
---001517741a14b62254047465bad3--
-
---001517741a14b6225c047465bad5
-Content-Type: text/x-patch; charset=US-ASCII;
-	name="0005-pxa-support-pxa3xx-onenand-in-saar-and-ttc-dkb.patch"
-Content-Disposition: attachment;
-	filename="0005-pxa-support-pxa3xx-onenand-in-saar-and-ttc-dkb.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g01crvu20
-
-RnJvbSBmYjgyNjM0MWJmZmEzNjRjYjA0ODAyNjc0ZGRhNDU3NjhlM2Y4NmIxIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBIYW9qaWFuIFpodWFuZyA8aGFvamlhbi56aHVhbmdAbWFydmVs
-bC5jb20+CkRhdGU6IEZyaSwgMjUgU2VwIDIwMDkgMTU6NDM6MTMgLTA0MDAKU3ViamVjdDogW1BB
-VENIXSBweGE6IHN1cHBvcnQgcHhhM3h4IG9uZW5hbmQgaW4gc2FhciBhbmQgdHRjIGRrYgoKTWFy
-dmVsbCBQWEEzeHggYmFkIGJsb2NrIG1hbmFnZW1lbnQgaXMgc3VwcG9ydGVkIGluIHB4YTN4eCBv
-bmVuYW5kCmRldmljZSBkcml2ZXIuIEVuYWJsZSBpdCBpbiBzYWFyIGFuZCB0dGMgZGtiIHBsYXRm
-b3JtLgoKU2lnbmVkLW9mZi1ieTogSGFvamlhbiBaaHVhbmcgPGhhb2ppYW4uemh1YW5nQG1hcnZl
-bGwuY29tPgotLS0KIGFyY2gvYXJtL21hY2gtbW1wL3R0Y19ka2IuYyB8ICAgIDIgKy0KIGFyY2gv
-YXJtL21hY2gtcHhhL3NhYXIuYyAgICB8ICAgIDIgKy0KIDIgZmlsZXMgY2hhbmdlZCwgMiBpbnNl
-cnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2FyY2gvYXJtL21hY2gtbW1w
-L3R0Y19ka2IuYyBiL2FyY2gvYXJtL21hY2gtbW1wL3R0Y19ka2IuYwppbmRleCA1N2QwNTM1Li5k
-YmQ4Y2ZkIDEwMDY0NAotLS0gYS9hcmNoL2FybS9tYWNoLW1tcC90dGNfZGtiLmMKKysrIGIvYXJj
-aC9hcm0vbWFjaC1tbXAvdHRjX2RrYi5jCkBAIC0xMDAsNyArMTAwLDcgQEAgc3RhdGljIHN0cnVj
-dCByZXNvdXJjZSB0dGNfZGtiX3Jlc291cmNlX29uZW5hbmRbXSA9IHsKIH07CiAKIHN0YXRpYyBz
-dHJ1Y3QgcGxhdGZvcm1fZGV2aWNlIHR0Y19ka2JfZGV2aWNlX29uZW5hbmQgPSB7Ci0JLm5hbWUJ
-CT0gIm9uZW5hbmQiLAorCS5uYW1lCQk9ICJweGEzeHgtb25lbmFuZCIsCiAJLmlkCQk9IC0xLAog
-CS5kZXYJCT0gewogCQkucGxhdGZvcm1fZGF0YQk9ICZ0dGNfZGtiX29uZW5hbmRfaW5mbywKZGlm
-ZiAtLWdpdCBhL2FyY2gvYXJtL21hY2gtcHhhL3NhYXIuYyBiL2FyY2gvYXJtL21hY2gtcHhhL3Nh
-YXIuYwppbmRleCA4YjdlYTA5Li42ODkyODY3IDEwMDY0NAotLS0gYS9hcmNoL2FybS9tYWNoLXB4
-YS9zYWFyLmMKKysrIGIvYXJjaC9hcm0vbWFjaC1weGEvc2Fhci5jCkBAIC01NTYsNyArNTU2LDcg
-QEAgc3RhdGljIHN0cnVjdCByZXNvdXJjZSBzYWFyX3Jlc291cmNlX29uZW5hbmRbXSA9IHsKIH07
-CiAKIHN0YXRpYyBzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlIHNhYXJfZGV2aWNlX29uZW5hbmQgPSB7
-Ci0JLm5hbWUJCT0gIm9uZW5hbmQiLAorCS5uYW1lCQk9ICJweGEzeHgtb25lbmFuZCIsCiAJLmlk
-CQk9IC0xLAogCS5kZXYJCT0gewogCQkucGxhdGZvcm1fZGF0YQk9ICZzYWFyX29uZW5hbmRfaW5m
-bywKLS0gCjEuNS42LjUKCg==
---001517741a14b6225c047465bad5--
+--=20
+Corentin Chary
+http://xf.iksaif.net
