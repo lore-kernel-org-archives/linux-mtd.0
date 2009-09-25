@@ -1,22 +1,23 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mr4uV-0004fB-Eh
-	for linux-mtd@lists.infradead.org; Fri, 25 Sep 2009 07:08:11 +0000
-Subject: Re: UBIFS and hardware ECC of all FF pages of MLC NAND
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-In-Reply-To: <4ABB921B.8090500@parrot.com>
-References: <B125D8217ABC4B43826503DE00A2D44910D7E85DFD@SJEXCHCCR01.corp.ad.broadcom.com>
-	<4ABB7224.8000804@nokia.com>  <4ABB921B.8090500@parrot.com>
+	id 1Mr584-0000SK-0v
+	for linux-mtd@lists.infradead.org; Fri, 25 Sep 2009 07:22:12 +0000
+Subject: Re: [PATCH 1/3] blkid: add UBI volume support
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Corentin Chary <corentin.chary@gmail.com>
+In-Reply-To: <71cd59b00909241457p3b9247a1q661ea63bde584f26@mail.gmail.com>
+References: <1251112316-18971-1-git-send-email-corentincj@iksaif.net>
+	<1251112316-18971-2-git-send-email-corentincj@iksaif.net>
+	<20090924141433.GC27905@nb.net.home>
+	<71cd59b00909241457p3b9247a1q661ea63bde584f26@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 25 Sep 2009 10:05:09 +0300
-Message-Id: <1253862309.3778.25.camel@localhost>
+Date: Fri, 25 Sep 2009 10:19:19 +0300
+Message-Id: <1253863159.3778.38.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Darwin Rambo <drambo@broadcom.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Adrian Hunter <adrian.hunter@nokia.com>
-Reply-To: dedekind@infradead.org
+Cc: util-linux-ng@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+	linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,30 +27,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-09-24 at 17:36 +0200, Matthieu CASTET wrote:
-> Adrian Hunter a écrit :
-> > Darwin Rambo wrote:
-> > 
-> >> 2. for initial downloading, should an ECC be programmed on all FF data pages? Is there any correction advantage?
-> > 
-> > In your case, as you have discovered, you must not program ECC for FF pages at
-> > the end of eraseblocks.
-> > 
-> The tricky part is when you read FF pages with ecc in mtd. You will get
-> an ecc error.
+On Thu, 2009-09-24 at 23:57 +0200, Corentin Chary wrote:
+> >> +                     if (!(st.st_rdev & 0xFF)) { // It's an UBI Device
+> >> +                             free(device);
+> >> +                             continue ;
+> >> +                     }
+> >
+> > Wouldn't be better to
+> >
+> >  #define is_ubi_device(s)    (S_ISCHR(s->st_mode) && (s->st_rdev & 0xFF))
+> >
+> > (or major() instead magic 0xFF constant?) and use it everywhere in
+> > code? I guess UBI is always a char device.
 > 
-> If the ecc writing is done on software you can always xor the ecc code
-> to make it "FF for FF data".
-> But if everything is done by hardware...
+> Maybe something like that:
+> #define is_ubi_device(s)    (S_ISCHR(s->st_mode) && !minor(s->st_rdev))
 
-Right, which means the UBI/UBIFS flasher should be smart and skip
-0xFF-ed NAND pages at the end of eraseblocks. This adds some complexity
-to the flasher, thought. And here:
+Well, if you want to be really nice, you may implement this as a
+function which scans sysfs or looks at /proc/devices and makes sure the
+device really belongs to UBI. See below.
 
-http://www.linux-mtd.infradead.org/doc/ubi.html#L_format_det
+> 
+> >> +++ b/shlibs/blkid/src/probe.c
+> >> @@ -284,6 +284,8 @@ int blkid_probe_set_device(blkid_probe pr, int fd,
+> >>
+> >>               if (S_ISBLK(sb.st_mode))
+> >>                       blkdev_get_size(fd, (unsigned long long *) &pr->size);
+> >> +             else if (S_ISCHR(sb.st_mode))
+> >> +                     pr->size = 1;
+> >>               else
+> >>                       pr->size = sb.st_size;
+> >>       }
+> >
+> > this is the same situation, this code will for all char devices, but we
+> > want to support UBI only.
+> 
+> I don't know if there is a "good" way to detect an ubi device using
+> only struct stat.
+> 
+> Artem, any idea ?
 
-I even described in details the flashing algorithm with my limited
-English vocabulary :-)
+UBI char devices' major:minor numbers are allocated dynamically, so they
+cannot be used.
+
+To check whether this char. device node is an UBI volume and not
+something else, you should scan all /sys/class/ubi/ubiX/Y/dev files, and
+see if there is a device with the same major:minor.
+
+The other possibility would be to look at /proc/devices, and make sure
+there is an ubiX device with the same major number as your /dev/ubiX_Y
+device.
 
 -- 
 Best Regards,
