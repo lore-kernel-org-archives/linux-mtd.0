@@ -1,25 +1,19 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MsEMp-0003OY-JV
-	for linux-mtd@lists.infradead.org; Mon, 28 Sep 2009 11:26:12 +0000
-Subject: Re: UBIFS Error
+	id 1MsEOA-0003f1-Jr
+	for linux-mtd@lists.infradead.org; Mon, 28 Sep 2009 11:27:35 +0000
+Subject: Re: [MTD-Tests]- issue while inserting modules
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: JerinJacob <jerin.jacob@maxim-ic.com>
-In-Reply-To: <4AB1F58D.7070809@maxim-ic.com>
-References: <4AA5F37F.4050307@maxim-ic.com> <4AA60E6C.6060307@nokia.com>
-	<4AA8EA9C.4070805@maxim-ic.com> <4AA8ED7B.5020509@nokia.com>
-	<4AA8F6E4.1090209@maxim-ic.com> <4AA90351.3050000@nokia.com>
-	<4AAA4005.9080707@maxim-ic.com> <1252938440.5060.102.camel@localhost>
-	<1252938588.5060.103.camel@localhost> <4AAF5016.2030809@maxim-ic.com>
-	<4AB1F58D.7070809@maxim-ic.com>
+To: Tadimarri Sarath Babu <sarath.babu@samsung.com>
+In-Reply-To: <EFE8EA804139414AAAFE7C5C7F01F8D8@sisodomain.com>
+References: <1FF44128171E4E6E900BD9EAEB332E73@sisodomain.com>
+	<EFE8EA804139414AAAFE7C5C7F01F8D8@sisodomain.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 28 Sep 2009 14:22:29 +0300
-Message-Id: <1254136949.3778.58.camel@localhost>
+Date: Mon, 28 Sep 2009 14:23:49 +0300
+Message-Id: <1254137029.3778.59.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"Hunter Adrian \(Nokia-D/Helsinki\)" <adrian.hunter@nokia.com>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,18 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-09-17 at 14:08 +0530, JerinJacob wrote:
-> >
-> >> Got a crash  while reading a large mtd device with "mtd_readtest".
-> Let me fix this platform specific driver bug.
-> Any way this mtd_tests are very use full.
+On Thu, 2009-09-17 at 17:24 +0530, Tadimarri Sarath Babu wrote:
+> Hi,
 > 
->  >>> Fixed the platform specific driver bug.And all the mtd test case 
-> are passing now with zero errors.
-> Unfortunately, Still the UBIFS crashing problem persist.
+> Now I am able to run MTD Tests on OneNAND.
+> MTD Tests by default takes the mtd0 as the device number as per the code.
+> I disabled the Writable Mask in the 0th partition in my architecture specific file and it started 
+> working.
+> I am using the mtd2 partition as the mtd device . So i initialized the "dev" variable in 
+> mtd_oobtest.c to the respective number and similarly all other test files.
+> I feel user should be prompted with the mtd device number he wants to run these tests.
+> Any comments?
 
-Do you still have UBIFS errors? Any new interesting findings? Did you
-manage to somehow reproduce this on nandsim?
+May be, but this is why we have "modinfo". But feel free to send
+a patch.
 
 -- 
 Best Regards,
