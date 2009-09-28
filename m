@@ -1,755 +1,1927 @@
-From: haojian.zhuang@marvell.com (Haojian Zhuang)
-Date: Fri, 25 Sep 2009 15:00:28 -0400
-Subject: [PATCH] [MTD] [NAND] pxa3xx_nand: enable PXA3xx bad block manageme=
-Message-ID: <mailman.39.1253930443.2253.linux-mtd@lists.infradead.org>
+From: leochen@broadcom.com (Leo Chen)
+Date: Mon, 28 Sep 2009 14:11:49 -0700
+Subject: [PATCH] add bcmring mtd nand driver support
+Message-ID: <mailman.46.1254176707.2253.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-nt
+Add mtd umi driver for bcmring arm arch.
+Add header files, register definition files,
+add entry in Kconfig and Makefile.
 
-There's a custom bad block management in PXA3xx series.
-
-This BBM needs to allocate a reserved area at the bottom of NAND chip.
-The reserved area should be protected from normal usage. The first block
-of NAND is also reserved in order to storing the relocation information.
-
-The reserved area is also called as relocation area. It occupies 2% of
-the whole NAND space.
-
-When NAND controller finds a bad block, it marks the block as bad and
-allocate a unused block from relocation area in bottom. The new block is
-used to replace the original bad one. From OS view, there's no bad block
-at the time. It's handled by NAND driver. Then driver records the replaceme=
-nt
-information in the first block.
-
-There're 40 pages are reserved in the first block. Each page is a independa=
-nt
-relocation table. If the current relocation table is broken, driver will fe=
-tch
-the previous one. Each relocation information cost a 32-bit word.
-
-Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
+Signed-off-by: Leo Hao Chen <leochen@broadcom.com>
 ---
- arch/arm/plat-pxa/include/plat/pxa3xx_bbm.h |   61 ++++
- drivers/mtd/Kconfig                         |    6 +
- drivers/mtd/Makefile                        |    1 +
- drivers/mtd/nand/pxa3xx_nand.c              |  124 ++++++++
- drivers/mtd/pxa3xx_bbm.c                    |  427 +++++++++++++++++++++++=
-++++
- 5 files changed, 619 insertions(+), 0 deletions(-)
- create mode 100644 arch/arm/plat-pxa/include/plat/pxa3xx_bbm.h
- create mode 100644 drivers/mtd/pxa3xx_bbm.c
+ arch/arm/mach-bcmring/include/mach/reg_nand.h |   66 ++
+ arch/arm/mach-bcmring/include/mach/reg_umi.h  |  237 ++++++++
+ drivers/mtd/nand/Kconfig                      |   16 +
+ drivers/mtd/nand/Makefile                     |    1 +
+ drivers/mtd/nand/bcm_umi_bch.c                |  213 +++++++
+ drivers/mtd/nand/bcm_umi_nand.c               |  792 +++++++++++++++++++++++++
+ drivers/mtd/nand/nand_bcm_umi.c               |  149 +++++
+ drivers/mtd/nand/nand_bcm_umi.h               |  358 +++++++++++
+ 8 files changed, 1832 insertions(+), 0 deletions(-)
+ create mode 100644 arch/arm/mach-bcmring/include/mach/reg_nand.h
+ create mode 100644 arch/arm/mach-bcmring/include/mach/reg_umi.h
+ create mode 100644 drivers/mtd/nand/bcm_umi_bch.c
+ create mode 100644 drivers/mtd/nand/bcm_umi_nand.c
+ create mode 100644 drivers/mtd/nand/nand_bcm_umi.c
+ create mode 100644 drivers/mtd/nand/nand_bcm_umi.h
 
-diff --git a/arch/arm/plat-pxa/include/plat/pxa3xx_bbm.h
-b/arch/arm/plat-pxa/include/plat/pxa3xx_bbm.h
+diff --git a/arch/arm/mach-bcmring/include/mach/reg_nand.h b/arch/arm/mach-bcmring/include/mach/reg_nand.h
 new file mode 100644
-index 0000000..3cc8c7b
+index 0000000..387376f
 --- /dev/null
-+++ b/arch/arm/plat-pxa/include/plat/pxa3xx_bbm.h
-@@ -0,0 +1,61 @@
-+#ifndef	__PXA3XX_BBT_H__
-+#define	__PXA3XX_BBT_H__
++++ b/arch/arm/mach-bcmring/include/mach/reg_nand.h
+@@ -0,0 +1,66 @@
++/*****************************************************************************
++* Copyright 2001 - 2008 Broadcom Corporation.  All rights reserved.
++*
++* Unless you and Broadcom execute a separate written software license
++* agreement governing use of this software, this software is licensed to you
++* under the terms of the GNU General Public License version 2, available at
++* http://www.broadcom.com/licenses/GPLv2.php (the "GPL").
++*
++* Notwithstanding the above, under no circumstances may you combine this
++* software in any way with any other Broadcom software provided under a
++* license other than the GPL, without Broadcom's express prior written
++* consent.
++*****************************************************************************/
 +
-+#include <linux/types.h>
-+
-+#define PXA_RLTABLE_HEADER		(0x524e)
-+#define PXA_MAX_RLENTRY			(127)
-+#define PXA_MAX_SLOT			(40)
-+#define PXA_BBM_MAGIC			(0x4c56524d)	/* MRVL */
-+
-+enum {
-+	PXA3xx_BBM_NAND =3D 0,
-+	PXA3xx_BBM_ONENAND,
-+	PXA3xx_BBM_INVALID =3D -1,
-+};
-+
-+struct relocate_entry {
-+	unsigned short from;
-+	unsigned short to;
-+};
-+
-+struct relocate_table {
-+	unsigned short header;
-+	unsigned short total;
-+};
-+
-+struct pxa3xx_bbm {
-+	int			magic;
-+	/*
-+	 * NOTES: this field impact the partition table. Please make sure
-+	 * that this value align with partitions definition.
-+	 */
-+	int			max_relocate_entry;
-+	int			max_slots;
-+	int			current_slot;
-+
-+	void			*data_buf;
-+
-+	/*
-+	 * These two fields should be in (one)nand_chip. Add here to handle
-+	 * onenand_chip and nand_chip at the same time.
-+	 */
-+	int			page_shift;
-+	int			erase_shift;
-+
-+	struct relocate_table	*table;
-+	struct relocate_entry	*entry;
-+
-+	void	(*uninit)(struct mtd_info *mtd);
-+	loff_t	(*search)(struct mtd_info *mtd,	loff_t ofs);
-+	int	(*block_markbad)(struct mtd_info *mtd, int block);
-+	int	(*scan_bbt)(struct mtd_info *mtd);
-+};
-+
-+extern int verify_nand_bbm(struct mtd_info *mtd, struct pxa3xx_bbm **bbm);
-+extern int verify_onenand_bbm(struct mtd_info *mtd, struct pxa3xx_bbm **bb=
-m);
-+extern int nand_badblockpos(struct mtd_info *mtd);
-+extern int onenand_badblockpos(struct mtd_info *mtd);
-+extern struct pxa3xx_bbm *pxa3xx_query_bbm(void);
-+#endif
-+
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index b8e35a0..3cdf7bf 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -315,6 +315,12 @@ config MTD_OOPS
- 	  To use, add console=3DttyMTDx to the kernel command line,
- 	  where x is the MTD device number to use.
-
-+config PXA3xx_BBM
-+	bool "Marvell PXA3xx Bad Block Management"
-+	depends on MTD && (MTD_NAND || MTD_ONENAND)
-+	help
-+	  This enables Marvell Bad block management on NAND/ONENAND on PXA3xx.
-+
- source "drivers/mtd/chips/Kconfig"
-
- source "drivers/mtd/maps/Kconfig"
-diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
-index 82d1e4d..e637fa0 100644
---- a/drivers/mtd/Makefile
-+++ b/drivers/mtd/Makefile
-@@ -25,6 +25,7 @@ obj-$(CONFIG_INFTL)		+=3D inftl.o
- obj-$(CONFIG_RFD_FTL)		+=3D rfd_ftl.o
- obj-$(CONFIG_SSFDC)		+=3D ssfdc.o
- obj-$(CONFIG_MTD_OOPS)		+=3D mtdoops.o
-+obj-$(CONFIG_PXA3xx_BBM)	+=3D pxa3xx_bbm.o
-
- nftl-objs		:=3D nftlcore.o nftlmount.o
- inftl-objs		:=3D inftlcore.o inftlmount.o
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.=
-c
-index 134bfbc..d6c9524 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -24,6 +24,10 @@
- #include <mach/dma.h>
- #include <plat/pxa3xx_nand.h>
-
-+#ifdef CONFIG_PXA3xx_BBM
-+#include <plat/pxa3xx_bbm.h>
-+#endif
-+
- #define	CHIP_DELAY_TIMEOUT	(2 * HZ/10)
-
- /* registers and bit definitions */
-@@ -112,6 +116,14 @@ enum {
-
- struct pxa3xx_nand_info {
- 	struct nand_chip	nand_chip;
-+#ifdef CONFIG_PXA3xx_BBM
-+	/*
-+	 * Restriction: nand_chip should be the first one of pxa3xx_nand_info.
-+	 * bbm should be the second one of pxa3xx_nand_info.
-+	 * Marvell PXA3xx BBM always access this field to get bbm.
-+	 */
-+	struct pxa3xx_bbm	*bbm;
-+#endif
-
- 	struct platform_device	 *pdev;
- 	const struct pxa3xx_nand_flash *flash_info;
-@@ -365,6 +377,8 @@ static struct pxa3xx_nand_flash *builtin_flash_types[] =
-=3D {
- /* convert nand flash controller clock cycles to nano-seconds */
- #define cycle2ns(c, clk)	((((c) + 1) * 1000000 + clk / 500) / (clk / 1000)=
-)
-
-+static int pxa3xx_nand_relocate_addr(struct mtd_info *mtd, int page_addr);
-+
- static void pxa3xx_nand_set_timing(struct pxa3xx_nand_info *info,
- 				   const struct pxa3xx_nand_timing *t)
- {
-@@ -706,6 +720,8 @@ static void pxa3xx_nand_cmdfunc(struct mtd_info
-*mtd, unsigned command,
-
- 	init_completion(&info->cmd_complete);
-
-+	page_addr =3D pxa3xx_nand_relocate_addr(mtd, page_addr);
-+
- 	switch (command) {
- 	case NAND_CMD_READOOB:
- 		/* disable HW ECC to get all the OOB data */
-@@ -1165,6 +1181,113 @@ static struct nand_ecclayout hw_largepage_ecclayout=
- =3D {
- 	.oobfree =3D { {2, 38} }
- };
-
-+#ifdef CONFIG_PXA3xx_BBM
-+int verify_nand_bbm(struct mtd_info *mtd, struct pxa3xx_bbm **bbm)
-+{
-+	struct nand_chip *info =3D mtd->priv;
-+	struct pxa3xx_bbm **nbbm =3D NULL;
-+
-+	/* check whether current flash is nand */
-+	nbbm =3D (struct pxa3xx_bbm **)(++info);
-+	if (((unsigned int)nbbm < PAGE_OFFSET)
-+		|| ((unsigned int)*nbbm < PAGE_OFFSET))
-+		return PXA3xx_BBM_INVALID;
-+
-+	if ((*nbbm)->magic =3D=3D PXA_BBM_MAGIC) {
-+		pr_debug("%s:Found Nand flash.\n", __func__);
-+		*bbm =3D *nbbm;
-+		return PXA3xx_BBM_NAND;
-+	}
-+	return PXA3xx_BBM_INVALID;
-+}
-+
-+static int pxa3xx_nand_relocate_addr(struct mtd_info *mtd, int page_addr)
-+{
-+	struct pxa3xx_nand_info *info =3D mtd->priv;
-+	struct pxa3xx_bbm *bbm =3D info->bbm;
-+	loff_t addr;
-+	int ret;
-+
-+	addr =3D page_addr << bbm->page_shift;
-+	addr =3D bbm->search(mtd, addr);
-+	ret =3D addr >> bbm->page_shift;
-+	return ret;
-+}
-+
-+static int pxa3xx_nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
-+{
-+	struct pxa3xx_nand_info *info =3D mtd->priv;
-+	struct pxa3xx_bbm *bbm =3D info->bbm;
-+	struct nand_chip *chip =3D mtd->priv;
-+	uint8_t buf[2] =3D { 0, 0 };
-+	int block, ret;
-+
-+	/* Get block number */
-+	block =3D (int)(ofs >> chip->bbt_erase_shift);
-+
-+	/* We write two bytes, so we dont have to mess with 16 bit
-+	 * access
-+	 */
-+	ofs +=3D mtd->oobsize;
-+	chip->ops.len =3D chip->ops.ooblen =3D 2;
-+	chip->ops.datbuf =3D NULL;
-+	chip->ops.oobbuf =3D buf;
-+	chip->ops.ooboffs =3D chip->badblockpos & ~0x01;
-+
-+	ret =3D mtd->write_oob(mtd, ofs, &chip->ops);
-+
-+	if (!ret)
-+		mtd->ecc_stats.badblocks++;
-+
-+	return bbm->block_markbad(mtd, block);
-+}
-+
-+static void pxa3xx_nand_init_mtd(struct mtd_info *mtd,
-+				 struct pxa3xx_nand_info *info)
-+{
-+	const struct pxa3xx_nand_flash *f =3D info->flash_info;
-+	struct nand_chip *this =3D &info->nand_chip;
-+	struct pxa3xx_bbm *bbm =3D NULL;
-+
-+	this->options =3D (f->flash_width =3D=3D 16) ? NAND_BUSWIDTH_16: 0;
-+
-+	this->waitfunc		=3D pxa3xx_nand_waitfunc;
-+	this->select_chip	=3D pxa3xx_nand_select_chip;
-+	this->dev_ready		=3D pxa3xx_nand_dev_ready;
-+	this->cmdfunc		=3D pxa3xx_nand_cmdfunc;
-+	this->read_word		=3D pxa3xx_nand_read_word;
-+	this->read_byte		=3D pxa3xx_nand_read_byte;
-+	this->read_buf		=3D pxa3xx_nand_read_buf;
-+	this->write_buf		=3D pxa3xx_nand_write_buf;
-+	this->verify_buf	=3D pxa3xx_nand_verify_buf;
-+
-+	this->ecc.mode		=3D NAND_ECC_HW;
-+	this->ecc.hwctl		=3D pxa3xx_nand_ecc_hwctl;
-+	this->ecc.calculate	=3D pxa3xx_nand_ecc_calculate;
-+	this->ecc.correct	=3D pxa3xx_nand_ecc_correct;
-+	this->ecc.size		=3D f->page_size;
-+
-+	if (f->page_size =3D=3D 2048)
-+		this->ecc.layout =3D &hw_largepage_ecclayout;
-+	else
-+		this->ecc.layout =3D &hw_smallpage_ecclayout;
-+
-+	this->chip_delay =3D 25;
-+
-+	bbm =3D pxa3xx_query_bbm();
-+	if (bbm) {
-+		/* Marvell PXA3xx BBM is initialized successfully */
-+		info->bbm =3D bbm;
-+		this->scan_bbt =3D bbm->scan_bbt;
-+		this->block_markbad =3D pxa3xx_nand_block_markbad;
-+	}
-+}
-+#else
-+static int pxa3xx_nand_relocate_addr(struct mtd_info *mtd, int page_addr)
-+{
-+	return page_addr;
-+}
-+
- static void pxa3xx_nand_init_mtd(struct mtd_info *mtd,
- 				 struct pxa3xx_nand_info *info)
- {
-@@ -1196,6 +1319,7 @@ static void pxa3xx_nand_init_mtd(struct mtd_info *mtd=
-,
-
- 	this->chip_delay =3D 25;
- }
-+#endif
-
- static int pxa3xx_nand_probe(struct platform_device *pdev)
- {
-diff --git a/drivers/mtd/pxa3xx_bbm.c b/drivers/mtd/pxa3xx_bbm.c
-new file mode 100644
-index 0000000..d9c1853
---- /dev/null
-+++ b/drivers/mtd/pxa3xx_bbm.c
-@@ -0,0 +1,427 @@
 +/*
-+ * linux/drivers/mtd/pxa3xx_bbm.c
-+ *
-+ * Support bad block management on PXA3xx.
-+ * Copyright (C) 2007 Marvell International Ltd.
-+ *
-+ * Haojian Zhuang <haojian.zhuang@marvell.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ */
++*
++*****************************************************************************
++*
++*  REG_NAND.h
++*
++*  PURPOSE:
++*
++*     This file contains definitions for the nand registers:
++*
++*  NOTES:
++*
++*****************************************************************************/
 +
++#if !defined(__ASM_ARCH_REG_NAND_H)
++#define __ASM_ARCH_REG_NAND_H
++
++/* ---- Include Files ---------------------------------------------------- */
++#include <csp/reg.h>
++#include <mach/reg_umi.h>
++
++/* ---- Constants and Types ---------------------------------------------- */
++
++#define HW_NAND_BASE       MM_IO_BASE_NAND	/* NAND Flash */
++
++/* DMA accesses by the bootstrap need hard nonvirtual addresses */
++#define REG_NAND_CMD            __REG16(HW_NAND_BASE + 0)
++#define REG_NAND_ADDR           __REG16(HW_NAND_BASE + 4)
++
++#define REG_NAND_PHYS_DATA16   (HW_NAND_BASE + 8)
++#define REG_NAND_PHYS_DATA8    (HW_NAND_BASE + 8)
++#define REG_NAND_DATA16         __REG16(REG_NAND_PHYS_DATA16)
++#define REG_NAND_DATA8          __REG8(REG_NAND_PHYS_DATA8)
++
++/* use appropriate offset to make sure it start at the 1K boundary */
++#define REG_NAND_PHYS_DATA_DMA   (HW_NAND_BASE + 0x400)
++#define REG_NAND_DATA_DMA         __REG32(REG_NAND_PHYS_DATA_DMA)
++
++/* Linux DMA requires physical address of the data register */
++#define REG_NAND_DATA16_PADDR    HW_IO_VIRT_TO_PHYS(REG_NAND_PHYS_DATA16)
++#define REG_NAND_DATA8_PADDR     HW_IO_VIRT_TO_PHYS(REG_NAND_PHYS_DATA8)
++#define REG_NAND_DATA_PADDR      HW_IO_VIRT_TO_PHYS(REG_NAND_PHYS_DATA_DMA)
++
++#define NAND_BUS_16BIT()        (0)
++#define NAND_BUS_8BIT()         (!NAND_BUS_16BIT())
++
++/* Register offsets */
++#define REG_NAND_CMD_OFFSET     (0)
++#define REG_NAND_ADDR_OFFSET    (4)
++#define REG_NAND_DATA8_OFFSET   (8)
++
++#endif
+diff --git a/arch/arm/mach-bcmring/include/mach/reg_umi.h b/arch/arm/mach-bcmring/include/mach/reg_umi.h
+new file mode 100644
+index 0000000..06a3554
+--- /dev/null
++++ b/arch/arm/mach-bcmring/include/mach/reg_umi.h
+@@ -0,0 +1,237 @@
++/*****************************************************************************
++* Copyright 2005 - 2008 Broadcom Corporation.  All rights reserved.
++*
++* Unless you and Broadcom execute a separate written software license
++* agreement governing use of this software, this software is licensed to you
++* under the terms of the GNU General Public License version 2, available at
++* http://www.broadcom.com/licenses/GPLv2.php (the "GPL").
++*
++* Notwithstanding the above, under no circumstances may you combine this
++* software in any way with any other Broadcom software provided under a
++* license other than the GPL, without Broadcom's express prior written
++* consent.
++*****************************************************************************/
++
++/*
++*
++*****************************************************************************
++*
++*  REG_UMI.h
++*
++*  PURPOSE:
++*
++*     This file contains definitions for the nand registers:
++*
++*  NOTES:
++*
++*****************************************************************************/
++
++#if !defined(__ASM_ARCH_REG_UMI_H)
++#define __ASM_ARCH_REG_UMI_H
++
++/* ---- Include Files ---------------------------------------------------- */
++#include <csp/reg.h>
++#include <mach/csp/mm_io.h>
++
++/* ---- Constants and Types ---------------------------------------------- */
++
++/* Unified Memory Interface Ctrl Register */
++#define HW_UMI_BASE       MM_IO_BASE_UMI
++
++/* Flash bank 0 timing and control register */
++#define REG_UMI_FLASH0_TCR         __REG32(HW_UMI_BASE  + 0x00)
++/* Flash bank 1 timing and control register */
++#define REG_UMI_FLASH1_TCR         __REG32(HW_UMI_BASE  + 0x04)
++/* Flash bank 2 timing and control register */
++#define REG_UMI_FLASH2_TCR         __REG32(HW_UMI_BASE  + 0x08)
++/* MMD interface and control register */
++#define REG_UMI_MMD_ICR            __REG32(HW_UMI_BASE  + 0x0c)
++/* NAND timing and control register */
++#define REG_UMI_NAND_TCR           __REG32(HW_UMI_BASE  + 0x18)
++/* NAND ready/chip select register */
++#define REG_UMI_NAND_RCSR          __REG32(HW_UMI_BASE  + 0x1c)
++/* NAND ECC control & status register */
++#define REG_UMI_NAND_ECC_CSR       __REG32(HW_UMI_BASE  + 0x20)
++/* NAND ECC data register XXB2B1B0 */
++#define REG_UMI_NAND_ECC_DATA      __REG32(HW_UMI_BASE  + 0x24)
++/* BCH ECC Parameter N */
++#define REG_UMI_BCH_N              __REG32(HW_UMI_BASE  + 0x40)
++/* BCH ECC Parameter T */
++#define REG_UMI_BCH_K              __REG32(HW_UMI_BASE  + 0x44)
++/* BCH ECC Parameter K */
++#define REG_UMI_BCH_T              __REG32(HW_UMI_BASE  + 0x48)
++/* BCH ECC Contro Status */
++#define REG_UMI_BCH_CTRL_STATUS    __REG32(HW_UMI_BASE  + 0x4C)
++/* BCH WR ECC 31:0 */
++#define REG_UMI_BCH_WR_ECC_0       __REG32(HW_UMI_BASE  + 0x50)
++/* BCH WR ECC 63:32 */
++#define REG_UMI_BCH_WR_ECC_1       __REG32(HW_UMI_BASE  + 0x54)
++/* BCH WR ECC 95:64 */
++#define REG_UMI_BCH_WR_ECC_2       __REG32(HW_UMI_BASE  + 0x58)
++/* BCH WR ECC 127:96 */
++#define REG_UMI_BCH_WR_ECC_3       __REG32(HW_UMI_BASE  + 0x5c)
++/* BCH WR ECC 155:128 */
++#define REG_UMI_BCH_WR_ECC_4       __REG32(HW_UMI_BASE  + 0x60)
++/* BCH Read Error Location 1,0 */
++#define REG_UMI_BCH_RD_ERR_LOC_1_0 __REG32(HW_UMI_BASE  + 0x64)
++/* BCH Read Error Location 3,2 */
++#define REG_UMI_BCH_RD_ERR_LOC_3_2 __REG32(HW_UMI_BASE  + 0x68)
++/* BCH Read Error Location 5,4 */
++#define REG_UMI_BCH_RD_ERR_LOC_5_4 __REG32(HW_UMI_BASE  + 0x6c)
++/* BCH Read Error Location 7,6 */
++#define REG_UMI_BCH_RD_ERR_LOC_7_6 __REG32(HW_UMI_BASE  + 0x70)
++/* BCH Read Error Location 9,8 */
++#define REG_UMI_BCH_RD_ERR_LOC_9_8 __REG32(HW_UMI_BASE  + 0x74)
++/* BCH Read Error Location 11,10 */
++#define REG_UMI_BCH_RD_ERR_LOC_B_A __REG32(HW_UMI_BASE  + 0x78)
++
++/* REG_UMI_FLASH0/1/2_TCR, REG_UMI_SRAM0/1_TCR bits */
++/* Enable wait pin during burst write or read */
++#define REG_UMI_TCR_WAITEN              0x80000000
++/* Enable mem ctrlr to work iwth ext mem of lower freq than AHB clk */
++#define REG_UMI_TCR_LOWFREQ             0x40000000
++/* 1=synch write, 0=async write */
++#define REG_UMI_TCR_MEMTYPE_SYNCWRITE   0x20000000
++/* 1=synch read, 0=async read */
++#define REG_UMI_TCR_MEMTYPE_SYNCREAD    0x10000000
++/* 1=page mode read, 0=normal mode read */
++#define REG_UMI_TCR_MEMTYPE_PAGEREAD    0x08000000
++/* page size/burst size (wrap only) */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_MASK   0x07000000
++/* 4 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_4      0x00000000
++/* 8 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_8      0x01000000
++/* 16 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_16     0x02000000
++/* 32 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_32     0x03000000
++/* 64 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_64     0x04000000
++/* 128 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_128    0x05000000
++/* 256 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_256    0x06000000
++/* 512 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_512    0x07000000
++/* Page read access cycle / Burst write latency (n+2 / n+1) */
++#define REG_UMI_TCR_TPRC_TWLC_MASK      0x00f80000
++/* Bus turnaround cycle (n) */
++#define REG_UMI_TCR_TBTA_MASK           0x00070000
++/* Write pulse width cycle (n+1) */
++#define REG_UMI_TCR_TWP_MASK            0x0000f800
++/* Write recovery cycle (n+1) */
++#define REG_UMI_TCR_TWR_MASK            0x00000600
++/* Write address setup cycle (n+1) */
++#define REG_UMI_TCR_TAS_MASK            0x00000180
++/* Output enable delay cycle (n) */
++#define REG_UMI_TCR_TOE_MASK            0x00000060
++/* Read access cycle / Burst read latency (n+2 / n+1) */
++#define REG_UMI_TCR_TRC_TLC_MASK        0x0000001f
++
++/* REG_UMI_MMD_ICR bits */
++/* Flash write protection pin control */
++#define REG_UMI_MMD_ICR_FLASH_WP            0x8000
++/* Extend hold time for sram0, sram1 csn (39 MHz operation) */
++#define REG_UMI_MMD_ICR_XHCS                0x4000
++/* Enable SDRAM 2 interface control */
++#define REG_UMI_MMD_ICR_SDRAM2EN            0x2000
++/* Enable merge of flash banks 0/1 to 512 MBit bank */
++#define REG_UMI_MMD_ICR_INST512             0x1000
++/* Enable merge of flash banks 1/2 to 512 MBit bank */
++#define REG_UMI_MMD_ICR_DATA512             0x0800
++/* Enable SDRAM interface control */
++#define REG_UMI_MMD_ICR_SDRAMEN             0x0400
++/* Polarity of busy state of Burst Wait Signal */
++#define REG_UMI_MMD_ICR_WAITPOL             0x0200
++/* Enable burst clock stopped when not accessing external burst flash/sram */
++#define REG_UMI_MMD_ICR_BCLKSTOP            0x0100
++/* Enable the peri1_csn to replace flash1_csn in 512 Mb flash mode */
++#define REG_UMI_MMD_ICR_PERI1EN             0x0080
++/* Enable the peri2_csn to replace sdram_csn */
++#define REG_UMI_MMD_ICR_PERI2EN             0x0040
++/* Enable the peri3_csn to replace sdram2_csn */
++#define REG_UMI_MMD_ICR_PERI3EN             0x0020
++/* Enable sram bank1 for H/W controlled MRS */
++#define REG_UMI_MMD_ICR_MRSB1               0x0010
++/* Enable sram bank0 for H/W controlled MRS */
++#define REG_UMI_MMD_ICR_MRSB0               0x0008
++/* Polarity for assert3ed state of H/W controlled MRS */
++#define REG_UMI_MMD_ICR_MRSPOL              0x0004
++/* 0: S/W controllable ZZ/MRS/CRE/P-Mode pin */
++/* 1: H/W controlled ZZ/MRS/CRE/P-Mode, same timing as CS */
++#define REG_UMI_MMD_ICR_MRSMODE             0x0002
++/* MRS state for S/W controlled mode */
++#define REG_UMI_MMD_ICR_MRSSTATE            0x0001
++
++/* REG_UMI_NAND_TCR bits */
++/* Enable software to control CS */
++#define REG_UMI_NAND_TCR_CS_SWCTRL          0x80000000
++/* 16-bit nand wordsize if set */
++#define REG_UMI_NAND_TCR_WORD16             0x40000000
++/* Bus turnaround cycle (n) */
++#define REG_UMI_NAND_TCR_TBTA_MASK          0x00070000
++/* Write pulse width cycle (n+1) */
++#define REG_UMI_NAND_TCR_TWP_MASK           0x0000f800
++/* Write recovery cycle (n+1) */
++#define REG_UMI_NAND_TCR_TWR_MASK           0x00000600
++/* Write address setup cycle (n+1) */
++#define REG_UMI_NAND_TCR_TAS_MASK           0x00000180
++/* Output enable delay cycle (n) */
++#define REG_UMI_NAND_TCR_TOE_MASK           0x00000060
++/* Read access cycle (n+2) */
++#define REG_UMI_NAND_TCR_TRC_TLC_MASK       0x0000001f
++
++/* REG_UMI_NAND_RCSR bits */
++/* Status: Ready=1, Busy=0 */
++#define REG_UMI_NAND_RCSR_RDY               0x02
++/* Keep CS asserted during operation */
++#define REG_UMI_NAND_RCSR_CS_ASSERTED       0x01
++
++/* REG_UMI_NAND_ECC_CSR bits */
++/* Interrupt status - read-only */
++#define REG_UMI_NAND_ECC_CSR_NANDINT        0x80000000
++/* Read: Status of ECC done, Write: clear ECC interrupt */
++#define REG_UMI_NAND_ECC_CSR_ECCINT_RAW     0x00800000
++/* Read: Status of R/B, Write: clear R/B interrupt */
++#define REG_UMI_NAND_ECC_CSR_RBINT_RAW      0x00400000
++/* 1 = Enable ECC Interrupt */
++#define REG_UMI_NAND_ECC_CSR_ECCINT_ENABLE  0x00008000
++/* 1 = Assert interrupt at rising edge of R/B_ */
++#define REG_UMI_NAND_ECC_CSR_RBINT_ENABLE   0x00004000
++/* Calculate ECC by 0=512 bytes, 1=256 bytes */
++#define REG_UMI_NAND_ECC_CSR_256BYTE        0x00000080
++/* Enable ECC in hardware */
++#define REG_UMI_NAND_ECC_CSR_ECC_ENABLE     0x00000001
++
++/* REG_UMI_BCH_CTRL_STATUS bits */
++/* Shift to Indicate Number of correctable errors detected */
++#define REG_UMI_BCH_CTRL_STATUS_NB_CORR_ERROR_SHIFT 20
++/* Indicate Number of correctable errors detected */
++#define REG_UMI_BCH_CTRL_STATUS_NB_CORR_ERROR 0x00F00000
++/* Indicate Errors detected during read but uncorrectable */
++#define REG_UMI_BCH_CTRL_STATUS_UNCORR_ERR    0x00080000
++/* Indicate Errors detected during read and are correctable */
++#define REG_UMI_BCH_CTRL_STATUS_CORR_ERR      0x00040000
++/* Flag indicates BCH's ECC status of read process are valid */
++#define REG_UMI_BCH_CTRL_STATUS_RD_ECC_VALID  0x00020000
++/* Flag indicates BCH's ECC status of write process are valid */
++#define REG_UMI_BCH_CTRL_STATUS_WR_ECC_VALID  0x00010000
++/* Pause ECC calculation */
++#define REG_UMI_BCH_CTRL_STATUS_PAUSE_ECC_DEC 0x00000010
++/* Enable Interrupt */
++#define REG_UMI_BCH_CTRL_STATUS_INT_EN        0x00000004
++/* Enable ECC during read */
++#define REG_UMI_BCH_CTRL_STATUS_ECC_RD_EN     0x00000002
++/* Enable ECC during write */
++#define REG_UMI_BCH_CTRL_STATUS_ECC_WR_EN     0x00000001
++/* Mask for location */
++#define REG_UMI_BCH_ERR_LOC_MASK              0x00001FFF
++/* location within a byte */
++#define REG_UMI_BCH_ERR_LOC_BYTE              0x00000007
++/* location within a word */
++#define REG_UMI_BCH_ERR_LOC_WORD              0x00000018
++/* location within a page (512 byte) */
++#define REG_UMI_BCH_ERR_LOC_PAGE              0x00001FE0
++#define REG_UMI_BCH_ERR_LOC_ADDR(index)     (__REG32(HW_UMI_BASE + 0x64 + (index / 2)*4) >> ((index % 2) * 16))
++#endif
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 2fda0b6..34598e9 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -203,6 +203,22 @@ config MTD_NAND_S3C2410_CLKSTOP
+ 	  when the is NAND chip selected or released, but will save
+ 	  approximately 5mA of power when there is nothing happening.
+ 
++config MTD_NAND_BCM_UMI
++	tristate "NAND Flash support for BCM Reference Boards"
++	depends on ARCH_BCMRING && MTD_NAND
++	help
++	  This enables the NAND flash controller on the BCM UMI block.
++
++	  No board specfic support is done by this driver, each board
++	  must advertise a platform_device for the driver to attach.
++
++config MTD_NAND_BCM_UMI_HWCS
++	bool "BCM UMI NAND Hardware CS"
++	depends on MTD_NAND_BCM_UMI
++	help
++	  Enable the use of the BCM UMI block's internal CS using NAND.
++	  This should only be used if you know the external NAND CS can toggle.
++
+ config MTD_NAND_DISKONCHIP
+ 	tristate "DiskOnChip 2000, Millennium and Millennium Plus (NAND reimplementation) (EXPERIMENTAL)"
+ 	depends on EXPERIMENTAL
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index 6950d3d..460a1f3 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -42,5 +42,6 @@ obj-$(CONFIG_MTD_NAND_SOCRATES)		+= socrates_nand.o
+ obj-$(CONFIG_MTD_NAND_TXX9NDFMC)	+= txx9ndfmc.o
+ obj-$(CONFIG_MTD_NAND_W90P910)		+= w90p910_nand.o
+ obj-$(CONFIG_MTD_NAND_NOMADIK)		+= nomadik_nand.o
++obj-$(CONFIG_MTD_NAND_BCM_UMI)		+= bcm_umi_nand.o nand_bcm_umi.o
+ 
+ nand-objs := nand_base.o nand_bbt.o
+diff --git a/drivers/mtd/nand/bcm_umi_bch.c b/drivers/mtd/nand/bcm_umi_bch.c
+new file mode 100644
+index 0000000..a930666
+--- /dev/null
++++ b/drivers/mtd/nand/bcm_umi_bch.c
+@@ -0,0 +1,213 @@
++/*****************************************************************************
++* Copyright 2004 - 2009 Broadcom Corporation.  All rights reserved.
++*
++* Unless you and Broadcom execute a separate written software license
++* agreement governing use of this software, this software is licensed to you
++* under the terms of the GNU General Public License version 2, available at
++* http://www.broadcom.com/licenses/GPLv2.php (the "GPL").
++*
++* Notwithstanding the above, under no circumstances may you combine this
++* software in any way with any other Broadcom software provided under a
++* license other than the GPL, without Broadcom's express prior written
++* consent.
++*****************************************************************************/
++
++/* ---- Include Files ---------------------------------------------------- */
++#include "nand_bcm_umi.h"
++
++/* ---- External Variable Declarations ----------------------------------- */
++/* ---- External Function Prototypes ------------------------------------- */
++/* ---- Public Variables ------------------------------------------------- */
++/* ---- Private Constants and Types -------------------------------------- */
++
++/* ---- Private Function Prototypes -------------------------------------- */
++static int bcm_umi_bch_read_page_hwecc(struct mtd_info *mtd,
++	struct nand_chip *chip, uint8_t *buf, int page);
++static void bcm_umi_bch_write_page_hwecc(struct mtd_info *mtd,
++	struct nand_chip *chip, const uint8_t *buf);
++
++/* ---- Private Variables ------------------------------------------------ */
++
++/*
++** nand_hw_eccoob
++** New oob placement block for use with hardware ecc generation.
++*/
++static struct nand_ecclayout nand_hw_eccoob_512 = {
++	/* Reserve 5 for BI indicator */
++	.oobfree = {
++#if (NAND_ECC_NUM_BYTES > 3)
++		    {.offset = 0, .length = 2}
++#else
++		    {.offset = 0, .length = 5},
++		    {.offset = 6, .length = 7}
++#endif
++		    }
++};
++
++/*
++** We treat the OOB for a 2K page as if it were 4 512 byte oobs,
++** except the BI is at byte 0.
++*/
++static struct nand_ecclayout nand_hw_eccoob_2048 = {
++	/* Reserve 0 as BI indicator */
++	.oobfree = {
++#if (NAND_ECC_NUM_BYTES > 10)
++		    {.offset = 1, .length = 2},
++#elif (NAND_ECC_NUM_BYTES > 7)
++		    {.offset = 1, .length = 5},
++		    {.offset = 16, .length = 6},
++		    {.offset = 32, .length = 6},
++		    {.offset = 48, .length = 6}
++#else
++		    {.offset = 1, .length = 8},
++		    {.offset = 16, .length = 9},
++		    {.offset = 32, .length = 9},
++		    {.offset = 48, .length = 9}
++#endif
++		    }
++};
++
++/* We treat the OOB for a 4K page as if it were 8 512 byte oobs,
++ * except the BI is at byte 0. */
++static struct nand_ecclayout nand_hw_eccoob_4096 = {
++	/* Reserve 0 as BI indicator */
++	.oobfree = {
++#if (NAND_ECC_NUM_BYTES > 10)
++		    {.offset = 1, .length = 2},
++		    {.offset = 16, .length = 3},
++		    {.offset = 32, .length = 3},
++		    {.offset = 48, .length = 3},
++		    {.offset = 64, .length = 3},
++		    {.offset = 80, .length = 3},
++		    {.offset = 96, .length = 3},
++		    {.offset = 112, .length = 3}
++#else
++		    {.offset = 1, .length = 5},
++		    {.offset = 16, .length = 6},
++		    {.offset = 32, .length = 6},
++		    {.offset = 48, .length = 6},
++		    {.offset = 64, .length = 6},
++		    {.offset = 80, .length = 6},
++		    {.offset = 96, .length = 6},
++		    {.offset = 112, .length = 6}
++#endif
++		    }
++};
++
++/* ---- Private Functions ------------------------------------------------ */
++/* ==== Public Functions ================================================= */
++
++/****************************************************************************
++*
++*  bcm_umi_bch_read_page_hwecc - hardware ecc based page read function
++*  @mtd:	mtd info structure
++*  @chip:	nand chip info structure
++*  @buf:	buffer to store read data
++*
++***************************************************************************/
++static int bcm_umi_bch_read_page_hwecc(struct mtd_info *mtd,
++				       struct nand_chip *chip, uint8_t * buf,
++						 int page)
++{
++	int sectorIdx = 0;
++	int eccsize = chip->ecc.size;
++	int eccsteps = chip->ecc.steps;
++	uint8_t *datap = buf;
++	uint8_t eccCalc[NAND_ECC_NUM_BYTES];
++	int sectorOobSize = mtd->oobsize / eccsteps;
++	int stat;
++
++	for (sectorIdx = 0; sectorIdx < eccsteps;
++			sectorIdx++, datap += eccsize) {
++		if (sectorIdx > 0) {
++			/* Seek to page location within sector */
++			chip->cmdfunc(mtd, NAND_CMD_RNDOUT, sectorIdx * eccsize,
++				      -1);
++		}
++
++		/* Enable hardware ECC before reading the buf */
++		nand_bcm_umi_bch_enable_read_hwecc();
++
++		/* Read in data */
++		bcm_umi_nand_read_buf(mtd, datap, eccsize);
++
++		/* Pause hardware ECC after reading the buf */
++		nand_bcm_umi_bch_pause_read_ecc_calc();
++
++		/* Read the OOB ECC */
++		chip->cmdfunc(mtd, NAND_CMD_RNDOUT,
++			      mtd->writesize + sectorIdx * sectorOobSize, -1);
++		nand_bcm_umi_bch_read_oobEcc(mtd->writesize, eccCalc,
++					     NAND_ECC_NUM_BYTES,
++					     chip->oob_poi +
++					     sectorIdx * sectorOobSize);
++
++		/* Correct any ECC detected errors */
++		stat =
++		    nand_bcm_umi_bch_correct_page(datap, eccCalc,
++						  NAND_ECC_NUM_BYTES);
++
++		/* Update Stats */
++		if (stat < 0) {
++#if defined(NAND_BCM_UMI_DEBUG)
++			printk(KERN_WARNING "%s uncorr_err sectorIdx=%d\n",
++			       __func__, sectorIdx);
++			printk(KERN_WARNING
++			       "%s data %02x %02x %02x %02x "
++					 "%02x %02x %02x %02x\n",
++			       __func__, datap[0], datap[1], datap[2], datap[3],
++			       datap[4], datap[5], datap[6], datap[7]);
++			printk(KERN_WARNING
++			       "%s ecc  %02x %02x %02x %02x "
++					 "%02x %02x %02x %02x %02x %02x "
++					 "%02x %02x %02x\n",
++			       __func__, eccCalc[0], eccCalc[1], eccCalc[2],
++			       eccCalc[3], eccCalc[4], eccCalc[5], eccCalc[6],
++			       eccCalc[7], eccCalc[8], eccCalc[9], eccCalc[10],
++			       eccCalc[11], eccCalc[12]);
++			BUG();
++#endif
++			mtd->ecc_stats.failed++;
++		} else {
++#if defined(NAND_BCM_UMI_DEBUG)
++			if (stat > 0) {
++				printk(KERN_INFO
++				       "%s %d correctable_errors detected\n",
++				       __func__, stat);
++			}
++#endif
++			mtd->ecc_stats.corrected += stat;
++		}
++	}
++	return 0;
++}
++
++/****************************************************************************
++*
++*  bcm_umi_bch_write_page_hwecc - hardware ecc based page write function
++*  @mtd:	mtd info structure
++*  @chip:	nand chip info structure
++*  @buf:	data buffer
++*
++***************************************************************************/
++static void bcm_umi_bch_write_page_hwecc(struct mtd_info *mtd,
++	struct nand_chip *chip, const uint8_t *buf)
++{
++	int sectorIdx = 0;
++	int eccsize = chip->ecc.size;
++	int eccsteps = chip->ecc.steps;
++	const uint8_t *datap = buf;
++	uint8_t *oobp = chip->oob_poi;
++	int sectorOobSize = mtd->oobsize / eccsteps;
++
++	for (sectorIdx = 0; sectorIdx < eccsteps;
++	     sectorIdx++, datap += eccsize, oobp += sectorOobSize) {
++		/* Enable hardware ECC before writing the buf */
++		nand_bcm_umi_bch_enable_write_hwecc();
++		bcm_umi_nand_write_buf(mtd, datap, eccsize);
++		nand_bcm_umi_bch_write_oobEcc(mtd->writesize, oobp,
++					      NAND_ECC_NUM_BYTES);
++	}
++
++	bcm_umi_nand_write_buf(mtd, chip->oob_poi, mtd->oobsize);
++}
+diff --git a/drivers/mtd/nand/bcm_umi_nand.c b/drivers/mtd/nand/bcm_umi_nand.c
+new file mode 100644
+index 0000000..a7e0778
+--- /dev/null
++++ b/drivers/mtd/nand/bcm_umi_nand.c
+@@ -0,0 +1,792 @@
++/*****************************************************************************
++* Copyright 2004 - 2009 Broadcom Corporation.  All rights reserved.
++*
++* Unless you and Broadcom execute a separate written software license
++* agreement governing use of this software, this software is licensed to you
++* under the terms of the GNU General Public License version 2, available at
++* http://www.broadcom.com/licenses/GPLv2.php (the "GPL").
++*
++* Notwithstanding the above, under no circumstances may you combine this
++* software in any way with any other Broadcom software provided under a
++* license other than the GPL, without Broadcom's express prior written
++* consent.
++*****************************************************************************/
++
++/* ---- Include Files ---------------------------------------------------- */
++#include <linux/version.h>
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/string.h>
++#include <linux/ioport.h>
++#include <linux/device.h>
++#include <linux/delay.h>
++#include <linux/err.h>
++#include <linux/io.h>
++#include <linux/platform_device.h>
 +#include <linux/mtd/mtd.h>
 +#include <linux/mtd/nand.h>
-+#include <plat/pxa3xx_bbm.h>
-+#include <asm/errno.h>
++#include <linux/mtd/nand_ecc.h>
++#include <linux/mtd/partitions.h>
 +
-+static struct pxa3xx_bbm *pxa3xx_bbm =3D NULL;
++#include <asm/mach-types.h>
++#include <asm/system.h>
++
++#include <mach/reg_nand.h>
++#include <mach/reg_umi.h>
++
++#include "nand_bcm_umi.h"
++
++#if !defined(CONFIG_ARCH_BCM116X)
++#include <mach/memory_settings.h>
++#endif
++
++#define USE_DMA 1
++#include <mach/dma.h>
++#include <linux/dma-mapping.h>
++#include <linux/completion.h>
++
++#define USE_HWECC 1
++
++/* ---- External Variable Declarations ----------------------------------- */
++/* ---- External Function Prototypes ------------------------------------- */
++/* ---- Public Variables ------------------------------------------------- */
++/* ---- Private Constants and Types -------------------------------------- */
++static char gBanner[] __initdata = KERN_INFO "BCM UMI MTD NAND Driver: 1.00\n";
++
++#ifdef CONFIG_MTD_PARTITIONS
++const char *part_probes[] = { "cmdlinepart", NULL };
++#endif
++
++#if NAND_ECC_BCH
++static uint8_t scan_ff_pattern[] = { 0xff };
++
++static struct nand_bbt_descr largepage_bbt = {
++	.options = 0,
++	.offs = 0,
++	.len = 1,
++	.pattern = scan_ff_pattern
++};
++#endif
 +
 +/*
-+ * bbm should be the next field of nand_chip or onenand_chip.
++** Preallocate a buffer to avoid having to do this every dma operation.
++** This is the size of the preallocated coherent DMA buffer.
++*/
++#if USE_DMA
++#define DMA_MIN_BUFLEN	512
++#define DMA_MAX_BUFLEN	PAGE_SIZE
++#define USE_DIRECT_IO(len)	(((len) < DMA_MIN_BUFLEN) || \
++	((len) > DMA_MAX_BUFLEN))
++
++#if defined(CONFIG_ARCH_BCMRING)
++/*
++ * The current NAND data space goes from 0x80001900 to 0x80001FFF,
++ * which is only 0x700 = 1792 bytes long. This is too small for 2K, 4K page
++ * size NAND flash. Need to break the DMA down to multiple 1Ks.
++ *
++ * Need to make sure REG_NAND_DATA_PADDR + DMA_MAX_LEN < 0x80002000
 + */
-+static int verify_bbm_magic(struct mtd_info *mtd, struct pxa3xx_bbm **bbm)
-+{
-+	int ret;
++#define DMA_MAX_LEN             1024
++#endif
 +
-+	ret =3D verify_nand_bbm(mtd, bbm);
-+	return ret;
++#if defined(CONFIG_ARCH_BCM116X)
++
++#define NAND_DMA_CHAN   3
++
++/* Global config is common for both directions. */
++#define DMA_CFG                                 \
++    (REG_DMA_CHAN_CFG_TC_INT_ENABLE            \
++    | REG_DMA_CHAN_CFG_ERROR_INT_ENABLE         \
++    | REG_DMA_CHAN_CFG_FLOW_CTL_MEM_TO_MEM_DMA  \
++    | REG_DMA_CHAN_CFG_ENABLE)
++
++/* Common transfer widths in bits (typically 8, 16, or 32) */
++#define DMA_WIDTH(dstwidth, srcwidth)                        \
++    (REG_DMA_CHAN_CTL_DEST_WIDTH_##dstwidth       \
++    | REG_DMA_CHAN_CTL_SRC_WIDTH_##srcwidth)
++
++/* Common burst sizes - typically 4 */
++#define DMA_BURST(width)                        \
++    (REG_DMA_CHAN_CTL_DEST_BURST_SIZE_##width  \
++    | REG_DMA_CHAN_CTL_SRC_BURST_SIZE_##width)
++
++/* DMA settings for copying from NAND to SDRAM */
++#define DMA_CTRL_NAND_TO_SDRAM(dstwidth, srcwidth, bytes)    \
++    (REG_DMA_CHAN_CTL_TC_INT_ENABLE            \
++    | REG_DMA_CHAN_CTL_DEST_INCR                \
++    | DMA_BURST(4)                              \
++    | DMA_WIDTH(dstwidth, srcwidth)             \
++    | (bytes * 8 / srcwidth))
++
++/* DMA settings for copying from SDRAM to NAND */
++#define DMA_CTRL_SDRAM_TO_NAND(dstwidth, srcwidth, bytes)    \
++    (REG_DMA_CHAN_CTL_TC_INT_ENABLE            \
++    | REG_DMA_CHAN_CTL_SRC_INCR                 \
++    | DMA_BURST(4)                              \
++    | DMA_WIDTH(dstwidth, srcwidth)             \
++    | (bytes * 8 / srcwidth))
++
++#endif /* CONFIG_ARCH_BCM116X */
++
++#else /* !USE_DMA */
++#define DMA_MIN_BUFLEN          0
++#define DMA_MAX_BUFLEN          0
++#define USE_DIRECT_IO(len)      1
++#endif
++/* ---- Private Function Prototypes -------------------------------------- */
++static void bcm_umi_nand_read_buf(struct mtd_info *mtd, u_char * buf, int len);
++static void bcm_umi_nand_write_buf(struct mtd_info *mtd, const u_char * buf,
++				   int len);
++
++/* ---- Private Variables ------------------------------------------------ */
++static struct mtd_info *board_mtd;
++static void __iomem *bcm_umi_io_base;
++static void *virtPtr;
++static dma_addr_t physPtr;
++static struct completion nand_comp;
++
++/* ---- Private Functions ------------------------------------------------ */
++#if NAND_ECC_BCH
++#include "bcm_umi_bch.c"
++#else
++#include "bcm_umi_hamming.c"
++#endif
++
++#if USE_DMA
++
++#if defined(CONFIG_ARCH_BCM116X)
++static irqreturn_t nand_dma_isr(void *dev_id)
++{
++	complete(&nand_comp);
++	return IRQ_HANDLED;
 +}
 +
-+static void dump_rltable(struct pxa3xx_bbm *bbm)
-+{
-+	int i;
++#elif defined(CONFIG_ARCH_BCMRING)
 +
-+	if (bbm->table->total =3D=3D 0) {
-+		pr_info("The relocation table is empty now\n");
-+		return;
-+	}
-+	for (i =3D 0; i < bbm->table->total; i++) {
-+		if (bbm->entry[i].from =3D=3D (unsigned short)(-1))
-+			continue;
-+		if (bbm->entry[i].to =3D=3D (unsigned short)(-1))
-+			pr_info("(%4d): block #%d is bad in relocation area\n",
-+				i, bbm->entry[i].from);
-+		else
-+			pr_info("(%4d): block #%d is relocated to #%d\n",
-+				i, bbm->entry[i].from, bbm->entry[i].to);
-+	}
++/****************************************************************************
++*
++*   Handler called when the DMA finishes.
++*
++***************************************************************************/
++
++static void nand_dma_handler(DMA_Device_t dev, int reason, void *userData)
++{
++	complete(&nand_comp);
 +}
 +
-+/* Initialize the relocation table */
-+static int pxa3xx_init_rltable(struct mtd_info *mtd)
++#endif
++
++/****************************************************************************
++*
++*   Function to perform DMA initialization
++*
++***************************************************************************/
++
++static int nand_dma_init(void)
 +{
-+	struct pxa3xx_bbm *bbm =3D NULL;
-+	int size =3D mtd->writesize + mtd->oobsize;
-+	int pages, entries;
++#if defined(CONFIG_ARCH_BCM116X)
 +
-+	if (verify_bbm_magic(mtd, &bbm) < 0) {
-+		/* BBM don't support this type of flash */
-+		return -EINVAL;
++	dma_request_irq(NAND_DMA_CHAN, nand_dma_isr, NULL);
++	dma_enable_irq(NAND_DMA_CHAN);
++	dma_request_chan(NAND_DMA_CHAN, "nand");
++
++#elif defined(CONFIG_ARCH_BCMRING)
++
++	int rc;
++
++	rc = dma_set_device_handler(DMA_DEVICE_NAND_MEM_TO_MEM,
++		nand_dma_handler, NULL);
++	if (rc != 0) {
++		printk(KERN_ERR "dma_set_device_handler failed: %d\n", rc);
++		return rc;
 +	}
++#else
++#error "Unrecognized DMA platform"
++#endif
 +
-+	bbm->page_shift =3D ffs(mtd->writesize) - 1;
-+	bbm->erase_shift =3D ffs(mtd->erasesize) - 1;
-+
-+	pages =3D mtd->erasesize >> bbm->page_shift;
-+
-+	entries =3D mtd->size >> bbm->erase_shift;
-+	entries =3D (entries * 10) / 512;
-+	if (mtd->writesize =3D=3D 512)
-+		entries =3D (entries < PXA_MAX_RLENTRY) ? entries
-+			  : PXA_MAX_RLENTRY;
-+
-+	bbm->max_slots	=3D PXA_MAX_SLOT;
-+	bbm->max_relocate_entry =3D entries;
-+	bbm->current_slot =3D -1;
-+
-+	bbm->data_buf =3D kzalloc(size, GFP_KERNEL);
-+	if (bbm->data_buf =3D=3D NULL)
++	virtPtr =
++	    dma_alloc_coherent(NULL, DMA_MAX_BUFLEN, &physPtr, GFP_KERNEL);
++	if (virtPtr == NULL) {
++		printk(KERN_ERR "NAND - Failed to allocate memory for DMA buffer\n");
 +		return -ENOMEM;
-+
-+	bbm->table =3D (struct relocate_table *)bbm->data_buf;
-+	memset(bbm->table, 0, sizeof(struct relocate_table));
-+
-+	bbm->entry =3D (struct relocate_entry *)((uint8_t *)bbm->data_buf +
-+			sizeof(struct relocate_entry));
-+	memset(bbm->entry, 0, sizeof(struct relocate_entry)
-+		* bbm->max_relocate_entry);
++	}
 +
 +	return 0;
 +}
 +
-+/* Uninitialize the relocation table */
-+static void pxa3xx_uninit_rltable(struct mtd_info *mtd)
++/****************************************************************************
++*
++*   Function to perform DMA termination
++*
++***************************************************************************/
++
++static void nand_dma_term(void)
 +{
-+	struct pxa3xx_bbm *bbm =3D NULL;
++#if defined(CONFIG_ARCH_BCM116X)
++	dma_free_chan(NAND_DMA_CHAN);
++	dma_free_irq(NAND_DMA_CHAN);
++#elif defined(CONFIG_ARCH_BCMRING)
++	/* Nothing to do */
++#else
++#error "Unrecognized DMA platform"
++#endif
 +
-+	if (verify_bbm_magic(mtd, &bbm) < 0) {
-+		/* BBM don't support this flash type */
-+		return;
-+	}
-+
-+	if (bbm) {
-+		kfree(bbm->data_buf);
-+		bbm =3D NULL;
-+	}
++	if (virtPtr != NULL)
++		dma_free_coherent(NULL, DMA_MAX_BUFLEN, virtPtr, physPtr);
 +}
 +
-+/*
-+ * Move larger data to left of pivot, and move smaller data to right of
-+ * pivot.
-+ */
-+static int partition(unsigned short *array, int left, int right, int pivot=
-_idx)
++/****************************************************************************
++*
++*   Performs a read via DMA
++*
++***************************************************************************/
++
++static void nand_dma_read(void *buf, int len)
 +{
-+	int i, pivot, base_idx;
++#if defined(CONFIG_ARCH_BCM116X)
++	int dmactrl;
 +
-+	pivot =3D array[pivot_idx];
-+	swap(array[left], array[right]);
-+	base_idx =3D left;
++	init_completion(&nand_comp);
++	dmactrl = DMA_CTRL_NAND_TO_SDRAM(32, 8, len);
++	dma_init_chan(NAND_DMA_CHAN);
++	dma_setup_chan(NAND_DMA_CHAN,
++		       REG_NAND_DATA8_PADDR, (int)physPtr, 0, dmactrl, DMA_CFG);
++	wait_for_completion(&nand_comp);
++	if (buf != NULL)
++		memcpy(buf, virtPtr, len);
 +
-+	for (i =3D left; i < right; i++) {
-+		if (array[i] > pivot) {
-+			swap(array[i], array[base_idx]);
-+			base_idx++;
-+		}
-+	}
-+	if (base_idx < right)
-+		swap(array[base_idx], array[right]);
-+	return base_idx;
-+}
++#elif defined(CONFIG_ARCH_BCMRING)
++	int offset = 0;
++	int tmp_len = 0;
++	int len_left = len;
++	DMA_Handle_t hndl;
 +
-+static int quick_sort(unsigned short *array, int left, int right)
-+{
-+	int pivot_idx, new_idx;
-+	if (right > left) {
-+		pivot_idx =3D left;
-+		new_idx =3D partition(array, left, right, pivot_idx);
-+		quick_sort(array, left, new_idx - 1);
-+		quick_sort(array, new_idx + 1, right);
-+	}
-+	return 0;
-+}
++	if (virtPtr == NULL)
++		panic("nand_dma_read: virtPtr == NULL\n");
 +
-+/*
-+ * Add the relocation entry into the relocation table. If the relocated bl=
-ock
-+ * is bad, an new entry will be added into the bottom of the relocation ta=
-ble.
-+ */
-+int update_rltable(struct mtd_info *mtd, int block)
-+{
-+	struct pxa3xx_bbm *bbm =3D NULL;
-+	struct relocate_table *table =3D NULL;
-+	struct relocate_entry *entry =3D NULL;
-+	struct erase_info instr;
-+	unsigned short array[PXA_MAX_RLENTRY], addr;
-+	int i, idx, ret, relocated_idx =3D -1;
++	if ((void *)physPtr == NULL)
++		panic("nand_dma_read: physPtr == NULL\n");
 +
-+	if (verify_bbm_magic(mtd, &bbm) < 0) {
-+		/* BBM don't support this type of flash */
-+		return -EINVAL;
++	hndl = dma_request_channel(DMA_DEVICE_NAND_MEM_TO_MEM);
++	if (hndl < 0) {
++		printk(KERN_ERR
++		       "nand_dma_read: unable to allocate dma channel: %d\n",
++		       (int)hndl);
++		panic("\n");
 +	}
 +
-+	table =3D bbm->table;
-+	entry =3D bbm->entry;
-+
-+	/* identify whether the block has been relocated */
-+	for (i =3D 0; i < table->total; i++) {
-+		if (entry[i].from =3D=3D (unsigned short)(-1))
-+			continue;
-+		if (block =3D=3D entry[i].from) {
-+			relocated_idx =3D i;
-+			break;
-+		}
-+	}
-+
-+scan:
-+	if (table->total > bbm->max_relocate_entry) {
-+		pr_warning("Relocation entries exceed max num. Can't relocate");
-+		pr_warning(" block 0x%x\n", block);
-+		return -ENOSPC;
-+	}
-+
-+	memset(array, 0, PXA_MAX_RLENTRY);
-+	/* Get all index of relocated blocks */
-+	for (i =3D 0, idx =3D 0; i < table->total; i++) {
-+		array[idx] =3D (entry[i].to !=3D (unsigned short)(-1)) ? entry[i].to
-+				: entry[i].from;
-+		idx++;
-+	}
-+	/* sort array with descending order */
-+	quick_sort(array, 0, idx - 1);
-+	/*
-+	 * find the available block with the largest number in reservered
-+	 * area
-+	 */
-+	addr =3D (unsigned short)((mtd->size >> bbm->erase_shift) - 1);
-+	for (i =3D 0; i < bbm->max_relocate_entry; i++, addr--) {
-+		if (addr < ((mtd->size >> bbm->erase_shift)
-+			- bbm->max_relocate_entry)) {
-+			pr_warning("Relocation area is already full!\n");
-+			return -ENOSPC;
-+		}
-+		if (array[i] < addr) {
-+			memset(&instr, 0, sizeof(struct erase_info));
-+			instr.mtd =3D mtd;
-+			instr.addr =3D addr << bbm->erase_shift;
-+			instr.len =3D 1 << bbm->erase_shift;
-+			ret =3D mtd->erase(mtd, &instr);
-+			if (ret =3D=3D 0) {
-+				/* fill the recorder into relocation table */
-+				if (relocated_idx =3D=3D -1) {
-+					/* new entry in relocation table */
-+					entry[table->total].from =3D block;
-+					entry[table->total].to =3D addr;
-+					table->total++;
-+					goto done;
-+				} else {
-+					/* update entry in relocation table */
-+					entry[table->total].from
-+						=3D entry[relocated_idx].to;
-+					entry[table->total].to
-+						=3D (unsigned short)(-1);
-+					table->total++;
-+					entry[relocated_idx].to =3D addr;
-+					goto done;
-+				}
-+			} else {
-+				/* append new bad entry */
-+				entry[table->total].from =3D addr;
-+				entry[table->total].to =3D (unsigned short)(-1);
-+				table->total++;
-+				goto scan;
-+			}
-+		}
-+	}
-+
-+done:
-+	return 0;
-+}
-+
-+/* Write the relocation table back to device, if there's room. */
-+static int sync_rltable(struct mtd_info *mtd, int *idx)
-+{
-+	struct pxa3xx_bbm *bbm =3D NULL;
-+	unsigned char *tmp;
-+	size_t retlen;
-+	int len, pages;
-+
-+	if (verify_bbm_magic(mtd, &bbm) < 0) {
-+		/* BBM don't support this type of flash */
-+		return -EINVAL;
-+	}
-+
-+	pages =3D mtd->erasesize >> bbm->page_shift;
-+	if ((*idx >=3D pages) || (*idx <=3D (pages - bbm->max_slots))) {
-+		printk(KERN_ERR "Wrong Slot is specified.\n");
-+		return -EINVAL;
-+	}
-+
-+	/* should write to the next slot*/
-+	(*idx)--;
-+
-+	len =3D 4;		/* table header */
-+	len +=3D bbm->table->total << 2;
-+
-+	tmp =3D (unsigned char *)bbm->data_buf;
-+	mtd->write(mtd, (*idx) << bbm->page_shift,
-+		   1 << bbm->page_shift, &retlen, tmp);
-+
-+	return 0;
-+}
-+
-+static int pxa3xx_scan_rltable(struct mtd_info *mtd)
-+{
-+	struct pxa3xx_bbm *bbm =3D NULL;
-+	struct relocate_table *table;
-+	int page, max_page;
-+	size_t retlen;
-+	int ret, retry_count =3D 3;
-+
-+	if (verify_bbm_magic(mtd, &bbm) < 0) {
-+		/* BBM don't support this type of flash */
-+		return -EINVAL;
-+	}
-+
-+	pxa3xx_init_rltable(mtd);
-+
-+	table =3D bbm->table;
-+
-+	bbm->current_slot =3D -1;
-+	page =3D (mtd->erasesize >> bbm->page_shift) - bbm->max_slots;
-+	max_page =3D mtd->erasesize >> bbm->page_shift;
-+	for (; page < max_page; page++, retry_count =3D 3) {
-+retry:
-+		memset(bbm->data_buf, 0, mtd->writesize + mtd->oobsize);
-+		ret =3D mtd->read(mtd, (page << bbm->page_shift),
-+				mtd->writesize, &retlen, bbm->data_buf);
-+		if (ret =3D=3D 0) {
-+			if (table->header =3D=3D PXA_RLTABLE_HEADER) {
-+				bbm->current_slot =3D page;
-+				break;
-+			}
++	while (len_left > 0) {
++		if (len_left > DMA_MAX_LEN) {
++			tmp_len = DMA_MAX_LEN;
++			len_left -= DMA_MAX_LEN;
 +		} else {
-+			if (retry_count--)
-+				goto retry;
++			tmp_len = len_left;
++			len_left = 0;
 +		}
++
++		init_completion(&nand_comp);
++		dma_transfer_mem_to_mem(hndl, REG_NAND_DATA_PADDR,
++					physPtr + offset, tmp_len);
++		wait_for_completion(&nand_comp);
++
++		offset += tmp_len;
 +	}
-+	if (bbm->current_slot !=3D -1) {
-+		pr_debug("Found relocation table at page:%d\n",
-+			bbm->current_slot);
-+		dump_rltable(bbm);
-+	} else {
-+		pr_err("Can't recognize relocation table.\n");
-+		pr_err("CAUTION: It may cause unpredicated error\n");
-+		pr_err("Please re-initialize the flash.\n");
-+		memset((unsigned char *)bbm->table, 0,
-+			sizeof(struct relocate_table));
++
++	dma_free_channel(hndl);
++
++	if (buf != NULL)
++		memcpy(buf, virtPtr, len);
++
++#else
++#error "Unrecognized DMA platform"
++#endif
++}
++
++/****************************************************************************
++*
++*   Performs a write via DMA
++*
++***************************************************************************/
++
++static void nand_dma_write(const void *buf, int len)
++{
++#if defined(CONFIG_ARCH_BCM116X)
++	int dmactrl;
++
++	memcpy(virtPtr, buf, len);
++	init_completion(&nand_comp);
++
++	dmactrl = DMA_CTRL_SDRAM_TO_NAND(8, 32, len);
++	dma_init_chan(NAND_DMA_CHAN);
++	dma_setup_chan(NAND_DMA_CHAN,
++		       (int)physPtr, REG_NAND_DATA8_PADDR, 0, dmactrl, DMA_CFG);
++	wait_for_completion(&nand_comp);
++
++#elif defined(CONFIG_ARCH_BCMRING)
++	int offset = 0;
++	int tmp_len = 0;
++	int len_left = len;
++	DMA_Handle_t hndl;
++
++	if (buf == NULL)
++		panic("nand_dma_write: buf == NULL\n");
++
++	if (virtPtr == NULL)
++		panic("nand_dma_write: virtPtr == NULL\n");
++
++	if ((void *)physPtr == NULL)
++		panic("nand_dma_write: physPtr == NULL\n");
++
++	memcpy(virtPtr, buf, len);
++
++
++	hndl = dma_request_channel(DMA_DEVICE_NAND_MEM_TO_MEM);
++	if (hndl < 0) {
++		printk(KERN_ERR
++		       "nand_dma_write: unable to allocate dma channel: %d\n",
++		       (int)hndl);
++		panic("\n");
++	}
++
++	while (len_left > 0) {
++		if (len_left > DMA_MAX_LEN) {
++			tmp_len = DMA_MAX_LEN;
++			len_left -= DMA_MAX_LEN;
++		} else {
++			tmp_len = len_left;
++			len_left = 0;
++		}
++
++		init_completion(&nand_comp);
++		dma_transfer_mem_to_mem(hndl, physPtr + offset,
++					REG_NAND_DATA_PADDR, tmp_len);
++		wait_for_completion(&nand_comp);
++
++		offset += tmp_len;
++	}
++
++	dma_free_channel(hndl);
++#else
++#error "Unrecognized DMA platform"
++#endif
++}
++
++#endif
++
++/****************************************************************************
++*
++*  nand_dev_ready
++*
++*   Routine to check if nand is ready.
++*
++***************************************************************************/
++static int nand_dev_ready(struct mtd_info *mtd)
++{
++	return nand_bcm_umi_dev_ready();
++}
++
++/****************************************************************************
++*
++*  bcm_umi_nand_inithw
++*
++*   This routine does the necessary hardware (board-specific)
++*   initializations.  This includes setting up the timings, etc.
++*
++***************************************************************************/
++
++int bcm_umi_nand_inithw(void)
++{
++	/* Configure nand timing parameters */
++#if defined(CONFIG_ARCH_BCM116X)
++/*
++ * waiten = 0
++ * lowfreq = 0
++ * memtype async r/w, no page mode = 000
++ * pgsz = 000
++ * tprc_twlc = 00000     Page read access cycle/Burst write latency (n+2/n+1)
++ * tbta = 001            Bus turnaround cycle (n)
++ * twp = 00100           Write pulse width cycle (n+1)
++ * twr = 00              Write recovery cycle (n+1)
++ * tas = 00              Write address setup cycle (n+1)
++ * toe = 00              Output enable delay cycle (n)
++ * trc_tlc = 00011       Read access cycle / Burst read latency (n+2 / n+1)
++ */
++	REG_UMI_FLASH0_TCR = 0x00012003;
++#endif
++
++	REG_UMI_NAND_TCR &= ~0x7ffff;
++#if defined(CONFIG_ARCH_BCM116X)
++/*
++ * tbta = 001            Bus turnaround cycle (n)
++ * twp = 00100           Write pulse width cycle (n+1)
++ * twr = 00              Write recovery cycle (n+1)
++ * tas = 00              Write address setup cycle (n+1)
++ * toe = 00              Output enable delay cycle (n)
++ * trc_tlc = 00011       Read access cycle / Burst read latency (n+2 / n+1)
++ */
++	REG_UMI_NAND_TCR |= 0x72003;
++#else
++	REG_UMI_NAND_TCR |= HW_CFG_NAND_TCR;
++#endif
++
++#if !defined(CONFIG_MTD_NAND_BCM_UMI_HWCS)
++	/* enable software control of CS */
++	REG_UMI_NAND_TCR |= REG_UMI_NAND_TCR_CS_SWCTRL;
++#endif
++
++	/* keep NAND chip select asserted */
++	REG_UMI_NAND_RCSR |= REG_UMI_NAND_RCSR_CS_ASSERTED;
++
++	REG_UMI_NAND_TCR &= ~REG_UMI_NAND_TCR_WORD16;
++	/* enable writes to flash */
++	REG_UMI_MMD_ICR |= REG_UMI_MMD_ICR_FLASH_WP;
++
++	writel(NAND_CMD_RESET, bcm_umi_io_base + REG_NAND_CMD_OFFSET);
++	nand_bcm_umi_wait_till_ready();
++
++#if NAND_ECC_BCH
++	nand_bcm_umi_bch_config_ecc(NAND_ECC_NUM_BYTES);
++#endif
++
++	return 0;
++}
++
++/****************************************************************************
++*
++*  bcm_umi_nand_hwcontrol
++*
++*   Used to turn latch the proper register for access.
++*
++***************************************************************************/
++
++static void bcm_umi_nand_hwcontrol(struct mtd_info *mtd, int cmd,
++				   unsigned int ctrl)
++{
++	/* send command to hardware */
++	struct nand_chip *chip = mtd->priv;
++	if (ctrl & NAND_CTRL_CHANGE) {
++		if (ctrl & NAND_CLE) {
++			chip->IO_ADDR_W = bcm_umi_io_base + REG_NAND_CMD_OFFSET;
++			goto CMD;
++		}
++		if (ctrl & NAND_ALE) {
++			chip->IO_ADDR_W =
++			    bcm_umi_io_base + REG_NAND_ADDR_OFFSET;
++			goto CMD;
++		}
++		chip->IO_ADDR_W = bcm_umi_io_base + REG_NAND_DATA8_OFFSET;
++	}
++
++CMD:
++	/* Send command to chip directly */
++	if (cmd != NAND_CMD_NONE)
++		writeb(cmd, chip->IO_ADDR_W);
++}
++
++/****************************************************************************
++*
++*  bcm_umi_nand_write_buf - write buffer to chip
++*  @mtd:	MTD device structure
++*  @buf:	data buffer
++*  @len:	number of bytes to write
++*
++***************************************************************************/
++static void bcm_umi_nand_write_buf(struct mtd_info *mtd, const u_char * buf,
++				   int len)
++{
++	if (USE_DIRECT_IO(len)) {
++		/* Do it the old way if the buffer is small or too large.
++		 * Probably quicker than starting and checking dma. */
++		int i;
++		struct nand_chip *this = mtd->priv;
++
++		for (i = 0; i < len; i++)
++			writeb(buf[i], this->IO_ADDR_W);
++	}
++#if USE_DMA
++	else
++		nand_dma_write(buf, len);
++#endif
++}
++
++/****************************************************************************
++*
++*  nand_read_buf - read chip data into buffer
++*  @mtd:	MTD device structure
++*  @buf:	buffer to store data
++*  @len:	number of bytes to read
++*
++***************************************************************************/
++
++static void bcm_umi_nand_read_buf(struct mtd_info *mtd, u_char * buf, int len)
++{
++	if (USE_DIRECT_IO(len)) {
++		int i;
++		struct nand_chip *this = mtd->priv;
++
++		for (i = 0; i < len; i++)
++			buf[i] = readb(this->IO_ADDR_R);
++	}
++#if USE_DMA
++	else
++		nand_dma_read(buf, len);
++#endif
++}
++
++/****************************************************************************
++*
++*  bcm_umi_nand_verify_buf - Verify chip data against buffer
++*  @mtd:	MTD device structure
++*  @buf:	buffer containing the data to compare
++*  @len:	number of bytes to compare
++*
++***************************************************************************/
++static uint8_t readbackbuf[NAND_MAX_PAGESIZE];
++static int bcm_umi_nand_verify_buf(struct mtd_info *mtd, const u_char * buf,
++				   int len)
++{
++	/*
++	 * Try to readback page with ECC correction. This is necessary
++	 * for MLC parts which may have permanently stuck bits.
++	 */
++	struct nand_chip *chip = mtd->priv;
++	int ret = chip->ecc.read_page(mtd, chip, readbackbuf, 0);
++	if (ret < 0)
++		return -EFAULT;
++	else {
++		if (memcmp(readbackbuf, buf, len) == 0)
++			return 0;
++
 +		return -EFAULT;
 +	}
 +	return 0;
 +}
 +
-+/*
-+ * Find the relocated block of the bad one.
-+ * If it's a good block, return 0. Otherwise, return a relocated one.
-+ * idx points to the next relocation entry
-+ * If the relocated block is bad, an new entry will be added into the
-+ * bottom of the relocation table.
-+ */
-+static loff_t pxa3xx_search_rlentry(struct mtd_info *mtd, loff_t ofs)
++static int bcm_umi_nand_probe(struct platform_device *pdev)
 +{
-+	struct pxa3xx_bbm *bbm =3D NULL;
-+	struct relocate_table *table =3D NULL;
-+	struct relocate_entry *entry =3D NULL;
-+	int i, block;
++	struct nand_chip *this;
++	int err = 0;
 +
-+	/*
-+	 * In SLC, block 0 shouldn't be broken.
-+	 * In some command, address is assigned to 0 if it doesn't need
-+	 * to operate address. So just skip it.
++	printk(gBanner);
++
++	/* Allocate memory for MTD device structure and private data */
++	board_mtd =
++	    kmalloc(sizeof(struct mtd_info) + sizeof(struct nand_chip),
++		    GFP_KERNEL);
++	if (!board_mtd) {
++		printk(KERN_WARNING
++		       "Unable to allocate NAND MTD device structure.\n");
++		return -ENOMEM;
++	}
++
++	/* map physical adress */
++#ifdef CONFIG_ARCH_BCMRING
++	bcm_umi_io_base = ioremap(MM_ADDR_IO_NAND, 0x1000);
++#else
++	bcm_umi_io_base = ioremap(0x08000000, 0x1000);
++#endif
++
++	if (!bcm_umi_io_base) {
++		printk(KERN_ERR "ioremap to access BCM UMI NAND chip failed\n");
++		kfree(board_mtd);
++		return -EIO;
++	}
++
++	/* Get pointer to private data */
++	this = (struct nand_chip *)(&board_mtd[1]);
++
++	/* Initialize structures */
++	memset((char *)board_mtd, 0, sizeof(struct mtd_info));
++	memset((char *)this, 0, sizeof(struct nand_chip));
++
++	/* Link the private data with the MTD structure */
++	board_mtd->priv = this;
++
++	/* Initialize the NAND hardware.  */
++	if (bcm_umi_nand_inithw() < 0) {
++		printk(KERN_ERR "BCM UMI NAND chip could not be initialized\n");
++		iounmap(bcm_umi_io_base);
++		kfree(board_mtd);
++		return -EIO;
++	}
++
++	/* Set address of NAND IO lines */
++	this->IO_ADDR_W = bcm_umi_io_base + REG_NAND_DATA8_OFFSET;
++	this->IO_ADDR_R = bcm_umi_io_base + REG_NAND_DATA8_OFFSET;
++
++	/* Set command delay time, see datasheet for correct value */
++	this->chip_delay = 0;
++	/* Assign the device ready function, if available */
++	this->dev_ready = nand_dev_ready;
++	this->options = 0;
++
++	this->write_buf = bcm_umi_nand_write_buf;
++	this->read_buf = bcm_umi_nand_read_buf;
++	this->verify_buf = bcm_umi_nand_verify_buf;
++
++	this->cmd_ctrl = bcm_umi_nand_hwcontrol;
++#if USE_HWECC
++	this->ecc.mode = NAND_ECC_HW;
++	this->ecc.size = 512;
++	this->ecc.bytes = NAND_ECC_NUM_BYTES;
++
++#if NAND_ECC_BCH
++	this->ecc.read_page = bcm_umi_bch_read_page_hwecc;
++	this->ecc.write_page = bcm_umi_bch_write_page_hwecc;
++#else
++	this->ecc.correct = nand_correct_data512;
++	this->ecc.calculate = bcm_umi_hamming_get_hw_ecc;
++	this->ecc.hwctl = bcm_umi_hamming_enable_hwecc;
++#endif
++#else
++	this->ecc.mode = NAND_ECC_SOFT;
++#endif
++
++#if USE_DMA
++	err = nand_dma_init();
++	if (err != 0)
++		return err;
++#endif
++
++	/* Figure out the size of the device that we have.
++	 * We need to do this to figure out which ECC
++	 * layout we'll be using.
 +	 */
-+	if (ofs <=3D 0)
-+		return ofs;
 +
-+	if (verify_bbm_magic(mtd, &bbm) < 0)
-+		return ofs;
++	err = nand_scan_ident(board_mtd, 1);
++	if (err) {
++		printk(KERN_ERR "nand_scan failed: %d\n", err);
++		iounmap(bcm_umi_io_base);
++		kfree(board_mtd);
++		return err;
++	}
 +
-+	table =3D bbm->table;
-+	entry =3D bbm->entry;
++	/* Now that we know the nand size, we can setup the ECC layout */
 +
-+	block =3D ofs >> bbm->erase_shift;
-+
-+	if ((bbm->current_slot =3D=3D -1) || (table->total <=3D 0)
-+		|| (block >=3D (mtd->size >> bbm->erase_shift)))
-+		return ofs;
-+
-+	ofs =3D ofs - (block << bbm->erase_shift);	/* save offset */
-+
-+	for (i =3D 0; i < table->total; i++) {
-+		if (block =3D=3D entry[i].from) {
-+			block =3D entry[i].to;
-+			break;
++#if USE_HWECC
++	switch (board_mtd->writesize) {	/* writesize is the pagesize */
++	case 4096:
++		this->ecc.layout = &nand_hw_eccoob_4096;
++		break;
++	case 2048:
++		this->ecc.layout = &nand_hw_eccoob_2048;
++		break;
++	case 512:
++		this->ecc.layout = &nand_hw_eccoob_512;
++		break;
++	default:
++		{
++			printk(KERN_ERR "NAND - Unrecognized pagesize: %d\n",
++			       board_mtd->writesize);
++			return -EINVAL;
 +		}
 +	}
-+	ofs +=3D block << bbm->erase_shift;
-+	return ofs;
-+}
++#endif
 +
-+static int pxa3xx_mark_rlentry(struct mtd_info *mtd, int block)
-+{
-+	struct pxa3xx_bbm *bbm =3D NULL;
-+	int ret =3D 0;
++#if NAND_ECC_BCH
++	if (board_mtd->writesize > 512) {
++		if (this->options & NAND_USE_FLASH_BBT)
++			largepage_bbt.options = NAND_BBT_SCAN2NDPAGE;
++		this->badblock_pattern = &largepage_bbt;
++	}
++#endif
 +
-+	ret =3D verify_bbm_magic(mtd, &bbm);
-+	if (ret < 0) {
-+		/* BBM don't support this type of flash */
-+		return -EINVAL;
++	/* Now finish off the scan, now that ecc.layout has been initialized. */
++
++	err = nand_scan_tail(board_mtd);
++	if (err) {
++		printk(KERN_ERR "nand_scan failed: %d\n", err);
++		iounmap(bcm_umi_io_base);
++		kfree(board_mtd);
++		return err;
 +	}
 +
-+	ret =3D update_rltable(mtd, block);
-+	if (ret)
-+		return ret;
++	/* Register the partitions */
++	{
++		int nr_partitions;
++		struct mtd_partition *partition_info;
 +
-+	return sync_rltable(mtd, &(bbm->current_slot));
++		board_mtd->name = "bcm_umi-nand";
++		nr_partitions =
++		    parse_mtd_partitions(board_mtd, part_probes,
++					 &partition_info, 0);
++
++		if (nr_partitions <= 0) {
++			printk(KERN_ERR "BCM UMI NAND: Too few partitions - %d\n",
++			       nr_partitions);
++			iounmap(bcm_umi_io_base);
++			kfree(board_mtd);
++			return -EIO;
++		}
++		add_mtd_partitions(board_mtd, partition_info, nr_partitions);
++	}
++
++	/* Return happy */
++	return 0;
 +}
 +
-+/* If Marvell BBM is used, return 0. Otherwise, return negative value. */
-+struct pxa3xx_bbm *pxa3xx_query_bbm(void)
++static int bcm_umi_nand_remove(struct platform_device *pdev)
 +{
-+	if (pxa3xx_bbm)
-+		return pxa3xx_bbm;
-+	return NULL;
-+}
-+EXPORT_SYMBOL(pxa3xx_query_bbm);
++#if USE_DMA
++	nand_dma_term();
++#endif
 +
-+static int __init pxa3xx_bbm_init(void)
-+{
-+	struct pxa3xx_bbm *bbm;
++	/* Release resources, unregister device */
++	nand_release(board_mtd);
 +
-+	bbm =3D kzalloc(sizeof(struct pxa3xx_bbm), GFP_KERNEL);
-+	if (!bbm)
-+		return -ENOMEM;
++	/* unmap physical adress */
++	iounmap(bcm_umi_io_base);
 +
-+	bbm->magic		=3D PXA_BBM_MAGIC;
-+	bbm->uninit		=3D pxa3xx_uninit_rltable;
-+	bbm->search		=3D pxa3xx_search_rlentry;
-+	bbm->block_markbad	=3D pxa3xx_mark_rlentry;
-+	bbm->scan_bbt		=3D pxa3xx_scan_rltable;
-+
-+	pxa3xx_bbm =3D bbm;
++	/* Free the MTD device structure */
++	kfree(board_mtd);
 +
 +	return 0;
 +}
-+subsys_initcall(pxa3xx_bbm_init);
 +
-+static void pxa3xx_bbm_exit(void)
++#ifdef CONFIG_PM
++static int bcm_umi_nand_suspend(struct platform_device *pdev,
++				pm_message_t state)
 +{
-+	if (pxa3xx_bbm) {
-+		kfree(pxa3xx_bbm);
-+		pxa3xx_bbm =3D NULL;
-+	}
++	printk(KERN_ERR "MTD NAND suspend is being called\n");
++	return 0;
 +}
-+module_exit(pxa3xx_bbm_exit);
++
++static int bcm_umi_nand_resume(struct platform_device *pdev)
++{
++	printk(KERN_ERR "MTD NAND resume is being called\n");
++	return 0;
++}
++#else
++#define bcm_umi_nand_suspend   NULL
++#define bcm_umi_nand_resume    NULL
++#endif
++
++static struct platform_driver nand_driver = {
++	.driver = {
++		   .name = "bcm-nand",
++		   .owner = THIS_MODULE,
++		   },
++	.probe = bcm_umi_nand_probe,
++	.remove = bcm_umi_nand_remove,
++	.suspend = bcm_umi_nand_suspend,
++	.resume = bcm_umi_nand_resume,
++};
++
++static int __init nand_init(void)
++{
++	return platform_driver_register(&nand_driver);
++}
++
++static void __exit nand_exit(void)
++{
++	platform_driver_unregister(&nand_driver);
++}
++
++module_init(nand_init);
++module_exit(nand_exit);
 +
 +MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Marvell PXA3xx Bad Block Management");
---=20
-1.5.6.5
++MODULE_AUTHOR("Broadcom");
++MODULE_DESCRIPTION("BCM UMI MTD NAND driver");
+diff --git a/drivers/mtd/nand/nand_bcm_umi.c b/drivers/mtd/nand/nand_bcm_umi.c
+new file mode 100644
+index 0000000..46a6bc9
+--- /dev/null
++++ b/drivers/mtd/nand/nand_bcm_umi.c
+@@ -0,0 +1,149 @@
++/*****************************************************************************
++* Copyright 2004 - 2009 Broadcom Corporation.  All rights reserved.
++*
++* Unless you and Broadcom execute a separate written software license
++* agreement governing use of this software, this software is licensed to you
++* under the terms of the GNU General Public License version 2, available at
++* http://www.broadcom.com/licenses/GPLv2.php (the "GPL").
++*
++* Notwithstanding the above, under no circumstances may you combine this
++* software in any way with any other Broadcom software provided under a
++* license other than the GPL, without Broadcom's express prior written
++* consent.
++*****************************************************************************/
++
++/* ---- Include Files ---------------------------------------------------- */
++#include <mach/reg_umi.h>
++#include "nand_bcm_umi.h"
++#ifdef BOOT0_BUILD
++#include <uart.h>
++#endif
++
++/* ---- External Variable Declarations ----------------------------------- */
++/* ---- External Function Prototypes ------------------------------------- */
++/* ---- Public Variables ------------------------------------------------- */
++/* ---- Private Constants and Types -------------------------------------- */
++/* ---- Private Function Prototypes -------------------------------------- */
++/* ---- Private Variables ------------------------------------------------ */
++/* ---- Private Functions ------------------------------------------------ */
++
++#if NAND_ECC_BCH
++/****************************************************************************
++*  nand_bch_ecc_flip_bit - Routine to flip an errored bit
++*
++*  PURPOSE:
++*     This is a helper routine that flips the bit (0 -> 1 or 1 -> 0) of the
++*     errored bit specified
++*
++*  PARAMETERS:
++*     datap - Container that holds the 512 byte data
++*     errorLocation - Location of the bit that needs to be flipped
++*
++*  RETURNS:
++*     None
++****************************************************************************/
++static void nand_bcm_umi_bch_ecc_flip_bit(uint8_t *datap, int errorLocation)
++{
++	int locWithinAByte = (errorLocation & REG_UMI_BCH_ERR_LOC_BYTE) >> 0;
++	int locWithinAWord = (errorLocation & REG_UMI_BCH_ERR_LOC_WORD) >> 3;
++	int locWithinAPage = (errorLocation & REG_UMI_BCH_ERR_LOC_PAGE) >> 5;
++
++	uint8_t errorByte = 0;
++	uint8_t byteMask = 1 << locWithinAByte;
++
++	/* BCH uses big endian, need to change the location
++	 * bits to little endian */
++	locWithinAWord = 3 - locWithinAWord;
++
++	errorByte = datap[locWithinAPage * sizeof(uint32_t) + locWithinAWord];
++
++#ifdef BOOT0_BUILD
++	puthexs("\nECC Correct Offset: ",
++		locWithinAPage * sizeof(uint32_t) + locWithinAWord);
++	puthexs(" errorByte:", errorByte);
++	puthex8(" Bit: ", locWithinAByte);
++#endif
++
++	if (errorByte & byteMask) {
++		/* bit needs to be cleared */
++		errorByte &= ~byteMask;
++	} else {
++		/* bit needs to be set */
++		errorByte |= byteMask;
++	}
++
++	/* write back the value with the fixed bit */
++	datap[locWithinAPage * sizeof(uint32_t) + locWithinAWord] = errorByte;
++}
++
++/****************************************************************************
++*  nand_correct_page_bch - Routine to correct bit errors when reading NAND
++*
++*  PURPOSE:
++*     This routine reads the BCH registers to determine if there are any bit
++*     errors during the read of the last 512 bytes of data + ECC bytes.  If
++*     errors exists, the routine fixes it.
++*
++*  PARAMETERS:
++*     datap - Container that holds the 512 byte data
++*
++*  RETURNS:
++*     0 or greater = Number of errors corrected
++*                    (No errors are found or errors have been fixed)
++*    -1 = Error(s) cannot be fixed
++****************************************************************************/
++int nand_bcm_umi_bch_correct_page(uint8_t *datap, uint8_t *readEccData,
++				  int numEccBytes)
++{
++	int numErrors;
++	int errorLocation;
++	int idx;
++	uint32_t regValue;
++
++	/* wait for read ECC to be valid */
++	regValue = nand_bcm_umi_bch_poll_read_ecc_calc();
++
++	/*
++	 * read the control status register to determine if there
++	 * are error'ed bits
++	 * see if errors are correctible
++	 */
++	if ((regValue & REG_UMI_BCH_CTRL_STATUS_UNCORR_ERR) > 0) {
++		int i;
++
++		for (i = 0; i < numEccBytes; i++) {
++			if (readEccData[i] != 0xff) {
++				/* errors cannot be fixed, return -1 */
++				return -1;
++			}
++		}
++		/* If ECC is unprogrammed then we can't correct,
++		 * assume everything OK */
++		return 0;
++	}
++
++	if ((regValue & REG_UMI_BCH_CTRL_STATUS_CORR_ERR) == 0) {
++		/* no errors */
++		return 0;
++	}
++
++	/*
++	 * Fix errored bits by doing the following:
++	 * 1. Read the number of errors in the control and status register
++	 * 2. Read the error location registers that corresponds to the number
++	 *    of errors reported
++	 * 3. Invert the bit in the data
++	 */
++	numErrors = (regValue & REG_UMI_BCH_CTRL_STATUS_NB_CORR_ERROR) >> 20;
++
++	for (idx = 0; idx < numErrors; idx++) {
++		errorLocation =
++		    REG_UMI_BCH_ERR_LOC_ADDR(idx) & REG_UMI_BCH_ERR_LOC_MASK;
++
++		/* Flip bit */
++		nand_bcm_umi_bch_ecc_flip_bit(datap, errorLocation);
++	}
++	/* Errors corrected */
++	return numErrors;
++}
++#endif
+diff --git a/drivers/mtd/nand/nand_bcm_umi.h b/drivers/mtd/nand/nand_bcm_umi.h
+new file mode 100644
+index 0000000..7cec2cd
+--- /dev/null
++++ b/drivers/mtd/nand/nand_bcm_umi.h
+@@ -0,0 +1,358 @@
++/*****************************************************************************
++* Copyright 2003 - 2009 Broadcom Corporation.  All rights reserved.
++*
++* Unless you and Broadcom execute a separate written software license
++* agreement governing use of this software, this software is licensed to you
++* under the terms of the GNU General Public License version 2, available at
++* http://www.broadcom.com/licenses/GPLv2.php (the "GPL").
++*
++* Notwithstanding the above, under no circumstances may you combine this
++* software in any way with any other Broadcom software provided under a
++* license other than the GPL, without Broadcom's express prior written
++* consent.
++*****************************************************************************/
++#ifndef NAND_BCM_UMI_H
++#define NAND_BCM_UMI_H
++
++/* ---- Include Files ---------------------------------------------------- */
++#include <mach/reg_umi.h>
++#include <mach/reg_nand.h>
++#include <cfg_global.h>
++
++/* ---- Constants and Types ---------------------------------------------- */
++#if (CFG_GLOBAL_CHIP_FAMILY == CFG_GLOBAL_CHIP_FAMILY_BCMRING)
++#define NAND_ECC_BCH (CFG_GLOBAL_CHIP_REV > 0xA0)
++#else
++#define NAND_ECC_BCH 0
++#endif
++
++#define CFG_GLOBAL_NAND_ECC_BCH_NUM_BYTES	13
++
++#if NAND_ECC_BCH
++#ifdef BOOT0_BUILD
++#define NAND_ECC_NUM_BYTES 13
++#else
++#define NAND_ECC_NUM_BYTES CFG_GLOBAL_NAND_ECC_BCH_NUM_BYTES
++#endif
++#else
++#define NAND_ECC_NUM_BYTES 3
++#endif
++
++#define NAND_DATA_ACCESS_SIZE 512
++
++/* ---- Variable Externs ------------------------------------------ */
++/* ---- Function Prototypes --------------------------------------- */
++int nand_bcm_umi_bch_correct_page(uint8_t *datap, uint8_t *readEccData,
++				  int numEccBytes);
++
++/* Check in device is ready */
++static inline int nand_bcm_umi_dev_ready(void)
++{
++	return REG_UMI_NAND_RCSR & REG_UMI_NAND_RCSR_RDY;
++}
++
++/* Wait until device is ready */
++static inline void nand_bcm_umi_wait_till_ready(void)
++{
++	while (nand_bcm_umi_dev_ready() == 0)
++		;
++}
++
++/* Enable Hamming ECC */
++static inline void nand_bcm_umi_hamming_enable_hwecc(void)
++{
++	/* disable and reset ECC, 512 byte page */
++	REG_UMI_NAND_ECC_CSR &= ~(REG_UMI_NAND_ECC_CSR_ECC_ENABLE |
++		REG_UMI_NAND_ECC_CSR_256BYTE);
++	/* enable ECC */
++	REG_UMI_NAND_ECC_CSR |= REG_UMI_NAND_ECC_CSR_ECC_ENABLE;
++}
++
++#if NAND_ECC_BCH
++/* BCH ECC specifics */
++#define ECC_BITS_PER_CORRECTABLE_BIT 13
++
++/* Enable BCH Read ECC */
++static inline void nand_bcm_umi_bch_enable_read_hwecc(void)
++{
++	/* disable and reset ECC */
++	REG_UMI_BCH_CTRL_STATUS = REG_UMI_BCH_CTRL_STATUS_RD_ECC_VALID;
++	/* Turn on ECC */
++	REG_UMI_BCH_CTRL_STATUS = REG_UMI_BCH_CTRL_STATUS_ECC_RD_EN;
++}
++
++/* Enable BCH Write ECC */
++static inline void nand_bcm_umi_bch_enable_write_hwecc(void)
++{
++	/* disable and reset ECC */
++	REG_UMI_BCH_CTRL_STATUS = REG_UMI_BCH_CTRL_STATUS_WR_ECC_VALID;
++	/* Turn on ECC */
++	REG_UMI_BCH_CTRL_STATUS = REG_UMI_BCH_CTRL_STATUS_ECC_WR_EN;
++}
++
++/* Config number of BCH ECC bytes */
++static inline void nand_bcm_umi_bch_config_ecc(uint8_t numEccBytes)
++{
++	uint32_t nValue;
++	uint32_t tValue;
++	uint32_t kValue;
++	uint32_t numBits = numEccBytes * 8;
++
++	/* disable and reset ECC */
++	REG_UMI_BCH_CTRL_STATUS =
++	    REG_UMI_BCH_CTRL_STATUS_WR_ECC_VALID |
++	    REG_UMI_BCH_CTRL_STATUS_RD_ECC_VALID;
++
++	/* Every correctible bit requires 13 ECC bits */
++	tValue = (uint32_t) (numBits / ECC_BITS_PER_CORRECTABLE_BIT);
++
++	/* Total data in number of bits for generating and computing BCH ECC */
++	nValue = (NAND_DATA_ACCESS_SIZE + numEccBytes) * 8;
++
++	/* K parameter is used internally.  K = N - (T * 13) */
++	kValue = nValue - (tValue * ECC_BITS_PER_CORRECTABLE_BIT);
++
++	/* Write the settings */
++	REG_UMI_BCH_N = nValue;
++	REG_UMI_BCH_T = tValue;
++	REG_UMI_BCH_K = kValue;
++}
++
++/* Pause during ECC read calculation to skip bytes in OOB */
++static inline void nand_bcm_umi_bch_pause_read_ecc_calc(void)
++{
++	REG_UMI_BCH_CTRL_STATUS =
++	    REG_UMI_BCH_CTRL_STATUS_ECC_RD_EN |
++	    REG_UMI_BCH_CTRL_STATUS_PAUSE_ECC_DEC;
++}
++
++/* Resume during ECC read calculation after skipping bytes in OOB */
++static inline void nand_bcm_umi_bch_resume_read_ecc_calc(void)
++{
++	REG_UMI_BCH_CTRL_STATUS = REG_UMI_BCH_CTRL_STATUS_ECC_RD_EN;
++}
++
++/* Poll read ECC calc to check when hardware completes */
++static inline uint32_t nand_bcm_umi_bch_poll_read_ecc_calc(void)
++{
++	uint32_t regVal;
++
++	do {
++		/* wait for ECC to be valid */
++		regVal = REG_UMI_BCH_CTRL_STATUS;
++	} while ((regVal & REG_UMI_BCH_CTRL_STATUS_RD_ECC_VALID) == 0);
++
++	return regVal;
++}
++
++/* Poll write ECC calc to check when hardware completes */
++static inline void nand_bcm_umi_bch_poll_write_ecc_calc(void)
++{
++	/* wait for ECC to be valid */
++	while ((REG_UMI_BCH_CTRL_STATUS & REG_UMI_BCH_CTRL_STATUS_WR_ECC_VALID)
++	       == 0)
++		;
++}
++
++/* Read the OOB and ECC, for kernel write OOB to a buffer */
++#if defined(__KERNEL__) && !defined(STANDALONE)
++static inline void nand_bcm_umi_bch_read_oobEcc(uint32_t pageSize,
++	uint8_t *eccCalc, int numEccBytes, uint8_t *oobp)
++#else
++static inline void nand_bcm_umi_bch_read_oobEcc(uint32_t pageSize,
++	uint8_t *eccCalc, int numEccBytes)
++#endif
++{
++	int eccPos = 0;
++	int numToRead = 16;	/* There are 16 bytes per sector in the OOB */
++
++	/* ECC is already paused when this function is called */
++
++	if (pageSize == NAND_DATA_ACCESS_SIZE) {
++		while (numToRead > numEccBytes) {
++			/* skip free oob region */
++#if defined(__KERNEL__) && !defined(STANDALONE)
++			*oobp++ = REG_NAND_DATA8;
++#else
++			REG_NAND_DATA8;
++#endif
++			numToRead--;
++		}
++
++		/* read ECC bytes before BI */
++		nand_bcm_umi_bch_resume_read_ecc_calc();
++
++		while (numToRead > 11) {
++#if defined(__KERNEL__) && !defined(STANDALONE)
++			*oobp = REG_NAND_DATA8;
++			eccCalc[eccPos++] = *oobp;
++			oobp++;
++#else
++			eccCalc[eccPos++] = REG_NAND_DATA8;
++#endif
++		}
++
++		nand_bcm_umi_bch_pause_read_ecc_calc();
++
++		if (numToRead == 11) {
++			/* read BI */
++#if defined(__KERNEL__) && !defined(STANDALONE)
++			*oobp++ = REG_NAND_DATA8;
++#else
++			REG_NAND_DATA8;
++#endif
++			numToRead--;
++		}
++
++		/* read ECC bytes */
++		nand_bcm_umi_bch_resume_read_ecc_calc();
++		while (numToRead) {
++#if defined(__KERNEL__) && !defined(STANDALONE)
++			*oobp = REG_NAND_DATA8;
++			eccCalc[eccPos++] = *oobp;
++			oobp++;
++#else
++			eccCalc[eccPos++] = REG_NAND_DATA8;
++#endif
++			numToRead--;
++		}
++	} else {
++		/* skip BI */
++#if defined(__KERNEL__) && !defined(STANDALONE)
++		*oobp++ = REG_NAND_DATA8;
++#else
++		REG_NAND_DATA8;
++#endif
++		numToRead--;
++
++		while (numToRead > numEccBytes) {
++			/* skip free oob region */
++#if defined(__KERNEL__) && !defined(STANDALONE)
++			*oobp++ = REG_NAND_DATA8;
++#else
++			REG_NAND_DATA8;
++#endif
++			numToRead--;
++		}
++
++		/* read ECC bytes */
++		nand_bcm_umi_bch_resume_read_ecc_calc();
++		while (numToRead) {
++#if defined(__KERNEL__) && !defined(STANDALONE)
++			*oobp = REG_NAND_DATA8;
++			eccCalc[eccPos++] = *oobp;
++			oobp++;
++#else
++			eccCalc[eccPos++] = REG_NAND_DATA8;
++#endif
++			numToRead--;
++		}
++	}
++}
++
++/* Helper function to write ECC */
++static inline void NAND_BCM_UMI_ECC_WRITE(int numEccBytes, int eccBytePos,
++					  uint8_t *oobp, uint8_t eccVal)
++{
++	if (eccBytePos <= numEccBytes)
++		*oobp = eccVal;
++}
++
++/* Write OOB with ECC */
++static inline void nand_bcm_umi_bch_write_oobEcc(uint32_t pageSize,
++						 uint8_t *oobp, int numEccBytes)
++{
++	uint32_t eccVal = 0xffffffff;
++
++	/* wait for write ECC to be valid */
++	nand_bcm_umi_bch_poll_write_ecc_calc();
++
++	/*
++	 ** Get the hardware ecc from the 32-bit result registers.
++	 ** Read after 512 byte accesses. Format B3B2B1B0
++	 ** where B3 = ecc3, etc.
++	 */
++
++	if (pageSize == NAND_DATA_ACCESS_SIZE) {
++		/* Now fill in the ECC bytes */
++		if (numEccBytes >= 13)
++			eccVal = REG_UMI_BCH_WR_ECC_3;
++
++		/* Usually we skip CM in oob[0,1] */
++		NAND_BCM_UMI_ECC_WRITE(numEccBytes, 15, &oobp[0],
++			(eccVal >> 16) & 0xff);
++		NAND_BCM_UMI_ECC_WRITE(numEccBytes, 14, &oobp[1],
++			(eccVal >> 8) & 0xff);
++
++		/* Write ECC in oob[2,3,4] */
++		NAND_BCM_UMI_ECC_WRITE(numEccBytes, 13, &oobp[2],
++			eccVal & 0xff);	/* ECC 12 */
++
++		if (numEccBytes >= 9)
++			eccVal = REG_UMI_BCH_WR_ECC_2;
++
++		NAND_BCM_UMI_ECC_WRITE(numEccBytes, 12, &oobp[3],
++			(eccVal >> 24) & 0xff);	/* ECC11 */
++		NAND_BCM_UMI_ECC_WRITE(numEccBytes, 11, &oobp[4],
++			(eccVal >> 16) & 0xff);	/* ECC10 */
++
++		/* Always Skip BI in oob[5] */
++	} else {
++		/* Always Skip BI in oob[0] */
++
++		/* Now fill in the ECC bytes */
++		if (numEccBytes >= 13)
++			eccVal = REG_UMI_BCH_WR_ECC_3;
++
++		/* Usually skip CM in oob[1,2] */
++		NAND_BCM_UMI_ECC_WRITE(numEccBytes, 15, &oobp[1],
++			(eccVal >> 16) & 0xff);
++		NAND_BCM_UMI_ECC_WRITE(numEccBytes, 14, &oobp[2],
++			(eccVal >> 8) & 0xff);
++
++		/* Write ECC in oob[3-15] */
++		NAND_BCM_UMI_ECC_WRITE(numEccBytes, 13, &oobp[3],
++			eccVal & 0xff);	/* ECC12 */
++
++		if (numEccBytes >= 9)
++			eccVal = REG_UMI_BCH_WR_ECC_2;
++
++		NAND_BCM_UMI_ECC_WRITE(numEccBytes, 12, &oobp[4],
++			(eccVal >> 24) & 0xff);	/* ECC11 */
++		NAND_BCM_UMI_ECC_WRITE(numEccBytes, 11, &oobp[5],
++			(eccVal >> 16) & 0xff);	/* ECC10 */
++	}
++
++	/* Fill in the remainder of ECC locations */
++	NAND_BCM_UMI_ECC_WRITE(numEccBytes, 10, &oobp[6],
++		(eccVal >> 8) & 0xff);	/* ECC9 */
++	NAND_BCM_UMI_ECC_WRITE(numEccBytes, 9, &oobp[7],
++		eccVal & 0xff);	/* ECC8 */
++
++	if (numEccBytes >= 5)
++		eccVal = REG_UMI_BCH_WR_ECC_1;
++
++	NAND_BCM_UMI_ECC_WRITE(numEccBytes, 8, &oobp[8],
++		(eccVal >> 24) & 0xff);	/* ECC7 */
++	NAND_BCM_UMI_ECC_WRITE(numEccBytes, 7, &oobp[9],
++		(eccVal >> 16) & 0xff);	/* ECC6 */
++	NAND_BCM_UMI_ECC_WRITE(numEccBytes, 6, &oobp[10],
++		(eccVal >> 8) & 0xff);	/* ECC5 */
++	NAND_BCM_UMI_ECC_WRITE(numEccBytes, 5, &oobp[11],
++		eccVal & 0xff);	/* ECC4 */
++
++	if (numEccBytes >= 1)
++		eccVal = REG_UMI_BCH_WR_ECC_0;
++
++	NAND_BCM_UMI_ECC_WRITE(numEccBytes, 4, &oobp[12],
++		(eccVal >> 24) & 0xff);	/* ECC3 */
++	NAND_BCM_UMI_ECC_WRITE(numEccBytes, 3, &oobp[13],
++		(eccVal >> 16) & 0xff);	/* ECC2 */
++	NAND_BCM_UMI_ECC_WRITE(numEccBytes, 2, &oobp[14],
++		(eccVal >> 8) & 0xff);	/* ECC1 */
++	NAND_BCM_UMI_ECC_WRITE(numEccBytes, 1, &oobp[15],
++		eccVal & 0xff);	/* ECC0 */
++}
++#endif
++
++#endif /* NAND_BCM_UMI_H */
+-- 
+1.6.0.6
+
+-- 
+
+Leo Hao Chen
+
+------------------------
+Life is short, run long.
