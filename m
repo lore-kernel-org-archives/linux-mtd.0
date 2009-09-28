@@ -1,7 +1,7 @@
 From: leochen@broadcom.com (Leo Chen)
 Date: Mon, 28 Sep 2009 14:11:49 -0700
 Subject: [PATCH] add bcmring mtd nand driver support
-Message-ID: <mailman.46.1254176707.2253.linux-mtd@lists.infradead.org>
+Message-ID: <mailman.48.1254268957.2253.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
@@ -9,17 +9,24 @@ Add mtd umi driver for bcmring arm arch.
 Add header files, register definition files,
 add entry in Kconfig and Makefile.
 
+remove superfluous comments from bcm nand driver
+use platform resource
+
+add CONFIG_MTD_NAND_BCM_UMI_HWECC option to replace USE_HWECC macro
+
 Signed-off-by: Leo Hao Chen <leochen@broadcom.com>
 ---
- arch/arm/mach-bcmring/include/mach/reg_nand.h |   66 ++
- arch/arm/mach-bcmring/include/mach/reg_umi.h  |  237 ++++++++
- drivers/mtd/nand/Kconfig                      |   16 +
+ arch/arm/configs/bcmring_defconfig            |    1 +
+ arch/arm/mach-bcmring/arch.c                  |   10 +
+ arch/arm/mach-bcmring/include/mach/reg_nand.h |   66 +++
+ arch/arm/mach-bcmring/include/mach/reg_umi.h  |  237 ++++++++++
+ drivers/mtd/nand/Kconfig                      |   24 +
  drivers/mtd/nand/Makefile                     |    1 +
- drivers/mtd/nand/bcm_umi_bch.c                |  213 +++++++
- drivers/mtd/nand/bcm_umi_nand.c               |  792 +++++++++++++++++++++++++
- drivers/mtd/nand/nand_bcm_umi.c               |  149 +++++
- drivers/mtd/nand/nand_bcm_umi.h               |  358 +++++++++++
- 8 files changed, 1832 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/bcm_umi_bch.c                |  213 +++++++++
+ drivers/mtd/nand/bcm_umi_nand.c               |  592 +++++++++++++++++++++++++
+ drivers/mtd/nand/nand_bcm_umi.c               |  149 +++++++
+ drivers/mtd/nand/nand_bcm_umi.h               |  358 +++++++++++++++
+ 10 files changed, 1651 insertions(+), 0 deletions(-)
  create mode 100644 arch/arm/mach-bcmring/include/mach/reg_nand.h
  create mode 100644 arch/arm/mach-bcmring/include/mach/reg_umi.h
  create mode 100644 drivers/mtd/nand/bcm_umi_bch.c
@@ -27,6 +34,42 @@ Signed-off-by: Leo Hao Chen <leochen@broadcom.com>
  create mode 100644 drivers/mtd/nand/nand_bcm_umi.c
  create mode 100644 drivers/mtd/nand/nand_bcm_umi.h
 
+diff --git a/arch/arm/configs/bcmring_defconfig b/arch/arm/configs/bcmring_defconfig
+index bcc0bac..789794e 100644
+--- a/arch/arm/configs/bcmring_defconfig
++++ b/arch/arm/configs/bcmring_defconfig
+@@ -416,6 +416,7 @@ CONFIG_MTD_NAND_VERIFY_WRITE=y
+ CONFIG_MTD_NAND_IDS=y
+ CONFIG_MTD_NAND_BCM_UMI=y
+ CONFIG_MTD_NAND_BCM_UMI_HWCS=y
++CONFIG_MTD_NAND_BCM_UMI_HWECC=y
+ # CONFIG_MTD_NAND_DISKONCHIP is not set
+ # CONFIG_MTD_NAND_NANDSIM is not set
+ # CONFIG_MTD_NAND_PLATFORM is not set
+diff --git a/arch/arm/mach-bcmring/arch.c b/arch/arm/mach-bcmring/arch.c
+index 0da693b..074dad6 100644
+--- a/arch/arm/mach-bcmring/arch.c
++++ b/arch/arm/mach-bcmring/arch.c
+@@ -76,9 +76,19 @@ static struct ctl_table bcmring_sysctl_reboot[] = {
+ 	{}
+ };
+ 
++static struct resource nand_resource[] = {
++	[0] = {
++		.start = MM_ADDR_IO_NAND,
++		.end = MM_ADDR_IO_NAND + 0x1000 - 1,
++		.flags = IORESOURCE_MEM,
++	},
++};
++
+ static struct platform_device nand_device = {
+ 	.name = "bcm-nand",
+ 	.id = -1,
++	.resource = nand_resource,
++	.num_resources	= ARRAY_SIZE(nand_resource),
+ };
+ 
+ static struct platform_device *devices[] __initdata = {
 diff --git a/arch/arm/mach-bcmring/include/mach/reg_nand.h b/arch/arm/mach-bcmring/include/mach/reg_nand.h
 new file mode 100644
 index 0000000..387376f
@@ -343,10 +386,10 @@ index 0000000..06a3554
 +#define REG_UMI_BCH_ERR_LOC_ADDR(index)     (__REG32(HW_UMI_BASE + 0x64 + (index / 2)*4) >> ((index % 2) * 16))
 +#endif
 diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 2fda0b6..34598e9 100644
+index 2fda0b6..f45a8ad 100644
 --- a/drivers/mtd/nand/Kconfig
 +++ b/drivers/mtd/nand/Kconfig
-@@ -203,6 +203,22 @@ config MTD_NAND_S3C2410_CLKSTOP
+@@ -203,6 +203,30 @@ config MTD_NAND_S3C2410_CLKSTOP
  	  when the is NAND chip selected or released, but will save
  	  approximately 5mA of power when there is nothing happening.
  
@@ -365,6 +408,14 @@ index 2fda0b6..34598e9 100644
 +	help
 +	  Enable the use of the BCM UMI block's internal CS using NAND.
 +	  This should only be used if you know the external NAND CS can toggle.
++
++config MTD_NAND_BCM_UMI_HWECC
++	bool "BCM UMI NAND Hardware ECC"
++	default y
++	depends on MTD_NAND_BCM_UMI
++	help
++	  Enable the use of the internal ECC generator of BCM UMI block when
++	  using NAND.
 +
  config MTD_NAND_DISKONCHIP
  	tristate "DiskOnChip 2000, Millennium and Millennium Plus (NAND reimplementation) (EXPERIMENTAL)"
@@ -601,10 +652,10 @@ index 0000000..a930666
 +}
 diff --git a/drivers/mtd/nand/bcm_umi_nand.c b/drivers/mtd/nand/bcm_umi_nand.c
 new file mode 100644
-index 0000000..a7e0778
+index 0000000..c9c538f
 --- /dev/null
 +++ b/drivers/mtd/nand/bcm_umi_nand.c
-@@ -0,0 +1,792 @@
+@@ -0,0 +1,592 @@
 +/*****************************************************************************
 +* Copyright 2004 - 2009 Broadcom Corporation.  All rights reserved.
 +*
@@ -645,16 +696,18 @@ index 0000000..a7e0778
 +
 +#include "nand_bcm_umi.h"
 +
-+#if !defined(CONFIG_ARCH_BCM116X)
 +#include <mach/memory_settings.h>
-+#endif
 +
 +#define USE_DMA 1
 +#include <mach/dma.h>
 +#include <linux/dma-mapping.h>
 +#include <linux/completion.h>
 +
-+#define USE_HWECC 1
++#ifdef CONFIG_MTD_NAND_BCM_UMI_HWECC
++static int use_hardware_ecc = 1;
++#else
++static int use_hardware_ecc;
++#endif
 +
 +/* ---- External Variable Declarations ----------------------------------- */
 +/* ---- External Function Prototypes ------------------------------------- */
@@ -687,7 +740,6 @@ index 0000000..a7e0778
 +#define USE_DIRECT_IO(len)	(((len) < DMA_MIN_BUFLEN) || \
 +	((len) > DMA_MAX_BUFLEN))
 +
-+#if defined(CONFIG_ARCH_BCMRING)
 +/*
 + * The current NAND data space goes from 0x80001900 to 0x80001FFF,
 + * which is only 0x700 = 1792 bytes long. This is too small for 2K, 4K page
@@ -696,46 +748,6 @@ index 0000000..a7e0778
 + * Need to make sure REG_NAND_DATA_PADDR + DMA_MAX_LEN < 0x80002000
 + */
 +#define DMA_MAX_LEN             1024
-+#endif
-+
-+#if defined(CONFIG_ARCH_BCM116X)
-+
-+#define NAND_DMA_CHAN   3
-+
-+/* Global config is common for both directions. */
-+#define DMA_CFG                                 \
-+    (REG_DMA_CHAN_CFG_TC_INT_ENABLE            \
-+    | REG_DMA_CHAN_CFG_ERROR_INT_ENABLE         \
-+    | REG_DMA_CHAN_CFG_FLOW_CTL_MEM_TO_MEM_DMA  \
-+    | REG_DMA_CHAN_CFG_ENABLE)
-+
-+/* Common transfer widths in bits (typically 8, 16, or 32) */
-+#define DMA_WIDTH(dstwidth, srcwidth)                        \
-+    (REG_DMA_CHAN_CTL_DEST_WIDTH_##dstwidth       \
-+    | REG_DMA_CHAN_CTL_SRC_WIDTH_##srcwidth)
-+
-+/* Common burst sizes - typically 4 */
-+#define DMA_BURST(width)                        \
-+    (REG_DMA_CHAN_CTL_DEST_BURST_SIZE_##width  \
-+    | REG_DMA_CHAN_CTL_SRC_BURST_SIZE_##width)
-+
-+/* DMA settings for copying from NAND to SDRAM */
-+#define DMA_CTRL_NAND_TO_SDRAM(dstwidth, srcwidth, bytes)    \
-+    (REG_DMA_CHAN_CTL_TC_INT_ENABLE            \
-+    | REG_DMA_CHAN_CTL_DEST_INCR                \
-+    | DMA_BURST(4)                              \
-+    | DMA_WIDTH(dstwidth, srcwidth)             \
-+    | (bytes * 8 / srcwidth))
-+
-+/* DMA settings for copying from SDRAM to NAND */
-+#define DMA_CTRL_SDRAM_TO_NAND(dstwidth, srcwidth, bytes)    \
-+    (REG_DMA_CHAN_CTL_TC_INT_ENABLE            \
-+    | REG_DMA_CHAN_CTL_SRC_INCR                 \
-+    | DMA_BURST(4)                              \
-+    | DMA_WIDTH(dstwidth, srcwidth)             \
-+    | (bytes * 8 / srcwidth))
-+
-+#endif /* CONFIG_ARCH_BCM116X */
 +
 +#else /* !USE_DMA */
 +#define DMA_MIN_BUFLEN          0
@@ -763,44 +775,14 @@ index 0000000..a7e0778
 +
 +#if USE_DMA
 +
-+#if defined(CONFIG_ARCH_BCM116X)
-+static irqreturn_t nand_dma_isr(void *dev_id)
-+{
-+	complete(&nand_comp);
-+	return IRQ_HANDLED;
-+}
-+
-+#elif defined(CONFIG_ARCH_BCMRING)
-+
-+/****************************************************************************
-+*
-+*   Handler called when the DMA finishes.
-+*
-+***************************************************************************/
-+
++/* Handler called when the DMA finishes. */
 +static void nand_dma_handler(DMA_Device_t dev, int reason, void *userData)
 +{
 +	complete(&nand_comp);
 +}
 +
-+#endif
-+
-+/****************************************************************************
-+*
-+*   Function to perform DMA initialization
-+*
-+***************************************************************************/
-+
 +static int nand_dma_init(void)
 +{
-+#if defined(CONFIG_ARCH_BCM116X)
-+
-+	dma_request_irq(NAND_DMA_CHAN, nand_dma_isr, NULL);
-+	dma_enable_irq(NAND_DMA_CHAN);
-+	dma_request_chan(NAND_DMA_CHAN, "nand");
-+
-+#elif defined(CONFIG_ARCH_BCMRING)
-+
 +	int rc;
 +
 +	rc = dma_set_device_handler(DMA_DEVICE_NAND_MEM_TO_MEM,
@@ -809,9 +791,6 @@ index 0000000..a7e0778
 +		printk(KERN_ERR "dma_set_device_handler failed: %d\n", rc);
 +		return rc;
 +	}
-+#else
-+#error "Unrecognized DMA platform"
-+#endif
 +
 +	virtPtr =
 +	    dma_alloc_coherent(NULL, DMA_MAX_BUFLEN, &physPtr, GFP_KERNEL);
@@ -823,48 +802,14 @@ index 0000000..a7e0778
 +	return 0;
 +}
 +
-+/****************************************************************************
-+*
-+*   Function to perform DMA termination
-+*
-+***************************************************************************/
-+
 +static void nand_dma_term(void)
 +{
-+#if defined(CONFIG_ARCH_BCM116X)
-+	dma_free_chan(NAND_DMA_CHAN);
-+	dma_free_irq(NAND_DMA_CHAN);
-+#elif defined(CONFIG_ARCH_BCMRING)
-+	/* Nothing to do */
-+#else
-+#error "Unrecognized DMA platform"
-+#endif
-+
 +	if (virtPtr != NULL)
 +		dma_free_coherent(NULL, DMA_MAX_BUFLEN, virtPtr, physPtr);
 +}
 +
-+/****************************************************************************
-+*
-+*   Performs a read via DMA
-+*
-+***************************************************************************/
-+
 +static void nand_dma_read(void *buf, int len)
 +{
-+#if defined(CONFIG_ARCH_BCM116X)
-+	int dmactrl;
-+
-+	init_completion(&nand_comp);
-+	dmactrl = DMA_CTRL_NAND_TO_SDRAM(32, 8, len);
-+	dma_init_chan(NAND_DMA_CHAN);
-+	dma_setup_chan(NAND_DMA_CHAN,
-+		       REG_NAND_DATA8_PADDR, (int)physPtr, 0, dmactrl, DMA_CFG);
-+	wait_for_completion(&nand_comp);
-+	if (buf != NULL)
-+		memcpy(buf, virtPtr, len);
-+
-+#elif defined(CONFIG_ARCH_BCMRING)
 +	int offset = 0;
 +	int tmp_len = 0;
 +	int len_left = len;
@@ -905,33 +850,10 @@ index 0000000..a7e0778
 +
 +	if (buf != NULL)
 +		memcpy(buf, virtPtr, len);
-+
-+#else
-+#error "Unrecognized DMA platform"
-+#endif
 +}
-+
-+/****************************************************************************
-+*
-+*   Performs a write via DMA
-+*
-+***************************************************************************/
 +
 +static void nand_dma_write(const void *buf, int len)
 +{
-+#if defined(CONFIG_ARCH_BCM116X)
-+	int dmactrl;
-+
-+	memcpy(virtPtr, buf, len);
-+	init_completion(&nand_comp);
-+
-+	dmactrl = DMA_CTRL_SDRAM_TO_NAND(8, 32, len);
-+	dma_init_chan(NAND_DMA_CHAN);
-+	dma_setup_chan(NAND_DMA_CHAN,
-+		       (int)physPtr, REG_NAND_DATA8_PADDR, 0, dmactrl, DMA_CFG);
-+	wait_for_completion(&nand_comp);
-+
-+#elif defined(CONFIG_ARCH_BCMRING)
 +	int offset = 0;
 +	int tmp_len = 0;
 +	int len_left = len;
@@ -975,20 +897,10 @@ index 0000000..a7e0778
 +	}
 +
 +	dma_free_channel(hndl);
-+#else
-+#error "Unrecognized DMA platform"
-+#endif
 +}
 +
 +#endif
 +
-+/****************************************************************************
-+*
-+*  nand_dev_ready
-+*
-+*   Routine to check if nand is ready.
-+*
-+***************************************************************************/
 +static int nand_dev_ready(struct mtd_info *mtd)
 +{
 +	return nand_bcm_umi_dev_ready();
@@ -1002,41 +914,11 @@ index 0000000..a7e0778
 +*   initializations.  This includes setting up the timings, etc.
 +*
 +***************************************************************************/
-+
 +int bcm_umi_nand_inithw(void)
 +{
 +	/* Configure nand timing parameters */
-+#if defined(CONFIG_ARCH_BCM116X)
-+/*
-+ * waiten = 0
-+ * lowfreq = 0
-+ * memtype async r/w, no page mode = 000
-+ * pgsz = 000
-+ * tprc_twlc = 00000     Page read access cycle/Burst write latency (n+2/n+1)
-+ * tbta = 001            Bus turnaround cycle (n)
-+ * twp = 00100           Write pulse width cycle (n+1)
-+ * twr = 00              Write recovery cycle (n+1)
-+ * tas = 00              Write address setup cycle (n+1)
-+ * toe = 00              Output enable delay cycle (n)
-+ * trc_tlc = 00011       Read access cycle / Burst read latency (n+2 / n+1)
-+ */
-+	REG_UMI_FLASH0_TCR = 0x00012003;
-+#endif
-+
 +	REG_UMI_NAND_TCR &= ~0x7ffff;
-+#if defined(CONFIG_ARCH_BCM116X)
-+/*
-+ * tbta = 001            Bus turnaround cycle (n)
-+ * twp = 00100           Write pulse width cycle (n+1)
-+ * twr = 00              Write recovery cycle (n+1)
-+ * tas = 00              Write address setup cycle (n+1)
-+ * toe = 00              Output enable delay cycle (n)
-+ * trc_tlc = 00011       Read access cycle / Burst read latency (n+2 / n+1)
-+ */
-+	REG_UMI_NAND_TCR |= 0x72003;
-+#else
 +	REG_UMI_NAND_TCR |= HW_CFG_NAND_TCR;
-+#endif
 +
 +#if !defined(CONFIG_MTD_NAND_BCM_UMI_HWCS)
 +	/* enable software control of CS */
@@ -1060,14 +942,7 @@ index 0000000..a7e0778
 +	return 0;
 +}
 +
-+/****************************************************************************
-+*
-+*  bcm_umi_nand_hwcontrol
-+*
-+*   Used to turn latch the proper register for access.
-+*
-+***************************************************************************/
-+
++/* Used to turn latch the proper register for access. */
 +static void bcm_umi_nand_hwcontrol(struct mtd_info *mtd, int cmd,
 +				   unsigned int ctrl)
 +{
@@ -1092,14 +967,6 @@ index 0000000..a7e0778
 +		writeb(cmd, chip->IO_ADDR_W);
 +}
 +
-+/****************************************************************************
-+*
-+*  bcm_umi_nand_write_buf - write buffer to chip
-+*  @mtd:	MTD device structure
-+*  @buf:	data buffer
-+*  @len:	number of bytes to write
-+*
-+***************************************************************************/
 +static void bcm_umi_nand_write_buf(struct mtd_info *mtd, const u_char * buf,
 +				   int len)
 +{
@@ -1118,15 +985,6 @@ index 0000000..a7e0778
 +#endif
 +}
 +
-+/****************************************************************************
-+*
-+*  nand_read_buf - read chip data into buffer
-+*  @mtd:	MTD device structure
-+*  @buf:	buffer to store data
-+*  @len:	number of bytes to read
-+*
-+***************************************************************************/
-+
 +static void bcm_umi_nand_read_buf(struct mtd_info *mtd, u_char * buf, int len)
 +{
 +	if (USE_DIRECT_IO(len)) {
@@ -1142,14 +1000,6 @@ index 0000000..a7e0778
 +#endif
 +}
 +
-+/****************************************************************************
-+*
-+*  bcm_umi_nand_verify_buf - Verify chip data against buffer
-+*  @mtd:	MTD device structure
-+*  @buf:	buffer containing the data to compare
-+*  @len:	number of bytes to compare
-+*
-+***************************************************************************/
 +static uint8_t readbackbuf[NAND_MAX_PAGESIZE];
 +static int bcm_umi_nand_verify_buf(struct mtd_info *mtd, const u_char * buf,
 +				   int len)
@@ -1174,6 +1024,7 @@ index 0000000..a7e0778
 +static int bcm_umi_nand_probe(struct platform_device *pdev)
 +{
 +	struct nand_chip *this;
++	struct resource *r;
 +	int err = 0;
 +
 +	printk(gBanner);
@@ -1188,12 +1039,13 @@ index 0000000..a7e0778
 +		return -ENOMEM;
 +	}
 +
++	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++
++	if (!r)
++		return -ENXIO;
++
 +	/* map physical adress */
-+#ifdef CONFIG_ARCH_BCMRING
-+	bcm_umi_io_base = ioremap(MM_ADDR_IO_NAND, 0x1000);
-+#else
-+	bcm_umi_io_base = ioremap(0x08000000, 0x1000);
-+#endif
++	bcm_umi_io_base = ioremap(r->start, r->end - r->start + 1);
 +
 +	if (!bcm_umi_io_base) {
 +		printk(KERN_ERR "ioremap to access BCM UMI NAND chip failed\n");
@@ -1234,22 +1086,21 @@ index 0000000..a7e0778
 +	this->verify_buf = bcm_umi_nand_verify_buf;
 +
 +	this->cmd_ctrl = bcm_umi_nand_hwcontrol;
-+#if USE_HWECC
-+	this->ecc.mode = NAND_ECC_HW;
-+	this->ecc.size = 512;
-+	this->ecc.bytes = NAND_ECC_NUM_BYTES;
-+
++	if (use_hardware_ecc) {
++		this->ecc.mode = NAND_ECC_HW;
++		this->ecc.size = 512;
++		this->ecc.bytes = NAND_ECC_NUM_BYTES;
 +#if NAND_ECC_BCH
-+	this->ecc.read_page = bcm_umi_bch_read_page_hwecc;
-+	this->ecc.write_page = bcm_umi_bch_write_page_hwecc;
++		this->ecc.read_page = bcm_umi_bch_read_page_hwecc;
++		this->ecc.write_page = bcm_umi_bch_write_page_hwecc;
 +#else
-+	this->ecc.correct = nand_correct_data512;
-+	this->ecc.calculate = bcm_umi_hamming_get_hw_ecc;
-+	this->ecc.hwctl = bcm_umi_hamming_enable_hwecc;
++		this->ecc.correct = nand_correct_data512;
++		this->ecc.calculate = bcm_umi_hamming_get_hw_ecc;
++		this->ecc.hwctl = bcm_umi_hamming_enable_hwecc;
 +#endif
-+#else
-+	this->ecc.mode = NAND_ECC_SOFT;
-+#endif
++	} else {
++		this->ecc.mode = NAND_ECC_SOFT;
++	}
 +
 +#if USE_DMA
 +	err = nand_dma_init();
@@ -1272,25 +1123,25 @@ index 0000000..a7e0778
 +
 +	/* Now that we know the nand size, we can setup the ECC layout */
 +
-+#if USE_HWECC
-+	switch (board_mtd->writesize) {	/* writesize is the pagesize */
-+	case 4096:
-+		this->ecc.layout = &nand_hw_eccoob_4096;
-+		break;
-+	case 2048:
-+		this->ecc.layout = &nand_hw_eccoob_2048;
-+		break;
-+	case 512:
-+		this->ecc.layout = &nand_hw_eccoob_512;
-+		break;
-+	default:
-+		{
-+			printk(KERN_ERR "NAND - Unrecognized pagesize: %d\n",
-+			       board_mtd->writesize);
-+			return -EINVAL;
++	if (use_hardware_ecc) {
++		switch (board_mtd->writesize) {	/* writesize is the pagesize */
++		case 4096:
++			this->ecc.layout = &nand_hw_eccoob_4096;
++			break;
++		case 2048:
++			this->ecc.layout = &nand_hw_eccoob_2048;
++			break;
++		case 512:
++			this->ecc.layout = &nand_hw_eccoob_512;
++			break;
++		default:
++			{
++				printk(KERN_ERR "NAND - Unrecognized pagesize: %d\n",
++						 board_mtd->writesize);
++				return -EINVAL;
++			}
 +		}
 +	}
-+#endif
 +
 +#if NAND_ECC_BCH
 +	if (board_mtd->writesize > 512) {
@@ -1918,10 +1769,3 @@ index 0000000..7cec2cd
 +#endif /* NAND_BCM_UMI_H */
 -- 
 1.6.0.6
-
--- 
-
-Leo Hao Chen
-
-------------------------
-Life is short, run long.
