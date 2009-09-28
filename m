@@ -1,7 +1,7 @@
 From: leochen@broadcom.com (Leo Chen)
 Date: Mon, 28 Sep 2009 14:11:49 -0700
 Subject: [PATCH] add bcmring mtd nand driver support
-Message-ID: <mailman.48.1254268957.2253.linux-mtd@lists.infradead.org>
+Message-ID: <mailman.49.1254271306.2253.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
@@ -12,21 +12,18 @@ add entry in Kconfig and Makefile.
 remove superfluous comments from bcm nand driver
 use platform resource
 
-add CONFIG_MTD_NAND_BCM_UMI_HWECC option to replace USE_HWECC macro
-
 Signed-off-by: Leo Hao Chen <leochen@broadcom.com>
 ---
- arch/arm/configs/bcmring_defconfig            |    1 +
  arch/arm/mach-bcmring/arch.c                  |   10 +
  arch/arm/mach-bcmring/include/mach/reg_nand.h |   66 +++
  arch/arm/mach-bcmring/include/mach/reg_umi.h  |  237 ++++++++++
- drivers/mtd/nand/Kconfig                      |   24 +
+ drivers/mtd/nand/Kconfig                      |   16 +
  drivers/mtd/nand/Makefile                     |    1 +
  drivers/mtd/nand/bcm_umi_bch.c                |  213 +++++++++
- drivers/mtd/nand/bcm_umi_nand.c               |  592 +++++++++++++++++++++++++
+ drivers/mtd/nand/bcm_umi_nand.c               |  580 +++++++++++++++++++++++++
  drivers/mtd/nand/nand_bcm_umi.c               |  149 +++++++
  drivers/mtd/nand/nand_bcm_umi.h               |  358 +++++++++++++++
- 10 files changed, 1651 insertions(+), 0 deletions(-)
+ 9 files changed, 1630 insertions(+), 0 deletions(-)
  create mode 100644 arch/arm/mach-bcmring/include/mach/reg_nand.h
  create mode 100644 arch/arm/mach-bcmring/include/mach/reg_umi.h
  create mode 100644 drivers/mtd/nand/bcm_umi_bch.c
@@ -34,18 +31,6 @@ Signed-off-by: Leo Hao Chen <leochen@broadcom.com>
  create mode 100644 drivers/mtd/nand/nand_bcm_umi.c
  create mode 100644 drivers/mtd/nand/nand_bcm_umi.h
 
-diff --git a/arch/arm/configs/bcmring_defconfig b/arch/arm/configs/bcmring_defconfig
-index bcc0bac..789794e 100644
---- a/arch/arm/configs/bcmring_defconfig
-+++ b/arch/arm/configs/bcmring_defconfig
-@@ -416,6 +416,7 @@ CONFIG_MTD_NAND_VERIFY_WRITE=y
- CONFIG_MTD_NAND_IDS=y
- CONFIG_MTD_NAND_BCM_UMI=y
- CONFIG_MTD_NAND_BCM_UMI_HWCS=y
-+CONFIG_MTD_NAND_BCM_UMI_HWECC=y
- # CONFIG_MTD_NAND_DISKONCHIP is not set
- # CONFIG_MTD_NAND_NANDSIM is not set
- # CONFIG_MTD_NAND_PLATFORM is not set
 diff --git a/arch/arm/mach-bcmring/arch.c b/arch/arm/mach-bcmring/arch.c
 index 0da693b..074dad6 100644
 --- a/arch/arm/mach-bcmring/arch.c
@@ -386,10 +371,10 @@ index 0000000..06a3554
 +#define REG_UMI_BCH_ERR_LOC_ADDR(index)     (__REG32(HW_UMI_BASE + 0x64 + (index / 2)*4) >> ((index % 2) * 16))
 +#endif
 diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 2fda0b6..f45a8ad 100644
+index 2fda0b6..34598e9 100644
 --- a/drivers/mtd/nand/Kconfig
 +++ b/drivers/mtd/nand/Kconfig
-@@ -203,6 +203,30 @@ config MTD_NAND_S3C2410_CLKSTOP
+@@ -203,6 +203,22 @@ config MTD_NAND_S3C2410_CLKSTOP
  	  when the is NAND chip selected or released, but will save
  	  approximately 5mA of power when there is nothing happening.
  
@@ -408,14 +393,6 @@ index 2fda0b6..f45a8ad 100644
 +	help
 +	  Enable the use of the BCM UMI block's internal CS using NAND.
 +	  This should only be used if you know the external NAND CS can toggle.
-+
-+config MTD_NAND_BCM_UMI_HWECC
-+	bool "BCM UMI NAND Hardware ECC"
-+	default y
-+	depends on MTD_NAND_BCM_UMI
-+	help
-+	  Enable the use of the internal ECC generator of BCM UMI block when
-+	  using NAND.
 +
  config MTD_NAND_DISKONCHIP
  	tristate "DiskOnChip 2000, Millennium and Millennium Plus (NAND reimplementation) (EXPERIMENTAL)"
@@ -652,10 +629,10 @@ index 0000000..a930666
 +}
 diff --git a/drivers/mtd/nand/bcm_umi_nand.c b/drivers/mtd/nand/bcm_umi_nand.c
 new file mode 100644
-index 0000000..c9c538f
+index 0000000..38fa9c1
 --- /dev/null
 +++ b/drivers/mtd/nand/bcm_umi_nand.c
-@@ -0,0 +1,592 @@
+@@ -0,0 +1,580 @@
 +/*****************************************************************************
 +* Copyright 2004 - 2009 Broadcom Corporation.  All rights reserved.
 +*
@@ -702,12 +679,6 @@ index 0000000..c9c538f
 +#include <mach/dma.h>
 +#include <linux/dma-mapping.h>
 +#include <linux/completion.h>
-+
-+#ifdef CONFIG_MTD_NAND_BCM_UMI_HWECC
-+static int use_hardware_ecc = 1;
-+#else
-+static int use_hardware_ecc;
-+#endif
 +
 +/* ---- External Variable Declarations ----------------------------------- */
 +/* ---- External Function Prototypes ------------------------------------- */
@@ -1086,21 +1057,17 @@ index 0000000..c9c538f
 +	this->verify_buf = bcm_umi_nand_verify_buf;
 +
 +	this->cmd_ctrl = bcm_umi_nand_hwcontrol;
-+	if (use_hardware_ecc) {
-+		this->ecc.mode = NAND_ECC_HW;
-+		this->ecc.size = 512;
-+		this->ecc.bytes = NAND_ECC_NUM_BYTES;
++	this->ecc.mode = NAND_ECC_HW;
++	this->ecc.size = 512;
++	this->ecc.bytes = NAND_ECC_NUM_BYTES;
 +#if NAND_ECC_BCH
-+		this->ecc.read_page = bcm_umi_bch_read_page_hwecc;
-+		this->ecc.write_page = bcm_umi_bch_write_page_hwecc;
++	this->ecc.read_page = bcm_umi_bch_read_page_hwecc;
++	this->ecc.write_page = bcm_umi_bch_write_page_hwecc;
 +#else
-+		this->ecc.correct = nand_correct_data512;
-+		this->ecc.calculate = bcm_umi_hamming_get_hw_ecc;
-+		this->ecc.hwctl = bcm_umi_hamming_enable_hwecc;
++	this->ecc.correct = nand_correct_data512;
++	this->ecc.calculate = bcm_umi_hamming_get_hw_ecc;
++	this->ecc.hwctl = bcm_umi_hamming_enable_hwecc;
 +#endif
-+	} else {
-+		this->ecc.mode = NAND_ECC_SOFT;
-+	}
 +
 +#if USE_DMA
 +	err = nand_dma_init();
@@ -1123,23 +1090,21 @@ index 0000000..c9c538f
 +
 +	/* Now that we know the nand size, we can setup the ECC layout */
 +
-+	if (use_hardware_ecc) {
-+		switch (board_mtd->writesize) {	/* writesize is the pagesize */
-+		case 4096:
-+			this->ecc.layout = &nand_hw_eccoob_4096;
-+			break;
-+		case 2048:
-+			this->ecc.layout = &nand_hw_eccoob_2048;
-+			break;
-+		case 512:
-+			this->ecc.layout = &nand_hw_eccoob_512;
-+			break;
-+		default:
-+			{
-+				printk(KERN_ERR "NAND - Unrecognized pagesize: %d\n",
-+						 board_mtd->writesize);
-+				return -EINVAL;
-+			}
++	switch (board_mtd->writesize) {	/* writesize is the pagesize */
++	case 4096:
++		this->ecc.layout = &nand_hw_eccoob_4096;
++		break;
++	case 2048:
++		this->ecc.layout = &nand_hw_eccoob_2048;
++		break;
++	case 512:
++		this->ecc.layout = &nand_hw_eccoob_512;
++		break;
++	default:
++		{
++			printk(KERN_ERR "NAND - Unrecognized pagesize: %d\n",
++					 board_mtd->writesize);
++			return -EINVAL;
 +		}
 +	}
 +
