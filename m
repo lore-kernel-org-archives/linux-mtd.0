@@ -1,7 +1,7 @@
 From: leochen@broadcom.com (Leo Chen)
 Date: Mon, 28 Sep 2009 14:11:49 -0700
 Subject: [PATCH] add bcmring mtd nand driver support
-Message-ID: <mailman.49.1254271306.2253.linux-mtd@lists.infradead.org>
+Message-ID: <mailman.69.1255140816.2253.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
@@ -9,8 +9,9 @@ Add mtd umi driver for bcmring arm arch.
 Add header files, register definition files,
 add entry in Kconfig and Makefile.
 
-remove superfluous comments from bcm nand driver
-use platform resource
+remove superfluous comments from bcm nand driver.
+use platform resource.
+fix section mismatch warning in the driver.
 
 Signed-off-by: Leo Hao Chen <leochen@broadcom.com>
 ---
@@ -20,10 +21,10 @@ Signed-off-by: Leo Hao Chen <leochen@broadcom.com>
  drivers/mtd/nand/Kconfig                      |   16 +
  drivers/mtd/nand/Makefile                     |    1 +
  drivers/mtd/nand/bcm_umi_bch.c                |  213 +++++++++
- drivers/mtd/nand/bcm_umi_nand.c               |  580 +++++++++++++++++++++++++
+ drivers/mtd/nand/bcm_umi_nand.c               |  581 +++++++++++++++++++++++++
  drivers/mtd/nand/nand_bcm_umi.c               |  149 +++++++
  drivers/mtd/nand/nand_bcm_umi.h               |  358 +++++++++++++++
- 9 files changed, 1630 insertions(+), 0 deletions(-)
+ 9 files changed, 1631 insertions(+), 0 deletions(-)
  create mode 100644 arch/arm/mach-bcmring/include/mach/reg_nand.h
  create mode 100644 arch/arm/mach-bcmring/include/mach/reg_umi.h
  create mode 100644 drivers/mtd/nand/bcm_umi_bch.c
@@ -629,10 +630,10 @@ index 0000000..a930666
 +}
 diff --git a/drivers/mtd/nand/bcm_umi_nand.c b/drivers/mtd/nand/bcm_umi_nand.c
 new file mode 100644
-index 0000000..38fa9c1
+index 0000000..087bcd7
 --- /dev/null
 +++ b/drivers/mtd/nand/bcm_umi_nand.c
-@@ -0,0 +1,580 @@
+@@ -0,0 +1,581 @@
 +/*****************************************************************************
 +* Copyright 2004 - 2009 Broadcom Corporation.  All rights reserved.
 +*
@@ -684,7 +685,8 @@ index 0000000..38fa9c1
 +/* ---- External Function Prototypes ------------------------------------- */
 +/* ---- Public Variables ------------------------------------------------- */
 +/* ---- Private Constants and Types -------------------------------------- */
-+static char gBanner[] __initdata = KERN_INFO "BCM UMI MTD NAND Driver: 1.00\n";
++static const __devinitconst char gBanner[] = KERN_INFO \
++	"BCM UMI MTD NAND Driver: 1.00\n";
 +
 +#ifdef CONFIG_MTD_PARTITIONS
 +const char *part_probes[] = { "cmdlinepart", NULL };
@@ -992,7 +994,7 @@ index 0000000..38fa9c1
 +	return 0;
 +}
 +
-+static int bcm_umi_nand_probe(struct platform_device *pdev)
++static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
 +{
 +	struct nand_chip *this;
 +	struct resource *r;
@@ -1734,3 +1736,7 @@ index 0000000..7cec2cd
 +#endif /* NAND_BCM_UMI_H */
 -- 
 1.6.0.6
+
+-- 
+
+Leo Hao Chen
