@@ -1,24 +1,24 @@
-Message-ID: <4AC1FE67.7070001@gmail.com>
-Date: Tue, 29 Sep 2009 15:32:39 +0300
-From: Artem Bityutskiy <dedekind1@gmail.com>
+Received: from mms2.broadcom.com ([216.31.210.18])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Mscj2-0002eZ-Ia
+	for linux-mtd@lists.infradead.org; Tue, 29 Sep 2009 13:26:45 +0000
+From: "Darwin Rambo" <drambo@broadcom.com>
+To: "dedekind@infradead.org" <dedekind@infradead.org>,
+	"Matthieu CASTET" <matthieu.castet@parrot.com>
+Date: Tue, 29 Sep 2009 06:26:27 -0700
+Subject: RE: UBIFS and hardware ECC of all FF pages of MLC NAND
+Message-ID: <B125D8217ABC4B43826503DE00A2D44910D7F2EA60@SJEXCHCCR01.corp.ad.broadcom.com>
+References: <B125D8217ABC4B43826503DE00A2D44910D7E85DFD@SJEXCHCCR01.corp.ad.broadcom.com>
+	<4ABB7224.8000804@nokia.com> <4ABB921B.8090500@parrot.com>
+	<1253862309.3778.25.camel@localhost>
+In-Reply-To: <1253862309.3778.25.camel@localhost>
+Content-Language: en-US
 MIME-Version: 1.0
-To: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH 8/9] fs/ubifs: Use %pUX to print UUIDs
-References: <cover.1254193019.git.joe@perches.com>
-	<5cf449befe715a79ad0bfaf41ad74f65892134f5.1254193019.git.joe@perches.com>
-In-Reply-To: <5cf449befe715a79ad0bfaf41ad74f65892134f5.1254193019.git.joe@perches.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: Steven Whitehouse <swhiteho@redhat.com>,
-	Artem Bityutskiy <dedekind@infradead.org>, Matt Mackall <mpm@selenic.com>,
-	Huang Ying <ying.huang@intel.com>, linux-kernel@vger.kernel.org,
-	xfs-masters@oss.sgi.com, Jeff Garzik <jgarzik@redhat.com>,
-	Neil Brown <neilb@suse.de>, Laurent Pinchart <laurent.pinchart@skynet.be>,
-	linux-mtd@lists.infradead.org, Alex Elder <aelder@sgi.com>,
-	Ingo Molnar <mingo@elte.hu>, Adrian Hunter <adrian.hunter@nokia.com>,
-	Christoph Hellwig <hch@lst.de>,
-	Mauro Carvalho Chehab <mchehab@infradead.org>,
-	Harvey Harrison <harvey.harrison@gmail.com>
+Content-Type: text/plain;
+ charset=gb2312
+Content-Transfer-Encoding: base64
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,17 +28,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/29/2009 08:01 AM, Joe Perches wrote:
-> Signed-off-by: Joe Perches<joe@perches.com>
-> ---
->   fs/ubifs/debug.c |    9 ++-------
->   fs/ubifs/super.c |    7 +------
->   2 files changed, 3 insertions(+), 13 deletions(-)
-
-Looks OK,
-
-Acked-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+QXJ0ZW0sDQoNCk9uZSB0aGluZyB5b3UgbWlnaHQgYWRkIGlzIGEgcGFyYW5vaWQgY2hlY2sgZm9y
+IHRoZSBPT0IgYmVpbmcgc2V0IHRvIDB4RkYgYmVmb3JlIA0KcHJvZ3JhbW1pbmcgYSBwYWdlLiBJ
+ZiBzb21lb25lIHByb2dyYW1zIHRyYWlsaW5nIHBhZ2VzIGluIGEgYmxvY2sgb2YgMHhGRiBieSBt
+aXN0YWtlLCANCmFuZCBwdXRzIGEgbm9uLTB4RkYgRUNDIGluIHRoZSBPT0IsIHRoZW4gdGhlIFVC
+SUZTIGNvZGUgd291bGQgd3JpdGUgdG8gYW4gYWxyZWFkeSANCndyaXR0ZW4gRUNDLCB3aGljaCBJ
+IGhhdmUgZm91bmQgdG8gY29ycnVwdCBvdGhlciBibG9ja3MgRUNDcyBvbiBteSBwYXJ0LiBJdCBh
+bHNvIGdpdmVzIA0Kc3RyYW5nZSBlcnJvciBtZXNzYWdlcyBhbmQgcmVmdXNlcyB0byBtb3VudCBv
+biByZWJvb3QuIFRoZSBtZXNzYWdlcyBkbyBub3QgbG9vayBsaWtlIA0KdGhleSBhcmUgcmVsYXRl
+ZCB0byB0aGUgb3JpZ2luYWwgRUNDIHdyaXRlIHByb2JsZW0gc28gaXQgaXMgaGFyZGVyIHRvIGRl
+YnVnLiANCg0KV2l0aCB0aGlzIHBhcnRpY3VsYXIgZXJyb3IsIHlvdSBjYW4gc2VlIG1lc3NhZ2Vz
+IGxpa2UgYmVsb3c6DQoNClVCSUZTIGVycm9yIChwaWQgMjQ1KTogdWJpZnNfcmVhZF9ub2RlOiBi
+YWQgbm9kZSB0eXBlICgyNTUgYnV0IGV4cGVjdGVkIDIpDQpVQklGUyBlcnJvciAocGlkIDI0NSk6
+IHViaWZzX3JlYWRfbm9kZTogYmFkIG5vZGUgYXQgTEVCIDczOjQ1NjM5Mg0KVUJJIGVycm9yOiB1
+YmlfaW9fcmVhZDogZXJyb3IgLTc0IHdoaWxlIHJlYWRpbmcgNjQgYnl0ZXMgZnJvbSBQRUIgMzow
+LCByZWFkIDY0IGJ5dGVzDQpVQkkgd2FybmluZzogdWJpX2ViYV9pbml0X3NjYW46IGNhbm5vdCBy
+ZXNlcnZlIGVub3VnaCBQRUJzIGZvciBiYWQgUEVCIGhhbmRsaW5nLA0KIHJlc2VydmVkIDE3LCBu
+ZWVkIDE5DQpVQkkgd2FybmluZzogdWJpX2ViYV9jb3B5X2xlYjogZXJyb3IgLTc0IHdoaWxlIHJl
+YWRpbmcgZGF0YSBmcm9tIFBFQiAzDQpVQkkgZXJyb3I6IHdlYXJfbGV2ZWxpbmdfd29ya2VyOiBl
+cnJvciAtNzQgd2hpbGUgbW92aW5nIFBFQiAzIHRvIFBFQiAyDQpVQkkgd2FybmluZzogdWJpX3Jv
+X21vZGU6IHN3aXRjaCB0byByZWFkLW9ubHkgbW9kZQ0KVUJJIGVycm9yOiBkb193b3JrOiB3b3Jr
+IGZhaWxlZCB3aXRoIGVycm9yIGNvZGUgLTc0DQpVQkkgZXJyb3I6IHViaV90aHJlYWQ6IHViaV9i
+Z3QwZDogd29yayBmYWlsZWQgd2l0aCBlcnJvciBjb2RlIC03NA0KVUJJIGVycm9yOiB1YmlfaW9f
+cmVhZDogZXJyb3IgLTc0IHdoaWxlIHJlYWRpbmcgNTE2MDk2IGJ5dGVzIGZyb20gUEVCIDM6ODE5
+MiwgcmUNCmFkIDUxNjA5NiBieXRlcw0KVUJJRlMgZXJyb3IgKHBpZCAxKTogdWJpZnNfc2Nhbjog
+Y29ycnVwdCBlbXB0eSBzcGFjZSBhdCBMRUIgMTo4MTkyDQpVQklGUyBlcnJvciAocGlkIDEpOiB1
+Ymlmc19zY2FubmVkX2NvcnJ1cHRpb246IGNvcnJ1cHRlZCBkYXRhIGF0IExFQiAxOjgxOTINClVC
+SUZTIGVycm9yIChwaWQgMSk6IHViaWZzX3NjYW46IExFQiAxIHNjYW5uaW5nIGZhaWxlZA0KVUJJ
+IGVycm9yOiB1YmlfaW9fcmVhZDogZXJyb3IgLTc0IHdoaWxlIHJlYWRpbmcgNTE2MDk2IGJ5dGVz
+IGZyb20gUEVCIDM6ODE5MiwgcmVhZCA1MTYwOTYgYnl0ZXMNClVCSUZTIGVycm9yIChwaWQgMSk6
+IHViaWZzX3JlY292ZXJfbWFzdGVyX25vZGU6IGZhaWxlZCB0byByZWNvdmVyIG1hc3RlciBub2Rl
+DQpMaXN0IG9mIGFsbCBwYXJ0aXRpb25zOg0KMWYwMCAgICAgICAgICAgICA1MTIgbXRkYmxvY2sw
+IChkcml2ZXI/KQ0KMWYwMSAgICAgICAgICAgIDIwNDggbXRkYmxvY2sxIChkcml2ZXI/KQ0KMWYw
+MiAgICAgICAgICAgIDIwNDggbXRkYmxvY2syIChkcml2ZXI/KQ0KMWYwMyAgICAgICAgICAgIDgx
+OTIgbXRkYmxvY2szIChkcml2ZXI/KQ0KMWYwNCAgICAgICAgICAgIDIwNDggbXRkYmxvY2s0IChk
+cml2ZXI/KQ0KMWYwNSAgICAgICAgICAgIDIwNDggbXRkYmxvY2s1IChkcml2ZXI/KQ0KMWYwNiAg
+ICAgICAgIDEwMDc2MTYgbXRkYmxvY2s2IChkcml2ZXI/KQ0KMWYwNyAgICAgICAgIDEwMDY1OTIg
+bXRkYmxvY2s3IChkcml2ZXI/KQ0KMWYwOCAgICAgICAgICAgMzI3NjggbXRkYmxvY2s4IChkcml2
+ZXI/KQ0KMWYwOSAgICAgICAgICAgIDEwMjQgbXRkYmxvY2s5IChkcml2ZXI/KQ0KMWYwYSAgICAg
+ICAgICA5ODAyODAgbXRkYmxvY2sxMCAoZHJpdmVyPykNCk5vIGZpbGVzeXN0ZW0gY291bGQgbW91
+bnQgcm9vdCwgdHJpZWQ6ICB1Ymlmcw0KDQoNCkEgYmV0dGVyIGVycm9yIG1lc3NhZ2Ugd291bGQg
+c2F5IHNvbWV0aGluZyBsaWtlOg0KIlVCSSBlcnJvcjogRGF0YSBwYWdlIGluY29ycmVjdGx5IHBy
+b2dyYW1tZWQgdG8gYWxsIDB4RkZzIHdpdGggbm9uLTB4RkYgRUNDLiINCg0KDQpBbm90aGVyIHN1
+Z2dlc3Rpb24gaXMgcmF0aGVyIHRoYW4gY3JlYXRpbmcgbGFyZ2UgZmlsZXMgc3R1ZmZlZCB3aXRo
+IDB4RkYgcGFkcyB0aGUgDQplbmQgb2Ygc29tZSBvZiB0aGUgYmxvY2tzLCB0byBoYXZlIGEgdWJp
+bml6ZSBvcHRpb24gd2hpY2ggY3JlYXRlcyBhIGRvd25sb2FkIGhlYWRlciANCmluIGZyb250IG9m
+IGVhY2ggYmxvY2sgd2l0aCBibG9jayBsZW5ndGggYW5kIHZhbGlkIGRhdGEgbGVuZ3RoLiBUaGVu
+IHRoZSAweEZGJ3MgDQp3b3VsZG4ndCBoYXZlIHRvIGJlIGNhcnJpZWQgYXJvdW5kIGFuZCB0aGUg
+dXNlciB3b3VsZCBiZSBsZXNzIGxpa2VseSB0byBwcm9ncmFtIA0KMHhGRidzIGJ5IG1pc3Rha2Uu
+IFRoZXkgd291bGQgdHlwaWNhbGx5IG9ubHkgcHJvZ3JhbSB0aGUgdXNlZnVsIGRhdGEgdGhhdCBp
+cyBpbiANCnRoZSBmaWxlIGluc3RlYWQsIGFuZCBzaW5jZSB0aGV5IGVyYXNlZCB0aGUgYmxvY2sg
+dG8gcHJvZ3JhbSwgdGhlIHRyYWlsaW5nIDB4RkZzDQp3b3VsZCBiZSB0YWtlbiBjYXJlIG9mIGF1
+dG9tYXRpY2FsbHkuIE9mIGNvdXJzZSwgdGhpcyB3b3VsZCByZXF1aXJlIGN1c3RvbSBmbGFzaGVy
+DQpjaGFuZ2VzIHRvIGFjY29tbW9kYXRlLiBUaGFua3MuDQoNClJlZ2FyZHMsDQpEYXJ3aW4NCg0K
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBBcnRlbSBCaXR5dXRza2l5IFtt
+YWlsdG86ZGVkZWtpbmRAaW5mcmFkZWFkLm9yZ10gDQo+IFNlbnQ6IEZyaWRheSwgU2VwdGVtYmVy
+IDI1LCAyMDA5IDEyOjA1IEFNDQo+IFRvOiBNYXR0aGlldSBDQVNURVQNCj4gQ2M6IEFkcmlhbiBI
+dW50ZXI7IERhcndpbiBSYW1ibzsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gU3Vi
+amVjdDogUmU6IFVCSUZTIGFuZCBoYXJkd2FyZSBFQ0Mgb2YgYWxsIEZGIHBhZ2VzIG9mIE1MQyBO
+QU5EDQo+IA0KPiBPbiBUaHUsIDIwMDktMDktMjQgYXQgMTc6MzYgKzAyMDAsIE1hdHRoaWV1IENB
+U1RFVCB3cm90ZToNCj4gPiBBZHJpYW4gSHVudGVyIGEgqKZjcml0IDoNCj4gPiA+IERhcndpbiBS
+YW1ibyB3cm90ZToNCj4gPiA+IA0KPiA+ID4+IDIuIGZvciBpbml0aWFsIGRvd25sb2FkaW5nLCBz
+aG91bGQgYW4gRUNDIGJlIHByb2dyYW1tZWQgDQo+IG9uIGFsbCBGRiBkYXRhIHBhZ2VzPyBJcyB0
+aGVyZSBhbnkgY29ycmVjdGlvbiBhZHZhbnRhZ2U/DQo+ID4gPiANCj4gPiA+IEluIHlvdXIgY2Fz
+ZSwgYXMgeW91IGhhdmUgZGlzY292ZXJlZCwgeW91IG11c3Qgbm90IA0KPiBwcm9ncmFtIEVDQyBm
+b3IgRkYgcGFnZXMgYXQNCj4gPiA+IHRoZSBlbmQgb2YgZXJhc2VibG9ja3MuDQo+ID4gPiANCj4g
+PiBUaGUgdHJpY2t5IHBhcnQgaXMgd2hlbiB5b3UgcmVhZCBGRiBwYWdlcyB3aXRoIGVjYyBpbiBt
+dGQuIA0KPiBZb3Ugd2lsbCBnZXQNCj4gPiBhbiBlY2MgZXJyb3IuDQo+ID4gDQo+ID4gSWYgdGhl
+IGVjYyB3cml0aW5nIGlzIGRvbmUgb24gc29mdHdhcmUgeW91IGNhbiBhbHdheXMgeG9yIA0KPiB0
+aGUgZWNjIGNvZGUNCj4gPiB0byBtYWtlIGl0ICJGRiBmb3IgRkYgZGF0YSIuDQo+ID4gQnV0IGlm
+IGV2ZXJ5dGhpbmcgaXMgZG9uZSBieSBoYXJkd2FyZS4uLg0KPiANCj4gUmlnaHQsIHdoaWNoIG1l
+YW5zIHRoZSBVQkkvVUJJRlMgZmxhc2hlciBzaG91bGQgYmUgc21hcnQgYW5kIHNraXANCj4gMHhG
+Ri1lZCBOQU5EIHBhZ2VzIGF0IHRoZSBlbmQgb2YgZXJhc2VibG9ja3MuIFRoaXMgYWRkcyBzb21l
+IA0KPiBjb21wbGV4aXR5DQo+IHRvIHRoZSBmbGFzaGVyLCB0aG91Z2h0LiBBbmQgaGVyZToNCj4g
+DQo+IGh0dHA6Ly93d3cubGludXgtbXRkLmluZnJhZGVhZC5vcmcvZG9jL3ViaS5odG1sI0xfZm9y
+bWF0X2RldA0KPiANCj4gSSBldmVuIGRlc2NyaWJlZCBpbiBkZXRhaWxzIHRoZSBmbGFzaGluZyBh
+bGdvcml0aG0gd2l0aCBteSBsaW1pdGVkDQo+IEVuZ2xpc2ggdm9jYWJ1bGFyeSA6LSkNCj4gDQo+
+IC0tIA0KPiBCZXN0IFJlZ2FyZHMsDQo+IEFydGVtIEJpdHl1dHNraXkgKKehp+Kn5KfXp94gp6Kn
+2qfkp/Cn6Kfcp9qn2ykNCj4gDQo+IA0KPiA=
