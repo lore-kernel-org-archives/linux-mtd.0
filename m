@@ -1,19 +1,24 @@
-Received: from smtpin2.mailsecure.in ([121.241.224.3])
+Received: from mail.perches.com ([173.55.12.10])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MsUnH-0008QR-8g
-	for linux-mtd@lists.infradead.org; Tue, 29 Sep 2009 04:58:35 +0000
-Message-ID: <4AC1947A.5060901@tataelxsi.co.in>
-Date: Tue, 29 Sep 2009 10:30:42 +0530
-From: Rahanesh <rahanesh@tataelxsi.co.in>
-MIME-Version: 1.0
-To: Dennis McLeod <dmcleod@bittware.com>
-Subject: Re: Mounting Entire Flash
-References: <4ABB468D.9050009@tataelxsi.co.in>
-	<1253797515.3722.3.camel@lusitania>
-In-Reply-To: <1253797515.3722.3.camel@lusitania>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-Cc: linux-mtd@lists.infradead.org
+	id 1MsUq6-000565-PX
+	for linux-mtd@lists.infradead.org; Tue, 29 Sep 2009 05:01:31 +0000
+From: Joe Perches <joe@perches.com>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 8/9] fs/ubifs: Use %pUX to print UUIDs
+Date: Mon, 28 Sep 2009 22:01:10 -0700
+Message-Id: <5cf449befe715a79ad0bfaf41ad74f65892134f5.1254193019.git.joe@perches.com>
+In-Reply-To: <cover.1254193019.git.joe@perches.com>
+References: <cover.1254193019.git.joe@perches.com>
+Cc: Steven Whitehouse <swhiteho@redhat.com>,
+	Artem Bityutskiy <dedekind@infradead.org>,
+	Matt Mackall <mpm@selenic.com>, Alex Elder <aelder@sgi.com>,
+	xfs-masters@oss.sgi.com, Jeff Garzik <jgarzik@redhat.com>,
+	Neil Brown <neilb@suse.de>, Laurent Pinchart <laurent.pinchart@skynet.be>,
+	linux-mtd@lists.infradead.org, Huang Ying <ying.huang@intel.com>,
+	Ingo Molnar <mingo@elte.hu>, Adrian Hunter <adrian.hunter@nokia.com>,
+	Christoph Hellwig <hch@lst.de>,
+	Mauro Carvalho Chehab <mchehab@infradead.org>,
+	Harvey Harrison <harvey.harrison@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,57 +28,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Dennis,
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ fs/ubifs/debug.c |    9 ++-------
+ fs/ubifs/super.c |    7 +------
+ 2 files changed, 3 insertions(+), 13 deletions(-)
 
-> On Thu, 2009-09-24 at 15:44 +0530, Rahanesh wrote:
->  =20
->> Hi All,
->>
->> Currently I have 4 mtd partitions in Flash. They are all seen under /dev=20
->> directory as mtd0 mtd1 mtd2 and mtd3.
->>
->> mtd0-> Uboot + Itz Environment
->> mtd1-> JFFS
->> mtd2-> Config files
->> mtd3-> Not used
->>
->> I am currently trying to implement Image upgradation.
->>
->> I will need to update JFFS, uboot and Config files from Linux.
->>
->> I am currently achieving this through  flash_eraseall and dd  command .
->>
->> To Update U-boot First i will do a
->>
->> flash_eraseall /dev/mtd0 and then
->> dd if=3Duboot.bin of=3D/dev/mtd0 count=3Dsize;
->>
->> and similarly for all individual partitions.
->>
->> But If i have a combined image as combined.bin  how do i update the=20
->> entire flash .
->>
->> Is it possible to see entire flash as /dev/mtd  . i can very well=20
->> extract individual images from combined image and reflash to respective=20
->> partitions.
->>
->> But it would be generic if  we are able write to entire flash not to=20
->> individual partitions.
->>
->> Is it possible to Write to entire flash as such.
->>
->> Thanks
->> Rahanesh
->>    =20
->
-> I always set up a partition that spans the entire flash chip..=20
->
-> mtd0 -> 0:ENTIRE_SIZE
-> mtd1 -> 0:+10M
-> mtd2 -> 10M:22M
->  =20
-         How do we achieve this? Should we edit /proc/mtd or=20
-flash/driver code ?
-
-        Thanks
-        Rahanesh
+diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
+index dbc093a..b16779e 100644
+--- a/fs/ubifs/debug.c
++++ b/fs/ubifs/debug.c
+@@ -350,13 +350,8 @@ void dbg_dump_node(const struct ubifs_info *c, const void *node)
+ 		       le32_to_cpu(sup->fmt_version));
+ 		printk(KERN_DEBUG "\ttime_gran      %u\n",
+ 		       le32_to_cpu(sup->time_gran));
+-		printk(KERN_DEBUG "\tUUID           %02X%02X%02X%02X-%02X%02X"
+-		       "-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X\n",
+-		       sup->uuid[0], sup->uuid[1], sup->uuid[2], sup->uuid[3],
+-		       sup->uuid[4], sup->uuid[5], sup->uuid[6], sup->uuid[7],
+-		       sup->uuid[8], sup->uuid[9], sup->uuid[10], sup->uuid[11],
+-		       sup->uuid[12], sup->uuid[13], sup->uuid[14],
+-		       sup->uuid[15]);
++		printk(KERN_DEBUG "\tUUID           %pUX\n",
++		       sup->uuid);
+ 		break;
+ 	}
+ 	case UBIFS_MST_NODE:
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 333e181..7d59ab7 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1393,12 +1393,7 @@ static int mount_ubifs(struct ubifs_info *c)
+ 		c->leb_size, c->leb_size >> 10);
+ 	dbg_msg("data journal heads:  %d",
+ 		c->jhead_cnt - NONDATA_JHEADS_CNT);
+-	dbg_msg("UUID:                %02X%02X%02X%02X-%02X%02X"
+-	       "-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X",
+-	       c->uuid[0], c->uuid[1], c->uuid[2], c->uuid[3],
+-	       c->uuid[4], c->uuid[5], c->uuid[6], c->uuid[7],
+-	       c->uuid[8], c->uuid[9], c->uuid[10], c->uuid[11],
+-	       c->uuid[12], c->uuid[13], c->uuid[14], c->uuid[15]);
++	dbg_msg("UUID:                %pUX", c->uuid);
+ 	dbg_msg("big_lpt              %d", c->big_lpt);
+ 	dbg_msg("log LEBs:            %d (%d - %d)",
+ 		c->log_lebs, UBIFS_LOG_LNUM, c->log_last);
+-- 
+1.6.3.1.10.g659a0.dirty
