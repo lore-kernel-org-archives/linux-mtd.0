@@ -1,18 +1,24 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Msavk-0008UG-Ou
-	for linux-mtd@lists.infradead.org; Tue, 29 Sep 2009 11:31:45 +0000
-Message-ID: <4AC1F018.5000207@nokia.com>
-Date: Tue, 29 Sep 2009 14:31:36 +0300
-From: Adrian Hunter <adrian.hunter@nokia.com>
+Message-ID: <4AC1FE67.7070001@gmail.com>
+Date: Tue, 29 Sep 2009 15:32:39 +0300
+From: Artem Bityutskiy <dedekind1@gmail.com>
 MIME-Version: 1.0
-To: David Lambert <dave@lambsys.com>
-Subject: Re: Long attach times attaching MTD to UBI
-References: <4AC113E8.2030405@lambsys.com>
-In-Reply-To: <4AC113E8.2030405@lambsys.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: Joe Perches <joe@perches.com>
+Subject: Re: [PATCH 8/9] fs/ubifs: Use %pUX to print UUIDs
+References: <cover.1254193019.git.joe@perches.com>
+	<5cf449befe715a79ad0bfaf41ad74f65892134f5.1254193019.git.joe@perches.com>
+In-Reply-To: <5cf449befe715a79ad0bfaf41ad74f65892134f5.1254193019.git.joe@perches.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: Steven Whitehouse <swhiteho@redhat.com>,
+	Artem Bityutskiy <dedekind@infradead.org>, Matt Mackall <mpm@selenic.com>,
+	Huang Ying <ying.huang@intel.com>, linux-kernel@vger.kernel.org,
+	xfs-masters@oss.sgi.com, Jeff Garzik <jgarzik@redhat.com>,
+	Neil Brown <neilb@suse.de>, Laurent Pinchart <laurent.pinchart@skynet.be>,
+	linux-mtd@lists.infradead.org, Alex Elder <aelder@sgi.com>,
+	Ingo Molnar <mingo@elte.hu>, Adrian Hunter <adrian.hunter@nokia.com>,
+	Christoph Hellwig <hch@lst.de>,
+	Mauro Carvalho Chehab <mchehab@infradead.org>,
+	Harvey Harrison <harvey.harrison@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,15 +28,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Lambert wrote:
-> Please excuse me if this is a naive question as I am a newbie to MTD and 
-> flash file systems.
-> 
-> I am attempting to enable UBIFS on an Atmel AT91RM9200 using kernel 
-> version 2.6.30.1. One of the attractions was fast mount times compared 
-> to JFFS2 etc. Unfortunately I am running into VERY long attach times as 
-> witnessed below. Obviously I must be doing something very wrong as the 
-> documentation indicates that attaching a 1G partition should take around 
-> 2 seconds, but mine is over 8 minutes!
+On 09/29/2009 08:01 AM, Joe Perches wrote:
+> Signed-off-by: Joe Perches<joe@perches.com>
+> ---
+>   fs/ubifs/debug.c |    9 ++-------
+>   fs/ubifs/super.c |    7 +------
+>   2 files changed, 3 insertions(+), 13 deletions(-)
 
-Is your NAND slow?  Have you configured UBI debugging checks turned on?
+Looks OK,
+
+Acked-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
