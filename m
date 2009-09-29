@@ -1,19 +1,19 @@
 Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Msdjq-0008M4-Lf
-	for linux-mtd@lists.infradead.org; Tue, 29 Sep 2009 14:31:39 +0000
-Subject: Re: [PATCH 1/2] UBI: Add ubi_open_volume_path()
+	id 1MseTr-0002WL-D2
+	for linux-mtd@lists.infradead.org; Tue, 29 Sep 2009 15:19:11 +0000
+Message-ID: <4AC2247F.3030100@gmail.com>
+Date: Tue, 29 Sep 2009 18:15:11 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Corentin Chary <corentincj@iksaif.net>
-In-Reply-To: <1254165012-10798-1-git-send-email-corentincj@iksaif.net>
-References: <1254165012-10798-1-git-send-email-corentincj@iksaif.net>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 29 Sep 2009 17:27:37 +0300
-Message-Id: <1254234457.3778.84.camel@localhost>
-Mime-Version: 1.0
+MIME-Version: 1.0
+To: David Lambert <dave@lambsys.com>
+Subject: Re: Long attach times attaching MTD to UBI
+References: <4AC113E8.2030405@lambsys.com> <4AC1F018.5000207@nokia.com>
+In-Reply-To: <4AC1F018.5000207@nokia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>
-Reply-To: dedekind1@gmail.com
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-09-28 at 21:10 +0200, Corentin Chary wrote:
-> Add an ubi_open_volume_path(path, mode) function which works like
-> open_bdev_exclusive(path, mode, ...) where path is the special file
-> representing the UBI volume, typically /dev/ubi0_0.
-> 
-> Signed-off-by: Corentin Chary <corentincj@iksaif.net>
+On 09/29/2009 02:31 PM, Adrian Hunter wrote:
+> David Lambert wrote:
+>> Please excuse me if this is a naive question as I am a newbie to MTD
+>> and flash file systems.
+>>
+>> I am attempting to enable UBIFS on an Atmel AT91RM9200 using kernel
+>> version 2.6.30.1. One of the attractions was fast mount times compared
+>> to JFFS2 etc. Unfortunately I am running into VERY long attach times
+>> as witnessed below. Obviously I must be doing something very wrong as
+>> the documentation indicates that attaching a 1G partition should take
+>> around 2 seconds, but mine is over 8 minutes!
+>
+> Is your NAND slow? Have you configured UBI debugging checks turned on?
 
-Looks good, and actually works. And I like that I can now do:
+Please, measure your nand throughput withmtd_speedtest:
 
-mount -t ubifs /dev/ubi_whatever_name /mnt/ubifs
-
-And when your user-space changes hit distros, I will not have to
-even specify -t ubifs.
-
-I'm not entirely sure vs the 'kern_path()' usage though. Could you
-please post your patch to these lists as well:
-
-linux-fsdevel@vger.kernel.org
-linux-kernel@vger.kernel.org
-
-I'll push your patches to the ubi-2.6.git now, but I would not want to
-make these changes sneak into mainline without being sent to lkml, just
-because I'm not entirely sure about the 'kern_path()'. But for me this
-looks ok.
-
-Thanks!
+http://www.linux-mtd.infradead.org/doc/general.html#L_mtd_tests
 
 -- 
 Best Regards,
