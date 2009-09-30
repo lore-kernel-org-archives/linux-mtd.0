@@ -1,27 +1,13 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Msrx0-0005JZ-JX
-	for linux-mtd@lists.infradead.org; Wed, 30 Sep 2009 05:42:10 +0000
-Subject: Re: UBIFS Error
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: JerinJacob <jerin.jacob@maxim-ic.com>
-In-Reply-To: <4AC19FA0.1090301@maxim-ic.com>
-References: <4AA5F37F.4050307@maxim-ic.com> <4AA60E6C.6060307@nokia.com>
-	<4AA8EA9C.4070805@maxim-ic.com> <4AA8ED7B.5020509@nokia.com>
-	<4AA8F6E4.1090209@maxim-ic.com> <4AA90351.3050000@nokia.com>
-	<4AAA4005.9080707@maxim-ic.com> <1252938440.5060.102.camel@localhost>
-	<1252938588.5060.103.camel@localhost> <4AAF5016.2030809@maxim-ic.com>
-	<4AB1F58D.7070809@maxim-ic.com> <1254136949.3778.58.camel@localhost>
-	<4AC19FA0.1090301@maxim-ic.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 30 Sep 2009 08:37:27 +0300
-Message-Id: <1254289047.3778.118.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"Hunter Adrian \(Nokia-D/Helsinki\)" <adrian.hunter@nokia.com>
-Reply-To: dedekind1@gmail.com
+	id 1MstK8-00046V-N4
+	for linux-mtd@lists.infradead.org; Wed, 30 Sep 2009 07:10:09 +0000
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+To: Sven Luther <sven@powerlinux.fr>
+Subject: [PATCH] UBI: fix backward compatibility
+Date: Wed, 30 Sep 2009 10:09:20 +0300
+Message-Id: <1254294560-6884-1-git-send-email-Artem.Bityutskiy@nokia.com>
+Cc: linux-mtd@lists.infradead.org, adrian.hunter@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,42 +17,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-09-29 at 11:18 +0530, JerinJacob wrote:
-> Do you still have UBIFS errors? Any new interesting findings? Did you
-> manage to somehow reproduce this on nandsim?
-> 
->  >Still the UBIFS crashing problem persist.
->  >Not able to reproduce with nandsim.
->  >Is there anything I can help you to accelerate this bug fix ? Please 
-> let me know ?
->  >Even I could reproduce the problem 16MiB of nand partition(Earlier, I 
-> Was testing with 500MiB partition)
->  >If possible,Could you please run the testapp on any target board(if 
-> you have any).
+Commit 32bc4820287a1a03982979515949e8ea56eac641 did not fully fix
+the backward compatibility issues. We still fail to properly handle
+situations when the first PEB contains non-zero image sequence
+number, but one of the following PEBs contains zero image sequence
+number. For example, this may happen if we mount a new image with
+an old kernel, and then try to mount it in the new kernel.
 
-First of all, it would be cool if you fixed your e-mail client. I
-haven't ever seen before anything like this - you put _your_ answer to
-the ">" quotations, not mine. Here are some guidelines:
+This patch should fix the issue.
 
-http://www.infradead.org/~dwmw2/email.html
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ drivers/mtd/ubi/scan.c |    7 +++----
+ drivers/mtd/ubi/scan.h |    2 --
+ 2 files changed, 3 insertions(+), 6 deletions(-)
 
-Try enabling UBI extra self-checks as it is suggested here:
-http://www.linux-mtd.infradead.org/faq/ubi.html#L_how_debug
-
-Similarly, try to enable UBIFS extra self-checks. Also, keep UBI/UBIFS
-debugging enabled. With the debugging and self-checks you may catch
-something.
-
-Also, try to avoid doing 'ubiformat /dev/mtd6 -y', just to make sure it
-is not ubiformat which screws something. Just do
-'flash_eraseall /dev/mtd6'.
-
-Also, when you send a bug report, include _all_ UBI/UBIFS output, not
-only what you see on the console. E.g., use dmesg. Read more about this
-here:
-
-http://www.linux-mtd.infradead.org/faq/ubi.html#L_how_debug
-
+diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
+index b847745..6db7ce5 100644
+--- a/drivers/mtd/ubi/scan.c
++++ b/drivers/mtd/ubi/scan.c
+@@ -793,16 +793,15 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
+ 		 * number.
+ 		 */
+ 		image_seq = be32_to_cpu(ech->image_seq);
+-		if (!si->image_seq_set) {
++		if (!ubi->image_seq && image_seq)
+ 			ubi->image_seq = image_seq;
+-			si->image_seq_set = 1;
+-		} else if (ubi->image_seq && ubi->image_seq != image_seq) {
++		if (ubi->image_seq && image_seq &&
++		    ubi->image_seq != image_seq) {
+ 			ubi_err("bad image sequence number %d in PEB %d, "
+ 				"expected %d", image_seq, pnum, ubi->image_seq);
+ 			ubi_dbg_dump_ec_hdr(ech);
+ 			return -EINVAL;
+ 		}
+-
+ 	}
+ 
+ 	/* OK, we've done with the EC header, let's look at the VID header */
+diff --git a/drivers/mtd/ubi/scan.h b/drivers/mtd/ubi/scan.h
+index 1017cf1..61df208 100644
+--- a/drivers/mtd/ubi/scan.h
++++ b/drivers/mtd/ubi/scan.h
+@@ -102,7 +102,6 @@ struct ubi_scan_volume {
+  * @mean_ec: mean erase counter value
+  * @ec_sum: a temporary variable used when calculating @mean_ec
+  * @ec_count: a temporary variable used when calculating @mean_ec
+- * @image_seq_set: indicates @ubi->image_seq is known
+  *
+  * This data structure contains the result of scanning and may be used by other
+  * UBI sub-systems to build final UBI data structures, further error-recovery
+@@ -125,7 +124,6 @@ struct ubi_scan_info {
+ 	int mean_ec;
+ 	uint64_t ec_sum;
+ 	int ec_count;
+-	int image_seq_set;
+ };
+ 
+ struct ubi_device;
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.6.2.5
