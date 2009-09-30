@@ -1,17 +1,22 @@
-Received: from na3sys009aog111.obsmtp.com ([74.125.149.205])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Msmb9-0001uT-Ko
-	for linux-mtd@lists.infradead.org; Tue, 29 Sep 2009 23:59:17 +0000
-Received: by pzk4 with SMTP id 4so4050080pzk.32
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 29 Sep 2009 16:59:03 -0700 (PDT)
+Received: from mms1.broadcom.com ([216.31.210.17])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MsmeN-0002Ux-1X
+	for linux-mtd@lists.infradead.org; Wed, 30 Sep 2009 00:02:36 +0000
+Date: Tue, 29 Sep 2009 17:02:21 -0700
+From: "Leo (Hao) Chen" <leochen@broadcom.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Subject: Re: [PATCH] [MTD] bcmring: mtd nand driver
+Message-ID: <20090930000220.GA3812@broadcom.com>
+References: <20090928222451.GF30661@broadcom.com>
+	<1254177430.3034.790.camel@macbook.infradead.org>
+	<20090928232720.GI30661@broadcom.com>
 MIME-Version: 1.0
-Date: Wed, 30 Sep 2009 09:59:02 +1000
-Message-ID: <ed62800909291659i2de751aftdcb6ee879c0ebca0@mail.gmail.com>
-Subject: Unable to handle kernel paging request, jffs2_gcd (maybe)
-From: Aras Vaichas <arasv@magellan-technology.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+In-Reply-To: <20090928232720.GI30661@broadcom.com>
+Content-Type: text/plain;
+ charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,1730 +26,1786 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, I'm using 2.6.26.3 + AT91 patches, AT91RM9200, NAND with JFFS2.
-
-I ran a test where I continuously FTP'd the same 15MB file to the
-device over and over again. This simulates a firmware upgrade.
-
-The file causes the NAND device to reach about 80% full. I'm running
-this test because I noticed some weird interactions between our
-application,ftpd (linux-ftpd-0.17) and the CPU load. The problem could
-even be that the system is running our of RAM. Not sure, but I wanted
-to run an overnight stress test and see what occurred.
-
-What follows are the stack dumps that I saw this morning. I've tried
-my best to break them up. The only reason I'm starting at Linux-MTD is
-because the traces feature the jffs2_gcd. I'm happy to skip to another
-mailing list if this is the wrong list.
-
-Note that this device is still running, the CPU load is 34.00, and
-there are 20 instances of ftpd running in the process list. Yes, it's
-in a very sick state. I'd like to understand how the system got into
-this state.
-
-Unable to handle kernel paging request at virtual address 05690000
-pgd = c0004000
-[05690000] *pgd=00000000
-Internal error: Oops: 5 [#1] PREEMPT
-Modules linked in: readerdrv g_ether vfat fat nls_base
-CPU: 0    Not tainted  (2.6.26.3-magarm #110)
-PC is at jffs2_thread_should_wake+0x94/0xa4
-LR is at 0x1c000
-pc : [<c00fa200>]    lr : [<0001c000>]    psr: 80000013
-sp : c1d05f3c  ip : 00000007  fp : c1d05f54
-r10: 00000000  r9 : 00000000  r8 : 00000000
-r7 : 00000001  r6 : 00000003  r5 : 00000001  r4 : c1cff000
-r3 : 00000039  r2 : 05690000  r1 : c1cff08c  r0 : 00000000
-Flags: Nzcv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment kernel
-Control: c000317f  Table: 21f50000  DAC: 00000017
-Process jffs2_gcd_mtd5 (pid: 199, stack limit = 0xc1d04260)
-Stack: (0xc1d05f3c to 0xc1d06000)
-5f20:                                                                40000013
-5f40: c1d04000 c1cff000 c1d05ff4 c1d05f58 c0101c4c c00fa17c 00000001 00000000
-5f60: 00000080 00000000 00000000 00000000 00000093 00017b46 c1d05f98 c1d05f88
-5f80: c01ee8e4 c01ee560 c1d04000 c1d05fac c1d05f9c c0035f70 c01ee8b8 00000000
-5fa0: 00000000 c1d05fb0 c0023b84 c0035f48 00000000 c1cff000 c0101bcc c003c894
-5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-5fe0: 00000000 00000000 00000000 c1d05ff8 c003c894 c0101bdc d7eb7ecd f9078c11
-Backtrace:
-[<c00fa16c>] (jffs2_thread_should_wake+0x0/0xa4) from [<c0101c4c>]
-(jffs2_garbage_collect_thread+0x80/0x1bc)
- r6:c1cff000 r5:c1d04000 r4:40000013
-[<c0101bcc>] (jffs2_garbage_collect_thread+0x0/0x1bc) from
-[<c003c894>] (do_exit+0x0/0x65c)
- r7:00000000 r6:00000000 r5:00000000 r4:00000000
-Code: e5d4306d e2866001 e1560003 0affffe5 (e5922000)
----[ end trace 1218c359973afa01 ]---
-
-
-
-Unable to handle kernel NULL pointer dereference at virtual address 00000034
-pgd = c1f5c000
-[00000034] *pgd=21d4c031, *pte=00000000, *ppte=00000000
-Internal error: Oops: 17 [#2] PREEMPT
-Modules linked in: readerdrv g_ether vfat fat nls_base
-CPU: 0    Tainted: G      D    (2.6.26.3-magarm #110)
-PC is at prepare_signal+0x14/0x18c
-LR is at send_signal+0x24/0x1e0
-pc : [<c004579c>]    lr : [<c0045b50>]    psr: 80000093
-sp : c1f5bbcc  ip : c1f5bbec  fp : c1f5bbe8
-r10: c1c58000  r9 : 00000000  r8 : c1cff000
-r7 : 00000001  r6 : c1c58000  r5 : 00000000  r4 : c1f5a000
-r3 : 00000000  r2 : c1c58000  r1 : c1c58000  r0 : 00000001
-Flags: Nzcv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment user
-Control: c000317f  Table: 21f5c000  DAC: 00000015
-Process ftpd (pid: 579, stack limit = 0xc1f5a260)
-Stack: (0xc1f5bbcc to 0xc1f5c000)
-bbc0:                            c1f5a000 80000013 00000001 00000001 c1f5bc14
-bbe0: c1f5bbec c0045b50 c0045798 c1f5a000 80000013 c1cf5000 c187aa80 c1cff000
-bc00: 002fe000 00000000 c1f5bc24 c1f5bc18 c0045d38 c0045b3c c1f5bc40 c1f5bc28
-bc20: c00462c4 c0045d34 c1f5a000 c1cff000 c1cf5000 c1f5bc50 c1f5bc44 c0046310
-bc40: c0046298 c1f5bc68 c1f5bc54 c0101ab0 c0046300 c1cff000 00000000 c1f5bc7c
-bc60: c1f5bc6c c00f95ac c0101a78 c0fc43e0 c1f5bcd4 c1f5bc80 c00fcc5c c00f95a8
-bc80: 00000c88 00000003 00000000 00000000 c170d000 00000c88 00000c88 c170d000
-bca0: 00000ccc be05e31d be05e31d 00001000 00000000 c187aa80 c1cf5000 c187aaa8
-bcc0: 00000000 c02c31a0 c1f5bd2c c1f5bcd8 c00f7b5c c00fc9bc 002fe000 00001000
-bce0: c1f5bcf8 c187aae8 00000000 00001000 002fe000 00000000 00000000 00000947
-bd00: 00000947 c01f8400 c1f5a000 002fe000 00000000 00001000 00001000 00000000
-bd20: c1f5bdc0 c1f5bd30 c0067e2c c00f7a14 00001000 00001000 c02c31a0 00000947
-bd40: c187ab40 c01b7b70 bc00fea9 00000014 00000002 c0181e80 c1c12840 00001000
-bd60: 00000000 00000000 c01f8400 c187aaa8 c01f8400 c187ab40 c1fd9880 c1f5bea8
-bd80: 00000947 c02c31a0 c1f5bea0 00000001 00000000 00002000 002fe000 00000000
-bda0: 00300000 00000000 00000000 c1f5bdf4 c1f5bdf0 c1f5be54 c1f5bdc8 c0068b60
-bdc0: c0067ca8 002fe000 00000000 c1f5bef0 00002000 00000000 00000000 c187ab40
-bde0: c1fd9880 c1f5bef0 c1f5bea0 c1f5bea8 00002000 002fe000 00000000 00002000
-be00: 00000001 00000008 00000001 c1c3ed20 c028da80 c027f7b4 c1f5a000 c1f5be54
-be20: c1f5be2c c0182fd0 c019cad8 c1f5bea8 c187aaa8 002fe000 00000000 c1f5bef0
-be40: c1f5bea0 c187ab14 c1f5be94 c1f5be58 c0068c10 c0068624 c028da68 c0286ebc
-be60: c187ab40 c1fd9880 00000001 c1f5bea8 c1f5bef0 c1fd9880 c1f5bf78 c1f5bea0
-be80: 00000000 0001f9f0 c1f5bf50 c1f5be9c c0087794 c0068ba4 002fe000 00000000
-bea0: be890f20 00002000 c1f5bed4 c1f5beb8 00000000 00000001 ffffffff c1fd9880
-bec0: 00000000 00000000 00000000 00000000 c0800b80 00000000 00000000 c1f5bf08
-bee0: c0800b80 c004fa44 c1f5bee8 c1f5bee8 002fe000 00000000 00000001 c1f5bf74
-bf00: c1f5bf0c c002371c 00002000 0000000e 00002000 c01f849c c1f5bf78 c1fd9880
-bf20: be890f20 c1f5bf78 002fe000 c1fd9880 be890f20 c1f5bf78 00002000 00000000
-bf40: c1f5a000 c1f5bf74 c1f5bf54 c00878a8 c00876e4 0001f9f0 c1fd98a0 c1fd9880
-bf60: c1f5bf78 002fe000 c1f5bfa4 c1f5bf78 c00879ec c00877f4 002fe000 00000000
-bf80: 00000000 00002000 be890f20 00024988 00000004 c0023ca4 00000000 c1f5bfa8
-bfa0: c0023b00 c00879b0 00002000 be890f20 00000004 be890f20 00002000 fbad2484
-bfc0: 00002000 be890f20 00024988 00024698 00012848 00000000 0001f9f0 be893594
-bfe0: 00000000 be890f18 0000b570 401110b4 60000010 00000004 3e6bae52 36ccfe99
-Backtrace:
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1f5a000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf5000 r5:c1cff000 r4:c1f5a000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c00f95ac>] (jffs2_complete_reservation+0x14/0x20)
- r5:00000000 r4:c1cff000
-[<c00f9598>] (jffs2_complete_reservation+0x0/0x20) from [<c00fcc5c>]
-(jffs2_write_inode_range+0x2b0/0x31c)
- r4:c0fc43e0
-[<c00fc9ac>] (jffs2_write_inode_range+0x0/0x31c) from [<c00f7b5c>]
-(jffs2_write_end+0x158/0x294)
-[<c00f7a04>] (jffs2_write_end+0x0/0x294) from [<c0067e2c>]
-(generic_file_buffered_write+0x198/0x680)
-[<c0067c98>] (generic_file_buffered_write+0x4/0x680) from [<c0068b60>]
-(__generic_file_aio_write_nolock+0x54c/0x57c)
-[<c0068614>] (__generic_file_aio_write_nolock+0x0/0x57c) from
-[<c0068c10>] (generic_file_aio_write+0x80/0xf4)
-[<c0068b94>] (generic_file_aio_write+0x4/0xf4) from [<c0087794>]
-(do_sync_write+0xc0/0x110)
-[<c00876d4>] (do_sync_write+0x0/0x110) from [<c00878a8>] (vfs_write+0xc4/0x148)
- r9:c1f5a000 r8:00000000 r7:00002000 r6:c1f5bf78 r5:be890f20
-r4:c1fd9880
-[<c00877e4>] (vfs_write+0x0/0x148) from [<c00879ec>] (sys_write+0x4c/0x74)
- r7:002fe000 r6:c1f5bf78 r5:c1fd9880 r4:c1fd98a0
-[<c00879a0>] (sys_write+0x0/0x74) from [<c0023b00>] (ret_fast_syscall+0x0/0x2c)
- r8:c0023ca4 r7:00000004 r6:00024988 r5:be890f20 r4:00002000
-Code: e92dd8f0 e24cb004 e5915230 e1a06001 (e5953034)
----[ end trace 1218c359973afa01 ]---
-
-
-note: ftpd[579] exited with preempt_count 2
-BUG: scheduling while atomic: ftpd/579/0x40000003
-
-
-[<c0027650>] (dump_stack+0x0/0x14) from [<c0035554>] (__schedule_bug+0x48/0x54)
-[<c003550c>] (__schedule_bug+0x0/0x54) from [<c01ee5c0>]
-(__sched_text_start+0x70/0x358)
- r4:c1f5a000
-[<c01ee550>] (__sched_text_start+0x0/0x358) from [<c0037040>]
-(__cond_resched+0x24/0x44)
-[<c003701c>] (__cond_resched+0x0/0x44) from [<c01eedc8>]
-(_cond_resched+0x44/0x50)
- r4:00000001
-[<c01eed84>] (_cond_resched+0x0/0x50) from [<c0076530>] (unmap_vmas+0x5a8/0x620)
- r4:c1f5a000
-[<c0075f88>] (unmap_vmas+0x0/0x620) from [<c007bcbc>] (exit_mmap+0x84/0x140)
-[<c007bc38>] (exit_mmap+0x0/0x140) from [<c0037a0c>] (mmput+0x40/0xec)
- r8:c1f5bb84 r7:c0800b80 r6:c1fb77b8 r5:c1fb7780 r4:00000000
-[<c00379cc>] (mmput+0x0/0xec) from [<c003c4d0>] (exit_mm+0x10c/0x110)
- r5:c1fb7780 r4:c1f5a000
-[<c003c3c4>] (exit_mm+0x0/0x110) from [<c003ca5c>] (do_exit+0x1c8/0x65c)
- r7:00000001 r6:0000000b r5:c0800b80 r4:c1f5a000
-[<c003c894>] (do_exit+0x0/0x65c) from [<c0027884>] (die+0x1d8/0x210)
-[<c00276ac>] (die+0x0/0x210) from [<c0028d0c>] (__do_kernel_fault+0x6c/0x7c)
-[<c0028ca0>] (__do_kernel_fault+0x0/0x7c) from [<c0029044>]
-(do_page_fault+0x208/0x224)
- r7:c1f5bb84 r6:00000017 r5:c0800b80 r4:ffffffff
-[<c0028e3c>] (do_page_fault+0x0/0x224) from [<c0023228>]
-(do_DataAbort+0x3c/0xa0)
-[<c00231ec>] (do_DataAbort+0x0/0xa0) from [<c00236c0>] (__dabt_svc+0x40/0x60)
-Exception stack(0xc1f5bb84 to 0xc1f5bbcc)
-bb80:          00000001 c1c58000 c1c58000 00000000 c1f5a000 00000000 c1c58000
-bba0: 00000001 c1cff000 00000000 c1c58000 c1f5bbe8 c1f5bbec c1f5bbcc c0045b50
-bbc0: c004579c 80000093 ffffffff
- r8:c1cff000 r7:00000001 r6:c1c58000 r5:c1f5bbb8 r4:ffffffff
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1f5a000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf5000 r5:c1cff000 r4:c1f5a000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c00f95ac>] (jffs2_complete_reservation+0x14/0x20)
- r5:00000000 r4:c1cff000
-[<c00f9598>] (jffs2_complete_reservation+0x0/0x20) from [<c00fcc5c>]
-(jffs2_write_inode_range+0x2b0/0x31c)
- r4:c0fc43e0
-[<c00fc9ac>] (jffs2_write_inode_range+0x0/0x31c) from [<c00f7b5c>]
-(jffs2_write_end+0x158/0x294)
-[<c00f7a04>] (jffs2_write_end+0x0/0x294) from [<c0067e2c>]
-(generic_file_buffered_write+0x198/0x680)
-[<c0067c98>] (generic_file_buffered_write+0x4/0x680) from [<c0068b60>]
-(__generic_file_aio_write_nolock+0x54c/0x57c)
-[<c0068614>] (__generic_file_aio_write_nolock+0x0/0x57c) from
-[<c0068c10>] (generic_file_aio_write+0x80/0xf4)
-[<c0068b94>] (generic_file_aio_write+0x4/0xf4) from [<c0087794>]
-(do_sync_write+0xc0/0x110)
-[<c00876d4>] (do_sync_write+0x0/0x110) from [<c00878a8>] (vfs_write+0xc4/0x148)
- r9:c1f5a000 r8:00000000 r7:00002000 r6:c1f5bf78 r5:be890f20
-r4:c1fd9880
-[<c00877e4>] (vfs_write+0x0/0x148) from [<c00879ec>] (sys_write+0x4c/0x74)
- r7:002fe000 r6:c1f5bf78 r5:c1fd9880 r4:c1fd98a0
-[<c00879a0>] (sys_write+0x0/0x74) from [<c0023b00>] (ret_fast_syscall+0x0/0x2c)
- r8:c0023ca4 r7:00000004 r6:00024988 r5:be890f20 r4:00002000
-
-
-BUG: scheduling while atomic: ftpd/579/0x40000003
-
-
-[<c0027650>] (dump_stack+0x0/0x14) from [<c0035554>] (__schedule_bug+0x48/0x54)
-[<c003550c>] (__schedule_bug+0x0/0x54) from [<c01ee5c0>]
-(__sched_text_start+0x70/0x358)
- r4:c1f5a000
-[<c01ee550>] (__sched_text_start+0x0/0x358) from [<c0037040>]
-(__cond_resched+0x24/0x44)
-[<c003701c>] (__cond_resched+0x0/0x44) from [<c01eedc8>]
-(_cond_resched+0x44/0x50)
- r4:00000001
-[<c01eed84>] (_cond_resched+0x0/0x50) from [<c0076530>] (unmap_vmas+0x5a8/0x620)
- r4:c1f5a000
-[<c0075f88>] (unmap_vmas+0x0/0x620) from [<c007bcbc>] (exit_mmap+0x84/0x140)
-[<c007bc38>] (exit_mmap+0x0/0x140) from [<c0037a0c>] (mmput+0x40/0xec)
- r8:c1f5bb84 r7:c0800b80 r6:c1fb77b8 r5:c1fb7780 r4:00000000
-[<c00379cc>] (mmput+0x0/0xec) from [<c003c4d0>] (exit_mm+0x10c/0x110)
- r5:c1fb7780 r4:c1f5a000
-[<c003c3c4>] (exit_mm+0x0/0x110) from [<c003ca5c>] (do_exit+0x1c8/0x65c)
- r7:00000001 r6:0000000b r5:c0800b80 r4:c1f5a000
-[<c003c894>] (do_exit+0x0/0x65c) from [<c0027884>] (die+0x1d8/0x210)
-[<c00276ac>] (die+0x0/0x210) from [<c0028d0c>] (__do_kernel_fault+0x6c/0x7c)
-[<c0028ca0>] (__do_kernel_fault+0x0/0x7c) from [<c0029044>]
-(do_page_fault+0x208/0x224)
- r7:c1f5bb84 r6:00000017 r5:c0800b80 r4:ffffffff
-[<c0028e3c>] (do_page_fault+0x0/0x224) from [<c0023228>]
-(do_DataAbort+0x3c/0xa0)
-[<c00231ec>] (do_DataAbort+0x0/0xa0) from [<c00236c0>] (__dabt_svc+0x40/0x60)
-Exception stack(0xc1f5bb84 to 0xc1f5bbcc)
-bb80:          00000001 c1c58000 c1c58000 00000000 c1f5a000 00000000 c1c58000
-bba0: 00000001 c1cff000 00000000 c1c58000 c1f5bbe8 c1f5bbec c1f5bbcc c0045b50
-bbc0: c004579c 80000093 ffffffff
- r8:c1cff000 r7:00000001 r6:c1c58000 r5:c1f5bbb8 r4:ffffffff
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1f5a000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf5000 r5:c1cff000 r4:c1f5a000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c00f95ac>] (jffs2_complete_reservation+0x14/0x20)
- r5:00000000 r4:c1cff000
-[<c00f9598>] (jffs2_complete_reservation+0x0/0x20) from [<c00fcc5c>]
-(jffs2_write_inode_range+0x2b0/0x31c)
- r4:c0fc43e0
-[<c00fc9ac>] (jffs2_write_inode_range+0x0/0x31c) from [<c00f7b5c>]
-(jffs2_write_end+0x158/0x294)
-[<c00f7a04>] (jffs2_write_end+0x0/0x294) from [<c0067e2c>]
-(generic_file_buffered_write+0x198/0x680)
-[<c0067c98>] (generic_file_buffered_write+0x4/0x680) from [<c0068b60>]
-(__generic_file_aio_write_nolock+0x54c/0x57c)
-[<c0068614>] (__generic_file_aio_write_nolock+0x0/0x57c) from
-[<c0068c10>] (generic_file_aio_write+0x80/0xf4)
-[<c0068b94>] (generic_file_aio_write+0x4/0xf4) from [<c0087794>]
-(do_sync_write+0xc0/0x110)
-[<c00876d4>] (do_sync_write+0x0/0x110) from [<c00878a8>] (vfs_write+0xc4/0x148)
- r9:c1f5a000 r8:00000000 r7:00002000 r6:c1f5bf78 r5:be890f20
-r4:c1fd9880
-[<c00877e4>] (vfs_write+0x0/0x148) from [<c00879ec>] (sys_write+0x4c/0x74)
- r7:002fe000 r6:c1f5bf78 r5:c1fd9880 r4:c1fd98a0
-[<c00879a0>] (sys_write+0x0/0x74) from [<c0023b00>] (ret_fast_syscall+0x0/0x2c)
- r8:c0023ca4 r7:00000004 r6:00024988 r5:be890f20 r4:00002000
-
-
-BUG: scheduling while atomic: ftpd/579/0x40000003
-
-
-[<c0027650>] (dump_stack+0x0/0x14) from [<c0035554>] (__schedule_bug+0x48/0x54)
-[<c003550c>] (__schedule_bug+0x0/0x54) from [<c01ee5c0>]
-(__sched_text_start+0x70/0x358)
- r4:c1f5a000
-[<c01ee550>] (__sched_text_start+0x0/0x358) from [<c0037040>]
-(__cond_resched+0x24/0x44)
-[<c003701c>] (__cond_resched+0x0/0x44) from [<c01eedc8>]
-(_cond_resched+0x44/0x50)
- r4:00000001
-[<c01eed84>] (_cond_resched+0x0/0x50) from [<c0076530>] (unmap_vmas+0x5a8/0x620)
- r4:c1f5a000
-[<c0075f88>] (unmap_vmas+0x0/0x620) from [<c007bcbc>] (exit_mmap+0x84/0x140)
-[<c007bc38>] (exit_mmap+0x0/0x140) from [<c0037a0c>] (mmput+0x40/0xec)
- r8:c1f5bb84 r7:c0800b80 r6:c1fb77b8 r5:c1fb7780 r4:00000000
-[<c00379cc>] (mmput+0x0/0xec) from [<c003c4d0>] (exit_mm+0x10c/0x110)
- r5:c1fb7780 r4:c1f5a000
-[<c003c3c4>] (exit_mm+0x0/0x110) from [<c003ca5c>] (do_exit+0x1c8/0x65c)
- r7:00000001 r6:0000000b r5:c0800b80 r4:c1f5a000
-[<c003c894>] (do_exit+0x0/0x65c) from [<c0027884>] (die+0x1d8/0x210)
-[<c00276ac>] (die+0x0/0x210) from [<c0028d0c>] (__do_kernel_fault+0x6c/0x7c)
-[<c0028ca0>] (__do_kernel_fault+0x0/0x7c) from [<c0029044>]
-(do_page_fault+0x208/0x224)
- r7:c1f5bb84 r6:00000017 r5:c0800b80 r4:ffffffff
-[<c0028e3c>] (do_page_fault+0x0/0x224) from [<c0023228>]
-(do_DataAbort+0x3c/0xa0)
-[<c00231ec>] (do_DataAbort+0x0/0xa0) from [<c00236c0>] (__dabt_svc+0x40/0x60)
-Exception stack(0xc1f5bb84 to 0xc1f5bbcc)
-bb80:          00000001 c1c58000 c1c58000 00000000 c1f5a000 00000000 c1c58000
-bba0: 00000001 c1cff000 00000000 c1c58000 c1f5bbe8 c1f5bbec c1f5bbcc c0045b50
-bbc0: c004579c 80000093 ffffffff
- r8:c1cff000 r7:00000001 r6:c1c58000 r5:c1f5bbb8 r4:ffffffff
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1f5a000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf5000 r5:c1cff000 r4:c1f5a000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c00f95ac>] (jffs2_complete_reservation+0x14/0x20)
- r5:00000000 r4:c1cff000
-[<c00f9598>] (jffs2_complete_reservation+0x0/0x20) from [<c00fcc5c>]
-(jffs2_write_inode_range+0x2b0/0x31c)
- r4:c0fc43e0
-[<c00fc9ac>] (jffs2_write_inode_range+0x0/0x31c) from [<c00f7b5c>]
-(jffs2_write_end+0x158/0x294)
-[<c00f7a04>] (jffs2_write_end+0x0/0x294) from [<c0067e2c>]
-(generic_file_buffered_write+0x198/0x680)
-[<c0067c98>] (generic_file_buffered_write+0x4/0x680) from [<c0068b60>]
-(__generic_file_aio_write_nolock+0x54c/0x57c)
-[<c0068614>] (__generic_file_aio_write_nolock+0x0/0x57c) from
-[<c0068c10>] (generic_file_aio_write+0x80/0xf4)
-[<c0068b94>] (generic_file_aio_write+0x4/0xf4) from [<c0087794>]
-(do_sync_write+0xc0/0x110)
-[<c00876d4>] (do_sync_write+0x0/0x110) from [<c00878a8>] (vfs_write+0xc4/0x148)
- r9:c1f5a000 r8:00000000 r7:00002000 r6:c1f5bf78 r5:be890f20
-r4:c1fd9880
-[<c00877e4>] (vfs_write+0x0/0x148) from [<c00879ec>] (sys_write+0x4c/0x74)
- r7:002fe000 r6:c1f5bf78 r5:c1fd9880 r4:c1fd98a0
-[<c00879a0>] (sys_write+0x0/0x74) from [<c0023b00>] (ret_fast_syscall+0x0/0x2c)
- r8:c0023ca4 r7:00000004 r6:00024988 r5:be890f20 r4:00002000
-
-
-BUG: scheduling while atomic: ftpd/579/0x40000003
-
-
-[<c0027650>] (dump_stack+0x0/0x14) from [<c0035554>] (__schedule_bug+0x48/0x54)
-[<c003550c>] (__schedule_bug+0x0/0x54) from [<c01ee5c0>]
-(__sched_text_start+0x70/0x358)
- r4:c1f5a000
-[<c01ee550>] (__sched_text_start+0x0/0x358) from [<c0037040>]
-(__cond_resched+0x24/0x44)
-[<c003701c>] (__cond_resched+0x0/0x44) from [<c01eedc8>]
-(_cond_resched+0x44/0x50)
- r4:00000001
-[<c01eed84>] (_cond_resched+0x0/0x50) from [<c0076530>] (unmap_vmas+0x5a8/0x620)
- r4:c1f5a000
-[<c0075f88>] (unmap_vmas+0x0/0x620) from [<c007bcbc>] (exit_mmap+0x84/0x140)
-[<c007bc38>] (exit_mmap+0x0/0x140) from [<c0037a0c>] (mmput+0x40/0xec)
- r8:c1f5bb84 r7:c0800b80 r6:c1fb77b8 r5:c1fb7780 r4:00000000
-[<c00379cc>] (mmput+0x0/0xec) from [<c003c4d0>] (exit_mm+0x10c/0x110)
- r5:c1fb7780 r4:c1f5a000
-[<c003c3c4>] (exit_mm+0x0/0x110) from [<c003ca5c>] (do_exit+0x1c8/0x65c)
- r7:00000001 r6:0000000b r5:c0800b80 r4:c1f5a000
-[<c003c894>] (do_exit+0x0/0x65c) from [<c0027884>] (die+0x1d8/0x210)
-[<c00276ac>] (die+0x0/0x210) from [<c0028d0c>] (__do_kernel_fault+0x6c/0x7c)
-[<c0028ca0>] (__do_kernel_fault+0x0/0x7c) from [<c0029044>]
-(do_page_fault+0x208/0x224)
- r7:c1f5bb84 r6:00000017 r5:c0800b80 r4:ffffffff
-[<c0028e3c>] (do_page_fault+0x0/0x224) from [<c0023228>]
-(do_DataAbort+0x3c/0xa0)
-[<c00231ec>] (do_DataAbort+0x0/0xa0) from [<c00236c0>] (__dabt_svc+0x40/0x60)
-Exception stack(0xc1f5bb84 to 0xc1f5bbcc)
-bb80:          00000001 c1c58000 c1c58000 00000000 c1f5a000 00000000 c1c58000
-bba0: 00000001 c1cff000 00000000 c1c58000 c1f5bbe8 c1f5bbec c1f5bbcc c0045b50
-bbc0: c004579c 80000093 ffffffff
- r8:c1cff000 r7:00000001 r6:c1c58000 r5:c1f5bbb8 r4:ffffffff
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1f5a000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf5000 r5:c1cff000 r4:c1f5a000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c00f95ac>] (jffs2_complete_reservation+0x14/0x20)
- r5:00000000 r4:c1cff000
-[<c00f9598>] (jffs2_complete_reservation+0x0/0x20) from [<c00fcc5c>]
-(jffs2_write_inode_range+0x2b0/0x31c)
- r4:c0fc43e0
-[<c00fc9ac>] (jffs2_write_inode_range+0x0/0x31c) from [<c00f7b5c>]
-(jffs2_write_end+0x158/0x294)
-[<c00f7a04>] (jffs2_write_end+0x0/0x294) from [<c0067e2c>]
-(generic_file_buffered_write+0x198/0x680)
-[<c0067c98>] (generic_file_buffered_write+0x4/0x680) from [<c0068b60>]
-(__generic_file_aio_write_nolock+0x54c/0x57c)
-[<c0068614>] (__generic_file_aio_write_nolock+0x0/0x57c) from
-[<c0068c10>] (generic_file_aio_write+0x80/0xf4)
-[<c0068b94>] (generic_file_aio_write+0x4/0xf4) from [<c0087794>]
-(do_sync_write+0xc0/0x110)
-[<c00876d4>] (do_sync_write+0x0/0x110) from [<c00878a8>] (vfs_write+0xc4/0x148)
- r9:c1f5a000 r8:00000000 r7:00002000 r6:c1f5bf78 r5:be890f20
-r4:c1fd9880
-[<c00877e4>] (vfs_write+0x0/0x148) from [<c00879ec>] (sys_write+0x4c/0x74)
- r7:002fe000 r6:c1f5bf78 r5:c1fd9880 r4:c1fd98a0
-[<c00879a0>] (sys_write+0x0/0x74) from [<c0023b00>] (ret_fast_syscall+0x0/0x2c)
- r8:c0023ca4 r7:00000004 r6:00024988 r5:be890f20 r4:00002000
-
-
-BUG: scheduling while atomic: ftpd/579/0x40000003
-
-
-[<c0027650>] (dump_stack+0x0/0x14) from [<c0035554>] (__schedule_bug+0x48/0x54)
-[<c003550c>] (__schedule_bug+0x0/0x54) from [<c01ee5c0>]
-(__sched_text_start+0x70/0x358)
- r4:c1f5a000
-[<c01ee550>] (__sched_text_start+0x0/0x358) from [<c0037040>]
-(__cond_resched+0x24/0x44)
-[<c003701c>] (__cond_resched+0x0/0x44) from [<c01eedc8>]
-(_cond_resched+0x44/0x50)
- r4:00000001
-[<c01eed84>] (_cond_resched+0x0/0x50) from [<c0076530>] (unmap_vmas+0x5a8/0x620)
- r4:c1f5a000
-[<c0075f88>] (unmap_vmas+0x0/0x620) from [<c007bcbc>] (exit_mmap+0x84/0x140)
-[<c007bc38>] (exit_mmap+0x0/0x140) from [<c0037a0c>] (mmput+0x40/0xec)
- r8:c1f5bb84 r7:c0800b80 r6:c1fb77b8 r5:c1fb7780 r4:00000000
-[<c00379cc>] (mmput+0x0/0xec) from [<c003c4d0>] (exit_mm+0x10c/0x110)
- r5:c1fb7780 r4:c1f5a000
-[<c003c3c4>] (exit_mm+0x0/0x110) from [<c003ca5c>] (do_exit+0x1c8/0x65c)
- r7:00000001 r6:0000000b r5:c0800b80 r4:c1f5a000
-[<c003c894>] (do_exit+0x0/0x65c) from [<c0027884>] (die+0x1d8/0x210)
-[<c00276ac>] (die+0x0/0x210) from [<c0028d0c>] (__do_kernel_fault+0x6c/0x7c)
-[<c0028ca0>] (__do_kernel_fault+0x0/0x7c) from [<c0029044>]
-(do_page_fault+0x208/0x224)
- r7:c1f5bb84 r6:00000017 r5:c0800b80 r4:ffffffff
-[<c0028e3c>] (do_page_fault+0x0/0x224) from [<c0023228>]
-(do_DataAbort+0x3c/0xa0)
-[<c00231ec>] (do_DataAbort+0x0/0xa0) from [<c00236c0>] (__dabt_svc+0x40/0x60)
-Exception stack(0xc1f5bb84 to 0xc1f5bbcc)
-bb80:          00000001 c1c58000 c1c58000 00000000 c1f5a000 00000000 c1c58000
-bba0: 00000001 c1cff000 00000000 c1c58000 c1f5bbe8 c1f5bbec c1f5bbcc c0045b50
-bbc0: c004579c 80000093 ffffffff
- r8:c1cff000 r7:00000001 r6:c1c58000 r5:c1f5bbb8 r4:ffffffff
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1f5a000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf5000 r5:c1cff000 r4:c1f5a000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c00f95ac>] (jffs2_complete_reservation+0x14/0x20)
- r5:00000000 r4:c1cff000
-[<c00f9598>] (jffs2_complete_reservation+0x0/0x20) from [<c00fcc5c>]
-(jffs2_write_inode_range+0x2b0/0x31c)
- r4:c0fc43e0
-[<c00fc9ac>] (jffs2_write_inode_range+0x0/0x31c) from [<c00f7b5c>]
-(jffs2_write_end+0x158/0x294)
-[<c00f7a04>] (jffs2_write_end+0x0/0x294) from [<c0067e2c>]
-(generic_file_buffered_write+0x198/0x680)
-[<c0067c98>] (generic_file_buffered_write+0x4/0x680) from [<c0068b60>]
-(__generic_file_aio_write_nolock+0x54c/0x57c)
-[<c0068614>] (__generic_file_aio_write_nolock+0x0/0x57c) from
-[<c0068c10>] (generic_file_aio_write+0x80/0xf4)
-[<c0068b94>] (generic_file_aio_write+0x4/0xf4) from [<c0087794>]
-(do_sync_write+0xc0/0x110)
-[<c00876d4>] (do_sync_write+0x0/0x110) from [<c00878a8>] (vfs_write+0xc4/0x148)
- r9:c1f5a000 r8:00000000 r7:00002000 r6:c1f5bf78 r5:be890f20
-r4:c1fd9880
-[<c00877e4>] (vfs_write+0x0/0x148) from [<c00879ec>] (sys_write+0x4c/0x74)
- r7:002fe000 r6:c1f5bf78 r5:c1fd9880 r4:c1fd98a0
-[<c00879a0>] (sys_write+0x0/0x74) from [<c0023b00>] (ret_fast_syscall+0x0/0x2c)
- r8:c0023ca4 r7:00000004 r6:00024988 r5:be890f20 r4:00002000
-
-
-BUG: scheduling while atomic: ftpd/579/0x40000003
-
-
-[<c0027650>] (dump_stack+0x0/0x14) from [<c0035554>] (__schedule_bug+0x48/0x54)
-[<c003550c>] (__schedule_bug+0x0/0x54) from [<c01ee5c0>]
-(__sched_text_start+0x70/0x358)
- r4:c1f5a000
-[<c01ee550>] (__sched_text_start+0x0/0x358) from [<c0037040>]
-(__cond_resched+0x24/0x44)
-[<c003701c>] (__cond_resched+0x0/0x44) from [<c01eedc8>]
-(_cond_resched+0x44/0x50)
- r4:00000001
-[<c01eed84>] (_cond_resched+0x0/0x50) from [<c0076530>] (unmap_vmas+0x5a8/0x620)
- r4:c1f5a000
-[<c0075f88>] (unmap_vmas+0x0/0x620) from [<c007bcbc>] (exit_mmap+0x84/0x140)
-[<c007bc38>] (exit_mmap+0x0/0x140) from [<c0037a0c>] (mmput+0x40/0xec)
- r8:c1f5bb84 r7:c0800b80 r6:c1fb77b8 r5:c1fb7780 r4:00000000
-[<c00379cc>] (mmput+0x0/0xec) from [<c003c4d0>] (exit_mm+0x10c/0x110)
- r5:c1fb7780 r4:c1f5a000
-[<c003c3c4>] (exit_mm+0x0/0x110) from [<c003ca5c>] (do_exit+0x1c8/0x65c)
- r7:00000001 r6:0000000b r5:c0800b80 r4:c1f5a000
-[<c003c894>] (do_exit+0x0/0x65c) from [<c0027884>] (die+0x1d8/0x210)
-[<c00276ac>] (die+0x0/0x210) from [<c0028d0c>] (__do_kernel_fault+0x6c/0x7c)
-[<c0028ca0>] (__do_kernel_fault+0x0/0x7c) from [<c0029044>]
-(do_page_fault+0x208/0x224)
- r7:c1f5bb84 r6:00000017 r5:c0800b80 r4:ffffffff
-[<c0028e3c>] (do_page_fault+0x0/0x224) from [<c0023228>]
-(do_DataAbort+0x3c/0xa0)
-[<c00231ec>] (do_DataAbort+0x0/0xa0) from [<c00236c0>] (__dabt_svc+0x40/0x60)
-Exception stack(0xc1f5bb84 to 0xc1f5bbcc)
-bb80:          00000001 c1c58000 c1c58000 00000000 c1f5a000 00000000 c1c58000
-bba0: 00000001 c1cff000 00000000 c1c58000 c1f5bbe8 c1f5bbec c1f5bbcc c0045b50
-bbc0: c004579c 80000093 ffffffff
- r8:c1cff000 r7:00000001 r6:c1c58000 r5:c1f5bbb8 r4:ffffffff
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1f5a000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf5000 r5:c1cff000 r4:c1f5a000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c00f95ac>] (jffs2_complete_reservation+0x14/0x20)
- r5:00000000 r4:c1cff000
-[<c00f9598>] (jffs2_complete_reservation+0x0/0x20) from [<c00fcc5c>]
-(jffs2_write_inode_range+0x2b0/0x31c)
- r4:c0fc43e0
-[<c00fc9ac>] (jffs2_write_inode_range+0x0/0x31c) from [<c00f7b5c>]
-(jffs2_write_end+0x158/0x294)
-[<c00f7a04>] (jffs2_write_end+0x0/0x294) from [<c0067e2c>]
-(generic_file_buffered_write+0x198/0x680)
-[<c0067c98>] (generic_file_buffered_write+0x4/0x680) from [<c0068b60>]
-(__generic_file_aio_write_nolock+0x54c/0x57c)
-[<c0068614>] (__generic_file_aio_write_nolock+0x0/0x57c) from
-[<c0068c10>] (generic_file_aio_write+0x80/0xf4)
-[<c0068b94>] (generic_file_aio_write+0x4/0xf4) from [<c0087794>]
-(do_sync_write+0xc0/0x110)
-[<c00876d4>] (do_sync_write+0x0/0x110) from [<c00878a8>] (vfs_write+0xc4/0x148)
- r9:c1f5a000 r8:00000000 r7:00002000 r6:c1f5bf78 r5:be890f20
-r4:c1fd9880
-[<c00877e4>] (vfs_write+0x0/0x148) from [<c00879ec>] (sys_write+0x4c/0x74)
- r7:002fe000 r6:c1f5bf78 r5:c1fd9880 r4:c1fd98a0
-[<c00879a0>] (sys_write+0x0/0x74) from [<c0023b00>] (ret_fast_syscall+0x0/0x2c)
- r8:c0023ca4 r7:00000004 r6:00024988 r5:be890f20 r4:00002000
-
-
-
-Unable to handle kernel NULL pointer dereference at virtual address 00000034
-pgd = c0004000
-[00000034] *pgd=00000000
-Internal error: Oops: 17 [#3] PREEMPT
-Modules linked in: readerdrv g_ether vfat fat nls_base
-CPU: 0    Tainted: G      D    (2.6.26.3-magarm #110)
-PC is at prepare_signal+0x14/0x18c
-LR is at send_signal+0x24/0x1e0
-pc : [<c004579c>]    lr : [<c0045b50>]    psr: 80000093
-sp : c1c69e74  ip : c1c69e94  fp : c1c69e90
-r10: c1c58000  r9 : 00000000  r8 : c1c69f54
-r7 : 00000001  r6 : c1c58000  r5 : 00000000  r4 : c1c68000
-r3 : 00000000  r2 : c1c58000  r1 : c1c58000  r0 : 00000001
-Flags: Nzcv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment kernel
-Control: c000317f  Table: 21f50000  DAC: 00000017
-Process pdflush (pid: 75, stack limit = 0xc1c68260)
-Stack: (0xc1c69e74 to 0xc1c6a000)
-9e60:                                              c1c68000 80000013 00000001
-9e80: 00000001 c1c69ebc c1c69e94 c0045b50 c0045798 c1c68000 80000013 c1cf8e3c
-9ea0: c0275e48 c1c69f54 00000000 00000000 c1c69ecc c1c69ec0 c0045d38 c0045b3c
-9ec0: c1c69ee8 c1c69ed0 c00462c4 c0045d34 c1c68000 c1cff000 c1cf8e3c c1c69ef8
-9ee0: c1c69eec c0046310 c0046298 c1c69f10 c1c69efc c0101ab0 c0046300 c1cff000
-9f00: 00000000 c1c69f28 c1c69f14 c010297c c0101a78 c1cf8e00 c1c68000 c1c69f48
-9f20: c1c69f2c c0089640 c0102960 c1c68000 c1c69fb0 c0271788 c1c69fa4 c1c69f9c
-9f40: c1c69f4c c006d9b8 c00895a4 c1c588a0 c1c69f70 00000000 00000000 c1c69f4c
-9f60: 00000000 00000000 00000000 00000000 00000000 00000000 00000025 c1c68000
-9f80: c1c69fb0 c02759e0 c1c69fa4 c0271788 c1c69fdc c1c69fa0 c006ecc0 c006d970
-9fa0: 00000001 c1c588a0 c006d960 00000000 c1c69fb0 c1c69fb0 0020630b fffffffc
-9fc0: c006eb1c 00000000 00000000 00000000 c1c69ff4 c1c69fe0 c004f36c c006eb2c
-9fe0: 00000000 00000000 00000000 c1c69ff8 c003c894 c004f328 420f4ffa fd32e9ff
-Backtrace:
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1c68000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf8e3c r5:c1cff000 r4:c1c68000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c010297c>] (jffs2_write_super+0x2c/0x48)
- r5:00000000 r4:c1cff000
-[<c0102950>] (jffs2_write_super+0x0/0x48) from [<c0089640>]
-(sync_supers+0xac/0x10c)
- r5:c1c68000 r4:c1cf8e00
-[<c0089594>] (sync_supers+0x0/0x10c) from [<c006d9b8>] (wb_kupdate+0x58/0x14c)
- r7:c1c69fa4 r6:c0271788 r5:c1c69fb0 r4:c1c68000
-[<c006d960>] (wb_kupdate+0x0/0x14c) from [<c006ecc0>] (pdflush+0x1a4/0x298)
- r8:c0271788 r7:c1c69fa4 r6:c02759e0 r5:c1c69fb0 r4:c1c68000
-[<c006eb1c>] (pdflush+0x0/0x298) from [<c004f36c>] (kthread+0x54/0x7c)
- r8:00000000 r7:00000000 r6:00000000 r5:c006eb1c r4:fffffffc
-[<c004f318>] (kthread+0x0/0x7c) from [<c003c894>] (do_exit+0x0/0x65c)
- r5:00000000 r4:00000000
-Code: e92dd8f0 e24cb004 e5915230 e1a06001 (e5953034)
----[ end trace 1218c359973afa01 ]---
-
-
-------------[ cut here ]------------
-WARNING: at kernel/exit.c:965 do_exit+0x34/0x65c()
-Modules linked in: readerdrv g_ether vfat fat nls_base
-[<c0027650>] (dump_stack+0x0/0x14) from [<c0039f44>]
-(warn_on_slowpath+0x4c/0x68)
-[<c0039ef8>] (warn_on_slowpath+0x0/0x68) from [<c003c8c8>] (do_exit+0x34/0x65c)
- r6:0000000b r5:c1c588a0 r4:c1c68000
-[<c003c894>] (do_exit+0x0/0x65c) from [<c0027884>] (die+0x1d8/0x210)
-[<c00276ac>] (die+0x0/0x210) from [<c0028d0c>] (__do_kernel_fault+0x6c/0x7c)
-[<c0028ca0>] (__do_kernel_fault+0x0/0x7c) from [<c0029044>]
-(do_page_fault+0x208/0x224)
- r7:c1c69e2c r6:00000017 r5:c1c588a0 r4:ffffffff
-[<c0028e3c>] (do_page_fault+0x0/0x224) from [<c0023228>]
-(do_DataAbort+0x3c/0xa0)
-[<c00231ec>] (do_DataAbort+0x0/0xa0) from [<c00236c0>] (__dabt_svc+0x40/0x60)
-Exception stack(0xc1c69e2c to 0xc1c69e74)
-9e20:                            00000001 c1c58000 c1c58000 00000000 c1c68000
-9e40: 00000000 c1c58000 00000001 c1c69f54 00000000 c1c58000 c1c69e90 c1c69e94
-9e60: c1c69e74 c0045b50 c004579c 80000093 ffffffff
- r8:c1c69f54 r7:00000001 r6:c1c58000 r5:c1c69e60 r4:ffffffff
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1c68000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf8e3c r5:c1cff000 r4:c1c68000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c010297c>] (jffs2_write_super+0x2c/0x48)
- r5:00000000 r4:c1cff000
-[<c0102950>] (jffs2_write_super+0x0/0x48) from [<c0089640>]
-(sync_supers+0xac/0x10c)
- r5:c1c68000 r4:c1cf8e00
-[<c0089594>] (sync_supers+0x0/0x10c) from [<c006d9b8>] (wb_kupdate+0x58/0x14c)
- r7:c1c69fa4 r6:c0271788 r5:c1c69fb0 r4:c1c68000
-[<c006d960>] (wb_kupdate+0x0/0x14c) from [<c006ecc0>] (pdflush+0x1a4/0x298)
- r8:c0271788 r7:c1c69fa4 r6:c02759e0 r5:c1c69fb0 r4:c1c68000
-[<c006eb1c>] (pdflush+0x0/0x298) from [<c004f36c>] (kthread+0x54/0x7c)
- r8:00000000 r7:00000000 r6:00000000 r5:c006eb1c r4:fffffffc
-[<c004f318>] (kthread+0x0/0x7c) from [<c003c894>] (do_exit+0x0/0x65c)
- r5:00000000 r4:00000000
----[ end trace 1218c359973afa01 ]---
-
-
-note: pdflush[75] exited with preempt_count 2
-BUG: scheduling while atomic: ftpd/579/0x40000003
-
-
-[<c0027650>] (dump_stack+0x0/0x14) from [<c0035554>] (__schedule_bug+0x48/0x54)
-[<c003550c>] (__schedule_bug+0x0/0x54) from [<c01ee5c0>]
-(__sched_text_start+0x70/0x358)
- r4:c1f5a000
-[<c01ee550>] (__sched_text_start+0x0/0x358) from [<c0037040>]
-(__cond_resched+0x24/0x44)
-[<c003701c>] (__cond_resched+0x0/0x44) from [<c01eedc8>]
-(_cond_resched+0x44/0x50)
- r4:00000001
-[<c01eed84>] (_cond_resched+0x0/0x50) from [<c0076530>] (unmap_vmas+0x5a8/0x620)
- r4:c1f5a000
-[<c0075f88>] (unmap_vmas+0x0/0x620) from [<c007bcbc>] (exit_mmap+0x84/0x140)
-[<c007bc38>] (exit_mmap+0x0/0x140) from [<c0037a0c>] (mmput+0x40/0xec)
- r8:c1f5bb84 r7:c0800b80 r6:c1fb77b8 r5:c1fb7780 r4:00000000
-[<c00379cc>] (mmput+0x0/0xec) from [<c003c4d0>] (exit_mm+0x10c/0x110)
- r5:c1fb7780 r4:c1f5a000
-[<c003c3c4>] (exit_mm+0x0/0x110) from [<c003ca5c>] (do_exit+0x1c8/0x65c)
- r7:00000001 r6:0000000b r5:c0800b80 r4:c1f5a000
-[<c003c894>] (do_exit+0x0/0x65c) from [<c0027884>] (die+0x1d8/0x210)
-[<c00276ac>] (die+0x0/0x210) from [<c0028d0c>] (__do_kernel_fault+0x6c/0x7c)
-[<c0028ca0>] (__do_kernel_fault+0x0/0x7c) from [<c0029044>]
-(do_page_fault+0x208/0x224)
- r7:c1f5bb84 r6:00000017 r5:c0800b80 r4:ffffffff
-[<c0028e3c>] (do_page_fault+0x0/0x224) from [<c0023228>]
-(do_DataAbort+0x3c/0xa0)
-[<c00231ec>] (do_DataAbort+0x0/0xa0) from [<c00236c0>] (__dabt_svc+0x40/0x60)
-Exception stack(0xc1f5bb84 to 0xc1f5bbcc)
-bb80:          00000001 c1c58000 c1c58000 00000000 c1f5a000 00000000 c1c58000
-bba0: 00000001 c1cff000 00000000 c1c58000 c1f5bbe8 c1f5bbec c1f5bbcc c0045b50
-bbc0: c004579c 80000093 ffffffff
- r8:c1cff000 r7:00000001 r6:c1c58000 r5:c1f5bbb8 r4:ffffffff
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1f5a000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf5000 r5:c1cff000 r4:c1f5a000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c00f95ac>] (jffs2_complete_reservation+0x14/0x20)
- r5:00000000 r4:c1cff000
-[<c00f9598>] (jffs2_complete_reservation+0x0/0x20) from [<c00fcc5c>]
-(jffs2_write_inode_range+0x2b0/0x31c)
- r4:c0fc43e0
-[<c00fc9ac>] (jffs2_write_inode_range+0x0/0x31c) from [<c00f7b5c>]
-(jffs2_write_end+0x158/0x294)
-[<c00f7a04>] (jffs2_write_end+0x0/0x294) from [<c0067e2c>]
-(generic_file_buffered_write+0x198/0x680)
-[<c0067c98>] (generic_file_buffered_write+0x4/0x680) from [<c0068b60>]
-(__generic_file_aio_write_nolock+0x54c/0x57c)
-[<c0068614>] (__generic_file_aio_write_nolock+0x0/0x57c) from
-[<c0068c10>] (generic_file_aio_write+0x80/0xf4)
-[<c0068b94>] (generic_file_aio_write+0x4/0xf4) from [<c0087794>]
-(do_sync_write+0xc0/0x110)
-[<c00876d4>] (do_sync_write+0x0/0x110) from [<c00878a8>] (vfs_write+0xc4/0x148)
- r9:c1f5a000 r8:00000000 r7:00002000 r6:c1f5bf78 r5:be890f20
-r4:c1fd9880
-[<c00877e4>] (vfs_write+0x0/0x148) from [<c00879ec>] (sys_write+0x4c/0x74)
- r7:002fe000 r6:c1f5bf78 r5:c1fd9880 r4:c1fd98a0
-[<c00879a0>] (sys_write+0x0/0x74) from [<c0023b00>] (ret_fast_syscall+0x0/0x2c)
- r8:c0023ca4 r7:00000004 r6:00024988 r5:be890f20 r4:00002000
-
-
-BUG: scheduling while atomic: ftpd/579/0x40000003
-
-
-[<c0027650>] (dump_stack+0x0/0x14) from [<c0035554>] (__schedule_bug+0x48/0x54)
-[<c003550c>] (__schedule_bug+0x0/0x54) from [<c01ee5c0>]
-(__sched_text_start+0x70/0x358)
- r4:c1f5a000
-[<c01ee550>] (__sched_text_start+0x0/0x358) from [<c0037040>]
-(__cond_resched+0x24/0x44)
-[<c003701c>] (__cond_resched+0x0/0x44) from [<c01eedc8>]
-(_cond_resched+0x44/0x50)
- r4:00000001
-[<c01eed84>] (_cond_resched+0x0/0x50) from [<c0076530>] (unmap_vmas+0x5a8/0x620)
- r4:c1f5a000
-[<c0075f88>] (unmap_vmas+0x0/0x620) from [<c007bcbc>] (exit_mmap+0x84/0x140)
-[<c007bc38>] (exit_mmap+0x0/0x140) from [<c0037a0c>] (mmput+0x40/0xec)
- r8:c1f5bb84 r7:c0800b80 r6:c1fb77b8 r5:c1fb7780 r4:00000000
-[<c00379cc>] (mmput+0x0/0xec) from [<c003c4d0>] (exit_mm+0x10c/0x110)
- r5:c1fb7780 r4:c1f5a000
-[<c003c3c4>] (exit_mm+0x0/0x110) from [<c003ca5c>] (do_exit+0x1c8/0x65c)
- r7:00000001 r6:0000000b r5:c0800b80 r4:c1f5a000
-[<c003c894>] (do_exit+0x0/0x65c) from [<c0027884>] (die+0x1d8/0x210)
-[<c00276ac>] (die+0x0/0x210) from [<c0028d0c>] (__do_kernel_fault+0x6c/0x7c)
-[<c0028ca0>] (__do_kernel_fault+0x0/0x7c) from [<c0029044>]
-(do_page_fault+0x208/0x224)
- r7:c1f5bb84 r6:00000017 r5:c0800b80 r4:ffffffff
-[<c0028e3c>] (do_page_fault+0x0/0x224) from [<c0023228>]
-(do_DataAbort+0x3c/0xa0)
-[<c00231ec>] (do_DataAbort+0x0/0xa0) from [<c00236c0>] (__dabt_svc+0x40/0x60)
-Exception stack(0xc1f5bb84 to 0xc1f5bbcc)
-bb80:          00000001 c1c58000 c1c58000 00000000 c1f5a000 00000000 c1c58000
-bba0: 00000001 c1cff000 00000000 c1c58000 c1f5bbe8 c1f5bbec c1f5bbcc c0045b50
-bbc0: c004579c 80000093 ffffffff
- r8:c1cff000 r7:00000001 r6:c1c58000 r5:c1f5bbb8 r4:ffffffff
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1f5a000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf5000 r5:c1cff000 r4:c1f5a000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c00f95ac>] (jffs2_complete_reservation+0x14/0x20)
- r5:00000000 r4:c1cff000
-[<c00f9598>] (jffs2_complete_reservation+0x0/0x20) from [<c00fcc5c>]
-(jffs2_write_inode_range+0x2b0/0x31c)
- r4:c0fc43e0
-[<c00fc9ac>] (jffs2_write_inode_range+0x0/0x31c) from [<c00f7b5c>]
-(jffs2_write_end+0x158/0x294)
-[<c00f7a04>] (jffs2_write_end+0x0/0x294) from [<c0067e2c>]
-(generic_file_buffered_write+0x198/0x680)
-[<c0067c98>] (generic_file_buffered_write+0x4/0x680) from [<c0068b60>]
-(__generic_file_aio_write_nolock+0x54c/0x57c)
-[<c0068614>] (__generic_file_aio_write_nolock+0x0/0x57c) from
-[<c0068c10>] (generic_file_aio_write+0x80/0xf4)
-[<c0068b94>] (generic_file_aio_write+0x4/0xf4) from [<c0087794>]
-(do_sync_write+0xc0/0x110)
-[<c00876d4>] (do_sync_write+0x0/0x110) from [<c00878a8>] (vfs_write+0xc4/0x148)
- r9:c1f5a000 r8:00000000 r7:00002000 r6:c1f5bf78 r5:be890f20
-r4:c1fd9880
-[<c00877e4>] (vfs_write+0x0/0x148) from [<c00879ec>] (sys_write+0x4c/0x74)
- r7:002fe000 r6:c1f5bf78 r5:c1fd9880 r4:c1fd98a0
-[<c00879a0>] (sys_write+0x0/0x74) from [<c0023b00>] (ret_fast_syscall+0x0/0x2c)
- r8:c0023ca4 r7:00000004 r6:00024988 r5:be890f20 r4:00002000
-
-
-BUG: scheduling while atomic: ftpd/579/0x40000003
-
-
-[<c0027650>] (dump_stack+0x0/0x14) from [<c0035554>] (__schedule_bug+0x48/0x54)
-[<c003550c>] (__schedule_bug+0x0/0x54) from [<c01ee5c0>]
-(__sched_text_start+0x70/0x358)
- r4:c1f5a000
-[<c01ee550>] (__sched_text_start+0x0/0x358) from [<c0037040>]
-(__cond_resched+0x24/0x44)
-[<c003701c>] (__cond_resched+0x0/0x44) from [<c01eedc8>]
-(_cond_resched+0x44/0x50)
- r4:00000001
-[<c01eed84>] (_cond_resched+0x0/0x50) from [<c0076530>] (unmap_vmas+0x5a8/0x620)
- r4:c1f5a000
-[<c0075f88>] (unmap_vmas+0x0/0x620) from [<c007bcbc>] (exit_mmap+0x84/0x140)
-[<c007bc38>] (exit_mmap+0x0/0x140) from [<c0037a0c>] (mmput+0x40/0xec)
- r8:c1f5bb84 r7:c0800b80 r6:c1fb77b8 r5:c1fb7780 r4:00000000
-[<c00379cc>] (mmput+0x0/0xec) from [<c003c4d0>] (exit_mm+0x10c/0x110)
- r5:c1fb7780 r4:c1f5a000
-[<c003c3c4>] (exit_mm+0x0/0x110) from [<c003ca5c>] (do_exit+0x1c8/0x65c)
- r7:00000001 r6:0000000b r5:c0800b80 r4:c1f5a000
-[<c003c894>] (do_exit+0x0/0x65c) from [<c0027884>] (die+0x1d8/0x210)
-[<c00276ac>] (die+0x0/0x210) from [<c0028d0c>] (__do_kernel_fault+0x6c/0x7c)
-[<c0028ca0>] (__do_kernel_fault+0x0/0x7c) from [<c0029044>]
-(do_page_fault+0x208/0x224)
- r7:c1f5bb84 r6:00000017 r5:c0800b80 r4:ffffffff
-[<c0028e3c>] (do_page_fault+0x0/0x224) from [<c0023228>]
-(do_DataAbort+0x3c/0xa0)
-[<c00231ec>] (do_DataAbort+0x0/0xa0) from [<c00236c0>] (__dabt_svc+0x40/0x60)
-Exception stack(0xc1f5bb84 to 0xc1f5bbcc)
-bb80:          00000001 c1c58000 c1c58000 00000000 c1f5a000 00000000 c1c58000
-bba0: 00000001 c1cff000 00000000 c1c58000 c1f5bbe8 c1f5bbec c1f5bbcc c0045b50
-bbc0: c004579c 80000093 ffffffff
- r8:c1cff000 r7:00000001 r6:c1c58000 r5:c1f5bbb8 r4:ffffffff
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1f5a000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf5000 r5:c1cff000 r4:c1f5a000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c00f95ac>] (jffs2_complete_reservation+0x14/0x20)
- r5:00000000 r4:c1cff000
-[<c00f9598>] (jffs2_complete_reservation+0x0/0x20) from [<c00fcc5c>]
-(jffs2_write_inode_range+0x2b0/0x31c)
- r4:c0fc43e0
-[<c00fc9ac>] (jffs2_write_inode_range+0x0/0x31c) from [<c00f7b5c>]
-(jffs2_write_end+0x158/0x294)
-[<c00f7a04>] (jffs2_write_end+0x0/0x294) from [<c0067e2c>]
-(generic_file_buffered_write+0x198/0x680)
-[<c0067c98>] (generic_file_buffered_write+0x4/0x680) from [<c0068b60>]
-(__generic_file_aio_write_nolock+0x54c/0x57c)
-[<c0068614>] (__generic_file_aio_write_nolock+0x0/0x57c) from
-[<c0068c10>] (generic_file_aio_write+0x80/0xf4)
-[<c0068b94>] (generic_file_aio_write+0x4/0xf4) from [<c0087794>]
-(do_sync_write+0xc0/0x110)
-[<c00876d4>] (do_sync_write+0x0/0x110) from [<c00878a8>] (vfs_write+0xc4/0x148)
- r9:c1f5a000 r8:00000000 r7:00002000 r6:c1f5bf78 r5:be890f20
-r4:c1fd9880
-[<c00877e4>] (vfs_write+0x0/0x148) from [<c00879ec>] (sys_write+0x4c/0x74)
- r7:002fe000 r6:c1f5bf78 r5:c1fd9880 r4:c1fd98a0
-[<c00879a0>] (sys_write+0x0/0x74) from [<c0023b00>] (ret_fast_syscall+0x0/0x2c)
- r8:c0023ca4 r7:00000004 r6:00024988 r5:be890f20 r4:00002000
-
-
-BUG: scheduling while atomic: ftpd/579/0x40000003
-
-
-[<c0027650>] (dump_stack+0x0/0x14) from [<c0035554>] (__schedule_bug+0x48/0x54)
-[<c003550c>] (__schedule_bug+0x0/0x54) from [<c01ee5c0>]
-(__sched_text_start+0x70/0x358)
- r4:c1f5a000
-[<c01ee550>] (__sched_text_start+0x0/0x358) from [<c0037040>]
-(__cond_resched+0x24/0x44)
-[<c003701c>] (__cond_resched+0x0/0x44) from [<c01eedc8>]
-(_cond_resched+0x44/0x50)
- r4:00000001
-[<c01eed84>] (_cond_resched+0x0/0x50) from [<c0076530>] (unmap_vmas+0x5a8/0x620)
- r4:c1f5a000
-[<c0075f88>] (unmap_vmas+0x0/0x620) from [<c007bcbc>] (exit_mmap+0x84/0x140)
-[<c007bc38>] (exit_mmap+0x0/0x140) from [<c0037a0c>] (mmput+0x40/0xec)
- r8:c1f5bb84 r7:c0800b80 r6:c1fb77b8 r5:c1fb7780 r4:00000000
-[<c00379cc>] (mmput+0x0/0xec) from [<c003c4d0>] (exit_mm+0x10c/0x110)
- r5:c1fb7780 r4:c1f5a000
-[<c003c3c4>] (exit_mm+0x0/0x110) from [<c003ca5c>] (do_exit+0x1c8/0x65c)
- r7:00000001 r6:0000000b r5:c0800b80 r4:c1f5a000
-[<c003c894>] (do_exit+0x0/0x65c) from [<c0027884>] (die+0x1d8/0x210)
-[<c00276ac>] (die+0x0/0x210) from [<c0028d0c>] (__do_kernel_fault+0x6c/0x7c)
-[<c0028ca0>] (__do_kernel_fault+0x0/0x7c) from [<c0029044>]
-(do_page_fault+0x208/0x224)
- r7:c1f5bb84 r6:00000017 r5:c0800b80 r4:ffffffff
-[<c0028e3c>] (do_page_fault+0x0/0x224) from [<c0023228>]
-(do_DataAbort+0x3c/0xa0)
-[<c00231ec>] (do_DataAbort+0x0/0xa0) from [<c00236c0>] (__dabt_svc+0x40/0x60)
-Exception stack(0xc1f5bb84 to 0xc1f5bbcc)
-bb80:          00000001 c1c58000 c1c58000 00000000 c1f5a000 00000000 c1c58000
-bba0: 00000001 c1cff000 00000000 c1c58000 c1f5bbe8 c1f5bbec c1f5bbcc c0045b50
-bbc0: c004579c 80000093 ffffffff
- r8:c1cff000 r7:00000001 r6:c1c58000 r5:c1f5bbb8 r4:ffffffff
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1f5a000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf5000 r5:c1cff000 r4:c1f5a000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c00f95ac>] (jffs2_complete_reservation+0x14/0x20)
- r5:00000000 r4:c1cff000
-[<c00f9598>] (jffs2_complete_reservation+0x0/0x20) from [<c00fcc5c>]
-(jffs2_write_inode_range+0x2b0/0x31c)
- r4:c0fc43e0
-[<c00fc9ac>] (jffs2_write_inode_range+0x0/0x31c) from [<c00f7b5c>]
-(jffs2_write_end+0x158/0x294)
-[<c00f7a04>] (jffs2_write_end+0x0/0x294) from [<c0067e2c>]
-(generic_file_buffered_write+0x198/0x680)
-[<c0067c98>] (generic_file_buffered_write+0x4/0x680) from [<c0068b60>]
-(__generic_file_aio_write_nolock+0x54c/0x57c)
-[<c0068614>] (__generic_file_aio_write_nolock+0x0/0x57c) from
-[<c0068c10>] (generic_file_aio_write+0x80/0xf4)
-[<c0068b94>] (generic_file_aio_write+0x4/0xf4) from [<c0087794>]
-(do_sync_write+0xc0/0x110)
-[<c00876d4>] (do_sync_write+0x0/0x110) from [<c00878a8>] (vfs_write+0xc4/0x148)
- r9:c1f5a000 r8:00000000 r7:00002000 r6:c1f5bf78 r5:be890f20
-r4:c1fd9880
-[<c00877e4>] (vfs_write+0x0/0x148) from [<c00879ec>] (sys_write+0x4c/0x74)
- r7:002fe000 r6:c1f5bf78 r5:c1fd9880 r4:c1fd98a0
-[<c00879a0>] (sys_write+0x0/0x74) from [<c0023b00>] (ret_fast_syscall+0x0/0x2c)
- r8:c0023ca4 r7:00000004 r6:00024988 r5:be890f20 r4:00002000
-
-
-BUG: scheduling while atomic: ftpd/579/0x40000003
-
-
-[<c0027650>] (dump_stack+0x0/0x14) from [<c0035554>] (__schedule_bug+0x48/0x54)
-[<c003550c>] (__schedule_bug+0x0/0x54) from [<c01ee5c0>]
-(__sched_text_start+0x70/0x358)
- r4:c1f5a000
-[<c01ee550>] (__sched_text_start+0x0/0x358) from [<c0037040>]
-(__cond_resched+0x24/0x44)
-[<c003701c>] (__cond_resched+0x0/0x44) from [<c01eedc8>]
-(_cond_resched+0x44/0x50)
- r4:00000001
-[<c01eed84>] (_cond_resched+0x0/0x50) from [<c0076530>] (unmap_vmas+0x5a8/0x620)
- r4:c1f5a000
-[<c0075f88>] (unmap_vmas+0x0/0x620) from [<c007bcbc>] (exit_mmap+0x84/0x140)
-[<c007bc38>] (exit_mmap+0x0/0x140) from [<c0037a0c>] (mmput+0x40/0xec)
- r8:c1f5bb84 r7:c0800b80 r6:c1fb77b8 r5:c1fb7780 r4:00000000
-[<c00379cc>] (mmput+0x0/0xec) from [<c003c4d0>] (exit_mm+0x10c/0x110)
- r5:c1fb7780 r4:c1f5a000
-[<c003c3c4>] (exit_mm+0x0/0x110) from [<c003ca5c>] (do_exit+0x1c8/0x65c)
- r7:00000001 r6:0000000b r5:c0800b80 r4:c1f5a000
-[<c003c894>] (do_exit+0x0/0x65c) from [<c0027884>] (die+0x1d8/0x210)
-[<c00276ac>] (die+0x0/0x210) from [<c0028d0c>] (__do_kernel_fault+0x6c/0x7c)
-[<c0028ca0>] (__do_kernel_fault+0x0/0x7c) from [<c0029044>]
-(do_page_fault+0x208/0x224)
- r7:c1f5bb84 r6:00000017 r5:c0800b80 r4:ffffffff
-[<c0028e3c>] (do_page_fault+0x0/0x224) from [<c0023228>]
-(do_DataAbort+0x3c/0xa0)
-[<c00231ec>] (do_DataAbort+0x0/0xa0) from [<c00236c0>] (__dabt_svc+0x40/0x60)
-Exception stack(0xc1f5bb84 to 0xc1f5bbcc)
-bb80:          00000001 c1c58000 c1c58000 00000000 c1f5a000 00000000 c1c58000
-bba0: 00000001 c1cff000 00000000 c1c58000 c1f5bbe8 c1f5bbec c1f5bbcc c0045b50
-bbc0: c004579c 80000093 ffffffff
- r8:c1cff000 r7:00000001 r6:c1c58000 r5:c1f5bbb8 r4:ffffffff
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1f5a000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf5000 r5:c1cff000 r4:c1f5a000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c00f95ac>] (jffs2_complete_reservation+0x14/0x20)
- r5:00000000 r4:c1cff000
-[<c00f9598>] (jffs2_complete_reservation+0x0/0x20) from [<c00fcc5c>]
-(jffs2_write_inode_range+0x2b0/0x31c)
- r4:c0fc43e0
-[<c00fc9ac>] (jffs2_write_inode_range+0x0/0x31c) from [<c00f7b5c>]
-(jffs2_write_end+0x158/0x294)
-[<c00f7a04>] (jffs2_write_end+0x0/0x294) from [<c0067e2c>]
-(generic_file_buffered_write+0x198/0x680)
-[<c0067c98>] (generic_file_buffered_write+0x4/0x680) from [<c0068b60>]
-(__generic_file_aio_write_nolock+0x54c/0x57c)
-[<c0068614>] (__generic_file_aio_write_nolock+0x0/0x57c) from
-[<c0068c10>] (generic_file_aio_write+0x80/0xf4)
-[<c0068b94>] (generic_file_aio_write+0x4/0xf4) from [<c0087794>]
-(do_sync_write+0xc0/0x110)
-[<c00876d4>] (do_sync_write+0x0/0x110) from [<c00878a8>] (vfs_write+0xc4/0x148)
- r9:c1f5a000 r8:00000000 r7:00002000 r6:c1f5bf78 r5:be890f20
-r4:c1fd9880
-[<c00877e4>] (vfs_write+0x0/0x148) from [<c00879ec>] (sys_write+0x4c/0x74)
- r7:002fe000 r6:c1f5bf78 r5:c1fd9880 r4:c1fd98a0
-[<c00879a0>] (sys_write+0x0/0x74) from [<c0023b00>] (ret_fast_syscall+0x0/0x2c)
- r8:c0023ca4 r7:00000004 r6:00024988 r5:be890f20 r4:00002000
-
-
-BUG: scheduling while atomic: ftpd/579/0x40000003
-
-
-[<c0027650>] (dump_stack+0x0/0x14) from [<c0035554>] (__schedule_bug+0x48/0x54)
-[<c003550c>] (__schedule_bug+0x0/0x54) from [<c01ee5c0>]
-(__sched_text_start+0x70/0x358)
- r4:c1f5a000
-[<c01ee550>] (__sched_text_start+0x0/0x358) from [<c0037040>]
-(__cond_resched+0x24/0x44)
-[<c003701c>] (__cond_resched+0x0/0x44) from [<c01eedc8>]
-(_cond_resched+0x44/0x50)
- r4:00000001
-[<c01eed84>] (_cond_resched+0x0/0x50) from [<c0076530>] (unmap_vmas+0x5a8/0x620)
- r4:c1f5a000
-[<c0075f88>] (unmap_vmas+0x0/0x620) from [<c007bcbc>] (exit_mmap+0x84/0x140)
-[<c007bc38>] (exit_mmap+0x0/0x140) from [<c0037a0c>] (mmput+0x40/0xec)
- r8:c1f5bb84 r7:c0800b80 r6:c1fb77b8 r5:c1fb7780 r4:00000000
-[<c00379cc>] (mmput+0x0/0xec) from [<c003c4d0>] (exit_mm+0x10c/0x110)
- r5:c1fb7780 r4:c1f5a000
-[<c003c3c4>] (exit_mm+0x0/0x110) from [<c003ca5c>] (do_exit+0x1c8/0x65c)
- r7:00000001 r6:0000000b r5:c0800b80 r4:c1f5a000
-[<c003c894>] (do_exit+0x0/0x65c) from [<c0027884>] (die+0x1d8/0x210)
-[<c00276ac>] (die+0x0/0x210) from [<c0028d0c>] (__do_kernel_fault+0x6c/0x7c)
-[<c0028ca0>] (__do_kernel_fault+0x0/0x7c) from [<c0029044>]
-(do_page_fault+0x208/0x224)
- r7:c1f5bb84 r6:00000017 r5:c0800b80 r4:ffffffff
-[<c0028e3c>] (do_page_fault+0x0/0x224) from [<c0023228>]
-(do_DataAbort+0x3c/0xa0)
-[<c00231ec>] (do_DataAbort+0x0/0xa0) from [<c00236c0>] (__dabt_svc+0x40/0x60)
-Exception stack(0xc1f5bb84 to 0xc1f5bbcc)
-bb80:          00000001 c1c58000 c1c58000 00000000 c1f5a000 00000000 c1c58000
-bba0: 00000001 c1cff000 00000000 c1c58000 c1f5bbe8 c1f5bbec c1f5bbcc c0045b50
-bbc0: c004579c 80000093 ffffffff
- r8:c1cff000 r7:00000001 r6:c1c58000 r5:c1f5bbb8 r4:ffffffff
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1f5a000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf5000 r5:c1cff000 r4:c1f5a000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c00f95ac>] (jffs2_complete_reservation+0x14/0x20)
- r5:00000000 r4:c1cff000
-[<c00f9598>] (jffs2_complete_reservation+0x0/0x20) from [<c00fcc5c>]
-(jffs2_write_inode_range+0x2b0/0x31c)
- r4:c0fc43e0
-[<c00fc9ac>] (jffs2_write_inode_range+0x0/0x31c) from [<c00f7b5c>]
-(jffs2_write_end+0x158/0x294)
-[<c00f7a04>] (jffs2_write_end+0x0/0x294) from [<c0067e2c>]
-(generic_file_buffered_write+0x198/0x680)
-[<c0067c98>] (generic_file_buffered_write+0x4/0x680) from [<c0068b60>]
-(__generic_file_aio_write_nolock+0x54c/0x57c)
-[<c0068614>] (__generic_file_aio_write_nolock+0x0/0x57c) from
-[<c0068c10>] (generic_file_aio_write+0x80/0xf4)
-[<c0068b94>] (generic_file_aio_write+0x4/0xf4) from [<c0087794>]
-(do_sync_write+0xc0/0x110)
-[<c00876d4>] (do_sync_write+0x0/0x110) from [<c00878a8>] (vfs_write+0xc4/0x148)
- r9:c1f5a000 r8:00000000 r7:00002000 r6:c1f5bf78 r5:be890f20
-r4:c1fd9880
-[<c00877e4>] (vfs_write+0x0/0x148) from [<c00879ec>] (sys_write+0x4c/0x74)
- r7:002fe000 r6:c1f5bf78 r5:c1fd9880 r4:c1fd98a0
-[<c00879a0>] (sys_write+0x0/0x74) from [<c0023b00>] (ret_fast_syscall+0x0/0x2c)
- r8:c0023ca4 r7:00000004 r6:00024988 r5:be890f20 r4:00002000
-
-
-BUG: scheduling while atomic: ftpd/579/0x40000003
-
-
-[<c0027650>] (dump_stack+0x0/0x14) from [<c0035554>] (__schedule_bug+0x48/0x54)
-[<c003550c>] (__schedule_bug+0x0/0x54) from [<c01ee5c0>]
-(__sched_text_start+0x70/0x358)
- r4:c1f5a000
-[<c01ee550>] (__sched_text_start+0x0/0x358) from [<c0037040>]
-(__cond_resched+0x24/0x44)
-[<c003701c>] (__cond_resched+0x0/0x44) from [<c01eedc8>]
-(_cond_resched+0x44/0x50)
- r4:00000001
-[<c01eed84>] (_cond_resched+0x0/0x50) from [<c0076530>] (unmap_vmas+0x5a8/0x620)
- r4:c1f5a000
-[<c0075f88>] (unmap_vmas+0x0/0x620) from [<c007bcbc>] (exit_mmap+0x84/0x140)
-[<c007bc38>] (exit_mmap+0x0/0x140) from [<c0037a0c>] (mmput+0x40/0xec)
- r8:c1f5bb84 r7:c0800b80 r6:c1fb77b8 r5:c1fb7780 r4:00000000
-[<c00379cc>] (mmput+0x0/0xec) from [<c003c4d0>] (exit_mm+0x10c/0x110)
- r5:c1fb7780 r4:c1f5a000
-[<c003c3c4>] (exit_mm+0x0/0x110) from [<c003ca5c>] (do_exit+0x1c8/0x65c)
- r7:00000001 r6:0000000b r5:c0800b80 r4:c1f5a000
-[<c003c894>] (do_exit+0x0/0x65c) from [<c0027884>] (die+0x1d8/0x210)
-[<c00276ac>] (die+0x0/0x210) from [<c0028d0c>] (__do_kernel_fault+0x6c/0x7c)
-[<c0028ca0>] (__do_kernel_fault+0x0/0x7c) from [<c0029044>]
-(do_page_fault+0x208/0x224)
- r7:c1f5bb84 r6:00000017 r5:c0800b80 r4:ffffffff
-[<c0028e3c>] (do_page_fault+0x0/0x224) from [<c0023228>]
-(do_DataAbort+0x3c/0xa0)
-[<c00231ec>] (do_DataAbort+0x0/0xa0) from [<c00236c0>] (__dabt_svc+0x40/0x60)
-Exception stack(0xc1f5bb84 to 0xc1f5bbcc)
-bb80:          00000001 c1c58000 c1c58000 00000000 c1f5a000 00000000 c1c58000
-bba0: 00000001 c1cff000 00000000 c1c58000 c1f5bbe8 c1f5bbec c1f5bbcc c0045b50
-bbc0: c004579c 80000093 ffffffff
- r8:c1cff000 r7:00000001 r6:c1c58000 r5:c1f5bbb8 r4:ffffffff
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1f5a000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf5000 r5:c1cff000 r4:c1f5a000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c00f95ac>] (jffs2_complete_reservation+0x14/0x20)
- r5:00000000 r4:c1cff000
-[<c00f9598>] (jffs2_complete_reservation+0x0/0x20) from [<c00fcc5c>]
-(jffs2_write_inode_range+0x2b0/0x31c)
- r4:c0fc43e0
-[<c00fc9ac>] (jffs2_write_inode_range+0x0/0x31c) from [<c00f7b5c>]
-(jffs2_write_end+0x158/0x294)
-[<c00f7a04>] (jffs2_write_end+0x0/0x294) from [<c0067e2c>]
-(generic_file_buffered_write+0x198/0x680)
-[<c0067c98>] (generic_file_buffered_write+0x4/0x680) from [<c0068b60>]
-(__generic_file_aio_write_nolock+0x54c/0x57c)
-[<c0068614>] (__generic_file_aio_write_nolock+0x0/0x57c) from
-[<c0068c10>] (generic_file_aio_write+0x80/0xf4)
-[<c0068b94>] (generic_file_aio_write+0x4/0xf4) from [<c0087794>]
-(do_sync_write+0xc0/0x110)
-[<c00876d4>] (do_sync_write+0x0/0x110) from [<c00878a8>] (vfs_write+0xc4/0x148)
- r9:c1f5a000 r8:00000000 r7:00002000 r6:c1f5bf78 r5:be890f20
-r4:c1fd9880
-[<c00877e4>] (vfs_write+0x0/0x148) from [<c00879ec>] (sys_write+0x4c/0x74)
- r7:002fe000 r6:c1f5bf78 r5:c1fd9880 r4:c1fd98a0
-[<c00879a0>] (sys_write+0x0/0x74) from [<c0023b00>] (ret_fast_syscall+0x0/0x2c)
- r8:c0023ca4 r7:00000004 r6:00024988 r5:be890f20 r4:00002000
-
-
-BUG: scheduling while atomic: ftpd/579/0x40000003
-
-
-[<c0027650>] (dump_stack+0x0/0x14) from [<c0035554>] (__schedule_bug+0x48/0x54)
-[<c003550c>] (__schedule_bug+0x0/0x54) from [<c01ee5c0>]
-(__sched_text_start+0x70/0x358)
- r4:c1f5a000
-[<c01ee550>] (__sched_text_start+0x0/0x358) from [<c0037040>]
-(__cond_resched+0x24/0x44)
-[<c003701c>] (__cond_resched+0x0/0x44) from [<c01eedc8>]
-(_cond_resched+0x44/0x50)
- r4:00000001
-[<c01eed84>] (_cond_resched+0x0/0x50) from [<c0076530>] (unmap_vmas+0x5a8/0x620)
- r4:c1f5a000
-[<c0075f88>] (unmap_vmas+0x0/0x620) from [<c007bcbc>] (exit_mmap+0x84/0x140)
-[<c007bc38>] (exit_mmap+0x0/0x140) from [<c0037a0c>] (mmput+0x40/0xec)
- r8:c1f5bb84 r7:c0800b80 r6:c1fb77b8 r5:c1fb7780 r4:00000000
-[<c00379cc>] (mmput+0x0/0xec) from [<c003c4d0>] (exit_mm+0x10c/0x110)
- r5:c1fb7780 r4:c1f5a000
-[<c003c3c4>] (exit_mm+0x0/0x110) from [<c003ca5c>] (do_exit+0x1c8/0x65c)
- r7:00000001 r6:0000000b r5:c0800b80 r4:c1f5a000
-[<c003c894>] (do_exit+0x0/0x65c) from [<c0027884>] (die+0x1d8/0x210)
-[<c00276ac>] (die+0x0/0x210) from [<c0028d0c>] (__do_kernel_fault+0x6c/0x7c)
-[<c0028ca0>] (__do_kernel_fault+0x0/0x7c) from [<c0029044>]
-(do_page_fault+0x208/0x224)
- r7:c1f5bb84 r6:00000017 r5:c0800b80 r4:ffffffff
-[<c0028e3c>] (do_page_fault+0x0/0x224) from [<c0023228>]
-(do_DataAbort+0x3c/0xa0)
-[<c00231ec>] (do_DataAbort+0x0/0xa0) from [<c00236c0>] (__dabt_svc+0x40/0x60)
-Exception stack(0xc1f5bb84 to 0xc1f5bbcc)
-bb80:          00000001 c1c58000 c1c58000 00000000 c1f5a000 00000000 c1c58000
-bba0: 00000001 c1cff000 00000000 c1c58000 c1f5bbe8 c1f5bbec c1f5bbcc c0045b50
-bbc0: c004579c 80000093 ffffffff
- r8:c1cff000 r7:00000001 r6:c1c58000 r5:c1f5bbb8 r4:ffffffff
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1f5a000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf5000 r5:c1cff000 r4:c1f5a000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c00f95ac>] (jffs2_complete_reservation+0x14/0x20)
- r5:00000000 r4:c1cff000
-[<c00f9598>] (jffs2_complete_reservation+0x0/0x20) from [<c00fcc5c>]
-(jffs2_write_inode_range+0x2b0/0x31c)
- r4:c0fc43e0
-[<c00fc9ac>] (jffs2_write_inode_range+0x0/0x31c) from [<c00f7b5c>]
-(jffs2_write_end+0x158/0x294)
-[<c00f7a04>] (jffs2_write_end+0x0/0x294) from [<c0067e2c>]
-(generic_file_buffered_write+0x198/0x680)
-[<c0067c98>] (generic_file_buffered_write+0x4/0x680) from [<c0068b60>]
-(__generic_file_aio_write_nolock+0x54c/0x57c)
-[<c0068614>] (__generic_file_aio_write_nolock+0x0/0x57c) from
-[<c0068c10>] (generic_file_aio_write+0x80/0xf4)
-[<c0068b94>] (generic_file_aio_write+0x4/0xf4) from [<c0087794>]
-(do_sync_write+0xc0/0x110)
-[<c00876d4>] (do_sync_write+0x0/0x110) from [<c00878a8>] (vfs_write+0xc4/0x148)
- r9:c1f5a000 r8:00000000 r7:00002000 r6:c1f5bf78 r5:be890f20
-r4:c1fd9880
-[<c00877e4>] (vfs_write+0x0/0x148) from [<c00879ec>] (sys_write+0x4c/0x74)
- r7:002fe000 r6:c1f5bf78 r5:c1fd9880 r4:c1fd98a0
-[<c00879a0>] (sys_write+0x0/0x74) from [<c0023b00>] (ret_fast_syscall+0x0/0x2c)
- r8:c0023ca4 r7:00000004 r6:00024988 r5:be890f20 r4:00002000
-
-
-BUG: scheduling while atomic: ftpd/579/0x40000003
-
-
-[<c0027650>] (dump_stack+0x0/0x14) from [<c0035554>] (__schedule_bug+0x48/0x54)
-[<c003550c>] (__schedule_bug+0x0/0x54) from [<c01ee5c0>]
-(__sched_text_start+0x70/0x358)
- r4:c1f5a000
-[<c01ee550>] (__sched_text_start+0x0/0x358) from [<c0037040>]
-(__cond_resched+0x24/0x44)
-[<c003701c>] (__cond_resched+0x0/0x44) from [<c01eedc8>]
-(_cond_resched+0x44/0x50)
- r4:00000001
-[<c01eed84>] (_cond_resched+0x0/0x50) from [<c0076530>] (unmap_vmas+0x5a8/0x620)
- r4:c1f5a000
-[<c0075f88>] (unmap_vmas+0x0/0x620) from [<c007bcbc>] (exit_mmap+0x84/0x140)
-[<c007bc38>] (exit_mmap+0x0/0x140) from [<c0037a0c>] (mmput+0x40/0xec)
- r8:c1f5bb84 r7:c0800b80 r6:c1fb77b8 r5:c1fb7780 r4:00000000
-[<c00379cc>] (mmput+0x0/0xec) from [<c003c4d0>] (exit_mm+0x10c/0x110)
- r5:c1fb7780 r4:c1f5a000
-[<c003c3c4>] (exit_mm+0x0/0x110) from [<c003ca5c>] (do_exit+0x1c8/0x65c)
- r7:00000001 r6:0000000b r5:c0800b80 r4:c1f5a000
-[<c003c894>] (do_exit+0x0/0x65c) from [<c0027884>] (die+0x1d8/0x210)
-[<c00276ac>] (die+0x0/0x210) from [<c0028d0c>] (__do_kernel_fault+0x6c/0x7c)
-[<c0028ca0>] (__do_kernel_fault+0x0/0x7c) from [<c0029044>]
-(do_page_fault+0x208/0x224)
- r7:c1f5bb84 r6:00000017 r5:c0800b80 r4:ffffffff
-[<c0028e3c>] (do_page_fault+0x0/0x224) from [<c0023228>]
-(do_DataAbort+0x3c/0xa0)
-[<c00231ec>] (do_DataAbort+0x0/0xa0) from [<c00236c0>] (__dabt_svc+0x40/0x60)
-Exception stack(0xc1f5bb84 to 0xc1f5bbcc)
-bb80:          00000001 c1c58000 c1c58000 00000000 c1f5a000 00000000 c1c58000
-bba0: 00000001 c1cff000 00000000 c1c58000 c1f5bbe8 c1f5bbec c1f5bbcc c0045b50
-bbc0: c004579c 80000093 ffffffff
- r8:c1cff000 r7:00000001 r6:c1c58000 r5:c1f5bbb8 r4:ffffffff
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1f5a000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf5000 r5:c1cff000 r4:c1f5a000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c00f95ac>] (jffs2_complete_reservation+0x14/0x20)
- r5:00000000 r4:c1cff000
-[<c00f9598>] (jffs2_complete_reservation+0x0/0x20) from [<c00fcc5c>]
-(jffs2_write_inode_range+0x2b0/0x31c)
- r4:c0fc43e0
-[<c00fc9ac>] (jffs2_write_inode_range+0x0/0x31c) from [<c00f7b5c>]
-(jffs2_write_end+0x158/0x294)
-[<c00f7a04>] (jffs2_write_end+0x0/0x294) from [<c0067e2c>]
-(generic_file_buffered_write+0x198/0x680)
-[<c0067c98>] (generic_file_buffered_write+0x4/0x680) from [<c0068b60>]
-(__generic_file_aio_write_nolock+0x54c/0x57c)
-[<c0068614>] (__generic_file_aio_write_nolock+0x0/0x57c) from
-[<c0068c10>] (generic_file_aio_write+0x80/0xf4)
-[<c0068b94>] (generic_file_aio_write+0x4/0xf4) from [<c0087794>]
-(do_sync_write+0xc0/0x110)
-[<c00876d4>] (do_sync_write+0x0/0x110) from [<c00878a8>] (vfs_write+0xc4/0x148)
- r9:c1f5a000 r8:00000000 r7:00002000 r6:c1f5bf78 r5:be890f20
-r4:c1fd9880
-[<c00877e4>] (vfs_write+0x0/0x148) from [<c00879ec>] (sys_write+0x4c/0x74)
- r7:002fe000 r6:c1f5bf78 r5:c1fd9880 r4:c1fd98a0
-[<c00879a0>] (sys_write+0x0/0x74) from [<c0023b00>] (ret_fast_syscall+0x0/0x2c)
- r8:c0023ca4 r7:00000004 r6:00024988 r5:be890f20 r4:00002000
-
-
-BUG: scheduling while atomic: ftpd/579/0x40000003
-
-
-[<c0027650>] (dump_stack+0x0/0x14) from [<c0035554>] (__schedule_bug+0x48/0x54)
-[<c003550c>] (__schedule_bug+0x0/0x54) from [<c01ee5c0>]
-(__sched_text_start+0x70/0x358)
- r4:c1f5a000
-[<c01ee550>] (__sched_text_start+0x0/0x358) from [<c0037040>]
-(__cond_resched+0x24/0x44)
-[<c003701c>] (__cond_resched+0x0/0x44) from [<c01eedc8>]
-(_cond_resched+0x44/0x50)
- r4:00000001
-[<c01eed84>] (_cond_resched+0x0/0x50) from [<c0076530>] (unmap_vmas+0x5a8/0x620)
- r4:c1f5a000
-[<c0075f88>] (unmap_vmas+0x0/0x620) from [<c007bcbc>] (exit_mmap+0x84/0x140)
-[<c007bc38>] (exit_mmap+0x0/0x140) from [<c0037a0c>] (mmput+0x40/0xec)
- r8:c1f5bb84 r7:c0800b80 r6:c1fb77b8 r5:c1fb7780 r4:00000000
-[<c00379cc>] (mmput+0x0/0xec) from [<c003c4d0>] (exit_mm+0x10c/0x110)
- r5:c1fb7780 r4:c1f5a000
-[<c003c3c4>] (exit_mm+0x0/0x110) from [<c003ca5c>] (do_exit+0x1c8/0x65c)
- r7:00000001 r6:0000000b r5:c0800b80 r4:c1f5a000
-[<c003c894>] (do_exit+0x0/0x65c) from [<c0027884>] (die+0x1d8/0x210)
-[<c00276ac>] (die+0x0/0x210) from [<c0028d0c>] (__do_kernel_fault+0x6c/0x7c)
-[<c0028ca0>] (__do_kernel_fault+0x0/0x7c) from [<c0029044>]
-(do_page_fault+0x208/0x224)
- r7:c1f5bb84 r6:00000017 r5:c0800b80 r4:ffffffff
-[<c0028e3c>] (do_page_fault+0x0/0x224) from [<c0023228>]
-(do_DataAbort+0x3c/0xa0)
-[<c00231ec>] (do_DataAbort+0x0/0xa0) from [<c00236c0>] (__dabt_svc+0x40/0x60)
-Exception stack(0xc1f5bb84 to 0xc1f5bbcc)
-bb80:          00000001 c1c58000 c1c58000 00000000 c1f5a000 00000000 c1c58000
-bba0: 00000001 c1cff000 00000000 c1c58000 c1f5bbe8 c1f5bbec c1f5bbcc c0045b50
-bbc0: c004579c 80000093 ffffffff
- r8:c1cff000 r7:00000001 r6:c1c58000 r5:c1f5bbb8 r4:ffffffff
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1f5a000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf5000 r5:c1cff000 r4:c1f5a000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c00f95ac>] (jffs2_complete_reservation+0x14/0x20)
- r5:00000000 r4:c1cff000
-[<c00f9598>] (jffs2_complete_reservation+0x0/0x20) from [<c00fcc5c>]
-(jffs2_write_inode_range+0x2b0/0x31c)
- r4:c0fc43e0
-[<c00fc9ac>] (jffs2_write_inode_range+0x0/0x31c) from [<c00f7b5c>]
-(jffs2_write_end+0x158/0x294)
-[<c00f7a04>] (jffs2_write_end+0x0/0x294) from [<c0067e2c>]
-(generic_file_buffered_write+0x198/0x680)
-[<c0067c98>] (generic_file_buffered_write+0x4/0x680) from [<c0068b60>]
-(__generic_file_aio_write_nolock+0x54c/0x57c)
-[<c0068614>] (__generic_file_aio_write_nolock+0x0/0x57c) from
-[<c0068c10>] (generic_file_aio_write+0x80/0xf4)
-[<c0068b94>] (generic_file_aio_write+0x4/0xf4) from [<c0087794>]
-(do_sync_write+0xc0/0x110)
-[<c00876d4>] (do_sync_write+0x0/0x110) from [<c00878a8>] (vfs_write+0xc4/0x148)
- r9:c1f5a000 r8:00000000 r7:00002000 r6:c1f5bf78 r5:be890f20
-r4:c1fd9880
-[<c00877e4>] (vfs_write+0x0/0x148) from [<c00879ec>] (sys_write+0x4c/0x74)
- r7:002fe000 r6:c1f5bf78 r5:c1fd9880 r4:c1fd98a0
-[<c00879a0>] (sys_write+0x0/0x74) from [<c0023b00>] (ret_fast_syscall+0x0/0x2c)
- r8:c0023ca4 r7:00000004 r6:00024988 r5:be890f20 r4:00002000
-
-
-BUG: scheduling while atomic: ftpd/579/0x40000003
-
-
-[<c0027650>] (dump_stack+0x0/0x14) from [<c0035554>] (__schedule_bug+0x48/0x54)
-[<c003550c>] (__schedule_bug+0x0/0x54) from [<c01ee5c0>]
-(__sched_text_start+0x70/0x358)
- r4:c1f5a000
-[<c01ee550>] (__sched_text_start+0x0/0x358) from [<c0037040>]
-(__cond_resched+0x24/0x44)
-[<c003701c>] (__cond_resched+0x0/0x44) from [<c01eedc8>]
-(_cond_resched+0x44/0x50)
- r4:00000001
-[<c01eed84>] (_cond_resched+0x0/0x50) from [<c0076530>] (unmap_vmas+0x5a8/0x620)
- r4:c1f5a000
-[<c0075f88>] (unmap_vmas+0x0/0x620) from [<c007bcbc>] (exit_mmap+0x84/0x140)
-[<c007bc38>] (exit_mmap+0x0/0x140) from [<c0037a0c>] (mmput+0x40/0xec)
- r8:c1f5bb84 r7:c0800b80 r6:c1fb77b8 r5:c1fb7780 r4:00000000
-[<c00379cc>] (mmput+0x0/0xec) from [<c003c4d0>] (exit_mm+0x10c/0x110)
- r5:c1fb7780 r4:c1f5a000
-[<c003c3c4>] (exit_mm+0x0/0x110) from [<c003ca5c>] (do_exit+0x1c8/0x65c)
- r7:00000001 r6:0000000b r5:c0800b80 r4:c1f5a000
-[<c003c894>] (do_exit+0x0/0x65c) from [<c0027884>] (die+0x1d8/0x210)
-[<c00276ac>] (die+0x0/0x210) from [<c0028d0c>] (__do_kernel_fault+0x6c/0x7c)
-[<c0028ca0>] (__do_kernel_fault+0x0/0x7c) from [<c0029044>]
-(do_page_fault+0x208/0x224)
- r7:c1f5bb84 r6:00000017 r5:c0800b80 r4:ffffffff
-[<c0028e3c>] (do_page_fault+0x0/0x224) from [<c0023228>]
-(do_DataAbort+0x3c/0xa0)
-[<c00231ec>] (do_DataAbort+0x0/0xa0) from [<c00236c0>] (__dabt_svc+0x40/0x60)
-Exception stack(0xc1f5bb84 to 0xc1f5bbcc)
-bb80:          00000001 c1c58000 c1c58000 00000000 c1f5a000 00000000 c1c58000
-bba0: 00000001 c1cff000 00000000 c1c58000 c1f5bbe8 c1f5bbec c1f5bbcc c0045b50
-bbc0: c004579c 80000093 ffffffff
- r8:c1cff000 r7:00000001 r6:c1c58000 r5:c1f5bbb8 r4:ffffffff
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1f5a000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf5000 r5:c1cff000 r4:c1f5a000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c00f95ac>] (jffs2_complete_reservation+0x14/0x20)
- r5:00000000 r4:c1cff000
-[<c00f9598>] (jffs2_complete_reservation+0x0/0x20) from [<c00fcc5c>]
-(jffs2_write_inode_range+0x2b0/0x31c)
- r4:c0fc43e0
-[<c00fc9ac>] (jffs2_write_inode_range+0x0/0x31c) from [<c00f7b5c>]
-(jffs2_write_end+0x158/0x294)
-[<c00f7a04>] (jffs2_write_end+0x0/0x294) from [<c0067e2c>]
-(generic_file_buffered_write+0x198/0x680)
-[<c0067c98>] (generic_file_buffered_write+0x4/0x680) from [<c0068b60>]
-(__generic_file_aio_write_nolock+0x54c/0x57c)
-[<c0068614>] (__generic_file_aio_write_nolock+0x0/0x57c) from
-[<c0068c10>] (generic_file_aio_write+0x80/0xf4)
-[<c0068b94>] (generic_file_aio_write+0x4/0xf4) from [<c0087794>]
-(do_sync_write+0xc0/0x110)
-[<c00876d4>] (do_sync_write+0x0/0x110) from [<c00878a8>] (vfs_write+0xc4/0x148)
- r9:c1f5a000 r8:00000000 r7:00002000 r6:c1f5bf78 r5:be890f20
-r4:c1fd9880
-[<c00877e4>] (vfs_write+0x0/0x148) from [<c00879ec>] (sys_write+0x4c/0x74)
- r7:002fe000 r6:c1f5bf78 r5:c1fd9880 r4:c1fd98a0
-[<c00879a0>] (sys_write+0x0/0x74) from [<c0023b00>] (ret_fast_syscall+0x0/0x2c)
- r8:c0023ca4 r7:00000004 r6:00024988 r5:be890f20 r4:00002000
-
-
-BUG: scheduling while atomic: ftpd/579/0x40000003
-
-
-[<c0027650>] (dump_stack+0x0/0x14) from [<c0035554>] (__schedule_bug+0x48/0x54)
-[<c003550c>] (__schedule_bug+0x0/0x54) from [<c01ee5c0>]
-(__sched_text_start+0x70/0x358)
- r4:c1f5a000
-[<c01ee550>] (__sched_text_start+0x0/0x358) from [<c0037040>]
-(__cond_resched+0x24/0x44)
-[<c003701c>] (__cond_resched+0x0/0x44) from [<c01eedc8>]
-(_cond_resched+0x44/0x50)
- r4:00000001
-[<c01eed84>] (_cond_resched+0x0/0x50) from [<c0076530>] (unmap_vmas+0x5a8/0x620)
- r4:c1f5a000
-[<c0075f88>] (unmap_vmas+0x0/0x620) from [<c007bcbc>] (exit_mmap+0x84/0x140)
-[<c007bc38>] (exit_mmap+0x0/0x140) from [<c0037a0c>] (mmput+0x40/0xec)
- r8:c1f5bb84 r7:c0800b80 r6:c1fb77b8 r5:c1fb7780 r4:00000000
-[<c00379cc>] (mmput+0x0/0xec) from [<c003c4d0>] (exit_mm+0x10c/0x110)
- r5:c1fb7780 r4:c1f5a000
-[<c003c3c4>] (exit_mm+0x0/0x110) from [<c003ca5c>] (do_exit+0x1c8/0x65c)
- r7:00000001 r6:0000000b r5:c0800b80 r4:c1f5a000
-[<c003c894>] (do_exit+0x0/0x65c) from [<c0027884>] (die+0x1d8/0x210)
-[<c00276ac>] (die+0x0/0x210) from [<c0028d0c>] (__do_kernel_fault+0x6c/0x7c)
-[<c0028ca0>] (__do_kernel_fault+0x0/0x7c) from [<c0029044>]
-(do_page_fault+0x208/0x224)
- r7:c1f5bb84 r6:00000017 r5:c0800b80 r4:ffffffff
-[<c0028e3c>] (do_page_fault+0x0/0x224) from [<c0023228>]
-(do_DataAbort+0x3c/0xa0)
-[<c00231ec>] (do_DataAbort+0x0/0xa0) from [<c00236c0>] (__dabt_svc+0x40/0x60)
-Exception stack(0xc1f5bb84 to 0xc1f5bbcc)
-bb80:          00000001 c1c58000 c1c58000 00000000 c1f5a000 00000000 c1c58000
-bba0: 00000001 c1cff000 00000000 c1c58000 c1f5bbe8 c1f5bbec c1f5bbcc c0045b50
-bbc0: c004579c 80000093 ffffffff
- r8:c1cff000 r7:00000001 r6:c1c58000 r5:c1f5bbb8 r4:ffffffff
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1f5a000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf5000 r5:c1cff000 r4:c1f5a000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c00f95ac>] (jffs2_complete_reservation+0x14/0x20)
- r5:00000000 r4:c1cff000
-[<c00f9598>] (jffs2_complete_reservation+0x0/0x20) from [<c00fcc5c>]
-(jffs2_write_inode_range+0x2b0/0x31c)
- r4:c0fc43e0
-[<c00fc9ac>] (jffs2_write_inode_range+0x0/0x31c) from [<c00f7b5c>]
-(jffs2_write_end+0x158/0x294)
-[<c00f7a04>] (jffs2_write_end+0x0/0x294) from [<c0067e2c>]
-(generic_file_buffered_write+0x198/0x680)
-[<c0067c98>] (generic_file_buffered_write+0x4/0x680) from [<c0068b60>]
-(__generic_file_aio_write_nolock+0x54c/0x57c)
-[<c0068614>] (__generic_file_aio_write_nolock+0x0/0x57c) from
-[<c0068c10>] (generic_file_aio_write+0x80/0xf4)
-[<c0068b94>] (generic_file_aio_write+0x4/0xf4) from [<c0087794>]
-(do_sync_write+0xc0/0x110)
-[<c00876d4>] (do_sync_write+0x0/0x110) from [<c00878a8>] (vfs_write+0xc4/0x148)
- r9:c1f5a000 r8:00000000 r7:00002000 r6:c1f5bf78 r5:be890f20
-r4:c1fd9880
-[<c00877e4>] (vfs_write+0x0/0x148) from [<c00879ec>] (sys_write+0x4c/0x74)
- r7:002fe000 r6:c1f5bf78 r5:c1fd9880 r4:c1fd98a0
-[<c00879a0>] (sys_write+0x0/0x74) from [<c0023b00>] (ret_fast_syscall+0x0/0x2c)
- r8:c0023ca4 r7:00000004 r6:00024988 r5:be890f20 r4:00002000
-
-
-BUG: scheduling while atomic: ftpd/579/0x40000003
-
-
-[<c0027650>] (dump_stack+0x0/0x14) from [<c0035554>] (__schedule_bug+0x48/0x54)
-[<c003550c>] (__schedule_bug+0x0/0x54) from [<c01ee5c0>]
-(__sched_text_start+0x70/0x358)
- r4:c1f5a000
-[<c01ee550>] (__sched_text_start+0x0/0x358) from [<c0037040>]
-(__cond_resched+0x24/0x44)
-[<c003701c>] (__cond_resched+0x0/0x44) from [<c01eedc8>]
-(_cond_resched+0x44/0x50)
- r4:00000001
-[<c01eed84>] (_cond_resched+0x0/0x50) from [<c0076530>] (unmap_vmas+0x5a8/0x620)
- r4:c1f5a000
-[<c0075f88>] (unmap_vmas+0x0/0x620) from [<c007bcbc>] (exit_mmap+0x84/0x140)
-[<c007bc38>] (exit_mmap+0x0/0x140) from [<c0037a0c>] (mmput+0x40/0xec)
- r8:c1f5bb84 r7:c0800b80 r6:c1fb77b8 r5:c1fb7780 r4:00000000
-[<c00379cc>] (mmput+0x0/0xec) from [<c003c4d0>] (exit_mm+0x10c/0x110)
- r5:c1fb7780 r4:c1f5a000
-[<c003c3c4>] (exit_mm+0x0/0x110) from [<c003ca5c>] (do_exit+0x1c8/0x65c)
- r7:00000001 r6:0000000b r5:c0800b80 r4:c1f5a000
-[<c003c894>] (do_exit+0x0/0x65c) from [<c0027884>] (die+0x1d8/0x210)
-[<c00276ac>] (die+0x0/0x210) from [<c0028d0c>] (__do_kernel_fault+0x6c/0x7c)
-[<c0028ca0>] (__do_kernel_fault+0x0/0x7c) from [<c0029044>]
-(do_page_fault+0x208/0x224)
- r7:c1f5bb84 r6:00000017 r5:c0800b80 r4:ffffffff
-[<c0028e3c>] (do_page_fault+0x0/0x224) from [<c0023228>]
-(do_DataAbort+0x3c/0xa0)
-[<c00231ec>] (do_DataAbort+0x0/0xa0) from [<c00236c0>] (__dabt_svc+0x40/0x60)
-Exception stack(0xc1f5bb84 to 0xc1f5bbcc)
-bb80:          00000001 c1c58000 c1c58000 00000000 c1f5a000 00000000 c1c58000
-bba0: 00000001 c1cff000 00000000 c1c58000 c1f5bbe8 c1f5bbec c1f5bbcc c0045b50
-bbc0: c004579c 80000093 ffffffff
- r8:c1cff000 r7:00000001 r6:c1c58000 r5:c1f5bbb8 r4:ffffffff
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1f5a000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf5000 r5:c1cff000 r4:c1f5a000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c00f95ac>] (jffs2_complete_reservation+0x14/0x20)
- r5:00000000 r4:c1cff000
-[<c00f9598>] (jffs2_complete_reservation+0x0/0x20) from [<c00fcc5c>]
-(jffs2_write_inode_range+0x2b0/0x31c)
- r4:c0fc43e0
-[<c00fc9ac>] (jffs2_write_inode_range+0x0/0x31c) from [<c00f7b5c>]
-(jffs2_write_end+0x158/0x294)
-[<c00f7a04>] (jffs2_write_end+0x0/0x294) from [<c0067e2c>]
-(generic_file_buffered_write+0x198/0x680)
-[<c0067c98>] (generic_file_buffered_write+0x4/0x680) from [<c0068b60>]
-(__generic_file_aio_write_nolock+0x54c/0x57c)
-[<c0068614>] (__generic_file_aio_write_nolock+0x0/0x57c) from
-[<c0068c10>] (generic_file_aio_write+0x80/0xf4)
-[<c0068b94>] (generic_file_aio_write+0x4/0xf4) from [<c0087794>]
-(do_sync_write+0xc0/0x110)
-[<c00876d4>] (do_sync_write+0x0/0x110) from [<c00878a8>] (vfs_write+0xc4/0x148)
- r9:c1f5a000 r8:00000000 r7:00002000 r6:c1f5bf78 r5:be890f20
-r4:c1fd9880
-[<c00877e4>] (vfs_write+0x0/0x148) from [<c00879ec>] (sys_write+0x4c/0x74)
- r7:002fe000 r6:c1f5bf78 r5:c1fd9880 r4:c1fd98a0
-[<c00879a0>] (sys_write+0x0/0x74) from [<c0023b00>] (ret_fast_syscall+0x0/0x2c)
- r8:c0023ca4 r7:00000004 r6:00024988 r5:be890f20 r4:00002000
-
-
-BUG: scheduling while atomic: ftpd/579/0x40000003
-
-
-[<c0027650>] (dump_stack+0x0/0x14) from [<c0035554>] (__schedule_bug+0x48/0x54)
-[<c003550c>] (__schedule_bug+0x0/0x54) from [<c01ee5c0>]
-(__sched_text_start+0x70/0x358)
- r4:c1f5a000
-[<c01ee550>] (__sched_text_start+0x0/0x358) from [<c0037040>]
-(__cond_resched+0x24/0x44)
-[<c003701c>] (__cond_resched+0x0/0x44) from [<c01eedc8>]
-(_cond_resched+0x44/0x50)
- r4:00000001
-[<c01eed84>] (_cond_resched+0x0/0x50) from [<c003c214>]
-(put_files_struct+0x90/0xd4)
- r4:0000001f
-[<c003c184>] (put_files_struct+0x0/0xd4) from [<c003c2ac>]
-(exit_files+0x54/0x58)
- r8:c1f5bb84 r7:00000001 r6:0000000b r5:c0800b80 r4:c1fb6840
-[<c003c258>] (exit_files+0x0/0x58) from [<c003ca6c>] (do_exit+0x1d8/0x65c)
- r4:c1f5a000
-[<c003c894>] (do_exit+0x0/0x65c) from [<c0027884>] (die+0x1d8/0x210)
-[<c00276ac>] (die+0x0/0x210) from [<c0028d0c>] (__do_kernel_fault+0x6c/0x7c)
-[<c0028ca0>] (__do_kernel_fault+0x0/0x7c) from [<c0029044>]
-(do_page_fault+0x208/0x224)
- r7:c1f5bb84 r6:00000017 r5:c0800b80 r4:ffffffff
-[<c0028e3c>] (do_page_fault+0x0/0x224) from [<c0023228>]
-(do_DataAbort+0x3c/0xa0)
-[<c00231ec>] (do_DataAbort+0x0/0xa0) from [<c00236c0>] (__dabt_svc+0x40/0x60)
-Exception stack(0xc1f5bb84 to 0xc1f5bbcc)
-bb80:          00000001 c1c58000 c1c58000 00000000 c1f5a000 00000000 c1c58000
-bba0: 00000001 c1cff000 00000000 c1c58000 c1f5bbe8 c1f5bbec c1f5bbcc c0045b50
-bbc0: c004579c 80000093 ffffffff
- r8:c1cff000 r7:00000001 r6:c1c58000 r5:c1f5bbb8 r4:ffffffff
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1f5a000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf5000 r5:c1cff000 r4:c1f5a000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c00f95ac>] (jffs2_complete_reservation+0x14/0x20)
- r5:00000000 r4:c1cff000
-[<c00f9598>] (jffs2_complete_reservation+0x0/0x20) from [<c00fcc5c>]
-(jffs2_write_inode_range+0x2b0/0x31c)
- r4:c0fc43e0
-[<c00fc9ac>] (jffs2_write_inode_range+0x0/0x31c) from [<c00f7b5c>]
-(jffs2_write_end+0x158/0x294)
-[<c00f7a04>] (jffs2_write_end+0x0/0x294) from [<c0067e2c>]
-(generic_file_buffered_write+0x198/0x680)
-[<c0067c98>] (generic_file_buffered_write+0x4/0x680) from [<c0068b60>]
-(__generic_file_aio_write_nolock+0x54c/0x57c)
-[<c0068614>] (__generic_file_aio_write_nolock+0x0/0x57c) from
-[<c0068c10>] (generic_file_aio_write+0x80/0xf4)
-[<c0068b94>] (generic_file_aio_write+0x4/0xf4) from [<c0087794>]
-(do_sync_write+0xc0/0x110)
-[<c00876d4>] (do_sync_write+0x0/0x110) from [<c00878a8>] (vfs_write+0xc4/0x148)
- r9:c1f5a000 r8:00000000 r7:00002000 r6:c1f5bf78 r5:be890f20
-r4:c1fd9880
-[<c00877e4>] (vfs_write+0x0/0x148) from [<c00879ec>] (sys_write+0x4c/0x74)
- r7:002fe000 r6:c1f5bf78 r5:c1fd9880 r4:c1fd98a0
-[<c00879a0>] (sys_write+0x0/0x74) from [<c0023b00>] (ret_fast_syscall+0x0/0x2c)
- r8:c0023ca4 r7:00000004 r6:00024988 r5:be890f20 r4:00002000
-
-
-BUG: scheduling while atomic: ftpd/579/0x40000003
-
-
-[<c0027650>] (dump_stack+0x0/0x14) from [<c0035554>] (__schedule_bug+0x48/0x54)
-[<c003550c>] (__schedule_bug+0x0/0x54) from [<c01ee5c0>]
-(__sched_text_start+0x70/0x358)
- r4:c1f5a000
-[<c01ee550>] (__sched_text_start+0x0/0x358) from [<c0037040>]
-(__cond_resched+0x24/0x44)
-[<c003701c>] (__cond_resched+0x0/0x44) from [<c01eedc8>]
-(_cond_resched+0x44/0x50)
- r4:00000001
-[<c01eed84>] (_cond_resched+0x0/0x50) from [<c003c214>]
-(put_files_struct+0x90/0xd4)
- r4:00000001
-[<c003c184>] (put_files_struct+0x0/0xd4) from [<c003c2ac>]
-(exit_files+0x54/0x58)
- r8:c1f5bb84 r7:00000001 r6:0000000b r5:c0800b80 r4:c1fb6840
-[<c003c258>] (exit_files+0x0/0x58) from [<c003ca6c>] (do_exit+0x1d8/0x65c)
- r4:c1f5a000
-[<c003c894>] (do_exit+0x0/0x65c) from [<c0027884>] (die+0x1d8/0x210)
-[<c00276ac>] (die+0x0/0x210) from [<c0028d0c>] (__do_kernel_fault+0x6c/0x7c)
-[<c0028ca0>] (__do_kernel_fault+0x0/0x7c) from [<c0029044>]
-(do_page_fault+0x208/0x224)
- r7:c1f5bb84 r6:00000017 r5:c0800b80 r4:ffffffff
-[<c0028e3c>] (do_page_fault+0x0/0x224) from [<c0023228>]
-(do_DataAbort+0x3c/0xa0)
-[<c00231ec>] (do_DataAbort+0x0/0xa0) from [<c00236c0>] (__dabt_svc+0x40/0x60)
-Exception stack(0xc1f5bb84 to 0xc1f5bbcc)
-bb80:          00000001 c1c58000 c1c58000 00000000 c1f5a000 00000000 c1c58000
-bba0: 00000001 c1cff000 00000000 c1c58000 c1f5bbe8 c1f5bbec c1f5bbcc c0045b50
-bbc0: c004579c 80000093 ffffffff
- r8:c1cff000 r7:00000001 r6:c1c58000 r5:c1f5bbb8 r4:ffffffff
-[<c0045788>] (prepare_signal+0x0/0x18c) from [<c0045b50>]
-(send_signal+0x24/0x1e0)
- r7:00000001 r6:00000001 r5:80000013 r4:c1f5a000
-[<c0045b2c>] (send_signal+0x0/0x1e0) from [<c0045d38>]
-(specific_send_sig_info+0x14/0x18)
-[<c0045d24>] (specific_send_sig_info+0x0/0x18) from [<c00462c4>]
-(send_sig_info+0x3c/0x68)
-[<c0046288>] (send_sig_info+0x0/0x68) from [<c0046310>] (send_sig+0x20/0x24)
- r6:c1cf5000 r5:c1cff000 r4:c1f5a000
-[<c00462f0>] (send_sig+0x0/0x24) from [<c0101ab0>]
-(jffs2_garbage_collect_trigger+0x48/0x68)
-[<c0101a68>] (jffs2_garbage_collect_trigger+0x0/0x68) from
-[<c00f95ac>] (jffs2_complete_reservation+0x14/0x20)
- r5:00000000 r4:c1cff000
-[<c00f9598>] (jffs2_complete_reservation+0x0/0x20) from [<c00fcc5c>]
-(jffs2_write_inode_range+0x2b0/0x31c)
- r4:c0fc43e0
-[<c00fc9ac>] (jffs2_write_inode_range+0x0/0x31c) from [<c00f7b5c>]
-(jffs2_write_end+0x158/0x294)
-[<c00f7a04>] (jffs2_write_end+0x0/0x294) from [<c0067e2c>]
-(generic_file_buffered_write+0x198/0x680)
-[<c0067c98>] (generic_file_buffered_write+0x4/0x680) from [<c0068b60>]
-(__generic_file_aio_write_nolock+0x54c/0x57c)
-[<c0068614>] (__generic_file_aio_write_nolock+0x0/0x57c) from
-[<c0068c10>] (generic_file_aio_write+0x80/0xf4)
-[<c0068b94>] (generic_file_aio_write+0x4/0xf4) from [<c0087794>]
-(do_sync_write+0xc0/0x110)
-[<c00876d4>] (do_sync_write+0x0/0x110) from [<c00878a8>] (vfs_write+0xc4/0x148)
- r9:c1f5a000 r8:00000000 r7:00002000 r6:c1f5bf78 r5:be890f20
-r4:c1fd9880
-[<c00877e4>] (vfs_write+0x0/0x148) from [<c00879ec>] (sys_write+0x4c/0x74)
- r7:002fe000 r6:c1f5bf78 r5:c1fd9880 r4:c1fd98a0
-[<c00879a0>] (sys_write+0x0/0x74) from [<c0023b00>] (ret_fast_syscall+0x0/0x2c)
- r8:c0023ca4 r7:00000004 r6:00024988 r5:be890f20 r4:00002000
-
-
-Aras
+Hi,
+
+Please check the updated version of this patch for bcmring nand driver
+support.
+
+I've removed superfluous comments, added platform resource, added a new
+kernel option to replace the USE_HWECC macro.
+
+Please comment.
+
+Thanks,
+
+Leo
+
+>From 398b8fbfd219ee20f2eb76101992d6153ce8b52e Mon Sep 17 00:00:00 2001
+From: Leo Chen <leochen@broadcom.com>
+Date: Mon, 28 Sep 2009 14:11:49 -0700
+Subject: [PATCH] add bcmring mtd nand driver support
+
+Add mtd umi driver for bcmring arm arch.
+Add header files, register definition files,
+add entry in Kconfig and Makefile.
+
+remove superfluous comments from bcm nand driver
+use platform resource
+
+add CONFIG_MTD_NAND_BCM_UMI_HWECC option to replace USE_HWECC macro
+
+Signed-off-by: Leo Hao Chen <leochen@broadcom.com>
+---
+ arch/arm/configs/bcmring_defconfig            |    1 +
+ arch/arm/mach-bcmring/arch.c                  |   10 +
+ arch/arm/mach-bcmring/include/mach/reg_nand.h |   66 +++
+ arch/arm/mach-bcmring/include/mach/reg_umi.h  |  237 ++++++++++
+ drivers/mtd/nand/Kconfig                      |   24 +
+ drivers/mtd/nand/Makefile                     |    1 +
+ drivers/mtd/nand/bcm_umi_bch.c                |  213 +++++++++
+ drivers/mtd/nand/bcm_umi_nand.c               |  592 +++++++++++++++++++++++++
+ drivers/mtd/nand/nand_bcm_umi.c               |  149 +++++++
+ drivers/mtd/nand/nand_bcm_umi.h               |  358 +++++++++++++++
+ 10 files changed, 1651 insertions(+), 0 deletions(-)
+ create mode 100644 arch/arm/mach-bcmring/include/mach/reg_nand.h
+ create mode 100644 arch/arm/mach-bcmring/include/mach/reg_umi.h
+ create mode 100644 drivers/mtd/nand/bcm_umi_bch.c
+ create mode 100644 drivers/mtd/nand/bcm_umi_nand.c
+ create mode 100644 drivers/mtd/nand/nand_bcm_umi.c
+ create mode 100644 drivers/mtd/nand/nand_bcm_umi.h
+
+diff --git a/arch/arm/configs/bcmring_defconfig b/arch/arm/configs/bcmring_defconfig
+index bcc0bac..789794e 100644
+--- a/arch/arm/configs/bcmring_defconfig
++++ b/arch/arm/configs/bcmring_defconfig
+@@ -416,6 +416,7 @@ CONFIG_MTD_NAND_VERIFY_WRITE=y
+ CONFIG_MTD_NAND_IDS=y
+ CONFIG_MTD_NAND_BCM_UMI=y
+ CONFIG_MTD_NAND_BCM_UMI_HWCS=y
++CONFIG_MTD_NAND_BCM_UMI_HWECC=y
+ # CONFIG_MTD_NAND_DISKONCHIP is not set
+ # CONFIG_MTD_NAND_NANDSIM is not set
+ # CONFIG_MTD_NAND_PLATFORM is not set
+diff --git a/arch/arm/mach-bcmring/arch.c b/arch/arm/mach-bcmring/arch.c
+index 0da693b..074dad6 100644
+--- a/arch/arm/mach-bcmring/arch.c
++++ b/arch/arm/mach-bcmring/arch.c
+@@ -76,9 +76,19 @@ static struct ctl_table bcmring_sysctl_reboot[] = {
+ 	{}
+ };
+ 
++static struct resource nand_resource[] = {
++	[0] = {
++		.start = MM_ADDR_IO_NAND,
++		.end = MM_ADDR_IO_NAND + 0x1000 - 1,
++		.flags = IORESOURCE_MEM,
++	},
++};
++
+ static struct platform_device nand_device = {
+ 	.name = "bcm-nand",
+ 	.id = -1,
++	.resource = nand_resource,
++	.num_resources	= ARRAY_SIZE(nand_resource),
+ };
+ 
+ static struct platform_device *devices[] __initdata = {
+diff --git a/arch/arm/mach-bcmring/include/mach/reg_nand.h b/arch/arm/mach-bcmring/include/mach/reg_nand.h
+new file mode 100644
+index 0000000..387376f
+--- /dev/null
++++ b/arch/arm/mach-bcmring/include/mach/reg_nand.h
+@@ -0,0 +1,66 @@
++/*****************************************************************************
++* Copyright 2001 - 2008 Broadcom Corporation.  All rights reserved.
++*
++* Unless you and Broadcom execute a separate written software license
++* agreement governing use of this software, this software is licensed to you
++* under the terms of the GNU General Public License version 2, available at
++* http://www.broadcom.com/licenses/GPLv2.php (the "GPL").
++*
++* Notwithstanding the above, under no circumstances may you combine this
++* software in any way with any other Broadcom software provided under a
++* license other than the GPL, without Broadcom's express prior written
++* consent.
++*****************************************************************************/
++
++/*
++*
++*****************************************************************************
++*
++*  REG_NAND.h
++*
++*  PURPOSE:
++*
++*     This file contains definitions for the nand registers:
++*
++*  NOTES:
++*
++*****************************************************************************/
++
++#if !defined(__ASM_ARCH_REG_NAND_H)
++#define __ASM_ARCH_REG_NAND_H
++
++/* ---- Include Files ---------------------------------------------------- */
++#include <csp/reg.h>
++#include <mach/reg_umi.h>
++
++/* ---- Constants and Types ---------------------------------------------- */
++
++#define HW_NAND_BASE       MM_IO_BASE_NAND	/* NAND Flash */
++
++/* DMA accesses by the bootstrap need hard nonvirtual addresses */
++#define REG_NAND_CMD            __REG16(HW_NAND_BASE + 0)
++#define REG_NAND_ADDR           __REG16(HW_NAND_BASE + 4)
++
++#define REG_NAND_PHYS_DATA16   (HW_NAND_BASE + 8)
++#define REG_NAND_PHYS_DATA8    (HW_NAND_BASE + 8)
++#define REG_NAND_DATA16         __REG16(REG_NAND_PHYS_DATA16)
++#define REG_NAND_DATA8          __REG8(REG_NAND_PHYS_DATA8)
++
++/* use appropriate offset to make sure it start at the 1K boundary */
++#define REG_NAND_PHYS_DATA_DMA   (HW_NAND_BASE + 0x400)
++#define REG_NAND_DATA_DMA         __REG32(REG_NAND_PHYS_DATA_DMA)
++
++/* Linux DMA requires physical address of the data register */
++#define REG_NAND_DATA16_PADDR    HW_IO_VIRT_TO_PHYS(REG_NAND_PHYS_DATA16)
++#define REG_NAND_DATA8_PADDR     HW_IO_VIRT_TO_PHYS(REG_NAND_PHYS_DATA8)
++#define REG_NAND_DATA_PADDR      HW_IO_VIRT_TO_PHYS(REG_NAND_PHYS_DATA_DMA)
++
++#define NAND_BUS_16BIT()        (0)
++#define NAND_BUS_8BIT()         (!NAND_BUS_16BIT())
++
++/* Register offsets */
++#define REG_NAND_CMD_OFFSET     (0)
++#define REG_NAND_ADDR_OFFSET    (4)
++#define REG_NAND_DATA8_OFFSET   (8)
++
++#endif
+diff --git a/arch/arm/mach-bcmring/include/mach/reg_umi.h b/arch/arm/mach-bcmring/include/mach/reg_umi.h
+new file mode 100644
+index 0000000..06a3554
+--- /dev/null
++++ b/arch/arm/mach-bcmring/include/mach/reg_umi.h
+@@ -0,0 +1,237 @@
++/*****************************************************************************
++* Copyright 2005 - 2008 Broadcom Corporation.  All rights reserved.
++*
++* Unless you and Broadcom execute a separate written software license
++* agreement governing use of this software, this software is licensed to you
++* under the terms of the GNU General Public License version 2, available at
++* http://www.broadcom.com/licenses/GPLv2.php (the "GPL").
++*
++* Notwithstanding the above, under no circumstances may you combine this
++* software in any way with any other Broadcom software provided under a
++* license other than the GPL, without Broadcom's express prior written
++* consent.
++*****************************************************************************/
++
++/*
++*
++*****************************************************************************
++*
++*  REG_UMI.h
++*
++*  PURPOSE:
++*
++*     This file contains definitions for the nand registers:
++*
++*  NOTES:
++*
++*****************************************************************************/
++
++#if !defined(__ASM_ARCH_REG_UMI_H)
++#define __ASM_ARCH_REG_UMI_H
++
++/* ---- Include Files ---------------------------------------------------- */
++#include <csp/reg.h>
++#include <mach/csp/mm_io.h>
++
++/* ---- Constants and Types ---------------------------------------------- */
++
++/* Unified Memory Interface Ctrl Register */
++#define HW_UMI_BASE       MM_IO_BASE_UMI
++
++/* Flash bank 0 timing and control register */
++#define REG_UMI_FLASH0_TCR         __REG32(HW_UMI_BASE  + 0x00)
++/* Flash bank 1 timing and control register */
++#define REG_UMI_FLASH1_TCR         __REG32(HW_UMI_BASE  + 0x04)
++/* Flash bank 2 timing and control register */
++#define REG_UMI_FLASH2_TCR         __REG32(HW_UMI_BASE  + 0x08)
++/* MMD interface and control register */
++#define REG_UMI_MMD_ICR            __REG32(HW_UMI_BASE  + 0x0c)
++/* NAND timing and control register */
++#define REG_UMI_NAND_TCR           __REG32(HW_UMI_BASE  + 0x18)
++/* NAND ready/chip select register */
++#define REG_UMI_NAND_RCSR          __REG32(HW_UMI_BASE  + 0x1c)
++/* NAND ECC control & status register */
++#define REG_UMI_NAND_ECC_CSR       __REG32(HW_UMI_BASE  + 0x20)
++/* NAND ECC data register XXB2B1B0 */
++#define REG_UMI_NAND_ECC_DATA      __REG32(HW_UMI_BASE  + 0x24)
++/* BCH ECC Parameter N */
++#define REG_UMI_BCH_N              __REG32(HW_UMI_BASE  + 0x40)
++/* BCH ECC Parameter T */
++#define REG_UMI_BCH_K              __REG32(HW_UMI_BASE  + 0x44)
++/* BCH ECC Parameter K */
++#define REG_UMI_BCH_T              __REG32(HW_UMI_BASE  + 0x48)
++/* BCH ECC Contro Status */
++#define REG_UMI_BCH_CTRL_STATUS    __REG32(HW_UMI_BASE  + 0x4C)
++/* BCH WR ECC 31:0 */
++#define REG_UMI_BCH_WR_ECC_0       __REG32(HW_UMI_BASE  + 0x50)
++/* BCH WR ECC 63:32 */
++#define REG_UMI_BCH_WR_ECC_1       __REG32(HW_UMI_BASE  + 0x54)
++/* BCH WR ECC 95:64 */
++#define REG_UMI_BCH_WR_ECC_2       __REG32(HW_UMI_BASE  + 0x58)
++/* BCH WR ECC 127:96 */
++#define REG_UMI_BCH_WR_ECC_3       __REG32(HW_UMI_BASE  + 0x5c)
++/* BCH WR ECC 155:128 */
++#define REG_UMI_BCH_WR_ECC_4       __REG32(HW_UMI_BASE  + 0x60)
++/* BCH Read Error Location 1,0 */
++#define REG_UMI_BCH_RD_ERR_LOC_1_0 __REG32(HW_UMI_BASE  + 0x64)
++/* BCH Read Error Location 3,2 */
++#define REG_UMI_BCH_RD_ERR_LOC_3_2 __REG32(HW_UMI_BASE  + 0x68)
++/* BCH Read Error Location 5,4 */
++#define REG_UMI_BCH_RD_ERR_LOC_5_4 __REG32(HW_UMI_BASE  + 0x6c)
++/* BCH Read Error Location 7,6 */
++#define REG_UMI_BCH_RD_ERR_LOC_7_6 __REG32(HW_UMI_BASE  + 0x70)
++/* BCH Read Error Location 9,8 */
++#define REG_UMI_BCH_RD_ERR_LOC_9_8 __REG32(HW_UMI_BASE  + 0x74)
++/* BCH Read Error Location 11,10 */
++#define REG_UMI_BCH_RD_ERR_LOC_B_A __REG32(HW_UMI_BASE  + 0x78)
++
++/* REG_UMI_FLASH0/1/2_TCR, REG_UMI_SRAM0/1_TCR bits */
++/* Enable wait pin during burst write or read */
++#define REG_UMI_TCR_WAITEN              0x80000000
++/* Enable mem ctrlr to work iwth ext mem of lower freq than AHB clk */
++#define REG_UMI_TCR_LOWFREQ             0x40000000
++/* 1=synch write, 0=async write */
++#define REG_UMI_TCR_MEMTYPE_SYNCWRITE   0x20000000
++/* 1=synch read, 0=async read */
++#define REG_UMI_TCR_MEMTYPE_SYNCREAD    0x10000000
++/* 1=page mode read, 0=normal mode read */
++#define REG_UMI_TCR_MEMTYPE_PAGEREAD    0x08000000
++/* page size/burst size (wrap only) */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_MASK   0x07000000
++/* 4 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_4      0x00000000
++/* 8 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_8      0x01000000
++/* 16 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_16     0x02000000
++/* 32 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_32     0x03000000
++/* 64 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_64     0x04000000
++/* 128 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_128    0x05000000
++/* 256 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_256    0x06000000
++/* 512 word */
++#define REG_UMI_TCR_MEMTYPE_PGSZ_512    0x07000000
++/* Page read access cycle / Burst write latency (n+2 / n+1) */
++#define REG_UMI_TCR_TPRC_TWLC_MASK      0x00f80000
++/* Bus turnaround cycle (n) */
++#define REG_UMI_TCR_TBTA_MASK           0x00070000
++/* Write pulse width cycle (n+1) */
++#define REG_UMI_TCR_TWP_MASK            0x0000f800
++/* Write recovery cycle (n+1) */
++#define REG_UMI_TCR_TWR_MASK            0x00000600
++/* Write address setup cycle (n+1) */
++#define REG_UMI_TCR_TAS_MASK            0x00000180
++/* Output enable delay cycle (n) */
++#define REG_UMI_TCR_TOE_MASK            0x00000060
++/* Read access cycle / Burst read latency (n+2 / n+1) */
++#define REG_UMI_TCR_TRC_TLC_MASK        0x0000001f
++
++/* REG_UMI_MMD_ICR bits */
++/* Flash write protection pin control */
++#define REG_UMI_MMD_ICR_FLASH_WP            0x8000
++/* Extend hold time for sram0, sram1 csn (39 MHz operation) */
++#define REG_UMI_MMD_ICR_XHCS                0x4000
++/* Enable SDRAM 2 interface control */
++#define REG_UMI_MMD_ICR_SDRAM2EN            0x2000
++/* Enable merge of flash banks 0/1 to 512 MBit bank */
++#define REG_UMI_MMD_ICR_INST512             0x1000
++/* Enable merge of flash banks 1/2 to 512 MBit bank */
++#define REG_UMI_MMD_ICR_DATA512             0x0800
++/* Enable SDRAM interface control */
++#define REG_UMI_MMD_ICR_SDRAMEN             0x0400
++/* Polarity of busy state of Burst Wait Signal */
++#define REG_UMI_MMD_ICR_WAITPOL             0x0200
++/* Enable burst clock stopped when not accessing external burst flash/sram */
++#define REG_UMI_MMD_ICR_BCLKSTOP            0x0100
++/* Enable the peri1_csn to replace flash1_csn in 512 Mb flash mode */
++#define REG_UMI_MMD_ICR_PERI1EN             0x0080
++/* Enable the peri2_csn to replace sdram_csn */
++#define REG_UMI_MMD_ICR_PERI2EN             0x0040
++/* Enable the peri3_csn to replace sdram2_csn */
++#define REG_UMI_MMD_ICR_PERI3EN             0x0020
++/* Enable sram bank1 for H/W controlled MRS */
++#define REG_UMI_MMD_ICR_MRSB1               0x0010
++/* Enable sram bank0 for H/W controlled MRS */
++#define REG_UMI_MMD_ICR_MRSB0               0x0008
++/* Polarity for assert3ed state of H/W controlled MRS */
++#define REG_UMI_MMD_ICR_MRSPOL              0x0004
++/* 0: S/W controllable ZZ/MRS/CRE/P-Mode pin */
++/* 1: H/W controlled ZZ/MRS/CRE/P-Mode, same timing as CS */
++#define REG_UMI_MMD_ICR_MRSMODE             0x0002
++/* MRS state for S/W controlled mode */
++#define REG_UMI_MMD_ICR_MRSSTATE            0x0001
++
++/* REG_UMI_NAND_TCR bits */
++/* Enable software to control CS */
++#define REG_UMI_NAND_TCR_CS_SWCTRL          0x80000000
++/* 16-bit nand wordsize if set */
++#define REG_UMI_NAND_TCR_WORD16             0x40000000
++/* Bus turnaround cycle (n) */
++#define REG_UMI_NAND_TCR_TBTA_MASK          0x00070000
++/* Write pulse width cycle (n+1) */
++#define REG_UMI_NAND_TCR_TWP_MASK           0x0000f800
++/* Write recovery cycle (n+1) */
++#define REG_UMI_NAND_TCR_TWR_MASK           0x00000600
++/* Write address setup cycle (n+1) */
++#define REG_UMI_NAND_TCR_TAS_MASK           0x00000180
++/* Output enable delay cycle (n) */
++#define REG_UMI_NAND_TCR_TOE_MASK           0x00000060
++/* Read access cycle (n+2) */
++#define REG_UMI_NAND_TCR_TRC_TLC_MASK       0x0000001f
++
++/* REG_UMI_NAND_RCSR bits */
++/* Status: Ready=1, Busy=0 */
++#define REG_UMI_NAND_RCSR_RDY               0x02
++/* Keep CS asserted during operation */
++#define REG_UMI_NAND_RCSR_CS_ASSERTED       0x01
++
++/* REG_UMI_NAND_ECC_CSR bits */
++/* Interrupt status - read-only */
++#define REG_UMI_NAND_ECC_CSR_NANDINT        0x80000000
++/* Read: Status of ECC done, Write: clear ECC interrupt */
++#define REG_UMI_NAND_ECC_CSR_ECCINT_RAW     0x00800000
++/* Read: Status of R/B, Write: clear R/B interrupt */
++#define REG_UMI_NAND_ECC_CSR_RBINT_RAW      0x00400000
++/* 1 = Enable ECC Interrupt */
++#define REG_UMI_NAND_ECC_CSR_ECCINT_ENABLE  0x00008000
++/* 1 = Assert interrupt at rising edge of R/B_ */
++#define REG_UMI_NAND_ECC_CSR_RBINT_ENABLE   0x00004000
++/* Calculate ECC by 0=512 bytes, 1=256 bytes */
++#define REG_UMI_NAND_ECC_CSR_256BYTE        0x00000080
++/* Enable ECC in hardware */
++#define REG_UMI_NAND_ECC_CSR_ECC_ENABLE     0x00000001
++
++/* REG_UMI_BCH_CTRL_STATUS bits */
++/* Shift to Indicate Number of correctable errors detected */
++#define REG_UMI_BCH_CTRL_STATUS_NB_CORR_ERROR_SHIFT 20
++/* Indicate Number of correctable errors detected */
++#define REG_UMI_BCH_CTRL_STATUS_NB_CORR_ERROR 0x00F00000
++/* Indicate Errors detected during read but uncorrectable */
++#define REG_UMI_BCH_CTRL_STATUS_UNCORR_ERR    0x00080000
++/* Indicate Errors detected during read and are correctable */
++#define REG_UMI_BCH_CTRL_STATUS_CORR_ERR      0x00040000
++/* Flag indicates BCH's ECC status of read process are valid */
++#define REG_UMI_BCH_CTRL_STATUS_RD_ECC_VALID  0x00020000
++/* Flag indicates BCH's ECC status of write process are valid */
++#define REG_UMI_BCH_CTRL_STATUS_WR_ECC_VALID  0x00010000
++/* Pause ECC calculation */
++#define REG_UMI_BCH_CTRL_STATUS_PAUSE_ECC_DEC 0x00000010
++/* Enable Interrupt */
++#define REG_UMI_BCH_CTRL_STATUS_INT_EN        0x00000004
++/* Enable ECC during read */
++#define REG_UMI_BCH_CTRL_STATUS_ECC_RD_EN     0x00000002
++/* Enable ECC during write */
++#define REG_UMI_BCH_CTRL_STATUS_ECC_WR_EN     0x00000001
++/* Mask for location */
++#define REG_UMI_BCH_ERR_LOC_MASK              0x00001FFF
++/* location within a byte */
++#define REG_UMI_BCH_ERR_LOC_BYTE              0x00000007
++/* location within a word */
++#define REG_UMI_BCH_ERR_LOC_WORD              0x00000018
++/* location within a page (512 byte) */
++#define REG_UMI_BCH_ERR_LOC_PAGE              0x00001FE0
++#define REG_UMI_BCH_ERR_LOC_ADDR(index)     (__REG32(HW_UMI_BASE + 0x64 + (index / 2)*4) >> ((index % 2) * 16))
++#endif
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 2fda0b6..f45a8ad 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -203,6 +203,30 @@ config MTD_NAND_S3C2410_CLKSTOP
+ 	  when the is NAND chip selected or released, but will save
+ 	  approximately 5mA of power when there is nothing happening.
+ 
++config MTD_NAND_BCM_UMI
++	tristate "NAND Flash support for BCM Reference Boards"
++	depends on ARCH_BCMRING && MTD_NAND
++	help
++	  This enables the NAND flash controller on the BCM UMI block.
++
++	  No board specfic support is done by this driver, each board
++	  must advertise a platform_device for the driver to attach.
++
++config MTD_NAND_BCM_UMI_HWCS
++	bool "BCM UMI NAND Hardware CS"
++	depends on MTD_NAND_BCM_UMI
++	help
++	  Enable the use of the BCM UMI block's internal CS using NAND.
++	  This should only be used if you know the external NAND CS can toggle.
++
++config MTD_NAND_BCM_UMI_HWECC
++	bool "BCM UMI NAND Hardware ECC"
++	default y
++	depends on MTD_NAND_BCM_UMI
++	help
++	  Enable the use of the internal ECC generator of BCM UMI block when
++	  using NAND.
++
+ config MTD_NAND_DISKONCHIP
+ 	tristate "DiskOnChip 2000, Millennium and Millennium Plus (NAND reimplementation) (EXPERIMENTAL)"
+ 	depends on EXPERIMENTAL
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index 6950d3d..460a1f3 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -42,5 +42,6 @@ obj-$(CONFIG_MTD_NAND_SOCRATES)		+= socrates_nand.o
+ obj-$(CONFIG_MTD_NAND_TXX9NDFMC)	+= txx9ndfmc.o
+ obj-$(CONFIG_MTD_NAND_W90P910)		+= w90p910_nand.o
+ obj-$(CONFIG_MTD_NAND_NOMADIK)		+= nomadik_nand.o
++obj-$(CONFIG_MTD_NAND_BCM_UMI)		+= bcm_umi_nand.o nand_bcm_umi.o
+ 
+ nand-objs := nand_base.o nand_bbt.o
+diff --git a/drivers/mtd/nand/bcm_umi_bch.c b/drivers/mtd/nand/bcm_umi_bch.c
+new file mode 100644
+index 0000000..a930666
+--- /dev/null
++++ b/drivers/mtd/nand/bcm_umi_bch.c
+@@ -0,0 +1,213 @@
++/*****************************************************************************
++* Copyright 2004 - 2009 Broadcom Corporation.  All rights reserved.
++*
++* Unless you and Broadcom execute a separate written software license
++* agreement governing use of this software, this software is licensed to you
++* under the terms of the GNU General Public License version 2, available at
++* http://www.broadcom.com/licenses/GPLv2.php (the "GPL").
++*
++* Notwithstanding the above, under no circumstances may you combine this
++* software in any way with any other Broadcom software provided under a
++* license other than the GPL, without Broadcom's express prior written
++* consent.
++*****************************************************************************/
++
++/* ---- Include Files ---------------------------------------------------- */
++#include "nand_bcm_umi.h"
++
++/* ---- External Variable Declarations ----------------------------------- */
++/* ---- External Function Prototypes ------------------------------------- */
++/* ---- Public Variables ------------------------------------------------- */
++/* ---- Private Constants and Types -------------------------------------- */
++
++/* ---- Private Function Prototypes -------------------------------------- */
++static int bcm_umi_bch_read_page_hwecc(struct mtd_info *mtd,
++	struct nand_chip *chip, uint8_t *buf, int page);
++static void bcm_umi_bch_write_page_hwecc(struct mtd_info *mtd,
++	struct nand_chip *chip, const uint8_t *buf);
++
++/* ---- Private Variables ------------------------------------------------ */
++
++/*
++** nand_hw_eccoob
++** New oob placement block for use with hardware ecc generation.
++*/
++static struct nand_ecclayout nand_hw_eccoob_512 = {
++	/* Reserve 5 for BI indicator */
++	.oobfree = {
++#if (NAND_ECC_NUM_BYTES > 3)
++		    {.offset = 0, .length = 2}
++#else
++		    {.offset = 0, .length = 5},
++		    {.offset = 6, .length = 7}
++#endif
++		    }
++};
++
++/*
++** We treat the OOB for a 2K page as if it were 4 512 byte oobs,
++** except the BI is at byte 0.
++*/
++static struct nand_ecclayout nand_hw_eccoob_2048 = {
++	/* Reserve 0 as BI indicator */
++	.oobfree = {
++#if (NAND_ECC_NUM_BYTES > 10)
++		    {.offset = 1, .length = 2},
++#elif (NAND_ECC_NUM_BYTES > 7)
++		    {.offset = 1, .length = 5},
++		    {.offset = 16, .length = 6},
++		    {.offset = 32, .length = 6},
++		    {.offset = 48, .length = 6}
++#else
++		    {.offset = 1, .length = 8},
++		    {.offset = 16, .length = 9},
++		    {.offset = 32, .length = 9},
++		    {.offset = 48, .length = 9}
++#endif
++		    }
++};
++
++/* We treat the OOB for a 4K page as if it were 8 512 byte oobs,
++ * except the BI is at byte 0. */
++static struct nand_ecclayout nand_hw_eccoob_4096 = {
++	/* Reserve 0 as BI indicator */
++	.oobfree = {
++#if (NAND_ECC_NUM_BYTES > 10)
++		    {.offset = 1, .length = 2},
++		    {.offset = 16, .length = 3},
++		    {.offset = 32, .length = 3},
++		    {.offset = 48, .length = 3},
++		    {.offset = 64, .length = 3},
++		    {.offset = 80, .length = 3},
++		    {.offset = 96, .length = 3},
++		    {.offset = 112, .length = 3}
++#else
++		    {.offset = 1, .length = 5},
++		    {.offset = 16, .length = 6},
++		    {.offset = 32, .length = 6},
++		    {.offset = 48, .length = 6},
++		    {.offset = 64, .length = 6},
++		    {.offset = 80, .length = 6},
++		    {.offset = 96, .length = 6},
++		    {.offset = 112, .length = 6}
++#endif
++		    }
++};
++
++/* ---- Private Functions ------------------------------------------------ */
++/* ==== Public Functions ================================================= */
++
++/****************************************************************************
++*
++*  bcm_umi_bch_read_page_hwecc - hardware ecc based page read function
++*  @mtd:	mtd info structure
++*  @chip:	nand chip info structure
++*  @buf:	buffer to store read data
++*
++***************************************************************************/
++static int bcm_umi_bch_read_page_hwecc(struct mtd_info *mtd,
++				       struct nand_chip *chip, uint8_t * buf,
++						 int page)
++{
++	int sectorIdx = 0;
++	int eccsize = chip->ecc.size;
++	int eccsteps = chip->ecc.steps;
++	uint8_t *datap = buf;
++	uint8_t eccCalc[NAND_ECC_NUM_BYTES];
++	int sectorOobSize = mtd->oobsize / eccsteps;
++	int stat;
++
++	for (sectorIdx = 0; sectorIdx < eccsteps;
++			sectorIdx++, datap += eccsize) {
++		if (sectorIdx > 0) {
++			/* Seek to page location within sector */
++			chip->cmdfunc(mtd, NAND_CMD_RNDOUT, sectorIdx * eccsize,
++				      -1);
++		}
++
++		/* Enable hardware ECC before reading the buf */
++		nand_bcm_umi_bch_enable_read_hwecc();
++
++		/* Read in data */
++		bcm_umi_nand_read_buf(mtd, datap, eccsize);
++
++		/* Pause hardware ECC after reading the buf */
++		nand_bcm_umi_bch_pause_read_ecc_calc();
++
++		/* Read the OOB ECC */
++		chip->cmdfunc(mtd, NAND_CMD_RNDOUT,
++			      mtd->writesize + sectorIdx * sectorOobSize, -1);
++		nand_bcm_umi_bch_read_oobEcc(mtd->writesize, eccCalc,
++					     NAND_ECC_NUM_BYTES,
++					     chip->oob_poi +
++					     sectorIdx * sectorOobSize);
++
++		/* Correct any ECC detected errors */
++		stat =
++		    nand_bcm_umi_bch_correct_page(datap, eccCalc,
++						  NAND_ECC_NUM_BYTES);
++
++		/* Update Stats */
++		if (stat < 0) {
++#if defined(NAND_BCM_UMI_DEBUG)
++			printk(KERN_WARNING "%s uncorr_err sectorIdx=%d\n",
++			       __func__, sectorIdx);
++			printk(KERN_WARNING
++			       "%s data %02x %02x %02x %02x "
++					 "%02x %02x %02x %02x\n",
++			       __func__, datap[0], datap[1], datap[2], datap[3],
++			       datap[4], datap[5], datap[6], datap[7]);
++			printk(KERN_WARNING
++			       "%s ecc  %02x %02x %02x %02x "
++					 "%02x %02x %02x %02x %02x %02x "
++					 "%02x %02x %02x\n",
++			       __func__, eccCalc[0], eccCalc[1], eccCalc[2],
++			       eccCalc[3], eccCalc[4], eccCalc[5], eccCalc[6],
++			       eccCalc[7], eccCalc[8], eccCalc[9], eccCalc[10],
++			       eccCalc[11], eccCalc[12]);
++			BUG();
++#endif
++			mtd->ecc_stats.failed++;
++		} else {
++#if defined(NAND_BCM_UMI_DEBUG)
++			if (stat > 0) {
++				printk(KERN_INFO
++				       "%s %d correctable_errors detected\n",
++				       __func__, stat);
++			}
++#endif
++			mtd->ecc_stats.corrected += stat;
++		}
++	}
++	return 0;
++}
++
++/****************************************************************************
++*
++*  bcm_umi_bch_write_page_hwecc - hardware ecc based page write function
++*  @mtd:	mtd info structure
++*  @chip:	nand chip info structure
++*  @buf:	data buffer
++*
++***************************************************************************/
++static void bcm_umi_bch_write_page_hwecc(struct mtd_info *mtd,
++	struct nand_chip *chip, const uint8_t *buf)
++{
++	int sectorIdx = 0;
++	int eccsize = chip->ecc.size;
++	int eccsteps = chip->ecc.steps;
++	const uint8_t *datap = buf;
++	uint8_t *oobp = chip->oob_poi;
++	int sectorOobSize = mtd->oobsize / eccsteps;
++
++	for (sectorIdx = 0; sectorIdx < eccsteps;
++	     sectorIdx++, datap += eccsize, oobp += sectorOobSize) {
++		/* Enable hardware ECC before writing the buf */
++		nand_bcm_umi_bch_enable_write_hwecc();
++		bcm_umi_nand_write_buf(mtd, datap, eccsize);
++		nand_bcm_umi_bch_write_oobEcc(mtd->writesize, oobp,
++					      NAND_ECC_NUM_BYTES);
++	}
++
++	bcm_umi_nand_write_buf(mtd, chip->oob_poi, mtd->oobsize);
++}
+diff --git a/drivers/mtd/nand/bcm_umi_nand.c b/drivers/mtd/nand/bcm_umi_nand.c
+new file mode 100644
+index 0000000..c9c538f
+--- /dev/null
++++ b/drivers/mtd/nand/bcm_umi_nand.c
+@@ -0,0 +1,592 @@
++/*****************************************************************************
++* Copyright 2004 - 2009 Broadcom Corporation.  All rights reserved.
++*
++* Unless you and Broadcom execute a separate written software license
++* agreement governing use of this software, this software is licensed to you
++* under the terms of the GNU General Public License version 2, available at
++* http://www.broadcom.com/licenses/GPLv2.php (the "GPL").
++*
++* Notwithstanding the above, under no circumstances may you combine this
++* software in any way with any other Broadcom software provided under a
++* license other than the GPL, without Broadcom's express prior written
++* consent.
++*****************************************************************************/
++
++/* ---- Include Files ---------------------------------------------------- */
++#include <linux/version.h>
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/string.h>
++#include <linux/ioport.h>
++#include <linux/device.h>
++#include <linux/delay.h>
++#include <linux/err.h>
++#include <linux/io.h>
++#include <linux/platform_device.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/nand.h>
++#include <linux/mtd/nand_ecc.h>
++#include <linux/mtd/partitions.h>
++
++#include <asm/mach-types.h>
++#include <asm/system.h>
++
++#include <mach/reg_nand.h>
++#include <mach/reg_umi.h>
++
++#include "nand_bcm_umi.h"
++
++#include <mach/memory_settings.h>
++
++#define USE_DMA 1
++#include <mach/dma.h>
++#include <linux/dma-mapping.h>
++#include <linux/completion.h>
++
++#ifdef CONFIG_MTD_NAND_BCM_UMI_HWECC
++static int use_hardware_ecc = 1;
++#else
++static int use_hardware_ecc;
++#endif
++
++/* ---- External Variable Declarations ----------------------------------- */
++/* ---- External Function Prototypes ------------------------------------- */
++/* ---- Public Variables ------------------------------------------------- */
++/* ---- Private Constants and Types -------------------------------------- */
++static char gBanner[] __initdata = KERN_INFO "BCM UMI MTD NAND Driver: 1.00\n";
++
++#ifdef CONFIG_MTD_PARTITIONS
++const char *part_probes[] = { "cmdlinepart", NULL };
++#endif
++
++#if NAND_ECC_BCH
++static uint8_t scan_ff_pattern[] = { 0xff };
++
++static struct nand_bbt_descr largepage_bbt = {
++	.options = 0,
++	.offs = 0,
++	.len = 1,
++	.pattern = scan_ff_pattern
++};
++#endif
++
++/*
++** Preallocate a buffer to avoid having to do this every dma operation.
++** This is the size of the preallocated coherent DMA buffer.
++*/
++#if USE_DMA
++#define DMA_MIN_BUFLEN	512
++#define DMA_MAX_BUFLEN	PAGE_SIZE
++#define USE_DIRECT_IO(len)	(((len) < DMA_MIN_BUFLEN) || \
++	((len) > DMA_MAX_BUFLEN))
++
++/*
++ * The current NAND data space goes from 0x80001900 to 0x80001FFF,
++ * which is only 0x700 = 1792 bytes long. This is too small for 2K, 4K page
++ * size NAND flash. Need to break the DMA down to multiple 1Ks.
++ *
++ * Need to make sure REG_NAND_DATA_PADDR + DMA_MAX_LEN < 0x80002000
++ */
++#define DMA_MAX_LEN             1024
++
++#else /* !USE_DMA */
++#define DMA_MIN_BUFLEN          0
++#define DMA_MAX_BUFLEN          0
++#define USE_DIRECT_IO(len)      1
++#endif
++/* ---- Private Function Prototypes -------------------------------------- */
++static void bcm_umi_nand_read_buf(struct mtd_info *mtd, u_char * buf, int len);
++static void bcm_umi_nand_write_buf(struct mtd_info *mtd, const u_char * buf,
++				   int len);
++
++/* ---- Private Variables ------------------------------------------------ */
++static struct mtd_info *board_mtd;
++static void __iomem *bcm_umi_io_base;
++static void *virtPtr;
++static dma_addr_t physPtr;
++static struct completion nand_comp;
++
++/* ---- Private Functions ------------------------------------------------ */
++#if NAND_ECC_BCH
++#include "bcm_umi_bch.c"
++#else
++#include "bcm_umi_hamming.c"
++#endif
++
++#if USE_DMA
++
++/* Handler called when the DMA finishes. */
++static void nand_dma_handler(DMA_Device_t dev, int reason, void *userData)
++{
++	complete(&nand_comp);
++}
++
++static int nand_dma_init(void)
++{
++	int rc;
++
++	rc = dma_set_device_handler(DMA_DEVICE_NAND_MEM_TO_MEM,
++		nand_dma_handler, NULL);
++	if (rc != 0) {
++		printk(KERN_ERR "dma_set_device_handler failed: %d\n", rc);
++		return rc;
++	}
++
++	virtPtr =
++	    dma_alloc_coherent(NULL, DMA_MAX_BUFLEN, &physPtr, GFP_KERNEL);
++	if (virtPtr == NULL) {
++		printk(KERN_ERR "NAND - Failed to allocate memory for DMA buffer\n");
++		return -ENOMEM;
++	}
++
++	return 0;
++}
++
++static void nand_dma_term(void)
++{
++	if (virtPtr != NULL)
++		dma_free_coherent(NULL, DMA_MAX_BUFLEN, virtPtr, physPtr);
++}
++
++static void nand_dma_read(void *buf, int len)
++{
++	int offset = 0;
++	int tmp_len = 0;
++	int len_left = len;
++	DMA_Handle_t hndl;
++
++	if (virtPtr == NULL)
++		panic("nand_dma_read: virtPtr == NULL\n");
++
++	if ((void *)physPtr == NULL)
++		panic("nand_dma_read: physPtr == NULL\n");
++
++	hndl = dma_request_channel(DMA_DEVICE_NAND_MEM_TO_MEM);
++	if (hndl < 0) {
++		printk(KERN_ERR
++		       "nand_dma_read: unable to allocate dma channel: %d\n",
++		       (int)hndl);
++		panic("\n");
++	}
++
++	while (len_left > 0) {
++		if (len_left > DMA_MAX_LEN) {
++			tmp_len = DMA_MAX_LEN;
++			len_left -= DMA_MAX_LEN;
++		} else {
++			tmp_len = len_left;
++			len_left = 0;
++		}
++
++		init_completion(&nand_comp);
++		dma_transfer_mem_to_mem(hndl, REG_NAND_DATA_PADDR,
++					physPtr + offset, tmp_len);
++		wait_for_completion(&nand_comp);
++
++		offset += tmp_len;
++	}
++
++	dma_free_channel(hndl);
++
++	if (buf != NULL)
++		memcpy(buf, virtPtr, len);
++}
++
++static void nand_dma_write(const void *buf, int len)
++{
++	int offset = 0;
++	int tmp_len = 0;
++	int len_left = len;
++	DMA_Handle_t hndl;
++
++	if (buf == NULL)
++		panic("nand_dma_write: buf == NULL\n");
++
++	if (virtPtr == NULL)
++		panic("nand_dma_write: virtPtr == NULL\n");
++
++	if ((void *)physPtr == NULL)
++		panic("nand_dma_write: physPtr == NULL\n");
++
++	memcpy(virtPtr, buf, len);
++
++
++	hndl = dma_request_channel(DMA_DEVICE_NAND_MEM_TO_MEM);
++	if (hndl < 0) {
++		printk(KERN_ERR
++		       "nand_dma_write: unable to allocate dma channel: %d\n",
++		       (int)hndl);
++		panic("\n");
++	}
++
++	while (len_left > 0) {
++		if (len_left > DMA_MAX_LEN) {
++			tmp_len = DMA_MAX_LEN;
++			len_left -= DMA_MAX_LEN;
++		} else {
++			tmp_len = len_left;
++			len_left = 0;
++		}
++
++		init_completion(&nand_comp);
++		dma_transfer_mem_to_mem(hndl, physPtr + offset,
++					REG_NAND_DATA_PADDR, tmp_len);
++		wait_for_completion(&nand_comp);
++
++		offset += tmp_len;
++	}
++
++	dma_free_channel(hndl);
++}
++
++#endif
++
++static int nand_dev_ready(struct mtd_info *mtd)
++{
++	return nand_bcm_umi_dev_ready();
++}
++
++/****************************************************************************
++*
++*  bcm_umi_nand_inithw
++*
++*   This routine does the necessary hardware (board-specific)
++*   initializations.  This includes setting up the timings, etc.
++*
++***************************************************************************/
++int bcm_umi_nand_inithw(void)
++{
++	/* Configure nand timing parameters */
++	REG_UMI_NAND_TCR &= ~0x7ffff;
++	REG_UMI_NAND_TCR |= HW_CFG_NAND_TCR;
++
++#if !defined(CONFIG_MTD_NAND_BCM_UMI_HWCS)
++	/* enable software control of CS */
++	REG_UMI_NAND_TCR |= REG_UMI_NAND_TCR_CS_SWCTRL;
++#endif
++
++	/* keep NAND chip select asserted */
++	REG_UMI_NAND_RCSR |= REG_UMI_NAND_RCSR_CS_ASSERTED;
++
++	REG_UMI_NAND_TCR &= ~REG_UMI_NAND_TCR_WORD16;
++	/* enable writes to flash */
++	REG_UMI_MMD_ICR |= REG_UMI_MMD_ICR_FLASH_WP;
++
++	writel(NAND_CMD_RESET, bcm_umi_io_base + REG_NAND_CMD_OFFSET);
++	nand_bcm_umi_wait_till_ready();
++
++#if NAND_ECC_BCH
++	nand_bcm_umi_bch_config_ecc(NAND_ECC_NUM_BYTES);
++#endif
++
++	return 0;
++}
++
++/* Used to turn latch the proper register for access. */
++static void bcm_umi_nand_hwcontrol(struct mtd_info *mtd, int cmd,
++				   unsigned int ctrl)
++{
++	/* send command to hardware */
++	struct nand_chip *chip = mtd->priv;
++	if (ctrl & NAND_CTRL_CHANGE) {
++		if (ctrl & NAND_CLE) {
++			chip->IO_ADDR_W = bcm_umi_io_base + REG_NAND_CMD_OFFSET;
++			goto CMD;
++		}
++		if (ctrl & NAND_ALE) {
++			chip->IO_ADDR_W =
++			    bcm_umi_io_base + REG_NAND_ADDR_OFFSET;
++			goto CMD;
++		}
++		chip->IO_ADDR_W = bcm_umi_io_base + REG_NAND_DATA8_OFFSET;
++	}
++
++CMD:
++	/* Send command to chip directly */
++	if (cmd != NAND_CMD_NONE)
++		writeb(cmd, chip->IO_ADDR_W);
++}
++
++static void bcm_umi_nand_write_buf(struct mtd_info *mtd, const u_char * buf,
++				   int len)
++{
++	if (USE_DIRECT_IO(len)) {
++		/* Do it the old way if the buffer is small or too large.
++		 * Probably quicker than starting and checking dma. */
++		int i;
++		struct nand_chip *this = mtd->priv;
++
++		for (i = 0; i < len; i++)
++			writeb(buf[i], this->IO_ADDR_W);
++	}
++#if USE_DMA
++	else
++		nand_dma_write(buf, len);
++#endif
++}
++
++static void bcm_umi_nand_read_buf(struct mtd_info *mtd, u_char * buf, int len)
++{
++	if (USE_DIRECT_IO(len)) {
++		int i;
++		struct nand_chip *this = mtd->priv;
++
++		for (i = 0; i < len; i++)
++			buf[i] = readb(this->IO_ADDR_R);
++	}
++#if USE_DMA
++	else
++		nand_dma_read(buf, len);
++#endif
++}
++
++static uint8_t readbackbuf[NAND_MAX_PAGESIZE];
++static int bcm_umi_nand_verify_buf(struct mtd_info *mtd, const u_char * buf,
++				   int len)
++{
++	/*
++	 * Try to readback page with ECC correction. This is necessary
++	 * for MLC parts which may have permanently stuck bits.
++	 */
++	struct nand_chip *chip = mtd->priv;
++	int ret = chip->ecc.read_page(mtd, chip, readbackbuf, 0);
++	if (ret < 0)
++		return -EFAULT;
++	else {
++		if (memcmp(readbackbuf, buf, len) == 0)
++			return 0;
++
++		return -EFAULT;
++	}
++	return 0;
++}
++
++static int bcm_umi_nand_probe(struct platform_device *pdev)
++{
++	struct nand_chip *this;
++	struct resource *r;
++	int err = 0;
++
++	printk(gBanner);
++
++	/* Allocate memory for MTD device structure and private data */
++	board_mtd =
++	    kmalloc(sizeof(struct mtd_info) + sizeof(struct nand_chip),
++		    GFP_KERNEL);
++	if (!board_mtd) {
++		printk(KERN_WARNING
++		       "Unable to allocate NAND MTD device structure.\n");
++		return -ENOMEM;
++	}
++
++	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++
++	if (!r)
++		return -ENXIO;
++
++	/* map physical adress */
++	bcm_umi_io_base = ioremap(r->start, r->end - r->start + 1);
++
++	if (!bcm_umi_io_base) {
++		printk(KERN_ERR "ioremap to access BCM UMI NAND chip failed\n");
++		kfree(board_mtd);
++		return -EIO;
++	}
++
++	/* Get pointer to private data */
++	this = (struct nand_chip *)(&board_mtd[1]);
++
++	/* Initialize structures */
++	memset((char *)board_mtd, 0, sizeof(struct mtd_info));
++	memset((char *)this, 0, sizeof(struct nand_chip));
++
++	/* Link the private data with the MTD structure */
++	board_mtd->priv = this;
++
++	/* Initialize the NAND hardware.  */
++	if (bcm_umi_nand_inithw() < 0) {
++		printk(KERN_ERR "BCM UMI NAND chip could not be initialized\n");
++		iounmap(bcm_umi_io_base);
++		kfree(board_mtd);
++		return -EIO;
++	}
++
++	/* Set address of NAND IO lines */
++	this->IO_ADDR_W = bcm_umi_io_base + REG_NAND_DATA8_OFFSET;
++	this->IO_ADDR_R = bcm_umi_io_base + REG_NAND_DATA8_OFFSET;
++
++	/* Set command delay time, see datasheet for correct value */
++	this->chip_delay = 0;
++	/* Assign the device ready function, if available */
++	this->dev_ready = nand_dev_ready;
++	this->options = 0;
++
++	this->write_buf = bcm_umi_nand_write_buf;
++	this->read_buf = bcm_umi_nand_read_buf;
++	this->verify_buf = bcm_umi_nand_verify_buf;
++
++	this->cmd_ctrl = bcm_umi_nand_hwcontrol;
++	if (use_hardware_ecc) {
++		this->ecc.mode = NAND_ECC_HW;
++		this->ecc.size = 512;
++		this->ecc.bytes = NAND_ECC_NUM_BYTES;
++#if NAND_ECC_BCH
++		this->ecc.read_page = bcm_umi_bch_read_page_hwecc;
++		this->ecc.write_page = bcm_umi_bch_write_page_hwecc;
++#else
++		this->ecc.correct = nand_correct_data512;
++		this->ecc.calculate = bcm_umi_hamming_get_hw_ecc;
++		this->ecc.hwctl = bcm_umi_hamming_enable_hwecc;
++#endif
++	} else {
++		this->ecc.mode = NAND_ECC_SOFT;
++	}
++
++#if USE_DMA
++	err = nand_dma_init();
++	if (err != 0)
++		return err;
++#endif
++
++	/* Figure out the size of the device that we have.
++	 * We need to do this to figure out which ECC
++	 * layout we'll be using.
++	 */
++
++	err = nand_scan_ident(board_mtd, 1);
++	if (err) {
++		printk(KERN_ERR "nand_scan failed: %d\n", err);
++		iounmap(bcm_umi_io_base);
++		kfree(board_mtd);
++		return err;
++	}
++
++	/* Now that we know the nand size, we can setup the ECC layout */
++
++	if (use_hardware_ecc) {
++		switch (board_mtd->writesize) {	/* writesize is the pagesize */
++		case 4096:
++			this->ecc.layout = &nand_hw_eccoob_4096;
++			break;
++		case 2048:
++			this->ecc.layout = &nand_hw_eccoob_2048;
++			break;
++		case 512:
++			this->ecc.layout = &nand_hw_eccoob_512;
++			break;
++		default:
++			{
++				printk(KERN_ERR "NAND - Unrecognized pagesize: %d\n",
++						 board_mtd->writesize);
++				return -EINVAL;
++			}
++		}
++	}
++
++#if NAND_ECC_BCH
++	if (board_mtd->writesize > 512) {
++		if (this->options & NAND_USE_FLASH_BBT)
++			largepage_bbt.options = NAND_BBT_SCAN2NDPAGE;
++		this->badblock_pattern = &largepage_bbt;
++	}
++#endif
++
++	/* Now finish off the scan, now that ecc.layout has been initialized. */
++
++	err = nand_scan_tail(board_mtd);
++	if (err) {
++		printk(KERN_ERR "nand_scan failed: %d\n", err);
++		iounmap(bcm_umi_io_base);
++		kfree(board_mtd);
++		return err;
++	}
++
++	/* Register the partitions */
++	{
++		int nr_partitions;
++		struct mtd_partition *partition_info;
++
++		board_mtd->name = "bcm_umi-nand";
++		nr_partitions =
++		    parse_mtd_partitions(board_mtd, part_probes,
++					 &partition_info, 0);
++
++		if (nr_partitions <= 0) {
++			printk(KERN_ERR "BCM UMI NAND: Too few partitions - %d\n",
++			       nr_partitions);
++			iounmap(bcm_umi_io_base);
++			kfree(board_mtd);
++			return -EIO;
++		}
++		add_mtd_partitions(board_mtd, partition_info, nr_partitions);
++	}
++
++	/* Return happy */
++	return 0;
++}
++
++static int bcm_umi_nand_remove(struct platform_device *pdev)
++{
++#if USE_DMA
++	nand_dma_term();
++#endif
++
++	/* Release resources, unregister device */
++	nand_release(board_mtd);
++
++	/* unmap physical adress */
++	iounmap(bcm_umi_io_base);
++
++	/* Free the MTD device structure */
++	kfree(board_mtd);
++
++	return 0;
++}
++
++#ifdef CONFIG_PM
++static int bcm_umi_nand_suspend(struct platform_device *pdev,
++				pm_message_t state)
++{
++	printk(KERN_ERR "MTD NAND suspend is being called\n");
++	return 0;
++}
++
++static int bcm_umi_nand_resume(struct platform_device *pdev)
++{
++	printk(KERN_ERR "MTD NAND resume is being called\n");
++	return 0;
++}
++#else
++#define bcm_umi_nand_suspend   NULL
++#define bcm_umi_nand_resume    NULL
++#endif
++
++static struct platform_driver nand_driver = {
++	.driver = {
++		   .name = "bcm-nand",
++		   .owner = THIS_MODULE,
++		   },
++	.probe = bcm_umi_nand_probe,
++	.remove = bcm_umi_nand_remove,
++	.suspend = bcm_umi_nand_suspend,
++	.resume = bcm_umi_nand_resume,
++};
++
++static int __init nand_init(void)
++{
++	return platform_driver_register(&nand_driver);
++}
++
++static void __exit nand_exit(void)
++{
++	platform_driver_unregister(&nand_driver);
++}
++
++module_init(nand_init);
++module_exit(nand_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Broadcom");
++MODULE_DESCRIPTION("BCM UMI MTD NAND driver");
+diff --git a/drivers/mtd/nand/nand_bcm_umi.c b/drivers/mtd/nand/nand_bcm_umi.c
+new file mode 100644
+index 0000000..46a6bc9
+--- /dev/null
++++ b/drivers/mtd/nand/nand_bcm_umi.c
+@@ -0,0 +1,149 @@
++/*****************************************************************************
++* Copyright 2004 - 2009 Broadcom Corporation.  All rights reserved.
++*
++* Unless you and Broadcom execute a separate written software license
++* agreement governing use of this software, this software is licensed to you
++* under the terms of the GNU General Public License version 2, available at
++* http://www.broadcom.com/licenses/GPLv2.php (the "GPL").
++*
++* Notwithstanding the above, under no circumstances may you combine this
++* software in any way with any other Broadcom software provided under a
++* license other than the GPL, without Broadcom's express prior written
++* consent.
++*****************************************************************************/
++
++/* ---- Include Files ---------------------------------------------------- */
++#include <mach/reg_umi.h>
++#include "nand_bcm_umi.h"
++#ifdef BOOT0_BUILD
++#include <uart.h>
++#endif
++
++/* ---- External Variable Declarations ----------------------------------- */
++/* ---- External Function Prototypes ------------------------------------- */
++/* ---- Public Variables ------------------------------------------------- */
++/* ---- Private Constants and Types -------------------------------------- */
++/* ---- Private Function Prototypes -------------------------------------- */
++/* ---- Private Variables ------------------------------------------------ */
++/* ---- Private Functions ------------------------------------------------ */
++
++#if NAND_ECC_BCH
++/****************************************************************************
++*  nand_bch_ecc_flip_bit - Routine to flip an errored bit
++*
++*  PURPOSE:
++*     This is a helper routine that flips the bit (0 -> 1 or 1 -> 0) of the
++*     errored bit specified
++*
++*  PARAMETERS:
++*     datap - Container that holds the 512 byte data
++*     errorLocation - Location of the bit that needs to be flipped
++*
++*  RETURNS:
++*     None
++****************************************************************************/
++static void nand_bcm_umi_bch_ecc_flip_bit(uint8_t *datap, int errorLocation)
++{
++	int locWithinAByte = (errorLocation & REG_UMI_BCH_ERR_LOC_BYTE) >> 0;
++	int locWithinAWord = (errorLocation & REG_UMI_BCH_ERR_LOC_WORD) >> 3;
++	int locWithinAPage = (errorLocation & REG_UMI_BCH_ERR_LOC_PAGE) >> 5;
++
++	uint8_t errorByte = 0;
++	uint8_t byteMask = 1 << locWithinAByte;
++
++	/* BCH uses big endian, need to change the location
++	 * bits to little endian */
++	locWithinAWord = 3 - locWithinAWord;
++
++	errorByte = datap[locWithinAPage * sizeof(uint32_t) + locWithinAWord];
++
++#ifdef BOOT0_BUILD
++	puthexs("\nECC Correct Offset: ",
++		locWithinAPage * sizeof(uint32_t) + locWithinAWord);
++	puthexs(" errorByte:", errorByte);
++	puthex8(" Bit: ", locWithinAByte);
++#endif
++
++	if (errorByte & byteMask) {
++		/* bit needs to be cleared */
++		errorByte &= ~byteMask;
++	} else {
++		/* bit needs to be set */
++		errorByte |= byteMask;
++	}
++
++	/* write back the value with the fixed bit */
++	datap[locWithinAPage * sizeof(uint32_t) + locWithinAWord] = errorByte;
++}
++
++/****************************************************************************
++*  nand_correct_page_bch - Routine to correct bit errors when reading NAND
++*
++*  PURPOSE:
++*     This routine reads the BCH registers to determine if there are any bit
++*     errors during the read of the last 512 bytes of data + ECC bytes.  If
++*     errors exists, the routine fixes it.
++*
++*  PARAMETERS:
++*     datap - Container that holds the 512 byte data
++*
++*  RETURNS:
++*     0 or greater = Number of errors corrected
++*                    (No errors are found or errors have been fixed)
++*    -1 = Error(s) cannot be fixed
++****************************************************************************/
++int nand_bcm_umi_bch_correct_page(uint8_t *datap, uint8_t *readEccData,
++				  int numEccBytes)
++{
++	int numErrors;
++	int errorLocation;
++	int idx;
++	uint32_t regValue;
++
++	/* wait for read ECC to be valid */
++	regValue = nand_bcm_umi_bch_poll_read_ecc_calc();
++
++	/*
++	 * read the control status register to determine if there
++	 * are error'ed bits
++	 * see if errors are correctible
++	 */
++	if ((regValue & REG_UMI_BCH_CTRL_STATUS_UNCORR_ERR) > 0) {
++		int i;
++
++		for (i = 0; i < numEccBytes; i++) {
++			if (readEccData[i] != 0xff) {
++				/* errors cannot be fixed, return -1 */
++				return -1;
++			}
++		}
++		/* If ECC is unprogrammed then we can't correct,
++		 * assume everything OK */
++		return 0;
++	}
++
++	if ((regValue & REG_UMI_BCH_CTRL_STATUS_CORR_ERR) == 0) {
++		/* no errors */
++		return 0;
++	}
++
++	/*
++	 * Fix errored bits by doing the following:
++	 * 1. Read the number of errors in the control and status register
++	 * 2. Read the error location registers that corresponds to the number
++	 *    of errors reported
++	 * 3. Invert the bit in the data
++	 */
++	numErrors = (regValue & REG_UMI_BCH_CTRL_STATUS_NB_CORR_ERROR) >> 20;
++
++	for (idx = 0; idx < numErrors; idx++) {
++		errorLocation =
++		    REG_UMI_BCH_ERR_LOC_ADDR(idx) & REG_UMI_BCH_ERR_LOC_MASK;
++
++		/* Flip bit */
++		nand_bcm_umi_bch_ecc_flip_bit(datap, errorLocation);
++	}
++	/* Errors corrected */
++	return numErrors;
++}
++#endif
+diff --git a/drivers/mtd/nand/nand_bcm_umi.h b/drivers/mtd/nand/nand_bcm_umi.h
+new file mode 100644
+index 0000000..7cec2cd
+--- /dev/null
++++ b/drivers/mtd/nand/nand_bcm_umi.h
+@@ -0,0 +1,358 @@
++/*****************************************************************************
++* Copyright 2003 - 2009 Broadcom Corporation.  All rights reserved.
++*
++* Unless you and Broadcom execute a separate written software license
++* agreement governing use of this software, this software is licensed to you
++* under the terms of the GNU General Public License version 2, available at
++* http://www.broadcom.com/licenses/GPLv2.php (the "GPL").
++*
++* Notwithstanding the above, under no circumstances may you combine this
++* software in any way with any other Broadcom software provided under a
++* license other than the GPL, without Broadcom's express prior written
++* consent.
++*****************************************************************************/
++#ifndef NAND_BCM_UMI_H
++#define NAND_BCM_UMI_H
++
++/* ---- Include Files ---------------------------------------------------- */
++#include <mach/reg_umi.h>
++#include <mach/reg_nand.h>
++#include <cfg_global.h>
++
++/* ---- Constants and Types ---------------------------------------------- */
++#if (CFG_GLOBAL_CHIP_FAMILY == CFG_GLOBAL_CHIP_FAMILY_BCMRING)
++#define NAND_ECC_BCH (CFG_GLOBAL_CHIP_REV > 0xA0)
++#else
++#define NAND_ECC_BCH 0
++#endif
++
++#define CFG_GLOBAL_NAND_ECC_BCH_NUM_BYTES	13
++
++#if NAND_ECC_BCH
++#ifdef BOOT0_BUILD
++#define NAND_ECC_NUM_BYTES 13
++#else
++#define NAND_ECC_NUM_BYTES CFG_GLOBAL_NAND_ECC_BCH_NUM_BYTES
++#endif
++#else
++#define NAND_ECC_NUM_BYTES 3
++#endif
++
++#define NAND_DATA_ACCESS_SIZE 512
++
++/* ---- Variable Externs ------------------------------------------ */
++/* ---- Function Prototypes --------------------------------------- */
++int nand_bcm_umi_bch_correct_page(uint8_t *datap, uint8_t *readEccData,
++				  int numEccBytes);
++
++/* Check in device is ready */
++static inline int nand_bcm_umi_dev_ready(void)
++{
++	return REG_UMI_NAND_RCSR & REG_UMI_NAND_RCSR_RDY;
++}
++
++/* Wait until device is ready */
++static inline void nand_bcm_umi_wait_till_ready(void)
++{
++	while (nand_bcm_umi_dev_ready() == 0)
++		;
++}
++
++/* Enable Hamming ECC */
++static inline void nand_bcm_umi_hamming_enable_hwecc(void)
++{
++	/* disable and reset ECC, 512 byte page */
++	REG_UMI_NAND_ECC_CSR &= ~(REG_UMI_NAND_ECC_CSR_ECC_ENABLE |
++		REG_UMI_NAND_ECC_CSR_256BYTE);
++	/* enable ECC */
++	REG_UMI_NAND_ECC_CSR |= REG_UMI_NAND_ECC_CSR_ECC_ENABLE;
++}
++
++#if NAND_ECC_BCH
++/* BCH ECC specifics */
++#define ECC_BITS_PER_CORRECTABLE_BIT 13
++
++/* Enable BCH Read ECC */
++static inline void nand_bcm_umi_bch_enable_read_hwecc(void)
++{
++	/* disable and reset ECC */
++	REG_UMI_BCH_CTRL_STATUS = REG_UMI_BCH_CTRL_STATUS_RD_ECC_VALID;
++	/* Turn on ECC */
++	REG_UMI_BCH_CTRL_STATUS = REG_UMI_BCH_CTRL_STATUS_ECC_RD_EN;
++}
++
++/* Enable BCH Write ECC */
++static inline void nand_bcm_umi_bch_enable_write_hwecc(void)
++{
++	/* disable and reset ECC */
++	REG_UMI_BCH_CTRL_STATUS = REG_UMI_BCH_CTRL_STATUS_WR_ECC_VALID;
++	/* Turn on ECC */
++	REG_UMI_BCH_CTRL_STATUS = REG_UMI_BCH_CTRL_STATUS_ECC_WR_EN;
++}
++
++/* Config number of BCH ECC bytes */
++static inline void nand_bcm_umi_bch_config_ecc(uint8_t numEccBytes)
++{
++	uint32_t nValue;
++	uint32_t tValue;
++	uint32_t kValue;
++	uint32_t numBits = numEccBytes * 8;
++
++	/* disable and reset ECC */
++	REG_UMI_BCH_CTRL_STATUS =
++	    REG_UMI_BCH_CTRL_STATUS_WR_ECC_VALID |
++	    REG_UMI_BCH_CTRL_STATUS_RD_ECC_VALID;
++
++	/* Every correctible bit requires 13 ECC bits */
++	tValue = (uint32_t) (numBits / ECC_BITS_PER_CORRECTABLE_BIT);
++
++	/* Total data in number of bits for generating and computing BCH ECC */
++	nValue = (NAND_DATA_ACCESS_SIZE + numEccBytes) * 8;
++
++	/* K parameter is used internally.  K = N - (T * 13) */
++	kValue = nValue - (tValue * ECC_BITS_PER_CORRECTABLE_BIT);
++
++	/* Write the settings */
++	REG_UMI_BCH_N = nValue;
++	REG_UMI_BCH_T = tValue;
++	REG_UMI_BCH_K = kValue;
++}
++
++/* Pause during ECC read calculation to skip bytes in OOB */
++static inline void nand_bcm_umi_bch_pause_read_ecc_calc(void)
++{
++	REG_UMI_BCH_CTRL_STATUS =
++	    REG_UMI_BCH_CTRL_STATUS_ECC_RD_EN |
++	    REG_UMI_BCH_CTRL_STATUS_PAUSE_ECC_DEC;
++}
++
++/* Resume during ECC read calculation after skipping bytes in OOB */
++static inline void nand_bcm_umi_bch_resume_read_ecc_calc(void)
++{
++	REG_UMI_BCH_CTRL_STATUS = REG_UMI_BCH_CTRL_STATUS_ECC_RD_EN;
++}
++
++/* Poll read ECC calc to check when hardware completes */
++static inline uint32_t nand_bcm_umi_bch_poll_read_ecc_calc(void)
++{
++	uint32_t regVal;
++
++	do {
++		/* wait for ECC to be valid */
++		regVal = REG_UMI_BCH_CTRL_STATUS;
++	} while ((regVal & REG_UMI_BCH_CTRL_STATUS_RD_ECC_VALID) == 0);
++
++	return regVal;
++}
++
++/* Poll write ECC calc to check when hardware completes */
++static inline void nand_bcm_umi_bch_poll_write_ecc_calc(void)
++{
++	/* wait for ECC to be valid */
++	while ((REG_UMI_BCH_CTRL_STATUS & REG_UMI_BCH_CTRL_STATUS_WR_ECC_VALID)
++	       == 0)
++		;
++}
++
++/* Read the OOB and ECC, for kernel write OOB to a buffer */
++#if defined(__KERNEL__) && !defined(STANDALONE)
++static inline void nand_bcm_umi_bch_read_oobEcc(uint32_t pageSize,
++	uint8_t *eccCalc, int numEccBytes, uint8_t *oobp)
++#else
++static inline void nand_bcm_umi_bch_read_oobEcc(uint32_t pageSize,
++	uint8_t *eccCalc, int numEccBytes)
++#endif
++{
++	int eccPos = 0;
++	int numToRead = 16;	/* There are 16 bytes per sector in the OOB */
++
++	/* ECC is already paused when this function is called */
++
++	if (pageSize == NAND_DATA_ACCESS_SIZE) {
++		while (numToRead > numEccBytes) {
++			/* skip free oob region */
++#if defined(__KERNEL__) && !defined(STANDALONE)
++			*oobp++ = REG_NAND_DATA8;
++#else
++			REG_NAND_DATA8;
++#endif
++			numToRead--;
++		}
++
++		/* read ECC bytes before BI */
++		nand_bcm_umi_bch_resume_read_ecc_calc();
++
++		while (numToRead > 11) {
++#if defined(__KERNEL__) && !defined(STANDALONE)
++			*oobp = REG_NAND_DATA8;
++			eccCalc[eccPos++] = *oobp;
++			oobp++;
++#else
++			eccCalc[eccPos++] = REG_NAND_DATA8;
++#endif
++		}
++
++		nand_bcm_umi_bch_pause_read_ecc_calc();
++
++		if (numToRead == 11) {
++			/* read BI */
++#if defined(__KERNEL__) && !defined(STANDALONE)
++			*oobp++ = REG_NAND_DATA8;
++#else
++			REG_NAND_DATA8;
++#endif
++			numToRead--;
++		}
++
++		/* read ECC bytes */
++		nand_bcm_umi_bch_resume_read_ecc_calc();
++		while (numToRead) {
++#if defined(__KERNEL__) && !defined(STANDALONE)
++			*oobp = REG_NAND_DATA8;
++			eccCalc[eccPos++] = *oobp;
++			oobp++;
++#else
++			eccCalc[eccPos++] = REG_NAND_DATA8;
++#endif
++			numToRead--;
++		}
++	} else {
++		/* skip BI */
++#if defined(__KERNEL__) && !defined(STANDALONE)
++		*oobp++ = REG_NAND_DATA8;
++#else
++		REG_NAND_DATA8;
++#endif
++		numToRead--;
++
++		while (numToRead > numEccBytes) {
++			/* skip free oob region */
++#if defined(__KERNEL__) && !defined(STANDALONE)
++			*oobp++ = REG_NAND_DATA8;
++#else
++			REG_NAND_DATA8;
++#endif
++			numToRead--;
++		}
++
++		/* read ECC bytes */
++		nand_bcm_umi_bch_resume_read_ecc_calc();
++		while (numToRead) {
++#if defined(__KERNEL__) && !defined(STANDALONE)
++			*oobp = REG_NAND_DATA8;
++			eccCalc[eccPos++] = *oobp;
++			oobp++;
++#else
++			eccCalc[eccPos++] = REG_NAND_DATA8;
++#endif
++			numToRead--;
++		}
++	}
++}
++
++/* Helper function to write ECC */
++static inline void NAND_BCM_UMI_ECC_WRITE(int numEccBytes, int eccBytePos,
++					  uint8_t *oobp, uint8_t eccVal)
++{
++	if (eccBytePos <= numEccBytes)
++		*oobp = eccVal;
++}
++
++/* Write OOB with ECC */
++static inline void nand_bcm_umi_bch_write_oobEcc(uint32_t pageSize,
++						 uint8_t *oobp, int numEccBytes)
++{
++	uint32_t eccVal = 0xffffffff;
++
++	/* wait for write ECC to be valid */
++	nand_bcm_umi_bch_poll_write_ecc_calc();
++
++	/*
++	 ** Get the hardware ecc from the 32-bit result registers.
++	 ** Read after 512 byte accesses. Format B3B2B1B0
++	 ** where B3 = ecc3, etc.
++	 */
++
++	if (pageSize == NAND_DATA_ACCESS_SIZE) {
++		/* Now fill in the ECC bytes */
++		if (numEccBytes >= 13)
++			eccVal = REG_UMI_BCH_WR_ECC_3;
++
++		/* Usually we skip CM in oob[0,1] */
++		NAND_BCM_UMI_ECC_WRITE(numEccBytes, 15, &oobp[0],
++			(eccVal >> 16) & 0xff);
++		NAND_BCM_UMI_ECC_WRITE(numEccBytes, 14, &oobp[1],
++			(eccVal >> 8) & 0xff);
++
++		/* Write ECC in oob[2,3,4] */
++		NAND_BCM_UMI_ECC_WRITE(numEccBytes, 13, &oobp[2],
++			eccVal & 0xff);	/* ECC 12 */
++
++		if (numEccBytes >= 9)
++			eccVal = REG_UMI_BCH_WR_ECC_2;
++
++		NAND_BCM_UMI_ECC_WRITE(numEccBytes, 12, &oobp[3],
++			(eccVal >> 24) & 0xff);	/* ECC11 */
++		NAND_BCM_UMI_ECC_WRITE(numEccBytes, 11, &oobp[4],
++			(eccVal >> 16) & 0xff);	/* ECC10 */
++
++		/* Always Skip BI in oob[5] */
++	} else {
++		/* Always Skip BI in oob[0] */
++
++		/* Now fill in the ECC bytes */
++		if (numEccBytes >= 13)
++			eccVal = REG_UMI_BCH_WR_ECC_3;
++
++		/* Usually skip CM in oob[1,2] */
++		NAND_BCM_UMI_ECC_WRITE(numEccBytes, 15, &oobp[1],
++			(eccVal >> 16) & 0xff);
++		NAND_BCM_UMI_ECC_WRITE(numEccBytes, 14, &oobp[2],
++			(eccVal >> 8) & 0xff);
++
++		/* Write ECC in oob[3-15] */
++		NAND_BCM_UMI_ECC_WRITE(numEccBytes, 13, &oobp[3],
++			eccVal & 0xff);	/* ECC12 */
++
++		if (numEccBytes >= 9)
++			eccVal = REG_UMI_BCH_WR_ECC_2;
++
++		NAND_BCM_UMI_ECC_WRITE(numEccBytes, 12, &oobp[4],
++			(eccVal >> 24) & 0xff);	/* ECC11 */
++		NAND_BCM_UMI_ECC_WRITE(numEccBytes, 11, &oobp[5],
++			(eccVal >> 16) & 0xff);	/* ECC10 */
++	}
++
++	/* Fill in the remainder of ECC locations */
++	NAND_BCM_UMI_ECC_WRITE(numEccBytes, 10, &oobp[6],
++		(eccVal >> 8) & 0xff);	/* ECC9 */
++	NAND_BCM_UMI_ECC_WRITE(numEccBytes, 9, &oobp[7],
++		eccVal & 0xff);	/* ECC8 */
++
++	if (numEccBytes >= 5)
++		eccVal = REG_UMI_BCH_WR_ECC_1;
++
++	NAND_BCM_UMI_ECC_WRITE(numEccBytes, 8, &oobp[8],
++		(eccVal >> 24) & 0xff);	/* ECC7 */
++	NAND_BCM_UMI_ECC_WRITE(numEccBytes, 7, &oobp[9],
++		(eccVal >> 16) & 0xff);	/* ECC6 */
++	NAND_BCM_UMI_ECC_WRITE(numEccBytes, 6, &oobp[10],
++		(eccVal >> 8) & 0xff);	/* ECC5 */
++	NAND_BCM_UMI_ECC_WRITE(numEccBytes, 5, &oobp[11],
++		eccVal & 0xff);	/* ECC4 */
++
++	if (numEccBytes >= 1)
++		eccVal = REG_UMI_BCH_WR_ECC_0;
++
++	NAND_BCM_UMI_ECC_WRITE(numEccBytes, 4, &oobp[12],
++		(eccVal >> 24) & 0xff);	/* ECC3 */
++	NAND_BCM_UMI_ECC_WRITE(numEccBytes, 3, &oobp[13],
++		(eccVal >> 16) & 0xff);	/* ECC2 */
++	NAND_BCM_UMI_ECC_WRITE(numEccBytes, 2, &oobp[14],
++		(eccVal >> 8) & 0xff);	/* ECC1 */
++	NAND_BCM_UMI_ECC_WRITE(numEccBytes, 1, &oobp[15],
++		eccVal & 0xff);	/* ECC0 */
++}
++#endif
++
++#endif /* NAND_BCM_UMI_H */
+-- 
+1.6.0.6
