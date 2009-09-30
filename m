@@ -1,13 +1,22 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MstK8-00046V-N4
-	for linux-mtd@lists.infradead.org; Wed, 30 Sep 2009 07:10:09 +0000
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-To: Sven Luther <sven@powerlinux.fr>
-Subject: [PATCH] UBI: fix backward compatibility
-Date: Wed, 30 Sep 2009 10:09:20 +0300
-Message-Id: <1254294560-6884-1-git-send-email-Artem.Bityutskiy@nokia.com>
-Cc: linux-mtd@lists.infradead.org, adrian.hunter@nokia.com
+Received: from mail-yw0-f171.google.com ([209.85.211.171])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MsuJj-0007mI-Kg
+	for linux-mtd@lists.infradead.org; Wed, 30 Sep 2009 08:13:47 +0000
+Received: by ywh1 with SMTP id 1so6509530ywh.25
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 30 Sep 2009 01:13:41 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <4AC1947A.5060901@tataelxsi.co.in>
+References: <4ABB468D.9050009@tataelxsi.co.in>
+	<1253797515.3722.3.camel@lusitania> <4AC1947A.5060901@tataelxsi.co.in>
+Date: Wed, 30 Sep 2009 16:13:41 +0800
+Message-ID: <8f6e22a70909300113q25e4286fp2d0d181a8dde0005@mail.gmail.com>
+Subject: Re: Mounting Entire Flash
+From: zheng shi <neversetsun@gmail.com>
+To: Rahanesh <rahanesh@tataelxsi.co.in>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, Dennis McLeod <dmcleod@bittware.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,64 +26,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Commit 32bc4820287a1a03982979515949e8ea56eac641 did not fully fix
-the backward compatibility issues. We still fail to properly handle
-situations when the first PEB contains non-zero image sequence
-number, but one of the following PEBs contains zero image sequence
-number. For example, this may happen if we mount a new image with
-an old kernel, and then try to mount it in the new kernel.
+There's a kernel command line parameter called mtdparts.
+You may refer to the comments in drivers/mtd/cmdlinepart.c.
 
-This patch should fix the issue.
+On Tue, Sep 29, 2009 at 1:00 PM, Rahanesh <rahanesh@tataelxsi.co.in> wrote:
+> Hi Dennis,
+>
+>> On Thu, 2009-09-24 at 15:44 +0530, Rahanesh wrote:
+>>
+>>>
+>>> Hi All,
+>>>
+>>> Currently I have 4 mtd partitions in Flash. They are all seen under /de=
+v
+>>> directory as mtd0 mtd1 mtd2 and mtd3.
+>>>
+>>> mtd0-> Uboot + Itz Environment
+>>> mtd1-> JFFS
+>>> mtd2-> Config files
+>>> mtd3-> Not used
+>>>
+>>> I am currently trying to implement Image upgradation.
+>>>
+>>> I will need to update JFFS, uboot and Config files from Linux.
+>>>
+>>> I am currently achieving this through =A0flash_eraseall and dd =A0comma=
+nd .
+>>>
+>>> To Update U-boot First i will do a
+>>>
+>>> flash_eraseall /dev/mtd0 and then
+>>> dd if=3Duboot.bin of=3D/dev/mtd0 count=3Dsize;
+>>>
+>>> and similarly for all individual partitions.
+>>>
+>>> But If i have a combined image as combined.bin =A0how do i update the
+>>> entire flash .
+>>>
+>>> Is it possible to see entire flash as /dev/mtd =A0. i can very well ext=
+ract
+>>> individual images from combined image and reflash to respective partiti=
+ons.
+>>>
+>>> But it would be generic if =A0we are able write to entire flash not to
+>>> individual partitions.
+>>>
+>>> Is it possible to Write to entire flash as such.
+>>>
+>>> Thanks
+>>> Rahanesh
+>>>
+>>
+>> I always set up a partition that spans the entire flash chip..
+>> mtd0 -> 0:ENTIRE_SIZE
+>> mtd1 -> 0:+10M
+>> mtd2 -> 10M:22M
+>>
+>
+> =A0 =A0 =A0 =A0How do we achieve this? Should we edit /proc/mtd or flash/=
+driver code
+> ?
+>
+> =A0 =A0 =A0 Thanks
+> =A0 =A0 =A0 Rahanesh
+>
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
 
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- drivers/mtd/ubi/scan.c |    7 +++----
- drivers/mtd/ubi/scan.h |    2 --
- 2 files changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
-index b847745..6db7ce5 100644
---- a/drivers/mtd/ubi/scan.c
-+++ b/drivers/mtd/ubi/scan.c
-@@ -793,16 +793,15 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
- 		 * number.
- 		 */
- 		image_seq = be32_to_cpu(ech->image_seq);
--		if (!si->image_seq_set) {
-+		if (!ubi->image_seq && image_seq)
- 			ubi->image_seq = image_seq;
--			si->image_seq_set = 1;
--		} else if (ubi->image_seq && ubi->image_seq != image_seq) {
-+		if (ubi->image_seq && image_seq &&
-+		    ubi->image_seq != image_seq) {
- 			ubi_err("bad image sequence number %d in PEB %d, "
- 				"expected %d", image_seq, pnum, ubi->image_seq);
- 			ubi_dbg_dump_ec_hdr(ech);
- 			return -EINVAL;
- 		}
--
- 	}
- 
- 	/* OK, we've done with the EC header, let's look at the VID header */
-diff --git a/drivers/mtd/ubi/scan.h b/drivers/mtd/ubi/scan.h
-index 1017cf1..61df208 100644
---- a/drivers/mtd/ubi/scan.h
-+++ b/drivers/mtd/ubi/scan.h
-@@ -102,7 +102,6 @@ struct ubi_scan_volume {
-  * @mean_ec: mean erase counter value
-  * @ec_sum: a temporary variable used when calculating @mean_ec
-  * @ec_count: a temporary variable used when calculating @mean_ec
-- * @image_seq_set: indicates @ubi->image_seq is known
-  *
-  * This data structure contains the result of scanning and may be used by other
-  * UBI sub-systems to build final UBI data structures, further error-recovery
-@@ -125,7 +124,6 @@ struct ubi_scan_info {
- 	int mean_ec;
- 	uint64_t ec_sum;
- 	int ec_count;
--	int image_seq_set;
- };
- 
- struct ubi_device;
--- 
-1.6.2.5
+
+--=20
+Regards, Shizheng
