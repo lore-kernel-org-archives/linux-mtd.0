@@ -1,21 +1,26 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MtIvG-00048m-Rx
-	for linux-mtd@lists.infradead.org; Thu, 01 Oct 2009 10:30:07 +0000
-Date: Thu, 1 Oct 2009 12:30:00 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Matthias Fuchs <matthias.fuchs@esd.eu>
-Subject: Re: patented FTL format
-Message-ID: <20091001103000.GA3166@pengutronix.de>
-References: <200909301732.35277.matthias.fuchs@esd.eu>
-	<20090930172832.GA4574@linode.davidb.org>
-	<200910011123.07588.matthias.fuchs@esd.eu>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="bg08WKrSYDhXBjb5"
-Content-Disposition: inline
-In-Reply-To: <200910011123.07588.matthias.fuchs@esd.eu>
-Cc: David Brown <mtd@davidb.org>, linux-mtd@lists.infradead.org
+Received: from mailout2.samsung.com ([203.254.224.25])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MtJV1-00085v-Rv
+	for linux-mtd@lists.infradead.org; Thu, 01 Oct 2009 11:07:08 +0000
+Received: from epmmp1 (mailout2.samsung.com [203.254.224.25])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KQU00A3J1JOUH@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 01 Oct 2009 20:07:00 +0900 (KST)
+Received: from amulsaha ([107.108.214.27])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KQU00A5X1JML6@mmp1.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 01 Oct 2009 20:07:00 +0900 (KST)
+Date: Thu, 01 Oct 2009 16:38:06 +0530
+From: Amul Kumar Saha <amul.saha@samsung.com>
+Subject: Re: [PATCH] [OneNAND] Standardising prints in onenand_base.c
+To: dedekind1@gmail.com
+Message-id: <F890C3D467A3465090BA4473AF6EC789@sisodomain.com>
+Content-transfer-encoding: 7BIT
+References: <C45F9E809A3C4FB0A470336A43DCCB74@sisodomain.com>
+	<1254384027.32310.18.camel@localhost>
+Cc: David Woodhouse <dwmw2@infradead.org>, Kyungmin Park <kmpark@infradead.org>,
+	linux-mtd@lists.infradead.org, adrian.hunter@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,37 +30,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Artem,
 
---bg08WKrSYDhXBjb5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>
+> Could you please first send the patch to yourself, then save it, and
+> try to apply. And when this works, send it to me.
+>
+> This one does not apply either for the same reasons.
+>
 
-> I expected get heard by the maintainer of the FTL code. Somebody
-> must have added the notice to the source code. Perhaps that person
-> knows why :-)
+I have taken care of all the prints but one.
+onenand_base.c: 2160
+DEBUG(MTD_DEBUG_LEVEL3, "onenand_erase: start = 0x%012llx, len = %llu\n", (unsigned long long) instr->addr, (unsigned long long) 
+instr->len);
 
-'git blame <file>' tells you the author/commit that changed a specific line.
-Then, 'git show <commit>' shows you also the description. That usually help=
-s to
-find the mail-thread accompanying the patch. Dunno if it works in this case,
-but it often does.
+Reason: This one is 149 characters long and the patch couldn't be sent, through the mailer.
+I am avoiding this one. I hope it's OK.
 
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---bg08WKrSYDhXBjb5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkrEhKgACgkQD27XaX1/VRtyGQCgoOpWIh7hMuFA+FFSqT0qMv4h
-n/4An2PAgDO5vRBDTTGg+8zYs9sAA/HP
-=mrL7
------END PGP SIGNATURE-----
-
---bg08WKrSYDhXBjb5--
+Regards,
+Amul 
