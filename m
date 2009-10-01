@@ -1,21 +1,13 @@
-Received: from moutng.kundenserver.de ([212.227.17.8])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MtHtQ-0004zN-Oo
-	for linux-mtd@lists.infradead.org; Thu, 01 Oct 2009 09:24:13 +0000
-From: Matthias Fuchs <matthias.fuchs@esd.eu>
-To: David Brown <mtd@davidb.org>
-Subject: Re: patented FTL format
-Date: Thu, 1 Oct 2009 11:23:07 +0200
-References: <200909301732.35277.matthias.fuchs@esd.eu>
-	<20090930172832.GA4574@linode.davidb.org>
-In-Reply-To: <20090930172832.GA4574@linode.davidb.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200910011123.07588.matthias.fuchs@esd.eu>
-Cc: linux-mtd@lists.infradead.org
+Received: from exprod7og111.obsmtp.com ([64.18.2.175])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MtI0x-0007We-9j
+	for linux-mtd@lists.infradead.org; Thu, 01 Oct 2009 09:31:59 +0000
+From: Arnaud Mouiche <arnaud.mouiche@thomson.net>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH/mtd-utils] add a "ubirsvol" tool to resize UBI volume.
+Date: Thu,  1 Oct 2009 11:31:47 +0200
+Message-Id: <1254389507-16507-1-git-send-email-arnaud.mouiche@thomson.net>
+Cc: Arnaud Mouiche <arnaud.mouiche@thomson.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,22 +17,278 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 30 September 2009 19:28, David Brown wrote:
-> On Wed, Sep 30, 2009 at 05:32:34PM +0200, Matthias Fuchs wrote:
-> 
-> >Or with other words, does a translation layer (we would also call it
-> >differently) that allows using things like ext3 on a bare NAND chip
-> >conflict with any patents?
-> 
-> I'm going to guess that most of the people who know the answer to this
-> question won't be able to talk about it.  Opinions from
-> non-legal-experts probably isn't all that useful anyway.
-> 
-I hope to get an idea about a starting point where to find the answer.
-I did no ask anybody to sign his answer.
+This is nearly a copy/paste from ubirmvol
 
-I expected get heard by the maintainer of the FTL code. Somebody
-must have added the notice to the source code. Perhaps that person
-knows why :-)
+Signed-off-by: Arnaud Mouiche <arnaud.mouiche@thomson.net>
+---
+ ubi-utils/Makefile       |    2 +-
+ ubi-utils/src/ubirsvol.c |  245 ++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 246 insertions(+), 1 deletions(-)
+ create mode 100644 ubi-utils/src/ubirsvol.c
 
-Matthias
+diff --git a/ubi-utils/Makefile b/ubi-utils/Makefile
+index b5388ec..e736a09 100644
+--- a/ubi-utils/Makefile
++++ b/ubi-utils/Makefile
+@@ -11,7 +11,7 @@ CPPFLAGS += -Iinclude -Isrc -I$(KERNELHDR)
+ 
+ LIBS = libubi libmtd libubigen libiniparser libscan
+ TARGETS = ubiupdatevol ubimkvol ubirmvol ubicrc32 ubinfo ubiattach \
+-          ubidetach ubinize ubiformat ubirename mtdinfo
++          ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol
+ 
+ VPATH = src
+ 
+diff --git a/ubi-utils/src/ubirsvol.c b/ubi-utils/src/ubirsvol.c
+new file mode 100644
+index 0000000..a32a956
+--- /dev/null
++++ b/ubi-utils/src/ubirsvol.c
+@@ -0,0 +1,245 @@
++/*
++ * Copyright (c) International Business Machines Corp., 2006
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
++ * the GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ */
++
++/*
++ * An utility to resize UBI volumes.
++ *
++ * Authors: Artem Bityutskiy <dedekind@infradead.org>
++ *          Frank Haverkamp <haver@vnet.ibm.com>
++ */
++
++#include <stdio.h>
++#include <stdint.h>
++#include <getopt.h>
++#include <stdlib.h>
++#include <string.h>
++
++#include <libubi.h>
++#include "common.h"
++
++#define PROGRAM_VERSION "1.1"
++#define PROGRAM_NAME    "ubirsvol"
++
++/* The variables below are set by command line arguments */
++struct args {
++	int vol_id;
++	const char *node;
++	const char *name;
++	long long bytes;
++	int lebs;
++};
++
++static struct args args = {
++	.vol_id = -1,
++	.bytes = -1,
++	.lebs = -1,
++};
++
++static const char *doc = PROGRAM_NAME " version " PROGRAM_VERSION
++				 " - a tool to resize UBI volumes.";
++
++static const char *optionsstr =
++"-n, --vol_id=<volume id>   volume ID to resize\n"
++"-N, --name=<volume name>   volume name to resize\n"
++"-s, --size=<bytes>         volume size volume size in bytes, kilobytes (KiB)\n"
++"                           or megabytes (MiB)\n"
++"-S, --lebs=<LEBs count>    alternative way to give volume size in logical\n"
++"                           eraseblocks\n"
++"-h, -?, --help             print help message\n"
++"-V, --version              print program version";
++
++
++static const char *usage =
++"Usage: " PROGRAM_NAME " <UBI device node file name> [-n <volume id>] [--vol_id=<volume id>]\n\n"
++"         [-N <volume name>] [--name=<volume name>] [-s <bytes>] [-S <LEBs>] [-h] [--help]\n\n"
++"Example: " PROGRAM_NAME " /dev/ubi0 -n 1 -s 1MiB resize UBI volume 1 to 1 MiB on\n"
++"         UBI device corresponding to /dev/ubi0\n"
++"         " PROGRAM_NAME " /dev/ubi0 -N my_vol -s 1MiB - resize UBI volume named \"my_vol\" to 1 MiB\n"
++"	  on UBI device corresponding to /dev/ubi0";
++
++static const struct option long_options[] = {
++	{ .name = "vol_id",  .has_arg = 1, .flag = NULL, .val = 'n' },
++	{ .name = "name",    .has_arg = 1, .flag = NULL, .val = 'N' },
++	{ .name = "help",    .has_arg = 0, .flag = NULL, .val = 'h' },
++	{ .name = "version", .has_arg = 0, .flag = NULL, .val = 'V' },
++	{ .name = "size",    .has_arg = 1, .flag = NULL, .val = 's' },
++	{ .name = "lebs",    .has_arg = 1, .flag = NULL, .val = 'S' },
++	{ NULL, 0, NULL, 0},
++};
++
++static int param_sanity_check(void)
++{
++	if (args.vol_id == -1 && !args.name) {
++		errmsg("please, specify either volume ID or volume name");
++		return -1;
++	}
++
++	if (args.vol_id != -1 && args.name) {
++		errmsg("please, specify either volume ID or volume name, not both");
++		return -1;
++	}
++
++	if (args.bytes == -1 && args.lebs == -1)
++		return errmsg("volume size was not specified (use -h for help)");
++
++	if (args.bytes != -1 && args.lebs != -1)
++		return errmsg("size specified with more then one option");
++
++	return 0;
++}
++
++static int parse_opt(int argc, char * const argv[])
++{
++	while (1) {
++		int key;
++		char *endp;
++
++		key = getopt_long(argc, argv, "s:S:n:N:h?V", long_options, NULL);
++		if (key == -1)
++			break;
++
++		switch (key) {
++		case 's':
++			args.bytes = ubiutils_get_bytes(optarg);
++			if (args.bytes <= 0)
++				return errmsg("bad volume size: \"%s\"", optarg);
++			break;
++
++		case 'S':
++			args.lebs = strtoull(optarg, &endp, 0);
++			if (endp == optarg || args.lebs <= 0 || *endp != '\0')
++				return errmsg("bad LEB count: \"%s\"", optarg);
++			break;
++
++		case 'n':
++			args.vol_id = strtoul(optarg, &endp, 0);
++			if (*endp != '\0' || endp == optarg || args.vol_id < 0) {
++				errmsg("bad volume ID: " "\"%s\"", optarg);
++				return -1;
++			}
++			break;
++
++		case 'N':
++			args.name = optarg;
++			break;
++
++		case 'h':
++		case '?':
++			fprintf(stderr, "%s\n\n", doc);
++			fprintf(stderr, "%s\n\n", usage);
++			fprintf(stderr, "%s\n", optionsstr);
++			exit(EXIT_SUCCESS);
++
++		case 'V':
++			fprintf(stderr, "%s\n", PROGRAM_VERSION);
++			exit(EXIT_SUCCESS);
++
++		case ':':
++			errmsg("parameter is missing");
++			return -1;
++
++		default:
++			fprintf(stderr, "Use -h for help\n");
++			return -1;
++		}
++	}
++
++	if (optind == argc) {
++		errmsg("UBI device name was not specified (use -h for help)");
++		return -1;
++	} else if (optind != argc - 1) {
++		errmsg("more then one UBI device specified (use -h for help)");
++		return -1;
++	}
++
++	args.node = argv[optind];
++
++	if (param_sanity_check())
++		return -1;
++
++	return 0;
++}
++
++int main(int argc, char * const argv[])
++{
++	int err;
++	libubi_t libubi;
++	struct ubi_dev_info dev_info;
++	struct ubi_vol_info vol_info;
++
++	err = parse_opt(argc, argv);
++	if (err)
++		return -1;
++
++	libubi = libubi_open();
++	if (!libubi)
++		return sys_errmsg("cannot open libubi");
++
++	err = ubi_probe_node(libubi, args.node);
++	if (err == 2) {
++		errmsg("\"%s\" is an UBI volume node, not an UBI device node",
++		       args.node);
++		goto out_libubi;
++	} else if (err < 0) {
++		if (errno == ENODEV)
++			errmsg("\"%s\" is not an UBI device node", args.node);
++		else
++			sys_errmsg("error while probing \"%s\"", args.node);
++	}
++
++	err = ubi_get_dev_info(libubi, args.node, &dev_info);
++	if (err) {
++		sys_errmsg("cannot get information about UBI device \"%s\"",
++			   args.node);
++		goto out_libubi;
++	}
++
++	if (args.name) {
++		err = ubi_get_vol_info1_nm(libubi, dev_info.dev_num,
++					   args.name, &vol_info);
++		if (err) {
++			sys_errmsg("cannot find UBI volume \"%s\"", args.name);
++			goto out_libubi;
++		}
++
++		args.vol_id = vol_info.vol_id;
++	} else {
++		err = ubi_get_vol_info1(libubi, dev_info.dev_num,
++					   args.vol_id, &vol_info);
++		if (err) {
++			sys_errmsg("cannot find UBI volume ID %d", args.vol_id);
++			goto out_libubi;
++		}
++	}
++
++	if (args.lebs != -1)
++		args.bytes = vol_info.leb_size * args.lebs;
++
++	err = ubi_rsvol(libubi, args.node, args.vol_id, args.bytes);
++	if (err) {
++		sys_errmsg("cannot UBI resize volume");
++		goto out_libubi;
++	}
++
++	libubi_close(libubi);
++	return 0;
++
++out_libubi:
++	libubi_close(libubi);
++	return -1;
++}
+-- 
+1.5.6.5
