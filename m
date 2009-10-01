@@ -4,8 +4,8 @@ To: Amul Kumar Saha <amul.saha@samsung.com>
 In-Reply-To: <C45F9E809A3C4FB0A470336A43DCCB74@sisodomain.com>
 References: <C45F9E809A3C4FB0A470336A43DCCB74@sisodomain.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 01 Oct 2009 11:00:27 +0300
-Message-Id: <1254384027.32310.18.camel@localhost>
+Date: Thu, 01 Oct 2009 11:01:14 +0300
+Message-Id: <1254384074.32310.19.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Kyungmin Park <kmpark@infradead.org>, David Woodhouse <dwmw2@infradead.org>,
@@ -20,8 +20,6 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
 On Thu, 2009-10-01 at 13:08 +0530, Amul Kumar Saha wrote:
 > Note: Reposting with corrected Signed-Off
 > 
@@ -30,11 +28,12 @@ On Thu, 2009-10-01 at 13:08 +0530, Amul Kumar Saha wrote:
 > and makes use of __func__.
 > 
 > Signed-off-by: Amul Kumar Saha <amul.saha@samsung.com>
+> ---
+>  onenand_base.c |  172 +++++++++++++++++++++++++++++++++++----------------------
+>  1 file changed, 106 insertions(+), 66 deletions(-)
+> 
 
-Could you please first send the patch to yourself, then save it, and
-try to apply. And when this works, send it to me.
-
-This one does not apply either for the same reasons.
+Try git send-email, it just works.
 
 -- 
 Best Regards,
