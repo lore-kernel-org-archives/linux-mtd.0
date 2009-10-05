@@ -1,19 +1,19 @@
-Message-ID: <4AC9A093.7030901@gmail.com>
-Date: Mon, 05 Oct 2009 10:30:27 +0300
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Muiko-0005D2-3o
+	for linux-mtd@lists.infradead.org; Mon, 05 Oct 2009 08:17:14 +0000
+Subject: Re: [PATCH/mtd-utils] add a "ubirsvol" tool to resize UBI volume.
 From: Artem Bityutskiy <dedekind1@gmail.com>
-MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] [OneNAND] Standardising prints in onenand_base.c
-References: <C45F9E809A3C4FB0A470336A43DCCB74@sisodomain.com>
-	<1254726268.3359.3.camel@localhost>
-	<1254726689.8859.5.camel@macbook.infradead.org>
-	<4AC99C82.6070308@gmail.com>
-	<alpine.LFD.2.00.0910050820560.12210@mercury.infradead.org>
-In-Reply-To: <alpine.LFD.2.00.0910050820560.12210@mercury.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Arnaud Mouiche <arnaud.mouiche@thomson.net>
+In-Reply-To: <1254389507-16507-1-git-send-email-arnaud.mouiche@thomson.net>
+References: <1254389507-16507-1-git-send-email-arnaud.mouiche@thomson.net>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 05 Oct 2009 11:16:27 +0300
+Message-Id: <1254730587.3359.7.camel@localhost>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Amul Kumar Saha <amul.saha@samsung.com>, linux-mtd@lists.infradead.org,
-	Kyungmin Park <kmpark@infradead.org>, adrian.hunter@nokia.com
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,15 +23,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/05/2009 10:22 AM, David Woodhouse wrote:
->
-> TBH, if anyone is embarking on a campaign to clean up printks, I'd
-> rather see all the DEBUG() crap removed entirely and replaced with
-> dev_dbg() and friends.
->
-> Everything should have a 'struct device' associated with it by now, right?
+On Thu, 2009-10-01 at 11:31 +0200, Arnaud Mouiche wrote:
+> This is nearly a copy/paste from ubirmvol
+> 
+> Signed-off-by: Arnaud Mouiche <arnaud.mouiche@thomson.net>
+> ---
+>  ubi-utils/Makefile       |    2 +-
+>  ubi-utils/src/ubirsvol.c |  245 ++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 246 insertions(+), 1 deletions(-)
+>  create mode 100644 ubi-utils/src/ubirsvol.c
 
-Right, the DEBUG() stuff should die.
+Pushed to the mtd-utils repository, thanks!
 
 -- 
 Best Regards,
