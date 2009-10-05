@@ -1,17 +1,14 @@
 Received: from smtp.gentoo.org ([140.211.166.183])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MuutR-0003tq-QN
+	by casper.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MuutW-0007iY-AY
 	for linux-mtd@lists.infradead.org; Mon, 05 Oct 2009 21:15:03 +0000
 From: Mike Frysinger <vapier@gentoo.org>
 To: Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH 1/3] mtd: m25p80: disable SST software protection bits by
-	default
-Date: Mon,  5 Oct 2009 17:14:47 -0400
-Message-Id: <1254777289-32109-2-git-send-email-vapier@gentoo.org>
-In-Reply-To: <1254777289-32109-1-git-send-email-vapier@gentoo.org>
-References: <1254777289-32109-1-git-send-email-vapier@gentoo.org>
-Cc: Graf Yang <graf.yang@analog.com>, David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] misc mtd patches for 2.6.32
+Date: Mon,  5 Oct 2009 17:14:46 -0400
+Message-Id: <1254777289-32109-1-git-send-email-vapier@gentoo.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,37 +18,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Graf Yang <graf.yang@analog.com>
+David picked up the rest of my patches, but here's some that didn't make
+it into his merge for 2.6.32.  The SST isn't critical, but it'd be nice
+to have.  The gpio-addr-flash ones fix build errors in randconfig setups
+as reported by some people due to missing depends/incomplete includes.
 
-The SST SPI flashes is like Atmel SPI flashes in that the software
-protection bits are set by default at power up, so clear them at init
-time.
+These can also be found in my 'for-mtd' branch in my Blackfin repo:
+	git://git.kernel.org/pub/scm/linux/kernel/git/vapier/blackfin.git for-mtd
 
-Signed-off-by: Graf Yang <graf.yang@analog.com>
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
----
- drivers/mtd/devices/m25p80.c |    7 ++++---
- 1 files changed, 4 insertions(+), 3 deletions(-)
+Graf Yang (1):
+  mtd: m25p80: disable SST software protection bits by default
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 379c316..933267a 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -775,11 +775,12 @@ static int __devinit m25p_probe(struct spi_device *spi)
- 	dev_set_drvdata(&spi->dev, flash);
- 
- 	/*
--	 * Atmel serial flash tend to power up
--	 * with the software protection bits set
-+	 * Atmel and SST serial flash tend to power
-+	 * up with the software protection bits set
- 	 */
- 
--	if (info->jedec_id >> 16 == 0x1f) {
-+	if (info->jedec_id >> 16 == 0x1f ||
-+	    info->jedec_id >> 16 == 0xbf) {
- 		write_enable(flash);
- 		write_sr(flash, 0);
- 	}
--- 
-1.6.5.rc2
+Mike Frysinger (2):
+  mtd/maps: gpio-addr-flash: pull in linux/ headers rather than asm/
+  mtd/maps: gpio-addr-flash: depend on GPIO arch support
+
+ drivers/mtd/devices/m25p80.c       |    7 ++++---
+ drivers/mtd/maps/Kconfig           |    1 +
+ drivers/mtd/maps/gpio-addr-flash.c |    5 ++---
+ 3 files changed, 7 insertions(+), 6 deletions(-)
