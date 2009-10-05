@@ -1,16 +1,16 @@
 Subject: Re: [PATCH] [OneNAND] Standardising prints in onenand_base.c
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Amul Kumar Saha <amul.saha@samsung.com>
-In-Reply-To: <C45F9E809A3C4FB0A470336A43DCCB74@sisodomain.com>
+From: David Woodhouse <dwmw2@infradead.org>
+To: dedekind1@gmail.com
+In-Reply-To: <1254726268.3359.3.camel@localhost>
 References: <C45F9E809A3C4FB0A470336A43DCCB74@sisodomain.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 05 Oct 2009 10:04:28 +0300
-Message-Id: <1254726268.3359.3.camel@localhost>
+	<1254726268.3359.3.camel@localhost>
+Content-Type: text/plain
+Date: Mon, 05 Oct 2009 08:11:29 +0100
+Message-Id: <1254726689.8859.5.camel@macbook.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Kyungmin Park <kmpark@infradead.org>, David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd@lists.infradead.org, adrian.hunter@nokia.com
-Reply-To: dedekind1@gmail.com
+Content-Transfer-Encoding: 7bit
+Cc: Amul Kumar Saha <amul.saha@samsung.com>, linux-mtd@lists.infradead.org,
+	Kyungmin Park <kmpark@infradead.org>, adrian.hunter@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,21 +20,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-10-01 at 13:08 +0530, Amul Kumar Saha wrote:
-> Note: Reposting with corrected Signed-Off
+On Mon, 2009-10-05 at 10:04 +0300, Artem Bityutskiy wrote:
 > 
-> This patch resolves all the prints present in onenand_base.c
-> Primarily, it replaces the hard-coded function names in the prints,
-> and makes use of __func__.
-> 
-> Signed-off-by: Amul Kumar Saha <amul.saha@samsung.com>
-> ---
->  onenand_base.c |  172 +++++++++++++++++++++++++++++++++++----------------------
->  1 file changed, 106 insertions(+), 66 deletions(-)
+> David decided to ignore the discussion and pushed your first patch
+> instead of this one already.
 
-David decided to ignore the discussion and pushed your first patch
-instead of this one already.
+Did I? Most of the discussion was about the patch not actually
+_applying_. The latest one from Friday did actually apply, and seemed
+sane enough. What did I miss?
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+dwmw2
