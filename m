@@ -1,20 +1,15 @@
-Received: from ernst.netinsight.se ([194.16.221.21])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MvBNZ-0004vq-V2
-	for linux-mtd@lists.infradead.org; Tue, 06 Oct 2009 14:51:11 +0000
-Date: Tue, 6 Oct 2009 16:50:56 +0200
-From: Simon Kagstrom <simon.kagstrom@netinsight.net>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 3/3]: mtdoops: store all kernel messages in a circular
-	buffer
-Message-ID: <20091006165056.2ccb43f3@marrow.netinsight.se>
-In-Reply-To: <20091002160741.6afac48b@marrow.netinsight.se>
-References: <20091002160510.191ef5a4@marrow.netinsight.se>
-	<20091002160741.6afac48b@marrow.netinsight.se>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Artem.Bityutskiy@nokia.com, Aaro Koskinen <aaro.koskinen@nokia.com>
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: [PATCH 1/2] Update ts72xx to use generic platform nand driver
+Date: Tue, 6 Oct 2009 18:19:36 -0400
+Message-ID: <BD79186B4FD85F4B8E60E381CAEE190901DB7967@mi8nycmail19.Mi8.com>
+From: "H Hartley Sweeten" <hartleys@visionengravers.com>
+To: <linux-arm-kernel@lists.infradead.org>,
+	<linux-mtd@lists.infradead.org>
+Cc: Matthieu Crapet <mcrapet@gmail.com>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,233 +19,277 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The last messages which happens before a crash might contain interesting
-information about the crash. This patch reworks mtdoops to keep a
-circular buffer of _all_ kernel messages, not just those that are
-printed when an oops is initiated.
+Update the ts72xx platform's nand driver support.
 
-A handler that is called on panic is also added instead of
-mtdoops_console_sync so that panic_on_oops and true panics are stored.
+This changes the ts72xx platform from using a custom nand driver
+(ts7250.c) to the generic platform nand driver (plat_nand.c).
 
-Signed-off-by: Simon Kagstrom <simon.kagstrom@netinsight.net>
+Tested on TS-7250 with 32MB NAND.
+
+Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
+Tested-by: Matthieu Crapet <mcrapet@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: <linux-arm-kernel@lists.infradead.org>
+Cc: <linux-mtd@lists.infradead.org>
+
 ---
-ChangeLog:
 
- v2:
-   * Fix output bug when writing out on large pages (ff's were at the
-     start of the printout).
-   * Fix garbled text issues on wrapping
-   * Add a BUG_ON assertion for writecount
-
- drivers/mtd/mtdoops.c |  117 +++++++++++++++++++++++++++++-------------------
- 1 files changed, 71 insertions(+), 46 deletions(-)
-
-diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-index cc2c187..c24e11f 100644
---- a/drivers/mtd/mtdoops.c
-+++ b/drivers/mtd/mtdoops.c
-@@ -52,6 +52,7 @@ static struct mtdoops_context {
- 	char *name;
- 
- 	void *oops_buf;
-+	void *oops_buf_write;
- 
- 	/* writecount and disabling ready are spin lock protected */
- 	spinlock_t writecount_lock;
-@@ -196,20 +197,36 @@ static void mtdoops_write(struct mtdoops_context *cxt, int panic)
- {
- 	struct mtd_info *mtd = cxt->mtd;
- 	size_t retlen;
-+	u32 * stamp;
-+	int p;
- 	int ret;
- 
--	if (cxt->writecount < cxt->page_size)
--		memset(cxt->oops_buf + cxt->writecount, 0xff,
--					cxt->page_size - cxt->writecount);
-+	cxt->ready = 0;
-+
-+	BUG_ON(cxt->writecount < 8);
-+	BUG_ON(cxt->writecount > cxt->page_size - 8);
-+
-+	/* oops_write_buf = [:8] + [writecount:] + [:writecount] */
-+	stamp = cxt->oops_buf_write;
-+	*stamp++ = cxt->nextcount;
-+	*stamp = MTDOOPS_KERNMSG_MAGIC;
-+
-+	/* Find out the first non-0xff character */
-+	for (p = cxt->writecount; p < cxt->page_size; p++) {
-+		if ( ((u8*)cxt->oops_buf)[p] != 0xff)
-+			break;
-+	}
-+	memcpy(cxt->oops_buf_write + 8, cxt->oops_buf + p,
-+			cxt->page_size - p);
-+	memcpy(cxt->oops_buf_write + 8 + cxt->page_size - p,
-+			cxt->oops_buf + 8, p - 8);
- 
- 	if (panic)
- 		ret = mtd->panic_write(mtd, cxt->nextpage * cxt->page_size,
--					cxt->page_size, &retlen, cxt->oops_buf);
-+					cxt->page_size, &retlen, cxt->oops_buf_write);
- 	else
- 		ret = mtd->write(mtd, cxt->nextpage * cxt->page_size,
--					cxt->page_size, &retlen, cxt->oops_buf);
--
--	cxt->writecount = 0;
-+					cxt->page_size, &retlen, cxt->oops_buf_write);
- 
- 	if ((retlen != cxt->page_size) || (ret < 0))
- 		printk(KERN_ERR "mtdoops: Write failure at %d (%td of %d written), err %d.\n",
-@@ -222,6 +239,26 @@ static void mtdoops_write(struct mtdoops_context *cxt, int panic)
- 		mtdoops_inc_counter(cxt);
- }
- 
-+static int mtdoops_panic(struct notifier_block *this, unsigned long event,
-+		void *ptr)
+diff --git a/arch/arm/mach-ep93xx/ts72xx.c =
+b/arch/arm/mach-ep93xx/ts72xx.c
+index 259f782..bbb757b 100644
+--- a/arch/arm/mach-ep93xx/ts72xx.c
++++ b/arch/arm/mach-ep93xx/ts72xx.c
+@@ -16,6 +16,8 @@
+ #include <linux/io.h>
+ #include <linux/m48t86.h>
+ #include <linux/mtd/physmap.h>
++#include <linux/mtd/nand.h>
++#include <linux/mtd/partitions.h>
+=20
+ #include <mach/hardware.h>
+ #include <mach/ts72xx.h>
+@@ -54,92 +56,185 @@ static struct map_desc ts72xx_io_desc[] __initdata =
+=3D {
+ 	}
+ };
+=20
+-static struct map_desc ts72xx_nand_io_desc[] __initdata =3D {
++static void __init ts72xx_map_io(void)
 +{
-+	struct mtdoops_context *cxt = &oops_cxt;
-+
-+	cancel_work_sync(&cxt->work_write);
-+	cxt->ready = 0;
-+	if (cxt->mtd->panic_write)
-+		mtdoops_write(cxt, 1);
-+	else
-+		printk(KERN_WARNING "mtdoops: panic_write is not defined, "
-+					"cannot store dump from panic\n");
-+
-+	return NOTIFY_DONE;
++	ep93xx_map_io();
++	iotable_init(ts72xx_io_desc, ARRAY_SIZE(ts72xx_io_desc));
 +}
 +
-+static struct notifier_block panic_block = {
-+	.notifier_call = mtdoops_panic,
++
++/***********************************************************************=
+**
++ * NAND flash
++ =
+*************************************************************************=
+/
++#define TS72XX_NAND_CONTROL_ADDR_LINE	22	/* 0xN0400000 */
++#define TS72XX_NAND_BUSY_ADDR_LINE	23	/* 0xN0800000 */
++
++static void ts72xx_nand_hwcontrol(struct mtd_info *mtd,
++				  int cmd, unsigned int ctrl)
++{
++	struct nand_chip *chip =3D mtd->priv;
++
++	if (ctrl & NAND_CTRL_CHANGE) {
++		void __iomem *addr =3D chip->IO_ADDR_R;
++		unsigned char bits;
++
++		addr +=3D (1 << TS72XX_NAND_CONTROL_ADDR_LINE);
++
++		bits =3D (ctrl & NAND_NCE) << 2;	/* bit 0 -> bit 2 */
++		bits |=3D ctrl & NAND_CLE;	/* bit 1 -> bit 1 */
++		bits |=3D (ctrl & NAND_ALE) >> 2;	/* bit 2 -> bit 0 */
++
++		__raw_writeb((__raw_readb(addr) & ~0x7) | bits, addr);
++	}
++
++	if (cmd !=3D NAND_CMD_NONE)
++		__raw_writeb(cmd, chip->IO_ADDR_W);
++}
++
++static int ts72xx_nand_device_ready(struct mtd_info *mtd)
++{
++	struct nand_chip *chip =3D mtd->priv;
++	void __iomem *addr =3D chip->IO_ADDR_R;
++
++	addr +=3D (1 << TS72XX_NAND_BUSY_ADDR_LINE);
++
++	return __raw_readb(addr) & 0x20;
++}
++
++static const char *ts72xx_nand_part_probes[] =3D { "cmdlinepart", NULL =
+};
++
++#define TS72XX_BOOTROM_PART_SIZE	(SZ_16K)
++#define TS72XX_REDBOOT_PART_SIZE	(SZ_2M + SZ_1M)
++
++static struct mtd_partition ts72xx_part_info32[] =3D {
+ 	{
+-		.virtual	=3D TS72XX_NAND_DATA_VIRT_BASE,
+-		.pfn		=3D __phys_to_pfn(TS72XX_NAND1_DATA_PHYS_BASE),
+-		.length		=3D TS72XX_NAND_DATA_SIZE,
+-		.type		=3D MT_DEVICE,
++		.name		=3D "TS-BOOTROM",
++		.offset		=3D 0,
++		.size		=3D TS72XX_BOOTROM_PART_SIZE,
+ 	}, {
+-		.virtual	=3D TS72XX_NAND_CONTROL_VIRT_BASE,
+-		.pfn		=3D __phys_to_pfn(TS72XX_NAND1_CONTROL_PHYS_BASE),
+-		.length		=3D TS72XX_NAND_CONTROL_SIZE,
+-		.type		=3D MT_DEVICE,
++		.name		=3D "Linux",
++		.offset		=3D MTDPART_OFS_APPEND,
++		.size		=3D SZ_32M - TS72XX_REDBOOT_PART_SIZE,
+ 	}, {
+-		.virtual	=3D TS72XX_NAND_BUSY_VIRT_BASE,
+-		.pfn		=3D __phys_to_pfn(TS72XX_NAND1_BUSY_PHYS_BASE),
+-		.length		=3D TS72XX_NAND_BUSY_SIZE,
+-		.type		=3D MT_DEVICE,
+-	}
++		.name		=3D "RedBoot",
++		.offset		=3D MTDPART_OFS_APPEND,
++		.size		=3D MTDPART_SIZ_FULL,
++	},
+ };
+=20
+-static struct map_desc ts72xx_alternate_nand_io_desc[] __initdata =3D {
++static struct mtd_partition ts72xx_part_info128[] =3D {
+ 	{
+-		.virtual	=3D TS72XX_NAND_DATA_VIRT_BASE,
+-		.pfn		=3D __phys_to_pfn(TS72XX_NAND2_DATA_PHYS_BASE),
+-		.length		=3D TS72XX_NAND_DATA_SIZE,
+-		.type		=3D MT_DEVICE,
++		.name		=3D "TS-BOOTROM",
++		.offset		=3D 0,
++		.size		=3D TS72XX_BOOTROM_PART_SIZE,
+ 	}, {
+-		.virtual	=3D TS72XX_NAND_CONTROL_VIRT_BASE,
+-		.pfn		=3D __phys_to_pfn(TS72XX_NAND2_CONTROL_PHYS_BASE),
+-		.length		=3D TS72XX_NAND_CONTROL_SIZE,
+-		.type		=3D MT_DEVICE,
++		.name		=3D "Linux",
++		.offset		=3D MTDPART_OFS_APPEND,
++		.size		=3D SZ_128M - TS72XX_REDBOOT_PART_SIZE,
+ 	}, {
+-		.virtual	=3D TS72XX_NAND_BUSY_VIRT_BASE,
+-		.pfn		=3D __phys_to_pfn(TS72XX_NAND2_BUSY_PHYS_BASE),
+-		.length		=3D TS72XX_NAND_BUSY_SIZE,
+-		.type		=3D MT_DEVICE,
+-	}
++		.name		=3D "RedBoot",
++		.offset		=3D MTDPART_OFS_APPEND,
++		.size		=3D MTDPART_SIZ_FULL,
++	},
+ };
+=20
+-static void __init ts72xx_map_io(void)
++static void ts72xx_nand_set_parts(uint64_t size,
++				  struct platform_nand_chip *chip)
+ {
+-	ep93xx_map_io();
+-	iotable_init(ts72xx_io_desc, ARRAY_SIZE(ts72xx_io_desc));
+-
+-	/*
+-	 * The TS-7200 has NOR flash, the other models have NAND flash.
+-	 */
+-	if (!board_is_ts7200()) {
+-		if (is_ts9420_installed()) {
+-			iotable_init(ts72xx_alternate_nand_io_desc,
+-				ARRAY_SIZE(ts72xx_alternate_nand_io_desc));
+-		} else {
+-			iotable_init(ts72xx_nand_io_desc,
+-				ARRAY_SIZE(ts72xx_nand_io_desc));
+-		}
++	switch (size) {
++	case SZ_32M:
++		chip->partitions =3D ts72xx_part_info32;
++		chip->nr_partitions =3D ARRAY_SIZE(ts72xx_part_info32);
++		break;
++	case SZ_128M:
++		chip->partitions =3D ts72xx_part_info128;
++		chip->nr_partitions =3D ARRAY_SIZE(ts72xx_part_info128);
++		break;
++	default:
++		pr_warning("ts72xx: Unknown nand disk size:%lluMB\n", size >> 20);
++		break;
+ 	}
+ }
+=20
++static struct platform_nand_data ts72xx_nand_data =3D {
++	.chip =3D {
++		.nr_chips	=3D 1,
++		.chip_offset	=3D 0,
++		.chip_delay	=3D 15,
++		.part_probe_types =3D ts72xx_nand_part_probes,
++		.set_parts	=3D ts72xx_nand_set_parts,
++	},
++	.ctrl =3D {
++		.cmd_ctrl	=3D ts72xx_nand_hwcontrol,
++		.dev_ready	=3D ts72xx_nand_device_ready,
++	},
 +};
 +
- 
- static void mtdoops_workfunc_write(struct work_struct *work)
- {
-@@ -309,6 +346,7 @@ static void mtdoops_notify_add(struct mtd_info *mtd)
- 
- 	find_next_position(cxt);
- 
-+	atomic_notifier_chain_register(&panic_notifier_list, &panic_block);
- 	printk(KERN_INFO "mtdoops: Attached to MTD device %d\n", mtd->index);
- }
- 
-@@ -326,28 +364,9 @@ static void mtdoops_notify_remove(struct mtd_info *mtd)
- static void mtdoops_console_sync(void)
- {
- 	struct mtdoops_context *cxt = &oops_cxt;
--	struct mtd_info *mtd = cxt->mtd;
--	unsigned long flags;
--
--	if (!cxt->ready || !mtd || cxt->writecount == 0)
--		return;
- 
--	/* 
--	 *  Once ready is 0 and we've held the lock no further writes to the 
--	 *  buffer will happen
--	 */
--	spin_lock_irqsave(&cxt->writecount_lock, flags);
--	if (!cxt->ready) {
--		spin_unlock_irqrestore(&cxt->writecount_lock, flags);
--		return;
--	}
--	cxt->ready = 0;
--	spin_unlock_irqrestore(&cxt->writecount_lock, flags);
--
--	if (mtd->panic_write && (in_interrupt() || panic_on_oops))
--		/* Interrupt context, we're going to panic so try and log */
--		mtdoops_write(cxt, 1);
--	else
-+	/* Write out the buffer if we are called during an oops */
-+	if (oops_in_progress)
- 		schedule_work(&cxt->work_write);
- }
- 
-@@ -356,13 +375,11 @@ mtdoops_console_write(struct console *co, const char *s, unsigned int count)
- {
- 	struct mtdoops_context *cxt = co->data;
- 	struct mtd_info *mtd = cxt->mtd;
-+	int copy_from;
-+	int copy_wrap = 0;
-+	int copy_wrap_diff = 0;
- 	unsigned long flags;
- 
--	if (!oops_in_progress) {
--		mtdoops_console_sync();
--		return;
--	}
--
- 	if (!cxt->ready || !mtd)
- 		return;
- 
-@@ -375,23 +392,21 @@ mtdoops_console_write(struct console *co, const char *s, unsigned int count)
- 		return;
- 	}
- 
--	if (cxt->writecount == 0) {
--		u32 *stamp = cxt->oops_buf;
--		*stamp++ = cxt->nextcount;
--		*stamp = MTDOOPS_KERNMSG_MAGIC;
-+	/* Handle wraps */
-+	if ((count + cxt->writecount) >= cxt->page_size) {
-+		copy_wrap_diff = cxt->page_size - cxt->writecount;
-+		copy_wrap = cxt->writecount;
++static struct resource ts7250_nand_resource[] =3D {
++	{
++		.start		=3D EP93XX_CS6_PHYS_BASE,
++		.end		=3D EP93XX_CS6_PHYS_BASE + SZ_16M - 1,
++		.flags		=3D IORESOURCE_MEM,
++	},
++};
 +
- 		cxt->writecount = 8;
-+		count -= copy_wrap_diff;
- 	}
--
--	if ((count + cxt->writecount) > cxt->page_size)
--		count = cxt->page_size - cxt->writecount;
--
--	memcpy(cxt->oops_buf + cxt->writecount, s, count);
-+	copy_from = cxt->writecount;
- 	cxt->writecount += count;
--
- 	spin_unlock_irqrestore(&cxt->writecount_lock, flags);
- 
--	if (cxt->writecount == cxt->page_size)
--		mtdoops_console_sync();
-+	if (copy_wrap)
-+		memcpy(cxt->oops_buf + copy_wrap, s, copy_wrap_diff);
-+	memcpy(cxt->oops_buf + copy_from, s + copy_wrap_diff, count);
- }
- 
- static int __init mtdoops_console_setup(struct console *co, char *options)
-@@ -429,15 +444,24 @@ static int __init mtdoops_console_init(void)
++static struct resource ts9420_nand_resource[] =3D {
++	{
++		.start		=3D EP93XX_CS7_PHYS_BASE,
++		.end		=3D EP93XX_CS7_PHYS_BASE + SZ_16M - 1,
++		.flags		=3D IORESOURCE_MEM,
++	},
++};
++
++static struct platform_device ts72xx_nand_flash =3D {
++	.name			=3D "gen_nand",
++	.id			=3D -1,
++	.dev.platform_data	=3D &ts72xx_nand_data,
++};
++
++
+ =
+/************************************************************************=
+*
+  * NOR flash (TS-7200 only)
+  =
+*************************************************************************=
+/
+-static struct physmap_flash_data ts72xx_flash_data =3D {
++static struct physmap_flash_data ts72xx_nor_data =3D {
+ 	.width		=3D 2,
+ };
+=20
+-static struct resource ts72xx_flash_resource =3D {
++static struct resource ts72xx_nor_resource =3D {
+ 	.start		=3D EP93XX_CS6_PHYS_BASE,
+ 	.end		=3D EP93XX_CS6_PHYS_BASE + SZ_16M - 1,
+ 	.flags		=3D IORESOURCE_MEM,
+ };
+=20
+-static struct platform_device ts72xx_flash =3D {
++static struct platform_device ts72xx_nor_flash =3D {
+ 	.name		=3D "physmap-flash",
+ 	.id		=3D 0,
+ 	.dev		=3D {
+-		.platform_data	=3D &ts72xx_flash_data,
++		.platform_data	=3D &ts72xx_nor_data,
+ 	},
+ 	.num_resources	=3D 1,
+-	.resource	=3D &ts72xx_flash_resource,
++	.resource	=3D &ts72xx_nor_resource,
+ };
+=20
+ static void __init ts72xx_register_flash(void)
  {
- 	struct mtdoops_context *cxt = &oops_cxt;
- 
-+	cxt->writecount = 8; /* Start after the header */
- 	cxt->mtd_index = -1;
- 	cxt->page_size = mtdoops_page_size;
--	cxt->oops_buf = vmalloc(cxt->page_size);
- 	spin_lock_init(&cxt->writecount_lock);
- 
-+	cxt->oops_buf = vmalloc(cxt->page_size);
- 	if (!cxt->oops_buf) {
- 		printk(KERN_ERR "Failed to allocate mtdoops buffer workspace\n");
- 		return -ENOMEM;
- 	}
-+	cxt->oops_buf_write = vmalloc(cxt->page_size);
-+	if (!cxt->oops_buf_write) {
-+		printk(KERN_ERR "Failed to allocate mtdoops write buffer workspace\n");
-+		vfree(cxt->oops_buf);
-+		return -ENOMEM;
+-	if (board_is_ts7200())
+-		platform_device_register(&ts72xx_flash);
++	if (board_is_ts7200()) {
++		platform_device_register(&ts72xx_nor_flash);
++	} else {
++		if (is_ts9420_installed()) {
++			ts72xx_nand_flash.resource =3D ts9420_nand_resource;
++			ts72xx_nand_flash.num_resources =3D
++					ARRAY_SIZE(ts9420_nand_resource);
++		} else {
++			ts72xx_nand_flash.resource =3D ts7250_nand_resource;
++			ts72xx_nand_flash.num_resources =3D
++					ARRAY_SIZE(ts7250_nand_resource);
++		}
++		platform_device_register(&ts72xx_nand_flash);
 +	}
-+	memset(cxt->oops_buf_write, 0xff, cxt->page_size);
-+	memset(cxt->oops_buf, 0xff, cxt->page_size);
- 
- 	INIT_WORK(&cxt->work_erase, mtdoops_workfunc_erase);
- 	INIT_WORK(&cxt->work_write, mtdoops_workfunc_write);
-@@ -455,6 +479,7 @@ static void __exit mtdoops_console_exit(void)
- 	unregister_console(&mtdoops_console);
- 	kfree(cxt->name);
- 	vfree(cxt->oops_buf);
-+	vfree(cxt->oops_buf_write);
  }
- 
- 
--- 
-1.6.0.4
+=20
++
+ static unsigned char ts72xx_rtc_readbyte(unsigned long addr)
+ {
+ 	__raw_writeb(addr, TS72XX_RTC_INDEX_VIRT_BASE);=20
