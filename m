@@ -1,15 +1,14 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mv5q9-00076j-ES
-	for linux-mtd@lists.infradead.org; Tue, 06 Oct 2009 08:56:18 +0000
+	id 1Mv5qD-000772-3m
+	for linux-mtd@lists.infradead.org; Tue, 06 Oct 2009 08:56:23 +0000
 From: Mika Korhonen <ext-mika.2.korhonen@nokia.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] MTD: OneNAND: multiblock erase support
-Date: Tue,  6 Oct 2009 11:56:00 +0300
-Message-Id: <1254819360-17191-3-git-send-email-ext-mika.2.korhonen@nokia.com>
-In-Reply-To: <1254819360-17191-2-git-send-email-ext-mika.2.korhonen@nokia.com>
+Subject: [PATCH 1/2] MTD: OneNAND: move erase method to a separate function
+Date: Tue,  6 Oct 2009 11:55:59 +0300
+Message-Id: <1254819360-17191-2-git-send-email-ext-mika.2.korhonen@nokia.com>
+In-Reply-To: <1254819360-17191-1-git-send-email-ext-mika.2.korhonen@nokia.com>
 References: <1254819360-17191-1-git-send-email-ext-mika.2.korhonen@nokia.com>
-	<1254819360-17191-2-git-send-email-ext-mika.2.korhonen@nokia.com>
 Cc: amul.saha@samsung.com, artem.bityutskiy@nokia.com,
 	kyungmin.park@samsung.com, Mika Korhonen <ext-mika.2.korhonen@nokia.com>,
 	adrian.hunter@nokia.com
@@ -22,311 +21,217 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add support for multiblock erase command. OneNANDs (excluding Flex-OneNAND)
-are capable of simultaneous erase of up to 64 eraseblocks which is much faster.
-
-This changes the erase requests for regions covering multiple eraseblocks
-to be performed using multiblock erase.
+Separate the actual execution of erase to a new function:
+onenand_block_by_block_erase(). This is done in preparation for
+the multiblock erase support.
 
 Signed-off-by: Mika Korhonen <ext-mika.2.korhonen@nokia.com>
 ---
- drivers/mtd/onenand/omap2.c        |   22 ++++-
- drivers/mtd/onenand/onenand_base.c |  175 +++++++++++++++++++++++++++++++++++-
- include/linux/mtd/flashchip.h      |    4 +-
- include/linux/mtd/onenand_regs.h   |    2 +
- 4 files changed, 196 insertions(+), 7 deletions(-)
+ drivers/mtd/onenand/onenand_base.c |  143 +++++++++++++++++++++---------------
+ 1 files changed, 84 insertions(+), 59 deletions(-)
 
-diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-index 0108ed4..2dafd09 100644
---- a/drivers/mtd/onenand/omap2.c
-+++ b/drivers/mtd/onenand/omap2.c
-@@ -112,10 +112,24 @@ static int omap2_onenand_wait(struct mtd_info *mtd, int state)
- 	unsigned long timeout;
- 	u32 syscfg;
- 
--	if (state == FL_RESETING) {
--		int i;
-+	if (state == FL_RESETING || state == FL_PREPARING_ERASE ||
-+	    state == FL_VERIFYING_ERASE) {
-+		int i = 21;
-+		unsigned int intr_flags = ONENAND_INT_MASTER;
-+
-+		switch (state) {
-+		case FL_RESETING:
-+			intr_flags |= ONENAND_INT_RESET;
-+			break;
-+		case FL_PREPARING_ERASE:
-+			intr_flags |= ONENAND_INT_ERASE;
-+			break;
-+		case FL_VERIFYING_ERASE:
-+			i = 101;
-+			break;
-+		}
- 
--		for (i = 0; i < 20; i++) {
-+		while (--i) {
- 			udelay(1);
- 			intr = read_reg(c, ONENAND_REG_INTERRUPT);
- 			if (intr & ONENAND_INT_MASTER)
-@@ -126,7 +140,7 @@ static int omap2_onenand_wait(struct mtd_info *mtd, int state)
- 			wait_err("controller error", state, ctrl, intr);
- 			return -EIO;
- 		}
--		if (!(intr & ONENAND_INT_RESET)) {
-+		if ((intr & intr_flags) != intr_flags) {
- 			wait_err("timeout", state, ctrl, intr);
- 			return -EIO;
- 		}
 diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index 13090f3..244fa0f 100644
+index ff66e43..13090f3 100644
 --- a/drivers/mtd/onenand/onenand_base.c
 +++ b/drivers/mtd/onenand/onenand_base.c
-@@ -32,6 +32,13 @@
- 
- #include <asm/io.h>
- 
-+/*
-+ * Multiblock erase if number of blocks to erase is 2 or more.
-+ * Maximum number of blocks for simultaneous erase is 64.
-+ */
-+#define MB_ERASE_MIN_BLK_COUNT 2
-+#define MB_ERASE_MAX_BLK_COUNT 64
-+
- /* Default Flex-OneNAND boundary and lock respectively */
- static int flex_bdry[MAX_DIES * 2] = { -1, 0, -1, 0 };
- 
-@@ -339,6 +346,8 @@ static int onenand_command(struct mtd_info *mtd, int cmd, loff_t addr, size_t le
- 		break;
- 
- 	case ONENAND_CMD_ERASE:
-+	case ONENAND_CMD_MULTIBLOCK_ERASE:
-+	case ONENAND_CMD_ERASE_VERIFY:
- 	case ONENAND_CMD_BUFFERRAM:
- 	case ONENAND_CMD_OTP_ACCESS:
- 		block = onenand_block(this, addr);
-@@ -483,7 +492,7 @@ static int onenand_wait(struct mtd_info *mtd, int state)
- 		if (interrupt & flags)
- 			break;
- 
--		if (state != FL_READING)
-+		if (state != FL_READING && state != FL_PREPARING_ERASE)
- 			cond_resched();
- 	}
- 	/* To get correct interrupt status in timeout case */
-@@ -513,6 +522,18 @@ static int onenand_wait(struct mtd_info *mtd, int state)
- 		return -EIO;
- 	}
- 
-+	if (state == FL_PREPARING_ERASE && !(interrupt & ONENAND_INT_ERASE)) {
-+		printk(KERN_ERR "onenand_wait: mb erase timeout! ctrl=0x%04x intr=0x%04x\n",
-+			ctrl, interrupt);
-+		return -EIO;
-+	}
-+
-+	if (!(interrupt & ONENAND_INT_MASTER)) {
-+		printk(KERN_ERR "onenand_wait: timeout! ctrl=0x%04x intr=0x%04x\n",
-+			ctrl, interrupt);
-+		return -EIO;
-+	}
-+
- 	/* If there's controller error, it's a real error */
- 	if (ctrl & ONENAND_CTRL_ERROR) {
- 		printk(KERN_ERR "onenand_wait: controller error = 0x%04x\n",
-@@ -2140,6 +2161,150 @@ static int onenand_block_isbad_nolock(struct mtd_info *mtd, loff_t ofs, int allo
- 	return bbm->isbad_bbt(mtd, ofs, allowbbt);
+@@ -2141,77 +2141,43 @@ static int onenand_block_isbad_nolock(struct mtd_info *mtd, loff_t ofs, int allo
  }
  
-+
-+static int onenand_multiblock_erase_verify(struct mtd_info *mtd,
-+					   struct erase_info *instr)
-+{
-+	struct onenand_chip *this = mtd->priv;
-+	loff_t addr = instr->addr;
+ /**
+- * onenand_erase - [MTD Interface] erase block(s)
++ * onenand_block_by_block_erase - [Internal] erase block(s) using regular erase
+  * @param mtd		MTD device structure
+  * @param instr		erase instruction
++ * @param region	erase region
++ * @param block_size	erase block size
+  *
+- * Erase one ore more blocks
++ * Erase one or more blocks one block at a time
+  */
+-static int onenand_erase(struct mtd_info *mtd, struct erase_info *instr)
++static int onenand_block_by_block_erase(struct mtd_info *mtd,
++					struct erase_info *instr,
++					struct mtd_erase_region_info *region,
++					unsigned int block_size)
+ {
+ 	struct onenand_chip *this = mtd->priv;
+-	unsigned int block_size;
+ 	loff_t addr = instr->addr;
+-	loff_t len = instr->len;
+-	int ret = 0, i;
+-	struct mtd_erase_region_info *region = NULL;
 +	int len = instr->len;
-+	unsigned int block_size = (1 << this->erase_shift);
+ 	loff_t region_end = 0;
 +	int ret = 0;
-+
-+	while (len) {
-+		this->command(mtd, ONENAND_CMD_ERASE_VERIFY, addr, block_size);
-+		ret = this->wait(mtd, FL_VERIFYING_ERASE);
-+		if (ret) {
-+			printk(KERN_ERR "onenand_multiblock_erase_verify: "
-+			       "Failed verify, block %d\n",
+ 
+-	DEBUG(MTD_DEBUG_LEVEL3, "onenand_erase: start = 0x%012llx, len = %llu\n", (unsigned long long) instr->addr, (unsigned long long) instr->len);
+-
+-	/* Do not allow erase past end of device */
+-	if (unlikely((len + addr) > mtd->size)) {
+-		printk(KERN_ERR "onenand_erase: Erase past end of device\n");
+-		return -EINVAL;
+-	}
+-
+-	if (FLEXONENAND(this)) {
+-		/* Find the eraseregion of this address */
+-		i = flexonenand_region(mtd, addr);
+-		region = &mtd->eraseregions[i];
+-
+-		block_size = region->erasesize;
++	if (region) {
++		/* region is set for Flex-OneNAND */
+ 		region_end = region->offset + region->erasesize * region->numblocks;
+-
+-		/* Start address within region must align on block boundary.
+-		 * Erase region's start offset is always block start address.
+-		 */
+-		if (unlikely((addr - region->offset) & (block_size - 1))) {
+-			printk(KERN_ERR "onenand_erase: Unaligned address\n");
+-			return -EINVAL;
+-		}
+-	} else {
+-		block_size = 1 << this->erase_shift;
+-
+-		/* Start address must align on block boundary */
+-		if (unlikely(addr & (block_size - 1))) {
+-			printk(KERN_ERR "onenand_erase: Unaligned address\n");
+-			return -EINVAL;
+-		}
+-	}
+-
+-	/* Length must align on block boundary */
+-	if (unlikely(len & (block_size - 1))) {
+-		printk(KERN_ERR "onenand_erase: Length not block aligned\n");
+-		return -EINVAL;
+ 	}
+ 
+-	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+-
+-	/* Grab the lock and see if the device is available */
+-	onenand_get_device(mtd, FL_ERASING);
+-
+-	/* Loop through the blocks */
+ 	instr->state = MTD_ERASING;
+ 
++	/* Loop through the blocks */
+ 	while (len) {
+ 		cond_resched();
+ 
+ 		/* Check if we have a bad block, we do not erase bad blocks */
+ 		if (onenand_block_isbad_nolock(mtd, addr, 0)) {
+-			printk (KERN_WARNING "onenand_erase: attempt to erase a bad block at addr 0x%012llx\n", (unsigned long long) addr);
++			printk(KERN_WARNING "onenand_block_by_block_erase: "
++			       "attempt to erase a bad block at addr "
++			       "0x%012llx\n", (unsigned long long) addr);
+ 			instr->state = MTD_ERASE_FAILED;
+-			goto erase_exit;
++			return -EIO;
+ 		}
+ 
+ 		this->command(mtd, ONENAND_CMD_ERASE, addr, block_size);
+@@ -2221,11 +2187,12 @@ static int onenand_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 		ret = this->wait(mtd, FL_ERASING);
+ 		/* Check, if it is write protected */
+ 		if (ret) {
+-			printk(KERN_ERR "onenand_erase: Failed erase, block %d\n",
+-						 onenand_block(this, addr));
++			printk(KERN_ERR "onenand_block_by_block_erase: "
++			       "Failed erase, block %d\n",
 +			       onenand_block(this, addr));
-+			instr->state = MTD_ERASE_FAILED;
-+			instr->fail_addr = addr;
-+			return -1;
-+		}
-+		len -= block_size;
-+		addr += block_size;
+ 			instr->state = MTD_ERASE_FAILED;
+ 			instr->fail_addr = addr;
+-			goto erase_exit;
++			return -EIO;
+ 		}
+ 
+ 		len -= block_size;
+@@ -2241,24 +2208,82 @@ static int onenand_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 
+ 			if (len & (block_size - 1)) {
+ 				/* FIXME: This should be handled at MTD partitioning level. */
+-				printk(KERN_ERR "onenand_erase: Unaligned address\n");
+-				goto erase_exit;
++				printk(KERN_ERR "onenand_block_by_block_erase: "
++				       "Unaligned address\n");
++				return -EIO;
+ 			}
+ 		}
 +	}
 +	return 0;
 +}
 +
 +/**
-+ * onenand_multiblock_erase - [Internal] erase block(s) using multiblock erase
++ * onenand_erase - [MTD Interface] erase block(s)
 + * @param mtd		MTD device structure
 + * @param instr		erase instruction
-+ * @param region	erase region
 + *
-+ * Erase one or more blocks up to 64 block at a time
++ * Erase one or more blocks
 + */
-+static int onenand_multiblock_erase(struct mtd_info *mtd,
-+				    struct erase_info *instr,
-+				    unsigned int block_size)
++static int onenand_erase(struct mtd_info *mtd, struct erase_info *instr)
 +{
 +	struct onenand_chip *this = mtd->priv;
++	unsigned int block_size;
 +	loff_t addr = instr->addr;
-+	int len = instr->len;
-+	int eb_count = 0;
++	loff_t len = instr->len;
 +	int ret = 0;
-+	int bdry_block = 0;
++	struct mtd_erase_region_info *region = NULL;
++	loff_t region_offset = 0;
 +
-+	instr->state = MTD_ERASING;
++	DEBUG(MTD_DEBUG_LEVEL3, "onenand_erase: start=0x%012llx, len=%llu\n",
++	      (unsigned long long) instr->addr,
++	      (unsigned long long) instr->len);
 +
-+	if (ONENAND_IS_DDP(this)) {
-+		loff_t bdry_addr = this->chipsize >> 1;
-+		if (addr < bdry_addr && (addr + len) > bdry_addr)
-+			bdry_block = bdry_addr >> this->erase_shift;
++	/* Do not allow erase past end of device */
++	if (unlikely((len + addr) > mtd->size)) {
++		printk(KERN_ERR "onenand_erase: Erase past end of device\n");
++		return -EINVAL;
 +	}
 +
-+	/* Pre-check bbs */
-+	while (len) {
-+		/* Check if we have a bad block, we do not erase bad blocks */
-+		if (onenand_block_isbad_nolock(mtd, addr, 0)) {
-+			printk(KERN_WARNING "onenand_multiblock_erase: "
-+			       "try to erase a bad block at addr 0x%012llx\n",
-+			       (unsigned long long) addr);
-+			instr->state = MTD_ERASE_FAILED;
-+			return -EIO;
-+		}
-+		len -= block_size;
-+		addr += block_size;
-+	}
++	if (FLEXONENAND(this)) {
++		/* Find the eraseregion of this address */
++		int i = flexonenand_region(mtd, addr);
 +
-+	len = instr->len;
-+	addr = instr->addr;
++		region = &mtd->eraseregions[i];
++		block_size = region->erasesize;
 +
-+	/* loop over 64 eb batches */
-+	while (len) {
-+		struct erase_info verify_instr = *instr;
-+		int max_eb_count = MB_ERASE_MAX_BLK_COUNT;
-+
-+		verify_instr.addr = addr;
-+		verify_instr.len = 0;
-+
-+		/* do not cross chip boundary */
-+		if (bdry_block) {
-+			int this_block = (addr >> this->erase_shift);
-+
-+			if (this_block < bdry_block) {
-+				max_eb_count = min(max_eb_count,
-+						   (bdry_block - this_block));
-+			}
-+		}
-+
-+		eb_count = 0;
-+
-+		while (len > block_size && eb_count < (max_eb_count - 1)) {
-+			this->command(mtd, ONENAND_CMD_MULTIBLOCK_ERASE,
-+				      addr, block_size);
-+			onenand_invalidate_bufferram(mtd, addr, block_size);
-+
-+			ret = this->wait(mtd, FL_PREPARING_ERASE);
-+			if (ret) {
-+				printk(KERN_ERR "onenand_multiblock_erase: "
-+				       "Failed multiblock erase, block %d\n",
-+				       onenand_block(this, addr));
-+				instr->state = MTD_ERASE_FAILED;
-+				instr->fail_addr = addr;
-+				return -EIO;
-+			}
-+
-+			len -= block_size;
-+			addr += block_size;
-+			eb_count++;
-+		}
-+
-+		/* last block of 64-eb series */
-+		cond_resched();
-+		this->command(mtd, ONENAND_CMD_ERASE, addr, block_size);
-+		onenand_invalidate_bufferram(mtd, addr, block_size);
-+
-+		ret = this->wait(mtd, FL_ERASING);
-+		/* Check, if it is write protected */
-+		if (ret) {
-+			printk(KERN_ERR "onenand_multiblock_erase: "
-+			       "Failed erase, block %d\n",
-+			       onenand_block(this, addr));
-+			instr->state = MTD_ERASE_FAILED;
-+			instr->fail_addr = addr;
-+			return -EIO;
-+		}
-+
-+		len -= block_size;
-+		addr += block_size;
-+		eb_count++;
-+
-+		/* verify */
-+		verify_instr.len = eb_count * block_size;
-+		if (onenand_multiblock_erase_verify(mtd, &verify_instr)) {
-+			instr->state = verify_instr.state;
-+			instr->fail_addr = verify_instr.fail_addr;
-+			return -EIO;
-+		}
-+
-+	}
-+	return 0;
-+}
-+
-+
- /**
-  * onenand_block_by_block_erase - [Internal] erase block(s) using regular erase
-  * @param mtd		MTD device structure
-@@ -2276,7 +2441,13 @@ static int onenand_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	/* Grab the lock and see if the device is available */
- 	onenand_get_device(mtd, FL_ERASING);
- 
--	ret = onenand_block_by_block_erase(mtd, instr, region, block_size);
-+	if (region || instr->len < MB_ERASE_MIN_BLK_COUNT * block_size) {
-+		/* region is set for Flex-OneNAND (no mb erase) */
-+		ret = onenand_block_by_block_erase(mtd, instr,
-+						   region, block_size);
++		/* Start address within region must align on block boundary.
++		 * Erase region's start offset is always block start address.
++		 */
++		region_offset = region->offset;
 +	} else {
-+		ret = onenand_multiblock_erase(mtd, instr, block_size);
++		block_size = 1 << this->erase_shift;
 +	}
+ 
++	/* Start address must align on block boundary */
++	if (unlikely((addr - region_offset) & (block_size - 1))) {
++		printk(KERN_ERR "onenand_erase: Unaligned address\n");
++		return -EINVAL;
+ 	}
+ 
+-	instr->state = MTD_ERASE_DONE;
++	/* Length must align on block boundary */
++	if (unlikely(len & (block_size - 1))) {
++		printk(KERN_ERR "onenand_erase: Length not block aligned\n");
++		return -EINVAL;
++	}
++
++	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+ 
+-erase_exit:
++	/* Grab the lock and see if the device is available */
++	onenand_get_device(mtd, FL_ERASING);
+ 
+-	ret = instr->state == MTD_ERASE_DONE ? 0 : -EIO;
++	ret = onenand_block_by_block_erase(mtd, instr, region, block_size);
  
  	/* Deselect and wake up anyone waiting on the device */
  	onenand_release_device(mtd);
-diff --git a/include/linux/mtd/flashchip.h b/include/linux/mtd/flashchip.h
-index f350a48..d0bf422 100644
---- a/include/linux/mtd/flashchip.h
-+++ b/include/linux/mtd/flashchip.h
-@@ -41,9 +41,11 @@ typedef enum {
- 	/* These 2 come from nand_state_t, which has been unified here */
- 	FL_READING,
- 	FL_CACHEDPRG,
--	/* These 2 come from onenand_state_t, which has been unified here */
-+	/* These 4 come from onenand_state_t, which has been unified here */
- 	FL_RESETING,
- 	FL_OTPING,
-+	FL_PREPARING_ERASE,
-+	FL_VERIFYING_ERASE,
  
- 	FL_UNKNOWN
- } flstate_t;
-diff --git a/include/linux/mtd/onenand_regs.h b/include/linux/mtd/onenand_regs.h
-index acadbf5..cd6f3b4 100644
---- a/include/linux/mtd/onenand_regs.h
-+++ b/include/linux/mtd/onenand_regs.h
-@@ -131,6 +131,8 @@
- #define ONENAND_CMD_LOCK_TIGHT		(0x2C)
- #define ONENAND_CMD_UNLOCK_ALL		(0x27)
- #define ONENAND_CMD_ERASE		(0x94)
-+#define ONENAND_CMD_MULTIBLOCK_ERASE	(0x95)
-+#define ONENAND_CMD_ERASE_VERIFY	(0x71)
- #define ONENAND_CMD_RESET		(0xF0)
- #define ONENAND_CMD_OTP_ACCESS		(0x65)
- #define ONENAND_CMD_READID		(0x90)
+ 	/* Do call back function */
+ 	if (!ret)
++		instr->state = MTD_ERASE_DONE;
+ 		mtd_erase_callback(instr);
+ 
+ 	return ret;
 -- 
 1.6.0.4
