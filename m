@@ -1,22 +1,21 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MvANB-00037p-3A
-	for linux-mtd@lists.infradead.org; Tue, 06 Oct 2009 13:46:40 +0000
-Date: Tue, 6 Oct 2009 15:46:28 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Matthias Fuchs <matthias.fuchs@esd.eu>
-Subject: Re: patented FTL format
-Message-ID: <20091006134628.GA3306@pengutronix.de>
-References: <200909301732.35277.matthias.fuchs@esd.eu>
-	<200910011123.07588.matthias.fuchs@esd.eu>
-	<20091001103000.GA3166@pengutronix.de>
-	<200910061541.07368.matthias.fuchs@esd.eu>
+Received: from mail-bw0-f220.google.com ([209.85.218.220])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MvBDc-0002qC-A0
+	for linux-mtd@lists.infradead.org; Tue, 06 Oct 2009 14:40:53 +0000
+Received: by bwz20 with SMTP id 20so3464501bwz.18
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 06 Oct 2009 07:40:46 -0700 (PDT)
+Message-ID: <4ACB56EF.9050301@billgatliff.com>
+Date: Tue, 06 Oct 2009 09:40:47 -0500
+From: Bill Gatliff <bgat@billgatliff.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="x+6KMIRAuhnl3hBn"
-Content-Disposition: inline
-In-Reply-To: <200910061541.07368.matthias.fuchs@esd.eu>
-Cc: David Brown <mtd@davidb.org>, linux-mtd@lists.infradead.org
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: Should flash hardware look like UBI?
+References: <1254751504.13096.725.camel@macbook.infradead.org>
+In-Reply-To: <1254751504.13096.725.camel@macbook.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,38 +25,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+David Woodhouse wrote:
+> But I've also been thinking about exactly what we _do_ want. We
+> certainly want something a little more capable than the raw interface to
+> NAND flash that ONFI provides.
+>   
 
---x+6KMIRAuhnl3hBn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Actually, I prefer that we make the hardware as dumb as possible.  I'm 
+ok with the chip timing its own flash erase and programming cycles, but 
+everything else I want to keep up in our software.  That way we can 
+adapt the functionality to whatever level of control that we want.
 
-> > 'git blame <file>' tells you the author/commit that changed a specific =
-line.
-> > Then, 'git show <commit>' shows you also the description. That usually =
-helps to
-> > find the mail-thread accompanying the patch. Dunno if it works in this =
-case,
-> > but it often does.
-> Hmm, this brings me to Linus' initial git import in 2.6.12 times :-)
+ECC can be difficult to get right, and the specific algorithm chosen can 
+be application- and environment-dependent.  If it's baked into the chip 
+then the algorithm decision is already made, and any bugs in the 
+implementation are impossible to correct.  Also, like other posters have 
+mentioned regarding SD/MMC firmware, any firmware running in a NAND 
+flash will require thorough documentation so that users of the chip can 
+accommodate its needs for power management, etc.
 
-There is a history-tree on kernel.org (by tglx).
+And on top of that, one really needs to know if the bits that they are 
+reading back have required ECC to recover.  If a region of flash is 
+failing, a sudden increase in the amount of error correction needed will 
+tell you that some evasive action is necessary.  By its very nature, ECC 
+can never be completely transparent to the user.
 
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+I don't see any substantial benefit to a chip having an inbuilt, 
+hardware "memcpy" to allow one to move data around without reading it 
+out.  That just sounds like more undocumented stuff to go wrong.  :)  
+And more design decisions that have been made without the user's consent.
 
---x+6KMIRAuhnl3hBn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
+Just my US$0.02.
 
-iEYEARECAAYFAkrLSjQACgkQD27XaX1/VRslewCgk6IANNbMwn7CWVWIjFJxR0yw
-4cQAoMYgOka/PGzxxXeC3M4HiHECMdRm
-=mgv3
------END PGP SIGNATURE-----
 
---x+6KMIRAuhnl3hBn--
+b.g.
+
+-- 
+Bill Gatliff
+bgat@billgatliff.com
