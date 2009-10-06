@@ -1,17 +1,13 @@
-Received: from mail-ew0-f223.google.com ([209.85.219.223])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mv7m3-0003x9-Pl
-	for linux-mtd@lists.infradead.org; Tue, 06 Oct 2009 11:00:13 +0000
-Received: by ewy23 with SMTP id 23so4026349ewy.2
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 06 Oct 2009 04:00:07 -0700 (PDT)
+Date: Tue, 6 Oct 2009 13:21:45 +0200 (CEST)
+From: Thomas Gleixner <tglx@linutronix.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: Should flash hardware look like UBI?
+In-Reply-To: <1254751504.13096.725.camel@macbook.infradead.org>
+Message-ID: <alpine.LFD.2.00.0910061302350.2638@localhost.localdomain>
+References: <1254751504.13096.725.camel@macbook.infradead.org>
 MIME-Version: 1.0
-Date: Tue, 6 Oct 2009 13:00:06 +0200
-Message-ID: <29001ab20910060400j76167eg138df17d57727231@mail.gmail.com>
-Subject: mkfs.ubifs / ubiformat: Bad UBI magic
-From: =?ISO-8859-1?Q?Tobias_Wahlstr=F6m?= <tobias.tanke@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,51 +17,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+David,
 
-This is my first post at this list - I hope it makes (at least) some
-sense anyway. I have looked through the mailing archive and searched
-using google without finding anything useful on the topic. I hope I
-provided the information you need - if not, just tell me what you are
-missing!
+On Mon, 5 Oct 2009, David Woodhouse wrote:
 
-I'm working on a project where we would like to use ubi and ubifs as
-root filesystem since it seems to be the best choise in many ways. But
-I have a problem which I can't find anything about either the mail
-archive nor using google etc. I currently use linux 2.6.26 with some
-patches. My target is the freescale imx255 pdk board. My build system
-is Ubuntu 9.04 (run within vmware).
+> I just posted http://www.advogato.org/person/dwmw2/diary/211.html which
+> laments the common view that future flash storage will just look like a
+> disk (SSD/eMMC/etc.). I don't think we want that, for the reasons given
+> there.
 
-I have cloned the mtd-utils.git (today 2009-09-05) and compiled the
-tools both for my build system and my target (both without xattr
-support). Then I created a ubifs image using mkfs.ubifs on my build
-system and tried to flash it to the nand using ubiformat. The commands
-I used was:
+You forgot to mention that the pre SSD FLASH storage (USB sticks, CF
+Cards ...) already have provided a proven track record of
+unreliability. I still have the recommendation of keeping the power
+supply stable for min. 400ms after the last access to the device which
+I got from a well known "industrial grade" manufacturer.
 
-build> mkfs.ubifs -m 2048 -e 256KiB -c 384 -U --root rootfs -o rootfs.ubifs
-target> flash_eraseall /dev/mtd2
-target> ubiformat /dev/mtd2 -s 2048 -v -f rootfs.ubifs
+I admit that certain SSD manufacturers seem to have slightly more
+clue, but that does not change the fact that we need to implement a
+filesystem on top of another filesystem.
 
-The output from ubiformat is:
+> But I've also been thinking about exactly what we _do_ want. We
+> certainly want something a little more capable than the raw interface to
+> NAND flash that ONFI provides.
+> 
+> For a start, we want ECC to be built-in. We don't want to have to do
+> correction in software, and we want a 'copy page' command that's
+> actually useful -- we want it to apply ECC corrections rather than
+> copying any flipped bits faithfully. Although we probably do want the
+> _option_ to read the raw data still, without attempting to correct it.
 
-ubiformat: mtd2 (nand), size 100663296 bytes (96.0 MiB), 384
-eraseblocks of 262144 bytes (256.0 KiB), min. I/O size 2048 bytes
-libscan: start scanning eraseblocks 0-384
-libscan: scanning eraseblock 0: empty
-[...]
-libscan: scanning eraseblock 383: empty
-libscan: finished, mean EC 0, 0 OK, 0 corrupted, 384 empty, 0 alien, bad 0
-ubiformat: 384 eraseblocks are supposedly empty
-ubiformat: will write 13 eraseblocks
-ubiformat: eraseblock 0: erase, change EC to 0ubiformat: error!: bad
-UBI magic 0x31181006, should be 0x55424923
-ubiformat: error!: bad EC header at eraseblock 0 of "/rootfs.ubifs"
+Ack.
+ 
+> We _also_ want the capability to do GC and block replacement for
+> ourselves, taking the opportunity to optimise the file system layout as
+> we do so. So we want to be _told_ about how many errors were fixed when
+> we read a block, and we also probably want to be told if we have to
+> recycle an eraseblock for other reasons (write disturb, etc.)
+> 
+> However, it's acceptable for the device to automatically move data for
+> us, if the OS lacks that capability or doesn't want to bother.
 
-If I look into the source code I see that UBI_EC_HDR_MAGIC is defined
-twice in the source both in include/mtd/ubi-media.h and seems to be
-used by all tools except for mkfs.ubifs. The command mkfs.ubifs use
-UBIFS_NODE_MAGIC in mkfs.ubifs/ubifs-media.h. The values do not match
-at all. And it also seems like mkfs.ubifs use little endian to encode
-the magic number and the other tools use big endian... Strange!
+Hmm, that's going to be a nightmare. Either let the OS sort it out or
+let the Firmware deal with it.
+ 
+> We don't _necessarily_ mind if the device hides bad blocks for us, and
+> if it maintains a logical<->physical mapping of eraseblocks. That kind
+> of thing has been done by hard drives for years, and it's simple enough
+> that they _ought_ to be able to get it right. Although the reliability
+> testing on Toshiba LBA-NAND shows that it's obviously possible to screw
+> it up too :)
 
-/Tobias
+Hmm, we have seen in the past how poorly implemented the logical <->
+physical mappings have been and how naive the wear levelling approach
+was in such devices. I'm not too confident that the manufacturers
+actually have improved that in a significant way.
+ 
+> It occurs to me that the interface that UBI presents to the higher
+> layers is actually a fairly close fit to what we want from hardware.
+>
+> And where it _isn't_, there's something to be said for changing UBI to
+> match what we want. With notifications for 'block recycle needed', for
+> reading blocks without actually returning the data, just to check if the
+> ECC shows any bitflips, etc.)
+
+Which makes me wonder whether we could have access to the CPU which
+runs inside of SSDs and just implement UBI on it. :) 
+
+Open Source Firmware for SSDs would allow us to optimize the
+filesystem <-> storage device interaction even better.
+
+Thanks,
+
+	tglx
