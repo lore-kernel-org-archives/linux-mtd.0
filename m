@@ -1,11 +1,14 @@
-From: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] pxa3xx_nand: fix time calculation
-Date: Wed,  7 Oct 2009 11:31:43 +0200
-Message-Id: <1254907903-11797-1-git-send-email-enrico.scholz@sigma-chemnitz.de>
-Sender: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
-Cc: eric.y.miao@gmail.com, mreimer@vpop.net, dwmw2@infradead.org,
-	Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
+Received: from aa001msb.fastweb.it ([85.18.95.80])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MvVon-0003tx-7U
+	for linux-mtd@lists.infradead.org; Wed, 07 Oct 2009 12:40:37 +0000
+Message-ID: <4ACC8C34.6030007@evidence.eu.com>
+Date: Wed, 07 Oct 2009 14:40:20 +0200
+From: Claudio Scordino <claudio@evidence.eu.com>
+MIME-Version: 1.0
+To: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Subject: [PATCH 1/1] atmel_nand: unused variable "eccpos" removed
+Content-Type: multipart/mixed; boundary="------------010103070708010103020201"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,27 +18,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use DIV_ROUND_UP to calculate number of clocks.  Else, calculated clocks
-are nearly always to low and for times < 10ns, they will be negative on
-PXA320  (which has a nand clock of 104 MHz).
+This is a multi-part message in MIME format.
+--------------010103070708010103020201
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
+Hi everybody,
+
+    this (trivial) patch removes an unused variable from atmel_nand driver.
+
+Best regards,
+
+              Claudio
+
+
+
+
+
+
+--------------010103070708010103020201
+Content-Type: text/x-patch;
+ name="0001-atmel_nand-unused-variable-removed.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="0001-atmel_nand-unused-variable-removed.patch"
+
+From: Claudio Scordino <claudio@evidence.eu.com>
+Date: Wed, 7 Oct 2009 14:27:07 +0200
+Subject: [PATCH 1/1] atmel_nand: unused variable removed
+
+Unused variable "eccpos" removed from atmel_nand driver.
+
+Signed-off-by: Claudio Scordino <claudio@evidence.eu.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ drivers/mtd/nand/atmel_nand.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 6ea520a..32cb4d1 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -316,7 +316,7 @@ static struct pxa3xx_nand_flash *builtin_flash_types[] = {
- #define tAR_NDTR1(r)	(((r) >> 0) & 0xf)
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index f8e9975..4f62d20 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -192,7 +192,6 @@ static int atmel_nand_calculate(struct mtd_info *mtd,
+ {
+ 	struct nand_chip *nand_chip = mtd->priv;
+ 	struct atmel_nand_host *host = nand_chip->priv;
+-	uint32_t *eccpos = nand_chip->ecc.layout->eccpos;
+ 	unsigned int ecc_value;
  
- /* convert nano-seconds to nand flash controller clock cycles */
--#define ns2cycle(ns, clk)	(int)(((ns) * (clk / 1000000) / 1000) - 1)
-+#define ns2cycle(ns, clk)	(int)(DIV_ROUND_UP((ns) * (clk / 1000000), 1000) - 1)
- 
- /* convert nand flash controller clock cycles to nano-seconds */
- #define cycle2ns(c, clk)	((((c) + 1) * 1000000 + clk / 500) / (clk / 1000))
+ 	/* get the first 2 ECC bytes */
 -- 
-1.6.2.5
+1.6.0.4
+
+
+--------------010103070708010103020201--
