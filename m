@@ -1,18 +1,19 @@
-Received: from exprod6og110.obsmtp.com ([64.18.1.25])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mvdk2-0002Ve-3E
-	for linux-mtd@lists.infradead.org; Wed, 07 Oct 2009 21:08:14 +0000
-Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+In-Reply-To: <771cded00909251900v7ee60bf6uf4c5724075c65826@mail.gmail.com>
+References: <771cded00909250457w19686a53obdc178488368dd43@mail.gmail.com>
+	<69f617130909251004y2a17cdetb45f6022a37b4249@mail.gmail.com>
+	<771cded00909251900v7ee60bf6uf4c5724075c65826@mail.gmail.com>
+Date: Wed, 7 Oct 2009 23:12:54 -0400
+Message-ID: <771cded00910072012n51522ce9q32691346e96c4e55@mail.gmail.com>
+Subject: Re: [PATCH 1/5] pxa3xx_nand: enable PXA3xx bad block management
+From: Haojian Zhuang <haojian.zhuang@gmail.com>
+To: David Woodhouse <david.woodhouse@intel.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Subject: [PATCH] Fix memory leak in mtd_dataflash
-Date: Wed, 7 Oct 2009 17:08:08 -0400
-Message-ID: <BD79186B4FD85F4B8E60E381CAEE190901DB7B18@mi8nycmail19.Mi8.com>
-From: "H Hartley Sweeten" <hartleys@visionengravers.com>
-To: <linux-mtd@lists.infradead.org>
-Cc: David Brownell <david-b@pacbell.net>
+Cc: linux-mtd@lists.infradead.org, kyungmin.park@samsung.com,
+	Eric Miao <eric.y.miao@gmail.com>,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+	Mok Keith <ek9852@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,74 +23,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix a potential memory leak in mtd_dataflash driver.
+On Fri, Sep 25, 2009 at 10:00 PM, Haojian Zhuang
+<haojian.zhuang@gmail.com> wrote:
+> On Sat, Sep 26, 2009 at 1:04 AM, Mok Keith <ek9852@gmail.com> wrote:
+>> Hi,
+>>
+>> Any reason to limit the max slot to 40 (PXA_MAX_SLOT). It seems the
+>> bad block management scheme is not scalable and have a limitation of
+>> up to 256M bytes flash size only. (256M, 128kB per block =3D 2048 blocks
+>> =3D 40 bad blocks)
+>
+> Each slot is one page. It's used to record the relocation information.
+> Each relocation
+> information is composed by two items. One is the bad block number, the ot=
+her one
+> is relocated block number. Both of these two items cost 16 bits. For
+> the large block
+> flash, it can save 511 relocation information at most.
+>
+> In the head of slot, a 16-bit magic number and 16-bit total number of
+> relocation items are
+> recorders.
+>
+> When the slot is used, the next written will be moved to the next
+> slot. It's used to protect
+> relocation recorders. If one slot is broken, driver could load the previo=
+us one.
+>
+> When all 40 slots are used, driver could erase the whole block and
+> write again. This feature
+> isn't enabled in the patch.
+>>
+>> Also for the calibration of the 2% bad block area, according to most
+>> NAND specifications (checked Samsung, Hynix, Micron), nand flash
+>> vendor guarantee no more than 20 bad block per 1024 blocks and this
+>> rule is apply linearly.
+>>
+>> Would it be better to use the following otherwise when nand size is
+>> greater than 256M the no of bad block entries is not matched to
+>> specification:
+>> instead of:
+>>> + =A0 =A0entries =3D (entries * 2) / 100;
+>>
+>> use:
+>> + =A0 =A0entries =3D (entries * 10) / 512;
+>
+> Yes, this formula is better. I will use this. Maybe I can use this
+> formula whatever
+> the flash is beyond 256M or not.
+>
+>>
+>> May I know what is the use of PXA_BEGIN_SLOT ?
+> I'm sorry that I removed usage of PXA_BEGIN_SLOT. But I didn't clear the =
+macro
+> definition.
+>>
+>> Keith
+>>
+>
+> Now the new patch is in below.
+>
+> From 57dc033ff95a12ee83f9189c5f72827d755c5432 Mon Sep 17 00:00:00 2001
+> From: Haojian Zhuang <haojian.zhuang@marvell.com>
+> Date: Fri, 25 Sep 2009 15:00:28 -0400
+> Subject: [PATCH] [MTD] [NAND] pxa3xx_nand: enable PXA3xx bad block manage=
+ment
+>
+> There's a custom bad block management in PXA3xx series.
+>
+> This BBM needs to allocate a reserved area at the bottom of NAND chip.
+> The reserved area should be protected from normal usage. The first block
+> of NAND is also reserved in order to storing the relocation information.
+>
+> The reserved area is also called as relocation area. It occupies 2% of
+> the whole NAND space.
+>
+> When NAND controller finds a bad block, it marks the block as bad and
+> allocate a unused block from relocation area in bottom. The new block is
+> used to replace the original bad one. From OS view, there's no bad block
+> at the time. It's handled by NAND driver. Then driver records the replace=
+ment
+> information in the first block.
+>
+> There're 40 pages are reserved in the first block. Each page is a indepen=
+dant
+> relocation table. If the current relocation table is broken, driver will =
+fetch
+> the previous one. Each relocation information cost a 32-bit word.
+>
+>
 
-The private data that is allocated when registering a DataFlash
-device with the MTD subsystem is not released if an error occurs
-when add_mtd_partitions() or add_mtd_device() is called.  Fix this
-by adding an error path.  The memory is already released during a
-remove.
+Hi David,
 
-Also, add a dev_set_drvdata(&spi->dev, NULL) before the kfree() so
-that the spi device does not reference invalid data.
+How do you think that this patch series on PXA3xx bad block
+management? Is it acceptable or not?
 
-Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
-Cc: David Brownell <david-b@pacbell.net>
-Cc: linux-mtd@lists.infradead.org
-
----
-
-diff --git a/drivers/mtd/devices/mtd_dataflash.c =
-b/drivers/mtd/devices/mtd_dataflash.c
-index 93e3627..1981740 100644
---- a/drivers/mtd/devices/mtd_dataflash.c
-+++ b/drivers/mtd/devices/mtd_dataflash.c
-@@ -636,6 +636,7 @@ add_dataflash_otp(struct spi_device *spi, char =
-*name,
- 	struct mtd_info			*device;
- 	struct flash_platform_data	*pdata =3D spi->dev.platform_data;
- 	char				*otp_tag =3D "";
-+	int				err =3D 0;
-=20
- 	priv =3D kzalloc(sizeof *priv, GFP_KERNEL);
- 	if (!priv)
-@@ -693,13 +694,23 @@ add_dataflash_otp(struct spi_device *spi, char =
-*name,
-=20
- 		if (nr_parts > 0) {
- 			priv->partitioned =3D 1;
--			return add_mtd_partitions(device, parts, nr_parts);
-+			err =3D add_mtd_partitions(device, parts, nr_parts);
-+			goto out;
- 		}
- 	} else if (pdata && pdata->nr_parts)
- 		dev_warn(&spi->dev, "ignoring %d default partitions on %s\n",
- 				pdata->nr_parts, device->name);
-=20
--	return add_mtd_device(device) =3D=3D 1 ? -ENODEV : 0;
-+	if (add_mtd_device(device) =3D=3D 1)
-+		err =3D -ENODEV;
-+
-+out:
-+	if (!err)
-+		return 0;
-+
-+	dev_set_drvdata(&spi->dev, NULL);
-+	kfree(priv);
-+	return err;
- }
-=20
- static inline int __devinit
-@@ -932,8 +943,10 @@ static int __devexit dataflash_remove(struct =
-spi_device *spi)
- 		status =3D del_mtd_partitions(&flash->mtd);
- 	else
- 		status =3D del_mtd_device(&flash->mtd);
--	if (status =3D=3D 0)
-+	if (status =3D=3D 0) {
-+		dev_set_drvdata(&spi->dev, NULL);
- 		kfree(flash);
-+	}
- 	return status;
- }
- =20
+Thanks
+Haojian
