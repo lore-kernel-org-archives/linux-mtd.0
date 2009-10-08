@@ -1,21 +1,19 @@
-Received: from ernst.netinsight.se ([194.16.221.21])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mvmec-0003es-0j
-	for linux-mtd@lists.infradead.org; Thu, 08 Oct 2009 06:39:14 +0000
-Date: Thu, 8 Oct 2009 08:38:57 +0200
-From: Simon Kagstrom <simon.kagstrom@netinsight.net>
-To: dedekind1@gmail.com
-Subject: Re: [PATCH 2/3]: mtdoops: Use panic_write if panic_on_oops is set
-Message-ID: <20091008083857.5bdc9c6d@marrow.netinsight.se>
-In-Reply-To: <1254979692.3359.32.camel@localhost>
-References: <20091002160510.191ef5a4@marrow.netinsight.se>
-	<20091002160652.5581c13c@marrow.netinsight.se>
-	<1254979692.3359.32.camel@localhost>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Artem.Bityutskiy@nokia.com, linux-mtd <linux-mtd@lists.infradead.org>,
-	Aaro Koskinen <aaro.koskinen@nokia.com>
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Mvoj8-0007hD-4Z
+	for linux-mtd@lists.infradead.org; Thu, 08 Oct 2009 08:52:02 +0000
+Message-ID: <4ACDA825.2020206@nokia.com>
+Date: Thu, 08 Oct 2009 11:51:49 +0300
+From: Adrian Hunter <adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: =?ISO-8859-1?Q?Tobias_Wahlstr=F6m?= <tobias.tanke@gmail.com>
+Subject: Re: mkfs.ubifs / ubiformat: Bad UBI magic
+References: <29001ab20910060400j76167eg138df17d57727231@mail.gmail.com>
+In-Reply-To: <29001ab20910060400j76167eg138df17d57727231@mail.gmail.com>
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: "Bityutskiy Artem \(Nokia-M/Helsinki\)" <Artem.Bityutskiy@nokia.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,68 +23,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thanks for reviewing the patches!
-
-On Thu, 08 Oct 2009 08:28:12 +0300
-Artem Bityutskiy <dedekind1@gmail.com> wrote:
-
-> > -	mtdoops_inc_counter(cxt);
-> > +	/* Go to next page, but skip this if we are currently panicking.
-> > +	 * We will not recover from that anyway, and the mtd->read call
-> > +	 * causes the panic to suspend */
-> > +	if (!in_interrupt() && !panic_on_oops)
-> > +		mtdoops_inc_counter(cxt);
+Tobias Wahlström wrote:
+> Hi!
 > 
-> Hmm, what if we are in an oops we want to write more than one time,
-> because the oops output is large? With this change we will write twice
-> to the same flash area in that case, which is bad.
-
-No, cxt->ready is set by mtdoops_inc_counter, so there will only be one
-write (no more messages are put in the buffer) until inc_counter is done.
-
-> Also, I think this kind of check should be inside
-> 'mtdoops_inc_counter()', not outside. It is just cleaner.
-
-OK, I'll do that.
-
-> BTW, 'mtdoops_inc_counter()' reads flash before each write, which is
-> strange. If an eraseblock was erased, everything is 0xFFed there. Why
-> not to maintain an internal array which contains erased/not erased
-> status of each eraseblock?
-
-Well, it reads the flash for the next block which will be written (on
-the next oops), and schedules an erase if needed. But sure, since it
-scans the partition at startup, an array could be used instead.
-
-The check I added was because mtdoops_inc_counter caused my panic to
-hang with my NAND flash (it sounds strange, but I never got the actual
-restart). I haven't debugged why it happened, but it's caused by the
-mtd->read call from mtdoops_inc_counter. 
-
-
-Anyway, perhaps a cleaner solution to the entire issue is to put
-mtdoops_inc_counter in a scheduled work instead so that we can skip
-this check entirely.
-
-> > @@ -340,7 +344,7 @@ static void mtdoops_console_sync(void)
-> >  	cxt->ready = 0;
-> >  	spin_unlock_irqrestore(&cxt->writecount_lock, flags);
-> >  
-> > -	if (mtd->panic_write && in_interrupt())
-> > +	if (mtd->panic_write && (in_interrupt() || panic_on_oops))
-> >  		/* Interrupt context, we're going to panic so try and log */
-> >  		mtdoops_write(cxt, 1);
-> >  	else
+> This is my first post at this list - I hope it makes (at least) some
+> sense anyway. I have looked through the mailing archive and searched
+> using google without finding anything useful on the topic. I hope I
+> provided the information you need - if not, just tell me what you are
+> missing!
 > 
-> I agree with this part and will push the patch from Aaro to my tree for
-> now.
+> I'm working on a project where we would like to use ubi and ubifs as
+> root filesystem since it seems to be the best choise in many ways. But
+> I have a problem which I can't find anything about either the mail
+> archive nor using google etc. I currently use linux 2.6.26 with some
+> patches. My target is the freescale imx255 pdk board. My build system
+> is Ubuntu 9.04 (run within vmware).
+> 
+> I have cloned the mtd-utils.git (today 2009-09-05) and compiled the
+> tools both for my build system and my target (both without xattr
+> support). Then I created a ubifs image using mkfs.ubifs on my build
+> system and tried to flash it to the nand using ubiformat. The commands
+> I used was:
+> 
+> build> mkfs.ubifs -m 2048 -e 256KiB -c 384 -U --root rootfs -o rootfs.ubifs
 
-Good, just bear in mind that adding the panic_on_oops check will make
-it impossible to build as a module as panic_on_oops is not exported. I
-disabled module-building in this patch because of this.
+Try making the -e option the leb-size not the peb-size i.e. probably 252KiB
 
-But perhaps the real solution is to export panic_on_oops, I just
-assumed that there was some good reason why it wasn't exported so
-far :-)
-
-// Simon
+> target> flash_eraseall /dev/mtd2
+> target> ubiformat /dev/mtd2 -s 2048 -v -f rootfs.ubifs
+> 
+> The output from ubiformat is:
+> 
+> ubiformat: mtd2 (nand), size 100663296 bytes (96.0 MiB), 384
+> eraseblocks of 262144 bytes (256.0 KiB), min. I/O size 2048 bytes
+> libscan: start scanning eraseblocks 0-384
+> libscan: scanning eraseblock 0: empty
+> [...]
+> libscan: scanning eraseblock 383: empty
+> libscan: finished, mean EC 0, 0 OK, 0 corrupted, 384 empty, 0 alien, bad 0
+> ubiformat: 384 eraseblocks are supposedly empty
+> ubiformat: will write 13 eraseblocks
+> ubiformat: eraseblock 0: erase, change EC to 0ubiformat: error!: bad
+> UBI magic 0x31181006, should be 0x55424923
+> ubiformat: error!: bad EC header at eraseblock 0 of "/rootfs.ubifs"
+> 
+> If I look into the source code I see that UBI_EC_HDR_MAGIC is defined
+> twice in the source both in include/mtd/ubi-media.h and seems to be
+> used by all tools except for mkfs.ubifs. The command mkfs.ubifs use
+> UBIFS_NODE_MAGIC in mkfs.ubifs/ubifs-media.h. The values do not match
+> at all. And it also seems like mkfs.ubifs use little endian to encode
+> the magic number and the other tools use big endian... Strange!
+> 
+> /Tobias
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
