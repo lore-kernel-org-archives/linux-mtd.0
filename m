@@ -1,9 +1,9 @@
 Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mvoj8-0007hD-4Z
-	for linux-mtd@lists.infradead.org; Thu, 08 Oct 2009 08:52:02 +0000
-Message-ID: <4ACDA825.2020206@nokia.com>
-Date: Thu, 08 Oct 2009 11:51:49 +0300
+	id 1MvolR-0007xJ-0z
+	for linux-mtd@lists.infradead.org; Thu, 08 Oct 2009 08:54:25 +0000
+Message-ID: <4ACDA8B6.3020807@nokia.com>
+Date: Thu, 08 Oct 2009 11:54:14 +0300
 From: Adrian Hunter <adrian.hunter@nokia.com>
 MIME-Version: 1.0
 To: =?ISO-8859-1?Q?Tobias_Wahlstr=F6m?= <tobias.tanke@gmail.com>
@@ -46,11 +46,11 @@ Tobias Wahlström wrote:
 > I used was:
 > 
 > build> mkfs.ubifs -m 2048 -e 256KiB -c 384 -U --root rootfs -o rootfs.ubifs
-
-Try making the -e option the leb-size not the peb-size i.e. probably 252KiB
-
 > target> flash_eraseall /dev/mtd2
 > target> ubiformat /dev/mtd2 -s 2048 -v -f rootfs.ubifs
+
+Also, doesn't ubiformat take a UBI image not a UBIFS image
+
 > 
 > The output from ubiformat is:
 > 
