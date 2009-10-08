@@ -1,19 +1,22 @@
-MIME-Version: 1.0
-In-Reply-To: <771cded00909251900v7ee60bf6uf4c5724075c65826@mail.gmail.com>
-References: <771cded00909250457w19686a53obdc178488368dd43@mail.gmail.com>
-	<69f617130909251004y2a17cdetb45f6022a37b4249@mail.gmail.com>
-	<771cded00909251900v7ee60bf6uf4c5724075c65826@mail.gmail.com>
-Date: Wed, 7 Oct 2009 23:12:54 -0400
-Message-ID: <771cded00910072012n51522ce9q32691346e96c4e55@mail.gmail.com>
-Subject: Re: [PATCH 1/5] pxa3xx_nand: enable PXA3xx bad block management
-From: Haojian Zhuang <haojian.zhuang@gmail.com>
-To: David Woodhouse <david.woodhouse@intel.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, kyungmin.park@samsung.com,
-	Eric Miao <eric.y.miao@gmail.com>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-	Mok Keith <ek9852@gmail.com>
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MvlMG-0007Hy-Lb
+	for linux-mtd@lists.infradead.org; Thu, 08 Oct 2009 05:16:12 +0000
+Subject: Re: [PATCH v2, Repost]: NAND: Add panic_write for NAND flashes
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Simon Kagstrom <simon.kagstrom@netinsight.net>
+In-Reply-To: <20091005155552.3f2e89b8@marrow.netinsight.se>
+References: <20091001140959.60364dbe@marrow.netinsight.se>
+	<20091002101431.GI9644@edde.se.axis.com>
+	<20091005155552.3f2e89b8@marrow.netinsight.se>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 08 Oct 2009 08:15:58 +0300
+Message-Id: <1254978958.3359.20.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org,
+	"Edgar E. Iglesias" <edgar.iglesias@axis.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,100 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Sep 25, 2009 at 10:00 PM, Haojian Zhuang
-<haojian.zhuang@gmail.com> wrote:
-> On Sat, Sep 26, 2009 at 1:04 AM, Mok Keith <ek9852@gmail.com> wrote:
->> Hi,
->>
->> Any reason to limit the max slot to 40 (PXA_MAX_SLOT). It seems the
->> bad block management scheme is not scalable and have a limitation of
->> up to 256M bytes flash size only. (256M, 128kB per block =3D 2048 blocks
->> =3D 40 bad blocks)
->
-> Each slot is one page. It's used to record the relocation information.
-> Each relocation
-> information is composed by two items. One is the bad block number, the ot=
-her one
-> is relocated block number. Both of these two items cost 16 bits. For
-> the large block
-> flash, it can save 511 relocation information at most.
->
-> In the head of slot, a 16-bit magic number and 16-bit total number of
-> relocation items are
-> recorders.
->
-> When the slot is used, the next written will be moved to the next
-> slot. It's used to protect
-> relocation recorders. If one slot is broken, driver could load the previo=
-us one.
->
-> When all 40 slots are used, driver could erase the whole block and
-> write again. This feature
-> isn't enabled in the patch.
->>
->> Also for the calibration of the 2% bad block area, according to most
->> NAND specifications (checked Samsung, Hynix, Micron), nand flash
->> vendor guarantee no more than 20 bad block per 1024 blocks and this
->> rule is apply linearly.
->>
->> Would it be better to use the following otherwise when nand size is
->> greater than 256M the no of bad block entries is not matched to
->> specification:
->> instead of:
->>> + =A0 =A0entries =3D (entries * 2) / 100;
->>
->> use:
->> + =A0 =A0entries =3D (entries * 10) / 512;
->
-> Yes, this formula is better. I will use this. Maybe I can use this
-> formula whatever
-> the flash is beyond 256M or not.
->
->>
->> May I know what is the use of PXA_BEGIN_SLOT ?
-> I'm sorry that I removed usage of PXA_BEGIN_SLOT. But I didn't clear the =
-macro
-> definition.
->>
->> Keith
->>
->
-> Now the new patch is in below.
->
-> From 57dc033ff95a12ee83f9189c5f72827d755c5432 Mon Sep 17 00:00:00 2001
-> From: Haojian Zhuang <haojian.zhuang@marvell.com>
-> Date: Fri, 25 Sep 2009 15:00:28 -0400
-> Subject: [PATCH] [MTD] [NAND] pxa3xx_nand: enable PXA3xx bad block manage=
-ment
->
-> There's a custom bad block management in PXA3xx series.
->
-> This BBM needs to allocate a reserved area at the bottom of NAND chip.
-> The reserved area should be protected from normal usage. The first block
-> of NAND is also reserved in order to storing the relocation information.
->
-> The reserved area is also called as relocation area. It occupies 2% of
-> the whole NAND space.
->
-> When NAND controller finds a bad block, it marks the block as bad and
-> allocate a unused block from relocation area in bottom. The new block is
-> used to replace the original bad one. From OS view, there's no bad block
-> at the time. It's handled by NAND driver. Then driver records the replace=
-ment
-> information in the first block.
->
-> There're 40 pages are reserved in the first block. Each page is a indepen=
-dant
-> relocation table. If the current relocation table is broken, driver will =
-fetch
-> the previous one. Each relocation information cost a 32-bit word.
->
->
+On Mon, 2009-10-05 at 15:55 +0200, Simon Kagstrom wrote:
+> This is a quick and dirty patch to add panic_write for NAND flashes. The
+> patch seems to work OK on my CRIS board running a 2.6.26 kernel with a
+> ID: 0x20, Chip ID: 0xf1 (ST Micro NAND 128MiB 3,3V 8-bit), and also on a
+> OpenRD base (Marvell Kirkwood) board with a Toshiba NAND 512MiB 3,3V
+> 8-bit flash with 2.6.32-pre1.
+> 
+> Signed-off-by: Edgar E. Iglesias <edgar@axis.com>
+> Signed-off-by: Simon Kagstrom <simon.kagstrom@netinsight.net>
+> ---
+> ChangeLog:
+> v2: Fix issues from Artem
+>   * Fix comments about 400ms and question marks
+>   * Add oops_in_progress to panic_nand_wait condition
+>   * Change prototype for panic_nand_get_device
+>   * Make some changes to the patch description
 
-Hi David,
+I've pushed this to my l2-mtd-2.6 tree, thanks:
 
-How do you think that this patch series on PXA3xx bad block
-management? Is it acceptable or not?
+http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/af9fcfdbb514e9d7e15c3b398669af1d0e714837
 
-Thanks
-Haojian
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
