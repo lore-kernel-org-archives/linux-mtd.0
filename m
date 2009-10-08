@@ -1,19 +1,18 @@
-MIME-Version: 1.0
-In-Reply-To: <771cded00910072012n51522ce9q32691346e96c4e55@mail.gmail.com>
-References: <771cded00909250457w19686a53obdc178488368dd43@mail.gmail.com>
-	<69f617130909251004y2a17cdetb45f6022a37b4249@mail.gmail.com>
-	<771cded00909251900v7ee60bf6uf4c5724075c65826@mail.gmail.com>
-	<771cded00910072012n51522ce9q32691346e96c4e55@mail.gmail.com>
-From: Eric Miao <eric.y.miao@gmail.com>
-Date: Thu, 8 Oct 2009 21:39:27 +0800
-Message-ID: <f17812d70910080639g44acb979k545056d361991c92@mail.gmail.com>
-Subject: Re: [PATCH 1/5] pxa3xx_nand: enable PXA3xx bad block management
-To: David Woodhouse <david.woodhouse@intel.com>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Mok Keith <ek9852@gmail.com>, kyungmin.park@samsung.com,
-	linux-mtd@lists.infradead.org,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Received: from ernst.netinsight.se ([194.16.221.21])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MvuCh-00064P-Va
+	for linux-mtd@lists.infradead.org; Thu, 08 Oct 2009 14:42:57 +0000
+Date: Thu, 8 Oct 2009 16:42:43 +0200
+From: Simon Kagstrom <simon.kagstrom@netinsight.net>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: [PATCH v2 0/3]: mtdoops fixes and improvements
+Message-ID: <20091008164243.2344df24@marrow.netinsight.se>
+In-Reply-To: <20091002160510.191ef5a4@marrow.netinsight.se>
+References: <20091002160510.191ef5a4@marrow.netinsight.se>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Artem.Bityutskiy@nokia.com, Aaro Koskinen <aaro.koskinen@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,13 +22,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Hi David,
->
-> How do you think that this patch series on PXA3xx bad block
-> management? Is it acceptable or not?
->
+Hi!
 
-David,
+Here are a couple of patches to mtdoops which I've been working on for
+a while. They should be applied on top of Aaros fix for panic_on_oops.
+That one technically breaks building mtdoops as a module, so I sent a
+patch to LKML which exports panic_on_oops:
 
-I can take care of this and send pull request to you if you don't have
-time to look into this.
+  http://patchwork.kernel.org/patch/52505/
+
+The patches here are:
+
+1. Keep track of mtdoops page cleanliness in an array. This allows
+   mtdoops_inc_counter to be called during panic (which fails in my
+   case, although I believe this is MTD-driver dependent).
+
+2. Make page size configurable to support longer messages. Mainly
+   needed for patch 3, but also allows longer messages to be stored
+   during panics (when the next oops area cannot be erased).
+
+3. Store all kernel messages in a circular buffer. This changes the
+   behavior of mtdoops a bit by constantly recording messages (not only
+   on oopses), which are written out on oopses and panics.
+
+   The code is changed to register a panic handler which calls the
+   write function, and on normal oopses scheduling a write work to
+   store the buffer.
+
+ChangeLog from last submit:
+
+* Patches have been reordered to keep the least controversial (?) first.
+
+* Implement Artems suggestion to keep cleanliness in an array
+
+* Use Aaros patch to fix the panic_on_oops problem
+
+// Simon
