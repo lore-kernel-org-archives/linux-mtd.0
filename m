@@ -1,21 +1,21 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MvlY7-0000cJ-RC
-	for linux-mtd@lists.infradead.org; Thu, 08 Oct 2009 05:28:27 +0000
+Received: from ernst.netinsight.se ([194.16.221.21])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Mvmec-0003es-0j
+	for linux-mtd@lists.infradead.org; Thu, 08 Oct 2009 06:39:14 +0000
+Date: Thu, 8 Oct 2009 08:38:57 +0200
+From: Simon Kagstrom <simon.kagstrom@netinsight.net>
+To: dedekind1@gmail.com
 Subject: Re: [PATCH 2/3]: mtdoops: Use panic_write if panic_on_oops is set
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Simon Kagstrom <simon.kagstrom@netinsight.net>
-In-Reply-To: <20091002160652.5581c13c@marrow.netinsight.se>
+Message-ID: <20091008083857.5bdc9c6d@marrow.netinsight.se>
+In-Reply-To: <1254979692.3359.32.camel@localhost>
 References: <20091002160510.191ef5a4@marrow.netinsight.se>
 	<20091002160652.5581c13c@marrow.netinsight.se>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 08 Oct 2009 08:28:12 +0300
-Message-Id: <1254979692.3359.32.camel@localhost>
+	<1254979692.3359.32.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Cc: Artem.Bityutskiy@nokia.com, linux-mtd <linux-mtd@lists.infradead.org>,
 	Aaro Koskinen <aaro.koskinen@nokia.com>
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,82 +25,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-10-02 at 16:06 +0200, Simon Kagstrom wrote:
-> mtdoops will not store the oops if panic_on_oops is set. This patch
-> makes use of panic_write if panic_on_oops is set. mtdoops_inc_counter is
-> also not good to call on panics, since the call to mtd->read suspends
-> the panic (at least with my NAND flash), so defer that. There is also no
-> point in doing it since we cannot recover from the panic anyway.
+Thanks for reviewing the patches!
+
+On Thu, 08 Oct 2009 08:28:12 +0300
+Artem Bityutskiy <dedekind1@gmail.com> wrote:
+
+> > -	mtdoops_inc_counter(cxt);
+> > +	/* Go to next page, but skip this if we are currently panicking.
+> > +	 * We will not recover from that anyway, and the mtd->read call
+> > +	 * causes the panic to suspend */
+> > +	if (!in_interrupt() && !panic_on_oops)
+> > +		mtdoops_inc_counter(cxt);
 > 
-> panic_on_oops is not exported to modules, so make mtdoops in-kernel only
+> Hmm, what if we are in an oops we want to write more than one time,
+> because the oops output is large? With this change we will write twice
+> to the same flash area in that case, which is bad.
+
+No, cxt->ready is set by mtdoops_inc_counter, so there will only be one
+write (no more messages are put in the buffer) until inc_counter is done.
+
+> Also, I think this kind of check should be inside
+> 'mtdoops_inc_counter()', not outside. It is just cleaner.
+
+OK, I'll do that.
+
+> BTW, 'mtdoops_inc_counter()' reads flash before each write, which is
+> strange. If an eraseblock was erased, everything is 0xFFed there. Why
+> not to maintain an internal array which contains erased/not erased
+> status of each eraseblock?
+
+Well, it reads the flash for the next block which will be written (on
+the next oops), and schedules an erase if needed. But sure, since it
+scans the partition at startup, an array could be used instead.
+
+The check I added was because mtdoops_inc_counter caused my panic to
+hang with my NAND flash (it sounds strange, but I never got the actual
+restart). I haven't debugged why it happened, but it's caused by the
+mtd->read call from mtdoops_inc_counter. 
+
+
+Anyway, perhaps a cleaner solution to the entire issue is to put
+mtdoops_inc_counter in a scheduled work instead so that we can skip
+this check entirely.
+
+> > @@ -340,7 +344,7 @@ static void mtdoops_console_sync(void)
+> >  	cxt->ready = 0;
+> >  	spin_unlock_irqrestore(&cxt->writecount_lock, flags);
+> >  
+> > -	if (mtd->panic_write && in_interrupt())
+> > +	if (mtd->panic_write && (in_interrupt() || panic_on_oops))
+> >  		/* Interrupt context, we're going to panic so try and log */
+> >  		mtdoops_write(cxt, 1);
+> >  	else
 > 
-> Signed-off-by: Simon Kagstrom <simon.kagstrom@netinsight.net>
-> ---
->  drivers/mtd/Kconfig   |    2 +-
->  drivers/mtd/mtdoops.c |    8 ++++++--
->  2 files changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-> index ecf90f5..6b39a8b 100644
-> --- a/drivers/mtd/Kconfig
-> +++ b/drivers/mtd/Kconfig
-> @@ -305,7 +305,7 @@ config SSFDC
->  	  flash. You can mount it with FAT file system.
->  
->  config MTD_OOPS
-> -	tristate "Log panic/oops to an MTD buffer"
-> +	bool "Log panic/oops to an MTD buffer"
->  	depends on MTD
->  	help
->  	  This enables panic and oops messages to be logged to a circular
-> diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-> index 244582c..cc2c187 100644
-> --- a/drivers/mtd/mtdoops.c
-> +++ b/drivers/mtd/mtdoops.c
-> @@ -215,7 +215,11 @@ static void mtdoops_write(struct mtdoops_context *cxt, int panic)
->  		printk(KERN_ERR "mtdoops: Write failure at %d (%td of %d written), err %d.\n",
->  			cxt->nextpage * cxt->page_size, retlen,	cxt->page_size, ret);
->  
-> -	mtdoops_inc_counter(cxt);
-> +	/* Go to next page, but skip this if we are currently panicking.
-> +	 * We will not recover from that anyway, and the mtd->read call
-> +	 * causes the panic to suspend */
-> +	if (!in_interrupt() && !panic_on_oops)
-> +		mtdoops_inc_counter(cxt);
+> I agree with this part and will push the patch from Aaro to my tree for
+> now.
 
-Hmm, what if we are in an oops we want to write more than one time,
-because the oops output is large? With this change we will write twice
-to the same flash area in that case, which is bad.
+Good, just bear in mind that adding the panic_on_oops check will make
+it impossible to build as a module as panic_on_oops is not exported. I
+disabled module-building in this patch because of this.
 
-Basically, if you skip 'mtdoops_inc_counter()', you should disallow any
-further mtdoops writes, so you need something like 'ctx->i_am_screwed'
-flag, I guess.
+But perhaps the real solution is to export panic_on_oops, I just
+assumed that there was some good reason why it wasn't exported so
+far :-)
 
-Also, I think this kind of check should be inside
-'mtdoops_inc_counter()', not outside. It is just cleaner.
-
-BTW, 'mtdoops_inc_counter()' reads flash before each write, which is
-strange. If an eraseblock was erased, everything is 0xFFed there. Why
-not to maintain an internal array which contains erased/not erased
-status of each eraseblock?
-
-> @@ -340,7 +344,7 @@ static void mtdoops_console_sync(void)
->  	cxt->ready = 0;
->  	spin_unlock_irqrestore(&cxt->writecount_lock, flags);
->  
-> -	if (mtd->panic_write && in_interrupt())
-> +	if (mtd->panic_write && (in_interrupt() || panic_on_oops))
->  		/* Interrupt context, we're going to panic so try and log */
->  		mtdoops_write(cxt, 1);
->  	else
-
-I agree with this part and will push the patch from Aaro to my tree for
-now.
-
-Please, post patches against:
-git://git.infradead.org/users/dedekind/l2-mtd-2.6.git
-so far. When we are done, I'll ping dwmw2 to pull them.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+// Simon
