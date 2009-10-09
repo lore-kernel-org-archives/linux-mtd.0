@@ -1,29 +1,20 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mw6vU-0004QW-Hr
-	for linux-mtd@lists.infradead.org; Fri, 09 Oct 2009 04:18:01 +0000
-Message-ID: <4ACEB95C.5080501@nokia.com>
-Date: Fri, 09 Oct 2009 07:17:32 +0300
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-MIME-Version: 1.0
-To: "ext Narnakaje, Snehaprabha" <nsnehaprabha@ti.com>
-Subject: Re: [PATCH] mtd: nand: davinci: fix to use mask_ale from pdata
-References: <1254407106-19390-1-git-send-email-hemantp@ti.com>
-	<87tyy9dih1.fsf@deeprootsystems.com>
-	<7A436F7769CA33409C6B44B358BFFF0C012A6FC76F@dlee02.ent.ti.com>
-In-Reply-To: <7A436F7769CA33409C6B44B358BFFF0C012A6FC76F@dlee02.ent.ti.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: "davinci-linux-open-source@linux.davincidsp.com"
-	<davinci-linux-open-source@linux.davincidsp.com>,
-	"dbrownell@users.sourceforge.net" <dbrownell@users.sourceforge.net>,
-	"Pedanekar, Hemant" <hemantp@ti.com>,
-	Kevin Hilman <khilman@deeprootsystems.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>
-Reply-To: Artem.Bityutskiy@nokia.com
+Received: from mail-vw0-f187.google.com ([209.85.212.187])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MwC11-0001vT-FL
+	for linux-mtd@lists.infradead.org; Fri, 09 Oct 2009 09:44:04 +0000
+Received: by vws17 with SMTP id 17so451147vws.24
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 09 Oct 2009 02:43:57 -0700 (PDT)
+From: Akinobu Mita <akinobu.mita@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: cleanup mtd_oobtest
+Date: Fri,  9 Oct 2009 18:43:52 +0900
+Message-Id: <1255081432-22080-1-git-send-email-akinobu.mita@gmail.com>
+In-Reply-To: <>
+References: <>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Akinobu Mita <akinobu.mita@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,14 +24,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/08/2009 06:37 PM, ext Narnakaje, Snehaprabha wrote:
-> Andrew,
->
-> Could you please apply this patch to the -mm tree and thus queue it up for 2.6.32-rc series?
+- Remove unnecessary memset for bbt
 
-FYI, this patch is already in the mtd-2.6.git tree. So you should bug
-dwmw2 to push it to rc3
+  All entries will be initialized at a few lines below
 
+- Remove unnecessary initialization for mtd->erasesize
+
+- Use write_whole_device()
+
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Cc: linux-mtd@lists.infradead.org
+Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
+---
+ drivers/mtd/tests/mtd_oobtest.c |   18 ++++--------------
+ 1 files changed, 4 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/mtd/tests/mtd_oobtest.c b/drivers/mtd/tests/mtd_oobtest.c
+index 5553cd4..5813920 100644
+--- a/drivers/mtd/tests/mtd_oobtest.c
++++ b/drivers/mtd/tests/mtd_oobtest.c
+@@ -343,7 +343,6 @@ static int scan_for_bad_eraseblocks(void)
+ 		printk(PRINT_PREF "error: cannot allocate memory\n");
+ 		return -ENOMEM;
+ 	}
+-	memset(bbt, 0 , ebcnt);
+ 
+ 	printk(PRINT_PREF "scanning for bad eraseblocks\n");
+ 	for (i = 0; i < ebcnt; ++i) {
+@@ -392,7 +391,6 @@ static int __init mtd_oobtest_init(void)
+ 	       mtd->writesize, ebcnt, pgcnt, mtd->oobsize);
+ 
+ 	err = -ENOMEM;
+-	mtd->erasesize = mtd->erasesize;
+ 	readbuf = kmalloc(mtd->erasesize, GFP_KERNEL);
+ 	if (!readbuf) {
+ 		printk(PRINT_PREF "error: cannot allocate memory\n");
+@@ -476,18 +474,10 @@ static int __init mtd_oobtest_init(void)
+ 	use_len_max = mtd->ecclayout->oobavail;
+ 	vary_offset = 1;
+ 	simple_srand(5);
+-	printk(PRINT_PREF "writing OOBs of whole device\n");
+-	for (i = 0; i < ebcnt; ++i) {
+-		if (bbt[i])
+-			continue;
+-		err = write_eraseblock(i);
+-		if (err)
+-			goto out;
+-		if (i % 256 == 0)
+-			printk(PRINT_PREF "written up to eraseblock %u\n", i);
+-		cond_resched();
+-	}
+-	printk(PRINT_PREF "written %u eraseblocks\n", i);
++
++	err = write_whole_device();
++	if (err)
++		goto out;
+ 
+ 	/* Check all eraseblocks */
+ 	use_offset = 0;
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.5.4.3
