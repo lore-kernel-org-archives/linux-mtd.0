@@ -1,15 +1,19 @@
-Subject: Re: [PATCH 2/2] Remove now-defunct ts7250 nand driver
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MwxjN-0001Vi-Dr
+	for linux-mtd@lists.infradead.org; Sun, 11 Oct 2009 12:41:02 +0000
+Subject: Re: [PATCH] MTD: Fix MEMGETINFO and MEMGETREGIONINFO for devices
+	>= 4GB
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: H Hartley Sweeten <hartleys@visionengravers.com>
-In-Reply-To: <BD79186B4FD85F4B8E60E381CAEE190901DB7969@mi8nycmail19.Mi8.com>
-References: <BD79186B4FD85F4B8E60E381CAEE190901DB7969@mi8nycmail19.Mi8.com>
+To: Felix Radensky <felix@embedded-sol.com>
+In-Reply-To: <1254904002-24913-1-git-send-email-felix@embedded-sol.com>
+References: <>  <1254904002-24913-1-git-send-email-felix@embedded-sol.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 11 Oct 2009 14:31:18 +0300
-Message-Id: <1255260678.16942.39.camel@localhost>
+Date: Sun, 11 Oct 2009 15:40:42 +0300
+Message-Id: <1255264842.16942.41.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Matthieu Crapet <mcrapet@gmail.com>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -20,23 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-10-06 at 18:26 -0400, H Hartley Sweeten wrote:
-> The ts72xx platform has been updated to use the generic platform nand
-> driver (plat_nand.c).  This removes the now-defunct ts7250.c nand driver.
+On Wed, 2009-10-07 at 10:26 +0200, Felix Radensky wrote:
+> Currently MEMGETINFO and MEMGETREGIONINFO report invalid
+> information for devices >= 4GB, since relevant fields in
+> MTD ABI structures are 32-bit while corresponding fields
+> in kernel internal structures are 64-bit. Fix ABI fields
+> to be 64-bit as well.
 > 
-> Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
-> Cc: Matthieu Crapet <mcrapet@gmail.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: <linux-arm-kernel@lists.infradead.org>
-> Cc: <linux-mtd@lists.infradead.org>
-> 
+> Signed-off-by: Felix Radensky <felix@embedded-sol.com>
 > ---
+>  include/mtd/mtd-abi.h |    4 ++--
+>  1 files changed, 2 insertions(+), 2 deletions(-)
 
-Would be nice to make sure you have diffstat here, to show that you
-actually remove files. I thing git-format-patch does this by default.
+Nack. As it was discussed several times, you cannot change these data
+structure because you will break binary compatibility.
 
-Anyway, the patch does not apply, please, refresh against current mtd
-tree.
+New ioctls is the way out.
 
 -- 
 Best Regards,
