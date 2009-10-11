@@ -1,18 +1,14 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MwyBG-00060Z-1Y
-	for linux-mtd@lists.infradead.org; Sun, 11 Oct 2009 13:09:50 +0000
-Subject: Re: [PATCH] Fix memory leak in mtd_dataflash
+Subject: Re: [PATCH] MTD: Add nand_ecc test module
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: H Hartley Sweeten <hartleys@visionengravers.com>
-In-Reply-To: <BD79186B4FD85F4B8E60E381CAEE190901DB7B18@mi8nycmail19.Mi8.com>
-References: <BD79186B4FD85F4B8E60E381CAEE190901DB7B18@mi8nycmail19.Mi8.com>
+To: Akinobu Mita <akinobu.mita@gmail.com>
+In-Reply-To: <1255082095-22158-1-git-send-email-akinobu.mita@gmail.com>
+References: <>  <1255082095-22158-1-git-send-email-akinobu.mita@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 11 Oct 2009 16:09:37 +0300
-Message-Id: <1255266577.16942.57.camel@localhost>
+Date: Sun, 11 Oct 2009 16:39:41 +0300
+Message-Id: <1255268381.16942.74.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: David Brownell <david-b@pacbell.net>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,110 +19,242 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-10-07 at 17:08 -0400, H Hartley Sweeten wrote:
-> Fix a potential memory leak in mtd_dataflash driver.
+On Fri, 2009-10-09 at 18:54 +0900, Akinobu Mita wrote:
+> This module tests NAND ECC functions.
 > 
-> The private data that is allocated when registering a DataFlash
-> device with the MTD subsystem is not released if an error occurs
-> when add_mtd_partitions() or add_mtd_device() is called.  Fix this
-> by adding an error path.  The memory is already released during a
-> remove.
+> The test is simple.
 > 
-> Also, add a dev_set_drvdata(&spi->dev, NULL) before the kfree() so
-> that the spi device does not reference invalid data.
+> 1. Create a 256 or 512 bytes block of data filled with random bytes (data)
+> 2. Duplicate the data block and inject single bit error (error_data)
+> 3. Try to correct error_data
+> 4. Compare data and error_data
+
+So you want to test the built-in 256/512 software ECC calculation
+and correction functions?
+
+> If the test fails, this creates create these files in debugfs:
 > 
-> Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
-> Cc: David Brownell <david-b@pacbell.net>
+> /sys/kernel/debug/nand-ecc-test-crashers/
+> 
+>         <testname>
+>         <testname>-error
+> 
+> <testname> contains data
+> <testname>-error contains error_data
+
+Why you need these files? This looks like overkill. Please, remove
+them.
+
+> Cc: David Woodhouse <dwmw2@infradead.org>
 > Cc: linux-mtd@lists.infradead.org
-> 
+> Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
 > ---
+>  drivers/mtd/nand/nand_ecc.c       |   25 ++++-
+>  drivers/mtd/tests/Makefile        |    1 +
+>  drivers/mtd/tests/nand_ecc-test.c |  200 +++++++++++++++++++++++++++++++++++++
+>  include/linux/mtd/nand_ecc.h      |    6 +
+>  4 files changed, 227 insertions(+), 5 deletions(-)
+>  create mode 100644 drivers/mtd/tests/nand_ecc-test.c
+
+Could you please split this on 2 patches - one is changing the generic
+code, one is the test itself.
+
 > 
-> diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-> index 93e3627..1981740 100644
-> --- a/drivers/mtd/devices/mtd_dataflash.c
-> +++ b/drivers/mtd/devices/mtd_dataflash.c
-> @@ -636,6 +636,7 @@ add_dataflash_otp(struct spi_device *spi, char *name,
->  	struct mtd_info			*device;
->  	struct flash_platform_data	*pdata = spi->dev.platform_data;
->  	char				*otp_tag = "";
-> +	int				err = 0;
+> diff --git a/drivers/mtd/nand/nand_ecc.c b/drivers/mtd/nand/nand_ecc.c
+> index db7ae9d..809fb53 100644
+> --- a/drivers/mtd/nand/nand_ecc.c
+> +++ b/drivers/mtd/nand/nand_ecc.c
+> @@ -150,20 +150,19 @@ static const char addressbits[256] = {
+>  };
 >  
->  	priv = kzalloc(sizeof *priv, GFP_KERNEL);
->  	if (!priv)
-> @@ -693,13 +694,23 @@ add_dataflash_otp(struct spi_device *spi, char *name,
->  
->  		if (nr_parts > 0) {
->  			priv->partitioned = 1;
-> -			return add_mtd_partitions(device, parts, nr_parts);
-> +			err = add_mtd_partitions(device, parts, nr_parts);
-> +			goto out;
->  		}
->  	} else if (pdata && pdata->nr_parts)
->  		dev_warn(&spi->dev, "ignoring %d default partitions on %s\n",
->  				pdata->nr_parts, device->name);
->  
-> -	return add_mtd_device(device) == 1 ? -ENODEV : 0;
-> +	if (add_mtd_device(device) == 1)
-> +		err = -ENODEV;
+>  /**
+> - * nand_calculate_ecc - [NAND Interface] Calculate 3-byte ECC for 256/512-byte
+> + * __nand_calculate_ecc - [NAND Interface] Calculate 3-byte ECC for 256/512-byte
+>   *			 block
+> - * @mtd:	MTD block structure
+>   * @buf:	input buffer with raw data
+> + * @eccsize:	data bytes per ecc step (256 or 512)
+>   * @code:	output buffer with ECC
+>   */
+> -int nand_calculate_ecc(struct mtd_info *mtd, const unsigned char *buf,
+> +void __nand_calculate_ecc(const unsigned char *buf, unsigned int eccsize,
+>  		       unsigned char *code)
+>  {
+>  	int i;
+>  	const uint32_t *bp = (uint32_t *)buf;
+>  	/* 256 or 512 bytes/ecc  */
+> -	const uint32_t eccsize_mult =
+> -			(((struct nand_chip *)mtd->priv)->ecc.size) >> 8;
+> +	const uint32_t eccsize_mult = eccsize >> 8;
+>  	uint32_t cur;		/* current value in buffer */
+>  	/* rp0..rp15..rp17 are the various accumulated parities (per byte) */
+>  	uint32_t rp0, rp1, rp2, rp3, rp4, rp5, rp6, rp7;
+> @@ -412,6 +411,22 @@ int nand_calculate_ecc(struct mtd_info *mtd, const unsigned char *buf,
+>  		    (invparity[par & 0x55] << 2) |
+>  		    (invparity[rp17] << 1) |
+>  		    (invparity[rp16] << 0);
+> +}
+> +EXPORT_SYMBOL(__nand_calculate_ecc);
+> +
+> +/**
+> + * nand_calculate_ecc - [NAND Interface] Calculate 3-byte ECC for 256/512-byte
+> + *			 block
+> + * @mtd:	MTD block structure
+> + * @buf:	input buffer with raw data
+> + * @code:	output buffer with ECC
+> + */
+> +int nand_calculate_ecc(struct mtd_info *mtd, const unsigned char *buf,
+> +		       unsigned char *code)
+> +{
+> +	__nand_calculate_ecc(buf,
+> +			((struct nand_chip *)mtd->priv)->ecc.size, code);
+> +
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL(nand_calculate_ecc);
+> diff --git a/drivers/mtd/tests/Makefile b/drivers/mtd/tests/Makefile
+> index c1d5013..0c23b29 100644
+> --- a/drivers/mtd/tests/Makefile
+> +++ b/drivers/mtd/tests/Makefile
+> @@ -5,3 +5,4 @@ obj-$(CONFIG_MTD_TESTS) += mtd_speedtest.o
+>  obj-$(CONFIG_MTD_TESTS) += mtd_stresstest.o
+>  obj-$(CONFIG_MTD_TESTS) += mtd_subpagetest.o
+>  obj-$(CONFIG_MTD_TESTS) += mtd_torturetest.o
+> +obj-$(CONFIG_MTD_TESTS) += nand_ecc-test.o
+> diff --git a/drivers/mtd/tests/nand_ecc-test.c b/drivers/mtd/tests/nand_ecc-test.c
+> new file mode 100644
+> index 0000000..143630c
+> --- /dev/null
+> +++ b/drivers/mtd/tests/nand_ecc-test.c
+> @@ -0,0 +1,200 @@
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/debugfs.h>
+> +#include <linux/list.h>
+> +#include <linux/slab.h>
+> +#include <linux/random.h>
+> +#include <linux/string.h>
+> +#include <linux/bitops.h>
+> +#include <linux/jiffies.h>
+> +
+> +void inject_single_bit_error(void *data, size_t size)
+> +{
+> +	unsigned long offset = random32() % (size * BITS_PER_BYTE);
+> +
+> +	__change_bit(offset, data);
+> +}
+> +
+> +static struct dentry *ecc_test_dir;
+> +
+> +struct ecc_test_blob {
+> +	struct dentry *dir;
+> +	struct debugfs_blob_wrapper blob;
+> +};
+> +
+> +static struct ecc_test_blob *create_ecc_test_blob(const char *name, void *data,
+> +						size_t size)
+> +{
+> +	struct ecc_test_blob *blob;
+> +
+> +	blob = kmalloc(sizeof(*blob), GFP_KERNEL);
+> +	if (!blob)
+> +		return NULL;
+> +
+> +	blob->blob.size = size;
+> +	blob->blob.data = kmemdup(data, size, GFP_KERNEL);
+> +	if (!blob->blob.data)
+> +		goto err1;
+> +
+> +	blob->dir = debugfs_create_blob(name, S_IRUSR, ecc_test_dir,
+> +						&blob->blob);
+> +	if (!blob->dir)
+> +		goto err2;
+> +
+> +	return blob;
+> +err2:
+> +	kfree(blob->blob.data);
+> +err1:
+> +	kfree(blob);
+> +
+> +	return NULL;
+> +}
+> +
+> +static void remove_ecc_test_blob(struct ecc_test_blob *blob)
+> +{
+> +	debugfs_remove(blob->dir);
+> +	kfree(blob->blob.data);
+> +	kfree(blob);
+> +}
+> +
+> +static LIST_HEAD(ecc_test_crashers);
+> +
+> +struct ecc_test_crasher {
+> +	struct list_head list;
+> +
+> +	struct ecc_test_blob *data;
+> +	struct ecc_test_blob *error_data;
+> +};
+> +
+> +/*
+> + * Create these files in debugfs:
+> + *
+> + * /sys/kernel/debug/nand-ecc-test-crashers/
+> + *	<name>		binary blob specified with data
+> + *	<name>-error	binary blob specified with error_data
+> + */
+> +static int register_ecc_test_crasher(const char *name, void *data,
+> +				void *error_data, size_t size)
+> +{
+> +	struct ecc_test_crasher *crasher;
+> +	char *error_name;
+> +
+> +	crasher = kmalloc(sizeof(*crasher), GFP_KERNEL);
+> +	if (!crasher)
+> +		return -ENOMEM;
+> +
+> +	crasher->data = create_ecc_test_blob(name, data, size);
+> +	if (!crasher->data)
+> +		goto err1;
+> +
+> +	error_name = kasprintf(GFP_KERNEL, "%s-error", name);
+> +	if (!error_name)
+> +		goto err2;
+> +
+> +	crasher->error_data = create_ecc_test_blob(error_name, error_data,
+> +							size);
+> +	kfree(error_name);
+> +
+> +	if (!crasher->error_data)
+> +		goto err3;
+> +
+> +	list_add(&crasher->list, &ecc_test_crashers);
+> +
+> +	return 0;
+> +err3:
+> +	remove_ecc_test_blob(crasher->error_data);
+> +err2:
+> +	remove_ecc_test_blob(crasher->data);
+> +err1:
+> +	kfree(crasher);
+> +
+> +	return -ENOMEM;
+> +}
+> +
+> +static void unregister_ecc_test_crasher(struct ecc_test_crasher *crasher)
+> +{
+> +	list_del(&crasher->list);
+> +
+> +	remove_ecc_test_blob(crasher->error_data);
+> +	remove_ecc_test_blob(crasher->data);
+> +	kfree(crasher);
+> +}
+> +
+> +#if defined(CONFIG_MTD_NAND) || defined(CONFIG_MTD_NAND_MODULE)
 
-But if you fail here, you should also call del_mtd_partitions(), right?
+This should not be needed. MTD tests are always compiled as modules,
+so you should not have copilation errors. And if MTD NAND support is
+not present, modprobe will just fail.
 
-How about this (untested) patch instead:
-
-diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-index 93e3627..4db412c 100644
---- a/drivers/mtd/devices/mtd_dataflash.c
-+++ b/drivers/mtd/devices/mtd_dataflash.c
-@@ -636,6 +636,7 @@ add_dataflash_otp(struct spi_device *spi, char *name,
- 	struct mtd_info			*device;
- 	struct flash_platform_data	*pdata = spi->dev.platform_data;
- 	char				*otp_tag = "";
-+	int				err;
- 
- 	priv = kzalloc(sizeof *priv, GFP_KERNEL);
- 	if (!priv)
-@@ -693,13 +694,27 @@ add_dataflash_otp(struct spi_device *spi, char *name,
- 
- 		if (nr_parts > 0) {
- 			priv->partitioned = 1;
--			return add_mtd_partitions(device, parts, nr_parts);
-+			err = add_mtd_partitions(device, parts, nr_parts);
-+			if (err)
-+				goto out_free;
- 		}
- 	} else if (pdata && pdata->nr_parts)
- 		dev_warn(&spi->dev, "ignoring %d default partitions on %s\n",
- 				pdata->nr_parts, device->name);
- 
--	return add_mtd_device(device) == 1 ? -ENODEV : 0;
-+	if (add_mtd_device(device) == 1) {
-+		if (priv->partitioned)
-+			del_mtd_partitions(device);
-+		err = -ENODEV;
-+		goto out_free;
-+	}
-+
-+	return 0;
-+
-+out_free:
-+	dev_set_drvdata(&spi->dev, NULL);
-+	kfree(priv);
-+	return err;
- }
- 
- static inline int __devinit
-@@ -932,8 +947,10 @@ static int __devexit dataflash_remove(struct spi_device *spi)
- 		status = del_mtd_partitions(&flash->mtd);
- 	else
- 		status = del_mtd_device(&flash->mtd);
--	if (status == 0)
-+	if (status == 0) {
-+		dev_set_drvdata(&spi->dev, NULL);
- 		kfree(flash);
-+	}
- 	return status;
- }
- 
 -- 
 Best Regards,
 Artem Bityutskiy (Артём Битюцкий)
