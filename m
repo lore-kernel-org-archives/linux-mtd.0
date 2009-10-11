@@ -1,28 +1,21 @@
-Received: from mms3.broadcom.com ([216.31.210.19])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mx2Lw-0001Wh-Qj
-	for linux-mtd@lists.infradead.org; Sun, 11 Oct 2009 17:37:09 +0000
-From: "Darwin Rambo" <drambo@broadcom.com>
-To: "dedekind@infradead.org" <dedekind@infradead.org>
-Date: Sun, 11 Oct 2009 10:36:45 -0700
-Subject: RE: UBIFS and hardware ECC of all FF pages of MLC NAND
-Message-ID: <B125D8217ABC4B43826503DE00A2D44910D7FCB264@SJEXCHCCR01.corp.ad.broadcom.com>
-References: <B125D8217ABC4B43826503DE00A2D44910D7E85DFD@SJEXCHCCR01.corp.ad.broadcom.com>
-	<4ABB7224.8000804@nokia.com> <4ABB921B.8090500@parrot.com>
-	<1253862309.3778.25.camel@localhost>
-	<B125D8217ABC4B43826503DE00A2D44910D7F2EA60@SJEXCHCCR01.corp.ad.broadcom.com>
-	<1255250357.16942.0.camel@localhost>
-	<B125D8217ABC4B43826503DE00A2D44910D7FCB251@SJEXCHCCR01.corp.ad.broadcom.com>
-	<1255273462.21218.13.camel@localhost>
-In-Reply-To: <1255273462.21218.13.camel@localhost>
-Content-Language: en-US
+Received: from exprod6og116.obsmtp.com ([64.18.1.37])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Mx5MV-00087d-Cz
+	for linux-mtd@lists.infradead.org; Sun, 11 Oct 2009 20:49:55 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
- charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Matthieu CASTET <matthieu.castet@parrot.com>,
-	Adrian Hunter <adrian.hunter@nokia.com>
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Subject: RE: [PATCH] Fix memory leak in mtd_dataflash
+Date: Sun, 11 Oct 2009 16:49:45 -0400
+Message-ID: <BD79186B4FD85F4B8E60E381CAEE190901DB7E55@mi8nycmail19.Mi8.com>
+In-Reply-To: <1255266577.16942.57.camel@localhost>
+References: <BD79186B4FD85F4B8E60E381CAEE190901DB7B18@mi8nycmail19.Mi8.com>
+	<1255266577.16942.57.camel@localhost>
+From: "H Hartley Sweeten" <hartleys@visionengravers.com>
+To: <dedekind1@gmail.com>
+Cc: David Brownell <david-b@pacbell.net>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,14 +25,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->=20
-> UBIFS does not assume *anything* about ECC. UBI/UBIFS does not assume
-> anything about flash type even. E.g., it works on NOR.
->=20
-> All UBIFS assumes is that it may write more data to the end of
-> eraseblocks, nothing else. IMHO, this is a reasonable assumption.
-
-Okay, I understand it is a lower level driver issue now and will look at
-putting the checks there. Thanks.
-
-Darwin=
+T24gU3VuZGF5LCBPY3RvYmVyIDExLCAyMDA5IDY6MTAgQU0sIEFydGVtIEJpdHl1dHNraXkgd3Jv
+dGU6DQo+IE9uIFdlZCwgMjAwOS0xMC0wNyBhdCAxNzowOCAtMDQwMCwgSCBIYXJ0bGV5IFN3ZWV0
+ZW4gd3JvdGU6DQo+PiBGaXggYSBwb3RlbnRpYWwgbWVtb3J5IGxlYWsgaW4gbXRkX2RhdGFmbGFz
+aCBkcml2ZXIuDQo+PiANCj4+IFRoZSBwcml2YXRlIGRhdGEgdGhhdCBpcyBhbGxvY2F0ZWQgd2hl
+biByZWdpc3RlcmluZyBhIERhdGFGbGFzaA0KPj4gZGV2aWNlIHdpdGggdGhlIE1URCBzdWJzeXN0
+ZW0gaXMgbm90IHJlbGVhc2VkIGlmIGFuIGVycm9yIG9jY3Vycw0KPj4gd2hlbiBhZGRfbXRkX3Bh
+cnRpdGlvbnMoKSBvciBhZGRfbXRkX2RldmljZSgpIGlzIGNhbGxlZC4gIEZpeCB0aGlzDQo+PiBi
+eSBhZGRpbmcgYW4gZXJyb3IgcGF0aC4gIFRoZSBtZW1vcnkgaXMgYWxyZWFkeSByZWxlYXNlZCBk
+dXJpbmcgYQ0KPj4gcmVtb3ZlLg0KPj4gDQo+PiBBbHNvLCBhZGQgYSBkZXZfc2V0X2RydmRhdGEo
+JnNwaS0+ZGV2LCBOVUxMKSBiZWZvcmUgdGhlIGtmcmVlKCkgc28NCj4+IHRoYXQgdGhlIHNwaSBk
+ZXZpY2UgZG9lcyBub3QgcmVmZXJlbmNlIGludmFsaWQgZGF0YS4NCj4+IA0KPj4gU2lnbmVkLW9m
+Zi1ieTogSCBIYXJ0bGV5IFN3ZWV0ZW4gPGhzd2VldGVuQHZpc2lvbmVuZ3JhdmVycy5jb20+DQo+
+PiBDYzogRGF2aWQgQnJvd25lbGwgPGRhdmlkLWJAcGFjYmVsbC5uZXQ+DQo+PiBDYzogbGludXgt
+bXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4+IA0KPj4gLS0tDQo+PiANCj4+IGRpZmYgLS1naXQg
+YS9kcml2ZXJzL210ZC9kZXZpY2VzL210ZF9kYXRhZmxhc2guYyBiL2RyaXZlcnMvbXRkL2Rldmlj
+ZXMvbXRkX2RhdGFmbGFzaC5jDQo+PiBpbmRleCA5M2UzNjI3Li4xOTgxNzQwIDEwMDY0NA0KPj4g
+LS0tIGEvZHJpdmVycy9tdGQvZGV2aWNlcy9tdGRfZGF0YWZsYXNoLmMNCj4+ICsrKyBiL2RyaXZl
+cnMvbXRkL2RldmljZXMvbXRkX2RhdGFmbGFzaC5jDQo+PiBAQCAtNjM2LDYgKzYzNiw3IEBAIGFk
+ZF9kYXRhZmxhc2hfb3RwKHN0cnVjdCBzcGlfZGV2aWNlICpzcGksIGNoYXIgKm5hbWUsDQo+PiAg
+CXN0cnVjdCBtdGRfaW5mbwkJCSpkZXZpY2U7DQo+PiAgCXN0cnVjdCBmbGFzaF9wbGF0Zm9ybV9k
+YXRhCSpwZGF0YSA9IHNwaS0+ZGV2LnBsYXRmb3JtX2RhdGE7DQo+PiAgCWNoYXIJCQkJKm90cF90
+YWcgPSAiIjsNCj4+ICsJaW50CQkJCWVyciA9IDA7DQo+PiAgDQo+PiAgCXByaXYgPSBremFsbG9j
+KHNpemVvZiAqcHJpdiwgR0ZQX0tFUk5FTCk7DQo+PiAgCWlmICghcHJpdikNCj4+IEBAIC02OTMs
+MTMgKzY5NCwyMyBAQCBhZGRfZGF0YWZsYXNoX290cChzdHJ1Y3Qgc3BpX2RldmljZSAqc3BpLCBj
+aGFyICpuYW1lLA0KPj4gIA0KPj4gIAkJaWYgKG5yX3BhcnRzID4gMCkgew0KPj4gIAkJCXByaXYt
+PnBhcnRpdGlvbmVkID0gMTsNCj4+IC0JCQlyZXR1cm4gYWRkX210ZF9wYXJ0aXRpb25zKGRldmlj
+ZSwgcGFydHMsIG5yX3BhcnRzKTsNCj4+ICsJCQllcnIgPSBhZGRfbXRkX3BhcnRpdGlvbnMoZGV2
+aWNlLCBwYXJ0cywgbnJfcGFydHMpOw0KPj4gKwkJCWdvdG8gb3V0Ow0KPj4gIAkJfQ0KPj4gIAl9
+IGVsc2UgaWYgKHBkYXRhICYmIHBkYXRhLT5ucl9wYXJ0cykNCj4+ICAJCWRldl93YXJuKCZzcGkt
+PmRldiwgImlnbm9yaW5nICVkIGRlZmF1bHQgcGFydGl0aW9ucyBvbiAlc1xuIiwNCj4+ICAJCQkJ
+cGRhdGEtPm5yX3BhcnRzLCBkZXZpY2UtPm5hbWUpOw0KPj4gIA0KPj4gLQlyZXR1cm4gYWRkX210
+ZF9kZXZpY2UoZGV2aWNlKSA9PSAxID8gLUVOT0RFViA6IDA7DQo+PiArCWlmIChhZGRfbXRkX2Rl
+dmljZShkZXZpY2UpID09IDEpDQo+PiArCQllcnIgPSAtRU5PREVWOw0KPg0KPiBCdXQgaWYgeW91
+IGZhaWwgaGVyZSwgeW91IHNob3VsZCBhbHNvIGNhbGwgZGVsX210ZF9wYXJ0aXRpb25zKCksIHJp
+Z2h0Pw0KDQpOb3QgYXMgSSB1bmRlcnN0YW5kIGl0Lg0KDQpJZiB0aGUgZGV2aWNlIGhhcyBwYXJ0
+aXRpb25zIChtdGRfaGFzX3BhcnRpdGlvbnMpLCBhbmQgdGhlIHN1YnN5c3RlbSBjYW4NCmRldGVy
+bWluZSB3aGF0IHRoZXkgYXJlLCBhZGRfbXRkX3BhcnRpdGlvbnMgaXMgY2FsbGVkIHRvIGFkZCB0
+aG9zZSBwYXJ0aXRpb25zLg0KVGhlIG9ubHkgd2F5IHRoZSBjb2RlIGdldHMgdG8gYWRkX210ZF9k
+ZXZpY2UgaXMgaWYgbXRkX2hhc19wYXJ0aXRpb25zIHJldHVybnMNCmZhbHNlIG9yIHRoZSBudW1i
+ZXIgb2YgcGFydGl0aW9ucyBjYW5ub3QgYmUgZGV0ZXJtaW5lZC4gIEluIHRoYXQgY2FzZSB0aGUg
+ZW50aXJlDQpkZXZpY2UgaXMgYWRkZWQuICBTbyBjYWxsaW5nIGRlbF9tdGRfcGFydGl0aW9ucyBp
+biB0aGF0IGNhc2UgaXMgbm90IHZhbGlkLg0KDQpEaWQgSSBvdmVybG9vayBzb21ldGhpbmc/DQoN
+ClJlZ2FyZHMsDQpIYXJ0bGV5DQo=
