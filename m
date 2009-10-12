@@ -1,26 +1,30 @@
-Received: from mail.gmx.net ([213.165.64.20])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MxPhA-0004qk-Ss
-	for linux-mtd@lists.infradead.org; Mon, 12 Oct 2009 18:32:37 +0000
-Message-ID: <4AD3763C.70307@gmx.net>
-Date: Mon, 12 Oct 2009 20:32:28 +0200
-From: Carl-Daniel Hailfinger <c-d.hailfinger.devel.2006@gmx.net>
-MIME-Version: 1.0
+Date: Mon, 12 Oct 2009 11:36:47 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
 To: Ingo Molnar <mingo@elte.hu>
 Subject: Re: [PATCH] panic.c: export panic_on_oops
-References: <20091012113758.GB11035@elte.hu>	<20091012140149.6789efab@marrow.netinsight.se>	<20091012120951.GA16799@elte.hu>	<20091012142714.56362465@marrow.netinsight.se>	<20091012123210.GB22766@elte.hu>	<20091012140821.5dfa1598@lxorguk.ukuu.org.uk>	<20091012132503.GD25464@elte.hu>	<1255354342.30919.17.camel@macbook.infradead.org>	<20091012142634.GB4565@elte.hu>	<1255358181.9111.14.camel@macbook.infradead.org>
-	<20091012151431.GC14004@elte.hu>
-In-Reply-To: <20091012151431.GC14004@elte.hu>
-Content-Type: text/plain; charset=ISO-8859-1
+Message-Id: <20091012113647.454fccc5.akpm@linux-foundation.org>
+In-Reply-To: <20091012182346.GH17138@elte.hu>
+References: <20091012113758.GB11035@elte.hu>
+	<20091012140149.6789efab@marrow.netinsight.se>
+	<20091012120951.GA16799@elte.hu>
+	<1255349748.10605.13.camel@macbook.infradead.org>
+	<20091012122023.GA19365@elte.hu>
+	<20091012150650.51a4b4dc@marrow.netinsight.se>
+	<20091012131528.GC25464@elte.hu>
+	<20091012153937.0dcd73e5@marrow.netinsight.se>
+	<alpine.LFD.2.01.0910120828390.3438@localhost.localdomain>
+	<20091012110954.67d7d8d8.akpm@linux-foundation.org>
+	<20091012182346.GH17138@elte.hu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Cc: Artem Bityutskiy <dedekind1@gmail.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	LKML <linux-kernel@vger.kernel.org>,
+	David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>,
 	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
 	linux-mtd <linux-mtd@lists.infradead.org>,
 	Simon Kagstrom <simon.kagstrom@netinsight.net>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>, Alan Cox <alan@lxorguk.ukuu.org.uk>
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,74 +34,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12.10.2009 17:14, Ingo Molnar wrote:
-> * David Woodhouse <dwmw2@infradead.org> wrote:
->   
->> On Mon, 2009-10-12 at 16:26 +0200, Ingo Molnar wrote:
->>     
->>> Not if the failure is say a s2ram hang that requires a power cycle. 
->>> Also there are certain classes of bugs that only occur on cold boot. 
->>> Plus there's the "need to unplug the battery to revive the system" 
->>> class of bugs (but they are rare).
->>>       
->> So you need to build in enough ECC to cope with the decay which 
->> happens when RAM isn't being refreshed for a few seconds... :)
->>     
->
-> [ hey, i think you should line up with BIOS writers at that wall ;-) ]
->   
+On Mon, 12 Oct 2009 20:23:46 +0200 Ingo Molnar <mingo@elte.hu> wrote:
 
-Not all of us x86 firmware writers are evil.
+> 
+> * Andrew Morton <akpm@linux-foundation.org> wrote:
+> 
+> > On Mon, 12 Oct 2009 08:36:38 -0700 (PDT) Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> > 
+> > > I agree with the "save kernel buffer on panic" thing, but I disagree with 
+> > > making it anything new, and hooking into "printk()" or the console 
+> > > subsystem AT ALL. That's just bogus, stupid, and WRONG.
+> > > 
+> > > What you can do is to just flush the 'log_buf' buffer (or as much of it as 
+> > > you want - the buffer may be a megabyte in size, and maybe you only want 
+> > > to flush the last 8kB or something like that) on oops. And _not_ mix this 
+> > > up with anything else.
+> > 
+> > What he said.  I did it that way in the Digeo kernel back in 2002. 
+> > Worked good.
+> > 
+> > Doing it via a console is rather weird.  It will need core kernel 
+> > changes to do it properly.
+> > 
+> > Perhaps oops_enter() is a good place to mark the start of the log, and 
+> > flush it within oops_exit().
+> 
+> Simplest would be to do the last 2K in oops_exit()? That gives the oops, 
+> and the history leading up to it. Since the blocking is 2K, the extra 
+> log output is for free.
+> 
+> (unless the oops is larger than 2K - but that is rather rare.)
+> 
 
+Some oops traces can be pretty large.  Perhaps "oops_enter minus 1k up
+to oops_exit".
 
->>> So i think the MTD / flash stuff is powerful.
->>>       
->> Yeah, definitely. I was just pointing out that we can actually do a 
->> lot better on today's commodity hardware too.
->>     
->
-> I wish it worked on any of the 10+ x86 systems i have. Is there anyone 
-> who'd be interested in exploring whether warm BIOS reboots work 
-> _anywhere_?
->   
+The digeo kernel later got changed to package the oops into a binary
+record format for logging to nvram.  iirc that was for space reasons,
+and for ease of downstream analysis.
 
-AFAIK memory clearing is default off in coreboot for non-ECC RAM and
-default on for ECC RAM (to avoid parity errors on read, but that can
-probably be worked around). Unless I'm mistaken, the SeaBIOS BIOS
-compatibility layer on top of coreboot doesn't erase RAM at all, so
-contents can survive.
-No idea about classic AMI/Award/Phoenix/Insyde/whatever BIOS, though.
-
-
-> A simple patch with a new (default-off) CONFIG_DEBUG_ feature that just 
-> puts a signature into a predictable spot in RAM, switches the reboot 
-> method over to warm reboot (reboot=w) and prints some friendly "yay, 
-> this BIOS rocks!" message if the signature is still there after a reboot 
-> and not zeroed out.
->
-> If that works _anywhere_ we could complete it: we could cache the dmesg 
-> buffer address (__log_buf[]) across reboots (and maybe the printk tail 
-> offset (log_end)), and that would be an _excellent_ debuggability 
-> feature for a large class of otherwise undebuggable crashes ...
->
-> We could use that to preserve a kernel function trace (or a branch 
-> execution hardware trace using BTS on Intel CPUs) across crashes, etc. 
-> etc.
->   
-
-Since we're discussing log buffers anyway, does it make sense to have
-this feature interact with the coreboot log buffer which is passed on to
-the OS (no official patches for that one, yet)? Basically, coreboot has
-its own log buffer where it stores the hardware init diagnostic messages
-(very similar to the Linux kernel message buffer) and it could make
-sense to use the same memory area for both purposes (if you can deal
-with coreboot messages being absent after a kernel Oops).
-
-Thoughts?
-
-Regards,
-Carl-Daniel
-
--- 
-Developer quote of the week: 
-"We are juggling too many chainsaws and flaming arrows and tigers."
+That kernel used to be downloadable but I can't immediately find it. 
+Probably not very interesting anyway.
