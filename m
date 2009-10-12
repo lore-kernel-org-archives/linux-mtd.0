@@ -1,27 +1,28 @@
 Received: from mx3.mail.elte.hu ([157.181.1.138])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MxQMO-0004Zc-67
-	for linux-mtd@lists.infradead.org; Mon, 12 Oct 2009 19:15:13 +0000
-Date: Mon, 12 Oct 2009 21:14:53 +0200
+	id 1MxQPn-0004tx-6e
+	for linux-mtd@lists.infradead.org; Mon, 12 Oct 2009 19:18:43 +0000
+Date: Mon, 12 Oct 2009 21:18:24 +0200
 From: Ingo Molnar <mingo@elte.hu>
-To: Linus Torvalds <torvalds@linux-foundation.org>
+To: Carl-Daniel Hailfinger <c-d.hailfinger.devel.2006@gmx.net>
 Subject: Re: [PATCH] panic.c: export panic_on_oops
-Message-ID: <20091012191453.GK17138@elte.hu>
+Message-ID: <20091012191824.GL17138@elte.hu>
 References: <20091012120951.GA16799@elte.hu>
-	<1255349748.10605.13.camel@macbook.infradead.org>
-	<20091012122023.GA19365@elte.hu>
-	<20091012150650.51a4b4dc@marrow.netinsight.se>
-	<20091012131528.GC25464@elte.hu>
-	<20091012153937.0dcd73e5@marrow.netinsight.se>
-	<alpine.LFD.2.01.0910120828390.3438@localhost.localdomain>
-	<20091012110954.67d7d8d8.akpm@linux-foundation.org>
-	<20091012182346.GH17138@elte.hu>
-	<alpine.LFD.2.01.0910121130190.3438@localhost.localdomain>
+	<20091012142714.56362465@marrow.netinsight.se>
+	<20091012123210.GB22766@elte.hu>
+	<20091012140821.5dfa1598@lxorguk.ukuu.org.uk>
+	<20091012132503.GD25464@elte.hu>
+	<1255354342.30919.17.camel@macbook.infradead.org>
+	<20091012142634.GB4565@elte.hu>
+	<1255358181.9111.14.camel@macbook.infradead.org>
+	<20091012151431.GC14004@elte.hu> <4AD3763C.70307@gmx.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LFD.2.01.0910121130190.3438@localhost.localdomain>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
+In-Reply-To: <4AD3763C.70307@gmx.net>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>,
 	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
 	linux-mtd <linux-mtd@lists.infradead.org>,
 	Simon Kagstrom <simon.kagstrom@netinsight.net>,
@@ -37,39 +38,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-* Linus Torvalds <torvalds@linux-foundation.org> wrote:
+* Carl-Daniel Hailfinger <c-d.hailfinger.devel.2006@gmx.net> wrote:
 
+> > I wish it worked on any of the 10+ x86 systems i have. Is there 
+> > anyone who'd be interested in exploring whether warm BIOS reboots 
+> > work _anywhere_?
 > 
-> 
-> On Mon, 12 Oct 2009, Ingo Molnar wrote:
-> > 
-> > * Andrew Morton <akpm@linux-foundation.org> wrote:
-> > > 
-> > > Perhaps oops_enter() is a good place to mark the start of the log, and 
-> > > flush it within oops_exit().
-> > 
-> > Simplest would be to do the last 2K in oops_exit()? That gives the 
-> > oops, and the history leading up to it. Since the blocking is 2K, 
-> > the extra log output is for free.
-> 
-> I agree, except I don't think it should be fixed to 2k.
-
-Yeah - i cited 2K only because that is what mtdoops uses.
-
->       	void dump_kmsg(void)
-> [...]
+> AFAIK memory clearing is default off in coreboot for non-ECC RAM and 
+> default on for ECC RAM (to avoid parity errors on read, but that can 
+> probably be worked around). Unless I'm mistaken, the SeaBIOS BIOS 
+> compatibility layer on top of coreboot doesn't erase RAM at all, so 
+> contents can survive.
 >
-> Look ma, no locking, no buffer allocations, no nothing.
+> No idea about classic AMI/Award/Phoenix/Insyde/whatever BIOS, though.
 
-Neat ...
+I wouldnt mind to support this for coreboot too, but it will only be 
+practical if there's at least one standard BIOS out of the many i run 
+that supports warm reboot in practice ...
 
-This could also be used for a warm-reboot preserve-memory thing as well. 
-A well-known 4K (or so) area to preserve and print out during the next 
-bootup after a crash. dump_kmsg() could copy the kernel's last will out 
-to that area, or so.
+Can try a test-patch on all of those systems btw. - we do support 
+warm-reboot on x86 in arch/x86/kernel/reboot.c:
 
-That would be cross-kernel compatible and the newly booted kernel image 
-wouldnt overwrite this area. (which it does currently via its 
-__log_buf[])
+        /* Write 0x1234 to absolute memory location 0x472.  The BIOS reads
+           this on booting to tell it to "Bypass memory test (also warm
+           boot)".  This seems like a fairly standard thing that gets set by
+           REBOOT.COM programs, and the previous reset routine did this
+           too. */
+        *((unsigned short *)0x472) = reboot_mode;
+
+But someone would have to come up with a test-patch to prove whether it 
+works really works.
 
 	Ingo
