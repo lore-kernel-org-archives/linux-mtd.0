@@ -1,19 +1,19 @@
-From: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
-To: Eric Miao <eric.y.miao@gmail.com>
-Subject: Re: [PATCH] pxa3xx_nand: fix time calculation
-References: <1254907903-11797-1-git-send-email-enrico.scholz@sigma-chemnitz.de>
-	<1255265475.16942.48.camel@localhost>
-	<f17812d70910112022g63c60438jca2a0e47944813a5@mail.gmail.com>
-Date: Mon, 12 Oct 2009 12:03:58 +0200
-In-Reply-To: <f17812d70910112022g63c60438jca2a0e47944813a5@mail.gmail.com>
-	(Eric Miao's message of "Mon, 12 Oct 2009 11:22:32 +0800")
-Message-ID: <ly3a5p6i9d.fsf@ensc-virt.intern.sigma-chemnitz.de>
+Received: from smtp-vbr8.xs4all.nl ([194.109.24.28])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MxHqf-00068L-M2
+	for linux-mtd@lists.infradead.org; Mon, 12 Oct 2009 10:09:54 +0000
+Message-ID: <4AD30069.8060101@aimvalley.nl>
+Date: Mon, 12 Oct 2009 12:09:45 +0200
+From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Sender: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
-Cc: linux-mtd@lists.infradead.org, mreimer@vpop.net, dwmw2@infradead.org,
-	dedekind1@gmail.com
+To: dedekind1@gmail.com
+Subject: Re: a UBIFS image makes task pdflush blocked > 120 seconds
+References: <4ACF3478.1060503@aimvalley.nl>
+	<1255269148.16942.95.camel@localhost>
+In-Reply-To: <1255269148.16942.95.camel@localhost>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,51 +23,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Eric Miao <eric.y.miao@gmail.com> writes:
+Artem Bityutskiy wrote:
+> On Fri, 2009-10-09 at 15:02 +0200, Norbert van Bolhuis wrote:
+>> We're using a 19MB UBIFS image (preprogrammed by manufacturing)
+>> for a 156 MB NOR flash partition.
+> 
+> Wow, really huge NOR. Keep in mind that we have not tested UBIFS
+> for NOR well enough.
+> 
 
->>> Use DIV_ROUND_UP to calculate number of clocks. =A0Else, calculated clo=
-cks
->>> are nearly always to low and for times < 10ns, they will be negative on
->>> PXA320 =A0(which has a nand clock of 104 MHz).
->>>
->>> -#define ns2cycle(ns, clk) =A0 =A0(int)(((ns) * (clk / 1000000) / 1000)=
- - 1)
->>> +#define ns2cycle(ns, clk) =A0 =A0(int)(DIV_ROUND_UP((ns) * (clk / 1000=
-000), 1000) - 1)
+It's a MTD_CONCATENATED 128MB NOR flash + 28MB NOR flash partition.
+ok, that's good to realize.
+Are there any (more) thorough UBIFS tests scheduled for NOR flash ?
+
 >>
->> Why there is -1 at the end?
-> ...
-> I'd recommend we remove this '-1' to always make the final result
-> a little bit larger and avoid the negative case. DIV_ROUND_UP() is
-> kind of confusing here, since the original equation is:
->
-> cycles =3D ns / (1/clk * 10^9) =3D ns * clk / 10^9
+>> This message repeats once. Apart from the message everything is
+>> functioning OK.
+>> so it's the UBIFS commit_sem that's causing this.
+> 
+> Not the semaphore itself, but it is locked for too long time and we
+> cannot acquire it for too long. Since make_reservation needs it only
+> in read mode, it is obvious that the it is is locked somewhere in
+> the commit code, which is strange.
+> 
+> How full if the FS when this happens? What is your eraseblock size?
+> 
 
-Hi Eric,
+The UBIFS image contains only 1 file (of 18MB) and a few directories. Several
+application processes create (small) files and make modifications. I guess that
+the FS contains only 20MB.
+PEB-size = 131072, LEB-size = 130944
 
-for me, the DIV_ROUND_UP() is more clean, because 'ns' are minimum
-values given on the datasheet and you have to round up fractional cycle
-counts hence. But I agree that
+>> We're using linux-2.6.28. The linux-next backport for 2.6.28
+>> (from git://git.infradead.org/~dedekind/ubifs-v2.6.28.git) changes
+>> are in.
+>>
+>> I guess that, initially, there's a lot of work to be done
+>> for UBI. I'm thinking about scan entire 156MB, add UBI VID/EC headers
+>> for the empty 137MB, make LEB mappings, etc..
+>>
+>> I don't understand why this would block UBIFS/pdflush.
+> 
+> It shouldn't. UBI spends time for scanning when you attach your flash.
+> You pay the price at the very beginning, and then it should be fast.
+> 
 
-| #define ns2cycle(ns, clk) (int)(DIV_ROUND_UP((ns) * (clk / 1000000), 1000=
-) - 1)
+but, this "problem" does occur (~ 1 minute after) the very beginning (when power is
+applied for the 1st time to the board).
 
-and
+> What I suggest you is to inject some code to UBIFS which measures for
+> how long the 'commit_sem' is locked in "write" mode, and find the times.
+> Then try to investigate why this actually happens. I cannot tell why
+> this could be, off the top of my head.
+> 
 
-| #define ns2cycle(ns, clk) (int)(((ns) * (clk / 1000000) / 1000))
+ok, will do that. I'll track commit_sem, io_mutex and ubifs_garbage_collect().
+I'll report back.
 
-give same results for most values.  I do not have a strong preference
-for one of these two variants.
+Btw. stackdump is the same (2 out of 2 times).
 
-
-> Could you please verify that removing '-1' will solve all corner
-> cases?
-
-Except for overflows (which are uninteresting here), timings which are
-a multiple of 1000ns are the only corner cases.  And these will result
-into cycle counts which are increased by 1 compared to their ideal
-value.
-
-
-
-Enrico
+thanks,
+Norbert.
