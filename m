@@ -1,9 +1,9 @@
-Date: Mon, 12 Oct 2009 11:36:47 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
+Date: Mon, 12 Oct 2009 11:45:15 -0700 (PDT)
+From: Linus Torvalds <torvalds@linux-foundation.org>
 To: Ingo Molnar <mingo@elte.hu>
 Subject: Re: [PATCH] panic.c: export panic_on_oops
-Message-Id: <20091012113647.454fccc5.akpm@linux-foundation.org>
 In-Reply-To: <20091012182346.GH17138@elte.hu>
+Message-ID: <alpine.LFD.2.01.0910121130190.3438@localhost.localdomain>
 References: <20091012113758.GB11035@elte.hu>
 	<20091012140149.6789efab@marrow.netinsight.se>
 	<20091012120951.GA16799@elte.hu>
@@ -15,16 +15,14 @@ References: <20091012113758.GB11035@elte.hu>
 	<alpine.LFD.2.01.0910120828390.3438@localhost.localdomain>
 	<20091012110954.67d7d8d8.akpm@linux-foundation.org>
 	<20091012182346.GH17138@elte.hu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>,
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
 	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
 	linux-mtd <linux-mtd@lists.infradead.org>,
 	Simon Kagstrom <simon.kagstrom@netinsight.net>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Alan Cox <alan@lxorguk.ukuu.org.uk>
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Woodhouse <dwmw2@infradead.org>, Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,27 +32,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 12 Oct 2009 20:23:46 +0200 Ingo Molnar <mingo@elte.hu> wrote:
 
+
+On Mon, 12 Oct 2009, Ingo Molnar wrote:
 > 
 > * Andrew Morton <akpm@linux-foundation.org> wrote:
-> 
-> > On Mon, 12 Oct 2009 08:36:38 -0700 (PDT) Linus Torvalds <torvalds@linux-foundation.org> wrote:
-> > 
-> > > I agree with the "save kernel buffer on panic" thing, but I disagree with 
-> > > making it anything new, and hooking into "printk()" or the console 
-> > > subsystem AT ALL. That's just bogus, stupid, and WRONG.
-> > > 
-> > > What you can do is to just flush the 'log_buf' buffer (or as much of it as 
-> > > you want - the buffer may be a megabyte in size, and maybe you only want 
-> > > to flush the last 8kB or something like that) on oops. And _not_ mix this 
-> > > up with anything else.
-> > 
-> > What he said.  I did it that way in the Digeo kernel back in 2002. 
-> > Worked good.
-> > 
-> > Doing it via a console is rather weird.  It will need core kernel 
-> > changes to do it properly.
 > > 
 > > Perhaps oops_enter() is a good place to mark the start of the log, and 
 > > flush it within oops_exit().
@@ -62,16 +44,60 @@ On Mon, 12 Oct 2009 20:23:46 +0200 Ingo Molnar <mingo@elte.hu> wrote:
 > Simplest would be to do the last 2K in oops_exit()? That gives the oops, 
 > and the history leading up to it. Since the blocking is 2K, the extra 
 > log output is for free.
-> 
-> (unless the oops is larger than 2K - but that is rather rare.)
-> 
 
-Some oops traces can be pretty large.  Perhaps "oops_enter minus 1k up
-to oops_exit".
+I agree, except I don't think it should be fixed to 2k.
 
-The digeo kernel later got changed to package the oops into a binary
-record format for logging to nvram.  iirc that was for space reasons,
-and for ease of downstream analysis.
+We should just dump as much as is "appropriate" for the dump device. It 
+might be the last 2kB, it might be 8kB, it might be 64kB. We don't know, 
+we don't care. The device may have its own per-device limits. Any extra 
+data we get from before the oops is just gravy (often there might be 
+interestign warning messages leadign up to the dump), and if the oops is 
+too big for the dump device, it's not something we can do anything about 
+anyway.
 
-That kernel used to be downloadable but I can't immediately find it. 
-Probably not very interesting anyway.
+So the logic should literally be something like this:
+
+ - kernel/printk.c:
+
+	void dump_kmsg(void)
+	{
+		unsigned long len = ACCESS_ONCE(log_end);
+		struct dump_device *dump;
+		const char *s1, *s2;
+		unsigned long l1, l2;
+
+		s1 = "";
+		l1 = 0;
+		s2 = log_buf;
+		l2 = len;
+
+		/* Have we rotated around the circular buffer? */
+		if (len > log_buf_len) {
+			unsigned long pos = (len & LOG_BUF_MASK);
+
+			s1 = log_buf + pos;
+			l1 = log_buf_len - pos;
+
+			s2 = log_buf;
+			l2 = pos;
+		}
+
+		list_for_each_entry (dump, dump_list, list) {
+			dump->fn(s1, l1, s2, l2);
+		}
+	}
+
+ie we just always give the whole buffer (as two "sections", since it's a 
+circular buffer) to the dumper, and then the dumper can decide how much of 
+those buffers it is able to dump sanely.
+
+If the dumper has some hardware limitation where it can only dump a single 
+aligned block, it can decide to just look at <s2,l2> which is the "latter" 
+part of the dump. It's usually going to be fine, and it should be 
+page-aligned (and you can even round up the size to a page, since the 
+worst that can happen is that you'll see some old printk output at the 
+end)
+
+Look ma, no locking, no buffer allocations, no nothing.
+
+			Linus
