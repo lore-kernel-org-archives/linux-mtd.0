@@ -1,30 +1,25 @@
-Received: from mx2.mail.elte.hu ([157.181.151.9])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MxK4d-0008Jo-8U
-	for linux-mtd@lists.infradead.org; Mon, 12 Oct 2009 12:32:27 +0000
-Date: Mon, 12 Oct 2009 14:32:10 +0200
-From: Ingo Molnar <mingo@elte.hu>
-To: Simon Kagstrom <simon.kagstrom@netinsight.net>
 Subject: Re: [PATCH] panic.c: export panic_on_oops
-Message-ID: <20091012123210.GB22766@elte.hu>
+From: David Woodhouse <dwmw2@infradead.org>
+To: Ingo Molnar <mingo@elte.hu>
+In-Reply-To: <20091012122023.GA19365@elte.hu>
 References: <1255241458-11665-1-git-send-email-dedekind1@gmail.com>
-	<20091012111545.GB8857@elte.hu>
-	<1255346731.9659.31.camel@localhost>
+	<20091012111545.GB8857@elte.hu> <1255346731.9659.31.camel@localhost>
 	<20091012113758.GB11035@elte.hu>
 	<20091012140149.6789efab@marrow.netinsight.se>
 	<20091012120951.GA16799@elte.hu>
-	<20091012142714.56362465@marrow.netinsight.se>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20091012142714.56362465@marrow.netinsight.se>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	LKML <linux-kernel@vger.kernel.org>,
+	<1255349748.10605.13.camel@macbook.infradead.org>
+	<20091012122023.GA19365@elte.hu>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 12 Oct 2009 13:33:18 +0100
+Message-Id: <1255350798.10605.19.camel@macbook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
 	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
 	linux-mtd <linux-mtd@lists.infradead.org>,
+	Simon Kagstrom <simon.kagstrom@netinsight.net>,
 	Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>
+	Linus Torvalds <torvalds@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,24 +29,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-* Simon Kagstrom <simon.kagstrom@netinsight.net> wrote:
-
-> > Yes, that looks like the better direction - but 'panic' is still the 
-> > wrong trigger condition i think. We generally just crash and dont 
-> > panic. Often we'll display a kernel warning and then hang. Etc.
+On Mon, 2009-10-12 at 14:20 +0200, Ingo Molnar wrote:
+> * David Woodhouse <dwmw2@infradead.org> wrote:
 > 
-> But how can we detect that? The code above will write to the MTD 
-> device either if an oops happens, or if we panic for some reason. If 
-> the kernel just hangs (and is reset by the watchdog, if we have one), 
-> how should we know when to write the log out?
+> > On Mon, 2009-10-12 at 14:09 +0200, Ingo Molnar wrote:
+> > > Also, would it be possible to just simplify the thing and not do any 
+> > > buffering at all? Extra buffering complexity in a console driver is only 
+> > > asking for trouble. Or is flash storage write cycles optimization that 
+> > > important in this case?
+> > 
+> > That and the fact that on NAND flash you have to write full pages at a 
+> > time -- that's 512 bytes, 2KiB or 4KiB depending on the type of chip. 
+> > So we really do want to buffer it where we can.
+> > 
+> > We don't want to write a 2KiB page for every line of printk output.
+> 
+> Then i think the buffering is at the wrong place: we should instead 
+> buffer in the generic layer and pass it to lowlevel if we know that we 
+> have gone past a 2K boundary.
+> 
+> The size of the generic log buffer is always a power of two so detecting 
+> 2K boundaries is very easy. On any emergency the generic console layer 
+> will do faster flushes - this is nothing the console driver itself 
+> should bother with.
+> 
+> And that would avoid the whole workqueue logic - which is fragile to be 
+> done in a printk to begin with.
+> 
+> So what we need is an extension to struct console that sets a buffering 
+> limit. Zero (the default) means unbuffered.
+> 
+> (Btw., things like netconsole might make use of such buffering too.)
+> 
+> Agreed?
 
-You shouldnt need to care about that in a console driver - it's up to 
-higher layers.
+Makes some sense, yes.
 
-See my reply to David Woodhouse, i think we should add support for 
-buffering in kernel/printk.c and that would both fix your problems, 
-would simplify the driver (significantly!) and would expose the generic 
-buffering capability to other console drivers as well.
+We also use the workqueue logic to allow us to co-ordinate access to the
+hardware properly -- taking locks where appropriate, etc. We can't do
+that directly from a console ->write() method.
 
-	Ingo
+Some device drivers do provide a ->panic_write() function which breaks
+all the locks and just resets the hardware because it knows we're
+panicking, but we don't want to do that in the common case.
+
+-- 
+dwmw2
