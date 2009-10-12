@@ -1,39 +1,22 @@
-Received: from mailout4.samsung.com ([203.254.224.34])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MxCiM-0006vg-4X
-	for linux-mtd@lists.infradead.org; Mon, 12 Oct 2009 04:40:58 +0000
-Received: from epmmp1 (mailout4.samsung.com [203.254.224.34])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KRD005ASX00OL@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 12 Oct 2009 13:40:48 +0900 (KST)
-Received: from amulsaha ([107.108.214.27])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0KRD00I9FWZW3F@mmp1.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 12 Oct 2009 13:40:48 +0900 (KST)
-Date: Mon, 12 Oct 2009 10:12:04 +0530
-From: Amul Kumar Saha <amul.saha@samsung.com>
-Subject: Re: [PATCH] [OneNAND] OTP support re-implementation 1/1
+Received: from ernst.netinsight.se ([194.16.221.21])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MxEJP-0001WD-Rf
+	for linux-mtd@lists.infradead.org; Mon, 12 Oct 2009 06:23:20 +0000
+Date: Mon, 12 Oct 2009 08:23:12 +0200
+From: Simon Kagstrom <simon.kagstrom@netinsight.net>
 To: dedekind1@gmail.com
-Message-id: <A06F384B00BE4137A566DF49DF751A52@sisodomain.com>
-Content-transfer-encoding: 7BIT
-References: <EF4202CC14044212993EE17E6010D5E7@sisodomain.com>
-	<87D6E94B11734CE1A253D9AE203F4192@sisodomain.com>
-	<4A94CF0A.6060106@gmail.com>
-	<6098B9D32DCD48C387EF96034FFFC55D@sisodomain.com>
-	<1251466736.3514.10.camel@localhost>
-	<A32D4C31541C4D8B9BF6CB4D6EF4B5DC@sisodomain.com>
-	<9c9fda240908310234h6cef3afev6a3f6e315321631b@mail.gmail.com>
-	<C48D93C7DF3C4F9C96E47BE9D6F51F37@sisodomain.com>
-	<4A9E0C47.205@gmail.com>
-	<8A3568961C4E4E7495A397D2267B6E37@sisodomain.com>
-	<1251958245.5060.6.camel@localhost>
-	<FC4F021760EA4F649917598723041422@sisodomain.com>
-	<1251976743.5060.13.camel@localhost>
-	<E902C77C74C544A3A554DD9881742C04@sisodomain.com>
-	<1254130728.3778.57.camel@localhost>
-Cc: Kyungmin Park <kmpark@infradead.org>, David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd@lists.infradead.org, adrian.hunter@nokia.com
+Subject: Re: [PATCH 2/3]: mtdoops: Use panic_write if panic_on_oops is set
+Message-ID: <20091012082312.4cd9b36c@marrow.netinsight.se>
+In-Reply-To: <1255240820.3359.33.camel@localhost>
+References: <20091002160510.191ef5a4@marrow.netinsight.se>
+	<20091002160652.5581c13c@marrow.netinsight.se>
+	<1254979692.3359.32.camel@localhost>
+	<1255240820.3359.33.camel@localhost>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Artem.Bityutskiy@nokia.com, linux-mtd <linux-mtd@lists.infradead.org>,
+	Aaro Koskinen <aaro.koskinen@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,22 +26,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+On Sun, 11 Oct 2009 09:00:20 +0300
+Artem Bityutskiy <dedekind1@gmail.com> wrote:
 
-> Could you please refresh your patch and resend it? The old one does not
-> apply anymore.
+> On Thu, 2009-10-08 at 08:28 +0300, Artem Bityutskiy wrote:
 >
-> Also, could you please avoid doing these:
->
-> printk(KERN_ERR "onenand_write_ops_nolock: \
->       write failed %d\n", ret);
->
-> function name prints. This is bad practice. You could amend whole
-> onenand_base.c first, then send the OTP re-write as a follow up patch.
->
+> > > -	if (mtd->panic_write && in_interrupt())
+> > > +	if (mtd->panic_write && (in_interrupt() || panic_on_oops))
+> > >  		/* Interrupt context, we're going to panic so try and log */
+> > >  		mtdoops_write(cxt, 1);
+> 
+> Oh, panic_on_oops is not exported. So we should either export it or make
+> mtdoops to be always compiled-in.
 
-As you have requested, rebased the OTP patch to the current version.
-Sending the OTP patch.
+Yep, in the earlier patch series (this one!) I made it always
+compiled-in, but for new one I kept the module support and also sent
+a patch to LKML which exports panic_on_oops. I saw you did the same
+thing now, thanks!
 
-Regards,
-Amul 
+// Simon
