@@ -1,22 +1,39 @@
-Received: from mail-qy0-f187.google.com ([209.85.221.187])
+Received: from mailout4.samsung.com ([203.254.224.34])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MxBUv-0007yd-Bk
-	for linux-mtd@lists.infradead.org; Mon, 12 Oct 2009 03:23:05 +0000
-Received: by qyk17 with SMTP id 17so9867400qyk.2
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 11 Oct 2009 20:22:53 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1255265475.16942.48.camel@localhost>
-References: <1254907903-11797-1-git-send-email-enrico.scholz@sigma-chemnitz.de>
-	<1255265475.16942.48.camel@localhost>
-From: Eric Miao <eric.y.miao@gmail.com>
-Date: Mon, 12 Oct 2009 11:22:32 +0800
-Message-ID: <f17812d70910112022g63c60438jca2a0e47944813a5@mail.gmail.com>
-Subject: Re: [PATCH] pxa3xx_nand: fix time calculation
-To: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>, dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: dwmw2@infradead.org, mreimer@vpop.net, linux-mtd@lists.infradead.org
+	id 1MxCiM-0006vg-4X
+	for linux-mtd@lists.infradead.org; Mon, 12 Oct 2009 04:40:58 +0000
+Received: from epmmp1 (mailout4.samsung.com [203.254.224.34])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KRD005ASX00OL@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Mon, 12 Oct 2009 13:40:48 +0900 (KST)
+Received: from amulsaha ([107.108.214.27])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KRD00I9FWZW3F@mmp1.samsung.com> for
+	linux-mtd@lists.infradead.org; Mon, 12 Oct 2009 13:40:48 +0900 (KST)
+Date: Mon, 12 Oct 2009 10:12:04 +0530
+From: Amul Kumar Saha <amul.saha@samsung.com>
+Subject: Re: [PATCH] [OneNAND] OTP support re-implementation 1/1
+To: dedekind1@gmail.com
+Message-id: <A06F384B00BE4137A566DF49DF751A52@sisodomain.com>
+Content-transfer-encoding: 7BIT
+References: <EF4202CC14044212993EE17E6010D5E7@sisodomain.com>
+	<87D6E94B11734CE1A253D9AE203F4192@sisodomain.com>
+	<4A94CF0A.6060106@gmail.com>
+	<6098B9D32DCD48C387EF96034FFFC55D@sisodomain.com>
+	<1251466736.3514.10.camel@localhost>
+	<A32D4C31541C4D8B9BF6CB4D6EF4B5DC@sisodomain.com>
+	<9c9fda240908310234h6cef3afev6a3f6e315321631b@mail.gmail.com>
+	<C48D93C7DF3C4F9C96E47BE9D6F51F37@sisodomain.com>
+	<4A9E0C47.205@gmail.com>
+	<8A3568961C4E4E7495A397D2267B6E37@sisodomain.com>
+	<1251958245.5060.6.camel@localhost>
+	<FC4F021760EA4F649917598723041422@sisodomain.com>
+	<1251976743.5060.13.camel@localhost>
+	<E902C77C74C544A3A554DD9881742C04@sisodomain.com>
+	<1254130728.3778.57.camel@localhost>
+Cc: Kyungmin Park <kmpark@infradead.org>, David Woodhouse <dwmw2@infradead.org>,
+	linux-mtd@lists.infradead.org, adrian.hunter@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,56 +43,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Oct 11, 2009 at 8:51 PM, Artem Bityutskiy <dedekind1@gmail.com> wro=
-te:
-> On Wed, 2009-10-07 at 11:31 +0200, Enrico Scholz wrote:
->> Use DIV_ROUND_UP to calculate number of clocks. =C2=A0Else, calculated c=
-locks
->> are nearly always to low and for times < 10ns, they will be negative on
->> PXA320 =C2=A0(which has a nand clock of 104 MHz).
->>
->> Signed-off-by: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
->> ---
->> =C2=A0drivers/mtd/nand/pxa3xx_nand.c | =C2=A0 =C2=A02 +-
->> =C2=A01 files changed, 1 insertions(+), 1 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_na=
-nd.c
->> index 6ea520a..32cb4d1 100644
->> --- a/drivers/mtd/nand/pxa3xx_nand.c
->> +++ b/drivers/mtd/nand/pxa3xx_nand.c
->> @@ -316,7 +316,7 @@ static struct pxa3xx_nand_flash *builtin_flash_types=
-[] =3D {
->> =C2=A0#define tAR_NDTR1(r) (((r) >> 0) & 0xf)
->>
->> =C2=A0/* convert nano-seconds to nand flash controller clock cycles */
->> -#define ns2cycle(ns, clk) =C2=A0 =C2=A0(int)(((ns) * (clk / 1000000) / =
-1000) - 1)
->> +#define ns2cycle(ns, clk) =C2=A0 =C2=A0(int)(DIV_ROUND_UP((ns) * (clk /=
- 1000000), 1000) - 1)
+Hi Artem,
+
+> Could you please refresh your patch and resend it? The old one does not
+> apply anymore.
 >
-> Why there is -1 at the end?
+> Also, could you please avoid doing these:
+>
+> printk(KERN_ERR "onenand_write_ops_nolock: \
+>       write failed %d\n", ret);
+>
+> function name prints. This is bad practice. You could amend whole
+> onenand_base.c first, then send the OTP re-write as a follow up patch.
 >
 
-This is because the actual clock cycles are what in the register + 1.
+As you have requested, rebased the OTP patch to the current version.
+Sending the OTP patch.
 
-Enrico,
-
-I'd recommend we remove this '-1' to always make the final result
-a little bit larger and avoid the negative case. DIV_ROUND_UP() is
-kind of confusing here, since the original equation is:
-
-cycles =3D ns / (1/clk * 10^9) =3D ns * clk / 10^9
-
-And since clk is normally N * MHz, thus clk/1000,000 will most likely
-be an integer, and simplified to (ns * clk/1000,000) / 1000.
-
-My rough guess is that removing '-1' would suffice for most cases, e.g.
-with 104MHz NAND controller frequency:
-  9ns =3D 9 * 104 / 1000 =3D 0, which is fine (as 0+1 =3D 1cycle ~ 1000/104=
- ns), and
-10ns =3D 10 * 104/1000 =3D 1, which is acceptable as 1 + 1 =3D 2cycle ~ 200=
-0/104ns
-
-Could you please verify that removing '-1' will solve all corner cases? Tha=
-nks.
+Regards,
+Amul 
