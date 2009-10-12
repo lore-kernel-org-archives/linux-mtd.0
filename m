@@ -1,9 +1,9 @@
-Date: Mon, 12 Oct 2009 08:36:38 -0700 (PDT)
+Date: Mon, 12 Oct 2009 08:44:30 -0700 (PDT)
 From: Linus Torvalds <torvalds@linux-foundation.org>
 To: Simon Kagstrom <simon.kagstrom@netinsight.net>
 Subject: Re: [PATCH] panic.c: export panic_on_oops
-In-Reply-To: <20091012153937.0dcd73e5@marrow.netinsight.se>
-Message-ID: <alpine.LFD.2.01.0910120828390.3438@localhost.localdomain>
+In-Reply-To: <alpine.LFD.2.01.0910120828390.3438@localhost.localdomain>
+Message-ID: <alpine.LFD.2.01.0910120837030.3438@localhost.localdomain>
 References: <1255241458-11665-1-git-send-email-dedekind1@gmail.com>
 	<20091012111545.GB8857@elte.hu>
 	<1255346731.9659.31.camel@localhost>
@@ -15,6 +15,7 @@ References: <1255241458-11665-1-git-send-email-dedekind1@gmail.com>
 	<20091012150650.51a4b4dc@marrow.netinsight.se>
 	<20091012131528.GC25464@elte.hu>
 	<20091012153937.0dcd73e5@marrow.netinsight.se>
+	<alpine.LFD.2.01.0910120828390.3438@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: Artem Bityutskiy <dedekind1@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
@@ -34,38 +35,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 
 
-On Mon, 12 Oct 2009, Simon Kagstrom wrote:
+On Mon, 12 Oct 2009, Linus Torvalds wrote:
 > 
-> Well, this is what my patch [1] aims to fix. What it does is to put all
-> messages in a circular buffer, and when an oops or panic occurs it
-> writes them out.
+> Don't. kfifo's aren't going to help. You're doing this at all the wrong 
+> levels ENTIRELY, and we already have the buffer you want to flush.
 
-Umm. That's wrong. We already _have_ the circular buffer.
+Btw, a few simple rules:
 
-It's called 'log_buf'.
+ - if you need to make your device look like a "console device" for 
+   dumping at oops time, you're doing things wrong. You don't want line 
+   buffered output to begin with, and you don't want to see each line, you 
+   only want this at exceptional points.
 
-I agree with the "save kernel buffer on panic" thing, but I disagree with 
-making it anything new, and hooking into "printk()" or the console 
-subsystem AT ALL. That's just bogus, stupid, and WRONG.
+ - if you need to look at "in_interrupt()" or "panic_on_oops", you're 
+   doing things wrong.
 
-What you can do is to just flush the 'log_buf' buffer (or as much of it as 
-you want - the buffer may be a megabyte in size, and maybe you only want 
-to flush the last 8kB or something like that) on oops. And _not_ mix this 
-up with anything else. It's a really simple circular buffer, which just 
-has
+ - if you add your own buffers, you're doing things wrong. I have 
+   CONFIG_LOG_BUF_SHIFT=18 in my kernel, so I've already got 256kB worth 
+   of memory allocated for kernel messages. Sometimes I increase that 
+   further, just because I do some silly printk debugging.
 
- - log_buf: buffer start
- - log_end: number of characters ever seen
- - log_buf_len: size of buffer (guaranteed to be a power-of-2)
+IOW, just add a very simple "flush the dmesg buffer on oops" callback to 
+the end of the oops printout code (just a single call after the oops thing 
+is now known to be in the dmesg buffers!)
 
-so it's literally as easy as looking at those three values (there's a few 
-more that you _can_ look at, but they'd not likely be relevant for a 
-"panic_on_oops" thing)
-
-> The current version only collects messages _during_ an
-> oops. I'll rework it with using kfifo as per Alans suggestion though.
-
-Don't. kfifo's aren't going to help. You're doing this at all the wrong 
-levels ENTIRELY, and we already have the buffer you want to flush.
+It's not just oopses, btw. Maybe people would like to do this as the last 
+stage of a reboot/shutdown too. Because some of the final printouts from 
+the shutdown will never make it to disk, because 'ksyslogd' has been 
+killed, and the root filesystem has been turned read-only.
 
 			Linus
