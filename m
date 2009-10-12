@@ -1,22 +1,19 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MxHdP-0002bY-MM
-	for linux-mtd@lists.infradead.org; Mon, 12 Oct 2009 09:56:11 +0000
-Message-ID: <4AD2FD26.9010403@nokia.com>
-Date: Mon, 12 Oct 2009 12:55:50 +0300
-From: Mika Korhonen <ext-mika.2.korhonen@nokia.com>
+From: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
+To: Eric Miao <eric.y.miao@gmail.com>
+Subject: Re: [PATCH] pxa3xx_nand: fix time calculation
+References: <1254907903-11797-1-git-send-email-enrico.scholz@sigma-chemnitz.de>
+	<1255265475.16942.48.camel@localhost>
+	<f17812d70910112022g63c60438jca2a0e47944813a5@mail.gmail.com>
+Date: Mon, 12 Oct 2009 12:03:58 +0200
+In-Reply-To: <f17812d70910112022g63c60438jca2a0e47944813a5@mail.gmail.com>
+	(Eric Miao's message of "Mon, 12 Oct 2009 11:22:32 +0800")
+Message-ID: <ly3a5p6i9d.fsf@ensc-virt.intern.sigma-chemnitz.de>
 MIME-Version: 1.0
-To: "Bityutskiy Artem (Nokia-D/Helsinki)" <Artem.Bityutskiy@nokia.com>
-Subject: Re: [PATCH 0/2] Revised: MTD: OneNAND: multiblock erase support
-References: <1254819360-17191-1-git-send-email-ext-mika.2.korhonen@nokia.com>
-	<1255260331.16942.37.camel@localhost>
-In-Reply-To: <1255260331.16942.37.camel@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "amul.saha@samsung.com" <amul.saha@samsung.com>,
-	"kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"Hunter Adrian \(Nokia-D/Helsinki\)" <adrian.hunter@nokia.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+Sender: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
+Cc: linux-mtd@lists.infradead.org, mreimer@vpop.net, dwmw2@infradead.org,
+	dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,41 +23,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Bityutskiy Artem (Nokia-D/Helsinki) wrote:
-> On Tue, 2009-10-06 at 11:55 +0300, Mika Korhonen wrote:
->   
->> This patch series is a reworked version of
->>
->> http://lists.infradead.org/pipermail/linux-mtd/2009-September/027138.html
->> http://lists.infradead.org/pipermail/linux-mtd/2009-September/027139.html
->> http://lists.infradead.org/pipermail/linux-mtd/2009-September/027140.html
->>
->> based on comments by Adrian Hunter and Kyungmin Park. This version should
->> address the issues pointed out by them and apply on the current mtd tree.
->>
->> The original patch is:
->> http://lists.infradead.org/pipermail/linux-mtd/2009-June/026130.html
->>
->> I split the original patch in two for readability: the first part extracts
->> the execution of erase command to a separate function for easier integration
->> of different erase method. The second part implements the multiblock erase
->> function in case multiple blocks are requested to be erased and the chip is
->> not Flex.
->>
->> This is useful for flashing applications that need to do their work as
->> fast as possible. For full 64 eraseblock case the erase speed is up to 30x
->> faster. (Samsung: 64 MB/s vs 2.1 GB/s, I got 1.4 GB/s on Linux kernel)
->>     
->
-> Mika, I've tried to apply your patches to my tree, but they do not apply
-> any more because of recent printk cleanups:
->
-> http://git.infradead.org/mtd-2.6.git/commit/297758f8fc4e92b1915d2f5f2f84cedfe8941e5a
->
-> Could you please refresh your patches against the current MTD tree and
-> re-send?
->   
-There you are, I just resent them.
+Eric Miao <eric.y.miao@gmail.com> writes:
 
-br,
-Mika
+>>> Use DIV_ROUND_UP to calculate number of clocks. =A0Else, calculated clo=
+cks
+>>> are nearly always to low and for times < 10ns, they will be negative on
+>>> PXA320 =A0(which has a nand clock of 104 MHz).
+>>>
+>>> -#define ns2cycle(ns, clk) =A0 =A0(int)(((ns) * (clk / 1000000) / 1000)=
+ - 1)
+>>> +#define ns2cycle(ns, clk) =A0 =A0(int)(DIV_ROUND_UP((ns) * (clk / 1000=
+000), 1000) - 1)
+>>
+>> Why there is -1 at the end?
+> ...
+> I'd recommend we remove this '-1' to always make the final result
+> a little bit larger and avoid the negative case. DIV_ROUND_UP() is
+> kind of confusing here, since the original equation is:
+>
+> cycles =3D ns / (1/clk * 10^9) =3D ns * clk / 10^9
+
+Hi Eric,
+
+for me, the DIV_ROUND_UP() is more clean, because 'ns' are minimum
+values given on the datasheet and you have to round up fractional cycle
+counts hence. But I agree that
+
+| #define ns2cycle(ns, clk) (int)(DIV_ROUND_UP((ns) * (clk / 1000000), 1000=
+) - 1)
+
+and
+
+| #define ns2cycle(ns, clk) (int)(((ns) * (clk / 1000000) / 1000))
+
+give same results for most values.  I do not have a strong preference
+for one of these two variants.
+
+
+> Could you please verify that removing '-1' will solve all corner
+> cases?
+
+Except for overflows (which are uninteresting here), timings which are
+a multiple of 1000ns are the only corner cases.  And these will result
+into cycle counts which are increased by 1 compared to their ideal
+value.
+
+
+
+Enrico
