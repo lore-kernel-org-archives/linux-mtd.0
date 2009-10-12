@@ -1,13 +1,13 @@
-Received: from mx2.mail.elte.hu ([157.181.151.9])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MxMkV-00062W-Ff
-	for linux-mtd@lists.infradead.org; Mon, 12 Oct 2009 15:23:51 +0000
-Date: Mon, 12 Oct 2009 17:23:27 +0200
-From: Ingo Molnar <mingo@elte.hu>
+Date: Mon, 12 Oct 2009 08:36:38 -0700 (PDT)
+From: Linus Torvalds <torvalds@linux-foundation.org>
 To: Simon Kagstrom <simon.kagstrom@netinsight.net>
 Subject: Re: [PATCH] panic.c: export panic_on_oops
-Message-ID: <20091012152327.GD14004@elte.hu>
-References: <20091012113758.GB11035@elte.hu>
+In-Reply-To: <20091012153937.0dcd73e5@marrow.netinsight.se>
+Message-ID: <alpine.LFD.2.01.0910120828390.3438@localhost.localdomain>
+References: <1255241458-11665-1-git-send-email-dedekind1@gmail.com>
+	<20091012111545.GB8857@elte.hu>
+	<1255346731.9659.31.camel@localhost>
+	<20091012113758.GB11035@elte.hu>
 	<20091012140149.6789efab@marrow.netinsight.se>
 	<20091012120951.GA16799@elte.hu>
 	<1255349748.10605.13.camel@macbook.infradead.org>
@@ -15,18 +15,13 @@ References: <20091012113758.GB11035@elte.hu>
 	<20091012150650.51a4b4dc@marrow.netinsight.se>
 	<20091012131528.GC25464@elte.hu>
 	<20091012153937.0dcd73e5@marrow.netinsight.se>
-	<20091012143017.GC4565@elte.hu>
-	<20091012170139.147fbddc@marrow.netinsight.se>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20091012170139.147fbddc@marrow.netinsight.se>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>,
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
 	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>, Ingo Molnar <mingo@elte.hu>,
+	David Woodhouse <dwmw2@infradead.org>,
 	Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
 	Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -38,47 +33,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-* Simon Kagstrom <simon.kagstrom@netinsight.net> wrote:
 
-> With my patch it instead works like this:
+On Mon, 12 Oct 2009, Simon Kagstrom wrote:
 > 
-> - mtdoops_console_write continuously writes messages to the buffer, but
->   never calls mtdoops_console_sync() itself.
-> 
-> - mtdoops_console_sync (i.e., the ->unblank() callback) will schedule
->   work if oops_in_progress is set.
-> 
-> - if we have a panic, it will call mtdoops_write directly (if
->   mtd->panic_write is set, otherwise we are out of luck). This is also
->   the code path on oopses in interrupt context.
-> 
-> So the workqueue only gets used on unblank() from oopses. I think the 
-> second implementation is simpler, but it also changes the behavior of 
-> mtdoops a bit to include messages before the oops/panic as well.
+> Well, this is what my patch [1] aims to fix. What it does is to put all
+> messages in a circular buffer, and when an oops or panic occurs it
+> writes them out.
 
-The main printk principle is simplicity:
+Umm. That's wrong. We already _have_ the circular buffer.
 
-- The simpler the printk codepath, the higher the chances that we still
-  are within the window of opportunity to get anything out to the user.
+It's called 'log_buf'.
 
-- Furthermore, the simpler the printk codepath, the larger the window of
-  opportunity is to begin with: we rely on less external state, so we
-  have a smaller surface of interaction that might break printk.
+I agree with the "save kernel buffer on panic" thing, but I disagree with 
+making it anything new, and hooking into "printk()" or the console 
+subsystem AT ALL. That's just bogus, stupid, and WRONG.
 
-In that sense, i think your modified workqueue use is less wrong than 
-what is in current mainline, but i'm afraid it's still wrong.
+What you can do is to just flush the 'log_buf' buffer (or as much of it as 
+you want - the buffer may be a megabyte in size, and maybe you only want 
+to flush the last 8kB or something like that) on oops. And _not_ mix this 
+up with anything else. It's a really simple circular buffer, which just 
+has
 
-Why use a workqueue on unblank()? Why use a workqueue _at all_? (If we 
-piggyback to any kernel thread we could as well piggyback to syslog 
-itself - and we all know how often syslog fails at capturing oopses.)
+ - log_buf: buffer start
+ - log_end: number of characters ever seen
+ - log_buf_len: size of buffer (guaranteed to be a power-of-2)
 
-The mtdoops console driver only seems to act if there's an emergency - 
-and in emergencies we really _never_ want to do complex things like 
-using a workqueue thread.
+so it's literally as easy as looking at those three values (there's a few 
+more that you _can_ look at, but they'd not likely be relevant for a 
+"panic_on_oops" thing)
 
-( Sidenote: i proffer that we dont want to use a workqueue in the 
-  'regular' printk case either - but that seems to be irrelevant here as 
-  mtdoops does not seem to save / care about regular non-emergency 
-  printks. )
+> The current version only collects messages _during_ an
+> oops. I'll rework it with using kfifo as per Alans suggestion though.
 
-	Ingo
+Don't. kfifo's aren't going to help. You're doing this at all the wrong 
+levels ENTIRELY, and we already have the buffer you want to flush.
+
+			Linus
