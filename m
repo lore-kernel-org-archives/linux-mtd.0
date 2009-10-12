@@ -1,29 +1,18 @@
-Date: Mon, 12 Oct 2009 08:44:30 -0700 (PDT)
-From: Linus Torvalds <torvalds@linux-foundation.org>
-To: Simon Kagstrom <simon.kagstrom@netinsight.net>
-Subject: Re: [PATCH] panic.c: export panic_on_oops
-In-Reply-To: <alpine.LFD.2.01.0910120828390.3438@localhost.localdomain>
-Message-ID: <alpine.LFD.2.01.0910120837030.3438@localhost.localdomain>
-References: <1255241458-11665-1-git-send-email-dedekind1@gmail.com>
-	<20091012111545.GB8857@elte.hu>
-	<1255346731.9659.31.camel@localhost>
-	<20091012113758.GB11035@elte.hu>
-	<20091012140149.6789efab@marrow.netinsight.se>
-	<20091012120951.GA16799@elte.hu>
-	<1255349748.10605.13.camel@macbook.infradead.org>
-	<20091012122023.GA19365@elte.hu>
-	<20091012150650.51a4b4dc@marrow.netinsight.se>
-	<20091012131528.GC25464@elte.hu>
-	<20091012153937.0dcd73e5@marrow.netinsight.se>
-	<alpine.LFD.2.01.0910120828390.3438@localhost.localdomain>
+Received: from [213.79.90.228] (helo=buildserver.ru.mvista.com)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MxNhP-0001oZ-Fg
+	for linux-mtd@lists.infradead.org; Mon, 12 Oct 2009 16:24:44 +0000
+Date: Mon, 12 Oct 2009 20:24:38 +0400
+From: Anton Vorontsov <avorontsov@ru.mvista.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH 2/3] mtd: m25p80: Rework probing/JEDEC code
+Message-ID: <20091012162438.GB30699@oksana.dev.rtsoft.ru>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
-	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>, Ingo Molnar <mingo@elte.hu>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alan Cox <alan@lxorguk.ukuu.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	David Brownell <dbrownell@users.sourceforge.net>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,35 +22,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Previosly the driver always tried JEDEC probing, assuming that non-JEDEC
+chips will return '0'. But truly non-JEDEC chips (like CAT25) won't do
+that, their behaviour on RDID command is undefined, so the driver should
+not call jedec_probe() for these chips.
 
+Also, be less strict on error conditions, don't fail to probe if JEDEC
+found a chip that is different from what platform code told, instead
+just print some warnings and use an information obtained via JEDEC. In
+that case we should not trust partitions any longer, but they might be
+still useful (i.e. they could protect some parts of the chip).
 
-On Mon, 12 Oct 2009, Linus Torvalds wrote:
-> 
-> Don't. kfifo's aren't going to help. You're doing this at all the wrong 
-> levels ENTIRELY, and we already have the buffer you want to flush.
+Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
+---
+ drivers/mtd/devices/m25p80.c |   69 ++++++++++++++++++++++++-----------------
+ 1 files changed, 40 insertions(+), 29 deletions(-)
 
-Btw, a few simple rules:
-
- - if you need to make your device look like a "console device" for 
-   dumping at oops time, you're doing things wrong. You don't want line 
-   buffered output to begin with, and you don't want to see each line, you 
-   only want this at exceptional points.
-
- - if you need to look at "in_interrupt()" or "panic_on_oops", you're 
-   doing things wrong.
-
- - if you add your own buffers, you're doing things wrong. I have 
-   CONFIG_LOG_BUF_SHIFT=18 in my kernel, so I've already got 256kB worth 
-   of memory allocated for kernel messages. Sometimes I increase that 
-   further, just because I do some silly printk debugging.
-
-IOW, just add a very simple "flush the dmesg buffer on oops" callback to 
-the end of the oops printout code (just a single call after the oops thing 
-is now known to be in the dmesg buffers!)
-
-It's not just oopses, btw. Maybe people would like to do this as the last 
-stage of a reboot/shutdown too. Because some of the final printouts from 
-the shutdown will never make it to disk, because 'ksyslogd' has been 
-killed, and the root filesystem has been turned read-only.
-
-			Linus
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 133a532..3c74c3a 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -709,6 +709,14 @@ static const struct spi_device_id *__devinit jedec_probe(struct spi_device *spi)
+ 	jedec = jedec << 8;
+ 	jedec |= id[2];
+ 
++	/*
++	 * Some chips (like Numonyx M25P80) have JEDEC and non-JEDEC variants,
++	 * which depend on technology process. Officially RDID command doesn't
++	 * exist for non-JEDEC chips, but for compatibility they return ID 0.
++	 */
++	if (jedec == 0)
++		return NULL;
++
+ 	ext_jedec = id[3] << 8 | id[4];
+ 
+ 	for (tmp = 0; tmp < ARRAY_SIZE(m25p_ids) - 1; tmp++) {
+@@ -730,7 +738,7 @@ static const struct spi_device_id *__devinit jedec_probe(struct spi_device *spi)
+  */
+ static int __devinit m25p_probe(struct spi_device *spi)
+ {
+-	const struct spi_device_id	*id;
++	const struct spi_device_id	*id = spi_get_device_id(spi);
+ 	struct flash_platform_data	*data;
+ 	struct m25p			*flash;
+ 	struct flash_info		*info;
+@@ -743,41 +751,44 @@ static int __devinit m25p_probe(struct spi_device *spi)
+ 	 */
+ 	data = spi->dev.platform_data;
+ 	if (data && data->type) {
++		const struct spi_device_id *plat_id;
++
+ 		for (i = 0; i < ARRAY_SIZE(m25p_ids) - 1; i++) {
+-			id = &m25p_ids[i];
+-			info = (void *)m25p_ids[i].driver_data;
+-			if (strcmp(data->type, id->name))
++			plat_id = &m25p_ids[i];
++			if (strcmp(data->type, plat_id->name))
+ 				continue;
+ 			break;
+ 		}
+ 
+-		/* unrecognized chip? */
+-		if (i == ARRAY_SIZE(m25p_ids) - 1) {
+-			DEBUG(MTD_DEBUG_LEVEL0, "%s: unrecognized id %s\n",
+-					dev_name(&spi->dev), data->type);
+-			info = NULL;
+-
+-		/* recognized; is that chip really what's there? */
+-		} else if (info->jedec_id) {
+-			id = jedec_probe(spi);
+-
+-			if (id != &m25p_ids[i]) {
+-				dev_warn(&spi->dev, "found %s, expected %s\n",
+-						id ? id->name : "UNKNOWN",
+-						m25p_ids[i].name);
+-				info = NULL;
+-			}
+-		}
+-	} else {
+-		id = jedec_probe(spi);
+-		if (!id)
+-			id = spi_get_device_id(spi);
+-
+-		info = (void *)id->driver_data;
++		if (plat_id)
++			id = plat_id;
++		else
++			dev_warn(&spi->dev, "unrecognized id %s\n", data->type);
+ 	}
+ 
+-	if (!info)
+-		return -ENODEV;
++	info = (void *)id->driver_data;
++
++	if (info->jedec_id) {
++		const struct spi_device_id *jid;
++
++		jid = jedec_probe(spi);
++		if (!jid) {
++			dev_info(&spi->dev, "non-JEDEC variant of %s\n",
++				 id->name);
++		} else if (jid != id) {
++			/*
++			 * JEDEC knows better, so overwrite platform ID. We
++			 * can't trust partitions any longer, but we'll let
++			 * mtd apply them anyway, since some partitions may be
++			 * marked read-only, and we don't want to lose that
++			 * information, even if it's not 100% accurate.
++			 */
++			dev_warn(&spi->dev, "found %s, expected %s\n",
++				 jid->name, id->name);
++			id = jid;
++			info = (void *)jid->driver_data;
++		}
++	}
+ 
+ 	flash = kzalloc(sizeof *flash, GFP_KERNEL);
+ 	if (!flash)
+-- 
+1.6.3.3
