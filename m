@@ -1,29 +1,30 @@
 Received: from mx3.mail.elte.hu ([157.181.1.138])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MxKkV-0002AN-Ns
-	for linux-mtd@lists.infradead.org; Mon, 12 Oct 2009 13:15:44 +0000
-Date: Mon, 12 Oct 2009 15:15:29 +0200
+	id 1MxKtk-0004XJ-IY
+	for linux-mtd@lists.infradead.org; Mon, 12 Oct 2009 13:25:17 +0000
+Date: Mon, 12 Oct 2009 15:25:03 +0200
 From: Ingo Molnar <mingo@elte.hu>
-To: Simon Kagstrom <simon.kagstrom@netinsight.net>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
 Subject: Re: [PATCH] panic.c: export panic_on_oops
-Message-ID: <20091012131528.GC25464@elte.hu>
+Message-ID: <20091012132503.GD25464@elte.hu>
 References: <1255241458-11665-1-git-send-email-dedekind1@gmail.com>
 	<20091012111545.GB8857@elte.hu>
 	<1255346731.9659.31.camel@localhost>
 	<20091012113758.GB11035@elte.hu>
 	<20091012140149.6789efab@marrow.netinsight.se>
 	<20091012120951.GA16799@elte.hu>
-	<1255349748.10605.13.camel@macbook.infradead.org>
-	<20091012122023.GA19365@elte.hu>
-	<20091012150650.51a4b4dc@marrow.netinsight.se>
+	<20091012142714.56362465@marrow.netinsight.se>
+	<20091012123210.GB22766@elte.hu>
+	<20091012140821.5dfa1598@lxorguk.ukuu.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20091012150650.51a4b4dc@marrow.netinsight.se>
+In-Reply-To: <20091012140821.5dfa1598@lxorguk.ukuu.org.uk>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>,
 	David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>,
 	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
 	linux-mtd <linux-mtd@lists.infradead.org>,
+	Simon Kagstrom <simon.kagstrom@netinsight.net>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Linus Torvalds <torvalds@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -36,78 +37,47 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-* Simon Kagstrom <simon.kagstrom@netinsight.net> wrote:
+* Alan Cox <alan@lxorguk.ukuu.org.uk> wrote:
 
-> On Mon, 12 Oct 2009 14:20:23 +0200
-> Ingo Molnar <mingo@elte.hu> wrote:
+> > See my reply to David Woodhouse, i think we should add support for 
+> > buffering in kernel/printk.c and that would both fix your problems, 
+> > would simplify the driver (significantly!) and would expose the 
+> > generic buffering capability to other console drivers as well.
 > 
-> > * David Woodhouse <dwmw2@infradead.org> wrote:
-> > 
-> > > On Mon, 2009-10-12 at 14:09 +0200, Ingo Molnar wrote:
-> > > > Also, would it be possible to just simplify the thing and not do any 
-> > > > buffering at all? Extra buffering complexity in a console driver is only 
-> > > > asking for trouble. Or is flash storage write cycles optimization that 
-> > > > important in this case?
-> > > 
-> > > That and the fact that on NAND flash you have to write full pages at a 
-> > > time -- that's 512 bytes, 2KiB or 4KiB depending on the type of chip. 
-> > > So we really do want to buffer it where we can.
-> > > 
-> > > We don't want to write a 2KiB page for every line of printk output.
-> > 
-> > Then i think the buffering is at the wrong place: we should instead 
-> > buffer in the generic layer and pass it to lowlevel if we know that we 
-> > have gone past a 2K boundary.
-> >
-> > The size of the generic log buffer is always a power of two so 
-> > detecting 2K boundaries is very easy. On any emergency the generic 
-> > console layer will do faster flushes - this is nothing the console 
-> > driver itself should bother with.
-> 
-> But this is only part of the mtdoops problem (the reason why we don't 
-> write all the time). The current code only stores messages printed 
-> during an oops, and this behavior will surely change if the console 
-> driver gets large buffers of output - or it would have to take in the 
-> output unbuffered anyway.
-> 
-> My patch changes this behavior, and with that I don't think buffered 
-> output would be a problem - it would indeed make it more simple as you 
-> say - assuming there is something like ->kernel_bug() that would flush 
-> the last 4KiB or so of messages to mtdoops when there is an oops or 
-> panic.
-> 
-> > And that would avoid the whole workqueue logic - which is fragile to 
-> > be done in a printk to begin with.
-> 
-> I'm afraid I don't really see this issue. The workqueue is used to 
-> write the buffer to the mtd device if we are not in a panic or 
-> interrupt context - in which case we do it directly.
-> 
-> So it's only used when an oops is ongoing.
+> Buffering printk in general is bad. [...]
 
-This fixation on 'panic' is so wrong!
+The general (and default) case would be 0 buffering - i.e. finegrained 
+per line calls to ->console_write().
 
-90% of the bugs users care about dont involve any panic. And even if 
-there is a panic down the line, most of the interesting messages are in 
-the stream leading up to the panic - now tucked away in that async 
-workqueue mechanism and not visible.
+This is the common case indeed, we want to get console output out as 
+soon as possible and as finegrained as possible - as we dont know when a 
+failure mode removes our ability to print anything else.
 
-There's two clean solutions i think:
+My argument is that instead of a complicated dance of workqueue versus 
+non-workqueue printk support in the MTD code in drivers/mtd/mtdoops.c, 
+this should be done at the generic console level.
 
-1) add some new "ok, there's trouble!" callback to struct console and 
-   the console driver could via that mechanism send out the _last_ 2KB 
-   (or more) of kernel log messages. Basically we can go back in time by 
-   looking at the dmesg buffer. The low level console driver does not 
-   need to 'follow' the high level console state - it only wants to 
-   print in case of trouble anyway.
+It's not hard, nor complex if done at the right level, nor does it 
+impact the regular zero-buffering codepath in a significant way - and 
+the end result would be a significantly simpler (and, in turn, more 
+robust) MTD printk driver.
 
-2) or add buffered (flash-friendly) writes for all printk output - panic
-   and non-panic alike. This would be useful to debug suspend/resume
-   bugs for example. This would also optimize the packets of netconsole
-   output. (last i checked we sent a packet per line.)
+I care about this because i still havent given up hope that the company 
+you are working for will finally give us some permanent storage in the 
+CPU itself, so that we can have cross-reboot printk buffering ;-) If 
+that storage is in the form of Flash, then buffering (to optimize write 
+cycles) is probably a must.
 
-The workqueue looks wrong in both variants. If we are panic-ing (or 
-hanging, or ...) then we are halting the machine - the workqueue has no 
-chance to actually execute.
+> [...] Given a driver needs only to provide about 6 lines of code using 
+> a kfifo is it really that hard for the odd code that wants to buffer 
+> to do that ?
+
+Avoiding a workqueue in printk is about the critical path of failure and 
+about complexity in general.
+
+I dont see how kfifo helps here much - kfifo is really just a relatively 
+simple dynamic memory buffer abstraction - while most of the complexity 
+here is elsewhere. Could you explain what you meant with kfifo here 
+please?
 
 	Ingo
