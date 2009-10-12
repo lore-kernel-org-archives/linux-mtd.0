@@ -1,33 +1,24 @@
-Received: from ernst.netinsight.se ([194.16.221.21])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MxL7p-0006lA-JO
-	for linux-mtd@lists.infradead.org; Mon, 12 Oct 2009 13:39:49 +0000
-Date: Mon, 12 Oct 2009 15:39:37 +0200
-From: Simon Kagstrom <simon.kagstrom@netinsight.net>
+Date: Mon, 12 Oct 2009 07:12:39 -0700
+From: Arjan van de Ven <arjan@infradead.org>
 To: Ingo Molnar <mingo@elte.hu>
 Subject: Re: [PATCH] panic.c: export panic_on_oops
-Message-ID: <20091012153937.0dcd73e5@marrow.netinsight.se>
-In-Reply-To: <20091012131528.GC25464@elte.hu>
+Message-ID: <20091012071239.608a74c9@infradead.org>
+In-Reply-To: <20091012113758.GB11035@elte.hu>
 References: <1255241458-11665-1-git-send-email-dedekind1@gmail.com>
 	<20091012111545.GB8857@elte.hu>
 	<1255346731.9659.31.camel@localhost>
 	<20091012113758.GB11035@elte.hu>
-	<20091012140149.6789efab@marrow.netinsight.se>
-	<20091012120951.GA16799@elte.hu>
-	<1255349748.10605.13.camel@macbook.infradead.org>
-	<20091012122023.GA19365@elte.hu>
-	<20091012150650.51a4b4dc@marrow.netinsight.se>
-	<20091012131528.GC25464@elte.hu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Cc: Artem Bityutskiy <dedekind1@gmail.com>,
 	Linus Torvalds <torvalds@linux-foundation.org>,
-	LKML <linux-kernel@vger.kernel.org>, "Koskinen Aaro
-	\(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
 	linux-mtd <linux-mtd@lists.infradead.org>,
+	Simon Kagstrom <simon.kagstrom@netinsight.net>,
 	Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>, Alan Cox <alan@lxorguk.ukuu.org.uk>
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,60 +28,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-OK, I don't think we understand each other. Sorry if I'm being slow
-here, please tell me if I'm misunderstanding something fundamental
-below.
-
-On Mon, 12 Oct 2009 15:15:29 +0200
+On Mon, 12 Oct 2009 13:37:58 +0200
 Ingo Molnar <mingo@elte.hu> wrote:
 
-> > I'm afraid I don't really see this issue. The workqueue is used to 
-> > write the buffer to the mtd device if we are not in a panic or 
-> > interrupt context - in which case we do it directly.
+> 
+> * Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> 
+> > On Mon, 2009-10-12 at 13:15 +0200, ext Ingo Molnar wrote:
+> > > > We use the mtdoops module which stores oopses on the Flash
+> > > > partition, in order to make it possible to analyze them later.
+> > > > And mtdoops needs to know whether 'panic_on_oops' is on or off.
+> > > > Thus, we need this variable to be exported.
+> > > 
+> > > hm, why does it need it? Could you send the patch please that
+> > > makes use of it (as an easy way to explain the need for the
+> > > export) - current upstream drivers/mtd/mtdoops.c doesnt need it
+> > > so it must be some pending change.
 > > 
-> > So it's only used when an oops is ongoing.
+> > Yes, current drivers/mtd/mtdoops.c does not need it, but we have
+> > this patch:
+> > 
+> > http://lists.infradead.org/pipermail/linux-mtd/2009-October/027450.html
+> > 
+> > which makes sure mtdoops writes the oops log immediately, because we
+> > have 'panic_on_oops' set so this is our last chance to save the
+> > oops.
+> > 
+> > Here is the patch inlined as well:
+> > 
+> > Author: Aaro Koskinen <aaro.koskinen@nokia.com>
+> > Date:   Thu Oct 1 18:16:55 2009 +0300
+> > 
+> >     mtd: mtdoops: do not schedule work if we are going to die
+> > 
+> >     If panic_on_oops is set, the log should be written right away
+> >     because this is not going to be a second chance.
+> > 
+> >     Signed-off-by: Aaro Koskinen <aaro.koskinen@nokia.com>
+> >     Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> > 
+> > diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
+> > index 1060337..ac67833 100644
+> > --- a/drivers/mtd/mtdoops.c
+> > +++ b/drivers/mtd/mtdoops.c
+> > @@ -335,7 +335,7 @@ static void mtdoops_console_sync(void)
+> >         cxt->ready = 0;
+> >         spin_unlock_irqrestore(&cxt->writecount_lock, flags);
+> > 
+> > -       if (mtd->panic_write && in_interrupt())
+> > +       if (mtd->panic_write && (in_interrupt() || panic_on_oops))
+> >                 /* Interrupt context, we're going to panic so try
+> > and log */ mtdoops_write(cxt, 1);
 > 
-> This fixation on 'panic' is so wrong!
+> Hm, the code seems to be somewhat confused about this. It tries to
+> guess when it's panic-ing, right? in_interrupt() is the wrong test
+> for that.
 > 
-> 90% of the bugs users care about dont involve any panic. And even if 
-> there is a panic down the line, most of the interesting messages are in 
-> the stream leading up to the panic - now tucked away in that async 
-> workqueue mechanism and not visible.
-
-Well, this is what my patch [1] aims to fix. What it does is to put all
-messages in a circular buffer, and when an oops or panic occurs it
-writes them out. The current version only collects messages _during_ an
-oops. I'll rework it with using kfifo as per Alans suggestion though.
-
-Neither the current code nor the new patch has them stored in the work
-queue during a panic though. If this happens, they will call
-panic_write (if it's available) to write it out directly.
-
-> There's two clean solutions i think:
+> mtdoops_console_sync() gets called by regular printk() as well via:
 > 
-> 1) add some new "ok, there's trouble!" callback to struct console and 
->    the console driver could via that mechanism send out the _last_ 2KB 
->    (or more) of kernel log messages. Basically we can go back in time by 
->    looking at the dmesg buffer. The low level console driver does not 
->    need to 'follow' the high level console state - it only wants to 
->    print in case of trouble anyway.
->
-> 2) or add buffered (flash-friendly) writes for all printk output - panic
->    and non-panic alike. This would be useful to debug suspend/resume
->    bugs for example. This would also optimize the packets of netconsole
->    output. (last i checked we sent a packet per line.)
+> static void
+> mtdoops_console_write(struct console *co, const char *s, unsigned int
+> count) {
+>         struct mtdoops_context *cxt = co->data;
+>         struct mtd_info *mtd = cxt->mtd;
+>         unsigned long flags;
+> 
+>         if (!oops_in_progress) {
+>                 mtdoops_console_sync();
+>                 return;
+> 
+> I think this is all layered incorrectly - because mtdoops (which is a 
+> _VERY_ cool debugging facility btw - i wish generic x86 had something 
+> like that) tries to be a 'driver' and tries to achieve these things 
+> without modifying the core kernel.
+> 
+> But it really should do that. We can certainly enhance the core
+> kernel logic to tell the console driver more clearly when printk
+> should go out immediately.
+> 
+> Instead of using oops_in_progress it might be better to go into 'sync 
+> immeditately' mode if the kernel gets tainted.
 
-Well, suspend/resume hangs is one of the cases which mtdoops won't
-catch. But at least on NAND flash, I'd be a bit weary about logging all
-printk output for fear of wearing out the flash.
+actually there are very nice "begin of oops" and "end of oops"
+functions... they are the perfect places for this ;-)
 
-> The workqueue looks wrong in both variants. If we are panic-ing (or 
-> hanging, or ...) then we are halting the machine - the workqueue has no 
-> chance to actually execute.
-
-but then we are using mtd->panic_write to write it out directly, not
-via the work queue.
-
-// Simon
-
-[1] http://patchwork.ozlabs.org/patch/35750/
+-- 
+Arjan van de Ven 	Intel Open Source Technology Centre
+For development, discussion and tips for power savings, 
+visit http://www.lesswatts.org
