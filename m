@@ -1,21 +1,22 @@
-Received: from ernst.netinsight.se ([194.16.221.21])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MxKc4-0008Ko-6n
-	for linux-mtd@lists.infradead.org; Mon, 12 Oct 2009 13:07:05 +0000
-Date: Mon, 12 Oct 2009 15:06:50 +0200
-From: Simon Kagstrom <simon.kagstrom@netinsight.net>
+Received: from earthlight.etchedpixels.co.uk ([81.2.110.250]
+	helo=www.etchedpixels.co.uk)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MxKcR-0008Lx-W1
+	for linux-mtd@lists.infradead.org; Mon, 12 Oct 2009 13:07:25 +0000
+Date: Mon, 12 Oct 2009 14:08:21 +0100
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
 To: Ingo Molnar <mingo@elte.hu>
 Subject: Re: [PATCH] panic.c: export panic_on_oops
-Message-ID: <20091012150650.51a4b4dc@marrow.netinsight.se>
-In-Reply-To: <20091012122023.GA19365@elte.hu>
+Message-ID: <20091012140821.5dfa1598@lxorguk.ukuu.org.uk>
+In-Reply-To: <20091012123210.GB22766@elte.hu>
 References: <1255241458-11665-1-git-send-email-dedekind1@gmail.com>
 	<20091012111545.GB8857@elte.hu>
 	<1255346731.9659.31.camel@localhost>
 	<20091012113758.GB11035@elte.hu>
 	<20091012140149.6789efab@marrow.netinsight.se>
 	<20091012120951.GA16799@elte.hu>
-	<1255349748.10605.13.camel@macbook.infradead.org>
-	<20091012122023.GA19365@elte.hu>
+	<20091012142714.56362465@marrow.netinsight.se>
+	<20091012123210.GB22766@elte.hu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,6 +25,7 @@ Cc: Artem Bityutskiy <dedekind1@gmail.com>,
 	LKML <linux-kernel@vger.kernel.org>, "Koskinen Aaro
 	\(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
 	linux-mtd <linux-mtd@lists.infradead.org>,
+	Simon Kagstrom <simon.kagstrom@netinsight.net>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Linus Torvalds <torvalds@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -35,51 +37,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 12 Oct 2009 14:20:23 +0200
-Ingo Molnar <mingo@elte.hu> wrote:
+> See my reply to David Woodhouse, i think we should add support for 
+> buffering in kernel/printk.c and that would both fix your problems, 
+> would simplify the driver (significantly!) and would expose the generic 
+> buffering capability to other console drivers as well.
 
-> * David Woodhouse <dwmw2@infradead.org> wrote:
-> 
-> > On Mon, 2009-10-12 at 14:09 +0200, Ingo Molnar wrote:
-> > > Also, would it be possible to just simplify the thing and not do any 
-> > > buffering at all? Extra buffering complexity in a console driver is only 
-> > > asking for trouble. Or is flash storage write cycles optimization that 
-> > > important in this case?
-> > 
-> > That and the fact that on NAND flash you have to write full pages at a 
-> > time -- that's 512 bytes, 2KiB or 4KiB depending on the type of chip. 
-> > So we really do want to buffer it where we can.
-> > 
-> > We don't want to write a 2KiB page for every line of printk output.
-> 
-> Then i think the buffering is at the wrong place: we should instead 
-> buffer in the generic layer and pass it to lowlevel if we know that we 
-> have gone past a 2K boundary.
->
-> The size of the generic log buffer is always a power of two so detecting 
-> 2K boundaries is very easy. On any emergency the generic console layer 
-> will do faster flushes - this is nothing the console driver itself 
-> should bother with.
-
-But this is only part of the mtdoops problem (the reason why we don't
-write all the time). The current code only stores messages printed
-during an oops, and this behavior will surely change if the console
-driver gets large buffers of output - or it would have to take in the
-output unbuffered anyway.
-
-My patch changes this behavior, and with that I don't think buffered
-output would be a problem - it would indeed make it more simple as you
-say - assuming there is something like ->kernel_bug() that would flush
-the last 4KiB or so of messages to mtdoops when there is an oops or
-panic.
-
-> And that would avoid the whole workqueue logic - which is fragile to be 
-> done in a printk to begin with.
-
-I'm afraid I don't really see this issue. The workqueue is used to
-write the buffer to the mtd device if we are not in a panic or
-interrupt context - in which case we do it directly.
-
-So it's only used when an oops is ongoing.
-
-// Simon
+Buffering printk in general is bad. Given a driver needs only to provide
+about 6 lines of code using a kfifo is it really that hard for the odd
+code that wants to buffer to do that ?
