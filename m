@@ -1,35 +1,13 @@
-Received: from ernst.netinsight.se ([194.16.221.21])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MxhL2-00084S-If
-	for linux-mtd@lists.infradead.org; Tue, 13 Oct 2009 13:22:57 +0000
-Date: Tue, 13 Oct 2009 15:22:46 +0200
-From: Simon Kagstrom <simon.kagstrom@netinsight.net>
-To: Linus Torvalds <torvalds@linux-foundation.org>, linux-mtd
-	<linux-mtd@lists.infradead.org>
-Subject: [PATCH/RFC v5 5/5]: mtdoops: refactor as a dump_device
-Message-ID: <20091013152246.37903d23@marrow.netinsight.se>
-In-Reply-To: <20091013151751.59e217a7@marrow.netinsight.se>
-References: <20091012113758.GB11035@elte.hu>
-	<20091012140149.6789efab@marrow.netinsight.se>
-	<20091012120951.GA16799@elte.hu>
-	<1255349748.10605.13.camel@macbook.infradead.org>
-	<20091012122023.GA19365@elte.hu>
-	<20091012150650.51a4b4dc@marrow.netinsight.se>
-	<20091012131528.GC25464@elte.hu>
-	<20091012153937.0dcd73e5@marrow.netinsight.se>
-	<alpine.LFD.2.01.0910120828390.3438@localhost.localdomain>
-	<20091012110954.67d7d8d8.akpm@linux-foundation.org>
-	<20091012182346.GH17138@elte.hu>
-	<alpine.LFD.2.01.0910121130190.3438@localhost.localdomain>
-	<20091013151751.59e217a7@marrow.netinsight.se>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
-	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
-	Ingo Molnar <mingo@elte.hu>, David Woodhouse <dwmw2@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alan Cox <alan@lxorguk.ukuu.org.uk>
+From: Dmitry Artamonow <mad_soft@inbox.ru>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [RESEND][PATCH] mtd: maps: remove obsolete ipaq-flash driver
+Date: Tue, 13 Oct 2009 15:34:54 +0400
+Message-Id: <1255433694-26471-1-git-send-email-mad_soft@inbox.ru>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	Russell King <linux@arm.linux.org.uk>, linux-kernel@vger.kernel.org,
+	Kristoffer Ericson <kristoffer.ericson@gmail.com>,
+	linux-mtd@lists.infradead.org, Anton Vorontsov <cbouatmailru@gmail.com>,
+	Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,395 +17,521 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The last messages which happens before a crash might contain interesting
-information about the crash. This patch reworks mtdoops using the
-dump_device support instead of a console, which simplifies the code and
-includes also messages before the oops started.
+This driver seems to be obsolete and broken for a long time.
+It depends on CONFIG_IPAQ_HANDHELD that simply doesn't exists
+anywhere in kernel. Also, it seems that none of machines it
+claims to support have any use of it:
+ SA11xx-based iPAQs (h3100/h3600) use sa1100-flash
+ iPAQ h5000 uses physmap-flash
+ Jornada 720 uses sa1100-flash
+ Jornada 560 and iPAQ h1910 are not in mainline
 
-It registers handlers for both oopses and panics. On oopses, the write
-is scheduled in a work queue (to be able to use the regular mtd->write
-call), while panics call mtd->panic_write directly. Thus, if
-panic_on_oops is set, the oops will be written out during the panic.
-
-A parameter to specify which mtd device to use (number or name), as well
-as a flag to toggle wheter to dump oopses or only panics (since oopses
-can often be handled by regular syslog).
-
-Signed-off-by: Simon Kagstrom <simon.kagstrom@netinsight.net>
+Signed-off-by: Dmitry Artamonow <mad_soft@inbox.ru>
 ---
- drivers/mtd/mtdoops.c |  218 +++++++++++++++++++++----------------------------
- 1 files changed, 92 insertions(+), 126 deletions(-)
+ drivers/mtd/maps/Kconfig      |    6 -
+ drivers/mtd/maps/Makefile     |    1 -
+ drivers/mtd/maps/ipaq-flash.c |  460 -----------------------------------------
+ 3 files changed, 0 insertions(+), 467 deletions(-)
+ delete mode 100644 drivers/mtd/maps/ipaq-flash.c
 
-diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-index c2a3b5c..920ce4f 100644
---- a/drivers/mtd/mtdoops.c
-+++ b/drivers/mtd/mtdoops.c
-@@ -29,10 +29,10 @@
- #include <linux/sched.h>
- #include <linux/wait.h>
- #include <linux/delay.h>
+First posted back in February to linux-mtd list here:
+http://lists.infradead.org/pipermail/linux-mtd/2009-February/024664.html
+and gathered no replies.
+
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 841e085..8e4a655 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -361,12 +361,6 @@ config MTD_SA1100
+ 	  the SA1100 and SA1110, including the Assabet and the Compaq iPAQ.
+ 	  If you have such a board, say 'Y'.
+ 
+-config MTD_IPAQ
+-	tristate "CFI Flash device mapped on Compaq/HP iPAQ"
+-	depends on IPAQ_HANDHELD && MTD_CFI
+-	help
+-	  This provides a driver for the on-board flash of the iPAQ.
+-
+ config MTD_DC21285
+ 	tristate "CFI Flash device mapped on DC21285 Footbridge"
+ 	depends on MTD_CFI && ARCH_FOOTBRIDGE && MTD_COMPLEX_MAPPINGS
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index 1d5cf86..34f3cdd 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -29,7 +29,6 @@ obj-$(CONFIG_MTD_PCMCIA)	+= pcmciamtd.o
+ obj-$(CONFIG_MTD_RPXLITE)	+= rpxlite.o
+ obj-$(CONFIG_MTD_TQM8XXL)	+= tqm8xxl.o
+ obj-$(CONFIG_MTD_SA1100)	+= sa1100-flash.o
+-obj-$(CONFIG_MTD_IPAQ)		+= ipaq-flash.o
+ obj-$(CONFIG_MTD_SBC_GXX)	+= sbc_gxx.o
+ obj-$(CONFIG_MTD_SC520CDP)	+= sc520cdp.o
+ obj-$(CONFIG_MTD_NETSC520)	+= netsc520.o
+diff --git a/drivers/mtd/maps/ipaq-flash.c b/drivers/mtd/maps/ipaq-flash.c
+deleted file mode 100644
+index 76708e7..0000000
+--- a/drivers/mtd/maps/ipaq-flash.c
++++ /dev/null
+@@ -1,460 +0,0 @@
+-/*
+- * Flash memory access on iPAQ Handhelds (either SA1100 or PXA250 based)
+- *
+- * (C) 2000 Nicolas Pitre <nico@fluxnic.net>
+- * (C) 2002 Hewlett-Packard Company <jamey.hicks@hp.com>
+- * (C) 2003 Christian Pellegrin <chri@ascensit.com>, <chri@infis.univ.ts.it>: concatenation of multiple flashes
+- */
+-
+-#include <linux/module.h>
+-#include <linux/types.h>
+-#include <linux/kernel.h>
 -#include <linux/spinlock.h>
- #include <linux/interrupt.h>
- #include <linux/mtd/mtd.h>
- #include <linux/log2.h>
-+#include <linux/dump_device.h>
- 
- #define MTDOOPS_KERNMSG_MAGIC 0x5d005d00
- 
-@@ -41,7 +41,19 @@ module_param(record_size, ulong, 0);
- MODULE_PARM_DESC(record_size,
- 		"record size for MTD OOPS pages in bytes (default 4096)");
- 
-+static char mtddev[80];
-+module_param_string(mtddev, mtddev, 80, 0600);
-+MODULE_PARM_DESC(mtddev,
-+		"name or index number of the MTD device to use");
-+
-+static int dump_oops = 1;
-+module_param(dump_oops, int, 0);
-+MODULE_PARM_DESC(dump_oops,
-+		"set to 1 to dump oopses, 0 to only dump panics (default 1)");
-+
- static struct mtdoops_context {
-+	struct dump_device dump;
-+
- 	int mtd_index;
- 	struct work_struct work_erase;
- 	struct work_struct work_write;
-@@ -50,14 +62,9 @@ static struct mtdoops_context {
- 	int nextpage;
- 	int nextcount;
- 	u32 *oops_page_used;
--	char *name;
-+	const char *name;
- 
- 	void *oops_buf;
+-#include <linux/init.h>
+-#include <linux/slab.h>
+-#include <asm/page.h>
+-#include <asm/mach-types.h>
+-#include <asm/system.h>
+-#include <asm/errno.h>
 -
--	/* writecount and disabling ready are spin lock protected */
--	spinlock_t writecount_lock;
--	int ready;
--	int writecount;
- } oops_cxt;
- 
- static void mark_page_used(struct mtdoops_context *cxt, int page)
-@@ -148,7 +155,6 @@ static void mtdoops_inc_counter(struct mtdoops_context *cxt)
- 
- 	printk(KERN_DEBUG "mtdoops: ready %d, %d (no erase)\n",
- 	       cxt->nextpage, cxt->nextcount);
--	cxt->ready = 1;
- }
- 
- /* Scheduled work - when we can't proceed without erasing a block */
-@@ -197,7 +203,6 @@ badblock:
- 	if (ret >= 0) {
- 		printk(KERN_DEBUG "mtdoops: ready %d, %d\n",
- 		       cxt->nextpage, cxt->nextcount);
--		cxt->ready = 1;
- 		return;
- 	}
- 
-@@ -215,11 +220,13 @@ static void mtdoops_write(struct mtdoops_context *cxt, int panic)
- {
- 	struct mtd_info *mtd = cxt->mtd;
- 	size_t retlen;
-+	u32 *stamp;
- 	int ret;
- 
--	if (cxt->writecount < record_size)
--		memset(cxt->oops_buf + cxt->writecount, 0xff,
--					record_size - cxt->writecount);
-+	/* Add mtdoops header to the buffer */
-+	stamp = cxt->oops_buf;
-+	*stamp++ = cxt->nextcount;
-+	*stamp = MTDOOPS_KERNMSG_MAGIC;
- 
- 	if (panic)
- 		ret = mtd->panic_write(mtd, cxt->nextpage * record_size,
-@@ -228,8 +235,6 @@ static void mtdoops_write(struct mtdoops_context *cxt, int panic)
- 		ret = mtd->write(mtd, cxt->nextpage * record_size,
- 					record_size, &retlen, cxt->oops_buf);
- 
--	cxt->writecount = 0;
+-#include <linux/mtd/mtd.h>
+-#include <linux/mtd/map.h>
+-#include <linux/mtd/partitions.h>
+-#ifdef CONFIG_MTD_CONCAT
+-#include <linux/mtd/concat.h>
+-#endif
 -
- 	if (retlen != record_size || ret < 0)
- 		printk(KERN_ERR "mtdoops: write failure at %ld (%td of %ld written), error %d\n",
- 		       cxt->nextpage * record_size, retlen, record_size, ret);
-@@ -238,7 +243,6 @@ static void mtdoops_write(struct mtdoops_context *cxt, int panic)
- 	mtdoops_inc_counter(cxt);
- }
- 
+-#include <mach/hardware.h>
+-#include <mach/h3600.h>
+-#include <asm/io.h>
 -
- static void mtdoops_workfunc_write(struct work_struct *work)
- {
- 	struct mtdoops_context *cxt =
-@@ -294,11 +298,9 @@ static void find_next_position(struct mtdoops_context *cxt)
- 		if (unclean_pages != 0) {
- 			printk(KERN_INFO "mtdoops: cleaning area\n");
- 			schedule_work(&cxt->work_erase);
--		} else {
-+		} else
- 			printk(KERN_DEBUG "mtdoops: ready %d, %d (clean)\n",
- 			       cxt->nextpage, cxt->nextcount);
--			cxt->ready = 1;
--		}
- 		return;
- 	}
- 
-@@ -308,13 +310,55 @@ static void find_next_position(struct mtdoops_context *cxt)
- 	mtdoops_inc_counter(cxt);
- }
- 
-+static void mtdoops_copy_buffer(struct mtdoops_context *cxt,
-+		const char *s1, unsigned long l1,
-+		const char *s2, unsigned long l2)
-+{
-+	unsigned long l1_cpy = min(l1, record_size - 8);
-+	unsigned long l2_cpy = min(l2 - l1_cpy, record_size - l1_cpy - 8);
-+	char *dst = cxt->oops_buf + 8;	/* Skip the header */
-+
-+	memcpy(dst, s1, l1_cpy);
-+	memcpy(dst + l1_cpy, s2, l2_cpy);
-+}
-+
-+static void mtdoops_oops(struct dump_device *dump,
-+		const char *s1, unsigned long l1,
-+		const char *s2, unsigned long l2)
-+{
-+	struct mtdoops_context *cxt = dump->priv;
-+
-+	mtdoops_copy_buffer(cxt, s1, l1, s2, l2);
-+
-+	/* Write when done */
-+	schedule_work(&cxt->work_write);
-+}
-+
-+static void mtdoops_panic(struct dump_device *dump,
-+		const char *s1, unsigned long l1,
-+		const char *s2, unsigned long l2)
-+{
-+	struct mtdoops_context *cxt = dump->priv;
-+
-+	mtdoops_copy_buffer(cxt, s1, l1, s2, l2);
-+	/* Must be written immediately */
-+	if (cxt->mtd->panic_write)
-+		mtdoops_write(cxt, 1);
-+	else
-+		printk(KERN_ERR "mtdoops: Cannot write from panic without panic_write\n");
-+}
-+
-+static int mtdoops_setup(struct dump_device *dump)
-+{
-+	return 0;
-+}
- 
- static void mtdoops_notify_add(struct mtd_info *mtd)
- {
- 	struct mtdoops_context *cxt = &oops_cxt;
--	u64 mtdoops_pages = mtd->size;
-+	u64 mtdoops_records = mtd->size;
- 
--	do_div(mtdoops_pages, record_size);
-+	do_div(mtdoops_records, record_size);
- 
- 	if (cxt->name && !strcmp(mtd->name, cxt->name))
- 		cxt->mtd_index = mtd->index;
-@@ -335,7 +379,7 @@ static void mtdoops_notify_add(struct mtd_info *mtd)
- 	}
- 
- 	/* oops_page_used is a bit field */
--	cxt->oops_page_used = vmalloc(DIV_ROUND_UP(mtdoops_pages,
-+	cxt->oops_page_used = vmalloc(DIV_ROUND_UP(mtdoops_records,
- 			8 * sizeof(u32)));
- 	if (!cxt->oops_page_used) {
- 		printk(KERN_ERR "Could not allocate page array\n");
-@@ -349,6 +393,11 @@ static void mtdoops_notify_add(struct mtd_info *mtd)
- 
- 	find_next_position(cxt);
- 
-+	cxt->dump.setup = mtdoops_setup;
-+	if (dump_oops)
-+		cxt->dump.oops = mtdoops_oops;
-+	cxt->dump.panic = mtdoops_panic;
-+	register_dumpdevice(&cxt->dump, cxt);
- 	printk(KERN_INFO "mtdoops: Attached to MTD device %d\n", mtd->index);
- }
- 
-@@ -359,116 +408,27 @@ static void mtdoops_notify_remove(struct mtd_info *mtd)
- 	if (mtd->index != cxt->mtd_index || cxt->mtd_index < 0)
- 		return;
- 
-+	unregister_dumpdevice(&cxt->dump);
- 	cxt->mtd = NULL;
- 	flush_scheduled_work();
- }
- 
--static void mtdoops_console_sync(void)
+-
+-#ifndef CONFIG_IPAQ_HANDHELD
+-#error This is for iPAQ Handhelds only
+-#endif
+-#ifdef CONFIG_SA1100_JORNADA56X
+-
+-static void jornada56x_set_vpp(struct map_info *map, int vpp)
 -{
--	struct mtdoops_context *cxt = &oops_cxt;
--	struct mtd_info *mtd = cxt->mtd;
--	unsigned long flags;
--
--	if (!cxt->ready || !mtd || cxt->writecount == 0)
--		return;
--
--	/*
--	 *  Once ready is 0 and we've held the lock no further writes to the
--	 *  buffer will happen
--	 */
--	spin_lock_irqsave(&cxt->writecount_lock, flags);
--	if (!cxt->ready) {
--		spin_unlock_irqrestore(&cxt->writecount_lock, flags);
--		return;
--	}
--	cxt->ready = 0;
--	spin_unlock_irqrestore(&cxt->writecount_lock, flags);
--
--	if (mtd->panic_write && (in_interrupt() || panic_on_oops))
--		/* Interrupt context, we're going to panic so try and log */
--		mtdoops_write(cxt, 1);
+-	if (vpp)
+-		GPSR = GPIO_GPIO26;
 -	else
--		schedule_work(&cxt->work_write);
+-		GPCR = GPIO_GPIO26;
+-	GPDR |= GPIO_GPIO26;
 -}
 -
--static void
--mtdoops_console_write(struct console *co, const char *s, unsigned int count)
+-#endif
+-
+-#ifdef CONFIG_SA1100_JORNADA720
+-
+-static void jornada720_set_vpp(struct map_info *map, int vpp)
 -{
--	struct mtdoops_context *cxt = co->data;
--	struct mtd_info *mtd = cxt->mtd;
--	unsigned long flags;
--
--	if (!oops_in_progress) {
--		mtdoops_console_sync();
--		return;
--	}
--
--	if (!cxt->ready || !mtd)
--		return;
--
--	/* Locking on writecount ensures sequential writes to the buffer */
--	spin_lock_irqsave(&cxt->writecount_lock, flags);
--
--	/* Check ready status didn't change whilst waiting for the lock */
--	if (!cxt->ready) {
--		spin_unlock_irqrestore(&cxt->writecount_lock, flags);
--		return;
--	}
--
--	if (cxt->writecount == 0) {
--		u32 *stamp = cxt->oops_buf;
--		*stamp++ = cxt->nextcount;
--		*stamp = MTDOOPS_KERNMSG_MAGIC;
--		cxt->writecount = 8;
--	}
--
--	if (count + cxt->writecount > record_size)
--		count = record_size - cxt->writecount;
--
--	memcpy(cxt->oops_buf + cxt->writecount, s, count);
--	cxt->writecount += count;
--
--	spin_unlock_irqrestore(&cxt->writecount_lock, flags);
--
--	if (cxt->writecount == record_size)
--		mtdoops_console_sync();
+-	if (vpp)
+-		PPSR |= 0x80;
+-	else
+-		PPSR &= ~0x80;
+-	PPDR |= 0x80;
 -}
 -
--static int __init mtdoops_console_setup(struct console *co, char *options)
--{
--	struct mtdoops_context *cxt = co->data;
+-#endif
 -
--	if (cxt->mtd_index != -1 || cxt->name)
--		return -EBUSY;
--	if (options) {
--		cxt->name = kstrdup(options, GFP_KERNEL);
--		return 0;
+-#define MAX_IPAQ_CS 2		/* Number of CS we are going to test */
+-
+-#define IPAQ_MAP_INIT(X) \
+-	{ \
+-		name:		"IPAQ flash " X, \
 -	}
--	if (co->index == -1)
--		return -EINVAL;
 -
--	cxt->mtd_index = co->index;
--	return 0;
--}
- 
- static struct mtd_notifier mtdoops_notifier = {
- 	.add	= mtdoops_notify_add,
- 	.remove	= mtdoops_notify_remove,
- };
- 
--static struct console mtdoops_console = {
--	.name		= "ttyMTD",
--	.write		= mtdoops_console_write,
--	.setup		= mtdoops_console_setup,
--	.unblank	= mtdoops_console_sync,
--	.index		= -1,
--	.data		= &oops_cxt,
+-
+-static struct map_info ipaq_map[MAX_IPAQ_CS] = {
+-	IPAQ_MAP_INIT("bank 1"),
+-	IPAQ_MAP_INIT("bank 2")
 -};
 -
--static int __init mtdoops_console_init(void)
-+static int __init mtdoops_init(void)
- {
- 	struct mtdoops_context *cxt = &oops_cxt;
-+	int mtd_index;
-+	char *endp;
- 
-+	if (strlen(mtddev) == 0) {
-+		printk(KERN_ERR "mtdoops: mtd device must be supplied\n");
-+		return -EINVAL;
-+	}
- 	if (!is_power_of_2(record_size)) {
- 		printk(KERN_ERR "mtdoops: record_size must be a power of two\n");
- 		return -EINVAL;
-@@ -477,37 +437,43 @@ static int __init mtdoops_console_init(void)
- 		printk(KERN_ERR "mtdoops: record_size must be over 4096 bytes\n");
- 		return -EINVAL;
- 	}
-+
-+	/* Setup the MTD device to use */
-+	cxt->name = mtddev;
- 	cxt->mtd_index = -1;
-+	mtd_index = simple_strtoul(mtddev, &endp, 0);
-+	if (endp != mtddev)
-+		cxt->mtd_index = mtd_index;
-+
- 	cxt->oops_buf = vmalloc(record_size);
- 	if (!cxt->oops_buf) {
--		printk(KERN_ERR "mtdoops: failed to allocate buffer workspace\n");
-+		printk(KERN_ERR "Failed to allocate mtdoops write buffer workspace\n");
-+		vfree(cxt->oops_buf);
- 		return -ENOMEM;
- 	}
-+	memset(cxt->oops_buf, 0xff, record_size);
- 
--	spin_lock_init(&cxt->writecount_lock);
- 	INIT_WORK(&cxt->work_erase, mtdoops_workfunc_erase);
- 	INIT_WORK(&cxt->work_write, mtdoops_workfunc_write);
- 
--	register_console(&mtdoops_console);
- 	register_mtd_user(&mtdoops_notifier);
- 	return 0;
- }
- 
--static void __exit mtdoops_console_exit(void)
-+static void __exit mtdoops_exit(void)
- {
- 	struct mtdoops_context *cxt = &oops_cxt;
- 
- 	unregister_mtd_user(&mtdoops_notifier);
--	unregister_console(&mtdoops_console);
- 	kfree(cxt->name);
--	vfree(cxt->oops_buf);
- 	if (cxt->oops_page_used)
- 		vfree(cxt->oops_page_used);
-+	vfree(cxt->oops_buf);
- }
- 
- 
--subsys_initcall(mtdoops_console_init);
--module_exit(mtdoops_console_exit);
-+module_init(mtdoops_init);
-+module_exit(mtdoops_exit);
- 
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Richard Purdie <rpurdie@openedhand.com>");
+-static struct mtd_info *my_sub_mtd[MAX_IPAQ_CS] = {
+-	NULL,
+-	NULL
+-};
+-
+-/*
+- * Here are partition information for all known IPAQ-based devices.
+- * See include/linux/mtd/partitions.h for definition of the mtd_partition
+- * structure.
+- *
+- * The *_max_flash_size is the maximum possible mapped flash size which
+- * is not necessarily the actual flash size.  It must be no more than
+- * the value specified in the "struct map_desc *_io_desc" mapping
+- * definition for the corresponding machine.
+- *
+- * Please keep these in alphabetical order, and formatted as per existing
+- * entries.  Thanks.
+- */
+-
+-#ifdef CONFIG_IPAQ_HANDHELD
+-static unsigned long h3xxx_max_flash_size = 0x04000000;
+-static struct mtd_partition h3xxx_partitions[] = {
+-	{
+-		name:		"H3XXX boot firmware",
+-#ifndef CONFIG_LAB
+-		size:		0x00040000,
+-#else
+-		size:		0x00080000,
+-#endif
+-		offset:		0,
+-#ifndef CONFIG_LAB
+-		mask_flags:	MTD_WRITEABLE,  /* force read-only */
+-#endif
+-	},
+-	{
+-		name:		"H3XXX root jffs2",
+-#ifndef CONFIG_LAB
+-		size:		0x2000000 - 2*0x40000, /* Warning, this is fixed later */
+-		offset:		0x00040000,
+-#else
+-		size:		0x2000000 - 0x40000 - 0x80000, /* Warning, this is fixed later */
+-		offset:		0x00080000,
+-#endif
+-	},
+-	{
+-		name:		"asset",
+-		size:		0x40000,
+-		offset:		0x2000000 - 0x40000, /* Warning, this is fixed later */
+-		mask_flags:	MTD_WRITEABLE,  /* force read-only */
+-	}
+-};
+-
+-#ifndef CONFIG_MTD_CONCAT
+-static struct mtd_partition h3xxx_partitions_bank2[] = {
+-	/* this is used only on 2 CS machines when concat is not present */
+-	{
+-		name:		"second H3XXX root jffs2",
+-		size:		0x1000000 - 0x40000, /* Warning, this is fixed later */
+-		offset:		0x00000000,
+-	},
+-	{
+-		name:		"second asset",
+-		size:		0x40000,
+-		offset:		0x1000000 - 0x40000, /* Warning, this is fixed later */
+-		mask_flags:	MTD_WRITEABLE,  /* force read-only */
+-	}
+-};
+-#endif
+-
+-static DEFINE_SPINLOCK(ipaq_vpp_lock);
+-
+-static void h3xxx_set_vpp(struct map_info *map, int vpp)
+-{
+-	static int nest = 0;
+-
+-	spin_lock(&ipaq_vpp_lock);
+-	if (vpp)
+-		nest++;
+-	else
+-		nest--;
+-	if (nest)
+-		assign_h3600_egpio(IPAQ_EGPIO_VPP_ON, 1);
+-	else
+-		assign_h3600_egpio(IPAQ_EGPIO_VPP_ON, 0);
+-	spin_unlock(&ipaq_vpp_lock);
+-}
+-
+-#endif
+-
+-#if defined(CONFIG_SA1100_JORNADA56X) || defined(CONFIG_SA1100_JORNADA720)
+-static unsigned long jornada_max_flash_size = 0x02000000;
+-static struct mtd_partition jornada_partitions[] = {
+-	{
+-		name:		"Jornada boot firmware",
+-		size:		0x00040000,
+-		offset:		0,
+-		mask_flags:	MTD_WRITEABLE,  /* force read-only */
+-	}, {
+-		name:		"Jornada root jffs2",
+-		size:		MTDPART_SIZ_FULL,
+-		offset:		0x00040000,
+-	}
+-};
+-#endif
+-
+-
+-static struct mtd_partition *parsed_parts;
+-static struct mtd_info *mymtd;
+-
+-static unsigned long cs_phys[] = {
+-#ifdef CONFIG_ARCH_SA1100
+-	SA1100_CS0_PHYS,
+-	SA1100_CS1_PHYS,
+-	SA1100_CS2_PHYS,
+-	SA1100_CS3_PHYS,
+-	SA1100_CS4_PHYS,
+-	SA1100_CS5_PHYS,
+-#else
+-	PXA_CS0_PHYS,
+-	PXA_CS1_PHYS,
+-	PXA_CS2_PHYS,
+-	PXA_CS3_PHYS,
+-	PXA_CS4_PHYS,
+-	PXA_CS5_PHYS,
+-#endif
+-};
+-
+-static const char *part_probes[] = { "cmdlinepart", "RedBoot", NULL };
+-
+-static int __init h1900_special_case(void);
+-
+-static int __init ipaq_mtd_init(void)
+-{
+-	struct mtd_partition *parts = NULL;
+-	int nb_parts = 0;
+-	int parsed_nr_parts = 0;
+-	const char *part_type;
+-	int i; /* used when we have >1 flash chips */
+-	unsigned long tot_flashsize = 0; /* used when we have >1 flash chips */
+-
+-	/* Default flash bankwidth */
+-	// ipaq_map.bankwidth = (MSC0 & MSC_RBW) ? 2 : 4;
+-
+-	if (machine_is_h1900())
+-	{
+-		/* For our intents, the h1900 is not a real iPAQ, so we special-case it. */
+-		return h1900_special_case();
+-	}
+-
+-	if (machine_is_h3100() || machine_is_h1900())
+-		for(i=0; i<MAX_IPAQ_CS; i++)
+-			ipaq_map[i].bankwidth = 2;
+-	else
+-		for(i=0; i<MAX_IPAQ_CS; i++)
+-			ipaq_map[i].bankwidth = 4;
+-
+-	/*
+-	 * Static partition definition selection
+-	 */
+-	part_type = "static";
+-
+-	simple_map_init(&ipaq_map[0]);
+-	simple_map_init(&ipaq_map[1]);
+-
+-#ifdef CONFIG_IPAQ_HANDHELD
+-	if (machine_is_ipaq()) {
+-		parts = h3xxx_partitions;
+-		nb_parts = ARRAY_SIZE(h3xxx_partitions);
+-		for(i=0; i<MAX_IPAQ_CS; i++) {
+-			ipaq_map[i].size = h3xxx_max_flash_size;
+-			ipaq_map[i].set_vpp = h3xxx_set_vpp;
+-			ipaq_map[i].phys = cs_phys[i];
+-			ipaq_map[i].virt = ioremap(cs_phys[i], 0x04000000);
+-			if (machine_is_h3100 () || machine_is_h1900())
+-				ipaq_map[i].bankwidth = 2;
+-		}
+-		if (machine_is_h3600()) {
+-			/* No asset partition here */
+-			h3xxx_partitions[1].size += 0x40000;
+-			nb_parts--;
+-		}
+-	}
+-#endif
+-#ifdef CONFIG_ARCH_H5400
+-	if (machine_is_h5400()) {
+-		ipaq_map[0].size = 0x02000000;
+-		ipaq_map[1].size = 0x02000000;
+-		ipaq_map[1].phys = 0x02000000;
+-		ipaq_map[1].virt = ipaq_map[0].virt + 0x02000000;
+-	}
+-#endif
+-#ifdef CONFIG_ARCH_H1900
+-	if (machine_is_h1900()) {
+-		ipaq_map[0].size = 0x00400000;
+-		ipaq_map[1].size = 0x02000000;
+-		ipaq_map[1].phys = 0x00080000;
+-		ipaq_map[1].virt = ipaq_map[0].virt + 0x00080000;
+-	}
+-#endif
+-
+-#ifdef CONFIG_SA1100_JORNADA56X
+-	if (machine_is_jornada56x()) {
+-		parts = jornada_partitions;
+-		nb_parts = ARRAY_SIZE(jornada_partitions);
+-		ipaq_map[0].size = jornada_max_flash_size;
+-		ipaq_map[0].set_vpp = jornada56x_set_vpp;
+-		ipaq_map[0].virt = (__u32)ioremap(0x0, 0x04000000);
+-	}
+-#endif
+-#ifdef CONFIG_SA1100_JORNADA720
+-	if (machine_is_jornada720()) {
+-		parts = jornada_partitions;
+-		nb_parts = ARRAY_SIZE(jornada_partitions);
+-		ipaq_map[0].size = jornada_max_flash_size;
+-		ipaq_map[0].set_vpp = jornada720_set_vpp;
+-	}
+-#endif
+-
+-
+-	if (machine_is_ipaq()) { /* for iPAQs only */
+-		for(i=0; i<MAX_IPAQ_CS; i++) {
+-			printk(KERN_NOTICE "iPAQ flash: probing %d-bit flash bus, window=%lx with CFI.\n", ipaq_map[i].bankwidth*8, ipaq_map[i].virt);
+-			my_sub_mtd[i] = do_map_probe("cfi_probe", &ipaq_map[i]);
+-			if (!my_sub_mtd[i]) {
+-				printk(KERN_NOTICE "iPAQ flash: probing %d-bit flash bus, window=%lx with JEDEC.\n", ipaq_map[i].bankwidth*8, ipaq_map[i].virt);
+-				my_sub_mtd[i] = do_map_probe("jedec_probe", &ipaq_map[i]);
+-			}
+-			if (!my_sub_mtd[i]) {
+-				printk(KERN_NOTICE "iPAQ flash: failed to find flash.\n");
+-				if (i)
+-					break;
+-				else
+-					return -ENXIO;
+-			} else
+-				printk(KERN_NOTICE "iPAQ flash: found %d bytes\n", my_sub_mtd[i]->size);
+-
+-			/* do we really need this debugging? --joshua 20030703 */
+-			// printk("my_sub_mtd[%d]=%p\n", i, my_sub_mtd[i]);
+-			my_sub_mtd[i]->owner = THIS_MODULE;
+-			tot_flashsize += my_sub_mtd[i]->size;
+-		}
+-#ifdef CONFIG_MTD_CONCAT
+-		/* fix the asset location */
+-#	ifdef CONFIG_LAB
+-		h3xxx_partitions[1].size = tot_flashsize - 0x40000 - 0x80000 /* extra big boot block */;
+-#	else
+-		h3xxx_partitions[1].size = tot_flashsize - 2 * 0x40000;
+-#	endif
+-		h3xxx_partitions[2].offset = tot_flashsize - 0x40000;
+-		/* and concat the devices */
+-		mymtd = mtd_concat_create(&my_sub_mtd[0], i,
+-					  "ipaq");
+-		if (!mymtd) {
+-			printk("Cannot create iPAQ concat device\n");
+-			return -ENXIO;
+-		}
+-#else
+-		mymtd = my_sub_mtd[0];
+-
+-		/*
+-		 *In the very near future, command line partition parsing
+-		 * will use the device name as 'mtd-id' instead of a value
+-		 * passed to the parse_cmdline_partitions() routine. Since
+-		 * the bootldr says 'ipaq', make sure it continues to work.
+-		 */
+-		mymtd->name = "ipaq";
+-
+-		if ((machine_is_h3600())) {
+-#	ifdef CONFIG_LAB
+-			h3xxx_partitions[1].size = my_sub_mtd[0]->size - 0x80000;
+-#	else
+-			h3xxx_partitions[1].size = my_sub_mtd[0]->size - 0x40000;
+-#	endif
+-			nb_parts = 2;
+-		} else {
+-#	ifdef CONFIG_LAB
+-			h3xxx_partitions[1].size = my_sub_mtd[0]->size - 0x40000 - 0x80000; /* extra big boot block */
+-#	else
+-			h3xxx_partitions[1].size = my_sub_mtd[0]->size - 2*0x40000;
+-#	endif
+-			h3xxx_partitions[2].offset = my_sub_mtd[0]->size - 0x40000;
+-		}
+-
+-		if (my_sub_mtd[1]) {
+-#	ifdef CONFIG_LAB
+-			h3xxx_partitions_bank2[0].size = my_sub_mtd[1]->size - 0x80000;
+-#	else
+-			h3xxx_partitions_bank2[0].size = my_sub_mtd[1]->size - 0x40000;
+-#	endif
+-			h3xxx_partitions_bank2[1].offset = my_sub_mtd[1]->size - 0x40000;
+-		}
+-#endif
+-	}
+-	else {
+-		/*
+-		 * Now let's probe for the actual flash.  Do it here since
+-		 * specific machine settings might have been set above.
+-		 */
+-		printk(KERN_NOTICE "IPAQ flash: probing %d-bit flash bus, window=%lx\n", ipaq_map[0].bankwidth*8, ipaq_map[0].virt);
+-		mymtd = do_map_probe("cfi_probe", &ipaq_map[0]);
+-		if (!mymtd)
+-			return -ENXIO;
+-		mymtd->owner = THIS_MODULE;
+-	}
+-
+-
+-	/*
+-	 * Dynamic partition selection stuff (might override the static ones)
+-	 */
+-
+-	 i = parse_mtd_partitions(mymtd, part_probes, &parsed_parts, 0);
+-
+-	 if (i > 0) {
+-		 nb_parts = parsed_nr_parts = i;
+-		 parts = parsed_parts;
+-		 part_type = "dynamic";
+-	 }
+-
+-	 if (!parts) {
+-		 printk(KERN_NOTICE "IPAQ flash: no partition info available, registering whole flash at once\n");
+-		 add_mtd_device(mymtd);
+-#ifndef CONFIG_MTD_CONCAT
+-		 if (my_sub_mtd[1])
+-			 add_mtd_device(my_sub_mtd[1]);
+-#endif
+-	 } else {
+-		 printk(KERN_NOTICE "Using %s partition definition\n", part_type);
+-		 add_mtd_partitions(mymtd, parts, nb_parts);
+-#ifndef CONFIG_MTD_CONCAT
+-		 if (my_sub_mtd[1])
+-			 add_mtd_partitions(my_sub_mtd[1], h3xxx_partitions_bank2, ARRAY_SIZE(h3xxx_partitions_bank2));
+-#endif
+-	 }
+-
+-	 return 0;
+-}
+-
+-static void __exit ipaq_mtd_cleanup(void)
+-{
+-	int i;
+-
+-	if (mymtd) {
+-		del_mtd_partitions(mymtd);
+-#ifndef CONFIG_MTD_CONCAT
+-		if (my_sub_mtd[1])
+-			del_mtd_partitions(my_sub_mtd[1]);
+-#endif
+-		map_destroy(mymtd);
+-#ifdef CONFIG_MTD_CONCAT
+-		for(i=0; i<MAX_IPAQ_CS; i++)
+-#else
+-			for(i=1; i<MAX_IPAQ_CS; i++)
+-#endif
+-			{
+-				if (my_sub_mtd[i])
+-					map_destroy(my_sub_mtd[i]);
+-			}
+-		kfree(parsed_parts);
+-	}
+-}
+-
+-static int __init h1900_special_case(void)
+-{
+-	/* The iPAQ h1900 is a special case - it has weird ROM. */
+-	simple_map_init(&ipaq_map[0]);
+-	ipaq_map[0].size = 0x80000;
+-	ipaq_map[0].set_vpp = h3xxx_set_vpp;
+-	ipaq_map[0].phys = 0x0;
+-	ipaq_map[0].virt = ioremap(0x0, 0x04000000);
+-	ipaq_map[0].bankwidth = 2;
+-
+-	printk(KERN_NOTICE "iPAQ flash: probing %d-bit flash bus, window=%lx with JEDEC.\n", ipaq_map[0].bankwidth*8, ipaq_map[0].virt);
+-	mymtd = do_map_probe("jedec_probe", &ipaq_map[0]);
+-	if (!mymtd)
+-		return -ENODEV;
+-	add_mtd_device(mymtd);
+-	printk(KERN_NOTICE "iPAQ flash: registered h1910 flash\n");
+-
+-	return 0;
+-}
+-
+-module_init(ipaq_mtd_init);
+-module_exit(ipaq_mtd_cleanup);
+-
+-MODULE_AUTHOR("Jamey Hicks");
+-MODULE_DESCRIPTION("IPAQ CFI map driver");
+-MODULE_LICENSE("MIT");
 -- 
-1.6.0.4
+1.6.3.4
