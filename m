@@ -1,15 +1,32 @@
-Received: from mail.gmx.net ([213.165.64.20])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mxj1Z-0003am-Dk
-	for linux-mtd@lists.infradead.org; Tue, 13 Oct 2009 15:11:00 +0000
-Content-Type: text/plain; charset="iso-8859-1"
-Date: Tue, 13 Oct 2009 17:10:49 +0200
-From: "Philipp Boerker" <philipp.boerker@gmx.de>
-Message-ID: <20091013151049.280490@gmx.net>
+Date: Tue, 13 Oct 2009 08:37:10 -0700 (PDT)
+From: Linus Torvalds <torvalds@linux-foundation.org>
+To: Simon Kagstrom <simon.kagstrom@netinsight.net>
+Subject: Re: [PATCH/RFC v5 4/5]: core: Add dump device to call on oopses and
+	panics
+In-Reply-To: <20091013152235.188059d2@marrow.netinsight.se>
+Message-ID: <alpine.LFD.2.01.0910130813320.26777@localhost.localdomain>
+References: <20091012113758.GB11035@elte.hu>
+	<20091012140149.6789efab@marrow.netinsight.se>
+	<20091012120951.GA16799@elte.hu>
+	<1255349748.10605.13.camel@macbook.infradead.org>
+	<20091012122023.GA19365@elte.hu>
+	<20091012150650.51a4b4dc@marrow.netinsight.se>
+	<20091012131528.GC25464@elte.hu>
+	<20091012153937.0dcd73e5@marrow.netinsight.se>
+	<alpine.LFD.2.01.0910120828390.3438@localhost.localdomain>
+	<20091012110954.67d7d8d8.akpm@linux-foundation.org>
+	<20091012182346.GH17138@elte.hu>
+	<alpine.LFD.2.01.0910121130190.3438@localhost.localdomain>
+	<20091013151751.59e217a7@marrow.netinsight.se>
+	<20091013152235.188059d2@marrow.netinsight.se>
 MIME-Version: 1.0
-Subject: mtd partitions definition
-To: linux-mtd@lists.infradead.org
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
+	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>, Ingo Molnar <mingo@elte.hu>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,29 +37,111 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-I'm sorry if this is the wrong place for such questions. I have done a lot of reading on the subject and have browsed through the kernel code for my device but still could not find the desired information (I'm no programming crack, I'm afraid). The situation is this:
 
-I have an embedded device which has some mtd partitions which are controlled by the omap2-nand driver. The exact kernel sources for the device are unavailable at the moment (I expect them to be published by the manufacturer within the next weeks) so I collect most of the info I have from dmesg and grepping through the binaries. 
+On Tue, 13 Oct 2009, Simon Kagstrom wrote:
+> +
+> +struct dump_device {
 
-Now I would like to install my own bootloader which in the present case resides in an mtd partition that appears to be read-only (opening the device rw fails). I concluded that I had to change the partition definition to being writable in order to be able to write to the partition holding the bootloader (I assume that making the partition read-only was a kind of security measure on the side of the manufacturer). The remaining mtd partitions can be written using flash_image.
+I know I used that name myself in the example code I sent out, but 
+thinking about it more, I hate the name.
 
-I have learned so far that there are (at least) three ways of defining mtd partitions: kernel command line ("cmdline parsing not available" in dmesg so it shouldn't be this), fixed (i.e. defined somewhere in the sources, however, a grep for the partition names listed in dmesg doesn't show anything) or redboot. The device does not use redboot as a bootloader but as far as I understand this does not mean that it doesn't use the redboot method for defining mtd partitions.
+Most people think a "dump" is something much more than just the kernel 
+messages, so "dump_device" ends up being misleading. And the "device" part 
+is kind of pointless and redundant (it need not be a real device).
 
-I have looked through the kernel sources for the omap2-nand driver and have come to a function called omap_nand_probe which seems to initialise (at least part of) the device but gets all the interesting information (i.e. partition definition) passed as an argument. So the partition information is set up somewhere else. And I can't find this somewhere else...
+So I suspect it would be better to name it by what it does, and make it 
+clear what that is.
 
-I wonder whether there is a user-space tool similar to fdisk for defining mtd partitions provided that the redboot method is used. (btw, the partition holding the bootloader does not use ubi.) I know that mtd partitions can be defined in redboot itself but this is some sort of a chicken-and-egg problem: I need to have the partitions rw in order to have my own bootloader installed and the device uses some other kind of bootloader...
+Maybe something like "struct kmsg_dumper" or similar. That is pretty 
+unambiguous, and nobody is going to get confused about what the semantics 
+are.
 
-Any help on this? I spend two days learning about mtd (a week ago I didn't know it existed) and I start feeling that pain in my neck... :)
+> +	void	(*oops)(struct dump_device *, const char *, unsigned long,
+> +			const char *, unsigned long);
+> +	void	(*panic)(struct dump_device *, const char *, unsigned long,
+> +			const char *, unsigned long);
 
+I don't much like this. Why separate 'oops' and 'panic' functions, 
+especially since we migth have many more causes to do a kmsg dump in the 
+future (ie 'shutdown', 'sysrq', 'suspend' etc etc)?
 
-Thank you for your work and time!
+So separating them out as two different functions is just wrong. Make it 
+one function, and then perhaps you can add a
 
--- 
-Hoy la lluvia no me moja, hoy en día soy el huracán
-Voy levantando las hojas, voy zarpado por todo el lugar
-Hoy la fuerza me sonríe, hoy la vida me quiere ayudar
-Me levanto aunque me tiren, no me duele, no me ves llorar
+	enum kmsg_dump_reason {
+		kmsg_dump_panic,
+		kmsg_dump_oops,
+		..
+	};
 
+and pass it as an argument.
 
-Jetzt kostenlos herunterladen: Internet Explorer 8 und Mozilla Firefox 3.5 -
-sicherer, schneller und einfacher! http://portal.gmx.net/de/go/chbrowser
+> +	int	(*setup)(struct dump_device *);
+
+Why?
+
+There seems to be no reason for this. Who ever registers the dumper should 
+just do the setup call itself. Why would we have a callback that just gets 
+called immediately, rather than have the registration code just do the 
+call itself?
+
+> +int register_dumpdevice(struct dump_device *dump, void *priv)
+> +{
+> +	/* We need at least one of these set */
+> +	if (!dump->oops && !dump->panic)
+> +		return -EINVAL;
+> +	if (dump->setup && dump->setup(dump) != 0)
+> +		return -EINVAL;
+
+So the above two tests should be pointless.
+
+> +	dump->priv = priv;
+> +
+> +	INIT_LIST_HEAD(&dump->list);
+
+Don't do "INIT_LIST_HEAD()" here. It's pointless as far as I can tell (the 
+list_add() will initialize it), but even in general we should basically 
+have basic initialization done by callers if needed.
+
+And judging by historical problems in areas like that, we should protect 
+against people registering the same dumper twice. One way to do that would 
+be to perhaps _require_ that the caller has initialized it, and then do a 
+
+	if (!list_empty(&dump->list))
+		return -EBUSY;
+
+(but I could also see using just a "registered" flag)
+
+> +	write_lock(&dump_list_lock);
+
+This looks dubious. Dumping can obviously happen from interrupts, so _if_ 
+you were to protect against dumpers, you'd need to use an interrupt-safe 
+lock.
+
+Of course, you do not actually take the lock at dump time (which may be 
+intentional, and that is not necessarily wrong - taking locks at oops time 
+is generally not a good thing to do, and it may be entirely reasonable to 
+say "we take the risk of not locking properly in order to _maybe_ work 
+even if the lock is scrogged").
+
+But if you don't take the lock at dump time (or, perhaps preferably, if 
+you make the dump-time lock be a "try_lock()" - maybe the oops is due to 
+dump list corruption, and if the dump_list_lock is held thew oopser 
+should simply not dump!), then you should probably use a spinlock rather 
+than an rwlock.
+
+> +	list_for_each_entry(dump, &dump_list, list) {
+> +		if (panic && dump->panic)
+> +			dump->panic(dump, s1, l1, s2, l2);
+> +		else if (!panic && dump->oops)
+> +			dump->oops(dump, s1, l1, s2, l2);
+> +	}
+
+So this would just become
+
+	list_for_each_entry(dump, &dump_list, list)
+		dump->fn(dump, s1, l1, s2, l2, reason);
+
+or something.
+
+			Linus
