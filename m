@@ -1,17 +1,34 @@
-Received: from gateway-1237.mvista.com ([63.81.120.158])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MxU8R-0003yR-B6
-	for linux-mtd@lists.infradead.org; Mon, 12 Oct 2009 23:17:03 +0000
-Date: Mon, 12 Oct 2009 16:16:37 -0700
-From: "Mark A. Greer" <mgreer@mvista.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: Add bad block table overrides to Davinci NAND driver
-Message-ID: <20091012231637.GA21098@mag.az.mvista.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: khilman@deeprootsystems.com, Davinci-linux-open-source@linux.davincidsp.com,
-	sudhakar.raj@ti.com
+Received: from ernst.netinsight.se ([194.16.221.21])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MxcGr-0000mu-Li
+	for linux-mtd@lists.infradead.org; Tue, 13 Oct 2009 07:58:18 +0000
+Date: Tue, 13 Oct 2009 09:58:05 +0200
+From: Simon Kagstrom <simon.kagstrom@netinsight.net>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] panic.c: export panic_on_oops
+Message-ID: <20091013095805.477f1928@marrow.netinsight.se>
+In-Reply-To: <alpine.LFD.2.01.0910121130190.3438@localhost.localdomain>
+References: <20091012113758.GB11035@elte.hu>
+	<20091012140149.6789efab@marrow.netinsight.se>
+	<20091012120951.GA16799@elte.hu>
+	<1255349748.10605.13.camel@macbook.infradead.org>
+	<20091012122023.GA19365@elte.hu>
+	<20091012150650.51a4b4dc@marrow.netinsight.se>
+	<20091012131528.GC25464@elte.hu>
+	<20091012153937.0dcd73e5@marrow.netinsight.se>
+	<alpine.LFD.2.01.0910120828390.3438@localhost.localdomain>
+	<20091012110954.67d7d8d8.akpm@linux-foundation.org>
+	<20091012182346.GH17138@elte.hu>
+	<alpine.LFD.2.01.0910121130190.3438@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
+	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>, Ingo Molnar <mingo@elte.hu>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,55 +38,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Mark A. Greer <mgreer@mvista.com>
+On Mon, 12 Oct 2009 11:45:15 -0700 (PDT)
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-The existing NAND infrastructure allows the default main and
-mirror bad block tables to be overridden in nand_default_bbt().
-However, the davinci_nand driver does not support this.  Add
-that support by adding fields to the davinci driver's platform
-data so platform code can pass in their own bbt's and make the
-davinci_nand driver honor them.
+> So the logic should literally be something like this:
+> 
+>  - kernel/printk.c:
+> 
+> 	void dump_kmsg(void)
+> 	{
+> 		unsigned long len = ACCESS_ONCE(log_end);
 
-Signed-off-by: Mark A. Greer <mgreer@mvista.com>
-Signed-off-by: Kevin Hilman <khilman@deeprootsystems.com>
-CC: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
----
-Applies cleanly to git://git.infradead.org/mtd-2.6.git
+OK, I'll get back with a few patches that does this later today.
 
-Tested in the Linux ARM/Davinci tree,
-git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-davinci.git
-
- arch/arm/mach-davinci/include/mach/nand.h |    4 ++++
- drivers/mtd/nand/davinci_nand.c           |    2 ++
- 2 files changed, 6 insertions(+), 0 deletions(-)
-
-diff --git a/arch/arm/mach-davinci/include/mach/nand.h b/arch/arm/mach-davinci/include/mach/nand.h
-index b520c4b..b2ad809 100644
---- a/arch/arm/mach-davinci/include/mach/nand.h
-+++ b/arch/arm/mach-davinci/include/mach/nand.h
-@@ -79,6 +79,10 @@ struct davinci_nand_pdata {		/* platform_data */
- 
- 	/* e.g. NAND_BUSWIDTH_16 or NAND_USE_FLASH_BBT */
- 	unsigned		options;
-+
-+	/* Main and mirror bbt descriptor overrides */
-+	struct nand_bbt_descr	*bbt_td;
-+	struct nand_bbt_descr	*bbt_md;
- };
- 
- #endif	/* __ARCH_ARM_DAVINCI_NAND_H */
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index 68cc924..fe3eba8 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -591,6 +591,8 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
- 
- 	/* options such as NAND_USE_FLASH_BBT or 16-bit widths */
- 	info->chip.options	= pdata->options;
-+	info->chip.bbt_td	= pdata->bbt_td;
-+	info->chip.bbt_md	= pdata->bbt_md;
- 
- 	info->ioaddr		= (uint32_t __force) vaddr;
- 
--- 
-1.6.3.3.220.g609a0
+// Simon
