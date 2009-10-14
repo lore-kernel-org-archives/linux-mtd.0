@@ -1,20 +1,33 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1My6xz-0007MP-BK
-	for linux-mtd@lists.infradead.org; Wed, 14 Oct 2009 16:44:52 +0000
-Message-ID: <4AD5FFE7.7080703@nokia.com>
-Date: Wed, 14 Oct 2009 19:44:23 +0300
-From: Adrian Hunter <adrian.hunter@nokia.com>
+Date: Wed, 14 Oct 2009 09:49:34 -0700 (PDT)
+From: Linus Torvalds <torvalds@linux-foundation.org>
+To: Simon Kagstrom <simon.kagstrom@netinsight.net>
+Subject: Re: [PATCH v6 4/5]: core: Add kernel message dumper to call on oopses
+	and panics
+In-Reply-To: <20091014154118.5c8cc998@marrow.netinsight.se>
+Message-ID: <alpine.LFD.2.01.0910140943040.6146@localhost.localdomain>
+References: <20091012113758.GB11035@elte.hu>
+	<20091012140149.6789efab@marrow.netinsight.se>
+	<20091012120951.GA16799@elte.hu>
+	<1255349748.10605.13.camel@macbook.infradead.org>
+	<20091012122023.GA19365@elte.hu>
+	<20091012150650.51a4b4dc@marrow.netinsight.se>
+	<20091012131528.GC25464@elte.hu>
+	<20091012153937.0dcd73e5@marrow.netinsight.se>
+	<alpine.LFD.2.01.0910120828390.3438@localhost.localdomain>
+	<20091012110954.67d7d8d8.akpm@linux-foundation.org>
+	<20091012182346.GH17138@elte.hu>
+	<alpine.LFD.2.01.0910121130190.3438@localhost.localdomain>
+	<20091014153458.05e31db6@marrow.netinsight.se>
+	<20091014154118.5c8cc998@marrow.netinsight.se>
 MIME-Version: 1.0
-To: Felix Radensky <felix@embedded-sol.com>
-Subject: Re: UBIFS problem on MPC8536DS
-References: <4AD5ADC9.30503@embedded-sol.com> <4AD5C5B4.3060303@nokia.com>
-	<4AD5D053.9000901@embedded-sol.com>
-In-Reply-To: <4AD5D053.9000901@embedded-sol.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: TEXT/PLAIN; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
+	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>, Ingo Molnar <mingo@elte.hu>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,146 +37,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Felix Radensky wrote:
-> Adrian Hunter wrote:
->> Felix Radensky wrote:
->>> Hi,
->>>
->>> I have a strange problem in linux-2.6.31 running on MPC8536DS board.
->>> It is 100% reproducible, by opening a 350MB tar file into ubifs volume
->>> on NAND flash, and starting erase of NOR flash partition right after 
->>> that.
->>>
->>> If I don't start  NOR erase, everything works fine. Also, If I run 
->>> sync after
->>> tar, no problem occurs.  The NOR flash is 32MB  Spansion, NAND is
->>> 4GB Samsung.
->>>
->>> The error messages are as follows:
->>>
->>> UBI error: ubi_io_write: error -5 while writing 2048 bytes to PEB 
->>> 5812:12288, written 0 bytes
->>> UBI warning: ubi_eba_write_leb: failed to write data to PEB 5812
->>> UBI: recover PEB 5812, move data to PEB 19400
->>> UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB 
->>> 5812:512, read 512 bytes
->>> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 
->>> 19400:512, written 0 bytes
->>> UBI warning: recover_peb: failed to write to PEB 19400
->>> UBI: try again
->>> UBI: recover PEB 5812, move data to PEB 19401
->>> UBI: run torture test for PEB 19400
->>> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 
->>> 19401:512, written 0 bytes
->>> UBI warning: recover_peb: failed to write to PEB 19401
->>> UBI: try again
->>> UBI: recover PEB 5812, move data to PEB 19402
->>> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 
->>> 19402:512, written 0 bytes
->>> UBI warning: recover_peb: failed to write to PEB 19402
->>> UBI: try again
->>> UBI: recover PEB 5812, move data to PEB 19403
->>> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 
->>> 19403:512, written 0 bytes
->>> UBI warning: recover_peb: failed to write to PEB 19403
->>> UBI warning: ubi_ro_mode: switch to read-only mode
->>> UBIFS error (pid 1149): ubifs_wbuf_write_nolock: cannot write 2522 
->>> bytes to LEB 389:10240, error -5
->>> UBIFS warning (pid 1149): ubifs_ro_mode: switched to read-only mode, 
->>> error -5
->>> UBIFS error (pid 1149): do_writepage: cannot write page 0 of inode 
->>> 30708, error -5
->>> UBIFS error (pid 1149): make_reservation: cannot reserve 858 bytes in 
->>> jhead 2, error -30
->>> UBIFS error (pid 1149): do_writepage: cannot write page 2 of inode 
->>> 29486, error -30
->>> UBIFS error (pid 1149): make_reservation: cannot reserve 721 bytes in 
->>> jhead 2, error -30
->>> UBIFS error (pid 1149): do_writepage: cannot write page 1 of inode 
->>> 30070, error -30
->>> UBI error: ubi_io_write: error -5 while writing 2048 bytes to PEB 
->>> 5022:88064, written 0 bytes
->>> UBI warning: ubi_eba_write_leb: failed to write data to PEB 5022
->>> UBI: recover PEB 5022, move data to PEB 19404
->>> UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB 
->>> 5022:512, read 512 bytes
->>> UBI error: ubi_io_write: read-only mode
->>> UBI warning: recover_peb: failed to write to PEB 19404
->>> UBI: try again
->>> UBI: recover PEB 5022, move data to PEB 19405
->>> UBI error: ubi_io_write: read-only mode
->>> UBI warning: recover_peb: failed to write to PEB 19405
->>> UBI: try again
->>> UBI: recover PEB 5022, move data to PEB 19406
->>> UBI error: ubi_io_write: read-only mode
->>> UBI warning: recover_peb: failed to write to PEB 19406
->>> UBI: try again
->>> UBI: recover PEB 5022, move data to PEB 19407
->>> UBI error: ubi_io_write: read-only mode
->>> UBI warning: recover_peb: failed to write to PEB 19407
->>> UBIFS error (pid 1044): ubifs_wbuf_sync_nolock: cannot write 2048 
->>> bytes to LEB 788:86016
->>> UBIFS error (pid 1044): ubifs_bg_wbufs_sync: cannot sync 
->>> write-buffer, error -30
->>> UBIFS warning (pid 1044): ubifs_ro_mode: switched to read-only mode, 
->>> error -30
->>> UBI error: ubi_io_write: error -5 while writing 2048 bytes to PEB 
->>> 5817:26624, written 0 bytes
->>> UBI warning: ubi_eba_write_leb: failed to write data to PEB 5817
->>> UBI: recover PEB 5817, move data to PEB 19408
->>> UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB 
->>> 5817:512, read 512 bytes
->>> UBI error: ubi_io_write: read-only mode
->>> UBI warning: recover_peb: failed to write to PEB 19408
->>> UBI: try again
->>> UBI: recover PEB 5817, move data to PEB 19409
->>> UBI error: ubi_io_write: read-only mode
->>> UBI warning: recover_peb: failed to write to PEB 19409
->>> UBI: try again
->>> UBI: recover PEB 5817, move data to PEB 19410
->>> UBI error: ubi_io_write: read-only mode
->>> UBI warning: recover_peb: failed to write to PEB 19410
->>> UBI: try again
->>> UBI: recover PEB 5817, move data to PEB 19411
->>> UBI error: ubi_io_write: read-only mode
->>> UBI warning: recover_peb: failed to write to PEB 19411
->>> UBIFS error (pid 1047): ubifs_wbuf_sync_nolock: cannot write 2048 
->>> bytes to LEB 385:24576
->>> UBIFS error (pid 1047): ubifs_bg_wbufs_sync: cannot sync 
->>> write-buffer, error -30
->>> UBIFS error (pid 1149): make_reservation: cannot reserve 160 bytes in 
->>> jhead 1, error -30
->>> UBIFS error (pid 1149): ubifs_write_inode: can't write inode 30709, 
->>> error -30
->>> UBIFS error (pid 1149): make_reservation: cannot reserve 160 bytes in 
->>> jhead 1, error -30
->>> UBIFS error (pid 1149): ubifs_write_inode: can't write inode 30710, 
->>> error -30
->>> UBIFS error (pid 1149): make_reservation: cannot reserve 160 bytes in 
->>> jhead 1, error -30
->>> UBIFS error (pid 1149): ubifs_write_inode: can't write inode 30698, 
->>> error -30
->>> UBIFS error (pid 1149): make_reservation: cannot reserve 160 bytes in 
->>> jhead 1, error -30
->>> UBIFS error (pid 1149): ubifs_write_inode: can't write inode 30711, 
->>> error -30
->>>
->>> I'd appreciate any hints on what can cause this. Is it a hardware 
->>> problem, mtd layer problem
->>> or UBI problem ?
->> It sounds like you are saying one MTD partition somehow affects another.
->> You should check the MTD partitions are set up correctly.  Are you using
->> tools that make assumptions about which mtd partition is which?
->>
->> How do you erase the NOR flash?  Is the device node (/dev/mtd...) 
->> correct?
-> I can also reproduce the problem by reading from NOR, i.e.
-> 
-> dd if=/dev/mtd4 of=/dev/null
 
-I doubt the problem is in UBI or UBIFS, and plenty of people use multiple
-MTD partitions with no problem.
 
-Do the NAND and NOR use the same memory controller?
+On Wed, 14 Oct 2009, Simon Kagstrom wrote:
+>
+> ChangeLog:
+> Review comments from Linus Torvalds and Anders Grafström:
+>        * Rename structures and file names
+>        * Remove setup callback and unify panic/oops callbacks and
+>          instead add a reason parameter
+>        * Use a regular spinlock and try it when dumping (fail
+>          if held)
+>        * Check if the dumper is already registered
+>        * Various style fixes/cleanup
 
-I don't think I can be much help I'm afraid.
+Ok, looks fine to me now. 
+
+I do end up having one minor nit: let's change the calling convention of 
+the dump function to either be:
+
+	void (*dump)(void *priv, enum kmsg_dump_reason reason,
+		const char *s1, unsigned long l1,
+		const char *s2, unsigned long l2);
+
+or let's just remove the 'priv' data from the dump entirely. 
+
+Right now, you pass in the whole 'kmsg_dumper' data structure, and then 
+you seem to expect that users look up their private context by looking 
+into that data structure with 'dumper->priv'. That's just ugly. 
+
+So if you want to have a callback value, just pass that in for the 
+callback.
+
+And if you want to pass in the whole 'kmsg_dumper' data structure, then 
+use that pointer _itself_ as the context (ie you would embed the 
+'kmsg_dumper' in some data structure, and then you do
+
+	struct my_data *my_data = container_of(dumper, struct my_data, dumper);
+
+or something like that.
+
+But your current implementation mixes _both_ of the above approaches. 
+Which one are people going to use? Both work, and no, "there are multiple 
+ways to do the same thing" is not an advantage, it just leads to 
+confusion. And confusion isn't good, whatever the perl people say.
+
+		Linus
