@@ -1,20 +1,17 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MxyuF-0004x3-4v
-	for linux-mtd@lists.infradead.org; Wed, 14 Oct 2009 08:08:28 +0000
-Subject: RE: [PATCH] Fix memory leak in mtd_dataflash
+Subject: RE: [PATCH 1/2] Update ts72xx to use generic platform nand driver
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: H Hartley Sweeten <hartleys@visionengravers.com>
-In-Reply-To: <BD79186B4FD85F4B8E60E381CAEE190901DB7E55@mi8nycmail19.Mi8.com>
-References: <BD79186B4FD85F4B8E60E381CAEE190901DB7B18@mi8nycmail19.Mi8.com>
-	<1255266577.16942.57.camel@localhost>
-	<BD79186B4FD85F4B8E60E381CAEE190901DB7E55@mi8nycmail19.Mi8.com>
+In-Reply-To: <BD79186B4FD85F4B8E60E381CAEE190901DB7E59@mi8nycmail19.Mi8.com>
+References: <BD79186B4FD85F4B8E60E381CAEE190901DB7967@mi8nycmail19.Mi8.com>
+	<1255260621.16942.38.camel@localhost>
+	<BD79186B4FD85F4B8E60E381CAEE190901DB7E59@mi8nycmail19.Mi8.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 14 Oct 2009 11:07:48 +0300
-Message-Id: <1255507668.32489.115.camel@localhost>
+Date: Wed, 14 Oct 2009 11:42:19 +0300
+Message-Id: <1255509739.32489.123.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: David Brownell <david-b@pacbell.net>, linux-mtd@lists.infradead.org
+Cc: Matthieu Crapet <mcrapet@gmail.com>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,68 +22,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2009-10-11 at 16:49 -0400, H Hartley Sweeten wrote:
-> On Sunday, October 11, 2009 6:10 AM, Artem Bityutskiy wrote:
-> > On Wed, 2009-10-07 at 17:08 -0400, H Hartley Sweeten wrote:
-> >> Fix a potential memory leak in mtd_dataflash driver.
-> >> 
-> >> The private data that is allocated when registering a DataFlash
-> >> device with the MTD subsystem is not released if an error occurs
-> >> when add_mtd_partitions() or add_mtd_device() is called.  Fix this
-> >> by adding an error path.  The memory is already released during a
-> >> remove.
-> >> 
-> >> Also, add a dev_set_drvdata(&spi->dev, NULL) before the kfree() so
-> >> that the spi device does not reference invalid data.
-> >> 
-> >> Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
-> >> Cc: David Brownell <david-b@pacbell.net>
-> >> Cc: linux-mtd@lists.infradead.org
-> >> 
-> >> ---
-> >> 
-> >> diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-> >> index 93e3627..1981740 100644
-> >> --- a/drivers/mtd/devices/mtd_dataflash.c
-> >> +++ b/drivers/mtd/devices/mtd_dataflash.c
-> >> @@ -636,6 +636,7 @@ add_dataflash_otp(struct spi_device *spi, char *name,
-> >>  	struct mtd_info			*device;
-> >>  	struct flash_platform_data	*pdata = spi->dev.platform_data;
-> >>  	char				*otp_tag = "";
-> >> +	int				err = 0;
-> >>  
-> >>  	priv = kzalloc(sizeof *priv, GFP_KERNEL);
-> >>  	if (!priv)
-> >> @@ -693,13 +694,23 @@ add_dataflash_otp(struct spi_device *spi, char *name,
-> >>  
-> >>  		if (nr_parts > 0) {
-> >>  			priv->partitioned = 1;
-> >> -			return add_mtd_partitions(device, parts, nr_parts);
-> >> +			err = add_mtd_partitions(device, parts, nr_parts);
-> >> +			goto out;
-> >>  		}
-> >>  	} else if (pdata && pdata->nr_parts)
-> >>  		dev_warn(&spi->dev, "ignoring %d default partitions on %s\n",
-> >>  				pdata->nr_parts, device->name);
-> >>  
-> >> -	return add_mtd_device(device) == 1 ? -ENODEV : 0;
-> >> +	if (add_mtd_device(device) == 1)
-> >> +		err = -ENODEV;
-> >
-> > But if you fail here, you should also call del_mtd_partitions(), right?
+On Sun, 2009-10-11 at 17:19 -0400, H Hartley Sweeten wrote:
+> Update the ts72xx platform's nand driver support.
+>  
+> This changes the ts72xx platform from using a custom nand driver
+> (ts7250.c) to the generic platform nand driver (plat_nand.c).
+>  
+> Tested on TS-7250 with 32MB NAND.
+>  
+> Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
+> Tested-by: Matthieu Crapet <mcrapet@gmail.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Artem Bityutskiy <dedekind1@gmail.com>
+> Cc: <linux-arm-kernel@lists.infradead.org>
+> Cc: <linux-mtd@lists.infradead.org>
 > 
-> Not as I understand it.
+> ---
 > 
-> If the device has partitions (mtd_has_partitions), and the subsystem can
-> determine what they are, add_mtd_partitions is called to add those partitions.
-> The only way the code gets to add_mtd_device is if mtd_has_partitions returns
-> false or the number of partitions cannot be determined.  In that case the entire
-> device is added.  So calling del_mtd_partitions in that case is not valid.
+> V2 - rebased to current mtd tree (Artem Bityutskiy)
 > 
-> Did I overlook something?
+>  arch/arm/mach-ep93xx/ts72xx.c |  177 +++++++++++++++++++++++++++++------------
+>  1 files changed, 125 insertions(+), 52 deletions(-)
 
-Right. I've applied it to my l2-mtd-2.6 tree.
+Ok, I've tried this patch on both mtd-2.6 and linux-2.6 git trees, and
+it does not apply cleanly.
 
+[dedekind@eru mtd-2.6]$ git am ../l2-mtd-2.6.git/sweeten1
+Applying: RE: [PATCH 1/2] Update ts72xx to use generic platform nand driver
+error: patch failed: arch/arm/mach-ep93xx/ts72xx.c:54
+error: arch/arm/mach-ep93xx/ts72xx.c: patch does not apply
+Patch failed at 0001 RE: [PATCH 1/2] Update ts72xx to use generic platform nand driver
+When you have resolved this problem run "git am --resolved".
+If you would prefer to skip this patch, instead run "git am --skip".
+To restore the original branch and stop patching run "git am --abort".
+[dedekind@eru mtd-2.6]$ patch -p1  < .git/rebase-apply/patch
+patching file arch/arm/mach-ep93xx/ts72xx.c
+Hunk #2 succeeded at 56 with fuzz 1.
+
+Ok, I can do things manually:
+
+[dedekind@eru mtd-2.6]$ git update-index arch/arm/mach-ep93xx/ts72xx.c
+[dedekind@eru mtd-2.6]$ git am --resolved
+Applying: RE: [PATCH 1/2] Update ts72xx to use generic platform nand driver
+
+But then the second patch does not apply anyway:
+
+[dedekind@eru mtd-2.6]$ git am ../l2-mtd-2.6.git/sweeten2
+Applying: RE: [PATCH 2/2] Remove now-defunct ts7250 nand driver
+error: patch failed: drivers/mtd/nand/ts7250.c:1
+error: drivers/mtd/nand/ts7250.c: patch does not apply
+Patch failed at 0001 RE: [PATCH 2/2] Remove now-defunct ts7250 nand driver
+When you have resolved this problem run "git am --resolved".
+If you would prefer to skip this patch, instead run "git am --skip".
+To restore the original branch and stop patching run "git am --abort".
+[dedekind@eru mtd-2.6]$ patch -p1 < .git/rebase-apply/patch
+patching file arch/arm/mach-ep93xx/include/mach/ts72xx.h
+patching file drivers/mtd/nand/Kconfig
+patching file drivers/mtd/nand/Makefile
+patching file drivers/mtd/nand/ts7250.c
+Reversed (or previously applied) patch detected!  Assume -R? [n] ^C
+
+This is where I'm in the mtd-2.6.git tree, for reference.
+
+[dedekind@eru mtd-2.6]$ git show
+commit e4af3bf6334341435740fce9ff236ba814686b99
+Author: Claudio Scordino <claudio@evidence.eu.com>
+Date:   Wed Oct 7 14:27:07 2009 +0200
+
+    mtd: atmel_nand: unused variable removed
+
+    Unused variable "eccpos" removed from atmel_nand driver.
+
+    Signed-off-by: Claudio Scordino <claudio@evidence.eu.com>
+    Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
+
+diff --git a/drivers/mtd/nand/atmel_nand.c
+b/drivers/mtd/nand/atmel_nand.c
+index f8e9975..4f62d20 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -192,7 +192,6 @@ static int atmel_nand_calculate(struct mtd_info
+*mtd,
+ {
+        struct nand_chip *nand_chip = mtd->priv;
+        struct atmel_nand_host *host = nand_chip->priv;
+-       uint32_t *eccpos = nand_chip->ecc.layout->eccpos;
+        unsigned int ecc_value;
+
+        /* get the first 2 ECC bytes */
 
 -- 
 Best Regards,
