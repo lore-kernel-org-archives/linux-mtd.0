@@ -1,37 +1,19 @@
-Received: from ernst.netinsight.se ([194.16.221.21])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1My5Wz-0005qx-0g
-	for linux-mtd@lists.infradead.org; Wed, 14 Oct 2009 15:12:54 +0000
-Date: Wed, 14 Oct 2009 17:12:40 +0200
-From: Simon Kagstrom <simon.kagstrom@netinsight.net>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v6 5/5]: mtdoops: refactor as a kmsg_dumper
-Message-ID: <20091014171240.49d0963f@marrow.netinsight.se>
-In-Reply-To: <20091014154124.5d9c366e@marrow.netinsight.se>
-References: <20091012113758.GB11035@elte.hu>
-	<20091012140149.6789efab@marrow.netinsight.se>
-	<20091012120951.GA16799@elte.hu>
-	<1255349748.10605.13.camel@macbook.infradead.org>
-	<20091012122023.GA19365@elte.hu>
-	<20091012150650.51a4b4dc@marrow.netinsight.se>
-	<20091012131528.GC25464@elte.hu>
-	<20091012153937.0dcd73e5@marrow.netinsight.se>
-	<alpine.LFD.2.01.0910120828390.3438@localhost.localdomain>
-	<20091012110954.67d7d8d8.akpm@linux-foundation.org>
-	<20091012182346.GH17138@elte.hu>
-	<alpine.LFD.2.01.0910121130190.3438@localhost.localdomain>
-	<20091014153458.05e31db6@marrow.netinsight.se>
-	<20091014154124.5d9c366e@marrow.netinsight.se>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1My5uy-0006D9-6T
+	for linux-mtd@lists.infradead.org; Wed, 14 Oct 2009 15:37:40 +0000
+Subject: Re: NAND: Add flags to the probe calls to control scan behaviour
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ben Dooks <ben@simtec.co.uk>
+In-Reply-To: <20091013090019.091262272@fluff.org.uk>
+References: <20091013090019.091262272@fluff.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 14 Oct 2009 18:37:26 +0300
+Message-Id: <1255534646.32489.169.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	LKML <linux-kernel@vger.kernel.org>, "Koskinen Aaro
-	\(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
-	Ingo Molnar <mingo@elte.hu>, David Woodhouse <dwmw2@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alan Cox <alan@lxorguk.ukuu.org.uk>
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, Simtec Linux Team <linux@simtec.co.uk>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,19 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 14 Oct 2009 15:41:24 +0200
-Simon Kagstrom <simon.kagstrom@netinsight.net> wrote:
+On Tue, 2009-10-13 at 10:00 +0100, Ben Dooks wrote:
+> plain text document attachment (nand-update-probe2.patch)
+> Add a flags field to the two scan calls to control the behaviour of the
+> scan process. Currently the only flag we define is NAND_PROBE_SPECULATIVE
+> to stop the user-worrying messages 'No NAND device found!!!'. This message
+> often worries users (was three exclamation marks really necessary?) and is
+> even worse in systems such as the Simtec Osiris where there may be optional
+> NAND devices which are not known until probe time.
+> 
+> The approach is to change nand_scan_ident and nand_scan to have a new flags
+> field, and add wrapper functions to the header files so that we do not have
+> to get around all the drivers doing a search and replace. If we where to
+> change all the call sites for nand_scan() and nand_scan_ident() we would
+> touch about 40 drivers.
+> 
+> Signed-off-by: Ben Dooks <ben@simtec.co.uk>
+> Signed-off-by: Simtec Linux Team <linux@simtec.co.uk>
 
-> -static void __exit mtdoops_console_exit(void)
-> +static void __exit mtdoops_exit(void)
->  {
->  	struct mtdoops_context *cxt = &oops_cxt;
->  
->  	unregister_mtd_user(&mtdoops_notifier);
-> -	unregister_console(&mtdoops_console);
->  	kfree(cxt->name);
+So you are introducing this new flag just to make generic NAND layer be
+silent if it cannot identify device type, right?
 
-The kfree should go as well since cxt->name is no longer allocated. I'll
-await further comments and send a new patch tomorrow.
+Could you please elaborate why more why is this needed a bit more? What
+is the driver?
 
-// Simon
+Why not to just remove that print at all?
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
