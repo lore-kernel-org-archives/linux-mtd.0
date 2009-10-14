@@ -1,21 +1,21 @@
-Received: from mail-gx0-f210.google.com ([209.85.217.210])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1MxwER-0000eX-DM
-	for linux-mtd@lists.infradead.org; Wed, 14 Oct 2009 05:17:07 +0000
-Received: by gxk2 with SMTP id 2so5431439gxk.4
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 13 Oct 2009 22:17:01 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20091013151049.280490@gmx.net>
-References: <20091013151049.280490@gmx.net>
-From: vimal singh <vimal.newwork@gmail.com>
-Date: Wed, 14 Oct 2009 10:46:41 +0530
-Message-ID: <ce9ab5790910132216q2e1236e8kdab3968d7804ef51@mail.gmail.com>
-Subject: Re: mtd partitions definition
-To: Philipp Boerker <philipp.boerker@gmx.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MxyuF-0004x3-4v
+	for linux-mtd@lists.infradead.org; Wed, 14 Oct 2009 08:08:28 +0000
+Subject: RE: [PATCH] Fix memory leak in mtd_dataflash
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: H Hartley Sweeten <hartleys@visionengravers.com>
+In-Reply-To: <BD79186B4FD85F4B8E60E381CAEE190901DB7E55@mi8nycmail19.Mi8.com>
+References: <BD79186B4FD85F4B8E60E381CAEE190901DB7B18@mi8nycmail19.Mi8.com>
+	<1255266577.16942.57.camel@localhost>
+	<BD79186B4FD85F4B8E60E381CAEE190901DB7E55@mi8nycmail19.Mi8.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 14 Oct 2009 11:07:48 +0300
+Message-Id: <1255507668.32489.115.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: David Brownell <david-b@pacbell.net>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,75 +25,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 13, 2009 at 8:40 PM, Philipp Boerker <philipp.boerker@gmx.de> w=
-rote:
->
-> I'm sorry if this is the wrong place for such questions. I have done a lo=
-t of reading on the subject and have browsed through the kernel code for my=
- device but still could not find the desired information (I'm no programmin=
-g crack, I'm afraid). The situation is this:
->
-> I have an embedded device which has some mtd partitions which are control=
-led by the omap2-nand driver. The exact kernel sources for the device are u=
-navailable at the moment (I expect them to be published by the manufacturer=
- within the next weeks) so I collect most of the info I have from dmesg and=
- grepping through the binaries.
->
-> Now I would like to install my own bootloader which in the present case r=
-esides in an mtd partition that appears to be read-only (opening the device=
- rw fails). I concluded that I had to change the partition definition to be=
-ing writable in order to be able to write to the partition holding the boot=
-loader (I assume that making the partition read-only was a kind of security=
- measure on the side of the manufacturer). The remaining mtd partitions can=
- be written using flash_image.
->
-> I have learned so far that there are (at least) three ways of defining mt=
-d partitions: kernel command line ("cmdline parsing not available" in dmesg=
- so it shouldn't be this), fixed (i.e. defined somewhere in the sources, ho=
-wever, a grep for the partition names listed in dmesg doesn't show anything=
-) or redboot. The device does not use redboot as a bootloader but as far as=
- I understand this does not mean that it doesn't use the redboot method for=
- defining mtd partitions.
->
-> I have looked through the kernel sources for the omap2-nand driver and ha=
-ve come to a function called omap_nand_probe which seems to initialise (at =
-least part of) the device but gets all the interesting information (i.e. pa=
-rtition definition) passed as an argument. So the partition information is =
-set up somewhere else. And I can't find this somewhere else...
->
-Partition information normally passed from board specific file as
-platform data. For example see this patch (yet not merged into
-kernel):
-http://marc.info/?l=3Dlinux-omap&m=3D125258243302182&w=3D2
+On Sun, 2009-10-11 at 16:49 -0400, H Hartley Sweeten wrote:
+> On Sunday, October 11, 2009 6:10 AM, Artem Bityutskiy wrote:
+> > On Wed, 2009-10-07 at 17:08 -0400, H Hartley Sweeten wrote:
+> >> Fix a potential memory leak in mtd_dataflash driver.
+> >> 
+> >> The private data that is allocated when registering a DataFlash
+> >> device with the MTD subsystem is not released if an error occurs
+> >> when add_mtd_partitions() or add_mtd_device() is called.  Fix this
+> >> by adding an error path.  The memory is already released during a
+> >> remove.
+> >> 
+> >> Also, add a dev_set_drvdata(&spi->dev, NULL) before the kfree() so
+> >> that the spi device does not reference invalid data.
+> >> 
+> >> Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
+> >> Cc: David Brownell <david-b@pacbell.net>
+> >> Cc: linux-mtd@lists.infradead.org
+> >> 
+> >> ---
+> >> 
+> >> diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
+> >> index 93e3627..1981740 100644
+> >> --- a/drivers/mtd/devices/mtd_dataflash.c
+> >> +++ b/drivers/mtd/devices/mtd_dataflash.c
+> >> @@ -636,6 +636,7 @@ add_dataflash_otp(struct spi_device *spi, char *name,
+> >>  	struct mtd_info			*device;
+> >>  	struct flash_platform_data	*pdata = spi->dev.platform_data;
+> >>  	char				*otp_tag = "";
+> >> +	int				err = 0;
+> >>  
+> >>  	priv = kzalloc(sizeof *priv, GFP_KERNEL);
+> >>  	if (!priv)
+> >> @@ -693,13 +694,23 @@ add_dataflash_otp(struct spi_device *spi, char *name,
+> >>  
+> >>  		if (nr_parts > 0) {
+> >>  			priv->partitioned = 1;
+> >> -			return add_mtd_partitions(device, parts, nr_parts);
+> >> +			err = add_mtd_partitions(device, parts, nr_parts);
+> >> +			goto out;
+> >>  		}
+> >>  	} else if (pdata && pdata->nr_parts)
+> >>  		dev_warn(&spi->dev, "ignoring %d default partitions on %s\n",
+> >>  				pdata->nr_parts, device->name);
+> >>  
+> >> -	return add_mtd_device(device) == 1 ? -ENODEV : 0;
+> >> +	if (add_mtd_device(device) == 1)
+> >> +		err = -ENODEV;
+> >
+> > But if you fail here, you should also call del_mtd_partitions(), right?
+> 
+> Not as I understand it.
+> 
+> If the device has partitions (mtd_has_partitions), and the subsystem can
+> determine what they are, add_mtd_partitions is called to add those partitions.
+> The only way the code gets to add_mtd_device is if mtd_has_partitions returns
+> false or the number of partitions cannot be determined.  In that case the entire
+> device is added.  So calling del_mtd_partitions in that case is not valid.
+> 
+> Did I overlook something?
 
--vimal
+Right. I've applied it to my l2-mtd-2.6 tree.
 
 
-> I wonder whether there is a user-space tool similar to fdisk for defining=
- mtd partitions provided that the redboot method is used. (btw, the partiti=
-on holding the bootloader does not use ubi.) I know that mtd partitions can=
- be defined in redboot itself but this is some sort of a chicken-and-egg pr=
-oblem: I need to have the partitions rw in order to have my own bootloader =
-installed and the device uses some other kind of bootloader...
->
-> Any help on this? I spend two days learning about mtd (a week ago I didn'=
-t know it existed) and I start feeling that pain in my neck... :)
->
->
-> Thank you for your work and time!
->
-> --
-> Hoy la lluvia no me moja, hoy en d=EDa soy el hurac=E1n
-> Voy levantando las hojas, voy zarpado por todo el lugar
-> Hoy la fuerza me sonr=EDe, hoy la vida me quiere ayudar
-> Me levanto aunque me tiren, no me duele, no me ves llorar
->
->
-> Jetzt kostenlos herunterladen: Internet Explorer 8 und Mozilla Firefox 3.=
-5 -
-> sicherer, schneller und einfacher! http://portal.gmx.net/de/go/chbrowser
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
