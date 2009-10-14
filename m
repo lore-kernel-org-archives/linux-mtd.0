@@ -1,9 +1,9 @@
 Received: from vega.surpasshosting.com ([72.29.83.9])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1My3VT-0002Xu-7G
-	for linux-mtd@lists.infradead.org; Wed, 14 Oct 2009 13:03:12 +0000
-Message-ID: <4AD5CC01.4080007@embedded-sol.com>
-Date: Wed, 14 Oct 2009 15:02:57 +0200
+	id 1My3nL-00086a-Qd
+	for linux-mtd@lists.infradead.org; Wed, 14 Oct 2009 13:21:41 +0000
+Message-ID: <4AD5D053.9000901@embedded-sol.com>
+Date: Wed, 14 Oct 2009 15:21:23 +0200
 From: Felix Radensky <felix@embedded-sol.com>
 MIME-Version: 1.0
 To: Adrian Hunter <adrian.hunter@nokia.com>
@@ -22,8 +22,6 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-
-Hi, Adrian
 
 Adrian Hunter wrote:
 > Felix Radensky wrote:
@@ -158,14 +156,14 @@ Adrian Hunter wrote:
 >
 > How do you erase the NOR flash?  Is the device node (/dev/mtd...) 
 > correct?
->
->
-I use flash_eraseall /dev/mtd4 to erase NOR. The version of mtd-utils is 
-from
-latest mtd-utils git tree. The device nodes for NOR (mtd4) and NAND (mtd7)
-are correct:
+I can also reproduce the problem by reading from NOR, i.e.
 
-crwxr-xr-x 1 root root 90, 8 2005-08-07 13:11 mtd4
-crw-r--r-- 1 root root 90, 14 2008-07-16 18:51 mtd7
+dd if=/dev/mtd4 of=/dev/null
 
 Felix.
+>
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
