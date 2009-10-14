@@ -1,20 +1,15 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from vega.surpasshosting.com ([72.29.83.9])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mxzf7-00054W-9v
-	for linux-mtd@lists.infradead.org; Wed, 14 Oct 2009 08:56:53 +0000
-Subject: Re: a UBIFS image makes task pdflush blocked > 120 seconds
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
-In-Reply-To: <4AD30069.8060101@aimvalley.nl>
-References: <4ACF3478.1060503@aimvalley.nl>
-	<1255269148.16942.95.camel@localhost> <4AD30069.8060101@aimvalley.nl>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 14 Oct 2009 11:56:40 +0300
-Message-Id: <1255510600.32489.130.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+	id 1My1Uc-0007oq-LI
+	for linux-mtd@lists.infradead.org; Wed, 14 Oct 2009 10:54:13 +0000
+Message-ID: <4AD5ADC9.30503@embedded-sol.com>
+Date: Wed, 14 Oct 2009 12:54:01 +0200
+From: Felix Radensky <felix@embedded-sol.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org, linuxppc-dev@ozlabs.org
+Subject: UBIFS problem on MPC8536DS
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,73 +19,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-10-12 at 12:09 +0200, Norbert van Bolhuis wrote:
-> Artem Bityutskiy wrote:
-> > On Fri, 2009-10-09 at 15:02 +0200, Norbert van Bolhuis wrote:
-> >> We're using a 19MB UBIFS image (preprogrammed by manufacturing)
-> >> for a 156 MB NOR flash partition.
-> > 
-> > Wow, really huge NOR. Keep in mind that we have not tested UBIFS
-> > for NOR well enough.
-> It's a MTD_CONCATENATED 128MB NOR flash + 28MB NOR flash partition.
-> ok, that's good to realize.
-> Are there any (more) thorough UBIFS tests scheduled for NOR flash ?
+Hi,
 
-Not by us. But you may do this. Although, I did test power-cut recovery
-for NOR recently. This was on the "Kilauea" board.
+I have a strange problem in linux-2.6.31 running on MPC8536DS board.
+It is 100% reproducible, by opening a 350MB tar file into ubifs volume
+on NAND flash, and starting erase of NOR flash partition right after that.
 
-> >> This message repeats once. Apart from the message everything is
-> >> functioning OK.
-> >> so it's the UBIFS commit_sem that's causing this.
-> > 
-> > Not the semaphore itself, but it is locked for too long time and we
-> > cannot acquire it for too long. Since make_reservation needs it only
-> > in read mode, it is obvious that the it is is locked somewhere in
-> > the commit code, which is strange.
-> > 
-> > How full if the FS when this happens? What is your eraseblock size?
-> > 
-> 
-> The UBIFS image contains only 1 file (of 18MB) and a few directories. Several
-> application processes create (small) files and make modifications. I guess that
-> the FS contains only 20MB.
-> PEB-size = 131072, LEB-size = 130944
+If I don't start  NOR erase, everything works fine. Also, If I run sync 
+after
+tar, no problem occurs.  The NOR flash is 32MB  Spansion, NAND is
+4GB Samsung.
 
-Hmm, then GC should have almost no work to do.
+The error messages are as follows:
 
-> >> We're using linux-2.6.28. The linux-next backport for 2.6.28
-> >> (from git://git.infradead.org/~dedekind/ubifs-v2.6.28.git) changes
-> >> are in.
-> >>
-> >> I guess that, initially, there's a lot of work to be done
-> >> for UBI. I'm thinking about scan entire 156MB, add UBI VID/EC headers
-> >> for the empty 137MB, make LEB mappings, etc..
-> >>
-> >> I don't understand why this would block UBIFS/pdflush.
-> > 
-> > It shouldn't. UBI spends time for scanning when you attach your flash.
-> > You pay the price at the very beginning, and then it should be fast.
-> > 
-> 
-> but, this "problem" does occur (~ 1 minute after) the very beginning (when power is
-> applied for the 1st time to the board).
+UBI error: ubi_io_write: error -5 while writing 2048 bytes to PEB 
+5812:12288, written 0 bytes
+UBI warning: ubi_eba_write_leb: failed to write data to PEB 5812
+UBI: recover PEB 5812, move data to PEB 19400
+UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB 
+5812:512, read 512 bytes
+UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 
+19400:512, written 0 bytes
+UBI warning: recover_peb: failed to write to PEB 19400
+UBI: try again
+UBI: recover PEB 5812, move data to PEB 19401
+UBI: run torture test for PEB 19400
+UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 
+19401:512, written 0 bytes
+UBI warning: recover_peb: failed to write to PEB 19401
+UBI: try again
+UBI: recover PEB 5812, move data to PEB 19402
+UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 
+19402:512, written 0 bytes
+UBI warning: recover_peb: failed to write to PEB 19402
+UBI: try again
+UBI: recover PEB 5812, move data to PEB 19403
+UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 
+19403:512, written 0 bytes
+UBI warning: recover_peb: failed to write to PEB 19403
+UBI warning: ubi_ro_mode: switch to read-only mode
+UBIFS error (pid 1149): ubifs_wbuf_write_nolock: cannot write 2522 bytes 
+to LEB 389:10240, error -5
+UBIFS warning (pid 1149): ubifs_ro_mode: switched to read-only mode, 
+error -5
+UBIFS error (pid 1149): do_writepage: cannot write page 0 of inode 
+30708, error -5
+UBIFS error (pid 1149): make_reservation: cannot reserve 858 bytes in 
+jhead 2, error -30
+UBIFS error (pid 1149): do_writepage: cannot write page 2 of inode 
+29486, error -30
+UBIFS error (pid 1149): make_reservation: cannot reserve 721 bytes in 
+jhead 2, error -30
+UBIFS error (pid 1149): do_writepage: cannot write page 1 of inode 
+30070, error -30
+UBI error: ubi_io_write: error -5 while writing 2048 bytes to PEB 
+5022:88064, written 0 bytes
+UBI warning: ubi_eba_write_leb: failed to write data to PEB 5022
+UBI: recover PEB 5022, move data to PEB 19404
+UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB 
+5022:512, read 512 bytes
+UBI error: ubi_io_write: read-only mode
+UBI warning: recover_peb: failed to write to PEB 19404
+UBI: try again
+UBI: recover PEB 5022, move data to PEB 19405
+UBI error: ubi_io_write: read-only mode
+UBI warning: recover_peb: failed to write to PEB 19405
+UBI: try again
+UBI: recover PEB 5022, move data to PEB 19406
+UBI error: ubi_io_write: read-only mode
+UBI warning: recover_peb: failed to write to PEB 19406
+UBI: try again
+UBI: recover PEB 5022, move data to PEB 19407
+UBI error: ubi_io_write: read-only mode
+UBI warning: recover_peb: failed to write to PEB 19407
+UBIFS error (pid 1044): ubifs_wbuf_sync_nolock: cannot write 2048 bytes 
+to LEB 788:86016
+UBIFS error (pid 1044): ubifs_bg_wbufs_sync: cannot sync write-buffer, 
+error -30
+UBIFS warning (pid 1044): ubifs_ro_mode: switched to read-only mode, 
+error -30
+UBI error: ubi_io_write: error -5 while writing 2048 bytes to PEB 
+5817:26624, written 0 bytes
+UBI warning: ubi_eba_write_leb: failed to write data to PEB 5817
+UBI: recover PEB 5817, move data to PEB 19408
+UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB 
+5817:512, read 512 bytes
+UBI error: ubi_io_write: read-only mode
+UBI warning: recover_peb: failed to write to PEB 19408
+UBI: try again
+UBI: recover PEB 5817, move data to PEB 19409
+UBI error: ubi_io_write: read-only mode
+UBI warning: recover_peb: failed to write to PEB 19409
+UBI: try again
+UBI: recover PEB 5817, move data to PEB 19410
+UBI error: ubi_io_write: read-only mode
+UBI warning: recover_peb: failed to write to PEB 19410
+UBI: try again
+UBI: recover PEB 5817, move data to PEB 19411
+UBI error: ubi_io_write: read-only mode
+UBI warning: recover_peb: failed to write to PEB 19411
+UBIFS error (pid 1047): ubifs_wbuf_sync_nolock: cannot write 2048 bytes 
+to LEB 385:24576
+UBIFS error (pid 1047): ubifs_bg_wbufs_sync: cannot sync write-buffer, 
+error -30
+UBIFS error (pid 1149): make_reservation: cannot reserve 160 bytes in 
+jhead 1, error -30
+UBIFS error (pid 1149): ubifs_write_inode: can't write inode 30709, 
+error -30
+UBIFS error (pid 1149): make_reservation: cannot reserve 160 bytes in 
+jhead 1, error -30
+UBIFS error (pid 1149): ubifs_write_inode: can't write inode 30710, 
+error -30
+UBIFS error (pid 1149): make_reservation: cannot reserve 160 bytes in 
+jhead 1, error -30
+UBIFS error (pid 1149): ubifs_write_inode: can't write inode 30698, 
+error -30
+UBIFS error (pid 1149): make_reservation: cannot reserve 160 bytes in 
+jhead 1, error -30
+UBIFS error (pid 1149): ubifs_write_inode: can't write inode 30711, 
+error -30
 
-OK.
+I'd appreciate any hints on what can cause this. Is it a hardware 
+problem, mtd layer problem
+or UBI problem ?
 
-> > What I suggest you is to inject some code to UBIFS which measures for
-> > how long the 'commit_sem' is locked in "write" mode, and find the times.
-> > Then try to investigate why this actually happens. I cannot tell why
-> > this could be, off the top of my head.
-> > 
-> 
-> ok, will do that. I'll track commit_sem, io_mutex and ubifs_garbage_collect().
-> I'll report back.
-> 
-> Btw. stackdump is the same (2 out of 2 times).
+Thanks a lot in advance.
 
-OK. I really do not have any idea off the top of my head now, sorry.
-Try to investigate this a beet deeper.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Felix.
+ 
