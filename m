@@ -1,13 +1,14 @@
 Received: from ernst.netinsight.se ([194.16.221.21])
 	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1My466-0006fT-Md
-	for linux-mtd@lists.infradead.org; Wed, 14 Oct 2009 13:41:03 +0000
-Date: Wed, 14 Oct 2009 15:40:49 +0200
+	id 1My46H-0006j8-Na
+	for linux-mtd@lists.infradead.org; Wed, 14 Oct 2009 13:41:14 +0000
+Date: Wed, 14 Oct 2009 15:41:05 +0200
 From: Simon Kagstrom <simon.kagstrom@netinsight.net>
 To: Linus Torvalds <torvalds@linux-foundation.org>, linux-mtd
 	<linux-mtd@lists.infradead.org>
-Subject: [PATCH v6 1/5]: mtdoops: avoid erasing already empty areas
-Message-ID: <20091014154049.7ee27f14@marrow.netinsight.se>
+Subject: [PATCH v6 2/5]: mtdoops: Keep track of used/unused mtdoops pages in
+	an array
+Message-ID: <20091014154105.0488965a@marrow.netinsight.se>
 In-Reply-To: <20091014153458.05e31db6@marrow.netinsight.se>
 References: <20091012113758.GB11035@elte.hu>
 	<20091012140149.6789efab@marrow.netinsight.se>
@@ -23,8 +24,8 @@ References: <20091012113758.GB11035@elte.hu>
 	<alpine.LFD.2.01.0910121130190.3438@localhost.localdomain>
 	<20091014153458.05e31db6@marrow.netinsight.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Cc: Artem Bityutskiy <dedekind1@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
 	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
 	Ingo Molnar <mingo@elte.hu>, David Woodhouse <dwmw2@infradead.org>,
@@ -39,64 +40,190 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-After having scanned the entire mtdoops area, mtdoops will erase it if
-there are no mtdoops headers in it. However, empty and already erased
-areas (i.e., without mtdoops headers) will therefore also be erased at
-each startup.
-
-This patch counts the number of unclean pages (neither empty nor with
-the mtdoops header) and only erases if no headers are found and the area
-is still unclean.
+This patch makes mtdoops keep track of used/unused pages in an array
+instead of scanning the flash after a write. The advantage with this
+approach is that it avoids calling mtd->read on a panic, which is not
+possible for all mtd drivers.
 
 Signed-off-by: Simon Kagstrom <simon.kagstrom@netinsight.net>
+Reviewed-by: Anders Grafstrom <anders.grafstrom@netinsight.net>
 ---
- drivers/mtd/mtdoops.c |   18 ++++++++++++++----
- 1 files changed, 14 insertions(+), 4 deletions(-)
+ChangeLog:
+Review comments from Anders Grafstr=C3=B6m:
+       * Use set_bit/clear_bit and test_bit to check the page array
+       * Make oops_page_used a unsigned long and use BITS_PER_LONG
+       * Skip NULL-test for vfree
+
+ drivers/mtd/mtdoops.c |   62 ++++++++++++++++++++++++++++++++++-----------=
+---
+ 1 files changed, 44 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-index 18c6c96..c785e1a 100644
+index c785e1a..08627c2 100644
 --- a/drivers/mtd/mtdoops.c
 +++ b/drivers/mtd/mtdoops.c
-@@ -225,7 +225,7 @@ static void mtdoops_workfunc_write(struct work_struct *work)
- static void find_next_position(struct mtdoops_context *cxt)
+@@ -44,6 +44,7 @@ static struct mtdoops_context {
+ 	int oops_pages;
+ 	int nextpage;
+ 	int nextcount;
++	unsigned long *oops_page_used;
+ 	char *name;
+=20
+ 	void *oops_buf;
+@@ -54,18 +55,38 @@ static struct mtdoops_context {
+ 	int writecount;
+ } oops_cxt;
+=20
++static void mark_page_used(struct mtdoops_context *cxt, int page)
++{
++	set_bit(page, cxt->oops_page_used);
++}
++
++static void mark_page_unused(struct mtdoops_context *cxt, int page)
++{
++	clear_bit(page, cxt->oops_page_used);
++}
++
++static int page_is_used(struct mtdoops_context *cxt, int page)
++{
++	return test_bit(page, cxt->oops_page_used);
++}
++
+ static void mtdoops_erase_callback(struct erase_info *done)
  {
- 	struct mtd_info *mtd = cxt->mtd;
--	int ret, page, maxpos = 0;
-+	int ret, page, maxpos = 0, unclean_pages = 0;
- 	u32 count[2], maxcount = 0xffffffff;
- 	size_t retlen;
- 
-@@ -237,10 +237,13 @@ static void find_next_position(struct mtdoops_context *cxt)
- 			continue;
- 		}
- 
--		if (count[1] != MTDOOPS_KERNMSG_MAGIC)
--			continue;
- 		if (count[0] == 0xffffffff)
- 			continue;
-+		if (count[1] != MTDOOPS_KERNMSG_MAGIC) {
-+			/* Page is neither clean nor empty */
-+			unclean_pages++;
-+			continue;
-+		}
- 		if (maxcount == 0xffffffff) {
- 			maxcount = count[0];
- 			maxpos = page;
-@@ -259,7 +262,14 @@ static void find_next_position(struct mtdoops_context *cxt)
- 	if (maxcount == 0xffffffff) {
- 		cxt->nextpage = 0;
- 		cxt->nextcount = 1;
+ 	wait_queue_head_t *wait_q =3D (wait_queue_head_t *)done->priv;
+ 	wake_up(wait_q);
+ }
+=20
+-static int mtdoops_erase_block(struct mtd_info *mtd, int offset)
++static int mtdoops_erase_block(struct mtdoops_context *cxt, int offset)
+ {
++	struct mtd_info *mtd =3D cxt->mtd;
++	u32 start_page_offset =3D mtd_div_by_eb(offset, mtd) * mtd->erasesize;
++	u32 start_page =3D start_page_offset / OOPS_PAGE_SIZE;
++	u32 erase_pages =3D mtd->erasesize / OOPS_PAGE_SIZE;
+ 	struct erase_info erase;
+ 	DECLARE_WAITQUEUE(wait, current);
+ 	wait_queue_head_t wait_q;
+ 	int ret;
++	int page;
+=20
+ 	init_waitqueue_head(&wait_q);
+ 	erase.mtd =3D mtd;
+@@ -90,16 +111,15 @@ static int mtdoops_erase_block(struct mtd_info *mtd, i=
+nt offset)
+ 	schedule();  /* Wait for erase to finish. */
+ 	remove_wait_queue(&wait_q, &wait);
+=20
++	/* Mark pages as unused */
++	for (page =3D start_page; page < start_page + erase_pages; page++)
++		mark_page_unused(cxt, page);
++
+ 	return 0;
+ }
+=20
+ static void mtdoops_inc_counter(struct mtdoops_context *cxt)
+ {
+-	struct mtd_info *mtd =3D cxt->mtd;
+-	size_t retlen;
+-	u32 count;
+-	int ret;
+-
+ 	cxt->nextpage++;
+ 	if (cxt->nextpage >=3D cxt->oops_pages)
+ 		cxt->nextpage =3D 0;
+@@ -107,17 +127,7 @@ static void mtdoops_inc_counter(struct mtdoops_context=
+ *cxt)
+ 	if (cxt->nextcount =3D=3D 0xffffffff)
+ 		cxt->nextcount =3D 0;
+=20
+-	ret =3D mtd->read(mtd, cxt->nextpage * OOPS_PAGE_SIZE, 4,
+-			&retlen, (u_char *) &count);
+-	if (retlen !=3D 4 || (ret < 0 && ret !=3D -EUCLEAN)) {
+-		printk(KERN_ERR "mtdoops: read failure at %d (%td of 4 read), err %d\n",
+-		       cxt->nextpage * OOPS_PAGE_SIZE, retlen, ret);
 -		schedule_work(&cxt->work_erase);
-+		if (unclean_pages != 0) {
-+			printk(KERN_INFO "mtdoops: cleaning area\n");
-+			schedule_work(&cxt->work_erase);
-+		} else {
-+			printk(KERN_DEBUG "mtdoops: ready %d, %d (clean)\n",
-+			       cxt->nextpage, cxt->nextcount);
-+			cxt->ready = 1;
-+		}
+-		return;
+-	}
+-
+-	/* See if we need to erase the next block */
+-	if (count !=3D 0xffffffff) {
++	if (page_is_used(cxt, cxt->nextpage)) {
+ 		schedule_work(&cxt->work_erase);
  		return;
  	}
- 
--- 
+@@ -168,7 +178,7 @@ badblock:
+ 	}
+=20
+ 	for (j =3D 0, ret =3D -1; (j < 3) && (ret < 0); j++)
+-		ret =3D mtdoops_erase_block(mtd, cxt->nextpage * OOPS_PAGE_SIZE);
++		ret =3D mtdoops_erase_block(cxt, cxt->nextpage * OOPS_PAGE_SIZE);
+=20
+ 	if (ret >=3D 0) {
+ 		printk(KERN_DEBUG "mtdoops: ready %d, %d\n",
+@@ -209,6 +219,7 @@ static void mtdoops_write(struct mtdoops_context *cxt, =
+int panic)
+ 	if (retlen !=3D OOPS_PAGE_SIZE || ret < 0)
+ 		printk(KERN_ERR "mtdoops: write failure at %d (%td of %d written), error=
+ %d\n",
+ 		       cxt->nextpage * OOPS_PAGE_SIZE, retlen, OOPS_PAGE_SIZE, ret);
++	mark_page_used(cxt, cxt->nextpage);
+=20
+ 	mtdoops_inc_counter(cxt);
+ }
+@@ -230,6 +241,8 @@ static void find_next_position(struct mtdoops_context *=
+cxt)
+ 	size_t retlen;
+=20
+ 	for (page =3D 0; page < cxt->oops_pages; page++) {
++		/* Assume the page is used */
++		mark_page_used(cxt, page);
+ 		ret =3D mtd->read(mtd, page * OOPS_PAGE_SIZE, 8, &retlen, (u_char *) &co=
+unt[0]);
+ 		if (retlen !=3D 8 || (ret < 0 && ret !=3D -EUCLEAN)) {
+ 			printk(KERN_ERR "mtdoops: read failure at %d (%td of 8 read), err %d\n",
+@@ -237,6 +250,8 @@ static void find_next_position(struct mtdoops_context *=
+cxt)
+ 			continue;
+ 		}
+=20
++		if (count[0] =3D=3D 0xffffffff && count[1] =3D=3D 0xffffffff)
++			mark_page_unused(cxt, page);
+ 		if (count[0] =3D=3D 0xffffffff)
+ 			continue;
+ 		if (count[1] !=3D MTDOOPS_KERNMSG_MAGIC) {
+@@ -283,6 +298,9 @@ static void find_next_position(struct mtdoops_context *=
+cxt)
+ static void mtdoops_notify_add(struct mtd_info *mtd)
+ {
+ 	struct mtdoops_context *cxt =3D &oops_cxt;
++	u64 mtdoops_pages =3D mtd->size;
++
++	do_div(mtdoops_pages, OOPS_PAGE_SIZE);
+=20
+ 	if (cxt->name && !strcmp(mtd->name, cxt->name))
+ 		cxt->mtd_index =3D mtd->index;
+@@ -302,6 +320,13 @@ static void mtdoops_notify_add(struct mtd_info *mtd)
+ 		return;
+ 	}
+=20
++	/* oops_page_used is a bit field */
++	cxt->oops_page_used =3D vmalloc(DIV_ROUND_UP(mtdoops_pages,
++			BITS_PER_LONG));
++	if (!cxt->oops_page_used) {
++		printk(KERN_ERR "Could not allocate page array\n");
++		return;
++	}
+ 	cxt->mtd =3D mtd;
+ 	if (mtd->size > INT_MAX)
+ 		cxt->oops_pages =3D INT_MAX / OOPS_PAGE_SIZE;
+@@ -454,6 +479,7 @@ static void __exit mtdoops_console_exit(void)
+ 	unregister_console(&mtdoops_console);
+ 	kfree(cxt->name);
+ 	vfree(cxt->oops_buf);
++	vfree(cxt->oops_page_used);
+ }
+=20
+=20
+--=20
 1.6.0.4
