@@ -1,31 +1,13 @@
-Received: from az33egw02.freescale.net ([192.88.158.103])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MyWbj-00057K-Ls
-	for linux-mtd@lists.infradead.org; Thu, 15 Oct 2009 20:07:38 +0000
-Received: from az33smr02.freescale.net (az33smr02.freescale.net [10.64.34.200])
-	by az33egw02.freescale.net (8.14.3/az33egw02) with ESMTP id
-	n9FK7Sig011804 for <linux-mtd@lists.infradead.org>;
-	Thu, 15 Oct 2009 13:07:29 -0700 (MST)
-Received: from az33exm25.fsl.freescale.net (az33exm25.am.freescale.net
-	[10.64.32.16])
-	by az33smr02.freescale.net (8.13.1/8.13.0) with ESMTP id n9FK7Tmx009280
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 15 Oct 2009 15:07:29 -0500 (CDT)
-Message-ID: <4AD7811A.6040501@freescale.com>
-Date: Thu, 15 Oct 2009 15:07:54 -0500
-From: Scott Wood <scottwood@freescale.com>
-MIME-Version: 1.0
-To: Felix Radensky <felix@embedded-sol.com>
-Subject: Re: UBIFS problem on MPC8536DS
-References: <4AD5ADC9.30503@embedded-sol.com>	<4AD5C5B4.3060303@nokia.com>	<4AD5D053.9000901@embedded-sol.com>	<4AD5FFE7.7080703@nokia.com>
-	<4AD60EF4.4080306@embedded-sol.com>
-	<4AD614E4.6030005@freescale.com>
-In-Reply-To: <4AD614E4.6030005@freescale.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Adrian Hunter <adrian.hunter@nokia.com>
+Message-Id: <20091015202758.523050101@linutronix.de>
+Date: Thu, 15 Oct 2009 20:28:48 -0000
+From: Thomas Gleixner <tglx@linutronix.de>
+To: LKML <linux-kernel@vger.kernel.org>
+Subject: [patch 4/5] mtd: Remove BKL and convert to unlocked_ioctl
+References: <20091015202722.372890083@linutronix.de>
+Content-Disposition: inline;
+	filename=mtd-remove-bkl-and-convert-to-unlocked-ioctl.patch
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	Arnd Bergmann <arnd@arndb.de>, ALan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,24 +17,121 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Scott Wood wrote:
-> Felix Radensky wrote:
->> Yes, NAND and NOR are on the same local bus controller.
->>
->> Maybe powerpc folks can provide some insight here.
->> Is it possible that simultaneous access to NOR and NAND
->> on MPC8536 can result in NAND timeouts ?
-> 
-> I've heard other reports of such problems with eLBC, but was unable to 
-> reproduce it myself last time I tried.  Could you reduce this down to a 
-> minimal set of specific reproduction instructions (e.g. eliminate UBI if 
-> possible, or else explain how to set up UBI)?
+mtd_open() got lock/unlock kernel from the big BKL push down, but it
+never relied on the BKL serialization as get_mtd_device() takes care
+of serialization vs. device init/teardown.
 
-OK, I was able to reproduce the problem on mpc8572 simply by sticking a 
-read to NOR flash inside fsl_elbc_run_command -- I'm not sure what 
-happened last time I tried.
+mtd_ioctl() is safe w/o the BKL as well. The data which is copied from
+the mtd data structure is either set up during device initialization
+or statistics which have never been protected by the BKL against
+concurrent modification. The mtd functions which are called from
+various ioctl commands are safe as well.
 
-I suppose we'll need a special NOR mapping driver that does some sync 
-with the NAND driver.
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+---
+ drivers/mtd/mtdchar.c |   30 ++++++++----------------------
+ 1 file changed, 8 insertions(+), 22 deletions(-)
 
--Scott
+Index: linux-2.6-tip/drivers/mtd/mtdchar.c
+===================================================================
+--- linux-2.6-tip.orig/drivers/mtd/mtdchar.c
++++ linux-2.6-tip/drivers/mtd/mtdchar.c
+@@ -12,7 +12,6 @@
+ #include <linux/module.h>
+ #include <linux/slab.h>
+ #include <linux/sched.h>
+-#include <linux/smp_lock.h>
+ #include <linux/backing-dev.h>
+ #include <linux/compat.h>
+ 
+@@ -74,18 +73,14 @@ static int mtd_open(struct inode *inode,
+ 	if ((file->f_mode & FMODE_WRITE) && (minor & 1))
+ 		return -EACCES;
+ 
+-	lock_kernel();
+ 	mtd = get_mtd_device(NULL, devnum);
+ 
+-	if (IS_ERR(mtd)) {
+-		ret = PTR_ERR(mtd);
+-		goto out;
+-	}
++	if (IS_ERR(mtd))
++		return PTR_ERR(mtd);
+ 
+ 	if (mtd->type == MTD_ABSENT) {
+ 		put_mtd_device(mtd);
+-		ret = -ENODEV;
+-		goto out;
++		return -ENODEV;
+ 	}
+ 
+ 	if (mtd->backing_dev_info)
+@@ -94,21 +89,17 @@ static int mtd_open(struct inode *inode,
+ 	/* You can't open it RW if it's not a writeable device */
+ 	if ((file->f_mode & FMODE_WRITE) && !(mtd->flags & MTD_WRITEABLE)) {
+ 		put_mtd_device(mtd);
+-		ret = -EACCES;
+-		goto out;
++		return -EACCES;
+ 	}
+ 
+ 	mfi = kzalloc(sizeof(*mfi), GFP_KERNEL);
+ 	if (!mfi) {
+ 		put_mtd_device(mtd);
+-		ret = -ENOMEM;
+-		goto out;
++		return -ENOMEM;
+ 	}
+ 	mfi->mtd = mtd;
+ 	file->private_data = mfi;
+ 
+-out:
+-	unlock_kernel();
+ 	return ret;
+ } /* mtd_open */
+ 
+@@ -450,13 +441,12 @@ static int mtd_do_readoob(struct mtd_inf
+ 	return ret;
+ }
+ 
+-static int mtd_ioctl(struct inode *inode, struct file *file,
+-		     u_int cmd, u_long arg)
++static long mtd_ioctl(struct file *file, u_int cmd, u_long arg)
+ {
+ 	struct mtd_file_info *mfi = file->private_data;
+ 	struct mtd_info *mtd = mfi->mtd;
+ 	void __user *argp = (void __user *)arg;
+-	int ret = 0;
++	long ret = 0;
+ 	u_long size;
+ 	struct mtd_info_user info;
+ 
+@@ -842,8 +832,6 @@ static long mtd_compat_ioctl(struct file
+ 	void __user *argp = compat_ptr(arg);
+ 	int ret = 0;
+ 
+-	lock_kernel();
+-
+ 	switch (cmd) {
+ 	case MEMWRITEOOB32:
+ 	{
+@@ -877,8 +865,6 @@ static long mtd_compat_ioctl(struct file
+ 		ret = mtd_ioctl(inode, file, cmd, (unsigned long)argp);
+ 	}
+ 
+-	unlock_kernel();
+-
+ 	return ret;
+ }
+ 
+@@ -942,7 +928,7 @@ static const struct file_operations mtd_
+ 	.llseek		= mtd_lseek,
+ 	.read		= mtd_read,
+ 	.write		= mtd_write,
+-	.ioctl		= mtd_ioctl,
++	.unlocked_ioctl	= mtd_ioctl,
+ #ifdef CONFIG_COMPAT
+ 	.compat_ioctl	= mtd_compat_ioctl,
+ #endif
