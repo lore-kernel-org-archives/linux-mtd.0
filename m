@@ -1,20 +1,20 @@
-Received: from cluster-a.mailcontrol.com ([85.115.52.190])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MySnt-0003Jn-SQ
-	for linux-mtd@lists.infradead.org; Thu, 15 Oct 2009 16:03:56 +0000
-Received: from mail.mta.it (mail.mta.it [89.96.171.250])
-	by rly08a.srv.mailcontrol.com (MailControl) with ESMTP id
-	n9FG3UlH023780
-	for <linux-mtd@lists.infradead.org>; Thu, 15 Oct 2009 17:03:32 +0100
-From: Fortini Matteo <Matteo.Fortini@mta.it>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Thu, 15 Oct 2009 18:02:26 +0200
-Subject: Acceleration for map_copy_from on powerpc 512x
-Message-ID: <BD9F3F3F5A6CCF4BA032B9FED4DD312E5EA2BA99AB@mta-digimail.MTA.INT>
-Content-Language: it-IT
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Date: Thu, 15 Oct 2009 20:53:20 +0400
+From: Anton Vorontsov <cbouatmailru@gmail.com>
+To: Dmitry Artamonow <mad_soft@inbox.ru>
+Subject: Re: [RESEND][PATCH] mtd: maps: remove obsolete ipaq-flash driver
+Message-ID: <20091015165320.GA24086@oksana.dev.rtsoft.ru>
+References: <1255433694-26471-1-git-send-email-mad_soft@inbox.ru>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1255433694-26471-1-git-send-email-mad_soft@inbox.ru>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	Eric Miao <eric.y.miao@gmail.com>, linux-kernel@vger.kernel.org,
+	Kristoffer Ericson <kristoffer.ericson@gmail.com>,
+	linux-mtd@lists.infradead.org, Anton Vorontsov <cbouatmailru@gmail.com>,
+	Russell King <linux@arm.linux.org.uk>,
+	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Reply-To: cbouatmailru@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-I'm working on a powerpc (PPC512x) embedded Linux product, and while I was =
-trying to improve boot time, I found I could exploit the hw in order to spe=
-ed up reading from NOR flashes.
-The Linux/mtd version we're using is 2.6.24.6+Freescale patches.
-Basically, I needed to hack the map_copy_from, which for my arch and uncach=
-ed areas translates to a memcpy, in order to use the SCLPC FIFO, with a per=
-formance benefit of >2x on aligned multiple of 32Bytes transfers.
+On Tue, Oct 13, 2009 at 03:34:54PM +0400, Dmitry Artamonow wrote:
+> This driver seems to be obsolete and broken for a long time.
+> It depends on CONFIG_IPAQ_HANDHELD that simply doesn't exists
+> anywhere in kernel. Also, it seems that none of machines it
+> claims to support have any use of it:
+>  SA11xx-based iPAQs (h3100/h3600) use sa1100-flash
+>  iPAQ h5000 uses physmap-flash
+>  Jornada 720 uses sa1100-flash
+>  Jornada 560 and iPAQ h1910 are not in mainline
+> 
+> Signed-off-by: Dmitry Artamonow <mad_soft@inbox.ru>
 
-I didn't find a cleaner way than just #ifdef'ing the map_copy_from call and=
- substitute with my call on relevant cases. I wonder if there is a cleaner =
-way.
+Acked-by: Anton Vorontsov <cbouatmailru@gmail.com>
 
-And yes, as soon as I've cleaned up the code a little bit, I will definitel=
-y post a patch about it.
+Thanks!
 
-Moreover: a huge benefit would come from exploiting DMA on these transfers,=
- but I found I'm in_atomic while doing map_copy_from... is there an alterna=
-tive way of locking than just disabling preemption?
-I know maybe a newer kernel has already fixed it, but we're kind of stuck w=
-ith the old one since we don't have time to port all of our device drivers =
-to 2.6.3x
-
-Thanks,
-Matteo=
+-- 
+Anton Vorontsov
+email: cbouatmailru@gmail.com
+irc://irc.freenode.net/bd2
