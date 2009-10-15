@@ -1,19 +1,31 @@
-Date: Thu, 15 Oct 2009 19:13:46 +0200
-From: Kristoffer Ericson <kristoffer.ericson@gmail.com>
-To: cbouatmailru@gmail.com
-Subject: Re: [RESEND][PATCH] mtd: maps: remove obsolete ipaq-flash driver
-Message-Id: <20091015191346.39750c54.kristoffer.ericson@gmail.com>
-In-Reply-To: <20091015165320.GA24086@oksana.dev.rtsoft.ru>
-References: <1255433694-26471-1-git-send-email-mad_soft@inbox.ru>
-	<20091015165320.GA24086@oksana.dev.rtsoft.ru>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from az33egw02.freescale.net ([192.88.158.103])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MyWbj-00057K-Ls
+	for linux-mtd@lists.infradead.org; Thu, 15 Oct 2009 20:07:38 +0000
+Received: from az33smr02.freescale.net (az33smr02.freescale.net [10.64.34.200])
+	by az33egw02.freescale.net (8.14.3/az33egw02) with ESMTP id
+	n9FK7Sig011804 for <linux-mtd@lists.infradead.org>;
+	Thu, 15 Oct 2009 13:07:29 -0700 (MST)
+Received: from az33exm25.fsl.freescale.net (az33exm25.am.freescale.net
+	[10.64.32.16])
+	by az33smr02.freescale.net (8.13.1/8.13.0) with ESMTP id n9FK7Tmx009280
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 15 Oct 2009 15:07:29 -0500 (CDT)
+Message-ID: <4AD7811A.6040501@freescale.com>
+Date: Thu, 15 Oct 2009 15:07:54 -0500
+From: Scott Wood <scottwood@freescale.com>
+MIME-Version: 1.0
+To: Felix Radensky <felix@embedded-sol.com>
+Subject: Re: UBIFS problem on MPC8536DS
+References: <4AD5ADC9.30503@embedded-sol.com>	<4AD5C5B4.3060303@nokia.com>	<4AD5D053.9000901@embedded-sol.com>	<4AD5FFE7.7080703@nokia.com>
+	<4AD60EF4.4080306@embedded-sol.com>
+	<4AD614E4.6030005@freescale.com>
+In-Reply-To: <4AD614E4.6030005@freescale.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	Eric Miao <eric.y.miao@gmail.com>, Dmitry Artamonow <mad_soft@inbox.ru>,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	Russell King <linux@arm.linux.org.uk>,
-	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Cc: "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,33 +35,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 15 Oct 2009 20:53:20 +0400
-Anton Vorontsov <cbouatmailru@gmail.com> wrote:
-
-> On Tue, Oct 13, 2009 at 03:34:54PM +0400, Dmitry Artamonow wrote:
-> > This driver seems to be obsolete and broken for a long time.
-> > It depends on CONFIG_IPAQ_HANDHELD that simply doesn't exists
-> > anywhere in kernel. Also, it seems that none of machines it
-> > claims to support have any use of it:
-> >  SA11xx-based iPAQs (h3100/h3600) use sa1100-flash
-> >  iPAQ h5000 uses physmap-flash
-> >  Jornada 720 uses sa1100-flash
-> >  Jornada 560 and iPAQ h1910 are not in mainline
-> > 
-> > Signed-off-by: Dmitry Artamonow <mad_soft@inbox.ru>
+Scott Wood wrote:
+> Felix Radensky wrote:
+>> Yes, NAND and NOR are on the same local bus controller.
+>>
+>> Maybe powerpc folks can provide some insight here.
+>> Is it possible that simultaneous access to NOR and NAND
+>> on MPC8536 can result in NAND timeouts ?
 > 
-> Acked-by: Anton Vorontsov <cbouatmailru@gmail.com>
+> I've heard other reports of such problems with eLBC, but was unable to 
+> reproduce it myself last time I tried.  Could you reduce this down to a 
+> minimal set of specific reproduction instructions (e.g. eliminate UBI if 
+> possible, or else explain how to set up UBI)?
 
-Same here.
+OK, I was able to reproduce the problem on mpc8572 simply by sticking a 
+read to NOR flash inside fsl_elbc_run_command -- I'm not sure what 
+happened last time I tried.
 
-> 
-> Thanks!
-> 
-> -- 
-> Anton Vorontsov
-> email: cbouatmailru@gmail.com
-> irc://irc.freenode.net/bd2
+I suppose we'll need a special NOR mapping driver that does some sync 
+with the NAND driver.
 
-
--- 
-Kristoffer Ericson <kristoffer.ericson@gmail.com>
+-Scott
