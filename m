@@ -1,26 +1,18 @@
-Received: from mx2.mail.elte.hu ([157.181.151.9])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MyMgY-0003Ft-8Q
-	for linux-mtd@lists.infradead.org; Thu, 15 Oct 2009 09:31:55 +0000
-Date: Thu, 15 Oct 2009 11:31:33 +0200
-From: Ingo Molnar <mingo@elte.hu>
-To: Simon Kagstrom <simon.kagstrom@netinsight.net>
-Subject: Re: [PATCH v7 4/5]: core: Add kernel message dumper to call on
-	oopses and panics
-Message-ID: <20091015093133.GF10546@elte.hu>
-References: <20091015094057.7298e0d7@marrow.netinsight.se>
-	<20091015094805.754461fa@marrow.netinsight.se>
+Received: from smtp-vbr7.xs4all.nl ([194.109.24.27])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MyN3H-000480-64
+	for linux-mtd@lists.infradead.org; Thu, 15 Oct 2009 09:55:23 +0000
+Message-ID: <4AD6F172.6030407@aimvalley.nl>
+Date: Thu, 15 Oct 2009 11:54:58 +0200
+From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20091015094805.754461fa@marrow.netinsight.se>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>,
-	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: Felix Radensky <felix@embedded-sol.com>
+Subject: Re: UBIFS problem on MPC8536DS
+References: <4AD5ADC9.30503@embedded-sol.com>
+In-Reply-To: <4AD5ADC9.30503@embedded-sol.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,42 +22,157 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Felix,
 
-* Simon Kagstrom <simon.kagstrom@netinsight.net> wrote:
+do you have CONFIG_NO_HZ defined ?
 
-> --- /dev/null
-> +++ b/include/linux/kmsg_dump.h
+I've seen similar problems with powerpc + CONFIG_NO_HZ. In my case the low-level
+do_write_buffer (cfi_cmdset_0002.c) timed out too early. See
+http://lkml.org/lkml/2009/9/3/84
 
-> +enum kmsg_dump_reason {
-> +	kmsg_dump_oops,
-> +	kmsg_dump_panic,
-> +};
+Maybe in your case it's the do_erase_chip timing out too early.
 
-Please capitalize constants - lower case suggests it's some sort of 
-variable which it is not.
+---
+NvBolhuis.
 
-> +void dump_kmsg(enum kmsg_dump_reason reason);
-> +
-> +int register_kmsg_dumper(struct kmsg_dumper *dumper);
-> +
-> +void unregister_kmsg_dumper(struct kmsg_dumper *dumper);
 
-Please rename these APIs to be more in line with how we name new kernel 
-APIs. Something like:
 
-  kmsg_dump()
-  kmsg_dumper_register()
-  kmsg_dumper_unregister()
 
-(we start with the subsystem as a prefix, then we go from more generic 
-to less generic words.)
 
-Might even make sense to name them all kmsg_dump:
-
-  kmsg_dump()
-  kmsg_dump_register()
-  kmsg_dump_unregister()
-
-Thanks,
-
-	Ingo
+Felix Radensky wrote:
+> Hi,
+> 
+> I have a strange problem in linux-2.6.31 running on MPC8536DS board.
+> It is 100% reproducible, by opening a 350MB tar file into ubifs volume
+> on NAND flash, and starting erase of NOR flash partition right after that.
+> 
+> If I don't start  NOR erase, everything works fine. Also, If I run sync 
+> after
+> tar, no problem occurs.  The NOR flash is 32MB  Spansion, NAND is
+> 4GB Samsung.
+> 
+> The error messages are as follows:
+> 
+> UBI error: ubi_io_write: error -5 while writing 2048 bytes to PEB 
+> 5812:12288, written 0 bytes
+> UBI warning: ubi_eba_write_leb: failed to write data to PEB 5812
+> UBI: recover PEB 5812, move data to PEB 19400
+> UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB 
+> 5812:512, read 512 bytes
+> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 
+> 19400:512, written 0 bytes
+> UBI warning: recover_peb: failed to write to PEB 19400
+> UBI: try again
+> UBI: recover PEB 5812, move data to PEB 19401
+> UBI: run torture test for PEB 19400
+> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 
+> 19401:512, written 0 bytes
+> UBI warning: recover_peb: failed to write to PEB 19401
+> UBI: try again
+> UBI: recover PEB 5812, move data to PEB 19402
+> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 
+> 19402:512, written 0 bytes
+> UBI warning: recover_peb: failed to write to PEB 19402
+> UBI: try again
+> UBI: recover PEB 5812, move data to PEB 19403
+> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 
+> 19403:512, written 0 bytes
+> UBI warning: recover_peb: failed to write to PEB 19403
+> UBI warning: ubi_ro_mode: switch to read-only mode
+> UBIFS error (pid 1149): ubifs_wbuf_write_nolock: cannot write 2522 bytes 
+> to LEB 389:10240, error -5
+> UBIFS warning (pid 1149): ubifs_ro_mode: switched to read-only mode, 
+> error -5
+> UBIFS error (pid 1149): do_writepage: cannot write page 0 of inode 
+> 30708, error -5
+> UBIFS error (pid 1149): make_reservation: cannot reserve 858 bytes in 
+> jhead 2, error -30
+> UBIFS error (pid 1149): do_writepage: cannot write page 2 of inode 
+> 29486, error -30
+> UBIFS error (pid 1149): make_reservation: cannot reserve 721 bytes in 
+> jhead 2, error -30
+> UBIFS error (pid 1149): do_writepage: cannot write page 1 of inode 
+> 30070, error -30
+> UBI error: ubi_io_write: error -5 while writing 2048 bytes to PEB 
+> 5022:88064, written 0 bytes
+> UBI warning: ubi_eba_write_leb: failed to write data to PEB 5022
+> UBI: recover PEB 5022, move data to PEB 19404
+> UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB 
+> 5022:512, read 512 bytes
+> UBI error: ubi_io_write: read-only mode
+> UBI warning: recover_peb: failed to write to PEB 19404
+> UBI: try again
+> UBI: recover PEB 5022, move data to PEB 19405
+> UBI error: ubi_io_write: read-only mode
+> UBI warning: recover_peb: failed to write to PEB 19405
+> UBI: try again
+> UBI: recover PEB 5022, move data to PEB 19406
+> UBI error: ubi_io_write: read-only mode
+> UBI warning: recover_peb: failed to write to PEB 19406
+> UBI: try again
+> UBI: recover PEB 5022, move data to PEB 19407
+> UBI error: ubi_io_write: read-only mode
+> UBI warning: recover_peb: failed to write to PEB 19407
+> UBIFS error (pid 1044): ubifs_wbuf_sync_nolock: cannot write 2048 bytes 
+> to LEB 788:86016
+> UBIFS error (pid 1044): ubifs_bg_wbufs_sync: cannot sync write-buffer, 
+> error -30
+> UBIFS warning (pid 1044): ubifs_ro_mode: switched to read-only mode, 
+> error -30
+> UBI error: ubi_io_write: error -5 while writing 2048 bytes to PEB 
+> 5817:26624, written 0 bytes
+> UBI warning: ubi_eba_write_leb: failed to write data to PEB 5817
+> UBI: recover PEB 5817, move data to PEB 19408
+> UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB 
+> 5817:512, read 512 bytes
+> UBI error: ubi_io_write: read-only mode
+> UBI warning: recover_peb: failed to write to PEB 19408
+> UBI: try again
+> UBI: recover PEB 5817, move data to PEB 19409
+> UBI error: ubi_io_write: read-only mode
+> UBI warning: recover_peb: failed to write to PEB 19409
+> UBI: try again
+> UBI: recover PEB 5817, move data to PEB 19410
+> UBI error: ubi_io_write: read-only mode
+> UBI warning: recover_peb: failed to write to PEB 19410
+> UBI: try again
+> UBI: recover PEB 5817, move data to PEB 19411
+> UBI error: ubi_io_write: read-only mode
+> UBI warning: recover_peb: failed to write to PEB 19411
+> UBIFS error (pid 1047): ubifs_wbuf_sync_nolock: cannot write 2048 bytes 
+> to LEB 385:24576
+> UBIFS error (pid 1047): ubifs_bg_wbufs_sync: cannot sync write-buffer, 
+> error -30
+> UBIFS error (pid 1149): make_reservation: cannot reserve 160 bytes in 
+> jhead 1, error -30
+> UBIFS error (pid 1149): ubifs_write_inode: can't write inode 30709, 
+> error -30
+> UBIFS error (pid 1149): make_reservation: cannot reserve 160 bytes in 
+> jhead 1, error -30
+> UBIFS error (pid 1149): ubifs_write_inode: can't write inode 30710, 
+> error -30
+> UBIFS error (pid 1149): make_reservation: cannot reserve 160 bytes in 
+> jhead 1, error -30
+> UBIFS error (pid 1149): ubifs_write_inode: can't write inode 30698, 
+> error -30
+> UBIFS error (pid 1149): make_reservation: cannot reserve 160 bytes in 
+> jhead 1, error -30
+> UBIFS error (pid 1149): ubifs_write_inode: can't write inode 30711, 
+> error -30
+> 
+> I'd appreciate any hints on what can cause this. Is it a hardware 
+> problem, mtd layer problem
+> or UBI problem ?
+> 
+> Thanks a lot in advance.
+> 
+> Felix.
+> 
+> 
+> 
+> 
+> _______________________________________________
+> Linuxppc-dev mailing list
+> Linuxppc-dev@lists.ozlabs.org
+> https://lists.ozlabs.org/listinfo/linuxppc-dev
+> 
