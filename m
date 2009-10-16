@@ -1,19 +1,21 @@
-Subject: RE: [PATCH 1/2] Update ts72xx to use generic platform nand driver
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1MygY8-0003fb-QQ
+	for linux-mtd@lists.infradead.org; Fri, 16 Oct 2009 06:44:34 +0000
+Subject: Re: [patch 4/5] mtd: Remove BKL and convert to unlocked_ioctl
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: H Hartley Sweeten <hartleys@visionengravers.com>
-In-Reply-To: <BD79186B4FD85F4B8E60E381CAEE190901DB8132@mi8nycmail19.Mi8.com>
-References: <BD79186B4FD85F4B8E60E381CAEE190901DB7967@mi8nycmail19.Mi8.com>
-	<1255260621.16942.38.camel@localhost>
-	<BD79186B4FD85F4B8E60E381CAEE190901DB7E59@mi8nycmail19.Mi8.com>
-	<1255509739.32489.123.camel@localhost>
-	<BD79186B4FD85F4B8E60E381CAEE190901DB8132@mi8nycmail19.Mi8.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+In-Reply-To: <20091015202758.523050101@linutronix.de>
+References: <20091015202722.372890083@linutronix.de>
+	<20091015202758.523050101@linutronix.de>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 16 Oct 2009 09:38:43 +0300
-Message-Id: <1255675123.32489.310.camel@localhost>
+Date: Fri, 16 Oct 2009 09:44:00 +0300
+Message-Id: <1255675440.32489.311.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Matthieu Crapet <mcrapet@gmail.com>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Arnd Bergmann <arnd@arndb.de>, LKML <linux-kernel@vger.kernel.org>,
+	ALan Cox <alan@lxorguk.ukuu.org.uk>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,78 +26,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-10-14 at 13:05 -0400, H Hartley Sweeten wrote:
-> On Wednesday, October 14, 2009 1:42 AM, Artem Bityutskiy wrote:
-> > On Sun, 2009-10-11 at 17:19 -0400, H Hartley Sweeten wrote:
-> >> Update the ts72xx platform's nand driver support.
-> >>  
-> >> This changes the ts72xx platform from using a custom nand driver
-> >> (ts7250.c) to the generic platform nand driver (plat_nand.c).
-> >>  
-> >> Tested on TS-7250 with 32MB NAND.
-> >>  
-> >> Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
-> >> Tested-by: Matthieu Crapet <mcrapet@gmail.com>
-> >> Cc: David Woodhouse <dwmw2@infradead.org>
-> >> Cc: Artem Bityutskiy <dedekind1@gmail.com>
-> >> Cc: <linux-arm-kernel@lists.infradead.org>
-> >> Cc: <linux-mtd@lists.infradead.org>
-> >> 
-> >> ---
-> >> 
-> >> V2 - rebased to current mtd tree (Artem Bityutskiy)
-> >> 
-> >>  arch/arm/mach-ep93xx/ts72xx.c |  177 +++++++++++++++++++++++++++++------------
-> >>  1 files changed, 125 insertions(+), 52 deletions(-)
-> >
-> > Ok, I've tried this patch on both mtd-2.6 and linux-2.6 git trees, and
-> > it does not apply cleanly.
+On Thu, 2009-10-15 at 20:28 +0000, Thomas Gleixner wrote:
+> plain text document attachment
+> (mtd-remove-bkl-and-convert-to-unlocked-ioctl.patch)
+> mtd_open() got lock/unlock kernel from the big BKL push down, but it
+> never relied on the BKL serialization as get_mtd_device() takes care
+> of serialization vs. device init/teardown.
 > 
-> [snip]
+> mtd_ioctl() is safe w/o the BKL as well. The data which is copied from
+> the mtd data structure is either set up during device initialization
+> or statistics which have never been protected by the BKL against
+> concurrent modification. The mtd functions which are called from
+> various ioctl commands are safe as well.
 > 
-> I'm really confused why this does not apply.
-> 
-> My mtd-2.6.git tree is at the same place as yours.
-> 
-> bigguiness@etch:~/src/git/mtd-2.6$ git show
-> commit 8032747e7680a31cdde293421af62d2e1904c528
-> Author: David Woodhouse <David.Woodhouse@intel.com>
-> Date:   Mon Oct 5 08:30:04 2009 +0100
-> 
->     mtd: make onenand_base.c compile again
->     
->     Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
-> 
-> diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-> index 8935e63..6e250f3 100644
-> --- a/drivers/mtd/onenand/onenand_base.c
-> +++ b/drivers/mtd/onenand/onenand_base.c
-> @@ -1051,7 +1051,7 @@ static int onenand_mlc_read_ops_nolock(struct mtd_info *mtd, loff_t from,
->         int writesize = this->writesize;
->  
->         DEBUG(MTD_DEBUG_LEVEL3, "%s: from = 0x%08x, len = %i\n",
-> -               (unsigned int) from, (int) len);
-> +             __func__, (unsigned int) from, (int) len);
->  
->         if (ops->mode == MTD_OOB_AUTO)
->                 oobsize = this->ecclayout->oobavail;
-> @@ -2022,8 +2022,8 @@ static int onenand_write_oob_nolock(struct mtd_info *mtd, loff_t to,
->         if (unlikely(to >= mtd->size ||
->                      column + len > ((mtd->size >> this->page_shift) -
->                                      (to >> this->page_shift)) * oobsize)) {
-> -               printk(KERN_ERR "%s: Attempted to write past end of device\n"
-> -                       __func__);
-> +               printk(KERN_ERR "%s: Attempted to write past end of device\n",
-> +                      __func__);
->                 return -EINVAL;
->         }
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: linux-mtd@lists.infradead.org
+> ---
+>  drivers/mtd/mtdchar.c |   30 ++++++++----------------------
+>  1 file changed, 8 insertions(+), 22 deletions(-)
 
-My git head was actually different, take a look at my previous answer.
-
-> If I apply the two patches I get.
-
-Could you please try to save your own e-mails, and then apply them using
-"git am"?
+[dedekind@eru l2-mtd-2.6.git]$ make -j8
+  CHK     include/linux/version.h
+  CHK     include/linux/utsrelease.h
+  SYMLINK include/asm -> include/asm-x86
+  CALL    scripts/checksyscalls.sh
+  CHK     include/linux/compile.h
+  CC [M]  drivers/mtd/mtdchar.o
+drivers/mtd/mtdchar.c: In function ‘mtd_compat_ioctl’:
+drivers/mtd/mtdchar.c:865: warning: passing argument 1 of ‘mtd_ioctl’ from incompatible pointer type
+drivers/mtd/mtdchar.c:444: note: expected ‘struct file *’ but argument is of type ‘struct inode *’
+drivers/mtd/mtdchar.c:865: warning: passing argument 2 of ‘mtd_ioctl’ makes integer from pointer without a cast
+drivers/mtd/mtdchar.c:444: note: expected ‘u_int’ but argument is of type ‘struct file *’
+drivers/mtd/mtdchar.c:865: error: too many arguments to function ‘mtd_ioctl’
 
 -- 
 Best Regards,
