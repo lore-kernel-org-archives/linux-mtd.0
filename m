@@ -1,34 +1,24 @@
-Received: from mx3.mail.elte.hu ([157.181.1.138])
+Received: from az33egw02.freescale.net ([192.88.158.103])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MymNn-0004Gq-RU
-	for linux-mtd@lists.infradead.org; Fri, 16 Oct 2009 12:58:16 +0000
-Date: Fri, 16 Oct 2009 14:57:52 +0200
-From: Ingo Molnar <mingo@elte.hu>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH v10 4/5] core: Add kernel message dumper to call on
-	oopses and panics
-Message-ID: <20091016125752.GB24518@elte.hu>
-References: <20091015094805.754461fa@marrow.netinsight.se>
-	<20091015093133.GF10546@elte.hu>
-	<20091015161052.0752208e@marrow.netinsight.se>
-	<20091015154640.GA11408@elte.hu>
-	<20091016094601.4e2c2d3e@marrow.netinsight.se>
-	<20091016080935.GA3895@elte.hu>
-	<1255681467.32489.360.camel@localhost>
-	<20091016112556.6902b2dc@marrow.netinsight.se>
-	<20091016101045.GA3263@elte.hu>
-	<1255690828.32489.368.camel@localhost>
+	id 1MyomG-00045X-FA
+	for linux-mtd@lists.infradead.org; Fri, 16 Oct 2009 15:31:41 +0000
+Date: Fri, 16 Oct 2009 10:31:29 -0500
+From: Scott Wood <scottwood@freescale.com>
+To: Felix Radensky <felix@embedded-sol.com>
+Subject: Re: UBIFS problem on MPC8536DS
+Message-ID: <20091016153128.GA11838@loki.buserror.net>
+References: <4AD5ADC9.30503@embedded-sol.com> <4AD5C5B4.3060303@nokia.com>
+	<4AD5D053.9000901@embedded-sol.com> <4AD5FFE7.7080703@nokia.com>
+	<4AD60EF4.4080306@embedded-sol.com>
+	<4AD614E4.6030005@freescale.com> <4AD7811A.6040501@freescale.com>
+	<4AD7FE37.1060705@embedded-sol.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1255690828.32489.368.camel@localhost>
-Cc: David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>,
-	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	Simon Kagstrom <simon.kagstrom@netinsight.net>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Alan Cox <alan@lxorguk.ukuu.org.uk>
+In-Reply-To: <4AD7FE37.1060705@embedded-sol.com>
+Cc: "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,70 +28,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, Oct 16, 2009 at 07:01:43AM +0200, Felix Radensky wrote:
+> Thanks for confirmation. So the real problem is eLBC ?
+> What happens if I access other devices on eLBC (e.g. FPGA)
+> simultaneously with NAND or NOR ?
 
-* Artem Bityutskiy <dedekind1@gmail.com> wrote:
+AFAICT, the problem is NAND being accessed simultaneously with anything else
+on the eLBC (at least GPCM -- not sure about UPM).  Instead of delaying the
+memory-like transaction until the NAND special operation has completed, it
+seems to just abort the NAND operation.
 
-> On Fri, 2009-10-16 at 12:10 +0200, Ingo Molnar wrote:
-> > * Simon Kagstrom <simon.kagstrom@netinsight.net> wrote:
-> > 
-> > > +int kmsg_dump_register(struct kmsg_dumper *dumper)
-> > > +{
-> > > +	unsigned long flags;
-> > > +
-> > > +	/* The dump callback needs to be set */
-> > > +	if (!dumper->dump)
-> > > +		return -EINVAL;
-> > > +
-> > > +	spin_lock_irqsave(&dump_list_lock, flags);
-> > > +
-> > > +	/* Don't allow registering multiple times */
-> > > +	if (dumper->registered) {
-> > > +		spin_unlock_irqrestore(&dump_list_lock, flags);
-> > > +
-> > > +		return -EBUSY;
-> > > +	}
-> > > +
-> > > +	dumper->registered = 1;
-> > > +	list_add(&dumper->list, &dump_list);
-> > > +	spin_unlock_irqrestore(&dump_list_lock, flags);
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +EXPORT_SYMBOL_GPL(kmsg_dump_register);
-> > 
-> > 
-> > i dont want to bikeshed paint this but this sequence caught my eyes. We 
-> > generally do flatter and clearer locking sequences:
-> > 
-> > int kmsg_dump_register(struct kmsg_dumper *dumper)
-> > {
-> > 	unsigned long flags;
-> > 	int err = -EBUSY;
-> > 
-> > 	/* The dump callback needs to be set */
-> > 	if (!dumper->dump)
-> > 		return -EINVAL;
-> > 
-> > 	spin_lock_irqsave(&dump_list_lock, flags);
-> > 
-> > 	/* Don't allow registering multiple times */
-> > 	if (!dumper->registered) {
-> > 		dumper->registered = 1;
-> > 		list_add_tail(&dumper->list, &dump_list);
-> > 		err = 0;
-> > 	}
-> > 
-> > 	spin_unlock_irqrestore(&dump_list_lock, flags);
-> > 
-> > 	return err;
-> > }
-> > EXPORT_SYMBOL_GPL(kmsg_dump_register);
-> 
-> And while we are on it, I think these extra lines before and after 
-> spinlocks are unneeded and even a bit annoying :-)
+eLBC can't really tell the difference whether you've got NOR or FPGA hooked
+up to a GPCM chip select, so the problem should still apply.
 
-To me they increase readability quite a bit as it allows me to 
-concentrate on just the inner critical section without the distraction 
-of the lock/unlock sequence. YMMV.
-
-	Ingo
+-Scott
