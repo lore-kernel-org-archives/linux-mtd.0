@@ -1,22 +1,28 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MygY8-0003fb-QQ
-	for linux-mtd@lists.infradead.org; Fri, 16 Oct 2009 06:44:34 +0000
-Subject: Re: [patch 4/5] mtd: Remove BKL and convert to unlocked_ioctl
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-In-Reply-To: <20091015202758.523050101@linutronix.de>
-References: <20091015202722.372890083@linutronix.de>
-	<20091015202758.523050101@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 16 Oct 2009 09:44:00 +0300
-Message-Id: <1255675440.32489.311.camel@localhost>
+Received: from ernst.netinsight.se ([194.16.221.21])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MyhVm-0005Sn-Fz
+	for linux-mtd@lists.infradead.org; Fri, 16 Oct 2009 07:46:11 +0000
+Date: Fri, 16 Oct 2009 09:46:01 +0200
+From: Simon Kagstrom <simon.kagstrom@netinsight.net>
+To: Ingo Molnar <mingo@elte.hu>, linux-mtd <linux-mtd@lists.infradead.org>
+Subject: [PATCH v9 4/5] core: Add kernel message dumper to call on oopses
+	and panics
+Message-ID: <20091016094601.4e2c2d3e@marrow.netinsight.se>
+In-Reply-To: <20091015154640.GA11408@elte.hu>
+References: <20091015094057.7298e0d7@marrow.netinsight.se>
+	<20091015094805.754461fa@marrow.netinsight.se>
+	<20091015093133.GF10546@elte.hu>
+	<20091015161052.0752208e@marrow.netinsight.se>
+	<20091015154640.GA11408@elte.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	Arnd Bergmann <arnd@arndb.de>, LKML <linux-kernel@vger.kernel.org>,
-	ALan Cox <alan@lxorguk.ukuu.org.uk>
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>, "Koskinen
+	Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Woodhouse <dwmw2@infradead.org>, Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +32,240 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-10-15 at 20:28 +0000, Thomas Gleixner wrote:
-> plain text document attachment
-> (mtd-remove-bkl-and-convert-to-unlocked-ioctl.patch)
-> mtd_open() got lock/unlock kernel from the big BKL push down, but it
-> never relied on the BKL serialization as get_mtd_device() takes care
-> of serialization vs. device init/teardown.
-> 
-> mtd_ioctl() is safe w/o the BKL as well. The data which is copied from
-> the mtd data structure is either set up during device initialization
-> or statistics which have never been protected by the BKL against
-> concurrent modification. The mtd functions which are called from
-> various ioctl commands are safe as well.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: linux-mtd@lists.infradead.org
-> ---
->  drivers/mtd/mtdchar.c |   30 ++++++++----------------------
->  1 file changed, 8 insertions(+), 22 deletions(-)
+The core functionality is implemented as per Linus suggestion from
 
-[dedekind@eru l2-mtd-2.6.git]$ make -j8
-  CHK     include/linux/version.h
-  CHK     include/linux/utsrelease.h
-  SYMLINK include/asm -> include/asm-x86
-  CALL    scripts/checksyscalls.sh
-  CHK     include/linux/compile.h
-  CC [M]  drivers/mtd/mtdchar.o
-drivers/mtd/mtdchar.c: In function ‘mtd_compat_ioctl’:
-drivers/mtd/mtdchar.c:865: warning: passing argument 1 of ‘mtd_ioctl’ from incompatible pointer type
-drivers/mtd/mtdchar.c:444: note: expected ‘struct file *’ but argument is of type ‘struct inode *’
-drivers/mtd/mtdchar.c:865: warning: passing argument 2 of ‘mtd_ioctl’ makes integer from pointer without a cast
-drivers/mtd/mtdchar.c:444: note: expected ‘u_int’ but argument is of type ‘struct file *’
-drivers/mtd/mtdchar.c:865: error: too many arguments to function ‘mtd_ioctl’
+  http://lists.infradead.org/pipermail/linux-mtd/2009-October/027620.html
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+(with the kmsg_dump implementation by Linus). A struct kmsg_dumper has
+been added which contains a callback to dump the kernel log buffers on
+crashes. The kmsg_dump function gets called from oops_exit() and panic()
+and invokes this callbacks with the crash reason.
+
+Signed-off-by: Simon Kagstrom <simon.kagstrom@netinsight.net>
+Reviewed-by: Anders Grafstrom <anders.grafstrom@netinsight.net>
+Reviewed-by: Ingo Molnar <mingo@elte.hu>
+---
+ChangeLog:
+	* (Arjan van de Ven): Use EXPORT_SYMBOL_GPL
+	* (Ingo Molnar): Switch list/spinlock definition order
+	* (Ingo Molnar): Set/check ->registered within spinlocked region
+	* (Ingo Molnar): Return error from unregister and check that the
+	  dumper really is registered
+	* (Ingo Molnar): Maximise constness and correct array check
+	* (Ingo Molnar): Use _irqsave/_irqrestore also in kmsg_dump
+	* (Ingo Molnar): Style fixes
+	* (Anders Grafstr=C3=B6m): Correct kerneldoc names
+
+ include/linux/kmsg_dump.h |   36 ++++++++++++++
+ kernel/panic.c            |    3 +
+ kernel/printk.c           |  116 +++++++++++++++++++++++++++++++++++++++++=
+++++
+ 3 files changed, 155 insertions(+), 0 deletions(-)
+ create mode 100644 include/linux/kmsg_dump.h
+
+diff --git a/include/linux/kmsg_dump.h b/include/linux/kmsg_dump.h
+new file mode 100644
+index 0000000..64296f3
+--- /dev/null
++++ b/include/linux/kmsg_dump.h
+@@ -0,0 +1,36 @@
++/*
++ * linux/include/kmsg_dump.h
++ *
++ * Copyright (C) 2009 Net Insight AB
++ *
++ * Author: Simon Kagstrom <simon.kagstrom@netinsight.net>
++ *
++ * This file is subject to the terms and conditions of the GNU General Pub=
+lic
++ * License.  See the file COPYING in the main directory of this archive
++ * for more details.
++ */
++#ifndef _LINUX_KMSG_DUMP_H
++#define _LINUX_KMSG_DUMP_H
++
++#include <linux/list.h>
++
++enum kmsg_dump_reason {
++	KMSG_DUMP_OOPS,
++	KMSG_DUMP_PANIC,
++};
++
++struct kmsg_dumper {
++	void (*dump)(struct kmsg_dumper *dumper, enum kmsg_dump_reason reason,
++			const char *s1, unsigned long l1,
++			const char *s2, unsigned long l2);
++	struct list_head list;
++	int registered;
++};
++
++void kmsg_dump(enum kmsg_dump_reason reason);
++
++int kmsg_dump_register(struct kmsg_dumper *dumper);
++
++int kmsg_dump_unregister(struct kmsg_dumper *dumper);
++
++#endif /* _LINUX_DUMP_DEVICE_H */
+diff --git a/kernel/panic.c b/kernel/panic.c
+index c0b33b8..763296d 100644
+--- a/kernel/panic.c
++++ b/kernel/panic.c
+@@ -10,6 +10,7 @@
+  */
+ #include <linux/debug_locks.h>
+ #include <linux/interrupt.h>
++#include <linux/kmsg_dump.h>
+ #include <linux/kallsyms.h>
+ #include <linux/notifier.h>
+ #include <linux/module.h>
+@@ -76,6 +77,7 @@ NORET_TYPE void panic(const char * fmt, ...)
+ 	dump_stack();
+ #endif
+=20
++	kmsg_dump(KMSG_DUMP_PANIC);
+ 	/*
+ 	 * If we have crashed and we have a crash kernel loaded let it handle
+ 	 * everything else.
+@@ -341,6 +343,7 @@ void oops_exit(void)
+ {
+ 	do_oops_enter_exit();
+ 	print_oops_end_marker();
++	kmsg_dump(KMSG_DUMP_OOPS);
+ }
+=20
+ #ifdef WANT_WARN_ON_SLOWPATH
+diff --git a/kernel/printk.c b/kernel/printk.c
+index f38b07f..d363306 100644
+--- a/kernel/printk.c
++++ b/kernel/printk.c
+@@ -33,6 +33,7 @@
+ #include <linux/bootmem.h>
+ #include <linux/syscalls.h>
+ #include <linux/kexec.h>
++#include <linux/kmsg_dump.h>
+=20
+ #include <asm/uaccess.h>
+=20
+@@ -1405,3 +1406,118 @@ bool printk_timed_ratelimit(unsigned long *caller_j=
+iffies,
+ }
+ EXPORT_SYMBOL(printk_timed_ratelimit);
+ #endif
++
++static DEFINE_SPINLOCK(dump_list_lock);
++static LIST_HEAD(dump_list);
++
++/**
++ *	kmsg_dump_register - register a kernel log dumper.
++ *	@dump: pointer to the kmsg_dumper structure
++ *
++ *	Adds a kernel log dumper to the system. The dump callback in the
++ *	structure will be called when the kernel oopses or panics and must be
++ *	set. Returns zero on success and -EINVAL or -EBUSY otherwise.
++ */
++int kmsg_dump_register(struct kmsg_dumper *dumper)
++{
++	unsigned long flags;
++
++	/* The dump callback needs to be set */
++	if (!dumper->dump)
++		return -EINVAL;
++
++	spin_lock_irqsave(&dump_list_lock, flags);
++
++	/* Don't allow registering multiple times */
++	if (dumper->registered) {
++		spin_unlock_irqrestore(&dump_list_lock, flags);
++
++		return -EBUSY;
++	}
++
++	dumper->registered =3D 1;
++	list_add(&dumper->list, &dump_list);
++	spin_unlock_irqrestore(&dump_list_lock, flags);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(kmsg_dump_register);
++
++/**
++ *	kmsg_dump_unregister - unregister a kmsg dumper.
++ *	@dump: pointer to the kmsg_dumper structure
++ *
++ *	Removes a dump device from the system.
++ */
++int kmsg_dump_unregister(struct kmsg_dumper *dumper)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&dump_list_lock, flags);
++	if (!dumper->registered) {
++		spin_unlock_irqrestore(&dump_list_lock, flags);
++
++		return -EINVAL;
++	}
++
++	dumper->registered =3D 0;
++	list_del(&dumper->list);
++	spin_unlock_irqrestore(&dump_list_lock, flags);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(kmsg_dump_unregister);
++
++static const char const *kmsg_reasons[] =3D {
++	[KMSG_DUMP_OOPS]	=3D "oops",
++	[KMSG_DUMP_PANIC]	=3D "panic",
++};
++
++static const char *kmsg_to_str(enum kmsg_dump_reason reason)
++{
++	if (reason >=3D ARRAY_SIZE(kmsg_reasons) || reason < 0)
++		return "unknown";
++
++	return kmsg_reasons[reason];
++}
++
++/**
++ *	kmsg_dump - dump kernel log to kernel message dumpers.
++ *	@reason: the reason (oops, panic etc) for dumping
++ *
++ *	Iterate through each of the dump devices and call the oops/panic
++ *	callbacks with the log buffer.
++ */
++void kmsg_dump(enum kmsg_dump_reason reason)
++{
++	unsigned long len =3D ACCESS_ONCE(log_end);
++	struct kmsg_dumper *dumper;
++	const char *s1, *s2;
++	unsigned long l1, l2;
++	unsigned long flags;
++
++	s1 =3D "";
++	l1 =3D 0;
++	s2 =3D log_buf;
++	l2 =3D len;
++
++	/* Have we rotated around the circular buffer? */
++	if (len > log_buf_len) {
++		unsigned long pos =3D len & LOG_BUF_MASK;
++
++		s1 =3D log_buf + pos;
++		l1 =3D log_buf_len - pos;
++
++		s2 =3D log_buf;
++		l2 =3D pos;
++	}
++
++	if (!spin_trylock_irqsave(&dump_list_lock, flags)) {
++		printk(KERN_ERR "dump_kmsg: dump list lock is held during %s, skipping d=
+ump\n",
++				kmsg_to_str(reason));
++		return;
++	}
++	list_for_each_entry(dumper, &dump_list, list)
++		dumper->dump(dumper, reason, s1, l1, s2, l2);
++	spin_unlock_irqrestore(&dump_list_lock, flags);
++}
+--=20
+1.6.0.4
