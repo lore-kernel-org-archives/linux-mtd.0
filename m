@@ -1,25 +1,19 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MykxX-00069W-4l
-	for linux-mtd@lists.infradead.org; Fri, 16 Oct 2009 11:27:03 +0000
-Message-ID: <4AD85842.9090800@nokia.com>
-Date: Fri, 16 Oct 2009 14:25:54 +0300
-From: Aaro Koskinen <aaro.koskinen@nokia.com>
+Received: from mail-ew0-f228.google.com ([209.85.219.228])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MylKV-0002w2-9i
+	for linux-mtd@lists.infradead.org; Fri, 16 Oct 2009 11:50:48 +0000
+Received: by ewy28 with SMTP id 28so1901457ewy.18
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 16 Oct 2009 04:50:41 -0700 (PDT)
+Message-ID: <4AD86051.2040302@gmail.com>
+Date: Fri, 16 Oct 2009 14:00:17 +0200
+From: Roel Kluin <roel.kluin@gmail.com>
 MIME-Version: 1.0
-To: ext Simon Kagstrom <simon.kagstrom@netinsight.net>
-Subject: Re: [PATCH v10 4/5] core: Add kernel message dumper to call on oopses
-	and panics
-References: <20091015094057.7298e0d7@marrow.netinsight.se>	<20091015094805.754461fa@marrow.netinsight.se>	<20091015093133.GF10546@elte.hu>	<20091015161052.0752208e@marrow.netinsight.se>	<20091015154640.GA11408@elte.hu>	<20091016094601.4e2c2d3e@marrow.netinsight.se>	<20091016080935.GA3895@elte.hu>	<1255681467.32489.360.camel@localhost>
-	<20091016112556.6902b2dc@marrow.netinsight.se>
-In-Reply-To: <20091016112556.6902b2dc@marrow.netinsight.se>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+To: Artem Bityutskiy <dedekind@infradead.org>,
+	linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] UBI: Fix check on unsigned in ytes_str_to_int()
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>, Ingo Molnar <mingo@elte.hu>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,44 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+result is unsigned, the wrong check was used.
 
-Simon Kagstrom wrote:
-> +#ifndef _LINUX_KMSG_DUMP_H
-> +#define _LINUX_KMSG_DUMP_H
-> +
-> +#include <linux/list.h>
-> +
-> +enum kmsg_dump_reason {
-> +	KMSG_DUMP_OOPS,
-> +	KMSG_DUMP_PANIC,
-> +};
-> +
-> +/**
-> + * struct kmsg_dumper - kernel crash message dumper structure
-> + * @dump:	The callback which gets called on crashes. The buffer is passed
-> + * 		as two sections, where s1 (length l1) contains the older
-> + * 		messages and s2 (length l2) contains the newer.
-> + * @list:	Entry in the dumper list (private)
-> + * @registered:	Flag that specifies if this is already registered
-> + */
-> +struct kmsg_dumper {
-> +	void (*dump)(struct kmsg_dumper *dumper, enum kmsg_dump_reason reason,
-> +			const char *s1, unsigned long l1,
-> +			const char *s2, unsigned long l2);
-> +	struct list_head list;
-> +	int registered;
-> +};
-> +
-> +void kmsg_dump(enum kmsg_dump_reason reason);
-> +
-> +int kmsg_dump_register(struct kmsg_dumper *dumper);
-> +
-> +int kmsg_dump_unregister(struct kmsg_dumper *dumper);
-> +
-> +#endif /* _LINUX_DUMP_DEVICE_H */
-
-If you still make a new version of the patch, please correct the
-"_LINUX_DUMP_DEVICE_H" comment.
-
-A.
+Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+---
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index e1f7d0a..14cec04 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -42,6 +42,7 @@
+ #include <linux/log2.h>
+ #include <linux/kthread.h>
+ #include <linux/reboot.h>
++#include <linux/kernel.h>
+ #include "ubi.h"
+ 
+ /* Maximum length of the 'mtd=' parameter */
+@@ -1257,7 +1258,7 @@ static int __init bytes_str_to_int(const char *str)
+ 	unsigned long result;
+ 
+ 	result = simple_strtoul(str, &endp, 0);
+-	if (str == endp || result < 0) {
++	if (str == endp || result >= INT_MAX) {
+ 		printk(KERN_ERR "UBI error: incorrect bytes count: \"%s\"\n",
+ 		       str);
+ 		return -EINVAL;
