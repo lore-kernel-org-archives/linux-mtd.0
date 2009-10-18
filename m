@@ -1,23 +1,25 @@
-Received: from vega.surpasshosting.com ([72.29.83.9])
+Received: from lo.gmane.org ([80.91.229.12])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Mzyhm-00070R-BU
-	for linux-mtd@lists.infradead.org; Mon, 19 Oct 2009 20:19:50 +0000
-Message-ID: <4ADCC9CE.6070403@embedded-sol.com>
-Date: Mon, 19 Oct 2009 22:19:26 +0200
-From: Felix Radensky <felix@embedded-sol.com>
-MIME-Version: 1.0
-To: Scott Wood <scottwood@freescale.com>
-Subject: Re: UBIFS problem on MPC8536DS
-References: <4AD5ADC9.30503@embedded-sol.com>
-	<4AD5C5B4.3060303@nokia.com>	<4AD5D053.9000901@embedded-sol.com>
-	<4AD5FFE7.7080703@nokia.com>	<4AD60EF4.4080306@embedded-sol.com>	<4AD614E4.6030005@freescale.com>
-	<4AD7811A.6040501@freescale.com>	<4AD7FE37.1060705@embedded-sol.com>	<20091016153128.GA11838@loki.buserror.net>	<4ADAE205.7070106@embedded-sol.com>	<20091019154002.GC19074@loki.buserror.net>	<4ADCC08D.5080207@embedded-sol.com>
-	<4ADCC247.6080107@freescale.com>
-In-Reply-To: <4ADCC247.6080107@freescale.com>
+	id 1N00jy-00041j-Rh
+	for linux-mtd@lists.infradead.org; Mon, 19 Oct 2009 22:30:15 +0000
+Received: from list by lo.gmane.org with local (Exim 4.50) id 1N00jv-00084E-GK
+	for linux-mtd@lists.infradead.org; Tue, 20 Oct 2009 00:30:07 +0200
+Received: from pool-74-104-159-210.bstnma.fios.verizon.net ([74.104.159.210])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 20 Oct 2009 00:30:07 +0200
+Received: from jim by pool-74-104-159-210.bstnma.fios.verizon.net with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 20 Oct 2009 00:30:07 +0200
+To: linux-mtd@lists.infradead.org
+From: Jim Duda <jim@duda.tzo.com>
+Subject: Advice on New Hardware Platform
+Date: Sun, 18 Oct 2009 12:27:40 -0400
+Message-ID: <hbffls$lic$1@ger.gmane.org>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Sender: news <news@ger.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,16 +29,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Scott Wood wrote:
-> Felix Radensky wrote:
->> OK, no problem. I just wanted to get an idea of what should be done.
->> Should the NOR code poll some eLBC register to wait for completion of
->> NAND special operation ? Can you tell what register is relevant ?
->
-> I was thinking you'd just share a mutex with the NAND code.
+I have designed a new NAND Flash Controller which supports ECC at the hardware layer.
+It can be programmed to support between 6-30 bits of Reed Solomon correction over 512 or 1024K bytes of data.
+The controller supports the following four main functions in hardware:
 
-Thanks. Do I understand correctly that in fsl_ebc_nand.c this mutex should
-protect the execution of special operation and wait for completion in
-fsl_elbc_run_command() routine ?
+1.CLE cycles of 1 to 15 bytes of information
+2. ALE cycles of 1 to 15 bytes of information
+3. Page Write with DMA calculating ECC on the fly
+4. Page Read with DMA correcting bytes using ECC on the fly.
 
-Felix.
+ECC is stored intermixed with data, using main and spare data as one piece.
+The combination of the four main functions can be used to support most devices.
+I'm now investigating how to map this design to the MTD layer.
+
+I've read all of the documentation I can find.
+Since my new hardware does ECC on the fly, I'm struggling to determine which "model" to use.
+
+Can anyone suggest an example driver to use as a starting point?
+
+Any advice appreciated.
+
+Thanks,
+
+Jim
