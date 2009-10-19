@@ -1,26 +1,21 @@
-Received: from az33egw02.freescale.net ([192.88.158.103])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1MzuL4-0002yJ-ET
-	for linux-mtd@lists.infradead.org; Mon, 19 Oct 2009 15:40:07 +0000
-Date: Mon, 19 Oct 2009 10:40:02 -0500
-From: Scott Wood <scottwood@freescale.com>
-To: Felix Radensky <felix@embedded-sol.com>
-Subject: Re: UBIFS problem on MPC8536DS
-Message-ID: <20091019154002.GC19074@loki.buserror.net>
-References: <4AD5ADC9.30503@embedded-sol.com> <4AD5C5B4.3060303@nokia.com>
-	<4AD5D053.9000901@embedded-sol.com> <4AD5FFE7.7080703@nokia.com>
-	<4AD60EF4.4080306@embedded-sol.com>
-	<4AD614E4.6030005@freescale.com> <4AD7811A.6040501@freescale.com>
-	<4AD7FE37.1060705@embedded-sol.com>
-	<20091016153128.GA11838@loki.buserror.net>
-	<4ADAE205.7070106@embedded-sol.com>
+Received: from mms2.broadcom.com ([216.31.210.18])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1MzvZl-0002fk-0k
+	for linux-mtd@lists.infradead.org; Mon, 19 Oct 2009 16:59:21 +0000
+From: "Scott Branden" <sbranden@broadcom.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>,
+	"Leo (Hao) Chen" <leochen@broadcom.com>,
+	"David Woodhouse" <dwmw2@infradead.org>
+Date: Mon, 19 Oct 2009 09:58:59 -0700
+Subject: RE: [PATCH] [MTD] bcmring: mtd nand driver (v3)
+Message-ID: <9383297B60843144AC17878B479520F110AEF60320@SJEXCHCCR01.corp.ad.broadcom.com>
+In-Reply-To: <1255269304.16942.101.camel@localhost>
+Content-Language: en-US
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4ADAE205.7070106@embedded-sol.com>
-Cc: "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Adrian Hunter <adrian.hunter@nokia.com>
+Content-Type: text/plain;
+ charset=koi8-r
+Content-Transfer-Encoding: quoted-printable
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,26 +25,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Oct 18, 2009 at 11:38:13AM +0200, Felix Radensky wrote:
-> Hi, Scott
->
-> Scott Wood wrote:
->> On Fri, Oct 16, 2009 at 07:01:43AM +0200, Felix Radensky wrote:
->>> Thanks for confirmation. So the real problem is eLBC ?
->>> What happens if I access other devices on eLBC (e.g. FPGA)
->>> simultaneously with NAND or NOR ?
->>
->> AFAICT, the problem is NAND being accessed simultaneously with anything else
->> on the eLBC (at least GPCM -- not sure about UPM).  Instead of delaying the
->> memory-like transaction until the NAND special operation has completed, it
->> seems to just abort the NAND operation.
->>
->> eLBC can't really tell the difference whether you've got NOR or FPGA hooked
->> up to a GPCM chip select, so the problem should still apply.
->>
->
-> Can you please provide some code example of synchronizing GPCM and NAND ?
+=20
 
-I don't have any.  It's something that would have to be written.
+> -----Original Message-----
+> From: linux-mtd-bounces@lists.infradead.org=20
+> [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of=20
+> Artem Bityutskiy
+> Sent: October 11, 2009 6:55 AM
+> To: Leo (Hao) Chen
+> Cc: David Woodhouse; Linux MTD
+> Subject: Re: [PATCH] [MTD] bcmring: mtd nand driver (v3)
+>=20
+> On Fri, 2009-10-09 at 19:13 -0700, Leo (Hao) Chen wrote:
+> > Hi,
+> >=20
+> > I've updated the mtd nand driver for bcmring machine.
+> > It is applicable to the latest kernel.org git tree.
+> >=20
+> > Is it possible for this patch to be merged into the 2.6.32 git tree?
+> >=20
+> > Thanks a lot for your review.
+> >=20
+> > Best,
+>=20
+> No idea about dwmw2's plans, but I've refreshed your driver=20
+> in my l2-mtd-2.6.git tree.
+> http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/
+005e0a0356c62edcc98ced43cf83d474df92202d
+>=20
+> --
+> Best Regards,
+> Artem Bityutskiy (=E1=D2=D4=A3=CD =E2=C9=D4=C0=C3=CB=C9=CA)
+>=20
+Hi David,
 
--Scott
+Is there anything else that needs to be done to get this
+ into the mainline?
+
+Thanks,
+ Scott
+>=20
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> =
