@@ -1,19 +1,16 @@
-Received: from mail-fx0-f228.google.com ([209.85.220.228])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1N0COX-0002Q8-2R
-	for linux-mtd@lists.infradead.org; Tue, 20 Oct 2009 10:56:53 +0000
-Received: by fxm28 with SMTP id 28so6443678fxm.18
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 20 Oct 2009 03:56:48 -0700 (PDT)
-MIME-Version: 1.0
-Sender: emmanuel.michon@gmail.com
-Date: Tue, 20 Oct 2009 12:56:45 +0200
-Message-ID: <81859150910200356i1e80bb4er1b97046f43415938@mail.gmail.com>
-Subject: giving room for Linux filesystems on MLC/SLC
-From: Emmanuel Michon <emmanuel.michon@polytechnique.org>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 2/2] MTD: Add nand_ecc test module
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+To: Akinobu Mita <akinobu.mita@gmail.com>
+In-Reply-To: <1255932706-23824-2-git-send-email-akinobu.mita@gmail.com>
+References: <> <1255932706-23824-1-git-send-email-akinobu.mita@gmail.com>
+	<1255932706-23824-2-git-send-email-akinobu.mita@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 20 Oct 2009 14:50:01 +0300
+Message-Id: <1256039401.29856.216.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Reply-To: Artem.Bityutskiy@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +20,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Mon, 2009-10-19 at 15:11 +0900, Akinobu Mita wrote:
+> This module tests NAND ECC functions.
+> 
+> The test is simple.
+> 
+> 1. Create a 256 or 512 bytes block of data filled with random bytes (data)
+> 2. Duplicate the data block and inject single bit error (error_data)
+> 3. Try to correct error_data
+> 4. Compare data and error_data
+> 
+> This test is added into new MTD test group called MTD NAND test
+> which requires MTD NAND device support.
+> 
+> Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: linux-mtd@lists.infradead.org
+> Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> ---
+>  drivers/mtd/Kconfig               |    6 +++
+>  drivers/mtd/tests/Makefile        |    1 +
+>  drivers/mtd/tests/nand_ecc-test.c |   88 +++++++++++++++++++++++++++++++++++++
+>  3 files changed, 95 insertions(+), 0 deletions(-)
+>  create mode 100644 drivers/mtd/tests/nand_ecc-test.c
+> 
+> diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+> index ecf90f5..abe5c7f 100644
+> --- a/drivers/mtd/Kconfig
+> +++ b/drivers/mtd/Kconfig
+> @@ -33,6 +33,12 @@ config MTD_TESTS
+>  	  should normally be compiled as kernel modules. The modules perform
+>  	  various checks and verifications when loaded.
+>  
+> +config MTD_NAND_TESTS
+> +	tristate "MTD NAND tests support"
+> +	depends on MTD_TESTS && MTD_NAND
+> +	help
+> +	  This option enables MTD tests which require NAND Device support.
+> +
+>  config MTD_CONCAT
+>  	tristate "MTD concatenating support"
+>  	help
 
-we're preparing in my company the software for a general purpose (.5K,
-2K, 4KB page)
-hardware MLC/SLC controller, especially how we're going to
-choose the byte offsets of a page+spare for `metadata' and `bad
-blocks' (those are excluded by our ECC check hardware).
+Could this please be a separate patch? Also, some of the existing tests
+are NAND only as well, so could do corresponding Makefile changes in the
+same patch and move the to the MTD_NAND_TESTS set? The tests are:
 
-0                                               4096+epsilon
-| metadata | data | bb info | data
+mtd_oobtest.c
+mtd_pagetest.c
+mtd_subpagetest.c
 
-Our primary goal is to be compatible with our proprietary filesystem,
-but if we can enable Linux family of MTD FS with little effort, let's
-prepare it
-
-`bad block' information is a hardware stuff (unconsistently, poorly)
-documented to be near the start of spare area.
-
-For some reason we have this 4 byte metadata at the start of each
-page. Does this software concept apply to ubifs and friends and should
-it be sized differently?
-
-Btw, any success stories about UBIFS+MLC since the FAQ report on this topic=
-?
-
---=20
-Tr=E8s sinc=E8rement,
-
-e.m.
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
