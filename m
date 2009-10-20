@@ -1,21 +1,19 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N0AXX-0000SG-K2
-	for linux-mtd@lists.infradead.org; Tue, 20 Oct 2009 08:58:03 +0000
-Subject: Re: [PATCH v5 0/3] MTD: OneNAND: multiblock erase support
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-To: Mika Korhonen <ext-mika.2.korhonen@nokia.com>,
-	Adrian Hunter <adrian.hunter@nokia.com>
-In-Reply-To: <1255341165-1972-1-git-send-email-ext-mika.2.korhonen@nokia.com>
-References: <1255341165-1972-1-git-send-email-ext-mika.2.korhonen@nokia.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 20 Oct 2009 11:57:19 +0300
-Message-Id: <1256029039.29856.145.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: amul.saha@samsung.com, Kyungmin Park <kyungmin.park@samsung.com>,
-	linux-mtd@lists.infradead.org
-Reply-To: Artem.Bityutskiy@nokia.com
+Received: from mail-fx0-f228.google.com ([209.85.220.228])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1N0COX-0002Q8-2R
+	for linux-mtd@lists.infradead.org; Tue, 20 Oct 2009 10:56:53 +0000
+Received: by fxm28 with SMTP id 28so6443678fxm.18
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 20 Oct 2009 03:56:48 -0700 (PDT)
+MIME-Version: 1.0
+Sender: emmanuel.michon@gmail.com
+Date: Tue, 20 Oct 2009 12:56:45 +0200
+Message-ID: <81859150910200356i1e80bb4er1b97046f43415938@mail.gmail.com>
+Subject: giving room for Linux filesystems on MLC/SLC
+From: Emmanuel Michon <emmanuel.michon@polytechnique.org>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,50 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Similarly, waiting for Adrian to review this. He said he'll do soon.
+Hello,
 
-On Mon, 2009-10-12 at 12:52 +0300, Mika Korhonen wrote:
-> (v5) Adjust patches to apply on current tree. Use __func__ in printk's.
->      Fix mistakes found by K. Park.
-> 
-> (v4) This patch series is a reworked version of
-> 
-> http://lists.infradead.org/pipermail/linux-mtd/2009-September/027138.html
-> http://lists.infradead.org/pipermail/linux-mtd/2009-September/027139.html
-> http://lists.infradead.org/pipermail/linux-mtd/2009-September/027140.html
-> 
-> based on comments by Adrian Hunter and Kyungmin Park. This version should
-> address the issues pointed out by them.
-> 
-> The original patch is:
-> http://lists.infradead.org/pipermail/linux-mtd/2009-June/026130.html
-> 
-> I split the original patch in two for readability: the first part extracts
-> the execution of erase command to a separate function for easier integration
-> of different erase method. The second part implements the multiblock erase
-> function in case multiple blocks are requested to be erased and the chip is
-> not Flex.
-> 
-> This is useful for flashing applications that need to do their work as
-> fast as possible. For full 64 eraseblock case the erase speed is up to 30x
-> faster. (Samsung: 64 MB/s vs 2.1 GB/s, I got 1.4 GB/s on Linux kernel)
-> 
-> 
-> Mika Korhonen (3):
->   MTD: OneNAND: move erase method to a separate function
->   MTD: OneNAND: multiblock erase support
->   MTD: OneNAND: fix double printing of function name
-> 
->  drivers/mtd/onenand/omap2.c        |   22 +++-
->  drivers/mtd/onenand/onenand_base.c |  289 +++++++++++++++++++++++++++++------
->  include/linux/mtd/flashchip.h      |    4 +-
->  include/linux/mtd/onenand_regs.h   |    2 +
->  4 files changed, 262 insertions(+), 55 deletions(-)
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+we're preparing in my company the software for a general purpose (.5K,
+2K, 4KB page)
+hardware MLC/SLC controller, especially how we're going to
+choose the byte offsets of a page+spare for `metadata' and `bad
+blocks' (those are excluded by our ECC check hardware).
+
+0                                               4096+epsilon
+| metadata | data | bb info | data
+
+Our primary goal is to be compatible with our proprietary filesystem,
+but if we can enable Linux family of MTD FS with little effort, let's
+prepare it
+
+`bad block' information is a hardware stuff (unconsistently, poorly)
+documented to be near the start of spare area.
+
+For some reason we have this 4 byte metadata at the start of each
+page. Does this software concept apply to ubifs and friends and should
+it be sized differently?
+
+Btw, any success stories about UBIFS+MLC since the FAQ report on this topic=
+?
+
+--=20
+Tr=E8s sinc=E8rement,
+
+e.m.
