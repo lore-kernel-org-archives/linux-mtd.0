@@ -1,16 +1,19 @@
-Subject: Re: [PATCH 2/2] MTD: Add nand_ecc test module
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1N0DUE-0003DM-Bw
+	for linux-mtd@lists.infradead.org; Tue, 20 Oct 2009 12:06:51 +0000
+Subject: Re: NAND: Add flags to the probe calls to control scan behaviour
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Akinobu Mita <akinobu.mita@gmail.com>
-In-Reply-To: <1256039401.29856.216.camel@localhost>
-References: <> <1255932706-23824-1-git-send-email-akinobu.mita@gmail.com>
-	<1255932706-23824-2-git-send-email-akinobu.mita@gmail.com>
-	<1256039401.29856.216.camel@localhost>
+To: Ben Dooks <ben@simtec.co.uk>
+In-Reply-To: <4ADC4137.1060204@simtec.co.uk>
+References: <20091013090019.091262272@fluff.org.uk>
+	<1255534646.32489.169.camel@localhost> <4ADC4137.1060204@simtec.co.uk>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 20 Oct 2009 15:01:08 +0300
-Message-Id: <1256040068.29856.222.camel@localhost>
+Date: Tue, 20 Oct 2009 15:06:35 +0300
+Message-Id: <1256040395.29856.228.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org, Simtec Linux Team <linux@simtec.co.uk>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,60 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-10-20 at 14:50 +0300, Artem Bityutskiy wrote:
-> On Mon, 2009-10-19 at 15:11 +0900, Akinobu Mita wrote:
-> > This module tests NAND ECC functions.
-> > 
-> > The test is simple.
-> > 
-> > 1. Create a 256 or 512 bytes block of data filled with random bytes (data)
-> > 2. Duplicate the data block and inject single bit error (error_data)
-> > 3. Try to correct error_data
-> > 4. Compare data and error_data
-> > 
-> > This test is added into new MTD test group called MTD NAND test
-> > which requires MTD NAND device support.
-> > 
-> > Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
-> > Cc: David Woodhouse <dwmw2@infradead.org>
-> > Cc: linux-mtd@lists.infradead.org
-> > Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-> > ---
-> >  drivers/mtd/Kconfig               |    6 +++
-> >  drivers/mtd/tests/Makefile        |    1 +
-> >  drivers/mtd/tests/nand_ecc-test.c |   88 +++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 95 insertions(+), 0 deletions(-)
-> >  create mode 100644 drivers/mtd/tests/nand_ecc-test.c
-> > 
-> > diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-> > index ecf90f5..abe5c7f 100644
-> > --- a/drivers/mtd/Kconfig
-> > +++ b/drivers/mtd/Kconfig
-> > @@ -33,6 +33,12 @@ config MTD_TESTS
-> >  	  should normally be compiled as kernel modules. The modules perform
-> >  	  various checks and verifications when loaded.
-> >  
-> > +config MTD_NAND_TESTS
-> > +	tristate "MTD NAND tests support"
-> > +	depends on MTD_TESTS && MTD_NAND
-> > +	help
-> > +	  This option enables MTD tests which require NAND Device support.
-> > +
-> >  config MTD_CONCAT
-> >  	tristate "MTD concatenating support"
-> >  	help
+On Mon, 2009-10-19 at 11:36 +0100, Ben Dooks wrote:
+> I'd rather it be silent if it cannot find a device, as a number of our boards
+> have slots where NAND devices may be fitted by the customer and as such all
+> possibilities are registered with the NAND driver.
 > 
-> Could this please be a separate patch? Also, some of the existing tests
-> are NAND only as well, so could do corresponding Makefile changes in the
-> same patch and move the to the MTD_NAND_TESTS set? The tests are:
+> > Could you please elaborate why more why is this needed a bit more? What
+> > is the driver?
 > 
-> mtd_oobtest.c
-> mtd_pagetest.c
-> mtd_subpagetest.c
+> Because customers get scared when errors with '!!!' turn up.
 
-Err, and of course this patch has to be the _last_ in the series, to
-preserve bisectability.
+> > Why not to just remove that print at all?
+> 
+> Possible, but what about the case where there is a legitimate problem with
+> the device that is supposed to be there.
 
+I would go for this instead. I think the drivers can print an error
+message themselves.
+
+Or can this be done using the chip->options ?
 -- 
 Best Regards,
 Artem Bityutskiy (Артём Битюцкий)
