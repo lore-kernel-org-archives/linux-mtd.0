@@ -1,18 +1,17 @@
-Received: from exprod6og107.obsmtp.com ([64.18.1.208])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1N01uu-0001GI-8x
-	for linux-mtd@lists.infradead.org; Mon, 19 Oct 2009 23:45:36 +0000
-Content-class: urn:content-classes:message
+Date: Tue, 20 Oct 2009 07:27:38 +0200 (CEST)
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [patch 4/5] mtd: Remove BKL and convert to unlocked_ioctl
+In-Reply-To: <1255675440.32489.311.camel@localhost>
+Message-ID: <alpine.LFD.2.00.0910200727070.4908@localhost.localdomain>
+References: <20091015202722.372890083@linutronix.de>
+	<20091015202758.523050101@linutronix.de>
+	<1255675440.32489.311.camel@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Subject: [PATCH] plat_nand: request memory resource before doing ioremap
-Date: Mon, 19 Oct 2009 19:45:29 -0400
-Message-ID: <BD79186B4FD85F4B8E60E381CAEE190901E24741@mi8nycmail19.Mi8.com>
-From: "H Hartley Sweeten" <hartleys@visionengravers.com>
-To: <linux-mtd@lists.infradead.org>
-Cc: David Woodhouse <dwmw2@infradead.org>
+Content-Type: MULTIPART/MIXED; BOUNDARY="8323328-1210128686-1256016463=:4908"
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Arnd Bergmann <arnd@arndb.de>, LKML <linux-kernel@vger.kernel.org>,
+	ALan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,139 +21,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add a request_mem_region() before doing the ioremap().  Also, use the
-resource_size macro instead of doing the end - start + 1 calc by hand.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
+--8323328-1210128686-1256016463=:4908
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
----
+On Fri, 16 Oct 2009, Artem Bityutskiy wrote:
+> On Thu, 2009-10-15 at 20:28 +0000, Thomas Gleixner wrote:
+> > plain text document attachment
+> > (mtd-remove-bkl-and-convert-to-unlocked-ioctl.patch)
+> > mtd_open() got lock/unlock kernel from the big BKL push down, but it
+> > never relied on the BKL serialization as get_mtd_device() takes care
+> > of serialization vs. device init/teardown.
+> > 
+> > mtd_ioctl() is safe w/o the BKL as well. The data which is copied from
+> > the mtd data structure is either set up during device initialization
+> > or statistics which have never been protected by the BKL against
+> > concurrent modification. The mtd functions which are called from
+> > various ioctl commands are safe as well.
+> > 
+> > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: David Woodhouse <dwmw2@infradead.org>
+> > Cc: linux-mtd@lists.infradead.org
+> > ---
+> >  drivers/mtd/mtdchar.c |   30 ++++++++----------------------
+> >  1 file changed, 8 insertions(+), 22 deletions(-)
+> 
+> [dedekind@eru l2-mtd-2.6.git]$ make -j8
+>   CHK     include/linux/version.h
+>   CHK     include/linux/utsrelease.h
+>   SYMLINK include/asm -> include/asm-x86
+>   CALL    scripts/checksyscalls.sh
+>   CHK     include/linux/compile.h
+>   CC [M]  drivers/mtd/mtdchar.o
+> drivers/mtd/mtdchar.c: In function ‘mtd_compat_ioctl’:
+> drivers/mtd/mtdchar.c:865: warning: passing argument 1 of ‘mtd_ioctl’ from incompatible pointer type
+> drivers/mtd/mtdchar.c:444: note: expected ‘struct file *’ but argument is of type ‘struct inode *’
+> drivers/mtd/mtdchar.c:865: warning: passing argument 2 of ‘mtd_ioctl’ makes integer from pointer without a cast
+> drivers/mtd/mtdchar.c:444: note: expected ‘u_int’ but argument is of type ‘struct file *’
+> drivers/mtd/mtdchar.c:865: error: too many arguments to function ‘mtd_ioctl’
 
-diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
-index 4e16c6f..8d46731 100644
---- a/drivers/mtd/nand/plat_nand.c
-+++ b/drivers/mtd/nand/plat_nand.c
-@@ -34,7 +34,12 @@ static int __devinit plat_nand_probe(struct =
-platform_device *pdev)
- {
- 	struct platform_nand_data *pdata =3D pdev->dev.platform_data;
- 	struct plat_nand_data *data;
--	int res =3D 0;
-+	struct resource *res;
-+	int err =3D 0;
-+
-+	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res)
-+		return -ENXIO;
-=20
- 	/* Allocate memory for the device structure (and zero it) */
- 	data =3D kzalloc(sizeof(struct plat_nand_data), GFP_KERNEL);
-@@ -43,12 +48,18 @@ static int __devinit plat_nand_probe(struct =
-platform_device *pdev)
- 		return -ENOMEM;
- 	}
-=20
--	data->io_base =3D ioremap(pdev->resource[0].start,
--				pdev->resource[0].end - pdev->resource[0].start + 1);
-+	if (!request_mem_region(res->start, resource_size(res),
-+				dev_name(&pdev->dev))) {
-+		dev_err(&pdev->dev, "request_mem_region failed\n");
-+		err =3D -EBUSY;
-+		goto out_free;
-+	}
-+
-+	data->io_base =3D ioremap(res->start, resource_size(res));
- 	if (data->io_base =3D=3D NULL) {
- 		dev_err(&pdev->dev, "ioremap failed\n");
--		kfree(data);
--		return -EIO;
-+		err =3D -EIO;
-+		goto out_release_io;
- 	}
-=20
- 	data->chip.priv =3D &data;
-@@ -74,24 +85,24 @@ static int __devinit plat_nand_probe(struct =
-platform_device *pdev)
-=20
- 	/* Handle any platform specific setup */
- 	if (pdata->ctrl.probe) {
--		res =3D pdata->ctrl.probe(pdev);
--		if (res)
-+		err =3D pdata->ctrl.probe(pdev);
-+		if (err)
- 			goto out;
- 	}
-=20
- 	/* Scan to find existance of the device */
- 	if (nand_scan(&data->mtd, 1)) {
--		res =3D -ENXIO;
-+		err =3D -ENXIO;
- 		goto out;
- 	}
-=20
- #ifdef CONFIG_MTD_PARTITIONS
- 	if (pdata->chip.part_probe_types) {
--		res =3D parse_mtd_partitions(&data->mtd,
-+		err =3D parse_mtd_partitions(&data->mtd,
- 					pdata->chip.part_probe_types,
- 					&data->parts, 0);
--		if (res > 0) {
--			add_mtd_partitions(&data->mtd, data->parts, res);
-+		if (err > 0) {
-+			add_mtd_partitions(&data->mtd, data->parts, err);
- 			return 0;
- 		}
- 	}
-@@ -99,14 +110,14 @@ static int __devinit plat_nand_probe(struct =
-platform_device *pdev)
- 		pdata->chip.set_parts(data->mtd.size, &pdata->chip);
- 	if (pdata->chip.partitions) {
- 		data->parts =3D pdata->chip.partitions;
--		res =3D add_mtd_partitions(&data->mtd, data->parts,
-+		err =3D add_mtd_partitions(&data->mtd, data->parts,
- 			pdata->chip.nr_partitions);
- 	} else
- #endif
--	res =3D add_mtd_device(&data->mtd);
-+	err =3D add_mtd_device(&data->mtd);
-=20
--	if (!res)
--		return res;
-+	if (!err)
-+		return err;
-=20
- 	nand_release(&data->mtd);
- out:
-@@ -114,8 +125,11 @@ out:
- 		pdata->ctrl.remove(pdev);
- 	platform_set_drvdata(pdev, NULL);
- 	iounmap(data->io_base);
-+out_release_io:
-+	release_mem_region(res->start, resource_size(res));
-+out_free:
- 	kfree(data);
--	return res;
-+	return err;
- }
-=20
- /*
-@@ -125,6 +139,9 @@ static int __devexit plat_nand_remove(struct =
-platform_device *pdev)
- {
- 	struct plat_nand_data *data =3D platform_get_drvdata(pdev);
- 	struct platform_nand_data *pdata =3D pdev->dev.platform_data;
-+	struct resource *res;
-+
-+	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-=20
- 	nand_release(&data->mtd);
- #ifdef CONFIG_MTD_PARTITIONS
-@@ -134,6 +151,7 @@ static int __devexit plat_nand_remove(struct =
-platform_device *pdev)
- 	if (pdata->ctrl.remove)
- 		pdata->ctrl.remove(pdev);
- 	iounmap(data->io_base);
-+	release_mem_region(res->start, resource_size(res));
- 	kfree(data);
-=20
- 	return 0;=20
+Yeah, found and fixed that already.
+
+      tglx
+--8323328-1210128686-1256016463=:4908--
