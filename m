@@ -1,19 +1,18 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N0DUE-0003DM-Bw
-	for linux-mtd@lists.infradead.org; Tue, 20 Oct 2009 12:06:51 +0000
-Subject: Re: NAND: Add flags to the probe calls to control scan behaviour
+	id 1N0E00-0005oy-37
+	for linux-mtd@lists.infradead.org; Tue, 20 Oct 2009 12:39:40 +0000
+Subject: Re: giving room for Linux filesystems on MLC/SLC
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ben Dooks <ben@simtec.co.uk>
-In-Reply-To: <4ADC4137.1060204@simtec.co.uk>
-References: <20091013090019.091262272@fluff.org.uk>
-	<1255534646.32489.169.camel@localhost> <4ADC4137.1060204@simtec.co.uk>
+To: Emmanuel Michon <emmanuel.michon@polytechnique.org>
+In-Reply-To: <81859150910200356i1e80bb4er1b97046f43415938@mail.gmail.com>
+References: <81859150910200356i1e80bb4er1b97046f43415938@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 20 Oct 2009 15:06:35 +0300
-Message-Id: <1256040395.29856.228.camel@localhost>
+Date: Tue, 20 Oct 2009 15:39:25 +0300
+Message-Id: <1256042365.29856.260.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Simtec Linux Team <linux@simtec.co.uk>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,25 +23,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-10-19 at 11:36 +0100, Ben Dooks wrote:
-> I'd rather it be silent if it cannot find a device, as a number of our boards
-> have slots where NAND devices may be fitted by the customer and as such all
-> possibilities are registered with the NAND driver.
+On Tue, 2009-10-20 at 12:56 +0200, Emmanuel Michon wrote:
+> Hello,
 > 
-> > Could you please elaborate why more why is this needed a bit more? What
-> > is the driver?
+> we're preparing in my company the software for a general purpose (.5K,
+> 2K, 4KB page)
+> hardware MLC/SLC controller, especially how we're going to
+> choose the byte offsets of a page+spare for `metadata' and `bad
+> blocks' (those are excluded by our ECC check hardware).
 > 
-> Because customers get scared when errors with '!!!' turn up.
-
-> > Why not to just remove that print at all?
+> 0                                               4096+epsilon
+> | metadata | data | bb info | data
 > 
-> Possible, but what about the case where there is a legitimate problem with
-> the device that is supposed to be there.
+> Our primary goal is to be compatible with our proprietary filesystem,
+> but if we can enable Linux family of MTD FS with little effort, let's
+> prepare it
+> 
+> `bad block' information is a hardware stuff (unconsistently, poorly)
+> documented to be near the start of spare area.
+> 
+> For some reason we have this 4 byte metadata at the start of each
+> page. Does this software concept apply to ubifs and friends and should
+> it be sized differently?
 
-I would go for this instead. I think the drivers can print an error
-message themselves.
+We work with an abstract flash mode: it consists of eraseblock, each
+eraseblock has several min. I/O units. So if in your cases the driver
+hides these meta-data bytes, it should be fine.
 
-Or can this be done using the chip->options ?
+However, current UBIFS is hard-coded with an assumption that min. I/O
+size is power of 2. This would probably have to change. There was no
+fundamental reason why we did it like this, we just wanted to save some
+CPU cycles and avoid divisions. But this can be changed.
+
+> Btw, any success stories about UBIFS+MLC since the FAQ report on this topic?
+
+I have not heard them.
+
 -- 
 Best Regards,
 Artem Bityutskiy (Артём Битюцкий)
