@@ -1,22 +1,16 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N0ID9-00046F-Ln
-	for linux-mtd@lists.infradead.org; Tue, 20 Oct 2009 17:09:32 +0000
-From: Juergen Beisert <jbe@pengutronix.de>
-To: "Berland, Mathieu" <mathieu.berland@eads.com>
-Date: Tue, 20 Oct 2009 19:08:46 +0200
-References: <2132956280B09448AB947D9C8A291AC6011F88BE@SMFIDF806A.main.fr.ds.corp>
-In-Reply-To: <2132956280B09448AB947D9C8A291AC6011F88BE@SMFIDF806A.main.fr.ds.corp>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Subject: RE: [PATCH] mtd: Fix kernel NULL pointer dereference in physmap.c
+From: David Woodhouse <dwmw2@infradead.org>
+To: H Hartley Sweeten <hartleys@visionengravers.com>
+In-Reply-To: <BD79186B4FD85F4B8E60E381CAEE190901E24827@mi8nycmail19.Mi8.com>
+References: <BD79186B4FD85F4B8E60E381CAEE190901E246A0@mi8nycmail19.Mi8.com>
+	<20091021.002941.41633716.anemo@mba.ocn.ne.jp>
+	<BD79186B4FD85F4B8E60E381CAEE190901E24827@mi8nycmail19.Mi8.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 21 Oct 2009 06:37:38 +0900
+Message-Id: <1256074658.4230.6.camel@macbook.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200910201908.47230.jbe@pengutronix.de>
-Subject: Re: About the mxc nand driver
-Cc: Vladimir Barinov <vova.barinov@gmail.com>,
-	'Sascha Hauer' <s.hauer@pengutronix.de>,
-	linux-mtd@lists.infradead.org, Eric Benard <ebenard@eukrea.com>
+Cc: Atsushi Nemoto <anemo@mba.ocn.ne.jp>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,183 +20,134 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Dienstag, 20. Oktober 2009, Berland, Mathieu wrote:
-> =============== About Freescale driver (NOT mainline driver)
->
-> >The original Freescale driver uses this ecc layout for 8/16 bit busses:
-> >
-> >static struct nand_ecclayout nand_hw_eccoob_8 = {
-> >	.eccbytes = 5,
-> >	.eccpos = {6, 7, 8, 9, 10},
-> >	.oobfree = {{0, 5}, {11, 5}}
-> >};
-> >
-> >static struct nand_ecclayout nand_hw_eccoob_16 = {
-> >	.eccbytes = 5,
-> >	.eccpos = {6, 7, 8, 9, 10},
-> >	.oobfree = {{0, 6}, {12, 4}}
-> >};
-> >
-> >I understand the first one, but doesn't the second one specify a oobfree
->
-> which overlaps with ecc data?
->
-> ECC is not overlapped for 16 bits since the second fields of oobfree are
-> lengths which is confusing.
->
-> These settings comply with the MXC Nand Flash controller specification, at
-> least with mine which might be outdated :
->
-> 8 bits bus :
-> 	Bad block marker @ 5
-> 	ECC @ [6..10] (understand from 6 to 10, both included) = {6, 7, 8,
-> 9, 10}
-> 	Free @ [0..4] [11..15] = {{0, 5}, {11, 5}}
->
-> 16 bits bus :
-> 	Bad block marker @ 11
-> 	ECC @ [6..10] = {6, 7, 8, 9, 10}
-> 	Free @ [0..5] [12..15] = {{0, 6}, {12, 4}}
->
-> The datasheet says :
-> "The host can use all of the spare area except for the BI (bad block
-> marker) and ECC code areas".
->
-> The ECC is managed by the hardware. It seems that the bad block marker is
-> not (not sure).
+On Tue, 2009-10-20 at 12:23 -0400, H Hartley Sweeten wrote:
+> During the probe for physmap platform flash devices there are a
+> number error exit conditions that all do a goto err_out which
+> then calls physmap_flash_remove().  In that function one of the
+> cleanup steps is:
+> 
+> #ifdef CONFIG_MTD_CONCAT
+> 	if (info->cmtd != info->mtd[0])
+> 		mtd_concat_destroy(info->cmtd);
+> #endif
+> 
+> This test will succeed since info->cmtd == NULL and info->mtd[0] is
+> valid, which then causes a NULL pointer dereference when mtd_concat_destroy()
+> is called.  Fix this by moving the mtd_concat_destroy() step into the
+> if (info->cmtd) condition.
+> 
+> Also, move the kfree(info->parts) cleanup to remove an #ifdef.
+> 
+> Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+> 
+> ---
+> 
+> V2 - As pointed out by Atsushi Nemoto, the map_destroy loop should not
+>      be skipped even when info->cmtd == NULL.
 
-Bad block marker is handled by the NAND framework. And in the most worst case 
-this bad block marker is overwritten by the ECC hardware...
+Thanks.
 
-> What's the problem with the old Freescale's driver ?
-> The problem is that Flash chips with 2K pages are not really handled.
->
->
-> =============== About "SPARE AREA ASSIGNMENT STANDARD" from Samsung (?)
->
-> I found one document in Samsung website. It is said :
->
-> Small pages (16B OOB) && 8 bits bus :
-> 	Bad block marker @ 5 => In my Samsung chip, all the bytes of the OOB
-> are set to 0 when a block is marked bad in factory.
-> 	ECC @ [6..10] => Chip founders don't care I guess.
+In an attempt to improve my responsiveness as maintainer, I'd already
+committed the first version. How does this look:
 
-It seems every hardware vendor does it in a different way.
+commit 8ce110ac19bc88b82e3feacfbb3a2ee08a07fe22
+Author: H Hartley Sweeten <hartleys@visionengravers.com>
+Date:   Tue Oct 20 12:23:33 2009 -0400
 
-> Small pages (16B OOB) && 16 bits bus :
-> 	Bad block marker @ 11
-> 	ECC @ [6..10]
+    mtd: Fix compile failure and error path in physmap.c
+    
+    Commit 4b56ffcacee937a85bf39e14872dd141e23ee85f ("mtd: Fix kernel NULL
+    pointer dereference in physmap.c") introduced a couple of bugs.
+    
+    It neglected to run the loop of map_destroy() calls in
+    physmap_flash_remove(), if !info->cmtd, which would happen if that
+    function was called to clean up errors during probe.
+    
+    It also failed to compile if CONFIG_MTD_PARTITIONS was not defined.
+    
+    Reported-By: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+    Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
+    Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
 
-You must register your own bad block marker structure 
-(member 'badblock_pattern' in struct nand_chip) to use offset 11 instead of 
-the offset 5.
+diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
+index 65f52d4..3f13a96 100644
+--- a/drivers/mtd/maps/physmap.c
++++ b/drivers/mtd/maps/physmap.c
+@@ -44,12 +44,10 @@ static int physmap_flash_remove(struct platform_device *dev)
+ 		return 0;
+ 	platform_set_drvdata(dev, NULL);
+ 
+-	if (info->cmtd == NULL)
+-		return 0;
+-
+ 	physmap_data = dev->dev.platform_data;
+ 
+-	if (mtd_has_partitions()) {
++	if (info->cmtd) {
++#ifdef CONFIG_MTD_PARTITIONS
+ 		if (info->nr_parts || physmap_data->nr_parts) {
+ 			del_mtd_partitions(info->cmtd);
+ 
+@@ -58,14 +56,14 @@ static int physmap_flash_remove(struct platform_device *dev)
+ 		} else {
+ 			del_mtd_device(info->cmtd);
+ 		}
+-	} else {
++#else
+ 		del_mtd_device(info->cmtd);
+-	}
+-
++#endif
+ #ifdef CONFIG_MTD_CONCAT
+-	if (info->cmtd != info->mtd[0])
+-		mtd_concat_destroy(info->cmtd);
++		if (info->cmtd != info->mtd[0])
++			mtd_concat_destroy(info->cmtd);
+ #endif
++	}
+ 
+ 	for (i = 0; i < MAX_RESOURCES; i++) {
+ 		if (info->mtd[i] != NULL)
+@@ -170,22 +168,22 @@ static int physmap_flash_probe(struct platform_device *dev)
+ 	if (err)
+ 		goto err_out;
+ 
+-	if (mtd_has_partitions()) {
+-		err = parse_mtd_partitions(info->cmtd, part_probe_types,
+-					&info->parts, 0);
+-		if (err > 0) {
+-			add_mtd_partitions(info->cmtd, info->parts, err);
+-			info->nr_parts = err;
+-			return 0;
+-		}
++#ifdef CONFIG_MTD_PARTITIONS
++	err = parse_mtd_partitions(info->cmtd, part_probe_types,
++				&info->parts, 0);
++	if (err > 0) {
++		add_mtd_partitions(info->cmtd, info->parts, err);
++		info->nr_parts = err;
++		return 0;
++	}
+ 
+-		if (physmap_data->nr_parts) {
+-			printk(KERN_NOTICE "Using physmap partition information\n");
+-			add_mtd_partitions(info->cmtd, physmap_data->parts,
+-					physmap_data->nr_parts);
+-			return 0;
+-		}
++	if (physmap_data->nr_parts) {
++		printk(KERN_NOTICE "Using physmap partition information\n");
++		add_mtd_partitions(info->cmtd, physmap_data->parts,
++				   physmap_data->nr_parts);
++		return 0;
+ 	}
++#endif
+ 
+ 	add_mtd_device(info->cmtd);
+ 	return 0;
 
-[...]
-> =============== About the mainline driver
->
-> Generic BBT code used by mxc_nand.c :
->
-> Small pages
-> 	Bad block marker @ 5
->
-> Large pages
-> 	Bad block marker @ [0..1]
-
-These are the defaults if the driver keeps member 'badblock_pattern' in struct 
-nand_chip NULL.
-
-> Here is what Vladimir did :
->
-> 8 bytes OOB or SW ECC (?) :
-> 	Bad block marker @ [5]
-
-Default for page size equal to 512.
-
-> 	ECC @ [6..10]
-> 	Free @ [0..4] [11..15]
->
-> Small pages (16B OOB) :
-> 	Bad block marker @ [5]
-
-Default for page size equal to 512.
-
-> 	ECC @ [6..10]
-> 	Free @ [0..4] [11..15]
->
-> Large pages (64B OOB) :
-> 	Bad block marker @ [0..1]
-
-Default if page size is larger than 512 bytes.
-
-> 	ECC @ [6..10] [22..26] [38..42] [54..58]
-> 	Free @ [2..5] [11..20] [27..36] [43..52] [59..63]
-> [...]
-> =============== Some improvements ?
->
-> The only thing that's worrying me is the fact that the Nand Flash
-> Controller might use these bad block marker bytes. In this case, we could
-> experience problems.
-
-That's why I'm using a separate bbt descriptor.
-
-> I have somes proposals which should be compatible with current Flash
-> loaders. This is *only* if someone is experiencing problems during the
-> lifecyle of boards :
->
-> 1)
->
-> 8 bytes OOB :
-> 	No more supported
->
-> Small pages (16B OOB) && 8 bits bus :
-> 	Requirement : keep default bad block marker location, same as today
->
-> 	Bad block marker @ 5
-> 	ECC @ [6..10]
-> 	Free @ [0..4] [11..15]
-
-Bad block marker at offset 5 is described in structure 'smallpage_flashbased' 
-in 'nand_bbt.c' and will be used if the driver doesn't touch 
-the 'badblock_pattern' structure member.
-
-> Small pages (16B OOB) && 16 bits bus :
-> 	Requirement : keep default bad block marker location, same as today
-> 	Requirement : byte 11 is not free anymore because it might be used
-> by HW for bad block flag (don't known)
->
-> 	Bad block marker @ 5
-> 	ECC @ [6..10]
-> 	Free @ [0..4] [12..15]
-
-Same here. because 'nand_bbt.c' does not distinguish between date width.
-
-> Large pages (64B OOB) && 8 bits bus :
-> 	Requirement : keep default bad block marker location, same as today
-> 	Requirement : byte 5+16*n are not free because it might be used by
-> HW for bad block flag (don't known)
->
-> 	Bad block marker @ [0..1]
-
-Yes, because here 'largepage_flashbased' is used for all page sizes larger 
-than 512 bytes (until the driver touches the 'badblock_pattern' structure 
-member).
-
-> 	ECC & [6..10] [22..26] [38..42] [54..58]
-> 	Free @ [2..4] [11..20] [27..36] [43..52] [59..63]
->
-> Large pages (64B OOB) && 16 bits bus :
-> 	Requirement : keep default bad block marker location, same as today
-> 	Requirement : byte 11+16*n are not free because it might be used by
-> HW for bad block flag (don't known)
->
-> 	Bad block marker @ [0..1]
-
-Yes. No difference between 8 or 16 bits.
-
-jbe
 
 -- 
-Pengutronix e.K.                              | Juergen Beisert             |
-Linux Solutions for Science and Industry      | Phone: +49-8766-939 228     |
-Vertretung Sued/Muenchen, Germany             | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686              | http://www.pengutronix.de/  |
+dwmw2
