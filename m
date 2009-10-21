@@ -1,19 +1,21 @@
-Subject: Re: [PATCH 2/2] MTD: Add nand_ecc test module
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-To: Akinobu Mita <akinobu.mita@gmail.com>
-In-Reply-To: <20091021044614.GA10336@localhost.localdomain>
-References: <1255932706-23824-1-git-send-email-akinobu.mita@gmail.com>
-	<1255932706-23824-2-git-send-email-akinobu.mita@gmail.com>
-	<1256039401.29856.216.camel@localhost>
-	<20091021044614.GA10336@localhost.localdomain>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 21 Oct 2009 09:52:44 +0300
-Message-Id: <1256107964.29856.271.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: Artem.Bityutskiy@nokia.com
+Received: from mail-yw0-f204.google.com ([209.85.211.204])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1N0We2-0005R6-6H
+	for linux-mtd@lists.infradead.org; Wed, 21 Oct 2009 08:34:14 +0000
+Received: by ywh42 with SMTP id 42so6054257ywh.28
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 21 Oct 2009 01:34:09 -0700 (PDT)
+From: Akinobu Mita <akinobu.mita@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/3 -v3] MTD: Add __nand_calculate_ecc() to NAND ECC functions
+Date: Wed, 21 Oct 2009 17:34:02 +0900
+Message-Id: <1256114044-12163-1-git-send-email-akinobu.mita@gmail.com>
+In-Reply-To: <>
+References: <>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Akinobu Mita <akinobu.mita@gmail.com>,
+	vimal singh <vimal.newwork@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,50 +25,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-10-21 at 06:46 +0200, ext Akinobu Mita wrote:
-> On Tue, Oct 20, 2009 at 02:50:01PM +0300, Artem Bityutskiy wrote:
-> > > diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-> > > index ecf90f5..abe5c7f 100644
-> > > --- a/drivers/mtd/Kconfig
-> > > +++ b/drivers/mtd/Kconfig
-> > > @@ -33,6 +33,12 @@ config MTD_TESTS
-> > >  	  should normally be compiled as kernel modules. The modules perform
-> > >  	  various checks and verifications when loaded.
-> > >  
-> > > +config MTD_NAND_TESTS
-> > > +	tristate "MTD NAND tests support"
-> > > +	depends on MTD_TESTS && MTD_NAND
-> > > +	help
-> > > +	  This option enables MTD tests which require NAND Device support.
-> > > +
-> > >  config MTD_CONCAT
-> > >  	tristate "MTD concatenating support"
-> > >  	help
-> > 
-> > Could this please be a separate patch? Also, some of the existing tests
-> > are NAND only as well, so could do corresponding Makefile changes in the
-> > same patch and move the to the MTD_NAND_TESTS set? The tests are:
-> > 
-> > mtd_oobtest.c
-> > mtd_pagetest.c
-> > mtd_subpagetest.c
-> 
-> Should these MTD NAND tests support OneNAND device, too?
-> 
-> If so, the config with !CONFIG_MTD_NAND && MTD_ONENAND=m cannot select
-> this new MTD_NAND_TESTS. So Kconfig dependency should be:
-> 
-> config MTD_NAND_TESTS
->         tristate "MTD NAND tests support"
->         depends on MTD_TEST
->         depends on MTD_NAND || MTD_ONENAND
-> 
-> But nand_ecc-test obviously needs CONFIG_MTD_NAND and cannot exist
-> in the same group.
+Add __nand_calculate_ecc() which does not take struct mtd_info.
+The built-in 256/512 software ECC calculation and correction tester
+will use it.
 
-Oh, I see. May be your original idea with ifdefs in the code was not
-bad at all :-) ?
+Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Cc: linux-mtd@lists.infradead.org
+Cc: vimal singh <vimal.newwork@gmail.com>
+---
+ drivers/mtd/nand/nand_ecc.c  |   25 ++++++++++++++++++++-----
+ include/linux/mtd/nand_ecc.h |   10 ++++++++--
+ 2 files changed, 28 insertions(+), 7 deletions(-)
 
+diff --git a/drivers/mtd/nand/nand_ecc.c b/drivers/mtd/nand/nand_ecc.c
+index db7ae9d..809fb53 100644
+--- a/drivers/mtd/nand/nand_ecc.c
++++ b/drivers/mtd/nand/nand_ecc.c
+@@ -150,20 +150,19 @@ static const char addressbits[256] = {
+ };
+ 
+ /**
+- * nand_calculate_ecc - [NAND Interface] Calculate 3-byte ECC for 256/512-byte
++ * __nand_calculate_ecc - [NAND Interface] Calculate 3-byte ECC for 256/512-byte
+  *			 block
+- * @mtd:	MTD block structure
+  * @buf:	input buffer with raw data
++ * @eccsize:	data bytes per ecc step (256 or 512)
+  * @code:	output buffer with ECC
+  */
+-int nand_calculate_ecc(struct mtd_info *mtd, const unsigned char *buf,
++void __nand_calculate_ecc(const unsigned char *buf, unsigned int eccsize,
+ 		       unsigned char *code)
+ {
+ 	int i;
+ 	const uint32_t *bp = (uint32_t *)buf;
+ 	/* 256 or 512 bytes/ecc  */
+-	const uint32_t eccsize_mult =
+-			(((struct nand_chip *)mtd->priv)->ecc.size) >> 8;
++	const uint32_t eccsize_mult = eccsize >> 8;
+ 	uint32_t cur;		/* current value in buffer */
+ 	/* rp0..rp15..rp17 are the various accumulated parities (per byte) */
+ 	uint32_t rp0, rp1, rp2, rp3, rp4, rp5, rp6, rp7;
+@@ -412,6 +411,22 @@ int nand_calculate_ecc(struct mtd_info *mtd, const unsigned char *buf,
+ 		    (invparity[par & 0x55] << 2) |
+ 		    (invparity[rp17] << 1) |
+ 		    (invparity[rp16] << 0);
++}
++EXPORT_SYMBOL(__nand_calculate_ecc);
++
++/**
++ * nand_calculate_ecc - [NAND Interface] Calculate 3-byte ECC for 256/512-byte
++ *			 block
++ * @mtd:	MTD block structure
++ * @buf:	input buffer with raw data
++ * @code:	output buffer with ECC
++ */
++int nand_calculate_ecc(struct mtd_info *mtd, const unsigned char *buf,
++		       unsigned char *code)
++{
++	__nand_calculate_ecc(buf,
++			((struct nand_chip *)mtd->priv)->ecc.size, code);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL(nand_calculate_ecc);
+diff --git a/include/linux/mtd/nand_ecc.h b/include/linux/mtd/nand_ecc.h
+index 052ea8c..41bc013 100644
+--- a/include/linux/mtd/nand_ecc.h
++++ b/include/linux/mtd/nand_ecc.h
+@@ -16,7 +16,13 @@
+ struct mtd_info;
+ 
+ /*
+- * Calculate 3 byte ECC code for 256 byte block
++ * Calculate 3 byte ECC code for eccsize byte block
++ */
++void __nand_calculate_ecc(const u_char *dat, unsigned int eccsize,
++				u_char *ecc_code);
++
++/*
++ * Calculate 3 byte ECC code for 256/512 byte block
+  */
+ int nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat, u_char *ecc_code);
+ 
+@@ -27,7 +33,7 @@ int __nand_correct_data(u_char *dat, u_char *read_ecc, u_char *calc_ecc,
+ 			unsigned int eccsize);
+ 
+ /*
+- * Detect and correct a 1 bit error for 256 byte block
++ * Detect and correct a 1 bit error for 256/512 byte block
+  */
+ int nand_correct_data(struct mtd_info *mtd, u_char *dat, u_char *read_ecc, u_char *calc_ecc);
+ 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.5.4.3
