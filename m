@@ -1,29 +1,14 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N0bxq-0001xf-Jt
-	for linux-mtd@lists.infradead.org; Wed, 21 Oct 2009 14:14:59 +0000
+	id 1N0bz4-0004tR-MV
+	for linux-mtd@lists.infradead.org; Wed, 21 Oct 2009 14:16:15 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 16/19] mxc_nand: disable sp_en bit only once
-Date: Wed, 21 Oct 2009 16:13:23 +0200
-Message-Id: <1256134406-25251-17-git-send-email-s.hauer@pengutronix.de>
-In-Reply-To: <1256134406-25251-16-git-send-email-s.hauer@pengutronix.de>
+Subject: [PATCH 01/19] Revert "mtd: mxc_nand: fix 2KiB pagesize NAND on i.MX27"
+Date: Wed, 21 Oct 2009 16:13:08 +0200
+Message-Id: <1256134406-25251-2-git-send-email-s.hauer@pengutronix.de>
+In-Reply-To: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
 References: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
-	<1256134406-25251-2-git-send-email-s.hauer@pengutronix.de>
-	<1256134406-25251-3-git-send-email-s.hauer@pengutronix.de>
-	<1256134406-25251-4-git-send-email-s.hauer@pengutronix.de>
-	<1256134406-25251-5-git-send-email-s.hauer@pengutronix.de>
-	<1256134406-25251-6-git-send-email-s.hauer@pengutronix.de>
-	<1256134406-25251-7-git-send-email-s.hauer@pengutronix.de>
-	<1256134406-25251-8-git-send-email-s.hauer@pengutronix.de>
-	<1256134406-25251-9-git-send-email-s.hauer@pengutronix.de>
-	<1256134406-25251-10-git-send-email-s.hauer@pengutronix.de>
-	<1256134406-25251-11-git-send-email-s.hauer@pengutronix.de>
-	<1256134406-25251-12-git-send-email-s.hauer@pengutronix.de>
-	<1256134406-25251-13-git-send-email-s.hauer@pengutronix.de>
-	<1256134406-25251-14-git-send-email-s.hauer@pengutronix.de>
-	<1256134406-25251-15-git-send-email-s.hauer@pengutronix.de>
-	<1256134406-25251-16-git-send-email-s.hauer@pengutronix.de>
 Cc: Sascha Hauer <s.hauer@pengutronix.de>, Eric Benard <ebenard@eukrea.com>,
 	Vladimir Barinov <vova.barinov@gmail.com>,
 	mathieu.berland@eads.com, jbe@pengutronix.de, sha@pengutronix.de
@@ -36,63 +21,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+This reverts commit 71b7d0d90d536ae4e70929cc59a1a9f6ba457c6c.
 ---
- drivers/mtd/nand/mxc_nand.c |   15 +++------------
- 1 files changed, 3 insertions(+), 12 deletions(-)
+ drivers/mtd/nand/mxc_nand.c |   16 +---------------
+ 1 files changed, 1 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index f2297eb..199a5f2 100644
+index 65b26d5..76beea4 100644
 --- a/drivers/mtd/nand/mxc_nand.c
 +++ b/drivers/mtd/nand/mxc_nand.c
-@@ -274,16 +274,10 @@ static void send_page(struct mtd_info *mtd, unsigned int ops)
- static void send_read_id(struct mxc_nand_host *host)
- {
- 	struct nand_chip *this = &host->nand;
--	uint16_t tmp;
+@@ -857,17 +857,6 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 	}
+ }
  
- 	/* NANDFC buffer 0 is used for device ID output */
- 	writew(0x0, host->regs + NFC_BUF_ADDR);
- 
--	/* Read ID into main buffer */
--	tmp = readw(host->regs + NFC_CONFIG1);
--	tmp &= ~NFC_SP_EN;
--	writew(tmp, host->regs + NFC_CONFIG1);
+-/* Define some generic bad / good block scan pattern which are used
+- * while scanning a device for factory marked good / bad blocks. */
+-static uint8_t scan_ff_pattern[] = { 0xff, 0xff };
 -
- 	writew(NFC_ID, host->regs + NFC_CONFIG2);
- 
- 	/* Wait for operation to complete */
-@@ -307,7 +301,7 @@ static uint16_t get_dev_status(struct mxc_nand_host *host)
- {
- 	void __iomem *main_buf = host->main_area1;
- 	uint32_t store;
--	uint16_t ret, tmp;
-+	uint16_t ret;
- 	/* Issue status request to NAND device */
- 
- 	/* store the main area1 first word, later do recovery */
-@@ -316,11 +310,6 @@ static uint16_t get_dev_status(struct mxc_nand_host *host)
- 	 * corruption of read/write buffer on status requests. */
- 	writew(1, host->regs + NFC_BUF_ADDR);
- 
--	/* Read status into main buffer */
--	tmp = readw(host->regs + NFC_CONFIG1);
--	tmp &= ~NFC_SP_EN;
--	writew(tmp, host->regs + NFC_CONFIG1);
+-static struct nand_bbt_descr smallpage_memorybased = {
+-	.options = NAND_BBT_SCAN2NDPAGE,
+-	.offs = 5,
+-	.len = 1,
+-	.pattern = scan_ff_pattern
+-};
 -
- 	writew(NFC_STATUS, host->regs + NFC_CONFIG2);
+ static int __init mxcnd_probe(struct platform_device *pdev)
+ {
+ 	struct nand_chip *this;
+@@ -984,10 +973,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 		goto escan;
+ 	}
  
- 	/* Wait for operation to complete */
-@@ -739,8 +728,10 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 	} else
- 		BUG();
+-	if (mtd->writesize == 2048) {
+-		host->pagesize_2k = 1;
+-		this->badblock_pattern = &smallpage_memorybased;
+-	}
++	host->pagesize_2k = (mtd->writesize == 2048) ? 1 : 0;
  
-+	/* disable interrupt and spare enable */
- 	tmp = readw(host->regs + NFC_CONFIG1);
- 	tmp |= NFC_INT_MSK;
-+	tmp &= ~NFC_SP_EN;
- 	writew(tmp, host->regs + NFC_CONFIG1);
- 
- 	init_waitqueue_head(&host->irq_waitq);
+ 	if (this->ecc.mode == NAND_ECC_HW) {
+ 		switch (mtd->oobsize) {
 -- 
 1.6.5
