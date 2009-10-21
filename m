@@ -1,17 +1,20 @@
-From: Gianluca Renzi <gianlucarenzi@eptar.com>
-To: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Claudio Lanconelli <claudiolanconelli@eptar.com>
-Subject: Re: About the mxc nand driver
-Date: Wed, 21 Oct 2009 13:30:37 +0200
-References: <20091020131157.GR8818@pengutronix.de>
-In-Reply-To: <20091020131157.GR8818@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+Received: from mba.ocn.ne.jp ([122.28.14.163] helo=smtp.mba.ocn.ne.jp)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1N0b0O-0003sJ-4q
+	for linux-mtd@lists.infradead.org; Wed, 21 Oct 2009 13:13:36 +0000
+Date: Wed, 21 Oct 2009 22:13:29 +0900 (JST)
+Message-Id: <20091021.221329.159689505.anemo@mba.ocn.ne.jp>
+To: hartleys@visionengravers.com
+Subject: Re: [PATCH] mtd: Fix kernel NULL pointer dereference in physmap.c
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+In-Reply-To: <BD79186B4FD85F4B8E60E381CAEE190901E248E7@mi8nycmail19.Mi8.com>
+References: <BD79186B4FD85F4B8E60E381CAEE190901E24827@mi8nycmail19.Mi8.com>
+	<1256074658.4230.6.camel@macbook.infradead.org>
+	<BD79186B4FD85F4B8E60E381CAEE190901E248E7@mi8nycmail19.Mi8.com>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200910211330.38141.gianlucarenzi@eptar.com>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,107 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 20 October 2009 15:11:58 Sascha Hauer wrote:
-> Hi all,
->
-> I frequently get reports about bugs in the Freescale mxc nand driver.
-> Juergen Beisert and me invested some time to see what's going on in this
-> driver, so here are some results.
+On Tue, 20 Oct 2009 18:28:59 -0400, "H Hartley Sweeten" <hartleys@visionengravers.com> wrote:
+> > In an attempt to improve my responsiveness as maintainer, I'd already
+> > committed the first version. How does this look:
+> 
+> Very responsive indeed.  ;-)
+> 
+> Sorry about introducing the bug.  Your amended patch looks like it serves
+> the same purpose as my updated one.  Thanks for fixing that.
 
-The problem is caused by the fact the FreeScale's NAND Core Controller manages 
-the 2K Largepage NAND as 4 SmallPage pages joined with their own ECC codes and 
-badblock markers positions i.e. the smallpage badblock marker is located at 
-6th byte of the oobpage data (offset 5) (repeated for each page).
-To keep this NAND Controller fancy situation under kernel/mtd's control there 
-are 2 ways:
-1- Keep the location of the badblock marker at the first byte of oobpage data 
-(offset 0) as mtd driver expects to be the badblock marker, but the mxc_nand 
-driver MUST swap those locations *before* sending them to mtd.
-2- Tell to mtd through its badblock descriptors to use 6th location (offset 5) 
-as a badblock marker instead of the standard offset 0 (for each smallpage page 
-area).
-In the latter case, the hardware NAND Flash vendor MUST follow the same 
-badblock marker layout (i.e.: Numonyx NAND02G-B2D 2-Gbit, 2112-byte/1056-word 
-page, multiplane architecture, 1.8 V or 3 V, SLC NAND flash memories is using 
-both locations as badblock marker (offset 0 and offset 5) of oobpage data)
+Thank you.  Both looks good for me.
 
-In the first case we need to have a code like this to act the swap:
-/*
- * This function does the trick of swapping the 464th byte in the last RAM
- * buffer in the main area with the 0th byte in the spare area. This seems
- * to be the optimal way of addressing the NFC imcompatibility problem with
- * the NAND flash out of factory in terms of BI field.
- * Note: this function only operates on the NFC's internal RAM buffers and
- * for 2K page only.
- */
-static void mxc_swap_2k_bi_main_sp(void)
-{
-	u16 tmp1, tmp2, new_tmp1;
-	tmp1 = BAD_BLK_MARKER_464;
-	tmp2 = BAD_BLK_MARKER_SP_0;
-
-	new_tmp1 = (tmp1 & 0xFF00) | (tmp2 >> 8);
-	tmp2 = (tmp1 << 8) | (tmp2 & 0xFF);
-	BAD_BLK_MARKER_464 = new_tmp1;
-	BAD_BLK_MARKER_SP_0 = tmp2;
-}
-and you can use the standard layout of mtd.
-
-We are using the second case, and to make it works we had to use the following 
-ECCLayout as suggested by FreeScale using the HWECC:
-
-/*
- * OOB placement block for use with hardware ecc generation
- */
-static struct nand_ecclayout nand_hw_eccoob_8 = {
-	.eccbytes = 5,
-	.eccpos = {6, 7, 8, 9, 10},
-	.oobfree = {{0, 5}, {11, 5}}
-};
-
-static struct nand_ecclayout nand_hw_eccoob_16 = {
-	.eccbytes = 5,
-	.eccpos = {6, 7, 8, 9, 10},
-	.oobfree = {{0, 6}, {12, 4}}
-};
-
-static struct nand_ecclayout nand_hw_eccoob_2k = {
-	.eccbytes = 20,
-	.eccpos = {6, 7, 8, 9, 10, 22, 23, 24, 25, 26,
-		   38, 39, 40, 41, 42, 54, 55, 56, 57, 58},
-	.oobfree = {
-		    {.offset = 0,
-		     .length = 5},
-
-		    {.offset = 11,
-		     .length = 10},
-
-		    {.offset = 27,
-		     .length = 10},
-
-		    {.offset = 43,
-		     .length = 10},
-
-		    {.offset = 59,
-		     .length = 5}
-		    }
-};
-
-We hope to see a common way to ensure this NAND Controller in the next kernel 
-release, hopefully selected by a Kconfig entry (so to keep both cases valid).
-
-Best regards,
--- 
-           ,,,
-          (o o)
-======oOO==(_)==OOo======
-
-Gianluca Renzi
-R&D
-phone: +39.0542.609120
-fax: +39.0542.609212
-
-      .oooO  Oooo.
-======(   )==(   )=======
-       \ (    ) /
-        \_)  (_/
+Reviewed-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
