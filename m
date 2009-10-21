@@ -1,14 +1,29 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N0c4b-0006G5-Mp
-	for linux-mtd@lists.infradead.org; Wed, 21 Oct 2009 14:22:02 +0000
+	id 1N0c5i-0007E8-6b
+	for linux-mtd@lists.infradead.org; Wed, 21 Oct 2009 14:23:07 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [RFC] mxc nand controller updates
-Date: Wed, 21 Oct 2009 16:13:07 +0200
-Message-Id: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
-Cc: Vladimir Barinov <vova.barinov@gmail.com>, mathieu.berland@eads.com,
-	jbe@pengutronix.de, Eric Benard <ebenard@eukrea.com>, sha@pengutronix.de
+Subject: [PATCH 13/19] mxc_nand: Make main/spare areas runtime configurable
+Date: Wed, 21 Oct 2009 16:13:20 +0200
+Message-Id: <1256134406-25251-14-git-send-email-s.hauer@pengutronix.de>
+In-Reply-To: <1256134406-25251-13-git-send-email-s.hauer@pengutronix.de>
+References: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
+	<1256134406-25251-2-git-send-email-s.hauer@pengutronix.de>
+	<1256134406-25251-3-git-send-email-s.hauer@pengutronix.de>
+	<1256134406-25251-4-git-send-email-s.hauer@pengutronix.de>
+	<1256134406-25251-5-git-send-email-s.hauer@pengutronix.de>
+	<1256134406-25251-6-git-send-email-s.hauer@pengutronix.de>
+	<1256134406-25251-7-git-send-email-s.hauer@pengutronix.de>
+	<1256134406-25251-8-git-send-email-s.hauer@pengutronix.de>
+	<1256134406-25251-9-git-send-email-s.hauer@pengutronix.de>
+	<1256134406-25251-10-git-send-email-s.hauer@pengutronix.de>
+	<1256134406-25251-11-git-send-email-s.hauer@pengutronix.de>
+	<1256134406-25251-12-git-send-email-s.hauer@pengutronix.de>
+	<1256134406-25251-13-git-send-email-s.hauer@pengutronix.de>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, Eric Benard <ebenard@eukrea.com>,
+	Vladimir Barinov <vova.barinov@gmail.com>,
+	mathieu.berland@eads.com, jbe@pengutronix.de, sha@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,44 +33,139 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+The main/spare areas are on different addresses on later versions
+of the controller, so make them configurable.
 
-Here are several patches for the mxc nand controller. At the end
-of this series we are able to use this driver with the i.MX25/35
-SoCs. Please review and test if you do not want to see your boards
-break ;)
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ drivers/mtd/nand/mxc_nand.c |   42 ++++++++++++++++++++----------------------
+ 1 files changed, 20 insertions(+), 22 deletions(-)
 
-Sascha
-
-The following changes since commit 012abeea669ea49636cf952d13298bb68654146a:
-  Linus Torvalds (1):
-        Linux 2.6.32-rc5
-
-are available in the git repository at:
-
-  git://git.pengutronix.de/git/imx/linux-2.6.git mxc-nand
-
-Sascha Hauer (19):
-      Revert "mtd: mxc_nand: fix 2KiB pagesize NAND on i.MX27"
-      mxc_nand: cleanup eccoob descriptions
-      mxc_nand: cleanup initialization
-      mxc_nand: merge send_read_page and send_prog_page
-      mxc_nand: introduce mxc_do_addr_cycle
-      mxc nand: remove debug param
-      mxc nand: remove dead code
-      mxc nand: use resource_size()
-      mxc nand: use buffers
-      mxc nand: simplify command processing
-      mxc nand: modify send_page to send all pages, not only one
-      mxc_nand: remove unused defines
-      mxc_nand: Make main/spare areas runtime configurable
-      mxc_nand: Get rid of pagesize_2k flag
-      mxc_nand: Add NFC V2 support
-      mxc_nand: disable sp_en bit only once
-      mxc_nand: Allow flash based bbt
-      mxc_nand: remove TROP_US_DELAY
-      mxc_nand: use DRIVER_NAME where appropriate
-
- arch/arm/plat-mxc/include/mach/mxc_nand.h |    3 +-
- drivers/mtd/nand/mxc_nand.c               |  781 +++++++++++------------------
- 2 files changed, 297 insertions(+), 487 deletions(-)
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 2988f1d..450db4e 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -52,18 +52,6 @@
+ #define NFC_CONFIG1		0xE1A
+ #define NFC_CONFIG2		0xE1C
+ 
+-/* Addresses for NFC RAM BUFFER Main area 0 */
+-#define MAIN_AREA0		0x000
+-#define MAIN_AREA1		0x200
+-#define MAIN_AREA2		0x400
+-#define MAIN_AREA3		0x600
+-
+-/* Addresses for NFC SPARE BUFFER Spare area 0 */
+-#define SPARE_AREA0		0x800
+-#define SPARE_AREA1		0x810
+-#define SPARE_AREA2		0x820
+-#define SPARE_AREA3		0x830
+-
+ /* Set INT to 0, FCMD to 1, rest to 0 in NFC_CONFIG2 Register
+  * for Command operation */
+ #define NFC_CMD            0x1
+@@ -106,6 +94,11 @@ struct mxc_nand_host {
+ 	struct mtd_partition	*parts;
+ 	struct device		*dev;
+ 
++	void			*spare0;
++	void			*main_area0;
++	void			*main_area1;
++
++	void __iomem		*base;
+ 	void __iomem		*regs;
+ 	int			status_request;
+ 	int			pagesize_2k;
+@@ -262,7 +255,7 @@ static void send_read_id(struct mxc_nand_host *host)
+ 	wait_op_done(host, TROP_US_DELAY, true);
+ 
+ 	if (this->options & NAND_BUSWIDTH_16) {
+-		void __iomem *main_buf = host->regs + MAIN_AREA0;
++		void __iomem *main_buf = host->main_area0;
+ 		/* compress the ID info */
+ 		writeb(readb(main_buf + 2), main_buf + 1);
+ 		writeb(readb(main_buf + 4), main_buf + 2);
+@@ -270,14 +263,14 @@ static void send_read_id(struct mxc_nand_host *host)
+ 		writeb(readb(main_buf + 8), main_buf + 4);
+ 		writeb(readb(main_buf + 10), main_buf + 5);
+ 	}
+-	memcpy(host->data_buf, host->regs + MAIN_AREA0, 16);
++	memcpy(host->data_buf, host->main_area0, 16);
+ }
+ 
+ /* This function requests the NANDFC to perform a read of the
+  * NAND device status and returns the current status. */
+ static uint16_t get_dev_status(struct mxc_nand_host *host)
+ {
+-	void __iomem *main_buf = host->regs + MAIN_AREA1;
++	void __iomem *main_buf = host->main_area1;
+ 	uint32_t store;
+ 	uint16_t ret, tmp;
+ 	/* Issue status request to NAND device */
+@@ -462,7 +455,7 @@ static void copy_spare(struct mtd_info *mtd, bool bfrom)
+ 	u16 i, j;
+ 	u16 n = mtd->writesize >> 9;
+ 	u8 *d = host->data_buf + mtd->writesize;
+-	u8 *s = host->regs + SPARE_AREA0;
++	u8 *s = host->spare0;
+ 	u16 t = host->spare_len;
+ 
+ 	j = (mtd->oobsize / n >> 1) << 1;
+@@ -572,7 +565,7 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 
+ 		send_page(host, NFC_OUTPUT);
+ 
+-		memcpy(host->data_buf, host->regs + MAIN_AREA0, mtd->writesize);
++		memcpy(host->data_buf, host->main_area0, mtd->writesize);
+ 		copy_spare(mtd, true);
+ 		break;
+ 
+@@ -608,7 +601,7 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 		break;
+ 
+ 	case NAND_CMD_PAGEPROG:
+-		memcpy(host->regs + MAIN_AREA0, host->data_buf, mtd->writesize);
++		memcpy(host->main_area0, host->data_buf, mtd->writesize);
+ 		copy_spare(mtd, false);
+ 		send_page(host, NFC_INPUT);
+ 		send_cmd(host, command, true);
+@@ -686,12 +679,17 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 		goto eres;
+ 	}
+ 
+-	host->regs = ioremap(res->start, resource_size(res));
+-	if (!host->regs) {
++	host->base = ioremap(res->start, resource_size(res));
++	if (!host->base) {
+ 		err = -ENOMEM;
+ 		goto eres;
+ 	}
+ 
++	host->regs = host->base;
++	host->main_area0 = host->base;
++	host->main_area1 = host->base + 0x200;
++	host->spare0 = host->base + 0x800;
++
+ 	tmp = readw(host->regs + NFC_CONFIG1);
+ 	tmp |= NFC_INT_MSK;
+ 	writew(tmp, host->regs + NFC_CONFIG1);
+@@ -778,7 +776,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ escan:
+ 	free_irq(host->irq, host);
+ eirq:
+-	iounmap(host->regs);
++	iounmap(host->base);
+ eres:
+ 	clk_put(host->clk);
+ eclk:
+@@ -797,7 +795,7 @@ static int __devexit mxcnd_remove(struct platform_device *pdev)
+ 
+ 	nand_release(&host->mtd);
+ 	free_irq(host->irq, host);
+-	iounmap(host->regs);
++	iounmap(host->base);
+ 	kfree(host);
+ 
+ 	return 0;
+-- 
+1.6.5
