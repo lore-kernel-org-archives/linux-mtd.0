@@ -1,13 +1,13 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N0cHh-0004GQ-D9
-	for linux-mtd@lists.infradead.org; Wed, 21 Oct 2009 14:35:32 +0000
+	id 1N0cRE-0004BU-4b
+	for linux-mtd@lists.infradead.org; Wed, 21 Oct 2009 14:45:23 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 15/19] mxc_nand: Add NFC V2 support
-Date: Wed, 21 Oct 2009 16:13:22 +0200
-Message-Id: <1256134406-25251-16-git-send-email-s.hauer@pengutronix.de>
-In-Reply-To: <1256134406-25251-15-git-send-email-s.hauer@pengutronix.de>
+Subject: [PATCH 10/19] mxc nand: simplify command processing
+Date: Wed, 21 Oct 2009 16:13:17 +0200
+Message-Id: <1256134406-25251-11-git-send-email-s.hauer@pengutronix.de>
+In-Reply-To: <1256134406-25251-10-git-send-email-s.hauer@pengutronix.de>
 References: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
 	<1256134406-25251-2-git-send-email-s.hauer@pengutronix.de>
 	<1256134406-25251-3-git-send-email-s.hauer@pengutronix.de>
@@ -18,11 +18,6 @@ References: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
 	<1256134406-25251-8-git-send-email-s.hauer@pengutronix.de>
 	<1256134406-25251-9-git-send-email-s.hauer@pengutronix.de>
 	<1256134406-25251-10-git-send-email-s.hauer@pengutronix.de>
-	<1256134406-25251-11-git-send-email-s.hauer@pengutronix.de>
-	<1256134406-25251-12-git-send-email-s.hauer@pengutronix.de>
-	<1256134406-25251-13-git-send-email-s.hauer@pengutronix.de>
-	<1256134406-25251-14-git-send-email-s.hauer@pengutronix.de>
-	<1256134406-25251-15-git-send-email-s.hauer@pengutronix.de>
 Cc: Sascha Hauer <s.hauer@pengutronix.de>, Eric Benard <ebenard@eukrea.com>,
 	Vladimir Barinov <vova.barinov@gmail.com>,
 	mathieu.berland@eads.com, jbe@pengutronix.de, sha@pengutronix.de
@@ -35,188 +30,140 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The v2 version of this controller is used on i.MX35/25 SoCs.
+Instead of having two switch/case with other operations
+in between, use only one switch/case
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- drivers/mtd/nand/mxc_nand.c |   81 ++++++++++++++++++++++++++++++++++++-------
- 1 files changed, 68 insertions(+), 13 deletions(-)
+ drivers/mtd/nand/mxc_nand.c |   81 ++++++++++++++++++------------------------
+ 1 files changed, 35 insertions(+), 46 deletions(-)
 
 diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 6525d0f..f2297eb 100644
+index 4c338ae..e5de71a 100644
 --- a/drivers/mtd/nand/mxc_nand.c
 +++ b/drivers/mtd/nand/mxc_nand.c
-@@ -33,9 +33,13 @@
- 
- #include <asm/mach/flash.h>
- #include <mach/mxc_nand.h>
-+#include <mach/hardware.h>
- 
- #define DRIVER_NAME "mxc_nand"
- 
-+#define nfc_is_v21()		(cpu_is_mx25() || cpu_is_mx35())
-+#define nfc_is_v1()		(cpu_is_mx31() || cpu_is_mx27())
-+
- /* Addresses for NFC registers */
- #define NFC_BUF_SIZE		0xE00
- #define NFC_BUF_ADDR		0xE04
-@@ -46,8 +50,10 @@
- #define NFC_RSLTMAIN_AREA	0xE0E
- #define NFC_RSLTSPARE_AREA	0xE10
- #define NFC_WRPROT		0xE12
--#define NFC_UNLOCKSTART_BLKADDR	0xE14
--#define NFC_UNLOCKEND_BLKADDR	0xE16
-+#define NFC_V1_UNLOCKSTART_BLKADDR	0xe14
-+#define NFC_V1_UNLOCKEND_BLKADDR	0xe16
-+#define NFC_V21_UNLOCKSTART_BLKADDR	0xe20
-+#define NFC_V21_UNLOCKEND_BLKADDR	0xe22
- #define NFC_NF_WRPRST		0xE18
- #define NFC_CONFIG1		0xE1A
- #define NFC_CONFIG2		0xE1C
-@@ -116,19 +122,47 @@ struct mxc_nand_host {
- #define TROP_US_DELAY   2000
- 
- /* OOB placement block for use with hardware ecc generation */
--static struct nand_ecclayout nand_hw_eccoob_smallpage = {
-+static struct nand_ecclayout nandv1_hw_eccoob_smallpage = {
- 	.eccbytes = 5,
- 	.eccpos = {6, 7, 8, 9, 10},
- 	.oobfree = {{0, 5}, {12, 4}, }
- };
- 
--static struct nand_ecclayout nand_hw_eccoob_largepage = {
-+static struct nand_ecclayout nandv1_hw_eccoob_largepage = {
- 	.eccbytes = 20,
- 	.eccpos = {6, 7, 8, 9, 10, 22, 23, 24, 25, 26,
- 		   38, 39, 40, 41, 42, 54, 55, 56, 57, 58},
- 	.oobfree = {{2, 4}, {11, 10}, {27, 10}, {43, 10}, {59, 5}, }
- };
- 
-+/* OOB description for 512 byte pages with 16 byte OOB */
-+static struct nand_ecclayout nandv2_hw_eccoob_smallpage = {
-+	.eccbytes = 1 * 9,
-+	.eccpos = {
-+		 7,  8,  9, 10, 11, 12, 13, 14, 15
-+	},
-+	.oobfree = {
-+		{.offset = 0, .length = 5}
-+	}
-+};
-+
-+/* OOB description for 2048 byte pages with 64 byte OOB */
-+static struct nand_ecclayout nandv2_hw_eccoob_largepage = {
-+	.eccbytes = 4 * 9,
-+	.eccpos = {
-+		 7,  8,  9, 10, 11, 12, 13, 14, 15,
-+		23, 24, 25, 26, 27, 28, 29, 30, 31,
-+		39, 40, 41, 42, 43, 44, 45, 46, 47,
-+		55, 56, 57, 58, 59, 60, 61, 62, 63
-+	},
-+	.oobfree = {
-+		{.offset = 2, .length = 4},
-+		{.offset = 16, .length = 7},
-+		{.offset = 32, .length = 7},
-+		{.offset = 48, .length = 7}
-+	}
-+};
-+
- #ifdef CONFIG_MTD_PARTITIONS
- static const char *part_probes[] = { "RedBoot", "cmdlinepart", NULL };
- #endif
-@@ -219,7 +253,7 @@ static void send_page(struct mtd_info *mtd, unsigned int ops)
+@@ -533,7 +533,6 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ {
+ 	struct nand_chip *nand_chip = mtd->priv;
  	struct mxc_nand_host *host = nand_chip->priv;
- 	int bufs, i;
+-	int useirq = true;
  
--	if (mtd->writesize > 512)
-+	if (nfc_is_v1() && mtd->writesize > 512)
- 		bufs = 4;
- 	else
- 		bufs = 1;
-@@ -613,6 +647,7 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
- 		send_cmd(host, command, true);
- 		mxc_do_addr_cycle(mtd, column, page_addr);
- 		send_read_id(host);
-+		host->buf_start = column;
+ 	DEBUG(MTD_DEBUG_LEVEL3,
+ 	      "mxc_nand_command (cmd = 0x%x, col = 0x%x, page = 0x%x)\n",
+@@ -548,19 +547,37 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 	case NAND_CMD_STATUS:
+ 		host->buf_start = 0;
+ 		host->status_request = true;
+-		break;
+ 
+-	case NAND_CMD_READ0:
+-		host->buf_start = column;
+-		useirq = false;
++		send_cmd(host, command, true);
++		mxc_do_addr_cycle(mtd, column, page_addr);
  		break;
  
- 	case NAND_CMD_ERASE1:
-@@ -633,6 +668,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	uint16_t tmp;
- 	int err = 0, nr_parts = 0;
-+	struct nand_ecclayout *oob_smallpage, *oob_largepage;
++	case NAND_CMD_READ0:
+ 	case NAND_CMD_READOOB:
+-		host->buf_start = column + mtd->writesize;
++		if (command == NAND_CMD_READ0)
++			host->buf_start = column;
++		else
++			host->buf_start = column + mtd->writesize;
  
- 	/* Allocate memory for MTD device structure and private data */
- 	host = kzalloc(sizeof(struct mxc_nand_host) + NAND_MAX_PAGESIZE +
-@@ -641,7 +677,6 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	host->data_buf = (uint8_t *)(host + 1);
--	host->spare_len = 16;
- 
- 	host->dev = &pdev->dev;
- 	/* structures must be linked */
-@@ -686,10 +721,23 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 		goto eres;
- 	}
- 
--	host->regs = host->base;
- 	host->main_area0 = host->base;
- 	host->main_area1 = host->base + 0x200;
--	host->spare0 = host->base + 0x800;
+-		useirq = false;
+ 		if (host->pagesize_2k)
+ 			command = NAND_CMD_READ0; /* only READ0 is valid */
 +
-+	if (nfc_is_v21()) {
-+		host->regs = host->base + 0x1000;
-+		host->spare0 = host->base + 0x1000;
-+		host->spare_len = 64;
-+		oob_smallpage = &nandv2_hw_eccoob_smallpage;
-+		oob_largepage = &nandv2_hw_eccoob_largepage;
-+	} else if (nfc_is_v1()) {
-+		host->regs = host->base;
-+		host->spare0 = host->base + 0x800;
-+		host->spare_len = 16;
-+		oob_smallpage = &nandv1_hw_eccoob_smallpage;
-+		oob_largepage = &nandv1_hw_eccoob_largepage;
-+	} else
-+		BUG();
++		send_cmd(host, command, false);
++		mxc_do_addr_cycle(mtd, column, page_addr);
++
++		if (host->pagesize_2k) {
++			/* send read confirm command */
++			send_cmd(host, NAND_CMD_READSTART, true);
++			/* read for each AREA */
++			send_page(host, 0, NFC_OUTPUT);
++			send_page(host, 1, NFC_OUTPUT);
++			send_page(host, 2, NFC_OUTPUT);
++			send_page(host, 3, NFC_OUTPUT);
++		} else
++			send_page(host, 0, NFC_OUTPUT);
++
++		memcpy(host->data_buf, host->regs + MAIN_AREA0, mtd->writesize);
++		copy_spare(mtd, true);
+ 		break;
  
- 	tmp = readw(host->regs + NFC_CONFIG1);
- 	tmp |= NFC_INT_MSK;
-@@ -711,15 +759,22 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 	writew(0x2, host->regs + NFC_CONFIG);
+ 	case NAND_CMD_SEQIN:
+@@ -589,7 +606,9 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 			if (!host->pagesize_2k)
+ 				send_cmd(host, NAND_CMD_READ0, false);
+ 		}
+-		useirq = false;
++
++		send_cmd(host, command, false);
++		mxc_do_addr_cycle(mtd, column, page_addr);
+ 		break;
  
- 	/* Blocks to be unlocked */
--	writew(0x0, host->regs + NFC_UNLOCKSTART_BLKADDR);
--	writew(0x4000, host->regs + NFC_UNLOCKEND_BLKADDR);
-+	if (nfc_is_v21()) {
-+		writew(0x0, host->regs + NFC_V21_UNLOCKSTART_BLKADDR);
-+	        writew(0xffff, host->regs + NFC_V21_UNLOCKEND_BLKADDR);
-+		this->ecc.bytes = 9;
-+	} else if (nfc_is_v1()) {
-+		writew(0x0, host->regs + NFC_V1_UNLOCKSTART_BLKADDR);
-+	        writew(0x4000, host->regs + NFC_V1_UNLOCKEND_BLKADDR);
-+		this->ecc.bytes = 3;
-+	} else
-+		BUG();
+ 	case NAND_CMD_PAGEPROG:
+@@ -604,51 +623,21 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 			send_page(host, 3, NFC_INPUT);
+ 		}
  
- 	/* Unlock Block Command for given address range */
- 	writew(0x4, host->regs + NFC_WRPROT);
+-		break;
+-
+-	case NAND_CMD_ERASE1:
+-		useirq = false;
+-		break;
+-	}
+-
+-	/* Write out the command to the device. */
+-	send_cmd(host, command, useirq);
+-	mxc_do_addr_cycle(mtd, column, page_addr);
+-
+-	/* Command post-processing step */
+-	switch (command) {
+-
+-	case NAND_CMD_RESET:
+-		break;
+-
+-	case NAND_CMD_READOOB:
+-	case NAND_CMD_READ0:
+-		if (host->pagesize_2k) {
+-			/* send read confirm command */
+-			send_cmd(host, NAND_CMD_READSTART, true);
+-			/* read for each AREA */
+-			send_page(host, 0, NFC_OUTPUT);
+-			send_page(host, 1, NFC_OUTPUT);
+-			send_page(host, 2, NFC_OUTPUT);
+-			send_page(host, 3, NFC_OUTPUT);
+-		} else
+-			send_page(host, 0, NFC_OUTPUT);
+-
+-		memcpy(host->data_buf, host->regs + MAIN_AREA0, mtd->writesize);
+-		copy_spare(mtd, true);
++		send_cmd(host, command, true);
++		mxc_do_addr_cycle(mtd, column, page_addr);
+ 		break;
  
- 	this->ecc.size = 512;
--	this->ecc.bytes = 3;
--	this->ecc.layout = &nand_hw_eccoob_smallpage;
-+	this->ecc.layout = oob_smallpage;
+ 	case NAND_CMD_READID:
++		send_cmd(host, command, true);
++		mxc_do_addr_cycle(mtd, column, page_addr);
+ 		send_read_id(host);
+ 		break;
  
- 	if (pdata->hw_ecc) {
- 		this->ecc.calculate = mxc_nand_calculate_ecc;
-@@ -747,7 +802,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+-	case NAND_CMD_PAGEPROG:
+-		break;
+-
+-	case NAND_CMD_STATUS:
+-		break;
+-
++	case NAND_CMD_ERASE1:
+ 	case NAND_CMD_ERASE2:
++		send_cmd(host, command, false);
++		mxc_do_addr_cycle(mtd, column, page_addr);
++
+ 		break;
  	}
- 
- 	if (mtd->writesize == 2048)
--		this->ecc.layout = &nand_hw_eccoob_largepage;
-+		this->ecc.layout = oob_largepage;
- 
- 	/* second phase scan */
- 	if (nand_scan_tail(mtd)) {
+ }
 -- 
 1.6.5
