@@ -1,14 +1,13 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N0cEC-00015v-JW
-	for linux-mtd@lists.infradead.org; Wed, 21 Oct 2009 14:31:56 +0000
+	id 1N0cHh-0004GQ-D9
+	for linux-mtd@lists.infradead.org; Wed, 21 Oct 2009 14:35:32 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 11/19] mxc nand: modify send_page to send all pages,
-	not only one
-Date: Wed, 21 Oct 2009 16:13:18 +0200
-Message-Id: <1256134406-25251-12-git-send-email-s.hauer@pengutronix.de>
-In-Reply-To: <1256134406-25251-11-git-send-email-s.hauer@pengutronix.de>
+Subject: [PATCH 15/19] mxc_nand: Add NFC V2 support
+Date: Wed, 21 Oct 2009 16:13:22 +0200
+Message-Id: <1256134406-25251-16-git-send-email-s.hauer@pengutronix.de>
+In-Reply-To: <1256134406-25251-15-git-send-email-s.hauer@pengutronix.de>
 References: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
 	<1256134406-25251-2-git-send-email-s.hauer@pengutronix.de>
 	<1256134406-25251-3-git-send-email-s.hauer@pengutronix.de>
@@ -20,6 +19,10 @@ References: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
 	<1256134406-25251-9-git-send-email-s.hauer@pengutronix.de>
 	<1256134406-25251-10-git-send-email-s.hauer@pengutronix.de>
 	<1256134406-25251-11-git-send-email-s.hauer@pengutronix.de>
+	<1256134406-25251-12-git-send-email-s.hauer@pengutronix.de>
+	<1256134406-25251-13-git-send-email-s.hauer@pengutronix.de>
+	<1256134406-25251-14-git-send-email-s.hauer@pengutronix.de>
+	<1256134406-25251-15-git-send-email-s.hauer@pengutronix.de>
 Cc: Sascha Hauer <s.hauer@pengutronix.de>, Eric Benard <ebenard@eukrea.com>,
 	Vladimir Barinov <vova.barinov@gmail.com>,
 	mathieu.berland@eads.com, jbe@pengutronix.de, sha@pengutronix.de
@@ -32,84 +35,188 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The v2 version of this controller is used on i.MX35/25 SoCs.
+
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- drivers/mtd/nand/mxc_nand.c |   45 +++++++++++++++++++-----------------------
- 1 files changed, 20 insertions(+), 25 deletions(-)
+ drivers/mtd/nand/mxc_nand.c |   81 ++++++++++++++++++++++++++++++++++++-------
+ 1 files changed, 68 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index e5de71a..04b2bf2 100644
+index 6525d0f..f2297eb 100644
 --- a/drivers/mtd/nand/mxc_nand.c
 +++ b/drivers/mtd/nand/mxc_nand.c
-@@ -228,16 +228,25 @@ static void send_addr(struct mxc_nand_host *host, uint16_t addr, int islast)
- 	wait_op_done(host, TROP_US_DELAY, islast);
- }
+@@ -33,9 +33,13 @@
  
--static void send_page(struct mxc_nand_host *host, uint8_t buf_id,
--		unsigned int ops)
-+static void send_page(struct mxc_nand_host *host, unsigned int ops)
- {
--	/* NANDFC buffer 0 is used for page read/write */
--	writew(buf_id, host->regs + NFC_BUF_ADDR);
-+	int bufs, i;
+ #include <asm/mach/flash.h>
+ #include <mach/mxc_nand.h>
++#include <mach/hardware.h>
  
--	writew(ops, host->regs + NFC_CONFIG2);
-+	if (host->pagesize_2k)
-+		bufs = 4;
-+	else
-+		bufs = 1;
+ #define DRIVER_NAME "mxc_nand"
  
--	/* Wait for operation to complete */
--	wait_op_done(host, TROP_US_DELAY, true);
-+	for (i = 0; i < bufs; i++) {
++#define nfc_is_v21()		(cpu_is_mx25() || cpu_is_mx35())
++#define nfc_is_v1()		(cpu_is_mx31() || cpu_is_mx27())
 +
-+		/* NANDFC buffer 0 is used for page read/write */
-+		writew(i, host->regs + NFC_BUF_ADDR);
-+
-+		writew(ops, host->regs + NFC_CONFIG2);
-+
-+		/* Wait for operation to complete */
-+		wait_op_done(host, TROP_US_DELAY, true);
+ /* Addresses for NFC registers */
+ #define NFC_BUF_SIZE		0xE00
+ #define NFC_BUF_ADDR		0xE04
+@@ -46,8 +50,10 @@
+ #define NFC_RSLTMAIN_AREA	0xE0E
+ #define NFC_RSLTSPARE_AREA	0xE10
+ #define NFC_WRPROT		0xE12
+-#define NFC_UNLOCKSTART_BLKADDR	0xE14
+-#define NFC_UNLOCKEND_BLKADDR	0xE16
++#define NFC_V1_UNLOCKSTART_BLKADDR	0xe14
++#define NFC_V1_UNLOCKEND_BLKADDR	0xe16
++#define NFC_V21_UNLOCKSTART_BLKADDR	0xe20
++#define NFC_V21_UNLOCKEND_BLKADDR	0xe22
+ #define NFC_NF_WRPRST		0xE18
+ #define NFC_CONFIG1		0xE1A
+ #define NFC_CONFIG2		0xE1C
+@@ -116,19 +122,47 @@ struct mxc_nand_host {
+ #define TROP_US_DELAY   2000
+ 
+ /* OOB placement block for use with hardware ecc generation */
+-static struct nand_ecclayout nand_hw_eccoob_smallpage = {
++static struct nand_ecclayout nandv1_hw_eccoob_smallpage = {
+ 	.eccbytes = 5,
+ 	.eccpos = {6, 7, 8, 9, 10},
+ 	.oobfree = {{0, 5}, {12, 4}, }
+ };
+ 
+-static struct nand_ecclayout nand_hw_eccoob_largepage = {
++static struct nand_ecclayout nandv1_hw_eccoob_largepage = {
+ 	.eccbytes = 20,
+ 	.eccpos = {6, 7, 8, 9, 10, 22, 23, 24, 25, 26,
+ 		   38, 39, 40, 41, 42, 54, 55, 56, 57, 58},
+ 	.oobfree = {{2, 4}, {11, 10}, {27, 10}, {43, 10}, {59, 5}, }
+ };
+ 
++/* OOB description for 512 byte pages with 16 byte OOB */
++static struct nand_ecclayout nandv2_hw_eccoob_smallpage = {
++	.eccbytes = 1 * 9,
++	.eccpos = {
++		 7,  8,  9, 10, 11, 12, 13, 14, 15
++	},
++	.oobfree = {
++		{.offset = 0, .length = 5}
 +	}
- }
- 
- /* Request the NANDFC to perform a read of the NAND device ID. */
-@@ -565,16 +574,10 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
- 		send_cmd(host, command, false);
- 		mxc_do_addr_cycle(mtd, column, page_addr);
- 
--		if (host->pagesize_2k) {
--			/* send read confirm command */
-+		if (host->pagesize_2k)
- 			send_cmd(host, NAND_CMD_READSTART, true);
--			/* read for each AREA */
--			send_page(host, 0, NFC_OUTPUT);
--			send_page(host, 1, NFC_OUTPUT);
--			send_page(host, 2, NFC_OUTPUT);
--			send_page(host, 3, NFC_OUTPUT);
--		} else
--			send_page(host, 0, NFC_OUTPUT);
++};
 +
-+		send_page(host, NFC_OUTPUT);
++/* OOB description for 2048 byte pages with 64 byte OOB */
++static struct nand_ecclayout nandv2_hw_eccoob_largepage = {
++	.eccbytes = 4 * 9,
++	.eccpos = {
++		 7,  8,  9, 10, 11, 12, 13, 14, 15,
++		23, 24, 25, 26, 27, 28, 29, 30, 31,
++		39, 40, 41, 42, 43, 44, 45, 46, 47,
++		55, 56, 57, 58, 59, 60, 61, 62, 63
++	},
++	.oobfree = {
++		{.offset = 2, .length = 4},
++		{.offset = 16, .length = 7},
++		{.offset = 32, .length = 7},
++		{.offset = 48, .length = 7}
++	}
++};
++
+ #ifdef CONFIG_MTD_PARTITIONS
+ static const char *part_probes[] = { "RedBoot", "cmdlinepart", NULL };
+ #endif
+@@ -219,7 +253,7 @@ static void send_page(struct mtd_info *mtd, unsigned int ops)
+ 	struct mxc_nand_host *host = nand_chip->priv;
+ 	int bufs, i;
  
- 		memcpy(host->data_buf, host->regs + MAIN_AREA0, mtd->writesize);
- 		copy_spare(mtd, true);
-@@ -614,15 +617,7 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
- 	case NAND_CMD_PAGEPROG:
- 		memcpy(host->regs + MAIN_AREA0, host->data_buf, mtd->writesize);
- 		copy_spare(mtd, false);
--		send_page(host, 0, NFC_INPUT);
--
--		if (host->pagesize_2k) {
--			/* data in 4 areas datas */
--			send_page(host, 1, NFC_INPUT);
--			send_page(host, 2, NFC_INPUT);
--			send_page(host, 3, NFC_INPUT);
--		}
--
-+		send_page(host, NFC_INPUT);
+-	if (mtd->writesize > 512)
++	if (nfc_is_v1() && mtd->writesize > 512)
+ 		bufs = 4;
+ 	else
+ 		bufs = 1;
+@@ -613,6 +647,7 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
  		send_cmd(host, command, true);
  		mxc_do_addr_cycle(mtd, column, page_addr);
+ 		send_read_id(host);
++		host->buf_start = column;
  		break;
+ 
+ 	case NAND_CMD_ERASE1:
+@@ -633,6 +668,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	uint16_t tmp;
+ 	int err = 0, nr_parts = 0;
++	struct nand_ecclayout *oob_smallpage, *oob_largepage;
+ 
+ 	/* Allocate memory for MTD device structure and private data */
+ 	host = kzalloc(sizeof(struct mxc_nand_host) + NAND_MAX_PAGESIZE +
+@@ -641,7 +677,6 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	host->data_buf = (uint8_t *)(host + 1);
+-	host->spare_len = 16;
+ 
+ 	host->dev = &pdev->dev;
+ 	/* structures must be linked */
+@@ -686,10 +721,23 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 		goto eres;
+ 	}
+ 
+-	host->regs = host->base;
+ 	host->main_area0 = host->base;
+ 	host->main_area1 = host->base + 0x200;
+-	host->spare0 = host->base + 0x800;
++
++	if (nfc_is_v21()) {
++		host->regs = host->base + 0x1000;
++		host->spare0 = host->base + 0x1000;
++		host->spare_len = 64;
++		oob_smallpage = &nandv2_hw_eccoob_smallpage;
++		oob_largepage = &nandv2_hw_eccoob_largepage;
++	} else if (nfc_is_v1()) {
++		host->regs = host->base;
++		host->spare0 = host->base + 0x800;
++		host->spare_len = 16;
++		oob_smallpage = &nandv1_hw_eccoob_smallpage;
++		oob_largepage = &nandv1_hw_eccoob_largepage;
++	} else
++		BUG();
+ 
+ 	tmp = readw(host->regs + NFC_CONFIG1);
+ 	tmp |= NFC_INT_MSK;
+@@ -711,15 +759,22 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	writew(0x2, host->regs + NFC_CONFIG);
+ 
+ 	/* Blocks to be unlocked */
+-	writew(0x0, host->regs + NFC_UNLOCKSTART_BLKADDR);
+-	writew(0x4000, host->regs + NFC_UNLOCKEND_BLKADDR);
++	if (nfc_is_v21()) {
++		writew(0x0, host->regs + NFC_V21_UNLOCKSTART_BLKADDR);
++	        writew(0xffff, host->regs + NFC_V21_UNLOCKEND_BLKADDR);
++		this->ecc.bytes = 9;
++	} else if (nfc_is_v1()) {
++		writew(0x0, host->regs + NFC_V1_UNLOCKSTART_BLKADDR);
++	        writew(0x4000, host->regs + NFC_V1_UNLOCKEND_BLKADDR);
++		this->ecc.bytes = 3;
++	} else
++		BUG();
+ 
+ 	/* Unlock Block Command for given address range */
+ 	writew(0x4, host->regs + NFC_WRPROT);
+ 
+ 	this->ecc.size = 512;
+-	this->ecc.bytes = 3;
+-	this->ecc.layout = &nand_hw_eccoob_smallpage;
++	this->ecc.layout = oob_smallpage;
+ 
+ 	if (pdata->hw_ecc) {
+ 		this->ecc.calculate = mxc_nand_calculate_ecc;
+@@ -747,7 +802,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	if (mtd->writesize == 2048)
+-		this->ecc.layout = &nand_hw_eccoob_largepage;
++		this->ecc.layout = oob_largepage;
+ 
+ 	/* second phase scan */
+ 	if (nand_scan_tail(mtd)) {
 -- 
 1.6.5
