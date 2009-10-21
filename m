@@ -1,13 +1,13 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N0cAR-0004LD-PN
-	for linux-mtd@lists.infradead.org; Wed, 21 Oct 2009 14:28:00 +0000
+	id 1N0cB0-0005Gc-4M
+	for linux-mtd@lists.infradead.org; Wed, 21 Oct 2009 14:28:37 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 07/19] mxc nand: remove dead code
-Date: Wed, 21 Oct 2009 16:13:14 +0200
-Message-Id: <1256134406-25251-8-git-send-email-s.hauer@pengutronix.de>
-In-Reply-To: <1256134406-25251-7-git-send-email-s.hauer@pengutronix.de>
+Subject: [PATCH 09/19] mxc nand: use buffers
+Date: Wed, 21 Oct 2009 16:13:16 +0200
+Message-Id: <1256134406-25251-10-git-send-email-s.hauer@pengutronix.de>
+In-Reply-To: <1256134406-25251-9-git-send-email-s.hauer@pengutronix.de>
 References: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
 	<1256134406-25251-2-git-send-email-s.hauer@pengutronix.de>
 	<1256134406-25251-3-git-send-email-s.hauer@pengutronix.de>
@@ -15,6 +15,8 @@ References: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
 	<1256134406-25251-5-git-send-email-s.hauer@pengutronix.de>
 	<1256134406-25251-6-git-send-email-s.hauer@pengutronix.de>
 	<1256134406-25251-7-git-send-email-s.hauer@pengutronix.de>
+	<1256134406-25251-8-git-send-email-s.hauer@pengutronix.de>
+	<1256134406-25251-9-git-send-email-s.hauer@pengutronix.de>
 Cc: Sascha Hauer <s.hauer@pengutronix.de>, Eric Benard <ebenard@eukrea.com>,
 	Vladimir Barinov <vova.barinov@gmail.com>,
 	mathieu.berland@eads.com, jbe@pengutronix.de, sha@pengutronix.de
@@ -27,38 +29,470 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The NAND controller has some limitations how to access the
+internal buffers. It only allows 32 bit accesses. The driver
+used to work around this by having special alignment aware
+copy routines.
+We now copy the whole page to a buffer in memory and let the
+access functions use this buffer. This simplifies the driver.
+A bonnie++ test showed that this has no negative performance
+impact on the driver.
+
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- drivers/mtd/nand/mxc_nand.c |   17 -----------------
- 1 files changed, 0 insertions(+), 17 deletions(-)
+ drivers/mtd/nand/mxc_nand.c |  310 +++++++++++--------------------------------
+ 1 files changed, 77 insertions(+), 233 deletions(-)
 
 diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index cd09196..74c5dbc 100644
+index 127e0b7..4c338ae 100644
 --- a/drivers/mtd/nand/mxc_nand.c
 +++ b/drivers/mtd/nand/mxc_nand.c
-@@ -620,23 +620,6 @@ static void mxc_nand_select_chip(struct mtd_info *mtd, int chip)
+@@ -107,15 +107,17 @@ struct mxc_nand_host {
+ 	struct device		*dev;
+ 
+ 	void __iomem		*regs;
+-	int			spare_only;
+ 	int			status_request;
+ 	int			pagesize_2k;
+-	uint16_t		col_addr;
+ 	struct clk		*clk;
+ 	int			clk_act;
+ 	int			irq;
+ 
+ 	wait_queue_head_t	irq_waitq;
++
++	uint8_t			*data_buf;
++	unsigned int		buf_start;
++	int			spare_len;
+ };
+ 
+ /* Define delays in microsec for NAND device operations */
+@@ -227,23 +229,11 @@ static void send_addr(struct mxc_nand_host *host, uint16_t addr, int islast)
+ }
+ 
+ static void send_page(struct mxc_nand_host *host, uint8_t buf_id,
+-			int spare_only, unsigned int ops)
++		unsigned int ops)
+ {
+-	DEBUG(MTD_DEBUG_LEVEL3, "send_page (%d)\n", spare_only);
+-
+ 	/* NANDFC buffer 0 is used for page read/write */
+ 	writew(buf_id, host->regs + NFC_BUF_ADDR);
+ 
+-	/* Configure spare or page+spare access */
+-	if (!host->pagesize_2k) {
+-		uint16_t config1 = readw(host->regs + NFC_CONFIG1);
+-		if (spare_only)
+-			config1 |= NFC_SP_EN;
+-		else
+-			config1 &= ~(NFC_SP_EN);
+-		writew(config1, host->regs + NFC_CONFIG1);
+-	}
+-
+ 	writew(ops, host->regs + NFC_CONFIG2);
+ 
+ 	/* Wait for operation to complete */
+@@ -278,6 +268,7 @@ static void send_read_id(struct mxc_nand_host *host)
+ 		writeb(readb(main_buf + 8), main_buf + 4);
+ 		writeb(readb(main_buf + 10), main_buf + 5);
+ 	}
++	memcpy(host->data_buf, host->regs + MAIN_AREA0, 16);
+ }
+ 
+ /* This function requests the NANDFC to perform a read of the
+@@ -363,32 +354,14 @@ static u_char mxc_nand_read_byte(struct mtd_info *mtd)
+ {
  	struct nand_chip *nand_chip = mtd->priv;
  	struct mxc_nand_host *host = nand_chip->priv;
+-	uint8_t ret = 0;
+-	uint16_t col, rd_word;
+-	uint16_t __iomem *main_buf = host->regs + MAIN_AREA0;
+-	uint16_t __iomem *spare_buf = host->regs + SPARE_AREA0;
++	uint8_t ret;
  
--#ifdef CONFIG_MTD_NAND_MXC_FORCE_CE
--	if (chip > 0) {
--		DEBUG(MTD_DEBUG_LEVEL0,
--		      "ERROR:  Illegal chip select (chip = %d)\n", chip);
--		return;
+ 	/* Check for status request */
+ 	if (host->status_request)
+ 		return get_dev_status(host) & 0xFF;
+ 
+-	/* Get column for 16-bit access */
+-	col = host->col_addr >> 1;
+-
+-	/* If we are accessing the spare region */
+-	if (host->spare_only)
+-		rd_word = readw(&spare_buf[col]);
+-	else
+-		rd_word = readw(&main_buf[col]);
+-
+-	/* Pick upper/lower byte of word from RAM buffer */
+-	if (host->col_addr & 0x1)
+-		ret = (rd_word >> 8) & 0xFF;
+-	else
+-		ret = rd_word & 0xFF;
+-
+-	/* Update saved column address */
+-	host->col_addr++;
++	ret = *(uint8_t *)(host->data_buf + host->buf_start);
++	host->buf_start++;
+ 
+ 	return ret;
+ }
+@@ -397,33 +370,10 @@ static uint16_t mxc_nand_read_word(struct mtd_info *mtd)
+ {
+ 	struct nand_chip *nand_chip = mtd->priv;
+ 	struct mxc_nand_host *host = nand_chip->priv;
+-	uint16_t col, rd_word, ret;
+-	uint16_t __iomem *p;
++	uint16_t ret;
+ 
+-	DEBUG(MTD_DEBUG_LEVEL3,
+-	      "mxc_nand_read_word(col = %d)\n", host->col_addr);
+-
+-	col = host->col_addr;
+-	/* Adjust saved column address */
+-	if (col < mtd->writesize && host->spare_only)
+-		col += mtd->writesize;
+-
+-	if (col < mtd->writesize)
+-		p = (host->regs + MAIN_AREA0) + (col >> 1);
+-	else
+-		p = (host->regs + SPARE_AREA0) + ((col - mtd->writesize) >> 1);
+-
+-	if (col & 1) {
+-		rd_word = readw(p);
+-		ret = (rd_word >> 8) & 0xff;
+-		rd_word = readw(&p[1]);
+-		ret |= (rd_word << 8) & 0xff00;
+-
+-	} else
+-		ret = readw(p);
+-
+-	/* Update saved column address */
+-	host->col_addr = col + 2;
++	ret = *(uint16_t *)(host->data_buf + host->buf_start);
++	host->buf_start += 2;
+ 
+ 	return ret;
+ }
+@@ -436,94 +386,14 @@ static void mxc_nand_write_buf(struct mtd_info *mtd,
+ {
+ 	struct nand_chip *nand_chip = mtd->priv;
+ 	struct mxc_nand_host *host = nand_chip->priv;
+-	int n, col, i = 0;
+-
+-	DEBUG(MTD_DEBUG_LEVEL3,
+-	      "mxc_nand_write_buf(col = %d, len = %d)\n", host->col_addr,
+-	      len);
+-
+-	col = host->col_addr;
+-
+-	/* Adjust saved column address */
+-	if (col < mtd->writesize && host->spare_only)
+-		col += mtd->writesize;
+-
+-	n = mtd->writesize + mtd->oobsize - col;
+-	n = min(len, n);
+-
+-	DEBUG(MTD_DEBUG_LEVEL3,
+-	      "%s:%d: col = %d, n = %d\n", __func__, __LINE__, col, n);
+-
+-	while (n) {
+-		void __iomem *p;
+-
+-		if (col < mtd->writesize)
+-			p = host->regs + MAIN_AREA0 + (col & ~3);
+-		else
+-			p = host->regs + SPARE_AREA0 -
+-						mtd->writesize + (col & ~3);
+-
+-		DEBUG(MTD_DEBUG_LEVEL3, "%s:%d: p = %p\n", __func__,
+-		      __LINE__, p);
+-
+-		if (((col | (int)&buf[i]) & 3) || n < 16) {
+-			uint32_t data = 0;
+-
+-			if (col & 3 || n < 4)
+-				data = readl(p);
+-
+-			switch (col & 3) {
+-			case 0:
+-				if (n) {
+-					data = (data & 0xffffff00) |
+-					    (buf[i++] << 0);
+-					n--;
+-					col++;
+-				}
+-			case 1:
+-				if (n) {
+-					data = (data & 0xffff00ff) |
+-					    (buf[i++] << 8);
+-					n--;
+-					col++;
+-				}
+-			case 2:
+-				if (n) {
+-					data = (data & 0xff00ffff) |
+-					    (buf[i++] << 16);
+-					n--;
+-					col++;
+-				}
+-			case 3:
+-				if (n) {
+-					data = (data & 0x00ffffff) |
+-					    (buf[i++] << 24);
+-					n--;
+-					col++;
+-				}
+-			}
+-
+-			writel(data, p);
+-		} else {
+-			int m = mtd->writesize - col;
++	u16 col = host->buf_start;
++	int n = mtd->oobsize + mtd->writesize - col;
+ 
+-			if (col >= mtd->writesize)
+-				m += mtd->oobsize;
++	n = min(n, len);
+ 
+-			m = min(n, m) & ~3;
++	memcpy(host->data_buf + col, buf, n);
+ 
+-			DEBUG(MTD_DEBUG_LEVEL3,
+-			      "%s:%d: n = %d, m = %d, i = %d, col = %d\n",
+-			      __func__,  __LINE__, n, m, i, col);
+-
+-			memcpy(p, &buf[i], m);
+-			col += m;
+-			i += m;
+-			n -= m;
+-		}
 -	}
+-	/* Update saved column address */
+-	host->col_addr = col;
++	host->buf_start += n;
+ }
+ 
+ /* Read the data buffer from the NAND Flash. To read the data from NAND
+@@ -534,75 +404,14 @@ static void mxc_nand_read_buf(struct mtd_info *mtd, u_char *buf, int len)
+ {
+ 	struct nand_chip *nand_chip = mtd->priv;
+ 	struct mxc_nand_host *host = nand_chip->priv;
+-	int n, col, i = 0;
++	u16 col = host->buf_start;
++	int n = mtd->oobsize + mtd->writesize - col;
+ 
+-	DEBUG(MTD_DEBUG_LEVEL3,
+-	      "mxc_nand_read_buf(col = %d, len = %d)\n", host->col_addr, len);
 -
--	if (chip == -1) {
--		writew(readw(host->regs + NFC_CONFIG1) & ~NFC_CE,
--				host->regs + NFC_CONFIG1);
--		return;
+-	col = host->col_addr;
+-
+-	/* Adjust saved column address */
+-	if (col < mtd->writesize && host->spare_only)
+-		col += mtd->writesize;
+-
+-	n = mtd->writesize + mtd->oobsize - col;
+-	n = min(len, n);
+-
+-	while (n) {
+-		void __iomem *p;
+-
+-		if (col < mtd->writesize)
+-			p = host->regs + MAIN_AREA0 + (col & ~3);
+-		else
+-			p = host->regs + SPARE_AREA0 -
+-					mtd->writesize + (col & ~3);
+-
+-		if (((col | (int)&buf[i]) & 3) || n < 16) {
+-			uint32_t data;
+-
+-			data = readl(p);
+-			switch (col & 3) {
+-			case 0:
+-				if (n) {
+-					buf[i++] = (uint8_t) (data);
+-					n--;
+-					col++;
+-				}
+-			case 1:
+-				if (n) {
+-					buf[i++] = (uint8_t) (data >> 8);
+-					n--;
+-					col++;
+-				}
+-			case 2:
+-				if (n) {
+-					buf[i++] = (uint8_t) (data >> 16);
+-					n--;
+-					col++;
+-				}
+-			case 3:
+-				if (n) {
+-					buf[i++] = (uint8_t) (data >> 24);
+-					n--;
+-					col++;
+-				}
+-			}
+-		} else {
+-			int m = mtd->writesize - col;
++	n = min(n, len);
+ 
+-			if (col >= mtd->writesize)
+-				m += mtd->oobsize;
+-
+-			m = min(n, m) & ~3;
+-			memcpy(&buf[i], p, m);
+-			col += m;
+-			i += m;
+-			n -= m;
+-		}
 -	}
--
--	writew(readw(host->regs + NFC_CONFIG1) | NFC_CE,
--			host->regs + NFC_CONFIG1);
--#endif
--
- 	switch (chip) {
- 	case -1:
- 		/* Disable the NFC clock */
+-	/* Update saved column address */
+-	host->col_addr = col;
++	memcpy(buf, host->data_buf + col, len);
+ 
++	host->buf_start += len;
+ }
+ 
+ /* Used by the upper layer to verify the data in NAND Flash
+@@ -641,6 +450,36 @@ static void mxc_nand_select_chip(struct mtd_info *mtd, int chip)
+ 	}
+ }
+ 
++/*
++ * Function to transfer data to/from spare area.
++ */
++static void copy_spare(struct mtd_info *mtd, bool bfrom)
++{
++	struct nand_chip *this = mtd->priv;
++	struct mxc_nand_host *host = this->priv;
++	u16 i, j;
++	u16 n = mtd->writesize >> 9;
++	u8 *d = host->data_buf + mtd->writesize;
++	u8 *s = host->regs + SPARE_AREA0;
++	u16 t = host->spare_len;
++
++	j = (mtd->oobsize / n >> 1) << 1;
++
++	if (bfrom) {
++		for (i = 0; i < n - 1; i++)
++			memcpy(d + i * j, s + i * t, j);
++
++		/* the last section */
++		memcpy(d + i * j, s + i * t, mtd->oobsize - i * j);
++	} else {
++		for (i = 0; i < n - 1; i++)
++			memcpy(&s[i * t], &d[i * j], j);
++
++		/* the last section */
++		memcpy(&s[i * t], &d[i * j], mtd->oobsize - i * j);
++	}
++}
++
+ static void mxc_do_addr_cycle(struct mtd_info *mtd, int column, int page_addr)
+ {
+ 	struct nand_chip *nand_chip = mtd->priv;
+@@ -707,19 +546,18 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 	switch (command) {
+ 
+ 	case NAND_CMD_STATUS:
+-		host->col_addr = 0;
++		host->buf_start = 0;
+ 		host->status_request = true;
+ 		break;
+ 
+ 	case NAND_CMD_READ0:
+-		host->col_addr = column;
+-		host->spare_only = false;
++		host->buf_start = column;
+ 		useirq = false;
+ 		break;
+ 
+ 	case NAND_CMD_READOOB:
+-		host->col_addr = column;
+-		host->spare_only = true;
++		host->buf_start = column + mtd->writesize;
++
+ 		useirq = false;
+ 		if (host->pagesize_2k)
+ 			command = NAND_CMD_READ0; /* only READ0 is valid */
+@@ -739,15 +577,13 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 				mxc_nand_command(mtd, NAND_CMD_READ0, 0,
+ 						page_addr);
+ 
+-			host->col_addr = column - mtd->writesize;
+-			host->spare_only = true;
++			host->buf_start = column;
+ 
+ 			/* Set program pointer to spare region */
+ 			if (!host->pagesize_2k)
+ 				send_cmd(host, NAND_CMD_READOOB, false);
+ 		} else {
+-			host->spare_only = false;
+-			host->col_addr = column;
++			host->buf_start = column;
+ 
+ 			/* Set program pointer to page start */
+ 			if (!host->pagesize_2k)
+@@ -757,13 +593,15 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 		break;
+ 
+ 	case NAND_CMD_PAGEPROG:
+-		send_page(host, 0, host->spare_only, NFC_INPUT);
++		memcpy(host->regs + MAIN_AREA0, host->data_buf, mtd->writesize);
++		copy_spare(mtd, false);
++		send_page(host, 0, NFC_INPUT);
+ 
+ 		if (host->pagesize_2k) {
+ 			/* data in 4 areas datas */
+-			send_page(host, 1, host->spare_only, NFC_INPUT);
+-			send_page(host, 2, host->spare_only, NFC_INPUT);
+-			send_page(host, 3, host->spare_only, NFC_INPUT);
++			send_page(host, 1, NFC_INPUT);
++			send_page(host, 2, NFC_INPUT);
++			send_page(host, 3, NFC_INPUT);
+ 		}
+ 
+ 		break;
+@@ -789,16 +627,18 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 			/* send read confirm command */
+ 			send_cmd(host, NAND_CMD_READSTART, true);
+ 			/* read for each AREA */
+-			send_page(host, 0, host->spare_only, NFC_OUTPUT);
+-			send_page(host, 1, host->spare_only, NFC_OUTPUT);
+-			send_page(host, 2, host->spare_only, NFC_OUTPUT);
+-			send_page(host, 3, host->spare_only, NFC_OUTPUT);
++			send_page(host, 0, NFC_OUTPUT);
++			send_page(host, 1, NFC_OUTPUT);
++			send_page(host, 2, NFC_OUTPUT);
++			send_page(host, 3, NFC_OUTPUT);
+ 		} else
+-			send_page(host, 0, host->spare_only, NFC_OUTPUT);
++			send_page(host, 0, NFC_OUTPUT);
++
++		memcpy(host->data_buf, host->regs + MAIN_AREA0, mtd->writesize);
++		copy_spare(mtd, true);
+ 		break;
+ 
+ 	case NAND_CMD_READID:
+-		host->col_addr = 0;
+ 		send_read_id(host);
+ 		break;
+ 
+@@ -824,10 +664,14 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	int err = 0, nr_parts = 0;
+ 
+ 	/* Allocate memory for MTD device structure and private data */
+-	host = kzalloc(sizeof(struct mxc_nand_host), GFP_KERNEL);
++	host = kzalloc(sizeof(struct mxc_nand_host) + NAND_MAX_PAGESIZE +
++			NAND_MAX_OOBSIZE, GFP_KERNEL);
+ 	if (!host)
+ 		return -ENOMEM;
+ 
++	host->data_buf = (uint8_t *)(host + 1);
++	host->spare_len = 16;
++
+ 	host->dev = &pdev->dev;
+ 	/* structures must be linked */
+ 	this = &host->nand;
 -- 
 1.6.5
