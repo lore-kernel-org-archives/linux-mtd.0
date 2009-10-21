@@ -1,13 +1,13 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N0c5i-0007E8-6b
-	for linux-mtd@lists.infradead.org; Wed, 21 Oct 2009 14:23:07 +0000
+	id 1N0c6F-0007mq-Bl
+	for linux-mtd@lists.infradead.org; Wed, 21 Oct 2009 14:23:41 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 13/19] mxc_nand: Make main/spare areas runtime configurable
-Date: Wed, 21 Oct 2009 16:13:20 +0200
-Message-Id: <1256134406-25251-14-git-send-email-s.hauer@pengutronix.de>
-In-Reply-To: <1256134406-25251-13-git-send-email-s.hauer@pengutronix.de>
+Subject: [PATCH 18/19] mxc_nand: remove TROP_US_DELAY
+Date: Wed, 21 Oct 2009 16:13:25 +0200
+Message-Id: <1256134406-25251-19-git-send-email-s.hauer@pengutronix.de>
+In-Reply-To: <1256134406-25251-18-git-send-email-s.hauer@pengutronix.de>
 References: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
 	<1256134406-25251-2-git-send-email-s.hauer@pengutronix.de>
 	<1256134406-25251-3-git-send-email-s.hauer@pengutronix.de>
@@ -21,6 +21,11 @@ References: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
 	<1256134406-25251-11-git-send-email-s.hauer@pengutronix.de>
 	<1256134406-25251-12-git-send-email-s.hauer@pengutronix.de>
 	<1256134406-25251-13-git-send-email-s.hauer@pengutronix.de>
+	<1256134406-25251-14-git-send-email-s.hauer@pengutronix.de>
+	<1256134406-25251-15-git-send-email-s.hauer@pengutronix.de>
+	<1256134406-25251-16-git-send-email-s.hauer@pengutronix.de>
+	<1256134406-25251-17-git-send-email-s.hauer@pengutronix.de>
+	<1256134406-25251-18-git-send-email-s.hauer@pengutronix.de>
 Cc: Sascha Hauer <s.hauer@pengutronix.de>, Eric Benard <ebenard@eukrea.com>,
 	Vladimir Barinov <vova.barinov@gmail.com>,
 	mathieu.berland@eads.com, jbe@pengutronix.de, sha@pengutronix.de
@@ -33,139 +38,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The main/spare areas are on different addresses on later versions
-of the controller, so make them configurable.
+wait_op_done is only called with the same timeout, so
+code the timeout into the function itself.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- drivers/mtd/nand/mxc_nand.c |   42 ++++++++++++++++++++----------------------
- 1 files changed, 20 insertions(+), 22 deletions(-)
+ drivers/mtd/nand/mxc_nand.c |   17 +++++++----------
+ 1 files changed, 7 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 2988f1d..450db4e 100644
+index 3fdc172..dd80e88 100644
 --- a/drivers/mtd/nand/mxc_nand.c
 +++ b/drivers/mtd/nand/mxc_nand.c
-@@ -52,18 +52,6 @@
- #define NFC_CONFIG1		0xE1A
- #define NFC_CONFIG2		0xE1C
+@@ -118,9 +118,6 @@ struct mxc_nand_host {
+ 	int			spare_len;
+ };
  
--/* Addresses for NFC RAM BUFFER Main area 0 */
--#define MAIN_AREA0		0x000
--#define MAIN_AREA1		0x200
--#define MAIN_AREA2		0x400
--#define MAIN_AREA3		0x600
+-/* Define delays in microsec for NAND device operations */
+-#define TROP_US_DELAY   2000
 -
--/* Addresses for NFC SPARE BUFFER Spare area 0 */
--#define SPARE_AREA0		0x800
--#define SPARE_AREA1		0x810
--#define SPARE_AREA2		0x820
--#define SPARE_AREA3		0x830
--
- /* Set INT to 0, FCMD to 1, rest to 0 in NFC_CONFIG2 Register
-  * for Command operation */
- #define NFC_CMD            0x1
-@@ -106,6 +94,11 @@ struct mxc_nand_host {
- 	struct mtd_partition	*parts;
- 	struct device		*dev;
+ /* OOB placement block for use with hardware ecc generation */
+ static struct nand_ecclayout nandv1_hw_eccoob_smallpage = {
+ 	.eccbytes = 5,
+@@ -185,10 +182,10 @@ static irqreturn_t mxc_nfc_irq(int irq, void *dev_id)
+ /* This function polls the NANDFC to wait for the basic operation to
+  * complete by checking the INT bit of config2 register.
+  */
+-static void wait_op_done(struct mxc_nand_host *host, int max_retries,
+-				int useirq)
++static void wait_op_done(struct mxc_nand_host *host, int useirq)
+ {
+ 	uint32_t tmp;
++	int max_retries = 2000;
  
-+	void			*spare0;
-+	void			*main_area0;
-+	void			*main_area1;
-+
-+	void __iomem		*base;
- 	void __iomem		*regs;
- 	int			status_request;
- 	int			pagesize_2k;
-@@ -262,7 +255,7 @@ static void send_read_id(struct mxc_nand_host *host)
- 	wait_op_done(host, TROP_US_DELAY, true);
+ 	if (useirq) {
+ 		if ((readw(host->regs + NFC_CONFIG2) & NFC_INT) == 0) {
+@@ -230,7 +227,7 @@ static void send_cmd(struct mxc_nand_host *host, uint16_t cmd, int useirq)
+ 	writew(NFC_CMD, host->regs + NFC_CONFIG2);
  
- 	if (this->options & NAND_BUSWIDTH_16) {
--		void __iomem *main_buf = host->regs + MAIN_AREA0;
-+		void __iomem *main_buf = host->main_area0;
- 		/* compress the ID info */
- 		writeb(readb(main_buf + 2), main_buf + 1);
- 		writeb(readb(main_buf + 4), main_buf + 2);
-@@ -270,14 +263,14 @@ static void send_read_id(struct mxc_nand_host *host)
- 		writeb(readb(main_buf + 8), main_buf + 4);
- 		writeb(readb(main_buf + 10), main_buf + 5);
- 	}
--	memcpy(host->data_buf, host->regs + MAIN_AREA0, 16);
-+	memcpy(host->data_buf, host->main_area0, 16);
+ 	/* Wait for operation to complete */
+-	wait_op_done(host, TROP_US_DELAY, useirq);
++	wait_op_done(host, useirq);
  }
  
- /* This function requests the NANDFC to perform a read of the
-  * NAND device status and returns the current status. */
- static uint16_t get_dev_status(struct mxc_nand_host *host)
- {
--	void __iomem *main_buf = host->regs + MAIN_AREA1;
-+	void __iomem *main_buf = host->main_area1;
- 	uint32_t store;
- 	uint16_t ret, tmp;
- 	/* Issue status request to NAND device */
-@@ -462,7 +455,7 @@ static void copy_spare(struct mtd_info *mtd, bool bfrom)
- 	u16 i, j;
- 	u16 n = mtd->writesize >> 9;
- 	u8 *d = host->data_buf + mtd->writesize;
--	u8 *s = host->regs + SPARE_AREA0;
-+	u8 *s = host->spare0;
- 	u16 t = host->spare_len;
+ /* This function sends an address (or partial address) to the
+@@ -244,7 +241,7 @@ static void send_addr(struct mxc_nand_host *host, uint16_t addr, int islast)
+ 	writew(NFC_ADDR, host->regs + NFC_CONFIG2);
  
- 	j = (mtd->oobsize / n >> 1) << 1;
-@@ -572,7 +565,7 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 	/* Wait for operation to complete */
+-	wait_op_done(host, TROP_US_DELAY, islast);
++	wait_op_done(host, islast);
+ }
  
- 		send_page(host, NFC_OUTPUT);
+ static void send_page(struct mtd_info *mtd, unsigned int ops)
+@@ -266,7 +263,7 @@ static void send_page(struct mtd_info *mtd, unsigned int ops)
+ 		writew(ops, host->regs + NFC_CONFIG2);
  
--		memcpy(host->data_buf, host->regs + MAIN_AREA0, mtd->writesize);
-+		memcpy(host->data_buf, host->main_area0, mtd->writesize);
- 		copy_spare(mtd, true);
- 		break;
- 
-@@ -608,7 +601,7 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
- 		break;
- 
- 	case NAND_CMD_PAGEPROG:
--		memcpy(host->regs + MAIN_AREA0, host->data_buf, mtd->writesize);
-+		memcpy(host->main_area0, host->data_buf, mtd->writesize);
- 		copy_spare(mtd, false);
- 		send_page(host, NFC_INPUT);
- 		send_cmd(host, command, true);
-@@ -686,12 +679,17 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 		goto eres;
+ 		/* Wait for operation to complete */
+-		wait_op_done(host, TROP_US_DELAY, true);
++		wait_op_done(host, true);
  	}
+ }
  
--	host->regs = ioremap(res->start, resource_size(res));
--	if (!host->regs) {
-+	host->base = ioremap(res->start, resource_size(res));
-+	if (!host->base) {
- 		err = -ENOMEM;
- 		goto eres;
- 	}
+@@ -281,7 +278,7 @@ static void send_read_id(struct mxc_nand_host *host)
+ 	writew(NFC_ID, host->regs + NFC_CONFIG2);
  
-+	host->regs = host->base;
-+	host->main_area0 = host->base;
-+	host->main_area1 = host->base + 0x200;
-+	host->spare0 = host->base + 0x800;
-+
- 	tmp = readw(host->regs + NFC_CONFIG1);
- 	tmp |= NFC_INT_MSK;
- 	writew(tmp, host->regs + NFC_CONFIG1);
-@@ -778,7 +776,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- escan:
- 	free_irq(host->irq, host);
- eirq:
--	iounmap(host->regs);
-+	iounmap(host->base);
- eres:
- 	clk_put(host->clk);
- eclk:
-@@ -797,7 +795,7 @@ static int __devexit mxcnd_remove(struct platform_device *pdev)
+ 	/* Wait for operation to complete */
+-	wait_op_done(host, TROP_US_DELAY, true);
++	wait_op_done(host, true);
  
- 	nand_release(&host->mtd);
- 	free_irq(host->irq, host);
--	iounmap(host->regs);
-+	iounmap(host->base);
- 	kfree(host);
+ 	if (this->options & NAND_BUSWIDTH_16) {
+ 		void __iomem *main_buf = host->main_area0;
+@@ -313,7 +310,7 @@ static uint16_t get_dev_status(struct mxc_nand_host *host)
+ 	writew(NFC_STATUS, host->regs + NFC_CONFIG2);
  
- 	return 0;
+ 	/* Wait for operation to complete */
+-	wait_op_done(host, TROP_US_DELAY, true);
++	wait_op_done(host, true);
+ 
+ 	/* Status is placed in first word of main buffer */
+ 	/* get status, then recovery area 1 data */
 -- 
 1.6.5
