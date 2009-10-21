@@ -1,19 +1,14 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N0c46-0005q7-Q4
-	for linux-mtd@lists.infradead.org; Wed, 21 Oct 2009 14:21:32 +0000
+	id 1N0c4b-0006G5-Mp
+	for linux-mtd@lists.infradead.org; Wed, 21 Oct 2009 14:22:02 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 03/19] mxc_nand: cleanup initialization
-Date: Wed, 21 Oct 2009 16:13:10 +0200
-Message-Id: <1256134406-25251-4-git-send-email-s.hauer@pengutronix.de>
-In-Reply-To: <1256134406-25251-3-git-send-email-s.hauer@pengutronix.de>
-References: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
-	<1256134406-25251-2-git-send-email-s.hauer@pengutronix.de>
-	<1256134406-25251-3-git-send-email-s.hauer@pengutronix.de>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Eric Benard <ebenard@eukrea.com>,
-	Vladimir Barinov <vova.barinov@gmail.com>,
-	mathieu.berland@eads.com, jbe@pengutronix.de, sha@pengutronix.de
+Subject: [RFC] mxc nand controller updates
+Date: Wed, 21 Oct 2009 16:13:07 +0200
+Message-Id: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
+Cc: Vladimir Barinov <vova.barinov@gmail.com>, mathieu.berland@eads.com,
+	jbe@pengutronix.de, Eric Benard <ebenard@eukrea.com>, sha@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,121 +18,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The oob layout was initialized several times. Instead, use
-a smallpage layout by default and switch to a largepage
-afterwards if necessary.
+Hi all,
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- drivers/mtd/nand/mxc_nand.c |   72 +++++++++++++-----------------------------
- 1 files changed, 22 insertions(+), 50 deletions(-)
+Here are several patches for the mxc nand controller. At the end
+of this series we are able to use this driver with the i.MX25/35
+SoCs. Please review and test if you do not want to see your boards
+break ;)
 
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 7a34679..b28e5f9 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -921,45 +921,42 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 	if (err)
- 		goto eirq;
- 
-+	/* Reset NAND */
-+	this->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
-+
-+	/* preset operation */
-+	/* Unlock the internal RAM Buffer */
-+	writew(0x2, host->regs + NFC_CONFIG);
-+
-+	/* Blocks to be unlocked */
-+	writew(0x0, host->regs + NFC_UNLOCKSTART_BLKADDR);
-+	writew(0x4000, host->regs + NFC_UNLOCKEND_BLKADDR);
-+
-+	/* Unlock Block Command for given address range */
-+	writew(0x4, host->regs + NFC_WRPROT);
-+
-+	this->ecc.size = 512;
-+	this->ecc.bytes = 3;
-+	this->ecc.layout = &nand_hw_eccoob_smallpage;
-+
- 	if (pdata->hw_ecc) {
- 		this->ecc.calculate = mxc_nand_calculate_ecc;
- 		this->ecc.hwctl = mxc_nand_enable_hwecc;
- 		this->ecc.correct = mxc_nand_correct_data;
- 		this->ecc.mode = NAND_ECC_HW;
--		this->ecc.size = 512;
--		this->ecc.bytes = 3;
- 		tmp = readw(host->regs + NFC_CONFIG1);
- 		tmp |= NFC_ECC_EN;
- 		writew(tmp, host->regs + NFC_CONFIG1);
- 	} else {
--		this->ecc.size = 512;
--		this->ecc.bytes = 3;
--		this->ecc.layout = &nand_hw_eccoob_smallpage;
- 		this->ecc.mode = NAND_ECC_SOFT;
- 		tmp = readw(host->regs + NFC_CONFIG1);
- 		tmp &= ~NFC_ECC_EN;
- 		writew(tmp, host->regs + NFC_CONFIG1);
- 	}
- 
--	/* Reset NAND */
--	this->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
--
--	/* preset operation */
--	/* Unlock the internal RAM Buffer */
--	writew(0x2, host->regs + NFC_CONFIG);
--
--	/* Blocks to be unlocked */
--	writew(0x0, host->regs + NFC_UNLOCKSTART_BLKADDR);
--	writew(0x4000, host->regs + NFC_UNLOCKEND_BLKADDR);
--
--	/* Unlock Block Command for given address range */
--	writew(0x4, host->regs + NFC_WRPROT);
--
- 	/* NAND bus width determines access funtions used by upper layer */
--	if (pdata->width == 2) {
-+	if (pdata->width == 2)
- 		this->options |= NAND_BUSWIDTH_16;
--		this->ecc.layout = &nand_hw_eccoob_smallpage;
--	}
- 
- 	/* first scan to find the device and get the page size */
- 	if (nand_scan_ident(mtd, 1)) {
-@@ -967,34 +964,9 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 		goto escan;
- 	}
- 
--	host->pagesize_2k = (mtd->writesize == 2048) ? 1 : 0;
--
--	if (this->ecc.mode == NAND_ECC_HW) {
--		switch (mtd->oobsize) {
--		case 8:
--			this->ecc.layout = &nand_hw_eccoob_smallpage;
--			break;
--		case 16:
--			this->ecc.layout = &nand_hw_eccoob_smallpage;
--			break;
--		case 64:
--			this->ecc.layout = &nand_hw_eccoob_largepage;
--			break;
--		default:
--			/* page size not handled by HW ECC */
--			/* switching back to soft ECC */
--			this->ecc.size = 512;
--			this->ecc.bytes = 3;
--			this->ecc.layout = &nand_hw_eccoob_smallpage;
--			this->ecc.mode = NAND_ECC_SOFT;
--			this->ecc.calculate = NULL;
--			this->ecc.correct = NULL;
--			this->ecc.hwctl = NULL;
--			tmp = readw(host->regs + NFC_CONFIG1);
--			tmp &= ~NFC_ECC_EN;
--			writew(tmp, host->regs + NFC_CONFIG1);
--			break;
--		}
-+	if (mtd->writesize == 2048) {
-+		host->pagesize_2k = 1;
-+		this->ecc.layout = &nand_hw_eccoob_largepage;
- 	}
- 
- 	/* second phase scan */
--- 
-1.6.5
+Sascha
+
+The following changes since commit 012abeea669ea49636cf952d13298bb68654146a:
+  Linus Torvalds (1):
+        Linux 2.6.32-rc5
+
+are available in the git repository at:
+
+  git://git.pengutronix.de/git/imx/linux-2.6.git mxc-nand
+
+Sascha Hauer (19):
+      Revert "mtd: mxc_nand: fix 2KiB pagesize NAND on i.MX27"
+      mxc_nand: cleanup eccoob descriptions
+      mxc_nand: cleanup initialization
+      mxc_nand: merge send_read_page and send_prog_page
+      mxc_nand: introduce mxc_do_addr_cycle
+      mxc nand: remove debug param
+      mxc nand: remove dead code
+      mxc nand: use resource_size()
+      mxc nand: use buffers
+      mxc nand: simplify command processing
+      mxc nand: modify send_page to send all pages, not only one
+      mxc_nand: remove unused defines
+      mxc_nand: Make main/spare areas runtime configurable
+      mxc_nand: Get rid of pagesize_2k flag
+      mxc_nand: Add NFC V2 support
+      mxc_nand: disable sp_en bit only once
+      mxc_nand: Allow flash based bbt
+      mxc_nand: remove TROP_US_DELAY
+      mxc_nand: use DRIVER_NAME where appropriate
+
+ arch/arm/plat-mxc/include/mach/mxc_nand.h |    3 +-
+ drivers/mtd/nand/mxc_nand.c               |  781 +++++++++++------------------
+ 2 files changed, 297 insertions(+), 487 deletions(-)
