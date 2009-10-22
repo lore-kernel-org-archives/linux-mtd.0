@@ -1,23 +1,30 @@
-Received: from mail-fx0-f228.google.com ([209.85.220.228])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1N0t21-0003tX-91
-	for linux-mtd@lists.infradead.org; Thu, 22 Oct 2009 08:28:30 +0000
-Received: by fxm28 with SMTP id 28so9167272fxm.18
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 22 Oct 2009 01:28:20 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1256198013-10003-1-git-send-email-akinobu.mita@gmail.com>
-References: <1256198013-10003-1-git-send-email-akinobu.mita@gmail.com>
-From: Vimal Singh <vimal.newwork@gmail.com>
-Date: Thu, 22 Oct 2009 13:57:59 +0530
-Message-ID: <ce9ab5790910220127g5f2efc95l6a5a8e4cb9888cce@mail.gmail.com>
-Subject: Re: [PATCH -v4 1/2] MTD: Add __nand_calculate_ecc() to NAND ECC
-	functions
-To: Akinobu Mita <akinobu.mita@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Subject: Re: [PATCH v11 4/5] core: Add kernel message dumper to call on
+	oopses and panics
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Simon Kagstrom <simon.kagstrom@netinsight.net>
+In-Reply-To: <20091022084242.6d559ed8@marrow.netinsight.se>
+References: <20091015093133.GF10546@elte.hu>
+	<20091015161052.0752208e@marrow.netinsight.se>
+	<20091015154640.GA11408@elte.hu>
+	<20091016094601.4e2c2d3e@marrow.netinsight.se>
+	<20091016080935.GA3895@elte.hu> <1255681467.32489.360.camel@localhost>
+	<20091016112556.6902b2dc@marrow.netinsight.se>
+	<20091016101045.GA3263@elte.hu>
+	<20091016140918.3981cfa2@marrow.netinsight.se>
+	<1255952922.32489.505.camel@localhost> <20091019125017.GA9030@elte.hu>
+	<alpine.LFD.2.00.0910220832580.9771@eeepc.linux-foundation.org>
+	<20091022082500.602f9a7d@marrow.netinsight.se>
+	<1256193368.29856.466.camel@localhost>
+	<20091022084242.6d559ed8@marrow.netinsight.se>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 22 Oct 2009 11:52:56 +0300
+Message-Id: <1256201576.29885.9.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,121 +34,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Please add my ack:
-Acked-by: Vimal Singh <vimalsingh@ti.com>
+On Thu, 2009-10-22 at 08:42 +0200, Simon Kagstrom wrote:
+> (Removing some people from Cc:)
+> 
+> On Thu, 22 Oct 2009 09:36:08 +0300
+> Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > > I would put it all through Artems MTD tree then so that we keep the new
+> > > API and the user of it close together then.
+> > 
+> > It's dwmw2's tree actually. I just act as his secretary :-)
+> > 
+> > David, could you push this patch to your tree? Ingo's and Linus' acks
+> > are there, AFAIU.
+> 
+> I know it's Davids tree :-)
+> 
+> I just thought it would be a good idea to keep everything together
+> through your tree first before asking David to merge it.
+> 
+> 
+> But it's better to take in only the core patch first as you suggest.
 
--vimal
+Well, let's wait for what dwmw2 does. But for now I just put this patch
+to my l2 tree.
 
-On Thu, Oct 22, 2009 at 1:23 PM, Akinobu Mita <akinobu.mita@gmail.com> wrot=
-e:
-> Add __nand_calculate_ecc() which does not take struct mtd_info.
-> The built-in 256/512 software ECC calculation and correction tester
-> will use it.
->
-> Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-> Cc: linux-mtd@lists.infradead.org
-> Cc: vimal singh <vimal.newwork@gmail.com>
-> ---
-> =A0drivers/mtd/nand/nand_ecc.c =A0| =A0 25 ++++++++++++++++++++-----
-> =A0include/linux/mtd/nand_ecc.h | =A0 10 ++++++++--
-> =A02 files changed, 28 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/mtd/nand/nand_ecc.c b/drivers/mtd/nand/nand_ecc.c
-> index db7ae9d..809fb53 100644
-> --- a/drivers/mtd/nand/nand_ecc.c
-> +++ b/drivers/mtd/nand/nand_ecc.c
-> @@ -150,20 +150,19 @@ static const char addressbits[256] =3D {
-> =A0};
->
-> =A0/**
-> - * nand_calculate_ecc - [NAND Interface] Calculate 3-byte ECC for 256/51=
-2-byte
-> + * __nand_calculate_ecc - [NAND Interface] Calculate 3-byte ECC for 256/=
-512-byte
-> =A0* =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0block
-> - * @mtd: =A0 =A0 =A0 MTD block structure
-> =A0* @buf: =A0 =A0 =A0 input buffer with raw data
-> + * @eccsize: =A0 data bytes per ecc step (256 or 512)
-> =A0* @code: =A0 =A0 =A0output buffer with ECC
-> =A0*/
-> -int nand_calculate_ecc(struct mtd_info *mtd, const unsigned char *buf,
-> +void __nand_calculate_ecc(const unsigned char *buf, unsigned int eccsize=
-,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 unsigned char *code)
-> =A0{
-> =A0 =A0 =A0 =A0int i;
-> =A0 =A0 =A0 =A0const uint32_t *bp =3D (uint32_t *)buf;
-> =A0 =A0 =A0 =A0/* 256 or 512 bytes/ecc =A0*/
-> - =A0 =A0 =A0 const uint32_t eccsize_mult =3D
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (((struct nand_chip *)mtd->=
-priv)->ecc.size) >> 8;
-> + =A0 =A0 =A0 const uint32_t eccsize_mult =3D eccsize >> 8;
-> =A0 =A0 =A0 =A0uint32_t cur; =A0 =A0 =A0 =A0 =A0 /* current value in buff=
-er */
-> =A0 =A0 =A0 =A0/* rp0..rp15..rp17 are the various accumulated parities (p=
-er byte) */
-> =A0 =A0 =A0 =A0uint32_t rp0, rp1, rp2, rp3, rp4, rp5, rp6, rp7;
-> @@ -412,6 +411,22 @@ int nand_calculate_ecc(struct mtd_info *mtd, const u=
-nsigned char *buf,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0(invparity[par & 0x55] << 2) |
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0(invparity[rp17] << 1) |
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0(invparity[rp16] << 0);
-> +}
-> +EXPORT_SYMBOL(__nand_calculate_ecc);
-> +
-> +/**
-> + * nand_calculate_ecc - [NAND Interface] Calculate 3-byte ECC for 256/51=
-2-byte
-> + * =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0block
-> + * @mtd: =A0 =A0 =A0 MTD block structure
-> + * @buf: =A0 =A0 =A0 input buffer with raw data
-> + * @code: =A0 =A0 =A0output buffer with ECC
-> + */
-> +int nand_calculate_ecc(struct mtd_info *mtd, const unsigned char *buf,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0unsigned char *code)
-> +{
-> + =A0 =A0 =A0 __nand_calculate_ecc(buf,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ((struct nand_chip *)mtd->p=
-riv)->ecc.size, code);
-> +
-> =A0 =A0 =A0 =A0return 0;
-> =A0}
-> =A0EXPORT_SYMBOL(nand_calculate_ecc);
-> diff --git a/include/linux/mtd/nand_ecc.h b/include/linux/mtd/nand_ecc.h
-> index 052ea8c..41bc013 100644
-> --- a/include/linux/mtd/nand_ecc.h
-> +++ b/include/linux/mtd/nand_ecc.h
-> @@ -16,7 +16,13 @@
-> =A0struct mtd_info;
->
-> =A0/*
-> - * Calculate 3 byte ECC code for 256 byte block
-> + * Calculate 3 byte ECC code for eccsize byte block
-> + */
-> +void __nand_calculate_ecc(const u_char *dat, unsigned int eccsize,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 u_char *ecc=
-_code);
-> +
-> +/*
-> + * Calculate 3 byte ECC code for 256/512 byte block
-> =A0*/
-> =A0int nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat, u_char=
- *ecc_code);
->
-> @@ -27,7 +33,7 @@ int __nand_correct_data(u_char *dat, u_char *read_ecc, =
-u_char *calc_ecc,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0unsigned int eccsize);
->
-> =A0/*
-> - * Detect and correct a 1 bit error for 256 byte block
-> + * Detect and correct a 1 bit error for 256/512 byte block
-> =A0*/
-> =A0int nand_correct_data(struct mtd_info *mtd, u_char *dat, u_char *read_=
-ecc, u_char *calc_ecc);
->
-> --
-> 1.5.4.3
->
->
+FYI, I never meant to have this tree for developers, so I always rebased
+it. Can you leave with this? Or you want me to create a branch which I
+won't re-base?
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
