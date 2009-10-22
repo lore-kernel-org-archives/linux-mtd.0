@@ -1,25 +1,33 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from az33egw02.freescale.net ([192.88.158.103])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N0usB-00047J-Dc
-	for linux-mtd@lists.infradead.org; Thu, 22 Oct 2009 10:26:27 +0000
-Received: from themisto.ext.pengutronix.de ([92.198.50.58]
-	helo=jupiter.intranet.kreuzholzen.de)
-	by metis.ext.pengutronix.de with esmtp (Exim 4.63)
-	(envelope-from <jbe@pengutronix.de>) id 1N0us2-00032P-Do
-	for linux-mtd@lists.infradead.org; Thu, 22 Oct 2009 12:26:17 +0200
-From: Juergen Beisert <jbe@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Date: Thu, 22 Oct 2009 12:26:06 +0200
-References: <20091020131157.GR8818@pengutronix.de>
-	<200910211330.38141.gianlucarenzi@eptar.com>
-In-Reply-To: <200910211330.38141.gianlucarenzi@eptar.com>
+	id 1N10C7-0004Er-8C
+	for linux-mtd@lists.infradead.org; Thu, 22 Oct 2009 16:07:24 +0000
+Received: from de01smr02.am.mot.com (de01smr02.freescale.net [10.208.0.151])
+	by az33egw02.freescale.net (8.14.3/az33egw02) with ESMTP id
+	n9MG7CKv016949 for <linux-mtd@lists.infradead.org>;
+	Thu, 22 Oct 2009 09:07:12 -0700 (MST)
+Received: from az33exm25.fsl.freescale.net (az33exm25.am.freescale.net
+	[10.64.32.16])
+	by de01smr02.am.mot.com (8.13.1/8.13.0) with ESMTP id n9MGAUQK014599
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 22 Oct 2009 11:10:30 -0500 (CDT)
+Message-ID: <4AE08348.9000102@freescale.com>
+Date: Thu, 22 Oct 2009 11:07:36 -0500
+From: Scott Wood <scottwood@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+To: Felix Radensky <felix@embedded-sol.com>
+Subject: Re: UBIFS problem on MPC8536DS
+References: <4AD5ADC9.30503@embedded-sol.com>
+	<4AD5C5B4.3060303@nokia.com>	<4AD5D053.9000901@embedded-sol.com>
+	<4AD5FFE7.7080703@nokia.com>	<4AD60EF4.4080306@embedded-sol.com>	<4AD614E4.6030005@freescale.com>
+	<4AD7811A.6040501@freescale.com>	<4AD7FE37.1060705@embedded-sol.com>
+	<20091016153128.GA11838@loki.buserror.net>
+	<4AE015DD.1010009@embedded-sol.com>
+In-Reply-To: <4AE015DD.1010009@embedded-sol.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200910221226.07328.jbe@pengutronix.de>
-Subject: Re: About the mxc nand driver
+Cc: "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,31 +37,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mittwoch, 21. Oktober 2009, Gianluca Renzi wrote:
-> On Tuesday 20 October 2009 15:11:58 Sascha Hauer wrote:
-> > Hi all,
-> >
-> > I frequently get reports about bugs in the Freescale mxc nand driver.
-> > Juergen Beisert and me invested some time to see what's going on in this
-> > driver, so here are some results.
->
-> The problem is caused by the fact the FreeScale's NAND Core Controller
-> manages the 2K Largepage NAND as 4 SmallPage pages joined with their own
-> ECC codes and badblock markers positions i.e. the smallpage badblock marker
-> is located at 6th byte of the oobpage data (offset 5) (repeated for each
-> page).
+Felix Radensky wrote:
+> Are you aware of Freescale plans to fix the problem in new silicon 
+> revisions ?
 
-I can currently speak only about the i.MX35 NFC. But it handles larger pages 
-than 512 byte in the same way the i.MX27 NFC does. The tables in the 
-datasheet suggests they define a fixed location for the bad block marker in 
-the spare area and this will be repeated 4 times for a 2048 byte page. But it 
-seems the NFS does not touch any other byte than the ones defined for ECC 
-usage.
+I don't know anything yet -- still trying to get in touch with the 
+relevant hardware people.
 
-jbe
+> Also, can you please tell what CPUs are affected by this, except 8536 
+> and 8572.
 
--- 
-Pengutronix e.K.                              | Juergen Beisert             |
-Linux Solutions for Science and Industry      | Phone: +49-8766-939 228     |
-Vertretung Sued/Muenchen, Germany             | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686              | http://www.pengutronix.de/  |
+I suppose anything with an eLBC could be affected.
+
+-Scott
