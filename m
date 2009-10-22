@@ -1,36 +1,25 @@
-Received: from ernst.netinsight.se ([194.16.221.21])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1N0tVL-0000Ur-VG
-	for linux-mtd@lists.infradead.org; Thu, 22 Oct 2009 08:58:48 +0000
-Date: Thu, 22 Oct 2009 10:58:33 +0200
-From: Simon Kagstrom <simon.kagstrom@netinsight.net>
-To: dedekind1@gmail.com
-Subject: Re: [PATCH v11 4/5] core: Add kernel message dumper to call on
-	oopses and panics
-Message-ID: <20091022105833.096d28fe@marrow.netinsight.se>
-In-Reply-To: <1256201576.29885.9.camel@localhost>
-References: <20091015093133.GF10546@elte.hu>
-	<20091015161052.0752208e@marrow.netinsight.se>
-	<20091015154640.GA11408@elte.hu>
-	<20091016094601.4e2c2d3e@marrow.netinsight.se>
-	<20091016080935.GA3895@elte.hu>
-	<1255681467.32489.360.camel@localhost>
-	<20091016112556.6902b2dc@marrow.netinsight.se>
-	<20091016101045.GA3263@elte.hu>
-	<20091016140918.3981cfa2@marrow.netinsight.se>
-	<1255952922.32489.505.camel@localhost>
-	<20091019125017.GA9030@elte.hu>
-	<alpine.LFD.2.00.0910220832580.9771@eeepc.linux-foundation.org>
-	<20091022082500.602f9a7d@marrow.netinsight.se>
-	<1256193368.29856.466.camel@localhost>
-	<20091022084242.6d559ed8@marrow.netinsight.se>
-	<1256201576.29885.9.camel@localhost>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1N0usB-00047J-Dc
+	for linux-mtd@lists.infradead.org; Thu, 22 Oct 2009 10:26:27 +0000
+Received: from themisto.ext.pengutronix.de ([92.198.50.58]
+	helo=jupiter.intranet.kreuzholzen.de)
+	by metis.ext.pengutronix.de with esmtp (Exim 4.63)
+	(envelope-from <jbe@pengutronix.de>) id 1N0us2-00032P-Do
+	for linux-mtd@lists.infradead.org; Thu, 22 Oct 2009 12:26:17 +0200
+From: Juergen Beisert <jbe@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Date: Thu, 22 Oct 2009 12:26:06 +0200
+References: <20091020131157.GR8818@pengutronix.de>
+	<200910211330.38141.gianlucarenzi@eptar.com>
+In-Reply-To: <200910211330.38141.gianlucarenzi@eptar.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>
+Content-Disposition: inline
+Message-Id: <200910221226.07328.jbe@pengutronix.de>
+Subject: Re: About the mxc nand driver
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,17 +29,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 22 Oct 2009 11:52:56 +0300
-Artem Bityutskiy <dedekind1@gmail.com> wrote:
+On Mittwoch, 21. Oktober 2009, Gianluca Renzi wrote:
+> On Tuesday 20 October 2009 15:11:58 Sascha Hauer wrote:
+> > Hi all,
+> >
+> > I frequently get reports about bugs in the Freescale mxc nand driver.
+> > Juergen Beisert and me invested some time to see what's going on in this
+> > driver, so here are some results.
+>
+> The problem is caused by the fact the FreeScale's NAND Core Controller
+> manages the 2K Largepage NAND as 4 SmallPage pages joined with their own
+> ECC codes and badblock markers positions i.e. the smallpage badblock marker
+> is located at 6th byte of the oobpage data (offset 5) (repeated for each
+> page).
 
-> Well, let's wait for what dwmw2 does. But for now I just put this patch
-> to my l2 tree.
-> 
-> FYI, I never meant to have this tree for developers, so I always rebased
-> it. Can you leave with this? Or you want me to create a branch which I
-> won't re-base?
+I can currently speak only about the i.MX35 NFC. But it handles larger pages 
+than 512 byte in the same way the i.MX27 NFC does. The tables in the 
+datasheet suggests they define a fixed location for the bad block marker in 
+the spare area and this will be repeated 4 times for a 2048 byte page. But it 
+seems the NFS does not touch any other byte than the ones defined for ECC 
+usage.
 
-I'm fine with having it rebased.
+jbe
 
-Thanks,
-// Simon
+-- 
+Pengutronix e.K.                              | Juergen Beisert             |
+Linux Solutions for Science and Industry      | Phone: +49-8766-939 228     |
+Vertretung Sued/Muenchen, Germany             | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686              | http://www.pengutronix.de/  |
