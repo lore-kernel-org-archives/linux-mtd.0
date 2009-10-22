@@ -1,19 +1,35 @@
-Subject: Re: [PATCH 3/3 -v3] MTD: Add nand_ecc test module
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-To: Akinobu Mita <akinobu.mita@gmail.com>
-In-Reply-To: <20091022032415.GA3637@localhost.localdomain>
-References: <1256114044-12163-3-git-send-email-akinobu.mita@gmail.com>
-	<1256115095.29856.338.camel@localhost>
-	<20091022032415.GA3637@localhost.localdomain>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 22 Oct 2009 08:13:38 +0300
-Message-Id: <1256188418.29856.429.camel@localhost>
+Received: from ernst.netinsight.se ([194.16.221.21])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1N0r6j-0003Dm-Cy
+	for linux-mtd@lists.infradead.org; Thu, 22 Oct 2009 06:25:14 +0000
+Date: Thu, 22 Oct 2009 08:25:00 +0200
+From: Simon Kagstrom <simon.kagstrom@netinsight.net>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v11 4/5] core: Add kernel message dumper to call on
+	oopses and panics
+Message-ID: <20091022082500.602f9a7d@marrow.netinsight.se>
+In-Reply-To: <alpine.LFD.2.00.0910220832580.9771@eeepc.linux-foundation.org>
+References: <20091015093133.GF10546@elte.hu>
+	<20091015161052.0752208e@marrow.netinsight.se>
+	<20091015154640.GA11408@elte.hu>
+	<20091016094601.4e2c2d3e@marrow.netinsight.se>
+	<20091016080935.GA3895@elte.hu>
+	<1255681467.32489.360.camel@localhost>
+	<20091016112556.6902b2dc@marrow.netinsight.se>
+	<20091016101045.GA3263@elte.hu>
+	<20091016140918.3981cfa2@marrow.netinsight.se>
+	<1255952922.32489.505.camel@localhost>
+	<20091019125017.GA9030@elte.hu>
+	<alpine.LFD.2.00.0910220832580.9771@eeepc.linux-foundation.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	vimal singh <vimal.newwork@gmail.com>
-Reply-To: Artem.Bityutskiy@nokia.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
+	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>, Ingo Molnar <mingo@elte.hu>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,44 +39,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-10-22 at 05:24 +0200, ext Akinobu Mita wrote:
-> On Wed, Oct 21, 2009 at 11:51:35AM +0300, Artem Bityutskiy wrote:
-> > On Wed, 2009-10-21 at 17:34 +0900, Akinobu Mita wrote:
-> > > This module tests NAND ECC functions.
+On Thu, 22 Oct 2009 08:33:11 +0900 (JST)
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
+
+> > > I wonder, via which tree this should go in. We are going to have mtdoops
+> > > depend on this. Should we go one of these ways:
 > > > 
-> > > The test is simple.
-> > > 
-> > > 1. Create a 256 or 512 bytes block of data filled with random bytes (data)
-> > > 2. Duplicate the data block and inject single bit error (error_data)
-> > > 3. Try to correct error_data
-> > > 4. Compare data and error_data
-> > > 
-> > > Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
-> > > Cc: David Woodhouse <dwmw2@infradead.org>
-> > > Cc: linux-mtd@lists.infradead.org
-> > > Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-> > > Cc: vimal singh <vimal.newwork@gmail.com>
-> > > ---
-> > >  drivers/mtd/tests/Makefile        |    1 +
-> > >  drivers/mtd/tests/nand_ecc-test.c |   87 +++++++++++++++++++++++++++++++++++++
-> > >  2 files changed, 88 insertions(+), 0 deletions(-)
-> > >  create mode 100644 drivers/mtd/tests/nand_ecc-test.c
+> > >    * this patch goes to one of Ingo's tip trees, so we can pull it and
+> > >      work on top.
+> > >    * we have Ingo's / Linus' acks, and this goes via the MTD tree.
+> > > ?
 > > 
-> > How about a consistent name for the test? All current tests have 'mtd_'
-> > prefix. How about make the file to be 'mtd_ecctest.c' ?
+> > Either way is good to me. Linus, do you have any preferences?
 > 
-> OK. I'll rename to mtd_nandecctest.c as vimal said.
-> 
-> > Also, since you anyway need to use these "#defines", I think there is
-> > not need to use this splitting. I apologize for leading you that way at
-> > the beginning.
-> 
-> Does it mean we don't need MTD_NAND_TESTS and the new mtd_nandecctest
-> should exist in MTD_TESTS with that #ifdef checks as I originally did?
+> Either works for me.
 
-Right. The idea was to avoid the ifdefs by cheap price, but now it seems
-that was bad idea.
+I would put it all through Artems MTD tree then so that we keep the new
+API and the user of it close together then.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Thanks to everyone for the reviewing and suggestions!
+
+// Simon
