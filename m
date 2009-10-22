@@ -1,33 +1,22 @@
-Received: from az33egw02.freescale.net ([192.88.158.103])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N10C7-0004Er-8C
-	for linux-mtd@lists.infradead.org; Thu, 22 Oct 2009 16:07:24 +0000
-Received: from de01smr02.am.mot.com (de01smr02.freescale.net [10.208.0.151])
-	by az33egw02.freescale.net (8.14.3/az33egw02) with ESMTP id
-	n9MG7CKv016949 for <linux-mtd@lists.infradead.org>;
-	Thu, 22 Oct 2009 09:07:12 -0700 (MST)
-Received: from az33exm25.fsl.freescale.net (az33exm25.am.freescale.net
-	[10.64.32.16])
-	by de01smr02.am.mot.com (8.13.1/8.13.0) with ESMTP id n9MGAUQK014599
+Received: from mail-ew0-f228.google.com ([209.85.219.228])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1N152J-0001sn-Iy
+	for linux-mtd@lists.infradead.org; Thu, 22 Oct 2009 21:17:36 +0000
+Received: by ewy28 with SMTP id 28so6497347ewy.18
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 22 Oct 2009 11:10:30 -0500 (CDT)
-Message-ID: <4AE08348.9000102@freescale.com>
-Date: Thu, 22 Oct 2009 11:07:36 -0500
-From: Scott Wood <scottwood@freescale.com>
+	Thu, 22 Oct 2009 14:17:25 -0700 (PDT)
 MIME-Version: 1.0
-To: Felix Radensky <felix@embedded-sol.com>
-Subject: Re: UBIFS problem on MPC8536DS
-References: <4AD5ADC9.30503@embedded-sol.com>
-	<4AD5C5B4.3060303@nokia.com>	<4AD5D053.9000901@embedded-sol.com>
-	<4AD5FFE7.7080703@nokia.com>	<4AD60EF4.4080306@embedded-sol.com>	<4AD614E4.6030005@freescale.com>
-	<4AD7811A.6040501@freescale.com>	<4AD7FE37.1060705@embedded-sol.com>
-	<20091016153128.GA11838@loki.buserror.net>
-	<4AE015DD.1010009@embedded-sol.com>
-In-Reply-To: <4AE015DD.1010009@embedded-sol.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <200910221226.07328.jbe@pengutronix.de>
+References: <20091020131157.GR8818@pengutronix.de>
+	<200910211330.38141.gianlucarenzi@eptar.com>
+	<200910221226.07328.jbe@pengutronix.de>
+Date: Thu, 22 Oct 2009 16:17:24 -0500
+Message-ID: <528f13590910221417i393958b6tc0d402e9e206ff51@mail.gmail.com>
+Subject: Re: About the mxc nand driver
+From: alfred steele <alfred.jaquez@gmail.com>
+To: Juergen Beisert <jbe@pengutronix.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,16 +26,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Felix Radensky wrote:
-> Are you aware of Freescale plans to fix the problem in new silicon 
-> revisions ?
+> I can currently speak only about the i.MX35 NFC. But it handles larger pages
+> than 512 byte in the same way the i.MX27 NFC does. The tables in the
+> datasheet suggests they define a fixed location for the bad block marker in
+> the spare area and this will be repeated 4 times for a 2048 byte page. But it
+> seems the NFS does not touch any other byte than the ones defined for ECC
+> usage.
+So does the mxc_nand driver without "Saschas" latest patches work for
+NAND transactions on the mx35 nfc. This probably suggests that the for
+a 4K page size NAND, it would boil down to 8 cycles. Does that still
+hold true?
 
-I don't know anything yet -- still trying to get in touch with the 
-relevant hardware people.
-
-> Also, can you please tell what CPUs are affected by this, except 8536 
-> and 8572.
-
-I suppose anything with an eLBC could be affected.
-
--Scott
+-Alfred
