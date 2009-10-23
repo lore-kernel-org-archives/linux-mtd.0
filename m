@@ -1,13 +1,12 @@
-Subject: Re: [PATCH v7 2/5]: mtdoops: Keep track of used/unused mtdoops
-	pages in an array
+Subject: Re: [PATCH v7 3/5]: mtdoops: Make page (record) size configurable
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Simon Kagstrom <simon.kagstrom@netinsight.net>
-In-Reply-To: <20091015094731.1627d06e@marrow.netinsight.se>
+In-Reply-To: <20091015094739.3728e731@marrow.netinsight.se>
 References: <20091015094057.7298e0d7@marrow.netinsight.se>
-	<20091015094731.1627d06e@marrow.netinsight.se>
+	<20091015094739.3728e731@marrow.netinsight.se>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 23 Oct 2009 07:08:19 +0300
-Message-Id: <1256270899.29885.175.camel@localhost>
+Date: Fri, 23 Oct 2009 07:13:49 +0300
+Message-Id: <1256271229.29885.179.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -23,14 +22,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Thu, 2009-10-15 at 09:47 +0200, Simon Kagstrom wrote:
-> This patch makes mtdoops keep track of used/unused pages in an array
-> instead of scanning the flash after a write. The advantage with this
-> approach is that it avoids calling mtd->read on a panic, which is not
-> possible for all mtd drivers.
+> The main justification for this is to allow catching long messages
+> during a panic, where the top part might otherwise be lost since moving
+> to the next block can require a flash erase.
 > 
 > Signed-off-by: Simon Kagstrom <simon.kagstrom@netinsight.net>
 > Reviewed-by: Anders Grafstrom <anders.grafstrom@netinsight.net>
-Reviewed-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+
+What will happen if I have a partition with 8192-bytes records, and then
+attach it to mtdoops with default 4096 ?
+
+>  	cxt->mtd = mtd;
+>  	if (mtd->size > INT_MAX)
+> -		cxt->oops_pages = INT_MAX / OOPS_PAGE_SIZE;
+> +		cxt->oops_pages = INT_MAX / record_size;
+>  	else
+> -		cxt->oops_pages = (int)mtd->size / OOPS_PAGE_SIZE;
+> +		cxt->oops_pages = (int)mtd->size / record_size;
+
+BTW, this INT_MAX and the (int) cast also suggests we need to limit the
+maximum partition size and add a check for this.
 
 -- 
 Best Regards,
