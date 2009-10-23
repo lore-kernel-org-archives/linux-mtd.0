@@ -1,18 +1,18 @@
-Subject: Re: [PATCH -v4 1/2] MTD: Add __nand_calculate_ecc() to NAND ECC
-	functions
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-To: Vimal Singh <vimal.newwork@gmail.com>
-In-Reply-To: <ce9ab5790910220127g5f2efc95l6a5a8e4cb9888cce@mail.gmail.com>
-References: <1256198013-10003-1-git-send-email-akinobu.mita@gmail.com>
-	<ce9ab5790910220127g5f2efc95l6a5a8e4cb9888cce@mail.gmail.com>
+Subject: Re: [PATCH] [OneNAND] OTP support re-implementation 1/1
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Amul Kumar Saha <amul.saha@samsung.com>
+In-Reply-To: <F1A2DF54F9F549B29F1A72240FB6CED8@sisodomain.com>
+References: <7C266C6722224724BF9456BA7986FC05@sisodomain.com>
+	<1256028984.29856.144.camel@localhost> <4ADDC5A3.50607@nokia.com>
+	<F1A2DF54F9F549B29F1A72240FB6CED8@sisodomain.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 23 Oct 2009 09:10:37 +0300
-Message-Id: <1256278237.29885.225.camel@localhost>
+Date: Fri, 23 Oct 2009 09:11:04 +0300
+Message-Id: <1256278264.29885.226.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	Akinobu Mita <akinobu.mita@gmail.com>
-Reply-To: Artem.Bityutskiy@nokia.com
+Cc: David Woodhouse <dwmw2@infradead.org>, Kyungmin Park <kmpark@infradead.org>,
+	linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,12 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-10-22 at 13:57 +0530, Vimal Singh wrote:
-> Please add my ack:
-> Acked-by: Vimal Singh <vimalsingh@ti.com>
+On Wed, 2009-10-21 at 16:50 +0530, Amul Kumar Saha wrote:
+> Hi Adrian,
 > 
+> 
+> > Artem Bityutskiy wrote:
+> >> I'm still waiting for Adrian to review this. Yesterday he said he will
+> >> do this soon. In any case, I remember about this patch, just FYI.
+> >
+> > Seems fine except why aren't
+> > onenand_otp_command()
+> > onenand_otp_write_oob_nolock()
+> > inside an
+> > #ifdef CONFIG_MTD_ONENAND_OTP
+> > ...
+> > #endif
+> 
+> Accepted and Corrected.
 
-Yes, applied to my l2 tree and added your ack.
+It is in my l2 tree now, thanks.
 
 -- 
 Best Regards,
