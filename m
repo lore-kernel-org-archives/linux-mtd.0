@@ -1,36 +1,29 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N1MV1-0006Qj-DF
-	for linux-mtd@lists.infradead.org; Fri, 23 Oct 2009 15:56:23 +0000
-Subject: Re: [PATCH v11 4/5] core: Add kernel message dumper to call on
-	oopses and panics
-From: "Shargorodsky Atal (EXT-Teleca/Helsinki)"
-	<ext-atal.shargorodsky@nokia.com>
-To: ext Simon Kagstrom <simon.kagstrom@netinsight.net>
-In-Reply-To: <20091022082500.602f9a7d@marrow.netinsight.se>
-References: <20091015093133.GF10546@elte.hu>
-	<20091015161052.0752208e@marrow.netinsight.se>
-	<20091015154640.GA11408@elte.hu>
-	<20091016094601.4e2c2d3e@marrow.netinsight.se>
-	<20091016080935.GA3895@elte.hu>	<1255681467.32489.360.camel@localhost>
-	<20091016112556.6902b2dc@marrow.netinsight.se>
-	<20091016101045.GA3263@elte.hu>
-	<20091016140918.3981cfa2@marrow.netinsight.se>
-	<1255952922.32489.505.camel@localhost>	<20091019125017.GA9030@elte.hu>
-	<alpine.LFD.2.00.0910220832580.9771@eeepc.linux-foundation.org>
-	<20091022082500.602f9a7d@marrow.netinsight.se>
-Content-Type: text/plain
-Date: Fri, 23 Oct 2009 18:53:22 +0300
-Message-Id: <1256313202.5824.60.camel@atal-desktop>
-Mime-Version: 1.0
+Received: from moutng.kundenserver.de ([212.227.126.186])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1N1MeV-0000lh-UA
+	for linux-mtd@lists.infradead.org; Fri, 23 Oct 2009 16:06:12 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by comm-neu.esd (Postfix) with ESMTP id 690711362DB
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 23 Oct 2009 18:05:15 +0200 (CEST)
+Received: from comm-neu.esd ([127.0.0.1])
+	by localhost (comm [127.0.0.1]) (amavisd-new, port 10024) with LMTP
+	id 27948-03 for <linux-mtd@lists.infradead.org>;
+	Fri, 23 Oct 2009 18:05:05 +0200 (CEST)
+Received: from debby.esd (debby.esd [10.0.0.190])
+	by comm-neu.esd (Postfix) with ESMTP id 66D3F1362CC
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 23 Oct 2009 18:05:05 +0200 (CEST)
+From: Matthias Fuchs <matthias.fuchs@esd.eu>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] Fix crosscompilation for mkfs.ubifs
+Date: Fri, 23 Oct 2009 18:05:04 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>,
-	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>, Ingo Molnar <mingo@elte.hu>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alan Cox <alan@lxorguk.ukuu.org.uk>
+Content-Disposition: inline
+Message-Id: <200910231805.04917.matthias.fuchs@esd.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,39 +33,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+This patch adds support for passing the location of the lzo
+library and headers.
 
-On Thu, 2009-10-22 at 08:25 +0200, ext Simon Kagstrom wrote:
+Also BUILDDIR must be referenced to find the libubi.a archive.
 
-> Thanks to everyone for the reviewing and suggestions!
-> 
+Signed-off-by: Matthias Fuchs <matthias.fuchs@esd.eu>
+---
+ mkfs.ubifs/Makefile |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
-I have a couple of questions:
-
-1. If somebody writes a module that uses dumper for uploading the
-oopses/panics logs via some pay-per-byte medium,  since he has no way
-to know in a module if the panic_on_oops flag is set, he'll have
-to upload both oops and the following panic, because he does not
-know for sure that the panic was caused by the oops. Hence he
-pays twice for the same information, right?
-
-I can think of a couple of way to figure it out in the module
-itself, but I could not think of any clean way to do it.
-
-
-2. We tried to use panic notifiers mechanism to print additional
-information that we want to see in mtdoops logs and it worked well,
-but having the kmsg_dump(KMSG_DUMP_PANIC) before the
-atomic_notifier_call_chain() breaks this functionality.
-Can we the call kmsg_dump() after the notifiers had been invoked?
-
-
-Thanks,
-Atal.
-
-> // Simon
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
+diff --git a/mkfs.ubifs/Makefile b/mkfs.ubifs/Makefile
+index a678b0a..61d0e20 100644
+--- a/mkfs.ubifs/Makefile
++++ b/mkfs.ubifs/Makefile
+@@ -1,11 +1,13 @@
+ 
+ CPPFLAGS += -I../include -I../ubi-utils/include
++CPPFLAGS += $(ZLIBCPPFLAGS) $(LZOCPPFLAGS)
+ 
+ ALL_SOURCES=*.[ch] hashtable/*.[ch]
+ 
+ TARGETS = mkfs.ubifs
+ 
+-LDLIBS_mkfs.ubifs = -lz -llzo2 -lm -luuid -L../ubi-utils/ -lubi
++LDLIBS_mkfs.ubifs = -lz -llzo2 -lm -luuid -L$(BUILDDIR)/../ubi-utils/ -lubi
++LDLIBS_mkfs.ubifs += $(ZLIBLDFLAGS) $(LZOLDFLAGS)
+ 
+ include ../common.mk
+ 
+-- 
+1.6.1
