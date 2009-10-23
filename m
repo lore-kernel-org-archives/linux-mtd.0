@@ -1,29 +1,23 @@
-Received: from moutng.kundenserver.de ([212.227.126.186])
+Received: from relais.videotron.ca ([24.201.245.36])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1N1MeV-0000lh-UA
-	for linux-mtd@lists.infradead.org; Fri, 23 Oct 2009 16:06:12 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by comm-neu.esd (Postfix) with ESMTP id 690711362DB
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 23 Oct 2009 18:05:15 +0200 (CEST)
-Received: from comm-neu.esd ([127.0.0.1])
-	by localhost (comm [127.0.0.1]) (amavisd-new, port 10024) with LMTP
-	id 27948-03 for <linux-mtd@lists.infradead.org>;
-	Fri, 23 Oct 2009 18:05:05 +0200 (CEST)
-Received: from debby.esd (debby.esd [10.0.0.190])
-	by comm-neu.esd (Postfix) with ESMTP id 66D3F1362CC
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 23 Oct 2009 18:05:05 +0200 (CEST)
-From: Matthias Fuchs <matthias.fuchs@esd.eu>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] Fix crosscompilation for mkfs.ubifs
-Date: Fri, 23 Oct 2009 18:05:04 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200910231805.04917.matthias.fuchs@esd.eu>
+	id 1N1QLU-0006Mr-9w
+	for linux-mtd@lists.infradead.org; Fri, 23 Oct 2009 20:02:49 +0000
+MIME-version: 1.0
+Content-transfer-encoding: 7BIT
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Received: from xanadu.home ([66.130.28.92]) by VL-MO-MR003.ip.videotron.ca
+	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
+	32bit))
+	with ESMTP id <0KRZ00APJH0IGAB0@VL-MO-MR003.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Fri, 23 Oct 2009 16:02:42 -0400 (EDT)
+Date: Fri, 23 Oct 2009 16:02:42 -0400 (EDT)
+From: Nicolas Pitre <nico@fluxnic.net>
+To: Antonio Ospite <ospite@studenti.unina.it>
+Subject: [PATCH] MTD: add missing put_chip() in cfi_intelext_reset()
+In-reply-to: <20091023000533.57893593.ospite@studenti.unina.it>
+Message-id: <alpine.LFD.2.00.0910231559320.21460@xanadu.home>
+References: <20091023000533.57893593.ospite@studenti.unina.it>
+Cc: openezx-devel@lists.openezx.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,34 +27,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds support for passing the location of the lzo
-library and headers.
 
-Also BUILDDIR must be referenced to find the libubi.a archive.
+Signed-off-by: Nicolas Pitre <nico@fluxnic.net>
 
-Signed-off-by: Matthias Fuchs <matthias.fuchs@esd.eu>
 ---
- mkfs.ubifs/Makefile |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
 
-diff --git a/mkfs.ubifs/Makefile b/mkfs.ubifs/Makefile
-index a678b0a..61d0e20 100644
---- a/mkfs.ubifs/Makefile
-+++ b/mkfs.ubifs/Makefile
-@@ -1,11 +1,13 @@
- 
- CPPFLAGS += -I../include -I../ubi-utils/include
-+CPPFLAGS += $(ZLIBCPPFLAGS) $(LZOCPPFLAGS)
- 
- ALL_SOURCES=*.[ch] hashtable/*.[ch]
- 
- TARGETS = mkfs.ubifs
- 
--LDLIBS_mkfs.ubifs = -lz -llzo2 -lm -luuid -L../ubi-utils/ -lubi
-+LDLIBS_mkfs.ubifs = -lz -llzo2 -lm -luuid -L$(BUILDDIR)/../ubi-utils/ -lubi
-+LDLIBS_mkfs.ubifs += $(ZLIBLDFLAGS) $(LZOLDFLAGS)
- 
- include ../common.mk
- 
--- 
-1.6.1
+On Fri, 23 Oct 2009, Antonio Ospite wrote:
+
+> Hi,
+> 
+> I am attaching a trace of a possible recursive locking in
+> cfi_cmdset_0001.c
+
+This patch should fix it.
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index e7563a9..d923a2d 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -2564,6 +2564,7 @@ static int cfi_intelext_reset(struct mtd_info *mtd)
+ 		if (!ret) {
+ 			map_write(map, CMD(0xff), chip->start);
+ 			chip->state = FL_SHUTDOWN;
++			put_chip(map, chip, chip->start);
+ 		}
+ 		spin_unlock(chip->mutex);
+ 	}
