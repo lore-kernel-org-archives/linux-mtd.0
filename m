@@ -1,17 +1,25 @@
-Subject: Re: [PATCH v7 5/5]: mtdoops: refactor as a kmsg_dumper
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Simon Kagstrom <simon.kagstrom@netinsight.net>
-In-Reply-To: <20091015094815.36f5872c@marrow.netinsight.se>
-References: <20091015094057.7298e0d7@marrow.netinsight.se>
-	<20091015094815.36f5872c@marrow.netinsight.se>
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1N1Br7-0004xN-Nq
+	for linux-mtd@lists.infradead.org; Fri, 23 Oct 2009 04:34:30 +0000
+Subject: Re: [PATCH v5 2/3] MTD: OneNAND: multiblock erase support
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+To: "Korhonen Mika.2 (EXT-Ardites/Oulu)" <ext-mika.2.korhonen@nokia.com>
+In-Reply-To: <4ADDB69F.7060606@nokia.com>
+References: <1255341165-1972-1-git-send-email-ext-mika.2.korhonen@nokia.com>
+	<1255341165-1972-2-git-send-email-ext-mika.2.korhonen@nokia.com>
+	<1255341165-1972-3-git-send-email-ext-mika.2.korhonen@nokia.com>
+	<4ADDB69F.7060606@nokia.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 23 Oct 2009 07:32:42 +0300
-Message-Id: <1256272362.29885.197.camel@localhost>
+Date: Fri, 23 Oct 2009 07:34:14 +0300
+Message-Id: <1256272454.29885.198.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Cc: "amul.saha@samsung.com" <amul.saha@samsung.com>,
+	"kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Adrian Hunter <adrian.hunter@nokia.com>
+Reply-To: Artem.Bityutskiy@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,38 +29,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-10-15 at 09:48 +0200, Simon Kagstrom wrote:
-> The last messages which happens before a crash might contain interesting
-> information about the crash. This patch reworks mtdoops using the
-> kmsg_dumper support instead of a console, which simplifies the code and
-> also includes the messages before the oops started.
+On Tue, 2009-10-20 at 16:09 +0300, Adrian Hunter wrote:
+> Korhonen Mika.2 (EXT-Ardites/Oulu) wrote:
+> > Add support for multiblock erase command. OneNANDs (excluding Flex-OneNAND)
+> > are capable of simultaneous erase of up to 64 eraseblocks which is much faster.
+> > 
+> > This changes the erase requests for regions covering multiple eraseblocks
+> > to be performed using multiblock erase.
+> > 
+> > Signed-off-by: Mika Korhonen <ext-mika.2.korhonen@nokia.com>
+> > ---
 > 
-> On oops callbacks, the MTD device write is scheduled in a work queue (to
-> be able to use the regular mtd->write call), while panics call
-> mtd->panic_write directly. Thus, if panic_on_oops is set, the oops will
-> be written out during the panic.
-> 
-> A parameter to specify which mtd device to use (number or name), as well
-> as a flag, writable at runtime, to toggle wheter to dump oopses or only
-> panics (since oopses can often be handled by regular syslog).
-> 
-> Signed-off-by: Simon Kagstrom <simon.kagstrom@netinsight.net>
-> Reviewed-by: Anders Grafstrom <anders.grafstrom@netinsight.net>
-> ---
-> ChangeLog:
-> 	* (Vimal Singh) Correct Kconfig instructions on how to load
-> 	  the module
-> 	* Correct kfree of unallocated area
->         * More descriptive error message on wrong module parameters
-> 	* Rebase against new patch 4 (use container_of instead of private
->           pointer)
-> 
->  drivers/mtd/Kconfig   |    5 +-
->  drivers/mtd/mtdoops.c |  211 ++++++++++++++++++++-----------------------------
->  2 files changed, 88 insertions(+), 128 deletions(-)
+> Just a comment about fail_addr
 
-Looks good, thanks for doing this. Did you actually test this with
-oopses and panics, with and without panic_on_oops?
+Mika, are you planning to amend this and re-send?
 
 -- 
 Best Regards,
