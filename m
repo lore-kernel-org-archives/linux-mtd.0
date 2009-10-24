@@ -1,20 +1,37 @@
-Received: from smtp-out01.alice.it ([85.33.2.12])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1N1Qt0-0007GK-TO
-	for linux-mtd@lists.infradead.org; Fri, 23 Oct 2009 20:37:26 +0000
-Date: Fri, 23 Oct 2009 22:37:04 +0200
-From: Antonio Ospite <ospite@studenti.unina.it>
-To: Nicolas Pitre <nico@fluxnic.net>
-Subject: Re: [PATCH] MTD: add missing put_chip() in cfi_intelext_reset()
-Message-Id: <20091023223704.af83eaf0.ospite@studenti.unina.it>
-In-Reply-To: <alpine.LFD.2.00.0910231559320.21460@xanadu.home>
-References: <20091023000533.57893593.ospite@studenti.unina.it>
-	<alpine.LFD.2.00.0910231559320.21460@xanadu.home>
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1N1k4S-0003MD-BU
+	for linux-mtd@lists.infradead.org; Sat, 24 Oct 2009 17:06:32 +0000
+Subject: Re: [PATCH v11 4/5] core: Add kernel message dumper to call on
+	oopses and panics
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: "Shargorodsky Atal (EXT-Teleca/Helsinki)" <ext-atal.shargorodsky@nokia.com>
+In-Reply-To: <1256313202.5824.60.camel@atal-desktop>
+References: <20091015093133.GF10546@elte.hu>
+	<20091015161052.0752208e@marrow.netinsight.se>
+	<20091015154640.GA11408@elte.hu>
+	<20091016094601.4e2c2d3e@marrow.netinsight.se>
+	<20091016080935.GA3895@elte.hu>	<1255681467.32489.360.camel@localhost>
+	<20091016112556.6902b2dc@marrow.netinsight.se>
+	<20091016101045.GA3263@elte.hu>
+	<20091016140918.3981cfa2@marrow.netinsight.se>
+	<1255952922.32489.505.camel@localhost>	<20091019125017.GA9030@elte.hu>
+	<alpine.LFD.2.00.0910220832580.9771@eeepc.linux-foundation.org>
+	<20091022082500.602f9a7d@marrow.netinsight.se>
+	<1256313202.5824.60.camel@atal-desktop>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sat, 24 Oct 2009 20:05:57 +0300
+Message-Id: <1256403957.29885.357.camel@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
-	micalg="PGP-SHA1";
-	boundary="Signature=_Fri__23_Oct_2009_22_37_04_+0200_nwR9apXirKpCB3F0"
-Cc: openezx-devel@lists.openezx.org, linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>,
+	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	Simon Kagstrom <simon.kagstrom@netinsight.net>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Ingo Molnar <mingo@elte.hu>, Alan Cox <alan@lxorguk.ukuu.org.uk>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,68 +41,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---Signature=_Fri__23_Oct_2009_22_37_04_+0200_nwR9apXirKpCB3F0
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, 2009-10-23 at 18:53 +0300, Shargorodsky Atal
+(EXT-Teleca/Helsinki) wrote:
+> Hi all,
+> 
+> On Thu, 2009-10-22 at 08:25 +0200, ext Simon Kagstrom wrote:
+> 
+> > Thanks to everyone for the reviewing and suggestions!
+> > 
+> 
+> I have a couple of questions:
+> 
+> 1. If somebody writes a module that uses dumper for uploading the
+> oopses/panics logs via some pay-per-byte medium,  since he has no way
+> to know in a module if the panic_on_oops flag is set, he'll have
+> to upload both oops and the following panic, because he does not
+> know for sure that the panic was caused by the oops. Hence he
+> pays twice for the same information, right?
 
-On Fri, 23 Oct 2009 16:02:42 -0400 (EDT)
-Nicolas Pitre <nico@fluxnic.net> wrote:
+Looks like a valid point to me. Indeed, in this case we will first call
+'kmsg_dump(KMSG_DUMP_OOPS)' from 'oops_exit()', and then call it from
+'panic()'. And the dumper may dump the same information, which is not
+nice.
 
->=20
-> Signed-off-by: Nicolas Pitre <nico@fluxnic.net>
->=20
-> ---
->=20
-> On Fri, 23 Oct 2009, Antonio Ospite wrote:
->=20
-> > Hi,
-> >=20
-> > I am attaching a trace of a possible recursive locking in
-> > cfi_cmdset_0001.c
->=20
-> This patch should fix it.
->=20
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_=
-cmdset_0001.c
-> index e7563a9..d923a2d 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-> @@ -2564,6 +2564,7 @@ static int cfi_intelext_reset(struct mtd_info *mtd)
->  		if (!ret) {
->  			map_write(map, CMD(0xff), chip->start);
->  			chip->state =3D FL_SHUTDOWN;
-> +			put_chip(map, chip, chip->start);
->  		}
->  		spin_unlock(chip->mutex);
->  	}
+I've looked briefly and tried to figure out how to fix this. But I
+cannot find an clean way. And I was confused by the die/oops/etc code.
+My question is, why the code does not work the following way instead?
 
-I've just tested this and it seems to fix the issue, indeed.
+diff --git a/arch/x86/kernel/dumpstack.c b/arch/x86/kernel/dumpstack.c
+index 2d8a371..8f322c7 100644
+--- a/arch/x86/kernel/dumpstack.c
++++ b/arch/x86/kernel/dumpstack.c
+@@ -235,13 +235,12 @@ void __kprobes oops_end(unsigned long flags, struct pt_regs *regs, int signr)
+        raw_local_irq_restore(flags);
+        oops_exit();
 
-Many thanks,
-   Antonio
+-       if (!signr)
+-               return;
+        if (in_interrupt())
+                panic("Fatal exception in interrupt");
+        if (panic_on_oops)
+                panic("Fatal exception");
+-       do_exit(signr);
++       if (signr)
++               do_exit(signr);
+ }
 
---=20
-Antonio Ospite
-http://ao2.it
+ int __kprobes __die(const char *str, struct pt_regs *regs, long err)
 
-PGP public key ID: 0x4553B001
+If the code worked like this, I think the problem indicated by Atal
+could be easily fixed.
 
-A: Because it messes up the order in which people normally read text.
-   See http://en.wikipedia.org/wiki/Posting_style
-Q: Why is top-posting such a bad thing?
-A: Top-posting.
-Q: What is the most annoying thing in e-mail?
+> 2. We tried to use panic notifiers mechanism to print additional
+> information that we want to see in mtdoops logs and it worked well,
+> but having the kmsg_dump(KMSG_DUMP_PANIC) before the
+> atomic_notifier_call_chain() breaks this functionality.
+> Can we the call kmsg_dump() after the notifiers had been invoked?
 
---Signature=_Fri__23_Oct_2009_22_37_04_+0200_nwR9apXirKpCB3F0
-Content-Type: application/pgp-signature
+Atal, I think you should just attach your patch, it is easier to express
+what you mean.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
+But for me it looks like atomic_notifier_call_chain() can be moved up.
 
-iEYEARECAAYFAkriE/AACgkQ5xr2akVTsAGh8ACfbtE5OFsEIPIvO6JpmtDvF89n
-aG0AnjmizPfYHhyk39xNxkQIWnQWFrLZ
-=EqYo
------END PGP SIGNATURE-----
+Anyway, please, show your patch.
 
---Signature=_Fri__23_Oct_2009_22_37_04_+0200_nwR9apXirKpCB3F0--
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
