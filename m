@@ -1,21 +1,20 @@
-Received: from mail-yx0-f202.google.com ([209.85.210.202])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1N2MS8-0005ZQ-4L
-	for linux-mtd@lists.infradead.org; Mon, 26 Oct 2009 10:05:33 +0000
-Received: by yxe40 with SMTP id 40so2528935yxe.28
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 26 Oct 2009 03:05:27 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20091026145935.uvck3scgs8wgcc8o@bangalore.tesbv.com>
-References: <20091026145935.uvck3scgs8wgcc8o@bangalore.tesbv.com>
-Date: Mon, 26 Oct 2009 18:05:26 +0800
-Message-ID: <e8775dd00910260305v1c6ebe76t56eca8e09071e562@mail.gmail.com>
-Subject: Re: UBIFS second time booting issue
-From: Jason Liu <liu.h.jason@gmail.com>
-To: rithesh@tesbv.com
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, thomas@tesbv.com
+Date: Mon, 26 Oct 2009 10:19:09 +0000
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH 14/16] pcmcia: use dynamic debug infrastructure,
+	deprecate CS_CHECK (misc drivers)
+Message-ID: <20091026101909.271c109e@lxorguk.ukuu.org.uk>
+In-Reply-To: <1256541991.29885.376.camel@localhost>
+References: <20091024194219.GA19546@comet.dominikbrodowski.net>
+	<1256413386-20501-14-git-send-email-linux@dominikbrodowski.net>
+	<1256539331.29885.360.camel@localhost>
+	<20091026071352.GA26980@isilmar.linta.de>
+	<1256541991.29885.376.camel@localhost>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-pcmcia@lists.infradead.org, linux-mtd@lists.infradead.org,
+	linux-usb@vger.kernel.org, Dominik Brodowski <linux@dominikbrodowski.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,54 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2009/10/26  <rithesh@tesbv.com>:
-> Hello,
->
-> I have built a ubifs filesystem of size 8MiB. The following steps were
-> followed:
->
->
-> ./mkfs.ubifs -r /home/rithesh/TITAN/ubifilesystem/ -m 512 -e 15360 -c 511=
- -o
-> /tmp/ubifs.img
->
-> ./ubinize -o /tmp/ubi.img -m 512 -s 512 -p 16384 ubinize.cfg
->
-> My nand flash is 256MiB with the block size of 16KiB and 512 bytes of pag=
-e
-> size.
->
-> The ubinize.cfg contains the following:
->
-> [ubifs]
-> mode=3Dubi
-> image=3D/tmp/ubifs.img
-> vol_id=3D0
-> vol_size=3D8MiB
-> vol_type=3Ddynamic
-> vol_name=3Drootfs
-> vol_flags=3Dautoresize
->
->
-> ISSUE:
->
-> The ubi.img which gets generate out of the following steps is flashed and
-> the kernel comes up for the first time but fails to boot up the second ti=
-me.
->
-> Hence i have enabled the Debug message to traces the bug which points
-> towards "switching of ubifs filesystem to readonly mode" but i am not sur=
-e
-> why this should happen.
-> Before switching the readonly mode the ubifs write to the flash fails
-> continues, please see the logfile =A0attached to this mail.
->
-> Please guide me through this problem.
->
-> Thanks and Regards,
-> Rithesh.M
-> TES Electronic Solutions(I) Pvt LTD.
->
-What utility did you used to write the UBIFS image to NAND flash?
-Please make sure not to program the page which data is all 0xFF. Your
-issue is called by writting the page which data is all 0xFF.
+> > No, I don't have all that much PCMCIA hardware -- and specifically none for
+> > the drivers which were modified in this patch (parport, ixj-telephony,
+> > sl811; pcmcia_mtd is marked broken anyway).
+> 
+> This driver is old and ugly, and it is even possible that no one uses it
+> anymore, so I guess getting clean-ups without testing is ok for it.
+> However, in that case the clean-up patches should be reviewable, which I
+> wouldn't say about your patch :-)
+> 
+> Could you please split it on several smaller patches, each doing one
+> thing only?
+
+pcmcia_mtd has been marked broken for how long - better to delete it ?
+It's in the git history if anyone ever wants to resurrect it.
