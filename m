@@ -1,40 +1,13 @@
-Received: from ernst.netinsight.se ([194.16.221.21])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1N2O8Z-0002G7-Ns
-	for linux-mtd@lists.infradead.org; Mon, 26 Oct 2009 11:53:28 +0000
-Date: Mon, 26 Oct 2009 12:53:16 +0100
-From: Simon Kagstrom <simon.kagstrom@netinsight.net>
-To: "Shargorodsky Atal (EXT-Teleca/Helsinki)" <ext-atal.shargorodsky@nokia.com>
-Subject: Re: [PATCH v11 4/5] core: Add kernel message dumper to call on
-	oopses and panics
-Message-ID: <20091026125316.0283e322@marrow.netinsight.se>
-In-Reply-To: <1256553393.5822.24.camel@atal-desktop>
-References: <20091015093133.GF10546@elte.hu>
-	<20091015161052.0752208e@marrow.netinsight.se>
-	<20091015154640.GA11408@elte.hu>
-	<20091016094601.4e2c2d3e@marrow.netinsight.se>
-	<20091016080935.GA3895@elte.hu>
-	<1255681467.32489.360.camel@localhost>
-	<20091016112556.6902b2dc@marrow.netinsight.se>
-	<20091016101045.GA3263@elte.hu>
-	<20091016140918.3981cfa2@marrow.netinsight.se>
-	<1255952922.32489.505.camel@localhost>
-	<20091019125017.GA9030@elte.hu>
-	<alpine.LFD.2.00.0910220832580.9771@eeepc.linux-foundation.org>
-	<20091022082500.602f9a7d@marrow.netinsight.se>
-	<1256313202.5824.60.camel@atal-desktop>
-	<20091026084158.0644ea85@marrow.netinsight.se>
-	<1256553393.5822.24.camel@atal-desktop>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>,
-	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>, Ingo Molnar <mingo@elte.hu>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alan Cox <alan@lxorguk.ukuu.org.uk>
+Received: from mba.ocn.ne.jp ([122.28.14.163] helo=smtp.mba.ocn.ne.jp)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1N2P31-0003N7-09
+	for linux-mtd@lists.infradead.org; Mon, 26 Oct 2009 12:51:48 +0000
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd/maps: Fix accidental removal in Makefile
+Date: Mon, 26 Oct 2009 21:51:40 +0900
+Message-Id: <1256561500-8036-1-git-send-email-anemo@mba.ocn.ne.jp>
+Cc: Mike Frysinger <vapier@gentoo.org>, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,49 +17,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 26 Oct 2009 12:36:33 +0200
-"Shargorodsky Atal (EXT-Teleca/Helsinki)" <ext-atal.shargorodsky@nokia.com> wrote:
+The commit d79c326 ("gpio-addr-flash: new driver for GPIO assisted
+flash addressing") removed two lines from the Makefile by accident.
+Though I'm not sure how this accident happened, this patch reverts the
+removal.
 
-> > > I can think of a couple of way to figure it out in the module
-> > > itself, but I could not think of any clean way to do it.
-> > 
-> > This is correct, and the mtdoops driver has some provisions to handle
-> > this. First, there is a parameter to the module to specify whether
-> > oopses should be dumped at all - I added this for the particular case
-> > that someone has panic_on_oops set.
-> 
-> It takes care of most of the situations, but panic_on_oops
-> can be changed any time, even after the module is loaded.
+Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+---
+ drivers/mtd/maps/Makefile |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-Yes, but this parameter is settable at runtime as well by writing
-to /sys/module/mtdoops/parameters/dump_oops.
-
-> > Second, it does not dump oopses directly anyway, but puts it in a work
-> > queue. That way, if panic_on_oops is set, it will store the panic but
-> > the oops (called from the workqueue) will not get written anyway.
-> > 
-> 
-> AFAIK, mtdoops does not put oopses in a work queue. And if by any chance
-> it does, then I think it's wrong and might lead to missed oopses, as
-> the oops might be because of the work queues themselves, or it might
-> look to the kernel like some non-fatal fault, but actually it's a
-> sign of a much more catastrophic failure - IOMMU device garbaging
-> memory, for instance.
-
-I was referring to my patches to it, sorry. It's in the patch "[PATCH v7 5/5]:
-mtdoops: refactor as a kmsg_dumper" (as well as the parameter to dump
-oopses at all).
-
-There are other situations which will make dumping problematic as well,
-e.g., crashes in the mtd code, so there are certainly some cases which
-will be difficult to catch. But in the panic_on_oops case or
-oops-in-interrupt, the oops won't be missed and won't be outputted
-twice for mtdoops.
-
-
-Anyway, I understand your problem and agree that it would be good to
-fix. Moving up crash_kexec() and the notifiers will at least fix your
-second issue. For the double-output-of-oopses, I don't see a good way
-to fix it unless relying on the module to correct it like above.
-
-// Simon
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index 1d5cf86..ae2f6db 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -58,4 +58,6 @@ obj-$(CONFIG_MTD_PLATRAM)	+= plat-ram.o
+ obj-$(CONFIG_MTD_OMAP_NOR)	+= omap_nor.o
+ obj-$(CONFIG_MTD_INTEL_VR_NOR)	+= intel_vr_nor.o
+ obj-$(CONFIG_MTD_BFIN_ASYNC)	+= bfin-async-flash.o
++obj-$(CONFIG_MTD_RBTX4939)	+= rbtx4939-flash.o
++obj-$(CONFIG_MTD_VMU)		+= vmu-flash.o
+ obj-$(CONFIG_MTD_GPIO_ADDR)	+= gpio-addr-flash.o
+-- 
+1.5.6.5
