@@ -1,13 +1,13 @@
 Received: from ernst.netinsight.se ([194.16.221.21])
 	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1N3UJm-0001MQ-4n
-	for linux-mtd@lists.infradead.org; Thu, 29 Oct 2009 12:41:35 +0000
-Date: Thu, 29 Oct 2009 13:41:19 +0100
+	id 1N3UJr-0001MQ-I1
+	for linux-mtd@lists.infradead.org; Thu, 29 Oct 2009 12:41:40 +0000
+Date: Thu, 29 Oct 2009 13:41:23 +0100
 From: Simon Kagstrom <simon.kagstrom@netinsight.net>
 To: Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd
 	<linux-mtd@lists.infradead.org>
-Subject: [PATCH v12 3/4]: mtdoops: Make page (record) size configurable
-Message-ID: <20091029134119.7452f327@marrow.netinsight.se>
+Subject: [PATCH v12 4/4]: mtdoops: refactor as a kmsg_dumper
+Message-ID: <20091029134123.348b5126@marrow.netinsight.se>
 In-Reply-To: <20091029133535.2ea65f72@marrow.netinsight.se>
 References: <20091015094057.7298e0d7@marrow.netinsight.se>
 	<20091029133535.2ea65f72@marrow.netinsight.se>
@@ -23,211 +23,417 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The main justification for this is to allow catching long messages
-during a panic, where the top part might otherwise be lost since moving
-to the next block can require a flash erase.
+The last messages which happens before a crash might contain interesting
+information about the crash. This patch reworks mtdoops using the
+kmsg_dumper support instead of a console, which simplifies the code and
+also includes the messages before the oops started.
+
+On oops callbacks, the MTD device write is scheduled in a work queue (to
+be able to use the regular mtd->write call), while panics call
+mtd->panic_write directly. Thus, if panic_on_oops is set, the oops will
+be written out during the panic.
+
+A parameter to specify which mtd device to use (number or name), as well
+as a flag, writable at runtime, to toggle wheter to dump oopses or only
+panics (since oopses can often be handled by regular syslog).
 
 Signed-off-by: Simon Kagstrom <simon.kagstrom@netinsight.net>
 Reviewed-by: Anders Grafstrom <anders.grafstrom@netinsight.net>
 ---
 ChangeLog:
- * Rebased over "[PATCH v12 2/4]: mtdoops: Add a maximum MTD partition size"
+  * Rebased on top of "[PATCH v12 3/4]: mtdoops: Make page (record) size configurable"
 
- drivers/mtd/mtdoops.c |   75 ++++++++++++++++++++++++++++--------------------
- 1 files changed, 44 insertions(+), 31 deletions(-)
+ drivers/mtd/Kconfig   |    5 +-
+ drivers/mtd/mtdoops.c |  218 +++++++++++++++++++++----------------------------
+ 2 files changed, 96 insertions(+), 127 deletions(-)
 
+diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+index 9a69af8..c1bcad5 100644
+--- a/drivers/mtd/Kconfig
++++ b/drivers/mtd/Kconfig
+@@ -312,8 +312,9 @@ config MTD_OOPS
+ 	  buffer in a flash partition where it can be read back at some
+ 	  later point.
+ 
+-	  To use, add console=ttyMTDx to the kernel command line,
+-	  where x is the MTD device number to use.
++	  To use, add mtddev=name/number to the kernel command line,
++	  where name/number is the name or number of the MTD device
++	  to use (e.g., mtddev=7 for /dev/mtd7).
+ 
+ config MTD_OOPS_MAX_MTD_SIZE
+ 	int "Maximum MTD oops partition size (kbytes)"
 diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-index dc94a70..6c8aa70 100644
+index 6c8aa70..91b0061 100644
 --- a/drivers/mtd/mtdoops.c
 +++ b/drivers/mtd/mtdoops.c
-@@ -34,7 +34,11 @@
+@@ -29,18 +29,31 @@
+ #include <linux/sched.h>
+ #include <linux/wait.h>
+ #include <linux/delay.h>
+-#include <linux/spinlock.h>
+ #include <linux/interrupt.h>
  #include <linux/mtd/mtd.h>
++#include <linux/kmsg_dump.h>
  
  #define MTDOOPS_KERNMSG_MAGIC 0x5d005d00
--#define OOPS_PAGE_SIZE 4096
++#define MTDOOPS_HEADER_SIZE   8
+ 
+ static unsigned long record_size = 4096;
+ module_param(record_size, ulong, 0400);
+ MODULE_PARM_DESC(record_size,
+ 		"record size for MTD OOPS pages in bytes (default 4096)");
+ 
++static char mtddev[80];
++module_param_string(mtddev, mtddev, 80, 0400);
++MODULE_PARM_DESC(mtddev,
++		"name or index number of the MTD device to use");
 +
-+static unsigned long record_size = 4096;
-+module_param(record_size, ulong, 0400);
-+MODULE_PARM_DESC(record_size,
-+		"record size for MTD OOPS pages in bytes (default 4096)");
- 
++static int dump_oops = 1;
++module_param(dump_oops, int, 0600);
++MODULE_PARM_DESC(dump_oops,
++		"set to 1 to dump oopses, 0 to only dump panics (default 1)");
++
  static struct mtdoops_context {
++	struct kmsg_dumper dump;
++
  	int mtd_index;
-@@ -80,8 +84,8 @@ static int mtdoops_erase_block(struct mtdoops_context *cxt, int offset)
- {
- 	struct mtd_info *mtd = cxt->mtd;
- 	u32 start_page_offset = mtd_div_by_eb(offset, mtd) * mtd->erasesize;
--	u32 start_page = start_page_offset / OOPS_PAGE_SIZE;
--	u32 erase_pages = mtd->erasesize / OOPS_PAGE_SIZE;
-+	u32 start_page = start_page_offset / record_size;
-+	u32 erase_pages = mtd->erasesize / record_size;
- 	struct erase_info erase;
- 	DECLARE_WAITQUEUE(wait, current);
- 	wait_queue_head_t wait_q;
-@@ -149,15 +153,15 @@ static void mtdoops_workfunc_erase(struct work_struct *work)
- 	if (!mtd)
- 		return;
+ 	struct work_struct work_erase;
+ 	struct work_struct work_write;
+@@ -49,14 +62,8 @@ static struct mtdoops_context {
+ 	int nextpage;
+ 	int nextcount;
+ 	unsigned long *oops_page_used;
+-	char *name;
  
--	mod = (cxt->nextpage * OOPS_PAGE_SIZE) % mtd->erasesize;
-+	mod = (cxt->nextpage * record_size) % mtd->erasesize;
- 	if (mod != 0) {
--		cxt->nextpage = cxt->nextpage + ((mtd->erasesize - mod) / OOPS_PAGE_SIZE);
-+		cxt->nextpage = cxt->nextpage + ((mtd->erasesize - mod) / record_size);
- 		if (cxt->nextpage >= cxt->oops_pages)
- 			cxt->nextpage = 0;
+ 	void *oops_buf;
+-
+-	/* writecount and disabling ready are spin lock protected */
+-	spinlock_t writecount_lock;
+-	int ready;
+-	int writecount;
+ } oops_cxt;
+ 
+ static void mark_page_used(struct mtdoops_context *cxt, int page)
+@@ -108,7 +115,7 @@ static int mtdoops_erase_block(struct mtdoops_context *cxt, int offset)
+ 		remove_wait_queue(&wait_q, &wait);
+ 		printk(KERN_WARNING "mtdoops: erase of region [0x%llx, 0x%llx] on \"%s\" failed\n",
+ 		       (unsigned long long)erase.addr,
+-		       (unsigned long long)erase.len, mtd->name);
++		       (unsigned long long)erase.len, mtddev);
+ 		return ret;
  	}
  
- 	while (mtd->block_isbad) {
--		ret = mtd->block_isbad(mtd, cxt->nextpage * OOPS_PAGE_SIZE);
-+		ret = mtd->block_isbad(mtd, cxt->nextpage * record_size);
- 		if (!ret)
- 			break;
- 		if (ret < 0) {
-@@ -165,20 +169,20 @@ static void mtdoops_workfunc_erase(struct work_struct *work)
- 			return;
- 		}
- badblock:
--		printk(KERN_WARNING "mtdoops: bad block at %08x\n",
--		       cxt->nextpage * OOPS_PAGE_SIZE);
-+		printk(KERN_WARNING "mtdoops: bad block at %08lx\n",
-+		       cxt->nextpage * record_size);
- 		i++;
--		cxt->nextpage = cxt->nextpage + (mtd->erasesize / OOPS_PAGE_SIZE);
-+		cxt->nextpage = cxt->nextpage + (mtd->erasesize / record_size);
- 		if (cxt->nextpage >= cxt->oops_pages)
- 			cxt->nextpage = 0;
--		if (i == cxt->oops_pages / (mtd->erasesize / OOPS_PAGE_SIZE)) {
-+		if (i == cxt->oops_pages / (mtd->erasesize / record_size)) {
- 			printk(KERN_ERR "mtdoops: all blocks bad!\n");
- 			return;
- 		}
- 	}
+@@ -138,7 +145,6 @@ static void mtdoops_inc_counter(struct mtdoops_context *cxt)
  
- 	for (j = 0, ret = -1; (j < 3) && (ret < 0); j++)
--		ret = mtdoops_erase_block(cxt, cxt->nextpage * OOPS_PAGE_SIZE);
-+		ret = mtdoops_erase_block(cxt, cxt->nextpage * record_size);
+ 	printk(KERN_DEBUG "mtdoops: ready %d, %d (no erase)\n",
+ 	       cxt->nextpage, cxt->nextcount);
+-	cxt->ready = 1;
+ }
  
+ /* Scheduled work - when we can't proceed without erasing a block */
+@@ -187,7 +193,6 @@ badblock:
  	if (ret >= 0) {
  		printk(KERN_DEBUG "mtdoops: ready %d, %d\n",
-@@ -188,7 +192,7 @@ badblock:
+ 		       cxt->nextpage, cxt->nextcount);
+-		cxt->ready = 1;
+ 		return;
  	}
  
- 	if (mtd->block_markbad && ret == -EIO) {
--		ret = mtd->block_markbad(mtd, cxt->nextpage * OOPS_PAGE_SIZE);
-+		ret = mtd->block_markbad(mtd, cxt->nextpage * record_size);
- 		if (ret < 0) {
- 			printk(KERN_ERR "mtdoops: block_markbad failed, aborting\n");
- 			return;
-@@ -203,22 +207,22 @@ static void mtdoops_write(struct mtdoops_context *cxt, int panic)
+@@ -205,11 +210,13 @@ static void mtdoops_write(struct mtdoops_context *cxt, int panic)
+ {
+ 	struct mtd_info *mtd = cxt->mtd;
  	size_t retlen;
++	u32 *hdr;
  	int ret;
  
--	if (cxt->writecount < OOPS_PAGE_SIZE)
-+	if (cxt->writecount < record_size)
- 		memset(cxt->oops_buf + cxt->writecount, 0xff,
--					OOPS_PAGE_SIZE - cxt->writecount);
-+					record_size - cxt->writecount);
+-	if (cxt->writecount < record_size)
+-		memset(cxt->oops_buf + cxt->writecount, 0xff,
+-					record_size - cxt->writecount);
++	/* Add mtdoops header to the buffer */
++	hdr = cxt->oops_buf;
++	hdr[0] = cxt->nextcount;
++	hdr[1] = MTDOOPS_KERNMSG_MAGIC;
  
  	if (panic)
--		ret = mtd->panic_write(mtd, cxt->nextpage * OOPS_PAGE_SIZE,
--					OOPS_PAGE_SIZE, &retlen, cxt->oops_buf);
-+		ret = mtd->panic_write(mtd, cxt->nextpage * record_size,
-+					record_size, &retlen, cxt->oops_buf);
- 	else
--		ret = mtd->write(mtd, cxt->nextpage * OOPS_PAGE_SIZE,
--					OOPS_PAGE_SIZE, &retlen, cxt->oops_buf);
-+		ret = mtd->write(mtd, cxt->nextpage * record_size,
-+					record_size, &retlen, cxt->oops_buf);
+ 		ret = mtd->panic_write(mtd, cxt->nextpage * record_size,
+@@ -218,17 +225,15 @@ static void mtdoops_write(struct mtdoops_context *cxt, int panic)
+ 		ret = mtd->write(mtd, cxt->nextpage * record_size,
+ 					record_size, &retlen, cxt->oops_buf);
  
- 	cxt->writecount = 0;
- 
--	if (retlen != OOPS_PAGE_SIZE || ret < 0)
--		printk(KERN_ERR "mtdoops: write failure at %d (%td of %d written), error %d\n",
--		       cxt->nextpage * OOPS_PAGE_SIZE, retlen, OOPS_PAGE_SIZE, ret);
-+	if (retlen != record_size || ret < 0)
-+		printk(KERN_ERR "mtdoops: write failure at %ld (%td of %ld written), error %d\n",
-+		       cxt->nextpage * record_size, retlen, record_size, ret);
+-	cxt->writecount = 0;
+-
+ 	if (retlen != record_size || ret < 0)
+ 		printk(KERN_ERR "mtdoops: write failure at %ld (%td of %ld written), error %d\n",
+ 		       cxt->nextpage * record_size, retlen, record_size, ret);
  	mark_page_used(cxt, cxt->nextpage);
++	memset(cxt->oops_buf, 0xff, record_size);
  
  	mtdoops_inc_counter(cxt);
-@@ -243,10 +247,10 @@ static void find_next_position(struct mtdoops_context *cxt)
+ }
+ 
+-
+ static void mtdoops_workfunc_write(struct work_struct *work)
+ {
+ 	struct mtdoops_context *cxt =
+@@ -247,10 +252,13 @@ static void find_next_position(struct mtdoops_context *cxt)
  	for (page = 0; page < cxt->oops_pages; page++) {
  		/* Assume the page is used */
  		mark_page_used(cxt, page);
--		ret = mtd->read(mtd, page * OOPS_PAGE_SIZE, 8, &retlen, (u_char *) &count[0]);
-+		ret = mtd->read(mtd, page * record_size, 8, &retlen, (u_char *) &count[0]);
- 		if (retlen != 8 || (ret < 0 && ret != -EUCLEAN)) {
--			printk(KERN_ERR "mtdoops: read failure at %d (%td of 8 read), err %d\n",
--			       page * OOPS_PAGE_SIZE, retlen, ret);
-+			printk(KERN_ERR "mtdoops: read failure at %ld (%td of 8 read), err %d\n",
-+			       page * record_size, retlen, ret);
+-		ret = mtd->read(mtd, page * record_size, 8, &retlen, (u_char *) &count[0]);
+-		if (retlen != 8 || (ret < 0 && ret != -EUCLEAN)) {
+-			printk(KERN_ERR "mtdoops: read failure at %ld (%td of 8 read), err %d\n",
+-			       page * record_size, retlen, ret);
++		ret = mtd->read(mtd, page * record_size, MTDOOPS_HEADER_SIZE,
++				&retlen, (u_char *) &count[0]);
++		if (retlen != MTDOOPS_HEADER_SIZE ||
++				(ret < 0 && ret != -EUCLEAN)) {
++			printk(KERN_ERR "mtdoops: read failure at %ld (%td of %d read), err %d\n",
++			       page * record_size, retlen,
++			       MTDOOPS_HEADER_SIZE, ret);
  			continue;
  		}
  
-@@ -290,7 +294,7 @@ static void mtdoops_notify_add(struct mtd_info *mtd)
- 	struct mtdoops_context *cxt = &oops_cxt;
- 	u64 mtdoops_pages = mtd->size;
- 
--	do_div(mtdoops_pages, OOPS_PAGE_SIZE);
-+	do_div(mtdoops_pages, record_size);
- 
- 	if (cxt->name && !strcmp(mtd->name, cxt->name))
- 		cxt->mtd_index = mtd->index;
-@@ -310,7 +314,7 @@ static void mtdoops_notify_add(struct mtd_info *mtd)
- 		return;
- 	}
- 
--	if (mtd->erasesize < OOPS_PAGE_SIZE) {
-+	if (mtd->erasesize < record_size) {
- 		printk(KERN_ERR "mtdoops: eraseblock size of MTD partition %d too small\n",
- 		       mtd->index);
- 		return;
-@@ -324,7 +328,8 @@ static void mtdoops_notify_add(struct mtd_info *mtd)
- 		return;
- 	}
- 	cxt->mtd = mtd;
--	cxt->oops_pages = (int)mtd->size / OOPS_PAGE_SIZE;
-+
-+	cxt->oops_pages = (int)mtd->size / record_size;
- 
- 	find_next_position(cxt);
- 
-@@ -401,15 +406,15 @@ mtdoops_console_write(struct console *co, const char *s, unsigned int count)
- 		cxt->writecount = 8;
- 	}
- 
--	if (count + cxt->writecount > OOPS_PAGE_SIZE)
--		count = OOPS_PAGE_SIZE - cxt->writecount;
-+	if (count + cxt->writecount > record_size)
-+		count = record_size - cxt->writecount;
- 
- 	memcpy(cxt->oops_buf + cxt->writecount, s, count);
- 	cxt->writecount += count;
- 
- 	spin_unlock_irqrestore(&cxt->writecount_lock, flags);
- 
--	if (cxt->writecount == OOPS_PAGE_SIZE)
-+	if (cxt->writecount == record_size)
- 		mtdoops_console_sync();
+@@ -288,6 +296,42 @@ static void find_next_position(struct mtdoops_context *cxt)
+ 	mtdoops_inc_counter(cxt);
  }
  
-@@ -448,8 +453,16 @@ static int __init mtdoops_console_init(void)
++static void mtdoops_do_dump(struct kmsg_dumper *dumper,
++		enum kmsg_dump_reason reason, const char *s1, unsigned long l1,
++		const char *s2, unsigned long l2)
++{
++	struct mtdoops_context *cxt = container_of(dumper,
++			struct mtdoops_context, dump);
++	unsigned long s1_start, s2_start;
++	unsigned long l1_cpy, l2_cpy;
++	char *dst;
++
++	/* Only dump oopses if dump_oops is set */
++	if (reason == KMSG_DUMP_OOPS && !dump_oops)
++		return;
++
++	dst = cxt->oops_buf + MTDOOPS_HEADER_SIZE; /* Skip the header */
++	l2_cpy = min(l2, record_size - MTDOOPS_HEADER_SIZE);
++	l1_cpy = min(l1, record_size - MTDOOPS_HEADER_SIZE - l2_cpy);
++
++	s2_start = l2 - l2_cpy;
++	s1_start = l1 - l1_cpy;
++
++	memcpy(dst, s1 + s1_start, l1_cpy);
++	memcpy(dst + l1_cpy, s2 + s2_start, l2_cpy);
++
++	/* Panics must be written immediately */
++	if (reason == KMSG_DUMP_PANIC) {
++		if (!cxt->mtd->panic_write)
++			printk(KERN_ERR "mtdoops: Cannot write from panic without panic_write\n");
++		else
++			mtdoops_write(cxt, 1);
++		return;
++	}
++
++	/* For other cases, schedule work to write it "nicely" */
++	schedule_work(&cxt->work_write);
++}
+ 
+ static void mtdoops_notify_add(struct mtd_info *mtd)
+ {
+@@ -296,7 +340,7 @@ static void mtdoops_notify_add(struct mtd_info *mtd)
+ 
+ 	do_div(mtdoops_pages, record_size);
+ 
+-	if (cxt->name && !strcmp(mtd->name, cxt->name))
++	if (!strcmp(mtd->name, mtddev))
+ 		cxt->mtd_index = mtd->index;
+ 
+ 	if (mtd->index != cxt->mtd_index || cxt->mtd_index < 0)
+@@ -327,6 +371,14 @@ static void mtdoops_notify_add(struct mtd_info *mtd)
+ 		printk(KERN_ERR "Could not allocate page array\n");
+ 		return;
+ 	}
++	cxt->dump.dump = mtdoops_do_dump;
++	if (kmsg_dump_register(&cxt->dump) < 0) {
++		printk(KERN_ERR "Registering kmsg dumper failed\n");
++		vfree(cxt->oops_page_used);
++		cxt->oops_page_used = NULL;
++		return;
++	}
++
+ 	cxt->mtd = mtd;
+ 
+ 	cxt->oops_pages = (int)mtd->size / record_size;
+@@ -343,116 +395,29 @@ static void mtdoops_notify_remove(struct mtd_info *mtd)
+ 	if (mtd->index != cxt->mtd_index || cxt->mtd_index < 0)
+ 		return;
+ 
++	if (kmsg_dump_unregister(&cxt->dump) < 0)
++		printk(KERN_WARNING "Could not unregister kmsg_dumper??\n");
++
+ 	cxt->mtd = NULL;
+ 	flush_scheduled_work();
+ }
+ 
+-static void mtdoops_console_sync(void)
+-{
+-	struct mtdoops_context *cxt = &oops_cxt;
+-	struct mtd_info *mtd = cxt->mtd;
+-	unsigned long flags;
+-
+-	if (!cxt->ready || !mtd || cxt->writecount == 0)
+-		return;
+-
+-	/*
+-	 *  Once ready is 0 and we've held the lock no further writes to the
+-	 *  buffer will happen
+-	 */
+-	spin_lock_irqsave(&cxt->writecount_lock, flags);
+-	if (!cxt->ready) {
+-		spin_unlock_irqrestore(&cxt->writecount_lock, flags);
+-		return;
+-	}
+-	cxt->ready = 0;
+-	spin_unlock_irqrestore(&cxt->writecount_lock, flags);
+-
+-	if (mtd->panic_write && (in_interrupt() || panic_on_oops))
+-		/* Interrupt context, we're going to panic so try and log */
+-		mtdoops_write(cxt, 1);
+-	else
+-		schedule_work(&cxt->work_write);
+-}
+-
+-static void
+-mtdoops_console_write(struct console *co, const char *s, unsigned int count)
+-{
+-	struct mtdoops_context *cxt = co->data;
+-	struct mtd_info *mtd = cxt->mtd;
+-	unsigned long flags;
+-
+-	if (!oops_in_progress) {
+-		mtdoops_console_sync();
+-		return;
+-	}
+-
+-	if (!cxt->ready || !mtd)
+-		return;
+-
+-	/* Locking on writecount ensures sequential writes to the buffer */
+-	spin_lock_irqsave(&cxt->writecount_lock, flags);
+-
+-	/* Check ready status didn't change whilst waiting for the lock */
+-	if (!cxt->ready) {
+-		spin_unlock_irqrestore(&cxt->writecount_lock, flags);
+-		return;
+-	}
+-
+-	if (cxt->writecount == 0) {
+-		u32 *stamp = cxt->oops_buf;
+-		*stamp++ = cxt->nextcount;
+-		*stamp = MTDOOPS_KERNMSG_MAGIC;
+-		cxt->writecount = 8;
+-	}
+-
+-	if (count + cxt->writecount > record_size)
+-		count = record_size - cxt->writecount;
+-
+-	memcpy(cxt->oops_buf + cxt->writecount, s, count);
+-	cxt->writecount += count;
+-
+-	spin_unlock_irqrestore(&cxt->writecount_lock, flags);
+-
+-	if (cxt->writecount == record_size)
+-		mtdoops_console_sync();
+-}
+-
+-static int __init mtdoops_console_setup(struct console *co, char *options)
+-{
+-	struct mtdoops_context *cxt = co->data;
+-
+-	if (cxt->mtd_index != -1 || cxt->name)
+-		return -EBUSY;
+-	if (options) {
+-		cxt->name = kstrdup(options, GFP_KERNEL);
+-		return 0;
+-	}
+-	if (co->index == -1)
+-		return -EINVAL;
+-
+-	cxt->mtd_index = co->index;
+-	return 0;
+-}
+ 
+ static struct mtd_notifier mtdoops_notifier = {
+ 	.add	= mtdoops_notify_add,
+ 	.remove	= mtdoops_notify_remove,
+ };
+ 
+-static struct console mtdoops_console = {
+-	.name		= "ttyMTD",
+-	.write		= mtdoops_console_write,
+-	.setup		= mtdoops_console_setup,
+-	.unblank	= mtdoops_console_sync,
+-	.index		= -1,
+-	.data		= &oops_cxt,
+-};
+-
+-static int __init mtdoops_console_init(void)
++static int __init mtdoops_init(void)
  {
  	struct mtdoops_context *cxt = &oops_cxt;
++	int mtd_index;
++	char *endp;
  
-+	if ((record_size & 4095) != 0) {
-+		printk(KERN_ERR "mtdoops: record_size must be a multiple of 4096\n");
++	if (strlen(mtddev) == 0) {
++		printk(KERN_ERR "mtdoops: mtd device (mtddev=name/number) must be supplied\n");
 +		return -EINVAL;
 +	}
-+	if (record_size < 4096) {
-+		printk(KERN_ERR "mtdoops: record_size must be over 4096 bytes\n");
-+		return -EINVAL;
-+	}
+ 	if ((record_size & 4095) != 0) {
+ 		printk(KERN_ERR "mtdoops: record_size must be a multiple of 4096\n");
+ 		return -EINVAL;
+@@ -461,36 +426,39 @@ static int __init mtdoops_console_init(void)
+ 		printk(KERN_ERR "mtdoops: record_size must be over 4096 bytes\n");
+ 		return -EINVAL;
+ 	}
++
++	/* Setup the MTD device to use */
  	cxt->mtd_index = -1;
--	cxt->oops_buf = vmalloc(OOPS_PAGE_SIZE);
-+	cxt->oops_buf = vmalloc(record_size);
++	mtd_index = simple_strtoul(mtddev, &endp, 0);
++	if (endp != mtddev)
++		cxt->mtd_index = mtd_index;
++
+ 	cxt->oops_buf = vmalloc(record_size);
  	if (!cxt->oops_buf) {
  		printk(KERN_ERR "mtdoops: failed to allocate buffer workspace\n");
  		return -ENOMEM;
+ 	}
++	memset(cxt->oops_buf, 0xff, record_size);
+ 
+-	spin_lock_init(&cxt->writecount_lock);
+ 	INIT_WORK(&cxt->work_erase, mtdoops_workfunc_erase);
+ 	INIT_WORK(&cxt->work_write, mtdoops_workfunc_write);
+ 
+-	register_console(&mtdoops_console);
+ 	register_mtd_user(&mtdoops_notifier);
+ 	return 0;
+ }
+ 
+-static void __exit mtdoops_console_exit(void)
++static void __exit mtdoops_exit(void)
+ {
+ 	struct mtdoops_context *cxt = &oops_cxt;
+ 
+ 	unregister_mtd_user(&mtdoops_notifier);
+-	unregister_console(&mtdoops_console);
+-	kfree(cxt->name);
+ 	vfree(cxt->oops_buf);
+ 	vfree(cxt->oops_page_used);
+ }
+ 
+ 
+-subsys_initcall(mtdoops_console_init);
+-module_exit(mtdoops_console_exit);
++module_init(mtdoops_init);
++module_exit(mtdoops_exit);
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Richard Purdie <rpurdie@openedhand.com>");
 -- 
 1.6.0.4
