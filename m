@@ -1,19 +1,19 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N3kyn-0000sx-72
-	for linux-mtd@lists.infradead.org; Fri, 30 Oct 2009 06:29:01 +0000
-Subject: Re: [PATCH 0/3] NAND: OMAP: Fix and clean NAND driver
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Vimal Singh <vimal.newwork@gmail.com>
+Received: from mail-bw0-f212.google.com ([209.85.218.212])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1N3n44-0005C0-Pu
+	for linux-mtd@lists.infradead.org; Fri, 30 Oct 2009 08:42:37 +0000
+Received: by bwz4 with SMTP id 4so3633358bwz.2
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 30 Oct 2009 01:42:31 -0700 (PDT)
+MIME-Version: 1.0
 In-Reply-To: <ce9ab5790910292320x2eef0550pdc3fde5d616ea361@mail.gmail.com>
 References: <ce9ab5790910292320x2eef0550pdc3fde5d616ea361@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 30 Oct 2009 08:28:50 +0200
-Message-Id: <1256884130.29885.865.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Linux MTD <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+From: Vimal Singh <vimal.newwork@gmail.com>
+Date: Fri, 30 Oct 2009 14:12:11 +0530
+Message-ID: <ce9ab5790910300142q6062c47p935ae967955f89f@mail.gmail.com>
+Subject: Re: [PATCH 0/3] NAND: OMAP: Fix and clean NAND driver
+To: Linux MTD <linux-mtd@lists.infradead.org>, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,23 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-10-30 at 11:50 +0530, Vimal Singh wrote:
-> From: Vimal Singh <vimalsingh@ti.com>
-> Date: Fri, 30 Oct 2009 11:34:14 +0530
-> Subject: [PATCH 0/3] NAND: OMAP: Fix and clean NAND driver
-> 
-> This patch series addresses some of the issues in omap nand driver.
-> 
-> Vimal Singh (3):
->   Fixing compilation warning for 'nand/omap2.c'
->   NAND: OMAP: Fixing omap nand driver, compiled as module
->   NAND: OMAP: Simplifying HWECC and removing unnecessary macros
-> 
->  drivers/mtd/nand/omap2.c |  315 ++++++++++++++++------------------------------
->  1 files changed, 108 insertions(+), 207 deletions(-)
+Looping Linux-omap mailing list.
 
-Could you please post this to linux-omap as well?
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+From: Vimal Singh <vimalsingh@ti.com>
+Date: Fri, 30 Oct 2009 11:34:14 +0530
+Subject: [PATCH 0/3] NAND: OMAP: Fix and clean NAND driver
+
+This patch series addresses some of the issues in omap nand driver.
+
+Vimal Singh (3):
+ Fixing compilation warning for 'nand/omap2.c'
+ NAND: OMAP: Fixing omap nand driver, compiled as module
+ NAND: OMAP: Simplifying HWECC and removing unnecessary macros
+
+ drivers/mtd/nand/omap2.c |  315 ++++++++++++++++------------------------------
+ 1 files changed, 108 insertions(+), 207 deletions(-)
+
+--
+Regards,
+Vimal Singh
