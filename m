@@ -1,14 +1,22 @@
-Received: from mx2.zhaw.ch ([160.85.104.51])
+Received: from mail-ew0-f205.google.com ([209.85.219.205])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1N3uki-0000u3-Hb
-	for linux-mtd@lists.infradead.org; Fri, 30 Oct 2009 16:55:09 +0000
-From: Tobias Klauser <tklauser@distanz.ch>
-To: David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH] [MTD] maps/ixp4xx: Use resource_size
-Date: Fri, 30 Oct 2009 17:54:33 +0100
-Message-Id: <1256921673-19745-1-git-send-email-tklauser@distanz.ch>
-Cc: Tobias Klauser <tklauser@distanz.ch>
+	id 1N4IqY-0000Kt-Jb
+	for linux-mtd@lists.infradead.org; Sat, 31 Oct 2009 18:38:48 +0000
+Received: by ewy1 with SMTP id 1so3606944ewy.27
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 31 Oct 2009 11:38:40 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
+References: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
+Date: Sat, 31 Oct 2009 13:38:39 -0500
+Message-ID: <528f13590910311138s7c3b1551odfd363846dca0efb@mail.gmail.com>
+Subject: Re: [RFC] mxc nand controller updates
+From: alfred steele <alfred.jaquez@gmail.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Eric Benard <ebenard@eukrea.com>, Vladimir Barinov <vova.barinov@gmail.com>,
+	mathieu.berland@eads.com, jbe@pengutronix.de,
+	linux-mtd@lists.infradead.org, sha@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,45 +26,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use the resource_size inline function instead of manually calculating
-the resource size. This reduces the chance of introducing off-by-one
-errors.
+Hi Sascha,
 
-Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
----
- drivers/mtd/maps/ixp4xx.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/maps/ixp4xx.c b/drivers/mtd/maps/ixp4xx.c
-index 7214b87..7b05152 100644
---- a/drivers/mtd/maps/ixp4xx.c
-+++ b/drivers/mtd/maps/ixp4xx.c
-@@ -210,7 +210,7 @@ static int ixp4xx_flash_probe(struct platform_device *dev)
- 	 * not attempt to do a direct access on us.
- 	 */
- 	info->map.phys = NO_XIP;
--	info->map.size = dev->resource->end - dev->resource->start + 1;
-+	info->map.size = resource_size(dev->resource);
- 
- 	/*
- 	 * We only support 16-bit accesses for now. If and when
-@@ -224,7 +224,7 @@ static int ixp4xx_flash_probe(struct platform_device *dev)
- 	info->map.copy_from = ixp4xx_copy_from,
- 
- 	info->res = request_mem_region(dev->resource->start,
--			dev->resource->end - dev->resource->start + 1,
-+			resource_size(dev->resource),
- 			"IXP4XXFlash");
- 	if (!info->res) {
- 		printk(KERN_ERR "IXP4XXFlash: Could not reserve memory region\n");
-@@ -233,7 +233,7 @@ static int ixp4xx_flash_probe(struct platform_device *dev)
- 	}
- 
- 	info->map.virt = ioremap(dev->resource->start,
--				 dev->resource->end - dev->resource->start + 1);
-+				 resource_size(dev->resource));
- 	if (!info->map.virt) {
- 		printk(KERN_ERR "IXP4XXFlash: Failed to ioremap region\n");
- 		err = -EIO;
--- 
-1.6.3.3
+> Here are several patches for the mxc nand controller. At the end
+> of this series we are able to use this driver with the i.MX25/35
+> SoCs. Please review and test if you do not want to see your boards
+> break ;)
+Are these changes ported to u-boot yet.
+Would this be able to support 4k page size NAND flash. I took the
+latest snapshot from the U-boot GIT and trying to boot out of a 4K
+NAND on this but haven't been succesful as of now.
+I believe we used have a separate mxc_nand_load.S assembly code in
+earlier u-boot v2.0 which would load the first 4k from the NAND to the
+NFC  SRAM and then the rest of the uboot is loaded after SDRAM /DDR is
+initialized. But with the lates code you have in uboot GIT, looks like
+all this is done in C after a minimal stack is setup.
+
+Please help me understand this better.
+
+-Alfred.
