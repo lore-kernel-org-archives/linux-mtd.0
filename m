@@ -1,16 +1,24 @@
-Subject: Re: [PATCH] mtd: m25p80: make command buffer DMA-safe
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1N5D4B-0006pt-0O
+	for linux-mtd@lists.infradead.org; Tue, 03 Nov 2009 06:40:35 +0000
+Received: from vaebh106.NOE.Nokia.com (vaebh106.europe.nokia.com
+	[10.160.244.32])
+	by mgw-mx06.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
+	nA36eK5R008975
+	for <linux-mtd@lists.infradead.org>; Tue, 3 Nov 2009 08:40:28 +0200
+Subject: Re: [PATCH] MTD OneNAND OMAP2/3: allow giving partition layout as
+	module parameter
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Johannes Stezenbach <js@sig21.net>
-In-Reply-To: <20091028132137.GA17813@sig21.net>
-References: <20091028132137.GA17813@sig21.net>
+To: Mika Korhonen <ext-mika.2.korhonen@nokia.com>
+In-Reply-To: <1251976558-13463-1-git-send-email-ext-mika.2.korhonen@nokia.com>
+References: <1251976558-13463-1-git-send-email-ext-mika.2.korhonen@nokia.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 03 Nov 2009 08:36:05 +0200
-Message-Id: <1257230165.21596.33.camel@localhost>
+Date: Tue, 03 Nov 2009 08:40:22 +0200
+Message-Id: <1257230422.21596.37.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org,
-	David Brownell <dbrownell@users.sourceforge.net>,
-	David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,41 +29,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-10-28 at 14:21 +0100, Johannes Stezenbach wrote:
-> spi_write() requires the buffer to be DMA-safe, kmalloc()
-> it seperately to ensure this.
+On Thu, 2009-09-03 at 14:15 +0300, Mika Korhonen wrote:
+> Add module parameter "parts" to omap2-onenand driver. Parameter format is
+> the same as for cmdlinepart except mtd-id must not be specified - it
+> gets prepended by the driver, i.e.: parts=<partdef>[,<partdef>]*
 > 
-> Signed-off-by: Johannes Stezenbach <js@sig21.net>
+> This allows one to repartition the OneNAND chip and is useful for flashing
+> applications that do the partitioning from scratch or want to backup and
+> update the partitioning.
 > 
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 4c19269..21dd4d9 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -79,7 +79,7 @@ struct m25p {
->  	struct mtd_info		mtd;
->  	unsigned		partitioned:1;
->  	u8			erase_opcode;
-> -	u8			command[CMD_SIZE + FAST_READ_DUMMY_BYTE];
-> +	u8			*command;
->  };
->  
->  static inline struct m25p *mtd_to_m25p(struct mtd_info *mtd)
-> @@ -770,6 +770,11 @@ static int __devinit m25p_probe(struct spi_device *spi)
->  	flash = kzalloc(sizeof *flash, GFP_KERNEL);
->  	if (!flash)
->  		return -ENOMEM;
-> +	flash->command = kmalloc(CMD_SIZE + FAST_READ_DUMMY_BYTE, GFP_KERNEL);
-> +	if (!flash->command) {
-> +		kfree(flash);
-> +		return -ENOMEM;
-> +	}
+> Signed-off-by: Mika Korhonen <ext-mika.2.korhonen@nokia.com>
+> ---
+>  drivers/mtd/cmdlinepart.c   |   35 +++++++++++++++++++++++++++++------
+>  drivers/mtd/onenand/omap2.c |   29 +++++++++++++++++++++++++++++
+>  2 files changed, 58 insertions(+), 6 deletions(-)
 
-Even though it is just 4 or 5 bytes it can do DMA? Does not sound too
-sane to use DMA in that case. Does this patch fix a real error?
+This should not be onenand module parameters actually. This
+re-partitioning should be done via an mtd device ioctl instead.
 
-I do not know much about SPI, but for me it sounds like there should be
-a method to ask SPI to avoid using DMA, and you should use that method.
+Could you try to introduce a new mtd ioctl?
+
+I know the partitioning in mtd is ugly, so you may hit some challenges.
+E.g., all these special cases like
+
+#ifdef CONFIG_MTD_PARTITIONS
+        /* Deregister partitions */
+        del_mtd_partitions (mtd);
+#endif
+        /* Deregister the device */
+        del_mtd_device (mtd);
+
+make no sense and should die. We should always have partitioning support
+instead. So the mtdpart module should also die and partitioning support
+should become part of mtdcore.
 
 -- 
 Best Regards,
