@@ -1,22 +1,27 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N5EyF-0001Gs-Qk
-	for linux-mtd@lists.infradead.org; Tue, 03 Nov 2009 08:42:36 +0000
-Subject: Re: [PATCH 1/3] Fixing compilation warning for 'nand/omap2.c'
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Vimal Singh <vimal.newwork@gmail.com>
-In-Reply-To: <ce9ab5790911030038p31bb69cfs1ba86cd70b243e4c@mail.gmail.com>
-References: <ce9ab5790910292321nf230810v353c23f9c1ce1931@mail.gmail.com>
-	<ce9ab5790910300142s615c7d59h15bb2d46d4f76574@mail.gmail.com>
-	<1257236323.21596.56.camel@localhost>
-	<ce9ab5790911030038p31bb69cfs1ba86cd70b243e4c@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 03 Nov 2009 10:42:08 +0200
-Message-Id: <1257237728.21596.65.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from mail-bw0-f212.google.com ([209.85.218.212])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1N5F4a-0002Tn-9J
+	for linux-mtd@lists.infradead.org; Tue, 03 Nov 2009 08:49:09 +0000
+Received: by bwz4 with SMTP id 4so7635671bwz.2
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 03 Nov 2009 00:49:03 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1257237550.21596.62.camel@localhost>
+References: <ce9ab5790910292321y1e7239b7pbffe9a5891d66448@mail.gmail.com>
+	<ce9ab5790910300142kf12e31cpd6249d4c7383553f@mail.gmail.com>
+	<ce9ab5790910300227r41d42673webad0ee48e3444d1@mail.gmail.com>
+	<1257236897.21596.57.camel@localhost>
+	<ce9ab5790911030035p2f8dfe21q7c8f911077adc262@mail.gmail.com>
+	<1257237550.21596.62.camel@localhost>
+From: Vimal Singh <vimal.newwork@gmail.com>
+Date: Tue, 3 Nov 2009 14:18:43 +0530
+Message-ID: <ce9ab5790911030048r2257412dr2d96d62efc071b47@mail.gmail.com>
+Subject: Re: [PATCH 2/3]NAND: OMAP: Fixing omap nand driver, compiled as
+	module
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-omap@vger.kernel.org, Linux MTD <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,95 +31,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-11-03 at 14:08 +0530, Vimal Singh wrote:
-> On Tue, Nov 3, 2009 at 1:48 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> > On Fri, 2009-10-30 at 14:12 +0530, Vimal Singh wrote:
-> >> Looping Linux-omap mailing list.
-> >>
-> >>
-> >> From: Vimal Singh <vimalsingh@ti.com>
-> >> Date: Fri, 30 Oct 2009 11:31:34 +0530
-> >> Subject: [PATCH] Fixing compilation warning for 'nand/omap2.c'
-> >>
-> >> Fixing below warning in compilation:
-> >> drivers/mtd/nand/omap2.c: In function 'omap_write_buf_dma_pref':
-> >> drivers/mtd/nand/omap2.c:508: warning: passing argument 2 of
-> >> 'omap_nand_dma_transfer' discards qualifiers from pointer target type
-> >>
-> >> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
-> >> ---
-> >>  drivers/mtd/nand/omap2.c |    6 ++++--
-> >>  1 files changed, 4 insertions(+), 2 deletions(-)
-> >
-> > [dedekind@eru l2-mtd-2.6.git]$ scripts/checkpatch.pl vimal
-> > ERROR: patch seems to be corrupt (line wrapped?)
-> > #94: FILE: drivers/mtd/nand/omap2.c:500:
-> > mtd_info *mtd, u_char *buf, int len)
-> >
-> > total: 1 errors, 0 warnings, 16 lines checked
-> >
-> > vimal has style problems, please review.  If any of these errors
-> > are false positives report them to the maintainer, see
-> > CHECKPATCH in MAINTAINERS.
-> > [dedekind@eru l2-mtd-2.6.git]$ vim vimal
-> > [dedekind@eru l2-mtd-2.6.git]$ git am vimal
-> > Applying: Fixing compilation warning for 'nand/omap2.c'
-> > fatal: corrupt patch at line 10
-> > Patch failed at 0001 Fixing compilation warning for 'nand/omap2.c'
-> > When you have resolved this problem run "git am --resolved".
-> > If you would prefer to skip this patch, instead run "git am --skip".
-> > To restore the original branch and stop patching run "git am --abort".
-> > [dedekind@eru l2-mtd-2.6.git]$
-> >
-> 
-> Grr... its again mailer's issue. Fixed this in below patch:
-> 
-> -vimal
-> 
-> From eebbd81141b196af2dc3f7a2650ce16b6b0d76ae Mon Sep 17 00:00:00 2001
-> From: Vimal Singh <vimalsingh@ti.com>
-> Date: Fri, 30 Oct 2009 11:31:34 +0530
-> Subject: [PATCH] Fixing compilation warning for 'nand/omap2.c'
-> 
-> Fixing below warning in compilation:
-> drivers/mtd/nand/omap2.c: In function 'omap_write_buf_dma_pref':
-> drivers/mtd/nand/omap2.c:508: warning: passing argument 2 of
-> 'omap_nand_dma_transfer' discards qualifiers from pointer target type
-> 
-> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
-> ---
->  drivers/mtd/nand/omap2.c |    6 ++++--
->  1 files changed, 4 insertions(+), 2 deletions(-)
+On Tue, Nov 3, 2009 at 2:09 PM, Artem Bityutskiy <dedekind1@gmail.com> wrot=
+e:
+> On Tue, 2009-11-03 at 14:05 +0530, Vimal Singh wrote:
+>> On Tue, Nov 3, 2009 at 1:58 PM, Artem Bityutskiy <dedekind1@gmail.com> w=
+rote:
+>> > On Fri, 2009-10-30 at 14:57 +0530, Vimal Singh wrote:
+>> >> Last time I forgot to 'git add' for 'arch/arm/mach-omap2/gpmc.c'... M=
+y bad.
+>> >> Correct patch is below.
+>> >>
+>> >> -vimal
+>> >>
+>> >>
+>> >> From: Vimal Singh <vimalsingh@ti.com>
+>> >> Date: Fri, 30 Oct 2009 14:54:29 +0530
+>> >> Subject: [PATCH] NAND: OMAP: Fixing omap nand driver, compiled as mod=
+ule
+>> >>
+>> >> Removing OMAP NAND driver, when loaded as a module, gives error and
+>> >> does not get success. This fixes this and makes driver loadable and
+>> >> removable run time.
+>> >>
+>> >> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+>> >> ---
+>> >> =A0arch/arm/mach-omap2/gpmc.c | =A0 =A02 ++
+>> >> =A0drivers/mtd/nand/omap2.c =A0 | =A0 =A05 ++++-
+>> >> =A02 files changed, 6 insertions(+), 1 deletions(-)
+>> >>
+>> >> diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
+>> >> index 1587682..1d10b7b 100644
+>> >> --- a/arch/arm/mach-omap2/gpmc.c
+>> >> +++ b/arch/arm/mach-omap2/gpmc.c
+>> >> @@ -88,6 +88,7 @@ void gpmc_cs_write_reg(int cs, int idx, u32 val)
+>> >> =A0 =A0 =A0 reg_addr =3D gpmc_base + GPMC_CS0 + (cs * GPMC_CS_SIZE) +=
+ idx;
+>> >> =A0 =A0 =A0 __raw_writel(val, reg_addr);
+>> >> =A0}
+>> >> +EXPORT_SYMBOL(gpmc_cs_write_reg);
+>> >>
+>> >> =A0u32 gpmc_cs_read_reg(int cs, int idx)
+>> >> =A0{
+>> >> @@ -96,6 +97,7 @@ u32 gpmc_cs_read_reg(int cs, int idx)
+>> >> =A0 =A0 =A0 reg_addr =3D gpmc_base + GPMC_CS0 + (cs * GPMC_CS_SIZE) +=
+ idx;
+>> >> =A0 =A0 =A0 return __raw_readl(reg_addr);
+>> >> =A0}
+>> >> +EXPORT_SYMBOL(gpmc_cs_read_reg);
+>> >
+>> > Why do you export these?
+>>
+>> These functions are called during prob. So, if not exported and driver
+>> is compiled as a module compilation will break with error saying these
+>> are not defined or not found.
+>
+> Could you show the place where they are called from please. I tried to
+> compile the omap NAND driver as module and it compiled fine. Probably
+> I'm missing something?
 
-git-send-email ...
+Code snippet from omap2.c, in prob call: line 919
+-----------------------------------------------------------
+        /* Enable RD PIN Monitoring Reg */
+        if (pdata->dev_ready) {
+                val  =3D gpmc_cs_read_reg(info->gpmc_cs, GPMC_CS_CONFIG1);
+                val |=3D WR_RD_PIN_MONITORING;
+                gpmc_cs_write_reg(info->gpmc_cs, GPMC_CS_CONFIG1, val);
+        }
 
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index 090ab87..92573d5 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -501,11 +501,13 @@ static void omap_read_buf_dma_pref(struct
-> mtd_info *mtd, u_char
+        val  =3D gpmc_cs_read_reg(info->gpmc_cs, GPMC_CS_CONFIG7);
+        val &=3D ~(0xf << 8);
+        val |=3D  (0xc & 0xf) << 8;
+        gpmc_cs_write_reg(info->gpmc_cs, GPMC_CS_CONFIG7, val);
+-----------------------------------------------------------
 
-:-) It is the same again.
-
-Try to send the e-mail to yourself, then save it and apply with git-am.
-If it works, send to the mailing list.
-
->  static void omap_write_buf_dma_pref(struct mtd_info *mtd,
->  					const u_char *buf, int len)
->  {
-> +	u_char *p = (u_char *)buf;
-> +
->  	if (len <= mtd->oobsize)
-> -		omap_write_buf_pref(mtd, buf, len);
-> +		omap_write_buf_pref(mtd, p, len);
->  	else
->  		/* start transfer in DMA mode */
-> -		omap_nand_dma_transfer(mtd, buf, len, 0x1);
-> +		omap_nand_dma_transfer(mtd, p, len, 0x1);
->  }
-> 
->  /**
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+--=20
+Regards,
+Vimal Singh
