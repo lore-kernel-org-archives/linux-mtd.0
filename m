@@ -1,21 +1,15 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N5D4B-0006pt-0O
-	for linux-mtd@lists.infradead.org; Tue, 03 Nov 2009 06:40:35 +0000
-Received: from vaebh106.NOE.Nokia.com (vaebh106.europe.nokia.com
-	[10.160.244.32])
-	by mgw-mx06.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
-	nA36eK5R008975
-	for <linux-mtd@lists.infradead.org>; Tue, 3 Nov 2009 08:40:28 +0200
-Subject: Re: [PATCH] MTD OneNAND OMAP2/3: allow giving partition layout as
-	module parameter
+	id 1N5DSQ-0006Nf-3Y
+	for linux-mtd@lists.infradead.org; Tue, 03 Nov 2009 07:05:39 +0000
+Subject: Re: [PATCH] mtd: add lock fixup for AT49BV640D and AT49BV640DT chips
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mika Korhonen <ext-mika.2.korhonen@nokia.com>
-In-Reply-To: <1251976558-13463-1-git-send-email-ext-mika.2.korhonen@nokia.com>
-References: <1251976558-13463-1-git-send-email-ext-mika.2.korhonen@nokia.com>
+To: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
+In-Reply-To: <1256817902-16534-1-git-send-email-hans-christian.egtvedt@atmel.com>
+References: <1256817902-16534-1-git-send-email-hans-christian.egtvedt@atmel.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 03 Nov 2009 08:40:22 +0200
-Message-Id: <1257230422.21596.37.camel@localhost>
+Date: Tue, 03 Nov 2009 09:05:14 +0200
+Message-Id: <1257231914.21596.39.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -29,39 +23,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-09-03 at 14:15 +0300, Mika Korhonen wrote:
-> Add module parameter "parts" to omap2-onenand driver. Parameter format is
-> the same as for cmdlinepart except mtd-id must not be specified - it
-> gets prepended by the driver, i.e.: parts=<partdef>[,<partdef>]*
+On Thu, 2009-10-29 at 13:05 +0100, Hans-Christian Egtvedt wrote:
+> This patch sets the MTD_POWERUP_LOCK flag for AT49BV640D and AT49BV640DT
+> devices, since the devices are locked when powered up and needs to be unlocked
+> before interfaced.
 > 
-> This allows one to repartition the OneNAND chip and is useful for flashing
-> applications that do the partitioning from scratch or want to backup and
-> update the partitioning.
+> Quote datasheet; "At power-up and reset, all sectors have their Softlock
+> protection mode enabled.".
 > 
-> Signed-off-by: Mika Korhonen <ext-mika.2.korhonen@nokia.com>
+> Tested on AVR32 hardware platform with an AT49BV640D flash device.
+> 
+> Signed-off-by: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
 > ---
->  drivers/mtd/cmdlinepart.c   |   35 +++++++++++++++++++++++++++++------
->  drivers/mtd/onenand/omap2.c |   29 +++++++++++++++++++++++++++++
->  2 files changed, 58 insertions(+), 6 deletions(-)
+>  drivers/mtd/chips/cfi_cmdset_0001.c |    8 ++++++++
+>  1 files changed, 8 insertions(+), 0 deletions(-)
+> 
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+> index e7563a9..6228115 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+> @@ -52,6 +52,7 @@
+>  #define M50FLW080A	0x0080
+>  #define M50FLW080B	0x0081
+>  #define AT49BV640D	0x02de
+> +#define AT49BV640DT	0x02db
+>  
+>  static int cfi_intelext_read (struct mtd_info *, loff_t, size_t, size_t *, u_char *);
+>  static int cfi_intelext_write_words(struct mtd_info *, loff_t, size_t, size_t *, const u_char *);
+> @@ -255,6 +256,11 @@ static void fixup_use_point(struct mtd_info *mtd, void *param)
+>  	}
+>  }
+>  
+> +static void fixup_use_at49bv640dx_lock(struct mtd_info *mtd, void *param)
+> +{
+> +	mtd->flags |= MTD_POWERUP_LOCK;
+> +}
+> +
+>  static void fixup_use_write_buffers(struct mtd_info *mtd, void *param)
+>  {
+>  	struct map_info *map = mtd->priv;
+> @@ -313,6 +319,8 @@ static struct cfi_fixup fixup_table[] = {
+>  	 * we know that is the case.
+>  	 */
+>  	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_use_point, NULL },
+> +	{ CFI_MFR_ATMEL, AT49BV640D, fixup_use_at49bv640dx_lock, NULL },
+> +	{ CFI_MFR_ATMEL, AT49BV640DT, fixup_use_at49bv640dx_lock, NULL },
+>  	{ 0, 0, NULL, NULL }
+>  };
 
-This should not be onenand module parameters actually. This
-re-partitioning should be done via an mtd device ioctl instead.
-
-Could you try to introduce a new mtd ioctl?
-
-I know the partitioning in mtd is ugly, so you may hit some challenges.
-E.g., all these special cases like
-
-#ifdef CONFIG_MTD_PARTITIONS
-        /* Deregister partitions */
-        del_mtd_partitions (mtd);
-#endif
-        /* Deregister the device */
-        del_mtd_device (mtd);
-
-make no sense and should die. We should always have partitioning support
-instead. So the mtdpart module should also die and partitioning support
-should become part of mtdcore.
+Why you add this to the fixup_table, not cfi_fixup_table?
 
 -- 
 Best Regards,
