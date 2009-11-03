@@ -1,19 +1,21 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N5DSQ-0006Nf-3Y
-	for linux-mtd@lists.infradead.org; Tue, 03 Nov 2009 07:05:39 +0000
-Subject: Re: [PATCH] mtd: add lock fixup for AT49BV640D and AT49BV640DT chips
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-In-Reply-To: <1256817902-16534-1-git-send-email-hans-christian.egtvedt@atmel.com>
-References: <1256817902-16534-1-git-send-email-hans-christian.egtvedt@atmel.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 03 Nov 2009 09:05:14 +0200
-Message-Id: <1257231914.21596.39.camel@localhost>
+Received: from ernst.netinsight.se ([194.16.221.21])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1N5DoC-0001da-UD
+	for linux-mtd@lists.infradead.org; Tue, 03 Nov 2009 07:28:10 +0000
+Date: Tue, 3 Nov 2009 08:27:54 +0100
+From: Simon Kagstrom <simon.kagstrom@netinsight.net>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH v12 3/4]: mtdoops: Make page (record) size configurable
+Message-ID: <20091103082754.3481e9ed@marrow.netinsight.se>
+In-Reply-To: <1257229438.21596.28.camel@localhost>
+References: <20091015094057.7298e0d7@marrow.netinsight.se>
+	<20091029133535.2ea65f72@marrow.netinsight.se>
+	<20091029134119.7452f327@marrow.netinsight.se>
+	<1257229438.21596.28.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,56 +25,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-10-29 at 13:05 +0100, Hans-Christian Egtvedt wrote:
-> This patch sets the MTD_POWERUP_LOCK flag for AT49BV640D and AT49BV640DT
-> devices, since the devices are locked when powered up and needs to be unlocked
-> before interfaced.
+On Tue, 03 Nov 2009 08:23:58 +0200
+Artem Bityutskiy <dedekind1@gmail.com> wrote:
+
+> On Thu, 2009-10-29 at 13:41 +0100, Simon Kagstrom wrote:
+> > The main justification for this is to allow catching long messages
+> > during a panic, where the top part might otherwise be lost since moving
+> > to the next block can require a flash erase.
+> > 
+> > Signed-off-by: Simon Kagstrom <simon.kagstrom@netinsight.net>
+> > Reviewed-by: Anders Grafstrom <anders.grafstrom@netinsight.net>
+> > ---
+> > ChangeLog:
+> >  * Rebased over "[PATCH v12 2/4]: mtdoops: Add a maximum MTD partition size"
+> > 
+> >  drivers/mtd/mtdoops.c |   75 ++++++++++++++++++++++++++++--------------------
+> >  1 files changed, 44 insertions(+), 31 deletions(-)
 > 
-> Quote datasheet; "At power-up and reset, all sectors have their Softlock
-> protection mode enabled.".
-> 
-> Tested on AVR32 hardware platform with an AT49BV640D flash device.
-> 
-> Signed-off-by: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-> ---
->  drivers/mtd/chips/cfi_cmdset_0001.c |    8 ++++++++
->  1 files changed, 8 insertions(+), 0 deletions(-)
-> 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-> index e7563a9..6228115 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-> @@ -52,6 +52,7 @@
->  #define M50FLW080A	0x0080
->  #define M50FLW080B	0x0081
->  #define AT49BV640D	0x02de
-> +#define AT49BV640DT	0x02db
->  
->  static int cfi_intelext_read (struct mtd_info *, loff_t, size_t, size_t *, u_char *);
->  static int cfi_intelext_write_words(struct mtd_info *, loff_t, size_t, size_t *, const u_char *);
-> @@ -255,6 +256,11 @@ static void fixup_use_point(struct mtd_info *mtd, void *param)
+> Pushed this one to my tree, on top of the previous patch which I
+> tweaked, thanks.
+
+Thanks! I was going to send an updated patch in, but I've had some
+other work to do lately. I'll send in a new version of the final patch
+before the end of the day.
+
+
+I noticed a small issue in your updated patch:
+
+> +/* Maximum MTD partition size, MiB */
+> +#define MTDOOPS_MAX_MTD_SIZE 32
+
+> @@ -310,6 +312,12 @@ static void mtdoops_notify_add(struct mtd_info *mtd)
+>  		return;
 >  	}
->  }
 >  
-> +static void fixup_use_at49bv640dx_lock(struct mtd_info *mtd, void *param)
-> +{
-> +	mtd->flags |= MTD_POWERUP_LOCK;
-> +}
-> +
->  static void fixup_use_write_buffers(struct mtd_info *mtd, void *param)
->  {
->  	struct map_info *map = mtd->priv;
-> @@ -313,6 +319,8 @@ static struct cfi_fixup fixup_table[] = {
->  	 * we know that is the case.
->  	 */
->  	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_use_point, NULL },
-> +	{ CFI_MFR_ATMEL, AT49BV640D, fixup_use_at49bv640dx_lock, NULL },
-> +	{ CFI_MFR_ATMEL, AT49BV640DT, fixup_use_at49bv640dx_lock, NULL },
->  	{ 0, 0, NULL, NULL }
->  };
+> +	if (mtd->size > MTDOOPS_MAX_MTD_SIZE) {
+> +		printk(KERN_ERR "mtdoops: mtd%d is too large (limit is %d MiB)\n",
+> +		       mtd->index, MTDOOPS_MAX_MTD_SIZE);
 
-Why you add this to the fixup_table, not cfi_fixup_table?
+mtd->size should be in bytes, right? So this will only check that it's
+larger than 32 bytes, which most users will probably want ;-)
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+// Simon
