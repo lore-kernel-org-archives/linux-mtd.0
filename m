@@ -1,21 +1,19 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from relay.atmel.no ([80.232.32.139])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N5Dq3-0002eo-8F
-	for linux-mtd@lists.infradead.org; Tue, 03 Nov 2009 07:30:04 +0000
-Subject: Re: [PATCH v12 4/4]: mtdoops: refactor as a kmsg_dumper
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Simon Kagstrom <simon.kagstrom@netinsight.net>
-In-Reply-To: <20091029134123.348b5126@marrow.netinsight.se>
-References: <20091015094057.7298e0d7@marrow.netinsight.se>
-	<20091029133535.2ea65f72@marrow.netinsight.se>
-	<20091029134123.348b5126@marrow.netinsight.se>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 03 Nov 2009 09:29:52 +0200
-Message-Id: <1257233392.21596.48.camel@localhost>
+	id 1N5E4M-00055X-JM
+	for linux-mtd@lists.infradead.org; Tue, 03 Nov 2009 07:44:52 +0000
+Date: Tue, 3 Nov 2009 08:44:33 +0100
+From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH] mtd: add lock fixup for AT49BV640D and AT49BV640DT chips
+Message-ID: <20091103084433.7bc4d9fb@hcegtvedt.norway.atmel.com>
+In-Reply-To: <1257231914.21596.39.camel@localhost>
+References: <1256817902-16534-1-git-send-email-hans-christian.egtvedt@atmel.com>
+	<1257231914.21596.39.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,70 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-10-29 at 13:41 +0100, Simon Kagstrom wrote:
-> The last messages which happens before a crash might contain interesting
-> information about the crash. This patch reworks mtdoops using the
-> kmsg_dumper support instead of a console, which simplifies the code and
-> also includes the messages before the oops started.
+On Tue, 03 Nov 2009 09:05:14 +0200
+Artem Bityutskiy <dedekind1@gmail.com> wrote:
+
+<snipp Atmel AT49BV640D(T) powerup lock fixup patch>
+
+> >  static void fixup_use_write_buffers(struct mtd_info *mtd, void *param)
+> >  {
+> >  	struct map_info *map = mtd->priv;
+> > @@ -313,6 +319,8 @@ static struct cfi_fixup fixup_table[] = {
+> >  	 * we know that is the case.
+> >  	 */
+> >  	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_use_point, NULL },
+> > +	{ CFI_MFR_ATMEL, AT49BV640D, fixup_use_at49bv640dx_lock, NULL },
+> > +	{ CFI_MFR_ATMEL, AT49BV640DT, fixup_use_at49bv640dx_lock, NULL },
+> >  	{ 0, 0, NULL, NULL }
+> >  };
 > 
-> On oops callbacks, the MTD device write is scheduled in a work queue (to
-> be able to use the regular mtd->write call), while panics call
-> mtd->panic_write directly. Thus, if panic_on_oops is set, the oops will
-> be written out during the panic.
-> 
-> A parameter to specify which mtd device to use (number or name), as well
-> as a flag, writable at runtime, to toggle wheter to dump oopses or only
-> panics (since oopses can often be handled by regular syslog).
-> 
-> Signed-off-by: Simon Kagstrom <simon.kagstrom@netinsight.net>
-> Reviewed-by: Anders Grafstrom <anders.grafstrom@netinsight.net>
-> ---
-> ChangeLog:
->   * Rebased on top of "[PATCH v12 3/4]: mtdoops: Make page (record) size configurable"
-> 
->  drivers/mtd/Kconfig   |    5 +-
->  drivers/mtd/mtdoops.c |  218 +++++++++++++++++++++----------------------------
->  2 files changed, 96 insertions(+), 127 deletions(-)
+> Why you add this to the fixup_table, not cfi_fixup_table?
 > 
 
-... snip ...
+It would probably be more appropriate to place it after the first Atmel
+fixup in the cfi_fixup_table, yes.
 
-> -static int __init mtdoops_console_init(void)
-> +static int __init mtdoops_init(void)
->  {
->  	struct mtdoops_context *cxt = &oops_cxt;
-> +	int mtd_index;
-> +	char *endp;
->  
-> +	if (strlen(mtddev) == 0) {
-> +		printk(KERN_ERR "mtdoops: mtd device (mtddev=name/number) must be supplied\n");
-> +		return -EINVAL;
-> +	}
->  	if ((record_size & 4095) != 0) {
->  		printk(KERN_ERR "mtdoops: record_size must be a multiple of 4096\n");
->  		return -EINVAL;
-> @@ -461,36 +426,39 @@ static int __init mtdoops_console_init(void)
->  		printk(KERN_ERR "mtdoops: record_size must be over 4096 bytes\n");
->  		return -EINVAL;
->  	}
-> +
-> +	/* Setup the MTD device to use */
->  	cxt->mtd_index = -1;
-> +	mtd_index = simple_strtoul(mtddev, &endp, 0);
-> +	if (endp != mtddev)
-> +		cxt->mtd_index = mtd_index;
+Really unsure why I ended up putting it in the fixup_table, because I
+used the fixup_unlock_powerup_lock as reference.
 
-I think you should instead do
-
-if (*endp == '\0')
-	cxt->mtd_index = mtd_index;
-
-instead. Otherwise the code will tread 'mtddev == 1xyz' as mtd1, which
-is wrong.
-
-And some sanity check to mtd_index would be nice, e.g., a check against
-MAX_MTD_DEVICES.
+It is probably more correct that I set the FeatureSupport 0x20 (32)
+feature to indicate that the flash has "Instant block lock". I'll
+submit a v2 for the latter unless you have some other feedback?
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Best regards,
+Hans-Christian Egtvedt
