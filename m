@@ -1,20 +1,16 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N5CoI-0005oH-C4
-	for linux-mtd@lists.infradead.org; Tue, 03 Nov 2009 06:24:11 +0000
-Subject: Re: [PATCH v12 3/4]: mtdoops: Make page (record) size configurable
+Subject: Re: [PATCH] mtd: m25p80: make command buffer DMA-safe
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Simon Kagstrom <simon.kagstrom@netinsight.net>
-In-Reply-To: <20091029134119.7452f327@marrow.netinsight.se>
-References: <20091015094057.7298e0d7@marrow.netinsight.se>
-	<20091029133535.2ea65f72@marrow.netinsight.se>
-	<20091029134119.7452f327@marrow.netinsight.se>
+To: Johannes Stezenbach <js@sig21.net>
+In-Reply-To: <20091028132137.GA17813@sig21.net>
+References: <20091028132137.GA17813@sig21.net>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 03 Nov 2009 08:23:58 +0200
-Message-Id: <1257229438.21596.28.camel@localhost>
+Date: Tue, 03 Nov 2009 08:36:05 +0200
+Message-Id: <1257230165.21596.33.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org,
+	David Brownell <dbrownell@users.sourceforge.net>,
+	David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,22 +21,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-10-29 at 13:41 +0100, Simon Kagstrom wrote:
-> The main justification for this is to allow catching long messages
-> during a panic, where the top part might otherwise be lost since moving
-> to the next block can require a flash erase.
+On Wed, 2009-10-28 at 14:21 +0100, Johannes Stezenbach wrote:
+> spi_write() requires the buffer to be DMA-safe, kmalloc()
+> it seperately to ensure this.
 > 
-> Signed-off-by: Simon Kagstrom <simon.kagstrom@netinsight.net>
-> Reviewed-by: Anders Grafstrom <anders.grafstrom@netinsight.net>
-> ---
-> ChangeLog:
->  * Rebased over "[PATCH v12 2/4]: mtdoops: Add a maximum MTD partition size"
+> Signed-off-by: Johannes Stezenbach <js@sig21.net>
 > 
->  drivers/mtd/mtdoops.c |   75 ++++++++++++++++++++++++++++--------------------
->  1 files changed, 44 insertions(+), 31 deletions(-)
+> 
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index 4c19269..21dd4d9 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -79,7 +79,7 @@ struct m25p {
+>  	struct mtd_info		mtd;
+>  	unsigned		partitioned:1;
+>  	u8			erase_opcode;
+> -	u8			command[CMD_SIZE + FAST_READ_DUMMY_BYTE];
+> +	u8			*command;
+>  };
+>  
+>  static inline struct m25p *mtd_to_m25p(struct mtd_info *mtd)
+> @@ -770,6 +770,11 @@ static int __devinit m25p_probe(struct spi_device *spi)
+>  	flash = kzalloc(sizeof *flash, GFP_KERNEL);
+>  	if (!flash)
+>  		return -ENOMEM;
+> +	flash->command = kmalloc(CMD_SIZE + FAST_READ_DUMMY_BYTE, GFP_KERNEL);
+> +	if (!flash->command) {
+> +		kfree(flash);
+> +		return -ENOMEM;
+> +	}
 
-Pushed this one to my tree, on top of the previous patch which I
-tweaked, thanks.
+Even though it is just 4 or 5 bytes it can do DMA? Does not sound too
+sane to use DMA in that case. Does this patch fix a real error?
+
+I do not know much about SPI, but for me it sounds like there should be
+a method to ask SPI to avoid using DMA, and you should use that method.
 
 -- 
 Best Regards,
