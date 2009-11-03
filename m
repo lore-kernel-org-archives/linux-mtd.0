@@ -1,20 +1,19 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N5E7P-0007GT-7Q
-	for linux-mtd@lists.infradead.org; Tue, 03 Nov 2009 07:48:00 +0000
-Subject: Re: [PATCH] mtd: add lock fixup for AT49BV640D and AT49BV640DT chips
+	id 1N5Ebg-0004Zi-R0
+	for linux-mtd@lists.infradead.org; Tue, 03 Nov 2009 08:19:17 +0000
+Subject: Re: [PATCH 1/3] Fixing compilation warning for 'nand/omap2.c'
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-In-Reply-To: <20091103084433.7bc4d9fb@hcegtvedt.norway.atmel.com>
-References: <1256817902-16534-1-git-send-email-hans-christian.egtvedt@atmel.com>
-	<1257231914.21596.39.camel@localhost>
-	<20091103084433.7bc4d9fb@hcegtvedt.norway.atmel.com>
+To: Vimal Singh <vimal.newwork@gmail.com>
+In-Reply-To: <ce9ab5790910300142s615c7d59h15bb2d46d4f76574@mail.gmail.com>
+References: <ce9ab5790910292321nf230810v353c23f9c1ce1931@mail.gmail.com>
+	<ce9ab5790910300142s615c7d59h15bb2d46d4f76574@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 03 Nov 2009 09:47:43 +0200
-Message-Id: <1257234463.21596.54.camel@localhost>
+Date: Tue, 03 Nov 2009 10:18:43 +0200
+Message-Id: <1257236323.21596.56.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-omap@vger.kernel.org, Linux MTD <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,39 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-11-03 at 08:44 +0100, Hans-Christian Egtvedt wrote:
-> On Tue, 03 Nov 2009 09:05:14 +0200
-> Artem Bityutskiy <dedekind1@gmail.com> wrote:
+On Fri, 2009-10-30 at 14:12 +0530, Vimal Singh wrote:
+> Looping Linux-omap mailing list.
 > 
-> <snipp Atmel AT49BV640D(T) powerup lock fixup patch>
 > 
-> > >  static void fixup_use_write_buffers(struct mtd_info *mtd, void *param)
-> > >  {
-> > >  	struct map_info *map = mtd->priv;
-> > > @@ -313,6 +319,8 @@ static struct cfi_fixup fixup_table[] = {
-> > >  	 * we know that is the case.
-> > >  	 */
-> > >  	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_use_point, NULL },
-> > > +	{ CFI_MFR_ATMEL, AT49BV640D, fixup_use_at49bv640dx_lock, NULL },
-> > > +	{ CFI_MFR_ATMEL, AT49BV640DT, fixup_use_at49bv640dx_lock, NULL },
-> > >  	{ 0, 0, NULL, NULL }
-> > >  };
-> > 
-> > Why you add this to the fixup_table, not cfi_fixup_table?
-> > 
+> From: Vimal Singh <vimalsingh@ti.com>
+> Date: Fri, 30 Oct 2009 11:31:34 +0530
+> Subject: [PATCH] Fixing compilation warning for 'nand/omap2.c'
 > 
-> It would probably be more appropriate to place it after the first Atmel
-> fixup in the cfi_fixup_table, yes.
+> Fixing below warning in compilation:
+> drivers/mtd/nand/omap2.c: In function 'omap_write_buf_dma_pref':
+> drivers/mtd/nand/omap2.c:508: warning: passing argument 2 of
+> 'omap_nand_dma_transfer' discards qualifiers from pointer target type
 > 
-> Really unsure why I ended up putting it in the fixup_table, because I
-> used the fixup_unlock_powerup_lock as reference.
-> 
-> It is probably more correct that I set the FeatureSupport 0x20 (32)
-> feature to indicate that the flash has "Instant block lock". I'll
-> submit a v2 for the latter unless you have some other feedback?
+> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+> ---
+>  drivers/mtd/nand/omap2.c |    6 ++++--
+>  1 files changed, 4 insertions(+), 2 deletions(-)
 
-The only other feed-back would be to CC Nicolas Pitre <nico@fluxnic.net>
-when you re-submit v2.
+[dedekind@eru l2-mtd-2.6.git]$ scripts/checkpatch.pl vimal
+ERROR: patch seems to be corrupt (line wrapped?)
+#94: FILE: drivers/mtd/nand/omap2.c:500:
+mtd_info *mtd, u_char *buf, int len)
+
+total: 1 errors, 0 warnings, 16 lines checked
+
+vimal has style problems, please review.  If any of these errors
+are false positives report them to the maintainer, see
+CHECKPATCH in MAINTAINERS.
+[dedekind@eru l2-mtd-2.6.git]$ vim vimal
+[dedekind@eru l2-mtd-2.6.git]$ git am vimal
+Applying: Fixing compilation warning for 'nand/omap2.c'
+fatal: corrupt patch at line 10
+Patch failed at 0001 Fixing compilation warning for 'nand/omap2.c'
+When you have resolved this problem run "git am --resolved".
+If you would prefer to skip this patch, instead run "git am --skip".
+To restore the original branch and stop patching run "git am --abort".
+[dedekind@eru l2-mtd-2.6.git]$
 
 -- 
 Best Regards,
