@@ -1,17 +1,19 @@
-Received: from isilmar.linta.de ([213.133.102.198] helo=linta.de)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N5auK-0007om-V1
-	for linux-mtd@lists.infradead.org; Wed, 04 Nov 2009 08:08:02 +0000
-Date: Wed, 4 Nov 2009 09:07:54 +0100
-From: Dominik Brodowski <linux@dominikbrodowski.net>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
+Received: from chilli.pcug.org.au ([203.10.76.44] helo=smtps.tip.net.au)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1N5cvH-0003Ss-8V
+	for linux-mtd@lists.infradead.org; Wed, 04 Nov 2009 10:17:07 +0000
+Date: Wed, 4 Nov 2009 21:16:55 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Dominik Brodowski <linux@dominikbrodowski.net>
 Subject: Re: linux-next: pcmcia tree build failure
-Message-ID: <20091104080754.GA27784@isilmar.linta.de>
+Message-Id: <20091104211655.97232be9.sfr@canb.auug.org.au>
+In-Reply-To: <20091104080754.GA27784@isilmar.linta.de>
 References: <20091104131540.f39af556.sfr@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20091104131540.f39af556.sfr@canb.auug.org.au>
+	<20091104080754.GA27784@isilmar.linta.de>
+Mime-Version: 1.0
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+	micalg="PGP-SHA1";
+	boundary="Signature=_Wed__4_Nov_2009_21_16_55_+1100_+YNuZDVRMDCg8erg"
 Cc: linux-next@vger.kernel.org, linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,21 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Stephen,
+--Signature=_Wed__4_Nov_2009_21_16_55_+1100_+YNuZDVRMDCg8erg
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 04, 2009 at 01:15:40PM +1100, Stephen Rothwell wrote:
-> Today's linux-next build (x86_64 allmodconfig) failed like this:
-> 
-> drivers/telephony/ixj_pcmcia.c: In function 'ixj_probe':
-> drivers/telephony/ixj_pcmcia.c:35: error: 'link' undeclared (first use in this function)
-> 
-> Caused by commit 990c0c8eeb34f62d062052d462feaa99715cb043 ("pcmcia: use
-> dynamic debug infrastructure, deprecate CS_CHECK (misc drivers)").
-> 
-> I have used the version of the pcmcia tree from next-20091102 for today.
-> Please build test.  :-(
+Hi Dominik,
 
-Thanks -- fixed both issues (build failure and test setup).
+On Wed, 4 Nov 2009 09:07:54 +0100 Dominik Brodowski <linux@dominikbrodowski=
+.net> wrote:
+>
+> Thanks -- fixed both issues (build failure and test setup).
 
-Best,
-	Domiik
+Thanks for that.
+
+--=20
+Cheers,
+Stephen Rothwell                    sfr@canb.auug.org.au
+http://www.canb.auug.org.au/~sfr/
+
+--Signature=_Wed__4_Nov_2009_21_16_55_+1100_+YNuZDVRMDCg8erg
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAkrxVJcACgkQjjKRsyhoI8yZ+QCfYi9q3IJk7D7gq1PACwCfEFhT
+EpgAmwcwFGWfitbPPxufG7oX9yYYihV4
+=C7k6
+-----END PGP SIGNATURE-----
+
+--Signature=_Wed__4_Nov_2009_21_16_55_+1100_+YNuZDVRMDCg8erg--
