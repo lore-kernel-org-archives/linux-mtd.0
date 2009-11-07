@@ -1,17 +1,15 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N6g20-0003yg-IZ
-	for linux-mtd@lists.infradead.org; Sat, 07 Nov 2009 07:48:24 +0000
-Subject: Re: Corrupted ubifs after reboot (from the debugger)
+	id 1N6gyG-00044P-E5
+	for linux-mtd@lists.infradead.org; Sat, 07 Nov 2009 08:48:36 +0000
+Subject: Re: can UBIFS be NFS exported
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ricardo <ricardo.ribalda@gmail.com>
-In-Reply-To: <aa76a2be0911040826w5e5ce3bah7afa3fdbf92ae8a2@mail.gmail.com>
-References: <aa76a2be0911030732n74406409v62ae64244ef358a6@mail.gmail.com>
-	<1257319048.21596.74.camel@localhost>
-	<aa76a2be0911040826w5e5ce3bah7afa3fdbf92ae8a2@mail.gmail.com>
+To: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+In-Reply-To: <4AF2DE80.5010808@aimvalley.nl>
+References: <4AF2DE80.5010808@aimvalley.nl>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 07 Nov 2009 09:48:03 +0200
-Message-Id: <1257580083.21596.102.camel@localhost>
+Date: Sat, 07 Nov 2009 10:48:12 +0200
+Message-Id: <1257583692.21596.116.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -25,23 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-11-04 at 17:26 +0100, Ricardo wrote:
-> Hello
+On Thu, 2009-11-05 at 15:17 +0100, Norbert van Bolhuis wrote:
+> just to make sure. UBIFS can not be NFS exported, is this correct ?
 > 
->   I am using the 2.6.31 from linus tree.
+> (I need NFS in our distributed system. The server uses UBIFS.
+>   But there is a ISO9660 image on our UBIFS and fortunately
+>   ISO(Z)FS can be NFS exported, so it's not a problem)
 
-Update it please, with
-http://www.linux-mtd.infradead.org/doc/ubifs.html#L_source
+Hi, not, it does not support NFS and you would need to implement the
+support. Hake a look here:
 
->  I will merge the tree from
-> infreadead.org/mtd-2.6 right now.
+http://www.linux-mtd.infradead.org/faq/ubifs.html#L_nfs
 
-No, use ubifs-v2.6.31.git.
-
->  Will this version be able to restore
-> the broken partition or it wont corrupt future partitions?
-
-I think it will not fix it, but will prevent this corruption.
+(Rload the page, because I've just updated it)
 
 -- 
 Best Regards,
