@@ -1,29 +1,17 @@
-Date: Sat, 7 Nov 2009 17:57:51 +0100
-From: Kristoffer Ericson <kristoffer.ericson@gmail.com>
-To: Dominik Brodowski <linux@dominikbrodowski.net>
-Subject: Re: pcmciamtd -- what's broken, who needs it?
-Message-Id: <20091107175751.801ee556.kristoffer.ericson@gmail.com>
-In-Reply-To: <20091107113346.GA9922@isilmar.linta.de>
-References: <200911041120.25305.pep.talens@f1-connecting.com>
-	<20091024194219.GA19546@comet.dominikbrodowski.net>
-	<1256413386-20501-14-git-send-email-linux@dominikbrodowski.net>
-	<1256539331.29885.360.camel@localhost>
-	<20091026071352.GA26980@isilmar.linta.de>
-	<1256541991.29885.376.camel@localhost>
-	<20091026101909.271c109e@lxorguk.ukuu.org.uk>
-	<1256552337.29885.419.camel@localhost>
-	<1257237433.21596.60.camel@localhost>
-	<31862236.11111257593349372.komurojun-mbn@nifty.com>
-	<20091107113346.GA9922@isilmar.linta.de>
+Received: from mba.ocn.ne.jp ([122.28.14.163] helo=smtp.mba.ocn.ne.jp)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1N6pJh-0005gJ-1U
+	for linux-mtd@lists.infradead.org; Sat, 07 Nov 2009 17:43:18 +0000
+Date: Sun, 08 Nov 2009 02:43:07 +0900 (JST)
+Message-Id: <20091108.024307.183026733.anemo@mba.ocn.ne.jp>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH resend] mtd/maps: Fix accidental removal in Makefile
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: Komuro <komurojun-mbn@nifty.com>, Artem Bityutskiy <dedekind1@gmail.com>,
-	Pep Talens <pep.talens@f1-connecting.com>,
-	linux-pcmcia@lists.infradead.org,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	'David Woodhouse' <dwmw2@infradead.org>,
-	Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: Mike Frysinger <vapier@gentoo.org>, akpm@linux-foundation.org,
+	dwmw2@infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,33 +21,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 7 Nov 2009 12:33:46 +0100
-Dominik Brodowski <linux@dominikbrodowski.net> wrote:
+The commit d79c326 ("gpio-addr-flash: new driver for GPIO assisted
+flash addressing") removed two lines from the Makefile by accident.
+Though I'm not sure how this accident happened, this patch reverts the
+removal.
 
-> Hey,
-> 
-> On Sat, Nov 07, 2009 at 08:29:09PM +0900, Komuro wrote:
-> > staging directory is not the place for broken driver,
-> > is it?
-> 
-> 
-> It is becoming the place for drivers on their way out of the kernel tree.
-> An indication for drivers being unused is that they have been marked broken
-> or obsolete for a loooong time; and then they'll remain in staging for 3
-> releases or so before being removed (or being moved in again).
+Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+---
+This patch fixes a regression from 2.6.31
 
-Is the 3 releases a fixed date? Got a couple of drivers in there
-that I "might" want to use in the near future. Just havent had time to
-looking at cleaning them up.
+ drivers/mtd/maps/Makefile |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-> 
-> Best,
-> 	Dominik
-> 
-> _______________________________________________
-> Linux PCMCIA reimplementation list
-> http://lists.infradead.org/mailman/listinfo/linux-pcmcia
-
-
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index 1d5cf86..ae2f6db 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -58,4 +58,6 @@ obj-$(CONFIG_MTD_PLATRAM)	+= plat-ram.o
+ obj-$(CONFIG_MTD_OMAP_NOR)	+= omap_nor.o
+ obj-$(CONFIG_MTD_INTEL_VR_NOR)	+= intel_vr_nor.o
+ obj-$(CONFIG_MTD_BFIN_ASYNC)	+= bfin-async-flash.o
++obj-$(CONFIG_MTD_RBTX4939)	+= rbtx4939-flash.o
++obj-$(CONFIG_MTD_VMU)		+= vmu-flash.o
+ obj-$(CONFIG_MTD_GPIO_ADDR)	+= gpio-addr-flash.o
 -- 
-Kristoffer Ericson <kristoffer.ericson@gmail.com>
+1.5.6.5
