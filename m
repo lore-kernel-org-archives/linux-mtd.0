@@ -1,14 +1,13 @@
-Message-ID: <31862236.11111257593349372.komurojun-mbn@nifty.com>
-Date: Sat, 7 Nov 2009 20:29:09 +0900 (JST)
-From: Komuro <komurojun-mbn@nifty.com>
-To: Dominik Brodowski <linux@dominikbrodowski.net>
+Received: from isilmar.linta.de ([213.133.102.198] helo=linta.de)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1N6jYB-0006rb-TN
+	for linux-mtd@lists.infradead.org; Sat, 07 Nov 2009 11:33:52 +0000
+Date: Sat, 7 Nov 2009 12:33:46 +0100
+From: Dominik Brodowski <linux@dominikbrodowski.net>
+To: Komuro <komurojun-mbn@nifty.com>
 Subject: Re: pcmciamtd -- what's broken, who needs it?
-In-Reply-To: <20091107110259.GA1173@comet.dominikbrodowski.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
-References: <20091107110259.GA1173@comet.dominikbrodowski.net>
-	<200911041120.25305.pep.talens@f1-connecting.com>
+Message-ID: <20091107113346.GA9922@isilmar.linta.de>
+References: <200911041120.25305.pep.talens@f1-connecting.com>
 	<20091024194219.GA19546@comet.dominikbrodowski.net>
 	<1256413386-20501-14-git-send-email-linux@dominikbrodowski.net>
 	<1256539331.29885.360.camel@localhost>
@@ -17,6 +16,11 @@ References: <20091107110259.GA1173@comet.dominikbrodowski.net>
 	<20091026101909.271c109e@lxorguk.ukuu.org.uk>
 	<1256552337.29885.419.camel@localhost>
 	<1257237433.21596.60.camel@localhost>
+	<31862236.11111257593349372.komurojun-mbn@nifty.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <31862236.11111257593349372.komurojun-mbn@nifty.com>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>,
 	Pep Talens <pep.talens@f1-connecting.com>,
 	linux-pcmcia@lists.infradead.org,
@@ -32,24 +36,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hey,
 
-staging directory is not the place for broken driver,
-is it?
+On Sat, Nov 07, 2009 at 08:29:09PM +0900, Komuro wrote:
+> staging directory is not the place for broken driver,
+> is it?
 
->Hey,
->
->it seems that just as we were preparing to move pcmciamtd to staging, an
->user who still tries to use it has appeared:
->
->> ATTR{modalias}=="pcmcia:m0000c0000f00fn00pfn00paEBF91155pb805360CApc0000000
-0pd00000000"
->> ? ? ATTR{prod_id2}==" ?2MB SRAM CARD"
->> ? ? ATTR{prod_id1}=="PRETEC"
->> ? ? ATTR{pm_state}=="on"
->> ? ? ATTR{function}=="0x00"
->
->So, what is actually BROKEN with pcmciamtd.c ?
 
-Best Regards
-Komuro
+It is becoming the place for drivers on their way out of the kernel tree.
+An indication for drivers being unused is that they have been marked broken
+or obsolete for a loooong time; and then they'll remain in staging for 3
+releases or so before being removed (or being moved in again).
+
+Best,
+	Dominik
