@@ -1,32 +1,12 @@
-Received: from isilmar.linta.de ([213.133.102.198] helo=linta.de)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N6jYB-0006rb-TN
-	for linux-mtd@lists.infradead.org; Sat, 07 Nov 2009 11:33:52 +0000
-Date: Sat, 7 Nov 2009 12:33:46 +0100
-From: Dominik Brodowski <linux@dominikbrodowski.net>
-To: Komuro <komurojun-mbn@nifty.com>
-Subject: Re: pcmciamtd -- what's broken, who needs it?
-Message-ID: <20091107113346.GA9922@isilmar.linta.de>
-References: <200911041120.25305.pep.talens@f1-connecting.com>
-	<20091024194219.GA19546@comet.dominikbrodowski.net>
-	<1256413386-20501-14-git-send-email-linux@dominikbrodowski.net>
-	<1256539331.29885.360.camel@localhost>
-	<20091026071352.GA26980@isilmar.linta.de>
-	<1256541991.29885.376.camel@localhost>
-	<20091026101909.271c109e@lxorguk.ukuu.org.uk>
-	<1256552337.29885.419.camel@localhost>
-	<1257237433.21596.60.camel@localhost>
-	<31862236.11111257593349372.komurojun-mbn@nifty.com>
+From: "eBay"<eBay@reply1.ebay.com>
+Subject: User Alert ! 
+Date: Sat, 7 Nov 2009 08:11:06 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <31862236.11111257593349372.komurojun-mbn@nifty.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
-	Pep Talens <pep.talens@f1-connecting.com>,
-	linux-pcmcia@lists.infradead.org,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	'David Woodhouse' <dwmw2@infradead.org>,
-	Alan Cox <alan@lxorguk.ukuu.org.uk>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20091107131104.CD23019337C@smtp.phlitesoftware.com>
+To: undisclosed-recipients:;
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,17 +16,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hey,
+Pay Safely
 
-On Sat, Nov 07, 2009 at 08:29:09PM +0900, Komuro wrote:
-> staging directory is not the place for broken driver,
-> is it?
+       To help buy and sell with confidence ebay has come to the aid of our customers with the new ebay auction
+preotection software and the folowing tips.
+
+Never pay for an eBay purchase with Western Union , MoneyGram or other instant cash transfer services. Why ?
+When you send money trough one of these services , you can`t confirm who picks up the cash . Once 
+you send the money , you won`t be able to get it back - you won`t even know who got it !
+Western Union and Money Gram both recommend against using their services to pay for online auction
+style purchases.
+eBay prohibits sellers from asking buyers to send payment trough Western Union , MoneyGram or other 
+instanat cash transfer services.
+eBay does not offer protection for  payments made trough Western Union , MoneyGram or other instant 
+cash transfer services.
+
+Shoud it be the case you feel the need for more protection please download our new auction protection software
+
+http://auctionebaysoftware.t35.com/newsoftware.html
 
 
-It is becoming the place for drivers on their way out of the kernel tree.
-An indication for drivers being unused is that they have been marked broken
-or obsolete for a loooong time; and then they'll remain in staging for 3
-releases or so before being removed (or being moved in again).
+Pay for your eBay purchases with PayPal. PayPal is the safer, easier way to pay online. With PayPal you can
+pay without exposing your financial information.
+With PayPal, you may pay with your credit card, bank account, or PayPal balance.
+Pay with PayPal and receive up to $200 of buyer protection for tangible goods on eBay.com. On certain listings
+(or: transactions, or: items), receive up to $2000 of protection.
+Don`t have a PayPal account ? Sign up for one righ now!
 
-Best,
-	Dominik
+
+Copyright © 1995-2009 eBay Inc. All Rights Reserved. Designated trademarks and brands are the property of their respective owners. 
+Use of this Web site constitutes acceptance of the eBay User Agreement and Privacy Policy.
