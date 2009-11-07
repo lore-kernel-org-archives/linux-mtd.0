@@ -1,17 +1,28 @@
-Received: from mba.ocn.ne.jp ([122.28.14.163] helo=smtp.mba.ocn.ne.jp)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1N6pJh-0005gJ-1U
-	for linux-mtd@lists.infradead.org; Sat, 07 Nov 2009 17:43:18 +0000
-Date: Sun, 08 Nov 2009 02:43:07 +0900 (JST)
-Message-Id: <20091108.024307.183026733.anemo@mba.ocn.ne.jp>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH resend] mtd/maps: Fix accidental removal in Makefile
-From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Message-ID: <26027331.5701257633190830.komurojun-mbn@nifty.com>
+Date: Sun, 8 Nov 2009 07:33:10 +0900 (JST)
+From: Komuro <komurojun-mbn@nifty.com>
+To: Dominik Brodowski <linux@dominikbrodowski.net>
+Subject: Re: pcmciamtd -- what's broken, who needs it?
+In-Reply-To: <20091107110259.GA1173@comet.dominikbrodowski.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-2022-jp"
 Content-Transfer-Encoding: 7bit
-Cc: Mike Frysinger <vapier@gentoo.org>, akpm@linux-foundation.org,
-	dwmw2@infradead.org, linux-kernel@vger.kernel.org
+References: <20091107110259.GA1173@comet.dominikbrodowski.net>
+	<200911041120.25305.pep.talens@f1-connecting.com>
+	<20091024194219.GA19546@comet.dominikbrodowski.net>
+	<1256413386-20501-14-git-send-email-linux@dominikbrodowski.net>
+	<1256539331.29885.360.camel@localhost>
+	<20091026071352.GA26980@isilmar.linta.de>
+	<1256541991.29885.376.camel@localhost>
+	<20091026101909.271c109e@lxorguk.ukuu.org.uk>
+	<1256552337.29885.419.camel@localhost>
+	<1257237433.21596.60.camel@localhost>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+	Pep Talens <pep.talens@f1-connecting.com>,
+	linux-pcmcia@lists.infradead.org,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	'David Woodhouse' <dwmw2@infradead.org>,
+	Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,28 +32,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The commit d79c326 ("gpio-addr-flash: new driver for GPIO assisted
-flash addressing") removed two lines from the Makefile by accident.
-Though I'm not sure how this accident happened, this patch reverts the
-removal.
 
-Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
----
-This patch fixes a regression from 2.6.31
+Hi,
 
- drivers/mtd/maps/Makefile |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index 1d5cf86..ae2f6db 100644
---- a/drivers/mtd/maps/Makefile
-+++ b/drivers/mtd/maps/Makefile
-@@ -58,4 +58,6 @@ obj-$(CONFIG_MTD_PLATRAM)	+= plat-ram.o
- obj-$(CONFIG_MTD_OMAP_NOR)	+= omap_nor.o
- obj-$(CONFIG_MTD_INTEL_VR_NOR)	+= intel_vr_nor.o
- obj-$(CONFIG_MTD_BFIN_ASYNC)	+= bfin-async-flash.o
-+obj-$(CONFIG_MTD_RBTX4939)	+= rbtx4939-flash.o
-+obj-$(CONFIG_MTD_VMU)		+= vmu-flash.o
- obj-$(CONFIG_MTD_GPIO_ADDR)	+= gpio-addr-flash.o
--- 
-1.5.6.5
+At least, we need to add one line below to pcmciamtd.c .
+
+   PCMCIA_DEVICE_PROD_ID12("PRETEC", "  2MB SRAM CARD", 0xebf91155, 0x805360ca
+),
+
+>Hey,
+>
+>it seems that just as we were preparing to move pcmciamtd to staging, an
+>user who still tries to use it has appeared:
+>
+>> ATTR{modalias}=="pcmcia:m0000c0000f00fn00pfn00paEBF91155pb805360CApc0000000
+0pd00000000"
+>> ? ? ATTR{prod_id2}==" ?2MB SRAM CARD"
+>> ? ? ATTR{prod_id1}=="PRETEC"
+>> ? ? ATTR{pm_state}=="on"
+>> ? ? ATTR{function}=="0x00"
+>
+>So, what is actually BROKEN with pcmciamtd.c ?
+>
+>Best,
+>	Dominik
+>
+>_______________________________________________
+>Linux PCMCIA reimplementation list
+>http://lists.infradead.org/mailman/listinfo/linux-pcmcia
