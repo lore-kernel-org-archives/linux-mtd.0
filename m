@@ -1,21 +1,15 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N7RX4-0008GP-U0
-	for linux-mtd@lists.infradead.org; Mon, 09 Nov 2009 10:31:39 +0000
-Subject: Re: [PATCH 0/3] NAND: OMAP: Fix and clean NAND driver
+Subject: Re: NAND: Add option to quieten off the no device found messgae
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Vimal Singh <vimal.newwork@gmail.com>
-In-Reply-To: <ce9ab5790911090215q7a626f8v6159a97dc70265c5@mail.gmail.com>
-References: <ce9ab5790910292320x2eef0550pdc3fde5d616ea361@mail.gmail.com>
-	<ce9ab5790910300142q6062c47p935ae967955f89f@mail.gmail.com>
-	<ce9ab5790911090215q7a626f8v6159a97dc70265c5@mail.gmail.com>
+To: Ben Dooks <ben@simtec.co.uk>
+In-Reply-To: <20091102181232.800355727@fluff.org.uk>
+References: <20091102181232.800355727@fluff.org.uk>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 09 Nov 2009 12:31:15 +0200
-Message-Id: <1257762675.21596.234.camel@localhost>
+Date: Mon, 09 Nov 2009 13:02:41 +0200
+Message-Id: <1257764561.21596.252.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
-	Linux MTD <linux-mtd@lists.infradead.org>
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	Simtec Linux Team <linux@simtec.co.uk>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,18 +20,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-11-09 at 15:45 +0530, Vimal Singh wrote:
-> Artem,
-> I just saw you have taken 2nd patch from this series to your tree .
-> Could you please be able to maintain this full series?
+On Mon, 2009-11-02 at 18:12 +0000, Ben Dooks wrote:
+> plain text document attachment (nand-update-probe3.patch)
+> Add NAND_SCAN_SILENT_NODEV to chip->options to the user-worrying messages
+> 'No NAND device found!!!'. This message often worries users (was three
+> exclamation marks really necessary?) and especially in systems such as the
+> Simtec Osiris where there may be optional NAND devices which are not
+> known until probe time.
 > 
-> Tony,
-> You may want to look into 1st and 2nd patch in this series.
+> Revised version of the original NAND_PROBE_SPECULATIVE patch after comments
+> by Artem Bityutskiy about adding a whole new call.
 > 
+> Signed-off-by: Ben Dooks <ben@simtec.co.uk>
+> Signed-off-by: Simtec Linux Team <linux@simtec.co.uk>
 
-Yes, they are in the queue, I'll look at them as soon as I reach them,
-and then will either reply, or put them to my tree - either to the
-master or dunno branches.
+Pushed both patches to my l2-mtd-2.6 tree, thanks.
 
 -- 
 Best Regards,
