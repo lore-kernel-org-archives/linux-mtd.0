@@ -1,15 +1,20 @@
-Subject: Re: NAND: Add option to quieten off the no device found messgae
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1N7Scb-00049o-22
+	for linux-mtd@lists.infradead.org; Mon, 09 Nov 2009 11:41:25 +0000
+Subject: Re: [PATCH resend] mtd/maps: Fix accidental removal in Makefile
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ben Dooks <ben@simtec.co.uk>
-In-Reply-To: <20091102181232.800355727@fluff.org.uk>
-References: <20091102181232.800355727@fluff.org.uk>
+To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+In-Reply-To: <20091108.024307.183026733.anemo@mba.ocn.ne.jp>
+References: <20091108.024307.183026733.anemo@mba.ocn.ne.jp>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 09 Nov 2009 13:02:41 +0200
-Message-Id: <1257764561.21596.252.camel@localhost>
+Date: Mon, 09 Nov 2009 13:40:53 +0200
+Message-Id: <1257766853.21596.292.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
-	Simtec Linux Team <linux@simtec.co.uk>
+Cc: Mike Frysinger <vapier@gentoo.org>, dwmw2@infradead.org,
+	akpm@linux-foundation.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -20,21 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-11-02 at 18:12 +0000, Ben Dooks wrote:
-> plain text document attachment (nand-update-probe3.patch)
-> Add NAND_SCAN_SILENT_NODEV to chip->options to the user-worrying messages
-> 'No NAND device found!!!'. This message often worries users (was three
-> exclamation marks really necessary?) and especially in systems such as the
-> Simtec Osiris where there may be optional NAND devices which are not
-> known until probe time.
+On Sun, 2009-11-08 at 02:43 +0900, Atsushi Nemoto wrote:
+> The commit d79c326 ("gpio-addr-flash: new driver for GPIO assisted
+> flash addressing") removed two lines from the Makefile by accident.
+> Though I'm not sure how this accident happened, this patch reverts the
+> removal.
 > 
-> Revised version of the original NAND_PROBE_SPECULATIVE patch after comments
-> by Artem Bityutskiy about adding a whole new call.
+> Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+> ---
+> This patch fixes a regression from 2.6.31
 > 
-> Signed-off-by: Ben Dooks <ben@simtec.co.uk>
-> Signed-off-by: Simtec Linux Team <linux@simtec.co.uk>
+>  drivers/mtd/maps/Makefile |    2 ++
+>  1 files changed, 2 insertions(+), 0 deletions(-)
+> 
+> diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+> index 1d5cf86..ae2f6db 100644
+> --- a/drivers/mtd/maps/Makefile
+> +++ b/drivers/mtd/maps/Makefile
+> @@ -58,4 +58,6 @@ obj-$(CONFIG_MTD_PLATRAM)	+= plat-ram.o
+>  obj-$(CONFIG_MTD_OMAP_NOR)	+= omap_nor.o
+>  obj-$(CONFIG_MTD_INTEL_VR_NOR)	+= intel_vr_nor.o
+>  obj-$(CONFIG_MTD_BFIN_ASYNC)	+= bfin-async-flash.o
+> +obj-$(CONFIG_MTD_RBTX4939)	+= rbtx4939-flash.o
+> +obj-$(CONFIG_MTD_VMU)		+= vmu-flash.o
+>  obj-$(CONFIG_MTD_GPIO_ADDR)	+= gpio-addr-flash.o
 
-Pushed both patches to my l2-mtd-2.6 tree, thanks.
+This patch is in my l2-mtd-2.6 tree now, but I think it should be merged
+to 2.6.32-rcX.
 
 -- 
 Best Regards,
