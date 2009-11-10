@@ -1,21 +1,20 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N7Scb-00049o-22
-	for linux-mtd@lists.infradead.org; Mon, 09 Nov 2009 11:41:25 +0000
-Subject: Re: [PATCH resend] mtd/maps: Fix accidental removal in Makefile
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-In-Reply-To: <20091108.024307.183026733.anemo@mba.ocn.ne.jp>
-References: <20091108.024307.183026733.anemo@mba.ocn.ne.jp>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 09 Nov 2009 13:40:53 +0200
-Message-Id: <1257766853.21596.292.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Mike Frysinger <vapier@gentoo.org>, dwmw2@infradead.org,
-	akpm@linux-foundation.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+	id 1N7k5f-00050b-Ft
+	for linux-mtd@lists.infradead.org; Tue, 10 Nov 2009 06:20:36 +0000
+Message-ID: <4AF905B8.4070704@nokia.com>
+Date: Tue, 10 Nov 2009 08:18:32 +0200
+From: Mika Korhonen <ext-mika.2.korhonen@nokia.com>
+MIME-Version: 1.0
+To: ext Vimal Singh <vimal.newwork@gmail.com>
+Subject: Re: [PATCH] MTD OneNAND OMAP2/3: allow giving partition layout as
+	module parameter
+References: <1251976558-13463-1-git-send-email-ext-mika.2.korhonen@nokia.com>
+	<ce9ab5790910290625u9baaf14le5ab14fe4d6ba783@mail.gmail.com>
+In-Reply-To: <ce9ab5790910290625u9baaf14le5ab14fe4d6ba783@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,34 +24,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2009-11-08 at 02:43 +0900, Atsushi Nemoto wrote:
-> The commit d79c326 ("gpio-addr-flash: new driver for GPIO assisted
-> flash addressing") removed two lines from the Makefile by accident.
-> Though I'm not sure how this accident happened, this patch reverts the
-> removal.
-> 
-> Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-> ---
-> This patch fixes a regression from 2.6.31
-> 
->  drivers/mtd/maps/Makefile |    2 ++
->  1 files changed, 2 insertions(+), 0 deletions(-)
-> 
-> diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-> index 1d5cf86..ae2f6db 100644
-> --- a/drivers/mtd/maps/Makefile
-> +++ b/drivers/mtd/maps/Makefile
-> @@ -58,4 +58,6 @@ obj-$(CONFIG_MTD_PLATRAM)	+= plat-ram.o
->  obj-$(CONFIG_MTD_OMAP_NOR)	+= omap_nor.o
->  obj-$(CONFIG_MTD_INTEL_VR_NOR)	+= intel_vr_nor.o
->  obj-$(CONFIG_MTD_BFIN_ASYNC)	+= bfin-async-flash.o
-> +obj-$(CONFIG_MTD_RBTX4939)	+= rbtx4939-flash.o
-> +obj-$(CONFIG_MTD_VMU)		+= vmu-flash.o
->  obj-$(CONFIG_MTD_GPIO_ADDR)	+= gpio-addr-flash.o
-
-This patch is in my l2-mtd-2.6 tree now, but I think it should be merged
-to 2.6.32-rcX.
+ext Vimal Singh wrote:
+> On Thu, Sep 3, 2009 at 4:45 PM, Mika Korhonen
+> <ext-mika.2.korhonen@nokia.com> wrote:
+>   
+>> Add module parameter "parts" to omap2-onenand driver. Parameter format is
+>> the same as for cmdlinepart except mtd-id must not be specified - it
+>> gets prepended by the driver, i.e.: parts=<partdef>[,<partdef>]*
+>>
+>> This allows one to repartition the OneNAND chip and is useful for flashing
+>> applications that do the partitioning from scratch or want to backup and
+>> update the partitioning.
+>>
+>> Signed-off-by: Mika Korhonen <ext-mika.2.korhonen@nokia.com>
+>> ---
+>>  drivers/mtd/cmdlinepart.c   |   35 +++++++++++++++++++++++++++++------
+>>  drivers/mtd/onenand/omap2.c |   29 +++++++++++++++++++++++++++++
+>>  2 files changed, 58 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
+>> index 1479da6..77fa7b7 100644
+>> --- a/drivers/mtd/cmdlinepart.c
+>> +++ b/drivers/mtd/cmdlinepart.c
+>> @@ -5,7 +5,7 @@
+>>  *
+>>  * The format for the command line is as follows:
+>>  *
+>> - * mtdparts=<mtddef>[;<mtddef]
+>> + * mtdparts=<mtddef>[;<mtddef>]
+>>  * <mtddef>  := <mtd-id>:<partdef>[,<partdef>]
+>>  *              where <mtd-id> is the name from the "cat /proc/mtd" command
+>>  * <partdef> := <size>[@offset][<name>][ro][lk]
+>> @@ -54,7 +54,7 @@ struct cmdline_mtd_partition {
+>>  /* mtdpart_setup() parses into here */
+>>  static struct cmdline_mtd_partition *partitions;
+>>
+>> -/* the command line passed to mtdpart_setupd() */
+>> +/* the command line passed to mtdpart_setup() */
+>>  static char *cmdline;
+>>  static int cmdline_parsed = 0;
+>>
+>> @@ -219,9 +219,8 @@ static int mtdpart_setup_real(char *s)
+>>  {
+>>        cmdline_parsed = 1;
+>>
+>> -       for( ; s != NULL; )
+>> -       {
+>> -               struct cmdline_mtd_partition *this_mtd;
+>> +       for ( ; s != NULL; ) {
+>> +               struct cmdline_mtd_partition *this_mtd, *mtd, *mtd_prev;
+>>                struct mtd_partition *parts;
+>>                int mtd_id_len;
+>>                int num_parts;
+>> @@ -270,6 +269,27 @@ static int mtdpart_setup_real(char *s)
+>>                this_mtd->mtd_id = (char*)(this_mtd + 1);
+>>                strlcpy(this_mtd->mtd_id, mtd_id, mtd_id_len + 1);
+>>
+>> +               /* remove existing ones with the same id */
+>> +               mtd_prev = NULL;
+>> +               for (mtd = partitions; mtd;)    {
+>>     
+> Space instead of tab.
+>
+>   
+>> +                       if (strcmp(this_mtd->mtd_id, mtd->mtd_id) == 0) {
+>>     
+> Hmm... I guess you won't get your device id matched here. Since the
+> string you are passing from omap onenand driver is something like
+> this:
+> omap2-onenand:.....
+>
+> while mtd registers device ids in different format, something like:
+> 'omap2-onenand.0'
+>
+>   
+It's been tested, and it matches. In parse_cmdline_partitions() mtd_id 
+is set from mtd_info.name of the chip. Could be that cmdlinepart.c is 
+outdated, though.
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Mika
