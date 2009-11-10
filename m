@@ -1,18 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N7rcq-0005Yc-CN
-	for linux-mtd@lists.infradead.org; Tue, 10 Nov 2009 14:23:21 +0000
-Subject: Re: [PATCH 2/3]NAND: OMAP: Fixing omap nand driver, compiled as
-	module
+	id 1N7reN-0008DD-5U
+	for linux-mtd@lists.infradead.org; Tue, 10 Nov 2009 14:24:55 +0000
+Subject: Re: [PATCH 1/3] Fixing compilation warning for 'nand/omap2.c'
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Vimal Singh <vimal.newwork@gmail.com>
-In-Reply-To: <ce9ab5790910300227r41d42673webad0ee48e3444d1@mail.gmail.com>
-References: <ce9ab5790910292321y1e7239b7pbffe9a5891d66448@mail.gmail.com>
-	<ce9ab5790910300142kf12e31cpd6249d4c7383553f@mail.gmail.com>
-	<ce9ab5790910300227r41d42673webad0ee48e3444d1@mail.gmail.com>
+In-Reply-To: <ce9ab5790911030101t256e49e8iaf26c733e6472157@mail.gmail.com>
+References: <ce9ab5790910292321nf230810v353c23f9c1ce1931@mail.gmail.com>
+	<ce9ab5790910300142s615c7d59h15bb2d46d4f76574@mail.gmail.com>
+	<1257236323.21596.56.camel@localhost>
+	<ce9ab5790911030038p31bb69cfs1ba86cd70b243e4c@mail.gmail.com>
+	<1257237728.21596.65.camel@localhost>
+	<ce9ab5790911030101t256e49e8iaf26c733e6472157@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 10 Nov 2009 16:23:09 +0200
-Message-Id: <1257862989.21596.763.camel@localhost>
+Date: Tue, 10 Nov 2009 16:24:23 +0200
+Message-Id: <1257863063.21596.765.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-omap@vger.kernel.org, Linux MTD <linux-mtd@lists.infradead.org>
@@ -26,78 +28,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-10-30 at 14:57 +0530, Vimal Singh wrote:
-> Last time I forgot to 'git add' for 'arch/arm/mach-omap2/gpmc.c'... My bad.
-> Correct patch is below.
+On Tue, 2009-11-03 at 14:31 +0530, Vimal Singh wrote:
+> >> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> >> index 090ab87..92573d5 100644
+> >> --- a/drivers/mtd/nand/omap2.c
+> >> +++ b/drivers/mtd/nand/omap2.c
+> >> @@ -501,11 +501,13 @@ static void omap_read_buf_dma_pref(struct
+> >> mtd_info *mtd, u_char
+> >
+> > :-) It is the same again.
+> >
+> > Try to send the e-mail to yourself, then save it and apply with git-am.
+> > If it works, send to the mailing list.
 > 
-> -vimal
+> Below patch applies. Sorry for noise... :(
+> 
+> Thanks,
+> vimal
 > 
 > 
+> From eebbd81141b196af2dc3f7a2650ce16b6b0d76ae Mon Sep 17 00:00:00 2001
 > From: Vimal Singh <vimalsingh@ti.com>
-> Date: Fri, 30 Oct 2009 14:54:29 +0530
-> Subject: [PATCH] NAND: OMAP: Fixing omap nand driver, compiled as module
+> Date: Fri, 30 Oct 2009 11:31:34 +0530
+> Subject: [PATCH] Fixing compilation warning for 'nand/omap2.c'
 > 
-> Removing OMAP NAND driver, when loaded as a module, gives error and
-> does not get success. This fixes this and makes driver loadable and
-> removable run time.
+> Fixing below warning in compilation:
+> drivers/mtd/nand/omap2.c: In function 'omap_write_buf_dma_pref':
+> drivers/mtd/nand/omap2.c:508: warning: passing argument 2 of
+> 'omap_nand_dma_transfer' discards qualifiers from pointer target type
 > 
 > Signed-off-by: Vimal Singh <vimalsingh@ti.com>
 > ---
->  arch/arm/mach-omap2/gpmc.c |    2 ++
->  drivers/mtd/nand/omap2.c   |    5 ++++-
->  2 files changed, 6 insertions(+), 1 deletions(-)
+>  drivers/mtd/nand/omap2.c |    6 ++++--
+>  1 files changed, 4 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-> index 1587682..1d10b7b 100644
-> --- a/arch/arm/mach-omap2/gpmc.c
-> +++ b/arch/arm/mach-omap2/gpmc.c
-> @@ -88,6 +88,7 @@ void gpmc_cs_write_reg(int cs, int idx, u32 val)
->  	reg_addr = gpmc_base + GPMC_CS0 + (cs * GPMC_CS_SIZE) + idx;
->  	__raw_writel(val, reg_addr);
->  }
-> +EXPORT_SYMBOL(gpmc_cs_write_reg);
-> 
->  u32 gpmc_cs_read_reg(int cs, int idx)
->  {
-> @@ -96,6 +97,7 @@ u32 gpmc_cs_read_reg(int cs, int idx)
->  	reg_addr = gpmc_base + GPMC_CS0 + (cs * GPMC_CS_SIZE) + idx;
->  	return __raw_readl(reg_addr);
->  }
-> +EXPORT_SYMBOL(gpmc_cs_read_reg);
-
-You should get Tony's ack for this. I do not know the code, but on
-surface it looks strange. Exporting so low-level functions is bad in
-general, IMO. These function should either be inlined, or you should
-invent better abstraction, so that you would not need to ever call these
-functions from omap2.c. 
-
-> 
->  /* TODO: Add support for gpmc_fck to clock framework and use it */
->  unsigned long gpmc_get_fclk_period(void)
 > diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index 92573d5..ecc4d32 100644
+> index 090ab87..92573d5 100644
 > --- a/drivers/mtd/nand/omap2.c
 > +++ b/drivers/mtd/nand/omap2.c
-> @@ -1056,7 +1056,8 @@ out_free_info:
->  static int omap_nand_remove(struct platform_device *pdev)
+> @@ -501,11 +501,13 @@ static void omap_read_buf_dma_pref(struct
+>  static void omap_write_buf_dma_pref(struct mtd_info *mtd,
+>  					const u_char *buf, int len)
 >  {
->  	struct mtd_info *mtd = platform_get_drvdata(pdev);
-> -	struct omap_nand_info *info = mtd->priv;
-> +	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
-> +							mtd);
-> 
->  	platform_set_drvdata(pdev, NULL);
->  	if (use_dma)
-> @@ -1064,7 +1065,9 @@ static int omap_nand_remove(struct platform_device *pdev)
-> 
->  	/* Release NAND device, its internal structures and partitions */
->  	nand_release(&info->mtd);
-> +	release_mem_region(info->phys_base, NAND_IO_SIZE);
->  	iounmap(info->nand_pref_fifo_add);
-> +	gpmc_cs_free(info->gpmc_cs);
->  	kfree(&info->mtd);
->  	return 0;
+> +	u_char *p = (u_char *)buf;
+> +
+>  	if (len <= mtd->oobsize)
+> -		omap_write_buf_pref(mtd, buf, len);
+> +		omap_write_buf_pref(mtd, p, len);
+>  	else
+>  		/* start transfer in DMA mode */
+> -		omap_nand_dma_transfer(mtd, buf, len, 0x1);
+> +		omap_nand_dma_transfer(mtd, p, len, 0x1);
 >  }
+> 
+>  /**
+
+BTW, this patch is still corrupted for me. And it is strange that I do
+not see it in the archives, so I cannot check is this my setup which is
+guilty, or it is you sending the patches incorrectly:
+
+http://lists.infradead.org/pipermail/linux-mtd/2009-November/027918.html
+
 -- 
 Best Regards,
 Artem Bityutskiy (Артём Битюцкий)
