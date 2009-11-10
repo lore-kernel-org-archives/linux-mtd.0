@@ -1,17 +1,22 @@
-Received: from gw1.transmode.se ([213.115.205.20])
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N7mdq-0003jd-1r
-	for linux-mtd@lists.infradead.org; Tue, 10 Nov 2009 09:04:03 +0000
-Received: from sesr04.transmode.se (sesr04.transmode.se [192.168.201.15])
-	by gw1.transmode.se (Postfix) with ESMTP id 4D376650002
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 10 Nov 2009 10:03:31 +0100 (CET)
-From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] zlib: Optimize inffast when copying direct from output
-Date: Tue, 10 Nov 2009 10:03:20 +0100
-Message-Id: <1257843800-8628-1-git-send-email-Joakim.Tjernlund@transmode.se>
-Cc: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+	id 1N7n3S-0006kL-D8
+	for linux-mtd@lists.infradead.org; Tue, 10 Nov 2009 09:30:31 +0000
+Message-ID: <4AF93236.5090905@nokia.com>
+Date: Tue, 10 Nov 2009 11:28:22 +0200
+From: Mika Korhonen <ext-mika.2.korhonen@nokia.com>
+MIME-Version: 1.0
+To: ext Vimal Singh <vimal.newwork@gmail.com>
+Subject: Re: [PATCH] MTD OneNAND OMAP2/3: allow giving partition layout as
+	module parameter
+References: <1251976558-13463-1-git-send-email-ext-mika.2.korhonen@nokia.com>
+	<ce9ab5790910290625u9baaf14le5ab14fe4d6ba783@mail.gmail.com>
+	<4AF905B8.4070704@nokia.com>
+	<ce9ab5790911100102q64c5cb6an371ff7f1b7699a4f@mail.gmail.com>
+In-Reply-To: <ce9ab5790911100102q64c5cb6an371ff7f1b7699a4f@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,122 +26,124 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-JFFS2 uses lesser compression ratio and inflate always
-ends up in "copy direct from output" case.
-This patch tries to optimize the direct copy procedure.
-Uses get_unaligned() but only in one place.
-The copy loop just above this one can also use this
-optimization, but I havn't done so as I have not tested if it
-is a win there too.
-On my MPC8321 this is about 17% faster on my JFFS2 root FS
-than the original.
----
+ext Vimal Singh wrote:
+> On Tue, Nov 10, 2009 at 11:48 AM, Mika Korhonen
+> <ext-mika.2.korhonen@nokia.com> wrote:
+>   
+>> ext Vimal Singh wrote:
+>>     
+>>> On Thu, Sep 3, 2009 at 4:45 PM, Mika Korhonen
+>>> <ext-mika.2.korhonen@nokia.com> wrote:
+>>>
+>>>       
+>>>> Add module parameter "parts" to omap2-onenand driver. Parameter format is
+>>>> the same as for cmdlinepart except mtd-id must not be specified - it
+>>>> gets prepended by the driver, i.e.: parts=<partdef>[,<partdef>]*
+>>>>
+>>>> This allows one to repartition the OneNAND chip and is useful for
+>>>> flashing
+>>>> applications that do the partitioning from scratch or want to backup and
+>>>> update the partitioning.
+>>>>
+>>>> Signed-off-by: Mika Korhonen <ext-mika.2.korhonen@nokia.com>
+>>>> ---
+>>>>  drivers/mtd/cmdlinepart.c   |   35 +++++++++++++++++++++++++++++------
+>>>>  drivers/mtd/onenand/omap2.c |   29 +++++++++++++++++++++++++++++
+>>>>  2 files changed, 58 insertions(+), 6 deletions(-)
+>>>>
+>>>> diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
+>>>> index 1479da6..77fa7b7 100644
+>>>> --- a/drivers/mtd/cmdlinepart.c
+>>>> +++ b/drivers/mtd/cmdlinepart.c
+>>>> @@ -5,7 +5,7 @@
+>>>>  *
+>>>>  * The format for the command line is as follows:
+>>>>  *
+>>>> - * mtdparts=<mtddef>[;<mtddef]
+>>>> + * mtdparts=<mtddef>[;<mtddef>]
+>>>>  * <mtddef>  := <mtd-id>:<partdef>[,<partdef>]
+>>>>  *              where <mtd-id> is the name from the "cat /proc/mtd"
+>>>> command
+>>>>  * <partdef> := <size>[@offset][<name>][ro][lk]
+>>>> @@ -54,7 +54,7 @@ struct cmdline_mtd_partition {
+>>>>  /* mtdpart_setup() parses into here */
+>>>>  static struct cmdline_mtd_partition *partitions;
+>>>>
+>>>> -/* the command line passed to mtdpart_setupd() */
+>>>> +/* the command line passed to mtdpart_setup() */
+>>>>  static char *cmdline;
+>>>>  static int cmdline_parsed = 0;
+>>>>
+>>>> @@ -219,9 +219,8 @@ static int mtdpart_setup_real(char *s)
+>>>>  {
+>>>>       cmdline_parsed = 1;
+>>>>
+>>>> -       for( ; s != NULL; )
+>>>> -       {
+>>>> -               struct cmdline_mtd_partition *this_mtd;
+>>>> +       for ( ; s != NULL; ) {
+>>>> +               struct cmdline_mtd_partition *this_mtd, *mtd, *mtd_prev;
+>>>>               struct mtd_partition *parts;
+>>>>               int mtd_id_len;
+>>>>               int num_parts;
+>>>> @@ -270,6 +269,27 @@ static int mtdpart_setup_real(char *s)
+>>>>               this_mtd->mtd_id = (char*)(this_mtd + 1);
+>>>>               strlcpy(this_mtd->mtd_id, mtd_id, mtd_id_len + 1);
+>>>>
+>>>> +               /* remove existing ones with the same id */
+>>>> +               mtd_prev = NULL;
+>>>> +               for (mtd = partitions; mtd;)    {
+>>>>
+>>>>         
+>>> Space instead of tab.
+>>>
+>>>
+>>>       
+>>>> +                       if (strcmp(this_mtd->mtd_id, mtd->mtd_id) == 0) {
+>>>>
+>>>>         
+>>> Hmm... I guess you won't get your device id matched here. Since the
+>>> string you are passing from omap onenand driver is something like
+>>> this:
+>>> omap2-onenand:.....
+>>>
+>>> while mtd registers device ids in different format, something like:
+>>> 'omap2-onenand.0'
+>>>
+>>>
+>>>       
+>> It's been tested, and it matches. In parse_cmdline_partitions() mtd_id is
+>> set from mtd_info.name of the chip. Could be that cmdlinepart.c is outdated,
+>> though.
+>>     
+>
+> I am still not convinced. I use to get below prints when I boot up
+> (this is for NAND and should be same for OneNAND too):
+> ...
+> omap2-nand driver initializing
+> NAND device: Manufacturer ID: 0x2c, Chip ID: 0xbc (Micron NAND 512MiB
+> 1,8V 16-bit)
+> Creating 7 MTD partitions on "omap2-nand.0":
+> ...
+> This print comes from 'add_mtd_partitions' (drivers/mtd/mtdpart.c):
+> printk(KERN_NOTICE "Creating %d MTD partitions on \"%s\":\n", nbparts,
+> master->name);
+>
+> And I use to give cmdline like this:
+> "mtdparts=omap2-nand.0:512k@0(p1),1280k@512k(p2),768k@1792k(p3),5m@2560k(p4),123392k@7680k(p5)"
+>
+> and this works for me.
+>
+>   
+It does not seem to be the same for OneNAND:
 
- Would like some testing of the PowerPC boot wrapper and
- a LE target before sending it upstream.
+Creating 5 MTD partitions on 
+"omap2-onenand":                                  
+0x00000000-0x00020000 : "p1"                                           
+0x00020000-0x00080000 : "p2"                                               
+...
 
- arch/powerpc/boot/Makefile |    4 ++-
- lib/zlib_inflate/inffast.c |   48 +++++++++++++++++++++++++++++++++----------
- 2 files changed, 40 insertions(+), 12 deletions(-)
+Another question is, if it should be.
 
-diff --git a/arch/powerpc/boot/Makefile b/arch/powerpc/boot/Makefile
-index 9ae7b7e..98e4c4f 100644
---- a/arch/powerpc/boot/Makefile
-+++ b/arch/powerpc/boot/Makefile
-@@ -20,7 +20,7 @@
- all: $(obj)/zImage
- 
- BOOTCFLAGS    := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
--		 -fno-strict-aliasing -Os -msoft-float -pipe \
-+		 -fno-strict-aliasing -Os -msoft-float -pipe -D__KERNEL__\
- 		 -fomit-frame-pointer -fno-builtin -fPIC -nostdinc \
- 		 -isystem $(shell $(CROSS32CC) -print-file-name=include)
- BOOTAFLAGS	:= -D__ASSEMBLY__ $(BOOTCFLAGS) -traditional -nostdinc
-@@ -34,6 +34,8 @@ BOOTCFLAGS	+= -fno-stack-protector
- endif
- 
- BOOTCFLAGS	+= -I$(obj) -I$(srctree)/$(obj)
-+BOOTCFLAGS	+= -include include/linux/autoconf.h -Iarch/powerpc/include
-+BOOTCFLAGS	+= -Iinclude
- 
- DTS_FLAGS	?= -p 1024
- 
-diff --git a/lib/zlib_inflate/inffast.c b/lib/zlib_inflate/inffast.c
-index 8550b0c..0c7fa3d 100644
---- a/lib/zlib_inflate/inffast.c
-+++ b/lib/zlib_inflate/inffast.c
-@@ -4,6 +4,7 @@
-  */
- 
- #include <linux/zutil.h>
-+#include <asm/unaligned.h>
- #include "inftrees.h"
- #include "inflate.h"
- #include "inffast.h"
-@@ -24,9 +25,11 @@
- #ifdef POSTINC
- #  define OFF 0
- #  define PUP(a) *(a)++
-+#  define UP_UNALIGNED(a) get_unaligned((a)++)
- #else
- #  define OFF 1
- #  define PUP(a) *++(a)
-+#  define UP_UNALIGNED(a) get_unaligned(++(a))
- #endif
- 
- /*
-@@ -239,18 +242,41 @@ void inflate_fast(z_streamp strm, unsigned start)
-                     }
-                 }
-                 else {
-+		    unsigned short *sout;
-+		    unsigned long loops;
-+
-                     from = out - dist;          /* copy direct from output */
--                    do {                        /* minimum length is three */
--                        PUP(out) = PUP(from);
--                        PUP(out) = PUP(from);
--                        PUP(out) = PUP(from);
--                        len -= 3;
--                    } while (len > 2);
--                    if (len) {
--                        PUP(out) = PUP(from);
--                        if (len > 1)
--                            PUP(out) = PUP(from);
--                    }
-+                    /* minimum length is three */
-+		    /* Align out addr */
-+		    if (!((long)(out - 1 + OFF)) & 1) {
-+			PUP(out) = PUP(from);
-+			len--;
-+		    }
-+		    sout = (unsigned short *)(out - OFF);
-+		    if (dist > 2 ) {
-+			unsigned short *sfrom;
-+
-+			sfrom = (unsigned short *)(from - OFF);
-+			loops = len >> 1;
-+			do
-+			    PUP(sout) = UP_UNALIGNED(sfrom);
-+			while (--loops);
-+			out = (unsigned char *)sout + OFF;
-+			from = (unsigned char *)sfrom + OFF;
-+		    } else { /* dist == 1 or dist == 2 */
-+			unsigned short pat16;
-+
-+			pat16 = *(sout-2+2*OFF);
-+			if (dist == 1)
-+			    pat16 = (pat16 & 0xff) | ((pat16 & 0xff ) << 8);
-+			loops = len >> 1;
-+			do
-+			    PUP(sout) = pat16;
-+			while (--loops);
-+			out = (unsigned char *)sout + OFF;
-+		    }
-+		    if (len & 1)
-+			PUP(out) = PUP(from);
-                 }
-             }
-             else if ((op & 64) == 0) {          /* 2nd level distance code */
--- 
-1.6.4.4
+br,
+Mika
