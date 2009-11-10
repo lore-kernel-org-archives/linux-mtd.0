@@ -1,22 +1,18 @@
-Received: from mho-02-ewr.mailhop.org ([204.13.248.72])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N7vtD-0001KW-1i
-	for linux-mtd@lists.infradead.org; Tue, 10 Nov 2009 18:56:31 +0000
-Date: Tue, 10 Nov 2009 10:56:21 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 2/3]NAND: OMAP: Fixing omap nand driver, compiled as module
-Message-ID: <20091110185621.GB23952@atomide.com>
-References: <ce9ab5790910292321y1e7239b7pbffe9a5891d66448@mail.gmail.com>
-	<ce9ab5790910300142kf12e31cpd6249d4c7383553f@mail.gmail.com>
-	<ce9ab5790910300227r41d42673webad0ee48e3444d1@mail.gmail.com>
-	<1257862989.21596.763.camel@localhost>
+Received: from ey-out-1920.google.com ([74.125.78.150])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1N7w8r-0004nQ-WE
+	for linux-mtd@lists.infradead.org; Tue, 10 Nov 2009 19:12:42 +0000
+Received: by ey-out-1920.google.com with SMTP id 4so517933eyg.2
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 10 Nov 2009 11:12:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1257862989.21596.763.camel@localhost>
-Cc: Linux MTD <linux-mtd@lists.infradead.org>, linux-omap@vger.kernel.org,
-	Vimal Singh <vimal.newwork@gmail.com>
+Sender: fszczerba@gmail.com
+From: Frank Szczerba <frank@szczerba.net>
+Date: Tue, 10 Nov 2009 14:12:14 -0500
+Message-ID: <2711ec210911101112q1d4dcbd6k7b709243c94b305c@mail.gmail.com>
+Subject: [PATCH] Fix OOB Read Errors with Atmel Hardware ECC
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,75 +22,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Artem Bityutskiy <dedekind1@gmail.com> [091110 06:22]:
-> On Fri, 2009-10-30 at 14:57 +0530, Vimal Singh wrote:
-> > Last time I forgot to 'git add' for 'arch/arm/mach-omap2/gpmc.c'... My bad.
-> > Correct patch is below.
-> > 
-> > -vimal
-> > 
-> > 
-> > From: Vimal Singh <vimalsingh@ti.com>
-> > Date: Fri, 30 Oct 2009 14:54:29 +0530
-> > Subject: [PATCH] NAND: OMAP: Fixing omap nand driver, compiled as module
-> > 
-> > Removing OMAP NAND driver, when loaded as a module, gives error and
-> > does not get success. This fixes this and makes driver loadable and
-> > removable run time.
-> > 
-> > Signed-off-by: Vimal Singh <vimalsingh@ti.com>
-> > ---
-> >  arch/arm/mach-omap2/gpmc.c |    2 ++
-> >  drivers/mtd/nand/omap2.c   |    5 ++++-
-> >  2 files changed, 6 insertions(+), 1 deletions(-)
-> > 
-> > diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-> > index 1587682..1d10b7b 100644
-> > --- a/arch/arm/mach-omap2/gpmc.c
-> > +++ b/arch/arm/mach-omap2/gpmc.c
-> > @@ -88,6 +88,7 @@ void gpmc_cs_write_reg(int cs, int idx, u32 val)
-> >  	reg_addr = gpmc_base + GPMC_CS0 + (cs * GPMC_CS_SIZE) + idx;
-> >  	__raw_writel(val, reg_addr);
-> >  }
-> > +EXPORT_SYMBOL(gpmc_cs_write_reg);
-> > 
-> >  u32 gpmc_cs_read_reg(int cs, int idx)
-> >  {
-> > @@ -96,6 +97,7 @@ u32 gpmc_cs_read_reg(int cs, int idx)
-> >  	reg_addr = gpmc_base + GPMC_CS0 + (cs * GPMC_CS_SIZE) + idx;
-> >  	return __raw_readl(reg_addr);
-> >  }
-> > +EXPORT_SYMBOL(gpmc_cs_read_reg);
-> 
-> You should get Tony's ack for this. I do not know the code, but on
-> surface it looks strange. Exporting so low-level functions is bad in
-> general, IMO. These function should either be inlined, or you should
-> invent better abstraction, so that you would not need to ever call these
-> functions from omap2.c. 
+I am working on an AT91SAM9260-based board using a Samsung
+STNAND256W3A flash device (256 Mbit, 8-bit bus, 512+16 pages, 16K
+blocks). We are using the hardware ECC module in the AT91, and have a
+YAFFS filesystem in part of the flash.
 
-NAK. We don't want the drivers to tinker with these registers
-directly. And really, the drivers should be platform independent.
+After changing to the hardware ECC we started to see corrupted
+directories and lost files in the YAFFS filesystem on reboot. In
+particular, filling the filesystem would reliably cause files to
+disappear when the system was rebooted. This does not happen when
+using MTD software ECC.
 
-This seems like a quick hack to add back the missing functionality
-we threw out of the linux-omap tree. It was thrown out because there
-were the same cut and paste hacks duplicated all over the place
-tinkering with the GPMC registers directly.
+To recreate this issue:
 
-We've fixed a lot of this by creating gpmc-onenand.c and gpmc-smc91x.c,
-and that's clearly the way to go.
+# flash_eraseall /dev/mtd4
+Erasing 16 Kibyte @ 700000 -- 100% complete.
+# mount -t yaffs /dev/mtdblock4 /mnt/yaffs
+# ls /mnt/yaffs
+lost+found
+# dd if=/dev/urandom bs=512 count=1  of=/mnt/yaffs/test1
+1+0 records in
+1+0 records out
+# dd if=/dev/urandom bs=512 count=1  of=/mnt/yaffs/test2
+1+0 records in
+1+0 records out
+# ls /mnt/yaffs
+lost+found  test1       test2
+# umount /mnt/yaffs
+# mount -t yaffs /dev/mtdblock4 /mnt/yaffs
+# ls /mnt/yaffs
+lost+found  test1       test2
+# dd if=/dev/zero bs=512 of=/mnt/yaffs/test3
+dd: writing '/mnt/yaffs/test3': No space left on device
+14147+0 records in
+14146+0 records out
+# ls -l /mnt/yaffs
+drw-rw-rw-    1 root     root          512 Jan  1 00:02 lost+found
+-rw-r--r--    1 root     root          512 Jan  1 00:01 test1
+-rw-r--r--    1 root     root          512 Jan  1 00:02 test2
+-rw-r--r--    1 root     root      7242752 Jan  1 00:03 test3
+# umount /mnt/yaffs
+# mount -t yaffs /dev/mtdblock4 /mnt/yaffs
+# ls -l /mnt/yaffs
+drw-rw-rw-    1 root     root          512 Jan  1 00:03 lost+found
+-rw-r--r--    1 root     root      7242752 Jan  1 00:03
+??????????????????????????????????????????????????????????????????????????????????????????????????????????
 
-So instead of trying to add back the same old hacks, how about rather
-spend that time to create something that we can use for all boards
-using GPMC?
+While investigating this, I made what I thought was a simple
+optimization to the atmel_nand_read_page() function that seems to
+actually fix this issue. I'm not 100% sure why this works, maybe
+someone on the list will know.
 
-To me it looks like platform init like this should be done in a
-generic way in arch/arm/mach-omap2/gpmc-nand.c the same way we have
-gpmc-onenand.c and gpmc-smc91x.c.
+Signed-off-by: Frank Szczerba <frank+mtd at szczerba.net>
+---
+ drivers/mtd/nand/atmel_nand.c |   26 +++++++++++++-------------
+ 1 files changed, 13 insertions(+), 13 deletions(-)
 
-Also, you should calculate the GPMC timings dynamically as they
-can change based on the L3 frequency. Just take a look at the
-gpmc-onenand.c and gpmc-smc91x.c.
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index f8e9975..552ee9e 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -192,7 +192,6 @@ static int atmel_nand_calculate(struct mtd_info *mtd,
+ {
+ 	struct nand_chip *nand_chip = mtd->priv;
+ 	struct atmel_nand_host *host = nand_chip->priv;
+-	uint32_t *eccpos = nand_chip->ecc.layout->eccpos;
+ 	unsigned int ecc_value;
 
-Cheers,
+ 	/* get the first 2 ECC bytes */
+@@ -244,8 +243,10 @@ static int atmel_nand_read_page(struct mtd_info *mtd,
+ 	/* read the page */
+ 	chip->read_buf(mtd, p, eccsize);
 
-Tony
++	ecc_pos = oob + eccpos[0];
++
+ 	/* move to ECC position if needed */
+-	if (eccpos[0] != 0) {
++	if (ecc_pos != oob) {
+ 		/* This only works on large pages
+ 		 * because the ECC controller waits for
+ 		 * NAND_CMD_RNDOUTSTART after the
+@@ -254,26 +255,25 @@ static int atmel_nand_read_page(struct mtd_info *mtd,
+ 		 */
+ 		chip->cmdfunc(mtd, NAND_CMD_RNDOUT,
+ 				mtd->writesize + eccpos[0], -1);
+-	}
+
+-	/* the ECC controller needs to read the ECC just after the data */
+-	ecc_pos = oob + eccpos[0];
+-	chip->read_buf(mtd, ecc_pos, eccbytes);
++        /* the ECC controller needs to read the ECC just after the data */
++        chip->read_buf(mtd, ecc_pos, eccbytes);
++
++        /* get back to oob start (end of page) */
++        chip->cmdfunc(mtd, NAND_CMD_RNDOUT, mtd->writesize, -1);
++    }
++
++    /* read the whole oob */
++    chip->read_buf(mtd, oob, mtd->oobsize);
+
+ 	/* check if there's an error */
+-	stat = chip->ecc.correct(mtd, p, oob, NULL);
++	stat = chip->ecc.correct(mtd, p, ecc_pos, NULL);
+
+ 	if (stat < 0)
+ 		mtd->ecc_stats.failed++;
+ 	else
+ 		mtd->ecc_stats.corrected += stat;
+
+-	/* get back to oob start (end of page) */
+-	chip->cmdfunc(mtd, NAND_CMD_RNDOUT, mtd->writesize, -1);
+-
+-	/* read the oob */
+-	chip->read_buf(mtd, oob, mtd->oobsize);
+-
+ 	return 0;
+ }
+
+-- 
+1.6.5.1
+
+
+Frank Szczerba
