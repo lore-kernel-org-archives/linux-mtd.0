@@ -1,21 +1,25 @@
-Received: from smtp-vbr3.xs4all.nl ([194.109.24.23])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1N8FX1-0000kK-A5
-	for linux-mtd@lists.infradead.org; Wed, 11 Nov 2009 15:54:55 +0000
-Message-ID: <4AFADE3B.3050406@aimvalley.nl>
-Date: Wed, 11 Nov 2009 16:54:35 +0100
-From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+Received: from mho-02-ewr.mailhop.org ([204.13.248.72])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1N8IAA-0006G6-8X
+	for linux-mtd@lists.infradead.org; Wed, 11 Nov 2009 18:43:30 +0000
+Date: Wed, 11 Nov 2009 10:43:18 -0800
+From: Tony Lindgren <tony@atomide.com>
+To: Vimal Singh <vimal.newwork@gmail.com>
+Subject: Re: [PATCH 2/3]NAND: OMAP: Fixing omap nand driver, compiled as module
+Message-ID: <20091111184318.GD24837@atomide.com>
+References: <ce9ab5790910292321y1e7239b7pbffe9a5891d66448@mail.gmail.com>
+	<ce9ab5790910300142kf12e31cpd6249d4c7383553f@mail.gmail.com>
+	<ce9ab5790910300227r41d42673webad0ee48e3444d1@mail.gmail.com>
+	<1257862989.21596.763.camel@localhost>
+	<20091110185621.GB23952@atomide.com>
+	<ce9ab5790911102046w389b0b11l367876fdb49e5dca@mail.gmail.com>
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: a UBIFS image makes task pdflush blocked > 120 seconds
-References: <4ACF3478.1060503@aimvalley.nl>	
-	<1255269148.16942.95.camel@localhost>
-	<4AD30069.8060101@aimvalley.nl>
-	<1255510600.32489.130.camel@localhost>
-In-Reply-To: <1255510600.32489.130.camel@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ce9ab5790911102046w389b0b11l367876fdb49e5dca@mail.gmail.com>
+Cc: linux-omap@vger.kernel.org, Linux MTD <linux-mtd@lists.infradead.org>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,134 +29,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
->> ok, will do that. I'll track commit_sem, io_mutex and ubifs_garbage_collect().
->> I'll report back.
->>
->> Btw. stackdump is the same (2 out of 2 times).
+* Vimal Singh <vimal.newwork@gmail.com> [091110 20:46]:
+> On Wed, Nov 11, 2009 at 12:26 AM, Tony Lindgren <tony@atomide.com> wrote:
+> > * Artem Bityutskiy <dedekind1@gmail.com> [091110 06:22]:
+> >> On Fri, 2009-10-30 at 14:57 +0530, Vimal Singh wrote:
+> >> > Last time I forgot to 'git add' for 'arch/arm/mach-omap2/gpmc.c'... My bad.
+> >> > Correct patch is below.
+> >> >
+> >> > -vimal
+> >> >
+> >> >
+> >> > From: Vimal Singh <vimalsingh@ti.com>
+> >> > Date: Fri, 30 Oct 2009 14:54:29 +0530
+> >> > Subject: [PATCH] NAND: OMAP: Fixing omap nand driver, compiled as module
+> >> >
+> >> > Removing OMAP NAND driver, when loaded as a module, gives error and
+> >> > does not get success. This fixes this and makes driver loadable and
+> >> > removable run time.
+> >> >
+> >> > Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+> >> > ---
+> >> >  arch/arm/mach-omap2/gpmc.c |    2 ++
+> >> >  drivers/mtd/nand/omap2.c   |    5 ++++-
+> >> >  2 files changed, 6 insertions(+), 1 deletions(-)
+> >> >
+> >> > diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
+> >> > index 1587682..1d10b7b 100644
+> >> > --- a/arch/arm/mach-omap2/gpmc.c
+> >> > +++ b/arch/arm/mach-omap2/gpmc.c
+> >> > @@ -88,6 +88,7 @@ void gpmc_cs_write_reg(int cs, int idx, u32 val)
+> >> >     reg_addr = gpmc_base + GPMC_CS0 + (cs * GPMC_CS_SIZE) + idx;
+> >> >     __raw_writel(val, reg_addr);
+> >> >  }
+> >> > +EXPORT_SYMBOL(gpmc_cs_write_reg);
+> >> >
+> >> >  u32 gpmc_cs_read_reg(int cs, int idx)
+> >> >  {
+> >> > @@ -96,6 +97,7 @@ u32 gpmc_cs_read_reg(int cs, int idx)
+> >> >     reg_addr = gpmc_base + GPMC_CS0 + (cs * GPMC_CS_SIZE) + idx;
+> >> >     return __raw_readl(reg_addr);
+> >> >  }
+> >> > +EXPORT_SYMBOL(gpmc_cs_read_reg);
+> >>
+> >> You should get Tony's ack for this. I do not know the code, but on
+> >> surface it looks strange. Exporting so low-level functions is bad in
+> >> general, IMO. These function should either be inlined, or you should
+> >> invent better abstraction, so that you would not need to ever call these
+> >> functions from omap2.c.
+> >
+> > NAK. We don't want the drivers to tinker with these registers
+> > directly. And really, the drivers should be platform independent.
+> >
+> > This seems like a quick hack to add back the missing functionality
+> > we threw out of the linux-omap tree. It was thrown out because there
+> > were the same cut and paste hacks duplicated all over the place
+> > tinkering with the GPMC registers directly.
+> >
+> > We've fixed a lot of this by creating gpmc-onenand.c and gpmc-smc91x.c,
+> > and that's clearly the way to go.
+> >
+> > So instead of trying to add back the same old hacks, how about rather
+> > spend that time to create something that we can use for all boards
+> > using GPMC?
+> >
+> > To me it looks like platform init like this should be done in a
+> > generic way in arch/arm/mach-omap2/gpmc-nand.c the same way we have
+> > gpmc-onenand.c and gpmc-smc91x.c.
+> >
+> > Also, you should calculate the GPMC timings dynamically as they
+> > can change based on the L3 frequency. Just take a look at the
+> > gpmc-onenand.c and gpmc-smc91x.c.
 > 
-> OK. I really do not have any idea off the top of my head now, sorry.
-> Try to investigate this a beet deeper.
-> 
+> Ok, I'll look into these and will try to do something generic.
 
+Thanks!
 
-I investigated this. It turn out it's some kind of race condition between the pdflush
-deamon and other tasks (e.g. events). It has everything to do the the commit_sem
-and io_mutex. It's not related to my preprogrammed UBIFS image (i've seen it also after
-a big file was written to UBIFS and a sync was done "simultaneously") nor is it related
-to ubifs_garbage_collect().
-
-Here's what I did and how I conclude the above.
-
-I logged (in memory) all commit_sem, io_mutex and ubifs_garbage_collect actions
-and parse the results to human readable text afterwards.
-"Req" means mutex/semaphore requested. If there's no "Req" the operation
-has been done.
-
-
-The race condition occurs for the below UBIFS pseaudo code (which is done by many
-UBIFS functions):
-
-
-  err = make_reservation () {
-   down_read(&c->commit_sem)				/*** commit_sem, make_reservation, DOWN 1 ***/
-   err = reserve_space(c, jhead, len) {
-    ...
-  again:
-    mutex_lock_nested(&wbuf->io_mutex, wbuf->jhead);	/*** io_mutex, reserve_space, LOCK 1 ***/
-    ...
-    avail = c->leb_size - wbuf->offs - wbuf->used;
-    if (wbuf->lnum != -1 && avail >= len)
-     return 0;
-   }
-   if (!err)
-  	return 0;
-  }
-  /* the journal head stays locked and later has to be unlocked using release_head() */
-  if (err)
-   goto out_free;
-  ...
-  err = write_head(c, BASEHD, dent, len, &lnum, &dent_offs, sync);
-  if (err)
-   goto out_release;
-  ...
-  release_head(c, BASEHD) {
-   mutex_unlock(&c->jheads[jhead].wbuf.io_mutex);	/*** io_mutex, release_head, UNLOCK ***/
-  }
-  ...
-  finish_reservation(c) {
-   up_read(&c->commit_sem);				/*** commit_sem, finish_reservation, UP ***/
-  }
-
-
-
-
-Normally (for one "update" I guess) the logs shows:
-
-TIME=0000.000, M(t=8,xy=06)=commit_sem, make_reservation, Req DOWN 1
-TIME=0000.000, M(t=0,xy=06)=commit_sem, make_reservation, DOWN 1
-TIME=0000.000, M(t=9,xy=07)=io_mutex, reserve_space, Req LOCK 1
-TIME=0000.000, M(t=1,xy=07)=io_mutex, reserve_space, LOCK 1
-TIME=0000.480, M(t=9,xy=8a)=io_mutex, release_head, Req UNLOCK
-TIME=0000.480, M(t=1,xy=8a)=io_mutex, release_head, UNLOCK
-TIME=0000.480, M(t=8,xy=88)=commit_sem, finish_reservation, Req UP
-TIME=0000.480, M(t=0,xy=88)=commit_sem, finish_reservation, UP
-
-
-
-when "another task" is also updating the log shows:
-
-TIME=0304.252, M(t=8,xy=06)=commit_sem, make_reservation, Req DOWN 1
-TIME=0304.252, M(t=0,xy=06)=commit_sem, make_reservation, DOWN 1
-TIME=0304.252, M(t=9,xy=07)=io_mutex, reserve_space, Req LOCK 1
-TIME=0304.252, M(t=1,xy=07)=io_mutex, reserve_space, LOCK 1
-TIME=0304.292, M(t=8,xy=06)=commit_sem, make_reservation, Req DOWN 1
-TIME=0304.292, M(t=0,xy=06)=commit_sem, make_reservation, DOWN 1	<- 2nd DOWN !?
-TIME=0304.292, M(t=9,xy=07)=io_mutex, reserve_space, Req LOCK 1
-TIME=0304.736, M(t=9,xy=8a)=io_mutex, release_head, Req UNLOCK
-TIME=0304.736, M(t=1,xy=8a)=io_mutex, release_head, UNLOCK
-TIME=0304.736, M(t=8,xy=88)=commit_sem, finish_reservation, Req UP
-TIME=0304.736, M(t=0,xy=88)=commit_sem, finish_reservation, UP
-TIME=0304.736, M(t=1,xy=07)=io_mutex, reserve_space, LOCK 1
-TIME=0304.736, M(t=9,xy=8a)=io_mutex, release_head, Req UNLOCK
-TIME=0304.736, M(t=1,xy=8a)=io_mutex, release_head, UNLOCK
-TIME=0304.736, M(t=8,xy=88)=commit_sem, finish_reservation, Req UP
-TIME=0304.736, M(t=0,xy=88)=commit_sem, finish_reservation, UP
-
-I really don't understand the commit_sem here. Is there a 2nd copy of commit_sem ?
-
-
-
-the very first time pdflush interfers the pdflush error report shows
-(for which there's also a log entry):
-
-TIME=0021.644, M(t=8,xy=06)=commit_sem, make_reservation, Req DOWN 1
-TIME=0021.644, M(t=0,xy=06)=commit_sem, make_reservation, DOWN 1
-TIME=0021.644, M(t=9,xy=07)=io_mutex, reserve_space, Req LOCK 1
-TIME=0021.644, M(t=1,xy=07)=io_mutex, reserve_space, LOCK 1
-TIME=0034.316, M(t=8,xy=06)=commit_sem, make_reservation, Req DOWN 1
-TIME=0034.316, M(t=0,xy=06)=commit_sem, make_reservation, DOWN 1	<- 2nd DOWN !?
-TIME=0034.316, M(t=9,xy=07)=io_mutex, reserve_space, Req LOCK 1		<- pdflush blocks here
-TIME=0168.868, M(t=3,xy=00)=pdflush error report
-TIME=0302.012, M(t=3,xy=00)=pdflush error report
-TIME=0303.280, M(t=9,xy=8a)=io_mutex, release_head, Req UNLOCK
-TIME=0303.280, M(t=1,xy=8a)=io_mutex, release_head, UNLOCK		<- pdflush can continue
-TIME=0303.280, M(t=8,xy=88)=commit_sem, finish_reservation, Req UP
-TIME=0303.280, M(t=0,xy=88)=commit_sem, finish_reservation, UP
-TIME=0303.284, M(t=1,xy=07)=io_mutex, reserve_space, LOCK 1		<- pdflush continues here
-TIME=0303.284, M(t=9,xy=8a)=io_mutex, release_head, Req UNLOCK
-TIME=0303.284, M(t=1,xy=8a)=io_mutex, release_head, UNLOCK
-TIME=0303.284, M(t=8,xy=88)=commit_sem, finish_reservation, Req UP
-TIME=0303.284, M(t=0,xy=88)=commit_sem, finish_reservation, UP
-
-
-
-I must admit I dont't see the root cause. I don't understand why the commit_sem
-doesn't seem to work. Nor do I understand why the "other task" needs to hold the
-io_mutex for more than 280 seconds.
-
-If you see the reason or have any idea please let me know, otherwise I'll
-investigate this more thorough.
-
-thanks,
-Norbert.
+Tony
