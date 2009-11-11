@@ -1,18 +1,28 @@
-Received: from ey-out-1920.google.com ([74.125.78.150])
+Received: from mail-bw0-f212.google.com ([209.85.218.212])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1N7w8r-0004nQ-WE
-	for linux-mtd@lists.infradead.org; Tue, 10 Nov 2009 19:12:42 +0000
-Received: by ey-out-1920.google.com with SMTP id 4so517933eyg.2
+	id 1N850s-0008QP-CT
+	for linux-mtd@lists.infradead.org; Wed, 11 Nov 2009 04:41:03 +0000
+Received: by bwz4 with SMTP id 4so703688bwz.2
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 10 Nov 2009 11:12:35 -0800 (PST)
+	Tue, 10 Nov 2009 20:40:55 -0800 (PST)
 MIME-Version: 1.0
-Sender: fszczerba@gmail.com
-From: Frank Szczerba <frank@szczerba.net>
-Date: Tue, 10 Nov 2009 14:12:14 -0500
-Message-ID: <2711ec210911101112q1d4dcbd6k7b709243c94b305c@mail.gmail.com>
-Subject: [PATCH] Fix OOB Read Errors with Atmel Hardware ECC
-To: linux-mtd@lists.infradead.org
+In-Reply-To: <1257863201.21596.766.camel@localhost>
+References: <ce9ab5790910292321nf230810v353c23f9c1ce1931@mail.gmail.com>
+	<ce9ab5790910300142s615c7d59h15bb2d46d4f76574@mail.gmail.com>
+	<1257236323.21596.56.camel@localhost>
+	<ce9ab5790911030038p31bb69cfs1ba86cd70b243e4c@mail.gmail.com>
+	<1257237728.21596.65.camel@localhost>
+	<ce9ab5790911030101t256e49e8iaf26c733e6472157@mail.gmail.com>
+	<1257862827.21596.760.camel@localhost>
+	<1257863201.21596.766.camel@localhost>
+From: Vimal Singh <vimal.newwork@gmail.com>
+Date: Wed, 11 Nov 2009 10:10:35 +0530
+Message-ID: <ce9ab5790911102040r5cfbe5a3v310a2316a11825b@mail.gmail.com>
+Subject: Re: [PATCH 1/3] Fixing compilation warning for 'nand/omap2.c'
+To: dedekind1@gmail.com
 Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-omap@vger.kernel.org, Linux MTD <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,125 +32,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am working on an AT91SAM9260-based board using a Samsung
-STNAND256W3A flash device (256 Mbit, 8-bit bus, 512+16 pages, 16K
-blocks). We are using the hardware ECC module in the AT91, and have a
-YAFFS filesystem in part of the flash.
+On Tue, Nov 10, 2009 at 7:56 PM, Artem Bityutskiy <dedekind1@gmail.com> wro=
+te:
+> On Tue, 2009-11-10 at 16:20 +0200, Artem Bityutskiy wrote:
+>> On Tue, 2009-11-03 at 14:31 +0530, Vimal Singh wrote:
+>> > >> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+>> > >> index 090ab87..92573d5 100644
+>> > >> --- a/drivers/mtd/nand/omap2.c
+>> > >> +++ b/drivers/mtd/nand/omap2.c
+>> > >> @@ -501,11 +501,13 @@ static void omap_read_buf_dma_pref(struct
+>> > >> mtd_info *mtd, u_char
+>> > >
+>> > > :-) It is the same again.
+>> > >
+>> > > Try to send the e-mail to yourself, then save it and apply with git-=
+am.
+>> > > If it works, send to the mailing list.
+>> >
+>> > Below patch applies. Sorry for noise... :(
+>> >
+>> > Thanks,
+>> > vimal
+>> >
+>> >
+>> > From eebbd81141b196af2dc3f7a2650ce16b6b0d76ae Mon Sep 17 00:00:00 2001
+>> > From: Vimal Singh <vimalsingh@ti.com>
+>> > Date: Fri, 30 Oct 2009 11:31:34 +0530
+>> > Subject: [PATCH] Fixing compilation warning for 'nand/omap2.c'
+>> >
+>> > Fixing below warning in compilation:
+>> > drivers/mtd/nand/omap2.c: In function 'omap_write_buf_dma_pref':
+>> > drivers/mtd/nand/omap2.c:508: warning: passing argument 2 of
+>> > 'omap_nand_dma_transfer' discards qualifiers from pointer target type
+>> >
+>> > Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+>> > ---
+>> > =A0drivers/mtd/nand/omap2.c | =A0 =A06 ++++--
+>> > =A01 files changed, 4 insertions(+), 2 deletions(-)
+>> >
+>> > diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+>> > index 090ab87..92573d5 100644
+>> > --- a/drivers/mtd/nand/omap2.c
+>> > +++ b/drivers/mtd/nand/omap2.c
+>> > @@ -501,11 +501,13 @@ static void omap_read_buf_dma_pref(struct
+>> > =A0static void omap_write_buf_dma_pref(struct mtd_info *mtd,
+>> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 const u_char *buf, int len)
+>> > =A0{
+>> > + =A0 u_char *p =3D (u_char *)buf;
+>> > +
+>> > =A0 =A0 if (len <=3D mtd->oobsize)
+>> > - =A0 =A0 =A0 =A0 =A0 omap_write_buf_pref(mtd, buf, len);
+>> > + =A0 =A0 =A0 =A0 =A0 omap_write_buf_pref(mtd, p, len);
+>> > =A0 =A0 else
+>> > =A0 =A0 =A0 =A0 =A0 =A0 /* start transfer in DMA mode */
+>> > - =A0 =A0 =A0 =A0 =A0 omap_nand_dma_transfer(mtd, buf, len, 0x1);
+>> > + =A0 =A0 =A0 =A0 =A0 omap_nand_dma_transfer(mtd, p, len, 0x1);
+>> > =A0}
+>>
+>> I think that you should instead remove the 'const' modifier from the
+>> 'omap_write_buf_dma_pref()' function. Indeed, if it has the 'const'
+>> modifier, it should never change the bugger.
+>
+> Sorry, s/bugger/buffer/
+> :-)
 
-After changing to the hardware ECC we started to see corrupted
-directories and lost files in the YAFFS filesystem on reboot. In
-particular, filling the filesystem would reliably cause files to
-disappear when the system was rebooted. This does not happen when
-using MTD software ECC.
+Write calls are intended to copy data bytes from supplied buffer to
+NAND. So yes, these calls are not supposed to change this buffer.
 
-To recreate this issue:
-
-# flash_eraseall /dev/mtd4
-Erasing 16 Kibyte @ 700000 -- 100% complete.
-# mount -t yaffs /dev/mtdblock4 /mnt/yaffs
-# ls /mnt/yaffs
-lost+found
-# dd if=/dev/urandom bs=512 count=1  of=/mnt/yaffs/test1
-1+0 records in
-1+0 records out
-# dd if=/dev/urandom bs=512 count=1  of=/mnt/yaffs/test2
-1+0 records in
-1+0 records out
-# ls /mnt/yaffs
-lost+found  test1       test2
-# umount /mnt/yaffs
-# mount -t yaffs /dev/mtdblock4 /mnt/yaffs
-# ls /mnt/yaffs
-lost+found  test1       test2
-# dd if=/dev/zero bs=512 of=/mnt/yaffs/test3
-dd: writing '/mnt/yaffs/test3': No space left on device
-14147+0 records in
-14146+0 records out
-# ls -l /mnt/yaffs
-drw-rw-rw-    1 root     root          512 Jan  1 00:02 lost+found
--rw-r--r--    1 root     root          512 Jan  1 00:01 test1
--rw-r--r--    1 root     root          512 Jan  1 00:02 test2
--rw-r--r--    1 root     root      7242752 Jan  1 00:03 test3
-# umount /mnt/yaffs
-# mount -t yaffs /dev/mtdblock4 /mnt/yaffs
-# ls -l /mnt/yaffs
-drw-rw-rw-    1 root     root          512 Jan  1 00:03 lost+found
--rw-r--r--    1 root     root      7242752 Jan  1 00:03
-??????????????????????????????????????????????????????????????????????????????????????????????????????????
-
-While investigating this, I made what I thought was a simple
-optimization to the atmel_nand_read_page() function that seems to
-actually fix this issue. I'm not 100% sure why this works, maybe
-someone on the list will know.
-
-Signed-off-by: Frank Szczerba <frank+mtd at szczerba.net>
----
- drivers/mtd/nand/atmel_nand.c |   26 +++++++++++++-------------
- 1 files changed, 13 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index f8e9975..552ee9e 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -192,7 +192,6 @@ static int atmel_nand_calculate(struct mtd_info *mtd,
- {
- 	struct nand_chip *nand_chip = mtd->priv;
- 	struct atmel_nand_host *host = nand_chip->priv;
--	uint32_t *eccpos = nand_chip->ecc.layout->eccpos;
- 	unsigned int ecc_value;
-
- 	/* get the first 2 ECC bytes */
-@@ -244,8 +243,10 @@ static int atmel_nand_read_page(struct mtd_info *mtd,
- 	/* read the page */
- 	chip->read_buf(mtd, p, eccsize);
-
-+	ecc_pos = oob + eccpos[0];
-+
- 	/* move to ECC position if needed */
--	if (eccpos[0] != 0) {
-+	if (ecc_pos != oob) {
- 		/* This only works on large pages
- 		 * because the ECC controller waits for
- 		 * NAND_CMD_RNDOUTSTART after the
-@@ -254,26 +255,25 @@ static int atmel_nand_read_page(struct mtd_info *mtd,
- 		 */
- 		chip->cmdfunc(mtd, NAND_CMD_RNDOUT,
- 				mtd->writesize + eccpos[0], -1);
--	}
-
--	/* the ECC controller needs to read the ECC just after the data */
--	ecc_pos = oob + eccpos[0];
--	chip->read_buf(mtd, ecc_pos, eccbytes);
-+        /* the ECC controller needs to read the ECC just after the data */
-+        chip->read_buf(mtd, ecc_pos, eccbytes);
-+
-+        /* get back to oob start (end of page) */
-+        chip->cmdfunc(mtd, NAND_CMD_RNDOUT, mtd->writesize, -1);
-+    }
-+
-+    /* read the whole oob */
-+    chip->read_buf(mtd, oob, mtd->oobsize);
-
- 	/* check if there's an error */
--	stat = chip->ecc.correct(mtd, p, oob, NULL);
-+	stat = chip->ecc.correct(mtd, p, ecc_pos, NULL);
-
- 	if (stat < 0)
- 		mtd->ecc_stats.failed++;
- 	else
- 		mtd->ecc_stats.corrected += stat;
-
--	/* get back to oob start (end of page) */
--	chip->cmdfunc(mtd, NAND_CMD_RNDOUT, mtd->writesize, -1);
--
--	/* read the oob */
--	chip->read_buf(mtd, oob, mtd->oobsize);
--
- 	return 0;
- }
-
--- 
-1.6.5.1
-
-
-Frank Szczerba
+--=20
+Regards,
+Vimal Singh
