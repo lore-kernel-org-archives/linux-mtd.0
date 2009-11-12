@@ -1,20 +1,22 @@
-Received: from mail-yw0-f204.google.com ([209.85.211.204])
+Received: from fmmailgate02.web.de ([217.72.192.227])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1N8JuI-0003Co-0d
-	for linux-mtd@lists.infradead.org; Wed, 11 Nov 2009 20:35:14 +0000
-Received: by ywh42 with SMTP id 42so1434239ywh.28
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 11 Nov 2009 12:35:08 -0800 (PST)
-Message-ID: <4AFB22CA.2050106@gmail.com>
-Date: Wed, 11 Nov 2009 21:47:06 +0100
-From: Roel Kluin <roel.kluin@gmail.com>
+	id 1N8UEL-0001OJ-Ov
+	for linux-mtd@lists.infradead.org; Thu, 12 Nov 2009 07:36:38 +0000
+Date: Thu, 12 Nov 2009 08:36:30 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [RFC] mxc nand controller updates
+Message-ID: <20091112073630.GV30179@pengutronix.de>
+References: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
+	<1257925792.21596.858.camel@localhost>
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] mtd: error return -EIO instead of EIO
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1257925792.21596.858.camel@localhost>
+Sender: saschahauer@web.de
+Cc: Vladimir Barinov <vova.barinov@gmail.com>, mathieu.berland@eads.com,
+	jbe@pengutronix.de, linux-mtd@lists.infradead.org,
+	Eric Benard <ebenard@eukrea.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,60 +26,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Return a negative error value instead of a positive
+Hi Artem,
 
-Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
----
- drivers/mtd/maps/physmap.c    |    2 +-
- drivers/mtd/maps/vmu-flash.c  |    2 +-
- drivers/mtd/nand/atmel_nand.c |    4 ++--
- 3 files changed, 4 insertions(+), 4 deletions(-)
+On Wed, Nov 11, 2009 at 09:49:52AM +0200, Artem Bityutskiy wrote:
+> On Wed, 2009-10-21 at 16:13 +0200, Sascha Hauer wrote:
+> > Hi all,
+> > 
+> > Here are several patches for the mxc nand controller. At the end
+> > of this series we are able to use this driver with the i.MX25/35
+> > SoCs. Please review and test if you do not want to see your boards
+> > break ;)
+> 
+> Just tried to pull your tree, but could not - there were confilicts.
+> Could you please provide a branch/patches against the mtd-2.6 tree?
 
-diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
-index 380648e..a5a72b2 100644
---- a/drivers/mtd/maps/physmap.c
-+++ b/drivers/mtd/maps/physmap.c
-@@ -130,7 +130,7 @@ static int physmap_flash_probe(struct platform_device *dev)
- 						 info->map[i].size);
- 		if (info->map[i].virt == NULL) {
- 			dev_err(&dev->dev, "Failed to ioremap flash region\n");
--			err = EIO;
-+			err = -EIO;
- 			goto err_out;
- 		}
- 
-diff --git a/drivers/mtd/maps/vmu-flash.c b/drivers/mtd/maps/vmu-flash.c
-index 1f73297..b02db6f 100644
---- a/drivers/mtd/maps/vmu-flash.c
-+++ b/drivers/mtd/maps/vmu-flash.c
-@@ -621,7 +621,7 @@ static int __devinit vmu_connect(struct maple_device *mdev)
- 
- 	card = kmalloc(sizeof(struct memcard), GFP_KERNEL);
- 	if (!card) {
--		error = ENOMEM;
-+		error = -ENOMEM;
- 		goto fail_nomem;
- 	}
- 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index f8e9975..e4aeeed 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -464,7 +464,7 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
- 	if (host->board->det_pin) {
- 		if (gpio_get_value(host->board->det_pin)) {
- 			printk(KERN_INFO "No SmartMedia card inserted.\n");
--			res = ENXIO;
-+			res = -ENXIO;
- 			goto err_no_card;
- 		}
- 	}
-@@ -535,7 +535,7 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
- 
- 	if ((!partitions) || (num_partitions == 0)) {
- 		printk(KERN_ERR "atmel_nand: No partitions defined, or unsupported device.\n");
--		res = ENXIO;
-+		res = -ENXIO;
- 		goto err_no_partitions;
- 	}
- 
+I updated the tree, the branch is still the same.
+
+Thanks
+  Sascha
+
+
+The following changes since commit
+8ce110ac19bc88b82e3feacfbb3a2ee08a07fe22:
+  H Hartley Sweeten (1):
+        mtd: Fix compile failure and error path in physmap.c
+
+are available in the git repository at:
+
+  git://git.pengutronix.de/git/imx/linux-2.6.git mxc-nand
+
+Sascha Hauer (18):
+      mxc_nand: cleanup eccoob descriptions
+      mxc_nand: cleanup initialization
+      mxc_nand: merge send_read_page and send_prog_page
+      mxc_nand: introduce mxc_do_addr_cycle
+      mxc nand: remove debug param
+      mxc nand: remove dead code
+      mxc nand: use resource_size()
+      mxc nand: use buffers
+      mxc nand: simplify command processing
+      mxc nand: modify send_page to send all pages, not only one
+      mxc_nand: remove unused defines
+      mxc_nand: Make main/spare areas runtime configurable
+      mxc_nand: Get rid of pagesize_2k flag
+      mxc_nand: Add NFC V2 support
+      mxc_nand: disable sp_en bit only once
+      mxc_nand: Allow flash based bbt
+      mxc_nand: remove TROP_US_DELAY
+      mxc_nand: use DRIVER_NAME where appropriate
+
+ arch/arm/plat-mxc/include/mach/mxc_nand.h |    3 +-
+ drivers/mtd/nand/mxc_nand.c               |  773 +++++++++++------------------
+ 2 files changed, 300 insertions(+), 476 deletions(-)
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
