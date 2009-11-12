@@ -1,22 +1,19 @@
 Received: from fmmailgate02.web.de ([217.72.192.227])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1N8UEL-0001OJ-Ov
-	for linux-mtd@lists.infradead.org; Thu, 12 Nov 2009 07:36:38 +0000
-Date: Thu, 12 Nov 2009 08:36:30 +0100
+	id 1N8W5k-000148-2C
+	for linux-mtd@lists.infradead.org; Thu, 12 Nov 2009 09:35:52 +0000
+Date: Thu, 12 Nov 2009 10:35:45 +0100
 From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [RFC] mxc nand controller updates
-Message-ID: <20091112073630.GV30179@pengutronix.de>
-References: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
-	<1257925792.21596.858.camel@localhost>
+To: John Ogness <john.ogness@linutronix.de>
+Subject: Re: mxc nand i.mx35: no OOB with HW_ECC
+Message-ID: <20091112093545.GW30179@pengutronix.de>
+References: <80bpjj7hrd.fsf@merkur.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1257925792.21596.858.camel@localhost>
+In-Reply-To: <80bpjj7hrd.fsf@merkur.tec.linutronix.de>
 Sender: saschahauer@web.de
-Cc: Vladimir Barinov <vova.barinov@gmail.com>, mathieu.berland@eads.com,
-	jbe@pengutronix.de, linux-mtd@lists.infradead.org,
-	Eric Benard <ebenard@eukrea.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,59 +23,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+Hi John,
 
-On Wed, Nov 11, 2009 at 09:49:52AM +0200, Artem Bityutskiy wrote:
-> On Wed, 2009-10-21 at 16:13 +0200, Sascha Hauer wrote:
-> > Hi all,
-> > 
-> > Here are several patches for the mxc nand controller. At the end
-> > of this series we are able to use this driver with the i.MX25/35
-> > SoCs. Please review and test if you do not want to see your boards
-> > break ;)
+On Tue, Nov 03, 2009 at 04:25:10PM +0100, John Ogness wrote:
+> Hi,
 > 
-> Just tried to pull your tree, but could not - there were confilicts.
-> Could you please provide a branch/patches against the mtd-2.6 tree?
+> I spent a while trying to figure out why JFFS2 was getting hardware ECC
+> errors on an i.MX35 NANDFC with 2K pages. The problem also existed when
+> using nandwrite together with the -n and -o options.
+> 
+> The problem is that for page sizes larger than 512 bytes, the i.MX35
+> NANDFC can only write the page and oob data together. When writing the
+> page and oob data, the ECC hardware also writes the ECC codes for
+> it. This is ok if the filesystem driver or userspace application
+> understands that only one write per page+oob is allowed.
+> 
+> But jffs2 and "nandwrite -n -o" assume that they can write the oob data
+> and the page data separately. With the recently posted mxc_nand.c
+> driver, this results in the NANDFC writing the ECC codes to flash
+> twice... with different values. This means the ECC codes that end up on
+> the flash chip are garbage.
 
-I updated the tree, the branch is still the same.
+I can confirm jffs2 errors on i.MX35 with the patches I posted. And yes
+you're right, I mostly use UBIFS.
 
-Thanks
-  Sascha
+Freescale originally provided two drivers, one for the i.MX27/31 type
+nand controller (v1) from which the in kernel driver is derived and one
+for the remaining nand controllers (i.mx35/25) (v2). What I did is to
+work on both drivers till they both looked (nearly) the same and posted
+the patches for the v1 driver.
 
+One remaining difference is in mxc_do_addr_cycle(). Here is the version
+from the v2 driver which works with jffs2:
 
-The following changes since commit
-8ce110ac19bc88b82e3feacfbb3a2ee08a07fe22:
-  H Hartley Sweeten (1):
-        mtd: Fix compile failure and error path in physmap.c
+static void mxc_do_addr_cycle(struct mtd_info *mtd, int column, int
+page_addr)
+{
+	struct nand_chip *nand_chip = mtd->priv;
+	struct mxc_nand_host *host = nand_chip->priv;
 
-are available in the git repository at:
+	u32 page_mask = nand_chip->pagemask;
 
-  git://git.pengutronix.de/git/imx/linux-2.6.git mxc-nand
+	if (column != -1) {
+		send_addr(host, column & 0xFF, 0);
+		if (mtd->writesize == 2048) {
+			/* another col addr cycle for 2k page */
+			send_addr(host, (column >> 8) & 0xF, 0);
+		} else if (mtd->writesize == 4096) {
+			/* another col addr cycle for 4k page */
+			send_addr(host, (column >> 8) & 0x1F, 0);
+		}
+	}
+	if (page_addr != -1) {
+		do {
+			send_addr(host, (page_addr & 0xff), 0);
+			page_mask >>= 8;
+			page_addr >>= 8;
+		} while (page_mask != 0);
+	}
+}
 
-Sascha Hauer (18):
-      mxc_nand: cleanup eccoob descriptions
-      mxc_nand: cleanup initialization
-      mxc_nand: merge send_read_page and send_prog_page
-      mxc_nand: introduce mxc_do_addr_cycle
-      mxc nand: remove debug param
-      mxc nand: remove dead code
-      mxc nand: use resource_size()
-      mxc nand: use buffers
-      mxc nand: simplify command processing
-      mxc nand: modify send_page to send all pages, not only one
-      mxc_nand: remove unused defines
-      mxc_nand: Make main/spare areas runtime configurable
-      mxc_nand: Get rid of pagesize_2k flag
-      mxc_nand: Add NFC V2 support
-      mxc_nand: disable sp_en bit only once
-      mxc_nand: Allow flash based bbt
-      mxc_nand: remove TROP_US_DELAY
-      mxc_nand: use DRIVER_NAME where appropriate
+Putting this function into the v1 driver makes the driver work for me on
+i.MX35 with jffs2. Can you confirm this?
 
- arch/arm/plat-mxc/include/mach/mxc_nand.h |    3 +-
- drivers/mtd/nand/mxc_nand.c               |  773 +++++++++++------------------
- 2 files changed, 300 insertions(+), 476 deletions(-)
+I haven't looked deeply into the differences and I suspect this version
+of mxc_do_addr_cycle() won't work on the v1 type controllers, so this is
+not a solution yet.
 
+Sascha
 
 -- 
 Pengutronix e.K.                           |                             |
