@@ -1,14 +1,20 @@
-From: "Govindarajan, Sriramakrishnan" <srk@ti.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Date: Thu, 12 Nov 2009 21:28:58 +0530
-Subject: NAND: failure reported with mtd_oobtest(read delay violated)
-Message-ID: <FCCFB4CDC6E5564B9182F639FC35608702FA5CC012@dbde02.ent.ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-qy0-f204.google.com ([209.85.221.204])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1N8czT-0008GK-Fq
+	for linux-mtd@lists.infradead.org; Thu, 12 Nov 2009 16:57:52 +0000
+Received: by qyk42 with SMTP id 42so1081366qyk.28
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 12 Nov 2009 08:57:45 -0800 (PST)
+Message-ID: <4AFC415C.6040305@gmail.com>
+Date: Thu, 12 Nov 2009 18:09:48 +0100
+From: Roel Kluin <roel.kluin@gmail.com>
 MIME-Version: 1.0
-Cc: "'linux-arm-kernel@lists.infradead.org'"
-	<linux-arm-kernel@lists.infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] jffs2: Fix error return in jffs2_do_read_inode_internal()
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,39 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
-On the OMAP3 EVM platform we are seeing failures when we run the mtd_oobtes=
-t repeatedly (overnight). Usually the failures are reported after 40-45 ite=
-rations.
+The returned error should stay negative
 
-Further analysis with logic analyzer seems to indicate that for the specifi=
-c instance where failure is observed, the time delay between dispatching th=
-e READ0 command and the start of read operation is violated. (udelay loop w=
-ould start even before the write is reflected on the HW)
+Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+---
+ fs/jffs2/readinode.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-OMAP3EVM implementation relies on command delay(chip_delay set to 50ms) and=
- doesn't use wait pin monitoring. By adding a data memory barrier dmb() ins=
-truction right after the command phase the issue seems to be resolved.
-
-Have we seen similar behavior on other platforms that rely on command delay=
- and do we specifically require a dmb() after the command is written?
-
-DIFF Details:(will post this a patch once I hear your review comments)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 2211386..8df3780 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -651,6 +651,7 @@ static void nand_command_lp(struct mtd_info *mtd, unsig=
-ned int command,
-                               NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
-                chip->cmd_ctrl(mtd, NAND_CMD_NONE,
-                               NAND_NCE | NAND_CTRL_CHANGE);
-+               dmb();
-
-                /* This applies to read commands */
-        default:
-
-
-Regards
-Sriram
+diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+index 1a80301..9c26738 100644
+--- a/fs/jffs2/readinode.c
++++ b/fs/jffs2/readinode.c
+@@ -1284,7 +1284,7 @@ static int jffs2_do_read_inode_internal(struct jffs2_sb_info *c,
+ 				f->target = NULL;
+ 				mutex_unlock(&f->sem);
+ 				jffs2_do_clear_inode(c, f);
+-				return -ret;
++				return ret;
+ 			}
+ 
+ 			f->target[je32_to_cpu(latest_node->csize)] = '\0';
