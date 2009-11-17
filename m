@@ -1,23 +1,19 @@
-Received: from smtp-vbr7.xs4all.nl ([194.109.24.27])
+Received: from smtp-vbr16.xs4all.nl ([194.109.24.36])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NALZD-000505-1t
-	for linux-mtd@lists.infradead.org; Tue, 17 Nov 2009 10:45:51 +0000
-Message-ID: <4B027ED2.6090302@aimvalley.nl>
-Date: Tue, 17 Nov 2009 11:45:38 +0100
+	id 1NAQsF-0005aI-08
+	for linux-mtd@lists.infradead.org; Tue, 17 Nov 2009 16:25:51 +0000
+Message-ID: <4B02CE86.5000908@aimvalley.nl>
+Date: Tue, 17 Nov 2009 17:25:42 +0100
 From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
 MIME-Version: 1.0
-To: Jamie Lokier <jamie@shareable.org>
+To: dedekind1@gmail.com
 Subject: Re: a UBIFS image makes task pdflush blocked > 120 seconds
-References: <34637.10.10.0.184.1258202287.squirrel@intranet.aimsys.nl>
-	<1258359185.21596.1285.camel@localhost>
-	<OF4EAF98D9.8FAE2E28-ONC1257670.00302441-C1257670.0030D73E@transmode.se>
-	<20091116232228.GI12063@shareable.org>
-In-Reply-To: <20091116232228.GI12063@shareable.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+References: <4B012D0D.4080500@aimvalley.nl>
+	<1258446318.27437.60.camel@localhost>
+In-Reply-To: <1258446318.27437.60.camel@localhost>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: nvbolhuis@aimsys.nl,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Joakim Tjernlund <joakim.tjernlund@transmode.se>, dedekind1@gmail.com
+Cc: linux-mtd@lists.infradead.org, joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +23,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jamie Lokier wrote:
-
-> According to datasheets, the flash I'm using with cmdset_0002 supports
-> multi-block erase, although I don't think the driver does at the moment.
-> 
-> Multi-block erase works by giving the chip a list of blocks to erase,
-> or even the whole flash, and then it does them simultaneously.
-> 
-> Could this solve your problem?
-> 
-> -- Jamie
-> 
 
 
-I doubt it.
+I tested all mentioned solutions. It turns out only the "erase-suspend option"
+helps.
 
-Afaik multi-block erasure doesn't speed up things. So for n blocks you'd still have
-to wait n x block-erase-time (in this case erase-suspend whould be even more important).
-Besides, currently MTD/CFI do not support this.
 
-thanks,
+lowering the UBI BG task priority somehow causes the application to block until
+the UBI BG task finishes erasing *all* NOR blocks. I guess the application is blocked
+in get_chip and never gets activated by the scheduler.
+I do not understand why this happens. How can a lower UBI BG prio make the application
+block for so long ?
+Maybe I implemented it wrong, I added line 1359.
+1354 int ubi_thread(void *u)
+1355 {
+1356         int failures = 0;
+1357         struct ubi_device *ubi = u;
+1358
+1359         set_user_nice(current, 19);
+1360
+1361         ubi_msg("background thread \"%s\" started, PID %d",
+1362                 ubi->bgt_name, task_pid_nr(current));
+I did see the ubi_bg prio = 139 (lowest possible prio), it used to be 115.
+I also tried 135, same result.
+Anyway, this doesn't seem to work.
+
+
+Using yield() in the UBI BG task doesn't seem to do much. It for sure doesn't cause
+the application to become active after a (couple of) erase operations. The log shows:
+LE:0197, TIME=0026.276, pid=0918, M(xy=00)=do_erase_oneblock, START
+LE:0198, TIME=0026.868, pid=1237, M(xy=04)=commit_semR, make_reservation, Req DOWN 1
+LE:0199, TIME=0026.868, pid=1237, M(xy=05)=commit_semR, make_reservation, DOWN 1
+LE:0200, TIME=0026.868, pid=1237, M(xy=02)=io_mutex, reserve_space, Req LOCK 1
+LE:0201, TIME=0026.868, pid=1237, M(xy=03)=io_mutex, reserve_space, LOCK 1
+LE:0202, TIME=0027.104, pid=0918, M(xy=01)=do_erase_oneblock, END
+LE:0203, TIME=0027.104, pid=0918, M(xy=0c)=yield
+LE:0204, TIME=0027.104, pid=0918, M(xy=00)=do_erase_oneblock, START
+LE:0205, TIME=0027.876, pid=0918, M(xy=01)=do_erase_oneblock, END
+LE:0206, TIME=0027.876, pid=0918, M(xy=0c)=yield
+LE:0207, TIME=0027.876, pid=0918, M(xy=00)=do_erase_oneblock, START
+LE:0208, TIME=0028.672, pid=0918, M(xy=01)=do_erase_oneblock, END
+LE:0209, TIME=0028.672, pid=0918, M(xy=0c)=yield
+   <omitted many do_erase_oneblock END/START + yield entries>
+LE:0294, TIME=0051.132, pid=0918, M(xy=00)=do_erase_oneblock, START
+LE:0295, TIME=0051.944, pid=0918, M(xy=01)=do_erase_oneblock, END
+LE:0296, TIME=0051.944, pid=0918, M(xy=0c)=yield
+LE:0297, TIME=0051.944, pid=0918, M(xy=00)=do_erase_oneblock, START
+LE:0298, TIME=0052.080, pid=0108, M(xy=04)=commit_semR, make_reservation, Req DOWN 1
+LE:0299, TIME=0052.080, pid=0108, M(xy=05)=commit_semR, make_reservation, DOWN 1
+LE:0300, TIME=0052.080, pid=0108, M(xy=02)=io_mutex, reserve_space, Req LOCK 1
+   <omitted many do_erase_oneblock END/START + yield entries>
+LE:0405, TIME=0080.652, pid=0918, M(xy=00)=do_erase_oneblock, START
+LE:0406, TIME=0081.536, pid=0918, M(xy=01)=do_erase_oneblock, END
+LE:0407, TIME=0081.536, pid=0918, M(xy=0c)=yield
+LE:0408, TIME=0081.536, pid=0918, M(xy=00)=do_erase_oneblock, START
+LE:0409, TIME=0082.332, pid=0918, M(xy=01)=do_erase_oneblock, END
+LE:0410, TIME=0082.332, pid=0918, M(xy=0c)=yield
+LE:0411, TIME=0082.332, pid=1237, M(xy=06)=io_mutex, release_head, Req UNLOCK
+LE:0412, TIME=0082.332, pid=0108, M(xy=03)=io_mutex, reserve_space, LOCK 1
+LE:0413, TIME=0082.332, pid=0108, M(xy=06)=io_mutex, release_head, Req UNLOCK
+LE:0414, TIME=0082.332, pid=0108, M(xy=07)=io_mutex, release_head, UNLOCK
+LE:0415, TIME=0082.332, pid=0108, M(xy=08)=commit_semR, finish_reservation, Req UP
+LE:0416, TIME=0082.332, pid=0108, M(xy=09)=commit_semR, finish_reservation, UP
+As can be seen it still takes ~ 55 seconds before the application (pid=1237) and pdflush
+(pid=0108) can continue.
+
+
+Using the erase-suspend feature works great. The application creates and writes
+files without any delay. pdflush isn't delayed either.
+The difference is that the UBI BG thread erased only 200 blocks after our application
+is completely up and running while this used to be ~ 1000. This is as expected and
+a logical consequence of the erase-suspend.
+
+
+So as far as I'm concerned this problem has been solved. I'm gonna use the
+erase-suspend feature in the way Joakim suggested.
+I will do a few additional erase-suspend related tests (since it looks like I'm one of the
+first users for cmdset_002) and report problems to this list (as usual).
+
+thanks for all help.
+
 Norbert.
