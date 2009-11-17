@@ -1,12 +1,12 @@
-Message-Id: <200911172245.nAHMjk8X001820@imap1.linux-foundation.org>
-Subject: [patch 1/4] mtd-nand: davinci: Correct 4-bit error correction
+Message-Id: <200911172245.nAHMjnss001994@imap1.linux-foundation.org>
+Subject: [patch 4/4] mtd/nand: fix multi-chip suspend problem
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Tue, 17 Nov 2009 14:45:46 -0800
+Date: Tue, 17 Nov 2009 14:45:49 -0800
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
-Cc: nsnehaprabha@ti.com, akpm@linux-foundation.org, sudhakar.raj@ti.com,
+Cc: b24347@freescale.com, akpm@linux-foundation.org, leoli@freescale.com,
 	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -17,57 +17,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
+From: Li Yang <leoli@freescale.com>
 
-On TI's DA830/OMAP-L137, DA850/OMAP-L138 and DM365, after setting the
-4BITECC_ADD_CALC_START bit in the NAND Flash control register to 1 and
-before waiting for the NAND Flash status register to be equal to 1, 2 or
-3, we have to wait till the ECC HW goes to correction state.  Without this
-wait, ECC correction calculations will not be proper.
+Symptom:
+device_suspend(): mtd_cls_suspend+0x0/0x58 returns -11
+PM: Device mtd14 failed to suspend: error -11
+PM: Some devices failed to suspend
 
-This has been tested on DA830/OMAP-L137, DA850/OMAP-L138, DM355 and DM365
-EVMs.
+This patch enables other chips to be suspended if the active chip of
+the controller has been suspended.
 
-Signed-off-by: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
-Acked-by: Sneha Narnakaje <nsnehaprabha@ti.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
+Signed-off-by: Jin Qing <b24347@freescale.com>
+Signed-off-by: Li Yang <leoli@freescale.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- drivers/mtd/nand/davinci_nand.c |   16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/mtd/nand/nand_base.c |   14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-diff -puN drivers/mtd/nand/davinci_nand.c~mtd-nand-davinci-correct-4-bit-error-correction drivers/mtd/nand/davinci_nand.c
---- a/drivers/mtd/nand/davinci_nand.c~mtd-nand-davinci-correct-4-bit-error-correction
-+++ a/drivers/mtd/nand/davinci_nand.c
-@@ -310,6 +310,7 @@ static int nand_davinci_correct_4bit(str
- 	unsigned short ecc10[8];
- 	unsigned short *ecc16;
- 	u32 syndrome[4];
-+	u32 ecc_state;
- 	unsigned num_errors, corrected;
- 
- 	/* All bytes 0xff?  It's an erased page; ignore its ECC. */
-@@ -360,6 +361,21 @@ compare:
- 	 */
- 	davinci_nand_writel(info, NANDFCR_OFFSET,
- 			davinci_nand_readl(info, NANDFCR_OFFSET) | BIT(13));
+diff -puN drivers/mtd/nand/nand_base.c~mtd-nand-fix-multi-chip-suspend-problem drivers/mtd/nand/nand_base.c
+--- a/drivers/mtd/nand/nand_base.c~mtd-nand-fix-multi-chip-suspend-problem
++++ a/drivers/mtd/nand/nand_base.c
+@@ -697,10 +697,16 @@ nand_get_device(struct nand_chip *chip, 
+ 		spin_unlock(lock);
+ 		return 0;
+ 	}
+-	if (new_state == FL_PM_SUSPENDED) {
+-		spin_unlock(lock);
+-		return (chip->state == FL_PM_SUSPENDED) ? 0 : -EAGAIN;
+-	}
++	if (new_state == FL_PM_SUSPENDED)
++		if (chip->controller->active->state == FL_PM_SUSPENDED) {
++			chip->state = FL_PM_SUSPENDED;
++			spin_unlock(lock);
++			return 0;
++		} else {
++			spin_unlock(lock);
++			return -EAGAIN;
++		}
 +
-+	/*
-+	 * ECC_STATE field reads 0x3 (Error correction complete) immediately
-+	 * after setting the 4BITECC_ADD_CALC_START bit. So if you immediately
-+	 * begin trying to poll for the state, you may fall right out of your
-+	 * loop without any of the correction calculations having taken place.
-+	 * The recommendation from the hardware team is to wait till ECC_STATE
-+	 * reads less than 4, which means ECC HW has entered correction state.
-+	 */
-+	do {
-+		ecc_state = (davinci_nand_readl(info,
-+				NANDFSR_OFFSET) >> 8) & 0x0f;
-+		cpu_relax();
-+	} while (ecc_state < 4);
-+
- 	for (;;) {
- 		u32	fsr = davinci_nand_readl(info, NANDFSR_OFFSET);
- 
+ 	set_current_state(TASK_UNINTERRUPTIBLE);
+ 	add_wait_queue(wq, &wait);
+ 	spin_unlock(lock);
 _
