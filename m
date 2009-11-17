@@ -1,22 +1,40 @@
-Received: from mail2.shareable.org ([80.68.89.115])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NAAu3-0006Vp-OG
-	for linux-mtd@lists.infradead.org; Mon, 16 Nov 2009 23:22:40 +0000
-Date: Mon, 16 Nov 2009 23:22:28 +0000
-From: Jamie Lokier <jamie@shareable.org>
-To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Subject: Re: a UBIFS image makes task pdflush blocked > 120 seconds
-Message-ID: <20091116232228.GI12063@shareable.org>
-References: <34637.10.10.0.184.1258202287.squirrel@intranet.aimsys.nl>
-	<1258359185.21596.1285.camel@localhost>
-	<OF4EAF98D9.8FAE2E28-ONC1257670.00302441-C1257670.0030D73E@transmode.se>
+Received: from fgwmail5.fujitsu.co.jp ([192.51.44.35])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NAIKu-0007m6-LO
+	for linux-mtd@lists.infradead.org; Tue, 17 Nov 2009 07:18:53 +0000
+Received: from m2.gw.fujitsu.co.jp ([10.0.50.72])
+	by fgwmail5.fujitsu.co.jp (Fujitsu Gateway) with ESMTP id
+	nAH7IhXG026887 for <linux-mtd@lists.infradead.org> (envelope-from
+	kosaki.motohiro@jp.fujitsu.com); Tue, 17 Nov 2009 16:18:43 +0900
+Received: from smail (m2 [127.0.0.1])
+	by outgoing.m2.gw.fujitsu.co.jp (Postfix) with ESMTP id C04C545DE4F
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 17 Nov 2009 16:18:42 +0900 (JST)
+Received: from s2.gw.fujitsu.co.jp (s2.gw.fujitsu.co.jp [10.0.50.92])
+	by m2.gw.fujitsu.co.jp (Postfix) with ESMTP id 84FC045DE51
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 17 Nov 2009 16:18:42 +0900 (JST)
+Received: from s2.gw.fujitsu.co.jp (localhost.localdomain [127.0.0.1])
+	by s2.gw.fujitsu.co.jp (Postfix) with ESMTP id 21A2C8F8007
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 17 Nov 2009 16:18:42 +0900 (JST)
+Received: from m106.s.css.fujitsu.com (m106.s.css.fujitsu.com [10.249.87.106])
+	by s2.gw.fujitsu.co.jp (Postfix) with ESMTP id B8CA1E78003
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 17 Nov 2009 16:18:41 +0900 (JST)
+From: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
+To: LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH 3/7] mtd: Don't use PF_MEMALLOC
+In-Reply-To: <20091117161551.3DD4.A69D9226@jp.fujitsu.com>
+References: <20091117161551.3DD4.A69D9226@jp.fujitsu.com>
+Message-Id: <20091117161753.3DDD.A69D9226@jp.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OF4EAF98D9.8FAE2E28-ONC1257670.00302441-C1257670.0030D73E@transmode.se>
-Cc: nvbolhuis@aimsys.nl,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	dedekind1@gmail.com
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+Date: Tue, 17 Nov 2009 16:18:41 +0900 (JST)
+Cc: linux-mtd@lists.infradead.org, linux-mm <linux-mm@kvack.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Woodhouse <dwmw2@infradead.org>, kosaki.motohiro@jp.fujitsu.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +44,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Joakim Tjernlund wrote:
-> I only noticed a problem with deleting big files and then a reboot.
-> if you don't reboot, the system will work. Perhaps this is due
-> to the actual CFI driver? I am using cmdset_0001 and it is a bit more
-> evolved than the others. My NOR flash also supports erase suspend.
-> If you are using cmdset_0002 you should consider fixing it.
-> As I recall, erase suspend is disabled. There was a thread about it
-> a while ago were I noticed a bug in the driver which may be the reason
-> for erase suspend being disabled. I even posted some
-> fixes for this but I don't think anyone bothered to test them.
 
-According to datasheets, the flash I'm using with cmdset_0002 supports
-multi-block erase, although I don't think the driver does at the moment.
+Non MM subsystem must not use PF_MEMALLOC. Memory reclaim need few
+memory, anyone must not prevent it. Otherwise the system cause
+mysterious hang-up and/or OOM Killer invokation.
 
-Multi-block erase works by giving the chip a list of blocks to erase,
-or even the whole flash, and then it does them simultaneously.
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Signed-off-by: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
+---
+ drivers/mtd/mtd_blkdevs.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
 
-Could this solve your problem?
-
--- Jamie
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index 8ca17a3..7be5ac3 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -82,9 +82,6 @@ static int mtd_blktrans_thread(void *arg)
+ 	struct request_queue *rq = tr->blkcore_priv->rq;
+ 	struct request *req = NULL;
+ 
+-	/* we might get involved when memory gets low, so use PF_MEMALLOC */
+-	current->flags |= PF_MEMALLOC;
+-
+ 	spin_lock_irq(rq->queue_lock);
+ 
+ 	while (!kthread_should_stop()) {
+-- 
+1.6.2.5
