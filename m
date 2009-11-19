@@ -1,70 +1,46 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NF5z8-0002Sh-Ok
-	for linux-mtd@lists.infradead.org; Mon, 30 Nov 2009 13:08:15 +0000
-Subject: Re: [RFC / PATCH] mtd/ubi: flush wl before clearing update marker
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-In-Reply-To: <20091129184602.GB30617@Chamillionaire.breakpoint.cc>
-References: <20091129184602.GB30617@Chamillionaire.breakpoint.cc>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 30 Nov 2009 14:50:16 +0200
-Message-Id: <1259585416.7518.106.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
-	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
-	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+From: vimalsingh@ti.com (Vimal Singh)
+Date: Thu, 19 Nov 2009 19:28:11 +0530
+Subject: No subject
+Message-ID: <mailman.43.1258639761.2170.linux-mtd@lists.infradead.org>
+To: linux-mtd@lists.infradead.org
+List-Id: linux-mtd.lists.infradead.org
 
-On Sun, 2009-11-29 at 19:46 +0100, Sebastian Andrzej Siewior wrote:
-> ubiupdatevol -t does the following:
-> - ubi_start_update()
->   - set_update_marker()
->   - for all LEBs ubi_eba_unmap_leb()
->   - clear_update_marker()
->   - ubi_wl_flush()
-> 
-> ubi_wl_flush() physically erases all PEB, once it returns all PEBs are
-> empty. clear_update_marker() has the update marker written after return.
-> If there is a power cut between the last two functions then the UBI
-> volume has no longer the "update" marker set and may have some valid
-> LEBs while some of them may be gone.
-> If that volume in question happens to be a UBIFS volume, then mount
-> will fail with
+This patch series adds flash support for NAND (in sdp, zoom and ldp),
+OneNAND and NOR (in sdp)
 
-Very good catch, thanks. Pushed to the ubi-2.6.git tree, although I've
+Tested on Zoom2 and 3430SDP
 
-[snip]
+Vimal Singh (4):
+[PATCH-v6 1/4] OMAP2/3: Add support for flash on SDP boards
+[PATCH-v6 2/4] OMAP3: Add support for NAND on ZOOM/LDP boards
+[PATCH-v6 3/4] OMAP: Zoom2: Enable NAND and JFFS2 support in defconfig
+[PATCH-v6 4/4] OMAP: 3430SDP: Enable NAND in defconfig
 
->  	if (bytes == 0) {
-> +
-Removed this junk newline
-> +		err = ubi_wl_flush(ubi);
-> +		if (err)
-> +			return err;
 
-[snip]
+v6 :
+1. Implemented Tony's comments on below threads:
 
->  	vol->upd_buf = vmalloc(ubi->leb_size);
-> @@ -362,16 +365,17 @@ int ubi_more_update_data(struct ubi_device *ubi, struct ubi_volume *vol,
->  
->  	ubi_assert(vol->upd_received <= vol->upd_bytes);
->  	if (vol->upd_received == vol->upd_bytes) {
-> +
-And this.
-> +		err = ubi_wl_flush(ubi);
-> +		if (err)
-> +			return err;
+[PATCH-v5 1/4] OMAP2/3: Add support for flash on SDP boards
+http://marc.info/?l=linux-omap&m=125805845217778&w=2
 
-[snip]
+[PATCH-v5 2/4] OMAP3: Add support for NAND on ZOOM2/LDP boards
+http://marc.info/?l=linux-omap&m=125805867318269&w=2
+
+[PATCH 2/3]NAND: OMAP: Fixing omap nand driver, compiled as module
+http://marc.info/?l=linux-omap&m=125787938923028&w=2
+
+2. Creating 'mach-omap2/gpmc-nand.c' to handle GPMC related setups for
+the driver.
+3. Removed all 'gpmc_cs_read_reg' and 'gpmc_cs_write_reg' calls from
+'nand/omap2.c'
+4. Corrected macro 'GPMC_CONFIG1_DEVICETYPE_NAND' for NAND
+5. Removed 'nand unlock' routine in patch 2/4, will take this
+discussion to mtd list.
+
+v4-v5:
+[PATCH-v5 1/4] OMAP2/3: Add support for flash on SDP boards:
+Implemented Tony's comments.
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Regards,
+Vimal Singh
