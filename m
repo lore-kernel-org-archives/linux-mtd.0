@@ -1,20 +1,17 @@
-Received: from smtp-out113.alice.it ([85.37.17.113])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NBQVs-0004Qn-MM
-	for linux-mtd@lists.infradead.org; Fri, 20 Nov 2009 10:14:52 +0000
-Date: Fri, 20 Nov 2009 11:14:35 +0100
-From: Antonio Ospite <ospite@studenti.unina.it>
-To: Nicolas Pitre <nico@fluxnic.net>
-Subject: Re: [PATCH] MTD: add missing put_chip() in cfi_intelext_reset()
-Message-Id: <20091120111435.d28c19bf.ospite@studenti.unina.it>
-In-Reply-To: <alpine.LFD.2.00.0910231559320.21460@xanadu.home>
-References: <20091023000533.57893593.ospite@studenti.unina.it>
-	<alpine.LFD.2.00.0910231559320.21460@xanadu.home>
-Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
-	micalg="PGP-SHA1";
-	boundary="Signature=_Fri__20_Nov_2009_11_14_36_+0100_mcKH0h4t2JlDr09o"
-Cc: openezx-devel@lists.openezx.org, linux-mtd@lists.infradead.org
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NBWUf-0000r9-Hq
+	for linux-mtd@lists.infradead.org; Fri, 20 Nov 2009 16:38:02 +0000
+Date: Fri, 20 Nov 2009 17:37:44 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] fio infrastructure
+Message-ID: <20091120163744.GB1716@logfs.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,71 +21,146 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---Signature=_Fri__20_Nov_2009_11_14_36_+0100_mcKH0h4t2JlDr09o
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I really wish I could have tested this with working hardware, but the
+gods are against that idea.  So here is a patch anyway.
 
-On Fri, 23 Oct 2009 16:02:42 -0400 (EDT)
-Nicolas Pitre <nico@fluxnic.net> wrote:
+Main idea is to have three asynchonous operations for read, write and
+erase.  The old erase method already has an asynchronous interface, so
+arguably I could have reused that.  But for consistency and because no
+existing driver actually worked asynchronously, I decided to add a new
+method for erase as well.
 
->=20
-> Signed-off-by: Nicolas Pitre <nico@fluxnic.net>
->
+Each operation works on the smallest possible entity - either a page or
+a block.  If and when hardware arrives that performs better when using
+larger operations, we can still change that.
 
-Hi, has this fix been submitted yet?
-I can't see it in 2.6.32-rc8.
+The wait_multiple_* code is can be used to send off a lot of IO at once
+and wait for it all to finish.
 
-Thanks,
-   Antonio
+Comments?
 
-> ---
->=20
-> On Fri, 23 Oct 2009, Antonio Ospite wrote:
->=20
-> > Hi,
-> >=20
-> > I am attaching a trace of a possible recursive locking in
-> > cfi_cmdset_0001.c
->=20
-> This patch should fix it.
->=20
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_=
-cmdset_0001.c
-> index e7563a9..d923a2d 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-> @@ -2564,6 +2564,7 @@ static int cfi_intelext_reset(struct mtd_info *mtd)
->  		if (!ret) {
->  			map_write(map, CMD(0xff), chip->start);
->  			chip->state =3D FL_SHUTDOWN;
-> +			put_chip(map, chip, chip->start);
->  		}
->  		spin_unlock(chip->mutex);
->  	}
+Jörn
 
+-- 
+To my face you have the audacity to advise me to become a thief - the worst
+kind of thief that is conceivable, a thief of spiritual things, a thief of
+ideas! It is insufferable, intolerable!
+-- M. Binet in Scarabouche
 
---=20
-Antonio Ospite
-http://ao2.it
+FIO or Flash IO is loosely based on bio.  Like bios, fios are
+asynchronous and can be queued, reordered, etc.  Unlike bios, fios are
+tiny operations - single page read, single page write, single block
+erase.  To group larger operations, the wait_multiple infrastructure
+can be used.
+---
+ drivers/mtd/mtdcore.c   |   25 +++++++++++++++++++++++
+ include/linux/mtd/mtd.h |   51 +++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 76 insertions(+), 0 deletions(-)
 
-PGP public key ID: 0x4553B001
-
-A: Because it messes up the order in which people normally read text.
-   See http://en.wikipedia.org/wiki/Posting_style
-Q: Why is top-posting such a bad thing?
-A: Top-posting.
-Q: What is the most annoying thing in e-mail?
-
---Signature=_Fri__20_Nov_2009_11_14_36_+0100_mcKH0h4t2JlDr09o
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAksGbAwACgkQ5xr2akVTsAHNhgCbBwft8fZeo7DHU/pPj16r/HxZ
-ncgAoJwBc4a4oJvZiyvCOIyzID6XX3ii
-=dEDh
------END PGP SIGNATURE-----
-
---Signature=_Fri__20_Nov_2009_11_14_36_+0100_mcKH0h4t2JlDr09o--
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 467a4f1..04ac1a0 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -44,6 +44,31 @@ EXPORT_SYMBOL_GPL(mtd_table);
+ static LIST_HEAD(mtd_notifiers);
+ 
+ 
++void wait_multiple_init(struct wait_multiple *wm_data, int count)
++{
++	kref_set(&wm_data->refcount, count);
++	init_completion(&wm_data->complete);
++	wm_data->err = 0;
++}
++
++void wait_multiple_release(struct kref *kref)
++{
++	struct wait_multiple *wm_data;
++
++	wm_data = container_of(kref, struct wait_multiple, refcount);
++	complete(&wm_data->complete);
++}
++
++void wait_multiple_complete(struct fio *fio)
++{
++	struct wait_multiple *wm_data = fio->fi_private;
++
++	if (fio->fi_err && !wm_data->err)
++		wm_data->err = fio->fi_err;
++	kref_put(&wm_data->refcount, wait_multiple_release);
++	free_fio(fio);
++}
++
+ #if defined(CONFIG_MTD_CHAR) || defined(CONFIG_MTD_CHAR_MODULE)
+ #define MTD_DEVT(index) MKDEV(MTD_CHAR_MAJOR, (index)*2)
+ #else
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 0f32a9b..3f0a65e 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -48,6 +48,52 @@ struct erase_info {
+ 	struct erase_info *next;
+ };
+ 
++enum fio_type {
++	FIO_READ_OOB	= 1,
++	FIO_READ	= 2,
++	FIO_WRITE	= 3,
++	FIO_ERASE	= 4,
++};
++
++/*
++ * A fio does one thing and does it well - asynchronously and out of order.
++ * One thing means a single small operation, a page read, a page write or a
++ * block erase.
++ */
++struct fio;
++typedef void (fio_end_io_t) (struct fio *fio);
++struct fio {
++	struct list_head fi_list;
++	enum fio_type	 fi_type;
++	struct mtd_info	*fi_mtd;
++	u64		 fi_ofs;
++	void		*fi_private;
++	fio_end_io_t	*fi_end_io;
++	int		 fi_err;
++	struct kref	 fi_refcount;
++	struct page	*fi_page;
++};
++
++static inline struct fio *alloc_fio(gfp_t gfp_mask)
++{
++	return kzalloc(sizeof(struct fio), gfp_mask);
++}
++
++static inline void free_fio(struct fio *fio)
++{
++	kfree(fio);
++}
++
++struct wait_multiple {
++	struct completion complete;
++	struct kref refcount;
++	int err;
++};
++
++void wait_multiple_init(struct wait_multiple *wm_data, int count);
++void wait_multiple_release(struct kref *kref);
++void wait_multiple_complete(struct fio *fio);
++
+ struct mtd_erase_region_info {
+ 	uint64_t offset;			/* At which this region starts, from the beginning of the MTD */
+ 	uint32_t erasesize;		/* For this region */
+@@ -181,6 +227,11 @@ struct mtd_info {
+ 	int (*read) (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf);
+ 	int (*write) (struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen, const u_char *buf);
+ 
++	void (*fio_read)(struct fio *fio);
++	void (*fio_write)(struct fio *fio);
++	/* XXX  Caller has to check for bad blocks manually. */
++	void (*fio_erase)(struct fio *fio);
++
+ 	/* In blackbox flight recorder like scenarios we want to make successful
+ 	   writes in interrupt context. panic_write() is only intended to be
+ 	   called when its known the kernel is about to panic and we need the
+-- 
+1.6.2.1
