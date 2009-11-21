@@ -1,17 +1,20 @@
-Received: from [213.79.90.228] (helo=buildserver.ru.mvista.com)
+Received: from mail-ew0-f211.google.com ([209.85.219.211])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NBZQE-0004aS-Il
-	for linux-mtd@lists.infradead.org; Fri, 20 Nov 2009 19:45:39 +0000
-Date: Fri, 20 Nov 2009 22:45:32 +0300
-From: Anton Vorontsov <avorontsov@ru.mvista.com>
-To: David Woodhouse <David.Woodhouse@intel.com>
-Subject: [PATCH] jffs2: Fix memory corruption in jffs2_read_inode_range()
-Message-ID: <20091120194532.GA9455@oksana.dev.rtsoft.ru>
+	id 1NBrmV-0004ss-H3
+	for linux-mtd@lists.infradead.org; Sat, 21 Nov 2009 15:21:52 +0000
+Received: by ewy3 with SMTP id 3so1036582ewy.2
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 21 Nov 2009 07:21:46 -0800 (PST)
+Message-ID: <4B08088C.8050305@gmail.com>
+Date: Sat, 21 Nov 2009 16:34:36 +0100
+From: Roel Kluin <roel.kluin@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Cc: Neil Brown <neilb@suse.de>, Andrew Morton <akpm@linux-foundation.org>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+To: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] JFFS2: min/max confusion?
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,82 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In 2.6.23 kernel, commit a32ea1e1f925399e0d81ca3f7394a44a6dafa12c
-("Fix read/truncate race") fixed a race in the generic code, and as a
-side effect, now do_generic_file_read() can ask us to readpage() past
-the i_size, which seems to be correctly handled by the block routines
-(e.g. block_read_full_page() fills the page with zeroes in case if
-somebody is trying to read past the last inode's block).
+MAX_SUMMARY_SIZE was meant as a limit, not as a minimum
 
-JFFS2 doesn't handle this, instead jffs2_read_inode_range() is trying
-to lookup the fragments which do not belong to anything, and
-jffs2_lookup_node_frag() happily returns "the closest smaller match"
-which is OK for most cases (I guess), but in our case there wasn't
-anything meaningful to lookup in the first place.
-
-After we found the bogus fragment, the code can branch to 'Filling
-frag hole' case that does
-
-  memset(buf, 0, min(end, frag->ofs + frag->size) - offset);
-
-and since 'frag' is bogus, its ofs + size can be smaller than the real
-'offset' (i.e. index << PAGE_CACHE_SHIFT), and so the code turns into
-
-  memset(buf, 0, <huge unsigned negative>);
-
-Hopefully, in most cases the corruption is fatal, and quickly causing
-random oopses, like this:
-
-  root@10.0.0.4:~/ltp-fs-20090531# ./testcases/kernel/fs/ftest/ftest01
-  Unable to handle kernel paging request for data at address 0x00000008
-  Faulting instruction address: 0xc01cd980
-  Oops: Kernel access of bad area, sig: 11 [#1]
-  [...]
-  NIP [c01cd980] rb_insert_color+0x38/0x184
-  LR [c0043978] enqueue_hrtimer+0x88/0xc4
-  Call Trace:
-  [c6c63b60] [c004f9a8] tick_sched_timer+0xa0/0xe4 (unreliable)
-  [c6c63b80] [c0043978] enqueue_hrtimer+0x88/0xc4
-  [c6c63b90] [c0043a48] __run_hrtimer+0x94/0xbc
-  [c6c63bb0] [c0044628] hrtimer_interrupt+0x140/0x2b8
-  [c6c63c10] [c000f8e8] timer_interrupt+0x13c/0x254
-  [c6c63c30] [c001352c] ret_from_except+0x0/0x14
-  --- Exception: 901 at memset+0x38/0x5c
-      LR = jffs2_read_inode_range+0x144/0x17c
-  [c6c63cf0] [00000000] (null) (unreliable)
-
-This patch fixes the issue, plus fixes all LTP tests on NAND/UBI with
-JFFS2 filesystem that were failing since 2.6.23 (seems like the bug
-above also broke the truncation).
-
-Note that the bug is only reproducible with write-buffered MTD devices
-(e.g. NAND, UBI), which is a mystery to me (though I didn't look close
-enough, possibly there is a race between gc and wbuf code, but I don't
-see it and obviously it isn't that fatal).
-
-Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
+Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
 ---
- fs/jffs2/file.c |    8 +++++++-
- 1 files changed, 7 insertions(+), 1 deletions(-)
+ fs/jffs2/summary.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
-index 5edc2bf..e1d7a1d 100644
---- a/fs/jffs2/file.c
-+++ b/fs/jffs2/file.c
-@@ -85,7 +85,13 @@ static int jffs2_do_readpage_nolock (struct inode *inode, struct page *pg)
- 	pg_buf = kmap(pg);
- 	/* FIXME: Can kmap fail? */
+unless I am mistaken?
+
+diff --git a/fs/jffs2/summary.c b/fs/jffs2/summary.c
+index 6caf1e1..800171d 100644
+--- a/fs/jffs2/summary.c
++++ b/fs/jffs2/summary.c
+@@ -23,7 +23,7 @@
  
--	ret = jffs2_read_inode_range(c, f, pg_buf, pg->index << PAGE_CACHE_SHIFT, PAGE_CACHE_SIZE);
-+	if (pg->index > ((i_size_read(inode) - 1) >> PAGE_CACHE_SHIFT)) {
-+		ret = 0;
-+		memset(pg_buf, 0, PAGE_CACHE_SIZE);
-+	} else {
-+		ret = jffs2_read_inode_range(c, f, pg_buf,
-+			pg->index << PAGE_CACHE_SHIFT, PAGE_CACHE_SIZE);
-+	}
+ int jffs2_sum_init(struct jffs2_sb_info *c)
+ {
+-	uint32_t sum_size = max_t(uint32_t, c->sector_size, MAX_SUMMARY_SIZE);
++	uint32_t sum_size = min_t(uint32_t, c->sector_size, MAX_SUMMARY_SIZE);
  
- 	if (ret) {
- 		ClearPageUptodate(pg);
--- 
-1.6.3.3
+ 	c->summary = kzalloc(sizeof(struct jffs2_summary), GFP_KERNEL);
+ 
