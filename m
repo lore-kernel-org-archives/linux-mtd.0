@@ -1,23 +1,16 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from smtp.seznam.cz ([77.75.72.43])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NCHQu-0000an-S8
-	for linux-mtd@lists.infradead.org; Sun, 22 Nov 2009 18:45:16 +0000
-MIME-version: 1.0
-Content-transfer-encoding: 7BIT
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Received: from xanadu.home ([66.130.28.92]) by VL-MO-MR005.ip.videotron.ca
-	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
-	32bit))
-	with ESMTP id <0KTI000I9UNAO140@VL-MO-MR005.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Sun, 22 Nov 2009 12:45:10 -0500 (EST)
-Date: Sun, 22 Nov 2009 12:45:10 -0500 (EST)
-From: Nicolas Pitre <nico@fluxnic.net>
-To: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
-Subject: Re: [PATCH] enable erase-suspend-program for CFI cmdset_0002
-In-reply-to: <200911191101.nAJB1wwH000784@linpc062.aimsys.nl>
-Message-id: <alpine.LFD.2.00.0911221243070.2059@xanadu.home>
-References: <200911191101.nAJB1wwH000784@linpc062.aimsys.nl>
-Cc: linux-mtd@lists.infradead.org
+	id 1NCKaI-0003Cz-2q
+	for linux-mtd@lists.infradead.org; Sun, 22 Nov 2009 22:07:10 +0000
+Date: Mon, 23 Nov 2009 00:06:50 +0100
+From: Ladislav Michl <Ladislav.Michl@seznam.cz>
+To: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Subject: [PATCH] fix M29W800D dev_id and uaddr
+Message-ID: <20091122230649.GA29911@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Reply-To: Ladislav Michl <ladis@linux-mips.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,63 +20,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 19 Nov 2009, Norbert van Bolhuis wrote:
+This one sits in my tree for more than two years...
+Using device code found on page 12 (http://www.btdesigner.com/pdfs/M29W800D.pdf)
+and unlock address from page 15 MTD subsytem happily detects ST M29W800DB
+in 16-bit mode. I do believe original author used only 8-bit mode and thus
+didn't hit this bug.
 
-> 
-> erase-suspend for writing is required to avoid blocking applications that wish
-> to write some data (to a NOR block other than the one being erased).
-> Particularly, it solves some huge delays that an application (which writes to a
-> UBIFS) will experience if UBI attaches to empty NOR flash. In this case the
-> UBI background thread will erase a lot of blocks and the application can be blocked
-> for minutes because of the "MTD/CFI chip lock".
-> This feature has been disabled for years. Maybe this was because the old code
-> turned it on for erase-suspend read-only chips also (cfip->EraseSuspend & 0x1).
-> This is wrong and corrected now.
-> I tested this patch and it seems to work fine.
-> 
-> Signed-off-by: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
 
-FYI: I have no experience with non-Intel parts and no good knowledge of 
-the cmdset_0002 code.  So I can't review this.
-
-> ---
->  drivers/mtd/chips/cfi_cmdset_0002.c |   16 +++-------------
->  1 files changed, 3 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-> index 94bb61e..1d49e18 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> @@ -490,10 +490,6 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
->  	}
->  #endif
->  
-> -	/* FIXME: erase-suspend-program is broken.  See
-> -	   http://lists.infradead.org/pipermail/linux-mtd/2003-December/009001.html */
-> -	printk(KERN_NOTICE "cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.\n");
-> -
->  	__module_get(THIS_MODULE);
->  	return mtd;
->  
-> @@ -589,15 +585,9 @@ static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr
->  		return 0;
->  
->  	case FL_ERASING:
-> -		if (mode == FL_WRITING) /* FIXME: Erase-suspend-program appears broken. */
-> -			goto sleep;
-> -
-> -		if (!(   mode == FL_READY
-> -		      || mode == FL_POINT
-> -		      || !cfip
-> -		      || (mode == FL_WRITING && (cfip->EraseSuspend & 0x2))
-> -		      || (mode == FL_WRITING && (cfip->EraseSuspend & 0x1)
-> -		    )))
-> +		if (!cfip || !(cfip->EraseSuspend & (0x1|0x2)) ||
-> +		    !(mode == FL_READY || mode == FL_POINT ||
-> +		    (mode == FL_WRITING && (cfip->EraseSuspend & 0x2))))
->  			goto sleep;
->  
->  		/* We could check to see if we're trying to access the sector
-> -- 
-> 1.5.2.2
-> 
+diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
+index 736a3be..1bec5e1 100644
+--- a/drivers/mtd/chips/jedec_probe.c
++++ b/drivers/mtd/chips/jedec_probe.c
+@@ -142,8 +142,8 @@
+ 
+ /* ST - www.st.com */
+ #define M29F800AB	0x0058
+-#define M29W800DT	0x00D7
+-#define M29W800DB	0x005B
++#define M29W800DT	0x22D7
++#define M29W800DB	0x225B
+ #define M29W400DT	0x00EE
+ #define M29W400DB	0x00EF
+ #define M29W160DT	0x22C4
+@@ -1575,7 +1575,7 @@ static const struct amd_flash_info jedec_table[] = {
+ 		.dev_id		= M29W800DT,
+ 		.name		= "ST M29W800DT",
+ 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
+-		.uaddr		= MTD_UADDR_0x5555_0x2AAA,	/* ???? */
++		.uaddr		= MTD_UADDR_0x0AAA_0x0555,
+ 		.dev_size	= SIZE_1MiB,
+ 		.cmd_set	= P_ID_AMD_STD,
+ 		.nr_regions	= 4,
+@@ -1590,7 +1590,7 @@ static const struct amd_flash_info jedec_table[] = {
+ 		.dev_id		= M29W800DB,
+ 		.name		= "ST M29W800DB",
+ 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
+-		.uaddr		= MTD_UADDR_0x5555_0x2AAA,	/* ???? */
++		.uaddr		= MTD_UADDR_0x0AAA_0x0555,
+ 		.dev_size	= SIZE_1MiB,
+ 		.cmd_set	= P_ID_AMD_STD,
+ 		.nr_regions	= 4,
