@@ -1,16 +1,23 @@
-Subject: Re: [PATCH] jffs2: Fix memory corruption in jffs2_read_inode_range()
-From: David Woodhouse <dwmw2@infradead.org>
-To: Anton Vorontsov <avorontsov@ru.mvista.com>
-In-Reply-To: <20091120194532.GA9455@oksana.dev.rtsoft.ru>
-References: <20091120194532.GA9455@oksana.dev.rtsoft.ru>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 22 Nov 2009 10:20:59 +0000
-Message-ID: <1258885259.1127.80.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Neil Brown <neilb@suse.de>, Andrew Morton <akpm@linux-foundation.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Received: from relais.videotron.ca ([24.201.245.36])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NCHQu-0000an-S8
+	for linux-mtd@lists.infradead.org; Sun, 22 Nov 2009 18:45:16 +0000
+MIME-version: 1.0
+Content-transfer-encoding: 7BIT
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Received: from xanadu.home ([66.130.28.92]) by VL-MO-MR005.ip.videotron.ca
+	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
+	32bit))
+	with ESMTP id <0KTI000I9UNAO140@VL-MO-MR005.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Sun, 22 Nov 2009 12:45:10 -0500 (EST)
+Date: Sun, 22 Nov 2009 12:45:10 -0500 (EST)
+From: Nicolas Pitre <nico@fluxnic.net>
+To: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+Subject: Re: [PATCH] enable erase-suspend-program for CFI cmdset_0002
+In-reply-to: <200911191101.nAJB1wwH000784@linpc062.aimsys.nl>
+Message-id: <alpine.LFD.2.00.0911221243070.2059@xanadu.home>
+References: <200911191101.nAJB1wwH000784@linpc062.aimsys.nl>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,53 +27,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-11-20 at 12:45 -0700, Anton Vorontsov wrote:
-> +       if (pg->index > ((i_size_read(inode) - 1) >> PAGE_CACHE_SHIFT)) {
-> +               ret = 0;
-> +               memset(pg_buf, 0, PAGE_CACHE_SIZE);
-> +       } else {
-> +               ret = jffs2_read_inode_range(c, f, pg_buf,
-> +                       pg->index << PAGE_CACHE_SHIFT, PAGE_CACHE_SIZE);
-> +       } 
+On Thu, 19 Nov 2009, Norbert van Bolhuis wrote:
 
-Thank you for the excellent diagnosis and the patch. 
+> 
+> erase-suspend for writing is required to avoid blocking applications that wish
+> to write some data (to a NOR block other than the one being erased).
+> Particularly, it solves some huge delays that an application (which writes to a
+> UBIFS) will experience if UBI attaches to empty NOR flash. In this case the
+> UBI background thread will erase a lot of blocks and the application can be blocked
+> for minutes because of the "MTD/CFI chip lock".
+> This feature has been disabled for years. Maybe this was because the old code
+> turned it on for erase-suspend read-only chips also (cfip->EraseSuspend & 0x1).
+> This is wrong and corrected now.
+> I tested this patch and it seems to work fine.
+> 
+> Signed-off-by: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
 
-I think I'd prefer to fix it a little differently though -- I would be
-happier to make jffs2_read_inode_range() cope with out-of-file reads,
-rather than adding this special case where we don't call it.
+FYI: I have no experience with non-Intel parts and no good knowledge of 
+the cmdset_0002 code.  So I can't review this.
 
-That way we aren't at all susceptible to potential races between the
-VFS-maintained i_size and our own internal fragtree handling. And
-jffs2_read_inode_range() already handles the memset to zero for various
-other reasons anyway.
-
-Does this patch look OK to you? It seems to work on the test cases I've
-tried.
-
-diff --git a/fs/jffs2/read.c b/fs/jffs2/read.c
-index cfe05c1..9640175 100644
---- a/fs/jffs2/read.c
-+++ b/fs/jffs2/read.c
-@@ -164,12 +164,14 @@ int jffs2_read_inode_range(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
- 
- 	/* XXX FIXME: Where a single physical node actually shows up in two
- 	   frags, we read it twice. Don't do that. */
--	/* Now we're pointing at the first frag which overlaps our page */
-+	/* Now we're pointing at the first frag which overlaps our page
-+	 * (or perhaps is before it, if we've been asked to read off the
-+	 * end of the file). */
- 	while(offset < end) {
- 		D2(printk(KERN_DEBUG "jffs2_read_inode_range: offset %d, end %d\n", offset, end));
--		if (unlikely(!frag || frag->ofs > offset)) {
-+		if (unlikely(!frag || frag->ofs > offset || frag->ofs + frag->size <= offset)) {
- 			uint32_t holesize = end - offset;
--			if (frag) {
-+			if (frag && frag->ofs > offset) {
- 				D1(printk(KERN_NOTICE "Eep. Hole in ino #%u fraglist. frag->ofs = 0x%08x, offset = 0x%08x\n", f->inocache->ino, frag->ofs, offset));
- 				holesize = min(holesize, frag->ofs - offset);
- 			}
-
-
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+> ---
+>  drivers/mtd/chips/cfi_cmdset_0002.c |   16 +++-------------
+>  1 files changed, 3 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+> index 94bb61e..1d49e18 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+> @@ -490,10 +490,6 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
+>  	}
+>  #endif
+>  
+> -	/* FIXME: erase-suspend-program is broken.  See
+> -	   http://lists.infradead.org/pipermail/linux-mtd/2003-December/009001.html */
+> -	printk(KERN_NOTICE "cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.\n");
+> -
+>  	__module_get(THIS_MODULE);
+>  	return mtd;
+>  
+> @@ -589,15 +585,9 @@ static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr
+>  		return 0;
+>  
+>  	case FL_ERASING:
+> -		if (mode == FL_WRITING) /* FIXME: Erase-suspend-program appears broken. */
+> -			goto sleep;
+> -
+> -		if (!(   mode == FL_READY
+> -		      || mode == FL_POINT
+> -		      || !cfip
+> -		      || (mode == FL_WRITING && (cfip->EraseSuspend & 0x2))
+> -		      || (mode == FL_WRITING && (cfip->EraseSuspend & 0x1)
+> -		    )))
+> +		if (!cfip || !(cfip->EraseSuspend & (0x1|0x2)) ||
+> +		    !(mode == FL_READY || mode == FL_POINT ||
+> +		    (mode == FL_WRITING && (cfip->EraseSuspend & 0x2))))
+>  			goto sleep;
+>  
+>  		/* We could check to see if we're trying to access the sector
+> -- 
+> 1.5.2.2
+> 
