@@ -1,20 +1,26 @@
-Received: from moutng.kundenserver.de ([212.227.126.186])
+Received: from mail-fx0-f211.google.com ([209.85.220.211])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NCXsi-0000HD-2W
-	for linux-mtd@lists.infradead.org; Mon, 23 Nov 2009 12:19:05 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: Joern Engel <joern@logfs.org>
-Subject: Re: [PATCH 0/17] [LogFS] New flash filesystem
-Date: Mon, 23 Nov 2009 13:18:39 +0100
-References: <20091120181113.GA2159@logfs.org>
-In-Reply-To: <20091120181113.GA2159@logfs.org>
+	id 1NCY6Y-0004Wj-4I
+	for linux-mtd@lists.infradead.org; Mon, 23 Nov 2009 12:33:23 +0000
+Received: by fxm3 with SMTP id 3so5854968fxm.4
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 23 Nov 2009 04:33:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200911231318.39685.arnd@arndb.de>
-Cc: linux-fsdevel@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Sender: penberg@gmail.com
+In-Reply-To: <E1NBZJ5-0003hL-Qc@longford.logfs.org>
+References: <20091120181113.GA2159@logfs.org>
+	<E1NBZJ5-0003hL-Qc@longford.logfs.org>
+Date: Mon, 23 Nov 2009 14:33:15 +0200
+Message-ID: <84144f020911230433q5fd90321m9b463cb425fafe7d@mail.gmail.com>
+Subject: Re: [PATCH 12/17] [LogFS] readwrite.c
+From: Pekka Enberg <penberg@cs.helsinki.fi>
+To: Joern Engel <joern@logfs.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+	Hugh Dickins <hugh.dickins@tiscali.co.uk>,
+	linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,22 +30,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 20 November 2009, Joern Engel wrote:
-> Mails are purely for review and comments.  If this is deemed
-> merge-ready, please the git tree at
-> http://git.kernel.org/?p=linux/kernel/git/joern/logfs.git
-> instead.
+Hi Joern,
 
-I think merging is overdue, the code looks great and if you're
-happy with it to go in, it's hard for anyone to argue with
-that.
+(Dunno who to CC, really, so lets see if I can trick Andrew or Hugh
+into looking at the issue.)
 
-It should definitely be included in linux-next, and I guess it
-should have been in there for some time, to get better
-compile-time coverage across architectures, and some
-more testing.
+On Fri, Nov 20, 2009 at 9:38 PM, Joern Engel <joern@logfs.org> wrote:
+> +static void logfs_lock_write_page(struct page *page)
+> +{
+> + =A0 =A0 =A0 int loop =3D 0;
+> +
+> + =A0 =A0 =A0 while (unlikely(!trylock_page(page))) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (loop++ > 0x1000) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* Has been observed once s=
+o far... */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_ERR "stack at %=
+p\n", &loop);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 BUG();
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (PagePreLocked(page)) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* Holder of page lock is w=
+aiting for us, it
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* is safe to use this pa=
+ge. */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* Some other process has this page locked =
+and has
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* nothing to do with us. =A0Wait for it =
+to finish.
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0*/
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 schedule();
+> + =A0 =A0 =A0 }
+> + =A0 =A0 =A0 BUG_ON(!PageLocked(page));
+> +}
 
-I can't find it in linux-next right now, but I could be
-looking at the wrong stuff again, as I have before.
+What's the purpose of PagePreLocked()? The above function looks pretty
+fragile for a filesystem to me.
 
-	Arnd <><
+                        Pekka
